@@ -4,8 +4,31 @@ local floorColor = Color(58, 62, 64, 255)
 local stairColor = Color(120, 126, 132, 255)
 local stairEdgeColor = Color(225, 145, 48, 255)
 
+local function refreshRenderBounds(ent)
+    local mins = ent:GetBoxMins()
+    local maxs = ent:GetBoxMaxs()
+
+    -- Upper-floor geometry is merged into long row-run entities. A fixed
+    -- +/-512 render bound causes perfectly solid floors to disappear visually
+    -- when the entity origin leaves the client's visibility volume. Use the
+    -- actual authored bounds instead, with a small safety margin.
+    local margin = Vector(32, 32, 32)
+    ent:SetRenderBounds(mins - margin, maxs + margin)
+end
+
 function ENT:Initialize()
-    self:SetRenderBounds(Vector(-512, -512, -512), Vector(512, 512, 512))
+    refreshRenderBounds(self)
+    self._LODNextBoundsRefresh = 0
+end
+
+function ENT:Think()
+    -- Networked box dimensions can arrive just after client entity creation.
+    -- Refresh briefly/cheaply so the final authoritative dimensions always
+    -- become the render bounds even if Initialize saw defaults.
+    if CurTime() >= (self._LODNextBoundsRefresh or 0) then
+        refreshRenderBounds(self)
+        self._LODNextBoundsRefresh = CurTime() + 1
+    end
 end
 
 local function drawFilled(ent, color)
