@@ -4,7 +4,10 @@ GM.Name = "The Legend of Deborah"
 GM.Author = "Shael Riley"
 GM.Email = ""
 GM.Website = ""
-GM.TeamBased = true
+
+-- Deborah is cooperative. We still use one real team for teammate collision and
+-- friendly-fire semantics, but there is no player-facing team-selection game.
+GM.TeamBased = false
 
 LOD = LOD or {}
 LOD.Version = "0.1.0-dev"
@@ -12,8 +15,10 @@ LOD.Version = "0.1.0-dev"
 include("lod/sh_config.lua")
 include("lod/sh_rng.lua")
 
-function GM:Initialize()
-    team.SetUp(LOD.Config.PlayerTeam, "Expedition", Color(220, 140, 48), true)
+-- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
+-- CreateTeams explicitly so those sample teams never become part of Deborah.
+function GM:CreateTeams()
+    team.SetUp(LOD.Config.PlayerTeam, "Expedition", Color(220, 140, 48), false)
 end
 
 function GM:PlayerNoClip()
