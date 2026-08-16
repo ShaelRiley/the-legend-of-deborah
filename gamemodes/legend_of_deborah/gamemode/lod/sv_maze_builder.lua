@@ -264,8 +264,58 @@ function MazeBuilder:Build(graph)
         return false, "geometry creation failed for " .. failures .. " required entities"
     end
 
+    local counts = {
+        containers = 0,
+        floorBoxes = 0,
+        stairBoxes = 0,
+        railBoxes = 0,
+        other = 0
+    }
+
+    for _, ent in ipairs(self.Entities) do
+        if IsValid(ent) then
+            local class = ent:GetClass()
+            if class == "prop_physics" then
+                counts.containers = counts.containers + 1
+            elseif class == "lod_static_box" then
+                local kind = ent:GetBoxKind()
+                if kind == 1 then
+                    counts.floorBoxes = counts.floorBoxes + 1
+                elseif kind == 2 then
+                    counts.stairBoxes = counts.stairBoxes + 1
+                elseif kind == 3 then
+                    counts.railBoxes = counts.railBoxes + 1
+                else
+                    counts.other = counts.other + 1
+                end
+            else
+                counts.other = counts.other + 1
+            end
+        end
+    end
+
+    local representativeContainer
+    for _, ent in ipairs(self.Entities) do
+        if IsValid(ent) and ent:GetClass() == "prop_physics" then
+            representativeContainer = ent
+            break
+        end
+    end
+
+    local containerBounds
+    if IsValid(representativeContainer) then
+        local mins, maxs = representativeContainer:OBBMins(), representativeContainer:OBBMaxs()
+        containerBounds = {
+            mins = mins,
+            maxs = maxs,
+            size = maxs - mins
+        }
+    end
+
     return true, {
         entityCount = #self.Entities,
+        entityCounts = counts,
+        containerBounds = containerBounds,
         startPos = self:CellCenter(graph.Start) + Vector(0, 0, 12),
         goalPos = self:CellCenter(graph.Goal) + Vector(0, 0, 12)
     }

@@ -10,7 +10,10 @@ C.Maze = {
     Width = 21,
     Height = 21,
     CellSize = 384,
-    LevelHeight = 256,
+    -- Keep successive traversable floors vertically separated from the tops of
+    -- the two-container wall stack. At 256 units the lower wall tops were flush
+    -- with the next floor, creating a potential wall-top bypass.
+    LevelHeight = 384,
     Origin = Vector(0, 0, 0),
     GenerationAttempts = 32,
     MandatoryVerticalMin = 3,
@@ -34,8 +37,11 @@ C.Geometry = {
     WallStack = 2,
     FloorThickness = 16,
     StairWidth = 192,
-    StairRun = 160,
-    StairSteps = 16,
+    -- 24 steps over 384 units preserves a 16-unit rise per step (within the
+    -- ordinary Source movement step-height envelope) while fitting a broad
+    -- mandatory staircase inside one 384-unit logical cell.
+    StairRun = 288,
+    StairSteps = 24,
     FloorColor = Color(58, 62, 64),
     StairColor = Color(76, 79, 80),
     DebugColor = Color(225, 145, 48),

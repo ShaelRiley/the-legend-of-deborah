@@ -89,10 +89,20 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     if levelSeedOverride then self:MarkUnranked("debug level-seed override") end
     self.State.LevelSeed = LOD.Seeds.Normalize(levelSeed)
 
+    local totalStarted = SysTime()
+    local generationStarted = SysTime()
     local graph, err = LOD.MazeGenerator:Generate(self.State.LevelSeed)
+    local generationSeconds = SysTime() - generationStarted
     if not graph then return false, err end
+
+    local buildStarted = SysTime()
     local ok, buildReport = LOD.MazeBuilder:Build(graph)
+    local buildSeconds = SysTime() - buildStarted
     if not ok then return false, buildReport end
+
+    buildReport.generationSeconds = generationSeconds
+    buildReport.buildSeconds = buildSeconds
+    buildReport.totalSeconds = SysTime() - totalStarted
 
     self.State.Graph = graph
     self.State.BuildReport = buildReport
@@ -104,14 +114,17 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     end
 
     print(string.format(
-        "[LOD] Level %d ready. campaign=%d levelSeed=%d cells=%d entities=%d vertical=%d attempt=%d",
+        "[LOD] Level %d ready. campaign=%d levelSeed=%d cells=%d entities=%d vertical=%d attempt=%d gen=%.3fs build=%.3fs total=%.3fs",
         self.State.Level,
         self.State.CampaignSeed,
         self.State.LevelSeed,
         graph.Validation.cellCount,
         buildReport.entityCount,
         graph.Validation.criticalVerticalTransitions,
-        graph.Attempt
+        graph.Attempt,
+        buildReport.generationSeconds,
+        buildReport.buildSeconds,
+        buildReport.totalSeconds
     ))
     return true, graph
 end
