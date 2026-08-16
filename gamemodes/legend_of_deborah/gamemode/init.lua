@@ -1,0 +1,11 @@
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+AddCSLuaFile("lod/sh_config.lua")
+AddCSLuaFile("lod/sh_rng.lua")
+AddCSLuaFile("lod/cl_debug.lua")
+
+include("shared.lua")
+include("lod/sv_maze_generator.lua")
+include("lod/sv_maze_builder.lua")
+include("lod/sv_run_manager.lua")
+include("lod/sv_debug_tools.lua")

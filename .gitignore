@@ -1,0 +1,19 @@
+# Garry's Mod / editor / OS noise
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Local tooling / packaged outputs
+.build/
+dist/
+*.gma
+*.zip
+
+# Secrets / local config
+.env
+.env.*
+*.token

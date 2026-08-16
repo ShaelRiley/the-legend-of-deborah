@@ -1,0 +1,8 @@
+"legend_of_deborah"
+{
+    "base"          "base"
+    "title"         "The Legend of Deborah"
+    "category"      "Other"
+    "maps"          "^gm_flatgrass$"
+    "menusystem"    "1"
+}
