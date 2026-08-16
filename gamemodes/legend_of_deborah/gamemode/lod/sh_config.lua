@@ -45,10 +45,11 @@ C.Geometry = {
     -- floor resting directly on the map surface when the fallback Z is exact.
     GroundFloorOffset = 16,
     StairWidth = 192,
-    -- Keep both ends of the 24-step flight inside the clear 256-unit interior
-    -- left by 128-unit-thick perimeter container walls. Rise remains 16 units,
-    -- so ordinary movement can ascend without jumping.
-    StairRun = 240,
+    -- A mandatory flight begins in its graph-approved open lower approach cell
+    -- and terminates inside the upper transition cell rather than against its
+    -- perimeter wall. 24 steps retain the ordinary 16-unit Source step rise.
+    StairRun = 320,
+    StairTopOffset = 64,
     StairSteps = 24,
     FloorColor = Color(58, 62, 64),
     StairColor = Color(76, 79, 80),
