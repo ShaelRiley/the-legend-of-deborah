@@ -1,6 +1,8 @@
 LOD = LOD or {}
 
 local SUPPORT_DISTANCE = 48
+local SUPPORT_HULL_MINS = Vector(-8, -8, 0)
+local SUPPORT_HULL_MAXS = Vector(8, 8, 2)
 local callbacks = concommand.GetTable()
 local previousAudit = callbacks and callbacks["lod_m1_audit"]
 
@@ -17,14 +19,38 @@ local function transitionCellSet(graph)
     return cells
 end
 
+-- Match player movement more closely than the original infinitely-thin line
+-- probe. The generated maze surfaces are SOLID_BBOX entities, and a small feet
+-- hull with the player-movement collision group is the relevant support test.
 local function hasSupport(pos, ignored)
-    local tr = util.TraceLine({
+    local tr = util.TraceHull({
         start = pos + Vector(0, 0, 2),
         endpos = pos - Vector(0, 0, SUPPORT_DISTANCE),
-        mask = MASK_PLAYERSOLID,
+        mins = SUPPORT_HULL_MINS,
+        maxs = SUPPORT_HULL_MAXS,
+        mask = MASK_SOLID,
+        collisiongroup = COLLISION_GROUP_PLAYER_MOVEMENT,
         filter = ignored
     })
     return tr.Hit and not tr.StartSolid, tr
+end
+
+local function classifyHit(tr, counts)
+    if not tr or not tr.Hit then return end
+    if tr.HitWorld then
+        counts.world = counts.world + 1
+        return
+    end
+    if IsValid(tr.Entity) then
+        local class = tr.Entity:GetClass()
+        if class == "lod_static_box" then
+            counts.generated = counts.generated + 1
+        else
+            counts.other = counts.other + 1
+        end
+    else
+        counts.other = counts.other + 1
+    end
 end
 
 local function supportAudit()
@@ -40,30 +66,37 @@ local function supportAudit()
     local tested = 0
     local unsupported = 0
     local examples = {}
+    local hits = {generated = 0, world = 0, other = 0}
 
     for key, cell in pairs(graph.Cells) do
         if not transitionCells[key] then
             tested = tested + 1
             local pos = LOD.MazeBuilder:CellCenter(cell) + Vector(0, 0, 12)
-            local supported = hasSupport(pos, ignored)
-            if not supported then
+            local supported, tr = hasSupport(pos, ignored)
+            if supported then
+                classifyHit(tr, hits)
+            else
                 unsupported = unsupported + 1
                 if #examples < 8 then examples[#examples + 1] = key end
             end
         end
     end
 
-    local startSupported = hasSupport(buildReport.startPos, ignored)
+    local startSupported, startTrace = hasSupport(buildReport.startPos, ignored)
     return {
         pass = startSupported and unsupported == 0,
         startSupported = startSupported,
+        startHitWorld = startTrace and startTrace.HitWorld or false,
+        startHitClass = startTrace and IsValid(startTrace.Entity) and startTrace.Entity:GetClass() or nil,
         testedCenters = tested,
         unsupportedCenters = unsupported,
         unsupportedExamples = examples,
+        supportHits = hits,
         supportDistance = SUPPORT_DISTANCE,
         worldFloorZ = buildReport.worldFloorZ,
         mazeOriginZ = buildReport.mazeOriginZ,
-        groundFloorOffset = buildReport.groundFloorOffset
+        groundFloorOffset = buildReport.groundFloorOffset,
+        floorAnchorSource = buildReport.floorAnchorSource
     }
 end
 
@@ -76,13 +109,17 @@ local function printSupportReport(ply, result, err)
     end
 
     local line = string.format(
-        "support start=%s unsupported=%d/%d worldFloorZ=%s mazeOriginZ=%s offset=%s",
+        "support start=%s unsupported=%d/%d generatedHits=%d worldHits=%d otherHits=%d floorZ=%s originZ=%s offset=%s anchor=%s",
         tostring(result.startSupported),
         result.unsupportedCenters,
         result.testedCenters,
+        result.supportHits.generated,
+        result.supportHits.world,
+        result.supportHits.other,
         tostring(result.worldFloorZ),
         tostring(result.mazeOriginZ),
-        tostring(result.groundFloorOffset)
+        tostring(result.groundFloorOffset),
+        tostring(result.floorAnchorSource)
     )
     print("[LOD:M1] " .. line)
 
