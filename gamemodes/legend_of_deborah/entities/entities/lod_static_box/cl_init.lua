@@ -3,14 +3,14 @@ include("shared.lua")
 local floorColor = Color(58, 62, 64)
 local stairColor = Color(76, 79, 80)
 function ENT:Initialize()
-    -- Networked box bounds can arrive after client Initialize. Keep the
-    -- procedural collision geometry conservatively visible until then.
     self:SetRenderBounds(Vector(-512, -512, -512), Vector(512, 512, 512))
 end
 
 function ENT:Draw()
     local kind = self:GetBoxKind()
-    if kind == 3 then return end
+    -- Rail and merged wall boxes are collision-only. Container models provide
+    -- the visible wall presentation for kind 4.
+    if kind == 3 or kind == 4 then return end
     render.SetColorMaterial()
     render.DrawBox(
         self:GetPos(),
