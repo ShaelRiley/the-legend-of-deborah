@@ -35,6 +35,10 @@ C.Geometry = {
     ContainerWidth = 128,
     ContainerHeight = 128,
     WallStack = 2,
+    -- Visible walls remain two containers high. Authoritative collision extends
+    -- to the next logical floor so ordinary jumping cannot turn container tops
+    -- into graph/progression shortcuts.
+    AntiBypassHeight = C.Maze.LevelHeight,
     FloorThickness = 16,
     -- Keep the rendered/collision floor one full floor thickness above the
     -- Flatgrass surface. This avoids z-fighting while leaving the generated
