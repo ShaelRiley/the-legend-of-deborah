@@ -34,7 +34,7 @@ local function spawnWallBox(pos, mins, maxs)
     ent:SetAngles(angle_zero)
     ent:SetBoxMins(mins)
     ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(4) -- invisible merged wall collision
+    ent:SetBoxKind(4) -- invisible merged wall collision / anti-bypass blocker
     ent:Spawn()
     ent:Activate()
     if ent.IsLODCollisionReady and not ent:IsLODCollisionReady() then
@@ -100,8 +100,9 @@ function MazeBuilder:_SpawnMergedWallRun(group, firstIndex, lastIndex)
     local count = lastIndex - firstIndex + 1
     local halfLength = count * MC.CellSize * 0.5
     local halfThickness = GC.ContainerWidth * 0.5
-    local wallHeight = GC.ContainerHeight * GC.WallStack
-    local halfHeight = wallHeight * 0.5
+    local visibleWallHeight = GC.ContainerHeight * GC.WallStack
+    local collisionHeight = math.max(visibleWallHeight, GC.AntiBypassHeight or MC.LevelHeight)
+    local halfHeight = collisionHeight * 0.5
     local fixed = group.fixed2 * 0.5
     local pos
     local mins
