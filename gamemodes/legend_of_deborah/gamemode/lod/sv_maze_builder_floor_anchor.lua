@@ -6,6 +6,13 @@ local MC = LOD.Config.Maze
 local GC = LOD.Config.Geometry
 local cellKey = LOD.MazeGenerator.CellKey
 
+local SPAWN_CLASSES = {
+    "info_player_start",
+    "info_player_deathmatch",
+    "info_player_rebel",
+    "info_player_combine"
+}
+
 local function upperTransitionMap(graph)
     local transitions = {}
     for _, edge in ipairs(graph.VerticalEdges or {}) do
@@ -15,36 +22,89 @@ local function upperTransitionMap(graph)
     return transitions
 end
 
--- Resolve the logical Level-0 plane against gm_flatgrass world geometry rather
--- than assuming that world Z=0 is the walkable surface. gm_flatgrass uses a
--- displacement surface, so a brush-only trace can miss the actual ground.
+local function sortedSpawnPositions()
+    local positions = {}
+    for _, className in ipairs(SPAWN_CLASSES) do
+        for _, ent in ipairs(ents.FindByClass(className)) do
+            if IsValid(ent) then
+                positions[#positions + 1] = ent:GetPos()
+            end
+        end
+    end
+
+    table.sort(positions, function(a, b)
+        if a.z ~= b.z then return a.z < b.z end
+        if a.x ~= b.x then return a.x < b.x end
+        return a.y < b.y
+    end)
+    return positions
+end
+
+local function traceWorldAt(pos)
+    return util.TraceLine({
+        start = pos + Vector(0, 0, 1024),
+        endpos = pos - Vector(0, 0, 4096),
+        mask = MASK_SOLID
+    })
+end
+
+-- Level 0 owns explicit collision, so world-floor discovery is a placement aid,
+-- not a prerequisite for correctness. Prefer a real world hit; if the maze's
+-- configured X/Y lies outside traceable map ground, derive Z from map spawnpoints.
+-- A final fixed Z fallback keeps gm_flatgrass startup fail-safe rather than
+-- refusing to construct an otherwise self-supported maze.
 function MazeBuilder:_ResolveWorldFloor()
     -- Regeneration must never anchor to collision from the previous maze.
     self:Cleanup()
 
     local probeX = MC.Origin.x
     local probeY = MC.Origin.y
-    local tr = util.TraceLine({
-        start = Vector(probeX, probeY, 4096),
-        endpos = Vector(probeX, probeY, -4096),
-        mask = MASK_SOLID
-    })
+    local floorZ
+    local source
 
-    if not tr.Hit or not tr.HitWorld then
-        return false, string.format(
-            "could not locate gm_flatgrass world floor beneath maze origin (hit=%s world=%s texture=%s)",
-            tostring(tr.Hit), tostring(tr.HitWorld), tostring(tr.HitTexture)
-        )
+    local originTrace = traceWorldAt(Vector(probeX, probeY, 0))
+    if originTrace.Hit and originTrace.HitWorld then
+        floorZ = originTrace.HitPos.z
+        source = "maze-origin-world-trace"
+    end
+
+    local spawnPositions = sortedSpawnPositions()
+    if floorZ == nil then
+        for _, spawnPos in ipairs(spawnPositions) do
+            local tr = traceWorldAt(spawnPos)
+            if tr.Hit and tr.HitWorld then
+                floorZ = tr.HitPos.z
+                source = "map-spawn-world-trace"
+                break
+            end
+        end
+    end
+
+    if floorZ == nil and #spawnPositions > 0 then
+        local median = spawnPositions[math.ceil(#spawnPositions * 0.5)]
+        floorZ = median.z
+        source = "map-spawn-z-fallback"
+    end
+
+    if floorZ == nil then
+        floorZ = GC.FallbackFloorZ or 0
+        source = "explicit-gm_flatgrass-fallback"
     end
 
     local offset = GC.GroundFloorOffset or 2
-    self.WorldFloorZ = tr.HitPos.z
-    MC.Origin = Vector(probeX, probeY, tr.HitPos.z + offset)
+    self.WorldFloorZ = floorZ
+    self.FloorAnchorSource = source
+    MC.Origin = Vector(probeX, probeY, floorZ + offset)
+
+    print(string.format(
+        "[LOD] Level-0 anchor source=%s floorZ=%.2f originZ=%.2f spawnpoints=%d",
+        source, floorZ, MC.Origin.z, #spawnPositions
+    ))
     return true
 end
 
 -- Build explicit floor collision on Level 0 as well as elevated layers. The
--- world surface remains beneath the maze, but gameplay no longer depends on its
+-- world surface may sit beneath the maze, but gameplay does not depend on its
 -- exact elevation or on every occupied logical cell coinciding with map ground.
 function MazeBuilder:_BuildFloors(graph)
     local transitions = upperTransitionMap(graph)
@@ -91,5 +151,6 @@ function MazeBuilder:Build(graph)
     report.worldFloorZ = self.WorldFloorZ
     report.mazeOriginZ = MC.Origin.z
     report.groundFloorOffset = GC.GroundFloorOffset or 2
+    report.floorAnchorSource = self.FloorAnchorSource
     return true, report
 end
