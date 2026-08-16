@@ -5,7 +5,7 @@ include("shared.lua")
 function ENT:Initialize()
     self:SetModel("models/hunter/blocks/cube025x025x025.mdl")
     local mins, maxs = self:GetBoxMins(), self:GetBoxMaxs()
-    self:PhysicsInitBox(mins, maxs, "metal")
+    self.LODCollisionReady = self:PhysicsInitBox(mins, maxs, "metal") == true
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_VPHYSICS)
     self:SetCollisionBounds(mins, maxs)
@@ -16,4 +16,8 @@ function ENT:Initialize()
         phys:EnableMotion(false)
         phys:Sleep()
     end
+end
+
+function ENT:IsLODCollisionReady()
+    return self.LODCollisionReady == true
 end

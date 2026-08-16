@@ -17,9 +17,10 @@ Status: **implementation underway; in-engine acceptance not yet passed**.
 - [x] Critical-route minimum vertical-transition validation.
 - [x] Deterministic failed-layout retry sequence.
 - [x] Shipping-container wall builder.
-- [x] Elevated floor geometry.
+- [x] Elevated floor geometry with merged row-run collision surfaces to reduce entity count.
 - [x] Broad mandatory stairs and rail collision.
 - [x] Generated-entity registry and cleanup.
+- [x] Build abort/cleanup if required container or collision entities fail to initialize.
 - [x] 1–4 active-player admission for Milestone 1 traversal tests.
 - [x] Unique randomized eligible character assignment for active players.
 - [x] Developer graph visualization.

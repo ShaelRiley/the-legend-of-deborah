@@ -37,6 +37,10 @@ local function spawnBox(pos, ang, mins, maxs, kind)
     ent:SetBoxKind(kind or 1)
     ent:Spawn()
     ent:Activate()
+    if ent.IsLODCollisionReady and not ent:IsLODCollisionReady() then
+        ent:Remove()
+        return nil
+    end
     return ent
 end
 
@@ -52,16 +56,20 @@ function MazeBuilder:_SpawnContainer(pos, ang)
     ent:SetMoveType(MOVETYPE_VPHYSICS)
 
     local phys = ent:GetPhysicsObject()
-    if IsValid(phys) then
-        phys:EnableMotion(false)
-        phys:Sleep()
+    if not IsValid(phys) then
+        ent:Remove()
+        return nil
     end
+    phys:EnableMotion(false)
+    phys:Sleep()
     return ent
 end
 
 function MazeBuilder:_Register(ent)
     if IsValid(ent) then
         self.Entities[#self.Entities + 1] = ent
+    else
+        self.BuildFailures = (self.BuildFailures or 0) + 1
     end
     return ent
 end
@@ -110,25 +118,31 @@ local function transitionDirection(edge)
     return ({"E", "N", "W", "S"})[n + 1]
 end
 
-local function isUpperTransitionCell(graph, cell)
+local function upperTransitionMap(graph)
+    local transitions = {}
     for _, edge in ipairs(graph.VerticalEdges) do
         local upper = edge.a.z > edge.b.z and edge.a or edge.b
-        if upper.x == cell.x and upper.y == cell.y and upper.z == cell.z then
-            return edge
-        end
+        transitions[cellKey(upper.x, upper.y, upper.z)] = edge
     end
-    return nil
+    return transitions
 end
 
-function MazeBuilder:_BuildFullFloor(cell)
-    local center = self:CellCenter(cell)
+function MazeBuilder:_BuildFloorRun(firstCell, lastCell)
+    local firstCenter = self:CellCenter(firstCell)
+    local lastCenter = self:CellCenter(lastCell)
+    local center = Vector(
+        (firstCenter.x + lastCenter.x) * 0.5,
+        firstCenter.y,
+        firstCenter.z
+    )
+    local runHalf = (lastCell.x - firstCell.x + 1) * MC.CellSize * 0.5
     local half = MC.CellSize * 0.5
     local t = GC.FloorThickness
     self:_Register(spawnBox(
         center + Vector(0, 0, -t * 0.5),
         angle_zero,
-        Vector(-half, -half, -t * 0.5),
-        Vector(half, half, t * 0.5),
+        Vector(-runHalf, -half, -t * 0.5),
+        Vector(runHalf, half, t * 0.5),
         1
     ))
 end
@@ -139,29 +153,53 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     local t = GC.FloorThickness
     local stairHalf = GC.StairWidth * 0.5
     local runHalf = GC.StairRun * 0.5
+    local dir = transitionDirection(edge)
+    local yaw = (dir == "N" or dir == "S") and 90 or 0
+    local ang = Angle(0, yaw, 0)
 
     -- The aperture is centered rather than reaching a cell edge. Cargo-container
     -- walls occupy the cell perimeter; keeping end landings inside that perimeter
     -- prevents a valid vertical transition from being blocked by a closed wall.
-    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), angle_zero,
+    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, stairHalf, -t * 0.5), Vector(half, half, t * 0.5), 1))
-    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), angle_zero,
+    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -half, -t * 0.5), Vector(half, -stairHalf, t * 0.5), 1))
-    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), angle_zero,
+    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -stairHalf, -t * 0.5), Vector(-runHalf, stairHalf, t * 0.5), 1))
-    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), angle_zero,
+    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(runHalf, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
 end
 
 function MazeBuilder:_BuildFloors(graph)
-    for _, keyValue in ipairs(sortedKeys(graph.Cells)) do
-        local cell = graph.Cells[keyValue]
-        if cell.z > 0 then
-            local transition = isUpperTransitionCell(graph, cell)
-            if transition then
-                self:_BuildPerforatedFloor(cell, transition)
-            else
-                self:_BuildFullFloor(cell)
+    local transitions = upperTransitionMap(graph)
+
+    -- Merge ordinary elevated floor cells into deterministic row runs. This
+    -- preserves the logical-cell surface while avoiding hundreds of redundant
+    -- physics entities on the partial upper layers. Transition cells retain
+    -- individual perforated geometry for their stair apertures.
+    for z = 1, graph.Layers - 1 do
+        for y = 1, MC.Height do
+            local x = 1
+            while x <= MC.Width do
+                local k = cellKey(x, y, z)
+                local cell = graph.Cells[k]
+                local transition = transitions[k]
+
+                if transition then
+                    self:_BuildPerforatedFloor(cell, transition)
+                    x = x + 1
+                elseif cell then
+                    local runEnd = x
+                    while runEnd + 1 <= MC.Width do
+                        local nextKey = cellKey(runEnd + 1, y, z)
+                        if not graph.Cells[nextKey] or transitions[nextKey] then break end
+                        runEnd = runEnd + 1
+                    end
+                    self:_BuildFloorRun(cell, graph.Cells[cellKey(runEnd, y, z)])
+                    x = runEnd + 1
+                else
+                    x = x + 1
+                end
             end
         end
     end
@@ -169,7 +207,6 @@ end
 
 function MazeBuilder:_BuildStair(edge)
     local lower = edge.a.z < edge.b.z and edge.a or edge.b
-    local upper = edge.a.z > edge.b.z and edge.a or edge.b
     local center = self:CellCenter(lower)
     local steps = GC.StairSteps
     local stairRun = GC.StairRun
@@ -211,6 +248,7 @@ end
 function MazeBuilder:Build(graph)
     self:Cleanup()
     self.Entities = {}
+    self.BuildFailures = 0
 
     if not util.IsValidProp(GC.ContainerModel) then
         return false, "configured cargo container is not a valid physics prop: " .. GC.ContainerModel
@@ -219,6 +257,12 @@ function MazeBuilder:Build(graph)
     self:_BuildFloors(graph)
     self:_BuildWalls(graph)
     self:_BuildVerticalTransitions(graph)
+
+    if self.BuildFailures > 0 then
+        local failures = self.BuildFailures
+        self:Cleanup()
+        return false, "geometry creation failed for " .. failures .. " required entities"
+    end
 
     return true, {
         entityCount = #self.Entities,
