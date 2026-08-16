@@ -28,6 +28,7 @@ local function hasOpenEdge(graph, cell, nx, ny, nz)
 end
 
 local function transitionDirection(edge)
+    if edge.LODStairDirection then return edge.LODStairDirection end
     local n = (edge.a.x * 17 + edge.a.y * 31 + edge.a.z * 13) % 4
     return ({"E", "N", "W", "S"})[n + 1]
 end
@@ -41,7 +42,9 @@ local function upperCell(edge)
 end
 
 local function stairEntry(dir)
-    local entry = GC.StairRun * 0.5 + 32
+    -- The selected approach side is an open logical corridor, so place the
+    -- tester between the cell boundary and the shortened first stair tread.
+    local entry = GC.StairRun * 0.5 + 40
     if dir == "E" then return Vector(-entry, 0, 20), Angle(0, 0, 0) end
     if dir == "W" then return Vector(entry, 0, 20), Angle(0, 180, 0) end
     if dir == "N" then return Vector(0, -entry, 20), Angle(0, 90, 0) end
@@ -156,8 +159,9 @@ concommand.Add("lod_m1_stairs", function(ply)
         local lower = lowerCell(edge)
         local upper = upperCell(edge)
         print(string.format(
-            "[LOD:M1] stair %d lower=(%d,%d,%d) upper=(%d,%d,%d) ascend=%s",
-            i, lower.x, lower.y, lower.z, upper.x, upper.y, upper.z, transitionDirection(edge)
+            "[LOD:M1] stair %d lower=(%d,%d,%d) upper=(%d,%d,%d) entry=%s ascend=%s",
+            i, lower.x, lower.y, lower.z, upper.x, upper.y, upper.z,
+            tostring(edge.LODStairEntrySide), transitionDirection(edge)
         ))
     end
     if IsValid(ply) then ply:ChatPrint("Use lod_m1_stair <number> to test a transition.") end
@@ -179,20 +183,38 @@ concommand.Add("lod_m1_stair", function(ply, _, args)
         return
     end
 
-    LOD.RunManager:MarkUnranked("vertical traversal debug teleport")
     local edge = graph.VerticalEdges[index]
+    if not edge.LODStairEntrySide then
+        ply:ChatPrint(string.format("Stair %d has no horizontal lower approach; this transition requires investigation.", index))
+        return
+    end
+
+    LOD.RunManager:MarkUnranked("vertical traversal debug teleport")
     local lower = lowerCell(edge)
     local upper = upperCell(edge)
     local dir = transitionDirection(edge)
     local offset, view = stairEntry(dir)
     local target = LOD.MazeBuilder:CellCenter(lower) + offset
 
+    local hull = util.TraceHull({
+        start = target,
+        endpos = target,
+        mins = Vector(-16, -16, 0),
+        maxs = Vector(16, 16, 72),
+        mask = MASK_PLAYERSOLID,
+        filter = ply
+    })
+    if hull.Hit or hull.StartSolid then
+        ply:ChatPrint(string.format("Stair %d debug approach is obstructed; do not attempt traversal.", index))
+        return
+    end
+
     ply:SetPos(target)
     ply:SetEyeAngles(view)
     ply:SetVelocity(-ply:GetVelocity())
     ply:ChatPrint(string.format(
-        "Stair %d/%d: walk straight %s from layer %d to %d; jumping should not be required.",
-        index, count, dir, lower.z, upper.z
+        "Stair %d/%d: clear approach from %s; walk straight %s from layer %d to %d. Do not jump.",
+        index, count, edge.LODStairEntrySide, dir, lower.z, upper.z
     ))
 end)
 
