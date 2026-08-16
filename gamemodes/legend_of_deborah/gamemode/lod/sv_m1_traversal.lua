@@ -42,13 +42,15 @@ local function upperCell(edge)
 end
 
 local function stairEntry(dir)
-    -- The selected approach side is an open logical corridor, so place the
-    -- tester between the cell boundary and the shortened first stair tread.
-    local entry = GC.StairRun * 0.5 + 40
-    if dir == "E" then return Vector(-entry, 0, 20), Angle(0, 0, 0) end
-    if dir == "W" then return Vector(entry, 0, 20), Angle(0, 180, 0) end
-    if dir == "N" then return Vector(0, -entry, 20), Angle(0, 90, 0) end
-    return Vector(0, entry, 20), Angle(0, -90, 0)
+    -- The low end now extends into the graph-approved open approach cell. Put
+    -- the tester a short distance before that first tread rather than inside the
+    -- transition cell itself.
+    local topOffset = GC.StairTopOffset or 64
+    local approach = GC.StairRun - topOffset + 32
+    if dir == "E" then return Vector(-approach, 0, 20), Angle(0, 0, 0) end
+    if dir == "W" then return Vector(approach, 0, 20), Angle(0, 180, 0) end
+    if dir == "N" then return Vector(0, -approach, 20), Angle(0, 90, 0) end
+    return Vector(0, approach, 20), Angle(0, -90, 0)
 end
 
 local function bypassAudit()
@@ -154,7 +156,12 @@ concommand.Add("lod_m1_stairs", function(ply)
     local graph = LOD.RunManager.State.Graph
     if not graph then return end
 
-    print(string.format("[LOD:M1] vertical transitions=%d", #(graph.VerticalEdges or {})))
+    local innerWallFace = MC.CellSize * 0.5 - GC.ContainerWidth * 0.5
+    local upperLanding = innerWallFace - (GC.StairTopOffset or 64)
+    print(string.format(
+        "[LOD:M1] vertical transitions=%d stairRun=%d topOffset=%d upperLanding=%.1f",
+        #(graph.VerticalEdges or {}), GC.StairRun, GC.StairTopOffset or 64, upperLanding
+    ))
     for i, edge in ipairs(graph.VerticalEdges or {}) do
         local lower = lowerCell(edge)
         local upper = upperCell(edge)
