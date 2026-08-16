@@ -36,7 +36,10 @@ C.Geometry = {
     ContainerHeight = 128,
     WallStack = 2,
     FloorThickness = 16,
-    GroundFloorOffset = 2,
+    -- Keep the rendered/collision floor one full floor thickness above the
+    -- Flatgrass surface. This avoids z-fighting while leaving the generated
+    -- floor resting directly on the map surface when the fallback Z is exact.
+    GroundFloorOffset = 16,
     StairWidth = 192,
     -- 24 steps over 384 units preserves a 16-unit rise per step (within the
     -- ordinary Source movement step-height envelope) while fitting a broad
