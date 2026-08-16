@@ -30,6 +30,16 @@ function RunManager:MarkUnranked(reason)
     self.State.UnrankedReason = self.State.UnrankedReason or reason
 end
 
+function RunManager:HoldPlayersForBuild()
+    for _, ply in ipairs(player.GetAll()) do
+        if IsValid(ply) then
+            ply:StripWeapons()
+            ply:Spectate(OBS_MODE_FIXED)
+            ply:SetPos(CC.Maze.Origin + Vector(0, 0, 128))
+        end
+    end
+end
+
 function RunManager:_DefaultSeed()
     defaultSeedCounter = defaultSeedCounter + 1
     return LOD.Seeds.Normalize(os.time() * 1000 + defaultSeedCounter)
@@ -74,6 +84,7 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     end
 
     self.State.BuildReady = false
+    self:HoldPlayersForBuild()
     local levelSeed = levelSeedOverride or LOD.Seeds.DeriveLevel(self.State.CampaignSeed, self.State.Level)
     if levelSeedOverride then self:MarkUnranked("debug level-seed override") end
     self.State.LevelSeed = LOD.Seeds.Normalize(levelSeed)

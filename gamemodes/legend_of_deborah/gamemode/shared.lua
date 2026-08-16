@@ -45,7 +45,7 @@ function GM:CanTool()
 end
 
 function GM:PlayerShouldTakeDamage(victim, attacker)
-    if IsValid(attacker) and attacker:IsPlayer() then
+    if IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim then
         return false
     end
     return true

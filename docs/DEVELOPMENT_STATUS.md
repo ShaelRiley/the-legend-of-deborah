@@ -25,6 +25,8 @@ Status: **implementation underway; in-engine acceptance not yet passed**.
 - [x] Developer graph visualization.
 - [x] Safe regeneration command.
 - [x] Multi-seed logical validation command.
+- [x] Cross-process deterministic topology regression hash.
+- [x] First 1,000-seed logical sweep: 0 failures, minimum 3 critical-route vertical transitions.
 
 ### Must be verified/fixed in Garry's Mod before Milestone 1 completion
 
@@ -36,9 +38,9 @@ Status: **implementation underway; in-engine acceptance not yet passed**.
 - [ ] Confirm no wall-top or arbitrary-drop bypasses in representative 2-, 3-, and 4-layer seeds.
 - [ ] Confirm spawn safety for 1–4 simultaneous players.
 - [ ] Measure typical/worst generation/build time against ≤5s / ≤10s targets.
-- [ ] Run at least 100 logical seed tests during M1 development; retain 1,000-run qualification for Milestone 6.
+- [x] Run at least 100 logical seed tests during M1 development. Current headless suite has passed 1,000 seeds twice with identical topology hash `981725631`; Milestone 6 still requires full release-qualification automation in the target runtime.
 - [ ] Conduct listen-server and dedicated-server smoke tests.
 
 ### Git
 
-Initial development baseline is intended to be committed locally after static checks. The current connected GitHub tooling can inspect/write existing repositories but does not expose repository creation, so a new remote cannot be created from this environment unless an empty repository is created through another available GitHub path.
+Foundation checkpoint: `dd56188` (`Establish Milestone 1 labyrinth foundation`). The current connected GitHub tooling can inspect/write existing repositories but does not expose repository creation, so a new remote cannot be created from this environment unless an empty repository is created through another available GitHub path.
