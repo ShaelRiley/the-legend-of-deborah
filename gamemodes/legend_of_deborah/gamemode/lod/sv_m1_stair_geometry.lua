@@ -15,6 +15,23 @@ local DIRS = {
 
 local OPPOSITE = {N = "S", S = "N", E = "W", W = "E"}
 
+local function spawnStaticBox(pos, ang, mins, maxs, kind)
+    local ent = ents.Create("lod_static_box")
+    if not IsValid(ent) then return nil end
+    ent:SetPos(pos)
+    ent:SetAngles(ang or angle_zero)
+    ent:SetBoxMins(mins)
+    ent:SetBoxMaxs(maxs)
+    ent:SetBoxKind(kind or 1)
+    ent:Spawn()
+    ent:Activate()
+    if ent.IsLODCollisionReady and not ent:IsLODCollisionReady() then
+        ent:Remove()
+        return nil
+    end
+    return ent
+end
+
 local function lowerCell(edge)
     return edge.a.z < edge.b.z and edge.a or edge.b
 end
@@ -72,13 +89,13 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     local yaw = (dir == "N" or dir == "S") and 90 or 0
     local ang = Angle(0, yaw, 0)
 
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, stairHalf, -t * 0.5), Vector(half, half, t * 0.5), 1))
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -half, -t * 0.5), Vector(half, -stairHalf, t * 0.5), 1))
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -stairHalf, -t * 0.5), Vector(-runHalf, stairHalf, t * 0.5), 1))
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(runHalf, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
 end
 
@@ -100,7 +117,7 @@ function MazeBuilder:_BuildStair(edge)
         local x0 = -stairRun * 0.5 + (logicalIndex - 1) * tread
         local x1 = x0 + tread + 0.5
         local top = i * rise
-        self:_Register(self:_SpawnStaticBox(
+        self:_Register(spawnStaticBox(
             center,
             ang,
             Vector(x0, -stairHalf, 0),
@@ -111,10 +128,10 @@ function MazeBuilder:_BuildStair(edge)
 
     local railHeight = 48
     local railThickness = 6
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
         Vector(-stairRun * 0.5, stairHalf, -MC.LevelHeight * 0.5),
         Vector(stairRun * 0.5, stairHalf + railThickness, MC.LevelHeight * 0.5 + railHeight), 3))
-    self:_Register(self:_SpawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
+    self:_Register(spawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
         Vector(-stairRun * 0.5, -stairHalf - railThickness, -MC.LevelHeight * 0.5),
         Vector(stairRun * 0.5, -stairHalf, MC.LevelHeight * 0.5 + railHeight), 3))
 end
