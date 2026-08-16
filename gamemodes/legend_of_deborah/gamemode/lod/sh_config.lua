@@ -36,6 +36,7 @@ C.Geometry = {
     ContainerHeight = 128,
     WallStack = 2,
     FloorThickness = 16,
+    GroundFloorOffset = 2,
     StairWidth = 192,
     -- 24 steps over 384 units preserves a 16-unit rise per step (within the
     -- ordinary Source movement step-height envelope) while fitting a broad
