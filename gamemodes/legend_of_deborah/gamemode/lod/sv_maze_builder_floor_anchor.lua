@@ -16,19 +16,25 @@ local function upperTransitionMap(graph)
 end
 
 -- Resolve the logical Level-0 plane against gm_flatgrass world geometry rather
--- than assuming that world Z=0 is the grass surface. Generated entities are
--- excluded by the brush-only mask, so regeneration cannot anchor to the old maze.
+-- than assuming that world Z=0 is the walkable surface. gm_flatgrass uses a
+-- displacement surface, so a brush-only trace can miss the actual ground.
 function MazeBuilder:_ResolveWorldFloor()
+    -- Regeneration must never anchor to collision from the previous maze.
+    self:Cleanup()
+
     local probeX = MC.Origin.x
     local probeY = MC.Origin.y
     local tr = util.TraceLine({
-        start = Vector(probeX, probeY, 1024),
+        start = Vector(probeX, probeY, 4096),
         endpos = Vector(probeX, probeY, -4096),
-        mask = MASK_SOLID_BRUSHONLY
+        mask = MASK_SOLID
     })
 
-    if not tr.Hit then
-        return false, "could not locate gm_flatgrass world floor beneath maze origin"
+    if not tr.Hit or not tr.HitWorld then
+        return false, string.format(
+            "could not locate gm_flatgrass world floor beneath maze origin (hit=%s world=%s texture=%s)",
+            tostring(tr.Hit), tostring(tr.HitWorld), tostring(tr.HitTexture)
+        )
     end
 
     local offset = GC.GroundFloorOffset or 2
@@ -38,7 +44,7 @@ function MazeBuilder:_ResolveWorldFloor()
 end
 
 -- Build explicit floor collision on Level 0 as well as elevated layers. The
--- world brush remains beneath the maze, but gameplay no longer depends on its
+-- world surface remains beneath the maze, but gameplay no longer depends on its
 -- exact elevation or on every occupied logical cell coinciding with map ground.
 function MazeBuilder:_BuildFloors(graph)
     local transitions = upperTransitionMap(graph)
