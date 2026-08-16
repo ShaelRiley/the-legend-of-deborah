@@ -45,10 +45,10 @@ C.Geometry = {
     -- floor resting directly on the map surface when the fallback Z is exact.
     GroundFloorOffset = 16,
     StairWidth = 192,
-    -- 24 steps over 384 units preserves a 16-unit rise per step (within the
-    -- ordinary Source movement step-height envelope) while fitting a broad
-    -- mandatory staircase inside one 384-unit logical cell.
-    StairRun = 288,
+    -- Keep both ends of the 24-step flight inside the clear 256-unit interior
+    -- left by 128-unit-thick perimeter container walls. Rise remains 16 units,
+    -- so ordinary movement can ascend without jumping.
+    StairRun = 240,
     StairSteps = 24,
     FloorColor = Color(58, 62, 64),
     StairColor = Color(76, 79, 80),
