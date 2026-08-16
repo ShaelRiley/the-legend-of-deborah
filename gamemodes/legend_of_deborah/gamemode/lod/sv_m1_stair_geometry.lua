@@ -13,6 +13,9 @@ local DIRS = {
     {name = "W", dx = -1, dy = 0}
 }
 
+local DIR_BY_NAME = {
+    N = DIRS[1], E = DIRS[2], S = DIRS[3], W = DIRS[4]
+}
 local OPPOSITE = {N = "S", S = "N", E = "W", W = "E"}
 
 local function spawnStaticBox(pos, ang, mins, maxs, kind)
@@ -64,8 +67,8 @@ local function assignDirection(graph, edge)
         end
     end
 
-    -- Rare fallback for a lower cell reached only vertically (or the campaign
-    -- start). The shortened stair flight remains inside the clear cell interior.
+    -- This should be rare and is surfaced by the traversal diagnostics. Keeping
+    -- a deterministic fallback prevents an uncontrolled geometry choice.
     edge.LODStairEntrySide = nil
     edge.LODStairDirection = fallbackDirection(edge)
     return edge.LODStairDirection
@@ -79,12 +82,16 @@ function MazeBuilder:Build(graph)
     return previousBuild(self, graph)
 end
 
+-- The upper-floor aperture only needs to surround the high end of the flight.
+-- The staircase now starts in the graph-approved lower approach cell and ends
+-- GC.StairTopOffset units inside this transition cell, leaving a true upper
+-- landing between the final tread and the perimeter container wall.
 function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     local center = self:CellCenter(cell)
     local half = MC.CellSize * 0.5
     local t = GC.FloorThickness
     local stairHalf = GC.StairWidth * 0.5
-    local runHalf = GC.StairRun * 0.5
+    local holeHalf = GC.StairTopOffset or 64
     local dir = edge.LODStairDirection or fallbackDirection(edge)
     local yaw = (dir == "N" or dir == "S") and 90 or 0
     local ang = Angle(0, yaw, 0)
@@ -94,23 +101,31 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -half, -t * 0.5), Vector(half, -stairHalf, t * 0.5), 1))
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
-        Vector(-half, -stairHalf, -t * 0.5), Vector(-runHalf, stairHalf, t * 0.5), 1))
+        Vector(-half, -stairHalf, -t * 0.5), Vector(-holeHalf, stairHalf, t * 0.5), 1))
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
-        Vector(runHalf, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
+        Vector(holeHalf, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
 end
 
 function MazeBuilder:_BuildStair(edge)
     local lower = lowerCell(edge)
-    local center = self:CellCenter(lower)
+    local transitionCenter = self:CellCenter(lower)
     local steps = GC.StairSteps
     local stairRun = GC.StairRun
     local tread = stairRun / steps
     local rise = MC.LevelHeight / steps
     local stairHalf = GC.StairWidth * 0.5
+    local topOffset = GC.StairTopOffset or 64
     local dir = edge.LODStairDirection or fallbackDirection(edge)
+    local d = DIR_BY_NAME[dir]
     local yaw = (dir == "N" or dir == "S") and 90 or 0
     local reverse = (dir == "W" or dir == "S")
     local ang = Angle(0, yaw, 0)
+
+    -- Local stair geometry remains centered on its own flight. Shift that flight
+    -- toward the open lower approach so its high end finishes at topOffset in
+    -- the transition cell: low end = topOffset - StairRun, high end = topOffset.
+    local midpointOffset = topOffset - stairRun * 0.5
+    local center = transitionCenter + Vector(d.dx * midpointOffset, d.dy * midpointOffset, 0)
 
     for i = 1, steps do
         local logicalIndex = reverse and (steps - i + 1) or i
