@@ -1,6 +1,7 @@
 include("shared.lua")
 
 local PC = LOD.Config.Progression
+local GATE_UI_HEIGHT = 72
 local gateMaterial = CreateMaterial("lod_gate_opaque_v1", "UnlitGeneric", {
     ["$basetexture"] = "color/white",
     ["$vertexcolor"] = "1",
@@ -62,7 +63,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             local locked = not ent:GetOpened()
             local readerColor = locked and card.color or Color(72, 190, 92)
             local halfHeight = PC.GateBlockerHeight * 0.5
-            local readerZ = -halfHeight + 72
+            local readerZ = -halfHeight + GATE_UI_HEIGHT
             render.SetMaterial(readerMaterial)
             if ent:GetGateAxis() == 0 then
                 render.DrawBox(ent:GetPos() + Vector(PC.GateThickness * 0.5 + 12, PC.GateWidth * 0.32, readerZ), angle_zero,
@@ -91,7 +92,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", functio
         if IsValid(ent) then
             local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 3)]
             local halfHeight = PC.GateBlockerHeight * 0.5
-            local z = -halfHeight + math.min(PC.GateVisibleHeight - 52, 164)
+            local z = -halfHeight + GATE_UI_HEIGHT
             if ent:GetGateAxis() == 0 then
                 drawGateLabel(ent, card, ent:GetPos() + Vector(PC.GateThickness * 0.5 + 1, 0, z), Angle(0, 90, 90))
                 drawGateLabel(ent, card, ent:GetPos() + Vector(-PC.GateThickness * 0.5 - 1, 0, z), Angle(0, -90, 90))
