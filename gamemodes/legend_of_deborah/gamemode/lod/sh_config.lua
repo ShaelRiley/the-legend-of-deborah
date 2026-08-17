@@ -6,6 +6,16 @@ local C = LOD.Config
 C.PlayerTeam = 1
 C.MaxActivePlayers = 4
 
+C.Campaign = {
+    MaxPlayedIdentities = 10
+}
+
+C.Lives = {
+    StartingLives = 3,
+    MaxLives = 4,
+    RespawnDelay = 20
+}
+
 C.Maze = {
     Width = 21,
     Height = 21,
@@ -55,6 +65,45 @@ C.Geometry = {
     StairColor = Color(76, 79, 80),
     DebugColor = Color(225, 145, 48),
     Skin = 0
+}
+
+C.Progression = {
+    LayoutAttempts = 16,
+    MinimumGateSpacing = 4,
+    MinimumTailEdges = 5,
+    KeycardDetourMin = 4,
+    KeycardTopBandFraction = 0.35,
+    GateThickness = 28,
+    GateWidth = 256,
+    GateVisibleHeight = 256,
+    GateBlockerHeight = C.Maze.LevelHeight,
+    GateOpenSeconds = 0.75,
+    KeycardTriggerRadius = 52,
+    KeycardHeight = 40,
+    IntermissionSeconds = 15,
+    Cards = {
+        {
+            id = "red",
+            name = "Red",
+            letter = "R",
+            symbol = "TRIANGLE",
+            color = Color(205, 54, 54)
+        },
+        {
+            id = "blue",
+            name = "Blue",
+            letter = "B",
+            symbol = "CIRCLE",
+            color = Color(64, 118, 210)
+        },
+        {
+            id = "yellow",
+            name = "Yellow",
+            letter = "Y",
+            symbol = "SQUARE",
+            color = Color(224, 190, 52)
+        }
+    }
 }
 
 -- Deborah deliberately reserves female_01 from the citizen NPC family. The
