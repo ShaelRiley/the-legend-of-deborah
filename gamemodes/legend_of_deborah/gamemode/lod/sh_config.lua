@@ -78,7 +78,10 @@ C.Progression = {
     KeycardGateCellSeparationMin = 3,
     KeycardTopBandFraction = 0.35,
     GateThickness = 28,
-    GateWidth = 256,
+    -- A gate replaces one complete logical wall edge. Match the 384-unit cell
+    -- width so no player-sized lateral gap remains between the gate and the
+    -- neighboring maze walls.
+    GateWidth = C.Maze.CellSize,
     GateVisibleHeight = 256,
     GateBlockerHeight = C.Maze.LevelHeight,
     GateOpenSeconds = 0.75,
