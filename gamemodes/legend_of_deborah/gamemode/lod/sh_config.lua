@@ -54,7 +54,12 @@ C.Geometry = {
     -- Flatgrass surface. This avoids z-fighting while leaving the generated
     -- floor resting directly on the map surface when the fallback Z is exact.
     GroundFloorOffset = 16,
-    StairWidth = 192,
+    -- Keep enough real walkable deck beside upper stair apertures. With 128-unit
+    -- container walls intruding 64 units into a 384-unit cell, the former
+    -- 192-unit stair left only ~26 units between handrail and wall, narrower
+    -- than a Source player hull. A 128-unit stair leaves ~58 units of clearance
+    -- while remaining comfortably wider than the player.
+    StairWidth = 128,
     -- Mandatory stairs run from an open lower approach corridor to the center
     -- of the upper logical cell. Ending at cell center provides a full landing
     -- with enough room to turn toward whichever upper corridor the graph owns.
