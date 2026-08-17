@@ -4,14 +4,22 @@ local floorColor = Color(58, 62, 64, 255)
 local stairColor = Color(120, 126, 132, 255)
 local stairEdgeColor = Color(225, 145, 48, 255)
 
+-- render.SetColorMaterial() uses Garry's Mod's built-in translucent color
+-- material. That is convenient for effects but causes depth/sorting artifacts
+-- when many large generated floor slabs overlap in view. Use a deliberately
+-- opaque material for authoritative maze surfaces instead.
+local opaqueGeometryMaterial = CreateMaterial("lod_generated_geometry_opaque_v1", "UnlitGeneric", {
+    ["$basetexture"] = "color/white",
+    ["$vertexcolor"] = "1",
+    ["$vertexalpha"] = "1"
+})
+
 local function refreshRenderBounds(ent)
     local mins = ent:GetBoxMins()
     local maxs = ent:GetBoxMaxs()
 
-    -- Upper-floor geometry is merged into long row-run entities. A fixed
-    -- +/-512 render bound causes perfectly solid floors to disappear visually
-    -- when the entity origin leaves the client's visibility volume. Use the
-    -- actual authored bounds instead, with a small safety margin.
+    -- Upper-floor geometry is merged into long row-run entities. Use each
+    -- entity's actual authored dimensions rather than a fixed render bound.
     local margin = Vector(32, 32, 32)
     ent:SetRenderBounds(mins - margin, maxs + margin)
 end
@@ -23,8 +31,6 @@ end
 
 function ENT:Think()
     -- Networked box dimensions can arrive just after client entity creation.
-    -- Refresh briefly/cheaply so the final authoritative dimensions always
-    -- become the render bounds even if Initialize saw defaults.
     if CurTime() >= (self._LODNextBoundsRefresh or 0) then
         refreshRenderBounds(self)
         self._LODNextBoundsRefresh = CurTime() + 1
@@ -32,7 +38,12 @@ function ENT:Think()
 end
 
 local function drawFilled(ent, color)
-    render.SetColorMaterial()
+    render.SetMaterial(opaqueGeometryMaterial)
+
+    -- Floor slabs are gameplay surfaces and must remain visually legible from
+    -- above and below. Disable face culling only for this draw and immediately
+    -- restore Source's ordinary counter-clockwise culling afterward.
+    render.CullMode(MATERIAL_CULLMODE_NONE)
     render.DrawBox(
         ent:GetPos(),
         ent:GetAngles(),
@@ -40,6 +51,7 @@ local function drawFilled(ent, color)
         ent:GetBoxMaxs(),
         color
     )
+    render.CullMode(MATERIAL_CULLMODE_CCW)
 end
 
 local function drawOutlined(ent, color)
@@ -61,7 +73,6 @@ function ENT:Draw()
     if kind == 3 or kind == 4 then return end
 
     if kind == 2 then
-        -- Make stairs conspicuous and legible.
         drawFilled(self, stairColor)
         drawOutlined(self, stairEdgeColor)
         return
