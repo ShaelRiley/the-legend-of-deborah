@@ -3,6 +3,31 @@
 ## Current phase
 Milestone 2 — The Three Keys
 
+**Current M2 state: integrated implementation awaiting first live Garry's Mod runtime validation.**
+
+Implemented in the current development branch/state:
+
+- deterministic progression planning over the authoritative maze graph;
+- three ordered progression-safe bridge gates targeting Red → Blue → Yellow sectors;
+- deterministic keycard objective pockets chosen from accessible pre-gate sectors with minimum detour constraints;
+- explicit ordered-solvability simulation before the level is committed;
+- deterministic layout retry when a generated maze cannot support safe gate/card placement;
+- gate checkpoint safety rejection for vertical-transition cells;
+- team-wide Red/Blue/Yellow card state;
+- non-color identifiers R/triangle, B/circle, Y/square on cards, gates, readers, and HUD;
+- scripted permanent bidirectional gate opening with locked collision and full-height anti-bypass blocking;
+- checkpoint advancement immediately beyond each opened gate;
+- persistent Source-era HUD for level, lives, keycards, objective, ranked state, and post-card directional gate guidance without a minimap;
+- three starting personal lives, four-life state cap, authoritative 20-second death/spectate timer, checkpoint respawn, elimination at zero lives, and next-level one-life comeback;
+- persistent identity/character/life/inventory state across disconnect/reconnect within the server-session campaign;
+- four active-player slots and ten-played-identity campaign ledger, with spectator-only visitors excluded until they actually enter play;
+- disconnect/wipe semantics that ignore disconnected participants while another played identity remains connected and freeze campaign simulation when no played identity is connected;
+- provisional Deborah physical-touch rescue trigger;
+- 15-second minimum M2 level-clear intermission and deterministic Level N+1 rebuild;
+- dedicated M2 status, objective, teleport, seed-test, and audit developer commands.
+
+This is **not yet a Milestone-2 completion checkpoint**. Live runtime validation must first prove startup, gate/card rendering and collision, ordered progression, checkpoints, death timing, elimination/comeback, level transition, and join/rejoin/cap behavior.
+
 ## Milestone 1 — The Labyrinth
 **Status: implementation checkpoint accepted on 2026-08-16.**
 
@@ -25,17 +50,3 @@ Live Garry's Mod validation on `gm_flatgrass` has confirmed:
 Milestone-1 Git/runtime details and retained validation debt are recorded in `docs/M1_TEST_REPORT.md`.
 
 Known diagnostic debt: the current automated wall-top bypass audit can false-negative where stair geometry intercepts its hull before the anti-bypass blocker. The working gameplay build remains intact; the failed blocker-only audit experiment was reverted. Multi-client 1–4-player, dedicated-server, and exhaustive bypass/soak QA remain scheduled for later hardening and Release Candidate work.
-
-## Next implementation target
-Milestone 2 — The Three Keys:
-
-- ordered Red → Blue → Yellow progression;
-- keycard objective placement and non-color identifiers;
-- team-wide card state;
-- scripted permanent bidirectional gates;
-- gate checkpoints;
-- personal lives and 20-second teammate-spectator respawn;
-- elimination and next-level one-life restoration;
-- join/rejoin state and ten-played-identity campaign cap;
-- spectator-only visitors excluded from the cap;
-- Deborah as the provisional level-clear endpoint for end-to-end progression-loop testing.
