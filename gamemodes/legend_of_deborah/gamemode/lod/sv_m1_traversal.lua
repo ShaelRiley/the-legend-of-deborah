@@ -11,6 +11,9 @@ local DIRS = {
     {name = "W", dx = -1, dy = 0}
 }
 
+local BYPASS_HULL_MINS = Vector(-16, -16, -32)
+local BYPASS_HULL_MAXS = Vector(16, 16, 32)
+
 local function allowed(ply)
     return not IsValid(ply) or ply:IsAdmin()
 end
@@ -42,11 +45,7 @@ local function upperCell(edge)
 end
 
 local function stairEntry(dir)
-    -- The low end now extends into the graph-approved open approach cell. Put
-    -- the tester a short distance before that first tread rather than inside the
-    -- transition cell itself.
-    local topOffset = GC.StairTopOffset or 64
-    local approach = GC.StairRun - topOffset + 32
+    local approach = GC.StairRun + 32
     if dir == "E" then return Vector(-approach, 0, 20), Angle(0, 0, 0) end
     if dir == "W" then return Vector(approach, 0, 20), Angle(0, 180, 0) end
     if dir == "N" then return Vector(0, -approach, 20), Angle(0, 90, 0) end
@@ -65,6 +64,7 @@ local function bypassAudit()
     local blocked = 0
     local gaps = 0
     local examples = {}
+    local unexpected = {}
     local visibleWallHeight = GC.ContainerHeight * GC.WallStack
     local blockerHeight = GC.AntiBypassHeight or MC.LevelHeight
     local testHeight = visibleWallHeight + math.max(16, (blockerHeight - visibleWallHeight) * 0.5)
@@ -86,22 +86,29 @@ local function bypassAudit()
 
                     local startPos = center + Vector(0, 0, testHeight)
                     local endPos = startPos + Vector(d.dx * MC.CellSize, d.dy * MC.CellSize, 0)
-                    local tr = util.TraceLine({
+                    local tr = util.TraceHull({
                         start = startPos,
                         endpos = endPos,
-                        mask = MASK_PLAYERSOLID,
+                        mins = BYPASS_HULL_MINS,
+                        maxs = BYPASS_HULL_MAXS,
+                        mask = MASK_SOLID,
+                        collisiongroup = COLLISION_GROUP_PLAYER_MOVEMENT,
                         filter = ignored
                     })
 
-                    local wallBlocked = tr.Hit and IsValid(tr.Entity) and
+                    local isBlocker = tr.Hit and IsValid(tr.Entity) and
                         tr.Entity:GetClass() == "lod_static_box" and
                         tr.Entity:GetBoxKind() == 4
 
-                    if wallBlocked then
+                    if isBlocker then
                         blocked = blocked + 1
                     else
                         gaps = gaps + 1
                         if #examples < 8 then examples[#examples + 1] = wallKey end
+                        if #unexpected < 8 then
+                            unexpected[#unexpected + 1] = tr.HitWorld and "world" or
+                                (IsValid(tr.Entity) and (tr.Entity:GetClass() .. ":kind=" .. tostring(tr.Entity.GetBoxKind and tr.Entity:GetBoxKind() or "?")) or "no-hit")
+                        end
                     end
                 end
             end
@@ -114,9 +121,12 @@ local function bypassAudit()
         blocked = blocked,
         gaps = gaps,
         gapExamples = examples,
+        unexpectedHits = unexpected,
         visibleWallHeight = visibleWallHeight,
         blockerHeight = blockerHeight,
-        testHeight = testHeight
+        testHeight = testHeight,
+        hullMins = tostring(BYPASS_HULL_MINS),
+        hullMaxs = tostring(BYPASS_HULL_MAXS)
     }
 end
 
@@ -138,6 +148,7 @@ local function printBypass(result, err)
     ))
     if result.gaps > 0 then
         print("[LOD:M1] bypass gap examples=" .. table.concat(result.gapExamples, ","))
+        print("[LOD:M1] bypass unexpected hits=" .. table.concat(result.unexpectedHits, ","))
     end
     return result.pass
 end
@@ -156,11 +167,9 @@ concommand.Add("lod_m1_stairs", function(ply)
     local graph = LOD.RunManager.State.Graph
     if not graph then return end
 
-    local innerWallFace = MC.CellSize * 0.5 - GC.ContainerWidth * 0.5
-    local upperLanding = innerWallFace - (GC.StairTopOffset or 64)
     print(string.format(
-        "[LOD:M1] vertical transitions=%d stairRun=%d topOffset=%d upperLanding=%.1f",
-        #(graph.VerticalEdges or {}), GC.StairRun, GC.StairTopOffset or 64, upperLanding
+        "[LOD:M1] vertical transitions=%d stairRun=%d highEnd=cell-center",
+        #(graph.VerticalEdges or {}), GC.StairRun
     ))
     for i, edge in ipairs(graph.VerticalEdges or {}) do
         local lower = lowerCell(edge)
@@ -233,6 +242,7 @@ if previousAudit then
         if not allowed(ply) then return end
         previousAudit(ply, cmd, args, argStr)
         local result, err = bypassAudit()
-        printBypass(result, err)
+        local pass = printBypass(result, err)
+        print("[LOD:M1] M1 AUDIT COMPOSITE " .. (pass and "PASS" or "FAIL") .. " | wall-top-bypass=" .. (pass and "PASS" or "FAIL"))
     end)
 end
