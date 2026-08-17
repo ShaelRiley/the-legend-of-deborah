@@ -72,6 +72,10 @@ C.Progression = {
     MinimumGateSpacing = 4,
     MinimumTailEdges = 5,
     KeycardDetourMin = 4,
+    -- Prevent a logically deep objective from nevertheless appearing immediately
+    -- beside its own lock in physical grid space. The safety validator measures
+    -- taxicab distance in logical cells and rejects/retries closer layouts.
+    KeycardGateCellSeparationMin = 3,
     KeycardTopBandFraction = 0.35,
     GateThickness = 28,
     GateWidth = 256,
