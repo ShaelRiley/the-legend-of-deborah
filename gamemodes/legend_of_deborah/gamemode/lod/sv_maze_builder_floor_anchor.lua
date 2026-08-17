@@ -54,7 +54,6 @@ end
 -- A final fixed Z fallback keeps gm_flatgrass startup fail-safe rather than
 -- refusing to construct an otherwise self-supported maze.
 function MazeBuilder:_ResolveWorldFloor()
-    -- Regeneration must never anchor to collision from the previous maze.
     self:Cleanup()
 
     local probeX = MC.Origin.x
@@ -103,34 +102,48 @@ function MazeBuilder:_ResolveWorldFloor()
     return true
 end
 
--- Build explicit floor collision on Level 0 as well as elevated layers. The
--- world surface may sit beneath the maze, but gameplay does not depend on its
--- exact elevation or on every occupied logical cell coinciding with map ground.
+-- Level 0 remains row-merged for efficiency. Elevated layers deliberately use
+-- one floor entity per occupied logical cell. Their origins therefore stay local
+-- to the visible corridor/platform they represent, eliminating the long-entity
+-- visibility ambiguity that repeatedly made solid upper floors appear absent.
 function MazeBuilder:_BuildFloors(graph)
     local transitions = upperTransitionMap(graph)
 
-    for z = 0, graph.Layers - 1 do
+    -- Ground layer: merge deterministic contiguous row runs.
+    for y = 1, MC.Height do
+        local x = 1
+        while x <= MC.Width do
+            local k = cellKey(x, y, 0)
+            local cell = graph.Cells[k]
+            if cell then
+                local runEnd = x
+                while runEnd + 1 <= MC.Width do
+                    local nextKey = cellKey(runEnd + 1, y, 0)
+                    if not graph.Cells[nextKey] then break end
+                    runEnd = runEnd + 1
+                end
+                self:_BuildFloorRun(cell, graph.Cells[cellKey(runEnd, y, 0)])
+                x = runEnd + 1
+            else
+                x = x + 1
+            end
+        end
+    end
+
+    -- Elevated layers: explicit cell-local floors. Transition cells retain their
+    -- authored stair aperture; every other occupied cell gets a complete slab.
+    for z = 1, graph.Layers - 1 do
         for y = 1, MC.Height do
-            local x = 1
-            while x <= MC.Width do
+            for x = 1, MC.Width do
                 local k = cellKey(x, y, z)
                 local cell = graph.Cells[k]
-                local transition = transitions[k]
-
-                if transition then
-                    self:_BuildPerforatedFloor(cell, transition)
-                    x = x + 1
-                elseif cell then
-                    local runEnd = x
-                    while runEnd + 1 <= MC.Width do
-                        local nextKey = cellKey(runEnd + 1, y, z)
-                        if not graph.Cells[nextKey] or transitions[nextKey] then break end
-                        runEnd = runEnd + 1
+                if cell then
+                    local transition = transitions[k]
+                    if transition then
+                        self:_BuildPerforatedFloor(cell, transition)
+                    else
+                        self:_BuildFloorRun(cell, cell)
                     end
-                    self:_BuildFloorRun(cell, graph.Cells[cellKey(runEnd, y, z)])
-                    x = runEnd + 1
-                else
-                    x = x + 1
                 end
             end
         end
