@@ -43,7 +43,19 @@ function ENT:Initialize()
     self:SetCollisionGroup(COLLISION_GROUP_NONE)
     self:DrawShadow(false)
 
+    -- Generated floors and merged wall runs can extend far from their entity
+    -- origins. Default PVS transmission is therefore unsafe: a player may stand
+    -- on/collide with one end of a long box while its origin is outside that
+    -- client's PVS, leaving the client without the entity needed for rendering
+    -- and movement prediction. These entities are our runtime world geometry,
+    -- so keep every client synchronized with the complete static collision set.
+    self:AddEFlags(EFL_FORCE_CHECK_TRANSMIT)
+
     self.LODCollisionReady = true
+end
+
+function ENT:UpdateTransmitState()
+    return TRANSMIT_ALWAYS
 end
 
 function ENT:IsLODCollisionReady()
