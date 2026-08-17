@@ -18,7 +18,11 @@ local DIR_BY_NAME = {
 }
 local OPPOSITE = {N = "S", S = "N", E = "W", W = "E"}
 local YAW = {E = 0, N = 90, W = 180, S = -90}
-local REAR_CROSSOVER_DEPTH = 96
+
+-- Keep the no-jump rear crossover broad enough to walk normally, but far enough
+-- toward the rear edge that a standing player has generous headroom while
+-- ascending beneath it. 64 units is twice the nominal 32-unit player hull width.
+local REAR_CROSSOVER_DEPTH = 64
 
 local function spawnStaticBox(pos, ang, mins, maxs, kind)
     local ent = ents.Create("lod_static_box")
@@ -104,9 +108,10 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(0, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
 
-    -- Broad rear landing/crossover. At this end of the upper cell the staircase
-    -- is still far below the upper floor, so this deck safely bridges over it
-    -- and provides a no-jump route between both side decks and the rear corridor.
+    -- Rear crossover stays tight to the far edge of the upper transition cell.
+    -- This leaves a large open stairwell above the rising half of the flight so
+    -- players can walk upright all the way to the crest without ducking, while
+    -- retaining a wide, standable no-jump route behind the staircase.
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -stairHalf, -t * 0.5),
         Vector(-half + crossoverDepth, stairHalf, t * 0.5), 1))
