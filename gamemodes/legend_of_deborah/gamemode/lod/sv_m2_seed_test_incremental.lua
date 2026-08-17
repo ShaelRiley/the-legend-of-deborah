@@ -33,6 +33,7 @@ concommand.Add("lod_m2_seed_test", function(ply, _, args)
         count = count,
         nextIndex = 1,
         failures = 0,
+        failureDetails = {},
         worstLayoutAttempt = 0,
         minDetour = math.huge,
         maxDetour = 0,
@@ -60,6 +61,14 @@ concommand.Add("lod_m2_seed_test", function(ply, _, args)
             job.minGateSeparation,
             job.elapsed
         ))
+        for _, detail in ipairs(job.failureDetails) do
+            printTo(job.ply, string.format(
+                "seed test failure index=%d seed=%s reason=%s",
+                detail.index,
+                tostring(detail.seed),
+                tostring(detail.reason)
+            ))
+        end
     end
 
     local function step()
@@ -68,11 +77,23 @@ concommand.Add("lod_m2_seed_test", function(ply, _, args)
         local i = job.nextIndex
         local seed = LOD.Seeds.Derive(job.base, "m2-seed-test:" .. i)
         local started = SysTime()
-        local graph = RunManager:_GenerateProgressionLevel(seed)
+        local graph, err = RunManager:_GenerateProgressionLevel(seed)
         job.elapsed = job.elapsed + (SysTime() - started)
 
         if not graph or not graph.Progression or not graph.Progression.Validation or not graph.Progression.Validation.valid then
             job.failures = job.failures + 1
+            job.failureDetails[#job.failureDetails + 1] = {
+                index = i,
+                seed = seed,
+                reason = err or "missing/invalid progression result"
+            }
+            printTo(job.ply, string.format(
+                "seed test FAILURE %d/%d seed=%s reason=%s",
+                i,
+                job.count,
+                tostring(seed),
+                tostring(err or "missing/invalid progression result")
+            ))
         else
             job.worstLayoutAttempt = math.max(job.worstLayoutAttempt, graph.ProgressionLayoutAttempt or 1)
             for _, card in ipairs(graph.Progression.Keycards or {}) do
