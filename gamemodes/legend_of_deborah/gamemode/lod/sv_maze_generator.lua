@@ -154,7 +154,7 @@ local function chooseLayerCount(rng)
     return rng:Chance(0.52) and 2 or 3
 end
 
-function MazeGenerator:_FillOccupancy(rng, spine, layerCount)
+function MazeGenerator:_FillOccupancy(rng, spine, verticalEdges, layerCount)
     local occupied = {}
     local perLayer = {}
 
@@ -163,6 +163,7 @@ function MazeGenerator:_FillOccupancy(rng, spine, layerCount)
     end
 
     local function occupy(x, y, z)
+        if x < 1 or x > MC.Width or y < 1 or y > MC.Height or z < 0 or z >= layerCount then return false end
         local k = key(x, y, z)
         if occupied[k] then return false end
         occupied[k] = {x = x, y = y, z = z}
@@ -172,6 +173,19 @@ function MazeGenerator:_FillOccupancy(rng, spine, layerCount)
 
     for _, cell in ipairs(spine) do
         occupy(cell.x, cell.y, cell.z)
+    end
+
+    -- Every stair endpoint owns a cross-shaped clearance plaza. Reserve all four
+    -- neighboring cells now so later wall generation cannot crowd the staircase.
+    -- The transition anchors are intentionally interior cells, so this creates a
+    -- full one-cell buffer around both ends of every staircase.
+    for _, edge in ipairs(verticalEdges or {}) do
+        for _, endpoint in ipairs({edge.a, edge.b}) do
+            occupy(endpoint.x, endpoint.y, endpoint.z)
+            for _, d in ipairs(DIRS) do
+                occupy(endpoint.x + d.dx, endpoint.y + d.dy, endpoint.z)
+            end
+        end
     end
 
     local total2D = MC.Width * MC.Height
@@ -259,6 +273,31 @@ function MazeGenerator:_BuildGraph(rng, occupied, spine, verticalEdges, layerCou
         graph.VerticalEdges[#graph.VerticalEdges + 1] = {a = copyCell(e.a), b = copyCell(e.b)}
     end
 
+    -- Force each reserved stair-clearance cell to connect directly to the stair
+    -- endpoint. The resulting open cross keeps walls one complete logical cell
+    -- away from the stairs and provides generous circulation in every direction.
+    local stairClearanceEdgeSet = {}
+    for _, e in ipairs(verticalEdges or {}) do
+        for _, endpoint in ipairs({e.a, e.b}) do
+            local endpointKey = key(endpoint.x, endpoint.y, endpoint.z)
+            local from = graph.Cells[endpointKey]
+            if from then
+                for _, d in ipairs(DIRS) do
+                    local neighborKey = key(endpoint.x + d.dx, endpoint.y + d.dy, endpoint.z)
+                    local neighbor = graph.Cells[neighborKey]
+                    if neighbor then
+                        local ek = edgeKey(from, neighbor)
+                        stairClearanceEdgeSet[ek] = true
+                        if not graph.Edges[ek] then
+                            addNeighbor(graph, from, neighbor)
+                            union(endpointKey, neighborKey)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     local candidates = {}
     local candidateSet = {}
     for _, occupiedKey in ipairs(allKeys) do
@@ -269,7 +308,7 @@ function MazeGenerator:_BuildGraph(rng, occupied, spine, verticalEdges, layerCou
             if occupied[nk] then
                 local other = occupied[nk]
                 local ek = edgeKey(cell, other)
-                if not spineEdgeSet[ek] and not candidateSet[ek] then
+                if not graph.Edges[ek] and not spineEdgeSet[ek] and not stairClearanceEdgeSet[ek] and not candidateSet[ek] then
                     candidateSet[ek] = true
                     candidates[#candidates + 1] = {a = copyCell(cell), b = copyCell(other)}
                 end
@@ -373,6 +412,23 @@ function MazeGenerator:Validate(graph)
         end
     end
 
+    -- Stair endpoints must retain a full four-direction open plaza. Treat this
+    -- as a generation invariant so a future geometry or graph change cannot
+    -- silently reintroduce walls immediately beside a staircase.
+    for _, e in ipairs(graph.VerticalEdges or {}) do
+        for _, endpoint in ipairs({e.a, e.b}) do
+            local endpointKey = key(endpoint.x, endpoint.y, endpoint.z)
+            local cell = graph.Cells[endpointKey]
+            for _, d in ipairs(DIRS) do
+                local neighborKey = key(endpoint.x + d.dx, endpoint.y + d.dy, endpoint.z)
+                if not graph.Cells[neighborKey] or not cell or not cell.neighbors[neighborKey] then
+                    errors[#errors + 1] = "stair clearance plaza incomplete at " .. endpointKey
+                    break
+                end
+            end
+        end
+    end
+
     local occupancy = {}
     for z = 0, graph.Layers - 1 do occupancy[z] = 0 end
     for _, cell in pairs(graph.Cells) do occupancy[cell.z] = occupancy[cell.z] + 1 end
@@ -403,7 +459,7 @@ function MazeGenerator:Generate(levelSeed)
         local layerCount = chooseLayerCount(structureRng)
         local transitionCount = structureRng:Int(MC.MandatoryVerticalMin, MC.MandatoryVerticalMax)
         local spine, verticalEdges = self:_BuildSpine(structureRng, layerCount, transitionCount)
-        local occupied = self:_FillOccupancy(occupancyRng, spine, layerCount)
+        local occupied = self:_FillOccupancy(occupancyRng, spine, verticalEdges, layerCount)
         local graph = self:_BuildGraph(edgeRng, occupied, spine, verticalEdges, layerCount, levelSeed, attempt)
         local valid = self:Validate(graph)
         if valid then
