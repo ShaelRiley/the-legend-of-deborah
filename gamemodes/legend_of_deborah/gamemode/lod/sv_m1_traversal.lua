@@ -52,6 +52,12 @@ local function stairEntry(dir)
     return Vector(0, approach, 20), Angle(0, -90, 0)
 end
 
+local function isAntiBypassBlocker(ent)
+    return IsValid(ent) and
+        ent:GetClass() == "lod_static_box" and
+        ent.GetBoxKind and ent:GetBoxKind() == 4
+end
+
 local function bypassAudit()
     local state = LOD.RunManager.State
     local graph = state.Graph
@@ -64,11 +70,9 @@ local function bypassAudit()
     local blocked = 0
     local gaps = 0
     local examples = {}
-    local unexpected = {}
     local visibleWallHeight = GC.ContainerHeight * GC.WallStack
     local blockerHeight = GC.AntiBypassHeight or MC.LevelHeight
     local testHeight = visibleWallHeight + math.max(16, (blockerHeight - visibleWallHeight) * 0.5)
-    local ignored = player.GetAll()
 
     for _, key in ipairs(sortedKeys(graph.Cells)) do
         local cell = graph.Cells[key]
@@ -93,22 +97,20 @@ local function bypassAudit()
                         maxs = BYPASS_HULL_MAXS,
                         mask = MASK_SOLID,
                         collisiongroup = COLLISION_GROUP_PLAYER_MOVEMENT,
-                        filter = ignored
+                        -- This audit asks one narrow question: is the authored
+                        -- kind-4 anti-bypass blocker present across this closed
+                        -- graph edge? Stairs/floors may intersect the same hull
+                        -- first, so ignore every other entity instead of treating
+                        -- an intervening gameplay surface as a missing blocker.
+                        filter = isAntiBypassBlocker
                     })
 
-                    local isBlocker = tr.Hit and IsValid(tr.Entity) and
-                        tr.Entity:GetClass() == "lod_static_box" and
-                        tr.Entity:GetBoxKind() == 4
-
+                    local isBlocker = tr.Hit and isAntiBypassBlocker(tr.Entity)
                     if isBlocker then
                         blocked = blocked + 1
                     else
                         gaps = gaps + 1
                         if #examples < 8 then examples[#examples + 1] = wallKey end
-                        if #unexpected < 8 then
-                            unexpected[#unexpected + 1] = tr.HitWorld and "world" or
-                                (IsValid(tr.Entity) and (tr.Entity:GetClass() .. ":kind=" .. tostring(tr.Entity.GetBoxKind and tr.Entity:GetBoxKind() or "?")) or "no-hit")
-                        end
                     end
                 end
             end
@@ -121,12 +123,12 @@ local function bypassAudit()
         blocked = blocked,
         gaps = gaps,
         gapExamples = examples,
-        unexpectedHits = unexpected,
         visibleWallHeight = visibleWallHeight,
         blockerHeight = blockerHeight,
         testHeight = testHeight,
         hullMins = tostring(BYPASS_HULL_MINS),
-        hullMaxs = tostring(BYPASS_HULL_MAXS)
+        hullMaxs = tostring(BYPASS_HULL_MAXS),
+        blockerOnlyTrace = true
     }
 end
 
@@ -137,18 +139,18 @@ local function printBypass(result, err)
     end
 
     print(string.format(
-        "[LOD:M1] bypass %s walls=%d blocked=%d gaps=%d visibleWall=%d blocker=%d testZ=%.1f",
+        "[LOD:M1] bypass %s walls=%d blocked=%d gaps=%d visibleWall=%d blocker=%d testZ=%.1f blockerOnly=%s",
         result.pass and "PASS" or "FAIL",
         result.tested,
         result.blocked,
         result.gaps,
         result.visibleWallHeight,
         result.blockerHeight,
-        result.testHeight
+        result.testHeight,
+        tostring(result.blockerOnlyTrace)
     ))
     if result.gaps > 0 then
         print("[LOD:M1] bypass gap examples=" .. table.concat(result.gapExamples, ","))
-        print("[LOD:M1] bypass unexpected hits=" .. table.concat(result.unexpectedHits, ","))
     end
     return result.pass
 end
