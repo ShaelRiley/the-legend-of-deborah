@@ -2,6 +2,7 @@ LOD = LOD or {}
 
 local ProgressionDirector = LOD.ProgressionDirector
 local cellKey = LOD.MazeGenerator.CellKey
+local PC = LOD.Config.Progression
 local previousPlan = ProgressionDirector.Plan
 
 local function transitionCells(graph)
@@ -13,9 +14,14 @@ local function transitionCells(graph)
     return set
 end
 
+local function taxicabDistance(a, b)
+    return math.abs(a.x - b.x) + math.abs(a.y - b.y) + math.abs(a.z - b.z)
+end
+
 -- Gate checkpoints must be flat, safe cells immediately beyond their gates.
--- Reject an otherwise-solvable layout if either side of a selected gate is also
--- a vertical-transition cell; RunManager deterministically tries the next layout seed.
+-- Keycards must also remain physically separated from their own locks even when
+-- the graph route to the card is long. Reject an otherwise-solvable layout and
+-- let RunManager deterministically try the next layout seed.
 function ProgressionDirector:Plan(graph, masterLevelSeed)
     local ok, result = previousPlan(self, graph, masterLevelSeed)
     if not ok then return false, result end
@@ -27,6 +33,25 @@ function ProgressionDirector:Plan(graph, masterLevelSeed)
         if transitions[beforeKey] or transitions[afterKey] then
             graph.Progression = nil
             return false, string.format("%s gate checkpoint intersects a vertical-transition cell", tostring(gate.id))
+        end
+    end
+
+    local minSeparation = PC.KeycardGateCellSeparationMin or 3
+    for i, card in ipairs(result.Keycards or {}) do
+        local gate = result.Gates and result.Gates[i]
+        if gate and card.cell then
+            local separation = math.min(
+                taxicabDistance(card.cell, gate.beforeCell),
+                taxicabDistance(card.cell, gate.afterCell)
+            )
+            card.gateCellSeparation = separation
+            if separation < minSeparation then
+                graph.Progression = nil
+                return false, string.format(
+                    "%s keycard is only %d logical cells from its gate; minimum is %d",
+                    tostring(card.id), separation, minSeparation
+                )
+            end
         end
     end
 
