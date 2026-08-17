@@ -45,11 +45,11 @@ C.Geometry = {
     -- floor resting directly on the map surface when the fallback Z is exact.
     GroundFloorOffset = 16,
     StairWidth = 192,
-    -- A mandatory flight begins in its graph-approved open lower approach cell
-    -- and terminates inside the upper transition cell rather than against its
-    -- perimeter wall. 24 steps retain the ordinary 16-unit Source step rise.
+    -- Mandatory stairs run from an open lower approach corridor to the center
+    -- of the upper logical cell. Ending at cell center provides a full landing
+    -- with enough room to turn toward whichever upper corridor the graph owns.
     StairRun = 320,
-    StairTopOffset = 64,
+    StairTopOffset = 0,
     StairSteps = 24,
     FloorColor = Color(58, 62, 64),
     StairColor = Color(76, 79, 80),
