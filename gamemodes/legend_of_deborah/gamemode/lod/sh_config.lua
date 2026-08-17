@@ -68,7 +68,10 @@ C.Geometry = {
 }
 
 C.Progression = {
-    LayoutAttempts = 16,
+    -- Safety constraints can reject an otherwise valid maze late in planning.
+    -- Keep deterministic retry headroom high enough that normal campaign startup
+    -- does not fail merely because the first handful of layouts are unsuitable.
+    LayoutAttempts = 64,
     MinimumGateSpacing = 4,
     MinimumTailEdges = 5,
     KeycardDetourMin = 4,
