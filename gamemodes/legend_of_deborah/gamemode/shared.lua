@@ -10,7 +10,7 @@ GM.Website = ""
 GM.TeamBased = false
 
 LOD = LOD or {}
-LOD.Version = "0.1.0-dev"
+LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
 include("lod/sh_rng.lua")
@@ -60,4 +60,12 @@ function GM:ShouldCollide(ent1, ent2)
     if IsValid(ent1) and IsValid(ent2) and ent1:IsPlayer() and ent2:IsPlayer() then
         return false
     end
+end
+
+-- The base gamemode normally permits manual respawn input after death. Deborah's
+-- life system owns respawn timing authoritatively: a consumed life means exactly
+-- 20 seconds of restricted allied spectating before the server respawns the
+-- participant at the latest checkpoint. Returning true prevents base respawn input.
+function GM:PlayerDeathThink()
+    return true
 end
