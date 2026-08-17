@@ -18,6 +18,7 @@ local DIR_BY_NAME = {
 }
 local OPPOSITE = {N = "S", S = "N", E = "W", W = "E"}
 local YAW = {E = 0, N = 90, W = 180, S = -90}
+local REAR_CROSSOVER_DEPTH = 96
 
 local function spawnStaticBox(pos, ang, mins, maxs, kind)
     local ent = ents.Create("lod_static_box")
@@ -80,9 +81,10 @@ function MazeBuilder:Build(graph)
     return previousBuild(self, graph)
 end
 
--- Local +X always points in the ascent direction. The upper floor therefore
--- needs an aperture only on the approach half of the transition cell. The high
--- half remains a solid landing beginning exactly where the final tread ends.
+-- Local +X points uphill. The stair reaches upper-floor height at cell center.
+-- Build the upper transition cell as a real landing with walkable floor on all
+-- four sides of the stair opening. The rear crossover prevents the player from
+-- needing to jump the stairwell to reach a graph-open corridor behind the stairs.
 function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     local center = self:CellCenter(cell)
     local half = MC.CellSize * 0.5
@@ -90,17 +92,31 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     local stairHalf = GC.StairWidth * 0.5
     local dir = edge.LODStairDirection or fallbackDirection(edge)
     local ang = Angle(0, YAW[dir] or 0, 0)
+    local crossoverDepth = math.min(REAR_CROSSOVER_DEPTH, half - 16)
 
-    -- Side decks run the complete cell length.
+    -- Wide left/right decks run the full cell length.
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, stairHalf, -t * 0.5), Vector(half, half, t * 0.5), 1))
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -half, -t * 0.5), Vector(half, -stairHalf, t * 0.5), 1))
 
-    -- The forward half is the upper landing. The rear half stays open for the
-    -- rising staircase, so the player cannot collide with a slab at the top.
+    -- Broad forward landing where the final tread reaches floor height.
     self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(0, -stairHalf, -t * 0.5), Vector(half, stairHalf, t * 0.5), 1))
+
+    -- Broad rear landing/crossover. At this end of the upper cell the staircase
+    -- is still far below the upper floor, so this deck safely bridges over it
+    -- and provides a no-jump route between both side decks and the rear corridor.
+    self:_Register(spawnStaticBox(center + Vector(0, 0, -t * 0.5), ang,
+        Vector(-half, -stairHalf, -t * 0.5),
+        Vector(-half + crossoverDepth, stairHalf, t * 0.5), 1))
+end
+
+local function registerRailSegment(self, center, ang, x0, x1, y0, y1, railHeight)
+    if x1 <= x0 then return end
+    self:_Register(spawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
+        Vector(x0, y0, -MC.LevelHeight * 0.5),
+        Vector(x1, y1, MC.LevelHeight * 0.5 + railHeight), 3))
 end
 
 function MazeBuilder:_BuildStair(edge)
@@ -115,9 +131,8 @@ function MazeBuilder:_BuildStair(edge)
     local d = DIR_BY_NAME[dir]
     local ang = Angle(0, YAW[dir] or 0, 0)
 
-    -- Local +X is always uphill. Shift the 320-unit flight backward by half its
-    -- run so the final tread ends at the upper cell center and the first tread
-    -- begins 320 units into the graph-approved lower approach corridor.
+    -- Local +X is uphill. The flight starts 320 units behind the transition
+    -- cell center and reaches upper-floor height exactly at that center.
     local center = transitionCenter + Vector(
         d.dx * (-stairRun * 0.5),
         d.dy * (-stairRun * 0.5),
@@ -139,10 +154,26 @@ function MazeBuilder:_BuildStair(edge)
 
     local railHeight = 48
     local railThickness = 6
-    self:_Register(spawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
-        Vector(-stairRun * 0.5, stairHalf, -MC.LevelHeight * 0.5),
-        Vector(stairRun * 0.5, stairHalf + railThickness, MC.LevelHeight * 0.5 + railHeight), 3))
-    self:_Register(spawnStaticBox(center + Vector(0, 0, MC.LevelHeight * 0.5), ang,
-        Vector(-stairRun * 0.5, -stairHalf - railThickness, -MC.LevelHeight * 0.5),
-        Vector(stairRun * 0.5, -stairHalf, MC.LevelHeight * 0.5 + railHeight), 3))
+
+    -- Upper-cell rear edge and crossover forward edge expressed in stair-local X.
+    -- The stair entity center is 160 units behind the transition-cell center.
+    local upperRearX = stairRun * 0.5 - MC.CellSize * 0.5
+    local crossoverForwardX = upperRearX + math.min(REAR_CROSSOVER_DEPTH, MC.CellSize * 0.5 - 16)
+
+    -- Keep rails inside the stair envelope so they do not consume side-deck
+    -- walking width. Split them around the rear crossover so the crossover is a
+    -- genuinely open walking route rather than a deck bisected by railings.
+    for _, side in ipairs({-1, 1}) do
+        local y0, y1
+        if side < 0 then
+            y0, y1 = -stairHalf, -stairHalf + railThickness
+        else
+            y0, y1 = stairHalf - railThickness, stairHalf
+        end
+
+        registerRailSegment(self, center, ang,
+            -stairRun * 0.5, upperRearX, y0, y1, railHeight)
+        registerRailSegment(self, center, ang,
+            crossoverForwardX, stairRun * 0.5, y0, y1, railHeight)
+    end
 end
