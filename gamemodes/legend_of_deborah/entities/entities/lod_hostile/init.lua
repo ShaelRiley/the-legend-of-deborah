@@ -2,6 +2,10 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+local DEATH_BLINK_DURATION = 1.0
+local DEATH_BLINK_INTERVAL = 0.125
+local PLACEHOLDER_LOOT_MODEL = "models/items/boxsrounds.mdl"
+
 local function archetypeConfig(id)
     return LOD.Config.Encounter.Archetypes[id]
 end
@@ -92,6 +96,7 @@ function ENT:Initialize()
     self.LODTarget = nil
     self.LODReturningHome = false
     self.LODSoldierBurst = nil
+    self.LODDead = false
 
     if self.LODArchetypeId == "soldier" then
         self:_CreateSoldierWeaponVisual()
@@ -358,7 +363,7 @@ function ENT:_TryAttack(target)
 end
 
 function ENT:_BehaviourTick()
-    if not self.LODActivated then return end
+    if self.LODDead or not self.LODActivated then return end
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
     if not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
@@ -418,6 +423,10 @@ function ENT:RunBehaviour()
 end
 
 function ENT:BodyUpdate()
+    if self.LODDead then
+        self:FrameAdvance()
+        return
+    end
     if self:GetVelocity():Length2DSqr() > 25 then
         self:BodyMoveXY()
     end
@@ -425,11 +434,13 @@ function ENT:BodyUpdate()
 end
 
 function ENT:HandleStuck()
+    if self.LODDead then return end
     if self.loco then self.loco:ClearStuck() end
     self.LODNextRouteRefresh = 0
 end
 
 function ENT:OnInjured(dmginfo)
+    if self.LODDead then return end
     local attacker = dmginfo:GetAttacker()
     if IsValid(attacker) and attacker:IsPlayer() and LOD.FactionManager:IsValidPlayerTarget(attacker) then
         self.LODTarget = attacker
@@ -439,15 +450,105 @@ function ENT:OnInjured(dmginfo)
     end
 end
 
+function ENT:_SpawnPlaceholderLoot()
+    local state = LOD.RunManager and LOD.RunManager.State
+    if not state or state.LevelSeed ~= self.LODDeathLevelSeed or state.Failed or state.LevelCleared then return end
+
+    local loot = ents.Create("prop_dynamic")
+    if not IsValid(loot) then return end
+    loot:SetModel(PLACEHOLDER_LOOT_MODEL)
+    loot:SetPos(self:GetPos() + Vector(0, 0, 8))
+    loot:SetAngles(Angle(0, self:GetAngles().y, 0))
+    loot:SetSolid(SOLID_NONE)
+    loot:SetMoveType(MOVETYPE_NONE)
+    loot:SetRenderMode(RENDERMODE_TRANSCOLOR)
+    loot:SetColor(Color(255, 196, 64, 235))
+    loot:SetModelScale(1.15, 0)
+    loot.LODPlaceholderLoot = true
+    loot:Spawn()
+    loot:Activate()
+    loot:EmitSound("items/itempickup.wav", 55, 128, 0.45, CHAN_ITEM)
+
+    -- Milestone 4 will replace this inert marker with LootDirector's
+    -- individualized seeded drop resolution. Registering it with MazeBuilder
+    -- already gives it correct level cleanup semantics in the meantime.
+    if LOD.MazeBuilder and LOD.MazeBuilder._Register then
+        LOD.MazeBuilder:_Register(loot)
+    end
+end
+
+function ENT:_FinishDeathPresentation()
+    if not IsValid(self) then return end
+    self:SetNoDraw(true)
+    self:_SpawnPlaceholderLoot()
+    self:Remove()
+end
+
+function ENT:_BeginDeathPresentation()
+    if self.LODDead then return end
+    self.LODDead = true
+    self.LODActivated = false
+    self.LODTarget = nil
+    self.LODWaypoints = {}
+    self.LODSoldierBurst = nil
+    self.LODDeathLevelSeed = LOD.RunManager and LOD.RunManager.State.LevelSeed or nil
+    self:SetNW2Bool("LOD_SoldierTelegraph", false)
+
+    if self.loco then self.loco:SetDesiredSpeed(0) end
+    self:SetVelocity(vector_origin)
+    self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+    self:SetSolid(SOLID_NONE)
+    self:SetMoveType(MOVETYPE_NONE)
+    self:DrawShadow(false)
+
+    if IsValid(self.LODWeaponVisual) then
+        self.LODWeaponVisual:Remove()
+        self.LODWeaponVisual = nil
+    end
+
+    -- Keep the actual enemy model as the corpse instead of creating a Source
+    -- ragdoll. Generated upper floors are custom collision geometry, and the
+    -- old ragdoll path could fall through them. A death activity gives the body
+    -- a readable corpse pose while its origin remains fixed to the valid floor.
+    self:_SetActivity(ACT_DIESIMPLE or ACT_DIEBACKWARD or ACT_IDLE, true)
+
+    local blinkName = "LOD_DeathBlink_" .. self:EntIndex()
+    local finishName = "LOD_DeathFinish_" .. self:EntIndex()
+    self.LODDeathBlinkTimer = blinkName
+    self.LODDeathFinishTimer = finishName
+    self.LODDeathBlinkTicks = 0
+
+    timer.Create(blinkName, DEATH_BLINK_INTERVAL, 0, function()
+        if not IsValid(self) then timer.Remove(blinkName) return end
+        self.LODDeathBlinkTicks = (self.LODDeathBlinkTicks or 0) + 1
+        self:SetNoDraw(not self:GetNoDraw())
+
+        -- Four restrained retro pulses over the one-second dematerialization.
+        if self.LODDeathBlinkTicks % 2 == 1 then
+            local pitch = math.min(150, 118 + self.LODDeathBlinkTicks * 4)
+            self:EmitSound("buttons/blip1.wav", 56, pitch, 0.42, CHAN_ITEM)
+        end
+    end)
+
+    timer.Create(finishName, DEATH_BLINK_DURATION, 1, function()
+        if not IsValid(self) then return end
+        timer.Remove(blinkName)
+        self:_FinishDeathPresentation()
+    end)
+end
+
 function ENT:OnKilled(dmginfo)
+    if self.LODDead then return end
     if LOD.EncounterDirector and LOD.EncounterDirector.OnHostileKilled then
         LOD.EncounterDirector:OnHostileKilled(self, dmginfo)
     end
     hook.Run("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
-    self:BecomeRagdoll(dmginfo)
+    self:_BeginDeathPresentation()
 end
 
 function ENT:OnRemove()
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    if self.LODDeathBlinkTimer then timer.Remove(self.LODDeathBlinkTimer) end
+    if self.LODDeathFinishTimer then timer.Remove(self.LODDeathFinishTimer) end
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end
 end
