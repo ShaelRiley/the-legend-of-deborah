@@ -3,6 +3,21 @@ LOD = LOD or {}
 local MazeBuilder = LOD.MazeBuilder
 local EncounterDirector = LOD.EncounterDirector
 
+-- Encounter placement is evaluated after the maze exists. LOS therefore needs
+-- to see generated container props and static collision, not only Flatgrass's
+-- world brushes. Ignore held/spectating players during the build check.
+function EncounterDirector:_VisibleFromStart(graph, cell)
+    local startPos = LOD.MazeNavigator:CellCenter(graph.Start) + Vector(0, 0, 64)
+    local endPos = LOD.MazeNavigator:CellCenter(cell) + Vector(0, 0, 40)
+    local tr = util.TraceLine({
+        start = startPos,
+        endpos = endPos,
+        mask = MASK_SOLID,
+        filter = player.GetAll()
+    })
+    return tr.Fraction >= 0.995
+end
+
 local previousBuild = MazeBuilder.Build
 function MazeBuilder:Build(graph)
     -- Hostiles belong to the generated level just as surely as walls and gates.
