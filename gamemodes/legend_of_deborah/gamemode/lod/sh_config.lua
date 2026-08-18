@@ -3,7 +3,9 @@ LOD.Config = LOD.Config or {}
 
 local C = LOD.Config
 
+C.PlayerTeam = 1
 C.MaxActivePlayers = 4
+
 C.Campaign = {
     MaxPlayedIdentities = 10
 }
@@ -18,41 +20,104 @@ C.Maze = {
     Width = 21,
     Height = 21,
     CellSize = 384,
+    -- Keep successive traversable floors vertically separated from the tops of
+    -- the two-container wall stack. At 256 units the lower wall tops were flush
+    -- with the next floor, creating a potential wall-top bypass.
     LevelHeight = 384,
-    Origin = Vector(0, 0, -12288),
-    PrimaryOccupancy = {0.65, 0.80},
-    SecondaryOccupancy = {0.35, 0.55},
-    TertiaryOccupancy = {0.20, 0.35},
-    FourthOccupancyMax = 0.10,
+    Origin = Vector(0, 0, 0),
+    GenerationAttempts = 32,
     MandatoryVerticalMin = 3,
-    MandatoryVerticalMax = 6
+    MandatoryVerticalMax = 6,
+    LoopFractionMin = 0.05,
+    LoopFractionMax = 0.10,
+    RareFourthLayerChance = 0.05,
+    LayerOccupancy = {
+        {0.65, 0.80},
+        {0.35, 0.55},
+        {0.20, 0.35},
+        {0.05, 0.10}
+    }
 }
 
 C.Geometry = {
     ContainerModel = "models/props_wasteland/cargo_container01.mdl",
+    ContainerLength = 390,
     ContainerWidth = 128,
     ContainerHeight = 128,
     WallStack = 2,
-    AntiBypassHeight = 384,
+    -- Visible walls remain two containers high. Authoritative collision extends
+    -- to the next logical floor so ordinary jumping cannot turn container tops
+    -- into graph/progression shortcuts.
+    AntiBypassHeight = C.Maze.LevelHeight,
     FloorThickness = 16,
+    -- Keep the rendered/collision floor one full floor thickness above the
+    -- Flatgrass surface. This avoids z-fighting while leaving the generated
+    -- floor resting directly on the map surface when the fallback Z is exact.
+    GroundFloorOffset = 16,
+    -- Keep enough real walkable deck beside upper stair apertures. With 128-unit
+    -- container walls intruding 64 units into a 384-unit cell, the former
+    -- 192-unit stair left only ~26 units between handrail and wall, narrower
+    -- than a Source player hull. A 128-unit stair leaves ~58 units of clearance
+    -- while remaining comfortably wider than the player.
     StairWidth = 128,
+    -- Mandatory stairs run from an open lower approach corridor to the center
+    -- of the upper logical cell. Ending at cell center provides a full landing
+    -- with enough room to turn toward whichever upper corridor the graph owns.
     StairRun = 320,
-    StairSteps = 24
+    StairTopOffset = 0,
+    StairSteps = 24,
+    FloorColor = Color(58, 62, 64),
+    StairColor = Color(76, 79, 80),
+    DebugColor = Color(225, 145, 48),
+    Skin = 0
 }
 
 C.Progression = {
+    -- Safety constraints can reject an otherwise valid maze late in planning.
+    -- Keep deterministic retry headroom high enough that normal campaign startup
+    -- does not fail merely because the first handful of layouts are unsuitable.
     LayoutAttempts = 64,
+    MinimumGateSpacing = 4,
+    MinimumTailEdges = 5,
     KeycardDetourMin = 4,
+    -- Prevent a logically deep objective from nevertheless appearing immediately
+    -- beside its own lock in physical grid space. The safety validator measures
+    -- taxicab distance in logical cells and rejects/retries closer layouts.
     KeycardGateCellSeparationMin = 3,
+    KeycardTopBandFraction = 0.35,
+    GateThickness = 28,
+    -- A gate replaces one complete logical wall edge. Match the 384-unit cell
+    -- width so no player-sized lateral gap remains between the gate and the
+    -- neighboring maze walls.
     GateWidth = C.Maze.CellSize,
     GateVisibleHeight = 256,
-    GateBlockerHeight = 384,
+    GateBlockerHeight = C.Maze.LevelHeight,
     GateOpenSeconds = 0.75,
+    KeycardTriggerRadius = 52,
+    KeycardHeight = 40,
     IntermissionSeconds = 15,
     Cards = {
-        {name = "Red", short = "R", symbol = "TRIANGLE"},
-        {name = "Blue", short = "B", symbol = "CIRCLE"},
-        {name = "Yellow", short = "Y", symbol = "SQUARE"}
+        {
+            id = "red",
+            name = "Red",
+            letter = "R",
+            symbol = "TRIANGLE",
+            color = Color(205, 54, 54)
+        },
+        {
+            id = "blue",
+            name = "Blue",
+            letter = "B",
+            symbol = "CIRCLE",
+            color = Color(64, 118, 210)
+        },
+        {
+            id = "yellow",
+            name = "Yellow",
+            letter = "Y",
+            symbol = "SQUARE",
+            color = Color(224, 190, 52)
+        }
     }
 }
 
