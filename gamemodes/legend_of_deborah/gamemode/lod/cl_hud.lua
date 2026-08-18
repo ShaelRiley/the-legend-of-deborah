@@ -31,6 +31,11 @@ surface.CreateFont("LOD_HUD_Announcement", {
     size = 34,
     weight = 900
 })
+surface.CreateFont("LOD_HUD_Countdown", {
+    font = "DejaVu Sans",
+    size = 68,
+    weight = 900
+})
 
 net.Receive("LOD_RunState", function()
     local state = LOD.ClientState
@@ -83,6 +88,34 @@ local function objectiveArrow(target)
     local diff = math.AngleDifference(delta:Angle().y, EyeAngles().y)
     if math.abs(diff) <= 12 then return "▲" end
     return diff > 0 and "▶" or "◀"
+end
+
+local function drawDeathState(ply, state)
+    if state.failed or state.levelCleared then return end
+    if not ply:GetNW2Bool("LOD_PlayedIdentity", false) or ply:Alive() then return end
+
+    local eliminated = ply:GetNW2Bool("LOD_Eliminated", false)
+    draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(5, 7, 9, 150))
+
+    if eliminated then
+        draw.SimpleText("OUT OF LIVES", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.43,
+            Color(235, 105, 90), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("SPECTATING UNTIL THE NEXT LEVEL", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.49,
+            Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        return
+    end
+
+    local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
+    local seconds = math.max(0, math.ceil(remaining))
+
+    draw.SimpleText("YOU DIED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.38,
+        Color(235, 105, 90), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    draw.SimpleText("RESPAWNING IN", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.45,
+        Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    draw.SimpleText(tostring(seconds), "LOD_HUD_Countdown", ScrW() * 0.5, ScrH() * 0.54,
+        Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    draw.SimpleText("CHECKPOINT " .. tostring(state.checkpoint or 0), "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.62,
+        Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
 hook.Add("HUDPaint", "LOD_PersistentHUD", function()
@@ -144,5 +177,7 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
             Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         draw.SimpleText("BUILDING THE NEXT LABYRINTH", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.47,
             Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    else
+        drawDeathState(ply, state)
     end
 end)
