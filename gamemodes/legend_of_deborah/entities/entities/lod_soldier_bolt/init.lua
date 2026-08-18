@@ -13,6 +13,7 @@ function ENT:Initialize()
     self.LODDamage = self.LODDamage or 6
     self.LODExpireAt = CurTime() + (self.LODLifetime or 1.35)
     self.LODLastThink = CurTime()
+    self.LODLevelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
 end
 
 local function traceFilter(self, owner)
@@ -24,6 +25,11 @@ local function traceFilter(self, owner)
 end
 
 function ENT:Think()
+    local currentSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
+    if self.LODLevelSeed and currentSeed ~= self.LODLevelSeed then
+        self:Remove()
+        return
+    end
     if CurTime() >= (self.LODExpireAt or 0) then
         self:Remove()
         return
