@@ -16,6 +16,12 @@ local RANGE_FIELDS = {
     "meleeRange", "fireRange", "preferredRange", "leapRange", "latchDistance", "explosionRadius"
 }
 
+-- Tiny per-movement-update pace variation prevents enemies with similar routes
+-- from phase-locking into an unnaturally tight clump. The mean remains 1.0, so
+-- archetype tuning does not drift; only the length of individual movement
+-- updates varies by up to +/-2.5 percent.
+local STRIDE_VARIANCE = 0.025
+
 local function subFloat(seed, label, minimum, maximum)
     local subSeed = LOD.Seeds.Derive(seed, label)
     return LOD.RNG.New(subSeed):Float(minimum, maximum)
@@ -138,6 +144,12 @@ function EnemyVariance:Apply(hostile)
         hostile.loco:SetDeceleration(math.max(500, cfg.speed * 6))
     end
 
+    -- This stream advances independently of every other enemy and of all other
+    -- procedural systems. Same seed + same hostile identity therefore produces
+    -- the same movement micro-variation sequence without uncontrolled math.random.
+    hostile.LODStrideRNG = LOD.RNG.New(LOD.Seeds.Derive(seed, "micro-stride"))
+    hostile.LODStrideFactor = 1.0
+
     hostile.LODVariance = {
         seed = seed,
         size = size,
@@ -159,6 +171,28 @@ local function installHostilePatch()
         baseInitialize(self)
         if not IsValid(self) or not self.LODConfig then return end
         EnemyVariance:Apply(self)
+    end
+
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        local cfg = self.LODConfig
+        local rng = self.LODStrideRNG
+
+        -- Temporarily perturb the desired movement speed for this one movement
+        -- update. The underlying per-instance speed remains unchanged afterward.
+        -- Because displacement per update is speed * frame time, this is the
+        -- requested +/-2.5% variation in movement-step length.
+        if cfg and cfg.speed and rng and not self.LODDead and self.LODActivated ~= false then
+            local baseSpeed = cfg.speed
+            local factor = rng:Float(1 - STRIDE_VARIANCE, 1 + STRIDE_VARIANCE)
+            self.LODStrideFactor = factor
+            cfg.speed = baseSpeed * factor
+            local result = baseBehaviourTick(self)
+            cfg.speed = baseSpeed
+            return result
+        end
+
+        return baseBehaviourTick(self)
     end
     return true
 end
@@ -195,9 +229,10 @@ concommand.Add("lod_m3_variance", function(ply)
             found = found + 1
             local cfg = hostile.LODConfig
             local text = string.format(
-                "#%d %-10s size=%.3f hp=%d speed=%.1f damage=%.1f timer=%.2f seed=%d",
+                "#%d %-10s size=%.3f hp=%d speed=%.1f stride=%.3f damage=%.1f timer=%.2f seed=%d",
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId), hostile.LODVariance.size,
-                hostile:Health(), cfg.speed or 0, mainDamage(cfg), mainTimer(cfg), hostile.LODVariance.seed
+                hostile:Health(), cfg.speed or 0, hostile.LODStrideFactor or 1,
+                mainDamage(cfg), mainTimer(cfg), hostile.LODVariance.seed
             )
             print("[LOD:VARIANCE] " .. text)
             if IsValid(ply) then ply:ChatPrint(text) end
