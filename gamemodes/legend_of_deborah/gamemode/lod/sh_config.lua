@@ -143,9 +143,11 @@ C.Encounter = {
             class = "lod_hostile_shambler",
             name = "Shambler",
             model = "models/zombie/classic.mdl",
-            -- Runtime playtest target: roughly three ordinary pistol hits on
-            -- Level 1. The former 100 HP made the basic melee enemy about 3x
-            -- too tedious to kill and slowed encounter pacing disproportionately.
+            -- Playtest retune: the original 100 HP was reduced by roughly two
+            -- thirds. The Milestone-3 test kit uses stock weapon_pistol damage;
+            -- on the current runtime, 35 HP is about seven registered body hits,
+            -- not the three hits previously estimated from an incorrect assumed
+            -- pistol-damage value.
             baseHP = 35,
             speed = 90,
             meleeDamage = 20,
@@ -162,7 +164,9 @@ C.Encounter = {
             class = "lod_hostile_runner",
             name = "Runner",
             model = "models/zombie/fast.mdl",
-            baseHP = 50,
+            -- Match the playtest-driven roughly-two-thirds HP reduction applied
+            -- to the Shambler while retaining the Runner's lower durability.
+            baseHP = 17,
             speed = 220,
             meleeDamage = 10,
             meleeCooldown = 0.9,
@@ -179,7 +183,10 @@ C.Encounter = {
             class = "lod_hostile_soldier",
             name = "Soldier",
             model = "models/combine_soldier.mdl",
-            baseHP = 100,
+            -- Match the Shambler's playtest-driven roughly-two-thirds HP cut.
+            -- Soldier difficulty should come from ranged pressure and positioning,
+            -- not from absorbing an excessive number of ordinary bullets.
+            baseHP = 35,
             speed = 140,
             burstDamage = 6,
             burstShots = 3,
