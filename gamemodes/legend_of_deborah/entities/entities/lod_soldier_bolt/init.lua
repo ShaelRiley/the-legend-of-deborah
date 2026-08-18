@@ -6,8 +6,10 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
     self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
-    self:SetRenderBounds(Vector(-16, -16, -16), Vector(16, 16, 16))
 
+    -- Render bounds are client-only presentation state. Calling SetRenderBounds
+    -- here on the server caused every bolt to error during Initialize before its
+    -- movement/damage Think loop could ever run.
     self.LODDirection = (self.LODDirection or self:GetForward()):GetNormalized()
     self.LODSpeed = self.LODSpeed or 950
     self.LODDamage = self.LODDamage or 6
