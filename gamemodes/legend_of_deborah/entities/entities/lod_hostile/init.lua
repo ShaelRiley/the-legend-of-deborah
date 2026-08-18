@@ -19,6 +19,41 @@ local function healthMultiplier()
     return campaign * party
 end
 
+function ENT:_SetActivity(activity, force)
+    activity = activity or ACT_IDLE
+    if force or self.LODCurrentActivity ~= activity then
+        self.LODCurrentActivity = activity
+        self:StartActivity(activity)
+        self:SetPlaybackRate(1)
+    end
+end
+
+function ENT:_SoldierRunActivity()
+    return ACT_RUN_AIM_RIFLE or ACT_RUN
+end
+
+function ENT:_SoldierIdleActivity()
+    return ACT_IDLE_ANGRY_SMG1 or ACT_IDLE_ANGRY or ACT_IDLE
+end
+
+function ENT:_SoldierAttackActivity()
+    return ACT_RANGE_ATTACK_SMG1 or ACT_RANGE_ATTACK1
+end
+
+function ENT:_CreateSoldierWeaponVisual()
+    if self.LODArchetypeId ~= "soldier" then return end
+    local weapon = ents.Create("prop_dynamic")
+    if not IsValid(weapon) then return end
+    weapon:SetModel("models/weapons/w_irifle.mdl")
+    weapon:SetSolid(SOLID_NONE)
+    weapon:SetMoveType(MOVETYPE_NONE)
+    weapon:SetParent(self)
+    weapon:AddEffects(EF_BONEMERGE)
+    weapon:Spawn()
+    weapon:Activate()
+    self.LODWeaponVisual = weapon
+end
+
 function ENT:Initialize()
     self.LODHostile = true
     self.LODArchetypeId = self.LODArchetypeId or "shambler"
@@ -31,6 +66,7 @@ function ENT:Initialize()
 
     self:SetModel(self.LODConfig.model)
     self:SetNW2String("LOD_Archetype", self.LODArchetypeId)
+    self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
     self:DrawShadow(true)
@@ -55,9 +91,14 @@ function ENT:Initialize()
     self.LODWaypoints = {}
     self.LODTarget = nil
     self.LODReturningHome = false
+    self.LODSoldierBurst = nil
 
-    local activity = self.LODConfig.activity or ACT_WALK
-    self:StartActivity(activity)
+    if self.LODArchetypeId == "soldier" then
+        self:_CreateSoldierWeaponVisual()
+        self:_SetActivity(self:_SoldierRunActivity(), true)
+    else
+        self:_SetActivity(self.LODConfig.activity or ACT_WALK, true)
+    end
 end
 
 function ENT:SetLODEncounterContext(archetypeId, homeCellKey, encounterId)
@@ -185,24 +226,124 @@ function ENT:_MeleeAttack(target)
     return true
 end
 
-function ENT:_SoldierBurst(target)
+function ENT:_SoldierMuzzlePos()
+    local attachment = self:LookupAttachment("anim_attachment_RH")
+    if attachment and attachment > 0 then
+        local data = self:GetAttachment(attachment)
+        if data and data.Pos then return data.Pos + self:GetForward() * 18 end
+    end
+    return self:WorldSpaceCenter() + Vector(0, 0, 12) + self:GetForward() * 24
+end
+
+function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
     local cfg = self.LODConfig
-    if not IsValid(target) or CurTime() < (self.LODNextAttack or 0) then return false end
+    local startPos = self:_SoldierMuzzlePos()
+    local direction = (aimPos - startPos):GetNormalized()
+
+    -- Small deterministic side-to-side variance keeps the three-bolt burst
+    -- readable without turning it into unavoidable perfect tracking.
+    local yawOffsets = {-1.5, 1.5, 0}
+    local pitchOffsets = {0.4, -0.4, 0}
+    local ang = direction:Angle()
+    local offsetIndex = ((shotIndex - 1) % 3) + 1
+    ang.y = ang.y + yawOffsets[offsetIndex]
+    ang.p = ang.p + pitchOffsets[offsetIndex]
+    direction = ang:Forward()
+
+    local bolt = ents.Create("lod_soldier_bolt")
+    if not IsValid(bolt) then return false end
+    bolt.LODOwner = self
+    bolt.LODDirection = direction
+    bolt.LODSpeed = cfg.projectileSpeed
+    bolt.LODDamage = cfg.burstDamage
+    bolt.LODLifetime = cfg.projectileLifetime
+    bolt:SetPos(startPos)
+    bolt:SetAngles(direction:Angle())
+    bolt:Spawn()
+    bolt:Activate()
+    self:EmitSound("Weapon_AR2.Single", 72, 100, 0.85)
+    return true
+end
+
+function ENT:_BeginSoldierBurst(target)
+    local cfg = self.LODConfig
+    if self.LODSoldierBurst or not IsValid(target) then return false end
+    if CurTime() < (self.LODNextAttack or 0) then return false end
     if self:GetPos():DistToSqr(target:GetPos()) > cfg.fireRange * cfg.fireRange then return false end
     if not self:_HasLineOfSight(target) then return false end
 
-    self.LODNextAttack = CurTime() + cfg.burstCooldown
-    self:EmitSound("Weapon_AR2.Single")
-    for _ = 1, cfg.burstShots do
-        if IsValid(target) and target:Alive() and self:_HasLineOfSight(target) then
-            target:TakeDamage(cfg.burstDamage, self, self)
-        end
+    self.LODSoldierBurst = {
+        target = target,
+        windupEnd = CurTime() + cfg.burstTelegraph,
+        nextShot = nil,
+        shotsRemaining = cfg.burstShots,
+        shotIndex = 0,
+        lastAimPos = target:WorldSpaceCenter()
+    }
+    self:SetNW2Bool("LOD_SoldierTelegraph", true)
+    self:SetNW2Vector("LOD_SoldierAim", target:WorldSpaceCenter())
+    self:_SetActivity(self:_SoldierAttackActivity(), true)
+    self:EmitSound("buttons/button17.wav", 62, 115, 0.65)
+    return true
+end
+
+function ENT:_CancelSoldierBurst(shortCooldown)
+    self.LODSoldierBurst = nil
+    self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self.LODNextAttack = CurTime() + (shortCooldown or 0.35)
+    self:_SetActivity(self:_SoldierIdleActivity(), true)
+end
+
+function ENT:_ProcessSoldierBurst()
+    local burst = self.LODSoldierBurst
+    if not burst then return false end
+    local cfg = self.LODConfig
+    local target = burst.target
+
+    if not IsValid(target) or not target:Alive() then
+        self:_CancelSoldierBurst(0.2)
+        return false
     end
+
+    if self.loco then self.loco:SetDesiredSpeed(0) end
+    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+
+    if CurTime() < burst.windupEnd then
+        -- Breaking line of sight during the warning cancels the shot entirely.
+        if not self:_HasLineOfSight(target) then
+            self:_CancelSoldierBurst(0.25)
+            return false
+        end
+        burst.lastAimPos = target:WorldSpaceCenter()
+        self:SetNW2Vector("LOD_SoldierAim", burst.lastAimPos)
+        return true
+    end
+
+    self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    if not burst.nextShot then burst.nextShot = CurTime() end
+
+    if burst.shotsRemaining > 0 and CurTime() >= burst.nextShot then
+        burst.shotIndex = burst.shotIndex + 1
+        if self:_HasLineOfSight(target) then
+            burst.lastAimPos = target:WorldSpaceCenter()
+        end
+        self:_SpawnSoldierBolt(burst.lastAimPos, burst.shotIndex)
+        burst.shotsRemaining = burst.shotsRemaining - 1
+        burst.nextShot = CurTime() + cfg.burstShotInterval
+    end
+
+    if burst.shotsRemaining <= 0 then
+        self.LODSoldierBurst = nil
+        self.LODNextAttack = CurTime() + cfg.burstCooldown
+        self:_SetActivity(self:_SoldierIdleActivity(), true)
+        return false
+    end
+
     return true
 end
 
 function ENT:_TryAttack(target)
-    if self.LODArchetypeId == "soldier" then return self:_SoldierBurst(target) end
+    if self.LODArchetypeId == "soldier" then return self:_BeginSoldierBurst(target) end
     return self:_MeleeAttack(target)
 end
 
@@ -215,8 +356,12 @@ function ENT:_BehaviourTick()
     self:_RefreshTarget(graph)
     self:_RefreshRoute(graph)
 
+    if self.LODArchetypeId == "soldier" and self.LODSoldierBurst then
+        self:_ProcessSoldierBurst()
+        return
+    end
+
     local target = self.LODTarget
-    local attacked = IsValid(target) and self:_TryAttack(target)
     local waypoint = self:_AdvanceWaypoint()
 
     if self.LODArchetypeId == "soldier" and IsValid(target) and self:_HasLineOfSight(target) then
@@ -224,20 +369,35 @@ function ENT:_BehaviourTick()
         if self:GetPos():DistToSqr(target:GetPos()) <= preferred * preferred then
             if self.loco then self.loco:SetDesiredSpeed(0) end
             self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+            if not self:_TryAttack(target) then self:_SetActivity(self:_SoldierIdleActivity()) end
             return
         end
     end
 
     if self.loco then self.loco:SetDesiredSpeed(self.LODConfig.speed) end
     if waypoint and self.loco then
+        if self.LODArchetypeId == "soldier" then
+            self:_SetActivity(self:_SoldierRunActivity())
+        else
+            self:_SetActivity(self.LODConfig.activity or ACT_WALK)
+        end
         local face = Vector(waypoint.pos.x, waypoint.pos.y, self:GetPos().z)
         self.loco:FaceTowards(face)
         self.loco:Approach(waypoint.pos, 1)
-    elseif IsValid(target) and not attacked and self.loco then
+    elseif IsValid(target) and self.loco then
+        if self.LODArchetypeId == "soldier" then
+            self:_SetActivity(self:_SoldierRunActivity())
+        else
+            self:_SetActivity(self.LODConfig.activity or ACT_WALK)
+        end
         local direct = target:GetPos()
         self.loco:FaceTowards(Vector(direct.x, direct.y, self:GetPos().z))
         self.loco:Approach(direct, 1)
+    elseif self.LODArchetypeId == "soldier" then
+        self:_SetActivity(self:_SoldierIdleActivity())
     end
+
+    if IsValid(target) and self.LODArchetypeId ~= "soldier" then self:_TryAttack(target) end
 end
 
 function ENT:RunBehaviour()
@@ -275,4 +435,9 @@ function ENT:OnKilled(dmginfo)
     end
     hook.Run("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
     self:BecomeRagdoll(dmginfo)
+end
+
+function ENT:OnRemove()
+    self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end
 end
