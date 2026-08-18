@@ -159,8 +159,12 @@ function MazeNavigator:_VerticalEdge(graph, a, b)
     return graph.LODVerticalEdgeByKey[wanted]
 end
 
-local function append(out, pos, tolerance)
-    out[#out + 1] = {pos = pos, tolerance = tolerance or 34}
+local function append(out, pos, tolerance, stair)
+    out[#out + 1] = {
+        pos = pos,
+        tolerance = tolerance or 34,
+        stair = stair == true
+    }
 end
 
 function MazeNavigator:_AppendVerticalWaypoints(graph, fromCell, toCell, out)
@@ -171,27 +175,36 @@ function MazeNavigator:_AppendVerticalWaypoints(graph, fromCell, toCell, out)
     local dir = DIR_VECTOR[dirName] or DIR_VECTOR.E
     local lowerCenter = self:CellCenter(lower)
     local run = GC.StairRun
-    local rise = MC.LevelHeight
+    local totalRise = MC.LevelHeight
+    local steps = math.max(1, GC.StairSteps or 24)
+    local tread = run / steps
+    local rise = totalRise / steps
 
-    local function stairPoint(t)
-        return lowerCenter - dir * (run * (1 - t)) + Vector(0, 0, rise * t + 8)
+    -- The generated stair is a stack of 24 physical box treads. Routing to a
+    -- coarse point inside that volume makes locomotion fight the first riser.
+    -- Instead, target the CENTER/TOP of every physical tread, exactly matching
+    -- sv_m1_stair_geometry.lua. A short floor approach and upper landing keep
+    -- the hostile centered before entering and after leaving the flight.
+    local approach = lowerCenter - dir * (run + 40) + Vector(0, 0, 8)
+    local upperLanding = lowerCenter + dir * 52 + Vector(0, 0, totalRise + 8)
+
+    local function treadPoint(i)
+        local along = -run + (i - 0.5) * tread
+        return lowerCenter + dir * along + Vector(0, 0, i * rise + 3)
     end
 
     if ascending then
-        append(out, stairPoint(0), 42)
-        append(out, stairPoint(0.25), 42)
-        append(out, stairPoint(0.50), 42)
-        append(out, stairPoint(0.75), 42)
-        append(out, stairPoint(1.00), 44)
+        append(out, approach, 34, true)
+        for i = 1, steps do
+            append(out, treadPoint(i), 22, true)
+        end
+        append(out, upperLanding, 36, true)
     else
-        -- Descending traversal must first acquire the actual stair crest. The
-        -- previous route jumped directly from the upper landing to the 75%
-        -- point, inviting a diagonal cut across the open stairwell.
-        append(out, stairPoint(1.00), 44)
-        append(out, stairPoint(0.75), 44)
-        append(out, stairPoint(0.50), 42)
-        append(out, stairPoint(0.25), 42)
-        append(out, stairPoint(0.00), 44)
+        append(out, upperLanding, 36, true)
+        for i = steps, 1, -1 do
+            append(out, treadPoint(i), 22, true)
+        end
+        append(out, approach, 36, true)
     end
 end
 
@@ -207,11 +220,12 @@ function MazeNavigator:PathToWaypoints(graph, path)
         else
             -- If the next graph edge rises vertically, do not drive the enemy
             -- underneath the stair's top tread at the lower cell center. The
-            -- vertical waypoint sequence will deliberately route to the stair base.
+            -- vertical waypoint sequence deliberately routes through the actual
+            -- tread centers instead.
             local nextCell = path[i + 1]
             local leadsUp = nextCell and current.z < nextCell.z and current.x == nextCell.x and current.y == nextCell.y
             if not leadsUp then
-                append(out, self:CellCenter(current) + Vector(0, 0, 8), 44)
+                append(out, self:CellCenter(current) + Vector(0, 0, 8), 44, false)
             end
         end
     end
