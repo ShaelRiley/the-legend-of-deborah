@@ -126,3 +126,16 @@ concommand.Add("lod_m3_killall", function(ply)
     LOD.RunManager:MarkUnranked("Milestone 3 debug hostile cleanup")
     tell(ply, "removed " .. count .. " active hostiles")
 end)
+
+-- Temporary Milestone-3 test aid only. The real starting kit and ammunition
+-- economy belong to Milestone 4; this command keeps combat testing from
+-- silently implementing those systems early.
+concommand.Add("lod_m3_testkit", function(ply)
+    if not developerAllowed(ply) or not IsValid(ply) or not ply:Alive() then return end
+    local pistol = ply:Give("weapon_pistol", true)
+    local crowbar = ply:Give("weapon_crowbar", true)
+    ply:GiveAmmo(90, "Pistol", true)
+    if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
+    LOD.RunManager:MarkUnranked("Milestone 3 developer combat kit")
+    tell(ply, "developer combat kit granted: crowbar + pistol + 90 pistol rounds")
+end)
