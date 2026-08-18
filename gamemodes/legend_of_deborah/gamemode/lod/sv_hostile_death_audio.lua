@@ -7,8 +7,14 @@ local BLINK_INTERVAL = 0.125
 local BLINK_COUNT = 8
 local BLINK_SOUND = "buttons/button15.wav"
 local LEGACY_BLINK_SOUND = "buttons/blip1.wav"
-local CONVERT_SOUND = "items/itempickup.wav"
-local CONVERT_ACCENT = "buttons/button9.wav"
+local LEGACY_CONVERT_SOUND = "items/itempickup.wav"
+
+-- The loot handoff needs to read as a small fanfare, not another UI click. These
+-- are all base HL2 sounds already used/audited elsewhere in the gamemode. Three
+-- staggered notes give the conversion a distinct beginning, lift, and resolve.
+local CONVERT_OPEN = "items/suitchargeok1.wav"
+local CONVERT_LIFT = "buttons/button9.wav"
+local CONVERT_RESOLVE = "buttons/button14.wav"
 
 local function sameLevel(seed)
     local state = LOD.RunManager and LOD.RunManager.State
@@ -26,7 +32,7 @@ hook.Add("EntityEmitSound", "LOD_HostileDeathAudio_SuppressLegacy", function(dat
     if ent:GetClass() == "lod_hostile" and ent.LODDead and soundName == LEGACY_BLINK_SOUND then
         return false
     end
-    if ent.LODPlaceholderLoot and soundName == CONVERT_SOUND then
+    if ent.LODPlaceholderLoot and soundName == LEGACY_CONVERT_SOUND then
         return false
     end
 end)
@@ -48,11 +54,20 @@ hook.Add("OnNPCKilled", "LOD_HostileDeathAudio_RetroSequence", function(npc)
         end)
     end
 
-    -- The final disappearance/loot conversion is intentionally brighter and
-    -- louder than the countdown so the handoff is obvious even during combat.
-    timer.Simple(BLINK_INTERVAL * BLINK_COUNT + 0.01, function()
+    -- A three-note conversion fanfare begins immediately after the final blink.
+    -- It is deliberately louder and longer than the countdown ticks so the
+    -- player hears a categorical transition: corpse gone, loot now available.
+    local convertAt = BLINK_INTERVAL * BLINK_COUNT + 0.01
+    timer.Simple(convertAt, function()
         if not seed or not sameLevel(seed) then return end
-        sound.Play(CONVERT_SOUND, origin, 84, 145, 1.0)
-        sound.Play(CONVERT_ACCENT, origin, 76, 132, 0.80)
+        sound.Play(CONVERT_OPEN, origin, 92, 118, 1.0)
+    end)
+    timer.Simple(convertAt + 0.11, function()
+        if not seed or not sameLevel(seed) then return end
+        sound.Play(CONVERT_LIFT, origin, 90, 142, 1.0)
+    end)
+    timer.Simple(convertAt + 0.24, function()
+        if not seed or not sameLevel(seed) then return end
+        sound.Play(CONVERT_RESOLVE, origin, 92, 158, 1.0)
     end)
 end)
