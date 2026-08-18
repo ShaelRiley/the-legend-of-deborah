@@ -64,6 +64,7 @@ local cardColors = {
 }
 local letters = {"R", "B", "Y"}
 local symbolNames = {"TRIANGLE", "CIRCLE", "SQUARE"}
+local nextRestartRequest = 0
 
 local function drawSymbol(index, x, y, color)
     surface.SetDrawColor(color)
@@ -118,6 +119,18 @@ local function drawDeathState(ply, state)
         Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
+hook.Add("PlayerBindPress", "LOD_FailedCampaignRestart", function(_, bind, pressed)
+    if not pressed or not LOD.ClientState or not LOD.ClientState.failed then return end
+    if not string.find(string.lower(bind or ""), "+use", 1, true) then return end
+
+    if CurTime() >= nextRestartRequest then
+        nextRestartRequest = CurTime() + 1.0
+        net.Start("LOD_RestartCampaign")
+        net.SendToServer()
+    end
+    return true
+end)
+
 hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
@@ -169,9 +182,13 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     end
 
     if state.failed then
-        draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(25, 0, 0, 135))
-        draw.SimpleText("CAMPAIGN FAILED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.45,
+        draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(25, 0, 0, 155))
+        draw.SimpleText("CAMPAIGN FAILED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.42,
             Color(245, 90, 75), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("PRESS USE / E TO RESTART FROM LEVEL 1", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.50,
+            Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("THE SERVER AND CONNECTED GROUP STAY TOGETHER", "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.55,
+            Color(215, 215, 215), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     elseif state.levelCleared then
         draw.SimpleText("DEBORAH RESCUED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.42,
             Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
