@@ -26,16 +26,34 @@ local function jitter(seed, label, amount)
     return subFloat(seed, label, 1 - amount, 1 + amount)
 end
 
+local function stableSpawnIdentity(hostile)
+    if hostile.LODEncounterOrdinal then return "ordinal:" .. tostring(hostile.LODEncounterOrdinal) end
+
+    -- Existing encounter spawners place each unit at a deterministic offset from
+    -- its encounter cell. Use that position instead of EntIndex so activating
+    -- encounters in a different order does not perturb the same-seed enemy roll.
+    if hostile.LODEncounterId then
+        local pos = hostile:GetPos()
+        return string.format("pos:%d:%d:%d",
+            math.floor(pos.x * 10 + 0.5),
+            math.floor(pos.y * 10 + 0.5),
+            math.floor(pos.z * 10 + 0.5))
+    end
+
+    -- Developer-only ad-hoc spawns are not part of ranked seed reproduction.
+    return "debug:" .. tostring(hostile:EntIndex())
+end
+
 local function instanceSeed(hostile)
     if hostile.LODInstanceSeed then return hostile.LODInstanceSeed end
 
     local state = LOD.RunManager and LOD.RunManager.State
     local levelSeed = state and state.LevelSeed or 1
     local encounter = hostile.LODEncounterId or "debug"
-    local ordinal = hostile.LODEncounterOrdinal or hostile:EntIndex()
+    local identity = stableSpawnIdentity(hostile)
     local home = hostile.LODHomeCellKey or "none"
     local archetype = hostile.LODArchetypeId or "unknown"
-    local label = string.format("enemy:%s:%s:%s:%s", tostring(encounter), tostring(ordinal), tostring(home), tostring(archetype))
+    local label = string.format("enemy:%s:%s:%s:%s", tostring(encounter), identity, tostring(home), tostring(archetype))
     hostile.LODInstanceSeed = LOD.Seeds.Derive(levelSeed, label)
     return hostile.LODInstanceSeed
 end
