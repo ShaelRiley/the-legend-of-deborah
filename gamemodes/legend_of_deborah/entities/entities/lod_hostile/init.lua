@@ -154,6 +154,16 @@ function ENT:_RefreshTarget(graph)
 end
 
 function ENT:_RefreshRoute(graph)
+    -- A vertical flight is a committed movement sequence. Replanning every
+    -- 0.35 seconds while the entity is still geometrically in the lower cell
+    -- used to reset it to tread #1 forever. Hold the current route until the
+    -- explicit stair waypoints carry the hostile fully off the flight.
+    local activeWaypoint = self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
+    if activeWaypoint and activeWaypoint.stair then
+        self.LODNextRouteRefresh = CurTime() + LOD.Config.Encounter.RouteRefreshSeconds
+        return
+    end
+
     if CurTime() < (self.LODNextRouteRefresh or 0) then return end
     self.LODNextRouteRefresh = CurTime() + LOD.Config.Encounter.RouteRefreshSeconds
 
