@@ -121,6 +121,76 @@ C.Progression = {
     }
 }
 
+C.Encounter = {
+    ActivationDistanceCells = 4,
+    LeashCells = 6,
+    RouteRefreshSeconds = 0.35,
+    TargetRefreshSeconds = 0.25,
+    MajorSpacingCells = 4,
+    ActiveHostileTarget = 32,
+    ActiveHostileCeiling = 40,
+    CampaignThreatGrowthPerLevel = 0.06,
+    EnemyHPGrowthPerLevel = 0.02,
+    EnemyHPLevelCap = 1.50,
+    PartyThreatMultiplier = {1.00, 1.40, 1.70, 2.00},
+    PartyHealthMultiplier = {1.00, 1.10, 1.20, 1.30},
+    -- Keycard fights are guaranteed separately. These budgets fund the
+    -- discretionary encounters that give each act its pacing profile.
+    SectorBaseThreat = {4.0, 6.0, 8.0, 9.0},
+    MaxDiscretionaryPerSector = {1, 2, 2, 2},
+    Archetypes = {
+        shambler = {
+            class = "lod_hostile_shambler",
+            name = "Shambler",
+            model = "models/zombie/classic.mdl",
+            baseHP = 100,
+            speed = 90,
+            meleeDamage = 20,
+            meleeCooldown = 1.2,
+            meleeRange = 74,
+            threat = 1.0,
+            activity = ACT_WALK
+        },
+        runner = {
+            class = "lod_hostile_runner",
+            name = "Runner",
+            model = "models/zombie/fast.mdl",
+            baseHP = 50,
+            speed = 220,
+            meleeDamage = 10,
+            meleeCooldown = 0.9,
+            meleeRange = 70,
+            threat = 1.5,
+            activity = ACT_RUN
+        },
+        soldier = {
+            class = "lod_hostile_soldier",
+            name = "Soldier",
+            model = "models/combine_soldier.mdl",
+            baseHP = 100,
+            speed = 140,
+            burstDamage = 6,
+            burstShots = 3,
+            burstCooldown = 1.5,
+            fireRange = 850,
+            preferredRange = 480,
+            threat = 2.5,
+            activity = ACT_RUN
+        }
+    },
+    Templates = {
+        patrol = {name = "Patrol", composition = {shambler = 2}, variableShambler = true},
+        rush = {name = "Rush", composition = {shambler = 2, runner = 1}},
+        runner_ambush = {name = "Runner Ambush", composition = {runner = 2}},
+        firing_line = {name = "Firing Line", composition = {soldier = 2}},
+        mixed_pressure = {name = "Mixed Pressure", composition = {shambler = 2, soldier = 1}},
+        arena = {name = "Arena", composition = {shambler = 3, runner = 1, soldier = 1}},
+        red_keycard = {name = "Red Keycard", composition = {shambler = 3, runner = 1}, objective = true},
+        blue_keycard = {name = "Blue Keycard", composition = {shambler = 2, soldier = 2}, objective = true},
+        yellow_keycard = {name = "Yellow Keycard", composition = {runner = 2, soldier = 2, shambler = 2}, objective = true}
+    }
+}
+
 -- Deborah deliberately reserves female_01 from the citizen NPC family. The
 -- playable Female Citizen uses a different model variant.
 C.Models = {
