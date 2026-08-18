@@ -16,11 +16,19 @@ local RANGE_FIELDS = {
     "meleeRange", "fireRange", "preferredRange", "leapRange", "latchDistance", "explosionRadius"
 }
 
--- Tiny per-movement-update pace variation prevents enemies with similar routes
--- from phase-locking into an unnaturally tight clump. The mean remains 1.0, so
--- archetype tuning does not drift; only the length of individual movement
--- updates varies by up to +/-2.5 percent.
+-- Every PHYSICAL FOOTSTEP, not every AI update, receives its own independent
+-- +/-2.5% length roll. The current roll remains fixed for the duration of that
+-- one footfall, then advances only after the hostile has travelled that step's
+-- target distance. This creates cumulative phase drift between enemies that
+-- would otherwise march in lockstep and bunch together.
 local STRIDE_VARIANCE = 0.025
+local BASE_STRIDE_DISTANCE = {
+    shambler = 52,
+    runner = 70,
+    soldier = 60,
+    deadcrab = 35,
+    bioblaster = 36
+}
 
 local function subFloat(seed, label, minimum, maximum)
     local subSeed = LOD.Seeds.Derive(seed, label)
@@ -73,6 +81,20 @@ end
 
 local function scaledValue(base, sizeFactor, randomFactor)
     return base * sizeFactor * randomFactor
+end
+
+local function rollNextFootstep(hostile)
+    local rng = hostile.LODStrideRNG
+    if not rng then return end
+    local factor = rng:Float(1 - STRIDE_VARIANCE, 1 + STRIDE_VARIANCE)
+    hostile.LODStrideFactor = factor
+    hostile.LODStrideTargetDistance = math.max(4, (hostile.LODStrideBaseDistance or 52) * factor)
+    hostile.LODStrideOrdinal = (hostile.LODStrideOrdinal or 0) + 1
+end
+
+function EnemyVariance:AdvanceFootstep(hostile)
+    if not IsValid(hostile) or not hostile.LODStrideRNG then return end
+    rollNextFootstep(hostile)
 end
 
 function EnemyVariance:Apply(hostile)
@@ -144,11 +166,15 @@ function EnemyVariance:Apply(hostile)
         hostile.loco:SetDeceleration(math.max(500, cfg.speed * 6))
     end
 
-    -- This stream advances independently of every other enemy and of all other
-    -- procedural systems. Same seed + same hostile identity therefore produces
-    -- the same movement micro-variation sequence without uncontrolled math.random.
+    -- Footstep variance uses its own deterministic stream. Base stride distance
+    -- scales with visible body size; the +/-2.5% roll then changes on every
+    -- completed physical footfall. Same seed + identity reproduces the sequence.
     hostile.LODStrideRNG = LOD.RNG.New(LOD.Seeds.Derive(seed, "micro-stride"))
-    hostile.LODStrideFactor = 1.0
+    hostile.LODStrideBaseDistance = (BASE_STRIDE_DISTANCE[hostile.LODArchetypeId] or 52) * size
+    hostile.LODStrideAccumDistance = 0
+    hostile.LODStrideLastPos = hostile:GetPos()
+    hostile.LODStrideOrdinal = 0
+    rollNextFootstep(hostile)
 
     hostile.LODVariance = {
         seed = seed,
@@ -176,17 +202,13 @@ local function installHostilePatch()
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
         local cfg = self.LODConfig
-        local rng = self.LODStrideRNG
 
-        -- Temporarily perturb the desired movement speed for this one movement
-        -- update. The underlying per-instance speed remains unchanged afterward.
-        -- Because displacement per update is speed * frame time, this is the
-        -- requested +/-2.5% variation in movement-step length.
-        if cfg and cfg.speed and rng and not self.LODDead and self.LODActivated ~= false then
+        -- The factor is stable for the WHOLE current footstep. It is not rolled
+        -- here. The Think tracker below advances it only when this hostile has
+        -- physically travelled the current step's target distance.
+        if cfg and cfg.speed and self.LODStrideFactor and not self.LODDead and self.LODActivated ~= false then
             local baseSpeed = cfg.speed
-            local factor = rng:Float(1 - STRIDE_VARIANCE, 1 + STRIDE_VARIANCE)
-            self.LODStrideFactor = factor
-            cfg.speed = baseSpeed * factor
+            cfg.speed = baseSpeed * self.LODStrideFactor
             local result = baseBehaviourTick(self)
             cfg.speed = baseSpeed
             return result
@@ -200,6 +222,37 @@ end
 installHostilePatch()
 hook.Add("OnEntityCreated", "LOD_EnemyVarianceInstallBeforeSpawn", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end
+end)
+
+-- Measure actual world displacement so a "step" is a physical movement unit,
+-- not a render frame or AI coroutine iteration. Each time the current step
+-- distance is completed, advance exactly once to a new +/-2.5% roll.
+hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(hostile) and hostile.LODStrideRNG then
+            local pos = hostile:GetPos()
+            local last = hostile.LODStrideLastPos
+            hostile.LODStrideLastPos = pos
+
+            local moving = not hostile.LODDead
+                and hostile.LODActivated ~= false
+                and hostile.LODDeadcrabState ~= "latched"
+                and hostile:GetVelocity():Length2D() > 8
+
+            if moving and last then
+                -- Ignore/debug-clamp teleports so they cannot consume a whole
+                -- series of gait rolls instantaneously.
+                local travelled = math.min(80, pos:Distance(last))
+                hostile.LODStrideAccumDistance = (hostile.LODStrideAccumDistance or 0) + travelled
+                local target = hostile.LODStrideTargetDistance or hostile.LODStrideBaseDistance or 52
+
+                if hostile.LODStrideAccumDistance >= target then
+                    hostile.LODStrideAccumDistance = math.max(0, hostile.LODStrideAccumDistance - target)
+                    rollNextFootstep(hostile)
+                end
+            end
+        end
+    end
 end)
 
 local function mainDamage(cfg)
@@ -229,9 +282,10 @@ concommand.Add("lod_m3_variance", function(ply)
             found = found + 1
             local cfg = hostile.LODConfig
             local text = string.format(
-                "#%d %-10s size=%.3f hp=%d speed=%.1f stride=%.3f damage=%.1f timer=%.2f seed=%d",
+                "#%d %-10s size=%.3f hp=%d speed=%.1f step#=%d stepFactor=%.3f stepDist=%.1f damage=%.1f timer=%.2f seed=%d",
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId), hostile.LODVariance.size,
-                hostile:Health(), cfg.speed or 0, hostile.LODStrideFactor or 1,
+                hostile:Health(), cfg.speed or 0, hostile.LODStrideOrdinal or 0,
+                hostile.LODStrideFactor or 1, hostile.LODStrideTargetDistance or 0,
                 mainDamage(cfg), mainTimer(cfg), hostile.LODVariance.seed
             )
             print("[LOD:VARIANCE] " .. text)
