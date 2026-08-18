@@ -71,14 +71,16 @@ local function openChestPose(self)
 end
 
 local function mawPosition(self)
+    local scale = self:GetNW2Float("LOD_SizeScale", 1)
+    if scale <= 0 then scale = 1 end
     for _, name in ipairs({"mouth", "eyes"}) do
         local attachment = self:LookupAttachment(name)
         if attachment and attachment > 0 then
             local data = self:GetAttachment(attachment)
-            if data and data.Pos then return data.Pos + self:GetForward() * 10 end
+            if data and data.Pos then return data.Pos + self:GetForward() * (10 * scale) end
         end
     end
-    return self:WorldSpaceCenter() + self:GetForward() * 30 + Vector(0, 0, 18)
+    return self:WorldSpaceCenter() + self:GetForward() * (30 * scale) + Vector(0, 0, 18 * scale)
 end
 
 local function spawnBioBolt(self, aimPos)
