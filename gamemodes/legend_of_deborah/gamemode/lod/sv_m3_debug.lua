@@ -234,7 +234,11 @@ local function stairTestPositions(edge, direction)
     local run = LOD.Config.Geometry.StairRun
     local lowerCenter = LOD.MazeNavigator:CellCenter(lower)
     local upperCenter = LOD.MazeNavigator:CellCenter(upper)
-    local lowerApproach = lowerCenter - dir * (run - 32) + Vector(0, 0, 18)
+
+    -- Start on actual flat approach floor, not on a lower stair tread. The old
+    -- test position at run-32 landed inside the stair volume and muddied whether
+    -- the AI or the test harness was responsible for a failure.
+    local lowerApproach = lowerCenter - dir * (run + 48) + Vector(0, 0, 18)
     local upperLanding = upperCenter + dir * 96 + Vector(0, 0, 20)
 
     if direction == "down" then
