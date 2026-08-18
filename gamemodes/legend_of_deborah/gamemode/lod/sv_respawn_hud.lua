@@ -3,6 +3,35 @@ LOD = LOD or {}
 local RunManager = LOD.RunManager
 local nextSync = 0
 local SYNC_INTERVAL = 0.20
+local cvDeveloperMode = CreateConVar(
+    "lod_developer_mode",
+    "1",
+    FCVAR_ARCHIVE,
+    "Enable Legend of Deborah developer/testing affordances. Development builds default to 1; release should default to 0."
+)
+local fastUsed = {}
+
+-- Testing QoL: while dead with a normal respawn pending, compress the remaining
+-- countdown to one tenth once per death. This is deliberately server-authoritative
+-- and developer-mode-gated so it cannot become an accidental release mechanic.
+concommand.Add("lod_dev_respawn_fast", function(ply)
+    if not cvDeveloperMode:GetBool() or not IsValid(ply) then return end
+    if not RunManager:IsPlayedIdentity(ply) or not RunManager:IsActivePlayer(ply) then return end
+    if ply:Alive() then return end
+
+    local id = RunManager:IdentityOf(ply)
+    local ps = id and RunManager:GetPlayerState(id)
+    if not id or not ps or ps.eliminated or ps.lives <= 0 or not ps.respawnAt then return end
+    if fastUsed[id] then return end
+
+    local remaining = math.max(0, ps.respawnAt - CurTime())
+    if remaining <= 0 then return end
+
+    fastUsed[id] = true
+    ps.respawnAt = CurTime() + (remaining / 10)
+    RunManager:MarkUnranked("developer respawn acceleration")
+    ply:ChatPrint("Developer test: respawn countdown accelerated 10x.")
+end)
 
 -- Publish the authoritative server-side respawn countdown for the local HUD.
 -- This intentionally derives from RunManager player state instead of starting a
@@ -14,13 +43,19 @@ hook.Add("Think", "LOD_RespawnHUDSync", function()
 
     for _, ply in ipairs(player.GetAll()) do
         if IsValid(ply) then
-            local ps = RunManager:GetPlayerState(ply)
+            local id = RunManager:IdentityOf(ply)
+            local ps = id and RunManager:GetPlayerState(id)
             local remaining = 0
-            if ps and not ps.eliminated and ps.lives > 0 and ps.respawnAt then
+            local respawning = ps and not ps.eliminated and ps.lives > 0 and ps.respawnAt ~= nil
+            if respawning then
                 remaining = math.max(0, ps.respawnAt - CurTime())
+            else
+                if id then fastUsed[id] = nil end
             end
 
             ply:SetNW2Float("LOD_RespawnRemaining", remaining)
+            ply:SetNW2Bool("LOD_RespawnFastUsed", id and fastUsed[id] == true or false)
+            ply:SetNW2Bool("LOD_DeveloperMode", cvDeveloperMode:GetBool())
         end
     end
 end)
