@@ -103,6 +103,9 @@ function EnemyVariance:Apply(hostile)
     if cfg.speed then
         cfg.speed = scaledValue(cfg.speed, speedScale, jitter(seed, "speed", V.SpeedJitter))
     end
+    if cfg.leapSpeed then
+        cfg.leapSpeed = scaledValue(cfg.leapSpeed, speedScale, jitter(seed, "leapSpeed", V.SpeedJitter))
+    end
 
     for _, field in ipairs(DAMAGE_FIELDS) do
         if cfg[field] then
