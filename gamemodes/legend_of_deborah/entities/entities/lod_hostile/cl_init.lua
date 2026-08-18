@@ -4,10 +4,6 @@ local aimMaterial = Material("cable/redlaser")
 
 function ENT:Draw()
     self:DrawModel()
-end
-
-function ENT:DrawTranslucent()
-    self:DrawModel()
     if self:GetNW2String("LOD_Archetype", "") ~= "soldier" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 
