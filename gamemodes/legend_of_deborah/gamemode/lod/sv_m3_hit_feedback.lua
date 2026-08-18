@@ -18,25 +18,26 @@ end
 local function playFlinch(hostile)
     if not IsValid(hostile) then return false end
 
-    -- Prefer model-supported activity translation. StartActivity is more robust
-    -- on NextBots than manually resetting a sequence which BodyUpdate may then
-    -- immediately reinterpret as locomotion.
     local activities = {ACT_BIG_FLINCH, ACT_FLINCH_CHEST, ACT_SMALL_FLINCH, ACT_FLINCH_HEAD}
     for _, activity in ipairs(activities) do
         if isnumber(activity) and hostile.SelectWeightedSequence then
             local sequence = hostile:SelectWeightedSequence(activity)
             if isnumber(sequence) and sequence >= 0 then
                 hostile.LODCurrentActivity = nil
-                hostile:StartActivity(activity)
+                hostile:ResetSequence(sequence)
+                hostile:SetCycle(0)
                 hostile:SetPlaybackRate(1)
                 return true
             end
         end
     end
 
-    -- Defensive model-specific fallbacks for Source NPC models whose activity
-    -- table does not expose a conventional ACT_FLINCH mapping.
-    for _, name in ipairs({"flinch", "flinch_phys_01", "flinch_phys_02", "flinch_phys_03", "flinch_phys_04"}) do
+    -- Source NPC models vary in their exposed sequence names. These fallbacks
+    -- cover the common zombie/Combine pain and physical-flinch sequences.
+    for _, name in ipairs({
+        "flinch", "flinch1", "flinch2", "pain",
+        "flinch_phys_01", "flinch_phys_02", "flinch_phys_03", "flinch_phys_04"
+    }) do
         local sequence = hostile.LookupSequence and hostile:LookupSequence(name) or -1
         if isnumber(sequence) and sequence >= 0 then
             hostile.LODCurrentActivity = nil
@@ -68,8 +69,6 @@ function HitFeedback:ApplyHitStun(hostile)
     hostile.LODNextHitStun = now + STUN_RETRIGGER_SECONDS
     hostile.LODHitStunUntil = now + STUN_SECONDS
 
-    -- A hit explicitly interrupts telegraphed/committed normal attacks. The
-    -- Deadcrab's latched fuse remains the intentional exception.
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil
         hostile:SetNW2Bool("LOD_SoldierTelegraph", false)
@@ -93,7 +92,7 @@ function HitFeedback:ApplyHitStun(hostile)
     end
     hostile:SetVelocity(vector_origin)
 
-    playFlinch(hostile)
+    hostile.LODHitStunHasFlinch = playFlinch(hostile)
     return true
 end
 
@@ -108,10 +107,11 @@ function HitFeedback:HandleHostileInjured(hostile, dmginfo)
 
     sendHitConfirm(attacker)
 
-    -- OnKilled immediately supersedes this state on a lethal impact, so it is
-    -- safe to request the flinch for every real bullet injury here rather than
-    -- relying on hook-order-sensitive pre-damage health arithmetic.
-    self:ApplyHitStun(hostile)
+    -- OnKilled supersedes this immediately for lethal shots. All surviving
+    -- bullet injuries get the short combat interruption.
+    if hostile:Health() > 0 then
+        self:ApplyHitStun(hostile)
+    end
     return true
 end
 
@@ -121,18 +121,14 @@ local function installHostilePatch()
     if not class or class.LODHitFeedbackPatched then return false end
     class.LODHitFeedbackPatched = true
 
-    -- NextBot OnInjured is the authoritative hostile damage callback. Driving
-    -- confirmation/stun from here fixes the previous reliance on a global
-    -- EntityTakeDamage hook which did not consistently produce runtime feedback.
+    -- NextBot OnInjured is the authoritative hostile damage callback.
     local baseOnInjured = class.OnInjured
     function class:OnInjured(dmginfo)
         if baseOnInjured then baseOnInjured(self, dmginfo) end
         HitFeedback:HandleHostileInjured(self, dmginfo)
     end
 
-    -- Make hit stun an explicit AI state. No archetype wrapper can resume
-    -- routing, melee, Soldier bursts, Deadcrab leaps, or Bio Blaster charging
-    -- until this gate expires.
+    -- Make hit stun an explicit AI state.
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
         if self.LODDead then return baseBehaviourTick(self) end
@@ -148,6 +144,7 @@ local function installHostilePatch()
 
         if self.LODHitStunUntil then
             self.LODHitStunUntil = nil
+            self.LODHitStunHasFlinch = nil
             self.LODNextRouteRefresh = 0
             self.LODNextTargetRefresh = 0
             if self.loco and self.LODConfig then
@@ -156,6 +153,18 @@ local function installHostilePatch()
         end
 
         return baseBehaviourTick(self)
+    end
+
+    -- BodyMoveXY normally rewrites the sequence every frame while a NextBot has
+    -- residual velocity. During the stun window that erased the selected flinch
+    -- almost instantly, making a real stun look as if nothing happened.
+    local baseBodyUpdate = class.BodyUpdate
+    function class:BodyUpdate()
+        if not self.LODDead and CurTime() < (self.LODHitStunUntil or 0) then
+            self:FrameAdvance()
+            return
+        end
+        return baseBodyUpdate(self)
     end
 
     return true
@@ -176,9 +185,10 @@ concommand.Add("lod_m3_hitfeedback_status", function(ply)
         if IsValid(hostile) then
             count = count + 1
             local remaining = math.max(0, (hostile.LODHitStunUntil or 0) - CurTime())
-            local text = string.format("#%d %s hp=%d stunRemaining=%.3f nextStun=%.3f",
+            local text = string.format("#%d %s hp=%d stunRemaining=%.3f nextStun=%.3f flinch=%s",
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId), hostile:Health(), remaining,
-                math.max(0, (hostile.LODNextHitStun or 0) - CurTime()))
+                math.max(0, (hostile.LODNextHitStun or 0) - CurTime()),
+                tostring(hostile.LODHitStunHasFlinch == true))
             print("[LOD:HIT] " .. text)
             if IsValid(ply) then ply:ChatPrint(text) end
         end
@@ -187,4 +197,14 @@ concommand.Add("lod_m3_hitfeedback_status", function(ply)
         print("[LOD:HIT] no live hostiles")
         if IsValid(ply) then ply:ChatPrint("no live hostiles") end
     end
+end)
+
+-- Verify the client-local chime independently of combat/damage detection.
+concommand.Add("lod_m3_hitconfirm_test", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if not IsValid(ply) or not ply:IsAdmin() then return end
+    net.Start("LOD_HitConfirm")
+    net.Send(ply)
+    ply:ChatPrint("[LOD:M3] hit-confirm test cue sent")
 end)
