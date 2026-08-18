@@ -143,7 +143,10 @@ C.Encounter = {
             class = "lod_hostile_shambler",
             name = "Shambler",
             model = "models/zombie/classic.mdl",
-            baseHP = 100,
+            -- Runtime playtest target: roughly three ordinary pistol hits on
+            -- Level 1. The former 100 HP made the basic melee enemy about 3x
+            -- too tedious to kill and slowed encounter pacing disproportionately.
+            baseHP = 35,
             speed = 90,
             meleeDamage = 20,
             meleeCooldown = 1.2,
