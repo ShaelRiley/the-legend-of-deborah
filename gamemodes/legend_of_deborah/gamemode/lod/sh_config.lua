@@ -172,10 +172,11 @@ C.Encounter = {
             burstDamage = 6,
             burstShots = 3,
             burstCooldown = 1.5,
-            -- Soldiers no longer deal direct hitscan damage. A visible aiming
-            -- tell precedes each burst, then physical energy bolts travel through
-            -- the maze. Players can strafe, break LOS, or duck behind cover.
-            burstTelegraph = 0.40,
+            -- Soldiers no longer deal direct hitscan damage. A full one-second
+            -- visible/audio tell precedes each burst, then physical energy bolts
+            -- travel through the maze. Players can strafe, break LOS, or duck
+            -- behind cover before the first shot is released.
+            burstTelegraph = 1.00,
             burstShotInterval = 0.13,
             projectileSpeed = 950,
             projectileLifetime = 1.35,
