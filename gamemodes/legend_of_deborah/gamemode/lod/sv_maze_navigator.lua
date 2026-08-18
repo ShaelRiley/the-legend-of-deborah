@@ -184,6 +184,10 @@ function MazeNavigator:_AppendVerticalWaypoints(graph, fromCell, toCell, out)
         append(out, stairPoint(0.75), 42)
         append(out, stairPoint(1.00), 44)
     else
+        -- Descending traversal must first acquire the actual stair crest. The
+        -- previous route jumped directly from the upper landing to the 75%
+        -- point, inviting a diagonal cut across the open stairwell.
+        append(out, stairPoint(1.00), 44)
         append(out, stairPoint(0.75), 44)
         append(out, stairPoint(0.50), 42)
         append(out, stairPoint(0.25), 42)
