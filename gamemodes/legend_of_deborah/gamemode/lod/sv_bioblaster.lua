@@ -1,0 +1,360 @@
+LOD = LOD or {}
+
+local EC = LOD.Config.Encounter
+local EncounterDirector = LOD.EncounterDirector
+local CombatAudio = LOD.CombatAudio
+
+local BIO_PAIN = {
+    "npc/zombie_poison/pz_pain1.wav", "npc/zombie_poison/pz_pain2.wav", "npc/zombie_poison/pz_pain3.wav"
+}
+local BIO_DEATH = {
+    "npc/zombie_poison/pz_die1.wav", "npc/zombie_poison/pz_die2.wav"
+}
+local BIO_ALERT = {
+    "npc/zombie_poison/pz_alert1.wav", "npc/zombie_poison/pz_warn1.wav"
+}
+local BIO_FEET = {
+    "npc/zombie_poison/pz_left_foot1.wav", "npc/zombie_poison/pz_right_foot1.wav",
+    "npc/antlion_guard/foot_heavy1.wav", "npc/antlion_guard/foot_heavy2.wav"
+}
+local BIO_CHARGE = {
+    "npc/zombie_poison/pz_warn1.wav", "npc/antlion_guard/angry3.wav"
+}
+
+local function usable(paths)
+    local out = {}
+    for _, path in ipairs(paths or {}) do
+        if file.Exists("sound/" .. path, "GAME") then out[#out + 1] = path end
+    end
+    return out
+end
+
+local function playRotating(hostile, field, paths, level, pitch, volume, channel)
+    local pool = usable(paths)
+    if #pool == 0 or not IsValid(hostile) then return false end
+    hostile[field] = ((hostile[field] or 0) % #pool) + 1
+    hostile:EmitSound(pool[hostile[field]], level or 74, pitch or 100, volume or 0.8, channel or CHAN_VOICE)
+    return true
+end
+
+local function livingPlayer(ply)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    if LOD.RunManager and LOD.RunManager.IsActivePlayer then
+        return LOD.RunManager:IsActivePlayer(ply)
+    end
+    return true
+end
+
+local function bioIdle(self)
+    if self._SetActivity then self:_SetActivity(ACT_IDLE_ANGRY or ACT_IDLE, true) end
+end
+
+local function bioWalk(self)
+    if self._SetActivity then self:_SetActivity(ACT_WALK, true) end
+end
+
+local function openChestPose(self)
+    -- The classic zombie attack-B/C sequences give the broadest arms-open,
+    -- chest-exposed silhouette. Fall back to the normal attack activity on a
+    -- model/runtime that does not expose those sequence names.
+    for _, name in ipairs({"attackB", "attackC", "attackA"}) do
+        local seq = self:LookupSequence(name)
+        if isnumber(seq) and seq >= 0 then
+            self:ResetSequence(seq)
+            self:SetCycle(0)
+            self:SetPlaybackRate(0.55)
+            self.LODCurrentActivity = nil
+            return
+        end
+    end
+    if self._SetActivity then self:_SetActivity(ACT_MELEE_ATTACK1 or ACT_RANGE_ATTACK1, true) end
+end
+
+local function mawPosition(self)
+    for _, name in ipairs({"mouth", "eyes"}) do
+        local attachment = self:LookupAttachment(name)
+        if attachment and attachment > 0 then
+            local data = self:GetAttachment(attachment)
+            if data and data.Pos then return data.Pos + self:GetForward() * 10 end
+        end
+    end
+    return self:WorldSpaceCenter() + self:GetForward() * 30 + Vector(0, 0, 18)
+end
+
+local function spawnBioBolt(self, aimPos)
+    local cfg = self.LODConfig
+    local startPos = mawPosition(self)
+    local direction = (aimPos - startPos):GetNormalized()
+
+    local bolt = ents.Create("lod_bio_bolt")
+    if not IsValid(bolt) then return false end
+    bolt.LODOwner = self
+    bolt.LODDirection = direction
+    bolt.LODSpeed = cfg.projectileSpeed
+    bolt.LODDamage = cfg.blastDamage
+    bolt.LODLifetime = cfg.projectileLifetime
+    bolt:SetPos(startPos)
+    bolt:SetAngles(direction:Angle())
+    bolt:Spawn()
+    bolt:Activate()
+
+    self:EmitSound("weapons/physcannon/energy_sing_explosion2.wav", 82, 72, 0.92, CHAN_WEAPON)
+    self:EmitSound("npc/antlion_guard/shove1.wav", 78, 108, 0.70, CHAN_BODY)
+    return true
+end
+
+local function cancelBlast(self, cooldown)
+    self.LODBioBlast = nil
+    self.LODNextBioCharge = CurTime() + (cooldown or 0.45)
+    bioIdle(self)
+end
+
+local function beginBlast(self, target)
+    local cfg = self.LODConfig
+    if self.LODBioBlast or not livingPlayer(target) then return false end
+    if CurTime() < (self.LODNextBioCharge or 0) then return false end
+    if self:GetPos():DistToSqr(target:GetPos()) > cfg.fireRange * cfg.fireRange then return false end
+    if self._HasLineOfSight and not self:_HasLineOfSight(target) then return false end
+
+    self.LODBioBlast = {
+        target = target,
+        fireAt = CurTime() + cfg.blastTelegraph,
+        lastAimPos = target:WorldSpaceCenter()
+    }
+    if self.loco then self.loco:SetDesiredSpeed(0) end
+    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+    openChestPose(self)
+
+    if not playRotating(self, "LODBioChargeOrdinal", BIO_CHARGE, 80, 88, 0.95, CHAN_VOICE)
+        and CombatAudio and CombatAudio.PlayHostileAttack
+    then
+        CombatAudio:PlayHostileAttack(self)
+    end
+    self:EmitSound("buttons/button17.wav", 66, 76, 0.45, CHAN_ITEM)
+    return true
+end
+
+local function processBlast(self)
+    local burst = self.LODBioBlast
+    if not burst then return false end
+    local cfg = self.LODConfig
+    local target = burst.target
+
+    if not livingPlayer(target) then
+        cancelBlast(self, 0.3)
+        return false
+    end
+
+    if self.loco then self.loco:SetDesiredSpeed(0) end
+    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+
+    if CurTime() < burst.fireAt then
+        if self._HasLineOfSight and not self:_HasLineOfSight(target) then
+            cancelBlast(self, 0.35)
+            return false
+        end
+        burst.lastAimPos = target:WorldSpaceCenter()
+        return true
+    end
+
+    spawnBioBolt(self, burst.lastAimPos)
+    self.LODBioBlast = nil
+    -- Begin the next telegraph early enough that projectile releases remain
+    -- approximately blastInterval seconds apart under uninterrupted combat.
+    self.LODNextBioCharge = CurTime() + math.max(0.25, cfg.blastInterval - cfg.blastTelegraph)
+    bioIdle(self)
+    return false
+end
+
+local function installHostilePatch()
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    if not class or class.LODBioBlasterPatched then return false end
+    class.LODBioBlasterPatched = true
+
+    local baseInitialize = class.Initialize
+    function class:Initialize()
+        baseInitialize(self)
+        if self.LODArchetypeId ~= "bioblaster" or not self.LODConfig then return end
+
+        self:SetRenderMode(RENDERMODE_TRANSCOLOR)
+        self:SetColor(Color(72, 220, 92, 255))
+        self.LODBioBlast = nil
+        self.LODNextBioCharge = CurTime() + 0.75
+        bioWalk(self)
+    end
+
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        if self.LODArchetypeId ~= "bioblaster" then
+            return baseBehaviourTick(self)
+        end
+        if self.LODDead or not self.LODActivated then return end
+
+        local state = LOD.RunManager and LOD.RunManager.State
+        local graph = state and state.Graph
+        if not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
+
+        if self.LODBioBlast then
+            processBlast(self)
+            return
+        end
+
+        self:_RefreshTarget(graph)
+        self:_RefreshRoute(graph)
+        local target = self.LODTarget
+
+        if livingPlayer(target) and self:_HasLineOfSight(target) then
+            local distanceSq = self:GetPos():DistToSqr(target:GetPos())
+            if distanceSq <= self.LODConfig.fireRange * self.LODConfig.fireRange
+                and CurTime() >= (self.LODNextBioCharge or 0)
+            then
+                if beginBlast(self, target) then return end
+            end
+
+            local preferred = self.LODConfig.preferredRange or 560
+            if distanceSq <= preferred * preferred then
+                if self.loco then self.loco:SetDesiredSpeed(0) end
+                self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+                bioIdle(self)
+                return
+            end
+        end
+
+        -- Let the proven generic graph-routing code handle pursuit/leashing. Its
+        -- melee path is harmless because Bio Blaster meleeRange/damage are zero.
+        return baseBehaviourTick(self)
+    end
+
+    return true
+end
+
+installHostilePatch()
+hook.Add("OnEntityCreated", "LOD_BioBlasterInstallBeforeSpawn", function(ent)
+    if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end
+end)
+
+-- Add Bio Pressure as a discretionary mid/late-sector template. Avoid ambush
+-- cells because the large projectile is meant to be read and dodged in space.
+if EncounterDirector and not EncounterDirector.LODBioBlasterPlannerWrapped then
+    EncounterDirector.LODBioBlasterPlannerWrapped = true
+
+    local baseEligible = EncounterDirector._EligibleTemplates
+    function EncounterDirector:_EligibleTemplates(sector, role)
+        local base = baseEligible(self, sector, role)
+        local out = {}
+        for _, id in ipairs(base or {}) do out[#out + 1] = id end
+        if sector >= 2 and role ~= "ambush" then out[#out + 1] = "bio_pressure" end
+        return out
+    end
+
+    local baseSpawn = EncounterDirector._SpawnEncounter
+    function EncounterDirector:_SpawnEncounter(encounter)
+        if not encounter or not encounter.composition or not encounter.composition.bioblaster then
+            return baseSpawn(self, encounter)
+        end
+        if encounter.spawned or encounter.cleared then return true end
+
+        local total = 0
+        for _, count in pairs(encounter.composition) do total = total + count end
+        if self:GetActiveCount() + total > EC.ActiveHostileCeiling then return false end
+
+        local center = LOD.MazeNavigator:CellCenter(encounter.cell) + Vector(0, 0, 10)
+        local offsets = self:_SpawnOffsets(total)
+        local ordinal = 1
+        for _, archetypeId in ipairs({"shambler", "runner", "deadcrab", "bioblaster", "soldier"}) do
+            local count = encounter.composition[archetypeId] or 0
+            for _ = 1, count do
+                local ent = ents.Create("lod_hostile")
+                if IsValid(ent) then
+                    ent.LODArchetypeId = archetypeId
+                    ent.LODHomeCellKey = encounter.cellKey
+                    ent.LODEncounterId = encounter.id
+                    ent.LODEncounterOrdinal = ordinal
+                    ent.LODActivated = true
+                    ent:SetPos(center + offsets[ordinal])
+                    ent:Spawn()
+                    ent:Activate()
+                    ent:DropToFloor()
+                    encounter.entities[#encounter.entities + 1] = ent
+                    self.Entities[#self.Entities + 1] = ent
+                end
+                ordinal = ordinal + 1
+            end
+        end
+
+        encounter.spawned = true
+        encounter.activated = true
+        return true
+    end
+end
+
+-- Extend the existing centralized audio API after Deadcrab has had a chance to
+-- wrap it. Each wrapper delegates every non-Bio-Blaster case unchanged.
+if CombatAudio and not CombatAudio.LODBioBlasterAudioWrapped then
+    CombatAudio.LODBioBlasterAudioWrapped = true
+
+    local basePain = CombatAudio.PlayHostilePain
+    function CombatAudio:PlayHostilePain(hostile)
+        if IsValid(hostile) and hostile.LODArchetypeId == "bioblaster" then
+            local now = CurTime()
+            if now < (hostile.LODNextPainAudio or 0) then return end
+            hostile.LODNextPainAudio = now + 0.48
+            playRotating(hostile, "LODBioPainOrdinal", BIO_PAIN, 76, 78, 0.90, CHAN_VOICE)
+            return
+        end
+        return basePain(self, hostile)
+    end
+
+    local baseDeath = CombatAudio.PlayHostileDeath
+    function CombatAudio:PlayHostileDeath(hostile)
+        if IsValid(hostile) and hostile.LODArchetypeId == "bioblaster" then
+            playRotating(hostile, "LODBioDeathOrdinal", BIO_DEATH, 82, 72, 1.0, CHAN_VOICE)
+            return
+        end
+        return baseDeath(self, hostile)
+    end
+
+    local baseActivation = CombatAudio.PlayEncounterActivation
+    function CombatAudio:PlayEncounterActivation(encounter, anchor)
+        if IsValid(anchor) and anchor.LODArchetypeId == "bioblaster" then
+            playRotating(anchor, "LODBioAlertOrdinal", BIO_ALERT, 80, 82, 0.90, CHAN_VOICE)
+            return
+        end
+        return baseActivation(self, encounter, anchor)
+    end
+end
+
+hook.Add("Think", "LOD_BioBlasterFootsteps", function()
+    local now = CurTime()
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(hostile) and hostile.LODArchetypeId == "bioblaster"
+            and not hostile.LODDead and hostile.LODActivated ~= false
+            and not hostile.LODBioBlast
+            and hostile:GetVelocity():Length2D() > 18
+            and now >= (hostile.LODBioNextFootstep or 0)
+        then
+            hostile.LODBioNextFootstep = now + 0.34
+            playRotating(hostile, "LODBioFootOrdinal", BIO_FEET, 72, 76, 0.82, CHAN_BODY)
+        end
+    end
+end)
+
+concommand.Add("lod_m3_bioblaster_audio_audit", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    local function count(paths) return #usable(paths) end
+    local lines = {
+        "bioblaster model=" .. (util.IsValidModel(EC.Archetypes.bioblaster.model) and "OK" or "MISSING"),
+        "feet=" .. count(BIO_FEET),
+        "pain=" .. count(BIO_PAIN),
+        "death=" .. count(BIO_DEATH),
+        "alert=" .. count(BIO_ALERT),
+        "charge=" .. count(BIO_CHARGE),
+        "fire=" .. (file.Exists("sound/weapons/physcannon/energy_sing_explosion2.wav", "GAME") and "OK" or "MISSING"),
+        "impact=" .. (file.Exists("sound/physics/flesh/flesh_impact_bullet5.wav", "GAME") and "OK" or "MISSING")
+    }
+    for _, line in ipairs(lines) do
+        print("[LOD:BIO] " .. line)
+        if IsValid(ply) then ply:ChatPrint(line) end
+    end
+end)
