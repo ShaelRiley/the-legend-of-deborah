@@ -57,12 +57,17 @@ function HitFeedback:ApplyHitStun(hostile)
     hostile.LODActivated = false
     stunned[hostile] = true
 
-    -- Being shot is a real interruption. In particular, cancel a Soldier's
-    -- telegraphed burst rather than allowing it to fire through a flinch.
+    -- Being shot is a real interruption. Cancel telegraphed ranged attacks
+    -- rather than allowing them to release through the visible flinch.
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil
         hostile:SetNW2Bool("LOD_SoldierTelegraph", false)
         hostile.LODNextAttack = math.max(hostile.LODNextAttack or 0, now + 0.25)
+    end
+
+    if hostile.LODBioBlast then
+        hostile.LODBioBlast = nil
+        hostile.LODNextBioCharge = now + 0.55
     end
 
     -- A Deadcrab can be knocked out of a leap, but once it is latched the fuse
