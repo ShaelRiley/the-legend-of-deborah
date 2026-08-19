@@ -11,7 +11,7 @@ local cellKey = LOD.MazeGenerator.CellKey
 -- Values live together here so the population can be tuned without scattering
 -- magic numbers through the AI implementation.
 local WC = {
-    PerFloor = 6,
+    PerFloor = 16,
     RespawnSeconds = 20,
     AcquireCells = 4,
     DisengageCells = 6,
@@ -386,7 +386,7 @@ hook.Add("OnEntityCreated", "LOD_WandererInstallBeforeSpawn", function(ent)
 end)
 
 -- Reserve enough of the global hostile ceiling for dead wanderers to return.
--- This keeps authored encounter activation from consuming the six-per-floor
+-- This keeps authored encounter activation from consuming the sixteen-per-floor
 -- replacement slots while a roaming population is temporarily depleted.
 if LOD.EncounterDirector and not LOD.EncounterDirector.LODWandererCeilingWrapped then
     LOD.EncounterDirector.LODWandererCeilingWrapped = true
@@ -403,6 +403,7 @@ end
 function WanderingDirector:Think()
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
+    local plan = graph and graph.EncounterPlan
     if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
     if state.SimulationFrozen then return end
 
