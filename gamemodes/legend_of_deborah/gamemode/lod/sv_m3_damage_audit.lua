@@ -1,4 +1,7 @@
 LOD = LOD or {}
+LOD.M3DamageAudit = LOD.M3DamageAudit or {}
+
+local Audit = LOD.M3DamageAudit
 
 local function developerAllowed(ply)
     local cv = GetConVar("lod_developer_mode")
@@ -16,9 +19,35 @@ hook.Add("EntityTakeDamage", "LOD_M3_RecordHostileIncomingDamage", function(ent,
     local attacker = dmginfo and dmginfo:GetAttacker() or nil
     if not IsValid(attacker) or not attacker:IsPlayer() then return end
 
-    ent.LODLastPlayerDamage = dmginfo:GetDamage()
     local weapon = attacker:GetActiveWeapon()
-    ent.LODLastPlayerWeapon = IsValid(weapon) and weapon:GetClass() or "unknown"
+    local weaponClass = IsValid(weapon) and weapon:GetClass() or "unknown"
+    local amount = dmginfo:GetDamage() or 0
+    local damageType = dmginfo:GetDamageType() or 0
+
+    ent.LODLastPlayerDamage = amount
+    ent.LODLastPlayerWeapon = weaponClass
+
+    -- Persist independently of the hostile entity so a lethal shot or the
+    -- one-second death presentation cannot erase the evidence before audit.
+    Audit.LastEvent = {
+        time = CurTime(),
+        entIndex = ent:EntIndex(),
+        archetype = tostring(ent.LODArchetypeId or "unknown"),
+        healthBefore = ent:Health(),
+        maxHealth = ent:GetMaxHealth(),
+        damage = amount,
+        damageType = damageType,
+        bulletBit = dmginfo:IsDamageType(DMG_BULLET),
+        weapon = weaponClass,
+        attacker = attacker:Nick()
+    }
+
+    print(string.format(
+        "[LOD:M3-DMG-EVENT] #%d %s hpBefore=%d damage=%.2f weapon=%s type=%d bullet=%s",
+        Audit.LastEvent.entIndex, Audit.LastEvent.archetype, Audit.LastEvent.healthBefore,
+        Audit.LastEvent.damage, Audit.LastEvent.weapon, Audit.LastEvent.damageType,
+        tostring(Audit.LastEvent.bulletBit)
+    ))
 end)
 
 concommand.Add("lod_m3_damage_audit", function(ply)
@@ -39,6 +68,18 @@ concommand.Add("lod_m3_damage_audit", function(ply)
         end
     end
 
+    local last = Audit.LastEvent
+    if last then
+        tell(ply, string.format(
+            "LAST EVENT #%d %s hpBefore=%d/%d damage=%.2f weapon=%s type=%d bullet=%s age=%.2fs attacker=%s",
+            last.entIndex, last.archetype, last.healthBefore, last.maxHealth, last.damage,
+            last.weapon, last.damageType, tostring(last.bulletBit),
+            math.max(0, CurTime() - last.time), tostring(last.attacker)
+        ))
+    else
+        tell(ply, "LAST EVENT none")
+    end
+
     local found = 0
     for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(ent) then
@@ -50,5 +91,5 @@ concommand.Add("lod_m3_damage_audit", function(ply)
                 tostring(ent.LODLastPlayerWeapon or "none")))
         end
     end
-    if found == 0 then tell(ply, "no live hostile to report; spawn one, shoot it once, then rerun this command") end
+    if found == 0 then tell(ply, "no live hostile currently; LAST EVENT above remains available after death/removal") end
 end)
