@@ -45,8 +45,10 @@ function EncounterDirector:BuildPlan(graph)
     EC.MaxDiscretionaryPerSector = copyArray(DEV_MAX_DISCRETIONARY)
     EC.MajorSpacingCells = DEV_MAJOR_SPACING_CELLS
 
-    local ok, resultA, resultB = xpcall(function()
-        return baseBuildPlan(self, graph)
+    -- Garry's Mod is Lua 5.1-family; pack the planner's multiple return values
+    -- into one table so xpcall cannot discard the plan value.
+    local ok, packedOrError = xpcall(function()
+        return {baseBuildPlan(self, graph)}
     end, debug.traceback)
 
     EC.SectorBaseThreat = originalBudgets
@@ -54,10 +56,12 @@ function EncounterDirector:BuildPlan(graph)
     EC.MajorSpacingCells = originalSpacing
 
     if not ok then
-        ErrorNoHalt("[LOD:M3-DENSE] encounter planner error: " .. tostring(resultA) .. "\n")
-        return false, resultA
+        ErrorNoHalt("[LOD:M3-DENSE] encounter planner error: " .. tostring(packedOrError) .. "\n")
+        return false, packedOrError
     end
 
+    local resultA = packedOrError[1]
+    local resultB = packedOrError[2]
     local plan = resultB
     if resultA and istable(plan) then
         plan.developerDenseTesting = true
