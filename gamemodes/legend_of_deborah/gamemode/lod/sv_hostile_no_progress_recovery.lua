@@ -1,7 +1,6 @@
 LOD = LOD or {}
 LOD.HostileNoProgressRecovery = LOD.HostileNoProgressRecovery or {}
 
-local Recovery = LOD.HostileNoProgressRecovery
 local CHECK_INTERVAL = 0.25
 local STALL_SECONDS = 1.10
 local MIN_PROGRESS_2D = 8
@@ -15,9 +14,9 @@ end
 
 local function intentionalStationary(hostile)
     if hostile.LODDead or hostile.LODActivated == false then return true end
-    if hostile.LODHitStunnedUntil and CurTime() < hostile.LODHitStunnedUntil then return true end
+    if hostile.LODHitStunUntil and CurTime() < hostile.LODHitStunUntil then return true end
     if hostile.LODSoldierBurst then return true end
-    if hostile.LODBioBlastState or hostile.LODBioBlasterState then return true end
+    if hostile.LODBioBlast then return true end
     if hostile.LODDeadcrabState == "leaping"
         or hostile.LODDeadcrabState == "latched"
         or hostile.LODDeadcrabState == "detonated"
