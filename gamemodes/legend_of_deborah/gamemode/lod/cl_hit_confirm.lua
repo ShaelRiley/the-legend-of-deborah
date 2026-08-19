@@ -1,21 +1,17 @@
 LOD = LOD or {}
 
-local HIT_CONFIRM_OPEN = "buttons/button9.wav"
-local HIT_CONFIRM_RESOLVE = "items/suitchargeok1.wav"
+local HIT_CONFIRM_SOUND = "buttons/blip1.wav"
 local nextConfirm = 0
 
 local function playHitConfirm()
     local now = RealTime()
     if now < nextConfirm then return end
-    nextConfirm = now + 0.05
+    nextConfirm = now + 0.04
 
-    -- Deliberately non-diegetic and local to the shooter. Two short contrasting
-    -- Source cues read as positive confirmation without being mistaken for an
-    -- enemy vocalization, footstep, projectile, or world interaction.
-    surface.PlaySound(HIT_CONFIRM_OPEN)
-    timer.Simple(0.045, function()
-        surface.PlaySound(HIT_CONFIRM_RESOLVE)
-    end)
+    -- Deliberately non-diegetic and local to the shooter. Keep this to one
+    -- extremely short transient so rapid gunfire confirms hits without creating
+    -- a sustained synth tone or masking enemy/world audio.
+    surface.PlaySound(HIT_CONFIRM_SOUND)
 end
 
 net.Receive("LOD_HitConfirm", playHitConfirm)
