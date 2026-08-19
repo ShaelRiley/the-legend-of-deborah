@@ -142,6 +142,81 @@ local function drawPlayerMarker(px, py, size)
     surface.DrawLine(px, py, px + dx * (size + 7), py + dy * (size + 7))
 end
 
+local FLOOR_DIRS = {
+    {dx = 0, dy = 1, bit = 0, gateShift = 0},
+    {dx = 1, dy = 0, bit = 1, gateShift = 2},
+    {dx = 0, dy = -1, bit = 2, gateShift = 4},
+    {dx = -1, dy = 0, bit = 3, gateShift = 6}
+}
+
+local function edgeTraversable(cell, dir)
+    if not bitOpen(cell.openings, dir.bit) then return false end
+    local gateIndex = gateCode(cell.gates, dir.gateShift)
+    if gateIndex <= 0 then return true end
+    local state = LOD.ClientState or {}
+    return state.gates and state.gates[gateIndex] == true or false
+end
+
+-- Current-floor reachability deliberately respects the live colored-gate state.
+-- The map can therefore distinguish a real staircase that is available now from
+-- one that belongs to a later locked sector without revealing hidden objectives.
+local function floorReachability(gx, gy, gz)
+    local startKey = cellKey(gx, gy, gz)
+    if not Map.byKey[startKey] then return {}, {}, {}, nil, math.huge end
+
+    local queue = {startKey}
+    local head = 1
+    local reached = {[startKey] = true}
+    local previous = {}
+    local distance = {[startKey] = 0}
+    local nearestUp
+    local nearestUpDist = math.huge
+
+    while head <= #queue do
+        local currentKey = queue[head]
+        head = head + 1
+        local current = Map.byKey[currentKey]
+        if current then
+            if bitOpen(current.openings, 4) and distance[currentKey] < nearestUpDist then
+                nearestUp = currentKey
+                nearestUpDist = distance[currentKey]
+            end
+            for _, dir in ipairs(FLOOR_DIRS) do
+                if edgeTraversable(current, dir) then
+                    local nk = cellKey(current.x + dir.dx, current.y + dir.dy, gz)
+                    if Map.byKey[nk] and not reached[nk] then
+                        reached[nk] = true
+                        previous[nk] = currentKey
+                        distance[nk] = distance[currentKey] + 1
+                        queue[#queue + 1] = nk
+                    end
+                end
+            end
+        end
+    end
+
+    return reached, previous, distance, nearestUp, nearestUpDist
+end
+
+local function routeTo(previous, startKey, goalKey)
+    if not goalKey then return nil end
+    local reverse = {goalKey}
+    local cursor = goalKey
+    while cursor ~= startKey do
+        cursor = previous[cursor]
+        if not cursor then return nil end
+        reverse[#reverse + 1] = cursor
+    end
+    local route = {}
+    for i = #reverse, 1, -1 do route[#route + 1] = reverse[i] end
+    return route
+end
+
+local function mapCellCenter(cell, gridX, gridY, cellSize)
+    return gridX + (cell.x - 0.5) * cellSize,
+        gridY + (MC.Height - cell.y + 0.5) * cellSize
+end
+
 hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     if not Map.open then return end
     local ply = LocalPlayer()
@@ -181,11 +256,15 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         return
     end
 
+    local reached, previous, _, nearestUp, nearestUpDist = floorReachability(gx, gy, gz)
+    local startKey = cellKey(gx, gy, gz)
+
     surface.SetDrawColor(58, 62, 64, 105)
     surface.DrawRect(gridX, gridY, gridSize, gridSize)
 
     local wallColor = Color(180, 184, 186, 220)
-    local stairColor = Color(238, 194, 92, 230)
+    local stairReachable = Color(248, 213, 105, 255)
+    local stairLockedSector = Color(118, 105, 72, 145)
 
     for _, cell in ipairs(Map.cells) do
         if cell.z == gz then
@@ -211,19 +290,52 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
             local up = bitOpen(cell.openings, 4)
             local down = bitOpen(cell.openings, 5)
             if up or down then
+                local ck = cellKey(cell.x, cell.y, cell.z)
                 local stairText = up and down and "↕" or (up and "↑" or "↓")
+                local color = reached[ck] and stairReachable or stairLockedSector
                 draw.SimpleText(stairText, "LOD_Map_Small", (x0 + x1) * 0.5, (y0 + y1) * 0.5,
-                    stairColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                    color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
         end
     end
 
-    if Map.byKey[cellKey(gx, gy, gz)] then
+    -- Developer mode gets a breadcrumb to the nearest currently reachable upward
+    -- stair. Production Map loot remains a topology-reading aid rather than GPS.
+    if ply:GetNW2Bool("LOD_DeveloperMode", false) and nearestUp then
+        local route = routeTo(previous, startKey, nearestUp)
+        if route and #route > 1 then
+            surface.SetDrawColor(248, 213, 105, 155)
+            for i = 2, #route do
+                local a = Map.byKey[route[i - 1]]
+                local b = Map.byKey[route[i]]
+                if a and b then
+                    local ax, ay = mapCellCenter(a, gridX, gridY, cellSize)
+                    local bx, by = mapCellCenter(b, gridX, gridY, cellSize)
+                    surface.DrawLine(ax, ay, bx, by)
+                end
+            end
+        end
+        local stairCell = Map.byKey[nearestUp]
+        if stairCell then
+            local sx, sy = mapCellCenter(stairCell, gridX, gridY, cellSize)
+            local pulse = 5 + math.abs(math.sin(CurTime() * 4)) * 3
+            surface.DrawCircle(sx, sy, pulse, 248, 213, 105, 255)
+        end
+    end
+
+    if Map.byKey[startKey] then
         local px = gridX + (gx - 0.5) * cellSize
         local py = gridY + (MC.Height - gy + 0.5) * cellSize
         drawPlayerMarker(px, py, 3)
     end
 
-    draw.SimpleText("stairs ↑/↓   gates: color=locked  green=open", "LOD_Map_Small",
+    if ply:GetNW2Bool("LOD_DeveloperMode", false) then
+        local text = nearestUp and string.format("DEV: nearest reachable ↑ = %d cells", nearestUpDist) or
+            "DEV: no reachable ↑ with current gates"
+        draw.SimpleText(text, "LOD_Map_Small", panelX + 18, panelY + panelH - 31,
+            nearestUp and Color(238, 194, 92) or Color(205, 120, 90), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+    end
+
+    draw.SimpleText("stairs: bright=reachable  dim=behind lock   gates: green=open", "LOD_Map_Small",
         panelX + 18, panelY + panelH - 18, Color(170, 174, 176), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end)
