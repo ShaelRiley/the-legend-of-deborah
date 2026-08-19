@@ -27,6 +27,27 @@ local function deterministicEscape(self, other)
     return Vector(math.cos(radians), math.sin(radians), 0)
 end
 
+local function deconflictSpawn(ent)
+    local origin = ent:GetPos()
+    local overlaps = 0
+    for _, other in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(other) and other ~= ent and other.LODHostile and not other.LODDead then
+            local delta = origin - other:GetPos()
+            if math.abs(delta.z) < 10 and delta:Length2DSqr() < 64 then
+                overlaps = overlaps + 1
+            end
+        end
+    end
+
+    if overlaps <= 0 then return end
+
+    local seed = ent.LODInstanceSeed or ent:GetNW2Int("LOD_InstanceSeed", ent:EntIndex())
+    local degrees = (seed * 23 + overlaps * 137) % 360
+    local radians = math.rad(degrees)
+    local radius = math.min(52, 28 + overlaps * 8)
+    ent:SetPos(origin + Vector(math.cos(radians) * radius, math.sin(radians) * radius, 0))
+end
+
 function Separation:AdjustedGoal(hostile, goal, isStair)
     if not IsValid(hostile) or not goal then return goal end
 
@@ -101,6 +122,7 @@ local function installHostilePatch()
         -- continue colliding normally with players and maze geometry.
         self:SetCustomCollisionCheck(true)
         stableLaneUnit(self)
+        deconflictSpawn(self)
     end
 
     local baseAdvanceWaypoint = class._AdvanceWaypoint
