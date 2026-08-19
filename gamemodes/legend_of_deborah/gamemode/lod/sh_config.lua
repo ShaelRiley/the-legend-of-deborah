@@ -127,8 +127,11 @@ C.Encounter = {
     RouteRefreshSeconds = 0.35,
     TargetRefreshSeconds = 0.25,
     MajorSpacingCells = 4,
-    ActiveHostileTarget = 32,
-    ActiveHostileCeiling = 40,
+    -- Sixteen production wanderers per floor means the rare four-floor maze
+    -- owns 64 roamers before authored encounters activate. Preserve substantial
+    -- encounter headroom while retaining a hard runaway-entity safety ceiling.
+    ActiveHostileTarget = 80,
+    ActiveHostileCeiling = 96,
     CampaignThreatGrowthPerLevel = 0.06,
     EnemyHPGrowthPerLevel = 0.02,
     EnemyHPLevelCap = 1.50,
