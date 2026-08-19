@@ -100,8 +100,10 @@ local function spawnBioBolt(self, aimPos)
     bolt:Spawn()
     bolt:Activate()
 
-    self:EmitSound("weapons/physcannon/energy_sing_explosion2.wav", 82, 72, 0.92, CHAN_WEAPON)
-    self:EmitSound("npc/antlion_guard/shove1.wav", 78, 108, 0.70, CHAN_BODY)
+    -- Share the Soldier's exact projectile-release cue. The Bio Blaster keeps
+    -- its own organic charge/telegraph bank, but the release is the same short
+    -- laser-like AR2 report instead of the former Physcannon/Antlion blast pair.
+    self:EmitSound("Weapon_AR2.Single", 72, 100, 0.85, CHAN_WEAPON)
     return true
 end
 
@@ -352,7 +354,7 @@ concommand.Add("lod_m3_bioblaster_audio_audit", function(ply)
         "death=" .. count(BIO_DEATH),
         "alert=" .. count(BIO_ALERT),
         "charge=" .. count(BIO_CHARGE),
-        "fire=" .. (file.Exists("sound/weapons/physcannon/energy_sing_explosion2.wav", "GAME") and "OK" or "MISSING"),
+        "fire=Weapon_AR2.Single (shared with Soldier)",
         "impact=" .. (file.Exists("sound/physics/flesh/flesh_impact_bullet5.wav", "GAME") and "OK" or "MISSING")
     }
     for _, line in ipairs(lines) do
