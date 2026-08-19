@@ -2,8 +2,8 @@ LOD = LOD or {}
 LOD.M3HitFeedback = LOD.M3HitFeedback or {}
 
 local HitFeedback = LOD.M3HitFeedback
-local STUN_SECONDS = 0.22
-local STUN_RETRIGGER_SECONDS = 0.28
+local STUN_SECONDS = 0.30
+local STUN_RETRIGGER_SECONDS = 0.36
 
 local FIREARM_CLASSES = {
     weapon_pistol = true,
