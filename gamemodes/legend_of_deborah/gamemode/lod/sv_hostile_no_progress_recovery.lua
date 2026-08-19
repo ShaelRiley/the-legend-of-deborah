@@ -4,7 +4,7 @@ LOD.HostileNoProgressRecovery = LOD.HostileNoProgressRecovery or {}
 local CHECK_INTERVAL = 0.25
 local STALL_SECONDS = 1.10
 local MIN_PROGRESS_2D = 8
-local RECOVERY_COOLDOWN = 1.25
+local RECOVERY_COOLDOWN = 2.50
 local nextCheck = 0
 local Navigator = LOD.MazeNavigator
 local cellKey = LOD.MazeGenerator.CellKey
@@ -23,6 +23,12 @@ local function intentionalStationary(hostile)
         or hostile.LODDeadcrabState == "latched"
         or hostile.LODDeadcrabState == "detonated"
     then
+        return true
+    end
+
+    -- Never interpret an actually airborne/falling NextBot as horizontally
+    -- stuck. Recovery must wait until Source says locomotion is grounded.
+    if hostile.loco and hostile.loco.IsOnGround and not hostile.loco:IsOnGround() then
         return true
     end
 
@@ -96,11 +102,16 @@ local function safeGroundCandidate(hostile, graph, cell, offset, ignored)
 
     local x = center.x + offset.x
     local y = center.y + offset.y
-    local startZ = math.max(hostile:GetPos().z, center.z) + 112
-    local endZ = center.z - 128
+    local currentZ = hostile:GetPos().z
+
+    -- The trace is validation only. Earlier code mistakenly returned its high
+    -- start point and teleported recovering enemies into the sky. Preserve the
+    -- entity's current native grounded Z when moving within the same flat cell.
+    local traceStartZ = math.max(currentZ + 48, center.z + 48)
+    local traceEndZ = math.min(currentZ - 96, center.z - 128)
     local tr = util.TraceHull({
-        start = Vector(x, y, startZ),
-        endpos = Vector(x, y, endZ),
+        start = Vector(x, y, traceStartZ),
+        endpos = Vector(x, y, traceEndZ),
         mins = mins,
         maxs = maxs,
         mask = MASK_SOLID,
@@ -109,15 +120,28 @@ local function safeGroundCandidate(hostile, graph, cell, offset, ignored)
 
     if tr.StartSolid or not tr.Hit then return nil end
 
-    -- Confirm the resulting position still belongs to this exact logical cell.
-    -- This prevents recovery from ever crossing a wall/gate or changing floors.
+    -- Confirm the candidate belongs to this exact logical cell. This prevents
+    -- recovery from crossing a wall/gate or changing floors.
     local probe = tr.HitPos + Vector(0, 0, 8)
     local resolved = Navigator:WorldToCell(graph, probe)
     if not resolved or cellKey(resolved.x, resolved.y, resolved.z) ~= cellKey(cell.x, cell.y, cell.z) then
         return nil
     end
 
-    return Vector(x, y, startZ)
+    -- Check the candidate at the hostile's current Source-owned ground-relative
+    -- Z. We only want a horizontal escape from wall/corner wedging.
+    local candidate = Vector(x, y, currentZ)
+    local occupancy = util.TraceHull({
+        start = candidate,
+        endpos = candidate,
+        mins = mins,
+        maxs = maxs,
+        mask = MASK_SOLID,
+        filter = ignored
+    })
+    if occupancy.StartSolid or occupancy.Hit then return nil end
+
+    return candidate
 end
 
 local function recoverInsideCurrentCell(hostile)
@@ -127,11 +151,11 @@ local function recoverInsideCurrentCell(hostile)
     local ignored = ignoredHostiles()
     local candidates = {}
     for _, offset in ipairs(SAFE_OFFSETS) do
-        local startPos = safeGroundCandidate(hostile, graph, cell, offset, ignored)
-        if startPos then
+        local pos = safeGroundCandidate(hostile, graph, cell, offset, ignored)
+        if pos then
             candidates[#candidates + 1] = {
-                pos = startPos,
-                distance = dist2D(hostile:GetPos(), startPos)
+                pos = pos,
+                distance = dist2D(hostile:GetPos(), pos)
             }
         end
     end
@@ -141,8 +165,9 @@ local function recoverInsideCurrentCell(hostile)
     if not chosen then return false end
 
     hostile:SetPos(chosen.pos)
-    -- Source chooses the final grounded entity-origin Z. We deliberately do not
-    -- force the graph floor plane, which previously fought NextBot settlement.
+    -- Source owns final ground settlement. Because X/Y changed but Z did not,
+    -- DropToFloor only needs to resolve a local same-floor contact rather than a
+    -- large artificial fall.
     hostile:DropToFloor()
     return true
 end
@@ -167,7 +192,7 @@ local function recover(hostile)
     print(string.format(
         "[LOD:NO-PROGRESS] #%d %s recovered mode=%s count=%d",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId),
-        moved and "same-cell-safe-slot" or "source-drop-in-place",
+        moved and "same-cell-horizontal" or "source-drop-in-place",
         hostile.LODNoProgressRecoveries
     ))
 end
@@ -206,13 +231,15 @@ end)
 local function statusLine(hostile)
     local graph, cell = graphAndCell(hostile)
     local waypoint = currentWaypoint(hostile)
+    local grounded = hostile.loco and hostile.loco.IsOnGround and hostile.loco:IsOnGround()
     return string.format(
-        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f recoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s",
+        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f velZ=%.1f grounded=%s recoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId),
         hostile:GetNW2Float("LOD_SizeScale", 1),
         cell and cellKey(cell.x, cell.y, cell.z) or "none",
         hostile:GetPos().x, hostile:GetPos().y, hostile:GetPos().z,
-        hostile:GetVelocity():Length2D(), hostile.LODNoProgressRecoveries or 0,
+        hostile:GetVelocity():Length2D(), hostile:GetVelocity().z, tostring(grounded),
+        hostile.LODNoProgressRecoveries or 0,
         tostring(shouldBeMoving(hostile)),
         IsValid(hostile.LODTarget) and ("#" .. hostile.LODTarget:EntIndex()) or "none",
         waypoint and (waypoint.stair and "stair" or "route") or "none",
