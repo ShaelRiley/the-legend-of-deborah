@@ -50,16 +50,17 @@ local function visualAt(point)
             local p = ent:GetPos()
             local dx = p.x - point.x
             local dy = p.y - point.y
-            local d2 = dx * dx + dy * dy
+            local dz = p.z - point.z
+            local d2 = dx * dx + dy * dy + dz * dz
             if d2 < bestDist then
                 bestDist = d2
                 best = ent
             end
         end
     end
-    -- Wall visuals are authored exactly on logical edge centers. A very small
-    -- tolerance catches an actual segment at this boundary without confusing a
-    -- perpendicular wall whose center is one half-cell away.
+    -- Wall visuals are authored exactly on logical edge centers and at the same
+    -- stack elevation as this probe. A tight full-3D tolerance prevents a wall
+    -- on another maze floor from being mistaken for this edge.
     if best and bestDist <= 4 * 4 then return best end
     return nil
 end
@@ -122,9 +123,6 @@ function Audit:Run(graph)
                         string.format("CLOSED edge %s has no container visual", ek)
                 end
 
-                -- Gate edges are canonical open graph edges and intentionally
-                -- have no static wall. Their temporary lod_gate collision is not
-                -- part of this wall audit.
                 if gates[ek] and not open then
                     result.collisionMismatches[#result.collisionMismatches + 1] =
                         string.format("GATE %d edge %s is not canonical-open", gates[ek], ek)
