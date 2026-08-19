@@ -2,14 +2,22 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 
-local function visualFootPivot(ent)
-    -- Runtime grounding diagnostics show that Source keeps the native NextBot
-    -- entity origin below the visible sole plane. Render-only size variation must
-    -- therefore scale around that sole plane, not around GetPos(), or small models
-    -- visually shrink downward into the floor while their locomotion stays valid.
-    local archetype = ent:GetNW2String("LOD_Archetype", "")
-    if archetype == "deadcrab" then return 20 end
-    return 24
+local function visualModelBounds(ent)
+    -- Scale around the model's own lowest local point rather than a guessed
+    -- zombie/headcrab offset. Different Source models do not share one foot
+    -- pivot, and a hard-coded value made some small variants sink visually into
+    -- the generated floor even while their server NextBot remained grounded.
+    if ent.OBBMins and ent.OBBMaxs then
+        local mins, maxs = ent:OBBMins(), ent:OBBMaxs()
+        if mins and maxs and maxs.z > mins.z then return mins, maxs end
+    end
+
+    if util.GetModelBounds then
+        local mins, maxs = util.GetModelBounds(ent:GetModel())
+        if mins and maxs then return mins, maxs end
+    end
+
+    return Vector(-16, -16, 0), Vector(16, 16, 72)
 end
 
 local function applyVisualScale(ent)
@@ -17,34 +25,24 @@ local function applyVisualScale(ent)
     if ent.LODLastClientVisualScale == size then return end
     ent.LODLastClientVisualScale = size
 
-    -- Server-side NextBots remain 1.0x. The render matrix scales the visible
-    -- model around its planted-foot pivot so both tiny and large variants keep
-    -- the same sole plane as the native Source model.
-    local pivot = visualFootPivot(ent)
-    local verticalCompensation = pivot * (1 - size)
+    -- Server-side NextBots remain 1.0x. Preserve the native model's lowest
+    -- rendered point while scaling everything above it. If p is the local sole
+    -- plane, p must satisfy size*p + translation == p.
+    local mins, maxs = visualModelBounds(ent)
+    local pivotZ = mins.z
+    local verticalCompensation = pivotZ * (1 - size)
+
     local matrix = Matrix()
     matrix:Scale(Vector(size, size, size))
     matrix:SetTranslation(Vector(0, 0, verticalCompensation))
     ent:EnableMatrix("RenderMultiply", matrix)
 
-    -- Expanded/shrunken client render bounds keep visibility/PVS decisions in
-    -- step with the rendered model without touching server collision.
-    if util.GetModelBounds then
-        local mins, maxs = util.GetModelBounds(ent:GetModel())
-        if mins and maxs then
-            local scaledMins = Vector(
-                mins.x * size,
-                mins.y * size,
-                mins.z * size + verticalCompensation
-            )
-            local scaledMaxs = Vector(
-                maxs.x * size,
-                maxs.y * size,
-                maxs.z * size + verticalCompensation
-            )
-            ent:SetRenderBounds(scaledMins, scaledMaxs)
-        end
-    end
+    -- Keep client render bounds synchronized with the transformed model without
+    -- touching any server collision or locomotion state.
+    ent:SetRenderBounds(
+        Vector(mins.x * size, mins.y * size, mins.z * size + verticalCompensation),
+        Vector(maxs.x * size, maxs.y * size, maxs.z * size + verticalCompensation)
+    )
 end
 
 function ENT:Draw()
