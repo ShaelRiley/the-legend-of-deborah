@@ -26,8 +26,6 @@ local function intentionalStationary(hostile)
         return true
     end
 
-    -- Never interpret an actually airborne/falling NextBot as horizontally
-    -- stuck. Recovery must wait until Source says locomotion is grounded.
     if hostile.loco and hostile.loco.IsOnGround and not hostile.loco:IsOnGround() then
         return true
     end
@@ -85,10 +83,13 @@ local SAFE_OFFSETS = {
     Vector(64, -64, 0), Vector(-64, -64, 0)
 }
 
-local function ignoredHostiles()
+local function ignoredDynamicActors()
     local ignored = {}
     for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(ent) then ignored[#ignored + 1] = ent end
+    end
+    for _, ply in ipairs(player.GetAll()) do
+        if IsValid(ply) then ignored[#ignored + 1] = ply end
     end
     return ignored
 end
@@ -104,11 +105,12 @@ local function safeGroundCandidate(hostile, graph, cell, offset, ignored)
     local y = center.y + offset.y
     local currentZ = hostile:GetPos().z
 
-    -- The trace is validation only. Earlier code mistakenly returned its high
-    -- start point and teleported recovering enemies into the sky. Preserve the
-    -- entity's current native grounded Z when moving within the same flat cell.
-    local traceStartZ = math.max(currentZ + 48, center.z + 48)
-    local traceEndZ = math.min(currentZ - 96, center.z - 128)
+    -- Find the actual physical floor under a conservative interior point of the
+    -- current logical cell. The hull trace's HitPos is the hostile-origin
+    -- position at which its mins.z touches that floor; unlike earlier versions,
+    -- we keep this grounded result instead of preserving an already-buried Z.
+    local traceStartZ = math.max(currentZ + 96, center.z + 96)
+    local traceEndZ = math.min(currentZ - 128, center.z - 160)
     local tr = util.TraceHull({
         start = Vector(x, y, traceStartZ),
         endpos = Vector(x, y, traceEndZ),
@@ -118,19 +120,18 @@ local function safeGroundCandidate(hostile, graph, cell, offset, ignored)
         filter = ignored
     })
 
-    if tr.StartSolid or not tr.Hit then return nil end
+    if tr.StartSolid or not tr.Hit or not tr.HitNormal or tr.HitNormal.z < 0.65 then return nil end
 
-    -- Confirm the candidate belongs to this exact logical cell. This prevents
-    -- recovery from crossing a wall/gate or changing floors.
-    local probe = tr.HitPos + Vector(0, 0, 8)
+    local candidate = tr.HitPos + Vector(0, 0, 2)
+
+    -- Confirm the grounded candidate still belongs to this exact logical cell.
+    -- Recovery can never cross a wall, gate, staircase transition, or floor.
+    local probe = candidate + Vector(0, 0, 8)
     local resolved = Navigator:WorldToCell(graph, probe)
     if not resolved or cellKey(resolved.x, resolved.y, resolved.z) ~= cellKey(cell.x, cell.y, cell.z) then
         return nil
     end
 
-    -- Check the candidate at the hostile's current Source-owned ground-relative
-    -- Z. We only want a horizontal escape from wall/corner wedging.
-    local candidate = Vector(x, y, currentZ)
     local occupancy = util.TraceHull({
         start = candidate,
         endpos = candidate,
@@ -139,7 +140,7 @@ local function safeGroundCandidate(hostile, graph, cell, offset, ignored)
         mask = MASK_SOLID,
         filter = ignored
     })
-    if occupancy.StartSolid or occupancy.Hit then return nil end
+    if occupancy.StartSolid then return nil end
 
     return candidate
 end
@@ -148,7 +149,7 @@ local function recoverInsideCurrentCell(hostile)
     local graph, cell = graphAndCell(hostile)
     if not graph or not cell or isVerticalEndpoint(graph, cell) then return false end
 
-    local ignored = ignoredHostiles()
+    local ignored = ignoredDynamicActors()
     local candidates = {}
     for _, offset in ipairs(SAFE_OFFSETS) do
         local pos = safeGroundCandidate(hostile, graph, cell, offset, ignored)
@@ -165,10 +166,8 @@ local function recoverInsideCurrentCell(hostile)
     if not chosen then return false end
 
     hostile:SetPos(chosen.pos)
-    -- Source owns final ground settlement. Because X/Y changed but Z did not,
-    -- DropToFloor only needs to resolve a local same-floor contact rather than a
-    -- large artificial fall.
-    hostile:DropToFloor()
+    if hostile.loco and hostile.loco.SetVelocity then hostile.loco:SetVelocity(vector_origin) end
+    hostile.LODLastRecoveryGroundZ = chosen.pos.z
     return true
 end
 
@@ -177,7 +176,9 @@ local function recover(hostile)
 
     local moved = recoverInsideCurrentCell(hostile)
     if not moved then
-        -- Safe fallback for stair endpoints or unusual geometry: do not move XY.
+        -- Stair endpoints keep their dedicated exact-centerline recovery. For an
+        -- unusual ordinary-cell failure with no safe candidate, avoid guessing
+        -- another X/Y and simply ask Source for local ground settlement.
         hostile:DropToFloor()
     end
 
@@ -192,7 +193,7 @@ local function recover(hostile)
     print(string.format(
         "[LOD:NO-PROGRESS] #%d %s recovered mode=%s count=%d",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId),
-        moved and "same-cell-horizontal" or "source-drop-in-place",
+        moved and "same-cell-traced-ground" or "source-drop-in-place",
         hostile.LODNoProgressRecoveries
     ))
 end
@@ -233,7 +234,7 @@ local function statusLine(hostile)
     local waypoint = currentWaypoint(hostile)
     local grounded = hostile.loco and hostile.loco.IsOnGround and hostile.loco:IsOnGround()
     return string.format(
-        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f velZ=%.1f grounded=%s recoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s",
+        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f velZ=%.1f grounded=%s recoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s lastRecoveryGroundZ=%s",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId),
         hostile:GetNW2Float("LOD_SizeScale", 1),
         cell and cellKey(cell.x, cell.y, cell.z) or "none",
@@ -243,7 +244,8 @@ local function statusLine(hostile)
         tostring(shouldBeMoving(hostile)),
         IsValid(hostile.LODTarget) and ("#" .. hostile.LODTarget:EntIndex()) or "none",
         waypoint and (waypoint.stair and "stair" or "route") or "none",
-        tostring(hostile.LODEncounterId or "none"), tostring(hostile.LODWanderer == true)
+        tostring(hostile.LODEncounterId or "none"), tostring(hostile.LODWanderer == true),
+        hostile.LODLastRecoveryGroundZ and string.format("%.1f", hostile.LODLastRecoveryGroundZ) or "none"
     )
 end
 
