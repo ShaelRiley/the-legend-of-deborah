@@ -9,6 +9,51 @@ if not EncounterDirector then return end
 
 local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier"}
 
+local function cellKey(cell)
+    return cell and LOD.MazeGenerator.CellKey(cell.x, cell.y, cell.z) or nil
+end
+
+local function stairCellSet(graph)
+    graph.LODEncounterStairCellSet = graph.LODEncounterStairCellSet or nil
+    if graph.LODEncounterStairCellSet then return graph.LODEncounterStairCellSet end
+
+    local out = {}
+    for _, edge in ipairs(graph.VerticalEdges or {}) do
+        out[cellKey(edge.a)] = true
+        out[cellKey(edge.b)] = true
+    end
+    graph.LODEncounterStairCellSet = out
+    return out
+end
+
+local function safeEncounterSpawnCell(encounter)
+    local state = LOD.RunManager and LOD.RunManager.State
+    local graph = state and state.Graph
+    if not graph or not encounter or not encounter.cell then return encounter and encounter.cell end
+
+    local stairs = stairCellSet(graph)
+    if not stairs[encounter.cellKey] then return encounter.cell end
+
+    -- Encounters may pursue across stairs, but they should not originate on a
+    -- stair endpoint. A pile spawned directly into stair geometry can start with
+    -- its hull intersecting a tread/riser before locomotion gets a chance to run.
+    -- Move the authored spawn origin into the first deterministic, same-level,
+    -- non-stair neighbor. The encounter itself still belongs to its original
+    -- graph cell for activation/clear bookkeeping.
+    local origin = graph.Cells[encounter.cellKey]
+    if not origin then return encounter.cell end
+
+    local candidates = {}
+    for neighborKey in pairs(origin.neighbors or {}) do
+        local neighbor = graph.Cells[neighborKey]
+        if neighbor and neighbor.z == origin.z and not stairs[neighborKey] then
+            candidates[#candidates + 1] = neighbor
+        end
+    end
+    table.sort(candidates, function(a, b) return cellKey(a) < cellKey(b) end)
+    return candidates[1] or encounter.cell
+end
+
 -- Unify the authored encounter spawn path after all archetype planner wrappers
 -- have loaded. Every production encounter unit receives a stable ordinal BEFORE
 -- Spawn(), so deterministic instance variance never has to depend on entity index
@@ -25,7 +70,10 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
         end
         if self:GetActiveCount() + total > EC.ActiveHostileCeiling then return false end
 
-        local center = LOD.MazeNavigator:CellCenter(encounter.cell) + Vector(0, 0, 10)
+        local spawnCell = safeEncounterSpawnCell(encounter)
+        local spawnCellKey = cellKey(spawnCell) or encounter.cellKey
+        local relocatedFromStair = spawnCellKey ~= encounter.cellKey
+        local center = LOD.MazeNavigator:CellCenter(spawnCell) + Vector(0, 0, 24)
         local offsets = self:_SpawnOffsets(total)
         local ordinal = 1
 
@@ -35,10 +83,11 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
                 local ent = ents.Create("lod_hostile")
                 if IsValid(ent) then
                     ent.LODArchetypeId = archetypeId
-                    ent.LODHomeCellKey = encounter.cellKey
+                    ent.LODHomeCellKey = spawnCellKey
                     ent.LODEncounterId = encounter.id
                     ent.LODEncounterOrdinal = ordinal
                     ent.LODSpawnSource = "encounter"
+                    ent.LODSpawnRelocatedFromStair = relocatedFromStair
                     ent.LODActivated = true
                     ent:SetPos(center + offsets[ordinal])
                     ent:Spawn()
@@ -53,7 +102,13 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
                     end
 
                     if IsValid(ent) then
+                        -- Do the floor settle only after all final size/collision
+                        -- variance is known. Clearing loco's stuck flag here gives
+                        -- a clean movement start even if Source considered the
+                        -- pre-settle spawn position obstructed for one frame.
                         ent:DropToFloor()
+                        if ent.loco then ent.loco:ClearStuck() end
+                        ent.LODNextRouteRefresh = 0
                         encounter.entities[#encounter.entities + 1] = ent
                         self.Entities[#self.Entities + 1] = ent
                     end
@@ -95,11 +150,12 @@ concommand.Add("lod_m3_map_variance", function(ply)
             local size = hostile:GetNW2Float("LOD_SizeScale", 1)
             distinct[string.format("%.4f", size)] = true
             tell(ply, string.format(
-                "encounter=%s ordinal=%s #%d %-10s size=%.4f hp=%d speed=%.1f seed=%s",
+                "encounter=%s ordinal=%s #%d %-10s size=%.4f hp=%d speed=%.1f seed=%s stairRelocated=%s",
                 tostring(hostile.LODEncounterId), tostring(hostile.LODEncounterOrdinal),
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId), size,
                 hostile:Health(), hostile.LODConfig and hostile.LODConfig.speed or 0,
-                tostring(hostile.LODInstanceSeed or "none")
+                tostring(hostile.LODInstanceSeed or "none"),
+                tostring(hostile.LODSpawnRelocatedFromStair == true)
             ))
         end
     end
