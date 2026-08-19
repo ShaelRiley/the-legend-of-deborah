@@ -27,6 +27,11 @@ local function sortedNumericKeys(t)
     return keys
 end
 
+local function edgeKeyFromKeys(a, b)
+    if a < b then return a .. "|" .. b end
+    return b .. "|" .. a
+end
+
 local function spawnWallBox(pos, mins, maxs)
     local ent = ents.Create("lod_static_box")
     if not IsValid(ent) then return nil end
@@ -61,11 +66,16 @@ function MazeBuilder:_SpawnContainer(pos, ang)
     return ent
 end
 
+-- The canonical undirected graph edge table is the sole authority for whether
+-- a horizontal boundary is open. Do not infer geometry independently from one
+-- endpoint's neighbor table: if a future regression ever creates an asymmetric
+-- neighbor relation, using graph.Edges prevents the wall builder from creating
+-- a physical wall across an otherwise canonical open edge.
 local function hasOpenEdge(graph, cell, nx, ny, nz)
     local ck = cellKey(cell.x, cell.y, cell.z)
     local nk = cellKey(nx, ny, nz)
-    local c = graph.Cells[ck]
-    return c and c.neighbors[nk] == true
+    if not graph.Cells[nk] then return false end
+    return graph.Edges and graph.Edges[edgeKeyFromKeys(ck, nk)] ~= nil
 end
 
 local function logicalX(index)
@@ -163,7 +173,7 @@ function MazeBuilder:_BuildWalls(graph)
             if not hasOpenEdge(graph, cell, nx, ny, nz) then
                 local a = cellKey(cell.x, cell.y, cell.z)
                 local b = cellKey(nx, ny, nz)
-                local wallKey = a < b and (a .. "|" .. b) or (b .. "|" .. a)
+                local wallKey = edgeKeyFromKeys(a, b)
                 if not seen[wallKey] then
                     seen[wallKey] = true
                     visualSegments[#visualSegments + 1] = {
