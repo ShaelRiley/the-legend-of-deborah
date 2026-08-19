@@ -1,10 +1,18 @@
 LOD = LOD or {}
 LOD.HostileNoProgressRecovery = LOD.HostileNoProgressRecovery or {}
 
+-- The older autonomous ungrounded watcher used loco:IsOnGround() as its primary
+-- signal. Runtime evidence showed that generated floors can report grounded=false
+-- for many perfectly ordinary NextBots, creating a recovery/trace/console storm.
+-- Keep its topology-safe recovery routine available, but make this actual-world-
+-- displacement watcher the sole authority for deciding WHEN a recovery is needed.
+hook.Remove("Think", "LOD_UngroundedStallRecovery")
+
 local CHECK_INTERVAL = 0.25
 local STALL_SECONDS = 1.10
 local MIN_PROGRESS_2D = 8
 local RECOVERY_COOLDOWN = 2.50
+local MAX_INTENTIONAL_VERTICAL_SPEED = 30
 local nextCheck = 0
 local Navigator = LOD.MazeNavigator
 local cellKey = LOD.MazeGenerator.CellKey
@@ -26,21 +34,35 @@ local function intentionalStationary(hostile)
         return true
     end
 
-    if hostile.loco and hostile.loco.IsOnGround and not hostile.loco:IsOnGround() then
+    -- Do not recover a genuinely falling actor mid-flight. Ordinary humanoids
+    -- have zero autonomous jump height, so near-zero vertical speed is NOT a
+    -- legitimate reason to ignore a world-position stall.
+    if math.abs(hostile:GetVelocity().z) > MAX_INTENTIONAL_VERTICAL_SPEED then
         return true
     end
 
-    local waypoint = currentWaypoint(hostile)
-    if waypoint and waypoint.stair then return true end
-
     local target = hostile.LODTarget
     local cfg = hostile.LODConfig or {}
+
     if IsValid(target) and (cfg.meleeRange or 0) > 0 then
         local stopRange = (cfg.meleeRange or 0) + 18
         if hostile:GetPos():DistToSqr(target:GetPos()) <= stopRange * stopRange then
             return true
         end
     end
+
+    -- Ranged enemies intentionally hold their ground inside preferred range
+    -- between attacks. Without this, their normal cooldown can masquerade as a
+    -- locomotion stall.
+    if IsValid(target) and (cfg.preferredRange or 0) > 0 and hostile._HasLineOfSight then
+        local range = cfg.preferredRange
+        if hostile:GetPos():DistToSqr(target:GetPos()) <= range * range
+            and hostile:_HasLineOfSight(target)
+        then
+            return true
+        end
+    end
+
     return false
 end
 
@@ -48,7 +70,7 @@ local function shouldBeMoving(hostile)
     if not IsValid(hostile) or not hostile.LODHostile or intentionalStationary(hostile) then return false end
     if currentWaypoint(hostile) then return true end
     if IsValid(hostile.LODTarget) then return true end
-    return false
+    return hostile.LODReturningHome == true
 end
 
 local function dist2D(a, b)
@@ -171,17 +193,7 @@ local function recoverInsideCurrentCell(hostile)
     return true
 end
 
-local function recover(hostile)
-    if not IsValid(hostile) or hostile.LODDead then return end
-
-    local moved = recoverInsideCurrentCell(hostile)
-    if not moved then
-        -- Stair endpoints keep their dedicated exact-centerline recovery. For an
-        -- unusual ordinary-cell failure with no safe candidate, avoid guessing
-        -- another X/Y and simply ask Source for local ground settlement.
-        hostile:DropToFloor()
-    end
-
+local function finishRecoveryBookkeeping(hostile, mode)
     if hostile.loco then hostile.loco:ClearStuck() end
     hostile.LODNextRouteRefresh = 0
     hostile.LODNextTargetRefresh = 0
@@ -192,10 +204,34 @@ local function recover(hostile)
 
     print(string.format(
         "[LOD:NO-PROGRESS] #%d %s recovered mode=%s count=%d",
-        hostile:EntIndex(), tostring(hostile.LODArchetypeId),
-        moved and "same-cell-traced-ground" or "source-drop-in-place",
+        hostile:EntIndex(), tostring(hostile.LODArchetypeId), tostring(mode),
         hostile.LODNoProgressRecoveries
     ))
+end
+
+local function recover(hostile)
+    if not IsValid(hostile) or hostile.LODDead then return end
+
+    -- This routine knows the authored stair treads/landings and performs a
+    -- physically traced same-cell recovery elsewhere. It is now invoked only
+    -- after actual world-position stasis, never merely because Source reports
+    -- IsOnGround() == false.
+    local topologyRecovery = LOD.UngroundedStallRecovery
+    if topologyRecovery and topologyRecovery.Recover
+        and topologyRecovery:Recover(hostile, "world-position-stall")
+    then
+        finishRecoveryBookkeeping(hostile, "topology-safe")
+        return
+    end
+
+    local moved = recoverInsideCurrentCell(hostile)
+    if not moved then
+        -- If no verified relocation exists, ask Source to settle locally rather
+        -- than guessing another cell/floor position.
+        hostile:DropToFloor()
+    end
+
+    finishRecoveryBookkeeping(hostile, moved and "same-cell-traced-ground" or "source-drop-in-place")
 end
 
 hook.Add("Think", "LOD_HostileNoProgressRecovery", function()
@@ -234,13 +270,14 @@ local function statusLine(hostile)
     local waypoint = currentWaypoint(hostile)
     local grounded = hostile.loco and hostile.loco.IsOnGround and hostile.loco:IsOnGround()
     return string.format(
-        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f velZ=%.1f grounded=%s recoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s lastRecoveryGroundZ=%s",
+        "#%d %s size=%.3f cell=%s pos=(%.1f,%.1f,%.1f) vel2D=%.1f velZ=%.1f grounded=%s recoveries=%d topologyRecoveries=%d expectedMove=%s target=%s waypoint=%s encounter=%s wanderer=%s lastRecoveryGroundZ=%s",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId),
         hostile:GetNW2Float("LOD_SizeScale", 1),
         cell and cellKey(cell.x, cell.y, cell.z) or "none",
         hostile:GetPos().x, hostile:GetPos().y, hostile:GetPos().z,
         hostile:GetVelocity():Length2D(), hostile:GetVelocity().z, tostring(grounded),
         hostile.LODNoProgressRecoveries or 0,
+        hostile.LODUngroundedRecoveryCount or 0,
         tostring(shouldBeMoving(hostile)),
         IsValid(hostile.LODTarget) and ("#" .. hostile.LODTarget:EntIndex()) or "none",
         waypoint and (waypoint.stair and "stair" or "route") or "none",
