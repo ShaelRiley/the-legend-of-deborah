@@ -13,21 +13,23 @@ local function currentStairContext(hostile)
     local index = hostile.LODWaypointIndex or 1
     local current = waypoints[index]
     if current and current.stair and current.pos then
-        return current, "current"
+        return current, "current", current.pos, "current:" .. tostring(index)
     end
 
     -- At the crest, _AdvanceWaypoint can promote the route to the first ordinary
     -- cell waypoint while the physical hull is still only a few units beyond the
     -- final stair landing. Keep the just-completed stair landing as a short
-    -- recovery anchor so a rail/floor corner cannot strand the NextBot there.
+    -- recovery anchor, but measure successful progress toward the CURRENT route
+    -- target rather than toward the old landing.
     local previous = waypoints[index - 1]
     if previous and previous.stair and previous.pos
         and hostile:GetPos():DistToSqr(previous.pos) <= (112 * 112)
     then
-        return previous, "crest"
+        local progressTarget = current and current.pos or previous.pos
+        return previous, "crest", progressTarget, "crest:" .. tostring(index)
     end
 
-    return nil, nil
+    return nil, nil, nil, nil
 end
 
 local function intentionallyStationary(hostile)
@@ -46,10 +48,19 @@ local function intentionallyStationary(hostile)
     return false
 end
 
+local function ignoredTraceEntities(hostile)
+    local ignored = {hostile}
+    for _, other in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(other) and other ~= hostile then ignored[#ignored + 1] = other end
+    end
+    return ignored
+end
+
 local function safeRecoveryPosition(hostile, anchor)
     if not anchor or not anchor.pos then return nil end
     local mins, maxs = hostile:GetCollisionBounds()
     if not mins or not maxs then return nil end
+    local ignored = ignoredTraceEntities(hostile)
 
     -- Exact stair waypoints are centered over validated tread/landing geometry.
     -- Try a few tiny vertical clearances to avoid treating floor contact itself
@@ -62,7 +73,7 @@ local function safeRecoveryPosition(hostile, anchor)
             mins = mins,
             maxs = maxs,
             mask = MASK_NPCSOLID,
-            filter = hostile
+            filter = ignored
         })
         if not tr.StartSolid and not tr.AllSolid then return candidate end
     end
@@ -104,18 +115,27 @@ hook.Add("Think", "LOD_HostileStairSelfRecovery", function()
 
     for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(hostile) and hostile.LODHostile and not intentionallyStationary(hostile) then
-            local anchor, context = currentStairContext(hostile)
-            if anchor then
-                local distance = hostile:GetPos():Distance(anchor.pos)
-                local best = hostile.LODStairProgressBest
-
-                if not best or distance <= best - MIN_PROGRESS then
-                    hostile.LODStairProgressBest = distance
+            local anchor, context, progressTarget, progressKey = currentStairContext(hostile)
+            if anchor and progressTarget then
+                if hostile.LODStairProgressKey ~= progressKey then
+                    hostile.LODStairProgressKey = progressKey
+                    hostile.LODStairProgressBest = hostile:GetPos():Distance(progressTarget)
                     hostile.LODStairProgressTime = now
-                elseif now - (hostile.LODStairProgressTime or now) >= STUCK_SECONDS then
-                    Recovery:Recover(hostile, anchor, context)
+                else
+                    local distance = hostile:GetPos():Distance(progressTarget)
+                    local best = hostile.LODStairProgressBest
+
+                    if not best or distance <= best - MIN_PROGRESS then
+                        hostile.LODStairProgressBest = distance
+                        hostile.LODStairProgressTime = now
+                    elseif now - (hostile.LODStairProgressTime or now) >= STUCK_SECONDS then
+                        if Recovery:Recover(hostile, anchor, context) then
+                            hostile.LODStairProgressKey = nil
+                        end
+                    end
                 end
             else
+                hostile.LODStairProgressKey = nil
                 hostile.LODStairProgressBest = nil
                 hostile.LODStairProgressTime = nil
             end
@@ -132,7 +152,7 @@ concommand.Add("lod_m3_stair_recovery_status", function(ply)
     for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(hostile) and hostile.LODHostile then
             found = found + 1
-            local anchor, context = currentStairContext(hostile)
+            local _, context = currentStairContext(hostile)
             local text = string.format("#%d %s size=%.3f stairContext=%s recoveryCount=%d",
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId),
                 hostile:GetNW2Float("LOD_SizeScale", 1), tostring(context or "none"),
