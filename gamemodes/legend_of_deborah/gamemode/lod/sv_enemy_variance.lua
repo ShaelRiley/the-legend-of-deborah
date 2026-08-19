@@ -43,9 +43,6 @@ end
 local function stableSpawnIdentity(hostile)
     if hostile.LODEncounterOrdinal then return "ordinal:" .. tostring(hostile.LODEncounterOrdinal) end
 
-    -- Existing encounter spawners place each unit at a deterministic offset from
-    -- its encounter cell. Use that position instead of EntIndex so activating
-    -- encounters in a different order does not perturb the same-seed enemy roll.
     if hostile.LODEncounterId then
         local pos = hostile:GetPos()
         return string.format("pos:%d:%d:%d",
@@ -54,7 +51,6 @@ local function stableSpawnIdentity(hostile)
             math.floor(pos.z * 10 + 0.5))
     end
 
-    -- Developer-only ad-hoc spawns are not part of ranked seed reproduction.
     return "debug:" .. tostring(hostile:EntIndex())
 end
 
@@ -70,13 +66,6 @@ local function instanceSeed(hostile)
     local label = string.format("enemy:%s:%s:%s:%s", tostring(encounter), identity, tostring(home), tostring(archetype))
     hostile.LODInstanceSeed = LOD.Seeds.Derive(levelSeed, label)
     return hostile.LODInstanceSeed
-end
-
-local function scaleCollision(hostile, size)
-    if not hostile.GetCollisionBounds or not hostile.SetCollisionBounds then return end
-    local mins, maxs = hostile:GetCollisionBounds()
-    if not mins or not maxs then return end
-    hostile:SetCollisionBounds(mins * size, maxs * size)
 end
 
 local function scaledValue(base, sizeFactor, randomFactor)
@@ -115,13 +104,15 @@ function EnemyVariance:Apply(hostile)
     local timerScale = math.pow(size, V.TimerSizeExponent or 0.10)
     local rangeScale = math.pow(size, V.RangeSizeExponent or 0.55)
 
-    -- Model and hull vary together so what the player sees remains congruent
-    -- with what bullets/movement collide against.
-    hostile:SetModelScale(size, 0)
-    scaleCollision(hostile, size)
+    -- IMPORTANT: visual size is intentionally NOT applied with server-side
+    -- SetModelScale and this module never changes collision bounds. Runtime
+    -- testing showed that mutating a live NextBot's model/collision scale can
+    -- corrupt ground contact and produce half-buried or immobilized enemies.
+    -- The size value is networked below and rendered client-side only. Movement
+    -- hulls are owned exclusively by the grounding/locomotion layer; firearm
+    -- combat volume is owned by sv_hostile_combat_hulls.lua.
+    hostile:SetModelScale(1, 0)
 
-    -- Preserve campaign/party health scaling already applied by the base entity,
-    -- then layer the deterministic individual scale on top.
     local currentMax = math.max(1, hostile:GetMaxHealth())
     local variedMax = math.max(1, math.floor(currentMax * hpScale + 0.5))
     hostile:SetMaxHealth(variedMax)
@@ -157,18 +148,12 @@ function EnemyVariance:Apply(hostile)
         cfg.projectileSpeed = math.max(120, cfg.projectileSpeed * jitter(seed, "projectileSpeed", V.ProjectileSpeedJitter))
     end
 
-    -- The Deadcrab's 0.75-second latched fuse is a signature readability rule,
-    -- not part of the cadence randomization. Likewise navigation step/jump
-    -- allowances remain fixed so visual variety cannot break maze solvability.
     if hostile.loco and cfg.speed then
         hostile.loco:SetDesiredSpeed(cfg.speed)
         hostile.loco:SetAcceleration(math.max(500, cfg.speed * 5))
         hostile.loco:SetDeceleration(math.max(500, cfg.speed * 6))
     end
 
-    -- Footstep variance uses its own deterministic stream. Base stride distance
-    -- scales with visible body size; the +/-2.5% roll then changes on every
-    -- completed physical footfall. Same seed + identity reproduces the sequence.
     hostile.LODStrideRNG = LOD.RNG.New(LOD.Seeds.Derive(seed, "micro-stride"))
     hostile.LODStrideBaseDistance = (BASE_STRIDE_DISTANCE[hostile.LODArchetypeId] or 52) * size
     hostile.LODStrideAccumDistance = 0
@@ -203,9 +188,6 @@ local function installHostilePatch()
     function class:_BehaviourTick()
         local cfg = self.LODConfig
 
-        -- The factor is stable for the WHOLE current footstep. It is not rolled
-        -- here. The Think tracker below advances it only when this hostile has
-        -- physically travelled the current step's target distance.
         if cfg and cfg.speed and self.LODStrideFactor and not self.LODDead and self.LODActivated ~= false then
             local baseSpeed = cfg.speed
             cfg.speed = baseSpeed * self.LODStrideFactor
@@ -224,9 +206,6 @@ hook.Add("OnEntityCreated", "LOD_EnemyVarianceInstallBeforeSpawn", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end
 end)
 
--- Measure actual world displacement so a "step" is a physical movement unit,
--- not a render frame or AI coroutine iteration. Each time the current step
--- distance is completed, advance exactly once to a new +/-2.5% roll.
 hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
     for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(hostile) and hostile.LODStrideRNG then
@@ -240,8 +219,6 @@ hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
                 and hostile:GetVelocity():Length2D() > 8
 
             if moving and last then
-                -- Ignore/debug-clamp teleports so they cannot consume a whole
-                -- series of gait rolls instantaneously.
                 local travelled = math.min(80, pos:Distance(last))
                 hostile.LODStrideAccumDistance = (hostile.LODStrideAccumDistance or 0) + travelled
                 local target = hostile.LODStrideTargetDistance or hostile.LODStrideBaseDistance or 52
