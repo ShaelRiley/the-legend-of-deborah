@@ -53,16 +53,26 @@ function Ballistics:PlayerBulletBlocked(hostile, dmginfo)
     return blocked == true
 end
 
--- Damage-time fail-safe. This is deliberately independent of the weapon class:
--- any player-originated bullet damage must respect the generated maze as solid
--- cover. The hit-feedback module asks the same predicate before playing its cue,
--- so a blocked shot cannot produce a false confirmation beep or hit stun.
+-- Damage-time fail-safe. Any player-originated bullet damage must respect the
+-- generated maze as solid cover even when Source's original shot mask ignored a
+-- scripted floor slab.
 hook.Add("EntityTakeDamage", "LOD_GeneratedGeometryBlocksPlayerBullets", function(target, dmginfo)
     if not IsValid(target) or not target.LODHostile then return end
-    if Ballistics:PlayerBulletBlocked(target, dmginfo) then
-        return true
-    end
+    if Ballistics:PlayerBulletBlocked(target, dmginfo) then return true end
 end)
+
+-- Hit feedback is loaded before this module. Wrap its shared handler as well as
+-- the damage hook so a shot rejected by generated cover cannot beep, flinch, or
+-- interrupt an attack even if hook dispatch order changes.
+if LOD.M3HitFeedback and not LOD.M3HitFeedback.LODGeneratedCoverWrapped then
+    local feedback = LOD.M3HitFeedback
+    feedback.LODGeneratedCoverWrapped = true
+    local baseHandle = feedback.HandleDamageEvent
+    function feedback:HandleDamageEvent(hostile, dmginfo, source)
+        if Ballistics:PlayerBulletBlocked(hostile, dmginfo) then return false end
+        return baseHandle(self, hostile, dmginfo, source)
+    end
+end
 
 local function installHostileLOSPatch()
     local stored = scripted_ents.GetStored("lod_hostile")
