@@ -4,7 +4,6 @@ local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
 local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
 local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
-local sealColor = Color(24, 27, 29, 255)
 local textureTile = GC.FloorTextureTile or 384
 
 local function floorMaterial()
@@ -110,10 +109,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                     true
                 )
             elseif kind == 5 then
-                -- Under-wall seals are horizontal shadow plates, not pedestals.
-                -- Drawing only their broad faces prevents the 2-unit plate edge
-                -- from reading as another artificial riser beneath a container.
-                drawFloorSlab(ent, sealColor)
+                -- Exterior wall aprons are continuations of the ordinary deck,
+                -- sharing its exact top plane, texture, and color. Draw only the
+                -- broad faces so overlap beneath container walls is visually
+                -- indistinguishable from the contiguous ground floor.
+                drawFloorSlab(ent, floorColor)
             end
         end
     end
