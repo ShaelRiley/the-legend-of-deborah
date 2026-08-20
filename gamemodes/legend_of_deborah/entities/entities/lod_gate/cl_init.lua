@@ -2,7 +2,15 @@ include("shared.lua")
 
 local PC = LOD.Config.Progression
 local GATE_UI_HEIGHT = 72
-local gateMaterial = CreateMaterial("lod_gate_opaque_v1", "UnlitGeneric", {
+local GATE_VISUAL_HEIGHT = PC.GateBlockerHeight
+local GATE_METAL_COLOR = Color(72, 76, 78, 255)
+local GATE_RIB_COLOR = Color(38, 41, 43, 255)
+
+-- Reuse the same proven dark industrial floor material so locked progression
+-- barriers read as part of one heavy steel construction vocabulary rather than
+-- as flat debug-colored volumes.
+local gateMetalMaterial = Material("phoenix_storms/metalfloor_2-3")
+local solidMaterial = CreateMaterial("lod_gate_solid_v2", "UnlitGeneric", {
     ["$basetexture"] = "color/white",
     ["$vertexcolor"] = "1",
     ["$vertexalpha"] = "1"
@@ -29,13 +37,11 @@ end
 local function gateLocalBounds(ent)
     local halfThickness = PC.GateThickness * 0.5
     local halfWidth = PC.GateWidth * 0.5
-    local halfHeight = PC.GateBlockerHeight * 0.5
-    local visibleBottom = -halfHeight
-    local visibleTop = visibleBottom + PC.GateVisibleHeight
+    local halfHeight = GATE_VISUAL_HEIGHT * 0.5
     if ent:GetGateAxis() == 0 then
-        return Vector(-halfThickness, -halfWidth, visibleBottom), Vector(halfThickness, halfWidth, visibleTop)
+        return Vector(-halfThickness, -halfWidth, -halfHeight), Vector(halfThickness, halfWidth, halfHeight)
     end
-    return Vector(-halfWidth, -halfThickness, visibleBottom), Vector(halfWidth, halfThickness, visibleTop)
+    return Vector(-halfWidth, -halfThickness, -halfHeight), Vector(halfWidth, halfThickness, halfHeight)
 end
 
 local function openingFraction(ent)
@@ -45,8 +51,59 @@ local function openingFraction(ent)
     return math.Clamp((CurTime() - started) / PC.GateOpenSeconds, 0, 1)
 end
 
+local function drawStructuralBox(ent, center, mins, maxs, color)
+    render.SetMaterial(solidMaterial)
+    render.DrawBox(center, angle_zero, mins, maxs, color)
+end
+
+local function drawReinforcement(ent, center)
+    local halfThickness = PC.GateThickness * 0.5
+    local halfWidth = PC.GateWidth * 0.5
+    local halfHeight = GATE_VISUAL_HEIGHT * 0.5
+    local ribDepth = halfThickness + 4
+    local ribHalfWidth = 6
+
+    -- Five raised vertical ribs plus two horizontal braces make the door read as
+    -- a reinforced prison/industrial shutter while remaining completely opaque.
+    for _, offset in ipairs({-0.72, -0.36, 0, 0.36, 0.72}) do
+        local lateral = halfWidth * offset
+        if ent:GetGateAxis() == 0 then
+            drawStructuralBox(ent, center + Vector(0, lateral, 0),
+                Vector(-ribDepth, -ribHalfWidth, -halfHeight), Vector(ribDepth, ribHalfWidth, halfHeight), GATE_RIB_COLOR)
+        else
+            drawStructuralBox(ent, center + Vector(lateral, 0, 0),
+                Vector(-ribHalfWidth, -ribDepth, -halfHeight), Vector(ribHalfWidth, ribDepth, halfHeight), GATE_RIB_COLOR)
+        end
+    end
+
+    for _, z in ipairs({-halfHeight * 0.48, halfHeight * 0.48}) do
+        if ent:GetGateAxis() == 0 then
+            drawStructuralBox(ent, center + Vector(0, 0, z),
+                Vector(-ribDepth, -halfWidth, -7), Vector(ribDepth, halfWidth, 7), GATE_RIB_COLOR)
+        else
+            drawStructuralBox(ent, center + Vector(0, 0, z),
+                Vector(-halfWidth, -ribDepth, -7), Vector(halfWidth, ribDepth, 7), GATE_RIB_COLOR)
+        end
+    end
+end
+
+local function drawColorBand(ent, center, color)
+    local halfThickness = PC.GateThickness * 0.5 + 5
+    local halfWidth = PC.GateWidth * 0.5
+    local halfBandHeight = 10
+    local z = -GATE_VISUAL_HEIGHT * 0.5 + GATE_UI_HEIGHT + 52
+
+    render.SetMaterial(solidMaterial)
+    if ent:GetGateAxis() == 0 then
+        render.DrawBox(center + Vector(0, 0, z), angle_zero,
+            Vector(-halfThickness, -halfWidth, -halfBandHeight), Vector(halfThickness, halfWidth, halfBandHeight), color)
+    else
+        render.DrawBox(center + Vector(0, 0, z), angle_zero,
+            Vector(-halfWidth, -halfThickness, -halfBandHeight), Vector(halfWidth, halfThickness, halfBandHeight), color)
+    end
+end
+
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
-    render.SetMaterial(gateMaterial)
     render.CullMode(MATERIAL_CULLMODE_NONE)
 
     for ent in pairs(LOD.ClientGates) do
@@ -55,9 +112,17 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             local card = PC.Cards[index]
             local mins, maxs = gateLocalBounds(ent)
             local frac = openingFraction(ent)
+
             if frac < 1 then
-                local lift = Vector(0, 0, PC.GateVisibleHeight * frac)
-                render.DrawBox(ent:GetPos() + lift, angle_zero, mins, maxs, card.color)
+                -- Locked gates are floor-to-ceiling opaque steel shutters. On
+                -- unlock the whole reinforced assembly retracts upward, preserving
+                -- the existing readable opening animation without exposing the
+                -- next sector beforehand.
+                local center = ent:GetPos() + Vector(0, 0, GATE_VISUAL_HEIGHT * frac)
+                render.SetMaterial(gateMetalMaterial)
+                render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
+                drawReinforcement(ent, center)
+                drawColorBand(ent, center, card.color)
             end
 
             local locked = not ent:GetOpened()
