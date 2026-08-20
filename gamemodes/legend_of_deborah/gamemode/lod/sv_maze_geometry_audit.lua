@@ -4,6 +4,7 @@ LOD.MazeGeometryAudit = LOD.MazeGeometryAudit or {}
 local Audit = LOD.MazeGeometryAudit
 local Builder = LOD.MazeBuilder
 local MC = LOD.Config.Maze
+local GC = LOD.Config.Geometry or {}
 local cellKey = LOD.MazeGenerator.CellKey
 
 local function edgeKey(a, b)
@@ -43,14 +44,20 @@ local function wallAt(point, walls)
 end
 
 local function visualAt(point)
+    -- Container visuals may be deliberately sunk a few units into the authored
+    -- deck to hide the cargo model's recessed feet. Collision remains on the
+    -- canonical graph boundary. Audit against that intentional visual origin
+    -- rather than requiring the model center to equal the collision probe Z.
+    local visualInset = GC.ContainerVisualInsetZ or 0
+    local expected = point - Vector(0, 0, visualInset)
     local best
     local bestDist = math.huge
     for _, ent in ipairs(ents.FindByClass("lod_container_visual")) do
         if IsValid(ent) then
             local p = ent:GetPos()
-            local dx = p.x - point.x
-            local dy = p.y - point.y
-            local dz = p.z - point.z
+            local dx = p.x - expected.x
+            local dy = p.y - expected.y
+            local dz = p.z - expected.z
             local d2 = dx * dx + dy * dy + dz * dz
             if d2 < bestDist then
                 bestDist = d2
@@ -58,8 +65,8 @@ local function visualAt(point)
             end
         end
     end
-    -- Wall visuals are authored exactly on logical edge centers and at the same
-    -- stack elevation as this probe. A tight full-3D tolerance prevents a wall
+    -- Wall visuals are authored exactly on logical edge centers in X/Y and at
+    -- the configured visual inset in Z. A tight full-3D tolerance prevents a wall
     -- on another maze floor from being mistaken for this edge.
     if best and bestDist <= 4 * 4 then return best end
     return nil
@@ -196,7 +203,6 @@ concommand.Add("lod_map_edge_audit", function(ply)
     if not graph then return end
     local cell = LOD.MazeNavigator:WorldToCell(graph, ply:GetPos())
     if not cell then return end
-
     local forward = Angle(0, ply:EyeAngles().y, 0):Forward()
     local dx, dy, dir
     if math.abs(forward.x) >= math.abs(forward.y) then
