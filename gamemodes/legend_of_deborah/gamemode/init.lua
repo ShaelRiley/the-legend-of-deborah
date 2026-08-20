@@ -17,6 +17,9 @@ include("lod/sv_graph_integrity.lua")
 include("lod/sv_maze_builder.lua")
 include("lod/sv_maze_builder_static_walls.lua")
 include("lod/sv_maze_builder_floor_anchor.lua")
+-- Seal the deliberately raised level-0 deck at exterior wall edges so the
+-- underlying gm_flatgrass surface can never peek through beneath containers.
+include("lod/sv_ground_perimeter_seals.lua")
 include("lod/sv_m1_stair_geometry.lua")
 include("lod/sv_maze_navigator.lua")
 include("lod/sv_faction_manager.lua")
