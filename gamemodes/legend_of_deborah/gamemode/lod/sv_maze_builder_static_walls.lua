@@ -16,10 +16,10 @@ local DIRS = {
 -- The cargo-container model has recessed feet/undercut geometry at its visual
 -- base. Our authoritative floor plane is exact, but placing the model mathematically
 -- flush with that plane can reveal whatever map surface lies beneath it. Sink the
--- complete visible wall stack slightly into the deck. Collision is provided by the
--- independent merged wall boxes, so this is purely a visual seam treatment and
--- cannot change navigation or progression geometry.
-local CONTAINER_VISUAL_EMBED = 10
+-- complete visible wall stack into the deck far enough that shallow viewing angles
+-- cannot see through the model's base cutouts. Collision is provided by independent
+-- merged wall boxes, so this remains a visual-only seam treatment.
+local CONTAINER_VISUAL_EMBED = 16
 
 local function sortedKeys(t)
     local keys = {}
