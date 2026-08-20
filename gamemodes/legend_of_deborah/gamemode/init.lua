@@ -33,18 +33,22 @@ include("lod/sv_minimap.lua")
 include("lod/sv_minimap_canonical.lua")
 include("lod/sv_minimap_safety.lua")
 include("lod/sv_combat_audio.lua")
+
+-- Motion V2 is the one production ground-movement authority. Load it before
+-- archetype/variance wrappers so their existing state machines wrap the new
+-- graph-authoritative kinematic kernel rather than CLuaLocomotion:Approach.
+include("lod/sv_hostile_motion_v2.lua")
 include("lod/sv_deadcrab.lua")
 include("lod/sv_bioblaster.lua")
 include("lod/sv_enemy_variance.lua")
 include("lod/sv_wandering_director.lua")
-include("lod/sv_hostile_planar_movement.lua")
 include("lod/sv_encounter_spawn_variance.lua")
 include("lod/sv_hostile_separation.lua")
-include("lod/sv_hostile_stair_recovery.lua")
-include("lod/sv_m3_grounding_path_fix.lua")
-include("lod/sv_hostile_ground_bridge.lua")
-include("lod/sv_ungrounded_stall_recovery.lua")
-include("lod/sv_hostile_no_progress_recovery.lua")
+
+-- The former planar/ground-bridge/stair/no-progress recovery modules remain in
+-- the repository for rollback/history but are intentionally NOT loaded. They all
+-- attempted to repair Source NextBot ground locomotion after the fact and must
+-- not compete with Motion V2.
 include("lod/sv_m3_ground_probe.lua")
 include("lod/sv_hostile_combat_hulls.lua")
 include("lod/sv_m3_hit_feedback.lua")
