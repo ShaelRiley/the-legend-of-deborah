@@ -3,19 +3,27 @@ LOD.M3GroundingPathFix = LOD.M3GroundingPathFix or {}
 
 local EncounterDirector = LOD.EncounterDirector
 
--- Runtime testing showed two important Source/NextBot rules:
--- 1) movement collision must stay fixed and independent of visual enemy size;
--- 2) a NextBot's native grounded entity origin is NOT guaranteed to equal the
---    authored logical floor-top Z. Continuously forcing GetPos().z to the graph
---    floor made Source re-settle the bot every frame and caused visible clipping,
---    immobilization, and console spam. Let Source own vertical ground settlement.
+-- Runtime ground probing established the missing coordinate-space invariant:
+-- humanoid NextBot entity origins sit about 24 Source units BELOW the actual
+-- walking/visible foot plane on our generated geometry. The old 0..72 movement
+-- hull therefore began 24 units beneath the floor whenever Source settled a bot
+-- naturally, leaving loco:IsOnGround() false and making Approach report velocity
+-- without world translation. Keep that native origin; align the movement hull to
+-- the physical foot plane instead of moving the entity vertically every frame.
+LOD.HumanoidFootOffset = LOD.HumanoidFootOffset or 24
+
+-- Runtime testing also showed that varying the movement hull together with visual
+-- enemy size is unsafe on generated Source collision. Every humanoid therefore
+-- keeps one fixed 32x32x72 locomotion volume, merely offset upward by the native
+-- 24-unit origin-to-foot distance. Deadcrab keeps its dedicated compact hull.
 local function stableLocomotionBounds(hostile)
     if not IsValid(hostile) or not hostile.LODHostile then return end
 
     if hostile.LODArchetypeId == "deadcrab" then
         hostile:SetCollisionBounds(Vector(-14, -14, 0), Vector(14, 14, 30))
     else
-        hostile:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
+        local foot = LOD.HumanoidFootOffset or 24
+        hostile:SetCollisionBounds(Vector(-16, -16, foot), Vector(16, 16, foot + 72))
     end
 end
 
@@ -35,8 +43,9 @@ local function activeStairContext(hostile)
 end
 
 -- Diagnostic only. This is the authored logical floor plane, not a coordinate we
--- should force onto a live NextBot. The engine may keep the entity origin below
--- that plane while the actual movement hull/model is correctly ground-contacted.
+-- should force onto a live NextBot. Humanoid entity origins are expected to sit
+-- approximately HumanoidFootOffset units below it while their movement hull begins
+-- at the actual foot plane.
 local function graphFloorZ(hostile)
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
@@ -55,8 +64,9 @@ local function settleUsingSource(hostile)
     if hostile.LODDeadcrabState == "leaping" or hostile.LODDeadcrabState == "latched" then return end
     if activeStairContext(hostile) then return end
 
-    -- This is intentionally the ordinary Source operation that was used by the
-    -- pre-variance encounter implementation. Do not follow it with a graph-Z snap.
+    -- Source now receives a movement hull whose bottom coincides with the native
+    -- humanoid foot plane. Let the engine settle that hull locally; never follow
+    -- this with a graph-Z snap of the raw entity origin.
     hostile:DropToFloor()
     if hostile.loco then hostile.loco:ClearStuck() end
 end
