@@ -2,35 +2,21 @@ LOD = LOD or {}
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox
-local meshCache = meshCache or {}
-local DEFAULT_TILE = 128
-
--- The stock PHX floor material carries a pronounced bump/phong treatment. Once
--- the diagonal OpenGL primitive bug was fixed, that relief became the next visual
--- problem: repeated tiles read as literal raised/lowered plates even though the
--- authored deck plane is perfectly flat. Keep the same grippy base artwork, but
--- deliberately omit its bump/phong/envmap stages so the texture reads as surface
--- roughness rather than fake geometry.
-TexturedBox.IndustrialMaterial = TexturedBox.IndustrialMaterial or CreateMaterial(
-    "lod_industrial_grip_flat_v1",
-    "VertexLitGeneric",
-    {
-        ["$basetexture"] = "phoenix_storms/metalfloor_2-3",
-        ["$vertexcolor"] = "1",
-        ["$vertexalpha"] = "1",
-        ["$halflambert"] = "1"
-    }
-)
+local boxMeshCache = boxMeshCache or {}
+local slabMeshCache = slabMeshCache or {}
+local DEFAULT_TILE = 384
 
 function TexturedBox:GetIndustrialMaterial(fallbackPath)
-    local mat = self.IndustrialMaterial
+    local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
+    local primary = GC.FloorMaterial or "models/props_wasteland/metal_tram001a"
+    local mat = Material(primary)
     if mat and not mat:IsError() then return mat end
-    return Material(fallbackPath or "models/props_c17/FurnitureMetal001a")
+    return Material(fallbackPath or GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
 end
 
-local function cacheKey(mins, maxs, tile)
-    return string.format("%.3f,%.3f,%.3f|%.3f,%.3f,%.3f|%.3f",
-        mins.x, mins.y, mins.z, maxs.x, maxs.y, maxs.z, tile)
+local function cacheKey(prefix, mins, maxs, tile)
+    return string.format("%s|%.3f,%.3f,%.3f|%.3f,%.3f,%.3f|%.3f",
+        prefix, mins.x, mins.y, mins.z, maxs.x, maxs.y, maxs.z, tile)
 end
 
 local function pushVertex(pos, normal, tangentS, tangentT, u, v)
@@ -38,8 +24,6 @@ local function pushVertex(pos, normal, tangentS, tangentT, u, v)
     mesh.Normal(normal)
     mesh.TangentS(tangentS)
     mesh.TangentT(tangentT)
-    -- Some Source bump-mapped shaders consume tangent data through USERDATA.
-    -- Supplying it as well as TangentS/T keeps stock materials well behaved.
     mesh.UserData(tangentS.x, tangentS.y, tangentS.z, 1)
     mesh.TexCoord(0, u, v)
     mesh.Color(255, 255, 255, 255)
@@ -53,16 +37,10 @@ local function addQuad(a, b, c, d, normal, tangentS, tangentT, uMax, vMax)
     pushVertex(d, normal, tangentS, tangentT, 0, vMax)
 end
 
-local function buildMesh(mins, maxs, tile)
-    tile = math.max(1, tile or DEFAULT_TILE)
+local function addTopBottom(mins, maxs, tile)
     local dx = math.abs(maxs.x - mins.x)
     local dy = math.abs(maxs.y - mins.y)
-    local dz = math.abs(maxs.z - mins.z)
 
-    local obj = Mesh()
-    mesh.Begin(obj, MATERIAL_QUADS, 6)
-
-    -- Top / bottom.
     addQuad(
         Vector(mins.x, mins.y, maxs.z), Vector(maxs.x, mins.y, maxs.z),
         Vector(maxs.x, maxs.y, maxs.z), Vector(mins.x, maxs.y, maxs.z),
@@ -73,8 +51,19 @@ local function buildMesh(mins, maxs, tile)
         Vector(maxs.x, mins.y, mins.z), Vector(mins.x, mins.y, mins.z),
         Vector(0, 0, -1), Vector(1, 0, 0), Vector(0, -1, 0), dx / tile, dy / tile
     )
+end
 
-    -- +/- X faces.
+local function buildBoxMesh(mins, maxs, tile)
+    tile = math.max(1, tile or DEFAULT_TILE)
+    local dx = math.abs(maxs.x - mins.x)
+    local dy = math.abs(maxs.y - mins.y)
+    local dz = math.abs(maxs.z - mins.z)
+
+    local obj = Mesh()
+    mesh.Begin(obj, MATERIAL_QUADS, 6)
+
+    addTopBottom(mins, maxs, tile)
+
     addQuad(
         Vector(maxs.x, mins.y, mins.z), Vector(maxs.x, maxs.y, mins.z),
         Vector(maxs.x, maxs.y, maxs.z), Vector(maxs.x, mins.y, maxs.z),
@@ -85,8 +74,6 @@ local function buildMesh(mins, maxs, tile)
         Vector(mins.x, mins.y, maxs.z), Vector(mins.x, maxs.y, maxs.z),
         Vector(-1, 0, 0), Vector(0, -1, 0), Vector(0, 0, 1), dy / tile, dz / tile
     )
-
-    -- +/- Y faces.
     addQuad(
         Vector(maxs.x, maxs.y, mins.z), Vector(mins.x, maxs.y, mins.z),
         Vector(mins.x, maxs.y, maxs.z), Vector(maxs.x, maxs.y, maxs.z),
@@ -102,20 +89,35 @@ local function buildMesh(mins, maxs, tile)
     return obj
 end
 
-function TexturedBox:GetMesh(mins, maxs, tile)
-    tile = tile or DEFAULT_TILE
-    local key = cacheKey(mins, maxs, tile)
-    if not meshCache[key] then
-        meshCache[key] = buildMesh(mins, maxs, tile)
-    end
-    return meshCache[key]
+local function buildSlabMesh(mins, maxs, tile)
+    tile = math.max(1, tile or DEFAULT_TILE)
+    local obj = Mesh()
+    mesh.Begin(obj, MATERIAL_QUADS, 2)
+    addTopBottom(mins, maxs, tile)
+    mesh.End()
+    return obj
 end
 
-function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile)
-    if not position or not mins or not maxs or not material then return end
+function TexturedBox:GetMesh(mins, maxs, tile)
+    tile = tile or DEFAULT_TILE
+    local key = cacheKey("box", mins, maxs, tile)
+    if not boxMeshCache[key] then
+        boxMeshCache[key] = buildBoxMesh(mins, maxs, tile)
+    end
+    return boxMeshCache[key]
+end
 
-    local obj = self:GetMesh(mins, maxs, tile)
-    if not obj then return end
+function TexturedBox:GetSlabMesh(mins, maxs, tile)
+    tile = tile or DEFAULT_TILE
+    local key = cacheKey("slab", mins, maxs, tile)
+    if not slabMeshCache[key] then
+        slabMeshCache[key] = buildSlabMesh(mins, maxs, tile)
+    end
+    return slabMeshCache[key]
+end
+
+local function drawMesh(obj, position, angles, material, color)
+    if not obj or not position or not material then return end
 
     render.SetMaterial(material)
     local c = color or color_white
@@ -132,4 +134,19 @@ function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile)
 
     render.SetBlend(1)
     render.SetColorModulation(1, 1, 1)
+end
+
+function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile)
+    if not position or not mins or not maxs or not material then return end
+    drawMesh(self:GetMesh(mins, maxs, tile), position, angles, material, color)
+end
+
+-- Ordinary floor runs are visually one continuous horizontal deck. Rendering the
+-- vertical side faces of every row-run box exposed internal seams at low camera
+-- angles and made a mathematically flat floor look like a staircase. Slab mode
+-- intentionally draws only the walkable top and ceiling underside. Real stair
+-- geometry and the gate continue to use the full six-face renderer.
+function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile)
+    if not position or not mins or not maxs or not material then return end
+    drawMesh(self:GetSlabMesh(mins, maxs, tile), position, angles, material, color)
 end
