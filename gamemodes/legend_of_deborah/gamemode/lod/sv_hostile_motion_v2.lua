@@ -27,7 +27,7 @@ local cellKey = LOD.MazeGenerator.CellKey
 
 local FLOOR_LIFT = 2
 local MAX_STEP_DT = 0.050
-local CELL_INTERIOR_MARGIN = 84
+local CELL_INTERIOR_MARGIN = 32
 local MIN_FACE_DELTA_SQR = 0.25
 
 Motion.Version = 2
@@ -48,17 +48,21 @@ local function currentWaypoint(hostile)
 end
 
 local function quiesceEngineLocomotion(hostile)
-    -- Deadcrab's committed leap still uses its existing ballistic NextBot launch
-    -- for now. Its ordinary walking is kinematic like every other archetype.
-    if hostile.LODArchetypeId == "deadcrab" then return end
     if not hostile.loco then return end
 
+    -- Ordinary travel never uses CLuaLocomotion velocity. Deadcrab keeps its
+    -- native gravity/jump capability so its explicit leap state can still launch
+    -- ballistically, but while it is walking this function zeros its engine-side
+    -- horizontal movement just like every other archetype.
     hostile.loco:SetDesiredSpeed(0)
     if hostile.loco.SetVelocity then hostile.loco:SetVelocity(vector_origin) end
-    if hostile.loco.SetGravity then hostile.loco:SetGravity(0) end
-    if hostile.loco.SetJumpHeight then hostile.loco:SetJumpHeight(0) end
-    if hostile.loco.SetClimbAllowed then hostile.loco:SetClimbAllowed(false) end
-    if hostile.loco.SetJumpGapsAllowed then hostile.loco:SetJumpGapsAllowed(false) end
+
+    if hostile.LODArchetypeId ~= "deadcrab" then
+        if hostile.loco.SetGravity then hostile.loco:SetGravity(0) end
+        if hostile.loco.SetJumpHeight then hostile.loco:SetJumpHeight(0) end
+        if hostile.loco.SetClimbAllowed then hostile.loco:SetClimbAllowed(false) end
+        if hostile.loco.SetJumpGapsAllowed then hostile.loco:SetJumpGapsAllowed(false) end
+    end
 end
 
 function Motion:FaceToward(hostile, worldPos)
@@ -76,7 +80,7 @@ function Motion:Stop(hostile)
     hostile.LODMotionSpeed = 0
     hostile.LODMotionVelocity = vector_origin
     hostile.LODMotionMode = "hold"
-    if hostile.LODArchetypeId ~= "deadcrab" then quiesceEngineLocomotion(hostile) end
+    quiesceEngineLocomotion(hostile)
 end
 
 function Motion:CellFloorPoint(cell, sourcePos)
@@ -84,6 +88,9 @@ function Motion:CellFloorPoint(cell, sourcePos)
     local center = Navigator:CellCenter(cell)
     if not sourcePos then return center + Vector(0, 0, FLOOR_LIFT) end
 
+    -- Keep local pursuit and spawn offsets at least 32 units inside a cell edge.
+    -- The stable humanoid hull is 16 units wide per side, leaving another 16
+    -- units of deterministic clearance from a closed container wall.
     local limit = math.max(32, MC.CellSize * 0.5 - CELL_INTERIOR_MARGIN)
     return Vector(
         math.Clamp(sourcePos.x, center.x - limit, center.x + limit),
@@ -107,10 +114,11 @@ function Motion:SnapSpawn(hostile)
     if not cell then return false end
 
     local safe = self:CellFloorPoint(cell, hostile:GetPos())
+    local yaw = hostile:GetAngles().y
     hostile:SetPos(safe)
-    -- SOLID_BBOX entities may have angles disturbed by SetPos; restore a stable
-    -- yaw after positioning instead of relying on NextBot's delayed FaceTowards.
-    hostile:SetAngles(Angle(0, hostile:GetAngles().y, 0))
+    -- SOLID_BBOX entities can have angles disturbed by SetPos; restore yaw after
+    -- positioning rather than depending on NextBot's delayed FaceTowards.
+    hostile:SetAngles(Angle(0, yaw, 0))
     hostile.LODMotionLastUpdate = CurTime()
     hostile.LODMotionLastPos = safe
     hostile.LODMotionSpeed = 0
@@ -154,11 +162,9 @@ function Motion:MoveToward(hostile, waypoint)
     local delta = goal - pos
 
     -- Ordinary graph travel is mathematically planar. Only an explicit stair
-    -- node is allowed to carry a changing Z coordinate. This makes container-top
-    -- traversal impossible by construction rather than by jump-height heuristics.
-    if not waypoint.stair then
-        delta.z = 0
-    end
+    -- node is allowed to carry a changing Z coordinate. Container-top travel is
+    -- therefore impossible by construction instead of by jump-height heuristics.
+    if not waypoint.stair then delta.z = 0 end
 
     local distance = delta:Length()
     if distance <= 0.05 then
@@ -172,16 +178,18 @@ function Motion:MoveToward(hostile, waypoint)
     local direction = delta / distance
     local nextPos = pos + direction * step
 
-    if not waypoint.stair then
-        nextPos.z = goal.z
-    end
+    if not waypoint.stair then nextPos.z = goal.z end
 
+    -- Physical execution is intentionally independent of Source collision
+    -- response. The graph and validated local waypoint compiler are the movement
+    -- authority; SetPos cannot become stuck while trying to resolve generated
+    -- floor/wall contacts.
     hostile:SetPos(nextPos)
     self:FaceToward(hostile, nextPos + direction * 32)
 
     local moved = nextPos - pos
     hostile.LODMotionVelocity = dt > 0 and (moved / dt) or vector_origin
-    hostile.LODMotionSpeed = moved:Length2D() / dt
+    hostile.LODMotionSpeed = dt > 0 and (moved:Length2D() / dt) or 0
     hostile.LODMotionMode = waypoint.stair and "stair" or "ground"
     hostile.LODMotionLastPos = nextPos
     hostile.LODMotionTravel = (hostile.LODMotionTravel or 0) + moved:Length()
@@ -190,9 +198,7 @@ function Motion:MoveToward(hostile, waypoint)
 end
 
 local function movementActivity(hostile)
-    if hostile.LODArchetypeId == "soldier" then
-        return hostile:_SoldierRunActivity()
-    end
+    if hostile.LODArchetypeId == "soldier" then return hostile:_SoldierRunActivity() end
     return hostile.LODConfig and hostile.LODConfig.activity or ACT_WALK
 end
 
@@ -223,16 +229,17 @@ local function installPatch()
         baseInitialize(self)
         if not IsValid(self) or not self.LODHostile then return end
         self.LODMotionV2 = true
+        self:SetNW2Bool("LOD_MotionV2", true)
         quiesceEngineLocomotion(self)
         timer.Simple(0, function()
             if IsValid(self) and not self.LODDead then Motion:SnapSpawn(self) end
         end)
     end
 
-    -- This replaces only the generic physical-execution loop. Archetype modules
-    -- loaded after this file still wrap this method exactly as before, so Soldier,
-    -- Deadcrab, Bio Blaster, variance, wandering, hit-stun, and death behavior
-    -- keep their established state machines while sharing one motion kernel.
+    -- Replace only the generic physical-execution loop. Archetype modules loaded
+    -- after this file still wrap this method, so Soldier, Deadcrab, Bio Blaster,
+    -- variance, wandering, hit-stun, and death retain their state machines while
+    -- sharing one motion kernel.
     function class:_BehaviourTick()
         if self.LODDead or not self.LODActivated then
             Motion:Stop(self)
@@ -250,6 +257,9 @@ local function installPatch()
 
         if self.LODArchetypeId == "soldier" and self.LODSoldierBurst then
             Motion:Stop(self)
+            if IsValid(self.LODSoldierBurst.target) then
+                Motion:FaceToward(self, self.LODSoldierBurst.target:GetPos())
+            end
             self:_ProcessSoldierBurst()
             return
         end
@@ -301,11 +311,10 @@ local function installPatch()
         if IsValid(target) and self.LODArchetypeId ~= "soldier" then self:_TryAttack(target) end
     end
 
-    -- BodyMoveXY derives animation direction from Source's locomotion velocity.
-    -- V2 intentionally does not use that velocity, so calling it would recreate
-    -- the visual backwards/sideways ambiguity observed in testing. The model is
-    -- explicitly yawed into its travel direction and its chosen walk/run activity
-    -- advances normally.
+    -- BodyMoveXY derives animation direction from CLuaLocomotion velocity. V2
+    -- deliberately does not use that velocity, so calling it would recreate the
+    -- backwards/sideways animation ambiguity seen in testing. Explicit yaw owns
+    -- facing; the selected walk/run activity simply advances in place.
     function class:BodyUpdate()
         if self.SetPoseParameter then self:SetPoseParameter("move_yaw", 0) end
         self:FrameAdvance()
