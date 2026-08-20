@@ -4,6 +4,7 @@ local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
 local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
 local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
+local sealColor = Color(24, 27, 29, 255)
 local textureTile = GC.FloorTextureTile or 384
 
 local function floorMaterial()
@@ -109,10 +110,10 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                     true
                 )
             elseif kind == 5 then
-                -- Exterior level-0 skirt: visible only beneath perimeter cargo
-                -- walls, closing the narrow raised-deck gap that otherwise exposed
-                -- gm_flatgrass at corners. Internal floor seams remain side-free.
-                drawFullMetalBox(ent, floorColor)
+                -- Under-wall seals are horizontal shadow plates, not pedestals.
+                -- Drawing only their broad faces prevents the 2-unit plate edge
+                -- from reading as another artificial riser beneath a container.
+                drawFloorSlab(ent, sealColor)
             end
         end
     end
