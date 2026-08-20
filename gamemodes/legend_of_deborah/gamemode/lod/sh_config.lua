@@ -49,10 +49,16 @@ C.Geometry = {
     -- to the next logical floor so ordinary jumping cannot turn container tops
     -- into graph/progression shortcuts.
     AntiBypassHeight = C.Maze.LevelHeight,
-    FloorThickness = 16,
-    -- Keep the rendered/collision floor one full floor thickness above the
-    -- Flatgrass surface. This avoids z-fighting while leaving the generated
-    -- floor resting directly on the map surface when the fallback Z is exact.
+    -- Floors are deliberately substantial steel deck plates rather than thin
+    -- abstract planes. Their top surface remains exactly at CellCenter.z; extra
+    -- thickness extends downward, so navigation/stair landing elevations do not
+    -- change while ceilings read as physically solid from the level below.
+    FloorThickness = 32,
+    FloorMaterial = "phoenix_storms/metalfloor_2-3",
+    FloorMaterialFallback = "models/props_c17/FurnitureMetal001a",
+    -- Keep the rendered/collision floor above the Flatgrass surface. The floor
+    -- plate may extend into the map ground below; only its authored top plane is
+    -- gameplay-significant.
     GroundFloorOffset = 16,
     -- Keep enough real walkable deck beside upper stair apertures. With 128-unit
     -- container walls intruding 64 units into a 384-unit cell, the former
@@ -66,8 +72,8 @@ C.Geometry = {
     StairRun = 320,
     StairTopOffset = 0,
     StairSteps = 24,
-    FloorColor = Color(58, 62, 64),
-    StairColor = Color(76, 79, 80),
+    FloorColor = Color(46, 49, 51),
+    StairColor = Color(68, 72, 74),
     DebugColor = Color(225, 145, 48),
     Skin = 0
 }
