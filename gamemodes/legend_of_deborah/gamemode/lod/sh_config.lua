@@ -54,12 +54,14 @@ C.Geometry = {
     -- thickness extends downward, so navigation/stair landing elevations do not
     -- change while ceilings read as physically solid from the level below.
     FloorThickness = 32,
-    FloorMaterial = "phoenix_storms/metalfloor_2-3",
+    -- Use a visually quiet stock industrial sheet-metal material. The former PHX
+    -- stamped plate contained strong embossed panels that read as false steps even
+    -- after its bump/phong stages were stripped away.
+    FloorMaterial = "models/props_wasteland/metal_tram001a",
     FloorMaterialFallback = "models/props_c17/FurnitureMetal001a",
-    -- The PHX artwork is now rendered without its bump/phong relief. Repeat it
-    -- at a larger scale as broad grip plate instead of a dense field of apparent
-    -- raised cassettes/steps.
-    FloorTextureTile = 256,
+    -- Broad tiling reduces visual repetition and keeps the deck reading as one
+    -- planar sheet rather than a field of small decorative panels.
+    FloorTextureTile = 384,
     -- Keep the rendered/collision floor above the Flatgrass surface. The floor
     -- plate may extend into the map ground below; only its authored top plane is
     -- gameplay-significant.
