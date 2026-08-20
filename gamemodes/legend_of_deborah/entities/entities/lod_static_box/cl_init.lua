@@ -1,19 +1,18 @@
 include("shared.lua")
 
-local floorColor = Color(58, 62, 64, 255)
-local stairColor = Color(120, 126, 132, 255)
-local stairEdgeColor = Color(225, 145, 48, 255)
+local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
+local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
+local stairColor = GC.StairColor or Color(68, 72, 74, 255)
+local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
 
--- render.DrawBox is documented as requiring a 3D rendering context. Drawing the
--- generated slabs from ENT:Draw proved unreliable on the OpenGL/Linux client:
--- wireframes appeared while filled faces did not. Keep a client cache of the
--- transmitted static-box entities and render them from an explicit 3D hook.
-local opaqueGeometryMaterial = CreateMaterial("lod_generated_geometry_opaque_v2", "UnlitGeneric", {
-    ["$basetexture"] = "color/white",
-    ["$vertexcolor"] = "1",
-    ["$vertexalpha"] = "1",
-    ["$nocull"] = "1"
-})
+-- Use a stock Garry's Mod metal-floor material so the generated deck reads as a
+-- real grippy steel plate rather than a flat debug slab. This path is part of the
+-- base GMod material set exposed by Sandbox's material tool; retain a known HL2
+-- metal fallback in case a client reports the preferred material as unavailable.
+local floorMaterial = Material(GC.FloorMaterial or "phoenix_storms/metalfloor_2-3")
+if floorMaterial:IsError() then
+    floorMaterial = Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+end
 
 local visualBoxes = visualBoxes or setmetatable({}, {__mode = "k"})
 
@@ -41,13 +40,11 @@ function ENT:OnRemove()
     visualBoxes[self] = nil
 end
 
--- Deliberately do not issue render.Draw* calls from ENT:Draw. The authoritative
--- rendering path below runs inside a documented 3D render hook.
 function ENT:Draw()
 end
 
-local function drawFilled(ent, color)
-    render.SetMaterial(opaqueGeometryMaterial)
+local function drawMetal(ent, color)
+    render.SetMaterial(floorMaterial)
     render.DrawBox(
         ent:GetPos(),
         ent:GetAngles(),
@@ -64,12 +61,13 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
         if IsValid(ent) then
             local kind = ent:GetBoxKind()
 
-            -- Rails and anti-bypass blockers remain collision-only. Cargo props
-            -- communicate those boundaries visually.
+            -- Floors and stair treads share one solid industrial steel language.
+            -- Rails and anti-bypass blockers remain collision-only because cargo
+            -- props and the visible stair geometry already communicate them.
             if kind == 1 then
-                drawFilled(ent, floorColor)
+                drawMetal(ent, floorColor)
             elseif kind == 2 then
-                drawFilled(ent, stairColor)
+                drawMetal(ent, stairColor)
                 render.DrawWireframeBox(
                     ent:GetPos(),
                     ent:GetAngles(),
