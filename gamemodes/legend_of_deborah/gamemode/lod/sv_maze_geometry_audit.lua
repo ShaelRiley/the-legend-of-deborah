@@ -44,12 +44,11 @@ local function wallAt(point, walls)
 end
 
 local function visualAt(point)
-    -- Container visuals are deliberately sunk 10 units into the authored deck
-    -- to hide the cargo model's recessed feet. The wall builder currently owns
-    -- that value locally; use the same production default here unless/until it is
-    -- promoted into shared geometry config. Collision remains on the canonical
-    -- graph boundary and is intentionally unaffected by the visual inset.
-    local visualInset = GC.ContainerVisualInsetZ or 10
+    -- Container visuals are deliberately sunk 16 units into the authored deck
+    -- to hide the cargo model's recessed feet/base cutouts at shallow camera angles.
+    -- Collision remains on the canonical graph boundary and is intentionally
+    -- unaffected by this visual-only inset.
+    local visualInset = GC.ContainerVisualInsetZ or 16
     local expected = point - Vector(0, 0, visualInset)
     local best
     local bestDist = math.huge
