@@ -3,27 +3,25 @@ LOD.M3GroundingPathFix = LOD.M3GroundingPathFix or {}
 
 local EncounterDirector = LOD.EncounterDirector
 
--- Runtime ground probing established the missing coordinate-space invariant:
--- humanoid NextBot entity origins sit about 24 Source units BELOW the actual
--- walking/visible foot plane on our generated geometry. The old 0..72 movement
--- hull therefore began 24 units beneath the floor whenever Source settled a bot
--- naturally, leaving loco:IsOnGround() false and making Approach report velocity
--- without world translation. Keep that native origin; align the movement hull to
--- the physical foot plane instead of moving the entity vertically every frame.
+-- Runtime probing established a stable model/engine invariant for the humanoid
+-- roster: the visible foot plane sits about 24 Source units above GetPos().z on
+-- the generated maze. Keep that offset as coordinate metadata for routing and
+-- diagnostics. It is NOT a collision-bounds offset.
 LOD.HumanoidFootOffset = LOD.HumanoidFootOffset or 24
 
--- Runtime testing also showed that varying the movement hull together with visual
--- enemy size is unsafe on generated Source collision. Every humanoid therefore
--- keeps one fixed 32x32x72 locomotion volume, merely offset upward by the native
--- 24-unit origin-to-foot distance. Deadcrab keeps its dedicated compact hull.
+-- Important follow-up evidence: moving the collision bounds upward by 24 did not
+-- move the physical foot plane upward. Source simply settled the NextBot origin
+-- another ~24 units downward, preserving the same bad contact state. Therefore
+-- SetCollisionBounds is not the knob that defines humanoid NextBot ground contact
+-- here. Restore the native fixed movement bounds that previously proved stable;
+-- visual scale and firearm combat volume remain independent.
 local function stableLocomotionBounds(hostile)
     if not IsValid(hostile) or not hostile.LODHostile then return end
 
     if hostile.LODArchetypeId == "deadcrab" then
         hostile:SetCollisionBounds(Vector(-14, -14, 0), Vector(14, 14, 30))
     else
-        local foot = LOD.HumanoidFootOffset or 24
-        hostile:SetCollisionBounds(Vector(-16, -16, foot), Vector(16, 16, foot + 72))
+        hostile:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
     end
 end
 
@@ -42,10 +40,8 @@ local function activeStairContext(hostile)
     return false
 end
 
--- Diagnostic only. This is the authored logical floor plane, not a coordinate we
--- should force onto a live NextBot. Humanoid entity origins are expected to sit
--- approximately HumanoidFootOffset units below it while their movement hull begins
--- at the actual foot plane.
+-- Diagnostic only. This is the authored physical floor plane. Never force a live
+-- NextBot origin to this Z: its model-space foot plane is offset from GetPos().z.
 local function graphFloorZ(hostile)
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
@@ -64,9 +60,8 @@ local function settleUsingSource(hostile)
     if hostile.LODDeadcrabState == "leaping" or hostile.LODDeadcrabState == "latched" then return end
     if activeStairContext(hostile) then return end
 
-    -- Source now receives a movement hull whose bottom coincides with the native
-    -- humanoid foot plane. Let the engine settle that hull locally; never follow
-    -- this with a graph-Z snap of the raw entity origin.
+    -- Preserve Source's native local settlement. Ground registration on generated
+    -- static boxes is handled separately by sv_hostile_ground_bridge.lua.
     hostile:DropToFloor()
     if hostile.loco then hostile.loco:ClearStuck() end
 end
@@ -95,9 +90,6 @@ local function installHostilePatch()
     function class:HandleStuck()
         if self.LODDead then return end
 
-        -- Stairs retain the validated tread/landing recovery because there we
-        -- know exact safe authored positions. Ordinary cells never teleport to
-        -- graph-floor Z or guessed cell centers.
         if activeStairContext(self) and LOD.HostileStairRecovery and LOD.HostileStairRecovery.Recover then
             if LOD.HostileStairRecovery:Recover(self, "nextbot-stair-stuck") then return end
         end
@@ -116,8 +108,8 @@ hook.Add("OnEntityCreated", "LOD_M3GroundingInstallBeforeSpawn", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end
 end)
 
--- Explicitly remove both historical recovery layers. They were useful diagnostic
--- experiments but must not fight native NextBot vertical movement in production.
+-- Historical Z watchdogs remain disabled. They fought Source settlement and are
+-- intentionally not part of the new generated-ground registration bridge.
 hook.Remove("Think", "LOD_HostileGeometrySelfRecovery")
 hook.Remove("Think", "LOD_HostileAuthoritativeFloorLock")
 
