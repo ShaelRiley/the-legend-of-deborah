@@ -51,6 +51,7 @@ include("lod/sv_hostile_separation.lua")
 -- not compete with Motion V2.
 include("lod/sv_m3_ground_probe.lua")
 include("lod/sv_hostile_combat_hulls.lua")
+include("lod/sv_generated_geometry_ballistics.lua")
 include("lod/sv_m3_hit_feedback.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
