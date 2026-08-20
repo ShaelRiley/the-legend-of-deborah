@@ -13,6 +13,14 @@ local DIRS = {
     {name = "W", dx = -1, dy = 0, yaw = 0}
 }
 
+-- The cargo-container model has recessed feet/undercut geometry at its visual
+-- base. Our authoritative floor plane is exact, but placing the model mathematically
+-- flush with that plane can reveal whatever map surface lies beneath it. Sink the
+-- complete visible wall stack slightly into the deck. Collision is provided by the
+-- independent merged wall boxes, so this is purely a visual seam treatment and
+-- cannot change navigation or progression geometry.
+local CONTAINER_VISUAL_EMBED = 10
+
 local function sortedKeys(t)
     local keys = {}
     for k in pairs(t) do keys[#keys + 1] = k end
@@ -191,7 +199,7 @@ function MazeBuilder:_BuildWalls(graph)
 
     for _, segment in ipairs(visualSegments) do
         for stack = 0, GC.WallStack - 1 do
-            local z = GC.ContainerHeight * 0.5 + stack * GC.ContainerHeight
+            local z = GC.ContainerHeight * 0.5 + stack * GC.ContainerHeight - CONTAINER_VISUAL_EMBED
             self:_Register(self:_SpawnContainer(segment.pos + Vector(0, 0, z), Angle(0, segment.yaw, 0)))
         end
     end
