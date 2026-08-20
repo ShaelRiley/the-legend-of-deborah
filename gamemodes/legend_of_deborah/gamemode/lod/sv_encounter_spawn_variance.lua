@@ -35,11 +35,8 @@ local function safeEncounterSpawnCell(encounter)
     if not stairs[encounter.cellKey] then return encounter.cell end
 
     -- Encounters may pursue across stairs, but they should not originate on a
-    -- stair endpoint. A pile spawned directly into stair geometry can start with
-    -- its hull intersecting a tread/riser before locomotion gets a chance to run.
-    -- Move the authored spawn origin into the first deterministic, same-level,
-    -- non-stair neighbor. The encounter itself still belongs to its original
-    -- graph cell for activation/clear bookkeeping.
+    -- stair endpoint. Move the authored spawn origin into the first deterministic
+    -- same-level non-stair neighbor while preserving encounter bookkeeping.
     local origin = graph.Cells[encounter.cellKey]
     if not origin then return encounter.cell end
 
@@ -56,8 +53,7 @@ end
 
 -- Unify the authored encounter spawn path after all archetype planner wrappers
 -- have loaded. Every production encounter unit receives a stable ordinal BEFORE
--- Spawn(), so deterministic instance variance never has to depend on entity index
--- or post-spawn position as its primary identity.
+-- Spawn(), so deterministic instance variance never depends on entity index.
 if not EncounterDirector.LODUnifiedVarianceSpawner then
     EncounterDirector.LODUnifiedVarianceSpawner = true
 
@@ -65,15 +61,13 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
         if not encounter or encounter.spawned or encounter.cleared then return true end
 
         local total = 0
-        for _, count in pairs(encounter.composition or {}) do
-            total = total + count
-        end
+        for _, count in pairs(encounter.composition or {}) do total = total + count end
         if self:GetActiveCount() + total > EC.ActiveHostileCeiling then return false end
 
         local spawnCell = safeEncounterSpawnCell(encounter)
         local spawnCellKey = cellKey(spawnCell) or encounter.cellKey
         local relocatedFromStair = spawnCellKey ~= encounter.cellKey
-        local center = LOD.MazeNavigator:CellCenter(spawnCell) + Vector(0, 0, 24)
+        local center = LOD.MazeNavigator:CellCenter(spawnCell) + Vector(0, 0, 2)
         local offsets = self:_SpawnOffsets(total)
         local ordinal = 1
 
@@ -93,21 +87,18 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
                     ent:Spawn()
                     ent:Activate()
 
-                    -- Fail-safe: the Initialize wrapper should already have
-                    -- applied variance. If another archetype wrapper ever changes
-                    -- initialization order, production encounter monsters still
-                    -- cannot silently fall back to uniform 1.0x size/stat values.
+                    -- Fail-safe: Initialize should already have applied variance.
                     if IsValid(ent) and not ent.LODVariance and EnemyVariance and EnemyVariance.Apply then
                         EnemyVariance:Apply(ent)
                     end
 
                     if IsValid(ent) then
-                        -- Do the floor settle only after all final size/collision
-                        -- variance is known. Clearing loco's stuck flag here gives
-                        -- a clean movement start even if Source considered the
-                        -- pre-settle spawn position obstructed for one frame.
-                        ent:DropToFloor()
-                        if ent.loco then ent.loco:ClearStuck() end
+                        -- Motion V2 owns spawn settlement. Do not call DropToFloor
+                        -- or ClearStuck here: those belong to the retired Source
+                        -- ground-locomotion architecture.
+                        if LOD.HostileMotionV2 and LOD.HostileMotionV2.SnapSpawn then
+                            LOD.HostileMotionV2:SnapSpawn(ent)
+                        end
                         ent.LODNextRouteRefresh = 0
                         encounter.entities[#encounter.entities + 1] = ent
                         self.Entities[#self.Entities + 1] = ent
@@ -134,8 +125,6 @@ local function tell(ply, text)
     if IsValid(ply) then ply:ChatPrint(text) end
 end
 
--- Audits only actual EncounterDirector-spawned monsters, excluding console
--- debug spawns. Useful for proving that the maze population itself is varied.
 concommand.Add("lod_m3_map_variance", function(ply)
     if not developerAllowed(ply) then return end
 
