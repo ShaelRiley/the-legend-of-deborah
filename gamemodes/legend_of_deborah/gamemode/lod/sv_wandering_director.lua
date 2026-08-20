@@ -8,8 +8,6 @@ local cellKey = LOD.MazeGenerator.CellKey
 
 -- Production roaming layer. These enemies exist in addition to the authored
 -- encounter plan and deliberately keep ordinary traversal from feeling empty.
--- Values live together here so the population can be tuned without scattering
--- magic numbers through the AI implementation.
 local WC = {
     PerFloor = 16,
     RespawnSeconds = 20,
@@ -46,6 +44,18 @@ local function sortedKeys(t)
     return out
 end
 
+local function stairCellSet(graph)
+    if not graph then return {} end
+    if graph.LODWanderStairCellSet then return graph.LODWanderStairCellSet end
+    local out = {}
+    for _, edge in ipairs(graph.VerticalEdges or {}) do
+        out[keyOf(edge.a)] = true
+        out[keyOf(edge.b)] = true
+    end
+    graph.LODWanderStairCellSet = out
+    return out
+end
+
 local function livingWanderer(ent)
     return IsValid(ent) and ent.LODHostile and ent.LODWanderer == true and not ent.LODDead
 end
@@ -56,7 +66,13 @@ local function safeCell(graph, cell)
 end
 
 local function eligibleWanderCell(graph, cell)
-    return cell and not safeCell(graph, cell)
+    if not cell or safeCell(graph, cell) then return false end
+    -- A vertical endpoint contains authored stair/aperture geometry. Wanderers
+    -- do not need to use those cells as random same-floor patrol destinations;
+    -- keeping them out of the roaming pool prevents a patrol from selecting a
+    -- cell-center target that lies inside the stair volume. Pursuit can still use
+    -- the canonical graph/stair compiler when a player actually requires it.
+    return not stairCellSet(graph)[keyOf(cell)]
 end
 
 function WanderingDirector:_FloorCells(graph, floor)
@@ -206,9 +222,7 @@ function WanderingDirector:_InitializeForGraph(graph)
     self.SpawnOrdinal = {}
 
     for floor = 0, math.max(0, (graph.Layers or 1) - 1) do
-        for _ = 1, WC.PerFloor do
-            self:_SpawnOne(graph, floor, "initial")
-        end
+        for _ = 1, WC.PerFloor do self:_SpawnOne(graph, floor, "initial") end
         self.NextRespawn[floor] = nil
     end
 
@@ -346,16 +360,14 @@ local function installWandererAIPatch()
             if targetCell and targetCell.z == self.LODWanderFloor then
                 self:_RouteToCell(graph, targetCell)
                 if #self.LODWaypoints == 0 then
-                    self.LODWaypoints = {{pos = self.LODTarget:GetPos(), tolerance = 54}}
+                    local safe = LOD.HostileMotionV2 and LOD.HostileMotionV2:SafeEngagementPoint(graph, self.LODTarget)
+                    self.LODWaypoints = {{pos = safe or self.LODTarget:GetPos(), tolerance = 18}}
                     self.LODWaypointIndex = 1
                 end
             end
             return
         end
 
-        -- Wanderers are a literal per-floor population. If some external force
-        -- displaced one vertically, route it back to its assigned floor before
-        -- resuming its free patrol.
         if current.z ~= self.LODWanderFloor then
             local anchor = graph.Cells[self.LODWanderAnchorCellKey or ""]
             if anchor then self:_RouteToCell(graph, anchor) end
@@ -365,16 +377,15 @@ local function installWandererAIPatch()
         local waypoint = self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
         if waypoint then return end
 
-        local path = chooseWanderPath(self, graph, current)
-        self.LODWaypoints = {}
+        -- One route compiler for every hostile. The former wanderer-specific
+        -- CellCenter+8 loop duplicated MazeNavigator policy and could diverge
+        -- from stair/height fixes. Build a real graph path beginning at the live
+        -- current cell and let PathToWaypoints own all world-space coordinates.
+        local chosen = chooseWanderPath(self, graph, current)
+        local graphPath = {current}
+        for _, cell in ipairs(chosen) do graphPath[#graphPath + 1] = cell end
+        self.LODWaypoints = Navigator:PathToWaypoints(graph, graphPath) or {}
         self.LODWaypointIndex = 1
-        for _, cell in ipairs(path) do
-            self.LODWaypoints[#self.LODWaypoints + 1] = {
-                pos = Navigator:CellCenter(cell) + Vector(0, 0, 8),
-                tolerance = 44,
-                stair = false
-            }
-        end
     end
 
     return true
@@ -386,8 +397,6 @@ hook.Add("OnEntityCreated", "LOD_WandererInstallBeforeSpawn", function(ent)
 end)
 
 -- Reserve enough of the global hostile ceiling for dead wanderers to return.
--- This keeps authored encounter activation from consuming the sixteen-per-floor
--- replacement slots while a roaming population is temporarily depleted.
 if LOD.EncounterDirector and not LOD.EncounterDirector.LODWandererCeilingWrapped then
     LOD.EncounterDirector.LODWandererCeilingWrapped = true
     local baseSpawnEncounter = LOD.EncounterDirector._SpawnEncounter
@@ -403,7 +412,6 @@ end
 function WanderingDirector:Think()
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
-    local plan = graph and graph.EncounterPlan
     if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
     if state.SimulationFrozen then return end
 
@@ -419,9 +427,7 @@ function WanderingDirector:Think()
             if not self.NextRespawn[floor] then
                 self.NextRespawn[floor] = now + WC.RespawnSeconds
             elseif now >= self.NextRespawn[floor] then
-                if self:_SpawnOne(graph, floor, "replacement") then
-                    living = living + 1
-                end
+                if self:_SpawnOne(graph, floor, "replacement") then living = living + 1 end
                 self.NextRespawn[floor] = living < WC.PerFloor and (now + WC.RespawnSeconds) or nil
             end
         else
