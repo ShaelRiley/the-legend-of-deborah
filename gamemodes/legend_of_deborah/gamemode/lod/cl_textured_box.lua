@@ -5,6 +5,29 @@ local TexturedBox = LOD.TexturedBox
 local meshCache = meshCache or {}
 local DEFAULT_TILE = 128
 
+-- The stock PHX floor material carries a pronounced bump/phong treatment. Once
+-- the diagonal OpenGL primitive bug was fixed, that relief became the next visual
+-- problem: repeated tiles read as literal raised/lowered plates even though the
+-- authored deck plane is perfectly flat. Keep the same grippy base artwork, but
+-- deliberately omit its bump/phong/envmap stages so the texture reads as surface
+-- roughness rather than fake geometry.
+TexturedBox.IndustrialMaterial = TexturedBox.IndustrialMaterial or CreateMaterial(
+    "lod_industrial_grip_flat_v1",
+    "VertexLitGeneric",
+    {
+        ["$basetexture"] = "phoenix_storms/metalfloor_2-3",
+        ["$vertexcolor"] = "1",
+        ["$vertexalpha"] = "1",
+        ["$halflambert"] = "1"
+    }
+)
+
+function TexturedBox:GetIndustrialMaterial(fallbackPath)
+    local mat = self.IndustrialMaterial
+    if mat and not mat:IsError() then return mat end
+    return Material(fallbackPath or "models/props_c17/FurnitureMetal001a")
+end
+
 local function cacheKey(mins, maxs, tile)
     return string.format("%.3f,%.3f,%.3f|%.3f,%.3f,%.3f|%.3f",
         mins.x, mins.y, mins.z, maxs.x, maxs.y, maxs.z, tile)
