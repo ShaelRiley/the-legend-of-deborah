@@ -4,16 +4,17 @@ local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
 local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
 local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
+local textureTile = GC.FloorTextureTile or 256
 
--- Use a stock Garry's Mod metal-floor material so the generated deck reads as a
--- real grippy steel plate rather than a flat debug slab. The renderer below does
--- NOT use render.DrawBox: that primitive does not expose UVs and, with this stock
--- bump-mapped material on the Linux/OpenGL path, produced the tell-tale diagonal
--- half-black triangle visible in playtesting. LOD.TexturedBox supplies explicit
--- normals, tangents and UVs for all six faces instead.
-local floorMaterial = Material(GC.FloorMaterial or "phoenix_storms/metalfloor_2-3")
-if floorMaterial:IsError() then
-    floorMaterial = Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+-- The collision geometry is flat; the former apparent "steps" came from the
+-- PHX material's aggressive bump/phong relief repeated every 128 units. Use the
+-- same grippy artwork through LOD.TexturedBox's flattened industrial material so
+-- the deck reads as one planar steel surface rather than raised cassettes.
+local function floorMaterial()
+    if LOD.TexturedBox and LOD.TexturedBox.GetIndustrialMaterial then
+        return LOD.TexturedBox:GetIndustrialMaterial(GC.FloorMaterialFallback)
+    end
+    return Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
 end
 
 local visualBoxes = visualBoxes or setmetatable({}, {__mode = "k"})
@@ -46,21 +47,22 @@ function ENT:Draw()
 end
 
 local function drawMetal(ent, color)
+    local material = floorMaterial()
     if LOD.TexturedBox and LOD.TexturedBox.Draw then
         LOD.TexturedBox:Draw(
             ent:GetPos(),
             ent:GetAngles(),
             ent:GetBoxMins(),
             ent:GetBoxMaxs(),
-            floorMaterial,
+            material,
             color,
-            128
+            textureTile
         )
         return
     end
 
     -- Defensive fallback only; normal clients load cl_textured_box.lua first.
-    render.SetMaterial(floorMaterial)
+    render.SetMaterial(material)
     render.DrawBox(ent:GetPos(), ent:GetAngles(), ent:GetBoxMins(), ent:GetBoxMaxs(), color)
 end
 
