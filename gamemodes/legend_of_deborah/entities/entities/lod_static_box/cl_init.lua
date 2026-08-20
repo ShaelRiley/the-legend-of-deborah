@@ -108,6 +108,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                     stairEdgeColor,
                     true
                 )
+            elseif kind == 5 then
+                -- Exterior level-0 skirt: visible only beneath perimeter cargo
+                -- walls, closing the narrow raised-deck gap that otherwise exposed
+                -- gm_flatgrass at corners. Internal floor seams remain side-free.
+                drawFullMetalBox(ent, floorColor)
             end
         end
     end
