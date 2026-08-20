@@ -26,7 +26,7 @@ local function spawnSealBox(pos, mins, maxs)
     ent:SetAngles(angle_zero)
     ent:SetBoxMins(mins)
     ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(5) -- thin horizontal under-wall shadow plate
+    ent:SetBoxKind(5) -- same-height exterior deck apron beneath container walls
     ent:Spawn()
     ent:Activate()
 
@@ -37,29 +37,26 @@ local function spawnSealBox(pos, mins, maxs)
     return ent
 end
 
-local function isClosedHorizontalEdge(graph, hereKey, neighborKey)
-    if not graph.Cells[neighborKey] then return true end
-    return not (graph.Edges and graph.Edges[edgeKey(hereKey, neighborKey)])
-end
-
--- The earlier fix filled the full 16-unit gap between gm_flatgrass and the deck
--- with vertical boxes. That hid green, but the exposed ends of those boxes looked
--- like rusty concrete/metal risers beneath individual containers. Do not fabricate
--- vertical foundations. Instead lay a very thin dark metal underlay directly over
--- the world surface beneath every closed level-0 wall footprint. Combined with the
--- slightly embedded container visuals, any remaining model-base notch now reveals
--- only a recessed shadow plate rather than Flatgrass or a visible pedestal.
+-- Ground-floor cells already own a substantial steel slab whose top is exactly
+-- CellCenter.z. At an exterior boundary the slab stops on the logical cell edge,
+-- while the centered cargo-container model extends roughly half its width beyond
+-- that edge. From shallow interior angles, the model's recessed lower rail can
+-- therefore expose gm_flatgrass beyond the slab even when the container itself is
+-- visually embedded into the deck.
+--
+-- Solve the topology rather than sinking the wall ever farther: extend the SAME
+-- deck plane beneath the complete footprint of exterior container walls. These
+-- aprons have the same top Z and thickness as the ordinary floor, render only top
+-- and underside faces, and overlap the existing floor invisibly. Internal closed
+-- walls need no apron because occupied cells already provide deck on both sides.
+-- Open graph edges are never touched.
 function MazeBuilder:_BuildGroundPerimeterSeals(graph)
-    local worldFloorZ = self.WorldFloorZ
-    if not worldFloorZ then return end
-
     local seen = {}
     local halfCell = MC.CellSize * 0.5
-    local halfDepth = GC.ContainerWidth * 0.5 + 8
-    local endOverlap = 10
-    local plateThickness = 2
-    local plateCenterZ = worldFloorZ + plateThickness * 0.5 + 0.25
-    local halfPlate = plateThickness * 0.5
+    local halfDepth = GC.ContainerWidth * 0.5 + 12
+    local endOverlap = 12
+    local thickness = GC.FloorThickness or 32
+    local halfThickness = thickness * 0.5
 
     for _, cell in pairs(graph.Cells or {}) do
         if cell.z == 0 then
@@ -70,26 +67,30 @@ function MazeBuilder:_BuildGroundPerimeterSeals(graph)
                 local neighborKey = cellKey(cell.x + d.dx, cell.y + d.dy, 0)
                 local key = edgeKey(hereKey, neighborKey)
 
-                if not seen[key] and isClosedHorizontalEdge(graph, hereKey, neighborKey) then
+                -- Only a missing neighboring logical cell exposes the outside of
+                -- the generated ground deck. If a neighbor exists, its own floor
+                -- already extends beneath any internal closed wall on that edge.
+                if not seen[key] and not graph.Cells[neighborKey] then
                     seen[key] = true
 
-                    local edgeCenter = Vector(
-                        center.x + d.dx * halfCell,
-                        center.y + d.dy * halfCell,
-                        plateCenterZ
+                    local edgeCenter = center + Vector(
+                        d.dx * halfCell,
+                        d.dy * halfCell,
+                        -halfThickness
                     )
                     local mins
                     local maxs
 
-                    -- Slight footprint overlap covers the recessed corner feet of
-                    -- intersecting container models without extending into open
-                    -- corridor edges; this plate is far below the authored deck.
+                    -- Symmetric overlap beneath the wall footprint is intentional:
+                    -- the inward half disappears into the existing floor while the
+                    -- outward half replaces every possible Flatgrass sightline.
+                    -- Extra end overlap closes perpendicular corner seams.
                     if d.name == "N" or d.name == "S" then
-                        mins = Vector(-halfCell - endOverlap, -halfDepth, -halfPlate)
-                        maxs = Vector(halfCell + endOverlap, halfDepth, halfPlate)
+                        mins = Vector(-halfCell - endOverlap, -halfDepth, -halfThickness)
+                        maxs = Vector(halfCell + endOverlap, halfDepth, halfThickness)
                     else
-                        mins = Vector(-halfDepth, -halfCell - endOverlap, -halfPlate)
-                        maxs = Vector(halfDepth, halfCell + endOverlap, halfPlate)
+                        mins = Vector(-halfDepth, -halfCell - endOverlap, -halfThickness)
+                        maxs = Vector(halfDepth, halfCell + endOverlap, halfThickness)
                     end
 
                     self:_Register(spawnSealBox(edgeCenter, mins, maxs))
