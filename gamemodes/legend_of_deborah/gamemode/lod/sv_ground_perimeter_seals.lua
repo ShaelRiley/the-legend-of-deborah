@@ -26,7 +26,7 @@ local function spawnSealBox(pos, mins, maxs)
     ent:SetAngles(angle_zero)
     ent:SetBoxMins(mins)
     ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(5) -- visible ground-perimeter skirt / under-container seal
+    ent:SetBoxKind(5) -- visible under-container seal / ground-wall plinth
     ent:Spawn()
     ent:Activate()
 
@@ -37,19 +37,32 @@ local function spawnSealBox(pos, mins, maxs)
     return ent
 end
 
--- The authored level-0 walkable plane intentionally sits slightly above the
--- gm_flatgrass world surface. At the outer boundary of the generated labyrinth,
--- cargo-container wall models therefore leave a narrow sightline to green map
--- grass underneath their outward half. Seal only edges whose neighboring logical
--- cell does not exist. Internal coplanar floor seams stay completely untouched,
--- preserving the newly-flat continuous deck presentation.
+local function isClosedHorizontalEdge(graph, hereKey, neighborKey)
+    -- Match the wall builder's canonical authority exactly: if this undirected
+    -- same-floor edge is absent from graph.Edges, a cargo-container wall occupies
+    -- the boundary. This includes BOTH exterior perimeter walls and internal maze
+    -- walls between two otherwise occupied cells. The previous implementation
+    -- sealed only missing-neighbor perimeter edges, which left Flatgrass visible
+    -- below internal closed walls at corners and long corridor boundaries.
+    if not graph.Cells[neighborKey] then return true end
+    return not (graph.Edges and graph.Edges[edgeKey(hereKey, neighborKey)])
+end
+
+-- Level 0 sits slightly above gm_flatgrass so the generated steel deck can own
+-- authoritative collision. Cargo-container models have a small visual undercut at
+-- their base; without a plinth, the bright green map surface can peek through that
+-- undercut. Seal EVERY level-0 boundary that actually owns a container wall, but
+-- never open graph edges. The seal lives entirely inside the wall footprint and
+-- terminates flush with the deck plane, so it cannot reintroduce false floor
+-- topography or obstruct a legitimate corridor/gate opening.
 function MazeBuilder:_BuildGroundPerimeterSeals(graph)
     local worldFloorZ = self.WorldFloorZ
     if not worldFloorZ then return end
 
     local seen = {}
     local halfCell = MC.CellSize * 0.5
-    local halfDepth = GC.ContainerWidth * 0.5 + 2
+    local halfDepth = GC.ContainerWidth * 0.5 + 4
+    local endOverlap = 6
 
     for _, cell in pairs(graph.Cells or {}) do
         if cell.z == 0 then
@@ -58,33 +71,34 @@ function MazeBuilder:_BuildGroundPerimeterSeals(graph)
 
             if sealHeight > 0.5 then
                 local halfHeight = sealHeight * 0.5
+                local hereKey = cellKey(cell.x, cell.y, 0)
 
                 for _, d in ipairs(DIRS) do
                     local neighborKey = cellKey(cell.x + d.dx, cell.y + d.dy, 0)
-                    if not graph.Cells[neighborKey] then
-                        local hereKey = cellKey(cell.x, cell.y, 0)
-                        local key = edgeKey(hereKey, neighborKey)
+                    local key = edgeKey(hereKey, neighborKey)
 
-                        if not seen[key] then
-                            seen[key] = true
+                    if not seen[key] and isClosedHorizontalEdge(graph, hereKey, neighborKey) then
+                        seen[key] = true
 
-                            local edgeCenter = center + Vector(d.dx * halfCell, d.dy * halfCell, -halfHeight)
-                            local mins
-                            local maxs
+                        local edgeCenter = center + Vector(
+                            d.dx * halfCell,
+                            d.dy * halfCell,
+                            -halfHeight
+                        )
+                        local mins
+                        local maxs
 
-                            -- Extend two units past each corner so perpendicular
-                            -- perimeter skirts overlap instead of revealing a
-                            -- hairline of Flatgrass at convex/concave corners.
-                            if d.name == "N" or d.name == "S" then
-                                mins = Vector(-halfCell - 2, -halfDepth, -halfHeight)
-                                maxs = Vector(halfCell + 2, halfDepth, halfHeight)
-                            else
-                                mins = Vector(-halfDepth, -halfCell - 2, -halfHeight)
-                                maxs = Vector(halfDepth, halfCell + 2, halfHeight)
-                            end
-
-                            self:_Register(spawnSealBox(edgeCenter, mins, maxs))
+                        -- Deliberate overlap in both wall depth and segment length
+                        -- closes model-base notches and perpendicular corner seams.
+                        if d.name == "N" or d.name == "S" then
+                            mins = Vector(-halfCell - endOverlap, -halfDepth, -halfHeight)
+                            maxs = Vector(halfCell + endOverlap, halfDepth, halfHeight)
+                        else
+                            mins = Vector(-halfDepth, -halfCell - endOverlap, -halfHeight)
+                            maxs = Vector(halfDepth, halfCell + endOverlap, halfHeight)
                         end
+
+                        self:_Register(spawnSealBox(edgeCenter, mins, maxs))
                     end
                 end
             end
