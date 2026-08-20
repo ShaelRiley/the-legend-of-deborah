@@ -56,6 +56,10 @@ C.Geometry = {
     FloorThickness = 32,
     FloorMaterial = "phoenix_storms/metalfloor_2-3",
     FloorMaterialFallback = "models/props_c17/FurnitureMetal001a",
+    -- The PHX artwork is now rendered without its bump/phong relief. Repeat it
+    -- at a larger scale as broad grip plate instead of a dense field of apparent
+    -- raised cassettes/steps.
+    FloorTextureTile = 256,
     -- Keep the rendered/collision floor above the Flatgrass surface. The floor
     -- plate may extend into the map ground below; only its authored top plane is
     -- gameplay-significant.
