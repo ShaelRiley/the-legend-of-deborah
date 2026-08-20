@@ -2,14 +2,12 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 
--- Source NextBots keep their server entity at native 1.0x. Runtime diagnostics
--- showed that the humanoid visual sole plane sits about 24 Source units above
--- the NextBot entity origin. Scale around that stable native foot plane instead
--- of performing a world trace for every hostile on every Draw call.
---
--- The previous per-frame trace implementation also rebuilt an all-hostile filter
--- inside every enemy Draw. With 16 wanderers per floor that became roughly
--- O(N^2) client work every rendered frame and caused severe chug.
+-- Visual scale stays client-only. Motion V2 deliberately places the server-side
+-- humanoid entity origin on the authoritative graph floor plane instead of at
+-- Source NextBot's historical ~24-unit-below-foot resting origin. Preserve the
+-- same visible foot pivot while translating V2 humanoid models down to that new
+-- server origin. Deadcrab keeps its native model-space pivot because its explicit
+-- leap remains a genuine Source airborne movement state.
 local HUMANOID_FOOT_PIVOT_Z = 24
 
 local function visualModelBounds(ent)
@@ -17,19 +15,27 @@ local function visualModelBounds(ent)
         local mins, maxs = util.GetModelBounds(ent:GetModel())
         if mins and maxs then return mins, maxs end
     end
-
     return Vector(-16, -16, 0), Vector(16, 16, 72)
 end
 
 local function applyVisualScale(ent)
     local size = math.Clamp(ent:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
-    if ent.LODLastClientVisualScale == size then return end
-    ent.LODLastClientVisualScale = size
+    local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
+    local signature = tostring(size) .. ":" .. tostring(motionV2)
+    if ent.LODLastClientVisualScale == signature then return end
+    ent.LODLastClientVisualScale = signature
 
     local archetype = ent:GetNW2String("LOD_Archetype", "")
     local mins, maxs = visualModelBounds(ent)
-    local pivotZ = archetype == "deadcrab" and mins.z or HUMANOID_FOOT_PIVOT_Z
+    local deadcrab = archetype == "deadcrab"
+    local pivotZ = deadcrab and mins.z or HUMANOID_FOOT_PIVOT_Z
     local verticalCompensation = pivotZ * (1 - size)
+
+    if motionV2 and not deadcrab then
+        -- A humanoid foot at local pivotZ transforms to local Z=0 for every
+        -- visible scale: pivotZ*size + (pivotZ*(1-size)-pivotZ) == 0.
+        verticalCompensation = verticalCompensation - pivotZ
+    end
 
     local matrix = Matrix()
     matrix:Scale(Vector(size, size, size))
