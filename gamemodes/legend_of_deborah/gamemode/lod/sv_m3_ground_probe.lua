@@ -78,14 +78,16 @@ concommand.Add("lod_m3_ground_probe", function(ply)
     local waypointType, waypointZ = waypointInfo(hostile)
     local locoGround = hostile.loco and hostile.loco.IsOnGround and hostile.loco:IsOnGround() or false
     local groundEntity = hostile.GetGroundEntity and hostile:GetGroundEntity() or NULL
+    local footWorldZ = pos.z + mins.z
 
     print(string.format(
-        "[LOD:GROUND-PROBE] #%d %s size=%.3f entityGround=%s locoGround=%s groundEnt=%s lineHit=%s lineDZ=%.1f hullHit=%s hullDZ=%.1f startSolid=%s posZ=%.1f floorZ=%s waypoint=%s waypointZ=%s vel2D=%.1f velZ=%.1f",
+        "[LOD:GROUND-PROBE] #%d %s size=%.3f entityGround=%s locoGround=%s groundEnt=%s lineHit=%s lineDZ=%.1f hullHit=%s hullDZ=%.1f startSolid=%s posZ=%.1f hullZ=%.1f..%.1f footZ=%.1f floorZ=%s waypoint=%s waypointZ=%s vel2D=%.1f velZ=%.1f",
         hostile:EntIndex(), tostring(hostile.LODArchetypeId), hostile:GetNW2Float("LOD_SizeScale", 1),
         tostring(hostile:IsOnGround()), tostring(locoGround), entLabel(groundEntity),
         traceLabel(line), line.Hit and (pos.z - line.HitPos.z) or -999,
         traceLabel(hull), hull.Hit and (pos.z - hull.HitPos.z) or -999, tostring(hull.StartSolid),
-        pos.z, floorZ and string.format("%.1f", floorZ) or "none",
+        pos.z, mins.z, maxs.z, footWorldZ,
+        floorZ and string.format("%.1f", floorZ) or "none",
         waypointType, waypointZ and string.format("%.1f", waypointZ) or "none",
         hostile:GetVelocity():Length2D(), hostile:GetVelocity().z
     ))
