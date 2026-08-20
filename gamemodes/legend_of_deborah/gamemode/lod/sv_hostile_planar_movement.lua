@@ -7,33 +7,27 @@ local function installPatch()
     if not class or class.LODPlanarMovementPatched then return false end
     class.LODPlanarMovementPatched = true
 
-    -- Preserve every archetype-specific Initialize wrapper that was installed
-    -- earlier, but remove ordinary jump authority from grounded humanoid
-    -- hostiles. Mandatory vertical traversal is already represented explicitly
-    -- by 16-unit stair treads; StepHeight=24 is sufficient for those. Deadcrab
-    -- keeps its dedicated leap setup from sv_deadcrab.lua.
+    -- Runtime evidence established an important distinction between a live
+    -- NextBot entity origin and the physical walking surface. On generated
+    -- floors Source commonly keeps GetPos().z about 24 units BELOW the authored
+    -- floor plane. Rewriting ordinary waypoint Z to GetPos().z therefore put the
+    -- locomotion goal inside the floor. The bot reported horizontal velocity but
+    -- made no world-position progress, then entered an endless recovery loop.
+    --
+    -- Keep the navigator's authored ordinary waypoints untouched. They already
+    -- sit at CellCenter(cell) + 8, safely above the physical deck, and every
+    -- ordinary edge remains on one logical floor. Planarity is enforced by
+    -- disabling autonomous jump/climb/gap-jump authority, NOT by copying the raw
+    -- entity-origin Z into movement goals. Explicit stair waypoints retain their
+    -- authored changing elevations.
     local baseInitialize = class.Initialize
     function class:Initialize()
         baseInitialize(self)
-        if IsValid(self) and self.loco and self.LODArchetypeId ~= "deadcrab" then
-            self.loco:SetJumpHeight(0)
-        end
-    end
+        if not IsValid(self) or not self.loco or self.LODArchetypeId == "deadcrab" then return end
 
-    -- Every ordinary graph waypoint is horizontal movement. Source/NextBot owns
-    -- the live grounded Z; only explicit stair waypoints are allowed to carry a
-    -- vertical destination. This prevents flat-corridor AI from interpreting a
-    -- cell-center Z offset as a reason to climb local wall/container geometry.
-    local baseRefreshRoute = class._RefreshRoute
-    function class:_RefreshRoute(graph)
-        local result = baseRefreshRoute(self, graph)
-        local z = self:GetPos().z
-        for _, waypoint in ipairs(self.LODWaypoints or {}) do
-            if waypoint and waypoint.pos and not waypoint.stair then
-                waypoint.pos = Vector(waypoint.pos.x, waypoint.pos.y, z)
-            end
-        end
-        return result
+        self.loco:SetJumpHeight(0)
+        if self.loco.SetClimbAllowed then self.loco:SetClimbAllowed(false) end
+        if self.loco.SetJumpGapsAllowed then self.loco:SetJumpGapsAllowed(false) end
     end
 
     return true
