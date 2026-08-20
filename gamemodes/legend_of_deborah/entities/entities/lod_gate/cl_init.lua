@@ -9,14 +9,15 @@ local READER_HOUSING_COLOR = Color(28, 31, 33, 255)
 local READER_SLOT_COLOR = Color(10, 12, 13, 255)
 local GATE_SIGN_HEIGHT = 126
 local GATE_READER_HEIGHT = 62
+local GATE_TEXTURE_TILE = GC.FloorTextureTile or 256
 
--- Exactly the same industrial grate material used by generated floors/ceilings.
--- The main shutter uses LOD.TexturedBox rather than render.DrawBox so every face
--- receives explicit UVs/normals/tangents and cannot split into a textured and a
--- black triangle on the Linux/OpenGL renderer.
-local gateMetalMaterial = Material(GC.FloorMaterial or "phoenix_storms/metalfloor_2-3")
-if gateMetalMaterial:IsError() then
-    gateMetalMaterial = Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+-- Keep the gate and decks in one material language, but use the flattened
+-- no-bump/no-phong wrapper so the grip pattern cannot masquerade as geometry.
+local function gateMetalMaterial()
+    if LOD.TexturedBox and LOD.TexturedBox.GetIndustrialMaterial then
+        return LOD.TexturedBox:GetIndustrialMaterial(GC.FloorMaterialFallback)
+    end
+    return Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
 end
 
 local solidMaterial = CreateMaterial("lod_gate_solid_v3", "UnlitGeneric", {
@@ -138,10 +139,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
 
             if frac < 1 then
                 local center = ent:GetPos() + Vector(0, 0, GATE_VISUAL_HEIGHT * frac)
+                local material = gateMetalMaterial()
                 if LOD.TexturedBox and LOD.TexturedBox.Draw then
-                    LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, gateMetalMaterial, GATE_METAL_COLOR, 128)
+                    LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, material, GATE_METAL_COLOR, GATE_TEXTURE_TILE)
                 else
-                    render.SetMaterial(gateMetalMaterial)
+                    render.SetMaterial(material)
                     render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
                 end
                 drawReinforcement(ent, center)
