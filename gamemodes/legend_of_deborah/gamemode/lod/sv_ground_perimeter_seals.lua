@@ -26,7 +26,7 @@ local function spawnSealBox(pos, mins, maxs)
     ent:SetAngles(angle_zero)
     ent:SetBoxMins(mins)
     ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(5) -- visible under-container seal / ground-wall plinth
+    ent:SetBoxKind(5) -- thin horizontal under-wall shadow plate
     ent:Spawn()
     ent:Activate()
 
@@ -38,68 +38,61 @@ local function spawnSealBox(pos, mins, maxs)
 end
 
 local function isClosedHorizontalEdge(graph, hereKey, neighborKey)
-    -- Match the wall builder's canonical authority exactly: if this undirected
-    -- same-floor edge is absent from graph.Edges, a cargo-container wall occupies
-    -- the boundary. This includes BOTH exterior perimeter walls and internal maze
-    -- walls between two otherwise occupied cells. The previous implementation
-    -- sealed only missing-neighbor perimeter edges, which left Flatgrass visible
-    -- below internal closed walls at corners and long corridor boundaries.
     if not graph.Cells[neighborKey] then return true end
     return not (graph.Edges and graph.Edges[edgeKey(hereKey, neighborKey)])
 end
 
--- Level 0 sits slightly above gm_flatgrass so the generated steel deck can own
--- authoritative collision. Cargo-container models have a small visual undercut at
--- their base; without a plinth, the bright green map surface can peek through that
--- undercut. Seal EVERY level-0 boundary that actually owns a container wall, but
--- never open graph edges. The seal lives entirely inside the wall footprint and
--- terminates flush with the deck plane, so it cannot reintroduce false floor
--- topography or obstruct a legitimate corridor/gate opening.
+-- The earlier fix filled the full 16-unit gap between gm_flatgrass and the deck
+-- with vertical boxes. That hid green, but the exposed ends of those boxes looked
+-- like rusty concrete/metal risers beneath individual containers. Do not fabricate
+-- vertical foundations. Instead lay a very thin dark metal underlay directly over
+-- the world surface beneath every closed level-0 wall footprint. Combined with the
+-- slightly embedded container visuals, any remaining model-base notch now reveals
+-- only a recessed shadow plate rather than Flatgrass or a visible pedestal.
 function MazeBuilder:_BuildGroundPerimeterSeals(graph)
     local worldFloorZ = self.WorldFloorZ
     if not worldFloorZ then return end
 
     local seen = {}
     local halfCell = MC.CellSize * 0.5
-    local halfDepth = GC.ContainerWidth * 0.5 + 4
-    local endOverlap = 6
+    local halfDepth = GC.ContainerWidth * 0.5 + 8
+    local endOverlap = 10
+    local plateThickness = 2
+    local plateCenterZ = worldFloorZ + plateThickness * 0.5 + 0.25
+    local halfPlate = plateThickness * 0.5
 
     for _, cell in pairs(graph.Cells or {}) do
         if cell.z == 0 then
             local center = self:CellCenter(cell)
-            local sealHeight = center.z - worldFloorZ
+            local hereKey = cellKey(cell.x, cell.y, 0)
 
-            if sealHeight > 0.5 then
-                local halfHeight = sealHeight * 0.5
-                local hereKey = cellKey(cell.x, cell.y, 0)
+            for _, d in ipairs(DIRS) do
+                local neighborKey = cellKey(cell.x + d.dx, cell.y + d.dy, 0)
+                local key = edgeKey(hereKey, neighborKey)
 
-                for _, d in ipairs(DIRS) do
-                    local neighborKey = cellKey(cell.x + d.dx, cell.y + d.dy, 0)
-                    local key = edgeKey(hereKey, neighborKey)
+                if not seen[key] and isClosedHorizontalEdge(graph, hereKey, neighborKey) then
+                    seen[key] = true
 
-                    if not seen[key] and isClosedHorizontalEdge(graph, hereKey, neighborKey) then
-                        seen[key] = true
+                    local edgeCenter = Vector(
+                        center.x + d.dx * halfCell,
+                        center.y + d.dy * halfCell,
+                        plateCenterZ
+                    )
+                    local mins
+                    local maxs
 
-                        local edgeCenter = center + Vector(
-                            d.dx * halfCell,
-                            d.dy * halfCell,
-                            -halfHeight
-                        )
-                        local mins
-                        local maxs
-
-                        -- Deliberate overlap in both wall depth and segment length
-                        -- closes model-base notches and perpendicular corner seams.
-                        if d.name == "N" or d.name == "S" then
-                            mins = Vector(-halfCell - endOverlap, -halfDepth, -halfHeight)
-                            maxs = Vector(halfCell + endOverlap, halfDepth, halfHeight)
-                        else
-                            mins = Vector(-halfDepth, -halfCell - endOverlap, -halfHeight)
-                            maxs = Vector(halfDepth, halfCell + endOverlap, halfHeight)
-                        end
-
-                        self:_Register(spawnSealBox(edgeCenter, mins, maxs))
+                    -- Slight footprint overlap covers the recessed corner feet of
+                    -- intersecting container models without extending into open
+                    -- corridor edges; this plate is far below the authored deck.
+                    if d.name == "N" or d.name == "S" then
+                        mins = Vector(-halfCell - endOverlap, -halfDepth, -halfPlate)
+                        maxs = Vector(halfCell + endOverlap, halfDepth, halfPlate)
+                    else
+                        mins = Vector(-halfDepth, -halfCell - endOverlap, -halfPlate)
+                        maxs = Vector(halfDepth, halfCell + endOverlap, halfPlate)
                     end
+
+                    self:_Register(spawnSealBox(edgeCenter, mins, maxs))
                 end
             end
         end
