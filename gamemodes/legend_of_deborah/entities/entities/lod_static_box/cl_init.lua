@@ -6,9 +6,11 @@ local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
 
 -- Use a stock Garry's Mod metal-floor material so the generated deck reads as a
--- real grippy steel plate rather than a flat debug slab. This path is part of the
--- base GMod material set exposed by Sandbox's material tool; retain a known HL2
--- metal fallback in case a client reports the preferred material as unavailable.
+-- real grippy steel plate rather than a flat debug slab. The renderer below does
+-- NOT use render.DrawBox: that primitive does not expose UVs and, with this stock
+-- bump-mapped material on the Linux/OpenGL path, produced the tell-tale diagonal
+-- half-black triangle visible in playtesting. LOD.TexturedBox supplies explicit
+-- normals, tangents and UVs for all six faces instead.
 local floorMaterial = Material(GC.FloorMaterial or "phoenix_storms/metalfloor_2-3")
 if floorMaterial:IsError() then
     floorMaterial = Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
@@ -44,14 +46,22 @@ function ENT:Draw()
 end
 
 local function drawMetal(ent, color)
+    if LOD.TexturedBox and LOD.TexturedBox.Draw then
+        LOD.TexturedBox:Draw(
+            ent:GetPos(),
+            ent:GetAngles(),
+            ent:GetBoxMins(),
+            ent:GetBoxMaxs(),
+            floorMaterial,
+            color,
+            128
+        )
+        return
+    end
+
+    -- Defensive fallback only; normal clients load cl_textured_box.lua first.
     render.SetMaterial(floorMaterial)
-    render.DrawBox(
-        ent:GetPos(),
-        ent:GetAngles(),
-        ent:GetBoxMins(),
-        ent:GetBoxMaxs(),
-        color
-    )
+    render.DrawBox(ent:GetPos(), ent:GetAngles(), ent:GetBoxMins(), ent:GetBoxMaxs(), color)
 end
 
 hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
