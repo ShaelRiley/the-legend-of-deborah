@@ -4,17 +4,17 @@ local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
 local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
 local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
-local textureTile = GC.FloorTextureTile or 256
+local textureTile = GC.FloorTextureTile or 384
 
--- The collision geometry is flat; the former apparent "steps" came from the
--- PHX material's aggressive bump/phong relief repeated every 128 units. Use the
--- same grippy artwork through LOD.TexturedBox's flattened industrial material so
--- the deck reads as one planar steel surface rather than raised cassettes.
 local function floorMaterial()
     if LOD.TexturedBox and LOD.TexturedBox.GetIndustrialMaterial then
         return LOD.TexturedBox:GetIndustrialMaterial(GC.FloorMaterialFallback)
     end
-    return Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+    local mat = Material(GC.FloorMaterial or "models/props_wasteland/metal_tram001a")
+    if mat:IsError() then
+        mat = Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+    end
+    return mat
 end
 
 local visualBoxes = visualBoxes or setmetatable({}, {__mode = "k"})
@@ -46,7 +46,26 @@ end
 function ENT:Draw()
 end
 
-local function drawMetal(ent, color)
+local function drawFloorSlab(ent, color)
+    local material = floorMaterial()
+    if LOD.TexturedBox and LOD.TexturedBox.DrawSlab then
+        LOD.TexturedBox:DrawSlab(
+            ent:GetPos(),
+            ent:GetAngles(),
+            ent:GetBoxMins(),
+            ent:GetBoxMaxs(),
+            material,
+            color,
+            textureTile
+        )
+        return
+    end
+
+    render.SetMaterial(material)
+    render.DrawBox(ent:GetPos(), ent:GetAngles(), ent:GetBoxMins(), ent:GetBoxMaxs(), color)
+end
+
+local function drawFullMetalBox(ent, color)
     local material = floorMaterial()
     if LOD.TexturedBox and LOD.TexturedBox.Draw then
         LOD.TexturedBox:Draw(
@@ -61,7 +80,6 @@ local function drawMetal(ent, color)
         return
     end
 
-    -- Defensive fallback only; normal clients load cl_textured_box.lua first.
     render.SetMaterial(material)
     render.DrawBox(ent:GetPos(), ent:GetAngles(), ent:GetBoxMins(), ent:GetBoxMaxs(), color)
 end
@@ -73,13 +91,15 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
         if IsValid(ent) then
             local kind = ent:GetBoxKind()
 
-            -- Floors and stair treads share one solid industrial steel language.
-            -- Rails and anti-bypass blockers remain collision-only because cargo
-            -- props and the visible stair geometry already communicate them.
+            -- Ordinary floor runs render only their top and underside. Their
+            -- collision remains a substantial 32-unit steel plate, but internal
+            -- row-run side faces are not visible, eliminating false step/riser
+            -- seams across a mathematically flat deck. Stair boxes retain all six
+            -- faces because their vertical risers are real geometry.
             if kind == 1 then
-                drawMetal(ent, floorColor)
+                drawFloorSlab(ent, floorColor)
             elseif kind == 2 then
-                drawMetal(ent, stairColor)
+                drawFullMetalBox(ent, stairColor)
                 render.DrawWireframeBox(
                     ent:GetPos(),
                     ent:GetAngles(),
