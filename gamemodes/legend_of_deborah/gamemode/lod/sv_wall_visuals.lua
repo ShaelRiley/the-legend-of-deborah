@@ -5,6 +5,18 @@ local WallVisuals = LOD.WallVisuals
 local MESSAGE = "LOD_WallVisuals"
 local PROTOCOL = 1
 local MAX_PAYLOAD_BYTES = 60000
+local cellKey = LOD.MazeGenerator.CellKey
+local DIRECTIONS = {
+    {dx = 0, dy = 1},
+    {dx = 1, dy = 0},
+    {dx = 0, dy = -1},
+    {dx = -1, dy = 0}
+}
+
+local function edgeKey(a, b)
+    if a < b then return a .. "|" .. b end
+    return b .. "|" .. a
+end
 
 util.AddNetworkString(MESSAGE)
 
@@ -36,19 +48,27 @@ end
 function WallVisuals:Clear()
     if not self.Payload and (self.LogicalCount or 0) == 0 then return end
     self.Payload = nil
+    self.EdgeKeys = nil
     self.LogicalCount = 0
     self:Broadcast()
 end
 
 function WallVisuals:SetSegments(graph, segments)
     local compact = {}
+    local edgeKeys = {}
     for _, segment in ipairs(segments or {}) do
-        compact[#compact + 1] = {
-            tonumber(segment[1]) or 0,
-            tonumber(segment[2]) or 0,
-            tonumber(segment[3]) or 0,
-            tonumber(segment[4]) or 0
-        }
+        local x = tonumber(segment[1]) or 0
+        local y = tonumber(segment[2]) or 0
+        local z = tonumber(segment[3]) or 0
+        local directionIndex = tonumber(segment[4]) or 0
+        compact[#compact + 1] = {x, y, z, directionIndex}
+
+        local direction = DIRECTIONS[directionIndex]
+        if direction then
+            local a = cellKey(x, y, z)
+            local b = cellKey(x + direction.dx, y + direction.dy, z)
+            edgeKeys[edgeKey(a, b)] = true
+        end
     end
 
     local json = util.TableToJSON({
@@ -66,6 +86,7 @@ function WallVisuals:SetSegments(graph, segments)
     end
 
     self.Payload = payload
+    self.EdgeKeys = edgeKeys
     self.LogicalCount = #compact
     self.CompressedBytes = #payload
     self:Broadcast()
@@ -74,6 +95,10 @@ function WallVisuals:SetSegments(graph, segments)
         #compact, #compact * (LOD.Config.Geometry.WallStack or 2), #payload
     ))
     return true
+end
+
+function WallVisuals:HasEdge(key)
+    return self.EdgeKeys and self.EdgeKeys[key] == true or false
 end
 
 hook.Add("PlayerInitialSpawn", "LOD_WallVisualsInitialSync", function(ply)

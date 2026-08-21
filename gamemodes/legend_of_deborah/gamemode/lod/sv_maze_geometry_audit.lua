@@ -72,6 +72,23 @@ local function visualAt(point)
     return nil
 end
 
+local function visualForEdge(key, point)
+    -- Production wall visuals are now a compact logical manifest instead of
+    -- server entities. Validate the exact manifest edge when that authority is
+    -- available; retain the entity lookup only as a rollback-compatible fallback.
+    if LOD.WallVisuals and LOD.WallVisuals.HasEdge then
+        return LOD.WallVisuals:HasEdge(key), "manifest"
+    end
+
+    local ent = visualAt(point)
+    return IsValid(ent), ent
+end
+
+local function visualLabel(source)
+    if IsValid(source) then return "container #" .. source:EntIndex() end
+    return tostring(source or "unknown")
+end
+
 local function gateIndexByEdge(graph)
     local out = {}
     for i, gate in ipairs(graph.Progression and graph.Progression.Gates or {}) do
@@ -111,7 +128,7 @@ function Audit:Run(graph)
                 local b = Builder:CellCenter(neighbor)
                 local boundary = (a + b) * 0.5 + Vector(0, 0, 64)
                 local blocker = wallAt(boundary, walls)
-                local visual = visualAt(boundary)
+                local hasVisual, visualSource = visualForEdge(ek, boundary)
                 result.checked = result.checked + 1
 
                 if open and IsValid(blocker) then
@@ -122,10 +139,10 @@ function Audit:Run(graph)
                         string.format("CLOSED edge %s has no wall blocker", ek)
                 end
 
-                if open and IsValid(visual) then
+                if open and hasVisual then
                     result.visualMismatches[#result.visualMismatches + 1] =
-                        string.format("OPEN edge %s has container visual #%d", ek, visual:EntIndex())
-                elseif not open and not IsValid(visual) then
+                        string.format("OPEN edge %s has wall visual (%s)", ek, visualLabel(visualSource))
+                elseif not open and not hasVisual then
                     result.visualMismatches[#result.visualMismatches + 1] =
                         string.format("CLOSED edge %s has no container visual", ek)
                 end
@@ -222,13 +239,13 @@ concommand.Add("lod_map_edge_audit", function(ply)
     local open = neighbor and graph.Edges and graph.Edges[ek] ~= nil or false
     local boundary = Builder:CellCenter(cell) + Vector(dx * MC.CellSize * 0.5, dy * MC.CellSize * 0.5, 64)
     local blocker = wallAt(boundary, wallBounds())
-    local visual = visualAt(boundary)
+    local hasVisual, visualSource = visualForEdge(ek, boundary)
     local gate = gateIndexByEdge(graph)[ek]
 
     print(string.format(
         "[LOD:EDGE-AUDIT] cell=%s facing=%s neighbor=%s canonicalOpen=%s gate=%s wall=%s visual=%s",
         aKey, dir, tostring(neighbor ~= nil), tostring(open), tostring(gate or "none"),
         IsValid(blocker) and ("#" .. blocker:EntIndex()) or "none",
-        IsValid(visual) and ("#" .. visual:EntIndex()) or "none"
+        hasVisual and visualLabel(visualSource) or "none"
     ))
 end)
