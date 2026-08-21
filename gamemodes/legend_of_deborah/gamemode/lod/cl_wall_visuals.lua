@@ -5,7 +5,7 @@ local Wall = LOD.WallVisualsClient
 local MC = LOD.Config.Maze
 local GC = LOD.Config.Geometry
 local MESSAGE = "LOD_WallVisuals"
-local PROTOCOL = 1
+local PROTOCOL = 2
 local CONTAINER_VISUAL_EMBED = 16
 local MODEL_BATCH_SIZE = 128
 
@@ -34,6 +34,7 @@ local function clearManifest()
     removeModels()
     Wall.logical = {}
     Wall.world = {}
+    Wall.origin = nil
     Wall.dirty = true
     Wall.lastOrigin = nil
 end
@@ -48,8 +49,19 @@ net.Receive(MESSAGE, function()
     local compressed = net.ReadData(byteCount)
     local json = compressed and util.Decompress(compressed) or nil
     local data = json and util.JSONToTable(json) or nil
-    if not istable(data) or tonumber(data.v) ~= PROTOCOL or not istable(data.segments) then
+    if not istable(data) or tonumber(data.v) ~= PROTOCOL
+        or not istable(data.segments) or not istable(data.origin)
+    then
         ErrorNoHalt("[LOD] rejected invalid wall visual manifest\n")
+        clearManifest()
+        return
+    end
+
+    local originX = tonumber(data.origin[1])
+    local originY = tonumber(data.origin[2])
+    local originZ = tonumber(data.origin[3])
+    if not originX or not originY or not originZ then
+        ErrorNoHalt("[LOD] rejected wall visual manifest without resolved origin\n")
         clearManifest()
         return
     end
@@ -74,6 +86,7 @@ net.Receive(MESSAGE, function()
     removeModels()
     Wall.logical = logical
     Wall.world = {}
+    Wall.origin = Vector(originX, originY, originZ)
     Wall.dirty = true
     Wall.lastOrigin = nil
 end)
@@ -84,7 +97,7 @@ local function originChanged(origin)
 end
 
 local function rebuildWorldCache()
-    local origin = MC.Origin or vector_origin
+    local origin = Wall.origin or MC.Origin or vector_origin
     if not Wall.dirty and not originChanged(origin) then return false end
 
     removeModels()
@@ -169,7 +182,8 @@ concommand.Add("lod_wall_visuals_status", function()
     end
     local total = #(Wall.world or {})
     print(string.format(
-        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d",
-        #(Wall.logical or {}), total, active, math.max(0, total - active)
+        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d originZ=%.2f",
+        #(Wall.logical or {}), total, active, math.max(0, total - active),
+        (Wall.origin or MC.Origin or vector_origin).z
     ))
 end)

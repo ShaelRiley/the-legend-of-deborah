@@ -3,7 +3,8 @@ LOD.WallVisuals = LOD.WallVisuals or {}
 
 local WallVisuals = LOD.WallVisuals
 local MESSAGE = "LOD_WallVisuals"
-local PROTOCOL = 1
+local PROTOCOL = 2
+local MC = LOD.Config.Maze
 local MAX_PAYLOAD_BYTES = 60000
 local cellKey = LOD.MazeGenerator.CellKey
 local DIRECTIONS = {
@@ -74,6 +75,10 @@ function WallVisuals:SetSegments(graph, segments)
     local json = util.TableToJSON({
         v = PROTOCOL,
         seed = graph and graph.LevelSeed or 0,
+        -- MazeBuilder resolves Flatgrass's real floor immediately before build.
+        -- Ship that authoritative origin with the manifest; clients cannot rely
+        -- on the minimap's later, unlock-gated NW2 origin synchronization.
+        origin = {MC.Origin.x, MC.Origin.y, MC.Origin.z},
         segments = compact
     }, false)
     local payload = json and util.Compress(json) or nil
