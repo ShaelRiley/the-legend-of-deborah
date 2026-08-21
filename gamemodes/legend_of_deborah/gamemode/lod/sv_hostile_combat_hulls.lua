@@ -94,7 +94,19 @@ hook.Add("EntityFireBullets", "LOD_ScaledHostileCombatHull", function(shooter, b
         if not startPos or not endPos then return end
 
         local best, bestT, bestPos
-        for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+
+        -- Broad-phase only against entities overlapping the traced shot
+        -- segment. The small asymmetric sweep covers the maximum difference
+        -- between an LOD hostile's fixed collision bounds and its 1.33x
+        -- fallback combat volume. The exact AABB test below remains
+        -- authoritative, so nearby entities cannot become false hits.
+        local candidates = ents.FindAlongRay(
+            startPos,
+            endPos,
+            Vector(-4, -4, -24),
+            Vector(4, 4, 0)
+        )
+        for _, hostile in ipairs(candidates) do
             if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead then
                 local mins, maxs = combatBounds(hostile)
                 local t, hitPos = segmentAABB(startPos, endPos, mins, maxs)
