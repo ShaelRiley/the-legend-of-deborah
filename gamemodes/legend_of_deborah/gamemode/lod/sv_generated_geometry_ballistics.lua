@@ -5,9 +5,9 @@ local Ballistics = LOD.GeneratedGeometryBallistics
 
 -- EntityTakeDamage observers receive the same transient CTakeDamageInfo object.
 -- Cache only for that object's lifetime so hit feedback and damage rejection
--- share one generated-cover trace without retaining combat entities.
-local playerBulletTarget = setmetatable({}, {__mode = "k"})
-local playerBulletBlocked = setmetatable({}, {__mode = "k"})
+-- share one generated-cover trace without retaining combat entities. Impact
+-- coordinates and frame number keep same-frame shotgun pellets independent.
+local playerBulletDecision = setmetatable({}, {__mode = "k"})
 
 local function damagePoint(target, dmginfo)
     local pos = dmginfo and dmginfo.GetDamagePosition and dmginfo:GetDamagePosition() or vector_origin
@@ -51,18 +51,34 @@ end
 function Ballistics:PlayerBulletBlocked(hostile, dmginfo)
     if not IsValid(hostile) or not dmginfo or not dmginfo:IsDamageType(DMG_BULLET) then return false end
 
-    if playerBulletTarget[dmginfo] == hostile then
-        return playerBulletBlocked[dmginfo] == true
-    end
-
     local attacker = dmginfo:GetAttacker()
     if not IsValid(attacker) or not attacker:IsPlayer() then return false end
 
     local startPos = attacker:GetShootPos()
     local endPos = damagePoint(hostile, dmginfo)
+    local frame = FrameNumber()
+    local cached = playerBulletDecision[dmginfo]
+    if cached
+        and cached.target == hostile
+        and cached.attacker == attacker
+        and cached.frame == frame
+        and cached.x == endPos.x
+        and cached.y == endPos.y
+        and cached.z == endPos.z
+    then
+        return cached.blocked == true
+    end
+
     local blocked = self:SegmentBlocked(startPos, endPos, attacker, hostile) == true
-    playerBulletTarget[dmginfo] = hostile
-    playerBulletBlocked[dmginfo] = blocked
+    playerBulletDecision[dmginfo] = {
+        target = hostile,
+        attacker = attacker,
+        frame = frame,
+        x = endPos.x,
+        y = endPos.y,
+        z = endPos.z,
+        blocked = blocked
+    }
     return blocked
 end
 
