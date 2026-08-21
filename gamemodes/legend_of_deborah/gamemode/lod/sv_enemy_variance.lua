@@ -207,7 +207,7 @@ hook.Add("OnEntityCreated", "LOD_EnemyVarianceInstallBeforeSpawn", function(ent)
 end)
 
 hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
-    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODStrideRNG then
             local pos = hostile:GetPos()
             local last = hostile.LODStrideLastPos

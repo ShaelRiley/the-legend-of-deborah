@@ -101,7 +101,7 @@ end
 -- Headcrab footstep sound-script keeps the cue distinct from every other enemy.
 hook.Add("Think", "LOD_DeadcrabFootsteps", function()
     local now = CurTime()
-    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODArchetypeId == "deadcrab"
             and not hostile.LODDead and hostile.LODActivated ~= false
             and hostile.LODDeadcrabState ~= "latched"

@@ -253,7 +253,7 @@ function CombatAudio:PlayEncounterActivation(encounter, anchor)
 end
 
 function CombatAudio:_UpdateHostileFootsteps(now)
-    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODHostile and hostile.LODActivated ~= false then
             local profile = HOSTILE_AUDIO[hostile.LODArchetypeId or ""]
             if profile then

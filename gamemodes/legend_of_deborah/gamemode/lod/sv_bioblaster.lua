@@ -411,7 +411,7 @@ end
 
 hook.Add("Think", "LOD_BioBlasterFootsteps", function()
     local now = CurTime()
-    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODArchetypeId == "bioblaster"
             and not hostile.LODDead and hostile.LODActivated ~= false
             and not hostile.LODBioBlast

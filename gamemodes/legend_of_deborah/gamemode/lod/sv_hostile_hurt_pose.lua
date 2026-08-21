@@ -125,7 +125,7 @@ end
 
 hook.Add("Think", "LOD_HostileHurtPoseAuthoritative", function()
     local now = CurTime()
-    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODFrozenHurtSequence then
             local dead = hostile.LODDead == true
             local stunned = now < (hostile.LODHitStunUntil or 0)

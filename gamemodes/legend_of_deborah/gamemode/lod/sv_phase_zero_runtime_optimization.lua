@@ -367,3 +367,24 @@ concommand.Add("lod_phase0_perf", function(ply)
     print("[LOD:PHASE0] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+
+
+concommand.Add("lod_hostile_registry_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local registered = #HostileRegistry:List()
+    local actual = 0
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(hostile) and hostile.LODHostile then actual = actual + 1 end
+    end
+
+    local passed = registered == actual
+    local line = string.format(
+        "registered=%d actual=%d consolidatedHotHooks=5 result=%s",
+        registered, actual, passed and "PASS" or "FAIL"
+    )
+    print("[LOD:HOSTILE-REGISTRY] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
