@@ -3,6 +3,12 @@ LOD.GeneratedGeometryBallistics = LOD.GeneratedGeometryBallistics or {}
 
 local Ballistics = LOD.GeneratedGeometryBallistics
 
+-- EntityTakeDamage observers receive the same transient CTakeDamageInfo object.
+-- Cache only for that object's lifetime so hit feedback and damage rejection
+-- share one generated-cover trace without retaining combat entities.
+local playerBulletTarget = setmetatable({}, {__mode = "k"})
+local playerBulletBlocked = setmetatable({}, {__mode = "k"})
+
 local function damagePoint(target, dmginfo)
     local pos = dmginfo and dmginfo.GetDamagePosition and dmginfo:GetDamagePosition() or vector_origin
     if pos == vector_origin or not pos then
@@ -44,13 +50,20 @@ end
 
 function Ballistics:PlayerBulletBlocked(hostile, dmginfo)
     if not IsValid(hostile) or not dmginfo or not dmginfo:IsDamageType(DMG_BULLET) then return false end
+
+    if playerBulletTarget[dmginfo] == hostile then
+        return playerBulletBlocked[dmginfo] == true
+    end
+
     local attacker = dmginfo:GetAttacker()
     if not IsValid(attacker) or not attacker:IsPlayer() then return false end
 
     local startPos = attacker:GetShootPos()
     local endPos = damagePoint(hostile, dmginfo)
-    local blocked = self:SegmentBlocked(startPos, endPos, attacker, hostile)
-    return blocked == true
+    local blocked = self:SegmentBlocked(startPos, endPos, attacker, hostile) == true
+    playerBulletTarget[dmginfo] = hostile
+    playerBulletBlocked[dmginfo] = blocked
+    return blocked
 end
 
 -- Damage-time fail-safe. Any player-originated bullet damage must respect the
