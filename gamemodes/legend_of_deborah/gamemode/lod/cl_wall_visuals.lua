@@ -1,9 +1,5 @@
 LOD = LOD or {}
-LOD.WallVisualsClient = LOD.WallVisualsClient or {
-    logical = {},
-    world = {},
-    dirty = true
-}
+LOD.WallVisualsClient = LOD.WallVisualsClient or {}
 
 local Wall = LOD.WallVisualsClient
 local MC = LOD.Config.Maze
@@ -11,6 +7,13 @@ local GC = LOD.Config.Geometry
 local MESSAGE = "LOD_WallVisuals"
 local PROTOCOL = 1
 local CONTAINER_VISUAL_EMBED = 16
+local MODEL_BATCH_SIZE = 128
+
+Wall.logical = Wall.logical or {}
+Wall.world = Wall.world or {}
+Wall.models = Wall.models or {}
+Wall.dirty = Wall.dirty ~= false
+Wall.nextModel = Wall.nextModel or 1
 
 local DIRS = {
     {dx = 0, dy = 1, yaw = 90},
@@ -19,31 +22,16 @@ local DIRS = {
     {dx = -1, dy = 0, yaw = 0}
 }
 
-local drawDistance = CreateClientConVar(
-    "lod_wall_draw_distance",
-    "8704",
-    true,
-    false,
-    "Maximum distance for procedural container-wall rendering. Default covers a complete straight 21-cell corridor."
-)
-
-local function removeModel()
-    if IsValid(Wall.model) then Wall.model:Remove() end
-    Wall.model = nil
-end
-
-local function ensureModel()
-    if IsValid(Wall.model) then return Wall.model end
-    local model = ClientsideModel(GC.ContainerModel, RENDERGROUP_OPAQUE)
-    if not IsValid(model) then return nil end
-    model:SetNoDraw(true)
-    model:SetSkin(GC.Skin or 0)
-    model:DrawShadow(false)
-    Wall.model = model
-    return model
+local function removeModels()
+    for _, model in pairs(Wall.models or {}) do
+        if IsValid(model) then model:Remove() end
+    end
+    Wall.models = {}
+    Wall.nextModel = 1
 end
 
 local function clearManifest()
+    removeModels()
     Wall.logical = {}
     Wall.world = {}
     Wall.dirty = true
@@ -83,6 +71,7 @@ net.Receive(MESSAGE, function()
         end
     end
 
+    removeModels()
     Wall.logical = logical
     Wall.world = {}
     Wall.dirty = true
@@ -96,8 +85,9 @@ end
 
 local function rebuildWorldCache()
     local origin = MC.Origin or vector_origin
-    if not Wall.dirty and not originChanged(origin) then return end
+    if not Wall.dirty and not originChanged(origin) then return false end
 
+    removeModels()
     local out = {}
     local halfWidth = (MC.Width + 1) * 0.5
     local halfHeight = (MC.Height + 1) * 0.5
@@ -131,48 +121,55 @@ local function rebuildWorldCache()
     Wall.world = out
     Wall.lastOrigin = Vector(origin.x, origin.y, origin.z)
     Wall.dirty = false
+    Wall.nextModel = 1
+    return true
 end
 
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawProceduralContainerWalls", function(drawingDepth, drawingSkybox, drawing3DSkybox)
-    if drawingDepth or drawingSkybox or drawing3DSkybox then return end
-    if not Wall.logical or #Wall.logical == 0 then return end
+local function spawnModel(instance)
+    local model = ClientsideModel(GC.ContainerModel, RENDERGROUP_OPAQUE)
+    if not IsValid(model) then return nil end
 
+    -- Keep construction invisible until the transform is complete. Each wall
+    -- instance then follows the engine's ordinary, proven model-rendering path;
+    -- no server entity or manual repeated DrawModel call is required.
+    model:SetNoDraw(true)
+    model:SetPos(instance.pos)
+    model:SetAngles(instance.ang)
+    model:SetSkin(GC.Skin or 0)
+    model:DrawShadow(false)
+    model:SetNoDraw(false)
+    return model
+end
+
+local function buildModelBatch()
     rebuildWorldCache()
-    local model = ensureModel()
-    if not IsValid(model) then return end
+    local total = #(Wall.world or {})
+    local first = Wall.nextModel or 1
+    if first > total then return end
 
-    local eye = EyePos()
-    local forward = EyeVector()
-    local maximum = math.max(MC.CellSize * 4, drawDistance:GetFloat())
-    local maximumSqr = maximum * maximum
-    local nearSqr = (MC.CellSize * 1.5) ^ 2
-
-    for _, instance in ipairs(Wall.world or {}) do
-        local delta = instance.pos - eye
-        local distanceSqr = delta:LengthSqr()
-        -- A generous plane behind the camera removes work the player cannot see
-        -- without clipping models at the peripheral edge. The default distance
-        -- still covers an end-to-end straight corridor.
-        if distanceSqr <= maximumSqr
-            and (distanceSqr <= nearSqr or delta:Dot(forward) >= -MC.CellSize)
-        then
-            model:SetPos(instance.pos)
-            model:SetAngles(instance.ang)
-            -- DrawModel retains the first transform when one entity is drawn
-            -- repeatedly in a frame unless its bone matrices are rebuilt.
-            model:SetupBones()
-            model:DrawModel()
-        end
+    local last = math.min(total, first + MODEL_BATCH_SIZE - 1)
+    for index = first, last do
+        Wall.models[index] = spawnModel(Wall.world[index])
     end
+    Wall.nextModel = last + 1
+end
+
+hook.Add("Think", "LOD_BuildProceduralContainerWalls", function()
+    if not Wall.logical or #Wall.logical == 0 then return end
+    buildModelBatch()
 end)
 
-hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModel)
+hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModels)
 
 concommand.Add("lod_wall_visuals_status", function()
     rebuildWorldCache()
+    local active = 0
+    for _, model in pairs(Wall.models or {}) do
+        if IsValid(model) then active = active + 1 end
+    end
+    local total = #(Wall.world or {})
     print(string.format(
-        "[LOD:WALL-VISUALS] logical=%d instances=%d drawDistance=%.0f model=%s",
-        #(Wall.logical or {}), #(Wall.world or {}), drawDistance:GetFloat(),
-        IsValid(Wall.model) and "ready" or "not-created"
+        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d",
+        #(Wall.logical or {}), total, active, math.max(0, total - active)
     ))
 end)
