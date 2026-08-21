@@ -60,6 +60,9 @@ include("lod/sv_m3_hit_feedback.lua")
 -- Load after hit feedback so generated-cover rejection can also suppress false
 -- hit-confirm/flinch events, independent of EntityTakeDamage hook order.
 include("lod/sv_generated_geometry_ballistics.lua")
+-- Phase Zero replaces repeated graph BFS/global hostile scans with bounded
+-- caches while preserving Motion V2 and generated geometry as authorities.
+include("lod/sv_phase_zero_runtime_optimization.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
