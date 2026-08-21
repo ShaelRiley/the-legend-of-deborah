@@ -1,0 +1,1 @@
+Compatibility loader image sizing fix staging note.
