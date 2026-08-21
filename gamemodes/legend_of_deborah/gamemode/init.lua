@@ -13,6 +13,7 @@ AddCSLuaFile("lod/cl_minimap_origin_sync.lua")
 AddCSLuaFile("lod/cl_minimap_safety.lua")
 
 include("shared.lua")
+include("lod/sv_saverestore_safety.lua")
 include("lod/sv_midnight_sky.lua")
 include("lod/sv_maze_generator.lua")
 include("lod/sv_graph_integrity.lua")
