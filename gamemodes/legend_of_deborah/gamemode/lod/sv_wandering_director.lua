@@ -204,6 +204,19 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     ent:Spawn()
     ent:Activate()
 
+    -- Initializing every wanderer with refresh time zero made the full roaming
+    -- population acquire targets and rebuild routes on the same frames forever.
+    -- Seed-derived phase offsets preserve the exact refresh cadences and replay
+    -- determinism while distributing their work across those intervals.
+    local scheduleRng = rng:Derive("refresh-phase")
+    local targetInterval = math.max(0.01, EC.TargetRefreshSeconds or 0.25)
+    local routeInterval = math.max(0.01, EC.RouteRefreshSeconds or 0.35)
+    local now = CurTime()
+    ent.LODWanderTargetPhase = scheduleRng:Float(0, targetInterval)
+    ent.LODWanderRoutePhase = scheduleRng:Float(0, routeInterval)
+    ent.LODNextTargetRefresh = now + ent.LODWanderTargetPhase
+    ent.LODNextRouteRefresh = now + ent.LODWanderRoutePhase
+
     self.Entities[#self.Entities + 1] = ent
     if LOD.EncounterDirector then
         LOD.EncounterDirector.Entities = LOD.EncounterDirector.Entities or {}
@@ -472,4 +485,44 @@ concommand.Add("lod_m3_wanderers", function(ply)
             print("[LOD:WANDER] " .. text)
         end
     end
+end)
+
+
+concommand.Add("lod_wander_schedule_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local targetInterval = math.max(0.01, EC.TargetRefreshSeconds or 0.25)
+    local routeInterval = math.max(0.01, EC.RouteRefreshSeconds or 0.35)
+    local binCount = 8
+    local targetBins = {}
+    local routeBins = {}
+    local living = 0
+
+    local function addBin(bins, phase, interval)
+        if not phase then return end
+        local index = math.Clamp(math.floor((phase / interval) * binCount), 0, binCount - 1)
+        bins[index] = true
+    end
+
+    for _, ent in ipairs(WanderingDirector.Entities or {}) do
+        if livingWanderer(ent) then
+            living = living + 1
+            addBin(targetBins, ent.LODWanderTargetPhase, targetInterval)
+            addBin(routeBins, ent.LODWanderRoutePhase, routeInterval)
+        end
+    end
+
+    local targetSpread = table.Count(targetBins)
+    local routeSpread = table.Count(routeBins)
+    local required = math.min(4, living)
+    local passed = living > 0 and targetSpread >= required and routeSpread >= required
+    local line = string.format(
+        "wanderers=%d targetBins=%d/%d routeBins=%d/%d cadence=%.2fs/%.2fs result=%s",
+        living, targetSpread, binCount, routeSpread, binCount,
+        targetInterval, routeInterval, passed and "PASS" or "FAIL"
+    )
+    print("[LOD:WANDER-SCHEDULE] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
