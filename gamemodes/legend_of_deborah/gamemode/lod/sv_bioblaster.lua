@@ -3,6 +3,7 @@ LOD = LOD or {}
 local EC = LOD.Config.Encounter
 local EncounterDirector = LOD.EncounterDirector
 local CombatAudio = LOD.CombatAudio
+local Motion = LOD.HostileMotionV2
 
 local BIO_PAIN = {
     "npc/zombie_poison/pz_pain1.wav", "npc/zombie_poison/pz_pain2.wav", "npc/zombie_poison/pz_pain3.wav"
@@ -51,6 +52,25 @@ end
 
 local function bioWalk(self)
     if self._SetActivity then self:_SetActivity(ACT_WALK, true) end
+end
+
+local function holdAndFace(self, target)
+    if not IsValid(self) or not IsValid(target) then return end
+
+    -- Motion V2 is the physical authority for every ground hostile. Driving its
+    -- disabled CLuaLocomotion object directly left the Bio Blaster's hold/facing
+    -- state outside that authority, so its mouth origin could retain a stale yaw
+    -- and the attack state could stall after the locomotion migration.
+    if self.LODMotionV2 and Motion then
+        Motion:Stop(self)
+        Motion:FaceToward(self, target:GetPos())
+        return
+    end
+
+    if self.loco then
+        self.loco:SetDesiredSpeed(0)
+        self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+    end
 end
 
 local function openChestPose(self)
@@ -125,8 +145,7 @@ local function beginBlast(self, target)
         fireAt = CurTime() + cfg.blastTelegraph,
         lastAimPos = target:WorldSpaceCenter()
     }
-    if self.loco then self.loco:SetDesiredSpeed(0) end
-    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+    holdAndFace(self, target)
     openChestPose(self)
 
     if not playRotating(self, "LODBioChargeOrdinal", BIO_CHARGE, 80, 88, 0.95, CHAN_VOICE)
@@ -149,8 +168,7 @@ local function processBlast(self)
         return false
     end
 
-    if self.loco then self.loco:SetDesiredSpeed(0) end
-    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+    holdAndFace(self, target)
 
     if CurTime() < burst.fireAt then
         if self._HasLineOfSight and not self:_HasLineOfSight(target) then
@@ -218,8 +236,7 @@ local function installHostilePatch()
 
             local preferred = self.LODConfig.preferredRange or 560
             if distanceSq <= preferred * preferred then
-                if self.loco then self.loco:SetDesiredSpeed(0) end
-                self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+                holdAndFace(self, target)
                 bioIdle(self)
                 return
             end
