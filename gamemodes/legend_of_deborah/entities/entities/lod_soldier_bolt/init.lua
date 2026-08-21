@@ -62,6 +62,25 @@ local function damagePlayer(self, owner, victim, hitPos)
     return true
 end
 
+local FALLBACK_PLAYER_PROXIMITY_SQR = 160 * 160
+
+local function fallbackPlayerNearby(endPos)
+    -- A Soldier bolt can travel at most 47.5 units in one clamped Think step;
+    -- Bio bolts travel less. A 160-unit end-point radius comfortably encloses
+    -- the active player's collision bounds, equipped attachments, and the
+    -- entire preceding segment. Outside it, FindAlongRay cannot produce a
+    -- valid fallback victim.
+    if not player.Iterator or not LOD or not LOD.FactionManager then return true end
+    for _, victim in player.Iterator() do
+        if LOD.FactionManager:IsValidPlayerTarget(victim)
+            and endPos:DistToSqr(victim:WorldSpaceCenter()) <= FALLBACK_PLAYER_PROXIMITY_SQR
+        then
+            return true
+        end
+    end
+    return false
+end
+
 function ENT:Think()
     local currentSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
     if self.LODLevelSeed and currentSeed ~= self.LODLevelSeed then
@@ -103,27 +122,29 @@ function ENT:Think()
     -- consistently become the first MASK_SHOT trace entity. FindAlongRay uses
     -- the whole travelled segment, and a clear obstacle trace prevents damage
     -- through cargo-container walls.
-    for _, ent in ipairs(ents.FindAlongRay(startPos, endPos, Vector(-6, -6, -6), Vector(6, 6, 6))) do
-        local victim = playerVictimFromEntity(ent)
-        if victim and LOD.FactionManager:IsValidPlayerTarget(victim) then
-            local obstruction = util.TraceLine({
-                start = startPos,
-                endpos = victim:WorldSpaceCenter(),
-                mask = MASK_SHOT,
-                filter = function(hit)
-                    if hit == self or hit == owner or hit == victim then return false end
-                    if IsValid(hit) and hit.LODHostile then return false end
-                    if isOwnerAttachment(hit, owner) then return false end
-                    if playerVictimFromEntity(hit) == victim then return false end
-                    return true
+    if fallbackPlayerNearby(endPos) then
+        for _, ent in ipairs(ents.FindAlongRay(startPos, endPos, Vector(-6, -6, -6), Vector(6, 6, 6))) do
+            local victim = playerVictimFromEntity(ent)
+            if victim and LOD.FactionManager:IsValidPlayerTarget(victim) then
+                local obstruction = util.TraceLine({
+                    start = startPos,
+                    endpos = victim:WorldSpaceCenter(),
+                    mask = MASK_SHOT,
+                    filter = function(hit)
+                        if hit == self or hit == owner or hit == victim then return false end
+                        if IsValid(hit) and hit.LODHostile then return false end
+                        if isOwnerAttachment(hit, owner) then return false end
+                        if playerVictimFromEntity(hit) == victim then return false end
+                        return true
+                    end
+                })
+                if not obstruction.Hit or obstruction.Fraction >= 0.995 then
+                    damagePlayer(self, owner, victim, victim:WorldSpaceCenter())
+                    self:Remove()
+                    return
                 end
-            })
-            if not obstruction.Hit or obstruction.Fraction >= 0.995 then
-                damagePlayer(self, owner, victim, victim:WorldSpaceCenter())
-                self:Remove()
-                return
             end
-        end
+    end
     end
 
     self:SetPos(endPos)
