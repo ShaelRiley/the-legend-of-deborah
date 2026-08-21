@@ -5,18 +5,28 @@
 <title>The Legend of Deborah</title>
 <style type="text/css">
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}
-#lod{position:absolute;left:0;top:0;width:100%;height:100%;border:0;margin:0;padding:0;}
+#lod{position:absolute;left:0;top:0;border:0;margin:0;padding:0;visibility:hidden;}
 </style>
-</head>
-<body marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" bgcolor="#000">
-<img id="lod" src="asset://garrysmod/html/legend_of_deborah_loading_compat.jpg" width="100%" height="100%" border="0" alt="The Legend of Deborah">
 <script type="text/javascript">
 function LODFit(){
   var img=document.getElementById('lod');
   if(!img){return;}
-  var w=document.documentElement.clientWidth||document.body.clientWidth||window.innerWidth||screen.width;
-  var h=document.documentElement.clientHeight||document.body.clientHeight||window.innerHeight||screen.height;
-  if(w&&h){img.width=w;img.height=h;img.style.width=w+'px';img.style.height=h+'px';}
+  var root=document.documentElement;
+  var body=document.body;
+  var w=(root&&root.clientWidth)||(body&&body.clientWidth)||window.innerWidth||1280;
+  var h=(root&&root.clientHeight)||(body&&body.clientHeight)||window.innerHeight||800;
+  var scale=Math.min(w/1280,h/800);
+  var drawWidth=Math.floor(1280*scale);
+  var drawHeight=Math.floor(800*scale);
+  var left=Math.floor((w-drawWidth)/2);
+  var top=Math.floor((h-drawHeight)/2);
+  img.width=drawWidth;
+  img.height=drawHeight;
+  img.style.width=drawWidth+'px';
+  img.style.height=drawHeight+'px';
+  img.style.left=left+'px';
+  img.style.top=top+'px';
+  img.style.visibility='visible';
 }
 window.onload=LODFit;
 window.onresize=LODFit;
@@ -26,5 +36,8 @@ window.SetFilesNeeded=function(){};
 window.DownloadingFile=function(){};
 window.SetStatusChanged=function(){};
 </script>
+</head>
+<body marginwidth="0" marginheight="0" leftmargin="0" topmargin="0" bgcolor="#000">
+<img id="lod" src="asset://garrysmod/html/legend_of_deborah_loading.jpg" width="1280" height="800" border="0" alt="The Legend of Deborah" onload="LODFit();">
 </body>
 </html>
