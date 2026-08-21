@@ -144,7 +144,7 @@ function ENT:Think()
                     return
                 end
             end
-    end
+        end
     end
 
     self:SetPos(endPos)
