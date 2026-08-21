@@ -2,6 +2,10 @@ LOD = LOD or {}
 LOD.M3DamageAudit = LOD.M3DamageAudit or {}
 
 local Audit = LOD.M3DamageAudit
+local eventCapture = CreateConVar(
+    "lod_m3_damage_audit_enabled", "0", FCVAR_NONE,
+    "Capture and print detailed per-hit Milestone 3 damage audit events"
+)
 
 local function developerAllowed(ply)
     local cv = GetConVar("lod_developer_mode")
@@ -16,6 +20,11 @@ end
 
 hook.Add("EntityTakeDamage", "LOD_M3_RecordHostileIncomingDamage", function(ent, dmginfo)
     if not IsValid(ent) or not ent.LODHostile then return end
+    -- The audit is diagnostic instrumentation, not production combat logic.
+    -- Keep all attacker/weapon lookup, table creation, formatting, and console
+    -- output dormant unless a developer explicitly arms it for a focused test.
+    if not eventCapture:GetBool() then return end
+
     local attacker = dmginfo and dmginfo:GetAttacker() or nil
     if not IsValid(attacker) or not attacker:IsPlayer() then return end
 
@@ -48,6 +57,19 @@ hook.Add("EntityTakeDamage", "LOD_M3_RecordHostileIncomingDamage", function(ent,
         Audit.LastEvent.damage, Audit.LastEvent.weapon, Audit.LastEvent.damageType,
         tostring(Audit.LastEvent.bulletBit)
     ))
+end)
+
+concommand.Add("lod_m3_damage_audit_status", function(ply)
+    if not developerAllowed(ply) then return end
+
+    local enabled = eventCapture:GetBool()
+    local line = string.format(
+        "enabled=%s lastEvent=%s productionFormatting=%s result=%s",
+        tostring(enabled), Audit.LastEvent and "present" or "none",
+        enabled and "ON" or "OFF", enabled and "ARMED" or "PASS"
+    )
+    print("[LOD:M3-DMG-STATUS] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
 concommand.Add("lod_m3_damage_audit", function(ply)
