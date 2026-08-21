@@ -232,13 +232,22 @@ local function installHostilePatch()
         if self.LODArchetypeId ~= "bioblaster" then
             return baseBehaviourTick(self)
         end
-        if self.LODDead or not self.LODActivated then return end
+
+        self.LODBioDebugTicks = (self.LODBioDebugTicks or 0) + 1
+        if self.LODDead or not self.LODActivated then
+            self.LODBioDebugGate = "inactive"
+            return
+        end
 
         local state = LOD.RunManager and LOD.RunManager.State
         local graph = state and state.Graph
-        if not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
+        if not graph or not state.BuildReady or state.Failed or state.LevelCleared then
+            self.LODBioDebugGate = "run-state"
+            return
+        end
 
         if self.LODBioBlast then
+            self.LODBioDebugGate = "charging"
             processBlast(self)
             return
         end
@@ -246,21 +255,44 @@ local function installHostilePatch()
         self:_RefreshTarget(graph)
         self:_RefreshRoute(graph)
         local target = self.LODTarget
+        local targetLiving = livingPlayer(target)
+        local hasLOS = targetLiving and bioHasLineOfSight(self, target) or false
+        local distanceSq = targetLiving and self:GetPos():DistToSqr(target:GetPos()) or math.huge
+        self.LODBioDebugTarget = target
+        self.LODBioDebugLiving = targetLiving
+        self.LODBioDebugLOS = hasLOS
+        self.LODBioDebugDistanceSq = distanceSq
 
-        if livingPlayer(target) and bioHasLineOfSight(self, target) then
-            local distanceSq = self:GetPos():DistToSqr(target:GetPos())
+        if targetLiving and hasLOS then
             if distanceSq <= self.LODConfig.fireRange * self.LODConfig.fireRange
                 and CurTime() >= (self.LODNextBioCharge or 0)
             then
-                if beginBlast(self, target) then return end
+                if beginBlast(self, target) then
+                    self.LODBioDebugGate = "charge-started"
+                    return
+                end
+                self.LODBioDebugGate = "begin-rejected"
             end
 
             local preferred = self.LODConfig.preferredRange or 560
             if distanceSq <= preferred * preferred then
+                self.LODBioDebugGate = "preferred-hold"
                 holdAndFace(self, target)
                 bioIdle(self)
                 return
             end
+        end
+
+        if not targetLiving then
+            self.LODBioDebugGate = "no-live-target"
+        elseif not hasLOS then
+            self.LODBioDebugGate = "no-los"
+        elseif distanceSq > self.LODConfig.fireRange * self.LODConfig.fireRange then
+            self.LODBioDebugGate = "out-of-range"
+        elseif CurTime() < (self.LODNextBioCharge or 0) then
+            self.LODBioDebugGate = "cooldown-pursuit"
+        else
+            self.LODBioDebugGate = "generic-pursuit"
         end
 
         -- Let the proven generic graph-routing code handle pursuit/leashing. Its
@@ -380,6 +412,44 @@ hook.Add("Think", "LOD_BioBlasterFootsteps", function()
             playRotating(hostile, "LODBioFootOrdinal", BIO_FEET, 72, 76, 0.82, CHAN_BODY)
         end
     end
+end)
+
+concommand.Add("lod_m3_bioblaster_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local nearest, nearestDistanceSq
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(hostile) and hostile.LODArchetypeId == "bioblaster" and not hostile.LODDead then
+            local distanceSq = IsValid(ply) and hostile:GetPos():DistToSqr(ply:GetPos()) or 0
+            if not nearest or distanceSq < nearestDistanceSq then
+                nearest = hostile
+                nearestDistanceSq = distanceSq
+            end
+        end
+    end
+
+    if not IsValid(nearest) then
+        print("[LOD:BIO-STATUS] no live Bio Blaster")
+        return
+    end
+
+    local target = nearest.LODBioDebugTarget
+    local cfg = nearest.LODConfig or {}
+    local sharedLOS = IsValid(target) and nearest._HasLineOfSight
+        and nearest:_HasLineOfSight(target) or false
+    local line = string.format(
+        "#%d ticks=%d gate=%s target=%s living=%s distance=%.1f fireRange=%.1f bioLOS=%s sharedLOS=%s cooldown=%.2f charging=%s motion=%s",
+        nearest:EntIndex(), nearest.LODBioDebugTicks or 0,
+        tostring(nearest.LODBioDebugGate or "never-entered"),
+        IsValid(target) and ("#" .. target:EntIndex()) or "none",
+        tostring(nearest.LODBioDebugLiving == true),
+        nearest.LODBioDebugDistanceSq and math.sqrt(nearest.LODBioDebugDistanceSq) or -1,
+        cfg.fireRange or -1, tostring(nearest.LODBioDebugLOS == true), tostring(sharedLOS == true),
+        math.max(0, (nearest.LODNextBioCharge or 0) - CurTime()),
+        tostring(nearest.LODBioBlast ~= nil), tostring(nearest.LODMotionMode or "none")
+    )
+    print("[LOD:BIO-STATUS] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
 concommand.Add("lod_m3_bioblaster_audio_audit", function(ply)
