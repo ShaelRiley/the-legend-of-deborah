@@ -50,18 +50,20 @@ end
 local function quiesceEngineLocomotion(hostile)
     if not hostile.loco then return end
 
-    -- Ordinary travel never uses CLuaLocomotion velocity. Deadcrab keeps its
-    -- native gravity/jump capability so its explicit leap state can still launch
-    -- ballistically, but while it is walking this function zeros its engine-side
-    -- horizontal movement just like every other archetype.
+    -- Desired speed and velocity remain dynamic: variance and hit-stun wrappers
+    -- can restore them between motion updates, so they must still be suppressed.
     hostile.loco:SetDesiredSpeed(0)
     if hostile.loco.SetVelocity then hostile.loco:SetVelocity(vector_origin) end
 
-    if hostile.LODArchetypeId ~= "deadcrab" then
+    -- Gravity/jump/climb policy is invariant for ordinary Motion V2 hostiles.
+    -- Reissuing these four engine setters every update performed no useful work.
+    -- Deadcrab is excluded because its committed leap deliberately owns them.
+    if hostile.LODArchetypeId ~= "deadcrab" and not hostile.LODMotionStaticSuppressionCached then
         if hostile.loco.SetGravity then hostile.loco:SetGravity(0) end
         if hostile.loco.SetJumpHeight then hostile.loco:SetJumpHeight(0) end
         if hostile.loco.SetClimbAllowed then hostile.loco:SetClimbAllowed(false) end
         if hostile.loco.SetJumpGapsAllowed then hostile.loco:SetJumpGapsAllowed(false) end
+        hostile.LODMotionStaticSuppressionCached = true
     end
 end
 
@@ -377,4 +379,33 @@ concommand.Add("lod_m3_nearest_hostile", function(ply)
         end
     end
     print("[LOD:NEAREST-HOSTILE] " .. (IsValid(nearest) and statusLine(nearest) or "none"))
+end)
+
+
+concommand.Add("lod_motion_suppression_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local ordinary = 0
+    local cached = 0
+    local deadcrabs = 0
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead then
+            if hostile.LODArchetypeId == "deadcrab" then
+                deadcrabs = deadcrabs + 1
+            else
+                ordinary = ordinary + 1
+                if hostile.LODMotionStaticSuppressionCached then cached = cached + 1 end
+            end
+        end
+    end
+
+    local passed = ordinary > 0 and cached == ordinary
+    local line = string.format(
+        "ordinary=%d cached=%d deadcrabs-exempt=%d avoidedStaticSettersPerUpdate=%d result=%s",
+        ordinary, cached, deadcrabs, cached * 4, passed and "PASS" or "FAIL"
+    )
+    print("[LOD:MOTION-SUPPRESSION] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
