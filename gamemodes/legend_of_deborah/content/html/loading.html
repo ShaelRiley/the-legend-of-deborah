@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>The Legend of Deborah</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lod-loading-art {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      object-fit: contain;
+      object-position: center center;
+      background: #000;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <img id="lod-loading-art" src="legend_of_deborah_loading.jpg" alt="The Legend of Deborah">
+  <script>
+    // Garry's Mod calls these callbacks while loading. The poster deliberately
+    // remains visually unadorned, so the callbacks are accepted without placing
+    // transient engine text over the supplied key art.
+    window.GameDetails = function () {};
+    window.SetFilesTotal = function () {};
+    window.SetFilesNeeded = function () {};
+    window.DownloadingFile = function () {};
+    window.SetStatusChanged = function () {};
+  </script>
+</body>
+</html>
