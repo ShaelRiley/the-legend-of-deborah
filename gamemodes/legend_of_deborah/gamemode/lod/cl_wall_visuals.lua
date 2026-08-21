@@ -158,6 +158,9 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawProceduralContainerWalls", functi
         then
             model:SetPos(instance.pos)
             model:SetAngles(instance.ang)
+            -- DrawModel retains the first transform when one entity is drawn
+            -- repeatedly in a frame unless its bone matrices are rebuilt.
+            model:SetupBones()
             model:DrawModel()
         end
     end
