@@ -75,6 +75,9 @@ function MazeBuilder:_Register(ent)
 end
 
 function MazeBuilder:Cleanup()
+    if LOD.PlaceholderLoot and LOD.PlaceholderLoot.Clear then
+        LOD.PlaceholderLoot:Clear()
+    end
     if LOD.WallVisuals and LOD.WallVisuals.Clear then
         LOD.WallVisuals:Clear()
     end

@@ -5,6 +5,75 @@ include("shared.lua")
 local DEATH_BLINK_DURATION = 1.0
 local DEATH_BLINK_INTERVAL = 0.125
 local PLACEHOLDER_LOOT_MODEL = "models/items/boxsrounds.mdl"
+local PLACEHOLDER_LOOT_LIFETIME = 20
+local PLACEHOLDER_LOOT_CAP = 24
+
+-- Milestone 4 will replace these inert markers with individualized seeded drops.
+-- Until then, keep their presentation bounded: wanderers respawn indefinitely, so
+-- registering every marker with MazeBuilder would otherwise grow both the entity
+-- population and MazeBuilder's retained entity table for the entire level.
+LOD.PlaceholderLoot = LOD.PlaceholderLoot or {Entities = {}}
+local PlaceholderLoot = LOD.PlaceholderLoot
+
+local function removeLootAt(index)
+    local loot = table.remove(PlaceholderLoot.Entities, index)
+    if IsValid(loot) then loot:Remove() end
+end
+
+function PlaceholderLoot:Prune()
+    local now = CurTime()
+    local state = LOD.RunManager and LOD.RunManager.State
+    local levelSeed = state and state.LevelSeed or nil
+
+    for index = #self.Entities, 1, -1 do
+        local loot = self.Entities[index]
+        if not IsValid(loot)
+            or (loot.LODPlaceholderLootExpiresAt or 0) <= now
+            or (levelSeed and loot.LODPlaceholderLootLevelSeed ~= levelSeed)
+        then
+            removeLootAt(index)
+        end
+    end
+end
+
+function PlaceholderLoot:Register(loot, levelSeed)
+    if not IsValid(loot) then return false end
+    self:Prune()
+
+    while #self.Entities >= PLACEHOLDER_LOOT_CAP do
+        removeLootAt(1)
+    end
+
+    loot.LODPlaceholderLootLevelSeed = levelSeed
+    loot.LODPlaceholderLootExpiresAt = CurTime() + PLACEHOLDER_LOOT_LIFETIME
+    self.Entities[#self.Entities + 1] = loot
+    return true
+end
+
+function PlaceholderLoot:Clear()
+    for index = #self.Entities, 1, -1 do
+        removeLootAt(index)
+    end
+end
+
+function PlaceholderLoot:Count()
+    self:Prune()
+    return #self.Entities
+end
+
+timer.Create("LOD_PlaceholderLootCleanup", 1, 0, function()
+    if LOD.PlaceholderLoot and LOD.PlaceholderLoot.Prune then
+        LOD.PlaceholderLoot:Prune()
+    end
+end)
+
+concommand.Add("lod_placeholder_loot_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    print(string.format(
+        "[LOD:LOOT] active=%d cap=%d lifetime=%.0fs",
+        PlaceholderLoot:Count(), PLACEHOLDER_LOOT_CAP, PLACEHOLDER_LOOT_LIFETIME
+    ))
+end)
 
 local function archetypeConfig(id)
     return LOD.Config.Encounter.Archetypes[id]
@@ -469,12 +538,7 @@ function ENT:_SpawnPlaceholderLoot()
     loot:Activate()
     loot:EmitSound("items/itempickup.wav", 55, 128, 0.45, CHAN_ITEM)
 
-    -- Milestone 4 will replace this inert marker with LootDirector's
-    -- individualized seeded drop resolution. Registering it with MazeBuilder
-    -- already gives it correct level cleanup semantics in the meantime.
-    if LOD.MazeBuilder and LOD.MazeBuilder._Register then
-        LOD.MazeBuilder:_Register(loot)
-    end
+    PlaceholderLoot:Register(loot, self.LODDeathLevelSeed)
 end
 
 function ENT:_FinishDeathPresentation()
