@@ -227,29 +227,36 @@ local function installHostilePatch()
         bioWalk(self)
     end
 
-    local baseBehaviourTick = class._BehaviourTick
-    function class:_BehaviourTick()
-        if self.LODArchetypeId ~= "bioblaster" then
-            return baseBehaviourTick(self)
-        end
+    -- Archetype dispatch is a named class method as well as a wrapper. Motion V2
+    -- invokes it directly, so unordered OnEntityCreated hook execution cannot
+    -- erase Bio combat by installing the generic motion tick afterward.
+    function class:_RunBioBlasterTick()
+        if self.LODArchetypeId ~= "bioblaster" then return false end
+
+        -- A correctly ordered wrapper may reach this dispatcher before Motion V2
+        -- does. Evaluate it only once per server frame, then let the second entry
+        -- fall through to generic pursuit without duplicating target/LOS work.
+        local frame = FrameNumber()
+        if self.LODBioDispatchFrame == frame then return false end
+        self.LODBioDispatchFrame = frame
 
         self.LODBioDebugTicks = (self.LODBioDebugTicks or 0) + 1
         if self.LODDead or not self.LODActivated then
             self.LODBioDebugGate = "inactive"
-            return
+            return true
         end
 
         local state = LOD.RunManager and LOD.RunManager.State
         local graph = state and state.Graph
         if not graph or not state.BuildReady or state.Failed or state.LevelCleared then
             self.LODBioDebugGate = "run-state"
-            return
+            return true
         end
 
         if self.LODBioBlast then
             self.LODBioDebugGate = "charging"
             processBlast(self)
-            return
+            return true
         end
 
         self:_RefreshTarget(graph)
@@ -269,7 +276,7 @@ local function installHostilePatch()
             then
                 if beginBlast(self, target) then
                     self.LODBioDebugGate = "charge-started"
-                    return
+                    return true
                 end
                 self.LODBioDebugGate = "begin-rejected"
             end
@@ -279,7 +286,7 @@ local function installHostilePatch()
                 self.LODBioDebugGate = "preferred-hold"
                 holdAndFace(self, target)
                 bioIdle(self)
-                return
+                return true
             end
         end
 
@@ -294,9 +301,12 @@ local function installHostilePatch()
         else
             self.LODBioDebugGate = "generic-pursuit"
         end
+        return false
+    end
 
-        -- Let the proven generic graph-routing code handle pursuit/leashing. Its
-        -- melee path is harmless because Bio Blaster meleeRange/damage are zero.
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        if self.LODArchetypeId == "bioblaster" and self:_RunBioBlasterTick() then return end
         return baseBehaviourTick(self)
     end
 

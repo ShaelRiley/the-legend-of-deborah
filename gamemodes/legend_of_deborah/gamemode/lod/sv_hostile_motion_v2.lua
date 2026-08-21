@@ -252,6 +252,14 @@ local function installPatch()
             return
         end
 
+        -- Bio combat is an explicit Motion V2 dispatch, not an incidental wrapper
+        -- ordering side effect. The method is supplied by sv_bioblaster.lua.
+        if self.LODArchetypeId == "bioblaster" and self._RunBioBlasterTick
+            and self:_RunBioBlasterTick()
+        then
+            return
+        end
+
         self:_RefreshTarget(graph)
         self:_RefreshRoute(graph)
 
