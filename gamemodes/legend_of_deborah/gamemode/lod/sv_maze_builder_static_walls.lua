@@ -174,9 +174,7 @@ function MazeBuilder:_BuildWalls(graph)
 
     for _, keyValue in ipairs(sortedKeys(graph.Cells)) do
         local cell = graph.Cells[keyValue]
-        local center = self:CellCenter(cell)
-
-        for _, d in ipairs(DIRS) do
+        for directionIndex, d in ipairs(DIRS) do
             local nx, ny, nz = cell.x + d.dx, cell.y + d.dy, cell.z
             if not hasOpenEdge(graph, cell, nx, ny, nz) then
                 local a = cellKey(cell.x, cell.y, cell.z)
@@ -184,9 +182,11 @@ function MazeBuilder:_BuildWalls(graph)
                 local wallKey = edgeKeyFromKeys(a, b)
                 if not seen[wallKey] then
                     seen[wallKey] = true
+                    -- Collision remains server-authoritative. Clients need only
+                    -- four compact logical values to reconstruct both stacked
+                    -- shipping-container models at the exact former positions.
                     visualSegments[#visualSegments + 1] = {
-                        pos = center + Vector(d.dx * MC.CellSize * 0.5, d.dy * MC.CellSize * 0.5, 0),
-                        yaw = d.yaw
+                        cell.x, cell.y, cell.z, directionIndex
                     }
                     addGroup(groups, (d.name == "N" or d.name == "S") and "x" or "y", cell, d)
                 end
@@ -197,10 +197,15 @@ function MazeBuilder:_BuildWalls(graph)
     self:_BuildMergedWallCollision(groups)
     if self.BuildFailures > 0 then return end
 
-    for _, segment in ipairs(visualSegments) do
-        for stack = 0, GC.WallStack - 1 do
-            local z = GC.ContainerHeight * 0.5 + stack * GC.ContainerHeight - CONTAINER_VISUAL_EMBED
-            self:_Register(self:_SpawnContainer(segment.pos + Vector(0, 0, z), Angle(0, segment.yaw, 0)))
-        end
+    -- The old implementation spawned one networked entity for every visible
+    -- container in both wall stacks. A three-floor level consequently created
+    -- more than two thousand presentation-only server entities and spent four
+    -- seconds constructing geometry on Steam Deck. Publish one compressed logical
+    -- manifest instead; the client reuses one hidden ClientsideModel to draw the
+    -- identical stock container model at each visible position.
+    if not LOD.WallVisuals or not LOD.WallVisuals.SetSegments
+        or not LOD.WallVisuals:SetSegments(graph, visualSegments)
+    then
+        self.BuildFailures = (self.BuildFailures or 0) + 1
     end
 end

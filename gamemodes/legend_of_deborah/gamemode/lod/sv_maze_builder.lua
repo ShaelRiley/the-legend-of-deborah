@@ -75,6 +75,9 @@ function MazeBuilder:_Register(ent)
 end
 
 function MazeBuilder:Cleanup()
+    if LOD.WallVisuals and LOD.WallVisuals.Clear then
+        LOD.WallVisuals:Clear()
+    end
     if not self.Entities then self.Entities = {} return end
     for _, ent in ipairs(self.Entities) do
         if IsValid(ent) then ent:Remove() end
