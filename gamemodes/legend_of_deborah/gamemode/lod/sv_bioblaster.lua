@@ -103,6 +103,27 @@ local function mawPosition(self)
     return self:WorldSpaceCenter() + self:GetForward() * (30 * scale) + Vector(0, 0, 18 * scale)
 end
 
+local function bioHasLineOfSight(self, target)
+    if not IsValid(self) or not livingPlayer(target) then return false end
+
+    -- Bio Blaster needs a projectile-authentic sightline. The shared Phase Zero
+    -- MASK_SOLID perception trace can reject this model at point-blank range and
+    -- leave it in generic pursuit forever. Restore the original MASK_SHOT
+    -- semantics locally while still treating generated walls as authoritative.
+    local tr = util.TraceLine({
+        start = self:WorldSpaceCenter() + Vector(0, 0, 12),
+        endpos = target:WorldSpaceCenter(),
+        mask = MASK_SHOT,
+        filter = function(ent)
+            if ent == self or ent == target then return false end
+            if IsValid(ent) and ent.LODHostile then return false end
+            if IsValid(ent) and (ent:GetOwner() == target or ent:GetParent() == target) then return false end
+            return true
+        end
+    })
+    return not tr.Hit or tr.Fraction >= 0.995
+end
+
 local function spawnBioBolt(self, aimPos)
     local cfg = self.LODConfig
     local startPos = mawPosition(self)
@@ -138,7 +159,7 @@ local function beginBlast(self, target)
     if self.LODBioBlast or not livingPlayer(target) then return false end
     if CurTime() < (self.LODNextBioCharge or 0) then return false end
     if self:GetPos():DistToSqr(target:GetPos()) > cfg.fireRange * cfg.fireRange then return false end
-    if self._HasLineOfSight and not self:_HasLineOfSight(target) then return false end
+    if not bioHasLineOfSight(self, target) then return false end
 
     self.LODBioBlast = {
         target = target,
@@ -171,7 +192,7 @@ local function processBlast(self)
     holdAndFace(self, target)
 
     if CurTime() < burst.fireAt then
-        if self._HasLineOfSight and not self:_HasLineOfSight(target) then
+        if not bioHasLineOfSight(self, target) then
             cancelBlast(self, 0.35)
             return false
         end
@@ -226,7 +247,7 @@ local function installHostilePatch()
         self:_RefreshRoute(graph)
         local target = self.LODTarget
 
-        if livingPlayer(target) and self:_HasLineOfSight(target) then
+        if livingPlayer(target) and bioHasLineOfSight(self, target) then
             local distanceSq = self:GetPos():DistToSqr(target:GetPos())
             if distanceSq <= self.LODConfig.fireRange * self.LODConfig.fireRange
                 and CurTime() >= (self.LODNextBioCharge or 0)
