@@ -109,10 +109,10 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                     true
                 )
             elseif kind == 5 then
-                -- Exterior wall aprons are continuations of the ordinary deck,
-                -- sharing its exact top plane, texture, and color. Draw only the
-                -- broad faces so overlap beneath container walls is visually
-                -- indistinguishable from the contiguous ground floor.
+                -- The continuous level-0 underdeck is deliberately recessed only
+                -- half a unit beneath the ordinary deck. Use the identical material
+                -- and color and draw only broad faces, so any container-base or
+                -- exterior-corner sightline resolves to seamless industrial steel.
                 drawFloorSlab(ent, floorColor)
             end
         end
