@@ -49,6 +49,27 @@ local HOSTILE_AUDIO = {
             "npc/fast_zombie/fz_alert_close1.wav", "npc/fast_zombie/fz_scream1.wav"
         }
     },
+    blitzer = {
+        footsteps = {
+            "npc/combine_soldier/gear1.wav", "npc/combine_soldier/gear2.wav",
+            "npc/combine_soldier/gear3.wav", "npc/combine_soldier/gear4.wav",
+            "npc/combine_soldier/gear5.wav", "npc/combine_soldier/gear6.wav"
+        },
+        footFallback = {"player/footsteps/metal1.wav", "player/footsteps/metal2.wav"},
+        footDistance = 60,
+        footInterval = 0.27,
+        footVolume = 0.74,
+        footPitch = 108,
+        pain = {
+            "npc/combine_soldier/pain1.wav", "npc/combine_soldier/pain2.wav", "npc/combine_soldier/pain3.wav"
+        },
+        death = {
+            "npc/combine_soldier/die1.wav", "npc/combine_soldier/die2.wav", "npc/combine_soldier/die3.wav"
+        },
+        activation = {
+            "npc/combine_soldier/gear2.wav", "npc/combine_soldier/gear6.wav"
+        }
+    },
     soldier = {
         -- Combine gear clacks make the ranged archetype recognizable around a
         -- blind corner without borrowing the organic foot sounds of either zombie.
