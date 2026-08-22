@@ -94,7 +94,11 @@ function ENT:Draw()
     self:DrawModel()
     local archetype = self:GetNW2String("LOD_Archetype", "")
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
-    if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
+    if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then
+        self.LODTelegraphVisualAim = nil
+        self.LODTelegraphVisualSerial = nil
+        return
+    end
 
     local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
     if aim == vector_origin then return end
@@ -108,12 +112,18 @@ function ENT:Draw()
         -- collapses into an imperceptible dot. Terminate toward the crosshair on
         -- a plane safely in front of the camera. This changes presentation only;
         -- the authoritative server aim and projectile path still target EyePos.
-        local eye = target:EyePos()
-        local proxyDistance = math.min(
-            TARGET_PROXY_MAX_DISTANCE,
-            startPos:Distance(eye) * 0.35
-        )
-        visualAim = eye + target:GetAimVector() * proxyDistance
+        local serial = self:GetNW2Int("LOD_SoldierTelegraphSerial", 0)
+        if self.LODTelegraphVisualSerial ~= serial or not self.LODTelegraphVisualAim then
+            local view = self:GetNW2Vector("LOD_SoldierTelegraphView", vector_origin)
+            if view == vector_origin then view = target:GetAimVector() end
+            local proxyDistance = math.min(
+                TARGET_PROXY_MAX_DISTANCE,
+                startPos:Distance(aim) * 0.35
+            )
+            self.LODTelegraphVisualAim = aim + view * proxyDistance
+            self.LODTelegraphVisualSerial = serial
+        end
+        visualAim = self.LODTelegraphVisualAim
     end
 
     local aimDelta = visualAim - startPos
