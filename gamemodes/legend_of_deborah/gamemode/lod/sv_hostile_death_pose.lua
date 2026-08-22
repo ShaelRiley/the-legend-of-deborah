@@ -32,13 +32,6 @@ local function freezeInPainPose(hostile)
     hostile:SetPlaybackRate(0)
 end
 
-hook.Add("OnNPCKilled", "LOD_HostileDeathPainPose", function(npc)
-    if not IsValid(npc) or not npc.LODHostile then return end
-
-    -- lod_hostile starts its death presentation immediately after firing
-    -- OnNPCKilled. Run next tick so this pose intentionally supersedes the
-    -- temporary ACT_DIESIMPLE fallback chosen by the entity itself.
-    timer.Simple(0, function()
-        freezeInPainPose(npc)
-    end)
+hook.Add("LOD_HostileDeathApplyPose", "LOD_HostileDeathPainPose", function(hostile)
+    freezeInPainPose(hostile)
 end)
