@@ -72,11 +72,22 @@ include("lod/sv_hostile_hurt_pose.lua")
 include("lod/sv_m3_damage_audit.lua")
 include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
-include("lod/sv_debug_tools.lua")
-include("lod/sv_m1_floor_support.lua")
-include("lod/sv_m1_traversal.lua")
-include("lod/sv_m2_debug.lua")
-include("lod/sv_m2_seed_test_incremental.lua")
-include("lod/sv_m3_debug.lua")
-include("lod/sv_m3_testkit_qol.lua")
-include("lod/sv_m3_roster_debug.lua")
+
+-- Audits, seed harnesses, teleports, and the infinite-ammo testkit are not
+-- production runtime dependencies. Read the archived startup value once: a
+-- development server retains its full tool surface, while a fresh installation
+-- avoids loading eight large test modules and their hooks entirely.
+local cvDeveloperMode = GetConVar("lod_developer_mode")
+LOD.DeveloperToolsLoaded = cvDeveloperMode and cvDeveloperMode:GetBool() or false
+LOD.DeveloperToolModuleCount = 0
+if LOD.DeveloperToolsLoaded then
+    include("lod/sv_debug_tools.lua")
+    include("lod/sv_m1_floor_support.lua")
+    include("lod/sv_m1_traversal.lua")
+    include("lod/sv_m2_debug.lua")
+    include("lod/sv_m2_seed_test_incremental.lua")
+    include("lod/sv_m3_debug.lua")
+    include("lod/sv_m3_testkit_qol.lua")
+    include("lod/sv_m3_roster_debug.lua")
+    LOD.DeveloperToolModuleCount = 8
+end
