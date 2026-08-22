@@ -234,6 +234,11 @@ function ENT:_SetActivity(activity, force)
     end
 end
 
+local function soldierFamily(hostile)
+    local archetype = hostile and hostile.LODArchetypeId
+    return archetype == "soldier" or archetype == "blitzer"
+end
+
 function ENT:_SoldierRunActivity()
     return ACT_RUN_AIM_RIFLE or ACT_RUN
 end
@@ -247,7 +252,7 @@ function ENT:_SoldierAttackActivity()
 end
 
 function ENT:_CreateSoldierWeaponVisual()
-    if self.LODArchetypeId ~= "soldier" then return end
+    if not soldierFamily(self) then return end
     local weapon = ents.Create("prop_dynamic")
     if not IsValid(weapon) then return end
     weapon:SetModel("models/weapons/w_irifle.mdl")
@@ -257,6 +262,10 @@ function ENT:_CreateSoldierWeaponVisual()
     weapon:AddEffects(EF_BONEMERGE)
     weapon:Spawn()
     weapon:Activate()
+    if self.LODArchetypeId == "blitzer" then
+        weapon:SetRenderMode(RENDERMODE_TRANSCOLOR)
+        weapon:SetColor(Color(70, 220, 90, 255))
+    end
     self.LODWeaponVisual = weapon
 end
 
@@ -271,6 +280,10 @@ function ENT:Initialize()
     end
 
     self:SetModel(self.LODConfig.model)
+    if self.LODArchetypeId == "blitzer" then
+        self:SetRenderMode(RENDERMODE_TRANSCOLOR)
+        self:SetColor(Color(70, 220, 90, 255))
+    end
     self:SetNW2String("LOD_Archetype", self.LODArchetypeId)
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
@@ -300,7 +313,7 @@ function ENT:Initialize()
     self.LODSoldierBurst = nil
     self.LODDead = false
 
-    if self.LODArchetypeId == "soldier" then
+    if soldierFamily(self) then
         self:_CreateSoldierWeaponVisual()
         self:_SetActivity(self:_SoldierRunActivity(), true)
     else
@@ -456,15 +469,24 @@ function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
     local cfg = self.LODConfig
     local startPos = self:_SoldierMuzzlePos()
     local direction = (aimPos - startPos):GetNormalized()
-
-    -- Small deterministic side-to-side variance keeps the three-bolt burst
-    -- readable without turning it into unavoidable perfect tracking.
-    local yawOffsets = {-1.5, 1.5, 0}
-    local pitchOffsets = {0.4, -0.4, 0}
     local ang = direction:Angle()
-    local offsetIndex = ((shotIndex - 1) % 3) + 1
-    ang.y = ang.y + yawOffsets[offsetIndex]
-    ang.p = ang.p + pitchOffsets[offsetIndex]
+
+    if self.LODArchetypeId == "blitzer" then
+        local burst = self.LODSoldierBurst
+        local shot = burst and burst.pattern and burst.pattern[shotIndex]
+        if shot and shot.veer then
+            ang.y = ang.y + shot.yaw
+            ang.p = ang.p + shot.pitch
+        end
+    else
+        -- Small deterministic side-to-side variance keeps the disciplined
+        -- Soldier's three-bolt burst readable.
+        local yawOffsets = {-1.5, 1.5, 0}
+        local pitchOffsets = {0.4, -0.4, 0}
+        local offsetIndex = ((shotIndex - 1) % 3) + 1
+        ang.y = ang.y + yawOffsets[offsetIndex]
+        ang.p = ang.p + pitchOffsets[offsetIndex]
+    end
     direction = ang:Forward()
 
     local bolt = ents.Create("lod_soldier_bolt")
@@ -478,7 +500,19 @@ function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
     bolt:SetAngles(direction:Angle())
     bolt:Spawn()
     bolt:Activate()
-    self:EmitSound("Weapon_AR2.Single", 72, 100, 0.85)
+
+    if self.LODArchetypeId == "blitzer" then
+        self.LODBlitzerShotsFired = (self.LODBlitzerShotsFired or 0) + 1
+        if self.LODSoldierBurst and self.LODSoldierBurst.pattern
+            and self.LODSoldierBurst.pattern[shotIndex]
+            and self.LODSoldierBurst.pattern[shotIndex].veer
+        then
+            self.LODBlitzerVeeringShots = (self.LODBlitzerVeeringShots or 0) + 1
+        end
+        self:EmitSound("Weapon_AR2.Single", 73, 116, 0.88)
+    else
+        self:EmitSound("Weapon_AR2.Single", 72, 100, 0.85)
+    end
     return true
 end
 
@@ -489,18 +523,46 @@ function ENT:_BeginSoldierBurst(target)
     if self:GetPos():DistToSqr(target:GetPos()) > cfg.fireRange * cfg.fireRange then return false end
     if not self:_HasLineOfSight(target) then return false end
 
+    local shots = cfg.burstShots or 3
+    local pattern
+    local patternSeed
+    if self.LODArchetypeId == "blitzer" then
+        self.LODBlitzerAttackOrdinal = (self.LODBlitzerAttackOrdinal or 0) + 1
+        local instanceSeed = self.LODInstanceSeed or self:GetNW2Int("LOD_InstanceSeed", 1)
+        patternSeed = LOD.Seeds.Derive(instanceSeed, "blitzer-burst:" .. self.LODBlitzerAttackOrdinal)
+        local rng = LOD.RNG.New(patternSeed)
+        shots = rng:Int(cfg.burstShotsMin or 1, cfg.burstShotsMax or 6)
+        pattern = {}
+        for i = 1, shots do
+            local veer = rng:Chance(cfg.veerChance or 0.50)
+            local sign = rng:Chance(0.5) and -1 or 1
+            pattern[i] = {
+                veer = veer,
+                yaw = sign * (cfg.veerDegrees or 2.4),
+                pitch = veer and rng:Float(-0.35, 0.35) or 0
+            }
+        end
+        self.LODBlitzerBurstsStarted = (self.LODBlitzerBurstsStarted or 0) + 1
+        self.LODBlitzerLastPatternSeed = patternSeed
+        self.LODBlitzerLastPatternShots = shots
+        self.LODBlitzerLastVeerRolls = #pattern
+    end
+
     self.LODSoldierBurst = {
         target = target,
         windupEnd = CurTime() + cfg.burstTelegraph,
         nextShot = nil,
-        shotsRemaining = cfg.burstShots,
+        shotsRemaining = shots,
+        originalShots = shots,
         shotIndex = 0,
-        lastAimPos = target:WorldSpaceCenter()
+        lastAimPos = target:WorldSpaceCenter(),
+        pattern = pattern,
+        patternSeed = patternSeed
     }
     self:SetNW2Bool("LOD_SoldierTelegraph", true)
     self:SetNW2Vector("LOD_SoldierAim", target:WorldSpaceCenter())
     self:_SetActivity(self:_SoldierAttackActivity(), true)
-    self:EmitSound("buttons/button17.wav", 62, 115, 0.65)
+    self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
     return true
 end
 
@@ -550,6 +612,12 @@ function ENT:_ProcessSoldierBurst()
     end
 
     if burst.shotsRemaining <= 0 then
+        if self.LODArchetypeId == "blitzer" then
+            self.LODBlitzerCompletedBursts = (self.LODBlitzerCompletedBursts or 0) + 1
+            self.LODBlitzerLastCompletedShots = burst.originalShots or burst.shotIndex
+            self.LODBlitzerLastCompletedVeerRolls = #(burst.pattern or {})
+            self.LODBlitzerLastCompletedSeed = burst.patternSeed
+        end
         self.LODSoldierBurst = nil
         self.LODNextAttack = CurTime() + cfg.burstCooldown
         self:_SetActivity(self:_SoldierIdleActivity(), true)
@@ -560,7 +628,7 @@ function ENT:_ProcessSoldierBurst()
 end
 
 function ENT:_TryAttack(target)
-    if self.LODArchetypeId == "soldier" then return self:_BeginSoldierBurst(target) end
+    if soldierFamily(self) then return self:_BeginSoldierBurst(target) end
     return self:_MeleeAttack(target)
 end
 
@@ -573,7 +641,7 @@ function ENT:_BehaviourTick()
     self:_RefreshTarget(graph)
     self:_RefreshRoute(graph)
 
-    if self.LODArchetypeId == "soldier" and self.LODSoldierBurst then
+    if soldierFamily(self) and self.LODSoldierBurst then
         self:_ProcessSoldierBurst()
         return
     end
@@ -581,7 +649,7 @@ function ENT:_BehaviourTick()
     local target = self.LODTarget
     local waypoint = self:_AdvanceWaypoint()
 
-    if self.LODArchetypeId == "soldier" and IsValid(target) and self:_HasLineOfSight(target) then
+    if soldierFamily(self) and IsValid(target) and self:_HasLineOfSight(target) then
         local preferred = self.LODConfig.preferredRange or 480
         if self:GetPos():DistToSqr(target:GetPos()) <= preferred * preferred then
             if self.loco then self.loco:SetDesiredSpeed(0) end
@@ -593,7 +661,7 @@ function ENT:_BehaviourTick()
 
     if self.loco then self.loco:SetDesiredSpeed(self.LODConfig.speed) end
     if waypoint and self.loco then
-        if self.LODArchetypeId == "soldier" then
+        if soldierFamily(self) then
             self:_SetActivity(self:_SoldierRunActivity())
         else
             self:_SetActivity(self.LODConfig.activity or ACT_WALK)
@@ -602,7 +670,7 @@ function ENT:_BehaviourTick()
         self.loco:FaceTowards(face)
         self.loco:Approach(waypoint.pos, 1)
     elseif IsValid(target) and self.loco then
-        if self.LODArchetypeId == "soldier" then
+        if soldierFamily(self) then
             self:_SetActivity(self:_SoldierRunActivity())
         else
             self:_SetActivity(self.LODConfig.activity or ACT_WALK)
@@ -610,12 +678,50 @@ function ENT:_BehaviourTick()
         local direct = target:GetPos()
         self.loco:FaceTowards(Vector(direct.x, direct.y, self:GetPos().z))
         self.loco:Approach(direct, 1)
-    elseif self.LODArchetypeId == "soldier" then
+    elseif soldierFamily(self) then
         self:_SetActivity(self:_SoldierIdleActivity())
     end
 
-    if IsValid(target) and self.LODArchetypeId ~= "soldier" then self:_TryAttack(target) end
+    if IsValid(target) and not soldierFamily(self) then self:_TryAttack(target) end
 end
+
+concommand.Add("lod_blitzer_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local tested = 0
+    local passed = 0
+    local bursts = 0
+    local shots = 0
+    local veers = 0
+    local lastBurst = 0
+    local lastSeed = 0
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and hostile.LODArchetypeId == "blitzer" then
+            tested = tested + 1
+            local completed = hostile.LODBlitzerCompletedBursts or 0
+            local completedShots = hostile.LODBlitzerLastCompletedShots or 0
+            local rolls = hostile.LODBlitzerLastCompletedVeerRolls or 0
+            if completed > 0 and completedShots >= 1 and completedShots <= 6 and rolls >= completedShots then
+                passed = passed + 1
+            end
+            bursts = bursts + completed
+            shots = shots + (hostile.LODBlitzerShotsFired or 0)
+            veers = veers + (hostile.LODBlitzerVeeringShots or 0)
+            lastBurst = completedShots
+            lastSeed = hostile.LODBlitzerLastCompletedSeed or 0
+        end
+    end
+
+    local result = tested > 0 and tested == passed and "PASS" or "FAIL"
+    local line = string.format(
+        "tested=%d passed=%d completedBursts=%d shots=%d veeringShots=%d lastBurst=%d lastSeed=%d result=%s",
+        tested, passed, bursts, shots, veers, lastBurst, lastSeed, result
+    )
+    print("[LOD:BLITZER] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
 
 function ENT:RunBehaviour()
     while true do
