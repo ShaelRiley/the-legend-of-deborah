@@ -238,8 +238,13 @@ function Motion:MoveToward(hostile, waypoint)
     return step >= distance - 0.05
 end
 
+local function soldierFamily(hostile)
+    local archetype = hostile and hostile.LODArchetypeId
+    return archetype == "soldier" or archetype == "blitzer"
+end
+
 local function movementActivity(hostile)
-    if hostile.LODArchetypeId == "soldier" then return hostile:_SoldierRunActivity() end
+    if soldierFamily(hostile) then return hostile:_SoldierRunActivity() end
     return hostile.LODConfig and hostile.LODConfig.activity or ACT_WALK
 end
 
@@ -313,7 +318,7 @@ local function installPatch()
         self:_RefreshTarget(graph)
         self:_RefreshRoute(graph)
 
-        if self.LODArchetypeId == "soldier" and self.LODSoldierBurst then
+        if soldierFamily(self) and self.LODSoldierBurst then
             Motion:Stop(self)
             if IsValid(self.LODSoldierBurst.target) then
                 Motion:FaceToward(self, self.LODSoldierBurst.target:GetPos())
@@ -325,7 +330,7 @@ local function installPatch()
         local target = self.LODTarget
         local waypoint = self:_AdvanceWaypoint()
 
-        if self.LODArchetypeId == "soldier" and IsValid(target) and self:_HasLineOfSight(target) then
+        if soldierFamily(self) and IsValid(target) and self:_HasLineOfSight(target) then
             local preferred = self.LODConfig.preferredRange or 480
             if self:GetPos():DistToSqr(target:GetPos()) <= preferred * preferred then
                 Motion:Stop(self)
@@ -362,11 +367,11 @@ local function installPatch()
                 end
             else
                 Motion:Stop(self)
-                if self.LODArchetypeId == "soldier" then self:_SetActivity(self:_SoldierIdleActivity()) end
+                if soldierFamily(self) then self:_SetActivity(self:_SoldierIdleActivity()) end
             end
         end
 
-        if IsValid(target) and self.LODArchetypeId ~= "soldier" then self:_TryAttack(target) end
+        if IsValid(target) and not soldierFamily(self) then self:_TryAttack(target) end
     end
 
     -- BodyMoveXY derives animation direction from CLuaLocomotion velocity. V2
