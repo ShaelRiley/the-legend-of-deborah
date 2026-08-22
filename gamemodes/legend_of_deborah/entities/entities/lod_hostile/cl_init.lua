@@ -3,7 +3,6 @@ include("shared.lua")
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
 local LASER_LENGTH = 160
-local TARGET_PROXY_MAX_DISTANCE = 96
 local BARREL_OFFSET = 24
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
@@ -108,18 +107,16 @@ function ENT:Draw()
     local target = self:GetNW2Entity("LOD_SoldierTelegraphTarget")
     local localPlayer = LocalPlayer()
     if IsValid(target) and target == localPlayer then
-        -- A ray ending exactly at the first-person camera is seen end-on and
-        -- collapses into an imperceptible dot. Terminate toward the crosshair on
-        -- a plane safely in front of the camera. This changes presentation only;
-        -- the authoritative server aim and projectile path still target EyePos.
+        -- A ray ending at or near the first-person camera is foreshortened into
+        -- a dot or a false downward segment. Project the frozen crosshair ray out
+        -- to the hostile's depth instead. This keeps the warning connected to
+        -- the muzzle and visually directed toward the committed screen location;
+        -- authoritative aim and projectile paths remain the frozen EyePos.
         local serial = self:GetNW2Int("LOD_SoldierTelegraphSerial", 0)
         if self.LODTelegraphVisualSerial ~= serial or not self.LODTelegraphVisualAim then
             local view = self:GetNW2Vector("LOD_SoldierTelegraphView", vector_origin)
             if view == vector_origin then view = target:GetAimVector() end
-            local proxyDistance = math.min(
-                TARGET_PROXY_MAX_DISTANCE,
-                startPos:Distance(aim) * 0.35
-            )
+            local proxyDistance = startPos:Distance(aim)
             self.LODTelegraphVisualAim = aim + view * proxyDistance
             self.LODTelegraphVisualSerial = serial
         end
@@ -130,10 +127,8 @@ function ENT:Draw()
     local aimDistance = aimDelta:Length()
     if aimDistance <= 0.001 then return end
 
-    -- A beam ending at the first-person camera becomes severely foreshortened
-    -- and can appear to descend beneath the hostile. Render the warning as a
-    -- uniform sight ray near the rifle while retaining the server aim point for
-    -- its direction. Soldier and Blitzer therefore share both width and length.
+    -- Render a uniform sight ray toward the frozen presentation proxy. Soldier
+    -- and Blitzer therefore share both width and visible length.
     local beamEnd = startPos + aimDelta * (math.min(aimDistance, LASER_LENGTH) / aimDistance)
     render.SetMaterial(aimMaterial)
     local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
