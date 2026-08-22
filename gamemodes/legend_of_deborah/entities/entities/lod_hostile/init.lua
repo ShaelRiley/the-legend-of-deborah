@@ -10,6 +10,7 @@ local DEATH_SHARED_TIMER = "LOD_HostileDeathPresentationShared"
 local PLACEHOLDER_LOOT_MODEL = "models/items/boxsrounds.mdl"
 local PLACEHOLDER_LOOT_LIFETIME = 20
 local PLACEHOLDER_LOOT_CAP = 24
+local SOLDIER_MUZZLE_ATTACHMENTS = {"muzzle", "muzzle_flash"}
 
 -- Milestone 4 will replace these inert markers with individualized seeded drops.
 -- Until then, keep their presentation bounded: wanderers respawn indefinitely, so
@@ -267,6 +268,7 @@ function ENT:_CreateSoldierWeaponVisual()
         weapon:SetColor(Color(70, 220, 90, 255))
     end
     self.LODWeaponVisual = weapon
+    self:SetNW2Entity("LOD_WeaponVisual", weapon)
 end
 
 function ENT:Initialize()
@@ -456,13 +458,39 @@ function ENT:_MeleeAttack(target)
     return true
 end
 
-function ENT:_SoldierMuzzlePos()
+function ENT:_SoldierRawMuzzlePos()
+    local weapon = self.LODWeaponVisual
+    if IsValid(weapon) then
+        for _, name in ipairs(SOLDIER_MUZZLE_ATTACHMENTS) do
+            local attachment = weapon:LookupAttachment(name)
+            if attachment and attachment > 0 then
+                local data = weapon:GetAttachment(attachment)
+                if data and data.Pos then return data.Pos end
+            end
+        end
+    end
+
     local attachment = self:LookupAttachment("anim_attachment_RH")
     if attachment and attachment > 0 then
         local data = self:GetAttachment(attachment)
-        if data and data.Pos then return data.Pos + self:GetForward() * 18 end
+        if data and data.Pos then
+            local forward = data.Ang and data.Ang:Forward() or self:GetForward()
+            return data.Pos + forward * 18
+        end
     end
     return self:WorldSpaceCenter() + Vector(0, 0, 12) + self:GetForward() * 24
+end
+
+function ENT:_SoldierMuzzlePos()
+    local rawPos = self:_SoldierRawMuzzlePos()
+    local size = math.Clamp(self:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
+    local mins = util.GetModelBounds and select(1, util.GetModelBounds(self:GetModel()))
+        or Vector(-16, -16, 0)
+    local motionV2 = self:GetNW2Bool("LOD_MotionV2", false)
+    local verticalCompensation = motionV2 and -(mins.z * size) or mins.z * (1 - size)
+    local localPos = self:WorldToLocal(rawPos) * size
+    localPos.z = localPos.z + verticalCompensation
+    return self:LocalToWorld(localPos)
 end
 
 function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
@@ -805,6 +833,7 @@ function ENT:_BeginDeathPresentation()
     self:DrawShadow(false)
 
     if IsValid(self.LODWeaponVisual) then
+        self:SetNW2Entity("LOD_WeaponVisual", NULL)
         self.LODWeaponVisual:Remove()
         self.LODWeaponVisual = nil
     end
@@ -829,5 +858,6 @@ end
 
 function ENT:OnRemove()
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_WeaponVisual", NULL)
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end
 end
