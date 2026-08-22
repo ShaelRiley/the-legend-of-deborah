@@ -80,6 +80,22 @@ local function encodeCanonicalCells(graph)
     return cells
 end
 
+local function cachedCanonicalCells(state, graph)
+    if Minimap.EncodedGraph == graph and Minimap.EncodedLevel == state.Level and Minimap.EncodedCells then
+        Minimap.EncodeCacheHits = (Minimap.EncodeCacheHits or 0) + 1
+        return Minimap.EncodedCells, Minimap.EncodedChunks
+    end
+
+    local cells = encodeCanonicalCells(graph)
+    local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
+    Minimap.EncodedGraph = graph
+    Minimap.EncodedLevel = state.Level
+    Minimap.EncodedCells = cells
+    Minimap.EncodedChunks = chunks
+    Minimap.EncodeBuilds = (Minimap.EncodeBuilds or 0) + 1
+    return cells, chunks
+end
+
 function Minimap:Send(ply)
     if not self:CanUse(ply) then
         net.Start("LOD_MapDenied")
@@ -106,8 +122,7 @@ function Minimap:Send(ply)
     ply:SetNW2Float("LOD_MazeOriginZ", MC.Origin.z)
     ply:SetNW2Bool("LOD_MazeOriginValid", true)
 
-    local cells = encodeCanonicalCells(graph)
-    local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
+    local cells, chunks = cachedCanonicalCells(state, graph)
 
     net.Start("LOD_MapBegin")
     net.WriteUInt(state.Level or 1, 20)
