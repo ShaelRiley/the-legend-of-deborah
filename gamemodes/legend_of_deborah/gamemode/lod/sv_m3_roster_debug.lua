@@ -12,7 +12,7 @@ local function tell(ply, text)
 end
 
 local function sortedArchetypes()
-    local preferred = {"shambler", "runner", "soldier", "deadcrab", "bioblaster"}
+    local preferred = {"shambler", "runner", "soldier", "blitzer", "deadcrab", "bioblaster"}
     local out, seen = {}, {}
     for _, id in ipairs(preferred) do
         if LOD.Config.Encounter.Archetypes[id] then
