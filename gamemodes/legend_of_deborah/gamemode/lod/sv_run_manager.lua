@@ -7,8 +7,9 @@ local CC = LOD.Config
 local cvSeed = CreateConVar("lod_campaign_seed", "0", FCVAR_ARCHIVE, "0 = time-derived campaign seed; nonzero = custom unranked seed")
 local defaultSeedCounter = 0
 
-local function freshState()
+local function freshState(campaignEpoch)
     return {
+        CampaignEpoch = campaignEpoch or 0,
         CampaignSeed = nil,
         LevelSeed = nil,
         Level = 1,
@@ -36,7 +37,12 @@ local function freshState()
     }
 end
 
-RunManager.State = RunManager.State or freshState()
+RunManager.CampaignEpoch = RunManager.CampaignEpoch or 0
+RunManager.State = RunManager.State or freshState(RunManager.CampaignEpoch)
+
+function RunManager:IsCampaignEpoch(epoch)
+    return self.State and self.State.CampaignEpoch == epoch
+end
 
 function RunManager:IdentityOf(ply)
     if not IsValid(ply) then return nil end
@@ -282,7 +288,8 @@ end
 
 function RunManager:NewCampaign()
     local customSeed = cvSeed:GetInt()
-    self.State = freshState()
+    self.CampaignEpoch = self.CampaignEpoch + 1
+    self.State = freshState(self.CampaignEpoch)
     self.State.Ranked = customSeed == 0
     self.State.UnrankedReason = customSeed == 0 and nil or "custom campaign seed"
     self.State.CampaignSeed = customSeed ~= 0 and LOD.Seeds.Normalize(customSeed) or self:_DefaultSeed()
@@ -418,8 +425,11 @@ function RunManager:HandleDeath(ply)
     end
 
     self:_SyncPlayerVars(ply)
+    local deathEpoch = self.State.CampaignEpoch
     timer.Simple(0, function()
-        if IsValid(ply) then self:PutInRestrictedSpectator(ply) end
+        if self:IsCampaignEpoch(deathEpoch) and IsValid(ply) and not ply:Alive() then
+            self:PutInRestrictedSpectator(ply)
+        end
     end)
 
     if ps.eliminated then self:PromoteWaitingSpectators() end
