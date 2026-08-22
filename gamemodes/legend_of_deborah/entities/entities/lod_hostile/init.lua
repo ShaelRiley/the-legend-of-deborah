@@ -485,15 +485,8 @@ function ENT:_SoldierMuzzlePos()
 end
 
 function ENT:_SoldierTargetAimPos(target)
-    local center = target:WorldSpaceCenter()
-    if not target:IsPlayer() then return center end
-
-    -- WorldSpaceCenter is near a standing player's waist. A rifle warning drawn
-    -- from shoulder height to that point reads as a groundward diagonal even
-    -- though it technically intersects the collision hull. Aim both the tell
-    -- and its ensuing bolts at the upper torso, between hull center and EyePos.
-    local eye = target:EyePos()
-    return center + (eye - center) * 0.65
+    if target:IsPlayer() then return target:EyePos() end
+    return target:WorldSpaceCenter()
 end
 
 function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
