@@ -295,8 +295,15 @@ local function installPatch()
             return
         end
 
-        -- Bio combat is an explicit Motion V2 dispatch, not an incidental wrapper
-        -- ordering side effect. The method is supplied by sv_bioblaster.lua.
+        -- Archetype combat is explicit Motion V2 dispatch, not an incidental
+        -- wrapper-ordering side effect. These methods are supplied by their
+        -- respective archetype modules.
+        if self.LODArchetypeId == "deadcrab" and self._RunDeadcrabTick
+            and self:_RunDeadcrabTick()
+        then
+            return
+        end
+
         if self.LODArchetypeId == "bioblaster" and self._RunBioBlasterTick
             and self:_RunBioBlasterTick()
         then
