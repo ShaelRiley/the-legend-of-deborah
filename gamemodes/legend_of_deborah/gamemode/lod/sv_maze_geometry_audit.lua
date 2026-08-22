@@ -12,10 +12,23 @@ local function edgeKey(a, b)
     return b .. "|" .. a
 end
 
+local function authoritativeStaticBoxes()
+    -- During an in-place rebuild, Source's global classname index can retain the
+    -- just-removed boxes until the frame ends and omit their same-frame
+    -- replacements. MazeBuilder.Entities is the completed build transaction and
+    -- therefore the authoritative audit source.
+    if Builder and istable(Builder.Entities) and #Builder.Entities > 0 then
+        return Builder.Entities
+    end
+    return ents.FindByClass("lod_static_box")
+end
+
 local function wallBounds()
     local out = {}
-    for _, ent in ipairs(ents.FindByClass("lod_static_box")) do
-        if IsValid(ent) and ent.GetBoxKind and ent:GetBoxKind() == 4 then
+    for _, ent in ipairs(authoritativeStaticBoxes()) do
+        if IsValid(ent) and ent:GetClass() == "lod_static_box"
+            and ent.GetBoxKind and ent:GetBoxKind() == 4
+        then
             local mins = ent:GetBoxMins()
             local maxs = ent:GetBoxMaxs()
             local pos = ent:GetPos()
