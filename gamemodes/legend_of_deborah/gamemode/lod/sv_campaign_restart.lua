@@ -146,6 +146,7 @@ concommand.Add("lod_campaign_restart_status", function(ply)
         and RestartAudit.lastNewSeed ~= nil
         and RestartAudit.lastOldSeed ~= RestartAudit.lastNewSeed
     local passed = RestartAudit.completed > 0
+        and RestartAudit.failures == 0
         and RestartAudit.lastStage == "complete"
         and not restartInProgress
         and state and state.BuildReady
