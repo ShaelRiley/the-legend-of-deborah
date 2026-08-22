@@ -26,6 +26,7 @@ local BASE_STRIDE_DISTANCE = {
     shambler = 52,
     runner = 70,
     soldier = 60,
+    blitzer = 60,
     deadcrab = 35,
     bioblaster = 36
 }
