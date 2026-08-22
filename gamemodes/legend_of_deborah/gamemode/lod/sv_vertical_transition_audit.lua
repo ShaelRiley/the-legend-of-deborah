@@ -18,10 +18,19 @@ local function lowerUpper(edge)
     return edge.b, edge.a
 end
 
+local function authoritativeStaticBoxes()
+    if Builder and istable(Builder.Entities) and #Builder.Entities > 0 then
+        return Builder.Entities
+    end
+    return ents.FindByClass("lod_static_box")
+end
+
 local function wallBoxes()
     local out = {}
-    for _, ent in ipairs(ents.FindByClass("lod_static_box")) do
-        if IsValid(ent) and ent.GetBoxKind and ent:GetBoxKind() == 4 then
+    for _, ent in ipairs(authoritativeStaticBoxes()) do
+        if IsValid(ent) and ent:GetClass() == "lod_static_box"
+            and ent.GetBoxKind and ent:GetBoxKind() == 4
+        then
             local pos = ent:GetPos()
             out[#out + 1] = {
                 ent = ent,
@@ -48,8 +57,12 @@ end
 
 local function countStairBoxes()
     local n = 0
-    for _, ent in ipairs(ents.FindByClass("lod_static_box")) do
-        if IsValid(ent) and ent.GetBoxKind and ent:GetBoxKind() == 2 then n = n + 1 end
+    for _, ent in ipairs(authoritativeStaticBoxes()) do
+        if IsValid(ent) and ent:GetClass() == "lod_static_box"
+            and ent.GetBoxKind and ent:GetBoxKind() == 2
+        then
+            n = n + 1
+        end
     end
     return n
 end
