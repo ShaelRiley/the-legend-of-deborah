@@ -5,9 +5,9 @@ local nextSync = 0
 local SYNC_INTERVAL = 0.20
 local cvDeveloperMode = CreateConVar(
     "lod_developer_mode",
-    "1",
+    "0",
     FCVAR_ARCHIVE,
-    "Enable Legend of Deborah developer/testing affordances. Development builds default to 1; release should default to 0."
+    "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
 )
 local fastUsed = {}
 
@@ -58,4 +58,24 @@ hook.Add("Think", "LOD_RespawnHUDSync", function()
             ply:SetNW2Bool("LOD_DeveloperMode", cvDeveloperMode:GetBool())
         end
     end
+end)
+
+
+concommand.Add("lod_developer_tools_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local enabled = cvDeveloperMode:GetBool()
+    local loaded = LOD.DeveloperToolsLoaded == true
+    local moduleCount = LOD.DeveloperToolModuleCount or 0
+    local thinkHooks = hook.GetTable().Think or {}
+    local legacyTestkitThink = thinkHooks["LOD_M3_TestkitInfinitePistolAmmo"] ~= nil
+    local passed = enabled == loaded and not legacyTestkitThink
+        and ((loaded and moduleCount == 8) or (not loaded and moduleCount == 0))
+    local line = string.format(
+        "default=0 enabled=%s toolsLoaded=%s modules=%d legacyTestkitThink=%s result=%s",
+        tostring(enabled), tostring(loaded), moduleCount, tostring(legacyTestkitThink),
+        passed and "PASS" or "FAIL"
+    )
+    print("[LOD:DEVELOPER-TOOLS] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
