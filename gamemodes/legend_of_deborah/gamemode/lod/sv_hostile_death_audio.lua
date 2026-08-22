@@ -3,8 +3,6 @@ LOD = LOD or {}
 -- The hostile entity owns the visual one-second / eight-blink death presentation.
 -- This module owns its audible counterpart so the retro countdown reads clearly
 -- even when the corpse is outside the player's central field of view.
-local BLINK_INTERVAL = 0.125
-local BLINK_COUNT = 8
 local BLINK_SOUND = "buttons/button15.wav"
 local LEGACY_BLINK_SOUND = "buttons/blip1.wav"
 local LEGACY_CONVERT_SOUND = "items/itempickup.wav"
@@ -37,37 +35,23 @@ hook.Add("EntityEmitSound", "LOD_HostileDeathAudio_SuppressLegacy", function(dat
     end
 end)
 
-hook.Add("OnNPCKilled", "LOD_HostileDeathAudio_RetroSequence", function(npc)
-    if not IsValid(npc) or not npc.LODHostile then return end
-
-    local origin = npc:WorldSpaceCenter()
-    local seed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
-
-    -- Four unmistakable rising electronic ticks, each synchronized with every
-    -- second visual blink. Fewer, stronger notes read more clearly than eight
-    -- quiet micro-blips while still making the one-second flicker feel rhythmic.
-    for pulse = 1, 4 do
-        timer.Simple(BLINK_INTERVAL * (pulse * 2 - 1), function()
-            if not seed or not sameLevel(seed) then return end
-            local pitch = 104 + pulse * 10
-            sound.Play(BLINK_SOUND, origin, 82, pitch, 0.95)
-        end)
-    end
-
-    -- A three-note conversion fanfare begins immediately after the final blink.
-    -- It is deliberately louder and longer than the countdown ticks so the
-    -- player hears a categorical transition: corpse gone, loot now available.
-    local convertAt = BLINK_INTERVAL * BLINK_COUNT + 0.01
-    timer.Simple(convertAt, function()
+hook.Add("LOD_HostileDeathBlinkPulse", "LOD_HostileDeathAudio_RetroPulse",
+    function(origin, seed, pulse)
         if not seed or not sameLevel(seed) then return end
-        sound.Play(CONVERT_OPEN, origin, 92, 118, 1.0)
+        local pitch = 104 + pulse * 10
+        sound.Play(BLINK_SOUND, origin, 82, pitch, 0.95)
     end)
-    timer.Simple(convertAt + 0.11, function()
+
+local CONVERT_NOTES = {
+    {sound = CONVERT_OPEN, level = 92, pitch = 118},
+    {sound = CONVERT_LIFT, level = 90, pitch = 142},
+    {sound = CONVERT_RESOLVE, level = 92, pitch = 158}
+}
+
+hook.Add("LOD_HostileDeathConvertNote", "LOD_HostileDeathAudio_ConvertNote",
+    function(origin, seed, step)
         if not seed or not sameLevel(seed) then return end
-        sound.Play(CONVERT_LIFT, origin, 90, 142, 1.0)
+        local note = CONVERT_NOTES[step]
+        if not note then return end
+        sound.Play(note.sound, origin, note.level, note.pitch, 1.0)
     end)
-    timer.Simple(convertAt + 0.24, function()
-        if not seed or not sameLevel(seed) then return end
-        sound.Play(CONVERT_RESOLVE, origin, 92, 158, 1.0)
-    end)
-end)
