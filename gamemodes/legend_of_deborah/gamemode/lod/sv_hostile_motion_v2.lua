@@ -85,6 +85,45 @@ function Motion:Stop(hostile)
     quiesceEngineLocomotion(hostile)
 end
 
+-- Hit feedback can be installed before or after this class patch depending on
+-- Source's OnEntityCreated hook order. Enforce the stun at the one physical
+-- movement authority so no wrapper order can restore kinematic travel.
+function Motion:HoldHitStun(hostile, now)
+    if not IsValid(hostile) then return false end
+    now = now or CurTime()
+
+    local stunUntil = hostile.LODHitStunUntil or 0
+    if now >= stunUntil then
+        local audit = hostile.LODMotionHitStunAudit
+        if audit and not audit.finished then
+            audit.finished = true
+            audit.active = false
+        end
+        return false
+    end
+
+    local audit = hostile.LODMotionHitStunAudit
+    if not audit or audit.stunUntil ~= stunUntil then
+        audit = {
+            active = true,
+            finished = false,
+            stunUntil = stunUntil,
+            startPos = hostile:GetPos(),
+            holdTicks = 0,
+            maxDrift = 0
+        }
+        hostile.LODMotionHitStunAudit = audit
+    end
+
+    local drift = hostile:GetPos():Distance(audit.startPos)
+    audit.holdTicks = audit.holdTicks + 1
+    audit.maxDrift = math.max(audit.maxDrift, drift)
+
+    self:Stop(hostile)
+    hostile.LODMotionMode = "hit-stun"
+    return true
+end
+
 function Motion:CellFloorPoint(cell, sourcePos)
     if not cell or not Navigator then return sourcePos end
     local center = Navigator:CellCenter(cell)
@@ -248,6 +287,8 @@ local function installPatch()
             return
         end
 
+        if Motion:HoldHitStun(self, CurTime()) then return end
+
         local state, graph = graphState()
         if not graph or not state.BuildReady or state.Failed or state.LevelCleared then
             Motion:Stop(self)
@@ -336,6 +377,36 @@ end
 installPatch()
 hook.Add("OnEntityCreated", "LOD_HostileMotionV2Install", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end
+end)
+
+concommand.Add("lod_hitstun_motion_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local tested = 0
+    local passed = 0
+    local maxDrift = 0
+    local holdTicks = 0
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        local audit = IsValid(hostile) and hostile.LODMotionHitStunAudit or nil
+        if audit then
+            tested = tested + 1
+            holdTicks = holdTicks + (audit.holdTicks or 0)
+            maxDrift = math.max(maxDrift, audit.maxDrift or 0)
+            if (audit.holdTicks or 0) > 0 and (audit.maxDrift or math.huge) <= 1 then
+                passed = passed + 1
+            end
+        end
+    end
+
+    local result = tested > 0 and tested == passed and "PASS" or "FAIL"
+    local line = string.format(
+        "tested=%d passed=%d holdTicks=%d maxDrift=%.3f result=%s",
+        tested, passed, holdTicks, maxDrift, result
+    )
+    print("[LOD:HIT-STUN-MOTION] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
 local function statusLine(hostile)
