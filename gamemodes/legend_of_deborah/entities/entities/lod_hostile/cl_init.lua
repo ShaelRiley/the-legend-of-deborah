@@ -3,6 +3,7 @@ include("shared.lua")
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
 local LASER_LENGTH = 160
+local TARGET_PROXY_MAX_DISTANCE = 96
 local BARREL_OFFSET = 24
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
@@ -99,7 +100,23 @@ function ENT:Draw()
     if aim == vector_origin then return end
 
     local startPos = renderedMuzzlePosition(self, size, verticalCompensation)
-    local aimDelta = aim - startPos
+    local visualAim = aim
+    local target = self:GetNW2Entity("LOD_SoldierTelegraphTarget")
+    local localPlayer = LocalPlayer()
+    if IsValid(target) and target == localPlayer then
+        -- A ray ending exactly at the first-person camera is seen end-on and
+        -- collapses into an imperceptible dot. Terminate toward the crosshair on
+        -- a plane safely in front of the camera. This changes presentation only;
+        -- the authoritative server aim and projectile path still target EyePos.
+        local eye = target:EyePos()
+        local proxyDistance = math.min(
+            TARGET_PROXY_MAX_DISTANCE,
+            startPos:Distance(eye) * 0.35
+        )
+        visualAim = eye + target:GetAimVector() * proxyDistance
+    end
+
+    local aimDelta = visualAim - startPos
     local aimDistance = aimDelta:Length()
     if aimDistance <= 0.001 then return end
 
