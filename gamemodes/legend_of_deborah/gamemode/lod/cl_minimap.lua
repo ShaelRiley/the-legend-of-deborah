@@ -13,6 +13,47 @@ local Map = LOD.Minimap
 local MC = LOD.Config.Maze
 local mapKeyWasDown = false
 
+Map.cache = Map.cache or {
+    revision = 0,
+    indexedRevision = -1,
+    floorCells = {},
+    reach = nil
+}
+Map.stats = Map.stats or {
+    paintFrames = 0,
+    bfsBuilds = 0,
+    bfsHits = 0,
+    floorIndexBuilds = 0
+}
+
+local function resetCacheStats()
+    Map.stats.paintFrames = 0
+    Map.stats.bfsBuilds = 0
+    Map.stats.bfsHits = 0
+    Map.stats.floorIndexBuilds = 0
+end
+
+local function invalidateGraphCache()
+    Map.cache.revision = (Map.cache.revision or 0) + 1
+    Map.cache.indexedRevision = -1
+    Map.cache.floorCells = {}
+    Map.cache.reach = nil
+    resetCacheStats()
+end
+
+local function buildFloorIndex()
+    if Map.cache.indexedRevision == Map.cache.revision then return end
+    local floorCells = {}
+    for _, cell in ipairs(Map.cells) do
+        floorCells[cell.z] = floorCells[cell.z] or {}
+        floorCells[cell.z][#floorCells[cell.z] + 1] = cell
+    end
+    Map.cache.floorCells = floorCells
+    Map.cache.indexedRevision = Map.cache.revision
+    Map.cache.reach = nil
+    Map.stats.floorIndexBuilds = Map.stats.floorIndexBuilds + 1
+end
+
 surface.CreateFont("LOD_Map_Title", {
     font = "DejaVu Sans",
     size = 18,
@@ -61,6 +102,7 @@ net.Receive("LOD_MapBegin", function()
     Map.receivedChunks = 0
     Map.cells = {}
     Map.byKey = {}
+    invalidateGraphCache()
 end)
 
 net.Receive("LOD_MapChunk", function()
@@ -81,6 +123,9 @@ net.Receive("LOD_MapChunk", function()
         Map.byKey[cellKey(cell.x, cell.y, cell.z)] = cell
     end
     Map.receivedChunks = math.max(Map.receivedChunks or 0, chunkIndex)
+    if Map.receivedChunks >= (Map.expectedChunks or 0) then
+        buildFloorIndex()
+    end
 end)
 
 net.Receive("LOD_MapDenied", function()
@@ -212,6 +257,45 @@ local function routeTo(previous, startKey, goalKey)
     return route
 end
 
+local function gateStateSignature()
+    local state = LOD.ClientState or {}
+    local gates = state.gates or {}
+    local signature = 0
+    for gateIndex = 1, 3 do
+        if gates[gateIndex] == true then
+            signature = bit.bor(signature, bit.lshift(1, gateIndex - 1))
+        end
+    end
+    return signature
+end
+
+local function cachedFloorData(gx, gy, gz)
+    local startKey = cellKey(gx, gy, gz)
+    local gateSignature = gateStateSignature()
+    local cached = Map.cache.reach
+    if cached and cached.revision == Map.cache.revision and
+        cached.startKey == startKey and cached.gateSignature == gateSignature then
+        Map.stats.bfsHits = Map.stats.bfsHits + 1
+        return cached
+    end
+
+    local reached, previous, distance, nearestUp, nearestUpDist = floorReachability(gx, gy, gz)
+    cached = {
+        revision = Map.cache.revision,
+        startKey = startKey,
+        gateSignature = gateSignature,
+        reached = reached,
+        previous = previous,
+        distance = distance,
+        nearestUp = nearestUp,
+        nearestUpDist = nearestUpDist,
+        route = routeTo(previous, startKey, nearestUp)
+    }
+    Map.cache.reach = cached
+    Map.stats.bfsBuilds = Map.stats.bfsBuilds + 1
+    return cached
+end
+
 local function mapCellCenter(cell, gridX, gridY, cellSize)
     return gridX + (cell.x - 0.5) * cellSize,
         gridY + (MC.Height - cell.y + 0.5) * cellSize
@@ -256,8 +340,12 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         return
     end
 
-    local reached, previous, _, nearestUp, nearestUpDist = floorReachability(gx, gy, gz)
-    local startKey = cellKey(gx, gy, gz)
+    Map.stats.paintFrames = Map.stats.paintFrames + 1
+    local floorData = cachedFloorData(gx, gy, gz)
+    local reached = floorData.reached
+    local nearestUp = floorData.nearestUp
+    local nearestUpDist = floorData.nearestUpDist
+    local startKey = floorData.startKey
 
     surface.SetDrawColor(58, 62, 64, 105)
     surface.DrawRect(gridX, gridY, gridSize, gridSize)
@@ -266,43 +354,41 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     local stairReachable = Color(248, 213, 105, 255)
     local stairLockedSector = Color(118, 105, 72, 145)
 
-    for _, cell in ipairs(Map.cells) do
-        if cell.z == gz then
-            local x0 = gridX + (cell.x - 1) * cellSize
-            local y0 = gridY + (MC.Height - cell.y) * cellSize
-            local x1 = x0 + cellSize
-            local y1 = y0 + cellSize
+    for _, cell in ipairs(Map.cache.floorCells[gz] or {}) do
+        local x0 = gridX + (cell.x - 1) * cellSize
+        local y0 = gridY + (MC.Height - cell.y) * cellSize
+        local x1 = x0 + cellSize
+        local y1 = y0 + cellSize
 
-            surface.SetDrawColor(30, 34, 36, 195)
-            surface.DrawRect(x0 + 1, y0 + 1, math.max(1, cellSize - 2), math.max(1, cellSize - 2))
-            surface.SetDrawColor(wallColor)
+        surface.SetDrawColor(30, 34, 36, 195)
+        surface.DrawRect(x0 + 1, y0 + 1, math.max(1, cellSize - 2), math.max(1, cellSize - 2))
+        surface.SetDrawColor(wallColor)
 
-            if not bitOpen(cell.openings, 0) then surface.DrawLine(x0, y0, x1, y0) end -- N
-            if not bitOpen(cell.openings, 1) then surface.DrawLine(x1, y0, x1, y1) end -- E
-            if not bitOpen(cell.openings, 2) then surface.DrawLine(x0, y1, x1, y1) end -- S
-            if not bitOpen(cell.openings, 3) then surface.DrawLine(x0, y0, x0, y1) end -- W
+        if not bitOpen(cell.openings, 0) then surface.DrawLine(x0, y0, x1, y0) end -- N
+        if not bitOpen(cell.openings, 1) then surface.DrawLine(x1, y0, x1, y1) end -- E
+        if not bitOpen(cell.openings, 2) then surface.DrawLine(x0, y1, x1, y1) end -- S
+        if not bitOpen(cell.openings, 3) then surface.DrawLine(x0, y0, x0, y1) end -- W
 
-            drawGateLine(gateCode(cell.gates, 0), x0, y0, x1, y0)
-            drawGateLine(gateCode(cell.gates, 2), x1, y0, x1, y1)
-            drawGateLine(gateCode(cell.gates, 4), x0, y1, x1, y1)
-            drawGateLine(gateCode(cell.gates, 6), x0, y0, x0, y1)
+        drawGateLine(gateCode(cell.gates, 0), x0, y0, x1, y0)
+        drawGateLine(gateCode(cell.gates, 2), x1, y0, x1, y1)
+        drawGateLine(gateCode(cell.gates, 4), x0, y1, x1, y1)
+        drawGateLine(gateCode(cell.gates, 6), x0, y0, x0, y1)
 
-            local up = bitOpen(cell.openings, 4)
-            local down = bitOpen(cell.openings, 5)
-            if up or down then
-                local ck = cellKey(cell.x, cell.y, cell.z)
-                local stairText = up and down and "↕" or (up and "↑" or "↓")
-                local color = reached[ck] and stairReachable or stairLockedSector
-                draw.SimpleText(stairText, "LOD_Map_Small", (x0 + x1) * 0.5, (y0 + y1) * 0.5,
-                    color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            end
+        local up = bitOpen(cell.openings, 4)
+        local down = bitOpen(cell.openings, 5)
+        if up or down then
+            local ck = cellKey(cell.x, cell.y, cell.z)
+            local stairText = up and down and "↕" or (up and "↑" or "↓")
+            local color = reached[ck] and stairReachable or stairLockedSector
+            draw.SimpleText(stairText, "LOD_Map_Small", (x0 + x1) * 0.5, (y0 + y1) * 0.5,
+                color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     end
 
     -- Developer mode gets a breadcrumb to the nearest currently reachable upward
     -- stair. Production Map loot remains a topology-reading aid rather than GPS.
     if ply:GetNW2Bool("LOD_DeveloperMode", false) and nearestUp then
-        local route = routeTo(previous, startKey, nearestUp)
+        local route = floorData.route
         if route and #route > 1 then
             surface.SetDrawColor(248, 213, 105, 155)
             for i = 2, #route do
@@ -338,4 +424,19 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
 
     draw.SimpleText("stairs: bright=reachable  dim=behind lock   gates: green=open", "LOD_Map_Small",
         panelX + 18, panelY + panelH - 18, Color(170, 174, 176), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+end)
+
+
+concommand.Add("lod_minimap_cache_status", function()
+    local stats = Map.stats or {}
+    local ready = Map.cache and Map.cache.indexedRevision == Map.cache.revision
+    local frames = stats.paintFrames or 0
+    local builds = stats.bfsBuilds or 0
+    local hits = stats.bfsHits or 0
+    local indexed = stats.floorIndexBuilds or 0
+    local passed = ready and frames > 0 and builds > 0 and hits > 0 and builds < frames and indexed == 1
+    print(string.format(
+        "[LOD:MINIMAP-CACHE] frames=%d bfsBuilds=%d bfsHits=%d floorIndexBuilds=%d ready=%s result=%s",
+        frames, builds, hits, indexed, tostring(ready), passed and "PASS" or "FAIL"
+    ))
 end)
