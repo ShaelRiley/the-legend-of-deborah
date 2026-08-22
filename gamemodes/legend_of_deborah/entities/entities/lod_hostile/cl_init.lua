@@ -59,7 +59,8 @@ end
 function ENT:Draw()
     applyVisualScale(self)
     self:DrawModel()
-    if self:GetNW2String("LOD_Archetype", "") ~= "soldier" then return end
+    local archetype = self:GetNW2String("LOD_Archetype", "")
+    if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 
     local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
@@ -67,5 +68,6 @@ function ENT:Draw()
 
     local startPos = self:WorldSpaceCenter() + Vector(0, 0, 12) + self:GetForward() * 24
     render.SetMaterial(aimMaterial)
-    render.DrawBeam(startPos, aim, 2.5, 0, 1, Color(255, 80, 60, 220))
+    local color = archetype == "blitzer" and Color(90, 255, 110, 230) or Color(255, 80, 60, 220)
+    render.DrawBeam(startPos, aim, 2.5, 0, 1, color)
 end
