@@ -2,7 +2,7 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
-local SOLDIER_MUZZLE_ATTACHMENTS = {"muzzle", "muzzle_flash"}
+local BARREL_OFFSET = 24
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
 
@@ -65,23 +65,15 @@ local function applyVisualScale(ent)
 end
 
 local function rawMuzzlePosition(ent)
-    local weapon = ent:GetNW2Entity("LOD_WeaponVisual")
-    if IsValid(weapon) then
-        for _, name in ipairs(SOLDIER_MUZZLE_ATTACHMENTS) do
-            local attachment = weapon:LookupAttachment(name)
-            if attachment and attachment > 0 then
-                local data = weapon:GetAttachment(attachment)
-                if data and data.Pos then return data.Pos, "weapon:" .. name end
-            end
-        end
-    end
-
     local attachment = ent:LookupAttachment("anim_attachment_RH")
     if attachment and attachment > 0 then
         local data = ent:GetAttachment(attachment)
         if data and data.Pos then
-            local forward = data.Ang and data.Ang:Forward() or ent:GetForward()
-            return data.Pos + forward * 18, "hand-fallback"
+            -- Bonemerged prop attachments can exist yet report a world position
+            -- near the parent's feet. The host model's right-hand socket is the
+            -- stable common datum for Soldier and Blitzer. Both aim activities
+            -- face the hostile at its target, so this offset follows the barrel.
+            return data.Pos + ent:GetForward() * BARREL_OFFSET, "hand-socket"
         end
     end
 
@@ -114,8 +106,9 @@ end
 concommand.Add("lod_laser_origin_status", function()
     local soldierCount = 0
     local blitzerCount = 0
-    local weaponMuzzles = 0
+    local handSockets = 0
     local fallbacks = 0
+    local floorOrigins = 0
 
     for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
         local archetype = hostile:GetNW2String("LOD_Archetype", "")
@@ -125,22 +118,27 @@ concommand.Add("lod_laser_origin_status", function()
 
             local size, verticalCompensation = applyVisualScale(hostile)
             local renderedPos, source, rawPos = renderedMuzzlePosition(hostile, size, verticalCompensation)
-            if string.StartWith(source, "weapon:") then
-                weaponMuzzles = weaponMuzzles + 1
+            local originHeight = renderedPos.z - hostile:GetPos().z
+            if source == "hand-socket" then
+                handSockets = handSockets + 1
             else
                 fallbacks = fallbacks + 1
             end
+            if originHeight <= math.max(8, 12 * size) then floorOrigins = floorOrigins + 1 end
             print(string.format(
-                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s scaleCorrection=%.2f width=%.2f",
-                hostile:EntIndex(), archetype, size, source, rawPos:Distance(renderedPos), LASER_WIDTH
+                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s originHeight=%.2f scaleCorrection=%.2f width=%.2f",
+                hostile:EntIndex(), archetype, size, source, originHeight,
+                rawPos:Distance(renderedPos), LASER_WIDTH
             ))
         end
     end
 
     local total = soldierCount + blitzerCount
-    local passed = soldierCount > 0 and blitzerCount > 0 and weaponMuzzles == total and fallbacks == 0
+    local passed = soldierCount > 0 and blitzerCount > 0 and handSockets == total
+        and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d weaponMuzzles=%d fallbacks=%d sharedWidth=%.2f result=%s",
-        soldierCount, blitzerCount, weaponMuzzles, fallbacks, LASER_WIDTH, passed and "PASS" or "FAIL"
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f result=%s",
+        soldierCount, blitzerCount, handSockets, fallbacks, floorOrigins,
+        LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
 end)
