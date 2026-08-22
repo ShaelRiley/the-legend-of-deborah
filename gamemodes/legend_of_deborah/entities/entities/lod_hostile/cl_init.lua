@@ -2,6 +2,7 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
+local LASER_LENGTH = 160
 local BARREL_OFFSET = 24
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
@@ -98,9 +99,18 @@ function ENT:Draw()
     if aim == vector_origin then return end
 
     local startPos = renderedMuzzlePosition(self, size, verticalCompensation)
+    local aimDelta = aim - startPos
+    local aimDistance = aimDelta:Length()
+    if aimDistance <= 0.001 then return end
+
+    -- A beam ending at the first-person camera becomes severely foreshortened
+    -- and can appear to descend beneath the hostile. Render the warning as a
+    -- uniform sight ray near the rifle while retaining the server aim point for
+    -- its direction. Soldier and Blitzer therefore share both width and length.
+    local beamEnd = startPos + aimDelta * (math.min(aimDistance, LASER_LENGTH) / aimDistance)
     render.SetMaterial(aimMaterial)
     local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
-    render.DrawBeam(startPos, aim, LASER_WIDTH, 0, 1, color)
+    render.DrawBeam(startPos, beamEnd, LASER_WIDTH, 0, 1, color)
 end
 
 concommand.Add("lod_laser_origin_status", function()
@@ -137,8 +147,8 @@ concommand.Add("lod_laser_origin_status", function()
     local passed = soldierCount > 0 and blitzerCount > 0 and handSockets == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f result=%s",
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f sharedMaxLength=%.0f result=%s",
         soldierCount, blitzerCount, handSockets, fallbacks, floorOrigins,
-        LASER_WIDTH, passed and "PASS" or "FAIL"
+        LASER_WIDTH, LASER_LENGTH, passed and "PASS" or "FAIL"
     ))
 end)
