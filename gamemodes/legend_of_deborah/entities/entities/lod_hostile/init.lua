@@ -484,6 +484,18 @@ function ENT:_SoldierMuzzlePos()
     return self:LocalToWorld(localPos)
 end
 
+function ENT:_SoldierTargetAimPos(target)
+    local center = target:WorldSpaceCenter()
+    if not target:IsPlayer() then return center end
+
+    -- WorldSpaceCenter is near a standing player's waist. A rifle warning drawn
+    -- from shoulder height to that point reads as a groundward diagonal even
+    -- though it technically intersects the collision hull. Aim both the tell
+    -- and its ensuing bolts at the upper torso, between hull center and EyePos.
+    local eye = target:EyePos()
+    return center + (eye - center) * 0.65
+end
+
 function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
     local cfg = self.LODConfig
     local startPos = self:_SoldierMuzzlePos()
@@ -567,6 +579,7 @@ function ENT:_BeginSoldierBurst(target)
         self.LODBlitzerLastVeerRolls = #pattern
     end
 
+    local targetAimPos = self:_SoldierTargetAimPos(target)
     self.LODSoldierBurst = {
         target = target,
         windupEnd = CurTime() + cfg.burstTelegraph,
@@ -574,12 +587,12 @@ function ENT:_BeginSoldierBurst(target)
         shotsRemaining = shots,
         originalShots = shots,
         shotIndex = 0,
-        lastAimPos = target:WorldSpaceCenter(),
+        lastAimPos = targetAimPos,
         pattern = pattern,
         patternSeed = patternSeed
     }
     self:SetNW2Bool("LOD_SoldierTelegraph", true)
-    self:SetNW2Vector("LOD_SoldierAim", target:WorldSpaceCenter())
+    self:SetNW2Vector("LOD_SoldierAim", targetAimPos)
     self:_SetActivity(self:_SoldierAttackActivity(), true)
     self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
     return true
@@ -612,7 +625,7 @@ function ENT:_ProcessSoldierBurst()
             self:_CancelSoldierBurst(0.25)
             return false
         end
-        burst.lastAimPos = target:WorldSpaceCenter()
+        burst.lastAimPos = self:_SoldierTargetAimPos(target)
         self:SetNW2Vector("LOD_SoldierAim", burst.lastAimPos)
         return true
     end
@@ -623,7 +636,7 @@ function ENT:_ProcessSoldierBurst()
     if burst.shotsRemaining > 0 and CurTime() >= burst.nextShot then
         burst.shotIndex = burst.shotIndex + 1
         if self:_HasLineOfSight(target) then
-            burst.lastAimPos = target:WorldSpaceCenter()
+            burst.lastAimPos = self:_SoldierTargetAimPos(target)
         end
         self:_SpawnSoldierBolt(burst.lastAimPos, burst.shotIndex)
         burst.shotsRemaining = burst.shotsRemaining - 1
