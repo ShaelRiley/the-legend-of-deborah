@@ -287,6 +287,8 @@ function ENT:Initialize()
     self:SetNW2String("LOD_Archetype", self.LODArchetypeId)
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
+    self:SetNW2Int("LOD_SoldierTelegraphSerial", 0)
+    self:SetNW2Vector("LOD_SoldierTelegraphView", vector_origin)
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
     self:DrawShadow(true)
@@ -574,8 +576,10 @@ function ENT:_BeginSoldierBurst(target)
     end
 
     local targetAimPos = self:_SoldierTargetAimPos(target)
+    self.LODSoldierTelegraphSerial = (self.LODSoldierTelegraphSerial or 0) + 1
     self.LODSoldierBurst = {
         target = target,
+        facingPos = Vector(targetAimPos.x, targetAimPos.y, self:GetPos().z),
         windupEnd = CurTime() + cfg.burstTelegraph,
         nextShot = nil,
         shotsRemaining = shots,
@@ -587,6 +591,11 @@ function ENT:_BeginSoldierBurst(target)
     }
     self:SetNW2Bool("LOD_SoldierTelegraph", true)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", target)
+    self:SetNW2Int("LOD_SoldierTelegraphSerial", self.LODSoldierTelegraphSerial)
+    self:SetNW2Vector(
+        "LOD_SoldierTelegraphView",
+        target:IsPlayer() and target:GetAimVector() or (targetAimPos - self:GetPos()):GetNormalized()
+    )
     self:SetNW2Vector("LOD_SoldierAim", targetAimPos)
     self:_SetActivity(self:_SoldierAttackActivity(), true)
     self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
@@ -613,7 +622,7 @@ function ENT:_ProcessSoldierBurst()
     end
 
     if self.loco then self.loco:SetDesiredSpeed(0) end
-    self.loco:FaceTowards(Vector(target:GetPos().x, target:GetPos().y, self:GetPos().z))
+    self.loco:FaceTowards(burst.facingPos)
 
     if CurTime() < burst.windupEnd then
         -- Breaking line of sight during the warning cancels the shot entirely.
@@ -621,8 +630,8 @@ function ENT:_ProcessSoldierBurst()
             self:_CancelSoldierBurst(0.25)
             return false
         end
-        burst.lastAimPos = self:_SoldierTargetAimPos(target)
-        self:SetNW2Vector("LOD_SoldierAim", burst.lastAimPos)
+        -- Deliberately do not refresh lastAimPos or facingPos. The warning is a
+        -- committed shot declaration: moving after beam-on is the dodge window.
         return true
     end
 
@@ -632,9 +641,8 @@ function ENT:_ProcessSoldierBurst()
 
     if burst.shotsRemaining > 0 and CurTime() >= burst.nextShot then
         burst.shotIndex = burst.shotIndex + 1
-        if self:_HasLineOfSight(target) then
-            burst.lastAimPos = self:_SoldierTargetAimPos(target)
-        end
+        -- Every bolt in the burst inherits the beam-on snapshot. Blitzer veer is
+        -- applied around that committed direction inside _SpawnSoldierBolt.
         self:_SpawnSoldierBolt(burst.lastAimPos, burst.shotIndex)
         burst.shotsRemaining = burst.shotsRemaining - 1
         burst.nextShot = CurTime() + cfg.burstShotInterval
