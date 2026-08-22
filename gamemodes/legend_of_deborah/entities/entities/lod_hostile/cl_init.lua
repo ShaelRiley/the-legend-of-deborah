@@ -1,6 +1,10 @@
 include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
+local LASER_WIDTH = 2.5
+local SOLDIER_MUZZLE_ATTACHMENTS = {"muzzle", "muzzle_flash"}
+local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
+local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
 
 -- Motion V2 owns world-space placement: an ordinary hostile entity origin sits
 -- on the graph-authored walking surface (+ a tiny safety lift), and explicit
@@ -27,7 +31,9 @@ local function applyVisualScale(ent)
     local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
     local model = ent:GetModel() or ""
     local signature = string.format("%s:%.4f:%s", model, size, tostring(motionV2))
-    if ent.LODLastClientVisualScale == signature then return end
+    if ent.LODLastClientVisualScale == signature then
+        return size, ent.LODVisualVerticalCompensation or 0
+    end
     ent.LODLastClientVisualScale = signature
 
     local mins, maxs = visualModelBounds(ent)
@@ -44,6 +50,7 @@ local function applyVisualScale(ent)
         -- network flag arrives. Preserve the model's native minimum-Z plane.
         verticalCompensation = mins.z * (1 - size)
     end
+    ent.LODVisualVerticalCompensation = verticalCompensation
 
     local matrix = Matrix()
     matrix:Scale(Vector(size, size, size))
@@ -54,10 +61,42 @@ local function applyVisualScale(ent)
         Vector(mins.x * size, mins.y * size, mins.z * size + verticalCompensation),
         Vector(maxs.x * size, maxs.y * size, maxs.z * size + verticalCompensation)
     )
+    return size, verticalCompensation
+end
+
+local function rawMuzzlePosition(ent)
+    local weapon = ent:GetNW2Entity("LOD_WeaponVisual")
+    if IsValid(weapon) then
+        for _, name in ipairs(SOLDIER_MUZZLE_ATTACHMENTS) do
+            local attachment = weapon:LookupAttachment(name)
+            if attachment and attachment > 0 then
+                local data = weapon:GetAttachment(attachment)
+                if data and data.Pos then return data.Pos, "weapon:" .. name end
+            end
+        end
+    end
+
+    local attachment = ent:LookupAttachment("anim_attachment_RH")
+    if attachment and attachment > 0 then
+        local data = ent:GetAttachment(attachment)
+        if data and data.Pos then
+            local forward = data.Ang and data.Ang:Forward() or ent:GetForward()
+            return data.Pos + forward * 18, "hand-fallback"
+        end
+    end
+
+    return ent:WorldSpaceCenter() + Vector(0, 0, 12) + ent:GetForward() * 24, "hull-fallback"
+end
+
+local function renderedMuzzlePosition(ent, size, verticalCompensation)
+    local rawPos, source = rawMuzzlePosition(ent)
+    local localPos = ent:WorldToLocal(rawPos) * size
+    localPos.z = localPos.z + verticalCompensation
+    return ent:LocalToWorld(localPos), source, rawPos
 end
 
 function ENT:Draw()
-    applyVisualScale(self)
+    local size, verticalCompensation = applyVisualScale(self)
     self:DrawModel()
     local archetype = self:GetNW2String("LOD_Archetype", "")
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
@@ -66,8 +105,42 @@ function ENT:Draw()
     local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
     if aim == vector_origin then return end
 
-    local startPos = self:WorldSpaceCenter() + Vector(0, 0, 12) + self:GetForward() * 24
+    local startPos = renderedMuzzlePosition(self, size, verticalCompensation)
     render.SetMaterial(aimMaterial)
-    local color = archetype == "blitzer" and Color(90, 255, 110, 230) or Color(255, 80, 60, 220)
-    render.DrawBeam(startPos, aim, 2.5, 0, 1, color)
+    local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
+    render.DrawBeam(startPos, aim, LASER_WIDTH, 0, 1, color)
 end
+
+concommand.Add("lod_laser_origin_status", function()
+    local soldierCount = 0
+    local blitzerCount = 0
+    local weaponMuzzles = 0
+    local fallbacks = 0
+
+    for _, hostile in ipairs(ents.FindByClass("lod_hostile")) do
+        local archetype = hostile:GetNW2String("LOD_Archetype", "")
+        if archetype == "soldier" or archetype == "blitzer" then
+            if archetype == "soldier" then soldierCount = soldierCount + 1 end
+            if archetype == "blitzer" then blitzerCount = blitzerCount + 1 end
+
+            local size, verticalCompensation = applyVisualScale(hostile)
+            local renderedPos, source, rawPos = renderedMuzzlePosition(hostile, size, verticalCompensation)
+            if string.StartWith(source, "weapon:") then
+                weaponMuzzles = weaponMuzzles + 1
+            else
+                fallbacks = fallbacks + 1
+            end
+            print(string.format(
+                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s scaleCorrection=%.2f width=%.2f",
+                hostile:EntIndex(), archetype, size, source, rawPos:Distance(renderedPos), LASER_WIDTH
+            ))
+        end
+    end
+
+    local total = soldierCount + blitzerCount
+    local passed = soldierCount > 0 and blitzerCount > 0 and weaponMuzzles == total and fallbacks == 0
+    print(string.format(
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d weaponMuzzles=%d fallbacks=%d sharedWidth=%.2f result=%s",
+        soldierCount, blitzerCount, weaponMuzzles, fallbacks, LASER_WIDTH, passed and "PASS" or "FAIL"
+    ))
+end)
