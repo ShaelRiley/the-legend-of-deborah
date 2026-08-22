@@ -4,6 +4,15 @@ local EC = LOD.Config.Encounter
 local EncounterDirector = LOD.EncounterDirector
 local CombatAudio = LOD.CombatAudio
 
+LOD.DeadcrabCombat = LOD.DeadcrabCombat or {
+    leaps = 0,
+    latches = 0,
+    detonations = 0,
+    victims = 0,
+    totalDamage = 0
+}
+local DeadcrabCombat = LOD.DeadcrabCombat
+
 -- DEADCRAB ---------------------------------------------------------------
 -- A deliberately fragile suicide-pressure archetype: visually a blood-red
 -- classic headcrab, tactically a dodgeable leap followed by a committed
@@ -134,6 +143,7 @@ local function beginLeap(self, target)
 
     self.LODDeadcrabState = "leaping"
     self.LODDeadcrabTarget = target
+    DeadcrabCombat.leaps = DeadcrabCombat.leaps + 1
     self.LODDeadcrabLeapExpires = CurTime() + 0.85
     self.LODDeadcrabNextLeap = CurTime() + cfg.leapCooldown
     deadcrabSetActivity(self, ACT_RANGE_ATTACK1 or ACT_JUMP or ACT_RUN)
@@ -163,6 +173,8 @@ end
 
 local function blastPlayers(self, origin)
     local cfg = self.LODConfig
+    local victims = 0
+    local totalDamage = 0
     for _, ply in ipairs(player.GetAll()) do
         if livingPlayer(ply) then
             local distance = origin:Distance(ply:WorldSpaceCenter())
@@ -176,9 +188,12 @@ local function blastPlayers(self, origin)
                 dmg:SetDamage(amount)
                 dmg:SetDamagePosition(origin)
                 ply:TakeDamageInfo(dmg)
+                victims = victims + 1
+                totalDamage = totalDamage + amount
             end
         end
     end
+    return victims, totalDamage
 end
 
 local function detonate(self)
@@ -203,7 +218,12 @@ local function detonate(self)
     util.Effect("Explosion", effect, true, true)
     sound.Play("ambient/explosions/explode_4.wav", origin, 92, 108, 1.0)
 
-    blastPlayers(self, origin)
+    local victims, totalDamage = blastPlayers(self, origin)
+    DeadcrabCombat.detonations = DeadcrabCombat.detonations + 1
+    DeadcrabCombat.victims = DeadcrabCombat.victims + victims
+    DeadcrabCombat.totalDamage = DeadcrabCombat.totalDamage + totalDamage
+    DeadcrabCombat.lastVictims = victims
+    DeadcrabCombat.lastDamage = totalDamage
 
     -- Suicide detonation still resolves its encounter slot, but hostile blast
     -- damage is applied only to players and therefore cannot create faction
@@ -230,6 +250,7 @@ local function latch(self, target)
 
     self.LODDeadcrabState = "latched"
     self.LODDeadcrabTarget = target
+    DeadcrabCombat.latches = DeadcrabCombat.latches + 1
     if self.loco then
         self.loco:SetDesiredSpeed(0)
         if self.loco.SetVelocity then self.loco:SetVelocity(vector_origin) end
@@ -316,21 +337,30 @@ local function installHostilePatch()
         deadcrabSetActivity(self, self.LODConfig.activity or ACT_RUN)
     end
 
+    -- Named archetype dispatch keeps the attack state machine reachable even if
+    -- Source installs Motion V2 after this wrapper during OnEntityCreated.
+    function class:_RunDeadcrabTick()
+        if self.LODArchetypeId ~= "deadcrab" then return false end
+
+        local frame = FrameNumber()
+        if self.LODDeadcrabDispatchFrame == frame then return false end
+        self.LODDeadcrabDispatchFrame = frame
+
+        if self.LODDead or not self.LODActivated then return true end
+        if self.LODDeadcrabState == "latched" or self.LODDeadcrabState == "detonated" then return true end
+        if self.LODDeadcrabState == "leaping" then
+            processLeap(self)
+            return true
+        end
+
+        local target = self.LODTarget
+        return livingPlayer(target) and beginLeap(self, target) or false
+    end
+
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
-        if self.LODArchetypeId ~= "deadcrab" then
-            return baseBehaviourTick(self)
-        end
-        if self.LODDead or not self.LODActivated then return end
-        if self.LODDeadcrabState == "latched" or self.LODDeadcrabState == "detonated" then return end
-        if self.LODDeadcrabState == "leaping" then return processLeap(self) end
-
-        -- Retain the already validated graph navigation/leash behavior, with
-        -- meleeRange=0 preventing the generic melee attack. Once close enough,
-        -- replace ordinary pursuit with the signature face leap.
-        baseBehaviourTick(self)
-        local target = self.LODTarget
-        if livingPlayer(target) then beginLeap(self, target) end
+        if self.LODArchetypeId == "deadcrab" and self:_RunDeadcrabTick() then return end
+        return baseBehaviourTick(self)
     end
 
     return true
@@ -397,6 +427,24 @@ if EncounterDirector and not EncounterDirector.LODDeadcrabPlannerWrapped then
         return true
     end
 end
+
+concommand.Add("lod_deadcrab_attack_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local result = DeadcrabCombat.detonations > 0
+        and (DeadcrabCombat.lastVictims or 0) > 0
+        and (DeadcrabCombat.lastDamage or 0) > 0
+        and "PASS" or "FAIL"
+    local line = string.format(
+        "leaps=%d latches=%d detonations=%d lastVictims=%d lastDamage=%d result=%s",
+        DeadcrabCombat.leaps, DeadcrabCombat.latches, DeadcrabCombat.detonations,
+        DeadcrabCombat.lastVictims or 0, DeadcrabCombat.lastDamage or 0, result
+    )
+    print("[LOD:DEADCRAB-ATTACK] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
 
 concommand.Add("lod_m3_deadcrab_audio_audit", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
