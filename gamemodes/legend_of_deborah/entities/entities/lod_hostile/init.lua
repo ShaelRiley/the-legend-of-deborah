@@ -286,6 +286,7 @@ function ENT:Initialize()
     end
     self:SetNW2String("LOD_Archetype", self.LODArchetypeId)
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
     self:DrawShadow(true)
@@ -585,6 +586,7 @@ function ENT:_BeginSoldierBurst(target)
         patternSeed = patternSeed
     }
     self:SetNW2Bool("LOD_SoldierTelegraph", true)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", target)
     self:SetNW2Vector("LOD_SoldierAim", targetAimPos)
     self:_SetActivity(self:_SoldierAttackActivity(), true)
     self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
@@ -594,6 +596,7 @@ end
 function ENT:_CancelSoldierBurst(shortCooldown)
     self.LODSoldierBurst = nil
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     self.LODNextAttack = CurTime() + (shortCooldown or 0.35)
     self:_SetActivity(self:_SoldierIdleActivity(), true)
 end
@@ -624,6 +627,7 @@ function ENT:_ProcessSoldierBurst()
     end
 
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     if not burst.nextShot then burst.nextShot = CurTime() end
 
     if burst.shotsRemaining > 0 and CurTime() >= burst.nextShot then
@@ -821,6 +825,7 @@ function ENT:_BeginDeathPresentation()
     self.LODSoldierBurst = nil
     self.LODDeathLevelSeed = LOD.RunManager and LOD.RunManager.State.LevelSeed or nil
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
 
     if self.loco then self.loco:SetDesiredSpeed(0) end
     self:SetVelocity(vector_origin)
@@ -854,5 +859,6 @@ end
 
 function ENT:OnRemove()
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
+    self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end
 end
