@@ -4,6 +4,9 @@ include("shared.lua")
 
 local DEATH_BLINK_DURATION = 1.0
 local DEATH_BLINK_INTERVAL = 0.125
+local DEATH_BLINK_COUNT = math.floor(DEATH_BLINK_DURATION / DEATH_BLINK_INTERVAL + 0.5)
+local DEATH_CONVERT_OFFSETS = {1.01, 1.12, 1.25}
+local DEATH_SHARED_TIMER = "LOD_HostileDeathPresentationShared"
 local PLACEHOLDER_LOOT_MODEL = "models/items/boxsrounds.mdl"
 local PLACEHOLDER_LOOT_LIFETIME = 20
 local PLACEHOLDER_LOOT_CAP = 24
@@ -73,6 +76,136 @@ concommand.Add("lod_placeholder_loot_status", function(ply)
         "[LOD:LOOT] active=%d cap=%d lifetime=%.0fs",
         PlaceholderLoot:Count(), PLACEHOLDER_LOOT_CAP, PLACEHOLDER_LOOT_LIFETIME
     ))
+end)
+
+-- One adaptive timer services every concurrent death presentation. The previous
+-- path allocated ten timers per hostile (blink, finish, pose, four pulse sounds,
+-- and three conversion notes). This queue keeps the same event times but owns
+-- only one timer, rescheduling it to the next due event and removing it when idle.
+LOD.HostileDeathPresentation = LOD.HostileDeathPresentation or {
+    Active = {},
+    TotalDeaths = 0,
+    SharedTimerStarts = 0,
+    SharedTicks = 0
+}
+local DeathPresentation = LOD.HostileDeathPresentation
+DeathPresentation.Active = DeathPresentation.Active or {}
+
+local function deathRecordNextDue(record)
+    if not record.finished and record.blinkTick < DEATH_BLINK_COUNT then
+        return record.startedAt + (record.blinkTick + 1) * DEATH_BLINK_INTERVAL
+    end
+    if record.finished and record.convertStep < #DEATH_CONVERT_OFFSETS then
+        return record.startedAt + DEATH_CONVERT_OFFSETS[record.convertStep + 1]
+    end
+end
+
+local function runDeathPresentationTimer()
+    DeathPresentation:_RunDue()
+end
+
+function DeathPresentation:_ScheduleNext()
+    local earliest
+    for _, record in ipairs(self.Active) do
+        local due = deathRecordNextDue(record)
+        if due and (not earliest or due < earliest) then earliest = due end
+    end
+
+    if not earliest then
+        timer.Remove(DEATH_SHARED_TIMER)
+        return
+    end
+
+    local delay = math.max(0.001, earliest - CurTime())
+    if timer.Exists(DEATH_SHARED_TIMER) then
+        timer.Adjust(DEATH_SHARED_TIMER, delay, 0)
+    else
+        self.SharedTimerStarts = (self.SharedTimerStarts or 0) + 1
+        timer.Create(DEATH_SHARED_TIMER, delay, 0, runDeathPresentationTimer)
+    end
+end
+
+function DeathPresentation:_RunDue()
+    self.SharedTicks = (self.SharedTicks or 0) + 1
+    local now = CurTime() + 0.001
+
+    for index = #self.Active, 1, -1 do
+        local record = self.Active[index]
+        local hostile = record.hostile
+
+        if not record.finished and not IsValid(hostile) then
+            table.remove(self.Active, index)
+        else
+            while not record.finished and record.blinkTick < DEATH_BLINK_COUNT
+                and now >= record.startedAt + (record.blinkTick + 1) * DEATH_BLINK_INTERVAL
+            do
+                record.blinkTick = record.blinkTick + 1
+                if IsValid(hostile) then hostile:SetNoDraw(not hostile:GetNoDraw()) end
+
+                if record.blinkTick % 2 == 1 then
+                    hook.Run("LOD_HostileDeathBlinkPulse", record.origin, record.levelSeed,
+                        math.floor(record.blinkTick / 2) + 1)
+                end
+
+                if record.blinkTick >= DEATH_BLINK_COUNT then
+                    record.finished = true
+                    if IsValid(hostile) then hostile:_FinishDeathPresentation() end
+                end
+            end
+
+            while record.finished and record.convertStep < #DEATH_CONVERT_OFFSETS
+                and now >= record.startedAt + DEATH_CONVERT_OFFSETS[record.convertStep + 1]
+            do
+                record.convertStep = record.convertStep + 1
+                hook.Run("LOD_HostileDeathConvertNote", record.origin, record.levelSeed, record.convertStep)
+            end
+
+            if record.finished and record.convertStep >= #DEATH_CONVERT_OFFSETS then
+                table.remove(self.Active, index)
+            end
+        end
+    end
+
+    self:_ScheduleNext()
+end
+
+function DeathPresentation:Add(hostile)
+    if not IsValid(hostile) then return false end
+    self.TotalDeaths = (self.TotalDeaths or 0) + 1
+    self.Active[#self.Active + 1] = {
+        hostile = hostile,
+        origin = hostile:WorldSpaceCenter(),
+        levelSeed = hostile.LODDeathLevelSeed,
+        startedAt = CurTime(),
+        blinkTick = 0,
+        convertStep = 0,
+        finished = false
+    }
+
+    -- The death activity has already been selected, so the pain-pose module can
+    -- supersede it synchronously without allocating a next-tick callback.
+    hook.Run("LOD_HostileDeathApplyPose", hostile)
+    self:_ScheduleNext()
+    return true
+end
+
+concommand.Add("lod_death_scheduler_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local deaths = DeathPresentation.TotalDeaths or 0
+    local active = #DeathPresentation.Active
+    local running = timer.Exists(DEATH_SHARED_TIMER)
+    local avoided = deaths * 10
+    local passed = deaths > 0 and active == 0 and not running
+    local line = string.format(
+        "deaths=%d active=%d sharedTimer=%s sharedStarts=%d sharedTicks=%d perDeathTimers=0 legacyTimersAvoided=%d result=%s",
+        deaths, active, tostring(running), DeathPresentation.SharedTimerStarts or 0,
+        DeathPresentation.SharedTicks or 0, avoided, passed and "PASS" or "FAIL"
+    )
+    print("[LOD:DEATH-SCHEDULER] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
 local function archetypeConfig(id)
@@ -576,29 +709,7 @@ function ENT:_BeginDeathPresentation()
     -- a readable corpse pose while its origin remains fixed to the valid floor.
     self:_SetActivity(ACT_DIESIMPLE or ACT_DIEBACKWARD or ACT_IDLE, true)
 
-    local blinkName = "LOD_DeathBlink_" .. self:EntIndex()
-    local finishName = "LOD_DeathFinish_" .. self:EntIndex()
-    self.LODDeathBlinkTimer = blinkName
-    self.LODDeathFinishTimer = finishName
-    self.LODDeathBlinkTicks = 0
-
-    timer.Create(blinkName, DEATH_BLINK_INTERVAL, 0, function()
-        if not IsValid(self) then timer.Remove(blinkName) return end
-        self.LODDeathBlinkTicks = (self.LODDeathBlinkTicks or 0) + 1
-        self:SetNoDraw(not self:GetNoDraw())
-
-        -- Four restrained retro pulses over the one-second dematerialization.
-        if self.LODDeathBlinkTicks % 2 == 1 then
-            local pitch = math.min(150, 118 + self.LODDeathBlinkTicks * 4)
-            self:EmitSound("buttons/blip1.wav", 56, pitch, 0.42, CHAN_ITEM)
-        end
-    end)
-
-    timer.Create(finishName, DEATH_BLINK_DURATION, 1, function()
-        if not IsValid(self) then return end
-        timer.Remove(blinkName)
-        self:_FinishDeathPresentation()
-    end)
+    DeathPresentation:Add(self)
 end
 
 function ENT:OnKilled(dmginfo)
@@ -612,7 +723,5 @@ end
 
 function ENT:OnRemove()
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
-    if self.LODDeathBlinkTimer then timer.Remove(self.LODDeathBlinkTimer) end
-    if self.LODDeathFinishTimer then timer.Remove(self.LODDeathFinishTimer) end
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end
 end
