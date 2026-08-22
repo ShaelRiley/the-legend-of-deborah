@@ -2,7 +2,8 @@ LOD = LOD or {}
 
 local TESTKIT_RESERVE = 999
 local REFILL_THRESHOLD = 250
-local nextRefill = 0
+local REFILL_TIMER = "LOD_M3_TestkitAmmoRefill"
+local armedPlayers = setmetatable({}, {__mode = "k"})
 
 local function developerAllowed(ply)
     local cv = GetConVar("lod_developer_mode")
@@ -15,6 +16,28 @@ local function tell(ply, text)
     if IsValid(ply) then ply:ChatPrint(text) end
 end
 
+local function refillArmedPlayers()
+    local active = 0
+    for ply in pairs(armedPlayers) do
+        if not IsValid(ply) or not ply.LODM3InfiniteTestPistol or not developerAllowed(ply) or not ply:Alive() then
+            armedPlayers[ply] = nil
+        else
+            active = active + 1
+            if IsValid(ply:GetWeapon("weapon_pistol")) and ply:GetAmmoCount("Pistol") < REFILL_THRESHOLD then
+                ply:SetAmmo(TESTKIT_RESERVE, "Pistol")
+            end
+        end
+    end
+    if active == 0 then timer.Remove(REFILL_TIMER) end
+end
+
+local function armAmmoRefill(ply)
+    armedPlayers[ply] = true
+    if not timer.Exists(REFILL_TIMER) then
+        timer.Create(REFILL_TIMER, 0.10, 0, refillArmedPlayers)
+    end
+end
+
 -- Replace the original temporary M3 command after sv_m3_debug.lua loads. This
 -- keeps one authoritative testkit path for both the console command and H hotkey.
 concommand.Remove("lod_m3_testkit")
@@ -25,6 +48,7 @@ concommand.Add("lod_m3_testkit", function(ply)
     ply:Give("weapon_crowbar", true)
     ply:SetAmmo(TESTKIT_RESERVE, "Pistol")
     ply.LODM3InfiniteTestPistol = true
+    armAmmoRefill(ply)
 
     if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
     if LOD.RunManager and LOD.RunManager.MarkUnranked then
@@ -33,24 +57,12 @@ concommand.Add("lod_m3_testkit", function(ply)
     tell(ply, "developer combat kit granted: crowbar + pistol + infinite pistol ammo")
 end)
 
--- Refill reserve invisibly in the background. Reload behavior remains normal;
--- only ammunition scarcity is removed from Milestone-3 combat iteration.
-hook.Add("Think", "LOD_M3_TestkitInfinitePistolAmmo", function()
-    local now = CurTime()
-    if now < nextRefill then return end
-    nextRefill = now + 0.10
-
-    for _, ply in ipairs(player.GetAll()) do
-        if IsValid(ply) and ply.LODM3InfiniteTestPistol and developerAllowed(ply) and ply:Alive() then
-            if IsValid(ply:GetWeapon("weapon_pistol")) and ply:GetAmmoCount("Pistol") < REFILL_THRESHOLD then
-                ply:SetAmmo(TESTKIT_RESERVE, "Pistol")
-            end
-        end
-    end
-end)
-
+-- The shared refill timer exists only while at least one living developer has
+-- explicitly armed the testkit; production and ordinary development play pay no
+-- permanent Think-hook cost.
 -- Testkit status is per life. Press H after a respawn to deliberately re-enable
 -- the developer kit rather than leaking infinite ammo into unrelated testing.
 hook.Add("PlayerSpawn", "LOD_M3_ResetInfiniteTestPistol", function(ply)
     ply.LODM3InfiniteTestPistol = false
+    armedPlayers[ply] = nil
 end)
