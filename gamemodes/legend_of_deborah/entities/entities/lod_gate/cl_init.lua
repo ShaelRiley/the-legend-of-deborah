@@ -215,8 +215,12 @@ concommand.Add("lod_progression_render_status", function()
     local gateLabels = (stats.gateLabelsDrawn or 0) + (stats.gateLabelsCulled or 0)
     local keycardBodies = (stats.keycardBodiesDrawn or 0) + (stats.keycardBodiesCulled or 0)
     local keycardLabels = (stats.keycardLabelsDrawn or 0) + (stats.keycardLabelsCulled or 0)
-    local passed = gates > 0 and keycards > 0 and gateBodies == gates and gateLabels == gates
-        and keycardBodies == keycards and keycardLabels == keycards
+    -- Source may not transmit distant progression entities until they enter the
+    -- client's PVS. Validate every entity currently known to this client without
+    -- falsely failing merely because an unseen gate or card has not arrived yet.
+    local gateReady = gates == 0 or (gateBodies == gates and gateLabels == gates)
+    local keycardReady = keycards == 0 or (keycardBodies == keycards and keycardLabels == keycards)
+    local passed = gates + keycards > 0 and gateReady and keycardReady
     print(string.format(
         "[LOD:PROGRESSION-RENDER] gates=%d bodies=%d/%d labels=%d/%d keycards=%d bodies=%d/%d labels=%d/%d result=%s",
         gates, stats.gateBodiesDrawn or 0, stats.gateBodiesCulled or 0,
