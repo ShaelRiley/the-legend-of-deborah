@@ -1,6 +1,7 @@
 include("shared.lua")
 
 local PC = LOD.Config.Progression
+local MC = LOD.Config.Maze
 local GC = LOD.Config.Geometry or {}
 local GATE_VISUAL_HEIGHT = PC.GateBlockerHeight
 local GATE_METAL_COLOR = Color(92, 96, 98, 255)
@@ -10,6 +11,11 @@ local READER_SLOT_COLOR = Color(10, 12, 13, 255)
 local GATE_SIGN_HEIGHT = 126
 local GATE_READER_HEIGHT = 62
 local GATE_TEXTURE_TILE = GC.FloorTextureTile or 256
+local GATE_BODY_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 64
+local PROGRESSION_LABEL_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 16
+
+LOD.ProgressionRenderStats = LOD.ProgressionRenderStats or {}
+local RenderStats = LOD.ProgressionRenderStats
 
 -- Keep the gate and decks in one material language, but use the flattened
 -- no-bump/no-phong wrapper so the grip pattern cannot masquerade as geometry.
@@ -130,29 +136,40 @@ local function drawReader(ent, card, locked)
 end
 
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
+    local eyePos = EyePos()
+    local registered, drawn, culled = 0, 0, 0
     for ent in pairs(LOD.ClientGates) do
         if IsValid(ent) then
-            local index = math.Clamp(ent:GetGateIndex(), 1, 3)
-            local card = PC.Cards[index]
-            local mins, maxs = gateLocalBounds(ent)
-            local frac = openingFraction(ent)
+            registered = registered + 1
+            if ent:GetPos():DistToSqr(eyePos) <= GATE_BODY_DISTANCE_SQR then
+                drawn = drawn + 1
+                local index = math.Clamp(ent:GetGateIndex(), 1, 3)
+                local card = PC.Cards[index]
+                local mins, maxs = gateLocalBounds(ent)
+                local frac = openingFraction(ent)
 
-            if frac < 1 then
-                local center = ent:GetPos() + Vector(0, 0, GATE_VISUAL_HEIGHT * frac)
-                local material = gateMetalMaterial()
-                if LOD.TexturedBox and LOD.TexturedBox.Draw then
-                    LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, material, GATE_METAL_COLOR, GATE_TEXTURE_TILE)
-                else
-                    render.SetMaterial(material)
-                    render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
+                if frac < 1 then
+                    local center = ent:GetPos() + Vector(0, 0, GATE_VISUAL_HEIGHT * frac)
+                    local material = gateMetalMaterial()
+                    if LOD.TexturedBox and LOD.TexturedBox.Draw then
+                        LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, material, GATE_METAL_COLOR, GATE_TEXTURE_TILE)
+                    else
+                        render.SetMaterial(material)
+                        render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
+                    end
+                    drawReinforcement(ent, center)
+                    drawColorBand(ent, center, card.color)
                 end
-                drawReinforcement(ent, center)
-                drawColorBand(ent, center, card.color)
-            end
 
-            drawReader(ent, card, not ent:GetOpened())
+                drawReader(ent, card, not ent:GetOpened())
+            else
+                culled = culled + 1
+            end
         end
     end
+    RenderStats.gates = registered
+    RenderStats.gateBodiesDrawn = drawn
+    RenderStats.gateBodiesCulled = culled
 end)
 
 local function drawGateLabel(ent, card, pos, ang)
@@ -165,18 +182,47 @@ local function drawGateLabel(ent, card, pos, ang)
 end
 
 hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", function()
+    local eyePos = EyePos()
+    local drawn, culled = 0, 0
     for ent in pairs(LOD.ClientGates) do
         if IsValid(ent) then
-            local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 3)]
-            local halfHeight = GATE_VISUAL_HEIGHT * 0.5
-            local z = -halfHeight + GATE_SIGN_HEIGHT
-            if ent:GetGateAxis() == 0 then
-                drawGateLabel(ent, card, ent:GetPos() + Vector(PC.GateThickness * 0.5 + 18, 0, z), Angle(0, 90, 90))
-                drawGateLabel(ent, card, ent:GetPos() + Vector(-PC.GateThickness * 0.5 - 18, 0, z), Angle(0, -90, 90))
+            if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
+                drawn = drawn + 1
+                local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 3)]
+                local halfHeight = GATE_VISUAL_HEIGHT * 0.5
+                local z = -halfHeight + GATE_SIGN_HEIGHT
+                if ent:GetGateAxis() == 0 then
+                    drawGateLabel(ent, card, ent:GetPos() + Vector(PC.GateThickness * 0.5 + 18, 0, z), Angle(0, 90, 90))
+                    drawGateLabel(ent, card, ent:GetPos() + Vector(-PC.GateThickness * 0.5 - 18, 0, z), Angle(0, -90, 90))
+                else
+                    drawGateLabel(ent, card, ent:GetPos() + Vector(0, PC.GateThickness * 0.5 + 18, z), Angle(0, 180, 90))
+                    drawGateLabel(ent, card, ent:GetPos() + Vector(0, -PC.GateThickness * 0.5 - 18, z), Angle(0, 0, 90))
+                end
             else
-                drawGateLabel(ent, card, ent:GetPos() + Vector(0, PC.GateThickness * 0.5 + 18, z), Angle(0, 180, 90))
-                drawGateLabel(ent, card, ent:GetPos() + Vector(0, -PC.GateThickness * 0.5 - 18, z), Angle(0, 0, 90))
+                culled = culled + 1
             end
         end
     end
+    RenderStats.gateLabelsDrawn = drawn
+    RenderStats.gateLabelsCulled = culled
+end)
+
+concommand.Add("lod_progression_render_status", function()
+    local stats = LOD.ProgressionRenderStats or {}
+    local gates = stats.gates or 0
+    local keycards = stats.keycards or 0
+    local gateBodies = (stats.gateBodiesDrawn or 0) + (stats.gateBodiesCulled or 0)
+    local gateLabels = (stats.gateLabelsDrawn or 0) + (stats.gateLabelsCulled or 0)
+    local keycardBodies = (stats.keycardBodiesDrawn or 0) + (stats.keycardBodiesCulled or 0)
+    local keycardLabels = (stats.keycardLabelsDrawn or 0) + (stats.keycardLabelsCulled or 0)
+    local passed = gates > 0 and keycards > 0 and gateBodies == gates and gateLabels == gates
+        and keycardBodies == keycards and keycardLabels == keycards
+    print(string.format(
+        "[LOD:PROGRESSION-RENDER] gates=%d bodies=%d/%d labels=%d/%d keycards=%d bodies=%d/%d labels=%d/%d result=%s",
+        gates, stats.gateBodiesDrawn or 0, stats.gateBodiesCulled or 0,
+        stats.gateLabelsDrawn or 0, stats.gateLabelsCulled or 0,
+        keycards, stats.keycardBodiesDrawn or 0, stats.keycardBodiesCulled or 0,
+        stats.keycardLabelsDrawn or 0, stats.keycardLabelsCulled or 0,
+        passed and "PASS" or "FAIL"
+    ))
 end)
