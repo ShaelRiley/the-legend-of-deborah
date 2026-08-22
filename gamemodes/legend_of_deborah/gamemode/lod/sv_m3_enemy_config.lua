@@ -2,6 +2,31 @@ LOD = LOD or {}
 
 local EC = LOD.Config.Encounter
 
+-- BLITZER ----------------------------------------------------------------
+-- Soldier-derived close/mid-range suppression. Burst length and per-shot veer
+-- are rolled later from stable instance + attack identity.
+EC.Archetypes.blitzer = {
+    class = "lod_hostile_blitzer",
+    name = "Blitzer",
+    model = "models/combine_soldier.mdl",
+    baseHP = 35,
+    speed = 145,
+    burstDamage = 5,
+    burstShotsMin = 1,
+    burstShotsMax = 6,
+    burstCooldown = 1.45,
+    burstTelegraph = 0.85,
+    burstShotInterval = 0.10,
+    projectileSpeed = 950,
+    projectileLifetime = 1.35,
+    fireRange = 900,
+    preferredRange = 520,
+    veerChance = 0.50,
+    veerDegrees = 2.4,
+    threat = 2.7,
+    activity = ACT_RUN
+}
+
 -- Universal per-instance enemy individuality. Values are deterministic from the
 -- level seed + encounter identity, so the same seed still reproduces the same
 -- enemies. Size is the dominant variation; small stat jitter prevents two
