@@ -10,6 +10,7 @@ local DEATH_SHARED_TIMER = "LOD_HostileDeathPresentationShared"
 local PLACEHOLDER_LOOT_MODEL = "models/items/boxsrounds.mdl"
 local PLACEHOLDER_LOOT_LIFETIME = 20
 local PLACEHOLDER_LOOT_CAP = 24
+local SOLDIER_HAND_BONE = "ValveBiped.Bip01_R_Hand"
 
 -- Milestone 4 will replace these inert markers with individualized seeded drops.
 -- Until then, keep their presentation bounded: wanderers respawn indefinitely, so
@@ -258,10 +259,12 @@ function ENT:_CreateSoldierWeaponVisual()
     weapon:SetModel("models/weapons/w_irifle.mdl")
     weapon:SetSolid(SOLID_NONE)
     weapon:SetMoveType(MOVETYPE_NONE)
-    weapon:SetParent(self)
-    weapon:AddEffects(EF_BONEMERGE)
+    weapon:SetPos(self:WorldSpaceCenter())
     weapon:Spawn()
     weapon:Activate()
+    weapon:SetOwner(self)
+    weapon:SetParent(self)
+    weapon:AddEffects(EF_BONEMERGE)
     if self.LODArchetypeId == "blitzer" then
         weapon:SetRenderMode(RENDERMODE_TRANSCOLOR)
         weapon:SetColor(Color(70, 220, 90, 255))
@@ -460,15 +463,20 @@ function ENT:_MeleeAttack(target)
 end
 
 function ENT:_SoldierRawMuzzlePos()
+    local handBone = self:LookupBone(SOLDIER_HAND_BONE)
+    if handBone then
+        local handPos = self:GetBonePosition(handBone)
+        if handPos and handPos ~= self:GetPos() then
+            return handPos + self:GetForward() * 24
+        end
+    end
+
     local attachment = self:LookupAttachment("anim_attachment_RH")
     if attachment and attachment > 0 then
         local data = self:GetAttachment(attachment)
         if data and data.Pos then
-            -- prop_dynamic's bonemerged w_irifle exposes a nominal muzzle
-            -- attachment, but Source reports that child attachment near the
-            -- parent's origin. The humanoid hand socket is stable; the rifle
-            -- barrel points along the hostile's faced direction during both
-            -- warning and burst activities.
+            -- Defensive fallback for models that omit the standard right-hand
+            -- bone but expose the corresponding animation attachment.
             return data.Pos + self:GetForward() * 24
         end
     end
