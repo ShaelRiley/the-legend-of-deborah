@@ -99,43 +99,23 @@ function ENT:Draw()
     self:DrawModel()
     local archetype = self:GetNW2String("LOD_Archetype", "")
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
-    if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then
-        self.LODTelegraphVisualAim = nil
-        self.LODTelegraphVisualSerial = nil
-        return
-    end
+    if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 
-    local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
-    if aim == vector_origin then return end
+    local direction = self:GetNW2Vector("LOD_SoldierAimDirection", vector_origin)
+    if direction == vector_origin then return end
+    direction = direction:GetNormalized()
 
     local startPos = renderedMuzzlePosition(self, size, verticalCompensation)
-    local visualAim = aim
-    local target = self:GetNW2Entity("LOD_SoldierTelegraphTarget")
-    local localPlayer = LocalPlayer()
-    if IsValid(target) and target == localPlayer then
-        -- A ray ending at or near the first-person camera is foreshortened into
-        -- a dot or a false downward segment. Project the frozen crosshair ray out
-        -- to the hostile's depth instead. This keeps the warning connected to
-        -- the muzzle and visually directed toward the committed screen location;
-        -- authoritative aim and projectile paths remain the frozen EyePos.
-        local serial = self:GetNW2Int("LOD_SoldierTelegraphSerial", 0)
-        if self.LODTelegraphVisualSerial ~= serial or not self.LODTelegraphVisualAim then
-            local view = self:GetNW2Vector("LOD_SoldierTelegraphView", vector_origin)
-            if view == vector_origin then view = target:GetAimVector() end
-            local proxyDistance = startPos:Distance(aim)
-            self.LODTelegraphVisualAim = aim + view * proxyDistance
-            self.LODTelegraphVisualSerial = serial
-        end
-        visualAim = self.LODTelegraphVisualAim
-    end
+    local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
+    local aimDistance = aim ~= vector_origin and startPos:Distance(aim) or 768
 
-    local aimDelta = visualAim - startPos
-    local aimDistance = aimDelta:Length()
-    if aimDistance <= 0.001 then return end
+    -- The warning is no longer a screen-space proxy. It is the exact committed
+    -- server-authoritative firing vector, extended beyond the frozen target point
+    -- only to keep the tell readable in first person. Soldier bolts inherit this
+    -- same vector; only the Blitzer's explicitly designed veer may depart from it.
+    local visualDistance = math.Clamp(aimDistance * 1.35, 512, 1600)
+    local visualAim = startPos + direction * visualDistance
 
-    -- The presentation proxy already lies on the hostile's depth plane. Drawing
-    -- all the way to it produces the intended readable screen direction; the old
-    -- 160-unit cap reduced that projected ray to a tiny nub at typical ranges.
     render.SetMaterial(aimMaterial)
     local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
     render.DrawBeam(startPos, visualAim, LASER_WIDTH, 0, 1, color)
@@ -175,7 +155,7 @@ concommand.Add("lod_laser_origin_status", function()
     local passed = soldierCount > 0 and blitzerCount > 0 and handAnchors == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f depthProjected=true result=%s",
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f authoritativeVector=true result=%s",
         soldierCount, blitzerCount, handAnchors, fallbacks, floorOrigins,
         LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
