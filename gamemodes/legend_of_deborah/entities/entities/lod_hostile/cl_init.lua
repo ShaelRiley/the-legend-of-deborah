@@ -3,6 +3,7 @@ include("shared.lua")
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
 local BARREL_OFFSET = 24
+local SOLDIER_HAND_BONE = "ValveBiped.Bip01_R_Hand"
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
 
@@ -65,14 +66,20 @@ local function applyVisualScale(ent)
 end
 
 local function rawMuzzlePosition(ent)
+    local handBone = ent:LookupBone(SOLDIER_HAND_BONE)
+    if handBone then
+        local matrix = ent:GetBoneMatrix(handBone)
+        local handPos = matrix and matrix:GetTranslation()
+        if handPos and handPos ~= ent:GetPos() then
+            return handPos + ent:GetForward() * BARREL_OFFSET, "hand-bone"
+        end
+    end
+
     local attachment = ent:LookupAttachment("anim_attachment_RH")
     if attachment and attachment > 0 then
         local data = ent:GetAttachment(attachment)
         if data and data.Pos then
-            -- Bonemerged prop attachments can exist yet report a world position
-            -- near the parent's feet. The host model's right-hand socket is the
-            -- stable common datum for Soldier and Blitzer. Both aim activities
-            -- face the hostile at its target, so this offset follows the barrel.
+            -- Defensive fallback for models lacking the standard hand bone.
             return data.Pos + ent:GetForward() * BARREL_OFFSET, "hand-socket"
         end
     end
@@ -137,7 +144,7 @@ end
 concommand.Add("lod_laser_origin_status", function()
     local soldierCount = 0
     local blitzerCount = 0
-    local handSockets = 0
+    local handAnchors = 0
     local fallbacks = 0
     local floorOrigins = 0
 
@@ -150,8 +157,8 @@ concommand.Add("lod_laser_origin_status", function()
             local size, verticalCompensation = applyVisualScale(hostile)
             local renderedPos, source, rawPos = renderedMuzzlePosition(hostile, size, verticalCompensation)
             local originHeight = renderedPos.z - hostile:GetPos().z
-            if source == "hand-socket" then
-                handSockets = handSockets + 1
+            if source == "hand-bone" or source == "hand-socket" then
+                handAnchors = handAnchors + 1
             else
                 fallbacks = fallbacks + 1
             end
@@ -165,11 +172,11 @@ concommand.Add("lod_laser_origin_status", function()
     end
 
     local total = soldierCount + blitzerCount
-    local passed = soldierCount > 0 and blitzerCount > 0 and handSockets == total
+    local passed = soldierCount > 0 and blitzerCount > 0 and handAnchors == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f depthProjected=true result=%s",
-        soldierCount, blitzerCount, handSockets, fallbacks, floorOrigins,
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f depthProjected=true result=%s",
+        soldierCount, blitzerCount, handAnchors, fallbacks, floorOrigins,
         LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
 end)
