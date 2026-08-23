@@ -65,13 +65,13 @@ local function applyVisualScale(ent)
     return size, verticalCompensation
 end
 
-local function rawMuzzlePosition(ent)
+local function rawHandPosition(ent)
     local handBone = ent:LookupBone(SOLDIER_HAND_BONE)
     if handBone then
         local matrix = ent:GetBoneMatrix(handBone)
         local handPos = matrix and matrix:GetTranslation()
         if handPos and handPos ~= ent:GetPos() then
-            return handPos + ent:GetForward() * BARREL_OFFSET, "hand-bone"
+            return handPos, "hand-bone"
         end
     end
 
@@ -79,19 +79,33 @@ local function rawMuzzlePosition(ent)
     if attachment and attachment > 0 then
         local data = ent:GetAttachment(attachment)
         if data and data.Pos then
-            -- Defensive fallback for models lacking the standard hand bone.
-            return data.Pos + ent:GetForward() * BARREL_OFFSET, "hand-socket"
+            -- Defensive fallback for models lacking the standard right-hand bone.
+            return data.Pos, "hand-socket"
         end
     end
 
-    return ent:WorldSpaceCenter() + Vector(0, 0, 12) + ent:GetForward() * 24, "hull-fallback"
+    return ent:WorldSpaceCenter() + Vector(0, 0, 12), "hull-fallback"
 end
 
-local function renderedMuzzlePosition(ent, size, verticalCompensation)
-    local rawPos, source = rawMuzzlePosition(ent)
+local function renderedHandPosition(ent, size, verticalCompensation)
+    local rawPos, source = rawHandPosition(ent)
     local localPos = ent:WorldToLocal(rawPos) * size
     localPos.z = localPos.z + verticalCompensation
     return ent:LocalToWorld(localPos), source, rawPos
+end
+
+local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
+    local handPos, source, rawPos = renderedHandPosition(ent, size, verticalCompensation)
+    local direction = ent:GetForward()
+    if aim and aim ~= vector_origin then
+        local delta = aim - handPos
+        if delta:LengthSqr() > 0.001 then direction = delta:GetNormalized() end
+    end
+
+    -- Offset from the hand ALONG THE COMMITTED SHOT LINE, not along the actor's
+    -- generic forward vector. This keeps the visible muzzle outside the body even
+    -- when the attack pose places the rifle across the Soldier's torso.
+    return handPos + direction * BARREL_OFFSET, source, rawPos
 end
 
 function ENT:Draw()
@@ -101,20 +115,21 @@ function ENT:Draw()
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 
-    local direction = self:GetNW2Vector("LOD_SoldierAimDirection", vector_origin)
-    if direction == vector_origin then return end
-    direction = direction:GetNormalized()
-
-    local startPos = renderedMuzzlePosition(self, size, verticalCompensation)
     local aim = self:GetNW2Vector("LOD_SoldierAim", vector_origin)
-    local aimDistance = aim ~= vector_origin and startPos:Distance(aim) or 768
+    if aim == vector_origin then return end
 
-    -- The warning is no longer a screen-space proxy. It is the exact committed
-    -- server-authoritative firing vector, extended beyond the frozen target point
-    -- only to keep the tell readable in first person. Soldier bolts inherit this
-    -- same vector; only the Blitzer's explicitly designed veer may depart from it.
-    local visualDistance = math.Clamp(aimDistance * 1.35, 512, 1600)
-    local visualAim = startPos + direction * visualDistance
+    local startPos = renderedMuzzlePosition(self, size, verticalCompensation, aim)
+    local aimDelta = aim - startPos
+    local aimDistance = aimDelta:Length()
+    if aimDistance <= 0.001 then return end
+    local direction = aimDelta / aimDistance
+
+    -- The beam and projectile now share one contract: both converge on the frozen
+    -- world-space aim point captured at beam-on. Stop the rendered beam just shy
+    -- of that point so a player-targeted ray does not cross the first-person near
+    -- plane and reappear as a misleading leg/crotch segment.
+    local stopShort = math.min(24, aimDistance * 0.20)
+    local visualAim = startPos + direction * math.max(8, aimDistance - stopShort)
 
     render.SetMaterial(aimMaterial)
     local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
@@ -144,7 +159,7 @@ concommand.Add("lod_laser_origin_status", function()
             end
             if originHeight <= math.max(8, 12 * size) then floorOrigins = floorOrigins + 1 end
             print(string.format(
-                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s originHeight=%.2f scaleCorrection=%.2f width=%.2f",
+                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s originHeight=%.2f handToMuzzle=%.2f width=%.2f",
                 hostile:EntIndex(), archetype, size, source, originHeight,
                 rawPos:Distance(renderedPos), LASER_WIDTH
             ))
@@ -155,7 +170,7 @@ concommand.Add("lod_laser_origin_status", function()
     local passed = soldierCount > 0 and blitzerCount > 0 and handAnchors == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f authoritativeVector=true result=%s",
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f frozenAimPoint=true result=%s",
         soldierCount, blitzerCount, handAnchors, fallbacks, floorOrigins,
         LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
