@@ -2,7 +2,9 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
-local BARREL_OFFSET = 24
+local SIGHT_FORWARD_OFFSET = 18
+local SIGHT_DOWN_OFFSET = 10
+local SIGHT_SIDE_OFFSET = 2
 local SOLDIER_HAND_BONE = "ValveBiped.Bip01_R_Hand"
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
@@ -102,10 +104,16 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
         if delta:LengthSqr() > 0.001 then direction = delta:GetNormalized() end
     end
 
-    -- Offset from the hand ALONG THE COMMITTED SHOT LINE, not along the actor's
-    -- generic forward vector. This keeps the visible muzzle outside the body even
-    -- when the attack pose places the rifle across the Soldier's torso.
-    return handPos + direction * BARREL_OFFSET, source, rawPos
+    -- Treat the visible origin as a weapon-mounted laser emitter rather than the
+    -- actor's hand bone: forward along the committed shot line, lowered onto the
+    -- rifle body, and nudged slightly inward. The server uses matching offsets for
+    -- projectile spawn so visual warning and physical shot remain coherent.
+    local muzzlePos = handPos
+        + direction * SIGHT_FORWARD_OFFSET
+        - ent:GetUp() * SIGHT_DOWN_OFFSET
+        - ent:GetRight() * SIGHT_SIDE_OFFSET
+
+    return muzzlePos, source, rawPos
 end
 
 function ENT:Draw()
@@ -159,7 +167,7 @@ concommand.Add("lod_laser_origin_status", function()
             end
             if originHeight <= math.max(8, 12 * size) then floorOrigins = floorOrigins + 1 end
             print(string.format(
-                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s originHeight=%.2f handToMuzzle=%.2f width=%.2f",
+                "[LOD:LASER-ORIGIN] #%d archetype=%s scale=%.3f source=%s originHeight=%.2f handToSight=%.2f width=%.2f",
                 hostile:EntIndex(), archetype, size, source, originHeight,
                 rawPos:Distance(renderedPos), LASER_WIDTH
             ))
@@ -170,7 +178,7 @@ concommand.Add("lod_laser_origin_status", function()
     local passed = soldierCount > 0 and blitzerCount > 0 and handAnchors == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f frozenAimPoint=true result=%s",
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handAnchors=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f rifleSiteAnchor=true frozenAimPoint=true result=%s",
         soldierCount, blitzerCount, handAnchors, fallbacks, floorOrigins,
         LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
