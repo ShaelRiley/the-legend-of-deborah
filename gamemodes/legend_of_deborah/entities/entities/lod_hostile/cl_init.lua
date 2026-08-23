@@ -2,7 +2,6 @@ include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
 local LASER_WIDTH = 2.5
-local LASER_LENGTH = 160
 local BARREL_OFFSET = 24
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
@@ -127,12 +126,12 @@ function ENT:Draw()
     local aimDistance = aimDelta:Length()
     if aimDistance <= 0.001 then return end
 
-    -- Render a uniform sight ray toward the frozen presentation proxy. Soldier
-    -- and Blitzer therefore share both width and visible length.
-    local beamEnd = startPos + aimDelta * (math.min(aimDistance, LASER_LENGTH) / aimDistance)
+    -- The presentation proxy already lies on the hostile's depth plane. Drawing
+    -- all the way to it produces the intended readable screen direction; the old
+    -- 160-unit cap reduced that projected ray to a tiny nub at typical ranges.
     render.SetMaterial(aimMaterial)
     local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
-    render.DrawBeam(startPos, beamEnd, LASER_WIDTH, 0, 1, color)
+    render.DrawBeam(startPos, visualAim, LASER_WIDTH, 0, 1, color)
 end
 
 concommand.Add("lod_laser_origin_status", function()
@@ -169,8 +168,8 @@ concommand.Add("lod_laser_origin_status", function()
     local passed = soldierCount > 0 and blitzerCount > 0 and handSockets == total
         and fallbacks == 0 and floorOrigins == 0
     print(string.format(
-        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f sharedMaxLength=%.0f result=%s",
+        "[LOD:LASER-ORIGIN] soldiers=%d blitzers=%d handSockets=%d fallbacks=%d floorOrigins=%d sharedWidth=%.2f depthProjected=true result=%s",
         soldierCount, blitzerCount, handSockets, fallbacks, floorOrigins,
-        LASER_WIDTH, LASER_LENGTH, passed and "PASS" or "FAIL"
+        LASER_WIDTH, passed and "PASS" or "FAIL"
     ))
 end)
