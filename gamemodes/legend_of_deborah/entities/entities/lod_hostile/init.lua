@@ -291,7 +291,7 @@ function ENT:Initialize()
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     self:SetNW2Int("LOD_SoldierTelegraphSerial", 0)
-    self:SetNW2Vector("LOD_SoldierTelegraphView", vector_origin)
+    self:SetNW2Vector("LOD_SoldierAimDirection", vector_origin)
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
     self:DrawShadow(true)
@@ -500,10 +500,11 @@ function ENT:_SoldierTargetAimPos(target)
     return target:WorldSpaceCenter()
 end
 
-function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
+function ENT:_SpawnSoldierBolt(aimDirection, shotIndex)
     local cfg = self.LODConfig
     local startPos = self:_SoldierMuzzlePos()
-    local direction = (aimPos - startPos):GetNormalized()
+    local direction = aimDirection and aimDirection:GetNormalized() or vector_origin
+    if direction == vector_origin then return false end
     local ang = direction:Angle()
 
     if self.LODArchetypeId == "blitzer" then
@@ -513,14 +514,6 @@ function ENT:_SpawnSoldierBolt(aimPos, shotIndex)
             ang.y = ang.y + shot.yaw
             ang.p = ang.p + shot.pitch
         end
-    else
-        -- Small deterministic side-to-side variance keeps the disciplined
-        -- Soldier's three-bolt burst readable.
-        local yawOffsets = {-1.5, 1.5, 0}
-        local pitchOffsets = {0.4, -0.4, 0}
-        local offsetIndex = ((shotIndex - 1) % 3) + 1
-        ang.y = ang.y + yawOffsets[offsetIndex]
-        ang.p = ang.p + pitchOffsets[offsetIndex]
     end
     direction = ang:Forward()
 
@@ -584,6 +577,9 @@ function ENT:_BeginSoldierBurst(target)
     end
 
     local targetAimPos = self:_SoldierTargetAimPos(target)
+    local committedDirection = (targetAimPos - self:_SoldierMuzzlePos()):GetNormalized()
+    if committedDirection == vector_origin then return false end
+
     self.LODSoldierTelegraphSerial = (self.LODSoldierTelegraphSerial or 0) + 1
     self.LODSoldierBurst = {
         target = target,
@@ -593,17 +589,14 @@ function ENT:_BeginSoldierBurst(target)
         shotsRemaining = shots,
         originalShots = shots,
         shotIndex = 0,
-        lastAimPos = targetAimPos,
+        aimDirection = committedDirection,
         pattern = pattern,
         patternSeed = patternSeed
     }
     self:SetNW2Bool("LOD_SoldierTelegraph", true)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", target)
     self:SetNW2Int("LOD_SoldierTelegraphSerial", self.LODSoldierTelegraphSerial)
-    self:SetNW2Vector(
-        "LOD_SoldierTelegraphView",
-        target:IsPlayer() and target:GetAimVector() or (targetAimPos - self:GetPos()):GetNormalized()
-    )
+    self:SetNW2Vector("LOD_SoldierAimDirection", committedDirection)
     self:SetNW2Vector("LOD_SoldierAim", targetAimPos)
     self:_SetActivity(self:_SoldierAttackActivity(), true)
     self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
@@ -638,8 +631,8 @@ function ENT:_ProcessSoldierBurst()
             self:_CancelSoldierBurst(0.25)
             return false
         end
-        -- Deliberately do not refresh lastAimPos or facingPos. The warning is a
-        -- committed shot declaration: moving after beam-on is the dodge window.
+        -- Deliberately do not refresh the committed vector or facing position.
+        -- The warning is a shot declaration: moving after beam-on is the dodge window.
         return true
     end
 
@@ -649,9 +642,9 @@ function ENT:_ProcessSoldierBurst()
 
     if burst.shotsRemaining > 0 and CurTime() >= burst.nextShot then
         burst.shotIndex = burst.shotIndex + 1
-        -- Every bolt in the burst inherits the beam-on snapshot. Blitzer veer is
-        -- applied around that committed direction inside _SpawnSoldierBolt.
-        self:_SpawnSoldierBolt(burst.lastAimPos, burst.shotIndex)
+        -- Every bolt inherits the exact beam-on direction. Only Blitzer veer is
+        -- applied around that committed vector inside _SpawnSoldierBolt.
+        self:_SpawnSoldierBolt(burst.aimDirection, burst.shotIndex)
         burst.shotsRemaining = burst.shotsRemaining - 1
         burst.nextShot = CurTime() + cfg.burstShotInterval
     end
