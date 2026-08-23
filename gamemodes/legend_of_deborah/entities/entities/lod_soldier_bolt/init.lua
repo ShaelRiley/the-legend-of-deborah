@@ -2,6 +2,42 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+local function rebaseOntoFrozenAimPoint(self)
+    local owner = self.LODOwner
+    if not IsValid(owner) then return end
+    local archetype = owner.LODArchetypeId or owner:GetNW2String("LOD_Archetype", "")
+    if archetype ~= "soldier" and archetype ~= "blitzer" then return end
+
+    local aim = owner:GetNW2Vector("LOD_SoldierAim", vector_origin)
+    if aim == vector_origin then return end
+    local baseDelta = aim - self:GetPos()
+    if baseDelta:LengthSqr() <= 0.001 then return end
+    local correctedBase = baseDelta:GetNormalized()
+
+    if archetype == "blitzer" then
+        -- _SpawnSoldierBolt has already applied the Blitzer's deterministic veer
+        -- around the older server-side base vector. Preserve only that intended
+        -- angular deviation, but rebase it onto the same frozen aim point used by
+        -- the visible warning beam.
+        local burst = owner.LODSoldierBurst
+        local oldBase = burst and burst.aimDirection
+        local oldShot = self.LODDirection
+        if oldBase and oldShot and oldBase ~= vector_origin and oldShot ~= vector_origin then
+            local oldBaseAng = oldBase:Angle()
+            local oldShotAng = oldShot:Angle()
+            local correctedAng = correctedBase:Angle()
+            correctedAng.y = correctedAng.y + math.AngleDifference(oldShotAng.y, oldBaseAng.y)
+            correctedAng.p = correctedAng.p + math.AngleDifference(oldShotAng.p, oldBaseAng.p)
+            self.LODDirection = correctedAng:Forward()
+            return
+        end
+    end
+
+    -- Ordinary Soldiers have no post-warning spread: their entire burst travels
+    -- through the exact world-space point declared when the laser appeared.
+    self.LODDirection = correctedBase
+end
+
 function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
@@ -11,6 +47,7 @@ function ENT:Initialize()
     -- here on the server caused every bolt to error during Initialize before its
     -- movement/damage Think loop could ever run.
     self.LODDirection = (self.LODDirection or self:GetForward()):GetNormalized()
+    rebaseOntoFrozenAimPoint(self)
     self.LODSpeed = self.LODSpeed or 950
     self.LODDamage = self.LODDamage or 6
     self.LODExpireAt = CurTime() + (self.LODLifetime or 1.35)
