@@ -43,6 +43,8 @@ net.Receive("LOD_RunState", function()
     state.objectiveStage = net.ReadUInt(4)
     state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
     state.gates = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
+    state.jailKey = net.ReadBool()
+    state.jailDoorOpen = net.ReadBool()
     state.checkpoint = net.ReadUInt(2)
     state.ranked = net.ReadBool()
     state.failed = net.ReadBool()
@@ -50,6 +52,23 @@ net.Receive("LOD_RunState", function()
     state.hasTarget = net.ReadBool()
     state.target = state.hasTarget and net.ReadVector() or nil
     state.objective = net.ReadString()
+    state.objectiveKind = net.ReadUInt(3)
+    state.objectiveA = nil
+    state.objectiveB = nil
+    if state.objectiveKind > 0 then
+        state.objectiveA = {
+            x = net.ReadUInt(7),
+            y = net.ReadUInt(7),
+            z = net.ReadUInt(3)
+        }
+        if net.ReadBool() then
+            state.objectiveB = {
+                x = net.ReadUInt(7),
+                y = net.ReadUInt(7),
+                z = net.ReadUInt(3)
+            }
+        end
+    end
 end)
 
 net.Receive("LOD_Announcement", function()
