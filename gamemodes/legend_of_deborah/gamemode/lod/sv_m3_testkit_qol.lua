@@ -47,6 +47,10 @@ concommand.Add("lod_m3_testkit", function(ply)
     local pistol = ply:Give("weapon_pistol", true)
     ply:Give("weapon_crowbar", true)
     ply:SetAmmo(TESTKIT_RESERVE, "Pistol")
+    -- H is the deliberate in-run development recovery action. Restore the
+    -- living tester completely so progression and traversal can continue after
+    -- a difficult encounter without bypassing death/respawn authority.
+    ply:SetHealth(math.max(1, ply:GetMaxHealth()))
     ply.LODM3InfiniteTestPistol = true
     armAmmoRefill(ply)
 
@@ -54,7 +58,7 @@ concommand.Add("lod_m3_testkit", function(ply)
     if LOD.RunManager and LOD.RunManager.MarkUnranked then
         LOD.RunManager:MarkUnranked("Milestone 3 developer combat kit")
     end
-    tell(ply, "developer combat kit granted: crowbar + pistol + infinite pistol ammo")
+    tell(ply, "developer combat kit granted: full health + crowbar + pistol + infinite pistol ammo")
 end)
 
 -- The shared refill timer exists only while at least one living developer has
