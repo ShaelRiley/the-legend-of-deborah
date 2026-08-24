@@ -25,6 +25,8 @@ local function freshState(campaignEpoch)
         WaitingSince = {},
         Cards = {false, false, false},
         GatesOpen = {false, false, false},
+        JailKey = false,
+        JailDoorOpen = false,
         ObjectiveStage = 1,
         CheckpointIndex = 0,
         CheckpointPos = nil,
