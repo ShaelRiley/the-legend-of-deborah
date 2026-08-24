@@ -11,6 +11,7 @@ LOD.Minimap = LOD.Minimap or {
 
 local Map = LOD.Minimap
 local MC = LOD.Config.Maze
+local GC = LOD.Config.Geometry
 local mapKeyWasDown = false
 
 Map.cache = Map.cache or {
@@ -127,7 +128,8 @@ net.Receive("LOD_MapChunk", function()
             y = net.ReadUInt(7),
             z = net.ReadUInt(3),
             openings = net.ReadUInt(6),
-            gates = net.ReadUInt(8)
+            gates = net.ReadUInt(8),
+            stairDirection = net.ReadUInt(2)
         }
         Map.cells[#Map.cells + 1] = cell
         Map.byKey[cellKey(cell.x, cell.y, cell.z)] = cell
@@ -204,6 +206,15 @@ local ROUTE_DIRS = {
     {dx = -1, dy = 0, bit = 3, gateShift = 6},
     {dx = 0, dy = 0, dz = 1, bit = 4},
     {dx = 0, dy = 0, dz = -1, bit = 5}
+}
+
+-- Matches the compact server-authored orientation used by the generated stair
+-- geometry. The vector points uphill; the physical foot lies behind it.
+local STAIR_DIRECTIONS = {
+    [0] = {name = "N", dx = 0, dy = 1},
+    [1] = {name = "E", dx = 1, dy = 0},
+    [2] = {name = "S", dx = 0, dy = -1},
+    [3] = {name = "W", dx = -1, dy = 0}
 }
 
 local function sameEdge(aKey, bKey, edgeA, edgeB)
@@ -343,6 +354,71 @@ local function mapCellCenter(cell, gridX, gridY, cellSize)
         gridY + (MC.Height - cell.y + 0.5) * cellSize
 end
 
+local function cellWorldCenter(cell)
+    return MC.Origin + Vector(
+        (cell.x - (MC.Width + 1) * 0.5) * MC.CellSize,
+        (cell.y - (MC.Height + 1) * 0.5) * MC.CellSize,
+        cell.z * MC.LevelHeight
+    )
+end
+
+-- Expand the abstract vertical edge into the same physical waypoint used by
+-- MazeNavigator: the true stair foot when climbing and the upper landing when
+-- descending. This is the point the player can actually see and traverse.
+local function physicalStairGuide(fromCell, toCell, gridX, gridY, cellSize)
+    if not fromCell or not toCell or fromCell.z == toCell.z then return nil end
+    local lower = fromCell.z < toCell.z and fromCell or toCell
+    local dir = STAIR_DIRECTIONS[lower.stairDirection or fromCell.stairDirection or 0]
+    if not dir then return nil end
+
+    local ascending = toCell.z > fromCell.z
+    local offset = ascending and -(GC.StairRun + 40) or 52
+    local fractionalX = lower.x + dir.dx * offset / MC.CellSize
+    local fractionalY = lower.y + dir.dy * offset / MC.CellSize
+    local mapX = gridX + (fractionalX - 0.5) * cellSize
+    local mapY = gridY + (MC.Height - fractionalY + 0.5) * cellSize
+    local world = cellWorldCenter(lower) + Vector(dir.dx * offset, dir.dy * offset,
+        ascending and 2 or (MC.LevelHeight + 2))
+
+    return {
+        ascending = ascending,
+        symbol = ascending and "↑" or "↓",
+        mapX = mapX,
+        mapY = mapY,
+        world = world,
+        travelX = ascending and dir.dx or -dir.dx,
+        travelY = ascending and dir.dy or -dir.dy
+    }
+end
+
+local function relativeTurn(targetYaw)
+    local delta = math.AngleDifference(targetYaw, EyeAngles().y)
+    local magnitude = math.abs(delta)
+    if magnitude <= 22 then return "STRAIGHT AHEAD" end
+    if magnitude >= 158 then return "TURN AROUND" end
+    local side = delta > 0 and "LEFT" or "RIGHT"
+    if magnitude <= 68 then return "BEAR " .. side end
+    if magnitude <= 112 then return "TURN " .. side end
+    return "SHARP " .. side
+end
+
+local function stairInstruction(ply, guide)
+    local delta = guide.world - ply:GetPos()
+    local distance = math.floor(Vector(delta.x, delta.y, 0):Length() + 0.5)
+    local targetYaw
+    local action
+    if distance > 72 then
+        targetYaw = math.deg(math.atan2(delta.y, delta.x))
+        action = relativeTurn(targetYaw)
+    else
+        targetYaw = math.deg(math.atan2(guide.travelY, guide.travelX))
+        local turn = relativeTurn(targetYaw)
+        local verb = guide.ascending and "CLIMB" or "DESCEND"
+        action = turn == "STRAIGHT AHEAD" and verb or (turn .. ", THEN " .. verb)
+    end
+    return string.format("STAIRS %s — %s — %du", guide.symbol, action, distance)
+end
+
 local function drawThickLine(x1, y1, x2, y2, color)
     surface.SetDrawColor(color)
     surface.DrawLine(x1, y1, x2, y2)
@@ -400,7 +476,7 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         return
     end
 
-    local panelW, panelH = 336, 392
+    local panelW, panelH = 336, 408
     local panelX = ScrW() - panelW - 20
     local panelY = 96
     local gridX, gridY = panelX + 26, panelY + 68
@@ -480,6 +556,7 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     -- the cached route from the player's new canonical cell.
     local route = floorData.route
     local transitionCell
+    local transitionNextCell
     local transitionDirection
     if route and #route > 0 then
         for i = 2, #route do
@@ -488,6 +565,7 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
             if not a or not b or a.z ~= gz then break end
             if b.z ~= gz then
                 transitionCell = a
+                transitionNextCell = b
                 transitionDirection = b.z > a.z and "↑" or "↓"
                 break
             end
@@ -498,11 +576,22 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         end
     end
 
-    if transitionCell then
-        local tx, ty = mapCellCenter(transitionCell, gridX, gridY, cellSize)
+    local transitionGuide
+    if transitionCell and transitionNextCell then
+        transitionGuide = physicalStairGuide(transitionCell, transitionNextCell, gridX, gridY, cellSize)
+        local cellX, cellY = mapCellCenter(transitionCell, gridX, gridY, cellSize)
+        local tx = transitionGuide and transitionGuide.mapX or cellX
+        local ty = transitionGuide and transitionGuide.mapY or cellY
+        drawThickLine(cellX, cellY, tx, ty, Color(255, 215, 58, 225))
         local pulse = 7 + math.abs(math.sin(CurTime() * 4)) * 3
         surface.DrawCircle(tx, ty, pulse, 255, 226, 100, 255)
-        draw.SimpleText(transitionDirection .. " NEXT", "LOD_Map_Small", tx, ty - 11,
+        if transitionGuide then
+            local arrowLength = cellSize * 0.24
+            local arrowX = tx + transitionGuide.travelX * arrowLength
+            local arrowY = ty - transitionGuide.travelY * arrowLength
+            drawThickLine(tx, ty, arrowX, arrowY, Color(255, 226, 100, 255))
+        end
+        draw.SimpleText(transitionDirection .. " STAIRS", "LOD_Map_Small", tx, ty - 11,
             Color(255, 226, 100), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
     end
 
@@ -532,10 +621,16 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     end
 
     local routeStatus = route and string.format("ROUTE READY — %d CELLS", math.max(0, #route - 1)) or "NO LEGAL ROUTE"
-    draw.SimpleText(routeStatus, "LOD_Map_Small", panelX + 18, panelY + panelH - 31,
+    draw.SimpleText(routeStatus, "LOD_Map_Small", panelX + 18, panelY + panelH - 47,
         route and Color(105, 210, 125) or Color(225, 100, 82), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 
-    draw.SimpleText("FOLLOW GOLD LINE • USE ↑/↓ AT RING • GREEN = OPEN", "LOD_Map_Small",
+    if transitionGuide then
+        draw.SimpleText(stairInstruction(ply, transitionGuide), "LOD_Map_Small",
+            panelX + 18, panelY + panelH - 32, Color(255, 226, 100),
+            TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+    end
+
+    draw.SimpleText("FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN", "LOD_Map_Small",
         panelX + 18, panelY + panelH - 18, Color(170, 174, 176), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end)
 
