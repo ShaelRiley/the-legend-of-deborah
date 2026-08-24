@@ -1,52 +1,79 @@
 # Development Status
 
-## Current phase
-Milestone 2 — The Three Keys
+## Current execution phase
+Vertical Slice Completion Gate — between core Milestone 3 stabilization and the Milestone 4 dice-combat foundation.
 
-**Current M2 state: integrated implementation awaiting first live Garry's Mod runtime validation.**
+**Implementation authority at audit start:** `d05c145348aadf6bfd99caf9a53a41f43a2b16a2` (`main`).
 
-Implemented in the current development branch/state:
+The repository had materially outgrown its old status document. Milestone 2 is no longer awaiting first runtime validation: the project now has live progression, a production minimap stack, graph-authoritative hostile motion, multiple ranged/melee archetypes, encounter/wandering systems, hit/death feedback, generated-geometry ballistics, low-end runtime optimization, and the accepted immutable Soldier shot contract.
 
-- deterministic progression planning over the authoritative maze graph;
-- three ordered progression-safe bridge gates targeting Red → Blue → Yellow sectors;
-- deterministic keycard objective pockets chosen from accessible pre-gate sectors with minimum detour constraints;
-- explicit ordered-solvability simulation before the level is committed;
-- deterministic layout retry when a generated maze cannot support safe gate/card placement;
-- gate checkpoint safety rejection for vertical-transition cells;
-- team-wide Red/Blue/Yellow card state;
-- non-color identifiers R/triangle, B/circle, Y/square on cards, gates, readers, and HUD;
-- scripted permanent bidirectional gate opening with locked collision and full-height anti-bypass blocking;
-- checkpoint advancement immediately beyond each opened gate;
-- persistent Source-era HUD for level, lives, keycards, objective, ranked state, and post-card directional gate guidance without a minimap;
-- three starting personal lives, four-life state cap, authoritative 20-second death/spectate timer, checkpoint respawn, elimination at zero lives, and next-level one-life comeback;
-- persistent identity/character/life/inventory state across disconnect/reconnect within the server-session campaign;
-- four active-player slots and ten-played-identity campaign ledger, with spectator-only visitors excluded until they actually enter play;
-- disconnect/wipe semantics that ignore disconnected participants while another played identity remains connected and freeze campaign simulation when no played identity is connected;
-- provisional Deborah physical-touch rescue trigger;
-- 15-second minimum M2 level-clear intermission and deterministic Level N+1 rebuild;
-- dedicated M2 status, objective, teleport, seed-test, and audit developer commands.
+## Accepted / established systems
 
-This is **not yet a Milestone-2 completion checkpoint**. Live runtime validation must first prove startup, gate/card rendering and collision, ordered progression, checkpoints, death timing, elimination/comeback, level transition, and join/rejoin/cap behavior.
+### Milestone 1 — The Labyrinth
+Accepted implementation checkpoint. Deterministic multi-layer generation, canonical graph connectivity, generated container/floor/stair geometry, regeneration, and representative Steam Deck generation performance are established. The 1,000-seed logical validation checkpoint remains recorded in `docs/M1_TEST_REPORT.md`.
 
-## Milestone 1 — The Labyrinth
-**Status: implementation checkpoint accepted on 2026-08-16.**
+### Milestone 2 — The Three Keys
+Substantially implemented and runtime-tested in representative progression tests:
 
-Live Garry's Mod validation on `gm_flatgrass` has confirmed:
+- deterministic ordered Red → Blue → Yellow keycard/gate planning;
+- progression-safe gate edges and validated objective pockets;
+- permanent gate opening and checkpoint advancement;
+- team card/gate state and Source-style objective HUD;
+- lives, death/spectate/respawn, elimination/comeback, and session-local player state;
+- provisional Deborah touch rescue and next-level intermission path;
+- canonical M-toggle minimap architecture with gate-aware topology and current-floor routing support.
 
-- deterministic multi-layer maze generation;
-- authoritative logical graph connectivity and required vertical progression;
-- real shipping-container labyrinth presentation;
-- stable generated floor collision and ordinary player locomotion;
-- visible opaque elevated floors;
-- visible broad stair traversal without jumping;
-- usable upper landings;
-- no Level-0 z-fighting after floor separation;
-- safe runtime regeneration into a fresh validated maze;
-- stairs 1–3 manually passed on one maze and stair 1 passed after regeneration;
-- regenerated validation result of 607/607 reachable cells, critical path 56, 3 critical vertical transitions, attempt 1;
-- representative live generation/build around 0.21–0.34 seconds total on the Steam Deck test system, comfortably inside the GDD's <=5-second typical / <=10-second worst-case targets;
-- 1,000-seed headless logical validation with zero failures and deterministic aggregate topology hash `981725631`.
+The remaining Milestone-2 debt is no longer isolated feature validation; it is **end-to-end dungeon-loop validation** under the current hostile/optimization architecture.
 
-Milestone-1 Git/runtime details and retained validation debt are recorded in `docs/M1_TEST_REPORT.md`.
+### Milestone 3 — The Hostiles / runtime architecture
+Established implementation includes:
 
-Known diagnostic debt: the current automated wall-top bypass audit can false-negative where stair geometry intercepts its hull before the anti-bypass blocker. The working gameplay build remains intact; the failed blocker-only audit experiment was reverted. Multi-client 1–4-player, dedicated-server, and exhaustive bypass/soak QA remain scheduled for later hardening and Release Candidate work.
+- `MazeNavigator`, `FactionManager`, deterministic encounter planning/activation, wandering population, hostile separation, and encounter/spawn variance;
+- Motion V2 as the sole production ground-movement authority over canonical graph waypoints;
+- Shambler, Runner, Soldier, Deadcrab, Bio Blaster, and the Soldier-derived Blitzer path;
+- deterministic 0.33x–1.33x client-rendered hostile size variance with server-authoritative stat consequences;
+- generated-geometry LOS/ballistic cover enforcement;
+- player hit confirmation, hit stun, hurt/death pose/audio presentation, and scaled-hostile combat-hull fallback;
+- bounded/optimized low-end runtime systems, including minimap caching/serialization and Phase Zero hot-path reductions;
+- Soldier warning/burst trajectory fixed on 2026-08-24 by one immutable server-authored world-space shot contract; live testing accepted the warning origin, frozen aim, and bolt colinearity.
+
+## Immediate development gate: completable dungeon
+
+Do **not** resume broad enemy-roster expansion yet. First produce and validate a complete single-player dungeon loop:
+
+`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Core/Jail Key → Deborah jail door → Deborah touch rescue → intermission → next generated level`
+
+Requirements:
+
+1. The entitled minimap marks the **current** mandatory progression objective and supplies a complete canonical-graph breadcrumb that respects live gate state and vertical transitions.
+2. Keycard stages breadcrumb to the currently required card; card acquisition retargets the route to its matching gate.
+3. After Yellow Gate, a deterministic temporary Core stand-in provides the production Jail Key. No Warden fight is implemented at this checkpoint.
+4. The Jail Key, Deborah jail-door lock/unlock state, rescue eligibility, and level-clear path must be production-compatible. Milestone 5 will replace only the key's source with Gordon the Warden's death/drop.
+5. Deborah cannot clear the level before the jail door has been legally unlocked.
+6. The complete loop must survive several no-teleport, no-progression-cheat playthroughs on different seeds before this gate is accepted.
+
+## Next major system after the vertical slice
+
+After a small baseline set of complete fixed-damage dungeon runs, implement the **v1 dice-combat foundation before further roster breadth**. This avoids balancing Watcher/Seeker/Sentry/etc. against a fixed-damage/fixed-HP economy already scheduled for replacement.
+
+The v1 dice foundation comprises the GDD-defined weapon dice, Magnum exploding d12, Shotgun shared exploding/floored d6 and bonus pellets, authoritative bounded combat-roll feed, three-reload ammo capacities with die-scaled regeneration timing, and deterministic enemy health dice with monotonic visible-size/durability behavior.
+
+XP, character leveling, procedural equipment/affixes, elemental progression, Magic, Luck Ring, and the broader RPG layer remain post-release.
+
+## Deferred until after dice foundation
+
+- remaining expanded normal roster: Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper;
+- production Brute + Neil Map-guardian encounter and ordinary Map acquisition flow (developer mode may auto-entitle the same production map behavior meanwhile);
+- broader Milestone-4 loot/resource economy;
+- Gordon the Warden combat and final presentation;
+- dedicated multiplayer integration and multiplayer-specific QA, which remain Milestone 6.
+
+## Preserved hard constraints
+
+- `gm_flatgrass` remains the required base map.
+- The canonical logical graph remains authoritative for maze topology, progression validation, routing, and generated-world interpretation.
+- Motion V2 remains the sole production hostile ground-motion authority.
+- Do not restore retired competing locomotion/recovery layers.
+- Soldier warning/projectile geometry remains governed by the immutable shot contract; do not reconstruct its trajectory from live client/server bones.
+- Preserve the validated low-end architecture: compact/chunked network state, cached minimap work, bounded ballistic queries, client-side visual scaling/batching, and developer-only heavy audit modules.
+- Multiplayer-aware server authority may remain in code, but active multiplayer development/testing waits until the full single-player experience is complete through Milestone 5.
