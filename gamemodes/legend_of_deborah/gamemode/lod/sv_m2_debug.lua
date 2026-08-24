@@ -17,6 +17,14 @@ local function boolText(v)
     return v and "yes" or "no"
 end
 
+local function validJailEdge(progression)
+    local jail = progression and progression.JailEdge
+    local yellow = progression and progression.Gates and progression.Gates[3]
+    return jail and yellow and jail.beforeCell and jail.afterCell and jail.edgeKey and
+        jail.beforeCell.z == jail.afterCell.z and
+        (jail.pathIndex or -1) > (yellow.pathIndex or math.huge)
+end
+
 local function printTo(ply, text)
     print("[LOD:M2] " .. text)
     if IsValid(ply) then ply:ChatPrint(text) end
@@ -41,9 +49,10 @@ concommand.Add("lod_m2_status", function(ply)
         boolText(state.LevelCleared)
     ))
     printTo(ply, string.format(
-        "cards R=%s B=%s Y=%s | gates R=%s B=%s Y=%s | objective=%s",
+        "cards R=%s B=%s Y=%s | gates R=%s B=%s Y=%s | jailKey=%s jailDoor=%s | objective=%s",
         boolText(state.Cards and state.Cards[1]), boolText(state.Cards and state.Cards[2]), boolText(state.Cards and state.Cards[3]),
         boolText(state.GatesOpen and state.GatesOpen[1]), boolText(state.GatesOpen and state.GatesOpen[2]), boolText(state.GatesOpen and state.GatesOpen[3]),
+        boolText(state.JailKey), boolText(state.JailDoorOpen),
         ProgressionDirector:GetObjectiveText()
     ))
 
@@ -87,7 +96,15 @@ concommand.Add("lod_m2_objectives", function(ply)
             cellText(gate.afterCell)
         ))
     end
-    printTo(ply, "core=" .. cellText(progression.CoreCell) .. " deborah=" .. cellText(progression.DeborahCell))
+    local jail = progression.JailEdge
+    printTo(ply, string.format(
+        "jail edge=%s pathIndex=%d before/core=%s after/deborah=%s horizontal=%s",
+        tostring(jail and jail.edgeKey),
+        jail and jail.pathIndex or -1,
+        cellText(jail and jail.beforeCell),
+        cellText(jail and jail.afterCell),
+        boolText(jail and jail.beforeCell and jail.afterCell and jail.beforeCell.z == jail.afterCell.z)
+    ))
 end)
 
 local function debugTeleport(ply, target, label)
@@ -145,7 +162,8 @@ concommand.Add("lod_m2_seed_test", function(ply, _, args)
     for i = 1, count do
         local seed = LOD.Seeds.Derive(base, "m2-seed-test:" .. i)
         local graph = RunManager:_GenerateProgressionLevel(seed)
-        if not graph or not graph.Progression or not graph.Progression.Validation or not graph.Progression.Validation.valid then
+        if not graph or not graph.Progression or not graph.Progression.Validation or
+            not graph.Progression.Validation.valid or not validJailEdge(graph.Progression) then
             failures = failures + 1
         else
             worstLayoutAttempt = math.max(worstLayoutAttempt, graph.ProgressionLayoutAttempt or 1)
@@ -159,8 +177,8 @@ concommand.Add("lod_m2_seed_test", function(ply, _, args)
 
     if minDetour == math.huge then minDetour = 0 end
     printTo(ply, string.format(
-        "seed test generated=%d failures=%d worstLayoutAttempt=%d cardDetourRange=%d-%d",
-        count, failures, worstLayoutAttempt, minDetour, maxDetour
+        "seed test generated=%d failures=%d worstLayoutAttempt=%d cardDetourRange=%d-%d jailEdges=horizontal-after-yellow result=%s",
+        count, failures, worstLayoutAttempt, minDetour, maxDetour, failures == 0 and "PASS" or "FAIL"
     ))
 end)
 
@@ -182,6 +200,12 @@ concommand.Add("lod_m2_audit", function(ply)
     require(progression.Validation and progression.Validation.valid == true, "ordered progression validation false")
     require(#(progression.Gates or {}) == 3, "gate plan count is not 3")
     require(#(progression.Keycards or {}) == 3, "keycard plan count is not 3")
+    require(validJailEdge(progression), "JailEdge is missing, vertical, or not after Yellow Gate")
+    require(progression.JailEdge and graph.Edges and graph.Edges[progression.JailEdge.edgeKey] ~= nil,
+        "JailEdge is not a canonical graph edge")
+    require(progression.Validation and progression.Validation.orderedRoute ==
+        "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah",
+        "ordered route does not include Jail Key and Jail Door")
     require(progression.Gates[1].pathIndex < progression.Gates[2].pathIndex and progression.Gates[2].pathIndex < progression.Gates[3].pathIndex,
         "gate path indices are not strictly ordered")
 
