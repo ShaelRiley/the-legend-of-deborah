@@ -43,6 +43,12 @@ local function copyCell(cell)
     return {x = cell.x, y = cell.y, z = cell.z}
 end
 
+local function writeCell(cell)
+    net.WriteUInt(math.Clamp(cell.x or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.y or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
+end
+
 local function bfs(graph, startCell, blockedEdges)
     local startKey = keyForCell(startCell)
     local queue = {startKey}
@@ -361,6 +367,7 @@ function ProgressionDirector:ResetLevelState(graph)
     state.GatesOpen = {false, false, false}
     state.JailKey = false
     state.JailDoorOpen = false
+    state.JailKeyEntity = nil
     state.ObjectiveStage = Stages.FIND_RED_KEYCARD
     state.CheckpointIndex = 0
     state.CheckpointPos = nil
@@ -391,16 +398,59 @@ function ProgressionDirector:GetObjectiveText()
     return objectives[stage] or "EXPEDITION"
 end
 
+function ProgressionDirector:GetObjectiveGraphTarget()
+    local state = LOD.RunManager.State
+    local graph = state and state.Graph
+    local progression = graph and graph.Progression
+    if not progression then return nil end
+
+    local stage = state.ObjectiveStage or Stages.FIND_RED_KEYCARD
+    if stage == Stages.FIND_RED_KEYCARD or stage == Stages.FIND_BLUE_KEYCARD or
+        stage == Stages.FIND_YELLOW_KEYCARD then
+        local index = math.floor((stage + 1) / 2)
+        local card = progression.Keycards and progression.Keycards[index]
+        return card and {kind = 1, a = copyCell(card.cell)} or nil
+    end
+
+    if stage == Stages.OPEN_RED_GATE or stage == Stages.OPEN_BLUE_GATE or
+        stage == Stages.OPEN_YELLOW_GATE then
+        local index = math.floor(stage / 2)
+        local gate = progression.Gates and progression.Gates[index]
+        return gate and {
+            kind = 2,
+            a = copyCell(gate.beforeCell),
+            b = copyCell(gate.afterCell)
+        } or nil
+    end
+
+    if stage == Stages.TAKE_JAIL_KEY then
+        return {kind = 3, a = copyCell(progression.CoreCell)}
+    end
+
+    if stage == Stages.UNLOCK_DEBORAH_CELL then
+        local jail = progression.JailEdge
+        return jail and {
+            kind = 4,
+            a = copyCell(jail.beforeCell),
+            b = copyCell(jail.afterCell)
+        } or nil
+    end
+
+    if stage == Stages.RESCUE_DEBORAH then
+        return {kind = 5, a = copyCell(progression.DeborahCell)}
+    end
+    return nil
+end
+
 function ProgressionDirector:GetObjectiveTarget()
     local state = LOD.RunManager.State
-    local graph = state.Graph
-    if not graph or not graph.Progression then return nil end
-    local stage = state.ObjectiveStage or 1
-    if stage == 2 or stage == 4 or stage == 6 then
-        local gateIndex = math.floor(stage / 2)
-        local gate = graph.Progression.Gates[gateIndex]
-        local a = LOD.MazeBuilder:CellCenter(gate.beforeCell)
-        local b = LOD.MazeBuilder:CellCenter(gate.afterCell)
+    local stage = state.ObjectiveStage or Stages.FIND_RED_KEYCARD
+    if stage == Stages.OPEN_RED_GATE or stage == Stages.OPEN_BLUE_GATE or
+        stage == Stages.OPEN_YELLOW_GATE or stage == Stages.UNLOCK_DEBORAH_CELL then
+        local target = self:GetObjectiveGraphTarget()
+        if not target or not target.b then return nil end
+        local a = LOD.MazeBuilder:CellCenter(target.a)
+        local b = LOD.MazeBuilder:CellCenter(target.b)
         return (a + b) * 0.5 + Vector(0, 0, 64)
     end
     return nil
@@ -410,12 +460,15 @@ function ProgressionDirector:SyncPlayer(ply)
     if not IsValid(ply) then return end
     local state = LOD.RunManager.State
     local target = self:GetObjectiveTarget()
+    local graphTarget = self:GetObjectiveGraphTarget()
 
     net.Start("LOD_RunState")
     net.WriteUInt(math.max(1, state.Level or 1), 20)
     net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 9), 4)
     for i = 1, 3 do net.WriteBool(state.Cards and state.Cards[i] == true) end
     for i = 1, 3 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
+    net.WriteBool(state.JailKey == true)
+    net.WriteBool(state.JailDoorOpen == true)
     net.WriteUInt(math.Clamp(state.CheckpointIndex or 0, 0, 3), 2)
     net.WriteBool(state.Ranked == true)
     net.WriteBool(state.Failed == true)
@@ -423,6 +476,12 @@ function ProgressionDirector:SyncPlayer(ply)
     net.WriteBool(target ~= nil)
     if target then net.WriteVector(target) end
     net.WriteString(self:GetObjectiveText())
+    net.WriteUInt(graphTarget and graphTarget.kind or 0, 3)
+    if graphTarget then
+        writeCell(graphTarget.a)
+        net.WriteBool(graphTarget.b ~= nil)
+        if graphTarget.b then writeCell(graphTarget.b) end
+    end
     net.Send(ply)
 end
 
@@ -480,7 +539,78 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     if meta then state.CheckpointPos = LOD.MazeBuilder:CellCenter(meta.afterCell) + Vector(0, 0, 12) end
 
     if IsValid(gateEnt) and gateEnt.OpenGate then gateEnt:OpenGate() end
+    if index == 3 then
+        local keyEnt = self:EnsureCoreJailKey()
+        if not IsValid(keyEnt) then
+            ErrorNoHalt("[LOD] Yellow Gate opened but production Jail Key failed to spawn at Core\n")
+        end
+    end
     self:Announce(string.format("%s GATE OPEN — CHECKPOINT %d", string.upper(card.name), index))
+    self:SyncAll()
+    return true
+end
+
+function ProgressionDirector:SpawnJailKey(pos, source)
+    local state = LOD.RunManager.State
+    if state.Failed or state.LevelCleared or state.JailKey then return nil end
+    if IsValid(state.JailKeyEntity) then return state.JailKeyEntity end
+
+    local ent = ents.Create("lod_jail_key")
+    if not IsValid(ent) then return nil end
+    ent:SetPos(pos)
+    ent:SetKeySource(source or "production")
+    ent:Spawn()
+    ent:Activate()
+    state.JailKeyEntity = ent
+    if LOD.MazeBuilder and LOD.MazeBuilder._Register then LOD.MazeBuilder:_Register(ent) end
+    return ent
+end
+
+function ProgressionDirector:EnsureCoreJailKey()
+    local state = LOD.RunManager.State
+    local progression = state.Graph and state.Graph.Progression
+    if not progression or state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY then return nil end
+    local pos = LOD.MazeBuilder:CellCenter(progression.CoreCell) + Vector(0, 0, PC.KeycardHeight)
+    return self:SpawnJailKey(pos, "temporary_core")
+end
+
+function ProgressionDirector:CollectJailKey(ply, keyEnt)
+    local state = LOD.RunManager.State
+    if state.Failed or state.LevelCleared or state.JailKey then return false end
+    if state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY then return false end
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or
+        not LOD.RunManager:IsActivePlayer(ply) then return false end
+
+    state.JailKey = true
+    state.JailKeyEntity = nil
+    state.ObjectiveStage = Stages.UNLOCK_DEBORAH_CELL
+    if IsValid(keyEnt) then keyEnt:Remove() end
+    self:Announce("JAIL KEY ACQUIRED — UNLOCK DEBORAH'S CELL")
+    self:SyncAll()
+    return true
+end
+
+function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
+    local state = LOD.RunManager.State
+    if state.Failed or state.LevelCleared then return false end
+    if state.JailDoorOpen then return true end
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or
+        not LOD.RunManager:IsActivePlayer(ply) then return false end
+
+    if not state.JailKey then
+        ply:ChatPrint("ACCESS DENIED — JAIL KEY REQUIRED")
+        ply:EmitSound("buttons/button10.wav", 65, 100, 0.7)
+        return false
+    end
+    if state.ObjectiveStage ~= Stages.UNLOCK_DEBORAH_CELL then
+        ply:ChatPrint("ACCESS DENIED — SECURITY SEQUENCE LOCKED")
+        return false
+    end
+
+    state.JailDoorOpen = true
+    state.ObjectiveStage = Stages.RESCUE_DEBORAH
+    if IsValid(doorEnt) and doorEnt.OpenDoor then doorEnt:OpenDoor() end
+    self:Announce("DEBORAH'S CELL UNLOCKED — RESCUE DEBORAH")
     self:SyncAll()
     return true
 end
