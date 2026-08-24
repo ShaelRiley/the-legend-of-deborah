@@ -17,6 +17,13 @@ local DIRS = {
     {dx = 0, dy = 0, dz = -1, bit = 5}                 -- DOWN
 }
 
+local STAIR_DIRECTION_CODE = {
+    N = 0,
+    E = 1,
+    S = 2,
+    W = 3
+}
+
 local function key(x, y, z)
     return LOD.MazeGenerator.CellKey(x, y, z)
 end
@@ -43,9 +50,20 @@ local function gateIndexByEdge(graph)
     return out
 end
 
+local function stairDirectionByCell(graph)
+    local out = {}
+    for _, edge in ipairs(graph.VerticalEdges or {}) do
+        local code = STAIR_DIRECTION_CODE[edge.LODStairDirection] or 0
+        out[key(edge.a.x, edge.a.y, edge.a.z)] = code
+        out[key(edge.b.x, edge.b.y, edge.b.z)] = code
+    end
+    return out
+end
+
 local function encodeCanonicalCells(graph)
     local cells = {}
     local gates = gateIndexByEdge(graph)
+    local stairs = stairDirectionByCell(graph)
 
     for cellKey, cell in pairs(graph.Cells or {}) do
         local openings = 0
@@ -74,7 +92,11 @@ local function encodeCanonicalCells(graph)
             y = cell.y,
             z = cell.z,
             openings = openings,
-            gates = gateCodes
+            gates = gateCodes,
+            -- Two compact bits identify the direction in which this generated
+            -- stair climbs. They are meaningful only on a cell with an UP/DOWN
+            -- opening and keep the breadcrumb aligned with physical geometry.
+            stairDirection = stairs[cellKey] or 0
         }
     end
 
@@ -159,6 +181,7 @@ function Minimap:Send(ply)
             net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
             net.WriteUInt(cell.openings or 0, 6)
             net.WriteUInt(cell.gates or 0, 8)
+            net.WriteUInt(cell.stairDirection or 0, 2)
         end
         net.Send(ply)
     end
