@@ -112,6 +112,48 @@ local function valueList(values)
     return table.concat(out, ",")
 end
 
+local function cleanName(value)
+    local text = tostring(value or "Unknown")
+    text = string.gsub(text, "[%c]", "")
+    text = string.Trim(text)
+    if text == "" then text = "Unknown" end
+    return string.sub(text, 1, 32)
+end
+
+local function titleName(value)
+    local text = string.lower(cleanName(value))
+    return (string.gsub(text, "(%a)([%w']*)", function(first, rest)
+        return string.upper(first) .. rest
+    end))
+end
+
+local function entityDisplayName(ent, fallback)
+    if IsValid(ent) and ent:IsPlayer() then
+        return cleanName(ent:Nick())
+    end
+    if IsValid(ent) and ent.LODHostile then
+        local configured = ent.LODConfig and (ent.LODConfig.name or ent.LODConfig.label)
+        return titleName(configured or ent.LODArchetypeId or fallback or "Hostile")
+    end
+    if IsValid(ent) then return titleName(ent:GetClass()) end
+    return titleName(fallback or "Unknown")
+end
+
+local function damageText(amount)
+    local value = math.max(0, tonumber(amount) or 0)
+    if math.abs(value - math.floor(value + 0.5)) < 0.05 then
+        return tostring(math.floor(value + 0.5))
+    end
+    return string.format("%.1f", value)
+end
+
+function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget)
+    return string.format("%s dealt %s (%s)%s damage to %s",
+        entityDisplayName(source, fallbackSource), formula, damageText(amount),
+        detail and detail ~= "" and (" " .. detail) or "",
+        entityDisplayName(target, fallbackTarget))
+end
+
 function Rolls:RollPlayerWeapon(ply, weaponClass)
     local profile = PLAYER_WEAPONS[weaponClass]
     if not profile then return nil end
@@ -151,39 +193,25 @@ function Rolls:RollPlayerWeapon(ply, weaponClass)
     return contract
 end
 
-function Rolls:_PlayerRollText(contract)
+function Rolls:_PlayerRollDetail(contract)
     if contract.weaponClass == "weapon_357" then
-        local parts = {}
-        for index, value in ipairs(contract.values or {}) do
-            parts[#parts + 1] = string.format("d12=%d%s", value,
-                index < #(contract.values or {}) and " EXPLODE" or "")
-        end
-        return string.format("MAGNUM %s; TOTAL=%d%s", table.concat(parts, "; "),
-            contract.total, contract.capped and " [CHAIN CAP]" or "")
+        return string.format("[rolls %s%s]", table.concat(contract.values or {}, ">"),
+            contract.capped and "; chain cap" or "")
     end
-
-    if contract.weaponClass == "weapon_shotgun" then
-        return string.format("SHOTGUN d6[%s]=%d; PELLETS %d",
-            valueList(contract.values), contract.total, contract.pellets or 6)
-    end
-
-    return string.format("%s %s=%d", contract.label, contract.formula, contract.total)
+    return nil
 end
 
 function Rolls:_FinishShotgunFeed(ply, contract)
     if not IsValid(ply) then return end
-    local bestTarget
-    local bestHits = 0
     for target, hits in pairs(contract.hits or {}) do
-        if IsValid(target) and hits > bestHits then
-            bestTarget = target
-            bestHits = hits
+        if IsValid(target) and hits > 0 then
+            local damage = contract.damageByTarget[target] or 0
+            local detail = string.format("[%d/%d pellets; rolls %s]", hits,
+                contract.pellets or 6, table.concat(contract.values or {}, ">"))
+            self:_Send(ply, 0, self:_DamageEventText(ply, "1d6!", damage,
+                target, detail, nil, "Hostile"))
         end
     end
-    local damage = bestTarget and (contract.damageByTarget[bestTarget] or 0) or 0
-    local text = string.format("%s; LANDED %d/%d; DAMAGE %.1f",
-        self:_PlayerRollText(contract), bestHits, contract.pellets or 6, damage)
-    self:_Send(ply, 0, text)
 end
 
 function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
@@ -222,14 +250,15 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
     return contract
 end
 
-function Rolls:_HostileRollText(contract)
+function Rolls:_HostileRollText(contract, source, target)
     local profile = contract.profile
-    local text = string.format("%s %s [%s]=%d", profile.label,
-        diceNotation(profile), valueList(contract.values), contract.total)
+    local details = string.format("[rolls %s", valueList(contract.values))
     if math.abs((contract.scale or 1) - 1) > 0.01 then
-        text = text .. string.format(" x%.2f=%d", contract.scale, contract.final)
+        details = details .. string.format("; base %d x%.2f", contract.total, contract.scale)
     end
-    return text .. " -> YOU"
+    details = details .. "]"
+    return self:_DamageEventText(source, diceNotation(profile), contract.final,
+        target, details, profile.label, "Player")
 end
 
 local function qualifyingPlayerShooter(shooter)
@@ -257,7 +286,13 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
         end)
     else
         bullet.Damage = contract.total
-        Rolls:_Send(shooter, 0, Rolls:_PlayerRollText(contract))
+        contract.targets = setmetatable({}, {__mode = "k"})
+        shooter.LODActivePlayerRoll = contract
+        timer.Simple(0, function()
+            if IsValid(shooter) and shooter.LODActivePlayerRoll == contract then
+                shooter.LODActivePlayerRoll = nil
+            end
+        end)
     end
 end)
 
@@ -289,13 +324,30 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
 
     if target.LODHostile and qualifyingPlayerShooter(attacker) then
         local weaponClass = activeWeaponClass(attacker)
-        if weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
+        if grenadeAttack(attacker, inflictor, dmginfo) then
+            local contract = grenadeRolls[inflictor]
+            if not contract then
+                local profile = {label = "GRENADE", count = 1, sides = 20}
+                local rng = Rolls:_RNG("player:grenade")
+                local total, values = Rolls:_RollFormula(profile, rng)
+                contract = {total = total, values = values}
+                grenadeRolls[inflictor] = contract
+                Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
+            end
+            local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
+            local final = math.max(1, contract.total * falloff)
+            dmginfo:SetDamage(final)
+            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d20",
+                final, target, string.format("[roll %d; blast x%.2f]", contract.total, falloff),
+                nil, "Hostile"))
+        elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
             local profile = {label = "CROWBAR", count = 1, sides = 8}
             local rng = Rolls:_RNG("player:weapon_crowbar")
             local total = Rolls:_RollFormula(profile, rng)
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
-            Rolls:_Send(attacker, 0, string.format("CROWBAR 1d8=%d", total))
+            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d8",
+                total, target, nil, nil, "Hostile"))
         elseif weaponClass == "weapon_shotgun" then
             local contract = attacker.LODActiveShotgunRoll
             local blocked = LOD.GeneratedGeometryBallistics
@@ -305,19 +357,20 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 contract.hits[target] = (contract.hits[target] or 0) + 1
                 contract.damageByTarget[target] = (contract.damageByTarget[target] or 0) + dmginfo:GetDamage()
             end
-        elseif grenadeAttack(attacker, inflictor, dmginfo) then
-            local contract = grenadeRolls[inflictor]
-            if not contract then
-                local profile = {label = "GRENADE", count = 1, sides = 20}
-                local rng = Rolls:_RNG("player:grenade")
-                local total, values = Rolls:_RollFormula(profile, rng)
-                contract = {total = total, values = values}
-                grenadeRolls[inflictor] = contract
-                Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
-                Rolls:_Send(attacker, 0, string.format("GRENADE 1d20=%d", total))
+        else
+            local contract = attacker.LODActivePlayerRoll
+            local blocked = LOD.GeneratedGeometryBallistics
+                and LOD.GeneratedGeometryBallistics.PlayerBulletBlocked
+                and LOD.GeneratedGeometryBallistics:PlayerBulletBlocked(target, dmginfo)
+            if not blocked and contract and CurTime() - contract.created < 0.20
+                and contract.weaponClass == weaponClass and dmginfo:GetDamage() > 0
+                and not contract.targets[target] then
+                contract.targets[target] = true
+                local formula = contract.weaponClass == "weapon_357" and "1d12!"
+                    or contract.formula
+                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
+                    dmginfo:GetDamage(), target, Rolls:_PlayerRollDetail(contract), nil, "Hostile"))
             end
-            local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
-            dmginfo:SetDamage(math.max(1, contract.total * falloff))
         end
         return
     end
@@ -328,7 +381,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         local contract = Rolls:RollHostileAttack(attacker, profile, dmginfo:GetDamage(), cacheOwner)
         if not contract then return end
         dmginfo:SetDamage(contract.final)
-        Rolls:_Send(target, 1, Rolls:_HostileRollText(contract))
+        Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target))
     end
 end)
 
