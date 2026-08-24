@@ -147,7 +147,12 @@ concommand.Add("lod_m2_tp", function(ply, _, args)
         return
     end
 
-    ply:ChatPrint("Usage: lod_m2_tp card <1-3> | gate <1-3> | deborah")
+    if kind == "core" or kind == "jail" then
+        debugTeleport(ply, LOD.MazeBuilder:CellCenter(progression.CoreCell) + Vector(0, 0, 24), "Core / jail-door approach")
+        return
+    end
+
+    ply:ChatPrint("Usage: lod_m2_tp card <1-3> | gate <1-3> | core | deborah")
 end)
 
 concommand.Add("lod_m2_seed_test", function(ply, _, args)
@@ -217,14 +222,24 @@ concommand.Add("lod_m2_audit", function(ply)
 
     local gateEntities = ents.FindByClass("lod_gate")
     local cardEntities = ents.FindByClass("lod_keycard")
+    local jailKeyEntities = ents.FindByClass("lod_jail_key")
+    local jailDoorEntities = ents.FindByClass("lod_jail_door")
     local deborahEntities = ents.FindByClass("lod_deborah")
     require(#gateEntities == 3, "runtime gate entity count is " .. #gateEntities)
+    require(#jailDoorEntities == 1, "runtime jail-door entity count is " .. #jailDoorEntities)
     require(#deborahEntities == 1, "runtime Deborah entity count is " .. #deborahEntities)
 
     local expectedCardsRemaining = 0
     for i = 1, 3 do if not (state.Cards and state.Cards[i]) then expectedCardsRemaining = expectedCardsRemaining + 1 end end
     require(#cardEntities == expectedCardsRemaining,
         string.format("runtime keycard count=%d expected=%d", #cardEntities, expectedCardsRemaining))
+    local expectedJailKeys = state.ObjectiveStage == 7 and not state.JailKey and 1 or 0
+    require(#jailKeyEntities == expectedJailKeys,
+        string.format("runtime Jail Key count=%d expected=%d", #jailKeyEntities, expectedJailKeys))
+    if jailDoorEntities[1] then
+        require(jailDoorEntities[1]:GetOpened() == (state.JailDoorOpen == true),
+            "jail-door entity/state mismatch")
+    end
 
     local playedCount = table.Count(state.PlayedIdentities or {})
     local activeCount = RunManager:_ActiveCount()
@@ -248,12 +263,14 @@ concommand.Add("lod_m2_audit", function(ply)
 
     local pass = #reasons == 0
     printTo(ply, string.format(
-        "M2 AUDIT %s | level=%d layoutAttempt=%d gates=%d cardsRemaining=%d Deborah=%d played=%d active=%d checkpoint=%d objective=%d",
+        "M2 AUDIT %s | level=%d layoutAttempt=%d gates=%d cardsRemaining=%d jailKeys=%d jailDoor=%d Deborah=%d played=%d active=%d checkpoint=%d objective=%d",
         pass and "PASS" or "FAIL",
         state.Level or -1,
         graph.ProgressionLayoutAttempt or -1,
         #gateEntities,
         #cardEntities,
+        #jailKeyEntities,
+        #jailDoorEntities,
         #deborahEntities,
         playedCount,
         activeCount,
