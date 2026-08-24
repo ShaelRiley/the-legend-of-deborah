@@ -40,7 +40,7 @@ surface.CreateFont("LOD_HUD_Countdown", {
 net.Receive("LOD_RunState", function()
     local state = LOD.ClientState
     state.level = net.ReadUInt(20)
-    state.objectiveStage = net.ReadUInt(3)
+    state.objectiveStage = net.ReadUInt(4)
     state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
     state.gates = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
     state.checkpoint = net.ReadUInt(2)
