@@ -11,6 +11,7 @@ AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_minimap_origin_sync.lua")
 AddCSLuaFile("lod/cl_minimap_safety.lua")
+AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 
 include("shared.lua")
 include("lod/sv_saverestore_safety.lua")
@@ -28,7 +29,6 @@ include("lod/sv_m1_stair_geometry.lua")
 include("lod/sv_maze_navigator.lua")
 include("lod/sv_faction_manager.lua")
 include("lod/sv_m3_enemy_config.lua")
-include("lod/sv_soldier_weapon_site.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
@@ -73,6 +73,12 @@ include("lod/sv_hostile_hurt_pose.lua")
 include("lod/sv_m3_damage_audit.lua")
 include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
+
+-- Soldier warning/firing is intentionally installed LAST among production combat
+-- wrappers. It owns one immutable world-space shot line and prevents Motion V2,
+-- live animation bones, client-only scale, or bolt initialization from becoming
+-- competing trajectory authorities.
+include("lod/sv_soldier_shot_contract.lua")
 
 -- Audits, seed harnesses, teleports, and the infinite-ammo testkit are not
 -- production runtime dependencies. Read the archived startup value once: a
