@@ -16,23 +16,23 @@ Rolls.Stats = Rolls.Stats or {
 }
 
 local PLAYER_WEAPONS = {
-    weapon_pistol = {label = "PISTOL", count = 1, sides = 4},
-    weapon_smg1 = {label = "SMG", count = 1, sides = 8},
-    weapon_ar2 = {label = "AR2", count = 1, sides = 10},
-    weapon_357 = {label = "MAGNUM", count = 1, sides = 12, exploding = 10},
-    weapon_shotgun = {label = "SHOTGUN", count = 1, sides = 6, exploding = 6, floor = 3}
+    weapon_pistol = {label = "PISTOL", source = "pistol", count = 1, sides = 4},
+    weapon_smg1 = {label = "SMG", source = "SMG", count = 1, sides = 8},
+    weapon_ar2 = {label = "AR2", source = "AR2", count = 1, sides = 10},
+    weapon_357 = {label = "MAGNUM", source = ".357 Magnum", count = 1, sides = 12, exploding = 10},
+    weapon_shotgun = {label = "SHOTGUN", source = "shotgun", count = 1, sides = 6, exploding = 6, floor = 3}
 }
 
 -- Initial hostile attack dice preserve the approximate means of the accepted
 -- fixed-damage baseline while moving every direction of combat onto one roll
 -- authority. Multiple dice deliberately narrow lethal low/high outliers.
 local HOSTILE_ATTACKS = {
-    shambler = {label = "SHAMBLER", count = 3, sides = 10, bonus = 3, reference = 20},
-    runner = {label = "RUNNER", count = 2, sides = 8, bonus = 1, reference = 10},
-    soldier = {label = "SOLDIER", count = 1, sides = 10, bonus = 1, reference = 6},
-    blitzer = {label = "BLITZER", count = 1, sides = 8, bonus = 1, reference = 5},
-    bioblaster = {label = "BIO BLASTER", count = 8, sides = 8, bonus = 9, reference = 45},
-    deadcrab = {label = "DEADCRAB", count = 8, sides = 10, bonus = 11, reference = 55}
+    shambler = {label = "SHAMBLER", source = "melee", count = 3, sides = 10, bonus = 3, reference = 20},
+    runner = {label = "RUNNER", source = "melee", count = 2, sides = 8, bonus = 1, reference = 10},
+    soldier = {label = "SOLDIER", source = "soldier bolt", count = 1, sides = 10, bonus = 1, reference = 6},
+    blitzer = {label = "BLITZER", source = "Blitzer bolt", count = 1, sides = 8, bonus = 1, reference = 5},
+    bioblaster = {label = "BIO BLASTER", source = "bio bolt", count = 8, sides = 8, bonus = 9, reference = 45},
+    deadcrab = {label = "DEADCRAB", source = "death blast", count = 8, sides = 10, bonus = 11, reference = 55}
 }
 
 local grenadeRolls = setmetatable({}, {__mode = "k"})
@@ -147,11 +147,15 @@ local function damageText(amount)
     return string.format("%.1f", value)
 end
 
-function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget)
-    return string.format("%s dealt %s (%s)%s damage to %s",
-        entityDisplayName(source, fallbackSource), formula, damageText(amount),
-        detail and detail ~= "" and (" " .. detail) or "",
-        entityDisplayName(target, fallbackTarget))
+function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget, damageSource)
+    local prefix = string.format("%s dealt %s (%s)",
+        entityDisplayName(source, fallbackSource), formula, damageText(amount))
+    local suffix = string.format(" damage to %s, via %s",
+        entityDisplayName(target, fallbackTarget), cleanName(damageSource or "unknown source"))
+    local detailText = detail and detail ~= "" and (" " .. detail) or ""
+    local detailBudget = 180 - #prefix - #suffix
+    if #detailText > detailBudget then detailText = "" end
+    return prefix .. detailText .. suffix
 end
 
 function Rolls:RollPlayerWeapon(ply, weaponClass)
@@ -209,7 +213,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
             local detail = string.format("[%d/%d pellets; rolls %s]", hits,
                 contract.pellets or 6, table.concat(contract.values or {}, ">"))
             self:_Send(ply, 0, self:_DamageEventText(ply, "1d6!", damage,
-                target, detail, nil, "Hostile"))
+                target, detail, nil, "Hostile", "shotgun"))
         end
     end
 end
@@ -258,7 +262,7 @@ function Rolls:_HostileRollText(contract, source, target)
     end
     details = details .. "]"
     return self:_DamageEventText(source, diceNotation(profile), contract.final,
-        target, details, profile.label, "Player")
+        target, details, profile.label, "Player", profile.source)
 end
 
 local function qualifyingPlayerShooter(shooter)
@@ -339,7 +343,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             dmginfo:SetDamage(final)
             Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d20",
                 final, target, string.format("[roll %d; blast x%.2f]", contract.total, falloff),
-                nil, "Hostile"))
+                nil, "Hostile", "grenade"))
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
             local profile = {label = "CROWBAR", count = 1, sides = 8}
             local rng = Rolls:_RNG("player:weapon_crowbar")
@@ -347,7 +351,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
             Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d8",
-                total, target, nil, nil, "Hostile"))
+                total, target, nil, nil, "Hostile", "crowbar"))
         elseif weaponClass == "weapon_shotgun" then
             local contract = attacker.LODActiveShotgunRoll
             local blocked = LOD.GeneratedGeometryBallistics
@@ -369,7 +373,8 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 local formula = contract.weaponClass == "weapon_357" and "1d12!"
                     or contract.formula
                 Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
-                    dmginfo:GetDamage(), target, Rolls:_PlayerRollDetail(contract), nil, "Hostile"))
+                    dmginfo:GetDamage(), target, Rolls:_PlayerRollDetail(contract), nil,
+                    "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))
             end
         end
         return
