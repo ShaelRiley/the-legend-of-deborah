@@ -28,6 +28,12 @@ local function edgeKey(a, b)
     return a < b and (a .. "|" .. b) or (b .. "|" .. a)
 end
 
+local function writeCell(cell)
+    net.WriteUInt(math.Clamp(cell.x or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.y or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
+end
+
 local function gateIndexByEdge(graph)
     local out = {}
     local progression = graph and graph.Progression
@@ -129,6 +135,12 @@ function Minimap:Send(ply)
     net.WriteUInt(math.Clamp(graph.Layers or 1, 1, 7), 3)
     net.WriteUInt(math.min(#cells, 65535), 16)
     net.WriteUInt(math.min(chunks, 255), 8)
+    local jail = graph.Progression and graph.Progression.JailEdge
+    net.WriteBool(jail ~= nil)
+    if jail then
+        writeCell(jail.beforeCell)
+        writeCell(jail.afterCell)
+    end
     net.Send(ply)
 
     for chunkIndex = 1, chunks do
