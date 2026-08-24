@@ -31,6 +31,21 @@ function MazeBuilder:_SpawnKeycard(meta)
     return ent
 end
 
+function MazeBuilder:_SpawnJailDoor(meta)
+    local a = self:CellCenter(meta.beforeCell)
+    local b = self:CellCenter(meta.afterCell)
+    local delta = b - a
+    local height = PC.GateBlockerHeight
+    local ent = ents.Create("lod_jail_door")
+    if not IsValid(ent) then return nil end
+    ent:SetDoorAxis(math.abs(delta.x) > math.abs(delta.y) and 0 or 1)
+    ent:SetPos((a + b) * 0.5 + Vector(0, 0, height * 0.5))
+    ent:Spawn()
+    ent:Activate()
+    meta.entity = ent
+    return ent
+end
+
 function MazeBuilder:_SpawnDeborah(meta)
     local ent = ents.Create("lod_deborah")
     if not IsValid(ent) then return nil end
@@ -50,6 +65,7 @@ function MazeBuilder:_BuildProgressionEntities(graph)
 
     for _, gate in ipairs(progression.Gates or {}) do self:_Register(self:_SpawnProgressionGate(gate)) end
     for _, card in ipairs(progression.Keycards or {}) do self:_Register(self:_SpawnKeycard(card)) end
+    self:_Register(self:_SpawnJailDoor(progression.JailEdge))
     self:_Register(self:_SpawnDeborah(progression.DeborahCell))
 end
 
@@ -71,6 +87,7 @@ function MazeBuilder:Build(graph)
     report.progression = {
         gates = 3,
         keycards = 3,
+        jailDoor = 1,
         deborah = 1
     }
     return true, report
