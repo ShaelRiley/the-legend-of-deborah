@@ -5,6 +5,19 @@ local ProgressionDirector = LOD.ProgressionDirector
 local PC = LOD.Config.Progression
 local cellKey = LOD.MazeGenerator.CellKey
 
+ProgressionDirector.Stages = ProgressionDirector.Stages or {
+    FIND_RED_KEYCARD = 1,
+    OPEN_RED_GATE = 2,
+    FIND_BLUE_KEYCARD = 3,
+    OPEN_BLUE_GATE = 4,
+    FIND_YELLOW_KEYCARD = 5,
+    OPEN_YELLOW_GATE = 6,
+    TAKE_JAIL_KEY = 7,
+    UNLOCK_DEBORAH_CELL = 8,
+    RESCUE_DEBORAH = 9
+}
+local Stages = ProgressionDirector.Stages
+
 util.AddNetworkString("LOD_RunState")
 util.AddNetworkString("LOD_Announcement")
 
@@ -131,6 +144,37 @@ local function transitionCellSet(graph)
     return set
 end
 
+local function chooseJailEdge(graph, gates)
+    local path = graph.CriticalPath or {}
+    local yellowGate = gates and gates[3]
+    if not yellowGate then return nil, "Yellow Gate is missing before JailEdge selection" end
+
+    local transitions = transitionCellSet(graph)
+    local firstAllowed = (yellowGate.pathIndex or 0) + 1
+
+    -- Prefer the latest compatible bridge on the critical route. Working
+    -- backward makes the choice deterministic and keeps Deborah's chamber near
+    -- the route terminus, while the bridge test proves there is no graph bypass.
+    for i = #path - 1, firstAllowed, -1 do
+        local a = path[i]
+        local b = path[i + 1]
+        local ek = a and b and edgeKey(a, b) or nil
+        if a and b and a.z == b.z and
+            not transitions[keyForCell(a)] and not transitions[keyForCell(b)] and
+            graph.Edges and graph.Edges[ek] ~= nil and isBridgeToGoal(graph, a, b) then
+            return {
+                id = "jail",
+                edgeKey = ek,
+                pathIndex = i,
+                beforeCell = copyCell(a),
+                afterCell = copyCell(b)
+            }
+        end
+    end
+
+    return nil, "no horizontal door-compatible bridge remains after Yellow Gate"
+end
+
 local function criticalPathSet(graph)
     local set = {}
     for _, cell in ipairs(graph.CriticalPath or {}) do set[keyForCell(cell)] = true end
@@ -215,8 +259,8 @@ local function chooseKeycardCell(graph, gates, cardIndex, rng, components)
     }
 end
 
-local function simulateProgression(graph, gates, keycards, coreCell, deborahCell)
-    local blocked = {}
+local function simulateProgression(graph, gates, keycards, jailEdge)
+    local blocked = {[jailEdge.edgeKey] = true}
     for _, gate in ipairs(gates) do blocked[gate.edgeKey] = true end
 
     for i = 1, 3 do
@@ -235,9 +279,21 @@ local function simulateProgression(graph, gates, keycards, coreCell, deborahCell
         end
     end
 
-    local finalReach = bfs(graph, graph.Start, blocked)
-    if not finalReach[keyForCell(coreCell)] then return false, "core is unreachable after Yellow Gate" end
-    if not finalReach[keyForCell(deborahCell)] then return false, "Deborah is unreachable after Yellow Gate" end
+    -- The temporary Core source will provide the production Jail Key here. The
+    -- locked JailEdge must still partition Deborah until that key is used.
+    local coreReach = bfs(graph, graph.Start, blocked)
+    if not coreReach[keyForCell(jailEdge.beforeCell)] then
+        return false, "Core/Jail Key source is unreachable after Yellow Gate"
+    end
+    if coreReach[keyForCell(jailEdge.afterCell)] then
+        return false, "Deborah side is reachable while JailEdge is locked"
+    end
+
+    blocked[jailEdge.edgeKey] = nil
+    local rescueReach = bfs(graph, graph.Start, blocked)
+    if not rescueReach[keyForCell(jailEdge.afterCell)] then
+        return false, "Deborah is unreachable after JailEdge unlock"
+    end
     return true
 end
 
@@ -275,21 +331,23 @@ function ProgressionDirector:Plan(graph, masterLevelSeed)
         keycards[i] = card
     end
 
-    local path = graph.CriticalPath or {}
-    if #path < 2 then return false, "critical path is too short for Core/Deborah reservation" end
-    local coreCell = copyCell(path[#path - 1])
-    local deborahCell = copyCell(path[#path])
-    local valid, validationErr = simulateProgression(graph, gates, keycards, coreCell, deborahCell)
+    local jailEdge, jailErr = chooseJailEdge(graph, gates)
+    if not jailEdge then return false, jailErr end
+
+    local coreCell = copyCell(jailEdge.beforeCell)
+    local deborahCell = copyCell(jailEdge.afterCell)
+    local valid, validationErr = simulateProgression(graph, gates, keycards, jailEdge)
     if not valid then return false, validationErr end
 
     graph.Progression = {
         Gates = gates,
         Keycards = keycards,
+        JailEdge = jailEdge,
         CoreCell = coreCell,
         DeborahCell = deborahCell,
         Validation = {
             valid = true,
-            orderedRoute = "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Core>Deborah"
+            orderedRoute = "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah"
         }
     }
 
@@ -301,7 +359,9 @@ function ProgressionDirector:ResetLevelState(graph)
     state.Graph = graph
     state.Cards = {false, false, false}
     state.GatesOpen = {false, false, false}
-    state.ObjectiveStage = 1
+    state.JailKey = false
+    state.JailDoorOpen = false
+    state.ObjectiveStage = Stages.FIND_RED_KEYCARD
     state.CheckpointIndex = 0
     state.CheckpointPos = nil
     state.LevelCleared = false
@@ -324,6 +384,8 @@ function ProgressionDirector:GetObjectiveText()
         "OPEN BLUE GATE — B / CIRCLE",
         "FIND YELLOW KEYCARD — Y / SQUARE",
         "OPEN YELLOW GATE — Y / SQUARE",
+        "TAKE JAIL KEY",
+        "UNLOCK DEBORAH'S CELL",
         "RESCUE DEBORAH"
     }
     return objectives[stage] or "EXPEDITION"
@@ -351,7 +413,7 @@ function ProgressionDirector:SyncPlayer(ply)
 
     net.Start("LOD_RunState")
     net.WriteUInt(math.max(1, state.Level or 1), 20)
-    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 7), 3)
+    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 9), 4)
     for i = 1, 3 do net.WriteBool(state.Cards and state.Cards[i] == true) end
     for i = 1, 3 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
     net.WriteUInt(math.Clamp(state.CheckpointIndex or 0, 0, 3), 2)
@@ -410,7 +472,7 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     end
 
     state.GatesOpen[index] = true
-    state.ObjectiveStage = index < 3 and (index * 2 + 1) or 7
+    state.ObjectiveStage = index < 3 and (index * 2 + 1) or Stages.TAKE_JAIL_KEY
     state.CheckpointIndex = index
 
     local graph = state.Graph
@@ -426,7 +488,9 @@ end
 function ProgressionDirector:CanRescueDeborah()
     local state = LOD.RunManager.State
     return not state.Failed and not state.LevelCleared and state.GatesOpen and
-        state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and state.ObjectiveStage == 7
+        state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and
+        state.JailKey == true and state.JailDoorOpen == true and
+        state.ObjectiveStage == Stages.RESCUE_DEBORAH
 end
 
 function ProgressionDirector:OnDeborahTouched(ply)
