@@ -49,7 +49,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 
 ## Basic Magic contract
 
-- Magic is a personal 0–100 campaign resource rendered in the exact stock `HudSuit` proportional footprint (`140,432,108×36`) with the stock `Default` label font and `HudNumbers` numeric font, colored blue; the HL2 suit/armor pool remains unused.
+- Magic is a personal 0–100 campaign resource rendered in the active stock `HudSuit` proportional footprint using a 640×480 **height-derived** proportional scale: normal layout `140,432,108×36`; Steam Deck-style 16:10 layout `150,426,120×42`; stock `Default` label font and `HudNumbers` numeric font; colored blue. The HL2 suit/armor pool remains unused.
 - Magic regenerates 0→100 in 60 seconds while alive.
 - RMB is globally reserved for Magic activation. LOD firearms do **not** expose HL2-style secondary fire.
 - Current Force Shout costs 30 Magic, affects an unobstructed ~60° / 1100-unit cone, deals independent exploding `2d6` per hostile, and applies a 336-unit shared-authority push to survivors.
