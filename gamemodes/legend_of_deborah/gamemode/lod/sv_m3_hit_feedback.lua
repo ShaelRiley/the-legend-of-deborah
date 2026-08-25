@@ -74,31 +74,34 @@ local function sendHitConfirm(attacker)
     net.Send(attacker)
 end
 
-function HitFeedback:ApplyHitStun(hostile)
+function HitFeedback:ApplyHitStun(hostile, durationMultiplier)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return false end
     if hostile.LODDeadcrabState == "latched" then return false end
 
     local now = CurTime()
     if now < (hostile.LODNextHitStun or 0) then return false end
 
-    hostile.LODNextHitStun = now + STUN_RETRIGGER_SECONDS
-    hostile.LODHitStunUntil = now + STUN_SECONDS
+    durationMultiplier = math.Clamp(tonumber(durationMultiplier) or 1, 1, 2)
+    local stunSeconds = STUN_SECONDS * durationMultiplier
+    local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
+    hostile.LODNextHitStun = now + retriggerSeconds
+    hostile.LODHitStunUntil = now + stunSeconds
 
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil
         hostile:SetNW2Bool("LOD_SoldierTelegraph", false)
-        hostile.LODNextAttack = math.max(hostile.LODNextAttack or 0, now + STUN_SECONDS + 0.10)
+        hostile.LODNextAttack = math.max(hostile.LODNextAttack or 0, now + stunSeconds + 0.10)
     end
 
     if hostile.LODBioBlast then
         hostile.LODBioBlast = nil
-        hostile.LODNextBioCharge = now + STUN_SECONDS + 0.35
+        hostile.LODNextBioCharge = now + stunSeconds + 0.35
     end
 
     if hostile.LODArchetypeId == "deadcrab" and hostile.LODDeadcrabState == "leaping" then
         hostile.LODDeadcrabState = nil
         hostile.LODDeadcrabTarget = nil
-        hostile.LODDeadcrabNextLeap = now + STUN_SECONDS + 0.35
+        hostile.LODDeadcrabNextLeap = now + stunSeconds + 0.35
     end
 
     if hostile.loco then
@@ -109,6 +112,20 @@ function HitFeedback:ApplyHitStun(hostile)
 
     hostile.LODHitStunHasFlinch = playFlinch(hostile)
     return true
+end
+
+function HitFeedback:ApplyShotgunShellStun(hostile)
+    -- One shared Shotgun roll may deliver up to nine pellet damage events.
+    -- The roll authority aggregates those events, then calls this once per
+    -- damaged target so stun can never scale with pellet count.
+    return self:ApplyHitStun(hostile, 2)
+end
+
+local function activeShotgunContract(attacker)
+    if not IsValid(attacker) or not attacker:IsPlayer() then return nil end
+    local contract = attacker.LODActiveShotgunRoll
+    if not contract or CurTime() - (contract.created or 0) >= 0.20 then return nil end
+    return contract
 end
 
 function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
@@ -131,7 +148,10 @@ function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
 
     -- EntityTakeDamage is pre-damage, so health here is the pre-impact value.
     -- Do not apply ordinary hit stun to a shot that is already lethal.
-    if incoming < hostile:Health() then
+    -- Shotgun pellet damage is aggregated by the combat-roll authority. It
+    -- applies one doubled stun after the shell has resolved; applying the
+    -- ordinary response here would make stun depend on pellet hook timing.
+    if incoming < hostile:Health() and not activeShotgunContract(attacker) then
         self:ApplyHitStun(hostile)
     end
     return true
@@ -234,4 +254,54 @@ concommand.Add("lod_m3_hitconfirm_test", function(ply)
     net.Start("LOD_HitConfirm")
     net.Send(ply)
     ply:ChatPrint("[LOD:M3] hit-confirm test cue sent")
+end)
+
+concommand.Add("lod_dice_shotgun_stun_probe", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if not IsValid(ply) or not ply:IsAdmin() then return end
+
+    local hostile
+    for _, candidate in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(candidate) and not candidate.LODDead and candidate:Health() > 1
+            and candidate.LODDeadcrabState ~= "latched" then
+            hostile = candidate
+            break
+        end
+    end
+    if not IsValid(hostile) then
+        local text = "no eligible live hostile result=FAIL"
+        print("[LOD:DICE-SHOTGUN] " .. text)
+        ply:ChatPrint(text)
+        return
+    end
+
+    hostile.LODHitStunUntil = nil
+    hostile.LODNextHitStun = nil
+    hostile.LODLastHitFeedbackEvent = nil
+    local contract = {created = CurTime()}
+    ply.LODActiveShotgunRoll = contract
+
+    local info = DamageInfo()
+    info:SetAttacker(ply)
+    info:SetInflictor(ply)
+    info:SetDamage(1)
+    info:SetDamageType(DMG_BULLET)
+    HitFeedback:HandleDamageEvent(hostile, info, "shotgun-probe-pellet")
+    local pelletSuppressed = not hostile.LODHitStunUntil
+
+    if ply.LODActiveShotgunRoll == contract then ply.LODActiveShotgunRoll = nil end
+    local applied = HitFeedback:ApplyShotgunShellStun(hostile)
+    local remaining = math.max(0, (hostile.LODHitStunUntil or 0) - CurTime())
+    local lockout = math.max(0, (hostile.LODNextHitStun or 0) - CurTime())
+    local duplicateRejected = not HitFeedback:ApplyShotgunShellStun(hostile)
+    local durationPass = remaining >= 0.58 and remaining <= 0.61
+    local lockoutPass = lockout >= 0.64 and lockout <= 0.67
+    local passed = pelletSuppressed and applied and duplicateRejected and durationPass and lockoutPass
+    local text = string.format(
+        "pelletSuppressed=%s shellApplied=%s duplicateRejected=%s duration=%.2f lockout=%.2f result=%s",
+        tostring(pelletSuppressed), tostring(applied), tostring(duplicateRejected), remaining,
+        lockout, passed and "PASS" or "FAIL")
+    print("[LOD:DICE-SHOTGUN] " .. text)
+    ply:ChatPrint(text)
 end)
