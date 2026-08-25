@@ -9,19 +9,30 @@ local SHOTGUN_PROFILE = {
     source = "shotgun",
     count = 1,
     sides = 6,
-    exploding = 5,
+    exploding = 6,
     floor = 3
 }
 
+local SHOTGUN_PELLET_PROFILE = {
+    label = "SHOTGUN PELLETS",
+    source = "shotgun",
+    count = 1,
+    sides = 6,
+    exploding = 6
+}
+
 local SHOTGUN_BASE_PELLETS = 6
+local SHOTGUN_MAX_PELLETS = 36
 local SHOTGUN_STUN_MULTIPLIER = 4
 local BASE_STUN_SECONDS = 0.30
 local BASE_STUN_RETRIGGER_SECONDS = 0.36
 
 -- Keep the shared combat-roll authority, but give the Shotgun its authored
--- high-variance identity: natural 5s and 6s recursively explode while every die
--- still obeys the existing floor of 3. Bonus pellets remain three independent
--- 33% checks for pellets 7-9.
+-- high-variance identity under the universal dice rules. The shared damage d6
+-- recursively explodes only on natural 6 and keeps the existing floor of 3.
+-- Every shell also rolls a separate exploding 1d6 for additional pellets, then
+-- retains the three independent 33% bonus checks. The hard pellet cap prevents
+-- pathological explosion chains from creating an unbounded trace workload.
 if not Rolls.LODShotgunIdentityBalanced then
     Rolls.LODShotgunIdentityBalanced = true
     local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
@@ -33,6 +44,8 @@ if not Rolls.LODShotgunIdentityBalanced then
 
         local rng = self:_RNG("player:" .. weaponClass)
         local total, values, contributions, capped = self:_RollExploding(SHOTGUN_PROFILE, rng)
+        local pelletBonus, pelletValues, _, pelletCapped = self:_RollExploding(SHOTGUN_PELLET_PROFILE, rng)
+
         local contract = {
             label = SHOTGUN_PROFILE.label,
             weaponClass = weaponClass,
@@ -42,7 +55,10 @@ if not Rolls.LODShotgunIdentityBalanced then
             contributions = contributions,
             capped = capped == true,
             created = CurTime(),
-            pellets = SHOTGUN_BASE_PELLETS,
+            pellets = math.min(SHOTGUN_MAX_PELLETS, SHOTGUN_BASE_PELLETS + math.max(1, pelletBonus or 1)),
+            pelletRollTotal = math.max(1, pelletBonus or 1),
+            pelletRollValues = pelletValues or {},
+            pelletRollCapped = pelletCapped == true,
             bonusChecks = {},
             hits = setmetatable({}, {__mode = "k"}),
             damageByTarget = setmetatable({}, {__mode = "k"})
@@ -51,8 +67,16 @@ if not Rolls.LODShotgunIdentityBalanced then
         for _ = 7, 9 do
             local added = rng:Int(1, 3) == 1
             contract.bonusChecks[#contract.bonusChecks + 1] = added
-            if added then contract.pellets = contract.pellets + 1 end
+            if added then
+                contract.pellets = math.min(SHOTGUN_MAX_PELLETS, contract.pellets + 1)
+            end
             self.Stats.rolls = self.Stats.rolls + 1
+        end
+
+        -- The pellet-count die is a real exploding d6 and therefore participates
+        -- in the same joyful exploding-die feedback as the shared damage die.
+        if self.EmitDiceExplosionFX and #(contract.pelletRollValues or {}) > 1 then
+            self:EmitDiceExplosionFX(ply, "weapon_shotgun", #(contract.pelletRollValues or {}) - 1, 1)
         end
 
         self.Stats.playerAttacks = self.Stats.playerAttacks + 1
