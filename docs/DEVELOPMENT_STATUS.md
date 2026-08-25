@@ -4,7 +4,7 @@
 
 **Gate C8 — Complete-Dungeon Dice-Era Validation.**
 
-This status was reconciled against GitHub `main` at `f24f0df613246ab531a1698480a6d98b7f30ec2f`, the live production GDD, and accepted Steam Deck runtime evidence. The older description of the project as waiting to begin the dice-combat foundation is obsolete.
+This status is reconciled against current GitHub `main`, the live production GDD, and accepted Steam Deck runtime evidence through the Crowbar runtime checkpoint. The older description of the project as waiting to begin the dice-combat foundation is obsolete.
 
 The live GDD remains design authority. GitHub `main` remains implementation authority. Milestone labels describe capability groups; the immediate execution gate is determined by the actual build and accepted runtime evidence.
 
@@ -41,13 +41,15 @@ The dice foundation is now implemented and has passed subsystem-level runtime ch
 
 Implemented v1 rules:
 
-- Crowbar: `1d8`
+- Crowbar: `1d3`
 - Pistol: `1d4`
 - SMG: `1d8`
 - AR2: `1d10`
 - Grenade: `1d20`
 - .357 Magnum: exploding `1d12`; natural 10, 11, or 12 recursively explodes
 - Shotgun: one shared exploding `1d6`, per-die floor 3, natural 6 explosions, six guaranteed pellets, independent 33% checks for pellets 7/8/9, and one aggregate damage resolution per target
+
+Crowbar runtime contract is accepted: the dedicated LOD Crowbar owns authoritative melee collision/damage, uses a 96-unit player reach, emits an audible miss whoosh, uses the accepted soft body-impact cue on hit, and adds the same local hit-confirm beep used by ranged weapons. The 96-unit reach intentionally gives careful backpedaling/timing only a narrow spacing advantage over variance-scaled ordinary melee enemies.
 
 XP, character levels, procedural affixes/equipment, elements, Magic, and Luck Ring remain deferred post-release systems and are not part of this v1 gate.
 
