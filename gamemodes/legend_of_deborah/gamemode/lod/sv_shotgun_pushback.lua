@@ -4,7 +4,7 @@ local HitFeedback = LOD.M3HitFeedback
 local Pushback = LOD.Pushback
 if not HitFeedback or not Pushback then return end
 
-local PUSH_DISTANCE = 42
+local PUSH_DISTANCE = 168
 
 local function shooterFor(hostile)
     local stamp = IsValid(hostile) and hostile.LODLastHitFeedbackEvent or nil
@@ -19,7 +19,9 @@ if not HitFeedback.LODShotgunPushbackWrapped then
     function HitFeedback:ApplyShotgunShellStun(hostile)
         -- Preserve the accepted one-stun-per-shell contract. Pushback occurs only
         -- if that shell-level stun succeeds, so pellet count can never multiply
-        -- movement or wall-crush checks.
+        -- movement or wall-crush checks. The current Shotgun identity uses a
+        -- forceful 168-unit nominal push; the generic push authority still owns
+        -- collision rejection and one wall-crush roll per push event.
         local applied = baseApplyShotgunShellStun(self, hostile)
         if not applied then return false end
 
