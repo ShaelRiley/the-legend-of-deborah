@@ -21,7 +21,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | SMG overheat + AR2 laser/burst | `sv_player_weapon_specials.lua`, `sv_player_weapon_specials_input.lua`, client mirror |
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
 | Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision; target depth escalates cumulatively from `1d12!` to `2d12!`, `3d12!`, etc. up to the existing 8-target cap |
-| Shotgun 5–6 explosion + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua` |
+| Shotgun exploding d6 + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua`; **current code still uses the superseded temporary 5–6 explosion threshold and must be reconciled to the canonical natural-6-only d6 rule after the current runtime test** |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
 | Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 4–16 silhouettes use distinct leased clientside render models from a reusable per-model pool, avoiding same-entity/same-frame transform caching; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
 | Shotgun 168-unit shell push | `sv_shotgun_pushback.lua` |
@@ -37,6 +37,16 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Gordon the Warden | Milestone 5 |
 | Dedicated multiplayer integration / QA | Milestone 6 |
 
+## Canonical exploding-die invariant
+
+The live GDD now defines explosion thresholds globally rather than per weapon:
+
+- **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
+- **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
+- These are dice-system invariants. New d6/d12 mechanics inherit them automatically unless a later explicit design change supersedes the rule.
+- Current implementation is already compliant for Force Shout d6s and Magnum / Magnum-pierce d12s.
+- The current Shotgun code remains temporarily noncompliant because it still explodes on natural 5–6. Do not treat that temporary implementation as design authority; reconcile it to natural-6-only after the in-progress runtime test.
+
 ## Current weapon contracts
 
 - Crowbar: `1d3`, 96-unit reach.
@@ -44,7 +54,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - SMG: `1d8`, six-shot heat threshold, 0.25 s per heat cooling, 2.0 s overheat lock.
 - AR2: `1d10` per projectile, 0.45 s committed laser tell, exactly three projectiles, **one AR2 ammo unit per complete burst**.
 - .357 Magnum: exploding `1d12` on natural **8/9/10/11/12**; one cartridge; aligned piercing escalates cumulatively by one fresh exploding d12 chain per deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., capped at eight total targets and stopped by authoritative geometry.
-- Shotgun: shared `1d6`, floor 3, natural **5 or 6** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**.
+- Shotgun design target: shared `1d6`, floor 3, natural **6 only** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**. Current code still has the temporary 5–6 threshold pending reconciliation.
 - Grenade: `1d20`, separate consumable reward.
 - Player-side exploding-die continuations (Magnum, Shotgun, Force Shout, and Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
 
@@ -53,7 +63,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - Magic is a personal 0–100 campaign resource rendered in the active stock `HudSuit` proportional footprint using a 640×480 **height-derived** proportional scale: normal layout `140,432,108×36`; Steam Deck-style 16:10 layout `150,426,120×42`; stock `Default` label font and `HudNumbers` numeric font; colored blue. The HL2 suit/armor pool remains unused.
 - Magic regenerates 0→100 in 60 seconds while alive.
 - RMB is globally reserved for Magic activation. LOD firearms do **not** expose HL2-style secondary fire.
-- Current Force Shout costs 30 Magic, affects an unobstructed ~60° / 1100-unit cone, deals independent exploding `2d6` per hostile, and applies a 336-unit shared-authority push to survivors.
+- Current Force Shout costs 30 Magic, affects an unobstructed ~60° / 1100-unit cone, deals independent exploding `2d6` per hostile using the universal natural-6 d6 threshold, and applies a 336-unit shared-authority push to survivors.
 - Shared pushback presentation means the shout automatically receives the same body-ghost travel trail and wall-crush audiovisual feedback as other push sources.
 - Elements, Magic items, Luck Ring behavior, and the broader RPG Magic system remain deferred.
 
