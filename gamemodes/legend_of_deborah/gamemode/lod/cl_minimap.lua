@@ -13,47 +13,37 @@ local Map = LOD.Minimap
 local MC = LOD.Config.Maze
 local GC = LOD.Config.Geometry
 local mapKeyWasDown = false
+local MAP_REQUEST_RETRY = 0.75
+local MAP_RT_SIZE = 256
 
 Map.cache = Map.cache or {
     revision = 0,
     indexedRevision = -1,
     floorCells = {},
-    reach = nil
+    floorStairs = {},
+    floorGates = {},
+    floorJail = {},
+    adjacency = {},
+    reach = nil,
+    topologyRevision = -1,
+    topologyFloor = -1
 }
 Map.stats = Map.stats or {
     paintFrames = 0,
     bfsBuilds = 0,
     bfsHits = 0,
-    floorIndexBuilds = 0
+    floorIndexBuilds = 0,
+    topologyBuilds = 0,
+    mapRequests = 0,
+    mapCacheReopens = 0
 }
 
-local function resetCacheStats()
-    Map.stats.paintFrames = 0
-    Map.stats.bfsBuilds = 0
-    Map.stats.bfsHits = 0
-    Map.stats.floorIndexBuilds = 0
-end
-
-local function invalidateGraphCache()
-    Map.cache.revision = (Map.cache.revision or 0) + 1
-    Map.cache.indexedRevision = -1
-    Map.cache.floorCells = {}
-    Map.cache.reach = nil
-    resetCacheStats()
-end
-
-local function buildFloorIndex()
-    if Map.cache.indexedRevision == Map.cache.revision then return end
-    local floorCells = {}
-    for _, cell in ipairs(Map.cells) do
-        floorCells[cell.z] = floorCells[cell.z] or {}
-        floorCells[cell.z][#floorCells[cell.z] + 1] = cell
-    end
-    Map.cache.floorCells = floorCells
-    Map.cache.indexedRevision = Map.cache.revision
-    Map.cache.reach = nil
-    Map.stats.floorIndexBuilds = Map.stats.floorIndexBuilds + 1
-end
+local topologyRT = GetRenderTarget("lod_minimap_topology_rt", MAP_RT_SIZE, MAP_RT_SIZE)
+local topologyMaterial = CreateMaterial("lod_minimap_topology_rt_mat", "UnlitGeneric", {
+    ["$basetexture"] = topologyRT:GetName(),
+    ["$vertexcolor"] = "1",
+    ["$vertexalpha"] = "1"
+})
 
 surface.CreateFont("LOD_Map_Title", {
     font = "DejaVu Sans",
@@ -67,24 +57,95 @@ surface.CreateFont("LOD_Map_Small", {
     weight = 650
 })
 
+local COLORS = {
+    panel = Color(12, 15, 17, 226),
+    accent = Color(220, 140, 48, 235),
+    title = Color(238, 194, 92),
+    muted = Color(185, 188, 190),
+    objective = Color(248, 213, 105),
+    loading = Color(220, 220, 220),
+    grid = Color(58, 62, 64, 255),
+    cell = Color(30, 34, 36, 255),
+    wall = Color(180, 184, 186, 220),
+    stairReachable = Color(248, 213, 105, 255),
+    stairLocked = Color(118, 105, 72, 145),
+    route = Color(255, 215, 58, 225),
+    routeBright = Color(255, 226, 100, 255),
+    open = Color(105, 185, 115, 245),
+    jailClosed = Color(205, 205, 215, 245),
+    routeReady = Color(105, 210, 125),
+    routeBlocked = Color(225, 100, 82),
+    footer = Color(170, 174, 176),
+    deborah = Color(245, 180, 225, 255),
+    player = Color(248, 213, 105, 255)
+}
+
 local gateColors = {
     Color(205, 54, 54),
     Color(64, 118, 210),
     Color(224, 190, 52)
 }
+local OBJECTIVE_LABELS = {[1] = "CARD", [2] = "GATE", [3] = "KEY", [4] = "JAIL", [5] = "D"}
 
 local function cellKey(x, y, z)
     return tostring(x) .. ":" .. tostring(y) .. ":" .. tostring(z)
 end
 
-local function hasAccess(ply)
-    if not IsValid(ply) then return false end
-    return ply:GetNW2Bool("LOD_DeveloperMode", false) or ply:GetNW2Bool("LOD_MapUnlocked", false)
+local function currentClientLevel()
+    local state = LOD.ClientState or {}
+    return tonumber(state.level) or 0
 end
 
-local function requestMap()
+local function hasAccess(ply)
+    if not IsValid(ply) then return false end
+    if ply:GetNW2Bool("LOD_DeveloperMode", false) then return true end
+    if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
+    local unlockedLevel = ply:GetNW2Int("LOD_MapUnlockedLevel", 0)
+    local level = currentClientLevel()
+    return level > 0 and unlockedLevel == level
+end
+
+local function mapReadyForLevel(level)
+    return level and level > 0
+        and Map.level == level
+        and (Map.expectedChunks or 0) > 0
+        and (Map.receivedChunks or 0) >= (Map.expectedChunks or 0)
+        and #Map.cells > 0
+        and Map.cache.indexedRevision == Map.cache.revision
+end
+
+local function resetCacheStats()
+    Map.stats.paintFrames = 0
+    Map.stats.bfsBuilds = 0
+    Map.stats.bfsHits = 0
+    Map.stats.floorIndexBuilds = 0
+    Map.stats.topologyBuilds = 0
+    Map.stats.mapRequests = 0
+    Map.stats.mapCacheReopens = 0
+end
+
+local function invalidateGraphCache()
+    Map.cache.revision = (Map.cache.revision or 0) + 1
+    Map.cache.indexedRevision = -1
+    Map.cache.floorCells = {}
+    Map.cache.floorStairs = {}
+    Map.cache.floorGates = {}
+    Map.cache.floorJail = {}
+    Map.cache.adjacency = {}
+    Map.cache.reach = nil
+    Map.cache.topologyRevision = -1
+    Map.cache.topologyFloor = -1
+    resetCacheStats()
+end
+
+local function requestMap(force)
+    local now = CurTime()
+    if not force and now < (Map.nextRequestAt or 0) then return false end
+    Map.nextRequestAt = now + MAP_REQUEST_RETRY
+    Map.stats.mapRequests = (Map.stats.mapRequests or 0) + 1
     net.Start("LOD_MapRequest")
     net.SendToServer()
+    return true
 end
 
 local function currentGridPosition(ply)
@@ -95,11 +156,135 @@ local function currentGridPosition(ply)
     return math.Clamp(x, 1, MC.Width), math.Clamp(y, 1, MC.Height), math.max(0, z)
 end
 
+local function bitOpen(mask, index)
+    return bit.band(mask or 0, bit.lshift(1, index)) ~= 0
+end
+
+local function gateCode(codes, shift)
+    return bit.band(bit.rshift(codes or 0, shift), 3)
+end
+
+local ROUTE_DIRS = {
+    {dx = 0, dy = 1, dz = 0, bit = 0, gateShift = 0},
+    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 2},
+    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 4},
+    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 6},
+    {dx = 0, dy = 0, dz = 1, bit = 4},
+    {dx = 0, dy = 0, dz = -1, bit = 5}
+}
+
+local STAIR_DIRECTIONS = {
+    [0] = {name = "N", dx = 0, dy = 1},
+    [1] = {name = "E", dx = 1, dy = 0},
+    [2] = {name = "S", dx = 0, dy = -1},
+    [3] = {name = "W", dx = -1, dy = 0}
+}
+
+local function sameEdge(aKey, bKey, edgeA, edgeB)
+    if not edgeA or not edgeB then return false end
+    return (aKey == edgeA and bKey == edgeB) or (aKey == edgeB and bKey == edgeA)
+end
+
+local function sortedEdgeKey(aKey, bKey)
+    return aKey < bKey and (aKey .. "|" .. bKey) or (bKey .. "|" .. aKey)
+end
+
+local function buildGraphIndex()
+    if Map.cache.indexedRevision == Map.cache.revision then return end
+
+    local floorCells = {}
+    local floorStairs = {}
+    local floorGates = {}
+    local floorJail = {}
+    local adjacency = {}
+    local seenGates = {}
+    local seenJail = {}
+    local jailA = Map.jailAKey
+    local jailB = Map.jailBKey
+
+    for _, cell in ipairs(Map.cells) do
+        floorCells[cell.z] = floorCells[cell.z] or {}
+        floorCells[cell.z][#floorCells[cell.z] + 1] = cell
+        adjacency[cell.key] = adjacency[cell.key] or {}
+
+        local up = bitOpen(cell.openings, 4)
+        local down = bitOpen(cell.openings, 5)
+        if up or down then
+            floorStairs[cell.z] = floorStairs[cell.z] or {}
+            floorStairs[cell.z][#floorStairs[cell.z] + 1] = {
+                cell = cell,
+                key = cell.key,
+                up = up,
+                down = down
+            }
+        end
+
+        for _, dir in ipairs(ROUTE_DIRS) do
+            if bitOpen(cell.openings, dir.bit) then
+                local neighborKey = cellKey(cell.x + dir.dx, cell.y + dir.dy, cell.z + dir.dz)
+                local neighbor = Map.byKey[neighborKey]
+                if neighbor then
+                    local gateIndex = dir.gateShift ~= nil and gateCode(cell.gates, dir.gateShift) or 0
+                    local isJail = sameEdge(cell.key, neighborKey, jailA, jailB)
+                    adjacency[cell.key][#adjacency[cell.key] + 1] = {
+                        key = neighborKey,
+                        gate = gateIndex,
+                        jail = isJail
+                    }
+
+                    if dir.gateShift ~= nil and gateIndex > 0 then
+                        local ek = sortedEdgeKey(cell.key, neighborKey)
+                        if not seenGates[ek] then
+                            seenGates[ek] = true
+                            floorGates[cell.z] = floorGates[cell.z] or {}
+                            floorGates[cell.z][#floorGates[cell.z] + 1] = {
+                                gate = gateIndex,
+                                x = cell.x,
+                                y = cell.y,
+                                dx = dir.dx,
+                                dy = dir.dy
+                            }
+                        end
+                    end
+
+                    if isJail and dir.gateShift ~= nil then
+                        local ek = sortedEdgeKey(cell.key, neighborKey)
+                        if not seenJail[ek] then
+                            seenJail[ek] = true
+                            floorJail[cell.z] = floorJail[cell.z] or {}
+                            floorJail[cell.z][#floorJail[cell.z] + 1] = {
+                                x = cell.x,
+                                y = cell.y,
+                                dx = dir.dx,
+                                dy = dir.dy
+                            }
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    Map.cache.floorCells = floorCells
+    Map.cache.floorStairs = floorStairs
+    Map.cache.floorGates = floorGates
+    Map.cache.floorJail = floorJail
+    Map.cache.adjacency = adjacency
+    Map.cache.indexedRevision = Map.cache.revision
+    Map.cache.reach = nil
+    Map.cache.topologyRevision = -1
+    Map.cache.topologyFloor = -1
+    Map.stats.floorIndexBuilds = (Map.stats.floorIndexBuilds or 0) + 1
+end
+
 net.Receive("LOD_MapBegin", function()
     Map.level = net.ReadUInt(20)
     Map.layers = net.ReadUInt(3)
     Map.expectedCells = net.ReadUInt(16)
     Map.expectedChunks = net.ReadUInt(8)
+
+    MC.Origin = Vector(net.ReadFloat(), net.ReadFloat(), net.ReadFloat())
+
     Map.jailA = nil
     Map.jailB = nil
     Map.jailAKey = nil
@@ -110,6 +295,7 @@ net.Receive("LOD_MapBegin", function()
         Map.jailAKey = cellKey(Map.jailA.x, Map.jailA.y, Map.jailA.z)
         Map.jailBKey = cellKey(Map.jailB.x, Map.jailB.y, Map.jailB.z)
     end
+
     Map.receivedChunks = 0
     Map.cells = {}
     Map.byKey = {}
@@ -131,12 +317,14 @@ net.Receive("LOD_MapChunk", function()
             gates = net.ReadUInt(8),
             stairDirection = net.ReadUInt(2)
         }
+        cell.key = cellKey(cell.x, cell.y, cell.z)
         Map.cells[#Map.cells + 1] = cell
-        Map.byKey[cellKey(cell.x, cell.y, cell.z)] = cell
+        Map.byKey[cell.key] = cell
     end
+
     Map.receivedChunks = math.max(Map.receivedChunks or 0, chunkIndex)
     if Map.receivedChunks >= (Map.expectedChunks or 0) then
-        buildFloorIndex()
+        buildGraphIndex()
     end
 end)
 
@@ -168,113 +356,54 @@ hook.Add("Think", "LOD_MinimapToggleInput", function()
 
     Map.open = not Map.open
     surface.PlaySound(Map.open and "buttons/button15.wav" or "buttons/button19.wav")
-    if Map.open then requestMap() end
+    if Map.open then
+        local level = currentClientLevel()
+        if mapReadyForLevel(level) then
+            Map.stats.mapCacheReopens = (Map.stats.mapCacheReopens or 0) + 1
+        else
+            requestMap(true)
+        end
+    end
 end)
 
-local function bitOpen(mask, index)
-    return bit.band(mask or 0, bit.lshift(1, index)) ~= 0
-end
-
-local function gateCode(codes, shift)
-    return bit.band(bit.rshift(codes or 0, shift), 3)
-end
-
-local function drawGateLine(gateIndex, x1, y1, x2, y2)
-    if gateIndex <= 0 then return end
+local function gateStateSignature()
     local state = LOD.ClientState or {}
-    local opened = state.gates and state.gates[gateIndex]
-    local color = opened and Color(105, 185, 115, 245) or (gateColors[gateIndex] or Color(238, 194, 92))
-    surface.SetDrawColor(color)
-    surface.DrawLine(x1, y1, x2, y2)
-    surface.DrawLine(x1 + (y1 == y2 and 0 or 1), y1 + (x1 == x2 and 0 or 1),
-        x2 + (y1 == y2 and 0 or 1), y2 + (x1 == x2 and 0 or 1))
+    local gates = state.gates or {}
+    local signature = 0
+    for gateIndex = 1, 3 do
+        if gates[gateIndex] == true then
+            signature = bit.bor(signature, bit.lshift(1, gateIndex - 1))
+        end
+    end
+    return signature
 end
 
-local function drawPlayerMarker(px, py, size)
-    local yaw = math.rad(EyeAngles().y)
-    local dx = math.cos(yaw)
-    local dy = -math.sin(yaw)
-    surface.SetDrawColor(248, 213, 105, 255)
-    surface.DrawCircle(px, py, size, 248, 213, 105, 255)
-    surface.DrawLine(px, py, px + dx * (size + 7), py + dy * (size + 7))
-end
-
-local ROUTE_DIRS = {
-    {dx = 0, dy = 1, bit = 0, gateShift = 0},
-    {dx = 1, dy = 0, bit = 1, gateShift = 2},
-    {dx = 0, dy = -1, bit = 2, gateShift = 4},
-    {dx = -1, dy = 0, bit = 3, gateShift = 6},
-    {dx = 0, dy = 0, dz = 1, bit = 4},
-    {dx = 0, dy = 0, dz = -1, bit = 5}
-}
-
--- Matches the compact server-authored orientation used by the generated stair
--- geometry. The vector points uphill; the physical foot lies behind it.
-local STAIR_DIRECTIONS = {
-    [0] = {name = "N", dx = 0, dy = 1},
-    [1] = {name = "E", dx = 1, dy = 0},
-    [2] = {name = "S", dx = 0, dy = -1},
-    [3] = {name = "W", dx = -1, dy = 0}
-}
-
-local function sameEdge(aKey, bKey, edgeA, edgeB)
-    if not edgeA or not edgeB then return false end
-    return (aKey == edgeA and bKey == edgeB) or (aKey == edgeB and bKey == edgeA)
-end
-
-local function jailEdgeKeys()
-    return Map.jailAKey, Map.jailBKey
-end
-
-local function edgeTraversable(cell, dir)
-    if not bitOpen(cell.openings, dir.bit) then return false end
-    local fromKey = cellKey(cell.x, cell.y, cell.z)
-    local toKey = cellKey(cell.x + dir.dx, cell.y + dir.dy, cell.z + (dir.dz or 0))
-    if not Map.byKey[toKey] then return false end
+local function graphReachability(startKey)
+    if not Map.byKey[startKey] then return {}, {} end
 
     local state = LOD.ClientState or {}
-    local jailA, jailB = jailEdgeKeys()
-    if sameEdge(fromKey, toKey, jailA, jailB) and state.jailDoorOpen ~= true then return false end
-
-    if dir.gateShift == nil then return true end
-    local gateIndex = gateCode(cell.gates, dir.gateShift)
-    if gateIndex <= 0 then return true end
-    return state.gates and state.gates[gateIndex] == true or false
-end
-
--- One cached three-dimensional BFS is the breadcrumb authority. It consumes the
--- compact canonical topology already held by the client, blocks every unopened
--- colored gate and the locked JailEdge, and traverses only encoded stair edges.
-local function graphReachability(gx, gy, gz)
-    local startKey = cellKey(gx, gy, gz)
-    if not Map.byKey[startKey] then return {}, {}, {} end
-
+    local gates = state.gates or {}
+    local jailOpen = state.jailDoorOpen == true
     local queue = {startKey}
     local head = 1
     local reached = {[startKey] = true}
     local previous = {}
-    local distance = {[startKey] = 0}
 
     while head <= #queue do
         local currentKey = queue[head]
         head = head + 1
-        local current = Map.byKey[currentKey]
-        if current then
-            for _, dir in ipairs(ROUTE_DIRS) do
-                if edgeTraversable(current, dir) then
-                    local nk = cellKey(current.x + dir.dx, current.y + dir.dy, current.z + (dir.dz or 0))
-                    if Map.byKey[nk] and not reached[nk] then
-                        reached[nk] = true
-                        previous[nk] = currentKey
-                        distance[nk] = distance[currentKey] + 1
-                        queue[#queue + 1] = nk
-                    end
-                end
+        for _, edge in ipairs(Map.cache.adjacency[currentKey] or {}) do
+            local traversable = (not edge.jail or jailOpen)
+                and (edge.gate <= 0 or gates[edge.gate] == true)
+            if traversable and not reached[edge.key] then
+                reached[edge.key] = true
+                previous[edge.key] = currentKey
+                queue[#queue + 1] = edge.key
             end
         end
     end
 
-    return reached, previous, distance
+    return reached, previous
 end
 
 local function routeTo(previous, startKey, goalKey)
@@ -291,61 +420,84 @@ local function routeTo(previous, startKey, goalKey)
     return route
 end
 
-local function gateStateSignature()
-    local state = LOD.ClientState or {}
-    local gates = state.gates or {}
-    local signature = 0
-    for gateIndex = 1, 3 do
-        if gates[gateIndex] == true then
-            signature = bit.bor(signature, bit.lshift(1, gateIndex - 1))
+local function buildRouteDisplay(route, gz)
+    local segments = {}
+    local transitionCell
+    local transitionNextCell
+    local transitionDirection
+
+    if route and #route > 0 then
+        for i = 2, #route do
+            local a = Map.byKey[route[i - 1]]
+            local b = Map.byKey[route[i]]
+            if not a or not b or a.z ~= gz then break end
+            if b.z ~= gz then
+                transitionCell = a
+                transitionNextCell = b
+                transitionDirection = b.z > a.z and "↑" or "↓"
+                break
+            end
+            segments[#segments + 1] = {a = a, b = b}
         end
     end
-    return signature
+
+    return segments, transitionCell, transitionNextCell, transitionDirection
 end
 
-local function objectiveSignature()
-    local state = LOD.ClientState or {}
+local function objectiveFields(state)
     local a = state.objectiveA
     local b = state.objectiveB
-    return table.concat({
-        tostring(state.objectiveStage or 0),
-        tostring(state.objectiveKind or 0),
-        a and cellKey(a.x, a.y, a.z) or "nil",
-        b and cellKey(b.x, b.y, b.z) or "nil"
-    }, "|")
+    return state.objectiveStage or 0, state.objectiveKind or 0,
+        a and a.x or -1, a and a.y or -1, a and a.z or -1,
+        b and b.x or -1, b and b.y or -1, b and b.z or -1
 end
 
 local function cachedRouteData(gx, gy, gz)
     local startKey = cellKey(gx, gy, gz)
     local gateSignature = gateStateSignature()
-    local objective = objectiveSignature()
     local state = LOD.ClientState or {}
     local jailOpen = state.jailDoorOpen == true
+    local stage, kind, ax, ay, az, bx, by, bz = objectiveFields(state)
     local cached = Map.cache.reach
-    if cached and cached.revision == Map.cache.revision and
-        cached.startKey == startKey and cached.gateSignature == gateSignature and
-        cached.jailOpen == jailOpen and cached.objective == objective then
-        Map.stats.bfsHits = Map.stats.bfsHits + 1
+
+    if cached and cached.revision == Map.cache.revision
+        and cached.startKey == startKey
+        and cached.gateSignature == gateSignature
+        and cached.jailOpen == jailOpen
+        and cached.stage == stage and cached.kind == kind
+        and cached.ax == ax and cached.ay == ay and cached.az == az
+        and cached.bx == bx and cached.by == by and cached.bz == bz
+    then
+        Map.stats.bfsHits = (Map.stats.bfsHits or 0) + 1
         return cached
     end
 
-    local reached, previous, distance = graphReachability(gx, gy, gz)
+    local reached, previous = graphReachability(startKey)
     local target = state.objectiveA
     local targetKey = target and cellKey(target.x, target.y, target.z) or nil
+    local route = targetKey and reached[targetKey] and routeTo(previous, startKey, targetKey) or nil
+    local segments, transitionCell, transitionNextCell, transitionDirection = buildRouteDisplay(route, gz)
     cached = {
         revision = Map.cache.revision,
         startKey = startKey,
         gateSignature = gateSignature,
         jailOpen = jailOpen,
-        objective = objective,
+        stage = stage,
+        kind = kind,
+        ax = ax, ay = ay, az = az,
+        bx = bx, by = by, bz = bz,
         reached = reached,
         previous = previous,
-        distance = distance,
         targetKey = targetKey,
-        route = targetKey and reached[targetKey] and routeTo(previous, startKey, targetKey) or nil
+        route = route,
+        routeStatus = route and string.format("ROUTE READY — %d CELLS", math.max(0, #route - 1)) or "NO LEGAL ROUTE",
+        segments = segments,
+        transitionCell = transitionCell,
+        transitionNextCell = transitionNextCell,
+        transitionDirection = transitionDirection
     }
     Map.cache.reach = cached
-    Map.stats.bfsBuilds = Map.stats.bfsBuilds + 1
+    Map.stats.bfsBuilds = (Map.stats.bfsBuilds or 0) + 1
     return cached
 end
 
@@ -362,9 +514,6 @@ local function cellWorldCenter(cell)
     )
 end
 
--- Expand the abstract vertical edge into the same physical waypoint used by
--- MazeNavigator: the true stair foot when climbing and the upper landing when
--- descending. This is the point the player can actually see and traverse.
 local function physicalStairGuide(fromCell, toCell, gridX, gridY, cellSize)
     if not fromCell or not toCell or fromCell.z == toCell.z then return nil end
     local lower = fromCell.z < toCell.z and fromCell or toCell
@@ -404,7 +553,7 @@ end
 
 local function stairInstruction(ply, guide)
     local delta = guide.world - ply:GetPos()
-    local distance = math.floor(Vector(delta.x, delta.y, 0):Length() + 0.5)
+    local distance = math.floor(math.sqrt(delta.x * delta.x + delta.y * delta.y) + 0.5)
     local targetYaw
     local action
     if distance > 72 then
@@ -426,54 +575,102 @@ local function drawThickLine(x1, y1, x2, y2, color)
     surface.DrawLine(x1, y1 + 1, x2, y2 + 1)
 end
 
+local function drawPlayerMarker(px, py, size)
+    local yaw = math.rad(EyeAngles().y)
+    local dx = math.cos(yaw)
+    local dy = -math.sin(yaw)
+    surface.SetDrawColor(COLORS.player)
+    surface.DrawCircle(px, py, size, COLORS.player.r, COLORS.player.g, COLORS.player.b, COLORS.player.a)
+    surface.DrawLine(px, py, px + dx * (size + 7), py + dy * (size + 7))
+end
+
 local function drawObjectiveMarker(state, x, y)
     local pulse = 6 + math.abs(math.sin(CurTime() * 4.5)) * 3
     local kind = state.objectiveKind or 0
-    local color = Color(255, 224, 92, 255)
+    local color = COLORS.routeBright
     if kind == 1 then
         local cardIndex = math.Clamp(math.floor(((state.objectiveStage or 1) + 1) / 2), 1, 3)
         color = gateColors[cardIndex] or color
     elseif kind == 5 then
-        color = Color(245, 180, 225, 255)
+        color = COLORS.deborah
     end
     surface.DrawCircle(x, y, pulse, color.r, color.g, color.b, color.a)
     surface.DrawCircle(x, y, pulse + 1, color.r, color.g, color.b, 180)
-    local labels = {[1] = "CARD", [2] = "GATE", [3] = "KEY", [4] = "JAIL", [5] = "D"}
-    draw.SimpleText(labels[kind] or "GOAL", "LOD_Map_Small", x, y - 11,
+    draw.SimpleText(OBJECTIVE_LABELS[kind] or "GOAL", "LOD_Map_Small", x, y - 11,
         color, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
 end
 
-local function drawJailEdge(cell, x0, y0, x1, y1)
-    local aKey, bKey = jailEdgeKeys()
-    if not aKey or not bKey then return end
-    local ck = cellKey(cell.x, cell.y, cell.z)
-    local state = LOD.ClientState or {}
-    local color = state.jailDoorOpen and Color(105, 185, 115, 245) or Color(205, 205, 215, 245)
-    local edges = {
-        {cellKey(cell.x, cell.y + 1, cell.z), x0, y0, x1, y0},
-        {cellKey(cell.x + 1, cell.y, cell.z), x1, y0, x1, y1},
-        {cellKey(cell.x, cell.y - 1, cell.z), x0, y1, x1, y1},
-        {cellKey(cell.x - 1, cell.y, cell.z), x0, y0, x0, y1}
-    }
-    for _, edge in ipairs(edges) do
-        if sameEdge(ck, edge[1], aKey, bKey) then
-            drawThickLine(edge[2], edge[3], edge[4], edge[5], color)
-        end
-    end
+local function segmentScreen(entry, gridX, gridY, cellSize)
+    local x0 = gridX + (entry.x - 1) * cellSize
+    local y0 = gridY + (MC.Height - entry.y) * cellSize
+    local x1 = x0 + cellSize
+    local y1 = y0 + cellSize
+
+    if entry.dx == 1 then return x1, y0, x1, y1 end
+    if entry.dx == -1 then return x0, y0, x0, y1 end
+    if entry.dy == 1 then return x0, y0, x1, y0 end
+    return x0, y1, x1, y1
 end
+
+local function renderStaticTopology(gz)
+    if Map.cache.indexedRevision ~= Map.cache.revision then return false end
+    local cells = Map.cache.floorCells[gz]
+    if not cells then return false end
+
+    local cellSize = MAP_RT_SIZE / math.max(MC.Width, MC.Height)
+    render.PushRenderTarget(topologyRT)
+    render.Clear(COLORS.grid.r, COLORS.grid.g, COLORS.grid.b, 255, true, true)
+    cam.Start2D()
+
+    for _, cell in ipairs(cells) do
+        local x0 = (cell.x - 1) * cellSize
+        local y0 = (MC.Height - cell.y) * cellSize
+        local x1 = x0 + cellSize
+        local y1 = y0 + cellSize
+
+        surface.SetDrawColor(COLORS.cell)
+        surface.DrawRect(x0 + 1, y0 + 1, math.max(1, cellSize - 2), math.max(1, cellSize - 2))
+        surface.SetDrawColor(COLORS.wall)
+        if not bitOpen(cell.openings, 0) then surface.DrawLine(x0, y0, x1, y0) end
+        if not bitOpen(cell.openings, 1) then surface.DrawLine(x1, y0, x1, y1) end
+        if not bitOpen(cell.openings, 2) then surface.DrawLine(x0, y1, x1, y1) end
+        if not bitOpen(cell.openings, 3) then surface.DrawLine(x0, y0, x0, y1) end
+    end
+
+    cam.End2D()
+    render.PopRenderTarget()
+
+    Map.cache.topologyRevision = Map.cache.revision
+    Map.cache.topologyFloor = gz
+    Map.stats.topologyBuilds = (Map.stats.topologyBuilds or 0) + 1
+    return true
+end
+
+-- Render the expensive, fully static floor topology only when the current floor
+-- changes or new map data arrives. HUDPaint then composites one cached texture
+-- and only a handful of dynamic overlays each frame.
+hook.Add("PostRender", "LOD_MinimapTopologyCache", function()
+    if not Map.open or Map.cache.indexedRevision ~= Map.cache.revision then return end
+    local ply = LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() then return end
+    local _, _, gz = currentGridPosition(ply)
+    gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
+    if Map.cache.topologyRevision == Map.cache.revision and Map.cache.topologyFloor == gz then return end
+    renderStaticTopology(gz)
+end)
 
 hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     if not Map.open then return end
     local ply = LocalPlayer()
-    if not IsValid(ply) or not hasAccess(ply) then
+    if not IsValid(ply) or not ply:Alive() or not hasAccess(ply) then
         Map.open = false
         return
     end
 
     local state = LOD.ClientState or {}
-    if Map.level ~= state.level then
-        requestMap()
-        return
+    local level = tonumber(state.level) or 0
+    if not mapReadyForLevel(level) then
+        requestMap(false)
     end
 
     local panelW, panelH = 336, 408
@@ -485,114 +682,96 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     local gx, gy, gz = currentGridPosition(ply)
     gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
 
-    draw.RoundedBox(4, panelX, panelY, panelW, panelH, Color(12, 15, 17, 226))
-    surface.SetDrawColor(220, 140, 48, 235)
+    draw.RoundedBox(4, panelX, panelY, panelW, panelH, COLORS.panel)
+    surface.SetDrawColor(COLORS.accent)
     surface.DrawRect(panelX, panelY, 4, panelH)
 
     draw.SimpleText("LABYRINTH MAP", "LOD_Map_Title", panelX + 18, panelY + 12,
-        Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        COLORS.title, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     draw.SimpleText(string.format("FLOOR %d / %d    M — CLOSE", gz + 1, math.max(1, Map.layers or 1)),
         "LOD_Map_Small", panelX + panelW - 16, panelY + 17,
-        Color(185, 188, 190), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+        COLORS.muted, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
     local goalFloor = state.objectiveA and (state.objectiveA.z + 1) or nil
     local objectiveLine = state.objective or "EXPEDITION"
     if goalFloor then objectiveLine = objectiveLine .. string.format("  [F%d]", goalFloor) end
     draw.SimpleText(objectiveLine, "LOD_Map_Small", panelX + 18, panelY + 42,
-        Color(248, 213, 105), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        COLORS.objective, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-    if (Map.receivedChunks or 0) < (Map.expectedChunks or 0) or #Map.cells == 0 then
+    if not mapReadyForLevel(level) then
         draw.SimpleText("LOADING MAP...", "LOD_Map_Title", panelX + panelW * 0.5, panelY + panelH * 0.5,
-            Color(220, 220, 220), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            COLORS.loading, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         return
     end
 
-    Map.stats.paintFrames = Map.stats.paintFrames + 1
+    if Map.cache.topologyRevision ~= Map.cache.revision or Map.cache.topologyFloor ~= gz then
+        draw.SimpleText("PREPARING FLOOR...", "LOD_Map_Small", panelX + panelW * 0.5, panelY + panelH * 0.5,
+            COLORS.loading, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        return
+    end
+
+    Map.stats.paintFrames = (Map.stats.paintFrames or 0) + 1
     local floorData = cachedRouteData(gx, gy, gz)
     local reached = floorData.reached
     local startKey = floorData.startKey
 
-    surface.SetDrawColor(58, 62, 64, 105)
-    surface.DrawRect(gridX, gridY, gridSize, gridSize)
+    surface.SetDrawColor(255, 255, 255, 255)
+    surface.SetMaterial(topologyMaterial)
+    surface.DrawTexturedRect(gridX, gridY, gridSize, gridSize)
 
-    local wallColor = Color(180, 184, 186, 220)
-    local stairReachable = Color(248, 213, 105, 255)
-    local stairLockedSector = Color(118, 105, 72, 145)
+    -- Gates are the only dynamic wall-colored overlays and there are at most a
+    -- handful per generated floor. Each canonical gate edge is stored once.
+    for _, gate in ipairs(Map.cache.floorGates[gz] or {}) do
+        local x0, y0, x1, y1 = segmentScreen(gate, gridX, gridY, cellSize)
+        local opened = state.gates and state.gates[gate.gate]
+        local color = opened and COLORS.open or (gateColors[gate.gate] or COLORS.title)
+        drawThickLine(x0, y0, x1, y1, color)
+    end
 
-    for _, cell in ipairs(Map.cache.floorCells[gz] or {}) do
+    for _, jail in ipairs(Map.cache.floorJail[gz] or {}) do
+        local x0, y0, x1, y1 = segmentScreen(jail, gridX, gridY, cellSize)
+        drawThickLine(x0, y0, x1, y1, state.jailDoorOpen and COLORS.open or COLORS.jailClosed)
+    end
+
+    for _, stair in ipairs(Map.cache.floorStairs[gz] or {}) do
+        local cell = stair.cell
         local x0 = gridX + (cell.x - 1) * cellSize
         local y0 = gridY + (MC.Height - cell.y) * cellSize
         local x1 = x0 + cellSize
         local y1 = y0 + cellSize
-
-        surface.SetDrawColor(30, 34, 36, 195)
-        surface.DrawRect(x0 + 1, y0 + 1, math.max(1, cellSize - 2), math.max(1, cellSize - 2))
-        surface.SetDrawColor(wallColor)
-
-        if not bitOpen(cell.openings, 0) then surface.DrawLine(x0, y0, x1, y0) end -- N
-        if not bitOpen(cell.openings, 1) then surface.DrawLine(x1, y0, x1, y1) end -- E
-        if not bitOpen(cell.openings, 2) then surface.DrawLine(x0, y1, x1, y1) end -- S
-        if not bitOpen(cell.openings, 3) then surface.DrawLine(x0, y0, x0, y1) end -- W
-
-        drawGateLine(gateCode(cell.gates, 0), x0, y0, x1, y0)
-        drawGateLine(gateCode(cell.gates, 2), x1, y0, x1, y1)
-        drawGateLine(gateCode(cell.gates, 4), x0, y1, x1, y1)
-        drawGateLine(gateCode(cell.gates, 6), x0, y0, x0, y1)
-        drawJailEdge(cell, x0, y0, x1, y1)
-
-        local up = bitOpen(cell.openings, 4)
-        local down = bitOpen(cell.openings, 5)
-        if up or down then
-            local ck = cellKey(cell.x, cell.y, cell.z)
-            local stairText = up and down and "↕" or (up and "↑" or "↓")
-            local color = reached[ck] and stairReachable or stairLockedSector
-            draw.SimpleText(stairText, "LOD_Map_Small", (x0 + x1) * 0.5, (y0 + y1) * 0.5,
-                color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        end
+        local stairText = stair.up and stair.down and "↕" or (stair.up and "↑" or "↓")
+        local color = reached[stair.key] and COLORS.stairReachable or COLORS.stairLocked
+        draw.SimpleText(stairText, "LOD_Map_Small", (x0 + x1) * 0.5, (y0 + y1) * 0.5,
+            color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
-    -- Draw only the immediately useful contiguous segment on this floor. If the
-    -- canonical route changes elevation, terminate the gold line at the exact
-    -- stair and mark the required direction. Changing floors naturally rebuilds
-    -- the cached route from the player's new canonical cell.
     local route = floorData.route
-    local transitionCell
-    local transitionNextCell
-    local transitionDirection
-    if route and #route > 0 then
-        for i = 2, #route do
-            local a = Map.byKey[route[i - 1]]
-            local b = Map.byKey[route[i]]
-            if not a or not b or a.z ~= gz then break end
-            if b.z ~= gz then
-                transitionCell = a
-                transitionNextCell = b
-                transitionDirection = b.z > a.z and "↑" or "↓"
-                break
-            end
-            local ax, ay = mapCellCenter(a, gridX, gridY, cellSize)
-            local bx, by = mapCellCenter(b, gridX, gridY, cellSize)
-            drawThickLine(ax, ay, bx, by, Color(255, 215, 58, 225))
-            surface.DrawCircle(bx, by, 2, 255, 226, 100, 235)
-        end
+    for _, segment in ipairs(floorData.segments or {}) do
+        local ax, ay = mapCellCenter(segment.a, gridX, gridY, cellSize)
+        local bx, by = mapCellCenter(segment.b, gridX, gridY, cellSize)
+        drawThickLine(ax, ay, bx, by, COLORS.route)
+        surface.DrawCircle(bx, by, 2, COLORS.routeBright.r, COLORS.routeBright.g, COLORS.routeBright.b, 235)
     end
 
+    local transitionCell = floorData.transitionCell
+    local transitionNextCell = floorData.transitionNextCell
+    local transitionDirection = floorData.transitionDirection
     local transitionGuide
     if transitionCell and transitionNextCell then
         transitionGuide = physicalStairGuide(transitionCell, transitionNextCell, gridX, gridY, cellSize)
         local cellX, cellY = mapCellCenter(transitionCell, gridX, gridY, cellSize)
         local tx = transitionGuide and transitionGuide.mapX or cellX
         local ty = transitionGuide and transitionGuide.mapY or cellY
-        drawThickLine(cellX, cellY, tx, ty, Color(255, 215, 58, 225))
+        drawThickLine(cellX, cellY, tx, ty, COLORS.route)
         local pulse = 7 + math.abs(math.sin(CurTime() * 4)) * 3
-        surface.DrawCircle(tx, ty, pulse, 255, 226, 100, 255)
+        surface.DrawCircle(tx, ty, pulse, COLORS.routeBright.r, COLORS.routeBright.g, COLORS.routeBright.b, 255)
         if transitionGuide then
             local arrowLength = cellSize * 0.24
             local arrowX = tx + transitionGuide.travelX * arrowLength
             local arrowY = ty - transitionGuide.travelY * arrowLength
-            drawThickLine(tx, ty, arrowX, arrowY, Color(255, 226, 100, 255))
+            drawThickLine(tx, ty, arrowX, arrowY, COLORS.routeBright)
         end
         draw.SimpleText(transitionDirection .. " STAIRS", "LOD_Map_Small", tx, ty - 11,
-            Color(255, 226, 100), TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
+            COLORS.routeBright, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
     end
 
     local objectiveA = state.objectiveA
@@ -620,20 +799,18 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         drawPlayerMarker(px, py, 3)
     end
 
-    local routeStatus = route and string.format("ROUTE READY — %d CELLS", math.max(0, #route - 1)) or "NO LEGAL ROUTE"
-    draw.SimpleText(routeStatus, "LOD_Map_Small", panelX + 18, panelY + panelH - 47,
-        route and Color(105, 210, 125) or Color(225, 100, 82), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+    draw.SimpleText(floorData.routeStatus, "LOD_Map_Small", panelX + 18, panelY + panelH - 47,
+        route and COLORS.routeReady or COLORS.routeBlocked, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 
     if transitionGuide then
         draw.SimpleText(stairInstruction(ply, transitionGuide), "LOD_Map_Small",
-            panelX + 18, panelY + panelH - 32, Color(255, 226, 100),
+            panelX + 18, panelY + panelH - 32, COLORS.routeBright,
             TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
     end
 
     draw.SimpleText("FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN", "LOD_Map_Small",
-        panelX + 18, panelY + panelH - 18, Color(170, 174, 176), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+        panelX + 18, panelY + panelH - 18, COLORS.footer, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end)
-
 
 concommand.Add("lod_minimap_cache_status", function()
     local stats = Map.stats or {}
@@ -642,9 +819,13 @@ concommand.Add("lod_minimap_cache_status", function()
     local builds = stats.bfsBuilds or 0
     local hits = stats.bfsHits or 0
     local indexed = stats.floorIndexBuilds or 0
-    local passed = ready and frames > 0 and builds > 0 and hits > 0 and builds < frames and indexed == 1
+    local topology = stats.topologyBuilds or 0
+    local requests = stats.mapRequests or 0
+    local reopens = stats.mapCacheReopens or 0
+    local passed = ready and frames > 0 and builds > 0 and hits > 0
+        and builds < frames and indexed == 1 and topology > 0
     print(string.format(
-        "[LOD:MINIMAP-CACHE] frames=%d bfsBuilds=%d bfsHits=%d floorIndexBuilds=%d ready=%s result=%s",
-        frames, builds, hits, indexed, tostring(ready), passed and "PASS" or "FAIL"
+        "[LOD:MINIMAP-CACHE] frames=%d bfsBuilds=%d bfsHits=%d floorIndexBuilds=%d topologyBuilds=%d mapRequests=%d cachedReopens=%d ready=%s result=%s",
+        frames, builds, hits, indexed, topology, requests, reopens, tostring(ready), passed and "PASS" or "FAIL"
     ))
 end)
