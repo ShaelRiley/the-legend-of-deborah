@@ -77,8 +77,9 @@ include("lod/sv_hostile_separation.lua")
 include("lod/sv_m3_ground_probe.lua")
 include("lod/sv_hostile_combat_hulls.lua")
 include("lod/sv_m3_hit_feedback.lua")
--- Shotgun identity extends the accepted one-stun-per-shell path with a modest,
--- graph-safe push that can never cross the hostile's current canonical cell.
+-- One reusable Motion-V2-safe push authority owns displacement and wall-crush
+-- resolution for Shotgun today and later elemental/weapon/environmental effects.
+include("lod/sv_pushback.lua")
 include("lod/sv_shotgun_pushback.lua")
 -- Load after hit feedback so generated-cover rejection can also suppress false
 -- hit-confirm/flinch events, independent of EntityTakeDamage hook order.
