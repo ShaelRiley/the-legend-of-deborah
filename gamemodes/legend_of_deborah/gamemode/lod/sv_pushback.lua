@@ -65,19 +65,18 @@ function Pushback:_RollWallCrush(hostile, opts)
     local total, values = rolls:_RollFormula(CRUSH_PROFILE, rng)
     total = math.max(1, math.floor((total or 1) + 0.5))
 
-    local attacker = IsValid(opts.attacker) and opts.attacker or game.GetWorld()
-    local inflictor = IsValid(opts.inflictor) and opts.inflictor or attacker
+    -- The wall is the direct damage source. Keep the initiating player/effect in
+    -- our own record and combat feed, but deliver DMG_CRUSH environmentally so a
+    -- shotgun-triggered crush cannot look like a second bullet hit and cannot
+    -- create another firearm hit-confirm or hit-stun event.
+    local sourceAttacker = IsValid(opts.attacker) and opts.attacker or nil
+    local world = game.GetWorld()
     local info = DamageInfo()
-    info:SetAttacker(attacker)
-    info:SetInflictor(inflictor)
+    info:SetAttacker(world)
+    info:SetInflictor(world)
     info:SetDamage(total)
     info:SetDamageType(DMG_CRUSH)
     info:SetDamageForce(vector_origin)
-
-    -- Crush is a consequence of the push, not another firearm impact. Suppress
-    -- the ordinary bullet hit-confirm/stun observer for this one damage event so
-    -- the initiating weapon remains the sole source of its normal hit feedback.
-    hostile.LODSuppressHitFeedbackUntil = CurTime() + 0.03
     hostile:TakeDamageInfo(info)
 
     self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
@@ -85,7 +84,7 @@ function Pushback:_RollWallCrush(hostile, opts)
     hostile.LODLastWallCrush = {
         at = CurTime(),
         damage = total,
-        attacker = attacker,
+        attacker = sourceAttacker,
         source = source,
         rolls = values
     }
@@ -94,9 +93,9 @@ function Pushback:_RollWallCrush(hostile, opts)
         hostile:EmitSound("physics/body/body_medium_impact_hard3.wav", 66, 96, 0.62, CHAN_BODY)
     end
 
-    if IsValid(attacker) and attacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
-        local detail = string.format("[roll %d]", values and values[1] or total)
-        rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker, "1d3", total,
+    if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
+        local detail = string.format("[roll %d; from %s push]", values and values[1] or total, source)
+        rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, "1d3", total,
             hostile, detail, nil, "Hostile", "wall crush"))
     end
 
