@@ -16,11 +16,11 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Enemy size/stat variance + monotonic durability | `sv_enemy_variance.lua`, `sv_combat_rolls.lua` |
 | Narrowed Shambler/Runner melee dice | `sv_enemy_melee_dice_balance.lua` |
 | Generated-cover LOS / bullet authority | `sv_generated_geometry_ballistics.lua` |
-| Server-authoritative combat dice / combat feed | `sv_combat_rolls.lua`, `cl_combat_roll_feed.lua` |
+| Server-authoritative combat dice / combat feed + exploding-die QoL cue | `sv_combat_rolls.lua`, `cl_combat_roll_feed.lua`; player exploding-die continuations trigger a bounded shooter-local radial HUD burst + positive two-layer sound |
 | Crowbar | `entities/weapons/weapon_lod_crowbar/`: `1d3`, 96-unit reach, miss/hit audio and hit-confirm |
 | SMG overheat + AR2 laser/burst | `sv_player_weapon_specials.lua`, `sv_player_weapon_specials_input.lua`, client mirror |
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
-| Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision |
+| Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision; target depth escalates cumulatively from `1d12!` to `2d12!`, `3d12!`, etc. up to the existing 8-target cap |
 | Shotgun 5–6 explosion + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua` |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
 | Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 4–16 silhouettes use distinct leased clientside render models from a reusable per-model pool, avoiding same-entity/same-frame transform caching; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
@@ -43,9 +43,10 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - Pistol: `1d4`.
 - SMG: `1d8`, six-shot heat threshold, 0.25 s per heat cooling, 2.0 s overheat lock.
 - AR2: `1d10` per projectile, 0.45 s committed laser tell, exactly three projectiles, **one AR2 ammo unit per complete burst**.
-- .357 Magnum: exploding `1d12` on natural 10/11/12; **one cartridge; penetrates aligned hostiles with the same resolved shot total** until blocked.
+- .357 Magnum: exploding `1d12` on natural **8/9/10/11/12**; one cartridge; aligned piercing escalates cumulatively by one fresh exploding d12 chain per deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., capped at eight total targets and stopped by authoritative geometry.
 - Shotgun: shared `1d6`, floor 3, natural **5 or 6** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**.
 - Grenade: `1d20`, separate consumable reward.
+- Player-side exploding-die continuations (currently Magnum and Shotgun, including Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
 
 ## Basic Magic contract
 
