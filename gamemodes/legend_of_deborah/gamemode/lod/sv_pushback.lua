@@ -8,11 +8,14 @@ if not Motion then return end
 local CRUSH_PROFILE = {label = "WALL CRUSH", source = "wall crush", count = 1, sides = 3}
 local CRUSH_IMPACT_SOUND = "physics/body/body_medium_impact_hard6.wav"
 local CRUSH_BREAK_SOUND = "physics/body/body_medium_break4.wav"
+local CRUSH_SLAM_SOUND = "ambient/machines/thumper_hit.wav"
 local WALL_CLASSES = {
     lod_static_box = true,
     lod_gate = true,
     lod_jail_door = true
 }
+
+util.AddNetworkString("LOD_PushbackFX")
 
 Pushback.Stats = Pushback.Stats or {pushes = 0, wallCrushes = 0, crushDamage = 0}
 
@@ -60,14 +63,34 @@ end
 local function playWallCrushAudio(hostile, damage)
     if not IsValid(hostile) then return end
 
-    -- One recognizable two-layer signature marks the mechanical event itself:
-    -- a heavy body/wall slam plus a short break/crunch. Slightly lower pitch on
-    -- larger 1d3 results makes stronger crushes feel heavier without adding UI.
+    -- One recognizable layered signature marks the mechanical event itself:
+    -- heavy body impact + short crunch + a low slam transient that cuts through
+    -- gunfire and the Force Shout. Slightly lower pitch on larger 1d3 results
+    -- makes stronger crushes feel heavier without adding more HUD noise.
     local strength = math.Clamp(math.floor((tonumber(damage) or 1) + 0.5), 1, 3)
     local impactPitch = 102 - (strength - 1) * 5
     local breakPitch = 108 - (strength - 1) * 6
+    local slamPitch = 124 - (strength - 1) * 5
     hostile:EmitSound(CRUSH_IMPACT_SOUND, 78, impactPitch, 0.90, CHAN_BODY)
     hostile:EmitSound(CRUSH_BREAK_SOUND, 72, breakPitch, 0.62, CHAN_STATIC)
+    if file.Exists("sound/" .. CRUSH_SLAM_SOUND, "GAME") then
+        hostile:EmitSound(CRUSH_SLAM_SOUND, 84, slamPitch, 0.72, CHAN_AUTO)
+    end
+end
+
+local function broadcastPushFX(hostile, startPos, destination, trace, crushed, opts)
+    local moved = startPos:Distance(destination)
+    if moved <= 0.05 and not crushed then return end
+
+    local impactPos = trace and trace.Hit and trace.HitPos or destination
+    net.Start("LOD_PushbackFX")
+    net.WriteEntity(IsValid(hostile) and hostile or NULL)
+    net.WriteVector(startPos)
+    net.WriteVector(destination)
+    net.WriteVector(impactPos)
+    net.WriteBool(crushed == true)
+    net.WriteString(string.sub(tostring(opts and opts.source or "generic"), 1, 24))
+    net.Broadcast()
 end
 
 function Pushback:_RollWallCrush(hostile, opts)
@@ -160,6 +183,12 @@ function Pushback:Apply(hostile, opts)
 
     self.Stats.pushes = (self.Stats.pushes or 0) + 1
     local crushed = crushSurface(trace)
+
+    -- Broadcast the already-resolved authoritative path before crush damage can
+    -- kill/remove the hostile. Clients render only presentation; they never infer
+    -- displacement, collision, or crush state independently.
+    broadcastPushFX(hostile, startPos, destination, trace, crushed, opts)
+
     local crushDamage = crushed and self:_RollWallCrush(hostile, opts) or 0
     local result = {
         requested = distance,
