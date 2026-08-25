@@ -32,7 +32,7 @@ function GM:PlayerLoadout(ply)
     ply:StripWeapons()
     ply:RemoveAllAmmo()
 
-    ply:Give("weapon_crowbar", true)
+    ply:Give("weapon_lod_crowbar", true)
     local pistol = ply:Give("weapon_pistol", true)
     if IsValid(pistol) then pistol:SetClip1(18) end
     ply:SetAmmo(0, "Pistol")
