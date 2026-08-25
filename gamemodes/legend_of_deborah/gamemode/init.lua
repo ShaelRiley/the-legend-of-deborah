@@ -57,6 +57,9 @@ include("lod/sv_loot_director.lua")
 include("lod/sv_loot_context_rules.lua")
 include("lod/sv_loot_catchup.lua")
 include("lod/sv_loot_budget_validation.lua")
+-- Firearms are peers rather than power tiers: equal acquisition weighting,
+-- depletion-driven ammo support, and one AR2 ammo unit per three-round burst.
+include("lod/sv_firearm_economy_equalization.lua")
 include("lod/sv_minimap.lua")
 include("lod/sv_minimap_canonical.lua")
 include("lod/sv_minimap_safety.lua")
@@ -90,6 +93,9 @@ include("lod/sv_shotgun_pushback.lua")
 -- Load after hit feedback so generated-cover rejection can also suppress false
 -- hit-confirm/flinch events, independent of EntityTakeDamage hook order.
 include("lod/sv_generated_geometry_ballistics.lua")
+-- Magnum penetration validates each post-body segment against the same generated
+-- geometry authority, so aligned enemies can be pierced but walls cannot.
+include("lod/sv_magnum_piercing.lua")
 -- Phase Zero replaces repeated graph BFS/global hostile scans with bounded
 -- caches while preserving Motion V2 and generated geometry as authorities.
 include("lod/sv_phase_zero_runtime_optimization.lua")
