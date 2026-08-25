@@ -7,7 +7,7 @@ local Rolls = LOD.CombatRolls
 local Pushback = LOD.Pushback
 
 local MAX_MAGIC = 100
-local SHOUT_COST = 20
+local SHOUT_COST = 30
 local REGEN_SECONDS = 60
 local REGEN_TICK = 0.25
 local REGEN_PER_TICK = MAX_MAGIC / (REGEN_SECONDS / REGEN_TICK)
