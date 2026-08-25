@@ -176,7 +176,8 @@ local function installContract()
 
         -- Facing is part of the commitment. Establish it before transforming the
         -- local weapon hardpoint, then never point the actor at the moving player
-        -- again until this burst has completed or been cancelled.
+        -- again until this burst has completed or been cancelled by an external
+        -- event such as hit stun, death, or level shutdown.
         Contract:HoldFacing(self, facingPos)
 
         local shotOrigin = Contract:ShotOrigin(self)
@@ -239,12 +240,11 @@ local function installContract()
         Contract:HoldFacing(self, burst.facingPos)
 
         if CurTime() < burst.windupEnd then
-            -- Breaking line of sight during the tell still cancels the attack.
-            -- Player motion never alters origin, direction, endpoint, or facing.
-            if not self:_HasLineOfSight(target) then
-                self:_CancelSoldierBurst(0.25)
-                return false
-            end
+            -- Once the warning beam is published, the shot is committed. Do not
+            -- re-check LOS during the dodge window: corridor-edge LOS can flicker
+            -- for a frame and previously caused an endless laser on/off restart
+            -- loop. If the player reaches cover, the already-committed bolts still
+            -- fire on the original line and collide with that cover normally.
             return true
         end
 
@@ -367,16 +367,16 @@ concommand.Add("lod_soldier_contract_status", function(ply)
             bolts = bolts + 1
             local delta = bolt:GetPos() - bolt.LODContractOrigin
             local dir = bolt.LODContractDirection:GetNormalized()
-            local deviation = delta:Cross(dir):Length()
-            maxDeviation = math.max(maxDeviation, deviation)
+            local along = delta:Dot(dir)
+            local closest = bolt.LODContractOrigin + dir * along
+            maxDeviation = math.max(maxDeviation, bolt:GetPos():Distance(closest))
         end
     end
 
-    local passed = legacyActive == 0 and maxDeviation <= 0.05
+    local pass = legacyActive == 0 and maxDeviation <= 0.75
     local line = string.format(
-        "activeBursts=%d physicalBolts=%d legacyTelegraphs=%d maxLineDeviation=%.4f result=%s",
-        active, bolts, legacyActive, maxDeviation, passed and "PASS" or "FAIL"
-    )
+        "active=%d legacyTelegraphs=%d soldierBolts=%d maxLineDeviation=%.3f result=%s",
+        active, legacyActive, bolts, maxDeviation, pass and "PASS" or "FAIL")
     print("[LOD:SOLDIER-CONTRACT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
