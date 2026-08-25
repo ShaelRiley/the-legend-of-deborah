@@ -1,16 +1,38 @@
 LOD = LOD or {}
 
 -- Magic visually replaces the stock CHudBattery/Suit readout, but does not use
--- the HL2 armor pool. Match Valve/GMod's actual HudSuit layout contract rather
--- than approximating it with a custom panel:
---   xpos 140, ypos 432, wide 108, tall 36
---   text 8,20; digits 50,2
--- All values are Source proportional coordinates on a 640x480 HUD canvas.
+-- the HL2 armor pool. Valve's HudLayout.res coordinates are proportional to a
+-- 640x480 HUD canvas. IMPORTANT: Garry's Mod ScreenScale() scales from WIDTH,
+-- so using it for Y on a widescreen display pushes the Suit slot off-screen.
+-- Use one height-derived proportional scale for both axes/sizes instead.
 local MAGIC_COLOR = Color(72, 168, 255, 255)
 local PANEL_COLOR = Color(0, 0, 0, 145)
 
-local function ss(value)
-    return ScreenScale(value)
+local function ps(value)
+    return value * (ScrH() / 480)
+end
+
+local function hudSuitLayout()
+    -- Valve ships a dedicated Steam Deck HudSuit layout. Use it for the Deck's
+    -- characteristic 16:10 low-height viewport; otherwise use the normal HL2MP
+    -- HudSuit values. Both are still rendered through the same 640x480
+    -- height-proportional coordinate system.
+    local aspect = ScrW() / math.max(1, ScrH())
+    local deckLike = ScrH() <= 900 and aspect >= 1.55 and aspect <= 1.65
+
+    if deckLike then
+        return {
+            x = 150, y = 426, w = 120, h = 42,
+            textX = 8, textY = 23,
+            digitX = 56, digitY = 0
+        }
+    end
+
+    return {
+        x = 140, y = 432, w = 108, h = 36,
+        textX = 8, textY = 20,
+        digitX = 50, digitY = 2
+    }
 end
 
 hook.Add("HUDShouldDraw", "LOD_MagicReplacesSuitBattery", function(name)
@@ -21,36 +43,25 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
-    -- Do not gate the persistent Magic meter on LOD_PlayedIdentity. That network
-    -- flag is used by some death/identity presentation paths but is not guaranteed
-    -- to remain true throughout every ordinary live-run state. The main LOD HUD
-    -- itself only requires a valid local player, so Magic follows the same rule.
     local maximum = math.max(1, ply:GetNW2Int("LOD_MagicMax", 100))
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
     local value = math.floor(magic + 0.5)
+    local layout = hudSuitLayout()
 
-    -- Exact stock HudSuit proportional bounds from HL2/GMod HudLayout.res.
-    local x = ss(140)
-    local y = ss(432)
-    local w = ss(108)
-    local h = ss(36)
+    local x = ps(layout.x)
+    local y = ps(layout.y)
+    local w = ps(layout.w)
+    local h = ps(layout.h)
 
-    -- PaintBackgroundType 2 is the stock compact HUD-panel treatment. Lua does
-    -- not expose that native border object directly, so reproduce its footprint
-    -- with the same dark translucent bounding box while using the engine's own
-    -- stock HUD fonts below.
-    draw.RoundedBox(ss(2), x, y, w, h, PANEL_COLOR)
+    draw.RoundedBox(ps(2), x, y, w, h, PANEL_COLOR)
 
-    -- CHudNumericDisplay itself uses TextFont="Default" and
-    -- NumberFont="HudNumbers". Reuse those exact engine fonts so Magic has
-    -- genuine font/size parity with the Suit indicator instead of a lookalike.
     surface.SetTextColor(MAGIC_COLOR)
     surface.SetFont("Default")
-    surface.SetTextPos(x + ss(8), y + ss(20))
+    surface.SetTextPos(x + ps(layout.textX), y + ps(layout.textY))
     surface.DrawText("MAGIC")
 
     surface.SetTextColor(MAGIC_COLOR)
     surface.SetFont("HudNumbers")
-    surface.SetTextPos(x + ss(50), y + ss(2))
+    surface.SetTextPos(x + ps(layout.digitX), y + ps(layout.digitY))
     surface.DrawText(tostring(value))
 end)
