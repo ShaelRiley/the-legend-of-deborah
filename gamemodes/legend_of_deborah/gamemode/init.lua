@@ -11,8 +11,6 @@ AddCSLuaFile("lod/cl_dev_testing.lua")
 AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed.lua")
 AddCSLuaFile("lod/cl_minimap.lua")
-AddCSLuaFile("lod/cl_minimap_origin_sync.lua")
-AddCSLuaFile("lod/cl_minimap_safety.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magic.lua")
@@ -63,9 +61,9 @@ include("lod/sv_loot_budget_validation.lua")
 -- Firearms are peers rather than power tiers: equal acquisition weighting,
 -- depletion-driven ammo support, and one AR2 ammo unit per three-round burst.
 include("lod/sv_firearm_economy_equalization.lua")
+-- One canonical minimap server module owns entitlement, canonical graph
+-- serialization, runtime-origin sync, and the compact map network protocol.
 include("lod/sv_minimap.lua")
-include("lod/sv_minimap_canonical.lua")
-include("lod/sv_minimap_safety.lua")
 include("lod/sv_combat_audio.lua")
 
 -- Motion V2 is the one production ground-movement authority. Load it before
@@ -89,8 +87,8 @@ include("lod/sv_hostile_separation.lua")
 include("lod/sv_m3_ground_probe.lua")
 include("lod/sv_hostile_combat_hulls.lua")
 include("lod/sv_m3_hit_feedback.lua")
--- Current Shotgun identity extends the shared roll/stun authorities: natural 5s
--- and 6s explode recursively and shell-level stun may reach the authored 4x tier.
+-- Current Shotgun identity uses the universal natural-6 d6 explosion rule, an
+-- exploding pellet-count d6, and shell-level stun up to the authored 4x tier.
 include("lod/sv_shotgun_identity_balance.lua")
 -- One reusable Motion-V2-safe push authority owns displacement and wall-crush
 -- resolution for Shotgun today and later elemental/weapon/environmental effects.
