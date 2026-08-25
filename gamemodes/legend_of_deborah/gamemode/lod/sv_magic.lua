@@ -164,18 +164,20 @@ local function lineClear(ply, hostile)
 end
 
 local function rollExploding2d6()
-    if not Rolls or not Rolls._RNG or not Rolls._RollExploding then return 2, {1, 1} end
+    if not Rolls or not Rolls._RNG or not Rolls._RollExploding then return 2, {1, 1}, false, 0 end
     local rng = Rolls:_RNG("magic:force-shout")
     local total = 0
     local all = {}
     local capped = false
+    local explosions = 0
     for die = 1, 2 do
         local amount, values, _, chainCapped = Rolls:_RollExploding(SHOUT_PROFILE, rng)
         total = total + (amount or 0)
         all[#all + 1] = values or {}
+        explosions = explosions + math.max(0, #(values or {}) - 1)
         capped = capped or chainCapped == true
     end
-    return math.max(2, total), all, capped
+    return math.max(2, total), all, capped, explosions
 end
 
 local function rollDetail(chains)
@@ -244,7 +246,11 @@ function Magic:CastForceShout(ply)
     local targets = targetList(ply, direction)
     for _, hostile in ipairs(targets) do
         if IsValid(hostile) and not hostile.LODDead and hostile:Health() > 0 then
-            local total, chains, capped = rollExploding2d6()
+            local total, chains, capped, explosions = rollExploding2d6()
+            if explosions > 0 and Rolls and Rolls.EmitDiceExplosionFX then
+                Rolls:EmitDiceExplosionFX(ply, "force_shout", explosions, 1)
+            end
+
             local info = DamageInfo()
             info:SetAttacker(ply)
             info:SetInflictor(ply)
