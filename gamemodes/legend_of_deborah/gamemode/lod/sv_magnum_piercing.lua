@@ -3,10 +3,18 @@ LOD.MagnumPiercing = LOD.MagnumPiercing or {}
 
 local Piercing = LOD.MagnumPiercing
 local Ballistics = LOD.GeneratedGeometryBallistics
+local Rolls = LOD.CombatRolls
 
 local MAX_TOTAL_TARGETS = 8
 local MAX_DISTANCE = 8192
 local ADVANCE_EPSILON = 6
+local MAGNUM_BONUS_PROFILE = {
+    label = "MAGNUM PIERCE BONUS",
+    source = ".357 Magnum",
+    count = 1,
+    sides = 12,
+    exploding = 8
+}
 
 Piercing.DamageSegments = Piercing.DamageSegments or setmetatable({}, {__mode = "k"})
 Piercing.Stats = Piercing.Stats or {shots = 0, extraTargets = 0, maxTargets = 0}
@@ -42,6 +50,22 @@ local function traceNext(startPos, direction, ignored)
         mask = MASK_SHOT,
         filter = ignored
     })
+end
+
+local function copyValues(values)
+    local out = {}
+    for i, value in ipairs(values or {}) do out[i] = value end
+    return out
+end
+
+local function chainDetail(depth, chains)
+    local parts = {}
+    for i, values in ipairs(chains or {}) do
+        local rolled = {}
+        for j, value in ipairs(values or {}) do rolled[j] = tostring(value) end
+        parts[i] = table.concat(rolled, ">")
+    end
+    return string.format("[pierce #%d; chains %s]", depth, table.concat(parts, " | "))
 end
 
 -- Generated-geometry rejection normally re-traces from the player's muzzle. A
@@ -92,6 +116,8 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
         local ignored = {attacker, weapon, tr.Entity}
         local startPos = tr.HitPos + direction * ADVANCE_EPSILON
         local targets = 1
+        local cumulativeTotal = math.max(1, tonumber(contract.total) or tonumber(dmginfo:GetDamage()) or 1)
+        local cumulativeChains = {copyValues(contract.values)}
         Piercing.Stats.shots = (Piercing.Stats.shots or 0) + 1
 
         while targets < MAX_TOTAL_TARGETS do
@@ -109,21 +135,47 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 if blocked then break end
             end
 
+            -- Each body deeper in a valid alignment adds one fresh exploding d12
+            -- chain to the damage carried forward. Thus target 2 receives 2d12!,
+            -- target 3 receives 3d12!, and so on; earlier rolled chains are never
+            -- rerolled. Every added die uses the Magnum's same natural 8-12
+            -- explosion threshold, making deep lines intentionally devastating.
+            local depth = targets + 1
+            local bonusTotal = 0
+            local bonusValues = {}
+            if Rolls and Rolls._RNG and Rolls._RollExploding then
+                local rng = Rolls:_RNG("magnum-pierce-bonus:" .. tostring(depth))
+                bonusTotal, bonusValues = Rolls:_RollExploding(MAGNUM_BONUS_PROFILE, rng)
+            else
+                bonusTotal = math.random(1, 12)
+                bonusValues = {bonusTotal}
+            end
+
+            cumulativeTotal = cumulativeTotal + math.max(1, tonumber(bonusTotal) or 1)
+            cumulativeChains[#cumulativeChains + 1] = copyValues(bonusValues)
+
+            if Rolls and Rolls.EmitDiceExplosionFX and #bonusValues > 1 then
+                Rolls:EmitDiceExplosionFX(attacker, "weapon_357", #bonusValues - 1, depth)
+            end
+
             local info = DamageInfo()
             info:SetAttacker(attacker)
             info:SetInflictor(weapon)
-            info:SetDamage(contract.total or dmginfo:GetDamage())
+            info:SetDamage(cumulativeTotal)
             info:SetDamageType(DMG_BULLET)
             info:SetDamagePosition(nextTrace.HitPos)
-            info:SetDamageForce(direction * math.max(1, contract.total or 1) * 30)
+            info:SetDamageForce(direction * math.max(1, cumulativeTotal) * 30)
 
             Piercing.DamageSegments[info] = {
                 startPos = startPos,
-                endPos = nextTrace.HitPos
+                endPos = nextTrace.HitPos,
+                depth = depth,
+                total = cumulativeTotal,
+                detail = chainDetail(depth, cumulativeChains)
             }
             target:TakeDamageInfo(info)
 
-            targets = targets + 1
+            targets = depth
             Piercing.Stats.extraTargets = (Piercing.Stats.extraTargets or 0) + 1
             ignored[#ignored + 1] = target
             startPos = nextTrace.HitPos + direction * ADVANCE_EPSILON
@@ -138,7 +190,7 @@ concommand.Add("lod_magnum_pierce_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
-    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d geometrySafe=true",
+    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d escalatingDice=true explode=8-12 geometrySafe=true",
         Piercing.Stats.shots or 0,
         Piercing.Stats.extraTargets or 0,
         Piercing.Stats.maxTargets or 0,
