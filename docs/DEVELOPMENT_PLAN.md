@@ -1,19 +1,17 @@
 # Development Plan — 2026-08-25 Dice-Era Reconciliation
 
-This execution plan reconciles the live production GDD with the actual `main` implementation and accepted Steam Deck runtime evidence after the complete-dungeon vertical slice and v1 dice-combat subsystem work.
+The live GDD is design authority; GitHub `main` is implementation authority. Milestone numbers describe capability groups, while the current execution gate follows accepted runtime evidence.
 
-## Execution principle
+## Current order
 
-Milestone numbers describe capability groups, not rigid chronological gates. Do not reopen accepted systems without new regression evidence, and do not tune future systems against obsolete fixed-damage assumptions.
-
-Current order:
-
-1. **Complete one full dice-era dungeon and evaluate the integrated combat economy.**
-2. Make only evidence-driven dice balance corrections required by that run and subsequent confirming runs.
+1. **Complete and tune Gate C8 whole-dungeon dice play.**
+2. Make only evidence-driven combat/economy corrections required by authentic runs.
 3. Resume the remaining expanded normal-enemy roster.
-4. Finish the rest of Milestone 4 expedition/economy work, including production loot and Brute + Neil / Map acquisition.
+4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
 5. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
-6. Integrate and harden multiplayer last.
+6. Integrate/harden multiplayer last.
+
+Production LootDirector is already implemented. Do not schedule it again as future work.
 
 XP, character levels, procedural equipment/affixes, elements, Magic, Luck Ring, and the broader RPG layer remain deferred post-release systems.
 
@@ -21,213 +19,200 @@ XP, character levels, procedural equipment/affixes, elements, Magic, Luck Ring, 
 
 ## Gate A — Complete Dungeon Vertical Slice — ACCEPTED
 
-The production-compatible progression loop is established:
+The production progression loop is established:
 
-`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → Deborah jail door → Deborah → level clear → intermission → next generated level`
+`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah → level clear → intermission → next generated level`
 
-Accepted evidence includes three consecutive complete dungeons, successful Level-4 generation/release, `lod_m2_seed_test 100` at 100/100, accepted minimap caching and breadcrumb routing, legal Jail Key/jail-door/Deborah state, death/checkpoint persistence, and corrected stair presentation.
-
-**Do not reopen Gate A without new evidence of regression.** Gordon the Warden will later replace only the temporary Core source of the already-proven Jail Key.
+Do not reopen without new regression evidence.
 
 ---
 
-## Gate B — Fixed-Damage Baseline — HISTORICAL / SUPERSEDED
+## Gate C — v1 Dice Combat / Current Balance Gate
 
-The project has already crossed into the dice-era implementation. Do not spend additional development time perfecting the obsolete fixed-damage/fixed-HP baseline.
+### Combat roll authority / feed — IMPLEMENTED
 
-Any historical fixed-damage observations remain useful only as qualitative comparison material. The current shipping balance target is the v1 dice system.
-
----
-
-## Gate C — v1 Dice-Combat Foundation
-
-### C1. Server-authoritative roll service — IMPLEMENTED
-
-`sv_combat_rolls.lua` owns authoritative player weapon rolls, hostile-originated damage rolls, deterministic enemy health dice, and compact resolved presentation events. Clients never decide damage.
-
-### C2. Bounded combat-roll feed — IMPLEMENTED / RUNTIME ACCEPTED
-
-`cl_combat_roll_feed.lua` presents a bounded lower-right event history between ammunition and the minimap. Damage attribution includes source/player name, formula, applied total, target, and `via` source.
-
-Accepted example:
+`sv_combat_rolls.lua` owns authoritative player/hostile dice and hostile health rolls. `cl_combat_roll_feed.lua` presents bounded attributed results such as:
 
 `ShaelRiley dealt 1d4 (3) damage to Shambler, via pistol`
 
-Monster-originated dice damage follows the same attribution structure.
+### Current weapon identities
 
-### C3. Straightforward weapon dice — IMPLEMENTED
+**Crowbar**
+- `1d3`
+- dedicated LOD SWEP
+- 96-unit reach
+- accepted miss/hit audio + hit-confirm.
 
-- Crowbar `1d3`, 96-unit player melee reach
-- Pistol `1d4`
-- SMG `1d8`
-- AR2 `1d10`
-- Grenade `1d20`
+**Pistol**
+- `1d4`
+- starts with 18 loaded / 0 reserve.
 
-Crowbar runtime acceptance is established. `weapon_lod_crowbar` owns player melee collision and damage authoritatively, uses the audible stock swing cue on a miss, the accepted soft body-impact cue on a hit, and the same local hit-confirm beep as ranged weapons. Its 96-unit reach is intentionally only a narrow spacing edge over ordinary variance-scaled melee enemies, making careful timing/backpedaling viable without making melee safe.
+**SMG**
+- `1d8`
+- six rapid shots overheat;
+- one heat cools every 0.25 s below threshold;
+- 2.0 s overheat lock;
+- model heat/glow, smoke, and staged audio feedback.
 
-### C4. .357 Magnum — IMPLEMENTED
+**AR2**
+- `1d10` per projectile;
+- every activation begins a 0.45 s committed targeting-laser tell;
+- exactly three rapid projectiles follow the committed line;
+- unrestricted automatic fire remains suppressed;
+- **the entire three-projectile burst consumes one AR2 primary-ammo unit total**, spent only when the first projectile releases.
 
-- `1d12`
-- natural 10, 11, or 12 explodes;
-- every bonus d12 may recursively explode;
-- one cartridge is consumed regardless of chain length.
+**.357 Magnum**
+- exploding `1d12`;
+- natural 10/11/12 recursively explode;
+- one cartridge regardless of chain length;
+- the bullet **penetrates multiple properly aligned hostiles**, carrying the same resolved exploding-d12 total through each body until blocking world/generated geometry or another solid obstruction stops the line;
+- penetration work is bounded.
 
-Do not implement Luck Ring behavior in v1.
+**Shotgun**
+- one shared `1d6` per shell;
+- floor each die below 3 to 3 for contribution;
+- natural **5 or 6 recursively explodes**;
+- six guaranteed pellets plus independent 33% chances for pellets 7/8/9;
+- aggregate once per damaged target;
+- one **4× ordinary hit stun** per damaged target per shell (nominal 1.20 s);
+- **168-unit nominal pushback** once per target per shell;
+- pellet count never multiplies stun, push, or wall-crush rolls.
 
-### C5. Shotgun shell contract — IMPLEMENTED / RUNTIME ACCEPTED
+**Grenades**
+- `1d20`;
+- separate nonregenerating consumable rewards.
 
-- one shared `1d6` roll per shell;
-- floor every die result below 3 to 3 for damage contribution;
-- only natural 6 explodes;
-- explosion dice follow the same floor/explosion rule;
-- six guaranteed pellets;
-- independent 33% chances for pellets 7, 8, and 9;
-- aggregate resolved damage once per target;
-- one doubled 0.60-second hit stun per damaged target per shell;
-- 0.66-second retrigger lockout;
-- never apply separate doubled stuns per pellet.
+### Generic push / wall crush — IMPLEMENTED
 
-`durationMultiplier` must continue to propagate through both `sv_hostile_hurt_pose.lua` and the final `sv_soldier_shot_contract.lua` wrapper so Shotgun stun and Soldier/Blitzer shot cancellation remain compatible.
+`LOD.Pushback` is the reusable authority for Shotgun and future weapon/element/environmental displacement.
 
-### C6. Ammunition economy — IMPLEMENTED / RUNTIME ACCEPTED
+- bounded collision resolution;
+- cannot push through walls/gates/jail doors;
+- actual architectural blockage causes one additional `1d3` wall-crush roll per push event;
+- wall crush has a distinctive spatial heavy-impact + crunch cue;
+- open cell boundaries do not count as walls merely because a cell edge is crossed.
 
-Combined loaded-plus-reserve capacity = three reload-equivalents. Regeneration floor = one reload-equivalent.
+### Peer-firearm design goal — IMPLEMENTED, RUNTIME VALIDATION PENDING
 
-- Pistol: 54 cap / 18 floor / 60 s empty-to-floor
-- Shotgun: 18 / 6 / 90 s
-- SMG: 135 / 45 / 120 s
-- AR2: 90 / 30 / 150 s
-- .357: 18 / 6 / 180 s
+Shotgun, SMG, Magnum, and AR2 are **peers, not power tiers**.
 
-One shared 4 Hz server timer owns bounded regeneration. Grenades are excluded. The H-key infinite developer Pistol is an intentional bypass and must not be used as balance evidence for ammo pressure.
+- all four can appear from Dungeon 1;
+- randomized firearm acquisition weights them equally;
+- Level 1 guarantees two distinct upgrades uniformly selected from those four rather than fixed Shotgun + SMG;
+- join-in-progress catch-up grants two deterministic distinct firearms from the same pool;
+- contextual ammo-family selection is driven by depletion rather than hidden weapon rarity;
+- Grenades remain separate consumables.
 
-### C7. Enemy health dice — IMPLEMENTED / RUNTIME ACCEPTED
+The balance objective is **equal viability through distinct mechanics**, not equal damage-per-trigger and not a stronger/weaker rarity ladder.
 
-Current deterministic profiles:
+### Production LootDirector — IMPLEMENTED
+
+LootDirector owns:
+- individualized static supplies;
+- individualized seeded enemy drops;
+- useful-drop pity protection;
+- extra-life behavior;
+- Level-1 firearm access;
+- contextual HP/ammo support;
+- join-in-progress catch-up;
+- sector resource-budget validation.
+
+LOD does not use HL2's auxiliary suit/armor pool. Former armor rewards restore ordinary HP instead.
+
+### Hostile damage retune — IMPLEMENTED / RUNTIME VALIDATION PENDING
+
+Authentic runs showed unacceptable ordinary melee spikes. Current formulas before existing size/stat scaling:
+
+- Shambler `3d4+8` (11–20 unscaled)
+- Runner `2d4+2` (4–10 unscaled)
+
+Do not compensate by endlessly raising healing before evaluating these new formulas in whole-dungeon play.
+
+### Health dice
 
 - Deadcrab `2d4+1`
 - Runner `3d4+3`
 - Shambler / Soldier / Blitzer `4d4+5`
 - Bio Blaster `5d4+6`
 
-Health dice replace the independent legacy HP jitter. Final durability remains monotonically constrained by visible hostile size so a clearly larger otherwise-comparable enemy never becomes less durable solely because of its health roll.
+Visible size remains a monotonic durability cue.
 
-Accepted diagnostic:
+### Finite ammo
 
-`[LOD:DICE-HEALTH] active=32 diceApplied=32 missing=0 legacyHPJitter=0 clearSizePairs=88 inversions=0 healthRolls=32 result=PASS`
+Combined loaded + reserve cap / one-load floor / empty-to-floor recovery:
 
-### C8. Complete-dungeon dice balance gate — CURRENT
+- Pistol 54 / 18 / 60 s
+- Shotgun 18 / 6 / 90 s
+- SMG 135 / 45 / 120 s
+- AR2 90 / 30 / 150 s
+- .357 18 / 6 / 180 s
 
-This is the immediate development gate.
+Shared 4 Hz server timer remains the regeneration authority. Grenades are excluded.
 
-Complete whole dungeons under the dice system and judge the integrated experience, not isolated arithmetic. Observe:
+### C8 — CURRENT ACCEPTANCE GATE
 
-- completion time relative to the GDD's 20–35 minute Level-1 target;
-- deaths and remaining lives;
-- player-to-hostile and hostile-to-player lethality;
-- ammunition pressure through Red, Blue, Yellow, Core, and rescue progression;
-- fights that feel excessively slow, cheap, or trivial;
-- whether visible size remains a trustworthy durability cue;
+Run ordinary complete dungeons and judge the integrated experience. Observe:
+
+- progress/completion time against the Level-1 20–35 minute target;
+- deaths/lives;
+- outgoing and incoming lethality;
+- sustain and ammunition pressure through progression;
+- whether all four acquired guns feel worth using for different reasons;
+- Shotgun 5–6 explosions / 4× stun / 168 push / wall crush;
+- AR2 three-projectile burst consuming one ammo unit;
+- Magnum penetration through aligned hostiles without penetrating maze geometry;
+- Shambler/Runner melee after spike reduction;
+- combat-feed readability;
 - Steam Deck performance;
-- whether the lower-right roll feed informs play without becoming visual noise;
-- successful Deborah rescue, intermission, and next-level generation.
+- eventual Deborah rescue/intermission/next level.
 
-Gate C passes only when the dice version remains legible, performant, and repeatedly completable.
-
----
-
-## Telemetry safety policy
-
-The first attempt at automatic full-run dice telemetry is **retired**.
-
-Loading `sv_dice_run_telemetry.lua` through normal gamemode startup caused Garry's Mod to lose the custom The Legend of Deborah startup path and enter ordinary Sandbox Flatgrass. Disabling only that loader restored normal startup. No useful GMod Lua exception was captured, so repository history cannot prove the module's exact internal runtime fault; static parsing is explicitly insufficient evidence.
-
-The experiment's complete surviving footprint was isolated to:
-
-- the telemetry module itself;
-- three lifecycle `hook.Run` calls in `sv_run_manager.lua`;
-- one guarded ammo sampling callback in `sv_dice_ammo.lua`.
-
-Those additions are removed rather than repaired speculatively.
-
-For the current C8 run, use existing subsystem diagnostics, screenshots, console output, and manual observations. If full-run telemetry is reconsidered later, it must satisfy all of these constraints before adoption:
-
-1. developer-only;
-2. explicitly armed after successful gamemode startup;
-3. absent from the normal production/startup loader;
-4. bounded and event-driven;
-5. no new per-frame scans, BFS, or broad entity queries;
-6. independently runtime-tested for startup safety before becoming a standard development tool.
+Tune from runtime evidence, not expected-value arithmetic alone.
 
 ---
 
-## Gate D — Resume Expanded Enemy Roster — BLOCKED ON C8
+## Gate D — Expanded Enemy Roster — BLOCKED ON C8
 
-Do not resume Watcher/Seeker/Sentry development until the complete-dungeon dice gate is accepted.
-
-After C8, continue in current GDD order:
+After C8 is accepted, continue:
 
 `Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
 
-Each archetype must be built and tuned against the dice-era combat economy and pass its systemic niche, placement/counterplay, graph navigation, death/hit feedback, durability, and low-end performance tests before moving to the next.
-
-Do not regress the immutable Soldier shot contract while reusing Soldier/Blitzer projectile infrastructure.
+Do not regress the immutable Soldier shot contract.
 
 ---
 
-## Gate E — Complete Remaining Milestone 4 Expedition
+## Gate E — Remaining Milestone 4 Expedition
 
-After dice-era combat and roster stability:
-
-- full production weapon/resource placement;
-- individualized pickups/drops;
-- pity protection;
-- rare extra-life behavior;
-- health/armor/ammo economy validation;
-- cross-level inventory persistence;
-- production Brute + Neil encounter and Map acquisition for applicable dungeon tiers;
+Remaining work after combat/roster stability includes:
+- Brute + Neil / Map acquisition for applicable dungeon tiers;
+- cross-level economy/persistence hardening;
 - broader complete-dungeon attrition and low-end soak testing;
 - remaining approved pre-release presentation work.
 
-All resource work must preserve the one-reload regeneration floor as anti-deadlock support rather than abundance.
+Production loot itself is no longer future work.
 
 ---
 
-## Gate F — Milestone 5: Gordon the Warden
+## Gate F — Gordon the Warden
 
-Only after the prior gates are stable:
-
-- implement the reserved final arena and Gordon the Warden phases;
-- preserve the accepted graph/progression architecture;
-- Warden death produces the same production Jail Key already proven by the vertical slice;
-- reuse, rather than rewrite, Jail Key ownership, jail-door unlock, Deborah eligibility, touch rescue, intermission, and next-level transition;
-- add boss HUD/music/resupply and final presentation per the live GDD.
+Implement the reserved final arena and Warden phases only after prior gates are stable. Warden death must feed the already-proven production Jail Key → jail door → Deborah rescue pipeline rather than replacing it.
 
 ---
 
-## Gate G — Multiplayer Integration / Release Candidate
+## Gate G — Multiplayer / Release Candidate
 
-Dedicated multiplayer development remains last. Preserve multiplayer-compatible server authority now, but defer multiplayer-specific debugging until the complete single-player game is stable through Gordon the Warden.
-
-Then validate 1–4 cooperative players, joins/rejoins, active slots, spectator-only connections, individualized resources, wipes, respawns, intermissions, dedicated servers, long campaign sequences, and the release-candidate criteria in the live GDD.
-
----
+Preserve multiplayer-compatible server authority now; perform dedicated 1–4-player joins/rejoins, individualized-resource, wipe/respawn, intermission, dedicated-server, and long-campaign validation after the single-player game is stable.
 
 ## Architecture invariants
 
-1. The canonical generated 3D maze graph is the authority for topology, progression legality, routing, minimap interpretation, gates, and stairs.
-2. Generated physical geometry must agree with that graph.
-3. Motion V2 is the sole production hostile ground-motion authority.
-4. Validated stairs are the sole ordinary hostile elevation-changing route.
-5. Retired CLuaLocomotion recovery systems must not return as competing authorities.
-6. Soldier warning and ordinary Soldier bolt share one immutable server-authored origin/direction committed at beam-on; Blitzer adds only its intentional deterministic veer.
-7. Client-only hostile visual scale and animation bones are never trajectory authorities.
-8. Visible hostile size remains a trustworthy monotonic durability cue under health dice.
-9. Minimap topology, floor indexes, reachability, and routes remain cached; no per-frame graph traversal.
-10. Networking remains compact/chunked rather than transmitting large generic state tables.
-11. Ballistic/player searches remain bounded; generated maze geometry remains authoritative cover.
-12. Recurring hostile consumers use the shared hostile registry rather than independent global scans.
-13. Death presentation remains bounded through the shared scheduler.
-14. Heavy audits and test modules remain developer-only.
-15. Every generated entity participates correctly in level cleanup and regeneration remains idempotent.
-16. Work one decisive runtime acceptance criterion at a time and commit coherent working increments directly to `main`.
+1. Canonical generated 3D graph remains topology/progression/routing/minimap authority.
+2. Physical geometry agrees with graph.
+3. Motion V2 is sole production hostile ground-motion authority.
+4. Validated stairs are sole ordinary hostile elevation route.
+5. Soldier shot line is immutable from beam-on; animation bones/client scale are never trajectory authorities.
+6. Generated geometry remains authoritative cover for ordinary bullets and Magnum penetration.
+7. Pushback uses the shared collision-safe authority; future elemental/weapon pushes reuse it.
+8. Visible hostile size remains monotonic durability information.
+9. Networking/graph work remains compact, cached, bounded, and low-end-safe.
+10. No per-frame global BFS or large entity scans.
+11. Automatic startup telemetry remains retired.
+12. Work one decisive runtime acceptance criterion at a time.
