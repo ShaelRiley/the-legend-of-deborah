@@ -31,14 +31,11 @@ function ENT:_TryCollect(ply)
     local ammo = LOD and LOD.DiceAmmo
     if not ammo or not ammo.GrantTemporaryDrop then return end
 
-    local granted, label, amount = ammo:GrantTemporaryDrop(ply)
+    local granted = ammo:GrantTemporaryDrop(ply)
     if not granted then return end
 
     self.LODCollected = true
     ply:EmitSound(PICKUP_SOUND, 62, 100, 0.75, CHAN_ITEM)
-    if label and amount then
-        ply:ChatPrint(string.format("Picked up %d %s ammo", amount, label))
-    end
     self:Remove()
 end
 
