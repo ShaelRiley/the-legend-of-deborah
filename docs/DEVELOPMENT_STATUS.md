@@ -4,142 +4,91 @@
 
 **Gate C8 — Complete-Dungeon Dice-Era Validation.**
 
-This status is reconciled against current GitHub `main`, the live production GDD, and accepted Steam Deck runtime evidence through the Crowbar runtime checkpoint. The older description of the project as waiting to begin the dice-combat foundation is obsolete.
-
-The live GDD remains design authority. GitHub `main` remains implementation authority. Milestone labels describe capability groups; the immediate execution gate is determined by the actual build and accepted runtime evidence.
+The live GDD remains design authority. GitHub `main` remains implementation authority. Gate A is closed unless new regression evidence appears.
 
 ## Accepted complete-dungeon checkpoint
 
-Gate A is closed unless new regression evidence appears.
+Accepted runtime evidence includes three consecutive complete dungeons, successful Level-4 generation/release, legal Red → Blue → Yellow → Jail Key → jail door → Deborah progression, Deborah rescue/intermission/next-level generation, `lod_m2_seed_test 100` at 100/100, accepted minimap/breadcrumb behavior, corrected stair presentation, and progression persistence through death.
 
-Accepted runtime evidence includes:
+## Current combat foundation
 
-- three consecutive complete dungeons;
-- successful generation and release of Level 4;
-- legal Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah progression;
-- Deborah touch rescue, level clear, intermission, and next-level generation;
-- `lod_m2_seed_test 100` completing 100/100 with zero failures;
-- accepted minimap-cache diagnostics and complete canonical breadcrumb routing through cards, gates, stairs, Jail Key, jail door, and Deborah;
-- correction of the misleading stair-presentation defect;
-- developer H kit granting full health, Crowbar, Pistol, and intentionally infinite developer Pistol ammunition;
-- colored progression and rescue state surviving the tested level loop.
+### Player weapons
 
-Do not reopen this gate without new runtime evidence of regression.
+- Crowbar: `1d3`, dedicated authoritative SWEP, 96-unit reach, miss whoosh, soft impact, hit-confirm beep.
+- Pistol: `1d4`; fresh expedition starts with Pistol + Crowbar, Pistol loaded to 18 with 0 reserve.
+- SMG: `1d8`; six rapid shots overheat, one heat cools every 0.25 s below threshold, 2.0 s overheat lock, staged model/audio/smoke feedback.
+- AR2: `1d10` per projectile; every activation commits one 0.45-second targeting-laser tell then exactly three rapid rounds. **The complete three-projectile burst consumes one AR2 primary-ammo unit total**, spent when the first projectile releases.
+- .357 Magnum: exploding `1d12`; natural 10/11/12 recursively explode. A bullet also **pierces multiple properly aligned hostiles**, reusing the same resolved shot total until blocking geometry/solid obstruction stops it.
+- Shotgun: one shared exploding `1d6`, per-die floor 3, **natural 5 or 6 recursively explodes**, six guaranteed pellets plus independent 33% checks for pellets 7/8/9. Per damaged target it applies **4× ordinary hit stun (nominal 1.20 s)** and a **168-unit nominal push**, once per shell rather than per pellet.
+- Grenade: `1d20`; remains a separate consumable reward.
 
-## Accepted v1 dice-combat foundation
+XP, character levels, procedural affixes/equipment, elements, Magic, and Luck Ring remain deferred.
 
-The dice foundation is now implemented and has passed subsystem-level runtime checks.
+### Generic pushback / wall crush
 
-### Combat roll authority and feed
+`LOD.Pushback` is the reusable displacement authority for Shotgun now and future weapon/element/environment effects. Pushes use bounded collision checks and cannot force hostiles through walls, gates, jail doors, or unauthored geometry. If blocking architectural geometry stops the requested push, the target takes one additional `1d3` wall-crush roll per push event and receives a distinct heavy-impact + crunch audio cue.
 
-- `sv_combat_rolls.lua` is the server-authoritative roll service for player weapon damage, hostile-originated dice damage, and deterministic hostile health dice.
-- `cl_combat_roll_feed.lua` renders the bounded event-driven lower-right feed between ammunition and the minimap.
-- Attributed damage entries preserve source, formula, applied total, target, and damage source, e.g. `ShaelRiley dealt 1d4 (3) damage to Shambler, via pistol`.
-- Player and monster damage both use the dice-era authority.
+### Hostile damage and health
 
-### Weapon dice
+Current ordinary melee retune from full-run evidence:
 
-Implemented v1 rules:
+- Shambler: `3d4+8` before existing size/stat scaling; unscaled 11–20.
+- Runner: `2d4+2`; unscaled 4–10.
 
-- Crowbar: `1d3`
-- Pistol: `1d4`
-- SMG: `1d8`
-- AR2: `1d10`
-- Grenade: `1d20`
-- .357 Magnum: exploding `1d12`; natural 10, 11, or 12 recursively explodes
-- Shotgun: one shared exploding `1d6`, per-die floor 3, natural 6 explosions, six guaranteed pellets, independent 33% checks for pellets 7/8/9, and one aggregate damage resolution per target
+Other hostile attacks retain their existing dice contracts.
 
-Crowbar runtime contract is accepted: the dedicated LOD Crowbar owns authoritative melee collision/damage, uses a 96-unit player reach, emits an audible miss whoosh, uses the accepted soft body-impact cue on hit, and adds the same local hit-confirm beep used by ranged weapons. The 96-unit reach intentionally gives careful backpedaling/timing only a narrow spacing advantage over variance-scaled ordinary melee enemies.
+Deterministic health profiles remain:
 
-XP, character levels, procedural affixes/equipment, elements, Magic, and Luck Ring remain deferred post-release systems and are not part of this v1 gate.
+- Deadcrab `2d4+1`
+- Runner `3d4+3`
+- Shambler / Soldier / Blitzer `4d4+5`
+- Bio Blaster `5d4+6`
 
-### Enemy health dice
+Visible hostile size remains a monotonic durability cue.
 
-Deterministic health dice replace the former independent HP jitter while retaining visible hostile size as a monotonic durability cue.
+## Production loot and firearm economy
 
-Current profiles:
+LootDirector is implemented and owns individualized static supplies, individualized contextual enemy drops, pity protection, rare extra lives, join-in-progress catch-up, and sector resource-budget validation. HL2 suit/armor is **not** part of LOD's economy; the former armor recovery band is ordinary HP recovery instead.
 
-- Deadcrab: `2d4+1`
-- Runner: `3d4+3`
-- Shambler / Soldier / Blitzer: `4d4+5`
-- Bio Blaster: `5d4+6`
+The current weapon-design goal is **peer firearms, not a power-tier rarity ladder**:
 
-Accepted diagnostic:
+- Shotgun, SMG, .357 Magnum, and AR2 are all available from Dungeon 1.
+- Random firearm rewards weight those four equally.
+- Level 1 guarantees two distinct firearm upgrades selected uniformly from those four rather than fixed Shotgun + SMG.
+- Join-in-progress catch-up similarly grants two deterministic distinct firearms from the four-gun pool.
+- Ammo-drop family choice has no hidden per-weapon rarity coefficient; depletion drives contextual weighting.
+- Grenades remain a separate consumable reward.
 
-`[LOD:DICE-HEALTH] active=32 diceApplied=32 missing=0 legacyHPJitter=0 clearSizePairs=88 inversions=0 healthRolls=32 result=PASS`
+The intent is that each gun remains viable because of its mechanic, not because one is a strictly rarer/higher tier.
 
-### Finite-ammo economy
+## Finite-ammo economy
 
-`sv_dice_ammo.lua` owns the shared bounded 4 Hz regeneration timer. Combined loaded-plus-reserve caps and one-reload floors are:
+Combined loaded-plus-reserve caps / one-reload regeneration floors:
 
-- Pistol: cap 54, floor 18, 60-second empty-to-floor recovery
-- Shotgun: cap 18, floor 6, 90 seconds
-- SMG: cap 135, floor 45, 120 seconds
-- AR2: cap 90, floor 30, 150 seconds
-- .357: cap 18, floor 6, 180 seconds
+- Pistol: 54 / 18 / 60 s empty-to-floor
+- Shotgun: 18 / 6 / 90 s
+- SMG: 135 / 45 / 120 s
+- AR2: 90 / 30 / 150 s
+- .357: 18 / 6 / 180 s
 
-Grenades are excluded. The H-key developer Pistol intentionally bypasses the cap.
+One shared 4 Hz server timer owns regeneration. Grenades do not regenerate. The H-key developer Pistol remains an intentional test bypass.
 
-Accepted diagnostic:
+## Runtime evidence still needed
 
-`[LOD:DICE-AMMO] capTotal=54 capExpected=54 cap=PASS regenTotal=1 regenExpected=1 regen=PASS result=PASS`
+Recent authentic runs proved the LootDirector and HP recovery work, but repeatedly ended in campaign wipes. Shambler/Runner melee was consequently narrowed. The newest Shotgun retune, one-ammo AR2 burst, peer-firearm distribution, and Magnum penetration still require runtime acceptance.
 
-### Shotgun hit stun
+The immediate Gate-C8 objective remains a repeatedly completable ordinary dungeon with acceptable lethality, sustain, ammo pressure, combat-feed readability, and Steam Deck performance.
 
-Each damaged target receives one doubled 0.60-second stun per resolved shell, with a 0.66-second retrigger lockout. Pellet-level stuns are suppressed.
+## Telemetry safety policy
 
-Accepted diagnostic:
-
-`[LOD:DICE-SHOTGUN] pelletSuppressed=true shellApplied=true duplicateRejected=true duration=0.60 lockout=0.66 result=PASS`
-
-`durationMultiplier` propagation through both `sv_hostile_hurt_pose.lua` and the final `sv_soldier_shot_contract.lua` wrapper is an accepted invariant. Do not regress Soldier/Blitzer shot cancellation or the immutable Soldier shot contract.
-
-## Telemetry incident and disposition
-
-An automatic dice-run telemetry experiment caused a severe startup regression when its server module was added to the normal gamemode loader: the custom loading screen disappeared and Garry's Mod entered ordinary Sandbox Flatgrass. Removing only that loader restored normal The Legend of Deborah startup in runtime testing.
-
-Repository history proves that the telemetry experiment's surviving footprint consisted only of:
-
-- `sv_dice_run_telemetry.lua`;
-- three custom lifecycle `hook.Run` calls in `sv_run_manager.lua`;
-- one guarded sampling callback in `sv_dice_ammo.lua`.
-
-No useful Garry's Mod runtime exception was captured, so the exact internal Lua fault is **not proven**. Static syntax success is not sufficient evidence. The safe disposition is therefore complete removal of the failed telemetry experiment rather than speculative repair or automatic re-enablement.
-
-The first dice-era full-dungeon validation uses existing bounded diagnostics, ordinary console/runtime evidence, screenshots, and manual observations. If telemetry is revisited later, it must be a minimal developer-only tool that is explicitly armed after successful gamemode startup and cannot participate in the normal startup path.
-
-## Immediate gate — one complete dice-era dungeon
-
-Before any further enemy-roster breadth, complete and inspect a full dice-era dungeon. Record or observe:
-
-- completion time against the GDD's Level-1 20–35 minute target;
-- deaths and remaining lives;
-- outgoing and incoming lethality;
-- ammunition pressure across progression stages;
-- fights that feel excessively slow, cheap, or trivial;
-- whether visible hostile size remains a trustworthy durability cue;
-- Steam Deck performance and obvious entity/runtime spikes;
-- whether the combat-roll feed remains useful rather than noisy;
-- successful Deborah rescue, intermission, and next-level release.
-
-Tune only from runtime evidence. Do not optimize expected-value arithmetic in isolation.
-
-## After the dice full-run gate
-
-Once complete-dungeon dice play is accepted, resume remaining roster breadth in the current GDD order:
-
-`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
-
-Then continue the remaining Milestone-4 expedition work, including production loot/resource systems and the Brute + Neil / Map path, followed by Gordon the Warden in Milestone 5 and dedicated multiplayer integration/testing in Milestone 6.
+The failed automatic dice-run telemetry experiment remains fully retired after causing a startup regression into ordinary Sandbox Flatgrass. Full-run validation uses existing diagnostics, screenshots, console output, and manual observations. Any future telemetry must be explicitly developer-armed after successful startup and absent from the normal production loader.
 
 ## Preserved hard constraints
 
-- `gm_flatgrass` is the required base map.
-- The canonical generated 3D graph is authoritative for topology, progression legality, routing, minimap interpretation, gates, and stairs.
-- Generated physical geometry must agree with that graph.
-- Motion V2 remains the sole ordinary hostile ground-movement authority.
-- Validated stairs are the sole ordinary elevation-changing route.
-- Do not restore retired CLuaLocomotion recovery layers as competing authorities.
-- The Soldier warning/projectile contract remains one immutable server-authored world-space origin and direction committed at beam-on; animation bones and client-only visual scaling are not trajectory authorities.
-- Preserve compact/chunked networking, cached minimap topology/floor/reachability/routes, bounded ballistic/player queries, generated-geometry cover, the shared hostile registry, client-only visual hostile scaling, bounded death scheduling, and developer-only heavy audits.
+- `gm_flatgrass` remains the required base map.
+- Canonical generated 3D graph remains topology/progression/routing/minimap authority.
+- Motion V2 remains the sole ordinary hostile ground-movement authority; validated stairs remain the sole ordinary elevation-changing route.
+- Soldier warning/projectile truth remains one immutable server-authored origin/direction committed at beam-on.
+- Generated geometry remains authoritative cover, including Magnum penetration and pushback collision.
+- Preserve bounded networking, cached graph/minimap work, shared hostile registry, bounded death scheduling, and developer-only heavy audits.
 - Do not introduce per-frame global BFS or large entity scans.
