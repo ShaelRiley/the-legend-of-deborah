@@ -5,15 +5,17 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 ## Current order
 
 1. **Complete and tune Gate C8 whole-dungeon dice play.**
-2. Make only evidence-driven combat/economy corrections required by authentic runs.
-3. Resume the remaining expanded normal-enemy roster.
-4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
-5. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
-6. Integrate/harden multiplayer last.
+2. Finish the in-progress runtime test without changing its live combat rules mid-run.
+3. Immediately afterward, reconcile the Shotgun's temporary 5–6 explosion threshold to the new universal natural-6-only d6 rule.
+4. Make only evidence-driven combat/economy corrections required by authentic runs.
+5. Resume the remaining expanded normal-enemy roster.
+6. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
+7. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
+8. Integrate/harden multiplayer last.
 
 Production LootDirector is already implemented. Do not schedule it again as future work.
 
-XP, character levels, procedural equipment/affixes, elements, Magic, Luck Ring, and the broader RPG layer remain deferred post-release systems.
+A limited pre-release Magic subsystem is now implemented: Magic meter, global RMB ownership, and Force Shout. XP, character levels, procedural equipment/affixes, elements, Luck Ring, Magic items, and the broader RPG Magic layer remain deferred.
 
 ---
 
@@ -29,11 +31,23 @@ Do not reopen without new regression evidence.
 
 ## Gate C — v1 Dice Combat / Current Balance Gate
 
+### Universal exploding-die rule — CANONICAL GDD CONTRACT
+
+Explosion thresholds are global dice-system invariants:
+
+- **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
+- **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
+- Future d6/d12 mechanics inherit these rules automatically unless a later explicit design change supersedes them.
+
+Current code is compliant for Force Shout d6s and Magnum/Magnum-pierce d12s. The Shotgun still uses the superseded temporary natural 5–6 threshold in the build currently under test. Do not interrupt the in-progress test; reconcile Shotgun immediately afterward.
+
 ### Combat roll authority / feed — IMPLEMENTED
 
 `sv_combat_rolls.lua` owns authoritative player/hostile dice and hostile health rolls. `cl_combat_roll_feed.lua` presents bounded attributed results such as:
 
 `ShaelRiley dealt 1d4 (3) damage to Shambler, via pistol`
+
+Player-side exploding dice also trigger one bounded celebratory audiovisual confirmation near the center of the HUD. This shared cue is used by Magnum, Shotgun, Force Shout, and Magnum-pierce bonus dice.
 
 ### Current weapon identities
 
@@ -62,37 +76,55 @@ Do not reopen without new regression evidence.
 - **the entire three-projectile burst consumes one AR2 primary-ammo unit total**, spent only when the first projectile releases.
 
 **.357 Magnum**
-- exploding `1d12`;
-- natural 10/11/12 recursively explode;
+- universal exploding `1d12`;
+- natural **8/9/10/11/12** recursively explode;
 - one cartridge regardless of chain length;
-- the bullet **penetrates multiple properly aligned hostiles**, carrying the same resolved exploding-d12 total through each body until blocking world/generated geometry or another solid obstruction stops the line;
-- penetration work is bounded.
+- a bullet penetrates properly aligned hostiles while authoritative world/generated geometry remains blocking;
+- target depth escalates cumulatively by one fresh independently exploding d12 chain: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., through the bounded eight-target cap.
 
-**Shotgun**
+**Shotgun — canonical design target**
 - one shared `1d6` per shell;
 - floor each die below 3 to 3 for contribution;
-- natural **5 or 6 recursively explodes**;
+- natural **6 only** recursively explodes under the universal d6 rule;
 - six guaranteed pellets plus independent 33% chances for pellets 7/8/9;
 - aggregate once per damaged target;
 - one **4× ordinary hit stun** per damaged target per shell (nominal 1.20 s);
 - **168-unit nominal pushback** once per target per shell;
-- pellet count never multiplies stun, push, or wall-crush rolls.
+- pellet count never multiplies stun, push, or wall-crush rolls;
+- floored d6 expected contribution before explosions = 4.0;
+- recursive shared exploding-d6 expected total = **4.8**;
+- with seven pellets on average, expected full-connect base damage = **5.6** before later modifiers.
+
+**Implementation discrepancy:** the current runtime build still explodes Shotgun d6s on 5–6. This is no longer canonical and must be corrected after the current test.
 
 **Grenades**
 - `1d20`;
 - separate nonregenerating consumable rewards.
 
+### Basic Magic / Force Shout — IMPLEMENTED
+
+- personal Magic resource 0–100;
+- blue Suit-style HUD slot immediately beside Health;
+- regeneration from 0→100 over 60 seconds while alive;
+- RMB is globally reserved for Magic; LOD firearms expose no HL2-style secondary-fire gameplay;
+- Force Shout costs 30 Magic;
+- unobstructed ~60° / 1100-unit cone;
+- independent exploding `2d6` per hostile using the universal natural-6 d6 threshold;
+- 336-unit shared-authority push to survivors;
+- expanding force-wave presentation, character-profiled shout, body-ghost push trails, and wall-crush audiovisual feedback.
+
 ### Generic push / wall crush — IMPLEMENTED
 
-`LOD.Pushback` is the reusable authority for Shotgun and future weapon/element/environmental displacement.
+`LOD.Pushback` is the reusable authority for Shotgun, Force Shout, and future weapon/element/environmental displacement.
 
 - bounded collision resolution;
 - cannot push through walls/gates/jail doors;
 - actual architectural blockage causes one additional `1d3` wall-crush roll per push event;
-- wall crush has a distinctive spatial heavy-impact + crunch cue;
+- wall crush has distinctive spatial audio and impact particles;
+- push travel is shown with a bounded 4–16 body-ghost trail using reusable leased clientside render models;
 - open cell boundaries do not count as walls merely because a cell edge is crossed.
 
-### Peer-firearm design goal — IMPLEMENTED, RUNTIME VALIDATION PENDING
+### Peer-firearm design goal — IMPLEMENTED, RUNTIME VALIDATION ONGOING
 
 Shotgun, SMG, Magnum, and AR2 are **peers, not power tiers**.
 
@@ -107,26 +139,16 @@ The balance objective is **equal viability through distinct mechanics**, not equ
 
 ### Production LootDirector — IMPLEMENTED
 
-LootDirector owns:
-- individualized static supplies;
-- individualized seeded enemy drops;
-- useful-drop pity protection;
-- extra-life behavior;
-- Level-1 firearm access;
-- contextual HP/ammo support;
-- join-in-progress catch-up;
-- sector resource-budget validation.
+LootDirector owns individualized static supplies, individualized seeded enemy drops, useful-drop pity protection, extra-life behavior, Level-1 firearm access, contextual HP/ammo support, join-in-progress catch-up, and sector resource-budget validation.
 
 LOD does not use HL2's auxiliary suit/armor pool. Former armor rewards restore ordinary HP instead.
 
-### Hostile damage retune — IMPLEMENTED / RUNTIME VALIDATION PENDING
+### Hostile damage retune — IMPLEMENTED
 
-Authentic runs showed unacceptable ordinary melee spikes. Current formulas before existing size/stat scaling:
+Current formulas before existing size/stat scaling:
 
 - Shambler `3d4+8` (11–20 unscaled)
 - Runner `2d4+2` (4–10 unscaled)
-
-Do not compensate by endlessly raising healing before evaluating these new formulas in whole-dungeon play.
 
 ### Health dice
 
@@ -151,20 +173,24 @@ Shared 4 Hz server timer remains the regeneration authority. Grenades are exclud
 
 ### C8 — CURRENT ACCEPTANCE GATE
 
-Run ordinary complete dungeons and judge the integrated experience. Observe:
+Continue ordinary complete-dungeon play and judge the integrated experience. Observe:
 
 - progress/completion time against the Level-1 20–35 minute target;
 - deaths/lives;
 - outgoing and incoming lethality;
 - sustain and ammunition pressure through progression;
-- whether all four acquired guns feel worth using for different reasons;
-- Shotgun 5–6 explosions / 4× stun / 168 push / wall crush;
+- whether all four peer firearms feel worth using for different reasons;
 - AR2 three-projectile burst consuming one ammo unit;
-- Magnum penetration through aligned hostiles without penetrating maze geometry;
+- Magnum 8–12 explosions and escalating aligned penetration;
+- exploding-die audiovisual readability;
+- Magic meter / Force Shout readability and balance;
+- push/body-ghost/wall-crush presentation;
 - Shambler/Runner melee after spike reduction;
 - combat-feed readability;
 - Steam Deck performance;
 - eventual Deborah rescue/intermission/next level.
+
+After the current run, change the Shotgun to natural-6-only explosion and then continue C8 testing under the canonical universal dice rules.
 
 Tune from runtime evidence, not expected-value arithmetic alone.
 
@@ -211,8 +237,9 @@ Preserve multiplayer-compatible server authority now; perform dedicated 1–4-pl
 5. Soldier shot line is immutable from beam-on; animation bones/client scale are never trajectory authorities.
 6. Generated geometry remains authoritative cover for ordinary bullets and Magnum penetration.
 7. Pushback uses the shared collision-safe authority; future elemental/weapon pushes reuse it.
-8. Visible hostile size remains monotonic durability information.
-9. Networking/graph work remains compact, cached, bounded, and low-end-safe.
-10. No per-frame global BFS or large entity scans.
-11. Automatic startup telemetry remains retired.
-12. Work one decisive runtime acceptance criterion at a time.
+8. d6 explosion threshold is universally natural 6; d12 explosion threshold is universally natural 8–12.
+9. Visible hostile size remains monotonic durability information.
+10. Networking/graph work remains compact, cached, bounded, and low-end-safe.
+11. No per-frame global BFS or large entity scans.
+12. Automatic startup telemetry remains retired.
+13. Work one decisive runtime acceptance criterion at a time.
