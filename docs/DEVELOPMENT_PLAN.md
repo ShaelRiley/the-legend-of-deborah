@@ -5,13 +5,12 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 ## Current order
 
 1. **Complete and tune Gate C8 whole-dungeon dice play.**
-2. Finish the in-progress runtime test without changing its live combat rules mid-run.
-3. Immediately afterward, reconcile the Shotgun's temporary 5–6 explosion threshold to the new universal natural-6-only d6 rule.
-4. Make only evidence-driven combat/economy corrections required by authentic runs.
-5. Resume the remaining expanded normal-enemy roster.
-6. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
-7. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
-8. Integrate/harden multiplayer last.
+2. Validate the newly reconciled Shotgun under the universal d6 rule: natural-6-only damage explosions plus the separate exploding additional-pellet d6.
+3. Make only evidence-driven combat/economy corrections required by authentic runs.
+4. Resume the remaining expanded normal-enemy roster.
+5. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
+6. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
+7. Integrate/harden multiplayer last.
 
 Production LootDirector is already implemented. Do not schedule it again as future work.
 
@@ -39,7 +38,7 @@ Explosion thresholds are global dice-system invariants:
 - **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
 - Future d6/d12 mechanics inherit these rules automatically unless a later explicit design change supersedes them.
 
-Current code is compliant for Force Shout d6s and Magnum/Magnum-pierce d12s. The Shotgun still uses the superseded temporary natural 5–6 threshold in the build currently under test. Do not interrupt the in-progress test; reconcile Shotgun immediately afterward.
+Current code is compliant for Force Shout, both Shotgun d6 systems, and Magnum/Magnum-pierce d12s.
 
 ### Combat roll authority / feed — IMPLEMENTED
 
@@ -47,7 +46,7 @@ Current code is compliant for Force Shout d6s and Magnum/Magnum-pierce d12s. The
 
 `ShaelRiley dealt 1d4 (3) damage to Shambler, via pistol`
 
-Player-side exploding dice also trigger one bounded celebratory audiovisual confirmation near the center of the HUD. This shared cue is used by Magnum, Shotgun, Force Shout, and Magnum-pierce bonus dice.
+Player-side exploding dice also trigger one bounded celebratory audiovisual confirmation near the center of the HUD. This shared cue is used by Magnum, Shotgun damage/pellet dice, Force Shout, and Magnum-pierce bonus dice.
 
 ### Current weapon identities
 
@@ -82,24 +81,23 @@ Player-side exploding dice also trigger one bounded celebratory audiovisual conf
 - a bullet penetrates properly aligned hostiles while authoritative world/generated geometry remains blocking;
 - target depth escalates cumulatively by one fresh independently exploding d12 chain: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., through the bounded eight-target cap.
 
-**Shotgun — canonical design target**
-- one shared `1d6` per shell;
-- floor each die below 3 to 3 for contribution;
+**Shotgun**
+- one shared damage `1d6!` per shell;
+- floor each damage die below 3 to 3 for contribution;
 - natural **6 only** recursively explodes under the universal d6 rule;
-- six guaranteed pellets plus independent 33% chances for pellets 7/8/9;
-- aggregate once per damaged target;
+- six guaranteed pellets;
+- every trigger pull rolls a separate exploding `1d6!` for additional pellets, with no damage floor because this die represents pellet count;
+- after that pellet die, retain the existing three independent 33% bonus-pellet checks;
+- cap final pellet traces at 36 as a low-end anti-runaway safeguard;
+- aggregate damage once per damaged target;
 - one **4× ordinary hit stun** per damaged target per shell (nominal 1.20 s);
 - **168-unit nominal pushback** once per target per shell;
 - pellet count never multiplies stun, push, or wall-crush rolls;
-- floored d6 expected contribution before explosions = 4.0;
+- floored shared damage d6 expected contribution before explosions = 4.0;
 - recursive shared exploding-d6 expected total = **4.8**;
-- with seven pellets on average, expected full-connect base damage = **5.6** before later modifiers.
-
-**Implementation discrepancy:** the current runtime build still explodes Shotgun d6s on 5–6. This is no longer canonical and must be corrected after the current test.
-
-**Grenades**
-- `1d20`;
-- separate nonregenerating consumable rewards.
+- exploding pellet-count d6 expected contribution = **4.2 extra pellets**;
+- including the three 33% checks, uncapped average pellet count = **11.2**;
+- expected full-connect base damage = approximately **8.96** before later modifiers and rare cap truncation.
 
 ### Basic Magic / Force Shout — IMPLEMENTED
 
@@ -182,6 +180,7 @@ Continue ordinary complete-dungeon play and judge the integrated experience. Obs
 - whether all four peer firearms feel worth using for different reasons;
 - AR2 three-projectile burst consuming one ammo unit;
 - Magnum 8–12 explosions and escalating aligned penetration;
+- Shotgun natural-6 damage explosions plus exploding additional-pellet d6, including whether unusually large pellet bursts remain readable and performant;
 - exploding-die audiovisual readability;
 - Magic meter / Force Shout readability and balance;
 - push/body-ghost/wall-crush presentation;
@@ -189,8 +188,6 @@ Continue ordinary complete-dungeon play and judge the integrated experience. Obs
 - combat-feed readability;
 - Steam Deck performance;
 - eventual Deborah rescue/intermission/next level.
-
-After the current run, change the Shotgun to natural-6-only explosion and then continue C8 testing under the canonical universal dice rules.
 
 Tune from runtime evidence, not expected-value arithmetic alone.
 
