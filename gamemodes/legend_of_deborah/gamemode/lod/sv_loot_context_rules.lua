@@ -5,6 +5,24 @@ if not Loot then return end
 
 local MAX_ARMOR = 100
 
+-- All ordinary firearm upgrades can appear from Dungeon 1. Shotgun and SMG
+-- remain the dominant early finds; Magnum is uncommon and AR2 is rarer still.
+-- Later dungeons gently improve high-tier weighting without ever making those
+-- weapons exclusive to a campaign-level gate.
+local WEAPON_RARITY = {
+    weapon_shotgun = {base = 1.00, perLevel = 0.00, cap = 1.00},
+    weapon_smg1 = {base = 0.90, perLevel = 0.00, cap = 0.90},
+    weapon_357 = {base = 0.28, perLevel = 0.06, cap = 0.55},
+    weapon_ar2 = {base = 0.12, perLevel = 0.04, cap = 0.40}
+}
+
+local WEAPON_ORDER = {
+    "weapon_shotgun",
+    "weapon_smg1",
+    "weapon_357",
+    "weapon_ar2"
+}
+
 local function weightedPick(rng, entries)
     local total = 0
     for _, entry in ipairs(entries or {}) do
@@ -19,6 +37,25 @@ local function weightedPick(rng, entries)
         if roll <= cursor then return entry.value end
     end
     return entries[#entries] and entries[#entries].value or nil
+end
+
+function Loot:_AllowedWeaponClasses()
+    return table.Copy(WEAPON_ORDER)
+end
+
+function Loot:_MissingWeaponReward(ply, rng)
+    local level = math.max(1, LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.Level or 1)
+    local choices = {}
+
+    for _, weaponClass in ipairs(WEAPON_ORDER) do
+        if not IsValid(ply:GetWeapon(weaponClass)) then
+            local rarity = WEAPON_RARITY[weaponClass]
+            local weight = math.min(rarity.cap, rarity.base + rarity.perLevel * (level - 1))
+            choices[#choices + 1] = {value = weaponClass, weight = weight}
+        end
+    end
+
+    return weightedPick(rng, choices)
 end
 
 -- Contextual weighting is kept separate from the core pickup/grant machinery so
