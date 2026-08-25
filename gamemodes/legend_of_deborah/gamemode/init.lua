@@ -84,9 +84,6 @@ include("lod/sv_respawn_hud.lua")
 -- live animation bones, client-only scale, or bolt initialization from becoming
 -- competing trajectory authorities.
 include("lod/sv_soldier_shot_contract.lua")
--- Late, bounded observer for dice-era full-dungeon balance evidence. Loading
--- after cover and shot-contract hooks lets it record only final legal damage.
-include("lod/sv_dice_run_telemetry.lua")
 
 -- Audits, seed harnesses, teleports, and the infinite-ammo testkit are not
 -- production runtime dependencies. Read the archived startup value once: a
