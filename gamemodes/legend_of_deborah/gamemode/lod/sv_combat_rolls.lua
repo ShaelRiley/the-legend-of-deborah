@@ -7,6 +7,7 @@ local SHOTGUN_SHARE_COUNT = 6
 local GRENADE_REFERENCE_DAMAGE = 150
 
 util.AddNetworkString("LOD_CombatRoll")
+util.AddNetworkString("LOD_DiceExplosionFX")
 
 Rolls.Stats = Rolls.Stats or {
     rolls = 0,
@@ -20,7 +21,7 @@ local PLAYER_WEAPONS = {
     weapon_pistol = {label = "PISTOL", source = "pistol", count = 1, sides = 4},
     weapon_smg1 = {label = "SMG", source = "SMG", count = 1, sides = 8},
     weapon_ar2 = {label = "AR2", source = "AR2", count = 1, sides = 10},
-    weapon_357 = {label = "MAGNUM", source = ".357 Magnum", count = 1, sides = 12, exploding = 10},
+    weapon_357 = {label = "MAGNUM", source = ".357 Magnum", count = 1, sides = 12, exploding = 8},
     weapon_shotgun = {label = "SHOTGUN", source = "shotgun", count = 1, sides = 6, exploding = 6, floor = 3}
 }
 
@@ -84,6 +85,25 @@ function Rolls:_Send(ply, category, text)
     net.WriteString(string.sub(tostring(text or "ROLL"), 1, 180))
     net.Send(ply)
     self.Stats.feedMessages = self.Stats.feedMessages + 1
+end
+
+-- Exploding dice are a joyful, important combat event. Keep the feedback packet
+-- tiny and shooter-local: kind 1 = Magnum, kind 2 = Shotgun, depth identifies a
+-- deeper Magnum pierce bonus when applicable.
+function Rolls:EmitDiceExplosionFX(ply, weaponClass, explosionCount, depth)
+    if not IsValid(ply) or not ply:IsPlayer() then return end
+    local count = math.Clamp(math.floor(tonumber(explosionCount) or 0), 0, 63)
+    if count <= 0 then return end
+
+    local kind = 0
+    if weaponClass == "weapon_357" then kind = 1 end
+    if weaponClass == "weapon_shotgun" then kind = 2 end
+
+    net.Start("LOD_DiceExplosionFX")
+    net.WriteUInt(kind, 2)
+    net.WriteUInt(count, 6)
+    net.WriteUInt(math.Clamp(math.floor(tonumber(depth) or 1), 1, 15), 4)
+    net.Send(ply)
 end
 
 function Rolls:_RollFormula(profile, rng)
@@ -327,6 +347,13 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
     local contract = Rolls:RollPlayerWeapon(shooter, weaponClass)
     if not contract then return end
 
+    -- An exploding roll has one or more continuation dice after its first die.
+    -- Trigger one concise audiovisual event per attack, with the number of actual
+    -- explosion continuations so especially lucky chains feel appropriately big.
+    if profile.exploding and #(contract.values or {}) > 1 then
+        Rolls:EmitDiceExplosionFX(shooter, weaponClass, #(contract.values or {}) - 1, 1)
+    end
+
     if weaponClass == "weapon_shotgun" then
         bullet.Num = contract.pellets
         bullet.Damage = contract.total / SHOTGUN_SHARE_COUNT
@@ -419,10 +446,20 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 and contract.weaponClass == weaponClass and dmginfo:GetDamage() > 0
                 and not contract.targets[target] then
                 contract.targets[target] = true
+
+                local pierce = weaponClass == "weapon_357" and LOD.MagnumPiercing
+                    and LOD.MagnumPiercing.DamageSegments
+                    and LOD.MagnumPiercing.DamageSegments[dmginfo] or nil
                 local formula = contract.weaponClass == "weapon_357" and "1d12!"
                     or contract.formula
+                local detail = Rolls:_PlayerRollDetail(contract)
+                if pierce and pierce.depth and pierce.depth > 1 then
+                    formula = string.format("%dd12!", pierce.depth)
+                    detail = pierce.detail or detail
+                end
+
                 Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
-                    dmginfo:GetDamage(), target, Rolls:_PlayerRollDetail(contract), nil,
+                    dmginfo:GetDamage(), target, detail, nil,
                     "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))
             end
         end
