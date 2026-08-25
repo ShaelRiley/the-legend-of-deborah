@@ -1,0 +1,179 @@
+LOD = LOD or {}
+LOD.Pushback = LOD.Pushback or {}
+
+local Pushback = LOD.Pushback
+local Motion = LOD.HostileMotionV2
+if not Motion then return end
+
+local CRUSH_PROFILE = {label = "WALL CRUSH", source = "wall crush", count = 1, sides = 3}
+local WALL_CLASSES = {
+    lod_static_box = true,
+    lod_gate = true,
+    lod_jail_door = true
+}
+
+Pushback.Stats = Pushback.Stats or {pushes = 0, wallCrushes = 0, crushDamage = 0}
+
+local function crushSurface(trace)
+    if not trace or not trace.Hit then return false end
+    if trace.HitWorld then return true end
+    local ent = trace.Entity
+    return IsValid(ent) and WALL_CLASSES[ent:GetClass()] == true
+end
+
+local function traceBounds(hostile)
+    local mins, maxs = hostile:GetCollisionBounds()
+    if not mins or not maxs then
+        return Vector(-14, -14, 4), Vector(14, 14, 56)
+    end
+
+    -- Lift the trace slightly off the generated floor so a horizontal push does
+    -- not mistake the floor beneath the hostile for the blocking wall.
+    mins = Vector(mins.x, mins.y, math.max(mins.z + 4, 4))
+    maxs = Vector(maxs.x, maxs.y, math.max(mins.z + 8, maxs.z - 4))
+    return mins, maxs
+end
+
+local function resolveDirection(hostile, opts)
+    local direction = opts.direction
+    if direction then
+        direction = Vector(direction.x, direction.y, 0)
+    else
+        local origin = opts.origin
+        if not origin and IsValid(opts.attacker) then origin = opts.attacker:GetPos() end
+        if origin then direction = hostile:GetPos() - origin end
+        if direction then direction.z = 0 end
+    end
+
+    if not direction or direction:LengthSqr() <= 0.01 then
+        if IsValid(opts.attacker) then
+            direction = opts.attacker:GetAimVector()
+            direction.z = 0
+        end
+    end
+    if not direction or direction:LengthSqr() <= 0.01 then return nil end
+    return direction:GetNormalized()
+end
+
+function Pushback:_RollWallCrush(hostile, opts)
+    if not IsValid(hostile) or hostile.LODDead or hostile:Health() <= 0 then return 0 end
+    local rolls = LOD.CombatRolls
+    if not rolls or not rolls._RNG or not rolls._RollFormula then return 0 end
+
+    local source = tostring(opts.source or "push")
+    local rng = rolls:_RNG("wall-crush:" .. source)
+    local total, values = rolls:_RollFormula(CRUSH_PROFILE, rng)
+    total = math.max(1, math.floor((total or 1) + 0.5))
+
+    local attacker = IsValid(opts.attacker) and opts.attacker or game.GetWorld()
+    local inflictor = IsValid(opts.inflictor) and opts.inflictor or attacker
+    local info = DamageInfo()
+    info:SetAttacker(attacker)
+    info:SetInflictor(inflictor)
+    info:SetDamage(total)
+    info:SetDamageType(DMG_CRUSH)
+    info:SetDamageForce(vector_origin)
+
+    -- Crush is a consequence of the push, not another firearm impact. Suppress
+    -- the ordinary bullet hit-confirm/stun observer for this one damage event so
+    -- the initiating weapon remains the sole source of its normal hit feedback.
+    hostile.LODSuppressHitFeedbackUntil = CurTime() + 0.03
+    hostile:TakeDamageInfo(info)
+
+    self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
+    self.Stats.crushDamage = (self.Stats.crushDamage or 0) + total
+    hostile.LODLastWallCrush = {
+        at = CurTime(),
+        damage = total,
+        attacker = attacker,
+        source = source,
+        rolls = values
+    }
+
+    if IsValid(hostile) then
+        hostile:EmitSound("physics/body/body_medium_impact_hard3.wav", 66, 96, 0.62, CHAN_BODY)
+    end
+
+    if IsValid(attacker) and attacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
+        local detail = string.format("[roll %d]", values and values[1] or total)
+        rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker, "1d3", total,
+            hostile, detail, nil, "Hostile", "wall crush"))
+    end
+
+    return total
+end
+
+function Pushback:Apply(hostile, opts)
+    opts = opts or {}
+    if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return nil end
+    if hostile.LODDeadcrabState == "latched" then return nil end
+
+    local distance = math.max(0, tonumber(opts.distance) or 0)
+    if distance <= 0 then return nil end
+    local direction = resolveDirection(hostile, opts)
+    if not direction then return nil end
+
+    local startPos = hostile:GetPos()
+    local mins, maxs = traceBounds(hostile)
+    local trace = util.TraceHull({
+        start = startPos,
+        endpos = startPos + direction * distance,
+        mins = mins,
+        maxs = maxs,
+        mask = MASK_PLAYERSOLID,
+        filter = {hostile, opts.attacker}
+    })
+
+    local travel = distance
+    if trace.Hit then
+        travel = math.max(0, distance * math.Clamp(trace.Fraction or 0, 0, 1) - 1)
+    end
+    local destination = startPos + direction * travel
+    destination.z = startPos.z
+
+    if travel > 0.05 then
+        local yaw = hostile:GetAngles().y
+        hostile:SetPos(destination)
+        hostile:SetAngles(Angle(0, yaw, 0))
+        hostile.LODMotionLastPos = destination
+        hostile.LODMotionLastUpdate = CurTime()
+        hostile.LODMotionVelocity = vector_origin
+        hostile.LODMotionSpeed = 0
+        hostile.LODMotionMode = "pushback:" .. tostring(opts.source or "generic")
+        hostile.LODNextRouteRefresh = 0
+        hostile.LODNextTargetRefresh = 0
+    end
+
+    self.Stats.pushes = (self.Stats.pushes or 0) + 1
+    local crushed = crushSurface(trace)
+    local crushDamage = crushed and self:_RollWallCrush(hostile, opts) or 0
+    local result = {
+        requested = distance,
+        moved = travel,
+        blocked = trace.Hit == true,
+        crushed = crushed,
+        crushDamage = crushDamage,
+        hitEntity = trace.Entity
+    }
+    hostile.LODLastPushback = {
+        at = CurTime(),
+        requested = distance,
+        moved = travel,
+        crushed = crushed,
+        crushDamage = crushDamage,
+        source = tostring(opts.source or "generic")
+    }
+    return result
+end
+
+concommand.Add("lod_pushback_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local line = string.format("pushes=%d wallCrushes=%d crushDamage=%d crushDie=1d3",
+        Pushback.Stats.pushes or 0, Pushback.Stats.wallCrushes or 0,
+        Pushback.Stats.crushDamage or 0)
+    print("[LOD:PUSHBACK] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
