@@ -82,14 +82,22 @@ local function broadcastPushFX(hostile, startPos, destination, trace, crushed, o
     local moved = startPos:Distance(destination)
     if moved <= 0.05 and not crushed then return end
 
+    local validHostile = IsValid(hostile)
     local impactPos = trace and trace.Hit and trace.HitPos or destination
+    local impactNormal = trace and trace.Hit and trace.HitNormal or vector_origin
     net.Start("LOD_PushbackFX")
-    net.WriteEntity(IsValid(hostile) and hostile or NULL)
+    net.WriteEntity(validHostile and hostile or NULL)
     net.WriteVector(startPos)
     net.WriteVector(destination)
     net.WriteVector(impactPos)
+    net.WriteVector(impactNormal)
     net.WriteBool(crushed == true)
     net.WriteString(string.sub(tostring(opts and opts.source or "generic"), 1, 24))
+    -- Capture the hostile's presentation before crush damage can kill/remove it.
+    -- Clients can therefore draw a short model-silhouette trail without spawning
+    -- temporary entities or depending on the hostile remaining valid next frame.
+    net.WriteString(validHostile and tostring(hostile:GetModel() or "") or "")
+    net.WriteAngle(validHostile and hostile:GetAngles() or angle_zero)
     net.Broadcast()
 end
 
