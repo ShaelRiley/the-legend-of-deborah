@@ -223,8 +223,31 @@ local function installHostilePatch()
 end
 
 installHostilePatch()
+local DEFERRED_APPLY_TIMER = "LOD_EnemyVarianceDeferredApply"
+EnemyVariance.PendingApply = EnemyVariance.PendingApply or setmetatable({}, {__mode = "k"})
+
+local function applyPendingHostiles()
+    local pending = EnemyVariance.PendingApply
+    EnemyVariance.PendingApply = setmetatable({}, {__mode = "k"})
+    for hostile in pairs(pending) do
+        if IsValid(hostile) and hostile.LODHostile and not hostile.LODVarianceApplied then
+            EnemyVariance:Apply(hostile)
+        end
+    end
+end
+
 hook.Add("OnEntityCreated", "LOD_EnemyVarianceInstallBeforeSpawn", function(ent)
-    if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end
+    if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return end
+    installHostilePatch()
+
+    -- The first hostile created after a Lua refresh can precede the stored-class
+    -- Initialize wrapper by one lifecycle edge. Queue every creation into one
+    -- shared next-tick fail-safe; the Apply guard makes this a no-op for normally
+    -- initialized entities and avoids allocating one timer per hostile.
+    EnemyVariance.PendingApply[ent] = true
+    if not timer.Exists(DEFERRED_APPLY_TIMER) then
+        timer.Create(DEFERRED_APPLY_TIMER, 0, 1, applyPendingHostiles)
+    end
 end)
 
 hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
