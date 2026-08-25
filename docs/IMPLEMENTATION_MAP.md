@@ -23,7 +23,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision |
 | Shotgun 5–6 explosion + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua` |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
-| Pushback motion trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; inherited by Shotgun, Force Shout, and future shared push sources |
+| Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; four cached-model silhouettes span the resolved path with bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
 | Shotgun 168-unit shell push | `sv_shotgun_pushback.lua` |
 | Basic Magic / Force Shout / global RMB ownership | `sv_magic.lua`, `cl_magic.lua`, `cl_magic_hud.lua`; RMB is Magic-only and weapon secondary fire is suppressed globally |
 | Finite ammo caps / regeneration floor | `sv_dice_ammo.lua`; shared 4 Hz server timer |
@@ -53,7 +53,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - Magic regenerates 0→100 in 60 seconds while alive.
 - RMB is globally reserved for Magic activation. LOD firearms do **not** expose HL2-style secondary fire.
 - Current Force Shout costs 30 Magic, affects an unobstructed ~60° / 1100-unit cone, deals independent exploding `2d6` per hostile, and applies a 336-unit shared-authority push to survivors.
-- Shared pushback presentation means the shout automatically receives the same travel trail and wall-crush audiovisual feedback as other push sources.
+- Shared pushback presentation means the shout automatically receives the same body-ghost travel trail and wall-crush audiovisual feedback as other push sources.
 - Elements, Magic items, Luck Ring behavior, and the broader RPG Magic system remain deferred.
 
 ## Firearm availability contract
