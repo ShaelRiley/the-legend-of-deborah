@@ -21,6 +21,23 @@ function GM:CreateTeams()
     team.SetUp(LOD.Config.PlayerTeam, "Expedition", Color(220, 140, 48), false)
 end
 
+-- A brand-new expedition identity begins with the GDD baseline only: Crowbar
+-- plus one loaded Pistol magazine. RunManager owns every later inventory restore,
+-- so respawns and level transitions never use this path as an ammunition refill.
+function GM:PlayerLoadout(ply)
+    local run = LOD.RunManager
+    local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
+    if not ps or ps.inventory then return end
+
+    ply:StripWeapons()
+    ply:RemoveAllAmmo()
+
+    ply:Give("weapon_crowbar", true)
+    local pistol = ply:Give("weapon_pistol", true)
+    if IsValid(pistol) then pistol:SetClip1(18) end
+    ply:SetAmmo(0, "Pistol")
+end
+
 function GM:PlayerNoClip()
     return false
 end
