@@ -34,6 +34,21 @@ local HULL_MAXS = Vector(10, 10, 8)
 local DAMAGE_PROFILE = {label = "CROWBAR", source = "crowbar", count = 1, sides = 3}
 local MISS_SOUND = "weapons/crowbar/crowbar_swing1.wav"
 local HIT_SOUND = "physics/body/body_medium_impact_soft2.wav"
+local MISS_NET = "LOD_CrowbarMissCue"
+
+if SERVER then
+    util.AddNetworkString(MISS_NET)
+else
+    net.Receive(MISS_NET, function()
+        surface.PlaySound(MISS_SOUND)
+    end)
+end
+
+local function sendMissCue(owner)
+    if not SERVER or not IsValid(owner) or not owner:IsPlayer() then return end
+    net.Start(MISS_NET)
+    net.Send(owner)
+end
 
 function SWEP:Initialize()
     self:SetHoldType("melee")
@@ -72,13 +87,13 @@ function SWEP:PrimaryAttack()
 
     local target = trace.Entity
     if not IsValid(target) or not target.LODHostile or target.LODDead then
-        self:EmitSound(MISS_SOUND, 68, 100, 0.82, CHAN_WEAPON)
+        sendMissCue(owner)
         return
     end
 
     local rolls = LOD and LOD.CombatRolls
     if not rolls or not rolls._RNG or not rolls._RollFormula then
-        self:EmitSound(MISS_SOUND, 68, 100, 0.82, CHAN_WEAPON)
+        sendMissCue(owner)
         return
     end
 
