@@ -10,7 +10,7 @@ The live GDD remains design authority. GitHub `main` remains implementation auth
 
 Accepted runtime evidence includes three consecutive complete dungeons, successful Level-4 generation/release, legal Red → Blue → Yellow → Jail Key → jail door → Deborah progression, Deborah rescue/intermission/next-level generation, `lod_m2_seed_test 100` at 100/100, accepted minimap/breadcrumb behavior, corrected stair presentation, and progression persistence through death.
 
-Recent authentic dice-era play has also produced a legitimate Level-1 clear and meaningful Level-2 progress. Balance is currently treated as challenging but viable; avoid broad difficulty changes without new runtime evidence.
+Authentic dice-era play has now progressed through **Level 5** before a total-party wipe. The player explicitly reports the game as fun, balanced, and playable. Treat broad combat/economy balance as frozen unless new runtime evidence identifies a specific problem; current optimization work must not casually retune the accepted loop.
 
 ## Canonical exploding-die invariant
 
@@ -54,6 +54,24 @@ A deliberately limited pre-release Magic subsystem is implemented while the broa
 
 Push travel presentation uses a short 4–16 body-ghost trail from the hostile's authoritative start position to its resolved destination. Distinct leased clientside render models are reused from bounded per-model pools so multiple ghosts can coexist in one frame without AI/physics work.
 
+## Minimap performance architecture
+
+A map-open performance audit found the route BFS itself was already cached, but the presentation layer was still redrawing hundreds of static maze cells/walls and allocating jail/gate helper data on every HUD frame. The server also retained layered serializer/safety modules, the client retained separate per-frame origin/alive Think hooks, the server polled every tick for level changes to revoke old maps, and reopening a same-level map retransmitted the full topology.
+
+The production minimap is now consolidated to **one server module (`sv_minimap.lua`) and one client module (`cl_minimap.lua`)**:
+
+- immutable current-floor topology is drawn once into one reusable **256×256 render target** and composited as one textured rectangle each HUD frame;
+- gates, JailEdge, stair markers, breadcrumb route, objective, and player marker remain lightweight live overlays;
+- client floor/stair/gate/jail indexes and compact adjacency are built once after topology reception;
+- breadcrumb BFS uses the precomputed adjacency and remains cached by player cell + gate/jail/objective state;
+- same-level close/reopen reuses client topology with **no network retransmission**;
+- mismatched/incomplete requests are throttled rather than emitted every HUD frame;
+- resolved maze origin travels once in the map-begin packet rather than being polled through NW2 values every client frame;
+- Map entitlement is level-stamped, eliminating the server's per-tick level-reset scan;
+- dead-player/access safety is folded into the canonical modules rather than separate Think/wrapper layers.
+
+`lod_minimap_cache_status` remains a manual, lightweight acceptance probe and now reports topology builds, map requests, and cached reopens in addition to BFS/floor-index statistics. Automatic telemetry remains prohibited.
+
 ### Hostile damage and health
 
 Current ordinary melee retune from full-run evidence:
@@ -90,9 +108,7 @@ One shared 4 Hz server timer owns regeneration. Grenades do not regenerate. The 
 
 ## Runtime evidence still needed
 
-Current testing should continue to judge the integrated dungeon experience: completion time, deaths/lives, sustain, ammunition pressure, peer-firearm usefulness, Magic readability, Magnum alignment reward, exploding-die feedback, Shotgun pellet volatility, combat-feed readability, and Steam Deck performance.
-
-The next Shotgun-specific evidence should verify that eight guaranteed pellets plus the exploding pellet-count die and 1-damage-per-connected-pellet floor feel fun and powerful without producing unacceptable close-range lethality or Steam Deck trace cost.
+Current testing should continue to judge the integrated dungeon experience, but broad balance is provisionally accepted after the Level-5 run. Immediate evidence should focus on the **minimap performance refactor**: visual correctness, breadcrumb correctness across floors/gates, same-level cache reuse, and whether the prior frame-rate/performance penalty while the map is open is materially reduced on Steam Deck.
 
 ## Telemetry safety policy
 
