@@ -14,19 +14,15 @@ Recent authentic dice-era play has also produced a legitimate Level-1 clear and 
 
 ## Canonical exploding-die invariant
 
-The live GDD now defines explosion thresholds globally:
+The live GDD defines explosion thresholds globally:
 
 - **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
 - **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
 - New mechanics that use d6s or d12s inherit these thresholds automatically unless a later explicit design change supersedes them.
 
-Current implementation status:
+Current implementation is compliant for Force Shout d6 chains, both Shotgun d6 systems, and Magnum / Magnum-pierce d12 chains.
 
-- Force Shout d6 chains: compliant, natural 6 explodes.
-- Magnum and Magnum-pierce d12 chains: compliant, natural 8–12 explodes.
-- Shotgun: **temporarily noncompliant** because the currently tested build still explodes on natural 5–6. The GDD supersedes that temporary tuning; reconcile Shotgun to natural-6-only after the current runtime test rather than changing the build mid-test.
-
-With the universal d6 rule, the Shotgun's floored d6 has expected contribution 4.0 before explosions, expected recursive shared total **4.8**, and expected seven-pellet full-connect base damage **5.6** before later modifiers.
+The Shotgun was compensated for losing the temporary 5–6 damage-die explosion range by gaining a second high-variance subsystem: every shell now rolls a separate exploding `1d6!` for additional pellets on top of six guaranteed pellets and the existing three independent 33% bonus-pellet checks. The pellet-count die has no damage floor, averages 4.2 extra pellets before the rare safety cap, and itself triggers the shared exploding-die audiovisual confirmation when it explodes. Production clamps final shell trace count to 36 for low-end safety. With the universal natural-6-only shared damage die, the uncapped shell averages 11.2 pellets and approximately 8.96 full-connect base damage before later modifiers.
 
 ## Current combat foundation
 
@@ -37,10 +33,10 @@ With the universal d6 rule, the Shotgun's floored d6 has expected contribution 4
 - SMG: `1d8`; six rapid shots overheat, one heat cools every 0.25 s below threshold, 2.0 s overheat lock, staged model/audio/smoke feedback.
 - AR2: `1d10` per projectile; every activation commits one 0.45-second targeting-laser tell then exactly three rapid rounds. **The complete three-projectile burst consumes one AR2 primary-ammo unit total**, spent when the first projectile releases.
 - .357 Magnum: universal exploding `1d12`; natural **8–12** recursively explode. A bullet pierces properly aligned hostiles and adds one fresh independently exploding d12 chain for every deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., up to the bounded eight-target cap and authoritative geometry stop.
-- Shotgun design target: one shared universal exploding `1d6`, per-die floor 3, **natural 6 only** recursively explodes, six guaranteed pellets plus independent 33% checks for pellets 7/8/9, one 4× ordinary hit stun and 168-unit nominal push per damaged target per shell. Current code still has the superseded temporary 5–6 explosion threshold pending reconciliation.
+- Shotgun: shared universal exploding damage `1d6!`, per-die floor 3, **natural 6 only** recursively explodes; six guaranteed pellets + one separate exploding `1d6!` additional-pellet roll + three independent 33% bonus-pellet checks; one 4× ordinary hit stun and 168-unit nominal push per damaged target per shell; 36-pellet safety cap.
 - Grenade: `1d20`; remains a separate consumable reward.
 
-Player-side exploding dice have bounded audiovisual confirmation: center-screen radial burst/label plus a short positive two-layer sound. This is shared by Magnum, Shotgun, Force Shout, and Magnum-pierce bonus dice.
+Player-side exploding dice have bounded audiovisual confirmation: center-screen radial burst/label plus a short positive two-layer sound. This is shared by Magnum, Shotgun damage/pellet dice, Force Shout, and Magnum-pierce bonus dice.
 
 ### Basic Magic
 
@@ -94,9 +90,9 @@ One shared 4 Hz server timer owns regeneration. Grenades do not regenerate. The 
 
 ## Runtime evidence still needed
 
-Current testing should continue to judge the integrated dungeon experience: completion time, deaths/lives, sustain, ammunition pressure, peer-firearm usefulness, Magic readability, Magnum alignment reward, exploding-die feedback, combat-feed readability, and Steam Deck performance.
+Current testing should continue to judge the integrated dungeon experience: completion time, deaths/lives, sustain, ammunition pressure, peer-firearm usefulness, Magic readability, Magnum alignment reward, exploding-die feedback, Shotgun pellet volatility, combat-feed readability, and Steam Deck performance.
 
-After the current test finishes, reconcile the Shotgun implementation from temporary natural 5–6 explosion to the new canonical natural-6-only d6 rule before treating C8 balance data as final.
+The Shotgun's universal-rule reconciliation is now implemented; the next Shotgun-specific evidence should verify that the extra exploding pellet-count die feels fun and powerful without producing unacceptable close-range lethality or Steam Deck trace cost.
 
 ## Telemetry safety policy
 
