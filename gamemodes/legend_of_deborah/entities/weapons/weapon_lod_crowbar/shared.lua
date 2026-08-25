@@ -11,6 +11,8 @@ SWEP.ViewModelFOV = 62
 SWEP.UseHands = true
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
+SWEP.DrawWeaponInfoBox = false
+SWEP.BounceWeaponIcon = false
 SWEP.Slot = 0
 SWEP.SlotPos = 0
 SWEP.Weight = 5
@@ -38,6 +40,25 @@ local DAMAGE_PROFILE = {label = "CROWBAR", source = "crowbar", count = 1, sides 
 local MISS_SOUND = "Weapon_Crowbar.Single"
 local HIT_SOUND = "physics/body/body_medium_impact_soft2.wav"
 local HIT_CONFIRM_DELAY = 0.06
+
+if CLIENT then
+    -- The custom LOD Crowbar derives from weapon_base, whose default selection
+    -- art is the generic SWEP icon. Draw HL2's canonical Crowbar glyph instead:
+    -- weapon_crowbar uses WeaponIcons character "c" in the Source weapon script.
+    killicon.AddAlias("weapon_lod_crowbar", "weapon_crowbar")
+
+    function SWEP:DrawWeaponSelection(x, y, wide, tall, alpha)
+        surface.SetFont("WeaponIcons")
+        local glyph = "c"
+        local glyphWidth, glyphHeight = surface.GetTextSize(glyph)
+        surface.SetTextColor(255, 255, 255, alpha)
+        surface.SetTextPos(
+            x + math.floor((wide - glyphWidth) * 0.5),
+            y + math.floor((tall - glyphHeight) * 0.5)
+        )
+        surface.DrawText(glyph)
+    end
+end
 
 function SWEP:Initialize()
     self:SetHoldType("melee")
