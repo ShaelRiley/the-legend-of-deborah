@@ -29,8 +29,8 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Finite ammo caps / regeneration floor | `sv_dice_ammo.lua`; shared 4 Hz server timer |
 | Production individualized LootDirector | `sv_loot_director.lua`, `sv_loot_context_rules.lua`, `sv_loot_catchup.lua`, `sv_loot_budget_validation.lua`, loot pickup entity |
 | Hit confirm / hurt-death presentation / combat audio | `sv_m3_hit_feedback.lua`, `cl_hit_confirm.lua`, `sv_hostile_hurt_pose.lua`, `sv_hostile_death_pose.lua`, `sv_hostile_death_audio.lua`, `sv_combat_audio.lua` |
-| HUD / minimap | `cl_hud.lua`, `cl_magic_hud.lua`, `sv_minimap*.lua`, `cl_minimap*.lua` |
-| Low-end runtime optimization | `sv_phase_zero_runtime_optimization.lua` plus bounded/cached work in motion, minimap, ballistics, loot, projectiles, death systems |
+| HUD / minimap | `cl_hud.lua`, `cl_magic_hud.lua`, **one canonical `cl_minimap.lua` + one canonical `sv_minimap.lua`**; static current-floor topology is rendered once into one reusable 256×256 client render target, while only gates/stairs/route/objective/player overlays remain live per frame; same-level reopen reuses topology without retransmission |
+| Low-end runtime optimization | `sv_phase_zero_runtime_optimization.lua` plus bounded/cached work in motion, minimap, ballistics, loot, projectiles, death systems; minimap precomputes client adjacency/overlay indexes once per topology revision, caches BFS by player cell/progression state, and has no server level-reset Think or client origin/alive helper Think hooks |
 | Automatic dice-run telemetry | **Retired; not loaded.** Use existing diagnostics + manual runtime evidence. |
 | Remaining expanded normal roster | Blocked until complete-dungeon dice balance gate passes |
 | Brute + Neil / production Map acquisition | Remaining Milestone 4 work |
@@ -107,4 +107,5 @@ Grenades do not regenerate.
 - weapon power-tier rarity gating for Shotgun/SMG/Magnum/AR2.
 - HL2 suit/armor as a production LOD resource pool.
 - HL2 weapon secondary-fire gameplay; RMB is owned globally by Magic.
+- layered minimap serializer/safety/origin-sync wrappers, per-tick map entitlement reset, or full-topology redraw/retransmit on every map frame/open.
 - unbounded generic state/network payloads, global BFS/entity scans, or automatic startup telemetry.
