@@ -146,15 +146,22 @@ local function encodeCanonicalCells(graph)
 end
 
 local function cachedCanonicalCells(state, graph)
-    if Minimap.EncodedGraph == graph and Minimap.EncodedLevel == state.Level and Minimap.EncodedCells then
+    local epoch = tonumber(state.CampaignEpoch) or 0
+    local levelSeed = tonumber(state.LevelSeed) or 0
+    if Minimap.EncodedEpoch == epoch and Minimap.EncodedLevel == state.Level
+        and Minimap.EncodedLevelSeed == levelSeed and Minimap.EncodedCells
+    then
         Minimap.EncodeCacheHits = (Minimap.EncodeCacheHits or 0) + 1
         return Minimap.EncodedCells, Minimap.EncodedChunks
     end
 
     local cells = encodeCanonicalCells(graph)
     local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
-    Minimap.EncodedGraph = graph
+    -- Cache compact serialized cells, not the graph object itself. Holding the
+    -- prior graph here would unnecessarily keep an entire retired level alive.
+    Minimap.EncodedEpoch = epoch
     Minimap.EncodedLevel = state.Level
+    Minimap.EncodedLevelSeed = levelSeed
     Minimap.EncodedCells = cells
     Minimap.EncodedChunks = chunks
     Minimap.EncodeBuilds = (Minimap.EncodeBuilds or 0) + 1
