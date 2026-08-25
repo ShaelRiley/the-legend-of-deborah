@@ -12,6 +12,7 @@ Rolls.Stats = Rolls.Stats or {
     rolls = 0,
     playerAttacks = 0,
     hostileAttacks = 0,
+    healthRolls = 0,
     feedMessages = 0
 }
 
@@ -33,6 +34,18 @@ local HOSTILE_ATTACKS = {
     blitzer = {label = "BLITZER", source = "Blitzer bolt", count = 1, sides = 8, bonus = 1, reference = 5},
     bioblaster = {label = "BIO BLASTER", source = "bio bolt", count = 8, sides = 8, bonus = 9, reference = 45},
     deadcrab = {label = "DEADCRAB", source = "death blast", count = 8, sides = 10, bonus = 11, reference = 55}
+}
+
+-- Initial health pools are tuned from desired dice-era hit counts rather than
+-- inherited fixed HP. Several small dice keep ordinary durability readable;
+-- the variance layer subsequently constrains the result beneath visible size.
+local ENEMY_HEALTH_PROFILES = {
+    deadcrab = {count = 2, sides = 4, bonus = 1},
+    runner = {count = 3, sides = 4, bonus = 3},
+    shambler = {count = 4, sides = 4, bonus = 5},
+    soldier = {count = 4, sides = 4, bonus = 5},
+    blitzer = {count = 4, sides = 4, bonus = 5},
+    bioblaster = {count = 5, sides = 4, bonus = 6}
 }
 
 local grenadeRolls = setmetatable({}, {__mode = "k"})
@@ -112,6 +125,23 @@ local function valueList(values)
     return table.concat(out, ",")
 end
 
+function Rolls:RollEnemyHealth(archetypeId, instanceSeed)
+    local profile = ENEMY_HEALTH_PROFILES[archetypeId]
+    if not profile then return nil end
+    local seed = LOD.Seeds.Derive(instanceSeed or 1, "health-dice:" .. archetypeId)
+    local total, values = self:_RollFormula(profile, LOD.RNG.New(seed))
+    self.Stats.healthRolls = (self.Stats.healthRolls or 0) + 1
+    return {
+        profile = profile,
+        formula = diceNotation(profile),
+        total = total,
+        values = values,
+        expected = (profile.count or 1) * ((profile.sides or 1) + 1) * 0.5
+            + (profile.bonus or 0),
+        seed = seed
+    }
+end
+
 local function cleanName(value)
     local text = tostring(value or "Unknown")
     text = string.gsub(text, "[%c]", "")
@@ -156,6 +186,22 @@ function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbac
     local detailBudget = 180 - #prefix - #suffix
     if #detailText > detailBudget then detailText = "" end
     return prefix .. detailText .. suffix
+end
+
+function Rolls:ReportEnemyHealth(hostile, contract, size, campaignPartyScale, finalHealth)
+    if not contract then return end
+    local raw = contract.total
+    local resolved = contract.resolvedBase or raw
+    local resolution = math.abs(raw - resolved) > 0.05
+        and string.format("%s -> %s", damageText(raw), damageText(resolved))
+        or damageText(raw)
+    local text = string.format("%s health %s (%s) [rolls %s; size x%.2f; campaign x%.2f] = %d HP",
+        entityDisplayName(hostile, "Hostile"), contract.formula, resolution,
+        valueList(contract.values), size or 1, campaignPartyScale or 1,
+        math.max(1, math.floor((finalHealth or 1) + 0.5)))
+    for _, ply in ipairs(player.GetHumans()) do
+        self:_Send(ply, 2, text)
+    end
 end
 
 function Rolls:RollPlayerWeapon(ply, weaponClass)
@@ -395,12 +441,13 @@ concommand.Add("lod_dice_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
     local stats = Rolls.Stats
-    local pass = stats.rolls > 0 and stats.feedMessages > 0
+    local pass = stats.rolls > 0 and stats.feedMessages > 0 and (stats.healthRolls or 0) > 0
         and stats.playerAttacks > 0 and stats.hostileAttacks > 0
     local text = string.format(
-        "rolls=%d playerAttacks=%d hostileAttacks=%d feed=%d serial=%d result=%s",
+        "rolls=%d playerAttacks=%d hostileAttacks=%d healthRolls=%d feed=%d serial=%d result=%s",
         stats.rolls or 0, stats.playerAttacks or 0, stats.hostileAttacks or 0,
-        stats.feedMessages or 0, Rolls.Serial or 0, pass and "PASS" or "WAITING")
+        stats.healthRolls or 0, stats.feedMessages or 0, Rolls.Serial or 0,
+        pass and "PASS" or "WAITING")
     print("[LOD:DICE] " .. text)
     if IsValid(ply) then ply:ChatPrint(text) end
 end)
