@@ -57,11 +57,13 @@ Monster-originated dice damage follows the same attribution structure.
 
 ### C3. Straightforward weapon dice — IMPLEMENTED
 
-- Crowbar `1d8`
+- Crowbar `1d3`, 96-unit player melee reach
 - Pistol `1d4`
 - SMG `1d8`
 - AR2 `1d10`
 - Grenade `1d20`
+
+Crowbar runtime acceptance is established. `weapon_lod_crowbar` owns player melee collision and damage authoritatively, uses the audible stock swing cue on a miss, the accepted soft body-impact cue on a hit, and the same local hit-confirm beep as ranged weapons. Its 96-unit reach is intentionally only a narrow spacing edge over ordinary variance-scaled melee enemies, making careful timing/backpedaling viable without making melee safe.
 
 ### C4. .357 Magnum — IMPLEMENTED
 
