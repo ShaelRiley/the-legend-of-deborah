@@ -21,6 +21,7 @@ This file maps the current production architecture. The live GDD defines intende
 | Per-instance hostile size/stat variance and size/durability resolution | `gamemode/lod/sv_enemy_variance.lua` plus health contracts from `sv_combat_rolls.lua` |
 | Generated-cover LOS/ballistics and projectile collision safety | `sv_generated_geometry_ballistics.lua`, projectile entities |
 | Server-authoritative player/hostile combat dice | `gamemode/lod/sv_combat_rolls.lua` |
+| Authoritative player melee / Crowbar | `entities/weapons/weapon_lod_crowbar/`; accepted `1d3`, 96-unit reach, miss whoosh, soft impact, and ranged-style hit-confirm beep |
 | Deterministic hostile health dice | `gamemode/lod/sv_combat_rolls.lua`, resolved through `sv_enemy_variance.lua` so visible size remains monotonic with durability |
 | Bounded lower-right combat-roll feed | `gamemode/lod/cl_combat_roll_feed.lua`, fed only by authoritative resolved server events |
 | Finite firearm caps and one-reload regeneration floor | `gamemode/lod/sv_dice_ammo.lua`; one shared 4 Hz server timer |
@@ -44,7 +45,7 @@ This file maps the current production architecture. The live GDD defines intende
 
 ### Weapon families
 
-- Crowbar `1d8`
+- Crowbar `1d3`, 96-unit player melee reach
 - Pistol `1d4`
 - SMG `1d8`
 - AR2 `1d10`
