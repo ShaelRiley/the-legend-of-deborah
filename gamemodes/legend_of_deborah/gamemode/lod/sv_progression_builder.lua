@@ -4,6 +4,11 @@ LOD.MazeBuilder = LOD.MazeBuilder or {}
 local MazeBuilder = LOD.MazeBuilder
 local PC = LOD.Config.Progression
 
+local LEVEL_ONE_WEAPONS = {
+    {class = "weapon_shotgun", clip = 6, cardIndex = 1, offset = Vector(72, 0, 28)},
+    {class = "weapon_smg1", clip = 45, cardIndex = 2, offset = Vector(-72, 0, 28)}
+}
+
 function MazeBuilder:_SpawnProgressionGate(meta)
     local a = self:CellCenter(meta.beforeCell)
     local b = self:CellCenter(meta.afterCell)
@@ -56,6 +61,38 @@ function MazeBuilder:_SpawnDeborah(meta)
     return ent
 end
 
+function MazeBuilder:_SpawnGuaranteedWeapon(meta, spec)
+    if not meta or not meta.cell then return nil end
+    local ent = ents.Create(spec.class)
+    if not IsValid(ent) then return nil end
+    ent:SetPos(self:CellCenter(meta.cell) + spec.offset)
+    ent:SetAngles(angle_zero)
+    ent:Spawn()
+    ent:Activate()
+    if ent.SetClip1 then ent:SetClip1(spec.clip) end
+    ent.LODGuaranteedLevelWeapon = true
+    return ent
+end
+
+function MazeBuilder:_BuildLevelOneWeaponAccess(graph)
+    local state = LOD.RunManager and LOD.RunManager.State
+    if not state or state.Level ~= 1 then return 0 end
+
+    local cards = graph.Progression and graph.Progression.Keycards
+    if not cards or not cards[1] or not cards[2] then
+        self.BuildFailures = (self.BuildFailures or 0) + 1
+        return 0
+    end
+
+    local spawned = 0
+    for _, spec in ipairs(LEVEL_ONE_WEAPONS) do
+        local ent = self:_SpawnGuaranteedWeapon(cards[spec.cardIndex], spec)
+        self:_Register(ent)
+        if IsValid(ent) then spawned = spawned + 1 end
+    end
+    return spawned
+end
+
 function MazeBuilder:_BuildProgressionEntities(graph)
     local progression = graph.Progression
     if not progression then
@@ -76,6 +113,7 @@ function MazeBuilder:Build(graph)
 
     local before = #self.Entities
     self:_BuildProgressionEntities(graph)
+    local guaranteedWeapons = self:_BuildLevelOneWeaponAccess(graph)
     if self.BuildFailures > 0 then
         local failures = self.BuildFailures
         self:Cleanup()
@@ -88,7 +126,8 @@ function MazeBuilder:Build(graph)
         gates = 3,
         keycards = 3,
         jailDoor = 1,
-        deborah = 1
+        deborah = 1,
+        guaranteedWeapons = guaranteedWeapons
     }
     return true, report
 end
