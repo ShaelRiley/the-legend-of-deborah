@@ -46,7 +46,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - .357 Magnum: exploding `1d12` on natural **8/9/10/11/12**; one cartridge; aligned piercing escalates cumulatively by one fresh exploding d12 chain per deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., capped at eight total targets and stopped by authoritative geometry.
 - Shotgun: shared `1d6`, floor 3, natural **5 or 6** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**.
 - Grenade: `1d20`, separate consumable reward.
-- Player-side exploding-die continuations (currently Magnum and Shotgun, including Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
+- Player-side exploding-die continuations (Magnum, Shotgun, Force Shout, and Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
 
 ## Basic Magic contract
 
