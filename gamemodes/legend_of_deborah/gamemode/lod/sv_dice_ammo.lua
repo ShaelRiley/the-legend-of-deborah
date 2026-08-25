@@ -9,23 +9,23 @@ local SHARED_TIMER = "LOD_DiceAmmoSharedTick"
 local PROFILES = {
     weapon_pistol = {
         label = "Pistol", ammo = "Pistol", load = 18, cap = 54,
-        floor = 18, recovery = 60
+        floor = 18, recovery = 60, pickup = 6
     },
     weapon_shotgun = {
         label = "Shotgun", ammo = "Buckshot", load = 6, cap = 18,
-        floor = 6, recovery = 90
+        floor = 6, recovery = 90, pickup = 2
     },
     weapon_smg1 = {
         label = "SMG", ammo = "SMG1", load = 45, cap = 135,
-        floor = 45, recovery = 120
+        floor = 45, recovery = 120, pickup = 15
     },
     weapon_ar2 = {
         label = "AR2", ammo = "AR2", load = 30, cap = 90,
-        floor = 30, recovery = 150
+        floor = 30, recovery = 150, pickup = 10
     },
     weapon_357 = {
         label = ".357 Magnum", ammo = "357", load = 6, cap = 18,
-        floor = 6, recovery = 180
+        floor = 6, recovery = 180, pickup = 2
     }
 }
 
@@ -76,6 +76,49 @@ function Ammo:ClampFamily(ply, weaponClass, profile)
     ply:SetAmmo(math.max(0, profile.cap - clip), profile.ammo)
     self.Stats.capClamps = (self.Stats.capClamps or 0) + 1
     return true
+end
+
+-- Temporary Gate-C test support. The final LootDirector will own individualized,
+-- seeded weighted drops. Until then, death pickups grant a small amount of ammo
+-- for the collector's most depleted firearm family. This deliberately reuses the
+-- production caps so the scaffold cannot create ammunition above normal limits.
+function Ammo:GrantTemporaryDrop(ply)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+
+    local chosenClass
+    local chosenProfile
+    local chosenTotal
+    local chosenRatio
+
+    for weaponClass, profile in pairs(PROFILES) do
+        if not testkitBypass(ply, weaponClass) then
+            local total, _, weapon = familyTotal(ply, weaponClass, profile)
+            if weapon and total < profile.cap then
+                local ratio = total / math.max(1, profile.cap)
+                if chosenRatio == nil or ratio < chosenRatio
+                    or (ratio == chosenRatio and weaponClass < chosenClass)
+                then
+                    chosenClass = weaponClass
+                    chosenProfile = profile
+                    chosenTotal = total
+                    chosenRatio = ratio
+                end
+            end
+        end
+    end
+
+    if not chosenProfile then return false end
+
+    local headroom = math.max(0, chosenProfile.cap - chosenTotal)
+    local amount = math.min(headroom, math.max(1, chosenProfile.pickup or 1))
+    if amount <= 0 then return false end
+
+    ply:SetAmmo(ply:GetAmmoCount(chosenProfile.ammo) + amount, chosenProfile.ammo)
+    self:ClampFamily(ply, chosenClass, chosenProfile)
+    self.Stats.pickupsCollected = (self.Stats.pickupsCollected or 0) + 1
+    self.Stats.pickupRounds = (self.Stats.pickupRounds or 0) + amount
+
+    return true, chosenProfile.label, amount
 end
 
 function Ammo:Interrupt(ply, weaponClass, now)
@@ -154,8 +197,9 @@ concommand.Add("lod_dice_ammo_status", function(ply)
     end
     table.sort(details)
     printLine(ply, string.format(
-        "owned=%d overflow=%d regenerated=%d clamps=%d %s result=%s",
+        "owned=%d overflow=%d regenerated=%d clamps=%d pickups=%d pickupRounds=%d %s result=%s",
         owned, overflow, Ammo.Stats.roundsRegenerated or 0, Ammo.Stats.capClamps or 0,
+        Ammo.Stats.pickupsCollected or 0, Ammo.Stats.pickupRounds or 0,
         table.concat(details, " "), overflow == 0 and "PASS" or "FAIL"))
 end)
 
