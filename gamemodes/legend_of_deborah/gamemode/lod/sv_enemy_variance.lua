@@ -98,9 +98,7 @@ function EnemyVariance:Apply(hostile)
     local cfg = table.Copy(originalConfig)
     hostile.LODConfig = cfg
 
-    local hpJitter = jitter(seed, "health", V.HealthJitter)
     local damageScale = size
-    local hpScale = size * hpJitter
     local speedScale = math.pow(size, V.SpeedSizeExponent or -0.18)
     local timerScale = math.pow(size, V.TimerSizeExponent or 0.10)
     local rangeScale = math.pow(size, V.RangeSizeExponent or 0.55)
@@ -115,10 +113,27 @@ function EnemyVariance:Apply(hostile)
     hostile:SetModelScale(1, 0)
 
     local currentMax = math.max(1, hostile:GetMaxHealth())
-    local variedMax = math.max(1, math.floor(currentMax * hpScale + 0.5))
+    local fixedBase = math.max(1, tonumber(originalConfig.baseHP) or currentMax)
+    local campaignPartyScale = currentMax / fixedBase
+    local healthContract = LOD.CombatRolls
+        and LOD.CombatRolls:RollEnemyHealth(hostile.LODArchetypeId, seed)
+    local resolvedBase = fixedBase
+    if healthContract then
+        -- Dice retain per-instance variation, but a narrow +/-6% band makes the
+        -- much stronger visible-size multiplier the dependable durability cue.
+        -- This replaces rather than stacks with the former +/-8% HP jitter.
+        local rawFactor = healthContract.total / math.max(1, healthContract.expected)
+        local boundedFactor = math.Clamp(rawFactor, 0.94, 1.06)
+        resolvedBase = healthContract.expected * boundedFactor
+        healthContract.resolvedBase = resolvedBase
+        healthContract.boundedFactor = boundedFactor
+    end
+    local variedMax = math.max(1,
+        math.floor(resolvedBase * size * campaignPartyScale + 0.5))
+    local hpScale = variedMax / currentMax
     hostile:SetMaxHealth(variedMax)
     hostile:SetHealth(variedMax)
-    if cfg.baseHP then cfg.baseHP = scaledValue(cfg.baseHP, size, hpJitter) end
+    if cfg.baseHP then cfg.baseHP = resolvedBase * size end
 
     if cfg.speed then
         cfg.speed = scaledValue(cfg.speed, speedScale, jitter(seed, "speed", V.SpeedJitter))
@@ -168,8 +183,13 @@ function EnemyVariance:Apply(hostile)
         hpScale = hpScale,
         speedScale = cfg.speed and (cfg.speed / (originalConfig.speed or cfg.speed)) or 1
     }
+    hostile.LODHealthDice = healthContract
     hostile:SetNW2Float("LOD_SizeScale", size)
     hostile:SetNW2Int("LOD_InstanceSeed", seed)
+    if healthContract and LOD.CombatRolls then
+        LOD.CombatRolls:ReportEnemyHealth(hostile, healthContract, size,
+            campaignPartyScale, variedMax)
+    end
 end
 
 local function installHostilePatch()
@@ -274,4 +294,51 @@ concommand.Add("lod_m3_variance", function(ply)
         print("[LOD:VARIANCE] no active varied hostiles")
         if IsValid(ply) then ply:ChatPrint("no active varied hostiles") end
     end
+end)
+
+concommand.Add("lod_dice_health_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local active = {}
+    local missing = 0
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and not hostile.LODDead then
+            active[#active + 1] = hostile
+            if not hostile.LODHealthDice then missing = missing + 1 end
+        end
+    end
+
+    -- "Clearly larger" is conservatively audited at a 0.20 scale gap. Dice
+    -- banding may vary near-identical silhouettes, but must never invert an
+    -- unmistakable same-archetype size difference.
+    local clearPairs = 0
+    local inversions = 0
+    for firstIndex = 1, #active do
+        local first = active[firstIndex]
+        for secondIndex = firstIndex + 1, #active do
+            local second = active[secondIndex]
+            if first.LODArchetypeId == second.LODArchetypeId then
+                local firstSize = first.LODVariance and first.LODVariance.size or 1
+                local secondSize = second.LODVariance and second.LODVariance.size or 1
+                if math.abs(firstSize - secondSize) >= 0.20 then
+                    clearPairs = clearPairs + 1
+                    local larger = firstSize > secondSize and first or second
+                    local smaller = larger == first and second or first
+                    if larger:GetMaxHealth() <= smaller:GetMaxHealth() then
+                        inversions = inversions + 1
+                    end
+                end
+            end
+        end
+    end
+
+    local result = #active > 0 and missing == 0 and inversions == 0 and "PASS" or "FAIL"
+    local line = string.format(
+        "active=%d diceApplied=%d missing=%d legacyHPJitter=0 clearSizePairs=%d inversions=%d healthRolls=%d result=%s",
+        #active, #active - missing, missing, clearPairs, inversions,
+        LOD.CombatRolls and LOD.CombatRolls.Stats.healthRolls or 0, result)
+    print("[LOD:DICE-HEALTH] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
