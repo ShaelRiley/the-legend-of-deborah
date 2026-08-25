@@ -33,6 +33,7 @@ include("lod/sv_m3_enemy_config.lua")
 -- One server roll service owns outgoing player dice and incoming hostile dice.
 -- Load it before any runtime combat can occur and before feedback wrappers.
 include("lod/sv_combat_rolls.lua")
+include("lod/sv_dice_ammo.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
