@@ -1,20 +1,17 @@
 LOD = LOD or {}
 
--- Mirror the visual language of Source/GMod's stock CHudBattery rather than
--- presenting Magic as a separate custom subsystem. The actual HL2 armor/suit
--- pool remains unused; only its familiar lower-left HUD footprint is inherited.
-surface.CreateFont("LOD_MagicHUD_Label", {
-    font = "Trebuchet MS",
-    size = 12,
-    weight = 700,
-    antialias = true
-})
-surface.CreateFont("LOD_MagicHUD_Number", {
-    font = "Trebuchet MS",
-    size = 40,
-    weight = 900,
-    antialias = true
-})
+-- Magic visually replaces the stock CHudBattery/Suit readout, but does not use
+-- the HL2 armor pool. Match Valve/GMod's actual HudSuit layout contract rather
+-- than approximating it with a custom panel:
+--   xpos 140, ypos 432, wide 108, tall 36
+--   text 8,20; digits 50,2
+-- All values are Source proportional coordinates on a 640x480 HUD canvas.
+local MAGIC_COLOR = Color(72, 168, 255, 255)
+local PANEL_COLOR = Color(0, 0, 0, 145)
+
+local function ss(value)
+    return ScreenScale(value)
+end
 
 hook.Add("HUDShouldDraw", "LOD_MagicReplacesSuitBattery", function(name)
     if name == "CHudBattery" then return false end
@@ -28,33 +25,28 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
     local value = math.floor(magic + 0.5)
 
-    -- Stock CHudHealth occupies the far lower-left. CHudBattery normally sits
-    -- directly beside it; keep that same compact horizontal footprint so MAGIC
-    -- reads as the renamed/re-purposed suit indicator rather than a new widget.
-    local scale = math.Clamp(ScrH() / 768, 0.80, 1.35)
-    local x = math.floor(166 * scale)
-    local y = ScrH() - math.floor(67 * scale)
-    local w = math.floor(154 * scale)
-    local h = math.floor(55 * scale)
+    -- Exact stock HudSuit proportional bounds from HL2/GMod HudLayout.res.
+    local x = ss(140)
+    local y = ss(432)
+    local w = ss(108)
+    local h = ss(36)
 
-    local panel = Color(0, 0, 0, 118)
-    local normal = Color(255, 208, 64, 255)
-    local low = Color(255, 96, 72, 255)
-    local textColor = value <= 20 and low or normal
+    -- PaintBackgroundType 2 is the stock compact HUD-panel treatment. Lua does
+    -- not expose that native border object directly, so reproduce its footprint
+    -- with the same dark translucent bounding box while using the engine's own
+    -- stock HUD fonts below.
+    draw.RoundedBox(ss(2), x, y, w, h, PANEL_COLOR)
 
-    draw.RoundedBox(0, x, y, w, h, panel)
+    -- CHudNumericDisplay itself uses TextFont="Default" and
+    -- NumberFont="HudNumbers". Reuse those exact engine fonts so Magic has
+    -- genuine font/size parity with the Suit indicator instead of a lookalike.
+    surface.SetTextColor(MAGIC_COLOR)
+    surface.SetFont("Default")
+    surface.SetTextPos(x + ss(8), y + ss(20))
+    surface.DrawText("MAGIC")
 
-    draw.SimpleText("MAGIC", "LOD_MagicHUD_Label",
-        x + math.floor(10 * scale),
-        y + math.floor(35 * scale),
-        textColor,
-        TEXT_ALIGN_LEFT,
-        TEXT_ALIGN_CENTER)
-
-    draw.SimpleText(tostring(value), "LOD_MagicHUD_Number",
-        x + math.floor(72 * scale),
-        y + math.floor(28 * scale),
-        textColor,
-        TEXT_ALIGN_LEFT,
-        TEXT_ALIGN_CENTER)
+    surface.SetTextColor(MAGIC_COLOR)
+    surface.SetFont("HudNumbers")
+    surface.SetTextPos(x + ss(50), y + ss(2))
+    surface.DrawText(tostring(value))
 end)
