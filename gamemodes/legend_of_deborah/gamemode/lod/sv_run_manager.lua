@@ -382,7 +382,6 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
         buildReport.buildSeconds,
         buildReport.totalSeconds
     ))
-    hook.Run("LOD_LevelReady", self.State.Level, self.State.LevelSeed)
     return true, graph
 end
 
@@ -499,7 +498,6 @@ function RunManager:FailCampaign(reason)
         LOD.ProgressionDirector:SyncAll()
     end
     print(string.format("[LOD] Campaign failed at Level %d. seed=%s reason=%s", self.State.Level, tostring(self.State.CampaignSeed), self.State.FailureReason))
-    hook.Run("LOD_CampaignFailed", self.State.FailureReason, self.State.Level, self.State.LevelSeed)
 end
 
 function RunManager:CompleteLevel(ply)
@@ -516,7 +514,6 @@ function RunManager:CompleteLevel(ply)
     LOD.ProgressionDirector:Announce(string.format("DEBORAH RESCUED — LEVEL %d CLEAR", self.State.Level))
     LOD.ProgressionDirector:SyncAll()
     print(string.format("[LOD] Level %d cleared by %s; advancing in %d seconds", self.State.Level, ply:Nick(), CC.Progression.IntermissionSeconds))
-    hook.Run("LOD_LevelCleared", ply, self.State.Level, self.State.LevelSeed)
     return true
 end
 

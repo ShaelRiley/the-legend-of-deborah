@@ -1,79 +1,143 @@
-# Development Status
+# Development Status — 2026-08-25 Dice-Era Reconciliation
 
 ## Current execution phase
-Vertical Slice Completion Gate — between core Milestone 3 stabilization and the Milestone 4 dice-combat foundation.
 
-**Implementation authority at audit start:** `d05c145348aadf6bfd99caf9a53a41f43a2b16a2` (`main`).
+**Gate C8 — Complete-Dungeon Dice-Era Validation.**
 
-The repository had materially outgrown its old status document. Milestone 2 is no longer awaiting first runtime validation: the project now has live progression, a production minimap stack, graph-authoritative hostile motion, multiple ranged/melee archetypes, encounter/wandering systems, hit/death feedback, generated-geometry ballistics, low-end runtime optimization, and the accepted immutable Soldier shot contract.
+This status was reconciled against GitHub `main` at `f24f0df613246ab531a1698480a6d98b7f30ec2f`, the live production GDD, and accepted Steam Deck runtime evidence. The older description of the project as waiting to begin the dice-combat foundation is obsolete.
 
-## Accepted / established systems
+The live GDD remains design authority. GitHub `main` remains implementation authority. Milestone labels describe capability groups; the immediate execution gate is determined by the actual build and accepted runtime evidence.
 
-### Milestone 1 — The Labyrinth
-Accepted implementation checkpoint. Deterministic multi-layer generation, canonical graph connectivity, generated container/floor/stair geometry, regeneration, and representative Steam Deck generation performance are established. The 1,000-seed logical validation checkpoint remains recorded in `docs/M1_TEST_REPORT.md`.
+## Accepted complete-dungeon checkpoint
 
-### Milestone 2 — The Three Keys
-Substantially implemented and runtime-tested in representative progression tests:
+Gate A is closed unless new regression evidence appears.
 
-- deterministic ordered Red → Blue → Yellow keycard/gate planning;
-- progression-safe gate edges and validated objective pockets;
-- permanent gate opening and checkpoint advancement;
-- team card/gate state and Source-style objective HUD;
-- lives, death/spectate/respawn, elimination/comeback, and session-local player state;
-- provisional Deborah touch rescue and next-level intermission path;
-- canonical M-toggle minimap architecture with gate-aware topology and current-floor routing support.
+Accepted runtime evidence includes:
 
-The remaining Milestone-2 debt is no longer isolated feature validation; it is **end-to-end dungeon-loop validation** under the current hostile/optimization architecture.
+- three consecutive complete dungeons;
+- successful generation and release of Level 4;
+- legal Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah progression;
+- Deborah touch rescue, level clear, intermission, and next-level generation;
+- `lod_m2_seed_test 100` completing 100/100 with zero failures;
+- accepted minimap-cache diagnostics and complete canonical breadcrumb routing through cards, gates, stairs, Jail Key, jail door, and Deborah;
+- correction of the misleading stair-presentation defect;
+- developer H kit granting full health, Crowbar, Pistol, and intentionally infinite developer Pistol ammunition;
+- colored progression and rescue state surviving the tested level loop.
 
-### Milestone 3 — The Hostiles / runtime architecture
-Established implementation includes:
+Do not reopen this gate without new runtime evidence of regression.
 
-- `MazeNavigator`, `FactionManager`, deterministic encounter planning/activation, wandering population, hostile separation, and encounter/spawn variance;
-- Motion V2 as the sole production ground-movement authority over canonical graph waypoints;
-- Shambler, Runner, Soldier, Deadcrab, Bio Blaster, and the Soldier-derived Blitzer path;
-- deterministic 0.33x–1.33x client-rendered hostile size variance with server-authoritative stat consequences;
-- generated-geometry LOS/ballistic cover enforcement;
-- player hit confirmation, hit stun, hurt/death pose/audio presentation, and scaled-hostile combat-hull fallback;
-- bounded/optimized low-end runtime systems, including minimap caching/serialization and Phase Zero hot-path reductions;
-- Soldier warning/burst trajectory fixed on 2026-08-24 by one immutable server-authored world-space shot contract; live testing accepted the warning origin, frozen aim, and bolt colinearity.
+## Accepted v1 dice-combat foundation
 
-## Immediate development gate: completable dungeon
+The dice foundation is now implemented and has passed subsystem-level runtime checks.
 
-Do **not** resume broad enemy-roster expansion yet. First produce and validate a complete single-player dungeon loop:
+### Combat roll authority and feed
 
-`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Core/Jail Key → Deborah jail door → Deborah touch rescue → intermission → next generated level`
+- `sv_combat_rolls.lua` is the server-authoritative roll service for player weapon damage, hostile-originated dice damage, and deterministic hostile health dice.
+- `cl_combat_roll_feed.lua` renders the bounded event-driven lower-right feed between ammunition and the minimap.
+- Attributed damage entries preserve source, formula, applied total, target, and damage source, e.g. `ShaelRiley dealt 1d4 (3) damage to Shambler, via pistol`.
+- Player and monster damage both use the dice-era authority.
 
-Requirements:
+### Weapon dice
 
-1. The entitled minimap marks the **current** mandatory progression objective and supplies a complete canonical-graph breadcrumb that respects live gate state and vertical transitions.
-2. Keycard stages breadcrumb to the currently required card; card acquisition retargets the route to its matching gate.
-3. After Yellow Gate, a deterministic temporary Core stand-in provides the production Jail Key. No Warden fight is implemented at this checkpoint.
-4. The Jail Key, Deborah jail-door lock/unlock state, rescue eligibility, and level-clear path must be production-compatible. Milestone 5 will replace only the key's source with Gordon the Warden's death/drop.
-5. Deborah cannot clear the level before the jail door has been legally unlocked.
-6. The complete loop must survive several no-teleport, no-progression-cheat playthroughs on different seeds before this gate is accepted.
+Implemented v1 rules:
 
-## Next major system after the vertical slice
+- Crowbar: `1d8`
+- Pistol: `1d4`
+- SMG: `1d8`
+- AR2: `1d10`
+- Grenade: `1d20`
+- .357 Magnum: exploding `1d12`; natural 10, 11, or 12 recursively explodes
+- Shotgun: one shared exploding `1d6`, per-die floor 3, natural 6 explosions, six guaranteed pellets, independent 33% checks for pellets 7/8/9, and one aggregate damage resolution per target
 
-After a small baseline set of complete fixed-damage dungeon runs, implement the **v1 dice-combat foundation before further roster breadth**. This avoids balancing Watcher/Seeker/Sentry/etc. against a fixed-damage/fixed-HP economy already scheduled for replacement.
+XP, character levels, procedural affixes/equipment, elements, Magic, and Luck Ring remain deferred post-release systems and are not part of this v1 gate.
 
-The v1 dice foundation comprises the GDD-defined weapon dice, Magnum exploding d12, Shotgun shared exploding/floored d6 and bonus pellets, authoritative bounded combat-roll feed, three-reload ammo capacities with die-scaled regeneration timing, and deterministic enemy health dice with monotonic visible-size/durability behavior.
+### Enemy health dice
 
-XP, character leveling, procedural equipment/affixes, elemental progression, Magic, Luck Ring, and the broader RPG layer remain post-release.
+Deterministic health dice replace the former independent HP jitter while retaining visible hostile size as a monotonic durability cue.
 
-## Deferred until after dice foundation
+Current profiles:
 
-- remaining expanded normal roster: Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper;
-- production Brute + Neil Map-guardian encounter and ordinary Map acquisition flow (developer mode may auto-entitle the same production map behavior meanwhile);
-- broader Milestone-4 loot/resource economy;
-- Gordon the Warden combat and final presentation;
-- dedicated multiplayer integration and multiplayer-specific QA, which remain Milestone 6.
+- Deadcrab: `2d4+1`
+- Runner: `3d4+3`
+- Shambler / Soldier / Blitzer: `4d4+5`
+- Bio Blaster: `5d4+6`
+
+Accepted diagnostic:
+
+`[LOD:DICE-HEALTH] active=32 diceApplied=32 missing=0 legacyHPJitter=0 clearSizePairs=88 inversions=0 healthRolls=32 result=PASS`
+
+### Finite-ammo economy
+
+`sv_dice_ammo.lua` owns the shared bounded 4 Hz regeneration timer. Combined loaded-plus-reserve caps and one-reload floors are:
+
+- Pistol: cap 54, floor 18, 60-second empty-to-floor recovery
+- Shotgun: cap 18, floor 6, 90 seconds
+- SMG: cap 135, floor 45, 120 seconds
+- AR2: cap 90, floor 30, 150 seconds
+- .357: cap 18, floor 6, 180 seconds
+
+Grenades are excluded. The H-key developer Pistol intentionally bypasses the cap.
+
+Accepted diagnostic:
+
+`[LOD:DICE-AMMO] capTotal=54 capExpected=54 cap=PASS regenTotal=1 regenExpected=1 regen=PASS result=PASS`
+
+### Shotgun hit stun
+
+Each damaged target receives one doubled 0.60-second stun per resolved shell, with a 0.66-second retrigger lockout. Pellet-level stuns are suppressed.
+
+Accepted diagnostic:
+
+`[LOD:DICE-SHOTGUN] pelletSuppressed=true shellApplied=true duplicateRejected=true duration=0.60 lockout=0.66 result=PASS`
+
+`durationMultiplier` propagation through both `sv_hostile_hurt_pose.lua` and the final `sv_soldier_shot_contract.lua` wrapper is an accepted invariant. Do not regress Soldier/Blitzer shot cancellation or the immutable Soldier shot contract.
+
+## Telemetry incident and disposition
+
+An automatic dice-run telemetry experiment caused a severe startup regression when its server module was added to the normal gamemode loader: the custom loading screen disappeared and Garry's Mod entered ordinary Sandbox Flatgrass. Removing only that loader restored normal The Legend of Deborah startup in runtime testing.
+
+Repository history proves that the telemetry experiment's surviving footprint consisted only of:
+
+- `sv_dice_run_telemetry.lua`;
+- three custom lifecycle `hook.Run` calls in `sv_run_manager.lua`;
+- one guarded sampling callback in `sv_dice_ammo.lua`.
+
+No useful Garry's Mod runtime exception was captured, so the exact internal Lua fault is **not proven**. Static syntax success is not sufficient evidence. The safe disposition is therefore complete removal of the failed telemetry experiment rather than speculative repair or automatic re-enablement.
+
+The first dice-era full-dungeon validation uses existing bounded diagnostics, ordinary console/runtime evidence, screenshots, and manual observations. If telemetry is revisited later, it must be a minimal developer-only tool that is explicitly armed after successful gamemode startup and cannot participate in the normal startup path.
+
+## Immediate gate — one complete dice-era dungeon
+
+Before any further enemy-roster breadth, complete and inspect a full dice-era dungeon. Record or observe:
+
+- completion time against the GDD's Level-1 20–35 minute target;
+- deaths and remaining lives;
+- outgoing and incoming lethality;
+- ammunition pressure across progression stages;
+- fights that feel excessively slow, cheap, or trivial;
+- whether visible hostile size remains a trustworthy durability cue;
+- Steam Deck performance and obvious entity/runtime spikes;
+- whether the combat-roll feed remains useful rather than noisy;
+- successful Deborah rescue, intermission, and next-level release.
+
+Tune only from runtime evidence. Do not optimize expected-value arithmetic in isolation.
+
+## After the dice full-run gate
+
+Once complete-dungeon dice play is accepted, resume remaining roster breadth in the current GDD order:
+
+`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
+
+Then continue the remaining Milestone-4 expedition work, including production loot/resource systems and the Brute + Neil / Map path, followed by Gordon the Warden in Milestone 5 and dedicated multiplayer integration/testing in Milestone 6.
 
 ## Preserved hard constraints
 
-- `gm_flatgrass` remains the required base map.
-- The canonical logical graph remains authoritative for maze topology, progression validation, routing, and generated-world interpretation.
-- Motion V2 remains the sole production hostile ground-motion authority.
-- Do not restore retired competing locomotion/recovery layers.
-- Soldier warning/projectile geometry remains governed by the immutable shot contract; do not reconstruct its trajectory from live client/server bones.
-- Preserve the validated low-end architecture: compact/chunked network state, cached minimap work, bounded ballistic queries, client-side visual scaling/batching, and developer-only heavy audit modules.
-- Multiplayer-aware server authority may remain in code, but active multiplayer development/testing waits until the full single-player experience is complete through Milestone 5.
+- `gm_flatgrass` is the required base map.
+- The canonical generated 3D graph is authoritative for topology, progression legality, routing, minimap interpretation, gates, and stairs.
+- Generated physical geometry must agree with that graph.
+- Motion V2 remains the sole ordinary hostile ground-movement authority.
+- Validated stairs are the sole ordinary elevation-changing route.
+- Do not restore retired CLuaLocomotion recovery layers as competing authorities.
+- The Soldier warning/projectile contract remains one immutable server-authored world-space origin and direction committed at beam-on; animation bones and client-only visual scaling are not trajectory authorities.
+- Preserve compact/chunked networking, cached minimap topology/floor/reachability/routes, bounded ballistic/player queries, generated-geometry cover, the shared hostile registry, client-only visual hostile scaling, bounded death scheduling, and developer-only heavy audits.
+- Do not introduce per-frame global BFS or large entity scans.
