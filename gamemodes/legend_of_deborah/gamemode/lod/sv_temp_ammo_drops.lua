@@ -3,6 +3,15 @@ LOD.TempAmmoDrops = LOD.TempAmmoDrops or {}
 
 local TempAmmoDrops = LOD.TempAmmoDrops
 local FALLBACK_LIFETIME = 20
+local AMMO_DROP_CHANCE = 0.35
+
+local function shouldSpawnAmmoDrop(hostile)
+    local baseSeed = hostile.LODInstanceSeed or hostile.LODDeathLevelSeed or 1
+    local identity = hostile.LODEncounterOrdinal or hostile:EntIndex()
+    local seed = LOD.Seeds.Derive(baseSeed, "temp-ammo-drop:" .. tostring(identity))
+    local rng = LOD.RNG.New(seed)
+    return rng:Float(0, 1) < AMMO_DROP_CHANCE
+end
 
 function TempAmmoDrops:InstallHostilePatch()
     local stored = scripted_ents.GetStored("lod_hostile")
@@ -19,6 +28,11 @@ function TempAmmoDrops:InstallHostilePatch()
         then
             return
         end
+
+        -- Approximate the finished LootDirector's useful-ammo band rather than
+        -- turning every hostile into guaranteed ammunition. Other final drop
+        -- categories remain intentionally absent from this temporary scaffold.
+        if not shouldSpawnAmmoDrop(self) then return end
 
         local loot = ents.Create("lod_temp_ammo_drop")
         if not IsValid(loot) then return end
