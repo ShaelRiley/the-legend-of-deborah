@@ -1,9 +1,18 @@
 LOD = LOD or {}
-LOD.PushbackFX = LOD.PushbackFX or {trails = {}, modelCache = {}}
+LOD.PushbackFX = LOD.PushbackFX or {trails = {}, modelPools = {}}
 
 local FX = LOD.PushbackFX
 FX.trails = FX.trails or {}
-FX.modelCache = FX.modelCache or {}
+FX.modelPools = FX.modelPools or {}
+
+-- Retire the old single-model cache on hot reload. A single ClientsideModel cannot
+-- reliably represent several different world transforms in the same render frame.
+if FX.modelCache then
+    for _, cached in pairs(FX.modelCache) do
+        if IsValid(cached) then cached:Remove() end
+    end
+    FX.modelCache = nil
+end
 
 local trailMaterial = Material("sprites/light_glow02_add")
 local ghostMaterial = Material("models/debug/debugwhite")
@@ -12,9 +21,10 @@ local sparkTexture = "effects/spark"
 local TRAIL_LIFETIME = 0.30
 local MAX_TRAILS = 12
 local MAX_GHOST_DISTANCE_SQR = 2200 * 2200
-local MIN_GHOST_SAMPLES = 8
+local MIN_GHOST_SAMPLES = 4
 local MAX_GHOST_SAMPLES = 16
-local GHOST_SAMPLE_SPACING = 22
+local GHOST_SAMPLE_SPACING = 28
+local MAX_FREE_GHOSTS_PER_MODEL = 32
 
 local function trailColor(source, alpha)
     source = string.lower(tostring(source or ""))
@@ -27,17 +37,59 @@ local function trailColor(source, alpha)
     return Color(215, 230, 255, alpha)
 end
 
-local function ghostForModel(model)
+local function poolForModel(model)
     if not model or model == "" then return nil end
-    local ghost = FX.modelCache[model]
-    if IsValid(ghost) then return ghost end
+    local pool = FX.modelPools[model]
+    if pool then return pool end
+    pool = {free = {}}
+    FX.modelPools[model] = pool
+    return pool
+end
 
-    ghost = ClientsideModel(model, RENDERGROUP_OTHER)
+local function createGhost(model)
+    local ghost = ClientsideModel(model, RENDERGROUP_OTHER)
     if not IsValid(ghost) then return nil end
     ghost:SetNoDraw(true)
     ghost:SetIK(false)
-    FX.modelCache[model] = ghost
     return ghost
+end
+
+local function acquireGhost(model)
+    local pool = poolForModel(model)
+    if not pool then return nil end
+
+    while #pool.free > 0 do
+        local ghost = table.remove(pool.free)
+        if IsValid(ghost) then return ghost end
+    end
+    return createGhost(model)
+end
+
+local function releaseGhost(model, ghost)
+    if not IsValid(ghost) then return end
+    local pool = poolForModel(model)
+    if not pool or #pool.free >= MAX_FREE_GHOSTS_PER_MODEL then
+        ghost:Remove()
+        return
+    end
+
+    ghost:SetNoDraw(true)
+    ghost:SetPos(vector_origin)
+    ghost:SetAngles(angle_zero)
+    ghost:SetModelScale(1, 0)
+    pool.free[#pool.free + 1] = ghost
+end
+
+local function releaseTrailGhosts(event)
+    if not event or not event.ghosts then return end
+    for _, ghost in ipairs(event.ghosts) do
+        releaseGhost(event.model, ghost)
+    end
+    event.ghosts = nil
+end
+
+local function ghostSampleCount(length)
+    return math.Clamp(math.ceil(length / GHOST_SAMPLE_SPACING), MIN_GHOST_SAMPLES, MAX_GHOST_SAMPLES)
 end
 
 local function emitCrushParticles(pos, wallNormal)
@@ -97,6 +149,13 @@ net.Receive("LOD_PushbackFX", function()
     local delta = endPos - startPos
     local moved = delta:Length()
     if moved > 0.05 then
+        local sampleCount = ghostSampleCount(moved)
+        local ghosts = {}
+        for i = 1, sampleCount do
+            local ghost = acquireGhost(model)
+            if IsValid(ghost) then ghosts[#ghosts + 1] = ghost end
+        end
+
         FX.trails[#FX.trails + 1] = {
             hostile = hostile,
             model = model,
@@ -108,9 +167,15 @@ net.Receive("LOD_PushbackFX", function()
             endPos = endPos,
             source = source,
             started = CurTime(),
-            lifetime = TRAIL_LIFETIME
+            lifetime = TRAIL_LIFETIME,
+            sampleCount = sampleCount,
+            ghosts = ghosts
         }
-        while #FX.trails > MAX_TRAILS do table.remove(FX.trails, 1) end
+
+        while #FX.trails > MAX_TRAILS do
+            local retired = table.remove(FX.trails, 1)
+            releaseTrailGhosts(retired)
+        end
     end
 
     if crushed then
@@ -133,13 +198,15 @@ net.Receive("LOD_PushbackFX", function()
     end
 end)
 
-local function drawBodyGhost(event, t, alpha)
-    local ghost = ghostForModel(event.model)
+local function drawBodyGhost(event, ghost, t, alpha)
     if not IsValid(ghost) then return end
 
     local pos = LerpVector(t, event.startPos, event.endPos)
     local color = trailColor(event.source, alpha)
 
+    -- Each simultaneous silhouette owns a distinct cached CSEnt for the 0.30 s
+    -- event. That avoids Source's same-entity/same-frame transform cache entirely:
+    -- no SetupBones gymnastics and no per-frame ClientsideModel allocation.
     ghost:SetPos(pos)
     ghost:SetAngles(event.angles or angle_zero)
     ghost:SetModelScale(math.max(0.05, tonumber(event.modelScale) or 1), 0)
@@ -148,12 +215,6 @@ local function drawBodyGhost(event, t, alpha)
         ghost:SetCycle(event.cycle or 0)
     end
 
-    -- A cached ClientsideModel can be drawn repeatedly in one frame, but Source
-    -- retains its first bone transform unless bones are rebuilt before each draw.
-    -- Rebuilding here is the critical part that lets every sampled position render
-    -- as a distinct afterimage while still reusing one cached model per archetype.
-    ghost:SetupBones()
-
     render.MaterialOverride(ghostMaterial)
     render.SetColorModulation(color.r / 255, color.g / 255, color.b / 255)
     render.SetBlend(math.Clamp(alpha / 255, 0, 1))
@@ -161,10 +222,6 @@ local function drawBodyGhost(event, t, alpha)
     render.SetBlend(1)
     render.SetColorModulation(1, 1, 1)
     render.MaterialOverride(nil)
-end
-
-local function ghostSampleCount(length)
-    return math.Clamp(math.ceil(length / GHOST_SAMPLE_SPACING), MIN_GHOST_SAMPLES, MAX_GHOST_SAMPLES)
 end
 
 local function drawTrail(event, now)
@@ -182,16 +239,15 @@ local function drawTrail(event, now)
     local lp = LocalPlayer()
     local nearby = not IsValid(lp) or lp:EyePos():DistToSqr(endPos) <= MAX_GHOST_DISTANCE_SQR
 
-    -- Eight to sixteen translucent snapshots of the creature's own body make the
-    -- server-authoritative displacement read as one continuous shove rather than
-    -- a teleport. Samples scale with travel distance; earlier ghosts are dimmer
-    -- and destination-side ghosts brighter to reinforce direction.
+    -- Four to sixteen body snapshots scale with travel distance. The typical
+    -- Shotgun push gets several readable silhouettes while very long Force Shout
+    -- throws can use the full sixteen without making every ordinary push noisy.
     if nearby then
-        local samples = ghostSampleCount(length)
-        for i = 1, samples do
+        local samples = math.max(1, tonumber(event.sampleCount) or #event.ghosts)
+        for i, ghost in ipairs(event.ghosts or {}) do
             local t = i / (samples + 1)
             local pathBrightness = 0.58 + 0.42 * t
-            drawBodyGhost(event, t, math.floor(150 * fade * pathBrightness))
+            drawBodyGhost(event, ghost, t, math.floor(150 * fade * pathBrightness))
         end
     end
 
@@ -210,6 +266,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function(
     for i = #FX.trails, 1, -1 do
         local event = FX.trails[i]
         if now - event.started >= event.lifetime then
+            releaseTrailGhosts(event)
             table.remove(FX.trails, i)
         else
             drawTrail(event, now)
@@ -218,8 +275,19 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function(
 end)
 
 hook.Add("ShutDown", "LOD_PushbackGhostCacheCleanup", function()
-    for model, ghost in pairs(FX.modelCache) do
-        if IsValid(ghost) then ghost:Remove() end
-        FX.modelCache[model] = nil
+    for _, event in ipairs(FX.trails) do
+        if event.ghosts then
+            for _, ghost in ipairs(event.ghosts) do
+                if IsValid(ghost) then ghost:Remove() end
+            end
+        end
+    end
+    FX.trails = {}
+
+    for model, pool in pairs(FX.modelPools) do
+        for _, ghost in ipairs(pool.free or {}) do
+            if IsValid(ghost) then ghost:Remove() end
+        end
+        FX.modelPools[model] = nil
     end
 end)
