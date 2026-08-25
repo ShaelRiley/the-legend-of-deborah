@@ -13,6 +13,7 @@ AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_minimap_origin_sync.lua")
 AddCSLuaFile("lod/cl_minimap_safety.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
+AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 
 include("shared.lua")
 include("lod/sv_saverestore_safety.lua")
@@ -34,6 +35,9 @@ include("lod/sv_m3_enemy_config.lua")
 -- Load it before any runtime combat can occur and before feedback wrappers.
 include("lod/sv_combat_rolls.lua")
 include("lod/sv_dice_ammo.lua")
+-- Preserve stock HL2 weapon entities for inventory/loot compatibility while
+-- layering the GDD-authored SMG heat and player AR2 burst contracts on top.
+include("lod/sv_player_weapon_specials.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
