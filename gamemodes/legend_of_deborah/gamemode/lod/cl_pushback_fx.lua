@@ -84,9 +84,6 @@ net.Receive("LOD_PushbackFX", function()
 
     if crushed then
         emitCrushParticles(impactPos, delta)
-        if file.Exists("sound/ambient/machines/thumper_hit.wav", "GAME") then
-            sound.Play("ambient/machines/thumper_hit.wav", impactPos, 82, 122, 0.72)
-        end
 
         local effect = EffectData()
         effect:SetOrigin(impactPos)
