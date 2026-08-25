@@ -32,23 +32,8 @@ local CROWBAR_RANGE = 75
 local HULL_MINS = Vector(-10, -10, -8)
 local HULL_MAXS = Vector(10, 10, 8)
 local DAMAGE_PROFILE = {label = "CROWBAR", source = "crowbar", count = 1, sides = 3}
-local MISS_SOUND = "weapons/crowbar/crowbar_swing1.wav"
+local MISS_SOUND = "Weapon_Crowbar.Single"
 local HIT_SOUND = "physics/body/body_medium_impact_soft2.wav"
-local MISS_NET = "LOD_CrowbarMissCue"
-
-if SERVER then
-    util.AddNetworkString(MISS_NET)
-else
-    net.Receive(MISS_NET, function()
-        surface.PlaySound(MISS_SOUND)
-    end)
-end
-
-local function sendMissCue(owner)
-    if not SERVER or not IsValid(owner) or not owner:IsPlayer() then return end
-    net.Start(MISS_NET)
-    net.Send(owner)
-end
 
 function SWEP:Initialize()
     self:SetHoldType("melee")
@@ -87,13 +72,13 @@ function SWEP:PrimaryAttack()
 
     local target = trace.Entity
     if not IsValid(target) or not target.LODHostile or target.LODDead then
-        sendMissCue(owner)
+        owner:EmitSound(MISS_SOUND, 68, 100, 0.60, CHAN_WEAPON)
         return
     end
 
     local rolls = LOD and LOD.CombatRolls
     if not rolls or not rolls._RNG or not rolls._RollFormula then
-        sendMissCue(owner)
+        owner:EmitSound(MISS_SOUND, 68, 100, 0.60, CHAN_WEAPON)
         return
     end
 
@@ -122,10 +107,9 @@ function SWEP:PrimaryAttack()
         LOD.M3HitFeedback:ApplyHitStun(target)
     end
 
-    if util.NetworkStringToID("LOD_HitConfirm") ~= 0 then
-        net.Start("LOD_HitConfirm")
-        net.Send(owner)
-    end
+    -- Use the exact same client hit-confirm event as ranged weapons.
+    net.Start("LOD_HitConfirm")
+    net.Send(owner)
 
     self:EmitSound(HIT_SOUND, 66, 100, 0.72, CHAN_WEAPON)
 end
