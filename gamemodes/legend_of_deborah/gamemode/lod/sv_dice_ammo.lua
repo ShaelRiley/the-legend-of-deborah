@@ -108,6 +108,10 @@ function Ammo:TickPlayer(ply, now)
                     self.Stats.roundsRegenerated = (self.Stats.roundsRegenerated or 0) + 1
                 end
             end
+
+            if weapon and LOD.DiceRunTelemetry and LOD.DiceRunTelemetry.SampleAmmo then
+                LOD.DiceRunTelemetry:SampleAmmo(ply, weaponClass, total, profile, now)
+            end
         end
     end
 end
