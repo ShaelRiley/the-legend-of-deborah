@@ -5,7 +5,7 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 ## Current order
 
 1. **Complete and tune Gate C8 whole-dungeon dice play.**
-2. Validate the newly reconciled Shotgun under the universal d6 rule: natural-6-only damage explosions plus the separate exploding additional-pellet d6.
+2. Validate the newly reconciled Shotgun under the universal d6 rule: natural-6-only damage explosions plus the separate exploding additional-pellet d6 and the 1-damage-per-connected-pellet floor.
 3. Make only evidence-driven combat/economy corrections required by authentic runs.
 4. Resume the remaining expanded normal-enemy roster.
 5. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
@@ -88,6 +88,7 @@ Player-side exploding dice also trigger one bounded celebratory audiovisual conf
 - **eight guaranteed pellets**;
 - every trigger pull rolls a separate exploding `1d6!` for additional pellets, with no damage floor because this die represents pellet count;
 - the previous three independent 33% pellet checks are retired;
+- **every connecting pellet deals at least 1 damage**, even if one-sixth of the shared shell total would be fractional;
 - cap final pellet traces at 36 as a low-end anti-runaway safeguard;
 - aggregate damage once per damaged target;
 - one **4× ordinary hit stun** per damaged target per shell (nominal 1.20 s);
@@ -97,7 +98,7 @@ Player-side exploding dice also trigger one bounded celebratory audiovisual conf
 - recursive shared exploding-d6 expected total = **4.8**;
 - exploding pellet-count d6 expected contribution = **4.2 extra pellets**;
 - uncapped average pellet count = **12.2**;
-- expected full-connect base damage = approximately **9.76** before later modifiers and rare cap truncation.
+- expected full-connect base damage with the per-pellet floor = approximately **13.83** before later modifiers and rare cap truncation.
 
 ### Basic Magic / Force Shout — IMPLEMENTED
 
@@ -180,7 +181,7 @@ Continue ordinary complete-dungeon play and judge the integrated experience. Obs
 - whether all four peer firearms feel worth using for different reasons;
 - AR2 three-projectile burst consuming one ammo unit;
 - Magnum 8–12 explosions and escalating aligned penetration;
-- Shotgun natural-6 damage explosions plus 8 guaranteed pellets + exploding additional-pellet d6, including whether unusually large pellet bursts remain readable and performant;
+- Shotgun natural-6 damage explosions plus 8 guaranteed pellets + exploding additional-pellet d6 + 1-damage connected-pellet floor, including whether unusually large pellet bursts remain readable and performant;
 - exploding-die audiovisual readability;
 - Magic meter / Force Shout readability and balance;
 - push/body-ghost/wall-crush presentation;
