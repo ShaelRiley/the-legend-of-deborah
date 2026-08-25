@@ -1,14 +1,19 @@
 LOD = LOD or {}
 
+-- Mirror the visual language of Source/GMod's stock CHudBattery rather than
+-- presenting Magic as a separate custom subsystem. The actual HL2 armor/suit
+-- pool remains unused; only its familiar lower-left HUD footprint is inherited.
 surface.CreateFont("LOD_MagicHUD_Label", {
-    font = "DejaVu Sans",
-    size = 13,
-    weight = 700
+    font = "Trebuchet MS",
+    size = 12,
+    weight = 700,
+    antialias = true
 })
-surface.CreateFont("LOD_MagicHUD_Value", {
-    font = "DejaVu Sans",
-    size = 34,
-    weight = 700
+surface.CreateFont("LOD_MagicHUD_Number", {
+    font = "Trebuchet MS",
+    size = 40,
+    weight = 900,
+    antialias = true
 })
 
 hook.Add("HUDShouldDraw", "LOD_MagicReplacesSuitBattery", function(name)
@@ -21,26 +26,35 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
 
     local maximum = math.max(1, ply:GetNW2Int("LOD_MagicMax", 100))
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
-    local ratio = magic / maximum
+    local value = math.floor(magic + 0.5)
 
-    -- Occupy the classic HEV/suit-resource neighborhood immediately to the
-    -- right of the stock HL2 health panel. LOD never uses suit armor as health.
-    local x = 176
-    local y = ScrH() - 70
-    local w = 150
-    local h = 56
+    -- Stock CHudHealth occupies the far lower-left. CHudBattery normally sits
+    -- directly beside it; keep that same compact horizontal footprint so MAGIC
+    -- reads as the renamed/re-purposed suit indicator rather than a new widget.
+    local scale = math.Clamp(ScrH() / 768, 0.80, 1.35)
+    local x = math.floor(166 * scale)
+    local y = ScrH() - math.floor(67 * scale)
+    local w = math.floor(154 * scale)
+    local h = math.floor(55 * scale)
 
-    draw.RoundedBox(4, x, y, w, h, Color(8, 12, 18, 178))
-    draw.SimpleText("MAGIC", "LOD_MagicHUD_Label", x + 10, y + 10,
-        Color(125, 205, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    draw.SimpleText(tostring(math.floor(magic + 0.5)), "LOD_MagicHUD_Value", x + 12, y + 35,
-        Color(175, 225, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    local panel = Color(0, 0, 0, 118)
+    local normal = Color(255, 208, 64, 255)
+    local low = Color(255, 96, 72, 255)
+    local textColor = value <= 20 and low or normal
 
-    local barX = x + 72
-    local barY = y + 30
-    local barW = w - 82
-    local barH = 10
-    draw.RoundedBox(2, barX, barY, barW, barH, Color(28, 42, 54, 220))
-    draw.RoundedBox(2, barX, barY, math.floor(barW * ratio + 0.5), barH,
-        Color(95, 185, 245, 235))
+    draw.RoundedBox(0, x, y, w, h, panel)
+
+    draw.SimpleText("MAGIC", "LOD_MagicHUD_Label",
+        x + math.floor(10 * scale),
+        y + math.floor(35 * scale),
+        textColor,
+        TEXT_ALIGN_LEFT,
+        TEXT_ALIGN_CENTER)
+
+    draw.SimpleText(tostring(value), "LOD_MagicHUD_Number",
+        x + math.floor(72 * scale),
+        y + math.floor(28 * scale),
+        textColor,
+        TEXT_ALIGN_LEFT,
+        TEXT_ALIGN_CENTER)
 end)
