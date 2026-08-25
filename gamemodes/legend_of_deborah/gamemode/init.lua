@@ -16,6 +16,7 @@ AddCSLuaFile("lod/cl_minimap_safety.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magic.lua")
+AddCSLuaFile("lod/cl_pushback_fx.lua")
 
 include("shared.lua")
 include("lod/sv_saverestore_safety.lua")
