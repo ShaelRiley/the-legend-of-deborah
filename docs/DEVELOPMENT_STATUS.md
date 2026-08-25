@@ -10,6 +10,24 @@ The live GDD remains design authority. GitHub `main` remains implementation auth
 
 Accepted runtime evidence includes three consecutive complete dungeons, successful Level-4 generation/release, legal Red → Blue → Yellow → Jail Key → jail door → Deborah progression, Deborah rescue/intermission/next-level generation, `lod_m2_seed_test 100` at 100/100, accepted minimap/breadcrumb behavior, corrected stair presentation, and progression persistence through death.
 
+Recent authentic dice-era play has also produced a legitimate Level-1 clear and meaningful Level-2 progress. Balance is currently treated as challenging but viable; avoid broad difficulty changes without new runtime evidence.
+
+## Canonical exploding-die invariant
+
+The live GDD now defines explosion thresholds globally:
+
+- **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
+- **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
+- New mechanics that use d6s or d12s inherit these thresholds automatically unless a later explicit design change supersedes them.
+
+Current implementation status:
+
+- Force Shout d6 chains: compliant, natural 6 explodes.
+- Magnum and Magnum-pierce d12 chains: compliant, natural 8–12 explodes.
+- Shotgun: **temporarily noncompliant** because the currently tested build still explodes on natural 5–6. The GDD supersedes that temporary tuning; reconcile Shotgun to natural-6-only after the current runtime test rather than changing the build mid-test.
+
+With the universal d6 rule, the Shotgun's floored d6 has expected contribution 4.0 before explosions, expected recursive shared total **4.8**, and expected seven-pellet full-connect base damage **5.6** before later modifiers.
+
 ## Current combat foundation
 
 ### Player weapons
@@ -18,15 +36,27 @@ Accepted runtime evidence includes three consecutive complete dungeons, successf
 - Pistol: `1d4`; fresh expedition starts with Pistol + Crowbar, Pistol loaded to 18 with 0 reserve.
 - SMG: `1d8`; six rapid shots overheat, one heat cools every 0.25 s below threshold, 2.0 s overheat lock, staged model/audio/smoke feedback.
 - AR2: `1d10` per projectile; every activation commits one 0.45-second targeting-laser tell then exactly three rapid rounds. **The complete three-projectile burst consumes one AR2 primary-ammo unit total**, spent when the first projectile releases.
-- .357 Magnum: exploding `1d12`; natural 10/11/12 recursively explode. A bullet also **pierces multiple properly aligned hostiles**, reusing the same resolved shot total until blocking geometry/solid obstruction stops it.
-- Shotgun: one shared exploding `1d6`, per-die floor 3, **natural 5 or 6 recursively explodes**, six guaranteed pellets plus independent 33% checks for pellets 7/8/9. Per damaged target it applies **4× ordinary hit stun (nominal 1.20 s)** and a **168-unit nominal push**, once per shell rather than per pellet.
+- .357 Magnum: universal exploding `1d12`; natural **8–12** recursively explode. A bullet pierces properly aligned hostiles and adds one fresh independently exploding d12 chain for every deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., up to the bounded eight-target cap and authoritative geometry stop.
+- Shotgun design target: one shared universal exploding `1d6`, per-die floor 3, **natural 6 only** recursively explodes, six guaranteed pellets plus independent 33% checks for pellets 7/8/9, one 4× ordinary hit stun and 168-unit nominal push per damaged target per shell. Current code still has the superseded temporary 5–6 explosion threshold pending reconciliation.
 - Grenade: `1d20`; remains a separate consumable reward.
 
-XP, character levels, procedural affixes/equipment, elements, Magic, and Luck Ring remain deferred.
+Player-side exploding dice have bounded audiovisual confirmation: center-screen radial burst/label plus a short positive two-layer sound. This is shared by Magnum, Shotgun, Force Shout, and Magnum-pierce bonus dice.
+
+### Basic Magic
+
+A deliberately limited pre-release Magic subsystem is implemented while the broader RPG Magic layer remains deferred:
+
+- personal 0–100 Magic resource;
+- blue Suit-style HUD slot beside Health;
+- regeneration from 0→100 over 60 seconds while alive;
+- RMB globally belongs to Magic; LOD weapons have no HL2-style secondary fire;
+- Force Shout costs 30 Magic, attacks an unobstructed ~60° / 1100-unit cone, deals exploding `2d6` using the universal natural-6 rule, and pushes surviving targets 336 units through `LOD.Pushback`.
 
 ### Generic pushback / wall crush
 
-`LOD.Pushback` is the reusable displacement authority for Shotgun now and future weapon/element/environment effects. Pushes use bounded collision checks and cannot force hostiles through walls, gates, jail doors, or unauthored geometry. If blocking architectural geometry stops the requested push, the target takes one additional `1d3` wall-crush roll per push event and receives a distinct heavy-impact + crunch audio cue.
+`LOD.Pushback` is the reusable displacement authority for Shotgun, Force Shout, and future weapon/element/environment effects. Pushes use bounded collision checks and cannot force hostiles through walls, gates, jail doors, or unauthored geometry. If blocking architectural geometry stops the requested push, the target takes one additional `1d3` wall-crush roll per push event and receives distinct audiovisual impact feedback.
+
+Push travel presentation uses a short 4–16 body-ghost trail from the hostile's authoritative start position to its resolved destination. Distinct leased clientside render models are reused from bounded per-model pools so multiple ghosts can coexist in one frame without AI/physics work.
 
 ### Hostile damage and health
 
@@ -34,8 +64,6 @@ Current ordinary melee retune from full-run evidence:
 
 - Shambler: `3d4+8` before existing size/stat scaling; unscaled 11–20.
 - Runner: `2d4+2`; unscaled 4–10.
-
-Other hostile attacks retain their existing dice contracts.
 
 Deterministic health profiles remain:
 
@@ -48,18 +76,9 @@ Visible hostile size remains a monotonic durability cue.
 
 ## Production loot and firearm economy
 
-LootDirector is implemented and owns individualized static supplies, individualized contextual enemy drops, pity protection, rare extra lives, join-in-progress catch-up, and sector resource-budget validation. HL2 suit/armor is **not** part of LOD's economy; the former armor recovery band is ordinary HP recovery instead.
+LootDirector is implemented and owns individualized static supplies, contextual enemy drops, pity protection, rare extra lives, join-in-progress catch-up, and sector resource-budget validation. HL2 suit/armor is not part of LOD's economy; former armor recovery restores ordinary HP instead.
 
-The current weapon-design goal is **peer firearms, not a power-tier rarity ladder**:
-
-- Shotgun, SMG, .357 Magnum, and AR2 are all available from Dungeon 1.
-- Random firearm rewards weight those four equally.
-- Level 1 guarantees two distinct firearm upgrades selected uniformly from those four rather than fixed Shotgun + SMG.
-- Join-in-progress catch-up similarly grants two deterministic distinct firearms from the four-gun pool.
-- Ammo-drop family choice has no hidden per-weapon rarity coefficient; depletion drives contextual weighting.
-- Grenades remain a separate consumable reward.
-
-The intent is that each gun remains viable because of its mechanic, not because one is a strictly rarer/higher tier.
+Shotgun, SMG, .357 Magnum, and AR2 are peer firearms rather than power tiers. All can appear from Dungeon 1, randomized firearm acquisition weights them equally, Level 1 guarantees two distinct peer firearms, and contextual ammo-family choice is driven by depletion rather than hidden rarity coefficients.
 
 ## Finite-ammo economy
 
@@ -75,9 +94,9 @@ One shared 4 Hz server timer owns regeneration. Grenades do not regenerate. The 
 
 ## Runtime evidence still needed
 
-Recent authentic runs proved the LootDirector and HP recovery work, but repeatedly ended in campaign wipes. Shambler/Runner melee was consequently narrowed. The newest Shotgun retune, one-ammo AR2 burst, peer-firearm distribution, and Magnum penetration still require runtime acceptance.
+Current testing should continue to judge the integrated dungeon experience: completion time, deaths/lives, sustain, ammunition pressure, peer-firearm usefulness, Magic readability, Magnum alignment reward, exploding-die feedback, combat-feed readability, and Steam Deck performance.
 
-The immediate Gate-C8 objective remains a repeatedly completable ordinary dungeon with acceptable lethality, sustain, ammo pressure, combat-feed readability, and Steam Deck performance.
+After the current test finishes, reconcile the Shotgun implementation from temporary natural 5–6 explosion to the new canonical natural-6-only d6 rule before treating C8 balance data as final.
 
 ## Telemetry safety policy
 
