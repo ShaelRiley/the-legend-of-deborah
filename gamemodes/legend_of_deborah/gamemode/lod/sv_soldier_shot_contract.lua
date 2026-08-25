@@ -329,8 +329,8 @@ end
 if LOD.M3HitFeedback and not LOD.M3HitFeedback.LODSoldierShotContractWrapped then
     LOD.M3HitFeedback.LODSoldierShotContractWrapped = true
     local baseApplyHitStun = LOD.M3HitFeedback.ApplyHitStun
-    function LOD.M3HitFeedback:ApplyHitStun(hostile)
-        local applied = baseApplyHitStun(self, hostile)
+    function LOD.M3HitFeedback:ApplyHitStun(hostile, durationMultiplier)
+        local applied = baseApplyHitStun(self, hostile, durationMultiplier)
         if applied and IsValid(hostile) and soldierFamily(hostile) then
             hostile.LODSoldierBurst = nil
             clearNetworkContract(hostile)
