@@ -6,6 +6,8 @@ local Motion = LOD.HostileMotionV2
 if not Motion then return end
 
 local CRUSH_PROFILE = {label = "WALL CRUSH", source = "wall crush", count = 1, sides = 3}
+local CRUSH_IMPACT_SOUND = "physics/body/body_medium_impact_hard6.wav"
+local CRUSH_BREAK_SOUND = "physics/body/body_medium_break4.wav"
 local WALL_CLASSES = {
     lod_static_box = true,
     lod_gate = true,
@@ -55,6 +57,19 @@ local function resolveDirection(hostile, opts)
     return direction:GetNormalized()
 end
 
+local function playWallCrushAudio(hostile, damage)
+    if not IsValid(hostile) then return end
+
+    -- One recognizable two-layer signature marks the mechanical event itself:
+    -- a heavy body/wall slam plus a short break/crunch. Slightly lower pitch on
+    -- larger 1d3 results makes stronger crushes feel heavier without adding UI.
+    local strength = math.Clamp(math.floor((tonumber(damage) or 1) + 0.5), 1, 3)
+    local impactPitch = 102 - (strength - 1) * 5
+    local breakPitch = 108 - (strength - 1) * 6
+    hostile:EmitSound(CRUSH_IMPACT_SOUND, 78, impactPitch, 0.90, CHAN_BODY)
+    hostile:EmitSound(CRUSH_BREAK_SOUND, 72, breakPitch, 0.62, CHAN_STATIC)
+end
+
 function Pushback:_RollWallCrush(hostile, opts)
     if not IsValid(hostile) or hostile.LODDead or hostile:Health() <= 0 then return 0 end
     local rolls = LOD.CombatRolls
@@ -64,6 +79,10 @@ function Pushback:_RollWallCrush(hostile, opts)
     local rng = rolls:_RNG("wall-crush:" .. source)
     local total, values = rolls:_RollFormula(CRUSH_PROFILE, rng)
     total = math.max(1, math.floor((total or 1) + 0.5))
+
+    -- The crush cue is emitted before damage so even a lethal crush has one clear
+    -- audio identity rather than being swallowed by the hostile death transition.
+    playWallCrushAudio(hostile, total)
 
     -- The wall is the direct damage source. Keep the initiating player/effect in
     -- our own record and combat feed, but deliver DMG_CRUSH environmentally so a
@@ -88,10 +107,6 @@ function Pushback:_RollWallCrush(hostile, opts)
         source = source,
         rolls = values
     }
-
-    if IsValid(hostile) then
-        hostile:EmitSound("physics/body/body_medium_impact_hard3.wav", 66, 96, 0.62, CHAN_BODY)
-    end
 
     if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
         local detail = string.format("[roll %d; from %s push]", values and values[1] or total, source)
