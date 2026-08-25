@@ -27,11 +27,36 @@ local function giveLoaded(ply, weaponClass, clip)
     return weapon
 end
 
+local CATCHUP_FIREARMS = {
+    {class = "weapon_shotgun", clip = 6, ammo = "Buckshot"},
+    {class = "weapon_smg1", clip = 45, ammo = "SMG1"},
+    {class = "weapon_357", clip = 6, ammo = "357"},
+    {class = "weapon_ar2", clip = 30, ammo = "AR2"}
+}
+
+local function giveEqualCatchupFirearms(ply, run)
+    local levelSeed = run and run.State and run.State.LevelSeed or 1
+    local identity = run and run.IdentityOf and run:IdentityOf(ply) or ply:SteamID64()
+    local rng = LOD.RNG.New(LOD.Seeds.Derive(levelSeed,
+        "catchup-firearms:" .. tostring(identity or ply:EntIndex())))
+    local pool = table.Copy(CATCHUP_FIREARMS)
+
+    for _ = 1, math.min(2, #pool) do
+        local index = rng:Int(1, #pool)
+        local spec = table.remove(pool, index)
+        giveLoaded(ply, spec.class, spec.clip)
+        ply:SetAmmo(0, spec.ammo)
+    end
+
+    ply:SetAmmo(0, "AR2AltFire")
+end
+
 -- Initial Level-1 participants receive the baseline Pistol + emergency Crowbar.
--- A first-time identity entering an already-running expedition is marked by the
--- LootDirector catch-up policy and receives the GDD's progression-appropriate
--- weapon band at the normal regeneration-floor ammunition quantities. Once an
--- inventory snapshot exists, RunManager owns every later respawn/level restore.
+-- A first-time identity entering an already-running expedition receives two
+-- distinct firearms selected uniformly from Shotgun/SMG/Magnum/AR2. Catch-up no
+-- longer encodes a weapon power tier; ordinary LootDirector acquisition does not
+-- privilege any of those four guns either. Once an inventory snapshot exists,
+-- RunManager owns every later respawn/level restore.
 function GM:PlayerLoadout(ply)
     local run = LOD.RunManager
     local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
@@ -46,23 +71,12 @@ function GM:PlayerLoadout(ply)
 
     local catchupLevel = math.max(0, math.floor(tonumber(ps.catchupLevel) or 0))
     if catchupLevel >= 1 then
-        giveLoaded(ply, "weapon_shotgun", 6)
-        giveLoaded(ply, "weapon_smg1", 45)
-        ply:SetAmmo(0, "Buckshot")
-        ply:SetAmmo(0, "SMG1")
-    end
-    if catchupLevel >= 2 then
-        giveLoaded(ply, "weapon_357", 6)
-        ply:SetAmmo(0, "357")
-    end
-    if catchupLevel >= 3 then
-        giveLoaded(ply, "weapon_ar2", 30)
-        ply:SetAmmo(0, "AR2")
-        ply:SetAmmo(0, "AR2AltFire")
+        giveEqualCatchupFirearms(ply, run)
     end
 
     -- Catch-up kits never include free grenades or AR2 secondary ammunition.
     ply:SetAmmo(0, "Grenade")
+    ply:SetAmmo(0, "AR2AltFire")
 
     if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
 end
