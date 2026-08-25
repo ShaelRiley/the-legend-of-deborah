@@ -21,7 +21,7 @@ local SHOTGUN_PELLET_PROFILE = {
     exploding = 6
 }
 
-local SHOTGUN_BASE_PELLETS = 6
+local SHOTGUN_BASE_PELLETS = 8
 local SHOTGUN_MAX_PELLETS = 36
 local SHOTGUN_STUN_MULTIPLIER = 4
 local BASE_STUN_SECONDS = 0.30
@@ -30,9 +30,10 @@ local BASE_STUN_RETRIGGER_SECONDS = 0.36
 -- Keep the shared combat-roll authority, but give the Shotgun its authored
 -- high-variance identity under the universal dice rules. The shared damage d6
 -- recursively explodes only on natural 6 and keeps the existing floor of 3.
--- Every shell also rolls a separate exploding 1d6 for additional pellets, then
--- retains the three independent 33% bonus checks. The hard pellet cap prevents
--- pathological explosion chains from creating an unbounded trace workload.
+-- Every shell also rolls a separate exploding 1d6 for additional pellets. Eight
+-- pellets are guaranteed; the old three independent 33% bonus-pellet checks are
+-- retired. The hard pellet cap prevents pathological explosion chains from
+-- creating an unbounded trace workload.
 if not Rolls.LODShotgunIdentityBalanced then
     Rolls.LODShotgunIdentityBalanced = true
     local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
@@ -59,19 +60,9 @@ if not Rolls.LODShotgunIdentityBalanced then
             pelletRollTotal = math.max(1, pelletBonus or 1),
             pelletRollValues = pelletValues or {},
             pelletRollCapped = pelletCapped == true,
-            bonusChecks = {},
             hits = setmetatable({}, {__mode = "k"}),
             damageByTarget = setmetatable({}, {__mode = "k"})
         }
-
-        for _ = 7, 9 do
-            local added = rng:Int(1, 3) == 1
-            contract.bonusChecks[#contract.bonusChecks + 1] = added
-            if added then
-                contract.pellets = math.min(SHOTGUN_MAX_PELLETS, contract.pellets + 1)
-            end
-            self.Stats.rolls = self.Stats.rolls + 1
-        end
 
         -- The pellet-count die is a real exploding d6 and therefore participates
         -- in the same joyful exploding-die feedback as the shared damage die.
