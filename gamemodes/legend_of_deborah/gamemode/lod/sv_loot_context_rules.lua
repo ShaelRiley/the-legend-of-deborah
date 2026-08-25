@@ -124,10 +124,24 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
     local weaponMissing = self:_MissingWeaponReward(ply, rng) ~= nil
 
     local ammoWeight = ammoNeed > 0 and 35 * (0.55 + ammoNeed * 1.85) or 0
+
+    -- Whole-dungeon runtime evidence showed that the original ammo-depletion
+    -- multiplier could dominate a critically injured player's useful-drop roll.
+    -- Preserve scarcity pressure, but once health is genuinely threatened bias
+    -- the same useful-drop band toward recovery rather than letting ammo crowd
+    -- health/armor out. This changes category selection, not the global drop rate.
+    if hpRatio < 0.25 then
+        ammoWeight = ammoWeight * 0.72
+    elseif hpRatio < 0.55 then
+        ammoWeight = ammoWeight * 0.88
+    end
+
     local healthWeight = hpRatio < 1 and
-        12 * (hpRatio < 0.25 and 3.0 or (hpRatio < 0.55 and 2.0 or 0.55)) or 0
+        12 * (hpRatio < 0.25 and 4.5 or (hpRatio < 0.55 and 2.75 or 0.65)) or 0
     local armorWeight = armorRatio < 1 and
-        5 * (armorRatio < 0.25 and 2.2 or (armorRatio < 0.60 and 1.4 or 0.45)) or 0
+        5 * (hpRatio < 0.25 and 2.8 or
+            (hpRatio < 0.55 and 1.75 or
+                (armorRatio < 0.25 and 2.2 or (armorRatio < 0.60 and 1.4 or 0.50)))) or 0
     local weaponWeight = 2.8 * (weaponMissing and 1.8 or 0.75)
     local lifeWeight = self:_CanUseExtraLife(ply) and 1.5 or 0
 
