@@ -256,6 +256,9 @@ function Rolls:_FinishShotgunFeed(ply, contract)
     for target, hits in pairs(contract.hits or {}) do
         if IsValid(target) and hits > 0 then
             local damage = contract.damageByTarget[target] or 0
+            if damage > 0 and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyShotgunShellStun then
+                LOD.M3HitFeedback:ApplyShotgunShellStun(target)
+            end
             local detail = string.format("[%d/%d pellets; rolls %s]", hits,
                 contract.pellets or 6, table.concat(contract.values or {}, ">"))
             self:_Send(ply, 0, self:_DamageEventText(ply, "1d6!", damage,
