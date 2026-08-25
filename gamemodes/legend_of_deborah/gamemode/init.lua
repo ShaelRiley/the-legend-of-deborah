@@ -6,6 +6,7 @@ AddCSLuaFile("lod/cl_textured_box.lua")
 AddCSLuaFile("lod/cl_wall_visuals.lua")
 AddCSLuaFile("lod/cl_debug.lua")
 AddCSLuaFile("lod/cl_hud.lua")
+AddCSLuaFile("lod/cl_magic_hud.lua")
 AddCSLuaFile("lod/cl_dev_testing.lua")
 AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed.lua")
@@ -114,7 +115,7 @@ include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
 
 -- Soldier warning/firing is intentionally installed LAST among production combat
--- wrappers. It owns one immutable world-space shot line and prevents Motion V2,
+-- wrappers. It owns one immutable server-authored world-space shot line and prevents Motion V2,
 -- live animation bones, client-only visual scaling, or bolt initialization from
 -- becoming competing trajectory authorities.
 include("lod/sv_soldier_shot_contract.lua")
