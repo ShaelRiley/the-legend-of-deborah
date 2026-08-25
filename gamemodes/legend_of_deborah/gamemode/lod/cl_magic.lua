@@ -44,20 +44,16 @@ net.Receive("LOD_MagicShoutFX", function()
 
     if caster == LocalPlayer() then
         localCastUntil = CurTime() + 0.28
-        local vm = caster:GetViewModel()
-        if IsValid(vm) and vm.SelectWeightedSequence and vm.SendViewModelMatchingSequence then
-            local seq = vm:SelectWeightedSequence(ACT_VM_PRIMARYATTACK)
-            if seq and seq >= 0 then vm:SendViewModelMatchingSequence(seq) end
-        end
+        -- Do not force ACT_VM_PRIMARYATTACK on the active weapon here. Stock HL2
+        -- SWEPs can retain/replay that sequence after a Magic cast, producing a
+        -- phantom firing animation with no shot. The server-authored player
+        -- gesture and force-wave FX carry the cast presentation instead.
         surface.PlaySound("ambient/levels/citadel/weapon_disintegrate2.wav")
     end
 end)
 
--- During the first-person cast thrust, clear only the held weapon viewmodel out
--- of the frame. GMod's player-hands entity is drawn separately on normal UseHands
--- weapons, so the attack sequence can read as a weaponless hand thrust where the
--- current weapon supports standard hands. The world player simultaneously uses
--- the server-authored unarmed forward gesture.
+-- Briefly clear the held first-person viewmodel during the cast. We deliberately
+-- do not drive a firearm animation sequence; RMB belongs to Magic, not alt-fire.
 hook.Add("PreDrawViewModel", "LOD_MagicHideWeaponDuringCast", function()
     if CurTime() < localCastUntil then return true end
 end)
