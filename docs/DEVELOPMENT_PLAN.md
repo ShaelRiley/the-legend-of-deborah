@@ -4,8 +4,8 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 
 ## Current order
 
-1. **Complete and tune Gate C8 whole-dungeon dice play.**
-2. Validate the newly reconciled Shotgun under the universal d6 rule: natural-6-only damage explosions plus the separate exploding additional-pellet d6 and the 1-damage-per-connected-pellet floor.
+1. **Validate the minimap performance refactor on Steam Deck.** Confirm visual/breadcrumb correctness, same-level cache reuse, and materially reduced map-open frame cost.
+2. Continue Gate C8 whole-dungeon validation with broad combat/economy balance provisionally frozen after the authentic Level-5 run.
 3. Make only evidence-driven combat/economy corrections required by authentic runs.
 4. Resume the remaining expanded normal-enemy roster.
 5. Finish remaining Milestone-4 expedition work, especially Brute + Neil / Map acquisition and broader attrition/soak validation.
@@ -172,22 +172,21 @@ Shared 4 Hz server timer remains the regeneration authority. Grenades are exclud
 
 ### C8 — CURRENT ACCEPTANCE GATE
 
-Continue ordinary complete-dungeon play and judge the integrated experience. Observe:
+An authentic dice-era run reached **Level 5** before total-party wipe, and the player reports the game as fun, balanced, and playable. Broad balance is therefore provisionally frozen. Continue ordinary complete-dungeon play, but prioritize regression/performance evidence rather than speculative retuning. Observe:
 
-- progress/completion time against the Level-1 20–35 minute target;
-- deaths/lives;
-- outgoing and incoming lethality;
+- whether the optimized minimap preserves exact topology, objective, gate, jail, stair, and breadcrumb behavior;
+- map-open frame rate/perceived smoothness on Steam Deck versus map closed;
+- `lod_minimap_cache_status` showing one topology/index build per graph/floor transition, cached BFS hits, and zero same-level retransmission on reopen;
+- progress/completion time and deaths/lives without broad balance intervention;
 - sustain and ammunition pressure through progression;
-- whether all four peer firearms feel worth using for different reasons;
+- whether all four peer firearms remain worth using for different reasons;
 - AR2 three-projectile burst consuming one ammo unit;
 - Magnum 8–12 explosions and escalating aligned penetration;
-- Shotgun natural-6 damage explosions plus 8 guaranteed pellets + exploding additional-pellet d6 + 1-damage connected-pellet floor, including whether unusually large pellet bursts remain readable and performant;
+- Shotgun natural-6 damage explosions plus 8 guaranteed pellets + exploding additional-pellet d6 + 1-damage connected-pellet floor;
 - exploding-die audiovisual readability;
 - Magic meter / Force Shout readability and balance;
 - push/body-ghost/wall-crush presentation;
-- Shambler/Runner melee after spike reduction;
 - combat-feed readability;
-- Steam Deck performance;
 - eventual Deborah rescue/intermission/next level.
 
 Tune from runtime evidence, not expected-value arithmetic alone.
@@ -238,6 +237,7 @@ Preserve multiplayer-compatible server authority now; perform dedicated 1–4-pl
 8. d6 explosion threshold is universally natural 6; d12 explosion threshold is universally natural 8–12.
 9. Visible hostile size remains monotonic durability information.
 10. Networking/graph work remains compact, cached, bounded, and low-end-safe.
-11. No per-frame global BFS or large entity scans.
-12. Automatic startup telemetry remains retired.
-13. Work one decisive runtime acceptance criterion at a time.
+11. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
+12. No per-frame global BFS or large entity scans.
+13. Automatic startup telemetry remains retired.
+14. Work one decisive runtime acceptance criterion at a time.
