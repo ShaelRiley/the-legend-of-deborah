@@ -34,6 +34,9 @@ include("lod/sv_m3_enemy_config.lua")
 -- One server roll service owns outgoing player dice and incoming hostile dice.
 -- Load it before any runtime combat can occur and before feedback wrappers.
 include("lod/sv_combat_rolls.lua")
+-- Narrow ordinary Shambler/Runner melee dice from full-run balance evidence while
+-- preserving the existing size/stat multiplier and the shared combat-roll feed.
+include("lod/sv_enemy_melee_dice_balance.lua")
 include("lod/sv_dice_ammo.lua")
 -- Preserve stock HL2 weapon entities for inventory/loot compatibility while
 -- layering the GDD-authored SMG heat and player AR2 burst contracts on top.
