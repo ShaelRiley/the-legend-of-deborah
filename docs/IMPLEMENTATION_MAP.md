@@ -11,7 +11,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Encounter planning / wandering population | `sv_encounter_director.lua`, `sv_encounter_spawn_variance.lua`, `sv_wandering_director.lua`, `sv_hostile_separation.lua` |
 | Sole production hostile ground motion | `sv_hostile_motion_v2.lua` |
 | Core hostile state machine | `entities/entities/lod_hostile/` |
-| Deadcrab / Bio Blaster | `sv_deadcrab.lua`, `sv_bioblaster.lua`, projectile entities |
+| Deadcrab / Bio Blaster | `sv_deadcrab.lua`, `sv_deadcrab_latch_parent_safety.lua`, `sv_bioblaster.lua`, projectile entities |
 | Soldier/Blitzer immutable warning/projectile contract | `sv_soldier_shot_contract.lua`, `cl_soldier_shot_contract.lua`, `entities/entities/lod_soldier_bolt/` |
 | Enemy size/stat variance + monotonic durability | `sv_enemy_variance.lua`, `sv_combat_rolls.lua` |
 | Narrowed Shambler/Runner melee dice | `sv_enemy_melee_dice_balance.lua` |
@@ -22,12 +22,14 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
 | Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision |
 | Shotgun 5–6 explosion + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua` |
-| Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua` |
+| Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
+| Pushback motion trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; inherited by Shotgun, Force Shout, and future shared push sources |
 | Shotgun 168-unit shell push | `sv_shotgun_pushback.lua` |
+| Basic Magic / Force Shout / global RMB ownership | `sv_magic.lua`, `cl_magic.lua`, `cl_magic_hud.lua`; RMB is Magic-only and weapon secondary fire is suppressed globally |
 | Finite ammo caps / regeneration floor | `sv_dice_ammo.lua`; shared 4 Hz server timer |
 | Production individualized LootDirector | `sv_loot_director.lua`, `sv_loot_context_rules.lua`, `sv_loot_catchup.lua`, `sv_loot_budget_validation.lua`, loot pickup entity |
 | Hit confirm / hurt-death presentation / combat audio | `sv_m3_hit_feedback.lua`, `cl_hit_confirm.lua`, `sv_hostile_hurt_pose.lua`, `sv_hostile_death_pose.lua`, `sv_hostile_death_audio.lua`, `sv_combat_audio.lua` |
-| HUD / minimap | `cl_hud.lua`, `sv_minimap*.lua`, `cl_minimap*.lua` |
+| HUD / minimap | `cl_hud.lua`, `cl_magic_hud.lua`, `sv_minimap*.lua`, `cl_minimap*.lua` |
 | Low-end runtime optimization | `sv_phase_zero_runtime_optimization.lua` plus bounded/cached work in motion, minimap, ballistics, loot, projectiles, death systems |
 | Automatic dice-run telemetry | **Retired; not loaded.** Use existing diagnostics + manual runtime evidence. |
 | Remaining expanded normal roster | Blocked until complete-dungeon dice balance gate passes |
@@ -44,6 +46,15 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 - .357 Magnum: exploding `1d12` on natural 10/11/12; **one cartridge; penetrates aligned hostiles with the same resolved shot total** until blocked.
 - Shotgun: shared `1d6`, floor 3, natural **5 or 6** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**.
 - Grenade: `1d20`, separate consumable reward.
+
+## Basic Magic contract
+
+- Magic is a personal 0–100 campaign resource shown beside HP; the HL2 suit/armor pool remains unused.
+- Magic regenerates 0→100 in 60 seconds while alive.
+- RMB is globally reserved for Magic activation. LOD firearms do **not** expose HL2-style secondary fire.
+- Current Force Shout costs 20 Magic, affects an unobstructed ~60° / 1100-unit cone, deals independent exploding `2d6` per hostile, and applies a 336-unit shared-authority push to survivors.
+- Shared pushback presentation means the shout automatically receives the same travel trail and wall-crush audiovisual feedback as other push sources.
+- Elements, Magic items, Luck Ring behavior, and the broader RPG Magic system remain deferred.
 
 ## Firearm availability contract
 
@@ -85,4 +96,5 @@ Grenades do not regenerate.
 - independent HP jitter on top of health dice.
 - weapon power-tier rarity gating for Shotgun/SMG/Magnum/AR2.
 - HL2 suit/armor as a production LOD resource pool.
+- HL2 weapon secondary-fire gameplay; RMB is owned globally by Magic.
 - unbounded generic state/network payloads, global BFS/entity scans, or automatic startup telemetry.
