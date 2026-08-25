@@ -21,10 +21,17 @@ function GM:CreateTeams()
     team.SetUp(LOD.Config.PlayerTeam, "Expedition", Color(220, 140, 48), false)
 end
 
--- A brand-new expedition identity begins with the GDD baseline: both the Pistol
--- and the emergency Crowbar. The Pistol begins with exactly one loaded magazine
--- and no reserve ammunition. RunManager owns every later inventory restore, so
--- respawns and level transitions never use this path as an ammunition refill.
+local function giveLoaded(ply, weaponClass, clip)
+    local weapon = ply:Give(weaponClass, true)
+    if IsValid(weapon) and clip and clip >= 0 then weapon:SetClip1(clip) end
+    return weapon
+end
+
+-- Initial Level-1 participants receive the baseline Pistol + emergency Crowbar.
+-- A first-time identity entering an already-running expedition is marked by the
+-- LootDirector catch-up policy and receives the GDD's progression-appropriate
+-- weapon band at the normal regeneration-floor ammunition quantities. Once an
+-- inventory snapshot exists, RunManager owns every later respawn/level restore.
 function GM:PlayerLoadout(ply)
     local run = LOD.RunManager
     local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
@@ -33,14 +40,31 @@ function GM:PlayerLoadout(ply)
     ply:StripWeapons()
     ply:RemoveAllAmmo()
 
-    local pistol = ply:Give("weapon_pistol", true)
+    local pistol = giveLoaded(ply, "weapon_pistol", 18)
     ply:Give("weapon_lod_crowbar", true)
-
-    if IsValid(pistol) then
-        pistol:SetClip1(18)
-        ply:SelectWeapon("weapon_pistol")
-    end
     ply:SetAmmo(0, "Pistol")
+
+    local catchupLevel = math.max(0, math.floor(tonumber(ps.catchupLevel) or 0))
+    if catchupLevel >= 1 then
+        giveLoaded(ply, "weapon_shotgun", 6)
+        giveLoaded(ply, "weapon_smg1", 45)
+        ply:SetAmmo(0, "Buckshot")
+        ply:SetAmmo(0, "SMG1")
+    end
+    if catchupLevel >= 2 then
+        giveLoaded(ply, "weapon_357", 6)
+        ply:SetAmmo(0, "357")
+    end
+    if catchupLevel >= 3 then
+        giveLoaded(ply, "weapon_ar2", 30)
+        ply:SetAmmo(0, "AR2")
+        ply:SetAmmo(0, "AR2AltFire")
+    end
+
+    -- Catch-up kits never include free grenades or AR2 secondary ammunition.
+    ply:SetAmmo(0, "Grenade")
+
+    if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
 end
 
 function GM:PlayerNoClip()
