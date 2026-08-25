@@ -115,7 +115,6 @@ hook.Add("CreateMove", "LOD_PlayerWeaponSpecials_PredictedInput", function(cmd)
 
     if class == "weapon_smg1" and weapon:GetNW2Bool("LOD_SMGOverheated", false) then
         cmd:RemoveKey(IN_ATTACK)
-        cmd:RemoveKey(IN_ATTACK2)
     end
 
     if class == "weapon_ar2" then
