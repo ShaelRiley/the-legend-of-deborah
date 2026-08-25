@@ -34,6 +34,9 @@ include("lod/sv_m3_enemy_config.lua")
 -- Load it before any runtime combat can occur and before feedback wrappers.
 include("lod/sv_combat_rolls.lua")
 include("lod/sv_dice_ammo.lua")
+-- Temporary Gate-C scaffold: convert the existing bounded hostile death markers
+-- into cap-aware collectible ammunition until the real LootDirector replaces it.
+include("lod/sv_temp_ammo_drops.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
