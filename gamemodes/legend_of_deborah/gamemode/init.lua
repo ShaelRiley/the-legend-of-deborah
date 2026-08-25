@@ -70,6 +70,9 @@ include("lod/sv_combat_audio.lua")
 -- graph-authoritative kinematic kernel rather than CLuaLocomotion:Approach.
 include("lod/sv_hostile_motion_v2.lua")
 include("lod/sv_deadcrab.lua")
+-- Deadcrab face-latches follow players without becoming Source-engine children,
+-- preventing parented-entity push warnings during player movement.
+include("lod/sv_deadcrab_latch_parent_safety.lua")
 include("lod/sv_bioblaster.lua")
 include("lod/sv_enemy_variance.lua")
 include("lod/sv_wandering_director.lua")
