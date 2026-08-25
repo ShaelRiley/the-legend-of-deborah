@@ -1,7 +1,10 @@
 LOD = LOD or {}
-LOD.PushbackFX = LOD.PushbackFX or {trails = {}}
+LOD.PushbackFX = LOD.PushbackFX or {trails = {}, modelCache = {}}
 
 local FX = LOD.PushbackFX
+FX.trails = FX.trails or {}
+FX.modelCache = FX.modelCache or {}
+
 local trailMaterial = Material("sprites/light_glow02_add")
 local ghostMaterial = Material("models/debug/debugwhite")
 local dustTexture = "particle/particle_smokegrenade"
@@ -20,6 +23,19 @@ local function trailColor(source, alpha)
         return Color(255, 205, 105, alpha)
     end
     return Color(215, 230, 255, alpha)
+end
+
+local function ghostForModel(model)
+    if not model or model == "" then return nil end
+    local ghost = FX.modelCache[model]
+    if IsValid(ghost) then return ghost end
+
+    ghost = ClientsideModel(model, RENDERGROUP_OTHER)
+    if not IsValid(ghost) then return nil end
+    ghost:SetNoDraw(true)
+    ghost:SetIK(false)
+    FX.modelCache[model] = ghost
+    return ghost
 end
 
 local function emitCrushParticles(pos, wallNormal)
@@ -83,6 +99,9 @@ net.Receive("LOD_PushbackFX", function()
             hostile = hostile,
             model = model,
             angles = angles,
+            modelScale = IsValid(hostile) and hostile:GetModelScale() or 1,
+            sequence = IsValid(hostile) and hostile:GetSequence() or -1,
+            cycle = IsValid(hostile) and hostile:GetCycle() or 0,
             startPos = startPos,
             endPos = endPos,
             source = source,
@@ -113,19 +132,24 @@ net.Receive("LOD_PushbackFX", function()
 end)
 
 local function drawBodyGhost(event, t, alpha)
-    if not event.model or event.model == "" then return end
+    local ghost = ghostForModel(event.model)
+    if not IsValid(ghost) then return end
 
     local pos = LerpVector(t, event.startPos, event.endPos)
     local color = trailColor(event.source, alpha)
 
+    ghost:SetPos(pos)
+    ghost:SetAngles(event.angles or angle_zero)
+    ghost:SetModelScale(math.max(0.05, tonumber(event.modelScale) or 1), 0)
+    if (event.sequence or -1) >= 0 then
+        ghost:SetSequence(event.sequence)
+        ghost:SetCycle(event.cycle or 0)
+    end
+
     render.MaterialOverride(ghostMaterial)
     render.SetColorModulation(color.r / 255, color.g / 255, color.b / 255)
     render.SetBlend(math.Clamp(alpha / 255, 0, 1))
-    render.Model({
-        model = event.model,
-        pos = pos,
-        angle = event.angles or angle_zero
-    })
+    ghost:DrawModel()
     render.SetBlend(1)
     render.SetColorModulation(1, 1, 1)
     render.MaterialOverride(nil)
@@ -146,19 +170,19 @@ local function drawTrail(event, now)
     local lp = LocalPlayer()
     local nearby = not IsValid(lp) or lp:EyePos():DistToSqr(endPos) <= MAX_GHOST_DISTANCE_SQR
 
-    -- Render-only silhouettes of the hostile's own body make the entire resolved
-    -- displacement path legible at a glance. Four model draws exist for only
-    -- 0.30 s, create no entities, run no Think/physics, and are distance culled.
+    -- Four translucent snapshots of the creature's own body make the complete
+    -- travel path obvious. Cached hidden models eliminate per-frame allocation;
+    -- they have no physics, AI, networking, or Think work and are distance culled.
     if nearby then
         for i, t in ipairs(GHOST_SAMPLES) do
             local stagger = 1 - ((i - 1) / (#GHOST_SAMPLES + 1)) * 0.35
-            drawBodyGhost(event, t, math.floor(125 * fade * stagger))
+            drawBodyGhost(event, t, math.floor(135 * fade * stagger))
         end
     end
 
-    -- Keep one inexpensive luminous spine underneath the body ghosts so even
-    -- tiny archetypes retain a readable direction of travel.
-    local color = trailColor(event.source, math.floor(155 * fade))
+    -- One inexpensive luminous spine keeps tiny archetypes readable between the
+    -- body silhouettes and makes push direction unambiguous.
+    local color = trailColor(event.source, math.floor(165 * fade))
     render.SetMaterial(trailMaterial)
     render.DrawBeam(startPos + Vector(0, 0, 30), endPos + Vector(0, 0, 30),
         5 * fade + 1, 0, 1, color)
@@ -175,5 +199,12 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function(
         else
             drawTrail(event, now)
         end
+    end
+end)
+
+hook.Add("ShutDown", "LOD_PushbackGhostCacheCleanup", function()
+    for model, ghost in pairs(FX.modelCache) do
+        if IsValid(ghost) then ghost:Remove() end
+        FX.modelCache[model] = nil
     end
 end)
