@@ -12,9 +12,9 @@ local sparkTexture = "effects/spark"
 local TRAIL_LIFETIME = 0.30
 local MAX_TRAILS = 12
 local MAX_GHOST_DISTANCE_SQR = 2200 * 2200
-local MIN_GHOST_SAMPLES = 16
-local MAX_GHOST_SAMPLES = 24
-local GHOST_SAMPLE_SPACING = 14
+local MIN_GHOST_SAMPLES = 8
+local MAX_GHOST_SAMPLES = 16
+local GHOST_SAMPLE_SPACING = 22
 
 local function trailColor(source, alpha)
     source = string.lower(tostring(source or ""))
@@ -148,6 +148,12 @@ local function drawBodyGhost(event, t, alpha)
         ghost:SetCycle(event.cycle or 0)
     end
 
+    -- A cached ClientsideModel can be drawn repeatedly in one frame, but Source
+    -- retains its first bone transform unless bones are rebuilt before each draw.
+    -- Rebuilding here is the critical part that lets every sampled position render
+    -- as a distinct afterimage while still reusing one cached model per archetype.
+    ghost:SetupBones()
+
     render.MaterialOverride(ghostMaterial)
     render.SetColorModulation(color.r / 255, color.g / 255, color.b / 255)
     render.SetBlend(math.Clamp(alpha / 255, 0, 1))
@@ -176,11 +182,10 @@ local function drawTrail(event, now)
     local lp = LocalPlayer()
     local nearby = not IsValid(lp) or lp:EyePos():DistToSqr(endPos) <= MAX_GHOST_DISTANCE_SQR
 
-    -- Dense cached body afterimages make the server-authoritative displacement
-    -- read as one continuous shove rather than a teleport. Even a short Shotgun
-    -- push gets sixteen silhouettes; long Force Shout throws scale up to twenty-
-    -- four. Earlier ghosts are dimmer and the destination-side ghosts brightest,
-    -- reinforcing direction without creating any additional gameplay entities.
+    -- Eight to sixteen translucent snapshots of the creature's own body make the
+    -- server-authoritative displacement read as one continuous shove rather than
+    -- a teleport. Samples scale with travel distance; earlier ghosts are dimmer
+    -- and destination-side ghosts brighter to reinforce direction.
     if nearby then
         local samples = ghostSampleCount(length)
         for i = 1, samples do
