@@ -10,6 +10,8 @@ local SMG_MAX_HEAT = 6
 local smoke = setmetatable({}, {__mode = "k"})
 local tinted = setmetatable({}, {__mode = "k"})
 local nextVisualTick = 0
+local ar2AttackHeld = false
+local ar2InputBlockUntil = 0
 
 local function activeWeapon(ply)
     if not IsValid(ply) then return nil end
@@ -100,6 +102,36 @@ local function emitSmoke(ply, weapon, now)
     particle:SetColor(120, 120, 120)
     particle:SetAirResistance(18)
 end
+
+hook.Add("CreateMove", "LOD_PlayerWeaponSpecials_PredictedInput", function(cmd)
+    local ply = LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() then
+        ar2AttackHeld = false
+        return
+    end
+
+    local weapon = activeWeapon(ply)
+    local class = IsValid(weapon) and weapon:GetClass() or ""
+
+    if class == "weapon_smg1" and weapon:GetNW2Bool("LOD_SMGOverheated", false) then
+        cmd:RemoveKey(IN_ATTACK)
+        cmd:RemoveKey(IN_ATTACK2)
+    end
+
+    if class == "weapon_ar2" then
+        local down = cmd:KeyDown(IN_ATTACK)
+        if down and not ar2AttackHeld then
+            net.Start("LOD_PlayerAR2Activate")
+            net.SendToServer()
+            ar2InputBlockUntil = CurTime() + 0.85
+        end
+        ar2AttackHeld = down
+        cmd:RemoveKey(IN_ATTACK)
+        if CurTime() < ar2InputBlockUntil then cmd:RemoveKey(IN_RELOAD) end
+    else
+        ar2AttackHeld = false
+    end
+end)
 
 hook.Add("PreDrawViewModel", "LOD_SMGHeat_ViewModel", function(vm, ply, weapon)
     if not IsValid(weapon) or weapon:GetClass() ~= "weapon_smg1" then return end
