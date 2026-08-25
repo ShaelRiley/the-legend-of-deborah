@@ -356,7 +356,10 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
 
     if weaponClass == "weapon_shotgun" then
         bullet.Num = contract.pellets
-        bullet.Damage = contract.total / SHOTGUN_SHARE_COUNT
+        -- Every pellet that actually connects is guaranteed to contribute at
+        -- least one point of damage. Low shared shell rolls therefore cannot be
+        -- diluted into sub-1 pellet hits by the one-sixth share calculation.
+        bullet.Damage = math.max(1, contract.total / SHOTGUN_SHARE_COUNT)
         shooter.LODActiveShotgunRoll = contract
         timer.Simple(0, function()
             if shooter.LODActiveShotgunRoll == contract then
