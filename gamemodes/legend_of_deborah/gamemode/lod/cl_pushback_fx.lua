@@ -12,7 +12,9 @@ local sparkTexture = "effects/spark"
 local TRAIL_LIFETIME = 0.30
 local MAX_TRAILS = 12
 local MAX_GHOST_DISTANCE_SQR = 2200 * 2200
-local GHOST_SAMPLES = {0.16, 0.36, 0.56, 0.76}
+local MIN_GHOST_SAMPLES = 16
+local MAX_GHOST_SAMPLES = 24
+local GHOST_SAMPLE_SPACING = 14
 
 local function trailColor(source, alpha)
     source = string.lower(tostring(source or ""))
@@ -155,6 +157,10 @@ local function drawBodyGhost(event, t, alpha)
     render.MaterialOverride(nil)
 end
 
+local function ghostSampleCount(length)
+    return math.Clamp(math.ceil(length / GHOST_SAMPLE_SPACING), MIN_GHOST_SAMPLES, MAX_GHOST_SAMPLES)
+end
+
 local function drawTrail(event, now)
     local age = now - event.started
     local fraction = math.Clamp(age / event.lifetime, 0, 1)
@@ -170,13 +176,17 @@ local function drawTrail(event, now)
     local lp = LocalPlayer()
     local nearby = not IsValid(lp) or lp:EyePos():DistToSqr(endPos) <= MAX_GHOST_DISTANCE_SQR
 
-    -- Four translucent snapshots of the creature's own body make the complete
-    -- travel path obvious. Cached hidden models eliminate per-frame allocation;
-    -- they have no physics, AI, networking, or Think work and are distance culled.
+    -- Dense cached body afterimages make the server-authoritative displacement
+    -- read as one continuous shove rather than a teleport. Even a short Shotgun
+    -- push gets sixteen silhouettes; long Force Shout throws scale up to twenty-
+    -- four. Earlier ghosts are dimmer and the destination-side ghosts brightest,
+    -- reinforcing direction without creating any additional gameplay entities.
     if nearby then
-        for i, t in ipairs(GHOST_SAMPLES) do
-            local stagger = 1 - ((i - 1) / (#GHOST_SAMPLES + 1)) * 0.35
-            drawBodyGhost(event, t, math.floor(135 * fade * stagger))
+        local samples = ghostSampleCount(length)
+        for i = 1, samples do
+            local t = i / (samples + 1)
+            local pathBrightness = 0.58 + 0.42 * t
+            drawBodyGhost(event, t, math.floor(150 * fade * pathBrightness))
         end
     end
 
