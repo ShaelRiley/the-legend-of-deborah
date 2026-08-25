@@ -163,7 +163,8 @@ concommand.Add("lod_dice_ammo_probe", function(ply)
     if not developerAllowed(ply) or not ply:Alive() then return end
     local profile = PROFILES.weapon_pistol
     ply.LODM3InfiniteTestPistol = false
-    local weapon = ply:Give("weapon_pistol", true)
+    local weapon = familyWeapon(ply, "weapon_pistol")
+    if not weapon then weapon = ply:Give("weapon_pistol", true) end
     if not IsValid(weapon) then
         printLine(ply, "probe could not grant pistol result=FAIL")
         return
