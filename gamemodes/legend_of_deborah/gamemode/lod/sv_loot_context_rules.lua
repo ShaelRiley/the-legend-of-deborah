@@ -3,8 +3,6 @@ LOD = LOD or {}
 local Loot = LOD.LootDirector
 if not Loot then return end
 
-local MAX_ARMOR = 100
-
 -- All ordinary firearm upgrades can appear from Dungeon 1. Shotgun and SMG
 -- remain the dominant early finds; Magnum is uncommon and AR2 is rarer still.
 -- Later dungeons gently improve high-tier weighting without ever making those
@@ -72,10 +70,19 @@ function Loot:_MissingWeaponReward(ply, rng)
     return weightedPick(rng, choices)
 end
 
+-- LOD does not use Half-Life 2's auxiliary suit/armor health pool. Keep this
+-- legacy grant entrypoint as a safety adapter for any older loot plan/cache path:
+-- anything that still asks for armor restores ordinary HP instead.
+function Loot:_GrantArmor(ply, amount)
+    return self:_GrantHealth(ply, amount or 20)
+end
+
 -- The core static plan already reserves one optional weapon-reward node from
 -- Dungeon 1 onward. Retune that node through the same rarity table instead of
 -- hard-coding it to Grenades, so every v1 weapon can physically appear in a
--- Level-1 maze while Shotgun/SMG remain much more common outcomes.
+-- Level-1 maze while Shotgun/SMG remain much more common outcomes. Also convert
+-- every authored armor/suit node into an ordinary health pickup before entities
+-- are spawned, so no battery/suit-restoration loot enters production play.
 local baseBuildStaticPlan = Loot.BuildStaticPlan
 function Loot:BuildStaticPlan(graph)
     local ok, planOrErr = baseBuildStaticPlan(self, graph)
@@ -90,15 +97,20 @@ function Loot:BuildStaticPlan(graph)
     end
     local chosen = weightedPick(rng, choices)
 
-    if chosen then
-        for _, node in ipairs(plan.nodes or {}) do
-            if node.kind == "weapon" and node.role == "reward"
-                and node.payload and node.payload.weaponClass == "weapon_frag"
-            then
-                node.payload.weaponClass = chosen
-                node.weaponRarityRolled = true
-                break
-            end
+    local weaponRewardRewritten = false
+    for _, node in ipairs(plan.nodes or {}) do
+        if node.kind == "armor" then
+            node.kind = "health"
+            node.payload = node.payload or {}
+            node.payload.amount = math.max(1, tonumber(node.payload.amount) or 20)
+            node.convertedFromArmor = true
+        elseif not weaponRewardRewritten and chosen
+            and node.kind == "weapon" and node.role == "reward"
+            and node.payload and node.payload.weaponClass == "weapon_frag"
+        then
+            node.payload.weaponClass = chosen
+            node.weaponRarityRolled = true
+            weaponRewardRewritten = true
         end
     end
 
@@ -119,7 +131,6 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
 
     local maxHealth = math.max(1, ply:GetMaxHealth())
     local hpRatio = math.Clamp(ply:Health() / maxHealth, 0, 1)
-    local armorRatio = math.Clamp(ply:Armor() / MAX_ARMOR, 0, 1)
     local ammoNeed = self:_AmmoNeed(ply)
     local weaponMissing = self:_MissingWeaponReward(ply, rng) ~= nil
 
@@ -128,27 +139,27 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
     -- Whole-dungeon runtime evidence showed that the original ammo-depletion
     -- multiplier could dominate a critically injured player's useful-drop roll.
     -- Preserve scarcity pressure, but once health is genuinely threatened bias
-    -- the same useful-drop band toward recovery rather than letting ammo crowd
-    -- health/armor out. This changes category selection, not the global drop rate.
+    -- the same useful-drop band toward recovery. LOD has no suit-health economy,
+    -- so the former armor band is folded directly into ordinary HP recovery.
     if hpRatio < 0.25 then
         ammoWeight = ammoWeight * 0.72
     elseif hpRatio < 0.55 then
         ammoWeight = ammoWeight * 0.88
     end
 
-    local healthWeight = hpRatio < 1 and
-        12 * (hpRatio < 0.25 and 4.5 or (hpRatio < 0.55 and 2.75 or 0.65)) or 0
-    local armorWeight = armorRatio < 1 and
-        5 * (hpRatio < 0.25 and 2.8 or
-            (hpRatio < 0.55 and 1.75 or
-                (armorRatio < 0.25 and 2.2 or (armorRatio < 0.60 and 1.4 or 0.50)))) or 0
+    local healthWeight = 0
+    if hpRatio < 1 then
+        local healthBand = 12 * (hpRatio < 0.25 and 4.5 or (hpRatio < 0.55 and 2.75 or 0.65))
+        local formerArmorBand = 5 * (hpRatio < 0.25 and 2.8 or (hpRatio < 0.55 and 1.75 or 0.50))
+        healthWeight = healthBand + formerArmorBand
+    end
+
     local weaponWeight = 2.8 * (weaponMissing and 1.8 or 0.75)
     local lifeWeight = self:_CanUseExtraLife(ply) and 1.5 or 0
 
     local category = weightedPick(rng, {
         {value = "ammo", weight = ammoWeight},
         {value = "health", weight = healthWeight},
-        {value = "armor", weight = armorWeight},
         {value = "weapon", weight = weaponWeight},
         {value = "life", weight = lifeWeight}
     })
