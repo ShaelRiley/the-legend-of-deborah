@@ -2,6 +2,7 @@ LOD = LOD or {}
 LOD.MinimapServer = LOD.MinimapServer or {}
 
 local Minimap = LOD.MinimapServer
+local MC = LOD.Config.Maze
 local CHUNK_SIZE = 128
 
 util.AddNetworkString("LOD_MapRequest")
@@ -18,8 +19,22 @@ local DIRS = {
     {dx = 0, dy = 0, dz = -1, bit = 5}                 -- DOWN
 }
 
+local STAIR_DIRECTION_CODE = {
+    N = 0,
+    E = 1,
+    S = 2,
+    W = 3
+}
+
 local function key(x, y, z)
     return LOD.MazeGenerator.CellKey(x, y, z)
+end
+
+local function edgeKey(a, b)
+    if LOD.MazeNavigator and LOD.MazeNavigator.EdgeKey then
+        return LOD.MazeNavigator:EdgeKey(a, b)
+    end
+    return a < b and (a .. "|" .. b) or (b .. "|" .. a)
 end
 
 local function developerMode()
@@ -27,22 +42,40 @@ local function developerMode()
     return cv and cv:GetBool() or false
 end
 
-function Minimap:CanUse(ply)
-    if not IsValid(ply) then return false end
-    return developerMode() or ply:GetNW2Bool("LOD_MapUnlocked", false)
+local function currentLevel()
+    local state = LOD.RunManager and LOD.RunManager.State
+    return state and tonumber(state.Level) or 0
 end
 
--- Milestone 4's individualized rare Map drop should call this function.
--- Map entitlement is deliberately current-level-only and resets on the next maze.
+function Minimap:CanUse(ply)
+    if not IsValid(ply) or not ply:Alive() then return false end
+    if developerMode() then return true end
+    if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
+    local level = currentLevel()
+    return level > 0 and ply:GetNW2Int("LOD_MapUnlockedLevel", 0) == level
+end
+
+-- Map entitlement is current-level-only without a per-tick reset hook. The level
+-- stamp makes an old Map automatically invalid as soon as RunManager advances.
 function Minimap:Grant(ply)
     if not IsValid(ply) then return false end
+    local level = currentLevel()
+    if level <= 0 then return false end
     ply:SetNW2Bool("LOD_MapUnlocked", true)
+    ply:SetNW2Int("LOD_MapUnlockedLevel", level)
     return true
 end
 
 function Minimap:Revoke(ply)
     if not IsValid(ply) then return end
     ply:SetNW2Bool("LOD_MapUnlocked", false)
+    ply:SetNW2Int("LOD_MapUnlockedLevel", 0)
+end
+
+local function writeCell(cell)
+    net.WriteUInt(math.Clamp(cell.x or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.y or 0, 0, 127), 7)
+    net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
 end
 
 local function gateIndexByEdge(graph)
@@ -54,16 +87,23 @@ local function gateIndexByEdge(graph)
     return out
 end
 
-local function edgeKey(aKey, bKey)
-    if LOD.MazeNavigator and LOD.MazeNavigator.EdgeKey then
-        return LOD.MazeNavigator:EdgeKey(aKey, bKey)
+local function stairDirectionByCell(graph)
+    local out = {}
+    for _, edge in ipairs(graph.VerticalEdges or {}) do
+        local code = STAIR_DIRECTION_CODE[edge.LODStairDirection] or 0
+        out[key(edge.a.x, edge.a.y, edge.a.z)] = code
+        out[key(edge.b.x, edge.b.y, edge.b.z)] = code
     end
-    return aKey < bKey and (aKey .. "|" .. bKey) or (bKey .. "|" .. aKey)
+    return out
 end
 
-local function encodeCells(graph)
+-- Serialize topology once per immutable generated graph. Opening/closing the map
+-- does not rebuild this representation, and the client no longer asks for it on
+-- same-level reopens.
+local function encodeCanonicalCells(graph)
     local cells = {}
     local gates = gateIndexByEdge(graph)
+    local stairs = stairDirectionByCell(graph)
 
     for cellKey, cell in pairs(graph.Cells or {}) do
         local openings = 0
@@ -71,12 +111,17 @@ local function encodeCells(graph)
 
         for _, dir in ipairs(DIRS) do
             local neighborKey = key(cell.x + dir.dx, cell.y + dir.dy, cell.z + dir.dz)
-            if cell.neighbors and cell.neighbors[neighborKey] then
+            local neighbor = graph.Cells[neighborKey]
+            local ek = neighbor and edgeKey(cellKey, neighborKey) or nil
+            local open = ek and graph.Edges and graph.Edges[ek] ~= nil
+
+            if open then
                 openings = bit.bor(openings, bit.lshift(1, dir.bit))
                 if dir.gateShift then
-                    local gateIndex = gates[edgeKey(cellKey, neighborKey)] or 0
+                    local gateIndex = gates[ek] or 0
                     if gateIndex > 0 then
-                        gateCodes = bit.bor(gateCodes, bit.lshift(math.Clamp(gateIndex, 0, 3), dir.gateShift))
+                        gateCodes = bit.bor(gateCodes,
+                            bit.lshift(math.Clamp(gateIndex, 0, 3), dir.gateShift))
                     end
                 end
             end
@@ -87,7 +132,8 @@ local function encodeCells(graph)
             y = cell.y,
             z = cell.z,
             openings = openings,
-            gates = gateCodes
+            gates = gateCodes,
+            stairDirection = stairs[cellKey] or 0
         }
     end
 
@@ -97,6 +143,22 @@ local function encodeCells(graph)
         return a.x < b.x
     end)
     return cells
+end
+
+local function cachedCanonicalCells(state, graph)
+    if Minimap.EncodedGraph == graph and Minimap.EncodedLevel == state.Level and Minimap.EncodedCells then
+        Minimap.EncodeCacheHits = (Minimap.EncodeCacheHits or 0) + 1
+        return Minimap.EncodedCells, Minimap.EncodedChunks
+    end
+
+    local cells = encodeCanonicalCells(graph)
+    local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
+    Minimap.EncodedGraph = graph
+    Minimap.EncodedLevel = state.Level
+    Minimap.EncodedCells = cells
+    Minimap.EncodedChunks = chunks
+    Minimap.EncodeBuilds = (Minimap.EncodeBuilds or 0) + 1
+    return cells, chunks
 end
 
 function Minimap:Send(ply)
@@ -116,14 +178,27 @@ function Minimap:Send(ply)
         return false
     end
 
-    local cells = encodeCells(graph)
-    local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
+    local cells, chunks = cachedCanonicalCells(state, graph)
 
     net.Start("LOD_MapBegin")
     net.WriteUInt(state.Level or 1, 20)
     net.WriteUInt(math.Clamp(graph.Layers or 1, 1, 7), 3)
     net.WriteUInt(math.min(#cells, 65535), 16)
     net.WriteUInt(math.min(chunks, 255), 8)
+
+    -- Send the resolved runtime origin once with topology. This replaces three
+    -- NW2 reads and comparisons in a client Think hook that previously ran for
+    -- every rendered frame of the entire session.
+    net.WriteFloat(MC.Origin.x)
+    net.WriteFloat(MC.Origin.y)
+    net.WriteFloat(MC.Origin.z)
+
+    local jail = graph.Progression and graph.Progression.JailEdge
+    net.WriteBool(jail ~= nil)
+    if jail then
+        writeCell(jail.beforeCell)
+        writeCell(jail.afterCell)
+    end
     net.Send(ply)
 
     for chunkIndex = 1, chunks do
@@ -142,6 +217,7 @@ function Minimap:Send(ply)
             net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
             net.WriteUInt(cell.openings or 0, 6)
             net.WriteUInt(cell.gates or 0, 8)
+            net.WriteUInt(cell.stairDirection or 0, 2)
         end
         net.Send(ply)
     end
@@ -154,17 +230,5 @@ net.Receive("LOD_MapRequest", function(_, ply)
 end)
 
 hook.Add("PlayerInitialSpawn", "LOD_MinimapInitialEntitlement", function(ply)
-    ply:SetNW2Bool("LOD_MapUnlocked", false)
-end)
-
--- A found map describes one generated labyrinth only. A fresh level needs a new
--- rare Map drop. Developer mode bypasses entitlement without mutating this flag.
-hook.Add("Think", "LOD_MinimapLevelReset", function()
-    local state = LOD.RunManager and LOD.RunManager.State
-    local level = state and state.Level
-    if not level or level == Minimap.LastLevel then return end
-    Minimap.LastLevel = level
-    for _, ply in ipairs(player.GetAll()) do
-        if IsValid(ply) then ply:SetNW2Bool("LOD_MapUnlocked", false) end
-    end
+    Minimap:Revoke(ply)
 end)
