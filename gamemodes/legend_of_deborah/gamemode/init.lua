@@ -14,6 +14,7 @@ AddCSLuaFile("lod/cl_minimap_origin_sync.lua")
 AddCSLuaFile("lod/cl_minimap_safety.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
+AddCSLuaFile("lod/cl_magic.lua")
 
 include("shared.lua")
 include("lod/sv_saverestore_safety.lua")
@@ -92,6 +93,9 @@ include("lod/sv_shotgun_identity_balance.lua")
 -- One reusable Motion-V2-safe push authority owns displacement and wall-crush
 -- resolution for Shotgun today and later elemental/weapon/environmental effects.
 include("lod/sv_pushback.lua")
+-- Basic pre-release Magic reuses the same push authority: RMB casts one bounded
+-- exploding-dice cone shout and regenerates a 0-100 personal Magic resource.
+include("lod/sv_magic.lua")
 include("lod/sv_shotgun_pushback.lua")
 -- Load after hit feedback so generated-cover rejection can also suppress false
 -- hit-confirm/flinch events, independent of EntityTakeDamage hook order.
