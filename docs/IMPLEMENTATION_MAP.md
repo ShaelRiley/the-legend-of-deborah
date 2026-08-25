@@ -21,7 +21,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | SMG overheat + AR2 laser/burst | `sv_player_weapon_specials.lua`, `sv_player_weapon_specials_input.lua`, client mirror |
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
 | Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision; target depth escalates cumulatively from `1d12!` to `2d12!`, `3d12!`, etc. up to the existing 8-target cap |
-| Shotgun exploding d6 + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua`; **current code still uses the superseded temporary 5–6 explosion threshold and must be reconciled to the canonical natural-6-only d6 rule after the current runtime test** |
+| Shotgun exploding damage/pellet d6 + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua`; shared damage d6 now follows universal natural-6-only explosions with floor 3; every shell also adds a separate exploding `1d6!` worth of pellets, retains the three independent 33% bonus-pellet checks, and clamps final trace count to 36 for low-end safety |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
 | Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 4–16 silhouettes use distinct leased clientside render models from a reusable per-model pool, avoiding same-entity/same-frame transform caching; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
 | Shotgun 168-unit shell push | `sv_shotgun_pushback.lua` |
@@ -39,13 +39,12 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 
 ## Canonical exploding-die invariant
 
-The live GDD now defines explosion thresholds globally rather than per weapon:
+The live GDD defines explosion thresholds globally rather than per weapon:
 
 - **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
 - **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
 - These are dice-system invariants. New d6/d12 mechanics inherit them automatically unless a later explicit design change supersedes the rule.
-- Current implementation is already compliant for Force Shout d6s and Magnum / Magnum-pierce d12s.
-- The current Shotgun code remains temporarily noncompliant because it still explodes on natural 5–6. Do not treat that temporary implementation as design authority; reconcile it to natural-6-only after the in-progress runtime test.
+- Current implementation is compliant for Force Shout d6s, both Shotgun d6 systems, and Magnum / Magnum-pierce d12s.
 
 ## Current weapon contracts
 
@@ -54,9 +53,9 @@ The live GDD now defines explosion thresholds globally rather than per weapon:
 - SMG: `1d8`, six-shot heat threshold, 0.25 s per heat cooling, 2.0 s overheat lock.
 - AR2: `1d10` per projectile, 0.45 s committed laser tell, exactly three projectiles, **one AR2 ammo unit per complete burst**.
 - .357 Magnum: exploding `1d12` on natural **8/9/10/11/12**; one cartridge; aligned piercing escalates cumulatively by one fresh exploding d12 chain per deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., capped at eight total targets and stopped by authoritative geometry.
-- Shotgun design target: shared `1d6`, floor 3, natural **6 only** recursively explodes, six guaranteed pellets + independent 33% checks for 7/8/9, one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**. Current code still has the temporary 5–6 threshold pending reconciliation.
+- Shotgun: shared damage `1d6!`, floor 3, natural **6 only** recursively explodes; six guaranteed pellets plus a separate exploding `1d6!` additional-pellet roll plus the existing independent 33% checks for three further pellets; one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**, and a 36-pellet hard safety cap. The exploding pellet die averages 4.2 extra pellets, producing an uncapped 11.2-pellet shell average and approximately 8.96 expected full-connect base damage before later modifiers.
 - Grenade: `1d20`, separate consumable reward.
-- Player-side exploding-die continuations (Magnum, Shotgun, Force Shout, and Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
+- Player-side exploding-die continuations (Magnum, Shotgun damage/pellet dice, Force Shout, and Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
 
 ## Basic Magic contract
 
