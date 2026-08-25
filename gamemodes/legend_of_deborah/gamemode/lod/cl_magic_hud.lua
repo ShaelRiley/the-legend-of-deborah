@@ -19,8 +19,12 @@ end)
 
 hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:GetNW2Bool("LOD_PlayedIdentity", false) then return end
+    if not IsValid(ply) then return end
 
+    -- Do not gate the persistent Magic meter on LOD_PlayedIdentity. That network
+    -- flag is used by some death/identity presentation paths but is not guaranteed
+    -- to remain true throughout every ordinary live-run state. The main LOD HUD
+    -- itself only requires a valid local player, so Magic follows the same rule.
     local maximum = math.max(1, ply:GetNW2Int("LOD_MagicMax", 100))
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
     local value = math.floor(magic + 0.5)
