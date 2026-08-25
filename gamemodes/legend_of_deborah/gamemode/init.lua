@@ -38,6 +38,7 @@ include("lod/sv_dice_ammo.lua")
 -- Preserve stock HL2 weapon entities for inventory/loot compatibility while
 -- layering the GDD-authored SMG heat and player AR2 burst contracts on top.
 include("lod/sv_player_weapon_specials.lua")
+include("lod/sv_player_weapon_specials_input.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
