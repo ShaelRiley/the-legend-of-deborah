@@ -22,7 +22,7 @@ The live GDD defines explosion thresholds globally:
 
 Current implementation is compliant for Force Shout d6 chains, both Shotgun d6 systems, and Magnum / Magnum-pierce d12 chains.
 
-The Shotgun uses two pellet-count layers only: eight guaranteed pellets plus a separate exploding `1d6!` for additional pellets. The earlier three independent 33% bonus-pellet checks are retired. The pellet-count die has no damage floor, averages 4.2 extra pellets before the rare safety cap, and triggers the shared exploding-die audiovisual confirmation when it explodes. Production clamps final shell trace count to 36 for low-end safety. With the universal natural-6-only shared damage die, the uncapped shell averages 12.2 pellets and approximately 9.76 full-connect base damage before later modifiers.
+The Shotgun uses two pellet-count layers only: eight guaranteed pellets plus a separate exploding `1d6!` for additional pellets. The earlier three independent 33% bonus-pellet checks are retired. The pellet-count die has no damage floor, averages 4.2 extra pellets before the rare safety cap, and triggers the shared exploding-die audiovisual confirmation when it explodes. Production clamps final shell trace count to 36 for low-end safety. **Every connecting pellet now deals at least 1 damage**, even when the normal one-sixth shared-shell contribution would be fractional. With the universal natural-6-only shared damage die and the uncapped 12.2-pellet average, expected full-connect base damage is approximately **13.83** before later modifiers.
 
 ## Current combat foundation
 
@@ -33,7 +33,7 @@ The Shotgun uses two pellet-count layers only: eight guaranteed pellets plus a s
 - SMG: `1d8`; six rapid shots overheat, one heat cools every 0.25 s below threshold, 2.0 s overheat lock, staged model/audio/smoke feedback.
 - AR2: `1d10` per projectile; every activation commits one 0.45-second targeting-laser tell then exactly three rapid rounds. **The complete three-projectile burst consumes one AR2 primary-ammo unit total**, spent when the first projectile releases.
 - .357 Magnum: universal exploding `1d12`; natural **8–12** recursively explode. A bullet pierces properly aligned hostiles and adds one fresh independently exploding d12 chain for every deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., up to the bounded eight-target cap and authoritative geometry stop.
-- Shotgun: shared universal exploding damage `1d6!`, per-die floor 3, **natural 6 only** recursively explodes; eight guaranteed pellets + one separate exploding `1d6!` additional-pellet roll; one 4× ordinary hit stun and 168-unit nominal push per damaged target per shell; 36-pellet safety cap.
+- Shotgun: shared universal exploding damage `1d6!`, per-die floor 3, **natural 6 only** recursively explodes; eight guaranteed pellets + one separate exploding `1d6!` additional-pellet roll; **minimum 1 damage per connecting pellet**; one 4× ordinary hit stun and 168-unit nominal push per damaged target per shell; 36-pellet safety cap.
 - Grenade: `1d20`; remains a separate consumable reward.
 
 Player-side exploding dice have bounded audiovisual confirmation: center-screen radial burst/label plus a short positive two-layer sound. This is shared by Magnum, Shotgun damage/pellet dice, Force Shout, and Magnum-pierce bonus dice.
@@ -92,7 +92,7 @@ One shared 4 Hz server timer owns regeneration. Grenades do not regenerate. The 
 
 Current testing should continue to judge the integrated dungeon experience: completion time, deaths/lives, sustain, ammunition pressure, peer-firearm usefulness, Magic readability, Magnum alignment reward, exploding-die feedback, Shotgun pellet volatility, combat-feed readability, and Steam Deck performance.
 
-The next Shotgun-specific evidence should verify that eight guaranteed pellets plus the exploding pellet-count die feels fun and powerful without producing unacceptable close-range lethality or Steam Deck trace cost.
+The next Shotgun-specific evidence should verify that eight guaranteed pellets plus the exploding pellet-count die and 1-damage-per-connected-pellet floor feel fun and powerful without producing unacceptable close-range lethality or Steam Deck trace cost.
 
 ## Telemetry safety policy
 
