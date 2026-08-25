@@ -46,6 +46,7 @@ include("lod/sv_run_manager.lua")
 -- Production LootDirector wraps the final maze/encounter build chain and the
 -- RunManager activation path, so it must load after both authorities exist.
 include("lod/sv_loot_director.lua")
+include("lod/sv_loot_context_rules.lua")
 include("lod/sv_minimap.lua")
 include("lod/sv_minimap_canonical.lua")
 include("lod/sv_minimap_safety.lua")
