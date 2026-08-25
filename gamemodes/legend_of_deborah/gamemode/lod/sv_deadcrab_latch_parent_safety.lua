@@ -4,12 +4,10 @@ LOD.DeadcrabLatchSafety = LOD.DeadcrabLatchSafety or {}
 local Safety = LOD.DeadcrabLatchSafety
 
 -- Source warns when player movement attempts to push any entity that is parented
--- to that player. Deadcrab face-latches previously used Entity:SetParent(player),
--- which made an otherwise harmless visual attachment participate in that engine
--- path. Keep the authored latch/fuse behavior, but convert the attachment to a
--- tiny manual local transform before the player's next movement simulation.
+-- to that player. Deadcrab face-latches are therefore represented as a manual
+-- local transform only; the engine never receives a deadcrab->player parent.
 Safety.ByPlayer = Safety.ByPlayer or setmetatable({}, {__mode = "k"})
-Safety.Stats = Safety.Stats or {adopted = 0, updates = 0}
+Safety.Stats = Safety.Stats or {adopted = 0, intercepted = 0, updates = 0}
 
 local DEFAULT_LOCAL_POS = Vector(8, 0, 62)
 local DEFAULT_LOCAL_ANG = Angle(0, 180, 0)
@@ -43,21 +41,74 @@ local function updateTransform(ply, crab)
     return true
 end
 
+function Safety:RegisterLatch(crab, ply, localPos, localAng)
+    if not isLatchedDeadcrab(crab, ply) then return false end
+    crab.LODDeadcrabManualLatchTarget = ply
+    crab.LODDeadcrabManualLatchLocalPos = localPos or crab.LODDeadcrabManualLatchLocalPos or DEFAULT_LOCAL_POS
+    crab.LODDeadcrabManualLatchLocalAngles = localAng or crab.LODDeadcrabManualLatchLocalAngles or DEFAULT_LOCAL_ANG
+    playerBucket(ply)[crab] = true
+    updateTransform(ply, crab)
+    return true
+end
+
 local function adoptParentedLatch(ply, crab)
     if not isLatchedDeadcrab(crab, ply) or crab:GetParent() ~= ply then return false end
 
-    -- Capture exactly the local transform authored by sv_deadcrab.lua before
-    -- detaching. The fuse, target reference, collision state, activity and death
-    -- path remain untouched; only the engine parent relationship is retired.
-    crab.LODDeadcrabManualLatchLocalPos = crab:GetLocalPos()
-    crab.LODDeadcrabManualLatchLocalAngles = crab:GetLocalAngles()
+    local localPos = crab:GetLocalPos()
+    local localAng = crab:GetLocalAngles()
     crab:SetParent(nil)
-    crab.LODDeadcrabManualLatchTarget = ply
-    playerBucket(ply)[crab] = true
-    updateTransform(ply, crab)
+    Safety:RegisterLatch(crab, ply, localPos, localAng)
 
     Safety.Stats.adopted = (Safety.Stats.adopted or 0) + 1
     return true
+end
+
+-- sv_deadcrab.lua historically calls SetParent(player), SetLocalPos, then
+-- SetLocalAngles when the latch lands. Intercept only that exact relationship so
+-- no frame exists in which Source sees a hostile parented to player movement.
+-- All other entity parenting/local-transform calls pass straight through.
+local entityMeta = FindMetaTable("Entity")
+if entityMeta and not Safety.LODDeadcrabMetaWrapped then
+    Safety.LODDeadcrabMetaWrapped = true
+
+    local baseSetParent = entityMeta.SetParent
+    local baseSetLocalPos = entityMeta.SetLocalPos
+    local baseSetLocalAngles = entityMeta.SetLocalAngles
+
+    function entityMeta:SetParent(parent, ...)
+        if IsValid(self)
+            and self.LODHostile
+            and self.LODArchetypeId == "deadcrab"
+            and self.LODDeadcrabState == "latched"
+            and IsValid(parent)
+            and parent:IsPlayer()
+        then
+            Safety:RegisterLatch(self, parent)
+            Safety.Stats.intercepted = (Safety.Stats.intercepted or 0) + 1
+            return
+        end
+        return baseSetParent(self, parent, ...)
+    end
+
+    function entityMeta:SetLocalPos(pos)
+        local ply = self.LODDeadcrabManualLatchTarget
+        if IsValid(ply) and isLatchedDeadcrab(self, ply) and self:GetParent() ~= ply then
+            self.LODDeadcrabManualLatchLocalPos = pos
+            self:SetPos(ply:LocalToWorld(pos))
+            return
+        end
+        return baseSetLocalPos(self, pos)
+    end
+
+    function entityMeta:SetLocalAngles(ang)
+        local ply = self.LODDeadcrabManualLatchTarget
+        if IsValid(ply) and isLatchedDeadcrab(self, ply) and self:GetParent() ~= ply then
+            self.LODDeadcrabManualLatchLocalAngles = ang
+            self:SetAngles(ply:LocalToWorldAngles(ang))
+            return
+        end
+        return baseSetLocalAngles(self, ang)
+    end
 end
 
 local function pruneAndUpdate(ply)
@@ -76,8 +127,8 @@ local function pruneAndUpdate(ply)
     end
 end
 
--- SetupMove runs before Source applies this player's movement. Convert any newly
--- parented latch here, before the engine reaches its parented-entity push path.
+-- Fallback migration for any pre-existing/stale parented latch created before
+-- this module installed (for example after Lua refresh during development).
 hook.Add("SetupMove", "LOD_DeadcrabLatchParentSafety_PreMove", function(ply)
     if not IsValid(ply) or not ply:IsPlayer() then return end
 
@@ -89,7 +140,7 @@ hook.Add("SetupMove", "LOD_DeadcrabLatchParentSafety_PreMove", function(ply)
 end)
 
 -- Re-apply the stored local transform after movement so the latch remains visually
--- attached with at most one command-tick of work and without a global entity scan.
+-- attached with bounded work only for that player's actually latched Deadcrabs.
 hook.Add("FinishMove", "LOD_DeadcrabLatchParentSafety_PostMove", function(ply)
     if not IsValid(ply) or not ply:IsPlayer() then return end
     pruneAndUpdate(ply)
@@ -113,8 +164,8 @@ concommand.Add("lod_deadcrab_latch_safety_status", function(ply)
         end
     end
 
-    local line = string.format("adopted=%d active=%d updates=%d playerParenting=false",
-        Safety.Stats.adopted or 0, active, Safety.Stats.updates or 0)
+    local line = string.format("intercepted=%d adopted=%d active=%d updates=%d playerParenting=false",
+        Safety.Stats.intercepted or 0, Safety.Stats.adopted or 0, active, Safety.Stats.updates or 0)
     print("[LOD:DEADCRAB-LATCH-SAFETY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
