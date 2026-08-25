@@ -80,6 +80,9 @@ include("lod/sv_hostile_separation.lua")
 include("lod/sv_m3_ground_probe.lua")
 include("lod/sv_hostile_combat_hulls.lua")
 include("lod/sv_m3_hit_feedback.lua")
+-- Current Shotgun identity extends the shared roll/stun authorities: natural 5s
+-- and 6s explode recursively and shell-level stun may reach the authored 4x tier.
+include("lod/sv_shotgun_identity_balance.lua")
 -- One reusable Motion-V2-safe push authority owns displacement and wall-crush
 -- resolution for Shotgun today and later elemental/weapon/environmental effects.
 include("lod/sv_pushback.lua")
