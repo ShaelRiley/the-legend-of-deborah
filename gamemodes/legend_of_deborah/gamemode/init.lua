@@ -48,6 +48,7 @@ include("lod/sv_run_manager.lua")
 include("lod/sv_loot_director.lua")
 include("lod/sv_loot_context_rules.lua")
 include("lod/sv_loot_catchup.lua")
+include("lod/sv_loot_budget_validation.lua")
 include("lod/sv_minimap.lua")
 include("lod/sv_minimap_canonical.lua")
 include("lod/sv_minimap_safety.lua")
@@ -86,8 +87,8 @@ include("lod/sv_respawn_hud.lua")
 
 -- Soldier warning/firing is intentionally installed LAST among production combat
 -- wrappers. It owns one immutable world-space shot line and prevents Motion V2,
--- live animation bones, client-only visual scaling, or bolt initialization from becoming
--- competing trajectory authorities.
+-- live animation bones, client-only visual scaling, or bolt initialization from
+-- becoming competing trajectory authorities.
 include("lod/sv_soldier_shot_contract.lua")
 
 -- Audits, seed harnesses, teleports, and the infinite-ammo testkit are not
