@@ -85,9 +85,9 @@ Player-side exploding dice also trigger one bounded celebratory audiovisual conf
 - one shared damage `1d6!` per shell;
 - floor each damage die below 3 to 3 for contribution;
 - natural **6 only** recursively explodes under the universal d6 rule;
-- six guaranteed pellets;
+- **eight guaranteed pellets**;
 - every trigger pull rolls a separate exploding `1d6!` for additional pellets, with no damage floor because this die represents pellet count;
-- after that pellet die, retain the existing three independent 33% bonus-pellet checks;
+- the previous three independent 33% pellet checks are retired;
 - cap final pellet traces at 36 as a low-end anti-runaway safeguard;
 - aggregate damage once per damaged target;
 - one **4× ordinary hit stun** per damaged target per shell (nominal 1.20 s);
@@ -96,8 +96,8 @@ Player-side exploding dice also trigger one bounded celebratory audiovisual conf
 - floored shared damage d6 expected contribution before explosions = 4.0;
 - recursive shared exploding-d6 expected total = **4.8**;
 - exploding pellet-count d6 expected contribution = **4.2 extra pellets**;
-- including the three 33% checks, uncapped average pellet count = **11.2**;
-- expected full-connect base damage = approximately **8.96** before later modifiers and rare cap truncation.
+- uncapped average pellet count = **12.2**;
+- expected full-connect base damage = approximately **9.76** before later modifiers and rare cap truncation.
 
 ### Basic Magic / Force Shout — IMPLEMENTED
 
@@ -180,7 +180,7 @@ Continue ordinary complete-dungeon play and judge the integrated experience. Obs
 - whether all four peer firearms feel worth using for different reasons;
 - AR2 three-projectile burst consuming one ammo unit;
 - Magnum 8–12 explosions and escalating aligned penetration;
-- Shotgun natural-6 damage explosions plus exploding additional-pellet d6, including whether unusually large pellet bursts remain readable and performant;
+- Shotgun natural-6 damage explosions plus 8 guaranteed pellets + exploding additional-pellet d6, including whether unusually large pellet bursts remain readable and performant;
 - exploding-die audiovisual readability;
 - Magic meter / Force Shout readability and balance;
 - push/body-ghost/wall-crush presentation;
