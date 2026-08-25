@@ -2,7 +2,6 @@ LOD = LOD or {}
 LOD.MagnumPiercing = LOD.MagnumPiercing or {}
 
 local Piercing = LOD.MagnumPiercing
-local Rolls = LOD.CombatRolls
 local Ballistics = LOD.GeneratedGeometryBallistics
 
 local MAX_TOTAL_TARGETS = 8
@@ -37,7 +36,10 @@ local function traceNext(startPos, direction, ignored)
     return util.TraceLine({
         start = startPos,
         endpos = startPos + direction * MAX_DISTANCE,
-        mask = MASK_SOLID,
+        -- Use the ordinary bullet mask to reliably discover the next damageable
+        -- body. Every candidate segment is separately checked against LOD's
+        -- MASK_SOLID generated-geometry authority before damage is applied.
+        mask = MASK_SHOT,
         filter = ignored
     })
 end
@@ -98,6 +100,14 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
 
             local target = nextTrace.Entity
             if not validHostile(target) then break end
+
+            -- MASK_SHOT can intentionally ignore some scripted maze slabs. Stop
+            -- the chain if the authoritative generated/world collision trace says
+            -- there is real cover between the previous body and this candidate.
+            if Ballistics then
+                local blocked = Ballistics:SegmentBlocked(startPos, nextTrace.HitPos, attacker, target)
+                if blocked then break end
+            end
 
             local info = DamageInfo()
             info:SetAttacker(attacker)
