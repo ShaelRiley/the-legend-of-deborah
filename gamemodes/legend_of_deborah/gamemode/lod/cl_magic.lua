@@ -44,13 +44,20 @@ net.Receive("LOD_MagicShoutFX", function()
 
     if caster == LocalPlayer() then
         localCastUntil = CurTime() + 0.28
+        local vm = caster:GetViewModel()
+        if IsValid(vm) and vm.SelectWeightedSequence and vm.SendViewModelMatchingSequence then
+            local seq = vm:SelectWeightedSequence(ACT_VM_PRIMARYATTACK)
+            if seq and seq >= 0 then vm:SendViewModelMatchingSequence(seq) end
+        end
         surface.PlaySound("ambient/levels/citadel/weapon_disintegrate2.wav")
     end
 end)
 
--- During the first-person cast thrust, clear the held weapon out of the frame.
--- The world player simultaneously performs the server-authored unarmed forward
--- gesture, so local and remote players both read this as a weapon-independent cast.
+-- During the first-person cast thrust, clear only the held weapon viewmodel out
+-- of the frame. GMod's player-hands entity is drawn separately on normal UseHands
+-- weapons, so the attack sequence can read as a weaponless hand thrust where the
+-- current weapon supports standard hands. The world player simultaneously uses
+-- the server-authored unarmed forward gesture.
 hook.Add("PreDrawViewModel", "LOD_MagicHideWeaponDuringCast", function()
     if CurTime() < localCastUntil then return true end
 end)
@@ -78,7 +85,8 @@ local function drawRing(origin, direction, distance, alpha, width)
         previous = point
     end
 
-    render.DrawSprite(center, 22 + distance * 0.018, 22 + distance * 0.018, Color(190, 235, 255, math.floor(alpha * 0.6)))
+    render.DrawSprite(center, 22 + distance * 0.018, 22 + distance * 0.018,
+        Color(190, 235, 255, math.floor(alpha * 0.6)))
 end
 
 hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function()
