@@ -45,7 +45,7 @@ concommand.Add("lod_m3_testkit", function(ply)
     if not developerAllowed(ply) or not ply:Alive() then return end
 
     local pistol = ply:Give("weapon_pistol", true)
-    ply:Give("weapon_crowbar", true)
+    ply:Give("weapon_lod_crowbar", true)
     ply:SetAmmo(TESTKIT_RESERVE, "Pistol")
     -- H is the deliberate in-run development recovery action. Restore the
     -- living tester completely so progression and traversal can continue after
