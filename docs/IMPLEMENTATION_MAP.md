@@ -23,7 +23,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision |
 | Shotgun 5–6 explosion + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_m3_hit_feedback.lua` |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
-| Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 8–16 cached-model silhouettes span the resolved path, with `SetupBones()` before each same-frame sampled draw so every ghost receives its own transform; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
+| Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 4–16 silhouettes use distinct leased clientside render models from a reusable per-model pool, avoiding same-entity/same-frame transform caching; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
 | Shotgun 168-unit shell push | `sv_shotgun_pushback.lua` |
 | Basic Magic / Force Shout / global RMB ownership | `sv_magic.lua`, `cl_magic.lua`, `cl_magic_hud.lua`; RMB is Magic-only and weapon secondary fire is suppressed globally |
 | Finite ammo caps / regeneration floor | `sv_dice_ammo.lua`; shared 4 Hz server timer |
