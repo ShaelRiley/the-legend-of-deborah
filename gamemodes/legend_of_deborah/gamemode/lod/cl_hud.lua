@@ -125,16 +125,29 @@ local function drawDeathState(ply, state)
         return
     end
 
+    -- Once Tetris is active, cl_tetris.lua owns the entire death presentation in
+    -- PostDrawHUD. Keep this normal spectator presentation for the opt-in phase.
+    if ply:GetNW2Bool("LOD_DeathTetrisActive", false) then return end
+
     local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
     local seconds = math.max(0, math.ceil(remaining))
 
     draw.SimpleText("YOU DIED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.38,
         Color(235, 105, 90), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    draw.SimpleText("RESPAWNING IN", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.45,
-        Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    draw.SimpleText(tostring(seconds), "LOD_HUD_Countdown", ScrW() * 0.5, ScrH() * 0.54,
-        Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    draw.SimpleText("CHECKPOINT " .. tostring(state.checkpoint or 0), "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.62,
+
+    if remaining > 0 then
+        draw.SimpleText("Press F to pay respects", "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.425,
+            Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("RESPAWN AVAILABLE IN", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.47,
+            Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(tostring(seconds), "LOD_HUD_Countdown", ScrW() * 0.5, ScrH() * 0.56,
+            Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    else
+        draw.SimpleText("LEFT CLICK TO RESPAWN", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.47,
+            Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
+
+    draw.SimpleText("CHECKPOINT " .. tostring(state.checkpoint or 0), "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.64,
         Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
