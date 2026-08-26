@@ -118,6 +118,7 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
         local targets = 1
         local cumulativeTotal = math.max(1, tonumber(contract.total) or tonumber(dmginfo:GetDamage()) or 1)
         local cumulativeChains = {copyValues(contract.values)}
+        local aimMultiplier = math.max(1, tonumber(contract.aimMultiplier) or 1)
         Piercing.Stats.shots = (Piercing.Stats.shots or 0) + 1
 
         while targets < MAX_TOTAL_TARGETS do
@@ -139,7 +140,9 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
             -- cumulative damage. Earlier chains are carried forward, never
             -- rerolled. The shared d12 authority resets every new chain to 8+,
             -- then lowers continuation thresholds one step per explosion toward
-            -- the current Boomchain Floor (default 5).
+            -- the current Boomchain Floor (default 5). Aim State belongs to the
+            -- whole trigger/projectile, so its x2 multiplier also applies to every
+            -- fresh pierce chain rather than only the first body's base roll.
             local depth = targets + 1
             local bonusTotal = 0
             local bonusValues = {}
@@ -151,7 +154,8 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 bonusValues = {bonusTotal}
             end
 
-            cumulativeTotal = cumulativeTotal + math.max(1, tonumber(bonusTotal) or 1)
+            cumulativeTotal = cumulativeTotal
+                + math.max(1, tonumber(bonusTotal) or 1) * aimMultiplier
             cumulativeChains[#cumulativeChains + 1] = copyValues(bonusValues)
 
             if Rolls and Rolls.EmitDiceExplosionFX and #bonusValues > 1 then
@@ -191,7 +195,7 @@ concommand.Add("lod_magnum_pierce_status", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
 
     local floor = Rolls and Rolls.GetD12BoomchainFloor and Rolls:GetD12BoomchainFloor() or 5
-    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d escalatingDice=true boomStart=8 boomFloor=%d geometrySafe=true",
+    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d escalatingDice=true boomStart=8 boomFloor=%d geometrySafe=true aimSafe=true",
         Piercing.Stats.shots or 0,
         Piercing.Stats.extraTargets or 0,
         Piercing.Stats.maxTargets or 0,
