@@ -2,22 +2,23 @@ LOD = LOD or {}
 LOD.WatcherScanProgressionFix = LOD.WatcherScanProgressionFix or {
     dispatches = 0,
     advanced = 0,
-    handled = 0
+    handled = 0,
+    escapeDelegations = 0
 }
 
 local Fix = LOD.WatcherScanProgressionFix
 
--- Watcher state authority must run before any of the later presentation/range
--- wrappers are allowed to hold ordinary movement. The committed-standoff layer
--- quite correctly stops generic pursuit inside the scan envelope, but because it
--- used to return before _RunWatcherTick it could also starve the scan state
--- machine itself: a Watcher would reach useful range, stand still, and never
--- start/advance a scan.
+-- Watcher state authority must run before the standoff wrappers can suppress
+-- generic pursuit, otherwise a legal scan can be starved before it starts or
+-- completes. Conversely, once retreat/concealment exists, sv_watcher_polish is
+-- the unified physical-movement owner and must receive the Behaviour tick.
 --
--- Dispatch _RunWatcherTick once at the outer edge of the normal Behaviour tick.
--- The Watcher core already carries a per-frame dispatch guard, so wrappers lower
--- in the chain cannot advance it twice in one server frame. No timer, Think hook,
--- alternate pathfinder, or second locomotion authority is introduced.
+-- The previous revision fixed scan starvation but returned on any handled Watcher
+-- state. LODWatcherConcealment deliberately makes _RunWatcherTick return true,
+-- so that return also starved the unified retreat/concealment mover. The runtime
+-- symptom was exact: scan succeeds, both retreating=1 and concealing=1, then the
+-- Scanner stands motionless. This revision separates state progression from
+-- escape locomotion instead of allowing either layer to pre-empt the other.
 local function installPatch()
     local stored = scripted_ents.GetStored("lod_hostile")
     local class = stored and stored.t
@@ -32,18 +33,32 @@ local function installPatch()
     function class:_BehaviourTick()
         if self.LODArchetypeId ~= "watcher" then return baseBehaviourTick(self) end
 
+        -- Escape movement is already mutually exclusive with generic pursuit in
+        -- the lower Watcher wrappers. Do not call _RunWatcherTick first here:
+        -- concealment intentionally reports handled=true and would swallow the
+        -- Behaviour tick before sv_watcher_polish can advance Motion V2.
+        if self.LODWatcherConcealment or self.LODWatcherRetreat then
+            Fix.escapeDelegations = (Fix.escapeDelegations or 0) + 1
+            return baseBehaviourTick(self)
+        end
+
         local hadScan = self.LODWatcherScan ~= nil
         Fix.dispatches = (Fix.dispatches or 0) + 1
         local handled = self:_RunWatcherTick()
         if hadScan then Fix.advanced = (Fix.advanced or 0) + 1 end
         if handled then Fix.handled = (Fix.handled or 0) + 1 end
 
-        -- A Watcher state transition owns this behaviour tick. In particular,
-        -- never let generic pursuit run after a scan starts/completes or a retreat
-        -- / concealment is armed in the same frame.
-        if handled or self.LODWatcherScan or self.LODWatcherRetreat or self.LODWatcherConcealment then
-            return
+        -- A scan may complete and arm retreat/concealment synchronously inside
+        -- _RunWatcherTick. Hand that same tick to the unified escape layer so the
+        -- first retreat step need not wait for another coroutine turn.
+        if self.LODWatcherConcealment or self.LODWatcherRetreat then
+            Fix.escapeDelegations = (Fix.escapeDelegations or 0) + 1
+            return baseBehaviourTick(self)
         end
+
+        -- Active scan owns the actor and keeps it stationary; generic pursuit is
+        -- not allowed to run until the scan resolves.
+        if handled or self.LODWatcherScan then return end
 
         return baseBehaviourTick(self)
     end
@@ -70,10 +85,11 @@ concommand.Add("lod_watcher_scan_progression_status", function(ply)
     end
 
     local line = string.format(
-        "dispatches=%d scanAdvances=%d handled=%d activeScans=%d retreating=%d concealing=%d installed=%s recurringService=false authority=outer-behaviour+RunWatcherTick",
+        "dispatches=%d scanAdvances=%d handled=%d escapeDelegations=%d activeScans=%d retreating=%d concealing=%d installed=%s recurringService=false authority=scan-state->polish-escape->MotionV2",
         Fix.dispatches or 0,
         Fix.advanced or 0,
         Fix.handled or 0,
+        Fix.escapeDelegations or 0,
         activeScans,
         retreating,
         concealing,
