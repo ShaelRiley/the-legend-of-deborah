@@ -7,6 +7,7 @@ local beamMaterial = Material("cable/blue_elec")
 local WINDUP_COLOR = Color(80, 220, 255, 255)
 local CHARGE_COLOR = Color(205, 250, 255, 255)
 local IMPACT_COLOR = Color(255, 225, 110, 255)
+local SEEKER_VISUAL_LIFT = Vector(0, 0, 8)
 
 FX.Active = FX.Active or setmetatable({}, {__mode = "k"})
 
@@ -34,7 +35,7 @@ end)
 
 local function seekerCenter(seeker)
     if not IsValid(seeker) then return nil end
-    return seeker:WorldSpaceCenter()
+    return seeker:WorldSpaceCenter() + SEEKER_VISUAL_LIFT
 end
 
 hook.Add("PreDrawHalos", "LOD_SeekerChargeHalo", function()
@@ -101,9 +102,6 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_SeekerChargeFX", function()
 
                 render.SetMaterial(beamMaterial)
                 if phase == 1 then
-                    -- Three rapidly tightening electrical chords plus a forward
-                    -- commitment line make the pre-charge tell readable even when
-                    -- the Rollermine model itself is partly hidden by floor clutter.
                     local radius = 32 - progress * 15
                     for i = 0, 2 do
                         local a = now * (190 + i * 25) + i * 120
