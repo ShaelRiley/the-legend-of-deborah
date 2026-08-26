@@ -10,6 +10,7 @@ local BLINK_HZ = 10
 local LEAN_DEGREES = 9
 local WEAVE_UNITS = 6
 local MOTION_SAMPLE_GUARD = 180
+local WATCHER_MODEL = "models/combine_scanner.mdl"
 
 FX.Pulses = FX.Pulses or setmetatable({}, {__mode = "k"})
 FX.Motion = FX.Motion or setmetatable({}, {__mode = "k"})
@@ -17,6 +18,18 @@ FX.ScanKick = FX.ScanKick or setmetatable({}, {__mode = "k"})
 
 local function archetype(ent)
     return IsValid(ent) and ent:GetNW2String("LOD_Archetype", "") or ""
+end
+
+-- Cloaking is a Watcher-only presentation effect. Do not trust a single NW2
+-- field here: entity indexes can be recycled and their client replication may
+-- arrive across adjacent frames. Requiring the archetype, explicit Watcher flag,
+-- and scanner model prevents a stale Watcher presentation state from ever
+-- suppressing an ordinary hostile such as a Runner.
+local function isWatcherPresentationTarget(ent)
+    if not IsValid(ent) then return false end
+    if archetype(ent) ~= "watcher" then return false end
+    if not ent:GetNW2Bool("LOD_Watcher", false) then return false end
+    return string.lower(ent:GetModel() or "") == WATCHER_MODEL
 end
 
 local function watcherVisible(ent, now)
@@ -83,7 +96,7 @@ local function installDrawPatch()
 
     local baseDraw = class.Draw
     function class:Draw()
-        if archetype(self) ~= "watcher" then return baseDraw(self) end
+        if not isWatcherPresentationTarget(self) then return baseDraw(self) end
 
         local now = CurTime()
         if not watcherVisible(self, now) then return end
@@ -113,7 +126,7 @@ end
 net.Receive("LOD_WatcherScanPulse", function()
     local watcher = net.ReadEntity()
     local target = net.ReadEntity()
-    if not IsValid(watcher) then return end
+    if not IsValid(watcher) or not isWatcherPresentationTarget(watcher) then return end
 
     local now = CurTime()
     FX.Pulses[watcher] = {
@@ -144,7 +157,9 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_WatcherScanCompletionPulse", fun
     local now = CurTime()
     for watcher, pulse in pairs(FX.Pulses) do
         local age = now - (pulse.startedAt or now)
-        if not IsValid(watcher) or age < 0 or age > PULSE_LIFETIME then
+        if not IsValid(watcher) or not isWatcherPresentationTarget(watcher)
+            or age < 0 or age > PULSE_LIFETIME
+        then
             FX.Pulses[watcher] = nil
         else
             local t = math.Clamp(age / PULSE_LIFETIME, 0, 1)
