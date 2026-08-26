@@ -48,9 +48,16 @@ function Motion:MoveToward(hostile, waypoint)
     return reached
 end
 
--- Expose one synchronous repair for attack-state transitions that stop without a
--- movement step (for example a Seeker resolving an impact on the same service
--- tick). It uses the exact same floor postcondition and performs no polling.
+-- Attack-state transitions often stop on the same tick that contact/impact is
+-- resolved. Apply the same postcondition synchronously there so a charge cannot
+-- finish with a Rollermine origin slightly below the authored floor and remain
+-- visually/physically stranded while stunned or retreating.
+local baseStop = Motion.Stop
+function Motion:Stop(hostile)
+    baseStop(self, hostile)
+    normalizeDeviceFloor(hostile, nil)
+end
+
 function Motion:NormalizeDeviceFloor(hostile)
     normalizeDeviceFloor(hostile, nil)
 end
