@@ -8,13 +8,15 @@ local SIGHT_SIDE_OFFSET = 2
 local SOLDIER_HAND_BONE = "ValveBiped.Bip01_R_Hand"
 local SOLDIER_LASER_COLOR = Color(255, 80, 60, 220)
 local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
+local SEEKER_ROLL_RADIUS = 18
+local SEEKER_ROLL_TELEPORT_GUARD = 180
 
 -- Motion V2 owns world-space placement: an ordinary hostile entity origin sits
 -- on the graph-authored walking surface (+ a tiny safety lift), and explicit
 -- stair/leap motion changes that world position deliberately. Humanoid/deadcrab
 -- visuals pin their lowest rendered point to that origin. Device archetypes are
 -- different: Scanner is a hovering actor, while Rollermine needs a small visual
--- clearance so animation/model bounds can never appear embedded in the deck.
+-- clearance so model rotation can never appear embedded in the deck.
 -- These are presentation offsets only; graph/physics position remains unchanged.
 local DEVICE_VISUAL_LIFT = {
     watcher = 42,
@@ -29,13 +31,41 @@ local function visualModelBounds(ent)
     return Vector(-16, -16, 0), Vector(16, 16, 72)
 end
 
-local function applyVisualScale(ent)
+local function updateSeekerRoll(ent)
+    local pos = ent:GetPos()
+    local previous = ent.LODSeekerVisualLastPos
+    ent.LODSeekerVisualLastPos = Vector(pos.x, pos.y, pos.z)
+
+    if not previous then
+        ent.LODSeekerVisualRoll = ent.LODSeekerVisualRoll or 0
+        return ent.LODSeekerVisualRoll
+    end
+
+    local delta = pos - previous
+    delta.z = 0
+    local travelled = delta:Length()
+    if travelled > 0.01 and travelled <= SEEKER_ROLL_TELEPORT_GUARD then
+        local size = math.Clamp(ent:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
+        local radius = math.max(8, SEEKER_ROLL_RADIUS * size)
+        -- Rotation is distance-derived rather than animation-time-derived: twice
+        -- the travel speed naturally produces twice the visible rolling rate.
+        ent.LODSeekerVisualRoll = ((ent.LODSeekerVisualRoll or 0)
+            + math.deg(travelled / radius)) % 360
+        ent.LODSeekerVisualTravelYaw = delta:Angle().y
+    end
+
+    return ent.LODSeekerVisualRoll or 0
+end
+
+local function applyVisualScale(ent, seekerRoll)
     local size = math.Clamp(ent:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
     local model = ent:GetModel() or ""
     local archetype = ent:GetNW2String("LOD_Archetype", "")
     local deviceLift = DEVICE_VISUAL_LIFT[archetype] or 0
-    local signature = string.format("%s:%.4f:%s:%s:%.2f", model, size, tostring(motionV2), archetype, deviceLift)
+    local roll = archetype == "seeker" and (seekerRoll or 0) or 0
+    local signature = string.format("%s:%.4f:%s:%s:%.2f:%.2f",
+        model, size, tostring(motionV2), archetype, deviceLift, roll)
     if ent.LODLastClientVisualScale == signature then
         return size, ent.LODVisualVerticalCompensation or 0
     end
@@ -56,13 +86,31 @@ local function applyVisualScale(ent)
 
     local matrix = Matrix()
     matrix:Scale(Vector(size, size, size))
+    if archetype == "seeker" and roll ~= 0 then
+        -- Motion V2 already yaws the entity toward each actual travel segment.
+        -- Local pitch therefore reads as physical forward rolling in the current
+        -- direction of motion while leaving the authoritative entity angles flat.
+        matrix:Rotate(Angle(roll, 0, 0))
+    end
     matrix:SetTranslation(Vector(0, 0, verticalCompensation))
     ent:EnableMatrix("RenderMultiply", matrix)
 
-    ent:SetRenderBounds(
-        Vector(mins.x * size, mins.y * size, mins.z * size + verticalCompensation),
-        Vector(maxs.x * size, maxs.y * size, maxs.z * size + verticalCompensation)
-    )
+    if archetype == "seeker" then
+        -- Rolling can rotate corners outside the model's native axis-aligned
+        -- bounds. Use one conservative cached sphere-like bound to prevent cull
+        -- popping; this changes no collision or server hull.
+        local extent = math.max(
+            math.abs(mins.x), math.abs(mins.y), math.abs(mins.z),
+            math.abs(maxs.x), math.abs(maxs.y), math.abs(maxs.z)) * size + 12
+        ent:SetRenderBounds(
+            Vector(-extent, -extent, -extent + verticalCompensation),
+            Vector(extent, extent, extent + verticalCompensation))
+    else
+        ent:SetRenderBounds(
+            Vector(mins.x * size, mins.y * size, mins.z * size + verticalCompensation),
+            Vector(maxs.x * size, maxs.y * size, maxs.z * size + verticalCompensation)
+        )
+    end
     return size, verticalCompensation
 end
 
@@ -111,9 +159,10 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
 end
 
 function ENT:Draw()
-    local size, verticalCompensation = applyVisualScale(self)
-    self:DrawModel()
     local archetype = self:GetNW2String("LOD_Archetype", "")
+    local seekerRoll = archetype == "seeker" and updateSeekerRoll(self) or 0
+    local size, verticalCompensation = applyVisualScale(self, seekerRoll)
+    self:DrawModel()
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 
@@ -147,7 +196,7 @@ concommand.Add("lod_laser_origin_status", function()
             if archetype == "soldier" then soldierCount = soldierCount + 1 end
             if archetype == "blitzer" then blitzerCount = blitzerCount + 1 end
 
-            local size, verticalCompensation = applyVisualScale(hostile)
+            local size, verticalCompensation = applyVisualScale(hostile, 0)
             local renderedPos, source, rawPos = renderedMuzzlePosition(hostile, size, verticalCompensation)
             local originHeight = renderedPos.z - hostile:GetPos().z
             if source == "hand-bone" or source == "hand-socket" then
