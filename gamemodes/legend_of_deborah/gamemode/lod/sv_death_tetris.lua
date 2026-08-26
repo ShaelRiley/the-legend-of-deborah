@@ -14,6 +14,13 @@ local ACTION_ROTATE = 3
 local ACTION_SOFT_DROP = 4
 local ACTION_HARD_DROP = 5
 
+local EVENT_NONE = 0
+local EVENT_ROTATE = 1
+local EVENT_HARD_DROP = 2
+local EVENT_LOCK = 3
+local EVENT_LINE_CLEAR = 4
+local EVENT_GAME_OVER = 5
+
 local sessions = DeathTetris.Sessions or {}
 DeathTetris.Sessions = sessions
 
@@ -49,6 +56,9 @@ local function writeSnapshot(ply, session, active)
     net.WriteUInt((session.clearSerial or 0) % 256, 8)
     net.WriteUInt(math.Clamp(session.lastClearLines or 0, 0, 4), 3)
     net.WriteUInt((game.resetCount or 0) % 256, 8)
+    net.WriteBool(game.gameOver == true)
+    net.WriteUInt((session.eventSerial or 0) % 256, 8)
+    net.WriteUInt(math.Clamp(session.lastEvent or EVENT_NONE, 0, 7), 3)
     net.Send(ply)
 end
 
@@ -59,6 +69,11 @@ local function syncSession(session, force)
     if not force and now < (session.nextSync or 0) then return end
     session.nextSync = now + 0.25
     writeSnapshot(ply, session, true)
+end
+
+local function recordEvent(session, eventType)
+    session.lastEvent = eventType or EVENT_NONE
+    session.eventSerial = (session.eventSerial or 0) + 1
 end
 
 local function addLineReward(session, lines)
@@ -82,8 +97,41 @@ local function addLineReward(session, lines)
     end
 end
 
-local function handleLockResult(session, lines)
-    if lines and lines > 0 then addLineReward(session, lines) end
+local function afterLock(session, lines, gameOver, normalEvent)
+    session.lockDeadline = nil
+    session.lockResets = 0
+    if lines and lines > 0 then
+        addLineReward(session, lines)
+        recordEvent(session, EVENT_LINE_CLEAR)
+    elseif gameOver then
+        recordEvent(session, EVENT_GAME_OVER)
+    else
+        recordEvent(session, normalEvent or EVENT_LOCK)
+    end
+end
+
+local function armLockDelay(session, resetEligible)
+    local game = session.game
+    if game.gameOver or not game.current then
+        session.lockDeadline = nil
+        return
+    end
+
+    if not Tetris.IsGrounded(game) then
+        session.lockDeadline = nil
+        return
+    end
+
+    local now = CurTime()
+    if not session.lockDeadline then
+        session.lockDeadline = now + Tetris.LockDelay
+        return
+    end
+
+    if resetEligible and (session.lockResets or 0) < Tetris.MaxLockResets then
+        session.lockResets = (session.lockResets or 0) + 1
+        session.lockDeadline = now + Tetris.LockDelay
+    end
 end
 
 function DeathTetris:StartSession(ply, kind, endsAt)
@@ -110,7 +158,11 @@ function DeathTetris:StartSession(ply, kind, endsAt)
         nextFallAt = CurTime() + Tetris.FallInterval,
         nextSync = 0,
         inputWindowAt = 0,
-        inputCount = 0
+        inputCount = 0,
+        lockDeadline = nil,
+        lockResets = 0,
+        eventSerial = 0,
+        lastEvent = EVENT_NONE
     }
     sessions[identity] = session
     ply:SetNW2Int("LOD_TetrisNextLifeBonus", ps.nextLifeHPBonus or 0)
@@ -146,33 +198,41 @@ net.Receive("LOD_TetrisInput", function(_, ply)
     if not IsValid(ply) or ply:Alive() then return end
     local identity = RunManager:IdentityOf(ply)
     local session = identity and sessions[identity]
-    if not session or session.kind ~= "death" or not permitInput(session) then return end
+    if not session or session.kind ~= "death" or session.game.gameOver or not permitInput(session) then return end
 
     local ps = RunManager:GetPlayerState(identity)
     if not ps or ps.eliminated or ps.lives <= 0 or not ps.respawnAt or CurTime() >= ps.respawnAt then return end
 
     local action = net.ReadUInt(3)
     local changed = false
-    local lines = 0
 
     if action == ACTION_LEFT then
         changed = Tetris.Move(session.game, -1, 0)
+        if changed then armLockDelay(session, true) end
     elseif action == ACTION_RIGHT then
         changed = Tetris.Move(session.game, 1, 0)
+        if changed then armLockDelay(session, true) end
     elseif action == ACTION_ROTATE then
         changed = Tetris.Rotate(session.game, 1)
+        if changed then
+            armLockDelay(session, true)
+            recordEvent(session, EVENT_ROTATE)
+        end
     elseif action == ACTION_SOFT_DROP then
-        local moved
-        moved, lines = Tetris.StepDown(session.game)
-        changed = moved or lines > 0
-        if not moved then changed = true end
+        local moved = Tetris.StepDown(session.game)
+        changed = moved
+        if moved then
+            armLockDelay(session, false)
+        else
+            armLockDelay(session, false)
+        end
     elseif action == ACTION_HARD_DROP then
-        local distance
-        distance, lines = Tetris.HardDrop(session.game)
-        changed = distance >= 0
+        local _, lines, gameOver = Tetris.HardDrop(session.game)
+        afterLock(session, lines, gameOver, EVENT_HARD_DROP)
+        session.nextFallAt = CurTime() + Tetris.FallInterval
+        changed = true
     end
 
-    handleLockResult(session, lines)
     if changed then syncSession(session, true) end
 end)
 
@@ -219,23 +279,43 @@ hook.Add("Think", "LOD_DeathTetrisThink", function()
         if session.wasFrozen then
             session.wasFrozen = nil
             session.nextFallAt = now + Tetris.FallInterval
+            session.lockDeadline = session.game.gameOver and nil or (Tetris.IsGrounded(session.game) and now + Tetris.LockDelay or nil)
             session.nextSync = 0
         end
+
         local ps = RunManager:GetPlayerState(identity)
         local ply = connectedPlayerForIdentity(identity)
         local expired = not ps or ps.eliminated or ps.lives <= 0 or not ps.respawnAt or now >= ps.respawnAt
         if expired or (IsValid(ply) and ply:Alive()) then
             DeathTetris:EndSession(identity)
+        elseif session.game.gameOver then
+            syncSession(session, false)
         else
             local changed = false
             local safety = 0
             while now >= session.nextFallAt and safety < 8 do
-                local _, lines = Tetris.StepDown(session.game)
-                handleLockResult(session, lines)
+                local moved = Tetris.StepDown(session.game)
                 session.nextFallAt = session.nextFallAt + Tetris.FallInterval
                 safety = safety + 1
-                changed = true
+                if moved then
+                    changed = true
+                    armLockDelay(session, false)
+                else
+                    armLockDelay(session, false)
+                    session.nextFallAt = now + Tetris.FallInterval
+                    break
+                end
             end
+
+            if session.lockDeadline and now >= session.lockDeadline and Tetris.IsGrounded(session.game) then
+                local lines, gameOver = Tetris.Lock(session.game)
+                afterLock(session, lines, gameOver, EVENT_LOCK)
+                session.nextFallAt = now + Tetris.FallInterval
+                changed = true
+            elseif session.lockDeadline and not Tetris.IsGrounded(session.game) then
+                session.lockDeadline = nil
+            end
+
             syncSession(session, changed)
         end
     end

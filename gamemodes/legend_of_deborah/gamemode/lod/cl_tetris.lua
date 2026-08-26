@@ -9,6 +9,11 @@ surface.CreateFont("LOD_Tetris_Header", {
     size = 30,
     weight = 900
 })
+surface.CreateFont("LOD_Tetris_Loss", {
+    font = "DejaVu Sans",
+    size = 24,
+    weight = 900
+})
 surface.CreateFont("LOD_Tetris_Label", {
     font = "DejaVu Sans",
     size = 17,
@@ -37,6 +42,14 @@ local feedbackNames = {
     [4] = "TETRIS  +80 HP"
 }
 
+local eventSounds = {
+    [1] = "buttons/button15.wav", -- rotate
+    [2] = "physics/metal/metal_box_impact_soft2.wav", -- hard drop
+    [3] = "physics/metal/metal_box_impact_soft1.wav", -- natural lock
+    [4] = "buttons/button9.wav", -- line clear
+    [5] = "buttons/button10.wav" -- game over
+}
+
 local function readBoard()
     local board = {}
     for y = 1, Tetris.Height do
@@ -51,7 +64,14 @@ end
 net.Receive("LOD_TetrisState", function()
     local active = net.ReadBool()
     Client.active = active
-    if not active then return end
+    if not active then
+        Client.board = nil
+        Client.gameOver = false
+        Client.clearSerial = nil
+        Client.eventSerial = nil
+        Client.feedback = nil
+        return
+    end
 
     Client.kind = net.ReadUInt(2)
     Client.board = readBoard()
@@ -66,15 +86,25 @@ net.Receive("LOD_TetrisState", function()
     local serial = net.ReadUInt(8)
     local lines = net.ReadUInt(3)
     Client.resetCount = net.ReadUInt(8)
+    Client.gameOver = net.ReadBool()
+    local eventSerial = net.ReadUInt(8)
+    local eventType = net.ReadUInt(3)
+
     if serial ~= (Client.clearSerial or 0) then
         Client.clearSerial = serial
         Client.feedback = feedbackNames[lines]
         Client.feedbackUntil = CurTime() + 1.6
     end
+
+    if eventSerial ~= (Client.eventSerial or 0) then
+        Client.eventSerial = eventSerial
+        local soundPath = eventSounds[eventType]
+        if soundPath then surface.PlaySound(soundPath) end
+    end
 end)
 
 local function sendAction(action)
-    if not Client.active then return end
+    if not Client.active or Client.gameOver then return end
     net.Start("LOD_TetrisInput")
     net.WriteUInt(action, 3)
     net.SendToServer()
@@ -95,7 +125,7 @@ hook.Add("PlayerBindPress", "LOD_DeathTetrisControls", function(ply, bind, press
     local lower = string.lower(bind or "")
     for _, mapping in ipairs(bindActions) do
         if string.find(lower, mapping[1], 1, true) then
-            sendAction(mapping[2])
+            if not Client.gameOver then sendAction(mapping[2]) end
             return true
         end
     end
@@ -139,9 +169,21 @@ function Client:DrawDeathState(ply, state)
     surface.DrawRect(panelX, panelY, 5, panelH)
     surface.DrawRect(panelX, panelY, panelW, 3)
 
-    local headline = self.firstClear and "The dead love Tetris" or "YOU DIED"
-    local headlineColor = self.firstClear and Color(245, 210, 115) or Color(235, 105, 90)
-    draw.SimpleText(headline, "LOD_Tetris_Header", panelX + 24, panelY + 18,
+    local headline
+    local headlineFont = "LOD_Tetris_Header"
+    local headlineColor
+    if self.gameOver then
+        headline = "You died, and you lost at Tetris"
+        headlineFont = "LOD_Tetris_Loss"
+        headlineColor = Color(185, 185, 185)
+    elseif self.firstClear then
+        headline = "The dead love Tetris"
+        headlineColor = Color(245, 210, 115)
+    else
+        headline = "YOU DIED"
+        headlineColor = Color(235, 105, 90)
+    end
+    draw.SimpleText(headline, headlineFont, panelX + 24, panelY + 18,
         headlineColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
     local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
@@ -173,8 +215,15 @@ function Client:DrawDeathState(ply, state)
         end
     end
 
-    draw.SimpleText("NEXT", "LOD_Tetris_Label", sideX, boardY, Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    drawPiecePreview(self.nextPiece, sideX + 4, boardY + 34, math.max(12, cell - 2))
+    if self.gameOver then
+        surface.SetDrawColor(42, 44, 46, 205)
+        surface.DrawRect(boardX, boardY, boardW, boardH)
+        draw.SimpleText("TETRIS LOST", "LOD_Tetris_Feedback", boardX + boardW * 0.5, boardY + boardH * 0.5,
+            Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
+
+    draw.SimpleText("NEXT", "LOD_Tetris_Label", sideX, boardY, self.gameOver and Color(120, 120, 120) or Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    if not self.gameOver then drawPiecePreview(self.nextPiece, sideX + 4, boardY + 34, math.max(12, cell - 2)) end
 
     draw.SimpleText("NEXT-LIFE OVERFILL", "LOD_Tetris_Label", sideX, boardY + 118,
         Color(205, 205, 205), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -187,16 +236,25 @@ function Client:DrawDeathState(ply, state)
     end
 
     local controlsY = boardY + boardH - 112
-    draw.SimpleText("CONTROLS", "LOD_Tetris_Label", sideX, controlsY,
-        Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    draw.SimpleText("LEFT / RIGHT   move", "LOD_HUD_Small", sideX, controlsY + 27,
-        Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    draw.SimpleText("UP / FORWARD   rotate", "LOD_HUD_Small", sideX, controlsY + 49,
-        Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    draw.SimpleText("DOWN / BACK   soft drop", "LOD_HUD_Small", sideX, controlsY + 71,
-        Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    draw.SimpleText("JUMP / A   hard drop", "LOD_HUD_Small", sideX, controlsY + 93,
-        Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    if self.gameOver then
+        draw.SimpleText("SESSION ENDED", "LOD_Tetris_Label", sideX, controlsY,
+            Color(150, 150, 150), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("NO RESTART", "LOD_HUD_Small", sideX, controlsY + 30,
+            Color(135, 135, 135), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("BONUS PRESERVED UNTIL RESPAWN", "LOD_HUD_Small", sideX, controlsY + 55,
+            Color(135, 135, 135), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    else
+        draw.SimpleText("CONTROLS", "LOD_Tetris_Label", sideX, controlsY,
+            Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("LEFT / RIGHT   move", "LOD_HUD_Small", sideX, controlsY + 27,
+            Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("UP / FORWARD   rotate", "LOD_HUD_Small", sideX, controlsY + 49,
+            Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("DOWN / BACK   soft drop", "LOD_HUD_Small", sideX, controlsY + 71,
+            Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText("JUMP / A   hard drop", "LOD_HUD_Small", sideX, controlsY + 93,
+            Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    end
 
     return true
 end

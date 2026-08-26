@@ -6,6 +6,8 @@ local Tetris = LOD.Tetris
 Tetris.Width = 10
 Tetris.Height = 20
 Tetris.FallInterval = 0.58
+Tetris.LockDelay = 0.50
+Tetris.MaxLockResets = 15
 Tetris.Rewards = {
     [1] = 10,
     [2] = 30,
@@ -95,6 +97,7 @@ function Tetris.CellsFor(pieceId, rotation, originX, originY)
 end
 
 function Tetris.CanPlace(game, pieceId, rotation, x, y)
+    if game.gameOver then return false end
     for _, cell in ipairs(Tetris.CellsFor(pieceId, rotation, x, y)) do
         if cell.x < 1 or cell.x > Tetris.Width or cell.y > Tetris.Height then return false end
         if cell.y >= 1 and (game.board[cell.y][cell.x] or 0) ~= 0 then return false end
@@ -103,6 +106,8 @@ function Tetris.CanPlace(game, pieceId, rotation, x, y)
 end
 
 local function spawnCurrent(game)
+    if game.gameOver then return false end
+
     game.current = {
         id = game.nextPiece or drawPiece(game),
         rotation = 1,
@@ -112,9 +117,11 @@ local function spawnCurrent(game)
     game.nextPiece = drawPiece(game)
 
     if not Tetris.CanPlace(game, game.current.id, game.current.rotation, game.current.x, game.current.y) then
-        game.board = newBoard()
-        game.resetCount = (game.resetCount or 0) + 1
+        game.current = nil
+        game.gameOver = true
+        return false
     end
+    return true
 end
 
 function Tetris.NewGame(seed)
@@ -125,7 +132,8 @@ function Tetris.NewGame(seed)
         current = nil,
         nextPiece = nil,
         resetCount = 0,
-        piecesLocked = 0
+        piecesLocked = 0,
+        gameOver = false
     }
     game.nextPiece = drawPiece(game)
     spawnCurrent(game)
@@ -134,7 +142,7 @@ end
 
 function Tetris.Move(game, dx, dy)
     local current = game.current
-    if not current then return false end
+    if game.gameOver or not current then return false end
     local x = current.x + (dx or 0)
     local y = current.y + (dy or 0)
     if not Tetris.CanPlace(game, current.id, current.rotation, x, y) then return false end
@@ -145,7 +153,7 @@ end
 
 function Tetris.Rotate(game, direction)
     local current = game.current
-    if not current then return false end
+    if game.gameOver or not current then return false end
     local rotation = ((current.rotation - 1 + (direction or 1)) % 4) + 1
     local kicks = {0, -1, 1, -2, 2}
     for _, dx in ipairs(kicks) do
@@ -156,6 +164,12 @@ function Tetris.Rotate(game, direction)
         end
     end
     return false
+end
+
+function Tetris.IsGrounded(game)
+    local current = game.current
+    if game.gameOver or not current then return false end
+    return not Tetris.CanPlace(game, current.id, current.rotation, current.x, current.y + 1)
 end
 
 local function clearLines(game)
@@ -182,7 +196,7 @@ end
 
 function Tetris.Lock(game)
     local current = game.current
-    if not current then return 0, false end
+    if game.gameOver or not current then return 0, game.gameOver == true end
 
     local toppedOut = false
     for _, cell in ipairs(Tetris.CellsFor(current.id, current.rotation, current.x, current.y)) do
@@ -197,25 +211,28 @@ function Tetris.Lock(game)
     game.piecesLocked = (game.piecesLocked or 0) + 1
 
     if toppedOut then
-        game.board = newBoard()
-        game.resetCount = (game.resetCount or 0) + 1
+        game.current = nil
+        game.gameOver = true
+    else
+        spawnCurrent(game)
     end
 
-    spawnCurrent(game)
-    return cleared, toppedOut
+    return cleared, game.gameOver == true
 end
 
+-- A failed downward step no longer locks immediately. The server owns a short
+-- lock-delay window so a grounded piece may still slide or rotate before it settles.
 function Tetris.StepDown(game)
     if Tetris.Move(game, 0, 1) then return true, 0, false end
-    local cleared, toppedOut = Tetris.Lock(game)
-    return false, cleared, toppedOut
+    return false, 0, game.gameOver == true
 end
 
 function Tetris.HardDrop(game)
+    if game.gameOver or not game.current then return 0, 0, game.gameOver == true end
     local distance = 0
     while Tetris.Move(game, 0, 1) do distance = distance + 1 end
-    local cleared, toppedOut = Tetris.Lock(game)
-    return distance, cleared, toppedOut
+    local cleared, gameOver = Tetris.Lock(game)
+    return distance, cleared, gameOver
 end
 
 function Tetris.RewardForLines(lines)
