@@ -11,11 +11,10 @@ local cellKey = LOD.MazeGenerator and LOD.MazeGenerator.CellKey
 
 if not Navigator or not Motion or not cellKey then return end
 
--- A successful Watcher scan no longer permits a quick range-reset and immediate
--- repeat scan. The Watcher must first break the scanned player's line of sight,
--- then remain continuously unseen for one freshly rolled 8d6! interval. Each of
--- the eight d6s uses the universal natural-6 explosion rule. Re-exposure resets
--- elapsed concealment time to zero but does not reroll the already-authored wait.
+-- After every successful scan, the Watcher must break the scanned player's line
+-- of sight and remain continuously unseen for one freshly rolled 8d6! interval.
+-- Each of the eight d6 chains explodes only on natural 6 under the universal d6
+-- rule. Re-exposure resets elapsed hidden time but does not reroll the interval.
 local SERVICE_NAME = "LOD_WatcherConcealmentService"
 local SERVICE_INTERVAL = 0.10
 local VISIBILITY_INTERVAL = 0.20
@@ -65,8 +64,7 @@ local function targetEligible(watcher, graph, target)
     local from = Navigator:WorldToCell(graph, watcher:GetPos())
     local to = Navigator:WorldToCell(graph, target:GetPos())
     if not from or not to or from.z ~= to.z then return false end
-    if safeCell(graph, to) then return false end
-    return true
+    return not safeCell(graph, to)
 end
 
 local function horizontalDistance(a, b)
@@ -85,10 +83,9 @@ end
 
 local function playerCanSeePoint(watcher, target, point)
     if not IsValid(watcher) or not livingPlayer(target) or not point then return false end
-    local endPos = point + Vector(0, 0, 34)
     local tr = util.TraceLine({
         start = target:EyePos(),
-        endpos = endPos,
+        endpos = point + Vector(0, 0, 34),
         mask = MASK_SHOT,
         filter = function(ent)
             if ent == watcher or ent == target then return false end
@@ -101,8 +98,7 @@ local function playerCanSeePoint(watcher, target, point)
 end
 
 local function playerCanSeeWatcher(watcher, target)
-    if not IsValid(watcher) then return false end
-    return playerCanSeePoint(watcher, target, watcher:GetPos())
+    return IsValid(watcher) and playerCanSeePoint(watcher, target, watcher:GetPos()) or false
 end
 
 local function fallbackExplodingChain(rng)
@@ -140,17 +136,12 @@ local function rollHideDuration(watcher)
             subtotal, values = fallbackExplodingChain(rng)
         end
         total = total + (subtotal or 0)
-        chains[index] = values or {}
+        chains[index] = table.concat(values or {}, ">")
     end
 
-    local chainText = {}
-    for index, values in ipairs(chains) do
-        chainText[index] = table.concat(values, ">")
-    end
-
-    Concealment.Stats.lastDuration = total
-    Concealment.Stats.lastRollText = table.concat(chainText, " | ")
-    return math.max(HIDE_DICE_COUNT, total), Concealment.Stats.lastRollText
+    Concealment.Stats.lastDuration = math.max(HIDE_DICE_COUNT, total)
+    Concealment.Stats.lastRollText = string.sub(table.concat(chains, " | "), 1, 160)
+    return Concealment.Stats.lastDuration, Concealment.Stats.lastRollText
 end
 
 local function reconstructWaypoints(graph, startKey, goalKey, previous)
@@ -174,9 +165,9 @@ local function reconstructWaypoints(graph, startKey, goalKey, previous)
     return #waypoints > 0 and waypoints or nil
 end
 
--- Compile a bounded graph-valid route that prefers the nearest reachable cell
--- hidden from the scanned player. If the local search cannot find concealment,
--- choose the farthest legal candidate and try again after that committed segment.
+-- One bounded plan at a time: prefer the nearest reachable hidden cell, with
+-- greater separation breaking ties. If no hidden cell is found within six graph
+-- steps, commit to the farthest legal candidate and search again from there.
 local function buildConcealmentPlan(watcher, graph, target)
     local startCell = Navigator:WorldToCell(graph, watcher:GetPos())
     local targetCell = Navigator:WorldToCell(graph, target:GetPos())
@@ -187,7 +178,6 @@ local function buildConcealmentPlan(watcher, graph, target)
     local head = 1
     local seen = {[startKey] = true}
     local previous = {}
-
     local hiddenKey, hiddenDepth, hiddenDistance
     local fallbackKey, fallbackDistance = nil, -1
     local targetPos = target:GetPos()
@@ -235,10 +225,8 @@ local function buildConcealmentPlan(watcher, graph, target)
         end
     end
 
-    local goalKey = hiddenKey or fallbackKey
-    local waypoints = reconstructWaypoints(graph, startKey, goalKey, previous)
-    if waypoints then return waypoints, hiddenKey ~= nil end
-    return nil, false
+    local waypoints = reconstructWaypoints(graph, startKey, hiddenKey or fallbackKey, previous)
+    return waypoints, waypoints ~= nil and hiddenKey ~= nil
 end
 
 local function serviceNeeded()
@@ -246,6 +234,109 @@ local function serviceNeeded()
         if IsValid(watcher) and watcher.LODWatcherConcealment then return true end
     end
     return false
+end
+
+local function releaseConcealment(watcher, target, now)
+    watcher.LODWatcherConcealment = nil
+    Concealment.Active[watcher] = nil
+    watcher.LODNextWatcherScan = now
+    watcher.LODTarget = livingPlayer(target) and target or nil
+    watcher.LODReturningHome = false
+    watcher.LODWaypoints = {}
+    watcher.LODWaypointIndex = 1
+    watcher.LODNextTargetRefresh = 0
+    watcher.LODNextRouteRefresh = 0
+    Watcher.Stats.concealmentCompletes = (Watcher.Stats.concealmentCompletes or 0) + 1
+    Concealment.Stats.completions = (Concealment.Stats.completions or 0) + 1
+end
+
+local function stepConcealment(watcher, graph, now)
+    local conceal = watcher.LODWatcherConcealment
+    if not conceal then return end
+    local target = conceal.target
+
+    if not targetEligible(watcher, graph, target) then
+        watcher.LODWatcherConcealment = nil
+        Concealment.Active[watcher] = nil
+        watcher.LODNextWatcherScan = now + 0.35
+        watcher.LODNextTargetRefresh = 0
+        watcher.LODNextRouteRefresh = 0
+        return
+    end
+
+    if now >= (conceal.nextVisibilityAt or 0) then
+        conceal.nextVisibilityAt = now + VISIBILITY_INTERVAL
+        local wasVisible = conceal.visible
+        local visible = playerCanSeeWatcher(watcher, target)
+        conceal.visible = visible
+
+        if visible then
+            if wasVisible == false then
+                Concealment.Stats.reexposures = (Concealment.Stats.reexposures or 0) + 1
+                conceal.waypoints = {}
+                conceal.index = 1
+                conceal.nextPlanAt = 0
+            end
+            conceal.hiddenSince = nil
+            conceal.hiddenEndsAt = nil
+            conceal.holding = false
+        elseif wasVisible ~= false then
+            conceal.hiddenSince = now
+            conceal.hiddenEndsAt = now + conceal.duration
+            conceal.waypoints = {}
+            conceal.index = 1
+            conceal.holding = false
+        end
+    end
+
+    if conceal.visible == false then
+        -- Let the older short committed retreat finish if it is still active;
+        -- otherwise stop at the first actual hidden position and hold it.
+        if not watcher.LODWatcherRetreat and not conceal.holding then
+            Motion:Stop(watcher)
+            watcher.LODMotionMode = "watcher-concealment-hold"
+            conceal.holding = true
+        end
+        if conceal.hiddenEndsAt and now >= conceal.hiddenEndsAt then
+            releaseConcealment(watcher, target, now)
+        end
+        return
+    end
+
+    -- While the old post-scan range retreat still owns movement, only observe it.
+    -- Once released, continue retreating until actual generated geometry blocks LOS.
+    if watcher.LODWatcherRetreat then return end
+
+    local waypoint = conceal.waypoints and conceal.waypoints[conceal.index or 1]
+    if not waypoint and now >= (conceal.nextPlanAt or 0) then
+        conceal.nextPlanAt = now + REPLAN_INTERVAL
+        local waypoints, hasHiddenGoal = buildConcealmentPlan(watcher, graph, target)
+        Concealment.Stats.plans = (Concealment.Stats.plans or 0) + 1
+        if waypoints then
+            conceal.waypoints = waypoints
+            conceal.index = 1
+            if hasHiddenGoal then
+                Concealment.Stats.hiddenPlans = (Concealment.Stats.hiddenPlans or 0) + 1
+            else
+                Concealment.Stats.fallbackPlans = (Concealment.Stats.fallbackPlans or 0) + 1
+            end
+            waypoint = waypoints[1]
+        else
+            Concealment.Stats.blockedPlans = (Concealment.Stats.blockedPlans or 0) + 1
+            Motion:Stop(watcher)
+            Motion:FaceToward(watcher, target:GetPos())
+            watcher.LODMotionMode = "watcher-concealment-blocked"
+        end
+    end
+
+    if waypoint then
+        local reached = Motion:MoveToward(watcher, waypoint)
+        watcher.LODMotionMode = "watcher-concealment-retreat"
+        if reached then
+            conceal.index = (conceal.index or 1) + 1
+            if not conceal.waypoints[conceal.index] then conceal.nextPlanAt = 0 end
+        end
+    end
 end
 
 local function ensureService()
@@ -260,108 +351,12 @@ local function ensureService()
 
         local now = CurTime()
         for watcher in pairs(Concealment.Active) do
-            local conceal = IsValid(watcher) and watcher.LODWatcherConcealment or nil
-            if not conceal or watcher.LODDead then
+            if not IsValid(watcher) or watcher.LODDead or not watcher.LODWatcherConcealment then
                 Concealment.Active[watcher] = nil
             else
-                local target = conceal.target
-                if not targetEligible(watcher, graph, target) then
-                    watcher.LODWatcherConcealment = nil
-                    Concealment.Active[watcher] = nil
-                    watcher.LODNextWatcherScan = now + 0.35
-                    watcher.LODNextTargetRefresh = 0
-                    watcher.LODNextRouteRefresh = 0
-                else
-                    if now >= (conceal.nextVisibilityAt or 0) then
-                        conceal.nextVisibilityAt = now + VISIBILITY_INTERVAL
-                        local visible = playerCanSeeWatcher(watcher, target)
-
-                        if visible then
-                            if conceal.hiddenSince then
-                                Concealment.Stats.reexposures = (Concealment.Stats.reexposures or 0) + 1
-                            end
-                            conceal.visible = true
-                            conceal.hiddenSince = nil
-                            conceal.hiddenEndsAt = nil
-                            conceal.holding = false
-                            conceal.waypoints = {}
-                            conceal.index = 1
-                            conceal.nextPlanAt = 0
-                        else
-                            conceal.visible = false
-                            if not conceal.hiddenSince then
-                                conceal.hiddenSince = now
-                                conceal.hiddenEndsAt = now + conceal.duration
-                                conceal.waypoints = {}
-                                conceal.index = 1
-                            end
-                        end
-                    end
-
-                    if conceal.visible == false then
-                        -- The legacy committed post-scan retreat may still be
-                        -- finishing its first range-reset segment. Do not fight it;
-                        -- once it releases motion authority, hold the hidden spot.
-                        if not watcher.LODWatcherRetreat and not conceal.holding then
-                            Motion:Stop(watcher)
-                            watcher.LODMotionMode = "watcher-concealment-hold"
-                            conceal.holding = true
-                        end
-
-                        if conceal.hiddenEndsAt and now >= conceal.hiddenEndsAt then
-                            watcher.LODWatcherConcealment = nil
-                            Concealment.Active[watcher] = nil
-                            watcher.LODNextWatcherScan = now
-                            watcher.LODTarget = target
-                            watcher.LODReturningHome = false
-                            watcher.LODWaypoints = {}
-                            watcher.LODWaypointIndex = 1
-                            watcher.LODNextTargetRefresh = 0
-                            watcher.LODNextRouteRefresh = 0
-                            Watcher.Stats.concealmentCompletes = (Watcher.Stats.concealmentCompletes or 0) + 1
-                            Concealment.Stats.completions = (Concealment.Stats.completions or 0) + 1
-                        end
-                    elseif conceal.visible == true and not watcher.LODWatcherRetreat then
-                        conceal.holding = false
-                        local waypoint = conceal.waypoints and conceal.waypoints[conceal.index or 1]
-
-                        if not waypoint and now >= (conceal.nextPlanAt or 0) then
-                            conceal.nextPlanAt = now + REPLAN_INTERVAL
-                            local waypoints, hasHiddenGoal = buildConcealmentPlan(watcher, graph, target)
-                            Concealment.Stats.plans = (Concealment.Stats.plans or 0) + 1
-                            if waypoints then
-                                conceal.waypoints = waypoints
-                                conceal.index = 1
-                                conceal.planHasHiddenGoal = hasHiddenGoal
-                                if hasHiddenGoal then
-                                    Concealment.Stats.hiddenPlans = (Concealment.Stats.hiddenPlans or 0) + 1
-                                else
-                                    Concealment.Stats.fallbackPlans = (Concealment.Stats.fallbackPlans or 0) + 1
-                                end
-                                waypoint = conceal.waypoints[1]
-                            else
-                                Concealment.Stats.blockedPlans = (Concealment.Stats.blockedPlans or 0) + 1
-                                Motion:Stop(watcher)
-                                Motion:FaceToward(watcher, target:GetPos())
-                                watcher.LODMotionMode = "watcher-concealment-blocked"
-                            end
-                        end
-
-                        if waypoint then
-                            local reached = Motion:MoveToward(watcher, waypoint)
-                            watcher.LODMotionMode = "watcher-concealment-retreat"
-                            if reached then
-                                conceal.index = (conceal.index or 1) + 1
-                                if not conceal.waypoints[conceal.index] then
-                                    conceal.nextPlanAt = 0
-                                end
-                            end
-                        end
-                    end
-                end
+                stepConcealment(watcher, graph, now)
             end
         end
-
         if not serviceNeeded() then timer.Remove(SERVICE_NAME) end
     end)
 end
@@ -369,7 +364,6 @@ end
 local function beginConcealment(watcher, target)
     if not IsValid(watcher) or not livingPlayer(target) or watcher.LODWatcherConcealment then return false end
     local duration, rollText = rollHideDuration(watcher)
-
     watcher.LODWatcherConcealment = {
         target = target,
         duration = duration,
@@ -377,15 +371,13 @@ local function beginConcealment(watcher, target)
         startedAt = CurTime(),
         hiddenSince = nil,
         hiddenEndsAt = nil,
-        visible = true,
+        visible = nil,
         nextVisibilityAt = 0,
         nextPlanAt = 0,
         waypoints = {},
         index = 1,
         holding = false
     }
-    -- The concealment state, not the old short scan cooldown, owns permission to
-    -- perform the next scan. math.huge makes accidental early re-entry impossible.
     watcher.LODNextWatcherScan = math.huge
     Concealment.Active[watcher] = true
     Concealment.Stats.starts = (Concealment.Stats.starts or 0) + 1
@@ -415,7 +407,6 @@ local function installPatch()
         local scanTarget = self.LODWatcherScan and self.LODWatcherScan.target or self.LODTarget
         local completedBefore = Watcher.Stats.scansCompleted or 0
         local result = baseRunWatcherTick(self)
-
         if (Watcher.Stats.scansCompleted or 0) > completedBefore and livingPlayer(scanTarget) then
             beginConcealment(self, scanTarget)
             return true
@@ -437,7 +428,6 @@ local function installPatch()
         end
         if baseOnRemove then return baseOnRemove(self) end
     end
-
     return true
 end
 
