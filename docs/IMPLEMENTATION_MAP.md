@@ -1,4 +1,4 @@
-# Implementation Map — 2026-08-25 Post-C8
+# Implementation Map — 2026-08-26 Gate D
 
 The live GDD defines intended design; GitHub `main` defines current implementation.
 
@@ -12,7 +12,8 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Sole production hostile ground motion | `sv_hostile_motion_v2.lua` |
 | Core hostile state machine | `entities/entities/lod_hostile/` |
 | Deadcrab / Bio Blaster | `sv_deadcrab.lua`, `sv_deadcrab_latch_parent_safety.lua`, `sv_bioblaster.lua`, projectile entities |
-| Watcher support archetype | `sv_watcher.lua`, `sv_watcher_attack_guard.lua`, `cl_watcher.lua`; Scanner-derived no-direct-attack support unit, 1.25 s LOS scan with escalating beam/audio, completed scan alerts only already-existing same-floor wanderers within 6 graph cells, bullet hit-stun/LOS break cancels, no reinforcement spawning; rare wandering weight 4 plus Sector-2+ `Surveillance = 1 Watcher + 2 Shamblers`; provisional Runner-class `3d4+3` dice durability pending runtime acceptance |
+| Watcher support archetype | `sv_watcher.lua`, `sv_watcher_attack_guard.lua`, `sv_watcher_committed_retreat.lua`, `cl_watcher.lua`; Scanner-derived no-direct-attack support unit, 1.25 s LOS scan with escalating beam/audio, completed scan alerts only already-existing same-floor wanderers within 6 graph cells, bullet hit-stun/LOS break cancels, no reinforcement spawning; committed post-scan/too-close range recovery; rare wandering weight 4 plus Sector-2+ `Surveillance = 1 Watcher + 2 Shamblers`; scan/alert contract runtime-accepted |
+| Seeker momentum archetype | `sv_seeker.lua`, `sv_seeker_personality.lua`, `sv_seeker_sound_safety.lua`, `sv_seeker_spawn_reliability.lua`, `sv_device_motion_safety.lua`, `cl_seeker.lua`, `entities/entities/lod_hostile/cl_init.lua`; Rollermine-derived wind-up/straight charge, wall-impact stun, 150-unit minimum attack range, committed medium-range retreat; seeded 30% left/right pre-charge feint and 25% eligible post-hit same-cell orbit; flourish timer exists only while active and all displacement still uses Motion V2; visible Rollermine rotation is client-side and derived from actual horizontal travel distance so spin rate rises with movement speed; core charge/retreat/floor-safety runtime accepted, personality polish awaiting runtime acceptance |
 | Soldier/Blitzer immutable warning/projectile contract | `sv_soldier_shot_contract.lua`, `cl_soldier_shot_contract.lua`, `entities/entities/lod_soldier_bolt/` |
 | Enemy size/stat variance + monotonic durability | `sv_enemy_variance.lua`, `sv_combat_rolls.lua` |
 | Narrowed Shambler/Runner melee dice | `sv_enemy_melee_dice_balance.lua` |
@@ -36,7 +37,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | HUD / minimap | `cl_hud.lua`, `cl_magic_hud.lua`, **one canonical `cl_minimap.lua` + one canonical `sv_minimap.lua`**; static current-floor topology is rendered once into one reusable 256×256 client render target, while only gates/stairs/route/objective/player overlays remain live per frame; same-level reopen reuses topology without retransmission |
 | Low-end runtime optimization | `sv_phase_zero_runtime_optimization.lua` plus bounded/cached work in motion, minimap, ballistics, loot, projectiles, death systems; minimap precomputes client adjacency/overlay indexes once per topology revision, caches BFS by player cell/progression state, and has no server level-reset Think or client origin/alive helper Think hooks |
 | Automatic dice-run telemetry | **Retired; not loaded.** Use existing diagnostics + manual runtime evidence. |
-| Expanded normal roster | **Gate D current: Watcher IMPLEMENTED / runtime acceptance pending.** After acceptance: `Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper` |
+| Expanded normal roster | **Gate D current: Watcher scan/alert accepted; Seeker core accepted, movement-personality polish awaiting acceptance.** Next after Seeker: `Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper` |
 | Brute + Neil / production Map acquisition | Remaining Milestone 4 work |
 | Gordon the Warden | Milestone 5 |
 | Dedicated multiplayer integration / QA | Milestone 6 |
@@ -89,6 +90,7 @@ Health:
 - Deadcrab `2d4+1`
 - Runner `3d4+3`
 - Watcher `3d4+3` **provisional implementation tuning; GDD does not prescribe a numeric Watcher health formula**
+- Seeker `3d4+3` **provisional implementation tuning; GDD does not prescribe a numeric Seeker health formula**
 - Shambler/Soldier/Blitzer `4d4+5`
 - Bio Blaster `5d4+6`
 
@@ -96,6 +98,7 @@ Ordinary melee before existing size/stat scaling:
 - Shambler `3d4+8`
 - Runner `2d4+2`
 - Watcher: no direct attack
+- Seeker: no ordinary melee; charge uses its dedicated dice-era impact contract
 
 ## Ammo profiles
 
@@ -118,4 +121,5 @@ Grenades do not regenerate.
 - layered minimap serializer/safety/origin-sync wrappers, per-tick map entitlement reset, or full-topology redraw/retransmit on every map frame/open.
 - fixed 8–12 thresholds for every continuation d12 after the first; d12s now descend toward the Boomchain Floor.
 - Watcher scan logic that spawns reinforcements, bypasses WanderingDirector, or adds global hostile scans; Watcher may only retarget already-existing eligible wanderers through cached graph distance.
+- Seeker flourish logic that bypasses Motion V2, crosses graph-blocked architecture, or creates a permanent general-purpose AI polling loop.
 - unbounded generic state/network payloads, global BFS/entity scans, or automatic startup telemetry.
