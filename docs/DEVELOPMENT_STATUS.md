@@ -55,7 +55,7 @@ Current implementation is compliant for Force Shout/Shotgun d6s and Magnum/Magnu
 - Pistol: `1d4`; fresh expedition begins with Pistol + Crowbar, Pistol 18 loaded / 0 reserve.
 - SMG: `1d8`; six rapid shots overheat, 0.25 s per heat cooling, 2.0 s overheat lock, staged audiovisual feedback.
 - AR2: `1d10` per projectile; 0.45-second committed targeting laser followed by exactly three rounds; complete burst costs **one AR2 ammo unit**.
-- .357 Magnum: each projectile deals **`1d12!+X`**, where X is the number of chambers already empty before that trigger. A normal cylinder therefore progresses **+0,+1,+2,+3,+4,+5**. Trigger 5 fires a two-projectile Magnum burst; trigger 6 fires a three-projectile burst. Extra burst projectiles consume no additional cartridge, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; eight-target cap and authoritative geometry stop remain.
+- .357 Magnum: each projectile deals **`1d12!+X`**, where X is the number of chambers already empty before that trigger. A normal cylinder progresses **+0,+1,+2,+3,+4,+5**. Trigger 5 fires two projectiles; trigger 6 fires three. Below 60 current HP, each trigger makes one `(60-HP)%` check to add exactly one further free Magnum projectile, so the final burst can become four projectiles. On a final-cartridge trigger below 34% max Health, the final cartridge has `floor(34-currentHealthPercent)%` chance not to be consumed; preservation restores exactly one cartridge after the complete burst, allowing another final-chamber/+5 trigger. Extra projectiles consume no additional ammo, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; eight-target cap and authoritative geometry stop remain.
 - Shotgun: shared exploding damage `1d6!`, per-die floor 3, natural 6 only; **8 guaranteed pellets + exploding `1d6!` additional pellets**; every connecting pellet deals at least 1 damage; 4× ordinary hit stun; 168-unit nominal push; 36-pellet safety cap.
 - Grenade: `1d20`, separate consumable reward.
 
@@ -105,10 +105,13 @@ Validate the targeted Magnum pass before beginning Watcher:
 
 1. A fresh/reloaded six-round cylinder reports chamber bonuses in order **+0,+1,+2,+3,+4,+5**.
 2. D12 explosions visibly use descending thresholds **8+ → 7+ → 6+ → 5+** within one chain.
-3. Trigger 5 produces exactly two Magnum projectiles total; trigger 6 produces exactly three.
-4. Extra burst projectiles do not consume extra cartridge/reserve ammunition.
-5. Burst projectiles retain normal independent damage, explosion cue, and penetration behavior.
-6. No meaningful Steam Deck performance regression.
+3. Trigger 5 produces exactly two Magnum projectiles total; trigger 6 produces exactly three at 60+ HP.
+4. Below 60 HP, the diagnostic reports the correct `(60-HP)%` extra-projectile chance and observed procs can add only one projectile per trigger.
+5. Below 34% max Health, the final-cartridge preservation diagnostic reports the correct chance; a successful proc resolves the full final burst and leaves exactly one cartridge available afterward.
+6. Preserved final cartridges remain chamber-6/+5 shots and may make a new preservation check on the next trigger.
+7. Extra burst/projectile mechanics do not consume additional reserve ammunition.
+8. Burst projectiles retain independent damage, explosion cue, and penetration behavior.
+9. No meaningful Steam Deck performance regression.
 
 After this targeted acceptance, proceed to **Gate D — Expanded Enemy Roster**, beginning with Watcher.
 
