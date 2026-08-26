@@ -36,10 +36,10 @@ local pieceColors = {
 }
 
 local feedbackNames = {
-    [1] = "SINGLE  +10 HP",
-    [2] = "DOUBLE  +30 HP",
-    [3] = "TRIPLE  +50 HP",
-    [4] = "TETRIS  +80 HP"
+    [1] = "SINGLE  +10 HP   -2 SEC",
+    [2] = "DOUBLE  +30 HP   -4 SEC",
+    [3] = "TRIPLE  +50 HP   -6 SEC",
+    [4] = "TETRIS  +80 HP   -8 SEC"
 }
 
 local eventSounds = {
@@ -49,6 +49,10 @@ local eventSounds = {
     [4] = "buttons/button9.wav", -- line clear
     [5] = "buttons/button10.wav" -- game over
 }
+
+local DEATH_ACTION_ENTER_TETRIS = 1
+local DEATH_ACTION_RESPAWN = 2
+local fWasDown = false
 
 local function readBoard()
     local board = {}
@@ -63,6 +67,7 @@ end
 
 net.Receive("LOD_TetrisState", function()
     local active = net.ReadBool()
+    local wasActive = Client.active == true
     Client.active = active
     if not active then
         Client.board = nil
@@ -70,8 +75,11 @@ net.Receive("LOD_TetrisState", function()
         Client.clearSerial = nil
         Client.eventSerial = nil
         Client.feedback = nil
+        Client.startedAt = nil
         return
     end
+
+    if not wasActive then Client.startedAt = CurTime() end
 
     Client.kind = net.ReadUInt(2)
     Client.board = readBoard()
@@ -110,6 +118,38 @@ local function sendAction(action)
     net.SendToServer()
 end
 
+local function sendDeathAction(action)
+    net.Start("LOD_DeathTetrisAction")
+    net.WriteUInt(action, 2)
+    net.SendToServer()
+end
+
+local function deathInputEligible(ply)
+    if not IsValid(ply) or ply:Alive() then return false end
+    if not ply:GetNW2Bool("LOD_PlayedIdentity", false) then return false end
+    if ply:GetNW2Bool("LOD_Eliminated", false) then return false end
+    return ply:GetNW2Bool("LOD_DeathInteraction", false)
+end
+
+-- Production F has one contextual meaning during death:
+--   mandatory wait running + no Tetris -> pay respects / enter Tetris
+--   Tetris active + mandatory wait complete -> respawn
+hook.Add("Think", "LOD_DeathTetrisFInput", function()
+    local down = input.IsKeyDown(KEY_F)
+    if down and not fWasDown and not gui.IsGameUIVisible() and not IsValid(vgui.GetKeyboardFocus()) then
+        local ply = LocalPlayer()
+        if deathInputEligible(ply) then
+            local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
+            if Client.active then
+                if remaining <= 0 then sendDeathAction(DEATH_ACTION_RESPAWN) end
+            elseif remaining > 0 then
+                sendDeathAction(DEATH_ACTION_ENTER_TETRIS)
+            end
+        end
+    end
+    fWasDown = down
+end)
+
 local bindActions = {
     {"+moveleft", 1},
     {"+left", 1},
@@ -129,6 +169,18 @@ hook.Add("PlayerBindPress", "LOD_DeathTetrisControls", function(ply, bind, press
             return true
         end
     end
+end)
+
+-- Players who never opt into Tetris use ordinary left click once the mandatory
+-- wait reaches zero. While the wait is running, spectator mouse controls remain
+-- untouched.
+hook.Add("PlayerBindPress", "LOD_DeathPlainRespawnInput", function(ply, bind, pressed)
+    if not pressed or Client.active or not deathInputEligible(ply) then return end
+    local lower = string.lower(bind or "")
+    if not string.find(lower, "+attack", 1, true) then return end
+    if ply:GetNW2Float("LOD_RespawnRemaining", 0) > 0 then return end
+    sendDeathAction(DEATH_ACTION_RESPAWN)
+    return true
 end)
 
 local function drawCell(x, y, cell, value)
@@ -163,6 +215,7 @@ function Client:DrawDeathState(ply, state)
     local boardX = panelX + 24
     local boardY = panelY + 78
     local sideX = boardX + boardW + 28
+    local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
 
     draw.RoundedBox(5, panelX, panelY, panelW, panelH, Color(12, 15, 17, 255))
     surface.SetDrawColor(220, 140, 48, 240)
@@ -172,12 +225,15 @@ function Client:DrawDeathState(ply, state)
     local headline
     local headlineFont = "LOD_Tetris_Header"
     local headlineColor
-    if self.gameOver then
+    if remaining <= 0 then
+        headline = "Press F to respawn"
+        headlineColor = Color(245, 210, 115)
+    elseif self.gameOver then
         headline = "You died, and you lost at Tetris"
         headlineFont = "LOD_Tetris_Loss"
         headlineColor = Color(185, 185, 185)
-    elseif self.firstClear then
-        headline = "The dead love Tetris"
+    elseif CurTime() >= ((self.startedAt or CurTime()) + 5) then
+        headline = "The Dead Love Tetris"
         headlineColor = Color(245, 210, 115)
     else
         headline = "YOU DIED"
@@ -186,8 +242,8 @@ function Client:DrawDeathState(ply, state)
     draw.SimpleText(headline, headlineFont, panelX + 24, panelY + 18,
         headlineColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-    local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
-    draw.SimpleText(string.format("RESPAWN  %02d", math.ceil(remaining)), "LOD_Tetris_Label",
+    local timerText = remaining > 0 and string.format("WAIT  %02d", math.ceil(remaining)) or "RESPAWN READY"
+    draw.SimpleText(timerText, "LOD_Tetris_Label",
         panelX + panelW - 22, panelY + 24, Color(235, 235, 235), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
     surface.SetDrawColor(45, 49, 51, 255)
@@ -222,7 +278,8 @@ function Client:DrawDeathState(ply, state)
             Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
 
-    draw.SimpleText("NEXT", "LOD_Tetris_Label", sideX, boardY, self.gameOver and Color(120, 120, 120) or Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    draw.SimpleText("NEXT", "LOD_Tetris_Label", sideX, boardY,
+        self.gameOver and Color(120, 120, 120) or Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     if not self.gameOver then drawPiecePreview(self.nextPiece, sideX + 4, boardY + 34, math.max(12, cell - 2)) end
 
     draw.SimpleText("NEXT-LIFE OVERFILL", "LOD_Tetris_Label", sideX, boardY + 118,
@@ -239,8 +296,8 @@ function Client:DrawDeathState(ply, state)
     if self.gameOver then
         draw.SimpleText("SESSION ENDED", "LOD_Tetris_Label", sideX, controlsY,
             Color(150, 150, 150), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-        draw.SimpleText("NO RESTART", "LOD_HUD_Small", sideX, controlsY + 30,
-            Color(135, 135, 135), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        draw.SimpleText(remaining <= 0 and "F   respawn" or "WAIT FOR RESPAWN WINDOW", "LOD_HUD_Small",
+            sideX, controlsY + 30, Color(135, 135, 135), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
         draw.SimpleText("BONUS PRESERVED UNTIL RESPAWN", "LOD_HUD_Small", sideX, controlsY + 55,
             Color(135, 135, 135), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     else
@@ -252,7 +309,8 @@ function Client:DrawDeathState(ply, state)
             Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
         draw.SimpleText("DOWN / BACK   soft drop", "LOD_HUD_Small", sideX, controlsY + 71,
             Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-        draw.SimpleText("JUMP / A   hard drop", "LOD_HUD_Small", sideX, controlsY + 93,
+        draw.SimpleText(remaining <= 0 and "F   respawn  •  or keep playing" or "JUMP / A   hard drop",
+            "LOD_HUD_Small", sideX, controlsY + 93,
             Color(210, 210, 210), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     end
 
