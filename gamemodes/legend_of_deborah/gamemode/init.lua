@@ -146,6 +146,10 @@ include("lod/sv_seeker_spawn_reliability.lua")
 -- on the canonical graph floor after every Motion V2 step without adding another
 -- locomotion system, timer, trace, or pathfinder.
 include("lod/sv_device_motion_safety.lua")
+-- Seeker personality adds bounded left/right feints and occasional post-hit
+-- same-cell orbits. Its adaptive service exists only while a flourish is active;
+-- all physical movement still executes through Motion V2.
+include("lod/sv_seeker_personality.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
