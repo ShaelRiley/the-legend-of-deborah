@@ -14,13 +14,16 @@ if not EC or not Navigator or not Motion or not cellKey then return end
 
 local SERVICE_NAME = "LOD_SeekerChargeService"
 local SERVICE_INTERVAL = 0.05
-local WINDUP_SECONDS = 0.65
+local WINDUP_SECONDS = 0.85
 local CHARGE_SPEED = 560
 local CHARGE_SECONDS = 1.20
 local CHARGE_RANGE = 760
 local MIN_CHARGE_RANGE = 150
 local CHARGE_COOLDOWN = 2.80
 local IMPACT_STUN_SECONDS = 1.10
+local PLAYER_CONTACT_DISTANCE = 58
+local PLAYER_STANDOFF_DISTANCE = 180
+local IMPACT_FX_SECONDS = 0.28
 local WANDER_WEIGHT = 4
 local SEEKER_HEALTH_PROFILE = {count = 3, sides = 4, bonus = 3}
 local SEEKER_DAMAGE_PROFILE = {
@@ -98,6 +101,13 @@ local function targetEligible(seeker, graph, target)
     return true
 end
 
+local function horizontalDistanceSqr(a, b)
+    if not a or not b then return math.huge end
+    local dx = a.x - b.x
+    local dy = a.y - b.y
+    return dx * dx + dy * dy
+end
+
 local function traceFilter(seeker, target)
     return function(ent)
         if ent == seeker then return false end
@@ -120,8 +130,8 @@ local function lineGraphClear(seeker, graph, target)
     local tr = util.TraceHull({
         start = startPos,
         endpos = Vector(endPos.x, endPos.y, startPos.z),
-        mins = Vector(-10, -10, -10),
-        maxs = Vector(10, 10, 10),
+        mins = Vector(-12, -12, -12),
+        maxs = Vector(12, 12, 12),
         mask = MASK_SHOT,
         filter = traceFilter(seeker, target)
     })
@@ -140,7 +150,8 @@ local function lineGraphClear(seeker, graph, target)
         local k = keyOf(cell)
         if k ~= previousKey then
             if not Navigator:CanTraverse(graph, previousKey, k) then return false end
-            previous, previousKey = cell, k
+            previous = cell
+            previousKey = k
         end
     end
 
@@ -156,27 +167,44 @@ local function sendState(seeker, phase, duration)
     net.Broadcast()
 end
 
-local function emitCue(seeker, preferred, fallback, level, pitch, volume)
-    if not IsValid(seeker) then return end
-    local path = preferred
-    if not path or not file.Exists("sound/" .. path, "GAME") then path = fallback end
-    if path then seeker:EmitSound(path, level or 68, pitch or 100, volume or 0.8, CHAN_ITEM) end
+local function emitOneShot(seeker, path, level, pitch, volume, channel)
+    if not IsValid(seeker) or not path then return end
+    seeker:EmitSound(path, level or 72, pitch or 100, volume or 0.9, channel or CHAN_ITEM)
 end
 
-local function clearSpecialState(seeker, cooldown)
+local function stopLegacyLoop(seeker)
+    if not IsValid(seeker) then return end
+    seeker:StopSound("npc/roller/mine/rmine_seek_loop2.wav")
+    seeker:StopSound("npc/roller/mine/rmine_seek_loop1.wav")
+end
+
+local function restoreTargetAfterSpecial(seeker, target)
+    if not IsValid(seeker) then return end
+    if livingPlayer(target) then
+        seeker.LODTarget = target
+        seeker.LODReturningHome = false
+        seeker.LODNextTargetRefresh = CurTime() + 0.20
+        seeker.LODNextRouteRefresh = 0
+    end
+end
+
+local function clearSpecialState(seeker, cooldown, fxTail)
     if not IsValid(seeker) then return end
     local state = seeker.LODSeekerState
     local target = state and state.target
     seeker.LODSeekerState = nil
     seeker.LODNextSeekerCharge = CurTime() + (cooldown or CHARGE_COOLDOWN)
     seeker.LODMotionMode = "ground"
-    sendState(seeker, 0, 0)
+    stopLegacyLoop(seeker)
+    restoreTargetAfterSpecial(seeker, target)
 
-    if livingPlayer(target) then
-        seeker.LODTarget = target
-        seeker.LODReturningHome = false
-        seeker.LODNextTargetRefresh = CurTime() + 0.20
-        seeker.LODNextRouteRefresh = 0
+    local tail = math.max(0, tonumber(fxTail) or 0)
+    if tail <= 0 then
+        sendState(seeker, 0, 0)
+    else
+        timer.Simple(tail, function()
+            if IsValid(seeker) and not seeker.LODSeekerState then sendState(seeker, 0, 0) end
+        end)
     end
 end
 
@@ -207,7 +235,14 @@ local function beginWindup(seeker, graph, target)
     Motion:FaceToward(seeker, aim)
     Seeker.Stats.windups = (Seeker.Stats.windups or 0) + 1
     sendState(seeker, 1, WINDUP_SECONDS)
-    emitCue(seeker, "npc/roller/mine/rmine_blip3.wav", "buttons/button17.wav", 72, 120, 0.9)
+
+    emitOneShot(seeker, "buttons/button17.wav", 78, 132, 0.95, CHAN_ITEM)
+    local stateRef = seeker.LODSeekerState
+    timer.Simple(WINDUP_SECONDS * 0.55, function()
+        if IsValid(seeker) and seeker.LODSeekerState == stateRef and stateRef.phase == "windup" then
+            emitOneShot(seeker, "ambient/energy/zap1.wav", 76, 122, 0.82, CHAN_WEAPON)
+        end
+    end)
     return true
 end
 
@@ -219,27 +254,25 @@ local function beginCharge(seeker)
     state.distance = 0
     Seeker.Stats.charges = (Seeker.Stats.charges or 0) + 1
     sendState(seeker, 2, CHARGE_SECONDS)
-    emitCue(seeker, "npc/roller/mine/rmine_seek_loop2.wav", "ambient/energy/zap1.wav", 76, 106, 0.85)
+    stopLegacyLoop(seeker)
+    emitOneShot(seeker, "ambient/energy/zap5.wav", 82, 108, 0.95, CHAN_WEAPON)
     return true
 end
 
-local function impactStun(seeker, hitPos)
+local function impactEffect(seeker, hitPos, wall)
     if not IsValid(seeker) then return end
-    seeker.LODHitStunUntil = math.max(seeker.LODHitStunUntil or 0, CurTime() + IMPACT_STUN_SECONDS)
-    Motion:Stop(seeker)
-    seeker.LODMotionMode = "seeker-impact-stun"
-    Seeker.Stats.wallImpacts = (Seeker.Stats.wallImpacts or 0) + 1
-    Seeker.Stats.impactStuns = (Seeker.Stats.impactStuns or 0) + 1
-    sendState(seeker, 3, IMPACT_STUN_SECONDS)
-    emitCue(seeker, "npc/roller/mine/rmine_explode_shock1.wav", "physics/metal/metal_solid_impact_hard3.wav", 78, 92, 0.95)
+    sendState(seeker, 3, IMPACT_FX_SECONDS)
+    if wall then
+        emitOneShot(seeker, "physics/metal/metal_solid_impact_hard3.wav", 80, 94, 0.95, CHAN_BODY)
+    else
+        emitOneShot(seeker, "ambient/energy/zap9.wav", 80, 104, 0.92, CHAN_WEAPON)
+    end
 
     local effect = EffectData()
     effect:SetOrigin(hitPos or seeker:WorldSpaceCenter())
     effect:SetMagnitude(1)
-    effect:SetScale(1)
+    effect:SetScale(1.2)
     util.Effect("StunstickImpact", effect, true, true)
-
-    clearSpecialState(seeker, CHARGE_COOLDOWN)
 end
 
 local function damagePlayer(seeker, target)
@@ -247,7 +280,8 @@ local function damagePlayer(seeker, target)
     local size = math.Clamp(seeker:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local contract = Rolls and Rolls:RollHostileAttack(seeker, SEEKER_DAMAGE_PROFILE,
         SEEKER_DAMAGE_PROFILE.reference * size) or nil
-    local amount = contract and contract.final or math.max(1, math.floor(SEEKER_DAMAGE_PROFILE.reference * size + 0.5))
+    local amount = contract and contract.final
+        or math.max(1, math.floor(SEEKER_DAMAGE_PROFILE.reference * size + 0.5))
 
     local info = DamageInfo()
     info:SetAttacker(seeker)
@@ -261,10 +295,28 @@ local function damagePlayer(seeker, target)
         Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, seeker, target))
     end
 
-    -- Deliberately do not set player velocity. The Seeker damages rather than
-    -- launching players, avoiding physics/collision exploits in narrow corridors.
     Seeker.Stats.playerHits = (Seeker.Stats.playerHits or 0) + 1
     return true
+end
+
+local function resolvePlayerImpact(seeker, target)
+    if not IsValid(seeker) or not livingPlayer(target) or not seeker.LODSeekerState then return false end
+    Motion:Stop(seeker)
+    damagePlayer(seeker, target)
+    impactEffect(seeker, seeker:WorldSpaceCenter(), false)
+    clearSpecialState(seeker, CHARGE_COOLDOWN, IMPACT_FX_SECONDS)
+    return true
+end
+
+local function impactStun(seeker, hitPos)
+    if not IsValid(seeker) then return end
+    seeker.LODHitStunUntil = math.max(seeker.LODHitStunUntil or 0, CurTime() + IMPACT_STUN_SECONDS)
+    Motion:Stop(seeker)
+    seeker.LODMotionMode = "seeker-impact-stun"
+    Seeker.Stats.wallImpacts = (Seeker.Stats.wallImpacts or 0) + 1
+    Seeker.Stats.impactStuns = (Seeker.Stats.impactStuns or 0) + 1
+    impactEffect(seeker, hitPos, true)
+    clearSpecialState(seeker, CHARGE_COOLDOWN, IMPACT_FX_SECONDS)
 end
 
 local function stepGraphValid(graph, fromPos, toPos)
@@ -291,6 +343,14 @@ local function runChargeStep(seeker, graph)
     end
 
     local pos = seeker:GetPos()
+    local target = state.target
+    if livingPlayer(target)
+        and horizontalDistanceSqr(pos, target:GetPos()) <= PLAYER_CONTACT_DISTANCE * PLAYER_CONTACT_DISTANCE
+    then
+        resolvePlayerImpact(seeker, target)
+        return true
+    end
+
     local direction = state.direction
     local probeDistance = math.max(20, CHARGE_SPEED * (SERVICE_INTERVAL + 0.015))
     local probeEnd = pos + direction * probeDistance
@@ -299,16 +359,15 @@ local function runChargeStep(seeker, graph)
     local tr = util.TraceHull({
         start = pos + Vector(0, 0, 14),
         endpos = probeEnd + Vector(0, 0, 14),
-        mins = Vector(-11, -11, -11),
-        maxs = Vector(11, 11, 11),
+        mins = Vector(-13, -13, -13),
+        maxs = Vector(13, 13, 13),
         mask = MASK_SHOT,
-        filter = traceFilter(seeker, state.target)
+        filter = traceFilter(seeker, target)
     })
 
     if tr.Hit then
         if IsValid(tr.Entity) and tr.Entity:IsPlayer() and tr.Entity:Alive() then
-            damagePlayer(seeker, tr.Entity)
-            clearSpecialState(seeker, CHARGE_COOLDOWN)
+            resolvePlayerImpact(seeker, tr.Entity)
         else
             impactStun(seeker, tr.HitPos)
         end
@@ -329,6 +388,12 @@ local function runChargeStep(seeker, graph)
     local travelled = seeker:GetPos():Distance(before)
     state.distance = (state.distance or 0) + travelled
     seeker.LODMotionMode = "seeker-charge"
+
+    if livingPlayer(target)
+        and horizontalDistanceSqr(seeker:GetPos(), target:GetPos()) <= PLAYER_CONTACT_DISTANCE * PLAYER_CONTACT_DISTANCE
+    then
+        resolvePlayerImpact(seeker, target)
+    end
     return true
 end
 
@@ -358,7 +423,12 @@ end
 
 timer.Create(SERVICE_NAME, SERVICE_INTERVAL, 0, function()
     local state, graph = currentState()
-    if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared or state.SimulationFrozen then return end
+    if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared
+        or state.SimulationFrozen
+    then
+        return
+    end
+
     Seeker.Stats.serviceTicks = (Seeker.Stats.serviceTicks or 0) + 1
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODArchetypeId == "seeker" and not hostile.LODDead then
@@ -400,6 +470,7 @@ local function installHostilePatch()
         self.LODNextSeekerCharge = CurTime() + 0.75
         self:SetNW2Bool("LOD_Seeker", true)
         self:SetCollisionBounds(Vector(-13, -13, 0), Vector(13, 13, 28))
+        stopLegacyLoop(self)
     end
 
     local baseTryAttack = class._TryAttack
@@ -408,9 +479,30 @@ local function installHostilePatch()
         return baseTryAttack(self, target)
     end
 
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        if self.LODArchetypeId ~= "seeker" then return baseBehaviourTick(self) end
+        if self.LODSeekerState then return end
+
+        local target = self.LODTarget
+        if IsValid(target) and self._HasLineOfSight and self:_HasLineOfSight(target)
+            and horizontalDistanceSqr(self:GetPos(), target:GetPos())
+                <= PLAYER_STANDOFF_DISTANCE * PLAYER_STANDOFF_DISTANCE
+        then
+            Motion:Stop(self)
+            Motion:FaceToward(self, target:GetPos())
+            return
+        end
+
+        return baseBehaviourTick(self)
+    end
+
     local baseOnRemove = class.OnRemove
     function class:OnRemove()
-        if self.LODArchetypeId == "seeker" then sendState(self, 0, 0) end
+        if self.LODArchetypeId == "seeker" then
+            stopLegacyLoop(self)
+            sendState(self, 0, 0)
+        end
         if baseOnRemove then return baseOnRemove(self) end
     end
 
@@ -444,19 +536,18 @@ local function testSpawnCell(graph, playerCell, ply)
     local keys = {}
     for neighborKey in pairs(playerCell.neighbors or {}) do keys[#keys + 1] = neighborKey end
     table.sort(keys)
+
     for _, neighborKey in ipairs(keys) do
         local cell = graph.Cells[neighborKey]
         if cell and cell.z == playerCell.z and not safeCell(graph, cell)
             and Navigator:CanTraverse(graph, playerKey, neighborKey)
         then
-            local probe = ents.Create("lod_hostile")
-            if IsValid(probe) then probe:Remove() end
             local center = Navigator:CellCenter(cell) + Vector(0, 0, 2)
             local tr = util.TraceHull({
                 start = center + Vector(0, 0, 14),
                 endpos = ply:WorldSpaceCenter(),
-                mins = Vector(-10, -10, -10),
-                maxs = Vector(10, 10, 10),
+                mins = Vector(-12, -12, -12),
+                maxs = Vector(12, 12, 12),
                 mask = MASK_SHOT,
                 filter = function(ent)
                     if ent == ply then return true end
@@ -511,8 +602,10 @@ concommand.Add("lod_seeker_test", function(ply)
     Seeker.TestEntities[#Seeker.TestEntities + 1] = ent
     Seeker.Stats.testSpawns = (Seeker.Stats.testSpawns or 0) + 1
 
-    local line = string.format("seeker=#%d lane=%s->%s windup=%.2fs chargeSpeed=%d damage=2d6+4",
-        ent:EntIndex(), keyOf(spawnCell), keyOf(playerCell), WINDUP_SECONDS, CHARGE_SPEED)
+    local line = string.format(
+        "seeker=#%d lane=%s->%s windup=%.2fs chargeSpeed=%d damage=2d6+4 standoff=%d",
+        ent:EntIndex(), keyOf(spawnCell), keyOf(playerCell), WINDUP_SECONDS, CHARGE_SPEED,
+        PLAYER_STANDOFF_DISTANCE)
     print("[LOD:SEEKER-TEST] " .. line)
     ply:ChatPrint(line)
 end)
