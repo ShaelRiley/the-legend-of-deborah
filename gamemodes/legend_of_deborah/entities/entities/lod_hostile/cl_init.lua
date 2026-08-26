@@ -11,15 +11,15 @@ local BLITZER_LASER_COLOR = Color(80, 220, 100, 220)
 
 -- Motion V2 owns world-space placement: an ordinary hostile entity origin sits
 -- on the graph-authored walking surface (+ a tiny safety lift), and explicit
--- stair/leap motion changes that world position deliberately. Visual variance
--- therefore needs only one invariant: the LOWEST point of the rendered model
--- must remain at the entity origin for every scale. The old hard-coded 24-unit
--- humanoid pivot came from the retired Source-ground-locomotion architecture and
--- could push some models visibly into the deck; Deadcrab could likewise extend
--- downward through an upper-floor slab.
---
--- This uses cached model bounds only. There are no traces or hostile-list scans
--- in Draw(), preserving Motion V2's recovered frame-time performance.
+-- stair/leap motion changes that world position deliberately. Humanoid/deadcrab
+-- visuals pin their lowest rendered point to that origin. Device archetypes are
+-- different: Scanner is a hovering actor, while Rollermine needs a small visual
+-- clearance so animation/model bounds can never appear embedded in the deck.
+-- These are presentation offsets only; graph/physics position remains unchanged.
+local DEVICE_VISUAL_LIFT = {
+    watcher = 42,
+    seeker = 8
+}
 
 local function visualModelBounds(ent)
     if util.GetModelBounds then
@@ -33,7 +33,9 @@ local function applyVisualScale(ent)
     local size = math.Clamp(ent:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
     local model = ent:GetModel() or ""
-    local signature = string.format("%s:%.4f:%s", model, size, tostring(motionV2))
+    local archetype = ent:GetNW2String("LOD_Archetype", "")
+    local deviceLift = DEVICE_VISUAL_LIFT[archetype] or 0
+    local signature = string.format("%s:%.4f:%s:%s:%.2f", model, size, tostring(motionV2), archetype, deviceLift)
     if ent.LODLastClientVisualScale == signature then
         return size, ent.LODVisualVerticalCompensation or 0
     end
@@ -41,17 +43,14 @@ local function applyVisualScale(ent)
 
     local mins, maxs = visualModelBounds(ent)
 
-    -- Under Motion V2, local Z=0 is the authoritative visual foot plane. Scale
-    -- the complete model, then translate its scaled minimum-Z back to that plane.
-    -- This works for humanoids and Deadcrab alike and remains valid while a
-    -- Deadcrab is airborne because the entity origin itself follows the leap.
+    -- Under Motion V2, local Z=0 is the authoritative physical foot/floor plane.
+    -- First compensate scaled model bounds, then add any archetype presentation
+    -- lift. The lift never feeds back into movement, traces, routing, or damage.
     local verticalCompensation
     if motionV2 then
-        verticalCompensation = -(mins.z * size)
+        verticalCompensation = -(mins.z * size) + deviceLift
     else
-        -- Defensive legacy fallback for any entity created before Motion V2's
-        -- network flag arrives. Preserve the model's native minimum-Z plane.
-        verticalCompensation = mins.z * (1 - size)
+        verticalCompensation = mins.z * (1 - size) + deviceLift
     end
     ent.LODVisualVerticalCompensation = verticalCompensation
 
@@ -81,7 +80,6 @@ local function rawHandPosition(ent)
     if attachment and attachment > 0 then
         local data = ent:GetAttachment(attachment)
         if data and data.Pos then
-            -- Defensive fallback for models lacking the standard right-hand bone.
             return data.Pos, "hand-socket"
         end
     end
@@ -104,10 +102,6 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
         if delta:LengthSqr() > 0.001 then direction = delta:GetNormalized() end
     end
 
-    -- Treat the visible origin as a weapon-mounted laser emitter rather than the
-    -- actor's hand bone: forward along the committed shot line, lowered onto the
-    -- rifle body, and nudged slightly inward. The server uses matching offsets for
-    -- projectile spawn so visual warning and physical shot remain coherent.
     local muzzlePos = handPos
         + direction * SIGHT_FORWARD_OFFSET
         - ent:GetUp() * SIGHT_DOWN_OFFSET
@@ -132,10 +126,6 @@ function ENT:Draw()
     if aimDistance <= 0.001 then return end
     local direction = aimDelta / aimDistance
 
-    -- The beam and projectile now share one contract: both converge on the frozen
-    -- world-space aim point captured at beam-on. Stop the rendered beam just shy
-    -- of that point so a player-targeted ray does not cross the first-person near
-    -- plane and reappear as a misleading leg/crotch segment.
     local stopShort = math.min(24, aimDistance * 0.20)
     local visualAim = startPos + direction * math.max(8, aimDistance - stopShort)
 
