@@ -14,6 +14,7 @@ AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magnum_aim_state.lua")
+AddCSLuaFile("lod/cl_watcher.lua")
 AddCSLuaFile("lod/cl_magic.lua")
 AddCSLuaFile("lod/cl_pushback_fx.lua")
 
@@ -115,6 +116,10 @@ include("lod/sv_magnum_aim_state.lua")
 -- Phase Zero replaces repeated graph BFS/global hostile scans with bounded
 -- caches while preserving Motion V2 and generated geometry as authorities.
 include("lod/sv_phase_zero_runtime_optimization.lua")
+-- Gate-D Watcher support reuses Motion V2, the canonical wanderer registry, and
+-- graph-distance caches. It broadcasts target acquisition only to already-live
+-- wanderers and never creates reinforcements as part of its scan.
+include("lod/sv_watcher.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
