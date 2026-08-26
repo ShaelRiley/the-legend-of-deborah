@@ -15,6 +15,7 @@ AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magnum_aim_state.lua")
 AddCSLuaFile("lod/cl_watcher.lua")
+AddCSLuaFile("lod/cl_seeker.lua")
 AddCSLuaFile("lod/cl_magic.lua")
 AddCSLuaFile("lod/cl_pushback_fx.lua")
 
@@ -121,6 +122,11 @@ include("lod/sv_phase_zero_runtime_optimization.lua")
 -- wanderers and never creates reinforcements as part of its scan.
 include("lod/sv_watcher.lua")
 include("lod/sv_watcher_attack_guard.lua")
+-- Gate-D Seeker support layers a bounded wind-up/charge state machine onto
+-- Motion V2. It remains graph-bound, uses event-driven client FX, and never
+-- launches players on impact.
+include("lod/sv_seeker.lua")
+include("lod/sv_seeker_encounter.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
