@@ -131,16 +131,13 @@ include("lod/sv_watcher_attack_guard.lua")
 -- After a successful scan, Watcher commits one graph-valid retreat to restore
 -- support range; too-close Watchers retreat before they are allowed to scan.
 include("lod/sv_watcher_committed_retreat.lua")
--- Gate-D Seeker support layers a bounded wind-up/charge state machine onto
--- Motion V2. It remains graph-bound, uses event-driven client FX, and never
--- launches players on impact.
+-- Gate-D Seeker support owns wind-up, straight charge, wall-impact stun, and one
+-- immediately committed graph-valid retreat state. No second Seeker movement
+-- controller is loaded; Motion V2 remains the sole physical execution kernel.
 include("lod/sv_seeker.lua")
 -- Direct Source WAV availability can differ across installs; replace any missing
 -- Seeker-only direct asset before Source attempts playback.
 include("lod/sv_seeker_sound_safety.lua")
--- A Seeker retreat commits one graph-valid escape path instead of repeatedly
--- rebuilding short retreat routes that can oscillate around the same cells.
-include("lod/sv_seeker_committed_retreat.lua")
 include("lod/sv_seeker_encounter.lua")
 -- Explicitly enroll fully initialized Seekers in the shared hostile registry so
 -- their special service cannot be skipped by entity-creation timing.
