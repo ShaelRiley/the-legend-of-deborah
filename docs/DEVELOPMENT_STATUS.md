@@ -55,7 +55,7 @@ Current implementation is compliant for Force Shout/Shotgun d6s and Magnum/Magnu
 - Pistol: `1d4`; fresh expedition begins with Pistol + Crowbar, Pistol 18 loaded / 0 reserve.
 - SMG: `1d8`; six rapid shots overheat, 0.25 s per heat cooling, 2.0 s overheat lock, staged audiovisual feedback.
 - AR2: `1d10` per projectile; 0.45-second committed targeting laser followed by exactly three rounds; complete burst costs **one AR2 ammo unit**.
-- .357 Magnum: each projectile deals **`1d12!+X`**, where X is the number of chambers already empty before that trigger. A normal cylinder progresses **+0,+1,+2,+3,+4,+5**. Trigger 5 fires two projectiles; trigger 6 fires three. Below 60 current HP, each trigger makes one `(60-HP)%` check to add exactly one further free Magnum projectile, so the final burst can become four projectiles. On a final-cartridge trigger below 34% max Health, the final cartridge has `floor(34-currentHealthPercent)%` chance not to be consumed; preservation restores exactly one cartridge after the complete burst, allowing another final-chamber/+5 trigger. Extra projectiles consume no additional ammo, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; eight-target cap and authoritative geometry stop remain.
+- .357 Magnum: each projectile deals **`1d12!+X`**, where X is the number of chambers already empty before that trigger. A normal cylinder progresses **+0,+1,+2,+3,+4,+5**. Trigger 5 fires two projectiles; trigger 6 fires three. Below 60 current HP, each trigger makes one `(60-HP)%` check to add exactly one further free Magnum projectile, so the final burst can become four projectiles. On a final-cartridge trigger below 34% max Health, the final cartridge has `floor(34-currentHealthPercent)%` chance not to be consumed; preservation restores exactly one cartridge after the complete burst, allowing another final-chamber/+5 trigger. **Aim State** arms after 0.5 seconds of complete player and aim stillness, announces itself with a gold muzzle-particle lock cue, sound, and compact persistent `AIM x2` indicator, cancels immediately on movement or aim change, and is consumed by the next actual trigger. An aimed trigger deals **×2 damage across the whole trigger**, including every chamber/low-health burst projectile, cylinder bonus, projectile Boomchains, and fresh deeper-pierce Boomchains. Extra projectiles consume no additional ammo, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; eight-target cap and authoritative geometry stop remain.
 - Shotgun: shared exploding damage `1d6!`, per-die floor 3, natural 6 only; **8 guaranteed pellets + exploding `1d6!` additional pellets**; every connecting pellet deals at least 1 damage; 4× ordinary hit stun; 168-unit nominal push; 36-pellet safety cap.
 - Grenade: `1d20`, separate consumable reward.
 
@@ -109,9 +109,13 @@ Validate the targeted Magnum pass before beginning Watcher:
 4. Below 60 HP, the diagnostic reports the correct `(60-HP)%` extra-projectile chance and observed procs can add only one projectile per trigger.
 5. Below 34% max Health, the final-cartridge preservation diagnostic reports the correct chance; a successful proc resolves the full final burst and leaves exactly one cartridge available afterward.
 6. Preserved final cartridges remain chamber-6/+5 shots and may make a new preservation check on the next trigger.
-7. Extra burst/projectile mechanics do not consume additional reserve ammunition.
-8. Burst projectiles retain independent damage, explosion cue, and penetration behavior.
-9. No meaningful Steam Deck performance regression.
+7. Hold completely still with the Magnum for **0.5 s**: the gold particle/sound lock cue and persistent `AIM x2` indicator must appear. Move the player or view aim before firing and confirm Aim State cancels immediately.
+8. Fire from Aim State and confirm the combat feed detail includes **`AIM x2`** and applied damage is doubled. On a chamber burst, every projectile from that trigger inherits ×2; on a pierce, fresh deeper-target d12 chains are also doubled.
+9. Extra burst/projectile mechanics do not consume additional reserve ammunition.
+10. Burst projectiles retain independent damage, explosion cue, and penetration behavior.
+11. No meaningful Steam Deck performance regression.
+
+Diagnostics: `lod_magnum_super_status`, `lod_magnum_aim_status`, and `lod_magnum_pierce_status`.
 
 After this targeted acceptance, proceed to **Gate D — Expanded Enemy Roster**, beginning with Watcher.
 
