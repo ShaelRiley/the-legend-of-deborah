@@ -1,4 +1,4 @@
-# Implementation Map — 2026-08-25 Dice-Era Reconciliation
+# Implementation Map — 2026-08-25 Post-C8
 
 The live GDD defines intended design; GitHub `main` defines current implementation.
 
@@ -17,10 +17,12 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Narrowed Shambler/Runner melee dice | `sv_enemy_melee_dice_balance.lua` |
 | Generated-cover LOS / bullet authority | `sv_generated_geometry_ballistics.lua` |
 | Server-authoritative combat dice / combat feed + exploding-die QoL cue | `sv_combat_rolls.lua`, `cl_combat_roll_feed.lua`; player exploding-die continuations trigger a bounded shooter-local radial HUD burst + positive two-layer sound |
+| Global d12 Boomchain rule | `sv_magnum_super_explosive.lua` wraps the shared exploding-die authority: fresh d12 chains start at 8+, each explosion lowers the next threshold by 1, and the threshold stops at the exposed Boomchain Floor (default 5) |
 | Crowbar | `entities/weapons/weapon_lod_crowbar/`: `1d3`, 96-unit reach, miss/hit audio and hit-confirm |
 | SMG overheat + AR2 laser/burst | `sv_player_weapon_specials.lua`, `sv_player_weapon_specials_input.lua`, client mirror |
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
-| Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision; target depth escalates cumulatively from `1d12!` to `2d12!`, `3d12!`, etc. up to the existing 8-target cap |
+| Magnum cylinder escalation / late-cylinder bursts | `sv_magnum_super_explosive.lua`; six trigger positions apply `+0,+1,+2,+3,+4,+5` to each projectile; trigger 5 produces a two-round burst and trigger 6 a three-round burst, with one cartridge consumed per trigger |
+| Magnum multi-hostile penetration | `sv_magnum_piercing.lua`; post-body segments revalidate against generated/world collision; each deeper target adds a fresh independent d12 Boomchain up to the existing 8-target cap |
 | Shotgun exploding damage/pellet d6 + 4× shell stun | `sv_shotgun_identity_balance.lua`, `sv_combat_rolls.lua`, `sv_m3_hit_feedback.lua`; shared damage d6 follows universal natural-6-only explosions with floor 3; every shell has 8 guaranteed pellets plus a separate exploding `1d6!` worth of additional pellets; every connecting pellet deals at least 1 damage; final trace count is clamped to 36 for low-end safety |
 | Generic collision-safe pushback + `1d3` wall crush | `sv_pushback.lua`; authoritative displacement also broadcasts shared presentation state |
 | Pushback body-ghost trail / wall-crush particles + slam cue | `cl_pushback_fx.lua`; distance-scaled 4–16 silhouettes use distinct leased clientside render models from a reusable per-model pool, avoiding same-entity/same-frame transform caching; bounded lifetime/distance culling; inherited by Shotgun, Force Shout, and future shared push sources |
@@ -32,19 +34,21 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | HUD / minimap | `cl_hud.lua`, `cl_magic_hud.lua`, **one canonical `cl_minimap.lua` + one canonical `sv_minimap.lua`**; static current-floor topology is rendered once into one reusable 256×256 client render target, while only gates/stairs/route/objective/player overlays remain live per frame; same-level reopen reuses topology without retransmission |
 | Low-end runtime optimization | `sv_phase_zero_runtime_optimization.lua` plus bounded/cached work in motion, minimap, ballistics, loot, projectiles, death systems; minimap precomputes client adjacency/overlay indexes once per topology revision, caches BFS by player cell/progression state, and has no server level-reset Think or client origin/alive helper Think hooks |
 | Automatic dice-run telemetry | **Retired; not loaded.** Use existing diagnostics + manual runtime evidence. |
-| Remaining expanded normal roster | Blocked until complete-dungeon dice balance gate passes |
+| Expanded normal roster | **Gate D current:** `Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper` |
 | Brute + Neil / production Map acquisition | Remaining Milestone 4 work |
 | Gordon the Warden | Milestone 5 |
 | Dedicated multiplayer integration / QA | Milestone 6 |
 
 ## Canonical exploding-die invariant
 
-The live GDD defines explosion thresholds globally rather than per weapon:
+The live GDD defines explosion behavior globally rather than per weapon:
 
 - **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
-- **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
-- These are dice-system invariants. New d6/d12 mechanics inherit them automatically unless a later explicit design change supersedes the rule.
-- Current implementation is compliant for Force Shout d6s, both Shotgun d6 systems, and Magnum / Magnum-pierce d12s.
+- **Every fresh d12 chain begins by exploding on natural 8–12.**
+- After each successful d12 explosion, the next d12 in that same chain lowers its threshold by one: at the default settings the sequence is **8+ → 7+ → 6+ → 5+**, then remains at 5+.
+- **Boomchain Floor** is an exposed shared variable, default **5**. Future Magic/items may lower it without replacing the shared roll authority.
+- Every newly started d12 chain resets to 8+ before descending independently toward the current Boomchain Floor.
+- Current implementation is compliant for Force Shout/Shotgun d6s and Magnum/Magnum-pierce d12s.
 
 ## Current weapon contracts
 
@@ -52,7 +56,7 @@ The live GDD defines explosion thresholds globally rather than per weapon:
 - Pistol: `1d4`.
 - SMG: `1d8`, six-shot heat threshold, 0.25 s per heat cooling, 2.0 s overheat lock.
 - AR2: `1d10` per projectile, 0.45 s committed laser tell, exactly three projectiles, **one AR2 ammo unit per complete burst**.
-- .357 Magnum: exploding `1d12` on natural **8/9/10/11/12**; one cartridge; aligned piercing escalates cumulatively by one fresh exploding d12 chain per deeper target: target 1 `1d12!`, target 2 `2d12!`, target 3 `3d12!`, etc., capped at eight total targets and stopped by authoritative geometry.
+- .357 Magnum: each projectile deals `1d12!+X`, with X equal to the number of chambers already empty before that trigger. A normal six-round cylinder therefore progresses **+0,+1,+2,+3,+4,+5** and reload resets the sequence. Trigger 5 fires a rapid **two-projectile** Magnum burst; trigger 6 fires a rapid **three-projectile** burst. Extra burst projectiles consume no additional cartridge, use the triggering chamber's X bonus, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; geometry remains authoritative and total targets remain capped at eight.
 - Shotgun: shared damage `1d6!`, floor 3, natural **6 only** recursively explodes; 8 guaranteed pellets plus a separate exploding `1d6!` additional-pellet roll; **every connecting pellet deals at least 1 damage**; one aggregate resolution per target, **4× ordinary hit stun**, **168-unit nominal push**, and a 36-pellet hard safety cap. The exploding pellet die averages 4.2 extra pellets, producing an uncapped 12.2-pellet shell average and approximately **13.83 expected full-connect base damage** before later modifiers.
 - Grenade: `1d20`, separate consumable reward.
 - Player-side exploding-die continuations (Magnum, Shotgun damage/pellet dice, Force Shout, and Magnum pierce bonus dice) produce one concise local audiovisual confirmation: expanding radial burst/label near center screen plus a short positive two-layer cue.
@@ -108,4 +112,5 @@ Grenades do not regenerate.
 - HL2 suit/armor as a production LOD resource pool.
 - HL2 weapon secondary-fire gameplay; RMB is owned globally by Magic.
 - layered minimap serializer/safety/origin-sync wrappers, per-tick map entitlement reset, or full-topology redraw/retransmit on every map frame/open.
+- fixed 8–12 thresholds for every continuation d12 after the first; d12s now descend toward the Boomchain Floor.
 - unbounded generic state/network payloads, global BFS/entity scans, or automatic startup telemetry.
