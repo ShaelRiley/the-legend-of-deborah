@@ -129,6 +129,9 @@ include("lod/sv_seeker.lua")
 -- Direct Source WAV availability can differ across installs; replace any missing
 -- Seeker-only direct asset before Source attempts playback.
 include("lod/sv_seeker_sound_safety.lua")
+-- A Seeker retreat commits one graph-valid escape path instead of repeatedly
+-- rebuilding short retreat routes that can oscillate around the same cells.
+include("lod/sv_seeker_committed_retreat.lua")
 include("lod/sv_seeker_encounter.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
