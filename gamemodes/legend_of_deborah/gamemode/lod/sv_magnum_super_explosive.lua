@@ -11,6 +11,8 @@ local D12_DEFAULT_BOOMCHAIN_FLOOR = 5
 local MAGNUM_FALLBACK_CLIP = 6
 local BURST_SPACING = 0.085
 local MAX_CHAIN_DICE = 64
+local EXTRA_ROUND_HEALTH_THRESHOLD = 60
+local FINAL_PRESERVE_HEALTH_PERCENT = 34
 
 -- Public tuning seam for future Magic/items. The default game-wide Boomchain
 -- Floor is 5; later systems may lower this value or supply a lower per-profile
@@ -120,6 +122,31 @@ local function cylinderState(weapon)
     return emptyBefore, shotIndex, clipAfterTrigger, maximum
 end
 
+local function rollPercent(label, chance)
+    chance = math.Clamp(math.floor(tonumber(chance) or 0), 0, 100)
+    if chance <= 0 then return false end
+    if chance >= 100 then return true end
+    local rng = Rolls:_RNG(label)
+    return rng:Int(1, 100) <= chance
+end
+
+-- One percentage point per whole HP below 60. This can add at most one projectile
+-- to a trigger pull, regardless of the chamber's normal burst size.
+local function lowHealthExtraRoundChance(ply)
+    if not IsValid(ply) then return 0 end
+    local hp = math.max(0, math.floor(tonumber(ply:Health()) or 0))
+    return math.Clamp(EXTRA_ROUND_HEALTH_THRESHOLD - hp, 0, 100)
+end
+
+-- One percentage point per full percentage point of health below 34%.
+-- Example: exactly 33% health => 1%; 20% => 14%; 1% => 33%.
+local function finalRoundPreserveChance(ply)
+    if not IsValid(ply) then return 0 end
+    local maximum = math.max(1, tonumber(ply:GetMaxHealth()) or 100)
+    local percent = math.Clamp((math.max(0, ply:Health()) / maximum) * 100, 0, 100)
+    return math.Clamp(math.floor(FINAL_PRESERVE_HEALTH_PERCENT - percent + 0.0001), 0, 100)
+end
+
 -- Preserve every existing weapon wrapper (including the Shotgun identity pass),
 -- then add the Magnum's cylinder bonus after its d12 Boomchain has resolved.
 if not Rolls.LODMagnumCylinderDamageInstalled then
@@ -196,7 +223,12 @@ Magnum.Stats = Magnum.Stats or {
     triggerShots = 0,
     twoRoundBursts = 0,
     threeRoundBursts = 0,
-    injectedRounds = 0
+    injectedRounds = 0,
+    lowHealthExtraRolls = 0,
+    lowHealthExtraProcs = 0,
+    finalPreserveRolls = 0,
+    finalPreserveProcs = 0,
+    finalPreserveApplied = 0
 }
 
 local function fireInjectedRound(ply, burst)
@@ -236,11 +268,21 @@ local function fireInjectedRound(ply, burst)
     return true
 end
 
+local function finishBurst(ply, burst)
+    if burst and burst.preserveFinal and IsValid(burst.weapon) and burst.weapon:Clip1() == 0 then
+        -- Apply preservation only after every injected projectile has rolled, so
+        -- all bullets in the final-chamber burst continue to see chamber 6/+5.
+        burst.weapon:SetClip1(1)
+        Magnum.Stats.finalPreserveApplied = (Magnum.Stats.finalPreserveApplied or 0) + 1
+    end
+    Magnum.Bursts[ply] = nil
+end
+
 -- Stock Magnum trigger pulls remain authoritative for chamber/ammo consumption.
--- The fifth cartridge (one chamber left after the stock shot) schedules one free
--- follow-up projectile; the sixth/final cartridge schedules two. Each follow-up
--- is a genuine separately rolled/piercing Magnum round using the same committed
--- direction and the same cylinder bonus as its triggering cartridge.
+-- The fifth cartridge schedules one free follow-up projectile; the sixth/final
+-- cartridge schedules two. Low health can add exactly one more free projectile to
+-- any trigger. At very low percentage health, the final cartridge can be restored
+-- after its whole burst, allowing the player to attempt another final-chamber shot.
 hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
     local weapon = activeMagnum(shooter)
     if not IsValid(weapon) or weapon.LODMagnumInjectedBurst then return end
@@ -256,11 +298,42 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         extraRounds = 2
         Magnum.Stats.threeRoundBursts = (Magnum.Stats.threeRoundBursts or 0) + 1
     end
+
+    local extraChance = lowHealthExtraRoundChance(shooter)
+    local lowHealthExtra = false
+    if extraChance > 0 then
+        Magnum.Stats.lowHealthExtraRolls = (Magnum.Stats.lowHealthExtraRolls or 0) + 1
+        lowHealthExtra = rollPercent("magnum-low-health-extra:" .. tostring(shotIndex), extraChance)
+        if lowHealthExtra then
+            extraRounds = extraRounds + 1
+            Magnum.Stats.lowHealthExtraProcs = (Magnum.Stats.lowHealthExtraProcs or 0) + 1
+        end
+    end
+
+    local preserveFinal = false
+    local preserveChance = 0
+    if shotIndex == maximum and clipAfter == 0 then
+        preserveChance = finalRoundPreserveChance(shooter)
+        if preserveChance > 0 then
+            Magnum.Stats.finalPreserveRolls = (Magnum.Stats.finalPreserveRolls or 0) + 1
+            preserveFinal = rollPercent("magnum-final-preserve", preserveChance)
+            if preserveFinal then
+                Magnum.Stats.finalPreserveProcs = (Magnum.Stats.finalPreserveProcs or 0) + 1
+            end
+        end
+    end
+
     if extraRounds <= 0 then return end
 
     local direction = bullet and bullet.Dir or shooter:GetAimVector()
     direction = direction and direction:GetNormalized() or vector_origin
-    if direction == vector_origin then return end
+    if direction == vector_origin then
+        if preserveFinal and weapon:Clip1() == 0 then
+            weapon:SetClip1(1)
+            Magnum.Stats.finalPreserveApplied = (Magnum.Stats.finalPreserveApplied or 0) + 1
+        end
+        return
+    end
 
     Magnum.Bursts[shooter] = {
         weapon = weapon,
@@ -269,7 +342,11 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         nextAt = CurTime() + BURST_SPACING,
         spacing = BURST_SPACING,
         cylinderBonus = bonus,
-        clipAfterTrigger = clipAfter
+        clipAfterTrigger = clipAfter,
+        lowHealthExtra = lowHealthExtra,
+        extraChance = extraChance,
+        preserveFinal = preserveFinal,
+        preserveChance = preserveChance
     }
 end)
 
@@ -279,14 +356,14 @@ hook.Add("Think", "LOD_MagnumCylinderBurstThink", function()
         if not IsValid(ply) or not burst or not IsValid(burst.weapon)
             or not ply:Alive() or ply:GetActiveWeapon() ~= burst.weapon
         then
-            Magnum.Bursts[ply] = nil
+            finishBurst(ply, burst)
         elseif now >= (burst.nextAt or math.huge) then
             if not fireInjectedRound(ply, burst) then
-                Magnum.Bursts[ply] = nil
+                finishBurst(ply, burst)
             else
                 burst.remaining = (burst.remaining or 1) - 1
                 if burst.remaining <= 0 then
-                    Magnum.Bursts[ply] = nil
+                    finishBurst(ply, burst)
                 else
                     burst.nextAt = burst.nextAt + (burst.spacing or BURST_SPACING)
                 end
@@ -303,14 +380,23 @@ concommand.Add("lod_magnum_super_status", function(ply)
     local validated = (Magnum.Stats.twoRoundBursts or 0) > 0
         and (Magnum.Stats.threeRoundBursts or 0) > 0
         and (Magnum.Stats.injectedRounds or 0) >= 3
+    local hpExtraChance = IsValid(ply) and lowHealthExtraRoundChance(ply) or 0
+    local preserveChance = IsValid(ply) and finalRoundPreserveChance(ply) or 0
     local line = string.format(
-        "boomStart=%d boomFloor=%d cylinder=+0..+5 triggerShots=%d twoBursts=%d threeBursts=%d injected=%d result=%s",
+        "boomStart=%d boomFloor=%d cylinder=+0..+5 triggerShots=%d twoBursts=%d threeBursts=%d injected=%d lowHPChance=%d%% lowHPProcs=%d/%d finalKeepChance=%d%% finalKeepProcs=%d/%d applied=%d result=%s",
         D12_START_THRESHOLD,
         Rolls:GetD12BoomchainFloor(),
         Magnum.Stats.triggerShots or 0,
         Magnum.Stats.twoRoundBursts or 0,
         Magnum.Stats.threeRoundBursts or 0,
         Magnum.Stats.injectedRounds or 0,
+        hpExtraChance,
+        Magnum.Stats.lowHealthExtraProcs or 0,
+        Magnum.Stats.lowHealthExtraRolls or 0,
+        preserveChance,
+        Magnum.Stats.finalPreserveProcs or 0,
+        Magnum.Stats.finalPreserveRolls or 0,
+        Magnum.Stats.finalPreserveApplied or 0,
         validated and "PASS" or "WAITING")
     print("[LOD:MAGNUM-SUPER] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
