@@ -1,8 +1,15 @@
 LOD = LOD or {}
 LOD.Watcher = LOD.Watcher or {}
 
+local Watcher = LOD.Watcher
 local Navigator = LOD.MazeNavigator
 local cellKey = LOD.MazeGenerator and LOD.MazeGenerator.CellKey
+
+local WATCHER_SCAN_SERVICE = "LOD_WatcherScanService"
+local WATCHER_SCAN_INTERVAL = 0.10
+
+Watcher.ScanServiceTicks = Watcher.ScanServiceTicks or 0
+Watcher.ScanServiceCalls = Watcher.ScanServiceCalls or 0
 
 local function keyOf(cell)
     return cell and cellKey and cellKey(cell.x, cell.y, cell.z) or nil
@@ -33,13 +40,15 @@ local function installWatcherGuards()
         function class:_RunWatcherTick()
             if self.LODArchetypeId ~= "watcher" then return baseRunWatcherTick(self) end
 
+            local now = CurTime()
+            if now < (self.LODWatcherGuardNextTick or 0) then
+                return self.LODWatcherScan ~= nil
+            end
+            self.LODWatcherGuardNextTick = now + 0.045
             self.LODWatcherGuardTicks = (self.LODWatcherGuardTicks or 0) + 1
 
-            -- Make scan acquisition independent of wrapper/tick ordering while
-            -- retaining the existing authored/wanderer target authority. The
-            -- Watcher dispatcher can run before generic movement has refreshed
-            -- LODTarget, so explicitly give the canonical target refresher its
-            -- normal cadence here as well.
+            -- Make scan acquisition independent of wrapper/coroutine ordering
+            -- while retaining the canonical authored/wanderer target authority.
             if not self.LODWatcherScan then
                 local state = LOD.RunManager and LOD.RunManager.State
                 local graph = state and state.Graph
@@ -48,6 +57,12 @@ local function installWatcherGuards()
                 end
             end
 
+            -- The original Watcher dispatcher used FrameNumber() as a same-frame
+            -- duplicate guard. Runtime evidence showed that this can strand a
+            -- scanner after its first dispatch on the server. The bounded CurTime
+            -- cadence above now owns de-duplication, so clear that legacy guard
+            -- immediately before invoking the original Watcher state machine.
+            self.LODWatcherDispatchFrame = nil
             self.LODWatcherGuardTarget = self.LODTarget
             self.LODWatcherGuardFrame = FrameNumber()
             return baseRunWatcherTick(self)
@@ -62,9 +77,33 @@ hook.Add("OnEntityCreated", "LOD_WatcherGuardInstall", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installWatcherGuards() end
 end)
 
+-- Watcher scanning is a support-state machine, not locomotion. Run it from one
+-- bounded shared service rather than relying on a specific NextBot coroutine
+-- cadence. Motion V2 remains the sole movement authority; _RefreshTarget remains
+-- the sole acquisition authority; the Watcher module still owns LOS/scan/alert.
+-- At the production hostile ceiling this is at most a few hundred trivial
+-- archetype checks per second and allocates no per-Watcher timers.
+timer.Create(WATCHER_SCAN_SERVICE, WATCHER_SCAN_INTERVAL, 0, function()
+    local state = LOD.RunManager and LOD.RunManager.State
+    if not state or not state.Graph or not state.BuildReady or state.Failed or state.LevelCleared
+        or state.SimulationFrozen
+    then
+        return
+    end
+
+    Watcher.ScanServiceTicks = (Watcher.ScanServiceTicks or 0) + 1
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and not hostile.LODDead and hostile.LODArchetypeId == "watcher"
+            and hostile._RunWatcherTick
+        then
+            Watcher.ScanServiceCalls = (Watcher.ScanServiceCalls or 0) + 1
+            hostile.LODWatcherServiceCalls = (hostile.LODWatcherServiceCalls or 0) + 1
+            hostile:_RunWatcherTick()
+        end
+    end
+end)
+
 -- The production Watcher must ignore players in checkpoint/spawn safe space.
--- The test command exposes that prerequisite so a correct non-scan is not
--- mistaken for a broken scanner.
 concommand.Add("lod_watcher_preflight", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if cv and not cv:GetBool() then return end
@@ -87,9 +126,7 @@ concommand.Add("lod_watcher_preflight", function(ply)
 end)
 
 -- One-shot diagnosis for the pre-scan gate. It performs no persistent work and
--- uses the same shared LOS helper used by ordinary hostile perception, allowing
--- runtime evidence to distinguish a missing Watcher dispatch from target/LOS
--- rejection without adding telemetry or another gameplay authority.
+-- uses the same shared LOS helper used by ordinary hostile perception.
 concommand.Add("lod_watcher_dispatch_status", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if cv and not cv:GetBool() then return end
@@ -112,8 +149,9 @@ concommand.Add("lod_watcher_dispatch_status", function(ply)
             local nextScan = math.max(0, (watcher.LODNextWatcherScan or 0) - CurTime())
             local nextRefresh = math.max(0, (watcher.LODNextTargetRefresh or 0) - CurTime())
             local line = string.format(
-                "#%d ticks=%d target=%s watcherCell=%s targetCell=%s sameFloor=%s targetSafe=%s sharedLOS=%s scanning=%s nextScan=%.2f nextRefresh=%.2f",
+                "#%d ticks=%d service=%d target=%s watcherCell=%s targetCell=%s sameFloor=%s targetSafe=%s sharedLOS=%s scanning=%s nextScan=%.2f nextRefresh=%.2f",
                 watcher:EntIndex(), watcher.LODWatcherGuardTicks or 0,
+                watcher.LODWatcherServiceCalls or 0,
                 IsValid(target) and ("#" .. target:EntIndex()) or "none",
                 wc and keyOf(wc) or "none", tc and keyOf(tc) or "none",
                 tostring(sameFloor), tostring(targetSafe), tostring(los),
@@ -122,6 +160,11 @@ concommand.Add("lod_watcher_dispatch_status", function(ply)
             if IsValid(ply) then ply:ChatPrint(line) end
         end
     end
+
+    local serviceLine = string.format("serviceTicks=%d serviceCalls=%d interval=%.2fs",
+        Watcher.ScanServiceTicks or 0, Watcher.ScanServiceCalls or 0, WATCHER_SCAN_INTERVAL)
+    print("[LOD:WATCHER-DISPATCH] " .. serviceLine)
+    if IsValid(ply) then ply:ChatPrint(serviceLine) end
 
     if found == 0 then
         print("[LOD:WATCHER-DISPATCH] no live Watchers")
