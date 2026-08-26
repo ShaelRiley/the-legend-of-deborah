@@ -131,6 +131,10 @@ include("lod/sv_watcher_attack_guard.lua")
 -- After a successful scan, Watcher commits one graph-valid retreat to restore
 -- support range; too-close Watchers retreat before they are allowed to scan.
 include("lod/sv_watcher_committed_retreat.lua")
+-- Never let a Watcher keep scanning or enter a blocked hold at the player's
+-- feet. This transition-only repair extends the existing committed retreat and
+-- owns no recurring movement service of its own.
+include("lod/sv_watcher_close_range_continuity.lua")
 -- Gate-D Seeker support owns wind-up, straight charge, wall-impact stun, and one
 -- immediately committed graph-valid retreat state. No second Seeker movement
 -- controller is loaded; Motion V2 remains the sole physical execution kernel.
