@@ -85,14 +85,11 @@ include("lod/sv_magnum_super_explosive.lua")
 include("lod/sv_magnum_aim_state.lua")
 include("lod/sv_phase_zero_runtime_optimization.lua")
 include("lod/sv_watcher.lua")
-include("lod/sv_watcher_attack_guard.lua")
-include("lod/sv_watcher_committed_retreat.lua")
-include("lod/sv_watcher_close_range_continuity.lua")
-include("lod/sv_watcher_concealment.lua")
-include("lod/sv_watcher_polish.lua")
-include("lod/sv_watcher_polish_timer_safety.lua")
+-- Watcher behaviour is intentionally consolidated here. The retired incremental
+-- retreat/concealment/scan services remain in the repository for history but are
+-- not loaded; one Behaviour controller chooses state and Motion V2 alone moves it.
+include("lod/sv_watcher_unified.lua")
 include("lod/sv_watcher_test_visibility.lua")
-include("lod/sv_watcher_scan_progression_fix.lua")
 include("lod/sv_seeker.lua")
 include("lod/sv_seeker_sound_safety.lua")
 include("lod/sv_seeker_encounter.lua")
