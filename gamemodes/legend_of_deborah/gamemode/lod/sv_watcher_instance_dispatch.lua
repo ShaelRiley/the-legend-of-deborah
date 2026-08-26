@@ -11,13 +11,11 @@ if not Unified then return end
 -- which would continue calling the original RunBehaviour after the erased method
 -- is gone. That produced the production error at lod_hostile/init.lua:766.
 --
--- Instead, leave every non-Watcher completely untouched. Once a newly-created
--- hostile has had its archetype assigned, bind the final unified tick directly to
--- Watchers only. This preserves the accepted single Watcher authority while the
--- normal SENT/wrapper chain remains authoritative for all other archetypes.
-
-hook.Remove("OnEntityCreated", "LOD_WatcherUnifiedControllerInstall")
-hook.Remove("OnEntityCreated", "LOD_WatcherUnifiedRunBehaviourDispatch")
+-- Important startup-order rule: lod_hostile may not be registered yet when the
+-- gamemode includes this file. sv_watcher_unified.lua therefore keeps its own
+-- OnEntityCreated late-install hook armed until the first hostile exists. Do not
+-- remove that hook here and do not snapshot the patched tick during gamemode
+-- startup. Resolve it only after the entity has actually been created.
 
 local function unifiedWatcherTick()
     local stored = scripted_ents.GetStored("lod_hostile")
@@ -26,15 +24,12 @@ local function unifiedWatcherTick()
     return class._BehaviourTick
 end
 
-local watcherTick = unifiedWatcherTick()
-if not watcherTick then
-    ErrorNoHalt("[LOD:WATCHER-UNIFIED] final Watcher tick unavailable; direct bind skipped\n")
-    return
-end
-
 local function bindWatcher(ent)
     if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return false end
     if ent.LODArchetypeId ~= "watcher" then return false end
+
+    local watcherTick = unifiedWatcherTick()
+    if not watcherTick then return false end
 
     ent._BehaviourTick = watcherTick
     if not ent.LODWatcherUnifiedInstanceBound then
@@ -49,16 +44,20 @@ hook.Add("OnEntityCreated", "LOD_WatcherUnifiedWatcherOnlyBind", function(ent)
     if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return end
 
     -- ents.Create fires OnEntityCreated before encounter/wanderer code assigns
-    -- LODArchetypeId. One next-tick callback observes the finished spawn metadata;
-    -- it is finite (not a recurring controller or movement timer).
+    -- LODArchetypeId. One next-tick callback observes the finished spawn metadata
+    -- and also gives sv_watcher_unified's class installer time to run. This is a
+    -- finite spawn callback, not a recurring controller or movement timer.
     timer.Simple(0, function()
         if IsValid(ent) then bindWatcher(ent) end
     end)
 end)
 
--- Covers any Watcher that already exists when this module is loaded/reloaded.
+-- Covers Watchers that already exist when this module is hot-reloaded. Normal
+-- production startup has none here, but this keeps developer reloads harmless.
 for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
-    bindWatcher(ent)
+    timer.Simple(0, function()
+        if IsValid(ent) then bindWatcher(ent) end
+    end)
 end
 
-print("[LOD:WATCHER-UNIFIED] watcher-only direct BehaviourTick dispatch installed")
+print("[LOD:WATCHER-UNIFIED] watcher-only direct BehaviourTick dispatch armed")
