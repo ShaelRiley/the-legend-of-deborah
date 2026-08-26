@@ -19,10 +19,13 @@ local CHARGE_SPEED = 560
 local CHARGE_SECONDS = 1.20
 local CHARGE_RANGE = 760
 local MIN_CHARGE_RANGE = 150
+local READY_STANDOFF_DISTANCE = 300
+local RETREAT_TARGET_DISTANCE = 320
+local RETREAT_SEARCH_DEPTH = 2
+local RETREAT_RETRY_SECONDS = 0.25
 local CHARGE_COOLDOWN = 2.80
 local IMPACT_STUN_SECONDS = 1.10
 local PLAYER_CONTACT_DISTANCE = 58
-local PLAYER_STANDOFF_DISTANCE = 180
 local IMPACT_FX_SECONDS = 0.28
 local WANDER_WEIGHT = 4
 local SEEKER_HEALTH_PROFILE = {count = 3, sides = 4, bonus = 3}
@@ -59,15 +62,18 @@ if WanderingDirector and WanderingDirector.Config and WanderingDirector.Config.A
     WanderingDirector.Config.ArchetypeWeights.seeker = WANDER_WEIGHT
 end
 
-Seeker.Stats = Seeker.Stats or {
-    windups = 0,
-    charges = 0,
-    playerHits = 0,
-    wallImpacts = 0,
-    impactStuns = 0,
-    testSpawns = 0,
-    serviceTicks = 0
-}
+Seeker.Stats = Seeker.Stats or {}
+Seeker.Stats.windups = Seeker.Stats.windups or 0
+Seeker.Stats.charges = Seeker.Stats.charges or 0
+Seeker.Stats.playerHits = Seeker.Stats.playerHits or 0
+Seeker.Stats.wallImpacts = Seeker.Stats.wallImpacts or 0
+Seeker.Stats.impactStuns = Seeker.Stats.impactStuns or 0
+Seeker.Stats.testSpawns = Seeker.Stats.testSpawns or 0
+Seeker.Stats.serviceTicks = Seeker.Stats.serviceTicks or 0
+Seeker.Stats.retreatStarts = Seeker.Stats.retreatStarts or 0
+Seeker.Stats.retreatCompletes = Seeker.Stats.retreatCompletes or 0
+Seeker.Stats.postHitRetreats = Seeker.Stats.postHitRetreats or 0
+Seeker.Stats.closeRangeRetreats = Seeker.Stats.closeRangeRetreats or 0
 Seeker.TestEntities = Seeker.TestEntities or {}
 
 local function keyOf(cell)
@@ -106,6 +112,10 @@ local function horizontalDistanceSqr(a, b)
     local dx = a.x - b.x
     local dy = a.y - b.y
     return dx * dx + dy * dy
+end
+
+local function horizontalDistance(a, b)
+    return math.sqrt(horizontalDistanceSqr(a, b))
 end
 
 local function traceFilter(seeker, target)
@@ -189,7 +199,7 @@ local function restoreTargetAfterSpecial(seeker, target)
 end
 
 local function clearSpecialState(seeker, cooldown, fxTail)
-    if not IsValid(seeker) then return end
+    if not IsValid(seeker) then return nil end
     local state = seeker.LODSeekerState
     local target = state and state.target
     seeker.LODSeekerState = nil
@@ -206,10 +216,16 @@ local function clearSpecialState(seeker, cooldown, fxTail)
             if IsValid(seeker) and not seeker.LODSeekerState then sendState(seeker, 0, 0) end
         end)
     end
+    return target
 end
 
 local function beginWindup(seeker, graph, target)
-    if seeker.LODSeekerState or CurTime() < (seeker.LODNextSeekerCharge or 0) then return false end
+    if seeker.LODSeekerState or seeker.LODSeekerRetreat
+        or CurTime() < (seeker.LODNextSeekerCharge or 0)
+    then
+        return false
+    end
+    if horizontalDistance(seeker:GetPos(), target:GetPos()) < MIN_CHARGE_RANGE then return false end
     if not lineGraphClear(seeker, graph, target) then return false end
 
     local origin = seeker:GetPos()
@@ -299,12 +315,179 @@ local function damagePlayer(seeker, target)
     return true
 end
 
-local function resolvePlayerImpact(seeker, target)
+local function buildRetreatWaypoints(seeker, graph, target)
+    local startCell = Navigator:WorldToCell(graph, seeker:GetPos())
+    local targetCell = Navigator:WorldToCell(graph, target:GetPos())
+    if not startCell or not targetCell or startCell.z ~= targetCell.z then return nil end
+
+    local startKey = keyOf(startCell)
+    local queue = {{key = startKey, depth = 0}}
+    local head = 1
+    local seen = {[startKey] = true}
+    local previous = {}
+    local bestKey = startKey
+    local bestDistance = horizontalDistance(Navigator:CellCenter(startCell), target:GetPos())
+    local bestAtOrBeyond = bestDistance >= RETREAT_TARGET_DISTANCE
+
+    while head <= #queue do
+        local item = queue[head]
+        head = head + 1
+        local cell = graph.Cells[item.key]
+        if cell then
+            local centerDistance = horizontalDistance(Navigator:CellCenter(cell), target:GetPos())
+            local atOrBeyond = centerDistance >= RETREAT_TARGET_DISTANCE
+            local better = false
+
+            if atOrBeyond and not bestAtOrBeyond then
+                better = true
+            elseif atOrBeyond and bestAtOrBeyond then
+                better = math.abs(centerDistance - RETREAT_TARGET_DISTANCE)
+                    < math.abs(bestDistance - RETREAT_TARGET_DISTANCE)
+            elseif not bestAtOrBeyond and centerDistance > bestDistance then
+                better = true
+            end
+
+            if better and not safeCell(graph, cell) then
+                bestKey = item.key
+                bestDistance = centerDistance
+                bestAtOrBeyond = atOrBeyond
+            end
+
+            if item.depth < RETREAT_SEARCH_DEPTH then
+                local neighborKeys = {}
+                for neighborKey in pairs(cell.neighbors or {}) do neighborKeys[#neighborKeys + 1] = neighborKey end
+                table.sort(neighborKeys)
+                for _, neighborKey in ipairs(neighborKeys) do
+                    local neighbor = graph.Cells[neighborKey]
+                    if neighbor and neighbor.z == startCell.z and not seen[neighborKey]
+                        and not safeCell(graph, neighbor)
+                        and Navigator:CanTraverse(graph, item.key, neighborKey)
+                    then
+                        seen[neighborKey] = true
+                        previous[neighborKey] = item.key
+                        queue[#queue + 1] = {key = neighborKey, depth = item.depth + 1}
+                    end
+                end
+            end
+        end
+    end
+
+    if bestKey ~= startKey then
+        local reverse = {bestKey}
+        local cursor = bestKey
+        while cursor ~= startKey do
+            cursor = previous[cursor]
+            if not cursor then break end
+            reverse[#reverse + 1] = cursor
+        end
+        if cursor == startKey then
+            local path = {}
+            for i = #reverse, 1, -1 do path[#path + 1] = graph.Cells[reverse[i]] end
+            local waypoints = Navigator:PathToWaypoints(graph, path)
+            if #waypoints > 0 then return waypoints end
+        end
+    end
+
+    -- If topology offers no better neighboring cell, use the guaranteed interior
+    -- of the current graph cell and move directly away from the player. This does
+    -- not cross an edge, so it cannot bypass a wall or locked gate.
+    local seekerPos = seeker:GetPos()
+    local targetPos = target:GetPos()
+    local away = Vector(seekerPos.x - targetPos.x, seekerPos.y - targetPos.y, 0)
+    if away:LengthSqr() <= 0.01 then away = seeker:GetForward() * -1 end
+    away:Normalize()
+    local wanted = seekerPos + away * RETREAT_TARGET_DISTANCE
+    local localGoal = Motion:CellFloorPoint(startCell, wanted)
+    if localGoal and horizontalDistance(localGoal, targetPos) > horizontalDistance(seekerPos, targetPos) + 8 then
+        return {{pos = localGoal, tolerance = 12, stair = false, seekerRetreat = true}}
+    end
+
+    return nil
+end
+
+local function beginRetreat(seeker, graph, target, reason)
+    if not IsValid(seeker) or not targetEligible(seeker, graph, target) then return false end
+    if seeker.LODSeekerState then return false end
+
+    local existing = seeker.LODSeekerRetreat
+    if existing and existing.target == target then return true end
+
+    seeker.LODSeekerRetreat = {
+        target = target,
+        reason = reason or "range",
+        waypoints = nil,
+        index = 1,
+        retryAt = 0
+    }
+    seeker.LODWaypoints = {}
+    seeker.LODWaypointIndex = 1
+    seeker.LODNextRouteRefresh = CurTime() + 0.50
+    seeker.LODNextTargetRefresh = CurTime() + 0.50
+    Seeker.Stats.retreatStarts = (Seeker.Stats.retreatStarts or 0) + 1
+    if reason == "post-hit" then
+        Seeker.Stats.postHitRetreats = (Seeker.Stats.postHitRetreats or 0) + 1
+    else
+        Seeker.Stats.closeRangeRetreats = (Seeker.Stats.closeRangeRetreats or 0) + 1
+    end
+    return true
+end
+
+local function finishRetreat(seeker, target)
+    if not IsValid(seeker) then return end
+    seeker.LODSeekerRetreat = nil
+    Motion:Stop(seeker)
+    restoreTargetAfterSpecial(seeker, target)
+    if livingPlayer(target) then Motion:FaceToward(seeker, target:GetPos()) end
+    Seeker.Stats.retreatCompletes = (Seeker.Stats.retreatCompletes or 0) + 1
+end
+
+local function runRetreatStep(seeker, graph)
+    local retreat = seeker.LODSeekerRetreat
+    if not retreat then return false end
+    local target = retreat.target
+    if not targetEligible(seeker, graph, target) then
+        seeker.LODSeekerRetreat = nil
+        return false
+    end
+
+    local distance = horizontalDistance(seeker:GetPos(), target:GetPos())
+    if distance >= RETREAT_TARGET_DISTANCE then
+        finishRetreat(seeker, target)
+        return true
+    end
+
+    if not retreat.waypoints or retreat.index > #retreat.waypoints then
+        if CurTime() < (retreat.retryAt or 0) then
+            Motion:Stop(seeker)
+            Motion:FaceToward(seeker, target:GetPos())
+            return true
+        end
+        retreat.waypoints = buildRetreatWaypoints(seeker, graph, target)
+        retreat.index = 1
+        retreat.retryAt = CurTime() + RETREAT_RETRY_SECONDS
+        if not retreat.waypoints or #retreat.waypoints == 0 then
+            Motion:Stop(seeker)
+            Motion:FaceToward(seeker, target:GetPos())
+            return true
+        end
+    end
+
+    local waypoint = retreat.waypoints[retreat.index]
+    if waypoint then
+        local reached = Motion:MoveToward(seeker, waypoint)
+        seeker.LODMotionMode = "seeker-retreat"
+        if reached then retreat.index = retreat.index + 1 end
+    end
+    return true
+end
+
+local function resolvePlayerImpact(seeker, graph, target)
     if not IsValid(seeker) or not livingPlayer(target) or not seeker.LODSeekerState then return false end
     Motion:Stop(seeker)
     damagePlayer(seeker, target)
     impactEffect(seeker, seeker:WorldSpaceCenter(), false)
     clearSpecialState(seeker, CHARGE_COOLDOWN, IMPACT_FX_SECONDS)
+    beginRetreat(seeker, graph, target, "post-hit")
     return true
 end
 
@@ -347,7 +530,7 @@ local function runChargeStep(seeker, graph)
     if livingPlayer(target)
         and horizontalDistanceSqr(pos, target:GetPos()) <= PLAYER_CONTACT_DISTANCE * PLAYER_CONTACT_DISTANCE
     then
-        resolvePlayerImpact(seeker, target)
+        resolvePlayerImpact(seeker, graph, target)
         return true
     end
 
@@ -367,7 +550,7 @@ local function runChargeStep(seeker, graph)
 
     if tr.Hit then
         if IsValid(tr.Entity) and tr.Entity:IsPlayer() and tr.Entity:Alive() then
-            resolvePlayerImpact(seeker, tr.Entity)
+            resolvePlayerImpact(seeker, graph, tr.Entity)
         else
             impactStun(seeker, tr.HitPos)
         end
@@ -392,14 +575,13 @@ local function runChargeStep(seeker, graph)
     if livingPlayer(target)
         and horizontalDistanceSqr(seeker:GetPos(), target:GetPos()) <= PLAYER_CONTACT_DISTANCE * PLAYER_CONTACT_DISTANCE
     then
-        resolvePlayerImpact(seeker, target)
+        resolvePlayerImpact(seeker, graph, target)
     end
     return true
 end
 
 local function serviceSeeker(seeker, graph)
     if not IsValid(seeker) or seeker.LODDead or seeker.LODActivated == false then return end
-    if CurTime() < (seeker.LODHitStunUntil or 0) and not seeker.LODSeekerState then return end
 
     local state = seeker.LODSeekerState
     if state then
@@ -415,10 +597,25 @@ local function serviceSeeker(seeker, graph)
         end
     end
 
-    if CurTime() < (seeker.LODNextSeekerCharge or 0) then return end
+    if seeker.LODSeekerRetreat then
+        runRetreatStep(seeker, graph)
+        return
+    end
+
+    if CurTime() < (seeker.LODHitStunUntil or 0) then return end
+
     seeker:_RefreshTarget(graph)
     local target = seeker.LODTarget
-    if IsValid(target) then beginWindup(seeker, graph, target) end
+    if not IsValid(target) then return end
+
+    local distance = horizontalDistance(seeker:GetPos(), target:GetPos())
+    if distance < MIN_CHARGE_RANGE then
+        if beginRetreat(seeker, graph, target, "too-close") then runRetreatStep(seeker, graph) end
+        return
+    end
+
+    if CurTime() < (seeker.LODNextSeekerCharge or 0) then return end
+    beginWindup(seeker, graph, target)
 end
 
 timer.Create(SERVICE_NAME, SERVICE_INTERVAL, 0, function()
@@ -467,6 +664,7 @@ local function installHostilePatch()
         baseInitialize(self)
         if self.LODArchetypeId ~= "seeker" or not self.LODConfig then return end
         self.LODSeekerState = nil
+        self.LODSeekerRetreat = nil
         self.LODNextSeekerCharge = CurTime() + 0.75
         self:SetNW2Bool("LOD_Seeker", true)
         self:SetCollisionBounds(Vector(-13, -13, 0), Vector(13, 13, 28))
@@ -482,12 +680,12 @@ local function installHostilePatch()
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
         if self.LODArchetypeId ~= "seeker" then return baseBehaviourTick(self) end
-        if self.LODSeekerState then return end
+        if self.LODSeekerState or self.LODSeekerRetreat then return end
 
         local target = self.LODTarget
         if IsValid(target) and self._HasLineOfSight and self:_HasLineOfSight(target)
             and horizontalDistanceSqr(self:GetPos(), target:GetPos())
-                <= PLAYER_STANDOFF_DISTANCE * PLAYER_STANDOFF_DISTANCE
+                <= READY_STANDOFF_DISTANCE * READY_STANDOFF_DISTANCE
         then
             Motion:Stop(self)
             Motion:FaceToward(self, target:GetPos())
@@ -603,9 +801,9 @@ concommand.Add("lod_seeker_test", function(ply)
     Seeker.Stats.testSpawns = (Seeker.Stats.testSpawns or 0) + 1
 
     local line = string.format(
-        "seeker=#%d lane=%s->%s windup=%.2fs chargeSpeed=%d damage=2d6+4 standoff=%d",
+        "seeker=#%d lane=%s->%s windup=%.2fs chargeSpeed=%d damage=2d6+4 minRange=%d retreatRange=%d",
         ent:EntIndex(), keyOf(spawnCell), keyOf(playerCell), WINDUP_SECONDS, CHARGE_SPEED,
-        PLAYER_STANDOFF_DISTANCE)
+        MIN_CHARGE_RANGE, RETREAT_TARGET_DISTANCE)
     print("[LOD:SEEKER-TEST] " .. line)
     ply:ChatPrint(line)
 end)
@@ -615,26 +813,31 @@ concommand.Add("lod_seeker_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
-    local live, windup, charging = 0, 0, 0
+    local live, windup, charging, retreating = 0, 0, 0, 0
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and not hostile.LODDead and hostile.LODArchetypeId == "seeker" then
             live = live + 1
             local phase = hostile.LODSeekerState and hostile.LODSeekerState.phase
             if phase == "windup" then windup = windup + 1 end
             if phase == "charge" then charging = charging + 1 end
+            if hostile.LODSeekerRetreat then retreating = retreating + 1 end
         end
     end
 
     local resolved = (Seeker.Stats.playerHits or 0) + (Seeker.Stats.wallImpacts or 0)
     local pass = (Seeker.Stats.windups or 0) > 0 and (Seeker.Stats.charges or 0) > 0 and resolved > 0
     local line = string.format(
-        "live=%d windup=%d charging=%d windups=%d charges=%d playerHits=%d wallImpacts=%d impactStuns=%d tests=%d result=%s",
-        live, windup, charging,
+        "live=%d windup=%d charging=%d retreating=%d windups=%d charges=%d playerHits=%d wallImpacts=%d impactStuns=%d retreatStarts=%d retreatCompletes=%d postHitRetreats=%d closeRangeRetreats=%d tests=%d result=%s",
+        live, windup, charging, retreating,
         Seeker.Stats.windups or 0,
         Seeker.Stats.charges or 0,
         Seeker.Stats.playerHits or 0,
         Seeker.Stats.wallImpacts or 0,
         Seeker.Stats.impactStuns or 0,
+        Seeker.Stats.retreatStarts or 0,
+        Seeker.Stats.retreatCompletes or 0,
+        Seeker.Stats.postHitRetreats or 0,
+        Seeker.Stats.closeRangeRetreats or 0,
         Seeker.Stats.testSpawns or 0,
         pass and "PASS" or "WAITING")
     print("[LOD:SEEKER] " .. line)
