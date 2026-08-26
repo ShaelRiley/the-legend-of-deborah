@@ -3,20 +3,21 @@ LOD = LOD or {}
 local Unified = LOD.WatcherUnified
 if not Unified then return end
 
--- The first working unified-Watcher build proved that direct instance dispatch is
--- necessary on this NextBot class, but it bound the stored class's _BehaviourTick
--- onto EVERY hostile instance. That bypassed the real SENT method lookup for
--- non-Watchers; wrappers such as Bio Blaster then called helper methods that did
--- not exist on that stored table, producing _RunBioBlasterTick=nil errors.
+-- The unified Watcher controller must be bound directly because Garry's Mod can
+-- keep a NextBot's original SENT method table after the stored class is patched.
 --
--- Keep direct instance dispatch at the RunBehaviour level instead. Every hostile
--- gets the normal coroutine loop below. Non-Watchers resolve self:_BehaviourTick()
--- exactly as they did before the Watcher work. Watchers alone call the final
--- unified function captured from the patched stored class. Motion V2 remains the
--- sole physical mover and this adds no timer or recurring hook beyond NextBot's
--- existing behaviour coroutine.
+-- Never clear _BehaviourTick on ordinary hostiles and never try to replace
+-- RunBehaviour per instance: NextBot may already be using the class coroutine,
+-- which would continue calling the original RunBehaviour after the erased method
+-- is gone. That produced the production error at lod_hostile/init.lua:766.
+--
+-- Instead, leave every non-Watcher completely untouched. Once a newly-created
+-- hostile has had its archetype assigned, bind the final unified tick directly to
+-- Watchers only. This preserves the accepted single Watcher authority while the
+-- normal SENT/wrapper chain remains authoritative for all other archetypes.
 
 hook.Remove("OnEntityCreated", "LOD_WatcherUnifiedControllerInstall")
+hook.Remove("OnEntityCreated", "LOD_WatcherUnifiedRunBehaviourDispatch")
 
 local function unifiedWatcherTick()
     local stored = scripted_ents.GetStored("lod_hostile")
@@ -25,27 +26,17 @@ local function unifiedWatcherTick()
     return class._BehaviourTick
 end
 
-local function bindRunBehaviour(ent)
+local watcherTick = unifiedWatcherTick()
+if not watcherTick then
+    ErrorNoHalt("[LOD:WATCHER-UNIFIED] final Watcher tick unavailable; direct bind skipped\n")
+    return
+end
+
+local function bindWatcher(ent)
     if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return false end
+    if ent.LODArchetypeId ~= "watcher" then return false end
 
-    local watcherTick = unifiedWatcherTick()
-    if not watcherTick then return false end
-
-    -- Remove the previous build's per-instance _BehaviourTick override so ordinary
-    -- archetypes once again resolve their complete wrapper/helper chain normally.
-    ent._BehaviourTick = nil
-
-    ent.RunBehaviour = function(self)
-        while true do
-            if self.LODArchetypeId == "watcher" then
-                watcherTick(self)
-            else
-                self:_BehaviourTick()
-            end
-            coroutine.yield()
-        end
-    end
-
+    ent._BehaviourTick = watcherTick
     if not ent.LODWatcherUnifiedInstanceBound then
         ent.LODWatcherUnifiedInstanceBound = true
         Unified.Stats = Unified.Stats or {}
@@ -54,13 +45,20 @@ local function bindRunBehaviour(ent)
     return true
 end
 
-hook.Add("OnEntityCreated", "LOD_WatcherUnifiedRunBehaviourDispatch", function(ent)
-    -- OnEntityCreated fires before Spawn/Activate, so replacing RunBehaviour here
-    -- occurs before NextBot starts its behaviour coroutine. Archetype assignment may
-    -- happen later in the same spawn function; the runtime branch reads it lazily.
-    if IsValid(ent) and ent:GetClass() == "lod_hostile" then bindRunBehaviour(ent) end
+hook.Add("OnEntityCreated", "LOD_WatcherUnifiedWatcherOnlyBind", function(ent)
+    if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return end
+
+    -- ents.Create fires OnEntityCreated before encounter/wanderer code assigns
+    -- LODArchetypeId. One next-tick callback observes the finished spawn metadata;
+    -- it is finite (not a recurring controller or movement timer).
+    timer.Simple(0, function()
+        if IsValid(ent) then bindWatcher(ent) end
+    end)
 end)
 
-for _, ent in ipairs(ents.FindByClass("lod_hostile")) do bindRunBehaviour(ent) end
+-- Covers any Watcher that already exists when this module is loaded/reloaded.
+for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
+    bindWatcher(ent)
+end
 
-print("[LOD:WATCHER-UNIFIED] safe RunBehaviour instance dispatch installed")
+print("[LOD:WATCHER-UNIFIED] watcher-only direct BehaviourTick dispatch installed")
