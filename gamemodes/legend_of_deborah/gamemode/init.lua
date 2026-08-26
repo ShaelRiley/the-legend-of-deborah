@@ -11,6 +11,7 @@ AddCSLuaFile("lod/cl_dev_testing.lua")
 AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed.lua")
 AddCSLuaFile("lod/cl_minimap.lua")
+AddCSLuaFile("lod/cl_minimap_reliability.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magnum_aim_state.lua")
@@ -136,6 +137,9 @@ include("lod/sv_seeker_sound_safety.lua")
 -- rebuilding short retreat routes that can oscillate around the same cells.
 include("lod/sv_seeker_committed_retreat.lua")
 include("lod/sv_seeker_encounter.lua")
+-- Explicitly enroll fully initialized Seekers in the shared hostile registry so
+-- their special service cannot be skipped by entity-creation timing.
+include("lod/sv_seeker_spawn_reliability.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
