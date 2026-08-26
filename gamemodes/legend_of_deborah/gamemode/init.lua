@@ -107,6 +107,9 @@ include("lod/sv_soldier_shot_contract.lua")
 -- Mod loses this relative include context after init.lua returns, which produced
 -- the misleading "file not found" Lua errors seen during runtime testing.
 include("lod/sv_watcher_unified.lua")
+-- Correct the first direct-instance implementation: dispatch Watchers at the
+-- RunBehaviour boundary without overriding _BehaviourTick on unrelated archetypes.
+include("lod/sv_watcher_instance_dispatch.lua")
 
 -- If the first include saw a provisional lod_hostile class table, arm the module's
 -- already-registered OnEntityCreated installer to patch the final SENT table on
