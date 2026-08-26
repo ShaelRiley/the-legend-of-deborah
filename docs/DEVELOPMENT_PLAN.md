@@ -4,11 +4,12 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 
 ## Current order
 
-1. **Gate D — Expanded Enemy Roster:** implement and runtime-accept one archetype at a time, beginning with **Watcher**.
-2. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change.
-3. Finish remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
-4. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
-5. Integrate/harden multiplayer last.
+1. **Targeted Magnum balance validation:** validate d12 Boomchains, cylinder bonuses, and late-cylinder two-/three-round bursts.
+2. **Gate D — Expanded Enemy Roster:** implement and runtime-accept one archetype at a time, beginning with **Watcher**.
+3. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change.
+4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
+5. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
+6. Integrate/harden multiplayer last.
 
 Production LootDirector is already implemented. Do not schedule it again as future work.
 
@@ -28,9 +29,9 @@ Do not reopen without new regression evidence.
 
 ## Gate C8 — Complete-Dungeon Dice-Era Validation — ACCEPTED
 
-Acceptance evidence now includes an authentic run reaching **Level 5** before total-party wipe and the player's explicit assessment that the game is **fun, balanced, and playable**.
+Acceptance evidence includes an authentic run reaching **Level 5** before total-party wipe and the player's explicit assessment that the game is **fun, balanced, and playable**.
 
-Broad combat/economy balance is therefore frozen. Future tuning must be evidence-driven and narrowly scoped.
+Broad combat/economy balance is therefore frozen. Future tuning must be evidence-driven and narrowly scoped. The present Magnum pass is one such isolated correction identified before Gate D.
 
 The minimap performance issue discovered during C8 is also accepted as closed. Steam Deck validation produced:
 
@@ -52,8 +53,11 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 ### Universal exploding-die rule
 
 - **Every d6 recursively explodes only on natural 6.**
-- **Every d12 recursively explodes on natural 8–12.**
-- Future d6/d12 mechanics inherit these rules unless explicitly redesigned.
+- **Every fresh d12 chain begins at natural 8–12.**
+- Every successful d12 explosion lowers the next d12's threshold by one.
+- Default d12 sequence: **8+ → 7+ → 6+ → 5+**, remaining at 5+ thereafter.
+- **Boomchain Floor** is a shared exposed variable, default **5**; future Magic/items may lower it.
+- Every new d12 chain resets to 8+ and descends independently toward the current Boomchain Floor.
 
 ### Current player weapons
 
@@ -79,9 +83,14 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 - entire burst costs **one AR2 primary-ammo unit**.
 
 **.357 Magnum**
-- exploding `1d12` on natural **8–12**;
-- aligned penetration escalates cumulatively by one fresh exploding d12 chain per deeper target: `1d12!`, `2d12!`, `3d12!`, etc.;
-- eight-target cap;
+- every projectile deals **`1d12!+X`**, with X equal to the number of chambers already empty before that trigger;
+- a normal six-round cylinder progresses **+0,+1,+2,+3,+4,+5** and reload resets the sequence;
+- trigger 5 fires a rapid **two-projectile** Magnum burst;
+- trigger 6 fires a rapid **three-projectile** Magnum burst;
+- extra burst projectiles consume no additional cartridge/reserve ammo, use the triggering chamber's X bonus, and roll independently;
+- every d12 projectile uses the global descending Boomchain thresholds;
+- aligned penetration adds one fresh independent Boomchain per deeper target;
+- eight-target penetration cap;
 - authoritative geometry stops penetration.
 
 **Shotgun**
@@ -100,6 +109,25 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 - separate consumable reward.
 
 Player-side exploding dice share one bounded audiovisual confirmation cue.
+
+---
+
+## Targeted Magnum acceptance gate — CURRENT
+
+Before Watcher work begins, validate the final peer-firearm identity:
+
+1. Fresh/reloaded cylinder chamber bonuses appear as **+0,+1,+2,+3,+4,+5**.
+2. A d12 chain that repeatedly explodes uses thresholds **8+, 7+, 6+, 5+** and never drops below the current Boomchain Floor.
+3. The fifth trigger produces exactly **2 total Magnum projectiles**.
+4. The sixth trigger produces exactly **3 total Magnum projectiles**.
+5. The fifth and sixth trigger pulls each consume only **one cartridge** despite their burst projectiles.
+6. Every burst projectile independently rolls damage, can trigger explosion feedback, and can pierce aligned hostiles.
+7. Generated/world geometry still stops every penetration path.
+8. No meaningful Steam Deck performance regression.
+
+Diagnostic: `lod_magnum_super_status` should report the configured 8→5 boomchain parameters plus observed two-/three-round bursts after a full-cylinder test.
+
+After acceptance, freeze the Magnum again and continue to Gate D.
 
 ---
 
@@ -128,7 +156,7 @@ Player-side exploding dice share one bounded audiovisual confirmation cue.
 
 ---
 
-## Peer-firearm design — ACCEPTED
+## Peer-firearm design — ACCEPTED, MAGNUM TARGETED RECHECK ACTIVE
 
 Shotgun, SMG, Magnum, and AR2 are peers rather than power tiers.
 
@@ -189,7 +217,7 @@ Production minimap has one canonical server module and one canonical client modu
 
 ---
 
-## Gate D — Expanded Enemy Roster — CURRENT
+## Gate D — Expanded Enemy Roster — NEXT AFTER MAGNUM ACCEPTANCE
 
 Implement and runtime-accept one enemy at a time in this order:
 
@@ -207,7 +235,7 @@ For each enemy:
 6. Give one decisive runtime acceptance test.
 7. Do not proceed to the next archetype until the current one is accepted.
 
-The **Watcher** is next.
+The **Watcher** is next once Magnum validation passes.
 
 Do not regress the immutable Soldier shot contract.
 
@@ -245,10 +273,11 @@ Preserve multiplayer-compatible server authority now; perform dedicated 1–4-pl
 5. Soldier shot line is immutable from beam-on; animation bones/client scale are never trajectory authorities.
 6. Generated geometry remains authoritative cover for ordinary bullets and Magnum penetration.
 7. Pushback uses the shared collision-safe authority; future elemental/weapon pushes reuse it.
-8. d6 explosion threshold is universally natural 6; d12 explosion threshold is universally natural 8–12.
-9. Visible hostile size remains monotonic durability information.
-10. Networking/graph work remains compact, cached, bounded, and low-end-safe.
-11. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
-12. No per-frame global BFS or large entity scans.
-13. Automatic startup telemetry remains retired.
-14. Work one decisive runtime acceptance criterion at a time.
+8. d6 explosions are universally natural-6; fresh d12 chains start at 8+ and descend one threshold per explosion toward the Boomchain Floor.
+9. Boomchain Floor defaults to 5 and is exposed for future Magic/item modification.
+10. Visible hostile size remains monotonic durability information.
+11. Networking/graph work remains compact, cached, bounded, and low-end-safe.
+12. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
+13. No per-frame global BFS or large entity scans.
+14. Automatic startup telemetry remains retired.
+15. Work one decisive runtime acceptance criterion at a time.
