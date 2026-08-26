@@ -4,9 +4,9 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 
 ## Current order
 
-1. **Targeted Magnum balance validation:** validate d12 Boomchains, cylinder bonuses, late-cylinder bursts, low-health clutch mechanics, and Aim State.
-2. **Gate D — Expanded Enemy Roster:** implement and runtime-accept one archetype at a time, beginning with **Watcher**.
-3. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change.
+1. **Gate D — Watcher runtime acceptance.** Watcher is implemented; validate its scan presentation, cancellation, wanderer alert behavior, and Steam Deck cost.
+2. **Gate D — Seeker:** implement only after Watcher is accepted, then continue one archetype at a time through `Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`.
+3. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change. The recently implemented Magnum identity mechanics remain available for regression observation during normal play but no longer block Gate D.
 4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
 5. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
 6. Integrate/harden multiplayer last.
@@ -31,7 +31,7 @@ Do not reopen without new regression evidence.
 
 Acceptance evidence includes an authentic run reaching **Level 5** before total-party wipe and the player's explicit assessment that the game is **fun, balanced, and playable**.
 
-Broad combat/economy balance is therefore frozen. Future tuning must be evidence-driven and narrowly scoped. The present Magnum pass is one such isolated correction identified before Gate D.
+Broad combat/economy balance is therefore frozen. Future tuning must be evidence-driven and narrowly scoped.
 
 The minimap performance issue discovered during C8 is also accepted as closed. Steam Deck validation produced:
 
@@ -88,15 +88,12 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 - trigger 5 fires a rapid **two-projectile** Magnum burst;
 - trigger 6 fires a rapid **three-projectile** Magnum burst;
 - below 60 current HP, each trigger makes one `(60-HP)%` chance check to add exactly one further free Magnum projectile;
-- below 34% of maximum Health, the final-cartridge trigger has `floor(34-currentHealthPercent)%` chance not to consume that cartridge;
-- successful final-cartridge preservation is applied after the complete final burst, leaving exactly one cartridge and preserving the chamber-6/+5 identity for the next trigger;
-- a preserved final cartridge may make a new preservation check when fired again if Health remains below threshold;
+- below 34% of maximum Health, the final-cartridge trigger has `floor(34-currentHealthPercent)%` chance to restore that cartridge after the complete burst;
+- **each trigger pull consumes at most one cartridge regardless of total projectiles generated**; a successful final-cartridge preservation proc therefore produces zero net cartridge consumption for that trigger;
 - **Aim State:** after 0.5 seconds of complete player-position and view-aim stillness, the Magnum arms with a gold muzzle-particle lock cue, short sound, and compact persistent `AIM x2` indicator;
-- any movement input, actual player movement, jump, aim change, weapon switch, or death cancels Aim State before firing;
+- movement/aim change, weapon switch, or death cancels Aim State before firing;
 - Aim State persists while perfectly still and is consumed by the next actual Magnum trigger;
 - an aimed trigger deals **×2 damage across the complete trigger**, including every normal/chamber/low-health burst projectile, cylinder bonus, every projectile's d12 Boomchain, and every fresh Boomchain added by deeper pierced targets;
-- extra projectiles consume no additional cartridge/reserve ammo, use the triggering chamber's X bonus, and roll independently;
-- every d12 projectile uses the global descending Boomchain thresholds;
 - aligned penetration adds one fresh independent Boomchain per deeper target;
 - eight-target penetration cap;
 - authoritative geometry stops penetration.
@@ -118,31 +115,62 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 
 Player-side exploding dice share one bounded audiovisual confirmation cue.
 
+The Magnum diagnostics (`lod_magnum_super_status`, `lod_magnum_aim_status`, `lod_magnum_pierce_status`) remain available for opportunistic regression checks during normal play. Magnum validation is no longer a prerequisite for continuing Gate D.
+
 ---
 
-## Targeted Magnum acceptance gate — CURRENT
+## Gate D — Expanded Enemy Roster — CURRENT
 
-Before Watcher work begins, validate the final peer-firearm identity:
+Build and runtime-accept one enemy at a time in this order:
 
-1. Fresh/reloaded cylinder chamber bonuses appear as **+0,+1,+2,+3,+4,+5**.
-2. A d12 chain that repeatedly explodes uses thresholds **8+, 7+, 6+, 5+** and never drops below the current Boomchain Floor.
-3. At 60+ HP, the fifth trigger produces exactly **2 total Magnum projectiles** and the sixth produces exactly **3**.
-4. Below 60 HP, `lod_magnum_super_status` reports `(60-HP)%` as the extra-projectile chance; a successful proc adds exactly one projectile to that trigger's normal count.
-5. A low-health proc can therefore turn an ordinary shot into 2, chamber 5 into 3, or chamber 6 into 4 projectiles, never more than +1 from this mechanic.
-6. Below 34% max Health, the final-cartridge preservation chance equals one percentage point per full percentage point below 34%; a successful proc leaves exactly one cartridge after the entire final burst resolves.
-7. Preserved final cartridges remain final-chamber/+5 triggers, can roll preservation again, and do not create reserve ammo.
-8. With the Magnum equipped, remain completely still in both player position and view aim for **0.5 seconds**. Confirm the gold muzzle particle burst, lock sound, and persistent `AIM x2` indicator appear.
-9. Move the player or aim before firing. Confirm Aim State disappears immediately and `lod_magnum_aim_status` increments its cancellation count.
-10. Re-arm Aim State and fire. Confirm the combat-feed detail includes **`AIM x2`** and the applied damage is doubled.
-11. Arm Aim State on chamber 5 or 6 and confirm **every projectile generated by that trigger** inherits ×2, including any low-health extra projectile.
-12. Pierce multiple aligned hostiles from Aim State and confirm fresh deeper-target d12 Boomchains are also multiplied by ×2 rather than only the first body's base roll.
-13. Every injected projectile independently rolls damage, can trigger explosion feedback, and can pierce aligned hostiles.
-14. Generated/world geometry still stops every penetration path.
-15. No meaningful Steam Deck performance regression.
+`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
 
-Diagnostics: `lod_magnum_super_status`, `lod_magnum_aim_status`, and `lod_magnum_pierce_status`.
+### Watcher — IMPLEMENTED / RUNTIME ACCEPTANCE CURRENT
 
-After acceptance, freeze the Magnum again and continue to Gate D.
+The live GDD's Watcher contract is implemented without adding a new spawn or movement authority:
+
+- Combine Scanner-derived support archetype;
+- **no direct attack**;
+- graph-bound Motion-V2 movement and validated stair/gate traversal;
+- rare wandering eligibility;
+- Sector-2+ `Surveillance = 1 Watcher + 2 Shamblers` authored encounter option;
+- **1.25-second** visible scanning beam with escalating electronic cue;
+- line-of-sight break cancels the scan;
+- firearm hit-stun cancels the scan;
+- successful scan broadcasts the target only to already-existing same-floor wanderers within **6 graph cells**;
+- alerted wanderers immediately acquire the player but retain ordinary safe-zone, same-floor, and pursuit-leash rules;
+- Watcher scan **never spawns reinforcements** and cannot bypass EncounterDirector threat budgets or the hostile safety ceiling;
+- alert work iterates `WanderingDirector.Entities` and cached graph distance rather than performing a global entity scan;
+- provisional dice-era durability is `3d4+3` because the live GDD does not specify a numeric Watcher health formula.
+
+Presentation is event-driven client-side: active scans alone draw a pulsating cyan beam/glow. There is no per-frame search for Watchers.
+
+### Watcher acceptance test
+
+1. Enter an ordinary corridor outside spawn/checkpoint safe space.
+2. Run `lod_watcher_test`.
+3. Allow the full scan to complete without breaking line of sight or shooting the Watcher.
+4. Confirm the cyan beam and escalating electronic cue are clear.
+5. Run `lod_watcher_status`.
+6. Accept Watcher when status shows at least one scan start, one completion, one alerted wanderer, and `result=PASS`, with no obvious Steam Deck performance regression.
+
+The test intentionally attempts to place its alert-target Shambler **5–6 graph cells away**: outside the normal 4-cell wanderer acquisition radius but inside the Watcher's 6-cell broadcast radius. An alert therefore demonstrates Watcher behavior rather than ordinary acquisition.
+
+### Gate D working rule
+
+For every remaining archetype:
+
+1. Read its exact live-GDD contract before coding.
+2. Reuse existing graph/motion/ballistics/presentation authorities wherever possible.
+3. Add no competing locomotion, trajectory, LOS, spawning, or global-scan architecture.
+4. Keep low-end work bounded and event-driven.
+5. Push one coherent implementation milestone.
+6. Give one decisive runtime acceptance test.
+7. Do not proceed to the next archetype until the current one is accepted.
+
+**Seeker is next only after Watcher acceptance.**
+
+Do not regress the immutable Soldier shot contract.
 
 ---
 
@@ -171,7 +199,7 @@ After acceptance, freeze the Magnum again and continue to Gate D.
 
 ---
 
-## Peer-firearm design — ACCEPTED, MAGNUM TARGETED RECHECK ACTIVE
+## Peer-firearm design — ACCEPTED
 
 Shotgun, SMG, Magnum, and AR2 are peers rather than power tiers.
 
@@ -196,6 +224,7 @@ LOD does not use HL2's auxiliary suit/armor pool.
 
 - Deadcrab health `2d4+1`
 - Runner health `3d4+3`; melee `2d4+2`
+- Watcher health `3d4+3` **provisional implementation tuning**; no direct attack
 - Shambler health `4d4+5`; melee `3d4+8`
 - Soldier / Blitzer health `4d4+5`
 - Bio Blaster health `5d4+6`
@@ -232,30 +261,6 @@ Production minimap has one canonical server module and one canonical client modu
 
 ---
 
-## Gate D — Expanded Enemy Roster — NEXT AFTER MAGNUM ACCEPTANCE
-
-Implement and runtime-accept one enemy at a time in this order:
-
-`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
-
-### Gate D working rule
-
-For each enemy:
-
-1. Read its exact GDD contract before coding.
-2. Reuse existing graph/motion/ballistics/presentation authorities wherever possible.
-3. Add no competing locomotion, trajectory, LOS, or global-scan architecture.
-4. Keep low-end work bounded and event-driven.
-5. Push one implementation milestone.
-6. Give one decisive runtime acceptance test.
-7. Do not proceed to the next archetype until the current one is accepted.
-
-The **Watcher** is next once Magnum validation passes.
-
-Do not regress the immutable Soldier shot contract.
-
----
-
 ## Gate E — Remaining Milestone 4 Expedition
 
 After Gate D:
@@ -271,7 +276,7 @@ Production loot itself is no longer future work.
 
 ## Gate F — Gordon the Warden
 
-Implement the reserved final arena and Warden phases only after prior gates are stable. Warden death must feed the already-proven production Jail Key → jail door → Deborah rescue pipeline.
+Implement the reserved final arena and Warden phases only after prior gates are stable. Warden death must feed the already-proven production Jail Key → jail door → Deborah rescue pipeline rather than replacing it.
 
 ---
 
@@ -291,9 +296,10 @@ Preserve multiplayer-compatible server authority now; perform dedicated 1–4-pl
 8. d6 explosions are universally natural-6; fresh d12 chains start at 8+ and descend one threshold per explosion toward the Boomchain Floor.
 9. Boomchain Floor defaults to 5 and is exposed for future Magic/item modification.
 10. Magnum Aim State uses bounded per-player input/state tracking only; do not replace it with a global entity scan or per-frame world trace.
-11. Visible hostile size remains monotonic durability information.
-12. Networking/graph work remains compact, cached, bounded, and low-end-safe.
-13. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
-14. No per-frame global BFS or large entity scans.
-15. Automatic startup telemetry remains retired.
-16. Work one decisive runtime acceptance criterion at a time.
+11. Watcher scans may alert only already-live `WanderingDirector` wanderers; never create a Watcher-specific reinforcement or global-scan path.
+12. Visible hostile size remains monotonic durability information.
+13. Networking/graph work remains compact, cached, bounded, and low-end-safe.
+14. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
+15. No per-frame global BFS or large entity scans.
+16. Automatic startup telemetry remains retired.
+17. Work one decisive runtime acceptance criterion at a time.
