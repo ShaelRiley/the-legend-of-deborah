@@ -54,6 +54,7 @@ Unified.Stats = Unified.Stats or {
     hideCompletes = 0,
     backoffStarts = 0,
     backoffMoves = 0,
+    instanceBinds = 0,
     lastCloakSeconds = 0,
     lastCloakRoll = "none",
     lastHideSeconds = 0,
@@ -687,21 +688,45 @@ local function installPatch()
     return true
 end
 
+-- Garry's Mod can expose a stored SENT table that is not the exact method table
+-- consulted by already-created NextBot instances. That made the class patch look
+-- installed while RunBehaviour continued calling generic _BehaviourTick. Bind the
+-- final patched function directly onto each live lod_hostile instance; RunBehaviour
+-- resolves self:_BehaviourTick() every coroutine cycle, so this is authoritative
+-- without adding a timer or a second movement loop.
+local function bindInstance(ent)
+    if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return false end
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    if not class or not class.LODWatcherUnifiedControllerInstalled or not class._BehaviourTick then return false end
+    ent._BehaviourTick = class._BehaviourTick
+    if not ent.LODWatcherUnifiedInstanceBound then
+        ent.LODWatcherUnifiedInstanceBound = true
+        Unified.Stats.instanceBinds = (Unified.Stats.instanceBinds or 0) + 1
+    end
+    return true
+end
+
 installPatch()
 hook.Add("OnEntityCreated", "LOD_WatcherUnifiedControllerInstall", function(ent)
-    if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end
+    if IsValid(ent) and ent:GetClass() == "lod_hostile" then
+        installPatch()
+        bindInstance(ent)
+    end
 end)
+for _, ent in ipairs(ents.FindByClass("lod_hostile")) do bindInstance(ent) end
 
 concommand.Add("lod_watcher_motion_audit", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
-    local live, scanning, escaping, hidden, backoff = 0, 0, 0, 0, 0
+    local live, scanning, escaping, hidden, backoff, bound = 0, 0, 0, 0, 0, 0
     local lines = {}
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and not hostile.LODDead and hostile.LODArchetypeId == "watcher" then
             live = live + 1
+            if hostile.LODWatcherUnifiedInstanceBound then bound = bound + 1 end
             if hostile.LODWatcherScan then scanning = scanning + 1 end
             local escape = hostile.LODWatcherUnifiedEscape
             if escape then
@@ -714,8 +739,9 @@ concommand.Add("lod_watcher_motion_audit", function(ply)
             local distance = livingPlayer(target)
                 and horizontalDistance(hostile:GetPos(), target:GetPos()) or -1
             lines[#lines + 1] = string.format(
-                "#%d mode=%s scan=%s escape=%s wp=%d dist=%.0f cloakLeft=%.1f",
+                "#%d bound=%s mode=%s scan=%s escape=%s wp=%d dist=%.0f cloakLeft=%.1f",
                 hostile:EntIndex(),
+                tostring(hostile.LODWatcherUnifiedInstanceBound == true),
                 tostring(hostile.LODMotionMode or "none"),
                 tostring(hostile.LODWatcherScan ~= nil),
                 escape and tostring(escape.phase) or "none",
@@ -726,8 +752,8 @@ concommand.Add("lod_watcher_motion_audit", function(ply)
     end
 
     local summary = string.format(
-        "live=%d scanning=%d escaping=%d hidden=%d backoff=%d behaviour=%d scanDispatch=%d moveCalls=%d escapeMoves=%d plans=%d replans=%d blocked=%d hiddenStarts=%d reexposures=%d hideCompletes=%d lastCloak=2d6!=%ds[%s] lastHide=8d6!=%ds[%s] maxSpeed=%.2f timers=0 authority=Behaviour->MotionV2",
-        live, scanning, escaping, hidden, backoff,
+        "live=%d bound=%d scanning=%d escaping=%d hidden=%d backoff=%d behaviour=%d scanDispatch=%d moveCalls=%d escapeMoves=%d plans=%d replans=%d blocked=%d hiddenStarts=%d reexposures=%d hideCompletes=%d instanceBinds=%d lastCloak=2d6!=%ds[%s] lastHide=8d6!=%ds[%s] maxSpeed=%.2f timers=0 authority=RunBehaviour->instance _BehaviourTick->MotionV2",
+        live, bound, scanning, escaping, hidden, backoff,
         Unified.Stats.behaviourTicks or 0,
         Unified.Stats.scanDispatches or 0,
         Unified.Stats.movementCalls or 0,
@@ -738,6 +764,7 @@ concommand.Add("lod_watcher_motion_audit", function(ply)
         Unified.Stats.hiddenStarts or 0,
         Unified.Stats.reexposures or 0,
         Unified.Stats.hideCompletes or 0,
+        Unified.Stats.instanceBinds or 0,
         Unified.Stats.lastCloakSeconds or 0,
         tostring(Unified.Stats.lastCloakRoll or "none"),
         Unified.Stats.lastHideSeconds or 0,
@@ -745,9 +772,6 @@ concommand.Add("lod_watcher_motion_audit", function(ply)
         Unified.Stats.maxSpeedScale or 1)
 
     print("[LOD:WATCHER-UNIFIED] " .. summary)
-    if IsValid(ply) then ply:ChatPrint(summary) end
-    for _, line in ipairs(lines) do
-        print("[LOD:WATCHER-UNIFIED] " .. line)
-        if IsValid(ply) then ply:ChatPrint(line) end
-    end
+    for _, line in ipairs(lines) do print("[LOD:WATCHER-UNIFIED] " .. line) end
+    if IsValid(ply) then ply:ChatPrint(string.format("Watcher audit: live=%d bound=%d; full details in console.", live, bound)) end
 end)
