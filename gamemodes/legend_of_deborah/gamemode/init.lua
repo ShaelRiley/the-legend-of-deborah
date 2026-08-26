@@ -10,6 +10,7 @@ AddCSLuaFile("lod/cl_magic_hud.lua")
 AddCSLuaFile("lod/cl_dev_testing.lua")
 AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed.lua")
+AddCSLuaFile("lod/cl_melee_contact_audit.lua")
 AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_minimap_reliability.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
@@ -42,6 +43,10 @@ include("lod/sv_combat_rolls.lua")
 -- Narrow ordinary Shambler/Runner melee dice from full-run balance evidence while
 -- preserving the existing size/stat multiplier and the shared combat-roll feed.
 include("lod/sv_enemy_melee_dice_balance.lua")
+-- Event-only forensic capture for rare ordinary-melee anomalies. It records the
+-- exact server contact state and asks only the struck client for presentation
+-- state; there is no timer, global scan, or idle runtime cost.
+include("lod/sv_melee_contact_audit.lua")
 include("lod/sv_dice_ammo.lua")
 -- Preserve stock HL2 weapon entities for inventory/loot compatibility while
 -- layering the GDD-authored SMG heat and player AR2 burst contracts on top.
