@@ -79,6 +79,10 @@ include("lod/sv_combat_audio.lua")
 -- archetype/variance wrappers so their existing state machines wrap the new
 -- graph-authoritative kinematic kernel rather than CLuaLocomotion:Approach.
 include("lod/sv_hostile_motion_v2.lua")
+-- Living hostile presentation is a gameplay invariant. Death blinking is token-
+-- guarded, and existing behavior/motion/attack transitions repair any accidental
+-- NoDraw/alpha leak without adding a polling timer or hostile scan.
+include("lod/sv_hostile_visibility_safety.lua")
 include("lod/sv_deadcrab.lua")
 -- Deadcrab face-latches follow players without becoming Source-engine children,
 -- preventing parented-entity push warnings during player movement.
@@ -166,9 +170,7 @@ include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
 
 -- Soldier warning/firing is intentionally installed LAST among production combat
--- wrappers. It owns one immutable server-authored world-space shot line and prevents Motion V2,
--- live animation bones, client-only visual scaling, or bolt initialization from
--- becoming competing trajectory authorities.
+-- wrappers. It owns one immutable server-authored origin/direction committed at beam-on.
 include("lod/sv_soldier_shot_contract.lua")
 
 -- Audits, seed harnesses, teleports, and the infinite-ammo testkit are not
