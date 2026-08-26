@@ -1,0 +1,276 @@
+LOD = LOD or {}
+
+local Rolls = LOD.CombatRolls
+if not Rolls then return end
+
+LOD.MagnumSuperExplosive = LOD.MagnumSuperExplosive or {}
+local Magnum = LOD.MagnumSuperExplosive
+
+local D12_START_THRESHOLD = 8
+local D12_DEFAULT_BOOMCHAIN_FLOOR = 5
+local MAGNUM_FALLBACK_CLIP = 6
+local BURST_SPACING = 0.085
+local MAX_CHAIN_DICE = 64
+
+-- Public tuning seam for future Magic/items. The default game-wide Boomchain
+-- Floor is 5; later systems may lower this value or supply a lower per-profile
+-- boomchainFloor without replacing the dice authority.
+Rolls.D12BoomchainFloor = tonumber(Rolls.D12BoomchainFloor) or D12_DEFAULT_BOOMCHAIN_FLOOR
+
+function Rolls:GetD12BoomchainFloor(profile)
+    local requested = profile and tonumber(profile.boomchainFloor) or nil
+    return math.Clamp(math.floor(requested or self.D12BoomchainFloor or D12_DEFAULT_BOOMCHAIN_FLOOR), 1, 12)
+end
+
+-- Global d12 rule: the first d12 explodes on 8-12. Every successful explosion
+-- lowers the next d12's threshold by one until the Boomchain Floor is reached.
+-- At the default floor the sequence is 8+, then 7+, then 6+, then 5+ forever.
+-- Non-d12 exploding dice continue through the established shared implementation.
+if not Rolls.LODD12BoomchainInstalled then
+    Rolls.LODD12BoomchainInstalled = true
+    local baseRollExploding = Rolls._RollExploding
+
+    function Rolls:_RollExploding(profile, rng)
+        if not profile or tonumber(profile.sides) ~= 12 then
+            return baseRollExploding(self, profile, rng)
+        end
+
+        local values = {}
+        local contributions = {}
+        local thresholds = {}
+        local total = profile.bonus or 0
+        local threshold = math.Clamp(math.floor(tonumber(profile.exploding) or D12_START_THRESHOLD), 1, 12)
+        local boomchainFloor = math.min(threshold, self:GetD12BoomchainFloor(profile))
+        local natural = rng:Int(1, 12)
+
+        while natural and #values < MAX_CHAIN_DICE do
+            values[#values + 1] = natural
+            thresholds[#thresholds + 1] = threshold
+            local contribution = math.max(profile.floor or natural, natural)
+            contributions[#contributions + 1] = contribution
+            total = total + contribution
+            self.Stats.rolls = (self.Stats.rolls or 0) + 1
+
+            if natural < threshold then break end
+            threshold = math.max(boomchainFloor, threshold - 1)
+            natural = rng:Int(1, 12)
+        end
+
+        return total, values, contributions, #values >= MAX_CHAIN_DICE, thresholds
+    end
+end
+
+local function activeMagnum(ply)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return nil end
+    local weapon = ply:GetActiveWeapon()
+    if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357" then return nil end
+    return weapon
+end
+
+local function magnumClipSize(weapon)
+    local maximum = IsValid(weapon) and weapon:GetMaxClip1() or 0
+    if not maximum or maximum <= 0 then maximum = MAGNUM_FALLBACK_CLIP end
+    return math.max(1, math.floor(maximum))
+end
+
+-- weapon_357 decrements Clip1 before Entity:FireBullets. Thus, while resolving a
+-- real Magnum projectile, maxClip - Clip1 is the 1-based chamber/trigger number
+-- and maxClip - Clip1 - 1 is exactly the number of chambers already emptied
+-- before the current trigger pull.
+local function cylinderState(weapon)
+    if not IsValid(weapon) then return 0, 1, 0, MAGNUM_FALLBACK_CLIP end
+    local maximum = magnumClipSize(weapon)
+    local clipAfterTrigger = math.Clamp(math.floor(weapon:Clip1()), 0, maximum)
+    local shotIndex = math.Clamp(maximum - clipAfterTrigger, 1, maximum)
+    local emptyBefore = math.Clamp(shotIndex - 1, 0, maximum - 1)
+    return emptyBefore, shotIndex, clipAfterTrigger, maximum
+end
+
+-- Preserve every existing weapon wrapper (including the Shotgun identity pass),
+-- then add the Magnum's cylinder bonus after its d12 boomchain has resolved.
+if not Rolls.LODMagnumCylinderDamageInstalled then
+    Rolls.LODMagnumCylinderDamageInstalled = true
+    local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
+
+    function Rolls:RollPlayerWeapon(ply, weaponClass)
+        local contract = baseRollPlayerWeapon(self, ply, weaponClass)
+        if weaponClass ~= "weapon_357" or not contract then return contract end
+
+        local weapon = activeMagnum(ply)
+        local bonus, shotIndex, clipAfter, maximum = cylinderState(weapon)
+        contract.cylinderBonus = bonus
+        contract.chamberShot = shotIndex
+        contract.clipAfterTrigger = clipAfter
+        contract.cylinderSize = maximum
+        contract.boomchainFloor = self:GetD12BoomchainFloor()
+        contract.total = (tonumber(contract.total) or 0) + bonus
+        contract.formula = bonus > 0 and ("1d12!+" .. tostring(bonus)) or "1d12!"
+
+        local thresholds = {}
+        for i = 1, #(contract.values or {}) do
+            thresholds[i] = math.max(contract.boomchainFloor, D12_START_THRESHOLD - (i - 1))
+        end
+        contract.boomThresholds = thresholds
+        return contract
+    end
+end
+
+-- Keep the combat feed's formula truthful without duplicating the central feed
+-- authority. The core service asks for 1d12!/2d12!/3d12! text; this wrapper adds
+-- the one cylinder bonus exactly once while the live Magnum contract is active.
+if not Rolls.LODMagnumCylinderFeedInstalled then
+    Rolls.LODMagnumCylinderFeedInstalled = true
+    local baseDamageEventText = Rolls._DamageEventText
+
+    function Rolls:_DamageEventText(source, formula, amount, target, detail,
+        fallbackSource, fallbackTarget, damageSource)
+        if IsValid(source) and source:IsPlayer() then
+            local contract = source.LODActivePlayerRoll
+            local bonus = contract and contract.weaponClass == "weapon_357"
+                and math.max(0, math.floor(tonumber(contract.cylinderBonus) or 0)) or 0
+            if bonus > 0 and isstring(formula) and string.find(formula, "d12!", 1, true)
+                and not string.find(formula, "+", 1, true)
+            then
+                formula = formula .. "+" .. tostring(bonus)
+            end
+        end
+        return baseDamageEventText(self, source, formula, amount, target, detail,
+            fallbackSource, fallbackTarget, damageSource)
+    end
+
+    local basePlayerRollDetail = Rolls._PlayerRollDetail
+    function Rolls:_PlayerRollDetail(contract)
+        if contract and contract.weaponClass == "weapon_357" then
+            local values = {}
+            for i, value in ipairs(contract.values or {}) do
+                local threshold = contract.boomThresholds and contract.boomThresholds[i] or D12_START_THRESHOLD
+                values[#values + 1] = string.format("%d@%d+", value, threshold)
+            end
+            return string.format("[chamber %d/%d; +%d empty; boom %s%s]",
+                contract.chamberShot or 1,
+                contract.cylinderSize or MAGNUM_FALLBACK_CLIP,
+                contract.cylinderBonus or 0,
+                table.concat(values, ">"),
+                contract.capped and "; chain cap" or "")
+        end
+        return basePlayerRollDetail(self, contract)
+    end
+end
+
+Magnum.Bursts = Magnum.Bursts or setmetatable({}, {__mode = "k"})
+Magnum.Stats = Magnum.Stats or {
+    triggerShots = 0,
+    twoRoundBursts = 0,
+    threeRoundBursts = 0,
+    injectedRounds = 0
+}
+
+local function fireInjectedRound(ply, burst)
+    local weapon = burst.weapon
+    if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
+    if ply:GetActiveWeapon() ~= weapon or weapon:GetClass() ~= "weapon_357" then return false end
+
+    weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+    ply:SetAnimation(PLAYER_ATTACK1)
+    ply:MuzzleFlash()
+    weapon:EmitSound("Weapon_357.Single", 72, 100, 0.90, CHAN_WEAPON)
+    ply:ViewPunch(Angle(-1.25, math.Rand(-0.35, 0.35), 0))
+
+    local bullet = {
+        Num = 1,
+        Src = ply:GetShootPos(),
+        Dir = burst.direction,
+        Spread = vector_origin,
+        Tracer = 1,
+        Force = 8,
+        Damage = 1,
+        AmmoType = weapon:GetPrimaryAmmoType(),
+        Attacker = ply,
+        Inflictor = weapon
+    }
+
+    weapon.LODMagnumInjectedBurst = true
+    ply:LagCompensation(true)
+    ply:FireBullets(bullet)
+    ply:LagCompensation(false)
+    weapon.LODMagnumInjectedBurst = nil
+
+    Magnum.Stats.injectedRounds = (Magnum.Stats.injectedRounds or 0) + 1
+    return true
+end
+
+-- Stock Magnum trigger pulls remain authoritative for chamber/ammo consumption.
+-- The fifth cartridge (one chamber left after the stock shot) schedules one free
+-- follow-up projectile; the sixth/final cartridge schedules two. Each follow-up
+-- is a genuine separately rolled/piercing Magnum round using the same committed
+-- direction and the same cylinder bonus as its triggering cartridge.
+hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
+    local weapon = activeMagnum(shooter)
+    if not IsValid(weapon) or weapon.LODMagnumInjectedBurst then return end
+
+    local bonus, shotIndex, clipAfter, maximum = cylinderState(weapon)
+    Magnum.Stats.triggerShots = (Magnum.Stats.triggerShots or 0) + 1
+
+    local extraRounds = 0
+    if maximum >= 2 and shotIndex == maximum - 1 and clipAfter == 1 then
+        extraRounds = 1
+        Magnum.Stats.twoRoundBursts = (Magnum.Stats.twoRoundBursts or 0) + 1
+    elseif shotIndex == maximum and clipAfter == 0 then
+        extraRounds = 2
+        Magnum.Stats.threeRoundBursts = (Magnum.Stats.threeRoundBursts or 0) + 1
+    end
+    if extraRounds <= 0 then return end
+
+    local direction = bullet and bullet.Dir or shooter:GetAimVector()
+    direction = direction and direction:GetNormalized() or vector_origin
+    if direction == vector_origin then return end
+
+    Magnum.Bursts[shooter] = {
+        weapon = weapon,
+        direction = direction,
+        remaining = extraRounds,
+        nextAt = CurTime() + BURST_SPACING,
+        spacing = BURST_SPACING,
+        cylinderBonus = bonus
+    }
+end)
+
+hook.Add("Think", "LOD_MagnumCylinderBurstThink", function()
+    local now = CurTime()
+    for ply, burst in pairs(Magnum.Bursts) do
+        if not IsValid(ply) or not burst or not IsValid(burst.weapon)
+            or not ply:Alive() or ply:GetActiveWeapon() ~= burst.weapon
+        then
+            Magnum.Bursts[ply] = nil
+        elseif now >= (burst.nextAt or math.huge) then
+            if not fireInjectedRound(ply, burst) then
+                Magnum.Bursts[ply] = nil
+            else
+                burst.remaining = (burst.remaining or 1) - 1
+                if burst.remaining <= 0 then
+                    Magnum.Bursts[ply] = nil
+                else
+                    burst.nextAt = burst.nextAt + (burst.spacing or BURST_SPACING)
+                end
+            end
+        end
+    end
+end)
+
+concommand.Add("lod_magnum_super_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local line = string.format(
+        "boomStart=%d boomFloor=%d cylinder=+0..+5 triggerShots=%d twoBursts=%d threeBursts=%d injected=%d result=%s",
+        D12_START_THRESHOLD,
+        Rolls:GetD12BoomchainFloor(),
+        Magnum.Stats.triggerShots or 0,
+        Magnum.Stats.twoRoundBursts or 0,
+        Magnum.Stats.threeRoundBursts or 0,
+        Magnum.Stats.injectedRounds or 0,
+        (Magnum.Stats.triggerShots or 0) > 0 and "PASS" or "WAITING")
+    print("[LOD:MAGNUM-SUPER] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
