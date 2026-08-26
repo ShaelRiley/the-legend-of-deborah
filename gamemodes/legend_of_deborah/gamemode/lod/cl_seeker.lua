@@ -4,9 +4,9 @@ LOD.SeekerFX = LOD.SeekerFX or {}
 local FX = LOD.SeekerFX
 local glowMaterial = Material("sprites/light_glow02_add")
 local beamMaterial = Material("cable/blue_elec")
-local WINDUP_COLOR = Color(90, 205, 255, 245)
-local CHARGE_COLOR = Color(180, 240, 255, 255)
-local IMPACT_COLOR = Color(255, 230, 120, 255)
+local WINDUP_COLOR = Color(80, 220, 255, 255)
+local CHARGE_COLOR = Color(205, 250, 255, 255)
+local IMPACT_COLOR = Color(255, 225, 110, 255)
 
 FX.Active = FX.Active or setmetatable({}, {__mode = "k"})
 
@@ -37,6 +37,28 @@ local function seekerCenter(seeker)
     return seeker:WorldSpaceCenter()
 end
 
+hook.Add("PreDrawHalos", "LOD_SeekerChargeHalo", function()
+    local windups = {}
+    local charges = {}
+    local impacts = {}
+
+    for seeker, state in pairs(FX.Active) do
+        if not IsValid(seeker) or not state then
+            FX.Active[seeker] = nil
+        elseif state.phase == 1 then
+            windups[#windups + 1] = seeker
+        elseif state.phase == 2 then
+            charges[#charges + 1] = seeker
+        elseif state.phase == 3 then
+            impacts[#impacts + 1] = seeker
+        end
+    end
+
+    if #windups > 0 then halo.Add(windups, WINDUP_COLOR, 5, 5, 2, true, true) end
+    if #charges > 0 then halo.Add(charges, CHARGE_COLOR, 7, 7, 2, true, true) end
+    if #impacts > 0 then halo.Add(impacts, IMPACT_COLOR, 8, 8, 2, true, true) end
+end)
+
 hook.Add("PostDrawTranslucentRenderables", "LOD_SeekerChargeFX", function()
     local now = CurTime()
     for seeker, state in pairs(FX.Active) do
@@ -46,31 +68,64 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_SeekerChargeFX", function()
             local origin = seekerCenter(seeker)
             if origin then
                 local elapsed = now - (state.startedAt or now)
-                local duration = math.max(0.05, state.duration or 0.65)
+                local duration = math.max(0.05, state.duration or 0.85)
                 local progress = math.Clamp(elapsed / duration, 0, 1)
-                local pulse = 0.5 + 0.5 * math.sin(now * (18 + progress * 18))
+                local pulse = 0.5 + 0.5 * math.sin(now * (22 + progress * 24))
                 local phase = state.phase or 1
                 local color = phase == 3 and IMPACT_COLOR or (phase == 2 and CHARGE_COLOR or WINDUP_COLOR)
 
-                render.SetMaterial(glowMaterial)
-                local glow = phase == 2 and (13 + pulse * 6) or (9 + progress * 9 + pulse * 5)
-                render.DrawSprite(origin, glow, glow, color)
-                render.DrawSprite(origin + Vector(0, 0, 10), glow * 0.65, glow * 0.65,
-                    Color(255, 255, 255, 180 + math.floor(pulse * 70)))
+                local light = DynamicLight(seeker:EntIndex())
+                if light then
+                    light.pos = origin
+                    light.r = color.r
+                    light.g = color.g
+                    light.b = color.b
+                    light.brightness = phase == 1 and (2 + progress * 3) or 3.5
+                    light.Decay = 700
+                    light.Size = phase == 1 and (90 + progress * 100) or 130
+                    light.DieTime = now + 0.08
+                end
 
+                render.SetMaterial(glowMaterial)
+                local glow
                 if phase == 1 then
-                    render.SetMaterial(beamMaterial)
-                    local radius = 12 + progress * 18
-                    for i = 0, 2 do
-                        local a = now * (150 + i * 24) + i * 120
-                        local offsetA = Angle(0, a, 0):Forward() * radius
-                        local offsetB = Angle(0, a + 115, 0):Forward() * radius
-                        render.DrawBeam(origin + offsetA, origin + offsetB, 2 + pulse * 1.5, 0, 1, color)
-                    end
+                    glow = 22 + progress * 28 + pulse * 9
                 elseif phase == 2 then
-                    render.SetMaterial(beamMaterial)
-                    local tail = seeker:GetForward() * -42
-                    render.DrawBeam(origin, origin + tail, 5 + pulse * 3, 0, 1, color)
+                    glow = 28 + pulse * 12
+                else
+                    glow = 38 + pulse * 16
+                end
+                render.DrawSprite(origin, glow, glow, color)
+                render.DrawSprite(origin + Vector(0, 0, 10), glow * 0.72, glow * 0.72,
+                    Color(255, 255, 255, 195 + math.floor(pulse * 60)))
+
+                render.SetMaterial(beamMaterial)
+                if phase == 1 then
+                    -- Three rapidly tightening electrical chords plus a forward
+                    -- commitment line make the pre-charge tell readable even when
+                    -- the Rollermine model itself is partly hidden by floor clutter.
+                    local radius = 32 - progress * 15
+                    for i = 0, 2 do
+                        local a = now * (190 + i * 25) + i * 120
+                        local offsetA = Angle(0, a, 0):Forward() * radius
+                        local offsetB = Angle(0, a + 120, 0):Forward() * radius
+                        render.DrawBeam(origin + offsetA, origin + offsetB, 4 + pulse * 2, 0, 1, color)
+                    end
+                    local forward = seeker:GetForward()
+                    render.DrawBeam(origin, origin + forward * (90 + progress * 90),
+                        5 + pulse * 2, 0, 1, color)
+                elseif phase == 2 then
+                    local tail = seeker:GetForward() * -64
+                    render.DrawBeam(origin, origin + tail, 8 + pulse * 4, 0, 1, color)
+                    render.DrawBeam(origin + Vector(0, 0, 5), origin + tail * 0.72,
+                        4 + pulse * 2, 0, 1, Color(255, 255, 255, 220))
+                elseif phase == 3 then
+                    local radius = 26 + progress * 34
+                    for i = 0, 3 do
+                        local a = i * 90 + now * 80
+                        local arm = Angle(0, a, 0):Forward() * radius
+                        render.DrawBeam(origin, origin + arm, 5, 0, 1, color)
+                    end
                 end
             end
         end
