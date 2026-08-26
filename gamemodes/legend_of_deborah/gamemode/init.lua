@@ -150,6 +150,10 @@ include("lod/sv_device_motion_safety.lua")
 -- same-cell orbits. Its adaptive service exists only while a flourish is active;
 -- all physical movement still executes through Motion V2.
 include("lod/sv_seeker_personality.lua")
+-- Never permit an exhausted Seeker retreat itinerary to become a permanent
+-- point-blank hold. This transition-only plan repair appends one legal escape
+-- segment; the existing Seeker service and Motion V2 remain the sole executors.
+include("lod/sv_seeker_close_range_continuity.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
