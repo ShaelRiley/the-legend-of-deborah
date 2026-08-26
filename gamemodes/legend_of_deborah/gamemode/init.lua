@@ -103,6 +103,10 @@ include("lod/sv_generated_geometry_ballistics.lua")
 -- Magnum penetration validates each post-body segment against the same generated
 -- geometry authority, so aligned enemies can be pierced but walls cannot.
 include("lod/sv_magnum_piercing.lua")
+-- Final Magnum balance identity: global d12 boomchains lower their explosion
+-- threshold toward the Boomchain Floor, while later cylinder chambers gain
+-- damage and the last two trigger pulls become two-/three-round bursts.
+include("lod/sv_magnum_super_explosive.lua")
 -- Phase Zero replaces repeated graph BFS/global hostile scans with bounded
 -- caches while preserving Motion V2 and generated geometry as authorities.
 include("lod/sv_phase_zero_runtime_optimization.lua")
