@@ -101,25 +101,41 @@ include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
 include("lod/sv_soldier_shot_contract.lua")
 
--- Watcher behaviour is intentionally consolidated into one final controller.
--- Bind it only after the base SENT and every other hostile wrapper have had a
--- chance to register. Earlier eager binding could patch a provisional lod_hostile
--- class table that Garry's Mod subsequently replaced, leaving production Watchers
--- on generic pursuit while the unified controller's counters remained at zero.
-local watcherUnifiedBound = false
-local function bindWatcherUnified()
-    if watcherUnifiedBound then return end
+-- Always load the unified Watcher module so its diagnostics and OnEntityCreated
+-- installer are registered even if the lod_hostile SENT has not entered the
+-- scripted-entity registry yet. The prior late binder checked for _BehaviourTick
+-- before include(), so on some startup orders it silently skipped the module
+-- entirely; that is why lod_watcher_motion_audit was an unknown command despite
+-- the checkout being at the expected commit.
+include("lod/sv_watcher_unified.lua")
+
+-- Rebind only during startup, after SENT registration has had additional chances
+-- to settle. These are finite startup retries, not gameplay services. Clearing the
+-- marker before re-include lets the module patch the final class table if an eager
+-- include happened to see a provisional table.
+local function rebindWatcherUnified(reason)
     local stored = scripted_ents.GetStored("lod_hostile")
     local class = stored and stored.t
-    if not class or not class._BehaviourTick then return end
+    if not class or not class._BehaviourTick then
+        print("[LOD:WATCHER-UNIFIED] startup bind waiting: " .. tostring(reason))
+        return false
+    end
+    if class.LODWatcherUnifiedControllerInstalled then
+        print("[LOD:WATCHER-UNIFIED] startup bind ready: " .. tostring(reason))
+        return true
+    end
     class.LODWatcherUnifiedControllerInstalled = nil
     include("lod/sv_watcher_unified.lua")
-    watcherUnifiedBound = true
-    print("[LOD:WATCHER-UNIFIED] late binding installed")
+    local installed = class.LODWatcherUnifiedControllerInstalled == true
+    print("[LOD:WATCHER-UNIFIED] startup bind " .. tostring(reason) .. " installed=" .. tostring(installed))
+    return installed
 end
 
-timer.Simple(0, bindWatcherUnified)
-hook.Add("InitPostEntity", "LOD_WatcherUnifiedLateBind", bindWatcherUnified)
+timer.Simple(0, function() rebindWatcherUnified("next-tick") end)
+hook.Add("InitPostEntity", "LOD_WatcherUnifiedLateBind", function()
+    rebindWatcherUnified("InitPostEntity")
+end)
+timer.Simple(1.0, function() rebindWatcherUnified("one-second") end)
 
 local cvDeveloperMode = GetConVar("lod_developer_mode")
 LOD.DeveloperToolsLoaded = cvDeveloperMode and cvDeveloperMode:GetBool() or false
