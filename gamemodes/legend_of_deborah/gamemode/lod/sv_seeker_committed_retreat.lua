@@ -145,11 +145,20 @@ local function adopt(seeker, graph)
     local anchor = Vector(target:GetPos().x, target:GetPos().y, target:GetPos().z)
     local waypoints, plannedDistance = buildCommittedPath(seeker, graph, anchor)
 
-    -- Retire the oscillating planner state. From this point until completion,
-    -- this one immutable waypoint sequence is the only Seeker retreat authority.
+    -- Retire the old retreat planner state. From this point until completion,
+    -- this one immutable waypoint sequence is the sole Seeker retreat authority.
     seeker.LODSeekerRetreat = nil
     seeker.LODWaypoints = {}
     seeker.LODWaypointIndex = 1
+
+    -- The original Seeker service also runs at 20 Hz. If it is allowed to keep a
+    -- normal target while committed retreat owns movement, it can immediately
+    -- create a second close-range retreat (or start a wind-up) and both systems
+    -- fight over the same Rollermine. Freeze ordinary acquisition/routing and
+    -- clear the normal target until this committed disengage has finished.
+    seeker.LODTarget = nil
+    seeker.LODNextTargetRefresh = math.huge
+    seeker.LODNextRouteRefresh = math.huge
 
     local resumeChargeAt = seeker.LODNextSeekerCharge or CurTime()
     seeker.LODNextSeekerCharge = math.huge
@@ -176,12 +185,17 @@ local function finish(seeker, record)
     seeker.LODWaypointIndex = 1
     Motion:Stop(seeker)
 
+    -- Always unfreeze ordinary acquisition/routing, even if the player that
+    -- caused the retreat died or disconnected while the Seeker was disengaging.
+    seeker.LODTarget = nil
+    seeker.LODNextTargetRefresh = 0
+    seeker.LODNextRouteRefresh = 0
+
     local target = record and record.target
     if livingPlayer(target) then
         seeker.LODTarget = target
         seeker.LODReturningHome = false
         seeker.LODNextTargetRefresh = CurTime() + 0.20
-        seeker.LODNextRouteRefresh = 0
         Motion:FaceToward(seeker, target:GetPos())
     end
     seeker.LODNextSeekerCharge = math.max(record and record.resumeChargeAt or 0, CurTime() + 0.10)
