@@ -19,12 +19,12 @@ Rolls.D12BoomchainFloor = tonumber(Rolls.D12BoomchainFloor) or D12_DEFAULT_BOOMC
 
 function Rolls:GetD12BoomchainFloor(profile)
     local requested = profile and tonumber(profile.boomchainFloor) or nil
-    return math.Clamp(math.floor(requested or self.D12BoomchainFloor or D12_DEFAULT_BOOMCHAIN_FLOOR), 1, 12)
+    return math.Clamp(math.floor(requested or self.D12BoomchainFloor or D12_DEFAULT_BOOMCHAIN_FLOOR), 1, D12_START_THRESHOLD)
 end
 
--- Global d12 rule: the first d12 explodes on 8-12. Every successful explosion
--- lowers the next d12's threshold by one until the Boomchain Floor is reached.
--- At the default floor the sequence is 8+, then 7+, then 6+, then 5+ forever.
+-- Global d12 rule: every fresh d12 chain starts at 8+. Every successful
+-- explosion lowers the next d12 threshold by one until the Boomchain Floor is
+-- reached. At the default floor the sequence is 8+, 7+, 6+, 5+, 5+... .
 -- Non-d12 exploding dice continue through the established shared implementation.
 if not Rolls.LODD12BoomchainInstalled then
     Rolls.LODD12BoomchainInstalled = true
@@ -39,8 +39,8 @@ if not Rolls.LODD12BoomchainInstalled then
         local contributions = {}
         local thresholds = {}
         local total = profile.bonus or 0
-        local threshold = math.Clamp(math.floor(tonumber(profile.exploding) or D12_START_THRESHOLD), 1, 12)
-        local boomchainFloor = math.min(threshold, self:GetD12BoomchainFloor(profile))
+        local threshold = D12_START_THRESHOLD
+        local boomchainFloor = self:GetD12BoomchainFloor(profile)
         local natural = rng:Int(1, 12)
 
         while natural and #values < MAX_CHAIN_DICE do
@@ -60,6 +60,40 @@ if not Rolls.LODD12BoomchainInstalled then
     end
 end
 
+-- Enforce the already-authored global d6/d12 explosion invariants even when a
+-- future caller uses the ordinary formula helper rather than explicitly asking
+-- for _RollExploding. Each base die starts its own independent explosion chain;
+-- bonuses are added once after all base dice resolve.
+if not Rolls.LODGlobalExplodingFormulaInstalled then
+    Rolls.LODGlobalExplodingFormulaInstalled = true
+    local baseRollFormula = Rolls._RollFormula
+
+    function Rolls:_RollFormula(profile, rng)
+        local sides = profile and tonumber(profile.sides) or 0
+        if sides ~= 6 and sides ~= 12 then
+            return baseRollFormula(self, profile, rng)
+        end
+
+        local total = profile.bonus or 0
+        local values = {}
+        local count = math.max(1, math.floor(tonumber(profile.count) or 1))
+        for _ = 1, count do
+            local explodingProfile = {
+                count = 1,
+                sides = sides,
+                exploding = sides == 6 and 6 or D12_START_THRESHOLD,
+                floor = profile.floor,
+                boomchainFloor = profile.boomchainFloor,
+                bonus = 0
+            }
+            local dieTotal, dieValues = self:_RollExploding(explodingProfile, rng)
+            total = total + (tonumber(dieTotal) or 0)
+            for _, value in ipairs(dieValues or {}) do values[#values + 1] = value end
+        end
+        return total, values
+    end
+end
+
 local function activeMagnum(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return nil end
     local weapon = ply:GetActiveWeapon()
@@ -73,10 +107,10 @@ local function magnumClipSize(weapon)
     return math.max(1, math.floor(maximum))
 end
 
--- weapon_357 decrements Clip1 before Entity:FireBullets. Thus, while resolving a
--- real Magnum projectile, maxClip - Clip1 is the 1-based chamber/trigger number
--- and maxClip - Clip1 - 1 is exactly the number of chambers already emptied
--- before the current trigger pull.
+-- Source's stock weapon_357 decrements Clip1 before Entity:FireBullets. Thus,
+-- while resolving a real Magnum projectile, maxClip - Clip1 is the 1-based
+-- trigger/chamber number and maxClip - Clip1 - 1 is the number of chambers that
+-- were already empty before the current trigger pull.
 local function cylinderState(weapon)
     if not IsValid(weapon) then return 0, 1, 0, MAGNUM_FALLBACK_CLIP end
     local maximum = magnumClipSize(weapon)
@@ -87,7 +121,7 @@ local function cylinderState(weapon)
 end
 
 -- Preserve every existing weapon wrapper (including the Shotgun identity pass),
--- then add the Magnum's cylinder bonus after its d12 boomchain has resolved.
+-- then add the Magnum's cylinder bonus after its d12 Boomchain has resolved.
 if not Rolls.LODMagnumCylinderDamageInstalled then
     Rolls.LODMagnumCylinderDamageInstalled = true
     local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
@@ -169,6 +203,9 @@ local function fireInjectedRound(ply, burst)
     local weapon = burst.weapon
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
     if ply:GetActiveWeapon() ~= weapon or weapon:GetClass() ~= "weapon_357" then return false end
+    -- A reload changes Clip1. If it occurs before the short burst finishes, cancel
+    -- stale follow-up rounds instead of applying an old chamber bonus to a new cylinder.
+    if weapon:Clip1() ~= burst.clipAfterTrigger then return false end
 
     weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
     ply:SetAnimation(PLAYER_ATTACK1)
@@ -231,7 +268,8 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         remaining = extraRounds,
         nextAt = CurTime() + BURST_SPACING,
         spacing = BURST_SPACING,
-        cylinderBonus = bonus
+        cylinderBonus = bonus,
+        clipAfterTrigger = clipAfter
     }
 end)
 
@@ -262,6 +300,9 @@ concommand.Add("lod_magnum_super_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
+    local validated = (Magnum.Stats.twoRoundBursts or 0) > 0
+        and (Magnum.Stats.threeRoundBursts or 0) > 0
+        and (Magnum.Stats.injectedRounds or 0) >= 3
     local line = string.format(
         "boomStart=%d boomFloor=%d cylinder=+0..+5 triggerShots=%d twoBursts=%d threeBursts=%d injected=%d result=%s",
         D12_START_THRESHOLD,
@@ -270,7 +311,7 @@ concommand.Add("lod_magnum_super_status", function(ply)
         Magnum.Stats.twoRoundBursts or 0,
         Magnum.Stats.threeRoundBursts or 0,
         Magnum.Stats.injectedRounds or 0,
-        (Magnum.Stats.triggerShots or 0) > 0 and "PASS" or "WAITING")
+        validated and "PASS" or "WAITING")
     print("[LOD:MAGNUM-SUPER] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
