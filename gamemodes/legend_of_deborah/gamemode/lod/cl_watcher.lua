@@ -6,6 +6,7 @@ local beamMaterial = Material("cable/redlaser")
 local glowMaterial = Material("sprites/light_glow02_add")
 local SCAN_COLOR = Color(90, 225, 255, 235)
 local SCAN_COLOR_HOT = Color(205, 250, 255, 255)
+local WATCHER_VISUAL_LIFT = Vector(0, 0, 42)
 
 FX.Active = FX.Active or setmetatable({}, {__mode = "k"})
 
@@ -37,9 +38,9 @@ local function watcherOrigin(watcher)
     local attachment = watcher:LookupAttachment("light")
     if attachment and attachment > 0 then
         local data = watcher:GetAttachment(attachment)
-        if data and data.Pos then return data.Pos end
+        if data and data.Pos then return data.Pos + WATCHER_VISUAL_LIFT end
     end
-    return watcher:WorldSpaceCenter()
+    return watcher:WorldSpaceCenter() + WATCHER_VISUAL_LIFT
 end
 
 local function targetPoint(target)
