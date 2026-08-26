@@ -122,6 +122,9 @@ include("lod/sv_phase_zero_runtime_optimization.lua")
 -- wanderers and never creates reinforcements as part of its scan.
 include("lod/sv_watcher.lua")
 include("lod/sv_watcher_attack_guard.lua")
+-- After a successful scan, Watcher commits one graph-valid retreat to restore
+-- support range; too-close Watchers retreat before they are allowed to scan.
+include("lod/sv_watcher_committed_retreat.lua")
 -- Gate-D Seeker support layers a bounded wind-up/charge state machine onto
 -- Motion V2. It remains graph-bound, uses event-driven client FX, and never
 -- launches players on impact.
