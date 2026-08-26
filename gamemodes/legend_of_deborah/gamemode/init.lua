@@ -85,10 +85,6 @@ include("lod/sv_magnum_super_explosive.lua")
 include("lod/sv_magnum_aim_state.lua")
 include("lod/sv_phase_zero_runtime_optimization.lua")
 include("lod/sv_watcher.lua")
--- Watcher behaviour is intentionally consolidated here. The retired incremental
--- retreat/concealment/scan services remain in the repository for history but are
--- not loaded; one Behaviour controller chooses state and Motion V2 alone moves it.
-include("lod/sv_watcher_unified.lua")
 include("lod/sv_watcher_test_visibility.lua")
 include("lod/sv_seeker.lua")
 include("lod/sv_seeker_sound_safety.lua")
@@ -104,6 +100,26 @@ include("lod/sv_m3_damage_audit.lua")
 include("lod/sv_campaign_restart.lua")
 include("lod/sv_respawn_hud.lua")
 include("lod/sv_soldier_shot_contract.lua")
+
+-- Watcher behaviour is intentionally consolidated into one final controller.
+-- Bind it only after the base SENT and every other hostile wrapper have had a
+-- chance to register. Earlier eager binding could patch a provisional lod_hostile
+-- class table that Garry's Mod subsequently replaced, leaving production Watchers
+-- on generic pursuit while the unified controller's counters remained at zero.
+local watcherUnifiedBound = false
+local function bindWatcherUnified()
+    if watcherUnifiedBound then return end
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    if not class or not class._BehaviourTick then return end
+    class.LODWatcherUnifiedControllerInstalled = nil
+    include("lod/sv_watcher_unified.lua")
+    watcherUnifiedBound = true
+    print("[LOD:WATCHER-UNIFIED] late binding installed")
+end
+
+timer.Simple(0, bindWatcherUnified)
+hook.Add("InitPostEntity", "LOD_WatcherUnifiedLateBind", bindWatcherUnified)
 
 local cvDeveloperMode = GetConVar("lod_developer_mode")
 LOD.DeveloperToolsLoaded = cvDeveloperMode and cvDeveloperMode:GetBool() or false
