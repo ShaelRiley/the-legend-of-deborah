@@ -1,0 +1,753 @@
+LOD = LOD or {}
+LOD.WatcherUnified = LOD.WatcherUnified or {}
+
+local Unified = LOD.WatcherUnified
+local Watcher = LOD.Watcher
+local Navigator = LOD.MazeNavigator
+local Motion = LOD.HostileMotionV2
+local Rolls = LOD.CombatRolls
+local cellKey = LOD.MazeGenerator and LOD.MazeGenerator.CellKey
+
+if not Watcher or not Navigator or not Motion or not cellKey then return end
+
+-- Single-authority Watcher controller.
+--
+-- Behaviour owns state selection; Motion V2 alone owns physical movement.
+-- There are no Watcher movement/scan timers. Expensive graph/LOS work happens
+-- only on scan completion, completed escape legs, or 4 Hz hidden-state checks.
+
+local SCAN_STANDOFF = 300
+local MIN_SCAN_RANGE = 150
+local BACKOFF_RELEASE_RANGE = 220
+local ESCAPE_SEARCH_DEPTH = 6
+local VISIBILITY_INTERVAL = 0.25
+local BLOCKED_REPLAN_SECONDS = 1.0
+
+local BLINK_SECONDS = 0.50
+local CLOAK_DICE_COUNT = 2
+local HIDE_DICE_COUNT = 8
+local D6_PROFILE = {sides = 6, exploding = 6}
+local MAX_FALLBACK_CHAIN = 64
+
+local SPEED_NEAR_DISTANCE = 128
+local SPEED_FAR_DISTANCE = 640
+local PROXIMITY_SPEED_BONUS = 0.85
+local ESCAPE_SPEED_BONUS = 0.45
+local ESCAPE_SPEED_FLOOR = 1.65
+local SPEED_SCALE_CAP = 2.20
+local SPEED_APPROACH_STEP = 0.12
+
+util.AddNetworkString("LOD_WatcherScanPulse")
+
+Unified.Stats = Unified.Stats or {
+    behaviourTicks = 0,
+    scanDispatches = 0,
+    movementCalls = 0,
+    scanPulses = 0,
+    escapeStarts = 0,
+    escapeMoves = 0,
+    escapePlans = 0,
+    escapeReplans = 0,
+    blockedPlans = 0,
+    hiddenStarts = 0,
+    reexposures = 0,
+    hideCompletes = 0,
+    backoffStarts = 0,
+    backoffMoves = 0,
+    lastCloakSeconds = 0,
+    lastCloakRoll = "none",
+    lastHideSeconds = 0,
+    lastHideRoll = "none",
+    maxSpeedScale = 1
+}
+
+local function keyOf(cell)
+    return cell and cellKey(cell.x, cell.y, cell.z) or nil
+end
+
+local function currentState()
+    local state = LOD.RunManager and LOD.RunManager.State
+    return state, state and state.Graph or nil
+end
+
+local function livingPlayer(ply)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    if LOD.RunManager and LOD.RunManager.IsActivePlayer then
+        return LOD.RunManager:IsActivePlayer(ply)
+    end
+    return true
+end
+
+local function safeCell(graph, cell)
+    local tag = graph and graph.CellTags and graph.CellTags[keyOf(cell)]
+    return tag and tag.safe == true or false
+end
+
+local function targetEligible(watcher, graph, target)
+    if not IsValid(watcher) or not livingPlayer(target) then return false end
+    local wc = Navigator:WorldToCell(graph, watcher:GetPos())
+    local tc = Navigator:WorldToCell(graph, target:GetPos())
+    if not wc or not tc or wc.z ~= tc.z then return false end
+    return not safeCell(graph, tc)
+end
+
+local function horizontalDistance(a, b)
+    if not a or not b then return math.huge end
+    local dx = a.x - b.x
+    local dy = a.y - b.y
+    return math.sqrt(dx * dx + dy * dy)
+end
+
+local function sharedLOS(watcher, target)
+    if not IsValid(watcher) or not livingPlayer(target) then return false end
+    if watcher._HasLineOfSight then return watcher:_HasLineOfSight(target) end
+    local tr = util.TraceLine({
+        start = watcher:WorldSpaceCenter(),
+        endpos = target:EyePos(),
+        mask = MASK_SHOT,
+        filter = {watcher, target}
+    })
+    return not tr.Hit or tr.Fraction >= 0.995
+end
+
+local function playerCanSeePoint(watcher, target, point)
+    if not IsValid(watcher) or not livingPlayer(target) or not point then return false end
+    local tr = util.TraceLine({
+        start = target:EyePos(),
+        endpos = point + Vector(0, 0, 34),
+        mask = MASK_SHOT,
+        filter = function(ent)
+            if ent == watcher or ent == target then return false end
+            if IsValid(ent) and ent.LODHostile then return false end
+            if IsValid(ent) and (ent:GetOwner() == target or ent:GetParent() == target) then return false end
+            return true
+        end
+    })
+    return not tr.Hit or tr.Fraction >= 0.995
+end
+
+local function playerCanSeeWatcher(watcher, target)
+    return playerCanSeePoint(watcher, target, watcher:GetPos())
+end
+
+local function fallbackExplodingChain(rng)
+    local total = 0
+    local values = {}
+    for _ = 1, MAX_FALLBACK_CHAIN do
+        local value = rng:Int(1, 6)
+        values[#values + 1] = value
+        total = total + value
+        if value ~= 6 then break end
+    end
+    return total, values
+end
+
+local function rollExplodingDice(watcher, label, count)
+    watcher.LODWatcherUnifiedRollSerial = (watcher.LODWatcherUnifiedRollSerial or 0) + 1
+    local state = LOD.RunManager and LOD.RunManager.State
+    local levelSeed = state and state.LevelSeed or 1
+    local identity = watcher.LODEncounterOrdinal
+        or watcher.LODWanderSeed
+        or watcher.LODEncounterId
+        or watcher:EntIndex()
+    local seed = LOD.Seeds.Derive(levelSeed, string.format(
+        "watcher-unified:%s:%s:%d", label, tostring(identity), watcher.LODWatcherUnifiedRollSerial))
+    local rng = LOD.RNG.New(seed)
+
+    local total = 0
+    local chains = {}
+    for index = 1, count do
+        local subtotal, values
+        if Rolls and Rolls._RollExploding then
+            subtotal, values = Rolls:_RollExploding(D6_PROFILE, rng)
+        else
+            subtotal, values = fallbackExplodingChain(rng)
+        end
+        total = total + (subtotal or 0)
+        chains[index] = table.concat(values or {}, ">")
+    end
+    return math.max(count, total), table.concat(chains, " | ")
+end
+
+local function emitScanPulse(watcher, target)
+    if not IsValid(watcher) then return end
+    Unified.Stats.scanPulses = (Unified.Stats.scanPulses or 0) + 1
+    watcher:EmitSound("ambient/energy/zap1.wav", 76, 112, 0.72, CHAN_AUTO)
+    net.Start("LOD_WatcherScanPulse")
+    net.WriteEntity(watcher)
+    net.WriteEntity(IsValid(target) and target or NULL)
+    net.Broadcast()
+end
+
+local function cancelActiveScan(watcher, cooldown)
+    if not watcher.LODWatcherScan then return false end
+    watcher.LODWatcherScan = nil
+    watcher.LODNextWatcherScan = CurTime() + (cooldown or 0.35)
+    net.Start("LOD_WatcherScanState")
+    net.WriteEntity(watcher)
+    net.WriteBool(false)
+    net.Broadcast()
+    return true
+end
+
+local function sortedNeighborKeys(cell)
+    local out = {}
+    for neighborKey in pairs(cell and cell.neighbors or {}) do out[#out + 1] = neighborKey end
+    table.sort(out)
+    return out
+end
+
+local function reconstructWaypoints(graph, startKey, goalKey, previous)
+    if not goalKey or goalKey == startKey then return nil end
+    local reverse = {goalKey}
+    local cursor = goalKey
+    while cursor ~= startKey do
+        cursor = previous[cursor]
+        if not cursor then return nil end
+        reverse[#reverse + 1] = cursor
+    end
+
+    local path = {}
+    for index = #reverse, 1, -1 do
+        local cell = graph.Cells[reverse[index]]
+        if not cell then return nil end
+        path[#path + 1] = cell
+    end
+
+    local waypoints = Navigator:PathToWaypoints(graph, path)
+    return #waypoints > 0 and waypoints or nil
+end
+
+local function localFleeWaypoint(watcher, graph, target)
+    local cell = Navigator:WorldToCell(graph, watcher:GetPos())
+    if not cell or not livingPlayer(target) then return nil end
+
+    local pos = watcher:GetPos()
+    local targetPos = target:GetPos()
+    local away = Vector(pos.x - targetPos.x, pos.y - targetPos.y, 0)
+    if away:LengthSqr() <= 0.01 then away = -watcher:GetForward() end
+    if away:LengthSqr() <= 0.01 then away = Vector(1, 0, 0) end
+    away:Normalize()
+    local lateral = Vector(-away.y, away.x, 0)
+
+    local directions = {
+        away,
+        (away + lateral * 0.70):GetNormalized(),
+        (away - lateral * 0.70):GetNormalized(),
+        lateral,
+        -lateral
+    }
+
+    local best, bestScore
+    for index, dir in ipairs(directions) do
+        local candidate = Motion:CellFloorPoint(cell, pos + dir * 220)
+        if candidate then
+            local travel = horizontalDistance(candidate, pos)
+            if travel >= 24 then
+                local score = horizontalDistance(candidate, targetPos) * 10 + travel - index * 0.01
+                if not bestScore or score > bestScore then
+                    best = candidate
+                    bestScore = score
+                end
+            end
+        end
+    end
+
+    if not best then return nil end
+    return {pos = best, tolerance = 10, stair = false, watcherUnified = true}
+end
+
+local function buildEscapePlan(watcher, graph, target)
+    local startCell = Navigator:WorldToCell(graph, watcher:GetPos())
+    local targetCell = Navigator:WorldToCell(graph, target:GetPos())
+    if not startCell or not targetCell or startCell.z ~= targetCell.z then return nil, false end
+
+    local startKey = keyOf(startCell)
+    local queue = {{key = startKey, depth = 0}}
+    local head = 1
+    local seen = {[startKey] = true}
+    local previous = {}
+    local targetPos = target:GetPos()
+    local hiddenDepth
+    local hidden = {}
+    local fallbackKey, fallbackDistance = nil, -1
+
+    while head <= #queue do
+        local item = queue[head]
+        head = head + 1
+        if hiddenDepth and item.depth > hiddenDepth then break end
+
+        local cell = graph.Cells[item.key]
+        if cell then
+            if item.depth > 0 and not safeCell(graph, cell) then
+                local center = Motion:CellFloorPoint(cell, Navigator:CellCenter(cell))
+                local distance = horizontalDistance(center, targetPos)
+                if distance > fallbackDistance then
+                    fallbackKey = item.key
+                    fallbackDistance = distance
+                end
+
+                if not playerCanSeePoint(watcher, target, center) then
+                    hiddenDepth = hiddenDepth or item.depth
+                    if item.depth == hiddenDepth then
+                        hidden[#hidden + 1] = {key = item.key, distance = distance}
+                    end
+                end
+            end
+
+            if item.depth < ESCAPE_SEARCH_DEPTH and not hiddenDepth then
+                for _, neighborKey in ipairs(sortedNeighborKeys(cell)) do
+                    local neighbor = graph.Cells[neighborKey]
+                    if neighbor and neighbor.z == startCell.z and not seen[neighborKey]
+                        and not safeCell(graph, neighbor)
+                        and Navigator:CanTraverse(graph, item.key, neighborKey)
+                    then
+                        seen[neighborKey] = true
+                        previous[neighborKey] = item.key
+                        queue[#queue + 1] = {key = neighborKey, depth = item.depth + 1}
+                    end
+                end
+            end
+        end
+    end
+
+    local goalKey = fallbackKey
+    local hiddenGoal = false
+    if #hidden > 0 then
+        table.sort(hidden, function(a, b)
+            if a.distance == b.distance then return a.key < b.key end
+            return a.distance > b.distance
+        end)
+        goalKey = hidden[1].key
+        hiddenGoal = true
+    end
+
+    local waypoints = reconstructWaypoints(graph, startKey, goalKey, previous)
+    if not waypoints then
+        local localWaypoint = localFleeWaypoint(watcher, graph, target)
+        if localWaypoint then waypoints = {localWaypoint} end
+    end
+
+    Unified.Stats.escapePlans = (Unified.Stats.escapePlans or 0) + 1
+    if not waypoints then Unified.Stats.blockedPlans = (Unified.Stats.blockedPlans or 0) + 1 end
+    return waypoints, hiddenGoal
+end
+
+local function desiredSpeedScale(watcher, target, escaping)
+    if not livingPlayer(target) then return 1 end
+    local distance = horizontalDistance(watcher:GetPos(), target:GetPos())
+    local span = math.max(1, SPEED_FAR_DISTANCE - SPEED_NEAR_DISTANCE)
+    local closeness = 1 - math.Clamp((distance - SPEED_NEAR_DISTANCE) / span, 0, 1)
+    local desired = 1 + PROXIMITY_SPEED_BONUS * closeness
+    if escaping then desired = math.max(ESCAPE_SPEED_FLOOR, desired + ESCAPE_SPEED_BONUS) end
+    return math.min(SPEED_SCALE_CAP, desired)
+end
+
+local function moveWatcher(watcher, waypoint, target, escaping)
+    if not waypoint then return false end
+    local desired = desiredSpeedScale(watcher, target, escaping)
+    local current = watcher.LODWatcherUnifiedSpeedScale or desired
+    current = math.Approach(current, desired, SPEED_APPROACH_STEP)
+    watcher.LODWatcherUnifiedSpeedScale = current
+    Unified.Stats.maxSpeedScale = math.max(Unified.Stats.maxSpeedScale or 1, current)
+
+    local cfg = watcher.LODConfig
+    if not cfg then return Motion:MoveToward(watcher, waypoint) end
+    local originalSpeed = cfg.speed or 135
+    cfg.speed = originalSpeed * current
+    local reached = Motion:MoveToward(watcher, waypoint)
+    cfg.speed = originalSpeed
+    Unified.Stats.movementCalls = (Unified.Stats.movementCalls or 0) + 1
+    return reached
+end
+
+local function enterHidden(watcher, escape, now)
+    Motion:Stop(watcher)
+    escape.phase = "hidden"
+    escape.hiddenSince = now
+    escape.hiddenEndsAt = now + escape.hideDuration
+    escape.nextVisibilityAt = now + VISIBILITY_INTERVAL
+    escape.waypoints = {}
+    escape.index = 1
+    watcher.LODMotionMode = "watcher-hidden-hold"
+    Unified.Stats.hiddenStarts = (Unified.Stats.hiddenStarts or 0) + 1
+end
+
+local function clearEscape(watcher, target, now, completed)
+    watcher.LODWatcherUnifiedEscape = nil
+    watcher.LODWatcherUnifiedSpeedScale = 1
+    watcher:SetNW2Float("LOD_WatcherBlinkUntil", 0)
+    watcher:SetNW2Float("LOD_WatcherInvisibleUntil", 0)
+    watcher.LODNextWatcherScan = completed and now or (now + 0.35)
+    watcher.LODNextTargetRefresh = 0
+    watcher.LODNextRouteRefresh = 0
+    watcher.LODWaypoints = {}
+    watcher.LODWaypointIndex = 1
+    if livingPlayer(target) then
+        watcher.LODTarget = target
+        watcher.LODReturningHome = false
+    end
+    if completed then Unified.Stats.hideCompletes = (Unified.Stats.hideCompletes or 0) + 1 end
+end
+
+local function planEscape(watcher, graph, escape, replan)
+    local waypoints, hiddenGoal = buildEscapePlan(watcher, graph, escape.target)
+    escape.waypoints = waypoints or {}
+    escape.index = 1
+    escape.hiddenGoal = hiddenGoal == true
+    escape.nextPlanAt = 0
+    if replan then Unified.Stats.escapeReplans = (Unified.Stats.escapeReplans or 0) + 1 end
+    if not waypoints then
+        escape.nextPlanAt = CurTime() + BLOCKED_REPLAN_SECONDS
+        watcher.LODMotionMode = "watcher-escape-blocked"
+        Motion:Stop(watcher)
+        return false
+    end
+    escape.phase = "seeking"
+    return true
+end
+
+local function beginEscape(watcher, graph, target)
+    local now = CurTime()
+    local cloakDuration, cloakRoll = rollExplodingDice(watcher, "cloak", CLOAK_DICE_COUNT)
+    local hideDuration, hideRoll = rollExplodingDice(watcher, "hide", HIDE_DICE_COUNT)
+
+    local escape = {
+        target = target,
+        phase = "seeking",
+        cloakDuration = cloakDuration,
+        cloakRoll = cloakRoll,
+        hideDuration = hideDuration,
+        hideRoll = hideRoll,
+        blinkUntil = now + BLINK_SECONDS,
+        invisibleUntil = now + BLINK_SECONDS + cloakDuration,
+        waypoints = {},
+        index = 1,
+        nextVisibilityAt = 0,
+        hiddenSince = nil,
+        hiddenEndsAt = nil,
+        nextPlanAt = 0
+    }
+    watcher.LODWatcherUnifiedEscape = escape
+    watcher.LODNextWatcherScan = math.huge
+    watcher.LODWaypoints = {}
+    watcher.LODWaypointIndex = 1
+    watcher.LODNextRouteRefresh = math.huge
+    watcher.LODNextTargetRefresh = math.huge
+    watcher.LODWatcherUnifiedSpeedScale = math.max(watcher.LODWatcherUnifiedSpeedScale or 1, 1.80)
+    watcher:SetNW2Float("LOD_WatcherBlinkUntil", escape.blinkUntil)
+    watcher:SetNW2Float("LOD_WatcherInvisibleUntil", escape.invisibleUntil)
+    watcher:SetNW2Float("LOD_WatcherEscapeSeconds", cloakDuration)
+
+    Unified.Stats.escapeStarts = (Unified.Stats.escapeStarts or 0) + 1
+    Unified.Stats.lastCloakSeconds = cloakDuration
+    Unified.Stats.lastCloakRoll = cloakRoll
+    Unified.Stats.lastHideSeconds = hideDuration
+    Unified.Stats.lastHideRoll = hideRoll
+
+    emitScanPulse(watcher, target)
+    planEscape(watcher, graph, escape, false)
+    return escape
+end
+
+local function runEscape(watcher, graph, now)
+    local escape = watcher.LODWatcherUnifiedEscape
+    if not escape then return false end
+    local target = escape.target
+
+    if not targetEligible(watcher, graph, target) then
+        clearEscape(watcher, nil, now, false)
+        return false
+    end
+
+    if escape.phase == "hidden" then
+        if now < (escape.nextVisibilityAt or 0) then return true end
+        escape.nextVisibilityAt = now + VISIBILITY_INTERVAL
+
+        if playerCanSeeWatcher(watcher, target) then
+            escape.hiddenSince = nil
+            escape.hiddenEndsAt = nil
+            escape.phase = "seeking"
+            Unified.Stats.reexposures = (Unified.Stats.reexposures or 0) + 1
+            planEscape(watcher, graph, escape, true)
+            return true
+        end
+
+        if escape.hiddenEndsAt and now >= escape.hiddenEndsAt then
+            clearEscape(watcher, target, now, true)
+        end
+        return true
+    end
+
+    if now >= (escape.nextVisibilityAt or 0) then
+        escape.nextVisibilityAt = now + VISIBILITY_INTERVAL
+        if not playerCanSeeWatcher(watcher, target) then
+            enterHidden(watcher, escape, now)
+            return true
+        end
+    end
+
+    local waypoint = escape.waypoints and escape.waypoints[escape.index or 1]
+    if not waypoint then
+        if now >= (escape.nextPlanAt or 0) then
+            planEscape(watcher, graph, escape, true)
+            waypoint = escape.waypoints and escape.waypoints[escape.index or 1]
+        end
+        if not waypoint then return true end
+    end
+
+    local reached = moveWatcher(watcher, waypoint, target, true)
+    watcher.LODMotionMode = "watcher-escape-unified"
+    Unified.Stats.escapeMoves = (Unified.Stats.escapeMoves or 0) + 1
+    if reached then escape.index = (escape.index or 1) + 1 end
+    return true
+end
+
+local function beginBackoff(watcher, graph, target)
+    local waypoints = select(1, buildEscapePlan(watcher, graph, target))
+    watcher.LODWatcherUnifiedBackoff = {
+        target = target,
+        waypoints = waypoints or {},
+        index = 1,
+        nextPlanAt = 0
+    }
+    Unified.Stats.backoffStarts = (Unified.Stats.backoffStarts or 0) + 1
+end
+
+local function runBackoff(watcher, graph, target)
+    local backoff = watcher.LODWatcherUnifiedBackoff
+    if not backoff or backoff.target ~= target then
+        beginBackoff(watcher, graph, target)
+        backoff = watcher.LODWatcherUnifiedBackoff
+    end
+
+    if horizontalDistance(watcher:GetPos(), target:GetPos()) >= BACKOFF_RELEASE_RANGE then
+        watcher.LODWatcherUnifiedBackoff = nil
+        watcher.LODNextWatcherScan = CurTime() + 0.15
+        return false
+    end
+
+    local waypoint = backoff.waypoints and backoff.waypoints[backoff.index or 1]
+    if not waypoint then
+        if CurTime() >= (backoff.nextPlanAt or 0) then
+            local waypoints = select(1, buildEscapePlan(watcher, graph, target))
+            backoff.waypoints = waypoints or {}
+            backoff.index = 1
+            backoff.nextPlanAt = CurTime() + BLOCKED_REPLAN_SECONDS
+            waypoint = backoff.waypoints[1]
+        end
+        if not waypoint then
+            Motion:Stop(watcher)
+            return true
+        end
+    end
+
+    local reached = moveWatcher(watcher, waypoint, target, true)
+    watcher.LODMotionMode = "watcher-backoff"
+    Unified.Stats.backoffMoves = (Unified.Stats.backoffMoves or 0) + 1
+    if reached then backoff.index = (backoff.index or 1) + 1 end
+    return true
+end
+
+local function approachTarget(watcher, graph, target)
+    watcher:_RefreshRoute(graph)
+    local waypoint = watcher:_AdvanceWaypoint()
+
+    if not waypoint then
+        local tc = Navigator:WorldToCell(graph, target:GetPos())
+        if tc then
+            local safe = Motion:CellFloorPoint(tc, target:GetPos())
+            if safe then waypoint = {pos = safe, tolerance = 18, stair = false, watcherUnified = true} end
+        end
+    end
+
+    if waypoint then
+        moveWatcher(watcher, waypoint, target, false)
+        watcher.LODMotionMode = "watcher-approach"
+    else
+        Motion:Stop(watcher)
+    end
+end
+
+local function dispatchWatcherScan(watcher)
+    if not watcher._RunWatcherTick then return false end
+    watcher.LODWatcherDispatchFrame = nil
+    Unified.Stats.scanDispatches = (Unified.Stats.scanDispatches or 0) + 1
+    return watcher:_RunWatcherTick()
+end
+
+local function installPatch()
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    if not class or class.LODWatcherUnifiedControllerInstalled then return false end
+    class.LODWatcherUnifiedControllerInstalled = true
+
+    local baseInitialize = class.Initialize
+    function class:Initialize()
+        baseInitialize(self)
+        if self.LODArchetypeId ~= "watcher" then return end
+        self.LODWatcherUnifiedEscape = nil
+        self.LODWatcherUnifiedBackoff = nil
+        self.LODWatcherUnifiedSpeedScale = 1
+        self.LODWatcherUnifiedRollSerial = 0
+        self:SetNW2Float("LOD_WatcherBlinkUntil", 0)
+        self:SetNW2Float("LOD_WatcherInvisibleUntil", 0)
+        self:SetNW2Float("LOD_WatcherEscapeSeconds", 0)
+    end
+
+    local baseTryAttack = class._TryAttack
+    function class:_TryAttack(target)
+        if self.LODArchetypeId == "watcher" then return false end
+        return baseTryAttack(self, target)
+    end
+
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        if self.LODArchetypeId ~= "watcher" then return baseBehaviourTick(self) end
+        Unified.Stats.behaviourTicks = (Unified.Stats.behaviourTicks or 0) + 1
+
+        if self.LODDead or not self.LODActivated then
+            Motion:Stop(self)
+            return
+        end
+
+        local state, graph = currentState()
+        if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared then
+            Motion:Stop(self)
+            return
+        end
+
+        if Motion.HoldHitStun and Motion:HoldHitStun(self, CurTime()) then
+            if self.LODWatcherScan then dispatchWatcherScan(self) end
+            return
+        end
+
+        if self.LODWatcherUnifiedEscape then
+            runEscape(self, graph, CurTime())
+            return
+        end
+
+        self:_RefreshTarget(graph)
+        local target = self.LODTarget
+        if not targetEligible(self, graph, target) then
+            self.LODWatcherUnifiedBackoff = nil
+            Motion:Stop(self)
+            return
+        end
+
+        local distance = horizontalDistance(self:GetPos(), target:GetPos())
+
+        if self.LODWatcherScan then
+            if distance < MIN_SCAN_RANGE then
+                cancelActiveScan(self, 0.35)
+                beginBackoff(self, graph, target)
+                runBackoff(self, graph, target)
+                return
+            end
+
+            local completedBefore = Watcher.Stats.scansCompleted or 0
+            dispatchWatcherScan(self)
+            if (Watcher.Stats.scansCompleted or 0) > completedBefore then
+                beginEscape(self, graph, target)
+                runEscape(self, graph, CurTime())
+            end
+            return
+        end
+
+        if distance < MIN_SCAN_RANGE then
+            runBackoff(self, graph, target)
+            return
+        end
+        self.LODWatcherUnifiedBackoff = nil
+
+        if distance <= SCAN_STANDOFF and CurTime() >= (self.LODNextWatcherScan or 0)
+            and sharedLOS(self, target)
+        then
+            local completedBefore = Watcher.Stats.scansCompleted or 0
+            dispatchWatcherScan(self)
+            if (Watcher.Stats.scansCompleted or 0) > completedBefore then
+                beginEscape(self, graph, target)
+                runEscape(self, graph, CurTime())
+            end
+            if self.LODWatcherScan or self.LODWatcherUnifiedEscape then return end
+        end
+
+        approachTarget(self, graph, target)
+    end
+
+    local baseOnRemove = class.OnRemove
+    function class:OnRemove()
+        if self.LODArchetypeId == "watcher" then
+            self.LODWatcherUnifiedEscape = nil
+            self.LODWatcherUnifiedBackoff = nil
+        end
+        if baseOnRemove then return baseOnRemove(self) end
+    end
+
+    return true
+end
+
+installPatch()
+hook.Add("OnEntityCreated", "LOD_WatcherUnifiedControllerInstall", function(ent)
+    if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end
+end)
+
+concommand.Add("lod_watcher_motion_audit", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local live, scanning, escaping, hidden, backoff = 0, 0, 0, 0, 0
+    local lines = {}
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and not hostile.LODDead and hostile.LODArchetypeId == "watcher" then
+            live = live + 1
+            if hostile.LODWatcherScan then scanning = scanning + 1 end
+            local escape = hostile.LODWatcherUnifiedEscape
+            if escape then
+                escaping = escaping + 1
+                if escape.phase == "hidden" then hidden = hidden + 1 end
+            end
+            if hostile.LODWatcherUnifiedBackoff then backoff = backoff + 1 end
+
+            local target = escape and escape.target or hostile.LODTarget
+            local distance = livingPlayer(target)
+                and horizontalDistance(hostile:GetPos(), target:GetPos()) or -1
+            lines[#lines + 1] = string.format(
+                "#%d mode=%s scan=%s escape=%s wp=%d dist=%.0f cloakLeft=%.1f",
+                hostile:EntIndex(),
+                tostring(hostile.LODMotionMode or "none"),
+                tostring(hostile.LODWatcherScan ~= nil),
+                escape and tostring(escape.phase) or "none",
+                escape and math.max(0, #(escape.waypoints or {}) - (escape.index or 1) + 1) or 0,
+                distance,
+                math.max(0, hostile:GetNW2Float("LOD_WatcherInvisibleUntil", 0) - CurTime()))
+        end
+    end
+
+    local summary = string.format(
+        "live=%d scanning=%d escaping=%d hidden=%d backoff=%d behaviour=%d scanDispatch=%d moveCalls=%d escapeMoves=%d plans=%d replans=%d blocked=%d hiddenStarts=%d reexposures=%d hideCompletes=%d lastCloak=2d6!=%ds[%s] lastHide=8d6!=%ds[%s] maxSpeed=%.2f timers=0 authority=Behaviour->MotionV2",
+        live, scanning, escaping, hidden, backoff,
+        Unified.Stats.behaviourTicks or 0,
+        Unified.Stats.scanDispatches or 0,
+        Unified.Stats.movementCalls or 0,
+        Unified.Stats.escapeMoves or 0,
+        Unified.Stats.escapePlans or 0,
+        Unified.Stats.escapeReplans or 0,
+        Unified.Stats.blockedPlans or 0,
+        Unified.Stats.hiddenStarts or 0,
+        Unified.Stats.reexposures or 0,
+        Unified.Stats.hideCompletes or 0,
+        Unified.Stats.lastCloakSeconds or 0,
+        tostring(Unified.Stats.lastCloakRoll or "none"),
+        Unified.Stats.lastHideSeconds or 0,
+        tostring(Unified.Stats.lastHideRoll or "none"),
+        Unified.Stats.maxSpeedScale or 1)
+
+    print("[LOD:WATCHER-UNIFIED] " .. summary)
+    if IsValid(ply) then ply:ChatPrint(summary) end
+    for _, line in ipairs(lines) do
+        print("[LOD:WATCHER-UNIFIED] " .. line)
+        if IsValid(ply) then ply:ChatPrint(line) end
+    end
+end)
