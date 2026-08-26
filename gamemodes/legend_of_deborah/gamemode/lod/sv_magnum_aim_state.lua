@@ -153,6 +153,36 @@ if not Rolls.LODMagnumAimDamageInstalled then
     end
 end
 
+-- Wrap the already-authored burst hook rather than adding a second burst
+-- authority. Snapshot Aim State before the base hook executes. If the roll layer
+-- has already consumed Aim State, the temporary marker carries the same value;
+-- if the burst hook happens first, state.armed still carries it. This is robust
+-- to GMod's unspecified relative hook iteration order.
+if not Magnum.LODMagnumAimBurstWrapped then
+    local fireHooks = hook.GetTable().EntityFireBullets
+    local baseBurstHook = fireHooks and fireHooks["LOD_MagnumCylinderBurst"] or nil
+    if baseBurstHook then
+        Magnum.LODMagnumAimBurstWrapped = true
+        hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
+            local weapon = activeMagnum(shooter)
+            local multiplier = 1
+            if IsValid(weapon) and not weapon.LODMagnumInjectedBurst then
+                local state = Magnum.AimStates and Magnum.AimStates[shooter]
+                multiplier = tonumber(weapon.LODMagnumAimConsumedMultiplier)
+                    or (state and state.armed and AIM_DAMAGE_MULTIPLIER)
+                    or 1
+            end
+
+            local result = baseBurstHook(shooter, bullet)
+            if multiplier > 1 then
+                local burst = Magnum.Bursts and Magnum.Bursts[shooter]
+                if burst then burst.aimMultiplier = multiplier end
+            end
+            return result
+        end)
+    end
+end
+
 -- The trigger marker only has to survive the EntityFireBullets dispatch that
 -- caused it. Clear it on the next tick so it cannot leak into a later shot.
 hook.Add("EntityFireBullets", "LOD_MagnumAimState_TriggerMarkerCleanup", function(shooter)
