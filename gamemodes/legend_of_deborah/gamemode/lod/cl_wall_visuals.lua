@@ -8,12 +8,17 @@ local MESSAGE = "LOD_WallVisuals"
 local PROTOCOL = 2
 local CONTAINER_VISUAL_EMBED = 16
 local MODEL_BATCH_SIZE = 128
+local RETRY_BATCH_SIZE = 16
+local MODEL_RETRY_LIMIT = 8
 
 Wall.logical = Wall.logical or {}
 Wall.world = Wall.world or {}
 Wall.models = Wall.models or {}
 Wall.dirty = Wall.dirty ~= false
 Wall.nextModel = Wall.nextModel or 1
+Wall.retryQueue = Wall.retryQueue or {}
+Wall.retryAttempts = Wall.retryAttempts or {}
+Wall.failedModels = Wall.failedModels or 0
 
 local DIRS = {
     {dx = 0, dy = 1, yaw = 90},
@@ -22,12 +27,19 @@ local DIRS = {
     {dx = -1, dy = 0, yaw = 0}
 }
 
+local function resetRetries()
+    Wall.retryQueue = {}
+    Wall.retryAttempts = {}
+    Wall.failedModels = 0
+end
+
 local function removeModels()
     for _, model in pairs(Wall.models or {}) do
         if IsValid(model) then model:Remove() end
     end
     Wall.models = {}
     Wall.nextModel = 1
+    resetRetries()
 end
 
 local function clearManifest()
@@ -135,6 +147,7 @@ local function rebuildWorldCache()
     Wall.lastOrigin = Vector(origin.x, origin.y, origin.z)
     Wall.dirty = false
     Wall.nextModel = 1
+    resetRetries()
     return true
 end
 
@@ -154,6 +167,12 @@ local function spawnModel(instance)
     return model
 end
 
+local function queueRetry(index)
+    if Wall.retryAttempts[index] then return end
+    Wall.retryAttempts[index] = 0
+    Wall.retryQueue[#Wall.retryQueue + 1] = index
+end
+
 local function buildModelBatch()
     rebuildWorldCache()
     local total = #(Wall.world or {})
@@ -162,14 +181,50 @@ local function buildModelBatch()
 
     local last = math.min(total, first + MODEL_BATCH_SIZE - 1)
     for index = first, last do
-        Wall.models[index] = spawnModel(Wall.world[index])
+        local model = spawnModel(Wall.world[index])
+        Wall.models[index] = model
+        if not IsValid(model) then queueRetry(index) end
     end
     Wall.nextModel = last + 1
+end
+
+local function retryFailedModels()
+    if (Wall.nextModel or 1) <= #(Wall.world or {}) then return end
+    if not Wall.retryQueue or #Wall.retryQueue == 0 then return end
+
+    local processed = 0
+    while processed < RETRY_BATCH_SIZE and #Wall.retryQueue > 0 do
+        local index = table.remove(Wall.retryQueue, 1)
+        local instance = Wall.world and Wall.world[index]
+        if instance and not IsValid(Wall.models[index]) then
+            local model = spawnModel(instance)
+            Wall.models[index] = model
+            if not IsValid(model) then
+                local attempts = (Wall.retryAttempts[index] or 0) + 1
+                Wall.retryAttempts[index] = attempts
+                if attempts < MODEL_RETRY_LIMIT then
+                    Wall.retryQueue[#Wall.retryQueue + 1] = index
+                else
+                    Wall.failedModels = (Wall.failedModels or 0) + 1
+                    ErrorNoHalt(string.format(
+                        "[LOD] client wall model failed after %d retries: index=%d\n",
+                        MODEL_RETRY_LIMIT, index
+                    ))
+                end
+            else
+                Wall.retryAttempts[index] = nil
+            end
+        else
+            Wall.retryAttempts[index] = nil
+        end
+        processed = processed + 1
+    end
 end
 
 hook.Add("Think", "LOD_BuildProceduralContainerWalls", function()
     if not Wall.logical or #Wall.logical == 0 then return end
     buildModelBatch()
+    retryFailedModels()
 end)
 
 hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModels)
@@ -182,8 +237,9 @@ concommand.Add("lod_wall_visuals_status", function()
     end
     local total = #(Wall.world or {})
     print(string.format(
-        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d originZ=%.2f",
+        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d retryQueued=%d hardFailed=%d originZ=%.2f",
         #(Wall.logical or {}), total, active, math.max(0, total - active),
+        #(Wall.retryQueue or {}), Wall.failedModels or 0,
         (Wall.origin or MC.Origin or vector_origin).z
     ))
 end)
