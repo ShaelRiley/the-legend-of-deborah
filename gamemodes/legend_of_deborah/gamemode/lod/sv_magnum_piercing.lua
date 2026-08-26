@@ -135,11 +135,11 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 if blocked then break end
             end
 
-            -- Each body deeper in a valid alignment adds one fresh exploding d12
-            -- chain to the damage carried forward. Thus target 2 receives 2d12!,
-            -- target 3 receives 3d12!, and so on; earlier rolled chains are never
-            -- rerolled. Every added die uses the Magnum's same natural 8-12
-            -- explosion threshold, making deep lines intentionally devastating.
+            -- Each deeper body adds one fresh independent d12 Boomchain to the
+            -- cumulative damage. Earlier chains are carried forward, never
+            -- rerolled. The shared d12 authority resets every new chain to 8+,
+            -- then lowers continuation thresholds one step per explosion toward
+            -- the current Boomchain Floor (default 5).
             local depth = targets + 1
             local bonusTotal = 0
             local bonusValues = {}
@@ -190,11 +190,13 @@ concommand.Add("lod_magnum_pierce_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
-    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d escalatingDice=true explode=8-12 geometrySafe=true",
+    local floor = Rolls and Rolls.GetD12BoomchainFloor and Rolls:GetD12BoomchainFloor() or 5
+    local line = string.format("shots=%d extraTargets=%d maxTargets=%d cap=%d escalatingDice=true boomStart=8 boomFloor=%d geometrySafe=true",
         Piercing.Stats.shots or 0,
         Piercing.Stats.extraTargets or 0,
         Piercing.Stats.maxTargets or 0,
-        MAX_TOTAL_TARGETS)
+        MAX_TOTAL_TARGETS,
+        floor)
     print("[LOD:MAGNUM-PIERCE] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
