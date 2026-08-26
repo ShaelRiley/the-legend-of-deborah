@@ -142,6 +142,10 @@ include("lod/sv_seeker_encounter.lua")
 -- Explicitly enroll fully initialized Seekers in the shared hostile registry so
 -- their special service cannot be skipped by entity-creation timing.
 include("lod/sv_seeker_spawn_reliability.lua")
+-- Scanner/Rollermine are non-humanoid device shapes. Keep their physical origins
+-- on the canonical graph floor after every Motion V2 step without adding another
+-- locomotion system, timer, trace, or pathfinder.
+include("lod/sv_device_motion_safety.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
