@@ -4,7 +4,7 @@ The live GDD is design authority; GitHub `main` is implementation authority. Mil
 
 ## Current order
 
-1. **Targeted Magnum balance validation:** validate d12 Boomchains, cylinder bonuses, and late-cylinder two-/three-round bursts.
+1. **Targeted Magnum balance validation:** validate d12 Boomchains, cylinder bonuses, late-cylinder bursts, and low-health clutch mechanics.
 2. **Gate D — Expanded Enemy Roster:** implement and runtime-accept one archetype at a time, beginning with **Watcher**.
 3. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change.
 4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
@@ -87,7 +87,11 @@ The player confirms map-open gameplay now feels smooth. Preserve the optimized a
 - a normal six-round cylinder progresses **+0,+1,+2,+3,+4,+5** and reload resets the sequence;
 - trigger 5 fires a rapid **two-projectile** Magnum burst;
 - trigger 6 fires a rapid **three-projectile** Magnum burst;
-- extra burst projectiles consume no additional cartridge/reserve ammo, use the triggering chamber's X bonus, and roll independently;
+- below 60 current HP, each trigger makes one `(60-HP)%` chance check to add exactly one further free Magnum projectile;
+- below 34% of maximum Health, the final-cartridge trigger has `floor(34-currentHealthPercent)%` chance not to consume that cartridge;
+- successful final-cartridge preservation is applied after the complete final burst, leaving exactly one cartridge and preserving the chamber-6/+5 identity for the next trigger;
+- a preserved final cartridge may make a new preservation check when fired again if Health remains below threshold;
+- extra projectiles consume no additional cartridge/reserve ammo, use the triggering chamber's X bonus, and roll independently;
 - every d12 projectile uses the global descending Boomchain thresholds;
 - aligned penetration adds one fresh independent Boomchain per deeper target;
 - eight-target penetration cap;
@@ -118,14 +122,16 @@ Before Watcher work begins, validate the final peer-firearm identity:
 
 1. Fresh/reloaded cylinder chamber bonuses appear as **+0,+1,+2,+3,+4,+5**.
 2. A d12 chain that repeatedly explodes uses thresholds **8+, 7+, 6+, 5+** and never drops below the current Boomchain Floor.
-3. The fifth trigger produces exactly **2 total Magnum projectiles**.
-4. The sixth trigger produces exactly **3 total Magnum projectiles**.
-5. The fifth and sixth trigger pulls each consume only **one cartridge** despite their burst projectiles.
-6. Every burst projectile independently rolls damage, can trigger explosion feedback, and can pierce aligned hostiles.
-7. Generated/world geometry still stops every penetration path.
-8. No meaningful Steam Deck performance regression.
+3. At 60+ HP, the fifth trigger produces exactly **2 total Magnum projectiles** and the sixth produces exactly **3**.
+4. Below 60 HP, `lod_magnum_super_status` reports `(60-HP)%` as the extra-projectile chance; a successful proc adds exactly one projectile to that trigger's normal count.
+5. A low-health proc can therefore turn an ordinary shot into 2, chamber 5 into 3, or chamber 6 into 4 projectiles, never more than +1 from this mechanic.
+6. Below 34% max Health, the final-cartridge preservation chance equals one percentage point per full percentage point below 34%; a successful proc leaves exactly one cartridge after the entire final burst resolves.
+7. Preserved final cartridges remain final-chamber/+5 triggers, can roll preservation again, and do not create reserve ammo.
+8. Every injected projectile independently rolls damage, can trigger explosion feedback, and can pierce aligned hostiles.
+9. Generated/world geometry still stops every penetration path.
+10. No meaningful Steam Deck performance regression.
 
-Diagnostic: `lod_magnum_super_status` should report the configured 8→5 boomchain parameters plus observed two-/three-round bursts after a full-cylinder test.
+Diagnostic: `lod_magnum_super_status` reports Boomchain parameters, observed two-/three-round bursts, current low-HP extra-projectile chance/procs, and current final-cartridge preservation chance/procs.
 
 After acceptance, freeze the Magnum again and continue to Gate D.
 
