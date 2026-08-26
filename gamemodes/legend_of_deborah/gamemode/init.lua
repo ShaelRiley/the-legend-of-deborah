@@ -120,6 +120,7 @@ include("lod/sv_phase_zero_runtime_optimization.lua")
 -- graph-distance caches. It broadcasts target acquisition only to already-live
 -- wanderers and never creates reinforcements as part of its scan.
 include("lod/sv_watcher.lua")
+include("lod/sv_watcher_attack_guard.lua")
 include("lod/sv_hostile_death_audio.lua")
 include("lod/sv_hostile_death_pose.lua")
 include("lod/sv_hostile_hurt_pose.lua")
