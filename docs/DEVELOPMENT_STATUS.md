@@ -4,13 +4,13 @@
 
 **Gate C8 — Complete-Dungeon Dice-Era Validation: ACCEPTED.**
 
-**Gate D — Expanded Enemy Roster: CURRENT.**
+**Targeted Magnum balance validation: CURRENT, immediately before Gate D.**
 
 The live GDD remains design authority. GitHub `main` remains implementation authority. Gate A and Gate C8 are closed unless new regression evidence appears.
 
 ## Accepted whole-game balance checkpoint
 
-Authentic dice-era play progressed through **Level 5** before a total-party wipe. The player explicitly reports the game as **fun, balanced, and playable**. This is sufficient to accept Gate C8 and freeze broad combat/economy balance unless a specific runtime regression or clearly isolated balance problem appears.
+Authentic dice-era play progressed through **Level 5** before a total-party wipe. The player explicitly reports the game as **fun, balanced, and playable**. This accepts Gate C8 and freezes broad combat/economy balance. The current Magnum work is a deliberately narrow peer-firearm correction identified before beginning Gate D; do not use it as license for broad retuning.
 
 The accepted production progression loop remains:
 
@@ -20,42 +20,32 @@ Previous accepted evidence also includes three consecutive complete dungeons, su
 
 ## Minimap performance — ACCEPTED
 
-A performance audit found that breadcrumb BFS was already cached, but the presentation layer was still redrawing hundreds of static maze cells/walls each HUD frame while the map was open. The subsystem was consolidated to one canonical server module and one canonical client module.
-
-Production minimap architecture now provides:
-
-- immutable current-floor topology rendered once into a reusable **256×256 render target** and composited as a single textured rectangle;
-- dynamic gates, JailEdge, stairs, breadcrumb route, objective, and player marker as lightweight overlays;
-- floor/stair/gate/jail indexes and compact adjacency built once after topology reception;
-- BFS cached by player cell + gate/jail/objective state;
-- same-level close/reopen with **no topology retransmission**;
-- throttled mismatch/incomplete map requests;
-- maze origin sent once in the map-begin packet rather than polled every client frame;
-- level-stamped map entitlement instead of server per-tick level-reset scanning;
-- dead-player/access safety folded into the canonical modules.
+The production minimap is consolidated to one canonical server module and one canonical client module. Static current-floor topology is cached in a reusable 256×256 render target; dynamic gates, stairs, breadcrumb, objective, and player state remain lightweight overlays. Same-level reopen performs no topology retransmission.
 
 Steam Deck acceptance evidence:
 
 - `paintFrames=1297`
 - `bfsBuilds=20`
-- `bfsHits=1277` — approximately **98.5% route-cache reuse**
+- `bfsHits=1277` (~98.5% route-cache reuse)
 - `floorIndexBuilds=1`
 - `topologyBuilds=1`
 - `mapRequests=0`
 - `cachedReopens=1`
-- `ready=true`
-- `result=PASS`
-- player reports map-open play now feels smooth enough to close the performance issue.
+- `ready=true result=PASS`
+- player reports map-open play now feels smooth.
 
-The minimap performance issue is therefore **closed**. `lod_minimap_cache_status` remains a lightweight manual regression probe; automatic telemetry remains prohibited.
+The minimap performance issue is closed. `lod_minimap_cache_status` remains a lightweight manual regression probe; automatic telemetry remains prohibited.
 
 ## Canonical exploding-die invariant
 
-- **Every d6 rolled anywhere in LOD recursively explodes only on a natural 6.**
-- **Every d12 rolled anywhere in LOD recursively explodes on a natural 8, 9, 10, 11, or 12.**
-- New mechanics inherit these thresholds automatically unless a later explicit design change supersedes them.
+- **Every d6 rolled anywhere in LOD recursively explodes only on natural 6.**
+- **Every fresh d12 chain begins at natural 8–12.**
+- After every successful d12 explosion, the next d12 in that same chain lowers its threshold by one.
+- At the default settings the d12 sequence is **8+ → 7+ → 6+ → 5+**, then remains at 5+.
+- **Boomchain Floor** is an exposed shared tuning variable, default **5**. Future Magic/items may lower it.
+- Every newly started d12 chain resets to 8+ and descends independently toward the current Boomchain Floor.
 
-Current implementation is compliant for Force Shout, both Shotgun d6 systems, and Magnum/Magnum-pierce d12 chains.
+Current implementation is compliant for Force Shout/Shotgun d6s and Magnum/Magnum-pierce d12 chains.
 
 ## Current combat foundation
 
@@ -65,7 +55,7 @@ Current implementation is compliant for Force Shout, both Shotgun d6 systems, an
 - Pistol: `1d4`; fresh expedition begins with Pistol + Crowbar, Pistol 18 loaded / 0 reserve.
 - SMG: `1d8`; six rapid shots overheat, 0.25 s per heat cooling, 2.0 s overheat lock, staged audiovisual feedback.
 - AR2: `1d10` per projectile; 0.45-second committed targeting laser followed by exactly three rounds; complete burst costs **one AR2 ammo unit**.
-- .357 Magnum: exploding `1d12` on natural **8–12**; aligned piercing adds one fresh independently exploding d12 chain for every deeper target: `1d12!`, `2d12!`, `3d12!`, etc., capped at eight targets and stopped by authoritative geometry.
+- .357 Magnum: each projectile deals **`1d12!+X`**, where X is the number of chambers already empty before that trigger. A normal cylinder therefore progresses **+0,+1,+2,+3,+4,+5**. Trigger 5 fires a two-projectile Magnum burst; trigger 6 fires a three-projectile burst. Extra burst projectiles consume no additional cartridge, roll independent d12 Boomchains, and retain normal piercing. Each deeper pierced target adds one fresh independent d12 Boomchain; eight-target cap and authoritative geometry stop remain.
 - Shotgun: shared exploding damage `1d6!`, per-die floor 3, natural 6 only; **8 guaranteed pellets + exploding `1d6!` additional pellets**; every connecting pellet deals at least 1 damage; 4× ordinary hit stun; 168-unit nominal push; 36-pellet safety cap.
 - Grenade: `1d20`, separate consumable reward.
 
@@ -109,19 +99,18 @@ Shotgun, SMG, Magnum, and AR2 are peer firearms available from Dungeon 1 with eq
 
 One shared 4 Hz server timer owns regeneration. Grenades do not regenerate.
 
-## Next production work
+## Immediate runtime evidence needed
 
-Proceed to **Gate D — Expanded Enemy Roster**, in this order:
+Validate the targeted Magnum pass before beginning Watcher:
 
-`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
+1. A fresh/reloaded six-round cylinder reports chamber bonuses in order **+0,+1,+2,+3,+4,+5**.
+2. D12 explosions visibly use descending thresholds **8+ → 7+ → 6+ → 5+** within one chain.
+3. Trigger 5 produces exactly two Magnum projectiles total; trigger 6 produces exactly three.
+4. Extra burst projectiles do not consume extra cartridge/reserve ammunition.
+5. Burst projectiles retain normal independent damage, explosion cue, and penetration behavior.
+6. No meaningful Steam Deck performance regression.
 
-Implement and runtime-accept **one enemy archetype at a time**, beginning with **Watcher**. Preserve the immutable Soldier shot contract and the accepted low-end architecture.
-
-After Gate D:
-
-1. Remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
-2. Gordon the Warden.
-3. Dedicated multiplayer integration / release-candidate QA.
+After this targeted acceptance, proceed to **Gate D — Expanded Enemy Roster**, beginning with Watcher.
 
 ## Preserved hard constraints
 
