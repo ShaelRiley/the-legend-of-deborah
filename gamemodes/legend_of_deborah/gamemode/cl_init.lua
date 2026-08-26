@@ -7,6 +7,7 @@ include("lod/cl_magic_hud.lua")
 include("lod/cl_dev_testing.lua")
 include("lod/cl_hit_confirm.lua")
 include("lod/cl_combat_roll_feed.lua")
+include("lod/cl_melee_contact_audit.lua")
 include("lod/cl_minimap.lua")
 -- Close rare incomplete-transfer and sparse/stair player-cell routing failures
 -- without changing the accepted cached topology/BFS architecture.
