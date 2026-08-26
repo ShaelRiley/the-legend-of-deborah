@@ -109,45 +109,58 @@ hook.Add("StartCommand", "LOD_MagnumAimState_Input", function(ply, cmd)
     end
 end)
 
--- This hook loads after the core dice, Magnum burst, and Magnum piercing hooks.
--- The core hook has already authored the roll contract and bullet damage, while
--- the burst hook has already created any follow-up state. Multiplying the live
--- contract here makes the first impact authoritative at x2. The burst snapshot
--- propagates the same multiplier to every injected projectile from this trigger.
-hook.Add("EntityFireBullets", "LOD_MagnumAimState_Damage", function(shooter, bullet)
-    local weapon = activeMagnum(shooter)
-    if not IsValid(weapon) then return end
+-- Install Aim State at the roll-service layer rather than relying on relative
+-- EntityFireBullets hook order. Every real Magnum projectile asks this wrapper
+-- for its contract. The first projectile consumes the armed state; injected
+-- burst projectiles inherit the multiplier saved on their active burst.
+if not Rolls.LODMagnumAimDamageInstalled then
+    Rolls.LODMagnumAimDamageInstalled = true
+    local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
 
-    local contract = shooter.LODActivePlayerRoll
-    if not contract or contract.weaponClass ~= "weapon_357" then return end
+    function Rolls:RollPlayerWeapon(ply, weaponClass)
+        local contract = baseRollPlayerWeapon(self, ply, weaponClass)
+        if weaponClass ~= "weapon_357" or not contract then return contract end
 
-    local multiplier = 1
-    local injected = weapon.LODMagnumInjectedBurst == true
+        local weapon = activeMagnum(ply)
+        if not IsValid(weapon) then return contract end
 
-    if injected then
-        local burst = Magnum.Bursts and Magnum.Bursts[shooter]
-        multiplier = burst and tonumber(burst.aimMultiplier) or 1
-    else
-        local state = Magnum.AimStates and Magnum.AimStates[shooter]
-        if state and state.armed then
-            multiplier = AIM_DAMAGE_MULTIPLIER
-            clearAimState(shooter, state, false)
-            state.stationarySince = CurTime()
-            Magnum.Stats.aimShots = (Magnum.Stats.aimShots or 0) + 1
+        local multiplier = 1
+        local injected = weapon.LODMagnumInjectedBurst == true
+        if injected then
+            local burst = Magnum.Bursts and Magnum.Bursts[ply]
+            multiplier = burst and tonumber(burst.aimMultiplier) or 1
+        else
+            local state = Magnum.AimStates and Magnum.AimStates[ply]
+            if state and state.armed then
+                multiplier = AIM_DAMAGE_MULTIPLIER
+                -- Leave a one-trigger marker for the cylinder-burst hook. If that
+                -- hook runs before this wrapper, it can still read state.armed;
+                -- if it runs after, it reads this marker. No hook ordering needed.
+                weapon.LODMagnumAimConsumedMultiplier = multiplier
+                clearAimState(ply, state, false)
+                state.stationarySince = CurTime()
+                Magnum.Stats.aimShots = (Magnum.Stats.aimShots or 0) + 1
+            end
         end
+
+        if multiplier > 1 then
+            contract.aimState = true
+            contract.aimMultiplier = multiplier
+            contract.total = math.max(1, (tonumber(contract.total) or 1) * multiplier)
+        end
+
+        return contract
     end
+end
 
-    if multiplier <= 1 then return end
-
-    contract.aimState = true
-    contract.aimMultiplier = multiplier
-    contract.total = math.max(1, (tonumber(contract.total) or tonumber(bullet.Damage) or 1) * multiplier)
-    bullet.Damage = contract.total
-
-    if not injected then
-        local burst = Magnum.Bursts and Magnum.Bursts[shooter]
-        if burst then burst.aimMultiplier = multiplier end
-    end
+-- The trigger marker only has to survive the EntityFireBullets dispatch that
+-- caused it. Clear it on the next tick so it cannot leak into a later shot.
+hook.Add("EntityFireBullets", "LOD_MagnumAimState_TriggerMarkerCleanup", function(shooter)
+    local weapon = activeMagnum(shooter)
+    if not IsValid(weapon) or not weapon.LODMagnumAimConsumedMultiplier then return end
+    timer.Simple(0, function()
+        if IsValid(weapon) then weapon.LODMagnumAimConsumedMultiplier = nil end
+    end)
 end)
 
 -- Append Aim State to the existing Magnum roll detail so combat-feed evidence
