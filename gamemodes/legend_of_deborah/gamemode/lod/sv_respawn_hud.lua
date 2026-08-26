@@ -11,8 +11,9 @@ local cvDeveloperMode = CreateConVar(
 )
 
 -- Publish the authoritative server-side mandatory death wait for the local HUD.
--- Death Tetris may shorten ps.respawnAt by two seconds per cleared line, so this
--- remains derived from RunManager state rather than a client stopwatch.
+-- Death Tetris may shorten this by two seconds per cleared line. The separate
+-- hidden one-minute safety cap remains in RunManager's respawnAt and is never
+-- exposed as the player's mandatory countdown.
 hook.Add("Think", "LOD_RespawnHUDSync", function()
     if CurTime() < nextSync then return end
     nextSync = CurTime() + SYNC_INTERVAL
@@ -21,10 +22,16 @@ hook.Add("Think", "LOD_RespawnHUDSync", function()
         if IsValid(ply) then
             local id = RunManager:IdentityOf(ply)
             local ps = id and RunManager:GetPlayerState(id)
-            local remaining = 0
-            local respawning = ps and not ps.eliminated and ps.lives > 0 and ps.respawnAt ~= nil
-            if respawning then
-                remaining = math.max(0, ps.respawnAt - CurTime())
+            local remaining = nil
+
+            if LOD.DeathTetris and LOD.DeathTetris.GetMandatoryRemaining then
+                remaining = LOD.DeathTetris:GetMandatoryRemaining(id)
+            end
+
+            if remaining == nil then
+                remaining = 0
+                local respawning = ps and not ps.eliminated and ps.lives > 0 and ps.respawnAt ~= nil
+                if respawning then remaining = math.max(0, ps.respawnAt - CurTime()) end
             end
 
             ply:SetNW2Float("LOD_RespawnRemaining", remaining)
