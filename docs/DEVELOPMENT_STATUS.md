@@ -1,10 +1,10 @@
-# Development Status — 2026-08-25 Post-C8
+# Development Status — 2026-08-26 Gate D
 
 ## Current execution phase
 
 **Gate C8 — Complete-Dungeon Dice-Era Validation: ACCEPTED.**
 
-**Gate D — Expanded Enemy Roster: CURRENT. Watcher implemented; runtime acceptance pending.**
+**Gate D — Expanded Enemy Roster: CURRENT. Watcher scan/alert accepted; Seeker core accepted; Seeker movement-personality polish awaiting runtime acceptance.**
 
 The live GDD remains design authority. GitHub `main` remains implementation authority. Gate A and Gate C8 are closed unless new regression evidence appears.
 
@@ -20,7 +20,7 @@ The accepted production progression loop remains:
 
 Previous accepted evidence also includes three consecutive complete dungeons, successful Level-4 generation/release, legal progression, Deborah rescue/intermission/next-level generation, `lod_m2_seed_test 100` at 100/100, progression persistence through death, accepted minimap/breadcrumb behavior, and corrected stair presentation.
 
-## Minimap performance — ACCEPTED
+## Minimap performance / reliability — ACCEPTED
 
 The production minimap is consolidated to one canonical server module and one canonical client module. Static current-floor topology is cached in a reusable 256×256 render target; dynamic gates, stairs, breadcrumb, objective, and player state remain lightweight overlays. Same-level reopen performs no topology retransmission.
 
@@ -36,7 +36,9 @@ Steam Deck acceptance evidence:
 - `ready=true result=PASS`
 - player reports map-open play now feels smooth.
 
-The minimap performance issue is closed. `lod_minimap_cache_status` remains a lightweight manual regression probe; automatic telemetry remains prohibited.
+A later intermittent `NO LEGAL ROUTE` case exposed incomplete chunk-receive accounting and sparse/stair player-cell resolution; both were hardened without reopening the cached rendering/BFS architecture, and the user subsequently confirmed the minimap route works again.
+
+The minimap issue is closed. `lod_minimap_cache_status` remains a lightweight manual regression probe; automatic telemetry remains prohibited.
 
 ## Canonical exploding-die invariant
 
@@ -73,41 +75,66 @@ Player-side exploding dice use the shared bounded audiovisual confirmation cue.
 
 `LOD.Pushback` remains the reusable displacement authority for Shotgun, Force Shout, and future effects. Architectural blockage can add one `1d3` wall-crush roll. Push presentation uses bounded 4–16 body-ghost trails from reusable leased clientside models.
 
-## Gate D — Watcher implementation — RUNTIME ACCEPTANCE CURRENT
+## Gate D — Watcher
 
-The live GDD defines Watcher as a Combine Scanner-derived support archetype that weaponizes the existing wandering population rather than adding direct damage or reinforcements.
+Watcher is a Combine Scanner-derived support archetype that weaponizes the existing wandering population rather than adding direct damage or reinforcements.
 
-Current implementation:
+Accepted scan/alert contract:
 
 - no direct attack;
 - Scanner model, graph-bound Motion-V2 movement;
 - rare wandering eligibility with low production weight;
 - Sector-2+ authored `Surveillance = 1 Watcher + 2 Shamblers` encounter option;
 - unmistakable **1.25-second scan** with escalating cyan beam and electronic cues;
-- line-of-sight break cancels the scan;
-- firearm hit-stun cancels the scan;
+- line-of-sight break or firearm hit-stun cancels the scan;
 - successful scan retargets only **already-existing** eligible wanderers on the same floor within **6 graph cells**;
-- alerted wanderers immediately acquire the scanned player but remain subject to ordinary safe-zone, floor, and pursuit-leash rules;
-- the scan never spawns enemies and therefore cannot bypass threat budgets or hostile ceilings;
-- alert iteration uses `WanderingDirector.Entities` plus cached graph distance rather than a global entity scan;
-- provisional Watcher dice durability is `3d4+3`, chosen as Runner-class focus-fire durability because the GDD does not prescribe a numeric Watcher health formula.
+- alerted wanderers remain subject to ordinary safe-zone, floor, and pursuit-leash rules;
+- scan never spawns enemies and therefore cannot bypass threat budgets or hostile ceilings;
+- runtime evidence: `started=2 completed=2 alerted=2 result=PASS`.
 
-Developer probes:
+Range/presentation polish now additionally gives Watcher a readable hover presentation and committed post-scan/too-close retreat to medium range. This remains subject to ordinary regression observation because an earlier build allowed Scanner models to crowd/vibrate at player feet.
 
-- `lod_watcher_test` creates a Watcher plus a test wandering Shambler deliberately placed outside the normal 4-cell acquisition radius but, when geometry permits, inside the Watcher's 6-cell alert radius.
-- `lod_watcher_status` reports live/scanning Watchers, scan starts/completions, LOS/hit-stun cancellations, alerted wanderers, and PASS/WAITING.
+## Gate D — Seeker
 
-### Watcher acceptance criterion
+Seeker is a Rollermine-derived momentum archetype. Its core behavior is now runtime accepted by the player as working and fun.
 
-In an ordinary non-safe corridor, run `lod_watcher_test`, allow one complete visible scan, then run `lod_watcher_status`. Acceptance requires a readable escalating beam/audio sequence and status evidence of at least one scan start, one completion, and one alerted wanderer (`result=PASS`). Also confirm there is no obvious Steam Deck performance regression.
+Core accepted behavior:
 
-After Watcher acceptance, **Seeker** is next. Do not begin Seeker implementation before Watcher is accepted.
+- graph-valid ordinary routing;
+- minimum charge range **150 units**;
+- approximate ordinary LOS standoff **300 units**;
+- conspicuous electrical/audio wind-up;
+- fast committed straight charge with poor turning;
+- dedicated charge damage, no ordinary melee and no player launching;
+- hard wall/container impact creates a brief self-stun punish window;
+- successful player impact transitions directly into one committed retreat toward approximately **320 units**;
+- retreat and charge are one Seeker authority using Motion V2; the duplicate committed-retreat adapter is retired from production loading;
+- Scanner/Rollermine device origins are normalized to the canonical graph floor after non-stair movement and stop transitions, preventing the previous post-charge floor-stranding bug;
+- Rollermine receives a small client-only visual clearance above the physical graph origin.
+
+Current personality/presentation polish awaiting runtime acceptance:
+
+- each eligible attack opportunity has a seeded **30%** chance to substitute one short committed left/right teardrop loop for the immediate charge;
+- after a feint, the next eligible attack is forced to be a real charge so the Seeker cannot chain evasive flourishes indefinitely;
+- after an eligible successful player hit, seeded **25%** chance to make one same-cell clockwise/counterclockwise orbit around the player's immediate position before resuming the already-planned ordinary retreat;
+- orbit aborts if the player moves substantially away from the committed center, and neither flourish may cross graph-blocked architecture;
+- the flourish service is adaptive/event-only: its 20 Hz timer exists only while a Seeker is pending/performing a loop or orbit and performs no general hostile-registry scan;
+- the visible Rollermine body rolls in actual travel direction, with client-side rotation accumulated from horizontal distance traveled, so faster charge travel visibly spins faster than ordinary motion.
+
+Developer probe: `lod_seeker_personality_status` reports feints, left/right split, orbits, direction split, orbit aborts, and whether the adaptive service is active.
+
+### Current Seeker acceptance criterion
+
+Run `lod_seeker_test` in an ordinary corridor and leave the Seeker alive through several attack cycles. Normal charges must remain functional; occasional left/right feints and eligible post-hit orbits should appear without floor clipping, wall/gate bypass, oscillation, or permanent stuck states. The Rollermine must visibly roll in travel direction and spin substantially faster during its charge than during ordinary movement/retreat.
+
+After Seeker polish acceptance, proceed to **Sentry**.
 
 ## Hostile health / ordinary melee
 
 - Deadcrab health `2d4+1`
 - Runner health `3d4+3`; melee `2d4+2`
 - Watcher health `3d4+3` **provisional implementation tuning; no direct attack**
+- Seeker health `3d4+3` **provisional implementation tuning; no ordinary melee**
 - Shambler health `4d4+5`; melee `3d4+8`
 - Soldier / Blitzer health `4d4+5`
 - Bio Blaster health `5d4+6`
@@ -138,6 +165,7 @@ One shared 4 Hz server timer owns regeneration. Grenades do not regenerate.
 - Soldier warning/projectile truth remains one immutable server-authored origin/direction committed at beam-on.
 - Generated geometry remains authoritative cover, including Magnum penetration and pushback collision.
 - Watcher may only alert already-existing eligible wanderers; never create Watcher-specific reinforcement spawning or global hostile scans.
+- Seeker feint/orbit personality remains subordinate to Motion V2 and graph-valid movement; never create a second general locomotion/pathfinding authority.
 - Minimap remains one canonical server module + one canonical client module; static topology must not return to per-frame redraw or same-level retransmission.
 - Preserve bounded networking, cached graph/minimap work, shared hostile registry, bounded death scheduling, and developer-only heavy audits.
 - Do not introduce per-frame global BFS or large entity scans.
