@@ -6,15 +6,20 @@ if not Map or not MC then return end
 
 -- Reliability layer for the accepted cached minimap architecture.
 --
--- Two rare client-side failure modes are closed here without adding recurring
--- graph work:
+-- Three client-side failure modes are closed here without adding recurring graph
+-- work:
 --   1. receivedChunks used to mean "highest chunk index seen" rather than the
 --      number of unique chunks actually received. An out-of-order final chunk
 --      could therefore freeze an incomplete adjacency graph permanently.
 --   2. the client rounded the player's world position to one grid coordinate but
---      did not mirror MazeNavigator's nearest-real-cell fallback. Standing on a
---      stair / sparse upper-layer boundary could therefore produce NO LEGAL ROUTE
---      despite a valid server route.
+--      did not mirror the generated graph's nearest-real-cell fallback. Standing
+--      near a sparse upper-layer boundary could therefore produce NO LEGAL ROUTE.
+--   3. that fallback originally searched z +/- 1 as well as the current floor.
+--      Near a physical staircase it could silently alias the player's current
+--      coordinate to a cell on the opposite floor. The breadcrumb would then
+--      legally route back through the same staircase, producing an up/down loop.
+--      A minimap fallback must never change floors implicitly: vertical progress
+--      is represented only by the graph's encoded stair edge.
 --
 -- Topology is still indexed once per complete transfer. Route BFS remains owned
 -- by cl_minimap.lua and stays cached by player cell + progression state.
@@ -222,35 +227,37 @@ local function cellCenter(cell)
     )
 end
 
-local function nearestRealCell(pos, gx, gy, gz)
+local function nearestRealCellOnFloor(pos, gx, gy, gz)
     local best
     local bestDist
 
-    -- Match MazeNavigator's cheap neighborhood fallback first.
-    for dz = -1, 1 do
-        for dy = -2, 2 do
-            for dx = -2, 2 do
-                local candidate = Map.byKey[cellKey(gx + dx, gy + dy, gz + dz)]
-                if candidate then
-                    local dist = cellCenter(candidate):DistToSqr(pos)
-                    if not bestDist or dist < bestDist then
-                        best = candidate
-                        bestDist = dist
-                    end
+    -- The player's rounded z is the minimap floor authority. Search only that
+    -- floor so this fallback can repair a sparse x/y coordinate without ever
+    -- fabricating a vertical transition.
+    for dy = -2, 2 do
+        for dx = -2, 2 do
+            local candidate = Map.byKey[cellKey(gx + dx, gy + dy, gz)]
+            if candidate then
+                local dist = cellCenter(candidate):DistToSqr(pos)
+                if not bestDist or dist < bestDist then
+                    best = candidate
+                    bestDist = dist
                 end
             end
         end
     end
     if best then return best end
 
-    -- This only runs when the player rounds into a coordinate not represented by
-    -- the sparse generated graph, so the full fallback is exceptional rather
-    -- than per-frame work.
+    -- Exceptional sparse-floor fallback. Remain on gz; if that floor has no
+    -- candidate at all, return nil and let the core map report no route rather
+    -- than silently teleporting the breadcrumb to another level.
     for _, candidate in ipairs(Map.cells or {}) do
-        local dist = cellCenter(candidate):DistToSqr(pos)
-        if not bestDist or dist < bestDist then
-            best = candidate
-            bestDist = dist
+        if candidate.z == gz then
+            local dist = cellCenter(candidate):DistToSqr(pos)
+            if not bestDist or dist < bestDist then
+                best = candidate
+                bestDist = dist
+            end
         end
     end
     return best
@@ -278,7 +285,8 @@ hook.Add("PreDrawHUD", "LOD_MinimapNearestRealCell", function()
     local pos = ply:GetPos()
     local gx = math.Clamp(math.floor(((pos.x - MC.Origin.x) / MC.CellSize) + ((MC.Width + 1) * 0.5) + 0.5), 1, MC.Width)
     local gy = math.Clamp(math.floor(((pos.y - MC.Origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5), 1, MC.Height)
-    local gz = math.max(0, math.floor(((pos.z - MC.Origin.z) / MC.LevelHeight) + 0.5))
+    local maxFloor = math.max(0, (Map.layers or 1) - 1)
+    local gz = math.Clamp(math.floor(((pos.z - MC.Origin.z) / MC.LevelHeight) + 0.5), 0, maxFloor)
     local directKey = cellKey(gx, gy, gz)
 
     if Map.byKey[directKey] and directKey ~= aliasKey then
@@ -291,13 +299,12 @@ hook.Add("PreDrawHUD", "LOD_MinimapNearestRealCell", function()
     clearPlayerAlias()
     lastProbeKey = directKey
 
-    local nearest = nearestRealCell(pos, gx, gy, gz)
+    local nearest = nearestRealCellOnFloor(pos, gx, gy, gz)
     if not nearest then return end
 
     -- Give the existing cached route code a one-edge bridge from the rounded
-    -- physical coordinate to the same logical cell the server would resolve.
-    -- floorCells/topology are untouched, so this alias never draws fake maze
-    -- geometry and never changes authoritative progression.
+    -- physical coordinate to a real cell on THE SAME displayed floor. Crossing
+    -- floors is left exclusively to the canonical vertical stair edge.
     aliasKey = directKey
     aliasCell = nearest
     Map.byKey[aliasKey] = nearest
