@@ -8,18 +8,17 @@ local cellKey = LOD.MazeGenerator and LOD.MazeGenerator.CellKey
 
 if not Navigator or not Motion or not cellKey then return end
 
--- Watcher uses the same range-recovery principle as Seeker, adapted to its
--- support role: a successful scan is followed by one committed graph-valid
--- disengage. While too close to a player it prioritizes range recovery and will
--- not begin another scan. The destination/path is chosen once per retreat so
--- player movement cannot make the Watcher oscillate between freshly replanned
--- escape points.
+-- Watcher is a ranged support device, not a melee pursuer. It may route toward a
+-- player until it has a useful sightline, but once it reaches scan range it holds
+-- there. A completed scan (or accidental close-range state) transitions directly
+-- into one committed graph-valid retreat with generic pursuit frozen until the
+-- retreat resolves.
 local MIN_SCAN_RANGE = 150
+local READY_SCAN_STANDOFF = 300
 local RETREAT_TARGET_DISTANCE = 320
-local RETREAT_SEARCH_DEPTH = 2
+local RETREAT_SEARCH_DEPTH = 3
 local RETREAT_SERVICE = "LOD_WatcherCommittedRetreatService"
 local RETREAT_INTERVAL = 0.05
-local RETREAT_HOLD_RECHECK = 0.25
 
 Watcher.RetreatActive = Watcher.RetreatActive or {}
 Watcher.Stats = Watcher.Stats or {}
@@ -146,9 +145,9 @@ local function committedRetreatWaypoints(watcher, graph, target)
         end
     end
 
-    -- Same-cell fallback is safe because Motion:CellFloorPoint clamps the goal to
-    -- the current cell interior; it cannot cross a wall/gate. This point is also
-    -- frozen for the retreat rather than recalculated every service tick.
+    -- Same-cell fallback stays inside the current authoritative cell and freezes
+    -- one destination for the entire retreat, so player movement cannot make the
+    -- scanner jitter between freshly chosen escape points.
     local watcherPos = watcher:GetPos()
     local away = Vector(watcherPos.x - targetSnapshot.x, watcherPos.y - targetSnapshot.y, 0)
     if away:LengthSqr() <= 0.01 then away = watcher:GetForward() * -1 end
@@ -164,6 +163,18 @@ local function committedRetreatWaypoints(watcher, graph, target)
     return nil, targetSnapshot
 end
 
+local function restoreTarget(watcher, target)
+    watcher.LODTarget = nil
+    watcher.LODNextTargetRefresh = 0
+    watcher.LODNextRouteRefresh = 0
+    if livingPlayer(target) then
+        watcher.LODTarget = target
+        watcher.LODReturningHome = false
+        watcher.LODNextTargetRefresh = CurTime() + 0.20
+        Motion:FaceToward(watcher, target:GetPos())
+    end
+end
+
 local function finishRetreat(watcher, target)
     if not IsValid(watcher) then return end
     watcher.LODWatcherRetreat = nil
@@ -172,13 +183,7 @@ local function finishRetreat(watcher, target)
     watcher.LODMotionMode = "ground"
     watcher.LODWaypoints = {}
     watcher.LODWaypointIndex = 1
-    watcher.LODNextRouteRefresh = 0
-    if livingPlayer(target) then
-        watcher.LODTarget = target
-        watcher.LODReturningHome = false
-        watcher.LODNextTargetRefresh = CurTime() + 0.20
-        Motion:FaceToward(watcher, target:GetPos())
-    end
+    restoreTarget(watcher, target)
     Watcher.Stats.retreatCompletes = (Watcher.Stats.retreatCompletes or 0) + 1
 end
 
@@ -193,13 +198,16 @@ local function beginRetreat(watcher, graph, target, reason)
         targetSnapshot = targetSnapshot,
         waypoints = waypoints or {},
         index = 1,
-        blocked = not waypoints or #waypoints == 0,
-        nextHoldCheck = 0
+        blocked = not waypoints or #waypoints == 0
     }
+
+    -- Retreat owns the actor immediately. Do not leave even one generic pursuit
+    -- tick between scan completion and disengage.
+    watcher.LODTarget = nil
     watcher.LODWaypoints = {}
     watcher.LODWaypointIndex = 1
-    watcher.LODNextRouteRefresh = CurTime() + 1.0
-    watcher.LODNextTargetRefresh = CurTime() + 1.0
+    watcher.LODNextRouteRefresh = math.huge
+    watcher.LODNextTargetRefresh = math.huge
     Watcher.RetreatActive[watcher] = true
 
     Watcher.Stats.retreatStarts = (Watcher.Stats.retreatStarts or 0) + 1
@@ -240,13 +248,10 @@ local function runRetreatStep(watcher, graph)
 
     local waypoint = retreat.waypoints[retreat.index]
     if not waypoint then
-        -- The committed route has ended. Do not pick a new direction on the next
-        -- frame: either range is now legal, or hold until the player creates it.
         if liveDistance >= MIN_SCAN_RANGE then
             finishRetreat(watcher, target)
         else
             retreat.blocked = true
-            retreat.nextHoldCheck = CurTime() + RETREAT_HOLD_RECHECK
             Watcher.Stats.retreatBlocked = (Watcher.Stats.retreatBlocked or 0) + 1
             Motion:Stop(watcher)
             watcher.LODMotionMode = "watcher-retreat-blocked"
@@ -255,7 +260,7 @@ local function runRetreatStep(watcher, graph)
     end
 
     local reached = Motion:MoveToward(watcher, waypoint)
-    watcher.LODMotionMode = "watcher-retreat"
+    watcher.LODMotionMode = "watcher-retreat-committed"
     if reached then retreat.index = retreat.index + 1 end
     return true
 end
@@ -283,9 +288,6 @@ local function installPatch()
 
         if self.LODWatcherRetreat then return true end
 
-        -- Refresh through the existing acquisition authority before the Watcher
-        -- state machine can begin a scan. This lets close-range recovery preempt
-        -- scanning even on the first tick that acquires the player.
         if not self.LODWatcherScan then self:_RefreshTarget(graph) end
         local target = self.LODTarget
         if IsValid(target) and targetEligible(self, graph, target)
@@ -298,14 +300,42 @@ local function installPatch()
         local completedBefore = Watcher.Stats.scansCompleted or 0
         local result = baseRunWatcherTick(self)
 
-        -- Watcher scans are serviced serially by the shared Watcher service, so
-        -- a completion-count increment during this call belongs to this Watcher.
         if (Watcher.Stats.scansCompleted or 0) > completedBefore and IsValid(scanTarget) then
             beginRetreat(self, graph, scanTarget, "post-scan")
             return true
         end
 
         return result
+    end
+
+    -- Generic Motion V2 may approach only until a Watcher has a useful sightline.
+    -- Inside the preferred scan envelope it holds instead of driving the Scanner
+    -- model into the player's feet while waiting for the scan service/cooldown.
+    local baseBehaviourTick = class._BehaviourTick
+    function class:_BehaviourTick()
+        if self.LODArchetypeId ~= "watcher" then return baseBehaviourTick(self) end
+        if self.LODWatcherRetreat or self.LODWatcherScan then return end
+
+        local state, graph = currentState()
+        if state and graph and state.BuildReady and not state.Failed and not state.LevelCleared then
+            self:_RefreshTarget(graph)
+            local target = self.LODTarget
+            if IsValid(target) and targetEligible(self, graph, target) then
+                local distance = horizontalDistance(self:GetPos(), target:GetPos())
+                if distance < MIN_SCAN_RANGE then
+                    if beginRetreat(self, graph, target, "too-close") then return end
+                elseif distance <= READY_SCAN_STANDOFF and self._HasLineOfSight
+                    and self:_HasLineOfSight(target)
+                then
+                    Motion:Stop(self)
+                    Motion:FaceToward(self, target:GetPos())
+                    self.LODMotionMode = "watcher-standoff"
+                    return
+                end
+            end
+        end
+
+        return baseBehaviourTick(self)
     end
 
     local baseOnRemove = class.OnRemove
@@ -325,8 +355,8 @@ hook.Add("OnEntityCreated", "LOD_WatcherCommittedRetreatInstall", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end
 end)
 
--- Move only Watchers that are actively disengaging; unlike the scan service this
--- does not scan the hostile registry at 20 Hz.
+-- Only actively disengaging Watchers are serviced at movement cadence; idle or
+-- scanning Watchers do not add work here.
 timer.Create(RETREAT_SERVICE, RETREAT_INTERVAL, 0, function()
     local state, graph = currentState()
     if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared
@@ -355,7 +385,7 @@ concommand.Add("lod_watcher_retreat_status", function(ply)
     end
 
     local line = string.format(
-        "active=%d starts=%d completes=%d postScan=%d closeRange=%d blocked=%d minRange=%d targetRange=%d",
+        "active=%d starts=%d completes=%d postScan=%d closeRange=%d blocked=%d minRange=%d standoff=%d targetRange=%d",
         active,
         Watcher.Stats.retreatStarts or 0,
         Watcher.Stats.retreatCompletes or 0,
@@ -363,6 +393,7 @@ concommand.Add("lod_watcher_retreat_status", function(ply)
         Watcher.Stats.closeRangeRetreats or 0,
         Watcher.Stats.retreatBlocked or 0,
         MIN_SCAN_RANGE,
+        READY_SCAN_STANDOFF,
         RETREAT_TARGET_DISTANCE)
     print("[LOD:WATCHER-RETREAT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
