@@ -11,6 +11,38 @@ local MODEL_BATCH_SIZE = 128
 local RETRY_BATCH_SIZE = 16
 local MODEL_RETRY_LIMIT = 8
 
+-- Production container presentation is deliberately centralized here rather than
+-- distributed across the graph, collision, or Motion V2 code. The stock cargo
+-- mesh remains the validated batched wall model, but one material override removes
+-- the recognizable Northern Petroleum/red-container branding. Spatial metadata is
+-- derived only from the immutable wall manifest and its level seed.
+local CONTAINER_BODY_MATERIAL = "models/debug/debugwhite"
+local CONTAINER_BODY_COLOR = Color(224, 226, 226, 255)
+local LABEL_MAX_DISTANCE = 1550
+local LABEL_MAX_DISTANCE_SQR = LABEL_MAX_DISTANCE * LABEL_MAX_DISTANCE
+local LABEL_BUCKET_CELLS = 4
+local LABEL_SCALE = 0.20
+local LABEL_SURFACE_OFFSET = 0.85
+
+-- Exactly four deliberately non-progression hues are used on every floor, with a
+-- seeded permutation assigning them to A/B/C/D. This guarantees within-floor
+-- distinction while keeping Red/Blue/Yellow reserved for progression.
+local SECTION_PALETTE = {
+    Color(151, 86, 202, 255),  -- violet
+    Color(43, 166, 151, 255),  -- teal
+    Color(91, 174, 91, 255),   -- green
+    Color(201, 88, 169, 255)   -- magenta
+}
+local QUADRANT_LETTERS = {"A", "B", "C", "D"}
+
+surface.CreateFont("LOD_ContainerStencil", {
+    font = "DejaVu Sans",
+    size = 180,
+    weight = 1000,
+    antialias = false,
+    extended = true
+})
+
 Wall.logical = Wall.logical or {}
 Wall.world = Wall.world or {}
 Wall.models = Wall.models or {}
@@ -19,6 +51,9 @@ Wall.nextModel = Wall.nextModel or 1
 Wall.retryQueue = Wall.retryQueue or {}
 Wall.retryAttempts = Wall.retryAttempts or {}
 Wall.failedModels = Wall.failedModels or 0
+Wall.labelBuckets = Wall.labelBuckets or {}
+Wall.sectionColors = Wall.sectionColors or {}
+Wall.seed = Wall.seed or 0
 
 local DIRS = {
     {dx = 0, dy = 1, yaw = 90},
@@ -46,9 +81,30 @@ local function clearManifest()
     removeModels()
     Wall.logical = {}
     Wall.world = {}
+    Wall.labelBuckets = {}
+    Wall.sectionColors = {}
+    Wall.seed = 0
     Wall.origin = nil
     Wall.dirty = true
     Wall.lastOrigin = nil
+end
+
+local function rebuildSectionColors()
+    Wall.sectionColors = {}
+    local levelSeed = tonumber(Wall.seed) or 0
+
+    -- Precompute all representable floors. The maze normally owns 2-3 floors and
+    -- rarely four, but the wall protocol reserves three bits for z.
+    for floor = 0, 7 do
+        local order = {1, 2, 3, 4}
+        local rng = LOD.RNG.New(LOD.Seeds.Derive(levelSeed,
+            "container-sections:floor:" .. tostring(floor + 1)))
+        rng:Shuffle(order)
+        Wall.sectionColors[floor] = {}
+        for quadrant = 1, 4 do
+            Wall.sectionColors[floor][quadrant] = SECTION_PALETTE[order[quadrant]]
+        end
+    end
 end
 
 net.Receive(MESSAGE, function()
@@ -98,6 +154,9 @@ net.Receive(MESSAGE, function()
     removeModels()
     Wall.logical = logical
     Wall.world = {}
+    Wall.labelBuckets = {}
+    Wall.seed = tonumber(data.seed) or 0
+    rebuildSectionColors()
     Wall.origin = Vector(originX, originY, originZ)
     Wall.dirty = true
     Wall.lastOrigin = nil
@@ -108,12 +167,46 @@ local function originChanged(origin)
     return not previous or previous:DistToSqr(origin) > 0.0001
 end
 
+local function quadrantForSegment(segment, direction)
+    -- Classify the physical center of the wall rather than whichever graph cell
+    -- happened to enumerate the undirected edge first. The odd 21x21 footprint
+    -- has a true centerline; exact ties deterministically belong left/up.
+    local midpointX = segment[1] + direction.dx * 0.5
+    local midpointY = segment[2] + direction.dy * 0.5
+    local centerX = (MC.Width + 1) * 0.5
+    local centerY = (MC.Height + 1) * 0.5
+    local left = midpointX <= centerX
+    local upper = midpointY >= centerY
+
+    if upper then return left and 1 or 2 end
+    return left and 3 or 4
+end
+
+local function labelBucketKey(x, y)
+    local bx = math.floor((x - 1) / LABEL_BUCKET_CELLS)
+    local by = math.floor((y - 1) / LABEL_BUCKET_CELLS)
+    return bx, by, tostring(bx) .. ":" .. tostring(by)
+end
+
+local function addLabelBucket(instanceIndex, instance)
+    local floor = instance.floor
+    Wall.labelBuckets[floor] = Wall.labelBuckets[floor] or {}
+    local _, _, key = labelBucketKey(instance.gridX, instance.gridY)
+    local bucket = Wall.labelBuckets[floor][key]
+    if not bucket then
+        bucket = {}
+        Wall.labelBuckets[floor][key] = bucket
+    end
+    bucket[#bucket + 1] = instanceIndex
+end
+
 local function rebuildWorldCache()
     local origin = Wall.origin or MC.Origin or vector_origin
     if not Wall.dirty and not originChanged(origin) then return false end
 
     removeModels()
     local out = {}
+    Wall.labelBuckets = {}
     local halfWidth = (MC.Width + 1) * 0.5
     local halfHeight = (MC.Height + 1) * 0.5
     local stackCount = math.max(1, GC.WallStack or 2)
@@ -127,9 +220,14 @@ local function rebuildWorldCache()
                 + direction.dy * MC.CellSize * 0.5
             local baseZ = segment[3] * MC.LevelHeight
             local angle = Angle(0, direction.yaw, 0)
+            local quadrant = quadrantForSegment(segment, direction)
+            local code = tostring(segment[3] + 1) .. QUADRANT_LETTERS[quadrant]
+            local sectionColor = Wall.sectionColors[segment[3]]
+                and Wall.sectionColors[segment[3]][quadrant]
+                or SECTION_PALETTE[quadrant]
 
             for stack = 0, stackCount - 1 do
-                out[#out + 1] = {
+                local instance = {
                     pos = origin + Vector(
                         baseX,
                         baseY,
@@ -137,8 +235,16 @@ local function rebuildWorldCache()
                             + stack * GC.ContainerHeight
                             - CONTAINER_VISUAL_EMBED
                     ),
-                    ang = angle
+                    ang = angle,
+                    gridX = segment[1],
+                    gridY = segment[2],
+                    floor = segment[3],
+                    quadrant = quadrant,
+                    code = code,
+                    sectionColor = sectionColor
                 }
+                out[#out + 1] = instance
+                addLabelBucket(#out, instance)
             end
         end
     end
@@ -155,14 +261,25 @@ local function spawnModel(instance)
     local model = ClientsideModel(GC.ContainerModel, RENDERGROUP_OPAQUE)
     if not IsValid(model) then return nil end
 
-    -- Keep construction invisible until the transform is complete. Each wall
-    -- instance then follows the engine's ordinary, proven model-rendering path;
-    -- no server entity or manual repeated DrawModel call is required.
+    -- Keep construction invisible until the transform is complete. Authoritative
+    -- collision remains the merged server wall boxes; these client models are
+    -- presentation only.
     model:SetNoDraw(true)
     model:SetPos(instance.pos)
     model:SetAngles(instance.ang)
     model:SetSkin(GC.Skin or 0)
+    model:SetMaterial(CONTAINER_BODY_MATERIAL)
+    model:SetColor(CONTAINER_BODY_COLOR)
     model:DrawShadow(false)
+
+    -- Cache the actual mounted model bounds once so the stencil can sit on the
+    -- corrugated side panel without assuming where this model's origin lives.
+    local mins, maxs = model:GetRenderBounds()
+    instance.labelCenterX = (mins.x + maxs.x) * 0.5
+    instance.labelPositiveY = maxs.y + LABEL_SURFACE_OFFSET
+    instance.labelNegativeY = mins.y - LABEL_SURFACE_OFFSET
+    instance.labelCenterZ = mins.z + (maxs.z - mins.z) * 0.57
+
     model:SetNoDraw(false)
     return model
 end
@@ -227,6 +344,83 @@ hook.Add("Think", "LOD_BuildProceduralContainerWalls", function()
     retryFailedModels()
 end)
 
+local function gridPosition(pos)
+    local origin = Wall.origin or MC.Origin or vector_origin
+    local gx = math.floor(((pos.x - origin.x) / MC.CellSize) + ((MC.Width + 1) * 0.5) + 0.5)
+    local gy = math.floor(((pos.y - origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5)
+    local gz = math.floor(((pos.z - origin.z) / MC.LevelHeight) + 0.5)
+    return math.Clamp(gx, 1, MC.Width), math.Clamp(gy, 1, MC.Height), math.Clamp(gz, 0, 7)
+end
+
+local function drawSprayStencil(model, instance, eyePos)
+    if not instance.labelCenterX or not instance.sectionColor then return end
+
+    local right = model:GetRight()
+    local toEye = eyePos - model:GetPos()
+    local side = right:Dot(toEye) >= 0 and 1 or -1
+    local localY = side > 0 and instance.labelPositiveY or instance.labelNegativeY
+    local labelPos = model:LocalToWorld(Vector(instance.labelCenterX, localY, instance.labelCenterZ))
+
+    local ang = model:GetAngles()
+    ang = Angle(ang.p, ang.y, ang.r)
+    ang:RotateAroundAxis(ang:Forward(), side > 0 and 90 or -90)
+    if side < 0 then
+        -- Keep the reverse side readable rather than mirrored/upside-down.
+        ang:RotateAroundAxis(ang:Up(), 180)
+    end
+
+    local c = instance.sectionColor
+    cam.Start3D2D(labelPos, ang, LABEL_SCALE)
+        -- A restrained, slightly ragged color field reads as a sprayed/stencilled
+        -- location mark rather than a modern sign panel. The alphanumeric code is
+        -- always foregrounded so hue is never required for identification.
+        surface.SetDrawColor(c.r, c.g, c.b, 34)
+        surface.DrawRect(-150, -72, 300, 144)
+        surface.SetDrawColor(c.r, c.g, c.b, 62)
+        surface.DrawRect(-142, -78, 284, 8)
+        surface.DrawRect(-136, 70, 272, 7)
+        surface.DrawRect(-148, 62, 20, 4)
+        surface.DrawRect(130, -66, 17, 4)
+
+        draw.SimpleText(instance.code, "LOD_ContainerStencil", 3, 4,
+            Color(20, 22, 23, 185), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(instance.code, "LOD_ContainerStencil", 0, 0,
+            Color(c.r, c.g, c.b, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    cam.End3D2D()
+end
+
+hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
+    if not Wall.world or #Wall.world == 0 then return end
+    local ply = LocalPlayer()
+    if not IsValid(ply) then return end
+
+    local eyePos = EyePos()
+    local gx, gy, gz = gridPosition(eyePos)
+    local floorBuckets = Wall.labelBuckets and Wall.labelBuckets[gz]
+    if not floorBuckets then return end
+
+    local bucketWorld = LABEL_BUCKET_CELLS * MC.CellSize
+    local bucketRadius = math.ceil(LABEL_MAX_DISTANCE / bucketWorld) + 1
+    local centerBX, centerBY = labelBucketKey(gx, gy)
+
+    for bx = centerBX - bucketRadius, centerBX + bucketRadius do
+        for by = centerBY - bucketRadius, centerBY + bucketRadius do
+            local bucket = floorBuckets[tostring(bx) .. ":" .. tostring(by)]
+            if bucket then
+                for _, index in ipairs(bucket) do
+                    local model = Wall.models[index]
+                    local instance = Wall.world[index]
+                    if IsValid(model) and instance
+                        and eyePos:DistToSqr(model:GetPos()) <= LABEL_MAX_DISTANCE_SQR
+                    then
+                        drawSprayStencil(model, instance, eyePos)
+                    end
+                end
+            end
+        end
+    end
+end)
+
 hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModels)
 
 concommand.Add("lod_wall_visuals_status", function()
@@ -236,10 +430,17 @@ concommand.Add("lod_wall_visuals_status", function()
         if IsValid(model) then active = active + 1 end
     end
     local total = #(Wall.world or {})
+    local palette = {}
+    for quadrant = 1, 4 do
+        local c = Wall.sectionColors[0] and Wall.sectionColors[0][quadrant]
+        palette[#palette + 1] = c and string.format("%s=%d,%d,%d",
+            QUADRANT_LETTERS[quadrant], c.r, c.g, c.b) or (QUADRANT_LETTERS[quadrant] .. "=?")
+    end
     print(string.format(
-        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d retryQueued=%d hardFailed=%d originZ=%.2f",
+        "[LOD:WALL-VISUALS] logical=%d instances=%d clientModels=%d pending=%d retryQueued=%d hardFailed=%d originZ=%.2f seed=%s floor1={%s}",
         #(Wall.logical or {}), total, active, math.max(0, total - active),
         #(Wall.retryQueue or {}), Wall.failedModels or 0,
-        (Wall.origin or MC.Origin or vector_origin).z
+        (Wall.origin or MC.Origin or vector_origin).z,
+        tostring(Wall.seed or 0), table.concat(palette, " ")
     ))
 end)
