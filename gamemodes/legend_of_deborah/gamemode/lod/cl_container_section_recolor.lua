@@ -12,37 +12,32 @@ if not Wall then return end
 -- is NOT an NP-logo paint mask, so the authentic baked branding shares the body tint
 -- except on marked containers, where the separate plywood wayfinding plate covers it.
 --
--- Section colors are no longer drawn from a repeating four-color palette. A seeded
--- maximin palette generator creates 32 unique colors (8 representable floors x four
--- quadrants), rejects progression Red/Blue/Yellow hue bands, then greedily maximizes
--- CIE Lab distance globally and especially within each floor quartet. No section
--- color repeats anywhere in the representable dungeon.
+-- Section colors are generated uniquely for the ACTUAL sections in this maze. The
+-- entire hue circle is legal: Red, Yellow and Blue are no longer reserved. A seeded
+-- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
+-- distance, so every maze uses a broad spectrum rather than several brightness
+-- variants of the same few hues. No section color repeats within a generated maze.
 local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
 local COLOR_REPLACE_BLEND = 0.84
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v6_maximin_unique"
+local MATERIAL_VERSION = "v7_full_spectrum_maximin"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
-local MAX_SECTIONS = MAX_FLOORS * QUADRANTS_PER_FLOOR
+local CANDIDATE_HUE_STEP = 5
+local HUE_DISTANCE_WEIGHT = 0.22
 
--- Reserve broad neighborhoods around progression Red, Yellow and Blue. These are
--- intentionally wider than a single exact hue so a location color cannot plausibly
--- read as a gate/keycard color under Deborah's dark lighting.
-local FORBIDDEN_HUES = {
-    {center = 0, radius = 24},
-    {center = 58, radius = 21},
-    {center = 220, radius = 25}
-}
-
--- Multiple saturation/value shells give the maximin solver enough perceptual space
--- to produce 32 unique colors without resorting to near-duplicates in hue alone.
+-- Several high-chroma brightness shells enlarge the usable sRGB volume while
+-- retaining enough luminance for Deborah's midnight lighting. Every hue from 0 to
+-- 355 degrees is represented; nothing is excluded for progression semantics.
 local CANDIDATE_SV = {
-    {0.82, 0.82},
-    {0.92, 0.90},
-    {0.76, 0.96}
+    {0.82, 0.80},
+    {0.88, 0.90},
+    {0.96, 0.98},
+    {0.98, 0.82},
+    {0.84, 0.98}
 }
 
 local materialNames = {}
@@ -53,8 +48,10 @@ local reconcileComplete = false
 local appliedCount = 0
 
 local paletteSeed = nil
+local paletteFloorCount = nil
 local sectionPalette = {}
 local paletteMinDeltaE = 0
+local paletteMinHueDistance = 0
 
 local function clamp01(value)
     return math.Clamp(tonumber(value) or 0, 0, 1)
@@ -72,15 +69,6 @@ local function hueDistance(a, b)
     return math.min(d, 360 - d)
 end
 
-local function progressionSafeHue(h)
-    for _, forbidden in ipairs(FORBIDDEN_HUES) do
-        if hueDistance(h, forbidden.center) <= forbidden.radius then
-            return false
-        end
-    end
-    return true
-end
-
 local function vividSectionColor(c)
     local h, s, v = ColorToHSV(Color(c.r or 255, c.g or 255, c.b or 255))
     s = math.Clamp(math.max(s, MIN_SECTION_SATURATION), 0, 1)
@@ -88,9 +76,9 @@ local function vividSectionColor(c)
     return HSVToColor(h, s, v)
 end
 
--- CIE Lab is used only while a new level palette is being built. This is a tiny,
--- one-time computation (well under 100 candidates) and gives a materially better
--- approximation of human-visible color separation than raw RGB or hue distance.
+-- CIE Lab is used only while a new level palette is being built. Even the maximum
+-- eight-floor case considers only a few hundred candidates once per generated maze.
+-- This better approximates human-visible color separation than raw RGB distance.
 local function srgbLinear(channel)
     local c = math.Clamp(channel / 255, 0, 1)
     if c <= 0.04045 then return c / 12.92 end
@@ -137,12 +125,40 @@ local function minimumDistance(candidate, chosen)
     return minimum
 end
 
-local function buildSectionPalette(seed)
+local function minimumHueDistance(candidate, chosen)
+    if #chosen == 0 then return 180 end
+    local minimum = math.huge
+    for _, other in ipairs(chosen) do
+        minimum = math.min(minimum, hueDistance(candidate.hue, other.hue))
+    end
+    return minimum
+end
+
+local function maximinScore(candidate, chosen)
+    return minimumDistance(candidate, chosen)
+        + minimumHueDistance(candidate, chosen) * HUE_DISTANCE_WEIGHT
+end
+
+local function actualFloorCount()
+    local highest = -1
+    for _, instance in ipairs(Wall.world or {}) do
+        if instance.floor ~= nil then
+            highest = math.max(highest, math.floor(tonumber(instance.floor) or -1))
+        end
+    end
+    return math.Clamp(highest + 1, 1, MAX_FLOORS)
+end
+
+local function buildCandidates()
     local candidates = {}
-    for hue = 0, 350, 10 do
-        if progressionSafeHue(hue) then
-            for _, sv in ipairs(CANDIDATE_SV) do
-                local color = HSVToColor(hue, sv[1], sv[2])
+    local seen = {}
+
+    for hue = 0, 355, CANDIDATE_HUE_STEP do
+        for _, sv in ipairs(CANDIDATE_SV) do
+            local color = HSVToColor(hue, sv[1], sv[2])
+            local key = colorKey(color)
+            if not seen[key] then
+                seen[key] = true
                 candidates[#candidates + 1] = {
                     color = color,
                     lab = colorToLab(color),
@@ -152,68 +168,104 @@ local function buildSectionPalette(seed)
         end
     end
 
+    return candidates
+end
+
+local function buildSectionPalette(seed, floorCount)
+    local candidates = buildCandidates()
     local rng = LOD.RNG.New(LOD.Seeds.Derive(seed,
-        "container-section-maximin-palette-v1"))
+        "container-section-full-spectrum-maximin-v2:" .. tostring(floorCount)))
     rng:Shuffle(candidates)
 
-    local palette = {}
-    local allChosen = {}
+    local sectionCount = floorCount * QUADRANTS_PER_FLOOR
+    local selected = {}
 
-    for floor = 0, MAX_FLOORS - 1 do
+    -- Farthest-point sampling across the full sRGB candidate cloud. The CIE Lab
+    -- term maximizes perceptual difference; the hue term explicitly forces broad
+    -- traversal of the circular spectrum instead of exploiting lightness alone.
+    for _ = 1, sectionCount do
+        local bestIndex = nil
+        local bestScore = -math.huge
+
+        for index, candidate in ipairs(candidates) do
+            local score = maximinScore(candidate, selected)
+            if score > bestScore then
+                bestScore = score
+                bestIndex = index
+            end
+        end
+
+        local chosen = table.remove(candidates, bestIndex or 1)
+        if not chosen then
+            local fallbackHue = (#selected * 137.507764 + seed) % 360
+            local fallbackColor = HSVToColor(fallbackHue, 0.90, 0.90)
+            chosen = {
+                color = fallbackColor,
+                lab = colorToLab(fallbackColor),
+                hue = fallbackHue
+            }
+        end
+        selected[#selected + 1] = chosen
+    end
+
+    -- The selected set is globally optimized. Assignment is a second deterministic
+    -- maximin pass so each floor's own A/B/C/D quartet also spans that selected set
+    -- as widely as possible rather than receiving four adjacent selections.
+    local remaining = {}
+    for _, candidate in ipairs(selected) do remaining[#remaining + 1] = candidate end
+    rng:Shuffle(remaining)
+
+    local palette = {}
+    for floor = 0, floorCount - 1 do
         palette[floor] = {}
         local floorChosen = {}
 
         for quadrant = 1, QUADRANTS_PER_FLOOR do
             local bestIndex = nil
             local bestScore = -math.huge
-
-            for index, candidate in ipairs(candidates) do
-                local globalDistance = minimumDistance(candidate, allChosen)
-                local floorDistance = minimumDistance(candidate, floorChosen)
-
-                -- The floor quartet carries the immediate spatial-navigation burden,
-                -- so within-floor separation receives extra weight while global
-                -- distance still prevents any two dungeon sections becoming twins.
-                local score = globalDistance + floorDistance * 1.35
+            for index, candidate in ipairs(remaining) do
+                local score = maximinScore(candidate, floorChosen)
                 if score > bestScore then
                     bestScore = score
                     bestIndex = index
                 end
             end
 
-            local chosen = table.remove(candidates, bestIndex or 1)
-            if not chosen then
-                -- This should never occur with the candidate grid above, but retain
-                -- a deterministic emergency color rather than leaving a section nil.
-                local fallbackHue = ((floor * 4 + quadrant) * 137.507764) % 360
-                chosen = {
-                    color = HSVToColor(fallbackHue, 0.88, 0.88),
-                    lab = colorToLab(HSVToColor(fallbackHue, 0.88, 0.88))
-                }
+            local chosen = table.remove(remaining, bestIndex or 1)
+            if chosen then
+                palette[floor][quadrant] = chosen.color
+                floorChosen[#floorChosen + 1] = chosen
             end
-
-            palette[floor][quadrant] = chosen.color
-            floorChosen[#floorChosen + 1] = chosen
-            allChosen[#allChosen + 1] = chosen
         end
     end
 
-    local minimum = math.huge
-    for i = 1, #allChosen - 1 do
-        for j = i + 1, #allChosen do
-            minimum = math.min(minimum, deltaE(allChosen[i].lab, allChosen[j].lab))
+    local minDelta = math.huge
+    local minHue = math.huge
+    for i = 1, #selected - 1 do
+        for j = i + 1, #selected do
+            minDelta = math.min(minDelta, deltaE(selected[i].lab, selected[j].lab))
+            minHue = math.min(minHue, hueDistance(selected[i].hue, selected[j].hue))
         end
     end
 
-    paletteMinDeltaE = minimum == math.huge and 0 or minimum
+    paletteMinDeltaE = minDelta == math.huge and 0 or minDelta
+    paletteMinHueDistance = minHue == math.huge and 0 or minHue
     sectionPalette = palette
     paletteSeed = seed
+    paletteFloorCount = floorCount
 end
 
 local function ensureSectionPalette()
     local seed = tonumber(Wall.seed) or 0
-    if paletteSeed == seed and sectionPalette[0] then return false end
-    buildSectionPalette(seed)
+    local floorCount = actualFloorCount()
+    if paletteSeed == seed
+        and paletteFloorCount == floorCount
+        and sectionPalette[0]
+    then
+        return false
+    end
+
+    buildSectionPalette(seed, floorCount)
     return true
 end
 
@@ -359,7 +411,8 @@ concommand.Add("lod_container_recolor_status", function()
     for index, instance in ipairs(world) do
         local section = colorForInstance(instance)
         if section then
-            local code = tostring((instance.floor or 0) + 1) .. string.char(64 + (instance.quadrant or 1))
+            local code = tostring((instance.floor or 0) + 1)
+                .. string.char(64 + (instance.quadrant or 1))
             sectionCodes[code] = colorKey(section)
             local model = models[index]
             local wantedName = instance.sectionMaterialName or sectionMaterialName(section)
@@ -378,9 +431,10 @@ concommand.Add("lod_container_recolor_status", function()
     table.sort(sections)
 
     print(string.format(
-        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d uniqueSections=%d maxSections=%d minDeltaE=%.1f materials=%d blend=%.2f materialVersion=%s complete=%s sections={%s}",
-        #world, correct, wrong, table.Count(sectionCodes), MAX_SECTIONS,
-        paletteMinDeltaE, table.Count(materialNames), COLOR_REPLACE_BLEND,
-        MATERIAL_VERSION, tostring(reconcileComplete), table.concat(sections, " ")
+        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d floors=%d uniqueSections=%d minDeltaE=%.1f minHueDeg=%.1f candidatesHueStep=%d materials=%d blend=%.2f materialVersion=%s complete=%s sections={%s}",
+        #world, correct, wrong, paletteFloorCount or 0, table.Count(sectionCodes),
+        paletteMinDeltaE, paletteMinHueDistance, CANDIDATE_HUE_STEP,
+        table.Count(materialNames), COLOR_REPLACE_BLEND, MATERIAL_VERSION,
+        tostring(reconcileComplete), table.concat(sections, " ")
     ))
 end)
