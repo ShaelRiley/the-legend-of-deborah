@@ -66,6 +66,14 @@ local function identitySuffix(identity)
     return "#" .. string.sub(identity, -6)
 end
 
+local function entryClass(ps)
+    if not ps then return "spectator" end
+    if ps.initialLevelOneParticipant == true then return "initial" end
+    if ps.catchupGrantedLevel then return "JIP-L" .. tostring(ps.catchupGrantedLevel) end
+    if ps.catchupLevel then return "JIP-pending-L" .. tostring(ps.catchupLevel) end
+    return "existing"
+end
+
 local function rosterAudit()
     local state = RunManager.State or {}
     local connected = connectedByIdentity()
@@ -85,6 +93,18 @@ local function rosterAudit()
                 else
                     seenOrdinal[ordinal] = identity
                 end
+
+                -- The first identity in a fresh campaign is the bootstrap host on
+                -- listen servers where the Level-1 build precedes PlayerInitialSpawn.
+                -- It must never receive the late-join catch-up kit.
+                if ordinal == 1 and (ps.catchupLevel or ps.catchupGrantedLevel) then
+                    failures[#failures + 1] = "ordinal 1 was misclassified as join-in-progress"
+                end
+            end
+
+            if ps.initialLevelOneParticipant == true and (ps.catchupLevel or ps.catchupGrantedLevel) then
+                failures[#failures + 1] = "initial Level-1 participant also owns catch-up state "
+                    .. identitySuffix(identity)
             end
 
             local character = ps.characterId or ps.characterName
@@ -148,14 +168,13 @@ concommand.Add("lod_multiplayer_roster_status", function(ply)
                 and DeathTetris:GetMandatoryRemaining(identity) or nil
             local mapAllowed = Minimap and Minimap.CanUse and Minimap:CanUse(candidate) or false
             local line = string.format(
-                "%s id=%s ord=%s character=%s active=%s alive=%s lives=%d eliminated=%s waiting=%s magic=%.1f map=%s mapOpen=%s staticLoot=%d catchup=%s deathRemaining=%s",
+                "%s id=%s ord=%s character=%s entry=%s active=%s alive=%s lives=%d eliminated=%s waiting=%s magic=%.1f map=%s mapOpen=%s staticLoot=%d deathRemaining=%s",
                 candidate:Nick(), identitySuffix(identity), tostring(ps and ps.ordinal or "-"),
-                tostring(ps and ps.characterName or "Spectator"), tostring(activePlayer),
+                tostring(ps and ps.characterName or "Spectator"), entryClass(ps), tostring(activePlayer),
                 tostring(candidate:Alive()), ps and (ps.lives or 0) or 0,
                 tostring(ps and ps.eliminated == true or false), tostring(waiting), magic,
                 mapAllowed and "YES" or "NO", candidate:GetNW2Bool("LOD_MapMagicActive", false) and "YES" or "NO",
-                validStaticCount(identity), tostring(ps and ps.catchupGrantedLevel or "-"),
-                deathRemaining and string.format("%.1f", deathRemaining) or "-")
+                validStaticCount(identity), deathRemaining and string.format("%.1f", deathRemaining) or "-")
             print("[LOD:MP-ROSTER] " .. line)
             if IsValid(ply) then ply:ChatPrint(line) end
         end
