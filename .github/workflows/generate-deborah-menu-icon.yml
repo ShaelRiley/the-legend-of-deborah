@@ -1,0 +1,63 @@
+name: Generate Deborah menu icon
+
+on:
+  push:
+    paths:
+      - '.github/workflows/generate-deborah-menu-icon.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Generate canonical Deborah icon
+        run: |
+          python - <<'PY'
+          from io import BytesIO
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from PIL import Image, ImageEnhance
+
+          # Half-Life 2 Female 01 is Deborah's canonical reserved in-game model.
+          source = (
+              'https://static4.wikia.nocookie.net/__cb20091008233837/'
+              'half-life/en/images/b/be/Female01.jpg'
+          )
+          req = Request(source, headers={'User-Agent': 'Mozilla/5.0'})
+          with urlopen(req, timeout=30) as response:
+              image = Image.open(BytesIO(response.read())).convert('RGB')
+
+          # Tight head-and-shoulders framing designed for GMod's 24/32 px menu use.
+          w, h = image.size
+          side = min(w, h)
+          left = max(0, int(w * 0.20))
+          top = max(0, int(h * 0.02))
+          crop_side = min(int(w * 0.60), h - top, w - left)
+          face = image.crop((left, top, left + crop_side, top + crop_side))
+          face = ImageEnhance.Contrast(face).enhance(1.10)
+          face = ImageEnhance.Sharpness(face).enhance(1.25)
+
+          out = face.resize((32, 32), Image.Resampling.LANCZOS)
+          target = Path('gamemodes/legend_of_deborah/icon24.png')
+          target.parent.mkdir(parents=True, exist_ok=True)
+          out.save(target, 'PNG', optimize=True)
+          print(f'wrote {target} ({target.stat().st_size} bytes)')
+          PY
+
+      - name: Commit icon
+        run: |
+          git config user.name 'LOD Build Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add gamemodes/legend_of_deborah/icon24.png
+          git diff --cached --quiet && exit 0
+          git commit -m 'Add Deborah gamemode menu icon'
+          git push origin HEAD:main
