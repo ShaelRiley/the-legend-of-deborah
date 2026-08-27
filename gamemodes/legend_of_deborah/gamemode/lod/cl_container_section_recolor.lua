@@ -5,20 +5,22 @@ if not Wall then return end
 
 -- Shader-native section recoloring for the existing Northern Petrol cargo model.
 --
--- The former SetColor-only pass multiplied a strongly red diffuse texture by the
--- desired section hue. Multiplication cannot invent missing color channels, so a
--- teal/green/violet request mostly produced darker red containers. Source's
--- VertexLitGeneric shader already has the correct mechanism: color-replacement
--- tinting via $blendtintcoloroverbase. We keep the exact stock NP diffuse and
--- normal map, then create one cached Lua material per section hue. This preserves
--- the logo, grime, scratches, UVs, lighting and corrugation while allowing the
--- painted steel to move toward the authored A/B/C/D hue.
+-- The stock diffuse is strongly red, so ordinary SetColor multiplication cannot
+-- produce clean teal/green/violet sections. Source's VertexLitGeneric paint path
+-- solves that while preserving the exact model, UVs, diffuse artwork, grime and
+-- normal map. The stock cargo_container01 VTF is an 8-bit-alpha texture; enabling
+-- $blendtintbybasealpha makes its diffuse alpha the paintability mask (black = keep
+-- original albedo, white = tintable). This lets the authored NP/Northern Petrol
+-- branding remain at its original color wherever Valve's alpha mask excludes it,
+-- while the container's paintable steel receives the procedural section hue.
 local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
 local COLOR_REPLACE_BLEND = 0.84
 local MIN_SECTION_SATURATION = 0.86
 local MIN_SECTION_VALUE = 0.82
 local RECONCILE_BATCH_SIZE = 192
+local USE_BASE_ALPHA_TINT_MASK = true
+local MATERIAL_VERSION = "v3_masked"
 
 local materialNames = {}
 local reconcileCursor = 1
@@ -59,19 +61,20 @@ local function sectionMaterialName(c)
     local r = clamp01((vivid.r or 0) / 255)
     local g = clamp01((vivid.g or 0) / 255)
     local b = clamp01((vivid.b or 0) / 255)
-    local name = "lod_np_section_" .. key
+    local name = "lod_np_section_" .. MATERIAL_VERSION .. "_" .. key
 
-    -- $blendtintcoloroverbase interpolates between ordinary multiplicative tint
-    -- and replacing the base hue. At 0.84 the section hue reads clearly at corridor
-    -- distance, while the remaining original albedo contribution plus the untouched
-    -- normal map retain the weathered Northern Petrol material character.
+    -- $blendtintcoloroverbase interpolates between multiplicative tint and color
+    -- replacement. $blendtintbybasealpha restricts that operation to the stock
+    -- diffuse's paintable alpha regions. Source paint-mask convention is black =
+    -- original/unpaintable and white = paintable, so authored logo pixels can keep
+    -- their original NP coloration while the surrounding steel changes section hue.
     CreateMaterial(name, "VertexLitGeneric", {
         ["$basetexture"] = NP_BASE_TEXTURE,
         ["$bumpmap"] = NP_NORMAL_TEXTURE,
         ["$surfaceprop"] = "metal",
         ["$model"] = "1",
         ["$allowdiffusemodulation"] = "1",
-        ["$blendtintbybasealpha"] = "0",
+        ["$blendtintbybasealpha"] = USE_BASE_ALPHA_TINT_MASK and "1" or "0",
         ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
         ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b)
     })
@@ -123,7 +126,7 @@ local function reconcileModel(index, model, instance)
 
     -- Preserve the original red NP skin/model identity. The material itself still
     -- references the stock NP diffuse/normal textures; only shader tint behavior
-    -- changes.
+    -- changes, and the diffuse alpha decides which pixels participate in tinting.
     model:SetSkin(0)
 
     local vivid = vividSectionColor(section)
@@ -211,9 +214,10 @@ concommand.Add("lod_container_recolor_status", function()
     table.sort(sections)
 
     print(string.format(
-        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f satFloor=%.2f valueFloor=%.2f complete=%s stablePasses=%d applied=%d sections={%s}",
+        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f satFloor=%.2f valueFloor=%.2f alphaMask=%s materialVersion=%s complete=%s stablePasses=%d applied=%d sections={%s}",
         #world, correct, wrong, table.Count(materialNames), COLOR_REPLACE_BLEND,
-        MIN_SECTION_SATURATION, MIN_SECTION_VALUE, tostring(reconcileComplete),
-        stablePasses, appliedCount, table.concat(sections, " ")
+        MIN_SECTION_SATURATION, MIN_SECTION_VALUE, tostring(USE_BASE_ALPHA_TINT_MASK),
+        MATERIAL_VERSION, tostring(reconcileComplete), stablePasses, appliedCount,
+        table.concat(sections, " ")
     ))
 end)
