@@ -15,7 +15,9 @@ if not Wall then return end
 -- painted steel to move toward the authored A/B/C/D hue.
 local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-local COLOR_REPLACE_BLEND = 0.72
+local COLOR_REPLACE_BLEND = 0.84
+local MIN_SECTION_SATURATION = 0.86
+local MIN_SECTION_VALUE = 0.82
 local RECONCILE_BATCH_SIZE = 192
 
 local materialNames = {}
@@ -36,20 +38,33 @@ local function colorKey(c)
         math.Clamp(math.floor(c.b or 0), 0, 255))
 end
 
+local function vividSectionColor(c)
+    -- The authored palette intentionally avoids gate red/blue/yellow, but the dark
+    -- midnight environment and weathered NP albedo can mute those hues too much.
+    -- Preserve the exact hue while enforcing a modest saturation/value floor before
+    -- the color reaches the replacement shader. This improves corridor readability
+    -- without flattening the original texture or turning the containers neon.
+    local h, s, v = ColorToHSV(Color(c.r or 255, c.g or 255, c.b or 255))
+    s = math.Clamp(math.max(s, MIN_SECTION_SATURATION), 0, 1)
+    v = math.Clamp(math.max(v, MIN_SECTION_VALUE), 0, 1)
+    return HSVToColor(h, s, v)
+end
+
 local function sectionMaterialName(c)
     local key = colorKey(c)
     local cached = materialNames[key]
     if cached then return cached end
 
-    local r = clamp01((c.r or 0) / 255)
-    local g = clamp01((c.g or 0) / 255)
-    local b = clamp01((c.b or 0) / 255)
+    local vivid = vividSectionColor(c)
+    local r = clamp01((vivid.r or 0) / 255)
+    local g = clamp01((vivid.g or 0) / 255)
+    local b = clamp01((vivid.b or 0) / 255)
     local name = "lod_np_section_" .. key
 
     -- $blendtintcoloroverbase interpolates between ordinary multiplicative tint
-    -- and replacing the base hue. At 0.72 the section hue becomes unmistakable,
-    -- while 28% of the original albedo contribution plus the untouched normal map
-    -- retain the weathered Northern Petrol material character.
+    -- and replacing the base hue. At 0.84 the section hue reads clearly at corridor
+    -- distance, while the remaining original albedo contribution plus the untouched
+    -- normal map retain the weathered Northern Petrol material character.
     CreateMaterial(name, "VertexLitGeneric", {
         ["$basetexture"] = NP_BASE_TEXTURE,
         ["$bumpmap"] = NP_NORMAL_TEXTURE,
@@ -66,17 +81,17 @@ local function sectionMaterialName(c)
 end
 
 local function complementaryColor(c)
-    -- The sparse plywood labels already use a complementary stencil. Their old
-    -- appearance pass derived it from a pale multiplicative tint; now that the
-    -- container body genuinely uses the section hue, derive the opposite directly
-    -- from that authoritative section color instead.
-    local h, s, v = ColorToHSV(Color(c.r or 255, c.g or 255, c.b or 255))
+    -- Derive signage from the same vivid body hue actually sent to the shader, so
+    -- the plywood stencil remains a true 180-degree complement of what the player
+    -- reads on the container rather than of the dimmer source palette swatch.
+    local vivid = vividSectionColor(c)
+    local h, s, v = ColorToHSV(vivid)
     h = (h + 180) % 360
-    s = math.Clamp(math.max(s, 0.78), 0, 1)
+    s = math.Clamp(math.max(s, 0.82), 0, 1)
 
     -- The mark is painted on light plywood, so a moderately dark opposite hue is
     -- more legible than a pastel complement while remaining chromatically exact.
-    v = math.Clamp(math.min(v, 0.56), 0.30, 0.56)
+    v = 0.62
     return HSVToColor(h, s, v)
 end
 
@@ -111,7 +126,8 @@ local function reconcileModel(index, model, instance)
     -- changes.
     model:SetSkin(0)
 
-    instance.bodyColor = Color(section.r, section.g, section.b, 255)
+    local vivid = vividSectionColor(section)
+    instance.bodyColor = Color(vivid.r, vivid.g, vivid.b, 255)
     instance.stencilColor = complementaryColor(section)
     instance.sectionMaterialName = matName
 
@@ -195,8 +211,9 @@ concommand.Add("lod_container_recolor_status", function()
     table.sort(sections)
 
     print(string.format(
-        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f complete=%s stablePasses=%d applied=%d sections={%s}",
+        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f satFloor=%.2f valueFloor=%.2f complete=%s stablePasses=%d applied=%d sections={%s}",
         #world, correct, wrong, table.Count(materialNames), COLOR_REPLACE_BLEND,
-        tostring(reconcileComplete), stablePasses, appliedCount, table.concat(sections, " ")
+        MIN_SECTION_SATURATION, MIN_SECTION_VALUE, tostring(reconcileComplete),
+        stablePasses, appliedCount, table.concat(sections, " ")
     ))
 end)
