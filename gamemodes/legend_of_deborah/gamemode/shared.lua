@@ -17,6 +17,7 @@ include("lod/sh_rng.lua")
 
 if SERVER then
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
+    AddCSLuaFile("lod/cl_container_section_recolor.lua")
 end
 
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
