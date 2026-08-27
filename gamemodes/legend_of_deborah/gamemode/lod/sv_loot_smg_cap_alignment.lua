@@ -4,13 +4,13 @@ local Loot = LOD.LootDirector
 if not Loot or not Loot.CampaignAssistance then return end
 
 -- Final post-decay ammo-family selector. This is intentionally the same campaign
--- assistance logic as sv_loot_campaign_decay.lua with only the SMG's new 102-round
--- family ceiling substituted, so a full rebalance-SMG cannot remain falsely
--- eligible for contextual ammo drops between 102 and the retired 135-round cap.
+-- assistance logic as sv_loot_campaign_decay.lua with only the SMG's final
+-- 75-round family ceiling substituted, so a full SMG cannot remain falsely
+-- eligible for contextual ammo drops above the production cap.
 local AMMO_PROFILES = {
     weapon_pistol = {ammo = "Pistol", cap = 54},
     weapon_shotgun = {ammo = "Buckshot", cap = 21},
-    weapon_smg1 = {ammo = "SMG1", cap = 102},
+    weapon_smg1 = {ammo = "SMG1", cap = 75},
     weapon_357 = {ammo = "357", cap = 18},
     weapon_ar2 = {ammo = "AR2", cap = 60}
 }
