@@ -55,9 +55,11 @@ local function playCelebrationAudio()
 
     local delay = 0.08
     for _, path in ipairs(CHEER_SOUNDS) do
-        if soundExists(path) then
-            timer.Simple(delay, function()
-                if soundExists(path) then surface.PlaySound(path) end
+        local soundPath = path
+        if soundExists(soundPath) then
+            local scheduledAt = delay
+            timer.Simple(scheduledAt, function()
+                if soundExists(soundPath) then surface.PlaySound(soundPath) end
             end)
             delay = delay + 0.13
         end
