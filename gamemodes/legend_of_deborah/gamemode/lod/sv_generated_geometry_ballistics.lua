@@ -17,14 +17,27 @@ local function damagePoint(target, dmginfo)
     return pos
 end
 
-local function traceIgnore(attacker)
+local function addIgnored(out, ent)
+    if not IsValid(ent) then return end
+    for _, existing in ipairs(out) do
+        if existing == ent then return end
+    end
+    out[#out + 1] = ent
+end
+
+local function traceIgnore(attacker, additionalIgnore)
     local ignored = {}
     if IsValid(attacker) then
-        ignored[#ignored + 1] = attacker
+        addIgnored(ignored, attacker)
         if attacker:IsPlayer() then
-            local weapon = attacker:GetActiveWeapon()
-            if IsValid(weapon) then ignored[#ignored + 1] = weapon end
+            addIgnored(ignored, attacker:GetActiveWeapon())
         end
+    end
+
+    if IsValid(additionalIgnore) then
+        addIgnored(ignored, additionalIgnore)
+    elseif istable(additionalIgnore) then
+        for _, ent in ipairs(additionalIgnore) do addIgnored(ignored, ent) end
     end
     return ignored
 end
@@ -34,13 +47,17 @@ end
 -- slabs as bullet/LOS occluders. Use MASK_SOLID as the authoritative cover test.
 -- A clear segment may terminate on the intended target; any earlier solid hit is
 -- real cover and must prevent cross-floor/cross-wall combat.
-function Ballistics:SegmentBlocked(startPos, endPos, attacker, intendedTarget)
+--
+-- Piercing attacks may supply additionalIgnore. This does NOT weaken architecture
+-- blocking: it only lets an attack that has already legitimately penetrated an
+-- entity keep that body out of the next segment's cover trace.
+function Ballistics:SegmentBlocked(startPos, endPos, attacker, intendedTarget, additionalIgnore)
     if not startPos or not endPos then return false, nil end
     local tr = util.TraceLine({
         start = startPos,
         endpos = endPos,
         mask = MASK_SOLID,
-        filter = traceIgnore(attacker)
+        filter = traceIgnore(attacker, additionalIgnore)
     })
 
     if not tr.Hit or tr.Fraction >= 0.995 then return false, tr end
