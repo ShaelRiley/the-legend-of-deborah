@@ -6,22 +6,25 @@ local TICK_SECONDS = 0.25
 local NO_FIRE_DELAY = 3.0
 local SHARED_TIMER = "LOD_DiceAmmoSharedTick"
 
+-- Keep the base/shared profile table aligned with the final production capacities
+-- so early scaffolding and lod_dice_ammo_status cannot report retired values even
+-- though later weapon-specific modules still reinforce these same balances.
 local PROFILES = {
     weapon_pistol = {
         label = "Pistol", ammo = "Pistol", load = 18, cap = 54,
         floor = 18, recovery = 60, pickup = 6
     },
     weapon_shotgun = {
-        label = "Shotgun", ammo = "Buckshot", load = 6, cap = 18,
-        floor = 6, recovery = 90, pickup = 2
+        label = "Shotgun", ammo = "Buckshot", load = 7, cap = 21,
+        floor = 7, recovery = 90, pickup = 3
     },
     weapon_smg1 = {
-        label = "SMG", ammo = "SMG1", load = 45, cap = 135,
-        floor = 45, recovery = 120, pickup = 15
+        label = "SMG", ammo = "SMG1", load = 34, cap = 102,
+        floor = 34, recovery = 120, pickup = 15
     },
     weapon_ar2 = {
-        label = "AR2", ammo = "AR2", load = 30, cap = 90,
-        floor = 30, recovery = 150, pickup = 10
+        label = "AR2", ammo = "AR2", load = 20, cap = 60,
+        floor = 20, recovery = 150, pickup = 10
     },
     weapon_357 = {
         label = ".357 Magnum", ammo = "357", load = 6, cap = 18,
