@@ -19,8 +19,8 @@ local PROFILES = {
         floor = 7, recovery = 90, pickup = 3
     },
     weapon_smg1 = {
-        label = "SMG", ammo = "SMG1", load = 34, cap = 102,
-        floor = 34, recovery = 120, pickup = 15
+        label = "SMG", ammo = "SMG1", load = 25, cap = 75,
+        floor = 25, recovery = 120, pickup = 15
     },
     weapon_ar2 = {
         label = "AR2", ammo = "AR2", load = 20, cap = 60,
