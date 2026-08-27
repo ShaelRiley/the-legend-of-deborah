@@ -138,6 +138,9 @@ include("lod/sv_watcher_instance_dispatch.lua")
 -- Cross-system identity lifecycle invariants used by real multiplayer: slot-safe
 -- revival, reconnect-safe Tetris windows, fixed death timing, and live diagnostics.
 include("lod/sv_multiplayer_hardening.lua")
+-- Short-term multiplayer play-contract gate: friendly fire, living progression
+-- authority, and GDD-derived personal map availability for Dungeons 1-20.
+include("lod/sv_multiplayer_contracts.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
