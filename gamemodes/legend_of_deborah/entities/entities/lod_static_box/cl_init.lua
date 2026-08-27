@@ -4,6 +4,7 @@ local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
 local floorColor = GC.FloorColor or Color(46, 49, 51, 255)
 local stairColor = GC.StairColor or Color(68, 72, 74, 255)
 local stairEdgeColor = GC.DebugColor or Color(225, 145, 48, 255)
+local stagingColor = Color(72, 49, 46, 255)
 local textureTile = GC.FloorTextureTile or 384
 
 local function floorMaterial()
@@ -114,6 +115,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                 -- and color and draw only broad faces, so any container-base or
                 -- exterior-corner sightline resolves to seamless industrial steel.
                 drawFloorSlab(ent, floorColor)
+            elseif kind == 6 then
+                -- The deployment hut is intentionally authored from the same cheap
+                -- static-box renderer as the dungeon floor/stairs, but its warmer
+                -- iron tone separates the calm staging space from maze geometry.
+                drawFullMetalBox(ent, stagingColor)
             end
         end
     end
