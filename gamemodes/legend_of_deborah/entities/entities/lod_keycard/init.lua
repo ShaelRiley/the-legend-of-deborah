@@ -19,14 +19,21 @@ function ENT:Think()
     local radiusSqr = PC.KeycardTriggerRadius * PC.KeycardTriggerRadius
 
     for _, ply in ipairs(player.GetAll()) do
-        if IsValid(ply) and ply:Alive() and LOD.RunManager:IsActivePlayer(ply) and ply:GetPos():DistToSqr(self:GetPos()) <= radiusSqr then
-            if LOD.ProgressionDirector:CollectCard(self:GetCardIndex(), ply) then
-                -- Same recognizable pickup timbre, ascending pitch by progression
-                -- color: Red < Blue < Yellow. The card is therefore legible by ear
-                -- without inventing three unrelated interface sounds.
-                self:EmitSound("items/itempickup.wav", 70, PICKUP_PITCH[self:GetCardIndex()] or 108, 0.9)
-                self:Remove()
-                return
+        if IsValid(ply) and ply:Alive() and LOD.RunManager:IsActivePlayer(ply) then
+            -- Pickup should read as touching the keycard with any part of the
+            -- player hull. Using GetPos() measured from the player's feet while
+            -- the card floats above the deck, consuming most of the nominal
+            -- trigger radius vertically and making obvious body contact fail.
+            local nearest = ply:NearestPoint(self:GetPos())
+            if nearest:DistToSqr(self:GetPos()) <= radiusSqr then
+                if LOD.ProgressionDirector:CollectCard(self:GetCardIndex(), ply) then
+                    -- Same recognizable pickup timbre, ascending pitch by progression
+                    -- color: Red < Blue < Yellow. The card is therefore legible by ear
+                    -- without inventing three unrelated interface sounds.
+                    self:EmitSound("items/itempickup.wav", 70, PICKUP_PITCH[self:GetCardIndex()] or 108, 0.9)
+                    self:Remove()
+                    return
+                end
             end
         end
     end
