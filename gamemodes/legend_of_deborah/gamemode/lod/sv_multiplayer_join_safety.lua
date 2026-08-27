@@ -74,6 +74,26 @@ local function entryClass(ps)
     return "existing"
 end
 
+local function hostileTargetCounts()
+    local counts = {}
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and not hostile.LODDead and IsValid(hostile.LODTarget)
+            and hostile.LODTarget:IsPlayer()
+        then
+            local identity = identityOf(hostile.LODTarget)
+            if identity then counts[identity] = (counts[identity] or 0) + 1 end
+        end
+    end
+    return counts
+end
+
+local function playerCellText(ply, graph)
+    if not IsValid(ply) or not graph or not LOD.MazeNavigator then return "-" end
+    local cell = LOD.MazeNavigator:WorldToCell(graph, ply:GetPos())
+    if not cell then return "-" end
+    return string.format("%d:%d:%d/F%d", cell.x, cell.y, cell.z, cell.z + 1)
+end
+
 local function rosterAudit()
     local state = RunManager.State or {}
     local connected = connectedByIdentity()
@@ -147,6 +167,7 @@ concommand.Add("lod_multiplayer_roster_status", function(ply)
     local state = RunManager.State or {}
     local failures, warnings, active = rosterAudit()
     local connected = player.GetAll()
+    local targetCounts = hostileTargetCounts()
     local result = #failures == 0 and "PASS" or "FAIL"
 
     local headline = string.format(
@@ -168,13 +189,14 @@ concommand.Add("lod_multiplayer_roster_status", function(ply)
                 and DeathTetris:GetMandatoryRemaining(identity) or nil
             local mapAllowed = Minimap and Minimap.CanUse and Minimap:CanUse(candidate) or false
             local line = string.format(
-                "%s id=%s ord=%s character=%s entry=%s active=%s alive=%s lives=%d eliminated=%s waiting=%s magic=%.1f map=%s mapOpen=%s staticLoot=%d deathRemaining=%s",
+                "%s id=%s ord=%s character=%s entry=%s active=%s alive=%s hp=%d lives=%d eliminated=%s waiting=%s magic=%.1f map=%s mapOpen=%s staticLoot=%d cell=%s targetedBy=%d deathRemaining=%s",
                 candidate:Nick(), identitySuffix(identity), tostring(ps and ps.ordinal or "-"),
                 tostring(ps and ps.characterName or "Spectator"), entryClass(ps), tostring(activePlayer),
-                tostring(candidate:Alive()), ps and (ps.lives or 0) or 0,
+                tostring(candidate:Alive()), math.max(0, candidate:Health()), ps and (ps.lives or 0) or 0,
                 tostring(ps and ps.eliminated == true or false), tostring(waiting), magic,
                 mapAllowed and "YES" or "NO", candidate:GetNW2Bool("LOD_MapMagicActive", false) and "YES" or "NO",
-                validStaticCount(identity), deathRemaining and string.format("%.1f", deathRemaining) or "-")
+                validStaticCount(identity), playerCellText(candidate, state.Graph), targetCounts[identity] or 0,
+                deathRemaining and string.format("%.1f", deathRemaining) or "-")
             print("[LOD:MP-ROSTER] " .. line)
             if IsValid(ply) then ply:ChatPrint(line) end
         end
