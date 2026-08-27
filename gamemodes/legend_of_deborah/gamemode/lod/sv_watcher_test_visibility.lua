@@ -10,9 +10,11 @@ local cellKey = LOD.MazeGenerator and LOD.MazeGenerator.CellKey
 if not Watcher or not Navigator or not Motion or not cellKey then return end
 
 local TEST_WATCHER_ORDINAL = 980001
-local TEST_SLEEPER_ORDINAL = 980002
 local MIN_VISIBLE_DISTANCE = 154
 local DESIRED_VISIBLE_DISTANCE = 184
+local INITIAL_SCAN_DELAY = 1.00
+
+local PendingCycleTests = setmetatable({}, {__mode = "k"})
 
 local function currentState()
     local state = LOD.RunManager and LOD.RunManager.State
@@ -38,6 +40,7 @@ end
 local function spawnTestHostile(archetypeId, graph, cell, pos, ordinal)
     local ent = ents.Create("lod_hostile")
     if not IsValid(ent) then return nil end
+
     local key = keyOf(cell)
     ent.LODArchetypeId = archetypeId
     ent.LODHomeCellKey = key
@@ -46,7 +49,9 @@ local function spawnTestHostile(archetypeId, graph, cell, pos, ordinal)
     ent.LODWanderer = true
     ent.LODWanderFloor = cell.z
     ent.LODWanderAnchorCellKey = key
-    ent.LODWanderSeed = LOD.Seeds.Derive((LOD.RunManager.State.LevelSeed or 1), "watcher-visible-test:" .. ordinal)
+    ent.LODWanderSeed = LOD.Seeds.Derive(
+        (LOD.RunManager.State.LevelSeed or 1),
+        "watcher-cycle-test:" .. ordinal)
     ent.LODActivated = true
     ent:SetPos(pos or Motion:CellFloorPoint(cell, Navigator:CellCenter(cell)))
     ent:Spawn()
@@ -60,6 +65,7 @@ local function spawnTestHostile(archetypeId, graph, cell, pos, ordinal)
         EncounterDirector.Entities = EncounterDirector.Entities or {}
         EncounterDirector.Entities[#EncounterDirector.Entities + 1] = ent
     end
+
     Watcher.TestEntities = Watcher.TestEntities or {}
     Watcher.TestEntities[#Watcher.TestEntities + 1] = ent
     return ent
@@ -85,15 +91,10 @@ local function clearSightToPlayer(ply, pos)
     return not tr.Hit or tr.Fraction >= 0.995
 end
 
--- The old test placed the Scanner at the exact logical cell center regardless of
--- the player's position. A player near that center could therefore have the test
--- entity created inside/above their own body, after which close-range recovery
--- immediately carried it away. The command correctly printed a valid entity id,
--- but the human-facing test could look as though nothing spawned.
---
--- Pick a same-cell, graph-safe point deliberately separated from the player and
--- preferably in front of their view. This alters only developer-test placement;
--- production Watcher spawn/routing remains untouched.
+-- Human-facing test placement. Choose a legal point in the player's current cell,
+-- deliberately separated from the player and preferentially in front of the view.
+-- The important invariant is that the tester can see the Watcher before its state
+-- machine starts doing anything interesting.
 local function visibleWatcherSpawn(graph, cell, ply)
     local forward = horizontal(ply:EyeAngles():Forward())
     local right = horizontal(ply:EyeAngles():Right())
@@ -140,21 +141,90 @@ local function visibleWatcherSpawn(graph, cell, ply)
     return nil
 end
 
-local function distantTestCell(graph, playerCell)
-    local keys = {}
-    for key, cell in pairs(graph.Cells or {}) do
-        if cell.z == playerCell.z and not safeCell(graph, cell) then keys[#keys + 1] = key end
+local function validateTestLocation(ply)
+    local state, graph = currentState()
+    if not state or not graph or not state.BuildReady then
+        return nil, nil, "Watcher test requires an active generated dungeon."
     end
-    table.sort(keys)
-    local fallback
-    for _, key in ipairs(keys) do
-        local cell = graph.Cells[key]
-        local distance = Navigator:Distance(graph, playerCell, cell)
-        if distance == 5 or distance == 6 then return cell end
-        if not fallback and distance > 4 and distance ~= math.huge then fallback = cell end
+
+    local playerCell = Navigator:WorldToCell(graph, ply:GetPos())
+    if not playerCell then
+        return nil, nil, "Watcher test could not resolve your maze cell."
     end
-    return fallback
+    if safeCell(graph, playerCell) then
+        return nil, nil, "Watcher test: move into a normal non-safe maze cell, then run the command again."
+    end
+    return graph, playerCell, nil
 end
+
+local function beginCycleTest(ply)
+    if not IsValid(ply) or not ply:IsAdmin() then return end
+
+    local graph, playerCell, err = validateTestLocation(ply)
+    if err then
+        ply:ChatPrint(err)
+        return
+    end
+
+    local watcherPos = visibleWatcherSpawn(graph, playerCell, ply)
+    if not watcherPos then
+        ply:ChatPrint("Watcher test could not find a visible spawn point. Step toward the middle of this cell and retry.")
+        return
+    end
+
+    cleanupTestEntities()
+    local watcher = spawnTestHostile("watcher", graph, playerCell, watcherPos, TEST_WATCHER_ORDINAL)
+    if not IsValid(watcher) then
+        ply:ChatPrint("Watcher test failed to create the Watcher.")
+        return
+    end
+
+    watcher.LODWatcherCycleTest = true
+    watcher.LODTarget = ply
+    watcher.LODReturningHome = false
+    watcher.LODWaypoints = {}
+    watcher.LODWaypointIndex = 1
+    watcher.LODNextTargetRefresh = CurTime() + 0.65
+    watcher.LODNextRouteRefresh = 0
+    watcher.LODNextWatcherScan = CurTime() + INITIAL_SCAN_DELAY
+    watcher:SetNoDraw(false)
+
+    Watcher.Stats.testSpawns = (Watcher.Stats.testSpawns or 0) + 1
+    local visibleDistance = watcher:GetPos():Distance(ply:GetPos())
+    local line = string.format(
+        "watcher=#%s visibleSpawn=%.0fu cycleOnly=true initialScanDelay=%.2fs",
+        watcher:EntIndex(),
+        visibleDistance,
+        INITIAL_SCAN_DELAY)
+    print("[LOD:WATCHER-TEST] " .. line)
+    ply:ChatPrint(line)
+end
+
+local function movementResumed(cmd)
+    if not cmd then return false end
+    return math.abs(cmd:GetForwardMove()) > 0.01
+        or math.abs(cmd:GetSideMove()) > 0.01
+        or math.abs(cmd:GetUpMove()) > 0.01
+end
+
+-- Do not start the experiment while the developer console is still covering the
+-- game. Console time is real server time in GMod; the old test could complete a
+-- scan and enter cloak before the tester ever returned to gameplay. Arm the test
+-- at the command, then spawn only after the first actual movement usercmd.
+hook.Add("StartCommand", "LOD_WatcherCycleTestResumeGate", function(ply, cmd)
+    local pending = PendingCycleTests[ply]
+    if not pending or not movementResumed(cmd) then return end
+    if CurTime() < (pending.armedAt or 0) + 0.10 then return end
+
+    PendingCycleTests[ply] = nil
+    timer.Simple(0, function()
+        if IsValid(ply) then beginCycleTest(ply) end
+    end)
+end)
+
+hook.Add("PlayerDisconnected", "LOD_WatcherCycleTestCleanupPending", function(ply)
+    PendingCycleTests[ply] = nil
+end)
 
 concommand.Remove("lod_watcher_test")
 concommand.Add("lod_watcher_test", function(ply)
@@ -162,57 +232,17 @@ concommand.Add("lod_watcher_test", function(ply)
     if cv and not cv:GetBool() then return end
     if not IsValid(ply) or not ply:IsAdmin() then return end
 
-    local state, graph = currentState()
-    if not state or not graph or not state.BuildReady then
-        ply:ChatPrint("Watcher test requires an active generated dungeon.")
-        return
-    end
-
-    local playerCell = Navigator:WorldToCell(graph, ply:GetPos())
-    if not playerCell then
-        ply:ChatPrint("Watcher test could not resolve your maze cell.")
-        return
-    end
-    if safeCell(graph, playerCell) then
-        ply:ChatPrint("Watcher test: move into a normal non-safe maze cell, then run the command again.")
-        return
-    end
-
-    local watcherPos = visibleWatcherSpawn(graph, playerCell, ply)
-    if not watcherPos then
-        ply:ChatPrint("Watcher test could not find a visible same-cell spawn point. Step toward the middle of this cell and retry.")
+    local _, _, err = validateTestLocation(ply)
+    if err then
+        ply:ChatPrint(err)
         return
     end
 
     cleanupTestEntities()
-    local watcher = spawnTestHostile("watcher", graph, playerCell, watcherPos, TEST_WATCHER_ORDINAL)
-    local alertCell = distantTestCell(graph, playerCell)
-    local sleeper = alertCell and spawnTestHostile("shambler", graph, alertCell,
-        Motion:CellFloorPoint(alertCell, Navigator:CellCenter(alertCell)), TEST_SLEEPER_ORDINAL) or nil
-
-    if IsValid(watcher) then
-        watcher.LODTarget = ply
-        watcher.LODReturningHome = false
-        watcher.LODWaypoints = {}
-        watcher.LODWaypointIndex = 1
-        watcher.LODNextTargetRefresh = CurTime() + 0.65
-        watcher.LODNextRouteRefresh = 0
-        -- Briefly delay scan eligibility so the spawned Scanner is visibly present
-        -- before its ordinary approach/range-recovery/scan state machine takes over.
-        watcher.LODNextWatcherScan = CurTime() + 0.55
-        watcher:SetNoDraw(false)
-    end
-    if IsValid(sleeper) then sleeper.LODNextTargetRefresh = CurTime() + 0.15 end
-
-    Watcher.Stats.testSpawns = (Watcher.Stats.testSpawns or 0) + 1
-    local sleeperDistance = alertCell and Navigator:Distance(graph, playerCell, alertCell) or math.huge
-    local visibleDistance = IsValid(watcher) and watcher:GetPos():Distance(ply:GetPos()) or 0
-    local line = string.format(
-        "watcher=#%s visibleSpawn=%.0fu alertWanderer=#%s naturalAcquireDistance=%s scan=1.25s alertRadius=6",
-        IsValid(watcher) and watcher:EntIndex() or "FAIL",
-        visibleDistance,
-        IsValid(sleeper) and sleeper:EntIndex() or "none",
-        sleeperDistance ~= math.huge and tostring(sleeperDistance) or "none")
+    PendingCycleTests[ply] = {armedAt = CurTime()}
+    local line = "Watcher cycle test armed. Close console, then tap a movement key; one Watcher will spawn in front of you."
     print("[LOD:WATCHER-TEST] " .. line)
     ply:ChatPrint(line)
 end)
+
+print("[LOD:WATCHER-TEST] deterministic post-console cycle test armed")
