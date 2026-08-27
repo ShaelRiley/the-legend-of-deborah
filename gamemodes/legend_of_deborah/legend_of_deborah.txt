@@ -2,7 +2,7 @@
 {
     "base"          "base"
     "title"         "The Legend of Deborah"
-    "category"      "Other"
+    "category"      "pve"
     "maps"          "^gm_flatgrass$"
     "menusystem"    "1"
 }
