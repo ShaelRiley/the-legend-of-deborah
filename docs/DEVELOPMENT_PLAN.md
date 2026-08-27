@@ -1,305 +1,312 @@
-# Development Plan — 2026-08-25 Post-C8
+# Development Plan — 2026-08-27 Post-Audit / Multiplayer Priority
 
-The live GDD is design authority; GitHub `main` is implementation authority. Milestone numbers describe capability groups, while the current execution gate follows accepted runtime evidence.
+The live GDD is design authority. GitHub `main` is implementation authority.
 
-## Current order
+## Current objective
 
-1. **Gate D — Watcher runtime acceptance.** Watcher is implemented; validate its scan presentation, cancellation, wanderer alert behavior, and Steam Deck cost.
-2. **Gate D — Seeker:** implement only after Watcher is accepted, then continue one archetype at a time through `Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`.
-3. Continue ordinary whole-dungeon play with broad combat/economy balance frozen unless specific evidence demands a targeted change. The recently implemented Magnum identity mechanics remain available for regression observation during normal play but no longer block Gate D.
-4. Finish remaining Milestone-4 expedition work, especially Brute + Neil / production Map acquisition and broader attrition/soak validation.
-5. Implement Gordon the Warden while preserving the proven Jail Key → jail door → Deborah pipeline.
-6. Integrate/harden multiplayer last.
+**Run a real two-client multiplayer test on August 28, 2026.**
 
-Production LootDirector is already implemented. Do not schedule it again as future work.
+Multiplayer integration and testing now occurs **before** Neil + The Brute and before Gordon the Warden.
 
-A limited pre-release Magic subsystem is implemented: Magic meter, global RMB ownership, and Force Shout. XP, character levels, procedural equipment/affixes, elements, Luck Ring, Magic items, and the broader RPG Magic layer remain deferred.
+The first multiplayer gate is deliberately a functional smoke/integration test, not a release-candidate multiplayer pass. Use the currently implemented dungeon progression as the test harness:
 
----
+`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah → intermission → next generated level`
 
-## Gate A — Complete Dungeon Vertical Slice — ACCEPTED
+The live GDD now requires Neil + The Brute after the Blue Gate, but that midboss is intentionally deferred until after the first multiplayer gate. Gordon the Warden is also deferred.
 
-The production progression loop is established:
-
-`Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah → level clear → intermission → next generated level`
-
-Do not reopen without new regression evidence.
+Detailed test procedure: `docs/MULTIPLAYER_TEST_PLAN.md`.
 
 ---
 
-## Gate C8 — Complete-Dungeon Dice-Era Validation — ACCEPTED
+## Development order
 
-Acceptance evidence includes an authentic run reaching **Level 5** before total-party wipe and the player's explicit assessment that the game is **fun, balanced, and playable**.
+1. **MP-A — multiplayer lifecycle hardening — CURRENT.**
+2. **MP-B — single-client regression of the hardening changes.**
+3. **MP-C — real two-client gameplay test.**
+4. Fix defects revealed by the two-client run until the multiplayer smoke gate is accepted.
+5. Continue the Second Full-System Audit consolidation work where it directly improves multiplayer robustness and maintainability.
+6. Expand multiplayer validation toward split-floor play, reconnect churn, 3–4 active clients and dedicated-server soak.
+7. Implement the remaining ordinary enemy roster only as appropriate after multiplayer stability is established.
+8. Implement **Neil + The Brute** as the mandatory post-Blue-Gate midboss.
+9. Implement **Gordon the Warden** and final arena.
+10. Perform final multiplayer/release-candidate soak, performance and polish.
 
-Broad combat/economy balance is therefore frozen. Future tuning must be evidence-driven and narrowly scoped.
-
-The minimap performance issue discovered during C8 is also accepted as closed. Steam Deck validation produced:
-
-- `paintFrames=1297`
-- `bfsBuilds=20`
-- `bfsHits=1277`
-- `floorIndexBuilds=1`
-- `topologyBuilds=1`
-- `mapRequests=0`
-- `cachedReopens=1`
-- `ready=true result=PASS`
-
-The player confirms map-open gameplay now feels smooth. Preserve the optimized architecture.
+Do not resume Neil/Brute or Warden implementation before the first multiplayer test unless a multiplayer prerequisite specifically requires their existence. None currently does.
 
 ---
 
-## Canonical dice / weapon contracts
+# MP-A — Multiplayer Lifecycle Hardening
 
-### Universal exploding-die rule
+The existing RunManager already provides a strong multiplayer-oriented foundation:
 
-- **Every d6 recursively explodes only on natural 6.**
-- **Every fresh d12 chain begins at natural 8–12.**
-- Every successful d12 explosion lowers the next d12's threshold by one.
-- Default d12 sequence: **8+ → 7+ → 6+ → 5+**, remaining at 5+ thereafter.
-- **Boomchain Floor** is a shared exposed variable, default **5**; future Magic/items may lower it.
-- Every new d12 chain resets to 8+ and descends independently toward the current Boomchain Floor.
+- four active player slots;
+- up to ten played campaign identities;
+- persistent identity → character assignment;
+- personal lives/elimination/respawn state;
+- inventory capture/restoration;
+- waiting spectators and promotion;
+- reconnect admission through persistent identity;
+- server-authoritative team progression;
+- campaign freeze when every played identity is disconnected.
 
-### Current player weapons
+The first hardening pass adds the missing cross-system invariants without changing accepted combat/economy balance.
 
-**Crowbar**
-- `1d3`
-- 96-unit reach.
+## Implemented hardening
 
-**Pistol**
-- `1d4`
-- fresh expedition begins with 18 loaded / 0 reserve.
+`sv_multiplayer_hardening.lua` currently owns only cross-system lifecycle rules:
 
-**SMG**
-- `1d8`
-- six-shot overheat threshold;
-- 0.25 s cooling per heat;
-- 2.0 s overheat lock;
-- staged audiovisual/model feedback.
+### Active-slot authority
 
-**AR2**
-- `1d10` per projectile;
-- 0.45 s committed targeting laser;
-- exactly three projectiles;
-- entire burst costs **one AR2 primary-ammo unit**.
+- `RunManager` remains the sole authority for `ActiveIdentity`.
+- Extra-life teammate revival may no longer force an identity directly into an active slot.
+- Revived identities request normal RunManager activation.
+- If all four slots are occupied, a revived connected player remains a waiting spectator until promoted.
 
-**.357 Magnum**
-- every projectile deals **`1d12!+X`**, with X equal to the number of chambers already empty before that trigger;
-- a normal six-round cylinder progresses **+0,+1,+2,+3,+4,+5** and reload resets the sequence;
-- trigger 5 fires a rapid **two-projectile** Magnum burst;
-- trigger 6 fires a rapid **three-projectile** Magnum burst;
-- below 60 current HP, each trigger makes one `(60-HP)%` chance check to add exactly one further free Magnum projectile;
-- below 34% of maximum Health, the final-cartridge trigger has `floor(34-currentHealthPercent)%` chance to restore that cartridge after the complete burst;
-- **each trigger pull consumes at most one cartridge regardless of total projectiles generated**; a successful final-cartridge preservation proc therefore produces zero net cartridge consumption for that trigger;
-- **Aim State:** after 0.5 seconds of complete player-position and view-aim stillness, the Magnum arms with a gold muzzle-particle lock cue, short sound, and compact persistent `AIM x2` indicator;
-- movement/aim change, weapon switch, or death cancels Aim State before firing;
-- Aim State persists while perfectly still and is consumed by the next actual Magnum trigger;
-- an aimed trigger deals **×2 damage across the complete trigger**, including every normal/chamber/low-health burst projectile, cylinder bonus, every projectile's d12 Boomchain, and every fresh Boomchain added by deeper pierced targets;
-- aligned penetration adds one fresh independent Boomchain per deeper target;
-- eight-target penetration cap;
-- authoritative geometry stops penetration.
+### Death / reconnect
 
-**Shotgun**
-- shared damage `1d6!`, floor 3 per damage die;
-- natural 6 only explodes;
-- **8 guaranteed pellets**;
-- separate exploding `1d6!` additional-pellet roll;
-- every connecting pellet deals at least **1 damage**;
-- final trace count capped at 36;
-- one **4× ordinary hit stun** per target per shell;
-- **168-unit nominal pushback** once per target per shell;
-- pellet count never multiplies stun, push, or wall-crush rolls.
+- Death-Tetris eligibility survives a network disconnect.
+- A reconnecting identity can resume the death interaction while still eligible.
+- A reconnecting dead identity cannot respawn unless RunManager has actually admitted that identity to an active slot.
+- The mandatory death wait is fixed at the authored 20 seconds.
+- Tetris line clears award next-life HP only and cannot authorize an early respawn.
 
-**Grenade**
-- `1d20`
-- separate consumable reward.
+### Intermission / reconnect
 
-Player-side exploding dice share one bounded audiovisual confirmation cue.
+- Intermission-Tetris eligibility is identity-scoped rather than connection-scoped.
+- A played identity disconnected at level clear can reconnect during the same 20-second window and participate.
+- Disconnecting during an active intermission board discards only that transient board; the identity may start a fresh board if the shared window remains open.
 
-The Magnum diagnostics (`lod_magnum_super_status`, `lod_magnum_aim_status`, `lod_magnum_pierce_status`) remain available for opportunistic regression checks during normal play. Magnum validation is no longer a prerequisite for continuing Gate D.
+### Full-party disconnect freeze
+
+RunManager already freezes campaign deadlines when no played client remains connected. Multiplayer hardening extends that same elapsed-time correction to Death/Intermission Tetris module-local deadlines.
+
+### Diagnostics
+
+`lod_multiplayer_status` checks:
+
+- connected / played / active / living / waiting counts;
+- four-player active-slot cap;
+- active identity → PlayerState integrity;
+- no eliminated identity occupying an active slot;
+- no disconnected identity occupying an active slot;
+- no identity simultaneously active and waiting;
+- hostile targets are living active players;
+- loot owners resolve to campaign PlayerState;
+- Death-Tetris and Intermission-Tetris identity state resolves to campaign PlayerState.
+
+`lod_multiplayer_lifecycle_status` reports exercised revival, reconnect, Tetris-suspension and full-disconnect timeline-shift paths.
 
 ---
 
-## Gate D — Expanded Enemy Roster — CURRENT
+# MP-B — Single-client Regression
 
-Build and runtime-accept one enemy at a time in this order:
+Before introducing a second human client, validate that the multiplayer hardening did not disturb the accepted single-player game.
 
-`Watcher → Seeker → Sentry → Razor → Flamer → Big Crab → Arc Caster → Lurker → Beam Sweeper`
+## Required test
 
-### Watcher — IMPLEMENTED / RUNTIME ACCEPTANCE CURRENT
+1. Fully quit and restart Garry's Mod.
+2. Use the required map `gm_flatgrass`.
+3. Start a normal fresh campaign.
+4. Confirm generation/loading produces no Lua error.
+5. Run `lod_multiplayer_status`.
+6. Confirm ordinary movement, combat, loot, Magic, minimap and progression.
+7. Die with a life remaining.
+8. Clear at least one Tetris line if practical.
+9. Confirm respawn remains unavailable until the normal 20-second mandatory wait expires.
+10. Continue normal play long enough to catch obvious Watcher/Seeker/Soldier regressions.
 
-The live GDD's Watcher contract is implemented without adding a new spawn or movement authority:
+## Acceptance
 
-- Combine Scanner-derived support archetype;
-- **no direct attack**;
-- graph-bound Motion-V2 movement and validated stair/gate traversal;
-- rare wandering eligibility;
-- Sector-2+ `Surveillance = 1 Watcher + 2 Shamblers` authored encounter option;
-- **1.25-second** visible scanning beam with escalating electronic cue;
-- line-of-sight break cancels the scan;
-- firearm hit-stun cancels the scan;
-- successful scan broadcasts the target only to already-existing same-floor wanderers within **6 graph cells**;
-- alerted wanderers immediately acquire the player but retain ordinary safe-zone, same-floor, and pursuit-leash rules;
-- Watcher scan **never spawns reinforcements** and cannot bypass EncounterDirector threat budgets or the hostile safety ceiling;
-- alert work iterates `WanderingDirector.Entities` and cached graph distance rather than performing a global entity scan;
-- provisional dice-era durability is `3d4+3` because the live GDD does not specify a numeric Watcher health formula.
+- `lod_multiplayer_status` → `result=PASS`;
+- the expected `<2 connected clients` warning is harmless;
+- no Lua errors;
+- no single-player regression;
+- death wait remains fixed at 20 seconds.
 
-Presentation is event-driven client-side: active scans alone draw a pulsating cyan beam/glow. There is no per-frame search for Watchers.
-
-### Watcher acceptance test
-
-1. Enter an ordinary corridor outside spawn/checkpoint safe space.
-2. Run `lod_watcher_test`.
-3. Allow the full scan to complete without breaking line of sight or shooting the Watcher.
-4. Confirm the cyan beam and escalating electronic cue are clear.
-5. Run `lod_watcher_status`.
-6. Accept Watcher when status shows at least one scan start, one completion, one alerted wanderer, and `result=PASS`, with no obvious Steam Deck performance regression.
-
-The test intentionally attempts to place its alert-target Shambler **5–6 graph cells away**: outside the normal 4-cell wanderer acquisition radius but inside the Watcher's 6-cell broadcast radius. An alert therefore demonstrates Watcher behavior rather than ordinary acquisition.
-
-### Gate D working rule
-
-For every remaining archetype:
-
-1. Read its exact live-GDD contract before coding.
-2. Reuse existing graph/motion/ballistics/presentation authorities wherever possible.
-3. Add no competing locomotion, trajectory, LOS, spawning, or global-scan architecture.
-4. Keep low-end work bounded and event-driven.
-5. Push one coherent implementation milestone.
-6. Give one decisive runtime acceptance test.
-7. Do not proceed to the next archetype until the current one is accepted.
-
-**Seeker is next only after Watcher acceptance.**
-
-Do not regress the immutable Soldier shot contract.
+Do not add further systems before MP-B is accepted if this hardening pass introduced a regression.
 
 ---
 
-## Basic Magic / Force Shout — IMPLEMENTED
+# MP-C — Two-Client Multiplayer Smoke Gate
 
-- personal Magic resource 0–100;
-- blue Suit-style HUD slot beside Health;
-- 0→100 regeneration over 60 seconds while alive;
-- RMB globally reserved for Magic; firearms expose no HL2-style secondary fire;
-- Force Shout costs 30 Magic;
-- unobstructed ~60° / 1100-unit cone;
-- independent exploding `2d6` per hostile;
-- 336-unit shared-authority push to survivors.
+Use **two real human clients** first. Do not begin with four players; two clients expose ownership/state disagreements with much less diagnostic noise.
 
----
+The authoritative checklist is `docs/MULTIPLAYER_TEST_PLAN.md`.
 
-## Generic push / wall crush — IMPLEMENTED
+Minimum required evidence:
 
-`LOD.Pushback` is the reusable authority for Shotgun, Force Shout, and future displacement effects.
+## 1. Admission
 
-- bounded collision resolution;
-- cannot push through walls/gates/jail doors;
-- architectural blockage can add one `1d3` wall-crush roll;
-- wall crush has distinctive audiovisual feedback;
-- push travel uses bounded 4–16 body-ghost trails from reusable leased clientside render models.
+- two distinct persistent identities;
+- two distinct character assignments;
+- `connected=2`;
+- `active=2/4`;
+- both spawn into the same level instance.
 
----
+## 2. Shared world / personal state
 
-## Peer-firearm design — ACCEPTED
+Shared:
 
-Shotgun, SMG, Magnum, and AR2 are peers rather than power tiers.
+- graph;
+- generated geometry;
+- progression state;
+- gates/keycards/Jail Key/Deborah;
+- encounters and hostile population;
+- checkpoints;
+- level transition.
 
-- all available from Dungeon 1;
-- equal randomized firearm acquisition weighting;
-- Level 1 guarantees two distinct upgrades selected from the four;
-- join-in-progress catch-up grants two deterministic distinct firearms from the same pool;
-- contextual ammo-family selection is driven by depletion rather than hidden rarity;
-- Grenades remain separate consumables.
+Personal:
 
----
+- Health;
+- lives/elimination;
+- inventory/ammo;
+- Magic;
+- map-open/drain state;
+- individualized loot;
+- Death/Intermission Tetris;
+- next-life Tetris HP bonus.
 
-## Production LootDirector — IMPLEMENTED
+## 3. Combat targeting
 
-LootDirector owns individualized static supplies, individualized seeded enemy drops, useful-drop pity protection, extra-life behavior, Level-1 firearm access, contextual HP/ammo support, join-in-progress catch-up, and sector resource-budget validation.
+- enemies may select either living active player;
+- target changes must remain legal when players split up;
+- no persistent targeting of dead, disconnected or waiting identities;
+- hostile-vs-hostile damage remains suppressed;
+- generated geometry remains authoritative cover.
 
-LOD does not use HL2's auxiliary suit/armor pool.
+## 4. Personal death
 
----
+One player dying must not pause, kill, respawn or otherwise commandeer the living teammate.
 
-## Current hostile health / ordinary melee
+The deceased player receives only their own life decrement, death/Tetris interaction and later checkpoint respawn.
 
-- Deadcrab health `2d4+1`
-- Runner health `3d4+3`; melee `2d4+2`
-- Watcher health `3d4+3` **provisional implementation tuning**; no direct attack
-- Shambler health `4d4+5`; melee `3d4+8`
-- Soldier / Blitzer health `4d4+5`
-- Bio Blaster health `5d4+6`
+## 5. Disconnect / reconnect
 
-Visible hostile size remains monotonic durability information.
+A reconnect must restore the same campaign identity rather than admitting a new character.
 
----
+Exercise reconnect:
 
-## Finite ammo
+- while alive;
+- while dead with lives remaining;
+- during intermission if practical.
 
-- Pistol 54 cap / 18 floor / 60 s empty-to-floor
-- Shotgun 18 / 6 / 90 s
-- SMG 135 / 45 / 120 s
-- AR2 90 / 30 / 150 s
-- .357 18 / 6 / 180 s
+## 6. Individualized loot
 
-Shared 4 Hz server timer remains the regeneration authority. Grenades do not regenerate.
+A player's loot must never become collectible by the other client.
 
----
+Join/rejoin must correctly set entity transmission and reconstruct unconsumed static loot for the returning identity.
 
-## Minimap architecture — ACCEPTED
+## 7. Progression
 
-Production minimap has one canonical server module and one canonical client module.
+Either player may perform a progression interaction. The result is global, server-authored and immediately shared.
 
-- static current-floor topology is cached in one reusable 256×256 render target rather than redrawn every HUD frame;
-- dynamic overlays remain live;
-- client floor/stair/gate/jail indexes and adjacency are built once per topology reception;
-- route BFS is cached by player cell + relevant progression state;
-- same-level reopen does not retransmit topology;
-- request mismatch recovery is throttled;
-- no per-frame maze-origin polling or server level-reset scans.
+For the initial smoke gate, use the current temporary progression without Neil/Brute.
 
-`lod_minimap_cache_status` remains available as a lightweight manual regression check.
+## 8. Level clear
 
----
+One Deborah rescue must clear the level once for the entire party, open independent personal intermission-Tetris opportunities, then build one shared next level.
 
-## Gate E — Remaining Milestone 4 Expedition
+## MP-C acceptance
 
-After Gate D:
+A two-human-client run reaches at least one meaningful stretch of cooperative dungeon play with:
 
-- Brute + Neil / production Map acquisition for applicable dungeon tiers;
-- cross-level economy/persistence hardening;
-- broader complete-dungeon attrition and low-end soak testing;
-- remaining approved pre-release presentation work.
+- `lod_multiplayer_status` reporting zero failures;
+- no state divergence;
+- no cross-player personal-resource contamination;
+- no progression duplication;
+- no major targeting failure;
+- no serious Steam Deck/server performance collapse;
+- no Lua error.
 
-Production loot itself is no longer future work.
+Completing an entire Level 1 and entering Level 2 is preferred and becomes the acceptance target if the first session is stable enough.
 
 ---
 
-## Gate F — Gordon the Warden
+# Post-Smoke Multiplayer Hardening
 
-Implement the reserved final arena and Warden phases only after prior gates are stable. Warden death must feed the already-proven production Jail Key → jail door → Deborah rescue pipeline rather than replacing it.
+After MP-C, use real defects rather than speculation to choose the next changes.
+
+Highest-priority scenarios:
+
+1. players on different generated floors;
+2. simultaneous encounters near different players;
+3. death/reconnect while the teammate continues combat;
+4. 5th identity waiting/promotion semantics;
+5. extra-life revival with four active slots occupied;
+6. repeated disconnect/reconnect churn;
+7. three and four active clients;
+8. dedicated-server lifecycle;
+9. longer campaign soak;
+10. entity/network cost of individualized loot across many played identities.
 
 ---
 
-## Gate G — Multiplayer / Release Candidate
+# Second Full-System Audit Consolidation
 
-Preserve multiplayer-compatible server authority now; perform dedicated 1–4-player joins/rejoins, individualized-resource, wipe/respawn, intermission, dedicated-server, and long-campaign validation after the single-player game is stable.
+The audit conclusion remains valid: the game does not need a rewrite, but successful iterative fixes have produced too many historical wrapper layers.
 
-## Architecture invariants
+Do **not** attempt a broad cleanup immediately before tomorrow's multiplayer test. Preserve behavior and use the multiplayer run to establish the next evidence-based priorities.
 
-1. Canonical generated 3D graph remains topology/progression/routing/minimap authority.
-2. Physical geometry agrees with graph.
-3. Motion V2 is sole production hostile ground-motion authority.
-4. Validated stairs are sole ordinary hostile elevation route.
-5. Soldier shot line is immutable from beam-on; animation bones/client scale are never trajectory authorities.
-6. Generated geometry remains authoritative cover for ordinary bullets and Magnum penetration.
-7. Pushback uses the shared collision-safe authority; future elemental/weapon pushes reuse it.
-8. d6 explosions are universally natural-6; fresh d12 chains start at 8+ and descend one threshold per explosion toward the Boomchain Floor.
-9. Boomchain Floor defaults to 5 and is exposed for future Magic/item modification.
-10. Magnum Aim State uses bounded per-player input/state tracking only; do not replace it with a global entity scan or per-frame world trace.
-11. Watcher scans may alert only already-live `WanderingDirector` wanderers; never create a Watcher-specific reinforcement or global-scan path.
-12. Visible hostile size remains monotonic durability information.
-13. Networking/graph work remains compact, cached, bounded, and low-end-safe.
-14. Minimap has one canonical server module and one canonical client module; static topology is cached rather than redrawn/retransmitted per frame/open.
-15. No per-frame global BFS or large entity scans.
-16. Automatic startup telemetry remains retired.
-17. Work one decisive runtime acceptance criterion at a time.
+After the first multiplayer smoke gate, consolidation should proceed approximately in this order:
+
+1. canonical weapon/ammo/enemy rule registries;
+2. explicit level-build pipeline instead of nested `MazeBuilder.Build` wrappers;
+3. one resource/economy authority;
+4. explicit combat modifier pipeline;
+5. one hostile registry/controller scheduling architecture;
+6. unified Watcher controller preserving all historical regression guarantees;
+7. unified Seeker controller;
+8. canonical MapService and dungeon-tier map degradation;
+9. unified Death/Intermission Tetris session service;
+10. removal of retired scaffolding and stale compatibility layers.
+
+Every consolidation must retain a decisive runtime acceptance criterion.
+
+---
+
+# Design/runtime work deliberately deferred until after multiplayer smoke
+
+## Neil + The Brute
+
+The live GDD requires:
+
+`Blue Gate → Neil + The Brute → Yellow Keycard`
+
+This remains required production design, but implementation is intentionally deferred until after multiplayer has been exercised.
+
+## Gordon the Warden
+
+Final boss implementation remains deferred until after Neil/Brute and the relevant multiplayer foundations are stable.
+
+## Map degradation tiers
+
+The GDD's dungeon-tier map degradation still requires production implementation. Do not let this block the first two-client test; the currently functional map remains the test harness.
+
+## Armor cleanup
+
+HL2 suit/armor is retired from the intended design, but remaining implementation residue should be removed during economy consolidation rather than destabilizing the immediate multiplayer gate.
+
+---
+
+# Preserved hard constraints
+
+1. `gm_flatgrass` remains the required development map.
+2. The canonical generated 3D graph remains topology/progression/routing/minimap authority.
+3. Motion V2 remains the sole ordinary hostile ground-motion authority.
+4. Validated stairs remain the sole ordinary hostile elevation-changing route.
+5. Soldier warning/projectile truth remains one immutable server-authored line committed at beam-on.
+6. Generated geometry remains authoritative cover and pushback collision.
+7. Shotgun/SMG/Magnum/AR2 remain peer firearms; do not reintroduce power-tier rarity gating.
+8. Player Magic and loot remain personal; progression and world state remain team-global.
+9. Networking and recurring graph/entity work remain bounded and low-end-safe.
+10. Do not introduce automatic high-volume telemetry.
+11. Do not alter accepted broad combat/economy balance without concrete runtime evidence.
+12. Do not implement Neil + The Brute or Gordon the Warden before the first multiplayer smoke gate.
+
+---
+
+# Immediate next action
+
+**Run MP-B on a fully restarted single-client build.**
+
+If MP-B passes, the next development action is not another code feature: it is the real two-client MP-C session defined in `docs/MULTIPLAYER_TEST_PLAN.md`.
