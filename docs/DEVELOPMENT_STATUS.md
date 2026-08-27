@@ -2,162 +2,124 @@
 
 ## Current execution phase
 
-**MP-A — Multiplayer Lifecycle Hardening: IMPLEMENTED / AWAITING SINGLE-CLIENT RUNTIME REGRESSION.**
+**MP-STAGING — Shared Hut Deployment: IMPLEMENTED / AWAITING FIRST RUNTIME VALIDATION.**
 
 **Immediate goal: real two-client multiplayer test on August 28, 2026.**
 
 The live GDD is design authority. GitHub `main` is implementation authority.
 
-Development order has changed: multiplayer integration/testing now precedes Neil + The Brute and Gordon the Warden.
+Development order remains: staging/runtime validation → real multiplayer integration/testing → authority cleanup → Neil + The Brute → Gordon the Warden.
 
-The current implemented dungeon progression remains a temporary multiplayer test harness:
+The current implemented dungeon progression remains the temporary multiplayer test harness:
 
 `Red Card → Red Gate → Blue Card → Blue Gate → Yellow Card → Yellow Gate → Jail Key → jail door → Deborah → intermission → next generated level`
 
-The GDD's required post-Blue-Gate Neil + The Brute midboss is intentionally not yet implemented and does not block the first multiplayer smoke test. Gordon the Warden is likewise deferred.
+Neil + The Brute and Gordon remain intentionally outside the first multiplayer gate.
 
-See `docs/MULTIPLAYER_TEST_PLAN.md` for the complete August 28 protocol and `docs/DEVELOPMENT_PLAN.md` for current sequencing.
+## Newly implemented first-deployment staging
 
-## Multiplayer foundation already present
+Every newly admitted cooperative identity now reserves a RunManager slot but begins outside dungeon-active play in the native `gm_flatgrass` spawn hut.
 
-RunManager already supports:
+StagingDeployment owns:
 
-- maximum four active players;
-- maximum ten played campaign identities;
-- persistent identity → character assignment;
-- individualized lives/elimination/respawn state;
-- inventory capture/restoration;
-- restricted waiting spectators;
-- promotion when a slot becomes available;
-- reconnect through persistent identity;
-- server-authoritative shared progression;
-- campaign freeze when all played clients disconnect.
+- native-hut anchoring from the map's real player-start entities;
+- a red-tinted Dungeon Hermit presentation with the line `It's dangerous to go alone. Take this.`;
+- deterministic identity-bound advanced starter assignment from Shotgun, SMG, Magnum, and AR2;
+- without-replacement starter assignment among the currently reserved four-player cooperative party wherever the four-gun pool permits;
+- identity-instanced starter pickup visibility/claim ownership;
+- persistent starter assignment and claim state across reconnects;
+- staged-versus-deployed state;
+- hidden collision containment inside the native hut so ordinary movement cannot exit into Flatgrass;
+- a blue USE/E portal that is the sole legal transition to the current valid dungeon start/checkpoint;
+- a deployment diagnostic: `lod_staging_status`.
 
-LootDirector already provides individualized owner-validated loot and reapplies per-client transmission rules to joining clients.
+The universal baseline loadout is now Crowbar + Pistol 18 loaded with zero reserve. The advanced starter is a physical hut pickup with one loaded magazine and zero reserve:
 
-FactionManager and hostile targeting already resolve against living active players rather than treating every connected client as a combat target.
+- Shotgun: 7
+- SMG: 25
+- Magnum: 6
+- AR2: 20
 
-## New multiplayer hardening
+No starter grants Grenades or AR2 secondary ammunition.
 
-`gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_hardening.lua` is loaded after the current production systems and owns cross-system lifecycle invariants needed for the first real multiplayer run.
+## Staged-player authority rule
 
-### Slot-safe teammate revival
+RunManager still owns the raw four-slot ledger. For ordinary gameplay consumers, `RunManager:IsActivePlayer` now means **slot-reserved and deployed**.
 
-Previously, LootDirector's extra-life teammate revival directly wrote `RunManager.State.ActiveIdentity[revivedId] = true`, which could bypass the four-active-player cap.
+Therefore a staged identity:
 
-Now:
+- reserves one of the four cooperative slots;
+- keeps its character/lives/Magic/persistent identity state;
+- is not a legal hostile target;
+- cannot advance dungeon progression;
+- cannot use the dungeon minimap;
+- is not included in dungeon enemy-drop rolls;
+- does not materialize ordinary individualized static dungeon loot until deployment.
 
-- `RunManager:ReviveIdentity(identity)` restores persistent life/elimination state;
-- normal `TryActivatePlayer` arbitrates the active slot;
-- a revived identity waits if all active slots are occupied;
-- a connected revived identity spawns only after successful activation.
+Portal deployment changes only that identity into dungeon-active play; teammates may remain staged or deployed independently.
 
-### Fixed death wait
+## Retired rules
 
-The GDD requires a fixed 20-second mandatory death wait.
+The staging system supersedes two older onboarding assumptions:
 
-The existing Death-Tetris implementation still contains a retired line-clear wait-reduction field internally, but multiplayer hardening makes it non-authoritative:
+1. the Level-1 JIP catch-up kit that automatically granted SMG + Shotgun and later Magnum/AR2 is retired;
+2. the two guaranteed Level-1 firearm placements near early keycards are retired.
 
-- `DeathTetris:GetMandatoryRemaining` uses an immutable 20-second deadline;
-- the authoritative `LOD_DeathTetrisAction` receiver uses that same deadline;
-- Tetris line clears therefore award next-life HP only and cannot authorize an early respawn.
+Further firearm discoveries remain in the ordinary individualized reward/drop economy. Additional late-campaign JIP assistance beyond the universal hut starter is deliberately deferred until multiplayer lifecycle testing shows whether it is needed.
 
-This should be verified immediately in runtime and later folded directly into a consolidated Tetris implementation.
+`sv_loot_catchup.lua` now exists only as a harmless retired-compatibility marker.
 
-### Death disconnect/reconnect
+## Multiplayer hardening already accepted in single-client runtime
 
-Previously, disconnect deleted the identity's Death-Tetris/death interaction state.
+The previous one-client preflight passed:
 
-Now:
+- `lod_multiplayer_status` → PASS
+- `lod_multiplayer_contract_status` → PASS
+- `lod_multiplayer_roster_status` → PASS
+- fixed 20-second Death-Tetris wait;
+- slot-safe teammate revival;
+- reconnect-safe death/intermission state;
+- friendly-fire suppression and teammate non-collision;
+- D1–20 personal map policy;
+- connected-party encounter planning;
+- individualized loot transmission safety;
+- complementary-blue minimap player marker.
 
-- disconnect removes only the live Tetris board/session;
-- death eligibility remains identity-scoped;
-- reconnect restores the death interaction when the identity is re-admitted to an active slot and remains inside the hard-cap window;
-- a waiting/non-active reconnect cannot use the death action to bypass slot authority;
-- a promoted dead identity has its interaction ownership re-synchronized at 4 Hz.
+The staging feature was added after that pass and therefore requires a fresh narrow regression gate before the second human client is introduced.
 
-### Intermission disconnect/reconnect
+## Immediate gate — S0
 
-Previously, disconnect deleted both the intermission session and the identity's opportunity.
+Fully restart Garry's Mod and start a fresh normal campaign on `gm_flatgrass`.
 
-Now:
+Required evidence before deployment:
 
-- level clear creates a pending intermission opportunity for every admitted played identity in campaign PlayerState, connected or not;
-- disconnect during an active board discards only that transient board;
-- the pending opportunity survives;
-- reconnect during the same 20-second window may start a fresh intermission board.
+- player appears in the native Flatgrass hut;
+- red Dungeon Hermit and one advanced firearm are visible ahead;
+- blue portal is behind/near the exit side;
+- portal refuses USE/E before starter claim;
+- player cannot walk out into Flatgrass;
+- `lod_staging_status` reports one reserved slot, one staged identity, zero deployed, one pickup, hut ready, result PASS;
+- staged player has no dungeon map, no ordinary static dungeon loot, and is not dungeon-active.
 
-### Full-party disconnect timeline
+Then claim the starter and use the portal.
 
-RunManager already pauses its campaign timers when no played clients remain connected. The hardening layer now applies the same elapsed-time correction to Death/Intermission Tetris module-local deadlines so a full-party disconnect does not silently consume those windows.
+Required evidence after deployment:
 
-## New diagnostics
+- starter has correct loaded magazine and zero reserve;
+- portal teleports to current valid maze start/checkpoint;
+- `lod_staging_status` reports staged=0, deployed=1, claimed=1, result PASS;
+- `lod_multiplayer_status`, `lod_multiplayer_contract_status`, and `lod_multiplayer_roster_status` remain PASS;
+- normal combat, map/Magic, loot, and progression resume.
 
-### `lod_multiplayer_status`
+See `docs/MULTIPLAYER_TEST_PLAN.md` for the complete staged and two-client protocol.
 
-Reports:
+## Next gate — MP1
 
-- connected clients;
-- played campaign identities;
-- active identities / four-slot cap;
-- living active players;
-- waiting identities;
-- active identity → PlayerState integrity;
-- eliminated/disconnected identities illegally occupying slots;
-- active+waiting contradiction;
-- hostiles targeting dead/non-active players;
-- loot with invalid campaign owners;
-- orphan Death-Tetris state;
-- orphan Intermission-Tetris state.
+After S0 passes, use a multiplayer/listen server and connect a second real human after player 1 has deployed.
 
-`result=PASS` means no integrity failure was detected. A single-client run intentionally warns that fewer than two clients are connected.
+The second identity must independently stage in the same native hut, receive a different character and distinct advanced starter where possible, remain excluded from dungeon-active systems until portal deployment, and then join the current dungeon without disturbing player 1.
 
-### `lod_multiplayer_lifecycle_status`
-
-Reports counters for:
-
-- teammate revivals;
-- immediate vs waiting revival dispositions;
-- death reconnect restoration;
-- suspended death-Tetris sessions;
-- suspended intermission-Tetris sessions;
-- full-disconnect timeline shifts.
-
-## Immediate acceptance gate — MP-B
-
-Fully restart Garry's Mod and run the existing game single-player on `gm_flatgrass`.
-
-Required evidence:
-
-1. no Lua errors at startup/generation;
-2. normal movement/combat/loot/Magic/minimap/progression remain functional;
-3. `lod_multiplayer_status` reports `result=PASS`;
-4. death with lives remaining produces the normal interaction;
-5. clearing a Tetris line does not make respawn available before 20 seconds;
-6. ordinary Watcher/Seeker/Soldier behavior shows no obvious regression.
-
-If this passes, proceed directly to the two-client MP-C test rather than implementing another feature.
-
-## Two-client acceptance target — MP-C
-
-Preferred acceptance is a complete cooperative Level 1 followed by a successful shared transition into Level 2.
-
-Minimum acceptable evidence:
-
-- two real clients simultaneously active;
-- same level/progression state;
-- personal Magic/lives/inventory/loot remain isolated;
-- enemies can legally target either player;
-- personal death does not commandeer the teammate;
-- disconnect/reconnect restores the same identity;
-- either player may advance shared progression;
-- one Deborah rescue clears the level globally exactly once;
-- independent intermission-Tetris opportunities;
-- next dungeon generated once and shared;
-- `lod_multiplayer_status` has zero failures;
-- no serious performance regression or Lua error.
-
-## Accepted single-player foundations preserved
+## Accepted foundations to preserve
 
 Do not disturb without concrete regression evidence:
 
@@ -167,7 +129,7 @@ Do not disturb without concrete regression evidence:
 - validated stair/floor geometry;
 - Motion V2 ordinary hostile movement;
 - generated-geometry ballistics/cover;
-- current minimap caching/reliability behavior;
+- current minimap caching/reliability behavior and personal Magic drain;
 - server-authoritative combat dice;
 - immutable Soldier warning/projectile contract;
 - current Watcher and Seeker accepted behavior;
@@ -177,28 +139,14 @@ Do not disturb without concrete regression evidence:
 - current broad combat/economy balance;
 - campaign restart and level transition pipeline.
 
-## Known design/runtime discrepancies deliberately outside tomorrow's smoke gate
+## Known discrepancies outside the immediate staging/multiplayer smoke gate
 
-### Neil + The Brute
-
-Required by the live GDD after Blue Gate, but intentionally deferred until after multiplayer testing begins.
-
-### Gordon the Warden
-
-Not implemented; deferred.
-
-### Dungeon-tier Map degradation
-
-Required by current GDD, not yet production-complete. Existing functional map is retained as the multiplayer test harness.
-
-### Armor residue
-
-HL2 suit/armor is retired from intended design but some implementation residue remains. Remove during economy consolidation rather than immediately before multiplayer testing.
-
-### Architectural wrapper debt
-
-The Second Full-System Audit found substantial wrapper/load-order debt in weapon economy, hostile controllers, minimap reliability, Tetris and level-build integration. The codebase does not require a rewrite, but these layers should be consolidated after the first multiplayer run supplies real integration evidence.
+- Neil + The Brute required post-Blue midboss: deferred until after multiplayer validation begins.
+- Gordon the Warden: not implemented; deferred.
+- Dungeon-tier Map degradation: not yet production-complete.
+- armor residue: retired design still has implementation residue; remove during economy consolidation.
+- architectural wrapper debt: consolidate after real multiplayer evidence, not before the first test.
 
 ## Current rule
 
-**Do not implement Neil + The Brute or Gordon the Warden yet. Do not initiate a broad refactor tonight. First prove that the hardened current game still works single-player; then test it with two humans.**
+**Validate the new native-hut staging flow first. If S0 passes, move directly into the two-human multiplayer gate. Do not implement Neil + The Brute, Gordon the Warden, or a broad refactor before that evidence.**
