@@ -16,6 +16,7 @@ AddCSLuaFile("lod/cl_melee_contact_audit.lua")
 AddCSLuaFile("lod/cl_hostile_damage_audit.lua")
 AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_minimap_reliability.lua")
+AddCSLuaFile("lod/cl_minimap_logical_cell.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
 AddCSLuaFile("lod/cl_magnum_aim_state.lua")
@@ -42,7 +43,6 @@ include("lod/sv_faction_manager.lua")
 include("lod/sv_m3_enemy_config.lua")
 include("lod/sv_combat_rolls.lua")
 include("lod/sv_enemy_melee_dice_balance.lua")
-include("lod/sv_melee_contact_audit.lua")
 -- Event-only server/client snapshot for any hostile-caused player damage. This
 -- closes the old melee-audit blind spot for Seeker/Soldier/special damage and
 -- performs no recurring work while combat is idle.
