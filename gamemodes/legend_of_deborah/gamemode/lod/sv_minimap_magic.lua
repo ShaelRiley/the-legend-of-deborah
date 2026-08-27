@@ -6,7 +6,7 @@ local Minimap = LOD.MinimapServer
 local RunManager = LOD.RunManager
 
 local MAX_MAGIC = 100
-local FULL_DRAIN_SECONDS = 6
+local FULL_DRAIN_SECONDS = 15
 local DRAIN_RATE = MAX_MAGIC / FULL_DRAIN_SECONDS
 local TICK_SECONDS = 0.10
 local HEARTBEAT_TIMEOUT = 1.25
