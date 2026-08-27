@@ -135,6 +135,10 @@ include("lod/sv_watcher_scan_escape_handoff.lua")
 -- their native _BehaviourTick/helper method chain.
 include("lod/sv_watcher_instance_dispatch.lua")
 
+-- Cross-system identity lifecycle invariants used by real multiplayer: slot-safe
+-- revival, reconnect-safe Tetris windows, fixed death timing, and live diagnostics.
+include("lod/sv_multiplayer_hardening.lua")
+
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
 -- must remain armed for the instance dispatcher throughout the run.
