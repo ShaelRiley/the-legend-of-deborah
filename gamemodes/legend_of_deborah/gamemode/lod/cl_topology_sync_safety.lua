@@ -3,10 +3,9 @@ LOD.ClientTopologyIdentity = LOD.ClientTopologyIdentity or {}
 LOD.TopologySyncClient = LOD.TopologySyncClient or {}
 
 local Identity = LOD.ClientTopologyIdentity
-local Sync = LOD.TopologySyncClient
 
-local function identityKey(epoch, level, seed, layoutAttempt, mazeAttempt)
-    return table.concat({epoch, level, seed, layoutAttempt, mazeAttempt}, ":")
+local function identityKey(buildSerial, epoch, level, seed, layoutAttempt, mazeAttempt)
+    return table.concat({buildSerial, epoch, level, seed, layoutAttempt, mazeAttempt}, ":")
 end
 
 local function clearMapCache()
@@ -79,25 +78,25 @@ local function wallMatches(seed)
     return Wall and tonumber(Wall.seed or 0) == tonumber(seed or -1)
 end
 
-local function verifyWallIdentity(expectedSeed, attempt)
-    if Identity.seed ~= expectedSeed then return end
+local function verifyWallIdentity(expectedBuild, expectedSeed)
+    if Identity.buildSerial ~= expectedBuild or Identity.seed ~= expectedSeed then return end
     if wallMatches(expectedSeed) then return end
-
-    if attempt == 1 then clearWallCache() end
     requestWalls()
 end
 
 net.Receive("LOD_TopologyIdentity", function()
+    local buildSerial = net.ReadUInt(32)
     local epoch = net.ReadUInt(32)
     local level = net.ReadUInt(20)
     local seed = net.ReadUInt(32)
     local layoutAttempt = net.ReadUInt(8)
     local mazeAttempt = net.ReadUInt(8)
-    local key = identityKey(epoch, level, seed, layoutAttempt, mazeAttempt)
+    local key = identityKey(buildSerial, epoch, level, seed, layoutAttempt, mazeAttempt)
 
     if Identity.key == key then return end
 
     Identity.key = key
+    Identity.buildSerial = buildSerial
     Identity.epoch = epoch
     Identity.level = level
     Identity.seed = seed
@@ -106,24 +105,22 @@ net.Receive("LOD_TopologyIdentity", function()
     Identity.changedAt = CurTime()
 
     -- Level number alone is not a topology identity. A campaign restart, forced
-    -- regeneration, or deterministic layout retry may still be "Level 1" while
-    -- owning a completely different graph. Discard all old map topology now.
+    -- regeneration, same-seed rebuild, or deterministic layout retry may still be
+    -- "Level 1" while owning a newly built client presentation transaction.
     clearMapCache()
     requestMapIfOpen()
 
-    -- Wall models are clientside-only. If their manifest belongs to any other
-    -- graph, remove them immediately so an obsolete container cannot occlude an
-    -- otherwise open server corridor and create phantom combat through a wall.
-    if not wallMatches(seed) then
-        clearWallCache()
-        requestWalls()
-        timer.Simple(0.25, function() verifyWallIdentity(seed, 2) end)
-        timer.Simple(1.00, function() verifyWallIdentity(seed, 3) end)
-    end
+    -- Wall models are clientside-only. Retire every previous-build model even if
+    -- the deterministic topology seed happens to be the same: live development
+    -- can legitimately change the presentation code while rebuilding that seed.
+    clearWallCache()
+    requestWalls()
+    timer.Simple(0.25, function() verifyWallIdentity(buildSerial, seed) end)
+    timer.Simple(1.00, function() verifyWallIdentity(buildSerial, seed) end)
 
     print(string.format(
-        "[LOD:TOPOLOGY] client identity epoch=%d level=%d seed=%d layoutAttempt=%d mazeAttempt=%d",
-        epoch, level, seed, layoutAttempt, mazeAttempt))
+        "[LOD:TOPOLOGY] client identity build=%d epoch=%d level=%d seed=%d layoutAttempt=%d mazeAttempt=%d",
+        buildSerial, epoch, level, seed, layoutAttempt, mazeAttempt))
 end)
 
 concommand.Add("lod_topology_client_status", function()
@@ -134,10 +131,10 @@ concommand.Add("lod_topology_client_status", function()
     local wallSegments = Wall and #(Wall.logical or {}) or 0
 
     print(string.format(
-        "[LOD:TOPOLOGY-CLIENT] identity=%s expectedSeed=%s mapLevel=%s mapCells=%d wallSeed=%s wallSegments=%d wallModels=%d",
-        tostring(Identity.key or "none"), tostring(Identity.seed or "none"),
-        tostring(Map and Map.level or "none"), mapCells,
-        tostring(Wall and Wall.seed or "none"), wallSegments, wallModels))
+        "[LOD:TOPOLOGY-CLIENT] identity=%s build=%s expectedSeed=%s mapLevel=%s mapCells=%d wallSeed=%s wallSegments=%d wallModels=%d",
+        tostring(Identity.key or "none"), tostring(Identity.buildSerial or "none"),
+        tostring(Identity.seed or "none"), tostring(Map and Map.level or "none"),
+        mapCells, tostring(Wall and Wall.seed or "none"), wallSegments, wallModels))
 end)
 
 concommand.Add("lod_client_hostiles", function()
