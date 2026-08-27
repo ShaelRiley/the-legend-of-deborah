@@ -58,6 +58,14 @@ local function copyValues(values)
     return out
 end
 
+local function copyEntities(entities)
+    local out = {}
+    for _, ent in ipairs(entities or {}) do
+        if IsValid(ent) then out[#out + 1] = ent end
+    end
+    return out
+end
+
 local function chainDetail(depth, chains)
     local parts = {}
     for i, values in ipairs(chains or {}) do
@@ -80,7 +88,13 @@ if Ballistics and not Ballistics.LODMagnumPiercingWrapped then
         local segment = Piercing.DamageSegments[dmginfo]
         if segment and segment.startPos and segment.endPos then
             local attacker = dmginfo:GetAttacker()
-            local blocked = self:SegmentBlocked(segment.startPos, segment.endPos, attacker, hostile)
+            local blocked = self:SegmentBlocked(
+                segment.startPos,
+                segment.endPos,
+                attacker,
+                hostile,
+                segment.ignore
+            )
             return blocked == true
         end
         return basePlayerBulletBlocked(self, hostile, dmginfo)
@@ -128,11 +142,19 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
             local target = nextTrace.Entity
             if not validHostile(target) then break end
 
-            -- MASK_SHOT can intentionally ignore some scripted maze slabs. Stop
-            -- the chain if the authoritative generated/world collision trace says
-            -- there is real cover between the previous body and this candidate.
+            -- The already-pierced hostile bodies are intentionally transparent
+            -- to this segment. Generated/world architecture is not. Previously
+            -- the MASK_SOLID safety trace forgot this distinction and could hit
+            -- the first enemy's solid hull again only six units beyond impact,
+            -- incorrectly terminating an otherwise valid aligned chain.
             if Ballistics then
-                local blocked = Ballistics:SegmentBlocked(startPos, nextTrace.HitPos, attacker, target)
+                local blocked = Ballistics:SegmentBlocked(
+                    startPos,
+                    nextTrace.HitPos,
+                    attacker,
+                    target,
+                    ignored
+                )
                 if blocked then break end
             end
 
@@ -175,7 +197,8 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 endPos = nextTrace.HitPos,
                 depth = depth,
                 total = cumulativeTotal,
-                detail = chainDetail(depth, cumulativeChains)
+                detail = chainDetail(depth, cumulativeChains),
+                ignore = copyEntities(ignored)
             }
             target:TakeDamageInfo(info)
 
