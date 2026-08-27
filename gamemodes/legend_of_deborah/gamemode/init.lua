@@ -112,6 +112,9 @@ include("lod/sv_soldier_shot_contract.lua")
 -- Always load the unified Watcher module synchronously from this gamemode file.
 -- This registers its diagnostics while relative include resolution is valid.
 include("lod/sv_watcher_unified.lua")
+-- Explicit per-instance transition guarantee: scan completion must always leave
+-- the stationary attack state and seed the unified retreat/concealment routine.
+include("lod/sv_watcher_scan_escape_handoff.lua")
 -- Direct instance dispatch happens at RunBehaviour, so unrelated archetypes retain
 -- their native _BehaviourTick/helper method chain.
 include("lod/sv_watcher_instance_dispatch.lua")
