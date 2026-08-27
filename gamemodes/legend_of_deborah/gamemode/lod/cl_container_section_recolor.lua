@@ -8,19 +8,17 @@ if not Wall then return end
 -- The stock diffuse is strongly red, so ordinary SetColor multiplication cannot
 -- produce clean teal/green/violet sections. Source's VertexLitGeneric color-
 -- replacement path solves that while preserving the exact model, UVs, diffuse
--- artwork, grime and normal map. We tested the stock diffuse alpha as a paint mask,
--- but runtime evidence showed that Valve's alpha authoring does not isolate the NP
--- logo and makes broad steel areas visually too flat. Production therefore tints
--- the full stock albedo again; a separate lightweight logo-restoration pass redraws
--- the untinted NP identity on unmarked containers at close/medium corridor range.
+-- artwork, grime and normal map. Runtime testing established that the stock diffuse
+-- alpha is NOT an NP-logo paint mask, so production deliberately tints the complete
+-- stock albedo. The Northern Petrol logo remains part of that authentic texture and
+-- is allowed to share the section tint rather than being replaced by a fake overlay.
 local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
 local COLOR_REPLACE_BLEND = 0.84
 local MIN_SECTION_SATURATION = 0.86
 local MIN_SECTION_VALUE = 0.82
 local RECONCILE_BATCH_SIZE = 192
-local USE_BASE_ALPHA_TINT_MASK = false
-local MATERIAL_VERSION = "v4_textured_logo_restore"
+local MATERIAL_VERSION = "v5_textured_unmasked"
 
 local materialNames = {}
 local reconcileCursor = 1
@@ -62,18 +60,16 @@ local function sectionMaterialName(c)
     local name = "lod_np_section_" .. MATERIAL_VERSION .. "_" .. key
 
     -- $blendtintcoloroverbase interpolates between ordinary multiplicative tint and
-    -- replacing the base hue. The full-albedo path intentionally leaves base-alpha
-    -- masking disabled because the stock cargo texture was not authored with a
-    -- useful NP-specific paint mask. The untouched bump map and surviving 16% base
-    -- contribution retain the rust, grime, panel variation and corrugation that the
-    -- masked experiment visibly lost.
+    -- replacing the base hue. Keeping base-alpha masking OFF preserves the full
+    -- weathered albedo contribution, while the untouched bump map retains the
+    -- container's corrugation and surface depth.
     CreateMaterial(name, "VertexLitGeneric", {
         ["$basetexture"] = NP_BASE_TEXTURE,
         ["$bumpmap"] = NP_NORMAL_TEXTURE,
         ["$surfaceprop"] = "metal",
         ["$model"] = "1",
         ["$allowdiffusemodulation"] = "1",
-        ["$blendtintbybasealpha"] = USE_BASE_ALPHA_TINT_MASK and "1" or "0",
+        ["$blendtintbybasealpha"] = "0",
         ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
         ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b)
     })
@@ -207,10 +203,9 @@ concommand.Add("lod_container_recolor_status", function()
     table.sort(sections)
 
     print(string.format(
-        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f satFloor=%.2f valueFloor=%.2f alphaMask=%s materialVersion=%s complete=%s stablePasses=%d applied=%d sections={%s}",
+        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f satFloor=%.2f valueFloor=%.2f materialVersion=%s complete=%s stablePasses=%d applied=%d sections={%s}",
         #world, correct, wrong, table.Count(materialNames), COLOR_REPLACE_BLEND,
-        MIN_SECTION_SATURATION, MIN_SECTION_VALUE, tostring(USE_BASE_ALPHA_TINT_MASK),
-        MATERIAL_VERSION, tostring(reconcileComplete), stablePasses, appliedCount,
-        table.concat(sections, " ")
+        MIN_SECTION_SATURATION, MIN_SECTION_VALUE, MATERIAL_VERSION,
+        tostring(reconcileComplete), stablePasses, appliedCount, table.concat(sections, " ")
     ))
 end)
