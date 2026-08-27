@@ -35,6 +35,7 @@ AddCSLuaFile("lod/cl_magic.lua")
 AddCSLuaFile("lod/cl_pushback_fx.lua")
 
 include("shared.lua")
+include("lod/sv_required_map.lua")
 include("lod/sh_tetris.lua")
 include("lod/sv_saverestore_safety.lua")
 include("lod/sv_midnight_sky.lua")
