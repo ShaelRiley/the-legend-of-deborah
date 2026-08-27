@@ -20,7 +20,6 @@ local QUADRANT_LETTERS = {"A", "B", "C", "D"}
 Client.lastOpen = Client.lastOpen == true
 Client.nextHeartbeat = Client.nextHeartbeat or 0
 Client.palette = Client.palette or {}
-Client.paletteWorldRef = Client.paletteWorldRef
 Client.nextPaletteRefresh = Client.nextPaletteRefresh or 0
 
 local function sendState(open)
@@ -148,13 +147,9 @@ hook.Add("PostDrawHUD", "LOD_MinimapQuadrantPresentation", function()
     end
 
     local qColor = floorPalette[quadrant] or Color(185, 188, 190)
-    local magic = math.max(0, math.floor(ply:GetNW2Float("LOD_Magic", 0) + 0.5))
     draw.SimpleText("QUADRANT " .. (QUADRANT_LETTERS[quadrant] or "?"),
         "LOD_Map_Small", panelX + PANEL_W - 16, PANEL_Y + 31,
         qColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-    draw.SimpleText("MAGIC " .. tostring(magic), "LOD_Map_Small",
-        panelX + PANEL_W - 16, PANEL_Y + 44,
-        Color(120, 165, 235), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 end)
 
 concommand.Add("lod_minimap_quadrant_status", function()
