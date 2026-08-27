@@ -6,15 +6,14 @@ local Ammo = LOD.DiceAmmo
 local Loot = LOD.LootDirector
 if not Ammo or not Loot then return end
 
--- Runtime playtest rebalance: 45 * 0.75 = 33.75 and 135 * 0.75 = 101.25.
--- Firearms use integer ammunition and the production economy is explicitly three
--- reload-equivalents, so round the magazine to 34 and preserve that invariant at
--- 102 total. The 33% anti-deadlock floor therefore becomes exactly one 34-round
--- magazine. Recovery still takes 120 seconds from empty to that one-mag floor.
+-- Runtime playtest rebalance: tighten the SMG to a 25-round magazine and preserve
+-- the production three-reload-equivalent economy at 75 total rounds. The 33%
+-- anti-deadlock floor therefore becomes exactly one 25-round magazine. Recovery
+-- still takes 120 seconds from empty to that one-mag floor.
 local SMG_CLASS = "weapon_smg1"
 local SMG_AMMO = "SMG1"
-local SMG_MAGAZINE = 34
-local SMG_TOTAL_CAP = 102
+local SMG_MAGAZINE = 25
+local SMG_TOTAL_CAP = 75
 local SMG_RECOVERY = 120
 
 local MAGNUM_CLASS = "weapon_357"
