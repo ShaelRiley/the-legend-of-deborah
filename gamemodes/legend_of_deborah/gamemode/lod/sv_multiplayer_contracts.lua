@@ -5,6 +5,7 @@ local Contracts = LOD.MultiplayerContracts
 local RunManager = LOD.RunManager
 local Progression = LOD.ProgressionDirector
 local Minimap = LOD.MinimapServer
+local EncounterDirector = LOD.EncounterDirector
 local CC = LOD.Config
 
 if not RunManager or not CC then return end
@@ -40,12 +41,13 @@ local function shouldHaveMapAccess(ply)
         and state.BuildReady == true
         and state.Failed ~= true
         and state.LevelCleared ~= true
-        and productionMapLevelAvailable()
+        and (productionMapLevelAvailable() or developerMode())
 end
 
 -- The old Map pickup entitlement is retained only as a client-compatibility mirror.
 -- It is no longer an authority. Dungeons 1-20 derive map availability from the
 -- campaign level and active/living player state; Dungeon 21+ has no production map.
+-- Developer mode may temporarily override tier availability for explicit testing.
 function Contracts:SyncMapCompatibility(ply)
     if not IsValid(ply) then return end
     local allowed = shouldHaveMapAccess(ply)
@@ -93,6 +95,67 @@ hook.Add("PlayerDeath", "LOD_MultiplayerMapPolicyDeath", function(ply)
         if IsValid(ply) then Contracts:SyncMapCompatibility(ply) end
     end)
 end)
+
+-- A level is planned before RunManager repopulates ActiveIdentity. Counting only
+-- _ActiveCount() there silently produces one-player authored encounter budgets on
+-- every ordinary next-level build. Snapshot the connected cooperative identities
+-- that are actually eligible to enter the level, bounded by the four active slots.
+function RunManager:_ConnectedPartyCountForBuild()
+    local count = 0
+    local newAdmissions = 0
+    local played = self:_PlayedCount()
+    local maxActive = CC.MaxActivePlayers or 4
+    local maxPlayed = CC.Campaign and CC.Campaign.MaxPlayedIdentities or 10
+
+    for _, ply in ipairs(self:_SortedConnectedPlayers()) do
+        if count >= maxActive then break end
+        local ps = self:GetPlayerState(ply)
+        if ps then
+            if not ps.eliminated and (ps.lives or 0) > 0 then
+                count = count + 1
+            end
+        elseif not self.State.WardenStarted and played + newAdmissions < maxPlayed then
+            count = count + 1
+            newAdmissions = newAdmissions + 1
+        end
+    end
+
+    return math.Clamp(count, 1, maxActive)
+end
+
+function RunManager:GetPartySizeForScaling()
+    local state = self.State or {}
+    if state.BuildReady ~= true then
+        return math.Clamp(state.PlannedPartySize or self:_ConnectedPartyCountForBuild(),
+            1, CC.MaxActivePlayers or 4)
+    end
+    return math.Clamp(self:_ActiveCount(), 1, CC.MaxActivePlayers or 4)
+end
+
+if not RunManager.LODMultiplayerPartyScaleWrapped then
+    RunManager.LODMultiplayerPartyScaleWrapped = true
+    local baseBuildCurrentLevel = RunManager.BuildCurrentLevel
+    function RunManager:BuildCurrentLevel(levelSeedOverride)
+        self.State.PlannedPartySize = self:_ConnectedPartyCountForBuild()
+        return baseBuildCurrentLevel(self, levelSeedOverride)
+    end
+end
+
+-- EncounterDirector previously read _ActiveCount() during planning, after that
+-- ledger had been cleared for the new level. Use the build snapshot instead.
+-- A player who joins after a level was already planned does not retroactively
+-- rewrite completed content; subsequent level builds include that connected player.
+if EncounterDirector and not EncounterDirector.LODMultiplayerPartyScaleInstalled then
+    EncounterDirector.LODMultiplayerPartyScaleInstalled = true
+    function EncounterDirector:_ThreatScale()
+        local EC = CC.Encounter
+        local level = RunManager.State and RunManager.State.Level or 1
+        local party = RunManager:GetPartySizeForScaling()
+        local partyScale = EC.PartyThreatMultiplier[party] or 1
+        local campaignScale = 1 + EC.CampaignThreatGrowthPerLevel * math.max(0, level - 1)
+        return partyScale * campaignScale
+    end
+end
 
 -- Every production gate interaction must come from a living active participant.
 -- Other progression interactions already enforce this contract. Developer-mode
@@ -187,18 +250,21 @@ concommand.Add("lod_multiplayer_contract_status", function(ply)
         and entityDamageHooks["LOD_MultiplayerFriendlyFireOwnedEntities"] ~= nil
     local gateArmed = Progression and Progression.LODMultiplayerGateContractInstalled == true
     local mapArmed = Minimap and Minimap.CanUse ~= nil and RunManager.LODMultiplayerMapPolicyWrapped == true
-    local passed = ffArmed and gateArmed and mapArmed and mapMismatch == 0
+    local scaleArmed = EncounterDirector and EncounterDirector.LODMultiplayerPartyScaleInstalled == true
+        and RunManager.LODMultiplayerPartyScaleWrapped == true
+    local plannedParty = math.Clamp(tonumber(state.PlannedPartySize) or 1, 1, CC.MaxActivePlayers or 4)
+    local passed = ffArmed and gateArmed and mapArmed and scaleArmed and mapMismatch == 0
 
     local line = string.format(
-        "level=%d livingActive=%d mapAllowed=%d mapMismatch=%d mapD1to20=%s friendlyFire=%s gateContract=%s ffBlocked=%d gateBlocked=%d result=%s",
-        currentLevel(), living, mapAllowed, mapMismatch, tostring(productionMapLevelAvailable()),
+        "level=%d livingActive=%d plannedParty=%d mapAllowed=%d mapMismatch=%d mapD1to20=%s friendlyFire=%s gateContract=%s partyScale=%s ffBlocked=%d gateBlocked=%d result=%s",
+        currentLevel(), living, plannedParty, mapAllowed, mapMismatch, tostring(productionMapLevelAvailable()),
         ffArmed and "OFF/ARMED" or "UNSAFE", gateArmed and "ARMED" or "MISSING",
-        Contracts.Stats.friendlyFireBlocked or 0, Contracts.Stats.invalidGateUsesBlocked or 0,
-        passed and "PASS" or "FAIL")
+        scaleArmed and "ARMED" or "MISSING", Contracts.Stats.friendlyFireBlocked or 0,
+        Contracts.Stats.invalidGateUsesBlocked or 0, passed and "PASS" or "FAIL")
     print("[LOD:MULTIPLAYER-CONTRACT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 
-    if state.Level and state.Level >= 21 and mapAllowed > 0 then
+    if state.Level and state.Level >= 21 and not developerMode() and mapAllowed > 0 then
         print("[LOD:MULTIPLAYER-CONTRACT] FAIL Dungeon 21+ exposed production map access")
     end
 end)
