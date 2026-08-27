@@ -22,6 +22,7 @@ local materialNames = {}
 local reconcileCursor = 1
 local reconcileModelsRef = nil
 local stablePasses = 0
+local reconcileComplete = false
 local appliedCount = 0
 
 local function clamp01(value)
@@ -128,12 +129,14 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
         reconcileModelsRef = models
         reconcileCursor = 1
         stablePasses = 0
+        reconcileComplete = false
         appliedCount = 0
     end
+    if reconcileComplete then return end
 
     -- Do not race initial ClientsideModel creation/retry. Once construction has
     -- finished, run bounded cyclic passes until two complete passes find nothing
-    -- left for the older appearance hook to overwrite.
+    -- left for the older appearance hook to overwrite, then become fully idle.
     if (Wall.nextModel or 1) <= total then return end
     if Wall.retryQueue and #Wall.retryQueue > 0 then return end
 
@@ -148,7 +151,10 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
                 stablePasses = stablePasses + 1
             end
             changedThisBatch = false
-            if stablePasses >= 2 then break end
+            if stablePasses >= 2 then
+                reconcileComplete = true
+                break
+            end
         end
 
         local index = reconcileCursor
@@ -189,8 +195,8 @@ concommand.Add("lod_container_recolor_status", function()
     table.sort(sections)
 
     print(string.format(
-        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f stablePasses=%d applied=%d sections={%s}",
+        "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d materials=%d blend=%.2f complete=%s stablePasses=%d applied=%d sections={%s}",
         #world, correct, wrong, table.Count(materialNames), COLOR_REPLACE_BLEND,
-        stablePasses, appliedCount, table.concat(sections, " ")
+        tostring(reconcileComplete), stablePasses, appliedCount, table.concat(sections, " ")
     ))
 end)
