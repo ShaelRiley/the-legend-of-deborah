@@ -8,8 +8,24 @@ local WallVisuals = LOD.WallVisuals
 
 if not RunManager or not ProgressionDirector then return end
 
+Sync.BuildSerial = Sync.BuildSerial or 0
+
 util.AddNetworkString("LOD_TopologyIdentity")
 util.AddNetworkString("LOD_WallVisualsRequest")
+
+-- Every build transaction gets a monotonically increasing identity, even if the
+-- caller deliberately regenerates the exact same seed. This matters during live
+-- development because presentation code can change while topology coordinates do
+-- not; a same-seed rebuild must still retire all client caches from the prior build.
+if not RunManager.LODTopologyBuildSerialWrapped then
+    RunManager.LODTopologyBuildSerialWrapped = true
+    local baseBuildCurrentLevel = RunManager.BuildCurrentLevel
+
+    function RunManager:BuildCurrentLevel(...)
+        Sync.BuildSerial = (Sync.BuildSerial or 0) + 1
+        return baseBuildCurrentLevel(self, ...)
+    end
+end
 
 local function topologyIdentity()
     local state = RunManager.State
@@ -17,6 +33,7 @@ local function topologyIdentity()
     if not state or not graph or not state.BuildReady then return nil end
 
     return {
+        buildSerial = math.max(0, tonumber(Sync.BuildSerial) or 0),
         epoch = math.max(0, tonumber(state.CampaignEpoch) or 0),
         level = math.max(1, tonumber(state.Level) or 1),
         seed = math.max(0, tonumber(graph.LevelSeed or state.LevelSeed) or 0),
@@ -31,6 +48,7 @@ function Sync:SendIdentity(ply)
     if not identity then return false end
 
     net.Start("LOD_TopologyIdentity")
+    net.WriteUInt(identity.buildSerial, 32)
     net.WriteUInt(identity.epoch, 32)
     net.WriteUInt(identity.level, 20)
     net.WriteUInt(identity.seed, 32)
@@ -88,9 +106,10 @@ concommand.Add("lod_topology_server_status", function(ply)
 
     local wallSeed = WallVisuals and WallVisuals.Payload and identity.seed or 0
     local line = string.format(
-        "epoch=%d level=%d topologySeed=%d layoutAttempt=%d mazeAttempt=%d wallManifest=%s wallSegments=%d",
-        identity.epoch, identity.level, identity.seed, identity.layoutAttempt,
-        identity.mazeAttempt, wallSeed == identity.seed and "READY" or "MISSING",
+        "build=%d epoch=%d level=%d topologySeed=%d layoutAttempt=%d mazeAttempt=%d wallManifest=%s wallSegments=%d",
+        identity.buildSerial, identity.epoch, identity.level, identity.seed,
+        identity.layoutAttempt, identity.mazeAttempt,
+        wallSeed == identity.seed and "READY" or "MISSING",
         WallVisuals and WallVisuals.LogicalCount or 0)
     print("[LOD:TOPOLOGY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
