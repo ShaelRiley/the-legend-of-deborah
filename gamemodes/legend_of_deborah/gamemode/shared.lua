@@ -15,6 +15,10 @@ LOD.Version = "0.2.0-dev"
 include("lod/sh_config.lua")
 include("lod/sh_rng.lua")
 
+if SERVER then
+    AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
+end
+
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
 -- CreateTeams explicitly so those sample teams never become part of Deborah.
 function GM:CreateTeams()
