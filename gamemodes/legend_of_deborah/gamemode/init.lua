@@ -23,6 +23,7 @@ AddCSLuaFile("lod/cl_minimap.lua")
 AddCSLuaFile("lod/cl_minimap_magic_quadrants.lua")
 AddCSLuaFile("lod/cl_minimap_reliability.lua")
 AddCSLuaFile("lod/cl_minimap_logical_cell.lua")
+AddCSLuaFile("lod/cl_minimap_player_contrast.lua")
 AddCSLuaFile("lod/cl_topology_sync_safety.lua")
 AddCSLuaFile("lod/cl_soldier_shot_contract.lua")
 AddCSLuaFile("lod/cl_player_weapon_specials.lua")
@@ -139,8 +140,10 @@ include("lod/sv_watcher_instance_dispatch.lua")
 -- revival, reconnect-safe Tetris windows, fixed death timing, and live diagnostics.
 include("lod/sv_multiplayer_hardening.lua")
 -- Short-term multiplayer play-contract gate: friendly fire, living progression
--- authority, and GDD-derived personal map availability for Dungeons 1-20.
+-- authority, GDD-derived personal map availability, and party-size scaling.
 include("lod/sv_multiplayer_contracts.lua")
+-- Join-in-progress transmission safety and per-player roster/resource diagnostics.
+include("lod/sv_multiplayer_join_safety.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
