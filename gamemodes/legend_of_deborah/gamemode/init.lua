@@ -144,6 +144,9 @@ include("lod/sv_multiplayer_hardening.lua")
 include("lod/sv_multiplayer_contracts.lua")
 -- Join-in-progress transmission safety and per-player roster/resource diagnostics.
 include("lod/sv_multiplayer_join_safety.lua")
+-- Per-identity deployment staging: sealed hut, individualized advanced starter,
+-- and portal transition into active dungeon participation.
+include("lod/sv_staging_deployment.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
