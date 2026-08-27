@@ -4,10 +4,9 @@ LOD.StagingDeployment = LOD.StagingDeployment or {}
 local Staging = LOD.StagingDeployment
 local RunManager = LOD.RunManager
 local Loot = LOD.LootDirector
-local MC = LOD.Config and LOD.Config.Maze
 local CC = LOD.Config
 
-if not RunManager or not MC or not CC then return end
+if not RunManager or not CC then return end
 
 local STARTER_SPECS = {
     weapon_shotgun = {label = "Shotgun", clip = 7, ammo = "Buckshot", model = "models/weapons/w_shotgun.mdl"},
@@ -16,23 +15,37 @@ local STARTER_SPECS = {
     weapon_ar2 = {label = "AR2", clip = 20, ammo = "AR2", model = "models/weapons/w_irifle.mdl"}
 }
 local STARTER_CLASSES = {"weapon_shotgun", "weapon_smg1", "weapon_357", "weapon_ar2"}
-local HUT_KIND = 6
-local HUT_HALF_X = 320
-local HUT_HALF_Y = 240
-local HUT_HEIGHT = 224
-local WALL = 24
-local FLOOR_THICKNESS = 32
-local HUT_OFFSET = Vector(-5400, -5400, 0)
+local SPAWN_CLASSES = {
+    "info_player_start",
+    "info_player_deathmatch",
+    "info_player_rebel",
+    "info_player_combine"
+}
+
+-- The native gm_flatgrass spawn hut supplies the visible room. These four hidden
+-- static collision strips merely make its staging lease absolute: a staged player
+-- cannot walk out of the room and into Flatgrass, even if the stock doorway is open.
+-- Portal use is therefore the sole transition into dungeon space.
+local BARRIER_KIND = 7
+local HUT_HALF_FORWARD = 210
+local HUT_HALF_RIGHT = 170
+local BARRIER_THICKNESS = 12
+local BARRIER_HEIGHT = 224
+local GUIDE_FORWARD = 105
+local STARTER_FORWARD = 42
+local PORTAL_BACK = 105
 
 Staging.HutEntities = Staging.HutEntities or {}
 Staging.StarterEntities = Staging.StarterEntities or {}
 Staging.HutCenter = Staging.HutCenter or nil
+Staging.HutAngles = Staging.HutAngles or angle_zero
 Staging.Stats = Staging.Stats or {
     staged = 0,
     starterClaims = 0,
     deployments = 0,
     portalDenied = 0,
-    duplicateStarterPrevented = 0
+    duplicateStarterPrevented = 0,
+    anchorFallbacks = 0
 }
 
 local function identityOf(ply)
@@ -53,14 +66,59 @@ local function removeEntity(ent)
     if IsValid(ent) then ent:Remove() end
 end
 
-local function spawnStaticBox(pos, mins, maxs)
+local function sortedSpawnEntities()
+    local out = {}
+    for classIndex, className in ipairs(SPAWN_CLASSES) do
+        for _, ent in ipairs(ents.FindByClass(className)) do
+            if IsValid(ent) then
+                out[#out + 1] = {ent = ent, classIndex = classIndex}
+            end
+        end
+    end
+    table.sort(out, function(a, b)
+        if a.classIndex ~= b.classIndex then return a.classIndex < b.classIndex end
+        local ap, bp = a.ent:GetPos(), b.ent:GetPos()
+        if ap.z ~= bp.z then return ap.z < bp.z end
+        if ap.x ~= bp.x then return ap.x < bp.x end
+        if ap.y ~= bp.y then return ap.y < bp.y end
+        return a.ent:EntIndex() < b.ent:EntIndex()
+    end)
+    return out
+end
+
+function Staging:_ResolveNativeHutAnchor()
+    local candidates = sortedSpawnEntities()
+    if #candidates > 0 then
+        local chosen = candidates[1].ent
+        local pos = chosen:GetPos()
+        local ang = chosen:GetAngles()
+        -- Only yaw matters for arranging the tiny room presentation.
+        ang = Angle(0, ang.y, 0)
+        return Vector(pos.x, pos.y, pos.z), ang, chosen:GetClass()
+    end
+
+    -- gm_flatgrass should always expose a player start. Preserve a deterministic
+    -- fail-safe so a source-map quirk cannot make the campaign unstartable.
+    self.Stats.anchorFallbacks = (self.Stats.anchorFallbacks or 0) + 1
+    return Vector(0, 0, 16), Angle(0, 0, 0), "fallback-origin"
+end
+
+local function localOffset(center, angles, forward, right, up)
+    local yaw = Angle(0, angles.y, 0)
+    return center
+        + yaw:Forward() * (forward or 0)
+        + yaw:Right() * (right or 0)
+        + Vector(0, 0, up or 0)
+end
+
+local function spawnBarrier(pos, angles, mins, maxs)
     local ent = ents.Create("lod_static_box")
     if not IsValid(ent) then return nil end
     ent:SetPos(pos)
-    ent:SetAngles(angle_zero)
+    ent:SetAngles(angles)
     ent:SetBoxMins(mins)
     ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(HUT_KIND)
+    ent:SetBoxKind(BARRIER_KIND)
     ent:Spawn()
     ent:Activate()
     if ent.IsLODCollisionReady and not ent:IsLODCollisionReady() then
@@ -80,9 +138,11 @@ function RunManager:IsDungeonPlayer(ply)
     return Staging:IsDeployed(ply)
 end
 
--- From this point forward IsActivePlayer means an identity that both owns one of
--- the four campaign slots and has actually crossed the staging portal. Keep the
--- raw slot predicate separately for admission/reconnect internals.
+-- RunManager continues to own the four-slot ledger. For gameplay consumers,
+-- IsActivePlayer now means slot-reserved AND actually deployed. This automatically
+-- keeps staged identities out of hostile targeting, progression, map use, Magic
+-- combat, enemy-drop rolls, and ordinary dungeon interaction without introducing
+-- parallel copies of those systems.
 if not RunManager.LODStagingActiveSemanticsInstalled then
     RunManager.LODStagingActiveSemanticsInstalled = true
     local baseIsActivePlayer = RunManager.IsActivePlayer
@@ -112,14 +172,19 @@ function Staging:_AssignStarter(ps)
     for identity, enabled in pairs(state.ActiveIdentity or {}) do
         if enabled and identity ~= ps.identity then
             local other = state.PlayerState and state.PlayerState[identity]
-            if other and starterSpec(other.starterWeaponClass) then reserved[other.starterWeaponClass] = true end
+            if other and starterSpec(other.starterWeaponClass) then
+                reserved[other.starterWeaponClass] = true
+            end
         end
     end
 
     local order = buildStarterOrder(state.CampaignSeed or 1, ps.identity, ps.ordinal)
     local chosen
     for _, weaponClass in ipairs(order) do
-        if not reserved[weaponClass] then chosen = weaponClass break end
+        if not reserved[weaponClass] then
+            chosen = weaponClass
+            break
+        end
     end
     chosen = chosen or order[((math.max(1, tonumber(ps.ordinal) or 1) - 1) % #order) + 1]
     ps.starterWeaponClass = chosen
@@ -159,10 +224,10 @@ if not RunManager.LODStagingAdmissionWrapped then
     end
 end
 
--- Supersede the old Level-1/2/3 catch-up loadout. Every newly admitted identity
--- starts with only the universal Pistol + Crowbar baseline; the individualized
--- advanced firearm is a physical staging-room pickup. Later-campaign catch-up can
--- be tuned independently after multiplayer lifecycle validation.
+-- The old JIP loadout is superseded. Every newly admitted cooperative identity
+-- starts with the same universal Pistol + Crowbar baseline; its advanced firearm
+-- is a physical, identity-instanced staging-room pickup. Deeper-level catch-up can
+-- be retuned after the multiplayer lifecycle itself has been validated.
 local function giveLoaded(ply, className, clip)
     local weapon = ply:Give(className, true)
     if IsValid(weapon) and clip and clip >= 0 then weapon:SetClip1(clip) end
@@ -184,72 +249,65 @@ function GM:PlayerLoadout(ply)
     if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
 end
 
-function Staging:_BaseZ()
-    local report = RunManager.State and RunManager.State.BuildReport
-    if report and report.startPos then return report.startPos.z - 12 end
-    return MC.Origin.z
-end
-
-function Staging:_DesiredHutCenter()
-    local base = MC.Origin + HUT_OFFSET
-    base.z = self:_BaseZ()
-    return base
-end
-
-function Staging:_HutValid()
-    if not self.HutCenter then return false end
-    local valid = 0
-    for _, ent in ipairs(self.HutEntities or {}) do if IsValid(ent) then valid = valid + 1 end end
-    return valid >= 7 and IsValid(self.GuideEntity) and IsValid(self.PortalEntity)
-end
-
 function Staging:_RegisterHut(ent)
     if IsValid(ent) then self.HutEntities[#self.HutEntities + 1] = ent end
     return ent
 end
 
+function Staging:_HutValid()
+    if not self.HutCenter then return false end
+    local barriers = 0
+    for _, ent in ipairs(self.HutEntities or {}) do
+        if IsValid(ent) and ent:GetClass() == "lod_static_box" then barriers = barriers + 1 end
+    end
+    return barriers >= 4 and IsValid(self.GuideEntity) and IsValid(self.PortalEntity)
+end
+
 function Staging:EnsureHut()
-    local desired = self:_DesiredHutCenter()
-    if self:_HutValid() and self.HutCenter:DistToSqr(desired) < 4 then return true end
+    local center, angles, anchorSource = self:_ResolveNativeHutAnchor()
+    if self:_HutValid()
+        and self.HutCenter:DistToSqr(center) < 4
+        and math.abs(math.AngleDifference(self.HutAngles.y, angles.y)) < 0.1
+    then
+        return true
+    end
 
     for _, ent in ipairs(self.HutEntities or {}) do removeEntity(ent) end
     self.HutEntities = {}
     self.GuideEntity = nil
     self.PortalEntity = nil
-    self.HutCenter = desired
+    self.HutCenter = center
+    self.HutAngles = angles
+    self.HutAnchorSource = anchorSource
 
-    local c = desired
-    local floorCenter = c + Vector(0, 0, -FLOOR_THICKNESS * 0.5)
-    local ceilingCenter = c + Vector(0, 0, HUT_HEIGHT + FLOOR_THICKNESS * 0.5)
-    self:_RegisterHut(spawnStaticBox(floorCenter,
-        Vector(-HUT_HALF_X, -HUT_HALF_Y, -FLOOR_THICKNESS * 0.5),
-        Vector(HUT_HALF_X, HUT_HALF_Y, FLOOR_THICKNESS * 0.5)))
-    self:_RegisterHut(spawnStaticBox(ceilingCenter,
-        Vector(-HUT_HALF_X, -HUT_HALF_Y, -FLOOR_THICKNESS * 0.5),
-        Vector(HUT_HALF_X, HUT_HALF_Y, FLOOR_THICKNESS * 0.5)))
+    local halfF, halfR = HUT_HALF_FORWARD, HUT_HALF_RIGHT
+    local thick, height = BARRIER_THICKNESS, BARRIER_HEIGHT
 
-    self:_RegisterHut(spawnStaticBox(c + Vector(HUT_HALF_X + WALL * 0.5, 0, HUT_HEIGHT * 0.5),
-        Vector(-WALL * 0.5, -HUT_HALF_Y, -HUT_HEIGHT * 0.5),
-        Vector(WALL * 0.5, HUT_HALF_Y, HUT_HEIGHT * 0.5)))
-    self:_RegisterHut(spawnStaticBox(c + Vector(0, HUT_HALF_Y + WALL * 0.5, HUT_HEIGHT * 0.5),
-        Vector(-HUT_HALF_X, -WALL * 0.5, -HUT_HEIGHT * 0.5),
-        Vector(HUT_HALF_X, WALL * 0.5, HUT_HEIGHT * 0.5)))
-    self:_RegisterHut(spawnStaticBox(c + Vector(0, -HUT_HALF_Y - WALL * 0.5, HUT_HEIGHT * 0.5),
-        Vector(-HUT_HALF_X, -WALL * 0.5, -HUT_HEIGHT * 0.5),
-        Vector(HUT_HALF_X, WALL * 0.5, HUT_HEIGHT * 0.5)))
-
-    -- The portal is the only exit. The front wall is physically continuous, so
-    -- walking past the portal cannot leak a staged player into Flatgrass.
-    self:_RegisterHut(spawnStaticBox(c + Vector(-HUT_HALF_X - WALL * 0.5, 0, HUT_HEIGHT * 0.5),
-        Vector(-WALL * 0.5, -HUT_HALF_Y, -HUT_HEIGHT * 0.5),
-        Vector(WALL * 0.5, HUT_HALF_Y, HUT_HEIGHT * 0.5)))
+    -- Four invisible collision strips form a deterministic staging lease inside
+    -- the map's existing hut. They are intentionally not rendered client-side.
+    self:_RegisterHut(spawnBarrier(
+        localOffset(center, angles, halfF + thick * 0.5, 0, height * 0.5), angles,
+        Vector(-thick * 0.5, -halfR, -height * 0.5),
+        Vector(thick * 0.5, halfR, height * 0.5)))
+    self:_RegisterHut(spawnBarrier(
+        localOffset(center, angles, -halfF - thick * 0.5, 0, height * 0.5), angles,
+        Vector(-thick * 0.5, -halfR, -height * 0.5),
+        Vector(thick * 0.5, halfR, height * 0.5)))
+    self:_RegisterHut(spawnBarrier(
+        localOffset(center, angles, 0, halfR + thick * 0.5, height * 0.5), angles,
+        Vector(-halfF, -thick * 0.5, -height * 0.5),
+        Vector(halfF, thick * 0.5, height * 0.5)))
+    self:_RegisterHut(spawnBarrier(
+        localOffset(center, angles, 0, -halfR - thick * 0.5, height * 0.5), angles,
+        Vector(-halfF, -thick * 0.5, -height * 0.5),
+        Vector(halfF, thick * 0.5, height * 0.5)))
 
     local guide = ents.Create("lod_staging_prop")
     if IsValid(guide) then
         guide:SetStageKind(guide.KIND_GUIDE or 1)
         guide:SetStageLabel("DUNGEON HERMIT")
-        guide:SetPos(c + Vector(190, 0, 0))
-        guide:SetAngles(Angle(0, 180, 0))
+        guide:SetPos(localOffset(center, angles, GUIDE_FORWARD, 0, 0))
+        guide:SetAngles(Angle(0, angles.y + 180, 0))
         guide:Spawn()
         guide:Activate()
         self.GuideEntity = self:_RegisterHut(guide)
@@ -258,25 +316,30 @@ function Staging:EnsureHut()
     local portal = ents.Create("lod_staging_prop")
     if IsValid(portal) then
         portal:SetStageKind(portal.KIND_PORTAL or 2)
-        portal:SetStageLabel("ENTER THE DUNGEON")
-        portal:SetPos(c + Vector(-250, 0, 0))
-        portal:SetAngles(angle_zero)
+        portal:SetStageLabel("PRESS E — ENTER THE DUNGEON")
+        portal:SetPos(localOffset(center, angles, -PORTAL_BACK, 0, 0))
+        portal:SetAngles(angles)
         portal:Spawn()
         portal:Activate()
         self.PortalEntity = self:_RegisterHut(portal)
     end
 
+    print(string.format(
+        "[LOD:STAGING] native hut anchor=%s pos=(%.1f %.1f %.1f) yaw=%.1f",
+        tostring(anchorSource), center.x, center.y, center.z, angles.y))
     return self:_HutValid()
 end
 
 function Staging:_StarterPosition()
-    local c = self.HutCenter or self:_DesiredHutCenter()
-    return c + Vector(40, 0, 20)
+    return localOffset(self.HutCenter, self.HutAngles, STARTER_FORWARD, 0, 20)
 end
 
 function Staging:_SpawnPosition()
-    local c = self.HutCenter or self:_DesiredHutCenter()
-    return c + Vector(-120, 0, 12)
+    return localOffset(self.HutCenter, self.HutAngles, -35, 0, 8)
+end
+
+function Staging:_FacingAngles()
+    return Angle(0, self.HutAngles.y, 0)
 end
 
 function Staging:_ApplyStarterTransmission(ent, ownerIdentity)
@@ -291,6 +354,7 @@ function Staging:EnsureStarterPickup(ply)
     local identity = identityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
     if not identity or not ps or ps.deploymentComplete or ps.starterClaimed then return false end
+    if not self:EnsureHut() then return false end
 
     local weaponClass = self:_AssignStarter(ps)
     local spec = starterSpec(weaponClass)
@@ -305,12 +369,12 @@ function Staging:EnsureStarterPickup(ply)
     local ent = ents.Create("lod_staging_prop")
     if not IsValid(ent) then return false end
     ent:SetStageKind(ent.KIND_WEAPON or 3)
-    ent:SetStageLabel(spec.label)
+    ent:SetStageLabel("TAKE THIS — " .. spec.label)
     ent.LODStageModel = spec.model
     ent.LODStagingOwnerIdentity = identity
     ent.LODStagingWeaponClass = weaponClass
     ent:SetPos(self:_StarterPosition())
-    ent:SetAngles(Angle(0, 90, 0))
+    ent:SetAngles(Angle(0, self.HutAngles.y + 90, 0))
     ent:Spawn()
     ent:Activate()
     self.StarterEntities[identity] = ent
@@ -327,7 +391,7 @@ function Staging:PlacePlayerInHut(ply, announce)
     self:_AssignStarter(ps)
     self:_ClearLegacyCatchup(ps)
     ply:SetPos(self:_SpawnPosition())
-    ply:SetEyeAngles(Angle(0, 0, 0))
+    ply:SetEyeAngles(self:_FacingAngles())
     ply:SetLocalVelocity(vector_origin)
     ply:SetNW2Bool("LOD_Staged", true)
     ply:SetNW2Bool("LOD_Deployed", false)
@@ -433,9 +497,9 @@ if not RunManager.LODStagingApplyWrapped then
     end
 end
 
--- The starter room replaces the former two guaranteed Level-1 firearm nodes.
--- Weapon discoveries beyond the individualized starter return to the ordinary
--- per-player rare/reward economy.
+-- The hut starter replaces the former two guaranteed Level-1 keycard-pocket
+-- firearm nodes. Further firearm discoveries remain in the ordinary individualized
+-- reward/drop economy instead of being front-loaded as mandatory grants.
 if Loot and not Loot.LODStagingStarterPlanInstalled then
     Loot.LODStagingStarterPlanInstalled = true
     local baseBuildStaticPlan = Loot.BuildStaticPlan
@@ -534,15 +598,17 @@ concommand.Add("lod_staging_status", function(ply)
             end
         end
     end
-    for _, ent in pairs(Staging.StarterEntities or {}) do if IsValid(ent) then pickups = pickups + 1 end end
+    for _, ent in pairs(Staging.StarterEntities or {}) do
+        if IsValid(ent) then pickups = pickups + 1 end
+    end
 
     local hutReady = Staging:_HutValid()
     local result = hutReady and duplicateActiveStarter == 0 and "PASS" or "FAIL"
     local line = string.format(
-        "slotActive=%d staged=%d deployed=%d claimed=%d pickups=%d hut=%s uniqueStarterConflicts=%d deployments=%d denied=%d result=%s",
+        "slotActive=%d staged=%d deployed=%d claimed=%d pickups=%d hut=%s anchor=%s uniqueStarterConflicts=%d deployments=%d denied=%d result=%s",
         RunManager._ActiveCount and RunManager:_ActiveCount() or 0, staged, deployed, claims, pickups,
-        tostring(hutReady), duplicateActiveStarter, Staging.Stats.deployments or 0,
-        Staging.Stats.portalDenied or 0, result)
+        tostring(hutReady), tostring(Staging.HutAnchorSource or "none"), duplicateActiveStarter,
+        Staging.Stats.deployments or 0, Staging.Stats.portalDenied or 0, result)
     print("[LOD:STAGING] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 
