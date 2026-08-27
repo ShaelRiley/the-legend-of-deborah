@@ -19,12 +19,17 @@ function ENT:Think()
     local radiusSqr = PC.KeycardTriggerRadius * PC.KeycardTriggerRadius
 
     for _, ply in ipairs(player.GetAll()) do
-        if IsValid(ply) and ply:Alive() and LOD.RunManager:IsActivePlayer(ply) and
-            ply:GetPos():DistToSqr(self:GetPos()) <= radiusSqr then
-            local pickupPos = self:GetPos()
-            if LOD.ProgressionDirector:CollectJailKey(ply, self) then
-                sound.Play("items/itempickup.wav", pickupPos, 75, 82, 1)
-                return
+        if IsValid(ply) and ply:Alive() and LOD.RunManager:IsActivePlayer(ply) then
+            -- Match colored-keycard semantics: touching the objective with any
+            -- part of the player hull is enough. Player-origin distance made
+            -- floating objective pickups unnecessarily finicky.
+            local nearest = ply:NearestPoint(self:GetPos())
+            if nearest:DistToSqr(self:GetPos()) <= radiusSqr then
+                local pickupPos = self:GetPos()
+                if LOD.ProgressionDirector:CollectJailKey(ply, self) then
+                    sound.Play("items/itempickup.wav", pickupPos, 75, 82, 1)
+                    return
+                end
             end
         end
     end
