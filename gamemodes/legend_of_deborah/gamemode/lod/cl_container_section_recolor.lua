@@ -6,21 +6,21 @@ if not Wall then return end
 -- Shader-native section recoloring for the existing Northern Petrol cargo model.
 --
 -- The stock diffuse is strongly red, so ordinary SetColor multiplication cannot
--- produce clean teal/green/violet sections. Source's VertexLitGeneric paint path
--- solves that while preserving the exact model, UVs, diffuse artwork, grime and
--- normal map. The stock cargo_container01 VTF is an 8-bit-alpha texture; enabling
--- $blendtintbybasealpha makes its diffuse alpha the paintability mask (black = keep
--- original albedo, white = tintable). This lets the authored NP/Northern Petrol
--- branding remain at its original color wherever Valve's alpha mask excludes it,
--- while the container's paintable steel receives the procedural section hue.
+-- produce clean teal/green/violet sections. Source's VertexLitGeneric color-
+-- replacement path solves that while preserving the exact model, UVs, diffuse
+-- artwork, grime and normal map. We tested the stock diffuse alpha as a paint mask,
+-- but runtime evidence showed that Valve's alpha authoring does not isolate the NP
+-- logo and makes broad steel areas visually too flat. Production therefore tints
+-- the full stock albedo again; a separate lightweight logo-restoration pass redraws
+-- the untinted NP identity on unmarked containers at close/medium corridor range.
 local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
 local COLOR_REPLACE_BLEND = 0.84
 local MIN_SECTION_SATURATION = 0.86
 local MIN_SECTION_VALUE = 0.82
 local RECONCILE_BATCH_SIZE = 192
-local USE_BASE_ALPHA_TINT_MASK = true
-local MATERIAL_VERSION = "v3_masked"
+local USE_BASE_ALPHA_TINT_MASK = false
+local MATERIAL_VERSION = "v4_textured_logo_restore"
 
 local materialNames = {}
 local reconcileCursor = 1
@@ -41,11 +41,9 @@ local function colorKey(c)
 end
 
 local function vividSectionColor(c)
-    -- The authored palette intentionally avoids gate red/blue/yellow, but the dark
-    -- midnight environment and weathered NP albedo can mute those hues too much.
-    -- Preserve the exact hue while enforcing a modest saturation/value floor before
-    -- the color reaches the replacement shader. This improves corridor readability
-    -- without flattening the original texture or turning the containers neon.
+    -- Preserve the authored hue while enforcing saturation/value floors before it
+    -- reaches the replacement shader. This keeps A/B/C/D readable under Deborah's
+    -- midnight lighting without turning the weathered containers into flat neon.
     local h, s, v = ColorToHSV(Color(c.r or 255, c.g or 255, c.b or 255))
     s = math.Clamp(math.max(s, MIN_SECTION_SATURATION), 0, 1)
     v = math.Clamp(math.max(v, MIN_SECTION_VALUE), 0, 1)
@@ -63,11 +61,12 @@ local function sectionMaterialName(c)
     local b = clamp01((vivid.b or 0) / 255)
     local name = "lod_np_section_" .. MATERIAL_VERSION .. "_" .. key
 
-    -- $blendtintcoloroverbase interpolates between multiplicative tint and color
-    -- replacement. $blendtintbybasealpha restricts that operation to the stock
-    -- diffuse's paintable alpha regions. Source paint-mask convention is black =
-    -- original/unpaintable and white = paintable, so authored logo pixels can keep
-    -- their original NP coloration while the surrounding steel changes section hue.
+    -- $blendtintcoloroverbase interpolates between ordinary multiplicative tint and
+    -- replacing the base hue. The full-albedo path intentionally leaves base-alpha
+    -- masking disabled because the stock cargo texture was not authored with a
+    -- useful NP-specific paint mask. The untouched bump map and surviving 16% base
+    -- contribution retain the rust, grime, panel variation and corrugation that the
+    -- masked experiment visibly lost.
     CreateMaterial(name, "VertexLitGeneric", {
         ["$basetexture"] = NP_BASE_TEXTURE,
         ["$bumpmap"] = NP_NORMAL_TEXTURE,
@@ -84,9 +83,7 @@ local function sectionMaterialName(c)
 end
 
 local function complementaryColor(c)
-    -- Derive signage from the same vivid body hue actually sent to the shader, so
-    -- the plywood stencil remains a true 180-degree complement of what the player
-    -- reads on the container rather than of the dimmer source palette swatch.
+    -- Derive signage from the same vivid body hue actually sent to the shader.
     local vivid = vividSectionColor(c)
     local h, s, v = ColorToHSV(vivid)
     h = (h + 180) % 360
@@ -110,8 +107,7 @@ local function reconcileModel(index, model, instance)
     -- The older presentation hook still owns sparse mark selection and runs its
     -- one-time batching pass. It may briefly restore the stock material and apply
     -- SetColor while that batch is in flight. Reconciliation intentionally runs
-    -- alongside it until every model settles on this shader material, avoiding any
-    -- coupling to its local state or changing the successful 1-in-6 marking logic.
+    -- alongside it until every model settles on this shader material.
     local changed = false
     if model:GetMaterial() ~= wanted then
         model:SetMaterial(wanted)
@@ -124,9 +120,6 @@ local function reconcileModel(index, model, instance)
         changed = true
     end
 
-    -- Preserve the original red NP skin/model identity. The material itself still
-    -- references the stock NP diffuse/normal textures; only shader tint behavior
-    -- changes, and the diffuse alpha decides which pixels participate in tinting.
     model:SetSkin(0)
 
     local vivid = vividSectionColor(section)
