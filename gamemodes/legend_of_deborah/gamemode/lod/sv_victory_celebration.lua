@@ -70,9 +70,12 @@ local function spawnBalloon(center, index)
     if IsValid(phys) then
         phys:Wake()
         phys:SetMass(1)
+        -- Gravity would make a balloon prop drop like a heavy object. Instead use
+        -- a gentle persistent downward drift from the chamber ceiling so the real
+        -- physics models visibly descend throughout the short victory tableau.
         phys:EnableGravity(false)
-        phys:SetDamping(0.7, 1.6)
-        phys:SetVelocity(Vector(math.Rand(-22, 22), math.Rand(-22, 22), math.Rand(-32, -18)))
+        phys:SetDamping(0.12, 1.6)
+        phys:SetVelocity(Vector(math.Rand(-22, 22), math.Rand(-22, 22), math.Rand(-38, -26)))
         phys:AddAngleVelocity(Vector(math.Rand(-15, 15), math.Rand(-15, 15), math.Rand(-15, 15)))
     end
 
