@@ -53,6 +53,9 @@ include("lod/sv_faction_manager.lua")
 include("lod/sv_m3_enemy_config.lua")
 include("lod/sv_combat_rolls.lua")
 include("lod/sv_enemy_melee_dice_balance.lua")
+-- Event-only server/client snapshot for any hostile-caused player damage. This
+-- closes the old melee-audit blind spot for Seeker/Soldier/special damage and
+-- performs no recurring work while combat is idle.
 include("lod/sv_hostile_damage_audit.lua")
 include("lod/sv_dice_ammo.lua")
 include("lod/sv_player_weapon_specials.lua")
@@ -126,17 +129,26 @@ include("lod/sv_soldier_shot_contract.lua")
 -- Always load the unified Watcher module synchronously from this gamemode file.
 -- This registers its diagnostics while relative include resolution is valid.
 include("lod/sv_watcher_unified.lua")
+-- Explicit per-instance transition guarantee: scan completion must always leave
+-- the stationary attack state and seed the unified retreat/concealment routine.
 include("lod/sv_watcher_scan_escape_handoff.lua")
+-- Direct instance dispatch happens at RunBehaviour, so unrelated archetypes retain
+-- their native _BehaviourTick/helper method chain.
 include("lod/sv_watcher_instance_dispatch.lua")
 
--- Multiplayer lifecycle and play-contract layers.
+-- Cross-system identity lifecycle invariants used by real multiplayer: slot-safe
+-- revival, reconnect-safe Tetris windows, fixed death timing, and live diagnostics.
 include("lod/sv_multiplayer_hardening.lua")
+-- Short-term multiplayer play-contract gate: friendly fire, living progression
+-- authority, GDD-derived personal map availability, and party-size scaling.
 include("lod/sv_multiplayer_contracts.lua")
+-- Join-in-progress transmission safety and per-player roster/resource diagnostics.
 include("lod/sv_multiplayer_join_safety.lua")
--- Native Flatgrass-hut staging: identity-instanced advanced starter, staged vs.
--- deployed authority, portal transition, and zero-deployed simulation hold.
+-- Per-identity deployment staging. The base staging module owns identity/portal
+-- semantics; the native-room resolver loaded immediately after it anchors those
+-- entities inside gm_flatgrass world geometry without freezing player movement.
 include("lod/sv_staging_deployment.lua")
-include("lod/sv_staging_simulation_hold.lua")
+include("lod/sv_staging_native_room_hotfix.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
