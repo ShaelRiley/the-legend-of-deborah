@@ -149,6 +149,10 @@ include("lod/sv_multiplayer_join_safety.lua")
 -- entities inside gm_flatgrass world geometry without freezing player movement.
 include("lod/sv_staging_deployment.lua")
 include("lod/sv_staging_native_room_hotfix.lua")
+-- The visible animated vortex is taller than Source's stock teleplatform Use box.
+-- This normal gamemode authority maps the same shared portal volume to +use without
+-- patching entity classes or touching maze/startup order.
+include("lod/sv_staging_portal_interaction.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
