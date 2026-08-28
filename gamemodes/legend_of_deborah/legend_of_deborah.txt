@@ -5,4 +5,5 @@
     "category"      "pve"
     "maps"          "^gm_flatgrass$"
     "menusystem"    "1"
+    "workshopid"    "3791535712"
 }
