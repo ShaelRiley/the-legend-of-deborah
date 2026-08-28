@@ -39,18 +39,6 @@ local function weightedPick(rng, entries)
     return entries[#entries] and entries[#entries].value or nil
 end
 
-local function sameCell(a, b)
-    return a and b and a.x == b.x and a.y == b.y and a.z == b.z
-end
-
-local function chooseDistinctTwo(rng)
-    local pool = table.Copy(FIREARMS)
-    local firstIndex = rng:Int(1, #pool)
-    local first = table.remove(pool, firstIndex)
-    local second = pool[rng:Int(1, #pool)]
-    return first, second
-end
-
 if Loot and not Loot.LODEqualFirearmAvailabilityInstalled then
     Loot.LODEqualFirearmAvailabilityInstalled = true
 
@@ -99,38 +87,17 @@ if Loot and not Loot.LODEqualFirearmAvailabilityInstalled then
         return weightedPick(rng, choices)
     end
 
-    -- Preserve two guaranteed early firearm upgrades, but remove the old
-    -- Shotgun/SMG privilege. Dungeon 1 deterministically chooses two distinct
-    -- guns from the full four-gun pool with equal probability.
+    -- The staging-room starter replaced the historical two guaranteed Level-1
+    -- firearm nodes. Static weapon rewards that still occur elsewhere treat all
+    -- four peer firearms equally; grenade remains a separate consumable reward.
     local baseBuildStaticPlan = Loot.BuildStaticPlan
     function Loot:BuildStaticPlan(graph)
         local ok, plan = baseBuildStaticPlan(self, graph)
         if not ok then return ok, plan end
 
-        local level = math.max(1, tonumber(plan.level) or 1)
-        local levelSeed = plan.levelSeed or (LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed) or 1
-
-        if level == 1 and graph and graph.Progression then
-            local rng = LOD.RNG.New(LOD.Seeds.Derive(levelSeed, "loot-level1-equal-firearms"))
-            local first, second = chooseDistinctTwo(rng)
-            local cards = graph.Progression.Keycards or {}
-
-            for _, node in ipairs(plan.nodes or {}) do
-                if node.kind == "weapon" and node.payload then
-                    if cards[1] and sameCell(node.cell, cards[1].cell) then
-                        node.payload.weaponClass = first
-                        node.equalFirearmGuarantee = 1
-                    elseif cards[2] and sameCell(node.cell, cards[2].cell) then
-                        node.payload.weaponClass = second
-                        node.equalFirearmGuarantee = 2
-                    end
-                end
-            end
-        end
-
-        -- The optional static reward also treats every gun equally. Grenades are
-        -- still a separate consumable reward and therefore retain their own lower
-        -- weight rather than joining the four-gun equality contract.
+        local levelSeed = plan.levelSeed
+            or (LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed)
+            or 1
         local rewardRng = LOD.RNG.New(LOD.Seeds.Derive(levelSeed, "loot-static-equal-firearm-reward"))
         local choices = {}
         for weaponClass, weight in pairs(STATIC_REWARD_WEIGHTS) do
