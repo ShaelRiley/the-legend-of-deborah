@@ -13,8 +13,10 @@ if [[ -z "$SERVICE_HOME" ]]; then
     exit 1
 fi
 
-if [[ ! -x "$RUN_SCRIPT" ]]; then
-    echo "Server launch script not found or not executable: $RUN_SCRIPT" >&2
+# ExecStart invokes the launcher explicitly through /bin/bash, so the launcher
+# only needs to exist as a regular file; it does not need its executable bit set.
+if [[ ! -f "$RUN_SCRIPT" ]]; then
+    echo "Server launch script not found: $RUN_SCRIPT" >&2
     exit 1
 fi
 
