@@ -224,7 +224,10 @@ function Staging:EnsureHut()
     self.HutGuideDistance = placement
     self.HutPortalDistance = placement
     self.HutStarterDistance = math.Clamp(room.halfForward * 0.12, 16, 30)
-    self.HutSpawnBack = math.Clamp(room.halfForward * 0.18, 22, 40)
+    -- Keep the opening spawn near room center rather than inside the portal's
+    -- visible/usable volume. The player still faces the Hermit and starter; the
+    -- portal prompt now appears only after backing up or deliberately turning.
+    self.HutSpawnBack = math.Clamp(room.halfForward * 0.045, 8, 14)
 
     local guide = ents.Create("lod_staging_prop")
     if IsValid(guide) then
@@ -263,7 +266,7 @@ function Staging:_StarterPosition()
 end
 
 function Staging:_SpawnPosition()
-    return localOffset(self.HutCenter, self.HutAngles, -(self.HutSpawnBack or 32), 0, 2)
+    return localOffset(self.HutCenter, self.HutAngles, -(self.HutSpawnBack or 12), 0, 2)
 end
 
 function Staging:_FacingAngles()
