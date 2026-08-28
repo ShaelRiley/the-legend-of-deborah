@@ -16,6 +16,7 @@ include("lod/sh_config.lua")
 include("lod/sh_rng.lua")
 
 if SERVER then
+    include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
     AddCSLuaFile("lod/cl_container_marking_panel.lua")
