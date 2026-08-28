@@ -76,6 +76,24 @@ local function aimedAtStaging(ply, className, kind, maxDist, minDot)
     return best
 end
 
+local function aimedAtPortalVolume(ply)
+    if not IsValid(ply) then return nil end
+    local best, bestFraction
+
+    for _, ent in ipairs(ents.FindByClass("lod_staging_prop")) do
+        if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == 2
+            and ent.PortalAimFraction
+        then
+            local fraction = ent:PortalAimFraction(ply, ent.PORTAL_USE_DISTANCE or 340)
+            if fraction and (not bestFraction or fraction < bestFraction) then
+                best, bestFraction = ent, fraction
+            end
+        end
+    end
+
+    return best
+end
+
 local function installBoundStagingPrompts()
     hook.Add("HUDPaint", "LOD_FieldManualAndPortalPrompts", function()
         local manual = LOD and LOD.FieldManual
@@ -88,7 +106,7 @@ local function installBoundStagingPrompts()
         local text
         if IsValid(aimedAtStaging(ply, "lod_field_manual", nil, 260, 0.94)) then
             text = string.format("Press \"%s\" to Read", key)
-        elseif IsValid(aimedAtStaging(ply, "lod_staging_prop", 2, 320, 0.92)) then
+        elseif IsValid(aimedAtPortalVolume(ply)) then
             text = string.format("Press \"%s\" to Enter the Labyrinth", key)
         end
 
