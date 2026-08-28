@@ -22,6 +22,14 @@ if CLIENT then
         extended = false
     })
 
+    surface.CreateFont("LOD_StagingInteractionPrompt", {
+        font = "DejaVu Sans",
+        size = 38,
+        weight = 1000,
+        antialias = true,
+        extended = true
+    })
+
     local STENCIL_BRIDGE_CHARS = {
         A = true, B = true, D = true, O = true, P = true, R = true,
         ["0"] = true, ["6"] = true, ["8"] = true, ["9"] = true
@@ -48,8 +56,7 @@ if CLIENT then
         surface.DrawRect(-width * 0.5, -height * 0.5, 5, height)
         surface.DrawRect(width * 0.5 - 5, -height * 0.5, 5, height)
 
-        local bolt = 11
-        local inset = 22
+        local bolt, inset = 11, 22
         for _, x in ipairs({-width * 0.5 + inset, width * 0.5 - inset - bolt}) do
             for _, y in ipairs({-height * 0.5 + inset, height * 0.5 - inset - bolt}) do
                 surface.DrawRect(x, y, bolt, bolt)
@@ -89,40 +96,17 @@ if CLIENT then
             endpos = origin - normal * WALL_TRACE,
             mask = MASK_SOLID_BRUSHONLY
         })
-        local pos = tr.Hit and (tr.HitPos + normal * SURFACE_OFFSET) or origin
-        return pos, normal
+        return tr.Hit and (tr.HitPos + normal * SURFACE_OFFSET) or origin
     end
 
-    -- Exact wall-panel orientation copied from the proven maze quadrant marking
-    -- renderer. The entity's local +X/Forward direction is the room-facing surface
-    -- normal, just as the container's broad side normal is used by that routine.
-    local function panelAngle(ent, pos)
-        local ang = ent:GetAngles()
-        ang = Angle(ang.p, ang.y, ang.r)
-        local side = ent:GetForward():Dot(EyePos() - pos) >= 0 and 1 or -1
-        ang:RotateAroundAxis(ang:Right(), side > 0 and -90 or 90)
+    -- Sign/manual entities are authored with Forward pointing into the room.
+    -- Use that orientation directly. This is deliberately camera-independent so
+    -- plaques cannot rotate, flip, or visibly move as the player's view changes.
+    local function panelAngle(ent)
+        local ang = Angle(ent:GetAngles().p, ent:GetAngles().y, ent:GetAngles().r)
+        ang:RotateAroundAxis(ang:Right(), -90)
         ang:RotateAroundAxis(ang:Up(), 90)
-        if side < 0 then ang:RotateAroundAxis(ang:Up(), 180) end
         return ang
-    end
-
-    local function drawZeldaPanel(ent)
-        local pos = wallAnchor(ent, 0)
-        if not pos then return end
-        cam.Start3D2D(pos, panelAngle(ent, pos), 0.12)
-            drawBoard(930, 280)
-            drawStencil("IT'S DANGEROUS TO GO", -46)
-            drawStencil("ALONE! TAKE THIS.", 46)
-        cam.End3D2D()
-    end
-
-    local function drawManualPanel(ent)
-        local pos = wallAnchor(ent, 108)
-        if not pos then return end
-        cam.Start3D2D(pos, panelAngle(ent, pos), 0.12)
-            drawBoard(850, 170)
-            drawStencil("INSTRUCTION MANUAL", 0)
-        cam.End3D2D()
     end
 
     hook.Add("PostDrawOpaqueRenderables", "LOD_StagingQuadrantStyleWallPanels", function(depth, sky)
@@ -132,18 +116,30 @@ if CLIENT then
 
         for _, ent in ipairs(ents.FindByClass("lod_staging_prop")) do
             if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == SIGN_KIND then
-                drawZeldaPanel(ent)
+                local pos = wallAnchor(ent, 35)
+                if pos then
+                    cam.Start3D2D(pos, panelAngle(ent), 0.13)
+                        drawBoard(1000, 300)
+                        drawStencil("IT'S DANGEROUS TO GO", -50)
+                        drawStencil("ALONE! TAKE THIS.", 50)
+                    cam.End3D2D()
+                end
             end
         end
 
         for _, ent in ipairs(ents.FindByClass("lod_field_manual")) do
-            if IsValid(ent) then drawManualPanel(ent) end
+            if IsValid(ent) then
+                local pos = wallAnchor(ent, 108)
+                if pos then
+                    cam.Start3D2D(pos, panelAngle(ent), 0.12)
+                        drawBoard(850, 170)
+                        drawStencil("INSTRUCTION MANUAL", 0)
+                    cam.End3D2D()
+                end
+            end
         end
     end)
 
-    -- Interaction copy must describe the local player's controls, not a server-side
-    -- default. Resolve +use at draw time so rebinding Use in Options takes effect
-    -- immediately without a reconnect or map restart.
     local BINDING_ALIASES = {
         MOUSE1 = "MOUSE 1",
         MOUSE2 = "MOUSE 2",
@@ -165,12 +161,12 @@ if CLIENT then
     LOD = LOD or {}
     LOD.StagingUseBindingLabel = useBindingLabel
 
-    local function aimedAt(ply, className, kind, maxDist, minDot)
+    local function aimedAtManual(ply, maxDist, minDot)
         local eye = ply:EyePos()
         local forward = ply:EyeAngles():Forward()
         local best, bestDot
-        for _, ent in ipairs(ents.FindByClass(className)) do
-            if IsValid(ent) and (not kind or (ent.GetStageKind and ent:GetStageKind() == kind)) then
+        for _, ent in ipairs(ents.FindByClass("lod_field_manual")) do
+            if IsValid(ent) then
                 local delta = ent:WorldSpaceCenter() - eye
                 local dist2 = delta:LengthSqr()
                 if dist2 <= maxDist * maxDist and dist2 > 1 then
@@ -185,31 +181,38 @@ if CLIENT then
         return best
     end
 
-    -- cl_init.lua installs the legacy E-specific prompt later in this same entity
-    -- load. Replace that named hook on the next tick so there is one prompt authority.
-    timer.Simple(0, function()
-        hook.Add("HUDPaint", "LOD_FieldManualAndPortalPrompts", function()
-            if LOD and LOD.FieldManual and IsValid(LOD.FieldManual.Frame) then return end
-            local ply = LocalPlayer()
-            if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed", false) then return end
-
-            local binding = useBindingLabel()
-            if IsValid(aimedAt(ply, "lod_field_manual", nil, 260, 0.94)) then
-                draw.SimpleTextOutlined(
-                    string.format("Press \"%s\" to Read", binding),
-                    "LOD_InstructionHover", ScrW() * 0.5, ScrH() * 0.64,
-                    Color(250, 250, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-                    4, Color(0, 0, 0, 245))
-                return
+    local function aimedAtPortal(ply)
+        for _, ent in ipairs(ents.FindByClass("lod_staging_prop")) do
+            if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == (ent.KIND_PORTAL or 2)
+                and ent.IsPortalAimHit and ent:IsPortalAimHit(ply, ent.PORTAL_USE_DISTANCE)
+            then
+                return ent
             end
+        end
+        return nil
+    end
 
-            if IsValid(aimedAt(ply, "lod_staging_prop", 2, 320, 0.92)) then
-                draw.SimpleTextOutlined(
-                    string.format("Press \"%s\" to Enter the Labyrinth", binding),
-                    "LOD_StagingPortalHotfix", ScrW() * 0.5, ScrH() * 0.64,
-                    Color(250, 250, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-                    4, Color(0, 0, 0, 245))
-            end
-        end)
+    hook.Add("HUDPaint", "LOD_FieldManualAndPortalPrompts", function()
+        if LOD and LOD.FieldManual and IsValid(LOD.FieldManual.Frame) then return end
+        local ply = LocalPlayer()
+        if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed", false) then return end
+
+        local binding = useBindingLabel()
+        if IsValid(aimedAtManual(ply, 260, 0.94)) then
+            draw.SimpleTextOutlined(
+                string.format("Press \"%s\" to Read", binding),
+                "LOD_StagingInteractionPrompt", ScrW() * 0.5, ScrH() * 0.64,
+                Color(250, 250, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+                4, Color(0, 0, 0, 245))
+            return
+        end
+
+        if IsValid(aimedAtPortal(ply)) then
+            draw.SimpleTextOutlined(
+                string.format("Press \"%s\" to Enter the Labyrinth", binding),
+                "LOD_StagingInteractionPrompt", ScrW() * 0.5, ScrH() * 0.64,
+                Color(250, 250, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+                4, Color(0, 0, 0, 245))
+        end
     end)
 end
