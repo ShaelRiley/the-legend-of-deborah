@@ -42,21 +42,15 @@ end
 
 local function aimedPortal(ply)
     if not IsValid(ply) then return nil end
-    local eye = ply:EyePos()
-    local forward = ply:EyeAngles():Forward()
-    local best, bestDot
+    local best, bestFraction
 
     for _, ent in ipairs(ents.FindByClass("lod_staging_prop")) do
-        if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == PORTAL_KIND then
-            local target = ent:GetPos() + Vector(0, 0, 68)
-            local delta = target - eye
-            local dist2 = delta:LengthSqr()
-            if dist2 <= (360 * 360) and dist2 > 1 then
-                delta:Normalize()
-                local dot = forward:Dot(delta)
-                if dot >= 0.90 and (not bestDot or dot > bestDot) then
-                    best, bestDot = ent, dot
-                end
+        if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == PORTAL_KIND
+            and ent.PortalAimFraction
+        then
+            local fraction = ent:PortalAimFraction(ply, ent.PORTAL_USE_DISTANCE or 340)
+            if fraction and (not bestFraction or fraction < bestFraction) then
+                best, bestFraction = ent, fraction
             end
         end
     end
