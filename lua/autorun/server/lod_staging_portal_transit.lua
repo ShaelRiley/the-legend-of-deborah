@@ -1,2 +1,0 @@
--- retired: portal transit feedback must not patch server entity classes at autorun time.
--- feedback now lives entirely client-side and observes the authoritative staging state.
