@@ -71,7 +71,6 @@ include("lod/sv_m3_run_integration.lua")
 include("lod/sv_run_manager.lua")
 include("lod/sv_loot_director.lua")
 include("lod/sv_loot_context_rules.lua")
-include("lod/sv_loot_catchup.lua")
 include("lod/sv_loot_budget_validation.lua")
 include("lod/sv_firearm_economy_equalization.lua")
 include("lod/sv_minimap.lua")
@@ -144,14 +143,9 @@ include("lod/sv_multiplayer_hardening.lua")
 include("lod/sv_multiplayer_contracts.lua")
 -- Join-in-progress transmission safety and per-player roster/resource diagnostics.
 include("lod/sv_multiplayer_join_safety.lua")
--- Per-identity deployment staging. The base staging module owns identity/portal
--- semantics; the native-room resolver loaded immediately after it anchors those
--- entities inside gm_flatgrass world geometry without freezing player movement.
+-- Canonical staging owns native-room discovery, decor, identity-bound starter state,
+-- and deployment. The portal interaction module is only the tall-vortex Use adapter.
 include("lod/sv_staging_deployment.lua")
-include("lod/sv_staging_native_room_hotfix.lua")
--- The visible animated vortex is taller than Source's stock teleplatform Use box.
--- This normal gamemode authority maps the same shared portal volume to +use without
--- patching entity classes or touching maze/startup order.
 include("lod/sv_staging_portal_interaction.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
