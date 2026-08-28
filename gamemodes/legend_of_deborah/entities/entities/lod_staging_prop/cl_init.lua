@@ -2,6 +2,7 @@ include("shared.lua")
 
 local portalGlow = Material("sprites/light_glow02_add")
 local flameGlow = Material("sprites/light_glow02_add")
+local portalBeam = Material("sprites/physbeam")
 local KIND_GUIDE = 1
 local KIND_PORTAL = 2
 local KIND_WEAPON = 3
@@ -10,38 +11,22 @@ local KIND_TORCH = 5
 local KIND_PEDESTAL = 6
 local CELEBRATION_DURATION = 1.45
 
-surface.CreateFont("LOD_StagingLabel", {
-    font = "DejaVu Sans",
-    size = 32,
-    weight = 800,
-    antialias = true
-})
-
-surface.CreateFont("LOD_StagingWallQuote", {
-    font = "DejaVu Sans",
-    size = 48,
-    weight = 1000,
-    antialias = true
-})
-
-surface.CreateFont("LOD_StagingPortalPrompt", {
-    font = "DejaVu Sans",
-    size = 38,
-    weight = 1000,
-    antialias = true
-})
-
-surface.CreateFont("LOD_StagingCelebration", {
-    font = "DejaVu Sans",
-    size = 34,
-    weight = 1000,
-    antialias = true
-})
+surface.CreateFont("LOD_StagingLabel", {font = "DejaVu Sans", size = 32, weight = 800, antialias = true})
+surface.CreateFont("LOD_StagingWallQuote", {font = "DejaVu Sans", size = 68, weight = 1000, antialias = true})
+surface.CreateFont("LOD_StagingCelebration", {font = "DejaVu Sans", size = 34, weight = 1000, antialias = true})
 
 local function facing3D2DAngle(pos)
     local ang = (EyePos() - pos):Angle()
     ang:RotateAroundAxis(ang:Right(), 90)
     ang:RotateAroundAxis(ang:Up(), -90)
+    return ang
+end
+
+local function wallSurfaceAngle(ent)
+    local ang = ent:GetAngles()
+    ang = Angle(ang.p, ang.y, ang.r)
+    ang:RotateAroundAxis(ang:Right(), 90)
+    ang:RotateAroundAxis(ang:Up(), 90)
     return ang
 end
 
@@ -121,16 +106,16 @@ local function drawLabel(ent)
 end
 
 local function drawWallQuote(ent)
-    local pos = ent:GetPos()
-    local ang = facing3D2DAngle(pos)
-    local lines = string.Explode("\\n", ent:GetStageLabel() or "")
+    local pos = ent:GetPos() + ent:GetForward() * 4
+    local label = string.Replace(ent:GetStageLabel() or "", "\\n", "\n")
+    local lines = string.Explode("\n", label)
 
-    cam.Start3D2D(pos, ang, 0.082)
+    cam.Start3D2D(pos, wallSurfaceAngle(ent), 0.22)
         for index, line in ipairs(lines) do
             draw.SimpleTextOutlined(line,
-                "LOD_StagingWallQuote", 0, (index - 1) * 50,
-                Color(248, 248, 244), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-                4, Color(0, 0, 0, 250))
+                "LOD_StagingWallQuote", 0, (index - 1) * 74,
+                Color(252, 252, 248), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+                5, Color(0, 0, 0, 255))
         end
     cam.End3D2D()
 end
@@ -159,10 +144,63 @@ local function drawTorch(ent)
     end
 end
 
-local function drawPortalGlow(ent)
-    local pos = ent:GetPos() + Vector(0, 0, 30)
+local function portalPoint(center, right, up, phase, radiusX, radiusZ)
+    return center + right * math.cos(phase) * radiusX + up * math.sin(phase) * radiusZ
+end
+
+local function drawPortalEffect(ent)
+    local t = CurTime()
+    local center = ent:GetPos() + Vector(0, 0, 68)
+    local right = ent:GetRight():GetNormalized()
+    local up = Vector(0, 0, 1)
+    local pulse = 1 + math.sin(t * 3.2) * 0.08
+
     render.SetMaterial(portalGlow)
-    render.DrawSprite(pos, 86, 86, Color(92, 148, 255, 190))
+    render.DrawSprite(center, 126 * pulse, 164 * pulse, Color(68, 122, 255, 92))
+    render.DrawSprite(center, 78 * pulse, 116 * pulse, Color(112, 196, 255, 125))
+    render.DrawSprite(center + Vector(0, 0, 3), 42, 76, Color(220, 245, 255, 150))
+
+    render.SetMaterial(portalBeam)
+    local segments = 28
+    local basePhase = t * 1.7
+    for i = 0, segments - 1 do
+        local a0 = basePhase + (i / segments) * math.pi * 2
+        local a1 = basePhase + ((i + 1) / segments) * math.pi * 2
+        local p0 = portalPoint(center, right, up, a0, 47 * pulse, 70 * pulse)
+        local p1 = portalPoint(center, right, up, a1, 47 * pulse, 70 * pulse)
+        render.DrawBeam(p0, p1, 4.5, 0, 1, Color(92, 160, 255, 230))
+    end
+
+    local reversePhase = -t * 2.25
+    for i = 0, segments - 1 do
+        local a0 = reversePhase + (i / segments) * math.pi * 2
+        local a1 = reversePhase + ((i + 1) / segments) * math.pi * 2
+        local p0 = portalPoint(center, right, up, a0, 34, 55)
+        local p1 = portalPoint(center, right, up, a1, 34, 55)
+        render.DrawBeam(p0, p1, 2.2, 0, 1, Color(164, 224, 255, 205))
+    end
+
+    render.SetMaterial(portalGlow)
+    for i = 0, 7 do
+        local phase = -t * 2.8 + (i / 8) * math.pi * 2
+        local p = portalPoint(center, right, up, phase, 44, 67)
+        render.DrawSprite(p, 13, 13, Color(210, 244, 255, 245))
+    end
+
+    render.SetMaterial(portalBeam)
+    render.DrawBeam(center - up * 46, center + up * 46, 9, 0, 1, Color(170, 225, 255, 90))
+
+    local light = DynamicLight(10000 + ent:EntIndex())
+    if light then
+        light.pos = center
+        light.r = 80
+        light.g = 150
+        light.b = 255
+        light.brightness = 2.3 + math.sin(t * 4.1) * 0.25
+        light.decay = 520
+        light.size = 220
+        light.dietime = t + 0.12
+    end
 end
 
 local function drawStarterPedestal(ent)
@@ -171,6 +209,10 @@ local function drawStarterPedestal(ent)
     render.DrawBox(pos, ang, Vector(-16, -16, 0), Vector(16, 16, 10), Color(66, 48, 40))
     render.DrawBox(pos + Vector(0, 0, 10), ang, Vector(-20, -20, 0), Vector(20, 20, 3), Color(128, 85, 55))
     render.DrawBox(pos + Vector(0, 0, 13), ang, Vector(-18, -18, 0), Vector(18, 18, 1.5), Color(196, 151, 74))
+end
+
+function ENT:Initialize()
+    self:SetRenderBounds(Vector(-260, -260, -64), Vector(260, 260, 260))
 end
 
 function ENT:Draw()
@@ -194,7 +236,7 @@ function ENT:Draw()
         return
     end
 
-    if kind == KIND_PORTAL then drawPortalGlow(self) end
+    if kind == KIND_PORTAL then drawPortalEffect(self) end
     drawLabel(self)
 end
 
@@ -308,10 +350,9 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_StagingStarterCelebrationWeapon"
     weaponModel:DrawModel()
 end)
 
-hook.Add("HUDPaint", "LOD_StagingPortalAndCelebrationHUD", function()
+hook.Add("HUDPaint", "LOD_StagingCelebrationHUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
-
     if celebration and CurTime() < celebration.finishes then
         local remaining = math.Clamp((celebration.finishes - CurTime()) / CELEBRATION_DURATION, 0, 1)
         local alpha = math.floor(255 * math.min(1, remaining * 2.5))
@@ -320,18 +361,5 @@ hook.Add("HUDPaint", "LOD_StagingPortalAndCelebrationHUD", function()
             "LOD_StagingCelebration", ScrW() * 0.5, ScrH() * 0.22,
             Color(248, 226, 124, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
             3, Color(0, 0, 0, alpha))
-        return
     end
-
-    if not ply:GetNW2Bool("LOD_Staged", false) then return end
-    local trace = ply:GetEyeTrace()
-    local ent = trace and trace.Entity
-    if not IsValid(ent) or ent:GetClass() ~= "lod_staging_prop" or ent:GetStageKind() ~= KIND_PORTAL then return end
-    if ply:EyePos():DistToSqr(ent:WorldSpaceCenter()) > (260 * 260) then return end
-
-    draw.SimpleTextOutlined(
-        "Press \"E\" to Enter the Labyrinth",
-        "LOD_StagingPortalPrompt", ScrW() * 0.5, ScrH() * 0.63,
-        Color(250, 250, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-        4, Color(0, 0, 0, 245))
 end)
