@@ -57,7 +57,7 @@ local function candidateRoomAt(sample)
 
     local floor = util.TraceLine({
         start = sample + Vector(0, 0, 8),
-        endpos = sample - Vector(0, 0, 112),
+        endpos = sample - Vector(0, 0, 224),
         mask = WORLD_MASK
     })
     if not floor.Hit or not floor.HitWorld then return nil end
@@ -117,8 +117,8 @@ local function candidateRoomAt(sample)
     local halfRight = (spanX >= spanY and spanY or spanX) * 0.5
 
     -- Prefer the highest fully enclosed cavity beneath the normal spawn roof.
-    -- The stock Flatgrass secret room is inside the central structure; the 3D
-    -- skybox is much farther below and therefore loses this score decisively.
+    -- The stock Flatgrass room is inside the central structure; the 3D skybox is
+    -- much farther below and therefore loses this score decisively.
     local score = center.z * 1000 + math.min(spanX, spanY)
     return {
         center = center,
@@ -151,13 +151,17 @@ local function findNativeEnclosedRoom()
         local spawnPos = item.ent:GetPos()
         for ox = -SEARCH_XY, SEARCH_XY, SEARCH_XY_STEP do
             for oy = -SEARCH_XY, SEARCH_XY, SEARCH_XY_STEP do
-                local sawSolid = false
+                local previousSolid = false
                 for dz = SEARCH_Z_STEP, SEARCH_DEPTH, SEARCH_Z_STEP do
                     local sample = Vector(spawnPos.x + ox, spawnPos.y + oy, spawnPos.z - dz)
                     local solid = isWorldSolid(sample)
                     if solid then
-                        sawSolid = true
-                    elseif sawSolid then
+                        previousSolid = true
+                    elseif previousSolid then
+                        -- Evaluate only a solid->empty transition. This keeps the
+                        -- one-time native-room discovery bounded instead of tracing
+                        -- every empty Z sample below the spawn platform.
+                        previousSolid = false
                         local room = candidateRoomAt(sample)
                         if room and (not best or room.score > best.score) then
                             best = room
