@@ -237,3 +237,31 @@ function ENT:Use(activator)
         if staging and staging.DeployPlayer then staging:DeployPlayer(activator, self) end
     end
 end
+
+concommand.Add("lod_staging_presentation_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local staging = LOD and LOD.StagingDeployment
+    local guide = staging and staging.GuideEntity
+    local sign = staging and staging.SignEntity
+    local torches = 0
+    if staging then
+        for _, torch in ipairs(staging.TorchEntities or {}) do
+            if IsValid(torch) then torches = torches + 1 end
+        end
+    end
+
+    local sequenceName = "none"
+    if IsValid(guide) then
+        local current = guide:GetSequence()
+        sequenceName = guide:GetSequenceName(current) or tostring(current)
+    end
+
+    local pass = IsValid(guide) and IsValid(sign) and torches >= 2 and sequenceName ~= "none"
+    local line = string.format(
+        "guide=%s sequence=%s sign=%s torches=%d celebrationNet=ARMED result=%s",
+        tostring(IsValid(guide)), tostring(sequenceName), tostring(IsValid(sign)), torches,
+        pass and "PASS" or "FAIL")
+    print("[LOD:STAGING-PRESENTATION] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
