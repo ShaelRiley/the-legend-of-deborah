@@ -5,8 +5,19 @@ local Staging = LOD.StagingDeployment
 local RunManager = LOD.RunManager
 local Loot = LOD.LootDirector
 local CC = LOD.Config
-
 if not RunManager or not CC then return end
+
+Staging.ArchitectureVersion = "canonical-native-room-v1"
+Staging.HutEntities = Staging.HutEntities or {}
+Staging.StarterEntities = Staging.StarterEntities or {}
+Staging.TorchEntities = Staging.TorchEntities or {}
+Staging.Stats = Staging.Stats or {
+    staged = 0,
+    starterClaims = 0,
+    deployments = 0,
+    portalDenied = 0,
+    duplicateStarterPrevented = 0
+}
 
 local STARTER_SPECS = {
     weapon_shotgun = {label = "Shotgun", clip = 7, ammo = "Buckshot", model = "models/weapons/w_shotgun.mdl"},
@@ -15,37 +26,27 @@ local STARTER_SPECS = {
     weapon_ar2 = {label = "AR2", clip = 20, ammo = "AR2", model = "models/weapons/w_irifle.mdl"}
 }
 local STARTER_CLASSES = {"weapon_shotgun", "weapon_smg1", "weapon_357", "weapon_ar2"}
+local TORCH_MODEL = "models/props_c17/light_cagelight02_on.mdl"
+
+-- Native gm_flatgrass room discovery. This is the only hut-location authority.
+local WORLD_MASK = MASK_PLAYERSOLID_BRUSHONLY or MASK_SOLID_BRUSHONLY or MASK_SOLID
+local PLAYER_MINS = Vector(-16, -16, 0)
+local PLAYER_MAXS = Vector(16, 16, 72)
+local CARDINALS = {
+    Vector(1, 0, 0), Vector(-1, 0, 0),
+    Vector(0, 1, 0), Vector(0, -1, 0)
+}
+local SEARCH_XY = 320
+local SEARCH_XY_STEP = 64
+local SEARCH_DEPTH = 640
+local SEARCH_Z_STEP = 16
+local WALL_PROBE = 448
+local MIN_ROOM_HEIGHT = 82
 local SPAWN_CLASSES = {
     "info_player_start",
     "info_player_deathmatch",
     "info_player_rebel",
     "info_player_combine"
-}
-
--- The native gm_flatgrass spawn hut supplies the visible room. These four hidden
--- static collision strips merely make its staging lease absolute: a staged player
--- cannot walk out of the room and into Flatgrass, even if the stock doorway is open.
--- Portal use is therefore the sole transition into dungeon space.
-local BARRIER_KIND = 7
-local HUT_HALF_FORWARD = 210
-local HUT_HALF_RIGHT = 170
-local BARRIER_THICKNESS = 12
-local BARRIER_HEIGHT = 224
-local GUIDE_FORWARD = 105
-local STARTER_FORWARD = 42
-local PORTAL_BACK = 105
-
-Staging.HutEntities = Staging.HutEntities or {}
-Staging.StarterEntities = Staging.StarterEntities or {}
-Staging.HutCenter = Staging.HutCenter or nil
-Staging.HutAngles = Staging.HutAngles or angle_zero
-Staging.Stats = Staging.Stats or {
-    staged = 0,
-    starterClaims = 0,
-    deployments = 0,
-    portalDenied = 0,
-    duplicateStarterPrevented = 0,
-    anchorFallbacks = 0
 }
 
 local function identityOf(ply)
@@ -66,43 +67,6 @@ local function removeEntity(ent)
     if IsValid(ent) then ent:Remove() end
 end
 
-local function sortedSpawnEntities()
-    local out = {}
-    for classIndex, className in ipairs(SPAWN_CLASSES) do
-        for _, ent in ipairs(ents.FindByClass(className)) do
-            if IsValid(ent) then
-                out[#out + 1] = {ent = ent, classIndex = classIndex}
-            end
-        end
-    end
-    table.sort(out, function(a, b)
-        if a.classIndex ~= b.classIndex then return a.classIndex < b.classIndex end
-        local ap, bp = a.ent:GetPos(), b.ent:GetPos()
-        if ap.z ~= bp.z then return ap.z < bp.z end
-        if ap.x ~= bp.x then return ap.x < bp.x end
-        if ap.y ~= bp.y then return ap.y < bp.y end
-        return a.ent:EntIndex() < b.ent:EntIndex()
-    end)
-    return out
-end
-
-function Staging:_ResolveNativeHutAnchor()
-    local candidates = sortedSpawnEntities()
-    if #candidates > 0 then
-        local chosen = candidates[1].ent
-        local pos = chosen:GetPos()
-        local ang = chosen:GetAngles()
-        -- Only yaw matters for arranging the tiny room presentation.
-        ang = Angle(0, ang.y, 0)
-        return Vector(pos.x, pos.y, pos.z), ang, chosen:GetClass()
-    end
-
-    -- gm_flatgrass should always expose a player start. Preserve a deterministic
-    -- fail-safe so a source-map quirk cannot make the campaign unstartable.
-    self.Stats.anchorFallbacks = (self.Stats.anchorFallbacks or 0) + 1
-    return Vector(0, 0, 16), Angle(0, 0, 0), "fallback-origin"
-end
-
 local function localOffset(center, angles, forward, right, up)
     local yaw = Angle(0, angles.y, 0)
     return center
@@ -111,21 +75,393 @@ local function localOffset(center, angles, forward, right, up)
         + Vector(0, 0, up or 0)
 end
 
-local function spawnBarrier(pos, angles, mins, maxs)
-    local ent = ents.Create("lod_static_box")
-    if not IsValid(ent) then return nil end
-    ent:SetPos(pos)
-    ent:SetAngles(angles)
-    ent:SetBoxMins(mins)
-    ent:SetBoxMaxs(maxs)
-    ent:SetBoxKind(BARRIER_KIND)
-    ent:Spawn()
-    ent:Activate()
-    if ent.IsLODCollisionReady and not ent:IsLODCollisionReady() then
-        ent:Remove()
-        return nil
+local function isWorldSolid(pos)
+    return bit.band(util.PointContents(pos), CONTENTS_SOLID) ~= 0
+end
+
+local function hullClear(pos)
+    local tr = util.TraceHull({
+        start = pos,
+        endpos = pos,
+        mins = PLAYER_MINS,
+        maxs = PLAYER_MAXS,
+        mask = WORLD_MASK
+    })
+    return not tr.StartSolid and not tr.AllSolid
+end
+
+local function traceWall(origin, dir)
+    local tr = util.TraceLine({
+        start = origin,
+        endpos = origin + dir * WALL_PROBE,
+        mask = WORLD_MASK
+    })
+    if tr.Hit and tr.HitWorld then return origin:Distance(tr.HitPos), tr end
+    return nil, tr
+end
+
+local function candidateRoomAt(sample)
+    if isWorldSolid(sample) then return nil end
+
+    local floor = util.TraceLine({
+        start = sample + Vector(0, 0, 8),
+        endpos = sample - Vector(0, 0, 224),
+        mask = WORLD_MASK
+    })
+    if not floor.Hit or not floor.HitWorld then return nil end
+
+    local foot = floor.HitPos + Vector(0, 0, 2)
+    if not hullClear(foot) then return nil end
+
+    local ceiling = util.TraceLine({
+        start = foot + Vector(0, 0, 72),
+        endpos = foot + Vector(0, 0, 208),
+        mask = WORLD_MASK
+    })
+    if not ceiling.Hit or not ceiling.HitWorld then return nil end
+    if ceiling.HitPos.z - floor.HitPos.z < MIN_ROOM_HEIGHT then return nil end
+
+    local chest = foot + Vector(0, 0, 42)
+    local distances = {}
+    for index, dir in ipairs(CARDINALS) do distances[index] = traceWall(chest, dir) end
+
+    local plusX, minusX = distances[1], distances[2]
+    local plusY, minusY = distances[3], distances[4]
+    if not plusX or not minusX or not plusY or not minusY then return nil end
+
+    local centerProbe = foot + Vector((plusX - minusX) * 0.5, (plusY - minusY) * 0.5, 0)
+    local centerFloor = util.TraceLine({
+        start = centerProbe + Vector(0, 0, 36),
+        endpos = centerProbe - Vector(0, 0, 72),
+        mask = WORLD_MASK
+    })
+    if not centerFloor.Hit or not centerFloor.HitWorld then return nil end
+
+    local center = centerFloor.HitPos + Vector(0, 0, 2)
+    if not hullClear(center) then return nil end
+
+    local centerChest = center + Vector(0, 0, 42)
+    local px = traceWall(centerChest, Vector(1, 0, 0))
+    local nx = traceWall(centerChest, Vector(-1, 0, 0))
+    local py = traceWall(centerChest, Vector(0, 1, 0))
+    local ny = traceWall(centerChest, Vector(0, -1, 0))
+    if not px or not nx or not py or not ny then return nil end
+
+    local spanX, spanY = px + nx, py + ny
+    if math.min(spanX, spanY) < 110 then return nil end
+
+    local yaw = spanX >= spanY and 0 or 90
+    return {
+        center = center,
+        angles = Angle(0, yaw, 0),
+        halfForward = (spanX >= spanY and spanX or spanY) * 0.5,
+        halfRight = (spanX >= spanY and spanY or spanX) * 0.5,
+        score = center.z * 1000 + math.min(spanX, spanY)
+    }
+end
+
+local function sortedNativeSpawns()
+    local list = {}
+    for classIndex, className in ipairs(SPAWN_CLASSES) do
+        for _, ent in ipairs(ents.FindByClass(className)) do
+            if IsValid(ent) then list[#list + 1] = {ent = ent, classIndex = classIndex} end
+        end
     end
+    table.sort(list, function(a, b)
+        if a.classIndex ~= b.classIndex then return a.classIndex < b.classIndex end
+        return a.ent:EntIndex() < b.ent:EntIndex()
+    end)
+    return list
+end
+
+local function findNativeEnclosedRoom()
+    local best
+    for _, item in ipairs(sortedNativeSpawns()) do
+        local spawnPos = item.ent:GetPos()
+        for ox = -SEARCH_XY, SEARCH_XY, SEARCH_XY_STEP do
+            for oy = -SEARCH_XY, SEARCH_XY, SEARCH_XY_STEP do
+                local previousSolid = false
+                for dz = SEARCH_Z_STEP, SEARCH_DEPTH, SEARCH_Z_STEP do
+                    local sample = Vector(spawnPos.x + ox, spawnPos.y + oy, spawnPos.z - dz)
+                    local solid = isWorldSolid(sample)
+                    if solid then
+                        previousSolid = true
+                    elseif previousSolid then
+                        previousSolid = false
+                        local room = candidateRoomAt(sample)
+                        if room and (not best or room.score > best.score) then
+                            best = room
+                            best.anchorClass = item.ent:GetClass()
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return best
+end
+
+function Staging:_RegisterHutEntity(ent)
+    if IsValid(ent) then self.HutEntities[#self.HutEntities + 1] = ent end
     return ent
+end
+
+function Staging:_ClearHutPresentation()
+    for _, ent in ipairs(self.HutEntities or {}) do removeEntity(ent) end
+    self.HutEntities = {}
+    self.GuideEntity = nil
+    self.PortalEntity = nil
+    self.SignEntity = nil
+    self.ManualEntity = nil
+    self.MirrorEntity = nil
+    self.StarterPedestalEntity = nil
+    self.TorchEntities = {}
+end
+
+function Staging:_HutValid()
+    return self.HutCenter ~= nil
+        and self.HutAnchorSource == "native-enclosed-room"
+        and IsValid(self.GuideEntity)
+        and IsValid(self.PortalEntity)
+end
+
+local function findDeborahDoll(staging)
+    local center = staging.HutCenter
+    if not center then return nil end
+    local radius = math.max(tonumber(staging.HutHalfForward) or 448,
+        tonumber(staging.HutHalfRight) or 288) + 32
+
+    local best
+    for _, ent in ipairs(ents.FindInBox(
+        center + Vector(-radius, -radius, -36),
+        center + Vector(radius, radius, 170)
+    )) do
+        if IsValid(ent)
+            and ent:GetClass() ~= "lod_staging_prop"
+            and ent:GetClass() ~= "lod_field_manual"
+            and ent:GetClass() ~= "lod_staging_mirror"
+        then
+            local model = string.lower(ent:GetModel() or "")
+            if model ~= "" and string.find(model, "doll", 1, true) then
+                local distance = ent:GetPos():DistToSqr(center)
+                if not best or distance < best.distance then
+                    best = {entity = ent, distance = distance, model = model}
+                end
+            end
+        end
+    end
+    return best
+end
+
+local function featureWallLayout(staging)
+    local center = staging.HutCenter
+    local yaw = Angle(0, staging.HutAngles.y, 0)
+    local fwd, right = yaw:Forward(), yaw:Right()
+    local halfF = math.max(120, tonumber(staging.HutHalfForward) or 448)
+    local halfR = math.max(90, tonumber(staging.HutHalfRight) or 288)
+    local inset = 46
+
+    local doll = findDeborahDoll(staging)
+    local manualPos, manualInward, mirrorPos, mirrorInward
+
+    if doll and IsValid(doll.entity) then
+        local rel = doll.entity:GetPos() - center
+        local localF, localR = rel:Dot(fwd), rel:Dot(right)
+        local nearF, nearR = halfF - math.abs(localF), halfR - math.abs(localR)
+
+        if nearR <= nearF then
+            local side = localR >= 0 and 1 or -1
+            local tangent = math.Clamp(localF + (localF >= 0 and -82 or 82), -halfF + 90, halfF - 90)
+            manualPos = center + right * (side * (halfR - inset)) + fwd * tangent
+            manualInward = right * -side
+            mirrorPos = center + right * (-side * (halfR - 14))
+            mirrorInward = right * side
+        else
+            local side = localF >= 0 and 1 or -1
+            local tangent = math.Clamp(localR + (localR >= 0 and -82 or 82), -halfR + 90, halfR - 90)
+            manualPos = center + fwd * (side * (halfF - inset)) + right * tangent
+            manualInward = fwd * -side
+            mirrorPos = center + fwd * (-side * (halfF - 14))
+            mirrorInward = fwd * side
+        end
+        staging.FeatureDollModel = doll.model
+    else
+        manualPos = center - right * (halfR - inset) + fwd * 42
+        manualInward = right
+        mirrorPos = center + right * (halfR - 14)
+        mirrorInward = -right
+        staging.FeatureDollModel = "not-found"
+    end
+
+    manualPos.z, mirrorPos.z = center.z + 2, center.z + 2
+    local manualAng, mirrorAng = manualInward:Angle(), mirrorInward:Angle()
+    manualAng.p, manualAng.r = 0, 0
+    mirrorAng.p, mirrorAng.r = 0, 0
+    return manualPos, manualAng, mirrorPos, mirrorAng
+end
+
+function Staging:EnsureRoomDecor()
+    if not self:_HutValid() then return false end
+
+    local validTorches = 0
+    for _, torch in ipairs(self.TorchEntities or {}) do
+        if IsValid(torch) then validTorches = validTorches + 1 end
+    end
+    if IsValid(self.SignEntity)
+        and validTorches >= 2
+        and IsValid(self.ManualEntity)
+        and IsValid(self.MirrorEntity)
+        and IsValid(self.StarterPedestalEntity)
+    then
+        return true
+    end
+
+    for _, ent in ipairs({self.SignEntity, self.ManualEntity, self.MirrorEntity, self.StarterPedestalEntity}) do
+        removeEntity(ent)
+    end
+    for _, torch in ipairs(self.TorchEntities or {}) do removeEntity(torch) end
+    self.SignEntity, self.ManualEntity, self.MirrorEntity, self.StarterPedestalEntity = nil, nil, nil, nil
+    self.TorchEntities = {}
+
+    local center, angles = self.HutCenter, self.HutAngles
+    local halfForward = math.max(120, tonumber(self.HutHalfForward) or 180)
+    local halfRight = math.max(90, tonumber(self.HutHalfRight) or 130)
+    local guideDistance = tonumber(self.HutGuideDistance) or 72
+
+    local sign = ents.Create("lod_staging_prop")
+    if IsValid(sign) then
+        sign:SetStageKind(sign.KIND_SIGN or 4)
+        sign:SetStageLabel("IT'S DANGEROUS TO GO\nALONE! TAKE THIS.")
+        sign:SetPos(localOffset(center, angles, halfForward - 48, 0, 96))
+        sign:SetAngles(Angle(0, angles.y + 180, 0))
+        sign:Spawn()
+        sign:Activate()
+        self.SignEntity = self:_RegisterHutEntity(sign)
+    end
+
+    local torchForward = math.min(halfForward - 42, guideDistance + 48)
+    local torchRight = math.min(halfRight - 34, math.max(74, halfRight * 0.32))
+    for _, side in ipairs({-1, 1}) do
+        local torch = ents.Create("lod_staging_prop")
+        if IsValid(torch) then
+            torch:SetStageKind(torch.KIND_TORCH or 5)
+            torch:SetStageLabel("")
+            torch.LODStageModel = TORCH_MODEL
+            torch:SetPos(localOffset(center, angles, torchForward, torchRight * side, 34))
+            torch:SetAngles(Angle(0, angles.y + 180, 0))
+            torch:Spawn()
+            torch:Activate()
+            self.TorchEntities[#self.TorchEntities + 1] = self:_RegisterHutEntity(torch)
+        end
+    end
+
+    local pedestal = ents.Create("lod_staging_prop")
+    if IsValid(pedestal) then
+        pedestal:SetStageKind(pedestal.KIND_PEDESTAL or 6)
+        pedestal:SetStageLabel("")
+        local starterPos = self:_StarterPosition()
+        pedestal:SetPos(Vector(starterPos.x, starterPos.y, center.z + 2))
+        pedestal:SetAngles(angles)
+        pedestal:Spawn()
+        pedestal:Activate()
+        self.StarterPedestalEntity = self:_RegisterHutEntity(pedestal)
+    end
+
+    local manualPos, manualAng, mirrorPos, mirrorAng = featureWallLayout(self)
+    local manual = ents.Create("lod_field_manual")
+    if IsValid(manual) then
+        manual:SetPos(manualPos)
+        manual:SetAngles(manualAng)
+        manual:Spawn()
+        manual:Activate()
+        self.ManualEntity = self:_RegisterHutEntity(manual)
+    end
+
+    local mirror = ents.Create("lod_staging_mirror")
+    if IsValid(mirror) then
+        mirror:SetPos(mirrorPos)
+        mirror:SetAngles(mirrorAng)
+        mirror:Spawn()
+        mirror:Activate()
+        self.MirrorEntity = self:_RegisterHutEntity(mirror)
+    end
+
+    return IsValid(self.SignEntity)
+        and IsValid(self.ManualEntity)
+        and IsValid(self.MirrorEntity)
+        and IsValid(self.StarterPedestalEntity)
+        and #self.TorchEntities >= 2
+end
+
+function Staging:EnsureHut()
+    if self:_HutValid() then
+        self:EnsureRoomDecor()
+        return true
+    end
+
+    local room = findNativeEnclosedRoom()
+    if not room then
+        self.HutAnchorSource = "native-room-not-found"
+        ErrorNoHalt("[LOD:STAGING] Could not locate the enclosed native gm_flatgrass room; staging was not released.\n")
+        return false
+    end
+
+    self:_ClearHutPresentation()
+    self.HutCenter = room.center
+    self.HutAngles = room.angles
+    self.HutAnchorSource = "native-enclosed-room"
+    self.HutNativeSpawnClass = room.anchorClass
+    self.HutHalfForward = room.halfForward
+    self.HutHalfRight = room.halfRight
+
+    local placement = math.Clamp(room.halfForward * 0.38, 44, 82)
+    self.HutGuideDistance = placement
+    self.HutPortalDistance = placement
+    self.HutStarterDistance = math.Clamp(room.halfForward * 0.12, 16, 30)
+    self.HutSpawnBack = math.Clamp(room.halfForward * 0.045, 8, 14)
+
+    local guide = ents.Create("lod_staging_prop")
+    if IsValid(guide) then
+        guide:SetStageKind(guide.KIND_GUIDE or 1)
+        guide:SetStageLabel("DUNGEON HERMIT")
+        guide:SetPos(localOffset(room.center, room.angles, self.HutGuideDistance, 0, 0))
+        guide:SetAngles(Angle(0, room.angles.y + 180, 0))
+        guide:Spawn()
+        guide:Activate()
+        self.GuideEntity = self:_RegisterHutEntity(guide)
+    end
+
+    local portal = ents.Create("lod_staging_prop")
+    if IsValid(portal) then
+        portal:SetStageKind(portal.KIND_PORTAL or 2)
+        portal:SetStageLabel("ENTER THE DUNGEON")
+        portal:SetPos(localOffset(room.center, room.angles, -self.HutPortalDistance, 0, 0))
+        portal:SetAngles(room.angles)
+        portal:Spawn()
+        portal:Activate()
+        self.PortalEntity = self:_RegisterHutEntity(portal)
+    end
+
+    if not self:_HutValid() then return false end
+    self:EnsureRoomDecor()
+
+    print(string.format(
+        "[LOD:STAGING] canonical native room pos=(%.1f %.1f %.1f) yaw=%.1f spanForward=%.1f spanRight=%.1f sourceSpawn=%s",
+        room.center.x, room.center.y, room.center.z, room.angles.y,
+        room.halfForward * 2, room.halfRight * 2, tostring(room.anchorClass)))
+    return true
+end
+
+function Staging:_StarterPosition()
+    return localOffset(self.HutCenter, self.HutAngles, self.HutStarterDistance or 24, 0, 20)
+end
+
+function Staging:_SpawnPosition()
+    return localOffset(self.HutCenter, self.HutAngles, -(self.HutSpawnBack or 12), 0, 2)
+end
+
+function Staging:_FacingAngles()
+    return Angle(0, self.HutAngles and self.HutAngles.y or 0, 0)
 end
 
 function Staging:IsDeployed(ply)
@@ -138,15 +474,10 @@ function RunManager:IsDungeonPlayer(ply)
     return Staging:IsDeployed(ply)
 end
 
--- RunManager continues to own the four-slot ledger. For gameplay consumers,
--- IsActivePlayer now means slot-reserved AND actually deployed. This automatically
--- keeps staged identities out of hostile targeting, progression, map use, Magic
--- combat, enemy-drop rolls, and ordinary dungeon interaction without introducing
--- parallel copies of those systems.
+-- RunManager owns campaign slots; staging only refines the gameplay-active view.
 if not RunManager.LODStagingActiveSemanticsInstalled then
     RunManager.LODStagingActiveSemanticsInstalled = true
-    local baseIsActivePlayer = RunManager.IsActivePlayer
-    RunManager.IsSlotActivePlayer = RunManager.IsSlotActivePlayer or baseIsActivePlayer
+    RunManager.IsSlotActivePlayer = RunManager.IsSlotActivePlayer or RunManager.IsActivePlayer
     function RunManager:IsActivePlayer(ply)
         if self.LODStagingBypassActive and self.LODStagingBypassActive[ply] then
             return self:IsSlotActivePlayer(ply)
@@ -181,10 +512,7 @@ function Staging:_AssignStarter(ps)
     local order = buildStarterOrder(state.CampaignSeed or 1, ps.identity, ps.ordinal)
     local chosen
     for _, weaponClass in ipairs(order) do
-        if not reserved[weaponClass] then
-            chosen = weaponClass
-            break
-        end
+        if not reserved[weaponClass] then chosen = weaponClass break end
     end
     chosen = chosen or order[((math.max(1, tonumber(ps.ordinal) or 1) - 1) % #order) + 1]
     ps.starterWeaponClass = chosen
@@ -192,8 +520,11 @@ function Staging:_AssignStarter(ps)
     return chosen
 end
 
-function Staging:_ClearLegacyCatchup(ps)
+local function initializeStagingState(ps)
     if not ps then return end
+    Staging:_AssignStarter(ps)
+    if ps.deploymentComplete == nil then ps.deploymentComplete = false end
+    -- Compatibility cleanup for identities saved before staging became authoritative.
     ps.catchupLevel = nil
     ps.catchupGrantedLevel = nil
 end
@@ -203,31 +534,18 @@ if not RunManager.LODStagingAdmissionWrapped then
     local baseAdmitIdentity = RunManager._AdmitIdentity
     function RunManager:_AdmitIdentity(ply)
         local ps = baseAdmitIdentity(self, ply)
-        if ps then
-            Staging:_AssignStarter(ps)
-            Staging:_ClearLegacyCatchup(ps)
-            if ps.deploymentComplete == nil then ps.deploymentComplete = false end
-        end
+        initializeStagingState(ps)
         return ps
     end
 
     local baseTryActivatePlayer = RunManager.TryActivatePlayer
     function RunManager:TryActivatePlayer(ply)
         local active = baseTryActivatePlayer(self, ply)
-        local ps = self:GetPlayerState(ply)
-        if active and ps then
-            Staging:_AssignStarter(ps)
-            Staging:_ClearLegacyCatchup(ps)
-            if ps.deploymentComplete == nil then ps.deploymentComplete = false end
-        end
+        if active then initializeStagingState(self:GetPlayerState(ply)) end
         return active
     end
 end
 
--- The old JIP loadout is superseded. Every newly admitted cooperative identity
--- starts with the same universal Pistol + Crowbar baseline; its advanced firearm
--- is a physical, identity-instanced staging-room pickup. Deeper-level catch-up can
--- be retuned after the multiplayer lifecycle itself has been validated.
 local function giveLoaded(ply, className, clip)
     local weapon = ply:Give(className, true)
     if IsValid(weapon) and clip and clip >= 0 then weapon:SetClip1(clip) end
@@ -247,99 +565,6 @@ function GM:PlayerLoadout(ply)
     ply:SetAmmo(0, "AR2AltFire")
     ps.initialLoadoutGranted = true
     if IsValid(pistol) then ply:SelectWeapon("weapon_pistol") end
-end
-
-function Staging:_RegisterHut(ent)
-    if IsValid(ent) then self.HutEntities[#self.HutEntities + 1] = ent end
-    return ent
-end
-
-function Staging:_HutValid()
-    if not self.HutCenter then return false end
-    local barriers = 0
-    for _, ent in ipairs(self.HutEntities or {}) do
-        if IsValid(ent) and ent:GetClass() == "lod_static_box" then barriers = barriers + 1 end
-    end
-    return barriers >= 4 and IsValid(self.GuideEntity) and IsValid(self.PortalEntity)
-end
-
-function Staging:EnsureHut()
-    local center, angles, anchorSource = self:_ResolveNativeHutAnchor()
-    if self:_HutValid()
-        and self.HutCenter:DistToSqr(center) < 4
-        and math.abs(math.AngleDifference(self.HutAngles.y, angles.y)) < 0.1
-    then
-        return true
-    end
-
-    for _, ent in ipairs(self.HutEntities or {}) do removeEntity(ent) end
-    self.HutEntities = {}
-    self.GuideEntity = nil
-    self.PortalEntity = nil
-    self.HutCenter = center
-    self.HutAngles = angles
-    self.HutAnchorSource = anchorSource
-
-    local halfF, halfR = HUT_HALF_FORWARD, HUT_HALF_RIGHT
-    local thick, height = BARRIER_THICKNESS, BARRIER_HEIGHT
-
-    -- Four invisible collision strips form a deterministic staging lease inside
-    -- the map's existing hut. They are intentionally not rendered client-side.
-    self:_RegisterHut(spawnBarrier(
-        localOffset(center, angles, halfF + thick * 0.5, 0, height * 0.5), angles,
-        Vector(-thick * 0.5, -halfR, -height * 0.5),
-        Vector(thick * 0.5, halfR, height * 0.5)))
-    self:_RegisterHut(spawnBarrier(
-        localOffset(center, angles, -halfF - thick * 0.5, 0, height * 0.5), angles,
-        Vector(-thick * 0.5, -halfR, -height * 0.5),
-        Vector(thick * 0.5, halfR, height * 0.5)))
-    self:_RegisterHut(spawnBarrier(
-        localOffset(center, angles, 0, halfR + thick * 0.5, height * 0.5), angles,
-        Vector(-halfF, -thick * 0.5, -height * 0.5),
-        Vector(halfF, thick * 0.5, height * 0.5)))
-    self:_RegisterHut(spawnBarrier(
-        localOffset(center, angles, 0, -halfR - thick * 0.5, height * 0.5), angles,
-        Vector(-halfF, -thick * 0.5, -height * 0.5),
-        Vector(halfF, thick * 0.5, height * 0.5)))
-
-    local guide = ents.Create("lod_staging_prop")
-    if IsValid(guide) then
-        guide:SetStageKind(guide.KIND_GUIDE or 1)
-        guide:SetStageLabel("DUNGEON HERMIT")
-        guide:SetPos(localOffset(center, angles, GUIDE_FORWARD, 0, 0))
-        guide:SetAngles(Angle(0, angles.y + 180, 0))
-        guide:Spawn()
-        guide:Activate()
-        self.GuideEntity = self:_RegisterHut(guide)
-    end
-
-    local portal = ents.Create("lod_staging_prop")
-    if IsValid(portal) then
-        portal:SetStageKind(portal.KIND_PORTAL or 2)
-        portal:SetStageLabel("PRESS E — ENTER THE DUNGEON")
-        portal:SetPos(localOffset(center, angles, -PORTAL_BACK, 0, 0))
-        portal:SetAngles(angles)
-        portal:Spawn()
-        portal:Activate()
-        self.PortalEntity = self:_RegisterHut(portal)
-    end
-
-    print(string.format(
-        "[LOD:STAGING] native hut anchor=%s pos=(%.1f %.1f %.1f) yaw=%.1f",
-        tostring(anchorSource), center.x, center.y, center.z, angles.y))
-    return self:_HutValid()
-end
-
-function Staging:_StarterPosition()
-    return localOffset(self.HutCenter, self.HutAngles, STARTER_FORWARD, 0, 20)
-end
-
-function Staging:_SpawnPosition()
-    return localOffset(self.HutCenter, self.HutAngles, -35, 0, 8)
-end
-
-function Staging:_FacingAngles()
-    return Angle(0, self.HutAngles.y, 0)
 end
 
 function Staging:_ApplyStarterTransmission(ent, ownerIdentity)
@@ -388,8 +613,7 @@ function Staging:PlacePlayerInHut(ply, announce)
     if not ps or ps.deploymentComplete then return false end
     if not self:EnsureHut() then return false end
 
-    self:_AssignStarter(ps)
-    self:_ClearLegacyCatchup(ps)
+    initializeStagingState(ps)
     ply:SetPos(self:_SpawnPosition())
     ply:SetEyeAngles(self:_FacingAngles())
     ply:SetLocalVelocity(vector_origin)
@@ -400,7 +624,7 @@ function Staging:PlacePlayerInHut(ply, announce)
     if announce ~= false and not ps.stagingIntroShown then
         ps.stagingIntroShown = true
         ply:ChatPrint("DUNGEON HERMIT: It's dangerous to go alone. Take this.")
-        ply:ChatPrint("Take your weapon, then turn around and press E on the blue portal when you're ready.")
+        ply:ChatPrint("Take your weapon, then turn around and use the blue portal when you're ready.")
     end
 
     self.Stats.staged = (self.Stats.staged or 0) + 1
@@ -497,9 +721,9 @@ if not RunManager.LODStagingApplyWrapped then
     end
 end
 
--- The hut starter replaces the former two guaranteed Level-1 keycard-pocket
--- firearm nodes. Further firearm discoveries remain in the ordinary individualized
--- reward/drop economy instead of being front-loaded as mandatory grants.
+-- Staging replaces the two historical guaranteed Level-1 firearm nodes. Keep this
+-- narrow compatibility adapter until the broader LootDirector consolidation removes
+-- those old nodes at their original source.
 if Loot and not Loot.LODStagingStarterPlanInstalled then
     Loot.LODStagingStarterPlanInstalled = true
     local baseBuildStaticPlan = Loot.BuildStaticPlan
@@ -529,102 +753,129 @@ end
 if not RunManager.LODStagingCampaignWrapped then
     RunManager.LODStagingCampaignWrapped = true
     local baseNewCampaign = RunManager.NewCampaign
-    function RunManager:NewCampaign()
+    function RunManager:NewCampaign(...)
         clearStarterEntities()
-        return baseNewCampaign(self)
+        Staging:_ClearHutPresentation()
+        Staging.HutCenter = nil
+        Staging.HutAnchorSource = nil
+        return baseNewCampaign(self, ...)
     end
+end
 
+if not RunManager.LODStagingBuildWrapped then
+    RunManager.LODStagingBuildWrapped = true
     local baseBuildCurrentLevel = RunManager.BuildCurrentLevel
-    function RunManager:BuildCurrentLevel(levelSeedOverride)
-        local ok, result = baseBuildCurrentLevel(self, levelSeedOverride)
-        if ok then
-            Staging:EnsureHut()
-            timer.Simple(0, function()
-                for _, ply in ipairs(player.GetAll()) do
-                    local ps = RunManager:GetPlayerState(ply)
-                    if IsValid(ply) and ply:Alive() and ps and RunManager:IsSlotActivePlayer(ply)
-                        and ps.deploymentComplete ~= true
-                    then
-                        Staging:PlacePlayerInHut(ply, false)
-                    end
+    function RunManager:BuildCurrentLevel(...)
+        local ok, result = baseBuildCurrentLevel(self, ...)
+        if not ok then return ok, result end
+
+        Staging:EnsureHut()
+        timer.Simple(0, function()
+            if not self.State or not self.State.BuildReady then return end
+            for _, ply in ipairs(player.GetAll()) do
+                local ps = self:GetPlayerState(ply)
+                if IsValid(ply) and ps and self:IsSlotActivePlayer(ply)
+                    and ps.deploymentComplete ~= true and ply:Alive()
+                then
+                    Staging:PlacePlayerInHut(ply, true)
                 end
-            end)
-        end
+            end
+        end)
         return ok, result
     end
 end
 
-hook.Add("PlayerInitialSpawn", "LOD_StagingStarterTransmissionMask", function(ply)
+hook.Add("PlayerInitialSpawn", "LOD_StagingStarterTransmission", function(ply)
     timer.Simple(0, function()
         if not IsValid(ply) then return end
-        local identity = identityOf(ply)
-        for ownerIdentity, ent in pairs(Staging.StarterEntities or {}) do
-            if IsValid(ent) then ent:SetPreventTransmit(ply, ownerIdentity ~= identity) end
+        for identity, ent in pairs(Staging.StarterEntities or {}) do
+            if IsValid(ent) then ent:SetPreventTransmit(ply, identityOf(ply) ~= identity) end
         end
     end)
 end)
 
-hook.Add("PlayerDisconnected", "LOD_StagingDisconnectedStarterCleanup", function(ply)
+hook.Add("PlayerDisconnected", "LOD_StagingStarterCleanup", function(ply)
     local identity = identityOf(ply)
     local ent = identity and Staging.StarterEntities[identity]
-    if IsValid(ent) then ent:Remove() end
+    removeEntity(ent)
     if identity then Staging.StarterEntities[identity] = nil end
 end)
 
 hook.Add("ShutDown", "LOD_StagingCleanup", function()
     clearStarterEntities()
-    for _, ent in ipairs(Staging.HutEntities or {}) do removeEntity(ent) end
-    Staging.HutEntities = {}
+    Staging:_ClearHutPresentation()
+end)
+
+concommand.Add("lod_staging_anchor_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    local center = Staging.HutCenter
+    local line = string.format(
+        "source=%s hut=%s center=%s halfForward=%.1f halfRight=%.1f",
+        tostring(Staging.HutAnchorSource or "none"), tostring(Staging:_HutValid()),
+        center and string.format("%.1f,%.1f,%.1f", center.x, center.y, center.z) or "none",
+        tonumber(Staging.HutHalfForward) or 0, tonumber(Staging.HutHalfRight) or 0)
+    print("[LOD:STAGING-ANCHOR] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
 concommand.Add("lod_staging_status", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
+    local slotCount, stagedCount, deployedCount, claimedCount, pickupCount = 0, 0, 0, 0, 0
+    local starterSeen, conflicts = {}, 0
 
-    local state = RunManager.State or {}
-    local staged, deployed, claims, pickups = 0, 0, 0, 0
-    local starterSeen = {}
-    local duplicateActiveStarter = 0
-
-    for identity, active in pairs(state.ActiveIdentity or {}) do
-        if active then
-            local ps = state.PlayerState and state.PlayerState[identity]
-            if ps then
-                if ps.deploymentComplete then deployed = deployed + 1 else staged = staged + 1 end
-                if ps.starterClaimed then claims = claims + 1 end
-                if ps.starterWeaponClass then
-                    if starterSeen[ps.starterWeaponClass] then duplicateActiveStarter = duplicateActiveStarter + 1 end
-                    starterSeen[ps.starterWeaponClass] = true
-                end
+    for _, candidate in ipairs(player.GetAll()) do
+        local ps = RunManager:GetPlayerState(candidate)
+        if ps and RunManager:IsSlotActivePlayer(candidate) then
+            slotCount = slotCount + 1
+            if ps.deploymentComplete then deployedCount = deployedCount + 1 else stagedCount = stagedCount + 1 end
+            if ps.starterClaimed then claimedCount = claimedCount + 1 end
+            if ps.starterWeaponClass then
+                if starterSeen[ps.starterWeaponClass] then conflicts = conflicts + 1 end
+                starterSeen[ps.starterWeaponClass] = true
             end
         end
     end
-    for _, ent in pairs(Staging.StarterEntities or {}) do
-        if IsValid(ent) then pickups = pickups + 1 end
-    end
+    for _, ent in pairs(Staging.StarterEntities or {}) do if IsValid(ent) then pickupCount = pickupCount + 1 end end
 
-    local hutReady = Staging:_HutValid()
-    local result = hutReady and duplicateActiveStarter == 0 and "PASS" or "FAIL"
+    local pass = Staging:_HutValid() and conflicts == 0
     local line = string.format(
         "slotActive=%d staged=%d deployed=%d claimed=%d pickups=%d hut=%s anchor=%s uniqueStarterConflicts=%d deployments=%d denied=%d result=%s",
-        RunManager._ActiveCount and RunManager:_ActiveCount() or 0, staged, deployed, claims, pickups,
-        tostring(hutReady), tostring(Staging.HutAnchorSource or "none"), duplicateActiveStarter,
-        Staging.Stats.deployments or 0, Staging.Stats.portalDenied or 0, result)
+        slotCount, stagedCount, deployedCount, claimedCount, pickupCount,
+        tostring(Staging:_HutValid()), tostring(Staging.HutAnchorSource or "none"),
+        conflicts, Staging.Stats.deployments or 0, Staging.Stats.portalDenied or 0,
+        pass and "PASS" or "FAIL")
     print("[LOD:STAGING] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
+end)
 
-    for _, candidate in ipairs(RunManager:_SortedConnectedPlayers()) do
-        if IsValid(candidate) then
-            local ps = RunManager:GetPlayerState(candidate)
-            if ps then
-                local spec = starterSpec(ps.starterWeaponClass)
-                local detail = string.format(
-                    "%s ord=%s starter=%s claimed=%s staged=%s deployed=%s entryLevel=%s",
-                    candidate:Nick(), tostring(ps.ordinal or "-"), spec and spec.label or "none",
-                    tostring(ps.starterClaimed == true), tostring(ps.deploymentComplete ~= true),
-                    tostring(ps.deploymentComplete == true), tostring(ps.starterEntryLevel or "-"))
-                print("[LOD:STAGING] " .. detail)
-                if IsValid(ply) then ply:ChatPrint(detail) end
-            end
-        end
+concommand.Add("lod_staging_audit_status", function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local torches, barrierBoxes = 0, 0
+    for _, ent in ipairs(Staging.TorchEntities or {}) do if IsValid(ent) then torches = torches + 1 end end
+    for _, ent in ipairs(Staging.HutEntities or {}) do
+        if IsValid(ent) and ent:GetClass() == "lod_static_box" then barrierBoxes = barrierBoxes + 1 end
     end
+
+    local portalShared = IsValid(Staging.PortalEntity)
+        and Staging.PortalEntity.PortalAimFraction ~= nil
+        and Staging.PortalEntity.IsPortalAimHit ~= nil
+    local decor = IsValid(Staging.SignEntity)
+        and IsValid(Staging.ManualEntity)
+        and IsValid(Staging.MirrorEntity)
+        and IsValid(Staging.StarterPedestalEntity)
+        and torches >= 2
+    local pass = Staging.ArchitectureVersion == "canonical-native-room-v1"
+        and Staging:_HutValid()
+        and Staging.HutAnchorSource == "native-enclosed-room"
+        and barrierBoxes == 0 and decor and portalShared
+
+    local line = string.format(
+        "architecture=%s nativeRoom=%s barriers=%d decor=%s torches=%d portalShared=%s manual=%s mirror=%s result=%s",
+        tostring(Staging.ArchitectureVersion), tostring(Staging.HutAnchorSource == "native-enclosed-room"),
+        barrierBoxes, tostring(decor), torches, tostring(portalShared),
+        tostring(IsValid(Staging.ManualEntity)), tostring(IsValid(Staging.MirrorEntity)),
+        pass and "PASS" or "FAIL")
+    print("[LOD:STAGING-AUDIT] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
 end)
