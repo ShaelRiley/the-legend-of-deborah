@@ -4,12 +4,10 @@ LOD = LOD or {}
 LOD.FieldManual = LOD.FieldManual or {}
 local Manual = LOD.FieldManual
 
-surface.CreateFont("LOD_InstructionWall", {font = "DejaVu Sans", size = 52, weight = 1000, antialias = true})
+surface.CreateFont("LOD_InstructionWall", {font = "DejaVu Sans", size = 64, weight = 1000, antialias = true})
 surface.CreateFont("LOD_InstructionHover", {font = "DejaVu Sans", size = 38, weight = 1000, antialias = true})
 surface.CreateFont("LOD_InstructionBook", {font = "Georgia", size = 20, weight = 900, antialias = true})
 surface.CreateFont("LOD_ManualControl", {font = "DejaVu Sans", size = 20, weight = 900, antialias = true})
-surface.CreateFont("LOD_ManualHelp", {font = "DejaVu Sans", size = 17, weight = 700, antialias = true})
-surface.CreateFont("LOD_StagingWallHotfix", {font = "DejaVu Sans", size = 52, weight = 1000, antialias = true})
 surface.CreateFont("LOD_StagingPortalHotfix", {font = "DejaVu Sans", size = 38, weight = 1000, antialias = true})
 
 local function loadChunk(path)
@@ -35,6 +33,14 @@ local function facing3D2DAngle(pos)
     return ang
 end
 
+local function wallSurfaceAngle(ent)
+    local ang = ent:GetAngles()
+    ang = Angle(ang.p, ang.y, ang.r)
+    ang:RotateAroundAxis(ang:Right(), 90)
+    ang:RotateAroundAxis(ang:Up(), 90)
+    return ang
+end
+
 local function drawPedestal(ent)
     local pos, ang = ent:GetPos(), ent:GetAngles()
     local up, right = Vector(0, 0, 1), ent:GetRight()
@@ -54,16 +60,28 @@ local function drawPedestal(ent)
         (up - right * 0.25):GetNormalized(), 19, 26, Color(246, 237, 207), 0)
 end
 
+local function drawWallTitle(ent)
+    local pos = ent:GetPos() + ent:GetForward() * 4 + Vector(0, 0, 110)
+    cam.Start3D2D(pos, wallSurfaceAngle(ent), 0.22)
+        draw.SimpleTextOutlined("INSTRUCTION MANUAL", "LOD_InstructionWall", 0, 0,
+            Color(252, 252, 248), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+            5, Color(0, 0, 0, 255))
+    cam.End3D2D()
+end
+
 function ENT:Initialize()
-    self:SetRenderBounds(Vector(-180, -180, -16), Vector(180, 180, 190))
+    self:SetRenderBounds(Vector(-220, -220, -24), Vector(220, 220, 220))
 end
 
 function ENT:Draw()
     drawPedestal(self)
+    drawWallTitle(self)
+
     local bookPos = self:GetPos() + Vector(0, 0, 49)
     cam.Start3D2D(bookPos, facing3D2DAngle(bookPos), 0.06)
         draw.SimpleTextOutlined("THE LEGEND OF DEBORAH", "LOD_InstructionBook", 0, 0,
-            Color(124, 42, 38), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(255, 248, 225, 235))
+            Color(124, 42, 38), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+            1, Color(255, 248, 225, 235))
     cam.End3D2D()
 end
 
@@ -71,6 +89,11 @@ function ENT:DrawTranslucent()
     self:Draw()
 end
 
+-- GMod's embedded Chromium is older than the browser targeted by the attached
+-- manual package. Keep the exact pages/CSS/content, but replace only its modern
+-- JavaScript bootstrap with an ES5-compatible implementation. Pagination is
+-- physical-book style: cover alone on the right, then page 1 left/page 2 right,
+-- ending with page 21 left and the Back Cover right.
 local COMPAT_SCRIPT = [=[
 (function(){
   var sourceNodes=document.querySelectorAll('.source-page');
@@ -112,27 +135,54 @@ local COMPAT_SCRIPT = [=[
     bindJumps(node);
     return node;
   }
+  function lastSpreadAnchor(){
+    var last=source.length-1;
+    if(last<=0) return 0;
+    return last%2===0 ? last-1 : last;
+  }
+  function spreadFor(index){
+    if(compact()) return Math.max(0,Math.min(source.length-1,index));
+    if(index<=0) return 0;
+    index=Math.max(1,Math.min(source.length-1,index));
+    return index%2===0 ? index-1 : index;
+  }
+  function resetScroll(){
+    if(left) left.scrollTop=0;
+    if(right) right.scrollTop=0;
+  }
   function render(){
     left.innerHTML=''; right.innerHTML='';
     if(compact()){
       right.appendChild(clonePage(anchor));
       folio.innerHTML=titleAt(anchor);
+      resetScroll();
       return;
     }
-    if(anchor%2!==0) anchor-=1;
+    anchor=spreadFor(anchor);
+    if(anchor===0){
+      right.appendChild(clonePage(0));
+      folio.innerHTML=titleAt(0);
+      resetScroll();
+      return;
+    }
     left.appendChild(clonePage(anchor));
     if(anchor+1<source.length) right.appendChild(clonePage(anchor+1));
     folio.innerHTML=titleAt(anchor)+(anchor+1<source.length?' &nbsp;·&nbsp; '+titleAt(anchor+1):'');
+    resetScroll();
   }
-  function maxAnchor(){
-    if(compact()) return Math.max(0,source.length-1);
-    return Math.max(0,source.length-(source.length%2?1:2));
+  function nextAnchor(direction){
+    if(compact()) return Math.max(0,Math.min(source.length-1,anchor+direction));
+    if(direction>0){
+      if(anchor===0) return Math.min(1,lastSpreadAnchor());
+      return Math.min(lastSpreadAnchor(),anchor+2);
+    }
+    if(anchor<=1) return 0;
+    return Math.max(1,anchor-2);
   }
   function finishTurn(next){ anchor=next; render(); busy=false; }
   function turn(direction){
     if(readingOn || busy) return;
-    var step=compact()?1:2;
-    var next=Math.max(0,Math.min(maxAnchor(),anchor+direction*step));
+    var next=nextAnchor(direction);
     if(next===anchor) return;
     busy=true;
     if(soundOn) nativeCall('pageTurn',next,direction);
@@ -172,8 +222,7 @@ local COMPAT_SCRIPT = [=[
   }
   function jump(index){
     if(readingOn) toggleReading(false);
-    anchor=Math.max(0,Math.min(source.length-1,index));
-    if(!compact() && anchor%2!==0) anchor-=1;
+    anchor=spreadFor(index);
     render();
     if(soundOn) nativeCall('pageTurn',anchor,1);
   }
@@ -222,10 +271,18 @@ local EXTRA_STYLE = [=[
 <style>
 html,body,#manualApp{opacity:1!important;background:#17191c!important}
 .book-stage{background:#17191c!important}
-.page-slot{background:#f4edda!important;color:#20201d!important;opacity:1!important}
-.page{color:#20201d!important}
+.page-slot{
+  background:#f4edda!important;color:#20201d!important;opacity:1!important;
+  overflow-y:scroll!important;overflow-x:hidden!important;
+  scrollbar-color:#8b7a60 #e6dcc4;
+}
+.page-slot::-webkit-scrollbar{width:14px}
+.page-slot::-webkit-scrollbar-track{background:#e6dcc4}
+.page-slot::-webkit-scrollbar-thumb{background:#8b7a60;border:3px solid #e6dcc4}
+.page{color:#20201d!important;height:auto!important;min-height:100%!important;overflow:visible!important;padding-bottom:78px!important}
+.page.cover,.page.back-cover{height:100%!important;min-height:100%!important;padding:0!important;overflow:hidden!important}
 .toolbar{background:#202329!important;color:#f8f4e8!important}
-.reading{background:#f4edda!important;color:#20201d!important}
+.reading{background:#f4edda!important;color:#20201d!important;overflow-y:auto!important}
 </style>
 ]=]
 
@@ -349,35 +406,9 @@ hook.Add("HUDPaint","LOD_FieldManualAndPortalPrompts",function()
     end
 end)
 
--- Draw the two requested wall inscriptions from a global render hook so they are
--- never culled with the tiny invisible helper model that owns their network state.
-hook.Add("PostDrawTranslucentRenderables","LOD_StagingPhysicalWallLetters",function(depth,sky)
-    if depth or sky then return end
-    local ply=LocalPlayer()
-    if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed",false) then return end
-
-    for _,ent in ipairs(ents.FindByClass("lod_staging_prop")) do
-        if IsValid(ent) and ent.GetStageKind and ent:GetStageKind()==4 then
-            local pos=ent:GetPos(); local label=string.Replace(ent:GetStageLabel() or "","\\n","\n")
-            local lines=string.Explode("\n",label)
-            cam.Start3D2D(pos,facing3D2DAngle(pos),.28)
-                for i,line in ipairs(lines) do
-                    draw.SimpleTextOutlined(line,"LOD_StagingWallHotfix",0,(i-1)*58,
-                        Color(250,250,246),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,4,Color(0,0,0,250))
-                end
-            cam.End3D2D()
-        end
-    end
-
-    for _,ent in ipairs(ents.FindByClass("lod_field_manual")) do
-        if IsValid(ent) then
-            local pos=ent:GetPos()+Vector(0,0,108)
-            cam.Start3D2D(pos,facing3D2DAngle(pos),.23)
-                draw.SimpleTextOutlined("INSTRUCTION MANUAL","LOD_InstructionWall",0,0,
-                    Color(250,250,246),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,4,Color(0,0,0,250))
-            cam.End3D2D()
-        end
-    end
-end)
+-- The wall quote is now owned by the staging prop itself and the manual title by
+-- this entity's Draw pass. Remove the older billboard fallback so neither label
+-- can rotate toward the camera or render twice.
+hook.Remove("PostDrawTranslucentRenderables","LOD_StagingPhysicalWallLetters")
 
 hook.Add("ShutDown","LOD_FieldManualClose",function() Manual:Close(false) end)
