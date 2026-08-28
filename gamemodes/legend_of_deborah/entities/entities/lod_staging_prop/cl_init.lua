@@ -7,19 +7,13 @@ local KIND_PORTAL = 2
 local KIND_WEAPON = 3
 local KIND_SIGN = 4
 local KIND_TORCH = 5
+local KIND_PEDESTAL = 6
 local CELEBRATION_DURATION = 1.45
 
 surface.CreateFont("LOD_StagingLabel", {
     font = "DejaVu Sans",
     size = 32,
     weight = 800,
-    antialias = true
-})
-
-surface.CreateFont("LOD_StagingLine", {
-    font = "DejaVu Sans",
-    size = 24,
-    weight = 650,
     antialias = true
 })
 
@@ -51,6 +45,62 @@ local function facing3D2DAngle(pos)
     return ang
 end
 
+local function boneAngle(ent, name, ang)
+    local bone = ent:LookupBone(name)
+    if bone then ent:ManipulateBoneAngles(bone, ang) end
+end
+
+local function applyGuidePose(ent)
+    if ent.LODClientGuidePoseApplied then return end
+    ent.LODClientGuidePoseApplied = true
+
+    ent:ResetSequence(0)
+    ent:SetCycle(0)
+    ent:SetPlaybackRate(0)
+
+    boneAngle(ent, "ValveBiped.Bip01_L_Thigh", Angle(0, 0, 18))
+    boneAngle(ent, "ValveBiped.Bip01_R_Thigh", Angle(0, 0, -18))
+    boneAngle(ent, "ValveBiped.Bip01_L_Calf", Angle(0, 0, -7))
+    boneAngle(ent, "ValveBiped.Bip01_R_Calf", Angle(0, 0, 7))
+
+    boneAngle(ent, "ValveBiped.Bip01_L_UpperArm", Angle(-8, -28, -58))
+    boneAngle(ent, "ValveBiped.Bip01_L_Forearm", Angle(2, -70, -12))
+    boneAngle(ent, "ValveBiped.Bip01_L_Hand", Angle(0, 0, 28))
+
+    boneAngle(ent, "ValveBiped.Bip01_R_UpperArm", Angle(-12, 22, 52))
+    boneAngle(ent, "ValveBiped.Bip01_R_Forearm", Angle(0, 58, 18))
+    boneAngle(ent, "ValveBiped.Bip01_R_Hand", Angle(-8, 0, -28))
+
+    for _, name in ipairs({
+        "ValveBiped.Bip01_R_Finger1", "ValveBiped.Bip01_R_Finger11",
+        "ValveBiped.Bip01_R_Finger2", "ValveBiped.Bip01_R_Finger21",
+        "ValveBiped.Bip01_R_Finger3", "ValveBiped.Bip01_R_Finger31",
+        "ValveBiped.Bip01_R_Finger4", "ValveBiped.Bip01_R_Finger41"
+    }) do
+        boneAngle(ent, name, Angle(0, 0, 58))
+    end
+    boneAngle(ent, "ValveBiped.Bip01_R_Finger0", Angle(0, -42, -28))
+    boneAngle(ent, "ValveBiped.Bip01_R_Finger01", Angle(0, -18, -8))
+
+    if ent.SetFlexScale then ent:SetFlexScale(1) end
+    if ent.GetFlexNum and ent.GetFlexName and ent.SetFlexWeight then
+        for flex = 0, ent:GetFlexNum() - 1 do
+            local name = string.lower(ent:GetFlexName(flex) or "")
+            if string.find(name, "smile", 1, true) or string.find(name, "happy", 1, true)
+                or string.find(name, "grin", 1, true)
+            then
+                ent:SetFlexWeight(flex, 1)
+            elseif string.find(name, "jaw", 1, true)
+                and (string.find(name, "drop", 1, true) or string.find(name, "open", 1, true))
+            then
+                ent:SetFlexWeight(flex, 0.24)
+            elseif string.find(name, "cheek", 1, true) and string.find(name, "raise", 1, true) then
+                ent:SetFlexWeight(flex, 0.55)
+            end
+        end
+    end
+end
+
 local function labelColor(kind)
     if kind == KIND_PORTAL then return Color(110, 165, 255) end
     if kind == KIND_WEAPON then return Color(248, 213, 105) end
@@ -73,14 +123,14 @@ end
 local function drawWallQuote(ent)
     local pos = ent:GetPos()
     local ang = facing3D2DAngle(pos)
-    local lines = string.Explode("\n", ent:GetStageLabel() or "")
+    local lines = string.Explode("\\n", ent:GetStageLabel() or "")
 
     cam.Start3D2D(pos, ang, 0.082)
         for index, line in ipairs(lines) do
             draw.SimpleTextOutlined(line,
                 "LOD_StagingWallQuote", 0, (index - 1) * 50,
-                Color(245, 245, 240), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-                4, Color(0, 0, 0, 245))
+                Color(248, 248, 244), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
+                4, Color(0, 0, 0, 250))
         end
     cam.End3D2D()
 end
@@ -115,12 +165,28 @@ local function drawPortalGlow(ent)
     render.DrawSprite(pos, 86, 86, Color(92, 148, 255, 190))
 end
 
+local function drawStarterPedestal(ent)
+    local pos, ang = ent:GetPos(), ent:GetAngles()
+    render.SetColorMaterial()
+    render.DrawBox(pos, ang, Vector(-16, -16, 0), Vector(16, 16, 10), Color(66, 48, 40))
+    render.DrawBox(pos + Vector(0, 0, 10), ang, Vector(-20, -20, 0), Vector(20, 20, 3), Color(128, 85, 55))
+    render.DrawBox(pos + Vector(0, 0, 13), ang, Vector(-18, -18, 0), Vector(18, 18, 1.5), Color(196, 151, 74))
+end
+
 function ENT:Draw()
     local kind = self:GetStageKind()
+
     if kind == KIND_SIGN then
         drawWallQuote(self)
         return
     end
+
+    if kind == KIND_PEDESTAL then
+        drawStarterPedestal(self)
+        return
+    end
+
+    if kind == KIND_GUIDE then applyGuidePose(self) end
 
     self:DrawModel()
     if kind == KIND_TORCH then

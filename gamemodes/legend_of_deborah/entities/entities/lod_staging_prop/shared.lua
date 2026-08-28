@@ -10,6 +10,7 @@ ENT.KIND_PORTAL = 2
 ENT.KIND_WEAPON = 3
 ENT.KIND_SIGN = 4
 ENT.KIND_TORCH = 5
+ENT.KIND_PEDESTAL = 6
 
 function ENT:SetupDataTables()
     self:NetworkVar("Int", 0, "StageKind")
