@@ -4,11 +4,8 @@ LOD = LOD or {}
 LOD.FieldManual = LOD.FieldManual or {}
 local Manual = LOD.FieldManual
 
-surface.CreateFont("LOD_InstructionWall", {font = "DejaVu Sans", size = 64, weight = 1000, antialias = true})
-surface.CreateFont("LOD_InstructionHover", {font = "DejaVu Sans", size = 38, weight = 1000, antialias = true})
 surface.CreateFont("LOD_InstructionBook", {font = "Georgia", size = 20, weight = 900, antialias = true})
 surface.CreateFont("LOD_ManualControl", {font = "DejaVu Sans", size = 20, weight = 900, antialias = true})
-surface.CreateFont("LOD_StagingPortalHotfix", {font = "DejaVu Sans", size = 38, weight = 1000, antialias = true})
 
 local function loadChunk(path)
     local ok, value = pcall(include, path)
@@ -33,14 +30,6 @@ local function facing3D2DAngle(pos)
     return ang
 end
 
-local function wallSurfaceAngle(ent)
-    local ang = ent:GetAngles()
-    ang = Angle(ang.p, ang.y, ang.r)
-    ang:RotateAroundAxis(ang:Right(), 90)
-    ang:RotateAroundAxis(ang:Up(), 90)
-    return ang
-end
-
 local function drawPedestal(ent)
     local pos, ang = ent:GetPos(), ent:GetAngles()
     local up, right = Vector(0, 0, 1), ent:GetRight()
@@ -60,22 +49,12 @@ local function drawPedestal(ent)
         (up - right * 0.25):GetNormalized(), 19, 26, Color(246, 237, 207), 0)
 end
 
-local function drawWallTitle(ent)
-    local pos = ent:GetPos() + ent:GetForward() * 4 + Vector(0, 0, 110)
-    cam.Start3D2D(pos, wallSurfaceAngle(ent), 0.22)
-        draw.SimpleTextOutlined("INSTRUCTION MANUAL", "LOD_InstructionWall", 0, 0,
-            Color(252, 252, 248), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
-            5, Color(0, 0, 0, 255))
-    cam.End3D2D()
-end
-
 function ENT:Initialize()
     self:SetRenderBounds(Vector(-220, -220, -24), Vector(220, 220, 220))
 end
 
 function ENT:Draw()
     drawPedestal(self)
-    drawWallTitle(self)
 
     local bookPos = self:GetPos() + Vector(0, 0, 49)
     cam.Start3D2D(bookPos, facing3D2DAngle(bookPos), 0.06)
@@ -267,22 +246,16 @@ local COMPAT_SCRIPT = [=[
 })();
 ]=]
 
+-- Base compatibility styling only. The canonical document-level scrolling/layout
+-- repair is installed by lod_manual_reader_runtime.lua.
 local EXTRA_STYLE = [=[
 <style>
 html,body,#manualApp{opacity:1!important;background:#17191c!important}
 .book-stage{background:#17191c!important}
-.page-slot{
-  background:#f4edda!important;color:#20201d!important;opacity:1!important;
-  overflow-y:scroll!important;overflow-x:hidden!important;
-  scrollbar-color:#8b7a60 #e6dcc4;
-}
-.page-slot::-webkit-scrollbar{width:14px}
-.page-slot::-webkit-scrollbar-track{background:#e6dcc4}
-.page-slot::-webkit-scrollbar-thumb{background:#8b7a60;border:3px solid #e6dcc4}
-.page{color:#20201d!important;height:auto!important;min-height:100%!important;overflow:visible!important;padding-bottom:78px!important}
-.page.cover,.page.back-cover{height:100%!important;min-height:100%!important;padding:0!important;overflow:hidden!important}
+.page-slot{background:#f4edda!important;color:#20201d!important;opacity:1!important;}
+.page{color:#20201d!important;padding-bottom:78px!important}
 .toolbar{background:#202329!important;color:#f8f4e8!important}
-.reading{background:#f4edda!important;color:#20201d!important;overflow-y:auto!important}
+.reading{background:#f4edda!important;color:#20201d!important;}
 </style>
 ]=]
 
@@ -373,42 +346,5 @@ hook.Add("Think","LOD_FieldManualEscapeFailsafe",function()
     if down and not escapeWasDown then Manual:Close(true) end
     escapeWasDown=down
 end)
-
-local function aimedAt(ply,className,kind,maxDist,minDot)
-    local eye=ply:EyePos(); local forward=ply:EyeAngles():Forward()
-    local best,bestDot
-    for _,ent in ipairs(ents.FindByClass(className)) do
-        if IsValid(ent) and (not kind or (ent.GetStageKind and ent:GetStageKind()==kind)) then
-            local delta=ent:WorldSpaceCenter()-eye
-            local dist2=delta:LengthSqr()
-            if dist2<=(maxDist*maxDist) and dist2>1 then
-                delta:Normalize(); local dot=forward:Dot(delta)
-                if dot>=(minDot or .94) and (not bestDot or dot>bestDot) then best,bestDot=ent,dot end
-            end
-        end
-    end
-    return best
-end
-
-hook.Add("HUDPaint","LOD_FieldManualAndPortalPrompts",function()
-    if IsValid(Manual.Frame) then return end
-    local ply=LocalPlayer()
-    if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed",false) then return end
-
-    if IsValid(aimedAt(ply,"lod_field_manual",nil,260,.94)) then
-        draw.SimpleTextOutlined("Press 'E' to Read","LOD_InstructionHover",ScrW()*.5,ScrH()*.64,
-            Color(250,250,245),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,4,Color(0,0,0,245))
-        return
-    end
-    if IsValid(aimedAt(ply,"lod_staging_prop",2,320,.92)) then
-        draw.SimpleTextOutlined("Press \"E\" to Enter the Labyrinth","LOD_StagingPortalHotfix",ScrW()*.5,ScrH()*.64,
-            Color(250,250,245),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,4,Color(0,0,0,245))
-    end
-end)
-
--- The wall quote is now owned by the staging prop itself and the manual title by
--- this entity's Draw pass. Remove the older billboard fallback so neither label
--- can rotate toward the camera or render twice.
-hook.Remove("PostDrawTranslucentRenderables","LOD_StagingPhysicalWallLetters")
 
 hook.Add("ShutDown","LOD_FieldManualClose",function() Manual:Close(false) end)
