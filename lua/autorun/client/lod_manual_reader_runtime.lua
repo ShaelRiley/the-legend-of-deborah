@@ -2,145 +2,10 @@ if engine.ActiveGamemode and engine.ActiveGamemode() ~= "legend_of_deborah" then
 
 LOD = LOD or {}
 
--- The attached booklet uses a fixed-height page layout with overflow clipped at
--- several nested levels. The earlier per-page scrollbar therefore had almost no
--- real scroll range: some content was already clipped before it could contribute
--- to page-slot scrollHeight. This pass changes the authority completely. Book and
--- reading content expand in normal flow and the DHTML document itself scrolls.
--- A fixed gold scrollbar plus Lua input fallbacks keep it usable on GMod Chromium.
-
-local PANEL_MATERIAL = Material("models/props_c17/FurnitureWood001a")
-local PANEL_COLOR = Color(198, 168, 120, 255)
-local PANEL_EDGE = Color(69, 51, 35, 245)
-local PANEL_SHADOW = Color(15, 12, 10, 235)
-local STENCIL_COLOR = Color(250, 250, 246, 255)
-local SIGN_KIND = 4
-
-surface.CreateFont("LOD_HutDINStencil", {
-    font = "Roboto Condensed",
-    size = 82,
-    weight = 900,
-    antialias = true,
-    extended = false
-})
-
-local STENCIL_BRIDGE_CHARS = {
-    A = true, B = true, D = true, O = true, P = true, R = true,
-    ["0"] = true, ["6"] = true, ["8"] = true, ["9"] = true
-}
-
-local function drawBoard(width, height)
-    local border = 11
-    surface.SetDrawColor(PANEL_SHADOW)
-    surface.DrawRect(-width * 0.5 - border, -height * 0.5 - border,
-        width + border * 2, height + border * 2)
-
-    if PANEL_MATERIAL and not PANEL_MATERIAL:IsError() then
-        surface.SetMaterial(PANEL_MATERIAL)
-        surface.SetDrawColor(PANEL_COLOR)
-        surface.DrawTexturedRect(-width * 0.5, -height * 0.5, width, height)
-    else
-        surface.SetDrawColor(PANEL_COLOR)
-        surface.DrawRect(-width * 0.5, -height * 0.5, width, height)
-    end
-
-    surface.SetDrawColor(PANEL_EDGE)
-    surface.DrawRect(-width * 0.5, -height * 0.5, width, 5)
-    surface.DrawRect(-width * 0.5, height * 0.5 - 5, width, 5)
-    surface.DrawRect(-width * 0.5, -height * 0.5, 5, height)
-    surface.DrawRect(width * 0.5 - 5, -height * 0.5, 5, height)
-
-    local bolt, inset = 11, 22
-    for _, x in ipairs({-width * 0.5 + inset, width * 0.5 - inset - bolt}) do
-        for _, y in ipairs({-height * 0.5 + inset, height * 0.5 - inset - bolt}) do
-            surface.DrawRect(x, y, bolt, bolt)
-        end
-    end
-end
-
-local function drawStencil(text, y)
-    text = tostring(text or "")
-    surface.SetFont("LOD_HutDINStencil")
-    local totalW, totalH = surface.GetTextSize(text)
-
-    draw.SimpleText(text, "LOD_HutDINStencil", 5, y + 6,
-        Color(18, 18, 17, 220), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-    draw.SimpleText(text, "LOD_HutDINStencil", 0, y,
-        STENCIL_COLOR, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-
-    local charW = totalW / math.max(1, #text)
-    for index = 1, #text do
-        local ch = string.upper(string.sub(text, index, index))
-        if STENCIL_BRIDGE_CHARS[ch] then
-            local cx = -totalW * 0.5 + (index - 0.5) * charW
-            local bridgeW = math.max(6, math.floor(charW * 0.08))
-            local bridgeH = math.max(15, math.floor(totalH * 0.15))
-            surface.SetDrawColor(PANEL_COLOR)
-            surface.DrawRect(cx - bridgeW * 0.5, y - bridgeH * 0.18, bridgeW, bridgeH)
-        end
-    end
-end
-
-local function wallAnchor(ent, up)
-    if not IsValid(ent) then return nil end
-    local normal = ent:GetForward():GetNormalized()
-    local origin = ent:GetPos() + Vector(0, 0, up or 0)
-    local tr = util.TraceLine({
-        start = origin + normal * 12,
-        endpos = origin - normal * 140,
-        mask = MASK_SOLID_BRUSHONLY
-    })
-    return tr.Hit and (tr.HitPos + normal * 2.5) or origin
-end
-
-local function panelAngle(ent, pos)
-    local ang = ent:GetAngles()
-    ang = Angle(ang.p, ang.y, ang.r)
-    local side = ent:GetForward():Dot(EyePos() - pos) >= 0 and 1 or -1
-    ang:RotateAroundAxis(ang:Right(), side > 0 and -90 or 90)
-    ang:RotateAroundAxis(ang:Up(), 90)
-    if side < 0 then ang:RotateAroundAxis(ang:Up(), 180) end
-    return ang
-end
-
-local function installRaisedWallPanels()
-    hook.Add("PostDrawOpaqueRenderables", "LOD_StagingQuadrantStyleWallPanels", function(depth, sky)
-        if depth or sky then return end
-        local ply = LocalPlayer()
-        if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed", false) then return end
-
-        for _, ent in ipairs(ents.FindByClass("lod_staging_prop")) do
-            if IsValid(ent) and ent.GetStageKind and ent:GetStageKind() == SIGN_KIND then
-                -- Same proven physical sign, modestly enlarged and lifted so the
-                -- opening camera can read both lines above Grigori's head/shoulder.
-                local pos = wallAnchor(ent, 35)
-                if pos then
-                    cam.Start3D2D(pos, panelAngle(ent, pos), 0.13)
-                        drawBoard(1000, 300)
-                        drawStencil("IT'S DANGEROUS TO GO", -50)
-                        drawStencil("ALONE! TAKE THIS.", 50)
-                    cam.End3D2D()
-                end
-            end
-        end
-
-        for _, ent in ipairs(ents.FindByClass("lod_field_manual")) do
-            if IsValid(ent) then
-                local pos = wallAnchor(ent, 108)
-                if pos then
-                    cam.Start3D2D(pos, panelAngle(ent, pos), 0.12)
-                        drawBoard(850, 170)
-                        drawStencil("INSTRUCTION MANUAL", 0)
-                    cam.End3D2D()
-                end
-            end
-        end
-    end)
-end
-
-installRaisedWallPanels()
-timer.Create("LOD_StagingRaisedWallPanelAuthority", 1, 0, installRaisedWallPanels)
-
+-- Canonical manual scrolling authority. The attached booklet's original fixed-height
+-- layout clips content before ordinary page scrolling can reach it, so this runtime
+-- normalizes the document into flowing content and provides one explicit gold
+-- document scrollbar plus GMod input fallbacks.
 local MANUAL_DOCUMENT_SCROLL = [=[
 (function(){
   if(window.LODManualDocumentScrollInstalled) return;
@@ -258,7 +123,6 @@ local MANUAL_DOCUMENT_SCROLL = [=[
   document.addEventListener('mousemove',function(e){if(!dragging)return;var max=maximum();if(max<=0)return;var travel=Math.max(1,track.clientHeight-thumb.offsetHeight);setTop(dragStartScroll+(((e.clientY||0)-dragStartY)/travel)*max);if(e.preventDefault)e.preventDefault();},true);
   document.addEventListener('mouseup',function(){dragging=false;},true);
 
-  // Capture wheel before the old per-page fallback consumes it.
   document.addEventListener('wheel',function(e){var delta=typeof e.deltaY==='number'?e.deltaY:(typeof e.wheelDelta==='number'?-e.wheelDelta:90);if(delta===0)delta=90;by(delta);if(e.preventDefault)e.preventDefault();if(e.stopPropagation)e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();return false;},true);
   document.addEventListener('mousewheel',function(e){e=e||window.event;by(e.wheelDelta?-e.wheelDelta:90);if(e.preventDefault)e.preventDefault();if(e.stopPropagation)e.stopPropagation();e.returnValue=false;return false;},true);
   document.addEventListener('DOMMouseScroll',function(e){by((e.detail||1)*54);if(e.preventDefault)e.preventDefault();if(e.stopPropagation)e.stopPropagation();return false;},true);
@@ -296,21 +160,31 @@ local function keyPulse(key, js)
     local state = keyState[key]
     local now = RealTime()
     if not down then keyState[key] = nil return end
-    if not state then keyState[key] = {nextRepeat = now + 0.34} queueManualJS(js) return end
-    if now >= state.nextRepeat then state.nextRepeat = now + 0.075 queueManualJS(js) end
+    if not state then
+        keyState[key] = {nextRepeat = now + 0.34}
+        queueManualJS(js)
+        return
+    end
+    if now >= state.nextRepeat then
+        state.nextRepeat = now + 0.075
+        queueManualJS(js)
+    end
 end
 
 hook.Add("Think", "LOD_FieldManualDocumentScroll", function()
     local manual = LOD and LOD.FieldManual
     local browser = manual and manual.Browser
-    if not IsValid(browser) then lastBrowser = nil keyState = {} return end
+    if not IsValid(browser) then
+        lastBrowser = nil
+        keyState = {}
+        return
+    end
 
     if browser ~= lastBrowser then
         lastBrowser = browser
-        -- The old patch finishes at .55s; land after it so document-flow CSS wins.
-        timer.Simple(0.65, function() if IsValid(browser) then injectManualDocumentScroll(browser) end end)
-        timer.Simple(0.90, function() if IsValid(browser) then injectManualDocumentScroll(browser) end end)
-        timer.Simple(1.20, function() if IsValid(browser) then injectManualDocumentScroll(browser) end end)
+        -- DHTML is populated asynchronously; two bounded injections are enough.
+        timer.Simple(0.18, function() if IsValid(browser) then injectManualDocumentScroll(browser) end end)
+        timer.Simple(0.55, function() if IsValid(browser) then injectManualDocumentScroll(browser) end end)
         browser.OnMouseWheeled = function(_, delta)
             if delta == 0 then return false end
             queueManualJS(string.format("if(window.lodManualScroll)lodManualScroll(%d);", math.floor(-delta * 104)))
