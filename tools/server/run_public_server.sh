@@ -40,7 +40,7 @@ rm -rf "$ADDON_DIR/gamemodes/legend_of_deborah/content/html"
 
 mkdir -p "$(dirname "$SERVER_CFG")"
 cat > "$SERVER_CFG" <<'EOF'
-hostname "The Legend of Deborah | Public Alpha"
+hostname "The Legend of Deborah"
 sv_lan 0
 hide_server 0
 sv_location us
