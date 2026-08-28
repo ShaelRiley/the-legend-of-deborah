@@ -3,48 +3,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 GMA="$ROOT/dist/the_legend_of_deborah.gma"
-ICON_SOURCE="$ROOT/gamemodes/legend_of_deborah/content/html/legend_of_deborah_loading.jpg"
-GENERATED_ICON="$ROOT/.build/workshop/workshop_icon.jpg"
-
-if [[ $# -gt 1 ]]; then
-    echo "Usage: bash tools/workshop/publish_workshop.sh [/path/to/workshop_icon.jpg]" >&2
-    exit 2
-fi
-
-if [[ $# -eq 1 ]]; then
-    ICON="$(readlink -f "$1")"
-    if [[ ! -f "$ICON" ]]; then
-        echo "Workshop icon not found: $1" >&2
-        exit 2
-    fi
-
-    case "${ICON,,}" in
-        *.jpg|*.jpeg) ;;
-        *)
-            echo "Workshop icon must be a 512x512 baseline JPEG (.jpg/.jpeg) with 4:2:0 chroma." >&2
-            exit 2
-            ;;
-    esac
-else
-    if [[ ! -f "$ICON_SOURCE" ]]; then
-        echo "Default Workshop artwork not found: $ICON_SOURCE" >&2
-        exit 2
-    fi
-    if ! command -v ffmpeg >/dev/null 2>&1; then
-        echo "ffmpeg is required to generate the Workshop icon automatically." >&2
-        echo "Either install/provide ffmpeg or pass an already compliant 512x512 baseline JPEG." >&2
-        exit 2
-    fi
-
-    mkdir -p "$(dirname "$GENERATED_ICON")"
-    ffmpeg -hide_banner -loglevel error -y \
-        -i "$ICON_SOURCE" \
-        -vf "scale=512:512:force_original_aspect_ratio=increase,crop=512:512" \
-        -frames:v 1 -q:v 2 -pix_fmt yuvj420p \
-        "$GENERATED_ICON"
-    ICON="$GENERATED_ICON"
-    echo "Generated Workshop icon: $ICON"
-fi
+WORKSHOP_ID="3791535712"
+CHANGES="${1:-Alpha playtest build update}"
 
 bash "$ROOT/tools/workshop/build_workshop.sh"
 
@@ -84,13 +44,15 @@ BIN_DIR="$(dirname "$GMPUBLISH_BIN")"
 PARENT_DIR="$(dirname "$BIN_DIR")"
 export LD_LIBRARY_PATH="$BIN_DIR:$PARENT_DIR:${LD_LIBRARY_PATH:-}"
 
-echo "Creating new Garry's Mod Workshop item..."
-echo "Steam must be running and logged into the account that will own the item."
+echo "Updating Garry's Mod Workshop item $WORKSHOP_ID..."
+echo "Steam must be running and logged into the account that owns the item."
 (
     cd "$BIN_DIR"
-    "./$(basename "$GMPUBLISH_BIN")" create -addon "$GMA" -icon "$ICON"
+    "./$(basename "$GMPUBLISH_BIN")" update \
+        -addon "$GMA" \
+        -id "$WORKSHOP_ID" \
+        -changes "$CHANGES"
 )
 
 echo
-echo "Upload complete. Copy the Workshop ID printed above; it must be added to legend_of_deborah.txt next."
-echo "Then set the Workshop item's visibility to Public in Steam Community > Workshop > Your Files."
+echo "Workshop update complete: https://steamcommunity.com/sharedfiles/filedetails/?id=$WORKSHOP_ID"
