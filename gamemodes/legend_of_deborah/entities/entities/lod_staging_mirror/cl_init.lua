@@ -1,18 +1,25 @@
 include("shared.lua")
 
-local RT_W, RT_H = 256, 512
-local MIRROR_W, MIRROR_H = 62, 122
-local mirrorRT = GetRenderTarget("lod_staging_full_length_mirror_v3", RT_W, RT_H)
-local mirrorMat = CreateMaterial("lod_staging_full_length_mirror_mat_v3", "UnlitGeneric", {
-    ["$basetexture"] = mirrorRT:GetName(),
+local RT_W, RT_H = 320, 640
+local MIRROR_W, MIRROR_H = 64, 132
+local rawRT = GetRenderTarget("lod_staging_full_length_mirror_raw_v4", RT_W, RT_H)
+local displayRT = GetRenderTarget("lod_staging_full_length_mirror_display_v4", RT_W, RT_H)
+local rawMat = CreateMaterial("lod_staging_full_length_mirror_raw_mat_v4", "UnlitGeneric", {
+    ["$basetexture"] = rawRT:GetName(),
     ["$vertexcolor"] = "1",
     ["$vertexalpha"] = "1"
 })
+local mirrorMat = CreateMaterial("lod_staging_full_length_mirror_mat_v4", "UnlitGeneric", {
+    ["$basetexture"] = displayRT:GetName(),
+    ["$vertexcolor"] = "1",
+    ["$vertexalpha"] = "1"
+})
+
 local renderingMirror = false
 local nextUpdate = 0
 
 function ENT:Initialize()
-    self:SetRenderBounds(Vector(-96, -96, -16), Vector(96, 96, 150))
+    self:SetRenderBounds(Vector(-110, -110, -20), Vector(110, 110, 170))
 end
 
 local function mirrorCenter(ent)
@@ -45,11 +52,11 @@ local function drawFrame(ent, useReflection)
     local normal = visibleNormal(ent, surfacePos)
     if useReflection then
         render.SetMaterial(mirrorMat)
-        render.DrawQuadEasy(surfacePos, normal, MIRROR_W - 6, MIRROR_H - 7,
-            Color(245, 248, 250, 255), 0)
+        render.DrawQuadEasy(surfacePos, normal, MIRROR_W, MIRROR_H,
+            Color(255, 255, 255, 255), 0)
     else
         render.SetColorMaterial()
-        render.DrawQuadEasy(surfacePos, normal, MIRROR_W - 6, MIRROR_H - 7,
+        render.DrawQuadEasy(surfacePos, normal, MIRROR_W, MIRROR_H,
             Color(82, 94, 104, 255), 0)
     end
 end
@@ -66,6 +73,7 @@ local function eligibleMirror()
     local ply = LocalPlayer()
     if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed", false) then return nil end
     if LOD and LOD.FieldManual and IsValid(LOD.FieldManual.Frame) then return nil end
+
     local best, bestDist
     for _, ent in ipairs(ents.FindByClass("lod_staging_mirror")) do
         if IsValid(ent) then
@@ -77,10 +85,9 @@ local function eligibleMirror()
     return best, ply
 end
 
--- The mirror is intentionally implemented as a small live camera mounted on the
--- mirror surface and aimed back into the staging room. This is more robust than
--- a mathematically reflected camera on Source brush geometry and still gives the
--- player the expected full-length live reflection while keeping Steam Deck cost low.
+-- Render a small live camera from the mirror surface toward the staged player.
+-- Source render targets arrive vertically inverted when mapped directly onto a
+-- world quad, so copy the raw target through an explicit V-flip before display.
 hook.Add("PreRender", "LOD_StagingMirrorRender", function()
     if renderingMirror or CurTime() < nextUpdate then return end
     local mirror, ply = eligibleMirror()
@@ -92,12 +99,13 @@ hook.Add("PreRender", "LOD_StagingMirrorRender", function()
     if towardPlayer:LengthSqr() < 4 then return end
     towardPlayer:Normalize()
 
-    local origin = center + towardPlayer * 7
-    local target = ply:GetPos() + Vector(0, 0, 46)
+    local origin = center + towardPlayer * 8
+    local target = ply:GetPos() + Vector(0, 0, 42)
     local viewAngles = (target - origin):Angle()
 
     renderingMirror = true
-    render.PushRenderTarget(mirrorRT)
+
+    render.PushRenderTarget(rawRT)
         render.Clear(22, 25, 29, 255, true, true)
         render.RenderView({
             origin = origin,
@@ -106,13 +114,25 @@ hook.Add("PreRender", "LOD_StagingMirrorRender", function()
             y = 0,
             w = RT_W,
             h = RT_H,
-            fov = 86,
+            fov = 96,
             drawhud = false,
             drawviewmodel = false,
             dopostprocess = false,
             drawviewer = true
         })
     render.PopRenderTarget()
+
+    render.PushRenderTarget(displayRT)
+        render.Clear(22, 25, 29, 255, true, true)
+        cam.Start2D()
+            surface.SetMaterial(rawMat)
+            surface.SetDrawColor(255, 255, 255, 255)
+            -- Flip V explicitly so the reflected image is upright and fill the
+            -- entire display target rather than the upper half of the frame.
+            surface.DrawTexturedRectUV(0, 0, RT_W, RT_H, 0, 1, 1, 0)
+        cam.End2D()
+    render.PopRenderTarget()
+
     renderingMirror = false
 end)
 
