@@ -93,13 +93,8 @@ local function addProfile(fields, prefix, actor)
     fields[prefix .. "wizard_capstone_magic_x"] = derived.wizardCapstoneMagicPowerMultiplier
 end
 
-function Log:Reset(reason)
-    if not developerEnabled() then return false end
-    file.CreateDir(DATA_DIR)
-    self.Sequence = 0
-    self.Started = true
-    self.ProfileSignatures = {}
-    local header = table.concat({
+local function sessionHeader(reason)
+    return table.concat({
         "# The Legend of Deborah RPG runtime test log",
         "# schema=" .. SCHEMA,
         "# generated_utc=" .. os.date("!%Y-%m-%dT%H:%M:%SZ"),
@@ -109,13 +104,30 @@ function Log:Reset(reason)
         "# fields are tab-separated key=value pairs; one event per line",
         ""
     }, "\n")
-    file.Write(DATA_PATH, header)
+end
+
+function Log:BeginSession(reason)
+    if not developerEnabled() then return false end
+    file.CreateDir(DATA_DIR)
+    self.Sequence = 0
+    self.Started = true
+    self.ProfileSignatures = {}
+    local separator = file.Exists(DATA_PATH, "DATA") and "\n# --- NEW SERVER SESSION ---\n" or ""
+    file.Append(DATA_PATH, separator .. sessionHeader(reason))
     return true
+end
+
+function Log:Reset(reason)
+    if not developerEnabled() then return false end
+    file.CreateDir(DATA_DIR)
+    file.Write(DATA_PATH, "")
+    self.Started = false
+    return self:BeginSession(reason or "manual reset")
 end
 
 function Log:Ensure()
     if self.Started then return true end
-    return self:Reset("automatic session start")
+    return self:BeginSession("automatic session start")
 end
 
 function Log:Write(eventName, fields)
@@ -199,7 +211,7 @@ local function install()
     if not Rolls or not Rules or not Attribution then return false end
     if not Rolls.ResolveActorDamage or not Rolls.RollPlayerWeapon or not Rolls.RollHostileAttack then return false end
 
-    Log:Reset("server instrumentation installed")
+    Log:BeginSession("server instrumentation installed")
 
     Log.BaseResolveActorDamage = Rolls.ResolveActorDamage
     Rolls.ResolveActorDamage = function(self, contract, attacker, target, tags)
