@@ -157,8 +157,3 @@ function RPG.NewAbilityBlock(defaultValue)
     local value = tonumber(defaultValue) or 0
     return {str = value, dex = value, con = value, int = value, wis = value, cha = value}
 end
-
-if SERVER then
-    include("lod/sv_character_progression.lua")
-    include("lod/sv_rpg_validation.lua")
-end
