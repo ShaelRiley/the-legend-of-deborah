@@ -87,6 +87,7 @@ return [========[
             <p><span class="keycap">RMB</span> Force Shout</p>
             <p><span class="keycap">R</span> Reload</p>
             <p><span class="keycap">M</span> Map</p>
+            <p><span class="keycap">P</span> Character Sheet</p>
             <p><span class="keycap">1–6</span> Weapon selection</p>
           </div>
         </div>

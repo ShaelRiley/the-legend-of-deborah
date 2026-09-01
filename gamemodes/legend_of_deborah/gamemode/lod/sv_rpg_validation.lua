@@ -116,12 +116,13 @@ function Validation:Run(printResult)
     if printResult ~= false then
         if ok then
             print(string.format(
-                "[LOD:RPG] Gate A validation PASS — schemas=%d classes=%d abilities=%d featSlots=%d gameplayEnabled=%s",
+                "[LOD:RPG] core RPG validation PASS — gate=%s schemas=%d classes=%d abilities=%d featSlots=%d gameplayEnabled=%s",
+                tostring(RPG.ImplementationGate),
                 countKeys(RPG.Schema), countKeys(RPG.Classes), #RPG.Abilities, #RPG.OrdinaryFeatLevels,
                 tostring(RPG.GameplayEnabled)
             ))
         else
-            ErrorNoHalt("[LOD:RPG] Gate A validation FAILED (" .. #errors .. " error(s))\n")
+            ErrorNoHalt("[LOD:RPG] core RPG validation FAILED (" .. #errors .. " error(s))\n")
             for _, message in ipairs(errors) do ErrorNoHalt("[LOD:RPG]  - " .. message .. "\n") end
         end
     end
@@ -139,7 +140,7 @@ concommand.Add("lod_rpg_validate", function(ply)
     Validation:Run(true)
 end)
 
-hook.Add("InitPostEntity", "LOD_RPG_GateAValidation", function()
+hook.Add("InitPostEntity", "LOD_RPG_CoreValidation", function()
     local cvDeveloperMode = GetConVar("lod_developer_mode")
     if cvDeveloperMode and cvDeveloperMode:GetBool() then Validation:Run(true) end
 end)

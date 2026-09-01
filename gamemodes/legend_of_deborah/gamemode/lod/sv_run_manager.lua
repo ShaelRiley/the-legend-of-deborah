@@ -5,12 +5,16 @@ local RunManager = LOD.RunManager
 local CC = LOD.Config
 
 local cvSeed = CreateConVar("lod_campaign_seed", "0", FCVAR_ARCHIVE, "0 = time-derived campaign seed; nonzero = custom unranked seed")
+local cvRosterSeed = CreateConVar("lod_roster_seed", "0", FCVAR_ARCHIVE,
+    "0 = independently generated roster seed; nonzero = reproducible custom unranked roster")
 local defaultSeedCounter = 0
+local defaultRosterSeedCounter = 0
 
 local function freshState(campaignEpoch)
     return {
         CampaignEpoch = campaignEpoch or 0,
         CampaignSeed = nil,
+        RosterSeed = nil,
         LevelSeed = nil,
         Level = 1,
         Ranked = true,
@@ -21,6 +25,7 @@ local function freshState(campaignEpoch)
         ActiveIdentity = {},
         PlayedIdentities = {},
         PlayerState = {},
+        RPGAllocation = nil,
         CharacterOrder = nil,
         WaitingSince = {},
         Cards = {false, false, false},
@@ -68,6 +73,13 @@ function RunManager:_DefaultSeed()
     return LOD.Seeds.Normalize(os.time() * 1000 + defaultSeedCounter)
 end
 
+function RunManager:_DefaultRosterSeed()
+    defaultRosterSeedCounter = defaultRosterSeedCounter + 1
+    -- Deliberately independent from CampaignSeed: the roster remains fresh even
+    -- when an administrator reproduces a maze with lod_campaign_seed.
+    return LOD.Seeds.Normalize(os.time() * 1000 + defaultRosterSeedCounter * 104729 + 7919)
+end
+
 function RunManager:_PrepareCharacterOrder()
     local order = {}
     for i, character in ipairs(CC.Models.Characters) do order[i] = character end
@@ -105,6 +117,9 @@ function RunManager:_SyncPlayerVars(ply)
     ply:SetNW2Int("LOD_Lives", ps and ps.lives or 0)
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
     ply:SetNW2String("LOD_Character", ps and ps.characterName or "Spectator")
+    if LOD.CharacterProgressionSystem and LOD.CharacterProgressionSystem.SyncPlayer then
+        LOD.CharacterProgressionSystem:SyncPlayer(ply)
+    end
     if LOD.ProgressionDirector then LOD.ProgressionDirector:SyncPlayer(ply) end
 end
 
@@ -134,6 +149,9 @@ function RunManager:_AdmitIdentity(ply)
     self.State.PlayedIdentities[id] = true
     self.State.PlayerState[id] = ps
     self.State.CharacterByIdentity[id] = character
+    if LOD.CharacterProgressionSystem and LOD.CharacterProgressionSystem.InitializeHero then
+        LOD.CharacterProgressionSystem:InitializeHero(self, ps, character)
+    end
     self:_SyncPlayerVars(ply)
     return ps
 end
@@ -290,11 +308,25 @@ end
 
 function RunManager:NewCampaign()
     local customSeed = cvSeed:GetInt()
+    local customRosterSeed = cvRosterSeed:GetInt()
+    local developerMode = GetConVar("lod_developer_mode")
+    local customRosterAllowed = customRosterSeed ~= 0 and developerMode and developerMode:GetBool()
     self.CampaignEpoch = self.CampaignEpoch + 1
     self.State = freshState(self.CampaignEpoch)
     self.State.Ranked = customSeed == 0
     self.State.UnrankedReason = customSeed == 0 and nil or "custom campaign seed"
     self.State.CampaignSeed = customSeed ~= 0 and LOD.Seeds.Normalize(customSeed) or self:_DefaultSeed()
+    self.State.RosterSeed = customRosterAllowed
+        and LOD.Seeds.Normalize(customRosterSeed) or self:_DefaultRosterSeed()
+    if customRosterAllowed then
+        self.State.Ranked = false
+        self.State.UnrankedReason = self.State.UnrankedReason or "custom roster seed"
+    elseif customRosterSeed ~= 0 then
+        ErrorNoHalt("[LOD:RPG] lod_roster_seed ignored because developer mode is disabled.\n")
+    end
+    if LOD.CharacterProgressionSystem and LOD.CharacterProgressionSystem.PrepareCampaignState then
+        LOD.CharacterProgressionSystem:PrepareCampaignState(self.State)
+    end
     self:_PrepareCharacterOrder()
     self:_ValidateConfiguredModels()
     return self:BuildCurrentLevel()

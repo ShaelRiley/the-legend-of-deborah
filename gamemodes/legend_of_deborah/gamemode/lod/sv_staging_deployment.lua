@@ -624,7 +624,7 @@ function Staging:PlacePlayerInHut(ply, announce)
     if announce ~= false and not ps.stagingIntroShown then
         ps.stagingIntroShown = true
         ply:ChatPrint("DUNGEON HERMIT: It's dangerous to go alone. Take this.")
-        ply:ChatPrint("Take your weapon, then turn around and use the blue portal when you're ready.")
+        ply:ChatPrint("Press P to choose your Class and Level-1 Feat, take your weapon, then use the blue portal.")
     end
 
     self.Stats.staged = (self.Stats.staged or 0) + 1
@@ -666,6 +666,15 @@ function Staging:DeployPlayer(ply)
     local identity = identityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
     if not ps or ps.deploymentComplete then return false end
+
+    local progression = LOD.CharacterProgressionSystem
+    if not progression or not progression:IsDeploymentEligible(ps) then
+        self.Stats.portalDenied = (self.Stats.portalDenied or 0) + 1
+        ply:EmitSound("buttons/button10.wav", 58, 92, 0.7, CHAN_ITEM)
+        ply:ChatPrint("THE PORTAL REMAINS CLOSED - PRESS P AND COMMIT YOUR CLASS + LEVEL-1 FEAT")
+        if progression and progression.SyncPlayer then progression:SyncPlayer(ply) end
+        return false
+    end
 
     if not ps.starterClaimed then
         self.Stats.portalDenied = (self.Stats.portalDenied or 0) + 1

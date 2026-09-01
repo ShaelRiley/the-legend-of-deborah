@@ -31,6 +31,7 @@ include("lod/cl_hostile_presentation_safety.lua")
 include("lod/cl_seeker.lua")
 include("lod/cl_magic.lua")
 include("lod/cl_pushback_fx.lua")
+include("lod/cl_character_sheet.lua")
 
 -- One staging interaction-prompt authority. Manual scrolling belongs exclusively to
 -- lod_manual_reader_runtime.lua; portal geometry belongs to lod_staging_prop/shared.

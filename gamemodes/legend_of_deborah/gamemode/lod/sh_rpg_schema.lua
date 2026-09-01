@@ -3,9 +3,9 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 1
-RPG.ImplementationGate = "A"
-RPG.GameplayEnabled = false
+RPG.SchemaVersion = 2
+RPG.ImplementationGate = "B"
+RPG.GameplayEnabled = true
 
 RPG.Abilities = {"str", "dex", "con", "int", "wis", "cha"}
 RPG.AbilitySet = {}
@@ -50,14 +50,14 @@ RPG.Classes = {
 }
 
 RPG.SystemBootstrap = {
-    CharacterProgressionSystem = "scaffold",
+    CharacterProgressionSystem = "gate_b_level_1",
     AbilityRules = "schema_only",
-    FeatDirector = "schema_only",
+    FeatDirector = "gate_b_level_1_draft",
     FeatEffectSystem = "pending",
-    IdentityGenerationSystem = "schema_only",
-    IdentityPerkSystem = "schema_only",
-    CharacterSheetUI = "pending",
-    PlayerCharacterText = "pending",
+    IdentityGenerationSystem = "gate_b",
+    IdentityPerkSystem = "gate_b_identity_package",
+    CharacterSheetUI = "gate_b",
+    PlayerCharacterText = "gate_b",
     RPGThreatEvaluator = "schema_only"
 }
 

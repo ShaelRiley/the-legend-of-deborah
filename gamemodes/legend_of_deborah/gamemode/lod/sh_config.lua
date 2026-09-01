@@ -275,16 +275,16 @@ C.Audio = {
 C.Models = {
     Deborah = "models/Humans/Group01/Female_01.mdl",
     Characters = {
-        {id = "breen",   name = "Dr. Breen",         model = "models/player/breen.mdl"},
-        {id = "alyx",    name = "Alyx Vance",        model = "models/player/alyx.mdl"},
-        {id = "barney",  name = "Barney Calhoun",    model = "models/player/barney.mdl"},
-        {id = "kleiner", name = "Dr. Kleiner",       model = "models/player/kleiner.mdl"},
-        {id = "eli",     name = "Eli Vance",         model = "models/player/eli.mdl"},
-        {id = "mossman", name = "Dr. Judith Mossman",model = "models/player/mossman.mdl"},
-        {id = "odessa",  name = "Odessa Cubbage",    model = "models/player/odessa.mdl"},
-        {id = "grigori", name = "Father Grigori",    model = "models/player/monk.mdl"},
-        {id = "male",    name = "Male Citizen",      model = "models/player/Group01/male_07.mdl"},
-        {id = "female",  name = "Female Citizen",    model = "models/player/Group01/female_02.mdl"}
+        {id = "breen",   name = "Dr. Breen",          model = "models/player/breen.mdl",             presentationSex = "male"},
+        {id = "alyx",    name = "Alyx Vance",         model = "models/player/alyx.mdl",              presentationSex = "female"},
+        {id = "barney",  name = "Barney Calhoun",     model = "models/player/barney.mdl",            presentationSex = "male"},
+        {id = "kleiner", name = "Dr. Kleiner",        model = "models/player/kleiner.mdl",           presentationSex = "male"},
+        {id = "eli",     name = "Eli Vance",          model = "models/player/eli.mdl",               presentationSex = "male"},
+        {id = "mossman", name = "Dr. Judith Mossman", model = "models/player/mossman.mdl",           presentationSex = "female"},
+        {id = "odessa",  name = "Odessa Cubbage",     model = "models/player/odessa.mdl",            presentationSex = "male"},
+        {id = "grigori", name = "Father Grigori",     model = "models/player/monk.mdl",              presentationSex = "male"},
+        {id = "male",    name = "Male Citizen",       model = "models/player/Group01/male_07.mdl",   presentationSex = "male"},
+        {id = "female",  name = "Female Citizen",     model = "models/player/Group01/female_02.mdl", presentationSex = "female"}
     }
 }
 
