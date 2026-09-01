@@ -14,6 +14,8 @@ LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
 include("lod/sh_rng.lua")
+if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end
+include("lod/sh_rpg_schema.lua")
 
 if SERVER then
     include("lod/sv_workshop_distribution.lua")
