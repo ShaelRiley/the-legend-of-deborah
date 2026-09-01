@@ -132,6 +132,9 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
         local targets = 1
         local cumulativeTotal = math.max(1, tonumber(contract.total) or tonumber(dmginfo:GetDamage()) or 1)
         local cumulativeChains = {copyValues(contract.values)}
+        local cumulativeContributions = copyValues(contract.contributions)
+        local cumulativeBonus = tonumber(contract.bonus) or 0
+        local cumulativeBaseDice = math.max(1, math.floor(tonumber(contract.baseDice) or 1))
         local aimMultiplier = math.max(1, tonumber(contract.aimMultiplier) or 1)
         Piercing.Stats.shots = (Piercing.Stats.shots or 0) + 1
 
@@ -166,19 +169,26 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
             -- whole trigger/projectile, so its x2 multiplier also applies to every
             -- fresh pierce chain rather than only the first body's base roll.
             local depth = targets + 1
-            local bonusTotal = 0
-            local bonusValues = {}
-            if Rolls and Rolls._RNG and Rolls._RollExploding then
+            local bonusTotal, bonusValues, bonusContributions = 0, {}, {}
+            if Rolls and Rolls._RNG and Rolls.RollActorDamage then
                 local rng = Rolls:_RNG("magnum-pierce-bonus:" .. tostring(depth))
-                bonusTotal, bonusValues = Rolls:_RollExploding(MAGNUM_BONUS_PROFILE, rng)
+                local bonusContract = Rolls:RollActorDamage(attacker, MAGNUM_BONUS_PROFILE, rng, 0)
+                bonusTotal = bonusContract.total
+                bonusValues = bonusContract.values or {}
+                bonusContributions = bonusContract.contributions or bonusValues
             else
                 bonusTotal = math.random(1, 12)
                 bonusValues = {bonusTotal}
+                bonusContributions = {bonusTotal}
             end
 
             cumulativeTotal = cumulativeTotal
                 + math.max(1, tonumber(bonusTotal) or 1) * aimMultiplier
             cumulativeChains[#cumulativeChains + 1] = copyValues(bonusValues)
+            for _, contribution in ipairs(bonusContributions) do
+                cumulativeContributions[#cumulativeContributions + 1] = contribution
+            end
+            cumulativeBaseDice = cumulativeBaseDice + 1
 
             if Rolls and Rolls.EmitDiceExplosionFX and #bonusValues > 1 then
                 Rolls:EmitDiceExplosionFX(attacker, "weapon_357", #bonusValues - 1, depth)
@@ -198,6 +208,12 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 depth = depth,
                 total = cumulativeTotal,
                 detail = chainDetail(depth, cumulativeChains),
+                rpgContract = {
+                    total = cumulativeTotal,
+                    contributions = copyValues(cumulativeContributions),
+                    bonus = cumulativeBonus,
+                    baseDice = cumulativeBaseDice
+                },
                 ignore = copyEntities(ignored)
             }
             target:TakeDamageInfo(info)

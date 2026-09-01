@@ -420,14 +420,15 @@ local function routeTo(previous, startKey, goalKey)
     return route
 end
 
-local function buildRouteDisplay(route, gz)
+local function buildRouteDisplay(route, gz, breadcrumbCells)
     local segments = {}
     local transitionCell
     local transitionNextCell
     local transitionDirection
 
     if route and #route > 0 then
-        for i = 2, #route do
+        local last = math.min(#route, 1 + math.max(2, math.floor(tonumber(breadcrumbCells) or 6)))
+        for i = 2, last do
             local a = Map.byKey[route[i - 1]]
             local b = Map.byKey[route[i]]
             if not a or not b or a.z ~= gz then break end
@@ -458,6 +459,9 @@ local function cachedRouteData(gx, gy, gz)
     local state = LOD.ClientState or {}
     local jailOpen = state.jailDoorOpen == true
     local stage, kind, ax, ay, az, bx, by, bz = objectiveFields(state)
+    local localPlayer = LocalPlayer()
+    local breadcrumbCells = IsValid(localPlayer)
+        and localPlayer:GetNW2Int("LOD_RPGBreadcrumbCells", 6) or 6
     local cached = Map.cache.reach
 
     if cached and cached.revision == Map.cache.revision
@@ -467,6 +471,7 @@ local function cachedRouteData(gx, gy, gz)
         and cached.stage == stage and cached.kind == kind
         and cached.ax == ax and cached.ay == ay and cached.az == az
         and cached.bx == bx and cached.by == by and cached.bz == bz
+        and cached.breadcrumbCells == breadcrumbCells
     then
         Map.stats.bfsHits = (Map.stats.bfsHits or 0) + 1
         return cached
@@ -476,7 +481,8 @@ local function cachedRouteData(gx, gy, gz)
     local target = state.objectiveA
     local targetKey = target and cellKey(target.x, target.y, target.z) or nil
     local route = targetKey and reached[targetKey] and routeTo(previous, startKey, targetKey) or nil
-    local segments, transitionCell, transitionNextCell, transitionDirection = buildRouteDisplay(route, gz)
+    local segments, transitionCell, transitionNextCell, transitionDirection =
+        buildRouteDisplay(route, gz, breadcrumbCells)
     cached = {
         revision = Map.cache.revision,
         startKey = startKey,
@@ -486,11 +492,14 @@ local function cachedRouteData(gx, gy, gz)
         kind = kind,
         ax = ax, ay = ay, az = az,
         bx = bx, by = by, bz = bz,
+        breadcrumbCells = breadcrumbCells,
         reached = reached,
         previous = previous,
         targetKey = targetKey,
         route = route,
-        routeStatus = route and string.format("ROUTE READY — %d CELLS", math.max(0, #route - 1)) or "NO LEGAL ROUTE",
+        routeStatus = route and string.format("BREADCRUMB — %d OF %d CELLS",
+            math.min(breadcrumbCells, math.max(0, #route - 1)), math.max(0, #route - 1))
+            or "NO LEGAL ROUTE",
         segments = segments,
         transitionCell = transitionCell,
         transitionNextCell = transitionNextCell,

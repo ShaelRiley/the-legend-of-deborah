@@ -199,6 +199,7 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     ent.LODWanderFloor = floor
     ent.LODWanderAnchorCellKey = spawnKey
     ent.LODWanderSeed = seed
+    ent.LODWanderSpawnReason = tostring(reason or "population")
     ent.LODActivated = true
     ent:SetPos(Navigator:CellCenter(cell) + Vector(0, 0, 10))
     ent:Spawn()

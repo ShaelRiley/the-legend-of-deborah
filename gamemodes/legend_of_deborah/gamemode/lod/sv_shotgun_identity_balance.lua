@@ -83,15 +83,21 @@ if not HitFeedback.LODFourTimesStunSupported then
     HitFeedback.LODFourTimesStunSupported = true
     local baseApplyHitStun = HitFeedback.ApplyHitStun
 
-    function HitFeedback:ApplyHitStun(hostile, durationMultiplier)
+    function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
         local requested = math.Clamp(tonumber(durationMultiplier) or 1, 1, 4)
-        local applied = baseApplyHitStun(self, hostile, math.min(requested, 2))
+        local applied = baseApplyHitStun(self, hostile, math.min(requested, 2), attacker)
         if not applied or requested <= 2 then return applied end
 
+        local stamp = IsValid(hostile) and hostile.LODLastHitFeedbackEvent or nil
+        attacker = IsValid(attacker) and attacker or (stamp and stamp.attacker or nil)
+        local rules = LOD.RPGAbilityRules
+        local abilityMultiplier = rules and rules.HitStunMultiplier
+            and rules:HitStunMultiplier(attacker, hostile) or 1
+        local effectiveRequested = math.Clamp(requested * abilityMultiplier, 0.50, 4)
         local now = CurTime()
-        local stunSeconds = BASE_STUN_SECONDS * requested
+        local stunSeconds = BASE_STUN_SECONDS * effectiveRequested
         local retriggerSeconds = BASE_STUN_RETRIGGER_SECONDS
-            + BASE_STUN_SECONDS * (requested - 1)
+            + BASE_STUN_SECONDS * (effectiveRequested - 1)
 
         hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
         hostile.LODNextHitStun = math.max(hostile.LODNextHitStun or 0, now + retriggerSeconds)

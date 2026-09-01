@@ -3,8 +3,8 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 3
-RPG.ImplementationGate = "C"
+RPG.SchemaVersion = 4
+RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
 RPG.Abilities = {"str", "dex", "con", "int", "wis", "cha"}
@@ -59,13 +59,14 @@ RPG.Classes = {
 
 RPG.SystemBootstrap = {
     CharacterProgressionSystem = "gate_c_levels_1_20",
-    AbilityRules = "schema_only",
+    AbilityRules = "gate_d_gameplay",
     FeatDirector = "gate_c_cadence_and_capstone",
     FeatEffectSystem = "pending",
     IdentityGenerationSystem = "gate_b",
     IdentityPerkSystem = "gate_b_identity_package",
     CharacterSheetUI = "gate_c",
     PlayerCharacterText = "gate_b",
+    CombatAttributionSystem = "gate_d_hero_xp",
     RPGThreatEvaluator = "schema_only"
 }
 
@@ -104,6 +105,7 @@ RPG.Schema = {
         "aimSpreadMultiplier", "movementSpeedMultiplier", "boomShift",
         "rogueAllDamageDiceExplode", "rogueBoomThresholdShift", "rogueCapstoneBoomThresholdShift",
         "rogueCapstoneEvasionChance", "rogueAcePrimed", "damageResistancePerDie",
+        "rogueAcePrimeSeconds",
         "hpConBonusPerLevel", "startingHP", "progressionHitDieSides", "rolledHitPointSubtotal",
         "coreMaxHP", "maxHP", "conRegenMultiplier", "wizardClassHpToMagicDiversionFraction",
         "manaBarrierFeatDiversionFraction", "wizardCapstoneDiversionBonus", "livingAegisHPPerMagic",

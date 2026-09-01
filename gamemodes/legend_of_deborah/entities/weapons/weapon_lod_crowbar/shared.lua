@@ -81,6 +81,8 @@ function SWEP:PrimaryAttack()
     self:SendWeaponAnim(ACT_VM_MISSCENTER)
 
     if CLIENT then return end
+    local rules = LOD and LOD.RPGAbilityRules
+    local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(owner) and 1 or 0
 
     owner:LagCompensation(true)
     local startPos = owner:GetShootPos()
@@ -107,7 +109,12 @@ function SWEP:PrimaryAttack()
         return
     end
 
-    local total, values = rolls:_RollFormula(DAMAGE_PROFILE, rolls:_RNG("player:weapon_lod_crowbar"))
+    local contract = rolls.RollActorDamage
+        and rolls:RollActorDamage(owner, DAMAGE_PROFILE,
+            rolls:_RNG("player:weapon_lod_crowbar"), aceBonus) or nil
+    local total = contract and rolls:ResolveActorDamage(contract, owner, target, {physical = true})
+        or rolls:_RollFormula(DAMAGE_PROFILE, rolls:_RNG("player:weapon_lod_crowbar:fallback"))
+    local values = contract and contract.values or nil
     total = math.max(1, math.floor(tonumber(total) or 1))
     local healthBefore = target:Health()
 
@@ -122,14 +129,16 @@ function SWEP:PrimaryAttack()
 
     rolls.Stats.playerAttacks = (rolls.Stats.playerAttacks or 0) + 1
     if rolls._Send and rolls._DamageEventText then
-        local detail = values and values[1] and string.format("[roll %d]", values[1]) or nil
-        rolls:_Send(owner, 0, rolls:_DamageEventText(owner, "1d3", total,
+        local detail = values and #values > 0
+            and string.format("[rolls %s]", table.concat(values, ">")) or nil
+        rolls:_Send(owner, 0, rolls:_DamageEventText(owner,
+            contract and contract.formula or "1d3", total,
             target, detail, nil, "Hostile", "crowbar"))
     end
 
     if total < healthBefore and IsValid(target) and not target.LODDead
         and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyHitStun then
-        LOD.M3HitFeedback:ApplyHitStun(target)
+        LOD.M3HitFeedback:ApplyHitStun(target, 1, owner)
     end
 
     self:EmitSound(HIT_SOUND, 66, 100, 0.72, CHAN_WEAPON)

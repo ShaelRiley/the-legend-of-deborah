@@ -373,6 +373,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.rogueBoomThresholdShift = state.classId == "rogue" and 1 or 0
     mods.rogueCapstoneBoomThresholdShift = capParams.boomThresholdShift or 0
     mods.rogueCapstoneEvasionChance = capParams.evasionChance or 0
+    mods.rogueAcePrimeSeconds = capParams.primeSeconds or 0
     mods.damageResistancePerDie = math.Clamp(mods.conMod, 0, 3)
     mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
     mods.conRegenMultiplier = math.Clamp(1 + 0.10 * mods.conMod, 0.50, 2.00)
@@ -742,11 +743,20 @@ end
 
 function CharacterProgressionSystem:AwardHeroXP(ply, amount)
     local runManager = LOD.RunManager
-    local ps = runManager and runManager:GetPlayerState(ply)
+    local recipient = ply
+    if isstring(ply) and runManager and runManager.IdentityOf then
+        for _, candidate in ipairs(player.GetAll()) do
+            if runManager:IdentityOf(candidate) == ply then
+                recipient = candidate
+                break
+            end
+        end
+    end
+    local ps = runManager and runManager:GetPlayerState(recipient)
     local state = ps and ps.progressionState
     amount = math.max(0, math.floor(tonumber(amount) or 0))
     if not state or amount <= 0 then return false, "No positive XP award." end
-    return self:SetHeroXP(ply, math.min(RPG.Constants.HeroMaxXP, (state.xp or 0) + amount))
+    return self:SetHeroXP(recipient, math.min(RPG.Constants.HeroMaxXP, (state.xp or 0) + amount))
 end
 
 function CharacterProgressionSystem:IsDeploymentEligible(ps)
@@ -960,6 +970,9 @@ end
 
 function CharacterProgressionSystem:SyncPlayer(ply)
     if not IsValid(ply) then return end
+    if LOD.RPGAbilityRules and LOD.RPGAbilityRules.SyncPlayer then
+        LOD.RPGAbilityRules:SyncPlayer(ply)
+    end
     local snapshot = self:BuildClientSnapshot(ply)
     if not snapshot then return end
     net.Start("LOD_RPG_Snapshot")

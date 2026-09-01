@@ -382,6 +382,13 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     self.State.Graph = graph
     self.State.BuildReport = buildReport
     self.State.BuildReady = true
+    for _, ps in pairs(self.State.PlayerState or {}) do
+        local progression = ps.progressionState
+        if progression then
+            progression.dungeonEntryLevel = progression.level
+            progression.replacementXpEarnedThisDungeon = 0
+        end
+    end
     LOD.ProgressionDirector:CommitBuiltLevel(buildReport)
 
     for _, ply in ipairs(self:_SortedConnectedPlayers()) do
@@ -438,6 +445,7 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetMaxHealth(maximumHealth)
     ply:SetHealth(maximumHealth)
     ply:SetArmor(ps.armor or 0)
+    if ps.deploymentComplete then ps.deployedDungeonLevel = self.State.Level end
     self:RestoreInventory(ply, ps)
     ps.respawnAt = nil
     self:_SyncPlayerVars(ply)
@@ -543,6 +551,16 @@ function RunManager:CompleteLevel(ply)
     for _, candidate in ipairs(player.GetAll()) do
         local ps = self:GetPlayerState(candidate)
         if ps and candidate:Alive() then self:CaptureInventory(candidate, ps) end
+    end
+
+    local rescueXP = 500 + 100 * math.min(self.State.Level or 1, 20)
+    local progression = LOD.CharacterProgressionSystem
+    for identity, ps in pairs(self.State.PlayerState or {}) do
+        local deployed = ps.deployedDungeonLevel == self.State.Level
+            or ps.deployedAtLevel == self.State.Level
+        if deployed and progression and progression.AwardHeroXP then
+            progression:AwardHeroXP(identity, rescueXP)
+        end
     end
 
     self.State.LevelCleared = true

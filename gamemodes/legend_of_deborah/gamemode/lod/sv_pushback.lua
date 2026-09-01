@@ -107,8 +107,17 @@ function Pushback:_RollWallCrush(hostile, opts)
     if not rolls or not rolls._RNG or not rolls._RollFormula then return 0 end
 
     local source = tostring(opts.source or "push")
+    local sourceAttacker = IsValid(opts.attacker) and opts.attacker or nil
     local rng = rolls:_RNG("wall-crush:" .. source)
-    local total, values = rolls:_RollFormula(CRUSH_PROFILE, rng)
+    local rules = LOD.RPGAbilityRules
+    local derived = rules and rules.Derived and rules:Derived(sourceAttacker) or nil
+    local bonusDice = math.max(0,
+        math.floor(tonumber(derived and derived.fighterCapstoneWallSlamBonusDice) or 0))
+    local contract = rolls.RollActorDamage
+        and rolls:RollActorDamage(sourceAttacker, CRUSH_PROFILE, rng, bonusDice) or nil
+    local total = contract and rolls:ResolveActorDamage(contract, sourceAttacker, hostile, {})
+        or rolls:_RollFormula(CRUSH_PROFILE, rng)
+    local values = contract and contract.values or nil
     total = math.max(1, math.floor((total or 1) + 0.5))
 
     -- The crush cue is emitted before damage so even a lethal crush has one clear
@@ -119,7 +128,6 @@ function Pushback:_RollWallCrush(hostile, opts)
     -- our own record and combat feed, but deliver DMG_CRUSH environmentally so a
     -- shotgun-triggered crush cannot look like a second bullet hit and cannot
     -- create another firearm hit-confirm or hit-stun event.
-    local sourceAttacker = IsValid(opts.attacker) and opts.attacker or nil
     local world = game.GetWorld()
     local info = DamageInfo()
     info:SetAttacker(world)
@@ -127,7 +135,9 @@ function Pushback:_RollWallCrush(hostile, opts)
     info:SetDamage(total)
     info:SetDamageType(DMG_CRUSH)
     info:SetDamageForce(vector_origin)
+    hostile.LODPendingDamageAttribution = {attacker = sourceAttacker, source = source}
     hostile:TakeDamageInfo(info)
+    hostile.LODPendingDamageAttribution = nil
 
     self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
     self.Stats.crushDamage = (self.Stats.crushDamage or 0) + total
@@ -141,7 +151,8 @@ function Pushback:_RollWallCrush(hostile, opts)
 
     if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
         local detail = string.format("[roll %d; from %s push]", values and values[1] or total, source)
-        rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, "1d3", total,
+        local formula = contract and contract.formula or "1d3"
+        rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
             hostile, detail, nil, "Hostile", "wall crush"))
     end
 
@@ -154,6 +165,10 @@ function Pushback:Apply(hostile, opts)
     if hostile.LODDeadcrabState == "latched" then return nil end
 
     local distance = math.max(0, tonumber(opts.distance) or 0)
+    local rules = LOD.RPGAbilityRules
+    local attackerDerived = rules and rules.Derived and rules:Derived(opts.attacker) or nil
+    distance = distance * math.max(0,
+        tonumber(attackerDerived and attackerDerived.fighterCapstoneOutgoingPushMultiplier) or 1)
     if distance <= 0 then return nil end
     local direction = resolveDirection(hostile, opts)
     if not direction then return nil end

@@ -74,14 +74,19 @@ local function sendHitConfirm(attacker)
     net.Send(attacker)
 end
 
-function HitFeedback:ApplyHitStun(hostile, durationMultiplier)
+function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return false end
     if hostile.LODDeadcrabState == "latched" then return false end
 
     local now = CurTime()
     if now < (hostile.LODNextHitStun or 0) then return false end
 
-    durationMultiplier = math.Clamp(tonumber(durationMultiplier) or 1, 1, 2)
+    local stamp = hostile.LODLastHitFeedbackEvent
+    attacker = IsValid(attacker) and attacker or (stamp and stamp.attacker or nil)
+    local rules = LOD.RPGAbilityRules
+    local abilityMultiplier = rules and rules.HitStunMultiplier
+        and rules:HitStunMultiplier(attacker, hostile) or 1
+    durationMultiplier = math.Clamp((tonumber(durationMultiplier) or 1) * abilityMultiplier, 0.50, 2)
     local stunSeconds = STUN_SECONDS * durationMultiplier
     local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
     hostile.LODNextHitStun = now + retriggerSeconds
@@ -152,7 +157,7 @@ function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
     -- applies one doubled stun after the shell has resolved; applying the
     -- ordinary response here would make stun depend on pellet hook timing.
     if incoming < hostile:Health() and not activeShotgunContract(attacker) then
-        self:ApplyHitStun(hostile)
+        self:ApplyHitStun(hostile, 1, attacker)
     end
     return true
 end

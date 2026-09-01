@@ -10,7 +10,7 @@ local D12_START_THRESHOLD = 8
 local D12_DEFAULT_BOOMCHAIN_FLOOR = 5
 local MAGNUM_FALLBACK_CLIP = 6
 local BURST_SPACING = 0.085
-local MAX_CHAIN_DICE = 64
+local MAX_CHAIN_DICE = 32
 local EXTRA_ROUND_HEALTH_THRESHOLD = 60
 local FINAL_PRESERVE_HEALTH_PERCENT = 34
 
@@ -41,8 +41,13 @@ if not Rolls.LODD12BoomchainInstalled then
         local contributions = {}
         local thresholds = {}
         local total = profile.bonus or 0
-        local threshold = D12_START_THRESHOLD
-        local boomchainFloor = self:GetD12BoomchainFloor(profile)
+        local rules = LOD.RPGAbilityRules
+        local parameters = rules and rules.ExplosionParameters
+            and rules:ExplosionParameters(profile.rpgDerived, 12, profile.classExplosionImmune) or nil
+        local threshold = parameters and parameters.fresh or D12_START_THRESHOLD
+        local boomchainFloor = parameters and parameters.continuationFloor
+            or self:GetD12BoomchainFloor(profile)
+        local thresholdStep = parameters and parameters.continuationStep or 1
         local natural = rng:Int(1, 12)
 
         while natural and #values < MAX_CHAIN_DICE do
@@ -54,7 +59,7 @@ if not Rolls.LODD12BoomchainInstalled then
             self.Stats.rolls = (self.Stats.rolls or 0) + 1
 
             if natural < threshold then break end
-            threshold = math.max(boomchainFloor, threshold - 1)
+            threshold = math.max(boomchainFloor, threshold - thresholdStep)
             natural = rng:Int(1, 12)
         end
 
@@ -86,6 +91,8 @@ if not Rolls.LODGlobalExplodingFormulaInstalled then
                 exploding = sides == 6 and 6 or D12_START_THRESHOLD,
                 floor = profile.floor,
                 boomchainFloor = profile.boomchainFloor,
+                rpgDerived = profile.rpgDerived,
+                classExplosionImmune = profile.classExplosionImmune,
                 bonus = 0
             }
             local dieTotal, dieValues = self:_RollExploding(explodingProfile, rng)
@@ -165,12 +172,13 @@ if not Rolls.LODMagnumCylinderDamageInstalled then
         contract.cylinderSize = maximum
         contract.boomchainFloor = self:GetD12BoomchainFloor()
         contract.total = (tonumber(contract.total) or 0) + bonus
-        contract.formula = bonus > 0 and ("1d12!+" .. tostring(bonus)) or "1d12!"
+        contract.bonus = (tonumber(contract.bonus) or 0) + bonus
+        local dice = math.max(1, math.floor(tonumber(contract.baseDice) or 1))
+        contract.formula = string.format("%dd12!%s", dice,
+            bonus > 0 and ("+" .. tostring(bonus)) or "")
 
         local thresholds = {}
-        for i = 1, #(contract.values or {}) do
-            thresholds[i] = math.max(contract.boomchainFloor, D12_START_THRESHOLD - (i - 1))
-        end
+        for i, threshold in ipairs(contract.thresholds or {}) do thresholds[i] = threshold end
         contract.boomThresholds = thresholds
         return contract
     end

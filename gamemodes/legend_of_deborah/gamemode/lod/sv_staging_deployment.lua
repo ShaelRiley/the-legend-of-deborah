@@ -692,6 +692,7 @@ function Staging:DeployPlayer(ply)
     ps.deploymentComplete = true
     ps.deployedAtLevel = state.Level
     ps.deployedAtLevelSeed = state.LevelSeed
+    ps.deployedDungeonLevel = state.Level
     ply:SetNW2Bool("LOD_Staged", false)
     ply:SetNW2Bool("LOD_Deployed", true)
     ply:SetPos(destination)

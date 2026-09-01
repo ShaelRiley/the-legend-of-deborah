@@ -163,27 +163,21 @@ local function lineClear(ply, hostile)
     return not tr.Hit or tr.Fraction >= 0.995
 end
 
-local function rollExploding2d6()
-    if not Rolls or not Rolls._RNG or not Rolls._RollExploding then return 2, {1, 1}, false, 0 end
+local function rollExploding2d6(ply, bonusDice)
+    if not Rolls or not Rolls._RNG or not Rolls.RollActorDamage then return nil end
     local rng = Rolls:_RNG("magic:force-shout")
-    local total = 0
-    local all = {}
-    local capped = false
-    local explosions = 0
-    for die = 1, 2 do
-        local amount, values, _, chainCapped = Rolls:_RollExploding(SHOUT_PROFILE, rng)
-        total = total + (amount or 0)
-        all[#all + 1] = values or {}
-        explosions = explosions + math.max(0, #(values or {}) - 1)
-        capped = capped or chainCapped == true
-    end
-    return math.max(2, total), all, capped, explosions
+    local profile = table.Copy(SHOUT_PROFILE)
+    profile.count = 2
+    return Rolls:RollActorDamage(ply, profile, rng, bonusDice)
 end
 
-local function rollDetail(chains)
+local function rollDetail(contract)
     local pieces = {}
-    for _, chain in ipairs(chains or {}) do pieces[#pieces + 1] = table.concat(chain, ">") end
-    return table.concat(pieces, " + ")
+    for index, value in ipairs(contract and contract.values or {}) do
+        local threshold = contract.thresholds and contract.thresholds[index]
+        pieces[#pieces + 1] = threshold and string.format("%d@%d+", value, threshold) or tostring(value)
+    end
+    return table.concat(pieces, ">")
 end
 
 local function targetList(ply, direction)
@@ -243,10 +237,16 @@ function Magic:CastForceShout(ply)
     net.WriteVector(direction)
     net.Broadcast()
 
+    local rules = LOD.RPGAbilityRules
+    local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(ply) and 1 or 0
     local targets = targetList(ply, direction)
     for _, hostile in ipairs(targets) do
         if IsValid(hostile) and not hostile.LODDead and hostile:Health() > 0 then
-            local total, chains, capped, explosions = rollExploding2d6()
+            local contract = rollExploding2d6(ply, aceBonus)
+            local total = contract and Rolls:ResolveActorDamage(contract, ply, hostile,
+                {magic = true, wisScaled = true}) or 2
+            local explosions = contract and math.max(0,
+                #(contract.values or {}) - (contract.baseDice or 2)) or 0
             if explosions > 0 and Rolls and Rolls.EmitDiceExplosionFX then
                 Rolls:EmitDiceExplosionFX(ply, "force_shout", explosions, 1)
             end
@@ -264,8 +264,10 @@ function Magic:CastForceShout(ply)
             Magic.Stats.damage = (Magic.Stats.damage or 0) + total
 
             if Rolls and Rolls._Send and Rolls._DamageEventText then
-                local detail = string.format("[rolls %s%s]", rollDetail(chains), capped and "; chain cap" or "")
-                Rolls:_Send(ply, 0, Rolls:_DamageEventText(ply, "2d6!", total, hostile,
+                local detail = string.format("[rolls %s%s]", rollDetail(contract),
+                    contract and contract.capped and "; chain cap" or "")
+                Rolls:_Send(ply, 0, Rolls:_DamageEventText(ply,
+                    contract and contract.formula or "2d6!", total, hostile,
                     detail, nil, "Hostile", "force shout"))
             end
 
@@ -302,8 +304,13 @@ timer.Create(MAGIC_TIMER, REGEN_TICK, 0, function()
     for _, ply in ipairs(player.GetHumans()) do
         if IsValid(ply) and ply:Alive() and RunManager:IsActivePlayer(ply) then
             local ps = Magic:_EnsureState(ply)
-            if ps and ps.magic < MAX_MAGIC then
-                ps.magic = math.min(MAX_MAGIC, ps.magic + REGEN_PER_TICK)
+            local mapOpen = LOD.MinimapMagic and LOD.MinimapMagic.Active
+                and LOD.MinimapMagic.Active[ply] ~= nil
+            if ps and ps.magic < MAX_MAGIC and not mapOpen then
+                local rules = LOD.RPGAbilityRules
+                local multiplier = rules and rules.MagicRegenMultiplier
+                    and rules:MagicRegenMultiplier(ply) or 1
+                ps.magic = math.min(MAX_MAGIC, ps.magic + REGEN_PER_TICK * multiplier)
                 Magic:_Sync(ply, ps)
             end
         end

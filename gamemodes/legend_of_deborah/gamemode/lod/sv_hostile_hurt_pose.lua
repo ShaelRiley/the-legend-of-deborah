@@ -114,8 +114,8 @@ if LOD.M3HitFeedback and not LOD.M3HitFeedback.LODFrozenHurtPoseWrapped then
     LOD.M3HitFeedback.LODFrozenHurtPoseWrapped = true
     local baseApplyHitStun = LOD.M3HitFeedback.ApplyHitStun
 
-    function LOD.M3HitFeedback:ApplyHitStun(hostile, durationMultiplier)
-        local applied = baseApplyHitStun(self, hostile, durationMultiplier)
+    function LOD.M3HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
+        local applied = baseApplyHitStun(self, hostile, durationMultiplier, attacker)
         if applied and IsValid(hostile) then
             hostile.LODHitStunHasFlinch = HurtPose:Freeze(hostile, 0.44, "stun")
         end

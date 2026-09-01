@@ -127,7 +127,10 @@ timer.Create(TIMER_NAME, TICK_SECONDS, 0, function()
                 state.mapMagic = math.min(state.mapMagic or MAX_MAGIC,
                     math.Clamp(tonumber(ps.magic) or 0, 0, MAX_MAGIC))
                 local before = state.mapMagic
-                state.mapMagic = math.max(0, state.mapMagic - DRAIN_RATE * dt)
+                local rules = LOD.RPGAbilityRules
+                local utilityMultiplier = rules and rules.UtilityMagicCostMultiplier
+                    and rules:UtilityMagicCostMultiplier(ply) or 1
+                state.mapMagic = math.max(0, state.mapMagic - DRAIN_RATE * utilityMultiplier * dt)
                 ps.magic = state.mapMagic
                 Magic:_Sync(ply, ps)
 

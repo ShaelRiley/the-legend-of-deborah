@@ -7,13 +7,13 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 | New system | Existing authority it must extend | Current module/status |
 |---|---|---|
 | CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate C deterministic Levels 1-20, XP, growth, stored hit dice, and HP recomputation |
-| AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate C server-derived profile; semantic gameplay bridges deferred |
+| AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate D server-authoritative semantic bridges |
 | FeatDirector | CharacterProgressionSystem progression state | Gate C ordinary-feat cadence and fixed Level-20 class-capstone trios |
 | FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | pending |
 | IdentityGenerationSystem | RunManager RosterSeed lifecycle + independent deterministic substreams | Gate B exact 64/64/64 identity and 64-entry name catalogs |
 | IdentityPerkSystem | Existing semantic combat/navigation/loot/encounter events | Gate B immutable perk ownership/display; later semantic effect bridges pending |
 | CharacterSheetUI | Existing Field Manual visual language | Gate C P-key progression ledger and choice surface |
-| PlayerCharacterText | Existing HUD/feed/player-message surfaces | canonical formatter available; broad surface adoption pending |
+| PlayerCharacterText | Existing HUD/feed/player-message surfaces | canonical formatter adopted by RPG combat feed; remaining surfaces pending |
 | RPGThreatEvaluator | EncounterDirector projected-profile spending | bounded threat contract only |
 
 ## Gate A — boot + architecture scaffold
@@ -105,3 +105,47 @@ combat/class integration remains Gate D work.
    confirm ordinary movement, combat, death/respawn, and staging remain functional.
 
 Do not begin Gate D until this gate passes.
+
+## Gate D — ability and class gameplay integration
+
+Implemented by extending the existing combat, Magic, movement, minimap, pushback, staging, and
+RunManager authorities rather than introducing parallel systems:
+
+- STR scales ordinary physical gun, melee, and explosive damage exactly once after
+  dice aggregation; One-Person Army applies its authored additional physical multiplier;
+- DEX scales server-owned bullet spread and movement speed, and Boomshift changes continuation
+  thresholds without changing a fresh non-Rogue explosion threshold;
+- positive CON resistance reduces each positive damage-die contribution by up to three while
+  preserving a minimum result of one per die;
+- INT scales the existing Magic regeneration authority, with regeneration still hard-disabled while
+  the map is open; WIS scales Magic damage, utility drain, and canonical breadcrumb visibility;
+- CHA scales the existing hit-stun duration authority for attacker infliction and defender resistance;
+- Rogue actor-owned damage dice use the shared dice authority, including exact ordinary, d6, and
+  SUPER-d12 fresh/continuation rules; Loaded Dice, Now You See Me, and Ace capstone bridges are live;
+- Wizard post-resolution HP-to-Magic diversion spends the existing Magic pool, including Archmage,
+  Mana Engine, and Living Aegis parameters, without replacing final engine HP resolution;
+- hostile effective-damage ledgers exclude overkill, award the authored 40-percent killing-blow and
+  60-percent largest-remainder contribution pools, and enforce replacement-wanderer XP budgets;
+- authored rescue XP is awarded to every Hero that deployed into the completed dungeon, including an
+  eliminated Hero awaiting the next-level comeback;
+- Fighter pushback/wall-slam capstone parameters, Rogue capstones, and Wizard capstones are connected
+  only at their existing semantic authorities; ordinary feat-family effects remain deferred to Gate E;
+- developer-only lod_rpg_gate_d_status and lod_rpg_gate_d_validate expose the resolved profile and
+  perform finite threshold, diversion, attribution, authority, Magic, MaxHP, and breadcrumb checks.
+
+### Gate D runtime gate
+
+1. Start a fresh gm_flatgrass run with lod_developer_mode 1, complete Class and Level-1 feat, deploy,
+   and confirm no new Lua errors.
+2. Run lod_rpg_gate_d_status and verify the displayed ability/class multipliers match the Character
+   Sheet; observe movement or aim, combat damage, Magic regeneration, and map drain behavior.
+3. Exercise the selected class path: Fighter physical/pushback behavior, Rogue damage-die explosions,
+   or Wizard incoming-damage diversion. Confirm each RPG modifier appears only once in the combat feed.
+4. Kill one hostile after two Heroes contribute damage when possible, and confirm XP changes on the
+   Character Sheet; finish a dungeon and confirm rescue XP only for eligible deployed Heroes,
+   including an eliminated Hero awaiting the next-level comeback.
+5. At Level 20, exercise the selected class capstone and confirm its corresponding semantic behavior.
+6. Run lod_rpg_gate_d_validate and require one Gate D validation PASS line, then verify ordinary
+   movement, combat, death/respawn, Magic, minimap, staging, and maze progression remain functional.
+
+Do not begin Gate E until Gate D passes runtime approval.
