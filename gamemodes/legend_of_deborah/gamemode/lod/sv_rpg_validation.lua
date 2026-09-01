@@ -84,12 +84,22 @@ function Validation:Run(printResult)
         if RPG.OrdinaryFeatLevels[i] ~= level then addError(errors, "ordinary feat cadence mismatch at index " .. i) end
     end
 
+    local expectedXP = {
+        0, 150, 400, 800, 1500, 2500, 3800, 5400, 7300, 9500,
+        12000, 14800, 17900, 21300, 25000, 29000, 33300, 37900, 42800, 48000
+    }
+    for level, threshold in ipairs(expectedXP) do
+        if not RPG.HeroXPThresholds or RPG.HeroXPThresholds[level] ~= threshold then
+            addError(errors, "Hero XP threshold mismatch at Level " .. level)
+        end
+    end
+
     validateSchema(errors, "ProgressionState", {"actorId", "level", "xp", "classId", "hitDieRollsByLevel", "featStackCounts", "pendingFeatSlots", "classCapstoneFeatId", "capabilityTags"})
     validateSchema(errors, "ArchetypeProgressionTemplate", {"archetypeId", "baseAbilities", "aiClassWeights", "progressionHitDieSides", "usesMagic"})
     validateSchema(errors, "DamageContributionLedger", {"effectiveDamageByHeroId", "killingBlowHeroId", "totalEligibleEffectiveDamage", "resolved"})
     validateSchema(errors, "DefensiveProcState", {"blastProofReadyAtSeconds", "notYetConsumedDungeonNumber"})
     validateSchema(errors, "CombatHitResolution", {"hitConnected", "harmWasEffective", "effectiveHPDamage", "targetSurvived", "pushEligible", "hitStunEligible"})
-    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
+    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "coreMaxHP", "maxHP", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
     validateSchema(errors, "FeatDefinition", {"featId", "abilityRequirements", "requiredCapabilityTags", "effectHandlerId", "directorBaseWeight"})
     validateSchema(errors, "ClassCapstoneDefinition", {"featId", "classId", "effectHandlerId"})
     validateSchema(errors, "PendingFeatDraft", {"earnedAtLevel", "draftType", "offerFeatIds", "selectedFeatId", "resolved"})
@@ -111,6 +121,15 @@ function Validation:Run(printResult)
     local growth = CPS:HeroGrowthProfileSeed(rosterSeed, "validation-player", "fighter")
     if idA ~= idB then addError(errors, "Hero identity seed is not deterministic") end
     if idA == growth then addError(errors, "identity and growth RNG domains collided in validation sample") end
+
+    local capstoneCount = 0
+    for _, classId in ipairs({"fighter", "rogue", "wizard"}) do
+        local definitions = RPG.IdentityCatalog and RPG.IdentityCatalog.ClassCapstones
+            and RPG.IdentityCatalog.ClassCapstones[classId]
+        if countKeys(definitions) ~= 3 then addError(errors, classId .. " capstone count must be 3") end
+        capstoneCount = capstoneCount + countKeys(definitions)
+    end
+    if capstoneCount ~= 9 then addError(errors, "class capstone catalog must contain 9 definitions") end
 
     local ok = #errors == 0
     if printResult ~= false then

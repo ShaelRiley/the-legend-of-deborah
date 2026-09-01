@@ -139,6 +139,44 @@ function Rolls:_RollExploding(profile, rng)
     return total, values, contributions, #values >= MAX_CHAIN_DICE
 end
 
+-- Progression dice remain under the one dice authority but are not damage dice:
+-- Rogue mastery, damage feats, and combat rerolls never apply. The universal d6
+-- natural-6 chain still applies and the result is returned for permanent storage.
+function Rolls:RollProgressionHitDie(seed, sides)
+    sides = math.max(2, math.floor(tonumber(sides) or 6))
+    local rng = LOD.RNG.New(seed or 1)
+    local total, values, capped
+    local formula = "d" .. sides
+    if sides == 6 then
+        formula = "d6!"
+        total, values = 0, {}
+        local limit = math.max(1, math.floor(LOD.RPG
+            and LOD.RPG.Constants.MaxDamageDicePerChain or 32))
+        local natural = rng:Int(1, 6)
+        while natural and #values < limit do
+            values[#values + 1] = natural
+            total = total + natural
+            self.Stats.rolls = self.Stats.rolls + 1
+            if natural ~= 6 then break end
+            if #values >= limit then
+                capped = true
+                break
+            end
+            natural = rng:Int(1, 6)
+        end
+    else
+        total, values = self:_RollFormula({count = 1, sides = sides}, rng)
+    end
+    return {
+        seed = seed,
+        sides = sides,
+        formula = formula,
+        values = values,
+        total = total,
+        capped = capped == true
+    }
+end
+
 local function valueList(values)
     local out = {}
     for i, value in ipairs(values or {}) do out[i] = tostring(value) end

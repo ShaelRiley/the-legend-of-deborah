@@ -3,8 +3,8 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 2
-RPG.ImplementationGate = "B"
+RPG.SchemaVersion = 3
+RPG.ImplementationGate = "C"
 RPG.GameplayEnabled = true
 
 RPG.Abilities = {"str", "dex", "con", "int", "wis", "cha"}
@@ -28,6 +28,14 @@ RPG.Constants = {
 
 RPG.OrdinaryFeatLevels = {1, 3, 6, 9, 12, 15, 18}
 
+RPG.HeroXPThresholds = {
+    [1] = 0, [2] = 150, [3] = 400, [4] = 800, [5] = 1500,
+    [6] = 2500, [7] = 3800, [8] = 5400, [9] = 7300, [10] = 9500,
+    [11] = 12000, [12] = 14800, [13] = 17900, [14] = 21300,
+    [15] = 25000, [16] = 29000, [17] = 33300, [18] = 37900,
+    [19] = 42800, [20] = 48000
+}
+
 RPG.Classes = {
     fighter = {
         classId = "fighter",
@@ -50,13 +58,13 @@ RPG.Classes = {
 }
 
 RPG.SystemBootstrap = {
-    CharacterProgressionSystem = "gate_b_level_1",
+    CharacterProgressionSystem = "gate_c_levels_1_20",
     AbilityRules = "schema_only",
-    FeatDirector = "gate_b_level_1_draft",
+    FeatDirector = "gate_c_cadence_and_capstone",
     FeatEffectSystem = "pending",
     IdentityGenerationSystem = "gate_b",
     IdentityPerkSystem = "gate_b_identity_package",
-    CharacterSheetUI = "gate_b",
+    CharacterSheetUI = "gate_c",
     PlayerCharacterText = "gate_b",
     RPGThreatEvaluator = "schema_only"
 }
@@ -97,7 +105,7 @@ RPG.Schema = {
         "rogueAllDamageDiceExplode", "rogueBoomThresholdShift", "rogueCapstoneBoomThresholdShift",
         "rogueCapstoneEvasionChance", "rogueAcePrimed", "damageResistancePerDie",
         "hpConBonusPerLevel", "startingHP", "progressionHitDieSides", "rolledHitPointSubtotal",
-        "coreMaxHP", "conRegenMultiplier", "wizardClassHpToMagicDiversionFraction",
+        "coreMaxHP", "maxHP", "conRegenMultiplier", "wizardClassHpToMagicDiversionFraction",
         "manaBarrierFeatDiversionFraction", "wizardCapstoneDiversionBonus", "livingAegisHPPerMagic",
         "hpToMagicDiversionFraction", "magicRegenMultiplier", "wizardCapstoneMagicRegenMultiplier",
         "magicPowerMultiplier", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",

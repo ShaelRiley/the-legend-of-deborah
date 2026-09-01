@@ -6,13 +6,13 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 
 | New system | Existing authority it must extend | Current module/status |
 |---|---|---|
-| CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate B Level-1 hero state attached directly at RunManager admission |
-| AbilityRules | Existing combat dice, Magic, movement, HP authorities | shared schema/constant contract only |
-| FeatDirector | CharacterProgressionSystem progression state | Gate B locked Level-1 draft/selection; later levels pending |
+| CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate C deterministic Levels 1-20, XP, growth, stored hit dice, and HP recomputation |
+| AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate C server-derived profile; semantic gameplay bridges deferred |
+| FeatDirector | CharacterProgressionSystem progression state | Gate C ordinary-feat cadence and fixed Level-20 class-capstone trios |
 | FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | pending |
 | IdentityGenerationSystem | RunManager RosterSeed lifecycle + independent deterministic substreams | Gate B exact 64/64/64 identity and 64-entry name catalogs |
 | IdentityPerkSystem | Existing semantic combat/navigation/loot/encounter events | Gate B immutable perk ownership/display; later semantic effect bridges pending |
-| CharacterSheetUI | Existing Field Manual visual language | Gate B P-key sheet |
+| CharacterSheetUI | Existing Field Manual visual language | Gate C P-key progression ledger and choice surface |
 | PlayerCharacterText | Existing HUD/feed/player-message surfaces | canonical formatter available; broad surface adoption pending |
 | RPGThreatEvaluator | EncounterDirector projected-profile spending | bounded threat contract only |
 
@@ -68,3 +68,40 @@ bridges and later-level progression remain deliberately deferred to later gates.
 5. Select one offered feat, take the Hermit's weapon, and confirm the portal deploys the Hero.
 6. Reopen P and confirm identity, Level 1, Class, abilities, StartingHP 100, and selected feat.
 7. Run `lod_rpg_gate_b_validate` and require `Gate B validation PASS`.
+
+## Gate C — Levels 1-20 progression math
+
+Implemented as a server-authoritative extension of each Gate B Hero:
+
+- the exact 20-level Hero XP table, with sequential processing for multi-level gains;
+- Primary, both-Secondary, and all-ability growth on their authored schedules, plus alternating
+  per-Level Fighter Training in STR/CON;
+- exactly one deterministic, permanently stored class progression hit-die result for each gained
+  Level 2-20, including natural-6 recursive explosion for Wizard d6 rolls;
+- StartingHP 100, dynamic CON-per-Level recomputation from the stored rolls, minimum +1 HP per
+  gained Level, MaxHP clamping, and no implicit healing when the ceiling rises;
+- stored three-card ordinary drafts at Levels `1, 3, 6, 9, 12, 15, 18`, with the earliest
+  unresolved draft presented first and no reopening/reconnect/death reroll path;
+- the exact fixed trio of authored Level-20 capstones for each class, stored and selected separately
+  from ordinary feats;
+- Character Sheet campaign, HP-roll, owned-feat, pending-draft, and capstone ledgers;
+- developer-only `lod_rpg_gate_c_level <level>` acceleration, which marks the campaign unranked,
+  and `lod_rpg_gate_c_validate` deterministic-state validation.
+
+Gate C establishes ordinary-feat acquisition cadence using the already-authoritative Gate B legal
+catalog. Full ordinary feat-family/rank content and semantic gameplay bridges remain Gate E work;
+combat/class integration remains Gate D work.
+
+### Gate C runtime gate
+
+1. Start a fresh `gm_flatgrass` run with `lod_developer_mode 1`; complete Class and Level-1 feat.
+2. Run `lod_rpg_gate_c_level 3`, open P, and confirm stored L2/L3 HP rolls plus a Level-3 draft.
+3. Note all three Level-3 cards, close/reopen P, and confirm the same cards and seed; select one.
+4. Accelerate through Levels 6, 10, and 18, resolving each newly earned draft; then run
+   `lod_rpg_gate_c_level 20` and select one class capstone from the fixed trio.
+5. Reopen P and confirm Level 20 / XP 48000, nineteen stored hit-die entries, seven committed
+   ordinary feats, the selected capstone, current abilities, and current MaxHP.
+6. Run `lod_rpg_gate_c_validate` and require `Gate C validation PASS`; then enter the maze and
+   confirm ordinary movement, combat, death/respawn, and staging remain functional.
+
+Do not begin Gate D until this gate passes.

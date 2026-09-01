@@ -9,6 +9,7 @@ util.AddNetworkString("LOD_RPG_RequestSheet")
 util.AddNetworkString("LOD_RPG_Snapshot")
 util.AddNetworkString("LOD_RPG_ChooseClass")
 util.AddNetworkString("LOD_RPG_ChooseFeat")
+util.AddNetworkString("LOD_RPG_ChooseCapstone")
 
 local ABILITY_LABELS = {
     str = "STR", dex = "DEX", con = "CON", int = "INT", wis = "WIS", cha = "CHA"
@@ -40,6 +41,20 @@ local function sortedKeys(values)
     for key in pairs(values or {}) do result[#result + 1] = key end
     table.sort(result)
     return result
+end
+
+local function arrayContains(values, wanted)
+    for _, value in ipairs(values or {}) do
+        if value == wanted then return true end
+    end
+    return false
+end
+
+local function ordinarySlotIndexForLevel(level)
+    for index, featLevel in ipairs(RPG.OrdinaryFeatLevels) do
+        if featLevel == level then return index end
+    end
+    return nil
 end
 
 local function concise(text, limit)
@@ -273,20 +288,58 @@ function CharacterProgressionSystem:InitializeHero(runManager, ps, character)
     state.characterIdentityPackage = self:_BuildIdentityPackage(runManager, ps, character)
     state.identityAbilityDelta = copyAbilityBlock(state.characterIdentityPackage.identityAbilityDelta)
     state.dungeonEntryLevel = tonumber(runManager.State.Level) or 1
-    self:_RecomputeLevelOneState(state)
+    self:_RecomputeProgressionState(state)
     ps.progressionState = state
-    ps.rpgGate = "B"
+    ps.rpgGate = "C"
     return state
 end
 
-function CharacterProgressionSystem:_RecomputeLevelOneState(state)
-    if not state then return end
-    state.growthAbilities = RPG.NewAbilityBlock(0)
-    state.fighterTraining = RPG.NewAbilityBlock(0)
-    if state.primaryAbility then state.growthAbilities[state.primaryAbility] = 1 end
-    if state.classId == "fighter" and state.primaryAbility then
-        state.fighterTraining[state.primaryAbility] = 1
+function CharacterProgressionSystem:_GrowthAtLevel(state, level)
+    local growth = RPG.NewAbilityBlock(0)
+    level = self:ClampLevel(level)
+    if not state or not state.primaryAbility then return growth end
+
+    for gainedLevel = 1, level do
+        if gainedLevel % 2 == 1 then
+            growth[state.primaryAbility] = growth[state.primaryAbility] + 1
+        end
+        if gainedLevel % 4 == 2 then
+            for _, ability in ipairs(state.secondaryAbilities or {}) do
+                growth[ability] = growth[ability] + 1
+            end
+        end
+        if gainedLevel % 4 == 0 then
+            for _, ability in ipairs(ALL_ABILITIES) do
+                growth[ability] = growth[ability] + 1
+            end
+        end
     end
+    return growth
+end
+
+function CharacterProgressionSystem:_FighterTrainingAtLevel(state, level)
+    local training = RPG.NewAbilityBlock(0)
+    if not state or state.classId ~= "fighter" or not state.primaryAbility then return training end
+    local class = RPG.Classes.fighter
+    local lead = state.primaryAbility
+    local follow = lead == class.favoredAbilities[1]
+        and class.favoredAbilities[2] or class.favoredAbilities[1]
+    training[lead] = math.ceil(self:ClampLevel(level) / 2)
+    training[follow] = math.floor(self:ClampLevel(level) / 2)
+    return training
+end
+
+function CharacterProgressionSystem:_CapstoneDefinition(state)
+    local classCatalog = Catalog.ClassCapstones and Catalog.ClassCapstones[state.classId]
+    return classCatalog and state.classCapstoneFeatId
+        and classCatalog[state.classCapstoneFeatId] or nil
+end
+
+function CharacterProgressionSystem:_RecomputeProgressionState(state)
+    if not state then return end
+    state.level = self:ClampLevel(state.level)
+    state.growthAbilities = self:_GrowthAtLevel(state, state.level)
+    state.fighterTraining = self:_FighterTrainingAtLevel(state, state.level)
 
     local effective = RPG.NewAbilityBlock(0)
     local qualification = RPG.NewAbilityBlock(0)
@@ -307,15 +360,68 @@ function CharacterProgressionSystem:_RecomputeLevelOneState(state)
 
     local mods = {}
     for _, ability in ipairs(ALL_ABILITIES) do mods[ability .. "Mod"] = self:AbilityModifier(effective[ability]) end
+    local capstone = self:_CapstoneDefinition(state)
+    local capParams = capstone and capstone.effectParams or {}
     mods.fighterTrainingLead = state.classId == "fighter" and state.primaryAbility or nil
     mods.fighterClassStrBonus = state.fighterTraining.str or 0
     mods.fighterClassConBonus = state.fighterTraining.con or 0
+    mods.physicalDamageMultiplier = math.Clamp(1 + 0.05 * mods.strMod, 0.50, 1.50)
+    mods.aimSpreadMultiplier = math.Clamp(1 - 0.04 * mods.dexMod, 0.60, 1.40)
+    mods.movementSpeedMultiplier = math.Clamp(1 + 0.02 * mods.dexMod, 0.85, 1.20)
+    mods.boomShift = math.Clamp(math.floor(math.max(mods.dexMod, 0) / 2), 0, 2)
     mods.rogueAllDamageDiceExplode = state.classId == "rogue"
     mods.rogueBoomThresholdShift = state.classId == "rogue" and 1 or 0
-    mods.wizardClassHpToMagicDiversionFraction = state.classId == "wizard" and 0.02 or 0
-    mods.hpToMagicDiversionFraction = mods.wizardClassHpToMagicDiversionFraction
+    mods.rogueCapstoneBoomThresholdShift = capParams.boomThresholdShift or 0
+    mods.rogueCapstoneEvasionChance = capParams.evasionChance or 0
+    mods.damageResistancePerDie = math.Clamp(mods.conMod, 0, 3)
+    mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
+    mods.conRegenMultiplier = math.Clamp(1 + 0.10 * mods.conMod, 0.50, 2.00)
+    mods.magicRegenMultiplier = math.Clamp(1 + 0.10 * mods.intMod, 0.50, 2.00)
+    mods.magicPowerMultiplier = math.Clamp(1 + 0.06 * mods.wisMod, 0.60, 1.60)
+    mods.utilityMagicCostMultiplier = math.Clamp(1 - 0.04 * mods.wisMod, 0.60, 1.40)
+    mods.breadcrumbCells = math.Clamp(6 + 2 * mods.wisMod, 2, 24)
+    mods.chaHitStunInflictMultiplier = math.Clamp(1 + 0.03 * mods.chaMod, 0.75, 1.30)
+    mods.chaHitStunResistanceMultiplier = math.Clamp(1 - 0.03 * mods.chaMod, 0.70, 1.25)
+    mods.wizardClassHpToMagicDiversionFraction = state.classId == "wizard"
+        and 0.02 * state.level or 0
+    mods.wizardCapstoneDiversionBonus = capParams.diversionBonus or 0
+    mods.livingAegisHPPerMagic = capParams.hpPerMagic or 1
+    mods.hpToMagicDiversionFraction = math.min(1,
+        mods.wizardClassHpToMagicDiversionFraction + mods.wizardCapstoneDiversionBonus)
+    mods.fighterCapstonePhysicalDamageMultiplier = capParams.physicalDamageMultiplier or 1
+    mods.fighterCapstoneMaxHPMultiplier = capParams.maxHPMultiplier or 1
+    mods.fighterCapstoneOutgoingPushMultiplier = capParams.outgoingPushMultiplier or 1
+    mods.fighterCapstoneIncomingPushMultiplier = capParams.incomingPushMultiplier or 1
+    mods.fighterCapstoneWallSlamBonusDice = capParams.wallSlamBonusDice or 0
+    mods.wizardCapstoneMagicRegenMultiplier = capParams.magicRegenMultiplier or 1
+    mods.wizardCapstoneMagicPowerMultiplier = capParams.magicPowerMultiplier or 1
+    mods.wizardCapstoneMagicDCBonus = capParams.magicDCBonus or 0
+    mods.arcaneItemUseChance = state.classId == "wizard" and 1
+        or (state.classId == "rogue" and math.min(0.95, 0.05 * state.level) or 0)
+    mods.canActivateWandsScrolls = state.classId == "wizard" or state.classId == "rogue"
+    mods.levelProficiency = math.floor((state.level - 1) / 4)
     mods.startingHP = 100
+
+    local rolledSubtotal, coreMaxHP = 0, state.startingHP or 100
+    for level = 2, state.level do
+        local roll = state.hitDieRollsByLevel[level]
+        local rolled = tonumber(roll and roll.total or roll) or 0
+        rolledSubtotal = rolledSubtotal + rolled
+        coreMaxHP = coreMaxHP + math.max(1, rolled + mods.hpConBonusPerLevel)
+    end
+    mods.progressionHitDieSides = state.progressionHitDieSides
+    mods.rolledHitPointSubtotal = rolledSubtotal
+    mods.coreMaxHP = coreMaxHP
+    mods.maxHP = math.max(1, math.floor(coreMaxHP
+        * mods.fighterCapstoneMaxHPMultiplier + 0.5))
     state.derivedStats = mods
+end
+
+function CharacterProgressionSystem:_ApplyPlayerMaxHP(ply, state)
+    if not IsValid(ply) or not state then return end
+    local maximum = math.max(1, state.derivedStats and state.derivedStats.maxHP or 100)
+    ply:SetMaxHealth(maximum)
+    if ply:Health() > maximum then ply:SetHealth(maximum) end
 end
 
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
@@ -393,11 +499,13 @@ local function weightedDraw(rng, candidates, count)
     return result
 end
 
-function CharacterProgressionSystem:_GenerateLevelOneDraft(ps, state, campaignSeed)
-    if state.pendingFeatSlots[1] then return state.pendingFeatSlots[1] end
+function CharacterProgressionSystem:_GenerateOrdinaryDraft(ps, state, campaignSeed, earnedAtLevel)
+    local slotIndex = ordinarySlotIndexForLevel(earnedAtLevel)
+    if not slotIndex then return nil end
+    if state.pendingFeatSlots[slotIndex] then return state.pendingFeatSlots[slotIndex] end
 
     local draftSeed = derive(self:HeroGrowthProfileSeed(campaignSeed, ps.identity, state.classId),
-        "feat_draft:ordinary:level:1:slot:1")
+        "feat_draft:ordinary:level:" .. earnedAtLevel .. ":slot:" .. slotIndex)
     local rng = LOD.RNG.New(draftSeed)
     local ordinaryCandidates = {}
     for _, featId in ipairs(sortedKeys(Catalog.LevelOneOrdinaryFeats)) do
@@ -426,19 +534,40 @@ function CharacterProgressionSystem:_GenerateLevelOneDraft(ps, state, campaignSe
             selected[#selected + 1] = definition
         end
     end
-    assert(#selected == 3, "Gate B Level-1 feat draft could not produce three legal distinct offers")
+    assert(#selected == 3,
+        "Gate C Level-" .. earnedAtLevel .. " feat draft could not produce three legal distinct offers")
 
     local draft = {
-        earnedAtLevel = 1,
+        earnedAtLevel = earnedAtLevel,
         draftType = "ordinary",
         offerFeatIds = {selected[1].featId, selected[2].featId, selected[3].featId},
         rngSeed = draftSeed,
         selectedFeatId = nil,
         resolved = false
     }
-    state.pendingFeatSlots[1] = draft
-    state.featSlotsGranted = 1
+    state.pendingFeatSlots[slotIndex] = draft
+    state.featSlotsGranted = math.max(state.featSlotsGranted or 0, slotIndex)
     return draft
+end
+
+function CharacterProgressionSystem:_GenerateLevelOneDraft(ps, state, campaignSeed)
+    return self:_GenerateOrdinaryDraft(ps, state, campaignSeed, 1)
+end
+
+function CharacterProgressionSystem:_NextPendingOrdinaryDraft(state)
+    for index = 1, #(RPG.OrdinaryFeatLevels or {}) do
+        local draft = state and state.pendingFeatSlots and state.pendingFeatSlots[index]
+        if draft and not draft.resolved then return draft, index end
+    end
+    return nil, nil
+end
+
+function CharacterProgressionSystem:_LatestOrdinaryDraft(state)
+    for index = #(RPG.OrdinaryFeatLevels or {}), 1, -1 do
+        local draft = state and state.pendingFeatSlots and state.pendingFeatSlots[index]
+        if draft then return draft, index end
+    end
+    return nil, nil
 end
 
 function CharacterProgressionSystem:CommitClass(ply, classId)
@@ -461,7 +590,7 @@ function CharacterProgressionSystem:CommitClass(ply, classId)
     end
     state.secondaryAbilities[2] = outside[rng:Int(1, #outside)]
 
-    self:_RecomputeLevelOneState(state)
+    self:_RecomputeProgressionState(state)
     self:_GenerateLevelOneDraft(ps, state, runManager.State.CampaignSeed)
     self:SyncPlayer(ply)
     return true
@@ -471,34 +600,153 @@ function CharacterProgressionSystem:_FindFeat(featId)
     return Catalog.LevelOneOrdinaryFeats[featId] or Catalog.FallbackFeats[featId]
 end
 
-function CharacterProgressionSystem:CommitFeat(ply, featId)
+function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLevel)
     local runManager = LOD.RunManager
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
-    local draft = state and state.pendingFeatSlots[1]
-    if not draft or draft.resolved then return false, "No unresolved Level-1 draft." end
+    local draft = state and self:_NextPendingOrdinaryDraft(state) or nil
+    if not draft then return false, "No unresolved ordinary feat draft." end
+    if expectedEarnedAtLevel ~= nil
+        and tonumber(expectedEarnedAtLevel) ~= tonumber(draft.earnedAtLevel)
+    then
+        return false, "That choice belongs to a stale ordinary feat draft."
+    end
 
     local offered = false
     for _, offeredId in ipairs(draft.offerFeatIds or {}) do
         if offeredId == featId then offered = true break end
     end
     local definition = offered and self:_FindFeat(featId) or nil
-    if not definition or not self:_FeatEligible(ps, state, definition) then
+    if not definition then
         return false, "That feat is not a legal offer in the locked draft."
     end
 
     draft.selectedFeatId = featId
     draft.resolved = true
-    state.featIds[#state.featIds + 1] = featId
+    if not arrayContains(state.featIds, featId) then state.featIds[#state.featIds + 1] = featId end
     state.featStackCounts[featId] = (state.featStackCounts[featId] or 0) + 1
     if definition.repeatableFallback and definition.effectHandlerId == "fallback_ability_delta" then
         local ability = definition.effectParams.ability
         state.featAbilityDelta[ability] = (state.featAbilityDelta[ability] or 0)
             + (tonumber(definition.effectParams.amount) or 1)
     end
-    self:_RecomputeLevelOneState(state)
+    self:_RecomputeProgressionState(state)
+    self:_ApplyPlayerMaxHP(ply, state)
     self:SyncPlayer(ply)
     return true
+end
+
+function CharacterProgressionSystem:_GenerateProgressionHitDie(ps, state, campaignSeed, level)
+    if state.hitDieRollsByLevel[level] then return state.hitDieRollsByLevel[level] end
+    local rolls = LOD.CombatRolls
+    assert(rolls and rolls.RollProgressionHitDie,
+        "combat-roll authority unavailable for progression hit die")
+    local growthSeed = self:HeroGrowthProfileSeed(campaignSeed, ps.identity, state.classId)
+    local rollSeed = derive(growthSeed, "progression_hit_die:level:" .. level)
+    local roll = rolls:RollProgressionHitDie(rollSeed, state.progressionHitDieSides)
+    roll.level = level
+    state.hitDieRollsByLevel[level] = roll
+    return roll
+end
+
+function CharacterProgressionSystem:_GenerateClassCapstoneDraft(state)
+    if state.pendingClassCapstoneDraft then return state.pendingClassCapstoneDraft end
+    local definitions = Catalog.ClassCapstones and Catalog.ClassCapstones[state.classId]
+    local ids = sortedKeys(definitions or {})
+    assert(#ids == 3, "Level-20 class requires exactly three fixed capstones")
+    state.pendingClassCapstoneDraft = {
+        earnedAtLevel = 20,
+        draftType = "classCapstone",
+        offerFeatIds = ids,
+        rngSeed = nil,
+        selectedFeatId = nil,
+        resolved = false
+    }
+    return state.pendingClassCapstoneDraft
+end
+
+function CharacterProgressionSystem:CommitCapstone(ply, featId)
+    local runManager = LOD.RunManager
+    local ps = runManager and runManager:GetPlayerState(ply)
+    local state = ps and ps.progressionState
+    local draft = state and state.pendingClassCapstoneDraft
+    if not draft or draft.resolved or state.level ~= 20 then
+        return false, "No unresolved Level-20 class-capstone draft."
+    end
+    if not arrayContains(draft.offerFeatIds, featId) then
+        return false, "That capstone is not in the locked class trio."
+    end
+    local definition = Catalog.ClassCapstones[state.classId]
+        and Catalog.ClassCapstones[state.classId][featId]
+    if not definition then return false, "Unknown class capstone." end
+
+    draft.selectedFeatId = featId
+    draft.resolved = true
+    state.classCapstoneFeatId = featId
+    self:_RecomputeProgressionState(state)
+    self:_ApplyPlayerMaxHP(ply, state)
+    self:SyncPlayer(ply)
+    return true
+end
+
+function CharacterProgressionSystem:LevelForXP(xp)
+    xp = math.Clamp(math.floor(tonumber(xp) or 0), 0, RPG.Constants.HeroMaxXP)
+    local level = 1
+    for candidate = 2, RPG.Constants.MaxLevel do
+        if xp < RPG.HeroXPThresholds[candidate] then break end
+        level = candidate
+    end
+    return level
+end
+
+function CharacterProgressionSystem:AdvanceHeroToLevel(ply, targetLevel)
+    local runManager = LOD.RunManager
+    local ps = runManager and runManager:GetPlayerState(ply)
+    local state = ps and ps.progressionState
+    targetLevel = self:ClampLevel(targetLevel)
+    if not state or not state.classId then return false, "Class must be committed first." end
+    if targetLevel < state.level then return false, "Character Level cannot decrease." end
+
+    local startingLevel = state.level
+    while state.level < targetLevel do
+        local nextLevel = state.level + 1
+        state.level = nextLevel
+        self:_GenerateProgressionHitDie(ps, state, runManager.State.CampaignSeed, nextLevel)
+        self:_RecomputeProgressionState(state)
+        local slotIndex = ordinarySlotIndexForLevel(nextLevel)
+        if slotIndex then
+            self:_GenerateOrdinaryDraft(ps, state, runManager.State.CampaignSeed, nextLevel)
+        end
+        if nextLevel == RPG.Constants.MaxLevel then self:_GenerateClassCapstoneDraft(state) end
+    end
+
+    self:_ApplyPlayerMaxHP(ply, state)
+    self:SyncPlayer(ply)
+    if targetLevel > startingLevel and IsValid(ply) then
+        ply:ChatPrint(string.format("LEVEL UP - %d to %d. Press P to review progression.",
+            startingLevel, targetLevel))
+    end
+    return true
+end
+
+function CharacterProgressionSystem:SetHeroXP(ply, xp)
+    local runManager = LOD.RunManager
+    local ps = runManager and runManager:GetPlayerState(ply)
+    local state = ps and ps.progressionState
+    if not state then return false, "Hero progression state unavailable." end
+    local requested = math.Clamp(math.floor(tonumber(xp) or 0), 0, RPG.Constants.HeroMaxXP)
+    if requested < (state.xp or 0) then return false, "Campaign XP cannot decrease." end
+    state.xp = requested
+    return self:AdvanceHeroToLevel(ply, self:LevelForXP(requested))
+end
+
+function CharacterProgressionSystem:AwardHeroXP(ply, amount)
+    local runManager = LOD.RunManager
+    local ps = runManager and runManager:GetPlayerState(ply)
+    local state = ps and ps.progressionState
+    amount = math.max(0, math.floor(tonumber(amount) or 0))
+    if not state or amount <= 0 then return false, "No positive XP award." end
+    return self:SetHeroXP(ply, math.min(RPG.Constants.HeroMaxXP, (state.xp or 0) + amount))
 end
 
 function CharacterProgressionSystem:IsDeploymentEligible(ps)
@@ -531,6 +779,15 @@ local function featSnapshot(definition, selected)
     }
 end
 
+local function capstoneSnapshot(definition, selected)
+    return {
+        featId = definition.featId,
+        displayName = definition.displayName,
+        effect = concise(definition.effectParams and definition.effectParams.description, 360),
+        selected = selected == true
+    }
+end
+
 function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local runManager = LOD.RunManager
     local ps = runManager and runManager:GetPlayerState(ply)
@@ -538,7 +795,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local package = state and state.characterIdentityPackage
     if not package then return nil end
 
-    local draft = state.pendingFeatSlots[1]
+    local draft = self:_NextPendingOrdinaryDraft(state)
+    if not draft then draft = self:_LatestOrdinaryDraft(state) end
     local offers = {}
     if draft then
         for _, featId in ipairs(draft.offerFeatIds or {}) do
@@ -547,6 +805,61 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         end
     end
     local selectedFeat = draft and draft.selectedFeatId and self:_FindFeat(draft.selectedFeatId) or nil
+    local pendingFeatCount = 0
+    local ordinaryFeatsCommitted = 0
+    for _, ordinaryDraft in ipairs(state.pendingFeatSlots or {}) do
+        if ordinaryDraft and ordinaryDraft.resolved then
+            ordinaryFeatsCommitted = ordinaryFeatsCommitted + 1
+        elseif ordinaryDraft then
+            pendingFeatCount = pendingFeatCount + 1
+        end
+    end
+    local ownedFeats = {}
+    for _, featId in ipairs(state.featIds or {}) do
+        local definition = self:_FindFeat(featId)
+        if definition then
+            local item = featSnapshot(definition, true)
+            item.stackCount = state.featStackCounts[featId] or 1
+            local ability = definition.repeatableFallback and definition.effectParams
+                and definition.effectParams.ability or nil
+            if ability then
+                item.effect = string.format("Permanent +%d %s from this feat.",
+                    item.stackCount, string.upper(ability))
+            end
+            ownedFeats[#ownedFeats + 1] = item
+        end
+    end
+
+    local hitDieRolls = {}
+    for level = 2, state.level do
+        local roll = state.hitDieRollsByLevel[level]
+        if roll then
+            local conBonus = state.derivedStats.hpConBonusPerLevel or 0
+            hitDieRolls[#hitDieRolls + 1] = {
+                level = level,
+                formula = roll.formula or ("d" .. tostring(state.progressionHitDieSides)),
+                values = copyArray(roll.values),
+                total = roll.total,
+                conBonus = conBonus,
+                hpGain = math.max(1, (roll.total or 0) + conBonus),
+                capped = roll.capped == true
+            }
+        end
+    end
+
+    local capstoneDraft = state.pendingClassCapstoneDraft
+    local capstoneOffers = {}
+    local classCapstones = state.classId and Catalog.ClassCapstones
+        and Catalog.ClassCapstones[state.classId] or nil
+    for _, featId in ipairs(capstoneDraft and capstoneDraft.offerFeatIds or {}) do
+        local definition = classCapstones and classCapstones[featId]
+        if definition then
+            capstoneOffers[#capstoneOffers + 1] = capstoneSnapshot(definition,
+                capstoneDraft.selectedFeatId == featId)
+        end
+    end
+    local selectedCapstone = classCapstones and state.classCapstoneFeatId
+        and classCapstones[state.classCapstoneFeatId] or nil
 
     local roles = {}
     if state.primaryAbility then roles[state.primaryAbility] = "Primary Growth" end
@@ -573,16 +886,18 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local class = state.classId and RPG.Classes[state.classId] or nil
     local classPassive
     if state.classId == "fighter" then
-        classPassive = "Fighter Training: +1 at Level 1 to " .. string.upper(state.primaryAbility)
-            .. "; future training alternates STR and CON."
+        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s.",
+            state.fighterTraining.str or 0, state.fighterTraining.con or 0,
+            state.level, string.upper(state.primaryAbility))
     elseif state.classId == "rogue" then
         classPassive = "Exploding-Dice Mastery: all actor-owned damage dice can explode; d6 and SUPER-d12 thresholds improve."
     elseif state.classId == "wizard" then
-        classPassive = "Arcane Diversion: 2% of otherwise-final Level-1 HP damage is diverted to Magic when available."
+        classPassive = string.format("Arcane Diversion: %d%% of otherwise-final HP damage is diverted to Magic when available.",
+            math.floor((state.derivedStats.wizardClassHpToMagicDiversionFraction or 0) * 100 + 0.5))
     end
 
     return {
-        gate = "B",
+        gate = "C",
         schemaVersion = RPG.SchemaVersion,
         fullDisplayName = package.fullDisplayName,
         firstName = package.firstName,
@@ -594,8 +909,12 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         presentationSex = package.presentationSex,
         level = state.level,
         xp = state.xp,
+        xpForCurrentLevel = RPG.HeroXPThresholds[state.level],
+        xpForNextLevel = state.level < RPG.Constants.MaxLevel
+            and RPG.HeroXPThresholds[state.level + 1] or nil,
         startingHP = state.startingHP,
-        currentHP = IsValid(ply) and ply:Health() or state.startingHP,
+        maxHP = state.derivedStats.maxHP,
+        currentHP = IsValid(ply) and ply:Health() or state.derivedStats.maxHP,
         lives = ps.lives,
         dungeonLevel = runManager.State.Level,
         classId = state.classId,
@@ -605,6 +924,9 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         primaryAbility = state.primaryAbility,
         secondaryAbilities = copyArray(state.secondaryAbilities),
         abilities = abilities,
+        hitDieRolls = hitDieRolls,
+        hpConBonusPerLevel = state.derivedStats.hpConBonusPerLevel,
+        rolledHitPointSubtotal = state.derivedStats.rolledHitPointSubtotal,
         identityTraits = {
             perkSnapshot(Catalog.Origins[package.originIndex]),
             perkSnapshot(Catalog.Backgrounds[package.backgroundIndex]),
@@ -618,7 +940,19 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             selectedFeatId = draft.selectedFeatId,
             offers = offers
         } or nil,
+        pendingFeatCount = pendingFeatCount,
+        featSlotsGranted = state.featSlotsGranted,
+        ordinaryFeatsCommitted = ordinaryFeatsCommitted,
+        ownedFeats = ownedFeats,
         selectedFeat = selectedFeat and featSnapshot(selectedFeat, true) or nil,
+        capstoneDraft = capstoneDraft and {
+            earnedAtLevel = 20,
+            draftType = "classCapstone",
+            resolved = capstoneDraft.resolved,
+            selectedFeatId = capstoneDraft.selectedFeatId,
+            offers = capstoneOffers
+        } or nil,
+        selectedCapstone = selectedCapstone and capstoneSnapshot(selectedCapstone, true) or nil,
         requiredChoicesComplete = self:IsDeploymentEligible(ps),
         deploymentComplete = ps.deploymentComplete == true
     }
@@ -662,14 +996,25 @@ end)
 net.Receive("LOD_RPG_ChooseFeat", function(_, ply)
     if not IsValid(ply) then return end
     local featId = net.ReadString() or ""
-    local ok, err = CharacterProgressionSystem:CommitFeat(ply, featId)
+    local earnedAtLevel = net.ReadUInt(5)
+    local ok, err = CharacterProgressionSystem:CommitFeat(ply, featId, earnedAtLevel)
     if not ok and err then
         ply:ChatPrint("RPG - " .. err)
         CharacterProgressionSystem:SyncPlayer(ply)
     end
 end)
 
-hook.Add("PlayerSpawn", "LOD_RPGGateBSyncOnSpawn", function(ply)
+net.Receive("LOD_RPG_ChooseCapstone", function(_, ply)
+    if not IsValid(ply) then return end
+    local featId = net.ReadString() or ""
+    local ok, err = CharacterProgressionSystem:CommitCapstone(ply, featId)
+    if not ok and err then
+        ply:ChatPrint("RPG - " .. err)
+        CharacterProgressionSystem:SyncPlayer(ply)
+    end
+end)
+
+hook.Add("PlayerSpawn", "LOD_RPGGateCSyncOnSpawn", function(ply)
     timer.Simple(0, function()
         if IsValid(ply) then CharacterProgressionSystem:SyncPlayer(ply) end
     end)
@@ -761,5 +1106,155 @@ concommand.Add("lod_rpg_gate_b_validate", function(ply)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
+local function developerCommandPlayer(ply, commandName)
+    if IsValid(ply) and not ply:IsAdmin() then return nil end
+    local developerMode = GetConVar("lod_developer_mode")
+    if not developerMode or not developerMode:GetBool() then
+        if IsValid(ply) then ply:ChatPrint(commandName .. " requires lod_developer_mode 1 at startup.") end
+        return nil
+    end
+    return IsValid(ply) and ply or player.GetAll()[1]
+end
+
+concommand.Add("lod_rpg_gate_c_level", function(ply, _, args)
+    local target = developerCommandPlayer(ply, "lod_rpg_gate_c_level")
+    if not IsValid(target) then return end
+    local requestedLevel = CharacterProgressionSystem:ClampLevel(args and args[1])
+    local ps = LOD.RunManager:GetPlayerState(target)
+    if not CharacterProgressionSystem:IsDeploymentEligible(ps) then
+        target:ChatPrint("Complete the Level-1 class and feat choices before accelerating progression.")
+        return
+    end
+    if requestedLevel < ps.progressionState.level then
+        target:ChatPrint("Gate C acceleration cannot reduce Character Level.")
+        return
+    end
+    LOD.RunManager:MarkUnranked("Gate C developer level acceleration")
+    local ok, err = CharacterProgressionSystem:SetHeroXP(target,
+        RPG.HeroXPThresholds[requestedLevel])
+    if not ok then
+        target:ChatPrint("Gate C acceleration failed: " .. tostring(err))
+        return
+    end
+    target:ChatPrint(string.format(
+        "Gate C snapshot ready: Level %d / XP %d / press P.",
+        ps.progressionState.level, ps.progressionState.xp))
+end)
+
+function CharacterProgressionSystem:ValidateGateCPlayer(ply)
+    local errors = {}
+    local ps = IsValid(ply) and LOD.RunManager:GetPlayerState(ply) or nil
+    local state = ps and ps.progressionState
+    if not state or not state.classId then return false, {"progression/class missing"}, "none" end
+
+    local level = state.level
+    if level < 1 or level > 20 then errors[#errors + 1] = "level bounds" end
+    if (state.xp or 0) < (RPG.HeroXPThresholds[level] or 0) then errors[#errors + 1] = "XP below level" end
+    if level < 20 and (state.xp or 0) >= RPG.HeroXPThresholds[level + 1] then
+        errors[#errors + 1] = "XP level not advanced"
+    end
+
+    local expectedGrowth = self:_GrowthAtLevel(state, level)
+    local expectedTraining = self:_FighterTrainingAtLevel(state, level)
+    for _, ability in ipairs(ALL_ABILITIES) do
+        if state.growthAbilities[ability] ~= expectedGrowth[ability] then
+            errors[#errors + 1] = "growth " .. ability
+        end
+        if state.fighterTraining[ability] ~= expectedTraining[ability] then
+            errors[#errors + 1] = "Fighter Training " .. ability
+        end
+    end
+
+    local hitFingerprints = {}
+    local rolledSubtotal, expectedCoreHP = 0, state.startingHP or 100
+    local conBonus = state.derivedStats.hpConBonusPerLevel or 0
+    for gainedLevel = 2, level do
+        local roll = state.hitDieRollsByLevel[gainedLevel]
+        if not roll then
+            errors[#errors + 1] = "hit die missing L" .. gainedLevel
+        else
+            local replay = LOD.CombatRolls:RollProgressionHitDie(roll.seed, state.progressionHitDieSides)
+            if replay.total ~= roll.total or table.concat(replay.values, ",") ~= table.concat(roll.values, ",") then
+                errors[#errors + 1] = "hit die nondeterministic L" .. gainedLevel
+            end
+            rolledSubtotal = rolledSubtotal + (roll.total or 0)
+            expectedCoreHP = expectedCoreHP + math.max(1, (roll.total or 0) + conBonus)
+            hitFingerprints[#hitFingerprints + 1] = gainedLevel .. ":"
+                .. table.concat(roll.values or {}, "+")
+        end
+    end
+    if countKeys(state.hitDieRollsByLevel) ~= math.max(0, level - 1) then
+        errors[#errors + 1] = "hit die count"
+    end
+    if state.derivedStats.rolledHitPointSubtotal ~= rolledSubtotal then
+        errors[#errors + 1] = "rolled HP subtotal"
+    end
+    if state.derivedStats.coreMaxHP ~= expectedCoreHP then errors[#errors + 1] = "CoreMaxHP" end
+    local hpMultiplier = state.classCapstoneFeatId == "FTR_CAP_BUILT_DIFFERENT" and 1.25 or 1
+    local expectedMaxHP = math.floor(expectedCoreHP * hpMultiplier + 0.5)
+    if state.derivedStats.maxHP ~= expectedMaxHP then errors[#errors + 1] = "MaxHP" end
+
+    local expectedSlots = 0
+    for index, featLevel in ipairs(RPG.OrdinaryFeatLevels) do
+        if featLevel <= level then
+            expectedSlots = index
+            local draft = state.pendingFeatSlots[index]
+            if not draft or draft.earnedAtLevel ~= featLevel or #draft.offerFeatIds ~= 3 then
+                errors[#errors + 1] = "ordinary draft L" .. featLevel
+            else
+                local seen = {}
+                for _, featId in ipairs(draft.offerFeatIds) do
+                    if seen[featId] then errors[#errors + 1] = "duplicate offer L" .. featLevel end
+                    seen[featId] = true
+                    if not self:_FindFeat(featId) then errors[#errors + 1] = "unknown offer " .. featId end
+                end
+                if not draft.resolved or not seen[draft.selectedFeatId] then
+                    errors[#errors + 1] = "pending selection L" .. featLevel
+                end
+            end
+        end
+    end
+    if state.featSlotsGranted ~= expectedSlots then errors[#errors + 1] = "feat slot cadence" end
+
+    local capstone = state.pendingClassCapstoneDraft
+    if level == 20 then
+        local expected = sortedKeys(Catalog.ClassCapstones[state.classId] or {})
+        if not capstone or #capstone.offerFeatIds ~= 3
+            or table.concat(capstone.offerFeatIds, "|") ~= table.concat(expected, "|")
+        then
+            errors[#errors + 1] = "class capstone trio"
+        elseif not capstone.resolved or not arrayContains(capstone.offerFeatIds, state.classCapstoneFeatId) then
+            errors[#errors + 1] = "class capstone pending"
+        end
+    elseif capstone or state.classCapstoneFeatId then
+        errors[#errors + 1] = "early class capstone"
+    end
+
+    local fingerprint = util.CRC(table.concat(hitFingerprints, "|") .. ":"
+        .. tostring(state.derivedStats.maxHP) .. ":" .. tostring(state.featSlotsGranted)
+        .. ":" .. tostring(state.classCapstoneFeatId or "none"))
+    return #errors == 0, errors, fingerprint
+end
+
+concommand.Add("lod_rpg_gate_c_validate", function(ply)
+    local target = developerCommandPlayer(ply, "lod_rpg_gate_c_validate")
+    if not IsValid(target) then return end
+    local ok, errors, fingerprint = CharacterProgressionSystem:ValidateGateCPlayer(target)
+    local ps = LOD.RunManager:GetPlayerState(target)
+    local state = ps and ps.progressionState
+    local line = string.format(
+        "Gate C validation %s - Level=%s XP=%s MaxHP=%s hitDice=%s featSlots=%s capstone=%s fingerprint=%s",
+        ok and "PASS" or "FAILED", tostring(state and state.level or "missing"),
+        tostring(state and state.xp or "missing"),
+        tostring(state and state.derivedStats and state.derivedStats.maxHP or "missing"),
+        tostring(state and countKeys(state.hitDieRollsByLevel) or 0),
+        tostring(state and state.featSlotsGranted or 0),
+        tostring(state and state.classCapstoneFeatId or "pending"), tostring(fingerprint))
+    print("[LOD:RPG] " .. line)
+    for _, err in ipairs(errors) do ErrorNoHalt("[LOD:RPG] Gate C: " .. err .. "\n") end
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
+
 CharacterProgressionSystem.GateAScaffoldReady = true
 CharacterProgressionSystem.GateBReady = true
+CharacterProgressionSystem.GateCReady = true

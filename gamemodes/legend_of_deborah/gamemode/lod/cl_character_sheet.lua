@@ -284,6 +284,7 @@ local function addFeatCards(parent, snapshot, x, y, width)
             footer = makeChoiceButton(card, "Choose " .. feat.displayName, function()
                 net.Start("LOD_RPG_ChooseFeat")
                 net.WriteString(feat.featId)
+                net.WriteUInt(snapshot.featDraft.earnedAtLevel or 1, 5)
                 net.SendToServer()
             end)
             footer:SetSize(cardWidth - 24, 28)
@@ -291,6 +292,120 @@ local function addFeatCards(parent, snapshot, x, y, width)
         cards[#cards + 1] = {panel = card, footer = footer}
         cardHeight = math.max(cardHeight, effectY + effectHeight + 52)
     end
+    for _, card in ipairs(cards) do
+        card.panel:SetTall(cardHeight)
+        card.footer:SetPos(12, cardHeight - 38)
+    end
+    return cardHeight
+end
+
+local function addOwnedFeatLedger(parent, snapshot, x, y, width)
+    local panel = paperPanel(parent)
+    panel:SetPos(x, y)
+    panel:SetWide(width)
+    local contentWidth = width - 24
+    local cursorY = 10
+    local owned = snapshot.ownedFeats or {}
+
+    if #owned == 0 then
+        local empty = label(panel, "No ordinary feats committed.", "LOD_SheetSmall", MUTED)
+        empty:SetPos(12, cursorY)
+        cursorY = cursorY + fitWrapped(empty, contentWidth, 20) + 10
+    else
+        for _, feat in ipairs(owned) do
+            local stacks = (feat.stackCount or 1) > 1 and ("  x" .. feat.stackCount) or ""
+            local title = label(panel, feat.displayName .. stacks, "LOD_SheetSubheading", BLUE)
+            title:SetPos(12, cursorY)
+            cursorY = cursorY + fitWrapped(title, contentWidth, 22) + 3
+            local effect = label(panel, feat.effect or "", "LOD_SheetSmall", INK)
+            effect:SetPos(12, cursorY)
+            cursorY = cursorY + fitWrapped(effect, contentWidth, 18) + 9
+        end
+    end
+
+    panel:SetTall(cursorY)
+    return cursorY
+end
+
+local function addHitDieLedger(parent, snapshot, x, y, width)
+    local panel = paperPanel(parent)
+    panel:SetPos(x, y)
+    panel:SetWide(width)
+    local contentWidth = width - 24
+    local cursorY = 10
+    local rolls = snapshot.hitDieRolls or {}
+
+    if #rolls == 0 then
+        local empty = label(panel, "No progression die is rolled at Level 1.", "LOD_SheetSmall", MUTED)
+        empty:SetPos(12, cursorY)
+        cursorY = cursorY + fitWrapped(empty, contentWidth, 20) + 10
+    else
+        for _, roll in ipairs(rolls) do
+            local values = {}
+            for index, value in ipairs(roll.values or {}) do values[index] = tostring(value) end
+            local text = string.format("L%d  %s [%s]  %+d CON  =  +%d HP%s",
+                roll.level, roll.formula, table.concat(values, "+"), roll.conBonus or 0,
+                roll.hpGain or 1, roll.capped and " (CHAIN CAPPED)" or "")
+            local row = label(panel, text, "LOD_SheetSmall", roll.capped and RED or INK)
+            row:SetPos(12, cursorY)
+            cursorY = cursorY + fitWrapped(row, contentWidth, 18) + 3
+        end
+        local summary = label(panel,
+            string.format("Stored roll subtotal: %d  /  current CON bonus per gained Level: %+d",
+                snapshot.rolledHitPointSubtotal or 0, snapshot.hpConBonusPerLevel or 0),
+            "LOD_SheetSmall", MUTED)
+        summary:SetPos(12, cursorY + 4)
+        cursorY = cursorY + 4 + fitWrapped(summary, contentWidth, 20) + 10
+    end
+
+    panel:SetTall(cursorY)
+    return cursorY
+end
+
+local function addCapstoneCards(parent, snapshot, x, y, width)
+    local offers = snapshot.capstoneDraft and snapshot.capstoneDraft.offers or {}
+    local gap = 12
+    local cardWidth = math.floor((width - gap * 2) / 3)
+    local cards = {}
+    local cardHeight = 210
+
+    for index, feat in ipairs(offers) do
+        local card = paperPanel(parent)
+        card:SetPos(x + (index - 1) * (cardWidth + gap), y)
+        card:SetWide(cardWidth)
+        if feat.selected then
+            card.Paint = function(self, w, h)
+                draw.RoundedBox(2, 0, 0, w, h, Color(248, 225, 194))
+                surface.SetDrawColor(GOLD)
+                surface.DrawOutlinedRect(0, 0, w, h, 3)
+            end
+        end
+
+        local title = label(card, feat.displayName, "LOD_SheetSubheading", feat.selected and RED or BLUE)
+        title:SetPos(12, 10)
+        local titleHeight = fitWrapped(title, cardWidth - 24, 26)
+        local effect = label(card, feat.effect or "", "LOD_SheetSmall", INK)
+        local effectY = 10 + titleHeight + 10
+        effect:SetPos(12, effectY)
+        local effectHeight = fitWrapped(effect, cardWidth - 24, 100)
+
+        local footer
+        if snapshot.capstoneDraft.resolved then
+            footer = label(card, feat.selected and "SELECTED" or "NOT SELECTED",
+                "LOD_SheetKey", feat.selected and RED or MUTED)
+            footer:SetSize(cardWidth - 24, 25)
+        else
+            footer = makeChoiceButton(card, "Choose " .. feat.displayName, function()
+                net.Start("LOD_RPG_ChooseCapstone")
+                net.WriteString(feat.featId)
+                net.SendToServer()
+            end)
+            footer:SetSize(cardWidth - 24, 28)
+        end
+        cards[#cards + 1] = {panel = card, footer = footer}
+        cardHeight = math.max(cardHeight, effectY + effectHeight + 52)
+    end
+
     for _, card in ipairs(cards) do
         card.panel:SetTall(cardHeight)
         card.footer:SetPos(12, cardHeight - 38)
@@ -403,20 +518,28 @@ function Sheet:Open(requestFresh)
         leftY = leftY + traitHeight + 10
     end
 
-    local _, recordTitleHeight = sectionTitle(canvas, "Level-1 Record", 0, leftY + 6, leftWidth)
+    local _, recordTitleHeight = sectionTitle(canvas, "Campaign Record", 0, leftY + 6, leftWidth)
     leftY = leftY + 6 + recordTitleHeight + 8
     local record = paperPanel(canvas)
     record:SetPos(0, leftY)
     record:SetWide(leftWidth)
+    local xpLine = snapshot.xpForNextLevel
+        and string.format("XP: %d / %d", snapshot.xp or 0, snapshot.xpForNextLevel)
+        or string.format("XP: %d / MAX", snapshot.xp or 0)
     local recordText = string.format(
-        "Starting HP: %d\nXP: %d\nLives: %d\nDungeon Level: %d",
-        snapshot.startingHP or 100, snapshot.xp or 0, snapshot.lives or 0,
-        snapshot.dungeonLevel or 1)
+        "Starting HP: %d\nCurrent HP: %d / %d\n%s\nLives: %d\nDungeon Level: %d",
+        snapshot.startingHP or 100, snapshot.currentHP or 0, snapshot.maxHP or 100,
+        xpLine, snapshot.lives or 0, snapshot.dungeonLevel or 1)
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
-    local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 92) + 20
+    local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20
     record:SetTall(recordHeight)
-    local leftBottom = leftY + recordHeight
+    leftY = leftY + recordHeight + 16
+
+    local _, hpTitleHeight = sectionTitle(canvas, "Progression HP", 0, leftY, leftWidth)
+    leftY = leftY + hpTitleHeight + 8
+    leftY = leftY + addHitDieLedger(canvas, snapshot, 0, leftY, leftWidth)
+    local leftBottom = leftY
 
     local rightY = 0
     local _, classTitleHeight = sectionTitle(canvas,
@@ -461,8 +584,26 @@ function Sheet:Open(requestFresh)
     end
 
     rightY = rightY + 18
+    local _, ownedTitleHeight = sectionTitle(canvas,
+        string.format("Ordinary Feats / %d of %d", snapshot.ordinaryFeatsCommitted or 0,
+            snapshot.featSlotsGranted or 0),
+        rightX, rightY, rightWidth)
+    rightY = rightY + ownedTitleHeight + 8
+    rightY = rightY + addOwnedFeatLedger(canvas, snapshot, rightX, rightY, rightWidth)
+
+    rightY = rightY + 18
+    local draftLevel = snapshot.featDraft and snapshot.featDraft.earnedAtLevel or 1
+    local draftHeading
+    if not snapshot.classId then
+        draftHeading = "Level-1 Feat Draft"
+    elseif snapshot.featDraft and not snapshot.featDraft.resolved then
+        draftHeading = string.format("Level-%d Feat Available / %d Pending",
+            draftLevel, snapshot.pendingFeatCount or 1)
+    else
+        draftHeading = string.format("Locked Level-%d Feat Draft", draftLevel)
+    end
     local _, featTitleHeight = sectionTitle(canvas,
-        snapshot.classId and "Locked Level-1 Feat Draft" or "Level-1 Feat Draft",
+        draftHeading,
         rightX, rightY, rightWidth)
     rightY = rightY + featTitleHeight + 8
     if not snapshot.classId then
@@ -480,6 +621,14 @@ function Sheet:Open(requestFresh)
             "LOD_SheetSmall", MUTED)
         fingerprint:SetPos(rightX, rightY)
         rightY = rightY + fitWrapped(fingerprint, rightWidth, 20)
+    end
+
+    if snapshot.capstoneDraft then
+        rightY = rightY + 18
+        local _, capTitleHeight = sectionTitle(canvas, "Level-20 Class Capstone",
+            rightX, rightY, rightWidth)
+        rightY = rightY + capTitleHeight + 8
+        rightY = rightY + addCapstoneCards(canvas, snapshot, rightX, rightY, rightWidth)
     end
 
     canvas:SetTall(math.max(body:GetTall(), leftBottom, rightY) + 24)

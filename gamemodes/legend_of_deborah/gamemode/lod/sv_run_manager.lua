@@ -432,7 +432,11 @@ function RunManager:ApplyPlayerState(ply)
     if ps.model then ply:SetModel(ps.model) end
     ply:SetPos(self.State.CheckpointPos or self.State.BuildReport.startPos)
     ply:SetEyeAngles(Angle(0, 0, 0))
-    ply:SetHealth(100)
+    local progression = ps.progressionState
+    local maximumHealth = math.max(1, progression and progression.derivedStats
+        and progression.derivedStats.maxHP or 100)
+    ply:SetMaxHealth(maximumHealth)
+    ply:SetHealth(maximumHealth)
     ply:SetArmor(ps.armor or 0)
     self:RestoreInventory(ply, ps)
     ps.respawnAt = nil
