@@ -430,6 +430,23 @@ function AbilityRules:ValidateGateD(ply)
     expect(RPG.Constants.MaxDamageDicePerChain == 32, "chain cap")
     expect(LOD.CombatRolls and LOD.CombatRolls.RollActorDamage
         and LOD.CombatRolls.ResolveActorDamage, "dice integration")
+
+    -- Regression guard for Lua's multi-return argument expansion. Public combat
+    -- resolution must expose exactly one numeric value; richer internal damage
+    -- diagnostics stay behind AbilityRules:ResolveDamageContract.
+    local resolverReturnCount = 0
+    local resolverSample = nil
+    local function captureResolverResult(...)
+        resolverReturnCount = select("#", ...)
+        resolverSample = select(1, ...)
+    end
+    if LOD.CombatRolls and LOD.CombatRolls.ResolveActorDamage then
+        captureResolverResult(LOD.CombatRolls:ResolveActorDamage(
+            {contributions = {1}, bonus = 0}, nil, nil, {}))
+    end
+    expect(resolverReturnCount == 1 and type(resolverSample) == "number",
+        "single-value damage resolver contract")
+
     expect(LOD.CombatRolls and LOD.CombatRolls.LODD12BoomchainInstalled
         and LOD.MagnumPiercing and LOD.MagnumPiercing.DamageSegments,
         "late Magnum dice/piercing chain")

@@ -341,7 +341,12 @@ end
 function Rolls:ResolveActorDamage(contract, attacker, target, tags)
     local rules = LOD.RPGAbilityRules
     if not rules or not rules.ResolveDamageContract then return tonumber(contract and contract.total) or 0 end
-    return rules:ResolveDamageContract(contract, attacker, target, tags)
+    -- Public combat-roll resolution is intentionally a single-value contract.
+    -- AbilityRules retains its richer internal tuple for validation/debugging,
+    -- but callers may safely pass this result into math helpers without Lua
+    -- expanding hidden table-valued returns into additional arguments.
+    local resolved = rules:ResolveDamageContract(contract, attacker, target, tags)
+    return tonumber(resolved) or 0
 end
 
 function Rolls:RollPlayerWeapon(ply, weaponClass)
