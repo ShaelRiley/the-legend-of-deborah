@@ -84,6 +84,19 @@ local function installClassRouter()
     local class = stored and stored.t
     if not class then return false end
 
+    -- OnEntityCreated can arrive before every late SENT method is guaranteed to be
+    -- visible on the new instance. Initialize is the deterministic second seam:
+    -- after the complete existing Initialize chain runs, stamp the final stored
+    -- class methods directly onto the instance before ordinary behaviour advances.
+    if not class.LODWatcherDispatchInitializeBindingInstalled then
+        class.LODWatcherDispatchInitializeBindingInstalled = true
+        local baseInitialize = class.Initialize
+        function class:Initialize(...)
+            if baseInitialize then baseInitialize(self, ...) end
+            bindFinalMethods(self)
+        end
+    end
+
     local current = class.RunBehaviour
     if not Dispatch.NativeRunBehaviour and current and current ~= runBehaviourRouter then
         Dispatch.NativeRunBehaviour = current
@@ -129,10 +142,12 @@ concommand.Add("lod_watcher_dispatch_status", function(ply)
         end
     end
     local pass = live == 0 or (tickBound == live and scanBound == live)
-    local line = string.format("live=%d tickBound=%d scanBound=%d result=%s",
-        live, tickBound, scanBound, pass and "PASS" or "FAIL")
+    local line = string.format("live=%d tickBound=%d scanBound=%d initBind=%s result=%s",
+        live, tickBound, scanBound,
+        tostring(class and class.LODWatcherDispatchInitializeBindingInstalled == true),
+        pass and "PASS" or "FAIL")
     print("[LOD:WATCHER-DISPATCH] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
 
-print("[LOD:WATCHER-UNIFIED] pre-spawn router + final instance method binding armed")
+print("[LOD:WATCHER-UNIFIED] pre-spawn router + Initialize final-method binding armed")
