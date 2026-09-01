@@ -257,8 +257,9 @@ function Summary:WriteSummary()
 end
 
 local function attach()
+    if Summary.Attached then return true end
     local Log = LOD and LOD.RPGTestLog
-    if not Log or Summary.Attached then return false end
+    if not Log then return false end
     if not isfunction(Log.BeginSession) or not isfunction(Log.Write) then return false end
 
     Summary.Attached = true
