@@ -259,8 +259,15 @@ function Sheet:Open(requestFresh)
     frame:ShowCloseButton(false)
     frame:SetDraggable(false)
     frame:MakePopup()
+    -- PlayerButtonDown opens this keyboard-focused frame during the originating
+    -- P event. Do not let DFrame consume that same event as an immediate close.
+    frame.LODAcceptToggleAt = RealTime() + 0.15
     frame.OnKeyCodePressed = function(_, code)
-        if code == KEY_P or code == KEY_ESCAPE then Sheet:Close() end
+        if code == KEY_ESCAPE
+            or (code == KEY_P and RealTime() >= frame.LODAcceptToggleAt)
+        then
+            Sheet:Close()
+        end
     end
     frame.Paint = function(self, w, h)
         draw.RoundedBox(4, 0, 0, w, h, Color(18, 19, 21, 248))
@@ -400,6 +407,17 @@ function Sheet:Open(requestFresh)
     canvas:SetTall(math.max(790, featY + 350))
 end
 
+local function inputIsBusy()
+    return gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping())
+end
+
+local function toggleSheet()
+    local now = RealTime()
+    if (Sheet.NextToggleAt or 0) > now then return end
+    Sheet.NextToggleAt = now + 0.15
+    if IsValid(Sheet.Frame) then Sheet:Close() else Sheet:Open(true) end
+end
+
 net.Receive("LOD_RPG_Snapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
@@ -418,12 +436,35 @@ net.Receive("LOD_RPG_Snapshot", function()
 end)
 
 hook.Add("PlayerButtonDown", "LOD_CharacterSheetP", function(ply, button)
-    if ply ~= LocalPlayer() or button ~= KEY_P or gui.IsGameUIVisible()
-        or gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping())
+    if ply ~= LocalPlayer() or button ~= KEY_P or inputIsBusy() then return end
+    toggleSheet()
+end)
+
+-- Some client/input configurations dispatch a bound key through PlayerBindPress
+-- but not PlayerButtonDown. This remains event-driven and the debounce prevents
+-- one physical press observed by both hooks from toggling the sheet twice.
+hook.Add("PlayerBindPress", "LOD_CharacterSheetPBindingFallback", function(ply, _, pressed)
+    if ply ~= LocalPlayer() or not pressed or inputIsBusy()
+        or not input.IsKeyDown(KEY_P)
     then
         return
     end
-    if IsValid(Sheet.Frame) then Sheet:Close() else Sheet:Open(true) end
+    toggleSheet()
+end)
+
+-- The server's first spawn snapshot may precede this receiver on a listen-server
+-- client. Request one after client entities initialize so incomplete characters
+-- reliably receive their automatic sheet without any recurring polling.
+hook.Add("InitPostEntity", "LOD_CharacterSheetInitialSnapshot", function()
+    timer.Simple(0.5, function()
+        if not IsValid(LocalPlayer()) then return end
+        net.Start("LOD_RPG_RequestSheet")
+        net.SendToServer()
+    end)
+end)
+
+concommand.Add("lod_character_sheet", function()
+    toggleSheet()
 end)
 
 hook.Add("ShutDown", "LOD_CharacterSheetClose", function() Sheet:Close() end)
