@@ -8,7 +8,8 @@ LOD.ClientState = LOD.ClientState or {
     ranked = true,
     failed = false,
     levelCleared = false,
-    objective = "FIND RED KEYCARD — R / TRIANGLE"
+    synchronized = false,
+    objective = "INITIALIZING EXPEDITION..."
 }
 
 surface.CreateFont("LOD_HUD_Title", {
@@ -39,6 +40,7 @@ surface.CreateFont("LOD_HUD_Countdown", {
 
 net.Receive("LOD_RunState", function()
     local state = LOD.ClientState
+    state.synchronized = true
     state.level = net.ReadUInt(20)
     state.objectiveStage = net.ReadUInt(4)
     state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
@@ -176,13 +178,27 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     surface.DrawRect(margin, margin, 5, panelH)
 
     draw.SimpleText("THE LEGEND OF DEBORAH", "LOD_HUD_Title", margin + 18, margin + 10, Color(238, 194, 92))
-    draw.SimpleText("LEVEL " .. tostring(state.level) .. (state.ranked and "" or "  •  UNRANKED"), "LOD_HUD_Small",
-        margin + 20, margin + 40, state.ranked and Color(210, 210, 210) or Color(235, 160, 90))
+    local levelText = state.synchronized
+        and ("LEVEL " .. tostring(state.level) .. (state.ranked and "" or "  •  UNRANKED"))
+        or "INITIALIZING RUN..."
+    draw.SimpleText(levelText, "LOD_HUD_Small",
+        margin + 20, margin + 40, state.synchronized and state.ranked and Color(210, 210, 210) or Color(235, 160, 90))
 
     local lives = ply:GetNW2Int("LOD_Lives", 0)
     local eliminated = ply:GetNW2Bool("LOD_Eliminated", false)
-    local lifeText = eliminated and "LIVES: 0 — SPECTATOR" or ("LIVES: " .. tostring(lives))
-    draw.SimpleText(lifeText, "LOD_HUD_Body", margin + 20, margin + 64, eliminated and Color(220, 95, 80) or Color(245, 245, 245))
+    local lifeText
+    local lifeColor
+    if not state.synchronized then
+        lifeText = "INITIALIZING..."
+        lifeColor = Color(245, 210, 115)
+    elseif eliminated then
+        lifeText = "LIVES: 0 — SPECTATOR"
+        lifeColor = Color(220, 95, 80)
+    else
+        lifeText = "LIVES: " .. tostring(lives)
+        lifeColor = Color(245, 245, 245)
+    end
+    draw.SimpleText(lifeText, "LOD_HUD_Body", margin + 20, margin + 64, lifeColor)
 
     for i = 1, 3 do
         local x = margin + 34 + (i - 1) * 106
