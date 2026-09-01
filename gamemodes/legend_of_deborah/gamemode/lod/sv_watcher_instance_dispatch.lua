@@ -5,24 +5,27 @@ local Unified = LOD.WatcherUnified
 local Dispatch = LOD.WatcherUnifiedDispatch
 if not Unified then return end
 
--- The Watcher must never depend on a post-creation SENT method replacement.
--- NEXTBOT:BehaveStart owns the behaviour coroutine lifecycle, so rebinding
--- RunBehaviour from Initialize is not an authority guarantee: a Watcher can retain
--- the original generic hostile coroutine and then approach/follow the player with
--- neither its scan state nor its retreat state ever receiving control.
---
--- Bind one router at the earliest Lua entity lifecycle point and also install it on
--- the stored class whenever that class is available. The router waits until the
--- archetype is known. Watchers then call the final unified class tick directly on
--- every coroutine cycle. All other hostiles delegate to the exact native
--- RunBehaviour function captured before this router was installed, preserving
--- their complete instance/helper method chain.
+-- Bind one router at the earliest Lua entity lifecycle point. Also bind the final
+-- stored-class behaviour/scan methods directly onto each instance: native
+-- RunBehaviour resolves self:_BehaviourTick() every cycle, so this remains safe
+-- even if NEXTBOT captured the native coroutine before RunBehaviour replacement.
 
 local function unifiedWatcherTick()
     local stored = scripted_ents.GetStored("lod_hostile")
     local class = stored and stored.t
     if not class or not class.LODWatcherUnifiedControllerInstalled then return nil end
     return class._BehaviourTick
+end
+
+local function bindFinalMethods(self)
+    if not IsValid(self) or self:GetClass() ~= "lod_hostile" then return false end
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    if not class then return false end
+    if class._BehaviourTick then self._BehaviourTick = class._BehaviourTick end
+    if class._RunWatcherTick then self._RunWatcherTick = class._RunWatcherTick end
+    self.LODWatcherFinalMethodsBound = true
+    return true
 end
 
 local function stopWatcherSafely(self)
@@ -48,9 +51,6 @@ local function watcherRunLoop(self)
         if watcherTick then
             watcherTick(self)
         else
-            -- Never use generic hostile pursuit as a startup fallback. If the
-            -- unified controller is momentarily unavailable, holding position for
-            -- one coroutine cycle is safe; walking into the player is not.
             stopWatcherSafely(self)
             self.LODMotionMode = "watcher-dispatch-wait"
         end
@@ -59,10 +59,6 @@ local function watcherRunLoop(self)
 end
 
 local function runBehaviourRouter(self)
-    -- OnEntityCreated precedes the caller's archetype assignment. If the engine
-    -- starts the coroutine unusually early, yield until Initialize/spawn metadata
-    -- has made the archetype explicit instead of permanently choosing a branch
-    -- from a transient nil value.
     while not self.LODArchetypeId do coroutine.yield() end
 
     if self.LODArchetypeId == "watcher" then
@@ -74,9 +70,6 @@ local function runBehaviourRouter(self)
         return native(self)
     end
 
-    -- Defensive fallback only if startup order prevented capture of the native
-    -- method. This is byte-for-byte equivalent in control flow to lod_hostile's
-    -- ordinary RunBehaviour loop and never enters Watcher-specific state.
     while true do
         self:_BehaviourTick()
         coroutine.yield()
@@ -84,6 +77,7 @@ local function runBehaviourRouter(self)
 end
 
 Dispatch.Router = runBehaviourRouter
+Dispatch.BindFinalMethods = bindFinalMethods
 
 local function installClassRouter()
     local stored = scripted_ents.GetStored("lod_hostile")
@@ -101,26 +95,44 @@ local function installClassRouter()
     return Dispatch.NativeRunBehaviour ~= nil
 end
 
--- Normal startup usually installs here, before any production hostile exists.
 installClassRouter()
 
 hook.Add("OnEntityCreated", "LOD_WatcherUnifiedPreSpawnRunBehaviourDispatch", function(ent)
     if not IsValid(ent) or ent:GetClass() ~= "lod_hostile" then return end
-
-    -- This is the route that previously proved able to reach Watchers before their
-    -- NextBot behaviour coroutine committed to generic AI. It is intentionally
-    -- applied to every lod_hostile because LODArchetypeId is assigned immediately
-    -- after ents.Create; the router itself delegates every non-Watcher to the
-    -- untouched native coroutine once that identifier exists.
     installClassRouter()
+    bindFinalMethods(ent)
     ent.RunBehaviour = runBehaviourRouter
 end)
 
--- Hot-reload visibility only. A full game restart remains the authoritative test,
--- because an already-running NextBot coroutine cannot be assumed to adopt a newly
--- assigned RunBehaviour function.
+-- Hot reload repairs live native-coroutine hostiles on their very next behaviour
+-- cycle because native RunBehaviour dynamically resolves self:_BehaviourTick().
 for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
-    if IsValid(ent) then ent.RunBehaviour = runBehaviourRouter end
+    if IsValid(ent) then
+        bindFinalMethods(ent)
+        ent.RunBehaviour = runBehaviourRouter
+    end
 end
 
-print("[LOD:WATCHER-UNIFIED] pre-spawn RunBehaviour router armed; non-Watchers delegate native")
+concommand.Add("lod_watcher_dispatch_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local stored = scripted_ents.GetStored("lod_hostile")
+    local class = stored and stored.t
+    local live, tickBound, scanBound = 0, 0, 0
+    for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(ent) and not ent.LODDead and ent.LODArchetypeId == "watcher" then
+            live = live + 1
+            if class and ent._BehaviourTick == class._BehaviourTick then tickBound = tickBound + 1 end
+            if class and ent._RunWatcherTick == class._RunWatcherTick then scanBound = scanBound + 1 end
+        end
+    end
+    local pass = live == 0 or (tickBound == live and scanBound == live)
+    local line = string.format("live=%d tickBound=%d scanBound=%d result=%s",
+        live, tickBound, scanBound, pass and "PASS" or "FAIL")
+    print("[LOD:WATCHER-DISPATCH] " .. line)
+    if IsValid(ply) then ply:ChatPrint(line) end
+end)
+
+print("[LOD:WATCHER-UNIFIED] pre-spawn router + final instance method binding armed")
