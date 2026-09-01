@@ -18,6 +18,11 @@ if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end
 include("lod/sh_rpg_schema.lua")
 
 if SERVER then
+    -- Gate A RPG server modules are loaded from the gamemode root, not from the
+    -- shared schema file. Keeping this boundary explicit avoids nested relative
+    -- include resolution such as lod/lod/sv_character_progression.lua.
+    include("lod/sv_character_progression.lua")
+    include("lod/sv_rpg_validation.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
