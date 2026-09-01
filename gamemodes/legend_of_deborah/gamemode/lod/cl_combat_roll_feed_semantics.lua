@@ -13,7 +13,9 @@ local FADE_SECONDS = 1.0
 local EXPLOSION_FX_SECONDS = 0.52
 local FONT = "LOD_CombatRoll"
 local ROW_HEIGHT = 18
-local ENTRY_GAP = 3
+local ENTRY_GAP = 5
+local BACKING_PAD_X = 6
+local BACKING_PAD_Y = 2
 
 local COLORS = {
     identity = Color(158, 232, 255), -- GDD: light cyan
@@ -145,10 +147,26 @@ local function withAlpha(base, alpha)
     return Color(base.r, base.g, base.b, alpha)
 end
 
-local function drawEntry(entry, right, bottomY, maxWidth, alpha)
-    local lines, widths = layoutSegments(entry, maxWidth)
+local function entryHeight(lines)
+    return math.max(1, #lines) * ROW_HEIGHT
+end
+
+local function drawEntry(entry, right, bottomY, maxWidth, alpha, lines, widths)
+    lines, widths = lines or layoutSegments(entry, maxWidth)
+    local height = entryHeight(lines)
     local firstY = bottomY - (#lines - 1) * ROW_HEIGHT
     local outline = Color(5, 7, 8, math.floor(alpha * 0.92))
+    local widest = 0
+    for _, width in ipairs(widths) do widest = math.max(widest, width or 0) end
+
+    -- A quiet local backing keeps semantic colors readable against maze textures
+    -- without turning the feed into a large opaque HUD panel.
+    draw.RoundedBox(3,
+        right - widest - BACKING_PAD_X,
+        bottomY - height - BACKING_PAD_Y + 2,
+        widest + BACKING_PAD_X * 2,
+        height + BACKING_PAD_Y * 2,
+        Color(5, 7, 9, math.floor(alpha * 0.46)))
 
     for lineIndex, line in ipairs(lines) do
         local x = right - (widths[lineIndex] or 0)
@@ -162,7 +180,10 @@ local function drawEntry(entry, right, bottomY, maxWidth, alpha)
         end
     end
 
-    return firstY - ENTRY_GAP
+    -- firstY is the baseline of the top rendered row. Move one complete row above
+    -- it before applying the inter-entry gap; the previous implementation moved
+    -- only ENTRY_GAP pixels and therefore painted successive entries on top of one another.
+    return firstY - ROW_HEIGHT - ENTRY_GAP
 end
 
 local function drawDiceExplosion(now)
@@ -215,14 +236,23 @@ hook.Add("HUDPaint", "LOD_CombatRollFeed", function()
         local right = ScrW() - 24
         local cursorY = ScrH() - 102
         local maxWidth = math.Clamp(ScrW() * 0.55, 420, 720)
+        -- Reserve the lower-right combat band. In dense combat, preserve newest
+        -- information rather than allowing older wrapped entries to invade the
+        -- center/top HUD.
+        local topLimit = math.max(150, ScrH() * 0.52)
+
         for index = #Feed.entries, 1, -1 do
             local entry = Feed.entries[index]
+            local lines, widths = layoutSegments(entry, maxWidth)
+            local required = entryHeight(lines) + ENTRY_GAP
+            if cursorY - required < topLimit then break end
+
             local age = now - entry.created
             local alpha = 255
             if age > HOLD_SECONDS then
                 alpha = math.Clamp(255 * (1 - (age - HOLD_SECONDS) / FADE_SECONDS), 0, 255)
             end
-            cursorY = drawEntry(entry, right, cursorY, maxWidth, alpha)
+            cursorY = drawEntry(entry, right, cursorY, maxWidth, alpha, lines, widths)
         end
     end
 
@@ -237,6 +267,21 @@ concommand.Add("lod_dice_feed_qol_test", function()
         text = "Shael Riley as Jimmy 'The Fly' Mancina dealt 1d12! (27) [rolls 10>11>6] damage to Shambler, via .357 Magnum",
         created = CurTime()
     }
+    while #Feed.entries > 8 do table.remove(Feed.entries, 1) end
+end)
+
+concommand.Add("lod_dice_feed_qol_burst_test", function()
+    local cv = GetConVar("lod_developer_mode")
+    if cv and not cv:GetBool() then return end
+    local samples = {
+        "Shael Riley as Jimmy 'The Fly' Mancina dealt 1d12! (27) [rolls 10>11>6] damage to Shambler, via .357 Magnum",
+        "Runner dealt 2d4 (6) [rolls 2>4] damage to Shael Riley as Jimmy 'The Fly' Mancina, via melee",
+        "Shael Riley as Jimmy 'The Fly' Mancina dealt 6d3 (11) [rolls 1>2>2>1>3>2] damage to Soldier, via shotgun",
+        "Bio Blaster dealt 1d8 (7) [roll 7] damage to Shael Riley as Jimmy 'The Fly' Mancina, via bio bolt"
+    }
+    for _, text in ipairs(samples) do
+        Feed.entries[#Feed.entries + 1] = {category = 0, text = text, created = CurTime()}
+    end
     while #Feed.entries > 8 do table.remove(Feed.entries, 1) end
 end)
 
