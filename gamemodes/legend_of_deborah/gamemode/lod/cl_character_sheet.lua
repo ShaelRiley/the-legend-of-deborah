@@ -39,12 +39,49 @@ local function label(parent, text, font, color)
     return item
 end
 
+local function wrappedTextHeight(text, font, width)
+    surface.SetFont(font)
+    local _, lineHeight = surface.GetTextSize("Ag")
+    lineHeight = math.max(lineHeight + 2, 1)
+    local lineCount = 0
+
+    for hardLine in (tostring(text or "") .. "\n"):gmatch("(.-)\n") do
+        if hardLine == "" then
+            lineCount = lineCount + 1
+        else
+            local current = ""
+            for word in hardLine:gmatch("%S+") do
+                local candidate = current == "" and word or (current .. " " .. word)
+                local candidateWidth = surface.GetTextSize(candidate)
+                if current ~= "" and candidateWidth > width then
+                    lineCount = lineCount + 1
+                    current = word
+                else
+                    current = candidate
+                end
+            end
+            if current ~= "" then lineCount = lineCount + 1 end
+        end
+    end
+
+    return math.max(lineHeight, lineCount * lineHeight)
+end
+
+local function fitWrapped(item, width, minimumHeight)
+    item:SetWide(width)
+    local height = math.max(
+        wrappedTextHeight(item:GetText(), item:GetFont(), width),
+        minimumHeight or 0)
+    item:SetTall(height)
+    return height
+end
+
 local function sectionTitle(parent, text, x, y, width)
     local item = label(parent, string.upper(text), "LOD_SheetHeading", RED)
     item:SetPos(x, y)
-    item:SetWide(width)
-    item:SizeToContentsY()
-    return item
+    item:SetWrap(false)
+    item:SetSize(width, 30)
+    return item, 30
 end
 
 local function paperPanel(parent)
@@ -109,25 +146,30 @@ end
 local function addIdentityTrait(parent, trait, x, y, width)
     local panel = paperPanel(parent)
     panel:SetPos(x, y)
-    panel:SetSize(width, 156)
+    panel:SetWide(width)
+    local contentWidth = width - 24
+    local cursorY = 10
 
     local category = label(panel, string.upper(trait.tableType) .. " / " .. trait.categoryName,
         "LOD_SheetSubheading", BLUE)
-    category:SetPos(12, 8)
-    category:SetWide(width - 24)
+    category:SetPos(12, cursorY)
+    cursorY = cursorY + fitWrapped(category, contentWidth, 22) + 5
 
     local perk = label(panel, trait.perkDisplayName, "LOD_SheetBody", RED)
-    perk:SetPos(12, 32)
-    perk:SetWide(width - 24)
+    perk:SetPos(12, cursorY)
+    cursorY = cursorY + fitWrapped(perk, contentWidth, 21) + 10
 
     local effect = label(panel, trait.mechanicalEffect, "LOD_SheetSmall", INK)
-    effect:SetPos(12, 58)
-    effect:SetSize(width - 24, 42)
+    effect:SetPos(12, cursorY)
+    cursorY = cursorY + fitWrapped(effect, contentWidth, 18) + 12
 
     local flavor = label(panel, trait.flavorText, "LOD_SheetSmall", MUTED)
-    flavor:SetPos(12, 105)
-    flavor:SetSize(width - 24, 44)
-    return panel
+    flavor:SetPos(12, cursorY)
+    cursorY = cursorY + fitWrapped(flavor, contentWidth, 18) + 12
+
+    local height = math.max(146, cursorY)
+    panel:SetTall(height)
+    return panel, height
 end
 
 local function addAbilityRow(parent, ability, x, y, width)
@@ -172,38 +214,49 @@ local CLASS_CARDS = {
 local function addClassChoices(parent, snapshot, x, y, width)
     local gap = 12
     local cardWidth = math.floor((width - gap * 2) / 3)
+    local cards = {}
+    local cardHeight = 176
     for index, classId in ipairs({"fighter", "rogue", "wizard"}) do
         local data = CLASS_CARDS[classId]
         local card = paperPanel(parent)
         card:SetPos(x + (index - 1) * (cardWidth + gap), y)
-        card:SetSize(cardWidth, 176)
+        card:SetWide(cardWidth)
         local title = label(card, data.title, "LOD_SheetHeading", RED)
         title:SetPos(12, 10)
-        title:SetSize(cardWidth - 24, 30)
+        local titleHeight = fitWrapped(title, cardWidth - 24, 30)
         local sub = label(card, data.subtitle, "LOD_SheetSmall", BLUE)
-        sub:SetPos(12, 45)
-        sub:SetSize(cardWidth - 24, 22)
+        sub:SetPos(12, 10 + titleHeight + 5)
+        local subHeight = fitWrapped(sub, cardWidth - 24, 18)
         local body = label(card, data.body, "LOD_SheetSmall", INK)
-        body:SetPos(12, 70)
-        body:SetSize(cardWidth - 24, 58)
+        local bodyY = 10 + titleHeight + 5 + subHeight + 8
+        body:SetPos(12, bodyY)
+        local bodyHeight = fitWrapped(body, cardWidth - 24, 54)
         local choose = makeChoiceButton(card, "Commit " .. data.title, function()
             net.Start("LOD_RPG_ChooseClass")
             net.WriteString(classId)
             net.SendToServer()
         end)
-        choose:SetPos(12, 138)
         choose:SetSize(cardWidth - 24, 28)
+        cards[#cards + 1] = {panel = card, footer = choose}
+        cardHeight = math.max(cardHeight, bodyY + bodyHeight + 50)
     end
+    for _, card in ipairs(cards) do
+        card.panel:SetTall(cardHeight)
+        card.footer:SetPos(12, cardHeight - 38)
+    end
+    return cardHeight
 end
 
 local function addFeatCards(parent, snapshot, x, y, width)
     local offers = snapshot.featDraft and snapshot.featDraft.offers or {}
     local gap = 12
     local cardWidth = math.floor((width - gap * 2) / 3)
+    local cards = {}
+    local cardHeight = 246
     for index, feat in ipairs(offers) do
         local card = paperPanel(parent)
         card:SetPos(x + (index - 1) * (cardWidth + gap), y)
-        card:SetSize(cardWidth, 246)
+        card:SetWide(cardWidth)
         if feat.selected then
             card.Paint = function(self, w, h)
                 draw.RoundedBox(2, 0, 0, w, h, Color(248, 225, 194))
@@ -213,29 +266,36 @@ local function addFeatCards(parent, snapshot, x, y, width)
         end
         local title = label(card, feat.displayName, "LOD_SheetSubheading", feat.selected and RED or BLUE)
         title:SetPos(12, 10)
-        title:SetSize(cardWidth - 24, 30)
+        local titleHeight = fitWrapped(title, cardWidth - 24, 26)
         local req = label(card, feat.eligibilityText or "", "LOD_SheetSmall", MUTED)
-        req:SetPos(12, 40)
-        req:SetSize(cardWidth - 24, 22)
+        req:SetPos(12, 10 + titleHeight + 5)
+        local reqHeight = fitWrapped(req, cardWidth - 24, 18)
         local effect = label(card, feat.effect or "", "LOD_SheetSmall", INK)
-        effect:SetPos(12, 67)
-        effect:SetSize(cardWidth - 24, 132)
+        local effectY = 10 + titleHeight + 5 + reqHeight + 12
+        effect:SetPos(12, effectY)
+        local effectHeight = fitWrapped(effect, cardWidth - 24, 90)
 
+        local footer
         if snapshot.featDraft.resolved then
-            local state = label(card, feat.selected and "SELECTED" or "NOT SELECTED",
+            footer = label(card, feat.selected and "SELECTED" or "NOT SELECTED",
                 "LOD_SheetKey", feat.selected and RED or MUTED)
-            state:SetPos(12, 211)
-            state:SetSize(cardWidth - 24, 25)
+            footer:SetSize(cardWidth - 24, 25)
         else
-            local choose = makeChoiceButton(card, "Choose " .. feat.displayName, function()
+            footer = makeChoiceButton(card, "Choose " .. feat.displayName, function()
                 net.Start("LOD_RPG_ChooseFeat")
                 net.WriteString(feat.featId)
                 net.SendToServer()
             end)
-            choose:SetPos(12, 208)
-            choose:SetSize(cardWidth - 24, 28)
+            footer:SetSize(cardWidth - 24, 28)
         end
+        cards[#cards + 1] = {panel = card, footer = footer}
+        cardHeight = math.max(cardHeight, effectY + effectHeight + 52)
     end
+    for _, card in ipairs(cards) do
+        card.panel:SetTall(cardHeight)
+        card.footer:SetPos(12, cardHeight - 38)
+    end
+    return cardHeight
 end
 
 function Sheet:Close()
@@ -307,7 +367,6 @@ function Sheet:Open(requestFresh)
     body:SetPos(24, 84)
     body:SetSize(frame:GetWide() - 48, frame:GetTall() - 112)
     local canvas = body:GetCanvas()
-    canvas:SetTall(930)
     canvas.Paint = function(_, w, h)
         surface.SetDrawColor(80, 66, 41, 12)
         for y = 0, h, 5 do surface.DrawRect(0, y, w, 1) end
@@ -323,42 +382,53 @@ function Sheet:Open(requestFresh)
 
     local name = label(canvas, snapshot.fullDisplayName, "LOD_SheetHeading", INK)
     name:SetPos(164, 5)
-    name:SetSize(leftWidth - 164, 62)
+    local nameHeight = fitWrapped(name, leftWidth - 164, 48)
     local avatar = label(canvas, "Avatar: " .. tostring(snapshot.avatarDescriptor),
         "LOD_SheetSmall", MUTED)
-    avatar:SetPos(164, 70)
-    avatar:SetSize(leftWidth - 164, 38)
+    local avatarY = 5 + nameHeight + 6
+    avatar:SetPos(164, avatarY)
+    local avatarHeight = fitWrapped(avatar, leftWidth - 164, 20)
     local level = label(canvas,
         string.format("LEVEL %d  /  %s", snapshot.level, snapshot.className or "CLASS UNCOMMITTED"),
         "LOD_SheetSubheading", BLUE)
-    level:SetPos(164, 112)
-    level:SetSize(leftWidth - 164, 30)
+    local levelY = avatarY + avatarHeight + 7
+    level:SetPos(164, levelY)
+    local levelHeight = fitWrapped(level, leftWidth - 164, 26)
 
-    sectionTitle(canvas, "Identity Traits", 0, 164, leftWidth)
-    for index, trait in ipairs(snapshot.identityTraits or {}) do
-        addIdentityTrait(canvas, trait, 0, 198 + (index - 1) * 166, leftWidth)
+    local leftY = math.max(166, levelY + levelHeight + 16)
+    local _, identityTitleHeight = sectionTitle(canvas, "Identity Traits", 0, leftY, leftWidth)
+    leftY = leftY + identityTitleHeight + 8
+    for _, trait in ipairs(snapshot.identityTraits or {}) do
+        local _, traitHeight = addIdentityTrait(canvas, trait, 0, leftY, leftWidth)
+        leftY = leftY + traitHeight + 10
     end
 
-    sectionTitle(canvas, "Level-1 Record", 0, 708, leftWidth)
+    local _, recordTitleHeight = sectionTitle(canvas, "Level-1 Record", 0, leftY + 6, leftWidth)
+    leftY = leftY + 6 + recordTitleHeight + 8
     local record = paperPanel(canvas)
-    record:SetPos(0, 742)
-    record:SetSize(leftWidth, 126)
+    record:SetPos(0, leftY)
+    record:SetWide(leftWidth)
     local recordText = string.format(
         "Starting HP: %d\nXP: %d\nLives: %d\nDungeon Level: %d",
         snapshot.startingHP or 100, snapshot.xp or 0, snapshot.lives or 0,
         snapshot.dungeonLevel or 1)
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
-    recordLabel:SetSize(leftWidth - 24, 108)
+    local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 92) + 20
+    record:SetTall(recordHeight)
+    local leftBottom = leftY + recordHeight
 
-    sectionTitle(canvas, snapshot.classId and ("Class / " .. snapshot.className) or "Choose One Class",
-        rightX, 0, rightWidth)
+    local rightY = 0
+    local _, classTitleHeight = sectionTitle(canvas,
+        snapshot.classId and ("Class / " .. snapshot.className) or "Choose One Class",
+        rightX, rightY, rightWidth)
+    rightY = rightY + classTitleHeight + 8
     if not snapshot.classId then
-        addClassChoices(canvas, snapshot, rightX, 40, rightWidth)
+        rightY = rightY + addClassChoices(canvas, snapshot, rightX, rightY, rightWidth)
     else
         local classPanel = paperPanel(canvas)
-        classPanel:SetPos(rightX, 40)
-        classPanel:SetSize(rightWidth, 92)
+        classPanel:SetPos(rightX, rightY)
+        classPanel:SetWide(rightWidth)
         local classLine = label(classPanel,
             string.format("%s  /  favored %s  /  Hero progression d%d",
                 snapshot.className,
@@ -373,38 +443,46 @@ function Sheet:Open(requestFresh)
                 snapshot.classHitDie or 0),
             "LOD_SheetSubheading", BLUE)
         classLine:SetPos(12, 10)
-        classLine:SetSize(rightWidth - 24, 28)
+        local classLineHeight = fitWrapped(classLine, rightWidth - 24, 26)
         local passive = label(classPanel, snapshot.classPassive or "", "LOD_SheetSmall", INK)
-        passive:SetPos(12, 40)
-        passive:SetSize(rightWidth - 24, 45)
+        passive:SetPos(12, 10 + classLineHeight + 8)
+        local passiveHeight = fitWrapped(passive, rightWidth - 24, 36)
+        local classPanelHeight = 10 + classLineHeight + 8 + passiveHeight + 12
+        classPanel:SetTall(classPanelHeight)
+        rightY = rightY + classPanelHeight
     end
 
-    local abilityY = snapshot.classId and 150 or 234
-    sectionTitle(canvas, "Abilities", rightX, abilityY, rightWidth)
-    for index, ability in ipairs(snapshot.abilities or {}) do
-        addAbilityRow(canvas, ability, rightX, abilityY + 38 + (index - 1) * 42, rightWidth)
+    rightY = rightY + 18
+    local _, abilityTitleHeight = sectionTitle(canvas, "Abilities", rightX, rightY, rightWidth)
+    rightY = rightY + abilityTitleHeight + 6
+    for _, ability in ipairs(snapshot.abilities or {}) do
+        addAbilityRow(canvas, ability, rightX, rightY, rightWidth)
+        rightY = rightY + 42
     end
 
-    local featY = abilityY + 306
-    sectionTitle(canvas, snapshot.classId and "Locked Level-1 Feat Draft" or "Level-1 Feat Draft",
-        rightX, featY, rightWidth)
+    rightY = rightY + 18
+    local _, featTitleHeight = sectionTitle(canvas,
+        snapshot.classId and "Locked Level-1 Feat Draft" or "Level-1 Feat Draft",
+        rightX, rightY, rightWidth)
+    rightY = rightY + featTitleHeight + 8
     if not snapshot.classId then
         local hint = label(canvas,
             "Commit a class first. The server will then generate and store one deterministic three-card ordinary feat draft.",
             "LOD_SheetBody", INK)
-        hint:SetPos(rightX, featY + 42)
-        hint:SetSize(rightWidth, 58)
+        hint:SetPos(rightX, rightY)
+        rightY = rightY + fitWrapped(hint, rightWidth, 42)
     elseif snapshot.featDraft then
-        addFeatCards(canvas, snapshot, rightX, featY + 40, rightWidth)
+        local featCardHeight = addFeatCards(canvas, snapshot, rightX, rightY, rightWidth)
+        rightY = rightY + featCardHeight + 12
         local fingerprint = label(canvas,
             "Locked draft seed " .. tostring(snapshot.featDraft.rngSeed)
                 .. " / closing, death, reconnect, and dungeon transition do not reroll these cards.",
             "LOD_SheetSmall", MUTED)
-        fingerprint:SetPos(rightX, featY + 294)
-        fingerprint:SetSize(rightWidth, 42)
+        fingerprint:SetPos(rightX, rightY)
+        rightY = rightY + fitWrapped(fingerprint, rightWidth, 20)
     end
 
-    canvas:SetTall(math.max(790, featY + 350))
+    canvas:SetTall(math.max(body:GetTall(), leftBottom, rightY) + 24)
 end
 
 local function inputIsBusy()
