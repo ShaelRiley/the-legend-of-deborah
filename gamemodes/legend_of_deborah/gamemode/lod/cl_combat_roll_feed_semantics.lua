@@ -152,7 +152,12 @@ local function entryHeight(lines)
 end
 
 local function drawEntry(entry, right, bottomY, maxWidth, alpha, lines, widths)
-    lines, widths = lines or layoutSegments(entry, maxWidth)
+    -- Lua's `or` expression collapses multi-return values to one result. Do not use
+    -- `lines, widths = lines or layoutSegments(...)` here: that leaves widths nil
+    -- when layoutSegments is evaluated and causes a HUDPaint error every frame.
+    if not lines or not widths then
+        lines, widths = layoutSegments(entry, maxWidth)
+    end
     local height = entryHeight(lines)
     local firstY = bottomY - (#lines - 1) * ROW_HEIGHT
     local outline = Color(5, 7, 8, math.floor(alpha * 0.92))
