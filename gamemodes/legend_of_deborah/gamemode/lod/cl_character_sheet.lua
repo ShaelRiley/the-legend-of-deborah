@@ -541,6 +541,16 @@ function Sheet:Open(requestFresh)
             "\nNavigation: %d breadcrumb cells / %.2f Magic/s map drain",
             snapshot.breadcrumbCells or 6, snapshot.mapDrainRatePerSecond or (100 / 15))
     end
+    if (snapshot.ammoRegenFloorRank or 0) > 0 then
+        local families = {}
+        for _, profile in ipairs(snapshot.ammoRegenFamilies or {}) do
+            families[#families + 1] = string.format("%s %d/%d",
+                profile.label or "Ammo", profile.floor or 0, profile.cap or 0)
+        end
+        recordText = recordText .. string.format("\nAmmo Regen: %d%% floor%s",
+            math.floor((snapshot.ammoRegenFloorFraction or 0) * 100 + 0.5),
+            #families > 0 and (": " .. table.concat(families, ", ")) or "")
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

@@ -95,6 +95,44 @@ Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartograph
         description = "Multiplies WIS-scaled minimap drain by 0.85, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open."
     })
 
+local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction)
+    return {
+        featId = featId,
+        displayName = displayName,
+        featFamilyId = "int_ammo_regeneration_floor",
+        rankIndex = rank,
+        replacesLowerRank = rank > 1,
+        repeatableFallback = false,
+        governingAbilities = {"int"},
+        abilityRequirements = {int = requirement},
+        prerequisiteFeatIds = prerequisite and {prerequisite} or {},
+        requiredCapabilityTags = {"firearm"},
+        incompatibleFeatIds = {},
+        allowedActorTypes = {"hero", "human_soldier"},
+        requiredSubsystemTags = {},
+        synergyTags = {"ammo_regeneration", "firearm_economy"},
+        oneRank = true,
+        effectHandlerId = "ammo_regeneration_floor",
+        effectParams = {
+            floorFraction = fraction,
+            description = string.format(
+                "Replaces lower ammo-regeneration ranks and sets ordinary regenerative firearm AmmoRegenFloorFraction to %.2f; each owned eligible family stops at ceil(MaxFamilyCapacity × %.2f) without changing capacity, cadence, no-fire delay, Grenades, or AR2 secondary ammunition.",
+                fraction, fraction)
+        },
+        directorBaseWeight = 1.0,
+        eligibilityText = string.format("INT %d%s", requirement,
+            prerequisite and (" / requires " .. prerequisite) or ""),
+        actorText = "Player-controlled heroes and human Soldiers with regenerative firearm ammunition"
+    }
+end
+
+Feats.INT_AMMO_FLOOR_44 = ammoFloorDefinition("INT_AMMO_FLOOR_44", "Field Supply", 12,
+    nil, 1, 0.44)
+Feats.INT_AMMO_FLOOR_55 = ammoFloorDefinition("INT_AMMO_FLOOR_55", "Deep Reserves", 16,
+    "INT_AMMO_FLOOR_44", 2, 0.55)
+Feats.INT_AMMO_FLOOR_66 = ammoFloorDefinition("INT_AMMO_FLOOR_66", "War Stock", 18,
+    "INT_AMMO_FLOOR_55", 3, 0.66)
+
 local REGEN_RANKS = {
     CON_REGEN_11 = 1,
     CON_REGEN_22 = 2,
@@ -104,6 +142,12 @@ local REGEN_RANKS = {
 local BREADCRUMB_RANKS = {
     WIS_SURVEYOR = 1,
     WIS_CARTOGRAPHER = 2
+}
+
+local AMMO_FLOOR_RANKS = {
+    INT_AMMO_FLOOR_44 = 1,
+    INT_AMMO_FLOOR_55 = 2,
+    INT_AMMO_FLOOR_66 = 3
 }
 
 local function ownsFeat(state, featId)
@@ -162,6 +206,22 @@ function FeatEffectSystem:NavigationProfile(state)
     }
 end
 
+function FeatEffectSystem:AmmoRegenProfile(state)
+    local bestRank, bestDefinition = 0, nil
+    for featId, rank in pairs(AMMO_FLOOR_RANKS) do
+        if rank > bestRank and ownsFeat(state, featId) then
+            bestRank = rank
+            bestDefinition = Feats[featId]
+        end
+    end
+    local params = bestDefinition and bestDefinition.effectParams or {}
+    return {
+        rank = bestRank,
+        featId = bestDefinition and bestDefinition.featId or nil,
+        floorFraction = tonumber(params.floorFraction) or 0.33
+    }
+end
+
 function FeatEffectSystem:ApplyDerived(state, derived)
     local profile = self:HealthRegenProfile(state)
     derived.healthRegenEnabled = profile.enabled
@@ -179,6 +239,20 @@ function FeatEffectSystem:ApplyDerived(state, derived)
     derived.frugalMapEnabled = navigation.frugalMapEnabled
     derived.mapDrainFeatMultiplier = navigation.mapDrainMultiplier
     derived.minimumMapDrainPerSecond = navigation.minimumMapDrainPerSecond
+
+    local ammo = self:AmmoRegenProfile(state)
+    derived.ammoRegenFloorRank = ammo.rank
+    derived.ammoRegenFloorFraction = ammo.floorFraction
+    derived.ammoRegenFloorRoundsByFamily = {}
+    local ammoAuthority = LOD.DiceAmmo
+    if ammoAuthority and ammoAuthority.RegenerativeProfiles
+        and ammoAuthority.RegenFloorRounds
+    then
+        for weaponClass, weaponProfile in pairs(ammoAuthority.RegenerativeProfiles) do
+            derived.ammoRegenFloorRoundsByFamily[weaponClass] =
+                ammoAuthority:RegenFloorRounds(nil, weaponClass, weaponProfile, derived)
+        end
+    end
 end
 
 function FeatEffectSystem:HealthRegenPerSecond(maxHP, conRegenMultiplier, baseFraction)
@@ -412,6 +486,86 @@ function FeatEffectSystem:ValidateWISNavigation()
     return #errors == 0, errors
 end
 
+function FeatEffectSystem:ValidateAmmoRegenFloor()
+    local errors = {}
+    local function expect(condition, message)
+        if not condition then errors[#errors + 1] = message end
+    end
+    local expected = {
+        INT_AMMO_FLOOR_44 = {1, 12, nil, 0.44},
+        INT_AMMO_FLOOR_55 = {2, 16, "INT_AMMO_FLOOR_44", 0.55},
+        INT_AMMO_FLOOR_66 = {3, 18, "INT_AMMO_FLOOR_55", 0.66}
+    }
+    for featId, values in pairs(expected) do
+        local definition = Feats[featId]
+        expect(definition ~= nil, "missing " .. featId)
+        if definition then
+            expect(definition.featFamilyId == "int_ammo_regeneration_floor", featId .. " family")
+            expect(definition.rankIndex == values[1], featId .. " rank")
+            expect(definition.abilityRequirements.int == values[2], featId .. " requirement")
+            expect((definition.prerequisiteFeatIds or {})[1] == values[3], featId .. " prerequisite")
+            expect(definition.effectHandlerId == "ammo_regeneration_floor", featId .. " handler")
+            expect(definition.effectParams.floorFraction == values[4], featId .. " floor fraction")
+        end
+    end
+
+    local baseline = self:AmmoRegenProfile({featIds = {}})
+    local rankOne = self:AmmoRegenProfile({featIds = {"INT_AMMO_FLOOR_44"}})
+    local rankThree = self:AmmoRegenProfile({featIds = {
+        "INT_AMMO_FLOOR_44", "INT_AMMO_FLOOR_55", "INT_AMMO_FLOOR_66"
+    }})
+    expect(baseline.rank == 0 and baseline.floorFraction == 0.33, "baseline ammo floor")
+    expect(rankOne.rank == 1 and rankOne.floorFraction == 0.44, "Field Supply profile")
+    expect(rankThree.rank == 3 and rankThree.floorFraction == 0.66,
+        "War Stock must replace lower ranks")
+
+    local derived = {}
+    self:ApplyDerived({featIds = {
+        "INT_AMMO_FLOOR_44", "INT_AMMO_FLOOR_55", "INT_AMMO_FLOOR_66"
+    }}, derived)
+    expect(derived.ammoRegenFloorRank == 3 and derived.ammoRegenFloorFraction == 0.66,
+        "derived War Stock values")
+
+    local ammo = LOD.DiceAmmo
+    if ammo and ammo.RegenFloorRounds then
+        expect(ammo:RegenFloorRounds(nil, "weapon_pistol", {cap = 54}, {
+            ammoRegenFloorFraction = 0.44
+        }) == 24, "Field Supply Pistol ceil")
+        expect(ammo:RegenFloorRounds(nil, "weapon_shotgun", {cap = 21}, {
+            ammoRegenFloorFraction = 0.55
+        }) == 12, "Deep Reserves Shotgun ceil")
+        expect(ammo:RegenFloorRounds(nil, "weapon_smg1", {cap = 75}, {
+            ammoRegenFloorFraction = 0.66
+        }) == 50, "War Stock SMG ceil")
+        expect(ammo:RegenFloorRounds(nil, "weapon_357", {cap = 18}, {
+            ammoRegenFloorFraction = 0.66
+        }) == 12, "War Stock Magnum ceil")
+    else
+        expect(false, "canonical ammunition-regeneration authority unavailable")
+    end
+
+    local progression = LOD.CharacterProgressionSystem
+    if progression and progression._FeatEligible then
+        local state = {
+            featIds = {},
+            featQualificationAbilities = {int = 18},
+            classId = "wizard",
+            secondaryAbilities = {}
+        }
+        expect(not progression:_FeatEligible({}, state, Feats.INT_AMMO_FLOOR_55),
+            "Deep Reserves must require Field Supply")
+        state.featIds = {"INT_AMMO_FLOOR_44"}
+        expect(progression:_FeatEligible({}, state, Feats.INT_AMMO_FLOOR_55),
+            "Deep Reserves legal after Field Supply")
+        state.featIds[#state.featIds + 1] = "INT_AMMO_FLOOR_55"
+        expect(progression:_FeatEligible({}, state, Feats.INT_AMMO_FLOOR_66),
+            "War Stock legal after Deep Reserves")
+    else
+        expect(false, "FeatDirector eligibility authority unavailable")
+    end
+    return #errors == 0, errors
+end
+
 concommand.Add("lod_rpg_gate_e_regen_validate", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
@@ -433,6 +587,18 @@ concommand.Add("lod_rpg_gate_e_navigation_validate", function(ply)
     else
         ErrorNoHalt("[LOD:RPG-E] WIS Navigation feat family FAILED\n")
         for _, message in ipairs(errors) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
+    end
+end)
+
+concommand.Add("lod_rpg_gate_e_ammo_validate", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
+    local ok, errors = FeatEffectSystem:ValidateAmmoRegenFloor()
+    if ok then
+        print("[LOD:RPG-E] INT Ammo-Regen feat family PASS — 3/3 ranks, ceilings, cadence preserved")
+    else
+        ErrorNoHalt("[LOD:RPG-E] INT Ammo-Regen feat family FAILED\n")
+        for _, message in ipairs(errors or {}) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
     end
 end)
 
@@ -563,6 +729,63 @@ concommand.Add("lod_rpg_test_navigation", function(ply, _, args)
     ply:ChatPrint(string.format(
         "Gate E navigation mode %d configured (0=none, 1=Surveyor, 2=Cartographer chain, 3=chain + Frugal).",
         mode))
+end)
+
+concommand.Add("lod_rpg_gate_e_ammo_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
+    if not IsValid(ply) then
+        print("[LOD:RPG-E] Run this command from an attached player console.")
+        return
+    end
+    local rules = LOD.RPGAbilityRules
+    local derived = rules and rules:Derived(ply) or nil
+    local ammo = LOD.DiceAmmo
+    local details = {}
+    for _, profile in ipairs(ammo and ammo.RegenProfileSnapshot
+        and ammo:RegenProfileSnapshot(ply) or {}) do
+        details[#details + 1] = string.format("%s=%d/%d floor=%d interval=%.2fs",
+            profile.label, profile.total, profile.cap, profile.floor,
+            profile.roundIntervalSeconds)
+    end
+    local line = string.format("rank=%d floorFraction=%.2f %s",
+        math.floor(tonumber(derived and derived.ammoRegenFloorRank) or 0),
+        tonumber(derived and derived.ammoRegenFloorFraction) or 0.33,
+        #details > 0 and table.concat(details, " ") or "no eligible owned firearm")
+    print("[LOD:RPG-E] " .. line)
+    ply:ChatPrint(line)
+end)
+
+concommand.Add("lod_rpg_test_ammo_floor", function(ply, _, args)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or not IsValid(ply) or not ply:IsAdmin() then return end
+    local run = LOD.RunManager
+    local ps = run and run:GetPlayerState(ply) or nil
+    local state = ps and ps.progressionState or nil
+    local progression = LOD.CharacterProgressionSystem
+    if not state or not progression then
+        ply:ChatPrint("RPG progression state is unavailable.")
+        return
+    end
+    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 3)
+    local kept = {}
+    for _, featId in ipairs(state.featIds or {}) do
+        if not AMMO_FLOOR_RANKS[featId] then kept[#kept + 1] = featId end
+    end
+    state.featIds = kept
+    for featId in pairs(AMMO_FLOOR_RANKS) do state.featStackCounts[featId] = nil end
+    local chain = {"INT_AMMO_FLOOR_44", "INT_AMMO_FLOOR_55", "INT_AMMO_FLOOR_66"}
+    for index = 1, rank do
+        local featId = chain[index]
+        state.featIds[#state.featIds + 1] = featId
+        state.featStackCounts[featId] = 1
+    end
+    progression:_RecomputeProgressionState(state)
+    progression:SyncPlayer(ply)
+    if run.MarkUnranked then run:MarkUnranked("Gate E INT Ammo-Regen feat test") end
+    ply:ChatPrint(string.format(
+        "Gate E ammo-regeneration rank %d configured (0=33%%, 1=44%%, 2=55%%, 3=66%%).",
+        rank))
 end)
 
 return FeatEffectSystem

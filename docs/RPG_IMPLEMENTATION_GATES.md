@@ -9,7 +9,7 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 | CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate C deterministic Levels 1-20, XP, growth, stored hit dice, and HP recomputation |
 | AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate D server-authoritative semantic bridges |
 | FeatDirector | CharacterProgressionSystem progression state | Gate C ordinary-feat cadence and fixed Level-20 class-capstone trios |
-| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | Gate E batches 1–2: CON Health Regeneration and WIS Navigation |
+| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | Gate E batches 1–3: CON Health Regeneration, WIS Navigation, and INT Ammo-Regeneration Floors |
 | IdentityGenerationSystem | RunManager RosterSeed lifecycle + independent deterministic substreams | Gate B exact 64/64/64 identity and 64-entry name catalogs |
 | IdentityPerkSystem | Existing semantic combat/navigation/loot/encounter events | Gate B immutable perk ownership/display; later semantic effect bridges pending |
 | CharacterSheetUI | Existing Field Manual visual language | Gate C P-key progression ledger and choice surface |
@@ -186,16 +186,50 @@ Implemented from the exact live-GDD definitions:
 - the Character Sheet reports live breadcrumb cells and final Magic drain whenever a navigation Feat is active;
 - `lod_rpg_gate_e_navigation_validate`, `lod_rpg_gate_e_navigation_status`, and `lod_rpg_test_navigation <0-3>` provide finite validation and acceleration.
 
-### Batch 2 runtime gate
+### Batch 2 runtime acceptance — PASSED 2026-09-02
 
-1. Start `gm_flatgrass` with `lod_developer_mode 1`; complete staging and deploy.
-2. Run `lod_rpg_gate_e_navigation_validate` and require the WIS Navigation PASS line.
-3. Run `lod_rpg_test_navigation 0`, then `lod_rpg_gate_e_navigation_status`; record the generated Hero's baseline breadcrumb count and drain rate.
-4. Run mode `1`; require exactly baseline +4 BreadcrumbCells, capped at 24, with unchanged drain.
-5. Run mode `2`; require exactly baseline +8 rather than +12, capped at 24, with unchanged drain.
-6. Run mode `3`; require the same Cartographer breadcrumb result and final map drain equal to `(100/15 × UtilityMagicCostMultiplier × 0.85)`, never below 3.0 Magic/second.
-7. Open the minimap and rerun status; require `open=true`, observe the longer breadcrumb, and confirm Magic decreases at the reported final rate without regenerating.
-8. Open P and require its Navigation line to match status. Run mode `0` and require the line to disappear.
-9. Re-run `lod_rpg_validate`; require the core PASS line and no Lua errors.
+Steam Deck `gm_flatgrass` evidence confirmed the WIS Navigation validator. The tested Hero
+reported WIS 12 / modifier +1 and Cartographer's replacing +8 bonus for 16 BreadcrumbCells;
+the minimap visibly rendered 16 of 17 traversed cells. With Frugal Cartography active, the
+status and MinimapMagic authority both reported 5.44 Magic/second: `100/15 × 0.96 × 0.85`.
+The map remained open, the breadcrumb trail was longer, and no Lua error was visible.
+
+### Batch 3: INT Ammo-Regeneration Floors
+
+Implemented from the exact live-GDD definitions:
+
+- `INT_AMMO_FLOOR_44` / Field Supply: INT 12, sets each owned eligible ordinary-firearm
+  recovery ceiling to `ceil(capacity × 0.44)`;
+- `INT_AMMO_FLOOR_55` / Deep Reserves: INT 16 + Field Supply, replaces the fraction with
+  `0.55`;
+- `INT_AMMO_FLOOR_66` / War Stock: INT 18 + Deep Reserves, replaces the fraction with
+  `0.66` while ordinary pickups can still reach full capacity;
+- the final loaded shared ammunition authority now owns both canonical family capacities and
+  the feat-derived ceiling calculation, so no older balance-pass floor can override it;
+- recovery retains its existing three-second no-fire delay and existing per-round cadence;
+  the feat changes neither timing nor capacity, cannot create unowned weapons, and excludes
+  Grenades and AR2 secondary ammunition;
+- the Character Sheet and finite status command show each currently owned eligible family's
+  live total, capacity, ceiling, and unchanged round interval;
+- `lod_rpg_gate_e_ammo_validate`, `lod_rpg_gate_e_ammo_status`, and
+  `lod_rpg_test_ammo_floor <0-3>` provide finite validation and safe rank acceleration.
+
+### Batch 3 runtime gate
+
+1. Start `gm_flatgrass` with `lod_developer_mode 1`; complete staging and deploy with an
+   eligible ordinary firearm (the Shotgun is sufficient).
+2. Run `lod_rpg_gate_e_ammo_validate`; require `INT Ammo-Regen feat family PASS — 3/3 ranks,
+   ceilings, cadence preserved`.
+3. Run `lod_rpg_test_ammo_floor 0`, then `lod_rpg_gate_e_ammo_status`; for a Shotgun require
+   the baseline `floor=7` and its ordinary `12.86s` round interval.
+4. Run ranks `1`, `2`, and `3`, checking the Shotgun ceiling becomes respectively `10/21`,
+   `12/21`, and `14/21`, while the interval remains `12.86s` every time. The same rank-3
+   status should show Pistol `36/54`, SMG `50/75`, AR2 `40/60`, and Magnum `12/18` if owned.
+5. Empty an owned family below its shown ceiling, wait through the normal no-fire delay, and
+   confirm it gains rounds only at its unchanged interval then stops exactly at the shown
+   ceiling. Confirm ordinary pickups may still exceed that ceiling up to full capacity.
+6. Open P and require its `Ammo Regen` line to match the status output. Re-run rank `0` and
+   require the line to disappear and the baseline ceiling to return.
+7. Re-run `lod_rpg_validate`; require the core PASS line and no Lua errors.
 
 Gate E remains open after this batch. Proceed family-by-family until every matrix row has an implemented bridge and validator.

@@ -39,9 +39,10 @@ The active RPG implementation now includes:
 - improved combat-feed and major-screen presentation for Feedback and level-up events;
 - feat-choice confirmation presentation.
 - Gate E batch 1, runtime accepted: the complete Second Wind / Rapid Recovery / Unbroken Health-Regeneration ladder, including replacement ceilings, CON-scaled healing, damage-delay resets, Character Sheet truth, and finite validators.
-- Gate E batch 2, awaiting runtime acceptance: Surveyor / Cartographer / Frugal Cartography, including replacement breadcrumb ranks, canonical post-WIS drain ordering, the 3.0 Magic/second floor, Character Sheet truth, and finite validators.
+- Gate E batch 2, runtime accepted: Surveyor / Cartographer / Frugal Cartography, including replacement breadcrumb ranks, canonical post-WIS drain ordering, the 3.0 Magic/second floor, Character Sheet truth, and finite validators.
+- Gate E batch 3, awaiting runtime acceptance: Field Supply / Deep Reserves / War Stock, including canonical owned-family ammunition regeneration ceilings, unchanged recovery cadence/no-fire delay, Character Sheet truth, and finite validators.
 
-Gate E is now in active family-by-family implementation. The exact 73-entry matrix is established in `docs/RPG_GATE_E_FEAT_MATRIX.md`; 6 feats are mechanically complete, 17 remain catalog/ownership-only, and 50 are not yet catalogued. The next boundary is Batch 2 runtime acceptance, then the next coherent ordinary-feat family, followed by the authored procedural/background Perk gate and the full RPG consistency audit.
+Gate E is now in active family-by-family implementation. The exact 73-entry matrix is established in `docs/RPG_GATE_E_FEAT_MATRIX.md`; 9 feats are mechanically complete, 16 remain catalog/ownership-only, and 48 are not yet catalogued. The next boundary is Batch 3 runtime acceptance, then the next coherent ordinary-feat family, followed by the authored procedural/background Perk gate and the full RPG consistency audit.
 
 The exact six-stat rules baseline is preserved in `docs/RPG_GDD_RULES_BASELINE.md`. The live GDD now resolves the earlier CHA authority gap: after all stronger tactical constraints, otherwise equivalent hostile targets are tie-broken in favor of attacking the lower-CHA Hero. This is a preference layer, never aggro immunity.
 
@@ -79,7 +80,7 @@ Do not disturb without concrete regression evidence:
 
 ## Known deferred production work
 
-- remaining ordinary feat-family gameplay effects (67 of 73);
+- remaining ordinary feat-family gameplay effects (64 of 73);
 - all authored procedural/background Perk gameplay bridges;
 - full six-stat/player-level/enemy-level/combat-order consistency audit;
 - Neil + The Brute required post-Blue midboss;

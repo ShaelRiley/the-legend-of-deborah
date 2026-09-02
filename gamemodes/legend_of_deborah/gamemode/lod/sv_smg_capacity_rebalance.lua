@@ -44,6 +44,25 @@ local PROFILES = {
     }
 }
 
+-- This is the final loaded ordinary-firearm profile table.  Expose it through
+-- the shared ammunition authority so later RPG features never recreate weapon
+-- capacities, clips, or recovery cadence in a parallel table.
+Ammo.RegenerativeProfiles = PROFILES
+
+function Ammo:RegenFloorRounds(ply, weaponClass, profile, derivedOverride)
+    profile = profile or self.RegenerativeProfiles and self.RegenerativeProfiles[weaponClass]
+    if not profile then return 0 end
+    local derived = derivedOverride
+    if not derived and IsValid(ply) then
+        local rules = LOD.RPGAbilityRules
+        derived = rules and rules.Derived and rules:Derived(ply) or nil
+    end
+    local fraction = math.Clamp(
+        tonumber(derived and derived.ammoRegenFloorFraction) or 0.33, 0, 1)
+    return math.Clamp(math.ceil(math.max(0, profile.cap or 0) * fraction), 0,
+        math.max(0, math.floor(profile.cap or 0)))
+end
+
 local SHOTGUN_TIER_AMOUNTS = {small = 3, medium = 5, large = 7}
 
 Balance.Stats = Balance.Stats or {clipClamps = 0, capClamps = 0}
@@ -63,6 +82,26 @@ local function familyTotal(ply, weaponClass, profile)
     local clip = weapon and math.max(0, weapon:Clip1()) or 0
     local reserve = IsValid(ply) and math.max(0, ply:GetAmmoCount(profile.ammo)) or 0
     return clip + reserve, clip, reserve, weapon
+end
+
+function Ammo:RegenProfileSnapshot(ply)
+    local result = {}
+    for weaponClass, profile in pairs(PROFILES) do
+        local total, _, _, weapon = familyTotal(ply, weaponClass, profile)
+        if weapon then
+            result[#result + 1] = {
+                weaponClass = weaponClass,
+                label = profile.label,
+                total = total,
+                cap = profile.cap,
+                floor = self:RegenFloorRounds(ply, weaponClass, profile),
+                baselineFloor = profile.floor,
+                roundIntervalSeconds = profile.recovery / profile.floor
+            }
+        end
+    end
+    table.sort(result, function(a, b) return a.weaponClass < b.weaponClass end)
+    return result
 end
 
 local function configureDefinition()
@@ -143,13 +182,17 @@ function Ammo:TickPlayer(ply, now)
             self:ClampFamily(ply, weaponClass, profile)
             local total, _, _, weapon = familyTotal(ply, weaponClass, profile)
             local state = self:_FamilyState(ply, weaponClass)
+            local floor = self:RegenFloorRounds(ply, weaponClass, profile)
+            state.activeRegenFloor = floor
 
-            if not weapon or total >= profile.floor then
+            if not weapon or total >= floor then
                 state.nextRoundAt = nil
             else
+                -- The feat changes the stopping ceiling only.  This remains the
+                -- existing baseline per-round cadence, not a faster recovery.
                 local interval = profile.recovery / profile.floor
                 state.nextRoundAt = state.nextRoundAt or (now + 3.0 + interval)
-                while total < profile.floor and now >= state.nextRoundAt do
+                while total < floor and now >= state.nextRoundAt do
                     ply:SetAmmo(ply:GetAmmoCount(profile.ammo) + 1, profile.ammo)
                     total = total + 1
                     state.nextRoundAt = state.nextRoundAt + interval

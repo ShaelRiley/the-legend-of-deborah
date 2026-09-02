@@ -932,6 +932,12 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             math.floor((state.derivedStats.wizardClassHpToMagicDiversionFraction or 0) * 100 + 0.5))
     end
 
+    local ammoRegenFamilies = {}
+    local ammo = LOD.DiceAmmo
+    if ammo and ammo.RegenProfileSnapshot then
+        ammoRegenFamilies = ammo:RegenProfileSnapshot(ply)
+    end
+
     return {
         gate = RPG.ImplementationGate,
         schemaVersion = RPG.SchemaVersion,
@@ -978,6 +984,9 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         mapDrainRatePerSecond = LOD.RPGAbilityRules
             and LOD.RPGAbilityRules:MapDrainPerSecond(ply, 100 / 15)
             or (100 / 15) * (state.derivedStats.utilityMagicCostMultiplier or 1),
+        ammoRegenFloorRank = state.derivedStats.ammoRegenFloorRank,
+        ammoRegenFloorFraction = state.derivedStats.ammoRegenFloorFraction,
+        ammoRegenFamilies = ammoRegenFamilies,
         identityTraits = {
             perkSnapshot(Catalog.Origins[package.originIndex]),
             perkSnapshot(Catalog.Backgrounds[package.backgroundIndex]),

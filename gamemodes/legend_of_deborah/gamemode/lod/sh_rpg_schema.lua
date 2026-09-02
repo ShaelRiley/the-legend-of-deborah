@@ -3,7 +3,7 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 6
+RPG.SchemaVersion = 7
 RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
@@ -61,7 +61,7 @@ RPG.SystemBootstrap = {
     CharacterProgressionSystem = "gate_c_levels_1_20",
     AbilityRules = "gate_d_gameplay",
     FeatDirector = "gate_c_cadence_and_capstone",
-    FeatEffectSystem = "gate_e_batch_2_wis_navigation",
+    FeatEffectSystem = "gate_e_batch_3_int_ammo_regeneration",
     IdentityGenerationSystem = "gate_b",
     IdentityPerkSystem = "gate_b_identity_package",
     CharacterSheetUI = "gate_c",
@@ -119,7 +119,8 @@ RPG.Schema = {
         "chaHitStunResistanceMultiplier", "featHitStunMultiplier", "weaponKnockbackProcChance",
         "weaponKnockbackProcDistance", "pusherProcTargetCooldownSeconds", "wallSlamDieSides",
         "wallSlamExplodes", "wallSlamClassExplosionImmune", "ammoRegenFloorFraction",
-        "ammoRegenFloorRoundsByFamily", "rateOfFireMultiplier", "reloadTimeMultiplier",
+        "ammoRegenFloorRank", "ammoRegenFloorRoundsByFamily", "rateOfFireMultiplier",
+        "reloadTimeMultiplier",
         "smgHeatSuppressionChance", "smgOverheatThreshold", "blastProofCooldownSeconds",
         "invisibleStatePerception", "nearbyHostileWallSenseCells", "watcherMovementSenseAudio",
         "burstBonusRounds", "heroOfLegendPulseEnabled", "heroOfLegendPulseRangeCells",

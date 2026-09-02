@@ -18,7 +18,7 @@ Because that footage predates the RPG overhaul, the correct next network task is
 
 1. **Core multiplayer smoke foundation — ACCEPTED.**
 2. **RPG Gates A–D / class integration — substantially implemented and under active runtime tuning.**
-3. **Gate E — ordinary feat-family gameplay integration.** Batch 1 (CON Health Regeneration) is runtime accepted; Batch 2 (WIS Navigation) brings implementation to 6/73 feats and awaits runtime acceptance.
+3. **Gate E — ordinary feat-family gameplay integration.** Batches 1 (CON Health Regeneration) and 2 (WIS Navigation) are runtime accepted; Batch 3 (INT Ammo-Regeneration Floors) brings implementation to 9/73 feats and awaits runtime acceptance.
 4. Complete the remaining Gate E matrix families with one canonical FeatEffectSystem registry and family-specific validators.
 5. **Perk Gate — implement all 192 authored Origin/Background/Motive mechanical bridges.**
 6. Perform the mandatory six-stat, Hero Level 1–20, enemy progression, player/enemy symmetry, combat-order, and entity-wide RPG consistency audit.
@@ -91,10 +91,12 @@ Acceptance requires:
 
 - Batch 1 runtime accepted on `gm_flatgrass`: `CON_REGEN_11`, `CON_REGEN_22`, `CON_REGEN_33`; validator PASS, exact 11/22/33 HP ceilings, 1.20 HP/s tested rate, no visible Lua error.
 - Runtime commands: `lod_rpg_gate_e_regen_validate`, `lod_rpg_gate_e_regen_status`, `lod_rpg_test_regen <0-3>`.
-- Batch 2 complete in code: `WIS_SURVEYOR`, `WIS_CARTOGRAPHER`, `WIS_FRUGAL_MAP`.
-- Batch 2 runtime commands: `lod_rpg_gate_e_navigation_validate`, `lod_rpg_gate_e_navigation_status`, `lod_rpg_test_navigation <0-3>`.
+- Batch 2 runtime accepted: `WIS_SURVEYOR`, `WIS_CARTOGRAPHER`, `WIS_FRUGAL_MAP`; live evidence confirmed Cartographer's replacing +8 breadcrumb bonus and Frugal's 5.44/s final drain.
+- Batch 3 complete in code: `INT_AMMO_FLOOR_44`, `INT_AMMO_FLOOR_55`, `INT_AMMO_FLOOR_66`.
+- Batch 3 runtime commands: `lod_rpg_gate_e_ammo_validate`, `lod_rpg_gate_e_ammo_status`, `lod_rpg_test_ammo_floor <0-3>`.
+- The canonical ammunition authority calculates `ceil(capacity × active floor fraction)` and preserves each family's existing recovery interval and no-fire delay.
 - Source matrices: `docs/RPG_GATE_E_FEAT_MATRIX.md` and `docs/RPG_GDD_RULES_BASELINE.md`.
-- Next: runtime-accept Batch 2, then choose another complete family from the matrix; do not intermingle a half-implemented third family with this acceptance gate.
+- Next: runtime-accept Batch 3, then choose another complete family from the matrix; do not intermingle a half-implemented fourth family with this acceptance gate.
 
 ---
 
@@ -171,4 +173,4 @@ Every consolidation must retain a decisive runtime acceptance criterion.
 
 # Immediate Next Action
 
-**Runtime-accept Gate E Batch 2 on `gm_flatgrass`, then implement the next complete ordinary-feat family from the 73-entry live-GDD matrix.**
+**Runtime-accept Gate E Batch 3 on `gm_flatgrass`, then implement the next complete ordinary-feat family from the 73-entry live-GDD matrix.**
