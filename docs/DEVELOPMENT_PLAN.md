@@ -18,14 +18,17 @@ Because that footage predates the RPG overhaul, the correct next network task is
 
 1. **Core multiplayer smoke foundation — ACCEPTED.**
 2. **RPG Gates A–D / class integration — substantially implemented and under active runtime tuning.**
-3. **Gate E — ordinary feat-family gameplay integration.**
-4. Runtime/play-balance Gate E across multiple fresh randomized Heroes and all three classes.
-5. **Post-RPG multiplayer regression** covering the systems added after the September 1 VPS build.
-6. Fix defects revealed by that regression until RPG state remains coherent across clients.
-7. Continue Second Full-System Audit consolidation where runtime evidence identifies the highest-risk authority debt.
-8. Implement **Neil + The Brute** as the mandatory post-Blue-Gate midboss.
-9. Implement **Gordon the Warden** and final arena.
-10. Expand toward 3–4-client churn/reconnect/death/dedicated-server soak and release-candidate performance/polish.
+3. **Gate E — ordinary feat-family gameplay integration.** Batch 1 (CON Health Regeneration, 3/73 feats) is implemented and awaiting runtime acceptance.
+4. Complete the remaining Gate E matrix families with one canonical FeatEffectSystem registry and family-specific validators.
+5. **Perk Gate — implement all 192 authored Origin/Background/Motive mechanical bridges.**
+6. Perform the mandatory six-stat, Hero Level 1–20, enemy progression, player/enemy symmetry, combat-order, and entity-wide RPG consistency audit.
+7. Runtime/play-balance the completed RPG across multiple randomized Heroes/classes/ability extremes.
+8. **Post-RPG multiplayer regression** covering the systems added after the September 1 VPS build.
+9. Fix defects revealed by that regression until RPG state remains coherent across clients.
+10. Continue Second Full-System Audit consolidation where runtime evidence identifies the highest-risk authority debt.
+11. Implement **Neil + The Brute** as the mandatory post-Blue-Gate midboss.
+12. Implement **Gordon the Warden** and final arena.
+13. Expand toward 3–4-client churn/reconnect/death/dedicated-server soak and release-candidate performance/polish.
 
 ---
 
@@ -83,6 +86,13 @@ Acceptance requires:
 - no duplicate damage/resource modifiers appear in logs;
 - no new Lua errors;
 - broad movement/combat/Magic/loot/progression behavior remains intact.
+
+## Gate E batch ledger
+
+- Batch 1 complete in code: `CON_REGEN_11`, `CON_REGEN_22`, `CON_REGEN_33`.
+- Runtime commands: `lod_rpg_gate_e_regen_validate`, `lod_rpg_gate_e_regen_status`, `lod_rpg_test_regen <0-3>`.
+- Source matrices: `docs/RPG_GATE_E_FEAT_MATRIX.md` and `docs/RPG_GDD_RULES_BASELINE.md`.
+- Next: choose another complete family from the matrix after batch-1 runtime evidence; do not intermingle a half-implemented second family with this acceptance gate.
 
 ---
 
@@ -159,4 +169,4 @@ Every consolidation must retain a decisive runtime acceptance criterion.
 
 # Immediate Next Action
 
-**Prepare and execute Gate E: ordinary feat-family gameplay integration from the live GDD, then return to the VPS for the targeted post-RPG multiplayer regression.**
+**Runtime-accept Gate E batch 1 on `gm_flatgrass`, then implement the next complete ordinary-feat family from the 73-entry live-GDD matrix.**

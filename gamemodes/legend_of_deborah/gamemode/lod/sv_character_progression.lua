@@ -402,6 +402,10 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.canActivateWandsScrolls = state.classId == "wizard" or state.classId == "rogue"
     mods.levelProficiency = math.floor((state.level - 1) / 4)
     mods.startingHP = 100
+    local featEffects = RPG.FeatEffectSystem
+    if featEffects and featEffects.ApplyDerived then
+        featEffects:ApplyDerived(state, mods)
+    end
 
     local rolledSubtotal, coreMaxHP = 0, state.startingHP or 100
     for level = 2, state.level do
@@ -450,6 +454,12 @@ function CharacterProgressionSystem:_FeatEligible(ps, state, definition)
     for _, tag in ipairs(definition.requiredCapabilityTags or {}) do
         if not self:_HasCapability(ps, state, tag) then return false end
     end
+    for _, prerequisiteId in ipairs(definition.prerequisiteFeatIds or {}) do
+        if not arrayContains(state.featIds, prerequisiteId) then return false end
+    end
+    for _, incompatibleId in ipairs(definition.incompatibleFeatIds or {}) do
+        if arrayContains(state.featIds, incompatibleId) then return false end
+    end
     if definition.repeatableFallback then
         local ability = definition.effectParams and definition.effectParams.ability
         return not ability or (state.featQualificationAbilities[ability] or 30) < 30
@@ -474,6 +484,20 @@ function CharacterProgressionSystem:_FeatWeight(ps, state, definition)
         elseif favored[ability] then affinity = math.max(affinity, 1.15) end
     end
     weight = weight * affinity
+
+    if definition.featFamilyId and (tonumber(definition.rankIndex) or 0) > 1 then
+        local previousRank = (tonumber(definition.rankIndex) or 1) - 1
+        for _, featId in ipairs(state.featIds or {}) do
+            local owned = Catalog.OrdinaryFeats and Catalog.OrdinaryFeats[featId]
+                or Catalog.LevelOneOrdinaryFeats[featId]
+            if owned and owned.featFamilyId == definition.featFamilyId
+                and owned.rankIndex == previousRank
+            then
+                weight = weight * 1.75
+                break
+            end
+        end
+    end
 
     local toolTag = definition.requiredCapabilityTags and definition.requiredCapabilityTags[1]
     if toolTag == "d10_damage" or toolTag == "multi_fire_burst" or toolTag == "smg" then
@@ -509,8 +533,9 @@ function CharacterProgressionSystem:_GenerateOrdinaryDraft(ps, state, campaignSe
         "feat_draft:ordinary:level:" .. earnedAtLevel .. ":slot:" .. slotIndex)
     local rng = LOD.RNG.New(draftSeed)
     local ordinaryCandidates = {}
-    for _, featId in ipairs(sortedKeys(Catalog.LevelOneOrdinaryFeats)) do
-        local definition = Catalog.LevelOneOrdinaryFeats[featId]
+    local ordinaryFeats = Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats
+    for _, featId in ipairs(sortedKeys(ordinaryFeats)) do
+        local definition = ordinaryFeats[featId]
         if self:_FeatEligible(ps, state, definition) then
             ordinaryCandidates[#ordinaryCandidates + 1] = {
                 definition = definition,
@@ -598,7 +623,8 @@ function CharacterProgressionSystem:CommitClass(ply, classId)
 end
 
 function CharacterProgressionSystem:_FindFeat(featId)
-    return Catalog.LevelOneOrdinaryFeats[featId] or Catalog.FallbackFeats[featId]
+    local ordinaryFeats = Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats
+    return ordinaryFeats[featId] or Catalog.FallbackFeats[featId]
 end
 
 function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLevel)
@@ -907,7 +933,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     end
 
     return {
-        gate = "C",
+        gate = RPG.ImplementationGate,
         schemaVersion = RPG.SchemaVersion,
         fullDisplayName = package.fullDisplayName,
         firstName = package.firstName,
@@ -937,6 +963,12 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         hitDieRolls = hitDieRolls,
         hpConBonusPerLevel = state.derivedStats.hpConBonusPerLevel,
         rolledHitPointSubtotal = state.derivedStats.rolledHitPointSubtotal,
+        healthRegenEnabled = state.derivedStats.healthRegenEnabled == true,
+        healthRegenRank = state.derivedStats.healthRegenRank,
+        healthRegenCeilingFraction = state.derivedStats.healthRegenCeilingFraction,
+        healthRegenRatePerSecond = (state.derivedStats.maxHP or 0)
+            * (state.derivedStats.healthRegenBaseMaxHPPerSecond or 0)
+            * (state.derivedStats.conRegenMultiplier or 1),
         identityTraits = {
             perkSnapshot(Catalog.Origins[package.originIndex]),
             perkSnapshot(Catalog.Backgrounds[package.backgroundIndex]),
@@ -973,6 +1005,8 @@ function CharacterProgressionSystem:SyncPlayer(ply)
     if LOD.RPGAbilityRules and LOD.RPGAbilityRules.SyncPlayer then
         LOD.RPGAbilityRules:SyncPlayer(ply)
     end
+    local featEffects = RPG.FeatEffectSystem
+    if featEffects and featEffects.TrackActor then featEffects:TrackActor(ply, false) end
     local snapshot = self:BuildClientSnapshot(ply)
     if not snapshot then return end
     net.Start("LOD_RPG_Snapshot")

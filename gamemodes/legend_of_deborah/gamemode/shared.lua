@@ -23,6 +23,7 @@ if SERVER then
     -- include resolution such as lod/lod/sv_character_progression.lua.
     include("lod/sv_rpg_gate_b_catalog.lua")
     include("lod/sv_rpg_gate_c_catalog.lua")
+    include("lod/sv_rpg_gate_e_feats.lua")
     include("lod/sv_character_progression.lua")
     include("lod/sv_hero_ability_rolls.lua")
     include("lod/sv_rpg_gate_d.lua")

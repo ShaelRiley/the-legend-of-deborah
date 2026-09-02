@@ -38,8 +38,11 @@ The active RPG implementation now includes:
 - current Wizard Arcane Diversion, full-Magic INT bonus, Feedback, and Feedback cooldown;
 - improved combat-feed and major-screen presentation for Feedback and level-up events;
 - feat-choice confirmation presentation.
+- Gate E batch 1: the complete Second Wind / Rapid Recovery / Unbroken Health-Regeneration ladder, including replacement ceilings, CON-scaled healing, damage-delay resets, Character Sheet truth, and finite validators.
 
-The next RPG boundary is the ordinary feat-effect layer: ownership/drafting exists, but the broad ordinary feat families still require their authored semantic gameplay integrations.
+Gate E is now in active family-by-family implementation. The exact 73-entry matrix is established in `docs/RPG_GATE_E_FEAT_MATRIX.md`; 3 feats are mechanically complete, 18 remain catalog/ownership-only, and 52 are not yet catalogued. The next boundary is the next coherent ordinary-feat family, followed by the authored procedural/background Perk gate and the full RPG consistency audit.
+
+The exact six-stat rules baseline is preserved in `docs/RPG_GDD_RULES_BASELINE.md`. That read exposed one later-batch authority gap: the handoff requires high-CHA Heroes to receive lower hostile target priority, but the current live GDD contains no magnitude/formula for that rule. The CHA targeting bridge must not invent one; it requires an authored live-GDD rule before implementation.
 
 ## Multiplayer policy going forward
 
@@ -75,7 +78,9 @@ Do not disturb without concrete regression evidence:
 
 ## Known deferred production work
 
-- ordinary feat-family gameplay effects;
+- remaining ordinary feat-family gameplay effects (70 of 73);
+- all authored procedural/background Perk gameplay bridges;
+- full six-stat/player-level/enemy-level/combat-order consistency audit;
 - Neil + The Brute required post-Blue midboss;
 - Gordon the Warden and final arena;
 - dungeon-tier Map degradation;

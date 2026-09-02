@@ -9,7 +9,7 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 | CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate C deterministic Levels 1-20, XP, growth, stored hit dice, and HP recomputation |
 | AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate D server-authoritative semantic bridges |
 | FeatDirector | CharacterProgressionSystem progression state | Gate C ordinary-feat cadence and fixed Level-20 class-capstone trios |
-| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | pending |
+| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | Gate E batch 1: complete CON Health-Regeneration ladder |
 | IdentityGenerationSystem | RunManager RosterSeed lifecycle + independent deterministic substreams | Gate B exact 64/64/64 identity and 64-entry name catalogs |
 | IdentityPerkSystem | Existing semantic combat/navigation/loot/encounter events | Gate B immutable perk ownership/display; later semantic effect bridges pending |
 | CharacterSheetUI | Existing Field Manual visual language | Gate C P-key progression ledger and choice surface |
@@ -149,3 +149,34 @@ RunManager authorities rather than introducing parallel systems:
    movement, combat, death/respawn, Magic, minimap, staging, and maze progression remain functional.
 
 Do not begin Gate E until Gate D passes runtime approval.
+
+## Gate E — ordinary feat effects
+
+### Batch 1: CON Health Regeneration
+
+Implemented from the exact live-GDD definitions:
+
+- `CON_REGEN_11` / Second Wind: CON 12, 11% MaxHP ceiling;
+- `CON_REGEN_22` / Rapid Recovery: CON 14 + Second Wind, replaces the ceiling with 22%;
+- `CON_REGEN_33` / Unbroken: CON 16 + Rapid Recovery, replaces the ceiling with 33%;
+- one FeatEffectSystem-derived profile selects the highest owned rank rather than stacking ceilings;
+- effective damage restarts the shared 5.0-second damage-free clock at the final gamemode damage seam;
+- active regeneration restores `1.0% MaxHP/second × ConRegenMultiplier`, never exceeds the selected ceiling, and never restores Tetris overfill;
+- one bounded 0.25-second timer visits only injured tracked feat owners; there is no all-entity Think scan;
+- the Character Sheet reports the active ceiling and current CON-scaled rate;
+- prerequisites, rank metadata, next-rank weighting, and exact locked-draft legality are enforced;
+- `lod_rpg_gate_e_regen_validate`, `lod_rpg_gate_e_regen_status`, and `lod_rpg_test_regen <0-3>` provide finite validation and acceleration.
+
+The full 73-entry inventory is preserved in `docs/RPG_GATE_E_FEAT_MATRIX.md`. The exact six-stat baseline and the currently unresolved CHA target-priority authorship gap are preserved in `docs/RPG_GDD_RULES_BASELINE.md`.
+
+### Batch 1 runtime gate
+
+1. Start `gm_flatgrass` with `lod_developer_mode 1`; complete staging and deploy.
+2. Run `lod_rpg_gate_e_regen_validate` and require `Health-Regeneration feat family PASS`.
+3. Run `lod_rpg_test_regen 1`; it equips Second Wind, sets HP to 1, and starts the five-second delay. Run `lod_rpg_gate_e_regen_status` before and after the delay. Require ceiling 11% and the Character Sheet's live rate.
+4. Repeat with ranks `2` and `3`; require replacement ceilings 22% and 33%, never 11% + 22% + 33%.
+5. While regenerating, take effective damage and require the delay to return to approximately 5 seconds. Confirm no healing occurs during the delay.
+6. Run `lod_rpg_test_regen 0`; require regeneration to stop and the Character Sheet line to disappear.
+7. Re-run `lod_rpg_validate`; require the core PASS line and no Lua errors.
+
+Gate E remains open after this batch. Proceed family-by-family until every matrix row has an implemented bridge and validator.

@@ -530,6 +530,12 @@ function Sheet:Open(requestFresh)
         "Starting HP: %d\nCurrent HP: %d / %d\n%s\nLives: %d\nDungeon Level: %d",
         snapshot.startingHP or 100, snapshot.currentHP or 0, snapshot.maxHP or 100,
         xpLine, snapshot.lives or 0, snapshot.dungeonLevel or 1)
+    if snapshot.healthRegenEnabled then
+        recordText = recordText .. string.format(
+            "\nHealth Regen: %.2f HP/s to %d%% MaxHP",
+            snapshot.healthRegenRatePerSecond or 0,
+            math.floor((snapshot.healthRegenCeilingFraction or 0) * 100 + 0.5))
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

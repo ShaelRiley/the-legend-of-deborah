@@ -365,7 +365,18 @@ end
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
     if baseEntityTakeDamage then baseEntityTakeDamage(self, target, dmginfo) end
-    if IsValid(target) and target:IsPlayer() then AbilityRules:ApplyPlayerDefense(target, dmginfo) end
+    local defenseResult
+    if IsValid(target) and target:IsPlayer() then
+        defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
+    end
+    local featEffects = RPG.FeatEffectSystem
+    if IsValid(target) and featEffects and featEffects.OnEffectiveDamage then
+        local effectiveDamage = dmginfo and dmginfo:GetDamage() or 0
+        if defenseResult and (tonumber(defenseResult.actualMagicDiversion) or 0) > 0 then
+            effectiveDamage = math.max(effectiveDamage, defenseResult.actualMagicDiversion)
+        end
+        featEffects:OnEffectiveDamage(target, effectiveDamage)
+    end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
 end
 

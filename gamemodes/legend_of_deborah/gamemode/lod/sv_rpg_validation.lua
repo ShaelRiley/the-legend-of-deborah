@@ -99,7 +99,7 @@ function Validation:Run(printResult)
     validateSchema(errors, "DamageContributionLedger", {"effectiveDamageByHeroId", "killingBlowHeroId", "totalEligibleEffectiveDamage", "resolved"})
     validateSchema(errors, "DefensiveProcState", {"blastProofReadyAtSeconds", "notYetConsumedDungeonNumber"})
     validateSchema(errors, "CombatHitResolution", {"hitConnected", "harmWasEffective", "effectiveHPDamage", "targetSurvived", "pushEligible", "hitStunEligible"})
-    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "coreMaxHP", "maxHP", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
+    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "coreMaxHP", "maxHP", "healthRegenEnabled", "healthRegenCeilingFraction", "healthRegenDamageFreeDelaySeconds", "healthRegenBaseMaxHPPerSecond", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
     validateSchema(errors, "FeatDefinition", {"featId", "abilityRequirements", "requiredCapabilityTags", "effectHandlerId", "directorBaseWeight"})
     validateSchema(errors, "ClassCapstoneDefinition", {"featId", "classId", "effectHandlerId"})
     validateSchema(errors, "PendingFeatDraft", {"earnedAtLevel", "draftType", "offerFeatIds", "selectedFeatId", "resolved"})
@@ -130,6 +130,18 @@ function Validation:Run(printResult)
         capstoneCount = capstoneCount + countKeys(definitions)
     end
     if capstoneCount ~= 9 then addError(errors, "class capstone catalog must contain 9 definitions") end
+
+    local featEffects = RPG.FeatEffectSystem
+    if not featEffects or not featEffects.ValidateHealthRegen then
+        addError(errors, "Gate E Health-Regeneration validator unavailable")
+    else
+        local regenOK, regenErrors = featEffects:ValidateHealthRegen()
+        if not regenOK then
+            for _, message in ipairs(regenErrors or {}) do
+                addError(errors, "Gate E Health-Regeneration: " .. message)
+            end
+        end
+    end
 
     local ok = #errors == 0
     if printResult ~= false then

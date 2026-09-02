@@ -3,7 +3,7 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 4
+RPG.SchemaVersion = 5
 RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
@@ -61,7 +61,7 @@ RPG.SystemBootstrap = {
     CharacterProgressionSystem = "gate_c_levels_1_20",
     AbilityRules = "gate_d_gameplay",
     FeatDirector = "gate_c_cadence_and_capstone",
-    FeatEffectSystem = "pending",
+    FeatEffectSystem = "gate_e_batch_1_con_health_regeneration",
     IdentityGenerationSystem = "gate_b",
     IdentityPerkSystem = "gate_b_identity_package",
     CharacterSheetUI = "gate_c",
@@ -107,7 +107,9 @@ RPG.Schema = {
         "rogueCapstoneEvasionChance", "rogueAcePrimed", "damageResistancePerDie",
         "rogueAcePrimeSeconds",
         "hpConBonusPerLevel", "startingHP", "progressionHitDieSides", "rolledHitPointSubtotal",
-        "coreMaxHP", "maxHP", "conRegenMultiplier", "wizardClassHpToMagicDiversionFraction",
+        "coreMaxHP", "maxHP", "conRegenMultiplier", "healthRegenEnabled", "healthRegenRank",
+        "healthRegenCeilingFraction", "healthRegenDamageFreeDelaySeconds",
+        "healthRegenBaseMaxHPPerSecond", "wizardClassHpToMagicDiversionFraction",
         "manaBarrierFeatDiversionFraction", "wizardCapstoneDiversionBonus", "livingAegisHPPerMagic",
         "hpToMagicDiversionFraction", "magicRegenMultiplier", "wizardCapstoneMagicRegenMultiplier",
         "magicPowerMultiplier", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",
