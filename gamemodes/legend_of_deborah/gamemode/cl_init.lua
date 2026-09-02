@@ -34,6 +34,44 @@ include("lod/cl_magic.lua")
 include("lod/cl_pushback_fx.lua")
 include("lod/cl_character_sheet.lua")
 
+-- The sheet's identity column is intentionally narrow at Steam Deck scale. Give
+-- only the hero name another 32 px (roughly 3-4 condensed characters) by borrowing
+-- the otherwise-empty inter-column gutter, without shrinking the feat/class cards.
+do
+    local sheet = LOD.CharacterSheet
+    local baseOpen = sheet and sheet.Open
+    if sheet and baseOpen and not sheet.LODNameWidthQOLInstalled then
+        sheet.LODNameWidthQOLInstalled = true
+
+        local function widenName(panel, expectedName)
+            if not IsValid(panel) then return false end
+            for _, child in ipairs(panel:GetChildren()) do
+                if child.GetText and child.GetFont
+                    and child:GetText() == expectedName
+                    and child:GetFont() == "LOD_SheetHeading"
+                then
+                    local x, y = child:GetPos()
+                    if x == 164 then
+                        child:SetPos(156, y)
+                        child:SetWide(child:GetWide() + 32)
+                    end
+                    return true
+                end
+                if widenName(child, expectedName) then return true end
+            end
+            return false
+        end
+
+        function sheet:Open(requestFresh)
+            baseOpen(self, requestFresh)
+            local snapshot = self.Snapshot
+            if snapshot and IsValid(self.Frame) then
+                widenName(self.Frame, tostring(snapshot.fullDisplayName or ""))
+            end
+        end
+    end
+end
+
 -- One staging interaction-prompt authority. Manual scrolling belongs exclusively to
 -- lod_manual_reader_runtime.lua; portal geometry belongs to lod_staging_prop/shared.
 surface.CreateFont("LOD_StagingBoundPrompt", {
