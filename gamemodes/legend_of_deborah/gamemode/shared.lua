@@ -26,6 +26,7 @@ if SERVER then
     include("lod/sv_character_progression.lua")
     include("lod/sv_rpg_gate_d.lua")
     include("lod/sv_rpg_wizard_rules.lua")
+    include("lod/sv_rpg_wizard_rebalance.lua")
     include("lod/sv_rpg_validation.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
