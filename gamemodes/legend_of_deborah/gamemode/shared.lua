@@ -24,6 +24,7 @@ if SERVER then
     include("lod/sv_rpg_gate_b_catalog.lua")
     include("lod/sv_rpg_gate_c_catalog.lua")
     include("lod/sv_character_progression.lua")
+    include("lod/sv_hero_ability_rolls.lua")
     include("lod/sv_rpg_gate_d.lua")
     include("lod/sv_rpg_wizard_rules.lua")
     include("lod/sv_rpg_wizard_rebalance.lua")
