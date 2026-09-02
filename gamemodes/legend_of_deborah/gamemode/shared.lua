@@ -34,6 +34,14 @@ if SERVER then
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
     AddCSLuaFile("lod/cl_container_marking_panel.lua")
+    -- Major level-up/Feedback presentation is explicitly distributed here rather
+    -- than relying on the larger client include chain. This keeps the critical
+    -- celebration path independent of the combat-roll feed's load order.
+    AddCSLuaFile("lod/cl_rpg_major_fx.lua")
+end
+
+if CLIENT then
+    include("lod/cl_rpg_major_fx.lua")
 end
 
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
