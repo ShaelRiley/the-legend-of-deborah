@@ -7,7 +7,8 @@ WizardOffense.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 WizardOffense.SourceRevisionId = "ANLCKQkNcjBF3sFnckn_5ExOJDK0c-DXb291V5jp_bjHB-KnEf7LMJJeKGpB6mAQDFUwZk1ZhRLm1MfvE0i1TjrZSTmnbeVr2HOKoXy_KQ"
 WizardOffense.FeedbackContractMaxAge = 0.20
 WizardOffense.FeedbackCooldownSeconds = 1.0
-WizardOffense.FullMagicAttackMemory = 0.30
+WizardOffense.ActiveFullMagicSnapshots = WizardOffense.ActiveFullMagicSnapshots
+    or setmetatable({}, {__mode = "k"})
 WizardOffense.Stats = WizardOffense.Stats or {
     fullMagicBonusEvents = 0,
     fullMagicBonusDamage = 0,
@@ -65,34 +66,27 @@ function WizardOffense:CurrentMagic(actor)
     return tonumber(ps.magic), 100
 end
 
+-- This is intentionally a pure read of the Wizard's current authored state.
+-- Attack snapshots belong on attack contracts (or the tightly scoped Force Shout
+-- snapshot below), never on a persistent player field. A stale player override
+-- could otherwise report or apply a positive bonus after INT changed or went
+-- negative, which is exactly the bug this module guards against.
 function WizardOffense:FullMagicBonus(actor)
     if not self:IsWizard(actor) then return 0 end
-    local forced = tonumber(actor.LODWizardFullMagicAttackOverride)
-    if forced ~= nil then return math.max(0, math.floor(forced)) end
     local current, maximum = self:CurrentMagic(actor)
     if current == nil or maximum == nil or current < maximum - 0.0001 then return 0 end
     return self:IntBonus(actor)
 end
 
+function WizardOffense:AttackSnapshotBonus(actor)
+    if not IsValid(actor) then return 0 end
+    local snapshot = self.ActiveFullMagicSnapshots[actor]
+    if snapshot ~= nil then return math.max(0, math.floor(tonumber(snapshot) or 0)) end
+    return self:FullMagicBonus(actor)
+end
+
 function WizardOffense:FeedbackDiceCount(contract)
     return math.max(0, #(contract and contract.values or {}))
-end
-
-function WizardOffense:RememberFullMagicAttack(actor, bonus)
-    if not IsValid(actor) then return end
-    actor.LODWizardLastFullMagicAttack = {
-        at = CurTime(),
-        bonus = math.max(0, math.floor(tonumber(bonus) or 0))
-    }
-end
-
-function WizardOffense:RecentFullMagicBonus(actor)
-    if not IsValid(actor) then return 0 end
-    local remembered = actor.LODWizardLastFullMagicAttack
-    if not remembered or CurTime() - (tonumber(remembered.at) or -999) > self.FullMagicAttackMemory then
-        return 0
-    end
-    return math.max(0, math.floor(tonumber(remembered.bonus) or 0))
 end
 
 function WizardOffense:EmitFeedbackFX(wizard, attacker)
@@ -250,13 +244,17 @@ function WizardOffense:Install()
     end
     if self.IntegrationReady then return true end
 
+    -- Clear the obsolete field on clean startup/hot load. FullMagicBonus no longer
+    -- reads it, so even an old saved/stale value cannot affect combat or status.
+    for _, ply in ipairs(player.GetAll()) do
+        if IsValid(ply) then ply.LODWizardFullMagicAttackOverride = nil end
+    end
+
     local priorRollActorDamage = combatRolls.RollActorDamage
     function combatRolls:RollActorDamage(attacker, profile, rng, bonusDice)
         local rolled = priorRollActorDamage(self, attacker, profile, rng, bonusDice)
         if rolled and IsValid(attacker) then
-            local bonus = WizardOffense:FullMagicBonus(attacker)
-            rolled.wizardFullMagicIntBonus = bonus
-            WizardOffense:RememberFullMagicAttack(attacker, bonus)
+            rolled.wizardFullMagicIntBonus = WizardOffense:AttackSnapshotBonus(attacker)
         end
         return rolled
     end
@@ -265,9 +263,7 @@ function WizardOffense:Install()
     function combatRolls:RollPlayerWeapon(ply, weaponClass)
         local contract = priorRollPlayerWeapon(self, ply, weaponClass)
         if contract and IsValid(ply) then
-            local bonus = WizardOffense:FullMagicBonus(ply)
-            contract.wizardFullMagicIntBonus = bonus
-            WizardOffense:RememberFullMagicAttack(ply, bonus)
+            contract.wizardFullMagicIntBonus = WizardOffense:FullMagicBonus(ply)
         end
         return contract
     end
@@ -290,7 +286,7 @@ function WizardOffense:Install()
         local resolved, reduced, resistance = priorResolveDamageContract(self, contract, attacker, target, tags)
         if contract and contract.ignoreWizardFullMagicIntBonus ~= true and WizardOffense:IsWizard(attacker) then
             local bonus = tonumber(contract.wizardFullMagicIntBonus)
-            if bonus == nil then bonus = WizardOffense:RecentFullMagicBonus(attacker) end
+            if bonus == nil then bonus = WizardOffense:FullMagicBonus(attacker) end
             bonus = math.max(0, math.floor(tonumber(bonus) or 0))
             if bonus > 0 then
                 resolved = math.max(0, tonumber(resolved) or 0) + bonus
@@ -312,12 +308,19 @@ function WizardOffense:Install()
 
     local priorCastForceShout = magicAuthority.CastForceShout
     function magicAuthority:CastForceShout(ply)
-        local previous = IsValid(ply) and ply.LODWizardFullMagicAttackOverride or nil
-        local bonus = IsValid(ply) and WizardOffense:FullMagicBonus(ply) or 0
-        if IsValid(ply) then ply.LODWizardFullMagicAttackOverride = bonus end
-        local ok = priorCastForceShout(self, ply)
-        if IsValid(ply) then ply.LODWizardFullMagicAttackOverride = previous end
-        return ok
+        if not IsValid(ply) then return priorCastForceShout(self, ply) end
+
+        -- Force Shout spends Magic before rolling its damage. Snapshot the authored
+        -- full-Magic bonus just for the synchronous cast, then always restore the
+        -- prior snapshot even if the underlying cast raises a Lua error.
+        local previous = WizardOffense.ActiveFullMagicSnapshots[ply]
+        WizardOffense.ActiveFullMagicSnapshots[ply] = WizardOffense:FullMagicBonus(ply)
+        local ok, result = xpcall(function()
+            return priorCastForceShout(self, ply)
+        end, debug.traceback)
+        WizardOffense.ActiveFullMagicSnapshots[ply] = previous
+        if not ok then error(result, 0) end
+        return result
     end
 
     self.IntegrationReady = true
@@ -353,14 +356,23 @@ function WizardOffense:Validate(ply)
     local derived = IsValid(ply) and abilityRules and abilityRules.Derived
         and abilityRules:Derived(ply) or nil
     local currentMagic = IsValid(ply) and select(1, self:CurrentMagic(ply)) or 0
+    local liveIntMod = tonumber(derived and derived.intMod) or 0
+    local fullMagicBonus = IsValid(ply) and self:FullMagicBonus(ply) or 0
+    local expectedFullMagicBonus = state and state.classId == "wizard" and currentMagic >= 99.9999
+        and math.max(0, math.floor(liveIntMod)) or 0
+    if IsValid(ply) then
+        expect(fullMagicBonus == expectedFullMagicBonus,
+            "live full-Magic bonus equals max(0, INT_MOD) only at 100 Magic")
+    end
+
     local cooldownRemaining = IsValid(ply)
         and math.max(0, (tonumber(ply.LODWizardFeedbackNextReadyAt) or 0) - CurTime()) or 0
     return #errors == 0, errors, {
         classId = state and state.classId or "none",
         level = state and state.level or 0,
-        intMod = tonumber(derived and derived.intMod) or 0,
+        intMod = liveIntMod,
         magic = tonumber(currentMagic) or 0,
-        fullMagicBonus = IsValid(ply) and self:FullMagicBonus(ply) or 0,
+        fullMagicBonus = fullMagicBonus,
         feedbackChance = self:FeedbackChanceFromDerived(derived),
         feedbackCooldown = self.FeedbackCooldownSeconds,
         cooldownRemaining = cooldownRemaining
