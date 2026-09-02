@@ -1,8 +1,11 @@
 LOD = LOD or {}
-LOD.MagicFX = LOD.MagicFX or {waves = {}}
+LOD.MagicFX = LOD.MagicFX or {waves = {}, feedback = {}}
 
 local FX = LOD.MagicFX
+FX.waves = FX.waves or {}
+FX.feedback = FX.feedback or {}
 local beamMaterial = Material("sprites/light_glow02_add")
+local feedbackBeamMaterial = Material("cable/blue_elec")
 local attack2Held = false
 local localCastUntil = 0
 
@@ -50,6 +53,16 @@ net.Receive("LOD_MagicShoutFX", function()
         -- gesture and force-wave FX carry the cast presentation instead.
         surface.PlaySound("ambient/levels/citadel/weapon_disintegrate2.wav")
     end
+end)
+
+net.Receive("LOD_WizardFeedbackFX", function()
+    FX.feedback[#FX.feedback + 1] = {
+        origin = net.ReadVector(),
+        target = net.ReadVector(),
+        started = CurTime(),
+        travel = 0.09,
+        lifetime = 0.26
+    }
 end)
 
 -- Briefly clear the held first-person viewmodel during the cast. We deliberately
@@ -103,6 +116,37 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function(
             if trailing > 0 then
                 drawRing(wave.origin, wave.direction, 50 + trailing * 900,
                     math.floor(120 * fade), 6 * fade + 1)
+            end
+        end
+    end
+end)
+
+hook.Add("PostDrawTranslucentRenderables", "LOD_WizardFeedbackBeam", function()
+    local now = CurTime()
+    for i = #FX.feedback, 1, -1 do
+        local arc = FX.feedback[i]
+        local age = now - arc.started
+        if age >= arc.lifetime then
+            table.remove(FX.feedback, i)
+        else
+            local travel = math.Clamp(age / arc.travel, 0, 1)
+            local fade = math.Clamp(1 - age / arc.lifetime, 0, 1)
+            local current = LerpVector(travel, arc.origin, arc.target)
+            local pulse = 0.75 + 0.25 * math.sin(now * 75)
+            local alpha = math.floor(255 * fade)
+
+            render.SetMaterial(feedbackBeamMaterial)
+            render.DrawBeam(arc.origin, current, 10 * pulse + 3, 0, 1,
+                Color(80, 220, 255, alpha))
+            render.DrawBeam(arc.origin, current, 4 * pulse + 1, 0, 1,
+                Color(205, 250, 255, alpha))
+
+            render.SetMaterial(beamMaterial)
+            render.DrawSprite(current, 24 * pulse, 24 * pulse,
+                Color(205, 250, 255, math.floor(alpha * 0.85)))
+            if travel >= 1 then
+                render.DrawSprite(arc.target, 18 * pulse, 18 * pulse,
+                    Color(80, 220, 255, math.floor(alpha * 0.65)))
             end
         end
     end
