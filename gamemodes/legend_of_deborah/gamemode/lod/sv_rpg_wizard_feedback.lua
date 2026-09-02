@@ -4,14 +4,16 @@ LOD.RPGWizardOffense = LOD.RPGWizardOffense or {}
 local WizardOffense = LOD.RPGWizardOffense
 
 WizardOffense.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
-WizardOffense.SourceRevisionId = "AIroW35ulTyXYPmYb8sU1Gx0dPm9eS-CQxxmtZODVyjRSuJGsEOzWMY65hMbBL3HXOhfiEPhzjMPVbck03l3xEKMxt3ILMuge3MJv3GuDQ"
+WizardOffense.SourceRevisionId = "ANLCKQkNcjBF3sFnckn_5ExOJDK0c-DXb291V5jp_bjHB-KnEf7LMJJeKGpB6mAQDFUwZk1ZhRLm1MfvE0i1TjrZSTmnbeVr2HOKoXy_KQ"
 WizardOffense.FeedbackContractMaxAge = 0.20
+WizardOffense.FeedbackCooldownSeconds = 1.0
 WizardOffense.FullMagicAttackMemory = 0.30
 WizardOffense.Stats = WizardOffense.Stats or {
     fullMagicBonusEvents = 0,
     fullMagicBonusDamage = 0,
     feedbackChecks = 0,
     feedbackProcs = 0,
+    feedbackCooldownBlocks = 0,
     feedbackDice = 0,
     feedbackDamage = 0
 }
@@ -196,11 +198,17 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
         or (dmginfo and dmginfo.GetDamage and dmginfo:GetDamage()) or 0
     if finalHPDamage <= 0 then return false end
 
+    local now = CurTime()
+    if now < (tonumber(wizard.LODWizardFeedbackNextReadyAt) or 0) then
+        self.Stats.feedbackCooldownBlocks = (self.Stats.feedbackCooldownBlocks or 0) + 1
+        return false
+    end
+
     local attacker = dmginfo and dmginfo.GetAttacker and dmginfo:GetAttacker() or nil
     if not IsValid(attacker) or not attacker.LODHostile or attacker.LODDead then return false end
     local source = attacker.LODWizardFeedbackLastHostileRoll
     if not source or source.attacker ~= attacker
-        or CurTime() - (tonumber(source.at) or -999) > self.FeedbackContractMaxAge
+        or now - (tonumber(source.at) or -999) > self.FeedbackContractMaxAge
     then
         return false
     end
@@ -219,6 +227,7 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
     self.Stats.feedbackChecks = (self.Stats.feedbackChecks or 0) + 1
     if rng:Float(0, 1) >= chance then return false end
 
+    wizard.LODWizardFeedbackNextReadyAt = now + self.FeedbackCooldownSeconds
     local intBonus = self:IntBonus(wizard)
     timer.Simple(0, function()
         if IsValid(wizard) and IsValid(attacker) then
@@ -336,6 +345,7 @@ function WizardOffense:Validate(ply)
         "Feedback chance equals Arcane Diversion")
     expect(self:FeedbackDiceCount({values = {12, 11, 5, 1}}) == 4,
         "source explosion dice count as Feedback dice")
+    expect(math.abs(self.FeedbackCooldownSeconds - 1.0) < 0.00001, "Feedback cooldown is 1 second")
     expect(self.IntegrationReady == true, "runtime integration")
 
     local abilityRules = rules()
@@ -343,13 +353,17 @@ function WizardOffense:Validate(ply)
     local derived = IsValid(ply) and abilityRules and abilityRules.Derived
         and abilityRules:Derived(ply) or nil
     local currentMagic = IsValid(ply) and select(1, self:CurrentMagic(ply)) or 0
+    local cooldownRemaining = IsValid(ply)
+        and math.max(0, (tonumber(ply.LODWizardFeedbackNextReadyAt) or 0) - CurTime()) or 0
     return #errors == 0, errors, {
         classId = state and state.classId or "none",
         level = state and state.level or 0,
         intMod = tonumber(derived and derived.intMod) or 0,
         magic = tonumber(currentMagic) or 0,
         fullMagicBonus = IsValid(ply) and self:FullMagicBonus(ply) or 0,
-        feedbackChance = self:FeedbackChanceFromDerived(derived)
+        feedbackChance = self:FeedbackChanceFromDerived(derived),
+        feedbackCooldown = self.FeedbackCooldownSeconds,
+        cooldownRemaining = cooldownRemaining
     }
 end
 
@@ -361,9 +375,10 @@ concommand.Add("lod_rpg_wizard_feedback_validate", function(ply)
     local target = IsValid(ply) and ply or player.GetAll()[1]
     local ok, errors, current = WizardOffense:Validate(target)
     local line = string.format(
-        "Wizard offense validation %s - class=%s level=%d INTmod=%d magic=%.2f fullMagicBonus=%d feedbackChance=%.3f example=4d4+INT",
+        "Wizard offense validation %s - class=%s level=%d INTmod=%d magic=%.2f fullMagicBonus=%d feedbackChance=%.3f cooldown=%.1fs remaining=%.2fs example=4d4+INT",
         ok and "PASS" or "FAILED", tostring(current.classId), tonumber(current.level) or 0,
-        math.floor(current.intMod), current.magic, current.fullMagicBonus, current.feedbackChance)
+        math.floor(current.intMod), current.magic, current.fullMagicBonus, current.feedbackChance,
+        current.feedbackCooldown, current.cooldownRemaining)
     print("[LOD:RPG-WIZARD-OFFENSE] " .. line)
     for _, err in ipairs(errors) do
         ErrorNoHalt("[LOD:RPG-WIZARD-OFFENSE] " .. tostring(err) .. "\n")
