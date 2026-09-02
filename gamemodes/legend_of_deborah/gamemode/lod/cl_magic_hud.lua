@@ -93,7 +93,7 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
 
     if CurTime() < diversionTextUntil and lastDivertedHP > 0 then
         local text = string.format("ARCANE -%.1f HP / -%.1f MAGIC", lastDivertedHP, lastDivertedMagic)
-        draw.SimpleText(text, "DefaultBold", x + w * 0.5, y - ps(4), DIVERSION_COLOR,
+        draw.SimpleText(text, "Default", x + w * 0.5, y - ps(4), DIVERSION_COLOR,
             TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
     end
 end)
