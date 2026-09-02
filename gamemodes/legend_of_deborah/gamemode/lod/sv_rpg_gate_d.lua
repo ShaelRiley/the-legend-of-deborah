@@ -120,6 +120,21 @@ function AbilityRules:BreadcrumbCells(actor)
     return math.Clamp(math.floor(tonumber(derived and derived.breadcrumbCells) or 6), 2, 24)
 end
 
+function AbilityRules:MapDrainPerSecondFromDerived(baseDrainPerSecond, derived)
+    local base = math.max(0, tonumber(baseDrainPerSecond) or (100 / 15))
+    local utilityMultiplier = math.Clamp(
+        tonumber(derived and derived.utilityMagicCostMultiplier) or 1, 0.60, 1.40)
+    local featMultiplier = math.max(0,
+        tonumber(derived and derived.mapDrainFeatMultiplier) or 1)
+    local minimum = math.max(0,
+        tonumber(derived and derived.minimumMapDrainPerSecond) or 0)
+    return math.max(minimum, base * utilityMultiplier * featMultiplier)
+end
+
+function AbilityRules:MapDrainPerSecond(actor, baseDrainPerSecond)
+    return self:MapDrainPerSecondFromDerived(baseDrainPerSecond, self:Derived(actor))
+end
+
 function AbilityRules:HitStunMultiplier(attacker, defender)
     local attack = self:Derived(attacker)
     local defend = self:Derived(defender)

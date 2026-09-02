@@ -536,6 +536,11 @@ function Sheet:Open(requestFresh)
             snapshot.healthRegenRatePerSecond or 0,
             math.floor((snapshot.healthRegenCeilingFraction or 0) * 100 + 0.5))
     end
+    if (snapshot.breadcrumbFeatBonusCells or 0) > 0 or snapshot.frugalMapEnabled then
+        recordText = recordText .. string.format(
+            "\nNavigation: %d breadcrumb cells / %.2f Magic/s map drain",
+            snapshot.breadcrumbCells or 6, snapshot.mapDrainRatePerSecond or (100 / 15))
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

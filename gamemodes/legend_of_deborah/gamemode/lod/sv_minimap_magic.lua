@@ -128,9 +128,15 @@ timer.Create(TIMER_NAME, TICK_SECONDS, 0, function()
                     math.Clamp(tonumber(ps.magic) or 0, 0, MAX_MAGIC))
                 local before = state.mapMagic
                 local rules = LOD.RPGAbilityRules
-                local utilityMultiplier = rules and rules.UtilityMagicCostMultiplier
-                    and rules:UtilityMagicCostMultiplier(ply) or 1
-                state.mapMagic = math.max(0, state.mapMagic - DRAIN_RATE * utilityMultiplier * dt)
+                local drainPerSecond
+                if rules and rules.MapDrainPerSecond then
+                    drainPerSecond = rules:MapDrainPerSecond(ply, DRAIN_RATE)
+                else
+                    local utilityMultiplier = rules and rules.UtilityMagicCostMultiplier
+                        and rules:UtilityMagicCostMultiplier(ply) or 1
+                    drainPerSecond = DRAIN_RATE * utilityMultiplier
+                end
+                state.mapMagic = math.max(0, state.mapMagic - drainPerSecond * dt)
                 ps.magic = state.mapMagic
                 Magic:_Sync(ply, ps)
 
@@ -162,14 +168,20 @@ concommand.Add("lod_minimap_magic_status", function(ply)
 
     local active = 0
     for _ in pairs(MapMagic.Active) do active = active + 1 end
+    local personalRate = DRAIN_RATE
+    local rules = LOD.RPGAbilityRules
+    if IsValid(ply) and rules and rules.MapDrainPerSecond then
+        personalRate = rules:MapDrainPerSecond(ply, DRAIN_RATE)
+    end
     local line = string.format(
-        "active=%d opens=%d drained=%.1f forcedCloses=%d fullDrain=%.1fs rate=%.2f/s",
+        "active=%d opens=%d drained=%.1f forcedCloses=%d baseFullDrain=%.1fs baseRate=%.2f/s personalRate=%.2f/s",
         active,
         MapMagic.Stats.opens or 0,
         MapMagic.Stats.drained or 0,
         MapMagic.Stats.forcedCloses or 0,
         FULL_DRAIN_SECONDS,
-        DRAIN_RATE)
+        DRAIN_RATE,
+        personalRate)
     print("[LOD:MAP-MAGIC] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)

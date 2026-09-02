@@ -969,6 +969,15 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         healthRegenRatePerSecond = (state.derivedStats.maxHP or 0)
             * (state.derivedStats.healthRegenBaseMaxHPPerSecond or 0)
             * (state.derivedStats.conRegenMultiplier or 1),
+        breadcrumbCells = LOD.RPGAbilityRules and LOD.RPGAbilityRules:BreadcrumbCells(ply)
+            or state.derivedStats.breadcrumbCells,
+        breadcrumbFeatRank = state.derivedStats.breadcrumbFeatRank,
+        breadcrumbFeatBonusCells = state.derivedStats.breadcrumbFeatBonusCells,
+        frugalMapEnabled = state.derivedStats.frugalMapEnabled == true,
+        mapDrainFeatMultiplier = state.derivedStats.mapDrainFeatMultiplier,
+        mapDrainRatePerSecond = LOD.RPGAbilityRules
+            and LOD.RPGAbilityRules:MapDrainPerSecond(ply, 100 / 15)
+            or (100 / 15) * (state.derivedStats.utilityMagicCostMultiplier or 1),
         identityTraits = {
             perkSnapshot(Catalog.Origins[package.originIndex]),
             perkSnapshot(Catalog.Backgrounds[package.backgroundIndex]),

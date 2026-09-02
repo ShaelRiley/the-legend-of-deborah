@@ -18,7 +18,7 @@ Because that footage predates the RPG overhaul, the correct next network task is
 
 1. **Core multiplayer smoke foundation — ACCEPTED.**
 2. **RPG Gates A–D / class integration — substantially implemented and under active runtime tuning.**
-3. **Gate E — ordinary feat-family gameplay integration.** Batch 1 (CON Health Regeneration, 3/73 feats) is implemented and awaiting runtime acceptance.
+3. **Gate E — ordinary feat-family gameplay integration.** Batch 1 (CON Health Regeneration) is runtime accepted; Batch 2 (WIS Navigation) brings implementation to 6/73 feats and awaits runtime acceptance.
 4. Complete the remaining Gate E matrix families with one canonical FeatEffectSystem registry and family-specific validators.
 5. **Perk Gate — implement all 192 authored Origin/Background/Motive mechanical bridges.**
 6. Perform the mandatory six-stat, Hero Level 1–20, enemy progression, player/enemy symmetry, combat-order, and entity-wide RPG consistency audit.
@@ -89,10 +89,12 @@ Acceptance requires:
 
 ## Gate E batch ledger
 
-- Batch 1 complete in code: `CON_REGEN_11`, `CON_REGEN_22`, `CON_REGEN_33`.
+- Batch 1 runtime accepted on `gm_flatgrass`: `CON_REGEN_11`, `CON_REGEN_22`, `CON_REGEN_33`; validator PASS, exact 11/22/33 HP ceilings, 1.20 HP/s tested rate, no visible Lua error.
 - Runtime commands: `lod_rpg_gate_e_regen_validate`, `lod_rpg_gate_e_regen_status`, `lod_rpg_test_regen <0-3>`.
+- Batch 2 complete in code: `WIS_SURVEYOR`, `WIS_CARTOGRAPHER`, `WIS_FRUGAL_MAP`.
+- Batch 2 runtime commands: `lod_rpg_gate_e_navigation_validate`, `lod_rpg_gate_e_navigation_status`, `lod_rpg_test_navigation <0-3>`.
 - Source matrices: `docs/RPG_GATE_E_FEAT_MATRIX.md` and `docs/RPG_GDD_RULES_BASELINE.md`.
-- Next: choose another complete family from the matrix after batch-1 runtime evidence; do not intermingle a half-implemented second family with this acceptance gate.
+- Next: runtime-accept Batch 2, then choose another complete family from the matrix; do not intermingle a half-implemented third family with this acceptance gate.
 
 ---
 
@@ -169,4 +171,4 @@ Every consolidation must retain a decisive runtime acceptance criterion.
 
 # Immediate Next Action
 
-**Runtime-accept Gate E batch 1 on `gm_flatgrass`, then implement the next complete ordinary-feat family from the 73-entry live-GDD matrix.**
+**Runtime-accept Gate E Batch 2 on `gm_flatgrass`, then implement the next complete ordinary-feat family from the 73-entry live-GDD matrix.**

@@ -9,7 +9,7 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 | CharacterProgressionSystem | RunManager player/campaign lifecycle | Gate C deterministic Levels 1-20, XP, growth, stored hit dice, and HP recomputation |
 | AbilityRules | Existing combat dice, Magic, movement, HP authorities | Gate D server-authoritative semantic bridges |
 | FeatDirector | CharacterProgressionSystem progression state | Gate C ordinary-feat cadence and fixed Level-20 class-capstone trios |
-| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | Gate E batch 1: complete CON Health-Regeneration ladder |
+| FeatEffectSystem | Existing combat/pushback/loot/Magic/weapon authorities | Gate E batches 1–2: CON Health Regeneration and WIS Navigation |
 | IdentityGenerationSystem | RunManager RosterSeed lifecycle + independent deterministic substreams | Gate B exact 64/64/64 identity and 64-entry name catalogs |
 | IdentityPerkSystem | Existing semantic combat/navigation/loot/encounter events | Gate B immutable perk ownership/display; later semantic effect bridges pending |
 | CharacterSheetUI | Existing Field Manual visual language | Gate C P-key progression ledger and choice surface |
@@ -167,16 +167,35 @@ Implemented from the exact live-GDD definitions:
 - prerequisites, rank metadata, next-rank weighting, and exact locked-draft legality are enforced;
 - `lod_rpg_gate_e_regen_validate`, `lod_rpg_gate_e_regen_status`, and `lod_rpg_test_regen <0-3>` provide finite validation and acceleration.
 
-The full 73-entry inventory is preserved in `docs/RPG_GATE_E_FEAT_MATRIX.md`. The exact six-stat baseline and the currently unresolved CHA target-priority authorship gap are preserved in `docs/RPG_GDD_RULES_BASELINE.md`.
+The full 73-entry inventory is preserved in `docs/RPG_GATE_E_FEAT_MATRIX.md`. The exact six-stat baseline, including the now-authored CHA target-priority tie-break rule, is preserved in `docs/RPG_GDD_RULES_BASELINE.md`.
 
-### Batch 1 runtime gate
+### Batch 1 runtime acceptance — PASSED 2026-09-02
+
+Steam Deck `gm_flatgrass` evidence confirmed both Gate E and core RPG validators passing. Second Wind stopped at 11/100 HP, Rapid Recovery at 22/100, and Unbroken at 33/100. Each rank reported the expected 1.20 HP/s for the tested CON profile, and the higher ceiling replaced rather than stacked with lower ranks. No Lua error was visible in the supplied console evidence.
+
+### Batch 2: WIS Navigation
+
+Implemented from the exact live-GDD definitions:
+
+- `WIS_SURVEYOR` / Surveyor: WIS 12, adds +4 BreadcrumbCells after the normal WIS formula;
+- `WIS_CARTOGRAPHER` / Cartographer: WIS 16 + Surveyor, replaces +4 with +8 total;
+- `WIS_FRUGAL_MAP` / Frugal Cartography: WIS 14, multiplies post-WIS minimap drain by 0.85 with a final 3.0 Magic/second floor;
+- the canonical WIS breadcrumb value is extended once before the existing 2–24 final clamp and NW2 synchronization;
+- the canonical map-drain order is now centralized as base drain × WIS utility multiplier × Feat multiplier, then the authored floor;
+- MinimapMagic consumes that final rate while retaining its absolute no-regeneration-while-open rule;
+- the Character Sheet reports live breadcrumb cells and final Magic drain whenever a navigation Feat is active;
+- `lod_rpg_gate_e_navigation_validate`, `lod_rpg_gate_e_navigation_status`, and `lod_rpg_test_navigation <0-3>` provide finite validation and acceleration.
+
+### Batch 2 runtime gate
 
 1. Start `gm_flatgrass` with `lod_developer_mode 1`; complete staging and deploy.
-2. Run `lod_rpg_gate_e_regen_validate` and require `Health-Regeneration feat family PASS`.
-3. Run `lod_rpg_test_regen 1`; it equips Second Wind, sets HP to 1, and starts the five-second delay. Run `lod_rpg_gate_e_regen_status` before and after the delay. Require ceiling 11% and the Character Sheet's live rate.
-4. Repeat with ranks `2` and `3`; require replacement ceilings 22% and 33%, never 11% + 22% + 33%.
-5. While regenerating, take effective damage and require the delay to return to approximately 5 seconds. Confirm no healing occurs during the delay.
-6. Run `lod_rpg_test_regen 0`; require regeneration to stop and the Character Sheet line to disappear.
-7. Re-run `lod_rpg_validate`; require the core PASS line and no Lua errors.
+2. Run `lod_rpg_gate_e_navigation_validate` and require the WIS Navigation PASS line.
+3. Run `lod_rpg_test_navigation 0`, then `lod_rpg_gate_e_navigation_status`; record the generated Hero's baseline breadcrumb count and drain rate.
+4. Run mode `1`; require exactly baseline +4 BreadcrumbCells, capped at 24, with unchanged drain.
+5. Run mode `2`; require exactly baseline +8 rather than +12, capped at 24, with unchanged drain.
+6. Run mode `3`; require the same Cartographer breadcrumb result and final map drain equal to `(100/15 × UtilityMagicCostMultiplier × 0.85)`, never below 3.0 Magic/second.
+7. Open the minimap and rerun status; require `open=true`, observe the longer breadcrumb, and confirm Magic decreases at the reported final rate without regenerating.
+8. Open P and require its Navigation line to match status. Run mode `0` and require the line to disappear.
+9. Re-run `lod_rpg_validate`; require the core PASS line and no Lua errors.
 
 Gate E remains open after this batch. Proceed family-by-family until every matrix row has an implemented bridge and validator.

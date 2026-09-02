@@ -7,7 +7,7 @@ local Catalog = RPG.IdentityCatalog
 
 -- Authoritative Gate B data transcribed from the exact live GDD.
 Catalog.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
-Catalog.SourceRevisionId = "AIroW34oX054OqUeAC2-cC5N_IFZe9RvAJd02sHDzl7wJD30-D1IamAlE4a-Wyg1MGc1c_UP-K3vqk_NBDJkCqdSU0FEZS0qqAq37IzqTQ"
+Catalog.SourceRevisionId = "AIroW36vGASuk2aNYp1m4rVMnq-x3_k7IX_MCXny8aKkQnahykxbVFK5H612KfrOoS1fXUt3Pktx7zNWBYJtoDfI-c5K2iJSammBNBhzvA"
 
 Catalog.Origins = {
     [1] = {tableType = "origin", tableIndex = 1, categoryName = "Alabama", perkDisplayName = "Sweet Home Bearings", flavorText = "You can get turned around anywhere, but apparently not on the way home.", mechanicalEffect = "+2 BreadcrumbCells while the permitted current objective is a colored gate.", effectHandlerId = "gate_b_identity_descriptor", effectParams = {description = "+2 BreadcrumbCells while the permitted current objective is a colored gate."}, capabilityTags = {}},

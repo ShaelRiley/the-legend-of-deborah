@@ -2,7 +2,7 @@
 
 Source of truth: **The Legend of Deborah — Garry's Mod Game Design Document**  
 Google Doc ID: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
-Read revision: `AIroW34oX054OqUeAC2-cC5N_IFZe9RvAJd02sHDzl7wJD30-D1IamAlE4a-Wyg1MGc1c_UP-K3vqk_NBDJkCqdSU0FEZS0qqAq37IzqTQ`
+Read revision: `AIroW36vGASuk2aNYp1m4rVMnq-x3_k7IX_MCXny8aKkQnahykxbVFK5H612KfrOoS1fXUt3Pktx7zNWBYJtoDfI-c5K2iJSammBNBhzvA`
 
 This file preserves the exact six-ability baseline used to ground Gate E and the later full-system audit. It is a transcription aid, not a replacement for the live GDD.
 
@@ -54,9 +54,9 @@ Morale is event-driven. An AI hostile below 50% current MaxHP that takes effecti
 
 `MoraleSave >= MoraleDC` holds. Failure enters real Morale Flee for `clamp(4 + (MoraleDC - MoraleSave), 4, 10)` seconds through Motion V2 legal away/cover goals. It gives up offensive advance goals; ranged actors may finish already-committed defensive releases but cannot begin a new advance attack. Warden immunity is an explicit exception.
 
-## Open CHA authority discrepancy
+## CHA target-priority authority
 
-The implementation handoff requires high-CHA Heroes to receive lower hostile target priority. The exact live GDD revision above contains no target-priority formula or rule for Hero CHA after searches for `target priority`, `lower priority`, `lower-priority`, and equivalent terminology. The later CHA batch must therefore pause at this seam unless the live GDD acquires an exact authored targeting rule; implementation must not invent the magnitude, clamp, or evaluator order.
+The live GDD now explicitly defines CHA as the final preference layer among otherwise equally valid ordinary hostile targets. Mandatory eligibility, navigation, range, line of sight, current state, encounter rules, marks, scripted targets, and other stronger tactical constraints resolve first. When two or more player candidates remain equivalent, the hostile prefers the lower-CHA Hero. Equal CHA returns to ordinary deterministic/random tie-breaking. High CHA is therefore neither invisibility nor aggro immunity; it cannot override reachability, immediate threats, explicit target locks, authored enemy behavior, or another stronger tactical reason to select that Hero.
 
 ## Canonical damage order
 

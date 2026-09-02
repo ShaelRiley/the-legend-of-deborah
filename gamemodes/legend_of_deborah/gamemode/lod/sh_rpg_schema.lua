@@ -3,7 +3,7 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 5
+RPG.SchemaVersion = 6
 RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
@@ -61,7 +61,7 @@ RPG.SystemBootstrap = {
     CharacterProgressionSystem = "gate_c_levels_1_20",
     AbilityRules = "gate_d_gameplay",
     FeatDirector = "gate_c_cadence_and_capstone",
-    FeatEffectSystem = "gate_e_batch_1_con_health_regeneration",
+    FeatEffectSystem = "gate_e_batch_2_wis_navigation",
     IdentityGenerationSystem = "gate_b",
     IdentityPerkSystem = "gate_b_identity_package",
     CharacterSheetUI = "gate_c",
@@ -113,7 +113,9 @@ RPG.Schema = {
         "manaBarrierFeatDiversionFraction", "wizardCapstoneDiversionBonus", "livingAegisHPPerMagic",
         "hpToMagicDiversionFraction", "magicRegenMultiplier", "wizardCapstoneMagicRegenMultiplier",
         "magicPowerMultiplier", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",
-        "utilityMagicCostMultiplier", "breadcrumbCells", "chaHitStunInflictMultiplier",
+        "utilityMagicCostMultiplier", "breadcrumbCells", "breadcrumbFeatRank",
+        "breadcrumbFeatBonusCells", "frugalMapEnabled", "mapDrainFeatMultiplier",
+        "minimumMapDrainPerSecond", "chaHitStunInflictMultiplier",
         "chaHitStunResistanceMultiplier", "featHitStunMultiplier", "weaponKnockbackProcChance",
         "weaponKnockbackProcDistance", "pusherProcTargetCooldownSeconds", "wallSlamDieSides",
         "wallSlamExplodes", "wallSlamClassExplosionImmune", "ammoRegenFloorFraction",

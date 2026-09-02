@@ -51,10 +51,59 @@ Feats.CON_REGEN_22 = regenDefinition("CON_REGEN_22", "Rapid Recovery", 14,
 Feats.CON_REGEN_33 = regenDefinition("CON_REGEN_33", "Unbroken", 16,
     "CON_REGEN_22", 3, 0.33)
 
+local function navigationDefinition(featId, displayName, requirement, prerequisite,
+    familyId, rank, effectParams)
+    return {
+        featId = featId,
+        displayName = displayName,
+        featFamilyId = familyId,
+        rankIndex = rank,
+        replacesLowerRank = rank > 1,
+        repeatableFallback = false,
+        governingAbilities = {"wis"},
+        abilityRequirements = {wis = requirement},
+        prerequisiteFeatIds = prerequisite and {prerequisite} or {},
+        requiredCapabilityTags = {"minimap"},
+        incompatibleFeatIds = {},
+        allowedActorTypes = {"hero", "human_soldier"},
+        requiredSubsystemTags = {},
+        synergyTags = {"minimap", "navigation", "utility_magic"},
+        oneRank = true,
+        effectHandlerId = "wis_navigation",
+        effectParams = effectParams,
+        directorBaseWeight = 1.0,
+        eligibilityText = string.format("WIS %d%s", requirement,
+            prerequisite and (" / requires " .. prerequisite) or ""),
+        actorText = "Heroes and human Soldiers with minimap access"
+    }
+end
+
+Feats.WIS_SURVEYOR = navigationDefinition("WIS_SURVEYOR", "Surveyor", 12, nil,
+    "wis_breadcrumb_range", 1, {
+        breadcrumbBonusCells = 4,
+        description = "Adds +4 BreadcrumbCells after the normal WIS formula without revealing topology forbidden by map degradation."
+    })
+Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer", 16,
+    "WIS_SURVEYOR", "wis_breadcrumb_range", 2, {
+        breadcrumbBonusCells = 8,
+        description = "Replaces Surveyor's +4 with +8 BreadcrumbCells after the normal WIS formula; degradation and current-floor restrictions remain absolute."
+    })
+Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartography", 14,
+    nil, "wis_frugal_map", 1, {
+        mapDrainMultiplier = 0.85,
+        minimumMapDrainPerSecond = 3.0,
+        description = "Multiplies WIS-scaled minimap drain by 0.85, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open."
+    })
+
 local REGEN_RANKS = {
     CON_REGEN_11 = 1,
     CON_REGEN_22 = 2,
     CON_REGEN_33 = 3
+}
+
+local BREADCRUMB_RANKS = {
+    WIS_SURVEYOR = 1,
+    WIS_CARTOGRAPHER = 2
 }
 
 local function ownsFeat(state, featId)
@@ -92,6 +141,27 @@ function FeatEffectSystem:HealthRegenProfile(state)
     }
 end
 
+function FeatEffectSystem:NavigationProfile(state)
+    local bestRank, bestDefinition = 0, nil
+    for featId, rank in pairs(BREADCRUMB_RANKS) do
+        if rank > bestRank and ownsFeat(state, featId) then
+            bestRank = rank
+            bestDefinition = Feats[featId]
+        end
+    end
+    local frugal = ownsFeat(state, "WIS_FRUGAL_MAP")
+    local breadcrumbParams = bestDefinition and bestDefinition.effectParams or {}
+    local frugalParams = frugal and Feats.WIS_FRUGAL_MAP.effectParams or {}
+    return {
+        breadcrumbRank = bestRank,
+        breadcrumbFeatId = bestDefinition and bestDefinition.featId or nil,
+        breadcrumbBonusCells = tonumber(breadcrumbParams.breadcrumbBonusCells) or 0,
+        frugalMapEnabled = frugal,
+        mapDrainMultiplier = tonumber(frugalParams.mapDrainMultiplier) or 1,
+        minimumMapDrainPerSecond = tonumber(frugalParams.minimumMapDrainPerSecond) or 0
+    }
+end
+
 function FeatEffectSystem:ApplyDerived(state, derived)
     local profile = self:HealthRegenProfile(state)
     derived.healthRegenEnabled = profile.enabled
@@ -99,6 +169,16 @@ function FeatEffectSystem:ApplyDerived(state, derived)
     derived.healthRegenCeilingFraction = profile.ceilingFraction
     derived.healthRegenDamageFreeDelaySeconds = profile.damageFreeDelaySeconds
     derived.healthRegenBaseMaxHPPerSecond = profile.baseMaxHPPerSecond
+
+    local navigation = self:NavigationProfile(state)
+    derived.breadcrumbFeatRank = navigation.breadcrumbRank
+    derived.breadcrumbFeatBonusCells = navigation.breadcrumbBonusCells
+    derived.breadcrumbCells = math.Clamp(
+        math.floor((tonumber(derived.breadcrumbCells) or 6)
+            + navigation.breadcrumbBonusCells), 2, 24)
+    derived.frugalMapEnabled = navigation.frugalMapEnabled
+    derived.mapDrainFeatMultiplier = navigation.mapDrainMultiplier
+    derived.minimumMapDrainPerSecond = navigation.minimumMapDrainPerSecond
 end
 
 function FeatEffectSystem:HealthRegenPerSecond(maxHP, conRegenMultiplier, baseFraction)
@@ -246,6 +326,92 @@ function FeatEffectSystem:ValidateHealthRegen()
     return #errors == 0, errors
 end
 
+
+function FeatEffectSystem:ValidateWISNavigation()
+    local errors = {}
+    local function expect(condition, message)
+        if not condition then errors[#errors + 1] = message end
+    end
+    local expected = {
+        WIS_SURVEYOR = {"wis_breadcrumb_range", 1, 12, nil, 4, nil, nil},
+        WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 2, 16, "WIS_SURVEYOR", 8, nil, nil},
+        WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 14, nil, nil, 0.85, 3.0}
+    }
+    for featId, values in pairs(expected) do
+        local definition = Feats[featId]
+        expect(definition ~= nil, "missing " .. featId)
+        if definition then
+            expect(definition.featFamilyId == values[1], featId .. " family")
+            expect(definition.rankIndex == values[2], featId .. " rank")
+            expect(definition.abilityRequirements.wis == values[3], featId .. " requirement")
+            expect((definition.prerequisiteFeatIds or {})[1] == values[4], featId .. " prerequisite")
+            expect(definition.effectHandlerId == "wis_navigation", featId .. " handler")
+            expect(definition.effectParams.breadcrumbBonusCells == values[5], featId .. " breadcrumb bonus")
+            expect(definition.effectParams.mapDrainMultiplier == values[6], featId .. " drain multiplier")
+            expect(definition.effectParams.minimumMapDrainPerSecond == values[7], featId .. " drain floor")
+        end
+    end
+
+    local surveyor = self:NavigationProfile({featIds = {"WIS_SURVEYOR"}})
+    local cartographer = self:NavigationProfile({featIds = {
+        "WIS_SURVEYOR", "WIS_CARTOGRAPHER"
+    }})
+    local combined = self:NavigationProfile({featIds = {
+        "WIS_SURVEYOR", "WIS_CARTOGRAPHER", "WIS_FRUGAL_MAP"
+    }})
+    expect(surveyor.breadcrumbRank == 1 and surveyor.breadcrumbBonusCells == 4,
+        "Surveyor profile")
+    expect(cartographer.breadcrumbRank == 2 and cartographer.breadcrumbBonusCells == 8,
+        "Cartographer must replace Surveyor")
+    expect(combined.frugalMapEnabled and combined.mapDrainMultiplier == 0.85
+        and combined.minimumMapDrainPerSecond == 3.0, "Frugal Cartography profile")
+
+    local derived = {breadcrumbCells = 10}
+    self:ApplyDerived({featIds = {
+        "WIS_SURVEYOR", "WIS_CARTOGRAPHER", "WIS_FRUGAL_MAP"
+    }}, derived)
+    expect(derived.breadcrumbCells == 18 and derived.breadcrumbFeatBonusCells == 8,
+        "breadcrumb bonus must apply once after WIS")
+    expect(derived.mapDrainFeatMultiplier == 0.85
+        and derived.minimumMapDrainPerSecond == 3.0, "derived Frugal Cartography values")
+
+    local rules = LOD.RPGAbilityRules
+    if rules and rules.MapDrainPerSecondFromDerived then
+        expect(math.abs(rules:MapDrainPerSecondFromDerived(100 / 15, {
+            utilityMagicCostMultiplier = 1,
+            mapDrainFeatMultiplier = 0.85,
+            minimumMapDrainPerSecond = 3
+        }) - (100 / 15) * 0.85) < 0.0001, "Frugal drain multiplication order")
+        expect(rules:MapDrainPerSecondFromDerived(2, {
+            utilityMagicCostMultiplier = 1,
+            mapDrainFeatMultiplier = 0.85,
+            minimumMapDrainPerSecond = 3
+        }) == 3, "Frugal drain floor")
+    else
+        expect(false, "canonical map-drain authority unavailable")
+    end
+
+    local progression = LOD.CharacterProgressionSystem
+    if progression and progression._FeatEligible then
+        local state = {
+            featIds = {},
+            featQualificationAbilities = {wis = 16},
+            classId = "wizard",
+            secondaryAbilities = {}
+        }
+        expect(not progression:_FeatEligible({}, state, Feats.WIS_CARTOGRAPHER),
+            "Cartographer must require Surveyor")
+        state.featIds = {"WIS_SURVEYOR"}
+        expect(progression:_FeatEligible({}, state, Feats.WIS_CARTOGRAPHER),
+            "Cartographer legal after Surveyor")
+        expect(progression:_FeatEligible({}, state, Feats.WIS_FRUGAL_MAP),
+            "Frugal Cartography independently legal")
+    else
+        expect(false, "FeatDirector eligibility authority unavailable")
+    end
+    return #errors == 0, errors
+end
+
 concommand.Add("lod_rpg_gate_e_regen_validate", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
@@ -254,6 +420,18 @@ concommand.Add("lod_rpg_gate_e_regen_validate", function(ply)
         print("[LOD:RPG-E] Health-Regeneration feat family PASS — 3/3 ranks, replacement semantics, CON rate")
     else
         ErrorNoHalt("[LOD:RPG-E] Health-Regeneration feat family FAILED\n")
+        for _, message in ipairs(errors) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
+    end
+end)
+
+concommand.Add("lod_rpg_gate_e_navigation_validate", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
+    local ok, errors = FeatEffectSystem:ValidateWISNavigation()
+    if ok then
+        print("[LOD:RPG-E] WIS Navigation feat family PASS — 3/3 feats, replacement, drain order/floor")
+    else
+        ErrorNoHalt("[LOD:RPG-E] WIS Navigation feat family FAILED\n")
         for _, message in ipairs(errors) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
     end
 end)
@@ -312,6 +490,79 @@ concommand.Add("lod_rpg_test_regen", function(ply, _, args)
     if run.MarkUnranked then run:MarkUnranked("Gate E Health-Regeneration feat test") end
     ply:ChatPrint(string.format("Gate E regen rank %d configured%s.", rank,
         rank > 0 and "; HP set to 1 and the 5-second delay started" or ""))
+end)
+
+concommand.Add("lod_rpg_gate_e_navigation_status", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
+    if not IsValid(ply) then
+        print("[LOD:RPG-E] Run this command from an attached player console.")
+        return
+    end
+    local rules = LOD.RPGAbilityRules
+    local derived = rules and rules:Derived(ply) or nil
+    local progressionState = rules and rules:ProgressionState(ply) or nil
+    local baseDrain = 100 / 15
+    local finalDrain = rules and rules.MapDrainPerSecond
+        and rules:MapDrainPerSecond(ply, baseDrain) or baseDrain
+    local line = string.format(
+        "WIS=%d mod=%+d crumbs=%d featBonus=%d featRank=%d mapUtilityx=%.2f featDrainx=%.2f finalDrain=%.2f/s floor=%.2f/s open=%s",
+        math.floor(tonumber(progressionState and progressionState.effectiveAbilities
+            and progressionState.effectiveAbilities.wis) or 0),
+        math.floor(tonumber(derived and derived.wisMod) or 0),
+        rules and rules:BreadcrumbCells(ply) or 6,
+        math.floor(tonumber(derived and derived.breadcrumbFeatBonusCells) or 0),
+        math.floor(tonumber(derived and derived.breadcrumbFeatRank) or 0),
+        rules and rules:UtilityMagicCostMultiplier(ply) or 1,
+        tonumber(derived and derived.mapDrainFeatMultiplier) or 1,
+        finalDrain,
+        tonumber(derived and derived.minimumMapDrainPerSecond) or 0,
+        tostring(ply:GetNW2Bool("LOD_MapMagicActive", false)))
+    print("[LOD:RPG-E] " .. line)
+    ply:ChatPrint(line)
+end)
+
+concommand.Add("lod_rpg_test_navigation", function(ply, _, args)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or not IsValid(ply) or not ply:IsAdmin() then return end
+    local run = LOD.RunManager
+    local ps = run and run:GetPlayerState(ply) or nil
+    local state = ps and ps.progressionState or nil
+    local progression = LOD.CharacterProgressionSystem
+    if not state or not progression then
+        ply:ChatPrint("RPG progression state is unavailable.")
+        return
+    end
+    local mode = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 3)
+    local navigationFeats = {
+        WIS_SURVEYOR = true,
+        WIS_CARTOGRAPHER = true,
+        WIS_FRUGAL_MAP = true
+    }
+    local kept = {}
+    for _, featId in ipairs(state.featIds or {}) do
+        if not navigationFeats[featId] then kept[#kept + 1] = featId end
+    end
+    state.featIds = kept
+    for featId in pairs(navigationFeats) do state.featStackCounts[featId] = nil end
+    if mode >= 1 then
+        state.featIds[#state.featIds + 1] = "WIS_SURVEYOR"
+        state.featStackCounts.WIS_SURVEYOR = 1
+    end
+    if mode >= 2 then
+        state.featIds[#state.featIds + 1] = "WIS_CARTOGRAPHER"
+        state.featStackCounts.WIS_CARTOGRAPHER = 1
+    end
+    if mode >= 3 then
+        state.featIds[#state.featIds + 1] = "WIS_FRUGAL_MAP"
+        state.featStackCounts.WIS_FRUGAL_MAP = 1
+    end
+    progression:_RecomputeProgressionState(state)
+    progression:SyncPlayer(ply)
+    if run.MarkUnranked then run:MarkUnranked("Gate E WIS Navigation feat test") end
+    ply:ChatPrint(string.format(
+        "Gate E navigation mode %d configured (0=none, 1=Surveyor, 2=Cartographer chain, 3=chain + Frugal).",
+        mode))
 end)
 
 return FeatEffectSystem

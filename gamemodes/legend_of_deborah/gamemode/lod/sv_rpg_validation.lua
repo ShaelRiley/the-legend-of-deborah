@@ -99,7 +99,7 @@ function Validation:Run(printResult)
     validateSchema(errors, "DamageContributionLedger", {"effectiveDamageByHeroId", "killingBlowHeroId", "totalEligibleEffectiveDamage", "resolved"})
     validateSchema(errors, "DefensiveProcState", {"blastProofReadyAtSeconds", "notYetConsumedDungeonNumber"})
     validateSchema(errors, "CombatHitResolution", {"hitConnected", "harmWasEffective", "effectiveHPDamage", "targetSurvived", "pushEligible", "hitStunEligible"})
-    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "coreMaxHP", "maxHP", "healthRegenEnabled", "healthRegenCeilingFraction", "healthRegenDamageFreeDelaySeconds", "healthRegenBaseMaxHPPerSecond", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
+    validateSchema(errors, "DerivedStats", {"damageResistancePerDie", "hpConBonusPerLevel", "coreMaxHP", "maxHP", "healthRegenEnabled", "healthRegenCeilingFraction", "healthRegenDamageFreeDelaySeconds", "healthRegenBaseMaxHPPerSecond", "breadcrumbFeatRank", "breadcrumbFeatBonusCells", "frugalMapEnabled", "mapDrainFeatMultiplier", "minimumMapDrainPerSecond", "hpToMagicDiversionFraction", "rpgThreatMultiplier", "levelProficiency"})
     validateSchema(errors, "FeatDefinition", {"featId", "abilityRequirements", "requiredCapabilityTags", "effectHandlerId", "directorBaseWeight"})
     validateSchema(errors, "ClassCapstoneDefinition", {"featId", "classId", "effectHandlerId"})
     validateSchema(errors, "PendingFeatDraft", {"earnedAtLevel", "draftType", "offerFeatIds", "selectedFeatId", "resolved"})
@@ -139,6 +139,16 @@ function Validation:Run(printResult)
         if not regenOK then
             for _, message in ipairs(regenErrors or {}) do
                 addError(errors, "Gate E Health-Regeneration: " .. message)
+            end
+        end
+    end
+    if not featEffects or not featEffects.ValidateWISNavigation then
+        addError(errors, "Gate E WIS Navigation validator unavailable")
+    else
+        local navigationOK, navigationErrors = featEffects:ValidateWISNavigation()
+        if not navigationOK then
+            for _, message in ipairs(navigationErrors or {}) do
+                addError(errors, "Gate E WIS Navigation: " .. message)
             end
         end
     end
