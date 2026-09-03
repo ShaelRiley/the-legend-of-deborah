@@ -29,6 +29,8 @@ fi
 
 ADDONS_DIR="$GMOD_DIR/addons"
 TARGET="$ADDONS_DIR/the-legend-of-deborah-dev"
+CONSOLE_LOG="$GMOD_DIR/console.log"
+CONSOLE_LINK="$REPO_DIR/console_latest.log"
 mkdir -p "$ADDONS_DIR"
 
 if [[ -e "$TARGET" && ! -L "$TARGET" ]]; then
@@ -37,9 +39,25 @@ if [[ -e "$TARGET" && ! -L "$TARGET" ]]; then
 fi
 
 ln -sfn "$REPO_DIR" "$TARGET"
+# -condebug writes Garry's Mod's exact engine/client console stream here.  Keep a
+# stable, ignored path inside the checkout so playtesters can upload one obvious
+# file instead of navigating Steam's install tree.  A dangling link before the
+# first -condebug launch is intentional and becomes live as soon as GMod writes it.
+ln -sfn "$CONSOLE_LOG" "$CONSOLE_LINK"
 
 echo "The Legend of Deborah development checkout is mounted at:"
 echo "  $TARGET -> $REPO_DIR"
+echo
+echo "Full console capture (one-time Steam launch-option setup):"
+echo "  -condebug -conclearlog"
+echo "This writes the exact console stream and clears the previous log every GMod start."
+echo "Upload this stable convenience path after a test:"
+echo "  $CONSOLE_LINK"
+echo "Engine source:"
+echo "  $CONSOLE_LOG"
+echo
+echo "The structured RPG instrumentation log remains separate under:"
+echo "  $GMOD_DIR/data/legend_of_deborah/rpg_test_log.txt"
 echo
 echo "Launch Garry's Mod with gm_flatgrass and gamemode legend_of_deborah."
 echo "Then run this in the Garry's Mod developer console:"
