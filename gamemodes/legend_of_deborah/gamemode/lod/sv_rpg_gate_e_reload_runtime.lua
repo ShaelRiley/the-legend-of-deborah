@@ -11,46 +11,78 @@ local OBSERVE_INTERVAL = 0.01
 local PROBE_SECONDS = 0.30
 local SESSION_LIMIT_SECONDS = 16.0
 
-local function internal(entity, key, fallback)
+-- Source DATADESC FIELD_TIME values exposed through GetInternalVariable are
+-- offsets from CurTime, whereas Garry's Mod's weapon timing accessors use the
+-- normal absolute CurTime clock. Keep the runtime entirely on the absolute
+-- clock and translate only at the raw save-value boundary.
+local function internalDeadline(entity, key, fallback)
     if IsValid(entity) and entity.GetInternalVariable then
         local value = tonumber(entity:GetInternalVariable(key))
-        if value ~= nil then return value end
+        if value ~= nil then return CurTime() + value end
     end
     return tonumber(fallback) or 0
 end
 
 local function weaponDeadline(weapon, key)
+    if not IsValid(weapon) then return 0 end
+
     if key == "primary" then
-        return internal(weapon, "m_flNextPrimaryAttack",
-            weapon.GetNextPrimaryFire and weapon:GetNextPrimaryFire() or 0)
+        if weapon.GetNextPrimaryFire then
+            local value = tonumber(weapon:GetNextPrimaryFire())
+            if value ~= nil then return value end
+        end
+        return internalDeadline(weapon, "m_flNextPrimaryAttack", 0)
     elseif key == "secondary" then
-        return internal(weapon, "m_flNextSecondaryAttack",
-            weapon.GetNextSecondaryFire and weapon:GetNextSecondaryFire() or 0)
+        if weapon.GetNextSecondaryFire then
+            local value = tonumber(weapon:GetNextSecondaryFire())
+            if value ~= nil then return value end
+        end
+        return internalDeadline(weapon, "m_flNextSecondaryAttack", 0)
     elseif key == "idle" then
-        return internal(weapon, "m_flTimeWeaponIdle",
-            weapon.GetWeaponIdleTime and weapon:GetWeaponIdleTime() or 0)
+        if weapon.GetWeaponIdleTime then
+            local value = tonumber(weapon:GetWeaponIdleTime())
+            if value ~= nil then return value end
+        end
+        return internalDeadline(weapon, "m_flTimeWeaponIdle", 0)
     end
     return 0
 end
 
 local function playerDeadline(ply)
-    return internal(ply, "m_flNextAttack", 0)
+    return internalDeadline(ply, "m_flNextAttack", 0)
+end
+
+local function saveFieldTime(entity, key, absoluteDeadline)
+    if not IsValid(entity) or not entity.SetSaveValue then return false end
+    return entity:SetSaveValue(key, (tonumber(absoluteDeadline) or CurTime()) - CurTime()) == true
 end
 
 local function setWeaponDeadline(weapon, key, value)
     if not IsValid(weapon) then return end
-    if key == "primary" and weapon.SetNextPrimaryFire then weapon:SetNextPrimaryFire(value) end
-    if key == "secondary" and weapon.SetNextSecondaryFire then weapon:SetNextSecondaryFire(value) end
-    if key == "idle" and weapon.SetWeaponIdleTime then weapon:SetWeaponIdleTime(value) end
-    if weapon.SetSaveValue then
-        local saveKey = key == "primary" and "m_flNextPrimaryAttack"
-            or (key == "secondary" and "m_flNextSecondaryAttack" or "m_flTimeWeaponIdle")
-        weapon:SetSaveValue(saveKey, value)
+
+    if key == "primary" then
+        if weapon.SetNextPrimaryFire then weapon:SetNextPrimaryFire(value) end
+        -- The native HL2 pistol is known to bypass SetNextPrimaryFire, so retain
+        -- the save-field write as a compatibility backstop. FIELD_TIME expects a
+        -- CurTime-relative value, not the absolute deadline used by the Lua API.
+        if weapon:GetClass() == "weapon_pistol" then
+            saveFieldTime(weapon, "m_flNextPrimaryAttack", value)
+        end
+        return
+    elseif key == "secondary" then
+        if weapon.SetNextSecondaryFire then weapon:SetNextSecondaryFire(value) end
+        return
+    elseif key == "idle" then
+        if weapon.SetWeaponIdleTime then
+            weapon:SetWeaponIdleTime(value)
+        else
+            saveFieldTime(weapon, "m_flTimeWeaponIdle", value)
+        end
     end
 end
 
 local function setPlayerDeadline(ply, value)
-    if IsValid(ply) and ply.SetSaveValue then ply:SetSaveValue("m_flNextAttack", value) end
+    saveFieldTime(ply, "m_flNextAttack", value)
 end
 
 local function setReloadViewModelRate(ply, multiplier)
@@ -242,31 +274,6 @@ function Effects:ProcessReloadObservation(ply, session, now)
     end
 end
 
-local function beginStockAR2ReloadIfNeeded(ply, weapon, session)
-    if not session or session.weaponClass ~= "weapon_ar2" then return end
-    if session.stockReloadInvoked then return end
-    if not isfunction(weapon.Reload) then return end
-
-    local now = CurTime()
-    local primaryLock = weaponDeadline(weapon, "primary")
-    local playerLock = playerDeadline(ply)
-
-    -- Do not turn the AR2's targeting/burst lock into reload time. Only bridge
-    -- an otherwise-free stock reload transaction.
-    if primaryLock > now + EPSILON or playerLock > now + EPSILON then return end
-
-    session.stockReloadInvoked = true
-    weapon:Reload()
-
-    if Effects:IsWeaponInReload(weapon)
-        or weaponDeadline(weapon, "primary") > primaryLock + EPSILON
-        or playerDeadline(ply) > playerLock + EPSILON
-    then
-        session.sawReload = true
-        session.stockReloadConfirmed = true
-    end
-end
-
 hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
     if not IsValid(ply) or not ply:Alive() then return end
     local weapon = ply:GetActiveWeapon()
@@ -277,6 +284,8 @@ hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
 
     local session = Effects.ReloadSessions[ply]
     if session and (cmd:KeyDown(IN_ATTACK) or cmd:KeyDown(IN_ATTACK2)) then
+        -- Firing intentionally interrupts shell reload. Stop observing before the
+        -- weapon can author a firing cooldown, so this feat never changes RoF.
         Effects:EndReloadObservation(ply)
         session = nil
     end
@@ -286,10 +295,7 @@ hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
         if reloading then
             Effects:BeginReloadObservation(ply, weapon, true)
         elseif cmd:KeyDown(IN_RELOAD) then
-            if Effects:BeginReloadObservation(ply, weapon, false) then
-                session = Effects.ReloadSessions[ply]
-                beginStockAR2ReloadIfNeeded(ply, weapon, session)
-            end
+            Effects:BeginReloadObservation(ply, weapon, false)
         end
     end
 end)
