@@ -61,11 +61,16 @@ done
 # Garry's Mod Lua cannot reliably read the engine-level console.log through its
 # sandbox on Steam Deck. Maintain one tiny external mirror instead. Re-running
 # install_dev.sh replaces the previous watcher, so exactly one process remains.
+# A stale PID file is never trusted blindly: only terminate a live process whose
+# command line proves it is this checkout's mirror watcher.
 if [[ -f "$CONSOLE_MIRROR_PID" ]]; then
   old_pid="$(cat "$CONSOLE_MIRROR_PID" 2>/dev/null || true)"
   if [[ "$old_pid" =~ ^[0-9]+$ ]] && kill -0 "$old_pid" 2>/dev/null; then
-    kill "$old_pid" 2>/dev/null || true
-    sleep 0.1
+    old_args="$(ps -p "$old_pid" -o args= 2>/dev/null || true)"
+    if [[ "$old_args" == *"$CONSOLE_MIRROR_SCRIPT"* && "$old_args" == *"$CONSOLE_LOG"* && "$old_args" == *"$CONSOLE_MIRROR"* ]]; then
+      kill "$old_pid" 2>/dev/null || true
+      sleep 0.1
+    fi
   fi
   rm -f "$CONSOLE_MIRROR_PID"
 fi
