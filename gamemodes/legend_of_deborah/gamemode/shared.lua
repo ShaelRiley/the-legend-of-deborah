@@ -36,6 +36,7 @@ if SERVER then
     include("lod/sv_rpg_gate_e_exploding_dice.lua")
     include("lod/sv_rpg_gate_e_reload.lua")
     include("lod/sv_rpg_gate_e_reload_runtime.lua")
+    include("lod/sv_rpg_gate_e_reload_deadline_confirmation.lua")
     include("lod/sv_rpg_gate_e_reload_telemetry.lua")
     include("lod/sv_rpg_gate_e_reload_validation.lua")
     include("lod/sv_workshop_distribution.lua")
