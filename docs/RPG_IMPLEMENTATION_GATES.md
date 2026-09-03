@@ -10,6 +10,18 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 - **Gate D — ability/class gameplay:** STR/DEX/CON/INT/WIS/CHA bridges, Rogue damage-die mastery, Wizard diversion, Fighter/Rogue/Wizard capstones, XP attribution, core gameplay validation.
 - **Gate E — ordinary feat effects:** active family-by-family implementation at canonical semantic seams.
 
+## Runtime evidence standard
+
+Every finite RPG runtime gate follows `docs/TEST_LOGGING.md`:
+
+1. Fresh-start Garry's Mod for a clean engine `console_latest.log` when beginning a distinct gate.
+2. Run the family validator/testkit and exercise the mechanic.
+3. Use `lod_rpg_test_mark <note>` for moments worth correlating with telemetry.
+4. Run `lod_rpg_validate` and then `lod_rpg_test_finish <short-test-label>`.
+5. Upload **`console_latest.log` + `rpg_summary_latest.log` by default**. Add `rpg_session_latest.log` for detailed timing/event order. Upload `rpg_archive_latest.log` only for requested cross-session investigation.
+
+The current-session summary refreshes automatically every 10 seconds and at test finish. Detailed session and rolling archive files are bounded so unattended developer testing cannot grow them indefinitely.
+
 ## Gate E accepted batches
 
 ### Batch 1 — CON Health Regeneration — PASSED 2026-09-02
@@ -47,11 +59,12 @@ Implemented from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFr
 - player viewmodel playback is accelerated only while the authoritative reload session is active and is restored afterward;
 - the Character Sheet owned-feat ledger reports the current total ordinary reload-time multiplier;
 - `lod_rpg_gate_e_reload_validate`, `lod_rpg_gate_e_reload_status`, `lod_rpg_test_reload <0-3>`, and `lod_rpg_gate_e_reload_testkit [pistol|shotgun]` provide finite validation/testing;
-- core `lod_rpg_validate` includes the Batch 5 validator.
+- core `lod_rpg_validate` includes the Batch 5 validator;
+- test observability records reload-deadline scaling into the current RPG event stream and summary.
 
 ### Batch 5 runtime gate
 
-1. Fresh-start `gm_flatgrass` with `lod_developer_mode 1`; complete staging/deploy.
+1. Fresh-start Garry's Mod and `gm_flatgrass` with `lod_developer_mode 1`; complete staging/deploy.
 2. Run `lod_rpg_gate_e_reload_validate`; require `DEX Reload feat family PASS`.
 3. Run `lod_rpg_test_reload 0`, then `lod_rpg_gate_e_reload_testkit pistol`; press R and note baseline reload timing/status.
 4. Run ranks 1, 2, and 3. Before each reload, run the testkit again, press R, then run `lod_rpg_gate_e_reload_status`. Require multipliers `0.80`, `0.60`, and `0.40`, an increasing `scaledExtensions` count, and a `last=` entry showing an authored reload deadline compressed to the active multiplier.
@@ -59,5 +72,6 @@ Implemented from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFr
 6. With the SMG overheated, press R during its 2.0-second lock and confirm the overheat recovery is **not** shortened. With the AR2, confirm its targeting tell/internal burst timing is unchanged.
 7. Open P and confirm the active reload feat reports the same total reload-time multiplier.
 8. Run `lod_rpg_validate`; require core PASS and no Lua errors.
+9. Run `lod_rpg_test_finish batch5-reload`; upload `console_latest.log` + `rpg_summary_latest.log`. Add `rpg_session_latest.log` if any timing/exclusion result is ambiguous.
 
 Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and now accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.
