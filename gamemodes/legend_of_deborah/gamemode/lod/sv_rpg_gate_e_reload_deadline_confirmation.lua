@@ -12,21 +12,24 @@ local AR2_RETRY_INTERVAL = 0.05
 local AR2_POST_LOCK_GRACE = 0.18
 local baseProcessReloadObservation = Effects.ProcessReloadObservation
 
-local function internal(entity, key, fallback)
+local function internalDeadline(entity, key, fallback)
     if IsValid(entity) and entity.GetInternalVariable then
         local value = tonumber(entity:GetInternalVariable(key))
-        if value ~= nil then return value end
+        if value ~= nil then return CurTime() + value end
     end
     return tonumber(fallback) or 0
 end
 
 local function primaryDeadline(weapon)
-    return internal(weapon, "m_flNextPrimaryAttack",
-        weapon.GetNextPrimaryFire and weapon:GetNextPrimaryFire() or 0)
+    if IsValid(weapon) and weapon.GetNextPrimaryFire then
+        local value = tonumber(weapon:GetNextPrimaryFire())
+        if value ~= nil then return value end
+    end
+    return internalDeadline(weapon, "m_flNextPrimaryAttack", 0)
 end
 
 local function playerDeadline(ply)
-    return internal(ply, "m_flNextAttack", 0)
+    return internalDeadline(ply, "m_flNextAttack", 0)
 end
 
 local function primaryReserve(ply, weapon)
