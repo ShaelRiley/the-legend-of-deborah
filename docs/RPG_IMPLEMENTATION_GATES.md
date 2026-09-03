@@ -45,44 +45,36 @@ The accepted run also demonstrated positive emergent composition rather than a d
 
 Batch 4 implementation remains centralized at `AbilityRules:CopyDamageProfile` / `CombatRolls:_RollExploding`: fresh d10/d8/d4 thresholds are natural 10/8/4, continuation thresholds are `max(2, sides-BoomShift)`, Rogue offers exclude redundant ladder cards, `classExplosionImmune=true` remains absolute, universal d6/SUPER-d12 rules remain untouched, and the 32-die cap remains absolute.
 
-## Gate E Batch 5 — DEX Reload Cadence
+### Batch 5 — DEX Reload Cadence — PASSED 2026-09-03
 
-Implemented from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ`:
+Quick Reload / Lightning Reload / Blink Reload are runtime accepted from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ`:
 
 - `DEX_FAST_RELOAD` / Quick Reload: DEX 12; `ReloadTimeMultiplier = 0.80`.
 - `DEX_FAST_RELOAD_2` / Lightning Reload: DEX 16 + Quick Reload; replaces the total multiplier with `0.60`.
 - `DEX_FAST_RELOAD_3` / Blink Reload: DEX 18 + Lightning Reload; replaces the total multiplier with `0.40`.
 - one derived `reloadTimeMultiplier` value owns the active replacement rank;
-- the runtime bridge observes stock Source `m_bInReload` state and compresses only deadlines newly authored by a genuine reload;
-- every pre-existing weapon/player deadline is an absolute floor, so pressing Reload cannot shorten SMG overheat recovery, AR2 targeting/burst recovery, or an unrelated attack lock;
-- shell-by-shell Shotgun reloads remain in one bounded observation session, allowing each authored shell-reload extension to use the multiplier without replacing the Shotgun's reload mechanism;
-- attack input ends observation before a firing cooldown can be authored, preventing reload feats from becoming rate-of-fire feats;
-- player viewmodel playback is accelerated only while the authoritative reload session is active and is restored afterward;
-- the Character Sheet owned-feat ledger reports the current total ordinary reload-time multiplier;
-- `lod_rpg_gate_e_reload_validate`, `lod_rpg_gate_e_reload_status`, `lod_rpg_test_reload <0-3>`, and `lod_rpg_gate_e_reload_testkit [pistol|shotgun]` provide finite validation/testing;
-- core `lod_rpg_validate` includes the Batch 5 validator.
+- only deadlines newly authored by a genuine reload may be compressed;
+- every pre-existing weapon/player deadline remains an absolute floor, protecting SMG overheat recovery, AR2 targeting/burst timing, and unrelated attack locks;
+- Shotgun shell reloads remain engine-authored and are accelerated stage-by-stage;
+- attack input ends observation before a firing cooldown can be captured;
+- player viewmodel playback is accelerated only during the authoritative reload session and restored afterward;
+- Character Sheet/runtime truth exposes the current total multiplier;
+- finite family/status/testkit commands remain available and core `lod_rpg_validate` covers the bridge.
 
-### Batch 5 current runtime evidence
+Final Steam Deck `gm_flatgrass` acceptance evidence:
 
-Repeated Steam Deck play indicates the family behaves correctly across the tested ranks and weapon paths. Blink Reload with the AR2 creates a particularly strong but desirable high-DEX option: reload downtime becomes barely perceptible and permits almost-continuous fire, while the weapon's telegraphed laser and pre-burst delay retain its authored cadence. Preserve that composition for later whole-RPG balance evaluation rather than treating it as a defect.
+- rank 3 active with multiplier `0.40`;
+- active weapon `weapon_ar2`;
+- `scaledExtensions=3`;
+- final status `last=weapon_ar2/player 1.55s->0.62s`;
+- summary `reload_scale_events=3`;
+- `last_reload_weapon=weapon_ar2`;
+- `last_reload_multiplier=0.4`;
+- authored `1.5516667s`, scaled `0.6206667s`, saved `0.9310000s`;
+- `TEST_END batch5-clock-fix` and final core RPG validation PASS.
 
-The latest uploaded evidence exposed two **logging** defects, not a reported gameplay failure: the summary contained 51 AR2/d10 player-roll events but zero reload-scale events, and the physical console file was only an `ENGINE_CONSOLE_NOT_READABLE` placeholder because Steam Deck GMod Lua could not read the engine-level console. The repaired evidence path therefore:
+The acceptance investigation found and repaired a systemic Source/GMod clock-boundary error. Garry's Mod public weapon timing accessors are authoritative absolute `CurTime()` values. Raw Source `FIELD_TIME` internals/save fields are CurTime-relative and are translated only at that low-level boundary. This keeps genuine reload scaling coherent without allowing unrelated lockouts to be shortened.
 
-- mirrors real `garrysmod/console.log` externally into physical `data/legend_of_deborah/console_latest.txt`;
-- emits `RELOAD_SCALE` telemetry synchronously when the canonical reload runtime increments its actual scaling counter;
-- leaves the existing finite validator and reload mechanics unchanged.
-
-### Batch 5 short logged-closure gate
-
-Do not repeat the complete rank ladder again. On fresh `gm_flatgrass` with `lod_developer_mode 1`:
-
-1. Run `lod_rpg_test_upload_status` and confirm the physical console mirror is nonempty.
-2. Run `lod_rpg_gate_e_reload_validate`; require `DEX Reload feat family PASS`.
-3. Run `lod_rpg_test_reload 3`, use the AR2, and reload it at least once.
-4. Run `lod_rpg_gate_e_reload_status`; require multiplier `0.40`, `scaledExtensions > 0`, and an AR2 `last=` scaling entry.
-5. Run `lod_rpg_validate`; require core PASS and no Lua errors.
-6. Run `lod_rpg_test_finish batch5-reload-telemetry`, then `lod_rpg_test_upload_status`.
-7. Upload `console_latest.txt`, `rpg_summary_latest.txt`, and `rpg_session_latest.txt` from `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
-8. Formal acceptance requires the repaired summary/session to show reload scaling plus the final test mark/core PASS, agreeing with the already-successful gameplay evidence.
+Blink Reload + AR2 is deliberately retained as positive emergent high-DEX build space: reload downtime can become nearly imperceptible while the AR2's laser telegraph, pre-burst delay, and burst-internal spacing remain authored costs.
 
 Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.
