@@ -97,8 +97,6 @@ Effects.ReloadStats = Effects.ReloadStats or {
 local function captureDeadlines(ply, weapon, alreadyReloading)
     local now = CurTime()
     if alreadyReloading then
-        -- m_bInReload positively identifies the current engine state as reload.
-        -- Using now lets auto-reload/late observation compress its first extension.
         return {primary = now, secondary = now, idle = now, player = now}
     end
     return {
@@ -219,8 +217,6 @@ function Effects:ProcessReloadObservation(ply, session, now)
         session.sawReload = true
         session.finishGraceUntil = nil
     elseif session.wasInReload and session.sawReload then
-        -- FinishReload can author one final post-reload deadline in the frame that
-        -- clears m_bInReload, so retain one tiny grace window for that deadline.
         session.finishGraceUntil = now + 0.06
     end
     session.wasInReload = reloading
@@ -246,6 +242,31 @@ function Effects:ProcessReloadObservation(ply, session, now)
     end
 end
 
+local function beginStockAR2ReloadIfNeeded(ply, weapon, session)
+    if not session or session.weaponClass ~= "weapon_ar2" then return end
+    if session.stockReloadInvoked then return end
+    if not isfunction(weapon.Reload) then return end
+
+    local now = CurTime()
+    local primaryLock = weaponDeadline(weapon, "primary")
+    local playerLock = playerDeadline(ply)
+
+    -- Do not turn the AR2's targeting/burst lock into reload time. Only bridge
+    -- an otherwise-free stock reload transaction.
+    if primaryLock > now + EPSILON or playerLock > now + EPSILON then return end
+
+    session.stockReloadInvoked = true
+    weapon:Reload()
+
+    if Effects:IsWeaponInReload(weapon)
+        or weaponDeadline(weapon, "primary") > primaryLock + EPSILON
+        or playerDeadline(ply) > playerLock + EPSILON
+    then
+        session.sawReload = true
+        session.stockReloadConfirmed = true
+    end
+end
+
 hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
     if not IsValid(ply) or not ply:Alive() then return end
     local weapon = ply:GetActiveWeapon()
@@ -256,8 +277,6 @@ hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
 
     local session = Effects.ReloadSessions[ply]
     if session and (cmd:KeyDown(IN_ATTACK) or cmd:KeyDown(IN_ATTACK2)) then
-        -- Firing intentionally interrupts shell reload. Stop observing before the
-        -- weapon can author a firing cooldown, so this feat never changes RoF.
         Effects:EndReloadObservation(ply)
         session = nil
     end
@@ -267,7 +286,10 @@ hook.Add("StartCommand", "LOD_RPG_GateE_ReloadInput", function(ply, cmd)
         if reloading then
             Effects:BeginReloadObservation(ply, weapon, true)
         elseif cmd:KeyDown(IN_RELOAD) then
-            Effects:BeginReloadObservation(ply, weapon, false)
+            if Effects:BeginReloadObservation(ply, weapon, false) then
+                session = Effects.ReloadSessions[ply]
+                beginStockAR2ReloadIfNeeded(ply, weapon, session)
+            end
         end
     end
 end)
