@@ -1,22 +1,22 @@
 # Gate E Ordinary Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`, current revision `ANLCKQlK0CLl2Fs6HxRSmvQtJ64NnbR5HNXdS6m7gbfsgOXB-VlnaGZlXKlQxdLirxGy7uzVJguUC_AEFtLrDhAnQp4LaCWiw5ErJMjjCg` verified 2026-09-03.
+Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`, reload-family definitions reverified at revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ` on 2026-09-03.
 
 This is the Gate E completeness ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The ledger intentionally stays compact so status cannot drift away from implementation.
 
-**73 ordinary feats total: 12 mechanically implemented, 15 catalog/ownership-only, 46 not yet catalogued. 61 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs.
+**73 ordinary feats total: 15 mechanically implemented, 14 catalog/ownership-only, 44 not yet catalogued. 58 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
 | `CON_REGEN_11`<br>Second Wind | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
 | `CON_REGEN_22`<br>Rapid Recovery | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
 | `CON_REGEN_33`<br>Unbroken | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
-| `DEX_EXPLODE_D10`<br>Perfect Ten | DEX / Damage-die explosion access | Implemented + validator | Batch 4: additive d10→d8→d4 access through AbilityRules/CombatRolls; natural-max fresh threshold, BoomShift continuation, Rogue redundancy exclusion, classExplosionImmune absolute. |
-| `DEX_EXPLODE_D8`<br>Eight Is Enough | DEX / Damage-die explosion access | Implemented + validator | Batch 4: additive d10→d8→d4 access through AbilityRules/CombatRolls; natural-max fresh threshold, BoomShift continuation, Rogue redundancy exclusion, classExplosionImmune absolute. |
-| `DEX_EXPLODE_D4`<br>Fourtunate | DEX / Damage-die explosion access | Implemented + validator | Batch 4: additive d10→d8→d4 access through AbilityRules/CombatRolls; natural-max fresh threshold, BoomShift continuation, Rogue redundancy exclusion, classExplosionImmune absolute. |
-| `DEX_FAST_RELOAD`<br>Quick Reload | DEX / Reload cadence | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `DEX_FAST_RELOAD_2`<br>Lightning Reload | DEX / Reload cadence | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `DEX_FAST_RELOAD_3`<br>Blink Reload | DEX / Reload cadence | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `DEX_EXPLODE_D10`<br>Perfect Ten | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: additive d10→d8→d4 access through AbilityRules/CombatRolls; natural-max fresh threshold, BoomShift continuation, Rogue redundancy exclusion, classExplosionImmune absolute. |
+| `DEX_EXPLODE_D8`<br>Eight Is Enough | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: additive d10→d8→d4 access through AbilityRules/CombatRolls. Baseline Crowbar remains authored d3 and is not enabled by this ladder. |
+| `DEX_EXPLODE_D4`<br>Fourtunate | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: live Pistol d4 Boomchain behavior observed; Wizard Arcane Surge + exploding Pistol retained as positive emergent composition. |
+| `DEX_FAST_RELOAD`<br>Quick Reload | DEX / Reload cadence | Implemented + validator | Batch 5: replacement ReloadTimeMultiplier 0.80 at confirmed Source reload state; pre-existing lockouts are absolute floors. |
+| `DEX_FAST_RELOAD_2`<br>Lightning Reload | DEX / Reload cadence | Implemented + validator | Batch 5: replaces Quick Reload with total multiplier 0.60; same reload-only authority/exclusions. |
+| `DEX_FAST_RELOAD_3`<br>Blink Reload | DEX / Reload cadence | Implemented + validator | Batch 5: replaces lower ranks with total multiplier 0.40; overheat/tells/Magic/internal burst timing remain outside the bridge. |
 | `INT_AMMO_FLOOR_44`<br>Field Supply | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
 | `INT_AMMO_FLOOR_55`<br>Deep Reserves | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
 | `INT_AMMO_FLOOR_66`<br>War Stock | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
