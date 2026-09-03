@@ -1,95 +1,53 @@
-# Development Status — 2026-09-02
+# Development Status — 2026-09-03
 
 ## Current execution phase
 
 **CORE MULTIPLAYER SMOKE FOUNDATION: ACCEPTED.**
 
-**RPG OVERHAUL: ACTIVE DEVELOPMENT.**
+**RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority. GitHub `main` is implementation authority.
+The live GDD is design authority; GitHub `main` is implementation authority.
 
-The previous status document was stale: it still described first real-client multiplayer as an uncompleted blocker. That blocker has now been retired based on the September 1 live VPS playtest recorded in `docs/MP_PLAYTEST_2026-09-01.md`.
+## Accepted runtime foundation
 
-## Multiplayer evidence now accepted
+The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batch 1 (CON Health Regeneration), Batch 2 (WIS Navigation), and Batch 3 (INT Ammo-Regeneration Floors) have now all received `gm_flatgrass` runtime acceptance.
 
-The September 1 footage demonstrates a public VPS-hosted `gm_flatgrass` server with at least three simultaneous human-controlled clients in the generated dungeon. The run visibly exercises:
+Batch 3 acceptance evidence on 2026-09-03:
 
-- concurrent teammate movement and combat;
-- shared Red/Blue/Yellow progression;
-- shared key/gate state transitions;
-- personal map use during cooperative play;
-- Jail Key / Deborah-cell progression;
-- one party-wide Deborah rescue;
-- multiplayer victory/intermission presentation;
-- transition into the next generated labyrinth;
-- no Lua errors reported by the end-of-session Problems panel.
+- rank 0: floor fraction `0.33`; Magnum `6/18`, Pistol `18/54`;
+- rank 2: floor fraction `0.55`; Magnum `10/18`, Pistol `30/54`;
+- rank 3: floor fraction `0.66`; Magnum `12/18`, Pistol `36/54`;
+- Magnum interval remained `30.00s` and Pistol interval `3.33s` across ranks;
+- core RPG validator passed (`schemas=11`, `classes=3`, `abilities=6`, `featSlots=7`, gameplay enabled);
+- no Lua error was reported in the accepted runtime evidence.
 
-This is sufficient evidence to accept the basic live-network world/progression foundation and move forward. The footage predates the RPG overhaul, so post-RPG multiplayer synchronization remains a regression target, not an uncompleted prerequisite.
+## Gate E Batch 4 — DEX Exploding-Dice Ladder
 
-## Current RPG state
+Implemented in code and awaiting the finite Steam Deck runtime gate:
 
-The active RPG implementation now includes:
+- `DEX_EXPLODE_D10` / Perfect Ten;
+- `DEX_EXPLODE_D8` / Eight Is Enough;
+- `DEX_EXPLODE_D4` / Fourtunate;
+- additive unlocks retain earlier die sizes instead of replacing them;
+- fresh feat-enabled d10/d8/d4 dice explode only on their natural maximum;
+- continuation thresholds remain `max(2, sides - BoomShift)` at the existing Gate D authority;
+- all three feats are excluded from Rogue offers as redundant with Rogue mastery;
+- `classExplosionImmune=true` remains absolute;
+- the universal 32-die chain cap and non-damage-die isolation remain intact;
+- later-acquired legal weapon capability is recognized from live/persisted ownership rather than only the advanced starter choice;
+- Character Sheet owned-feat truth includes the currently enabled die sizes and fresh/continuation thresholds;
+- finite commands: `lod_rpg_gate_e_exploding_dice_validate`, `lod_rpg_gate_e_exploding_dice_status`, `lod_rpg_test_exploding_dice <0-3>`.
 
-- deterministic procedural hero identity and Character Sheet;
-- randomized base abilities using 4d6-drop-lowest with below-average arrays rerolled;
-- Fighter, Rogue, and Wizard class commitment;
-- Levels 1–20 progression, XP, ability growth, hit-die HP progression, ordinary feat drafts, and Level-20 capstones;
-- server-authoritative ability/class gameplay bridges;
-- current Wizard Arcane Diversion, full-Magic INT bonus, Feedback, and Feedback cooldown;
-- improved combat-feed and major-screen presentation for Feedback and level-up events;
-- feat-choice confirmation presentation.
-- Gate E batch 1, runtime accepted: the complete Second Wind / Rapid Recovery / Unbroken Health-Regeneration ladder, including replacement ceilings, CON-scaled healing, damage-delay resets, Character Sheet truth, and finite validators.
-- Gate E batch 2, runtime accepted: Surveyor / Cartographer / Frugal Cartography, including replacement breadcrumb ranks, canonical post-WIS drain ordering, the 3.0 Magic/second floor, Character Sheet truth, and finite validators.
-- Gate E batch 3, awaiting runtime acceptance: Field Supply / Deep Reserves / War Stock, including canonical owned-family ammunition regeneration ceilings, unchanged recovery cadence/no-fire delay, Character Sheet truth, and finite validators.
+## Gate E accounting
 
-Gate E is now in active family-by-family implementation. The exact 73-entry matrix is established in `docs/RPG_GATE_E_FEAT_MATRIX.md`; 9 feats are mechanically complete, 16 remain catalog/ownership-only, and 48 are not yet catalogued. The next boundary is Batch 3 runtime acceptance, then the next coherent ordinary-feat family, followed by the authored procedural/background Perk gate and the full RPG consistency audit.
+The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
-The exact six-stat rules baseline is preserved in `docs/RPG_GDD_RULES_BASELINE.md`. The live GDD now resolves the earlier CHA authority gap: after all stronger tactical constraints, otherwise equivalent hostile targets are tie-broken in favor of attacking the lower-CHA Hero. This is a preference layer, never aggro immunity.
-
-## Multiplayer policy going forward
-
-Do not repeat the old pre-RPG multiplayer smoke gate as a blocker before every feature.
-
-Instead:
-
-1. continue the RPG implementation to its next coherent runtime gate;
-2. perform focused multi-client regression of the systems that changed after the September 1 build;
-3. keep reconnect/death/resource-isolation/4-player soak as release-hardening scenarios;
-4. fix defects from actual network evidence rather than speculative rewrites.
-
-Post-RPG multiplayer regression should explicitly cover Character Sheet state, randomized abilities, XP/level progression, feat ownership/effects, class mechanics, personal Magic, Wizard Feedback, and player-specific resources.
-
-## Accepted foundations to preserve
-
-Do not disturb without concrete regression evidence:
-
-- deterministic procedural multi-floor maze generation;
-- canonical graph authority;
-- optimized merged server wall collision + client wall presentation;
-- validated stair/floor geometry;
-- Motion V2 ordinary hostile movement;
-- generated-geometry ballistics/cover;
-- current minimap caching/reliability behavior and personal Magic drain;
-- server-authoritative combat dice;
-- immutable Soldier warning/projectile contract;
-- current Watcher and Seeker accepted behavior;
-- individualized LootDirector;
-- finite ammo/regeneration system;
-- campaign restart and level-transition pipeline;
-- core live multiplayer world/progression behavior demonstrated on the VPS.
-
-## Known deferred production work
-
-- remaining ordinary feat-family gameplay effects (64 of 73);
-- all authored procedural/background Perk gameplay bridges;
-- full six-stat/player-level/enemy-level/combat-order consistency audit;
-- Neil + The Brute required post-Blue midboss;
-- Gordon the Warden and final arena;
-- dungeon-tier Map degradation;
-- armor-residue cleanup;
-- architectural wrapper consolidation;
-- broader 3–4-client/reconnect/churn/dedicated-server soak after the post-RPG regression pass.
+- 73 ordinary feats total;
+- 12 mechanically implemented;
+- 15 catalog/ownership-only;
+- 46 not yet catalogued;
+- 61 gameplay effects remain.
 
 ## Current rule
 
-**Multiplayer smoke is no longer the blocking milestone. Finish the next coherent RPG implementation gate, then regression-test the newer RPG layer in multiplayer before treating the build as release-ready.**
+Complete Batch 4 runtime acceptance on `gm_flatgrass`, then continue family-by-family through the remaining Gate E matrix. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.
