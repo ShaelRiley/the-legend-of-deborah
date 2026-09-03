@@ -10,7 +10,7 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 4. Gate E Batch 2 WIS Navigation — **runtime accepted**.
 5. Gate E Batch 3 INT Ammo-Regeneration Floors — **runtime accepted 2026-09-03**.
 6. Gate E Batch 4 DEX exploding-dice ladder — **runtime accepted 2026-09-03**.
-7. Gate E Batch 5 DEX reload cadence — **implemented; next runtime gate**.
+7. Gate E Batch 5 DEX reload cadence — **gameplay behavior successful; short logged-closure confirmation next**.
 8. Continue the remaining Gate E families until all 73 ordinary feats have canonical gameplay bridges and finite validators.
 9. Implement all 192 authored Origin/Background/Motive perk bridges.
 10. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
@@ -22,29 +22,33 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 
 All runtime gates use `docs/TEST_LOGGING.md`.
 
+- Run `./tools/install_dev.sh` after pulling; this now maintains exactly one external Steam Deck mirror of the engine `console.log` into the canonical data directory.
 - Start Garry's Mod fresh when beginning a distinct gate so `-condebug -conclearlog` gives a clean engine console.
 - End the gate with `lod_rpg_test_finish <short-test-label>`.
-- Canonical upload directory on the Steam Deck: `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
+- Canonical upload directory: `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
 - Default physical evidence package: `console_latest.txt` + `rpg_summary_latest.txt`.
 - Add `rpg_session_latest.txt` for timing/event-order or unexplained combat/RPG behavior.
 - `rpg_archive_latest.txt` is bounded rolling cross-session history and is uploaded only when specifically requested.
-- `lod_rpg_test_upload_status` verifies that the upload-facing files exist and reports their sizes.
 - Screenshots remain appropriate for visual/rendering/layout defects; logs are preferred for console text and runtime mechanics.
 
-## Immediate runtime gate — Batch 5
+## Immediate runtime gate — Batch 5 logged closure
 
-On `gm_flatgrass` with `lod_developer_mode 1`:
+Full reload gameplay testing has already been repeated successfully. The next pass exists only to confirm repaired observability, so do **not** repeat the whole rank ladder.
 
-1. Fresh-start Garry's Mod so the console log contains only this test session; complete staging/deploy.
+On a fresh `gm_flatgrass` run with `lod_developer_mode 1`:
+
+1. Run `lod_rpg_test_upload_status`; `console_latest.txt` should exist as the external engine-console mirror rather than a Lua-generated placeholder.
 2. Run `lod_rpg_gate_e_reload_validate`; require the DEX Reload family PASS line.
-3. Run `lod_rpg_test_reload 0`, `lod_rpg_gate_e_reload_testkit pistol`, then press R for a baseline reload.
-4. Repeat with ranks 1, 2, and 3; status must report multipliers 0.80, 0.60, and 0.40. `scaledExtensions` must increase after real reloads and `last=` must show an authored deadline compressed by the active multiplier.
-5. At rank 3, run `lod_rpg_gate_e_reload_testkit shotgun`; confirm shell-by-shell reload speeds up while normal fire-to-interrupt behavior remains intact.
-6. Overheat the SMG, press R during the fixed 2.0-second recovery, and confirm Reload does not shorten it. Confirm AR2 targeting tell/internal burst timing remains unchanged.
-7. Reopen P and confirm the owned reload feat reports the same total reload-time multiplier.
-8. Run `lod_rpg_validate`; require the core PASS line and no Lua errors.
-9. Run `lod_rpg_test_finish batch5-reload`, then `lod_rpg_test_upload_status`.
-10. Upload `console_latest.txt` + `rpg_summary_latest.txt` from the canonical data directory; add `rpg_session_latest.txt` if timing, interruption, or exclusion behavior is questionable.
+3. Configure `lod_rpg_test_reload 3` and use the AR2 normally. Reload it at least once while Blink Reload is active.
+4. Run `lod_rpg_gate_e_reload_status`; require multiplier `0.40`, `scaledExtensions > 0`, and a `last=` entry identifying an AR2 reload deadline that was compressed.
+5. Run `lod_rpg_validate`; require core PASS and no Lua errors.
+6. Run `lod_rpg_test_finish batch5-reload-telemetry`, then `lod_rpg_test_upload_status`.
+7. Upload `console_latest.txt`, `rpg_summary_latest.txt`, and—for this instrumentation confirmation only—`rpg_session_latest.txt` from the canonical data directory.
+8. Require summary evidence of `reload_scale_events > 0`, `last_reload_weapon=weapon_ar2`, a `TEST_END batch5-reload-telemetry` mark, and `last_rpg_validate=PASS`. Once those agree with the already-successful play evidence, formally runtime-accept Batch 5.
+
+## Batch 5 balance note
+
+Repeated play found Blink Reload + AR2 creates almost-continuous fire because reload downtime becomes nearly imperceptible. Preserve this. The AR2's laser telegraph and delay before each burst remain meaningful authored costs, so the reload feat creates a distinct high-DEX build payoff rather than simply erasing the weapon's identity.
 
 ## Batch 4 acceptance note
 

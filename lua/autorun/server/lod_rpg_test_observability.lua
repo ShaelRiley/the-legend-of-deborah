@@ -86,6 +86,26 @@ local function commandAllowed(ply)
     return not IsValid(ply) or ply:IsAdmin()
 end
 
+local function syncReloadStats()
+    local Effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local stats = Effects and Effects.ReloadStats
+    if not stats then return end
+    local count = tonumber(stats.reloadExtensionsScaled) or 0
+    if count <= (Obs.LastReloadScaleCount or 0) then return end
+    Obs.LastReloadScaleCount = count
+    Obs.ReloadScaleEvents = math.max(tonumber(Obs.ReloadScaleEvents) or 0, count)
+    local last = stats.lastScale or {}
+    Obs.LastReloadScale = {
+        count = count,
+        weaponClass = last.weaponClass,
+        channel = last.channel,
+        multiplier = last.multiplier,
+        authoredSeconds = last.authoredSeconds,
+        scaledSeconds = last.scaledSeconds,
+        savedSeconds = math.max(0, (tonumber(last.authoredSeconds) or 0) - (tonumber(last.scaledSeconds) or 0))
+    }
+end
+
 local function wrapLogger()
     local Log = LOD.RPGTestLog
     local Summary = LOD.RPGTestSessionSummary
@@ -130,7 +150,9 @@ local function wrapLogger()
                     errors = fields.errors
                 }
             elseif eventName == "RELOAD_SCALE" then
-                Obs.ReloadScaleEvents = math.max(Obs.ReloadScaleEvents or 0, tonumber(fields.count) or 0)
+                local count = tonumber(fields.count) or 0
+                Obs.ReloadScaleEvents = math.max(tonumber(Obs.ReloadScaleEvents) or 0, count)
+                Obs.LastReloadScaleCount = math.max(tonumber(Obs.LastReloadScaleCount) or 0, count)
                 Obs.LastReloadScale = fields
             elseif eventName == "MARK" then
                 Obs.LastMark = fields.text or fields.label
@@ -143,23 +165,27 @@ local function wrapLogger()
         Obs.SummaryRenderWrapped = true
         local baseRender = Summary.Render
         function Summary:Render()
+            syncReloadStats()
             local text = baseRender(self)
             local lastValidation = Obs.LastValidation or {}
             local lastReload = Obs.LastReloadScale or {}
             local extra = table.concat({
                 "[OBSERVABILITY]",
                 "retention=console:per-GMod-launch;session:current-server-session;summary:overwrite-every-10s;archive:rolling-4MiB",
-                "recommended_upload=console_latest.log + rpg_summary_latest.log",
-                "detailed_upload_when_needed=rpg_session_latest.log",
-                "archive_upload_only_on_request=rpg_archive_latest.log",
+                "physical_upload_dir=garrysmod/data/legend_of_deborah/",
+                "recommended_upload=console_latest.txt + rpg_summary_latest.txt",
+                "detailed_upload_when_needed=rpg_session_latest.txt",
+                "archive_upload_only_on_request=rpg_archive_latest.txt",
                 "last_mark=" .. safe(Obs.LastMark),
                 "last_rpg_validate=" .. safe(lastValidation.result),
                 "last_rpg_validate_errors=" .. safe(lastValidation.errors),
                 "reload_scale_events=" .. safe(Obs.ReloadScaleEvents or 0),
                 "last_reload_weapon=" .. safe(lastReload.weaponClass),
                 "last_reload_channel=" .. safe(lastReload.channel),
+                "last_reload_multiplier=" .. safe(lastReload.multiplier),
                 "last_reload_authored_seconds=" .. safe(lastReload.authoredSeconds),
                 "last_reload_scaled_seconds=" .. safe(lastReload.scaledSeconds),
+                "last_reload_saved_seconds=" .. safe(lastReload.savedSeconds),
                 "",
             }, "\n")
             return text .. "\n" .. extra
@@ -198,6 +224,7 @@ local function finishTest(ply, label)
     label = safe(label)
     if label == "" then label = "unnamed-test" end
 
+    syncReloadStats()
     Log:Write("MARK", {
         player = actorLabel(ply),
         text = "TEST_END " .. label,
@@ -209,10 +236,17 @@ local function finishTest(ply, label)
     if Summary and isfunction(Summary.WriteSummary) then Summary:WriteSummary() end
     Obs:Compact(true)
 
+    local Export = LOD.RPGTestUploadExport
+    if Export and isfunction(Export.Publish) then
+        timer.Simple(0.05, function()
+            Export:Publish("test finish " .. label, false)
+        end)
+    end
+
     local result = validationOK == nil and "not-run" or (validationOK and "PASS" or "FAIL")
     print(string.format("[LOD:RPG-TEST] finished %s; core validation=%s", label, result))
-    print("[LOD:RPG-TEST] upload by default: console_latest.log + rpg_summary_latest.log")
-    print("[LOD:RPG-TEST] add rpg_session_latest.log for timing/event-order bugs; archive only when requested")
+    print("[LOD:RPG-TEST] upload from garrysmod/data/legend_of_deborah/: console_latest.txt + rpg_summary_latest.txt")
+    print("[LOD:RPG-TEST] add rpg_session_latest.txt for timing/event-order bugs; archive only when requested")
 end
 
 local function installCommands()
@@ -235,13 +269,15 @@ local function installCommands()
     concommand.Add("lod_rpg_test_logs_status", function(ply)
         if not commandAllowed(ply) then return end
         wrapLogger()
+        syncReloadStats()
         Obs:Compact(true)
         local lines = {
             string.format("archive data/%s %dB (rolling max 4MiB, keeps recent 2MiB)", ARCHIVE_PATH, sizeOf(ARCHIVE_PATH)),
             string.format("session data/%s %dB (current session; max 8MiB, keeps recent 4MiB)", SESSION_PATH, sizeOf(SESSION_PATH)),
             string.format("summary data/%s %dB (overwritten every %ds and at test finish)", SUMMARY_PATH, sizeOf(SUMMARY_PATH), SUMMARY_INTERVAL),
-            "console_latest.log is engine console.log; -condebug -conclearlog resets it each GMod launch",
-            "default upload: console_latest.log + rpg_summary_latest.log"
+            "physical upload directory: garrysmod/data/legend_of_deborah/",
+            "console_latest.txt is externally mirrored from engine console.log; -condebug -conclearlog resets source each GMod launch",
+            "default upload: console_latest.txt + rpg_summary_latest.txt"
         }
         for _, line in ipairs(lines) do
             print("[LOD:RPG-LOG] " .. line)
@@ -250,38 +286,18 @@ local function installCommands()
     end)
 end
 
-local function observeReloadScaling()
-    local Effects = LOD.RPG and LOD.RPG.FeatEffectSystem
-    local stats = Effects and Effects.ReloadStats
-    if not stats then return end
-    local count = tonumber(stats.reloadExtensionsScaled) or 0
-    if count <= (Obs.LastReloadScaleCount or 0) then return end
-    Obs.LastReloadScaleCount = count
-    local last = stats.lastScale or {}
-    local Log = LOD.RPGTestLog
-    if Log and isfunction(Log.Write) then
-        Log:Write("RELOAD_SCALE", {
-            count = count,
-            weaponClass = last.weaponClass,
-            channel = last.channel,
-            authoredSeconds = last.authoredSeconds,
-            scaledSeconds = last.scaledSeconds
-        })
-    end
-end
-
 local function bootstrap()
     wrapLogger()
     installCommands()
     timer.Create("LOD_RPGTestObservability_AutoSummary", SUMMARY_INTERVAL, 0, function()
         if not wrapLogger() then return end
-        observeReloadScaling()
+        syncReloadStats()
         local Summary = LOD.RPGTestSessionSummary
         if Summary and isfunction(Summary.WriteSummary) and (tonumber(Summary.EventCount) or 0) > 0 then
             Summary:WriteSummary()
         end
     end)
-    timer.Create("LOD_RPGTestObservability_ReloadWatch", 0.25, 0, observeReloadScaling)
+    timer.Create("LOD_RPGTestObservability_ReloadWatch", 0.25, 0, syncReloadStats)
 end
 
 timer.Simple(0, bootstrap)
@@ -289,6 +305,7 @@ hook.Add("InitPostEntity", "LOD_RPGTestObservability_Bootstrap", function()
     timer.Simple(0, bootstrap)
 end)
 hook.Add("ShutDown", "LOD_RPGTestObservability_Finalize", function()
+    syncReloadStats()
     local Summary = LOD.RPGTestSessionSummary
     if Summary and isfunction(Summary.WriteSummary) then Summary:WriteSummary() end
     Obs:Compact(false)

@@ -10,7 +10,7 @@ The live GDD is design authority; GitHub `main` is implementation authority.
 
 ## Accepted runtime foundation
 
-The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–4 now have `gm_flatgrass` runtime acceptance.
+The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–4 have `gm_flatgrass` runtime acceptance.
 
 - Batch 1: CON Health Regeneration — accepted exact 11/22/33% ceilings and tested 1.20 HP/s rate.
 - Batch 2: WIS Navigation — accepted Cartographer +8 replacement and Frugal Cartography 5.44 Magic/s test profile.
@@ -21,7 +21,7 @@ Batch 4 also produced useful emergent balance evidence: a full-Magic Wizard comb
 
 ## Gate E Batch 5 — DEX Reload Cadence
 
-Implemented in code and awaiting the finite Steam Deck runtime gate:
+Mechanically implemented and **qualitatively successful in repeated Steam Deck play**:
 
 - Quick Reload: DEX 12, total ordinary reload-time multiplier `0.80`;
 - Lightning Reload: DEX 16 + Quick Reload, replaces total multiplier with `0.60`;
@@ -31,8 +31,13 @@ Implemented in code and awaiting the finite Steam Deck runtime gate:
 - pre-existing deadlines are absolute floors, protecting SMG overheat, AR2 timing, and unrelated weapon locks;
 - Shotgun shell-by-shell reload remains engine-authored and is accelerated stage-by-stage rather than replaced;
 - attack interruption terminates reload observation before firing cooldowns can be touched;
-- Character Sheet truth reports the active total reload-time multiplier;
-- finite commands: `lod_rpg_gate_e_reload_validate`, `lod_rpg_gate_e_reload_status`, `lod_rpg_test_reload <0-3>`, `lod_rpg_gate_e_reload_testkit [pistol|shotgun]`.
+- Character Sheet truth reports the active total reload-time multiplier.
+
+The latest playtest found Blink Reload particularly compelling with the AR2: reload downtime becomes barely perceptible, allowing almost-continuous fire, while the AR2's laser telegraph and pre-burst delay continue to impose its authored cadence. Treat this as **desirable emergent build space**, not an immediate nerf target.
+
+The same test exposed observability defects rather than gameplay defects. The supplied RPG summary showed a heavily exercised AR2 path (51 d10 player-roll events) but zero reload-scale telemetry; the physical console export was a placeholder because GMod Lua could not read the engine-level `console.log` on Steam Deck. The logging repair therefore moves console mirroring outside the Lua sandbox and emits reload telemetry synchronously at the actual reload-scaling seam.
+
+**Batch 5 logged closure now requires only one short rank-3 AR2 confirmation, not another complete rank-0→3 gameplay pass.**
 
 ## Gate E accounting
 
@@ -46,4 +51,4 @@ The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
 ## Current rule
 
-Runtime-accept Batch 5 on `gm_flatgrass`, then continue family-by-family through the remaining Gate E matrix. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.
+Complete the short Batch 5 observability confirmation on `gm_flatgrass`, formally close Batch 5 if telemetry/validators agree with the already-successful gameplay evidence, then continue family-by-family through the remaining Gate E matrix. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.

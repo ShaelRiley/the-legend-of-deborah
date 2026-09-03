@@ -15,10 +15,6 @@ local DEST_ARCHIVE = DATA_DIR .. "/rpg_archive_latest.txt"
 local DEST_SESSION = DATA_DIR .. "/rpg_session_latest.txt"
 local DEST_SUMMARY = DATA_DIR .. "/rpg_summary_latest.txt"
 
-local CONSOLE_MAX = 8 * 1024 * 1024
-local CONSOLE_HEAD = 256 * 1024
-local CONSOLE_TAIL = 6 * 1024 * 1024
-
 Export.Paths = {
     console = DEST_CONSOLE,
     archive = DEST_ARCHIVE,
@@ -49,72 +45,16 @@ local function copyData(sourcePath, destinationPath)
     return true, #body
 end
 
-local function readEngineConsole()
-    local candidates = {"console.log", "console.txt"}
-    for _, candidate in ipairs(candidates) do
-        local body = file.Read(candidate, "MOD")
-        if body ~= nil and body ~= "" then
-            return body, candidate
-        end
-    end
-    return nil, nil
-end
-
-local function boundedConsole(body)
-    if #body <= CONSOLE_MAX then return body, false end
-
-    local head = string.sub(body, 1, CONSOLE_HEAD)
-    local tail = string.sub(body, -CONSOLE_TAIL)
-    local separator = table.concat({
-        "",
-        "# --- THE LEGEND OF DEBORAH CONSOLE EXPORT COMPACTED ---",
-        "# Original engine console exceeded 8 MiB.",
-        "# Preserved: first 256 KiB (startup/load evidence) + newest 6 MiB (recent runtime evidence).",
-        "# Middle console output was discarded from this upload copy only.",
-        "# The engine's original console file remains untouched.",
-        "",
-    }, "\n")
-    return head .. separator .. tail, true
-end
-
-local function writeConsoleExport(reason)
-    local body, sourceName = readEngineConsole()
-    if not body then
-        local placeholder = table.concat({
-            "# The Legend of Deborah console upload export",
-            "# generated_utc=" .. os.date("!%Y-%m-%dT%H:%M:%SZ"),
-            "# reason=" .. safe(reason),
-            "# status=ENGINE_CONSOLE_NOT_READABLE",
-            "# expected Source launch options: -condebug -conclearlog",
-            "# tried MOD/console.log and MOD/console.txt",
-            "",
-        }, "\n")
-        file.Write(DEST_CONSOLE, placeholder)
-        return false, #placeholder, "unavailable", false
-    end
-
-    local bounded, compacted = boundedConsole(body)
-    local header = table.concat({
-        "# The Legend of Deborah console upload export",
-        "# generated_utc=" .. os.date("!%Y-%m-%dT%H:%M:%SZ"),
-        "# reason=" .. safe(reason),
-        "# engine_source=garrysmod/" .. safe(sourceName),
-        "# source_bytes=" .. safe(#body),
-        "# compacted=" .. (compacted and "true" or "false"),
-        "# --- ENGINE CONSOLE FOLLOWS ---",
-        "",
-    }, "\n")
-    local output = header .. bounded
-    file.Write(DEST_CONSOLE, output)
-    return true, #output, sourceName, compacted
-end
-
 function Export:Publish(reason, quiet)
     file.CreateDir(DATA_DIR)
     reason = safe(reason)
     if reason == "" then reason = "automatic export" end
 
-    local consoleOK, consoleBytes, consoleSource, consoleCompacted = writeConsoleExport(reason)
+    -- console_latest.txt is owned by tools/console_log_mirror.sh because Steam Deck
+    -- GMod Lua cannot reliably read the engine-level garrysmod/console.log. Never
+    -- rewrite or replace it from Lua; simply report whether the physical mirror exists.
+    local consoleBytes = sizeOf(DEST_CONSOLE)
+    local consoleOK = consoleBytes > 0
     local summaryOK, summaryBytes = copyData(SOURCE_SUMMARY, DEST_SUMMARY)
     local sessionOK, sessionBytes = copyData(SOURCE_SESSION, DEST_SESSION)
     local archiveOK, archiveBytes = copyData(SOURCE_ARCHIVE, DEST_ARCHIVE)
@@ -124,8 +64,6 @@ function Export:Publish(reason, quiet)
         utc = os.date("!%Y-%m-%dT%H:%M:%SZ"),
         consoleOK = consoleOK,
         consoleBytes = consoleBytes,
-        consoleSource = consoleSource,
-        consoleCompacted = consoleCompacted,
         summaryOK = summaryOK,
         summaryBytes = summaryBytes,
         sessionOK = sessionOK,
@@ -136,13 +74,13 @@ function Export:Publish(reason, quiet)
 
     if not quiet then
         print(string.format(
-            "[LOD:RPG-UPLOAD] exported data/%s (%dB), %s (%dB), %s (%dB), %s (%dB)",
+            "[LOD:RPG-UPLOAD] physical evidence data/%s (%dB), %s (%dB), %s (%dB), %s (%dB)",
             DEST_CONSOLE, consoleBytes,
             DEST_SUMMARY, summaryBytes,
             DEST_SESSION, sessionBytes,
             DEST_ARCHIVE, archiveBytes))
         if not consoleOK then
-            print("[LOD:RPG-UPLOAD] WARNING: engine console was unavailable; verify -condebug -conclearlog and upload the placeholder for diagnosis")
+            print("[LOD:RPG-UPLOAD] WARNING: console mirror is empty; rerun tools/install_dev.sh and verify -condebug -conclearlog")
         end
         if not summaryOK then print("[LOD:RPG-UPLOAD] WARNING: current RPG summary source was unavailable") end
         if not sessionOK then print("[LOD:RPG-UPLOAD] WARNING: current RPG session source was unavailable") end
@@ -174,30 +112,6 @@ local function installSummaryBridge()
     return true
 end
 
-local function installFinishBridge()
-    if Export.FinishBridgeInstalled then return true end
-    if not concommand.GetTable then return false end
-
-    local commands = concommand.GetTable()
-    local baseFinish = commands and commands["lod_rpg_test_finish"]
-    if not isfunction(baseFinish) then return false end
-
-    Export.FinishBridgeInstalled = true
-    concommand.Remove("lod_rpg_test_finish")
-    concommand.Add("lod_rpg_test_finish", function(ply, cmd, args, argStr)
-        baseFinish(ply, cmd, args, argStr)
-        local label = safe(argStr)
-        if label == "" then label = "unnamed-test" end
-        timer.Simple(0.1, function()
-            Export:Publish("test finish " .. label, false)
-            print("[LOD:RPG-UPLOAD] CANONICAL UPLOAD DIRECTORY: garrysmod/data/" .. DATA_DIR .. "/")
-            print("[LOD:RPG-UPLOAD] SEND: console_latest.txt + rpg_summary_latest.txt")
-            print("[LOD:RPG-UPLOAD] ADD rpg_session_latest.txt only for timing/event-order detail; archive only when requested")
-        end)
-    end)
-    return true
-end
-
 local function installCommands()
     if Export.CommandsInstalled then return end
     Export.CommandsInstalled = true
@@ -224,7 +138,7 @@ local function installCommands()
         local last = Export.LastPublish or {}
         local lines = {
             "physical upload directory: garrysmod/data/" .. DATA_DIR .. "/",
-            string.format("%s %dB", DEST_CONSOLE, sizeOf(DEST_CONSOLE)),
+            string.format("%s %dB (external engine-console mirror)", DEST_CONSOLE, sizeOf(DEST_CONSOLE)),
             string.format("%s %dB", DEST_SUMMARY, sizeOf(DEST_SUMMARY)),
             string.format("%s %dB", DEST_SESSION, sizeOf(DEST_SESSION)),
             string.format("%s %dB", DEST_ARCHIVE, sizeOf(DEST_ARCHIVE)),
@@ -244,12 +158,9 @@ local function bootstrap()
     file.CreateDir(DATA_DIR)
     installSummaryBridge()
     installCommands()
-    installFinishBridge()
 
     timer.Create("LOD_RPGTestUploadExport_BridgeRetry", 0.5, 0, function()
-        local summaryReady = installSummaryBridge()
-        local finishReady = installFinishBridge()
-        if summaryReady and finishReady then
+        if installSummaryBridge() then
             timer.Remove("LOD_RPGTestUploadExport_BridgeRetry")
         end
     end)

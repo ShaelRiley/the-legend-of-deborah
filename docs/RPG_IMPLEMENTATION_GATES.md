@@ -14,13 +14,14 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 
 Every finite RPG runtime gate follows `docs/TEST_LOGGING.md`:
 
-1. Fresh-start Garry's Mod for a clean engine console when beginning a distinct gate.
-2. Run the family validator/testkit and exercise the mechanic.
-3. Use `lod_rpg_test_mark <note>` for moments worth correlating with telemetry.
-4. Run `lod_rpg_validate` and then `lod_rpg_test_finish <short-test-label>`.
-5. Upload **`console_latest.txt` + `rpg_summary_latest.txt` from `garrysmod/data/legend_of_deborah/` by default**. Add `rpg_session_latest.txt` for detailed timing/event order. Upload `rpg_archive_latest.txt` only for requested cross-session investigation.
+1. Pull/install the current build; the installer maintains one external engine-console mirror on Steam Deck.
+2. Fresh-start Garry's Mod for a clean engine console when beginning a distinct gate.
+3. Run the family validator/testkit and exercise the mechanic.
+4. Use `lod_rpg_test_mark <note>` for moments worth correlating with telemetry.
+5. Run `lod_rpg_validate` and then `lod_rpg_test_finish <short-test-label>`.
+6. Upload **`console_latest.txt` + `rpg_summary_latest.txt` from `garrysmod/data/legend_of_deborah/` by default**. Add `rpg_session_latest.txt` for detailed timing/event order. Upload `rpg_archive_latest.txt` only for requested cross-session investigation.
 
-The current-session summary refreshes automatically every 10 seconds and at test finish. Each summary write republishes ordinary physical upload files in `data/legend_of_deborah/`; no checkout symlink is required. Detailed session and rolling archive files are bounded so unattended developer testing cannot grow them indefinitely.
+The engine console is mirrored outside the GMod Lua sandbox every 0.5 seconds. The current-session RPG summary refreshes automatically every 10 seconds and at test finish. Detailed session and rolling archive files are bounded so unattended developer testing cannot grow them indefinitely.
 
 ## Gate E accepted batches
 
@@ -59,19 +60,29 @@ Implemented from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFr
 - player viewmodel playback is accelerated only while the authoritative reload session is active and is restored afterward;
 - the Character Sheet owned-feat ledger reports the current total ordinary reload-time multiplier;
 - `lod_rpg_gate_e_reload_validate`, `lod_rpg_gate_e_reload_status`, `lod_rpg_test_reload <0-3>`, and `lod_rpg_gate_e_reload_testkit [pistol|shotgun]` provide finite validation/testing;
-- core `lod_rpg_validate` includes the Batch 5 validator;
-- test observability records reload-deadline scaling into the current RPG event stream and summary.
+- core `lod_rpg_validate` includes the Batch 5 validator.
 
-### Batch 5 runtime gate
+### Batch 5 current runtime evidence
 
-1. Fresh-start Garry's Mod and `gm_flatgrass` with `lod_developer_mode 1`; complete staging/deploy.
+Repeated Steam Deck play indicates the family behaves correctly across the tested ranks and weapon paths. Blink Reload with the AR2 creates a particularly strong but desirable high-DEX option: reload downtime becomes barely perceptible and permits almost-continuous fire, while the weapon's telegraphed laser and pre-burst delay retain its authored cadence. Preserve that composition for later whole-RPG balance evaluation rather than treating it as a defect.
+
+The latest uploaded evidence exposed two **logging** defects, not a reported gameplay failure: the summary contained 51 AR2/d10 player-roll events but zero reload-scale events, and the physical console file was only an `ENGINE_CONSOLE_NOT_READABLE` placeholder because Steam Deck GMod Lua could not read the engine-level console. The repaired evidence path therefore:
+
+- mirrors real `garrysmod/console.log` externally into physical `data/legend_of_deborah/console_latest.txt`;
+- emits `RELOAD_SCALE` telemetry synchronously when the canonical reload runtime increments its actual scaling counter;
+- leaves the existing finite validator and reload mechanics unchanged.
+
+### Batch 5 short logged-closure gate
+
+Do not repeat the complete rank ladder again. On fresh `gm_flatgrass` with `lod_developer_mode 1`:
+
+1. Run `lod_rpg_test_upload_status` and confirm the physical console mirror is nonempty.
 2. Run `lod_rpg_gate_e_reload_validate`; require `DEX Reload feat family PASS`.
-3. Run `lod_rpg_test_reload 0`, then `lod_rpg_gate_e_reload_testkit pistol`; press R and note baseline reload timing/status.
-4. Run ranks 1, 2, and 3. Before each reload, run the testkit again, press R, then run `lod_rpg_gate_e_reload_status`. Require multipliers `0.80`, `0.60`, and `0.40`, an increasing `scaledExtensions` count, and a `last=` entry showing an authored reload deadline compressed to the active multiplier.
-5. Repeat rank 3 with `lod_rpg_gate_e_reload_testkit shotgun`; confirm the shell-by-shell reload visibly accelerates and can still be interrupted normally by firing.
-6. With the SMG overheated, press R during its 2.0-second lock and confirm the overheat recovery is **not** shortened. With the AR2, confirm its targeting tell/internal burst timing is unchanged.
-7. Open P and confirm the active reload feat reports the same total reload-time multiplier.
-8. Run `lod_rpg_validate`; require core PASS and no Lua errors.
-9. Run `lod_rpg_test_finish batch5-reload`, then `lod_rpg_test_upload_status`. Upload `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/console_latest.txt` + `rpg_summary_latest.txt`. Add `rpg_session_latest.txt` if any timing/exclusion result is ambiguous.
+3. Run `lod_rpg_test_reload 3`, use the AR2, and reload it at least once.
+4. Run `lod_rpg_gate_e_reload_status`; require multiplier `0.40`, `scaledExtensions > 0`, and an AR2 `last=` scaling entry.
+5. Run `lod_rpg_validate`; require core PASS and no Lua errors.
+6. Run `lod_rpg_test_finish batch5-reload-telemetry`, then `lod_rpg_test_upload_status`.
+7. Upload `console_latest.txt`, `rpg_summary_latest.txt`, and `rpg_session_latest.txt` from `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
+8. Formal acceptance requires the repaired summary/session to show reload scaling plus the final test mark/core PASS, agreeing with the already-successful gameplay evidence.
 
-Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and now accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.
+Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.
