@@ -18,17 +18,30 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 12. Focused post-RPG VPS multiplayer regression.
 13. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
 
+## Runtime evidence protocol
+
+All runtime gates use `docs/TEST_LOGGING.md`.
+
+- Start Garry's Mod fresh when beginning a distinct gate so `-condebug -conclearlog` gives a clean `console_latest.log`.
+- End the gate with `lod_rpg_test_finish <short-test-label>`.
+- Default evidence package: `console_latest.log` + `rpg_summary_latest.log`.
+- Add `rpg_session_latest.log` for timing/event-order or unexplained combat/RPG behavior.
+- `rpg_archive_latest.log` is bounded rolling cross-session history and is uploaded only when specifically requested.
+- Screenshots remain appropriate for visual/rendering/layout defects; logs are preferred for console text and runtime mechanics.
+
 ## Immediate runtime gate — Batch 5
 
 On `gm_flatgrass` with `lod_developer_mode 1`:
 
-1. Run `lod_rpg_gate_e_reload_validate`; require the DEX Reload family PASS line.
-2. Run `lod_rpg_test_reload 0`, `lod_rpg_gate_e_reload_testkit pistol`, then press R for a baseline reload.
-3. Repeat with ranks 1, 2, and 3; status must report multipliers 0.80, 0.60, and 0.40. `scaledExtensions` must increase after real reloads and `last=` must show an authored deadline compressed by the active multiplier.
-4. At rank 3, run `lod_rpg_gate_e_reload_testkit shotgun`; confirm shell-by-shell reload speeds up while normal fire-to-interrupt behavior remains intact.
-5. Overheat the SMG, press R during the fixed 2.0-second recovery, and confirm Reload does not shorten it. Confirm AR2 targeting tell/internal burst timing remains unchanged.
-6. Reopen P and confirm the owned reload feat reports the same total reload-time multiplier.
-7. Run `lod_rpg_validate`; require the core PASS line and no Lua errors.
+1. Fresh-start Garry's Mod so the console log contains only this test session; complete staging/deploy.
+2. Run `lod_rpg_gate_e_reload_validate`; require the DEX Reload family PASS line.
+3. Run `lod_rpg_test_reload 0`, `lod_rpg_gate_e_reload_testkit pistol`, then press R for a baseline reload.
+4. Repeat with ranks 1, 2, and 3; status must report multipliers 0.80, 0.60, and 0.40. `scaledExtensions` must increase after real reloads and `last=` must show an authored deadline compressed by the active multiplier.
+5. At rank 3, run `lod_rpg_gate_e_reload_testkit shotgun`; confirm shell-by-shell reload speeds up while normal fire-to-interrupt behavior remains intact.
+6. Overheat the SMG, press R during the fixed 2.0-second recovery, and confirm Reload does not shorten it. Confirm AR2 targeting tell/internal burst timing remains unchanged.
+7. Reopen P and confirm the owned reload feat reports the same total reload-time multiplier.
+8. Run `lod_rpg_validate`; require the core PASS line and no Lua errors.
+9. Run `lod_rpg_test_finish batch5-reload`. Upload `console_latest.log` + `rpg_summary_latest.log`; add `rpg_session_latest.log` if timing, interruption, or exclusion behavior is questionable.
 
 ## Batch 4 acceptance note
 
