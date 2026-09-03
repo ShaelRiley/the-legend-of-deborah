@@ -14,13 +14,13 @@ Design authority: the live **The Legend of Deborah — Garry's Mod Game Design D
 
 Every finite RPG runtime gate follows `docs/TEST_LOGGING.md`:
 
-1. Fresh-start Garry's Mod for a clean engine `console_latest.log` when beginning a distinct gate.
+1. Fresh-start Garry's Mod for a clean engine console when beginning a distinct gate.
 2. Run the family validator/testkit and exercise the mechanic.
 3. Use `lod_rpg_test_mark <note>` for moments worth correlating with telemetry.
 4. Run `lod_rpg_validate` and then `lod_rpg_test_finish <short-test-label>`.
-5. Upload **`console_latest.log` + `rpg_summary_latest.log` by default**. Add `rpg_session_latest.log` for detailed timing/event order. Upload `rpg_archive_latest.log` only for requested cross-session investigation.
+5. Upload **`console_latest.txt` + `rpg_summary_latest.txt` from `garrysmod/data/legend_of_deborah/` by default**. Add `rpg_session_latest.txt` for detailed timing/event order. Upload `rpg_archive_latest.txt` only for requested cross-session investigation.
 
-The current-session summary refreshes automatically every 10 seconds and at test finish. Detailed session and rolling archive files are bounded so unattended developer testing cannot grow them indefinitely.
+The current-session summary refreshes automatically every 10 seconds and at test finish. Each summary write republishes ordinary physical upload files in `data/legend_of_deborah/`; no checkout symlink is required. Detailed session and rolling archive files are bounded so unattended developer testing cannot grow them indefinitely.
 
 ## Gate E accepted batches
 
@@ -72,6 +72,6 @@ Implemented from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFr
 6. With the SMG overheated, press R during its 2.0-second lock and confirm the overheat recovery is **not** shortened. With the AR2, confirm its targeting tell/internal burst timing is unchanged.
 7. Open P and confirm the active reload feat reports the same total reload-time multiplier.
 8. Run `lod_rpg_validate`; require core PASS and no Lua errors.
-9. Run `lod_rpg_test_finish batch5-reload`; upload `console_latest.log` + `rpg_summary_latest.log`. Add `rpg_session_latest.log` if any timing/exclusion result is ambiguous.
+9. Run `lod_rpg_test_finish batch5-reload`, then `lod_rpg_test_upload_status`. Upload `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/console_latest.txt` + `rpg_summary_latest.txt`. Add `rpg_session_latest.txt` if any timing/exclusion result is ambiguous.
 
 Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and now accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.

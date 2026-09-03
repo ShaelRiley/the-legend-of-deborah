@@ -22,11 +22,13 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 
 All runtime gates use `docs/TEST_LOGGING.md`.
 
-- Start Garry's Mod fresh when beginning a distinct gate so `-condebug -conclearlog` gives a clean `console_latest.log`.
+- Start Garry's Mod fresh when beginning a distinct gate so `-condebug -conclearlog` gives a clean engine console.
 - End the gate with `lod_rpg_test_finish <short-test-label>`.
-- Default evidence package: `console_latest.log` + `rpg_summary_latest.log`.
-- Add `rpg_session_latest.log` for timing/event-order or unexplained combat/RPG behavior.
-- `rpg_archive_latest.log` is bounded rolling cross-session history and is uploaded only when specifically requested.
+- Canonical upload directory on the Steam Deck: `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
+- Default physical evidence package: `console_latest.txt` + `rpg_summary_latest.txt`.
+- Add `rpg_session_latest.txt` for timing/event-order or unexplained combat/RPG behavior.
+- `rpg_archive_latest.txt` is bounded rolling cross-session history and is uploaded only when specifically requested.
+- `lod_rpg_test_upload_status` verifies that the upload-facing files exist and reports their sizes.
 - Screenshots remain appropriate for visual/rendering/layout defects; logs are preferred for console text and runtime mechanics.
 
 ## Immediate runtime gate — Batch 5
@@ -41,7 +43,8 @@ On `gm_flatgrass` with `lod_developer_mode 1`:
 6. Overheat the SMG, press R during the fixed 2.0-second recovery, and confirm Reload does not shorten it. Confirm AR2 targeting tell/internal burst timing remains unchanged.
 7. Reopen P and confirm the owned reload feat reports the same total reload-time multiplier.
 8. Run `lod_rpg_validate`; require the core PASS line and no Lua errors.
-9. Run `lod_rpg_test_finish batch5-reload`. Upload `console_latest.log` + `rpg_summary_latest.log`; add `rpg_session_latest.log` if timing, interruption, or exclusion behavior is questionable.
+9. Run `lod_rpg_test_finish batch5-reload`, then `lod_rpg_test_upload_status`.
+10. Upload `console_latest.txt` + `rpg_summary_latest.txt` from the canonical data directory; add `rpg_session_latest.txt` if timing, interruption, or exclusion behavior is questionable.
 
 ## Batch 4 acceptance note
 
