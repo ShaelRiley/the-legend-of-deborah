@@ -174,6 +174,30 @@ local function installSummaryBridge()
     return true
 end
 
+local function installFinishBridge()
+    if Export.FinishBridgeInstalled then return true end
+    if not concommand.GetTable then return false end
+
+    local commands = concommand.GetTable()
+    local baseFinish = commands and commands["lod_rpg_test_finish"]
+    if not isfunction(baseFinish) then return false end
+
+    Export.FinishBridgeInstalled = true
+    concommand.Remove("lod_rpg_test_finish")
+    concommand.Add("lod_rpg_test_finish", function(ply, cmd, args, argStr)
+        baseFinish(ply, cmd, args, argStr)
+        local label = safe(argStr)
+        if label == "" then label = "unnamed-test" end
+        timer.Simple(0.1, function()
+            Export:Publish("test finish " .. label, false)
+            print("[LOD:RPG-UPLOAD] CANONICAL UPLOAD DIRECTORY: garrysmod/data/" .. DATA_DIR .. "/")
+            print("[LOD:RPG-UPLOAD] SEND: console_latest.txt + rpg_summary_latest.txt")
+            print("[LOD:RPG-UPLOAD] ADD rpg_session_latest.txt only for timing/event-order detail; archive only when requested")
+        end)
+    end)
+    return true
+end
+
 local function installCommands()
     if Export.CommandsInstalled then return end
     Export.CommandsInstalled = true
@@ -220,9 +244,12 @@ local function bootstrap()
     file.CreateDir(DATA_DIR)
     installSummaryBridge()
     installCommands()
+    installFinishBridge()
 
     timer.Create("LOD_RPGTestUploadExport_BridgeRetry", 0.5, 0, function()
-        if installSummaryBridge() then
+        local summaryReady = installSummaryBridge()
+        local finishReady = installFinishBridge()
+        if summaryReady and finishReady then
             timer.Remove("LOD_RPGTestUploadExport_BridgeRetry")
         end
     end)
