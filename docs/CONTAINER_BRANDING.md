@@ -201,3 +201,39 @@ Expected V10 diagnostics:
 - `[LOD:CONTAINER-DETAIL] ... mode=runtime-texture`
 - `[LOD:CONTAINER-SLOTS] mode=submaterials sampleSlots=>0`
 - `wrong=0`
+
+## V11 file-backed Source materials
+
+The V10 Steam Deck playtest isolated the remaining material failure. Explicit
+`SetSubMaterial` replacement worked: `sampleSlots=3`, `wrong=0`, and the stock
+Northern Petroleum art disappeared. The replacement hull itself, however, rendered
+black even while the mounted PNGs reported `mode=runtime-texture`. That proves the
+remaining fault is the dynamic `CreateMaterial` + runtime PNG `ITexture` composition,
+not the cargo mesh, UVs, spray renderer, or submaterial indexing.
+
+V11 removes that runtime texture indirection entirely. The deterministic V9 blank
+steel and neutral grit images are compiled during the repository build into ordinary
+Source **VTF 7.2 / DXT1** textures with complete mip chains. The finite 72-hue x
+5-shell palette is compiled into 360 tiny file-backed `VertexLitGeneric` VMT files.
+The runtime maximin palette algorithm still chooses the same candidate colours, but
+each chosen section now points directly at a normal material path under
+`legend_of_deborah/container_sections/`. `SetSubMaterial` receives that file-backed
+path with no `!` dynamic-material prefix and no runtime `IMaterial:SetTexture` calls.
+
+The V11 renderer verifies the real state rather than cached calls: every material
+slot must return the expected path through `GetSubMaterial`, the selected VMT must
+load without `IsError()`, and its shader must be `VertexLitGeneric` before a container
+counts as correct.
+
+Expected V11 diagnostics:
+
+- `materialVersion=v16_filebacked_vtf`
+- `[LOD:CONTAINER-HULL] ... mode=file-backed-vtf`
+- `[LOD:CONTAINER-DETAIL] ... mode=file-backed-vtf`
+- `[LOD:CONTAINER-SLOTS] mode=file-backed-submaterials sampleSlots=>0`
+- `[LOD:CONTAINER-VTF] material=ok shader=VertexLitGeneric override=ok`
+- `wrong=0`
+
+Visual acceptance remains unchanged: no stock NP art, vivid deterministic section
+colour, dirty/corrugated steel instead of a black slab, two visibly distinct stacked
+containers, and the existing alpha-tested procedural company spray intact.

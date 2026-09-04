@@ -15,33 +15,19 @@ if not Wall then return end
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
-local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v9.png"
-local HULL_FALLBACK_TEXTURE = "vgui/white"
-local HULL_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-local hullSourceMaterial = Material(HULL_PATH, "smooth mips")
-local hullTexture = nil
-if hullSourceMaterial and not hullSourceMaterial:IsError() then
-    hullTexture = hullSourceMaterial:GetTexture("$basetexture")
-end
-local HULL_AVAILABLE = hullTexture ~= nil
-
-local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
-local DETAIL_FALLBACK_TEXTURE = "vgui/white"
-local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
-local detailTexture = nil
-if detailSourceMaterial and not detailSourceMaterial:IsError() then
-    detailTexture = detailSourceMaterial:GetTexture("$basetexture")
-end
-local DETAIL_AVAILABLE = detailTexture ~= nil
+local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v11.vtf"
+local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail_v11.vtf"
+local SECTION_MATERIAL_PREFIX = "legend_of_deborah/container_sections/"
 local DETAIL_BLEND_FACTOR = 0.40
 local DETAIL_SCALE = 1.00
--- Preserve authored steel luminance while the procedural section color remains
--- unmistakable. Full replacement made the safe white-base experiment look cel-shaded.
+-- File-backed Source VTF/VMT materials replace V10's runtime PNG ITexture binding.
+-- The authored neutral hull still owns luminance/grime while each prebuilt VMT owns
+-- one deterministic section tint from the finite maximin candidate set.
 local COLOR_REPLACE_BLEND = 0.78
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v15_blank_hull_submaterials"
+local MATERIAL_VERSION = "v16_filebacked_vtf"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -68,6 +54,8 @@ local appliedCount = 0
 local paletteSeed = nil
 local paletteFloorCount = nil
 local sectionPalette = {}
+local sectionMaterialKeys = {}
+local materialAvailability = {}
 local paletteMinDeltaE = 0
 local paletteMinHueDistance = 0
 
@@ -172,7 +160,7 @@ local function buildCandidates()
     local seen = {}
 
     for hue = 0, 355, CANDIDATE_HUE_STEP do
-        for _, sv in ipairs(CANDIDATE_SV) do
+        for shellIndex, sv in ipairs(CANDIDATE_SV) do
             local color = HSVToColor(hue, sv[1], sv[2])
             local key = colorKey(color)
             if not seen[key] then
@@ -180,7 +168,8 @@ local function buildCandidates()
                 candidates[#candidates + 1] = {
                     color = color,
                     lab = colorToLab(color),
-                    hue = hue
+                    hue = hue,
+                    materialKey = string.format("v16_h%03d_s%d", hue, shellIndex)
                 }
             end
         end
@@ -215,12 +204,17 @@ local function buildSectionPalette(seed, floorCount)
 
         local chosen = table.remove(candidates, bestIndex or 1)
         if not chosen then
-            local fallbackHue = (#selected * 137.507764 + seed) % 360
-            local fallbackColor = HSVToColor(fallbackHue, 0.90, 0.90)
+            local rawHue = (#selected * 137.507764 + seed) % 360
+            local fallbackHue = (math.floor(rawHue / CANDIDATE_HUE_STEP + 0.5)
+                * CANDIDATE_HUE_STEP) % 360
+            local fallbackShell = 2
+            local fallbackSV = CANDIDATE_SV[fallbackShell]
+            local fallbackColor = HSVToColor(fallbackHue, fallbackSV[1], fallbackSV[2])
             chosen = {
                 color = fallbackColor,
                 lab = colorToLab(fallbackColor),
-                hue = fallbackHue
+                hue = fallbackHue,
+                materialKey = string.format("v16_h%03d_s%d", fallbackHue, fallbackShell)
             }
         end
         selected[#selected + 1] = chosen
@@ -234,8 +228,10 @@ local function buildSectionPalette(seed, floorCount)
     rng:Shuffle(remaining)
 
     local palette = {}
+    local materialKeys = {}
     for floor = 0, floorCount - 1 do
         palette[floor] = {}
+        materialKeys[floor] = {}
         local floorChosen = {}
 
         for quadrant = 1, QUADRANTS_PER_FLOOR do
@@ -252,6 +248,7 @@ local function buildSectionPalette(seed, floorCount)
             local chosen = table.remove(remaining, bestIndex or 1)
             if chosen then
                 palette[floor][quadrant] = chosen.color
+                materialKeys[floor][quadrant] = chosen.materialKey
                 floorChosen[#floorChosen + 1] = chosen
             end
         end
@@ -269,6 +266,7 @@ local function buildSectionPalette(seed, floorCount)
     paletteMinDeltaE = minDelta == math.huge and 0 or minDelta
     paletteMinHueDistance = minHue == math.huge and 0 or minHue
     sectionPalette = palette
+    sectionMaterialKeys = materialKeys
     paletteSeed = seed
     paletteFloorCount = floorCount
 end
@@ -295,52 +293,33 @@ local function colorForInstance(instance)
     return sectionPalette[floor] and sectionPalette[floor][quadrant] or nil
 end
 
-local function sectionMaterialName(c)
-    local key = colorKey(c)
-    local cached = materialNames[key]
-    if cached then return cached end
+local function materialKeyForInstance(instance)
+    if not instance or instance.floor == nil or not instance.quadrant then return nil end
+    ensureSectionPalette()
+    local floor = math.Clamp(math.floor(instance.floor), 0, MAX_FLOORS - 1)
+    local quadrant = math.Clamp(math.floor(instance.quadrant), 1, QUADRANTS_PER_FLOOR)
+    return sectionMaterialKeys[floor] and sectionMaterialKeys[floor][quadrant] or nil
+end
 
-    local vivid = vividSectionColor(c)
-    local r = clamp01((vivid.r or 0) / 255)
-    local g = clamp01((vivid.g or 0) / 255)
-    local b = clamp01((vivid.b or 0) / 255)
-    local name = "lod_container_section_" .. MATERIAL_VERSION .. "_" .. key
-
-    local params = {
-        ["$basetexture"] = HULL_FALLBACK_TEXTURE,
-        ["$bumpmap"] = HULL_NORMAL_TEXTURE,
-        ["$surfaceprop"] = "metal",
-        ["$model"] = "1",
-        ["$allowdiffusemodulation"] = "1",
-        ["$blendtintbybasealpha"] = "0",
-        ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
-        ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b),
-        ["$detail"] = DETAIL_FALLBACK_TEXTURE,
-        ["$detailblendmode"] = "0",
-        ["$detailblendfactor"] = "0.000",
-        ["$detailscale"] = string.format("%.3f", DETAIL_SCALE),
-        ["$phong"] = "1",
-        ["$phongexponent"] = "18",
-        ["$phongboost"] = "0.16",
-        ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
-    }
-    local material = CreateMaterial(name, "VertexLitGeneric", params)
-    if material and not material:IsError() then
-        -- Mounted PNGs are valid ITextures. Bind the blank hull directly so Source
-        -- never reinterprets its internal name as a missing .vtf path.
-        if HULL_AVAILABLE then
-            material:SetTexture("$basetexture", hullTexture)
-        end
-        if DETAIL_AVAILABLE then
-            material:SetTexture("$detail", detailTexture)
-            material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)
-            material:SetFloat("$detailscale", DETAIL_SCALE)
-        end
-        if material.Recompute then material:Recompute() end
-    end
-
-    materialNames[key] = name
+local function sectionMaterialName(instance)
+    local key = materialKeyForInstance(instance)
+    if not key then return nil end
+    local name = SECTION_MATERIAL_PREFIX .. key
+    materialNames[name] = true
     return name
+end
+
+local function sectionMaterialAvailable(name)
+    if not name then return false, "missing" end
+    local cached = materialAvailability[name]
+    if cached then return cached.ok, cached.shader end
+
+    local material = Material(name)
+    local ok = material ~= nil and not material:IsError()
+    local shader = ok and tostring(material:GetShader() or "") or "error"
+    ok = ok and string.lower(shader) == "vertexlitgeneric"
+    materialAvailability[name] = {ok = ok, shader = shader}
+    return ok, shader
 end
 
 local function complementaryColor(c)
@@ -351,41 +330,57 @@ local function complementaryColor(c)
     return HSVToColor(h, s, 0.62)
 end
 
-local function applySectionMaterialSlots(model, matName, instance)
-    local wanted = "!" .. matName
+local function allSectionSlotsMatch(model, matName)
+    if not IsValid(model) or not matName then return false, 0 end
     local slots = model:GetMaterials() or {}
     local slotCount = #slots
+    if slotCount <= 0 then return false, 0 end
+    for slot = 0, slotCount - 1 do
+        if tostring(model:GetSubMaterial(slot) or "") ~= matName then
+            return false, slotCount
+        end
+    end
+    return true, slotCount
+end
 
-    -- The stock cargo model can expose multiple material slots. A single global
-    -- override proved insufficient in V9: the baked Northern Petroleum diffuse
-    -- survived even while our cached diagnostic claimed success. Replace every
-    -- slot explicitly, then clear the temporary debugwhite/global override that
-    -- cl_wall_visuals.lua uses while the client model is being constructed.
+local function applySectionMaterialSlots(model, matName, instance)
+    local available = sectionMaterialAvailable(matName)
+    if not available then
+        instance.appliedSectionMode = "file-backed-missing"
+        instance.appliedSectionSlotCount = 0
+        return false
+    end
+
+    local slots = model:GetMaterials() or {}
+    local slotCount = #slots
     if slotCount > 0 then
+        local matches = allSectionSlotsMatch(model, matName)
         local changed = instance.appliedSectionMaterialName ~= matName
-            or instance.appliedSectionMode ~= "submaterials"
+            or instance.appliedSectionMode ~= "file-backed-submaterials"
             or instance.appliedSectionSlotCount ~= slotCount
+            or not matches
 
         if changed then
             for slot = 0, slotCount - 1 do
-                model:SetSubMaterial(slot, wanted)
+                model:SetSubMaterial(slot, matName)
             end
+            -- cl_wall_visuals.lua constructs with a temporary debugwhite override.
+            -- Clear it only after every stock cargo material slot has a real VMT.
             model:SetMaterial("")
             instance.appliedSectionMaterialName = matName
-            instance.appliedSectionMode = "submaterials"
+            instance.appliedSectionMode = "file-backed-submaterials"
             instance.appliedSectionSlotCount = slotCount
         end
         return changed
     end
 
-    -- Defensive fallback for an unexpected model with no enumerated slots. This
-    -- should never be the production cargo path, but it keeps presentation safe.
     local changed = instance.appliedSectionMaterialName ~= matName
-        or instance.appliedSectionMode ~= "global-fallback"
+        or instance.appliedSectionMode ~= "file-backed-global-fallback"
+        or tostring(model:GetMaterial() or "") ~= matName
     if changed then
-        model:SetMaterial(wanted)
+        model:SetMaterial(matName)
         instance.appliedSectionMaterialName = matName
-        instance.appliedSectionMode = "global-fallback"
+        instance.appliedSectionMode = "file-backed-global-fallback"
         instance.appliedSectionSlotCount = 0
     end
     return changed
@@ -401,7 +396,8 @@ local function reconcileModel(index, model, instance)
     -- consumer, including the sparse plywood stencil renderer.
     instance.sectionColor = Color(section.r, section.g, section.b, 255)
 
-    local matName = sectionMaterialName(section)
+    local matName = sectionMaterialName(instance)
+    if not matName then return false end
     local changed = applySectionMaterialSlots(model, matName, instance)
 
     local current = model:GetColor()
@@ -473,12 +469,6 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
     end
 end)
 
-local function normalizedMaterialOverride(model)
-    if not IsValid(model) then return "" end
-    local actual = tostring(model:GetMaterial() or "")
-    return string.gsub(actual, "^!", "")
-end
-
 concommand.Add("lod_container_recolor_status", function()
     ensureSectionPalette()
 
@@ -495,11 +485,15 @@ concommand.Add("lod_container_recolor_status", function()
                 .. string.char(64 + (instance.quadrant or 1))
             sectionCodes[code] = colorKey(section)
             local model = models[index]
-            local wantedName = instance.sectionMaterialName or sectionMaterialName(section)
+            local wantedName = instance.sectionMaterialName or sectionMaterialName(instance)
+            local slotsMatch, slotCount = allSectionSlotsMatch(model, wantedName)
+            local materialOK = sectionMaterialAvailable(wantedName)
             if IsValid(model)
+                and materialOK
+                and slotsMatch
+                and slotCount > 0
                 and instance.appliedSectionMaterialName == wantedName
-                and instance.appliedSectionMode == "submaterials"
-                and (instance.appliedSectionSlotCount or 0) > 0
+                and instance.appliedSectionMode == "file-backed-submaterials"
             then
                 correct = correct + 1
             else
@@ -522,30 +516,40 @@ concommand.Add("lod_container_recolor_status", function()
         tostring(reconcileComplete), table.concat(sections, " ")
     ))
     print(string.format(
-        "[LOD:CONTAINER-HULL] source=%s mode=%s blend=%.2f",
-        HULL_PATH,
-        HULL_AVAILABLE and "runtime-texture" or "white-fallback",
-        COLOR_REPLACE_BLEND
+        "[LOD:CONTAINER-HULL] source=%s mode=file-backed-vtf blend=%.2f",
+        HULL_PATH, COLOR_REPLACE_BLEND
     ))
     print(string.format(
-        "[LOD:CONTAINER-DETAIL] source=%s mode=%s blend=%.2f",
-        DETAIL_PATH,
-        DETAIL_AVAILABLE and "runtime-texture" or "flat-fallback",
-        DETAIL_AVAILABLE and DETAIL_BLEND_FACTOR or 0
+        "[LOD:CONTAINER-DETAIL] source=%s mode=file-backed-vtf blend=%.2f",
+        DETAIL_PATH, DETAIL_BLEND_FACTOR
     ))
 
     local sampleSlots = 0
     local sampleMode = "none"
+    local sampleName = "none"
+    local sampleShader = "none"
+    local sampleMaterialOK = false
+    local sampleOverridesOK = false
     for index, instance in ipairs(world) do
         local model = models[index]
         if IsValid(model) then
             sampleSlots = #(model:GetMaterials() or {})
             sampleMode = tostring(instance.appliedSectionMode or "none")
+            sampleName = instance.sectionMaterialName or sectionMaterialName(instance) or "none"
+            sampleMaterialOK, sampleShader = sectionMaterialAvailable(sampleName)
+            sampleOverridesOK = select(1, allSectionSlotsMatch(model, sampleName))
             break
         end
     end
     print(string.format(
         "[LOD:CONTAINER-SLOTS] mode=%s sampleSlots=%d materialVersion=%s",
         sampleMode, sampleSlots, MATERIAL_VERSION
+    ))
+    print(string.format(
+        "[LOD:CONTAINER-VTF] material=%s shader=%s override=%s sample=%s",
+        sampleMaterialOK and "ok" or "error",
+        sampleShader,
+        sampleOverridesOK and "ok" or "wrong",
+        sampleName
     ))
 end)
