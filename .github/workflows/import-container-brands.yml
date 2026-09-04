@@ -2,14 +2,16 @@ name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main, agent/container-grit-v6]
+    branches: [main, agent/container-alpha-v7]
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'tools/assets/container_brand_names.tsv'
       - 'tools/assets/patch_container_grit_v6.py'
+      - 'tools/assets/patch_container_alpha_v7.py'
       - 'tools/assets/validate_container_v6.py'
+      - 'tools/assets/validate_container_v7.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
@@ -35,7 +37,9 @@ jobs:
         run: |
           python3 -m py_compile tools/assets/build_container_surface_assets.py
           python3 -m py_compile tools/assets/patch_container_grit_v6.py
+          python3 -m py_compile tools/assets/patch_container_alpha_v7.py
           python3 -m py_compile tools/assets/validate_container_v6.py
+          python3 -m py_compile tools/assets/validate_container_v7.py
 
       - name: Build container presentation assets
         run: python3 tools/assets/build_container_surface_assets.py
@@ -43,22 +47,27 @@ jobs:
       - name: Apply safe V6 grit runtime binding
         run: python3 tools/assets/patch_container_grit_v6.py
 
-      - name: Validate V6 presentation
+      - name: Apply V7 true-alpha spray binding
+        run: python3 tools/assets/patch_container_alpha_v7.py
+
+      - name: Validate V7 presentation
         run: |
           python3 tools/assets/validate_container_v6.py
+          python3 tools/assets/validate_container_v7.py
           git diff --check
 
-      - name: Commit generated runtime assets and V6 wiring
+      - name: Commit generated runtime assets and V7 wiring
         run: |
           git add -A \
             docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
           if git diff --cached --quiet; then
-            echo 'V6 runtime already matches generated output.'
+            echo 'V7 runtime already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Fix runtime grit texture binding [skip ci]'
+          git commit -m 'Fix full-side spray alpha transparency [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
