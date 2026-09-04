@@ -5,29 +5,30 @@ if not Wall then return end
 
 -- Shader-native section recoloring over a truly blank gritty cargo hull.
 --
--- V9 removes the final Northern Petroleum diffuse dependency. The repository ships
--- a deterministic company-free corrugated steel texture, while the stock normal map
--- remains solely for physical surface relief. Company identity is rendered later as
--- an alpha-tested spray mask and therefore never has to conceal baked stock branding.
+-- V13 removes custom hull texture decoding from the runtime entirely. Online and
+-- stock-content audits found that the three HL2 cargo-container skins are all branded,
+-- so the hull uses guaranteed stock neutral HL2 metalwall001a as its diffuse while the
+-- exact stock cargo normal map supplies corrugation relief. Company identity remains
+-- a separate alpha-tested spray and never has to conceal baked stock branding.
 --
 -- Section colors are generated uniquely for the ACTUAL sections in this maze. The
 -- entire hue circle is legal: Red, Yellow and Blue are no longer reserved. A seeded
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
-local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v12.vtf"
-local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail_v12.vtf"
+local HULL_PATH = "metal/metalwall001a"
+local DETAIL_PATH = "detail/detail_noise1"
 local SECTION_MATERIAL_PREFIX = "legend_of_deborah/container_sections/"
-local DETAIL_BLEND_FACTOR = 0.40
-local DETAIL_SCALE = 1.00
--- File-backed Source VTF/VMT materials replace V10's runtime PNG ITexture binding.
--- The authored neutral hull still owns luminance/grime while each prebuilt VMT owns
--- one deterministic section tint from the finite maximin candidate set.
-local COLOR_REPLACE_BLEND = 0.78
+local DETAIL_BLEND_FACTOR = 0.12
+local DETAIL_SCALE = 4.00
+-- V18 VMTs reference only mounted stock HL2/GMod textures. There is no custom VTF
+-- in the live hull path: metalwall001a supplies neutral worn steel, the cargo normal
+-- map supplies the model-specific ridges, and detail_noise1 adds restrained grime.
+local COLOR_REPLACE_BLEND = 0.72
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v17_filebacked_global_bgr888"
+local MATERIAL_VERSION = "v18_stock_hl2_metalwall"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -169,7 +170,7 @@ local function buildCandidates()
                     color = color,
                     lab = colorToLab(color),
                     hue = hue,
-                    materialKey = string.format("v17_h%03d_s%d", hue, shellIndex)
+                    materialKey = string.format("v18_h%03d_s%d", hue, shellIndex)
                 }
             end
         end
@@ -214,7 +215,7 @@ local function buildSectionPalette(seed, floorCount)
                 color = fallbackColor,
                 lab = colorToLab(fallbackColor),
                 hue = fallbackHue,
-                materialKey = string.format("v17_h%03d_s%d", fallbackHue, fallbackShell)
+                materialKey = string.format("v18_h%03d_s%d", fallbackHue, fallbackShell)
             }
         end
         selected[#selected + 1] = chosen
@@ -499,11 +500,11 @@ concommand.Add("lod_container_recolor_status", function()
         tostring(reconcileComplete), table.concat(sections, " ")
     ))
     print(string.format(
-        "[LOD:CONTAINER-HULL] source=%s mode=file-backed-bgr888 blend=%.2f",
+        "[LOD:CONTAINER-HULL] source=%s mode=stock-hl2-vtf blend=%.2f",
         HULL_PATH, COLOR_REPLACE_BLEND
     ))
     print(string.format(
-        "[LOD:CONTAINER-DETAIL] source=%s mode=file-backed-bgr888 blend=%.2f",
+        "[LOD:CONTAINER-DETAIL] source=%s mode=stock-hl2-vtf blend=%.2f",
         DETAIL_PATH, DETAIL_BLEND_FACTOR
     ))
 
@@ -532,10 +533,13 @@ concommand.Add("lod_container_recolor_status", function()
         sampleOverrideOK and "ok" or "wrong"
     ))
     print(string.format(
-        "[LOD:CONTAINER-VTF] material=%s shader=%s expected=%s actual=%s",
+        "[LOD:CONTAINER-STOCK] material=%s shader=%s expected=%s actual=%s base=%s normal=%s detail=%s",
         sampleMaterialOK and "ok" or "error",
         sampleShader,
         sampleName,
-        sampleActual
+        sampleActual,
+        HULL_PATH,
+        "models/props_wasteland/cargo_container01_normal",
+        DETAIL_PATH
     ))
 end)

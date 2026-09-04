@@ -258,3 +258,25 @@ than merely possessing a syntactically valid header.
 
 Expected runtime diagnostics are `materialVersion=v17_filebacked_global_bgr888`,
 `[LOD:CONTAINER-GLOBAL] ... override=ok`, and `wrong=0`.
+
+## V13 stock HL2 neutral-metal hull
+
+The V12 Steam Deck test still produced black broad faces. For V13 the implementation
+stopped iterating on custom hull encoders and audited mounted Source/Garry's Mod assets
+instead. Core Half-Life 2 ships `cargo_container01`, `cargo_container02`, and
+`cargo_container03`, but all three are Northern Petrol-branded skins; Counter-Strike:
+Source's `de_port` cargo family is also branded and is not a safe base-game dependency.
+There is therefore no verified, guaranteed, truly blank stock shipping-container skin.
+
+V13 uses a stronger stock-only composition. The procedural section VMTs use
+`metal/metalwall001a` as a neutral worn industrial diffuse, retain
+`models/props_wasteland/cargo_container01_normal` for the cargo model's exact corrugation and frame relief, and add the
+very restrained `detail/detail_noise1` detail texture. These are mounted stock Source textures,
+so the live hull no longer depends on any hand-built VTF or runtime PNG texture path.
+The V8 alpha-tested company spray remains separate and unchanged.
+
+The finite maximin palette is unchanged, but its generated files are now `v18_*` and
+`materialVersion=v18_stock_hl2_metalwall`. The runtime continues to clear stale submaterials and
+uses one global file-backed `VertexLitGeneric` override for the entire cargo model.
+Expected diagnostics include `mode=stock-hl2-vtf`, `[LOD:CONTAINER-GLOBAL] ...
+override=ok`, `[LOD:CONTAINER-STOCK] material=ok`, and `wrong=0`.
