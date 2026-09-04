@@ -25,7 +25,14 @@ def main():
         "fullSurfaceEligible = fullSurfaceEligibility[segmentIndex] == true",
         'local perpendicular = info.orientation == "h" and "v" or "h"',
         "edgeCounts[info.edgeKey] == 1",
+        "1=north, 2=east, 3=south, 4=west",
+        "if direction == 1 then",
+        "elseif direction == 3 then",
+        "elseif direction == 2 then",
+        "elseif direction == 4 then",
     ))
+    if "if direction == 0 then" in walls:
+        raise SystemExit("full-face classifier still uses invalid 0-based DIRS indexing")
     if "eligible[index] = a and b and a[perpendicular] == 0 and b[perpendicular] == 0" not in walls:
         raise SystemExit("full-face endpoint exclusion is incomplete")
 
@@ -55,7 +62,7 @@ def main():
         "perpendicular wall",
         "neither company paint nor",
     ))
-    print("V15 validated: <=20% deterministic company branding; all overlays exclude perpendicular-corner/junction-clipped and duplicate wall faces.")
+    print("V15.1 validated: <=20% deterministic company branding; 1-based wall directions; all overlays exclude perpendicular-corner/junction-clipped and duplicate wall faces.")
 
 
 if __name__ == "__main__":
