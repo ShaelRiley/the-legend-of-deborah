@@ -16,7 +16,7 @@ local LOGO_Y_FRACTION = 0.50
 local LOGO_Z_FRACTION = 0.55
 local SIDE_WIDTH_FRACTION = 0.86
 local SIDE_HEIGHT_FRACTION = 0.66
-local BRANDING_DENOMINATOR = 5
+local BRANDING_DENOMINATOR = 3
 
 local BRAND_COUNT = 256
 local BRANDS_PER_ATLAS = 64
@@ -111,6 +111,8 @@ local placementMarkedCount = -1
 local brandedCount = 0
 local brandableCount = 0
 local geometryBlockedCount = 0
+local targetBrandCount = 0
+local placementAttempts = 0
 
 local function placementSort(a, b)
     local ia, ib = a.instance, b.instance
@@ -132,10 +134,67 @@ local function currentMarkedCount(world)
     return count
 end
 
+-- Physical contact graph for company paint. Both containers in one logical wall
+-- stack share a horizontal face, so only one of them may be branded. Collinear
+-- neighbors in the same stack tier share a vertical end face, so they also conflict.
+-- Diagonal point/edge contact between different tiers is not treated as adjacency.
+local function candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
+    local edgeKey = instance.overlayEdgeKey
+    local endpointA = instance.overlayEndpointA
+    local endpointB = instance.overlayEndpointB
+    local orientation = instance.overlayOrientation
+    if not edgeKey or not endpointA or not endpointB or not orientation then return true end
+
+    -- Same logical wall edge means the upper/lower stack partner is already branded.
+    if occupiedEdges[edgeKey] then return true end
+
+    -- Same-tier collinear wall edges that share either endpoint are directly adjacent.
+    local stackKey = tostring(instance.stackIndex or 0) .. ":" .. orientation
+    local endpoints = occupiedEndpoints[stackKey]
+    return endpoints and (endpoints[endpointA] or endpoints[endpointB]) or false
+end
+
+local function reserveCandidate(instance, occupiedEdges, occupiedEndpoints)
+    occupiedEdges[instance.overlayEdgeKey] = true
+    local stackKey = tostring(instance.stackIndex or 0) .. ":" .. instance.overlayOrientation
+    local endpoints = occupiedEndpoints[stackKey]
+    if not endpoints then
+        endpoints = {}
+        occupiedEndpoints[stackKey] = endpoints
+    end
+    endpoints[instance.overlayEndpointA] = true
+    endpoints[instance.overlayEndpointB] = true
+end
+
+local function independentSelection(candidates, seed, trial, target)
+    local order = {}
+    for index = 1, #candidates do order[index] = index end
+
+    local rng = LOD.RNG.New(LOD.Seeds.Derive(seed,
+        "container-brand-placement:v2:trial:" .. tostring(trial)))
+    rng:Shuffle(order)
+
+    local occupiedEdges = {}
+    local occupiedEndpoints = {}
+    local chosen = {}
+    for _, candidateIndex in ipairs(order) do
+        if #chosen >= target then break end
+        local candidate = candidates[candidateIndex]
+        local instance = candidate and candidate.instance
+        if instance and not candidateConflicts(instance, occupiedEdges, occupiedEndpoints) then
+            reserveCandidate(instance, occupiedEdges, occupiedEndpoints)
+            chosen[#chosen + 1] = candidate
+        end
+    end
+    return chosen
+end
+
 local function rebuildBrandPlacement(world)
     brandedCount = 0
     brandableCount = 0
     geometryBlockedCount = 0
+    targetBrandCount = 0
+    placementAttempts = 0
     local candidates = {}
 
     for index, instance in ipairs(world or {}) do
@@ -149,17 +208,23 @@ local function rebuildBrandPlacement(world)
 
     table.sort(candidates, placementSort)
     brandableCount = #candidates
-    local seed = tonumber(Wall.seed) or 1
-    local rng = LOD.RNG.New(LOD.Seeds.Derive(seed, "container-brand-placement:v1"))
+    targetBrandCount = math.floor(#candidates / BRANDING_DENOMINATOR)
 
-    -- One deterministic choice from every complete spatial block of five. Leftover
-    -- candidates are intentionally unbranded, so density can never exceed 20%.
-    local fullBlocks = math.floor(#candidates / BRANDING_DENOMINATOR)
-    for block = 0, fullBlocks - 1 do
-        local first = block * BRANDING_DENOMINATOR + 1
-        local last = first + BRANDING_DENOMINATOR - 1
-        local chosen = candidates[rng:Int(first, last)]
-        if chosen and chosen.instance then
+    local seed = tonumber(Wall.seed) or 1
+    local best = {}
+    local maxAttempts = targetBrandCount > 0 and 24 or 0
+    for trial = 1, maxAttempts do
+        placementAttempts = trial
+        local chosen = independentSelection(candidates, seed, trial, targetBrandCount)
+        if #chosen > #best then best = chosen end
+        if #best >= targetBrandCount then break end
+    end
+
+    -- Separation is the hard invariant. In normal wall runs the independent set has
+    -- ample capacity for one in three; should a pathological layout fall short, it
+    -- remains safely under target rather than ever branding touching containers.
+    for _, chosen in ipairs(best) do
+        if chosen.instance then
             chosen.instance.companyBranded = true
             brandedCount = brandedCount + 1
         end
@@ -291,7 +356,7 @@ concommand.Add("lod_container_brand_status", function()
     if #world > 0 then ensureBrandPlacement(world) end
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d target=1/%d geometryBlocked=%d",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d target=1/%d targetCount=%d separation=touching-never geometryBlocked=%d attempts=%d",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
@@ -304,6 +369,8 @@ concommand.Add("lod_container_brand_status", function()
         brandedCount,
         brandableCount,
         BRANDING_DENOMINATOR,
-        geometryBlockedCount
+        targetBrandCount,
+        geometryBlockedCount,
+        placementAttempts
     ))
 end)

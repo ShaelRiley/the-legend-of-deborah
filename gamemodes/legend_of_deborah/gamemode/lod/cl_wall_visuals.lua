@@ -292,6 +292,7 @@ local function rebuildWorldCache()
     for segmentIndex, segment in ipairs(Wall.logical or {}) do
         local direction = DIRS[segment[4]]
         if direction then
+            local faceInfo = segmentFaceInfo(segment)
             local baseX = (segment[1] - halfWidth) * MC.CellSize
                 + direction.dx * MC.CellSize * 0.5
             local baseY = (segment[2] - halfHeight) * MC.CellSize
@@ -322,7 +323,11 @@ local function rebuildWorldCache()
                     sectionColor = sectionColor,
                     stackIndex = stack,
                     stackCount = stackCount,
-                    fullSurfaceEligible = fullSurfaceEligibility[segmentIndex] == true
+                    fullSurfaceEligible = fullSurfaceEligibility[segmentIndex] == true,
+                    overlayEdgeKey = faceInfo and faceInfo.edgeKey or nil,
+                    overlayEndpointA = faceInfo and faceInfo.endpointA or nil,
+                    overlayEndpointB = faceInfo and faceInfo.endpointB or nil,
+                    overlayOrientation = faceInfo and faceInfo.orientation or nil
                 }
                 out[#out + 1] = instance
                 addLabelBucket(#out, instance)

@@ -304,3 +304,21 @@ end-to-end walls remain eligible because they do not occlude the broad face.
 
 This classification is presentation-only and is computed once when the immutable wall
 manifest is expanded. It does not alter collision, maze topology or navigation.
+
+## V16 one-in-three non-touching company branding
+
+After V15 removes clipped geometry and reserves wayfinding containers, company paint now
+targets one third of the remaining eligible ordinary containers. Selection is seeded and
+deterministic for a labyrinth. The target count is `floor(eligible / 3)`.
+
+Brand separation is a hard invariant. The upper and lower containers in the same logical
+wall stack may never both carry company paint, because they directly touch. In addition,
+two collinear containers in the same stack tier may never both carry company paint when
+their wall edges share an endpoint. The selector searches deterministic shuffled orders
+for an independent set up to the one-third target. If an unusual topology cannot reach
+the target, separation wins and the run remains slightly under one third rather than ever
+placing two branded containers next to or directly touching one another.
+
+V15 full-surface eligibility remains authoritative: clipped corners, T-junctions, short
+dead-end edge cases, duplicate logical faces, and wayfinding-marked containers are excluded
+before the one-third target is calculated.
