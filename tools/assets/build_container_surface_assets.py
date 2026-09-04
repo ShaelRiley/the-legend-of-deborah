@@ -1,41 +1,45 @@
 #!/usr/bin/env python3
-"""Build blank-metal and spray-paint container runtime assets.
+"""Build the shipping-container surface assets used by The Legend of Deborah.
 
-The committed four brand atlases are the self-contained source for this runtime
-pass. This builder never downloads project assets. It derives:
+The runtime deliberately separates two concerns:
 
-- one neutral, logo-free metal diffuse used by the cargo model; and
-- four higher-resolution transparent spray-paint atlases (64 brands each).
+* The cargo model receives a neutral, logo-free diffuse derived from the *stock
+  cargo-container UV layout*.  This preserves Valve's authored face/door/top UV
+  structure instead of replacing it with a generic square metal tile.
+* Company identity is a transparent spray-paint mask.  When the authoritative
+  256-brand ZIP is supplied, spray atlases are rebuilt directly from the original
+  1024x512 brand sources; no tiny intermediate atlas is upscaled.
 
-It can also patch cl_container_section_recolor.lua so the stock Northern Petrol
-diffuse is no longer used as the model's color texture. The stock normal map is
-retained because it contains surface relief, not company branding.
+The stock normal map remains engine-provided and unchanged.
 """
 
 from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import random
 from pathlib import Path
+from zipfile import ZipFile
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+import numpy as np
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
+from srctools.vtf import VTF
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+BRAND_COUNT = 256
 ATLAS_COUNT = 4
-SOURCE_ATLAS_SIZE = (512, 256)
-SPRAY_ATLAS_SIZE = (1024, 512)
+BRANDS_PER_ATLAS = 64
 ATLAS_COLUMNS = 8
 ATLAS_ROWS = 8
-SPRAY_CELL_SIZE = (128, 64)
-BLANK_SIZE = (512, 512)
+SPRAY_CELL_SIZE = (256, 128)
+SPRAY_ATLAS_SIZE = (
+    SPRAY_CELL_SIZE[0] * ATLAS_COLUMNS,
+    SPRAY_CELL_SIZE[1] * ATLAS_ROWS,
+)
 RUNTIME_DIR = REPO_ROOT / (
     "gamemodes/legend_of_deborah/content/materials/"
     "legend_of_deborah/container_surfaces"
-)
-SOURCE_DIR = REPO_ROOT / (
-    "gamemodes/legend_of_deborah/content/materials/"
-    "legend_of_deborah/container_brands"
 )
 RECOLOR_PATH = REPO_ROOT / (
     "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua"
@@ -46,210 +50,298 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build_blank_metal(output: Path) -> None:
-    """Create a neutral, seamless-looking diffuse with no authored markings."""
-    rng = random.Random(0xD3B0A4)
+def load_vtf(path: Path) -> Image.Image:
+    with path.open("rb") as stream:
+        vtf = VTF.read(stream)
+        vtf.load()
+        image = vtf.get().to_PIL().convert("RGBA")
+    return image
 
-    # Low-frequency rolled-steel mottling. Keep the source neutral so the existing
-    # section-color shader can own hue without fighting a red baked diffuse.
-    coarse = Image.new("L", (32, 32))
-    coarse.putdata([rng.randint(118, 154) for _ in range(32 * 32)])
-    coarse = coarse.resize(BLANK_SIZE, Image.Resampling.BICUBIC)
-    fine = Image.new("L", BLANK_SIZE)
-    fine.putdata([rng.randint(126, 150) for _ in range(BLANK_SIZE[0] * BLANK_SIZE[1])])
-    metal = Image.blend(coarse, fine, 0.22)
-    metal = metal.filter(ImageFilter.GaussianBlur(0.35))
 
-    draw = ImageDraw.Draw(metal)
-    for _ in range(54):
-        y = rng.randrange(BLANK_SIZE[1])
-        x = rng.randrange(BLANK_SIZE[0])
-        length = rng.randrange(18, 120)
-        shade = rng.choice((96, 104, 168, 176))
-        draw.line((x, y, min(BLANK_SIZE[0] - 1, x + length), y + rng.choice((-1, 0, 1))),
-                  fill=shade, width=1)
+def normalized_luma(image: Image.Image) -> np.ndarray:
+    gray = np.asarray(ImageOps.grayscale(image), dtype=np.float32)
+    low = float(np.percentile(gray, 3.0))
+    high = float(np.percentile(gray, 97.0))
+    if high <= low + 1.0:
+        high = low + 1.0
+    gray = np.clip((gray - low) / (high - low), 0.0, 1.0)
+    return gray
 
-    # Faint broad vertical handling bands; these are material variation, not logos.
-    overlay = Image.new("L", BLANK_SIZE, 128)
-    odraw = ImageDraw.Draw(overlay)
-    for x in range(0, BLANK_SIZE[0], 48):
-        odraw.rectangle((x, 0, min(x + 8, BLANK_SIZE[0]), BLANK_SIZE[1]), fill=122)
-    metal = ImageChops.multiply(metal, overlay)
-    metal = Image.eval(metal, lambda value: max(92, min(188, int(value * 1.32))))
 
-    rgb = Image.merge("RGB", (metal, metal, metal))
+def build_blank_from_stock(stock_paths: list[Path], output: Path) -> None:
+    """Derive a neutral diffuse while preserving the cargo model's native UV map.
+
+    Multiple stock cargo skins are normalized and median-combined.  This keeps UV-
+    stable structure shared by the skins while suppressing skin-specific paint.
+    A deliberate low-pass pass removes remaining readable markings.  Low-amplitude
+    metal grain is then restored without changing the UV layout.
+    """
+    if not stock_paths:
+        raise SystemExit("at least one --stock-vtf is required to build the blank base")
+
+    images = [load_vtf(path) for path in stock_paths]
+    size = images[0].size
+    if any(image.size != size for image in images):
+        raise SystemExit(f"stock VTF dimensions disagree: {[image.size for image in images]}")
+    if min(size) < 512:
+        raise SystemExit(f"stock cargo diffuse unexpectedly small: {size}")
+
+    stack = np.stack([normalized_luma(image) for image in images], axis=0)
+    structural = np.median(stack, axis=0)
+    structural_u8 = Image.fromarray(np.uint8(np.clip(structural * 255.0, 0, 255)), "L")
+
+    # Down/up sampling plus a soft blur intentionally destroys readable lettering
+    # while retaining large authored UV regions (sides, ends, top/bottom and doors).
+    low_size = (max(128, size[0] // 6), max(128, size[1] // 6))
+    low = structural_u8.resize(low_size, Image.Resampling.BOX)
+    low = low.filter(ImageFilter.GaussianBlur(2.2))
+    blank = low.resize(size, Image.Resampling.BICUBIC)
+
+    # Retain only restrained medium-scale relief from the median stock image.  The
+    # clamp prevents high-contrast logo/text strokes from being reconstructed.
+    medium = structural_u8.filter(ImageFilter.GaussianBlur(3.0))
+    base_arr = np.asarray(blank, dtype=np.int16)
+    med_arr = np.asarray(medium, dtype=np.int16)
+    detail = np.clip(med_arr - base_arr, -9, 9)
+    result = np.clip(base_arr + detail, 0, 255).astype(np.uint8)
+
+    # Compress the tonal range around neutral steel. $color2 remains authoritative
+    # for section hue; the diffuse contributes weathering and UV-aware light/dark.
+    result = np.clip(104 + result.astype(np.float32) * 0.34, 104, 191).astype(np.uint8)
+
+    rng = np.random.default_rng(0xD3B0A4)
+    grain = rng.normal(0.0, 1.8, result.shape)
+    result = np.clip(result.astype(np.float32) + grain, 96, 198).astype(np.uint8)
+    neutral = Image.fromarray(result, "L")
+    rgb = Image.merge("RGB", (neutral, neutral, neutral))
+
     output.parent.mkdir(parents=True, exist_ok=True)
     rgb.save(output, optimize=True, compress_level=9)
+    print(f"blank source size={size} from {len(stock_paths)} stock skin(s)")
 
 
-def distress_cell(alpha: Image.Image, seed: int) -> Image.Image:
-    """Turn a clean decal alpha into a restrained stencil/spray-paint mask."""
-    rng = random.Random(seed)
-    core = alpha.point(lambda value: min(232, int(value * 0.91)))
-    mist = alpha.filter(ImageFilter.GaussianBlur(1.15)).point(
-        lambda value: int(value * 0.19)
+def locate_brand_prefix(names: list[str]) -> str:
+    suffix = "textures/container_brand_001.png"
+    matches = [name[: -len(suffix)] for name in names if name.endswith(suffix)]
+    if len(matches) != 1:
+        raise SystemExit("could not uniquely locate textures/container_brand_001.png")
+    return matches[0]
+
+
+def foreground_mask(image: Image.Image) -> Image.Image:
+    """Extract paintable logo/text while discarding authored plaque backgrounds.
+
+    Some source companies are already transparent marks; others are dark technical
+    placards with white artwork.  High-alpha placards are converted to a bright-
+    foreground mask and their outer frame is cropped away.  Transparent marks keep
+    their authored alpha directly.
+    """
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    alpha_arr = np.asarray(alpha, dtype=np.uint8)
+    coverage = float(np.count_nonzero(alpha_arr > 12)) / float(alpha_arr.size)
+
+    if coverage > 0.52:
+        # Remove the outer technical-card frame first.  The actual logo/name lives
+        # safely inside this inset on the placard-style authored variants.
+        inset_x = max(1, int(rgba.width * 0.065))
+        inset_y = max(1, int(rgba.height * 0.075))
+        rgba = rgba.crop((inset_x, inset_y, rgba.width - inset_x, rgba.height - inset_y))
+        alpha = rgba.getchannel("A")
+        luma = ImageOps.grayscale(rgba)
+        lum = np.asarray(luma, dtype=np.float32)
+        a = np.asarray(alpha, dtype=np.float32) / 255.0
+        # Technical placards use light logo/text against a charcoal field.
+        mask = np.clip((lum - 118.0) / 96.0, 0.0, 1.0) * a
+        mask = np.uint8(np.clip(mask * 255.0, 0, 255))
+        return Image.fromarray(mask, "L")
+
+    return alpha
+
+
+def fit_brand_mask(mask: Image.Image, brand_id: int) -> Image.Image:
+    bbox = mask.getbbox()
+    if not bbox:
+        raise SystemExit(f"brand {brand_id:03d}: empty foreground mask")
+    mask = mask.crop(bbox)
+
+    pad_x = int(SPRAY_CELL_SIZE[0] * 0.045)
+    pad_y = int(SPRAY_CELL_SIZE[1] * 0.075)
+    avail_w = SPRAY_CELL_SIZE[0] - pad_x * 2
+    avail_h = SPRAY_CELL_SIZE[1] - pad_y * 2
+    scale = min(avail_w / mask.width, avail_h / mask.height)
+    resized = mask.resize(
+        (max(1, round(mask.width * scale)), max(1, round(mask.height * scale))),
+        Image.Resampling.LANCZOS,
     )
-    combined = ImageChops.lighter(core, mist)
 
-    # Small deterministic chips and wipe marks. Damage is deliberately sparse so
-    # long company names survive the compact runtime representation.
-    draw = ImageDraw.Draw(combined)
-    width, height = combined.size
-    for _ in range(9):
-        x = rng.randrange(width)
-        y = rng.randrange(height)
-        radius = rng.choice((1, 1, 2))
-        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=0)
-    for _ in range(2):
-        x = rng.randrange(width)
-        y = rng.randrange(height)
-        draw.line((x, y, min(width - 1, x + rng.randrange(5, 18)), y), fill=35, width=1)
+    core = resized.point(lambda value: min(238, int(value * 0.94)))
+    mist = resized.filter(ImageFilter.GaussianBlur(0.85)).point(
+        lambda value: int(value * 0.11)
+    )
+    sprayed = ImageChops.lighter(core, mist)
 
-    return combined
+    # Sparse deterministic abrasion: enough to read as paint, not enough to destroy
+    # company names after Source filtering.
+    rng = random.Random(0xD3B0A4 + brand_id)
+    draw = ImageDraw.Draw(sprayed)
+    for _ in range(3):
+        x = rng.randrange(sprayed.width)
+        y = rng.randrange(sprayed.height)
+        if sprayed.getpixel((x, y)) > 180:
+            draw.ellipse((x - 1, y - 1, x + 1, y + 1), fill=rng.randrange(20, 75))
+
+    cell = Image.new("L", SPRAY_CELL_SIZE, 0)
+    x = (SPRAY_CELL_SIZE[0] - sprayed.width) // 2
+    y = (SPRAY_CELL_SIZE[1] - sprayed.height) // 2
+    cell.paste(sprayed, (x, y))
+    return cell
 
 
-def build_spray_atlas(source: Path, output: Path, atlas_index: int) -> None:
-    source_image = Image.open(source).convert("RGBA")
-    if source_image.size != SOURCE_ATLAS_SIZE:
-        raise SystemExit(
-            f"{source.name}: expected {SOURCE_ATLAS_SIZE}, got {source_image.size}"
-        )
+def indexed_paint_atlas(alpha: Image.Image) -> Image.Image:
+    """Encode soft alpha compactly without throwing away the 256x128 cell detail."""
+    raw = alpha.tobytes()
+    indexed = bytearray(len(raw))
+    for index, value in enumerate(raw):
+        if value < 8:
+            indexed[index] = 0
+        else:
+            indexed[index] = max(1, min(15, round(value / 255.0 * 15)))
 
-    # Upscale before alpha treatment. This cannot invent source detail, but it gives
-    # the spray fringe and wear enough resolution to avoid the previous pixel-card look.
-    source_image = source_image.resize(SPRAY_ATLAS_SIZE, Image.Resampling.LANCZOS)
-    canvas = Image.new("RGBA", SPRAY_ATLAS_SIZE, (0, 0, 0, 0))
+    image = Image.frombytes("P", alpha.size, bytes(indexed))
+    palette: list[int] = []
+    for palette_index in range(256):
+        if palette_index <= 15:
+            palette.extend((244, 242, 232))
+        else:
+            palette.extend((0, 0, 0))
+    image.putpalette(palette)
+    transparency = bytes(
+        [0]
+        + [round(index / 15.0 * 255) for index in range(1, 16)]
+        + [255] * (256 - 16)
+    )
+    image.info["transparency"] = transparency
+    return image
 
-    for cell in range(ATLAS_COLUMNS * ATLAS_ROWS):
-        x = (cell % ATLAS_COLUMNS) * SPRAY_CELL_SIZE[0]
-        y = (cell // ATLAS_COLUMNS) * SPRAY_CELL_SIZE[1]
-        region = source_image.crop(
-            (x, y, x + SPRAY_CELL_SIZE[0], y + SPRAY_CELL_SIZE[1])
-        )
-        alpha = distress_cell(region.getchannel("A"), atlas_index * 1000 + cell)
 
-        # Store a neutral paint mask. Runtime chooses light or charcoal paint from
-        # the already-authoritative section/body luminance.
-        paint = Image.new("RGBA", SPRAY_CELL_SIZE, (244, 242, 232, 0))
-        paint.putalpha(alpha)
-        canvas.alpha_composite(paint, (x, y))
+def build_spray_from_zip(source_zip: Path, output_dir: Path) -> None:
+    with ZipFile(source_zip) as archive:
+        names = archive.namelist()
+        prefix = locate_brand_prefix(names)
+        expected = {
+            f"{prefix}textures/container_brand_{brand_id:03d}.png"
+            for brand_id in range(1, BRAND_COUNT + 1)
+        }
+        present = {
+            name
+            for name in names
+            if name.startswith(f"{prefix}textures/container_brand_") and name.endswith(".png")
+        }
+        if present != expected:
+            raise SystemExit(
+                f"source brand set mismatch: missing={len(expected - present)} "
+                f"extra={len(present - expected)}"
+            )
 
-    output.parent.mkdir(parents=True, exist_ok=True)
-    canvas.save(output, optimize=True, compress_level=9)
+        for atlas_index in range(ATLAS_COUNT):
+            alpha_atlas = Image.new("L", SPRAY_ATLAS_SIZE, 0)
+            for cell_index in range(BRANDS_PER_ATLAS):
+                brand_id = atlas_index * BRANDS_PER_ATLAS + cell_index + 1
+                name = f"{prefix}textures/container_brand_{brand_id:03d}.png"
+                source = Image.open(io.BytesIO(archive.read(name))).convert("RGBA")
+                if source.size != (1024, 512):
+                    raise SystemExit(f"brand {brand_id:03d}: expected 1024x512, got {source.size}")
+                mask = fit_brand_mask(foreground_mask(source), brand_id)
+                x = (cell_index % ATLAS_COLUMNS) * SPRAY_CELL_SIZE[0]
+                y = (cell_index // ATLAS_COLUMNS) * SPRAY_CELL_SIZE[1]
+                alpha_atlas.paste(mask, (x, y))
+
+            atlas = indexed_paint_atlas(alpha_atlas)
+            output = output_dir / f"container_brand_spray_atlas_{atlas_index + 1:02d}.png"
+            atlas.save(
+                output,
+                optimize=True,
+                compress_level=9,
+                transparency=atlas.info["transparency"],
+            )
+            print(f"built {output.name} directly from original brand sources")
 
 
 def patch_recolor(path: Path) -> bool:
     text = path.read_text(encoding="utf-8")
-    if "CONTAINER_BLANK_BASE_PATH" in text:
-        return False
+    changed = False
 
-    old = (
-        'local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"\n'
-        'local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"\n'
-    )
-    new = (
-        'local CONTAINER_BLANK_BASE_PATH = '
-        '"legend_of_deborah/container_surfaces/container_blank_metal.png"\n'
-        'local blankBaseMaterial = Material(CONTAINER_BLANK_BASE_PATH, '
-        '"vertexlitgeneric mips smooth")\n'
-        'local blankBaseTexture = blankBaseMaterial and '
-        'blankBaseMaterial:GetTexture("$basetexture")\n'
-        'local NP_BASE_TEXTURE = blankBaseTexture and blankBaseTexture:GetName() '
-        'or "color/white"\n'
-        'local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"\n'
-    )
-    if old not in text:
-        raise SystemExit("recolor patch anchor not found")
+    old_version = 'local MATERIAL_VERSION = "v8_blank_metal_surface"'
+    new_version = 'local MATERIAL_VERSION = "v9_stock_uv_blank"'
+    if old_version in text:
+        text = text.replace(old_version, new_version, 1)
+        changed = True
+    elif new_version not in text:
+        raise SystemExit("recolor material-version anchor not found")
 
-    text = text.replace(old, new, 1)
-    text = text.replace(
-        'local MATERIAL_VERSION = "v7_full_spectrum_maximin"',
-        'local MATERIAL_VERSION = "v8_blank_metal_surface"',
-        1,
-    )
-    text = text.replace(
-        "-- Shader-native section recoloring for the existing Northern Petrol cargo model.",
-        "-- Shader-native section recoloring for the logo-free neutral cargo surface.",
-        1,
-    )
-    text = text.replace(
-        "-- The stock diffuse is strongly red, so ordinary SetColor multiplication cannot",
-        "-- The runtime diffuse is a neutral, logo-free metal texture. The existing",
-        1,
-    )
-    text = text.replace(
-        "-- produce clean section hues. Source's VertexLitGeneric color-replacement path",
-        "-- VertexLitGeneric color-replacement path retains deterministic section hue",
-        1,
-    )
-    text = text.replace(
-        "-- preserves the exact model, UVs, weathered diffuse and normal map while allowing",
-        "-- while retaining the validated cargo mesh and stock relief normal map.",
-        1,
-    )
-    text = text.replace(
-        "-- procedural paint colors. Runtime testing established that the stock diffuse alpha",
-        "-- Company identity is no longer baked into the diffuse; it is rendered separately",
-        1,
-    )
-    text = text.replace(
-        "-- is NOT an NP-logo paint mask, so the authentic baked branding shares the body tint",
-        "-- as a vertex-lit spray-paint mask on ordinary containers.",
-        1,
-    )
-    text = text.replace(
-        "-- except on marked containers, where the separate plywood wayfinding plate covers it.\n",
-        "\n",
-        1,
-    )
-    path.write_text(text, encoding="utf-8")
-    return True
+    if 'local COLOR_REPLACE_BLEND = 0.84' in text:
+        text = text.replace(
+            'local COLOR_REPLACE_BLEND = 0.84',
+            'local COLOR_REPLACE_BLEND = 0.80',
+            1,
+        )
+        changed = True
+
+    old_comment = "-- Shader-native section recoloring for the logo-free neutral cargo surface."
+    new_comment = "-- Shader-native section recoloring for the stock-UV-derived blank cargo surface."
+    if old_comment in text:
+        text = text.replace(old_comment, new_comment, 1)
+        changed = True
+
+    if changed:
+        path.write_text(text, encoding="utf-8")
+    return changed
 
 
 def validate_outputs(output_dir: Path) -> None:
     blank = output_dir / "container_blank_metal.png"
-    if Image.open(blank).size != BLANK_SIZE:
-        raise SystemExit("blank metal texture has wrong dimensions")
+    if not blank.exists():
+        raise SystemExit("blank metal texture is missing")
+    blank_image = Image.open(blank)
+    if min(blank_image.size) < 512 or blank_image.width != blank_image.height:
+        raise SystemExit(f"blank metal texture has unexpected dimensions {blank_image.size}")
 
     for atlas_index in range(1, ATLAS_COUNT + 1):
         atlas = output_dir / f"container_brand_spray_atlas_{atlas_index:02d}.png"
+        if not atlas.exists():
+            raise SystemExit(f"missing spray atlas: {atlas.name}")
         image = Image.open(atlas).convert("RGBA")
         if image.size != SPRAY_ATLAS_SIZE:
-            raise SystemExit(f"{atlas.name}: wrong dimensions")
-        alpha = image.getchannel("A")
-        lo, hi = alpha.getextrema()
-        if lo != 0 or hi < 128:
+            raise SystemExit(f"{atlas.name}: expected {SPRAY_ATLAS_SIZE}, got {image.size}")
+        lo, hi = image.getchannel("A").getextrema()
+        if lo != 0 or hi < 192:
             raise SystemExit(f"{atlas.name}: invalid transparency range {lo}..{hi}")
-
-
-def build(output_dir: Path, patch_runtime: bool) -> None:
-    output_dir.mkdir(parents=True, exist_ok=True)
-    build_blank_metal(output_dir / "container_blank_metal.png")
-
-    for atlas_index in range(1, ATLAS_COUNT + 1):
-        source = SOURCE_DIR / f"container_brand_atlas_{atlas_index:02d}.png"
-        if not source.exists():
-            raise SystemExit(f"missing committed source atlas: {source}")
-        output = output_dir / f"container_brand_spray_atlas_{atlas_index:02d}.png"
-        build_spray_atlas(source, output, atlas_index)
-
-    validate_outputs(output_dir)
-    if patch_runtime:
-        patch_recolor(RECOLOR_PATH)
-
-    for path in sorted(output_dir.glob("*.png")):
-        print(f"{path}: {path.stat().st_size} bytes sha256={sha256(path)}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=RUNTIME_DIR)
+    parser.add_argument("--stock-vtf", type=Path, action="append", default=[])
+    parser.add_argument("--source-zip", type=Path)
     parser.add_argument("--patch-runtime", action="store_true")
     args = parser.parse_args()
+
     output_dir = args.output_dir
     if not output_dir.is_absolute():
         output_dir = REPO_ROOT / output_dir
-    build(output_dir, args.patch_runtime)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.stock_vtf:
+        build_blank_from_stock(args.stock_vtf, output_dir / "container_blank_metal.png")
+    if args.source_zip:
+        build_spray_from_zip(args.source_zip, output_dir)
+    if args.patch_runtime:
+        patch_recolor(RECOLOR_PATH)
+
+    validate_outputs(output_dir)
+    for path in sorted(output_dir.glob("*.png")):
+        print(f"{path}: {path.stat().st_size} bytes sha256={sha256(path)}")
 
 
 if __name__ == "__main__":
