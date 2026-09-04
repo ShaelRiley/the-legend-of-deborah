@@ -428,6 +428,12 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
     end
 end)
 
+local function normalizedMaterialOverride(model)
+    if not IsValid(model) then return "" end
+    local actual = tostring(model:GetMaterial() or "")
+    return string.gsub(actual, "^!", "")
+end
+
 concommand.Add("lod_container_recolor_status", function()
     ensureSectionPalette()
 
@@ -445,7 +451,7 @@ concommand.Add("lod_container_recolor_status", function()
             sectionCodes[code] = colorKey(section)
             local model = models[index]
             local wantedName = instance.sectionMaterialName or sectionMaterialName(section)
-            if IsValid(model) and model:GetMaterial() == ("!" .. wantedName) then
+            if normalizedMaterialOverride(model) == wantedName then
                 correct = correct + 1
             else
                 wrong = wrong + 1

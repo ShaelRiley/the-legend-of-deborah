@@ -5,7 +5,7 @@ local MC = LOD.Config and LOD.Config.Maze
 if not Wall or not MC then return end
 
 -- Company identity is presentation-only. cl_container_section_recolor.lua owns the
--- gritty neutral hull and procedural section hue. This pass adds one transparent,
+-- gritty neutral hull and procedural section hue. This pass adds one true-RGBA,
 -- vertex-lit company stencil over most of the broad side of each ordinary container.
 -- Marked wayfinding containers deliberately suppress company paint.
 local DRAW_DISTANCE = 1650
@@ -61,10 +61,13 @@ local function materialForAtlas(atlasIndex)
     if not texture then return nil, path end
 
     local material = CreateMaterial(
-        string.format("lod_container_spray_atlas_%02d_v5", atlasIndex),
+        string.format("lod_container_spray_atlas_%02d_v7", atlasIndex),
         "VertexLitGeneric",
         {
-            ["$basetexture"] = texture:GetName(),
+            -- Start from a guaranteed built-in texture, then bind the mounted PNG's
+            -- ITexture directly. Never round-trip texture:GetName() through Source's
+            -- VTF resolver: that was the source of the opaque black broad-side card.
+            ["$basetexture"] = "vgui/white",
             ["$model"] = "1",
             ["$translucent"] = "1",
             ["$vertexcolor"] = "1",
@@ -74,6 +77,8 @@ local function materialForAtlas(atlasIndex)
         }
     )
     if not material or material:IsError() then return nil, path end
+    material:SetTexture("$basetexture", texture)
+    if material.Recompute then material:Recompute() end
 
     atlasMaterialCache[atlasIndex] = material
     return material, path
@@ -201,7 +206,7 @@ end)
 concommand.Add("lod_container_brand_status", function()
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v5-fullside width=%.2f height=%.2f",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v7-rgba-direct width=%.2f height=%.2f",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
