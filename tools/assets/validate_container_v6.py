@@ -49,7 +49,7 @@ def main() -> None:
         (
             'DETAIL_FALLBACK_TEXTURE = "vgui/white"',
             'DETAIL_BLEND_FACTOR = 0.64',
-            'v12_grit_runtime_binding',
+            'local MATERIAL_VERSION =',
             '["$detail"] = DETAIL_FALLBACK_TEXTURE',
             'material:SetTexture("$detail", detailTexture)',
             'material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)',
