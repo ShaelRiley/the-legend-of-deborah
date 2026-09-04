@@ -214,14 +214,17 @@ local function segmentFaceInfo(segment)
     if z < 0 or not DIRS[direction] then return nil end
 
     local ax, ay, bx, by, orientation
-    if direction == 0 then
+    -- DIRS is a normal Lua array: 1=north, 2=east, 3=south, 4=west.
+    if direction == 1 then
         ax, ay, bx, by, orientation = 2 * x - 1, 2 * y + 1, 2 * x + 1, 2 * y + 1, "h"
-    elseif direction == 2 then
+    elseif direction == 3 then
         ax, ay, bx, by, orientation = 2 * x - 1, 2 * y - 1, 2 * x + 1, 2 * y - 1, "h"
-    elseif direction == 1 then
+    elseif direction == 2 then
         ax, ay, bx, by, orientation = 2 * x + 1, 2 * y - 1, 2 * x + 1, 2 * y + 1, "v"
-    else
+    elseif direction == 4 then
         ax, ay, bx, by, orientation = 2 * x - 1, 2 * y - 1, 2 * x - 1, 2 * y + 1, "v"
+    else
+        return nil
     end
 
     local a = string.format("%d:%d:%d", z, ax, ay)
