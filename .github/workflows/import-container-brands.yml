@@ -48,6 +48,14 @@ jobs:
       - name: Apply V15 sparse full-face overlay rules
         run: python3 tools/assets/patch_container_marking_density_v15.py
 
+      - name: Normalize generated documentation EOF
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('docs/CONTAINER_BRANDING.md')
+          path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
+          PY
+
       - name: Validate container presentation
         run: |
           python3 tools/assets/validate_container_v14.py
