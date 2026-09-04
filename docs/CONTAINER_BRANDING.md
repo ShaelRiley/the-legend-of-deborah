@@ -399,3 +399,26 @@ same wall edge can never both carry boards, and same-tier collinear neighbors th
 an endpoint can never both carry boards. If a section lacks enough non-touching surfaces,
 coverage yields to this invariant rather than stacking or crowding signs. Company paint
 continues to suppress itself on marked wayfinding containers.
+
+## V21 orientation signage
+
+Floor/quadrant boards are now optimized for moment-to-moment navigation rather than
+raw spatial density. The nominal target rises to approximately 30% of strictly
+full-face-safe sign surfaces, with a baseline of five boards per populated
+floor/quadrant section where topology and the no-touching rule permit.
+
+Visibility scoring models a player stopping and looking around. Each sign covers
+straight cardinal sightlines from both sides of its wall out to six maze cells, stopping
+at walls rather than unrealistically turning corners. Coverage gain is the primary
+selection score; ties favor junctions and ninety-degree turns, then lower/eye-level
+containers, then a deterministic seeded tiebreak. This places location information at
+corridor decision points and across long readable vistas.
+
+The wayfinding no-touching invariant remains absolute: signs may not stack vertically
+or touch end-to-end on the same tier. Strict full-face eligibility also remains in
+force for plywood boards.
+
+Company branding and wayfinding are no longer mutually exclusive. A container selected
+for both systems renders the company stencil on the hull and the bolted floor/quadrant
+board farther out from the surface. This prevents wayfinding coverage from consuming
+company-brand capacity while keeping the locator code visually dominant.

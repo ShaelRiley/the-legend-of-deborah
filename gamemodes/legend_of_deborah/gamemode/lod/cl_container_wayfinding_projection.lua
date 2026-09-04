@@ -17,9 +17,9 @@ local LABEL_BUCKET_CELLS = 4
 local LABEL_SCALE = 0.22
 local LABEL_SURFACE_OFFSET = 1.8
 local APPEARANCE_BATCH_SIZE = 128
-local MARKING_DENSITY = 0.22
-local MIN_MARKS_PER_SECTION = 4
-local SIGN_COVERAGE_RADIUS_CELLS = 3
+local MARKING_DENSITY = 0.30
+local MIN_MARKS_PER_SECTION = 5
+local SIGN_SIGHTLINE_RANGE_CELLS = 6
 
 -- Real freight/offshore-container marking practice favors prominent, contrasting,
 -- sparse identification marks rather than centered decorative graphics. This panel
@@ -154,10 +154,10 @@ local function sortSectionCandidates(a, b)
     return a.index < b.index
 end
 
--- V20 treats locator visibility as a coverage problem rather than a lottery. Signs
--- remain section-balanced, but candidates that expose a floor/quadrant code to more
--- nearby walkable cells are preferred. Stacked or directly touching signs are always
--- forbidden, even if a section cannot otherwise reach its desired count.
+-- V21 treats locator visibility as a first-person orientation problem. Signs remain
+-- section-balanced, but candidates that cover long straight sightlines and decision
+-- points are preferred. Stacked or directly touching signs are always forbidden, even
+-- if a section cannot otherwise reach its desired count.
 local selectionWorldRef = nil
 local markedCount = 0
 local markedBySection = {}
@@ -202,51 +202,85 @@ local function buildBlockedPassages()
     return blocked
 end
 
-local function coverageForInstance(instance, blocked)
-    local floor = instance.floor or 0
-    local starts = {{instance.gridX or 0, instance.gridY or 0}}
+local function adjacentObservationCells(instance)
+    local cells = {{instance.gridX or 0, instance.gridY or 0}}
     local delta = DIR_DELTA[instance.overlayDirection or 0]
     if delta then
         local nx = (instance.gridX or 0) + delta[1]
         local ny = (instance.gridY or 0) + delta[2]
-        if inBounds(nx, ny) then starts[#starts + 1] = {nx, ny} end
+        if inBounds(nx, ny) then cells[#cells + 1] = {nx, ny} end
     end
+    return cells
+end
 
-    local covered = {}
-    local visited = {}
-    local queue = {}
-    local head = 1
-    for _, cell in ipairs(starts) do
-        local x, y = cell[1], cell[2]
-        if inBounds(x, y) then
-            local key = observationKey(floor, x, y)
-            if not visited[key] then
-                visited[key] = true
-                queue[#queue + 1] = {x = x, y = y, distance = 0}
-            end
+local function openDirections(floor, x, y, blocked)
+    local count = 0
+    local horizontal = false
+    local vertical = false
+    for direction, move in pairs(DIR_DELTA) do
+        local nx = x + move[1]
+        local ny = y + move[2]
+        if inBounds(nx, ny)
+            and not blocked[passageKey(floor, x, y, nx, ny)]
+        then
+            count = count + 1
+            if direction == 1 or direction == 3 then vertical = true else horizontal = true end
         end
     end
+    return count, horizontal, vertical
+end
 
-    while head <= #queue do
-        local current = queue[head]
-        head = head + 1
-        covered[observationKey(floor, current.x, current.y)] = true
-        if current.distance < SIGN_COVERAGE_RADIUS_CELLS then
+-- Decision-point utility is a secondary score after raw sightline coverage. Junctions
+-- are strongest, then ninety-degree turns, then dead ends/straight corridors. This
+-- puts location information where a player is most likely to stop and consult the map.
+local function orientationAnchorScore(instance, blocked)
+    local best = 0
+    local floor = instance.floor or 0
+    for _, cell in ipairs(adjacentObservationCells(instance)) do
+        local x, y = cell[1], cell[2]
+        if inBounds(x, y) then
+            local degree, horizontal, vertical = openDirections(floor, x, y, blocked)
+            local score
+            if degree >= 3 then
+                score = 8 + degree
+            elseif degree == 2 and horizontal and vertical then
+                score = 7
+            elseif degree == 1 then
+                score = 4
+            elseif degree == 2 then
+                score = 3
+            else
+                score = 1
+            end
+            if score > best then best = score end
+        end
+    end
+    return best
+end
+
+-- Model what the player can discover by stopping and looking around. Unlike V20's
+-- corridor flood, these rays never turn corners: each adjacent side of the container
+-- casts four cardinal sightlines until a wall, map edge, or six-cell range limit.
+local function coverageForInstance(instance, blocked)
+    local floor = instance.floor or 0
+    local covered = {}
+
+    for _, startCell in ipairs(adjacentObservationCells(instance)) do
+        local sx, sy = startCell[1], startCell[2]
+        if inBounds(sx, sy) then
+            covered[observationKey(floor, sx, sy)] = true
             for _, move in pairs(DIR_DELTA) do
-                local nx = current.x + move[1]
-                local ny = current.y + move[2]
-                if inBounds(nx, ny)
-                    and not blocked[passageKey(floor, current.x, current.y, nx, ny)]
-                then
-                    local key = observationKey(floor, nx, ny)
-                    if not visited[key] then
-                        visited[key] = true
-                        queue[#queue + 1] = {
-                            x = nx,
-                            y = ny,
-                            distance = current.distance + 1
-                        }
+                local x, y = sx, sy
+                for _ = 1, SIGN_SIGHTLINE_RANGE_CELLS do
+                    local nx = x + move[1]
+                    local ny = y + move[2]
+                    if not inBounds(nx, ny)
+                        or blocked[passageKey(floor, x, y, nx, ny)]
+                    then
+                        break
                     end
+                    covered[observationKey(floor, nx, ny)] = true
+                    x, y = nx, ny
                 end
             end
         end
@@ -290,7 +324,7 @@ end
 local function deterministicTieBreak(seed, candidate)
     local instance = candidate.instance
     local token = string.format(
-        "container-wayfinding-coverage:v20:%d:%d:%d:%d:%d",
+        "container-wayfinding-orientation:v21:%d:%d:%d:%d:%d",
         candidate.index or 0,
         instance.floor or 0,
         instance.gridX or 0,
@@ -304,6 +338,7 @@ end
 local function chooseBestCandidate(candidates, covered, occupiedEdges, occupiedEndpoints, seed)
     local best = nil
     local bestGain = -1
+    local bestAnchor = -1
     local bestLower = -1
     local bestNoise = -1
 
@@ -311,14 +346,18 @@ local function chooseBestCandidate(candidates, covered, occupiedEdges, occupiedE
         local instance = candidate.instance
         if not candidate.selected and not signConflicts(instance, occupiedEdges, occupiedEndpoints) then
             local gain = coverageGain(candidate, covered)
+            local anchor = candidate.anchorScore or 0
             local lower = (instance.stackIndex or 0) == 0 and 1 or 0
             local noise = deterministicTieBreak(seed, candidate)
             if gain > bestGain
-                or (gain == bestGain and lower > bestLower)
-                or (gain == bestGain and lower == bestLower and noise > bestNoise)
+                or (gain == bestGain and anchor > bestAnchor)
+                or (gain == bestGain and anchor == bestAnchor and lower > bestLower)
+                or (gain == bestGain and anchor == bestAnchor
+                    and lower == bestLower and noise > bestNoise)
             then
                 best = candidate
                 bestGain = gain
+                bestAnchor = anchor
                 bestLower = lower
                 bestNoise = noise
             end
@@ -402,6 +441,7 @@ local function rebuildMarkedSelection(world)
     for _, group in ipairs(groups) do
         for _, candidate in ipairs(group.candidates) do
             candidate.coverage = coverageForInstance(candidate.instance, blocked)
+            candidate.anchorScore = orientationAnchorScore(candidate.instance, blocked)
             candidate.selected = false
         end
     end
@@ -415,7 +455,7 @@ local function rebuildMarkedSelection(world)
         local progressed = false
         for _, group in ipairs(groups) do
             if (remaining[group.key] or 0) > 0 then
-                local groupSeed = LOD.Seeds.Derive(seed, "container-wayfinding-coverage:v20:" .. group.key)
+                local groupSeed = LOD.Seeds.Derive(seed, "container-wayfinding-orientation:v21:" .. group.key)
                 local chosen = chooseBestCandidate(
                     group.candidates, covered, occupiedEdges, occupiedEndpoints, groupSeed
                 )
@@ -463,12 +503,12 @@ concommand.Add("lod_container_wayfinding_status", function()
     end
     local percent = signCoverageObserved > 0 and (signCoverageCovered / signCoverageObserved) * 100 or 0
     print(string.format(
-        "[LOD] container wayfinding: marked=%d target=%d density=%.0f%% minPerSection=%d separation=touching-never distribution=coverage-first radius=%dcells coverage=%d/%d(%.0f%%)",
+        "[LOD] container wayfinding: marked=%d target=%d density=%.0f%% minPerSection=%d separation=touching-never distribution=orientation-coverage sightline=%dcells coverage=%d/%d(%.0f%%)",
         markedCount,
         signTargetCount,
         MARKING_DENSITY * 100,
         MIN_MARKS_PER_SECTION,
-        SIGN_COVERAGE_RADIUS_CELLS,
+        SIGN_SIGHTLINE_RANGE_CELLS,
         signCoverageCovered,
         signCoverageObserved,
         percent

@@ -7,7 +7,7 @@ if not Wall or not MC then return end
 -- Company identity is presentation-only. cl_container_section_recolor.lua owns the
 -- gritty neutral hull and procedural section hue. This pass adds one alpha-tested,
 -- dithered company stencil over most of the broad side of each ordinary container.
--- Marked wayfinding containers deliberately suppress company paint.
+-- Wayfinding boards may share a container with company paint; the physical board sits farther from the hull.
 local DRAW_DISTANCE = 1650
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
 local BUCKET_CELLS = 4
@@ -457,7 +457,7 @@ local function rebuildBrandPlacement(world)
         instance.companyBranded = false
         if instance.brandSurfaceEligible ~= true then
             geometryBlockedCount = geometryBlockedCount + 1
-        elseif not instance.marked then
+        else
             if instance.fullSurfaceEligible ~= true then
                 relaxedGeometryCount = relaxedGeometryCount + 1
             end
@@ -616,7 +616,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
                     local instance = world[index]
                     local model = Wall.models and Wall.models[index]
                     if instance and instance.companyBranded == true
-                        and instance.brandSurfaceEligible == true and not instance.marked
+                        and instance.brandSurfaceEligible == true
                         and IsValid(model)
                         and eyePos:DistToSqr(model:GetPos()) <= DRAW_DISTANCE_SQR
                     then
@@ -633,7 +633,7 @@ concommand.Add("lod_container_brand_status", function()
     if #world > 0 then ensureBrandPlacement(world) end
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d placeable=%d all=%d cap=%.0f%% capCount=%d targetCount=%d separation=touching-never distribution=coverage-first radius=%dcells coverage=%d/%d(%.0f%%) goal=%.0f%% coveragePrefix=%d geometryBlocked=%d decalRelaxed=%d lowerBias=%.2f",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d placeable=%d all=%d cap=%.0f%% capCount=%d targetCount=%d separation=touching-never distribution=coverage-first coexistence=brand+wayfinding radius=%dcells coverage=%d/%d(%.0f%%) goal=%.0f%% coveragePrefix=%d geometryBlocked=%d decalRelaxed=%d lowerBias=%.2f",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
