@@ -3,11 +3,10 @@ LOD = LOD or {}
 local Wall = LOD.WallVisualsClient
 if not Wall then return end
 
--- Shader-native section recoloring for the stock-UV-derived blank cargo surface.
+-- Shader-native section recoloring for the UV-agnostic neutral cargo surface.
 --
--- The runtime diffuse is a neutral, logo-free metal texture. The existing
--- VertexLitGeneric color-replacement path retains deterministic section hue
--- while retaining the validated cargo mesh and stock relief normal map.
+-- The runtime diffuse is uniform and logo-free. VertexLitGeneric color replacement
+-- owns the full hull hue while the validated cargo mesh and stock normal map retain relief.
 -- Company identity is no longer baked into the diffuse; it is rendered separately
 -- as a vertex-lit spray-paint mask on ordinary containers.
 
@@ -17,16 +16,16 @@ if not Wall then return end
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
-local CONTAINER_BLANK_BASE_PATH = "legend_of_deborah/container_surfaces/container_blank_metal.png"
-local blankBaseMaterial = Material(CONTAINER_BLANK_BASE_PATH, "vertexlitgeneric mips smooth")
-local blankBaseTexture = blankBaseMaterial and blankBaseMaterial:GetTexture("$basetexture")
-local NP_BASE_TEXTURE = blankBaseTexture and blankBaseTexture:GetName() or "color/white"
+-- The diffuse is deliberately UV-agnostic. Mesh geometry plus the stock normal map
+-- provide container relief; a uniform white base guarantees that no baked company
+-- art, source-image blocks, or checkerboard structure can leak into the hull color.
+local NP_BASE_TEXTURE = "vgui/white"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-local COLOR_REPLACE_BLEND = 0.80
+local COLOR_REPLACE_BLEND = 1.00
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v9_stock_uv_blank"
+local MATERIAL_VERSION = "v10_uniform_neutral"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5

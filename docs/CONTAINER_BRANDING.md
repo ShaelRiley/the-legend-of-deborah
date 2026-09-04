@@ -116,7 +116,7 @@ Also run:
 Expected:
 
 - `wrong=0`
-- `materialVersion=v9_stock_uv_blank`
+- `materialVersion=v10_uniform_neutral`
 
 Visual acceptance:
 
@@ -129,3 +129,8 @@ Visual acceptance:
 7. A different seed reselects the company; repeating a seed repeats it.
 8. Sparse wayfinding containers keep their clear alphanumeric plywood plates.
 9. Branding changes presentation only and does not affect maze geometry, collision, gates, minimap topology, hostiles, or navigation.
+
+
+## V4 substrate safety rule
+
+The hull diffuse is now deliberately UV-agnostic (`vgui/white`) and the section tint blend is `1.00`. The cargo mesh and stock normal map provide physical relief; the diffuse contributes no baked structure at all. This prevents source-texture logos, block patterns, or checkerboard artifacts from ever leaking into procedural section colors. The generated `container_blank_metal.png` remains a build artifact for compatibility but is no longer authoritative at runtime.
