@@ -9,6 +9,8 @@ on:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
+      - 'tools/assets/container_brand_names.tsv'
+      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
@@ -57,53 +59,13 @@ jobs:
           PY
           done
 
-      - name: Fetch authoritative 256-brand source archive
-        shell: bash
-        run: |
-          set -euo pipefail
-          output=/tmp/legend_of_deborah_container_brands_256.zip
-          file_id='163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa'
-
-          # The project source is a read-only shared Drive file. Try Google's direct
-          # content endpoint first, then the legacy uc endpoint. The following Python
-          # validation rejects HTML login/warning responses before any asset build.
-          if ! curl --fail --location --retry 3 --silent --show-error \
-              "https://drive.usercontent.google.com/download?id=${file_id}&export=download&confirm=t" \
-              --output "$output"; then
-            curl --fail --location --retry 3 --silent --show-error \
-              "https://drive.google.com/uc?export=download&id=${file_id}&confirm=t" \
-              --output "$output"
-          fi
-
-          python3 - <<'PY'
-          from pathlib import Path
-          from zipfile import ZipFile, BadZipFile
-
-          path = Path('/tmp/legend_of_deborah_container_brands_256.zip')
-          try:
-              with ZipFile(path) as archive:
-                  names = archive.namelist()
-          except BadZipFile as exc:
-              preview = path.read_bytes()[:240]
-              raise SystemExit(f'authoritative brand download is not a ZIP: {preview!r}') from exc
-
-          textures = [
-              name for name in names
-              if name.endswith('.png') and '/textures/container_brand_' in name
-          ]
-          if len(textures) != 256:
-              raise SystemExit(f'expected 256 brand textures, found {len(textures)}')
-          print(f'authoritative brand archive: {path.stat().st_size} bytes, 256 textures')
-          PY
-
-      - name: Build stock-UV blank and high-resolution spray assets
+      - name: Build stock-UV blank and readable high-resolution spray assets
         run: |
           python3 tools/assets/build_container_surface_assets.py \
             --stock-vtf /tmp/lod-container-stock/cargo_container01.vtf \
             --stock-vtf /tmp/lod-container-stock/cargo_container01c.vtf \
             --stock-vtf /tmp/lod-container-stock/cargo_container02.vtf \
             --stock-vtf /tmp/lod-container-stock/cargo_container03.vtf \
-            --source-zip /tmp/legend_of_deborah_container_brands_256.zip \
             --patch-runtime
 
       - name: Validate generated surface pipeline
@@ -142,6 +104,14 @@ jobs:
               if path.stat().st_size < 50000:
                   raise SystemExit(f'{path.name}: suspiciously small ({path.stat().st_size} bytes)')
               print(f'{path.name}: {path.stat().st_size} bytes alpha={lo}..{hi}')
+
+          names_path = Path('tools/assets/container_brand_names.tsv')
+          rows = [line.split('\t', 2) for line in names_path.read_text(encoding='utf-8').splitlines() if line.strip()]
+          ids = [int(row[0]) for row in rows]
+          if ids != list(range(1, 257)):
+              raise SystemExit('container brand-name manifest must contain canonical IDs 001..256')
+          if rows[-1][1] != 'Deborah Logistics Unlimited':
+              raise SystemExit('brand 256 must remain Deborah Logistics Unlimited')
 
           recolor_path = Path(
               'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
@@ -187,7 +157,7 @@ jobs:
           if present:
               raise SystemExit(f'legacy brand presentation still live: {present}')
 
-          print('Stock-UV blank + direct-source high-resolution spray validation passed.')
+          print('Stock-UV blank + readable high-resolution spray validation passed.')
           PY
 
       - name: Check whitespace
