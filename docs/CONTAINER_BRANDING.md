@@ -123,3 +123,12 @@ Visual acceptance:
 7. Each logical wall clearly reads as two separate 128-unit cargo containers stacked vertically, with a visible midpoint seam.
 8. Sparse wayfinding containers retain the stronger plywood alphanumeric plate.
 9. Branding and presentation do not alter maze topology, collision, gates, minimap topology, hostiles, progression or navigation.
+
+
+## V6 safe grit texture binding
+
+The V5 Steam Deck playtest proved the 4096x1024 full-side spray atlas and orientation fix: company text became readable and correctly oriented. It also exposed a Source-material interoperability bug. Garry's Mod can mount the committed `container_grit_detail.png` as an `ITexture`, but passing that texture's internal name back into a dynamic material's `$detail` string caused Source to reinterpret it as a standalone `.vtf` path. The missing sampler rendered the hull black.
+
+V6 keeps the PNG asset and removes that failure mode. `cl_container_section_recolor.lua` creates every section material with a guaranteed-valid white detail fallback, then assigns the already-loaded PNG `ITexture` directly with `IMaterial:SetTexture("$detail", detailTexture)`. No generated texture name is round-tripped through Source's filesystem resolver. If the grit texture is unavailable for any reason, detail blending remains zero and the hull degrades to the colored, normal-mapped flat fallback instead of black.
+
+`lod_container_recolor_status` also prints `[LOD:CONTAINER-DETAIL]`. Production should report `mode=runtime-texture`; `mode=flat-fallback` is safe but indicates the optional grime layer did not bind.
