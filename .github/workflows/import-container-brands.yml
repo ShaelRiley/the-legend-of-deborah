@@ -27,8 +27,8 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check --quiet gdown
-          gdown --fuzzy \
-            "https://drive.google.com/file/d/163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa/view?usp=sharing" \
+          gdown \
+            "163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa" \
             --output /tmp/lod-container-brands.zip
           python - <<'PY'
           import zipfile
