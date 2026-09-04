@@ -21,6 +21,7 @@ from pathlib import Path
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 ATLAS_COUNT = 4
 SOURCE_ATLAS_SIZE = (512, 256)
 SPRAY_ATLAS_SIZE = (1024, 512)
@@ -28,15 +29,15 @@ ATLAS_COLUMNS = 8
 ATLAS_ROWS = 8
 SPRAY_CELL_SIZE = (128, 64)
 BLANK_SIZE = (512, 512)
-RUNTIME_DIR = Path(
+RUNTIME_DIR = REPO_ROOT / (
     "gamemodes/legend_of_deborah/content/materials/"
     "legend_of_deborah/container_surfaces"
 )
-SOURCE_DIR = Path(
+SOURCE_DIR = REPO_ROOT / (
     "gamemodes/legend_of_deborah/content/materials/"
     "legend_of_deborah/container_brands"
 )
-RECOLOR_PATH = Path(
+RECOLOR_PATH = REPO_ROOT / (
     "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua"
 )
 
@@ -245,7 +246,10 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=RUNTIME_DIR)
     parser.add_argument("--patch-runtime", action="store_true")
     args = parser.parse_args()
-    build(args.output_dir, args.patch_runtime)
+    output_dir = args.output_dir
+    if not output_dir.is_absolute():
+        output_dir = REPO_ROOT / output_dir
+    build(output_dir, args.patch_runtime)
 
 
 if __name__ == "__main__":
