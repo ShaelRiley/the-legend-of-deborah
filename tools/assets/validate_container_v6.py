@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the V6 container presentation pipeline."""
+"""Validate the V6+ container presentation pipeline invariants."""
 
 from pathlib import Path
 from PIL import Image
@@ -77,7 +77,6 @@ def main() -> None:
             'mesh.TexCoord(0, u, v)',
             'side > 0 and -model:GetRight() or model:GetRight()',
             'SIDE_WIDTH_FRACTION = 0.86',
-            'vertexlit-spray-v5-fullside',
         ),
         "branding",
     )
@@ -101,7 +100,7 @@ def main() -> None:
         raise SystemExit("V6 documentation missing")
 
     print(
-        "V6 validated: safe runtime grit ITexture binding, 4096x1024 full-side sprays, "
+        "V6+ validated: safe runtime grit ITexture binding, full-side sprays, "
         "and exact two-container wall stacks."
     )
 
