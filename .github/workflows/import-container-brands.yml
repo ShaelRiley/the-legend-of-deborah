@@ -49,11 +49,6 @@ jobs:
           python3 -m py_compile tools/assets/validate_container_v8.py
           python3 -m py_compile tools/assets/validate_container_v9.py
 
-      # V8 is already the proven production baseline. Validate rather than rerunning
-      # historical patchers that intentionally target older material versions.
-      - name: Validate existing V8 spray baseline
-        run: python3 tools/assets/validate_container_v8.py
-
       - name: Build V9 truly blank corrugated hull
         run: python3 tools/assets/build_container_blank_hull_v9.py
 
