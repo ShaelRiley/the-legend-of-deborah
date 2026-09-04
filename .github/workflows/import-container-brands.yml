@@ -60,6 +60,14 @@ jobs:
       - name: Apply V9 blank hull runtime binding
         run: python3 tools/assets/patch_container_blank_hull_v9.py
 
+      - name: Normalize generated documentation EOF
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('docs/CONTAINER_BRANDING.md')
+          path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
+          PY
+
       - name: Validate V9 presentation
         run: |
           python3 tools/assets/validate_container_v9.py
