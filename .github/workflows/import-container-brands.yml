@@ -1,4 +1,4 @@
-# V14 uses the minimum safe mounted stock HL2/GMod material stack for cargo hulls.
+# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns sparse/full-face overlays.
 name: Build and validate container surface assets
 
 on:
@@ -10,8 +10,12 @@ on:
       - 'tools/assets/build_container_stock_v14.py'
       - 'tools/assets/patch_container_stock_v14.py'
       - 'tools/assets/validate_container_v14.py'
+      - 'tools/assets/patch_container_marking_density_v15.py'
+      - 'tools/assets/validate_container_marking_v15.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_marking_panel.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua'
   workflow_dispatch:
@@ -27,11 +31,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Validate V14 Python tooling syntax
+      - name: Validate container Python tooling syntax
         run: |
           python3 -m py_compile tools/assets/build_container_stock_v14.py
           python3 -m py_compile tools/assets/patch_container_stock_v14.py
           python3 -m py_compile tools/assets/validate_container_v14.py
+          python3 -m py_compile tools/assets/patch_container_marking_density_v15.py
+          python3 -m py_compile tools/assets/validate_container_marking_v15.py
 
       - name: Build V14 minimal stock section materials
         run: python3 tools/assets/build_container_stock_v14.py
@@ -39,22 +45,30 @@ jobs:
       - name: Apply V14 minimal stock runtime wiring
         run: python3 tools/assets/patch_container_stock_v14.py
 
-      - name: Validate V14 presentation
+      - name: Apply V15 sparse full-face overlay rules
+        run: python3 tools/assets/patch_container_marking_density_v15.py
+
+      - name: Validate container presentation
         run: |
           python3 tools/assets/validate_container_v14.py
+          python3 tools/assets/validate_container_marking_v15.py
           git diff --check
 
-      - name: Commit generated V14 runtime wiring
+      - name: Commit generated container presentation wiring
         run: |
           git add -A \
             docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_marking_panel.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
           if git diff --cached --quiet; then
-            echo 'V14 runtime already matches generated output.'
+            echo 'Container presentation already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Use minimal stock HL2 metal for cargo hull'
+          git commit -m 'Use sparse full-face-only container overlays'
           git push origin HEAD:${GITHUB_REF_NAME}
