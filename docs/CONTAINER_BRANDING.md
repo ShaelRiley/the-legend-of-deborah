@@ -385,3 +385,17 @@ Wayfinding plates continue to require V15's stricter full-face eligibility.
 
 Physical separation remains absolute: vertically stacked partners and same-tier
 collinear neighbors that touch end-to-end can never both carry company branding.
+
+## V20 wayfinding coverage
+
+Floor/quadrant plywood locator boards now target approximately 22% of strictly
+full-face-eligible container surfaces, with a baseline of four boards per populated
+floor/quadrant section where topology permits. Placement is coverage-first over a
+three-cell corridor-aware neighborhood so ordinary movement should expose a locator
+board most of the time instead of producing long informational deserts.
+
+Wayfinding boards have an absolute no-touching invariant. Upper/lower containers on the
+same wall edge can never both carry boards, and same-tier collinear neighbors that share
+an endpoint can never both carry boards. If a section lacks enough non-touching surfaces,
+coverage yields to this invariant rather than stacking or crowding signs. Company paint
+continues to suppress itself on marked wayfinding containers.

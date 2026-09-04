@@ -17,8 +17,9 @@ local LABEL_BUCKET_CELLS = 4
 local LABEL_SCALE = 0.22
 local LABEL_SURFACE_OFFSET = 1.8
 local APPEARANCE_BATCH_SIZE = 128
-local MARKING_DENSITY = 1 / 6
-local MIN_MARKS_PER_SECTION = 3
+local MARKING_DENSITY = 0.22
+local MIN_MARKS_PER_SECTION = 4
+local SIGN_COVERAGE_RADIUS_CELLS = 3
 
 -- Real freight/offshore-container marking practice favors prominent, contrasting,
 -- sparse identification marks rather than centered decorative graphics. This panel
@@ -153,19 +154,185 @@ local function sortSectionCandidates(a, b)
     return a.index < b.index
 end
 
--- Build an exact-size, deterministic stratified sample. The global target stays at
--- roughly one mark per six visible containers. Counts are first equalized across
--- every populated floor/quadrant section (minimum three where possible), so sparse
--- upper-floor sections remain noticeable instead of losing the random lottery.
--- Within each section, candidates are divided into spatial bins and one index is
--- seeded-randomly chosen from each bin, preventing ugly local clumps.
+-- V20 treats locator visibility as a coverage problem rather than a lottery. Signs
+-- remain section-balanced, but candidates that expose a floor/quadrant code to more
+-- nearby walkable cells are preferred. Stacked or directly touching signs are always
+-- forbidden, even if a section cannot otherwise reach its desired count.
 local selectionWorldRef = nil
 local markedCount = 0
 local markedBySection = {}
+local signTargetCount = 0
+local signCoverageObserved = 0
+local signCoverageCovered = 0
+
+local DIR_DELTA = {
+    [1] = {0, 1},
+    [2] = {1, 0},
+    [3] = {0, -1},
+    [4] = {-1, 0}
+}
+
+local function inBounds(x, y)
+    return x >= 1 and x <= MC.Width and y >= 1 and y <= MC.Height
+end
+
+local function observationKey(floor, x, y)
+    return string.format("%d:%d:%d", floor or 0, x, y)
+end
+
+local function passageKey(floor, x1, y1, x2, y2)
+    if x2 < x1 or (x2 == x1 and y2 < y1) then
+        x1, x2 = x2, x1
+        y1, y2 = y2, y1
+    end
+    return string.format("%d:%d:%d>%d:%d", floor or 0, x1, y1, x2, y2)
+end
+
+local function buildBlockedPassages()
+    local blocked = {}
+    for _, segment in ipairs(Wall.logical or {}) do
+        local x = tonumber(segment[1]) or 0
+        local y = tonumber(segment[2]) or 0
+        local floor = tonumber(segment[3]) or 0
+        local delta = DIR_DELTA[tonumber(segment[4]) or 0]
+        if delta then
+            blocked[passageKey(floor, x, y, x + delta[1], y + delta[2])] = true
+        end
+    end
+    return blocked
+end
+
+local function coverageForInstance(instance, blocked)
+    local floor = instance.floor or 0
+    local starts = {{instance.gridX or 0, instance.gridY or 0}}
+    local delta = DIR_DELTA[instance.overlayDirection or 0]
+    if delta then
+        local nx = (instance.gridX or 0) + delta[1]
+        local ny = (instance.gridY or 0) + delta[2]
+        if inBounds(nx, ny) then starts[#starts + 1] = {nx, ny} end
+    end
+
+    local covered = {}
+    local visited = {}
+    local queue = {}
+    local head = 1
+    for _, cell in ipairs(starts) do
+        local x, y = cell[1], cell[2]
+        if inBounds(x, y) then
+            local key = observationKey(floor, x, y)
+            if not visited[key] then
+                visited[key] = true
+                queue[#queue + 1] = {x = x, y = y, distance = 0}
+            end
+        end
+    end
+
+    while head <= #queue do
+        local current = queue[head]
+        head = head + 1
+        covered[observationKey(floor, current.x, current.y)] = true
+        if current.distance < SIGN_COVERAGE_RADIUS_CELLS then
+            for _, move in pairs(DIR_DELTA) do
+                local nx = current.x + move[1]
+                local ny = current.y + move[2]
+                if inBounds(nx, ny)
+                    and not blocked[passageKey(floor, current.x, current.y, nx, ny)]
+                then
+                    local key = observationKey(floor, nx, ny)
+                    if not visited[key] then
+                        visited[key] = true
+                        queue[#queue + 1] = {
+                            x = nx,
+                            y = ny,
+                            distance = current.distance + 1
+                        }
+                    end
+                end
+            end
+        end
+    end
+    return covered
+end
+
+local function signConflicts(instance, occupiedEdges, occupiedEndpoints)
+    local edgeKey = instance.overlayEdgeKey
+    local endpointA = instance.overlayEndpointA
+    local endpointB = instance.overlayEndpointB
+    local orientation = instance.overlayOrientation
+    if not edgeKey or not endpointA or not endpointB or not orientation then return true end
+    if occupiedEdges[edgeKey] then return true end
+
+    local stackKey = tostring(instance.stackIndex or 0) .. ":" .. orientation
+    local endpoints = occupiedEndpoints[stackKey]
+    return endpoints and (endpoints[endpointA] or endpoints[endpointB]) or false
+end
+
+local function reserveSign(instance, occupiedEdges, occupiedEndpoints)
+    occupiedEdges[instance.overlayEdgeKey] = true
+    local stackKey = tostring(instance.stackIndex or 0) .. ":" .. instance.overlayOrientation
+    local endpoints = occupiedEndpoints[stackKey]
+    if not endpoints then
+        endpoints = {}
+        occupiedEndpoints[stackKey] = endpoints
+    end
+    endpoints[instance.overlayEndpointA] = true
+    endpoints[instance.overlayEndpointB] = true
+end
+
+local function coverageGain(candidate, covered)
+    local gain = 0
+    for key in pairs(candidate.coverage or {}) do
+        if not covered[key] then gain = gain + 1 end
+    end
+    return gain
+end
+
+local function deterministicTieBreak(seed, candidate)
+    local instance = candidate.instance
+    local token = string.format(
+        "container-wayfinding-coverage:v20:%d:%d:%d:%d:%d",
+        candidate.index or 0,
+        instance.floor or 0,
+        instance.gridX or 0,
+        instance.gridY or 0,
+        instance.stackIndex or 0
+    )
+    local derived = tonumber(LOD.Seeds.Derive(seed, token)) or 0
+    return derived % 100000
+end
+
+local function chooseBestCandidate(candidates, covered, occupiedEdges, occupiedEndpoints, seed)
+    local best = nil
+    local bestGain = -1
+    local bestLower = -1
+    local bestNoise = -1
+
+    for _, candidate in ipairs(candidates) do
+        local instance = candidate.instance
+        if not candidate.selected and not signConflicts(instance, occupiedEdges, occupiedEndpoints) then
+            local gain = coverageGain(candidate, covered)
+            local lower = (instance.stackIndex or 0) == 0 and 1 or 0
+            local noise = deterministicTieBreak(seed, candidate)
+            if gain > bestGain
+                or (gain == bestGain and lower > bestLower)
+                or (gain == bestGain and lower == bestLower and noise > bestNoise)
+            then
+                best = candidate
+                bestGain = gain
+                bestLower = lower
+                bestNoise = noise
+            end
+        end
+    end
+    return best
+end
 
 local function rebuildMarkedSelection(world)
     markedCount = 0
     markedBySection = {}
+    signTargetCount = 0
+    signCoverageObserved = 0
+    signCoverageCovered = 0
 
     local byKey = {}
     for index, instance in ipairs(world or {}) do
@@ -199,14 +366,11 @@ local function rebuildMarkedSelection(world)
         if a.floor ~= b.floor then return a.floor < b.floor end
         return a.quadrant < b.quadrant
     end)
-
     if #groups == 0 or capacity == 0 then return end
 
     local desiredTotal = math.floor(capacity * MARKING_DENSITY + 0.5)
     local allocation = {}
     local allocated = 0
-
-    -- Guarantee a visible baseline in every section before distributing the rest.
     for _, group in ipairs(groups) do
         local minimum = math.min(MIN_MARKS_PER_SECTION, #group.candidates)
         allocation[group.key] = minimum
@@ -214,8 +378,6 @@ local function rebuildMarkedSelection(world)
     end
     desiredTotal = math.min(capacity, math.max(desiredTotal, allocated))
 
-    -- Round-robin allocation keeps populated sections within one mark of each
-    -- other until a small section reaches capacity.
     while allocated < desiredTotal do
         local progressed = false
         for _, group in ipairs(groups) do
@@ -229,31 +391,63 @@ local function rebuildMarkedSelection(world)
         end
         if not progressed then break end
     end
+    signTargetCount = desiredTotal
 
+    local blocked = buildBlockedPassages()
     local seed = tonumber(Wall.seed) or 1
-    for _, group in ipairs(groups) do
-        local candidates = group.candidates
-        local count = math.min(allocation[group.key] or 0, #candidates)
-        if count > 0 then
-            local rng = LOD.RNG.New(LOD.Seeds.Derive(seed,
-                "container-wayfinding-marks:" .. group.key))
+    local occupiedEdges = {}
+    local occupiedEndpoints = {}
+    local covered = {}
 
-            -- Each chosen item comes from its own portion of the spatially sorted
-            -- candidate list. Result: random-looking but evenly distributed signs.
-            for ordinal = 1, count do
-                local first = math.floor((ordinal - 1) * #candidates / count) + 1
-                local last = math.floor(ordinal * #candidates / count)
-                last = math.max(first, math.min(last, #candidates))
-                local chosen = candidates[rng:Int(first, last)]
+    for _, group in ipairs(groups) do
+        for _, candidate in ipairs(group.candidates) do
+            candidate.coverage = coverageForInstance(candidate.instance, blocked)
+            candidate.selected = false
+        end
+    end
+
+    local remaining = {}
+    for _, group in ipairs(groups) do
+        remaining[group.key] = math.min(allocation[group.key] or 0, #group.candidates)
+    end
+
+    while true do
+        local progressed = false
+        for _, group in ipairs(groups) do
+            if (remaining[group.key] or 0) > 0 then
+                local groupSeed = LOD.Seeds.Derive(seed, "container-wayfinding-coverage:v20:" .. group.key)
+                local chosen = chooseBestCandidate(
+                    group.candidates, covered, occupiedEdges, occupiedEndpoints, groupSeed
+                )
                 if chosen and chosen.instance then
+                    chosen.selected = true
                     chosen.instance.marked = true
-                    chosen.instance.markOrdinal = ordinal
+                    chosen.instance.markOrdinal = (allocation[group.key] or 0) - remaining[group.key] + 1
+                    reserveSign(chosen.instance, occupiedEdges, occupiedEndpoints)
+                    for key in pairs(chosen.coverage or {}) do covered[key] = true end
+                    remaining[group.key] = remaining[group.key] - 1
                     markedCount = markedCount + 1
+                    markedBySection[group.key] = (markedBySection[group.key] or 0) + 1
+                    progressed = true
+                else
+                    remaining[group.key] = 0
                 end
             end
         end
-        markedBySection[group.key] = count
+        if not progressed then break end
     end
+
+    for floor = 0, 7 do
+        local floorHasCandidates = false
+        for _, group in ipairs(groups) do
+            if group.floor == floor and #group.candidates > 0 then
+                floorHasCandidates = true
+                break
+            end
+        end
+        if floorHasCandidates then signCoverageObserved = signCoverageObserved + MC.Width * MC.Height end
+    end
+    for _ in pairs(covered) do signCoverageCovered = signCoverageCovered + 1 end
 end
 
 -- Restore the stock Northern Petrol appearance after the existing batched renderer
@@ -261,6 +455,26 @@ end
 -- with a debug-white override; clearing SetMaterial here returns the model to its
 -- original cargo_container01 skin/material, then SetColor supplies a restrained
 -- section cast while retaining the NP art and normal-map detail.
+concommand.Add("lod_container_wayfinding_status", function()
+    local world = Wall.world or {}
+    if world ~= selectionWorldRef then
+        selectionWorldRef = world
+        rebuildMarkedSelection(world)
+    end
+    local percent = signCoverageObserved > 0 and (signCoverageCovered / signCoverageObserved) * 100 or 0
+    print(string.format(
+        "[LOD] container wayfinding: marked=%d target=%d density=%.0f%% minPerSection=%d separation=touching-never distribution=coverage-first radius=%dcells coverage=%d/%d(%.0f%%)",
+        markedCount,
+        signTargetCount,
+        MARKING_DENSITY * 100,
+        MIN_MARKS_PER_SECTION,
+        SIGN_COVERAGE_RADIUS_CELLS,
+        signCoverageCovered,
+        signCoverageObserved,
+        percent
+    ))
+end)
+
 local appearanceModelsRef = nil
 local appearanceCursor = 1
 local appearanceComplete = false
