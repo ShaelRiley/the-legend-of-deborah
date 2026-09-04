@@ -273,6 +273,26 @@ local function buildFullSurfaceEligibility(logical)
     return eligible
 end
 
+-- Company paint is inset to 86% of the broad face, so a perpendicular wall that
+-- merely meets the extreme endpoint does not clip the actual spray rectangle. Keep
+-- duplicate logical faces ineligible, but otherwise allow the central decal-safe area.
+-- Wayfinding continues to use the stricter fullSurfaceEligible classifier above.
+local function buildBrandSurfaceEligibility(logical)
+    local counts = {}
+    local infoByIndex = {}
+    for index, segment in ipairs(logical or {}) do
+        local info = segmentFaceInfo(segment)
+        infoByIndex[index] = info
+        if info then counts[info.edgeKey] = (counts[info.edgeKey] or 0) + 1 end
+    end
+
+    local eligible = {}
+    for index, info in ipairs(infoByIndex) do
+        eligible[index] = info ~= nil and counts[info.edgeKey] == 1
+    end
+    return eligible
+end
+
 local function rebuildWorldCache()
     local origin = Wall.origin or MC.Origin or vector_origin
     if not Wall.dirty and not originChanged(origin) then return false end
@@ -289,6 +309,7 @@ local function rebuildWorldCache()
     local stackCount = 2
 
     local fullSurfaceEligibility = buildFullSurfaceEligibility(Wall.logical or {})
+    local brandSurfaceEligibility = buildBrandSurfaceEligibility(Wall.logical or {})
     for segmentIndex, segment in ipairs(Wall.logical or {}) do
         local direction = DIRS[segment[4]]
         if direction then
@@ -324,6 +345,8 @@ local function rebuildWorldCache()
                     stackIndex = stack,
                     stackCount = stackCount,
                     fullSurfaceEligible = fullSurfaceEligibility[segmentIndex] == true,
+                    brandSurfaceEligible = brandSurfaceEligibility[segmentIndex] == true,
+                    overlayDirection = segment[4],
                     overlayEdgeKey = faceInfo and faceInfo.edgeKey or nil,
                     overlayEndpointA = faceInfo and faceInfo.endpointA or nil,
                     overlayEndpointB = faceInfo and faceInfo.endpointB or nil,

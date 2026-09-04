@@ -17,7 +17,8 @@ local LOGO_Z_FRACTION = 0.55
 local SIDE_WIDTH_FRACTION = 0.86
 local SIDE_HEIGHT_FRACTION = 0.66
 local BRAND_GLOBAL_CAP_FRACTION = 0.40
-local BRAND_SOFT_SPACING_CELLS = 2
+local BRAND_COVERAGE_RADIUS_CELLS = 3
+local BRAND_COVERAGE_GOAL = 0.92
 local BRAND_LOWER_TIER_BIAS = 0.35
 
 local BRAND_COUNT = 256
@@ -114,7 +115,19 @@ local brandedCount = 0
 local brandableCount = 0
 local geometryBlockedCount = 0
 local targetBrandCount = 0
-local relaxedSpacingCount = 0
+local placeableCount = 0
+local globalBrandCap = 0
+local relaxedGeometryCount = 0
+local coverageObservedCount = 0
+local coverageCoveredCount = 0
+local coveragePrefixCount = 0
+
+local DIR_DELTA = {
+    [1] = {0, 1},
+    [2] = {1, 0},
+    [3] = {0, -1},
+    [4] = {-1, 0}
+}
 
 local function placementSort(a, b)
     local ia, ib = a.instance, b.instance
@@ -136,8 +149,8 @@ local function currentMarkedCount(world)
     return count
 end
 
--- Physical contact is a hard exclusion. Upper/lower partners on one wall edge touch,
--- and same-tier collinear neighbors sharing an endpoint touch end-to-end.
+-- Physical contact is always forbidden: vertical partners on one logical wall edge
+-- touch, and same-tier collinear neighbors sharing an endpoint touch end-to-end.
 local function candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
     local edgeKey = instance.overlayEdgeKey
     local endpointA = instance.overlayEndpointA
@@ -163,6 +176,92 @@ local function reserveCandidate(instance, occupiedEdges, occupiedEndpoints)
     endpoints[instance.overlayEndpointB] = true
 end
 
+local function inBounds(x, y)
+    return x >= 1 and x <= MC.Width and y >= 1 and y <= MC.Height
+end
+
+local function observationKey(floor, x, y)
+    return string.format("%d:%d:%d", floor or 0, x, y)
+end
+
+local function passageKey(floor, x1, y1, x2, y2)
+    if x2 < x1 or (x2 == x1 and y2 < y1) then
+        x1, x2 = x2, x1
+        y1, y2 = y2, y1
+    end
+    return string.format("%d:%d:%d>%d:%d", floor or 0, x1, y1, x2, y2)
+end
+
+local function buildBlockedPassages()
+    local blocked = {}
+    for _, segment in ipairs(Wall.logical or {}) do
+        local x = tonumber(segment[1]) or 0
+        local y = tonumber(segment[2]) or 0
+        local floor = tonumber(segment[3]) or 0
+        local delta = DIR_DELTA[tonumber(segment[4]) or 0]
+        if delta then
+            blocked[passageKey(floor, x, y, x + delta[1], y + delta[2])] = true
+        end
+    end
+    return blocked
+end
+
+-- Approximate first-person visibility from the actual maze topology, not Euclidean
+-- distance through walls. The company stencil is rendered on whichever broad side the
+-- player occupies, so seed the neighborhood from both cells adjacent to the wall and
+-- flood through open passages for a short corridor-aware radius.
+local function coverageForInstance(instance, blocked)
+    local floor = instance.floor or 0
+    local starts = {{instance.gridX or 0, instance.gridY or 0}}
+    local delta = DIR_DELTA[instance.overlayDirection or 0]
+    if delta then
+        local nx = (instance.gridX or 0) + delta[1]
+        local ny = (instance.gridY or 0) + delta[2]
+        if inBounds(nx, ny) then starts[#starts + 1] = {nx, ny} end
+    end
+
+    local covered = {}
+    local visited = {}
+    local queue = {}
+    local head = 1
+    for _, cell in ipairs(starts) do
+        local x, y = cell[1], cell[2]
+        if inBounds(x, y) then
+            local key = observationKey(floor, x, y)
+            if not visited[key] then
+                visited[key] = true
+                queue[#queue + 1] = {x = x, y = y, distance = 0}
+            end
+        end
+    end
+
+    while head <= #queue do
+        local current = queue[head]
+        head = head + 1
+        covered[observationKey(floor, current.x, current.y)] = true
+        if current.distance < BRAND_COVERAGE_RADIUS_CELLS then
+            for _, move in pairs(DIR_DELTA) do
+                local nx = current.x + move[1]
+                local ny = current.y + move[2]
+                if inBounds(nx, ny)
+                    and not blocked[passageKey(floor, current.x, current.y, nx, ny)]
+                then
+                    local key = observationKey(floor, nx, ny)
+                    if not visited[key] then
+                        visited[key] = true
+                        queue[#queue + 1] = {
+                            x = nx,
+                            y = ny,
+                            distance = current.distance + 1
+                        }
+                    end
+                end
+            end
+        end
+    end
+    return covered
+end
+
 local function floorDistanceSquared(a, b)
     local dx = (a.gridX or 0) - (b.gridX or 0)
     local dy = (a.gridY or 0) - (b.gridY or 0)
@@ -171,7 +270,7 @@ end
 
 local function deterministicNoise(seed, candidate)
     local token = string.format(
-        "container-brand-coverage:v4:%d:%d:%d:%d:%d",
+        "container-brand-coverage:v5:%d:%d:%d:%d:%d",
         candidate.index or 0,
         candidate.instance.floor or 0,
         candidate.instance.gridX or 0,
@@ -192,9 +291,18 @@ local function minChosenDistanceSquared(instance, chosen)
     return best
 end
 
-local function pickBestCandidate(candidates, chosen, occupiedEdges, occupiedEndpoints,
-    seed, minimumDistanceSquared)
+local function coverageGain(candidate, covered)
+    local gain = 0
+    for key in pairs(candidate.coverage or {}) do
+        if not covered[key] then gain = gain + 1 end
+    end
+    return gain
+end
+
+local function pickCoverageCandidate(candidates, chosen, covered,
+    occupiedEdges, occupiedEndpoints, seed)
     local best = nil
+    local bestGain = -1
     local bestDistance = -1
     local bestVisibility = -1
     local bestNoise = -1
@@ -204,130 +312,130 @@ local function pickBestCandidate(candidates, chosen, occupiedEdges, occupiedEndp
         if not candidate.selected
             and not candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
         then
+            local gain = coverageGain(candidate, covered)
             local distance = minChosenDistanceSquared(instance, chosen)
-            if distance >= minimumDistanceSquared then
-                -- Favor eye-level/lower containers only as a tie-breaker. Spatial
-                -- coverage remains the dominant criterion, which avoids visible clumps.
-                local visibility = (instance.stackIndex or 0) == 0 and BRAND_LOWER_TIER_BIAS or 0
-                local noise = deterministicNoise(seed, candidate)
-                if distance > bestDistance
-                    or (distance == bestDistance and visibility > bestVisibility)
-                    or (distance == bestDistance and visibility == bestVisibility and noise > bestNoise)
-                then
-                    best = candidate
-                    bestDistance = distance
-                    bestVisibility = visibility
-                    bestNoise = noise
-                end
+            local visibility = (instance.stackIndex or 0) == 0 and BRAND_LOWER_TIER_BIAS or 0
+            local noise = deterministicNoise(seed, candidate)
+            if gain > bestGain
+                or (gain == bestGain and distance > bestDistance)
+                or (gain == bestGain and distance == bestDistance and visibility > bestVisibility)
+                or (gain == bestGain and distance == bestDistance
+                    and visibility == bestVisibility and noise > bestNoise)
+            then
+                best = candidate
+                bestGain = gain
+                bestDistance = distance
+                bestVisibility = visibility
+                bestNoise = noise
             end
         end
     end
-    return best
+    return best, bestGain
 end
 
-local function selectBlueNoise(candidates, seed, target)
+local function selectCoverageOrder(candidates, floor, seed, blocked)
     local chosen = {}
     local occupiedEdges = {}
     local occupiedEndpoints = {}
-    local softDistanceSquared = BRAND_SOFT_SPACING_CELLS * BRAND_SOFT_SPACING_CELLS
+    local covered = {}
+    local coveredCount = 0
+    local observationCount = MC.Width * MC.Height
+    local goalCount = math.ceil(observationCount * BRAND_COVERAGE_GOAL)
+    local prefixCount = 0
 
-    -- Pass one: strong two-cell spacing. This is what creates a believable, evenly
-    -- distributed industrial-yard impression instead of random deserts and clusters.
-    while #chosen < target do
-        local candidate = pickBestCandidate(
-            candidates, chosen, occupiedEdges, occupiedEndpoints,
-            seed, softDistanceSquared
+    for _, candidate in ipairs(candidates) do
+        candidate.coverage = coverageForInstance(candidate.instance, blocked)
+    end
+
+    while true do
+        local candidate = pickCoverageCandidate(
+            candidates, chosen, covered, occupiedEdges, occupiedEndpoints, seed
         )
         if not candidate then break end
+
         candidate.selected = true
         reserveCandidate(candidate.instance, occupiedEdges, occupiedEndpoints)
         chosen[#chosen + 1] = candidate
+        for key in pairs(candidate.coverage or {}) do
+            if not covered[key] then
+                covered[key] = true
+                coveredCount = coveredCount + 1
+            end
+        end
+        if prefixCount == 0 and coveredCount >= goalCount then
+            prefixCount = #chosen
+        end
     end
 
-    -- Pass two: fill toward the visual-density target if necessary, but NEVER relax
-    -- physical contact. This only relaxes the aesthetic two-cell cushion.
-    while #chosen < target do
-        local candidate = pickBestCandidate(
-            candidates, chosen, occupiedEdges, occupiedEndpoints,
-            seed, 0
-        )
-        if not candidate then break end
-        candidate.selected = true
-        reserveCandidate(candidate.instance, occupiedEdges, occupiedEndpoints)
-        chosen[#chosen + 1] = candidate
-        relaxedSpacingCount = relaxedSpacingCount + 1
-    end
-
-    return chosen
+    if prefixCount == 0 then prefixCount = #chosen end
+    return {
+        floor = floor,
+        chosen = chosen,
+        coveragePrefix = prefixCount,
+        observationCount = observationCount
+    }
 end
-
-local placeableCount = 0
-local globalBrandCap = 0
 
 local function allocateFloorCounts(groups, target)
     local allocation = {}
     if target <= 0 or #groups == 0 then return allocation end
 
-    local allocated = 0
-    -- Preserve visual coverage across dungeon floors before spending the remaining
-    -- global budget proportionally. Every floor with a placeable brand gets one when
-    -- the cap is large enough to support that baseline.
-    if target >= #groups then
+    local totalChosen = 0
+    local totalCoveragePrefix = 0
+    for index, group in ipairs(groups) do
+        allocation[index] = 0
+        totalChosen = totalChosen + #group.chosen
+        totalCoveragePrefix = totalCoveragePrefix + math.min(#group.chosen, group.coveragePrefix or 0)
+    end
+    if target >= totalChosen then
+        for index, group in ipairs(groups) do allocation[index] = #group.chosen end
+        return allocation
+    end
+
+    -- Spend the constrained budget on coverage prefixes first. If even those exceed
+    -- the 40% ceiling, preserve at least one mark per floor when possible and then
+    -- distribute proportionally by each floor's coverage-prefix demand.
+    local baselineTarget = math.min(target, totalCoveragePrefix)
+    if baselineTarget >= #groups then
         for index, group in ipairs(groups) do
-            if #group.chosen > 0 then
-                allocation[index] = 1
-                allocated = allocated + 1
-            else
-                allocation[index] = 0
+            if #group.chosen > 0 then allocation[index] = 1 end
+        end
+    end
+
+    local allocated = 0
+    for _, count in pairs(allocation) do allocated = allocated + count end
+    local remaining = baselineTarget - allocated
+    while remaining > 0 do
+        local bestIndex = nil
+        local bestNeed = -1
+        for index, group in ipairs(groups) do
+            local need = math.min(#group.chosen, group.coveragePrefix or 0) - (allocation[index] or 0)
+            if need > bestNeed and need > 0 then
+                bestNeed = need
+                bestIndex = index
             end
         end
-    else
-        for index = 1, #groups do allocation[index] = 0 end
+        if not bestIndex then break end
+        allocation[bestIndex] = (allocation[bestIndex] or 0) + 1
+        remaining = remaining - 1
     end
 
-    local remaining = target - allocated
-    if remaining <= 0 then return allocation end
-
-    local residualCapacity = 0
-    for index, group in ipairs(groups) do
-        residualCapacity = residualCapacity + math.max(0, #group.chosen - (allocation[index] or 0))
-    end
-    if residualCapacity <= 0 then return allocation end
-
-    local remainders = {}
-    local used = 0
-    for index, group in ipairs(groups) do
-        local capacity = math.max(0, #group.chosen - (allocation[index] or 0))
-        local exact = remaining * capacity / residualCapacity
-        local base = math.min(capacity, math.floor(exact))
-        allocation[index] = (allocation[index] or 0) + base
-        used = used + base
-        remainders[#remainders + 1] = {
-            index = index,
-            fraction = exact - math.floor(exact),
-            floor = group.floor or 0,
-            capacity = capacity - base
-        }
-    end
-
-    table.sort(remainders, function(a, b)
-        if a.fraction ~= b.fraction then return a.fraction > b.fraction end
-        return a.floor < b.floor
-    end)
-
-    local left = remaining - used
-    while left > 0 do
-        local progressed = false
-        for _, item in ipairs(remainders) do
-            if left <= 0 then break end
-            if item.capacity > 0 then
-                allocation[item.index] = (allocation[item.index] or 0) + 1
-                item.capacity = item.capacity - 1
-                left = left - 1
-                progressed = true
+    allocated = 0
+    for _, count in pairs(allocation) do allocated = allocated + count end
+    remaining = target - allocated
+    while remaining > 0 do
+        local bestIndex = nil
+        local bestCapacity = -1
+        for index, group in ipairs(groups) do
+            local capacity = #group.chosen - (allocation[index] or 0)
+            if capacity > bestCapacity and capacity > 0 then
+                bestCapacity = capacity
+                bestIndex = index
             end
         end
-        if not progressed then break end
+        if not bestIndex then break end
+        allocation[bestIndex] = (allocation[bestIndex] or 0) + 1
+        remaining = remaining - 1
     end
     return allocation
 end
@@ -337,16 +445,22 @@ local function rebuildBrandPlacement(world)
     brandableCount = 0
     geometryBlockedCount = 0
     targetBrandCount = 0
-    relaxedSpacingCount = 0
     placeableCount = 0
+    relaxedGeometryCount = 0
+    coverageObservedCount = 0
+    coverageCoveredCount = 0
+    coveragePrefixCount = 0
     globalBrandCap = math.floor(#(world or {}) * BRAND_GLOBAL_CAP_FRACTION)
 
     local byFloor = {}
     for index, instance in ipairs(world or {}) do
         instance.companyBranded = false
-        if instance.fullSurfaceEligible ~= true then
+        if instance.brandSurfaceEligible ~= true then
             geometryBlockedCount = geometryBlockedCount + 1
         elseif not instance.marked then
+            if instance.fullSurfaceEligible ~= true then
+                relaxedGeometryCount = relaxedGeometryCount + 1
+            end
             local floor = instance.floor or 0
             local group = byFloor[floor]
             if not group then
@@ -359,29 +473,27 @@ local function rebuildBrandPlacement(world)
     end
 
     local seed = tonumber(Wall.seed) or 1
+    local blocked = buildBlockedPassages()
     local floors = {}
     for floor in pairs(byFloor) do floors[#floors + 1] = floor end
     table.sort(floors)
 
-    -- First find the dense, physically legal set. selectBlueNoise starts with broad
-    -- visual spacing, then relaxes only that aesthetic cushion until the hard
-    -- no-touching graph has no more candidates.
     local groups = {}
     for _, floor in ipairs(floors) do
         local candidates = byFloor[floor]
         table.sort(candidates, placementSort)
-        local floorSeed = LOD.Seeds.Derive(seed, "container-brand-coverage:v4:floor:" .. tostring(floor))
-        local chosen = selectBlueNoise(candidates, floorSeed, #candidates)
-        groups[#groups + 1] = {floor = floor, chosen = chosen}
-        placeableCount = placeableCount + #chosen
+        local floorSeed = LOD.Seeds.Derive(seed, "container-brand-coverage:v5:floor:" .. tostring(floor))
+        local group = selectCoverageOrder(candidates, floor, floorSeed, blocked)
+        groups[#groups + 1] = group
+        placeableCount = placeableCount + #group.chosen
+        coverageObservedCount = coverageObservedCount + group.observationCount
+        coveragePrefixCount = coveragePrefixCount + group.coveragePrefix
     end
 
     targetBrandCount = math.min(placeableCount, globalBrandCap)
     local allocation = allocateFloorCounts(groups, targetBrandCount)
+    local finalCovered = {}
 
-    -- Prefixes of each blue-noise list retain the widest coverage. Any subset of the
-    -- already non-touching chosen set remains non-touching, so enforcing the global
-    -- 40% ceiling cannot introduce a contact violation.
     for index, group in ipairs(groups) do
         local count = math.min(#group.chosen, allocation[index] or 0)
         for chosenIndex = 1, count do
@@ -389,9 +501,11 @@ local function rebuildBrandPlacement(world)
             if item and item.instance then
                 item.instance.companyBranded = true
                 brandedCount = brandedCount + 1
+                for key in pairs(item.coverage or {}) do finalCovered[key] = true end
             end
         end
     end
+    for _ in pairs(finalCovered) do coverageCoveredCount = coverageCoveredCount + 1 end
 
     placementWorldRef = world
     placementSeed = tonumber(Wall.seed) or 0
@@ -502,7 +616,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
                     local instance = world[index]
                     local model = Wall.models and Wall.models[index]
                     if instance and instance.companyBranded == true
-                        and instance.fullSurfaceEligible == true and not instance.marked
+                        and instance.brandSurfaceEligible == true and not instance.marked
                         and IsValid(model)
                         and eyePos:DistToSqr(model:GetPos()) <= DRAW_DISTANCE_SQR
                     then
@@ -519,7 +633,7 @@ concommand.Add("lod_container_brand_status", function()
     if #world > 0 then ensureBrandPlacement(world) end
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d placeable=%d all=%d cap=%.0f%% capCount=%d targetCount=%d separation=touching-never distribution=blue-noise-packed softSpacing=%dcells lowerBias=%.2f geometryBlocked=%d relaxed=%d",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d placeable=%d all=%d cap=%.0f%% capCount=%d targetCount=%d separation=touching-never distribution=coverage-first radius=%dcells coverage=%d/%d(%.0f%%) goal=%.0f%% coveragePrefix=%d geometryBlocked=%d decalRelaxed=%d lowerBias=%.2f",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
@@ -536,9 +650,14 @@ concommand.Add("lod_container_brand_status", function()
         BRAND_GLOBAL_CAP_FRACTION * 100,
         globalBrandCap,
         targetBrandCount,
-        BRAND_SOFT_SPACING_CELLS,
-        BRAND_LOWER_TIER_BIAS,
+        BRAND_COVERAGE_RADIUS_CELLS,
+        coverageCoveredCount,
+        coverageObservedCount,
+        coverageObservedCount > 0 and (coverageCoveredCount / coverageObservedCount) * 100 or 0,
+        BRAND_COVERAGE_GOAL * 100,
+        coveragePrefixCount,
         geometryBlockedCount,
-        relaxedSpacingCount
+        relaxedGeometryCount,
+        BRAND_LOWER_TIER_BIAS
     ))
 end)

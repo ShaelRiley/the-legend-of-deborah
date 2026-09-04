@@ -360,3 +360,28 @@ When the 40% global ceiling binds, the available brand budget is distributed acr
 floors with a one-per-floor baseline when possible, then proportionally by each floor's
 remaining placeable capacity. Each floor keeps a prefix of its blue-noise selection, so
 coverage remains broad and deterministic even under the cap.
+
+## V19 coverage-first company branding
+
+V18's dense 40% ceiling remains, but percentage is no longer the placement objective.
+V19 treats the maze's player-space coverage as primary. Each floor's maze cells are used
+as observation points. For every company-brand candidate, the client derives a short
+three-cell neighborhood by flooding through open passages in the authoritative logical
+wall manifest from both cells adjacent to the cargo wall. Candidates are then selected
+by maximum newly covered observation cells, with spatial distance, lower-tier visibility,
+and seeded noise as deterministic tie-breakers.
+
+The coverage phase aims to place a company mark within the three-cell topological
+neighborhood of roughly 92% of maze cells whenever topology, geometry eligibility, and
+the no-touching invariant allow it. After coverage is satisfied, selection continues to
+pack additional legal brands up to the existing global ceiling of 40% of all containers.
+If that ceiling binds, coverage-prefix selections receive budget before density fill.
+
+Company branding now has a decal-safe eligibility classifier separate from wayfinding.
+The spray occupies only the central 86% of a broad cargo side, so a perpendicular wall
+that merely meets the extreme endpoint no longer disqualifies the company stencil; the
+actual inset spray rectangle remains clear. Duplicate logical faces remain forbidden.
+Wayfinding plates continue to require V15's stricter full-face eligibility.
+
+Physical separation remains absolute: vertically stacked partners and same-tier
+collinear neighbors that touch end-to-end can never both carry company branding.
