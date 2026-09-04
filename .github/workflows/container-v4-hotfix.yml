@@ -39,16 +39,8 @@ jobs:
           if old_block not in recolor:
               raise SystemExit('V4 recolor base-texture anchor not found')
           recolor = recolor.replace(old_block, new_block, 1)
-          recolor = recolor.replace(
-              'local COLOR_REPLACE_BLEND = 0.80',
-              'local COLOR_REPLACE_BLEND = 1.00',
-              1,
-          )
-          recolor = recolor.replace(
-              'local MATERIAL_VERSION = "v9_stock_uv_blank"',
-              'local MATERIAL_VERSION = "v10_uniform_neutral"',
-              1,
-          )
+          recolor = recolor.replace('local COLOR_REPLACE_BLEND = 0.80', 'local COLOR_REPLACE_BLEND = 1.00', 1)
+          recolor = recolor.replace('local MATERIAL_VERSION = "v9_stock_uv_blank"', 'local MATERIAL_VERSION = "v10_uniform_neutral"', 1)
           recolor = recolor.replace(
               '-- Shader-native section recoloring for the stock-UV-derived blank cargo surface.',
               '-- Shader-native section recoloring for the UV-agnostic neutral cargo surface.',
@@ -71,54 +63,31 @@ jobs:
 
           workflow_path = Path('.github/workflows/import-container-brands.yml')
           workflow = workflow_path.read_text(encoding='utf-8')
-          workflow = workflow.replace(
-              '      - agent/container-surface-v3',
-              '      - agent/container-surface-v4',
-              1,
-          )
-          workflow = workflow.replace(
-              '            --patch-runtime\n',
-              '',
-              1,
-          )
-          old_required = '''          recolor_required = [
-              'CONTAINER_BLANK_BASE_PATH',
-              'container_surfaces/container_blank_metal.png',
-              'blankBaseMaterial:GetTexture("$basetexture")',
-              'v9_stock_uv_blank',
+          workflow = workflow.replace('      - agent/container-surface-v3', '      - agent/container-surface-v4', 1)
+          workflow = workflow.replace('            --patch-runtime\n', '', 1)
+
+          replacements = [
+              ("              'CONTAINER_BLANK_BASE_PATH',\n", "              'local NP_BASE_TEXTURE = \\\"vgui/white\\\"',\n"),
+              ("              'container_surfaces/container_blank_metal.png',\n", "              'local COLOR_REPLACE_BLEND = 1.00',\n"),
+              ("              'blankBaseMaterial:GetTexture(\\\"$basetexture\\\")',\n", ""),
+              ("              'v9_stock_uv_blank',\n", "              'v10_uniform_neutral',\n"),
+              ("              raise SystemExit(f'recolor missing stock-UV blank wiring: {missing}')", "              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')"),
+              ("          if 'v8_blank_metal_surface' in recolor:\n              raise SystemExit('generic v8 blank-metal material is still live')\n", "          if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:\n              raise SystemExit('generated diffuse is still authoritative for hull color')\n"),
+              ("          print('Stock-UV blank + readable high-resolution spray validation passed.')", "          print('Uniform-neutral hull + readable high-resolution spray validation passed.')"),
           ]
-          '''
-          new_required = '''          recolor_required = [
-              'local NP_BASE_TEXTURE = "vgui/white"',
-              'local COLOR_REPLACE_BLEND = 1.00',
-              'v10_uniform_neutral',
-          ]
-          '''
-          if old_required not in workflow:
-              raise SystemExit('V4 workflow validation anchor not found')
-          workflow = workflow.replace(old_required, new_required, 1)
-          workflow = workflow.replace(
-              "              raise SystemExit(f'recolor missing stock-UV blank wiring: {missing}')",
-              "              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')",
-              1,
-          )
-          workflow = workflow.replace(
-              "          if 'v8_blank_metal_surface' in recolor:\n              raise SystemExit('generic v8 blank-metal material is still live')\n",
-              "          if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:\n              raise SystemExit('generated diffuse is still authoritative for hull color')\n",
-              1,
-          )
-          workflow = workflow.replace(
-              "          print('Stock-UV blank + readable high-resolution spray validation passed.')",
-              "          print('Uniform-neutral hull + readable high-resolution spray validation passed.')",
-              1,
-          )
+          for old, new in replacements:
+              if old not in workflow:
+                  raise SystemExit(f'V4 workflow anchor not found: {old!r}')
+              workflow = workflow.replace(old, new, 1)
+
           workflow_path.write_text(workflow, encoding='utf-8')
 
           docs_path = Path('docs/CONTAINER_BRANDING.md')
           docs = docs_path.read_text(encoding='utf-8')
           docs = docs.replace('`materialVersion=v9_stock_uv_blank`', '`materialVersion=v10_uniform_neutral`')
           docs = docs.replace('`blend=0.80`', '`blend=1.00`')
-          docs += '''\n\n## V4 substrate safety rule\n\nThe hull diffuse is now deliberately UV-agnostic (`vgui/white`) and the section tint blend is `1.00`. The cargo mesh and stock normal map provide physical relief; the diffuse contributes no baked structure at all. This prevents source-texture logos, block patterns, or checkerboard artifacts from ever leaking into procedural section colors. The generated `container_blank_metal.png` remains a build artifact for compatibility but is no longer authoritative at runtime.\n'''
+          if '## V4 substrate safety rule' not in docs:
+              docs += '''\n\n## V4 substrate safety rule\n\nThe hull diffuse is now deliberately UV-agnostic (`vgui/white`) and the section tint blend is `1.00`. The cargo mesh and stock normal map provide physical relief; the diffuse contributes no baked structure at all. This prevents source-texture logos, block patterns, or checkerboard artifacts from ever leaking into procedural section colors. The generated `container_blank_metal.png` remains a build artifact for compatibility but is no longer authoritative at runtime.\n'''
           docs_path.write_text(docs, encoding='utf-8')
           PY
 
