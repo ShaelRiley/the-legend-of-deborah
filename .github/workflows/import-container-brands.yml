@@ -1,6 +1,7 @@
 # V14 owns the minimal stock HL2/GMod cargo hull; V15 owns strict full-face wayfinding eligibility;
 # V19 owns coverage-first, decal-safe company branding under a global 40% container ceiling;
-# V21 owns orientation-first floor/quadrant wayfinding and brand/sign coexistence.
+# V21 owns orientation-first floor/quadrant wayfinding and brand/sign coexistence;
+# V22 owns deterministic layer order: company spray first, location signage on top.
 name: Build and validate container surface assets
 
 on:
@@ -16,6 +17,8 @@ on:
       - 'tools/assets/validate_container_brand_coverage_v19.py'
       - 'tools/assets/patch_container_wayfinding_v21.py'
       - 'tools/assets/validate_container_wayfinding_v21.py'
+      - 'tools/assets/patch_container_overlay_order_v22.py'
+      - 'tools/assets/validate_container_overlay_order_v22.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
@@ -44,6 +47,8 @@ jobs:
           python3 -m py_compile tools/assets/validate_container_brand_coverage_v19.py
           python3 -m py_compile tools/assets/patch_container_wayfinding_v21.py
           python3 -m py_compile tools/assets/validate_container_wayfinding_v21.py
+          python3 -m py_compile tools/assets/patch_container_overlay_order_v22.py
+          python3 -m py_compile tools/assets/validate_container_overlay_order_v22.py
 
       - name: Build V14 minimal stock section materials
         run: python3 tools/assets/build_container_stock_v14.py
@@ -56,6 +61,9 @@ jobs:
 
       - name: Apply V21 orientation-first wayfinding
         run: python3 tools/assets/patch_container_wayfinding_v21.py
+
+      - name: Apply V22 deterministic overlay layering
+        run: python3 tools/assets/patch_container_overlay_order_v22.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -70,6 +78,7 @@ jobs:
           python3 tools/assets/validate_container_v14.py
           python3 tools/assets/validate_container_brand_coverage_v19.py
           python3 tools/assets/validate_container_wayfinding_v21.py
+          python3 tools/assets/validate_container_overlay_order_v22.py
           git diff --check
 
       - name: Commit generated container presentation wiring
@@ -79,6 +88,7 @@ jobs:
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_marking_panel.lua \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
             gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
           if git diff --cached --quiet; then
@@ -87,5 +97,5 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Improve orientation signage coverage'
+          git commit -m 'Render wayfinding signage above company spray'
           git push origin HEAD:${GITHUB_REF_NAME}
