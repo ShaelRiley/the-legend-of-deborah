@@ -132,3 +132,43 @@ The V5 Steam Deck playtest proved the 4096x1024 full-side spray atlas and orient
 V6 keeps the PNG asset and removes that failure mode. `cl_container_section_recolor.lua` creates every section material with a guaranteed-valid white detail fallback, then assigns the already-loaded PNG `ITexture` directly with `IMaterial:SetTexture("$detail", detailTexture)`. No generated texture name is round-tripped through Source's filesystem resolver. If the grit texture is unavailable for any reason, detail blending remains zero and the hull degrades to the colored, normal-mapped flat fallback instead of black.
 
 `lod_container_recolor_status` also prints `[LOD:CONTAINER-DETAIL]`. Production should report `mode=runtime-texture`; `mode=flat-fallback` is safe but indicates the optional grime layer did not bind.
+
+## V9 truly blank cargo hull
+
+The V8 Steam Deck playtest proved the alpha-tested spray system: company marks are
+legible, deterministic, full-side, correctly oriented and no longer create an opaque
+black card. It also made the remaining limitation explicit: using the stock Northern
+Petroleum diffuse underneath still leaves the baked `NP / Northern Petrol` art visible.
+
+V9 removes that dependency completely. `tools/assets/build_container_blank_hull_v9.py`
+deterministically generates `container_blank_hull_v9.png`, a 1024x1024 company-free
+painted-steel substrate containing only physical surface information: repeating
+corrugation luminance, thin frame/seam language, dirty blooms, drainage streaks,
+scratches and chipped-paint scoring. It contains no company name, logo, serial block
+or other semantic rectangle that can land on the wrong UV island.
+
+`cl_container_section_recolor.lua` mounts that PNG and binds its loaded `ITexture`
+directly to `$basetexture`. Procedural floor/quadrant `$color2` tint remains
+authoritative, but the blend is intentionally below total replacement so the blank
+steel luminance survives. The stock `cargo_container01_normal` is retained because it
+contains physical corrugation/frame relief rather than branding. The existing neutral
+`container_grit_detail.png` remains a lower-strength secondary dirt layer.
+
+The production composition is now:
+
+1. repository-owned truly blank corrugated steel hull;
+2. deterministic procedural floor/quadrant hue;
+3. neutral grime/scratch detail and stock normal-map relief;
+4. V8 alpha-tested company spray on ordinary containers only;
+5. plywood wayfinding plate instead of company spray on marked containers.
+
+There is no stock Northern Petroleum diffuse or runtime concealment rectangle in the
+ordinary-container presentation path.
+
+Runtime diagnostics should report:
+
+- `materialVersion=v14_blank_hull_v9`
+- `[LOD:CONTAINER-HULL] ... mode=runtime-texture blend=0.78`
+- `[LOD:CONTAINER-DETAIL] ... mode=runtime-texture blend=0.40`
+- `mode=vertexlit-spray-v8-alphatest-dither`
+- `wrong=0`

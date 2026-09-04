@@ -3,24 +3,28 @@ LOD = LOD or {}
 local Wall = LOD.WallVisualsClient
 if not Wall then return end
 
--- Shader-native section recoloring with safely bound gritty metal detail.
+-- Shader-native section recoloring over a truly blank gritty cargo hull.
 --
--- The runtime diffuse is uniform and logo-free. VertexLitGeneric color replacement
--- owns the full hull hue while the validated cargo mesh and stock normal map retain relief.
--- Company identity is no longer baked into the diffuse; it is rendered separately
--- as a vertex-lit spray-paint mask on ordinary containers.
-
+-- V9 removes the final Northern Petroleum diffuse dependency. The repository ships
+-- a deterministic company-free corrugated steel texture, while the stock normal map
+-- remains solely for physical surface relief. Company identity is rendered later as
+-- an alpha-tested spray mask and therefore never has to conceal baked stock branding.
 --
 -- Section colors are generated uniquely for the ACTUAL sections in this maze. The
 -- entire hue circle is legal: Red, Yellow and Blue are no longer reserved. A seeded
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
--- The diffuse is deliberately UV-agnostic. Mesh geometry plus the stock normal map
--- provide container relief; a uniform white base guarantees that no baked company
--- art, source-image blocks, or checkerboard structure can leak into the hull color.
-local NP_BASE_TEXTURE = "vgui/white"
-local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
+local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v9.png"
+local HULL_FALLBACK_TEXTURE = "vgui/white"
+local HULL_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
+local hullSourceMaterial = Material(HULL_PATH, "smooth mips")
+local hullTexture = nil
+if hullSourceMaterial and not hullSourceMaterial:IsError() then
+    hullTexture = hullSourceMaterial:GetTexture("$basetexture")
+end
+local HULL_AVAILABLE = hullTexture ~= nil
+
 local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
 local DETAIL_FALLBACK_TEXTURE = "vgui/white"
 local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
@@ -29,13 +33,15 @@ if detailSourceMaterial and not detailSourceMaterial:IsError() then
     detailTexture = detailSourceMaterial:GetTexture("$basetexture")
 end
 local DETAIL_AVAILABLE = detailTexture ~= nil
-local DETAIL_BLEND_FACTOR = 0.64
+local DETAIL_BLEND_FACTOR = 0.40
 local DETAIL_SCALE = 1.00
-local COLOR_REPLACE_BLEND = 1.00
+-- Preserve authored steel luminance while the procedural section color remains
+-- unmistakable. Full replacement made the safe white-base experiment look cel-shaded.
+local COLOR_REPLACE_BLEND = 0.78
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v13_grit_stable_apply"
+local MATERIAL_VERSION = "v14_blank_hull_v9"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -298,11 +304,11 @@ local function sectionMaterialName(c)
     local r = clamp01((vivid.r or 0) / 255)
     local g = clamp01((vivid.g or 0) / 255)
     local b = clamp01((vivid.b or 0) / 255)
-    local name = "lod_np_section_" .. MATERIAL_VERSION .. "_" .. key
+    local name = "lod_container_section_" .. MATERIAL_VERSION .. "_" .. key
 
     local params = {
-        ["$basetexture"] = NP_BASE_TEXTURE,
-        ["$bumpmap"] = NP_NORMAL_TEXTURE,
+        ["$basetexture"] = HULL_FALLBACK_TEXTURE,
+        ["$bumpmap"] = HULL_NORMAL_TEXTURE,
         ["$surfaceprop"] = "metal",
         ["$model"] = "1",
         ["$allowdiffusemodulation"] = "1",
@@ -319,12 +325,17 @@ local function sectionMaterialName(c)
         ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
     }
     local material = CreateMaterial(name, "VertexLitGeneric", params)
-    if material and not material:IsError() and DETAIL_AVAILABLE then
-        -- The mounted PNG is already a valid ITexture. Bind that object directly;
-        -- never feed its internal name back through Source's .vtf resolver.
-        material:SetTexture("$detail", detailTexture)
-        material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)
-        material:SetFloat("$detailscale", DETAIL_SCALE)
+    if material and not material:IsError() then
+        -- Mounted PNGs are valid ITextures. Bind the blank hull directly so Source
+        -- never reinterprets its internal name as a missing .vtf path.
+        if HULL_AVAILABLE then
+            material:SetTexture("$basetexture", hullTexture)
+        end
+        if DETAIL_AVAILABLE then
+            material:SetTexture("$detail", detailTexture)
+            material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)
+            material:SetFloat("$detailscale", DETAIL_SCALE)
+        end
         if material.Recompute then material:Recompute() end
     end
 
@@ -474,6 +485,12 @@ concommand.Add("lod_container_recolor_status", function()
         paletteMinDeltaE, paletteMinHueDistance, CANDIDATE_HUE_STEP,
         table.Count(materialNames), COLOR_REPLACE_BLEND, MATERIAL_VERSION,
         tostring(reconcileComplete), table.concat(sections, " ")
+    ))
+    print(string.format(
+        "[LOD:CONTAINER-HULL] source=%s mode=%s blend=%.2f",
+        HULL_PATH,
+        HULL_AVAILABLE and "runtime-texture" or "white-fallback",
+        COLOR_REPLACE_BLEND
     ))
     print(string.format(
         "[LOD:CONTAINER-DETAIL] source=%s mode=%s blend=%.2f",
