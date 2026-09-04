@@ -10,7 +10,9 @@ on:
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
+      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
   workflow_dispatch:
 
 permissions:
