@@ -4,14 +4,15 @@ local Wall = LOD.WallVisualsClient
 local MC = LOD.Config and LOD.Config.Maze
 if not Wall or not MC then return end
 
--- Company identity is presentation-only. The cargo model now receives a neutral,
--- logo-free metal diffuse from cl_container_section_recolor.lua. This pass adds only
--- the selected company's distressed paint mask as a lit world-space surface decal.
--- Sparse plywood wayfinding plates remain authoritative on marked containers.
+-- Company identity is presentation-only. cl_container_section_recolor.lua supplies
+-- a neutral, stock-UV-compatible cargo diffuse and owns floor/quadrant hull color.
+-- This pass adds only the selected company's transparent distressed paint mask as a
+-- lit world-space surface decal. Sparse plywood wayfinding plates remain authoritative
+-- on marked containers and therefore suppress company paint there.
 local DRAW_DISTANCE = 1450
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
 local BUCKET_CELLS = 4
-local SURFACE_OFFSET = 1.15
+local SURFACE_OFFSET = 0.90
 local LOGO_Y_FRACTION = 0.69
 local LOGO_Z_FRACTION = 0.58
 
@@ -21,7 +22,7 @@ local ATLAS_COLUMNS = 8
 local ATLAS_ROWS = 8
 local CELL_U = 1 / ATLAS_COLUMNS
 local CELL_V = 1 / ATLAS_ROWS
-local UV_INSET = 0.00125
+local UV_INSET = 0.00055
 
 local selectedSeed
 local selectedId
@@ -50,7 +51,12 @@ local function materialForBrand(brandId, atlasIndex, column, row)
         "legend_of_deborah/container_surfaces/container_brand_spray_atlas_%02d.png",
         atlasIndex
     )
-    local atlas = Material(path, "vertexlitgeneric mips smooth nocull")
+
+    -- Do not request generated mipmaps for the company mask. The previous tiny-cell
+    -- pipeline became unreadable chiefly because the already-small 128x64 cells were
+    -- filtered down again at ordinary play distances. V3 cells are 256x128 and stay
+    -- crisp while bilinear filtering still softens the stencil edge.
+    local atlas = Material(path, "vertexlitgeneric smooth nocull")
     if not atlas or atlas:IsError() then return nil, path end
 
     local texture = atlas:GetTexture("$basetexture")
@@ -65,7 +71,7 @@ local function materialForBrand(brandId, atlasIndex, column, row)
         scaleU, scaleV, translateU, translateV
     )
 
-    local name = string.format("lod_container_spray_brand_%03d_v2", brandId)
+    local name = string.format("lod_container_spray_brand_%03d_v3", brandId)
     local material = CreateMaterial(name, "VertexLitGeneric", {
         ["$basetexture"] = texture:GetName(),
         ["$basetexturetransform"] = transform,
@@ -106,10 +112,10 @@ end
 local function sprayPaintColor(instance)
     local c = instance.bodyColor or instance.sectionColor or Color(110, 110, 110, 255)
     local luminance = (c.r or 0) * 0.2126 + (c.g or 0) * 0.7152 + (c.b or 0) * 0.0722
-    if luminance < 142 then
-        return Color(239, 236, 222, 232)
+    if luminance < 148 then
+        return Color(242, 239, 224, 244)
     end
-    return Color(34, 33, 31, 220)
+    return Color(28, 28, 27, 235)
 end
 
 local function drawBrand(model, instance, eyePos)
@@ -125,14 +131,19 @@ local function drawBrand(model, instance, eyePos)
     local localZ = mins.z + spanZ * LOGO_Z_FRACTION
     local center = model:LocalToWorld(Vector(localX, localY, localZ))
 
-    -- A real 3D quad with a VertexLitGeneric material participates in scene lighting;
-    -- unlike the old 3D2D plaque it has no opaque background and reads as paint on
-    -- the metal surface. Mirror the horizontal basis so the reverse face stays legible.
+    -- The real 3D quad participates in scene lighting and has no opaque background.
+    -- It sits close to the broad metal face and reads as stencil/spray paint rather
+    -- than the superseded rectangular 3D2D plaque. Mirror the reverse face so text
+    -- remains readable from either side of a container wall.
     local horizontal = model:GetRight()
     if side < 0 then horizontal = -horizontal end
     local up = model:GetUp()
-    local width = math.Clamp(spanY * 0.46, 82, 112)
-    local height = math.min(spanZ * 0.46, width * 0.5)
+
+    -- V3 uses more of the broad side. The authored company name is the primary read;
+    -- fine ISO/tagline copy may naturally disappear at distance, as real stencil copy
+    -- would, but the logo and company name should remain recognizable.
+    local width = math.Clamp(spanY * 0.62, 120, 150)
+    local height = math.min(spanZ * 0.50, width * 0.5)
     local halfW = width * 0.5
     local halfH = height * 0.5
 
@@ -145,8 +156,6 @@ local function drawBrand(model, instance, eyePos)
     render.DrawQuad(v1, v2, v3, v4, sprayPaintColor(instance))
 end
 
--- Remove the superseded opaque 3D2D renderer during hot reloads and use the
--- translucent scene pass required by the distressed alpha paint masks.
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding")
 hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
 hook.Add("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding", function()
@@ -183,7 +192,7 @@ end)
 concommand.Add("lod_container_brand_status", function()
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s material=%s path=%s mode=vertexlit-spray-v2",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s material=%s path=%s mode=vertexlit-spray-v3-hires",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
