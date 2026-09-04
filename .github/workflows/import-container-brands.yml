@@ -12,7 +12,6 @@ on:
       - 'tools/assets/patch_container_alpha_v7.py'
       - 'tools/assets/patch_container_alpha_v8.py'
       - 'tools/assets/validate_container_v6.py'
-      - 'tools/assets/validate_container_v7.py'
       - 'tools/assets/validate_container_v8.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
@@ -42,7 +41,6 @@ jobs:
           python3 -m py_compile tools/assets/patch_container_alpha_v7.py
           python3 -m py_compile tools/assets/patch_container_alpha_v8.py
           python3 -m py_compile tools/assets/validate_container_v6.py
-          python3 -m py_compile tools/assets/validate_container_v7.py
           python3 -m py_compile tools/assets/validate_container_v8.py
 
       - name: Build container presentation assets
@@ -51,7 +49,7 @@ jobs:
       - name: Apply safe V6 grit runtime binding
         run: python3 tools/assets/patch_container_grit_v6.py
 
-      - name: Apply V7 true-alpha spray binding
+      - name: Apply V7 true-alpha source normalization
         run: python3 tools/assets/patch_container_alpha_v7.py
 
       - name: Apply V8 alpha-test spray binding
@@ -60,7 +58,6 @@ jobs:
       - name: Validate V8 presentation
         run: |
           python3 tools/assets/validate_container_v6.py
-          python3 tools/assets/validate_container_v7.py
           python3 tools/assets/validate_container_v8.py
           git diff --check
 
