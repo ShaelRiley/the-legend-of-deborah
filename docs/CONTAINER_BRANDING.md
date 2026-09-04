@@ -341,3 +341,22 @@ never both be branded, and same-tier collinear neighbors that share an endpoint 
 both be branded. If the two-cell aesthetic cushion prevents reaching the target, V17 may
 relax that cushion while preserving the physical no-touching invariant. Full-surface
 eligibility remains authoritative, so clipped corners and other partial faces stay clean.
+
+## V18 dense branding with a global 40% ceiling
+
+The fixed 26% eligible-container target is retired. V18 attempts to brand every
+full-surface, non-wayfinding container that can participate in the hard no-touching
+independent set. Branding is then capped globally at 40% of *all* rendered container
+instances, including clipped, marked, and otherwise ineligible containers.
+
+The no-touching invariant remains absolute. Upper/lower partners on one logical wall
+edge can never both carry company paint, and same-tier collinear neighbors sharing an
+endpoint can never both carry paint. V17's blue-noise ordering is retained: broad
+spacing is attempted first, then the soft spacing cushion may relax while physical
+contact remains forbidden. This produces the densest believable placement without
+turning the maze into repeated logo wallpaper.
+
+When the 40% global ceiling binds, the available brand budget is distributed across
+floors with a one-per-floor baseline when possible, then proportionally by each floor's
+remaining placeable capacity. Each floor keeps a prefix of its blue-noise selection, so
+coverage remains broad and deterministic even under the cap.

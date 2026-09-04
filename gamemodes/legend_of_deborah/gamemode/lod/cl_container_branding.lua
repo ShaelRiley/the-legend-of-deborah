@@ -16,7 +16,7 @@ local LOGO_Y_FRACTION = 0.50
 local LOGO_Z_FRACTION = 0.55
 local SIDE_WIDTH_FRACTION = 0.86
 local SIDE_HEIGHT_FRACTION = 0.66
-local BRAND_TARGET_FRACTION = 0.26
+local BRAND_GLOBAL_CAP_FRACTION = 0.40
 local BRAND_SOFT_SPACING_CELLS = 2
 local BRAND_LOWER_TIER_BIAS = 0.35
 
@@ -171,7 +171,7 @@ end
 
 local function deterministicNoise(seed, candidate)
     local token = string.format(
-        "container-brand-coverage:v3:%d:%d:%d:%d:%d",
+        "container-brand-coverage:v4:%d:%d:%d:%d:%d",
         candidate.index or 0,
         candidate.instance.floor or 0,
         candidate.instance.gridX or 0,
@@ -261,12 +261,85 @@ local function selectBlueNoise(candidates, seed, target)
     return chosen
 end
 
+local placeableCount = 0
+local globalBrandCap = 0
+
+local function allocateFloorCounts(groups, target)
+    local allocation = {}
+    if target <= 0 or #groups == 0 then return allocation end
+
+    local allocated = 0
+    -- Preserve visual coverage across dungeon floors before spending the remaining
+    -- global budget proportionally. Every floor with a placeable brand gets one when
+    -- the cap is large enough to support that baseline.
+    if target >= #groups then
+        for index, group in ipairs(groups) do
+            if #group.chosen > 0 then
+                allocation[index] = 1
+                allocated = allocated + 1
+            else
+                allocation[index] = 0
+            end
+        end
+    else
+        for index = 1, #groups do allocation[index] = 0 end
+    end
+
+    local remaining = target - allocated
+    if remaining <= 0 then return allocation end
+
+    local residualCapacity = 0
+    for index, group in ipairs(groups) do
+        residualCapacity = residualCapacity + math.max(0, #group.chosen - (allocation[index] or 0))
+    end
+    if residualCapacity <= 0 then return allocation end
+
+    local remainders = {}
+    local used = 0
+    for index, group in ipairs(groups) do
+        local capacity = math.max(0, #group.chosen - (allocation[index] or 0))
+        local exact = remaining * capacity / residualCapacity
+        local base = math.min(capacity, math.floor(exact))
+        allocation[index] = (allocation[index] or 0) + base
+        used = used + base
+        remainders[#remainders + 1] = {
+            index = index,
+            fraction = exact - math.floor(exact),
+            floor = group.floor or 0,
+            capacity = capacity - base
+        }
+    end
+
+    table.sort(remainders, function(a, b)
+        if a.fraction ~= b.fraction then return a.fraction > b.fraction end
+        return a.floor < b.floor
+    end)
+
+    local left = remaining - used
+    while left > 0 do
+        local progressed = false
+        for _, item in ipairs(remainders) do
+            if left <= 0 then break end
+            if item.capacity > 0 then
+                allocation[item.index] = (allocation[item.index] or 0) + 1
+                item.capacity = item.capacity - 1
+                left = left - 1
+                progressed = true
+            end
+        end
+        if not progressed then break end
+    end
+    return allocation
+end
+
 local function rebuildBrandPlacement(world)
     brandedCount = 0
     brandableCount = 0
     geometryBlockedCount = 0
     targetBrandCount = 0
     relaxedSpacingCount = 0
+    placeableCount = 0
+    globalBrandCap = math.floor(#(world or {}) * BRAND_GLOBAL_CAP_FRACTION)
 
     local byFloor = {}
     for index, instance in ipairs(world or {}) do
@@ -290,18 +363,33 @@ local function rebuildBrandPlacement(world)
     for floor in pairs(byFloor) do floors[#floors + 1] = floor end
     table.sort(floors)
 
+    -- First find the dense, physically legal set. selectBlueNoise starts with broad
+    -- visual spacing, then relaxes only that aesthetic cushion until the hard
+    -- no-touching graph has no more candidates.
+    local groups = {}
     for _, floor in ipairs(floors) do
         local candidates = byFloor[floor]
         table.sort(candidates, placementSort)
-        local target = math.floor(#candidates * BRAND_TARGET_FRACTION + 0.5)
-        if #candidates >= 4 then target = math.max(1, target) end
-        targetBrandCount = targetBrandCount + target
+        local floorSeed = LOD.Seeds.Derive(seed, "container-brand-coverage:v4:floor:" .. tostring(floor))
+        local chosen = selectBlueNoise(candidates, floorSeed, #candidates)
+        groups[#groups + 1] = {floor = floor, chosen = chosen}
+        placeableCount = placeableCount + #chosen
+    end
 
-        local floorSeed = LOD.Seeds.Derive(seed, "container-brand-coverage:v3:floor:" .. tostring(floor))
-        local chosen = selectBlueNoise(candidates, floorSeed, target)
-        for _, item in ipairs(chosen) do
-            item.instance.companyBranded = true
-            brandedCount = brandedCount + 1
+    targetBrandCount = math.min(placeableCount, globalBrandCap)
+    local allocation = allocateFloorCounts(groups, targetBrandCount)
+
+    -- Prefixes of each blue-noise list retain the widest coverage. Any subset of the
+    -- already non-touching chosen set remains non-touching, so enforcing the global
+    -- 40% ceiling cannot introduce a contact violation.
+    for index, group in ipairs(groups) do
+        local count = math.min(#group.chosen, allocation[index] or 0)
+        for chosenIndex = 1, count do
+            local item = group.chosen[chosenIndex]
+            if item and item.instance then
+                item.instance.companyBranded = true
+                brandedCount = brandedCount + 1
+            end
         end
     end
 
@@ -431,7 +519,7 @@ concommand.Add("lod_container_brand_status", function()
     if #world > 0 then ensureBrandPlacement(world) end
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d target=%.0f%% targetCount=%d separation=touching-never distribution=blue-noise softSpacing=%dcells lowerBias=%.2f geometryBlocked=%d relaxed=%d",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d placeable=%d all=%d cap=%.0f%% capCount=%d targetCount=%d separation=touching-never distribution=blue-noise-packed softSpacing=%dcells lowerBias=%.2f geometryBlocked=%d relaxed=%d",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
@@ -443,7 +531,10 @@ concommand.Add("lod_container_brand_status", function()
         SIDE_HEIGHT_FRACTION,
         brandedCount,
         brandableCount,
-        BRAND_TARGET_FRACTION * 100,
+        placeableCount,
+        #world,
+        BRAND_GLOBAL_CAP_FRACTION * 100,
+        globalBrandCap,
         targetBrandCount,
         BRAND_SOFT_SPACING_CELLS,
         BRAND_LOWER_TIER_BIAS,
