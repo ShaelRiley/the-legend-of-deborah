@@ -26,9 +26,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --retry-delay 2 \
-            --output /tmp/lod-container-brands.zip \
-            "https://drive.google.com/uc?export=download&id=163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa"
+          python -m pip install --disable-pip-version-check --quiet gdown
+          gdown --fuzzy \
+            "https://drive.google.com/file/d/163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa/view?usp=sharing" \
+            --output /tmp/lod-container-brands.zip
           python - <<'PY'
           import zipfile
           path = "/tmp/lod-container-brands.zip"
