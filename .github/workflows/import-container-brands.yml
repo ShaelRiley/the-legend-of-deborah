@@ -54,12 +54,11 @@ jobs:
           python3 -m py_compile tools/assets/validate_container_v9.py
           python3 -m py_compile tools/assets/validate_container_v10.py
 
-      - name: Build V9 truly blank corrugated hull
+      - name: Build truly blank corrugated hull
         run: python3 tools/assets/build_container_blank_hull_v9.py
 
-      - name: Apply V9 blank hull runtime binding
-        run: python3 tools/assets/patch_container_blank_hull_v9.py
-
+      # V10 is the production runtime. The historical V9 patcher intentionally
+      # targets v14 and must not be replayed over an already-upgraded v15 file.
       - name: Apply V10 explicit cargo material slots
         run: python3 tools/assets/patch_container_submaterials_v10.py
 
