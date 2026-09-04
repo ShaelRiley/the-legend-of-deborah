@@ -2,74 +2,75 @@
 
 ## Production rule
 
-The project-supplied `legend_of_deborah_container_brands_256.zip` is the authoritative source for shipping-container company art.
+The project-supplied `legend_of_deborah_container_brands_256.zip` remains the authored source for shipping-container company art.
 
 - Exactly one brand ID from `001` through `256` is selected deterministically from each generated labyrinth's level seed.
 - All ordinary containers in that labyrinth use the same fictional company.
 - A new generated labyrinth reselects from the catalog using its new level seed.
 - Branding is presentation-only. It does not alter collision, topology, progression, RPG state, encounters, or maze generation.
-- Gameplay-authoritative floor/quadrant hull coloration remains independently owned by `cl_container_section_recolor.lua`.
-- Containers chosen for sparse `1A`, `1B`, etc. wayfinding keep the stronger plywood location plate instead of the company decal.
-- Brand `256` remains **Deborah Logistics Unlimited**, as authored in the source set.
+- Gameplay-authoritative floor/quadrant hull coloration remains owned by `cl_container_section_recolor.lua`.
+- Sparse `1A`, `1B`, etc. wayfinding containers keep the stronger plywood location plate instead of company paint.
+- Brand `256` remains **Deborah Logistics Unlimited**.
 
-This makes company identity vary between labyrinth generations without chaotic per-container mixing.
+## Blank substrate
 
-## Runtime assets
+Ordinary containers no longer use the Northern Petrol diffuse as their color texture.
 
-The production build uses four transparent 512x256 indexed PNG atlases under:
+The production build generates and mounts:
 
-`gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/`
+`gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_metal.png`
 
-Files:
+This is a neutral, logo-free metal diffuse: no company name, no logo, no serial branding, and no colored baked paint. `cl_container_section_recolor.lua` loads this PNG, resolves its generated Garry's Mod texture, and uses it as the `$basetexture` of the existing per-section `VertexLitGeneric` materials.
 
-- `container_brand_atlas_01.png` — brands `001..064`
-- `container_brand_atlas_02.png` — brands `065..128`
-- `container_brand_atlas_03.png` — brands `129..192`
-- `container_brand_atlas_04.png` — brands `193..256`
+The validated cargo mesh is retained. The stock `cargo_container01_normal` normal map is also retained because it provides physical surface relief rather than company identity. The neutral diffuse therefore accepts the existing procedural floor/quadrant hue cleanly without the legacy red Northern Petrol art underneath it.
 
-Each atlas is an 8x8 grid, so each company occupies one 64x32 cell with the original 2:1 aspect ratio. Transparency is retained so the procedural hull color remains visible around and through the authored decal rather than being replaced by a fixed logo background.
+## Spray-paint brand assets
 
-The runtime atlases are deliberately compact derivatives of the 256 original 1024x512 RGBA source textures. The originals remain source authority; the atlas files are the shipped presentation assets.
+The committed four compact source atlases under `container_brands/` remain the self-contained company-art input. `tools/assets/build_container_surface_assets.py` derives four higher-resolution transparent spray masks:
 
-Garry's Mod mounts the gamemode's `content/materials` tree with the active gamemode. The existing development symlink, dedicated-server deployment, and Workshop build copy the complete `gamemodes/` tree, so these materials travel with normal builds.
+- `container_brand_spray_atlas_01.png` — brands `001..064`
+- `container_brand_spray_atlas_02.png` — brands `065..128`
+- `container_brand_spray_atlas_03.png` — brands `129..192`
+- `container_brand_spray_atlas_04.png` — brands `193..256`
 
-## Rebuilding the atlases
+The spray atlases are 1024x512 8x8 sheets. Each 128x64 cell is converted to a neutral paint mask with a soft overspray fringe plus restrained deterministic chips/scuffs. There is no rectangular backing plate in these images.
 
-`tools/assets/build_container_brand_atlases.py` rebuilds the four runtime atlases from the authoritative ZIP. It validates the complete `001..256` source set and original 1024x512 dimensions before packing the textures.
-
-The builder requires Pillow:
+The builder is deterministic and repository-local. It requires Pillow but performs no Drive/network download:
 
 ```bash
 python -m pip install Pillow
-python tools/assets/build_container_brand_atlases.py \
-  /path/to/legend_of_deborah_container_brands_256.zip \
-  gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands
+python tools/assets/build_container_surface_assets.py --patch-runtime
 ```
 
-The older `tools/assets/import_container_brands.py` remains useful for validating/staging the full-resolution source set, but the four atlases above are the production runtime representation.
+`--patch-runtime` also migrates `cl_container_section_recolor.lua` from the baked stock diffuse to the blank neutral base.
 
-`.github/workflows/import-container-brands.yml` now validates the committed runtime assets and renderer wiring on relevant pushes; it no longer depends on anonymous Google Drive downloading.
+## Runtime renderer
 
-## Renderer
-
-`gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua` owns company-decal presentation.
+`gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua` owns company-paint presentation.
 
 For an ordinary container it:
 
 1. derives a brand ID from `LOD.Seeds.Derive(levelSeed, "container-brand:v1")`;
-2. maps that ID to one of four atlases and one 8x8 UV cell;
-3. loads only the selected atlas as a cached Garry's Mod material for the current level seed;
-4. aligns an opaque same-hue repaint patch over the baked Northern Petrol branding zone;
-5. derives that patch from the already-authoritative procedural section/body color;
-6. composites the selected transparent fictional-company decal over the patch.
+2. maps that ID to one spray atlas and one 8x8 cell;
+3. creates/caches a `VertexLitGeneric` material whose `$basetexturetransform` selects that cell;
+4. draws the selected transparent paint mask as a world-space quad immediately above the broad metal face;
+5. lets scene lighting affect the paint material rather than rendering it as flat 3D2D UI;
+6. chooses light or charcoal paint from the already-authoritative hull luminance for contrast;
+7. draws no opaque rectangle behind the company art.
 
-For a wayfinding-marked container, `cl_container_marking_panel.lua` draws the existing plywood location stencil and `cl_container_branding.lua` deliberately skips company branding.
+The reverse broad face mirrors the horizontal basis so company text remains readable. The paint is deliberately surface-adjacent (`SURFACE_OFFSET`) to avoid z-fighting while still reading as applied directly to the container.
 
-Both systems use the same mirrored broad-face logo anchor. This replaces the baked stock branding without replacing the validated cargo-container mesh, collision, normal map, or floor/quadrant recolor shader.
+For a wayfinding-marked container, `cl_container_marking_panel.lua` remains authoritative and company paint is skipped.
+
+## Why this replaces the previous approach
+
+The superseded renderer painted an opaque rectangular same-hue patch over the baked Northern Petrol logo and then drew a 3D2D company image on top. That was useful for proving deterministic brand selection, but visually read as a sign/plaque.
+
+The production pipeline instead starts from truly blank neutral metal and adds only distressed, lit company paint. There is no legacy Northern Petrol diffuse to cover and no rectangular company panel.
 
 ## Runtime validation
 
-After entering a generated labyrinth, run:
+After pulling the build and entering a generated labyrinth, run:
 
 `lod_container_brand_status`
 
@@ -78,7 +79,8 @@ Expected:
 - `brand=001..256`
 - `atlas=01..04`
 - `material=ok`
-- `path=legend_of_deborah/container_brands/container_brand_atlas_NN.png`
+- `path=legend_of_deborah/container_surfaces/container_brand_spray_atlas_NN.png`
+- `mode=vertexlit-spray-v2`
 
 Also run:
 
@@ -87,13 +89,16 @@ Also run:
 Expected:
 
 - `wrong=0`
+- `materialVersion=v8_blank_metal_surface`
 
 Visual acceptance:
 
-1. Ordinary nearby containers show the selected fictional company rather than stock Northern Petrol.
-2. All ordinary containers in one generated labyrinth use the same company.
-3. A different level seed deterministically reselects the company.
-4. The same explicit level seed reproduces the same company.
-5. Floor/quadrant hull colors remain unchanged and readable.
-6. Sparse wayfinding containers still show their alphanumeric plywood plate instead of a company decal.
-7. Branding does not alter maze geometry, collision, minimap topology, gates, hostiles, or navigation.
+1. Ordinary containers contain no visible Northern Petrol art.
+2. The hull itself is neutral metal before procedural recoloring; no logo/text is baked into that base.
+3. Company art has transparent surroundings with no rectangle/plaque.
+4. Company text/logo reads as worn spray/stencil paint attached to the lit physical surface.
+5. All ordinary containers in one labyrinth use the same deterministic company.
+6. A different seed reselects the company; repeating a seed repeats it.
+7. Floor/quadrant hull colors remain unchanged in gameplay semantics.
+8. Sparse wayfinding containers keep their clear alphanumeric plywood plates.
+9. Branding changes presentation only and does not affect maze geometry, collision, gates, minimap topology, hostiles, or navigation.
