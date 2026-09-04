@@ -4,14 +4,14 @@ local Wall = LOD.WallVisualsClient
 local MC = LOD.Config and LOD.Config.Maze
 if not Wall or not MC then return end
 
--- Presentation-only company decals. cl_container_section_recolor.lua remains the
--- authority for floor/quadrant hull color, while cl_container_marking_panel.lua
--- remains the authority for sparse plywood wayfinding plates.
-local DRAW_DISTANCE = 1550
+-- Company identity is presentation-only. The cargo model now receives a neutral,
+-- logo-free metal diffuse from cl_container_section_recolor.lua. This pass adds only
+-- the selected company's distressed paint mask as a lit world-space surface decal.
+-- Sparse plywood wayfinding plates remain authoritative on marked containers.
+local DRAW_DISTANCE = 1450
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
 local BUCKET_CELLS = 4
-local PANEL_SCALE = 0.22
-local SURFACE_OFFSET = 2.1
+local SURFACE_OFFSET = 1.15
 local LOGO_Y_FRACTION = 0.69
 local LOGO_Z_FRACTION = 0.58
 
@@ -19,20 +19,16 @@ local BRAND_COUNT = 256
 local BRANDS_PER_ATLAS = 64
 local ATLAS_COLUMNS = 8
 local ATLAS_ROWS = 8
-local BRAND_WIDTH = 470
-local BRAND_HEIGHT = 235
-local PATCH_WIDTH = 520
-local PATCH_HEIGHT = 255
-local PATCH_EDGE = 7
-local U_INSET = 0.0004
-local V_INSET = 0.0007
+local CELL_U = 1 / ATLAS_COLUMNS
+local CELL_V = 1 / ATLAS_ROWS
+local UV_INSET = 0.00125
 
 local selectedSeed
 local selectedId
 local selectedAtlas
 local selectedMaterial
 local selectedPath
-local u0, v0, u1, v1 = 0, 0, 1, 1
+local materialCache = {}
 
 local function bucketKey(x, y)
     return math.floor((x - 1) / BUCKET_CELLS), math.floor((y - 1) / BUCKET_CELLS)
@@ -44,6 +40,46 @@ local function gridPosition(pos)
     local gy = math.floor(((pos.y - origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5)
     local gz = math.floor(((pos.z - origin.z) / MC.LevelHeight) + 0.5)
     return math.Clamp(gx, 1, MC.Width), math.Clamp(gy, 1, MC.Height), math.Clamp(gz, 0, 7)
+end
+
+local function materialForBrand(brandId, atlasIndex, column, row)
+    local cached = materialCache[brandId]
+    if cached then return cached end
+
+    local path = string.format(
+        "legend_of_deborah/container_surfaces/container_brand_spray_atlas_%02d.png",
+        atlasIndex
+    )
+    local atlas = Material(path, "vertexlitgeneric mips smooth nocull")
+    if not atlas or atlas:IsError() then return nil, path end
+
+    local texture = atlas:GetTexture("$basetexture")
+    if not texture then return nil, path end
+
+    local scaleU = CELL_U - UV_INSET * 2
+    local scaleV = CELL_V - UV_INSET * 2
+    local translateU = column * CELL_U + UV_INSET
+    local translateV = row * CELL_V + UV_INSET
+    local transform = string.format(
+        "center 0 0 scale %.6f %.6f rotate 0 translate %.6f %.6f",
+        scaleU, scaleV, translateU, translateV
+    )
+
+    local name = string.format("lod_container_spray_brand_%03d_v2", brandId)
+    local material = CreateMaterial(name, "VertexLitGeneric", {
+        ["$basetexture"] = texture:GetName(),
+        ["$basetexturetransform"] = transform,
+        ["$model"] = "1",
+        ["$translucent"] = "1",
+        ["$vertexcolor"] = "1",
+        ["$vertexalpha"] = "1",
+        ["$nocull"] = "1",
+        ["$halflambert"] = "1"
+    })
+
+    if not material or material:IsError() then return nil, path end
+    materialCache[brandId] = material
+    return material, path
 end
 
 local function ensureSelection()
@@ -61,85 +97,59 @@ local function ensureSelection()
     local cell = (selectedId - 1) % BRANDS_PER_ATLAS
     local column = cell % ATLAS_COLUMNS
     local row = math.floor(cell / ATLAS_COLUMNS)
-    u0 = column / ATLAS_COLUMNS + U_INSET
-    v0 = row / ATLAS_ROWS + V_INSET
-    u1 = (column + 1) / ATLAS_COLUMNS - U_INSET
-    v1 = (row + 1) / ATLAS_ROWS - V_INSET
-
-    selectedPath = string.format(
-        "legend_of_deborah/container_brands/container_brand_atlas_%02d.png",
-        selectedAtlas
+    selectedMaterial, selectedPath = materialForBrand(
+        selectedId, selectedAtlas, column, row
     )
-    selectedMaterial = Material(selectedPath, "smooth")
     return selectedMaterial and not selectedMaterial:IsError()
 end
 
-local function patchColors(instance)
+local function sprayPaintColor(instance)
     local c = instance.bodyColor or instance.sectionColor or Color(110, 110, 110, 255)
-    local fill = Color(
-        math.Clamp(math.floor(c.r * 0.52 + 18), 0, 255),
-        math.Clamp(math.floor(c.g * 0.52 + 18), 0, 255),
-        math.Clamp(math.floor(c.b * 0.52 + 18), 0, 255),
-        255
-    )
-    local edge = Color(
-        math.Clamp(math.floor(fill.r * 0.58), 0, 255),
-        math.Clamp(math.floor(fill.g * 0.58), 0, 255),
-        math.Clamp(math.floor(fill.b * 0.58), 0, 255),
-        255
-    )
-    return fill, edge
-end
-
-local function sideTransform(model, eyePos)
-    local mins, maxs = model:GetRenderBounds()
-    local side = model:GetForward():Dot(eyePos - model:GetPos()) >= 0 and 1 or -1
-    local localX = side > 0 and (maxs.x + SURFACE_OFFSET) or (mins.x - SURFACE_OFFSET)
-    local yFraction = side > 0 and LOGO_Y_FRACTION or (1 - LOGO_Y_FRACTION)
-    local localY = mins.y + (maxs.y - mins.y) * yFraction
-    local localZ = mins.z + (maxs.z - mins.z) * LOGO_Z_FRACTION
-    local pos = model:LocalToWorld(Vector(localX, localY, localZ))
-
-    local ang = model:GetAngles()
-    ang = Angle(ang.p, ang.y, ang.r)
-    ang:RotateAroundAxis(ang:Right(), side > 0 and -90 or 90)
-    ang:RotateAroundAxis(ang:Up(), 90)
-    if side < 0 then ang:RotateAroundAxis(ang:Up(), 180) end
-    return pos, ang
+    local luminance = (c.r or 0) * 0.2126 + (c.g or 0) * 0.7152 + (c.b or 0) * 0.0722
+    if luminance < 142 then
+        return Color(239, 236, 222, 232)
+    end
+    return Color(34, 33, 31, 220)
 end
 
 local function drawBrand(model, instance, eyePos)
     if not ensureSelection() then return end
-    local pos, ang = sideTransform(model, eyePos)
-    local fill, edge = patchColors(instance)
 
-    cam.Start3D2D(pos, ang, PANEL_SCALE)
-        -- Opaque same-hue repaint fully masks the baked Northern Petrol mark without
-        -- changing the authoritative hull color used for navigation.
-        surface.SetDrawColor(edge)
-        surface.DrawRect(
-            -PATCH_WIDTH * 0.5 - PATCH_EDGE,
-            -PATCH_HEIGHT * 0.5 - PATCH_EDGE,
-            PATCH_WIDTH + PATCH_EDGE * 2,
-            PATCH_HEIGHT + PATCH_EDGE * 2
-        )
-        surface.SetDrawColor(fill)
-        surface.DrawRect(-PATCH_WIDTH * 0.5, -PATCH_HEIGHT * 0.5, PATCH_WIDTH, PATCH_HEIGHT)
-        surface.SetDrawColor(edge.r, edge.g, edge.b, 185)
-        surface.DrawRect(-PATCH_WIDTH * 0.5, -PATCH_HEIGHT * 0.5, PATCH_WIDTH, 4)
-        surface.DrawRect(-PATCH_WIDTH * 0.5, PATCH_HEIGHT * 0.5 - 4, PATCH_WIDTH, 4)
+    local mins, maxs = model:GetRenderBounds()
+    local spanY = maxs.y - mins.y
+    local spanZ = maxs.z - mins.z
+    local side = model:GetForward():Dot(eyePos - model:GetPos()) >= 0 and 1 or -1
+    local localX = side > 0 and (maxs.x + SURFACE_OFFSET) or (mins.x - SURFACE_OFFSET)
+    local yFraction = side > 0 and LOGO_Y_FRACTION or (1 - LOGO_Y_FRACTION)
+    local localY = mins.y + spanY * yFraction
+    local localZ = mins.z + spanZ * LOGO_Z_FRACTION
+    local center = model:LocalToWorld(Vector(localX, localY, localZ))
 
-        surface.SetMaterial(selectedMaterial)
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawTexturedRectUV(
-            -BRAND_WIDTH * 0.5, -BRAND_HEIGHT * 0.5,
-            BRAND_WIDTH, BRAND_HEIGHT,
-            u0, v0, u1, v1
-        )
-    cam.End3D2D()
+    -- A real 3D quad with a VertexLitGeneric material participates in scene lighting;
+    -- unlike the old 3D2D plaque it has no opaque background and reads as paint on
+    -- the metal surface. Mirror the horizontal basis so the reverse face stays legible.
+    local horizontal = model:GetRight()
+    if side < 0 then horizontal = -horizontal end
+    local up = model:GetUp()
+    local width = math.Clamp(spanY * 0.46, 82, 112)
+    local height = math.min(spanZ * 0.46, width * 0.5)
+    local halfW = width * 0.5
+    local halfH = height * 0.5
+
+    local v1 = center - horizontal * halfW + up * halfH
+    local v2 = center + horizontal * halfW + up * halfH
+    local v3 = center + horizontal * halfW - up * halfH
+    local v4 = center - horizontal * halfW - up * halfH
+
+    render.SetMaterial(selectedMaterial)
+    render.DrawQuad(v1, v2, v3, v4, sprayPaintColor(instance))
 end
 
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
+-- Remove the superseded opaque 3D2D renderer during hot reloads and use the
+-- translucent scene pass required by the distressed alpha paint masks.
+hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding")
+hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
+hook.Add("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding", function()
     local world = Wall.world or {}
     if #world == 0 then return end
     local ply = LocalPlayer()
@@ -159,7 +169,6 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
                 for _, index in ipairs(bucket) do
                     local instance = world[index]
                     local model = Wall.models and Wall.models[index]
-                    -- Wayfinding plates deliberately supersede company branding.
                     if instance and not instance.marked and IsValid(model)
                         and eyePos:DistToSqr(model:GetPos()) <= DRAW_DISTANCE_SQR
                     then
@@ -174,12 +183,11 @@ end)
 concommand.Add("lod_container_brand_status", function()
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s material=%s path=%s uv=%.4f,%.4f..%.4f,%.4f",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s material=%s path=%s mode=vertexlit-spray-v2",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
         ok and "ok" or "error",
-        tostring(selectedPath or "none"),
-        u0, v0, u1, v1
+        tostring(selectedPath or "none")
     ))
 end)

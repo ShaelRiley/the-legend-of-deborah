@@ -3,27 +3,30 @@ LOD = LOD or {}
 local Wall = LOD.WallVisualsClient
 if not Wall then return end
 
--- Shader-native section recoloring for the existing Northern Petrol cargo model.
+-- Shader-native section recoloring for the logo-free neutral cargo surface.
 --
--- The stock diffuse is strongly red, so ordinary SetColor multiplication cannot
--- produce clean section hues. Source's VertexLitGeneric color-replacement path
--- preserves the exact model, UVs, weathered diffuse and normal map while allowing
--- procedural paint colors. Runtime testing established that the stock diffuse alpha
--- is NOT an NP-logo paint mask, so the authentic baked branding shares the body tint
--- except on marked containers, where the separate plywood wayfinding plate covers it.
+-- The runtime diffuse is a neutral, logo-free metal texture. The existing
+-- VertexLitGeneric color-replacement path retains deterministic section hue
+-- while retaining the validated cargo mesh and stock relief normal map.
+-- Company identity is no longer baked into the diffuse; it is rendered separately
+-- as a vertex-lit spray-paint mask on ordinary containers.
+
 --
 -- Section colors are generated uniquely for the ACTUAL sections in this maze. The
 -- entire hue circle is legal: Red, Yellow and Blue are no longer reserved. A seeded
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
-local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"
+local CONTAINER_BLANK_BASE_PATH = "legend_of_deborah/container_surfaces/container_blank_metal.png"
+local blankBaseMaterial = Material(CONTAINER_BLANK_BASE_PATH, "vertexlitgeneric mips smooth")
+local blankBaseTexture = blankBaseMaterial and blankBaseMaterial:GetTexture("$basetexture")
+local NP_BASE_TEXTURE = blankBaseTexture and blankBaseTexture:GetName() or "color/white"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
 local COLOR_REPLACE_BLEND = 0.84
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v7_full_spectrum_maximin"
+local MATERIAL_VERSION = "v8_blank_metal_surface"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
