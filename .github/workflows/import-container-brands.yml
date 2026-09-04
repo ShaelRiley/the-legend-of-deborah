@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out main
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Validate atlases and renderer wiring
         shell: bash
@@ -85,4 +87,4 @@ jobs:
           PY
 
       - name: Check whitespace
-        run: git diff --check HEAD^
+        run: git diff --check HEAD^ HEAD --
