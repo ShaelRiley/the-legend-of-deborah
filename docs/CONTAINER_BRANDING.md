@@ -12,88 +12,83 @@ The authored 256-company catalog remains the source of shipping-container identi
 - Sparse `1A`, `1B`, etc. wayfinding containers keep the stronger plywood location plate instead of company paint.
 - Brand `256` remains **Deborah Logistics Unlimited**.
 
-## V3 blank substrate: preserve the stock UV layout
+## V5 hull: neutral color plus physical grime
 
-The V2 experiment proved that an arbitrary square metal texture cannot replace the cargo model's authored diffuse. The model samples specific regions for broad sides, doors, ends, top and bottom. A generic tile therefore produced nearly black walls and broken-looking ceiling/container-top surfaces.
+V4 proved that a uniform white diffuse is a safe way to eliminate legacy Northern Petroleum art, but it also removed too much of the shipping container's visual character. The hull became clean, flat and cel-shaded even though the stock normal map remained present.
 
-V3 fixes that architectural error. `tools/assets/build_container_surface_assets.py` obtains four pinned 1024x1024 stock cargo skins that share the same UV layout, converts them to normalized luminance, median-combines their shared structural information, and removes remaining readable markings with low-pass filtering performed **inside the original UV coordinate system**.
+V5 separates color from surface dirt:
 
-The generated runtime diffuse is:
+- the authoritative hull base remains company-neutral and UV-agnostic;
+- procedural section hue remains fully owned by `$color2`;
+- `container_grit_detail.png` adds deterministic grayscale grime through `VertexLitGeneric` `$detail` / Mod2X blending;
+- 128 gray is the neutral point, so the detail texture darkens oily/rusty patches and brightens scratches without forcing one fixed paint hue;
+- the stock `models/props_wasteland/cargo_container01_normal` normal map remains mounted for physical corrugation and frame relief;
+- restrained phong response makes the normal-map ridges and chipped steel catch light instead of reading as a flat color field.
 
-`gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_metal.png`
+Runtime material version:
 
-Properties:
+`v11_gritty_neutral`
 
-- 1024x1024, matching the stock cargo diffuse layout;
-- neutral gray metal suitable for procedural recoloring;
-- no company identity is intentionally retained;
-- broad face / door / end / top UV organization remains compatible with the cargo model;
-- the existing stock `cargo_container01_normal` normal map remains in use for physical surface relief.
+The former `container_blank_metal.png` experiment is removed from runtime assets. It is not needed to hide Northern Petroleum branding and is no longer an authority for hull appearance.
 
-`cl_container_section_recolor.lua` resolves this blank diffuse as the `$basetexture` of the existing per-section `VertexLitGeneric` materials. Section hue remains authoritative through `$color2`; V3 identifies this path as `v9_stock_uv_blank`.
+## V5 full-side company paint
 
-## V3 high-resolution company paint
+The V3 spray renderer exposed two playtest failures: one broad side read backwards, and the stencil occupied too little of the actual shipping-container wall while clipping near one end.
 
-The V2 spray atlases inherited 64x32 company cells and then enlarged them. That preserved the general silhouette but permanently discarded enough text detail that Source filtering reduced company names to fuzzy white bars at play distance.
+V5 fixes both the source asset and the world-space transform:
 
-V3 does not enlarge the old tiny company text. Instead:
+- each company receives a **512x128** wide stencil cell;
+- four 4096x1024 atlases retain the canonical 8x8 / 64-brand organization;
+- the authored compact company emblem remains the logo source;
+- card-border fragments are filtered from full-card variants before the emblem is enlarged;
+- the canonical company name is re-typeset at native resolution in a condensed industrial face;
+- the canonical slogan is included as secondary copy when it fits;
+- a divider line, restrained abrasion and faint overspray create a physical stencil/spray treatment;
+- no opaque rectangle or placard is drawn.
 
-- the four committed 512x256 company atlases remain the supplied icon source;
-- `tools/assets/container_brand_names.tsv` preserves the canonical 256 company names (and source slogans as metadata);
-- each company is reconstructed into a **256x128** spray cell;
-- the supplied left-hand company icon is retained from the authored atlas;
-- the company name is re-typeset at native cell resolution in a condensed industrial face;
-- runtime output deliberately omits slogans so only the logo and company name must survive gameplay-distance filtering;
-- only restrained abrasion and a slight overspray fringe are applied;
-- there is no rectangular backing plate.
+`cl_container_branding.lua` selects one brand through:
 
-Four transparent runtime atlases are generated:
+`LOD.Seeds.Derive(levelSeed, "container-brand:v1")`
 
-- `container_brand_spray_atlas_01.png` — brands `001..064`
-- `container_brand_spray_atlas_02.png` — brands `065..128`
-- `container_brand_spray_atlas_03.png` — brands `129..192`
-- `container_brand_spray_atlas_04.png` — brands `193..256`
+The selected 8x8 atlas cell is now addressed with explicit mesh UV coordinates instead of `$basetexturetransform`. This prevents transform-dependent clipping. The reverse broad side uses the opposite outward tangent so text reads left-to-right from either side of the wall.
 
-Each atlas is 2048x1024 in an 8x8 grid. The PNGs use a compact indexed representation with sixteen useful alpha levels, retaining the 256x128 geometry while keeping repository/runtime size reasonable.
+The rendered paint occupies approximately 86% of the container's broad-side length and is centered on the side rather than anchored near one end. The 4:1 authored stencil aspect is matched to the physical broad-side quad.
 
-## Runtime renderer
+Runtime renderer mode:
 
-`gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua` owns company-paint presentation.
+`vertexlit-spray-v5-fullside`
 
-For an ordinary container it:
+## Two-container wall invariant
 
-1. derives a brand ID from `LOD.Seeds.Derive(levelSeed, "container-brand:v1")`;
-2. maps that ID to one of the four V3 spray atlases and one 8x8 UV cell;
-3. creates/caches a `VertexLitGeneric` material whose `$basetexturetransform` selects that cell;
-4. deliberately avoids the old generated-mipmap request used by V2, preventing needless additional loss of company-name detail;
-5. draws the selected transparent mask as a lit world-space quad immediately above the broad metal face;
-6. uses a larger portion of the broad container side than V2 (`spanY * 0.62`) so the name is readable without becoming a signboard;
-7. chooses light or charcoal paint from the already-authoritative hull luminance for contrast;
-8. draws no opaque rectangle behind the company art.
+Every logical maze wall edge is visually represented by **exactly two separate cargo-container models stacked vertically**. V5 makes this explicit rather than merely trusting configuration defaults:
 
-The reverse broad face mirrors the horizontal basis so company text remains readable. The paint remains surface-adjacent to avoid z-fighting while reading as applied paint rather than a floating panel.
+- runtime presentation enforces a stack count of two;
+- lower and upper containers remain independent clientside models;
+- a small presentation-only vertical seam separates the two models so their frames do not visually fuse into one stretched slab;
+- authoritative server collision remains unchanged and continues to block the full anti-bypass wall height.
 
-For a wayfinding-marked container, `cl_container_marking_panel.lua` remains authoritative and company paint is skipped.
+The seam is presentation-only. It does not create a traversable gameplay gap.
 
 ## Reproducible asset build
 
-The production build no longer depends on anonymous Google Drive access from GitHub Actions.
+`tools/assets/build_container_surface_assets.py` deterministically generates:
 
-The company portion of the build is repository-local: committed company icons plus `container_brand_names.tsv` generate the four high-resolution spray atlases. The blank cargo substrate is derived from four full-resolution stock cargo VTFs pinned to commit `472d4cb9ac7a32a8a408ac8cfeff6d978e70a75f` of the public `bouletmarc/hl2_ep2_content` archive. CI validates each stock source as 1024x1024 before using it.
+- `container_grit_detail.png` — 1024x1024 neutral grime/detail;
+- `container_brand_spray_atlas_01.png` — brands `001..064`;
+- `container_brand_spray_atlas_02.png` — brands `065..128`;
+- `container_brand_spray_atlas_03.png` — brands `129..192`;
+- `container_brand_spray_atlas_04.png` — brands `193..256`.
 
-The builder requires Pillow, NumPy and `srctools`:
+The company build is repository-local. It uses the committed compact authored emblems plus `tools/assets/container_brand_names.tsv`; it does not depend on anonymous Google Drive downloads.
+
+Dependencies:
 
 ```bash
-python -m pip install Pillow numpy srctools
-python tools/assets/build_container_surface_assets.py \
-  --stock-vtf /path/to/cargo_container01.vtf \
-  --stock-vtf /path/to/cargo_container01c.vtf \
-  --stock-vtf /path/to/cargo_container02.vtf \
-  --stock-vtf /path/to/cargo_container03.vtf \
-  --patch-runtime
+python -m pip install Pillow numpy
+python tools/assets/build_container_surface_assets.py
 ```
 
-`.github/workflows/import-container-brands.yml` performs this build and validation automatically and commits generated binary assets only when they differ from the repository.
+`.github/workflows/import-container-brands.yml` rebuilds and validates the generated assets and runtime wiring on relevant changes.
 
 ## Runtime validation
 
@@ -106,8 +101,7 @@ Expected:
 - `brand=001..256`
 - `atlas=01..04`
 - `material=ok`
-- `path=legend_of_deborah/container_surfaces/container_brand_spray_atlas_NN.png`
-- `mode=vertexlit-spray-v3-hires`
+- `mode=vertexlit-spray-v5-fullside`
 
 Also run:
 
@@ -116,21 +110,16 @@ Also run:
 Expected:
 
 - `wrong=0`
-- `materialVersion=v10_uniform_neutral`
+- `materialVersion=v11_gritty_neutral`
 
 Visual acceptance:
 
-1. Ordinary containers contain no visible Northern Petrol company art.
-2. Container sides, ends, doors and top/bottom surfaces read coherently rather than as a generic tiled texture.
-3. The hull accepts the existing procedural floor/quadrant color system clearly.
-4. Company art has transparent surroundings with no rectangle/plaque.
-5. The logo and company name are legible at ordinary play distance and read as worn paint attached to the lit physical surface.
-6. All ordinary containers in one labyrinth use the same deterministic company.
-7. A different seed reselects the company; repeating a seed repeats it.
-8. Sparse wayfinding containers keep their clear alphanumeric plywood plates.
-9. Branding changes presentation only and does not affect maze geometry, collision, gates, minimap topology, hostiles, or navigation.
-
-
-## V4 substrate safety rule
-
-The hull diffuse is now deliberately UV-agnostic (`vgui/white`) and the section tint blend is `1.00`. The cargo mesh and stock normal map provide physical relief; the diffuse contributes no baked structure at all. This prevents source-texture logos, block patterns, or checkerboard artifacts from ever leaking into procedural section colors. The generated `container_blank_metal.png` remains a build artifact for compatibility but is no longer authoritative at runtime.
+1. No Northern Petroleum logo/text survives on ordinary containers.
+2. Section colors remain vivid and deterministic but no longer look like clean cel-shaded slabs.
+3. Grime, scratches, dirty streaking and normal-map relief remain visible through every legal section hue.
+4. Company logo/name read left-to-right on either broad face.
+5. Company paint is centered, unclipped and occupies most of one individual container side.
+6. All ordinary containers in one generated labyrinth share the same deterministic company; a new seed may select any of the 256 companies.
+7. Each logical wall clearly reads as two separate 128-unit cargo containers stacked vertically, with a visible midpoint seam.
+8. Sparse wayfinding containers retain the stronger plywood alphanumeric plate.
+9. Branding and presentation do not alter maze topology, collision, gates, minimap topology, hostiles, progression or navigation.

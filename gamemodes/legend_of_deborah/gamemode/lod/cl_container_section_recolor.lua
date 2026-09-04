@@ -3,7 +3,7 @@ LOD = LOD or {}
 local Wall = LOD.WallVisualsClient
 if not Wall then return end
 
--- Shader-native section recoloring for the UV-agnostic neutral cargo surface.
+-- Shader-native section recoloring for the gritty neutral cargo surface.
 --
 -- The runtime diffuse is uniform and logo-free. VertexLitGeneric color replacement
 -- owns the full hull hue while the validated cargo mesh and stock normal map retain relief.
@@ -21,11 +21,17 @@ if not Wall then return end
 -- art, source-image blocks, or checkerboard structure can leak into the hull color.
 local NP_BASE_TEXTURE = "vgui/white"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
+local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
+local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
+local detailTexture = detailSourceMaterial and detailSourceMaterial:GetTexture("$basetexture")
+local DETAIL_TEXTURE = detailTexture and detailTexture:GetName() or nil
+local DETAIL_BLEND_FACTOR = 0.72
+local DETAIL_SCALE = 1.00
 local COLOR_REPLACE_BLEND = 1.00
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v10_uniform_neutral"
+local MATERIAL_VERSION = "v11_gritty_neutral"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -290,16 +296,27 @@ local function sectionMaterialName(c)
     local b = clamp01((vivid.b or 0) / 255)
     local name = "lod_np_section_" .. MATERIAL_VERSION .. "_" .. key
 
-    CreateMaterial(name, "VertexLitGeneric", {
-        ["$basetexture"] = NP_BASE_TEXTURE,
-        ["$bumpmap"] = NP_NORMAL_TEXTURE,
-        ["$surfaceprop"] = "metal",
-        ["$model"] = "1",
-        ["$allowdiffusemodulation"] = "1",
-        ["$blendtintbybasealpha"] = "0",
-        ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
-        ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b)
-    })
+    local params = {
+    ["$basetexture"] = NP_BASE_TEXTURE,
+    ["$bumpmap"] = NP_NORMAL_TEXTURE,
+    ["$surfaceprop"] = "metal",
+    ["$model"] = "1",
+    ["$allowdiffusemodulation"] = "1",
+    ["$blendtintbybasealpha"] = "0",
+    ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
+    ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b),
+    ["$phong"] = "1",
+    ["$phongexponent"] = "18",
+    ["$phongboost"] = "0.16",
+    ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
+}
+if DETAIL_TEXTURE then
+    params["$detail"] = DETAIL_TEXTURE
+    params["$detailblendmode"] = "0"
+    params["$detailblendfactor"] = string.format("%.3f", DETAIL_BLEND_FACTOR)
+    params["$detailscale"] = string.format("%.3f", DETAIL_SCALE)
+end
+CreateMaterial(name, "VertexLitGeneric", params)
 
     materialNames[key] = name
     return name
