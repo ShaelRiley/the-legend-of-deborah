@@ -14,7 +14,8 @@ local DRAW_DISTANCE = 1800
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
 local BUCKET_CELLS = 4
 local PANEL_SCALE = 0.22
-local SURFACE_OFFSET = 2.1
+local SURFACE_OFFSET = 2.6
+local LOD_V22_WAYFINDING_TOP_LAYER = true
 
 -- Empirically aligned to the stock Northern Petrol side-branding zone. The reverse
 -- face uses 1 - LOGO_Y_FRACTION, matching the mirrored texture placement.
@@ -170,8 +171,14 @@ end
 -- Replace, rather than stack on, the older panel projection. Mark selection remains
 -- owned by cl_container_wayfinding_projection.lua; this file owns only final board
 -- placement/drawing.
+-- V22 owns deterministic overlay order. Company spray is rendered in the opaque
+-- pass; location boards render afterward in the translucent-world pass. The board
+-- still depth-tests normally, so it remains a physical world object rather than HUD.
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding")
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
+hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerWayfinding")
+hook.Add("PostDrawTranslucentRenderables", "LOD_DrawContainerWayfinding", function(bDrawingDepth, bDrawingSkybox)
+    if bDrawingDepth or bDrawingSkybox then return end
+
     local world = Wall.world or {}
     if #world == 0 then return end
 

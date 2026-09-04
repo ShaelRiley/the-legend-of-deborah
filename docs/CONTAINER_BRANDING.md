@@ -422,3 +422,12 @@ Company branding and wayfinding are no longer mutually exclusive. A container se
 for both systems renders the company stencil on the hull and the bolted floor/quadrant
 board farther out from the surface. This prevents wayfinding coverage from consuming
 company-brand capacity while keeping the locator code visually dominant.
+
+## V22 overlay layer order
+
+When company spray and a floor/quadrant wayfinding board share one container, the
+physical board is always the top visual layer. Company paint remains in the opaque
+world pass; plywood locator boards render later in `PostDrawTranslucentRenderables`
+and use a 2.6-unit surface offset versus the spray's smaller face offset. The board
+continues to depth-test against world geometry, so this ordering does not turn signs
+into through-wall HUD elements.
