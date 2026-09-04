@@ -1,26 +1,21 @@
-# V10 validates explicit replacement of every stock cargo material slot.
+# V11 compiles the blank cargo hull into ordinary Source VTF/VMT materials.
 name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main, agent/container-alpha-v8, agent/container-blank-hull-v9, agent/container-submaterial-v10]
+    branches: [main, agent/container-vtf-v11]
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'tools/assets/build_container_blank_hull_v9.py'
+      - 'tools/assets/build_container_vtf_v11.py'
       - 'tools/assets/container_brand_names.tsv'
-      - 'tools/assets/patch_container_grit_v6.py'
-      - 'tools/assets/patch_container_alpha_v7.py'
-      - 'tools/assets/patch_container_alpha_v8.py'
-      - 'tools/assets/patch_container_blank_hull_v9.py'
-      - 'tools/assets/patch_container_submaterials_v10.py'
-      - 'tools/assets/validate_container_v6.py'
-      - 'tools/assets/validate_container_v8.py'
-      - 'tools/assets/validate_container_v9.py'
-      - 'tools/assets/validate_container_v10.py'
+      - 'tools/assets/patch_container_vtf_v11.py'
+      - 'tools/assets/validate_container_v11.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
+      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua'
@@ -44,23 +39,18 @@ jobs:
         run: |
           python3 -m py_compile tools/assets/build_container_surface_assets.py
           python3 -m py_compile tools/assets/build_container_blank_hull_v9.py
-          python3 -m py_compile tools/assets/patch_container_grit_v6.py
-          python3 -m py_compile tools/assets/patch_container_alpha_v7.py
-          python3 -m py_compile tools/assets/patch_container_alpha_v8.py
-          python3 -m py_compile tools/assets/patch_container_blank_hull_v9.py
-          python3 -m py_compile tools/assets/patch_container_submaterials_v10.py
-          python3 -m py_compile tools/assets/validate_container_v6.py
-          python3 -m py_compile tools/assets/validate_container_v8.py
-          python3 -m py_compile tools/assets/validate_container_v9.py
-          python3 -m py_compile tools/assets/validate_container_v10.py
+          python3 -m py_compile tools/assets/build_container_vtf_v11.py
+          python3 -m py_compile tools/assets/patch_container_vtf_v11.py
+          python3 -m py_compile tools/assets/validate_container_v11.py
 
-      - name: Build truly blank corrugated hull
+      - name: Rebuild company-free neutral hull source
         run: python3 tools/assets/build_container_blank_hull_v9.py
 
-      # V10 is the production runtime. The historical V9 patcher intentionally
-      # targets v14 and must not be replayed over an already-upgraded v15 file.
-      - name: Apply V10 explicit cargo material slots
-        run: python3 tools/assets/patch_container_submaterials_v10.py
+      - name: Compile V11 Source VTF and section VMT materials
+        run: python3 tools/assets/build_container_vtf_v11.py
+
+      - name: Apply V11 file-backed runtime wiring
+        run: python3 tools/assets/patch_container_vtf_v11.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -70,22 +60,25 @@ jobs:
           path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
           PY
 
-      - name: Validate V10 presentation
+      - name: Validate V11 presentation
         run: |
-          python3 tools/assets/validate_container_v10.py
+          python3 tools/assets/validate_container_v11.py
           git diff --check
 
-      - name: Commit generated runtime assets and V10 wiring
+      - name: Commit generated V11 runtime assets and wiring
         run: |
           git add -A \
             docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_hull_v9.png \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_hull_v11.vtf \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_grit_detail_v11.vtf \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
           if git diff --cached --quiet; then
-            echo 'V10 runtime already matches generated output.'
+            echo 'V11 runtime already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Replace every cargo material slot with blank hull [skip ci]'
+          git commit -m 'Use file-backed Source materials for cargo hull [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
