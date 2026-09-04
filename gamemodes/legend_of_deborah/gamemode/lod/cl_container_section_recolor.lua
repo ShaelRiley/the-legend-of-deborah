@@ -3,7 +3,7 @@ LOD = LOD or {}
 local Wall = LOD.WallVisualsClient
 if not Wall then return end
 
--- Shader-native section recoloring for the logo-free neutral cargo surface.
+-- Shader-native section recoloring for the stock-UV-derived blank cargo surface.
 --
 -- The runtime diffuse is a neutral, logo-free metal texture. The existing
 -- VertexLitGeneric color-replacement path retains deterministic section hue
@@ -22,11 +22,11 @@ local blankBaseMaterial = Material(CONTAINER_BLANK_BASE_PATH, "vertexlitgeneric 
 local blankBaseTexture = blankBaseMaterial and blankBaseMaterial:GetTexture("$basetexture")
 local NP_BASE_TEXTURE = blankBaseTexture and blankBaseTexture:GetName() or "color/white"
 local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-local COLOR_REPLACE_BLEND = 0.84
+local COLOR_REPLACE_BLEND = 0.80
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v8_blank_metal_surface"
+local MATERIAL_VERSION = "v9_stock_uv_blank"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
