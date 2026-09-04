@@ -1,6 +1,6 @@
 # V14 owns the minimal stock HL2/GMod cargo hull; V15 owns strict full-face wayfinding eligibility;
 # V19 owns coverage-first, decal-safe company branding under a global 40% container ceiling;
-# V20 owns coverage-first floor/quadrant wayfinding with an absolute no-touching invariant.
+# V21 owns orientation-first floor/quadrant wayfinding and brand/sign coexistence.
 name: Build and validate container surface assets
 
 on:
@@ -14,8 +14,8 @@ on:
       - 'tools/assets/validate_container_v14.py'
       - 'tools/assets/patch_container_brand_coverage_v19.py'
       - 'tools/assets/validate_container_brand_coverage_v19.py'
-      - 'tools/assets/patch_container_wayfinding_v20.py'
-      - 'tools/assets/validate_container_wayfinding_v20.py'
+      - 'tools/assets/patch_container_wayfinding_v21.py'
+      - 'tools/assets/validate_container_wayfinding_v21.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
@@ -42,8 +42,8 @@ jobs:
           python3 -m py_compile tools/assets/validate_container_v14.py
           python3 -m py_compile tools/assets/patch_container_brand_coverage_v19.py
           python3 -m py_compile tools/assets/validate_container_brand_coverage_v19.py
-          python3 -m py_compile tools/assets/patch_container_wayfinding_v20.py
-          python3 -m py_compile tools/assets/validate_container_wayfinding_v20.py
+          python3 -m py_compile tools/assets/patch_container_wayfinding_v21.py
+          python3 -m py_compile tools/assets/validate_container_wayfinding_v21.py
 
       - name: Build V14 minimal stock section materials
         run: python3 tools/assets/build_container_stock_v14.py
@@ -54,8 +54,8 @@ jobs:
       - name: Apply V19 coverage-first company branding
         run: python3 tools/assets/patch_container_brand_coverage_v19.py
 
-      - name: Apply V20 coverage-first wayfinding
-        run: python3 tools/assets/patch_container_wayfinding_v20.py
+      - name: Apply V21 orientation-first wayfinding
+        run: python3 tools/assets/patch_container_wayfinding_v21.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -69,7 +69,7 @@ jobs:
         run: |
           python3 tools/assets/validate_container_v14.py
           python3 tools/assets/validate_container_brand_coverage_v19.py
-          python3 tools/assets/validate_container_wayfinding_v20.py
+          python3 tools/assets/validate_container_wayfinding_v21.py
           git diff --check
 
       - name: Commit generated container presentation wiring
@@ -87,5 +87,5 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Increase non-touching wayfinding coverage'
+          git commit -m 'Improve orientation signage coverage'
           git push origin HEAD:${GITHUB_REF_NAME}
