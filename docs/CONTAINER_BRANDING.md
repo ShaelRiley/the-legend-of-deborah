@@ -280,3 +280,9 @@ The finite maximin palette is unchanged, but its generated files are now `v18_*`
 uses one global file-backed `VertexLitGeneric` override for the entire cargo model.
 Expected diagnostics include `mode=stock-hl2-vtf`, `[LOD:CONTAINER-GLOBAL] ...
 override=ok`, `[LOD:CONTAINER-STOCK] material=ok`, and `wrong=0`.
+
+## V14 minimal stock Source hull
+
+V14 is the black-texture containment build. The stock-asset audit found no verified blank cargo skin, so ordinary container hulls use only `metal/metalwall001a` plus the cargo model's native `models/props_wasteland/cargo_container01_normal` normal map. The section VMTs contain no `$detail`, phong, envmap, custom VTF, PNG binding, or dynamic material creation. This deliberately minimizes Source shader dependencies while preserving procedural `$color2` section hue and physical cargo corrugation.
+
+Generated materials are `v19_*` and runtime reports `materialVersion=v19_stock_hl2_minimal`. Expected diagnostics: `[LOD:CONTAINER-GLOBAL] ... override=ok`, `[LOD:CONTAINER-STOCK] material=ok`, `[LOD:CONTAINER-DETAIL] mode=disabled-by-design`, and `wrong=0`. The V8 alpha-tested company sprays and exact two-container wall stack are unchanged.
