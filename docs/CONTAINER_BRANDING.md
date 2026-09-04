@@ -322,3 +322,22 @@ placing two branded containers next to or directly touching one another.
 V15 full-surface eligibility remains authoritative: clipped corners, T-junctions, short
 dead-end edge cases, duplicate logical faces, and wayfinding-marked containers are excluded
 before the one-third target is calculated.
+
+## V17 verisimilitude-oriented brand coverage
+
+Raw one-in-N branding quotas are retired. Footage review showed that the V16 independent
+set could satisfy a global numerical target while still leaving long first-person views
+visually empty. V17 therefore treats *coverage* as the presentation goal.
+
+After full-face geometry filtering and wayfinding reservation, each dungeon floor targets
+approximately 26% of its remaining ordinary containers. Placement uses deterministic
+farthest-point (blue-noise-like) sampling in maze-grid space, with a two-cell soft spacing
+cushion and a small lower-tier preference so marks are more likely to enter the player's
+natural first-person sight line. The intent is typically one visible company mark, with two
+or occasionally three in long views, rather than either blank corridors or logo walls.
+
+The no-touching rule remains absolute. Upper/lower partners on one logical wall edge can
+never both be branded, and same-tier collinear neighbors that share an endpoint can never
+both be branded. If the two-cell aesthetic cushion prevents reaching the target, V17 may
+relax that cushion while preserving the physical no-touching invariant. Full-surface
+eligibility remains authoritative, so clipped corners and other partial faces stay clean.
