@@ -1,3 +1,4 @@
+# V10 validates explicit replacement of every stock cargo material slot.
 name: Build and validate container surface assets
 
 on:
