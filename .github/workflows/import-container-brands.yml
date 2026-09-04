@@ -2,12 +2,14 @@ name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main, agent/container-surface-v5]
+    branches: [main, agent/container-grit-v6]
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'tools/assets/container_brand_names.tsv'
+      - 'tools/assets/patch_container_grit_v6.py'
+      - 'tools/assets/validate_container_v6.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
@@ -29,183 +31,34 @@ jobs:
       - name: Install builder dependencies
         run: python3 -m pip install --disable-pip-version-check --quiet Pillow numpy
 
-      - name: Build V5 presentation assets
+      - name: Validate Python tooling syntax
         run: |
           python3 -m py_compile tools/assets/build_container_surface_assets.py
-          python3 tools/assets/build_container_surface_assets.py
+          python3 -m py_compile tools/assets/patch_container_grit_v6.py
+          python3 -m py_compile tools/assets/validate_container_v6.py
 
-      - name: Apply V5 runtime wiring
+      - name: Build container presentation assets
+        run: python3 tools/assets/build_container_surface_assets.py
+
+      - name: Apply safe V6 grit runtime binding
+        run: python3 tools/assets/patch_container_grit_v6.py
+
+      - name: Validate V6 presentation
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          recolor_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua')
-          recolor = recolor_path.read_text(encoding='utf-8')
-
-          if 'v11_gritty_neutral' not in recolor:
-              old = '''local NP_BASE_TEXTURE = "vgui/white"
-          local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-          local COLOR_REPLACE_BLEND = 1.00'''.replace('          ', '')
-              new = '''local NP_BASE_TEXTURE = "vgui/white"
-          local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-          local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
-          local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
-          local detailTexture = detailSourceMaterial and detailSourceMaterial:GetTexture("$basetexture")
-          local DETAIL_TEXTURE = detailTexture and detailTexture:GetName() or nil
-          local DETAIL_BLEND_FACTOR = 0.72
-          local DETAIL_SCALE = 1.00
-          local COLOR_REPLACE_BLEND = 1.00'''.replace('          ', '')
-              if old not in recolor:
-                  raise SystemExit('V5 recolor base anchor missing')
-              recolor = recolor.replace(old, new, 1)
-              recolor = recolor.replace(
-                  'local MATERIAL_VERSION = "v10_uniform_neutral"',
-                  'local MATERIAL_VERSION = "v11_gritty_neutral"', 1)
-
-          if 'params["$detail"] = DETAIL_TEXTURE' not in recolor:
-              pattern = re.compile(
-                  r'    CreateMaterial\(name, "VertexLitGeneric", \{\n'
-                  r'.*?'
-                  r'    \}\)\n',
-                  re.S,
-              )
-              replacement = '''    local params = {
-              ["$basetexture"] = NP_BASE_TEXTURE,
-              ["$bumpmap"] = NP_NORMAL_TEXTURE,
-              ["$surfaceprop"] = "metal",
-              ["$model"] = "1",
-              ["$allowdiffusemodulation"] = "1",
-              ["$blendtintbybasealpha"] = "0",
-              ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
-              ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b),
-              ["$phong"] = "1",
-              ["$phongexponent"] = "18",
-              ["$phongboost"] = "0.16",
-              ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
-          }
-          if DETAIL_TEXTURE then
-              params["$detail"] = DETAIL_TEXTURE
-              params["$detailblendmode"] = "0"
-              params["$detailblendfactor"] = string.format("%.3f", DETAIL_BLEND_FACTOR)
-              params["$detailscale"] = string.format("%.3f", DETAIL_SCALE)
-          end
-          CreateMaterial(name, "VertexLitGeneric", params)
-          '''.replace('          ', '')
-              recolor, count = pattern.subn(replacement, recolor, count=1)
-              if count != 1:
-                  raise SystemExit(f'V5 material replacement count={count}')
-
-          recolor = recolor.replace(
-              '-- Shader-native section recoloring for the UV-agnostic neutral cargo surface.',
-              '-- Shader-native section recoloring for the gritty neutral cargo surface.', 1)
-          recolor_path.write_text(recolor, encoding='utf-8')
-
-          wall_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua')
-          wall = wall_path.read_text(encoding='utf-8')
-          if 'local STACK_VISUAL_GAP = 4' not in wall:
-              wall = wall.replace('local CONTAINER_VISUAL_EMBED = 16\n',
-                                  'local CONTAINER_VISUAL_EMBED = 16\nlocal STACK_VISUAL_GAP = 4\n', 1)
-          if 'local stackCount = 2' not in wall:
-              old = '    local stackCount = math.max(1, GC.WallStack or 2)\n'
-              new = '''    local configuredStackCount = math.floor(tonumber(GC.WallStack) or 2)
-              if configuredStackCount ~= 2 then
-                  ErrorNoHalt(string.format("[LOD] WallStack=%d overridden: production walls require exactly two containers\\n", configuredStackCount))
-              end
-              local stackCount = 2
-          '''.replace('          ', '')
-              if old not in wall:
-                  raise SystemExit('V5 stack-count anchor missing')
-              wall = wall.replace(old, new, 1)
-          if 'stack * (GC.ContainerHeight + STACK_VISUAL_GAP)' not in wall:
-              if '+ stack * GC.ContainerHeight' not in wall:
-                  raise SystemExit('V5 stack-position token missing')
-              wall = wall.replace('+ stack * GC.ContainerHeight',
-                                  '+ stack * (GC.ContainerHeight + STACK_VISUAL_GAP)', 1)
-          if 'stackIndex = stack' not in wall:
-              old = '                    sectionColor = sectionColor\n                }'
-              new = '                    sectionColor = sectionColor,\n                    stackIndex = stack,\n                    stackCount = stackCount\n                }'
-              if old not in wall:
-                  raise SystemExit('V5 stack metadata anchor missing')
-              wall = wall.replace(old, new, 1)
-          if 'local expectedVisuals = #(Wall.logical or {}) * 2' not in wall:
-              anchor = '    Wall.world = out\n'
-              invariant = '''    local expectedVisuals = #(Wall.logical or {}) * 2
-              if #out ~= expectedVisuals then
-                  ErrorNoHalt(string.format("[LOD] two-container visual invariant failed: expected=%d actual=%d\\n", expectedVisuals, #out))
-              end
-
-          '''.replace('          ', '')
-              if anchor not in wall:
-                  raise SystemExit('V5 stack invariant anchor missing')
-              wall = wall.replace(anchor, invariant + anchor, 1)
-          wall_path.write_text(wall, encoding='utf-8')
-          PY
-
-      - name: Validate V5 presentation
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          from PIL import Image
-
-          surface = Path('gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces')
-          if (surface / 'container_blank_metal.png').exists():
-              raise SystemExit('legacy blank diffuse still present')
-          detail = surface / 'container_grit_detail.png'
-          im = Image.open(detail).convert('L')
-          if im.size != (1024, 1024) or detail.stat().st_size < 100000:
-              raise SystemExit('invalid grit detail')
-          lo, hi = im.getextrema()
-          if lo > 90 or hi < 160:
-              raise SystemExit(f'grit detail too flat: {lo}..{hi}')
-
-          for n in range(1, 5):
-              p = surface / f'container_brand_spray_atlas_{n:02d}.png'
-              im = Image.open(p).convert('RGBA')
-              if im.size != (4096, 1024):
-                  raise SystemExit(f'{p.name}: wrong dimensions {im.size}')
-              if p.stat().st_size < 60000:
-                  raise SystemExit(f'{p.name}: suspiciously small')
-              if im.getchannel('A').getextrema()[1] < 220:
-                  raise SystemExit(f'{p.name}: weak alpha')
-
-          recolor = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua').read_text()
-          for token in ('container_grit_detail.png', 'DETAIL_BLEND_FACTOR = 0.72',
-                        'params["$detail"] = DETAIL_TEXTURE', '["$phong"] = "1"',
-                        'v11_gritty_neutral'):
-              if token not in recolor:
-                  raise SystemExit(f'missing recolor token: {token}')
-
-          brand = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua').read_text()
-          for token in ('mesh.Begin(MATERIAL_QUADS, 1)', 'mesh.TexCoord(0, u, v)',
-                        'side > 0 and -model:GetRight() or model:GetRight()',
-                        'SIDE_WIDTH_FRACTION = 0.86', 'vertexlit-spray-v5-fullside'):
-              if token not in brand:
-                  raise SystemExit(f'missing branding token: {token}')
-          if '$basetexturetransform' in brand or 'render.DrawQuad(' in brand:
-              raise SystemExit('legacy transformed/mirrored decal path still live')
-
-          wall = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua').read_text()
-          for token in ('STACK_VISUAL_GAP = 4', 'local stackCount = 2',
-                        'stack * (GC.ContainerHeight + STACK_VISUAL_GAP)',
-                        'stackIndex = stack', 'expectedVisuals = #(Wall.logical or {}) * 2'):
-              if token not in wall:
-                  raise SystemExit(f'missing two-stack token: {token}')
-          print('V5 gritty hull, full-side spray, and exact two-container stack validated.')
-          PY
+          python3 tools/assets/validate_container_v6.py
           git diff --check
 
-      - name: Commit generated runtime assets and wiring
+      - name: Commit generated runtime assets and V6 wiring
         run: |
           git add -A \
+            docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
           if git diff --cached --quiet; then
-            echo 'V5 runtime already matches generated output.'
+            echo 'V6 runtime already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Build gritty full-side container presentation [skip ci]'
+          git commit -m 'Fix runtime grit texture binding [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
