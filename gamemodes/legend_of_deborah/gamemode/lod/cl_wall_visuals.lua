@@ -7,6 +7,7 @@ local GC = LOD.Config.Geometry
 local MESSAGE = "LOD_WallVisuals"
 local PROTOCOL = 2
 local CONTAINER_VISUAL_EMBED = 16
+local STACK_VISUAL_GAP = 4
 local MODEL_BATCH_SIZE = 128
 local RETRY_BATCH_SIZE = 16
 local MODEL_RETRY_LIMIT = 8
@@ -209,7 +210,11 @@ local function rebuildWorldCache()
     Wall.labelBuckets = {}
     local halfWidth = (MC.Width + 1) * 0.5
     local halfHeight = (MC.Height + 1) * 0.5
-    local stackCount = math.max(1, GC.WallStack or 2)
+    local configuredStackCount = math.floor(tonumber(GC.WallStack) or 2)
+    if configuredStackCount ~= 2 then
+        ErrorNoHalt(string.format("[LOD] WallStack=%d overridden: production walls require exactly two containers\n", configuredStackCount))
+    end
+    local stackCount = 2
 
     for _, segment in ipairs(Wall.logical or {}) do
         local direction = DIRS[segment[4]]
@@ -232,7 +237,7 @@ local function rebuildWorldCache()
                         baseX,
                         baseY,
                         baseZ + GC.ContainerHeight * 0.5
-                            + stack * GC.ContainerHeight
+                            + stack * (GC.ContainerHeight + STACK_VISUAL_GAP)
                             - CONTAINER_VISUAL_EMBED
                     ),
                     ang = angle,
@@ -241,12 +246,19 @@ local function rebuildWorldCache()
                     floor = segment[3],
                     quadrant = quadrant,
                     code = code,
-                    sectionColor = sectionColor
+                    sectionColor = sectionColor,
+                    stackIndex = stack,
+                    stackCount = stackCount
                 }
                 out[#out + 1] = instance
                 addLabelBucket(#out, instance)
             end
         end
+    end
+
+    local expectedVisuals = #(Wall.logical or {}) * 2
+    if #out ~= expectedVisuals then
+        ErrorNoHalt(string.format("[LOD] two-container visual invariant failed: expected=%d actual=%d\n", expectedVisuals, #out))
     end
 
     Wall.world = out
