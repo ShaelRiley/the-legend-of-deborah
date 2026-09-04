@@ -170,7 +170,9 @@ local function rebuildMarkedSelection(world)
     local byKey = {}
     for index, instance in ipairs(world or {}) do
         instance.marked = false
-        if instance.floor ~= nil and instance.quadrant then
+        if instance.floor ~= nil and instance.quadrant
+            and instance.fullSurfaceEligible == true
+        then
             local key = sectionKey(instance)
             local group = byKey[key]
             if not group then

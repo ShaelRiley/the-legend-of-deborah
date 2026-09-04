@@ -201,6 +201,75 @@ local function addLabelBucket(instanceIndex, instance)
     bucket[#bucket + 1] = instanceIndex
 end
 
+-- Overlay-safe containers must expose their entire long face. A perpendicular
+-- wall meeting either endpoint clips some portion of that face in corners, T-junctions,
+-- short dead ends and related maze edge cases. Classify those cases once from the
+-- immutable logical wall manifest rather than tracing visibility every render frame.
+local function segmentFaceInfo(segment)
+    if not segment then return nil end
+    local x = math.floor(tonumber(segment[1]) or 0)
+    local y = math.floor(tonumber(segment[2]) or 0)
+    local z = math.floor(tonumber(segment[3]) or -1)
+    local direction = math.floor(tonumber(segment[4]) or -1)
+    if z < 0 or not DIRS[direction] then return nil end
+
+    local ax, ay, bx, by, orientation
+    if direction == 0 then
+        ax, ay, bx, by, orientation = 2 * x - 1, 2 * y + 1, 2 * x + 1, 2 * y + 1, "h"
+    elseif direction == 2 then
+        ax, ay, bx, by, orientation = 2 * x - 1, 2 * y - 1, 2 * x + 1, 2 * y - 1, "h"
+    elseif direction == 1 then
+        ax, ay, bx, by, orientation = 2 * x + 1, 2 * y - 1, 2 * x + 1, 2 * y + 1, "v"
+    else
+        ax, ay, bx, by, orientation = 2 * x - 1, 2 * y - 1, 2 * x - 1, 2 * y + 1, "v"
+    end
+
+    local a = string.format("%d:%d:%d", z, ax, ay)
+    local b = string.format("%d:%d:%d", z, bx, by)
+    local first, second = a < b and a or b, a < b and b or a
+    return {
+        endpointA = a,
+        endpointB = b,
+        orientation = orientation,
+        edgeKey = first .. ">" .. second
+    }
+end
+
+local function buildFullSurfaceEligibility(logical)
+    local infoByIndex = {}
+    local endpointUse = {}
+    local edgeCounts = {}
+
+    for index, segment in ipairs(logical or {}) do
+        local info = segmentFaceInfo(segment)
+        infoByIndex[index] = info
+        if info then
+            edgeCounts[info.edgeKey] = (edgeCounts[info.edgeKey] or 0) + 1
+            for _, endpoint in ipairs({info.endpointA, info.endpointB}) do
+                local use = endpointUse[endpoint]
+                if not use then
+                    use = {h = 0, v = 0}
+                    endpointUse[endpoint] = use
+                end
+                use[info.orientation] = use[info.orientation] + 1
+            end
+        end
+    end
+
+    local eligible = {}
+    for index, info in ipairs(infoByIndex) do
+        if info and edgeCounts[info.edgeKey] == 1 then
+            local perpendicular = info.orientation == "h" and "v" or "h"
+            local a = endpointUse[info.endpointA]
+            local b = endpointUse[info.endpointB]
+            eligible[index] = a and b and a[perpendicular] == 0 and b[perpendicular] == 0
+        else
+            eligible[index] = false
+        end
+    end
+    return eligible
+end
+
 local function rebuildWorldCache()
     local origin = Wall.origin or MC.Origin or vector_origin
     if not Wall.dirty and not originChanged(origin) then return false end
@@ -216,7 +285,8 @@ local function rebuildWorldCache()
     end
     local stackCount = 2
 
-    for _, segment in ipairs(Wall.logical or {}) do
+    local fullSurfaceEligibility = buildFullSurfaceEligibility(Wall.logical or {})
+    for segmentIndex, segment in ipairs(Wall.logical or {}) do
         local direction = DIRS[segment[4]]
         if direction then
             local baseX = (segment[1] - halfWidth) * MC.CellSize
@@ -248,7 +318,8 @@ local function rebuildWorldCache()
                     code = code,
                     sectionColor = sectionColor,
                     stackIndex = stack,
-                    stackCount = stackCount
+                    stackCount = stackCount,
+                    fullSurfaceEligible = fullSurfaceEligibility[segmentIndex] == true
                 }
                 out[#out + 1] = instance
                 addLabelBucket(#out, instance)

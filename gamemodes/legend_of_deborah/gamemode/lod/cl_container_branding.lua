@@ -16,6 +16,7 @@ local LOGO_Y_FRACTION = 0.50
 local LOGO_Z_FRACTION = 0.55
 local SIDE_WIDTH_FRACTION = 0.86
 local SIDE_HEIGHT_FRACTION = 0.66
+local BRANDING_DENOMINATOR = 5
 
 local BRAND_COUNT = 256
 local BRANDS_PER_ATLAS = 64
@@ -103,6 +104,85 @@ local function ensureSelection()
     selectedMaterial, selectedPath = materialForAtlas(selectedAtlas)
     return selectedMaterial and not selectedMaterial:IsError()
 end
+
+local placementWorldRef = nil
+local placementSeed = nil
+local placementMarkedCount = -1
+local brandedCount = 0
+local brandableCount = 0
+local geometryBlockedCount = 0
+
+local function placementSort(a, b)
+    local ia, ib = a.instance, b.instance
+    if (ia.floor or 0) ~= (ib.floor or 0) then return (ia.floor or 0) < (ib.floor or 0) end
+    if (ia.quadrant or 0) ~= (ib.quadrant or 0) then return (ia.quadrant or 0) < (ib.quadrant or 0) end
+    if (ia.gridY or 0) ~= (ib.gridY or 0) then return (ia.gridY or 0) < (ib.gridY or 0) end
+    if (ia.gridX or 0) ~= (ib.gridX or 0) then return (ia.gridX or 0) < (ib.gridX or 0) end
+    if (ia.stackIndex or 0) ~= (ib.stackIndex or 0) then
+        return (ia.stackIndex or 0) < (ib.stackIndex or 0)
+    end
+    return a.index < b.index
+end
+
+local function currentMarkedCount(world)
+    local count = 0
+    for _, instance in ipairs(world or {}) do
+        if instance.marked then count = count + 1 end
+    end
+    return count
+end
+
+local function rebuildBrandPlacement(world)
+    brandedCount = 0
+    brandableCount = 0
+    geometryBlockedCount = 0
+    local candidates = {}
+
+    for index, instance in ipairs(world or {}) do
+        instance.companyBranded = false
+        if instance.fullSurfaceEligible ~= true then
+            geometryBlockedCount = geometryBlockedCount + 1
+        elseif not instance.marked then
+            candidates[#candidates + 1] = {index = index, instance = instance}
+        end
+    end
+
+    table.sort(candidates, placementSort)
+    brandableCount = #candidates
+    local seed = tonumber(Wall.seed) or 1
+    local rng = LOD.RNG.New(LOD.Seeds.Derive(seed, "container-brand-placement:v1"))
+
+    -- One deterministic choice from every complete spatial block of five. Leftover
+    -- candidates are intentionally unbranded, so density can never exceed 20%.
+    local fullBlocks = math.floor(#candidates / BRANDING_DENOMINATOR)
+    for block = 0, fullBlocks - 1 do
+        local first = block * BRANDING_DENOMINATOR + 1
+        local last = first + BRANDING_DENOMINATOR - 1
+        local chosen = candidates[rng:Int(first, last)]
+        if chosen and chosen.instance then
+            chosen.instance.companyBranded = true
+            brandedCount = brandedCount + 1
+        end
+    end
+
+    placementWorldRef = world
+    placementSeed = tonumber(Wall.seed) or 0
+    placementMarkedCount = currentMarkedCount(world)
+end
+
+local function ensureBrandPlacement(world)
+    local seed = tonumber(Wall.seed) or 0
+    local marked = currentMarkedCount(world)
+    if placementWorldRef ~= world or placementSeed ~= seed or placementMarkedCount ~= marked then
+        rebuildBrandPlacement(world)
+    end
+end
+
+hook.Add("Think", "LOD_RebuildSparseContainerBrandPlacement", function()
+    local world = Wall.world or {}
+    if #world == 0 then return end
+    ensureBrandPlacement(world)
+end)
 
 local function sprayPaintColor(instance)
     local c = instance.bodyColor or instance.sectionColor or Color(110, 110, 110, 255)
@@ -193,7 +273,9 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
                 for _, index in ipairs(bucket) do
                     local instance = world[index]
                     local model = Wall.models and Wall.models[index]
-                    if instance and not instance.marked and IsValid(model)
+                    if instance and instance.companyBranded == true
+                        and instance.fullSurfaceEligible == true and not instance.marked
+                        and IsValid(model)
                         and eyePos:DistToSqr(model:GetPos()) <= DRAW_DISTANCE_SQR
                     then
                         drawBrand(model, instance, eyePos)
@@ -205,9 +287,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
 end)
 
 concommand.Add("lod_container_brand_status", function()
+    local world = Wall.world or {}
+    if #world > 0 then ensureBrandPlacement(world) end
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f placement=%d/%d target=1/%d geometryBlocked=%d",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",
@@ -216,6 +300,10 @@ concommand.Add("lod_container_brand_status", function()
         ok and "ok" or "error",
         tostring(selectedPath or "none"),
         SIDE_WIDTH_FRACTION,
-        SIDE_HEIGHT_FRACTION
+        SIDE_HEIGHT_FRACTION,
+        brandedCount,
+        brandableCount,
+        BRANDING_DENOMINATOR,
+        geometryBlockedCount
     ))
 end)

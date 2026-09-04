@@ -286,3 +286,21 @@ override=ok`, `[LOD:CONTAINER-STOCK] material=ok`, and `wrong=0`.
 V14 is the black-texture containment build. The stock-asset audit found no verified blank cargo skin, so ordinary container hulls use only `metal/metalwall001a` plus the cargo model's native `models/props_wasteland/cargo_container01_normal` normal map. The section VMTs contain no `$detail`, phong, envmap, custom VTF, PNG binding, or dynamic material creation. This deliberately minimizes Source shader dependencies while preserving procedural `$color2` section hue and physical cargo corrugation.
 
 Generated materials are `v19_*` and runtime reports `materialVersion=v19_stock_hl2_minimal`. Expected diagnostics: `[LOD:CONTAINER-GLOBAL] ... override=ok`, `[LOD:CONTAINER-STOCK] material=ok`, `[LOD:CONTAINER-DETAIL] mode=disabled-by-design`, and `wrong=0`. The V8 alpha-tested company sprays and exact two-container wall stack are unchanged.
+
+## V15 sparse full-face-only overlays
+
+Company identity is intentionally sparse. After wayfinding containers are reserved,
+ordinary overlay-safe containers are sorted deterministically and divided into complete
+blocks of five; exactly one container from each block receives the run's selected
+company stencil. Incomplete trailing blocks receive no company paint, so branding can
+never exceed 20% of eligible ordinary containers.
+
+Every overlay now shares a conservative full-surface eligibility rule. The client wall
+cache classifies each logical wall edge from its grid endpoints. If a perpendicular wall
+meets either endpoint, the container is treated as geometrically clipped (corner,
+T-junction, short dead end, or related edge case) and receives neither company paint nor
+a plywood wayfinding plate. Duplicate logical edges are also ineligible. Collinear
+end-to-end walls remain eligible because they do not occlude the broad face.
+
+This classification is presentation-only and is computed once when the immutable wall
+manifest is expanded. It does not alter collision, maze topology or navigation.

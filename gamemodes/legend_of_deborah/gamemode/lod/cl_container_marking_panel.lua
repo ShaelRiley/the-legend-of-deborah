@@ -133,7 +133,11 @@ local function drawStencil(code, color)
 end
 
 local function drawMarkedContainer(model, instance, eyePos)
-    if not instance or not instance.marked or not IsValid(model) then return end
+    if not instance or not instance.marked
+        or instance.fullSurfaceEligible ~= true or not IsValid(model)
+    then
+        return
+    end
 
     local mins, maxs = model:GetRenderBounds()
     local spanY = maxs.y - mins.y
