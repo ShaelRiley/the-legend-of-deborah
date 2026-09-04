@@ -1,0 +1,140 @@
+name: Apply container surface V4 hotfix
+
+on:
+  push:
+    branches:
+      - agent/container-surface-v4
+    paths:
+      - '.github/workflows/container-v4-hotfix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Apply V4 uniform-neutral substrate patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          recolor_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua')
+          recolor = recolor_path.read_text(encoding='utf-8')
+          old_block = '''local CONTAINER_BLANK_BASE_PATH = "legend_of_deborah/container_surfaces/container_blank_metal.png"
+          local blankBaseMaterial = Material(CONTAINER_BLANK_BASE_PATH, "vertexlitgeneric mips smooth")
+          local blankBaseTexture = blankBaseMaterial and blankBaseMaterial:GetTexture("$basetexture")
+          local NP_BASE_TEXTURE = blankBaseTexture and blankBaseTexture:GetName() or "color/white"
+          '''.replace('          ', '')
+          new_block = '''-- The diffuse is deliberately UV-agnostic. Mesh geometry plus the stock normal map
+          -- provide container relief; a uniform white base guarantees that no baked company
+          -- art, source-image blocks, or checkerboard structure can leak into the hull color.
+          local NP_BASE_TEXTURE = "vgui/white"
+          '''.replace('          ', '')
+          if old_block not in recolor:
+              raise SystemExit('V4 recolor base-texture anchor not found')
+          recolor = recolor.replace(old_block, new_block, 1)
+          recolor = recolor.replace(
+              'local COLOR_REPLACE_BLEND = 0.80',
+              'local COLOR_REPLACE_BLEND = 1.00',
+              1,
+          )
+          recolor = recolor.replace(
+              'local MATERIAL_VERSION = "v9_stock_uv_blank"',
+              'local MATERIAL_VERSION = "v10_uniform_neutral"',
+              1,
+          )
+          recolor = recolor.replace(
+              '-- Shader-native section recoloring for the stock-UV-derived blank cargo surface.',
+              '-- Shader-native section recoloring for the UV-agnostic neutral cargo surface.',
+              1,
+          )
+          recolor = recolor.replace(
+              '-- The runtime diffuse is a neutral, logo-free metal texture. The existing\n-- VertexLitGeneric color-replacement path retains deterministic section hue\n-- while retaining the validated cargo mesh and stock relief normal map.',
+              '-- The runtime diffuse is uniform and logo-free. VertexLitGeneric color replacement\n-- owns the full hull hue while the validated cargo mesh and stock normal map retain relief.',
+              1,
+          )
+          required = [
+              'local NP_BASE_TEXTURE = "vgui/white"',
+              'local COLOR_REPLACE_BLEND = 1.00',
+              'local MATERIAL_VERSION = "v10_uniform_neutral"',
+          ]
+          missing = [token for token in required if token not in recolor]
+          if missing:
+              raise SystemExit(f'V4 recolor patch incomplete: {missing}')
+          recolor_path.write_text(recolor, encoding='utf-8')
+
+          workflow_path = Path('.github/workflows/import-container-brands.yml')
+          workflow = workflow_path.read_text(encoding='utf-8')
+          workflow = workflow.replace(
+              '      - agent/container-surface-v3',
+              '      - agent/container-surface-v4',
+              1,
+          )
+          workflow = workflow.replace(
+              '            --patch-runtime\n',
+              '',
+              1,
+          )
+          old_required = '''          recolor_required = [
+              'CONTAINER_BLANK_BASE_PATH',
+              'container_surfaces/container_blank_metal.png',
+              'blankBaseMaterial:GetTexture("$basetexture")',
+              'v9_stock_uv_blank',
+          ]
+          '''
+          new_required = '''          recolor_required = [
+              'local NP_BASE_TEXTURE = "vgui/white"',
+              'local COLOR_REPLACE_BLEND = 1.00',
+              'v10_uniform_neutral',
+          ]
+          '''
+          if old_required not in workflow:
+              raise SystemExit('V4 workflow validation anchor not found')
+          workflow = workflow.replace(old_required, new_required, 1)
+          workflow = workflow.replace(
+              "              raise SystemExit(f'recolor missing stock-UV blank wiring: {missing}')",
+              "              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')",
+              1,
+          )
+          workflow = workflow.replace(
+              "          if 'v8_blank_metal_surface' in recolor:\n              raise SystemExit('generic v8 blank-metal material is still live')\n",
+              "          if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:\n              raise SystemExit('generated diffuse is still authoritative for hull color')\n",
+              1,
+          )
+          workflow = workflow.replace(
+              "          print('Stock-UV blank + readable high-resolution spray validation passed.')",
+              "          print('Uniform-neutral hull + readable high-resolution spray validation passed.')",
+              1,
+          )
+          workflow_path.write_text(workflow, encoding='utf-8')
+
+          docs_path = Path('docs/CONTAINER_BRANDING.md')
+          docs = docs_path.read_text(encoding='utf-8')
+          docs = docs.replace('`materialVersion=v9_stock_uv_blank`', '`materialVersion=v10_uniform_neutral`')
+          docs = docs.replace('`blend=0.80`', '`blend=1.00`')
+          docs += '''\n\n## V4 substrate safety rule\n\nThe hull diffuse is now deliberately UV-agnostic (`vgui/white`) and the section tint blend is `1.00`. The cargo mesh and stock normal map provide physical relief; the diffuse contributes no baked structure at all. This prevents source-texture logos, block patterns, or checkerboard artifacts from ever leaking into procedural section colors. The generated `container_blank_metal.png` remains a build artifact for compatibility but is no longer authoritative at runtime.\n'''
+          docs_path.write_text(docs, encoding='utf-8')
+          PY
+
+      - name: Validate patch
+        run: |
+          grep -F 'local NP_BASE_TEXTURE = "vgui/white"' gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+          grep -F 'local COLOR_REPLACE_BLEND = 1.00' gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+          grep -F 'v10_uniform_neutral' gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+          git diff --check
+
+      - name: Commit V4 runtime patch
+        run: |
+          git add gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
+            .github/workflows/import-container-brands.yml \
+            docs/CONTAINER_BRANDING.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Use uniform neutral container hull diffuse'
+          git push origin HEAD:${GITHUB_REF_NAME}
