@@ -8,6 +8,8 @@ on:
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'tools/assets/container_brand_names.tsv'
+      - 'tools/assets/patch_container_grit_v6.py'
+      - 'tools/assets/validate_container_v6.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
@@ -29,197 +31,21 @@ jobs:
       - name: Install builder dependencies
         run: python3 -m pip install --disable-pip-version-check --quiet Pillow numpy
 
-      - name: Build container presentation assets
+      - name: Validate Python tooling syntax
         run: |
           python3 -m py_compile tools/assets/build_container_surface_assets.py
-          python3 tools/assets/build_container_surface_assets.py
+          python3 -m py_compile tools/assets/patch_container_grit_v6.py
+          python3 -m py_compile tools/assets/validate_container_v6.py
 
-      - name: Apply V6 safe grit binding
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
+      - name: Build container presentation assets
+        run: python3 tools/assets/build_container_surface_assets.py
 
-          recolor_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua')
-          recolor = recolor_path.read_text(encoding='utf-8')
-
-          if 'v12_grit_runtime_binding' not in recolor:
-              top_pattern = re.compile(
-                  r'local NP_BASE_TEXTURE = "vgui/white"\n'
-                  r'local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"\n'
-                  r'.*?'
-                  r'local MATERIAL_VERSION = "v11_gritty_neutral"\n',
-                  re.S,
-              )
-              top_replacement = '''local NP_BASE_TEXTURE = "vgui/white"
-          local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
-          local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
-          local DETAIL_FALLBACK_TEXTURE = "vgui/white"
-          local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
-          local detailTexture = nil
-          if detailSourceMaterial and not detailSourceMaterial:IsError() then
-              detailTexture = detailSourceMaterial:GetTexture("$basetexture")
-          end
-          local DETAIL_AVAILABLE = detailTexture ~= nil
-          local DETAIL_BLEND_FACTOR = 0.64
-          local DETAIL_SCALE = 1.00
-          local COLOR_REPLACE_BLEND = 1.00
-          local MIN_SECTION_SATURATION = 0.82
-          local MIN_SECTION_VALUE = 0.80
-          local RECONCILE_BATCH_SIZE = 192
-          local MATERIAL_VERSION = "v12_grit_runtime_binding"
-          '''.replace('          ', '')
-              recolor, count = top_pattern.subn(top_replacement, recolor, count=1)
-              if count != 1:
-                  raise SystemExit(f'V6 grit header replacement count={count}')
-
-              material_pattern = re.compile(
-                  r'    local params = \{\n.*?CreateMaterial\(name, "VertexLitGeneric", params\)\n',
-                  re.S,
-              )
-              material_replacement = '''    local params = {
-              ["$basetexture"] = NP_BASE_TEXTURE,
-              ["$bumpmap"] = NP_NORMAL_TEXTURE,
-              ["$surfaceprop"] = "metal",
-              ["$model"] = "1",
-              ["$allowdiffusemodulation"] = "1",
-              ["$blendtintbybasealpha"] = "0",
-              ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
-              ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b),
-              ["$detail"] = DETAIL_FALLBACK_TEXTURE,
-              ["$detailblendmode"] = "0",
-              ["$detailblendfactor"] = "0.000",
-              ["$detailscale"] = string.format("%.3f", DETAIL_SCALE),
-              ["$phong"] = "1",
-              ["$phongexponent"] = "18",
-              ["$phongboost"] = "0.16",
-              ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
-          }
-          local material = CreateMaterial(name, "VertexLitGeneric", params)
-          if material and not material:IsError() and DETAIL_AVAILABLE then
-              -- PNGs mounted by Garry's Mod are valid ITexture objects, but their
-              -- internal texture names are not standalone .vtf paths. Bind the
-              -- texture object directly instead of asking Source to resolve that
-              -- internal name as materials/.../container_grit_detail.vtf.
-              material:SetTexture("$detail", detailTexture)
-              material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)
-              material:SetFloat("$detailscale", DETAIL_SCALE)
-              if material.Recompute then material:Recompute() end
-          end
-          '''.replace('          ', '')
-              recolor, count = material_pattern.subn(material_replacement, recolor, count=1)
-              if count != 1:
-                  raise SystemExit(f'V6 material replacement count={count}')
-
-              recolor = recolor.replace(
-                  '-- Shader-native section recoloring for the gritty neutral cargo surface.',
-                  '-- Shader-native section recoloring with safely bound gritty metal detail.',
-                  1,
-              )
-
-              status_anchor = '    ))\nend)'
-              status_insert = '''    ))
-              print(string.format(
-                  "[LOD:CONTAINER-DETAIL] source=%s mode=%s blend=%.2f",
-                  DETAIL_PATH,
-                  DETAIL_AVAILABLE and "runtime-texture" or "flat-fallback",
-                  DETAIL_AVAILABLE and DETAIL_BLEND_FACTOR or 0
-              ))
-          end)'''.replace('          ', '')
-              index = recolor.rfind(status_anchor)
-              if index < 0:
-                  raise SystemExit('V6 detail status anchor missing')
-              recolor = recolor[:index] + status_insert + recolor[index + len(status_anchor):]
-
-              recolor_path.write_text(recolor, encoding='utf-8')
-
-          docs_path = Path('docs/CONTAINER_BRANDING.md')
-          docs = docs_path.read_text(encoding='utf-8')
-          marker = '## V6 safe grit texture binding'
-          if marker not in docs:
-              docs += '''
-
-## V6 safe grit texture binding
-
-The V5 Steam Deck playtest proved the 4096x1024 full-side spray atlas and orientation fix: company text became readable and correctly oriented. It also exposed a Source-material interoperability bug. Garry's Mod can mount the committed `container_grit_detail.png` as an `ITexture`, but passing that texture's internal name back into a dynamic material's `$detail` string caused Source to reinterpret it as a standalone `.vtf` path. The missing `.vtf` sampler rendered the hull black.
-
-V6 keeps the PNG asset and removes that failure mode. `cl_container_section_recolor.lua` now creates every section material with a guaranteed-valid white detail fallback, then, when the mounted PNG is available, assigns the already-loaded `ITexture` directly with `IMaterial:SetTexture("$detail", detailTexture)`. No generated texture name is ever round-tripped through Source's filesystem resolver. If the grit texture is unavailable for any reason, the detail blend remains zero and the hull degrades to the colored/normal-mapped V4 presentation instead of black.
-
-`lod_container_recolor_status` now also prints `[LOD:CONTAINER-DETAIL]`: production should report `mode=runtime-texture`; `mode=flat-fallback` is safe but indicates that the optional grime layer did not bind.
-'''
-              docs_path.write_text(docs, encoding='utf-8')
-          PY
+      - name: Apply safe V6 grit runtime binding
+        run: python3 tools/assets/patch_container_grit_v6.py
 
       - name: Validate V6 presentation
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          from PIL import Image
-
-          surface = Path('gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces')
-          detail = surface / 'container_grit_detail.png'
-          image = Image.open(detail).convert('L')
-          if image.size != (1024, 1024) or detail.stat().st_size < 100000:
-              raise SystemExit('invalid grit detail')
-          lo, hi = image.getextrema()
-          if lo > 90 or hi < 160:
-              raise SystemExit(f'grit detail too flat: {lo}..{hi}')
-
-          for number in range(1, 5):
-              path = surface / f'container_brand_spray_atlas_{number:02d}.png'
-              atlas = Image.open(path).convert('RGBA')
-              if atlas.size != (4096, 1024):
-                  raise SystemExit(f'{path.name}: wrong dimensions {atlas.size}')
-              if path.stat().st_size < 60000:
-                  raise SystemExit(f'{path.name}: suspiciously small')
-              if atlas.getchannel('A').getextrema()[1] < 220:
-                  raise SystemExit(f'{path.name}: weak alpha')
-
-          recolor = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua').read_text(encoding='utf-8')
-          required = (
-              'DETAIL_FALLBACK_TEXTURE = "vgui/white"',
-              'DETAIL_BLEND_FACTOR = 0.64',
-              'v12_grit_runtime_binding',
-              '["$detail"] = DETAIL_FALLBACK_TEXTURE',
-              'material:SetTexture("$detail", detailTexture)',
-              'material:SetFloat("$detailblendfactor", DETAIL_BLEND_FACTOR)',
-              'mode=%s blend=%.2f',
-              '["$phong"] = "1"',
-          )
-          missing = [token for token in required if token not in recolor]
-          if missing:
-              raise SystemExit(f'missing V6 recolor wiring: {missing}')
-          forbidden = (
-              'detailTexture:GetName()',
-              'params["$detail"] = DETAIL_TEXTURE',
-              'local DETAIL_TEXTURE =',
-              'v11_gritty_neutral',
-          )
-          present = [token for token in forbidden if token in recolor]
-          if present:
-              raise SystemExit(f'unsafe V5 detail binding still present: {present}')
-
-          brand = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua').read_text(encoding='utf-8')
-          for token in ('mesh.Begin(MATERIAL_QUADS, 1)', 'mesh.TexCoord(0, u, v)',
-                        'side > 0 and -model:GetRight() or model:GetRight()',
-                        'SIDE_WIDTH_FRACTION = 0.86', 'vertexlit-spray-v5-fullside'):
-              if token not in brand:
-                  raise SystemExit(f'missing branding token: {token}')
-
-          wall = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua').read_text(encoding='utf-8')
-          for token in ('STACK_VISUAL_GAP = 4', 'local stackCount = 2',
-                        'stack * (GC.ContainerHeight + STACK_VISUAL_GAP)',
-                        'stackIndex = stack', 'expectedVisuals = #(Wall.logical or {}) * 2'):
-              if token not in wall:
-                  raise SystemExit(f'missing exact-two-stack token: {token}')
-
-          docs = Path('docs/CONTAINER_BRANDING.md').read_text(encoding='utf-8')
-          if '## V6 safe grit texture binding' not in docs:
-              raise SystemExit('V6 documentation missing')
-
-          print('V6 safe grit binding, full-side sprays, and exact two-container stack validated.')
-          PY
+          python3 tools/assets/validate_container_v6.py
           git diff --check
 
       - name: Commit generated runtime assets and V6 wiring
