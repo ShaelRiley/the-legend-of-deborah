@@ -51,7 +51,7 @@ def main():
 
     require(DOCS, (
         "## V15 sparse full-face-only overlays",
-        "can never exceed 20%",
+        "never exceed 20%",
         "perpendicular wall",
         "neither company paint nor",
     ))
