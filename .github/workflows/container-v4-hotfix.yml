@@ -69,7 +69,7 @@ jobs:
           replacements = [
               ("              'CONTAINER_BLANK_BASE_PATH',\n", "              'local NP_BASE_TEXTURE = \\\"vgui/white\\\"',\n"),
               ("              'container_surfaces/container_blank_metal.png',\n", "              'local COLOR_REPLACE_BLEND = 1.00',\n"),
-              ("              'blankBaseMaterial:GetTexture(\\\"$basetexture\\\")',\n", ""),
+              ("              'blankBaseMaterial:GetTexture(\"$basetexture\")',\n", ""),
               ("              'v9_stock_uv_blank',\n", "              'v10_uniform_neutral',\n"),
               ("              raise SystemExit(f'recolor missing stock-UV blank wiring: {missing}')", "              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')"),
               ("          if 'v8_blank_metal_surface' in recolor:\n              raise SystemExit('generic v8 blank-metal material is still live')\n", "          if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:\n              raise SystemExit('generated diffuse is still authoritative for hull color')\n"),
