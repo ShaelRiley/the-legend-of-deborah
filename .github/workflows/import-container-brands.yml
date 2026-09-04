@@ -1,18 +1,18 @@
-# V11 compiles the blank cargo hull into ordinary Source VTF/VMT materials.
+# V12 uses file-backed BGR888 Source materials with one global model override.
 name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main, agent/container-vtf-v11]
+    branches: [main, agent/container-vtf-v12]
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
       - 'tools/assets/build_container_surface_assets.py'
       - 'tools/assets/build_container_blank_hull_v9.py'
-      - 'tools/assets/build_container_vtf_v11.py'
+      - 'tools/assets/build_container_vtf_v12.py'
       - 'tools/assets/container_brand_names.tsv'
-      - 'tools/assets/patch_container_vtf_v11.py'
-      - 'tools/assets/validate_container_v11.py'
+      - 'tools/assets/patch_container_vtf_v12.py'
+      - 'tools/assets/validate_container_v12.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
@@ -39,18 +39,18 @@ jobs:
         run: |
           python3 -m py_compile tools/assets/build_container_surface_assets.py
           python3 -m py_compile tools/assets/build_container_blank_hull_v9.py
-          python3 -m py_compile tools/assets/build_container_vtf_v11.py
-          python3 -m py_compile tools/assets/patch_container_vtf_v11.py
-          python3 -m py_compile tools/assets/validate_container_v11.py
+          python3 -m py_compile tools/assets/build_container_vtf_v12.py
+          python3 -m py_compile tools/assets/patch_container_vtf_v12.py
+          python3 -m py_compile tools/assets/validate_container_v12.py
 
       - name: Rebuild company-free neutral hull source
         run: python3 tools/assets/build_container_blank_hull_v9.py
 
-      - name: Compile V11 Source VTF and section VMT materials
-        run: python3 tools/assets/build_container_vtf_v11.py
+      - name: Compile V12 BGR888 Source VTF and section VMT materials
+        run: python3 tools/assets/build_container_vtf_v12.py
 
-      - name: Apply V11 file-backed runtime wiring
-        run: python3 tools/assets/patch_container_vtf_v11.py
+      - name: Apply V12 global file-backed runtime wiring
+        run: python3 tools/assets/patch_container_vtf_v12.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -60,25 +60,25 @@ jobs:
           path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
           PY
 
-      - name: Validate V11 presentation
+      - name: Validate V12 presentation
         run: |
-          python3 tools/assets/validate_container_v11.py
+          python3 tools/assets/validate_container_v12.py
           git diff --check
 
-      - name: Commit generated V11 runtime assets and wiring
+      - name: Commit generated V12 runtime assets and wiring
         run: |
           git add -A \
             docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_hull_v9.png \
-            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_hull_v11.vtf \
-            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_grit_detail_v11.vtf \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_blank_hull_v12.vtf \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/container_grit_detail_v12.vtf \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
           if git diff --cached --quiet; then
-            echo 'V11 runtime already matches generated output.'
+            echo 'V12 runtime already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Use file-backed Source materials for cargo hull [skip ci]'
+          git commit -m 'Use global BGR888 Source materials for cargo hull [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
