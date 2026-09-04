@@ -1,4 +1,5 @@
-# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns sparse/full-face overlays.
+# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns full-face eligibility;
+# V16 owns one-in-three, non-touching company branding.
 name: Build and validate container surface assets
 
 on:
@@ -11,8 +12,9 @@ on:
       - 'tools/assets/patch_container_stock_v14.py'
       - 'tools/assets/validate_container_v14.py'
       - 'tools/assets/patch_container_marking_density_v15.py'
-      - 'tools/assets/patch_container_marking_direction_v15_1.py'
       - 'tools/assets/validate_container_marking_v15.py'
+      - 'tools/assets/patch_container_brand_spacing_v16.py'
+      - 'tools/assets/validate_container_brand_spacing_v16.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
@@ -37,9 +39,8 @@ jobs:
           python3 -m py_compile tools/assets/build_container_stock_v14.py
           python3 -m py_compile tools/assets/patch_container_stock_v14.py
           python3 -m py_compile tools/assets/validate_container_v14.py
-          python3 -m py_compile tools/assets/patch_container_marking_density_v15.py
-          python3 -m py_compile tools/assets/patch_container_marking_direction_v15_1.py
-          python3 -m py_compile tools/assets/validate_container_marking_v15.py
+          python3 -m py_compile tools/assets/patch_container_brand_spacing_v16.py
+          python3 -m py_compile tools/assets/validate_container_brand_spacing_v16.py
 
       - name: Build V14 minimal stock section materials
         run: python3 tools/assets/build_container_stock_v14.py
@@ -47,11 +48,8 @@ jobs:
       - name: Apply V14 minimal stock runtime wiring
         run: python3 tools/assets/patch_container_stock_v14.py
 
-      - name: Apply V15 sparse full-face overlay rules
-        run: python3 tools/assets/patch_container_marking_density_v15.py
-
-      - name: Correct V15 full-face direction indexing
-        run: python3 tools/assets/patch_container_marking_direction_v15_1.py
+      - name: Apply V16 one-in-three non-touching branding
+        run: python3 tools/assets/patch_container_brand_spacing_v16.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -64,7 +62,7 @@ jobs:
       - name: Validate container presentation
         run: |
           python3 tools/assets/validate_container_v14.py
-          python3 tools/assets/validate_container_marking_v15.py
+          python3 tools/assets/validate_container_brand_spacing_v16.py
           git diff --check
 
       - name: Commit generated container presentation wiring
@@ -83,5 +81,5 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Use sparse full-face-only container overlays'
+          git commit -m 'Use one-in-three non-touching container branding'
           git push origin HEAD:${GITHUB_REF_NAME}
