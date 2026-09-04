@@ -41,7 +41,7 @@ local COLOR_REPLACE_BLEND = 0.78
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v14_blank_hull_v9"
+local MATERIAL_VERSION = "v15_blank_hull_submaterials"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -351,6 +351,46 @@ local function complementaryColor(c)
     return HSVToColor(h, s, 0.62)
 end
 
+local function applySectionMaterialSlots(model, matName, instance)
+    local wanted = "!" .. matName
+    local slots = model:GetMaterials() or {}
+    local slotCount = #slots
+
+    -- The stock cargo model can expose multiple material slots. A single global
+    -- override proved insufficient in V9: the baked Northern Petroleum diffuse
+    -- survived even while our cached diagnostic claimed success. Replace every
+    -- slot explicitly, then clear the temporary debugwhite/global override that
+    -- cl_wall_visuals.lua uses while the client model is being constructed.
+    if slotCount > 0 then
+        local changed = instance.appliedSectionMaterialName ~= matName
+            or instance.appliedSectionMode ~= "submaterials"
+            or instance.appliedSectionSlotCount ~= slotCount
+
+        if changed then
+            for slot = 0, slotCount - 1 do
+                model:SetSubMaterial(slot, wanted)
+            end
+            model:SetMaterial("")
+            instance.appliedSectionMaterialName = matName
+            instance.appliedSectionMode = "submaterials"
+            instance.appliedSectionSlotCount = slotCount
+        end
+        return changed
+    end
+
+    -- Defensive fallback for an unexpected model with no enumerated slots. This
+    -- should never be the production cargo path, but it keeps presentation safe.
+    local changed = instance.appliedSectionMaterialName ~= matName
+        or instance.appliedSectionMode ~= "global-fallback"
+    if changed then
+        model:SetMaterial(wanted)
+        instance.appliedSectionMaterialName = matName
+        instance.appliedSectionMode = "global-fallback"
+        instance.appliedSectionSlotCount = 0
+    end
+    return changed
+end
+
 local function reconcileModel(index, model, instance)
     if not IsValid(model) or not instance then return false end
 
@@ -362,16 +402,7 @@ local function reconcileModel(index, model, instance)
     instance.sectionColor = Color(section.r, section.g, section.b, 255)
 
     local matName = sectionMaterialName(section)
-    local wanted = "!" .. matName
-    local changed = false
-
-    -- ClientSideModel:GetMaterial() does not reliably echo dynamic !material names.
-    -- Cache our own applied material identity so reconciliation can actually settle.
-    if instance.appliedSectionMaterialName ~= matName then
-        model:SetMaterial(wanted)
-        instance.appliedSectionMaterialName = matName
-        changed = true
-    end
+    local changed = applySectionMaterialSlots(model, matName, instance)
 
     local current = model:GetColor()
     if current.r ~= 255 or current.g ~= 255 or current.b ~= 255 or current.a ~= 255 then
@@ -465,7 +496,11 @@ concommand.Add("lod_container_recolor_status", function()
             sectionCodes[code] = colorKey(section)
             local model = models[index]
             local wantedName = instance.sectionMaterialName or sectionMaterialName(section)
-            if IsValid(model) and instance.appliedSectionMaterialName == wantedName then
+            if IsValid(model)
+                and instance.appliedSectionMaterialName == wantedName
+                and instance.appliedSectionMode == "submaterials"
+                and (instance.appliedSectionSlotCount or 0) > 0
+            then
                 correct = correct + 1
             else
                 wrong = wrong + 1
@@ -497,5 +532,20 @@ concommand.Add("lod_container_recolor_status", function()
         DETAIL_PATH,
         DETAIL_AVAILABLE and "runtime-texture" or "flat-fallback",
         DETAIL_AVAILABLE and DETAIL_BLEND_FACTOR or 0
+    ))
+
+    local sampleSlots = 0
+    local sampleMode = "none"
+    for index, instance in ipairs(world) do
+        local model = models[index]
+        if IsValid(model) then
+            sampleSlots = #(model:GetMaterials() or {})
+            sampleMode = tostring(instance.appliedSectionMode or "none")
+            break
+        end
+    end
+    print(string.format(
+        "[LOD:CONTAINER-SLOTS] mode=%s sampleSlots=%d materialVersion=%s",
+        sampleMode, sampleSlots, MATERIAL_VERSION
     ))
 end)

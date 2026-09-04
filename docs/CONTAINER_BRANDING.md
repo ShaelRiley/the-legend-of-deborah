@@ -172,3 +172,32 @@ Runtime diagnostics should report:
 - `[LOD:CONTAINER-DETAIL] ... mode=runtime-texture blend=0.40`
 - `mode=vertexlit-spray-v8-alphatest-dither`
 - `wrong=0`
+
+## V10 explicit cargo material-slot replacement
+
+The V9 Steam Deck playtest produced a decisive runtime result: the generated blank
+hull and grit textures both reported `mode=runtime-texture`, but the stock `NP /
+Northern Petroleum` art still appeared unchanged on the physical cargo model. The
+old `wrong=0` diagnostic was not proof of the rendered material because it only
+verified our cached call state.
+
+V10 therefore stops treating a single `Entity:SetMaterial` call as authoritative.
+For every clientside cargo model, `cl_container_section_recolor.lua` now enumerates
+`model:GetMaterials()` and applies the generated blank-hull section material to each
+slot with `SetSubMaterial(slot, "!<dynamic material>")`. Only after every material
+slot is replaced does it clear the temporary global `models/debug/debugwhite`
+construction override. This closes the path through which any stock Northern
+Petroleum diffuse/material slot can survive.
+
+The runtime status command now counts a container as correct only when it has a
+non-zero material-slot count and reports `appliedSectionMode=submaterials`. It also
+prints `[LOD:CONTAINER-SLOTS]`; production should report `mode=submaterials` and a
+positive `sampleSlots` value.
+
+Expected V10 diagnostics:
+
+- `materialVersion=v15_blank_hull_submaterials`
+- `[LOD:CONTAINER-HULL] ... mode=runtime-texture`
+- `[LOD:CONTAINER-DETAIL] ... mode=runtime-texture`
+- `[LOD:CONTAINER-SLOTS] mode=submaterials sampleSlots=>0`
+- `wrong=0`
