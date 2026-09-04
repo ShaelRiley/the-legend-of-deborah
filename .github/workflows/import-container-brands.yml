@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - agent/container-surface-v4
+      - agent/container-surface-v5
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
@@ -14,6 +14,7 @@ on:
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua'
   workflow_dispatch:
 
 permissions:
@@ -29,43 +30,178 @@ jobs:
           fetch-depth: 2
 
       - name: Install asset builder dependencies
-        run: python3 -m pip install --disable-pip-version-check --quiet Pillow numpy srctools
+        run: python3 -m pip install --disable-pip-version-check --quiet Pillow numpy
 
-      - name: Fetch pinned stock cargo UV sources
+      - name: Validate asset builder syntax
+        run: python3 -m py_compile tools/assets/build_container_surface_assets.py
+
+      - name: Build gritty detail and full-side spray atlases
+        run: python3 tools/assets/build_container_surface_assets.py
+
+      - name: Apply V5 runtime material and stack invariants
         shell: bash
         run: |
-          set -euo pipefail
-          mkdir -p /tmp/lod-container-stock
-          base='https://raw.githubusercontent.com/bouletmarc/hl2_ep2_content/472d4cb9ac7a32a8a408ac8cfeff6d978e70a75f/materials/models/props_wasteland'
-          for name in cargo_container01 cargo_container01c cargo_container02 cargo_container03; do
-            curl --fail --location --retry 3 --silent --show-error \
-              "$base/$name.vtf" \
-              --output "/tmp/lod-container-stock/$name.vtf"
-            bytes=$(wc -c < "/tmp/lod-container-stock/$name.vtf")
-            if [ "$bytes" -lt 500000 ]; then
-              echo "$name.vtf is unexpectedly small: $bytes bytes" >&2
-              exit 1
-            fi
-            python3 - "/tmp/lod-container-stock/$name.vtf" <<'PY'
-          import struct, sys
-          path = sys.argv[1]
-          raw = open(path, 'rb').read(24)
-          if raw[:4] != b'VTF\0':
-              raise SystemExit(f'{path}: invalid VTF signature')
-          width, height = struct.unpack_from('<HH', raw, 16)
-          if (width, height) != (1024, 1024):
-              raise SystemExit(f'{path}: expected 1024x1024 stock UV texture, got {width}x{height}')
-          print(f'{path}: {width}x{height}')
-          PY
-          done
+          python3 - <<'PY'
+          from pathlib import Path
 
-      - name: Build compatibility blank and readable high-resolution spray assets
-        run: |
-          python3 tools/assets/build_container_surface_assets.py \
-            --stock-vtf /tmp/lod-container-stock/cargo_container01.vtf \
-            --stock-vtf /tmp/lod-container-stock/cargo_container01c.vtf \
-            --stock-vtf /tmp/lod-container-stock/cargo_container02.vtf \
-            --stock-vtf /tmp/lod-container-stock/cargo_container03.vtf
+          recolor_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua')
+          recolor = recolor_path.read_text(encoding='utf-8')
+
+          old_surface = '''-- The diffuse is deliberately UV-agnostic. Mesh geometry plus the stock normal map
+          -- provide container relief; a uniform white base guarantees that no baked company
+          -- art, source-image blocks, or checkerboard structure can leak into the hull color.
+          local NP_BASE_TEXTURE = "vgui/white"
+          local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
+          local COLOR_REPLACE_BLEND = 1.00
+          local MIN_SECTION_SATURATION = 0.82
+          local MIN_SECTION_VALUE = 0.80
+          local RECONCILE_BATCH_SIZE = 192
+          local MATERIAL_VERSION = "v10_uniform_neutral"
+          '''.replace('          ', '')
+          new_surface = '''-- Hull hue is fully procedural; neutral Mod2X detail restores grime without
+          -- reintroducing any baked company identity. The stock normal map remains the
+          -- physical corrugation authority.
+          local NP_BASE_TEXTURE = "vgui/white"
+          local NP_NORMAL_TEXTURE = "models/props_wasteland/cargo_container01_normal"
+          local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail.png"
+          local detailSourceMaterial = Material(DETAIL_PATH, "smooth mips")
+          local detailTexture = detailSourceMaterial and detailSourceMaterial:GetTexture("$basetexture")
+          local DETAIL_TEXTURE = detailTexture and detailTexture:GetName() or nil
+          local DETAIL_BLEND_FACTOR = 0.72
+          local DETAIL_SCALE = 1.00
+          local COLOR_REPLACE_BLEND = 1.00
+          local MIN_SECTION_SATURATION = 0.82
+          local MIN_SECTION_VALUE = 0.80
+          local RECONCILE_BATCH_SIZE = 192
+          local MATERIAL_VERSION = "v11_gritty_neutral"
+          '''.replace('          ', '')
+
+          if 'local MATERIAL_VERSION = "v11_gritty_neutral"' not in recolor:
+              if old_surface not in recolor:
+                  raise SystemExit('V5 recolor surface anchor not found')
+              recolor = recolor.replace(old_surface, new_surface, 1)
+
+          old_material = '''    CreateMaterial(name, "VertexLitGeneric", {
+                  ["$basetexture"] = NP_BASE_TEXTURE,
+                  ["$bumpmap"] = NP_NORMAL_TEXTURE,
+                  ["$surfaceprop"] = "metal",
+                  ["$model"] = "1",
+                  ["$allowdiffusemodulation"] = "1",
+                  ["$blendtintbybasealpha"] = "0",
+                  ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
+                  ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b)
+              })
+          '''.replace('          ', '')
+          new_material = '''    local params = {
+                  ["$basetexture"] = NP_BASE_TEXTURE,
+                  ["$bumpmap"] = NP_NORMAL_TEXTURE,
+                  ["$surfaceprop"] = "metal",
+                  ["$model"] = "1",
+                  ["$allowdiffusemodulation"] = "1",
+                  ["$blendtintbybasealpha"] = "0",
+                  ["$blendtintcoloroverbase"] = string.format("%.3f", COLOR_REPLACE_BLEND),
+                  ["$color2"] = string.format("[%.5f %.5f %.5f]", r, g, b),
+                  ["$phong"] = "1",
+                  ["$phongexponent"] = "18",
+                  ["$phongboost"] = "0.16",
+                  ["$phongfresnelranges"] = "[0.02 0.08 0.35]"
+              }
+              if DETAIL_TEXTURE then
+                  params["$detail"] = DETAIL_TEXTURE
+                  params["$detailblendmode"] = "0"
+                  params["$detailblendfactor"] = string.format("%.3f", DETAIL_BLEND_FACTOR)
+                  params["$detailscale"] = string.format("%.3f", DETAIL_SCALE)
+              end
+              CreateMaterial(name, "VertexLitGeneric", params)
+          '''.replace('          ', '')
+
+          if 'params["$detail"] = DETAIL_TEXTURE' not in recolor:
+              if old_material not in recolor:
+                  raise SystemExit('V5 recolor material anchor not found')
+              recolor = recolor.replace(old_material, new_material, 1)
+
+          recolor = recolor.replace(
+              '-- Shader-native section recoloring for the UV-agnostic neutral cargo surface.',
+              '-- Shader-native section recoloring for the gritty neutral cargo surface.',
+              1,
+          )
+          recolor = recolor.replace(
+              '-- The runtime diffuse is uniform and logo-free. VertexLitGeneric color replacement\n-- owns the full hull hue while the validated cargo mesh and stock normal map retain relief.',
+              '-- The runtime base is logo-free; neutral grime detail now restores dirty steel variation\n-- while VertexLitGeneric color replacement remains authoritative for hull hue.',
+              1,
+          )
+          recolor_path.write_text(recolor, encoding='utf-8')
+
+          wall_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua')
+          wall = wall_path.read_text(encoding='utf-8')
+
+          if 'local STACK_VISUAL_GAP = 4' not in wall:
+              anchor = 'local CONTAINER_VISUAL_EMBED = 16\n'
+              if anchor not in wall:
+                  raise SystemExit('V5 stack constant anchor not found')
+              wall = wall.replace(anchor, anchor + 'local STACK_VISUAL_GAP = 4\n', 1)
+
+          old_stack = '    local stackCount = math.max(1, GC.WallStack or 2)\n'
+          new_stack = '''    local configuredStackCount = math.floor(tonumber(GC.WallStack) or 2)
+              if configuredStackCount ~= 2 then
+                  ErrorNoHalt(string.format(
+                      "[LOD] Geometry.WallStack=%d overridden by production two-container invariant\\n",
+                      configuredStackCount
+                  ))
+              end
+              local stackCount = 2
+          '''.replace('              ', '')
+          if 'local stackCount = 2' not in wall:
+              if old_stack not in wall:
+                  raise SystemExit('V5 stack-count anchor not found')
+              wall = wall.replace(old_stack, new_stack, 1)
+
+          old_z = '''                        baseZ + GC.ContainerHeight * 0.5
+                                      + stack * GC.ContainerHeight
+                                      - CONTAINER_VISUAL_EMBED
+                                  ),
+          '''.replace('          ', '')
+          new_z = '''                        baseZ + GC.ContainerHeight * 0.5
+                                      + stack * (GC.ContainerHeight + STACK_VISUAL_GAP)
+                                      - CONTAINER_VISUAL_EMBED
+                                  ),
+          '''.replace('          ', '')
+          if 'stack * (GC.ContainerHeight + STACK_VISUAL_GAP)' not in wall:
+              if old_z not in wall:
+                  raise SystemExit('V5 stack-position anchor not found')
+              wall = wall.replace(old_z, new_z, 1)
+
+          old_instance_tail = '''                    code = code,
+                              sectionColor = sectionColor
+                          }
+          '''.replace('          ', '')
+          new_instance_tail = '''                    code = code,
+                              sectionColor = sectionColor,
+                              stackIndex = stack,
+                              stackCount = stackCount
+                          }
+          '''.replace('          ', '')
+          if 'stackIndex = stack' not in wall:
+              if old_instance_tail not in wall:
+                  raise SystemExit('V5 stack metadata anchor not found')
+              wall = wall.replace(old_instance_tail, new_instance_tail, 1)
+
+          invariant = '''    local expectedVisuals = #(Wall.logical or {}) * 2
+              if #out ~= expectedVisuals then
+                  ErrorNoHalt(string.format(
+                      "[LOD] two-container visual invariant failed: expected=%d actual=%d\\n",
+                      expectedVisuals, #out
+                  ))
+              end
+          '''.replace('              ', '')
+          if 'local expectedVisuals = #(Wall.logical or {}) * 2' not in wall:
+              anchor = '    Wall.world = out\n'
+              if anchor not in wall:
+                  raise SystemExit('V5 stack invariant anchor not found')
+              wall = wall.replace(anchor, invariant + '\n' + anchor, 1)
+
+          wall_path.write_text(wall, encoding='utf-8')
+          PY
 
       - name: Validate generated surface pipeline
         shell: bash
@@ -78,99 +214,121 @@ jobs:
               'gamemodes/legend_of_deborah/content/materials/'
               'legend_of_deborah/container_surfaces'
           )
-          blank = surface_dir / 'container_blank_metal.png'
-          if not blank.exists():
-              raise SystemExit('compatibility blank texture missing')
-          blank_image = Image.open(blank)
-          if blank_image.size != (1024, 1024):
-              raise SystemExit(f'blank cargo dimensions={blank_image.size}')
-          print(f'compatibility blank: 1024x1024 {blank.stat().st_size} bytes')
+          legacy = surface_dir / 'container_blank_metal.png'
+          if legacy.exists():
+              raise SystemExit('legacy blank diffuse should have been retired in V5')
 
-          expected = [
-              surface_dir / f'container_brand_spray_atlas_{index:02d}.png'
-              for index in range(1, 5)
-          ]
+          detail = surface_dir / 'container_grit_detail.png'
+          if not detail.exists():
+              raise SystemExit('V5 grit detail missing')
+          detail_image = Image.open(detail).convert('L')
+          if detail_image.size != (1024, 1024):
+              raise SystemExit(f'grit detail dimensions={detail_image.size}')
+          lo, hi = detail_image.getextrema()
+          if lo > 90 or hi < 160:
+              raise SystemExit(f'grit detail contrast={lo}..{hi}')
+          if detail.stat().st_size < 100000:
+              raise SystemExit(f'grit detail suspiciously small: {detail.stat().st_size}')
+          print(f'grit detail: {detail.stat().st_size} bytes range={lo}..{hi}')
+
+          expected = [surface_dir / f'container_brand_spray_atlas_{index:02d}.png'
+                      for index in range(1, 5)]
           actual = sorted(surface_dir.glob('container_brand_spray_atlas_*.png'))
           if actual != expected:
               raise SystemExit(f'spray atlas set mismatch: {actual}')
           for path in expected:
               image = Image.open(path).convert('RGBA')
-              if image.size != (2048, 1024):
+              if image.size != (4096, 1024):
                   raise SystemExit(f'{path.name}: dimensions={image.size}')
-              lo, hi = image.getchannel('A').getextrema()
-              if lo != 0 or hi < 192:
-                  raise SystemExit(f'{path.name}: alpha={lo}..{hi}')
-              if path.stat().st_size < 50000:
+              alpha_lo, alpha_hi = image.getchannel('A').getextrema()
+              if alpha_lo != 0 or alpha_hi < 220:
+                  raise SystemExit(f'{path.name}: alpha={alpha_lo}..{alpha_hi}')
+              if path.stat().st_size < 60000:
                   raise SystemExit(f'{path.name}: suspiciously small ({path.stat().st_size} bytes)')
-              print(f'{path.name}: {path.stat().st_size} bytes alpha={lo}..{hi}')
+              print(f'{path.name}: {path.stat().st_size} bytes alpha={alpha_lo}..{alpha_hi}')
 
           names_path = Path('tools/assets/container_brand_names.tsv')
           rows = [line.split('\t', 2) for line in names_path.read_text(encoding='utf-8').splitlines() if line.strip()]
           ids = [int(row[0]) for row in rows]
           if ids != list(range(1, 257)):
-              raise SystemExit('container brand-name manifest must contain canonical IDs 001..256')
+              raise SystemExit('container brand-name manifest must contain IDs 001..256')
           if rows[-1][1] != 'Deborah Logistics Unlimited':
               raise SystemExit('brand 256 must remain Deborah Logistics Unlimited')
 
-          recolor_path = Path(
+          recolor = Path(
               'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
-          )
-          recolor = recolor_path.read_text(encoding='utf-8')
+          ).read_text(encoding='utf-8')
           recolor_required = [
-              'local NP_BASE_TEXTURE = "vgui/white"',
-              'local COLOR_REPLACE_BLEND = 1.00',
-              'v10_uniform_neutral',
+              'container_grit_detail.png',
+              'local DETAIL_BLEND_FACTOR = 0.72',
+              'params["$detail"] = DETAIL_TEXTURE',
+              'params["$detailblendmode"] = "0"',
+              '["$phong"] = "1"',
+              'v11_gritty_neutral',
           ]
           missing = [token for token in recolor_required if token not in recolor]
           if missing:
-              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')
+              raise SystemExit(f'recolor missing V5 gritty wiring: {missing}')
           if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:
-              raise SystemExit('generated diffuse is still authoritative for hull color')
+              raise SystemExit('legacy generated diffuse is still authoritative')
 
-          renderer_path = Path(
+          renderer = Path(
               'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
-          )
-          renderer = renderer_path.read_text(encoding='utf-8')
+          ).read_text(encoding='utf-8')
           renderer_required = [
               'local BRAND_COUNT = 256',
               'LOD.Seeds.Derive(seed, "container-brand:v1")',
               'container_brand_spray_atlas_',
-              'CreateMaterial(name, "VertexLitGeneric"',
-              'Material(path, "vertexlitgeneric smooth nocull")',
-              'render.DrawQuad(',
-              'instance and not instance.marked',
-              'spanY * 0.62',
-              'mode=vertexlit-spray-v3-hires',
+              'mesh.Begin(MATERIAL_QUADS, 1)',
+              'mesh.TexCoord(0, u, v)',
+              'horizontal = side > 0 and -model:GetRight() or model:GetRight()',
+              'local SIDE_WIDTH_FRACTION = 0.86',
+              'mode=vertexlit-spray-v5-fullside',
           ]
           missing = [token for token in renderer_required if token not in renderer]
           if missing:
-              raise SystemExit(f'brand renderer missing V3 wiring: {missing}')
+              raise SystemExit(f'brand renderer missing V5 wiring: {missing}')
           forbidden = [
-              'PATCH_WIDTH',
-              'PATCH_HEIGHT',
-              'surface.DrawTexturedRectUV(',
-              'mode=vertexlit-spray-v2',
+              '$basetexturetransform',
+              'render.DrawQuad(',
+              'mode=vertexlit-spray-v3-hires',
           ]
           present = [token for token in forbidden if token in renderer]
           if present:
-              raise SystemExit(f'legacy brand presentation still live: {present}')
+              raise SystemExit(f'legacy brand transform still live: {present}')
 
-          print('Uniform-neutral hull + readable high-resolution spray validation passed.')
+          wall = Path(
+              'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua'
+          ).read_text(encoding='utf-8')
+          stack_required = [
+              'local STACK_VISUAL_GAP = 4',
+              'local stackCount = 2',
+              'stack * (GC.ContainerHeight + STACK_VISUAL_GAP)',
+              'stackIndex = stack',
+              'local expectedVisuals = #(Wall.logical or {}) * 2',
+          ]
+          missing = [token for token in stack_required if token not in wall]
+          if missing:
+              raise SystemExit(f'two-container stack invariant missing: {missing}')
+
+          print('V5 gritty hull + full-side readable spray + two-container stack validation passed.')
           PY
 
       - name: Check whitespace
         run: git diff --check
 
-      - name: Commit generated runtime assets
+      - name: Commit generated runtime assets and V5 runtime wiring
         shell: bash
         run: |
-          git add \
-            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces
+          git add -A \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
           if git diff --cached --quiet; then
-            echo 'Generated container surface assets already match the repository.'
+            echo 'V5 generated assets and runtime wiring already match the repository.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Build container presentation assets [skip ci]'
+          git commit -m 'Build gritty full-side container presentation [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
