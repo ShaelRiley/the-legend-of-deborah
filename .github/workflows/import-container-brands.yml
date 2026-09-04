@@ -1,90 +1,137 @@
-name: Validate container brand runtime assets
+name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - agent/container-spray-surface-v2
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
-      - 'tools/assets/build_container_brand_atlases.py'
+      - 'tools/assets/build_container_surface_assets.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
-      - 'gamemodes/legend_of_deborah/gamemode/cl_init.lua'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  validate-runtime-assets:
+  build-and-validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out main
+      - name: Check out triggering ref
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Validate atlases and renderer wiring
+      - name: Install asset builder dependency
+        run: python3 -m pip install --disable-pip-version-check --quiet Pillow
+
+      - name: Build blank metal and spray-paint assets
+        run: python3 tools/assets/build_container_surface_assets.py --patch-runtime
+
+      - name: Validate generated surface pipeline
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib
-          import struct
+          from PIL import Image
 
-          material_dir = Path(
+          surface_dir = Path(
               'gamemodes/legend_of_deborah/content/materials/'
-              'legend_of_deborah/container_brands'
+              'legend_of_deborah/container_surfaces'
           )
-          expected_names = [f'container_brand_atlas_{index:02d}.png' for index in range(1, 5)]
-          actual_names = sorted(path.name for path in material_dir.glob('container_brand_atlas_*.png'))
-          if actual_names != expected_names:
-              raise SystemExit(f'atlas set mismatch: {actual_names}')
+          blank = surface_dir / 'container_blank_metal.png'
+          if not blank.exists():
+              raise SystemExit('blank metal texture missing')
+          blank_image = Image.open(blank)
+          if blank_image.size != (512, 512):
+              raise SystemExit(f'blank metal dimensions={blank_image.size}')
 
-          for name in expected_names:
-              path = material_dir / name
-              raw = path.read_bytes()
-              if not raw.startswith(b'\x89PNG\r\n\x1a\n') or len(raw) < 33:
-                  raise SystemExit(f'{name}: invalid PNG')
-              width, height = struct.unpack('>II', raw[16:24])
-              bit_depth = raw[24]
-              color_type = raw[25]
-              if (width, height) != (512, 256):
-                  raise SystemExit(f'{name}: expected 512x256, got {width}x{height}')
-              if color_type != 3:
-                  raise SystemExit(f'{name}: expected indexed-color PNG, color_type={color_type}')
-              if b'tRNS' not in raw:
-                  raise SystemExit(f'{name}: transparency chunk is missing')
-              digest = hashlib.sha256(raw).hexdigest()
-              print(f'{name}: {len(raw)} bytes bit_depth={bit_depth} sha256={digest}')
+          expected = [
+              surface_dir / f'container_brand_spray_atlas_{index:02d}.png'
+              for index in range(1, 5)
+          ]
+          actual = sorted(surface_dir.glob('container_brand_spray_atlas_*.png'))
+          if actual != expected:
+              raise SystemExit(f'spray atlas set mismatch: {actual}')
+          for path in expected:
+              image = Image.open(path).convert('RGBA')
+              if image.size != (1024, 512):
+                  raise SystemExit(f'{path.name}: dimensions={image.size}')
+              lo, hi = image.getchannel('A').getextrema()
+              if lo != 0 or hi < 128:
+                  raise SystemExit(f'{path.name}: alpha={lo}..{hi}')
+              print(f'{path.name}: {path.stat().st_size} bytes alpha={lo}..{hi}')
+
+          recolor_path = Path(
+              'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
+          )
+          recolor = recolor_path.read_text(encoding='utf-8')
+          recolor_required = [
+              'CONTAINER_BLANK_BASE_PATH',
+              'container_surfaces/container_blank_metal.png',
+              'blankBaseMaterial:GetTexture("$basetexture")',
+              'v8_blank_metal_surface',
+          ]
+          missing = [token for token in recolor_required if token not in recolor]
+          if missing:
+              raise SystemExit(f'recolor missing blank-base wiring: {missing}')
+          if 'local NP_BASE_TEXTURE = "models/props_wasteland/cargo_container01"' in recolor:
+              raise SystemExit('legacy Northern Petrol diffuse is still authoritative')
 
           renderer_path = Path(
               'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
           )
           renderer = renderer_path.read_text(encoding='utf-8')
-          required_renderer_tokens = [
+          renderer_required = [
               'local BRAND_COUNT = 256',
-              'local BRANDS_PER_ATLAS = 64',
               'LOD.Seeds.Derive(seed, "container-brand:v1")',
-              'surface.DrawTexturedRectUV(',
+              'container_brand_spray_atlas_',
+              'CreateMaterial(name, "VertexLitGeneric"',
+              'render.DrawQuad(',
               'instance and not instance.marked',
-              'hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding"',
-              'concommand.Add("lod_container_brand_status"',
+              'hook.Add("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding"',
+              'mode=vertexlit-spray-v2',
           ]
-          missing = [token for token in required_renderer_tokens if token not in renderer]
+          missing = [token for token in renderer_required if token not in renderer]
           if missing:
-              raise SystemExit(f'cl_container_branding.lua missing required wiring: {missing}')
+              raise SystemExit(f'brand renderer missing spray wiring: {missing}')
+          forbidden = [
+              'PATCH_WIDTH',
+              'PATCH_HEIGHT',
+              'surface.DrawTexturedRectUV(',
+              'hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding"',
+          ]
+          present = [token for token in forbidden if token in renderer]
+          if present:
+              raise SystemExit(f'legacy plaque renderer still live: {present}')
 
-          cl_init = Path('gamemodes/legend_of_deborah/gamemode/cl_init.lua').read_text(encoding='utf-8')
+          cl_init = Path(
+              'gamemodes/legend_of_deborah/gamemode/cl_init.lua'
+          ).read_text(encoding='utf-8')
           include = 'include("lod/cl_container_branding.lua")'
           if cl_init.count(include) != 1:
               raise SystemExit('cl_init.lua must include cl_container_branding.lua exactly once')
-          marking = 'include("lod/cl_container_marking_panel.lua")'
-          if marking not in cl_init or cl_init.index(include) < cl_init.index(marking):
-              raise SystemExit('container branding include must follow the marking-panel include')
 
-          print('Container brand runtime validation passed.')
+          print('Blank-metal + vertex-lit spray container pipeline validation passed.')
           PY
 
       - name: Check whitespace
-        run: git diff --check HEAD^ HEAD --
+        run: git diff --check
+
+      - name: Commit generated runtime assets
+        shell: bash
+        run: |
+          git add \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+          if git diff --cached --quiet; then
+            echo 'Generated container surface assets already match the repository.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Build blank-metal container spray assets [skip ci]'
+          git push origin HEAD:${GITHUB_REF_NAME}
