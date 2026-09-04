@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - agent/container-surface-v3
+      - agent/container-surface-v4
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
@@ -59,14 +59,13 @@ jobs:
           PY
           done
 
-      - name: Build stock-UV blank and readable high-resolution spray assets
+      - name: Build compatibility blank and readable high-resolution spray assets
         run: |
           python3 tools/assets/build_container_surface_assets.py \
             --stock-vtf /tmp/lod-container-stock/cargo_container01.vtf \
             --stock-vtf /tmp/lod-container-stock/cargo_container01c.vtf \
             --stock-vtf /tmp/lod-container-stock/cargo_container02.vtf \
-            --stock-vtf /tmp/lod-container-stock/cargo_container03.vtf \
-            --patch-runtime
+            --stock-vtf /tmp/lod-container-stock/cargo_container03.vtf
 
       - name: Validate generated surface pipeline
         shell: bash
@@ -81,11 +80,11 @@ jobs:
           )
           blank = surface_dir / 'container_blank_metal.png'
           if not blank.exists():
-              raise SystemExit('stock-UV blank texture missing')
+              raise SystemExit('compatibility blank texture missing')
           blank_image = Image.open(blank)
           if blank_image.size != (1024, 1024):
               raise SystemExit(f'blank cargo dimensions={blank_image.size}')
-          print(f'blank cargo: 1024x1024 {blank.stat().st_size} bytes')
+          print(f'compatibility blank: 1024x1024 {blank.stat().st_size} bytes')
 
           expected = [
               surface_dir / f'container_brand_spray_atlas_{index:02d}.png'
@@ -118,16 +117,15 @@ jobs:
           )
           recolor = recolor_path.read_text(encoding='utf-8')
           recolor_required = [
-              'CONTAINER_BLANK_BASE_PATH',
-              'container_surfaces/container_blank_metal.png',
-              'blankBaseMaterial:GetTexture("$basetexture")',
-              'v9_stock_uv_blank',
+              'local NP_BASE_TEXTURE = "vgui/white"',
+              'local COLOR_REPLACE_BLEND = 1.00',
+              'v10_uniform_neutral',
           ]
           missing = [token for token in recolor_required if token not in recolor]
           if missing:
-              raise SystemExit(f'recolor missing stock-UV blank wiring: {missing}')
-          if 'v8_blank_metal_surface' in recolor:
-              raise SystemExit('generic v8 blank-metal material is still live')
+              raise SystemExit(f'recolor missing V4 uniform-neutral wiring: {missing}')
+          if 'blankBaseTexture and blankBaseTexture:GetName()' in recolor:
+              raise SystemExit('generated diffuse is still authoritative for hull color')
 
           renderer_path = Path(
               'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
@@ -157,7 +155,7 @@ jobs:
           if present:
               raise SystemExit(f'legacy brand presentation still live: {present}')
 
-          print('Stock-UV blank + readable high-resolution spray validation passed.')
+          print('Uniform-neutral hull + readable high-resolution spray validation passed.')
           PY
 
       - name: Check whitespace
@@ -167,13 +165,12 @@ jobs:
         shell: bash
         run: |
           git add \
-            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_surfaces
           if git diff --cached --quiet; then
             echo 'Generated container surface assets already match the repository.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Build stock-UV high-resolution container assets [skip ci]'
+          git commit -m 'Build container presentation assets [skip ci]'
           git push origin HEAD:${GITHUB_REF_NAME}
