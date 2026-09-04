@@ -5,8 +5,8 @@ local MC = LOD.Config and LOD.Config.Maze
 if not Wall or not MC then return end
 
 -- Company identity is presentation-only. cl_container_section_recolor.lua owns the
--- gritty neutral hull and procedural section hue. This pass adds one true-RGBA,
--- vertex-lit company stencil over most of the broad side of each ordinary container.
+-- gritty neutral hull and procedural section hue. This pass adds one alpha-tested,
+-- dithered company stencil over most of the broad side of each ordinary container.
 -- Marked wayfinding containers deliberately suppress company paint.
 local DRAW_DISTANCE = 1650
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
@@ -61,7 +61,7 @@ local function materialForAtlas(atlasIndex)
     if not texture then return nil, path end
 
     local material = CreateMaterial(
-        string.format("lod_container_spray_atlas_%02d_v7", atlasIndex),
+        string.format("lod_container_spray_atlas_%02d_v8", atlasIndex),
         "VertexLitGeneric",
         {
             -- Start from a guaranteed built-in texture, then bind the mounted PNG's
@@ -69,7 +69,8 @@ local function materialForAtlas(atlasIndex)
             -- VTF resolver: that was the source of the opaque black broad-side card.
             ["$basetexture"] = "vgui/white",
             ["$model"] = "1",
-            ["$translucent"] = "1",
+            ["$alphatest"] = "1",
+            ["$alphatestreference"] = "0.500",
             ["$vertexcolor"] = "1",
             ["$vertexalpha"] = "1",
             ["$nocull"] = "1",
@@ -172,7 +173,7 @@ end
 
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding")
 hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
-hook.Add("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding", function()
+hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function()
     local world = Wall.world or {}
     if #world == 0 then return end
     local ply = LocalPlayer()
@@ -206,7 +207,7 @@ end)
 concommand.Add("lod_container_brand_status", function()
     local ok = ensureSelection()
     print(string.format(
-        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v7-rgba-direct width=%.2f height=%.2f",
+        "[LOD] container brand: seed=%s brand=%s atlas=%s cell=%s,%s material=%s path=%s mode=vertexlit-spray-v8-alphatest-dither width=%.2f height=%.2f",
         tostring(Wall.seed or 0),
         selectedId and string.format("%03d", selectedId) or "none",
         selectedAtlas and string.format("%02d", selectedAtlas) or "none",

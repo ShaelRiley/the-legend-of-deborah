@@ -35,7 +35,7 @@ local COLOR_REPLACE_BLEND = 1.00
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v12_grit_runtime_binding"
+local MATERIAL_VERSION = "v13_grit_stable_apply"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -354,8 +354,11 @@ local function reconcileModel(index, model, instance)
     local wanted = "!" .. matName
     local changed = false
 
-    if model:GetMaterial() ~= wanted then
+    -- ClientSideModel:GetMaterial() does not reliably echo dynamic !material names.
+    -- Cache our own applied material identity so reconciliation can actually settle.
+    if instance.appliedSectionMaterialName ~= matName then
         model:SetMaterial(wanted)
+        instance.appliedSectionMaterialName = matName
         changed = true
     end
 
@@ -451,7 +454,7 @@ concommand.Add("lod_container_recolor_status", function()
             sectionCodes[code] = colorKey(section)
             local model = models[index]
             local wantedName = instance.sectionMaterialName or sectionMaterialName(section)
-            if normalizedMaterialOverride(model) == wantedName then
+            if IsValid(model) and instance.appliedSectionMaterialName == wantedName then
                 correct = correct + 1
             else
                 wrong = wrong + 1
