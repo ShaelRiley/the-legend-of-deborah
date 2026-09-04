@@ -3,7 +3,7 @@ name: Build and validate container surface assets
 
 on:
   push:
-    branches: [main, agent/container-stock-v14]
+    branches: [main]
     paths:
       - '.github/workflows/import-container-brands.yml'
       - 'docs/CONTAINER_BRANDING.md'
