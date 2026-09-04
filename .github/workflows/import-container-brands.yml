@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/lod-container-stock
-          base='https://raw.githubusercontent.com/blackletum/XBOX-HL2-MATS-VTF/e46e37e4c71fff266997e9dfd02ff50cbc3d983b/materials/models/props_wasteland'
+          base='https://raw.githubusercontent.com/bouletmarc/hl2_ep2_content/472d4cb9ac7a32a8a408ac8cfeff6d978e70a75f/materials/models/props_wasteland'
           for name in cargo_container01 cargo_container01c cargo_container02 cargo_container03; do
             curl --fail --location --retry 3 --silent --show-error \
               "$base/$name.vtf" \
@@ -44,7 +44,17 @@ jobs:
               echo "$name.vtf is unexpectedly small: $bytes bytes" >&2
               exit 1
             fi
-            echo "$name.vtf: $bytes bytes"
+            python3 - "/tmp/lod-container-stock/$name.vtf" <<'PY'
+          import struct, sys
+          path = sys.argv[1]
+          raw = open(path, 'rb').read(24)
+          if raw[:4] != b'VTF\0':
+              raise SystemExit(f'{path}: invalid VTF signature')
+          width, height = struct.unpack_from('<HH', raw, 16)
+          if (width, height) != (1024, 1024):
+              raise SystemExit(f'{path}: expected 1024x1024 stock UV texture, got {width}x{height}')
+          print(f'{path}: {width}x{height}')
+          PY
           done
 
       - name: Fetch authoritative 256-brand source archive
@@ -111,9 +121,9 @@ jobs:
           if not blank.exists():
               raise SystemExit('stock-UV blank texture missing')
           blank_image = Image.open(blank)
-          if blank_image.width != blank_image.height or blank_image.width < 512:
+          if blank_image.size != (1024, 1024):
               raise SystemExit(f'blank cargo dimensions={blank_image.size}')
-          print(f'blank cargo: {blank_image.size[0]}x{blank_image.size[1]} {blank.stat().st_size} bytes')
+          print(f'blank cargo: 1024x1024 {blank.stat().st_size} bytes')
 
           expected = [
               surface_dir / f'container_brand_spray_atlas_{index:02d}.png'
