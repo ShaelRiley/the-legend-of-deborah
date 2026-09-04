@@ -11,6 +11,7 @@ on:
       - 'tools/assets/patch_container_stock_v14.py'
       - 'tools/assets/validate_container_v14.py'
       - 'tools/assets/patch_container_marking_density_v15.py'
+      - 'tools/assets/patch_container_marking_direction_v15_1.py'
       - 'tools/assets/validate_container_marking_v15.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
@@ -37,6 +38,7 @@ jobs:
           python3 -m py_compile tools/assets/patch_container_stock_v14.py
           python3 -m py_compile tools/assets/validate_container_v14.py
           python3 -m py_compile tools/assets/patch_container_marking_density_v15.py
+          python3 -m py_compile tools/assets/patch_container_marking_direction_v15_1.py
           python3 -m py_compile tools/assets/validate_container_marking_v15.py
 
       - name: Build V14 minimal stock section materials
@@ -47,6 +49,9 @@ jobs:
 
       - name: Apply V15 sparse full-face overlay rules
         run: python3 tools/assets/patch_container_marking_density_v15.py
+
+      - name: Correct V15 full-face direction indexing
+        run: python3 tools/assets/patch_container_marking_direction_v15_1.py
 
       - name: Normalize generated documentation EOF
         run: |
