@@ -1,66 +1,131 @@
-name: Import container brand source
+name: Import container brand runtime assets
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
-      - ".github/workflows/import-container-brands.yml"
-      - "tools/assets/import_container_brands.py"
+      - '.github/workflows/import-container-brands.yml'
+      - 'tools/assets/container_brand_runtime_b64/**'
+      - 'tools/assets/container_brand_runtime_code_b64/**'
 
 permissions:
   contents: write
 
 jobs:
-  import:
-    if: github.repository == 'ShaelRiley/the-legend-of-deborah'
+  import-runtime-assets:
     runs-on: ubuntu-latest
     steps:
       - name: Check out main
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
-      - name: Download authoritative project source archive
+      - name: Reconstruct and validate runtime assets
         shell: bash
         run: |
-          set -euo pipefail
-          python -m pip install --disable-pip-version-check --quiet gdown
-          gdown \
-            "163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa" \
-            --output /tmp/lod-container-brands.zip
-          python - <<'PY'
-          import zipfile
-          path = "/tmp/lod-container-brands.zip"
-          if not zipfile.is_zipfile(path):
-              raise SystemExit("downloaded source is not a ZIP archive")
-          print("source ZIP validated")
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          import hashlib
+          import struct
+
+          asset_source = Path('tools/assets/container_brand_runtime_b64')
+          code_source = Path('tools/assets/container_brand_runtime_code_b64')
+          material_dir = Path('gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands')
+          material_dir.mkdir(parents=True, exist_ok=True)
+
+          expected_atlas = {
+              1: '46b96ae5a8daf041819f3a41e3386e64bb306641',
+              2: 'c69bb50bcb98746db9137ece0b18ab1111d67221',
+              3: '9e6a12598e76a7e10c28560c2e0a44265c32cae6',
+              4: '5d2d100ac3906ccfd5b410fb4fd5611d42c05f1d',
+          }
+          expected_renderer_sha256 = 'ab2215e3b3908fff6bcb8ffea1d442659603ea512ea33d537db07a98406aa90e'
+
+          def git_blob_sha(raw):
+              header = b'blob ' + str(len(raw)).encode('ascii') + b'\0'
+              return hashlib.sha1(header + raw).hexdigest()
+
+          def decode_parts(parts, label):
+              if not parts:
+                  raise SystemExit(f'{label}: no staging fragments')
+              encoded = ''.join(part.read_text(encoding='ascii').strip() for part in parts)
+              try:
+                  return base64.b64decode(encoded, validate=True)
+              except Exception as exc:
+                  raise SystemExit(f'{label}: invalid base64: {exc}') from exc
+
+          def validate_png(raw, atlas):
+              if not raw.startswith(b'\x89PNG\r\n\x1a\n') or len(raw) < 24:
+                  raise SystemExit(f'atlas {atlas:02d}: invalid PNG')
+              width, height = struct.unpack('>II', raw[16:24])
+              if (width, height) != (512, 256):
+                  raise SystemExit(f'atlas {atlas:02d}: expected 512x256, got {width}x{height}')
+
+          first = material_dir / 'container_brand_atlas_01.png'
+          if not first.exists():
+              raise SystemExit('atlas 01 is missing from the triggering commit')
+          raw = first.read_bytes()
+          validate_png(raw, 1)
+          if git_blob_sha(raw) != expected_atlas[1]:
+              raise SystemExit('atlas 01 failed Git-blob checksum validation')
+
+          if asset_source.exists():
+              for atlas in range(2, 5):
+                  raw = decode_parts(
+                      sorted(asset_source.glob(f'atlas_{atlas:02d}_*.b64')),
+                      f'atlas {atlas:02d}'
+                  )
+                  validate_png(raw, atlas)
+                  actual = git_blob_sha(raw)
+                  if actual != expected_atlas[atlas]:
+                      raise SystemExit(
+                          f'atlas {atlas:02d}: checksum mismatch {actual} != {expected_atlas[atlas]}'
+                      )
+                  target = material_dir / f'container_brand_atlas_{atlas:02d}.png'
+                  target.write_bytes(raw)
+                  print(f'Wrote {target} ({len(raw)} bytes, {actual})')
+
+          if code_source.exists():
+              renderer = decode_parts(
+                  sorted(code_source.glob('container_branding_*.b64')),
+                  'container branding renderer'
+              )
+              actual = hashlib.sha256(renderer).hexdigest()
+              if actual != expected_renderer_sha256:
+                  raise SystemExit(
+                      f'container branding renderer: checksum mismatch {actual} != {expected_renderer_sha256}'
+                  )
+              renderer_path = Path('gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua')
+              renderer_path.write_bytes(renderer)
+
+              cl_init = Path('gamemodes/legend_of_deborah/gamemode/cl_init.lua')
+              text = cl_init.read_text(encoding='utf-8')
+              include = 'include("lod/cl_container_branding.lua")\n'
+              if include not in text:
+                  anchor = 'include("lod/cl_container_marking_panel.lua")\n'
+                  if anchor not in text:
+                      raise SystemExit('cl_init.lua: marking-panel include anchor not found')
+                  text = text.replace(anchor, anchor + include, 1)
+                  cl_init.write_text(text, encoding='utf-8')
+              print(f'Wrote {renderer_path} ({len(renderer)} bytes, sha256={actual})')
           PY
 
-      - name: Import and validate all 256 source textures
-        run: |
-          python tools/assets/import_container_brands.py /tmp/lod-container-brands.zip
-          test "$(find gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands -maxdepth 1 -name 'container_brand_*.png' | wc -l)" -eq 256
-          git diff --check
-
-      - name: Commit imported assets
+      - name: Commit reconstructed runtime assets
         shell: bash
         run: |
-          set -euo pipefail
-          git config user.name "The Legend of Deborah Asset Import"
-          git config user.email "actions@users.noreply.github.com"
-          git add \
+          rm -rf tools/assets/container_brand_runtime_b64 tools/assets/container_brand_runtime_code_b64
+          git add -A \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands \
-            docs/CONTAINER_BRAND_MANIFEST.json \
-            docs/CONTAINER_BRAND_SOURCE_README.md \
-            docs/CONTAINER_BRAND_GENERATION_NOTES.md
-
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
+            gamemodes/legend_of_deborah/gamemode/cl_init.lua \
+            tools/assets/container_brand_runtime_b64 \
+            tools/assets/container_brand_runtime_code_b64
           if git diff --cached --quiet; then
-            echo "Brand source already matches the repository."
+            echo 'No generated changes to commit.'
             exit 0
           fi
-
-          git commit -m "Import 256 procedural container brand textures"
-          git pull --rebase origin main
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Import container brand runtime assets [skip ci]'
           git push origin HEAD:main
