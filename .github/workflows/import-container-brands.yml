@@ -1,5 +1,5 @@
-# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns full-face eligibility;
-# V18 owns dense no-touching branding under a global 40% container ceiling.
+# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns strict full-face wayfinding eligibility;
+# V19 owns coverage-first, decal-safe company branding under a global 40% container ceiling.
 name: Build and validate container surface assets
 
 on:
@@ -11,8 +11,8 @@ on:
       - 'tools/assets/build_container_stock_v14.py'
       - 'tools/assets/patch_container_stock_v14.py'
       - 'tools/assets/validate_container_v14.py'
-      - 'tools/assets/patch_container_brand_cap_v18.py'
-      - 'tools/assets/validate_container_brand_cap_v18.py'
+      - 'tools/assets/patch_container_brand_coverage_v19.py'
+      - 'tools/assets/validate_container_brand_coverage_v19.py'
       - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
       - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
@@ -37,8 +37,8 @@ jobs:
           python3 -m py_compile tools/assets/build_container_stock_v14.py
           python3 -m py_compile tools/assets/patch_container_stock_v14.py
           python3 -m py_compile tools/assets/validate_container_v14.py
-          python3 -m py_compile tools/assets/patch_container_brand_cap_v18.py
-          python3 -m py_compile tools/assets/validate_container_brand_cap_v18.py
+          python3 -m py_compile tools/assets/patch_container_brand_coverage_v19.py
+          python3 -m py_compile tools/assets/validate_container_brand_coverage_v19.py
 
       - name: Build V14 minimal stock section materials
         run: python3 tools/assets/build_container_stock_v14.py
@@ -46,8 +46,8 @@ jobs:
       - name: Apply V14 minimal stock runtime wiring
         run: python3 tools/assets/patch_container_stock_v14.py
 
-      - name: Apply V18 dense branding with global cap
-        run: python3 tools/assets/patch_container_brand_cap_v18.py
+      - name: Apply V19 coverage-first company branding
+        run: python3 tools/assets/patch_container_brand_coverage_v19.py
 
       - name: Normalize generated documentation EOF
         run: |
@@ -60,7 +60,7 @@ jobs:
       - name: Validate container presentation
         run: |
           python3 tools/assets/validate_container_v14.py
-          python3 tools/assets/validate_container_brand_cap_v18.py
+          python3 tools/assets/validate_container_brand_coverage_v19.py
           git diff --check
 
       - name: Commit generated container presentation wiring
@@ -69,12 +69,13 @@ jobs:
             docs/CONTAINER_BRANDING.md \
             gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
             gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua
+            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
+            gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
           if git diff --cached --quiet; then
             echo 'Container presentation already matches generated output.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Use dense container branding under 40 percent cap'
+          git commit -m 'Use coverage-first container branding'
           git push origin HEAD:${GITHUB_REF_NAME}
