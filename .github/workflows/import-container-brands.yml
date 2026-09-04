@@ -1,0 +1,65 @@
+name: Import container brand source
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/import-container-brands.yml"
+      - "tools/assets/import_container_brands.py"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: github.repository == 'ShaelRiley/the-legend-of-deborah'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download authoritative project source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 \
+            --output /tmp/lod-container-brands.zip \
+            "https://drive.google.com/uc?export=download&id=163r5QM5sffdD0gi5uqQk-XC6nKvn9hDa"
+          python - <<'PY'
+          import zipfile
+          path = "/tmp/lod-container-brands.zip"
+          if not zipfile.is_zipfile(path):
+              raise SystemExit("downloaded source is not a ZIP archive")
+          print("source ZIP validated")
+          PY
+
+      - name: Import and validate all 256 source textures
+        run: |
+          python tools/assets/import_container_brands.py /tmp/lod-container-brands.zip
+          test "$(find gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands -maxdepth 1 -name 'container_brand_*.png' | wc -l)" -eq 256
+          git diff --check
+
+      - name: Commit imported assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "The Legend of Deborah Asset Import"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_brands \
+            docs/CONTAINER_BRAND_MANIFEST.json \
+            docs/CONTAINER_BRAND_SOURCE_README.md \
+            docs/CONTAINER_BRAND_GENERATION_NOTES.md
+
+          if git diff --cached --quiet; then
+            echo "Brand source already matches the repository."
+            exit 0
+          fi
+
+          git commit -m "Import 256 procedural container brand textures"
+          git pull --rebase origin main
+          git push origin HEAD:main
