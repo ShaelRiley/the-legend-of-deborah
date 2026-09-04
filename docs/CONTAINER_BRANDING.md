@@ -237,3 +237,24 @@ Expected V11 diagnostics:
 Visual acceptance remains unchanged: no stock NP art, vivid deterministic section
 colour, dirty/corrugated steel instead of a black slab, two visibly distinct stacked
 containers, and the existing alpha-tested procedural company spray intact.
+
+## V12 global BGR888 Source material
+
+The V11 Steam Deck test reported `material=ok shader=VertexLitGeneric` but also
+`override=wrong` and `wrong=<all containers>`. This proved that the V11 file-backed
+VMT parser path existed while the per-slot override state itself was not authoritative.
+The visible hull remained black.
+
+V12 removes both remaining uncertainties. Because every cargo material island should
+share the same procedurally coloured blank hull, the client now clears all stale
+submaterial overrides and applies one ordinary file-backed `VertexLitGeneric` VMT with
+`Entity:SetMaterial`. Runtime verification compares `Entity:GetMaterial` directly.
+
+The VTF high-resolution payload is also changed from custom DXT1 compression to plain
+BGR888. This is larger but intentionally simple and deterministic. The build validator
+decodes the committed largest BGR888 mip and compares it byte-for-byte with the source
+PNG, ensuring the mounted Source texture contains the authored gritty blank hull rather
+than merely possessing a syntactically valid header.
+
+Expected runtime diagnostics are `materialVersion=v17_filebacked_global_bgr888`,
+`[LOD:CONTAINER-GLOBAL] ... override=ok`, and `wrong=0`.

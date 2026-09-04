@@ -15,8 +15,8 @@ if not Wall then return end
 -- hybrid maximin solver combines CIE Lab perceptual distance with circular hue
 -- distance, so every maze uses a broad spectrum rather than several brightness
 -- variants of the same few hues. No section color repeats within a generated maze.
-local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v11.vtf"
-local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail_v11.vtf"
+local HULL_PATH = "legend_of_deborah/container_surfaces/container_blank_hull_v12.vtf"
+local DETAIL_PATH = "legend_of_deborah/container_surfaces/container_grit_detail_v12.vtf"
 local SECTION_MATERIAL_PREFIX = "legend_of_deborah/container_sections/"
 local DETAIL_BLEND_FACTOR = 0.40
 local DETAIL_SCALE = 1.00
@@ -27,7 +27,7 @@ local COLOR_REPLACE_BLEND = 0.78
 local MIN_SECTION_SATURATION = 0.82
 local MIN_SECTION_VALUE = 0.80
 local RECONCILE_BATCH_SIZE = 192
-local MATERIAL_VERSION = "v16_filebacked_vtf"
+local MATERIAL_VERSION = "v17_filebacked_global_bgr888"
 local MAX_FLOORS = 8
 local QUADRANTS_PER_FLOOR = 4
 local CANDIDATE_HUE_STEP = 5
@@ -169,7 +169,7 @@ local function buildCandidates()
                     color = color,
                     lab = colorToLab(color),
                     hue = hue,
-                    materialKey = string.format("v16_h%03d_s%d", hue, shellIndex)
+                    materialKey = string.format("v17_h%03d_s%d", hue, shellIndex)
                 }
             end
         end
@@ -214,7 +214,7 @@ local function buildSectionPalette(seed, floorCount)
                 color = fallbackColor,
                 lab = colorToLab(fallbackColor),
                 hue = fallbackHue,
-                materialKey = string.format("v16_h%03d_s%d", fallbackHue, fallbackShell)
+                materialKey = string.format("v17_h%03d_s%d", fallbackHue, fallbackShell)
             }
         end
         selected[#selected + 1] = chosen
@@ -330,20 +330,20 @@ local function complementaryColor(c)
     return HSVToColor(h, s, 0.62)
 end
 
-local function allSectionSlotsMatch(model, matName)
-    if not IsValid(model) or not matName then return false, 0 end
-    local slots = model:GetMaterials() or {}
-    local slotCount = #slots
-    if slotCount <= 0 then return false, 0 end
-    for slot = 0, slotCount - 1 do
-        if tostring(model:GetSubMaterial(slot) or "") ~= matName then
-            return false, slotCount
-        end
-    end
-    return true, slotCount
+local function normalizedMaterialName(value)
+    local name = string.lower(tostring(value or ""))
+    name = string.gsub(name, "^!", "")
+    name = string.gsub(name, "^materials/", "")
+    name = string.gsub(name, "%.vmt$", "")
+    return name
 end
 
-local function applySectionMaterialSlots(model, matName, instance)
+local function globalMaterialMatches(model, matName)
+    if not IsValid(model) or not matName then return false end
+    return normalizedMaterialName(model:GetMaterial()) == normalizedMaterialName(matName)
+end
+
+local function applySectionMaterial(model, matName, instance)
     local available = sectionMaterialAvailable(matName)
     if not available then
         instance.appliedSectionMode = "file-backed-missing"
@@ -351,37 +351,22 @@ local function applySectionMaterialSlots(model, matName, instance)
         return false
     end
 
-    local slots = model:GetMaterials() or {}
-    local slotCount = #slots
-    if slotCount > 0 then
-        local matches = allSectionSlotsMatch(model, matName)
-        local changed = instance.appliedSectionMaterialName ~= matName
-            or instance.appliedSectionMode ~= "file-backed-submaterials"
-            or instance.appliedSectionSlotCount ~= slotCount
-            or not matches
-
-        if changed then
-            for slot = 0, slotCount - 1 do
-                model:SetSubMaterial(slot, matName)
-            end
-            -- cl_wall_visuals.lua constructs with a temporary debugwhite override.
-            -- Clear it only after every stock cargo material slot has a real VMT.
-            model:SetMaterial("")
-            instance.appliedSectionMaterialName = matName
-            instance.appliedSectionMode = "file-backed-submaterials"
-            instance.appliedSectionSlotCount = slotCount
-        end
-        return changed
-    end
-
+    local slotCount = #(model:GetMaterials() or {})
+    local matches = globalMaterialMatches(model, matName)
     local changed = instance.appliedSectionMaterialName ~= matName
-        or instance.appliedSectionMode ~= "file-backed-global-fallback"
-        or tostring(model:GetMaterial() or "") ~= matName
+        or instance.appliedSectionMode ~= "file-backed-global"
+        or instance.appliedSectionSlotCount ~= slotCount
+        or not matches
+
     if changed then
+        -- Every stock material island on the cargo mesh should use the same blank
+        -- hull. A single file-backed global override is both simpler and stronger
+        -- than V11's per-slot replacement. Clear stale submaterial state first.
+        model:SetSubMaterial()
         model:SetMaterial(matName)
         instance.appliedSectionMaterialName = matName
-        instance.appliedSectionMode = "file-backed-global-fallback"
-        instance.appliedSectionSlotCount = 0
+        instance.appliedSectionMode = "file-backed-global"
+        instance.appliedSectionSlotCount = slotCount
     end
     return changed
 end
@@ -398,7 +383,7 @@ local function reconcileModel(index, model, instance)
 
     local matName = sectionMaterialName(instance)
     if not matName then return false end
-    local changed = applySectionMaterialSlots(model, matName, instance)
+    local changed = applySectionMaterial(model, matName, instance)
 
     local current = model:GetColor()
     if current.r ~= 255 or current.g ~= 255 or current.b ~= 255 or current.a ~= 255 then
@@ -486,14 +471,12 @@ concommand.Add("lod_container_recolor_status", function()
             sectionCodes[code] = colorKey(section)
             local model = models[index]
             local wantedName = instance.sectionMaterialName or sectionMaterialName(instance)
-            local slotsMatch, slotCount = allSectionSlotsMatch(model, wantedName)
             local materialOK = sectionMaterialAvailable(wantedName)
             if IsValid(model)
                 and materialOK
-                and slotsMatch
-                and slotCount > 0
+                and globalMaterialMatches(model, wantedName)
                 and instance.appliedSectionMaterialName == wantedName
-                and instance.appliedSectionMode == "file-backed-submaterials"
+                and instance.appliedSectionMode == "file-backed-global"
             then
                 correct = correct + 1
             else
@@ -516,40 +499,43 @@ concommand.Add("lod_container_recolor_status", function()
         tostring(reconcileComplete), table.concat(sections, " ")
     ))
     print(string.format(
-        "[LOD:CONTAINER-HULL] source=%s mode=file-backed-vtf blend=%.2f",
+        "[LOD:CONTAINER-HULL] source=%s mode=file-backed-bgr888 blend=%.2f",
         HULL_PATH, COLOR_REPLACE_BLEND
     ))
     print(string.format(
-        "[LOD:CONTAINER-DETAIL] source=%s mode=file-backed-vtf blend=%.2f",
+        "[LOD:CONTAINER-DETAIL] source=%s mode=file-backed-bgr888 blend=%.2f",
         DETAIL_PATH, DETAIL_BLEND_FACTOR
     ))
 
     local sampleSlots = 0
     local sampleMode = "none"
     local sampleName = "none"
+    local sampleActual = "none"
     local sampleShader = "none"
     local sampleMaterialOK = false
-    local sampleOverridesOK = false
+    local sampleOverrideOK = false
     for index, instance in ipairs(world) do
         local model = models[index]
         if IsValid(model) then
             sampleSlots = #(model:GetMaterials() or {})
             sampleMode = tostring(instance.appliedSectionMode or "none")
             sampleName = instance.sectionMaterialName or sectionMaterialName(instance) or "none"
+            sampleActual = tostring(model:GetMaterial() or "")
             sampleMaterialOK, sampleShader = sectionMaterialAvailable(sampleName)
-            sampleOverridesOK = select(1, allSectionSlotsMatch(model, sampleName))
+            sampleOverrideOK = globalMaterialMatches(model, sampleName)
             break
         end
     end
     print(string.format(
-        "[LOD:CONTAINER-SLOTS] mode=%s sampleSlots=%d materialVersion=%s",
-        sampleMode, sampleSlots, MATERIAL_VERSION
+        "[LOD:CONTAINER-GLOBAL] mode=%s sampleSlots=%d materialVersion=%s override=%s",
+        sampleMode, sampleSlots, MATERIAL_VERSION,
+        sampleOverrideOK and "ok" or "wrong"
     ))
     print(string.format(
-        "[LOD:CONTAINER-VTF] material=%s shader=%s override=%s sample=%s",
+        "[LOD:CONTAINER-VTF] material=%s shader=%s expected=%s actual=%s",
         sampleMaterialOK and "ok" or "error",
         sampleShader,
-        sampleOverridesOK and "ok" or "wrong",
-        sampleName
+        sampleName,
+        sampleActual
     ))
 end)
