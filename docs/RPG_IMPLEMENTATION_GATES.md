@@ -77,4 +77,40 @@ The acceptance investigation found and repaired a systemic Source/GMod clock-bou
 
 Blink Reload + AR2 is deliberately retained as positive emergent high-DEX build space: reload downtime can become nearly imperceptible while the AR2's laser telegraph, pre-burst delay, and burst-internal spacing remain authored costs.
 
-Gate E remains open after Batch 5. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and accounts for 73 total ordinary feats: 15 implemented, 14 catalog/ownership-only, 44 not yet catalogued, 58 gameplay effects remaining.
+### Batch 6 — DEX Rate-of-Fire Cadence — PASSED 2026-09-05
+
+Hair Trigger / Rapid Fire / Lead Storm are runtime accepted from the same live-GDD authority:
+
+- `DEX_RATE_OF_FIRE_1` / Hair Trigger: DEX 13; total `RateOfFireMultiplier = 1.10`.
+- `DEX_RATE_OF_FIRE_2` / Rapid Fire: DEX 15 + Hair Trigger; replaces the total multiplier with `1.20`.
+- `DEX_RATE_OF_FIRE_3` / Lead Storm: DEX 17 + Rapid Fire; replaces the total multiplier with `1.30`.
+- applicability is ordinary firearm primary attacks only;
+- reload time, Magic cooldowns, enemy telegraphs, secondary attacks, SMG overheat recovery, and authored burst-internal spacing remain outside the family;
+- AR2 uses its custom burst authority instead of generic stock `IN_ATTACK` cadence;
+- every successful AR2 burst starts one player-local cadence transaction at the authoritative `BeginAR2Burst` seam;
+- every successful round is confirmed at the authoritative `FireAR2Round` seam;
+- only a completed three-round burst earns the shortened next-trigger opportunity;
+- the targeting laser, pre-burst delay, and 0.09s internal shot spacing are absolute preserved costs;
+- ordinary stock firearms continue through the generic post-shot deadline observer;
+- Character Sheet/runtime truth exposes the current total multiplier;
+- finite family/status/testkit commands remain available and core `lod_rpg_validate` covers the bridge.
+
+Final Steam Deck `gm_flatgrass` acceptance evidence:
+
+- startup confirmed the custom AR2 transaction bridge plus final `BeginAR2Burst` and `FireAR2Round` authority wrappers were armed;
+- rank 3 active at multiplier `1.30`;
+- exactly 5 AR2 bursts / 15 rounds;
+- console `scaledAttacks=5`;
+- final status `last=weapon_ar2/primary 0.880s->0.677s via ar2_burst_complete`;
+- summary `rate_of_fire_sessions=5`;
+- summary `rate_of_fire_confirmed_attacks=5`;
+- summary `rate_of_fire_scale_events=5`;
+- `last_rate_of_fire_weapon=weapon_ar2`;
+- `last_rate_of_fire_multiplier=1.3`;
+- authored `0.88s`, scaled `0.67692307692307s`, saved `0.20307692307692s`;
+- `rate_of_fire_deadline_misses=0`;
+- `TEST_END batch6-ar2-round-authority` and final core RPG validation PASS.
+
+Batch 6's investigation established a broader implementation rule: custom weapon mechanics must bridge from their final authoritative transaction seams, not from generic input hooks or assumed stock weapon timing. This is especially important for future authored burst-size, AR2 targeting, and SMG-heat feat families.
+
+Gate E remains open after Batch 6. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and now accounts for 73 total ordinary feats: 18 implemented, 13 catalog/ownership-only, 42 not yet catalogued, 55 gameplay effects remaining.
