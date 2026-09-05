@@ -12,7 +12,7 @@ local FAMILY = "dex_rate_of_fire"
 local CHAIN = {"DEX_RATE_OF_FIRE_1", "DEX_RATE_OF_FIRE_2", "DEX_RATE_OF_FIRE_3"}
 local RANK = {DEX_RATE_OF_FIRE_1 = 1, DEX_RATE_OF_FIRE_2 = 2, DEX_RATE_OF_FIRE_3 = 3}
 local MULTIPLIER = {[1] = 1.10, [2] = 1.20, [3] = 1.30}
-local SOURCE_REVISION = "ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ"
+local SOURCE_REVISION = "ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg"
 local EPSILON = 0.002
 local ORDINARY_FIREARMS = {
     weapon_pistol = true,
@@ -21,9 +21,7 @@ local ORDINARY_FIREARMS = {
     weapon_ar2 = true,
     weapon_357 = true
 }
-local ORDINARY_MELEE = {
-    weapon_lod_crowbar = true
-}
+local ORDINARY_MELEE = {}
 
 Effects.RateOfFireConfig = {
     family = FAMILY,
@@ -51,19 +49,19 @@ local function definition(id, name, dex, prerequisite, rank, multiplier)
         incompatibleFeatIds = {},
         allowedActorTypes = {"hero", "human_soldier", "ai"},
         requiredSubsystemTags = {},
-        synergyTags = {"attack_rate", "firearm_cadence", "melee_cadence"},
+        synergyTags = {"attack_rate", "firearm_cadence"},
         oneRank = true,
         effectHandlerId = "dex_rate_of_fire",
         effectParams = {
             rateOfFireMultiplier = multiplier,
             description = string.format(
-                "Sets RateOfFireMultiplier = %.2f total. Eligible authored attack intervals are divided by this multiplier; reload time, AR2 targeting-laser delay, SMG overheat recovery, Magic cooldowns, enemy telegraphs, and separately authored burst-internal spacing are unchanged.",
+                "Sets RateOfFireMultiplier = %.2f total. Eligible ordinary-firearm primary attack intervals are divided by this multiplier; reloads, Magic cooldowns, SMG cooling/overheat lockout, AR2 targeting-laser duration, internal AR2 three-shot spacing, Magnum free-projectile burst spacing, and enemy telegraphs are unchanged.",
                 multiplier)
         },
         directorBaseWeight = 1.0,
         eligibilityText = string.format("DEX %d%s", dex,
             prerequisite and (" / requires " .. prerequisite) or ""),
-        actorText = "Player-controlled heroes/human Soldiers; AI only when its authored weapon uses the shared attack-rate authority"
+        actorText = "Heroes, human Soldiers, and AI whose equipped/authored ordinary firearm uses the shared attack-cadence authority"
     }
 end
 
