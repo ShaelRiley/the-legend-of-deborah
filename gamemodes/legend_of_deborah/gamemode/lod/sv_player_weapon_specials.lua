@@ -12,9 +12,16 @@ local SMG_WARM_STAGE = 3
 local SMG_NEAR_STAGE = 5
 
 local AR2_TELEGRAPH = 0.45
-local AR2_BURST_SHOTS = 3
+local AR2_BASE_BURST_SHOTS = 3
 local AR2_BURST_SPACING = 0.09
 local AR2_RECOVERY = 0.25
+
+Specials.AR2Config = {
+    telegraph = AR2_TELEGRAPH,
+    baseBurstShots = AR2_BASE_BURST_SHOTS,
+    burstSpacing = AR2_BURST_SPACING,
+    recovery = AR2_RECOVERY
+}
 
 local SMG_WARM_SOUND = "buttons/button17.wav"
 local SMG_NEAR_SOUND = "buttons/button15.wav"
@@ -30,6 +37,9 @@ Specials.Stats = Specials.Stats or {
     ar2Bursts = 0,
     ar2Rounds = 0
 }
+Specials.Stats.lastAR2BurstRounds = Specials.Stats.lastAR2BurstRounds or 0
+Specials.Stats.lastAR2BurstTarget = Specials.Stats.lastAR2BurstTarget or 0
+Specials.Stats.lastAR2BurstDesired = Specials.Stats.lastAR2BurstDesired or 0
 
 local function developerAllowed(ply)
     local cv = GetConVar("lod_developer_mode")
@@ -68,6 +78,18 @@ local function syncSMG(weapon, smg)
     if not IsValid(weapon) then return end
     weapon:SetNW2Float("LOD_SMGHeat", math.Clamp(smg.heat or 0, 0, SMG_MAX_HEAT))
     weapon:SetNW2Bool("LOD_SMGOverheated", (smg.overheatedUntil or 0) > CurTime())
+end
+
+local function resolveAR2BurstTarget(ply, weapon)
+    local available = IsValid(weapon) and math.max(0, weapon:Clip1()) or 0
+    local rules = LOD.RPGAbilityRules
+    local bonus = rules and isfunction(rules.BurstSizeBonus) and rules:BurstSizeBonus(ply) or 0
+    if rules and isfunction(rules.ResolveBurstSize) then
+        local target, desired = rules:ResolveBurstSize(AR2_BASE_BURST_SHOTS, bonus, available)
+        return target, desired, bonus
+    end
+    local desired = AR2_BASE_BURST_SHOTS
+    return math.min(desired, available), desired, 0
 end
 
 function Specials:ResetPlayer(ply)
@@ -115,8 +137,24 @@ function Specials:OnSMGShot(ply, weapon)
 end
 
 local function finishAR2(ply, ar2, cooldown)
+    local rounds = math.max(0, math.floor(tonumber(ar2.shotsFired) or 0))
+    local target = math.max(0, math.floor(tonumber(ar2.targetShots) or 0))
+    local desired = math.max(target, math.floor(tonumber(ar2.desiredShots) or target))
+    local bonus = math.max(0, math.floor(tonumber(ar2.burstSizeBonus) or 0))
+    Specials.Stats.lastAR2BurstRounds = rounds
+    Specials.Stats.lastAR2BurstTarget = target
+    Specials.Stats.lastAR2BurstDesired = desired
+
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and isfunction(effects.RecordBurstSizeResult) and target > 0 then
+        effects:RecordBurstSizeResult(ply, rounds, target, desired, bonus)
+    end
+
     ar2.active = false
     ar2.shotsFired = 0
+    ar2.targetShots = nil
+    ar2.desiredShots = nil
+    ar2.burstSizeBonus = nil
     ar2.fireAt = nil
     ar2.nextShotAt = nil
     ar2.direction = nil
@@ -134,7 +172,9 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
 
     if ar2.active or now < (ar2.readyAt or 0) then return false end
     if now < weapon:GetNextPrimaryFire() then return false end
-    if weapon:Clip1() < AR2_BURST_SHOTS then
+
+    local targetShots, desiredShots, burstSizeBonus = resolveAR2BurstTarget(ply, weapon)
+    if targetShots <= 0 then
         weapon:EmitSound("Weapon_AR2.Empty", 62, 100, 0.72, CHAN_WEAPON)
         return false
     end
@@ -148,7 +188,10 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     ar2.fireAt = now + AR2_TELEGRAPH
     ar2.nextShotAt = ar2.fireAt
     ar2.shotsFired = 0
-    ar2.readyAt = ar2.fireAt + (AR2_BURST_SHOTS - 1) * AR2_BURST_SPACING + AR2_RECOVERY
+    ar2.targetShots = targetShots
+    ar2.desiredShots = desiredShots
+    ar2.burstSizeBonus = burstSizeBonus
+    ar2.readyAt = ar2.fireAt + (targetShots - 1) * AR2_BURST_SPACING + AR2_RECOVERY
 
     weapon:SetNextPrimaryFire(ar2.readyAt)
     ply:SetNW2Vector("LOD_PlayerAR2Direction", direction)
@@ -240,7 +283,8 @@ function Specials:ProcessPlayer(ply, state, now)
 
         if now >= (ar2.fireAt or math.huge) then
             ply:SetNW2Bool("LOD_PlayerAR2Telegraph", false)
-            while ar2.shotsFired < AR2_BURST_SHOTS and now >= (ar2.nextShotAt or math.huge) do
+            local targetShots = math.max(1, math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_SHOTS))
+            while ar2.shotsFired < targetShots and now >= (ar2.nextShotAt or math.huge) do
                 if not self:FireAR2Round(ply, ar2) then
                     finishAR2(ply, ar2, 0.15)
                     return
@@ -249,7 +293,7 @@ function Specials:ProcessPlayer(ply, state, now)
                 ar2.nextShotAt = ar2.nextShotAt + AR2_BURST_SPACING
             end
 
-            if ar2.shotsFired >= AR2_BURST_SHOTS then
+            if ar2.shotsFired >= targetShots then
                 finishAR2(ply, ar2, AR2_RECOVERY)
             end
         end
@@ -328,14 +372,18 @@ concommand.Add("lod_weapon_specials_status", function(ply)
     local smg = state.smg
     local ar2 = state.ar2
     local line = string.format(
-        "SMG heat=%d/6 overheated=%s lock=%.2f | AR2 active=%s shots=%d bursts=%d rounds=%d",
+        "SMG heat=%d/6 overheated=%s lock=%.2f | AR2 active=%s shots=%d/%d bursts=%d rounds=%d last=%d/%d desired=%d",
         math.floor((smg.heat or 0) + 0.5),
         ((smg.overheatedUntil or 0) > now) and "yes" or "no",
         math.max(0, (smg.overheatedUntil or 0) - now),
         ar2.active and "yes" or "no",
         ar2.shotsFired or 0,
+        ar2.targetShots or 0,
         Specials.Stats.ar2Bursts or 0,
-        Specials.Stats.ar2Rounds or 0)
+        Specials.Stats.ar2Rounds or 0,
+        Specials.Stats.lastAR2BurstRounds or 0,
+        Specials.Stats.lastAR2BurstTarget or 0,
+        Specials.Stats.lastAR2BurstDesired or 0)
     print("[LOD:WEAPON-SPECIALS] " .. line)
     ply:ChatPrint(line)
 end)
