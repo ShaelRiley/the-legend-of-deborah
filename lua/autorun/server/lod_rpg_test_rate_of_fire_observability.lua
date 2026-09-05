@@ -36,8 +36,10 @@ local function install()
 
         local extra = table.concat({
             "[RATE_OF_FIRE_OBSERVABILITY]",
+            "rate_of_fire_sessions=" .. safe(stats.sessions or 0),
             "rate_of_fire_scale_events=" .. safe(scaleCount),
             "rate_of_fire_confirmed_attacks=" .. safe(stats.confirmedAttacks or 0),
+            "rate_of_fire_preexisting_locks_preserved=" .. safe(stats.preexistingLocksPreserved or 0),
             "rate_of_fire_deadline_misses=" .. safe(missCount),
             "last_rate_of_fire_weapon=" .. safe(last.weaponClass),
             "last_rate_of_fire_channel=" .. safe(last.channel),
