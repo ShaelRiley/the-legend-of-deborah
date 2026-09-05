@@ -20,7 +20,9 @@ Specials.AR2Config = {
     telegraph = AR2_TELEGRAPH,
     baseBurstShots = AR2_BASE_BURST_SHOTS,
     burstSpacing = AR2_BURST_SPACING,
-    recovery = AR2_RECOVERY
+    recovery = AR2_RECOVERY,
+    ammoPerTriggerBurst = 1,
+    multiFireBurst = true
 }
 
 local SMG_WARM_SOUND = "buttons/button17.wav"
@@ -40,6 +42,7 @@ Specials.Stats = Specials.Stats or {
 Specials.Stats.lastAR2BurstRounds = Specials.Stats.lastAR2BurstRounds or 0
 Specials.Stats.lastAR2BurstTarget = Specials.Stats.lastAR2BurstTarget or 0
 Specials.Stats.lastAR2BurstDesired = Specials.Stats.lastAR2BurstDesired or 0
+Specials.Stats.ar2AmmoCommitted = Specials.Stats.ar2AmmoCommitted or 0
 
 local function developerAllowed(ply)
     local cv = GetConVar("lod_developer_mode")
@@ -80,16 +83,17 @@ local function syncSMG(weapon, smg)
     weapon:SetNW2Bool("LOD_SMGOverheated", (smg.overheatedUntil or 0) > CurTime())
 end
 
-local function resolveAR2BurstTarget(ply, weapon)
-    local available = IsValid(weapon) and math.max(0, weapon:Clip1()) or 0
+-- AR2 ammo units are trigger bursts, not projectiles. Resolve projectile count from
+-- authored burst state only; Clip1 is checked/charged separately at burst commit.
+local function resolveAR2BurstTarget(ply)
     local rules = LOD.RPGAbilityRules
-    local bonus = rules and isfunction(rules.BurstSizeBonus) and rules:BurstSizeBonus(ply) or 0
-    if rules and isfunction(rules.ResolveBurstSize) then
-        local target, desired = rules:ResolveBurstSize(AR2_BASE_BURST_SHOTS, bonus, available)
-        return target, desired, bonus
+    local bonus = rules and isfunction(rules.BurstBonusRounds)
+        and rules:BurstBonusRounds(ply)
+        or (rules and isfunction(rules.BurstSizeBonus) and rules:BurstSizeBonus(ply) or 0)
+    if rules and isfunction(rules.ResolveBurstCount) then
+        return rules:ResolveBurstCount(AR2_BASE_BURST_SHOTS, bonus), bonus
     end
-    local desired = AR2_BASE_BURST_SHOTS
-    return math.min(desired, available), desired, 0
+    return AR2_BASE_BURST_SHOTS + math.max(0, math.floor(tonumber(bonus) or 0)), bonus
 end
 
 function Specials:ResetPlayer(ply)
@@ -139,15 +143,15 @@ end
 local function finishAR2(ply, ar2, cooldown)
     local rounds = math.max(0, math.floor(tonumber(ar2.shotsFired) or 0))
     local target = math.max(0, math.floor(tonumber(ar2.targetShots) or 0))
-    local desired = math.max(target, math.floor(tonumber(ar2.desiredShots) or target))
     local bonus = math.max(0, math.floor(tonumber(ar2.burstSizeBonus) or 0))
     Specials.Stats.lastAR2BurstRounds = rounds
     Specials.Stats.lastAR2BurstTarget = target
-    Specials.Stats.lastAR2BurstDesired = desired
+    Specials.Stats.lastAR2BurstDesired = target
 
     local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
     if effects and isfunction(effects.RecordBurstSizeResult) and target > 0 then
-        effects:RecordBurstSizeResult(ply, rounds, target, desired, bonus)
+        effects:RecordBurstSizeResult(
+            ply, "weapon_ar2", rounds, AR2_BASE_BURST_SHOTS, target, bonus)
     end
 
     ar2.active = false
@@ -155,6 +159,7 @@ local function finishAR2(ply, ar2, cooldown)
     ar2.targetShots = nil
     ar2.desiredShots = nil
     ar2.burstSizeBonus = nil
+    ar2.ammoCommitted = nil
     ar2.fireAt = nil
     ar2.nextShotAt = nil
     ar2.direction = nil
@@ -173,14 +178,22 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     if ar2.active or now < (ar2.readyAt or 0) then return false end
     if now < weapon:GetNextPrimaryFire() then return false end
 
-    local targetShots, desiredShots, burstSizeBonus = resolveAR2BurstTarget(ply, weapon)
-    if targetShots <= 0 then
+    -- Exact authored ammo contract: a trigger burst costs one AR2 round total.
+    -- No burst can begin without that round; once committed, projectile resolution
+    -- is independent of later Clip1/reserve changes.
+    if weapon:Clip1() < 1 then
         weapon:EmitSound("Weapon_AR2.Empty", 62, 100, 0.72, CHAN_WEAPON)
         return false
     end
 
     direction = direction and direction:GetNormalized() or ply:GetAimVector():GetNormalized()
     if direction == vector_origin then return false end
+
+    local targetShots, burstSizeBonus = resolveAR2BurstTarget(ply)
+
+    -- Commit the one ammunition unit only after every pre-burst validity check.
+    weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
+    self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
 
     ar2.active = true
     ar2.weapon = weapon
@@ -189,8 +202,9 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     ar2.nextShotAt = ar2.fireAt
     ar2.shotsFired = 0
     ar2.targetShots = targetShots
-    ar2.desiredShots = desiredShots
+    ar2.desiredShots = targetShots
     ar2.burstSizeBonus = burstSizeBonus
+    ar2.ammoCommitted = 1
     ar2.readyAt = ar2.fireAt + (targetShots - 1) * AR2_BURST_SPACING + AR2_RECOVERY
 
     weapon:SetNextPrimaryFire(ar2.readyAt)
@@ -206,9 +220,11 @@ function Specials:FireAR2Round(ply, ar2)
     local weapon = ar2.weapon
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
     if activeWeapon(ply) ~= weapon or weapon:GetClass() ~= "weapon_ar2" then return false end
-    if weapon:Clip1() <= 0 then return false end
+    if ar2.ammoCommitted ~= 1 then return false end
 
-    weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
+    -- No Clip1 check/decrement here. The trigger burst already paid exactly one
+    -- AR2 round at commit, and all authored/feat-added projectiles are free inside
+    -- that committed burst.
     weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
     ply:SetAnimation(PLAYER_ATTACK1)
     ply:MuzzleFlash()
@@ -283,7 +299,8 @@ function Specials:ProcessPlayer(ply, state, now)
 
         if now >= (ar2.fireAt or math.huge) then
             ply:SetNW2Bool("LOD_PlayerAR2Telegraph", false)
-            local targetShots = math.max(1, math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_SHOTS))
+            local targetShots = math.max(1,
+                math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_SHOTS))
             while ar2.shotsFired < targetShots and now >= (ar2.nextShotAt or math.huge) do
                 if not self:FireAR2Round(ply, ar2) then
                     finishAR2(ply, ar2, 0.15)
@@ -371,19 +388,23 @@ concommand.Add("lod_weapon_specials_status", function(ply)
     local now = CurTime()
     local smg = state.smg
     local ar2 = state.ar2
+    local active = activeWeapon(ply)
+    local ar2Clip = IsValid(active) and active:GetClass() == "weapon_ar2"
+        and active:Clip1() or -1
     local line = string.format(
-        "SMG heat=%d/6 overheated=%s lock=%.2f | AR2 active=%s shots=%d/%d bursts=%d rounds=%d last=%d/%d desired=%d",
+        "SMG heat=%d/6 overheated=%s lock=%.2f | AR2 active=%s clip=%d shots=%d/%d bursts=%d ammoCommitted=%d projectiles=%d last=%d/%d",
         math.floor((smg.heat or 0) + 0.5),
         ((smg.overheatedUntil or 0) > now) and "yes" or "no",
         math.max(0, (smg.overheatedUntil or 0) - now),
         ar2.active and "yes" or "no",
+        ar2Clip,
         ar2.shotsFired or 0,
         ar2.targetShots or 0,
         Specials.Stats.ar2Bursts or 0,
+        Specials.Stats.ar2AmmoCommitted or 0,
         Specials.Stats.ar2Rounds or 0,
         Specials.Stats.lastAR2BurstRounds or 0,
-        Specials.Stats.lastAR2BurstTarget or 0,
-        Specials.Stats.lastAR2BurstDesired or 0)
+        Specials.Stats.lastAR2BurstTarget or 0)
     print("[LOD:WEAPON-SPECIALS] " .. line)
     ply:ChatPrint(line)
 end)
