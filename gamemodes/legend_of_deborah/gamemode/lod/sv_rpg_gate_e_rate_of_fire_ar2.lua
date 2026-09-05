@@ -9,6 +9,7 @@ if Effects.LODRateOfFireAR2NetBridgeInstalled then return Effects end
 
 local EPSILON = (Effects.RateOfFireConfig and Effects.RateOfFireConfig.epsilon) or 0.002
 local AR2_BASE_BURST_ROUNDS = 3
+local AUTHORITY_REVISION = "gate_e_ar2_one_ammo_per_burst_v2"
 
 -- The AR2 uses a custom burst transaction rather than ordinary stock IN_ATTACK
 -- cadence authority. Rate of Fire therefore owns a plan table keyed by player.
@@ -123,12 +124,50 @@ end)
 hook.Add("PlayerDeath", "LOD_RPG_GateE_AR2RateOfFireDeath", clearPlan)
 hook.Add("PlayerDisconnected", "LOD_RPG_GateE_AR2RateOfFireDisconnect", clearPlan)
 
--- Some AR2 activations originate in the server StartCommand path rather than the
--- client activation receiver. Install against the final weapon-special methods on
--- the first server tick, after all synchronous gamemode includes have completed.
--- BeginAR2Burst starts the player-local cadence plan and FireAR2Round confirms its
--- exact projectile count. This is independent of ammo debit and remains correct
--- when multiple players fire AR2 bursts concurrently.
+local function burstTarget(ply)
+    local bonus = isfunction(Rules.BurstBonusRounds)
+        and Rules:BurstBonusRounds(ply)
+        or (isfunction(Rules.BurstSizeBonus) and Rules:BurstSizeBonus(ply) or 0)
+    bonus = math.Clamp(math.floor(tonumber(bonus) or 0), 0, 3)
+    local target = isfunction(Rules.ResolveBurstCount)
+        and Rules:ResolveBurstCount(AR2_BASE_BURST_ROUNDS, bonus)
+        or (AR2_BASE_BURST_ROUNDS + bonus)
+    return math.max(AR2_BASE_BURST_ROUNDS, math.floor(tonumber(target) or AR2_BASE_BURST_ROUNDS)), bonus
+end
+
+-- Compatibility adapter for a stale pre-correction PlayerWeaponSpecials file.
+-- The current RecordBurstSizeResult signature begins with weaponClass; the old
+-- finishAR2 helper passed rounds/target/desired/bonus. Normalize that legacy call
+-- here so runtime evidence remains truthful even when an older base file wins a
+-- duplicate-addon filesystem collision.
+if isfunction(Effects.RecordBurstSizeResult) and not Effects.LODAR2LegacyBurstRecordAdapter then
+    Effects.LODAR2LegacyBurstRecordAdapter = true
+    local baseRecordBurstSizeResult = Effects.RecordBurstSizeResult
+    function Effects:RecordBurstSizeResult(ply, weaponClass, roundsResolved,
+        authoredBurstCount, finalBurstCount, bonus)
+        if not isstring(weaponClass) then
+            local legacyRounds = math.max(0, math.floor(tonumber(weaponClass) or 0))
+            local legacyTarget = math.max(1, math.floor(tonumber(roundsResolved) or 1))
+            local legacyDesired = math.max(legacyTarget,
+                math.floor(tonumber(authoredBurstCount) or legacyTarget))
+            local legacyBonus = math.Clamp(
+                math.floor(tonumber(finalBurstCount) or 0), 0, 3)
+            return baseRecordBurstSizeResult(self, ply, "weapon_ar2", legacyRounds,
+                AR2_BASE_BURST_ROUNDS, legacyDesired, legacyBonus)
+        end
+        return baseRecordBurstSizeResult(self, ply, weaponClass, roundsResolved,
+            authoredBurstCount, finalBurstCount, bonus)
+    end
+end
+
+-- The development addon can coexist with the public Workshop package. If GMod's
+-- filesystem resolves an older sv_player_weapon_specials.lua first, the mutable
+-- methods below may still use the retired per-projectile ammo semantics even while
+-- the new Gate-E modules are loaded. Therefore this final integration seam enforces
+-- the GDD transaction as postconditions around whichever base method was resolved:
+-- exactly one Clip1 debit at commit, 3+bonus committed projectiles, and zero ammo
+-- mutation while those projectiles resolve. On a current base these checks are
+-- idempotent; on a stale base they repair it without duplicating weapon behavior.
 local function installAuthorityWrappers()
     local currentBegin = Specials.BeginAR2Burst
     if isfunction(currentBegin)
@@ -138,16 +177,52 @@ local function installAuthorityWrappers()
         local beginWrapper
         beginWrapper = function(self, ply, weapon, direction)
             local startedAt = CurTime()
+            local clipBefore = IsValid(weapon) and math.max(0, weapon:Clip1()) or 0
             local ok = baseBegin(self, ply, weapon, direction)
-            if ok then
-                Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
+            if not ok then return ok end
+
+            local state = Specials.PlayerState and Specials.PlayerState[ply] or nil
+            local ar2 = state and state.ar2 or nil
+            if ar2 and ar2.active == true and ar2.weapon == weapon then
+                local alreadyCommitted = ar2.ammoCommitted == 1
+                local expectedClip = math.max(0, clipBefore - 1)
+                if IsValid(weapon) and weapon:Clip1() ~= expectedClip then
+                    weapon:SetClip1(expectedClip)
+                end
+                if not alreadyCommitted then
+                    self.Stats = self.Stats or {}
+                    self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
+                    ar2.ammoCommitted = 1
+                    ar2.LODLegacyPerProjectileAmmo = true
+                else
+                    ar2.LODLegacyPerProjectileAmmo = false
+                end
+
+                local targetShots, bonus = burstTarget(ply)
+                ar2.targetShots = targetShots
+                ar2.desiredShots = targetShots
+                ar2.burstSizeBonus = bonus
+
+                local config = self.AR2Config or {}
+                local telegraph = tonumber(config.telegraph) or 0.45
+                local spacing = tonumber(config.burstSpacing) or 0.09
+                local recovery = tonumber(config.recovery) or 0.25
+                ar2.fireAt = tonumber(ar2.fireAt) or (startedAt + telegraph)
+                ar2.nextShotAt = tonumber(ar2.nextShotAt) or ar2.fireAt
+                ar2.readyAt = ar2.fireAt + (targetShots - 1) * spacing + recovery
+                if IsValid(weapon) then weapon:SetNextPrimaryFire(ar2.readyAt) end
+
+                self.AR2GateEAuthorityRevision = AUTHORITY_REVISION
+                self.AR2GateEBaseMode = alreadyCommitted and "native" or "compat"
             end
+
+            Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
             return ok
         end
         Specials.LODRateOfFireBeginBase = baseBegin
         Specials.LODRateOfFireBeginWrapper = beginWrapper
         Specials.BeginAR2Burst = beginWrapper
-        print("[LOD:RPG-E] custom AR2 rate-of-fire BeginAR2Burst authority wrapped")
+        print("[LOD:RPG-E] custom AR2 BeginAR2Burst wrapped with one-ammo burst authority")
     end
 
     local currentFire = Specials.FireAR2Round
@@ -157,7 +232,18 @@ local function installAuthorityWrappers()
         local baseFire = currentFire
         local fireWrapper
         fireWrapper = function(self, ply, ar2)
+            local weapon = ar2 and ar2.weapon or nil
+            local preserveClip = ar2 and ar2.LODLegacyPerProjectileAmmo == true
+                and IsValid(weapon)
+            local clipBefore = preserveClip and math.max(0, weapon:Clip1()) or nil
+
+            -- A stale base refuses to fire at Clip1==0 and decrements Clip1 per
+            -- projectile. Give only that base a temporary one-round view, then
+            -- restore the already-committed clip after the projectile resolves.
+            if preserveClip and clipBefore <= 0 then weapon:SetClip1(1) end
             local ok = baseFire(self, ply, ar2)
+            if preserveClip and IsValid(weapon) then weapon:SetClip1(clipBefore) end
+
             if ok then
                 local plan = Effects.AR2RateOfFirePlans[ply]
                 if plan and ar2 and plan.weapon == ar2.weapon then
@@ -169,12 +255,19 @@ local function installAuthorityWrappers()
         Specials.LODRateOfFireFireBase = baseFire
         Specials.LODRateOfFireFireWrapper = fireWrapper
         Specials.FireAR2Round = fireWrapper
-        print("[LOD:RPG-E] custom AR2 rate-of-fire FireAR2Round authority wrapped")
+        print("[LOD:RPG-E] custom AR2 FireAR2Round wrapped with committed-ammo preservation")
     end
 
-    return Specials.BeginAR2Burst == Specials.LODRateOfFireBeginWrapper
+    local installed = Specials.BeginAR2Burst == Specials.LODRateOfFireBeginWrapper
         and Specials.FireAR2Round == Specials.LODRateOfFireFireWrapper
+    if installed then
+        Specials.AR2GateEAuthorityRevision = AUTHORITY_REVISION
+        Specials.AR2GateEBaseMode = Specials.AR2GateEBaseMode or "unproven"
+    end
+    return installed
 end
+
+Effects.InstallAR2RateOfFireAuthorityWrappers = installAuthorityWrappers
 
 timer.Simple(0, installAuthorityWrappers)
 hook.Add("OnReloaded", "LOD_RPG_GateE_AR2RateOfFireRebind", function()
@@ -182,5 +275,5 @@ hook.Add("OnReloaded", "LOD_RPG_GateE_AR2RateOfFireRebind", function()
 end)
 
 Effects.LODRateOfFireAR2NetBridgeInstalled = true
-print("[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed")
+print("[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed; revision=" .. AUTHORITY_REVISION)
 return Effects
