@@ -12,7 +12,8 @@ local AR2_BURST_ROUNDS = 3
 
 -- The AR2 uses a custom burst transaction rather than ordinary stock IN_ATTACK
 -- cadence authority. Rate of Fire therefore owns a plan table keyed by player.
--- A plan begins immediately after the authoritative BeginAR2Burst succeeds, then
+-- A plan begins immediately after the authoritative BeginAR2Burst succeeds. Each
+-- successful authoritative FireAR2Round is counted on that player-local plan, and
 -- a standalone Think observer commits the faster next-trigger deadline only after
 -- the burst has ended. The targeting laser and internal three-shot spacing remain
 -- outside this feat family's authority.
@@ -63,7 +64,8 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
         startedAt = startedAt,
         authoredReadyAt = authoredReadyAt,
         multiplier = multiplier,
-        clipBefore = weapon.Clip1 and weapon:Clip1() or -1
+        clipBefore = weapon.Clip1 and weapon:Clip1() or -1,
+        roundsFired = 0
     }
     self.AttackRateStats.sessions = (self.AttackRateStats.sessions or 0) + 1
     return true
@@ -85,7 +87,8 @@ hook.Add("Think", "LOD_RPG_GateE_AR2RateOfFireCommit", function()
                 clearPlan(ply)
             elseif ar2.active ~= true then
                 local clipNow = plan.weapon.Clip1 and plan.weapon:Clip1() or -1
-                local roundsFired = (tonumber(plan.clipBefore) or -1) - clipNow
+                local clipRounds = (tonumber(plan.clipBefore) or -1) - clipNow
+                local roundsFired = math.max(tonumber(plan.roundsFired) or 0, clipRounds)
                 clearPlan(ply)
 
                 -- Zero-, one-, and two-round aborts keep the authored cooldown.
@@ -117,38 +120,61 @@ hook.Add("PlayerDeath", "LOD_RPG_GateE_AR2RateOfFireDeath", clearPlan)
 hook.Add("PlayerDisconnected", "LOD_RPG_GateE_AR2RateOfFireDisconnect", clearPlan)
 
 -- Some AR2 activations originate in the server StartCommand path rather than the
--- client activation receiver. Install against the final BeginAR2Burst method on
+-- client activation receiver. Install against the final weapon-special methods on
 -- the first server tick, after all synchronous gamemode includes have completed.
--- This makes the transaction seam authoritative for every successful AR2 burst
--- without depending on StartCommand hook ordering or on the net path being used.
-local function installBeginAuthorityWrapper()
-    local current = Specials.BeginAR2Burst
-    if not isfunction(current) then return false end
-    if Specials.LODRateOfFireBeginWrapper and current == Specials.LODRateOfFireBeginWrapper then
-        return true
-    end
-
-    local baseBegin = current
-    local wrapper
-    wrapper = function(self, ply, weapon, direction)
-        local startedAt = CurTime()
-        local ok = baseBegin(self, ply, weapon, direction)
-        if ok then
-            Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
+-- BeginAR2Burst starts the player-local cadence plan and FireAR2Round confirms its
+-- exact completed rounds. This avoids relying on clip timing or global counters and
+-- remains correct when multiple players fire AR2s concurrently.
+local function installAuthorityWrappers()
+    local currentBegin = Specials.BeginAR2Burst
+    if isfunction(currentBegin)
+        and (not Specials.LODRateOfFireBeginWrapper or currentBegin ~= Specials.LODRateOfFireBeginWrapper)
+    then
+        local baseBegin = currentBegin
+        local beginWrapper
+        beginWrapper = function(self, ply, weapon, direction)
+            local startedAt = CurTime()
+            local ok = baseBegin(self, ply, weapon, direction)
+            if ok then
+                Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
+            end
+            return ok
         end
-        return ok
+        Specials.LODRateOfFireBeginBase = baseBegin
+        Specials.LODRateOfFireBeginWrapper = beginWrapper
+        Specials.BeginAR2Burst = beginWrapper
+        print("[LOD:RPG-E] custom AR2 rate-of-fire BeginAR2Burst authority wrapped")
     end
 
-    Specials.LODRateOfFireBeginBase = baseBegin
-    Specials.LODRateOfFireBeginWrapper = wrapper
-    Specials.BeginAR2Burst = wrapper
-    print("[LOD:RPG-E] custom AR2 rate-of-fire BeginAR2Burst authority wrapped")
-    return true
+    local currentFire = Specials.FireAR2Round
+    if isfunction(currentFire)
+        and (not Specials.LODRateOfFireFireWrapper or currentFire ~= Specials.LODRateOfFireFireWrapper)
+    then
+        local baseFire = currentFire
+        local fireWrapper
+        fireWrapper = function(self, ply, ar2)
+            local ok = baseFire(self, ply, ar2)
+            if ok then
+                local plan = Effects.AR2RateOfFirePlans[ply]
+                if plan and ar2 and plan.weapon == ar2.weapon then
+                    plan.roundsFired = (tonumber(plan.roundsFired) or 0) + 1
+                end
+            end
+            return ok
+        end
+        Specials.LODRateOfFireFireBase = baseFire
+        Specials.LODRateOfFireFireWrapper = fireWrapper
+        Specials.FireAR2Round = fireWrapper
+        print("[LOD:RPG-E] custom AR2 rate-of-fire FireAR2Round authority wrapped")
+    end
+
+    return Specials.BeginAR2Burst == Specials.LODRateOfFireBeginWrapper
+        and Specials.FireAR2Round == Specials.LODRateOfFireFireWrapper
 end
 
-timer.Simple(0, installBeginAuthorityWrapper)
+timer.Simple(0, installAuthorityWrappers)
 hook.Add("OnReloaded", "LOD_RPG_GateE_AR2RateOfFireRebind", function()
-    timer.Simple(0, installBeginAuthorityWrapper)
+    timer.Simple(0, installAuthorityWrappers)
 end)
 
 Effects.LODRateOfFireAR2NetBridgeInstalled = true
