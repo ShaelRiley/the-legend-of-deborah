@@ -47,7 +47,9 @@ function Effects:ValidateRateOfFireCadence()
         "delayed stock deadline scales only after shot proof")
 
     expect(isfunction(self.RateOfFireAR2ReadyAt),
-        "custom AR2 cadence authority is installed")
+        "custom AR2 cadence timing helper is installed")
+    expect(isfunction(self.BeginAR2RateOfFirePlan),
+        "canonical AR2 activation transaction bridge is installed")
     if isfunction(self.RateOfFireAR2ReadyAt) then
         local ar2Ready, ar2Changed = self:RateOfFireAR2ReadyAt(100.0, 100.88, 100.63, 1.30)
         local expected = 100.0 + 0.88 / 1.30
@@ -58,6 +60,11 @@ function Effects:ValidateRateOfFireCadence()
             100.0, 100.88, 100.70, 1.30)
         expect(delayedChanged and math.abs(delayedCompletion - 100.70) < 0.0001,
             "AR2 completed burst is an absolute floor for laser/internal spacing")
+
+        local tooLate, tooLateChanged = self:RateOfFireAR2ReadyAt(
+            100.0, 100.88, 100.90, 1.30)
+        expect(not tooLateChanged and math.abs(tooLate - 100.90) < 0.0001,
+            "late completion never fabricates a cadence gain")
 
         local baselineReady, baselineChanged = self:RateOfFireAR2ReadyAt(
             100.0, 100.88, 100.63, 1.00)
