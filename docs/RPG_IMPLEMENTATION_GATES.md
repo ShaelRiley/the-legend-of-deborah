@@ -113,4 +113,23 @@ Final Steam Deck `gm_flatgrass` acceptance evidence:
 
 Batch 6's investigation established a broader implementation rule: custom weapon mechanics must bridge from their final authoritative transaction seams, not from generic input hooks or assumed stock weapon timing. This is especially important for future authored burst-size, AR2 targeting, and SMG-heat feat families.
 
-Gate E remains open after Batch 6. The completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md` and now accounts for 73 total ordinary feats: 18 implemented, 13 catalog/ownership-only, 42 not yet catalogued, 55 gameplay effects remaining.
+### Batch 7 — DEX Authored Burst Size — PASSED 2026-09-05
+
+Extra Round / Extended Volley / Full Barrage are runtime accepted. The replacing ladder grants +1/+2/+3 total projectiles only to attacks already authored as `multiFireBurst`. AR2 therefore resolves 4/5/6 projectiles instead of its authored 3 while consuming exactly one AR2 ammo unit for the entire committed trigger burst. Magnum chamber-5/chamber-6 authored burst states inherit their existing spacing, damage, Aim-State, SUPER-d12, and free-projectile ammunition semantics; ordinary Magnum shots, Shotgun pellets, exploding dice, penetration, and unrelated extra-projectile procs remain excluded.
+
+Final `gm_flatgrass` acceptance proved Full Barrage from exactly one AR2 ammo: clip `1→0`, all `6/6` projectiles completed, `completed=1`, `aborted=0`, and core RPG validation PASS. Runtime authority revision `gate_e_ar2_one_ammo_per_burst_v2` reported `beginWrapped=true`, `fireWrapped=true`, `baseConfigOneAmmo=true`, and `resultAdapter=true`.
+
+### Batch 8 — DEX SMG Heat — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Cold Hands / Ice in the Veins / Absolute Zero are implemented from live-GDD Google revision `364`:
+
+- DEX 13/15/17 with the exact prerequisite chain;
+- replacing total `SMGHeatSuppressionChance` values 0.11/0.22/0.33;
+- replacing `SMGOverheatThreshold` values 8/10/12 versus baseline 6;
+- one deterministic, server-authoritative roll from the dedicated per-player/per-level `smg-heat:v1` substream for every successfully fired SMG round;
+- a suppressed round consumes ammunition and attacks normally but adds 0 rather than +1 heat;
+- existing SMG damage, ammunition, Rate-of-Fire composition, 0.25-second sub-threshold cooling cadence, heat feedback stages, and fixed 2.0-second overheat lock remain unchanged;
+- actual heat remains networked while the existing absolute tint/audio stages and overheat-smoke cue remain unchanged;
+- Character Sheet/runtime status, event telemetry, deterministic family validation, and a seeded finite acceptance kit are included.
+
+Gate E remains open after the Batch 8 build. The completeness ledger now accounts for 73 total ordinary feats: 24 mechanically implemented, 11 catalog/ownership-only, 38 not yet catalogued, and 49 gameplay effects remaining. Batch 8 does not become runtime accepted until its finite Steam Deck test passes.

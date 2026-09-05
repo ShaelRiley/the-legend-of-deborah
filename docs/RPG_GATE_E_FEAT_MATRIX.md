@@ -1,10 +1,10 @@
 # Gate E Ordinary Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`, reload/rate-of-fire family definitions reverified at revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ`.
+Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. The DEX SMG-heat family was reverified against current Google revision `364` (modified `2026-09-05T00:37:22.001Z`).
 
 This is the Gate E completeness ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The ledger intentionally stays compact so status cannot drift away from implementation.
 
-**73 ordinary feats total: 18 mechanically implemented, 13 catalog/ownership-only, 42 not yet catalogued. 55 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs.
+**73 ordinary feats total: 24 mechanically implemented, 11 catalog/ownership-only, 38 not yet catalogued. 49 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batch 7 is runtime accepted; Batch 8 is implemented and awaiting runtime acceptance.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
@@ -23,9 +23,9 @@ This is the Gate E completeness ledger. The live GDD remains design authority fo
 | `DEX_RATE_OF_FIRE_1`<br>Hair Trigger | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 13, total RateOfFireMultiplier 1.10; ordinary firearm primary-attack interval authority only. |
 | `DEX_RATE_OF_FIRE_2`<br>Rapid Fire | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 15 + Hair Trigger; replaces lower rank with total RateOfFireMultiplier 1.20. |
 | `DEX_RATE_OF_FIRE_3`<br>Lead Storm | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 17 + Rapid Fire; total RateOfFireMultiplier 1.30. Final AR2 proof: 5/5 completed bursts scaled 0.880s→0.677s through `ar2_burst_complete`; laser and burst-internal spacing remained outside cadence authority. |
-| `DEX_BURSTER_1`<br>Extra Round | DEX / Authored burst size | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `DEX_BURSTER_2`<br>Extended Volley | DEX / Authored burst size | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `DEX_BURSTER_3`<br>Full Barrage | DEX / Authored burst size | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `DEX_BURSTER_1`<br>Extra Round | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: AR2 authored 3-round burst becomes 4 projectiles for exactly one ammo per committed trigger burst. |
+| `DEX_BURSTER_2`<br>Extended Volley | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces Extra Round with +2 total; AR2 becomes 5 projectiles and authored Magnum bursts inherit their existing free-projectile semantics. |
+| `DEX_BURSTER_3`<br>Full Barrage | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces lower ranks with +3 total. Final proof completed all 6/6 AR2 projectiles from clip 1→0; `completed=1`, `aborted=0`. |
 | `DEX_DOUBLE_JUMP`<br>Double Jump | DEX / Mobility | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `DEX_SHRINK`<br>Little Guy | DEX / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `STR_CROWBAR_D6`<br>Bash | STR / Crowbar | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
@@ -41,9 +41,9 @@ This is the Gate E completeness ledger. The live GDD remains design authority fo
 | `CON_BIG_GUY`<br>Big Guy | CON / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_NOT_YET`<br>Not Yet | CON / Lethal interceptor | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_RUSSIAN_ASSET`<br>Russian Asset | CON / Tetris | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `DEX_SMG_COLD_HANDS_1`<br>Cold Hands | DEX / SMG heat | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `DEX_SMG_COLD_HANDS_2`<br>Ice in the Veins | DEX / SMG heat | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `DEX_SMG_COLD_HANDS_3`<br>Absolute Zero | DEX / SMG heat | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `DEX_SMG_COLD_HANDS_1`<br>Cold Hands | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 13; 11% deterministic heat suppression per successful SMG round; overheat threshold 8. |
+| `DEX_SMG_COLD_HANDS_2`<br>Ice in the Veins | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 15 + Cold Hands; replaces lower rank with 22% suppression and threshold 10. |
+| `DEX_SMG_COLD_HANDS_3`<br>Absolute Zero | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 17 + Ice in the Veins; replaces lower ranks with 33% suppression and threshold 12; fixed 2.0s lock/cooling/cadence preserved. |
 | `DEX_AR2_SNAP`<br>Snap Targeting | DEX / AR2 | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `DEX_MAGNUM_DEADEYE`<br>Deadeye | DEX / Magnum | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `INT_MANA_BARRIER_1`<br>Mana Barrier | INT / HP-to-Magic diversion | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |

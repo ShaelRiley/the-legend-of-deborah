@@ -169,6 +169,8 @@ local function wrapLogger()
             local text = baseRender(self)
             local lastValidation = Obs.LastValidation or {}
             local lastReload = Obs.LastReloadScale or {}
+            local smgStats = LOD.RPG and LOD.RPG.FeatEffectSystem
+                and LOD.RPG.FeatEffectSystem.SMGHeatStats or {}
             local extra = table.concat({
                 "[OBSERVABILITY]",
                 "retention=console:per-GMod-launch;session:current-server-session;summary:overwrite-every-10s;archive:rolling-4MiB",
@@ -186,6 +188,14 @@ local function wrapLogger()
                 "last_reload_authored_seconds=" .. safe(lastReload.authoredSeconds),
                 "last_reload_scaled_seconds=" .. safe(lastReload.scaledSeconds),
                 "last_reload_saved_seconds=" .. safe(lastReload.savedSeconds),
+                "smg_heat_shots=" .. safe(smgStats.shots or 0),
+                "smg_heat_suppressed=" .. safe(smgStats.suppressed or 0),
+                "smg_heat_added=" .. safe(smgStats.heatAdded or 0),
+                "smg_heat_overheats=" .. safe(smgStats.overheats or 0),
+                "smg_heat_last_chance=" .. safe(smgStats.lastChance),
+                "smg_heat_last_threshold=" .. safe(smgStats.lastThreshold),
+                "smg_heat_last_lock_seconds=" .. safe(smgStats.lastLockSeconds),
+                "smg_heat_acceptance=" .. safe(smgStats.acceptancePassed),
                 "",
             }, "\n")
             return text .. "\n" .. extra

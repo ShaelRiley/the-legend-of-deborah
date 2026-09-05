@@ -16,6 +16,15 @@ local AR2_BASE_BURST_SHOTS = 3
 local AR2_BURST_SPACING = 0.09
 local AR2_RECOVERY = 0.25
 
+Specials.SMGConfig = {
+    baselineThreshold = SMG_MAX_HEAT,
+    coolInterval = SMG_COOL_INTERVAL,
+    overheatLock = SMG_OVERHEAT_LOCK,
+    warmStage = SMG_WARM_STAGE,
+    nearStage = SMG_NEAR_STAGE
+}
+Specials.SMGHeatFeatAuthority = "gate_e_batch_8_dex_smg_heat_v1"
+
 Specials.AR2Config = {
     telegraph = AR2_TELEGRAPH,
     baseBurstShots = AR2_BASE_BURST_SHOTS,
@@ -79,7 +88,9 @@ end
 
 local function syncSMG(weapon, smg)
     if not IsValid(weapon) then return end
-    weapon:SetNW2Float("LOD_SMGHeat", math.Clamp(smg.heat or 0, 0, SMG_MAX_HEAT))
+    local threshold = math.Clamp(math.floor(tonumber(smg.threshold) or SMG_MAX_HEAT),
+        SMG_MAX_HEAT, 12)
+    weapon:SetNW2Float("LOD_SMGHeat", math.Clamp(smg.heat or 0, 0, threshold))
     weapon:SetNW2Bool("LOD_SMGOverheated", (smg.overheatedUntil or 0) > CurTime())
 end
 
@@ -106,6 +117,17 @@ function Specials:ResetPlayer(ply)
     self.PlayerState[ply] = nil
 end
 
+function Specials:ResetSMGState(ply)
+    local state = stateFor(ply)
+    local previous = state.smg or {}
+    if IsValid(previous.weapon) then
+        previous.weapon:SetNW2Float("LOD_SMGHeat", 0)
+        previous.weapon:SetNW2Bool("LOD_SMGOverheated", false)
+    end
+    state.smg = {heat = 0, threshold = SMG_MAX_HEAT}
+    return state.smg
+end
+
 function Specials:OnSMGShot(ply, weapon)
     local state = stateFor(ply)
     local smg = state.smg
@@ -113,9 +135,22 @@ function Specials:OnSMGShot(ply, weapon)
 
     if (smg.overheatedUntil or 0) > now then return end
 
+    local rules = LOD.RPGAbilityRules
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local chance = rules and isfunction(rules.SMGHeatSuppressionChance)
+        and rules:SMGHeatSuppressionChance(ply) or 0
+    local threshold = rules and isfunction(rules.SMGOverheatThreshold)
+        and rules:SMGOverheatThreshold(ply) or SMG_MAX_HEAT
+    local suppressed, roll = false, 1
+    if effects and isfunction(effects.ResolveSMGHeatSuppression) then
+        suppressed, roll = effects:ResolveSMGHeatSuppression(ply, chance)
+    end
+
     local previous = smg.heat or 0
     smg.weapon = weapon
-    smg.heat = math.min(SMG_MAX_HEAT, previous + 1)
+    smg.threshold = threshold
+    smg.suppressionChance = chance
+    smg.heat = math.min(threshold, previous + (suppressed and 0 or 1))
     smg.nextCoolAt = now + SMG_COOL_INTERVAL
     smg.lastShotAt = now
     self.Stats.smgShots = (self.Stats.smgShots or 0) + 1
@@ -127,7 +162,8 @@ function Specials:OnSMGShot(ply, weapon)
         weapon:EmitSound(SMG_NEAR_SOUND, 62, 132, 0.62, CHAN_ITEM)
     end
 
-    if smg.heat >= SMG_MAX_HEAT then
+    local overheated = smg.heat >= threshold
+    if overheated then
         smg.overheatedUntil = now + SMG_OVERHEAT_LOCK
         smg.coolCueAt = now + 0.85
         smg.coolCuePlayed = false
@@ -135,6 +171,18 @@ function Specials:OnSMGShot(ply, weapon)
         weapon:SetNextSecondaryFire(smg.overheatedUntil)
         weapon:EmitSound(SMG_OVERHEAT_SOUND, 70, 112, 0.78, CHAN_WEAPON)
         self.Stats.smgOverheats = (self.Stats.smgOverheats or 0) + 1
+    end
+
+    if effects and isfunction(effects.RecordSMGHeatShot) then
+        effects:RecordSMGHeatShot(ply, {
+            roll = roll,
+            chance = chance,
+            suppressed = suppressed,
+            heat = smg.heat,
+            threshold = threshold,
+            overheated = overheated,
+            lockSeconds = overheated and SMG_OVERHEAT_LOCK or 0
+        })
     end
 
     syncSMG(weapon, smg)
@@ -392,8 +440,10 @@ concommand.Add("lod_weapon_specials_status", function(ply)
     local ar2Clip = IsValid(active) and active:GetClass() == "weapon_ar2"
         and active:Clip1() or -1
     local line = string.format(
-        "SMG heat=%d/6 overheated=%s lock=%.2f | AR2 active=%s clip=%d shots=%d/%d bursts=%d ammoCommitted=%d projectiles=%d last=%d/%d",
+        "SMG heat=%d/%d suppression=%.2f overheated=%s lock=%.2f | AR2 active=%s clip=%d shots=%d/%d bursts=%d ammoCommitted=%d projectiles=%d last=%d/%d",
         math.floor((smg.heat or 0) + 0.5),
+        math.floor(tonumber(smg.threshold) or SMG_MAX_HEAT),
+        tonumber(smg.suppressionChance) or 0,
         ((smg.overheatedUntil or 0) > now) and "yes" or "no",
         math.max(0, (smg.overheatedUntil or 0) - now),
         ar2.active and "yes" or "no",

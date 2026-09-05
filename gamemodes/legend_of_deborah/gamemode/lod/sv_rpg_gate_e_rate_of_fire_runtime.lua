@@ -225,6 +225,19 @@ function Effects:RateOfFireConfirmedDeadlineReady(priorDeadline, preShotDeadline
     return rawDeadline > protectedFloor + EPSILON and rawDeadline > now + EPSILON, protectedFloor
 end
 
+-- The SMG heat authority may replace the ordinary post-shot deadline with its
+-- fixed 2.0-second overheat lock on the threshold-crossing round. That deadline
+-- is heat recovery, not trigger cadence, and must never be divided by a Rate-of-
+-- Fire feat. The server input seam also enforces this lock; ending observation
+-- here keeps the weapon deadline itself coherent with the same authority.
+function Effects:IsSMGOverheatLockActive(ply, weaponClass, now)
+    if weaponClass ~= "weapon_smg1" then return false end
+    local Specials = LOD.PlayerWeaponSpecials
+    local state = Specials and Specials.PlayerState and Specials.PlayerState[ply] or nil
+    local smg = state and state.smg or nil
+    return smg ~= nil and (tonumber(smg.overheatedUntil) or 0) > (tonumber(now) or 0)
+end
+
 function Effects:ProcessAttackRateObservation(ply, session, now)
     local weapon = session and session.weapon or nil
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon)
@@ -258,6 +271,11 @@ function Effects:ProcessAttackRateObservation(ply, session, now)
             session.confirmedAt = now
             self.AttackRateStats.confirmedAttacks = (self.AttackRateStats.confirmedAttacks or 0) + 1
         end
+    end
+
+    if self:IsSMGOverheatLockActive(ply, session.weaponClass, now) then
+        self:EndAttackRateObservation(ply)
+        return
     end
 
     -- Stock Source weapons can expose shot proof (especially clip decrement) one
