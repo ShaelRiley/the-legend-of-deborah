@@ -15,8 +15,8 @@ local AR2_BASE_BURST_ROUNDS = 3
 -- A plan begins immediately after the authoritative BeginAR2Burst succeeds. Each
 -- successful authoritative FireAR2Round is counted on that player-local plan, and
 -- a standalone Think observer commits the faster next-trigger deadline only after
--- the whole legal burst has ended. Burst-size feats may change the legal target;
--- the targeting laser and internal shot spacing remain outside cadence authority.
+-- the whole authored/feat-expanded burst has ended. Burst projectile count is
+-- independent of AR2 Clip1 because one ammo unit was already paid at burst commit.
 Effects.AR2RateOfFirePlans = Effects.AR2RateOfFirePlans or setmetatable({}, {__mode = "k"})
 
 function Effects:RateOfFireAR2ReadyAt(startedAt, authoredReadyAt, completedAt, multiplier)
@@ -64,8 +64,8 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
         startedAt = startedAt,
         authoredReadyAt = authoredReadyAt,
         multiplier = multiplier,
-        clipBefore = weapon.Clip1 and weapon:Clip1() or -1,
-        targetShots = math.max(1, math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_ROUNDS)),
+        targetShots = math.max(1,
+            math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_ROUNDS)),
         roundsFired = 0
     }
     self.AttackRateStats.sessions = (self.AttackRateStats.sessions or 0) + 1
@@ -87,17 +87,16 @@ hook.Add("Think", "LOD_RPG_GateE_AR2RateOfFireCommit", function()
             if not ar2 or ar2.weapon ~= plan.weapon then
                 clearPlan(ply)
             elseif ar2.active ~= true then
-                local clipNow = plan.weapon.Clip1 and plan.weapon:Clip1() or -1
-                local clipRounds = (tonumber(plan.clipBefore) or -1) - clipNow
-                local roundsFired = math.max(tonumber(plan.roundsFired) or 0, clipRounds)
+                local roundsFired = math.max(0,
+                    math.floor(tonumber(plan.roundsFired) or 0))
                 local targetShots = math.max(1,
                     math.floor(tonumber(plan.targetShots) or AR2_BASE_BURST_ROUNDS))
                 clearPlan(ply)
 
-                -- Only completion of the legal burst target earns faster cadence.
-                -- For Burst-Size ranks this may be 4/5/6; when ammo was short it
-                -- may legally be 1/2/etc. Abort paths below that captured target do
-                -- not receive a cadence benefit.
+                -- Only completion of the authoritative projectile target earns
+                -- faster cadence. Never infer projectile completion from Clip1:
+                -- every AR2 trigger burst has exactly one ammo debit regardless of
+                -- whether it resolves 3, 4, 5, or 6 projectiles.
                 if roundsFired >= targetShots then
                     local readyAt, changed = Effects:RateOfFireAR2ReadyAt(
                         plan.startedAt, plan.authoredReadyAt, now, plan.multiplier)
@@ -128,8 +127,8 @@ hook.Add("PlayerDisconnected", "LOD_RPG_GateE_AR2RateOfFireDisconnect", clearPla
 -- client activation receiver. Install against the final weapon-special methods on
 -- the first server tick, after all synchronous gamemode includes have completed.
 -- BeginAR2Burst starts the player-local cadence plan and FireAR2Round confirms its
--- exact completed rounds. This avoids relying on clip timing or global counters and
--- remains correct when multiple players fire AR2s concurrently.
+-- exact projectile count. This is independent of ammo debit and remains correct
+-- when multiple players fire AR2 bursts concurrently.
 local function installAuthorityWrappers()
     local currentBegin = Specials.BeginAR2Burst
     if isfunction(currentBegin)
