@@ -63,6 +63,10 @@ include("lod/sv_hostile_damage_audit.lua")
 include("lod/sv_dice_ammo.lua")
 include("lod/sv_player_weapon_specials.lua")
 include("lod/sv_player_weapon_specials_input.lua")
+-- The AR2 bypasses ordinary IN_ATTACK and owns a custom server burst transaction.
+-- Load its Gate-E cadence bridge only after PlayerWeaponSpecials exists so the
+-- wrapper composes with the actual authoritative BeginAR2Burst/ProcessPlayer seam.
+include("lod/sv_rpg_gate_e_rate_of_fire_ar2.lua")
 include("lod/sv_progression_director.lua")
 include("lod/sv_m2_progression_safety.lua")
 include("lod/sv_progression_builder.lua")
