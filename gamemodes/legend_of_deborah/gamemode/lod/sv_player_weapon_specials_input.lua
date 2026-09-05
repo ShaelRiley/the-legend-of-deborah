@@ -3,10 +3,13 @@ LOD = LOD or {}
 local Specials = LOD.PlayerWeaponSpecials
 if not Specials then return end
 
--- This file is loaded immediately after sv_player_weapon_specials.lua, so it is
--- the canonical point where the RPG cadence bridge can compose with the AR2's
--- custom input/burst authority without relying on StartCommand hook ordering.
+-- PlayerWeaponSpecials now exists, making this the canonical integration point
+-- for Gate-E feat families that alter the authored AR2 burst transaction. Load the
+-- burst-size definitions first, then the Rate-of-Fire composition bridge, then the
+-- finite Burst-Size validator/testkit against the final shared authority.
+include("sv_rpg_gate_e_burst_size.lua")
 include("sv_rpg_gate_e_rate_of_fire_ar2.lua")
+include("sv_rpg_gate_e_burst_size_validation.lua")
 
 util.AddNetworkString("LOD_PlayerAR2Activate")
 
@@ -18,13 +21,13 @@ net.Receive("LOD_PlayerAR2Activate", function(_, ply)
 
     -- Client prediction suppresses the stock automatic-fire input and only asks
     -- to begin the authored burst. The server revalidates weapon, ammo, cadence,
-    -- and commits its own current aim direction before publishing the laser.
+    -- burst size, and current aim direction before publishing the laser.
     local startedAt = CurTime()
     if not Specials:BeginAR2Burst(ply, weapon, ply:EyeAngles():Forward()) then return end
 
-    -- Begin the feat transaction from the same authoritative activation event.
-    -- Completion is observed independently after the three-round burst ends, so
-    -- later PlayerWeaponSpecials method replacement cannot silently bypass it.
+    -- Begin the cadence transaction from the same authoritative activation event.
+    -- The BeginAR2Burst wrapper normally already created it; the plan function is
+    -- idempotent per player, so this remains a safe network-path backstop.
     local RPG = LOD.RPG
     local Effects = RPG and RPG.FeatEffectSystem
     if Effects and isfunction(Effects.BeginAR2RateOfFirePlan) then
