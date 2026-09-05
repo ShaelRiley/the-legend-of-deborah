@@ -10,12 +10,12 @@ if Effects.LODRateOfFireAR2NetBridgeInstalled then return Effects end
 local EPSILON = (Effects.RateOfFireConfig and Effects.RateOfFireConfig.epsilon) or 0.002
 local AR2_BURST_ROUNDS = 3
 
--- The AR2 uses a custom networked burst transaction rather than ordinary stock
--- IN_ATTACK authority. Rate of Fire therefore owns a plan table keyed by player,
--- started explicitly by the canonical AR2 activation receiver. A standalone Think
--- observer commits the faster next-trigger deadline only after the burst has ended.
--- This avoids fragile method wrapping and keeps the targeting laser plus internal
--- three-shot spacing outside this feat family's authority.
+-- The AR2 uses a custom burst transaction rather than ordinary stock IN_ATTACK
+-- cadence authority. Rate of Fire therefore owns a plan table keyed by player.
+-- A plan begins immediately after the authoritative BeginAR2Burst succeeds, then
+-- a standalone Think observer commits the faster next-trigger deadline only after
+-- the burst has ended. The targeting laser and internal three-shot spacing remain
+-- outside this feat family's authority.
 Effects.AR2RateOfFirePlans = Effects.AR2RateOfFirePlans or setmetatable({}, {__mode = "k"})
 
 function Effects:RateOfFireAR2ReadyAt(startedAt, authoredReadyAt, completedAt, multiplier)
@@ -37,6 +37,7 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
     if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= "weapon_ar2" then
         return false
     end
+    if self.AR2RateOfFirePlans[ply] then return false end
 
     local state = Specials.PlayerState and Specials.PlayerState[ply] or nil
     local ar2 = state and state.ar2 or nil
@@ -114,6 +115,41 @@ end)
 
 hook.Add("PlayerDeath", "LOD_RPG_GateE_AR2RateOfFireDeath", clearPlan)
 hook.Add("PlayerDisconnected", "LOD_RPG_GateE_AR2RateOfFireDisconnect", clearPlan)
+
+-- Some AR2 activations originate in the server StartCommand path rather than the
+-- client activation receiver. Install against the final BeginAR2Burst method on
+-- the first server tick, after all synchronous gamemode includes have completed.
+-- This makes the transaction seam authoritative for every successful AR2 burst
+-- without depending on StartCommand hook ordering or on the net path being used.
+local function installBeginAuthorityWrapper()
+    local current = Specials.BeginAR2Burst
+    if not isfunction(current) then return false end
+    if Specials.LODRateOfFireBeginWrapper and current == Specials.LODRateOfFireBeginWrapper then
+        return true
+    end
+
+    local baseBegin = current
+    local wrapper
+    wrapper = function(self, ply, weapon, direction)
+        local startedAt = CurTime()
+        local ok = baseBegin(self, ply, weapon, direction)
+        if ok then
+            Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
+        end
+        return ok
+    end
+
+    Specials.LODRateOfFireBeginBase = baseBegin
+    Specials.LODRateOfFireBeginWrapper = wrapper
+    Specials.BeginAR2Burst = wrapper
+    print("[LOD:RPG-E] custom AR2 rate-of-fire BeginAR2Burst authority wrapped")
+    return true
+end
+
+timer.Simple(0, installBeginAuthorityWrapper)
+hook.Add("OnReloaded", "LOD_RPG_GateE_AR2RateOfFireRebind", function()
+    timer.Simple(0, installBeginAuthorityWrapper)
+end)
 
 Effects.LODRateOfFireAR2NetBridgeInstalled = true
 print("[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed")
