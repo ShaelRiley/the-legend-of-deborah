@@ -7,11 +7,13 @@ if not Specials then return end
 -- for Gate-E feat families that alter authored AR2 burst transactions. Burst-Size
 -- establishes the shared multiFireBurst rules; Rate-of-Fire composes with AR2;
 -- Magnum integration late-binds to its later cylinder authority; validation reads
--- the final shared state when invoked.
+-- the final shared state when invoked. Runtime validation additionally proves that
+-- the mutable public AR2 methods are actually owned by the corrected one-ammo seam.
 include("sv_rpg_gate_e_burst_size.lua")
 include("sv_rpg_gate_e_rate_of_fire_ar2.lua")
 include("sv_rpg_gate_e_burst_size_magnum.lua")
 include("sv_rpg_gate_e_burst_size_validation.lua")
+include("sv_rpg_gate_e_burst_size_runtime_validation.lua")
 
 util.AddNetworkString("LOD_PlayerAR2Activate")
 
