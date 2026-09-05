@@ -8,15 +8,15 @@ if not Effects or not Rules or not Specials then return end
 if Effects.LODRateOfFireAR2NetBridgeInstalled then return Effects end
 
 local EPSILON = (Effects.RateOfFireConfig and Effects.RateOfFireConfig.epsilon) or 0.002
-local AR2_BURST_ROUNDS = 3
+local AR2_BASE_BURST_ROUNDS = 3
 
 -- The AR2 uses a custom burst transaction rather than ordinary stock IN_ATTACK
 -- cadence authority. Rate of Fire therefore owns a plan table keyed by player.
 -- A plan begins immediately after the authoritative BeginAR2Burst succeeds. Each
 -- successful authoritative FireAR2Round is counted on that player-local plan, and
 -- a standalone Think observer commits the faster next-trigger deadline only after
--- the burst has ended. The targeting laser and internal three-shot spacing remain
--- outside this feat family's authority.
+-- the whole legal burst has ended. Burst-size feats may change the legal target;
+-- the targeting laser and internal shot spacing remain outside cadence authority.
 Effects.AR2RateOfFirePlans = Effects.AR2RateOfFirePlans or setmetatable({}, {__mode = "k"})
 
 function Effects:RateOfFireAR2ReadyAt(startedAt, authoredReadyAt, completedAt, multiplier)
@@ -65,6 +65,7 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
         authoredReadyAt = authoredReadyAt,
         multiplier = multiplier,
         clipBefore = weapon.Clip1 and weapon:Clip1() or -1,
+        targetShots = math.max(1, math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_ROUNDS)),
         roundsFired = 0
     }
     self.AttackRateStats.sessions = (self.AttackRateStats.sessions or 0) + 1
@@ -89,11 +90,15 @@ hook.Add("Think", "LOD_RPG_GateE_AR2RateOfFireCommit", function()
                 local clipNow = plan.weapon.Clip1 and plan.weapon:Clip1() or -1
                 local clipRounds = (tonumber(plan.clipBefore) or -1) - clipNow
                 local roundsFired = math.max(tonumber(plan.roundsFired) or 0, clipRounds)
+                local targetShots = math.max(1,
+                    math.floor(tonumber(plan.targetShots) or AR2_BASE_BURST_ROUNDS))
                 clearPlan(ply)
 
-                -- Zero-, one-, and two-round aborts keep the authored cooldown.
-                -- Only a completed three-round transaction earns faster cadence.
-                if roundsFired >= AR2_BURST_ROUNDS then
+                -- Only completion of the legal burst target earns faster cadence.
+                -- For Burst-Size ranks this may be 4/5/6; when ammo was short it
+                -- may legally be 1/2/etc. Abort paths below that captured target do
+                -- not receive a cadence benefit.
+                if roundsFired >= targetShots then
                     local readyAt, changed = Effects:RateOfFireAR2ReadyAt(
                         plan.startedAt, plan.authoredReadyAt, now, plan.multiplier)
                     if changed then
