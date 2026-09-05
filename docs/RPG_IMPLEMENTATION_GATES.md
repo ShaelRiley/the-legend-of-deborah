@@ -119,7 +119,7 @@ Extra Round / Extended Volley / Full Barrage are runtime accepted. The replacing
 
 Final `gm_flatgrass` acceptance proved Full Barrage from exactly one AR2 ammo: clip `1→0`, all `6/6` projectiles completed, `completed=1`, `aborted=0`, and core RPG validation PASS. Runtime authority revision `gate_e_ar2_one_ammo_per_burst_v2` reported `beginWrapped=true`, `fireWrapped=true`, `baseConfigOneAmmo=true`, and `resultAdapter=true`.
 
-### Batch 8 — DEX SMG Heat — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+### Batch 8 — DEX SMG Heat — PASSED 2026-09-05
 
 Cold Hands / Ice in the Veins / Absolute Zero are implemented from live-GDD Google revision `364`:
 
@@ -132,4 +132,17 @@ Cold Hands / Ice in the Veins / Absolute Zero are implemented from live-GDD Goog
 - actual heat remains networked while the existing absolute tint/audio stages and overheat-smoke cue remain unchanged;
 - Character Sheet/runtime status, event telemetry, deterministic family validation, and a seeded finite acceptance kit are included.
 
-Gate E remains open after the Batch 8 build. The completeness ledger now accounts for 73 total ordinary feats: 24 mechanically implemented, 11 catalog/ownership-only, 38 not yet catalogued, and 49 gameplay effects remaining. Batch 8 does not become runtime accepted until its finite Steam Deck test passes.
+Final `gm_flatgrass` acceptance established both sides of the deterministic contract: baseline overheated after exactly 6 shots with 0 suppressed + 6 heat, while Absolute Zero overheated after exactly 18 shots with 6 suppressed + 12 heat at threshold 12. The fixed lock was 2.0 seconds, the seeded acceptance result passed, the staging audit reported `misplaced=0`, and the family plus core validators passed.
+
+### Batch 9 — Four Singleton Families — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD revision `ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg`:
+
+- `DEX_SPRING_HEEL`: DEX 13; voluntary ordinary ground-jump takeoff impulse is multiplied by `sqrt(2)` to produce 2.0× ballistic apex height without touching Push, falls, ladders, stairs, scripted relocation, or blocking geometry;
+- `DEX_MAGNUM_DEADEYE`: DEX 15 plus actual .357 access; the existing Aim State authority requires 0.35 rather than 0.50 seconds of perfect stillness and preserves all cancellation/consumption rules;
+- `STR_MELEE_REACH`: STR 15 plus melee access; the existing Crowbar TraceHull extends from 96 to 120 units while the same wall/gate/floor collision mask remains authoritative;
+- `CON_RUSSIAN_ASSET`: stable save-compatible ID with current INT 13 qualification; both Tetris reward paths use ×2 overfill rewards, death Tetris uses a 120-second rather than 60-second hard cap, and the 20-second mandatory respawn and victory windows are unchanged;
+- one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;
+- `DEX_AR2_SNAP` is deliberately deferred because the live ×0.80 rule with a 0.50-second floor conflicts with the current 0.45-second base AR2 tell and would otherwise make the feat slower.
+
+Gate E remains open. The existing 73-row migration ledger now contains 28 mechanically implemented entries, 10 catalog/ownership-only entries, 35 not-yet-catalogued entries, and 45 effects remaining. Because the live GDD has expanded beyond that historical row set, a later full catalog reconciliation is required before the ledger can again claim exhaustive totals.

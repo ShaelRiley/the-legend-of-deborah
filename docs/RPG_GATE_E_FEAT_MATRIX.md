@@ -1,10 +1,10 @@
 # Gate E Ordinary Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. The DEX SMG-heat family was reverified against current Google revision `364` (modified `2026-09-05T00:37:22.001Z`).
+Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batch 9 was verified against Google revision `ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg`.
 
-This is the Gate E completeness ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The ledger intentionally stays compact so status cannot drift away from implementation.
+This is the bounded 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document has expanded since this ledger was established; stale `DEX_DOUBLE_JUMP` has been replaced here by the current `DEX_SPRING_HEEL`, while a later full catalog reconciliation must add every other newly authored row before this file can again claim exhaustive completeness.
 
-**73 ordinary feats total: 24 mechanically implemented, 11 catalog/ownership-only, 38 not yet catalogued. 49 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batch 7 is runtime accepted; Batch 8 is implemented and awaiting runtime acceptance.
+**Within this 73-row migration ledger: 28 mechanically implemented, 10 catalog/ownership-only, 35 not yet catalogued, and 45 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batch 8 is runtime accepted; Batch 9 is implemented and awaiting runtime acceptance.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
@@ -26,7 +26,7 @@ This is the Gate E completeness ledger. The live GDD remains design authority fo
 | `DEX_BURSTER_1`<br>Extra Round | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: AR2 authored 3-round burst becomes 4 projectiles for exactly one ammo per committed trigger burst. |
 | `DEX_BURSTER_2`<br>Extended Volley | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces Extra Round with +2 total; AR2 becomes 5 projectiles and authored Magnum bursts inherit their existing free-projectile semantics. |
 | `DEX_BURSTER_3`<br>Full Barrage | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces lower ranks with +3 total. Final proof completed all 6/6 AR2 projectiles from clip 1→0; `completed=1`, `aborted=0`. |
-| `DEX_DOUBLE_JUMP`<br>Double Jump | DEX / Mobility | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `DEX_SPRING_HEEL`<br>Spring Heel | DEX / Mobility | Implemented + validator (runtime test pending) | Batch 9: DEX 13; voluntary grounded jump takeoff impulse ×sqrt(2) for 2.0× ballistic apex height. Non-jump movement and geometry/progression blockers remain authoritative. |
 | `DEX_SHRINK`<br>Little Guy | DEX / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `STR_CROWBAR_D6`<br>Bash | STR / Crowbar | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `STR_CROWBAR_D12`<br>Walloper | STR / Crowbar | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
@@ -35,17 +35,17 @@ This is the Gate E completeness ledger. The live GDD remains design authority fo
 | `STR_KNOCKBACK_1`<br>Pusher | STR / Pusher | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `STR_KNOCKBACK_2`<br>Shover | STR / Pusher | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `STR_KNOCKBACK_3`<br>Space Hog | STR / Pusher | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `STR_MELEE_REACH`<br>Long Reach | STR / Melee reach | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `STR_MELEE_REACH`<br>Long Reach | STR / Melee reach | Implemented + validator (runtime test pending) | Batch 9: STR 15; ordinary Crowbar-family trace reach ×1.25, 96→120 units, using the unchanged blocking-geometry TraceHull. |
 | `CON_STEADFAST`<br>Hard to Move | CON / Control resistance | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `CON_BLAST_PROOF`<br>Blast-Proof | CON / Explosion defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_BIG_GUY`<br>Big Guy | CON / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_NOT_YET`<br>Not Yet | CON / Lethal interceptor | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CON_RUSSIAN_ASSET`<br>Russian Asset | CON / Tetris | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `DEX_SMG_COLD_HANDS_1`<br>Cold Hands | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 13; 11% deterministic heat suppression per successful SMG round; overheat threshold 8. |
-| `DEX_SMG_COLD_HANDS_2`<br>Ice in the Veins | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 15 + Cold Hands; replaces lower rank with 22% suppression and threshold 10. |
-| `DEX_SMG_COLD_HANDS_3`<br>Absolute Zero | DEX / SMG heat | Implemented + validator (runtime test pending) | Batch 8: DEX 17 + Ice in the Veins; replaces lower ranks with 33% suppression and threshold 12; fixed 2.0s lock/cooling/cadence preserved. |
-| `DEX_AR2_SNAP`<br>Snap Targeting | DEX / AR2 | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `DEX_MAGNUM_DEADEYE`<br>Deadeye | DEX / Magnum | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `CON_RUSSIAN_ASSET`<br>Russian Asset | INT / Tetris | Implemented + validator (runtime test pending) | Batch 9: stable legacy ID, current INT 13 qualification; death/victory Tetris rewards ×2, death cap 60→120 seconds, mandatory respawn and victory windows unchanged. |
+| `DEX_SMG_COLD_HANDS_1`<br>Cold Hands | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: DEX 13; seeded test produced baseline 6 heat in 6 shots and exact authored rank behavior. |
+| `DEX_SMG_COLD_HANDS_2`<br>Ice in the Veins | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: DEX 15 + Cold Hands; replaces lower rank with 22% suppression and threshold 10. |
+| `DEX_SMG_COLD_HANDS_3`<br>Absolute Zero | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: rank 3 produced exactly 6 suppressed + 12 heat in 18 shots; fixed 2.0s lock/cooling/cadence preserved. |
+| `DEX_AR2_SNAP`<br>Snap Targeting | DEX / AR2 | Design/runtime contradiction | Live effect is ×0.80 with a 0.50s floor, but current AR2 base tell is 0.45s; applying the rule literally would slow the feat. Resolve the base-tell authority before implementation. |
+| `DEX_MAGNUM_DEADEYE`<br>Deadeye | DEX / Magnum | Implemented + validator (runtime test pending) | Batch 9: DEX 15 with actual .357 capability; Aim State stillness requirement 0.50→0.35 seconds through the existing aim authority. |
 | `INT_MANA_BARRIER_1`<br>Mana Barrier | INT / HP-to-Magic diversion | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `INT_MANA_BARRIER_2`<br>Arcane Aegis | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `INT_MANA_BARRIER_3`<br>Mystic Bastion | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |

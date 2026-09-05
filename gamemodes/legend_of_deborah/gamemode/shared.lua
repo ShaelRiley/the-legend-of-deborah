@@ -44,6 +44,7 @@ if SERVER then
     include("lod/sv_rpg_gate_e_rate_of_fire_validation.lua")
     include("lod/sv_rpg_gate_e_rate_of_fire_compat_validation.lua")
     include("lod/sv_rpg_gate_e_smg_heat.lua")
+    include("lod/sv_rpg_gate_e_singletons.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")

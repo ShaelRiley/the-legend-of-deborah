@@ -4,7 +4,7 @@ local Rolls = LOD.CombatRolls
 local Magnum = LOD.MagnumSuperExplosive
 if not Rolls or not Magnum then return end
 
-local AIM_HOLD_SECONDS = 0.50
+local BASE_AIM_HOLD_SECONDS = 0.50
 local AIM_DAMAGE_MULTIPLIER = 2
 local POSITION_EPSILON_SQR = 0.01
 local ANGLE_EPSILON = 0.01
@@ -51,10 +51,20 @@ local function movementInput(cmd)
     return cmd:KeyDown(IN_JUMP)
 end
 
+local function aimHoldSeconds(ply)
+    local rules = LOD.RPGAbilityRules
+    if rules and rules.MagnumAimHoldSeconds then
+        return math.Clamp(tonumber(rules:MagnumAimHoldSeconds(ply))
+            or BASE_AIM_HOLD_SECONDS, 0.35, BASE_AIM_HOLD_SECONDS)
+    end
+    return BASE_AIM_HOLD_SECONDS
+end
+
 -- StartCommand is already the authoritative player-input cadence. This adds only
 -- O(1) work for a player who currently has the Magnum equipped: compare one
 -- position, one view angle, and movement input, then arm after 0.5 s of complete
--- stillness. Movement intent cancels immediately, even before position changes.
+-- stillness. Deadeye changes only that required duration. Movement intent
+-- cancels immediately, even before position changes.
 hook.Add("StartCommand", "LOD_MagnumAimState_Input", function(ply, cmd)
     if not IsValid(ply) then return end
 
@@ -99,10 +109,15 @@ hook.Add("StartCommand", "LOD_MagnumAimState_Input", function(ply, cmd)
         return
     end
 
-    if not state.armed and now - (state.stationarySince or now) >= AIM_HOLD_SECONDS then
+    local requiredHold = aimHoldSeconds(ply)
+    if not state.armed and now - (state.stationarySince or now) >= requiredHold then
         state.armed = true
+        state.lastRequiredHoldSeconds = requiredHold
+        state.lastLockElapsed = now - (state.stationarySince or now)
         ply:SetNW2Bool("LOD_MagnumAimState", true)
         Magnum.Stats.aimLocks = (Magnum.Stats.aimLocks or 0) + 1
+        Magnum.Stats.lastAimHoldSeconds = requiredHold
+        Magnum.Stats.lastAimLockElapsed = state.lastLockElapsed
 
         net.Start("LOD_MagnumAimLocked")
         net.Send(ply)
@@ -229,7 +244,7 @@ concommand.Add("lod_magnum_aim_status", function(ply)
     local state = IsValid(ply) and Magnum.AimStates and Magnum.AimStates[ply] or nil
     local line = string.format(
         "hold=%.2fs multiplier=x%d armed=%s locks=%d aimedShots=%d cancels=%d result=%s",
-        AIM_HOLD_SECONDS,
+        aimHoldSeconds(ply),
         AIM_DAMAGE_MULTIPLIER,
         tostring(state and state.armed == true or false),
         Magnum.Stats.aimLocks or 0,

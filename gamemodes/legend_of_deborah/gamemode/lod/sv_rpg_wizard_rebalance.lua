@@ -44,8 +44,8 @@ rankThree.effectParams.description = "Replaces lower Mana Barrier ranks and sets
 local russianAsset = assert(feats.CON_RUSSIAN_ASSET,
     "Russian Asset must exist before Wizard rebalance loads")
 russianAsset.governingAbilities = {"int"}
-russianAsset.abilityRequirements = {int = 12}
-russianAsset.eligibilityText = "INT 12"
+russianAsset.abilityRequirements = {int = 13}
+russianAsset.eligibilityText = "INT 13"
 
 local function featDefinition(featId)
     return (Catalog.LevelOneOrdinaryFeats and Catalog.LevelOneOrdinaryFeats[featId])
@@ -208,7 +208,7 @@ function WizardRules:Validate(ply)
     expect(rankThree.effectParams.manaBarrierFeatDiversionFraction == 0.45
         and rankThree.prerequisiteFeatIds[1] == "INT_MANA_BARRIER_2",
         "Mystic Bastion catalog")
-    expect(russianAsset.abilityRequirements and russianAsset.abilityRequirements.int == 12
+    expect(russianAsset.abilityRequirements and russianAsset.abilityRequirements.int == 13
         and russianAsset.abilityRequirements.con == nil
         and russianAsset.governingAbilities[1] == "int",
         "Russian Asset INT qualification")

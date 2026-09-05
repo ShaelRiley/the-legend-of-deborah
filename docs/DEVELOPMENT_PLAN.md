@@ -13,13 +13,14 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 7. Gate E Batch 5 DEX reload cadence — **runtime accepted 2026-09-03**.
 8. Gate E Batch 6 DEX rate-of-fire cadence — **runtime accepted 2026-09-05**.
 9. Gate E Batch 7 DEX authored burst size — **runtime accepted 2026-09-05**.
-10. Gate E Batch 8 DEX SMG heat — **implemented; runtime acceptance pending**.
-11. Continue the remaining Gate E families until all 73 ordinary feats have canonical gameplay bridges and finite validators.
-12. Implement all 192 authored Origin/Background/Motive perk bridges.
-13. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
-14. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
-15. Focused post-RPG VPS multiplayer regression.
-16. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
+10. Gate E Batch 8 DEX SMG heat — **runtime accepted 2026-09-05**.
+11. Gate E Batch 9 singleton suite — **implemented; runtime acceptance pending**.
+12. Reconcile the historical 73-row ledger with the expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
+13. Implement all 192 authored Origin/Background/Motive perk bridges.
+14. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
+15. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
+16. Focused post-RPG VPS multiplayer regression.
+17. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
 
 ## Runtime evidence protocol
 
@@ -65,19 +66,19 @@ Proceed to the next coherent family in `docs/RPG_GATE_E_FEAT_MATRIX.md`. Before 
 5. static validation before push;
 6. a short `gm_flatgrass` runtime acceptance pass with the standard evidence package.
 
-Batch 8 is the DEX SMG-heat ladder (`DEX_SMG_COLD_HANDS_1` / `DEX_SMG_COLD_HANDS_2` / `DEX_SMG_COLD_HANDS_3`). Its static implementation is complete and the next action is the finite seeded runtime acceptance test on `gm_flatgrass`.
+Batch 9 is the four-family singleton suite (`DEX_SPRING_HEEL`, `DEX_MAGNUM_DEADEYE`, `STR_MELEE_REACH`, and the save-compatible `CON_RUSSIAN_ASSET` ID now governed by INT 13). Its static implementation is complete and the next action is the finite combined baseline/feat runtime acceptance test on `gm_flatgrass`.
 
 ## Batch 4 acceptance note
 
 The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.
 
-## Gate E accounting after Batch 8 implementation
+## Gate E accounting after Batch 9 implementation
 
-- 73 ordinary feats total;
-- 24 mechanically implemented;
-- 11 catalog/ownership-only;
-- 38 not yet catalogued;
-- 49 gameplay effects remain.
+- within the historical 73-row migration ledger, 28 mechanically implemented;
+- 10 catalog/ownership-only;
+- 35 not yet catalogued;
+- 45 gameplay effects remain;
+- the live GDD has expanded beyond this historical row set, so the next ledger reconciliation must add the new rows before reporting an exhaustive current total.
 
 ## Preserved constraints
 

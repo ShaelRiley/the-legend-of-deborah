@@ -103,7 +103,12 @@ end
 
 local function addLineReward(session, lines)
     if lines <= 0 then return end
-    local reward = Tetris.RewardForLines(lines)
+    local ps = RunManager:GetPlayerState(session.identity)
+    local state = ps and ps.progressionState or nil
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local reward = effects and effects.TetrisOverfillReward
+        and effects:TetrisOverfillReward(lines, state)
+        or Tetris.RewardForLines(lines)
     if reward <= 0 then return end
 
     session.bonus = (session.bonus or 0) + reward
@@ -111,7 +116,6 @@ local function addLineReward(session, lines)
     session.lastClearLines = lines
     session.clearSerial = (session.clearSerial or 0) + 1
 
-    local ps = RunManager:GetPlayerState(session.identity)
     if ps then
         ps.nextLifeHPBonus = (ps.nextLifeHPBonus or 0) + reward
     end
@@ -178,11 +182,14 @@ function DeathTetris:StartDeath(ply, mandatoryEndsAt)
     if not identity or not ps or ps.eliminated or ps.lives <= 0 then return nil end
 
     local now = CurTime()
+    local rules = LOD.RPGAbilityRules
+    local hardCapSeconds = rules and rules.DeathTetrisMaxSeconds
+        and rules:DeathTetrisMaxSeconds(ps.progressionState) or HARD_DEATH_CAP
     local state = {
         identity = identity,
         startedAt = now,
         mandatoryEndsAt = mandatoryEndsAt or ps.respawnAt or (now + LOD.Config.Lives.RespawnDelay),
-        hardCapAt = now + HARD_DEATH_CAP,
+        hardCapAt = now + hardCapSeconds,
         tetrisStarted = false
     }
     deaths[identity] = state

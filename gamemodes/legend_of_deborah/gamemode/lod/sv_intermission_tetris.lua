@@ -91,7 +91,12 @@ end
 
 local function rewardLines(session, lines)
     if not lines or lines <= 0 then return end
-    local reward = Tetris.RewardForLines(lines)
+    local ps = RunManager:GetPlayerState(session.identity)
+    local state = ps and ps.progressionState or nil
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local reward = effects and effects.TetrisOverfillReward
+        and effects:TetrisOverfillReward(lines, state)
+        or Tetris.RewardForLines(lines)
     if reward <= 0 then return end
 
     session.bonus = (session.bonus or 0) + reward
@@ -99,7 +104,6 @@ local function rewardLines(session, lines)
     session.clearSerial = (session.clearSerial or 0) + 1
     recordEvent(session, EVENT_LINE_CLEAR)
 
-    local ps = RunManager:GetPlayerState(session.identity)
     if ps then
         ps.nextLifeHPBonus = (ps.nextLifeHPBonus or 0) + reward
         local ply = connectedPlayerForIdentity(session.identity)

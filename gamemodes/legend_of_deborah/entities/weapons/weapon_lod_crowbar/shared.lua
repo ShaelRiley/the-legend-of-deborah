@@ -83,13 +83,17 @@ function SWEP:PrimaryAttack()
     if CLIENT then return end
     local rules = LOD and LOD.RPGAbilityRules
     local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(owner) and 1 or 0
+    local reach = rules and rules.MeleeReach and rules:MeleeReach(owner, CROWBAR_RANGE)
+        or CROWBAR_RANGE
+    local effects = LOD and LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and effects.RecordMeleeReach then effects:RecordMeleeReach(reach) end
 
     owner:LagCompensation(true)
     local startPos = owner:GetShootPos()
     local direction = owner:GetAimVector()
     local trace = util.TraceHull({
         start = startPos,
-        endpos = startPos + direction * CROWBAR_RANGE,
+        endpos = startPos + direction * reach,
         mins = HULL_MINS,
         maxs = HULL_MAXS,
         filter = owner,
