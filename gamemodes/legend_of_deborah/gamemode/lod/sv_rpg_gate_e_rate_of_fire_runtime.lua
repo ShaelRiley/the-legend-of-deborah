@@ -60,15 +60,31 @@ local function lastShootTime(weapon)
     return tonumber(weapon:GetLastShootTime()) or 0
 end
 
+-- Firearms are allowed to begin observation while an authored primary deadline
+-- is still in the future. Stock Source weapons such as the AR2 use that interval
+-- for pre-shot/warm-up behavior; refusing to observe until it expires means the
+-- actual shot can happen before Deborah ever owns an observation session. The
+-- future deadline is captured as a protected floor and is never shortened.
+-- Melee has no equivalent pre-shot confirmation signal, so it still begins only
+-- when its ordinary attack deadline is ready.
+function Effects:RateOfFireCanObserveAttackState(weaponClass, inReload, clip, deadline, now)
+    weaponClass = tostring(weaponClass or "")
+    now = tonumber(now) or 0
+    deadline = tonumber(deadline) or 0
+    clip = tonumber(clip) or -1
+    if FIREARMS[weaponClass] then
+        return not inReload and clip > 0
+    end
+    if MELEE[weaponClass] then
+        return deadline <= now + EPSILON
+    end
+    return false
+end
+
 local function canObserveAttack(ply, weapon, now)
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
-    local class = weapon:GetClass()
-    if FIREARMS[class] then
-        if weaponInReload(weapon) or primaryClip(weapon) <= 0 then return false end
-    elseif not MELEE[class] then
-        return false
-    end
-    return primaryDeadline(weapon) <= now + EPSILON
+    return Effects:RateOfFireCanObserveAttackState(
+        weapon:GetClass(), weaponInReload(weapon), primaryClip(weapon), primaryDeadline(weapon), now)
 end
 
 function Effects:IsRateOfFireWeaponClass(weaponClass)
