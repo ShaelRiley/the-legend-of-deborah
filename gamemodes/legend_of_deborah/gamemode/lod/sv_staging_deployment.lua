@@ -464,6 +464,20 @@ function Staging:_FacingAngles()
     return Angle(0, self.HutAngles and self.HutAngles.y or 0, 0)
 end
 
+function Staging:IsPlayerInHut(ply)
+    if not IsValid(ply) or not self:_HutValid() then return false end
+
+    local delta = ply:GetPos() - self.HutCenter
+    local facing = Angle(0, self.HutAngles and self.HutAngles.y or 0, 0)
+    local forwardDistance = delta:Dot(facing:Forward())
+    local rightDistance = delta:Dot(facing:Right())
+    local verticalDistance = delta.z
+
+    return math.abs(forwardDistance) <= math.max(0, (self.HutHalfForward or 0) - 16)
+        and math.abs(rightDistance) <= math.max(0, (self.HutHalfRight or 0) - 16)
+        and verticalDistance >= -4 and verticalDistance <= 160
+end
+
 function Staging:IsDeployed(ply)
     if not IsValid(ply) or not slotActive(ply) then return false end
     local ps = RunManager:GetPlayerState(ply)
@@ -479,9 +493,6 @@ if not RunManager.LODStagingActiveSemanticsInstalled then
     RunManager.LODStagingActiveSemanticsInstalled = true
     RunManager.IsSlotActivePlayer = RunManager.IsSlotActivePlayer or RunManager.IsActivePlayer
     function RunManager:IsActivePlayer(ply)
-        if self.LODStagingBypassActive and self.LODStagingBypassActive[ply] then
-            return self:IsSlotActivePlayer(ply)
-        end
         return self:IsSlotActivePlayer(ply) and Staging:IsDeployed(ply)
     end
 end
@@ -707,29 +718,9 @@ function Staging:DeployPlayer(ply)
     return true
 end
 
-if not RunManager.LODStagingApplyWrapped then
-    RunManager.LODStagingApplyWrapped = true
-    local baseApplyPlayerState = RunManager.ApplyPlayerState
-    function RunManager:ApplyPlayerState(ply)
-        local ps = self:GetPlayerState(ply)
-        if ps and self:IsSlotActivePlayer(ply) and ps.deploymentComplete ~= true then
-            self.LODStagingBypassActive = self.LODStagingBypassActive or setmetatable({}, {__mode = "k"})
-            self.LODStagingBypassActive[ply] = true
-            baseApplyPlayerState(self, ply)
-            self.LODStagingBypassActive[ply] = nil
-            timer.Simple(0, function()
-                if IsValid(ply) then Staging:PlacePlayerInHut(ply, true) end
-            end)
-            return
-        end
-
-        baseApplyPlayerState(self, ply)
-        if IsValid(ply) and ps and ps.deploymentComplete then
-            ply:SetNW2Bool("LOD_Staged", false)
-            ply:SetNW2Bool("LOD_Deployed", true)
-        end
-    end
-end
+-- ApplyPlayerState itself owns the staging/checkpoint destination decision. Do not
+-- wrap it here: competing deferred teleports allowed a later checkpoint apply to
+-- strand an undeployed player in the maze while the campaign still said staged.
 
 -- Staging replaces the two historical guaranteed Level-1 firearm nodes. Keep this
 -- narrow compatibility adapter until the broader LootDirector consolidation removes
@@ -830,14 +821,20 @@ end)
 
 concommand.Add("lod_staging_status", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
-    local slotCount, stagedCount, deployedCount, claimedCount, pickupCount = 0, 0, 0, 0, 0
+    local slotCount, stagedCount, deployedCount, misplacedCount = 0, 0, 0, 0
+    local claimedCount, pickupCount = 0, 0
     local starterSeen, conflicts = {}, 0
 
     for _, candidate in ipairs(player.GetAll()) do
         local ps = RunManager:GetPlayerState(candidate)
         if ps and RunManager:IsSlotActivePlayer(candidate) then
             slotCount = slotCount + 1
-            if ps.deploymentComplete then deployedCount = deployedCount + 1 else stagedCount = stagedCount + 1 end
+            if ps.deploymentComplete then
+                deployedCount = deployedCount + 1
+            else
+                stagedCount = stagedCount + 1
+                if not Staging:IsPlayerInHut(candidate) then misplacedCount = misplacedCount + 1 end
+            end
             if ps.starterClaimed then claimedCount = claimedCount + 1 end
             if ps.starterWeaponClass then
                 if starterSeen[ps.starterWeaponClass] then conflicts = conflicts + 1 end
@@ -847,10 +844,10 @@ concommand.Add("lod_staging_status", function(ply)
     end
     for _, ent in pairs(Staging.StarterEntities or {}) do if IsValid(ent) then pickupCount = pickupCount + 1 end end
 
-    local pass = Staging:_HutValid() and conflicts == 0
+    local pass = Staging:_HutValid() and conflicts == 0 and misplacedCount == 0
     local line = string.format(
-        "slotActive=%d staged=%d deployed=%d claimed=%d pickups=%d hut=%s anchor=%s uniqueStarterConflicts=%d deployments=%d denied=%d result=%s",
-        slotCount, stagedCount, deployedCount, claimedCount, pickupCount,
+        "slotActive=%d staged=%d deployed=%d misplaced=%d claimed=%d pickups=%d hut=%s anchor=%s uniqueStarterConflicts=%d deployments=%d denied=%d result=%s",
+        slotCount, stagedCount, deployedCount, misplacedCount, claimedCount, pickupCount,
         tostring(Staging:_HutValid()), tostring(Staging.HutAnchorSource or "none"),
         conflicts, Staging.Stats.deployments or 0, Staging.Stats.portalDenied or 0,
         pass and "PASS" or "FAIL")

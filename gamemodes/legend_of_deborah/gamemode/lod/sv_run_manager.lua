@@ -425,7 +425,14 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
 end
 
 function RunManager:ApplyPlayerState(ply)
-    if not self.State.BuildReady or not self:IsActivePlayer(ply) then return end
+    -- Staging refines IsActivePlayer to mean "already deployed". Player-state
+    -- application must still run for an admitted, undeployed slot, so consult the
+    -- underlying slot authority when it is available. Keeping this decision here
+    -- also prevents a later ApplyPlayerState call from overwriting staging with the
+    -- maze checkpoint.
+    local slotActive = self.IsSlotActivePlayer
+        and self:IsSlotActivePlayer(ply) or self:IsActivePlayer(ply)
+    if not self.State.BuildReady or not slotActive then return end
     local ps = self:GetPlayerState(ply)
     if not ps or ps.eliminated or ps.lives <= 0 then
         self:PutInRestrictedSpectator(ply)
@@ -437,8 +444,6 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetNoCollideWithTeammates(true)
     ply:CollisionRulesChanged()
     if ps.model then ply:SetModel(ps.model) end
-    ply:SetPos(self.State.CheckpointPos or self.State.BuildReport.startPos)
-    ply:SetEyeAngles(Angle(0, 0, 0))
     local progression = ps.progressionState
     local maximumHealth = math.max(1, progression and progression.derivedStats
         and progression.derivedStats.maxHP or 100)
@@ -449,6 +454,23 @@ function RunManager:ApplyPlayerState(ply)
     self:RestoreInventory(ply, ps)
     ps.respawnAt = nil
     self:_SyncPlayerVars(ply)
+
+    if ps.deploymentComplete ~= true then
+        local staging = LOD.StagingDeployment
+        if staging and staging.PlacePlayerInHut
+            and staging:PlacePlayerInHut(ply, true)
+        then
+            return
+        end
+
+        ErrorNoHalt("[LOD:STAGING] Undeployed player placement failed; maze checkpoint withheld.\n")
+        return
+    end
+
+    ply:SetNW2Bool("LOD_Staged", false)
+    ply:SetNW2Bool("LOD_Deployed", true)
+    ply:SetPos(self.State.CheckpointPos or self.State.BuildReport.startPos)
+    ply:SetEyeAngles(Angle(0, 0, 0))
 end
 
 function RunManager:HandleDeath(ply)
