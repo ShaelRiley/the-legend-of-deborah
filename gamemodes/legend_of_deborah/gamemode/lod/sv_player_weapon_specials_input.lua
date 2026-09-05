@@ -19,5 +19,15 @@ net.Receive("LOD_PlayerAR2Activate", function(_, ply)
     -- Client prediction suppresses the stock automatic-fire input and only asks
     -- to begin the authored burst. The server revalidates weapon, ammo, cadence,
     -- and commits its own current aim direction before publishing the laser.
-    Specials:BeginAR2Burst(ply, weapon, ply:EyeAngles():Forward())
+    local startedAt = CurTime()
+    if not Specials:BeginAR2Burst(ply, weapon, ply:EyeAngles():Forward()) then return end
+
+    -- Begin the feat transaction from the same authoritative activation event.
+    -- Completion is observed independently after the three-round burst ends, so
+    -- later PlayerWeaponSpecials method replacement cannot silently bypass it.
+    local RPG = LOD.RPG
+    local Effects = RPG and RPG.FeatEffectSystem
+    if Effects and isfunction(Effects.BeginAR2RateOfFirePlan) then
+        Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
+    end
 end)
