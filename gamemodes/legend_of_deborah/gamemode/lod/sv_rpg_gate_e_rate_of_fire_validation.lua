@@ -12,7 +12,7 @@ if not Feats or not Effects or not Progression or not Rules or not Config then r
 local CHAIN = Config.chain
 local RANK = Config.rankById
 local FIREARMS = Config.ordinaryFirearms
-local MELEE = Config.ordinaryMelee
+local MELEE = Config.ordinaryMelee or {}
 
 local function owns(state, id)
     for _, value in ipairs(state and state.featIds or {}) do
@@ -101,7 +101,7 @@ function Effects:ValidateRateOfFireCadence()
     expect(FIREARMS.weapon_pistol and FIREARMS.weapon_shotgun and FIREARMS.weapon_smg1
         and FIREARMS.weapon_ar2 and FIREARMS.weapon_357,
         "ordinary firearm attack-rate authority coverage")
-    expect(MELEE.weapon_lod_crowbar, "ordinary Deborah crowbar melee authority coverage")
+    expect(not MELEE.weapon_lod_crowbar, "rate-of-fire family is firearm-only; Crowbar excluded")
     expect(not FIREARMS.weapon_frag and not MELEE.weapon_frag,
         "grenade/non-ordinary tools excluded")
 
@@ -161,7 +161,7 @@ concommand.Add("lod_rpg_gate_e_rate_of_fire_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateRateOfFireCadence()
     if ok then
-        print("[LOD:RPG-E] DEX Rate-of-Fire feat family PASS — 1.10/1.20/1.30 replacement ladder; authored attack interval division; pre-existing lockouts preserved")
+        print("[LOD:RPG-E] DEX Rate-of-Fire feat family PASS — 1.10/1.20/1.30 replacement ladder; firearm primary-attack interval division; authored exclusions preserved")
     else
         ErrorNoHalt("[LOD:RPG-E] DEX Rate-of-Fire feat family FAILED\n")
         for _, message in ipairs(errors or {}) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
@@ -230,8 +230,7 @@ concommand.Add("lod_rpg_gate_e_rate_of_fire_testkit", function(ply, _, args)
         shotgun = "weapon_shotgun",
         smg = "weapon_smg1",
         ar2 = "weapon_ar2",
-        magnum = "weapon_357",
-        crowbar = "weapon_lod_crowbar"
+        magnum = "weapon_357"
     }
     local class = classes[requested] or classes.pistol
     local weapon = ply:GetWeapon(class)
