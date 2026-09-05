@@ -119,6 +119,9 @@ function Effects:ValidateBurstSizeFamily()
     -- pure authored-state classifier must expose only chamber 5/6 as Burster events.
     local Magnum = LOD.MagnumSuperExplosive
     if Magnum then
+        if isfunction(self.InstallMagnumBurstSizeBridge) then
+            self:InstallMagnumBurstSizeBridge()
+        end
         expect(Magnum.LODBurstSizeIntegrationInstalled == true,
             "Magnum Burst-Size integration installed")
         expect(isfunction(Magnum.BursterAuthoredBurstCount),
