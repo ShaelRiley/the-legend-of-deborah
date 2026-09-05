@@ -19,24 +19,18 @@ function Effects:ValidateRateOfFireCadence()
         if not condition then errors[#errors + 1] = message end
     end
 
-    -- Stock Source firearms may own a future primary deadline before the actual
-    -- shot (AR2 targeting/warm-up is the motivating case). Observation must begin
-    -- during that lock so the later shot can be confirmed, while the lock itself
-    -- remains an absolute protected floor.
-    expect(self:RateOfFireCanObserveAttackState("weapon_ar2", false, 30, 100.8, 100.0),
-        "AR2 observation begins while authored pre-shot deadline is active")
-    expect(not self:RateOfFireCanObserveAttackState("weapon_ar2", true, 30, 100.8, 100.0),
+    -- Stock Source firearms may publish shot proof one server tick before their
+    -- post-shot primary deadline. Keep that transaction alive until the genuine
+    -- post-shot deadline appears; never infer cadence from a pre-shot lock.
+    expect(self:RateOfFireCanObserveAttackState("weapon_pistol", false, 18, 100.8, 100.0),
+        "ordinary firearm observation may begin while a pre-shot deadline is active")
+    expect(not self:RateOfFireCanObserveAttackState("weapon_pistol", true, 18, 100.8, 100.0),
         "firearm reload blocks attack-rate observation")
-    expect(not self:RateOfFireCanObserveAttackState("weapon_ar2", false, 0, 100.8, 100.0),
+    expect(not self:RateOfFireCanObserveAttackState("weapon_pistol", false, 0, 100.8, 100.0),
         "empty firearm blocks attack-rate observation")
-    expect(not self:RateOfFireCanObserveAttackState("weapon_lod_crowbar", false, -1, 100.8, 100.0),
-        "melee still waits for ordinary attack deadline")
-    expect(self:RateOfFireCanObserveAttackState("weapon_lod_crowbar", false, -1, 100.0, 100.0),
-        "ready melee attack remains observable")
+    expect(not self:RateOfFireCanObserveAttackState("weapon_lod_crowbar", false, -1, 100.0, 100.0),
+        "Crowbar is excluded because the live GDD family is ordinary-firearm-only")
 
-    -- Stock Source weapons may publish shot proof one server tick before their
-    -- post-shot primary deadline. The compatibility bridge must retain the shot
-    -- and wait for a genuinely new deadline rather than scaling the pre-shot tell.
     local earlyReady, earlyFloor = self:RateOfFireConfirmedDeadlineReady(
         100.0, 100.8, 100.8, 100.6)
     expect(not earlyReady and math.abs(earlyFloor - 100.8) < 0.0001,
@@ -51,6 +45,25 @@ function Effects:ValidateRateOfFireCadence()
         100.81, delayedFloor, 101.4, 1.30)
     expect(changed and scaled >= delayedFloor and scaled < 101.4,
         "delayed stock deadline scales only after shot proof")
+
+    expect(isfunction(self.RateOfFireAR2ReadyAt),
+        "custom AR2 cadence authority is installed")
+    if isfunction(self.RateOfFireAR2ReadyAt) then
+        local ar2Ready, ar2Changed = self:RateOfFireAR2ReadyAt(100.0, 100.88, 100.63, 1.30)
+        local expected = 100.0 + 0.88 / 1.30
+        expect(ar2Changed and math.abs(ar2Ready - expected) < 0.0001,
+            "AR2 total next-trigger interval is divided by Lead Storm")
+
+        local delayedCompletion, delayedChanged = self:RateOfFireAR2ReadyAt(
+            100.0, 100.88, 100.70, 1.30)
+        expect(delayedChanged and math.abs(delayedCompletion - 100.70) < 0.0001,
+            "AR2 completed burst is an absolute floor for laser/internal spacing")
+
+        local baselineReady, baselineChanged = self:RateOfFireAR2ReadyAt(
+            100.0, 100.88, 100.63, 1.00)
+        expect(not baselineChanged and math.abs(baselineReady - 100.88) < 0.0001,
+            "AR2 baseline cadence remains unchanged at rank zero")
+    end
 
     return ok and #errors == 0, errors
 end
