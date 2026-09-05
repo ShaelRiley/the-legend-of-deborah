@@ -109,6 +109,8 @@ local function installBurstWrapper()
     return true
 end
 
+Effects.InstallMagnumBurstSizeBridge = installBurstWrapper
+
 timer.Simple(0, installBurstWrapper)
 hook.Add("InitPostEntity", "LOD_RPG_GateE_MagnumBurstSizeLateBind", function()
     timer.Simple(0, installBurstWrapper)
