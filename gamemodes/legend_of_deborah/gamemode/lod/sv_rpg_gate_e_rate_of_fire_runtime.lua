@@ -10,6 +10,7 @@ local MELEE = Config.ordinaryMelee or {}
 local EPSILON = Config.epsilon or 0.002
 local OBSERVE_INTERVAL = 0.005
 local SESSION_LIMIT_SECONDS = 8.0
+local POST_SHOT_DEADLINE_SECONDS = 0.25
 
 local function internalDeadline(entity, key, fallback)
     if IsValid(entity) and entity.GetInternalVariable then
@@ -54,6 +55,11 @@ local function primaryClip(weapon)
     return tonumber(weapon:Clip1()) or -1
 end
 
+local function lastShootTime(weapon)
+    if not IsValid(weapon) or not weapon.GetLastShootTime then return 0 end
+    return tonumber(weapon:GetLastShootTime()) or 0
+end
+
 local function canObserveAttack(ply, weapon, now)
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
     local class = weapon:GetClass()
@@ -74,8 +80,13 @@ Effects.AttackRateSessions = Effects.AttackRateSessions or setmetatable({}, {__m
 Effects.AttackRateStats = Effects.AttackRateStats or {
     sessions = 0,
     attackIntervalsScaled = 0,
-    preexistingLocksPreserved = 0
+    preexistingLocksPreserved = 0,
+    confirmedAttacks = 0,
+    deadlineConfirmationTimeouts = 0
 }
+Effects.AttackRateStats.confirmedAttacks = tonumber(Effects.AttackRateStats.confirmedAttacks) or 0
+Effects.AttackRateStats.deadlineConfirmationTimeouts =
+    tonumber(Effects.AttackRateStats.deadlineConfirmationTimeouts) or 0
 
 function Effects:RecordRateOfFireScale(ply, weaponClass, channel, multiplier,
     authoredSeconds, scaledSeconds, confirmation)
@@ -108,19 +119,46 @@ function Effects:RecordRateOfFireScale(ply, weaponClass, channel, multiplier,
     return fields
 end
 
+local function recordDeadlineMiss(session, now, raw)
+    Effects.AttackRateStats.deadlineConfirmationTimeouts =
+        (Effects.AttackRateStats.deadlineConfirmationTimeouts or 0) + 1
+    local count = Effects.AttackRateStats.deadlineConfirmationTimeouts
+    local fields = {
+        count = count,
+        weaponClass = tostring(session.weaponClass or "unknown"),
+        confirmation = tostring(session.confirmationKind or "unknown"),
+        confirmedAt = tonumber(session.confirmedAt) or now,
+        priorDeadline = tonumber(session.priorDeadline) or 0,
+        protectedPreShotDeadline = tonumber(session.preShotDeadline) or 0,
+        observedDeadline = tonumber(raw) or 0
+    }
+    Effects.AttackRateStats.lastDeadlineMiss = fields
+    local Log = LOD.RPGTestLog
+    if Log and isfunction(Log.Write) then Log:Write("RATE_OF_FIRE_DEADLINE_MISS", fields) end
+    local Obs = LOD.RPGTestObservability
+    if Obs then
+        Obs.RateOfFireDeadlineMisses = math.max(tonumber(Obs.RateOfFireDeadlineMisses) or 0, count)
+        Obs.LastRateOfFireDeadlineMiss = fields
+    end
+end
+
 function Effects:BeginAttackRateObservation(ply, weapon)
     if not IsValid(ply) or not IsValid(weapon) then return false end
     local now = CurTime()
     local multiplier = Rules:RateOfFireMultiplier(ply)
     if multiplier <= 1.00 + EPSILON or not canObserveAttack(ply, weapon, now) then return false end
 
+    local prior = primaryDeadline(weapon)
     self.AttackRateSessions[ply] = {
         weapon = weapon,
         weaponClass = weapon:GetClass(),
         multiplier = multiplier,
         clipBefore = primaryClip(weapon),
-        priorDeadline = primaryDeadline(weapon),
-        confirmationKind = FIREARMS[weapon:GetClass()] and "clip_decrement" or "deadline_extension",
+        lastShootBefore = lastShootTime(weapon),
+        priorDeadline = prior,
+        preShotDeadline = prior,
+        shotConfirmed = false,
+        confirmationKind = nil,
         startedAt = now,
         expiresAt = now + SESSION_LIMIT_SECONDS
     }
@@ -130,6 +168,45 @@ end
 
 function Effects:EndAttackRateObservation(ply)
     self.AttackRateSessions[ply] = nil
+end
+
+local function confirmFirearmShot(session, weapon, now, raw)
+    if session.shotConfirmed then return true end
+
+    local confirmation = nil
+    local clip = primaryClip(weapon)
+    if session.clipBefore and session.clipBefore >= 0 and clip >= 0 and clip < session.clipBefore then
+        confirmation = "clip_decrement"
+    else
+        local shootTime = lastShootTime(weapon)
+        if shootTime > (tonumber(session.lastShootBefore) or 0) + EPSILON then
+            confirmation = "last_shoot_time"
+        end
+    end
+
+    if not confirmation then
+        -- Any deadline authored before proof of an actual shot is protected. This
+        -- includes the AR2 targeting-laser/pre-fire tell and similar warm-ups.
+        session.preShotDeadline = math.max(tonumber(session.preShotDeadline) or 0, raw)
+        return false
+    end
+
+    session.shotConfirmed = true
+    session.confirmationKind = confirmation
+    session.confirmedAt = now
+    session.deadlineWaitUntil = math.min(tonumber(session.expiresAt) or now,
+        now + POST_SHOT_DEADLINE_SECONDS)
+    Effects.AttackRateStats.confirmedAttacks = (Effects.AttackRateStats.confirmedAttacks or 0) + 1
+    return true
+end
+
+function Effects:RateOfFireConfirmedDeadlineReady(priorDeadline, preShotDeadline, rawDeadline, now)
+    priorDeadline = tonumber(priorDeadline) or 0
+    preShotDeadline = tonumber(preShotDeadline) or priorDeadline
+    rawDeadline = tonumber(rawDeadline) or 0
+    now = tonumber(now) or 0
+    local protectedFloor = math.max(priorDeadline, preShotDeadline)
+    return rawDeadline > protectedFloor + EPSILON and rawDeadline > now + EPSILON, protectedFloor
 end
 
 function Effects:ProcessAttackRateObservation(ply, session, now)
@@ -151,21 +228,40 @@ function Effects:ProcessAttackRateObservation(ply, session, now)
 
     local raw = primaryDeadline(weapon)
     local prior = tonumber(session.priorDeadline) or now
-    if session.confirmationKind == "clip_decrement" then
-        local clip = primaryClip(weapon)
-        if clip >= (session.clipBefore or clip) then return end
-        -- Clip consumption is our proof that the firearm really fired. This is
-        -- the critical AR2 safeguard: targeting-laser delay between input and
-        -- actual shot is already in the past and is never compressed here.
-    elseif raw <= prior + EPSILON then
-        -- The Deborah crowbar has no warm-up timer. Its own PrimaryAttack authors
-        -- the repeat deadline, so observing that extension is proof of a swing.
+    local firearm = FIREARMS[session.weaponClass] == true
+
+    if firearm then
+        if not confirmFirearmShot(session, weapon, now, raw) then return end
+    else
+        -- The Deborah crowbar has no pre-fire warm-up. Its own PrimaryAttack
+        -- authors the repeat deadline, so that extension is proof of a swing.
+        if not session.shotConfirmed then
+            if raw <= (tonumber(session.preShotDeadline) or prior) + EPSILON then return end
+            session.shotConfirmed = true
+            session.confirmationKind = "deadline_extension"
+            session.confirmedAt = now
+            self.AttackRateStats.confirmedAttacks = (self.AttackRateStats.confirmedAttacks or 0) + 1
+        end
+    end
+
+    -- Stock Source weapons can expose shot proof (especially clip decrement) one
+    -- server tick before m_flNextPrimaryAttack is advanced. Keep the confirmed
+    -- observation alive briefly instead of throwing away the attack. The largest
+    -- deadline seen before shot proof is an absolute floor, so AR2 laser/tell time
+    -- and every other pre-shot lock remain outside Rate-of-Fire authority.
+    local deadlineReady, protectedFloor = self:RateOfFireConfirmedDeadlineReady(
+        prior, session.preShotDeadline, raw, now)
+    if not deadlineReady then
+        if firearm and now >= (tonumber(session.deadlineWaitUntil) or now) then
+            recordDeadlineMiss(session, now, raw)
+            self:EndAttackRateObservation(ply)
+        end
         return
     end
 
-    local scaled, eligible = Rules:ScaleAttackDeadline(now, prior, raw, multiplier)
+    local scaled, eligible = Rules:ScaleAttackDeadline(now, protectedFloor, raw, multiplier)
     if eligible and scaled < raw - EPSILON then
-        if scaled <= prior + EPSILON and prior > now + EPSILON then
+        if scaled <= protectedFloor + EPSILON and protectedFloor > now + EPSILON then
             self.AttackRateStats.preexistingLocksPreserved =
                 (self.AttackRateStats.preexistingLocksPreserved or 0) + 1
         end
