@@ -3,6 +3,7 @@ local RPG = LOD.RPG
 local Effects = RPG and RPG.FeatEffectSystem
 if not Effects or not isfunction(Effects.ValidateRateOfFireCadence)
     or not isfunction(Effects.RateOfFireConfirmedDeadlineReady)
+    or not isfunction(Effects.RateOfFireCanObserveAttackState)
 then
     return
 end
@@ -17,6 +18,21 @@ function Effects:ValidateRateOfFireCadence()
     local function expect(condition, message)
         if not condition then errors[#errors + 1] = message end
     end
+
+    -- Stock Source firearms may own a future primary deadline before the actual
+    -- shot (AR2 targeting/warm-up is the motivating case). Observation must begin
+    -- during that lock so the later shot can be confirmed, while the lock itself
+    -- remains an absolute protected floor.
+    expect(self:RateOfFireCanObserveAttackState("weapon_ar2", false, 30, 100.8, 100.0),
+        "AR2 observation begins while authored pre-shot deadline is active")
+    expect(not self:RateOfFireCanObserveAttackState("weapon_ar2", true, 30, 100.8, 100.0),
+        "firearm reload blocks attack-rate observation")
+    expect(not self:RateOfFireCanObserveAttackState("weapon_ar2", false, 0, 100.8, 100.0),
+        "empty firearm blocks attack-rate observation")
+    expect(not self:RateOfFireCanObserveAttackState("weapon_lod_crowbar", false, -1, 100.8, 100.0),
+        "melee still waits for ordinary attack deadline")
+    expect(self:RateOfFireCanObserveAttackState("weapon_lod_crowbar", false, -1, 100.0, 100.0),
+        "ready melee attack remains observable")
 
     -- Stock Source weapons may publish shot proof one server tick before their
     -- post-shot primary deadline. The compatibility bridge must retain the shot
