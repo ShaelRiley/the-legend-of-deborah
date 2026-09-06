@@ -18,13 +18,14 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 12. Gate E Batch 10 Charisma utility and Presence — **runtime accepted 2026-09-06**.
 13. Gate E Batch 11 control and Magic push/recovery — **runtime accepted 2026-09-06**.
 14. Gate E Batch 12 Magic recovery — **runtime accepted 2026-09-06**.
-15. Gate E Batch 13 Pusher family and shared push save — **implemented; runtime acceptance pending**.
-16. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
-17. Implement all 192 authored Origin/Background/Motive perk bridges.
-18. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
-19. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
-20. Focused post-RPG VPS multiplayer regression.
-21. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
+15. Gate E Batch 13 Pusher family and shared push save — **runtime accepted 2026-09-06**.
+16. Gate E Batch 14 Crowbar family — **implemented; runtime acceptance pending**.
+17. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
+18. Implement all 192 authored Origin/Background/Motive perk bridges.
+19. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
+20. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
+21. Focused post-RPG VPS multiplayer regression.
+22. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
 
 ## Runtime evidence protocol
 
@@ -76,19 +77,21 @@ Batch 11 is runtime accepted across its two finite `gm_flatgrass` runs. The firs
 
 Batch 12 is runtime accepted. Its final run recorded two real exploding-d6 continuation dice restoring 2 Magic, four Magic kills restoring 15 Arc Recovery Magic, one clustered cooldown rejection, family/core validation passes, and `TEST_END batch12-magic-recovery`.
 
-Batch 13 implements the Pusher/Shover/Space Hog replacement ladder and the shared STR-based push save. The next finite test must prove an ordinary weapon proc, one push-save roll, the rank-3 75% profile, and a resulting authoritative displacement or legitimate brace.
+Batch 13 is runtime accepted: the rank-3 75% profile produced 10 procs from 19 rolls, two cooldown blocks, exactly 10 shared STR saves, eight wall crushes, `result=PASS`, core validation PASS, and `TEST_END batch13-pusher`.
+
+Batch 14 implements Bash/Walloper/Wrecking Bar/Hero of Legend. The next finite test must prove the SUPER `1d12` melee profile, a 168-unit Bash push, one visible eight-cell Hero pulse that damages a distant hostile without pushing it, and a two-die Crowbar wall crush. Mode 3 additionally exercises the one-save 336-unit Bash + Space Hog composition.
 
 ## Batch 4 acceptance note
 
 The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.
 
-## Gate E accounting after Batch 13 implementation
+## Gate E accounting after Batch 14 implementation
 
-- within the historical 73-row migration ledger, 39 mechanically implemented;
-- 6 catalog/ownership-only;
-- 28 not yet catalogued;
-- 34 gameplay effects remain;
-- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 41;
+- within the historical 73-row migration ledger, 43 mechanically implemented;
+- 4 catalog/ownership-only;
+- 26 not yet catalogued;
+- 30 gameplay effects remain;
+- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 45;
 - the live GDD currently contains 119 tabulated ordinary/cross-feat rows, so the remaining new rows still require migration into the matrix.
 
 ## Preserved constraints

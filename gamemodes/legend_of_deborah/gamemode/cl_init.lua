@@ -33,6 +33,7 @@ include("lod/cl_hostile_presentation_safety.lua")
 include("lod/cl_seeker.lua")
 include("lod/cl_magic.lua")
 include("lod/cl_pushback_fx.lua")
+include("lod/cl_crowbar_feats.lua")
 include("lod/cl_character_sheet.lua")
 
 -- The sheet's identity column is intentionally narrow at Steam Deck scale. Give

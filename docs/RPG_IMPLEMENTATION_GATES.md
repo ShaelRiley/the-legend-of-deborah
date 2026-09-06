@@ -145,7 +145,7 @@ Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD
 - one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;
 - `DEX_AR2_SNAP` is deliberately deferred because the live ×0.80 rule with a 0.50-second floor conflicts with the current 0.45-second base AR2 tell and would otherwise make the feat slower.
 
-Gate E remains open. After Batch 13, the historical 73-row migration ledger contains 39 mechanically implemented entries, 6 catalog/ownership-only entries, 28 not-yet-catalogued entries, and 34 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 41; the remaining rows from the live 119-row catalog still require reconciliation.
+Gate E remains open. After Batch 14, the historical 73-row migration ledger contains 43 mechanically implemented entries, 4 catalog/ownership-only entries, 26 not-yet-catalogued entries, and 30 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 45; the remaining rows from the live 119-row catalog still require reconciliation.
 
 ### Batch 10 — Charisma Utility and Presence — RUNTIME ACCEPTED 2026-09-06
 
@@ -188,7 +188,7 @@ Static proof: all Lua parses, `tools/test_gate_e_magic_recovery.lua` passes, and
 
 Final runtime proof: two actual Force Shout continuation dice restored exactly 2 Magic through Feedback Loop; four Magic-tagged hostile defeats restored 15 total Magic through Arc Recovery; one clustered kill was rejected by its cooldown; status reported `acceptance=PASS`; both validators passed; and the evidence ended at `TEST_END batch12-magic-recovery`.
 
-### Batch 13 — Pusher Family and Shared Push Save — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+### Batch 13 — Pusher Family and Shared Push Save — RUNTIME ACCEPTED 2026-09-06
 
 Pusher / Shover / Space Hog and their required push infrastructure are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`:
 
@@ -200,4 +200,21 @@ Pusher / Shover / Space Hog and their required push infrastructure are implement
 - unbridged Magic pushes retain the baseline wall-slam die even when the caster owns this physical-weapon family;
 - Character Sheet truth, dedicated RNG state, telemetry, finite family/shared-save validators, and a combined testkit/status command cover the bridge.
 
-Static proof: all Lua parses, `tools/test_gate_e_pusher.lua` passes, prior Batch 11/12 harnesses remain green, and the 100-seed maze regression remains `failures=0` with hash `1736216640`. Runtime acceptance remains pending.
+Static proof: all Lua parses, `tools/test_gate_e_pusher.lua` passes, prior Batch 11/12 harnesses remain green, and the 100-seed maze regression remains `failures=0` with hash `1736216640`.
+
+Final runtime proof: rank 3 reported `chance=0.75`, `distance=168`, `cooldown=0.50s`, and unsealed wall `1d12`; 19 rolls produced 10 procs and two cooldown blocks; those 10 procs produced exactly 10 shared STR saves; eight wall crushes dealt 62 total damage; status reported `result=PASS`; core validation passed; and the evidence ended at `TEST_END batch13-pusher`.
+
+### Batch 14 — Crowbar Family — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Bash / Walloper / Wrecking Bar / Hero of Legend are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`:
+
+- `STR_CROWBAR_D6`: STR 13; replaces baseline Crowbar `1d3` with universal exploding `1d6` and gives each successful nonlethal melee hit one authored 168-unit physical push;
+- `STR_CROWBAR_D12`: STR 15 plus Bash; replaces `1d6` with universal SUPER `1d12` and retains the authored push;
+- `STR_CROWBAR_CRUSH`: STR 17 plus Walloper; adds one die to each Crowbar-caused wall crush, producing `2d3`, sealed `2d8`/`2d10`, or universal SUPER `2d12` before any Fighter-capstone bonus die;
+- `STR_HERO_OF_LEGEND`: STR 13; each committed primary swing at `CurrentHP >= min(100, MaxHP)` emits one weapon-shaped ranged pulse from beyond melee reach through at most eight 384-unit cells;
+- the pulse stops at the first blocking geometry, prop, or body and applies one current Crowbar-die physical damage event to an eligible hostile; it is neither melee nor firearm contact, cannot push or wall-crush, and cannot recursively emit;
+- Bash 168 plus a successful Pusher-family 168 proc becomes one 336-unit request before exactly one shared STR save;
+- the custom and legacy Crowbar damage routes share the same d3/d6/d12 profile authority, while the production custom Crowbar owns pulse commit timing;
+- Character Sheet/runtime truth, client pulse presentation, finite family/shared-wall validators, isolated three-mode testkit, and dedicated telemetry cover the bridge.
+
+Static proof: all Lua parses, `tools/test_gate_e_crowbar.lua` and the Batch 11–13 harnesses pass. Runtime acceptance remains pending.

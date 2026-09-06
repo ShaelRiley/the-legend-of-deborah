@@ -24,9 +24,7 @@ local ORDINARY_WEAPONS = {
     weapon_smg1 = true,
     weapon_ar2 = true,
     weapon_357 = true,
-    weapon_shotgun = true,
-    weapon_lod_crowbar = true,
-    weapon_crowbar = true
+    weapon_shotgun = true
 }
 
 local function owns(state, id)
@@ -328,7 +326,8 @@ end
 local function ordinaryWeaponClass(attacker, dmginfo)
     if not IsValid(attacker) or not dmginfo then return nil end
     if dmginfo:IsDamageType(DMG_BLAST) or dmginfo:IsDamageType(DMG_SONIC)
-        or dmginfo:IsDamageType(DMG_CRUSH) then return nil end
+        or dmginfo:IsDamageType(DMG_CRUSH)
+        or dmginfo:IsDamageType(DMG_ENERGYBEAM) then return nil end
     local weapon = attacker.GetActiveWeapon and attacker:GetActiveWeapon() or nil
     local class = IsValid(weapon) and weapon:GetClass() or nil
     if ORDINARY_WEAPONS[class] then return class, weapon end
@@ -338,8 +337,10 @@ local function ordinaryWeaponClass(attacker, dmginfo)
     return nil
 end
 
--- Non-Shotgun ordinary weapon hits arrive here after actual HP damage. Shotgun
--- is excluded because its pellets are aggregated and bridged exactly once below.
+-- Non-Shotgun ordinary firearm hits arrive here after actual HP damage. Shotgun
+-- is excluded because its pellets are aggregated and bridged exactly once below;
+-- Crowbar-family hits are excluded because Bash and Pusher must assemble one
+-- physical-push request before the shared STR save in the Batch 14 authority.
 hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_PusherWeaponHit", function(target, dmginfo, took)
     if took == false or not IsValid(target) or not target.LODHostile
         or target.LODDead or target:Health() <= 0 or not dmginfo

@@ -540,6 +540,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
 
     if target.LODHostile and qualifyingPlayerShooter(attacker) then
         local weaponClass = activeWeaponClass(attacker)
+        -- Hero of Legend already enters through the Crowbar-family dice
+        -- authority. It is not a firearm event, even if the player switches to
+        -- a gun while the visible pulse is still travelling.
+        if dmginfo:IsDamageType(DMG_ENERGYBEAM) then return end
         if grenadeAttack(attacker, inflictor, dmginfo) then
             local contract = grenadeRolls[inflictor]
             if not contract then
@@ -558,13 +562,16 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     table.concat(contract.values or {}, ">"), falloff),
                 nil, "Hostile", "grenade"))
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
-            local profile = {label = "CROWBAR", count = 1, sides = 8}
+            local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+            local profile = effects and effects.CrowbarDamageProfile
+                and effects:CrowbarDamageProfile(attacker)
+                or {label = "CROWBAR", source = "crowbar", count = 1, sides = 3}
             local rng = Rolls:_RNG("player:weapon_crowbar")
             local rolled = Rolls:RollActorDamage(attacker, profile, rng, 0)
             local total = Rolls:ResolveActorDamage(rolled, attacker, target, {physical = true})
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
-            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d8",
+            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, rolled.formula,
                 total, target, nil, nil, "Hostile", "crowbar"))
         elseif weaponClass == "weapon_shotgun" then
             local contract = attacker.LODActiveShotgunRoll

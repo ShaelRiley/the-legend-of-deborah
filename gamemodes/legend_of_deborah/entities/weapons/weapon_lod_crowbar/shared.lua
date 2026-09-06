@@ -88,9 +88,13 @@ function SWEP:PrimaryAttack()
     local effects = LOD and LOD.RPG and LOD.RPG.FeatEffectSystem
     if effects and effects.RecordMeleeReach then effects:RecordMeleeReach(reach) end
 
-    owner:LagCompensation(true)
     local startPos = owner:GetShootPos()
     local direction = owner:GetAimVector()
+    if effects and effects.CommitHeroOfLegendPulse then
+        effects:CommitHeroOfLegendPulse(owner, self, startPos, direction, reach)
+    end
+
+    owner:LagCompensation(true)
     local trace = util.TraceHull({
         start = startPos,
         endpos = startPos + direction * reach,
@@ -113,11 +117,13 @@ function SWEP:PrimaryAttack()
         return
     end
 
+    local profile = effects and effects.CrowbarDamageProfile
+        and effects:CrowbarDamageProfile(owner) or DAMAGE_PROFILE
     local contract = rolls.RollActorDamage
-        and rolls:RollActorDamage(owner, DAMAGE_PROFILE,
+        and rolls:RollActorDamage(owner, profile,
             rolls:_RNG("player:weapon_lod_crowbar"), aceBonus) or nil
     local total = contract and rolls:ResolveActorDamage(contract, owner, target, {physical = true})
-        or rolls:_RollFormula(DAMAGE_PROFILE, rolls:_RNG("player:weapon_lod_crowbar:fallback"))
+        or rolls:_RollFormula(profile, rolls:_RNG("player:weapon_lod_crowbar:fallback"))
     local values = contract and contract.values or nil
     total = math.max(1, math.floor(tonumber(total) or 1))
     local healthBefore = target:Health()
@@ -136,7 +142,7 @@ function SWEP:PrimaryAttack()
         local detail = values and #values > 0
             and string.format("[rolls %s]", table.concat(values, ">")) or nil
         rolls:_Send(owner, 0, rolls:_DamageEventText(owner,
-            contract and contract.formula or "1d3", total,
+            contract and contract.formula or string.format("1d%d", profile.sides or 3), total,
             target, detail, nil, "Hostile", "crowbar"))
     end
 

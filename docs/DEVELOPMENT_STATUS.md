@@ -10,7 +10,7 @@ The live GDD is design authority; GitHub `main` is implementation authority. The
 
 ## Accepted runtime foundation
 
-The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8 and 10–12 now have `gm_flatgrass` runtime acceptance. Batches 9 and 13 are implemented and awaiting their finite runtime gates.
+The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8 and 10–13 now have `gm_flatgrass` runtime acceptance. Batch 9 remains implemented and runtime-pending; Batch 14 is implemented and awaiting its finite runtime gate.
 
 - Batch 1: CON Health Regeneration — accepted exact 11/22/33% ceilings and tested 1.20 HP/s rate.
 - Batch 2: WIS Navigation — accepted Cartographer +8 replacement and Frugal Cartography 5.44 Magic/s test profile.
@@ -87,7 +87,7 @@ Feedback Loop and Arc Recovery are implemented from the current live-GDD revisio
 
 The final `gm_flatgrass` run produced two actual Force Shout continuation dice and restored exactly 2 Magic through Feedback Loop. Four Magic-tagged hostile defeats restored 15 total Magic through Arc Recovery while one clustered kill was rejected by the 2.0-second cooldown. Status reported `acceptance=PASS`; the family validator and core RPG validator passed; the evidence ended at `TEST_END batch12-magic-recovery`.
 
-## Gate E Batch 13 — Pusher Family and Shared Push Save — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+## Gate E Batch 13 — Pusher Family and Shared Push Save — RUNTIME ACCEPTED 2026-09-06
 
 Pusher / Shover / Space Hog are implemented from the current live-GDD revision:
 
@@ -99,17 +99,31 @@ Pusher / Shover / Space Hog are implemented from the current live-GDD revision:
 - Magic-origin wall slams remain outside the family unless a later explicit bridge grants eligibility;
 - Character Sheet truth, finite family/shared-save validators, runtime status/testkit commands, and a dedicated pure-Lua harness are included.
 
+The accepted `gm_flatgrass` run reported the exact rank-3 profile (`chance=0.75`, `distance=168`, `cooldown=0.50s`, unsealed wall `1d12`), 19 eligible rolls, 10 procs, two cooldown blocks, and exactly 10 push-save rolls for those 10 procs. All 10 saves legitimately failed, eight pushes produced wall crushes for 62 total damage, status reported `result=PASS`, the core RPG validator passed, and the evidence ended at `TEST_END batch13-pusher`.
+
+## Gate E Batch 14 — Crowbar Family — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Bash / Walloper / Wrecking Bar / Hero of Legend are implemented from the current live-GDD revision:
+
+- Bash replaces the baseline Crowbar `1d3` with universal exploding `1d6` and adds one 168-unit physical push to every successful nonlethal melee hit;
+- Walloper replaces Bash damage with universal SUPER `1d12` while retaining its push;
+- Wrecking Bar adds one die to Crowbar-caused wall crushes, preserving the active baseline/Pusher/Shover/Space-Hog die class and explosion seal;
+- Hero of Legend emits one bright weapon-shaped pulse per committed primary swing at `CurrentHP >= min(100, MaxHP)`, starting beyond melee reach and stopping at the first body or blocking surface within eight 384-unit cells;
+- pulse damage uses the current Crowbar die and ordinary STR physical multiplier but is isolated from melee, firearm, Crowbar-push, wall-crush, and recursive pulse triggers;
+- Bash and a successful Pusher-family proc assemble as one 336-unit request before exactly one shared STR save;
+- Character Sheet truth, dedicated pulse/push/wall telemetry, a three-mode testkit, family validator, client presentation, and a pure-Lua harness cover the bridge.
+
 ## Gate E accounting
 
 The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
-- within the historical 73-row migration ledger, 39 mechanically implemented;
-- 6 catalog/ownership-only;
-- 28 not yet catalogued;
-- 34 gameplay effects remain;
-- two additional expanded-catalog rows are mechanically implemented, for 41 total;
+- within the historical 73-row migration ledger, 43 mechanically implemented;
+- 4 catalog/ownership-only;
+- 26 not yet catalogued;
+- 30 gameplay effects remain;
+- two additional expanded-catalog rows are mechanically implemented, for 45 total;
 - the remaining expanded rows still require matrix reconciliation.
 
 ## Current rule
 
-Proceed to the next coherent live-GDD feat family. Batch 9 remains a separate pending runtime gate and must not be inferred from another batch's logs. Continue expanded live-catalog reconciliation alongside implementation. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.
+Run the finite Batch 14 Crowbar gate next. Batch 9 remains a separate pending runtime gate and must not be inferred from another batch's logs. Continue expanded live-catalog reconciliation alongside implementation. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.

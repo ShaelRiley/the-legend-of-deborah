@@ -119,6 +119,9 @@ function Pushback:WallCrushProfile(derived, opts)
         math.floor(tonumber(derived and derived.wallSlamDieSides) or 3)) or 3
     profile.classExplosionImmune = pusherFamilyEligible and derived
         and derived.wallSlamClassExplosionImmune == true or false
+    local crowbarBonus = opts.crowbarPush == true and math.max(0,
+        math.floor(tonumber(derived and derived.crowbarWallSlamBonusDice) or 0)) or 0
+    profile.count = math.max(1, (profile.count or 1) + crowbarBonus)
     return profile
 end
 
@@ -163,12 +166,18 @@ function Pushback:_RollWallCrush(hostile, opts)
 
     self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
     self.Stats.crushDamage = (self.Stats.crushDamage or 0) + total
+    local actualDieCount = contract and contract.baseDice or profile.count
+    if opts.crowbarPush == true then
+        self.Stats.lastCrowbarWallDieCount = actualDieCount
+        self.Stats.lastCrowbarWallDieSides = profile.sides
+    end
     hostile.LODLastWallCrush = {
         at = CurTime(),
         damage = total,
         attacker = sourceAttacker,
         source = source,
         rolls = values,
+        dieCount = actualDieCount,
         dieSides = profile.sides,
         classExplosionImmune = profile.classExplosionImmune
     }
@@ -177,7 +186,7 @@ function Pushback:_RollWallCrush(hostile, opts)
         local detail = string.format("[rolls %s; from %s push]",
             values and table.concat(values, ">") or tostring(total), source)
         local formula = contract and contract.formula
-            or string.format("1d%d", profile.sides)
+            or string.format("%dd%d", profile.count or 1, profile.sides)
         rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
             hostile, detail, nil, "Hostile", "wall crush"))
     end
@@ -316,6 +325,21 @@ function Pushback:ValidateSharedPushSave()
         {magicPush = true})
     expect(profile.sides == 3 and not profile.classExplosionImmune,
         "unbridged Magic push retains baseline wall-slam profile")
+    profile = self:WallCrushProfile({
+        wallSlamDieSides = 3,
+        wallSlamClassExplosionImmune = false,
+        crowbarWallSlamBonusDice = 1
+    }, {crowbarPush = true})
+    expect(profile.count == 2 and profile.sides == 3,
+        "Wrecking Bar baseline 2d3 profile")
+    profile = self:WallCrushProfile({
+        wallSlamDieSides = 12,
+        wallSlamClassExplosionImmune = false,
+        crowbarWallSlamBonusDice = 1
+    }, {crowbarPush = true})
+    expect(profile.count == 2 and profile.sides == 12
+        and not profile.classExplosionImmune,
+        "Wrecking Bar plus Space Hog SUPER-2d12 profile")
     return #errors == 0, errors
 end
 

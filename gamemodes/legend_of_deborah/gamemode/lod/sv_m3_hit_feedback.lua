@@ -27,6 +27,7 @@ end
 
 local function firearmDamage(attacker, dmginfo)
     if not playerShooter(attacker) then return false end
+    if dmginfo and dmginfo:IsDamageType(DMG_ENERGYBEAM) then return false end
     local weaponClass = activeWeaponClass(attacker)
     if FIREARM_CLASSES[weaponClass] then return true end
     return dmginfo and dmginfo:IsDamageType(DMG_BULLET)

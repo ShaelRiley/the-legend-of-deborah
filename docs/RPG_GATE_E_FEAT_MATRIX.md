@@ -1,10 +1,10 @@
 # Gate E Ordinary Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batch 11 was verified against Google revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`.
+Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batches 11–14 were verified against Google revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`.
 
 This is the bounded historical 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document now contains 119 tabulated ordinary/cross-feat rows; the new Batch 10 singleton rows are recorded below, while the remaining expanded rows still require migration into this matrix.
 
-**Within the historical 73-row migration ledger: 39 mechanically implemented, 6 catalog/ownership-only, 28 not yet catalogued, and 34 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 41. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batches 10–12 are runtime accepted; Batches 9 and 13 await runtime acceptance.
+**Within the historical 73-row migration ledger: 43 mechanically implemented, 4 catalog/ownership-only, 26 not yet catalogued, and 30 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 45. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batches 10–13 are runtime accepted; Batches 9 and 14 await runtime acceptance.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
@@ -28,13 +28,13 @@ This is the bounded historical 73-row Gate E migration ledger. The live GDD rema
 | `DEX_BURSTER_3`<br>Full Barrage | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces lower ranks with +3 total. Final proof completed all 6/6 AR2 projectiles from clip 1→0; `completed=1`, `aborted=0`. |
 | `DEX_SPRING_HEEL`<br>Spring Heel | DEX / Mobility | Implemented + validator (runtime test pending) | Batch 9: DEX 13; voluntary grounded jump takeoff impulse ×sqrt(2) for 2.0× ballistic apex height. Non-jump movement and geometry/progression blockers remain authoritative. |
 | `DEX_SHRINK`<br>Little Guy | DEX / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `STR_CROWBAR_D6`<br>Bash | STR / Crowbar | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `STR_CROWBAR_D12`<br>Walloper | STR / Crowbar | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `STR_CROWBAR_CRUSH`<br>Wrecking Bar | STR / Crowbar | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `STR_HERO_OF_LEGEND`<br>Hero of Legend | STR / Crowbar pulse | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `STR_KNOCKBACK_1`<br>Pusher | STR / Pusher | Implemented + validator (runtime test pending) | Batch 13: STR 13; 25% deterministic proc, +168 push, 0.50s success cooldown, sealed 1d8 wall slam. |
-| `STR_KNOCKBACK_2`<br>Shover | STR / Pusher | Implemented + validator (runtime test pending) | Batch 13: STR 15 + Pusher; replaces chance with 50% and wall slam with sealed 1d10. |
-| `STR_KNOCKBACK_3`<br>Space Hog | STR / Pusher | Implemented + validator (runtime test pending) | Batch 13: STR 17 + Shover; replaces chance with 75% and wall slam with exploding SUPER d12. |
+| `STR_CROWBAR_D6`<br>Bash | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 13; baseline 1d3→universal exploding 1d6 and one 168-unit push on each successful nonlethal hit. |
+| `STR_CROWBAR_D12`<br>Walloper | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 15 + Bash; replaces d6 with universal SUPER d12 while retaining the 168-unit push. |
+| `STR_CROWBAR_CRUSH`<br>Wrecking Bar | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 17 + Walloper; Crowbar wall crush gains one die while preserving d3/d8/d10/d12 class and seal. |
+| `STR_HERO_OF_LEGEND`<br>Hero of Legend | STR / Crowbar pulse | Implemented + validator (runtime test pending) | Batch 14: STR 13; at `CurrentHP >= min(100, MaxHP)`, one nonrecursive weapon-shaped pulse per committed swing, eight-cell maximum, current Crowbar die, no push/melee triggers. |
+| `STR_KNOCKBACK_1`<br>Pusher | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 13; 25% deterministic proc, +168 push, 0.50s success cooldown, sealed 1d8 wall slam. |
+| `STR_KNOCKBACK_2`<br>Shover | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 15 + Pusher; replaces chance with 50% and wall slam with sealed 1d10. |
+| `STR_KNOCKBACK_3`<br>Space Hog | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 17 + Shover; replaces chance with 75% and wall slam with exploding SUPER d12. |
 | `STR_MELEE_REACH`<br>Long Reach | STR / Melee reach | Implemented + validator (runtime test pending) | Batch 9: STR 15; ordinary Crowbar-family trace reach ×1.25, 96→120 units, using the unchanged blocking-geometry TraceHull. |
 | `CON_STEADFAST`<br>Hard to Move | CON / Control resistance | Implemented + validator | Batch 11 runtime accepted: incoming ordinary hit-stun and non-scripted push displacement ×0.75, with explicit authored resistance bypass. |
 | `CON_BLAST_PROOF`<br>Blast-Proof | CON / Explosion defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |

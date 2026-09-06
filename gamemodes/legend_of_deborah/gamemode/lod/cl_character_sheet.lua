@@ -586,6 +586,20 @@ function Sheet:Open(requestFresh)
             snapshot.wallSlamDieSides or 3,
             snapshot.wallSlamExplodes and "!" or " sealed")
     end
+    if (snapshot.crowbarDamageRank or 0) > 0 or snapshot.heroOfLegendPulseEnabled then
+        local damageLabel = (snapshot.crowbarDamageDieSides or 3) == 12
+            and " SUPER" or ((snapshot.crowbarDamageDieSides or 3) == 6 and " exploding" or "")
+        local wrecking = (snapshot.crowbarWallSlamBonusDice or 0) > 0
+            and string.format(" / Wrecking +%d wall die",
+                snapshot.crowbarWallSlamBonusDice) or ""
+        local hero = snapshot.heroOfLegendPulseEnabled
+            and string.format(" / Hero pulse %d cells",
+                snapshot.heroOfLegendPulseRangeCells or 8) or ""
+        recordText = recordText .. string.format(
+            "\nCrowbar: 1d%d%s / %d push%s%s",
+            snapshot.crowbarDamageDieSides or 3, damageLabel,
+            snapshot.crowbarPushDistance or 0, wrecking, hero)
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20
