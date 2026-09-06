@@ -16,6 +16,8 @@ local CROWBAR_IDS = {
     STR_CROWBAR_D6 = true,
     STR_CROWBAR_D12 = true,
     STR_CROWBAR_CRUSH = true,
+    WIS_HERO_OF_LEGEND = true,
+    -- Preserve old in-progress saves while the renamed feat migrates to WIS.
     STR_HERO_OF_LEGEND = true
 }
 local PUSHER_IDS = {
@@ -23,12 +25,10 @@ local PUSHER_IDS = {
     STR_KNOCKBACK_2 = true,
     STR_KNOCKBACK_3 = true
 }
-local PULSE_RANGE_CELLS = 8
+local PULSE_MIN_RANGE_CELLS = 1
 local PUSH_DISTANCE = 168
-local PULSE_SPEED = 6144
+local PULSE_SPEED = 620
 local CROWBAR_CLASSES = {weapon_lod_crowbar = true, weapon_crowbar = true}
-
-util.AddNetworkString("LOD_HeroOfLegendPulse")
 
 local function owns(state, id)
     for _, value in ipairs(state and state.featIds or {}) do
@@ -80,12 +80,32 @@ Feats.STR_CROWBAR_CRUSH = definition("STR_CROWBAR_CRUSH", "Wrecking Bar",
         crowbarWallSlamBonusDice = 1,
         description = "Crowbar-caused wall slams gain one die while preserving the current authoritative wall-slam die class and explosion seal."
     })
-Feats.STR_HERO_OF_LEGEND = definition("STR_HERO_OF_LEGEND", "Hero of Legend",
-    "str_hero_of_legend", 1, 13, nil, {
+Feats.STR_HERO_OF_LEGEND = nil
+Feats.WIS_HERO_OF_LEGEND = {
+    featId = "WIS_HERO_OF_LEGEND",
+    displayName = "Hero of Legend",
+    featFamilyId = "wis_hero_of_legend",
+    rankIndex = 1,
+    replacesLowerRank = false,
+    repeatableFallback = false,
+    governingAbilities = {"wis"},
+    abilityRequirements = {wis = 15},
+    prerequisiteFeatIds = {},
+    requiredCapabilityTags = {"crowbar"},
+    incompatibleFeatIds = {},
+    allowedActorTypes = {"hero", "human_soldier"},
+    requiredSubsystemTags = {},
+    synergyTags = {"crowbar", "wis_hero_of_legend", "magic"},
+    oneRank = true,
+    effectHandlerId = "crowbar_family",
+    effectParams = {
         heroOfLegendPulseEnabled = true,
-        heroOfLegendPulseRangeCells = PULSE_RANGE_CELLS,
-        description = "At CurrentHP >= min(100, MaxHP), each committed Crowbar-family primary swing emits one nonrecursive ranged Crowbar pulse for up to 8 grid cells."
-    })
+        description = "At CurrentHP >= min(100, MaxHP), a committed Crowbar-family primary swing launches one globally exclusive, nonrecursive glowing Crowbar projectile. It travels at Bio Blaster speed for max(1, WIS bonus) grid cells and deals non-elemental Magic damage with the current Crowbar die."
+    },
+    directorBaseWeight = 1.0,
+    eligibilityText = "WIS 15",
+    actorText = "Player-controlled heroes and human Soldiers with Crowbar/Long-Sword-family access"
+}
 
 Catalog.OrdinaryFeats = Feats
 Catalog.GateECrowbarSourceRevisionId = SOURCE_REVISION
@@ -94,7 +114,7 @@ Effects.CrowbarConfig = {
     sourceRevision = SOURCE_REVISION,
     damageChain = DAMAGE_CHAIN,
     pushDistance = PUSH_DISTANCE,
-    pulseRangeCells = PULSE_RANGE_CELLS,
+    pulseMinRangeCells = PULSE_MIN_RANGE_CELLS,
     pulseSpeed = PULSE_SPEED
 }
 Effects.CrowbarStats = Effects.CrowbarStats or {
@@ -102,22 +122,44 @@ Effects.CrowbarStats = Effects.CrowbarStats or {
     pushRequests = 0,
     pulseEmissions = 0,
     pulseHits = 0,
-    pulseBlocked = 0
+    pulseBlocked = 0,
+    pulseLaunchBlocks = 0,
+    pulseExpired = 0
 }
 
-function Effects:CrowbarProfile(state)
+local function heroRangeCells(wisMod)
+    return math.max(PULSE_MIN_RANGE_CELLS,
+        math.floor(tonumber(wisMod) or 0))
+end
+
+function Effects:HeroOfLegendRangeCells(wisMod)
+    return heroRangeCells(wisMod)
+end
+
+function Effects:CrowbarProfile(state, derived)
     local walloper = owns(state, "STR_CROWBAR_D12")
     local bash = walloper or owns(state, "STR_CROWBAR_D6")
+    local hero = owns(state, "WIS_HERO_OF_LEGEND")
+        or owns(state, "STR_HERO_OF_LEGEND")
     return {
         damageRank = walloper and 2 or (bash and 1 or 0),
         crowbarDamageDieSides = walloper and 12 or (bash and 6 or 3),
         crowbarPushDistance = bash and PUSH_DISTANCE or 0,
         wreckingBar = owns(state, "STR_CROWBAR_CRUSH"),
         crowbarWallSlamBonusDice = owns(state, "STR_CROWBAR_CRUSH") and 1 or 0,
-        heroOfLegend = owns(state, "STR_HERO_OF_LEGEND"),
-        heroOfLegendPulseRangeCells = owns(state, "STR_HERO_OF_LEGEND")
-            and PULSE_RANGE_CELLS or 0
+        heroOfLegend = hero,
+        heroOfLegendPulseRangeCells = hero
+            and heroRangeCells(derived and derived.wisMod) or 0
     }
+end
+
+function Effects:HeroOfLegendDamageProfile(actor)
+    local profile = self:CrowbarDamageProfile(actor)
+    profile.label = "HERO OF LEGEND"
+    profile.source = "hero_of_legend"
+    profile.magicDamage = true
+    profile.nonElemental = true
+    return profile
 end
 
 function Effects:CrowbarDamageProfile(actor)
@@ -149,7 +191,7 @@ if not Effects.LODGateECrowbarApplyDerivedWrapped then
     local base = Effects.ApplyDerived
     function Effects:ApplyDerived(state, derived)
         base(self, state, derived)
-        local profile = self:CrowbarProfile(state)
+        local profile = self:CrowbarProfile(state, derived)
         derived.crowbarDamageRank = profile.damageRank
         derived.crowbarDamageDieSides = profile.crowbarDamageDieSides
         derived.crowbarPushDistance = profile.crowbarPushDistance
@@ -189,39 +231,6 @@ if not Progression.LODGateECrowbarSnapshotWrapped then
     end
 end
 
-local function pulseTrace(attacker, weapon, startPos, direction, reach)
-    local cellSize = tonumber(LOD.Config and LOD.Config.Maze
-        and LOD.Config.Maze.CellSize) or 384
-    local normalized = Vector(direction.x, direction.y, direction.z):GetNormalized()
-    local origin = startPos + normalized * (math.max(0, tonumber(reach) or 96) + 1)
-    local maximum = origin + normalized * (PULSE_RANGE_CELLS * cellSize)
-    local trace = util.TraceHull({
-        start = origin,
-        endpos = maximum,
-        mins = Vector(-3, -3, -3),
-        maxs = Vector(3, 3, 3),
-        mask = MASK_SHOT_HULL,
-        filter = {attacker, weapon}
-    })
-    return origin, trace.Hit and trace.HitPos or maximum, trace
-end
-
-local function broadcastPulse(attacker, weapon, origin, destination, duration, hit)
-    local model = "models/weapons/w_crowbar.mdl"
-    if IsValid(weapon) then
-        local candidate = weapon.WorldModel or weapon:GetModel()
-        if isstring(candidate) and candidate ~= "" then model = candidate end
-    end
-    net.Start("LOD_HeroOfLegendPulse")
-    net.WriteEntity(IsValid(attacker) and attacker or NULL)
-    net.WriteString(model)
-    net.WriteVector(origin)
-    net.WriteVector(destination)
-    net.WriteFloat(duration)
-    net.WriteBool(hit == true)
-    net.Broadcast()
-end
-
 function Effects:CommitHeroOfLegendPulse(attacker, weapon, startPos, direction, reach)
     if not IsValid(attacker) or not attacker:IsPlayer() then return false, "attacker" end
     local profile = self:CrowbarProfile(Rules:ProgressionState(attacker))
@@ -230,62 +239,110 @@ function Effects:CommitHeroOfLegendPulse(attacker, weapon, startPos, direction, 
     if not self:HeroOfLegendEligible(profile.heroOfLegend, attacker:Health(), maxHP) then
         return false, "threshold"
     end
+    if IsValid(self.ActiveHeroOfLegendPulse) then
+        local stats = self.CrowbarStats
+        stats.pulseLaunchBlocks = (stats.pulseLaunchBlocks or 0) + 1
+        return false, "active"
+    end
 
-    local origin, destination, trace = pulseTrace(
-        attacker, weapon, startPos, direction, reach)
-    local travel = origin:Distance(destination)
-    local duration = math.max(0.04, travel / PULSE_SPEED)
-    local target = trace.Entity
-    local eligibleTarget = IsValid(target) and target.LODHostile
-        and not target.LODDead and target:Health() > 0
+    local normalized = Vector(direction.x, direction.y, direction.z):GetNormalized()
+    if normalized:LengthSqr() <= 0.001 then return false, "direction" end
+    local cellSize = tonumber(LOD.Config and LOD.Config.Maze
+        and LOD.Config.Maze.CellSize) or 384
+    local rangeCells = self:HeroOfLegendRangeCells(derived.wisMod)
+    local originOffset = 18
+    local origin = startPos + normalized * originOffset
     local rolls = LOD.CombatRolls
-    local damageProfile = self:CrowbarDamageProfile(attacker)
-    local contract = eligibleTarget and rolls and rolls.RollActorDamage and rolls._RNG
+    local damageProfile = self:HeroOfLegendDamageProfile(attacker)
+    local contract = rolls and rolls.RollActorDamage and rolls._RNG
         and rolls:RollActorDamage(attacker, damageProfile,
             rolls:_RNG("hero-of-legend:crowbar"), 0) or nil
+    if not contract then return false, "rolls" end
+
+    local pulse = ents.Create("lod_hero_crowbar_pulse")
+    if not IsValid(pulse) then return false, "entity" end
+    pulse:SetModel("models/weapons/w_crowbar.mdl")
+    pulse:SetPos(origin)
+    pulse:SetAngles(normalized:Angle())
+    pulse:SetOwner(attacker)
+    pulse.LODOwner = attacker
+    pulse.LODWeapon = weapon
+    pulse.LODDirection = normalized
+    pulse.LODSpeed = PULSE_SPEED
+    pulse.LODMaxDistance = rangeCells * cellSize
+    pulse.LODArmDistance = math.max(0,
+        (math.max(0, tonumber(reach) or 96) + 1) - originOffset)
+    pulse.LODDamageContract = contract
+    pulse:Spawn()
+    pulse:Activate()
+    self.ActiveHeroOfLegendPulse = pulse
 
     local stats = self.CrowbarStats
     stats.pulseEmissions = (stats.pulseEmissions or 0) + 1
-    stats.lastPulseRange = travel
-    stats.lastPulseBlocked = trace.Hit == true and not eligibleTarget
-    if stats.lastPulseBlocked then
-        stats.pulseBlocked = (stats.pulseBlocked or 0) + 1
-    end
-    broadcastPulse(attacker, weapon, origin, destination, duration, trace.Hit)
-    attacker:EmitSound("ambient/energy/weld2.wav", 78, 142, 0.72, CHAN_WEAPON)
+    stats.lastPulseRangeCells = rangeCells
+    stats.lastPulseRange = pulse.LODMaxDistance
+    stats.lastPulseMagic = true
+    attacker:EmitSound("lod/hero_of_legend_launch.wav", 79, 100, 0.84, CHAN_WEAPON)
+    return true, "launched"
+end
 
-    timer.Simple(duration, function()
-        if not eligibleTarget or not IsValid(target) or target.LODDead
-            or target:Health() <= 0 or not contract or not rolls then return end
-        local total = rolls:ResolveActorDamage(contract, attacker, target,
-            {physical = true, crowbarPulse = true})
-        total = math.max(1, math.floor(tonumber(total) or 1))
-        local info = DamageInfo()
-        info:SetAttacker(IsValid(attacker) and attacker or game.GetWorld())
-        info:SetInflictor(IsValid(weapon) and weapon
-            or (IsValid(attacker) and attacker or game.GetWorld()))
-        info:SetDamage(total)
-        info:SetDamageType(DMG_ENERGYBEAM)
-        info:SetDamagePosition(destination)
-        info:SetDamageForce(direction * 900)
-        local healthBefore = target:Health()
-        target:TakeDamageInfo(info)
-        local healthAfter = IsValid(target) and target:Health() or 0
-        local defeated = not IsValid(target) or target.LODDead == true
-        local effectiveDamage = math.max(0, healthBefore - math.max(0, healthAfter))
-        if effectiveDamage <= 0 and not defeated then return end
-        stats.pulseHits = (stats.pulseHits or 0) + 1
-        stats.lastPulseDamage = effectiveDamage
-        if IsValid(attacker) and rolls._Send and rolls._DamageEventText then
-            local detail = contract.values and #contract.values > 0
-                and string.format("[rolls %s; ranged Crowbar pulse]",
-                    table.concat(contract.values, ">")) or "[ranged Crowbar pulse]"
-            rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker,
-                contract.formula, total, target, detail, nil,
-                "Hostile", "Hero of Legend"))
-        end
-    end)
-    return true, eligibleTarget and "target" or (trace.Hit and "blocked" or "range")
+function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
+    if not IsValid(pulse) or pulse.LODResolved then return false end
+    if not IsValid(target) or not target.LODHostile or target.LODDead
+        or target:Health() <= 0 then return false end
+    local attacker = pulse.LODOwner
+    local contract = pulse.LODDamageContract
+    local rolls = LOD.CombatRolls
+    if not IsValid(attacker) or not contract or not rolls then return false end
+
+    pulse.LODResolved = true
+    local total = rolls:ResolveActorDamage(contract, attacker, target, {
+        magic = true,
+        wisScaled = true,
+        nonElemental = true,
+        crowbarPulse = true
+    })
+    total = math.max(1, math.floor(tonumber(total) or 1))
+    local healthBefore = target:Health()
+    local info = DamageInfo()
+    info:SetAttacker(attacker)
+    info:SetInflictor(pulse)
+    info:SetDamage(total)
+    info:SetDamageType(DMG_ENERGYBEAM)
+    info:SetDamagePosition(hitPos or target:WorldSpaceCenter())
+    info:SetDamageForce(vector_origin)
+    target:TakeDamageInfo(info)
+
+    local healthAfter = IsValid(target) and target:Health() or 0
+    local defeated = not IsValid(target) or target.LODDead == true or healthAfter <= 0
+    local effectiveDamage = math.max(0, healthBefore - math.max(0, healthAfter))
+    if effectiveDamage <= 0 and not defeated then return true end
+    local stats = self.CrowbarStats
+    stats.pulseHits = (stats.pulseHits or 0) + 1
+    stats.lastPulseDamage = effectiveDamage
+
+    local run = LOD.RunManager
+    local ps = run and run.GetPlayerState and run:GetPlayerState(attacker) or nil
+    local continuations = math.max(0,
+        #(contract.values or {}) - (tonumber(contract.baseDice) or 1))
+    if ps and self.ApplyFeedbackLoop then
+        self:ApplyFeedbackLoop(attacker, ps, continuations, 0)
+    end
+    if ps and self.ApplyArcRecovery then
+        self:ApplyArcRecovery(attacker, ps, defeated, CurTime())
+    end
+    if ps and LOD.Magic and LOD.Magic._Sync then LOD.Magic:_Sync(attacker, ps) end
+
+    if rolls._Send and rolls._DamageEventText then
+        local detail = contract.values and #contract.values > 0
+            and string.format("[rolls %s; non-elemental Magic Crowbar projectile]",
+                table.concat(contract.values, ">"))
+            or "[non-elemental Magic Crowbar projectile]"
+        rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker,
+            contract.formula, total, target, detail, nil,
+            "Hostile", "Hero of Legend"))
+    end
+    return true
 end
 
 local function crowbarWeapon(attacker, dmginfo)
@@ -345,28 +402,30 @@ function Effects:ValidateCrowbarFamily()
         if not ok then errors[#errors + 1] = message end
     end
     local expected = {
-        {"STR_CROWBAR_D6", 13, nil, 1, false},
-        {"STR_CROWBAR_D12", 15, "STR_CROWBAR_D6", 2, true},
-        {"STR_CROWBAR_CRUSH", 17, "STR_CROWBAR_D12", 1, false},
-        {"STR_HERO_OF_LEGEND", 13, nil, 1, false}
+        {"STR_CROWBAR_D6", "str", 13, nil, 1, false},
+        {"STR_CROWBAR_D12", "str", 15, "STR_CROWBAR_D6", 2, true},
+        {"STR_CROWBAR_CRUSH", "str", 17, "STR_CROWBAR_D12", 1, false},
+        {"WIS_HERO_OF_LEGEND", "wis", 15, nil, 1, false}
     }
     for _, row in ipairs(expected) do
         local feat = Feats[row[1]]
         expect(feat ~= nil, "missing " .. row[1])
         if feat then
-            expect(feat.abilityRequirements.str == row[2], row[1] .. " STR requirement")
-            expect((feat.prerequisiteFeatIds or {})[1] == row[3], row[1] .. " prerequisite")
-            expect(feat.rankIndex == row[4], row[1] .. " rank")
-            expect(feat.replacesLowerRank == row[5], row[1] .. " replacement")
+            expect(feat.abilityRequirements[row[2]] == row[3],
+                row[1] .. " ability requirement")
+            expect((feat.prerequisiteFeatIds or {})[1] == row[4], row[1] .. " prerequisite")
+            expect(feat.rankIndex == row[5], row[1] .. " rank")
+            expect(feat.replacesLowerRank == row[6], row[1] .. " replacement")
         end
     end
+    expect(Feats.STR_HERO_OF_LEGEND == nil, "legacy STR Hero catalog row removed")
     local base = self:CrowbarProfile({featIds = {}})
     local bash = self:CrowbarProfile({featIds = {"STR_CROWBAR_D6"}})
     local walloper = self:CrowbarProfile({featIds = DAMAGE_CHAIN})
     local all = self:CrowbarProfile({featIds = {
         "STR_CROWBAR_D6", "STR_CROWBAR_D12", "STR_CROWBAR_CRUSH",
-        "STR_HERO_OF_LEGEND"
-    }})
+        "WIS_HERO_OF_LEGEND"
+    }}, {wisMod = 2})
     expect(base.crowbarDamageDieSides == 3 and base.crowbarPushDistance == 0,
         "baseline Crowbar profile")
     expect(bash.crowbarDamageDieSides == 6 and bash.crowbarPushDistance == 168,
@@ -374,7 +433,16 @@ function Effects:ValidateCrowbarFamily()
     expect(walloper.crowbarDamageDieSides == 12 and walloper.crowbarPushDistance == 168,
         "Walloper replacement d12 and retained push")
     expect(all.crowbarWallSlamBonusDice == 1 and all.heroOfLegend
-        and all.heroOfLegendPulseRangeCells == 8, "Wrecking Bar and Hero of Legend")
+        and all.heroOfLegendPulseRangeCells == 2, "Wrecking Bar and Hero of Legend")
+    expect(self:HeroOfLegendRangeCells(-2) == 1
+        and self:HeroOfLegendRangeCells(0) == 1
+        and self:HeroOfLegendRangeCells(1) == 1
+        and self:HeroOfLegendRangeCells(3) == 3,
+        "Hero range is max(1, WIS bonus)")
+    local magicProfile = self:HeroOfLegendDamageProfile({})
+    expect(magicProfile.magicDamage == true and magicProfile.nonElemental == true,
+        "Hero damage profile is non-elemental Magic")
+    expect(self.CrowbarConfig.pulseSpeed == 620, "Hero matches Bio Blaster speed")
     expect(self:ResolveCrowbarPushRequest(168, 168) == 336,
         "Bash and Pusher assemble before one save")
     expect(self:HeroOfLegendEligible(true, 100, 160), "Hero threshold caps at 100")
@@ -433,7 +501,7 @@ local function configurePlayer(ply, mode)
     if mode >= 2 then
         for _, id in ipairs({
             "STR_CROWBAR_D6", "STR_CROWBAR_D12", "STR_CROWBAR_CRUSH",
-            "STR_HERO_OF_LEGEND"
+            "WIS_HERO_OF_LEGEND"
         }) do
             state.featIds[#state.featIds + 1] = id
             state.featStackCounts[id] = 1
@@ -458,8 +526,14 @@ end
 
 local function resetTelemetry()
     local stats = Effects.CrowbarStats
+    if IsValid(Effects.ActiveHeroOfLegendPulse) then
+        Effects.ActiveHeroOfLegendPulse.LODRemovalReason = "test-reset"
+        Effects.ActiveHeroOfLegendPulse:Remove()
+    end
+    Effects.ActiveHeroOfLegendPulse = nil
     for _, field in ipairs({
-        "meleeHits", "pushRequests", "pulseEmissions", "pulseHits", "pulseBlocked"
+        "meleeHits", "pushRequests", "pulseEmissions", "pulseHits", "pulseBlocked",
+        "pulseLaunchBlocks", "pulseExpired"
     }) do stats[field] = 0 end
     stats.lastMeleeDamageDie = nil
     stats.lastPushRequest = nil
@@ -467,7 +541,9 @@ local function resetTelemetry()
     stats.combinedSingleSaves = 0
     stats.lastPushResult = nil
     stats.lastPulseRange = nil
+    stats.lastPulseRangeCells = nil
     stats.lastPulseDamage = nil
+    stats.lastPulseMagic = nil
     local push = LOD.Pushback and LOD.Pushback.Stats
     if push then
         push.wallCrushes = 0
@@ -488,7 +564,7 @@ concommand.Add("lod_rpg_gate_e_crowbar_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateCrowbarFamily()
     if ok then
-        print("[LOD:RPG-E] Crowbar PASS — Bash d6/+168; Walloper SUPER-d12; Wrecking +1 wall die; Hero pulse 8 cells")
+        print("[LOD:RPG-E] Crowbar PASS — Bash d6/+168; Walloper SUPER-d12; Wrecking +1 wall die; Hero WIS15/Magic/range=max(1,WIS bonus)/620ups")
     else
         ErrorNoHalt("[LOD:RPG-E] Crowbar FAILED\n")
         for _, message in ipairs(errors or {}) do
@@ -499,7 +575,8 @@ end)
 
 concommand.Add("lod_rpg_gate_e_crowbar_status", function(ply)
     if not developerAllowed(ply) or not IsValid(ply) then return end
-    local profile = Effects:CrowbarProfile(Rules:ProgressionState(ply))
+    local derived = Rules:Derived(ply) or {}
+    local profile = Effects:CrowbarProfile(Rules:ProgressionState(ply), derived)
     local pusher = Effects.PusherProfile
         and Effects:PusherProfile(Rules:ProgressionState(ply)) or {rank = 0}
     local stats = Effects.CrowbarStats
@@ -509,17 +586,22 @@ concommand.Add("lod_rpg_gate_e_crowbar_status", function(ply)
         and profile.crowbarPushDistance == 168 and profile.wreckingBar
         and profile.heroOfLegend and (stats.meleeHits or 0) >= 1
         and (stats.pushRequests or 0) >= 1 and (stats.pulseEmissions or 0) >= 1
-        and (stats.pulseHits or 0) >= 1 and (push.wallCrushes or 0) >= 1
+        and (stats.pulseHits or 0) >= 1 and stats.lastPulseMagic == true
+        and (stats.pulseLaunchBlocks or 0) >= 1 and (push.wallCrushes or 0) >= 1
         and (push.lastCrowbarWallDieCount or 0) == expectedWallCount
         and ((pusher.rank or 0) == 0 or (stats.combinedSingleSaves or 0) >= 1)
     local line = string.format(
-        "die=1d%d push=%d wreck=%s hero=%s range=%d swings=%d pushes=%d maxPush=%d oneSaveCombos=%d pulses=%d hits=%d blocked=%d walls=%d wall=%dd%d result=%s",
+        "die=1d%d push=%d wreck=%s hero=%s wisMod=%d range=%dcell/%du speed=%du magic=%s swings=%d pushes=%d maxPush=%d oneSaveCombos=%d pulses=%d hits=%d launchBlocks=%d blocked=%d expired=%d walls=%d wall=%dd%d result=%s",
         profile.crowbarDamageDieSides, profile.crowbarPushDistance,
         tostring(profile.wreckingBar), tostring(profile.heroOfLegend),
-        profile.heroOfLegendPulseRangeCells, stats.meleeHits or 0,
+        math.floor(tonumber(derived.wisMod) or 0), profile.heroOfLegendPulseRangeCells,
+        profile.heroOfLegendPulseRangeCells * (tonumber(LOD.Config and LOD.Config.Maze
+            and LOD.Config.Maze.CellSize) or 384), PULSE_SPEED,
+        tostring(stats.lastPulseMagic == true), stats.meleeHits or 0,
         stats.pushRequests or 0, stats.maxPushRequest or 0,
         stats.combinedSingleSaves or 0, stats.pulseEmissions or 0, stats.pulseHits or 0,
-        stats.pulseBlocked or 0, push.wallCrushes or 0,
+        stats.pulseLaunchBlocks or 0, stats.pulseBlocked or 0,
+        stats.pulseExpired or 0, push.wallCrushes or 0,
         push.lastCrowbarWallDieCount or 0, push.lastCrowbarWallDieSides or 0,
         pass and "PASS" or "WAITING")
     print("[LOD:RPG-E] " .. line)
@@ -541,7 +623,7 @@ concommand.Add("lod_rpg_gate_e_crowbar_testkit", function(ply, _, args)
     end
     local labels = {[1] = "BASELINE", [2] = "CROWBAR", [3] = "CROWBAR+SPACE HOG"}
     local line = string.format(
-        "Batch 14 %s: full Health, Crowbar ready, %d durable targets. Swing at near and distant targets; drive one into a wall; then run crowbar_status.",
+        "Batch 14R %s: full Health, Crowbar ready, %d durable targets. Hold attack toward a distant target to see one glowing Crowbar at 620ups and block extra launches; hit one target, drive one into a wall, then run crowbar_status.",
         labels[mode], prepared)
     print("[LOD:RPG-E] " .. line)
     ply:ChatPrint(line)

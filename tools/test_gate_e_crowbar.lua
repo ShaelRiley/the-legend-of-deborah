@@ -58,7 +58,7 @@ assert(ok, table.concat(errors or {}, "; "))
 local derived = {}
 effects:ApplyDerived({featIds = {
     "STR_CROWBAR_D6", "STR_CROWBAR_D12", "STR_CROWBAR_CRUSH",
-    "STR_HERO_OF_LEGEND", "STR_KNOCKBACK_1", "STR_KNOCKBACK_2",
+    "WIS_HERO_OF_LEGEND", "STR_KNOCKBACK_1", "STR_KNOCKBACK_2",
     "STR_KNOCKBACK_3"
 }}, derived)
 assert(derived.crowbarDamageRank == 2)
@@ -66,7 +66,17 @@ assert(derived.crowbarDamageDieSides == 12)
 assert(derived.crowbarPushDistance == 168)
 assert(derived.crowbarWallSlamBonusDice == 1)
 assert(derived.heroOfLegendPulseEnabled)
-assert(derived.heroOfLegendPulseRangeCells == 8)
+assert(derived.heroOfLegendPulseRangeCells == 1)
+assert(effects:HeroOfLegendRangeCells(-2) == 1)
+assert(effects:HeroOfLegendRangeCells(0) == 1)
+assert(effects:HeroOfLegendRangeCells(1) == 1)
+assert(effects:HeroOfLegendRangeCells(3) == 3)
+local hero = LOD.RPG.IdentityCatalog.OrdinaryFeats.WIS_HERO_OF_LEGEND
+assert(hero and hero.abilityRequirements.wis == 15)
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.STR_HERO_OF_LEGEND == nil)
+local heroDamage = effects:HeroOfLegendDamageProfile({})
+assert(heroDamage.magicDamage and heroDamage.nonElemental)
+assert(effects.CrowbarConfig.pulseSpeed == 620)
 assert(derived.pusherRank == 3 and derived.weaponKnockbackProcDistance == 168)
 
 local profile = LOD.Pushback:WallCrushProfile(derived, {crowbarPush = true})

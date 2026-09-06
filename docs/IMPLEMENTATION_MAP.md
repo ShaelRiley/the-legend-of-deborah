@@ -20,7 +20,7 @@ The live GDD defines intended design; GitHub `main` defines current implementati
 | Generated-cover LOS / bullet authority | `sv_generated_geometry_ballistics.lua` |
 | Server-authoritative combat dice / combat feed + exploding-die QoL cue | `sv_combat_rolls.lua`, `cl_combat_roll_feed.lua`; player exploding-die continuations trigger a bounded shooter-local radial HUD burst + positive two-layer sound |
 | Global d12 Boomchain rule | `sv_magnum_super_explosive.lua` wraps the shared exploding-die authority: fresh d12 chains start at 8+, each explosion lowers the next threshold by 1, and the threshold stops at the exposed Boomchain Floor (default 5) |
-| Crowbar | `entities/weapons/weapon_lod_crowbar/`, `sv_rpg_gate_e_crowbar.lua`, `cl_crowbar_feats.lua`: baseline `1d3`, Bash exploding `1d6` + 168 push, Walloper SUPER `1d12`, Wrecking extra wall-crush die, eight-cell weapon-shaped Hero pulse; 96-unit base reach and existing hit feedback retained |
+| Crowbar | `entities/weapons/weapon_lod_crowbar/`, `entities/entities/lod_hero_crowbar_pulse/`, `sv_rpg_gate_e_crowbar.lua`: baseline `1d3`, Bash exploding `1d6` + 168 push, Walloper SUPER `1d12`, Wrecking extra wall-crush die, and one globally exclusive glowing Hero crowbar at Bio Blaster speed; 96-unit base reach and existing hit feedback retained |
 | SMG overheat + AR2 laser/burst | `sv_player_weapon_specials.lua`, `sv_player_weapon_specials_input.lua`, client mirror |
 | Equal firearm acquisition / ammo weighting / AR2 one-unit burst economy | `sv_firearm_economy_equalization.lua` |
 | Magnum cylinder escalation / late-cylinder / low-health clutch | `sv_magnum_super_explosive.lua`; six trigger positions apply `+0,+1,+2,+3,+4,+5`; trigger 5 produces a two-round burst and trigger 6 a three-round burst; below 60 HP each trigger has `(60-HP)%` chance to add exactly one projectile; below 34% max Health the final cartridge has one percentage point of preservation chance per full percentage point below 34%, restoring that cartridge after the burst on success |
@@ -55,7 +55,7 @@ The live GDD defines explosion behavior globally rather than per weapon:
 
 ## Current weapon contracts
 
-- Crowbar: baseline `1d3`, Bash exploding `1d6`, Walloper SUPER `1d12`; 96-unit reach before Long Reach, Bash/Walloper 168 push, Wrecking extra wall-crush die, Hero pulse to eight 384-unit cells.
+- Crowbar: baseline `1d3`, Bash exploding `1d6`, Walloper SUPER `1d12`; 96-unit reach before Long Reach, Bash/Walloper 168 push, Wrecking extra wall-crush die, Hero projectile range `max(1, WIS bonus)` 384-unit cells.
 - Pistol: `1d4`.
 - SMG: `1d8`, six-shot heat threshold, 0.25 s per heat cooling, 2.0 s overheat lock.
 - AR2: `1d10` per projectile, 0.45 s committed laser tell, exactly three projectiles, **one AR2 ammo unit per complete burst**.

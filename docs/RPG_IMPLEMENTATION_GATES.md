@@ -204,17 +204,18 @@ Static proof: all Lua parses, `tools/test_gate_e_pusher.lua` passes, prior Batch
 
 Final runtime proof: rank 3 reported `chance=0.75`, `distance=168`, `cooldown=0.50s`, and unsealed wall `1d12`; 19 rolls produced 10 procs and two cooldown blocks; those 10 procs produced exactly 10 shared STR saves; eight wall crushes dealt 62 total damage; status reported `result=PASS`; core validation passed; and the evidence ended at `TEST_END batch13-pusher`.
 
-### Batch 14 — Crowbar Family — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+### Batch 14 — Crowbar Family — HERO REVISION IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
 
-Bash / Walloper / Wrecking Bar / Hero of Legend are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`:
+Bash / Walloper / Wrecking Bar are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`; Hero of Legend includes the subsequent user-authorized playtest revisions:
 
 - `STR_CROWBAR_D6`: STR 13; replaces baseline Crowbar `1d3` with universal exploding `1d6` and gives each successful nonlethal melee hit one authored 168-unit physical push;
 - `STR_CROWBAR_D12`: STR 15 plus Bash; replaces `1d6` with universal SUPER `1d12` and retains the authored push;
 - `STR_CROWBAR_CRUSH`: STR 17 plus Walloper; adds one die to each Crowbar-caused wall crush, producing `2d3`, sealed `2d8`/`2d10`, or universal SUPER `2d12` before any Fighter-capstone bonus die;
-- `STR_HERO_OF_LEGEND`: STR 13; each committed primary swing at `CurrentHP >= min(100, MaxHP)` emits one weapon-shaped ranged pulse from beyond melee reach through at most eight 384-unit cells;
-- the pulse stops at the first blocking geometry, prop, or body and applies one current Crowbar-die physical damage event to an eligible hostile; it is neither melee nor firearm contact, cannot push or wall-crush, and cannot recursively emit;
+- `WIS_HERO_OF_LEGEND`: WIS 15; at `CurrentHP >= min(100, MaxHP)`, a committed primary swing launches one glowing Crowbar model from the attacker's arm only when no other Hero projectile is active globally;
+- the genuine server-swept projectile travels at Bio Blaster speed (620 world units/second) for `max(1, WIS bonus)` 384-unit cells, stops at the first blocking geometry, prop, or eligible body beyond melee reach, and applies one current Crowbar-die non-elemental Magic damage event;
+- the projectile costs no ammunition or Magic and is neither melee nor firearm contact; it cannot push, wall-crush, pierce bodies, or recursively emit;
 - Bash 168 plus a successful Pusher-family 168 proc becomes one 336-unit request before exactly one shared STR save;
 - the custom and legacy Crowbar damage routes share the same d3/d6/d12 profile authority, while the production custom Crowbar owns pulse commit timing;
-- Character Sheet/runtime truth, client pulse presentation, finite family/shared-wall validators, isolated three-mode testkit, and dedicated telemetry cover the bridge.
+- Character Sheet/runtime truth, entity-owned crowbar presentation, an original synthesized launch cue, finite family/shared-wall validators, isolated three-mode testkit, and dedicated telemetry cover the bridge.
 
-Static proof: all Lua parses, `tools/test_gate_e_crowbar.lua` and the Batch 11–13 harnesses pass. Runtime acceptance remains pending.
+The first runtime pass accepted Bash, Walloper, Wrecking Bar, and push/save composition, but rejected Hero presentation and apparent collision damage: the old client proxy appeared as a tiny yellow indicator even though telemetry recorded hits. The revised real-entity projectile requires a fresh runtime acceptance pass.

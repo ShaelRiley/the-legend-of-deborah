@@ -101,17 +101,20 @@ Pusher / Shover / Space Hog are implemented from the current live-GDD revision:
 
 The accepted `gm_flatgrass` run reported the exact rank-3 profile (`chance=0.75`, `distance=168`, `cooldown=0.50s`, unsealed wall `1d12`), 19 eligible rolls, 10 procs, two cooldown blocks, and exactly 10 push-save rolls for those 10 procs. All 10 saves legitimately failed, eight pushes produced wall crushes for 62 total damage, status reported `result=PASS`, the core RPG validator passed, and the evidence ended at `TEST_END batch13-pusher`.
 
-## Gate E Batch 14 — Crowbar Family — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+## Gate E Batch 14 — Crowbar Family — HERO REVISION IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
 
-Bash / Walloper / Wrecking Bar / Hero of Legend are implemented from the current live-GDD revision:
+Bash / Walloper / Wrecking Bar follow the current live-GDD revision; Hero of Legend also incorporates the subsequent user-authorized playtest revisions:
 
 - Bash replaces the baseline Crowbar `1d3` with universal exploding `1d6` and adds one 168-unit physical push to every successful nonlethal melee hit;
 - Walloper replaces Bash damage with universal SUPER `1d12` while retaining its push;
 - Wrecking Bar adds one die to Crowbar-caused wall crushes, preserving the active baseline/Pusher/Shover/Space-Hog die class and explosion seal;
-- Hero of Legend emits one bright weapon-shaped pulse per committed primary swing at `CurrentHP >= min(100, MaxHP)`, starting beyond melee reach and stopping at the first body or blocking surface within eight 384-unit cells;
-- pulse damage uses the current Crowbar die and ordinary STR physical multiplier but is isolated from melee, firearm, Crowbar-push, wall-crush, and recursive pulse triggers;
+- Hero of Legend is gated at WIS 15. At `CurrentHP >= min(100, MaxHP)`, a committed primary swing launches one luminous crowbar from the attacker's arm when no other Hero projectile is active globally;
+- the projectile travels at Bio Blaster speed (620 world units/second), has a maximum range of `max(1, WIS bonus)` 384-unit cells, and stops at the first eligible body or blocking surface after ordinary melee reach;
+- pulse damage uses the current Crowbar die as non-elemental Magic damage with WIS scaling, and remains isolated from melee, firearm, Crowbar-push, wall-crush, and recursive pulse triggers;
 - Bash and a successful Pusher-family proc assemble as one 336-unit request before exactly one shared STR save;
-- Character Sheet truth, dedicated pulse/push/wall telemetry, a three-mode testkit, family validator, client presentation, and a pure-Lua harness cover the bridge.
+- Character Sheet truth, dedicated pulse/push/wall telemetry, a three-mode testkit, family validator, real projectile presentation, original synthesized cue, and a pure-Lua harness cover the bridge.
+
+The initial runtime pass accepted the three physical Crowbar feats and their Pusher composition. Hero was rejected because its proxy was tiny and its damage was not perceptible in play; this revision replaces that proxy/delayed-pretrace path and awaits retest.
 
 ## Gate E accounting
 

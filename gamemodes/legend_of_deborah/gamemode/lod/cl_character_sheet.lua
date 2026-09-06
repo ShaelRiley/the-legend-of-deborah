@@ -594,7 +594,7 @@ function Sheet:Open(requestFresh)
                 snapshot.crowbarWallSlamBonusDice) or ""
         local hero = snapshot.heroOfLegendPulseEnabled
             and string.format(" / Hero pulse %d cells",
-                snapshot.heroOfLegendPulseRangeCells or 8) or ""
+                snapshot.heroOfLegendPulseRangeCells or 1) or ""
         recordText = recordText .. string.format(
             "\nCrowbar: 1d%d%s / %d push%s%s",
             snapshot.crowbarDamageDieSides or 3, damageLabel,

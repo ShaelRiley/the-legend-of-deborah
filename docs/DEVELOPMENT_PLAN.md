@@ -79,7 +79,7 @@ Batch 12 is runtime accepted. Its final run recorded two real exploding-d6 conti
 
 Batch 13 is runtime accepted: the rank-3 75% profile produced 10 procs from 19 rolls, two cooldown blocks, exactly 10 shared STR saves, eight wall crushes, `result=PASS`, core validation PASS, and `TEST_END batch13-pusher`.
 
-Batch 14 implements Bash/Walloper/Wrecking Bar/Hero of Legend. The next finite test must prove the SUPER `1d12` melee profile, a 168-unit Bash push, one visible eight-cell Hero pulse that damages a distant hostile without pushing it, and a two-die Crowbar wall crush. Mode 3 additionally exercises the one-save 336-unit Bash + Space Hog composition.
+Batch 14 implements Bash/Walloper/Wrecking Bar/Hero of Legend. The physical Crowbar behaviors have positive runtime evidence. The next finite test must prove that WIS-15 Hero launches one clearly visible glowing crowbar at 620 units/second, rejects extra launches while it remains active, travels `max(1, WIS bonus)` cells, and deals non-elemental Magic damage to a distant hostile without pushing it. The same pass should retain the accepted SUPER `1d12`, 168-unit Bash push, two-die wall crush, and one-save 336-unit Bash + Space Hog composition.
 
 ## Batch 4 acceptance note
 

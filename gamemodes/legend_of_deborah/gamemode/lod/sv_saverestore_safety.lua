@@ -12,7 +12,8 @@ local Safety = LOD.SaveRestoreSafety
 local TRANSIENT_COMBAT_CLASS = {
     lod_hostile = true,
     lod_soldier_bolt = true,
-    lod_bio_bolt = true
+    lod_bio_bolt = true,
+    lod_hero_crowbar_pulse = true
 }
 
 if saverestore and saverestore.SaveEntity and not Safety.Installed then

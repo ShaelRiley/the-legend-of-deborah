@@ -35,7 +35,6 @@ AddCSLuaFile("lod/cl_hostile_presentation_safety.lua")
 AddCSLuaFile("lod/cl_seeker.lua")
 AddCSLuaFile("lod/cl_magic.lua")
 AddCSLuaFile("lod/cl_pushback_fx.lua")
-AddCSLuaFile("lod/cl_crowbar_feats.lua")
 AddCSLuaFile("lod/cl_character_sheet.lua")
 
 include("shared.lua")
