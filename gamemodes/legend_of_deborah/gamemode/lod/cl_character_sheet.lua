@@ -577,6 +577,15 @@ function Sheet:Open(requestFresh)
             "\nArc Recovery: +%d Magic per Magic kill / %.1fs cooldown",
             snapshot.arcRecoveryMagic or 5, snapshot.arcRecoveryCooldownSeconds or 2)
     end
+    if (snapshot.pusherRank or 0) > 0 then
+        recordText = recordText .. string.format(
+            "\nPusher: rank %d / %.0f%% proc / +%d push / %.2fs target cooldown / wall 1d%d%s",
+            snapshot.pusherRank, (snapshot.weaponKnockbackProcChance or 0) * 100,
+            snapshot.weaponKnockbackProcDistance or 168,
+            snapshot.pusherProcTargetCooldownSeconds or 0.50,
+            snapshot.wallSlamDieSides or 3,
+            snapshot.wallSlamExplodes and "!" or " sealed")
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

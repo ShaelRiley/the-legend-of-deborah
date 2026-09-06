@@ -420,6 +420,7 @@ local function resetTelemetry(enabled)
         target.LODGateEControlMagicHitStunResistance = nil
         target.LODGateEControlMagicHitStunFinal = nil
         target.LODGateEControlMagicHitStunAt = nil
+        target.LODLastPushback = nil
     end
     local push = LOD.Pushback and LOD.Pushback.Stats
     if push then
@@ -428,6 +429,9 @@ local function resetTelemetry(enabled)
         push.lastRequestedDistance = nil
         push.lastMagicPushMultiplier = nil
         push.lastSteadfastMultiplier = nil
+        push.saveRolls = 0
+        push.savesSucceeded = 0
+        push.savesFailed = 0
     end
 end
 
@@ -457,11 +461,21 @@ concommand.Add("lod_rpg_gate_e_control_magic_status", function(ply)
     local push = targetPush or pushStats
     local targetStunResistance = IsValid(target)
         and target.LODGateEControlMagicHitStunResistance or nil
-    local expectedPush = Effects:ResolvePushDistance(336, Rules:Derived(ply),
-        IsValid(target) and Rules:Derived(target) or nil, {magicPush = true})
+    local attackerDerived = Rules:Derived(ply)
+    local expectedAssembled = 336
+        * (tonumber(attackerDerived and attackerDerived.fighterCapstoneOutgoingPushMultiplier) or 1)
+        * profile.magicPushMultiplier
+    local save = push.pushSave
+    local expectedResolved = save and (save.saveSucceeded and 0
+        or (save.sizeAdjusted or 0)
+            * (push.incomingMultiplier or push.lastIncomingMultiplier or 1)
+            * (push.steadfastMultiplier or push.lastSteadfastMultiplier or 1)) or nil
     local pushOK = (pushStats.pushes or 0) >= 1
+        and save and save.rolled == true
+        and math.abs((push.assembled or push.lastAssembledDistance or 0)
+            - expectedAssembled) < 0.01
         and math.abs((push.requested or push.lastRequestedDistance or 0)
-            - expectedPush) < 0.01
+            - (expectedResolved or -1)) < 0.01
         and math.abs((push.magicPushMultiplier or push.lastMagicPushMultiplier or 0)
             - profile.magicPushMultiplier) < 0.001
         and math.abs((push.steadfastMultiplier or push.lastSteadfastMultiplier or 0)
@@ -504,12 +518,10 @@ concommand.Add("lod_rpg_gate_e_control_magic_testkit", function(ply, _, args)
     target:SetHealth(math.max(target:Health(), 200))
     ps.gateEControlMagicTestHoldUntil = CurTime() + 20
     resetTelemetry(enabled)
-    local expectedPush = Effects:ResolvePushDistance(336, Rules:Derived(ply),
-        Rules:Derived(target), {magicPush = true})
     local line = string.format(
-        "Batch 11 %s: target %s #%d; Magic held at 30 for 20s. Aim, RMB once, wait 1s, then run control_magic_status. Expected push %.0f; Mana Spring %s.",
+        "Batch 11 %s: target %s #%d; Magic held at 30 for 20s. Aim, RMB, wait 1s, then run control_magic_status. Shared STR save; Mana Spring %s.",
         enabled and "FEATS" or "BASELINE", target:GetClass(), target:EntIndex(),
-        expectedPush, enabled and "x1.50 active" or "off")
+        enabled and "x1.50 active" or "off")
     print("[LOD:RPG-E] " .. line)
     ply:ChatPrint(line)
 end)

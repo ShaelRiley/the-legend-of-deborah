@@ -145,7 +145,7 @@ Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD
 - one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;
 - `DEX_AR2_SNAP` is deliberately deferred because the live ×0.80 rule with a 0.50-second floor conflicts with the current 0.45-second base AR2 tell and would otherwise make the feat slower.
 
-Gate E remains open. After Batch 12, the historical 73-row migration ledger contains 36 mechanically implemented entries, 7 catalog/ownership-only entries, 30 not-yet-catalogued entries, and 37 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 38; the remaining rows from the live 119-row catalog still require reconciliation.
+Gate E remains open. After Batch 13, the historical 73-row migration ledger contains 39 mechanically implemented entries, 6 catalog/ownership-only entries, 28 not-yet-catalogued entries, and 34 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 41; the remaining rows from the live 119-row catalog still require reconciliation.
 
 ### Batch 10 — Charisma Utility and Presence — RUNTIME ACCEPTED 2026-09-06
 
@@ -174,7 +174,7 @@ Hard to Move / Force Multiplier / Mana Spring are implemented from live-GDD revi
 
 The first live pass proved baseline behavior plus Hard to Move and Force Multiplier composition (`336 × 1.25 × 0.75 = 315`). The corrected feat-side pass reached zero Magic and recorded one Mana Spring start, 16 active ticks, zero paused ticks, and the same exact 315-unit composed push. The family validator and full RPG validator passed and the run ended at `TEST_END batch11-mana-spring-fix`. A later hit-stun query against a different hostile caused the status line's global resistance field to report `x1.00`; this was a telemetry-only false negative and the status command now reads the designated test target's own `x0.75` result.
 
-### Batch 12 — Magic Recovery — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+### Batch 12 — Magic Recovery — PASSED 2026-09-06
 
 Feedback Loop / Arc Recovery are implemented from the current live-GDD revision:
 
@@ -184,4 +184,20 @@ Feedback Loop / Arc Recovery are implemented from the current live-GDD revision:
 - weapon Boomchains remain isolated, initial Magic dice do not count, multi-target casts do not reset the Feedback Loop cap, and clustered kills respect one Arc Recovery cooldown;
 - Character Sheet/runtime truth, a combined testkit/status command, a finite family validator, and core RPG validation cover the bridge.
 
-Static proof: all Lua parses, `tools/test_gate_e_magic_recovery.lua` passes, and the 100-seed maze regression remains `failures=0` with hash `1736216640`. Runtime acceptance remains pending.
+Static proof: all Lua parses, `tools/test_gate_e_magic_recovery.lua` passes, and the 100-seed maze regression remains `failures=0` with hash `1736216640`.
+
+Final runtime proof: two actual Force Shout continuation dice restored exactly 2 Magic through Feedback Loop; four Magic-tagged hostile defeats restored 15 total Magic through Arc Recovery; one clustered kill was rejected by its cooldown; status reported `acceptance=PASS`; both validators passed; and the evidence ended at `TEST_END batch12-magic-recovery`.
+
+### Batch 13 — Pusher Family and Shared Push Save — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Pusher / Shover / Space Hog and their required push infrastructure are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`:
+
+- STR 13/15/17 plus the exact prerequisite chain; higher ranks replace rather than stack;
+- deterministic 25%/50%/75% ordinary-weapon proc chances, fixed +168 units, and a 0.50-second per-attacker/per-target cooldown started only by successful procs;
+- exactly one proc per resolved nonlethal target-hit, including one per damaged Shotgun target after pellet aggregation rather than per pellet or damage die;
+- one shared non-exploding d20 STR push save for every actor-to-actor push, with exact DC/save proficiency terms, defender-size save modifier, size-adjusted travel, PushImmune, and post-save defender multipliers;
+- Pusher 1d8 and Shover 1d10 wall-slam dice are `classExplosionImmune`; Space Hog upgrades to an unsealed universal SUPER d12;
+- unbridged Magic pushes retain the baseline wall-slam die even when the caster owns this physical-weapon family;
+- Character Sheet truth, dedicated RNG state, telemetry, finite family/shared-save validators, and a combined testkit/status command cover the bridge.
+
+Static proof: all Lua parses, `tools/test_gate_e_pusher.lua` passes, prior Batch 11/12 harnesses remain green, and the 100-seed maze regression remains `failures=0` with hash `1736216640`. Runtime acceptance remains pending.

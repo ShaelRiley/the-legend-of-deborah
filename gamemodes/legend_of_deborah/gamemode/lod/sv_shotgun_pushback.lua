@@ -17,32 +17,42 @@ if not HitFeedback.LODShotgunPushbackWrapped then
     local baseApplyShotgunShellStun = HitFeedback.ApplyShotgunShellStun
 
     function HitFeedback:ApplyShotgunShellStun(hostile)
-        -- Preserve the accepted one-stun-per-shell contract. Pushback occurs only
-        -- if that shell-level stun succeeds, so pellet count can never multiply
-        -- movement or wall-crush checks. The current Shotgun identity uses a
-        -- forceful 168-unit nominal push; the generic push authority still owns
-        -- collision rejection and one wall-crush roll per push event.
+        -- Preserve the accepted one-stun-per-shell contract. The shell's authored
+        -- push is independently resolved exactly once after pellet aggregation,
+        -- so another actor's stun lock cannot suppress a legitimate push event.
+        -- Pellet count can never multiply movement, saves, procs, or wall slams.
         local applied = baseApplyShotgunShellStun(self, hostile)
-        if not applied then return false end
+        if not IsValid(hostile) or hostile.LODDead or hostile:Health() <= 0 then
+            return applied
+        end
 
         local attacker = shooterFor(hostile)
         local weapon = IsValid(attacker) and attacker:GetActiveWeapon() or nil
+        local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+        local procDistance, pusherProc = 0, false
+        if effects and effects.TryPusherProc then
+            procDistance, pusherProc = effects:TryPusherProc(
+                attacker, hostile, CurTime())
+        end
+        local requestedDistance = PUSH_DISTANCE + procDistance
         local result = Pushback:Apply(hostile, {
             attacker = attacker,
             inflictor = weapon,
-            distance = PUSH_DISTANCE,
-            source = "shotgun"
+            distance = requestedDistance,
+            source = pusherProc and "shotgun+pusher" or "shotgun",
+            pusherProc = pusherProc
         })
 
         hostile.LODLastShotgunPush = result and {
             distance = result.moved or 0,
-            requested = PUSH_DISTANCE,
+            requested = requestedDistance,
+            pusherProc = pusherProc,
             crushed = result.crushed == true,
             crushDamage = result.crushDamage or 0,
             at = CurTime(),
             attacker = attacker
         } or nil
-        return true
+        return applied
     end
 end
 

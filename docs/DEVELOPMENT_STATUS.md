@@ -10,7 +10,7 @@ The live GDD is design authority; GitHub `main` is implementation authority. The
 
 ## Accepted runtime foundation
 
-The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8, 10, and 11 now have `gm_flatgrass` runtime acceptance. Batch 9 is implemented and awaiting its finite runtime gate.
+The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8 and 10–12 now have `gm_flatgrass` runtime acceptance. Batches 9 and 13 are implemented and awaiting their finite runtime gates.
 
 - Batch 1: CON Health Regeneration — accepted exact 11/22/33% ceilings and tested 1.20 HP/s rate.
 - Batch 2: WIS Navigation — accepted Cartographer +8 replacement and Frugal Cartography 5.44 Magic/s test profile.
@@ -74,7 +74,7 @@ All three feats use current live-GDD CON 13 / WIS 15 / INT 13 qualifications, de
 
 The first September 6 runtime pass accepted the baseline and proved Hard to Move ×0.75 plus Force Multiplier ×1.25 at an exact final requested Force Shout displacement of 315 units. The corrected feat-side pass then reached zero Magic and recorded `starts=1`, `activeTicks=16`, and `pausedTicks=0`, while reproducing the exact composed push of 315. The family validator and full RPG validator passed and the evidence ended at `TEST_END batch11-mana-spring-fix`. Its final `WAITING` label was a telemetry-only false negative: a second hostile's ordinary hit-stun query overwrote the designated steadfast target's global reading. Status now records and reads the designated target's own hit-stun multiplier, and the over-limit 256-byte chat instruction has been shortened.
 
-## Gate E Batch 12 — Magic Recovery — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+## Gate E Batch 12 — Magic Recovery — RUNTIME ACCEPTED 2026-09-06
 
 Feedback Loop and Arc Recovery are implemented from the current live-GDD revision:
 
@@ -85,15 +85,29 @@ Feedback Loop and Arc Recovery are implemented from the current live-GDD revisio
 - Character Sheet truth, finite family/status/testkit commands, pure transition validation, and core RPG validation cover both bridges;
 - all Lua parses, the dedicated Batch 12 harness passes, and the 100-seed maze regression remains stable.
 
+The final `gm_flatgrass` run produced two actual Force Shout continuation dice and restored exactly 2 Magic through Feedback Loop. Four Magic-tagged hostile defeats restored 15 total Magic through Arc Recovery while one clustered kill was rejected by the 2.0-second cooldown. Status reported `acceptance=PASS`; the family validator and core RPG validator passed; the evidence ended at `TEST_END batch12-magic-recovery`.
+
+## Gate E Batch 13 — Pusher Family and Shared Push Save — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Pusher / Shover / Space Hog are implemented from the current live-GDD revision:
+
+- the STR 13/15/17 replacement ladder sets 25%/50%/75% deterministic weapon-knockback proc chances and a fixed +168-unit displacement;
+- successful procs alone start the shared 0.50-second per-attacker/per-target cooldown; cooldown-blocked hits consume no random roll;
+- ordinary firearms and Crowbar-family hits resolve one proc after a nonlethal damaging target-hit, while Shotgun resolves one proc per damaged target after pellet aggregation;
+- every actor-to-actor push now resolves one non-exploding d20 STR save, including the exact level-proficiency and defender-size modifier, size-adjusted distance, PushImmune bypass, and defender-side post-save multipliers;
+- Pusher and Shover wall slams use sealed 1d8/1d10 dice; Space Hog uses an unsealed universal SUPER d12;
+- Magic-origin wall slams remain outside the family unless a later explicit bridge grants eligibility;
+- Character Sheet truth, finite family/shared-save validators, runtime status/testkit commands, and a dedicated pure-Lua harness are included.
+
 ## Gate E accounting
 
 The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
-- within the historical 73-row migration ledger, 36 mechanically implemented;
-- 7 catalog/ownership-only;
-- 30 not yet catalogued;
-- 37 gameplay effects remain;
-- two additional expanded-catalog rows are mechanically implemented, for 38 total;
+- within the historical 73-row migration ledger, 39 mechanically implemented;
+- 6 catalog/ownership-only;
+- 28 not yet catalogued;
+- 34 gameplay effects remain;
+- two additional expanded-catalog rows are mechanically implemented, for 41 total;
 - the remaining expanded rows still require matrix reconciliation.
 
 ## Current rule

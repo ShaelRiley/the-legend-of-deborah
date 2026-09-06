@@ -5,7 +5,7 @@ local Pushback = LOD.Pushback
 local Motion = LOD.HostileMotionV2
 if not Motion then return end
 
-local CRUSH_PROFILE = {label = "WALL CRUSH", source = "wall crush", count = 1, sides = 3}
+local BASE_CRUSH_PROFILE = {label = "WALL CRUSH", source = "wall crush", count = 1, sides = 3}
 local CRUSH_IMPACT_SOUND = "physics/body/body_medium_impact_hard6.wav"
 local CRUSH_BREAK_SOUND = "physics/body/body_medium_break4.wav"
 local CRUSH_SLAM_SOUND = "ambient/machines/thumper_hit.wav"
@@ -17,7 +17,16 @@ local WALL_CLASSES = {
 
 util.AddNetworkString("LOD_PushbackFX")
 
-Pushback.Stats = Pushback.Stats or {pushes = 0, wallCrushes = 0, crushDamage = 0}
+Pushback.Stats = Pushback.Stats or {
+    pushes = 0,
+    wallCrushes = 0,
+    crushDamage = 0,
+    saveRolls = 0,
+    savesSucceeded = 0,
+    savesFailed = 0,
+    pushImmuneBlocks = 0
+}
+Pushback.SaveRNGState = Pushback.SaveRNGState or setmetatable({}, {__mode = "k"})
 
 local function crushSurface(trace)
     if not trace or not trace.Hit then return false end
@@ -101,6 +110,18 @@ local function broadcastPushFX(hostile, startPos, destination, trace, crushed, o
     net.Broadcast()
 end
 
+function Pushback:WallCrushProfile(derived, opts)
+    opts = opts or {}
+    local profile = table.Copy(BASE_CRUSH_PROFILE)
+    local pusherFamilyEligible = opts.magicPush ~= true
+        or opts.pusherFamilyEligible == true
+    profile.sides = pusherFamilyEligible and math.max(2,
+        math.floor(tonumber(derived and derived.wallSlamDieSides) or 3)) or 3
+    profile.classExplosionImmune = pusherFamilyEligible and derived
+        and derived.wallSlamClassExplosionImmune == true or false
+    return profile
+end
+
 function Pushback:_RollWallCrush(hostile, opts)
     if not IsValid(hostile) or hostile.LODDead or hostile:Health() <= 0 then return 0 end
     local rolls = LOD.CombatRolls
@@ -111,12 +132,13 @@ function Pushback:_RollWallCrush(hostile, opts)
     local rng = rolls:_RNG("wall-crush:" .. source)
     local rules = LOD.RPGAbilityRules
     local derived = rules and rules.Derived and rules:Derived(sourceAttacker) or nil
+    local profile = self:WallCrushProfile(derived, opts)
     local bonusDice = math.max(0,
         math.floor(tonumber(derived and derived.fighterCapstoneWallSlamBonusDice) or 0))
     local contract = rolls.RollActorDamage
-        and rolls:RollActorDamage(sourceAttacker, CRUSH_PROFILE, rng, bonusDice) or nil
+        and rolls:RollActorDamage(sourceAttacker, profile, rng, bonusDice) or nil
     local total = contract and rolls:ResolveActorDamage(contract, sourceAttacker, hostile, {})
-        or rolls:_RollFormula(CRUSH_PROFILE, rng)
+        or rolls:_RollFormula(profile, rng)
     local values = contract and contract.values or nil
     total = math.max(1, math.floor((total or 1) + 0.5))
 
@@ -146,17 +168,155 @@ function Pushback:_RollWallCrush(hostile, opts)
         damage = total,
         attacker = sourceAttacker,
         source = source,
-        rolls = values
+        rolls = values,
+        dieSides = profile.sides,
+        classExplosionImmune = profile.classExplosionImmune
     }
 
     if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
-        local detail = string.format("[roll %d; from %s push]", values and values[1] or total, source)
-        local formula = contract and contract.formula or "1d3"
+        local detail = string.format("[rolls %s; from %s push]",
+            values and table.concat(values, ">") or tostring(total), source)
+        local formula = contract and contract.formula
+            or string.format("1d%d", profile.sides)
         rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
             hostile, detail, nil, "Hostile", "wall crush"))
     end
 
     return total
+end
+
+local function round(value)
+    return math.floor((tonumber(value) or 0) + 0.5)
+end
+
+local function log2(value)
+    return math.log(value) / math.log(2)
+end
+
+function Pushback:ResolveSharedPushSave(requestedDistance, attackerDerived,
+    defenderDerived, sizeScale, natural, opts)
+    opts = opts or {}
+    local requested = math.max(0, tonumber(requestedDistance) or 0)
+    local size = math.max(0.01, tonumber(sizeScale) or 1)
+    local sizeModifier = math.Clamp(round(12 * log2(size)), -8, 6)
+    local sizeMultiplier = math.Clamp(1 / size, 0.50, 2.00)
+    local sizeAdjusted = round(requested * sizeMultiplier)
+    if opts.pushImmune == true then
+        return 0, {
+            pushImmune = true,
+            rolled = false,
+            requested = requested,
+            sizeScale = size,
+            sizeModifier = sizeModifier,
+            sizeMultiplier = sizeMultiplier,
+            sizeAdjusted = sizeAdjusted,
+            saveSucceeded = nil,
+            resolved = 0
+        }
+    end
+
+    local attackSTR = tonumber(attackerDerived and attackerDerived.strMod) or 0
+    local attackProficiency = tonumber(attackerDerived
+        and attackerDerived.levelProficiency) or 0
+    local defendSTR = tonumber(defenderDerived and defenderDerived.strMod) or 0
+    local defendProficiency = tonumber(defenderDerived
+        and defenderDerived.levelProficiency) or 0
+    local d20 = math.Clamp(math.floor(tonumber(natural) or 1), 1, 20)
+    local dc = 10 + attackSTR + attackProficiency
+    local save = d20 + defendSTR + defendProficiency + sizeModifier
+    local succeeded = save >= dc
+    local successfulFraction = succeeded
+        and math.Clamp(tonumber(opts.successfulSaveFraction) or 0, 0, 1) or 1
+    local postSave = sizeAdjusted * successfulFraction
+    local incoming = opts.ignoreResistance == true and 1
+        or math.max(0, tonumber(opts.incomingMultiplier) or 1)
+    local steadfast = opts.ignoreResistance == true and 1
+        or math.max(0, tonumber(opts.steadfastMultiplier) or 1)
+    local resolved = postSave * incoming * steadfast
+    return resolved, {
+        pushImmune = false,
+        rolled = true,
+        natural = d20,
+        dc = dc,
+        save = save,
+        saveSucceeded = succeeded,
+        successfulSaveFraction = successfulFraction,
+        requested = requested,
+        sizeScale = size,
+        sizeModifier = sizeModifier,
+        sizeMultiplier = sizeMultiplier,
+        sizeAdjusted = sizeAdjusted,
+        postSave = postSave,
+        incomingMultiplier = incoming,
+        steadfastMultiplier = steadfast,
+        resolved = resolved
+    }
+end
+
+local function actorKey(actor)
+    local rules = LOD.RPGAbilityRules
+    local state = rules and rules.ProgressionState and rules:ProgressionState(actor) or nil
+    if state and state.actorId then return tostring(state.actorId) end
+    return IsValid(actor) and tostring(actor:EntIndex()) or "world"
+end
+
+function Pushback:_PushSaveNatural(attacker, defender)
+    local runState = LOD.RunManager and LOD.RunManager.State
+    local levelSeed = runState and runState.LevelSeed or 1
+    local key = IsValid(attacker) and attacker or self
+    local stream = self.SaveRNGState[key]
+    if not stream or stream.levelSeed ~= levelSeed then
+        stream = {levelSeed = levelSeed, serial = 0}
+        self.SaveRNGState[key] = stream
+    end
+    stream.serial = stream.serial + 1
+    local seed = LOD.Seeds.Derive(levelSeed, string.format(
+        "push-save:v1:%s:%d:%d", actorKey(attacker),
+        IsValid(defender) and defender:EntIndex() or 0, stream.serial))
+    return LOD.RNG.New(seed):Int(1, 20)
+end
+
+function Pushback:ValidateSharedPushSave()
+    local errors = {}
+    local function expect(ok, message)
+        if not ok then errors[#errors + 1] = message end
+    end
+    local distance, result = self:ResolveSharedPushSave(168,
+        {strMod = 2, levelProficiency = 1},
+        {strMod = 1, levelProficiency = 0}, 1, 10, {})
+    expect(result.dc == 13 and result.save == 11 and not result.saveSucceeded,
+        "failed STR push save")
+    expect(distance == 168 and result.sizeAdjusted == 168,
+        "ordinary failed-save distance")
+    distance, result = self:ResolveSharedPushSave(168,
+        {strMod = 0, levelProficiency = 0},
+        {strMod = 0, levelProficiency = 0}, 1.33, 20, {})
+    expect(result.saveSucceeded and distance == 0 and result.sizeModifier == 5
+        and result.sizeAdjusted == 126, "large defender brace and distance scaling")
+    distance, result = self:ResolveSharedPushSave(168, {}, {}, 0.33, 10, {})
+    expect(not result.saveSucceeded and distance == 336 and result.sizeModifier == -8,
+        "tiny defender save penalty and displacement cap")
+    distance, result = self:ResolveSharedPushSave(168, {}, {}, 1, 1,
+        {incomingMultiplier = 0.75, steadfastMultiplier = 0.75})
+    expect(distance == 94.5, "post-save defender multipliers")
+    distance, result = self:ResolveSharedPushSave(168, {}, {}, 1, 1,
+        {pushImmune = true})
+    expect(distance == 0 and result.pushImmune and not result.rolled,
+        "PushImmune skips save")
+    local profile = self:WallCrushProfile(
+        {wallSlamDieSides = 8, wallSlamClassExplosionImmune = true}, {})
+    expect(profile.sides == 8 and profile.classExplosionImmune,
+        "Pusher sealed wall-slam profile")
+    profile = self:WallCrushProfile(
+        {wallSlamDieSides = 12, wallSlamClassExplosionImmune = false}, {})
+    expect(profile.sides == 12 and not profile.classExplosionImmune,
+        "Space Hog SUPER-d12 wall-slam profile")
+    profile = self:WallCrushProfile(
+        {wallSlamDieSides = 12, wallSlamClassExplosionImmune = false},
+        {magicPush = true})
+    expect(profile.sides == 3 and not profile.classExplosionImmune,
+        "unbridged Magic push retains baseline wall-slam profile")
+    return #errors == 0, errors
 end
 
 function Pushback:Apply(hostile, opts)
@@ -169,14 +329,13 @@ function Pushback:Apply(hostile, opts)
     local attackerDerived = rules and rules.Derived and rules:Derived(opts.attacker) or nil
     local defenderDerived = rules and rules.Derived and rules:Derived(hostile) or nil
     local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
-    local distance, parts
+    local parts
     if effects and effects.ResolvePushDistance then
-        distance, parts = effects:ResolvePushDistance(
+        _, parts = effects:ResolvePushDistance(
             authoredDistance, attackerDerived, defenderDerived, opts)
     else
         local outgoing = math.max(0, tonumber(attackerDerived
             and attackerDerived.fighterCapstoneOutgoingPushMultiplier) or 1)
-        distance = authoredDistance * outgoing
         parts = {
             authored = authoredDistance,
             outgoingMultiplier = outgoing,
@@ -185,7 +344,87 @@ function Pushback:Apply(hostile, opts)
             steadfastMultiplier = 1
         }
     end
-    if distance <= 0 then return nil end
+    local assembled = authoredDistance * (parts.outgoingMultiplier or 1)
+        * (parts.magicPushMultiplier or 1)
+    local sizeScale = hostile:GetNW2Float("LOD_SizeScale", 1)
+    local pushImmune = opts.pushImmune == true or hostile.LODPushImmune == true
+        or hostile:GetNW2Bool("LOD_PushImmune", false)
+    local natural = opts.pushSaveNatural
+        or (not pushImmune and self:_PushSaveNatural(opts.attacker, hostile) or 1)
+    local distance, save = self:ResolveSharedPushSave(
+        assembled, attackerDerived, defenderDerived, sizeScale, natural, {
+            pushImmune = pushImmune,
+            successfulSaveFraction = opts.successfulSaveFraction,
+            ignoreResistance = opts.ignoreResistance,
+            incomingMultiplier = parts.incomingMultiplier,
+            steadfastMultiplier = parts.steadfastMultiplier
+        })
+    self.Stats.pushes = (self.Stats.pushes or 0) + 1
+    self.Stats.lastAuthoredDistance = authoredDistance
+    self.Stats.lastAssembledDistance = assembled
+    self.Stats.lastSizeAdjustedDistance = save.sizeAdjusted
+    self.Stats.lastRequestedDistance = distance
+    self.Stats.lastOutgoingMultiplier = parts.outgoingMultiplier
+    self.Stats.lastMagicPushMultiplier = parts.magicPushMultiplier
+    self.Stats.lastIncomingMultiplier = parts.incomingMultiplier
+    self.Stats.lastSteadfastMultiplier = parts.steadfastMultiplier
+    self.Stats.lastSaveNatural = save.natural
+    self.Stats.lastSaveDC = save.dc
+    self.Stats.lastSaveTotal = save.save
+    self.Stats.lastSaveSucceeded = save.saveSucceeded
+    if save.rolled then
+        self.Stats.saveRolls = (self.Stats.saveRolls or 0) + 1
+        if save.saveSucceeded then
+            self.Stats.savesSucceeded = (self.Stats.savesSucceeded or 0) + 1
+        else
+            self.Stats.savesFailed = (self.Stats.savesFailed or 0) + 1
+        end
+    elseif save.pushImmune then
+        self.Stats.pushImmuneBlocks = (self.Stats.pushImmuneBlocks or 0) + 1
+    end
+    local rolls = LOD.CombatRolls
+    if save.rolled and IsValid(opts.attacker) and opts.attacker:IsPlayer()
+        and rolls and rolls._Send then
+        rolls:_Send(opts.attacker, 2, string.format(
+            "PUSH SAVE d20=%d; total %d vs DC %d; %s; distance %.1f",
+            save.natural, save.save, save.dc,
+            save.saveSucceeded and "BRACED" or "FAILED", distance))
+    end
+    if distance <= 0 then
+        local result = {
+            authored = authoredDistance,
+            assembled = assembled,
+            sizeAdjusted = save.sizeAdjusted,
+            requested = 0,
+            resolved = 0,
+            outgoingMultiplier = parts.outgoingMultiplier,
+            magicPushMultiplier = parts.magicPushMultiplier,
+            incomingMultiplier = parts.incomingMultiplier,
+            steadfastMultiplier = parts.steadfastMultiplier,
+            moved = 0,
+            blocked = false,
+            crushed = false,
+            crushDamage = 0,
+            pushSave = save
+        }
+        hostile.LODLastPushback = {
+            at = CurTime(),
+            authored = authoredDistance,
+            assembled = assembled,
+            sizeAdjusted = save.sizeAdjusted,
+            requested = 0,
+            moved = 0,
+            crushed = false,
+            crushDamage = 0,
+            source = tostring(opts.source or "generic"),
+            pushSave = save,
+            outgoingMultiplier = parts.outgoingMultiplier,
+            magicPushMultiplier = parts.magicPushMultiplier,
+            incomingMultiplier = parts.incomingMultiplier,
+            steadfastMultiplier = parts.steadfastMultiplier
+        }
+        return result
+    end
     local direction = resolveDirection(hostile, opts)
     if not direction then return nil end
 
@@ -220,13 +459,6 @@ function Pushback:Apply(hostile, opts)
         hostile.LODNextTargetRefresh = 0
     end
 
-    self.Stats.pushes = (self.Stats.pushes or 0) + 1
-    self.Stats.lastAuthoredDistance = authoredDistance
-    self.Stats.lastRequestedDistance = distance
-    self.Stats.lastOutgoingMultiplier = parts.outgoingMultiplier
-    self.Stats.lastMagicPushMultiplier = parts.magicPushMultiplier
-    self.Stats.lastIncomingMultiplier = parts.incomingMultiplier
-    self.Stats.lastSteadfastMultiplier = parts.steadfastMultiplier
     local crushed = crushSurface(trace)
 
     -- Broadcast the already-resolved authoritative path before crush damage can
@@ -237,7 +469,10 @@ function Pushback:Apply(hostile, opts)
     local crushDamage = crushed and self:_RollWallCrush(hostile, opts) or 0
     local result = {
         authored = authoredDistance,
+        assembled = assembled,
+        sizeAdjusted = save.sizeAdjusted,
         requested = distance,
+        resolved = distance,
         outgoingMultiplier = parts.outgoingMultiplier,
         magicPushMultiplier = parts.magicPushMultiplier,
         incomingMultiplier = parts.incomingMultiplier,
@@ -246,11 +481,14 @@ function Pushback:Apply(hostile, opts)
         blocked = trace.Hit == true,
         crushed = crushed,
         crushDamage = crushDamage,
-        hitEntity = trace.Entity
+        hitEntity = trace.Entity,
+        pushSave = save
     }
     hostile.LODLastPushback = {
         at = CurTime(),
         authored = authoredDistance,
+        assembled = assembled,
+        sizeAdjusted = save.sizeAdjusted,
         requested = distance,
         outgoingMultiplier = parts.outgoingMultiplier,
         magicPushMultiplier = parts.magicPushMultiplier,
@@ -259,7 +497,8 @@ function Pushback:Apply(hostile, opts)
         moved = travel,
         crushed = crushed,
         crushDamage = crushDamage,
-        source = tostring(opts.source or "generic")
+        source = tostring(opts.source or "generic"),
+        pushSave = save
     }
     return result
 end
@@ -269,9 +508,13 @@ concommand.Add("lod_pushback_status", function(ply)
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
 
-    local line = string.format("pushes=%d wallCrushes=%d crushDamage=%d crushDie=1d3",
-        Pushback.Stats.pushes or 0, Pushback.Stats.wallCrushes or 0,
-        Pushback.Stats.crushDamage or 0)
+    local line = string.format("pushes=%d saves=%d pass=%d fail=%d immune=%d wallCrushes=%d crushDamage=%d last=d20:%s total:%s DC:%s braced:%s",
+        Pushback.Stats.pushes or 0, Pushback.Stats.saveRolls or 0,
+        Pushback.Stats.savesSucceeded or 0, Pushback.Stats.savesFailed or 0,
+        Pushback.Stats.pushImmuneBlocks or 0, Pushback.Stats.wallCrushes or 0,
+        Pushback.Stats.crushDamage or 0,
+        tostring(Pushback.Stats.lastSaveNatural), tostring(Pushback.Stats.lastSaveTotal),
+        tostring(Pushback.Stats.lastSaveDC), tostring(Pushback.Stats.lastSaveSucceeded))
     print("[LOD:PUSHBACK] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
