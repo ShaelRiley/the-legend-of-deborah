@@ -344,9 +344,11 @@ local function configurePlayer(ply, enabled)
     Progression:_RecomputeProgressionState(state)
     Progression:SyncPlayer(ply)
     ps.magic = 30
+    ps.gateEControlMagicTestHoldUntil = nil
     ps.manaSpringWaiting = false
     ps.manaSpringRemainingSeconds = 0
     local magic = LOD.Magic
+    if magic and magic.NextCast then magic.NextCast[ply] = 0 end
     if magic and magic._Sync then magic:_Sync(ply, ps) end
     if run.MarkUnranked then run:MarkUnranked("Gate E control/Magic feat test") end
     return ps
@@ -485,11 +487,12 @@ concommand.Add("lod_rpg_gate_e_control_magic_testkit", function(ply, _, args)
         return
     end
     target:SetHealth(math.max(target:Health(), 200))
+    ps.gateEControlMagicTestHoldUntil = CurTime() + 20
     resetTelemetry(enabled)
     local expectedPush = Effects:ResolvePushDistance(336, Rules:Derived(ply),
         Rules:Derived(target), {magicPush = true})
     local line = string.format(
-        "Control/Magic acceptance kit %s: target is %s #%d. Magic is 30. Aim at that surviving hostile and press RMB once; wait one second, then run control_magic_status. Expected requested push %.0f and Mana Spring %s.",
+        "Control/Magic acceptance kit %s: target is %s #%d. Magic is held at exactly 30 for 20 seconds. Aim at that surviving hostile and press RMB once; wait one second, then run control_magic_status. Expected requested push %.0f and Mana Spring %s.",
         enabled and "FEATS" or "BASELINE", target:GetClass(), target:EntIndex(),
         expectedPush, enabled and "x1.50 active" or "off")
     print("[LOD:RPG-E] " .. line)

@@ -72,6 +72,8 @@ Batch 10 is runtime accepted from the September 6 evidence package. Batch 9 rema
 
 Batch 11 is the three-family control/Magic suite (`CON_STEADFAST`, `WIS_FORCEFUL_MAGIC`, and `INT_MANA_SPRING`). Its static implementation is complete; the next action is the finite combined baseline/feat runtime acceptance test on `gm_flatgrass`.
 
+The first Batch 11 pass proved baseline, Hard to Move, and Force Multiplier. Mana Spring was not exercised because regeneration raised Magic above the testkit's nominal 30 before RMB. The corrected kit now holds exactly 30 Magic for up to 20 seconds until the cast commits. Only the feat-side rerun is required.
+
 ## Batch 4 acceptance note
 
 The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.

@@ -117,6 +117,12 @@ function Magic:_EnsureState(ply)
 end
 
 function Magic:IsRegenerationSuppressed(ply, ps)
+    -- The finite Gate E acceptance kit holds its exact 30-Magic precondition until
+    -- the tester casts. The short expiry prevents an abandoned developer test from
+    -- suppressing regeneration indefinitely.
+    if ps and (tonumber(ps.gateEControlMagicTestHoldUntil) or 0) > CurTime() then
+        return true
+    end
     local mapOpen = LOD.MinimapMagic and LOD.MinimapMagic.Active
         and LOD.MinimapMagic.Active[ply] ~= nil
     if mapOpen then return true end
@@ -227,6 +233,7 @@ function Magic:CastForceShout(ply)
     if direction == vector_origin then return false end
 
     ps.magic = math.max(0, ps.magic - SHOUT_COST)
+    ps.gateEControlMagicTestHoldUntil = nil
     self.NextCast[ply] = now + SHOUT_COOLDOWN
     self:_Sync(ply, ps)
 

@@ -171,3 +171,5 @@ Hard to Move / Force Multiplier / Mana Spring are implemented from live-GDD revi
 - the push authority records authored distance and each ordered multiplier, and now also honors the existing defender-side Fighter capstone multiplier;
 - Character Sheet snapshots, exact pure-state validation, a baseline/feat testkit, and live hit-stun/push/Mana telemetry are included;
 - all Lua parses, the dedicated Batch 11 harness passes, and the 100-seed maze regression passes.
+
+The first live pass proved baseline behavior plus Hard to Move and Force Multiplier composition (`336 × 1.25 × 0.75 = 315`). It did not adjudicate Mana Spring: passive regeneration raced ahead of the manual RMB cast, so Magic never reached zero and status correctly remained `WAITING`. The corrected testkit holds exactly 30 Magic for up to 20 seconds until the cast commits, then releases ordinary regeneration immediately. Runtime acceptance therefore remains pending only for the corrected feat-side pass.

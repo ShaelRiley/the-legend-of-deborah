@@ -72,6 +72,8 @@ Hard to Move now applies ×0.75 to incoming ordinary hit stun and non-scripted p
 
 All three feats use current live-GDD CON 13 / WIS 15 / INT 13 qualifications, derived-state and Character Sheet truth, a finite validator, a combined baseline/feat testkit, and runtime telemetry. Static Lua validation, the dedicated pure-Lua family harness, and the 100-seed maze regression pass. Runtime acceptance remains pending.
 
+The first September 6 runtime pass accepted the baseline and proved Hard to Move ×0.75 plus Force Multiplier ×1.25 at an exact final requested Force Shout displacement of 315 units. Mana Spring remained untested because ordinary regeneration advanced the testkit's nominal 30 Magic before the manual cast, preventing Magic from reaching zero. The testkit now holds that exact precondition for up to 20 seconds and releases it immediately on a successful cast; a short feat-side rerun is required before Batch 11 closes.
+
 ## Gate E accounting
 
 The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
