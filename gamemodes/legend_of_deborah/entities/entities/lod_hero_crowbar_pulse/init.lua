@@ -59,7 +59,7 @@ local function impactFX(pos, hitHostile)
     effect:SetOrigin(pos)
     effect:SetScale(hitHostile and 1.45 or 0.90)
     util.Effect("cball_bounce", effect, true, true)
-    sound.Play(hitHostile and "weapons/stunstick/stunstick_fleshhit1.wav"
+    sound.Play(hitHostile and "physics/body/body_medium_impact_soft2.wav"
         or "weapons/stunstick/stunstick_impact1.wav", pos, 75,
         hitHostile and 125 or 145, 0.62)
 end
