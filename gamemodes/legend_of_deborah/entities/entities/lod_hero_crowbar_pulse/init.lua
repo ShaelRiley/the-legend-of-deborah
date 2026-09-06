@@ -59,9 +59,9 @@ local function impactFX(pos, hitHostile)
     effect:SetOrigin(pos)
     effect:SetScale(hitHostile and 1.45 or 0.90)
     util.Effect("cball_bounce", effect, true, true)
-    sound.Play(hitHostile and "physics/body/body_medium_impact_soft2.wav"
-        or "weapons/stunstick/stunstick_impact1.wav", pos, 75,
-        hitHostile and 125 or 145, 0.62)
+    if not hitHostile then
+        sound.Play("weapons/stunstick/stunstick_impact1.wav", pos, 75, 145, 0.62)
+    end
 end
 
 function ENT:BlockAt(pos)
@@ -83,6 +83,11 @@ function ENT:HitHostile(hostile, pos)
         or not effects:ResolveHeroOfLegendHit(self, hostile, pos) then return false end
     self.LODRemovalReason = "hit"
     impactFX(pos, true)
+    local attacker = self.LODOwner
+    if IsValid(attacker) and attacker:IsPlayer() then
+        net.Start("LOD_HitConfirm")
+        net.Send(attacker)
+    end
     self:Remove()
     return true
 end
