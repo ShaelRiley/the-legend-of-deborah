@@ -10,7 +10,7 @@ The live GDD is design authority; GitHub `main` is implementation authority. The
 
 ## Accepted runtime foundation
 
-The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8 now have `gm_flatgrass` runtime acceptance. Batch 9 is implemented and awaiting its finite runtime gate.
+The September 1 VPS multiplayer smoke remains accepted and is not a blocker to coherent RPG development. Gate E Batches 1–8 and Batch 10 now have `gm_flatgrass` runtime acceptance. Batches 9 and 11 are implemented and awaiting their finite runtime gates.
 
 - Batch 1: CON Health Regeneration — accepted exact 11/22/33% ceilings and tested 1.20 HP/s rate.
 - Batch 2: WIS Navigation — accepted Cartographer +8 replacement and Frugal Cartography 5.44 Magic/s test profile.
@@ -58,23 +58,31 @@ Blink Reload + AR2 remains positive emergent build space. Reload downtime can be
 
 Spring Heel, Deadeye, Long Reach, and Russian Asset now have exact live-GDD definitions, canonical runtime bridges, combined validation, and a finite baseline/feat testkit. Snap Targeting remains blocked on a real authority contradiction: its ×0.80 timing rule with a 0.50-second floor cannot be applied to the current 0.45-second base tell without making the feat slower.
 
-## Gate E Batch 10 — Charisma Utility and Presence — IMPLEMENTED
+## Gate E Batch 10 — Charisma Utility and Presence — ACCEPTED 2026-09-06
 
 Unnerving Presence / Dazing Presence / Overwhelming Presence now form a CHA 13/15/17 replacement ladder at the canonical hit-stun multiplier seam. Academic Achievement adds positive CHA_MOD only to passive Magic regeneration. Winning Personality substitutes CHA only for the printed ability prerequisite of `INT_` feats and preserves actual INT plus all other restrictions. All five feat rows have derived-state and Character Sheet truth, a finite validator, a combined testkit, and runtime status telemetry.
 
+The accepted `gm_flatgrass` run passed the Charisma family validator and the full RPG validator, then reached `TEST_END batch10-charisma`. Its baseline profile reported rank 0, passive regeneration ×1.10, Academic off, and Winning Personality off. The feat profile reported rank 3 at ×1.30, Academic on with effective regeneration modifier 2 and ×1.20 regeneration, and Winning Personality on with INT-feat qualification 13. A live surviving-hostile hit recorded ordinary hit stun ×1.030 and final ×1.339, exactly `1.030 × 1.30`.
+
 The September 6 live-GDD refresh also standardized the already-implemented Health Regeneration, WIS Navigation, Ammo-Regeneration Floor, DEX Exploding-Dice, and DEX Reload prerequisites to their current 13/15/17 values. No accepted effect magnitude or runtime seam changed.
+
+## Gate E Batch 11 — Control and Magic Push/Recovery — IMPLEMENTED
+
+Hard to Move now applies ×0.75 to incoming ordinary hit stun and non-scripted push displacement, with an explicit `ignoreResistance` escape hatch for authored boss mechanics. Force Multiplier applies ×1.25 only to explicitly tagged `magic_push` displacement; Force Shout is the first canonical beneficiary, while ordinary physical push remains separate. Mana Spring arms whenever Magic reaches zero and applies ×1.50 to the already INT-scaled passive regeneration rate for four unsuppressed seconds; its timer pauses while the minimap or another registered regeneration-suppressing effect is active.
+
+All three feats use current live-GDD CON 13 / WIS 15 / INT 13 qualifications, derived-state and Character Sheet truth, a finite validator, a combined baseline/feat testkit, and runtime telemetry. Static Lua validation, the dedicated pure-Lua family harness, and the 100-seed maze regression pass. Runtime acceptance remains pending.
 
 ## Gate E accounting
 
 The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
-- within the historical 73-row migration ledger, 31 mechanically implemented;
-- 9 catalog/ownership-only;
-- 33 not yet catalogued;
-- 42 gameplay effects remain;
-- two additional expanded-catalog rows are mechanically implemented, for 33 total;
+- within the historical 73-row migration ledger, 34 mechanically implemented;
+- 7 catalog/ownership-only;
+- 32 not yet catalogued;
+- 39 gameplay effects remain;
+- two additional expanded-catalog rows are mechanically implemented, for 36 total;
 - the remaining expanded rows still require matrix reconciliation.
 
 ## Current rule
 
-Run Batch 9's finite combined `gm_flatgrass` acceptance pass, then Batch 10's Charisma validator/testkit. If both pass, close those seven families and continue the expanded live-catalog reconciliation. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.
+Run Batch 11's finite combined baseline/feat `gm_flatgrass` acceptance pass. Batch 9 remains a separate pending runtime gate and must not be inferred from another batch's logs. Continue expanded live-catalog reconciliation after the active runtime gate. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.

@@ -15,13 +15,14 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 9. Gate E Batch 7 DEX authored burst size — **runtime accepted 2026-09-05**.
 10. Gate E Batch 8 DEX SMG heat — **runtime accepted 2026-09-05**.
 11. Gate E Batch 9 singleton suite — **implemented; runtime acceptance pending**.
-12. Gate E Batch 10 Charisma utility and Presence — **implemented; runtime acceptance pending**.
-13. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
-14. Implement all 192 authored Origin/Background/Motive perk bridges.
-15. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
-16. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
-17. Focused post-RPG VPS multiplayer regression.
-18. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
+12. Gate E Batch 10 Charisma utility and Presence — **runtime accepted 2026-09-06**.
+13. Gate E Batch 11 control and Magic push/recovery — **implemented; runtime acceptance pending**.
+14. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
+15. Implement all 192 authored Origin/Background/Motive perk bridges.
+16. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
+17. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
+18. Focused post-RPG VPS multiplayer regression.
+19. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
 
 ## Runtime evidence protocol
 
@@ -67,19 +68,21 @@ Proceed to the next coherent family in `docs/RPG_GATE_E_FEAT_MATRIX.md`. Before 
 5. static validation before push;
 6. a short `gm_flatgrass` runtime acceptance pass with the standard evidence package.
 
-Batch 9 is the four-family singleton suite (`DEX_SPRING_HEEL`, `DEX_MAGNUM_DEADEYE`, `STR_MELEE_REACH`, and the save-compatible `CON_RUSSIAN_ASSET` ID now governed by INT 13). Its static implementation is complete and the next action is the finite combined baseline/feat runtime acceptance test on `gm_flatgrass`.
+Batch 10 is runtime accepted from the September 6 evidence package. Batch 9 remains a separate pending gate and must not be inferred from Batch 10 or Batch 11 evidence.
+
+Batch 11 is the three-family control/Magic suite (`CON_STEADFAST`, `WIS_FORCEFUL_MAGIC`, and `INT_MANA_SPRING`). Its static implementation is complete; the next action is the finite combined baseline/feat runtime acceptance test on `gm_flatgrass`.
 
 ## Batch 4 acceptance note
 
 The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.
 
-## Gate E accounting after Batch 10 implementation
+## Gate E accounting after Batch 11 implementation
 
-- within the historical 73-row migration ledger, 31 mechanically implemented;
-- 9 catalog/ownership-only;
-- 33 not yet catalogued;
-- 42 gameplay effects remain;
-- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 33;
+- within the historical 73-row migration ledger, 34 mechanically implemented;
+- 7 catalog/ownership-only;
+- 32 not yet catalogued;
+- 39 gameplay effects remain;
+- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 36;
 - the live GDD currently contains 119 tabulated ordinary/cross-feat rows, so the remaining new rows still require migration into the matrix.
 
 ## Preserved constraints

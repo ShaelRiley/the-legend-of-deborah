@@ -438,6 +438,7 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     elseif tag == "crowbar" or tag == "pushable_weapon" or tag == "tetris"
         or tag == "firearm" or tag == "reloadable_firearm" or tag == "magic_pool"
         or tag == "minimap" or tag == "cooperative_hero" or tag == "hit_stun_source"
+        or tag == "magic_push"
     then
         return true
     end

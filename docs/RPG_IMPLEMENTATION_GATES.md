@@ -145,9 +145,9 @@ Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD
 - one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;
 - `DEX_AR2_SNAP` is deliberately deferred because the live ×0.80 rule with a 0.50-second floor conflicts with the current 0.45-second base AR2 tell and would otherwise make the feat slower.
 
-Gate E remains open. After Batch 10, the historical 73-row migration ledger contains 31 mechanically implemented entries, 9 catalog/ownership-only entries, 33 not-yet-catalogued entries, and 42 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 33; the remaining rows from the live 119-row catalog still require reconciliation.
+Gate E remains open. After Batch 11, the historical 73-row migration ledger contains 34 mechanically implemented entries, 7 catalog/ownership-only entries, 32 not-yet-catalogued entries, and 39 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 36; the remaining rows from the live 119-row catalog still require reconciliation.
 
-### Batch 10 — Charisma Utility and Presence — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+### Batch 10 — Charisma Utility and Presence — RUNTIME ACCEPTED 2026-09-06
 
 Unnerving Presence / Dazing Presence / Overwhelming Presence, Academic Achievement, and Winning Personality are implemented from live-GDD revision `ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q`:
 
@@ -158,3 +158,16 @@ Unnerving Presence / Dazing Presence / Overwhelming Presence, Academic Achieveme
 - Character Sheet snapshots, a finite validator, combined testkit, and live status telemetry expose all three bridges.
 
 The same authority refresh corrected the prerequisite thresholds of already-built Health Regeneration, WIS Navigation, Ammo-Regeneration Floor, DEX Exploding-Dice, and DEX Reload families to the current live-GDD values. Their accepted gameplay magnitudes and canonical runtime seams are unchanged.
+
+The final `gm_flatgrass` run passed both the family and full RPG validators and reached `TEST_END batch10-charisma`. Baseline/feat status proved the rank-0→rank-3 ×1.30 transition, Academic's effective-regeneration modifier contribution, and Winning Personality's INT-feat score substitution. A live hit on a surviving hostile recorded the exact composed hit-stun result `1.030 × 1.30 = 1.339`.
+
+### Batch 11 — Control and Magic Push/Recovery — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Hard to Move / Force Multiplier / Mana Spring are implemented from live-GDD revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`:
+
+- `CON_STEADFAST`: CON 13; incoming ordinary hit stun and non-scripted push displacement ×0.75, with explicit authored resistance bypass support;
+- `WIS_FORCEFUL_MAGIC`: WIS 15 plus a Magic-push capability; explicitly tagged `magic_push` displacement ×1.25, initially bridged at Force Shout without leaking into ordinary physical push;
+- `INT_MANA_SPRING`: INT 13 plus a Magic pool; reaching zero arms ×1.50 already-INT-scaled passive Magic regeneration for four unsuppressed seconds, pausing both regeneration and the feat timer during minimap/registered sustained suppression;
+- the push authority records authored distance and each ordered multiplier, and now also honors the existing defender-side Fighter capstone multiplier;
+- Character Sheet snapshots, exact pure-state validation, a baseline/feat testkit, and live hit-stun/push/Mana telemetry are included;
+- all Lua parses, the dedicated Batch 11 harness passes, and the 100-seed maze regression passes.

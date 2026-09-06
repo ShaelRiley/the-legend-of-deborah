@@ -116,6 +116,13 @@ function Magic:_EnsureState(ply)
     return ps
 end
 
+function Magic:IsRegenerationSuppressed(ply, ps)
+    local mapOpen = LOD.MinimapMagic and LOD.MinimapMagic.Active
+        and LOD.MinimapMagic.Active[ply] ~= nil
+    if mapOpen then return true end
+    return hook.Run("LODMagicRegenerationSuppressed", ply, ps) == true
+end
+
 -- Magic is a campaign resource. Wrap admission/sync/apply rather than adding a
 -- competing player-state authority to RunManager.
 if RunManager and not RunManager.LODMagicWrapped then
@@ -277,7 +284,8 @@ function Magic:CastForceShout(ply)
                     origin = ply:GetPos(),
                     direction = direction,
                     distance = SHOUT_PUSH,
-                    source = "force shout"
+                    source = "force shout",
+                    magicPush = true
                 })
             end
         end
@@ -304,14 +312,43 @@ timer.Create(MAGIC_TIMER, REGEN_TICK, 0, function()
     for _, ply in ipairs(player.GetHumans()) do
         if IsValid(ply) and ply:Alive() and RunManager:IsActivePlayer(ply) then
             local ps = Magic:_EnsureState(ply)
-            local mapOpen = LOD.MinimapMagic and LOD.MinimapMagic.Active
-                and LOD.MinimapMagic.Active[ply] ~= nil
-            if ps and ps.magic < MAX_MAGIC and not mapOpen then
+            if ps then
                 local rules = LOD.RPGAbilityRules
-                local multiplier = rules and rules.MagicRegenMultiplier
-                    and rules:MagicRegenMultiplier(ply) or 1
-                ps.magic = math.min(MAX_MAGIC, ps.magic + REGEN_PER_TICK * multiplier)
-                Magic:_Sync(ply, ps)
+                local derived = rules and rules.Derived and rules:Derived(ply) or nil
+                local regenerationPermitted = not Magic:IsRegenerationSuppressed(ply, ps)
+                local canRegenerate = ps.magic < MAX_MAGIC and regenerationPermitted
+                local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+                local springMultiplier = 1
+                if effects and effects.ResolveManaSpringTick then
+                    local started, active
+                    springMultiplier, ps.manaSpringWaiting,
+                        ps.manaSpringRemainingSeconds, started, active =
+                        effects:ResolveManaSpringTick(
+                            derived and derived.manaSpringEnabled == true,
+                            ps.magic, ps.manaSpringWaiting,
+                            ps.manaSpringRemainingSeconds,
+                            regenerationPermitted, REGEN_TICK)
+                    local stats = effects.ControlMagicStats
+                    if stats then
+                        if started then stats.manaSpringStarts = (stats.manaSpringStarts or 0) + 1 end
+                        if active then
+                            stats.manaSpringActiveTicks = (stats.manaSpringActiveTicks or 0) + 1
+                        elseif derived and derived.manaSpringEnabled == true
+                            and (ps.manaSpringWaiting == true
+                                or (ps.manaSpringRemainingSeconds or 0) > 0)
+                        then
+                            stats.manaSpringPausedTicks = (stats.manaSpringPausedTicks or 0) + 1
+                        end
+                        stats.lastManaSpringMultiplier = springMultiplier
+                    end
+                end
+                if canRegenerate then
+                    local multiplier = rules and rules.MagicRegenMultiplier
+                        and rules:MagicRegenMultiplier(ply) or 1
+                    multiplier = multiplier * springMultiplier
+                    ps.magic = math.min(MAX_MAGIC, ps.magic + REGEN_PER_TICK * multiplier)
+                    Magic:_Sync(ply, ps)
+                end
             end
         end
     end

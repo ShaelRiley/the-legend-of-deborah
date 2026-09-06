@@ -164,11 +164,27 @@ function Pushback:Apply(hostile, opts)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return nil end
     if hostile.LODDeadcrabState == "latched" then return nil end
 
-    local distance = math.max(0, tonumber(opts.distance) or 0)
+    local authoredDistance = math.max(0, tonumber(opts.distance) or 0)
     local rules = LOD.RPGAbilityRules
     local attackerDerived = rules and rules.Derived and rules:Derived(opts.attacker) or nil
-    distance = distance * math.max(0,
-        tonumber(attackerDerived and attackerDerived.fighterCapstoneOutgoingPushMultiplier) or 1)
+    local defenderDerived = rules and rules.Derived and rules:Derived(hostile) or nil
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local distance, parts
+    if effects and effects.ResolvePushDistance then
+        distance, parts = effects:ResolvePushDistance(
+            authoredDistance, attackerDerived, defenderDerived, opts)
+    else
+        local outgoing = math.max(0, tonumber(attackerDerived
+            and attackerDerived.fighterCapstoneOutgoingPushMultiplier) or 1)
+        distance = authoredDistance * outgoing
+        parts = {
+            authored = authoredDistance,
+            outgoingMultiplier = outgoing,
+            magicPushMultiplier = 1,
+            incomingMultiplier = 1,
+            steadfastMultiplier = 1
+        }
+    end
     if distance <= 0 then return nil end
     local direction = resolveDirection(hostile, opts)
     if not direction then return nil end
@@ -205,6 +221,12 @@ function Pushback:Apply(hostile, opts)
     end
 
     self.Stats.pushes = (self.Stats.pushes or 0) + 1
+    self.Stats.lastAuthoredDistance = authoredDistance
+    self.Stats.lastRequestedDistance = distance
+    self.Stats.lastOutgoingMultiplier = parts.outgoingMultiplier
+    self.Stats.lastMagicPushMultiplier = parts.magicPushMultiplier
+    self.Stats.lastIncomingMultiplier = parts.incomingMultiplier
+    self.Stats.lastSteadfastMultiplier = parts.steadfastMultiplier
     local crushed = crushSurface(trace)
 
     -- Broadcast the already-resolved authoritative path before crush damage can
@@ -214,7 +236,12 @@ function Pushback:Apply(hostile, opts)
 
     local crushDamage = crushed and self:_RollWallCrush(hostile, opts) or 0
     local result = {
+        authored = authoredDistance,
         requested = distance,
+        outgoingMultiplier = parts.outgoingMultiplier,
+        magicPushMultiplier = parts.magicPushMultiplier,
+        incomingMultiplier = parts.incomingMultiplier,
+        steadfastMultiplier = parts.steadfastMultiplier,
         moved = travel,
         blocked = trace.Hit == true,
         crushed = crushed,
@@ -223,7 +250,12 @@ function Pushback:Apply(hostile, opts)
     }
     hostile.LODLastPushback = {
         at = CurTime(),
+        authored = authoredDistance,
         requested = distance,
+        outgoingMultiplier = parts.outgoingMultiplier,
+        magicPushMultiplier = parts.magicPushMultiplier,
+        incomingMultiplier = parts.incomingMultiplier,
+        steadfastMultiplier = parts.steadfastMultiplier,
         moved = travel,
         crushed = crushed,
         crushDamage = crushDamage,
