@@ -349,18 +349,16 @@ concommand.Add("lod_rpg_gate_e_magic_recovery_testkit", function(ply, _, args)
     local ps, message = configurePlayer(ply, enabled)
     if not ps then ply:ChatPrint(message) return end
     resetTelemetry(enabled)
-    local target
+    local prepared = 0
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead and hostile:Health() > 0 then
-            target = hostile
-            break
+            hostile:SetHealth(1)
+            prepared = prepared + 1
         end
     end
-    if IsValid(target) then target:SetHealth(1) end
     local line = string.format(
-        "Batch 12 %s: Magic=30; %s. Aim, RMB, wait 1s, then run magic_recovery_status; if no continuation rolled, rerun the kit.",
-        enabled and "FEATS" or "BASELINE",
-        IsValid(target) and ("kill target #" .. target:EntIndex()) or "no target prepared")
+        "Batch 12 %s: Magic=30; %d one-HP targets. Aim, RMB, wait 1s, then run magic_recovery_status; rerun if no continuation rolled.",
+        enabled and "FEATS" or "BASELINE", prepared)
     print("[LOD:RPG-E] " .. line)
     ply:ChatPrint(line)
 end)
