@@ -4,7 +4,7 @@ Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batch 11 
 
 This is the bounded historical 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document now contains 119 tabulated ordinary/cross-feat rows; the new Batch 10 singleton rows are recorded below, while the remaining expanded rows still require migration into this matrix.
 
-**Within the historical 73-row migration ledger: 34 mechanically implemented, 7 catalog/ownership-only, 32 not yet catalogued, and 39 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 36. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batch 10 is runtime accepted; Batches 9 and 11 await runtime acceptance.
+**Within the historical 73-row migration ledger: 36 mechanically implemented, 7 catalog/ownership-only, 30 not yet catalogued, and 37 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 38. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batches 10 and 11 are runtime accepted; Batches 9 and 12 await runtime acceptance.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
@@ -36,7 +36,7 @@ This is the bounded historical 73-row Gate E migration ledger. The live GDD rema
 | `STR_KNOCKBACK_2`<br>Shover | STR / Pusher | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `STR_KNOCKBACK_3`<br>Space Hog | STR / Pusher | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `STR_MELEE_REACH`<br>Long Reach | STR / Melee reach | Implemented + validator (runtime test pending) | Batch 9: STR 15; ordinary Crowbar-family trace reach ×1.25, 96→120 units, using the unchanged blocking-geometry TraceHull. |
-| `CON_STEADFAST`<br>Hard to Move | CON / Control resistance | Implemented + validator (runtime test pending) | Batch 11: CON 13; incoming ordinary hit-stun and non-scripted push displacement ×0.75, with explicit authored resistance bypass. |
+| `CON_STEADFAST`<br>Hard to Move | CON / Control resistance | Implemented + validator | Batch 11 runtime accepted: incoming ordinary hit-stun and non-scripted push displacement ×0.75, with explicit authored resistance bypass. |
 | `CON_BLAST_PROOF`<br>Blast-Proof | CON / Explosion defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_BIG_GUY`<br>Big Guy | CON / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CON_NOT_YET`<br>Not Yet | CON / Lethal interceptor | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
@@ -49,9 +49,9 @@ This is the bounded historical 73-row Gate E migration ledger. The live GDD rema
 | `INT_MANA_BARRIER_1`<br>Mana Barrier | INT / HP-to-Magic diversion | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `INT_MANA_BARRIER_2`<br>Arcane Aegis | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `INT_MANA_BARRIER_3`<br>Mystic Bastion | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `INT_MANA_SPRING`<br>Mana Spring | INT / Magic regeneration | Implemented + validator (runtime test pending) | Batch 11: INT 13; after Magic reaches zero, passive regeneration is ×1.50 for four unsuppressed seconds; suppression pauses both regeneration and timer. |
-| `INT_FEEDBACK_LOOP`<br>Feedback Loop | INT / Magic continuation | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `INT_ARC_RECOVERY`<br>Arc Recovery | INT / Magic kill recovery | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `INT_MANA_SPRING`<br>Mana Spring | INT / Magic regeneration | Implemented + validator | Batch 11 runtime accepted: after Magic reached zero, passive regeneration produced 16 active ticks at ×1.50 across four unsuppressed seconds. |
+| `INT_FEEDBACK_LOOP`<br>Feedback Loop | INT / Magic continuation | Implemented + validator (runtime test pending) | Batch 12: INT 15; each actual offensive-Magic continuation restores 1 Magic, capped at 6 per committed cast. |
+| `INT_ARC_RECOVERY`<br>Arc Recovery | INT / Magic kill recovery | Implemented + validator (runtime test pending) | Batch 12: INT 17; an AI-hostile Magic kill restores 5 Magic through a 2.0-second per-actor cooldown, capped at 100. |
 | `INT_CALCULATED_LUCK`<br>Calculated Luck | INT / Luck Ring | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `WIS_SURVEYOR`<br>Surveyor | WIS / Navigation | Implemented + validator | Batch 2 runtime accepted: canonical breadcrumb/map-drain authority. |
 | `WIS_CARTOGRAPHER`<br>Cartographer | WIS / Navigation | Implemented + validator | Batch 2 runtime accepted: canonical breadcrumb/map-drain authority. |
@@ -60,7 +60,7 @@ This is the bounded historical 73-row Gate E migration ledger. The live GDD rema
 | `WIS_SIXTH_SENSE`<br>Sixth Sense | WIS / Perception | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
 | `WIS_SPELLBREAKER`<br>Spellbreaker | WIS / Magic saves | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `WIS_SPELLBANE`<br>Spellbane | WIS / Magic saves | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `WIS_FORCEFUL_MAGIC`<br>Force Multiplier | WIS / Magic push | Implemented + validator (runtime test pending) | Batch 11: WIS 15; explicit `magic_push` displacement ×1.25 at the shared Pushback authority, initially bridged by Force Shout and isolated from physical push. |
+| `WIS_FORCEFUL_MAGIC`<br>Force Multiplier | WIS / Magic push | Implemented + validator | Batch 11 runtime accepted: explicit `magic_push` displacement ×1.25 composed before Hard to Move, producing exact live push `336 × 1.25 × 0.75 = 315`. |
 | `WIS_ATTUNEMENT`<br>Attunement | WIS / Elemental weakness | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CHA_HITSTUN_1`<br>Unnerving Presence | CHA / Hit stun | Implemented + validator | Batch 10 runtime accepted: CHA 13; multiplies the ordinary attacker/defender CHA hit-stun result by 1.10. |
 | `CHA_HITSTUN_2`<br>Dazing Presence | CHA / Hit stun | Implemented + validator | Batch 10 runtime accepted: CHA 15 + Unnerving Presence; replaces the feat multiplier with 1.20. |

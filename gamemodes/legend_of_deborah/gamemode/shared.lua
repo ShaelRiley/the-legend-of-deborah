@@ -47,6 +47,7 @@ if SERVER then
     include("lod/sv_rpg_gate_e_singletons.lua")
     include("lod/sv_rpg_gate_e_charisma.lua")
     include("lod/sv_rpg_gate_e_control_magic.lua")
+    include("lod/sv_rpg_gate_e_magic_recovery.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")

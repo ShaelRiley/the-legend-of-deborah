@@ -254,6 +254,8 @@ function Magic:CastForceShout(ply)
     local rules = LOD.RPGAbilityRules
     local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(ply) and 1 or 0
     local targets = targetList(ply, direction)
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local castFeedbackRestored = 0
     for _, hostile in ipairs(targets) do
         if IsValid(hostile) and not hostile.LODDead and hostile:Health() > 0 then
             local contract = rollExploding2d6(ply, aceBonus)
@@ -264,7 +266,17 @@ function Magic:CastForceShout(ply)
             if explosions > 0 and Rolls and Rolls.EmitDiceExplosionFX then
                 Rolls:EmitDiceExplosionFX(ply, "force_shout", explosions, 1)
             end
+            if effects and effects.ApplyFeedbackLoop then
+                local restored
+                restored, castFeedbackRestored = effects:ApplyFeedbackLoop(
+                    ply, ps, explosions, castFeedbackRestored)
+                if restored > 0 and castFeedbackRestored == restored then
+                    effects.MagicRecoveryStats.castsWithFeedback =
+                        (effects.MagicRecoveryStats.castsWithFeedback or 0) + 1
+                end
+            end
 
+            local wasAlive = hostile:Health() > 0 and not hostile.LODDead
             local info = DamageInfo()
             info:SetAttacker(ply)
             info:SetInflictor(ply)
@@ -273,6 +285,12 @@ function Magic:CastForceShout(ply)
             info:SetDamagePosition(hostile:WorldSpaceCenter())
             info:SetDamageForce(vector_origin)
             hostile:TakeDamageInfo(info)
+
+            local defeated = wasAlive and (not IsValid(hostile)
+                or hostile.LODDead or hostile:Health() <= 0)
+            if effects and effects.ApplyArcRecovery then
+                effects:ApplyArcRecovery(ply, ps, defeated, now)
+            end
 
             Magic.Stats.targets = (Magic.Stats.targets or 0) + 1
             Magic.Stats.damage = (Magic.Stats.damage or 0) + total
@@ -297,6 +315,8 @@ function Magic:CastForceShout(ply)
             end
         end
     end
+
+    self:_Sync(ply, ps)
 
     self.Stats.casts = (self.Stats.casts or 0) + 1
     return true

@@ -567,6 +567,16 @@ function Sheet:Open(requestFresh)
             "\nWinning Personality: INT-feat qualification score %d",
             snapshot.effectiveINTFeatQualificationScore or 0)
     end
+    if snapshot.feedbackLoopEnabled then
+        recordText = recordText .. string.format(
+            "\nFeedback Loop: +1 Magic per Magic continuation / cap %d per cast",
+            snapshot.feedbackLoopPerCastCap or 6)
+    end
+    if snapshot.arcRecoveryEnabled then
+        recordText = recordText .. string.format(
+            "\nArc Recovery: +%d Magic per Magic kill / %.1fs cooldown",
+            snapshot.arcRecoveryMagic or 5, snapshot.arcRecoveryCooldownSeconds or 2)
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

@@ -185,6 +185,12 @@ if not Rules.LODGateEControlMagicHitStunWrapped then
         stats.lastHitStunBase = ordinary
         stats.lastHitStunResistance = resistance
         stats.lastHitStunFinal = final
+        if IsValid(defender) then
+            defender.LODGateEControlMagicHitStunBase = ordinary
+            defender.LODGateEControlMagicHitStunResistance = resistance
+            defender.LODGateEControlMagicHitStunFinal = final
+            defender.LODGateEControlMagicHitStunAt = CurTime()
+        end
         return final
     end
 end
@@ -408,6 +414,13 @@ local function resetTelemetry(enabled)
     stats.manaSpringPausedTicks = 0
     stats.lastManaSpringMultiplier = 1
     stats.expectedEnabled = enabled == true
+    local target = Effects.ControlMagicTestTarget
+    if IsValid(target) then
+        target.LODGateEControlMagicHitStunBase = nil
+        target.LODGateEControlMagicHitStunResistance = nil
+        target.LODGateEControlMagicHitStunFinal = nil
+        target.LODGateEControlMagicHitStunAt = nil
+    end
     local push = LOD.Pushback and LOD.Pushback.Stats
     if push then
         push.pushes = 0
@@ -442,6 +455,8 @@ concommand.Add("lod_rpg_gate_e_control_magic_status", function(ply)
     local targetPush = IsValid(target) and target.LODLastPushback or nil
     local pushStats = LOD.Pushback and LOD.Pushback.Stats or {}
     local push = targetPush or pushStats
+    local targetStunResistance = IsValid(target)
+        and target.LODGateEControlMagicHitStunResistance or nil
     local expectedPush = Effects:ResolvePushDistance(336, Rules:Derived(ply),
         IsValid(target) and Rules:Derived(target) or nil, {magicPush = true})
     local pushOK = (pushStats.pushes or 0) >= 1
@@ -451,8 +466,8 @@ concommand.Add("lod_rpg_gate_e_control_magic_status", function(ply)
             - profile.magicPushMultiplier) < 0.001
         and math.abs((push.steadfastMultiplier or push.lastSteadfastMultiplier or 0)
             - (profile.steadfast and 0.75 or 1)) < 0.001
-    local stunOK = (stats.hitStunQueries or 0) >= 1
-        and math.abs((stats.lastHitStunResistance or 0)
+    local stunOK = targetStunResistance ~= nil
+        and math.abs((targetStunResistance or 0)
             - (profile.steadfast and 0.75 or 1)) < 0.001
     local springOK = profile.manaSpring and (stats.manaSpringStarts or 0) >= 1
         and (stats.manaSpringActiveTicks or 0) >= 1
@@ -461,7 +476,7 @@ concommand.Add("lod_rpg_gate_e_control_magic_status", function(ply)
     local line = string.format(
         "steadfast=%s stunQueries=%d stunResist=x%.2f forceful=%s pushAuthored=%.1f pushMagic=x%.2f pushSteadfast=x%.2f pushRequested=%.1f manaSpring=%s starts=%d activeTicks=%d pausedTicks=%d spring=x%.2f remaining=%.2fs magic=%.2f acceptance=%s",
         tostring(profile.steadfast), stats.hitStunQueries or 0,
-        stats.lastHitStunResistance or 1, tostring(profile.forcefulMagic),
+        targetStunResistance or 1, tostring(profile.forcefulMagic),
         push.authored or push.lastAuthoredDistance or 0,
         push.magicPushMultiplier or push.lastMagicPushMultiplier or 1,
         push.steadfastMultiplier or push.lastSteadfastMultiplier or 1,
@@ -492,7 +507,7 @@ concommand.Add("lod_rpg_gate_e_control_magic_testkit", function(ply, _, args)
     local expectedPush = Effects:ResolvePushDistance(336, Rules:Derived(ply),
         Rules:Derived(target), {magicPush = true})
     local line = string.format(
-        "Control/Magic acceptance kit %s: target is %s #%d. Magic is held at exactly 30 for 20 seconds. Aim at that surviving hostile and press RMB once; wait one second, then run control_magic_status. Expected requested push %.0f and Mana Spring %s.",
+        "Batch 11 %s: target %s #%d; Magic held at 30 for 20s. Aim, RMB once, wait 1s, then run control_magic_status. Expected push %.0f; Mana Spring %s.",
         enabled and "FEATS" or "BASELINE", target:GetClass(), target:EntIndex(),
         expectedPush, enabled and "x1.50 active" or "off")
     print("[LOD:RPG-E] " .. line)
