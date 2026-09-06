@@ -45,10 +45,10 @@ local function regenDefinition(featId, displayName, requirement, prerequisite, r
     }
 end
 
-Feats.CON_REGEN_11 = regenDefinition("CON_REGEN_11", "Second Wind", 12, nil, 1, 0.11)
-Feats.CON_REGEN_22 = regenDefinition("CON_REGEN_22", "Rapid Recovery", 14,
+Feats.CON_REGEN_11 = regenDefinition("CON_REGEN_11", "Second Wind", 13, nil, 1, 0.11)
+Feats.CON_REGEN_22 = regenDefinition("CON_REGEN_22", "Rapid Recovery", 15,
     "CON_REGEN_11", 2, 0.22)
-Feats.CON_REGEN_33 = regenDefinition("CON_REGEN_33", "Unbroken", 16,
+Feats.CON_REGEN_33 = regenDefinition("CON_REGEN_33", "Unbroken", 17,
     "CON_REGEN_22", 3, 0.33)
 
 local function navigationDefinition(featId, displayName, requirement, prerequisite,
@@ -78,17 +78,17 @@ local function navigationDefinition(featId, displayName, requirement, prerequisi
     }
 end
 
-Feats.WIS_SURVEYOR = navigationDefinition("WIS_SURVEYOR", "Surveyor", 12, nil,
+Feats.WIS_SURVEYOR = navigationDefinition("WIS_SURVEYOR", "Surveyor", 13, nil,
     "wis_breadcrumb_range", 1, {
         breadcrumbBonusCells = 4,
         description = "Adds +4 BreadcrumbCells after the normal WIS formula without revealing topology forbidden by map degradation."
     })
-Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer", 16,
+Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer", 15,
     "WIS_SURVEYOR", "wis_breadcrumb_range", 2, {
         breadcrumbBonusCells = 8,
         description = "Replaces Surveyor's +4 with +8 BreadcrumbCells after the normal WIS formula; degradation and current-floor restrictions remain absolute."
     })
-Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartography", 14,
+Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartography", 15,
     nil, "wis_frugal_map", 1, {
         mapDrainMultiplier = 0.85,
         minimumMapDrainPerSecond = 3.0,
@@ -126,11 +126,11 @@ local function ammoFloorDefinition(featId, displayName, requirement, prerequisit
     }
 end
 
-Feats.INT_AMMO_FLOOR_44 = ammoFloorDefinition("INT_AMMO_FLOOR_44", "Field Supply", 12,
+Feats.INT_AMMO_FLOOR_44 = ammoFloorDefinition("INT_AMMO_FLOOR_44", "Field Supply", 13,
     nil, 1, 0.44)
-Feats.INT_AMMO_FLOOR_55 = ammoFloorDefinition("INT_AMMO_FLOOR_55", "Deep Reserves", 16,
+Feats.INT_AMMO_FLOOR_55 = ammoFloorDefinition("INT_AMMO_FLOOR_55", "Deep Reserves", 15,
     "INT_AMMO_FLOOR_44", 2, 0.55)
-Feats.INT_AMMO_FLOOR_66 = ammoFloorDefinition("INT_AMMO_FLOOR_66", "War Stock", 18,
+Feats.INT_AMMO_FLOOR_66 = ammoFloorDefinition("INT_AMMO_FLOOR_66", "War Stock", 17,
     "INT_AMMO_FLOOR_55", 3, 0.66)
 
 local REGEN_RANKS = {
@@ -348,9 +348,9 @@ function FeatEffectSystem:ValidateHealthRegen()
         if not condition then errors[#errors + 1] = message end
     end
     local expected = {
-        CON_REGEN_11 = {1, 12, nil, 0.11},
-        CON_REGEN_22 = {2, 14, "CON_REGEN_11", 0.22},
-        CON_REGEN_33 = {3, 16, "CON_REGEN_22", 0.33}
+        CON_REGEN_11 = {1, 13, nil, 0.11},
+        CON_REGEN_22 = {2, 15, "CON_REGEN_11", 0.22},
+        CON_REGEN_33 = {3, 17, "CON_REGEN_22", 0.33}
     }
     for featId, values in pairs(expected) do
         local definition = Feats[featId]
@@ -380,7 +380,7 @@ function FeatEffectSystem:ValidateHealthRegen()
     if progression and progression._FeatEligible then
         local state = {
             featIds = {},
-            featQualificationAbilities = {con = 16},
+            featQualificationAbilities = {con = 17},
             classId = "fighter",
             secondaryAbilities = {}
         }
@@ -407,9 +407,9 @@ function FeatEffectSystem:ValidateWISNavigation()
         if not condition then errors[#errors + 1] = message end
     end
     local expected = {
-        WIS_SURVEYOR = {"wis_breadcrumb_range", 1, 12, nil, 4, nil, nil},
-        WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 2, 16, "WIS_SURVEYOR", 8, nil, nil},
-        WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 14, nil, nil, 0.85, 3.0}
+        WIS_SURVEYOR = {"wis_breadcrumb_range", 1, 13, nil, 4, nil, nil},
+        WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 2, 15, "WIS_SURVEYOR", 8, nil, nil},
+        WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 15, nil, nil, 0.85, 3.0}
     }
     for featId, values in pairs(expected) do
         local definition = Feats[featId]
@@ -469,7 +469,7 @@ function FeatEffectSystem:ValidateWISNavigation()
     if progression and progression._FeatEligible then
         local state = {
             featIds = {},
-            featQualificationAbilities = {wis = 16},
+            featQualificationAbilities = {wis = 15},
             classId = "wizard",
             secondaryAbilities = {}
         }
@@ -492,9 +492,9 @@ function FeatEffectSystem:ValidateAmmoRegenFloor()
         if not condition then errors[#errors + 1] = message end
     end
     local expected = {
-        INT_AMMO_FLOOR_44 = {1, 12, nil, 0.44},
-        INT_AMMO_FLOOR_55 = {2, 16, "INT_AMMO_FLOOR_44", 0.55},
-        INT_AMMO_FLOOR_66 = {3, 18, "INT_AMMO_FLOOR_55", 0.66}
+        INT_AMMO_FLOOR_44 = {1, 13, nil, 0.44},
+        INT_AMMO_FLOOR_55 = {2, 15, "INT_AMMO_FLOOR_44", 0.55},
+        INT_AMMO_FLOOR_66 = {3, 17, "INT_AMMO_FLOOR_55", 0.66}
     }
     for featId, values in pairs(expected) do
         local definition = Feats[featId]
@@ -548,7 +548,7 @@ function FeatEffectSystem:ValidateAmmoRegenFloor()
     if progression and progression._FeatEligible then
         local state = {
             featIds = {},
-            featQualificationAbilities = {int = 18},
+            featQualificationAbilities = {int = 17},
             classId = "wizard",
             secondaryAbilities = {}
         }

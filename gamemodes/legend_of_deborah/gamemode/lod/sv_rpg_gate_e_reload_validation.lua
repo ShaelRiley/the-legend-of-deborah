@@ -58,9 +58,9 @@ function Effects:ValidateReloadCadence()
         if not ok then errors[#errors + 1] = message end
     end
     local expected = {
-        DEX_FAST_RELOAD = {1, 12, nil, 0.80},
-        DEX_FAST_RELOAD_2 = {2, 16, "DEX_FAST_RELOAD", 0.60},
-        DEX_FAST_RELOAD_3 = {3, 18, "DEX_FAST_RELOAD_2", 0.40}
+        DEX_FAST_RELOAD = {1, 13, nil, 0.80},
+        DEX_FAST_RELOAD_2 = {2, 15, "DEX_FAST_RELOAD", 0.60},
+        DEX_FAST_RELOAD_3 = {3, 17, "DEX_FAST_RELOAD_2", 0.40}
     }
     for id, values in pairs(expected) do
         local feat = Feats[id]
@@ -100,7 +100,7 @@ function Effects:ValidateReloadCadence()
         "non-reload/non-firearm tools excluded")
 
     local state = {
-        featIds = {}, featQualificationAbilities = {dex = 18}, classId = "wizard",
+        featIds = {}, featQualificationAbilities = {dex = 17}, classId = "wizard",
         secondaryAbilities = {}, capabilityTags = {}
     }
     local ps = {starterWeaponClass = "weapon_smg1"}

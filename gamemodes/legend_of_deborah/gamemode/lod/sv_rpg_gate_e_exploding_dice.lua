@@ -14,7 +14,7 @@ local FAMILY = "dex_exploding_damage_dice"
 local CHAIN = {"DEX_EXPLODE_D10", "DEX_EXPLODE_D8", "DEX_EXPLODE_D4"}
 local SIDES = {10, 8, 4}
 local RANK = {DEX_EXPLODE_D10 = 1, DEX_EXPLODE_D8 = 2, DEX_EXPLODE_D4 = 3}
-local SOURCE_REVISION = "ANLCKQlK0CLl2Fs6HxRSmvQtJ64NnbR5HNXdS6m7gbfsgOXB-VlnaGZlXKlQxdLirxGy7uzVJguUC_AEFtLrDhAnQp4LaCWiw5ErJMjjCg"
+local SOURCE_REVISION = "ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q"
 
 local function definition(id, name, dex, prerequisite, rank, sides)
     return {
@@ -36,9 +36,9 @@ local function definition(id, name, dex, prerequisite, rank, sides)
     }
 end
 
-Feats.DEX_EXPLODE_D10 = definition("DEX_EXPLODE_D10", "Perfect Ten", 12, nil, 1, 10)
-Feats.DEX_EXPLODE_D8 = definition("DEX_EXPLODE_D8", "Eight Is Enough", 14, "DEX_EXPLODE_D10", 2, 8)
-Feats.DEX_EXPLODE_D4 = definition("DEX_EXPLODE_D4", "Fourtunate", 16, "DEX_EXPLODE_D8", 3, 4)
+Feats.DEX_EXPLODE_D10 = definition("DEX_EXPLODE_D10", "Perfect Ten", 13, nil, 1, 10)
+Feats.DEX_EXPLODE_D8 = definition("DEX_EXPLODE_D8", "Eight Is Enough", 15, "DEX_EXPLODE_D10", 2, 8)
+Feats.DEX_EXPLODE_D4 = definition("DEX_EXPLODE_D4", "Fourtunate", 17, "DEX_EXPLODE_D8", 3, 4)
 Catalog.OrdinaryFeats = Feats
 Catalog.GateEExplodingDiceSourceRevisionId = SOURCE_REVISION
 
@@ -199,8 +199,8 @@ function Effects:ValidateExplodingDice()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
     local expected = {
-        DEX_EXPLODE_D10 = {1, 12, nil, 10}, DEX_EXPLODE_D8 = {2, 14, "DEX_EXPLODE_D10", 8},
-        DEX_EXPLODE_D4 = {3, 16, "DEX_EXPLODE_D8", 4}}
+        DEX_EXPLODE_D10 = {1, 13, nil, 10}, DEX_EXPLODE_D8 = {2, 15, "DEX_EXPLODE_D10", 8},
+        DEX_EXPLODE_D4 = {3, 17, "DEX_EXPLODE_D8", 4}}
     for id, values in pairs(expected) do
         local feat = Feats[id]
         expect(feat and feat.featFamilyId == FAMILY, id .. " definition/family")
@@ -252,7 +252,7 @@ function Effects:ValidateExplodingDice()
     else expect(false, "CombatRolls exploding authority unavailable") end
 
     local ps = {starterWeaponClass="weapon_ar2"}
-    local state = {featIds={},featQualificationAbilities={dex=16},classId="fighter",secondaryAbilities={},capabilityTags={}}
+    local state = {featIds={},featQualificationAbilities={dex=17},classId="fighter",secondaryAbilities={},capabilityTags={}}
     expect(Progression:_FeatEligible(ps,state,Feats[CHAIN[1]]), "Perfect Ten legal with d10 capability")
     expect(not Progression:_FeatEligible(ps,state,Feats[CHAIN[2]]), "Eight Is Enough prerequisite")
     state.featIds={CHAIN[1]}; expect(Progression:_FeatEligible(ps,state,Feats[CHAIN[2]]), "Eight Is Enough legal")

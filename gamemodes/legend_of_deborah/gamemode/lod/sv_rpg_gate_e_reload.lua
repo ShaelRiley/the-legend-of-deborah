@@ -12,7 +12,7 @@ local FAMILY = "dex_reload_cadence"
 local CHAIN = {"DEX_FAST_RELOAD", "DEX_FAST_RELOAD_2", "DEX_FAST_RELOAD_3"}
 local RANK = {DEX_FAST_RELOAD = 1, DEX_FAST_RELOAD_2 = 2, DEX_FAST_RELOAD_3 = 3}
 local MULTIPLIER = {[1] = 0.80, [2] = 0.60, [3] = 0.40}
-local SOURCE_REVISION = "ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ"
+local SOURCE_REVISION = "ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q"
 local EPSILON = 0.002
 local ORDINARY_RELOADABLE = {
     weapon_pistol = true,
@@ -63,10 +63,10 @@ local function definition(id, name, dex, prerequisite, rank, multiplier)
     }
 end
 
-Feats.DEX_FAST_RELOAD = definition("DEX_FAST_RELOAD", "Quick Reload", 12, nil, 1, 0.80)
-Feats.DEX_FAST_RELOAD_2 = definition("DEX_FAST_RELOAD_2", "Lightning Reload", 16,
+Feats.DEX_FAST_RELOAD = definition("DEX_FAST_RELOAD", "Quick Reload", 13, nil, 1, 0.80)
+Feats.DEX_FAST_RELOAD_2 = definition("DEX_FAST_RELOAD_2", "Lightning Reload", 15,
     "DEX_FAST_RELOAD", 2, 0.60)
-Feats.DEX_FAST_RELOAD_3 = definition("DEX_FAST_RELOAD_3", "Blink Reload", 18,
+Feats.DEX_FAST_RELOAD_3 = definition("DEX_FAST_RELOAD_3", "Blink Reload", 17,
     "DEX_FAST_RELOAD_2", 3, 0.40)
 Catalog.OrdinaryFeats = Feats
 Catalog.GateEReloadSourceRevisionId = SOURCE_REVISION

@@ -1,10 +1,10 @@
 # Gate E Ordinary Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batch 9 was verified against Google revision `ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg`.
+Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batch 10 and the eligibility-threshold reconciliation were verified against Google revision `ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q`.
 
-This is the bounded 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document has expanded since this ledger was established; stale `DEX_DOUBLE_JUMP` has been replaced here by the current `DEX_SPRING_HEEL`, while a later full catalog reconciliation must add every other newly authored row before this file can again claim exhaustive completeness.
+This is the bounded historical 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document now contains 119 tabulated ordinary/cross-feat rows; the new Batch 10 singleton rows are recorded below, while the remaining expanded rows still require migration into this matrix.
 
-**Within this 73-row migration ledger: 28 mechanically implemented, 10 catalog/ownership-only, 35 not yet catalogued, and 45 gameplay effects remain.** The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batch 8 is runtime accepted; Batch 9 is implemented and awaiting runtime acceptance.
+**Within the historical 73-row migration ledger: 31 mechanically implemented, 9 catalog/ownership-only, 33 not yet catalogued, and 42 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 33. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batches 9 and 10 await runtime acceptance.
 
 | Feat ID / name | Family | Current status | Implementation note |
 |---|---|---|---|
@@ -62,9 +62,9 @@ This is the bounded 73-row Gate E migration ledger. The live GDD remains design 
 | `WIS_SPELLBANE`<br>Spellbane | WIS / Magic saves | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `WIS_FORCEFUL_MAGIC`<br>Force Multiplier | WIS / Magic push | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `WIS_ATTUNEMENT`<br>Attunement | WIS / Elemental weakness | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_HITSTUN_1`<br>Unnerving Presence | CHA / Hit stun | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `CHA_HITSTUN_2`<br>Dazing Presence | CHA / Hit stun | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_HITSTUN_3`<br>Overwhelming Presence | CHA / Hit stun | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `CHA_HITSTUN_1`<br>Unnerving Presence | CHA / Hit stun | Implemented + validator (runtime test pending) | Batch 10: CHA 13; multiplies the ordinary attacker/defender CHA hit-stun result by 1.10. |
+| `CHA_HITSTUN_2`<br>Dazing Presence | CHA / Hit stun | Implemented + validator (runtime test pending) | Batch 10: CHA 15 + Unnerving Presence; replaces the feat multiplier with 1.20. |
+| `CHA_HITSTUN_3`<br>Overwhelming Presence | CHA / Hit stun | Implemented + validator (runtime test pending) | Batch 10: CHA 17 + Dazing Presence; replaces lower ranks with 1.30 before existing weapon and hard-cap processing. |
 | `CHA_NERVE_1`<br>Iron Nerve | CHA / Morale defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CHA_NERVE_2`<br>Unbreakable Nerve | CHA / Morale defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CHA_MENACE_1`<br>Menacing | CHA / Morale offense | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
@@ -74,6 +74,8 @@ This is the bounded 73-row Gate E migration ledger. The live GDD remains design 
 | `CHA_SPOT_1`<br>Point It Out | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CHA_SPOT_2`<br>Rally the Hunt | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CHA_SPOT_3`<br>Command the Hunt | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+| `CHA_ACADEMIC_ACHIEVEMENT`<br>Academic Achievement | CHA / Passive Magic regeneration | Implemented + validator (runtime test pending) | Batch 10: CHA 15 + canonical Magic pool; adds only positive CHA_MOD to INT_MOD for passive Magic-regeneration speed. |
+| `CHA_WINNING_PERSONALITY`<br>Winning Personality | CHA / INT-feat qualification | Implemented + validator (runtime test pending) | Batch 10: CHA 17; INT-prefixed feat ability checks use max(INT, CHA), while actual INT and every non-ability restriction remain unchanged. |
 | `CROSS_METEOR_STRIKE`<br>Meteor Strike | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CROSS_TINY_TERROR`<br>Tiny Terror | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
 | `CROSS_BIG_SCARY`<br>Big Scary | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |

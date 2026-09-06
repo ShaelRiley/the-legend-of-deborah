@@ -551,6 +551,22 @@ function Sheet:Open(requestFresh)
             math.floor((snapshot.ammoRegenFloorFraction or 0) * 100 + 0.5),
             #families > 0 and (": " .. table.concat(families, ", ")) or "")
     end
+    if (snapshot.featHitStunRank or 0) > 0 then
+        recordText = recordText .. string.format(
+            "\nPresence: rank %d / hit stun x%.2f",
+            snapshot.featHitStunRank, snapshot.featHitStunMultiplier or 1)
+    end
+    if snapshot.academicAchievementEnabled then
+        recordText = recordText .. string.format(
+            "\nAcademic Achievement: +%d CHA_MOD to passive Magic regen (effective modifier %d)",
+            snapshot.academicRegenCHAContribution or 0,
+            snapshot.effectiveMagicRegenModifier or 0)
+    end
+    if snapshot.winningPersonalityEnabled then
+        recordText = recordText .. string.format(
+            "\nWinning Personality: INT-feat qualification score %d",
+            snapshot.effectiveINTFeatQualificationScore or 0)
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

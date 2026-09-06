@@ -49,9 +49,9 @@ Batch 4 implementation remains centralized at `AbilityRules:CopyDamageProfile` /
 
 Quick Reload / Lightning Reload / Blink Reload are runtime accepted from live-GDD revision `ANLCKQlypm6azjpK6CFPntqCTeHdrbGj3gqHEw0WMaFrgcSu7eSm7HUSUAFdcdeUI3ZMHjp4d1773GjsBEDij7b2tiy_3WSTap-s_Ky9YQ`:
 
-- `DEX_FAST_RELOAD` / Quick Reload: DEX 12; `ReloadTimeMultiplier = 0.80`.
-- `DEX_FAST_RELOAD_2` / Lightning Reload: DEX 16 + Quick Reload; replaces the total multiplier with `0.60`.
-- `DEX_FAST_RELOAD_3` / Blink Reload: DEX 18 + Lightning Reload; replaces the total multiplier with `0.40`.
+- `DEX_FAST_RELOAD` / Quick Reload: current live-GDD prerequisite DEX 13; `ReloadTimeMultiplier = 0.80`.
+- `DEX_FAST_RELOAD_2` / Lightning Reload: current prerequisite DEX 15 + Quick Reload; replaces the total multiplier with `0.60`.
+- `DEX_FAST_RELOAD_3` / Blink Reload: current prerequisite DEX 17 + Lightning Reload; replaces the total multiplier with `0.40`.
 - one derived `reloadTimeMultiplier` value owns the active replacement rank;
 - only deadlines newly authored by a genuine reload may be compressed;
 - every pre-existing weapon/player deadline remains an absolute floor, protecting SMG overheat recovery, AR2 targeting/burst timing, and unrelated attack locks;
@@ -145,4 +145,16 @@ Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD
 - one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;
 - `DEX_AR2_SNAP` is deliberately deferred because the live ×0.80 rule with a 0.50-second floor conflicts with the current 0.45-second base AR2 tell and would otherwise make the feat slower.
 
-Gate E remains open. The existing 73-row migration ledger now contains 28 mechanically implemented entries, 10 catalog/ownership-only entries, 35 not-yet-catalogued entries, and 45 effects remaining. Because the live GDD has expanded beyond that historical row set, a later full catalog reconciliation is required before the ledger can again claim exhaustive totals.
+Gate E remains open. After Batch 10, the historical 73-row migration ledger contains 31 mechanically implemented entries, 9 catalog/ownership-only entries, 33 not-yet-catalogued entries, and 42 effects remaining. Two additional expanded-catalog rows are mechanically implemented, bringing the total to 33; the remaining rows from the live 119-row catalog still require reconciliation.
+
+### Batch 10 — Charisma Utility and Presence — IMPLEMENTED; RUNTIME ACCEPTANCE PENDING
+
+Unnerving Presence / Dazing Presence / Overwhelming Presence, Academic Achievement, and Winning Personality are implemented from live-GDD revision `ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q`:
+
+- the hit-stun ladder uses CHA 13/15/17 and replacing feat multipliers 1.10/1.20/1.30 after the continuous attacker/defender CHA calculation;
+- existing retrigger, anti-stunlock, weapon, resistance, and hard-cap authorities remain in place;
+- Academic Achievement uses CHA 15 and adds only `max(0, CHA_MOD)` to the passive Magic-regeneration modifier calculation;
+- Winning Personality uses CHA 17 and substitutes `max(INT, CHA)` only for printed ability checks on `INT_` feats, preserving actual INT, cross-feat requirements, prerequisites, class exclusions, capabilities, and other restrictions;
+- Character Sheet snapshots, a finite validator, combined testkit, and live status telemetry expose all three bridges.
+
+The same authority refresh corrected the prerequisite thresholds of already-built Health Regeneration, WIS Navigation, Ammo-Regeneration Floor, DEX Exploding-Dice, and DEX Reload families to the current live-GDD values. Their accepted gameplay magnitudes and canonical runtime seams are unchanged.

@@ -1,4 +1,4 @@
-# Development Status — 2026-09-05
+# Development Status — 2026-09-06
 
 ## Current execution phase
 
@@ -6,7 +6,7 @@
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority.
+The live GDD is design authority; GitHub `main` is implementation authority. The current live catalog contains 119 tabulated ordinary/cross-feat rows.
 
 ## Accepted runtime foundation
 
@@ -27,9 +27,9 @@ Batch 4 also produced useful emergent balance evidence: a full-Magic Wizard comb
 
 Quick Reload / Lightning Reload / Blink Reload are runtime accepted:
 
-- Quick Reload: DEX 12, total ordinary reload-time multiplier `0.80`;
-- Lightning Reload: DEX 16 + Quick Reload, replaces total multiplier with `0.60`;
-- Blink Reload: DEX 18 + Lightning Reload, replaces total multiplier with `0.40`;
+- Quick Reload: current prerequisite DEX 13, total ordinary reload-time multiplier `0.80`;
+- Lightning Reload: current prerequisite DEX 15 + Quick Reload, replaces total multiplier with `0.60`;
+- Blink Reload: current prerequisite DEX 17 + Lightning Reload, replaces total multiplier with `0.40`;
 - the shared derived state contains one replacement `reloadTimeMultiplier` rather than stacking ranks;
 - only genuine reload-authored deadlines are compressed;
 - pre-existing deadlines remain absolute floors, protecting SMG overheat, AR2 targeting/burst timing, and unrelated weapon locks;
@@ -58,16 +58,23 @@ Blink Reload + AR2 remains positive emergent build space. Reload downtime can be
 
 Spring Heel, Deadeye, Long Reach, and Russian Asset now have exact live-GDD definitions, canonical runtime bridges, combined validation, and a finite baseline/feat testkit. Snap Targeting remains blocked on a real authority contradiction: its ×0.80 timing rule with a 0.50-second floor cannot be applied to the current 0.45-second base tell without making the feat slower.
 
+## Gate E Batch 10 — Charisma Utility and Presence — IMPLEMENTED
+
+Unnerving Presence / Dazing Presence / Overwhelming Presence now form a CHA 13/15/17 replacement ladder at the canonical hit-stun multiplier seam. Academic Achievement adds positive CHA_MOD only to passive Magic regeneration. Winning Personality substitutes CHA only for the printed ability prerequisite of `INT_` feats and preserves actual INT plus all other restrictions. All five feat rows have derived-state and Character Sheet truth, a finite validator, a combined testkit, and runtime status telemetry.
+
+The September 6 live-GDD refresh also standardized the already-implemented Health Regeneration, WIS Navigation, Ammo-Regeneration Floor, DEX Exploding-Dice, and DEX Reload prerequisites to their current 13/15/17 values. No accepted effect magnitude or runtime seam changed.
+
 ## Gate E accounting
 
 The authoritative completeness ledger is `docs/RPG_GATE_E_FEAT_MATRIX.md`:
 
-- within the historical 73-row migration ledger, 28 mechanically implemented;
-- 10 catalog/ownership-only;
-- 35 not yet catalogued;
-- 45 gameplay effects remain;
-- the expanded live GDD requires a full row reconciliation before the ledger can again claim an exhaustive current total.
+- within the historical 73-row migration ledger, 31 mechanically implemented;
+- 9 catalog/ownership-only;
+- 33 not yet catalogued;
+- 42 gameplay effects remain;
+- two additional expanded-catalog rows are mechanically implemented, for 33 total;
+- the remaining expanded rows still require matrix reconciliation.
 
 ## Current rule
 
-Run Batch 9's finite combined `gm_flatgrass` acceptance pass. If it passes, close these four singleton families and reconcile the expanded live feat catalog before selecting the next coherent implementation batch. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.
+Run Batch 9's finite combined `gm_flatgrass` acceptance pass, then Batch 10's Charisma validator/testkit. If both pass, close those seven families and continue the expanded live-catalog reconciliation. Do not resurrect the pre-RPG multiplayer smoke gate; perform a focused post-RPG multiplayer regression after the RPG layer is coherent.

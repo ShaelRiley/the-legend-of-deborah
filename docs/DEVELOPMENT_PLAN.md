@@ -1,4 +1,4 @@
-# Development Plan — 2026-09-05 RPG Priority
+# Development Plan — 2026-09-06 RPG Priority
 
 The live GDD is design authority. GitHub `main` is implementation authority.
 
@@ -15,12 +15,13 @@ The live GDD is design authority. GitHub `main` is implementation authority.
 9. Gate E Batch 7 DEX authored burst size — **runtime accepted 2026-09-05**.
 10. Gate E Batch 8 DEX SMG heat — **runtime accepted 2026-09-05**.
 11. Gate E Batch 9 singleton suite — **implemented; runtime acceptance pending**.
-12. Reconcile the historical 73-row ledger with the expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
-13. Implement all 192 authored Origin/Background/Motive perk bridges.
-14. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
-15. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
-16. Focused post-RPG VPS multiplayer regression.
-17. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
+12. Gate E Batch 10 Charisma utility and Presence — **implemented; runtime acceptance pending**.
+13. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
+14. Implement all 192 authored Origin/Background/Motive perk bridges.
+15. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
+16. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
+17. Focused post-RPG VPS multiplayer regression.
+18. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
 
 ## Runtime evidence protocol
 
@@ -72,13 +73,14 @@ Batch 9 is the four-family singleton suite (`DEX_SPRING_HEEL`, `DEX_MAGNUM_DEADE
 
 The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.
 
-## Gate E accounting after Batch 9 implementation
+## Gate E accounting after Batch 10 implementation
 
-- within the historical 73-row migration ledger, 28 mechanically implemented;
-- 10 catalog/ownership-only;
-- 35 not yet catalogued;
-- 45 gameplay effects remain;
-- the live GDD has expanded beyond this historical row set, so the next ledger reconciliation must add the new rows before reporting an exhaustive current total.
+- within the historical 73-row migration ledger, 31 mechanically implemented;
+- 9 catalog/ownership-only;
+- 33 not yet catalogued;
+- 42 gameplay effects remain;
+- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 33;
+- the live GDD currently contains 119 tabulated ordinary/cross-feat rows, so the remaining new rows still require migration into the matrix.
 
 ## Preserved constraints
 
