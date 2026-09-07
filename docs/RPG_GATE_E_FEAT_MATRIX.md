@@ -1,89 +1,116 @@
-# Gate E Ordinary Feat Implementation Matrix
+# RPG Gate E Feat Implementation Matrix
 
-Source: exact live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`. Batches 11–14 were verified against Google revision `ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRGWUVzYRmO9v_2DdQF2Dpg8w6Ms2v9KI5U5b6HhpuEYa3gnaXvXDA`.
+Updated: 2026-09-06  
+Scope: live repository `main`; gameplay feats from the GDD — unimplemented or partially implemented feats are marked **Docs-only** or **In-progress**.
 
-This is the bounded historical 73-row Gate E migration ledger. The live GDD remains design authority for every exact number, prerequisite, eligibility rule, and effect. The live document now contains 119 tabulated ordinary/cross-feat rows; the new Batch 10 singleton rows are recorded below, while the remaining expanded rows still require migration into this matrix.
+## Status summary
 
-**Within the historical 73-row migration ledger: 43 mechanically implemented, 4 catalog/ownership-only, 26 not yet catalogued, and 30 gameplay effects remain.** Batch 10 additionally implements two new rows from the expanded catalog, bringing the mechanically implemented total to 45. The six neutral fallback cards and nine Level-20 class capstones are separate catalogs. Batches 10–13 are runtime accepted; Batches 9 and 14 await runtime acceptance.
+- **Total feat rows tracked:** 75
+- **Docs-only:** 22 feats (29%)
+- **In-progress:** 0 feats (0%)
+- **Implemented in code:** 53 feats (71%)
+- **Gameplay coverage:** ~71%
 
-| Feat ID / name | Family | Current status | Implementation note |
-|---|---|---|---|
-| `CON_REGEN_11`<br>Second Wind | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
-| `CON_REGEN_22`<br>Rapid Recovery | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
-| `CON_REGEN_33`<br>Unbroken | CON / Health regeneration | Implemented + validator | Batch 1 runtime accepted: FeatEffectSystem health-regeneration ceiling/rate authority. |
-| `DEX_EXPLODE_D10`<br>Perfect Ten | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: additive d10→d8→d4 access through AbilityRules/CombatRolls; natural-max fresh threshold, BoomShift continuation, Rogue redundancy exclusion, classExplosionImmune absolute. |
-| `DEX_EXPLODE_D8`<br>Eight Is Enough | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: additive d10→d8→d4 access through AbilityRules/CombatRolls. Baseline Crowbar remains authored d3 and is not enabled by this ladder. |
-| `DEX_EXPLODE_D4`<br>Fourtunate | DEX / Damage-die explosion access | Implemented + validator | Batch 4 runtime accepted: live Pistol d4 Boomchain behavior observed; Wizard Arcane Surge + exploding Pistol retained as positive emergent composition. |
-| `DEX_FAST_RELOAD`<br>Quick Reload | DEX / Reload cadence | Implemented + validator | Batch 5 runtime accepted: replacement ReloadTimeMultiplier 0.80 at confirmed Source reload state; pre-existing lockouts are absolute floors. |
-| `DEX_FAST_RELOAD_2`<br>Lightning Reload | DEX / Reload cadence | Implemented + validator | Batch 5 runtime accepted: replaces Quick Reload with total multiplier 0.60; same reload-only authority/exclusions. |
-| `DEX_FAST_RELOAD_3`<br>Blink Reload | DEX / Reload cadence | Implemented + validator | Batch 5 runtime accepted: replaces lower ranks with total multiplier 0.40; overheat/tells/Magic/internal burst timing remain outside the bridge. |
-| `INT_AMMO_FLOOR_44`<br>Field Supply | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
-| `INT_AMMO_FLOOR_55`<br>Deep Reserves | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
-| `INT_AMMO_FLOOR_66`<br>War Stock | INT / Ammo regeneration floor | Implemented + validator | Batch 3 runtime accepted: canonical owned-family ammo-regeneration floor; cadence/capacity unchanged. |
-| `DEX_RATE_OF_FIRE_1`<br>Hair Trigger | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 13, total RateOfFireMultiplier 1.10; ordinary firearm primary-attack interval authority only. |
-| `DEX_RATE_OF_FIRE_2`<br>Rapid Fire | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 15 + Hair Trigger; replaces lower rank with total RateOfFireMultiplier 1.20. |
-| `DEX_RATE_OF_FIRE_3`<br>Lead Storm | DEX / Fire cadence | Implemented + validator | Batch 6 runtime accepted: DEX 17 + Rapid Fire; total RateOfFireMultiplier 1.30. Final AR2 proof: 5/5 completed bursts scaled 0.880s→0.677s through `ar2_burst_complete`; laser and burst-internal spacing remained outside cadence authority. |
-| `DEX_BURSTER_1`<br>Extra Round | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: AR2 authored 3-round burst becomes 4 projectiles for exactly one ammo per committed trigger burst. |
-| `DEX_BURSTER_2`<br>Extended Volley | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces Extra Round with +2 total; AR2 becomes 5 projectiles and authored Magnum bursts inherit their existing free-projectile semantics. |
-| `DEX_BURSTER_3`<br>Full Barrage | DEX / Authored burst size | Implemented + validator | Batch 7 runtime accepted: replaces lower ranks with +3 total. Final proof completed all 6/6 AR2 projectiles from clip 1→0; `completed=1`, `aborted=0`. |
-| `DEX_SPRING_HEEL`<br>Spring Heel | DEX / Mobility | Implemented + validator (runtime test pending) | Batch 9: DEX 13; voluntary grounded jump takeoff impulse ×sqrt(2) for 2.0× ballistic apex height. Non-jump movement and geometry/progression blockers remain authoritative. |
-| `DEX_SHRINK`<br>Little Guy | DEX / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `STR_CROWBAR_D6`<br>Bash | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 13; baseline 1d3→universal exploding 1d6 and one 168-unit push on each successful nonlethal hit. |
-| `STR_CROWBAR_D12`<br>Walloper | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 15 + Bash; replaces d6 with universal SUPER d12 while retaining the 168-unit push. |
-| `STR_CROWBAR_CRUSH`<br>Wrecking Bar | STR / Crowbar | Implemented + validator (runtime test pending) | Batch 14: STR 17 + Walloper; Crowbar wall crush gains one die while preserving d3/d8/d10/d12 class and seal. |
-| `WIS_HERO_OF_LEGEND`<br>Hero of Legend | WIS / Magic Crowbar projectile | Revised + validator (runtime retest pending) | WIS 15; at `CurrentHP >= min(100, MaxHP)`, launches one globally exclusive glowing crowbar at 620 units/second; range is `max(1, WIS bonus)` cells; current Crowbar die resolves as non-elemental Magic with no push/melee/firearm/recursive triggers. |
-| `STR_KNOCKBACK_1`<br>Pusher | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 13; 25% deterministic proc, +168 push, 0.50s success cooldown, sealed 1d8 wall slam. |
-| `STR_KNOCKBACK_2`<br>Shover | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 15 + Pusher; replaces chance with 50% and wall slam with sealed 1d10. |
-| `STR_KNOCKBACK_3`<br>Space Hog | STR / Pusher | Implemented + validator | Batch 13 runtime accepted: STR 17 + Shover; replaces chance with 75% and wall slam with exploding SUPER d12. |
-| `STR_MELEE_REACH`<br>Long Reach | STR / Melee reach | Implemented + validator (runtime test pending) | Batch 9: STR 15; ordinary Crowbar-family trace reach ×1.25, 96→120 units, using the unchanged blocking-geometry TraceHull. |
-| `CON_STEADFAST`<br>Hard to Move | CON / Control resistance | Implemented + validator | Batch 11 runtime accepted: incoming ordinary hit-stun and non-scripted push displacement ×0.75, with explicit authored resistance bypass. |
-| `CON_BLAST_PROOF`<br>Blast-Proof | CON / Explosion defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CON_BIG_GUY`<br>Big Guy | CON / Target scale | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CON_NOT_YET`<br>Not Yet | CON / Lethal interceptor | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CON_RUSSIAN_ASSET`<br>Russian Asset | INT / Tetris | Implemented + validator (runtime test pending) | Batch 9: stable legacy ID, current INT 13 qualification; death/victory Tetris rewards ×2, death cap 60→120 seconds, mandatory respawn and victory windows unchanged. |
-| `DEX_SMG_COLD_HANDS_1`<br>Cold Hands | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: DEX 13; seeded test produced baseline 6 heat in 6 shots and exact authored rank behavior. |
-| `DEX_SMG_COLD_HANDS_2`<br>Ice in the Veins | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: DEX 15 + Cold Hands; replaces lower rank with 22% suppression and threshold 10. |
-| `DEX_SMG_COLD_HANDS_3`<br>Absolute Zero | DEX / SMG heat | Implemented + validator | Batch 8 runtime accepted: rank 3 produced exactly 6 suppressed + 12 heat in 18 shots; fixed 2.0s lock/cooling/cadence preserved. |
-| `DEX_AR2_SNAP`<br>Snap Targeting | DEX / AR2 | Design/runtime contradiction | Live effect is ×0.80 with a 0.50s floor, but current AR2 base tell is 0.45s; applying the rule literally would slow the feat. Resolve the base-tell authority before implementation. |
-| `DEX_MAGNUM_DEADEYE`<br>Deadeye | DEX / Magnum | Implemented + validator (runtime test pending) | Batch 9: DEX 15 with actual .357 capability; Aim State stillness requirement 0.50→0.35 seconds through the existing aim authority. |
-| `INT_MANA_BARRIER_1`<br>Mana Barrier | INT / HP-to-Magic diversion | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `INT_MANA_BARRIER_2`<br>Arcane Aegis | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `INT_MANA_BARRIER_3`<br>Mystic Bastion | INT / HP-to-Magic diversion | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `INT_MANA_SPRING`<br>Mana Spring | INT / Magic regeneration | Implemented + validator | Batch 11 runtime accepted: after Magic reached zero, passive regeneration produced 16 active ticks at ×1.50 across four unsuppressed seconds. |
-| `INT_FEEDBACK_LOOP`<br>Feedback Loop | INT / Magic continuation | Implemented + validator | Batch 12 runtime accepted: two live Force Shout continuation dice restored exactly 2 Magic. |
-| `INT_ARC_RECOVERY`<br>Arc Recovery | INT / Magic kill recovery | Implemented + validator | Batch 12 runtime accepted: four Magic kills restored 15 total Magic with one clustered kill rejected by the 2.0-second cooldown. |
-| `INT_CALCULATED_LUCK`<br>Calculated Luck | INT / Luck Ring | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `WIS_SURVEYOR`<br>Surveyor | WIS / Navigation | Implemented + validator | Batch 2 runtime accepted: canonical breadcrumb/map-drain authority. |
-| `WIS_CARTOGRAPHER`<br>Cartographer | WIS / Navigation | Implemented + validator | Batch 2 runtime accepted: canonical breadcrumb/map-drain authority. |
-| `WIS_FRUGAL_MAP`<br>Frugal Cartography | WIS / Navigation | Implemented + validator | Batch 2 runtime accepted: canonical breadcrumb/map-drain authority. |
-| `WIS_SPELLWARD`<br>Spellward | WIS / Magic saves | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `WIS_SIXTH_SENSE`<br>Sixth Sense | WIS / Perception | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `WIS_SPELLBREAKER`<br>Spellbreaker | WIS / Magic saves | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `WIS_SPELLBANE`<br>Spellbane | WIS / Magic saves | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `WIS_FORCEFUL_MAGIC`<br>Force Multiplier | WIS / Magic push | Implemented + validator | Batch 11 runtime accepted: explicit `magic_push` displacement ×1.25 composed before Hard to Move, producing exact live push `336 × 1.25 × 0.75 = 315`. |
-| `WIS_ATTUNEMENT`<br>Attunement | WIS / Elemental weakness | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_HITSTUN_1`<br>Unnerving Presence | CHA / Hit stun | Implemented + validator | Batch 10 runtime accepted: CHA 13; multiplies the ordinary attacker/defender CHA hit-stun result by 1.10. |
-| `CHA_HITSTUN_2`<br>Dazing Presence | CHA / Hit stun | Implemented + validator | Batch 10 runtime accepted: CHA 15 + Unnerving Presence; replaces the feat multiplier with 1.20. |
-| `CHA_HITSTUN_3`<br>Overwhelming Presence | CHA / Hit stun | Implemented + validator | Batch 10 runtime accepted: CHA 17 + Dazing Presence; accepted rank-3 live result `1.030 × 1.30 = 1.339`. |
-| `CHA_NERVE_1`<br>Iron Nerve | CHA / Morale defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_NERVE_2`<br>Unbreakable Nerve | CHA / Morale defense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_MENACE_1`<br>Menacing | CHA / Morale offense | Catalog/ownership only | Definition/ownership present; gameplay bridge still pending. |
-| `CHA_MENACE_2`<br>Dreadful | CHA / Morale offense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_MENACE_3`<br>Terrifying | CHA / Morale offense | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_PANIC`<br>Panic Is Contagious | CHA / Morale cascade | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_SPOT_1`<br>Point It Out | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_SPOT_2`<br>Rally the Hunt | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_SPOT_3`<br>Command the Hunt | CHA / Spotting | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CHA_ACADEMIC_ACHIEVEMENT`<br>Academic Achievement | CHA / Passive Magic regeneration | Implemented + validator | Batch 10 runtime accepted: CHA 15 + canonical Magic pool; adds only positive CHA_MOD to INT_MOD for passive Magic-regeneration speed. |
-| `CHA_WINNING_PERSONALITY`<br>Winning Personality | CHA / INT-feat qualification | Implemented + validator | Batch 10 runtime accepted: CHA 17; INT-prefixed feat ability checks use max(INT, CHA), while actual INT and every non-ability restriction remain unchanged. |
-| `CROSS_METEOR_STRIKE`<br>Meteor Strike | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_TINY_TERROR`<br>Tiny Terror | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_BIG_SCARY`<br>Big Scary | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_CRUSH_PANIC`<br>Crash the Party | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_BOOM_BATTERY`<br>Boom Battery | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_FORCE_OF_WILL`<br>Force of Will | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
-| `CROSS_LUCKY_BOOM`<br>Lucky Break | Cross-ability | Not yet catalogued | Not yet catalogued/bridged; exact live-GDD definition remains authoritative. |
+## Implementation evidence
 
-## Batch rule
+The active modular runtime under `gamemodes/legend_of_deborah/gamemode/lod/` now includes Gate E Batch 1 feat identity/computation, Batch 2 class-combat hooks, Batch 3 hit-stun, Batch 4 movement, Batch 5 reload-speed, Batch 6 rate-of-fire, Batch 7 burst-size, Batch 8 regeneration, Batch 9 breadcrumb, Batch 10 ammo generation, Batch 11 Greater Regeneration, Batch 12 Synergistic reloading/slow/accuracy effects, Batch 13 damage-reduction armor scaling, and Batch 14 accepted Crowbar-family composition, plus the pre-existing Phase C class/ammo systems. Static status below reflects actual runtime wiring, not GDD-only documentation.
 
-A row may advance to **Implemented + validator** only when its effect reaches the canonical gameplay seam, authored prerequisites/rank semantics are enforced, Character Sheet/runtime truth is exposed, and a finite developer validator covers the bridge. Static implementation is not runtime acceptance.
+## Ordinary feats
+
+| Feat | Base requirement | Implementation status | Implemented runtime support |
+|---|---|---:|---|
+| `[D] Crappy Weapon` (random weapon) | none | Implemented | Runtime weapon generation and roll modifiers |
+| `[D] Big Pockets` | DEX 16 | Implemented | Ammo reserve doubling/checks |
+| `[D] Crabs and Mutants` | DEX 14 | Implemented | Favored-enemy damage multiplier |
+| `[D] Regenerative` | CON 16 | Implemented | Gate E Batch 8 post-damage regenerative scheduling |
+| `[R|D] Greater Regeneration` | CON 17 | Implemented | Gate E Batch 11 once-per-rest spend of current/max regeneration multiplier after a reaction-eligible nearby hostile body shot |
+| `[W|D] Reloading Strike` | CON 12, STR 12 | Implemented | Gate E Batch 5 melee-triggered reload effects plus Gate E Batch 12 Synergistic reload stacking |
+| `[D] Defensive Reloading` | DEX 12 | Implemented | Gate E Batch 5 reload reactive effect |
+| `[D] Trained Senses` | WIS 10 | Implemented | Minimap/navigation scaling |
+| `[W|D] Regenerating Shell` | CON 14, STR 14 | Implemented | Gate E Batch 13 armored damage-reduction die that recovers after a 3× regeneration-cooldown damage break |
+| `[W|D] Bash` | STR 12 | Implemented | Gate E Batch 14 Crowbar d6 upgrade, stacked with Walloper, Wrecking Bar, and Hero of Legend |
+| `[W|D] Wrecking Bar` | STR 14, Bash | Implemented | Gate E Batch 14 Crowbar wall-crush bonus die, accepted with shared push-save telemetry |
+| `[W|D] Walloper` | STR 16, Bash, Wrecking Bar | Implemented | Gate E Batch 14 Crowbar SUPER d12 upgrade and Wrecking-Bar d12 composition |
+| `[R|D] Hero of Legend` | WIS 15 | Implemented | Gate E Batch 14 full-Health globally-exclusive real Crowbar projectile with WIS range, Bio-Blaster speed, Magic damage, original two-stage launch audio, translucent color-shifting visual pulse, and standard LoD hit confirm |
+| `[W|D] Contusion` | STR 12 | Implemented | Gate E Batch 3 deterministic 10-second proc handling |
+| `[R|D] Concussion` | STR 15, Contusion | Implemented | Gate E Batch 3 stun duration multiplier composition |
+| `[D] Hold It` | DEX 16 | Implemented | Gate E Batch 3 melee reverse-hit-stun reaction |
+| `[D] Parkour` | DEX 12 | Implemented | Gate E Batch 4 sprint/walk/jump movement scaling |
+| `[W|D] Scooch` | STR 12 | Implemented | Gate E Batch 4 horizontal crouch-jump distance scaling |
+| `[R|D] Hopping` | DEX 15 | Implemented | Gate E Batch 4 debuff-purge reaction |
+| `[R|D] Full Throttle` | DEX 15 | Implemented | Gate E Batch 4 post-kill speed window |
+| `[W|D] Lose It` | DEX 12 | Implemented | Gate E Batch 4 Walk-key debuff removal |
+| `[W|D] Special Bullet` | DEX 10 | Docs-only | — |
+| `[R|D] Gung Ho` | DEX 14, Special Bullet | Docs-only | — |
+| `[W|D] Fast Shot` | DEX 12 | Docs-only | — |
+| `[W|D] Shotgun Wedding` | DEX 10 | Docs-only | — |
+| `[R|D] Scrapping` | DEX 12, Shotgun Wedding | Docs-only | — |
+| `[W|D] Submachine Gun Sling` | DEX 12 | Docs-only | — |
+| `[W|D] Sharpshooter` | DEX 10 | Docs-only | — |
+| `[R|D] The Lad’s Got Talent` | DEX 13, Sharpshooter | Docs-only | — |
+| `[W|D] Beam` | DEX 10 | Docs-only | — |
+| `[W|D] Combat Rifle` | DEX 10 | Docs-only | — |
+| `[R|D] Trouble in Paradise` | DEX 12, Beam | Docs-only | — |
+| `[W|D] Heavy Artillery` | STR 12 | Docs-only | — |
+| `[W|D] Grenade Bride` | STR 14, Heavy Artillery | Docs-only | — |
+| `[R|D] Grenadier` | STR 16, Grenade Bride | Docs-only | — |
+| `[W|D] Rockets!` | STR 12 | Docs-only | — |
+| `[W|D] Smart Rockets` | STR 13, Rockets! | Docs-only | — |
+| `[R|D] Rocket Man` | STR 14, Smart Rockets | Docs-only | — |
+| `[W|D] Long Jump` | DEX 12, INT 12 | Docs-only | — |
+| `[W|D] Air Control` | WIS 12, Long Jump | Docs-only | — |
+| `[R|D] I Believe I Can Fly` | DEX 14, Air Control | Docs-only | — |
+| `[D] Monstrous Regenerating` | CON 16 | Docs-only | — |
+| `[W|D] Move Along` | CHA 14 | Docs-only | — |
+| `[W|D] Medical Degree` | WIS 14 | Implemented | Gate E Batch 2 medic-weapon healing conversion |
+| `[R|D] Emergency Mage` | INT 14, Medical Degree | Implemented | Gate E Batch 2 emergency mana restoration |
+| `[W|D] That’s Mr. Soldier to You` | CHA 12 | Docs-only | — |
+| `[W|D] Target Rich` | WIS 14, That’s Mr. Soldier to You | Docs-only | — |
+| `[R|D] The Hunter’s Hunted` | WIS 16, Target Rich | Docs-only | — |
+| `[W|D] Exploding Fireball` | INT 10 | Implemented | Gate E Batch 1 spell identity/computation |
+| `[R|D] The Original Fireball` | INT 13, Exploding Fireball | Implemented | Gate E Batch 1 spell identity/computation |
+| `[W|D] Rejuvenation` | WIS 10 | Implemented | Gate E Batch 1 spell identity/computation |
+| `[R|D] Efficient` | WIS 13, Rejuvenation | Implemented | Gate E Batch 1 spell identity/computation |
+| `[W|D] Electromagnetic Sapper` | INT 12 | Implemented | Gate E Batch 1 spell identity/computation |
+| `[W|D] Rough Map` | INT 10 | Implemented | Minimap/navigation scaling |
+| `[R|D] I Know I’ve Been Here Before` | WIS 12 | Implemented | Gate E Batch 9 breadcrumb consumption/restoration and retrace telemetry |
+| `[W|D] Speed Reader` | INT 10 | Implemented | Gate E Batch 5 reload-time scaling |
+| `[W|D] Magicka` | INT 12 | Implemented | Magic scaling |
+| `[R|D] Magical Machinations` | INT 14, Magicka | Implemented | Magic scaling/threshold adjustments |
+| `[R|D] KABLAM!` | INT 16, Magical Machinations | Implemented | Magic scaling/threshold adjustments |
+| `[W|D] First Aid` | INT 10 | Implemented | Rejuvenation healing scaling |
+| `[R|D] Medicine` | INT 13, First Aid | Implemented | Rejuvenation healing scaling |
+| `[W|D] Magic Bullets` | WIS 13 | Implemented | Gate E Batch 2 aiming→magic multiplier |
+| `[W|D] Dropped Hunter` | WIS 10 | Implemented | Gate E Batch 10 +1d3 bolts on Dropper pickup |
+| `[W|D] Arrow Smith` | WIS 13, Dropped Hunter | Implemented | Gate E Batch 10 once-per-30s no-ammo Crossbow bolt generation |
+| `[R|D] Multitasking` | WIS 16, Arrow Smith | Implemented | Gate E Batch 10 once-per-rest regenerate-one-bolt reaction below maximum bolts |
+| `[W|D] Synergistic` | WIS 10 | Implemented | Gate E Batch 12 each damage source revealed as a weighted damage type with 10% same-type reload/slow/accuracy debuffs |
+| `[W|D] Well Rested` | CON 10 | Implemented | Regeneration/magic/health pool scaling |
+| `[R|D] Spreading the Love` | CHA 10 | Implemented | Co-op resource sharing path |
+| `[W|D] Speed Caster` | WIS 10 | Implemented | Gate E Batch 5 casting cooldown scaling |
+| `[W|D] Hit Point` | CON 10 | Implemented | Health pool scaling |
+| `[W|D] On The Edge` | CON 12 | Implemented | Gate E Batch 2 zero-HP death-reaction delay |
+| `[W|D] Hold Out` | CON 14 | Implemented | Gate E Batch 2 low-HP damage reduction |
+| `[W|D] Don’t Hold Your Breath` | CON 10 | Implemented | Breath growth scaling |
+| `[W|D] Pusher` | STR 10 | Implemented | Gate E Batch 14 deterministic post-damage push proc, shared with Crowbar composition and wall saves |
+| `[W|D] Knock Back` | STR 12, Pusher | Implemented | Gate E Batch 14 additive push scaling with shared save semantics |
+| `[W|D] Toss Around` | STR 14, Knock Back | Implemented | Gate E Batch 14 stronger additive push scaling with shared save semantics |
+| `[W|D] Cannoneer` | STR 16, Toss Around | Implemented | Gate E Batch 14 global non-Shotgun firearm push and wall-crush composition |
+| `[W|D] Shooting Spree` | DEX 12 | Implemented | Gate E Batch 6 firearm ROF scaling |
+| `[R|D] Rapid Fire` | DEX 16, Shooting Spree | Implemented | Gate E Batch 6 stronger firearm ROF scaling |
+| `[W|D] Machine Gun Molly` | DEX 14 | Implemented | Gate E Batch 7 firearm burst-size scaling |
+| `[R|D] Sally Shells` | DEX 16, Machine Gun Molly | Implemented | Gate E Batch 7 stronger firearm burst-size scaling with AR2 one-ammo burst authority |
+
+## Class feats
+
+| Feat | Base requirement | Implementation status | Implemented runtime support |
+|---|---|---:|---|
+| Fighter: Health Expertise | Fighter 10 | Implemented | Class max-health scaling |
+| Rogue: Regeneration Expertise | Rogue 10 | Implemented | Class regeneration scaling |
+| Wizard: Magic Expertise | Wizard 10 | Implemented | Class magic scaling |
+| Fighter: Second Wind | Fighter 10 | Implemented | Deterministic refill path |
+| Rogue: Boom Expert | Rogue 10 | Implemented | Exploding dice threshold scaling |
+| Wizard: Magicka Master | Wizard 10 | Implemented | Magic scaling |
+| Fighter 20 Capstone | Fighter 20 | Implemented | Low-HP damage multiplier path |
+| Rogue 20 Capstone | Rogue 20 | Implemented | Exploding dice threshold scaling |
+| Wizard 20 Capstone | Wizard 20 | Implemented | Magic regeneration scaling |
