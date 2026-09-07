@@ -5,15 +5,15 @@ Scope: live repository `main`; gameplay feats from the GDD — unimplemented or 
 
 ## Status summary
 
-- **Total feat rows tracked:** 75
+- **Total feat rows tracked:** 76
 - **Docs-only:** 22 feats (29%)
-- **In-progress:** 0 feats (0%)
-- **Implemented in code:** 53 feats (71%)
-- **Gameplay coverage:** ~71%
+- **In-progress:** 1 feat (1%)
+- **Implemented in code:** 53 feats (70%)
+- **Gameplay coverage:** ~70%
 
 ## Implementation evidence
 
-The active modular runtime under `gamemodes/legend_of_deborah/gamemode/lod/` now includes Gate E Batch 1 feat identity/computation, Batch 2 class-combat hooks, Batch 3 hit-stun, Batch 4 movement, Batch 5 reload-speed, Batch 6 rate-of-fire, Batch 7 burst-size, Batch 8 regeneration, Batch 9 breadcrumb, Batch 10 ammo generation, Batch 11 Greater Regeneration, Batch 12 Synergistic reloading/slow/accuracy effects, Batch 13 damage-reduction armor scaling, and Batch 14 accepted Crowbar-family composition, plus the pre-existing Phase C class/ammo systems. Static status below reflects actual runtime wiring, not GDD-only documentation.
+The active modular runtime under `gamemodes/legend_of_deborah/gamemode/lod/` now includes Gate E Batch 1 feat identity/computation, Batch 2 class-combat hooks, Batch 3 hit-stun, Batch 4 movement, Batch 5 reload-speed, Batch 6 rate-of-fire, Batch 7 burst-size, Batch 8 regeneration, Batch 9 breadcrumb, Batch 10 ammo generation, Batch 11 Greater Regeneration, Batch 12 Synergistic reloading/slow/accuracy effects, Batch 13 damage-reduction armor scaling, and Batch 14 accepted Crowbar-family composition, plus the pre-existing Phase C class/ammo systems. Gate E Batch 15 Blast-Proof is wired through the central explosion-continuation authority and remains **In-progress** pending user runtime acceptance. Static status below reflects actual runtime wiring, not GDD-only documentation.
 
 ## Ordinary feats
 
@@ -28,6 +28,7 @@ The active modular runtime under `gamemodes/legend_of_deborah/gamemode/lod/` now
 | `[D] Defensive Reloading` | DEX 12 | Implemented | Gate E Batch 5 reload reactive effect |
 | `[D] Trained Senses` | WIS 10 | Implemented | Minimap/navigation scaling |
 | `[W|D] Regenerating Shell` | CON 14, STR 14 | Implemented | Gate E Batch 13 armored damage-reduction die that recovers after a 3× regeneration-cooldown damage break |
+| Blast-Proof | CON 15 | In-progress | Gate E Batch 15 central incoming exploding-damage continuation suppression with per-defender 2.0-second recharge; pending runtime acceptance |
 | `[W|D] Bash` | STR 12 | Implemented | Gate E Batch 14 Crowbar d6 upgrade, stacked with Walloper, Wrecking Bar, and Hero of Legend |
 | `[W|D] Wrecking Bar` | STR 14, Bash | Implemented | Gate E Batch 14 Crowbar wall-crush bonus die, accepted with shared push-save telemetry |
 | `[W|D] Walloper` | STR 16, Bash, Wrecking Bar | Implemented | Gate E Batch 14 Crowbar SUPER d12 upgrade and Wrecking-Bar d12 composition |

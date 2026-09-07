@@ -34,6 +34,7 @@ if SERVER then
     include("lod/sv_rpg_major_fx_bridge.lua")
     include("lod/sv_rpg_validation.lua")
     include("lod/sv_rpg_gate_e_exploding_dice.lua")
+    include("lod/sv_rpg_gate_e_blast_proof.lua")
     include("lod/sv_rpg_gate_e_reload.lua")
     include("lod/sv_rpg_gate_e_reload_runtime.lua")
     include("lod/sv_rpg_gate_e_reload_deadline_confirmation.lua")
