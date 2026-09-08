@@ -12,6 +12,7 @@ Thumbs.db
 dist/
 *.gma
 *.zip
+/antigravity_bundle/
 
 # Secrets / local config
 .env
