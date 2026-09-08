@@ -672,6 +672,20 @@ function Staging:ClaimStarter(ply, ent)
     return true
 end
 
+function Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
+    ps.deploymentComplete = true
+    ps.deployedAtLevel = state.Level
+    ps.deployedAtLevelSeed = state.LevelSeed
+    ps.deployedDungeonLevel = state.Level
+    ply:SetNW2Bool("LOD_Staged", false)
+    ply:SetNW2Bool("LOD_Deployed", true)
+    ply:SetPos(destination)
+    ply:SetEyeAngles(Angle(0, 0, 0))
+    ply:SetLocalVelocity(vector_origin)
+    RunManager:_SyncPlayerVars(ply)
+    if Loot and Loot.EnsureStaticForPlayer then Loot:EnsureStaticForPlayer(ply) end
+end
+
 function Staging:DeployPlayer(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or not slotActive(ply) then return false end
     local identity = identityOf(ply)
@@ -699,18 +713,7 @@ function Staging:DeployPlayer(ply)
     if not state or not state.BuildReady or state.Failed or state.LevelCleared then return false end
     local destination = state.CheckpointPos or (state.BuildReport and state.BuildReport.startPos)
     if not destination then return false end
-
-    ps.deploymentComplete = true
-    ps.deployedAtLevel = state.Level
-    ps.deployedAtLevelSeed = state.LevelSeed
-    ps.deployedDungeonLevel = state.Level
-    ply:SetNW2Bool("LOD_Staged", false)
-    ply:SetNW2Bool("LOD_Deployed", true)
-    ply:SetPos(destination)
-    ply:SetEyeAngles(Angle(0, 0, 0))
-    ply:SetLocalVelocity(vector_origin)
-    RunManager:_SyncPlayerVars(ply)
-    if Loot and Loot.EnsureStaticForPlayer then Loot:EnsureStaticForPlayer(ply) end
+    self:_ExecuteDeploymentTransition(ply, ps, destination, state)
 
     ply:EmitSound("ambient/machines/teleport3.wav", 72, 104, 0.75, CHAN_ITEM)
     ply:ChatPrint("DEPLOYED — ENTER THE DUNGEON")
@@ -885,4 +888,57 @@ concommand.Add("lod_staging_audit_status", function(ply)
         pass and "PASS" or "FAIL")
     print("[LOD:STAGING-AUDIT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
+end)
+
+concommand.Add("lod_dev_enter_maze", function(ply)
+    local cv = GetConVar("lod_developer_mode")
+    if not cv or not cv:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then
+        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=invalid_player"
+        print(msg)
+        if IsValid(ply) then ply:ChatPrint(msg) end
+        return
+    end
+
+    local state = RunManager.State
+    if not state or not state.BuildReady or state.Failed or state.LevelCleared then
+        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=no_active_maze"
+        print(msg)
+        ply:ChatPrint(msg)
+        return
+    end
+
+    local destination = state.CheckpointPos or (state.BuildReport and state.BuildReport.startPos)
+    if not destination then
+        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=no_destination"
+        print(msg)
+        ply:ChatPrint(msg)
+        return
+    end
+
+    if not RunManager:IsSlotActivePlayer(ply) then
+        if not RunManager:TryActivatePlayer(ply) then
+            local msg = "[LOD:DEV_INGRESS] result=FAIL reason=activation_failed"
+            print(msg)
+            ply:ChatPrint(msg)
+            return
+        end
+    end
+
+    local identity = identityOf(ply)
+    local ps = identity and RunManager:GetPlayerState(identity)
+    if not ps then
+        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=no_player_state"
+        print(msg)
+        ply:ChatPrint(msg)
+        return
+    end
+
+    Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
+
+    local msg = string.format("[LOD:DEV_INGRESS] result=PASS player=%s identity=%s destination=%.1f,%.1f,%.1f level=%s seed=%s",
+        ply:Nick(), tostring(ps.identity), destination.x, destination.y, destination.z,
+        tostring(state.Level), tostring(state.LevelSeed))
+    print(msg)
+    ply:ChatPrint(msg)
 end)
