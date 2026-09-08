@@ -224,7 +224,9 @@ function Magic:CastForceShout(ply)
     if not ps then return false end
     local now = CurTime()
     if now < (self.NextCast[ply] or 0) then return false end
-    if ps.magic < SHOUT_COST then
+    local rules = LOD.RPGAbilityRules
+    local cost = rules and rules.OffensiveMagicCost and rules:OffensiveMagicCost(ply, SHOUT_COST) or SHOUT_COST
+    if ps.magic < cost then
         ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
         return false
     end
@@ -232,7 +234,9 @@ function Magic:CastForceShout(ply)
     local direction = ply:GetAimVector():GetNormalized()
     if direction == vector_origin then return false end
 
-    ps.magic = math.max(0, ps.magic - SHOUT_COST)
+    ps.magic = math.max(0, ps.magic - cost)
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply, SHOUT_COST, cost) end
     ps.gateEControlMagicTestHoldUntil = nil
     self.NextCast[ply] = now + SHOUT_COOLDOWN
     self:_Sync(ply, ps)
@@ -385,9 +389,11 @@ concommand.Add("lod_magic_status", function(ply)
     local cv = GetConVar("lod_developer_mode")
     if cv and not cv:GetBool() then return end
     if IsValid(ply) and not ply:IsAdmin() then return end
+    local rules = LOD.RPGAbilityRules
+    local cost = rules and rules.OffensiveMagicCost and rules:OffensiveMagicCost(ply, SHOUT_COST) or SHOUT_COST
     local line = string.format("casts=%d targets=%d damage=%d max=%d cost=%d regen=%.2fs range=%d cone=%ddeg push=%d",
         Magic.Stats.casts or 0, Magic.Stats.targets or 0, Magic.Stats.damage or 0,
-        MAX_MAGIC, SHOUT_COST, REGEN_SECONDS, SHOUT_RANGE, SHOUT_HALF_ANGLE * 2, SHOUT_PUSH)
+        MAX_MAGIC, cost, REGEN_SECONDS, SHOUT_RANGE, SHOUT_HALF_ANGLE * 2, SHOUT_PUSH)
     print("[LOD:MAGIC] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)

@@ -442,7 +442,9 @@ end
 
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
-    if tag == "d10_damage" or tag == "multi_fire_burst" then
+    if tag == "offensive_magic_activation" then
+        return LOD.Magic ~= nil and type(LOD.Magic.CastForceShout) == "function"
+    elseif tag == "d10_damage" or tag == "multi_fire_burst" then
         return ps.starterWeaponClass == "weapon_ar2"
     elseif tag == "smg" then
         return ps.starterWeaponClass == "weapon_smg1"

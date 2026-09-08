@@ -25,7 +25,13 @@ Current family: Strafer / Sideler / Lateral Mover, DEX 13/15/17 with predecessor
 
 Static gate: `tools/test_strafe.lua` PASS for all ranks, replacement, signed diagonals, forward-axis preservation after simulated engine speed clamp, analog fractions, jump/air/ladder/swimming exclusions, DEX/map/backpedal/sprint-cap composition, client/server caps and prerequisite gates. Existing backpedal and map-movement tests also PASS. Runtime pending.
 
-Next finite gate: pull/restart on gm_flatgrass; after deployment run `lod_developer_mode 1; lod_rpg_strafe_testkit 3`. Walk A, D, W+A, S+D, then W for about two seconds each. Run `lod_rpg_strafe_status; lod_rpg_validate; lod_rpg_test_finish strafe`. Expect rank=3, positive samples/diagonal/forwardOnly counts, peak=1.33, last=1.00, definition and core PASS. Send console screenshot and note any unexpected forward-speed change or jitter on diagonals. Alpha 2 remains incomplete and undeployed.
+Strafer family rank-3 runtime gate accepted on `44a441652a7fd8c2753dfa7f1531042cdfe5ed52`: screenshot shows samples=1534, diagonal=750, forwardOnly=46, peak=1.33, last=1.00, definition/core PASS and completed strafe test. Lower ranks and exact component preservation remain statically verified; no user report of diagonal feel was supplied.
+
+Current family: Quantum Mathematics / Quantum Mechanics / Quantum Mastery, INT 13/15/17 chained, replacing offensive activation cost multipliers 0.89/0.78/0.67. Cost is max(1,ceil(ordinary offensive activation cost * multiplier)); baseline without ownership is unchanged. Existing Force Shout uses the shared cost helper for both affordability and deduction (30 baseline; 27/24/21 by rank). Utility drain, regen, diversion, cooldown and damage paths are unchanged. Candidate capability requires an available offensive activation. Canonical Form/Content casting remains Phase 2 work and must call this helper after constructing ordinary cost.
+
+Static gate: production Force Shout test `tools/test_quantum.lua` PASS for all ranks, minimum/rounding, exact affordability, charged amount, rejected casts/cooldown, and prerequisite/capability gates. Runtime pending.
+
+Next finite gate: pull/restart gm_flatgrass and deploy. Run `lod_developer_mode 1; lod_rpg_quantum_testkit 3`. Close console and tap RMB once to cast Force Shout. Run `lod_rpg_quantum_status; lod_rpg_validate; lod_rpg_test_finish quantum`. Expect rank=3, multiplier=0.67, casts>=1, base=30, cost=21, definition/core PASS. Send console screenshot. Alpha 2 remains incomplete and undeployed.
 
 The history below is retained as prior evidence, not current design authority.
 
@@ -37,7 +43,7 @@ The history below is retained as prior evidence, not current design authority.
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 59 canonical matches and 84 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
+The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 62 canonical matches and 81 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
 
 ## Accepted runtime foundation
 

@@ -6,12 +6,12 @@ Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZ
 
 Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement passed its rank-3 open/close runtime gate on 4134c3b.
 
-Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer/Sideler/Lateral Mover add three canonical definitions with production movement tests; runtime gate pending.
+Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer rank-3 runtime gate is accepted on 44a4416. Quantum family adds three definitions and Force Shout cost integration; runtime pending.
 
 ## Measured set relationship
 
 - 143 enumerated ordinary/cross feats; 9 separate class capstones; 6 separate repeatable fallbacks: **158 total definitions**.
-- Ordinary registry: **59 present, 84 missing, 0 noncanonical**, after alias normalization.
+- Ordinary registry: **62 present, 81 missing, 0 noncanonical**, after alias normalization.
 - GDD `STR_HERO_OF_LEGEND` and runtime `WIS_HERO_OF_LEGEND` are the same Hero of Legend, WIS 15. Keep the existing runtime ID for state compatibility.
 - All 9 capstones and 6 fallbacks have catalog definitions; this does not establish complete runtime behavior.
 - No numerical ordinary-feat count was found in the live GDD to correct. The stale 119 count was in development status.
@@ -112,9 +112,9 @@ The live GDD says the Form catalog has six entries while Hero progression and fo
 | INT_CLOUD_STEP | Cloud Step | INT 13 | None | Missing | — |
 | INT_FLOAT_ON | Float On | INT 15 | None | Missing | — |
 | INT_SIZE_SHIFTER | Size Shifter | INT 13 | None | Missing | — |
-| INT_QUANTUM_MATHEMATICS_1 | Quantum Mathematics | INT 13 | None | Missing | — |
-| INT_QUANTUM_MECHANICS_2 | Quantum Mechanics | INT 15 | Quantum Mathematics | Missing | — |
-| INT_QUANTUM_MASTERY_3 | Quantum Mastery | INT 17 | Quantum Mechanics | Missing | — |
+| INT_QUANTUM_MATHEMATICS_1 | Quantum Mathematics | INT 13 | None | Present | quantum_offensive_cost |
+| INT_QUANTUM_MECHANICS_2 | Quantum Mechanics | INT 15 | Quantum Mathematics | Present | quantum_offensive_cost |
+| INT_QUANTUM_MASTERY_3 | Quantum Mastery | INT 17 | Quantum Mechanics | Present | quantum_offensive_cost |
 | INT_MIDDLE_MANAGER | Middle Manager | INT 13 | None | Missing | — |
 | INT_TASKMASTER | Taskmaster | INT 15 | Middle Manager | Missing | — |
 | INT_OVERLORD | Overlord | INT 17 | Taskmaster | Missing | — |
