@@ -7,9 +7,13 @@ Winning Personality is runtime accepted on `06b579a3e42c744ad7e942fab9aed93e028f
 
 Current batch: World Walker / Globetrotter / Mind Strider (INT 13/15/17, chained) now multiply ordinary locomotion by 1.25/1.50/1.75 only while the existing server map authority permits an active map. Highest rank replaces lower ranks. Uses the existing DEX/SetupMove seam; no jump-velocity or forced-velocity edits. Existing map drain remains authoritative. Future Haste must compose at this same ordinary-locomotion seam; Haste is not implemented by this batch.
 
-Static gate: `luatex --luaonly tools/test_map_movement.lua` passes production rank/replacement, DEX/SetupMove composition, actor isolation, close/death/access/mapless/failure/freeze/heartbeat/exhaustion and prerequisite checks. Runtime acceptance pending.
+Static gate: `luatex --luaonly tools/test_map_movement.lua` passes production rank/replacement, DEX/SetupMove composition, actor isolation, close/death/access/mapless/failure/freeze/heartbeat/exhaustion and prerequisite checks. Map movement runtime acceptance is recorded below.
 
-Next finite gate on gm_flatgrass: run `lod_developer_mode 1; lod_rpg_mapwalk_testkit 3`, close the console, press M to open the map, walk for two seconds, press M to close, and walk again. Then run `lod_rpg_mapwalk_status; lod_rpg_mapwalk_validate; lod_rpg_validate; lod_rpg_test_finish mapwalk`. Expect rank=3, bonus=1.75, samples>0, peak=1.75, last=1.00, open=false, closedAfterOpen=true and both validators PASS. Send a console screenshot (export freshness remains unresolved). Alpha 2 remains incomplete and undeployed.
+Map movement runtime gate accepted on `4134c3b15d90a375342c104c76749cc98e7f7275`: screenshot shows rank=3, samples=1018, peak=1.75, last=1.00, open=false, closedAfterOpen=true; map-family and core validators PASS; finish marker confirmed. Lower-rank values remain statically verified.
+
+The same screenshot exposes an independent Deadcrab crash in sv_deadcrab.lua:362: missing `_RunDeadcrabTick`. The wrapper now directly calls its local dispatcher, while Initialize publishes that dispatcher on the instance for Motion V2. The attack state machine and tuning are unchanged. `tools/test_deadcrab_dispatch.lua` reproduces the missing-helper shape and passes fallback, non-Deadcrab, named-dispatch and frame-guard checks. Map movement regression also PASS.
+
+Next finite gate: pull/restart on gm_flatgrass, deploy, run `lod_developer_mode 1; lod_m3_spawn deadcrab`, approach the spawned Deadcrab and let it leap/latch/detonate once. Run `lod_deadcrab_attack_status` and send a console screenshot; require no missing-helper error and positive leap/latch/detonation evidence. Alpha 2 remains incomplete and undeployed.
 
 The history below is retained as prior evidence, not current design authority.
 

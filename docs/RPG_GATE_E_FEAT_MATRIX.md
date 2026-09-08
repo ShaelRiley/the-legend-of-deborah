@@ -4,7 +4,7 @@ Reconciled 2026-09-08 against live GDD modified 2026-09-08T06:07:17.109Z.
 Starting main: `544702805fcf97c13f1055b1cee16ca4d3b5b3d4`.
 Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY/edit
 
-Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement awaits its finite runtime gate.
+Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement passed its rank-3 open/close runtime gate on 4134c3b.
 
 ## Measured set relationship
 

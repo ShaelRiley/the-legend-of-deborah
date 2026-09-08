@@ -312,14 +312,39 @@ local function processLeap(self)
     return true
 end
 
+-- Named archetype dispatch keeps the attack state machine reachable even if
+-- Source installs Motion V2 after this wrapper during OnEntityCreated.
+local function runDeadcrabTick(self)
+    if self.LODArchetypeId ~= "deadcrab" then return false end
+
+    local frame = FrameNumber()
+    if self.LODDeadcrabDispatchFrame == frame then return false end
+    self.LODDeadcrabDispatchFrame = frame
+
+    if self.LODDead or not self.LODActivated then return true end
+    if self.LODDeadcrabState == "latched" or self.LODDeadcrabState == "detonated" then return true end
+    if self.LODDeadcrabState == "leaping" then
+        processLeap(self)
+        return true
+    end
+
+    local target = self.LODTarget
+    return livingPlayer(target) and beginLeap(self, target) or false
+end
+
+
 local function installHostilePatch()
     local stored = scripted_ents.GetStored("lod_hostile")
     local class = stored and stored.t
     if not class or class.LODDeadcrabPatched then return false end
     class.LODDeadcrabPatched = true
+    class._RunDeadcrabTick = runDeadcrabTick
 
     local baseInitialize = class.Initialize
     function class:Initialize()
+        -- Source instances may have copied their method table before this patch.
+        -- Publish the same dispatcher for the Motion V2 named-call path.
+        self._RunDeadcrabTick = runDeadcrabTick
         baseInitialize(self)
         if self.LODArchetypeId ~= "deadcrab" or not self.LODConfig then return end
 
@@ -337,29 +362,9 @@ local function installHostilePatch()
         deadcrabSetActivity(self, self.LODConfig.activity or ACT_RUN)
     end
 
-    -- Named archetype dispatch keeps the attack state machine reachable even if
-    -- Source installs Motion V2 after this wrapper during OnEntityCreated.
-    function class:_RunDeadcrabTick()
-        if self.LODArchetypeId ~= "deadcrab" then return false end
-
-        local frame = FrameNumber()
-        if self.LODDeadcrabDispatchFrame == frame then return false end
-        self.LODDeadcrabDispatchFrame = frame
-
-        if self.LODDead or not self.LODActivated then return true end
-        if self.LODDeadcrabState == "latched" or self.LODDeadcrabState == "detonated" then return true end
-        if self.LODDeadcrabState == "leaping" then
-            processLeap(self)
-            return true
-        end
-
-        local target = self.LODTarget
-        return livingPlayer(target) and beginLeap(self, target) or false
-    end
-
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
-        if self.LODArchetypeId == "deadcrab" and self:_RunDeadcrabTick() then return end
+        if self.LODArchetypeId == "deadcrab" and runDeadcrabTick(self) then return end
         return baseBehaviourTick(self)
     end
 
