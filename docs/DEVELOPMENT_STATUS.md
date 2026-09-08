@@ -1,3 +1,14 @@
+# Alpha 2 reconciliation — 2026-09-08
+
+Starting main: `544702805fcf97c13f1055b1cee16ca4d3b5b3d4`.
+
+The current canonical-vs-runtime inventory is in `RPG_GATE_E_FEAT_MATRIX.md`.
+Winning Personality's missing permanent +1 CHA is repaired, including P-sheet provenance. Production acquisition/recompute harness passes grant-once behavior, reconnect/recompute safety, fallback composition, ability cap, gear exclusion and INT isolation. Runtime acceptance is pending. Earlier Charisma acceptance proves the older implementation only.
+
+Next finite gate: run the Charisma validator and core RPG validator on gm_flatgrass; confirm enabling the Charisma utility testkit adds one intrinsic CHA and repeated enabling does not add another. Return console_latest.txt and rpg_summary_latest.txt. Continue Phase 1 after adjudication; Alpha 2 remains incomplete and undeployed.
+
+The history below is retained as prior evidence, not current design authority.
+
 # Development Status — 2026-09-06
 
 ## Current execution phase
@@ -6,7 +17,7 @@
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority. The current live catalog contains 119 tabulated ordinary/cross-feat rows.
+The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 52 canonical matches and 91 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
 
 ## Accepted runtime foundation
 

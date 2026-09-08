@@ -113,7 +113,7 @@ Feats.CHA_ACADEMIC_ACHIEVEMENT = charismaSingleton(
 Feats.CHA_WINNING_PERSONALITY = charismaSingleton(
     "CHA_WINNING_PERSONALITY", "Winning Personality", 17, nil,
     "cha_winning_personality", "winning_personality_qualification",
-    "For the printed ability-score prerequisite of INT-prefixed feats only, uses max(INT, CHA). Actual INT and INT_MOD remain unchanged, and every prerequisite, restriction, capability, class exclusion, and availability rule remains authoritative.")
+    "Permanently grants +1 intrinsic CHA, subject to the ordinary ability ceiling. For the printed ability-score prerequisite of INT-prefixed feats only, uses max(INT, CHA) after that increase. Actual INT and INT_MOD remain unchanged, and every prerequisite, restriction, capability, class exclusion, and availability rule remains authoritative.")
 
 Catalog.OrdinaryFeats = Feats
 Catalog.GateECharismaSourceRevisionId = SOURCE_REVISION
@@ -286,6 +286,14 @@ function Effects:ValidateCharismaFamilies()
     local winning = Feats.CHA_WINNING_PERSONALITY
     expect(winning and winning.abilityRequirements.cha == 17,
         "Winning Personality CHA 17")
+    local permanent = {featIds = {"CHA_WINNING_PERSONALITY"}, featAbilityDelta = {cha = 2}}
+    expect(Progression:PermanentFeatAbilityDelta(permanent, "cha") == 3,
+        "Winning Personality adds one permanent CHA alongside fallback grants")
+    expect(Progression:PermanentFeatAbilityDelta(permanent, "cha") == 3
+        and permanent.featAbilityDelta.cha == 2,
+        "Winning Personality recomputation does not accumulate grants")
+    expect(Progression:PermanentFeatAbilityDelta(permanent, "int") == 0,
+        "Winning Personality never grants actual INT")
     local state = {
         featIds = {"CHA_WINNING_PERSONALITY"},
         featQualificationAbilities = {int = 11, cha = 17, str = 13},
@@ -397,7 +405,7 @@ concommand.Add("lod_rpg_gate_e_charisma_status", function(ply)
     local profile = Effects:CharismaProfile(state)
     local stats = Effects.CharismaStats
     local line = string.format(
-        "hitStunRank=%d feat=x%.2f queries=%d lastBase=x%.3f lastFinal=x%.3f academic=%s intMod=%d chaContribution=%d effectiveRegenMod=%d regen=x%.2f winning=%s INTqualification=%d",
+        "hitStunRank=%d feat=x%.2f queries=%d lastBase=x%.3f lastFinal=x%.3f academic=%s intMod=%d chaContribution=%d effectiveRegenMod=%d regen=x%.2f winning=%s INTqualification=%d intrinsicCHA=%d permanentFeatCHA=%d",
         profile.hitStunRank, profile.featHitStunMultiplier,
         stats.hitStunMultiplierQueries or 0, stats.lastBaseHitStunMultiplier or 1,
         stats.lastFinalHitStunMultiplier or 1,
@@ -406,7 +414,9 @@ concommand.Add("lod_rpg_gate_e_charisma_status", function(ply)
         tonumber(derived.effectiveMagicRegenModifier) or tonumber(derived.intMod) or 0,
         tonumber(derived.magicRegenMultiplier) or 1,
         tostring(profile.winningPersonality),
-        Effects:WinningPersonalityQualificationScore(state))
+        Effects:WinningPersonalityQualificationScore(state),
+        tonumber(state and state.featQualificationAbilities and state.featQualificationAbilities.cha) or 0,
+        state and Progression:PermanentFeatAbilityDelta(state, "cha") or 0)
     print("[LOD:RPG-E] " .. line)
     ply:ChatPrint(line)
 end)

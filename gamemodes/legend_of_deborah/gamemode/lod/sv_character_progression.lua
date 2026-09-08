@@ -335,6 +335,17 @@ function CharacterProgressionSystem:_CapstoneDefinition(state)
         and classCatalog[state.classCapstoneFeatId] or nil
 end
 
+-- Permanent one-rank grants are derived from campaign-owned feats. Keeping
+-- these separate from accumulated fallback deltas makes recomputation and
+-- reconnect idempotent, including states created before the grant was wired.
+function CharacterProgressionSystem:PermanentFeatAbilityDelta(state, ability)
+    local amount = tonumber(state.featAbilityDelta and state.featAbilityDelta[ability]) or 0
+    if ability == "cha" and arrayContains(state.featIds or {}, "CHA_WINNING_PERSONALITY") then
+        amount = amount + 1
+    end
+    return amount
+end
+
 function CharacterProgressionSystem:_RecomputeProgressionState(state)
     if not state then return end
     state.level = self:ClampLevel(state.level)
@@ -348,7 +359,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
             + (state.growthAbilities[ability] or 0)
             + (state.fighterTraining[ability] or 0)
             + (state.identityAbilityDelta[ability] or 0)
-            + (state.featAbilityDelta[ability] or 0)
+            + self:PermanentFeatAbilityDelta(state, ability)
         qualification[ability] = math.Clamp(intrinsic, RPG.Constants.AbilityMin, RPG.Constants.AbilityMax)
         effective[ability] = math.Clamp(intrinsic
             + (state.equipmentAbilityDelta[ability] or 0)
@@ -916,7 +927,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             growth = state.growthAbilities[ability] or 0,
             fighterTraining = state.fighterTraining[ability] or 0,
             identity = state.identityAbilityDelta[ability] or 0,
-            feat = state.featAbilityDelta[ability] or 0
+            feat = self:PermanentFeatAbilityDelta(state, ability)
         }
     end
 

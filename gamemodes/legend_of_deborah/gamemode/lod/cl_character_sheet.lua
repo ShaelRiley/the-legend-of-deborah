@@ -564,7 +564,7 @@ function Sheet:Open(requestFresh)
     end
     if snapshot.winningPersonalityEnabled then
         recordText = recordText .. string.format(
-            "\nWinning Personality: INT-feat qualification score %d",
+            "\nWinning Personality: +1 permanent CHA / INT-feat qualification score %d",
             snapshot.effectiveINTFeatQualificationScore or 0)
     end
     if snapshot.feedbackLoopEnabled then
