@@ -6,7 +6,7 @@ Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZ
 
 Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement passed its rank-3 open/close runtime gate on 4134c3b.
 
-Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer rank-3 runtime gate is accepted on 44a4416. Quantum family adds three definitions and Force Shout cost integration; runtime pending.
+Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer rank-3 runtime gate is accepted on 44a4416. Quantum family adds three definitions and Force Shout cost integration; AG-001 runtime acceptance is reported, raw-bundle verification outstanding in the senior review (see DEVELOPMENT_STATUS.md).
 
 ## Measured set relationship
 

@@ -59,7 +59,7 @@ For each bounded development unit:
 3. **Define a finite gate.** State what observable condition will prove the unit correct. Avoid open-ended “test generally” instructions.
 4. **Implement narrowly.** Modify the smallest canonical gameplay seam that can satisfy the requirement. Prefer one authoritative mechanism over duplicated special cases.
 5. **Validate statically.** Run syntax/static checks and targeted validators available for the changed subsystem before pushing.
-6. **Commit and push.** Leave `main` in a coherent, testable state. Do not claim a push occurred unless the remote update actually succeeded.
+6. **Commit and push.** Under the hybrid workflow, Antigravity commits/pushes only `hybrid/antigravity`; Sol reviews and Astra promotes (see `docs/ANTIGRAVITY_PROTOCOL.md`). Leave the authorized branch in a coherent, testable state. Do not claim a push occurred unless the remote update actually succeeded.
 7. **Give finite runtime instructions.** Tester instructions must be short, deterministic where practical, and aimed at falsifying the exact behavior just changed.
 8. **Ingest evidence.** Read the returned logs/screenshots rather than relying on the tester's summary alone when the evidence is available.
 9. **Adjudicate.** Mark the unit accepted only when its explicit gate passes. If it fails, diagnose from evidence and repair the same unit before advancing unless the failure proves unrelated.

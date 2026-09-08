@@ -4,7 +4,7 @@ This protocol governs Google Antigravity/Gemini work performed on the experiment
 
 ## 1. Purpose
 
-Antigravity is a bounded implementation and local-test worker. Sol/Astra remain responsible for architecture, design reconciliation, difficult diagnosis, acceptance adjudication, and promotion to `main`.
+Antigravity is a bounded implementation and local-test worker. Sol owns daily task architecture and evidence review. Astra owns major architecture and promotion to `main`.
 
 The objective is to convert inexpensive Antigravity compute and local-computer control into auditable implementation progress without allowing speculative design or unreviewed code onto `main`.
 
@@ -14,7 +14,7 @@ Antigravity may work only on:
 
 `hybrid/antigravity`
 
-Unless a Sol/Astra task explicitly says otherwise, Antigravity must not:
+Antigravity must not:
 
 - commit, merge, cherry-pick, rebase, reset, or push `main`;
 - force-push any branch;
@@ -149,6 +149,16 @@ Antigravity must not self-promote a batch to `main` regardless of its own confid
 
 ## 11. Promotion to main
 
-Promotion is a separate Sol/Astra-controlled release gate. Before merging, the reviewer should compare the complete hybrid branch against the then-current `main`, review the accepted batch history and runtime evidence, run any necessary regression gates, repair genuine defects, and only then merge or otherwise promote the reviewed commits.
+Promotion is a separate Astra-controlled acceptance gate. Before merging, the reviewer should compare the complete hybrid branch against the then-current `main`, review the accepted batch history and runtime evidence, run any necessary regression gates, repair genuine defects, and only then merge or otherwise promote the reviewed commits.
 
-The public server continues to consume `main`; therefore experimental work remains inert with respect to the public deployment until explicitly promoted.
+Promotion does not authorize deployment, restart, or Workshop publication. Those remain separate explicit operations.
+
+## 12. Review-cycle controls (senior review 2026-09-08)
+
+- One writer per checkout/branch at a time. Sol freezes AG writes during Astra promotion. Fetch and verify both remote tips immediately before ref changes; any movement requires review. Never rewrite published task commits; repairs are new commits associated with the same task.
+- Each packet pins the starting hybrid SHA, accepted-main SHA, live-GDD passage/revision, allowed files, explicit exclusions, and finite negative as well as positive gates. A task-scope diff is from that pinned starting SHA, not merely the current HEAD commit or cumulative main diff.
+- Before a fresh GMod process, record the clean installed checkout SHA and installation path. Do not change checkout or branch while GMod runs: the addon is a live symlink. Runtime log copies and hashes alone cannot establish the loaded code SHA.
+- Each runtime gate uses a unique task/SHA/session marker, gm_flatgrass, production input activation, relevant negative cases, core validation and test finish. Sol must open the copied logs and verify the marker, actual events and completed gate. A filename, an agent PASS summary, or a staging-room audit alone is insufficient.
+- Bundles include full committed diff and SHA-256 file inventory; dirty trees are rejected. Generator success means packaging/static checks only, never runtime acceptance. Runtime freshness/build attribution remains explicitly unverified until Sol correlates logs with the recorded installation and fresh-process evidence.
+- Developer ingress is local admin/developer QA only. It uses normal slot admission (including capacity/lives limits), marks the campaign unranked, and sets deployment state without pretending class/feat/starter choices were completed. It does not spawn/revive or grant equipment. Ordinary admission may initialize a new identity; deployment materializes that identity's ordinary unconsumed world pickups, not inventory awards. Repeated ingress must not duplicate rewards. Use the normal portal separately to test staging eligibility.
+- After promotion, fast-forward hybrid to the accepted main tip. If branches diverge, stop task issuance until Astra records an explicit non-destructive reconciliation. Sol may accept experimental evidence and queue tasks; only Astra advances main under this workflow.

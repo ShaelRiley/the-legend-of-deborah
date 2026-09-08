@@ -1,3 +1,37 @@
+# Senior hybrid review — 2026-09-08
+
+Authority checked: live GDD modified 2026-09-08T06:07:17.109Z; accepted main c8bd0494c613a496dc533ae8ce89a9127a0485c6; hybrid 91ac49a6a5347c09a219f5d24bc670d312e0458a (harness 66ae1d4 plus AG-002). This entry supersedes the prior next-action paragraphs below. No feat definitions added: ordinary inventory remains 62/143, membership is not mechanical acceptance.
+
+**Code review: PASS WITH CORRECTIONS; engine runtime follow-up remains finite.** Shared production deployment transition is preserved. Senior correction marks developer ingress unranked and rechecks authoritative slot membership/lives. Admission retains normal capacity, identity, elimination and Warden limits. No class/feat/starter completion is fabricated and no equipment/XP/cards are granted by ingress. Ordinary admission initializes a new character if needed and normal deployment materializes unconsumed personal world loot. These legitimate side effects must not be misreported as a zero-state-change teleport.
+
+AG-001: supplied handoff reports production RMB Force Shout at rank 3 with multiplier=0.67, casts=1, base=30, cost=21, spent=21 and core PASS. This is design-correct (ceil, rounded UP). No AG-001 raw bundle was available to independently inspect in this review; retain reported runtime acceptance, with documentary verification outstanding. Production-code Lua test passed independently, including all ranks/affordability/deduction. Do not describe that test as GMod runtime.
+
+AG-002: user reports successful maze entry and DEV_INGRESS/staging-audit PASS at 91ac49a. The staging audit checks hut/decor/portal architecture, not admission, progression isolation or ranked status. Senior production-code regression tests cover developer/admin denial, invalid/dead actors, unavailable builds/destinations, capacity/Warden/lives rejection, real admission, invoking-player isolation and unchanged normal portal eligibility. Engine, geometry and loot creation are stubbed. Corrected ingress needs the finite local runtime gate below; this is a reviewed pullable development build, not public-release qualification.
+
+Workflow corrections: absolute AG branch restriction; Astra-only promotion; append-only published repairs; freeze writers for promotion; pin task/base/install SHAs; never switch the symlinked checkout during a running test; correlate fresh-process/task markers with actual logs. Bundle generator rejects dirty trees, uses unique output directories, explicitly refreshes origin/main, captures full committed diff and SHA-256 inventory, labels runtime attribution unverified, honors installer path override, and returns failure for failed built-in static checks. These protect ranked provenance, authorization, and tested-source attribution; they are infrastructure fixes, not evidence that routine Sol/AG work is unsuitable.
+
+Validation performed in this review: `luatex --luaonly` tests for developer ingress (new, full production admission/staging modules with engine stubs), Quantum, map movement, backpedal and strafe all PASS; bundle integration fixture PASS for wrong-branch/dirty rejection, unique output, explicit main fetch, full patch, checksum verification, installer path override and nonzero failed-static exit; shell syntax and diff whitespace checks PASS. No GMod executable/runtime was used here.
+
+## First next gate: AG-002R evidence closeout
+
+Before new feature work, Sol obtains the original AG-001/AG-002 bundles if available and directly checks logs, installed SHA, unique marker and finish records. If missing or unattributable, rerun only the missing gate. AG-002R uses a fresh gm_flatgrass process on the promoted build, developer/admin enabled, before choosing class/feat/starter: capture staging status, run ingress twice, capture staging status again, core validation and finish. Expect active/deployed true, ranked=false in ingress, unchanged character decisions/starter/inventory/XP/lives/cards and no duplicate pickup rewards. Then set developer mode 0: ingress must cause no movement/state change. A second non-admin client must also be denied with developer mode on. In a fresh normal campaign verify portal denial before required choices and starter, then normal deployment after completing them. AG can operate these tests; Shael is needed only where local automation cannot. Do not count hut-audit PASS as the entire ingress gate.
+
+## Next ~12 hours: Sol management directive
+
+1. Close AG-001 provenance and corrected AG-002R runtime gate first; stop issuance on any failure.
+2. Audit/accept Deadeye at the existing Magnum Aim State seam: authored 0.35s versus ordinary 0.50s, all cancellation causes and no bypass of authoritative firing. One bounded repair only if the direct diff proves needed.
+3. Audit/accept Long Reach at the existing melee trace seam: 1.25x ordinary reach with walls/gates/floors still blocking; test ownership/prerequisite and eligible actor scope. Do not create playable Soldier/AI architecture to satisfy a broad catalog tag.
+4. Audit/accept Hard to Move at existing stun/push consumers: both ordinary effects x0.75, with scripted exceptions preserved. If a new common control-resolution authority is needed, stop that task and escalate; do not scatter handler patches.
+5. Reconcile actual accepted evidence into the feat matrix and identify the next missing family with an already working consumer. Sol may issue it only after reading its current live GDD text and demonstrating bounded scope; no quota of feats or speculative catalog-only completion.
+
+Allowed: one coherent existing-seam feat/defect/acceptance task, local QA, targeted regression and evidence tooling. Every packet pins source/design authority, changed-file scope, production-input positive/negative gates, actor applicability, no unrelated grants/refactors, deterministic authoritative effects, protected baseline behaviors, no main/GDD/VPS/Workshop writes and append-only history. No parallel branch writers. Stop early for production/experimental divergence, unexplained regression or false PASS, state leakage between players, persistent-state corruption, unresolved design contradiction, or a task requiring new cross-system authority. After one bounded repair fails the same gate, return to Astra with evidence instead of layering workarounds.
+
+Reserved for Astra: Neil and the Brute; Gordon the Warden; other major enemies/bosses and new state machines; procedural generation/multiplayer lifecycle; universal enemy RPG state; identity/perk migration; modular Form/Content Magic and high-risk damage/control authority changes. Five-versus-six Forms, Sixth Sense prerequisites and Snap Targeting timing remain isolated design conflicts; no agent invents a resolution. Existing gameplay acceptance does not establish these missing systems.
+
+Next check-in: exact remote SHAs/ancestry, clean status, one task table (implemented/static/runtime-observed/runtime-accepted), pinned GDD passages, full per-task diffs, original bundles with hashes and fresh-process/install evidence, finite negative-test results, unresolved failures/contradictions, and the next proposed packet. Preserve failed evidence. Do not bring only Gemini prose.
+
+---
+
 # Alpha 2 reconciliation — 2026-09-08
 
 Starting main: `544702805fcf97c13f1055b1cee16ca4d3b5b3d4`.

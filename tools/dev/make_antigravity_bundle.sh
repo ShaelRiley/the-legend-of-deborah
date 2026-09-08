@@ -42,13 +42,17 @@ fi
 
 SAFE_TASK="$(printf '%s' "$TASK_ID" | tr -cs 'A-Za-z0-9._-' '_' | sed 's/^_*//; s/_*$//')"
 [[ -n "$SAFE_TASK" ]] || SAFE_TASK="AG-UNSPECIFIED"
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "ERROR: commit or resolve working-tree changes before attributing a bundle to HEAD." >&2
+  exit 4
+fi
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 BUNDLE_ROOT="$REPO_ROOT/antigravity_bundle"
-BUNDLE="$BUNDLE_ROOT/${SAFE_TASK}_${STAMP}"
-mkdir -p "$BUNDLE"
+mkdir -p "$BUNDLE_ROOT"
+BUNDLE="$(mktemp -d "$BUNDLE_ROOT/${SAFE_TASK}_${STAMP}_XXXXXX")"
 
 FETCH_STATUS="PASS"
-if ! git fetch origin main --quiet; then
+if ! git fetch origin refs/heads/main:refs/remotes/origin/main --quiet; then
   FETCH_STATUS="WARN: git fetch origin main failed; using existing origin/main if present"
 fi
 
@@ -103,6 +107,8 @@ AHEAD="$(awk '{print $2}' <<<"$AHEAD_BEHIND")"
   echo "== current commit name/status =="
   git show --no-ext-diff --format= --name-status --no-renames HEAD
 } > "$BUNDLE/02_changes.txt"
+
+git diff --no-ext-diff --binary "$MAIN_SHA"..."$HEAD_SHA" > "$BUNDLE/05_committed.patch"
 
 VALIDATION_RESULT="PASS"
 {
@@ -170,7 +176,7 @@ ERROR: report template unavailable. Fill this report manually before submission.
 REPORT
 fi
 
-GMOD_DIR="${LOD_GMOD_DIR:-$HOME/.local/share/Steam/steamapps/common/GarrysMod/garrysmod}"
+GMOD_DIR="${LOD_GMOD_DIR:-${GMOD_GARRYSMOD_DIR:-$HOME/.local/share/Steam/steamapps/common/GarrysMod/garrysmod}}"
 RUNTIME_DIR="$GMOD_DIR/data/legend_of_deborah"
 RUNTIME_COPIED=0
 for name in console_latest.txt rpg_summary_latest.txt rpg_session_latest.txt; do
@@ -196,8 +202,12 @@ fi
   echo "head=$HEAD_SHA"
   echo "runtime_files_copied=$RUNTIME_COPIED"
   echo "runtime_source=$RUNTIME_DIR"
+  echo "runtime_build_and_freshness=UNVERIFIED_REVIEW_REQUIRED"
+  echo "static_validation=$VALIDATION_RESULT"
   echo
   find "$BUNDLE" -maxdepth 1 -type f -printf '%f\n' | sort
 } > "$BUNDLE/00_manifest.txt"
 
+(cd "$BUNDLE" && sha256sum -- * > SHA256SUMS)
 printf '%s\n' "$BUNDLE"
+[[ "$VALIDATION_RESULT" == "PASS" ]]

@@ -927,16 +927,19 @@ concommand.Add("lod_dev_enter_maze", function(ply)
 
     local identity = identityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
-    if not ps then
-        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=no_player_state"
+    if not ps or not RunManager:IsSlotActivePlayer(ply) or ps.eliminated or (ps.lives or 0) <= 0 then
+        local msg = "[LOD:DEV_INGRESS] result=FAIL reason=invalid_membership"
         print(msg)
         ply:ChatPrint(msg)
         return
     end
 
+    -- Bypassing staging invalidates ranked-run provenance, even when developer
+    -- mode is later disabled. Normal portal deployment does not take this path.
+    RunManager:MarkUnranked("developer maze ingress")
     Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
 
-    local msg = string.format("[LOD:DEV_INGRESS] result=PASS player=%s identity=%s destination=%.1f,%.1f,%.1f level=%s seed=%s",
+    local msg = string.format("[LOD:DEV_INGRESS] result=PASS ranked=false slotActive=true deployed=true player=%s identity=%s destination=%.1f,%.1f,%.1f level=%s seed=%s",
         ply:Nick(), tostring(ps.identity), destination.x, destination.y, destination.z,
         tostring(state.Level), tostring(state.LevelSeed))
     print(msg)
