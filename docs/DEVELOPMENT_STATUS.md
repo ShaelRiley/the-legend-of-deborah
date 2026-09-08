@@ -19,7 +19,13 @@ Current feat batch: W,A,S,Deborah, INT 13, adds 1.25x voluntary backward locomot
 
 Static validation: production `tools/test_backpedal.lua` PASS for ownership/removal, INT gate, backward/diagonal, analog, walk/run caps, DEX/map composition and exclusions. Existing map-movement and Deadcrab regression harnesses PASS.
 
-Next finite runtime gate: pull/restart on gm_flatgrass, deploy, run `lod_developer_mode 1; lod_rpg_backpedal_testkit 1`. Close console; walk S, S+A, W, then A for roughly two seconds each. Run `lod_rpg_backpedal_status; lod_rpg_validate; lod_rpg_test_finish backpedal`. Expect backward/diagonal/forward/strafe counts >0, peak=1.25, last=1.00, definition PASS and core validator PASS. Send console screenshot. Alpha 2 remains incomplete and undeployed.
+W,A,S,Deborah runtime accepted on `d0111e59aeacf3491a8b29ce25016c20fbc80c06`: screenshot shows backward=973, diagonal=639, forward=620, strafe=437, peak=1.25, last=1.00, definition and core validator PASS, completion confirmed.
+
+Current family: Strafer / Sideler / Lateral Mover, DEX 13/15/17 with predecessor requirements and replacing lateral multipliers 1.11/1.22/1.33. Resolves the ordinary capped input before modifying only its sideways component and adjusting the directional cap; forward/backward speed remains unchanged on diagonals. Composes after DEX/map/backpedal at the existing voluntary movement seam. Grounded walk movement only; no velocity writes, jump impulse, air acceleration, ladder, swimming or forced-motion changes.
+
+Static gate: `tools/test_strafe.lua` PASS for all ranks, replacement, signed diagonals, forward-axis preservation after simulated engine speed clamp, analog fractions, jump/air/ladder/swimming exclusions, DEX/map/backpedal/sprint-cap composition, client/server caps and prerequisite gates. Existing backpedal and map-movement tests also PASS. Runtime pending.
+
+Next finite gate: pull/restart on gm_flatgrass; after deployment run `lod_developer_mode 1; lod_rpg_strafe_testkit 3`. Walk A, D, W+A, S+D, then W for about two seconds each. Run `lod_rpg_strafe_status; lod_rpg_validate; lod_rpg_test_finish strafe`. Expect rank=3, positive samples/diagonal/forwardOnly counts, peak=1.33, last=1.00, definition and core PASS. Send console screenshot and note any unexpected forward-speed change or jitter on diagonals. Alpha 2 remains incomplete and undeployed.
 
 The history below is retained as prior evidence, not current design authority.
 
@@ -31,7 +37,7 @@ The history below is retained as prior evidence, not current design authority.
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 56 canonical matches and 87 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
+The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 59 canonical matches and 84 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
 
 ## Accepted runtime foundation
 

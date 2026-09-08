@@ -6,12 +6,12 @@ Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZ
 
 Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement passed its rank-3 open/close runtime gate on 4134c3b.
 
-Current increment: W,A,S,Deborah adds one canonical definition with production movement tests; runtime gate pending.
+Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer/Sideler/Lateral Mover add three canonical definitions with production movement tests; runtime gate pending.
 
 ## Measured set relationship
 
 - 143 enumerated ordinary/cross feats; 9 separate class capstones; 6 separate repeatable fallbacks: **158 total definitions**.
-- Ordinary registry: **56 present, 87 missing, 0 noncanonical**, after alias normalization.
+- Ordinary registry: **59 present, 84 missing, 0 noncanonical**, after alias normalization.
 - GDD `STR_HERO_OF_LEGEND` and runtime `WIS_HERO_OF_LEGEND` are the same Hero of Legend, WIS 15. Keep the existing runtime ID for state compatibility.
 - All 9 capstones and 6 fallbacks have catalog definitions; this does not establish complete runtime behavior.
 - No numerical ordinary-feat count was found in the live GDD to correct. The stale 119 count was in development status.
@@ -79,9 +79,9 @@ The live GDD says the Form catalog has six entries while Hero progression and fo
 | DEX_BURSTER_3 | Full Barrage | DEX 17 | Extended Volley | Present | dex_burst_size |
 | DEX_SPRING_HEEL | Spring Heel | DEX 13 | None | Present | spring_heel |
 | DEX_WALL_JUMP | Wall Jump | DEX 15 | None | Missing | — |
-| DEX_STRAFER_1 | Strafer | DEX 13 | None | Missing | — |
-| DEX_SIDELER_2 | Sideler | DEX 15 | Strafer | Missing | — |
-| DEX_LATERAL_MOVER_3 | Lateral Mover | DEX 17 | Sideler | Missing | — |
+| DEX_STRAFER_1 | Strafer | DEX 13 | None | Present | lateral_strafe |
+| DEX_SIDELER_2 | Sideler | DEX 15 | Strafer | Present | lateral_strafe |
+| DEX_LATERAL_MOVER_3 | Lateral Mover | DEX 17 | Sideler | Present | lateral_strafe |
 | DEX_SHRINK | Little Guy | DEX 15 | None | Missing | — |
 | STR_CROWBAR_D6 | Bash | STR 13 | None | Present | crowbar_family |
 | STR_CROWBAR_D12 | Walloper | STR 15 | Bash | Present | crowbar_family |
