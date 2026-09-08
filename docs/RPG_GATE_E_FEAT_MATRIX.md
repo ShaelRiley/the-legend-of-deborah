@@ -6,10 +6,12 @@ Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZ
 
 Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement passed its rank-3 open/close runtime gate on 4134c3b.
 
+Current increment: W,A,S,Deborah adds one canonical definition with production movement tests; runtime gate pending.
+
 ## Measured set relationship
 
 - 143 enumerated ordinary/cross feats; 9 separate class capstones; 6 separate repeatable fallbacks: **158 total definitions**.
-- Ordinary registry: **55 present, 88 missing, 0 noncanonical**, after alias normalization.
+- Ordinary registry: **56 present, 87 missing, 0 noncanonical**, after alias normalization.
 - GDD `STR_HERO_OF_LEGEND` and runtime `WIS_HERO_OF_LEGEND` are the same Hero of Legend, WIS 15. Keep the existing runtime ID for state compatibility.
 - All 9 capstones and 6 fallbacks have catalog definitions; this does not establish complete runtime behavior.
 - No numerical ordinary-feat count was found in the live GDD to correct. The stale 119 count was in development status.
@@ -123,7 +125,7 @@ The live GDD says the Form catalog has six entries while Hero progression and fo
 | INT_GRAND_UNIFIED_THEORY | Grand Unified Theory | INT 17 | None | Missing | — |
 | INT_EXTRACURRICULAR_ACTIVITY | Extracurricular Activity | INT 17 | None | Missing | — |
 | INT_POLYMORPH | Polymorph | INT 17 | None | Missing | — |
-| INT_WAS_DEBORAH | W,A,S,Deborah | INT 13 | None | Missing | — |
+| INT_WAS_DEBORAH | W,A,S,Deborah | INT 13 | None | Present | backpedal_movement |
 | INT_HASTE_1 | Haste | INT 13 | None | Missing | — |
 | INT_HASTE_2 | Mana Rush | INT 15 | Haste | Missing | — |
 | INT_HASTE_3 | Aether Drive | INT 17 | Mana Rush | Missing | — |

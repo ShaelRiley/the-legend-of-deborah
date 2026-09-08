@@ -13,7 +13,13 @@ Map movement runtime gate accepted on `4134c3b15d90a375342c104c76749cc98e7f7275`
 
 The same screenshot exposes an independent Deadcrab crash in sv_deadcrab.lua:362: missing `_RunDeadcrabTick`. The wrapper now directly calls its local dispatcher, while Initialize publishes that dispatcher on the instance for Motion V2. The attack state machine and tuning are unchanged. `tools/test_deadcrab_dispatch.lua` reproduces the missing-helper shape and passes fallback, non-Deadcrab, named-dispatch and frame-guard checks. Map movement regression also PASS.
 
-Next finite gate: pull/restart on gm_flatgrass, deploy, run `lod_developer_mode 1; lod_m3_spawn deadcrab`, approach the spawned Deadcrab and let it leap/latch/detonate once. Run `lod_deadcrab_attack_status` and send a console screenshot; require no missing-helper error and positive leap/latch/detonation evidence. Alpha 2 remains incomplete and undeployed.
+Deadcrab repair runtime accepted on `641085fa8b9d85a0c2e10435661eeb07bbcdc415`: screenshot reports leaps=2, latches=2, detonations=2, lastVictims=1, lastDamage=32, result=PASS. No additional Deadcrab test is needed.
+
+Current feat batch: W,A,S,Deborah, INT 13, adds 1.25x voluntary backward locomotion including backward diagonals. Uses the existing SetupMove pipeline after mode/DEX/map speed resolution, scaling desired horizontal input and speed caps together to preserve analog fractions. No velocity/position/jump-power writes. Excludes forward-only, pure strafe, idle, airborne/jump, ladder/noclip, swimming and dead actors. Future Haste must compose in the same pipeline; not implemented here.
+
+Static validation: production `tools/test_backpedal.lua` PASS for ownership/removal, INT gate, backward/diagonal, analog, walk/run caps, DEX/map composition and exclusions. Existing map-movement and Deadcrab regression harnesses PASS.
+
+Next finite runtime gate: pull/restart on gm_flatgrass, deploy, run `lod_developer_mode 1; lod_rpg_backpedal_testkit 1`. Close console; walk S, S+A, W, then A for roughly two seconds each. Run `lod_rpg_backpedal_status; lod_rpg_validate; lod_rpg_test_finish backpedal`. Expect backward/diagonal/forward/strafe counts >0, peak=1.25, last=1.00, definition PASS and core validator PASS. Send console screenshot. Alpha 2 remains incomplete and undeployed.
 
 The history below is retained as prior evidence, not current design authority.
 
@@ -25,7 +31,7 @@ The history below is retained as prior evidence, not current design authority.
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 55 canonical matches and 88 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
+The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 56 canonical matches and 87 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
 
 ## Accepted runtime foundation
 

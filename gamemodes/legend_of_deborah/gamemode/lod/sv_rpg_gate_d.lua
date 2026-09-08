@@ -404,6 +404,9 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     local multiplier = AbilityRules:MovementMultiplier(ply)
     move:SetMaxClientSpeed(move:GetMaxClientSpeed() * multiplier)
     move:SetMaxSpeed(move:GetMaxSpeed() * multiplier)
+    if AbilityRules.ApplyVoluntaryMovementFeats then
+        AbilityRules:ApplyVoluntaryMovementFeats(ply, move)
+    end
 end)
 
 hook.Add("EntityFireBullets", "LOD_RPG_GateD_AimSpread", function(shooter, bullet)

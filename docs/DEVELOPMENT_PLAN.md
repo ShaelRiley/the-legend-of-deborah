@@ -3,7 +3,7 @@
 The attached 2026-09-08 handoff supersedes the historical sequence below.
 
 1. Reconcile live GDD and current main. Measured inventory: `RPG_GATE_E_FEAT_MATRIX.md`.
-2. Complete canonical feats, one finite family at a time. Winning Personality +1 CHA is runtime accepted. World Walker map-open/close gate is runtime accepted. Current batch repairs the independent Deadcrab missing-dispatch crash observed during that test. Ordinary set is now 55/143; no unauthorized runtime entries after alias normalization.
+2. Complete canonical feats, one finite family at a time. Winning Personality +1 CHA is runtime accepted. World Walker map-open/close gate is runtime accepted. Deadcrab repair is runtime accepted. Current batch is W,A,S,Deborah backpedal movement, static PASS and runtime pending. Ordinary set is now 56/143; no unauthorized runtime entries after alias normalization.
 3. Complete integrated RPG: canonical stats/classes/identity, magic, doubled hero XP thresholds, deterministic enemy levels and prescribed consumers. Resolve five-versus-six Form contradiction before dependent code. Equipment is excluded.
 4. Implement and validate Neil + Brute, then Gordon the Warden, then playable Soldier.
 5. Release audit and finite Steam Deck/multiplayer acceptance. Stop before VPS or Workshop deployment. Equipment follows in feature-complete Beta.
