@@ -4,10 +4,12 @@ Reconciled 2026-09-08 against live GDD modified 2026-09-08T06:07:17.109Z.
 Starting main: `544702805fcf97c13f1055b1cee16ca4d3b5b3d4`.
 Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY/edit
 
+Current increment: World Walker family adds three canonical definitions after the starting-HEAD audit. Winning Personality repair is runtime accepted; map movement awaits its finite runtime gate.
+
 ## Measured set relationship
 
 - 143 enumerated ordinary/cross feats; 9 separate class capstones; 6 separate repeatable fallbacks: **158 total definitions**.
-- Ordinary registry: **52 present, 91 missing, 0 noncanonical**, after alias normalization.
+- Ordinary registry: **55 present, 88 missing, 0 noncanonical**, after alias normalization.
 - GDD `STR_HERO_OF_LEGEND` and runtime `WIS_HERO_OF_LEGEND` are the same Hero of Legend, WIS 15. Keep the existing runtime ID for state compatibility.
 - All 9 capstones and 6 fallbacks have catalog definitions; this does not establish complete runtime behavior.
 - No numerical ordinary-feat count was found in the live GDD to correct. The stale 119 count was in development status.
@@ -20,7 +22,7 @@ Design: https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZ
 | System | Live GDD | Current main at starting HEAD | Discrepancy | Required action |
 |---|---|---|---|---|
 | Ordinary feats | 143 entries and authored effects | 52 definitions, 91 absent; effects vary | Registry and mechanical completion gate fails | Implement missing families; audit present effects against current text |
-| Winning Personality | CHA 17, permanent +1 CHA, INT-feat qualification substitution | Substitution works; +1 CHA absent | Missing permanent benefit | Repaired in this batch; runtime acceptance pending |
+| Winning Personality | CHA 17, permanent +1 CHA, INT-feat qualification substitution | Substitution works; +1 CHA absent | Missing permanent benefit | Repaired and runtime accepted on 06b579a |
 | Attributes / derived stats | Six universal abilities, current class/condition rules | Hero growth and consumers in sv_character_progression and sv_rpg_gate_d | Partial; no universal actor implementation | Audit each current formula and consumer after feat gate |
 | Hero level / XP | Server-authoritative progression; handoff doubles thresholds | Level 1–20; XP awards and 0–48,000 threshold table wired | Slower curve not applied | Phase 2: central 2x thresholds and XP cap, focused progression tests |
 | Classes / identity | Current class passives and standardized procedural identity perks | Classes wired; catalog still has obsolete authored identity descriptors | Current design differs from inherited plan | Replace obsolete identity effects with canonical normalized perk authority in RPG phase |
@@ -115,9 +117,9 @@ The live GDD says the Form catalog has six entries while Hero progression and fo
 | INT_TASKMASTER | Taskmaster | INT 15 | Middle Manager | Missing | — |
 | INT_OVERLORD | Overlord | INT 17 | Taskmaster | Missing | — |
 | INT_AFTERSHOCK | Aftershock | INT 15 | None | Missing | — |
-| INT_WORLD_WALKER_1 | World Walker | INT 13 | None | Missing | — |
-| INT_GLOBETROTTER_2 | Globetrotter | INT 15 | World Walker | Missing | — |
-| INT_MIND_STRIDER_3 | Mind Strider | INT 17 | Globetrotter | Missing | — |
+| INT_WORLD_WALKER_1 | World Walker | INT 13 | None | Present | map_open_movement |
+| INT_GLOBETROTTER_2 | Globetrotter | INT 15 | World Walker | Present | map_open_movement |
+| INT_MIND_STRIDER_3 | Mind Strider | INT 17 | Globetrotter | Present | map_open_movement |
 | INT_GRAND_UNIFIED_THEORY | Grand Unified Theory | INT 17 | None | Missing | — |
 | INT_EXTRACURRICULAR_ACTIVITY | Extracurricular Activity | INT 17 | None | Missing | — |
 | INT_POLYMORPH | Polymorph | INT 17 | None | Missing | — |

@@ -3,9 +3,13 @@
 Starting main: `544702805fcf97c13f1055b1cee16ca4d3b5b3d4`.
 
 The current canonical-vs-runtime inventory is in `RPG_GATE_E_FEAT_MATRIX.md`.
-Winning Personality's missing permanent +1 CHA is repaired, including P-sheet provenance. Production acquisition/recompute harness passes grant-once behavior, reconnect/recompute safety, fallback composition, ability cap, gear exclusion and INT isolation. Runtime acceptance is pending. Earlier Charisma acceptance proves the older implementation only.
+Winning Personality is runtime accepted on `06b579a3e42c744ad7e942fab9aed93e028f10c2`: screenshots show intrinsic CHA 9 → 10 → 10, permanentFeatCHA 0 → 1 → 1, Charisma families PASS, core RPG PASS and test-finish confirmation. The original long command batch was truncated by the console; keep future batches short. Uploaded console files were byte-identical and stale, so these screenshots are the acceptance evidence.
 
-Next finite gate: run the Charisma validator and core RPG validator on gm_flatgrass; confirm enabling the Charisma utility testkit adds one intrinsic CHA and repeated enabling does not add another. Return console_latest.txt and rpg_summary_latest.txt. Continue Phase 1 after adjudication; Alpha 2 remains incomplete and undeployed.
+Current batch: World Walker / Globetrotter / Mind Strider (INT 13/15/17, chained) now multiply ordinary locomotion by 1.25/1.50/1.75 only while the existing server map authority permits an active map. Highest rank replaces lower ranks. Uses the existing DEX/SetupMove seam; no jump-velocity or forced-velocity edits. Existing map drain remains authoritative. Future Haste must compose at this same ordinary-locomotion seam; Haste is not implemented by this batch.
+
+Static gate: `luatex --luaonly tools/test_map_movement.lua` passes production rank/replacement, DEX/SetupMove composition, actor isolation, close/death/access/mapless/failure/freeze/heartbeat/exhaustion and prerequisite checks. Runtime acceptance pending.
+
+Next finite gate on gm_flatgrass: run `lod_developer_mode 1; lod_rpg_mapwalk_testkit 3`, close the console, press M to open the map, walk for two seconds, press M to close, and walk again. Then run `lod_rpg_mapwalk_status; lod_rpg_mapwalk_validate; lod_rpg_validate; lod_rpg_test_finish mapwalk`. Expect rank=3, bonus=1.75, samples>0, peak=1.75, last=1.00, open=false, closedAfterOpen=true and both validators PASS. Send a console screenshot (export freshness remains unresolved). Alpha 2 remains incomplete and undeployed.
 
 The history below is retained as prior evidence, not current design authority.
 
@@ -17,7 +21,7 @@ The history below is retained as prior evidence, not current design authority.
 
 **RPG OVERHAUL / GATE E: ACTIVE DEVELOPMENT.**
 
-The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 52 canonical matches and 91 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
+The live GDD is design authority; GitHub `main` is implementation authority. The 2026-09-08 live enumeration contains 143 ordinary/cross feats, 9 class capstones, and 6 fallbacks. The active ordinary registry has 55 canonical matches and 88 omissions after Hero of Legend alias normalization. See `RPG_GATE_E_FEAT_MATRIX.md`; registry membership is not runtime acceptance.
 
 ## Accepted runtime foundation
 

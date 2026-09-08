@@ -43,6 +43,8 @@ end
 
 local function canDrain(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    local mapless = GetConVar("lod_mapless")
+    if mapless and mapless:GetBool() then return false end
     if not Minimap or not Minimap.CanUse or not Minimap:CanUse(ply) then return false end
     if not RunManager or not RunManager.State or RunManager.State.Failed
         or RunManager.State.LevelCleared or RunManager.State.SimulationFrozen
@@ -50,6 +52,19 @@ local function canDrain(ply)
         return false
     end
     return true
+end
+
+-- Read the same server authorization and budget used by the drain, never the
+-- client-visible flag alone. Revocation/exhaustion takes effect before the next
+-- drain tick, so dependent movement cannot retain a stale map-open bonus.
+function MapMagic:IsOpen(ply)
+    local active = self.Active[ply]
+    if not active or not canDrain(ply) then return false end
+    if CurTime() - (active.lastHeartbeat or 0) > HEARTBEAT_TIMEOUT then return false end
+    local Magic = magicAuthority()
+    local ps = Magic and Magic._EnsureState and Magic:_EnsureState(ply)
+    return ps ~= nil and (tonumber(ps.magic) or 0) > 0
+        and (tonumber(active.mapMagic) or 0) > 0
 end
 
 local function beginOrRefresh(ply)
