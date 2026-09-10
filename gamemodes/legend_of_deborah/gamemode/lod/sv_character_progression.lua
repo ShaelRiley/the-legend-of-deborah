@@ -70,7 +70,10 @@ function CharacterProgressionSystem:NewProgressionState(actorId, archetypeId, ac
 
     return {
         actorId = actorId,
+        actorType = actorType,
         archetypeId = archetypeId,
+        tierId = nil,
+        dungeonLevel = nil,
         characterIdentityPackage = nil,
         level = RPG.Constants.MinLevel,
         xp = isHero and 0 or nil,
@@ -98,12 +101,33 @@ function CharacterProgressionSystem:NewProgressionState(actorId, archetypeId, ac
         pendingClassCapstoneDraft = nil,
         dungeonEntryLevel = nil,
         replacementXpEarnedThisDungeon = 0,
-        capabilityTags = emptyArray()
+        capabilityTags = emptyArray(),
+        contentIds = emptyArray(),
+        moraleBonus = 0,
+        usesMagic = false
     }
 end
 
-function CharacterProgressionSystem:ClampLevel(level)
-    return math.Clamp(math.floor(tonumber(level) or RPG.Constants.MinLevel), RPG.Constants.MinLevel, RPG.Constants.MaxLevel)
+function CharacterProgressionSystem:ActorHardLevelCap(actorTypeOrState)
+    local actorType = type(actorTypeOrState) == "table" and actorTypeOrState.actorType or actorTypeOrState
+    if actorType == "ai" or actorType == "human_soldier" then
+        return RPG.Constants.MonsterMaxLevel
+    end
+    return RPG.Constants.HeroMaxLevel
+end
+
+function CharacterProgressionSystem:DungeonEntityLevelCeiling(dungeonLevel)
+    return math.max(1, math.floor(tonumber(dungeonLevel) or 1)) + 3
+end
+
+function CharacterProgressionSystem:EffectiveLevelCap(actorTypeOrState, dungeonLevel)
+    return math.min(self:ActorHardLevelCap(actorTypeOrState),
+        self:DungeonEntityLevelCeiling(dungeonLevel))
+end
+
+function CharacterProgressionSystem:ClampLevel(level, actorTypeOrState)
+    return math.Clamp(math.floor(tonumber(level) or RPG.Constants.MinLevel),
+        RPG.Constants.MinLevel, self:ActorHardLevelCap(actorTypeOrState))
 end
 
 function CharacterProgressionSystem:AbilityModifier(score)
@@ -296,7 +320,7 @@ end
 
 function CharacterProgressionSystem:_GrowthAtLevel(state, level)
     local growth = RPG.NewAbilityBlock(0)
-    level = self:ClampLevel(level)
+    level = self:ClampLevel(level, state)
     if not state or not state.primaryAbility then return growth end
 
     for gainedLevel = 1, level do
@@ -324,8 +348,8 @@ function CharacterProgressionSystem:_FighterTrainingAtLevel(state, level)
     local lead = state.primaryAbility
     local follow = lead == class.favoredAbilities[1]
         and class.favoredAbilities[2] or class.favoredAbilities[1]
-    training[lead] = math.ceil(self:ClampLevel(level) / 2)
-    training[follow] = math.floor(self:ClampLevel(level) / 2)
+    training[lead] = math.ceil(self:ClampLevel(level, state) / 2)
+    training[follow] = math.floor(self:ClampLevel(level, state) / 2)
     return training
 end
 
@@ -348,7 +372,7 @@ end
 
 function CharacterProgressionSystem:_RecomputeProgressionState(state)
     if not state then return end
-    state.level = self:ClampLevel(state.level)
+    state.level = self:ClampLevel(state.level, state)
     state.growthAbilities = self:_GrowthAtLevel(state, state.level)
     state.fighterTraining = self:_FighterTrainingAtLevel(state, state.level)
 
@@ -412,7 +436,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
         or (state.classId == "rogue" and math.min(0.95, 0.05 * state.level) or 0)
     mods.canActivateWandsScrolls = state.classId == "wizard" or state.classId == "rogue"
     mods.levelProficiency = math.floor((state.level - 1) / 4)
-    mods.startingHP = 100
+    mods.startingHP = state.startingHP or 100
     local featEffects = RPG.FeatEffectSystem
     if featEffects and featEffects.ApplyDerived then
         featEffects:ApplyDerived(state, mods)
@@ -442,12 +466,14 @@ end
 
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
+    if arrayContains(state and state.capabilityTags or {}, tag) then return true end
     if tag == "offensive_magic_activation" then
-        return LOD.Magic ~= nil and type(LOD.Magic.CastForceShout) == "function"
+        return state and state.usesMagic == true
+            or (LOD.Magic ~= nil and type(LOD.Magic.CastForceShout) == "function")
     elseif tag == "d10_damage" or tag == "multi_fire_burst" then
-        return ps.starterWeaponClass == "weapon_ar2"
+        return ps and ps.starterWeaponClass == "weapon_ar2"
     elseif tag == "smg" then
-        return ps.starterWeaponClass == "weapon_smg1"
+        return ps and ps.starterWeaponClass == "weapon_smg1"
     elseif tag == "crowbar" or tag == "pushable_weapon" or tag == "tetris"
         or tag == "firearm" or tag == "reloadable_firearm" or tag == "magic_pool"
         or tag == "minimap" or tag == "cooperative_hero" or tag == "hit_stun_source"
@@ -461,6 +487,11 @@ end
 function CharacterProgressionSystem:_FeatEligible(ps, state, definition)
     if not definition then return false end
     if definition.featId == "DEX_EXPLODE_D10" and state.classId == "rogue" then return false end
+
+    local allowedActors = definition.allowedActorTypes or {}
+    if #allowedActors > 0 and not arrayContains(allowedActors, state.actorType or "hero") then
+        return false
+    end
 
     for ability, required in pairs(definition.abilityRequirements or {}) do
         if (state.featQualificationAbilities[ability] or 0) < required then return false end
@@ -733,18 +764,24 @@ end
 function CharacterProgressionSystem:LevelForXP(xp)
     xp = math.Clamp(math.floor(tonumber(xp) or 0), 0, RPG.Constants.HeroMaxXP)
     local level = 1
-    for candidate = 2, RPG.Constants.MaxLevel do
+    for candidate = 2, RPG.Constants.HeroMaxLevel do
         if xp < RPG.HeroXPThresholds[candidate] then break end
         level = candidate
     end
     return level
 end
 
+function CharacterProgressionSystem:HeroLevelForXPAtDungeon(xp, dungeonLevel)
+    return math.min(self:LevelForXP(xp), self:EffectiveLevelCap("hero", dungeonLevel))
+end
+
 function CharacterProgressionSystem:AdvanceHeroToLevel(ply, targetLevel)
     local runManager = LOD.RunManager
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
-    targetLevel = self:ClampLevel(targetLevel)
+    local dungeonLevel = runManager and runManager.State and runManager.State.Level or 1
+    targetLevel = math.min(self:ClampLevel(targetLevel, "hero"),
+        self:EffectiveLevelCap("hero", dungeonLevel))
     if not state or not state.classId then return false, "Class must be committed first." end
     if targetLevel < state.level then return false, "Character Level cannot decrease." end
 
@@ -758,7 +795,7 @@ function CharacterProgressionSystem:AdvanceHeroToLevel(ply, targetLevel)
         if slotIndex then
             self:_GenerateOrdinaryDraft(ps, state, runManager.State.CampaignSeed, nextLevel)
         end
-        if nextLevel == RPG.Constants.MaxLevel then self:_GenerateClassCapstoneDraft(state) end
+        if nextLevel == RPG.Constants.HeroMaxLevel then self:_GenerateClassCapstoneDraft(state) end
     end
 
     self:_ApplyPlayerMaxHP(ply, state)
@@ -778,7 +815,8 @@ function CharacterProgressionSystem:SetHeroXP(ply, xp)
     local requested = math.Clamp(math.floor(tonumber(xp) or 0), 0, RPG.Constants.HeroMaxXP)
     if requested < (state.xp or 0) then return false, "Campaign XP cannot decrease." end
     state.xp = requested
-    return self:AdvanceHeroToLevel(ply, self:LevelForXP(requested))
+    local dungeonLevel = runManager and runManager.State and runManager.State.Level or 1
+    return self:AdvanceHeroToLevel(ply, self:HeroLevelForXPAtDungeon(requested, dungeonLevel))
 end
 
 function CharacterProgressionSystem:AwardHeroXP(ply, amount)
@@ -797,6 +835,316 @@ function CharacterProgressionSystem:AwardHeroXP(ply, amount)
     amount = math.max(0, math.floor(tonumber(amount) or 0))
     if not state or amount <= 0 then return false, "No positive XP award." end
     return self:SetHeroXP(recipient, math.min(RPG.Constants.HeroMaxXP, (state.xp or 0) + amount))
+end
+
+function CharacterProgressionSystem:ProcessBankedHeroXP(runManager)
+    runManager = runManager or LOD.RunManager
+    if not runManager or not runManager.State then return 0 end
+    local advanced = 0
+    for identity, ps in pairs(runManager.State.PlayerState or {}) do
+        local state = ps and ps.progressionState
+        if state and (state.actorType == nil or state.actorType == "hero") and state.classId then
+            state.actorType = "hero"
+            local target = self:HeroLevelForXPAtDungeon(state.xp or 0, runManager.State.Level)
+            if target > state.level then
+                local before = state.level
+                local ok = self:AdvanceHeroToLevel(identity, target)
+                if ok then advanced = advanced + (state.level - before) end
+            end
+        end
+    end
+    return advanced
+end
+
+function CharacterProgressionSystem:ArchetypeProgressionTemplate(archetypeId)
+    local id = string.lower(tostring(archetypeId or ""))
+    id = RPG.ArchetypeProgressionAliases[id] or id
+    return RPG.ArchetypeProgressionTemplates[id], id
+end
+
+function CharacterProgressionSystem:TierForRoll(roll)
+    roll = math.Clamp(math.floor(tonumber(roll) or 1), 1, 100)
+    if roll <= 60 then return "typical", 0 end
+    if roll <= 90 then return "elite", 1 end
+    return "champion", 2
+end
+
+function CharacterProgressionSystem:ResolveMonsterSpawnLevel(seed, dungeonLevel, archetypeId)
+    local _, normalizedId = self:ArchetypeProgressionTemplate(archetypeId)
+    local fixed = {
+        neil = {"typical", 0},
+        brute = {"elite", 1},
+        warden = {"champion", 2}
+    }
+    local fixedTier = fixed[normalizedId]
+    local tierId, offset
+    if fixedTier then
+        tierId, offset = fixedTier[1], fixedTier[2]
+    else
+        local tierRoll = LOD.RNG.New(derive(seed or 1, "monster_tier")):Int(1, 100)
+        tierId, offset = self:TierForRoll(tierRoll)
+    end
+    local dungeon = math.max(1, math.floor(tonumber(dungeonLevel) or 1))
+    local level = math.min(dungeon + offset,
+        self:EffectiveLevelCap("ai", dungeon), RPG.Constants.MonsterMaxLevel)
+    return level, tierId, offset
+end
+
+function CharacterProgressionSystem:_AssignAutomaticClass(template, seed)
+    local weights = table.Copy(template.aiClassWeights or {})
+    if template.usesMagic ~= true then weights.wizard = 0 end
+    local total = 0
+    for _, classId in ipairs({"fighter", "rogue", "wizard"}) do
+        total = total + math.max(0, tonumber(weights[classId]) or 0)
+    end
+    assert(total > 0, "archetype requires at least one usable AI class")
+    local roll = LOD.RNG.New(derive(seed, "automatic_class")):Int(1, total)
+    local running = 0
+    for _, classId in ipairs({"fighter", "rogue", "wizard"}) do
+        running = running + math.max(0, tonumber(weights[classId]) or 0)
+        if roll <= running then return classId end
+    end
+    return "fighter"
+end
+
+function CharacterProgressionSystem:_AssignAutomaticGrowthProfile(state, seed)
+    local class = assert(RPG.Classes[state.classId], "automatic actor class missing")
+    local rng = LOD.RNG.New(derive(seed, "automatic_growth_profile"))
+    local favored = class.favoredAbilities
+    state.primaryAbility = favored[rng:Int(1, #favored)]
+    state.secondaryAbilities = {
+        state.primaryAbility == favored[1] and favored[2] or favored[1]
+    }
+    local outside = {}
+    for _, ability in ipairs(ALL_ABILITIES) do
+        if ability ~= favored[1] and ability ~= favored[2] then
+            outside[#outside + 1] = ability
+        end
+    end
+    state.secondaryAbilities[2] = outside[rng:Int(1, #outside)]
+end
+
+function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, usesMagic)
+    local tags = {"hit_stun_source", "pushable_weapon"}
+    local ranged = {
+        soldier = true, blitzer = true, sniper = true, flamer = true,
+        sentry = true, razor = true, arccaster = true, beamsweeper = true,
+        watcher = true, bioblaster = true, warden = true
+    }
+    if ranged[archetypeId] then
+        tags[#tags + 1] = "firearm"
+        tags[#tags + 1] = "reloadable_firearm"
+    end
+    if archetypeId == "soldier" or archetypeId == "blitzer" then
+        tags[#tags + 1] = "multi_fire_burst"
+    end
+    if usesMagic then
+        tags[#tags + 1] = "magic_pool"
+        tags[#tags + 1] = "offensive_magic_activation"
+    end
+    return tags
+end
+
+function CharacterProgressionSystem:_GenerateAutomaticHitDie(state, actorSeed, level)
+    if state.hitDieRollsByLevel[level] then return state.hitDieRollsByLevel[level] end
+    local rolls = assert(LOD.CombatRolls, "combat-roll authority unavailable")
+    local rollSeed = derive(actorSeed, "progression_hit_die:level:" .. tostring(level))
+    local roll = rolls:RollProgressionHitDie(rollSeed, state.progressionHitDieSides)
+    roll.level = level
+    state.hitDieRollsByLevel[level] = roll
+    return roll
+end
+
+function CharacterProgressionSystem:_CommitAutomaticFeat(ps, state, draft, actorSeed)
+    local candidates = {}
+    for _, featId in ipairs(draft.offerFeatIds or {}) do
+        local definition = self:_FindFeat(featId)
+        if definition then
+            candidates[#candidates + 1] = {
+                definition = definition,
+                weight = self:_FeatWeight(ps, state, definition)
+            }
+        end
+    end
+    local rng = LOD.RNG.New(derive(actorSeed,
+        "automatic_feat_selection:level:" .. tostring(draft.earnedAtLevel)))
+    local definition = weightedDraw(rng, candidates, 1)[1]
+    assert(definition, "automatic actor feat selection requires one legal offer")
+    draft.selectedFeatId = definition.featId
+    draft.resolved = true
+    if not arrayContains(state.featIds, definition.featId) then
+        state.featIds[#state.featIds + 1] = definition.featId
+    end
+    state.featStackCounts[definition.featId] =
+        (state.featStackCounts[definition.featId] or 0) + 1
+    if definition.repeatableFallback and definition.effectHandlerId == "fallback_ability_delta" then
+        local ability = definition.effectParams and definition.effectParams.ability
+        if ability then
+            state.featAbilityDelta[ability] = (state.featAbilityDelta[ability] or 0)
+                + (tonumber(definition.effectParams.amount) or 1)
+        end
+    end
+end
+
+function CharacterProgressionSystem:_CommitAutomaticCapstone(state, actorSeed)
+    local definitions = Catalog.ClassCapstones and Catalog.ClassCapstones[state.classId] or {}
+    local ids = sortedKeys(definitions)
+    assert(#ids == 3, "automatic Level-20 actor requires three class capstones")
+    local rng = LOD.RNG.New(derive(actorSeed, "automatic_capstone"))
+    local selected = ids[rng:Int(1, #ids)]
+    state.pendingClassCapstoneDraft = {
+        earnedAtLevel = 20,
+        draftType = "classCapstone",
+        offerFeatIds = ids,
+        rngSeed = derive(actorSeed, "automatic_capstone"),
+        selectedFeatId = selected,
+        resolved = true
+    }
+    state.classCapstoneFeatId = selected
+end
+
+function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, actorSeed,
+    dungeonLevel, startingHP, actorType)
+    local template, normalizedId = self:ArchetypeProgressionTemplate(archetypeId)
+    if not template then return nil, "unknown progression archetype " .. tostring(archetypeId) end
+    actorSeed = tonumber(actorSeed) or 1
+    actorType = actorType == "human_soldier" and "human_soldier" or "ai"
+    local assignedLevel, tierId = self:ResolveMonsterSpawnLevel(actorSeed, dungeonLevel, normalizedId)
+    local state = self:NewProgressionState("monster:" .. tostring(actorSeed), normalizedId, actorType)
+    state.tierId = tierId
+    state.dungeonLevel = math.max(1, math.floor(tonumber(dungeonLevel) or 1))
+    state.baseAbilities = copyAbilityBlock(template.baseAbilities)
+    state.startingHP = math.max(1, math.floor(tonumber(startingHP) or 1))
+    state.progressionHitDieSides = template.progressionHitDieSides
+    state.moraleBonus = template.moraleBonus
+    state.usesMagic = template.usesMagic == true
+    state.capabilityTags = self:_AutomaticActorCapabilities(normalizedId, state.usesMagic)
+    state.classId = self:_AssignAutomaticClass(template, actorSeed)
+    self:_AssignAutomaticGrowthProfile(state, actorSeed)
+
+    local ps = {identity = state.actorId}
+    if normalizedId == "soldier" or normalizedId == "blitzer" then
+        ps.starterWeaponClass = "weapon_smg1"
+    end
+    state.level = 1
+    self:_RecomputeProgressionState(state)
+    local levelOne = self:_GenerateOrdinaryDraft(ps, state, actorSeed, 1)
+    self:_CommitAutomaticFeat(ps, state, levelOne, actorSeed)
+    self:_RecomputeProgressionState(state)
+
+    local authoredProgressionLevel = math.min(assignedLevel, RPG.Constants.HeroMaxLevel)
+    for level = 2, authoredProgressionLevel do
+        state.level = level
+        self:_GenerateAutomaticHitDie(state, actorSeed, level)
+        self:_RecomputeProgressionState(state)
+        if ordinarySlotIndexForLevel(level) then
+            local draft = self:_GenerateOrdinaryDraft(ps, state, actorSeed, level)
+            self:_CommitAutomaticFeat(ps, state, draft, actorSeed)
+            self:_RecomputeProgressionState(state)
+        end
+        if level == RPG.Constants.HeroMaxLevel then
+            self:_CommitAutomaticCapstone(state, actorSeed)
+            self:_RecomputeProgressionState(state)
+        end
+    end
+    -- Above 20 only numeric growth and one stored archetype hit die per Level
+    -- continue. Populate those immutable rolls linearly, then recompute once;
+    -- repeated full recomputation here would turn a legal Level-999 spawn into
+    -- quadratic work without changing any result.
+    if assignedLevel > RPG.Constants.HeroMaxLevel then
+        for level = RPG.Constants.HeroMaxLevel + 1, assignedLevel do
+            self:_GenerateAutomaticHitDie(state, actorSeed, level)
+        end
+        state.level = assignedLevel
+        self:_RecomputeProgressionState(state)
+    end
+    return state
+end
+
+function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed, dungeonLevel)
+    if not IsValid(hostile) or not hostile.LODHostile then return nil end
+    if hostile.LODProgressionState then return hostile.LODProgressionState end
+    local state, err = self:GenerateMonsterProgression(hostile.LODArchetypeId, actorSeed,
+        dungeonLevel, hostile:GetMaxHealth(), "ai")
+    if not state then
+        ErrorNoHalt("[LOD:RPG] " .. tostring(err) .. "\n")
+        return nil
+    end
+    hostile.LODProgressionState = state
+    hostile.LODCharacterLevel = state.level
+    hostile.LODMonsterTier = state.tierId
+    hostile:SetNW2Int("LOD_CharacterLevel", state.level)
+    hostile:SetNW2String("LOD_MonsterTier", state.tierId)
+    hostile:SetMaxHealth(state.derivedStats.maxHP)
+    hostile:SetHealth(state.derivedStats.maxHP)
+    return state
+end
+
+function CharacterProgressionSystem:ValidateActorProgressionCore()
+    local errors = {}
+    local function expect(condition, message)
+        if not condition then errors[#errors + 1] = message end
+    end
+
+    expect(self:ActorHardLevelCap("hero") == 20, "Hero hard cap")
+    expect(self:ActorHardLevelCap("ai") == 999, "monster hard cap")
+    expect(self:EffectiveLevelCap("hero", 1) == 4, "Hero D+3 ceiling")
+    expect(self:EffectiveLevelCap("ai", 1000) == 999, "monster 999 clamp")
+    expect(self:HeroLevelForXPAtDungeon(48000, 1) == 4, "banked Hero XP blocked at D+3")
+    expect(self:HeroLevelForXPAtDungeon(48000, 17) == 20, "banked Hero XP released")
+    expect(RPG.Classes.wizard.heroProgressionHitDieSides == 4, "Wizard d4")
+    expect(RPG.ArchetypeProgressionTemplates.soldier.progressionHitDieSides == 8, "Soldier d8")
+
+    local tierCounts = {typical = 0, elite = 0, champion = 0}
+    for roll = 1, 100 do
+        local tier = self:TierForRoll(roll)
+        tierCounts[tier] = (tierCounts[tier] or 0) + 1
+    end
+    expect(tierCounts.typical == 60 and tierCounts.elite == 30
+        and tierCounts.champion == 10, "60/30/10 categorical tiers")
+
+    local neilLevel, neilTier = self:ResolveMonsterSpawnLevel(1, 30, "neil")
+    local bruteLevel, bruteTier = self:ResolveMonsterSpawnLevel(1, 30, "brute")
+    local gordonLevel, gordonTier = self:ResolveMonsterSpawnLevel(1, 30, "gordon")
+    expect(neilLevel == 30 and neilTier == "typical", "Neil fixed tier")
+    expect(bruteLevel == 31 and bruteTier == "elite", "Brute fixed tier")
+    expect(gordonLevel == 32 and gordonTier == "champion", "Gordon fixed tier")
+
+    local first, firstErr = self:GenerateMonsterProgression("shambler", 8675309, 25, 40, "ai")
+    local replay, replayErr = self:GenerateMonsterProgression("shambler", 8675309, 25, 40, "ai")
+    expect(first ~= nil and replay ~= nil, firstErr or replayErr or "monster generation")
+    if first and replay then
+        local function fingerprint(state)
+            local dice = {}
+            for level = 2, state.level do
+                dice[#dice + 1] = tostring(state.hitDieRollsByLevel[level]
+                    and state.hitDieRollsByLevel[level].total or "missing")
+            end
+            return table.concat({
+                state.tierId, state.level, state.classId, state.primaryAbility,
+                table.concat(state.secondaryAbilities or {}, ","),
+                table.concat(state.featIds or {}, ","),
+                state.classCapstoneFeatId or "none",
+                table.concat(dice, ","),
+                state.derivedStats and state.derivedStats.maxHP or 0
+            }, "|")
+        end
+        expect(fingerprint(first) == fingerprint(replay), "deterministic monster replay")
+        expect(first.level >= 21 and first.level <= 28, "Level-21+ monster sample")
+        local expectedGrowth = self:_GrowthAtLevel(first, first.level)
+        for _, ability in ipairs(ALL_ABILITIES) do
+            expect(first.growthAbilities[ability] == expectedGrowth[ability],
+                "post-20 growth " .. ability)
+        end
+        local dieCount = 0
+        for _ in pairs(first.hitDieRollsByLevel or {}) do dieCount = dieCount + 1 end
+        expect(dieCount == first.level - 1, "post-20 progression hit dice")
+        expect(first.featSlotsGranted == #RPG.OrdinaryFeatLevels, "no post-20 feat slots")
+        expect(#(first.featIds or {}) <= #RPG.OrdinaryFeatLevels, "no post-20 feat grants")
+        expect(first.classCapstoneFeatId ~= nil, "Level-20 monster capstone retained")
+    end
+
+    return #errors == 0, errors
 end
 
 function CharacterProgressionSystem:IsDeploymentEligible(ps)
@@ -966,7 +1314,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         level = state.level,
         xp = state.xp,
         xpForCurrentLevel = RPG.HeroXPThresholds[state.level],
-        xpForNextLevel = state.level < RPG.Constants.MaxLevel
+        xpForNextLevel = state.level < RPG.Constants.HeroMaxLevel
             and RPG.HeroXPThresholds[state.level + 1] or nil,
         startingHP = state.startingHP,
         maxHP = state.derivedStats.maxHP,

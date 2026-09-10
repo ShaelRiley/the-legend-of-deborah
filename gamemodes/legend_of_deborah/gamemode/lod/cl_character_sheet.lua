@@ -206,7 +206,7 @@ local CLASS_CARDS = {
         body = "Every Rogue-owned damage die can explode. Rogue d6 and SUPER-d12 thresholds are easier to trigger."
     },
     wizard = {
-        title = "Wizard", subtitle = "INT / WIS | Hero d6",
+        title = "Wizard", subtitle = "INT / WIS | Hero d4",
         body = "Diverts 2% of otherwise-final HP damage per Level into Magic damage while Magic remains available."
     }
 }

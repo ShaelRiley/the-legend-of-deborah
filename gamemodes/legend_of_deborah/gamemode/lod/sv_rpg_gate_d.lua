@@ -298,9 +298,14 @@ function Attribution:Record(target, dmginfo)
 end
 
 local function xpValue(hostile)
-    local base = BASE_XP[string.lower(tostring(hostile.LODArchetypeId or ""))]
+    local rawId = string.lower(tostring(hostile.LODArchetypeId or ""))
+    local normalizedId = RPG.ArchetypeProgressionAliases[rawId] or rawId
+    local template = RPG.ArchetypeProgressionTemplates[normalizedId]
+    local base = template and template.baseXp or BASE_XP[rawId]
     if not base then return 0 end
-    local level = math.Clamp(math.floor(tonumber(hostile.LODCharacterLevel) or 1), 1, 20)
+    local progressionState = hostile.LODProgressionState
+    local level = math.Clamp(math.floor(tonumber(progressionState and progressionState.level
+        or hostile.LODCharacterLevel) or 1), 1, RPG.Constants.MonsterMaxLevel)
     return math.max(5, 5 * math.floor((base * (1 + 0.05 * (level - 1))) / 5 + 0.5))
 end
 

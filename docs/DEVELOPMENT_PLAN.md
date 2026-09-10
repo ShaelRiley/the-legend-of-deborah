@@ -4,7 +4,7 @@
 
 **Repository:** `ShaelRiley/the-legend-of-deborah`  
 **Branch:** `main`  
-**Reconciled starting HEAD:** `442c5e57fc532bef865b9d589a30ff409dfa6fbf`  
+**Reconciled starting HEAD:** `6ffa62c7f564c40c61e069041c30aaa087c67f76`
 **Required runtime map:** `gm_flatgrass`
 
 **Design authority:** live Google Doc **The Legend of Deborah — Garry's Mod Game Design Document**, ID `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
@@ -65,7 +65,7 @@ If any of these conflict with a newer explicit user direction or a newer live no
 
 # Integrated RPG Completion Checkpoints
 
-## Checkpoint A — Canonical actor Level/progression core
+## Checkpoint A — Canonical actor Level/progression core [STATIC GATE COMPLETE; RUNTIME PENDING]
 
 **Goal:** one actor-aware Level authority for Heroes, AI monsters, and human Soldiers.
 

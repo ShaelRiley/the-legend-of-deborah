@@ -3,7 +3,7 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 7
+RPG.SchemaVersion = 8
 RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
@@ -13,6 +13,10 @@ for _, ability in ipairs(RPG.Abilities) do RPG.AbilitySet[ability] = true end
 
 RPG.Constants = {
     MinLevel = 1,
+    HeroMaxLevel = 20,
+    MonsterMaxLevel = 999,
+    -- Compatibility alias for older Hero-only consumers. New actor-aware code
+    -- must use HeroMaxLevel/MonsterMaxLevel through CharacterProgressionSystem.
     MaxLevel = 20,
     HeroMaxXP = 48000,
     AbilityMin = 3,
@@ -53,8 +57,60 @@ RPG.Classes = {
         classId = "wizard",
         displayName = "Wizard",
         favoredAbilities = {"int", "wis"},
-        heroProgressionHitDieSides = 6
+        heroProgressionHitDieSides = 4
     }
+}
+
+local function archetypeTemplate(str, dex, con, int, wis, cha,
+    fighter, rogue, wizard, hitDie, baseXp, moraleBonus, usesMagic, healthProfile)
+    return {
+        baseAbilities = {str = str, dex = dex, con = con, int = int, wis = wis, cha = cha},
+        aiClassWeights = {fighter = fighter, rogue = rogue, wizard = wizard},
+        progressionHitDieSides = hitDie,
+        baseXp = baseXp,
+        moraleBonus = moraleBonus,
+        usesMagic = usesMagic == true,
+        externalHealthProfileId = healthProfile
+    }
+end
+
+-- Canonical Level-0 growth templates. These are deliberately separate from the
+-- external combat/health profiles: the existing archetype modules continue to
+-- own attack geometry, base health dice, size and encounter behavior.
+RPG.ArchetypeProgressionTemplates = {
+    shambler = archetypeTemplate(14, 6, 14, 5, 8, 6, 70, 20, 10, 8, 20, 4, false, "shambler"),
+    runner = archetypeTemplate(10, 15, 10, 5, 8, 7, 20, 70, 10, 6, 25, 3, false, "runner"),
+    climber = archetypeTemplate(9, 16, 10, 4, 9, 5, 15, 80, 5, 6, 35, 6, false, "climber"),
+    soldier = archetypeTemplate(11, 12, 11, 10, 10, 10, 50, 40, 10, 8, 35, 6, false, "soldier"),
+    deadcrab = archetypeTemplate(8, 15, 8, 3, 7, 4, 20, 75, 5, 6, 20, 8, false, "deadcrab"),
+    bioblaster = archetypeTemplate(10, 8, 12, 11, 13, 7, 20, 20, 60, 8, 45, 4, false, "bioblaster"),
+    blitzer = archetypeTemplate(10, 14, 10, 9, 9, 10, 30, 60, 10, 8, 40, 5, false, "blitzer"),
+    sniper = archetypeTemplate(9, 15, 9, 11, 12, 10, 15, 70, 15, 6, 45, 4, false, "sniper"),
+    flamer = archetypeTemplate(12, 10, 12, 8, 10, 9, 55, 30, 15, 8, 45, 5, false, "flamer"),
+    bigcrab = archetypeTemplate(16, 8, 16, 4, 8, 5, 80, 15, 5, 12, 80, 8, false, "bigcrab"),
+    watcher = archetypeTemplate(5, 14, 8, 14, 13, 14, 5, 35, 60, 6, 35, 2, false, "watcher"),
+    seeker = archetypeTemplate(12, 15, 11, 5, 9, 5, 25, 70, 5, 8, 40, 7, false, "seeker"),
+    sentry = archetypeTemplate(12, 10, 14, 8, 11, 7, 55, 35, 10, 10, 50, 8, false, "sentry"),
+    razor = archetypeTemplate(10, 16, 9, 5, 9, 5, 20, 75, 5, 6, 40, 6, false, "razor"),
+    arccaster = archetypeTemplate(8, 9, 11, 14, 16, 10, 10, 15, 75, 8, 50, 4, true, "arccaster"),
+    lurker = archetypeTemplate(12, 11, 12, 4, 11, 5, 45, 45, 10, 8, 40, 6, false, "lurker"),
+    beamsweeper = archetypeTemplate(9, 10, 13, 13, 14, 7, 20, 30, 50, 10, 55, 7, false, "beamsweeper"),
+    neil = archetypeTemplate(10, 13, 11, 12, 12, 14, 20, 40, 40, 10, 150, 8, false, "neil"),
+    brute = archetypeTemplate(18, 7, 18, 4, 8, 9, 90, 5, 5, 12, 250, 10, false, "brute"),
+    warden = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "warden")
+}
+
+for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do
+    template.archetypeId = archetypeId
+end
+
+RPG.ArchetypeProgressionAliases = {
+    arc_caster = "arccaster",
+    big_crab = "bigcrab",
+    beam_sweeper = "beamsweeper",
+    gordon = "warden",
+    gordon_warden = "warden",
+    gordon_the_warden = "warden"
 }
 
 RPG.SystemBootstrap = {
@@ -72,13 +128,15 @@ RPG.SystemBootstrap = {
 
 RPG.Schema = {
     ProgressionState = {
-        "actorId", "archetypeId", "characterIdentityPackage", "level", "xp", "classId",
+        "actorId", "actorType", "archetypeId", "tierId", "dungeonLevel",
+        "characterIdentityPackage", "level", "xp", "classId",
         "primaryAbility", "secondaryAbilities", "baseAbilities", "growthAbilities",
         "identityAbilityDelta", "equipmentAbilityDelta", "featAbilityDelta", "temporaryAbilityDelta",
         "effectiveAbilities", "startingHP", "progressionHitDieSides", "hitDieRollsByLevel",
         "featSlotsGranted", "featIds", "featStackCounts", "pendingFeatSlots",
         "classCapstoneFeatId", "pendingClassCapstoneDraft", "dungeonEntryLevel",
-        "replacementXpEarnedThisDungeon", "capabilityTags"
+        "replacementXpEarnedThisDungeon", "capabilityTags", "contentIds",
+        "moraleBonus", "usesMagic"
     },
     ArchetypeProgressionTemplate = {
         "archetypeId", "baseAbilities", "aiClassWeights", "progressionHitDieSides",
