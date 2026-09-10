@@ -554,12 +554,21 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
             end
             local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
+            local aimMult = tonumber(inflictor.LODAimMultiplier) or 1
             local final = math.max(1, Rolls:ResolveActorDamage(contract, attacker, target,
-                {physical = true, authoredScale = falloff}))
+                {physical = true, authoredScale = falloff * aimMult}))
             dmginfo:SetDamage(final)
+
+            local detailStr = string.format("[rolls %s; blast x%.2f]",
+                table.concat(contract.values or {}, ">"), falloff)
+            if aimMult > 1 then
+                local multText = aimMult == 3 and "x3" or "x2"
+                detailStr = string.format("[rolls %s; blast x%.2f; AIM %s]",
+                    table.concat(contract.values or {}, ">"), falloff, multText)
+            end
+
             Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d20",
-                final, target, string.format("[rolls %s; blast x%.2f]",
-                    table.concat(contract.values or {}, ">"), falloff),
+                final, target, detailStr,
                 nil, "Hostile", "grenade"))
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
             local effects = LOD.RPG and LOD.RPG.FeatEffectSystem

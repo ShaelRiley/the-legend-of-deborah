@@ -117,13 +117,14 @@ function SWEP:PrimaryAttack()
         return
     end
 
+    local aimMult = LOD.ConsumeAimState and LOD.ConsumeAimState(owner, self) or 1
     local profile = effects and effects.CrowbarDamageProfile
         and effects:CrowbarDamageProfile(owner) or DAMAGE_PROFILE
     local contract = rolls.RollActorDamage
         and rolls:RollActorDamage(owner, profile,
             rolls:_RNG("player:weapon_lod_crowbar"), aceBonus) or nil
-    local total = contract and rolls:ResolveActorDamage(contract, owner, target, {physical = true})
-        or rolls:_RollFormula(profile, rolls:_RNG("player:weapon_lod_crowbar:fallback"))
+    local total = contract and rolls:ResolveActorDamage(contract, owner, target, {physical = true, authoredScale = aimMult})
+        or (rolls:_RollFormula(profile, rolls:_RNG("player:weapon_lod_crowbar:fallback")) * aimMult)
     local values = contract and contract.values or nil
     total = math.max(1, math.floor(tonumber(total) or 1))
     local healthBefore = target:Health()
@@ -141,6 +142,14 @@ function SWEP:PrimaryAttack()
     if rolls._Send and rolls._DamageEventText then
         local detail = values and #values > 0
             and string.format("[rolls %s]", table.concat(values, ">")) or nil
+        if aimMult > 1 then
+            local multText = aimMult == 3 and "x3" or "x2"
+            if detail then
+                detail = string.sub(detail, 1, -2) .. "; AIM " .. multText .. "]"
+            else
+                detail = "[AIM " .. multText .. "]"
+            end
+        end
         rolls:_Send(owner, 0, rolls:_DamageEventText(owner,
             contract and contract.formula or string.format("1d%d", profile.sides or 3), total,
             target, detail, nil, "Hostile", "crowbar"))

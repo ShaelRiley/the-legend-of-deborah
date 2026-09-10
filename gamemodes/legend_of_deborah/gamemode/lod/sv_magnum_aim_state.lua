@@ -18,11 +18,32 @@ Magnum.Stats.aimLocks = Magnum.Stats.aimLocks or 0
 Magnum.Stats.aimShots = Magnum.Stats.aimShots or 0
 Magnum.Stats.aimCancels = Magnum.Stats.aimCancels or 0
 
-local function activeMagnum(ply)
+local AIMABLE_CLASSES = {
+    weapon_lod_crowbar = true,
+    weapon_pistol = true,
+    weapon_357 = true,
+    weapon_smg1 = true,
+    weapon_shotgun = true,
+    weapon_ar2 = true,
+    weapon_frag = true
+}
+
+local function activeAimableWeapon(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return nil end
     local weapon = ply:GetActiveWeapon()
-    if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357" then return nil end
-    return weapon
+    if not IsValid(weapon) then return nil end
+    local class = weapon:GetClass()
+    if not AIMABLE_CLASSES[class] then return nil end
+    if class == "weapon_357" then return weapon end
+
+    local rules = LOD.RPGAbilityRules
+    local state = rules and rules.ProgressionState and rules:ProgressionState(ply)
+    if state and state.featIds then
+        for _, id in ipairs(state.featIds) do
+            if id == "DEX_MAGNUM_DEADEYE" then return weapon end
+        end
+    end
+    return nil
 end
 
 local function clearAimState(ply, state, countCancel)
@@ -52,11 +73,6 @@ local function movementInput(cmd)
 end
 
 local function aimHoldSeconds(ply)
-    local rules = LOD.RPGAbilityRules
-    if rules and rules.MagnumAimHoldSeconds then
-        return math.Clamp(tonumber(rules:MagnumAimHoldSeconds(ply))
-            or BASE_AIM_HOLD_SECONDS, 0.35, BASE_AIM_HOLD_SECONDS)
-    end
     return BASE_AIM_HOLD_SECONDS
 end
 
@@ -68,7 +84,7 @@ end
 hook.Add("StartCommand", "LOD_MagnumAimState_Input", function(ply, cmd)
     if not IsValid(ply) then return end
 
-    local weapon = activeMagnum(ply)
+    local weapon = activeAimableWeapon(ply)
     local state = Magnum.AimStates[ply]
     if not IsValid(weapon) then
         if state then
@@ -128,16 +144,42 @@ end)
 -- EntityFireBullets hook order. Every real Magnum projectile asks this wrapper
 -- for its contract. The first projectile consumes the armed state; injected
 -- burst projectiles inherit the multiplier saved on their active burst.
+function LOD.ConsumeAimState(ply, weapon)
+    local state = Magnum.AimStates and Magnum.AimStates[ply]
+    if not state or not state.armed or state.weapon ~= weapon then return 1 end
+
+    local multiplier = AIM_DAMAGE_MULTIPLIER
+    local class = weapon:GetClass()
+    if class == "weapon_357" then
+        local rules = LOD.RPGAbilityRules
+        local prog = rules and rules.ProgressionState and rules:ProgressionState(ply)
+        if prog and prog.featIds then
+            for _, id in ipairs(prog.featIds) do
+                if id == "DEX_MAGNUM_DEADEYE" then
+                    multiplier = 3
+                    break
+                end
+            end
+        end
+    end
+
+    weapon.LODMagnumAimConsumedMultiplier = multiplier
+    clearAimState(ply, state, false)
+    state.stationarySince = CurTime()
+    Magnum.Stats.aimShots = (Magnum.Stats.aimShots or 0) + 1
+    return multiplier
+end
+
 if not Rolls.LODMagnumAimDamageInstalled then
     Rolls.LODMagnumAimDamageInstalled = true
     local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
 
     function Rolls:RollPlayerWeapon(ply, weaponClass)
         local contract = baseRollPlayerWeapon(self, ply, weaponClass)
-        if weaponClass ~= "weapon_357" or not contract then return contract end
+        if not contract then return contract end
 
-        local weapon = activeMagnum(ply)
-        if not IsValid(weapon) then return contract end
+        local weapon = activeAimableWeapon(ply)
+        if not IsValid(weapon) or weapon:GetClass() ~= weaponClass then return contract end
 
         local multiplier = 1
         local injected = weapon.LODMagnumInjectedBurst == true
@@ -145,17 +187,7 @@ if not Rolls.LODMagnumAimDamageInstalled then
             local burst = Magnum.Bursts and Magnum.Bursts[ply]
             multiplier = burst and tonumber(burst.aimMultiplier) or 1
         else
-            local state = Magnum.AimStates and Magnum.AimStates[ply]
-            if state and state.armed then
-                multiplier = AIM_DAMAGE_MULTIPLIER
-                -- Leave a one-trigger marker for the cylinder-burst hook. If that
-                -- hook runs before this wrapper, it can still read state.armed;
-                -- if it runs after, it reads this marker. No hook ordering needed.
-                weapon.LODMagnumAimConsumedMultiplier = multiplier
-                clearAimState(ply, state, false)
-                state.stationarySince = CurTime()
-                Magnum.Stats.aimShots = (Magnum.Stats.aimShots or 0) + 1
-            end
+            multiplier = LOD.ConsumeAimState(ply, weapon)
         end
 
         if multiplier > 1 then
@@ -179,13 +211,11 @@ if not Magnum.LODMagnumAimBurstWrapped then
     if baseBurstHook then
         Magnum.LODMagnumAimBurstWrapped = true
         hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
-            local weapon = activeMagnum(shooter)
+            local weapon = activeAimableWeapon(shooter)
             local multiplier = 1
             if IsValid(weapon) and not weapon.LODMagnumInjectedBurst then
-                local state = Magnum.AimStates and Magnum.AimStates[shooter]
                 multiplier = tonumber(weapon.LODMagnumAimConsumedMultiplier)
-                    or (state and state.armed and AIM_DAMAGE_MULTIPLIER)
-                    or 1
+                    or LOD.ConsumeAimState(shooter, weapon)
             end
 
             local result = baseBurstHook(shooter, bullet)
@@ -201,7 +231,7 @@ end
 -- The trigger marker only has to survive the EntityFireBullets dispatch that
 -- caused it. Clear it on the next tick so it cannot leak into a later shot.
 hook.Add("EntityFireBullets", "LOD_MagnumAimState_TriggerMarkerCleanup", function(shooter)
-    local weapon = activeMagnum(shooter)
+    local weapon = activeAimableWeapon(shooter)
     if not IsValid(weapon) or not weapon.LODMagnumAimConsumedMultiplier then return end
     timer.Simple(0, function()
         if IsValid(weapon) then weapon.LODMagnumAimConsumedMultiplier = nil end
@@ -216,11 +246,12 @@ if not Rolls.LODMagnumAimDetailInstalled then
 
     function Rolls:_PlayerRollDetail(contract)
         local detail = basePlayerRollDetail(self, contract)
-        if contract and contract.weaponClass == "weapon_357" and contract.aimState then
+        if contract and contract.aimState then
+            local multStr = contract.aimMultiplier == 3 and "x3" or "x2"
             if detail and detail ~= "" then
-                return string.sub(detail, 1, -2) .. "; AIM x2]"
+                return string.sub(detail, 1, -2) .. "; AIM " .. multStr .. "]"
             end
-            return "[AIM x2]"
+            return "[AIM " .. multStr .. "]"
         end
         return detail
     end
@@ -254,3 +285,23 @@ concommand.Add("lod_magnum_aim_status", function(ply)
     print("[LOD:MAGNUM-AIM] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+
+hook.Add("OnEntityCreated", "LOD_AimState_GrenadeFrag", function(ent)
+    if not IsValid(ent) or ent:GetClass() ~= "npc_grenade_frag" then return end
+    timer.Simple(0, function()
+        if not IsValid(ent) then return end
+        local owner = ent:GetOwner()
+        if not IsValid(owner) or not owner:IsPlayer() then return end
+        local weapon = owner:GetWeapon("weapon_frag")
+        if IsValid(weapon) then
+            local multiplier = LOD.ConsumeAimState(owner, weapon)
+            if multiplier > 1 then
+                ent.LODAimMultiplier = multiplier
+            end
+        end
+    end)
+end)
+
+if SERVER then
+    include("sv_deadeye_validation.lua")
+end

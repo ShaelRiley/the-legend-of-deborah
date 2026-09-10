@@ -4,11 +4,32 @@ local glowTexture = "sprites/light_glow02_add"
 local lockColor = Color(255, 205, 72, 230)
 local LOCK_SOUND = "buttons/button14.wav"
 
-local function activeMagnum(ply)
+local AIMABLE_CLASSES = {
+    weapon_lod_crowbar = true,
+    weapon_pistol = true,
+    weapon_357 = true,
+    weapon_smg1 = true,
+    weapon_shotgun = true,
+    weapon_ar2 = true,
+    weapon_frag = true
+}
+
+local function activeAimableWeapon(ply)
     if not IsValid(ply) then return nil end
     local weapon = ply:GetActiveWeapon()
-    if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357" then return nil end
-    return weapon
+    if not IsValid(weapon) then return nil end
+    local class = weapon:GetClass()
+    if not AIMABLE_CLASSES[class] then return nil end
+    if class == "weapon_357" then return weapon end
+
+    local rules = LOD.RPGAbilityRules
+    local state = rules and rules.ProgressionState and rules:ProgressionState(ply)
+    if state and state.featIds then
+        for _, id in ipairs(state.featIds) do
+            if id == "DEX_MAGNUM_DEADEYE" then return weapon end
+        end
+    end
+    return nil
 end
 
 local function attachmentPos(ent, index)
@@ -61,7 +82,7 @@ end
 net.Receive("LOD_MagnumAimLocked", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
-    local weapon = activeMagnum(ply)
+    local weapon = activeAimableWeapon(ply)
     if not IsValid(weapon) then return end
 
     emitLockBurst(ply, weapon)
@@ -73,7 +94,8 @@ end)
 hook.Add("HUDPaint", "LOD_MagnumAimState_HUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) or not ply:Alive() or not ply:GetNW2Bool("LOD_MagnumAimState", false) then return end
-    if not IsValid(activeMagnum(ply)) then return end
+    local weapon = activeAimableWeapon(ply)
+    if not IsValid(weapon) then return end
 
     local x, y = ScrW() * 0.5, ScrH() * 0.5
     local pulse = 0.75 + 0.25 * math.sin(CurTime() * 8)
@@ -90,7 +112,21 @@ hook.Add("HUDPaint", "LOD_MagnumAimState_HUD", function()
     surface.DrawLine(x + inner, y + outer, x + outer, y + outer)
     surface.DrawLine(x + outer, y + inner, x + outer, y + outer)
 
-    draw.SimpleText("AIM x2", "DermaDefaultBold", x, y + 25,
+    local multText = "AIM x2"
+    if weapon:GetClass() == "weapon_357" then
+        local rules = LOD.RPGAbilityRules
+        local state = rules and rules.ProgressionState and rules:ProgressionState(ply)
+        if state and state.featIds then
+            for _, id in ipairs(state.featIds) do
+                if id == "DEX_MAGNUM_DEADEYE" then
+                    multText = "AIM x3"
+                    break
+                end
+            end
+        end
+    end
+
+    draw.SimpleText(multText, "DermaDefaultBold", x, y + 25,
         Color(lockColor.r, lockColor.g, lockColor.b, math.floor(240 * pulse)),
         TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 end)
