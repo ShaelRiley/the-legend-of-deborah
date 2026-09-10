@@ -139,7 +139,7 @@ Final `gm_flatgrass` acceptance established both sides of the deterministic cont
 Spring Heel / Deadeye / Long Reach / Russian Asset are implemented from live-GDD revision `ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg`:
 
 - `DEX_SPRING_HEEL`: DEX 13; voluntary ordinary ground-jump takeoff impulse is multiplied by `sqrt(2)` to produce 2.0× ballistic apex height without touching Push, falls, ladders, stairs, scripted relocation, or blocking geometry;
-- `DEX_MAGNUM_DEADEYE`: DEX 15 plus actual .357 access; the existing Aim State authority requires 0.35 rather than 0.50 seconds of perfect stillness and preserves all cancellation/consumption rules;
+- `DEX_MAGNUM_DEADEYE`: DEX 15 with no Magnum prerequisite; enables Aim State for all standard player weapons (0.50 sec stillness); ordinary aimed transaction ×2, Magnum aimed transaction ×3 (supersedes the old 0.35s behavior);
 - `STR_MELEE_REACH`: STR 15 plus melee access; the existing Crowbar TraceHull extends from 96 to 120 units while the same wall/gate/floor collision mask remains authoritative;
 - `CON_RUSSIAN_ASSET`: stable save-compatible ID with current INT 13 qualification; both Tetris reward paths use ×2 overfill rewards, death Tetris uses a 120-second rather than 60-second hard cap, and the 20-second mandatory respawn and victory windows are unchanged;
 - one combined baseline/feat testkit and status command exercise all four bridges in a finite pass;

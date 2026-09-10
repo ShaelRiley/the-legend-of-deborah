@@ -40,6 +40,10 @@ Current increment: W,A,S,Deborah is runtime accepted on d0111e5. Strafer rank-3 
 
 The live GDD says the Form catalog has six entries while Hero progression and form-unlock feat eligibility still refer to five. Resolve before that dependent implementation. The older Snap Targeting timing conflict remains unadjudicated; inspect current authored timing before implementing it. Neither issue blocks the present Winning Personality repair.
 
+## Specific Feat Notes
+
+- **Deadeye**: DEX 15, no Magnum prerequisite. Universal standard-weapon Aim (0.50 sec stillness). Ordinary aimed transaction x2, Magnum aimed transaction x3. Old 0.35 behavior superseded.
+
 ## Ordinary enumeration
 
 “Present” means active registry membership only. Handler IDs identify the implementation seam; they do not certify completeness or runtime acceptance. Consult the live GDD for full effects, interaction rules and dynamic eligibility; requirements below are the enumerated printed requirements.

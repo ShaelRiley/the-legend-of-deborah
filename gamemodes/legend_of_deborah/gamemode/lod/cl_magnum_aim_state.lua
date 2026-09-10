@@ -4,10 +4,20 @@ local glowTexture = "sprites/light_glow02_add"
 local lockColor = Color(255, 205, 72, 230)
 local LOCK_SOUND = "buttons/button14.wav"
 
-local function activeMagnum(ply)
+local AIMABLE_CLASSES = {
+    weapon_lod_crowbar = true,
+    weapon_pistol = true,
+    weapon_357 = true,
+    weapon_smg1 = true,
+    weapon_shotgun = true,
+    weapon_ar2 = true,
+    weapon_frag = true
+}
+
+local function activeVisualWeapon(ply)
     if not IsValid(ply) then return nil end
     local weapon = ply:GetActiveWeapon()
-    if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357" then return nil end
+    if not IsValid(weapon) or not AIMABLE_CLASSES[weapon:GetClass()] then return nil end
     return weapon
 end
 
@@ -61,23 +71,28 @@ end
 net.Receive("LOD_MagnumAimLocked", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
-    local weapon = activeMagnum(ply)
+    local weapon = activeVisualWeapon(ply)
     if not IsValid(weapon) then return end
 
     emitLockBurst(ply, weapon)
     surface.PlaySound(LOCK_SOUND)
 end)
 
--- Persistent, tiny readability cue while the server-authoritative Aim State is
--- armed. The actual lock-on event remains the muzzle particle burst + sound.
 hook.Add("HUDPaint", "LOD_MagnumAimState_HUD", function()
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or not ply:GetNW2Bool("LOD_MagnumAimState", false) then return end
-    if not IsValid(activeMagnum(ply)) then return end
+    if not IsValid(ply) or not ply:Alive()
+        or not ply:GetNW2Bool("LOD_UniversalAimState", false)
+    then
+        return
+    end
+
+    local weapon = activeVisualWeapon(ply)
+    if not IsValid(weapon) then return end
 
     local x, y = ScrW() * 0.5, ScrH() * 0.5
     local pulse = 0.75 + 0.25 * math.sin(CurTime() * 8)
-    surface.SetDrawColor(lockColor.r, lockColor.g, lockColor.b, math.floor(lockColor.a * pulse))
+    surface.SetDrawColor(lockColor.r, lockColor.g, lockColor.b,
+        math.floor(lockColor.a * pulse))
 
     local inner = 11
     local outer = 17
@@ -90,7 +105,9 @@ hook.Add("HUDPaint", "LOD_MagnumAimState_HUD", function()
     surface.DrawLine(x + inner, y + outer, x + outer, y + outer)
     surface.DrawLine(x + outer, y + inner, x + outer, y + outer)
 
-    draw.SimpleText("AIM x2", "DermaDefaultBold", x, y + 25,
+    local multiplier = math.max(1,
+        math.floor(ply:GetNW2Float("LOD_UniversalAimMultiplier", 1) + 0.5))
+    draw.SimpleText("AIM x" .. tostring(multiplier), "DermaDefaultBold", x, y + 25,
         Color(lockColor.r, lockColor.g, lockColor.b, math.floor(240 * pulse)),
         TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 end)

@@ -24,7 +24,6 @@ local SPRING_HEEL_IMPULSE_MULTIPLIER = math.sqrt(SPRING_HEEL_HEIGHT_MULTIPLIER)
 Effects.SingletonConfig = {
     sourceRevision = SOURCE_REVISION,
     baseMagnumHoldSeconds = BASE_MAGNUM_HOLD_SECONDS,
-    deadeyeHoldSeconds = DEADEYE_HOLD_SECONDS,
     baseMeleeReach = BASE_MELEE_REACH,
     longReachMultiplier = LONG_REACH_MULTIPLIER,
     baseDeathTetrisSeconds = BASE_DEATH_TETRIS_SECONDS,
@@ -84,12 +83,11 @@ Feats.DEX_SPRING_HEEL = singletonDefinition(
     }, "DEX 13")
 
 Feats.DEX_MAGNUM_DEADEYE = singletonDefinition(
-    "DEX_MAGNUM_DEADEYE", "Deadeye", "dex", 15, "magnum",
+    "DEX_MAGNUM_DEADEYE", "Deadeye", "dex", 15, nil,
     {"hero", "human_soldier"}, "dex_magnum_deadeye", "magnum_deadeye", {
-        aimHoldSeconds = DEADEYE_HOLD_SECONDS,
-        actorText = "Player-controlled actors using the .357 Magnum",
-        description = "Magnum Aim State requires 0.35 seconds of perfect stillness instead of 0.50 seconds. Movement, jump input, aim movement, weapon switching, death, and firing cancel or consume the state exactly as normal."
-    }, "DEX 15 / .357 Magnum access")
+        actorText = "Player-controlled actors using a standard player weapon",
+        description = "Deadeye enables Aim State for all standard damage-capable player weapons. A completed aim (0.50 seconds of perfect stillness) empowers exactly one next primary attack transaction for x2 damage. If the weapon is the .357 Magnum (which natively supports x2 aim), Deadeye empowers it to x3."
+    }, "DEX 15")
 
 Feats.STR_MELEE_REACH = singletonDefinition(
     "STR_MELEE_REACH", "Long Reach", "str", 15, "crowbar",
@@ -162,8 +160,8 @@ function Effects:SingletonProfile(state)
         jumpHeightMultiplier = springHeel and SPRING_HEEL_HEIGHT_MULTIPLIER or 1,
         jumpImpulseMultiplier = springHeel and SPRING_HEEL_IMPULSE_MULTIPLIER or 1,
         deadeye = deadeye,
-        magnumAimHoldSeconds = deadeye and DEADEYE_HOLD_SECONDS
-            or BASE_MAGNUM_HOLD_SECONDS,
+        aimHoldSeconds = 0.50,
+        magnumAimHoldSeconds = 0.50,
         longReach = longReach,
         meleeReachMultiplier = longReach and LONG_REACH_MULTIPLIER or 1,
         russianAsset = russianAsset,
@@ -182,11 +180,20 @@ if not Effects.LODGateESingletonApplyDerivedWrapped then
         derived.springHeelEnabled = profile.springHeel
         derived.jumpHeightMultiplier = profile.jumpHeightMultiplier
         derived.jumpImpulseMultiplier = profile.jumpImpulseMultiplier
+        derived.aimHoldSeconds = profile.aimHoldSeconds
         derived.magnumAimHoldSeconds = profile.magnumAimHoldSeconds
         derived.meleeReachMultiplier = profile.meleeReachMultiplier
         derived.tetrisOverfillMultiplier = profile.tetrisOverfillMultiplier
         derived.deathTetrisMaxSeconds = profile.deathTetrisMaxSeconds
     end
+end
+
+function Rules:AimHoldSeconds(actorOrState)
+    return Effects:SingletonProfile(stateFor(actorOrState)).aimHoldSeconds
+end
+
+function Rules:MagnumAimHoldSeconds(actorOrState)
+    return Effects:SingletonProfile(stateFor(actorOrState)).magnumAimHoldSeconds
 end
 
 function Rules:SpringHeelImpulseMultiplier(actorOrState)
@@ -200,10 +207,6 @@ end
 function Effects:SpringHeelAdditionalImpulse(actorOrState, takeoffImpulse)
     local takeoff = math.max(0, tonumber(takeoffImpulse) or 0)
     return takeoff * math.max(0, Rules:SpringHeelImpulseMultiplier(actorOrState) - 1)
-end
-
-function Rules:MagnumAimHoldSeconds(actorOrState)
-    return Effects:SingletonProfile(stateFor(actorOrState)).magnumAimHoldSeconds
 end
 
 function Rules:MeleeReachMultiplier(actorOrState)
@@ -239,7 +242,7 @@ end
 
 for _, field in ipairs({
     "springHeelEnabled", "jumpHeightMultiplier", "jumpImpulseMultiplier",
-    "magnumAimHoldSeconds", "meleeReachMultiplier"
+    "aimHoldSeconds", "magnumAimHoldSeconds", "meleeReachMultiplier"
 }) do
     addSchemaField(field)
 end
@@ -337,8 +340,6 @@ function Effects:ValidateSingletonFamilies()
         "DEX_SPRING_HEEL", "DEX_MAGNUM_DEADEYE", "STR_MELEE_REACH",
         "CON_RUSSIAN_ASSET"
     }})
-    expect(baseline.magnumAimHoldSeconds == 0.50, "baseline Magnum Aim hold")
-    expect(all.magnumAimHoldSeconds == 0.35, "Deadeye Magnum Aim hold")
     expect(baseline.meleeReachMultiplier == 1, "baseline melee reach")
     expect(all.meleeReachMultiplier == 1.25
         and self.SingletonConfig.baseMeleeReach * all.meleeReachMultiplier == 120,
@@ -470,7 +471,7 @@ concommand.Add("lod_rpg_gate_e_singletons_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateSingletonFamilies()
     if ok then
-        print("[LOD:RPG-E] singleton families PASS — Spring Heel 2x height via sqrt(2)x impulse; Deadeye 0.50s->0.35s; Long Reach 96->120; Russian Asset rewards x2 and death cap 60s->120s")
+        print("[LOD:RPG-E] singleton families PASS — Spring Heel 2x height via sqrt(2)x impulse; Long Reach 96->120; Russian Asset rewards x2 and death cap 60s->120s")
     else
         ErrorNoHalt("[LOD:RPG-E] singleton families FAILED\n")
         for _, message in ipairs(errors or {}) do
@@ -498,8 +499,6 @@ concommand.Add("lod_rpg_gate_e_singletons_status", function(ply)
         and (stats.meleeSwings or 0) >= 1
         and math.abs((stats.lastMeleeReach or 0) - expectedReach) < 0.01
         and (magnumStats.aimLocks or 0) >= 1
-        and math.abs((magnumStats.lastAimHoldSeconds or 0)
-            - profile.magnumAimHoldSeconds) < 0.01
     local jumpRatio = (stats.baselineJumpHeight or 0) > 0
         and (stats.lastJumpHeight or 0) / stats.baselineJumpHeight or 0
     local line = string.format(
@@ -507,7 +506,7 @@ concommand.Add("lod_rpg_gate_e_singletons_status", function(ply)
         tostring(profile.springHeel), profile.jumpImpulseMultiplier,
         stats.jumpAttempts or 0, stats.jumpBoosts or 0, stats.lastJumpHeight or 0,
         stats.baselineJumpHeight or 0, jumpRatio,
-        tostring(profile.deadeye), profile.magnumAimHoldSeconds,
+        tostring(profile.deadeye), 0.50,
         magnumStats.aimLocks or 0, magnumStats.lastAimLockElapsed or 0,
         tostring(profile.longReach), expectedReach,
         stats.lastMeleeReach or 0, stats.meleeSwings or 0,
@@ -534,7 +533,7 @@ concommand.Add("lod_rpg_gate_e_singletons_testkit", function(ply, _, args)
     local profile = Effects:SingletonProfile(Rules:ProgressionState(ply))
     local line = string.format(
         "Singleton acceptance kit %s: stand perfectly still with Magnum until Aim locks; jump once and land; switch to Crowbar and swing once; then run status. Expected hold=%.2fs, impulse=x%.4f, trace=%.0f, Tetris rewards=%s, death cap=%ds.",
-        enabled and "FEATS" or "BASELINE", profile.magnumAimHoldSeconds,
+        enabled and "FEATS" or "BASELINE", 0.50,
         profile.jumpImpulseMultiplier, BASE_MELEE_REACH * profile.meleeReachMultiplier,
         enabled and "20/60/100/160" or "10/30/50/80",
         profile.deathTetrisMaxSeconds)

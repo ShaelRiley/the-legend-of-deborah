@@ -19,7 +19,7 @@ Before new feature work, Sol obtains the original AG-001/AG-002 bundles if avail
 ## Next ~12 hours: Sol management directive
 
 1. Close AG-001 provenance and corrected AG-002R runtime gate first; stop issuance on any failure.
-2. Audit/accept Deadeye at the existing Magnum Aim State seam: authored 0.35s versus ordinary 0.50s, all cancellation causes and no bypass of authoritative firing. One bounded repair only if the direct diff proves needed.
+2. Audit/accept Deadeye: universal Aim State for standard weapons at 0.50s hold, x2 ordinary, x3 Magnum, retaining all cancellation rules. One bounded repair only if the direct diff proves needed.
 3. Audit/accept Long Reach at the existing melee trace seam: 1.25x ordinary reach with walls/gates/floors still blocking; test ownership/prerequisite and eligible actor scope. Do not create playable Soldier/AI architecture to satisfy a broad catalog tag.
 4. Audit/accept Hard to Move at existing stun/push consumers: both ordinary effects x0.75, with scripted exceptions preserved. If a new common control-resolution authority is needed, stop that task and escalate; do not scatter handler patches.
 5. Reconcile actual accepted evidence into the feat matrix and identify the next missing family with an already working consumer. Sol may issue it only after reading its current live GDD text and demonstrating bounded scope; no quota of feats or speculative catalog-only completion.
