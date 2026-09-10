@@ -1,3 +1,20 @@
+LOD = LOD or {}
+
+local DEVELOPER_MODE_HELP = "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
+local devCheckoutMarker = file.Exists("legend_of_deborah/dev_checkout_mode.txt", "DATA")
+local cvDeveloperMode = GetConVar("lod_developer_mode")
+if not cvDeveloperMode then
+    cvDeveloperMode = CreateConVar("lod_developer_mode", "0", FCVAR_ARCHIVE, DEVELOPER_MODE_HELP)
+end
+
+-- Development installs created by tools/install_dev.sh carry an explicit DATA
+-- marker. Enable the developer/test module surface before any gamemode includes
+-- can gate on it. Public/Workshop installs have no marker and remain default-off.
+if devCheckoutMarker and not cvDeveloperMode:GetBool() then
+    cvDeveloperMode:SetBool(true)
+end
+LOD.DeveloperModeConVar = cvDeveloperMode
+
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("lod/sh_config.lua")
@@ -172,7 +189,6 @@ hook.Add("InitPostEntity", "LOD_WatcherUnifiedLateBind", function()
 end)
 timer.Simple(1.0, function() reportWatcherUnifiedReady("one-second") end)
 
-local cvDeveloperMode = GetConVar("lod_developer_mode")
 LOD.DeveloperToolsLoaded = cvDeveloperMode and cvDeveloperMode:GetBool() or false
 LOD.DeveloperToolModuleCount = 0
 if LOD.DeveloperToolsLoaded then

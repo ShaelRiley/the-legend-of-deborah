@@ -3,12 +3,16 @@ LOD = LOD or {}
 local RunManager = LOD.RunManager
 local nextSync = 0
 local SYNC_INTERVAL = 0.20
-local cvDeveloperMode = CreateConVar(
-    "lod_developer_mode",
-    "0",
-    FCVAR_ARCHIVE,
-    "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
-)
+local cvDeveloperMode = LOD.DeveloperModeConVar or GetConVar("lod_developer_mode")
+if not cvDeveloperMode then
+    cvDeveloperMode = CreateConVar(
+        "lod_developer_mode",
+        "0",
+        FCVAR_ARCHIVE,
+        "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
+    )
+    LOD.DeveloperModeConVar = cvDeveloperMode
+end
 
 -- Publish the authoritative server-side mandatory death wait for the local HUD.
 -- Death Tetris may shorten this by two seconds per cleared line. The separate
