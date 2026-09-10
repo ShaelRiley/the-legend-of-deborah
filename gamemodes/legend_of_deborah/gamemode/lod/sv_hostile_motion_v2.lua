@@ -189,6 +189,11 @@ function Motion:MoveToward(hostile, waypoint)
     if hostile.LODDeadcrabState == "leaping" or hostile.LODDeadcrabState == "latched" then
         return false
     end
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and not statusElements:CanMoveVoluntarily(hostile) then
+        self:Stop(hostile)
+        return false
+    end
 
     local now = CurTime()
     local last = hostile.LODMotionLastUpdate or now
@@ -214,7 +219,8 @@ function Motion:MoveToward(hostile, waypoint)
     end
 
     local cfg = hostile.LODConfig or {}
-    local speed = math.max(1, cfg.speed or 90)
+    local statusMultiplier = statusElements and statusElements:LocomotionMultiplier(hostile) or 1
+    local speed = math.max(1, (cfg.speed or 90) * statusMultiplier)
     local step = math.min(distance, speed * dt)
     local direction = delta / distance
     local nextPos = pos + direction * step
@@ -235,6 +241,7 @@ function Motion:MoveToward(hostile, waypoint)
     hostile.LODMotionLastPos = nextPos
     hostile.LODMotionTravel = (hostile.LODMotionTravel or 0) + moved:Length()
     advanceStrideVariance(hostile, moved:Length())
+    if statusElements then statusElements:ObserveCell(hostile) end
     return step >= distance - 0.05
 end
 
@@ -299,6 +306,9 @@ local function installPatch()
             Motion:Stop(self)
             return
         end
+
+        local statusElements = LOD.RPGStatusElements
+        if statusElements and statusElements:HandleAIFlee(self, graph, Motion) then return end
 
         -- Archetype combat is explicit Motion V2 dispatch, not an incidental
         -- wrapper-ordering side effect. These methods are supplied by their

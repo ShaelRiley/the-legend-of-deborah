@@ -54,6 +54,7 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local maximum = math.max(1, ply:GetNW2Int("LOD_MagicMax", 100))
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
     local value = math.floor(magic + 0.5)
+    local muted = ply:GetNW2Bool("LOD_StatusMuted", false)
     local layout = hudSuitLayout()
 
     local x = ps(layout.x)
@@ -89,7 +90,7 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
     surface.SetTextColor(MAGIC_COLOR)
     surface.SetFont("HudNumbers")
     surface.SetTextPos(x + ps(layout.digitX), y + ps(layout.digitY))
-    surface.DrawText(tostring(value))
+    surface.DrawText(muted and "MUTE" or tostring(value))
 
     if CurTime() < diversionTextUntil and lastDivertedHP > 0 then
         local text = string.format("ARCANE -%.1f HP / -%.1f MAGIC", lastDivertedHP, lastDivertedMagic)

@@ -158,6 +158,10 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     info:SetDamageType(DMG_SHOCK)
     info:SetDamagePosition(attacker:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and statusElements.AttachDamageContext then
+        statusElements:AttachDamageContext(info, {magic = true, feedbackIneligible = true})
+    end
 
     -- Feedback has already passed through the RPG dice resolver. Temporarily hide
     -- any same-frame firearm contract so the canonical player-firearm hook cannot
@@ -188,6 +192,10 @@ end
 
 function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
     if not IsValid(wizard) or not self:IsWizard(wizard) then return false end
+    local statusElements = LOD.RPGStatusElements
+    local damageContext = statusElements and statusElements:DamageContext(dmginfo, wizard)
+    if damageContext and damageContext.feedbackIneligible then return false end
+    if statusElements and statusElements:Has(wizard, "arcane_shattered") then return false end
     local finalHPDamage = tonumber(defenseResult and defenseResult.finalHPDamage)
         or (dmginfo and dmginfo.GetDamage and dmginfo:GetDamage()) or 0
     if finalHPDamage <= 0 then return false end

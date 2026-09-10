@@ -55,6 +55,7 @@ if SERVER then
     include("lod/sv_rpg_gate_e_backpedal.lua")
     include("lod/sv_rpg_gate_e_strafe.lua")
     include("lod/sv_rpg_gate_e_quantum.lua")
+    include("lod/sv_rpg_status_elements.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
@@ -134,6 +135,8 @@ end
 
 function GM:PlayerShouldTakeDamage(victim, attacker)
     if IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim then
+        local statusElements = LOD.RPGStatusElements
+        if statusElements and statusElements:AllowsFriendlyFire(attacker) then return true end
         return false
     end
     return true

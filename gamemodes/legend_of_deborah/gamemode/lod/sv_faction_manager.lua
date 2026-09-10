@@ -26,6 +26,12 @@ function FactionManager:BestTarget(hostile, graph, homeCell)
     local navigator = LOD.MazeNavigator
     if not navigator or not graph then return nil end
 
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and statusElements.ChooseRecklessTarget then
+        local ally, distance = statusElements:ChooseRecklessTarget(hostile, graph, homeCell)
+        if ally then return ally, distance end
+    end
+
     local best, bestGraphDistance, bestWorldDistance
     for _, ply in ipairs(self:LivingTargets()) do
         local targetCell = navigator:WorldToCell(graph, ply:GetPos())
@@ -53,7 +59,9 @@ hook.Add("EntityTakeDamage", "LOD_HostileFactionDamage", function(victim, dmginf
     if not FactionManager:IsHostile(victim) then return end
     local attacker = dmginfo:GetAttacker()
     local inflictor = dmginfo:GetInflictor()
-    if FactionManager:IsHostile(attacker) or FactionManager:IsHostile(inflictor) then
+    local statusElements = LOD.RPGStatusElements
+    local reckless = statusElements and statusElements:AllowsFriendlyFire(attacker)
+    if (FactionManager:IsHostile(attacker) or FactionManager:IsHostile(inflictor)) and not reckless then
         dmginfo:SetDamage(0)
         dmginfo:ScaleDamage(0)
         return true

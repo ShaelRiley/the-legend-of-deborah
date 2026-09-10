@@ -535,6 +535,9 @@ end
 
 hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo)
     if not IsValid(target) or not dmginfo then return end
+    local statusElements = LOD.RPGStatusElements
+    local statusContext = statusElements and statusElements:DamageContext(dmginfo, target)
+    if statusContext and statusContext.statusDamage then return end
     local attacker = dmginfo:GetAttacker()
     local inflictor = dmginfo:GetInflictor()
 

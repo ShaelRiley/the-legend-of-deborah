@@ -237,6 +237,8 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
 
     local fraction = math.Clamp(tonumber(derived.hpToMagicDiversionFraction) or 0, 0, 1)
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and statusElements:Has(target, "arcane_shattered") then fraction = 0 end
     if fraction <= 0 then return result end
     local magic = LOD.Magic
     local ps = magic and magic._EnsureState and magic:_EnsureState(target) or nil
@@ -396,6 +398,10 @@ function GM:EntityTakeDamage(target, dmginfo)
             effectiveDamage = math.max(effectiveDamage, defenseResult.actualMagicDiversion)
         end
         featEffects:OnEffectiveDamage(target, effectiveDamage)
+    end
+    local statusElements = LOD.RPGStatusElements
+    if IsValid(target) and statusElements and statusElements.ObserveDamage then
+        statusElements:ObserveDamage(target, dmginfo, defenseResult)
     end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
 end

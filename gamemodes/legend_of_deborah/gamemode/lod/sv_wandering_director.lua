@@ -256,6 +256,13 @@ local function bestNearbyTarget(hostile, graph, maximum)
     local current = currentCellFor(hostile, graph)
     if not current then return nil, math.huge end
 
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and statusElements.ChooseRecklessTarget then
+        local ally, distance = statusElements:ChooseRecklessTarget(
+            hostile, graph, current, maximum)
+        if ally then return ally, distance end
+    end
+
     local best, bestDistance, bestWorld
     for _, ply in ipairs(LOD.FactionManager:LivingTargets()) do
         local targetCell = targetCellFor(ply, graph)

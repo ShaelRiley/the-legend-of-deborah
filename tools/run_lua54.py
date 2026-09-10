@@ -12,11 +12,11 @@ import sys
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: tools/run_lua54.py <script.lua>", file=sys.stderr)
+    syntax_only = len(sys.argv) >= 3 and sys.argv[1] == "--syntax"
+    scripts = sys.argv[2:] if syntax_only else sys.argv[1:]
+    if not scripts or (not syntax_only and len(scripts) != 1):
+        print("usage: tools/run_lua54.py [--syntax] <script.lua> [...]", file=sys.stderr)
         return 2
-
-    script = pathlib.Path(sys.argv[1]).resolve()
     library = ctypes.util.find_library("lua5.4") or "liblua5.4.so.0"
     lua = ctypes.CDLL(library)
     lua.luaL_newstate.restype = ctypes.c_void_p
@@ -43,14 +43,18 @@ def main() -> int:
     state = lua.luaL_newstate()
     lua.luaL_openlibs(state)
     try:
-        status = lua.luaL_loadfilex(state, str(script).encode(), None)
-        if status == 0:
-            status = lua.lua_pcallk(state, 0, -1, 0, 0, None)
-        if status != 0:
-            size = ctypes.c_size_t()
-            message = lua.lua_tolstring(state, -1, ctypes.byref(size))
-            print(message[: size.value].decode(errors="replace"), file=sys.stderr)
-            return 1
+        for item in scripts:
+            script = pathlib.Path(item).resolve()
+            status = lua.luaL_loadfilex(state, str(script).encode(), None)
+            if status == 0 and not syntax_only:
+                status = lua.lua_pcallk(state, 0, -1, 0, 0, None)
+            if status != 0:
+                size = ctypes.c_size_t()
+                message = lua.lua_tolstring(state, -1, ctypes.byref(size))
+                print(f"{item}: " + message[: size.value].decode(errors="replace"), file=sys.stderr)
+                return 1
+            if syntax_only:
+                print(f"PASS {item}")
         return 0
     finally:
         lua.lua_close(state)

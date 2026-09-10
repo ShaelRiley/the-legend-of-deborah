@@ -104,7 +104,10 @@ function CharacterProgressionSystem:NewProgressionState(actorId, archetypeId, ac
         capabilityTags = emptyArray(),
         contentIds = emptyArray(),
         moraleBonus = 0,
-        usesMagic = false
+        usesMagic = false,
+        currentElement = nil,
+        elementalWeaknesses = emptyArray(),
+        statusImmunities = emptyArray()
     }
 end
 

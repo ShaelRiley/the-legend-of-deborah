@@ -82,7 +82,7 @@ Implement together, not as isolated constant edits:
 
 **Checkpoint gate:** existing Hero progression regressions pass; deterministic actor validator passes; production consumers can retrieve correct Hero and AI progression state. Commit and push immediately.
 
-## Checkpoint B — Shared status, element and Morale authority
+## Checkpoint B — Shared status, element and Morale authority [STATIC GATE COMPLETE; RUNTIME PENDING]
 
 **Goal:** make every current authored status/element interaction run through shared event-driven authorities.
 

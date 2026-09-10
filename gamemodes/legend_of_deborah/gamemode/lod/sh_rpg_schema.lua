@@ -3,13 +3,17 @@ LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
 
-RPG.SchemaVersion = 8
+RPG.SchemaVersion = 9
 RPG.ImplementationGate = "D"
 RPG.GameplayEnabled = true
 
 RPG.Abilities = {"str", "dex", "con", "int", "wis", "cha"}
 RPG.AbilitySet = {}
 for _, ability in ipairs(RPG.Abilities) do RPG.AbilitySet[ability] = true end
+
+RPG.Elements = {"earth", "fire", "dark", "ice", "light", "electric"}
+RPG.StatusIds = {"clumsy", "immolated", "poisoned", "bleeding", "muted",
+    "held", "reckless", "arcane_shattered", "intimidated", "morale_flee"}
 
 RPG.Constants = {
     MinLevel = 1,
@@ -123,6 +127,7 @@ RPG.SystemBootstrap = {
     CharacterSheetUI = "gate_c",
     PlayerCharacterText = "gate_b",
     CombatAttributionSystem = "gate_d_hero_xp",
+    StatusElementSystem = "integrated_checkpoint_b",
     RPGThreatEvaluator = "schema_only"
 }
 
@@ -136,7 +141,8 @@ RPG.Schema = {
         "featSlotsGranted", "featIds", "featStackCounts", "pendingFeatSlots",
         "classCapstoneFeatId", "pendingClassCapstoneDraft", "dungeonEntryLevel",
         "replacementXpEarnedThisDungeon", "capabilityTags", "contentIds",
-        "moraleBonus", "usesMagic"
+        "moraleBonus", "usesMagic", "currentElement", "elementalWeaknesses",
+        "statusImmunities"
     },
     ArchetypeProgressionTemplate = {
         "archetypeId", "baseAbilities", "aiClassWeights", "progressionHitDieSides",
@@ -153,6 +159,13 @@ RPG.Schema = {
         "attackEventId", "targetActorId", "hitConnected", "harmWasEffective", "effectiveHPDamage",
         "resolvedHPDamageBeforeDiversion", "actualMagicDiversion", "finalHPDamage",
         "targetSurvived", "pushEligible", "hitStunEligible"
+    },
+    StatusInstance = {
+        "id", "source", "dc", "appliedAt", "expiresAt", "nextTickAt",
+        "nextRecoveryAt", "lastCellKey"
+    },
+    ElementResolution = {
+        "element", "kind", "multiplier", "index", "hitStunMultiplier", "knockback"
     },
     DerivedStats = {
         "strMod", "dexMod", "conMod", "intMod", "wisMod", "chaMod",

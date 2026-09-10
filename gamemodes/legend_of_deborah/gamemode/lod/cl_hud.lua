@@ -86,6 +86,28 @@ local cardColors = {
 local letters = {"R", "B", "Y"}
 local symbolNames = {"TRIANGLE", "CIRCLE", "SQUARE"}
 local nextRestartRequest = 0
+local visibleStatuses = {
+    {key = "LOD_StatusImmolated", label = "IMMOLATED"},
+    {key = "LOD_StatusPoisoned", label = "POISONED"},
+    {key = "LOD_StatusBleeding", label = "BLEEDING"},
+    {key = "LOD_StatusClumsy", label = "CLUMSY"},
+    {key = "LOD_StatusMuted", label = "MUTED"},
+    {key = "LOD_StatusHeld", label = "HELD"},
+    {key = "LOD_StatusReckless", label = "RECKLESS"},
+    {key = "LOD_StatusArcaneShattered", label = "SHIELD SHATTERED"},
+    {key = "LOD_StatusIntimidated", label = "INTIMIDATED!"}
+}
+
+local function drawStatuses(ply)
+    local active = {}
+    for _, status in ipairs(visibleStatuses) do
+        if ply:GetNW2Bool(status.key, false) then active[#active + 1] = status.label end
+    end
+    if #active == 0 then return end
+    draw.SimpleText(table.concat(active, "  •  "), "LOD_HUD_Body",
+        ScrW() * 0.5, ScrH() - 82, Color(245, 120, 75),
+        TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+end
 
 local function drawSymbol(index, x, y, color)
     surface.SetDrawColor(color)
@@ -169,6 +191,7 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
     local state = LOD.ClientState
+    drawStatuses(ply)
     local margin = 22
     local panelW = 360
     local panelH = 150
