@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-11
 **Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `2678c4c274ad55553aa312f28a8d44bb53c09bf8`
+**Current remote HEAD:** `bbf90ffe718805760e7556c14ed6ea651b500559`
 **Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
@@ -38,6 +38,7 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `DEX_WALL_JUMP` is a server-authoritative once-per-airborne-cycle 24-unit static-world hull probe, with deterministic nearest-wall selection, a bounded lateral kick, normal voluntary-jump vertical impulse, and Spring Heel composition. `INT_CLOUD_STEP` adds its separate once-per-airborne-cycle 5-Magic jump, after a valid Wall Jump has priority. `INT_FLOAT_ON` is a held-at-apex, once-per-airborne-cycle float with exact 5-Magic-per-second accounting, a 3.0-second cap, and no upward-flight impulse.
 - `INT_SIZE_SHIFTER` now owns a server-side continuous crouch transformation to absolute 0.33 scale over three seconds, returning smoothly to the ordinary current size after release. It composes with Little Guy/Big Guy through `PlayerTargetScale` and preserves ordinary legal collision and traversal geometry.
 - `DEX_SHRINK` now supplies the canonical 0.70 ordinary target scale, is mutually exclusive with Big Guy, and composes as Size Shifter's release destination. `INT_HASTE_1` through `INT_HASTE_3` supply the rebindable default-H sustained toggle, 2.00 final voluntary movement multiplier, and replacement drain multipliers 1, 2/3, 1/3 of the current WIS-scaled map rate. Haste drains independently alongside a map, suppresses regeneration while active, and stops immediately at zero Magic.
+- `INT_MIDDLE_MANAGER`, `INT_TASKMASTER`, and `INT_OVERLORD` now use the existing caster-specific allied Seeker cap authority at 2/3/4, gated by actual Summon-Form ownership. `INT_GRAND_UNIFIED_THEORY` and `INT_EXTRACURRICULAR_ACTIVITY` each grant one persistent deterministic distinct Form/Content through MagicProgression and remain ineligible once their respective six-item catalog is exhausted.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
 ## Next work
