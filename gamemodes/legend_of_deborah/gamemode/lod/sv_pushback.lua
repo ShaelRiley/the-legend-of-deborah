@@ -370,6 +370,7 @@ function Pushback:Apply(hostile, opts)
     end
     local assembled = authoredDistance * (parts.outgoingMultiplier or 1)
         * (parts.magicPushMultiplier or 1)
+        * math.max(0, tonumber(attackerDerived and attackerDerived.bigGuyPhysicalPushMultiplier) or 1)
     local sizeScale = hostile:GetNW2Float("LOD_SizeScale", 1)
     local pushImmune = opts.pushImmune == true or hostile.LODPushImmune == true
         or hostile:GetNW2Bool("LOD_PushImmune", false)
@@ -378,7 +379,8 @@ function Pushback:Apply(hostile, opts)
     local distance, save = self:ResolveSharedPushSave(
         assembled, attackerDerived, defenderDerived, sizeScale, natural, {
             pushImmune = pushImmune,
-            successfulSaveFraction = opts.successfulSaveFraction,
+            successfulSaveFraction = opts.successfulSaveFraction
+                or (tonumber(attackerDerived and attackerDerived.steamrollerSuccessfulSaveFraction) or 0),
             ignoreResistance = opts.ignoreResistance,
             incomingMultiplier = parts.incomingMultiplier,
             steadfastMultiplier = parts.steadfastMultiplier
