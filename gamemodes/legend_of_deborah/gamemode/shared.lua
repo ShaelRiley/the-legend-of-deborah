@@ -71,6 +71,7 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_direct_cha_damage_feats.lua")
     include("lod/sv_rpg_checkpoint_d_wis_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_spellward_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_attunement_feat.lua")
     include("lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_menace_feats.lua")
     include("lod/sv_rpg_checkpoint_d_panic_feat.lua")
