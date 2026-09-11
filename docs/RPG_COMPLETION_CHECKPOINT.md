@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-11
 **Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `c0f626fcb8fa5bafc601d18bfed7dcef62ac66b2`
+**Current remote HEAD:** `4774b1fabb8fabbe4e38638cc92bf81b9ee6ab67`
 **Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
@@ -36,10 +36,11 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 
 - `STR_STEAMROLLER`, `CON_BIG_GUY`, and `CON_NOT_YET` remain on the shared Push/final-damage seams; `CON_GLOW_UP` adds its CON-modifier flat rider only through an explicit CHA-mod damage-contract helper and remains dynamically ineligible until an actor owns a usable registered CHA-mod damage source.
 - `DEX_WALL_JUMP` is a server-authoritative once-per-airborne-cycle 24-unit static-world hull probe, with deterministic nearest-wall selection, a bounded lateral kick, normal voluntary-jump vertical impulse, and Spring Heel composition. `INT_CLOUD_STEP` adds its separate once-per-airborne-cycle 5-Magic jump, after a valid Wall Jump has priority. `INT_FLOAT_ON` is a held-at-apex, once-per-airborne-cycle float with exact 5-Magic-per-second accounting, a 3.0-second cap, and no upward-flight impulse.
+- `INT_SIZE_SHIFTER` now owns a server-side continuous crouch transformation to absolute 0.33 scale over three seconds, returning smoothly to the ordinary current size after release. It composes with Little Guy/Big Guy through `PlayerTargetScale` and preserves ordinary legal collision and traversal geometry.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
 ## Next work
 
-Continue Checkpoint D from Size Shifter / remaining movement and other shared feat families; do not redo A-C or the status-proc/core/movement tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
+Continue Checkpoint D with the exact GDD-backed Little Guy and remaining movement/shared feat families; do not redo A-C or the status-proc/core/movement tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
 
 If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
