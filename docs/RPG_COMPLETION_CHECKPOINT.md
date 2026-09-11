@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-11
 **Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `e4dd66a84199d9fdba96692ec99e992009b65aff`
+**Current remote HEAD:** `65fb9106aeb857091b17f5ad80545231fbea75e7`
 **Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
@@ -42,10 +42,11 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `CHA_NERVE_1` and `CHA_NERVE_2` now provide their canonical replacement MoraleSave bonuses of +2/+4 through the shared Morale resolver for Heroes, human Soldiers, and AI.
 - `CHA_MENACE_1` through `CHA_MENACE_3` now reconcile the stale rank-one definition and provide canonical CHA 13/15/17 prerequisites, replacement DC bonuses +2/+4/+4, human trauma fractions .30/.25/.20, and Terrifying's once-per-defender/attacker encounter lower-of-two first Morale Save through the shared resolver.
 - `CHA_PANIC` now uses a shared nonrecursive Morale-failure cascade: eligible sub-half-health AI hostiles within two graph cells make one immediate check, with a 3.0-second per-target cascade-immunity timer.
+- `WIS_ASTRAL_REACH` now supplies its canonical Hero-only WIS 15 +2-cell rider through the existing WIS-scaled Magic Form spatial authority. It remains unavailable until the Hero owns at least one Magic Form; no duplicate range/damage/cost implementation was added.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
 ## Next work
 
-Continue Checkpoint D with the remaining CHA Panic/spot/aura families or another exact GDD-backed shared family; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
+Continue Checkpoint D with the remaining exact live-GDD spot/aura families or another shared family; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
 
 If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
