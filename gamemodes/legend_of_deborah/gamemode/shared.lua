@@ -72,6 +72,7 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_wis_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_spellward_feats.lua")
     include("lod/sv_rpg_checkpoint_d_attunement_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_wis_information_feats.lua")
     include("lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_menace_feats.lua")
     include("lod/sv_rpg_checkpoint_d_panic_feat.lua")
@@ -83,10 +84,12 @@ if SERVER then
     -- than relying on the larger client include chain. This keeps the critical
     -- celebration path independent of the combat-roll feed's load order.
     AddCSLuaFile("lod/cl_rpg_major_fx.lua")
+    AddCSLuaFile("lod/cl_rpg_wis_information.lua")
 end
 
 if CLIENT then
     include("lod/cl_rpg_major_fx.lua")
+    include("lod/cl_rpg_wis_information.lua")
 end
 
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
