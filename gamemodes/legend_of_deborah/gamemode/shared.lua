@@ -62,6 +62,7 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_status_validation.lua")
     include("lod/sv_rpg_checkpoint_d_core_feats.lua")
     include("lod/sv_rpg_checkpoint_d_movement_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_summon_feats.lua")
     include("lod/sv_magic_progression.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
