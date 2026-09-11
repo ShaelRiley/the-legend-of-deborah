@@ -391,6 +391,9 @@ function GM:EntityTakeDamage(target, dmginfo)
     if IsValid(target) and target:IsPlayer() then
         defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
+    if IsValid(target) and AbilityRules.ApplyNotYetDefense then
+        AbilityRules:ApplyNotYetDefense(target, dmginfo)
+    end
     local featEffects = RPG.FeatEffectSystem
     if IsValid(target) and featEffects and featEffects.OnEffectiveDamage then
         local effectiveDamage = dmginfo and dmginfo:GetDamage() or 0
