@@ -38,8 +38,15 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `CON_NOT_YET` preserves one HP and applies its 0.50-second protection once per owning actor per dungeon through the final damage seam; the consumed state is retained in progression state across reconnects.
 - Validation: pure-Lua `tools/test_checkpoint_d_core_feats.lua`, changed-file syntax checks, actor progression, status/element, and Checkpoint-C static validators PASS.
 
+### E Soldier progression core — implemented 2026-09-11
+
+- A human Soldier now has a distinct disposable incarnation progression state. It is generated through the same deterministic Soldier/AI generator and automatic selection path, uses Soldier d8 growth, and never mutates the underlying cooperative Hero package.
+- SoldierXP is server-authoritative: credited effective Hero HP damage adds 1 XP per whole HP; threshold state is 100/250/450 for +1/+2/+3 earned levels; the resulting level is clamped to the Soldier spawn level plus earned levels and the current `D+3`/999 ceilings. A dedicated `Award(..., lifeConsumed)` API reserves the authored +50 personal-life credit for the lifecycle owner rather than guessing from a pre-death damage callback.
+- Existing actor progression now exposes `AdvanceAutomaticActor`, shared by AI and Soldiers while retaining Level-21+ linear generation and zero post-20 feat/capstone grants.
+- Validation: expanded `tools/test_actor_progression.lua` PASS, including deterministic Soldier generation, Soldier d8, thresholds, automatic level-up, and ceiling behavior. Syntax and adjacent status/core-feat/Checkpoint-C validators PASS.
+
 ## Next work
 
-Continue Checkpoint D from `docs/DEVELOPMENT_PLAN.md`; do not redo A-C or this status-proc tranche absent contradictory evidence. Complete the remaining canonical feat/capstone inventory by shared handler families, then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
+Continue Checkpoint D's remaining canonical feat/capstone inventory by shared handler families, then complete E's role admission, life-consumption credit, retirement/reincarnation and P-sheet integration on top of the preserved Soldier progression authority. Do not redo A-C or the status-proc/core-feat tranches absent contradictory evidence.
 
 If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.

@@ -789,7 +789,8 @@ function CharacterProgressionSystem:AdvanceHeroToLevel(ply, targetLevel)
     if targetLevel < state.level then return false, "Character Level cannot decrease." end
 
     local startingLevel = state.level
-    while state.level < targetLevel do
+    local authoredTarget = math.min(targetLevel, RPG.Constants.HeroMaxLevel)
+    while state.level < authoredTarget do
         local nextLevel = state.level + 1
         state.level = nextLevel
         self:_GenerateProgressionHitDie(ps, state, runManager.State.CampaignSeed, nextLevel)
@@ -1006,6 +1007,45 @@ function CharacterProgressionSystem:_CommitAutomaticCapstone(state, actorSeed)
     state.classCapstoneFeatId = selected
 end
 
+-- Both ordinary AI actors and player-controlled Soldier incarnations use this
+-- exact automatic path.  It deliberately owns no player/UI state: callers give
+-- it an already-generated profile and a bounded target Level.
+function CharacterProgressionSystem:AdvanceAutomaticActor(ps, state, actorSeed, targetLevel)
+    if not state or not state.classId then return false, "automatic actor is uninitialized" end
+    local ceiling = self:EffectiveLevelCap(state.actorType, state.dungeonLevel)
+    targetLevel = math.min(math.max(1, math.floor(tonumber(targetLevel) or state.level)),
+        ceiling, self:ActorHardLevelCap(state))
+    while state.level < targetLevel do
+        local level = state.level + 1
+        state.level = level
+        self:_GenerateAutomaticHitDie(state, actorSeed, level)
+        self:_RecomputeProgressionState(state)
+        if level <= RPG.Constants.HeroMaxLevel then
+            local slotIndex = ordinarySlotIndexForLevel(level)
+            if slotIndex then
+                local draft = self:_GenerateOrdinaryDraft(ps, state, actorSeed, level)
+                self:_CommitAutomaticFeat(ps, state, draft, actorSeed)
+                self:_RecomputeProgressionState(state)
+            end
+            if level == RPG.Constants.HeroMaxLevel then
+                self:_CommitAutomaticCapstone(state, actorSeed)
+                self:_RecomputeProgressionState(state)
+            end
+        end
+    end
+    -- Numeric growth continues beyond 20, but no further slot/capstone work is
+    -- legal there.  Preserve the linear hit-die fill and one final recompute so
+    -- a legal Level-999 monster remains inexpensive to construct.
+    if state.level < targetLevel then
+        for level = state.level + 1, targetLevel do
+            self:_GenerateAutomaticHitDie(state, actorSeed, level)
+        end
+        state.level = targetLevel
+        self:_RecomputeProgressionState(state)
+    end
+    return true
+end
+
 function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, actorSeed,
     dungeonLevel, startingHP, actorType)
     local template, normalizedId = self:ArchetypeProgressionTemplate(archetypeId)
@@ -1035,32 +1075,7 @@ function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, acto
     self:_CommitAutomaticFeat(ps, state, levelOne, actorSeed)
     self:_RecomputeProgressionState(state)
 
-    local authoredProgressionLevel = math.min(assignedLevel, RPG.Constants.HeroMaxLevel)
-    for level = 2, authoredProgressionLevel do
-        state.level = level
-        self:_GenerateAutomaticHitDie(state, actorSeed, level)
-        self:_RecomputeProgressionState(state)
-        if ordinarySlotIndexForLevel(level) then
-            local draft = self:_GenerateOrdinaryDraft(ps, state, actorSeed, level)
-            self:_CommitAutomaticFeat(ps, state, draft, actorSeed)
-            self:_RecomputeProgressionState(state)
-        end
-        if level == RPG.Constants.HeroMaxLevel then
-            self:_CommitAutomaticCapstone(state, actorSeed)
-            self:_RecomputeProgressionState(state)
-        end
-    end
-    -- Above 20 only numeric growth and one stored archetype hit die per Level
-    -- continue. Populate those immutable rolls linearly, then recompute once;
-    -- repeated full recomputation here would turn a legal Level-999 spawn into
-    -- quadratic work without changing any result.
-    if assignedLevel > RPG.Constants.HeroMaxLevel then
-        for level = RPG.Constants.HeroMaxLevel + 1, assignedLevel do
-            self:_GenerateAutomaticHitDie(state, actorSeed, level)
-        end
-        state.level = assignedLevel
-        self:_RecomputeProgressionState(state)
-    end
+    assert(self:AdvanceAutomaticActor(ps, state, actorSeed, assignedLevel))
     return state
 end
 
