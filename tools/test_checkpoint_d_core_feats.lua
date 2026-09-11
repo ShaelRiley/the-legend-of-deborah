@@ -14,6 +14,7 @@ end
 LOD = {
     RPG = {IdentityCatalog = {OrdinaryFeats = {}}, FeatEffectSystem = {}},
     RPGAbilityRules = {},
+    CharacterProgressionSystem = {},
     RunManager = {State = {Level = 3}}
 }
 
@@ -24,6 +25,7 @@ function LOD.RPGAbilityRules:Derived(actor)
     return state and state.derivedStats or nil
 end
 function LOD.RPGAbilityRules:SyncPlayer() end
+function LOD.CharacterProgressionSystem:_HasCapability(_, _, tag) return tag ~= "cha_mod_damage" end
 
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_core_feats.lua")
 
@@ -50,5 +52,24 @@ assert(Rules:ApplyNotYetDefense(target, damage) and damage.amount == 0,
 now = 11
 damage.amount = 15
 assert(not Rules:ApplyNotYetDefense(target, damage), "Not Yet remains consumed in dungeon")
+
+local glowActor = {LODProgressionState = {featIds = {"CON_GLOW_UP"}, derivedStats = {
+    chaMod = 3, conMod = 4
+}}}
+local contract = {bonus = 2}
+local cha, con = Rules:AddChaModDerivedDamage(contract, glowActor, "test_cha_source")
+assert(cha == 3 and con == 4 and contract.bonus == 9, "Glow Up joins CHA damage once")
+Rules:AddChaModDerivedDamage(contract, glowActor, "second_cha_source")
+assert(contract.bonus == 12 and contract.LODGlowUpApplied,
+    "Glow Up does not duplicate within a resolved damage event")
+
+LOD.RPG.FeatEffectSystem:RegisterChaModDamageSource("test_cha_source", function(state)
+    for _, id in ipairs(state.featIds or {}) do if id == "CHA_DAMAGE" then return true end end
+    return false
+end)
+assert(LOD.CharacterProgressionSystem:_HasCapability({}, {featIds = {"CHA_DAMAGE"}}, "cha_mod_damage"),
+    "Glow Up draft gate observes usable CHA source")
+assert(not LOD.CharacterProgressionSystem:_HasCapability({}, {featIds = {}}, "cha_mod_damage"),
+    "Glow Up draft gate rejects absent CHA source")
 
 print("Checkpoint D core feats headless PASS")

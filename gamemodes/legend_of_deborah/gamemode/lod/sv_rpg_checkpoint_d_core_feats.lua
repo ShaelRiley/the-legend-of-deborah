@@ -37,6 +37,25 @@ register({
     actorText = "Heroes, human Soldiers, and AI with an authored push-capable attack or effect"
 })
 
+-- Glow Up deliberately has no generic "charisma damage" fallback.  A source
+-- must register itself below and use AddChaModDerivedDamage while constructing
+-- its own damage contract; that makes the draft gate track real, authored
+-- CHA_MOD damage instead of the presence of any CHA-related feat.
+register({
+    featId = "CON_GLOW_UP", displayName = "Glow Up",
+    featFamilyId = "con_glow_up", rankIndex = 1, replacesLowerRank = false,
+    governingAbilities = {"con"}, abilityRequirements = {con = 17},
+    prerequisiteFeatIds = {}, requiredCapabilityTags = {"cha_mod_damage"},
+    incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier", "ai"},
+    requiredSubsystemTags = {"damage_contract"},
+    synergyTags = {"charisma", "damage", "flat_damage"}, oneRank = true,
+    repeatableFallback = false, effectHandlerId = "glow_up_cha_damage_rider",
+    effectParams = {description = "Whenever an owned rule contributes max(0, CHA_MOD) as damage to a resolved damage event, adds max(0, CON_MOD) to that same event once. Requires a currently usable explicit CHA_MOD-derived damage source."},
+    directorBaseWeight = 1.0,
+    eligibilityText = "CON 17 / requires a usable explicit CHA_MOD-derived damage source",
+    actorText = "Heroes, human Soldiers, and AI with an authored CHA_MOD-derived damage source"
+})
+
 register({
     featId = "CON_BIG_GUY", displayName = "Big Guy",
     featFamilyId = "con_big_guy", rankIndex = 1, replacesLowerRank = false,
@@ -84,6 +103,52 @@ end
 
 local Rules = assert(LOD.RPGAbilityRules, "core feat runtime requires AbilityRules")
 
+Effects.ChaModDamageSources = Effects.ChaModDamageSources or {}
+
+function Effects:RegisterChaModDamageSource(sourceId, usable)
+    assert(type(sourceId) == "string" and sourceId ~= "", "CHA damage source id required")
+    self.ChaModDamageSources[sourceId] = usable or true
+end
+
+function Effects:HasUsableChaModDamage(state)
+    for sourceId, usable in pairs(self.ChaModDamageSources or {}) do
+        local active = type(usable) == "function" and usable(state, sourceId) or usable == true
+        if active then return true end
+    end
+    return false
+end
+
+-- Authored CHA damage sources call this while preparing their existing damage
+-- contract. Both the source's CHA bonus and Glow Up are therefore in the same
+-- ordinary damage event, receive normal downstream resolution, and cannot
+-- duplicate from multi-source contracts.
+function Rules:AddChaModDerivedDamage(contract, attacker, sourceId)
+    if type(contract) ~= "table" or not IsValid(attacker) then return 0, 0 end
+    local derived = self:Derived(attacker) or {}
+    local chaBonus = math.max(0, math.floor(tonumber(derived.chaMod) or 0))
+    local conBonus = 0
+    contract.bonus = math.max(0, tonumber(contract.bonus) or 0) + chaBonus
+    contract.chaModDamageSources = contract.chaModDamageSources or {}
+    contract.chaModDamageSources[sourceId or "authored"] = true
+    local state = self:ProgressionState(attacker)
+    if owns(state, "CON_GLOW_UP") and not contract.LODGlowUpApplied then
+        conBonus = math.max(0, math.floor(tonumber(derived.conMod) or 0))
+        contract.bonus = contract.bonus + conBonus
+        contract.LODGlowUpApplied = true
+    end
+    return chaBonus, conBonus
+end
+
+local Progression = assert(LOD.CharacterProgressionSystem, "core feat runtime requires progression")
+if not Progression.LODCheckpointDGlowUpCapabilityWrapped then
+    Progression.LODCheckpointDGlowUpCapabilityWrapped = true
+    local baseHasCapability = Progression._HasCapability
+    function Progression:_HasCapability(ps, state, tag)
+        if tag == "cha_mod_damage" then return Effects:HasUsableChaModDamage(state) end
+        return baseHasCapability(self, ps, state, tag)
+    end
+end
+
 function Rules:ApplyNotYetDefense(target, dmginfo)
     if not IsValid(target) or not dmginfo then return false end
     local derived = self:Derived(target)
@@ -122,7 +187,7 @@ end
 function Rules:ValidateCheckpointDCoreFeats()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    for _, id in ipairs({"STR_STEAMROLLER", "CON_BIG_GUY", "CON_NOT_YET"}) do
+    for _, id in ipairs({"STR_STEAMROLLER", "CON_BIG_GUY", "CON_NOT_YET", "CON_GLOW_UP"}) do
         local definition = Feats[id]
         expect(definition and definition.effectHandlerId, "core feat definition " .. id)
     end
@@ -133,5 +198,6 @@ function Rules:ValidateCheckpointDCoreFeats()
         "Big Guy derived body/reach")
     expect(derived.bigGuyPhysicalPushMultiplier == 1.20, "Big Guy physical push")
     expect(derived.notYetEnabled and derived.notYetImmunitySeconds == 0.50, "Not Yet derived")
+    expect(not Effects:HasUsableChaModDamage({featIds = {}}), "Glow Up no invented CHA damage source")
     return #errors == 0, errors
 end
