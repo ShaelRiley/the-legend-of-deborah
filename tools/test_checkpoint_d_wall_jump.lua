@@ -13,4 +13,16 @@ local ok, errors = LOD.RPGAbilityRules:ValidateCheckpointDWallJump()
 assert(ok, table.concat(errors or {}, "; "))
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_WALL_JUMP.effectParams.probeDistance == 24)
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_CLOUD_STEP.effectParams.magicCost == 5)
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_FLOAT_ON.effectParams.maximumSeconds == 3)
+local floater = {derived = {floatOnEnabled = true, cloudStepEnabled = false}, resource = {magic = 20}, velocity = {z = 0}}
+function floater:IsPlayer() return true end
+function floater:Alive() return true end
+function floater:OnGround() return false end
+function floater:KeyDown() return true end
+function floater:GetVelocity() return self.velocity end
+function floater:SetVelocity() end
+LOD.Magic = { _EnsureState = function(_, ply) return ply.resource end, _Sync = function() end }
+assert(LOD.RPGAbilityRules:TryStartFloatOn(floater, 0), "Float On starts at apex")
+assert(LOD.RPGAbilityRules:TickFloatOn(floater, 3), "Float On full duration tick")
+assert(floater.resource.magic == 5, "Float On full 3 seconds costs exactly 15 Magic")
 print("Checkpoint D Wall Jump headless PASS")

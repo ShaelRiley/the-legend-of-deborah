@@ -7,6 +7,7 @@ local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Wa
 local Effects = assert(RPG.FeatEffectSystem, "Wall Jump requires feat effects")
 local Rules = assert(LOD.RPGAbilityRules, "Wall Jump requires AbilityRules")
 local PROBE_DISTANCE, LATERAL_KICK, VERTICAL_NORMAL_LIMIT = 24, 160, 0.20
+local FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND, FLOAT_APEX_SPEED = 3.0, 5.0, 30
 local DIRECTIONS = {
     {x = 1, y = 0}, {x = 0, y = 1}, {x = -1, y = 0}, {x = 0, y = -1},
     {x = .70710678, y = .70710678}, {x = -.70710678, y = .70710678},
@@ -35,6 +36,16 @@ Feats.INT_CLOUD_STEP = {
         description = "Once per airborne cycle, a fresh Space press may spend exactly 5 Magic for one additional voluntary jump. A valid unused Wall Jump has priority and leaves Cloud Step unused."},
     directorBaseWeight = 1.0, eligibilityText = "INT 13 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
 }
+assert(Feats.INT_FLOAT_ON == nil, "duplicate canonical feat INT_FLOAT_ON")
+Feats.INT_FLOAT_ON = {
+    featId = "INT_FLOAT_ON", displayName = "Float On", featFamilyId = "int_float_on", rankIndex = 1,
+    replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"int"}, abilityRequirements = {int = 15},
+    prerequisiteFeatIds = {}, requiredCapabilityTags = {"magic_pool"}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
+    requiredSubsystemTags = {"movement", "magic"}, synergyTags = {"movement", "float", "magic"}, oneRank = true,
+    effectHandlerId = "float_on", effectParams = {maximumSeconds = FLOAT_MAX_SECONDS, magicPerSecond = FLOAT_MAGIC_PER_SECOND,
+        description = "Once per airborne cycle, hold Space at the apex for a controllable float of up to 3.0 seconds, spending exactly 5 Magic per second. It ends on release, ground contact, exhaustion, or cap."},
+    directorBaseWeight = 1.0, eligibilityText = "INT 15 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
+}
 
 local function owns(state, id)
     for _, value in ipairs(state and state.featIds or {}) do if value == id then return true end end
@@ -42,7 +53,7 @@ local function owns(state, id)
 end
 function Effects:WallJumpProfile(state)
     return {enabled = owns(state, "DEX_WALL_JUMP"), probeDistance = PROBE_DISTANCE, lateralKick = LATERAL_KICK,
-        cloudStep = owns(state, "INT_CLOUD_STEP")}
+        cloudStep = owns(state, "INT_CLOUD_STEP"), floatOn = owns(state, "INT_FLOAT_ON")}
 end
 if not Effects.LODCheckpointDWallJumpDerivedWrapped then
     Effects.LODCheckpointDWallJumpDerivedWrapped = true
@@ -52,6 +63,7 @@ if not Effects.LODCheckpointDWallJumpDerivedWrapped then
         local profile = self:WallJumpProfile(state)
         derived.wallJumpEnabled, derived.wallJumpProbeDistance, derived.wallJumpLateralKick = profile.enabled, profile.probeDistance, profile.lateralKick
         derived.cloudStepEnabled, derived.cloudStepMagicCost = profile.cloudStep, 5
+        derived.floatOnEnabled, derived.floatOnMaximumSeconds, derived.floatOnMagicPerSecond = profile.floatOn, FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND
     end
 end
 
@@ -66,6 +78,9 @@ addSchemaField("wallJumpProbeDistance")
 addSchemaField("wallJumpLateralKick")
 addSchemaField("cloudStepEnabled")
 addSchemaField("cloudStepMagicCost")
+addSchemaField("floatOnEnabled")
+addSchemaField("floatOnMaximumSeconds")
+addSchemaField("floatOnMagicPerSecond")
 
 function Rules:WallJumpVerticalImpulse(actor)
     if not IsValid(actor) then return 0 end
@@ -102,6 +117,7 @@ function Rules:FindWallJumpSurface(ply)
 end
 Effects.WallJumpState = Effects.WallJumpState or setmetatable({}, {__mode = "k"})
 Effects.CloudStepState = Effects.CloudStepState or setmetatable({}, {__mode = "k"})
+Effects.FloatOnState = Effects.FloatOnState or setmetatable({}, {__mode = "k"})
 function Rules:TryWallJump(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() then return false end
     local derived = self:Derived(ply)
@@ -137,9 +153,60 @@ function Rules:TryCloudStep(ply)
 end
 function Rules:HandleAirborneJump(ply)
     if self:TryWallJump(ply) then return true end
-    return self:TryCloudStep(ply)
+    if self:TryCloudStep(ply) then return true end
+    return false
 end
 hook.Add("KeyPress", "LOD_RPG_CheckpointDMovementJump", function(ply, key) if key == IN_JUMP then Rules:HandleAirborneJump(ply) end end)
+
+function Rules:TryStartFloatOn(ply, now)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() or not ply:KeyDown(IN_JUMP) then return false end
+    local derived = self:Derived(ply)
+    if not derived or derived.floatOnEnabled ~= true then return false end
+    local cloud = Effects.CloudStepState[ply]
+    if derived.cloudStepEnabled == true and not (cloud and cloud.used) then return false end
+    local state = Effects.FloatOnState[ply] or {}; Effects.FloatOnState[ply] = state
+    if state.used or state.active then return false end
+    local velocity = ply:GetVelocity()
+    if math.abs(tonumber(velocity and velocity.z) or 0) > FLOAT_APEX_SPEED then return false end
+    local magic = LOD.Magic
+    local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
+    if not resource or (tonumber(resource.magic) or 0) <= 0 then return false end
+    state.used, state.active, state.startedAt, state.lastAt, state.nextSyncAt = true, true, now, now, now
+    return true
+end
+function Rules:EndFloatOn(ply, sync)
+    local state = Effects.FloatOnState[ply]
+    if not state or not state.active then return false end
+    state.active = false
+    if sync then
+        local magic = LOD.Magic
+        local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
+        if resource and magic._Sync then magic:_Sync(ply, resource) end
+    end
+    return true
+end
+function Rules:TickFloatOn(ply, now)
+    local state = Effects.FloatOnState[ply]
+    if not state or not state.active then return false end
+    if not IsValid(ply) or not ply:Alive() or ply:OnGround() or not ply:KeyDown(IN_JUMP) then return self:EndFloatOn(ply, true) end
+    local maxSeconds = FLOAT_MAX_SECONDS
+    local capAt = (state.startedAt or now) + maxSeconds
+    local magic = LOD.Magic
+    local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
+    local elapsed = math.max(0, math.min(now, capAt) - (state.lastAt or now)); state.lastAt = now
+    local cost = elapsed * FLOAT_MAGIC_PER_SECOND
+    if not resource or (tonumber(resource.magic) or 0) <= 0 then return self:EndFloatOn(ply, true) end
+    local actual = math.min(cost, math.max(0, tonumber(resource.magic) or 0))
+    resource.magic = math.max(0, (tonumber(resource.magic) or 0) - actual)
+    local velocity = ply:GetVelocity()
+    if velocity and (tonumber(velocity.z) or 0) < 0 then ply:SetVelocity(Vector(0, 0, -(tonumber(velocity.z) or 0))) end
+    if resource.magic <= 0 or now >= capAt then return self:EndFloatOn(ply, true) end
+    if now >= (state.nextSyncAt or now) then
+        if magic._Sync then magic:_Sync(ply, resource) end
+        state.nextSyncAt = now + 0.10
+    end
+    return true
+end
 hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
     for ply, state in pairs(Effects.WallJumpState) do
         if not IsValid(ply) then Effects.WallJumpState[ply] = nil elseif ply:OnGround() then state.used = false end
@@ -147,8 +214,18 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
     for ply, state in pairs(Effects.CloudStepState) do
         if not IsValid(ply) then Effects.CloudStepState[ply] = nil elseif ply:OnGround() then state.used = false end
     end
+    for ply, state in pairs(Effects.FloatOnState) do
+        if not IsValid(ply) then Effects.FloatOnState[ply] = nil
+        elseif ply:OnGround() then state.used, state.active = false, false end
+    end
+    if player and player.GetAll then
+        local now = CurTime()
+        for _, ply in ipairs(player.GetAll()) do
+            if not Rules:TickFloatOn(ply, now) then Rules:TryStartFloatOn(ply, now) end
+        end
+    end
 end)
-hook.Add("PlayerDeath", "LOD_RPG_CheckpointDWallJumpDeath", function(ply) Effects.WallJumpState[ply], Effects.CloudStepState[ply] = nil, nil end)
+hook.Add("PlayerDeath", "LOD_RPG_CheckpointDWallJumpDeath", function(ply) Effects.WallJumpState[ply], Effects.CloudStepState[ply], Effects.FloatOnState[ply] = nil, nil, nil end)
 function Rules:ValidateCheckpointDWallJump()
     local errors = {}; local function expect(ok, text) if not ok then errors[#errors + 1] = text end end
     local def = Feats.DEX_WALL_JUMP
@@ -162,6 +239,9 @@ function Rules:ValidateCheckpointDWallJump()
     local cloud = Feats.INT_CLOUD_STEP
     expect(cloud and cloud.abilityRequirements.int == 13 and cloud.effectParams.magicCost == 5,
         "Cloud Step definition/cost")
+    local float = Feats.INT_FLOAT_ON
+    expect(float and float.abilityRequirements.int == 15 and float.effectParams.maximumSeconds == 3
+        and float.effectParams.magicPerSecond == 5, "Float On definition/cost/duration")
     return #errors == 0, errors
 end
 concommand.Add("lod_rpg_validate_wall_jump", function(ply)
