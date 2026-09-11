@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-11
 **Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `f7cc393f196d783095416e5284a780d4016ad0cf`
+**Current remote HEAD:** `e92c3dda44c30e810ed719c42eb8701c5e11b14e`
 **Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
@@ -48,10 +48,11 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `CHA_SELF_ACTUALIZATION` and `CHA_AGGRESSIVE_PERSONALITY` now apply their independent `max(0, CHA_MOD)` riders after ordinary source-side damage multipliers through the shared contract resolver. The former is per eligible magical event; the latter is transaction-scoped with a sealed 1d3 ready cooldown and remains available to every legitimate target event of the armed attack. Both are excluded from status/reactive/aura damage and provide the first real dynamic CHA-mod damage source for `CON_GLOW_UP`.
 - `WIS_TRUE_FAITH` and `WIS_MIND_OVER_MATTER` now reduce explicitly tagged magical/physical incoming events after upstream resolution and before final diversion/intercepts. Mind Over Matter shares the same all-actor seam, consumes its first eligible physical event, and rerolls its sealed non-exploding 3d4 cooldown; mixed events receive both authored reductions once.
 - `WIS_SPELLWARD`, `WIS_SPELLBREAKER`, and `WIS_SPELLBANE` now form their canonical WIS 13/15/17 replacement family for all RPG actor types. The stale base row was reconciled in place; the shared MagicSave consumer now receives only the highest owned +2/+4/+6 bonus.
+- `WIS_ATTUNEMENT` now gates on actual elemental Magic ownership and rerolls only the existing weakness-bonus table, retaining its higher result. While validating it, status/element feat ownership was corrected to compare IDs case-insensitively; the full existing status/element matrix now covers the Attunement reroll path.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
 ## Next work
 
-Continue Checkpoint D with remaining exact live-GDD WIS elemental/navigation or other missing shared families; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
+Continue Checkpoint D with remaining exact live-GDD WIS navigation/information or other missing shared families; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
 
 If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
