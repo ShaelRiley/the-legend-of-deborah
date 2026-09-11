@@ -75,6 +75,7 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_wis_information_feats.lua")
     include("lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua")
     include("lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_gps_feat.lua")
     include("lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_menace_feats.lua")
     include("lod/sv_rpg_checkpoint_d_panic_feat.lua")
@@ -89,6 +90,7 @@ if SERVER then
     AddCSLuaFile("lod/cl_rpg_wis_information.lua")
     AddCSLuaFile("lod/cl_rpg_sixth_sense.lua")
     AddCSLuaFile("lod/cl_rpg_killer_instinct.lua")
+    AddCSLuaFile("lod/cl_rpg_gps.lua")
 end
 
 if CLIENT then
@@ -96,6 +98,7 @@ if CLIENT then
     include("lod/cl_rpg_wis_information.lua")
     include("lod/cl_rpg_sixth_sense.lua")
     include("lod/cl_rpg_killer_instinct.lua")
+    include("lod/cl_rpg_gps.lua")
 end
 
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
