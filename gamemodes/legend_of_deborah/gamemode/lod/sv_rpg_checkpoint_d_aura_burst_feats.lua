@@ -33,7 +33,7 @@ function RPG:CheckpointDAuraBurstProfile(state)
     return nil
 end
 
-function RPG:CheckpointDAuraBurstCellInRadius(ownerCell, targetCell, radius)
+function RPG:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius)
     return ownerCell ~= nil and targetCell ~= nil and ownerCell.z == targetCell.z
         and math.max(math.abs(ownerCell.x - targetCell.x), math.abs(ownerCell.y - targetCell.y)) <= radius
 end
@@ -56,7 +56,7 @@ function RPG:ResolveCheckpointDAuraBurst(actor)
     for _, target in ipairs(LOD.HostileRegistry:List() or {}) do
         if IsValid(target) and target.LODHostile and not target.LODDead and target:Health() > 0 then
             local targetCell = navigator:WorldToCell(graph, target:GetPos())
-            if self:CheckpointDAuraBurstCellInRadius(ownerCell, targetCell, radius) then
+            if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
                 local info = DamageInfo()
                 info:SetAttacker(actor); info:SetInflictor(actor); info:SetDamage(damage)
                 info:SetDamageType(DMG_ENERGYBEAM); info:SetDamagePosition(target:WorldSpaceCenter())
@@ -86,8 +86,8 @@ function RPG:ValidateCheckpointDAuraBurstFeats()
         if rank > 1 then expect(definition.prerequisiteFeatIds[1] == IDS[rank - 1], id .. " prerequisite") end
     end
     expect(self:CheckpointDAuraBurstProfile({featIds = {IDS[1], IDS[3]}}) == 2, "highest Aura rank replaces lower ranks")
-    expect(self:CheckpointDAuraBurstCellInRadius({x = 3, y = 3, z = 0}, {x = 5, y = 1, z = 0}, 2), "same-floor square radius")
-    expect(not self:CheckpointDAuraBurstCellInRadius({x = 3, y = 3, z = 0}, {x = 3, y = 3, z = 1}, 2), "same-floor restriction")
+    expect(self:CheckpointDCellRadiusIncludes({x = 3, y = 3, z = 0}, {x = 5, y = 1, z = 0}, 2), "same-floor square radius")
+    expect(not self:CheckpointDCellRadiusIncludes({x = 3, y = 3, z = 0}, {x = 3, y = 3, z = 1}, 2), "same-floor restriction")
     return #errors == 0, errors
 end
 
