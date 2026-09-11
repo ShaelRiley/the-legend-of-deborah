@@ -35,6 +35,7 @@ include("lod/cl_magic.lua")
 include("lod/cl_spellbook.lua")
 include("lod/cl_pushback_fx.lua")
 include("lod/cl_character_sheet.lua")
+include("lod/cl_haste.lua")
 
 -- P and I are mutually exclusive even when the Character Sheet auto-opens for a
 -- pending progression choice after a delayed server snapshot. The Spellbook's
