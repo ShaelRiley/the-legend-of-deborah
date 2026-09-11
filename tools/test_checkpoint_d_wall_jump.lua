@@ -12,4 +12,5 @@ dofile("./gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_movement_
 local ok, errors = LOD.RPGAbilityRules:ValidateCheckpointDWallJump()
 assert(ok, table.concat(errors or {}, "; "))
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_WALL_JUMP.effectParams.probeDistance == 24)
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_CLOUD_STEP.effectParams.magicCost == 5)
 print("Checkpoint D Wall Jump headless PASS")
