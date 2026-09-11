@@ -46,6 +46,16 @@ Feats.INT_FLOAT_ON = {
         description = "Once per airborne cycle, hold Space at the apex for a controllable float of up to 3.0 seconds, spending exactly 5 Magic per second. It ends on release, ground contact, exhaustion, or cap."},
     directorBaseWeight = 1.0, eligibilityText = "INT 15 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
 }
+assert(Feats.INT_SIZE_SHIFTER == nil, "duplicate canonical feat INT_SIZE_SHIFTER")
+Feats.INT_SIZE_SHIFTER = {
+    featId = "INT_SIZE_SHIFTER", displayName = "Size Shifter", featFamilyId = "int_size_shifter", rankIndex = 1,
+    replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"int"}, abilityRequirements = {int = 13},
+    prerequisiteFeatIds = {}, requiredCapabilityTags = {}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
+    requiredSubsystemTags = {"movement", "pushback"}, synergyTags = {"movement", "body_size", "push"}, oneRank = true,
+    effectHandlerId = "size_shifter", effectParams = {targetScale = .33, transitionSeconds = 3.0,
+        description = "Crouching continuously transforms toward absolute 0.33 scale over 3.0 seconds; releasing crouch reverses at the same rate toward the build's ordinary target scale. Collision hull and traversal legality remain ordinary crouched values."},
+    directorBaseWeight = 1.0, eligibilityText = "INT 13", actorText = "Player-controlled Heroes and human Soldiers only"
+}
 
 local function owns(state, id)
     for _, value in ipairs(state and state.featIds or {}) do if value == id then return true end end
@@ -53,7 +63,7 @@ local function owns(state, id)
 end
 function Effects:WallJumpProfile(state)
     return {enabled = owns(state, "DEX_WALL_JUMP"), probeDistance = PROBE_DISTANCE, lateralKick = LATERAL_KICK,
-        cloudStep = owns(state, "INT_CLOUD_STEP"), floatOn = owns(state, "INT_FLOAT_ON")}
+        cloudStep = owns(state, "INT_CLOUD_STEP"), floatOn = owns(state, "INT_FLOAT_ON"), sizeShifter = owns(state, "INT_SIZE_SHIFTER")}
 end
 if not Effects.LODCheckpointDWallJumpDerivedWrapped then
     Effects.LODCheckpointDWallJumpDerivedWrapped = true
@@ -64,6 +74,7 @@ if not Effects.LODCheckpointDWallJumpDerivedWrapped then
         derived.wallJumpEnabled, derived.wallJumpProbeDistance, derived.wallJumpLateralKick = profile.enabled, profile.probeDistance, profile.lateralKick
         derived.cloudStepEnabled, derived.cloudStepMagicCost = profile.cloudStep, 5
         derived.floatOnEnabled, derived.floatOnMaximumSeconds, derived.floatOnMagicPerSecond = profile.floatOn, FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND
+        derived.sizeShifterEnabled, derived.sizeShifterTargetScale, derived.sizeShifterTransitionSeconds = profile.sizeShifter, .33, 3.0
     end
 end
 
@@ -81,6 +92,9 @@ addSchemaField("cloudStepMagicCost")
 addSchemaField("floatOnEnabled")
 addSchemaField("floatOnMaximumSeconds")
 addSchemaField("floatOnMagicPerSecond")
+addSchemaField("sizeShifterEnabled")
+addSchemaField("sizeShifterTargetScale")
+addSchemaField("sizeShifterTransitionSeconds")
 
 function Rules:WallJumpVerticalImpulse(actor)
     if not IsValid(actor) then return 0 end
@@ -118,6 +132,34 @@ end
 Effects.WallJumpState = Effects.WallJumpState or setmetatable({}, {__mode = "k"})
 Effects.CloudStepState = Effects.CloudStepState or setmetatable({}, {__mode = "k"})
 Effects.FloatOnState = Effects.FloatOnState or setmetatable({}, {__mode = "k"})
+Effects.SizeShifterState = Effects.SizeShifterState or setmetatable({}, {__mode = "k"})
+
+function Effects:SizeShifterScale(baseScale, progress)
+    local base = math.max(.01, tonumber(baseScale) or 1)
+    return base + (.33 - base) * math.Clamp(tonumber(progress) or 0, 0, 1)
+end
+function Rules:PlayerTargetScale(ply)
+    local active = Effects.SizeShifterState[ply]
+    if active and active.scale then return active.scale end
+    local derived = self:Derived(ply)
+    return math.max(.01, tonumber(derived and derived.playerTargetScale) or 1)
+end
+function Rules:PushSizeScale(ply) return self:PlayerTargetScale(ply) end
+function Rules:ApplySizeShifterScale(ply)
+    if not IsValid(ply) then return end
+    local scale = self:PlayerTargetScale(ply)
+    ply:SetNW2Float("LOD_PlayerTargetScale", scale)
+    ply:SetNW2Float("LOD_SizeScale", scale)
+    ply:SetModelScale(scale, 0)
+end
+if not Rules.LODCheckpointDSizeShifterSyncWrapped then
+    Rules.LODCheckpointDSizeShifterSyncWrapped = true
+    local baseSync = Rules.SyncPlayer
+    function Rules:SyncPlayer(ply)
+        baseSync(self, ply)
+        self:ApplySizeShifterScale(ply)
+    end
+end
 function Rules:TryWallJump(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() then return false end
     local derived = self:Derived(ply)
@@ -218,6 +260,25 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
         if not IsValid(ply) then Effects.FloatOnState[ply] = nil
         elseif ply:OnGround() then state.used, state.active = false, false end
     end
+    for _, ply in ipairs(player and player.GetAll and player.GetAll() or {}) do
+        if IsValid(ply) then
+            local derived = Rules:Derived(ply) or {}
+            local state = Effects.SizeShifterState[ply] or {progress = 0, scale = tonumber(derived.playerTargetScale) or 1, at = CurTime()}
+            Effects.SizeShifterState[ply] = state
+            local now, dt = CurTime(), math.max(0, CurTime() - (state.at or CurTime()))
+            state.at = now
+            local crouching = ply.Crouching and ply:Crouching() or (ply.KeyDown and ply:KeyDown(IN_DUCK))
+            local rate = dt / 3.0
+            if derived.sizeShifterEnabled == true then
+                state.progress = math.Clamp((tonumber(state.progress) or 0) + (crouching and rate or -rate), 0, 1)
+            else
+                state.progress = 0
+            end
+            local base = math.max(.01, tonumber(derived.playerTargetScale) or 1)
+            local scale = Effects:SizeShifterScale(base, state.progress)
+            if scale ~= state.scale then state.scale = scale; Rules:ApplySizeShifterScale(ply) end
+        end
+    end
     if player and player.GetAll then
         local now = CurTime()
         for _, ply in ipairs(player.GetAll()) do
@@ -225,7 +286,7 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
         end
     end
 end)
-hook.Add("PlayerDeath", "LOD_RPG_CheckpointDWallJumpDeath", function(ply) Effects.WallJumpState[ply], Effects.CloudStepState[ply], Effects.FloatOnState[ply] = nil, nil, nil end)
+hook.Add("PlayerDeath", "LOD_RPG_CheckpointDWallJumpDeath", function(ply) Effects.WallJumpState[ply], Effects.CloudStepState[ply], Effects.FloatOnState[ply], Effects.SizeShifterState[ply] = nil, nil, nil, nil end)
 function Rules:ValidateCheckpointDWallJump()
     local errors = {}; local function expect(ok, text) if not ok then errors[#errors + 1] = text end end
     local def = Feats.DEX_WALL_JUMP
@@ -242,6 +303,11 @@ function Rules:ValidateCheckpointDWallJump()
     local float = Feats.INT_FLOAT_ON
     expect(float and float.abilityRequirements.int == 15 and float.effectParams.maximumSeconds == 3
         and float.effectParams.magicPerSecond == 5, "Float On definition/cost/duration")
+    local size = Feats.INT_SIZE_SHIFTER
+    expect(size and size.abilityRequirements.int == 13 and size.effectParams.targetScale == .33
+        and size.effectParams.transitionSeconds == 3, "Size Shifter definition/transition")
+    expect(Effects:SizeShifterScale(1, 0) == 1 and math.abs(Effects:SizeShifterScale(1, 1) - .33) < .000001,
+        "Size Shifter scale endpoints")
     return #errors == 0, errors
 end
 concommand.Add("lod_rpg_validate_wall_jump", function(ply)

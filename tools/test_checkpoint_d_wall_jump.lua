@@ -1,4 +1,5 @@
 function IsValid(value) return type(value) == "table" and value.valid ~= false end
+function math.Clamp(value, low, high) return math.max(low, math.min(high, value)) end
 function CurTime() return 1 end
 function Vector(x, y, z) return {x = x, y = y, z = z} end
 vector_origin = Vector(0, 0, 0)
@@ -14,6 +15,7 @@ assert(ok, table.concat(errors or {}, "; "))
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_WALL_JUMP.effectParams.probeDistance == 24)
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_CLOUD_STEP.effectParams.magicCost == 5)
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_FLOAT_ON.effectParams.maximumSeconds == 3)
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_SIZE_SHIFTER.effectParams.targetScale == .33)
 local floater = {derived = {floatOnEnabled = true, cloudStepEnabled = false}, resource = {magic = 20}, velocity = {z = 0}}
 function floater:IsPlayer() return true end
 function floater:Alive() return true end
