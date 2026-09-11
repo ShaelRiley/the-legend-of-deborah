@@ -33,6 +33,13 @@ local Rules = LOD.RPGAbilityRules
 local ok, errors = Rules:ValidateCheckpointDCoreFeats()
 assert(ok, table.concat(errors or {}, "; "))
 
+local littleDerived = {}
+LOD.RPG.FeatEffectSystem:ApplyDerived({featIds = {"DEX_SHRINK"}}, littleDerived)
+assert(littleDerived.playerTargetScale == .70 and littleDerived.littleGuyEnabled,
+    "Little Guy applies its presentation target scale")
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_SHRINK.incompatibleFeatIds[1] == "CON_BIG_GUY",
+    "Little Guy cannot coexist with Big Guy")
+
 local target = {health = 10, LODProgressionState = {
     featIds = {"CON_NOT_YET"}, derivedStats = {notYetEnabled = true}
 }}

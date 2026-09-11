@@ -57,6 +57,20 @@ register({
 })
 
 register({
+    featId = "DEX_SHRINK", displayName = "Little Guy",
+    featFamilyId = "dex_shrink", rankIndex = 1, replacesLowerRank = false,
+    governingAbilities = {"dex"}, abilityRequirements = {dex = 15},
+    prerequisiteFeatIds = {}, requiredCapabilityTags = {}, incompatibleFeatIds = {"CON_BIG_GUY"},
+    allowedActorTypes = {"hero", "human_soldier"}, requiredSubsystemTags = {"movement"},
+    synergyTags = {"body_size", "presentation", "targeting"}, oneRank = true,
+    repeatableFallback = false, effectHandlerId = "little_guy_body_scale",
+    effectParams = {playerTargetScale = .70,
+        description = "Sets PlayerTargetScale to 0.70 while preserving the ordinary authoritative collision hull, stair legality, USE reach, weapon traces, and progression interactions."},
+    directorBaseWeight = 1.0, eligibilityText = "DEX 15",
+    actorText = "Player-controlled Heroes and human Soldiers only"
+})
+
+register({
     featId = "CON_BIG_GUY", displayName = "Big Guy",
     featFamilyId = "con_big_guy", rankIndex = 1, replacesLowerRank = false,
     governingAbilities = {"con", "str"}, abilityRequirements = {con = 15, str = 13},
@@ -87,11 +101,13 @@ if not Effects.LODCheckpointDCoreFeatDerivedWrapped then
     function Effects:ApplyDerived(state, derived)
         base(self, state, derived)
         local steamroller = owns(state, "STR_STEAMROLLER")
+        local littleGuy = owns(state, "DEX_SHRINK")
         local bigGuy = owns(state, "CON_BIG_GUY")
         local notYet = owns(state, "CON_NOT_YET")
         derived.steamrollerSuccessfulSaveFraction = steamroller and 0.50 or 0
+        derived.littleGuyEnabled = littleGuy
         derived.bigGuyEnabled = bigGuy
-        derived.playerTargetScale = bigGuy and 1.30 or 1
+        derived.playerTargetScale = bigGuy and 1.30 or (littleGuy and .70 or 1)
         derived.meleeReachMultiplier = (tonumber(derived.meleeReachMultiplier) or 1)
             * (bigGuy and 1.15 or 1)
         derived.bigGuyPhysicalPushMultiplier = bigGuy and 1.20 or 1
@@ -187,7 +203,7 @@ end
 function Rules:ValidateCheckpointDCoreFeats()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    for _, id in ipairs({"STR_STEAMROLLER", "CON_BIG_GUY", "CON_NOT_YET", "CON_GLOW_UP"}) do
+    for _, id in ipairs({"STR_STEAMROLLER", "DEX_SHRINK", "CON_BIG_GUY", "CON_NOT_YET", "CON_GLOW_UP"}) do
         local definition = Feats[id]
         expect(definition and definition.effectHandlerId, "core feat definition " .. id)
     end
@@ -198,6 +214,8 @@ function Rules:ValidateCheckpointDCoreFeats()
         "Big Guy derived body/reach")
     expect(derived.bigGuyPhysicalPushMultiplier == 1.20, "Big Guy physical push")
     expect(derived.notYetEnabled and derived.notYetImmunitySeconds == 0.50, "Not Yet derived")
+    local little = {}; Effects:ApplyDerived({featIds = {"DEX_SHRINK"}}, little)
+    expect(little.littleGuyEnabled and little.playerTargetScale == .70, "Little Guy derived presentation scale")
     expect(not Effects:HasUsableChaModDamage({featIds = {}}), "Glow Up no invented CHA damage source")
     return #errors == 0, errors
 end
