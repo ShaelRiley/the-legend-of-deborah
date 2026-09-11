@@ -2,6 +2,7 @@
 
 **Updated:** 2026-09-10  
 **Accepted branch:** `main`  
+**Current remote HEAD:** `09688f7dd8861a719266b20e51550bc56d723368`  
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
 **GDD revision after D status-proc reconciliation:** `ANLCKQmlzah9ZwI-_paNfuziK3DhYmVkwcNhu6iNplw_avI19r6YGo0zNW6s7nsQg8fIxL03rn6sHCQoYAW-uzw-Yo3tL11xbCa4CCUkEw`
@@ -29,6 +30,13 @@ Checkpoint D is **in progress**. The first coherent D tranche completes the shar
 - runtime command added: `lod_rpg_validate_status_procs`
 
 This tranche is **implemented/statically validated, not runtime accepted**.
+
+### D core feat slice — implemented 2026-09-11
+
+- `STR_STEAMROLLER` now changes only a successful shared push save to retain 50% of SizeAdjustedPushDistance; PushImmune, DCs, failures, defender multipliers, collision, and wall-crush continuation remain shared authority.
+- `CON_BIG_GUY` provides the authored 1.30 presentation/target scale, 1.15 melee-reach multiplier, and 1.20 outgoing physical-push multiplier through derived state.
+- `CON_NOT_YET` preserves one HP and applies its 0.50-second protection once per owning actor per dungeon through the final damage seam; the consumed state is retained in progression state across reconnects.
+- Validation: pure-Lua `tools/test_checkpoint_d_core_feats.lua`, changed-file syntax checks, actor progression, status/element, and Checkpoint-C static validators PASS.
 
 ## Next work
 
