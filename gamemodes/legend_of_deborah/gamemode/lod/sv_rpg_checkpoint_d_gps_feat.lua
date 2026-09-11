@@ -29,6 +29,7 @@ local NET_BARK = "LOD_RPGWisGPSBark"
 util.AddNetworkString(NET_STATE)
 util.AddNetworkString(NET_TOGGLE)
 util.AddNetworkString(NET_BARK)
+resource.AddFile("sound/lod/gps_voice_bank.mp3")
 
 local runtime = setmetatable({}, {__mode = "k"})
 local MOVE_SPEED_SQR = 32 * 32
