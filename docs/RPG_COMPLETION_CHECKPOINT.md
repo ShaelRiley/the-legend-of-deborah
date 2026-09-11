@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-11
 **Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `9cebe5c71c7125e8a96c7ad1ff03a5c071064e86`
+**Current remote HEAD:** `40eae607dcc5b40d9decc8564166919e6ce657d7`
 **Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
 **Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
@@ -44,10 +44,11 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `CHA_PANIC` now uses a shared nonrecursive Morale-failure cascade: eligible sub-half-health AI hostiles within two graph cells make one immediate check, with a 3.0-second per-target cascade-immunity timer.
 - `WIS_ASTRAL_REACH` now supplies its canonical Hero-only WIS 15 +2-cell rider through the existing WIS-scaled Magic Form spatial authority. It remains unavailable until the Hero owns at least one Magic Form; no duplicate range/damage/cost implementation was added.
 - `CHA_AURA_BURST_1`, `CHA_RADIANCE_2`, and `CHA_MAJESTY_3` now use the successful discrete Form-spend seam for one supplemental, nonrecursive magical aura event. Highest rank replaces lower ranks at same-floor square-cell radii 0/1/2; aura damage is `max(0, CHA_MOD)` without dice, status-proc/Morale/Feedback leakage, elements, or spell riders.
+- `CHA_ABRASIVE_PERSONALITY_1`, `CHA_NARCISSISM_2`, and `CHA_MEGALOMANIA_3` now use one shared lightweight passive-aura scheduler: each eligible living owner rerolls a sealed non-exploding 3d4 interval after each pulse, then applies untyped `max(0, CHA_MOD)` passive damage at rank-replacing same-floor radii 0/1/2. These events carry the authored non-attack exclusions while preserving ordinary lethal attribution.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
 ## Next work
 
-Continue Checkpoint D with the remaining exact live-GDD Spot or personality-aura families, or another shared family; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
+Continue Checkpoint D with the remaining exact live-GDD Spot or direct-damage personality families, or another shared family; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
 
 If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
