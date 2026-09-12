@@ -63,6 +63,7 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_core_feats.lua")
     include("lod/sv_rpg_checkpoint_d_movement_feats.lua")
     include("lod/sv_rpg_checkpoint_d_summon_feats.lua")
+    include("lod/sv_human_soldier_progression.lua")
     include("lod/sv_magic_progression.lua")
     include("lod/sv_rpg_checkpoint_d_magic_grant_feats.lua")
     include("lod/sv_rpg_checkpoint_d_astral_reach_feat.lua")

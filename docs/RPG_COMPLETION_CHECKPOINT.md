@@ -51,6 +51,13 @@ This tranche is **implemented/statically validated, not runtime accepted**.
 - `WIS_ATTUNEMENT` now gates on actual elemental Magic ownership and rerolls only the existing weakness-bonus table, retaining its higher result. While validating it, status/element feat ownership was corrected to compare IDs case-insensitively; the full existing status/element matrix now covers the Attunement reroll path.
 - Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
 
+### E Soldier progression core — implemented 2026-09-11
+
+- A human Soldier now has a distinct disposable incarnation progression state. It is generated through the same deterministic Soldier/AI generator and automatic selection path, uses Soldier d8 growth, and never mutates the underlying cooperative Hero package.
+- SoldierXP is server-authoritative: credited effective Hero HP damage adds 1 XP per whole HP; threshold state is 100/250/450 for +1/+2/+3 earned levels; the resulting level is clamped to the Soldier spawn level plus earned levels and the current `D+3`/999 ceilings. A dedicated `Award(..., lifeConsumed)` API reserves the authored +50 personal-life credit for the lifecycle owner rather than guessing from a pre-death damage callback.
+- Existing actor progression now exposes `AdvanceAutomaticActor`, shared by AI and Soldiers while retaining Level-21+ linear generation and zero post-20 feat/capstone grants.
+- Validation: expanded `tools/test_actor_progression.lua` PASS, including deterministic Soldier generation, Soldier d8, thresholds, automatic level-up, and ceiling behavior. Syntax and adjacent status/core-feat/Checkpoint-C validators PASS.
+
 ## Next work
 
 Continue Checkpoint D with remaining exact live-GDD WIS navigation/information or other missing shared families; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.

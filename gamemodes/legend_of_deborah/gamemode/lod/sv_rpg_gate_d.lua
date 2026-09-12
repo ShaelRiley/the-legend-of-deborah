@@ -394,6 +394,13 @@ function GM:EntityTakeDamage(target, dmginfo)
     if IsValid(target) and AbilityRules.ApplyNotYetDefense then
         AbilityRules:ApplyNotYetDefense(target, dmginfo)
     end
+    local soldierProgression = LOD.SoldierProgression
+    if soldierProgression and soldierProgression.ObserveEffectiveHeroDamage
+        and IsValid(target) and target:IsPlayer()
+    then
+        soldierProgression:ObserveEffectiveHeroDamage(dmginfo:GetAttacker(), target,
+            math.max(0, math.floor((tonumber(dmginfo:GetDamage()) or 0) + 0.5)))
+    end
     local featEffects = RPG.FeatEffectSystem
     if IsValid(target) and featEffects and featEffects.OnEffectiveDamage then
         local effectiveDamage = dmginfo and dmginfo:GetDamage() or 0

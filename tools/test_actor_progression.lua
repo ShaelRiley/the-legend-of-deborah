@@ -94,4 +94,17 @@ LOD.RunManager.State.Level = 17
 assert(LOD.CharacterProgressionSystem:ProcessBankedHeroXP(LOD.RunManager) == 16)
 assert(banked.level == 20 and banked.xp == 48000, "Hero banked-XP release transaction")
 
+LOD.RPGAbilityRules = {}
+function LOD.RPGAbilityRules:ProgressionState(actor)
+    return actor and actor.LODProgressionState or nil
+end
+function LOD.RPGAbilityRules:Derived(actor)
+    local state = self:ProgressionState(actor)
+    return state and state.derivedStats or nil
+end
+dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua")
+local soldierOK, soldierErrors = LOD.SoldierProgression:Validate()
+assert(soldierOK, "Soldier progression validation failed: "
+    .. table.concat(soldierErrors or {}, "; "))
+
 print("actor progression headless validation PASS")
