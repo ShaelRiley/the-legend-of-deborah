@@ -13,10 +13,16 @@ import sys
 
 def main() -> int:
     syntax_only = len(sys.argv) >= 3 and sys.argv[1] == "--syntax"
-    scripts = sys.argv[2:] if syntax_only else sys.argv[1:]
-    if not scripts or (not syntax_only and len(scripts) != 1):
-        print("usage: tools/run_lua54.py [--syntax] <script.lua> [...]", file=sys.stderr)
+    if len(sys.argv) < 2:
+        print("usage: tools/run_lua54.py [--syntax] <script.lua> [args...]", file=sys.stderr)
         return 2
+    if syntax_only:
+        scripts = [pathlib.Path(s).resolve() for s in sys.argv[2:]]
+        script_args = []
+    else:
+        scripts = [pathlib.Path(sys.argv[1]).resolve()]
+        script_args = sys.argv[2:]
+
     library = ctypes.util.find_library("lua5.4") or "liblua5.4.so.0"
     lua = ctypes.CDLL(library)
     lua.luaL_newstate.restype = ctypes.c_void_p
@@ -40,11 +46,19 @@ def main() -> int:
     lua.lua_tolstring.restype = ctypes.c_char_p
     lua.lua_close.argtypes = [ctypes.c_void_p]
 
+    lua.luaL_loadbufferx.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_size_t, ctypes.c_char_p, ctypes.c_char_p]
+    lua.luaL_loadbufferx.restype = ctypes.c_int
+
     state = lua.luaL_newstate()
     lua.luaL_openlibs(state)
     try:
-        for item in scripts:
-            script = pathlib.Path(item).resolve()
+        for script in scripts:
+            arg_map = f"[0] = {repr(str(script))}"
+            for i, a in enumerate(script_args, 1):
+                arg_map += f", [{i}] = {repr(a)}"
+            init_code = f"arg = {{{arg_map}}}".encode()
+            if lua.luaL_loadbufferx(state, init_code, len(init_code), b"=init_arg", None) == 0:
+                lua.lua_pcallk(state, 0, 0, 0, 0, None)
             status = lua.luaL_loadfilex(state, str(script).encode(), None)
             if status == 0 and not syntax_only:
                 status = lua.lua_pcallk(state, 0, -1, 0, 0, None)
@@ -54,7 +68,7 @@ def main() -> int:
                 print(f"{item}: " + message[: size.value].decode(errors="replace"), file=sys.stderr)
                 return 1
             if syntax_only:
-                print(f"PASS {item}")
+                print(f"PASS {script}")
         return 0
     finally:
         lua.lua_close(state)
