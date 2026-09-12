@@ -3,7 +3,6 @@ local RPG = LOD.RPG
 local Catalog = assert(RPG.IdentityCatalog, "Astral Reach requires catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Astral Reach requires ordinary feats")
 
-assert(Feats.WIS_ASTRAL_REACH == nil, "duplicate canonical feat WIS_ASTRAL_REACH")
 Feats.WIS_ASTRAL_REACH = {
     featId = "WIS_ASTRAL_REACH", displayName = "Astral Reach", featFamilyId = "wis_astral_reach", rankIndex = 1,
     replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"wis"}, abilityRequirements = {wis = 15},

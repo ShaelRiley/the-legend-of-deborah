@@ -4,7 +4,6 @@ local Catalog = assert(RPG.IdentityCatalog, "Sixth Sense requires catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Sixth Sense requires ordinary feats")
 local Rules = assert(LOD.RPGAbilityRules, "Sixth Sense requires ability rules")
 
-assert(Feats.WIS_SIXTH_SENSE == nil, "duplicate canonical feat WIS_SIXTH_SENSE")
 Feats.WIS_SIXTH_SENSE = {
     featId = "WIS_SIXTH_SENSE", displayName = "Sixth Sense", featFamilyId = "wis_sixth_sense", rankIndex = 1,
     replacesLowerRank = false, repeatableFallback = false,

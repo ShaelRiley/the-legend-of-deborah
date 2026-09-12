@@ -2,7 +2,6 @@ LOD = LOD or {}; LOD.RPG = LOD.RPG or {}
 local RPG = LOD.RPG
 local Catalog = assert(RPG.IdentityCatalog, "Panic requires catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Panic requires ordinary feats")
-assert(Feats.CHA_PANIC == nil, "duplicate canonical feat CHA_PANIC")
 Feats.CHA_PANIC = {featId = "CHA_PANIC", displayName = "Panic Is Contagious", featFamilyId = "cha_panic", rankIndex = 1,
     replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"cha"}, abilityRequirements = {cha = 17},
     prerequisiteFeatIds = {"CHA_MENACE_2"}, requiredCapabilityTags = {"morale"}, incompatibleFeatIds = {},

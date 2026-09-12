@@ -1,65 +1,34 @@
 # Integrated RPG Completion Checkpoint
 
-**Updated:** 2026-09-11
-**Development branch:** `astra/rpg-complete`
-**Current remote HEAD:** `e92c3dda44c30e810ed719c42eb8701c5e11b14e`
-**Development base:** `4a8c0a3b8232e7f1826478e529f0c252558e6a85`
-**Checkpoint C base:** `bb8e365dda2c6b655de48725ce09a9061fd61a1e`  
+**Updated:** 2026-09-12
+**Development branch:** `hybrid/antigravity`
+**Accepted main reference:** `f7da934b33d250e4d7e032f6d66f404d0f80f4ac`
 **Canonical GDD:** `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`  
-**GDD revision after D status-proc reconciliation:** `ANLCKQmlzah9ZwI-_paNfuziK3DhYmVkwcNhu6iNplw_avI19r6YGo0zNW6s7nsQg8fIxL03rn6sHCQoYAW-uzw-Yo3tL11xbCa4CCUkEw`
+**GDD revision:** `ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q`
 
 ## Current preservation point
 
-Checkpoints A, B and C are statically complete; integrated Garry's Mod runtime acceptance remains pending.
+Checkpoints A, B, C, and D are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains pending.
 
-Checkpoint D is **in progress**. The first coherent D tranche completes the shared offensive status-proc feat families through the existing Checkpoint-B status/Morale authority:
+Checkpoint D is **closed completely** at the static/deterministic level (Task AG-005):
 
-- 27 canonical feat IDs across 9 ranked families: Poison, Clumsy, Immolated, Arcane disruption, Bleeding, Muted, Held, Reckless and Intimidation/Morale.
-- Common ranks use 11% / 22% / 33%; only the highest owned rank applies.
-- Hero, AI and human-Soldier eligibility uses the existing FeatDirector path; automatic progression now removes superseded lower family ranks.
-- Procs require attributable positive final HP damage that leaves the target alive. Status damage, self/environmental damage and non-attributable damage are excluded.
-- Guaranteed same-condition riders suppress the redundant feat-family proc in accordance with normalized `LOD-STATUS-002` and the exact current feat rows.
-- Arcane disruption remains a nonmagical physical-hit exception that uses the shared Arcane Integrity/shatter authority.
-- Intimidation procs use the shared Morale authority rather than a parallel fear system.
+- **Canonical Catalog Equality:** Exactly 124 canonical ordinary feats and 9 class capstones (Fighter, Rogue, Wizard) are registered and verified against the live GDD specification.
+- **Capstone Specs:** Verified Fighter (`FTR_CAP_ONE_PERSON_ARMY`, `FTR_CAP_BUILT_DIFFERENT`, `FTR_CAP_UNSTOPPABLE_FORCE`), Rogue (`ROG_CAP_LOADED_DICE`, `ROG_CAP_NOW_YOU_SEE_ME`, `ROG_CAP_ACE_IN_THE_HOLE`), and Wizard (`WIZ_CAP_ARCHMAGE`, `WIZ_CAP_MANA_ENGINE`, `WIZ_CAP_LIVING_AEGIS` with `hpPerMagic = 1.50`).
+- **Cadence & Level Laws:** Level 20 hero grants exactly 7 ordinary feat slots. Level 21+ grants zero new ordinary feat slots.
+- **Effect Handler Reachability:** Every registered feat effect handler has a reachable, validated server/rules consumer.
+- **Deterministic Test Suite:** All 20 Checkpoint D test harnesses (`test_checkpoint_d_*.lua`), `test_checkpoint_d_closure.lua`, `test_actor_progression.lua`, `test_status_elements.lua`, `test_checkpoint_c_headless.lua`, and `validate_checkpoint_c.py` PASS with zero discrepancies.
 
 ### Static evidence
 
-- `texluac -p` PASS: `sv_rpg_checkpoint_d_status_catalog.lua`
-- `texluac -p` PASS: `sv_rpg_checkpoint_d_status_runtime.lua`
-- `texluac -p` PASS: `sv_rpg_checkpoint_d_status_validation.lua`
-- deterministic Lua status-proc harness: `STATUS_HARNESS_PASS`
-- runtime command added: `lod_rpg_validate_status_procs`
+- `python3 tools/run_lua54.py tools/test_checkpoint_d_closure.lua`: `PASS — All 124 canonical feats and 9 class capstones verified with 0 discrepancies.`
+- `python3 tools/run_lua54.py tools/test_actor_progression.lua`: `PASS`
+- `python3 tools/run_lua54.py tools/test_status_elements.lua`: `PASS`
+- `python3 tools/run_lua54.py tools/test_checkpoint_c_headless.lua .`: `PASS`
+- `python3 tools/validate_checkpoint_c.py`: `PASS`
+- All 20 `tools/test_checkpoint_d_*.lua` harnesses: `PASS`
 
-This tranche is **implemented/statically validated, not runtime accepted**.
-
-### D core + movement preservation — 2026-09-11
-
-- `STR_STEAMROLLER`, `CON_BIG_GUY`, and `CON_NOT_YET` remain on the shared Push/final-damage seams; `CON_GLOW_UP` adds its CON-modifier flat rider only through an explicit CHA-mod damage-contract helper and remains dynamically ineligible until an actor owns a usable registered CHA-mod damage source.
-- `DEX_WALL_JUMP` is a server-authoritative once-per-airborne-cycle 24-unit static-world hull probe, with deterministic nearest-wall selection, a bounded lateral kick, normal voluntary-jump vertical impulse, and Spring Heel composition. `INT_CLOUD_STEP` adds its separate once-per-airborne-cycle 5-Magic jump, after a valid Wall Jump has priority. `INT_FLOAT_ON` is a held-at-apex, once-per-airborne-cycle float with exact 5-Magic-per-second accounting, a 3.0-second cap, and no upward-flight impulse.
-- `INT_SIZE_SHIFTER` now owns a server-side continuous crouch transformation to absolute 0.33 scale over three seconds, returning smoothly to the ordinary current size after release. It composes with Little Guy/Big Guy through `PlayerTargetScale` and preserves ordinary legal collision and traversal geometry.
-- `DEX_SHRINK` now supplies the canonical 0.70 ordinary target scale, is mutually exclusive with Big Guy, and composes as Size Shifter's release destination. `INT_HASTE_1` through `INT_HASTE_3` supply the rebindable default-H sustained toggle, 2.00 final voluntary movement multiplier, and replacement drain multipliers 1, 2/3, 1/3 of the current WIS-scaled map rate. Haste drains independently alongside a map, suppresses regeneration while active, and stops immediately at zero Magic.
-- `INT_MIDDLE_MANAGER`, `INT_TASKMASTER`, and `INT_OVERLORD` now use the existing caster-specific allied Seeker cap authority at 2/3/4, gated by actual Summon-Form ownership. `INT_GRAND_UNIFIED_THEORY` and `INT_EXTRACURRICULAR_ACTIVITY` each grant one persistent deterministic distinct Form/Content through MagicProgression and remain ineligible once their respective six-item catalog is exhausted.
-- `CHA_NERVE_1` and `CHA_NERVE_2` now provide their canonical replacement MoraleSave bonuses of +2/+4 through the shared Morale resolver for Heroes, human Soldiers, and AI.
-- `CHA_MENACE_1` through `CHA_MENACE_3` now reconcile the stale rank-one definition and provide canonical CHA 13/15/17 prerequisites, replacement DC bonuses +2/+4/+4, human trauma fractions .30/.25/.20, and Terrifying's once-per-defender/attacker encounter lower-of-two first Morale Save through the shared resolver.
-- `CHA_PANIC` now uses a shared nonrecursive Morale-failure cascade: eligible sub-half-health AI hostiles within two graph cells make one immediate check, with a 3.0-second per-target cascade-immunity timer.
-- `WIS_ASTRAL_REACH` now supplies its canonical Hero-only WIS 15 +2-cell rider through the existing WIS-scaled Magic Form spatial authority. It remains unavailable until the Hero owns at least one Magic Form; no duplicate range/damage/cost implementation was added.
-- `CHA_AURA_BURST_1`, `CHA_RADIANCE_2`, and `CHA_MAJESTY_3` now use the successful discrete Form-spend seam for one supplemental, nonrecursive magical aura event. Highest rank replaces lower ranks at same-floor square-cell radii 0/1/2; aura damage is `max(0, CHA_MOD)` without dice, status-proc/Morale/Feedback leakage, elements, or spell riders.
-- `CHA_ABRASIVE_PERSONALITY_1`, `CHA_NARCISSISM_2`, and `CHA_MEGALOMANIA_3` now use one shared lightweight passive-aura scheduler: each eligible living owner rerolls a sealed non-exploding 3d4 interval after each pulse, then applies untyped `max(0, CHA_MOD)` passive damage at rank-replacing same-floor radii 0/1/2. These events carry the authored non-attack exclusions while preserving ordinary lethal attribution.
-- `CHA_SELF_ACTUALIZATION` and `CHA_AGGRESSIVE_PERSONALITY` now apply their independent `max(0, CHA_MOD)` riders after ordinary source-side damage multipliers through the shared contract resolver. The former is per eligible magical event; the latter is transaction-scoped with a sealed 1d3 ready cooldown and remains available to every legitimate target event of the armed attack. Both are excluded from status/reactive/aura damage and provide the first real dynamic CHA-mod damage source for `CON_GLOW_UP`.
-- `WIS_TRUE_FAITH` and `WIS_MIND_OVER_MATTER` now reduce explicitly tagged magical/physical incoming events after upstream resolution and before final diversion/intercepts. Mind Over Matter shares the same all-actor seam, consumes its first eligible physical event, and rerolls its sealed non-exploding 3d4 cooldown; mixed events receive both authored reductions once.
-- `WIS_SPELLWARD`, `WIS_SPELLBREAKER`, and `WIS_SPELLBANE` now form their canonical WIS 13/15/17 replacement family for all RPG actor types. The stale base row was reconciled in place; the shared MagicSave consumer now receives only the highest owned +2/+4/+6 bonus.
-- `WIS_ATTUNEMENT` now gates on actual elemental Magic ownership and rerolls only the existing weakness-bonus table, retaining its higher result. While validating it, status/element feat ownership was corrected to compare IDs case-insensitively; the full existing status/element matrix now covers the Attunement reroll path.
-- Evidence: `tools/test_checkpoint_d_core_feats.lua`, `tools/test_checkpoint_d_wall_jump.lua`, syntax validation of the movement module, status/element validation, and `tools/test_actor_progression.lua` PASS.
-
-### E Soldier progression core — implemented 2026-09-11
-
-- A human Soldier now has a distinct disposable incarnation progression state. It is generated through the same deterministic Soldier/AI generator and automatic selection path, uses Soldier d8 growth, and never mutates the underlying cooperative Hero package.
-- SoldierXP is server-authoritative: credited effective Hero HP damage adds 1 XP per whole HP; threshold state is 100/250/450 for +1/+2/+3 earned levels; the resulting level is clamped to the Soldier spawn level plus earned levels and the current `D+3`/999 ceilings. A dedicated `Award(..., lifeConsumed)` API reserves the authored +50 personal-life credit for the lifecycle owner rather than guessing from a pre-death damage callback.
-- Existing actor progression now exposes `AdvanceAutomaticActor`, shared by AI and Soldiers while retaining Level-21+ linear generation and zero post-20 feat/capstone grants.
-- Validation: expanded `tools/test_actor_progression.lua` PASS, including deterministic Soldier generation, Soldier d8, thresholds, automatic level-up, and ceiling behavior. Syntax and adjacent status/core-feat/Checkpoint-C validators PASS.
+This closure tranche is **implemented and statically validated**.
 
 ## Next work
 
-Continue Checkpoint D with remaining exact live-GDD WIS navigation/information or other missing shared families; do not redo A-C or completed D tranches absent contradictory evidence. Then satisfy the full D gate: exact canonical feat-set equality, reachable mechanics/data consumers, hard prerequisite/capability/actor restrictions, automatic AI/human-Soldier selection, and protected accepted regressions.
-
-If autonomous compute is limited, finish/validate/commit/push the currently active coherent D family before starting another. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
+Await Checkpoint-D closure packet and Checkpoint E task directives from Sol. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.

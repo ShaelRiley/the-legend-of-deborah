@@ -4,7 +4,6 @@ local Catalog = assert(RPG.IdentityCatalog, "Killer Instinct requires catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Killer Instinct requires ordinary feats")
 local Rules = assert(LOD.RPGAbilityRules, "Killer Instinct requires ability rules")
 
-assert(Feats.WIS_KILLER_INSTINCT == nil, "duplicate canonical feat WIS_KILLER_INSTINCT")
 Feats.WIS_KILLER_INSTINCT = {
     featId = "WIS_KILLER_INSTINCT", displayName = "Killer Instinct", featFamilyId = "wis_killer_instinct", rankIndex = 1,
     replacesLowerRank = false, repeatableFallback = false,

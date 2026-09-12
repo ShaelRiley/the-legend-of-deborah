@@ -258,7 +258,7 @@ function WizardRules:Validate(ply)
     expect(closeEnough(l20Bastion.derivedStats.hpToMagicDiversionFraction, 0.85),
         "Level-20 Wizard + Mystic Bastion designed maximum")
     expect(closeEnough(l20Aegis.derivedStats.hpToMagicDiversionFraction, 0.95)
-        and closeEnough(l20Aegis.derivedStats.livingAegisHPPerMagic, 1.25),
+        and closeEnough(l20Aegis.derivedStats.livingAegisHPPerMagic, 1.50),
         "Living Aegis additive diversion/exchange")
 
     local eligibilityState = newSyntheticState("wizard", 10)

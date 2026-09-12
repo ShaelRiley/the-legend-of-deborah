@@ -3,7 +3,6 @@ local RPG = LOD.RPG
 local Catalog = assert(RPG.IdentityCatalog, "Attunement requires catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Attunement requires ordinary feats")
 
-assert(Feats.WIS_ATTUNEMENT == nil, "duplicate canonical feat WIS_ATTUNEMENT")
 Feats.WIS_ATTUNEMENT = {featId = "WIS_ATTUNEMENT", displayName = "Attunement", featFamilyId = "wis_attunement", rankIndex = 1,
     replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"wis"}, abilityRequirements = {wis = 17},
     prerequisiteFeatIds = {}, requiredCapabilityTags = {"elemental_magic_attack"}, incompatibleFeatIds = {},

@@ -71,8 +71,8 @@ Catalog.ClassCapstones = {
             featId = "WIZ_CAP_LIVING_AEGIS", displayName = "Living Aegis",
             classId = "wizard", synergyTags = {"damage_diversion"},
             effectHandlerId = "wizard_capstone_living_aegis",
-            effectParams = {diversionBonus = 0.10, hpPerMagic = 1.25,
-                description = "Automatic damage diversion gains +0.10 fraction, capped at 1.00, and diverts 1.25 HP per Magic."}
+            effectParams = {diversionBonus = 0.10, hpPerMagic = 1.50,
+                description = "Automatic damage diversion gains +0.10 fraction, capped at 0.50, and diverts 1.50 HP per Magic."}
         }
     }
 }

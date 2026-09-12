@@ -1,6 +1,7 @@
 LOD = LOD or {}
 LOD.RPG = LOD.RPG or {}
 LOD.MagicProgression = LOD.MagicProgression or {}
+LOD.Magic = LOD.Magic or {}
 
 local RPG = LOD.RPG
 local Progression = LOD.CharacterProgressionSystem

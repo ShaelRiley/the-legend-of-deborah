@@ -50,7 +50,7 @@ function WizardRules:ValidateArcaneCap()
         local s = {classId = "wizard", level = level, derivedStats = {
             manaBarrierFeatDiversionFraction = 0,
             wizardCapstoneDiversionBonus = capstoneBonus or 0,
-            livingAegisHPPerMagic = capstoneBonus and capstoneBonus > 0 and 1.25 or 1
+            livingAegisHPPerMagic = capstoneBonus and capstoneBonus > 0 and 1.50 or 1
         }}
         self:ApplyDerived(s)
         return s
@@ -66,7 +66,7 @@ function WizardRules:ValidateArcaneCap()
     expect(closeEnough(l20.derivedStats.hpToMagicDiversionFraction, 0.50), "Level 20 stays capped")
     expect(closeEnough(l20Aegis.derivedStats.hpToMagicDiversionFraction, 0.50),
         "Living Aegis cannot exceed cap")
-    expect(closeEnough(l20Aegis.derivedStats.livingAegisHPPerMagic, 1.25),
+    expect(closeEnough(l20Aegis.derivedStats.livingAegisHPPerMagic, 1.50),
         "Living Aegis efficiency remains available")
     return #errors == 0, errors
 end

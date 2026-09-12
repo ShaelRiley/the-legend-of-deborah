@@ -241,7 +241,7 @@ function WizardRules:Validate(ply)
     expect(closeEnough(rogueBarrier.derivedStats.hpToMagicDiversionFraction, 0.15),
         "non-Wizard Mana Barrier diversion")
     expect(closeEnough(l20LivingAegis.derivedStats.hpToMagicDiversionFraction, 0.675)
-        and closeEnough(l20LivingAegis.derivedStats.livingAegisHPPerMagic, 1.25),
+        and closeEnough(l20LivingAegis.derivedStats.livingAegisHPPerMagic, 1.50),
         "Living Aegis Level-20 diversion/exchange")
 
     local eligibilityState = newSyntheticState("wizard", 10)

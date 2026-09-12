@@ -1,5 +1,6 @@
 LOD = LOD or {}
 LOD.CharacterProgressionSystem = LOD.CharacterProgressionSystem or {}
+LOD.FeatDirector = LOD.CharacterProgressionSystem
 
 local CharacterProgressionSystem = LOD.CharacterProgressionSystem
 local RPG = LOD.RPG

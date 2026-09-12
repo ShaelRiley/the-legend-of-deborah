@@ -65,7 +65,7 @@ def main() -> int:
             if status != 0:
                 size = ctypes.c_size_t()
                 message = lua.lua_tolstring(state, -1, ctypes.byref(size))
-                print(f"{item}: " + message[: size.value].decode(errors="replace"), file=sys.stderr)
+                print(f"{script}: " + message[: size.value].decode(errors="replace"), file=sys.stderr)
                 return 1
             if syntax_only:
                 print(f"PASS {script}")
