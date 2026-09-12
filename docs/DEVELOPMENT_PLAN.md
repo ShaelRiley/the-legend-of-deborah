@@ -1,113 +1,200 @@
-# Current Alpha 2 sequence — 2026-09-08
+# Current Development Plan — Integrated RPG Completion
 
-The attached 2026-09-08 handoff supersedes the historical sequence below.
+**Status:** CURRENT EXECUTION AUTHORITY for sequencing. Historical gate/batch plans are subordinate evidence only.
 
-1. Reconcile live GDD and current main. Measured inventory: `RPG_GATE_E_FEAT_MATRIX.md`.
-2. Complete canonical feats, one finite family at a time. Winning Personality +1 CHA is runtime accepted. World Walker map-open/close gate is runtime accepted. Deadcrab repair is runtime accepted. W,A,S,Deborah is runtime accepted. Strafer rank-3 gate is runtime accepted. Quantum AG-001 runtime acceptance is reported; original evidence attribution remains to be checked. Next gate is corrected developer-ingress AG-002R, followed by bounded existing-seam feat gates in DEVELOPMENT_STATUS.md. Ordinary set is now 62/143; no unauthorized runtime entries after alias normalization.
-3. Complete integrated RPG: canonical stats/classes/identity, magic, doubled hero XP thresholds, deterministic enemy levels and prescribed consumers. Resolve five-versus-six Form contradiction before dependent code. Equipment is excluded.
-4. Implement and validate Neil + Brute, then Gordon the Warden, then playable Soldier.
-5. Release audit and finite Steam Deck/multiplayer acceptance. Stop before VPS or Workshop deployment. Equipment follows in feature-complete Beta.
+**Repository:** `ShaelRiley/the-legend-of-deborah`  
+**Branch:** `main`  
+**Reconciled starting HEAD:** `6ffa62c7f564c40c61e069041c30aaa087c67f76`
+**Required runtime map:** `gm_flatgrass`
 
-Do not resume the obsolete 192 individually authored identity-perk bridge plan: current GDD uses standardized procedural perk records. Historical statuses below need current evidence before reuse.
+**Design authority:** live Google Doc **The Legend of Deborah — Garry's Mod Game Design Document**, ID `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
----
+## Mandatory GDD navigation
 
-# Development Plan — 2026-09-06 RPG Priority
+Do **not** read the full human GDD to orient development. Use the document's normalized AI interface:
 
-The live GDD is design authority. GitHub `main` is implementation authority.
+`00 — AI ENTRYPOINT` → `01 — AI RULE INDEX` → only the relevant subsystem tab → one exact `HUMAN — Complete GDD` anchor/featId only when the normalized tab marks something `HUMAN-DETAIL`.
 
-## Development order
+The normalized AI tabs are authoritative where they explicitly cover a rule. The human tab remains the complete author-facing design and exact-detail fallback. Never substitute an old GDD export, this plan, `RPG_GDD_RULES_BASELINE.md`, the feat matrix, or remembered chat text for the live GDD.
 
-1. Core multiplayer smoke foundation — **accepted** from the September 1 VPS playtest.
-2. RPG Gates A–D / class integration — implemented and under runtime tuning.
-3. Gate E Batch 1 CON Health Regeneration — **runtime accepted**.
-4. Gate E Batch 2 WIS Navigation — **runtime accepted**.
-5. Gate E Batch 3 INT Ammo-Regeneration Floors — **runtime accepted 2026-09-03**.
-6. Gate E Batch 4 DEX exploding-dice ladder — **runtime accepted 2026-09-03**.
-7. Gate E Batch 5 DEX reload cadence — **runtime accepted 2026-09-03**.
-8. Gate E Batch 6 DEX rate-of-fire cadence — **runtime accepted 2026-09-05**.
-9. Gate E Batch 7 DEX authored burst size — **runtime accepted 2026-09-05**.
-10. Gate E Batch 8 DEX SMG heat — **runtime accepted 2026-09-05**.
-11. Gate E Batch 9 singleton suite — **implemented; runtime acceptance pending**.
-12. Gate E Batch 10 Charisma utility and Presence — **runtime accepted 2026-09-06**.
-13. Gate E Batch 11 control and Magic push/recovery — **runtime accepted 2026-09-06**.
-14. Gate E Batch 12 Magic recovery — **runtime accepted 2026-09-06**.
-15. Gate E Batch 13 Pusher family and shared push save — **runtime accepted 2026-09-06**.
-16. Gate E Batch 14 Crowbar family — **implemented; runtime acceptance pending**.
-17. Reconcile the historical 73-row ledger with the remaining expanded live feat catalog, then continue coherent families until every current ordinary feat has a canonical gameplay bridge and finite validator.
-18. Implement all 192 authored Origin/Background/Motive perk bridges.
-19. Run the full six-stat / Level 1–20 / combat-order / player-enemy RPG consistency audit.
-20. Single-client balance across randomized Heroes, classes, ability extremes, and emergent cross-system builds.
-21. Focused post-RPG VPS multiplayer regression.
-22. Consolidate authority debt exposed by evidence, then implement Neil + The Brute, Gordon the Warden, final arena, map degradation, soak, and polish.
+## Program decision
 
-## Runtime evidence protocol
+The former strategy of implementing and runtime-testing one ordinary feat family at a time is **superseded for the current tranche**.
 
-All runtime gates use `docs/TEST_LOGGING.md`.
+The remaining work shares too many authorities—actor Levels, automatic AI progression, statuses, elements, Magic, feat eligibility/effects, Soldier progression, and UI state—to complete efficiently as dozens of isolated runtime cycles. The current objective is therefore one **integrated RPG-completion update**, divided into internally coherent checkpoint commits.
 
-- Run `./tools/install_dev.sh` after pulling; this maintains exactly one external Steam Deck mirror of the engine `console.log` into the canonical data directory.
-- Start Garry's Mod fresh when beginning a distinct gate so `-condebug -conclearlog` gives a clean engine console.
-- End the gate with `lod_rpg_test_finish <short-test-label>`.
-- Canonical upload directory: `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`.
-- Default physical evidence package: `console_latest.txt` + `rpg_summary_latest.txt`.
-- Add `rpg_session_latest.txt` for timing/event-order or unexplained combat/RPG behavior.
-- `rpg_archive_latest.txt` is bounded rolling cross-session history and is uploaded only when specifically requested.
-- Screenshots remain appropriate for visual/rendering/layout defects; logs are preferred for console text and runtime mechanics.
+Each checkpoint must be statically validated and pushed as soon as it is coherent. Do not spend scarce autonomous compute holding finished work uncommitted. Runtime acceptance of the integrated tranche occurs after the system is complete enough for one substantial play pass, except when a local automated engine test is required to diagnose a blocker.
 
-## Batch 6 acceptance note
+Previously runtime-accepted mechanics remain regression constraints unless the live GDD explicitly supersedes them.
 
-DEX Rate-of-Fire Cadence is closed. The final `gm_flatgrass` acceptance pass used Lead Storm at rank 3 and produced exactly five completed AR2 bursts / fifteen rounds, with `rate_of_fire_sessions=5`, `rate_of_fire_confirmed_attacks=5`, and `rate_of_fire_scale_events=5`. The last accepted event was `weapon_ar2/primary 0.880s->0.677s via ar2_burst_complete` at multiplier `1.30`; the summary recorded authored `0.88s`, scaled `0.6769230769s`, saved `0.2030769231s`, zero deadline misses, `TEST_END batch6-ar2-round-authority`, and final core RPG validation PASS.
+## Reconciled implementation baseline
 
-The acceptance investigation established the canonical AR2 cadence seam. AR2 activation may originate through server `StartCommand` as well as the client activation receiver, so the bridge now wraps the final authoritative `BeginAR2Burst` method after synchronous gamemode loading and confirms each successful round through the final authoritative `FireAR2Round` method. The cadence benefit is committed only after a complete three-round burst. This preserves the targeting laser, pre-burst delay, and internal 0.09s shot spacing while shortening only the next primary-attack opportunity.
+Current `main` already contains substantial RPG scaffolding and many accepted feat bridges. Do not rewrite it from scratch. Extend existing authorities.
 
-Hair Trigger / Rapid Fire / Lead Storm are ordinary-firearm-primary feats only. They do not accelerate melee, reloads, Magic cooldowns, enemy telegraphs, SMG overheat recovery, secondary attacks, or authored burst-internal spacing.
+Confirmed gaps/mismatches at the reconciled starting HEAD include:
 
-## Batch 5 acceptance note
+- `sh_rpg_schema.lua` still uses one global `MaxLevel = 20`; the live GDD requires Hero hard cap 20, monster hard cap 999, and the universal dungeon-relative ceiling `DungeonLevel + 3`.
+- the schema still gives Wizard Hero progression `d6`; canonical Wizard progression is **d4**.
+- `sv_character_progression.lua` is fundamentally Hero/Level-20 oriented. Existing Hero `4d6-drop-lowest` generation is correctly supplied by `sv_hero_ability_rolls.lua`; preserve that working behavior while consolidating only when safe.
+- `sv_rpg_gate_d.lua` already provides shared derived-stat and combat-attribution consumers and reads non-player `actor.LODProgressionState`, but production enemy RPG-state generation is not complete and enemy XP valuation still clamps enemy Level to 20.
+- modular six-Form/six-Content Magic is incomplete.
+- there is no complete shared current-status/element implementation for all authored proc families.
+- the feat inventory is materially incomplete; the 2026-09-08 matrix measured 62/143 ordinary definitions at its checkpoint. Use the matrix as an implementation inventory, **not** as design authority.
+- human-controlled Soldier RPG/lifecycle implementation is incomplete.
+- the current-required durable server-local `HEROES OF LEGEND` staging leaderboard is not complete.
 
-DEX Reload Cadence is closed. The final `gm_flatgrass` acceptance pass at rank 3 produced `scaledExtensions=3` on `weapon_ar2`, with the final observed reload deadline compressed from about `1.55s` to `0.62s` at multiplier `0.40`. The RPG summary recorded `reload_scale_events=3`, `last_reload_weapon=weapon_ar2`, `last_reload_multiplier=0.4`, `TEST_END batch5-clock-fix`, and final core validation PASS.
+Do not implement the old doubled-Hero-XP plan. The current canonical Hero cumulative XP table ends at **48,000 XP for Level 20**. Do not reopen the former five-versus-six Form question: the canonical catalog contains **six Forms**.
 
-The acceptance investigation corrected a systemic timing bug: public Garry's Mod weapon timing accessors are the absolute `CurTime()` authority. Raw Source `FIELD_TIME` values from internal/save fields are CurTime-relative and are translated only at that boundary. This keeps reload scaling numerically coherent while preserving every pre-existing lockout floor.
+## Protected high-frequency rules
 
-Repeated play found Blink Reload + AR2 creates almost-continuous fire because reload downtime becomes nearly imperceptible. Preserve this. The AR2's laser telegraph and delay before each burst remain meaningful authored costs, so the reload feat creates a distinct high-DEX build payoff rather than erasing the weapon's identity.
+These are navigation aids, not substitutes for the live normalized tabs:
 
-## Batch 7 acceptance note
+- Monster/Soldier ordinary spawn tier: 60% Typical=`D`, 30% Elite=`D+1`, 10% Champion=`D+2`, where `D=max(1,DungeonLevel)`.
+- Universal entity ceiling: `D+3`; Hero hard cap 20; monster hard cap 999.
+- Neil=`D`, Brute=`D+1`, Gordon=`D+2` as fixed authored tiers.
+- Monsters continue numeric growth above 20 but gain no new feats, Forms, Contents, class milestones, or capstones above 20.
+- Wizard Hero progression hit die=`d4`; Soldier progression hit die=`d8` regardless of automatically assigned class.
+- Human Soldiers are generated exactly like AI Soldiers; human control uniquely adds incarnation-local XP. Thresholds: 100/250/450 SoldierXP for +1/+2/+3 earned levels, always clamped to `D+3`.
+- Human Soldier level-up choices are automatic through the same deterministic AI selection authority. No new choice UI.
+- Magic catalog: six Forms and six class-neutral Contents.
+- ordinary feat cadence: Levels 1/3/6/9/12/15/18; Level 20 adds one separate class capstone. Former Rogue bonus drafts are retired.
+- `HeroOfLegendHPThreshold=min(100,MaxHP)`.
+- server-local staging `HEROES OF LEGEND` leaderboard is CURRENT REQUIRED; global Steam mirror is deferred.
 
-DEX Authored Burst Size is closed. Full Barrage completed all 6/6 AR2 projectiles after beginning with exactly one ammo, consumed that one ammo at commit, and reported `completed=1`, `aborted=0`, final clip 0, plus core RPG validation PASS. Do not reopen Batch 7 absent new contradictory evidence.
+If any of these conflict with a newer explicit user direction or a newer live normalized GDD rule, the newer authority wins.
 
-## Immediate Gate E work
+# Integrated RPG Completion Checkpoints
 
-Proceed to the next coherent family in `docs/RPG_GATE_E_FEAT_MATRIX.md`. Before implementation, re-read the exact live-GDD definitions for that family and use the narrowest existing canonical gameplay seam. Every family must receive:
+## Checkpoint A — Canonical actor Level/progression core [STATIC GATE COMPLETE; RUNTIME PENDING]
 
-1. exact authored definitions/prerequisites/rank semantics;
-2. one canonical runtime authority rather than duplicated special cases;
-3. Character Sheet/runtime truth where applicable;
-4. a finite family validator/testkit;
-5. static validation before push;
-6. a short `gm_flatgrass` runtime acceptance pass with the standard evidence package.
+**Goal:** one actor-aware Level authority for Heroes, AI monsters, and human Soldiers.
 
-Batch 10 is runtime accepted from the September 6 evidence package. Batch 9 remains a separate pending gate and must not be inferred from Batch 10 or Batch 11 evidence.
+Implement together, not as isolated constant edits:
 
-Batch 11 is runtime accepted across its two finite `gm_flatgrass` runs. The first established baseline behavior plus Hard to Move and Force Multiplier; the corrected feat-side run reached zero Magic and recorded one Mana Spring start with 16 active regeneration ticks. The same run reproduced exact push composition `336 × 1.25 × 0.75 = 315` and ended with the family validator, core RPG validator, and `TEST_END batch11-mana-spring-fix`. The former `WAITING` status was a telemetry-only false negative caused by a later hit-stun query against a different target; status now reads the designated test target's own result.
+1. Split Hero and monster hard caps and enforce the universal `D+3` ceiling.
+2. Preserve Hero 0–48,000 XP progression and add banked-XP behavior behind the dungeon-relative Hero ceiling.
+3. Change Wizard Hero progression hit die to d4.
+4. Extend monster numeric growth beyond Level 20 through the canonical recurring growth schedule; no new feats/Forms/Contents/milestones/capstones above 20.
+5. Create one production monster RPG-state producer that assigns level/tier, class, growth profile, abilities, stored HP dice, feats and other legal state deterministically. Attach it through `LODProgressionState` rather than adding parallel per-enemy RPG logic.
+6. Apply the 60/30/10 tier rule to ordinary monsters and Soldiers, with fixed Neil/Brute/Gordon tiers.
+7. Remove Level-20 clamping from monster XP valuation and other monster-only Level consumers while preserving Hero hard-cap behavior.
+8. Add/extend finite static validators for Hero caps/banking, D/D+1/D+2 tier assignment, D+3 clamp, deterministic replay, and Level-21+ monster growth with no post-20 feat grants.
 
-Batch 12 is runtime accepted. Its final run recorded two real exploding-d6 continuation dice restoring 2 Magic, four Magic kills restoring 15 Arc Recovery Magic, one clustered cooldown rejection, family/core validation passes, and `TEST_END batch12-magic-recovery`.
+**Checkpoint gate:** existing Hero progression regressions pass; deterministic actor validator passes; production consumers can retrieve correct Hero and AI progression state. Commit and push immediately.
 
-Batch 13 is runtime accepted: the rank-3 75% profile produced 10 procs from 19 rolls, two cooldown blocks, exactly 10 shared STR saves, eight wall crushes, `result=PASS`, core validation PASS, and `TEST_END batch13-pusher`.
+## Checkpoint B — Shared status, element and Morale authority [STATIC GATE COMPLETE; RUNTIME PENDING]
 
-Batch 14 implements Bash/Walloper/Wrecking Bar/Hero of Legend. The physical Crowbar behaviors have positive runtime evidence. The next finite test must prove that WIS-15 Hero launches one clearly visible glowing crowbar at 620 units/second, rejects extra launches while it remains active, travels `max(1, WIS bonus)` cells, and deals non-elemental Magic damage to a distant hostile without pushing it. The same pass should retain the accepted SUPER `1d12`, 168-unit Bash push, two-die wall crush, and one-save 336-unit Bash + Space Hog composition.
+**Goal:** make every current authored status/element interaction run through shared event-driven authorities.
 
-## Batch 4 acceptance note
+1. Implement one status registry/resolver rather than one Think hook per feat.
+2. Implement current named conditions and all status families required by exact current feat definitions, including at minimum Immolated, Poisoned, Held, Muted and Morale/Intimidated plus the exact authored bleed/clumsy/reckless/arcane families where the live feat rows require them.
+3. Preserve each status's exact save, duration, immunity, cooldown, reapplication and non-stacking law from the live GDD.
+4. Implement elemental resolution for Earth/Fire/Dark/Ice/Light/Electric at the existing shared combat pipeline. A typed hit resolves at most one applicable weakness/resistance table under current rules.
+5. Preserve canonical order: damage first → final effective HP damage and survival check → at most one legitimate rider attempt → save/duration/cooldown. Do not create recursive proc chains from status tick damage unless explicitly authored.
+6. Wire event-driven Morale through existing hostile movement/target authorities; do not create a second AI controller.
+7. Add a finite matrix validator proving every current element and status family can resolve and that invalid/immune/duplicate cases do not proc.
 
-The accepted Batch 4 live test corrected one earlier handoff statement: the **baseline Crowbar is d3, not d8**. It correctly remained outside Perfect Ten / Eight Is Enough / Fourtunate; Rogue mastery is the broader rule that may explode eligible d3 actor-owned damage dice. The same run showed a strong but desirable Wizard full-Magic Arcane Surge + exploding-Pistol composition, retained for later balance evaluation.
+**Checkpoint gate:** shared status/element matrix passes plus existing combat/push/dice regressions. Commit and push immediately.
 
-## Gate E accounting after Batch 14 implementation
+## Checkpoint C — Six-Form / six-Content Magic
 
-- within the historical 73-row migration ledger, 43 mechanically implemented;
-- 4 catalog/ownership-only;
-- 26 not yet catalogued;
-- 30 gameplay effects remain;
-- two newly tabulated expanded-catalog rows are also mechanically implemented, bringing the total to 45;
-- the live GDD currently contains 119 tabulated ordinary/cross-feat rows, so the remaining new rows still require migration into the matrix.
+**Goal:** complete modular current Magic on the existing personal 100-Magic authority.
 
-## Preserved constraints
+1. Implement all six Forms: Blast, Beam, Bomb, Missile, Bolt, Summon.
+2. Implement RAW + all six Contents: Earth, Fire, Dark, Ice, Light, Electric.
+3. Content ownership/use is class-neutral. Wizard specialization is quantity/passives, not exclusive permission.
+4. Preserve Magic capacity=100, INT regeneration authority, WIS power/utility scaling, map-open regen suppression, Arcane Shield/Feedback and existing Wizard rules.
+5. Compose existing Quantum/offensive-cost and other accepted Magic feat helpers at the canonical cost seam rather than duplicating cost logic.
+6. Use the existing Seeker authority for Summon wherever the authored behavior permits; do not fork a parallel allied-monster implementation.
+7. Complete I Spellbook state/UI for six Forms and RAW+owned Contents; preserve P/I mutual exclusion.
+8. Add deterministic Form/Content progression ownership without replacement at the exact live milestones.
 
-`gm_flatgrass` remains the required test map; the canonical graph remains topology authority; Motion V2 remains ordinary hostile motion authority; server CombatRolls remains dice authority; Magic/resources remain personal while world progression is shared. Reload cadence changes only genuine reload timing. Rate-of-Fire cadence changes only ordinary firearm primary-attack opportunity timing and must not become a generic attack-cooldown, melee, reload, overheat, telegraph, burst-spacing, secondary-fire, or Magic-cooldown modifier.
+**Checkpoint gate:** each Form casts through the shared pipeline, each Content resolves through the shared element/status authority, ownership/progression is deterministic, and existing Wizard/Quantum regressions pass. Commit and push immediately.
+
+## Checkpoint D — Complete current feat/capstone mechanics by shared handler families
+
+**Goal:** close the canonical feat inventory without returning to dozens of player-facing micro-gates.
+
+1. Re-enumerate the exact current live feat catalog by `featId` only as needed; use the 2026-09-08 matrix as a missing/present starting inventory, not current design text.
+2. Preserve already accepted mechanics unless superseded.
+3. Add missing definitions and effects grouped by shared handlers: status-proc families, movement, size/body, Magic, summon/control, identity/utility, weapon/combat and other actual seams.
+4. Hero ordinary drafts remain stored three-card choices. AI and human Soldiers use the same eligibility/offer construction but deterministic automatic synergy selection.
+5. Enforce current prerequisites, capability tags, allowed actor types, exclusions, replacement ranks, no-Rogue-bonus-drafts rule, and Level-20 capstone behavior.
+6. Ensure monster Levels above 20 never create additional feat slots.
+7. Extend one registry/mechanics validator to prove every canonical feat ID is present exactly once and every non-passive effect has a registered reachable handler or explicit data-driven consumer.
+
+**Checkpoint gate:** canonical feat-set equality, prerequisite/capability validation, automatic AI selection validation and existing accepted feat regressions all pass. Commit and push immediately.
+
+## Checkpoint E — Human Soldier RPG and lifecycle integration
+
+**Goal:** human-controlled Soldiers differ from AI Soldiers only by player control and incarnation-local XP progression, plus the already authored player-role lifecycle.
+
+1. Complete human Soldier role admission/slot handling without mutating the underlying eliminated Hero identity.
+2. Generate each human Soldier through exactly the AI Soldier generation path, including tier/class/growth/stats/HP/feats/Content/capstone state.
+3. Implement SoldierXP: +1 per effective post-mitigation/post-diversion Hero HP damage authoritatively credited; +50 when the credited event consumes a Hero personal life; no other XP sources.
+4. Thresholds 100/250/450 produce +1/+2/+3 earned levels, processed sequentially and clamped to `D+3`/monster hard cap.
+5. Level gains automatically run normal AI progression selection. No Soldier progression-choice UI.
+6. P Character Sheet displays the current Soldier build and SoldierXP/next legal threshold read-only.
+7. Soldier death waits 20 seconds, then creates a fresh eligible AI-equivalent incarnation with 0 SoldierXP. RETURN TO HERO QUEUE, dungeon clear and other retirement also discard Soldier incarnation progression.
+8. While Soldier control is active, the underlying Hero is not revival-eligible; missed revivals are not banked. Returning to Hero queue preserves the original Hero elimination timestamp.
+9. Active Soldiers never prevent a cooperative party wipe. Preserve max active contract 4 Heroes + 6 Soldiers = 10.
+
+**Checkpoint gate:** two-player/state-isolation validator proves no Hero/Soldier progression leakage, XP thresholds/caps, death reset, queue/revival state and fresh deterministic generation. Commit and push immediately.
+
+## Checkpoint F — Current-required staging/UI completion
+
+**Goal:** make new RPG state visible and persist the required local leaderboard.
+
+1. Ensure P Character Sheet reports current Hero/Soldier state accurately without becoming an authority.
+2. Ensure I Spellbook reports all six Forms and current Content ownership.
+3. Implement durable server-local `HEROES OF LEGEND` wall board in the shared staging hut beside the character mirror.
+4. Ranking unit is a completed party run. At canonical run end create one immutable ranked-eligible candidate with the full `PlayerCharacterText` of each participating cooperative Hero and the run's Deborah rescue count.
+5. Keep top 10 highest-to-lowest by rescues for that single run and display the canonical party/rescue wording. Preserve ranked-integrity exclusions.
+6. Do not implement the deferred global Steam-backed mirror.
+
+**Checkpoint gate:** restart/persistence validator retains board records; duplicate/invalid submissions do not corrupt ordering; P/I snapshots match server state. Commit and push immediately.
+
+## Checkpoint G — Integrated validation and test handoff
+
+**Goal:** prove the update is coherent enough for one substantial human play pass.
+
+Extend existing `lod_rpg_validate`, test logging, and evidence exporter rather than building redundant harnesses. Automated/static coverage must include:
+
+- Hero cap + banked XP behavior;
+- 60/30/10 tier assignment and fixed named tiers;
+- monster D+3/999 cap and Level-21+ growth without post-20 feats;
+- Wizard d4 and Soldier d8;
+- all six Forms and Contents;
+- every current element/status family positive and negative resolution;
+- current feat registry/effect-handler completeness;
+- AI/human-Soldier automatic feat/capstone progression;
+- SoldierXP 100/250/450 and reincarnation reset;
+- multiplayer identity/state isolation;
+- leaderboard persistence/ranked eligibility;
+- no regressions in already accepted dice, reload, ROF, burst, SMG heat, navigation, Tetris, Push, Crowbar, Deadeye, Quantum and other protected families.
+
+**Integrated human runtime gate:** after all checkpoint gates pass, install the resulting `main` build and play normally on `gm_flatgrass` for approximately **15–20 minutes**. Exercise multiple fights, level gains, Magic/Contents/statuses and staging transitions naturally rather than running dozens of isolated manual feat scripts. Return `console_latest.txt` + `rpg_summary_latest.txt`; add `rpg_session_latest.txt` only when detailed event ordering is needed. Diagnose from logs and perform one focused stabilization pass.
+
+# Compute-budget discipline for Astra/Work
+
+1. Begin from current `main`; verify clean working tree and remote HEAD.
+2. Read only GDD `00`, `01`, and the subsystem tab required by the active checkpoint.
+3. Inspect only existing modules/consumers relevant to that checkpoint before editing.
+4. Prefer one shared authority over many feat/enemy special cases.
+5. Run targeted static checks after each meaningful internal slice, but do not spend human runtime cycles on every feat family.
+6. The moment a checkpoint is coherent and static gates pass: update only necessary coordination notes, **commit and push**.
+7. If compute is running short, finish/validate/commit the current checkpoint. Do not start the next checkpoint and leave both half-finished.
+8. Never spend remaining compute on prose that could instead preserve a working commit.
+9. Do not modify the live GDD unless a genuine design contradiction is discovered. It was formally reconciled before this plan.
+10. Do not implement deferred equipment/economy, expanded Hut Events, global leaderboard service, future Audio Director, crypto/DFT systems, or unrelated polish during this tranche.
+
+# After integrated RPG completion
+
+After the 15–20 minute RPG playtest is accepted or stabilized, resume missing authored major-gameplay content in this order unless newer design direction changes it:
+
+1. Neil + Brute complete encounter behavior;
+2. Gordon the Warden / final arena / Jail Key and rescue flow;
+3. release audit, Steam Deck soak and focused multiplayer regression;
+4. public/VPS/Workshop deployment only when explicitly authorized.
+
+Major enemies must already consume the canonical RPG actor/Level system wherever they exist; this later phase concerns their missing authored encounter/state-machine gameplay, not a separate RPG implementation.

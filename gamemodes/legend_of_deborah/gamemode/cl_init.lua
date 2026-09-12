@@ -32,8 +32,26 @@ include("lod/cl_watcher_polish.lua")
 include("lod/cl_hostile_presentation_safety.lua")
 include("lod/cl_seeker.lua")
 include("lod/cl_magic.lua")
+include("lod/cl_spellbook.lua")
 include("lod/cl_pushback_fx.lua")
 include("lod/cl_character_sheet.lua")
+include("lod/cl_haste.lua")
+
+-- P and I are mutually exclusive even when the Character Sheet auto-opens for a
+-- pending progression choice after a delayed server snapshot. The Spellbook's
+-- own Open path already closes P; mirror that rule at the Sheet's actual Open
+-- seam so asynchronous UI updates cannot stack the two full-screen surfaces.
+do
+    local sheet = LOD.CharacterSheet
+    if sheet and sheet.Open and not sheet.LODSpellbookMutualExclusionInstalled then
+        sheet.LODSpellbookMutualExclusionInstalled = true
+        local baseOpen = sheet.Open
+        function sheet:Open(...)
+            if LOD.Spellbook and LOD.Spellbook.Close then LOD.Spellbook:Close() end
+            return baseOpen(self, ...)
+        end
+    end
+end
 
 -- The sheet's identity column is intentionally narrow at Steam Deck scale. Give
 -- only the hero name another 32 px (roughly 3-4 condensed characters) by borrowing

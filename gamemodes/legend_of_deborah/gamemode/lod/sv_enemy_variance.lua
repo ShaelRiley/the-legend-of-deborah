@@ -190,6 +190,11 @@ function EnemyVariance:Apply(hostile)
         LOD.CombatRolls:ReportEnemyHealth(hostile, healthContract, size,
             campaignPartyScale, variedMax)
     end
+    local progression = LOD.CharacterProgressionSystem
+    local runState = LOD.RunManager and LOD.RunManager.State
+    if progression and progression.AttachMonsterProgression then
+        progression:AttachMonsterProgression(hostile, seed, runState and runState.Level or 1)
+    end
 end
 
 local function installHostilePatch()

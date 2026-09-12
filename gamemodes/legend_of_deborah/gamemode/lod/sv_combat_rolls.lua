@@ -535,6 +535,9 @@ end
 
 hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo)
     if not IsValid(target) or not dmginfo then return end
+    local statusElements = LOD.RPGStatusElements
+    local statusContext = statusElements and statusElements:DamageContext(dmginfo, target)
+    if statusContext and statusContext.statusDamage then return end
     local attacker = dmginfo:GetAttacker()
     local inflictor = dmginfo:GetInflictor()
 
@@ -636,6 +639,12 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         contract.final = math.max(1, Rolls:ResolveActorDamage(contract, attacker, target,
             {physical = true, authoredScale = contract.scale}))
         dmginfo:SetDamage(contract.final)
+        -- Preserve the semantic classification through the later final-defense
+        -- seam. Mind Over Matter (and future physical-only defenses) must use
+        -- the same physical tag that resolved this hostile attack's contract.
+        if statusElements and statusElements.AttachDamageContext then
+            statusElements:AttachDamageContext(dmginfo, {physical = true})
+        end
         Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target))
     end
 end)

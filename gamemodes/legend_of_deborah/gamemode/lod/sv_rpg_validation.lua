@@ -48,7 +48,11 @@ function Validation:Run(printResult)
         if not RPG.AbilitySet[ability] then addError(errors, "missing ability " .. ability) end
     end
 
-    if constants.MinLevel ~= 1 or constants.MaxLevel ~= 20 then addError(errors, "Level bounds must be 1..20") end
+    if constants.MinLevel ~= 1 or constants.HeroMaxLevel ~= 20
+        or constants.MonsterMaxLevel ~= 999
+    then
+        addError(errors, "actor Level bounds must be Hero 1..20 / monster 1..999")
+    end
     if constants.HeroMaxXP ~= 48000 then addError(errors, "HeroMaxXP must be 48000") end
     if constants.AbilityMin ~= 3 or constants.AbilityMax ~= 30 then addError(errors, "ability bounds must be 3..30") end
     if constants.MagicCapacity ~= 100 then addError(errors, "Magic capacity must remain exactly 100") end
@@ -64,7 +68,7 @@ function Validation:Run(printResult)
     local expectedClasses = {
         fighter = {10, "str", "con"},
         rogue = {8, "dex", "cha"},
-        wizard = {6, "int", "wis"}
+        wizard = {4, "int", "wis"}
     }
     for classId, expected in pairs(expectedClasses) do
         local definition = RPG.Classes[classId]
@@ -75,6 +79,23 @@ function Validation:Run(printResult)
             if definition.favoredAbilities[1] ~= expected[2] or definition.favoredAbilities[2] ~= expected[3] then
                 addError(errors, classId .. " favored abilities mismatch")
             end
+        end
+    end
+
+    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 20 then
+        addError(errors, "archetype progression template count must be 20")
+    end
+    for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates or {}) do
+        local weights = template.aiClassWeights or {}
+        local totalWeight = (weights.fighter or 0) + (weights.rogue or 0) + (weights.wizard or 0)
+        if totalWeight ~= 100 then addError(errors, archetypeId .. " AI class weights") end
+        for _, ability in ipairs(RPG.Abilities) do
+            if type(template.baseAbilities and template.baseAbilities[ability]) ~= "number" then
+                addError(errors, archetypeId .. " missing base " .. ability)
+            end
+        end
+        if type(template.progressionHitDieSides) ~= "number" then
+            addError(errors, archetypeId .. " progression hit die")
         end
     end
 
@@ -94,7 +115,7 @@ function Validation:Run(printResult)
         end
     end
 
-    validateSchema(errors, "ProgressionState", {"actorId", "level", "xp", "classId", "hitDieRollsByLevel", "featStackCounts", "pendingFeatSlots", "classCapstoneFeatId", "capabilityTags"})
+    validateSchema(errors, "ProgressionState", {"actorId", "actorType", "archetypeId", "tierId", "dungeonLevel", "level", "xp", "classId", "hitDieRollsByLevel", "featStackCounts", "pendingFeatSlots", "classCapstoneFeatId", "capabilityTags", "contentIds", "moraleBonus", "usesMagic"})
     validateSchema(errors, "ArchetypeProgressionTemplate", {"archetypeId", "baseAbilities", "aiClassWeights", "progressionHitDieSides", "usesMagic"})
     validateSchema(errors, "DamageContributionLedger", {"effectiveDamageByHeroId", "killingBlowHeroId", "totalEligibleEffectiveDamage", "resolved"})
     validateSchema(errors, "DefensiveProcState", {"blastProofReadyAtSeconds", "notYetConsumedDungeonNumber"})
@@ -111,6 +132,7 @@ function Validation:Run(printResult)
     if heroState.level ~= 1 or heroState.xp ~= 0 then addError(errors, "new Hero progression state must begin at Level 1 / 0 XP") end
     if aiState.level ~= 1 or aiState.xp ~= nil then addError(errors, "new AI progression state must begin at Level 1 / no XP ledger") end
     if CPS:ClampLevel(0) ~= 1 or CPS:ClampLevel(99) ~= 20 then addError(errors, "Level clamp failed") end
+    if CPS:ClampLevel(5000, "ai") ~= 999 then addError(errors, "monster Level clamp failed") end
     if CPS:AbilityModifier(10) ~= 0 or CPS:AbilityModifier(18) ~= 4 or CPS:AbilityModifier(6) ~= -2 then
         addError(errors, "ABILITY_MOD implementation mismatch")
     end
@@ -130,6 +152,15 @@ function Validation:Run(printResult)
         capstoneCount = capstoneCount + countKeys(definitions)
     end
     if capstoneCount ~= 9 then addError(errors, "class capstone catalog must contain 9 definitions") end
+
+    local actorCallOK, actorOK, actorErrors = pcall(CPS.ValidateActorProgressionCore, CPS)
+    if not actorCallOK then
+        addError(errors, "actor progression validator error: " .. tostring(actorOK))
+    elseif not actorOK then
+        for _, message in ipairs(actorErrors or {}) do
+            addError(errors, "actor progression: " .. message)
+        end
+    end
 
     local featEffects = RPG.FeatEffectSystem
     if not featEffects or not featEffects.ValidateHealthRegen then

@@ -30,6 +30,7 @@ fi
 ADDONS_DIR="$GMOD_DIR/addons"
 TARGET="$ADDONS_DIR/the-legend-of-deborah-dev"
 RPG_DATA_DIR="$GMOD_DIR/data/legend_of_deborah"
+DEV_MODE_MARKER="$RPG_DATA_DIR/dev_checkout_mode.txt"
 CONSOLE_LOG="$GMOD_DIR/console.log"
 CONSOLE_MIRROR="$RPG_DATA_DIR/console_latest.txt"
 CONSOLE_MIRROR_PID="$RPG_DATA_DIR/.console_mirror.pid"
@@ -43,6 +44,39 @@ if [[ -e "$TARGET" && ! -L "$TARGET" ]]; then
 fi
 
 ln -sfn "$REPO_DIR" "$TARGET"
+
+# A dev checkout is explicitly marked in DATA so the gamemode can enable its
+# developer/test command surface during initialization without relying on a
+# +lod_developer_mode launch option. Workshop/public installs do not receive
+# this marker and therefore retain the production default (developer mode off).
+printf 'enabled\n' > "$DEV_MODE_MARKER"
+
+# AG-002R-E used an out-of-repository autorun harness. If an interrupted test
+# leaves it behind, Garry's Mod will otherwise execute it on every startup: it
+# toggles developer mode, performs developer ingress, changes level, chooses a
+# class/feat, and uses the staging portal. Quarantine that known contaminant and
+# remove its persistent phase marker. Never delete unknown autorun files here.
+ROGUE_AUTORUN="$GMOD_DIR/lua/autorun/ag002re_test.lua"
+if [[ -f "$ROGUE_AUTORUN" ]]; then
+  QUARANTINE_DIR="$RPG_DATA_DIR/quarantine"
+  mkdir -p "$QUARANTINE_DIR"
+  stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+  quarantined="$QUARANTINE_DIR/ag002re_test.lua.$stamp"
+  mv "$ROGUE_AUTORUN" "$quarantined"
+  echo "Quarantined stale AG-002R-E autorun harness:"
+  echo "  $quarantined"
+fi
+rm -f "$RPG_DATA_DIR/ag002re_phase.txt"
+
+# Warn about any other Antigravity-style loose autorun scripts rather than
+# silently removing files whose provenance has not been reviewed.
+if [[ -d "$GMOD_DIR/lua/autorun" ]]; then
+  remaining_ag_autoruns="$(find "$GMOD_DIR/lua/autorun" -maxdepth 1 -type f -name 'ag*.lua' -print 2>/dev/null || true)"
+  if [[ -n "$remaining_ag_autoruns" ]]; then
+    echo "WARNING: unreviewed AG-style loose autorun files remain:" >&2
+    printf '%s\n' "$remaining_ag_autoruns" >&2
+  fi
+fi
 
 # Older builds exposed upload-facing *.log symlinks in the checkout. They are no
 # longer the supported upload path because some Steam Deck file pickers reject
@@ -86,9 +120,13 @@ fi
 
 echo "The Legend of Deborah development checkout is mounted at:"
 echo "  $TARGET -> $REPO_DIR"
+echo "Developer mode autostart marker:"
+echo "  $DEV_MODE_MARKER"
 echo
 echo "Full console capture requires these one-time Steam launch options:"
 echo "  -condebug -conclearlog"
+echo "Do not add +lod_developer_mode 1; install_dev.sh now enables developer mode"
+echo "for this dev checkout before gamemode module gating."
 echo "Console mirror watcher: PID $mirror_pid"
 echo "  $CONSOLE_LOG -> $CONSOLE_MIRROR"
 echo

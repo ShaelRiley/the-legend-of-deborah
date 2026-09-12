@@ -237,6 +237,8 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
 
     local fraction = math.Clamp(tonumber(derived.hpToMagicDiversionFraction) or 0, 0, 1)
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and statusElements:Has(target, "arcane_shattered") then fraction = 0 end
     if fraction <= 0 then return result end
     local magic = LOD.Magic
     local ps = magic and magic._EnsureState and magic:_EnsureState(target) or nil
@@ -298,9 +300,14 @@ function Attribution:Record(target, dmginfo)
 end
 
 local function xpValue(hostile)
-    local base = BASE_XP[string.lower(tostring(hostile.LODArchetypeId or ""))]
+    local rawId = string.lower(tostring(hostile.LODArchetypeId or ""))
+    local normalizedId = RPG.ArchetypeProgressionAliases[rawId] or rawId
+    local template = RPG.ArchetypeProgressionTemplates[normalizedId]
+    local base = template and template.baseXp or BASE_XP[rawId]
     if not base then return 0 end
-    local level = math.Clamp(math.floor(tonumber(hostile.LODCharacterLevel) or 1), 1, 20)
+    local progressionState = hostile.LODProgressionState
+    local level = math.Clamp(math.floor(tonumber(progressionState and progressionState.level
+        or hostile.LODCharacterLevel) or 1), 1, RPG.Constants.MonsterMaxLevel)
     return math.max(5, 5 * math.floor((base * (1 + 0.05 * (level - 1))) / 5 + 0.5))
 end
 
@@ -384,6 +391,9 @@ function GM:EntityTakeDamage(target, dmginfo)
     if IsValid(target) and target:IsPlayer() then
         defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
+    if IsValid(target) and AbilityRules.ApplyNotYetDefense then
+        AbilityRules:ApplyNotYetDefense(target, dmginfo)
+    end
     local featEffects = RPG.FeatEffectSystem
     if IsValid(target) and featEffects and featEffects.OnEffectiveDamage then
         local effectiveDamage = dmginfo and dmginfo:GetDamage() or 0
@@ -391,6 +401,10 @@ function GM:EntityTakeDamage(target, dmginfo)
             effectiveDamage = math.max(effectiveDamage, defenseResult.actualMagicDiversion)
         end
         featEffects:OnEffectiveDamage(target, effectiveDamage)
+    end
+    local statusElements = LOD.RPGStatusElements
+    if IsValid(target) and statusElements and statusElements.ObserveDamage then
+        statusElements:ObserveDamage(target, dmginfo, defenseResult)
     end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
 end

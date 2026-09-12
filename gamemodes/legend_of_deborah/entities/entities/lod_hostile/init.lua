@@ -511,8 +511,10 @@ function ENT:_SpawnSoldierBolt(aimDirection, shotIndex)
         local burst = self.LODSoldierBurst
         local shot = burst and burst.pattern and burst.pattern[shotIndex]
         if shot and shot.veer then
-            ang.y = ang.y + shot.yaw
-            ang.p = ang.p + shot.pitch
+            local statusElements = LOD.RPGStatusElements
+            local aimMultiplier = statusElements and statusElements:AimMultiplier(self) or 1
+            ang.y = ang.y + shot.yaw * aimMultiplier
+            ang.p = ang.p + shot.pitch * aimMultiplier
         end
     end
     direction = ang:Forward()

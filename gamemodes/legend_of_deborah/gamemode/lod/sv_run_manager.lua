@@ -611,6 +611,14 @@ function RunManager:AdvanceLevel()
         end
     end
 
+    -- The new dungeon raises the universal D+3 ceiling before players enter the
+    -- Hermit staging phase. Resolve every newly legal banked Hero level now, in
+    -- chronological order, while keeping XP itself untouched.
+    local progression = LOD.CharacterProgressionSystem
+    if progression and progression.ProcessBankedHeroXP then
+        progression:ProcessBankedHeroXP(self)
+    end
+
     local ok, result = self:BuildCurrentLevel()
     if not ok then
         ErrorNoHalt("[LOD] Next-level build failed: " .. tostring(result) .. "\n")

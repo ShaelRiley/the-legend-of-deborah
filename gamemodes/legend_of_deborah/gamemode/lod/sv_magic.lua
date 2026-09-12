@@ -216,6 +216,8 @@ end
 
 function Magic:CastForceShout(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    local statusElements = LOD.RPGStatusElements
+    if statusElements and not statusElements:CanInitiateMagic(ply) then return false end
     if RunManager and RunManager.IsActivePlayer and not RunManager:IsActivePlayer(ply) then return false end
     local state = RunManager and RunManager.State
     if not state or state.Failed or state.LevelCleared or state.SimulationFrozen then return false end
@@ -288,6 +290,9 @@ function Magic:CastForceShout(ply)
             info:SetDamageType(DMG_SONIC)
             info:SetDamagePosition(hostile:WorldSpaceCenter())
             info:SetDamageForce(vector_origin)
+            if statusElements and statusElements.AttachDamageContext then
+                statusElements:AttachDamageContext(info, {magic = true})
+            end
             hostile:TakeDamageInfo(info)
 
             local defeated = wasAlive and (not IsValid(hostile)

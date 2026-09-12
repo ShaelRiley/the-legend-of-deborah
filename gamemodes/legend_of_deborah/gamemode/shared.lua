@@ -24,12 +24,14 @@ if SERVER then
     include("lod/sv_rpg_gate_b_catalog.lua")
     include("lod/sv_rpg_gate_c_catalog.lua")
     include("lod/sv_rpg_gate_e_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_status_catalog.lua")
     include("lod/sv_character_progression.lua")
     include("lod/sv_hero_ability_rolls.lua")
     include("lod/sv_rpg_gate_d.lua")
     include("lod/sv_rpg_wizard_rules.lua")
     include("lod/sv_rpg_wizard_rebalance.lua")
     include("lod/sv_rpg_wizard_feedback.lua")
+    include("lod/sv_wizard_arcane_cap.lua")
     include("lod/sv_rpg_presentation.lua")
     include("lod/sv_rpg_major_fx_bridge.lua")
     include("lod/sv_rpg_validation.lua")
@@ -55,6 +57,28 @@ if SERVER then
     include("lod/sv_rpg_gate_e_backpedal.lua")
     include("lod/sv_rpg_gate_e_strafe.lua")
     include("lod/sv_rpg_gate_e_quantum.lua")
+    include("lod/sv_rpg_status_elements.lua")
+    include("lod/sv_rpg_checkpoint_d_status_runtime.lua")
+    include("lod/sv_rpg_checkpoint_d_status_validation.lua")
+    include("lod/sv_rpg_checkpoint_d_core_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_movement_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_summon_feats.lua")
+    include("lod/sv_magic_progression.lua")
+    include("lod/sv_rpg_checkpoint_d_magic_grant_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_astral_reach_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_aura_burst_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_personality_aura_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_direct_cha_damage_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_wis_defense_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_spellward_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_attunement_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_wis_information_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_gps_feat.lua")
+    include("lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_menace_feats.lua")
+    include("lod/sv_rpg_checkpoint_d_panic_feat.lua")
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
@@ -63,10 +87,18 @@ if SERVER then
     -- than relying on the larger client include chain. This keeps the critical
     -- celebration path independent of the combat-roll feed's load order.
     AddCSLuaFile("lod/cl_rpg_major_fx.lua")
+    AddCSLuaFile("lod/cl_rpg_wis_information.lua")
+    AddCSLuaFile("lod/cl_rpg_sixth_sense.lua")
+    AddCSLuaFile("lod/cl_rpg_killer_instinct.lua")
+    AddCSLuaFile("lod/cl_rpg_gps.lua")
 end
 
 if CLIENT then
     include("lod/cl_rpg_major_fx.lua")
+    include("lod/cl_rpg_wis_information.lua")
+    include("lod/cl_rpg_sixth_sense.lua")
+    include("lod/cl_rpg_killer_instinct.lua")
+    include("lod/cl_rpg_gps.lua")
 end
 
 -- Base gamemode's TeamBased example creates Blue/Orange/Sexy teams. Override
@@ -134,6 +166,8 @@ end
 
 function GM:PlayerShouldTakeDamage(victim, attacker)
     if IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim then
+        local statusElements = LOD.RPGStatusElements
+        if statusElements and statusElements:AllowsFriendlyFire(attacker) then return true end
         return false
     end
     return true
