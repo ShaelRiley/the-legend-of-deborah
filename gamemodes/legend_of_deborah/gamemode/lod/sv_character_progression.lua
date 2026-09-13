@@ -1287,7 +1287,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
                 role = roles[ability],
                 base = base,
                 growth = growth,
-                fighterTraining = 0,
+                fighterTraining = soldierState.fighterTraining and soldierState.fighterTraining[ability] or 0,
                 identity = 0,
                 feat = featDelta,
                 provenanceText = string.format("Base %d, Effective %d (%+d)", base, eff, mod)

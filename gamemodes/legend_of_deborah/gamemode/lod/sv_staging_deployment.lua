@@ -311,16 +311,17 @@ function Staging:EnsureRoomDecor()
         and validTorches >= 2
         and IsValid(self.ManualEntity)
         and IsValid(self.MirrorEntity)
+        and IsValid(self.HeroesBoardEntity)
         and IsValid(self.StarterPedestalEntity)
     then
         return true
     end
 
-    for _, ent in ipairs({self.SignEntity, self.ManualEntity, self.MirrorEntity, self.StarterPedestalEntity}) do
+    for _, ent in ipairs({self.SignEntity, self.ManualEntity, self.MirrorEntity, self.HeroesBoardEntity, self.StarterPedestalEntity}) do
         removeEntity(ent)
     end
     for _, torch in ipairs(self.TorchEntities or {}) do removeEntity(torch) end
-    self.SignEntity, self.ManualEntity, self.MirrorEntity, self.StarterPedestalEntity = nil, nil, nil, nil
+    self.SignEntity, self.ManualEntity, self.MirrorEntity, self.HeroesBoardEntity, self.StarterPedestalEntity = nil, nil, nil, nil, nil
     self.TorchEntities = {}
 
     local center, angles = self.HutCenter, self.HutAngles
@@ -386,9 +387,21 @@ function Staging:EnsureRoomDecor()
         self.MirrorEntity = self:_RegisterHutEntity(mirror)
     end
 
+    local board = ents.Create("lod_heroes_of_legend_board")
+    if IsValid(board) then
+        local boardPos = mirrorPos - mirrorAng:Right() * 64
+        boardPos.z = center.z + 10
+        board:SetPos(boardPos)
+        board:SetAngles(mirrorAng)
+        board:Spawn()
+        board:Activate()
+        self.HeroesBoardEntity = self:_RegisterHutEntity(board)
+    end
+
     return IsValid(self.SignEntity)
         and IsValid(self.ManualEntity)
         and IsValid(self.MirrorEntity)
+        and IsValid(self.HeroesBoardEntity)
         and IsValid(self.StarterPedestalEntity)
         and #self.TorchEntities >= 2
 end

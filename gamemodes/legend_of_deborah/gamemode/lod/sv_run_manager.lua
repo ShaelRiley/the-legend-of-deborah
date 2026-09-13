@@ -501,6 +501,8 @@ function RunManager:NewCampaign()
     self.State.CampaignSeed = customSeed ~= 0 and LOD.Seeds.Normalize(customSeed) or self:_DefaultSeed()
     self.State.RosterSeed = customRosterAllowed
         and LOD.Seeds.Normalize(customRosterSeed) or self:_DefaultRosterSeed()
+    self.State.RescueCount = 0
+    self.State.RunId = "run_" .. tostring(self.State.CampaignSeed) .. "_epoch_" .. tostring(self.CampaignEpoch)
     if customRosterAllowed then
         self.State.Ranked = false
         self.State.UnrankedReason = self.State.UnrankedReason or "custom roster seed"
@@ -828,8 +830,37 @@ function RunManager:CompleteLevel(ply)
         end
     end
 
+    self.State.RescueCount = (self.State.RescueCount or 0) + 1
     self.State.LevelCleared = true
     self.State.IntermissionEnd = CurTime() + CC.Progression.IntermissionSeconds
+
+    if LOD.HeroesOfLegend and LOD.HeroesOfLegend.SubmitRun then
+        local partyMembers = {}
+        if self.State.PlayerState then
+            for identity, ps in pairs(self.State.PlayerState) do
+                local name
+                if ps.progressionState and ps.progressionState.characterIdentityPackage then
+                    name = ps.progressionState.characterIdentityPackage.fullDisplayName
+                end
+                if not name or name == "" then
+                    name = "Hero " .. tostring(identity)
+                end
+                table.insert(partyMembers, name)
+            end
+        end
+        if #partyMembers == 0 then
+            partyMembers = {"Lone Adventurer"}
+        else
+            table.sort(partyMembers)
+        end
+
+        local runId = self.State.RunId or ("run_" .. tostring(self.State.CampaignSeed or 1000))
+        LOD.HeroesOfLegend:SubmitRun({
+            runId = runId,
+            rescueCount = self.State.RescueCount,
+            partyMembers = partyMembers
+        })
+    end
     LOD.ProgressionDirector:Announce(string.format("DEBORAH RESCUED — LEVEL %d CLEAR", self.State.Level))
     LOD.ProgressionDirector:SyncAll()
     print(string.format("[LOD] Level %d cleared by %s; advancing in %d seconds", self.State.Level, ply:Nick(), CC.Progression.IntermissionSeconds))

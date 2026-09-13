@@ -8,28 +8,32 @@
 
 ## Current preservation point
 
-Checkpoints A, B, C, D, and E are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
+Checkpoints A, B, C, D, E, and F are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
 
-### Checkpoint E — Static & Deterministic Closure (AG-008 / AG-008R1 Repair)
+### Checkpoint F — Heroes of Legend Leaderboard Closure (AG-009 / AG-009R1)
 
-Task **AG-008R1** repaired character sheet snapshot compatibility, deep multi-scenario RPG parity validation, and contract testing for Checkpoint E:
+Task **AG-009R1** completed the server-local HEROES OF LEGEND completed-run leaderboard authority, persistence, wall-board display, and tie-break resolution:
 
-- **AI/Human Soldier RPG Parity:** Verified 100% deterministic RPG generation parity between `human_soldier` and `ai` actor types across 5 distinct dungeon level / seed scenarios (`DL 1`, `DL 5`, `DL 10`, `DL 20`, `DL 25`), comparing all shared RPG build fields byte-for-byte (`tierId`, `dungeonLevel`, `level`, `classId`, `primaryAbility`, `secondaryAbilities`, `baseAbilities`, `growthAbilities`, `fighterTraining`, `effectiveAbilities`, `progressionHitDieSides`, `hitDieRollsByLevel`, `featSlotsGranted`, `featIds`, `featStackCounts`, `classCapstoneFeatId`, `capabilityTags`, `contentIds`, `usesMagic`, `derivedStats`).
-- **Character Sheet Snapshot & Renderer Contract:** Repaired `CPS:BuildClientSnapshot(ply)` for Soldiers:
-  - Empty `identityTraits = {}` array to prevent Hero trait schema dereference crashes.
-  - Full ability row schema (`score`, `modifier`, `role`, `base`, `growth`, `fighterTraining=0`, `identity=0`, `feat`, `label`).
-  - Enriched hit-die ledger rolls (`level`, `formula`, `values`, `total`, `conBonus`, `hpGain`, `capped`).
-  - Authoritative `featSlotsGranted` and `featStackCounts` for ordinary feats ledger.
-  - Read-only capstone definition snapshot (`resolved = true`, `selected = true`) for Level 20 Soldiers.
-- **Client Sheet Renderer:** Updated `cl_character_sheet.lua` with dedicated `"Soldier Incarnation"` role panel and `"Soldier progression d8"` label.
-- **Contract Test Suite:** Created `tools/test_soldier_character_sheet.lua` exercising production `BuildClientSnapshot` and emulating client widget traversal with 0 errors.
-- **4 + 6 + 10 Config Contract:** Enforced `CC.MaxActivePlayers = 4`, `CC.MaxActiveSoldiers = 6`, and `CC.Campaign.MaxPlayedIdentities = 10` in `sh_config.lua`.
-- **Auto Runtime Hook Removal:** Removed `InitPostEntity` autostart hook from `sv_human_soldier_runtime_validation.lua`.
-- **Authored-Content Ambiguity:** `CANONICAL SOLDIER NAMING DETAIL UNDEFINED` in live GDD; using `"Human Soldier"` as presentation fallback.
-- **Engine Runtime Acceptance:** Garry's Mod engine runtime acceptance is explicitly deferred to Checkpoint G.
+- **Canonical Ranking & Tie Rule:** 
+  - Primary ranking: Deborah rescue count, descending (`rescueCount` DESC).
+  - Canonical tie-break: Equal rescue count → earlier completed party run ranks higher (`completionOrder` ASC).
+  - Unrelated record properties (alphabetical party member text, player SteamID, timestamp, etc.) do NOT affect ranking.
+- **Completion Sequence Mechanism:**
+  - Implemented server-authoritative monotonic completion counter (`completionOrder`) in `sv_heroes_of_legend.lua`.
+  - Assigned exactly once when a qualifying party run completes; monotonically increasing within persisted leaderboard history (`the_legend_of_deborah/heroes_of_legend.json`); immutable after assignment.
+  - Idempotent `SubmitRun` guards run identity (`runId`), updating rescue counts without creating duplicate records or consuming new sequence numbers.
+- **Top 10 Cutoff Behavior:**
+  - Canonical sorting (`rescueCount` DESC, `completionOrder` ASC) applied before truncation.
+  - At the #10/#11 boundary, earlier equal-scoring runs remain above later equal-scoring runs; later runs cannot displace earlier equal-scoring runs.
+- **Staging Hut Wall-Board Entity:**
+  - Registered `lod_heroes_of_legend_board` entity beside `lod_staging_mirror` in `sv_staging_deployment.lua:EnsureRoomDecor()`.
+  - Client 3D2D renderer (`cl_init.lua`) renders top 10 runs with wording contract: `<PartyRunMemberList> — Rescued Deborah <N> time` (if N=1) / `times` (if N!=1).
+- **Validation:**
+  - Created 22-point deterministic validator `tools/test_checkpoint_f_closure.lua` passing all requirements (ranking order, completion sequence monotonicity, top-10 cutoff stability, idempotency, persistence save/load, and text formatting contract).
+  - All static syntax checks and regression suites (`test_soldier_character_sheet.lua`, `test_checkpoint_e_closure.lua`) pass with 0 errors.
 
-Checkpoint E is **STATICALLY / DETERMINISTICALLY COMPLETE**.
+Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**.
 
 ## Next work
 
-Proceed to Checkpoint F static/deterministic closure according to execution policy, followed by Checkpoint G automated integration and single unified GMod engine human test pass on `gm_flatgrass`.
+Proceed to Checkpoint G automated integration and single unified GMod engine human test pass on `gm_flatgrass`.
