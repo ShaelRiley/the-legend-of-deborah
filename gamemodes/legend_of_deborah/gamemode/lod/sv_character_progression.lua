@@ -1208,7 +1208,29 @@ end
 function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local runManager = LOD.RunManager
     local ps = runManager and runManager:GetPlayerState(ply)
-    local state = ps and ps.progressionState
+    local isSoldier = runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply)
+    local soldierState = isSoldier and LOD.SoldierProgression and LOD.SoldierProgression:StateFor(ply)
+    local state = soldierState or (ps and ps.progressionState)
+    if isSoldier and soldierState then
+        local nextTh = LOD.SoldierProgression and LOD.SoldierProgression:NextThreshold(soldierState.soldierXP or 0)
+        return {
+            identity = (ps and ps.identity) or "soldier",
+            characterName = "Human Soldier",
+            model = "models/player/combine_soldier.mdl",
+            level = soldierState.level or 1,
+            classId = soldierState.classId or "soldier",
+            className = "Human Soldier",
+            isSoldier = true,
+            soldierXP = soldierState.soldierXP or 0,
+            nextThreshold = nextTh,
+            soldierEarnedLevels = soldierState.soldierEarnedLevels or 0,
+            derivedStats = soldierState.derivedStats or {maxHP = 40, ac = 12},
+            ownedFeats = {},
+            pendingFeatCount = 0,
+            lives = 0,
+            eliminated = true
+        }
+    end
     local package = state and state.characterIdentityPackage
     if not package then return nil end
 

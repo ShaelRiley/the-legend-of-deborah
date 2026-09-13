@@ -246,9 +246,16 @@ function Loot:_OldestEliminatedTeammate(excludeIdentity)
     local chosenState
     for id, ps in pairs(RunManager.State.PlayerState or {}) do
         if id ~= excludeIdentity and ps.eliminated and (ps.lives or 0) <= 0 then
-            if not chosenState or (ps.eliminatedSince or math.huge) < (chosenState.eliminatedSince or math.huge) then
-                chosenId = id
-                chosenState = ps
+            local candidatePly
+            for _, p in ipairs(player.GetAll()) do
+                if identityOf(p) == id then candidatePly = p break end
+            end
+            local isSoldierActive = candidatePly and RunManager and RunManager.IsSoldierControl and RunManager:IsSoldierControl(candidatePly)
+            if not isSoldierActive then
+                if not chosenState or (ps.eliminatedSince or math.huge) < (chosenState.eliminatedSince or math.huge) then
+                    chosenId = id
+                    chosenState = ps
+                end
             end
         end
     end
@@ -288,6 +295,7 @@ function Loot:_GrantExtraLife(ply)
     for _, candidate in ipairs(player.GetAll()) do
         if identityOf(candidate) == revivedId then
             RunManager.State.ActiveIdentity[revivedId] = true
+            if RunManager.RetireSoldier then RunManager:RetireSoldier(candidate) end
             RunManager:_SyncPlayerVars(candidate)
             timer.Simple(0, function()
                 if IsValid(candidate) and not candidate:Alive() then candidate:Spawn() end

@@ -109,14 +109,41 @@ function RunManager:_ActiveCount()
     return count
 end
 
+function RunManager:IsSoldierControl(ply)
+    if not IsValid(ply) then return false end
+    if ply.LODHumanSoldierProgressionState then return true end
+    local system = LOD.SoldierProgression
+    return system and system:StateFor(ply) ~= nil or false
+end
+
+function RunManager:AttachSoldier(ply, seed, hp, level)
+    local system = LOD.SoldierProgression
+    if not system or not IsValid(ply) then return nil end
+    level = level or math.max(1, math.floor(tonumber(self.State and self.State.Level) or 1))
+    seed = seed or LOD.Seeds.Derive(self.State.LevelSeed or 1, "soldier:" .. (self:IdentityOf(ply) or "0") .. ":" .. math.floor(CurTime()))
+    return system:Attach(ply, seed, hp or 40, level)
+end
+
+function RunManager:RetireSoldier(target)
+    local system = LOD.SoldierProgression
+    if not system then return false end
+    return system:Retire(target)
+end
+
 function RunManager:_SyncPlayerVars(ply)
     if not IsValid(ply) then return end
     local id = self:IdentityOf(ply)
     local ps = id and self.State.PlayerState[id]
+    local isSoldier = self:IsSoldierControl(ply)
     ply:SetNW2Bool("LOD_PlayedIdentity", ps ~= nil)
     ply:SetNW2Int("LOD_Lives", ps and ps.lives or 0)
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
-    ply:SetNW2String("LOD_Character", ps and ps.characterName or "Spectator")
+    ply:SetNW2Bool("LOD_IsSoldier", isSoldier)
+    if isSoldier then
+        ply:SetNW2String("LOD_Character", "Human Soldier")
+    else
+        ply:SetNW2String("LOD_Character", ps and ps.characterName or "Spectator")
+    end
     if LOD.CharacterProgressionSystem and LOD.CharacterProgressionSystem.SyncPlayer then
         LOD.CharacterProgressionSystem:SyncPlayer(ply)
     end
@@ -244,17 +271,73 @@ function RunManager:_SortedConnectedPlayers()
     return list
 end
 
+function RunManager:_SortedHeroQueueCandidates()
+    local candidates = {}
+    for _, ply in ipairs(player.GetAll()) do
+        if IsValid(ply) then
+            local id = self:IdentityOf(ply)
+            local ps = id and self.State.PlayerState[id]
+            if not self:IsActivePlayer(ply) then
+                local isEliminatedHero = ps and ps.eliminated == true and (ps.lives or 0) <= 0
+                local eliminatedSince = isEliminatedHero and (ps.eliminatedSince or math.huge) or math.huge
+                local waitingSince = self.State.WaitingSince[id] or math.huge
+                table.insert(candidates, {
+                    ply = ply,
+                    id = id,
+                    ps = ps,
+                    isEliminatedHero = isEliminatedHero,
+                    eliminatedSince = eliminatedSince,
+                    waitingSince = waitingSince,
+                    ordinal = ps and ps.ordinal or (100000 + ply:EntIndex())
+                })
+            end
+        end
+    end
+    table.sort(candidates, function(a, b)
+        if a.isEliminatedHero ~= b.isEliminatedHero then
+            return a.isEliminatedHero
+        end
+        if a.isEliminatedHero then
+            if a.eliminatedSince ~= b.eliminatedSince then
+                return a.eliminatedSince < b.eliminatedSince
+            end
+        else
+            if a.waitingSince ~= b.waitingSince then
+                return a.waitingSince < b.waitingSince
+            end
+        end
+        return a.ordinal < b.ordinal
+    end)
+    return candidates
+end
+
 function RunManager:PromoteWaitingSpectators()
     if not self.State.BuildReady or self.State.Failed then return end
-    for _, ply in ipairs(self:_SortedConnectedPlayers()) do
+    local candidates = self:_SortedHeroQueueCandidates()
+    for _, item in ipairs(candidates) do
         if self:_ActiveCount() >= CC.MaxActivePlayers then break end
-        if not self:IsActivePlayer(ply) and self:TryActivatePlayer(ply) then
-            local ps = self:GetPlayerState(ply)
-            if ps and ps.respawnAt and ps.respawnAt > CurTime() then
-                self:PutInRestrictedSpectator(ply)
-            else
-                ply:UnSpectate()
-                ply:Spawn()
+        local ply = item.ply
+        if IsValid(ply) and not self:IsActivePlayer(ply) then
+            local ps = item.ps
+            if ps and not ps.eliminated and (ps.lives or 0) > 0 then
+                if self:TryActivatePlayer(ply) then
+                    self:RetireSoldier(ply)
+                    if ps.respawnAt and ps.respawnAt > CurTime() then
+                        self:PutInRestrictedSpectator(ply)
+                    else
+                        ply:UnSpectate()
+                        ply:Spawn()
+                    end
+                end
+            elseif not item.isEliminatedHero then
+                if self:TryActivatePlayer(ply) then
+                    if ps and ps.respawnAt and ps.respawnAt > CurTime() then
+                        self:PutInRestrictedSpectator(ply)
+                    else
+                        ply:UnSpectate()
+                        ply:Spawn()
+                    end
+                end
             end
         end
     end
@@ -425,18 +508,57 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
 end
 
 function RunManager:ApplyPlayerState(ply)
-    -- Staging refines IsActivePlayer to mean "already deployed". Player-state
-    -- application must still run for an admitted, undeployed slot, so consult the
-    -- underlying slot authority when it is available. Keeping this decision here
-    -- also prevents a later ApplyPlayerState call from overwriting staging with the
-    -- maze checkpoint.
     local slotActive = self.IsSlotActivePlayer
         and self:IsSlotActivePlayer(ply) or self:IsActivePlayer(ply)
-    if not self.State.BuildReady or not slotActive then return end
+    if not self.State.BuildReady then return end
     local ps = self:GetPlayerState(ply)
-    if not ps or ps.eliminated or ps.lives <= 0 then
+
+    if ps and ps.eliminated and (ps.lives or 0) <= 0 then
+        if not self:IsSoldierControl(ply) then
+            self:AttachSoldier(ply)
+        end
+        ply:UnSpectate()
+        ply:SetTeam(CC.PlayerTeam)
+        ply:SetNoCollideWithTeammates(true)
+        ply:CollisionRulesChanged()
+
+        local soldierModel = "models/player/combine_soldier.mdl"
+        if not util.IsValidModel(soldierModel) then
+            soldierModel = "models/combine_soldier.mdl"
+        end
+        if util.IsValidModel(soldierModel) then
+            ply:SetModel(soldierModel)
+        end
+
+        local soldierState = LOD.SoldierProgression and LOD.SoldierProgression:StateFor(ply)
+        local maxHP = math.max(1, soldierState and soldierState.derivedStats and soldierState.derivedStats.maxHP or 40)
+        ply:SetMaxHealth(maxHP)
+        ply:SetHealth(maxHP)
+        ply:SetArmor(0)
+
+        ply:StripWeapons()
+        ply:RemoveAllAmmo()
+        local wep = ply:Give("weapon_smg1", true)
+        if IsValid(wep) then
+            ply:SetAmmo(90, wep:GetPrimaryAmmoType())
+        end
+
+        ps.respawnAt = nil
+        self:_SyncPlayerVars(ply)
+        ply:SetNW2Bool("LOD_Staged", false)
+        ply:SetNW2Bool("LOD_Deployed", true)
+        ply:SetPos(self.State.CheckpointPos or (self.State.BuildReport and self.State.BuildReport.startPos) or Vector(0, 0, 0))
+        ply:SetEyeAngles(Angle(0, 0, 0))
+        return
+    end
+
+    if not slotActive or not ps or ps.eliminated or ps.lives <= 0 then
         self:PutInRestrictedSpectator(ply)
         return
+    end
+
+    if self:IsSoldierControl(ply) then
+        self:RetireSoldier(ply)
     end
 
     ply:UnSpectate()
@@ -474,10 +596,29 @@ function RunManager:ApplyPlayerState(ply)
 end
 
 function RunManager:HandleDeath(ply)
-    if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or self.State.Failed then return end
+    if not IsValid(ply) or self.State.Failed then return end
+
     local id = self:IdentityOf(ply)
-    local ps = self.State.PlayerState[id]
-    if not ps then return end
+    local ps = id and self.State.PlayerState[id]
+
+    if self:IsSoldierControl(ply) then
+        self:RetireSoldier(ply)
+        if ps then
+            ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
+        end
+        self:_SyncPlayerVars(ply)
+        local deathEpoch = self.State.CampaignEpoch
+        timer.Simple(0, function()
+            if self:IsCampaignEpoch(deathEpoch) and IsValid(ply) and not ply:Alive() then
+                self:PutInRestrictedSpectator(ply)
+            end
+        end)
+        self:PromoteWaitingSpectators()
+        self:EvaluateWipe()
+        return
+    end
+
+    if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or not ps then return end
 
     self:CaptureInventory(ply, ps)
     ps.armor = 0
@@ -488,8 +629,9 @@ function RunManager:HandleDeath(ply)
         ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
     else
         ps.eliminated = true
-        ps.eliminatedSince = CurTime()
+        ps.eliminatedSince = ps.eliminatedSince or CurTime()
         self.State.ActiveIdentity[id] = nil
+        ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
     end
 
     self:_SyncPlayerVars(ply)
@@ -601,6 +743,10 @@ function RunManager:AdvanceLevel()
     self.State.LevelCleared = false
     self.State.ActiveIdentity = {}
 
+    for _, ply in ipairs(player.GetAll()) do
+        self:RetireSoldier(ply)
+    end
+
     for _, ps in pairs(self.State.PlayerState) do
         ps.respawnAt = nil
         if ps.lives <= 0 or ps.eliminated then
@@ -611,9 +757,6 @@ function RunManager:AdvanceLevel()
         end
     end
 
-    -- The new dungeon raises the universal D+3 ceiling before players enter the
-    -- Hermit staging phase. Resolve every newly legal banked Hero level now, in
-    -- chronological order, while keeping XP itself untouched.
     local progression = LOD.CharacterProgressionSystem
     if progression and progression.ProcessBankedHeroXP then
         progression:ProcessBankedHeroXP(self)
@@ -698,9 +841,9 @@ hook.Add("Think", "LOD_RunStateThink", function()
     end
 
     for _, ply in ipairs(player.GetAll()) do
-        if RunManager:IsActivePlayer(ply) and not ply:Alive() then
-            local ps = RunManager:GetPlayerState(ply)
-            if ps and not ps.eliminated and ps.lives > 0 and ps.respawnAt and CurTime() >= ps.respawnAt then
+        local ps = RunManager:GetPlayerState(ply)
+        if (RunManager:IsActivePlayer(ply) or (ps and ps.eliminated)) and not ply:Alive() then
+            if ps and ps.respawnAt and CurTime() >= ps.respawnAt then
                 ps.respawnAt = nil
                 ply:UnSpectate()
                 ply:Spawn()
