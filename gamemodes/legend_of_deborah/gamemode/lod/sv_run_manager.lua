@@ -628,7 +628,8 @@ function RunManager:ApplyPlayerState(ply)
         end
 
         local soldierState = LOD.SoldierProgression and LOD.SoldierProgression:StateFor(ply)
-        local maxHP = math.max(1, soldierState and soldierState.derivedStats and soldierState.derivedStats.maxHP or 40)
+        local baseFallback = CC.Encounter and CC.Encounter.Archetypes and CC.Encounter.Archetypes.soldier and CC.Encounter.Archetypes.soldier.baseHP or 35
+        local maxHP = math.max(1, soldierState and soldierState.derivedStats and soldierState.derivedStats.maxHP or baseFallback)
         ply:SetMaxHealth(maxHP)
         ply:SetHealth(maxHP)
         ply:SetArmor(0)

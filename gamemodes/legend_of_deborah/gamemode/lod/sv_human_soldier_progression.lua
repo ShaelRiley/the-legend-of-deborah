@@ -37,8 +37,9 @@ end
 
 function System:CreateIncarnation(actorSeed, startingHP, level)
     local seed = math.max(1, math.floor(tonumber(actorSeed) or 1))
+    local baseHp = (LOD.Config and LOD.Config.Encounter and LOD.Config.Encounter.Archetypes and LOD.Config.Encounter.Archetypes.soldier and LOD.Config.Encounter.Archetypes.soldier.baseHP) or 35
     local state, err = Progression:GenerateMonsterProgression("soldier", seed,
-        level or dungeonLevel(), startingHP or 40, "human_soldier")
+        level or dungeonLevel(), startingHP or baseHp, "human_soldier")
     if not state then return nil, err end
     state.soldierActorSeed = seed
     state.soldierSpawnLevel = state.level

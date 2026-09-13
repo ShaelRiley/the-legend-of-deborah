@@ -523,13 +523,23 @@ function Sheet:Open(requestFresh)
     local record = paperPanel(canvas)
     record:SetPos(0, leftY)
     record:SetWide(leftWidth)
-    local xpLine = snapshot.xpForNextLevel
-        and string.format("XP: %d / %d", snapshot.xp or 0, snapshot.xpForNextLevel)
-        or string.format("XP: %d / MAX", snapshot.xp or 0)
-    local recordText = string.format(
-        "Starting HP: %d\nCurrent HP: %d / %d\n%s\nLives: %d\nDungeon Level: %d",
-        snapshot.startingHP or 100, snapshot.currentHP or 0, snapshot.maxHP or 100,
-        xpLine, snapshot.lives or 0, snapshot.dungeonLevel or 1)
+    local xpLine
+    if snapshot.isSoldier then
+        xpLine = snapshot.nextThreshold
+            and string.format("SoldierXP: %d / %d (Earned +%d Lvl)", snapshot.soldierXP or 0, snapshot.nextThreshold, snapshot.soldierEarnedLevels or 0)
+            or string.format("SoldierXP: %d / MAX (Earned +%d Lvl)", snapshot.soldierXP or 0, snapshot.soldierEarnedLevels or 0)
+    else
+        xpLine = snapshot.xpForNextLevel
+            and string.format("XP: %d / %d", snapshot.xp or 0, snapshot.xpForNextLevel)
+            or string.format("XP: %d / MAX", snapshot.xp or 0)
+    end
+    local recordText = snapshot.isSoldier
+        and string.format("Starting HP: %d\nCurrent HP: %d / %d\n%s\nRole: Human Soldier (Incarnation-Local)\nDungeon Level: %d",
+            snapshot.startingHP or 35, snapshot.currentHP or 0, snapshot.maxHP or 35,
+            xpLine, snapshot.dungeonLevel or 1)
+        or string.format("Starting HP: %d\nCurrent HP: %d / %d\n%s\nLives: %d\nDungeon Level: %d",
+            snapshot.startingHP or 100, snapshot.currentHP or 0, snapshot.maxHP or 100,
+            xpLine, snapshot.lives or 0, snapshot.dungeonLevel or 1)
     if snapshot.healthRegenEnabled then
         recordText = recordText .. string.format(
             "\nHealth Regen: %.2f HP/s to %d%% MaxHP",
@@ -664,7 +674,9 @@ function Sheet:Open(requestFresh)
     rightY = rightY + 18
     local draftLevel = snapshot.featDraft and snapshot.featDraft.earnedAtLevel or 1
     local draftHeading
-    if not snapshot.classId then
+    if snapshot.isSoldier then
+        draftHeading = "Automatic Soldier Progression"
+    elseif not snapshot.classId then
         draftHeading = "Level-1 Feat Draft"
     elseif snapshot.featDraft and not snapshot.featDraft.resolved then
         draftHeading = string.format("Level-%d Feat Available / %d Pending",
@@ -676,7 +688,13 @@ function Sheet:Open(requestFresh)
         draftHeading,
         rightX, rightY, rightWidth)
     rightY = rightY + featTitleHeight + 8
-    if not snapshot.classId then
+    if snapshot.isSoldier then
+        local hint = label(canvas,
+            "Human Soldier progression is automatic. Feats and stats advance automatically upon reaching SoldierXP thresholds (100 / 250 / 450). No manual choices available.",
+            "LOD_SheetBody", INK)
+        hint:SetPos(rightX, rightY)
+        rightY = rightY + fitWrapped(hint, rightWidth, 42)
+    elseif not snapshot.classId then
         local hint = label(canvas,
             "Commit a class first. The server will then generate and store one deterministic three-card ordinary feat draft.",
             "LOD_SheetBody", INK)

@@ -5,6 +5,7 @@ local C = LOD.Config
 
 C.PlayerTeam = 1
 C.MaxActivePlayers = 4
+C.MaxActiveSoldiers = 6
 
 C.Campaign = {
     MaxPlayedIdentities = 10

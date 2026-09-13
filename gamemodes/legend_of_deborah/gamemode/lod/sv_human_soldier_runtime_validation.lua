@@ -163,12 +163,6 @@ concommand.Add("lod_rpg_ag007r2_runtime_validate", function(ply)
     LOD.AG007R2RuntimeValidation:RunScenario(ply)
 end)
 
--- Auto-run once when map loads on server in dev mode
-hook.Add("InitPostEntity", "LOD_AG007R2_AutoRuntimeValidation", function()
-    timer.Simple(2.0, function()
-        local cvDev = GetConVar("lod_developer_mode")
-        if cvDev and cvDev:GetBool() then
-            LOD.AG007R2RuntimeValidation:RunScenario()
-        end
-    end)
+concommand.Add("lod_rpg_ag008_runtime_validate", function(ply)
+    LOD.AG007R2RuntimeValidation:RunScenario(ply)
 end)

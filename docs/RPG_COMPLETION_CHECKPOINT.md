@@ -8,21 +8,21 @@
 
 ## Current preservation point
 
-Checkpoints A, B, C, and D are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains pending.
+Checkpoints A, B, C, D, and E are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
 
-### Checkpoint E — Human Soldier Queue Hardening & Authority Realignment (AG-007R2 Repair)
+### Checkpoint E — Static & Deterministic Closure (AG-008)
 
-Task **AG-007R2** hardened the Soldier queue lifecycle and authority against canonical design laws:
+Task **AG-008** completed the static and deterministic requirements of Checkpoint E:
 
-- **Central Queue Eligibility Authority:** Established `RunManager:IsHeroRevivalQueueEligible(plyOrIdentity)` as the single central authority for queue eligibility. All same-dungeon revival selection (`Loot:_OldestEliminatedTeammate`) and revival execution (`RunManager:ReviveIdentity`) enforce this predicate.
-- **ReturnToHeroQueue Safety:** `RunManager:ReturnToHeroQueue(ply)` explicitly rejects active Hero callers (`ps.lives > 0` and `not ps.eliminated`), mutating zero state. For active Soldiers or `SOLDIER_RESPAWN_WAIT`, it retires the Soldier, clears wait states, preserves original `ps.eliminatedSince`, and restores queue eligibility.
-- **ReviveIdentity Invariant Enforcement:** `RunManager:ReviveIdentity(identity)` validates `IsHeroRevivalQueueEligible` before mutating any lives or elimination variables. Calling `ReviveIdentity` on an active Soldier or player in `SOLDIER_RESPAWN_WAIT` returns `false` without side effects (does not forcibly retire active Soldiers).
-- **Canonical AI Soldier Authority:** Human-controlled Soldier RPG generation derives directly from `LOD.Config.Encounter.Archetypes.soldier` (`baseHP=35`, `model="models/combine_soldier.mdl"`), eliminating hardcoded surrogate values.
-- **ESC Seam & Client UI:** Integrated `cl_soldier_queue_ui.lua` providing client prompt integration and backing concommand `"lod_soldier_return_hero_queue"`.
-- **Validation & Runtime Status:** Headless deterministic validator `tools/test_human_soldier_lifecycle.lua` passes all AG-007R2 safety and invariant checks with 0 discrepancies. Genuine Garry's Mod engine runtime execution was **BLOCKED** headlessly due to missing host 32-bit system dependencies (`libgconf-2.so.4` required by Awesomium/client.so).
+- **AI/Human Soldier RPG Parity:** Verified 100% deterministic RPG generation parity between `human_soldier` and `ai` actor types via `LOD_CPS:GenerateMonsterProgression("soldier", seed, level, 35, actorType)` across all 11 progression fields (`tierId`, `level`, `classId`, `primaryAbility`, `growthProfile`, `baseAbilities`, `effectiveAbilities`, `progressionHitDieSides`, `derivedStats` including `maxHP`, `featIds`, and `featStackCounts`).
+- **4 + 6 + 10 Config Contract:** Enforced `CC.MaxActivePlayers = 4`, `CC.MaxActiveSoldiers = 6`, and `CC.Campaign.MaxPlayedIdentities = 10` in `sh_config.lua`.
+- **Read-Only Character Sheet & Choice Guard Rails:** Updated `CPS:BuildClientSnapshot(ply)` for Soldier control to return full read-only RPG snapshot metrics (`readOnly = true`, abilities, hit die rolls, ordinary feats, derived stats, SoldierXP thresholds). Blocked `CommitClass`, `CommitFeat`, `CommitCapstone` RPCs for Soldier callers with `"Soldier progression choices are read-only."`. Updated `cl_character_sheet.lua` to render clear Soldier read-only indicators.
+- **Auto Runtime Hook Removal:** Removed `InitPostEntity` autostart hook from `sv_human_soldier_runtime_validation.lua`, keeping explicit validation concommands `lod_rpg_ag007r2_runtime_validate` and `lod_rpg_ag008_runtime_validate`.
+- **20-Point Deterministic Test Suite:** Created `tools/test_checkpoint_e_closure.lua` verifying all 20 required Checkpoint E requirements with 0 discrepancies.
+- **Engine Runtime Acceptance:** Garry's Mod engine runtime acceptance is explicitly deferred to Checkpoint G.
 
-Checkpoint E remains **OPEN** pending remaining inventory-proxy item grab behavior and subsequent Checkpoint-E requirements.
+Checkpoint E is **STATICALLY / DETERMINISTICALLY COMPLETE**.
 
 ## Next work
 
-Await Checkpoint E inventory-proxy and subsequent directives from Sol.
+Proceed to Checkpoint F static/deterministic closure according to execution policy, followed by Checkpoint G automated integration and single unified GMod engine human test pass on `gm_flatgrass`.

@@ -647,6 +647,9 @@ end
 
 function CharacterProgressionSystem:CommitClass(ply, classId)
     local runManager = LOD.RunManager
+    if runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply) then
+        return false, "Soldier progression choices are read-only."
+    end
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
     local class = RPG.Classes[classId]
@@ -678,6 +681,9 @@ end
 
 function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLevel)
     local runManager = LOD.RunManager
+    if runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply) then
+        return false, "Soldier progression choices are read-only."
+    end
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
     local draft = state and self:_NextPendingOrdinaryDraft(state) or nil
@@ -743,6 +749,9 @@ end
 
 function CharacterProgressionSystem:CommitCapstone(ply, featId)
     local runManager = LOD.RunManager
+    if runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply) then
+        return false, "Soldier progression choices are read-only."
+    end
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
     local draft = state and state.pendingClassCapstoneDraft
@@ -1213,22 +1222,87 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local state = soldierState or (ps and ps.progressionState)
     if isSoldier and soldierState then
         local nextTh = LOD.SoldierProgression and LOD.SoldierProgression:NextThreshold(soldierState.soldierXP or 0)
+        local CC = LOD.Config
+        local archetype = CC and CC.Encounter and CC.Encounter.Archetypes and CC.Encounter.Archetypes.soldier
+        local modelName = (archetype and archetype.model) or soldierState.model or "models/combine_soldier.mdl"
+
+        local ownedFeats = {}
+        for _, featId in ipairs(soldierState.featIds or {}) do
+            local definition = self:_FindFeat(featId)
+            if definition then ownedFeats[#ownedFeats + 1] = featSnapshot(definition, true) end
+        end
+
+        local hitDieRolls = {}
+        if soldierState.hitDieRollsByLevel then
+            for lvl = 1, (soldierState.level or 1) do
+                local roll = soldierState.hitDieRollsByLevel[lvl]
+                if roll then hitDieRolls[#hitDieRolls + 1] = roll end
+            end
+        end
+
+        local classDef = RPG.Classes and RPG.Classes[soldierState.classId]
+        local className = classDef and classDef.name or (soldierState.classId and string.upper(soldierState.classId)) or "Human Soldier"
+
+        local abilities = {}
+        for _, name in ipairs(ALL_ABILITIES) do
+            local base = soldierState.baseAbilities and soldierState.baseAbilities[name] or 10
+            local eff = soldierState.effectiveAbilities and soldierState.effectiveAbilities[name] or base
+            local mod = math.floor((eff - 10) / 2)
+            abilities[#abilities + 1] = {
+                name = name,
+                label = string.upper(name),
+                base = base,
+                effective = eff,
+                modifier = mod,
+                formattedModifier = (mod >= 0 and "+" or "") .. tostring(mod),
+                provenanceText = string.format("Base %d, Effective %d (%+d)", base, eff, mod)
+            }
+        end
+
         return {
             identity = (ps and ps.identity) or "soldier",
             characterName = "Human Soldier",
-            model = "models/player/combine_soldier.mdl",
+            fullDisplayName = "Human Soldier",
+            avatarDescriptor = "Combine Soldier",
+            model = modelName,
+            tierId = soldierState.tierId or "tier_1",
+            dungeonLevel = soldierState.dungeonLevel or 1,
             level = soldierState.level or 1,
             classId = soldierState.classId or "soldier",
-            className = "Human Soldier",
+            className = className,
+            classHitDie = soldierState.progressionHitDieSides or 8,
+            classPassive = classDef and classDef.passiveText or "Automatic Monster Combat Progression",
+            primaryAbility = soldierState.primaryAbility,
+            secondaryAbilities = soldierState.secondaryAbilities,
+            abilities = abilities,
             isSoldier = true,
+            readOnly = true,
             soldierXP = soldierState.soldierXP or 0,
             nextThreshold = nextTh,
             soldierEarnedLevels = soldierState.soldierEarnedLevels or 0,
-            derivedStats = soldierState.derivedStats or {maxHP = 40, ac = 12},
-            ownedFeats = {},
+            growthProfile = soldierState.growthProfile or {},
+            baseAbilities = soldierState.baseAbilities or {},
+            effectiveAbilities = soldierState.effectiveAbilities or {},
+            progressionHitDieSides = soldierState.progressionHitDieSides or 8,
+            hitDieRolls = hitDieRolls,
+            startingHP = soldierState.startingHP or 35,
+            currentHP = IsValid(ply) and ply:Health() or (soldierState.derivedStats and soldierState.derivedStats.maxHP or 35),
+            maxHP = soldierState.derivedStats and soldierState.derivedStats.maxHP or 35,
+            derivedStats = soldierState.derivedStats or {maxHP = 35, ac = 12},
+            ownedFeats = ownedFeats,
+            featSlotsGranted = #ownedFeats,
+            ordinaryFeatsCommitted = #ownedFeats,
+            featStackState = soldierState.featStackCounts or {},
+            selectedCapstone = soldierState.classCapstoneFeatId,
             pendingFeatCount = 0,
             lives = 0,
-            eliminated = true
+            eliminated = true,
+            requiredChoicesComplete = true,
+            deploymentComplete = true,
+            identityTraits = {
+                {title = "Role", text = "Human Soldier combat incarnation. Disposable role attached to active dungeon run."},
+                {title = "Progression", text = "Automatic d8 monster progression. Earns SoldierXP at 100 / 250 / 450 thresholds."}
+            }
         }
     end
     local package = state and state.characterIdentityPackage
