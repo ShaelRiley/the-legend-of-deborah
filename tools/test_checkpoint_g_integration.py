@@ -43,6 +43,7 @@ SUITES = [
     ("Protected: Dev Ingress", ["python3", "tools/run_lua54.py", "tools/test_dev_ingress.lua"]),
     ("Protected: Control Magic", ["python3", "tools/run_lua54.py", "tools/test_gate_e_control_magic.lua"]),
     ("Protected: Magic Recovery", ["python3", "tools/run_lua54.py", "tools/test_gate_e_magic_recovery.lua"]),
+    ("Protected: Behavioral Regressions Gate", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_g_protected_regressions.lua"]),
 ]
 
 def main():
@@ -79,7 +80,7 @@ def main():
         print("\n[FAIL] CHECKPOINT_G_AUTOMATED_GATE_FAILED — One or more test suites failed.")
         sys.exit(1)
     else:
-        print("\nCHECKPOINT_G_AUTOMATED_GATE_PASS — All 24 test suites verified cleanly with 0 failures.")
+        print(f"\nCHECKPOINT_G_AUTOMATED_GATE_PASS — All {len(SUITES)} test suites verified cleanly with 0 failures.")
         sys.exit(0)
 
 if __name__ == "__main__":

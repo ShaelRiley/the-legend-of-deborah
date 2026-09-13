@@ -39,13 +39,13 @@ Task **AG-009R2** repaired HEROES OF LEGEND run-end submission and completed Che
 
 Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**.
 
-### Checkpoint G — Integrated Validation & Playtest Candidate (AG-010)
+### Checkpoint G — Integrated Validation & Playtest Candidate (AG-010 / AG-010R1)
 
-Task **AG-010** constructed the integrated automated RPG validation gate and prepared the playtest candidate for Shael's single organic `gm_flatgrass` session:
+Tasks **AG-010** and **AG-010R1** constructed the integrated automated RPG validation gate and protected regression harness, preparing the playtest candidate for Shael's single organic `gm_flatgrass` session:
 
-- **Playtest Candidate SHA:** `9d51942095d126e52a7aea65ebb0441bef454324`
+- **Playtest Candidate:** current committed `hybrid/antigravity` HEAD. The machine-exact candidate SHA is supplied by courier `git_head.txt`.
 - **Integrated Automated Gate Runner:** `tools/test_checkpoint_g_integration.py`
-- **Suite Matrix Results:** 24/24 test suites passed with 0 failures (`CHECKPOINT_G_AUTOMATED_GATE_PASS`), covering:
+- **Suite Matrix Results:** 25/25 test suites passed with 0 failures (`CHECKPOINT_G_AUTOMATED_GATE_PASS`), covering:
   - Actor core, Level caps (Hero 20 / Monster 999), 60/30/10 tier generation, fixed named tiers, monster D+3 ceiling;
   - Status & Element core matrices, damage->survival->rider ordering, tick damage recursion safety;
   - Magic 6 Forms (Blast, Beam, Bomb, Missile, Bolt, Summon) and 6 Contents (Earth, Fire, Dark, Ice, Light, Electric) + RAW state;
@@ -53,7 +53,8 @@ Task **AG-010** constructed the integrated automated RPG validation gate and pre
   - Human Soldier RPG progression, XP (+1 HP / +50 life loss), 100/250/450 thresholds, reincarnation reset, lifecycle queue isolation;
   - Staging & UI (P Character Sheet, I Spellbook mutual exclusion, read-only Soldier snapshot);
   - HEROES OF LEGEND leaderboard run-end submission, ranked eligibility, participant authority, immutability, tie order, and exact wording;
-  - All protected regression families (Deadeye, Crowbar, Pusher, Map Movement, Quantum, Strafe, Backpedal, Winning Personality, Deadcrab Dispatch, Dev Ingress, Control Magic, Magic Recovery).
+  - Protected behavioral regression harness (`tools/test_checkpoint_g_protected_regressions.lua`), directly invoking actual production validators for combat/exploding dice, reload cadence, rate of fire, authored burst size, SMG heat, and Tetris / Russian Asset;
+  - All protected regression families (Exploding Dice, Reload Cadence, Rate of Fire, Authored Burst Size, SMG Heat, Tetris / Russian Asset, Deadeye, Crowbar, Pusher, Map Movement, Quantum, Strafe, Backpedal, Winning Personality, Deadcrab Dispatch, Dev Ingress, Control Magic, Magic Recovery).
 - **Subsystem & Seam Validation:** `lod_rpg_validate` extended to verify `MagicProgression`, `HeroesOfLegend`, and `SoldierProgression` subsystem authorities without destructive state modification.
 - **Evidence Integrity & Telemetry:** Verified `console_latest.txt` and `rpg_summary_latest.txt` evidence export path. No static/headless script writes to engine `console.log` or `garrysmod/data/`.
 - **Local Playtest Candidate:** Installed via `tools/install_dev.sh` to local Garry's Mod dev checkout. Prepared `PLAYTEST_SHAEL.txt` instructions for ONE ~15–20 minute organic `gm_flatgrass` human play session.
@@ -64,4 +65,4 @@ Task **AG-010** constructed the integrated automated RPG validation gate and pre
 
 ## Next work
 
-Shael Riley organic 15–20 minute `gm_flatgrass` human play session using candidate `[HEAD]`, followed by evidence review by Sol for final integrated RPG completion acceptance.
+Shael Riley organic 15–20 minute `gm_flatgrass` human play session using current committed `hybrid/antigravity` HEAD (supplied by courier `git_head.txt`), followed by evidence review by Sol for final integrated RPG completion acceptance.
