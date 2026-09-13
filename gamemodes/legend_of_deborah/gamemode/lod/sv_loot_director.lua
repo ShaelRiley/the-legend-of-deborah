@@ -247,14 +247,26 @@ function Loot:_OldestEliminatedTeammate(excludeIdentity)
     for id, ps in pairs(RunManager.State.PlayerState or {}) do
         if id ~= excludeIdentity and ps.eliminated and (ps.lives or 0) <= 0 then
             local candidatePly
-            for _, p in ipairs(player.GetAll()) do
-                if identityOf(p) == id then candidatePly = p break end
+            if RunManager and RunManager.ConnectedPlayerForIdentity then
+                candidatePly = RunManager:ConnectedPlayerForIdentity(id)
+            end
+            if not candidatePly then
+                for _, p in ipairs(player.GetAll()) do
+                    if identityOf(p) == id then candidatePly = p break end
+                end
             end
             local isSoldierActive = candidatePly and RunManager and RunManager.IsSoldierControl and RunManager:IsSoldierControl(candidatePly)
             if not isSoldierActive then
                 if not chosenState or (ps.eliminatedSince or math.huge) < (chosenState.eliminatedSince or math.huge) then
                     chosenId = id
                     chosenState = ps
+                elseif (ps.eliminatedSince or math.huge) == (chosenState.eliminatedSince or math.huge) then
+                    local ordCandidate = ps.ordinal or 100000
+                    local ordChosen = chosenState.ordinal or 100000
+                    if ordCandidate < ordChosen then
+                        chosenId = id
+                        chosenState = ps
+                    end
                 end
             end
         end

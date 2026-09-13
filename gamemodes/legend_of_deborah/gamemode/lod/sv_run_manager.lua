@@ -311,8 +311,68 @@ function RunManager:_SortedHeroQueueCandidates()
     return candidates
 end
 
+function RunManager:_ActiveSoldierCount()
+    local count = 0
+    for _, ply in ipairs(player.GetAll()) do
+        if IsValid(ply) and self:IsSoldierControl(ply) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+function RunManager:JoinSoldierRole(ply)
+    if not IsValid(ply) or not self.State.BuildReady or self.State.Failed then return false, "invalid state" end
+    local id = self:IdentityOf(ply)
+    local ps = id and self.State.PlayerState[id]
+    if not ps or not ps.eliminated or (ps.lives or 0) > 0 then
+        return false, "only eliminated heroes can join soldier role"
+    end
+    if self:IsSoldierControl(ply) then
+        return true, "already controlling soldier"
+    end
+    if ps.respawnAt and ps.respawnAt > CurTime() then
+        return false, "soldier respawn delay active"
+    end
+    local maxSoldiers = CC.MaxActiveSoldiers or 6
+    if self:_ActiveSoldierCount() >= maxSoldiers then
+        return false, "soldier slots full"
+    end
+
+    local soldierState, err = self:AttachSoldier(ply)
+    if not soldierState then return false, err or "failed to attach soldier" end
+
+    ps.soldierRespawnWait = nil
+    ply:UnSpectate()
+    ply:Spawn()
+    return true
+end
+
+function RunManager:ReturnToHeroQueue(ply)
+    if not IsValid(ply) then return false, "invalid player" end
+    local isSol = self:IsSoldierControl(ply)
+    local id = self:IdentityOf(ply)
+    local ps = id and self.State.PlayerState[id]
+
+    if isSol then
+        self:RetireSoldier(ply)
+    end
+
+    if ps then
+        ps.soldierRespawnWait = nil
+        ps.respawnAt = nil
+        ps.eliminated = true
+        ps.lives = 0
+    end
+
+    self:PutInRestrictedSpectator(ply)
+    self:_SyncPlayerVars(ply)
+    return true
+end
+
 function RunManager:PromoteWaitingSpectators()
-    if not self.State.BuildReady or self.State.Failed then return end
+    if not self.State.BuildReady or self.State.Failed then return 0 end
+    local promotedCount = 0
     local candidates = self:_SortedHeroQueueCandidates()
     for _, item in ipairs(candidates) do
         if self:_ActiveCount() >= CC.MaxActivePlayers then break end
@@ -321,7 +381,10 @@ function RunManager:PromoteWaitingSpectators()
             local ps = item.ps
             if ps and not ps.eliminated and (ps.lives or 0) > 0 then
                 if self:TryActivatePlayer(ply) then
-                    self:RetireSoldier(ply)
+                    promotedCount = promotedCount + 1
+                    if self:IsSoldierControl(ply) then
+                        self:RetireSoldier(ply)
+                    end
                     if ps.respawnAt and ps.respawnAt > CurTime() then
                         self:PutInRestrictedSpectator(ply)
                     else
@@ -329,18 +392,16 @@ function RunManager:PromoteWaitingSpectators()
                         ply:Spawn()
                     end
                 end
-            elseif not item.isEliminatedHero then
+            elseif not ps and self:_PlayedCount() < CC.Campaign.MaxPlayedIdentities and not self.State.WardenStarted then
                 if self:TryActivatePlayer(ply) then
-                    if ps and ps.respawnAt and ps.respawnAt > CurTime() then
-                        self:PutInRestrictedSpectator(ply)
-                    else
-                        ply:UnSpectate()
-                        ply:Spawn()
-                    end
+                    promotedCount = promotedCount + 1
+                    ply:UnSpectate()
+                    ply:Spawn()
                 end
             end
         end
     end
+    return promotedCount
 end
 
 function RunManager:CaptureInventory(ply, ps)
@@ -508,15 +569,12 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
 end
 
 function RunManager:ApplyPlayerState(ply)
+    if not IsValid(ply) or not self.State.BuildReady then return end
     local slotActive = self.IsSlotActivePlayer
         and self:IsSlotActivePlayer(ply) or self:IsActivePlayer(ply)
-    if not self.State.BuildReady then return end
     local ps = self:GetPlayerState(ply)
 
-    if ps and ps.eliminated and (ps.lives or 0) <= 0 then
-        if not self:IsSoldierControl(ply) then
-            self:AttachSoldier(ply)
-        end
+    if self:IsSoldierControl(ply) then
         ply:UnSpectate()
         ply:SetTeam(CC.PlayerTeam)
         ply:SetNoCollideWithTeammates(true)
@@ -544,6 +602,7 @@ function RunManager:ApplyPlayerState(ply)
         end
 
         ps.respawnAt = nil
+        ps.soldierRespawnWait = nil
         self:_SyncPlayerVars(ply)
         ply:SetNW2Bool("LOD_Staged", false)
         ply:SetNW2Bool("LOD_Deployed", true)
@@ -552,7 +611,7 @@ function RunManager:ApplyPlayerState(ply)
         return
     end
 
-    if not slotActive or not ps or ps.eliminated or ps.lives <= 0 then
+    if not slotActive or not ps or ps.eliminated or (ps.lives or 0) <= 0 then
         self:PutInRestrictedSpectator(ply)
         return
     end
@@ -605,6 +664,7 @@ function RunManager:HandleDeath(ply)
         self:RetireSoldier(ply)
         if ps then
             ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
+            ps.soldierRespawnWait = true
         end
         self:_SyncPlayerVars(ply)
         local deathEpoch = self.State.CampaignEpoch
@@ -631,7 +691,8 @@ function RunManager:HandleDeath(ply)
         ps.eliminated = true
         ps.eliminatedSince = ps.eliminatedSince or CurTime()
         self.State.ActiveIdentity[id] = nil
-        ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
+        ps.respawnAt = nil
+        ps.soldierRespawnWait = nil
     end
 
     self:_SyncPlayerVars(ply)
@@ -687,8 +748,8 @@ function RunManager:EvaluateWipe()
     for _, ply in ipairs(connected) do
         local ps = self:GetPlayerState(ply)
         if ps then
-            if self:IsActivePlayer(ply) and ply:Alive() then return false end
-            if ps.lives > 0 and not ps.eliminated then return false end
+            if self:IsActivePlayer(ply) and ply:Alive() and not self:IsSoldierControl(ply) then return false end
+            if (ps.lives or 0) > 0 and not ps.eliminated then return false end
         end
     end
 
@@ -842,12 +903,35 @@ hook.Add("Think", "LOD_RunStateThink", function()
 
     for _, ply in ipairs(player.GetAll()) do
         local ps = RunManager:GetPlayerState(ply)
-        if (RunManager:IsActivePlayer(ply) or (ps and ps.eliminated)) and not ply:Alive() then
-            if ps and ps.respawnAt and CurTime() >= ps.respawnAt then
+        if ps and not ply:Alive() then
+            if ps.respawnAt and CurTime() >= ps.respawnAt then
                 ps.respawnAt = nil
-                ply:UnSpectate()
-                ply:Spawn()
+                if ps.soldierRespawnWait then
+                    ps.soldierRespawnWait = nil
+                    RunManager:JoinSoldierRole(ply)
+                elseif RunManager:IsActivePlayer(ply) then
+                    ply:UnSpectate()
+                    ply:Spawn()
+                end
             end
+        end
+    end
+end)
+
+concommand.Add("lod_join_human_soldier", function(ply)
+    if IsValid(ply) then
+        local ok, err = RunManager:JoinSoldierRole(ply)
+        if not ok then
+            print("[LOD] JoinSoldierRole failed: " .. tostring(err))
+        end
+    end
+end)
+
+concommand.Add("lod_return_to_hero_queue", function(ply)
+    if IsValid(ply) then
+        local ok, err = RunManager:ReturnToHeroQueue(ply)
+        if not ok then
+            print("[LOD] ReturnToHeroQueue failed: " .. tostring(err))
         end
     end
 end)

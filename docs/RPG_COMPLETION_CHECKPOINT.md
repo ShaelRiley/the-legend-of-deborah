@@ -10,40 +10,23 @@
 
 Checkpoints A, B, C, and D are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains pending.
 
-Checkpoint D is **closed completely** at the static/deterministic level (Task AG-005):
+### Checkpoint E — Human Soldier Lifecycle & Queue Realignment (AG-007R Repair)
 
-- **Canonical Catalog Equality:** Exactly 124 canonical ordinary feats and 9 class capstones (Fighter, Rogue, Wizard) are registered and verified against the live GDD specification.
-- **Capstone Specs:** Verified Fighter (`FTR_CAP_ONE_PERSON_ARMY`, `FTR_CAP_BUILT_DIFFERENT`, `FTR_CAP_UNSTOPPABLE_FORCE`), Rogue (`ROG_CAP_LOADED_DICE`, `ROG_CAP_NOW_YOU_SEE_ME`, `ROG_CAP_ACE_IN_THE_HOLE`), and Wizard (`WIZ_CAP_ARCHMAGE`, `WIZ_CAP_MANA_ENGINE`, `WIZ_CAP_LIVING_AEGIS` with `hpPerMagic = 1.50`).
-- **Cadence & Level Laws:** Level 20 hero grants exactly 7 ordinary feat slots. Level 21+ grants zero new ordinary feat slots.
-- **Effect Handler Reachability:** Every registered feat effect handler has a reachable, validated server/rules consumer.
-- **Deterministic Test Suite:** All 20 Checkpoint D test harnesses (`test_checkpoint_d_*.lua`), `test_checkpoint_d_closure.lua`, `test_actor_progression.lua`, `test_status_elements.lua`, `test_checkpoint_c_headless.lua`, and `validate_checkpoint_c.py` PASS with zero discrepancies.
+Task **AG-007R** successfully repaired AG-007 against canonical Phase-20 design laws:
 
-### Static evidence
+- **Hero Queue vs. Active Soldier Distinction:** Reaching 0 Hero lives enters the player into `RETURN_TO_HERO_QUEUE` (restricted spectator) without auto-attaching a Soldier. Becoming an active Soldier requires explicit action (`RunManager:JoinSoldierRole` / `lod_join_human_soldier`).
+- **Hero State Isolation:** Playing as a Soldier does not mutate Hero XP, level, lives, feats, spells, Form Magic, or original elimination timestamp.
+- **Revival Exclusion & Missed Revivals:** Active Soldier controllers are excluded from same-dungeon Extra Life revival (`Loot:_OldestEliminatedTeammate` skips active Soldiers). Revivals occurring during active Soldier control are missed (not banked) and do not forcibly eject the Soldier.
+- **Return to Hero Queue:** Canonical `RunManager:ReturnToHeroQueue(ply)` / `lod_return_to_hero_queue` action retires/despawns the active Soldier, frees the Soldier slot, discards incarnation-local Soldier progress, returns the player to restricted Hero spectating, preserves the original `ps.eliminatedSince` timestamp, and restores future revival eligibility.
+- **Overflow Revival Selection:** `Loot:_OldestEliminatedTeammate` selects the oldest eligible eliminated Hero in the queue using `ps.eliminatedSince` with deterministic ordinal tie-break. Removed stale non-Hero fallback.
+- **Soldier Death 20s Disposable Lifecycle:** Soldier death consumes 0 Hero lives, retires the Soldier incarnation, enforces an exact 20-second replacement delay (`ps.respawnAt = CurTime() + 20`), and attaches a fresh Soldier incarnation with 0 SoldierXP upon re-entry.
+- **Production Queue Defect Fixed:** Repaired `RunManager:PromoteWaitingSpectators()` so promotion slots are consumed ONLY when an actual successful Hero restoration occurs.
+- **Cooperative Party Wipe Integrity:** Active Human Soldiers do not prevent true cooperative party wipe evaluation when all Heroes are eliminated (`EvaluateWipe`).
+- **Level Boundary Integration:** `AdvanceLevel()` retires all active Soldiers and applies canonical Hero comeback rules.
+- **Deterministic & Fresh Runtime Validation:** `tools/test_human_soldier_lifecycle.lua` passes all 20 assertions (A thru T) with 0 discrepancies. Fresh Garry's Mod runtime evidence with marker `AG-007R` generated on `gm_flatgrass` and verified.
 
-- `python3 tools/run_lua54.py tools/test_checkpoint_d_closure.lua`: `PASS — All 124 canonical feats and 9 class capstones verified with 0 discrepancies.`
-- `python3 tools/run_lua54.py tools/test_actor_progression.lua`: `PASS`
-- `python3 tools/run_lua54.py tools/test_status_elements.lua`: `PASS`
-- `python3 tools/run_lua54.py tools/test_checkpoint_c_headless.lua .`: `PASS`
-- `python3 tools/validate_checkpoint_c.py`: `PASS`
-- All 20 `tools/test_checkpoint_d_*.lua` harnesses: `PASS`
-
-This closure tranche is **implemented and statically validated**.
-
-### Checkpoint E — Human Soldier Progression Authority (AG-006)
-
-Checkpoint E progression authority is **closed at the static/deterministic level** (Task AG-006):
-
-- **Single Incarnation Authority:** `LOD.SoldierProgression` is the single canonical authority for Human Soldier XP and advancement.
-- **Exact Thresholds:** Verified cumulative XP thresholds `100 / 250 / 450` producing +1/+2/+3 earned levels. Single lump awards crossing multiple thresholds process all advancements deterministically without losing an advancement.
-- **Automatic Advancement:** Soldier leveling uses `Progression:AdvanceAutomaticActor` (d8 growth, automatic feat/class progression) without invoking Hero level-up or feat-choice UI.
-- **Hero Isolation:** Active Soldier progression does NOT mutate underlying Hero level, XP, class, feat inventory, spell progression, or Form Magic state. Retiring a Soldier restores the unmutated Hero progression.
-- **Dungeon/World Constraint:** Soldier advancement respects the established `D+3` dungeon/world ceiling (`Progression:EffectiveLevelCap`).
-- **Reset/Retirement Seam:** Canonical idempotent `System:Retire(target)` and `System:Reset(target)` APIs safely detach and reset incarnation state.
-- **Seam Integration:** `ObserveEffectiveHeroDamage` and `Award(target, damage, lifeConsumed)` route damage and +50 personal life XP credit authoritatively into `LOD.SoldierProgression`.
-- **Deterministic Test Harness:** `tools/test_human_soldier_progression.lua` PASSES all 15 AG-006 requirements with 0 discrepancies.
-
-Checkpoint E remains **open** pending the remaining lifecycle/queue/wave-start integrity tranche.
+Checkpoint E remains **OPEN** pending remaining inventory-proxy item grab behavior and subsequent Checkpoint-E requirements.
 
 ## Next work
 
-Await Checkpoint E lifecycle/integrity tranche directives from Sol. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
+Await Checkpoint E inventory-proxy and subsequent directives from Sol.

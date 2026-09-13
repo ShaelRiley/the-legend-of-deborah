@@ -54,6 +54,9 @@ function RunManager:ReviveIdentity(identity)
     local ply = connectedPlayerForIdentity(identity)
     local activated = false
     if IsValid(ply) then
+        if self:IsSoldierControl(ply) then
+            self:RetireSoldier(ply)
+        end
         activated = self:TryActivatePlayer(ply) == true
         self:_SyncPlayerVars(ply)
         if activated then
