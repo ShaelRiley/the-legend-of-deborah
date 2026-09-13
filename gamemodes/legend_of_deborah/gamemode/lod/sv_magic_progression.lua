@@ -113,6 +113,56 @@ function MagicProgression:_GrantDistinct(state, kind, milestone, seed)
     return true, selected
 end
 
+function MagicProgression:GrantForm(state, formId, milestone)
+    self:EnsureState(state)
+    formId = string.lower(tostring(formId or ""))
+    if not RPG.MagicForms[formId] then return false, "invalid form" end
+    if not contains(state.magicFormIds, formId) then
+        table.insert(state.magicFormIds, formId)
+    end
+    if not state.selectedMagicFormId then
+        state.selectedMagicFormId = formId
+    end
+    return true
+end
+
+function MagicProgression:GrantContent(state, contentId, milestone)
+    self:EnsureState(state)
+    contentId = string.lower(tostring(contentId or ""))
+    if not RPG.MagicContents[contentId] then return false, "invalid content" end
+    if not contains(state.contentIds, contentId) then
+        table.insert(state.contentIds, contentId)
+    end
+    if not state.selectedMagicContentId then
+        state.selectedMagicContentId = contentId
+    end
+    return true
+end
+
+function MagicProgression:SelectForm(state, formId)
+    self:EnsureState(state)
+    formId = string.lower(tostring(formId or ""))
+    if RPG.MagicForms[formId] and contains(state.magicFormIds, formId) then
+        state.selectedMagicFormId = formId
+        return true
+    end
+    return false
+end
+
+function MagicProgression:SelectContent(state, contentId)
+    self:EnsureState(state)
+    contentId = string.lower(tostring(contentId or ""))
+    if contentId == "raw" then
+        state.selectedMagicContentId = nil
+        return true
+    elseif RPG.MagicContents[contentId] and contains(state.contentIds, contentId) then
+        state.selectedMagicContentId = contentId
+        return true
+    end
+    return false
+end
+
+
 function MagicProgression:ClassMilestoneAbilityDelta(state)
     local delta = RPG.NewAbilityBlock(0)
     if not state or not state.classId then return delta end

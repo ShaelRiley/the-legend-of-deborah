@@ -1542,6 +1542,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             offers = capstoneOffers
         } or nil,
         selectedCapstone = selectedCapstone and capstoneSnapshot(selectedCapstone, true) or nil,
+        isSoldier = false,
+        readOnly = false,
         requiredChoicesComplete = self:IsDeploymentEligible(ps),
         deploymentComplete = ps.deploymentComplete == true
     }
@@ -1561,12 +1563,33 @@ function CharacterProgressionSystem:SyncPlayer(ply)
     net.Send(ply)
 end
 
-function CharacterProgressionSystem:PlayerCharacterText(ply)
-    if not IsValid(ply) then return "Unknown player" end
+function CharacterProgressionSystem:FormatPlayerHeroText(playerNick, heroDisplayName)
+    playerNick = (isstring(playerNick) and playerNick ~= "") and playerNick or "Unknown Player"
+    heroDisplayName = isstring(heroDisplayName) and heroDisplayName or ""
+    if heroDisplayName ~= "" then
+        return string.format("%s as %s", playerNick, heroDisplayName)
+    end
+    return playerNick
+end
+
+function CharacterProgressionSystem:PlayerCharacterText(plyOrState)
+    if type(plyOrState) == "table" then
+        local ps = plyOrState
+        local nick = ps.lastPlayerName or ps.characterName or "Unknown Player"
+        local package = ps.progressionState and ps.progressionState.characterIdentityPackage
+        local heroName = package and package.fullDisplayName or ps.characterName
+        return self:FormatPlayerHeroText(nick, heroName)
+    end
+
+    if not IsValid(plyOrState) then return "Unknown Player" end
+    local ply = plyOrState
     local ps = LOD.RunManager and LOD.RunManager:GetPlayerState(ply)
+    if ps then
+        ps.lastPlayerName = ply:Nick()
+    end
     local package = ps and ps.progressionState and ps.progressionState.characterIdentityPackage
-    if not package then return ply:Nick() end
-    return string.format("%s as %s", ply:Nick(), package.fullDisplayName)
+    local heroName = package and package.fullDisplayName or (ps and ps.characterName)
+    return self:FormatPlayerHeroText(ply:Nick(), heroName)
 end
 
 net.Receive("LOD_RPG_RequestSheet", function(_, ply)

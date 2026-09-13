@@ -4,6 +4,7 @@ LOD.HeroesOfLegend = LOD.HeroesOfLegend or {}
 local Heroes = LOD.HeroesOfLegend
 Heroes.DATA_PATH = "the_legend_of_deborah/heroes_of_legend.json"
 Heroes.Entries = Heroes.Entries or {}
+Heroes.ProcessedRunIds = Heroes.ProcessedRunIds or {}
 Heroes.NextCompletionOrder = Heroes.NextCompletionOrder or 1
 
 if SERVER and util and util.AddNetworkString then
@@ -12,41 +13,40 @@ end
 
 function Heroes:Initialize()
     self.Entries = {}
+    self.ProcessedRunIds = {}
     self.NextCompletionOrder = 1
     self:Load()
 end
 
 function Heroes:Load()
+    self.Entries = {}
+    self.ProcessedRunIds = {}
+    self.NextCompletionOrder = 1
     if not file or not file.Exists then return end
-    if not file.Exists(self.DATA_PATH, "DATA") then
-        self.Entries = {}
-        self.NextCompletionOrder = 1
-        return
-    end
+    if not file.Exists(self.DATA_PATH, "DATA") then return end
 
     local jsonStr = file.Read(self.DATA_PATH, "DATA")
-    if not jsonStr or jsonStr == "" then
-        self.Entries = {}
-        self.NextCompletionOrder = 1
-        return
-    end
+    if not jsonStr or jsonStr == "" then return end
 
     local data = util and util.JSONToTable and util.JSONToTable(jsonStr) or nil
-    if not data or type(data) ~= "table" then
-        self.Entries = {}
-        self.NextCompletionOrder = 1
-        return
+    if not data or type(data) ~= "table" then return end
+
+    local rawEntries = data.entries
+    local maxSeq = 0
+    if type(rawEntries) == "table" then
+        for _, entry in ipairs(rawEntries) do
+            if self:IsValidEntry(entry) then
+                table.insert(self.Entries, entry)
+                self.ProcessedRunIds[entry.runId] = true
+                if entry.completionOrder > maxSeq then
+                    maxSeq = entry.completionOrder
+                end
+            end
+        end
     end
 
-    self.Entries = data.entries or {}
     self:SortEntries(self.Entries)
     self:_Truncate()
-
-    local maxSeq = 0
-    for _, entry in ipairs(self.Entries) do
-        local seq = tonumber(entry.completionOrder) or 0
-        if seq > maxSeq then maxSeq = seq end
-    end
 
     local savedSeq = tonumber(data.nextCompletionOrder) or 1
     self.NextCompletionOrder = math.max(savedSeq, maxSeq + 1)
@@ -72,35 +72,39 @@ function Heroes:_Truncate()
 end
 
 function Heroes:SubmitRun(runData)
-    if not runData or not runData.runId then return nil end
+    if not runData or type(runData) ~= "table" then return nil end
+    if not runData.runId or type(runData.runId) ~= "string" or runData.runId == "" then return nil end
 
-    local runIdStr = tostring(runData.runId)
-    local existingEntry = nil
-    for _, entry in ipairs(self.Entries) do
-        if tostring(entry.runId) == runIdStr then
-            existingEntry = entry
-            break
-        end
+    local rescues = tonumber(runData.rescueCount)
+    if not rescues or rescues < 0 or math.floor(rescues) ~= rescues then return nil end
+
+    if type(runData.partyMembers) ~= "table" or #runData.partyMembers == 0 then return nil end
+    for _, member in ipairs(runData.partyMembers) do
+        if type(member) ~= "string" or member == "" then return nil end
     end
 
-    if existingEntry then
-        local newRescues = tonumber(runData.rescueCount) or 0
-        if newRescues > (tonumber(existingEntry.rescueCount) or 0) then
-            existingEntry.rescueCount = newRescues
+    local runIdStr = tostring(runData.runId)
+
+    -- BLOCKER 4 & BLOCKER 3: If runId was already processed, record is IMMUTABLE. Idempotent NO-OP!
+    if self.ProcessedRunIds[runIdStr] then
+        for _, entry in ipairs(self.Entries) do
+            if entry.runId == runIdStr then return entry end
         end
-        if runData.partyMembers then
-            existingEntry.partyMembers = runData.partyMembers
-        end
-        self:SortEntries(self.Entries)
-        self:Save()
-        self:SyncAll()
-        return existingEntry
+        return nil
+    end
+
+    self.ProcessedRunIds[runIdStr] = true
+
+    -- BLOCKER 3: Deep copy partyMembers array so external caller table mutation does not alter stored record
+    local partyMembersCopy = {}
+    for i, member in ipairs(runData.partyMembers) do
+        partyMembersCopy[i] = tostring(member)
     end
 
     local newEntry = {
         runId = runIdStr,
-        rescueCount = tonumber(runData.rescueCount) or 0,
-        partyMembers = runData.partyMembers or {"Unknown Heroes"},
+        rescueCount = rescues,
+        partyMembers = partyMembersCopy,
         completionOrder = self.NextCompletionOrder,
         timestamp = os and os.time and os.time() or 0
     }

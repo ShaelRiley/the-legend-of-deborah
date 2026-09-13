@@ -10,29 +10,34 @@
 
 Checkpoints A, B, C, D, E, and F are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
 
-### Checkpoint F — Heroes of Legend Leaderboard Closure (AG-009 / AG-009R1)
+### Checkpoint F — Heroes of Legend Leaderboard & Staging/UI Static Closure (AG-009R2)
 
-Task **AG-009R1** completed the server-local HEROES OF LEGEND completed-run leaderboard authority, persistence, wall-board display, and tie-break resolution:
+Task **AG-009R2** repaired HEROES OF LEGEND run-end submission and completed Checkpoint-F deterministic static gate:
 
-- **Canonical Ranking & Tie Rule:** 
-  - Primary ranking: Deborah rescue count, descending (`rescueCount` DESC).
-  - Canonical tie-break: Equal rescue count → earlier completed party run ranks higher (`completionOrder` ASC).
-  - Unrelated record properties (alphabetical party member text, player SteamID, timestamp, etc.) do NOT affect ranking.
-- **Completion Sequence Mechanism:**
-  - Implemented server-authoritative monotonic completion counter (`completionOrder`) in `sv_heroes_of_legend.lua`.
-  - Assigned exactly once when a qualifying party run completes; monotonically increasing within persisted leaderboard history (`the_legend_of_deborah/heroes_of_legend.json`); immutable after assignment.
-  - Idempotent `SubmitRun` guards run identity (`runId`), updating rescue counts without creating duplicate records or consuming new sequence numbers.
-- **Top 10 Cutoff Behavior:**
-  - Canonical sorting (`rescueCount` DESC, `completionOrder` ASC) applied before truncation.
-  - At the #10/#11 boundary, earlier equal-scoring runs remain above later equal-scoring runs; later runs cannot displace earlier equal-scoring runs.
-- **Staging Hut Wall-Board Entity:**
-  - Registered `lod_heroes_of_legend_board` entity beside `lod_staging_mirror` in `sv_staging_deployment.lua:EnsureRoomDecor()`.
-  - Client 3D2D renderer (`cl_init.lua`) renders top 10 runs with wording contract: `<PartyRunMemberList> — Rescued Deborah <N> time` (if N=1) / `times` (if N!=1).
+- **Canonical Run-End Submission Seam:**
+  - Removed HEROES OF LEGEND submission from level-clear (`CompleteLevel`).
+  - Added `RunManager:FinalizeCampaignRun()`, called exclusively from canonical campaign end transaction (`FailCampaign`), using final accumulated `RescueCount`.
+- **Ranked Eligibility Seam:**
+  - Evaluated `State.Ranked == true` prior to submission. Unranked runs submit no entry, alter no ranking, and consume no completion order.
+- **Participant Authority:**
+  - Participant set derived from `RunManager.State.PlayedIdentities` and `PlayerState` ordered deterministically by `ps.ordinal` ASC.
+  - Includes connected, disconnected, eliminated, and Soldier-role participating heroes. Excludes spectator visitors. Does not list Human Soldier incarnation as separate entry.
+- **PlayerCharacterText Authority:**
+  - Derived using canonical `CharacterProgressionSystem:PlayerCharacterText(plyOrState)` (`<nick> as <heroDisplayName>`), supporting both connected and disconnected participating heroes.
+- **Immutability & Duplicate Protection:**
+  - Completed run records are immutable (idempotent NO-OP on re-submission; shallow snapshot copy of `partyMembers`).
+  - Server-session `ProcessedRunIds` table prevents duplicate submissions for truncated low-scoring runs from consuming sequence numbers.
+- **Canonical Ranking & Exact Wording:**
+  - Primary ranking: `rescueCount` DESC; tie-break: earlier completed party run (`completionOrder` ASC).
+  - Exact presentation wording: `<PartyRunMemberList> rescued Deborah <RescueCount> times`.
+- **P Character Sheet & I Spellbook Gates:**
+  - Hero P snapshot remains authoritative and read-only for Soldier.
+  - Spellbook exposes 6 canonical Forms (Blast, Beam, Bomb, Missile, Bolt, Summon) and RAW + 6 Contents (Earth, Fire, Dark, Ice, Light, Electric) matching production `MagicProgression` state with P/I UI mutual exclusion.
 - **Validation:**
-  - Created 22-point deterministic validator `tools/test_checkpoint_f_closure.lua` passing all requirements (ranking order, completion sequence monotonicity, top-10 cutoff stability, idempotency, persistence save/load, and text formatting contract).
-  - All static syntax checks and regression suites (`test_soldier_character_sheet.lua`, `test_checkpoint_e_closure.lua`) pass with 0 errors.
+  - 54-point deterministic validator `tools/test_checkpoint_f_closure.lua` passing all requirements (A through X) with 0 discrepancies.
+  - Passed all regression suites (`test_soldier_character_sheet.lua`, `test_checkpoint_e_closure.lua`, `test_checkpoint_c_headless.lua .`, syntax check).
 
-Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**.
+Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
 
 ## Next work
 

@@ -204,7 +204,8 @@ function RunManager:_AdmitIdentity(ply)
         characterName = character.name,
         model = character.model,
         inventory = nil,
-        armor = 0
+        armor = 0,
+        lastPlayerName = IsValid(ply) and ply:Nick() or nil
     }
 
     self.State.PlayedIdentities[id] = true
@@ -799,10 +800,63 @@ function RunManager:EvaluateWipe()
     return true
 end
 
+function RunManager:FinalizeCampaignRun()
+    if not self.State or self.State.Finalized then return false end
+    self.State.Finalized = true
+
+    if self.State.Ranked ~= true then
+        return false
+    end
+
+    if not LOD.HeroesOfLegend or not LOD.HeroesOfLegend.SubmitRun then
+        return false
+    end
+
+    local playedIdentities = self.State.PlayedIdentities or {}
+    local sortedIdentities = {}
+    for id, played in pairs(playedIdentities) do
+        if played then
+            local ps = self.State.PlayerState and self.State.PlayerState[id]
+            if ps then
+                table.insert(sortedIdentities, ps)
+            end
+        end
+    end
+    table.sort(sortedIdentities, function(a, b)
+        return (a.ordinal or 0) < (b.ordinal or 0)
+    end)
+
+    local partyMembers = {}
+    local progression = LOD.CharacterProgressionSystem
+    for _, ps in ipairs(sortedIdentities) do
+        local memberText
+        if progression and progression.PlayerCharacterText then
+            memberText = progression:PlayerCharacterText(ps)
+        else
+            memberText = (ps.lastPlayerName or "Unknown Player") .. " as " .. (ps.characterName or "Hero")
+        end
+        table.insert(partyMembers, memberText)
+    end
+
+    if #partyMembers == 0 then
+        return false
+    end
+
+    local runId = self.State.RunId or ("run_" .. tostring(self.State.CampaignSeed or 1000) .. "_epoch_" .. tostring(self.CampaignEpoch or 1))
+    LOD.HeroesOfLegend:SubmitRun({
+        runId = runId,
+        rescueCount = self.State.RescueCount or 0,
+        partyMembers = partyMembers
+    })
+
+    return true
+end
+
 function RunManager:FailCampaign(reason)
     if self.State.Failed then return end
     self.State.Failed = true
     self.State.FailureReason = reason or "campaign failure"
+    self:FinalizeCampaignRun()
     for _, ply in ipairs(player.GetAll()) do self:PutInRestrictedSpectator(ply) end
     if LOD.ProgressionDirector then
         LOD.ProgressionDirector:Announce("CAMPAIGN FAILED — " .. string.upper(self.State.FailureReason))
@@ -834,33 +888,6 @@ function RunManager:CompleteLevel(ply)
     self.State.LevelCleared = true
     self.State.IntermissionEnd = CurTime() + CC.Progression.IntermissionSeconds
 
-    if LOD.HeroesOfLegend and LOD.HeroesOfLegend.SubmitRun then
-        local partyMembers = {}
-        if self.State.PlayerState then
-            for identity, ps in pairs(self.State.PlayerState) do
-                local name
-                if ps.progressionState and ps.progressionState.characterIdentityPackage then
-                    name = ps.progressionState.characterIdentityPackage.fullDisplayName
-                end
-                if not name or name == "" then
-                    name = "Hero " .. tostring(identity)
-                end
-                table.insert(partyMembers, name)
-            end
-        end
-        if #partyMembers == 0 then
-            partyMembers = {"Lone Adventurer"}
-        else
-            table.sort(partyMembers)
-        end
-
-        local runId = self.State.RunId or ("run_" .. tostring(self.State.CampaignSeed or 1000))
-        LOD.HeroesOfLegend:SubmitRun({
-            runId = runId,
-            rescueCount = self.State.RescueCount,
-            partyMembers = partyMembers
-        })
-    end
     LOD.ProgressionDirector:Announce(string.format("DEBORAH RESCUED — LEVEL %d CLEAR", self.State.Level))
     LOD.ProgressionDirector:SyncAll()
     print(string.format("[LOD] Level %d cleared by %s; advancing in %d seconds", self.State.Level, ply:Nick(), CC.Progression.IntermissionSeconds))
