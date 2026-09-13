@@ -194,6 +194,27 @@ function Validation:Run(printResult)
         end
     end
 
+    local MagicProgression = LOD.MagicProgression
+    if MagicProgression and MagicProgression.Validate then
+        local magicOK, magicErrors = MagicProgression:Validate()
+        if not magicOK then
+            for _, message in ipairs(magicErrors or {}) do
+                addError(errors, "MagicProgression: " .. message)
+            end
+        end
+    end
+
+    local HeroesOfLegend = LOD.HeroesOfLegend
+    if not HeroesOfLegend or type(HeroesOfLegend.SubmitRun) ~= "function" then
+        addError(errors, "HeroesOfLegend leaderboard authority unavailable")
+    end
+
+    local SoldierProgression = LOD.SoldierProgression
+    if not SoldierProgression or type(SoldierProgression.Attach) ~= "function" then
+        addError(errors, "SoldierProgression authority unavailable")
+    end
+
+
     local ok = #errors == 0
     if printResult ~= false then
         if ok then

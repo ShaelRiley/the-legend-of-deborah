@@ -48,8 +48,8 @@ function Heroes:Load()
     self:SortEntries(self.Entries)
     self:_Truncate()
 
-    local savedSeq = tonumber(data.nextCompletionOrder) or 1
-    self.NextCompletionOrder = math.max(savedSeq, maxSeq + 1)
+    local savedSeq = math.floor(tonumber(data.nextCompletionOrder) or 1)
+    self.NextCompletionOrder = math.max(1, math.max(savedSeq, maxSeq + 1))
 end
 
 function Heroes:Save()
@@ -100,6 +100,8 @@ function Heroes:SubmitRun(runData)
     for i, member in ipairs(runData.partyMembers) do
         partyMembersCopy[i] = tostring(member)
     end
+
+    self.NextCompletionOrder = math.max(1, math.floor(tonumber(self.NextCompletionOrder) or 1))
 
     local newEntry = {
         runId = runIdStr,

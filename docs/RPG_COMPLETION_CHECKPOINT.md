@@ -37,8 +37,31 @@ Task **AG-009R2** repaired HEROES OF LEGEND run-end submission and completed Che
   - 54-point deterministic validator `tools/test_checkpoint_f_closure.lua` passing all requirements (A through X) with 0 discrepancies.
   - Passed all regression suites (`test_soldier_character_sheet.lua`, `test_checkpoint_e_closure.lua`, `test_checkpoint_c_headless.lua .`, syntax check).
 
-Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
+Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**.
+
+### Checkpoint G — Integrated Validation & Playtest Candidate (AG-010)
+
+Task **AG-010** constructed the integrated automated RPG validation gate and prepared the playtest candidate for Shael's single organic `gm_flatgrass` session:
+
+- **Playtest Candidate SHA:** `[HEAD]`
+- **Integrated Automated Gate Runner:** `tools/test_checkpoint_g_integration.py`
+- **Suite Matrix Results:** 24/24 test suites passed with 0 failures (`CHECKPOINT_G_AUTOMATED_GATE_PASS`), covering:
+  - Actor core, Level caps (Hero 20 / Monster 999), 60/30/10 tier generation, fixed named tiers, monster D+3 ceiling;
+  - Status & Element core matrices, damage->survival->rider ordering, tick damage recursion safety;
+  - Magic 6 Forms (Blast, Beam, Bomb, Missile, Bolt, Summon) and 6 Contents (Earth, Fire, Dark, Ice, Light, Electric) + RAW state;
+  - Feat registry equality (124 ordinary feats + 9 class capstones), Hero 1/3/6/9/12/15/18 cadence, prerequisites, replacement ladders;
+  - Human Soldier RPG progression, XP (+1 HP / +50 life loss), 100/250/450 thresholds, reincarnation reset, lifecycle queue isolation;
+  - Staging & UI (P Character Sheet, I Spellbook mutual exclusion, read-only Soldier snapshot);
+  - HEROES OF LEGEND leaderboard run-end submission, ranked eligibility, participant authority, immutability, tie order, and exact wording;
+  - All protected regression families (Deadeye, Crowbar, Pusher, Map Movement, Quantum, Strafe, Backpedal, Winning Personality, Deadcrab Dispatch, Dev Ingress, Control Magic, Magic Recovery).
+- **Subsystem & Seam Validation:** `lod_rpg_validate` extended to verify `MagicProgression`, `HeroesOfLegend`, and `SoldierProgression` subsystem authorities without destructive state modification.
+- **Evidence Integrity & Telemetry:** Verified `console_latest.txt` and `rpg_summary_latest.txt` evidence export path. No static/headless script writes to engine `console.log` or `garrysmod/data/`.
+- **Local Playtest Candidate:** Installed via `tools/install_dev.sh` to local Garry's Mod dev checkout. Prepared `PLAYTEST_SHAEL.txt` instructions for ONE ~15–20 minute organic `gm_flatgrass` human play session.
+- **Voluntary Termination Seam:** Verified that campaign restart is currently scoped to `State.Failed == true` (total party wipe). Recorded `VOLUNTARY RUN TERMINATION PLAYER-FACING SEAM NOT YET IMPLEMENTED` as post-RPG release follow-up.
+
+**CHECKPOINT G AUTOMATED GATE COMPLETE**
+**HUMAN RUNTIME GATE PENDING**
 
 ## Next work
 
-Proceed to Checkpoint G automated integration and single unified GMod engine human test pass on `gm_flatgrass`.
+Shael Riley organic 15–20 minute `gm_flatgrass` human play session using candidate `[HEAD]`, followed by evidence review by Sol for final integrated RPG completion acceptance.
