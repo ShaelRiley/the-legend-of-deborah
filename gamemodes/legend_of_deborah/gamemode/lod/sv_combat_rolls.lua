@@ -553,10 +553,11 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 contract = Rolls:RollActorDamage(attacker, profile, rng, 0)
                 grenadeRolls[inflictor] = contract
                 Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
-            end
-            local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or 1))
-            if continuations > 0 then
-                Rolls:EmitDiceExplosionFX(attacker, "grenade", continuations, 1)
+
+                local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or 1))
+                if continuations > 0 then
+                    Rolls:EmitDiceExplosionFX(attacker, "grenade", continuations, 1)
+                end
             end
             local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
             local aimMult = tonumber(inflictor.LODAimMultiplier) or 1

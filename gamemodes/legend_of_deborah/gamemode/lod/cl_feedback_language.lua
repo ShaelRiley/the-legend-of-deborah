@@ -5,10 +5,16 @@ local MAX_HISTORY = 1000
 Feed.history = Feed.history or {}
 
 if not Feed.historyLoaded then
-    local targetPath = file.Exists(PREFERRED_HISTORY, "DATA") and PREFERRED_HISTORY
-        or (file.Exists(FALLBACK_HISTORY, "DATA") and FALLBACK_HISTORY or nil)
-    if targetPath then
-        local loaded = util.JSONToTable(file.Read(targetPath, "DATA") or "")
+    local loadedPath
+    if file.Exists(PREFERRED_HISTORY, "DATA") then
+        loadedPath = PREFERRED_HISTORY
+    elseif file.Exists(FALLBACK_HISTORY, "DATA") then
+        loadedPath = FALLBACK_HISTORY
+    end
+
+    if loadedPath then
+        local rawData = file.Read(loadedPath, "DATA") or ""
+        local loaded = util.JSONToTable(rawData)
         if istable(loaded) then
             for _, row in ipairs(loaded) do
                 if istable(row) and isstring(row.text) then
@@ -17,6 +23,15 @@ if not Feed.historyLoaded then
                         stamp = tostring(row.stamp or "previous session")
                     }
                 end
+            end
+        end
+
+        -- Safe legacy migration: if loaded from fallback history, write to die_logger_history.json
+        if loadedPath == FALLBACK_HISTORY and #Feed.history > 0 then
+            file.CreateDir("legend_of_deborah")
+            local jsonStr = util.TableToJSON(Feed.history)
+            if jsonStr and jsonStr ~= "" then
+                file.Write(PREFERRED_HISTORY, jsonStr)
             end
         end
     end
@@ -29,7 +44,6 @@ local function saveHistory()
     file.Write(PREFERRED_HISTORY, util.TableToJSON(Feed.history))
 end
 hook.Add("ShutDown", "LOD_DieLoggerSave", saveHistory)
-hook.Add("ShutDown", "LOD_DialoggerSave", saveHistory)
 
 function Feed:AckFeedback(entry, stage, sound)
     if not entry.tracked then return end
@@ -48,7 +62,7 @@ function Feed:RetainFeedback(entry)
     self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S")}
     while #self.history > MAX_HISTORY do table.remove(self.history, 1) end
     -- Fixed batching: continuous combat still reaches disk.
-    if not timer.Exists("LOD_DieLoggerSave") and not timer.Exists("LOD_DialoggerSave") then
+    if not timer.Exists("LOD_DieLoggerSave") then
         timer.Create("LOD_DieLoggerSave", 2, 1, saveHistory)
     end
     local grammar = LOD.FeedbackLanguage[entry.family] or LOD.FeedbackLanguage.routine
@@ -75,7 +89,6 @@ function Feed:RetainFeedback(entry)
     end
     self:AckFeedback(entry, 0, sounded)
     hook.Run("LODDieLoggerUpdated")
-    hook.Run("LODDialoggerUpdated")
 end
 
 local PAPER = Color(244, 237, 218)
@@ -156,20 +169,20 @@ function Feed:OpenHistory()
     title:SetFont("LOD_SheetHeading")
     title:SetTextColor(RED)
     title:SetPos(24, 20)
-    title:SetSize(fw - 240, 30)
+    title:SetSize(w - 240, 30)
 
     local subtitle = vgui.Create("DLabel", frame)
     subtitle:SetText("Last 1,000 systemic combat events & roll histories (newest first)")
     subtitle:SetFont("LOD_SheetSmall")
     subtitle:SetTextColor(MUTED)
     subtitle:SetPos(24, 48)
-    subtitle:SetSize(fw - 240, 20)
+    subtitle:SetSize(w - 240, 20)
 
     local closeBtn = vgui.Create("DButton", frame)
     closeBtn:SetText("Close [ESC]")
     closeBtn:SetFont("LOD_SheetKey")
     closeBtn:SetTextColor(INK)
-    closeBtn:SetPos(fw - 130, 22)
+    closeBtn:SetPos(w - 130, 22)
     closeBtn:SetSize(106, 26)
     closeBtn.Paint = function(self, bw, bh)
         draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
@@ -182,7 +195,7 @@ function Feed:OpenHistory()
     refreshBtn:SetText("Refresh")
     refreshBtn:SetFont("LOD_SheetKey")
     refreshBtn:SetTextColor(INK)
-    refreshBtn:SetPos(fw - 226, 22)
+    refreshBtn:SetPos(w - 226, 22)
     refreshBtn:SetSize(86, 26)
     refreshBtn.Paint = function(self, bw, bh)
         draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
@@ -192,7 +205,7 @@ function Feed:OpenHistory()
 
     local scroll = vgui.Create("DScrollPanel", frame)
     scroll:SetPos(20, 76)
-    scroll:SetSize(fw - 40, fh - 96)
+    scroll:SetSize(w - 40, h - 96)
     local canvas = scroll:GetCanvas()
     canvas.Paint = function(_, cw, ch)
         surface.SetDrawColor(80, 66, 41, 10)
@@ -225,7 +238,7 @@ function Feed:OpenHistory()
             textLabel:SetFont("LOD_CombatRoll")
             textLabel:SetTextColor(INK)
             textLabel:SetPos(144, 4)
-            textLabel:SetSize(fw - 210, 20)
+            textLabel:SetSize(w - 210, 20)
             textLabel:SetWrap(true)
             textLabel:SetAutoStretchVertical(true)
 
@@ -239,4 +252,5 @@ function Feed:OpenHistory()
     end
     refresh()
     refreshBtn.DoClick = refresh
+    return frame
 end
