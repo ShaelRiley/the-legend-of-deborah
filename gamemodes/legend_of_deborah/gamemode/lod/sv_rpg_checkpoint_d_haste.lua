@@ -4,6 +4,7 @@ LOD.RPG = LOD.RPG or {}
 local RPG = LOD.RPG
 local Catalog = assert(RPG.IdentityCatalog, "Haste requires feat catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Haste requires ordinary feats")
+if Feats["INT_HASTE_1"] then return end
 local Effects = assert(RPG.FeatEffectSystem, "Haste requires feat effects")
 local Rules = assert(LOD.RPGAbilityRules, "Haste requires AbilityRules")
 local Magic = assert(LOD.Magic, "Haste requires Magic")

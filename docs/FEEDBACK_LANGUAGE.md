@@ -14,7 +14,7 @@ explicit presentation mandate; no gameplay rules or GDD tuning were changed.
 | Magic | Form + Content, committed spend and remaining Magic; failures explain reason and no net spend. Preserve positional cast effects/sound. Full-resource crossing is quiet. New Forms/Contents get a progression notice. |
 | XP / SoldierXP / loot | Quiet actual gains; Soldier level gains get a stronger progression cue. Hero level-up remains the existing major celebration. |
 | Life / Soldier state | Explicit life count, elimination/revival or incarnation transition; compact outlined notice and distinct danger/life/Soldier cue. |
-| Keys / gates / rescue / run failure | Copy the exact existing announcement into the dialogger. Preserve existing banners, physical gate sounds, pickups and rescue celebration. Denials also enter the feed. Successful dungeon build gets a ready notice. |
+| Keys / gates / rescue / run failure | Copy the exact existing announcement into the Die Logger. Preserve existing banners, physical gate sounds, pickups and rescue celebration. Denials also enter the feed. Successful dungeon build gets a ready notice. |
 
 Shared policy: `sh_feedback_language.lua`. Server delivery extends
 `LOD.RPGPresentation` and `CombatRolls:_Send`; outcome adapters live in
@@ -31,9 +31,9 @@ priority queue and 2.8-second display. Danger/life preempts progression. A Wizar
 Feedback burst cannot erase an active level-up celebration.
 
 The feed holds for nine seconds and fades for 1.4. Its visible ten-entry limit and
-screen-space clipping do not discard history. **P → Dialogger** opens the newest
+screen-space clipping do not discard history. **P → Die Logger** opens the newest
 1,000 messages with timestamps and a Refresh button. History persists on the client
-in `data/legend_of_deborah/dialogger_history.json`, written in two-second batches
+in `data/legend_of_deborah/die_logger_history.json`, written in two-second batches
 and on shutdown. A crash can lose the final batch. This requested persistence was
 absent at the starting SHA; it now belongs to the existing CombatRollFeed object.
 
@@ -71,7 +71,7 @@ Headless checks cannot establish Source asset audibility, HUD occlusion, or over
 mix quality. Freshly install/restart both realms because feed/major-ACK wire formats
 changed. During the planned 15–20 minute `gm_flatgrass` session, watch status versus
 resistance cues, readable Magic failures, life/Soldier notices, level-up protection,
-and P → Dialogger after busy combat. Finish with the standard exporter and return
+and P → Die Logger after busy combat. Finish with the standard exporter and return
 `console_latest.txt`, `rpg_summary_latest.txt`, and `rpg_session_latest.txt` for this
 correlation pass.
 

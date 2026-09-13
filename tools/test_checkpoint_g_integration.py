@@ -44,7 +44,8 @@ SUITES = [
     ("Protected: Control Magic", ["python3", "tools/run_lua54.py", "tools/test_gate_e_control_magic.lua"]),
     ("Protected: Magic Recovery", ["python3", "tools/run_lua54.py", "tools/test_gate_e_magic_recovery.lua"]),
     ("Protected: Behavioral Regressions Gate", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_g_protected_regressions.lua"]),
-    ("Feedback Language & Dialogger", ["python3", "tools/run_lua54.py", "tools/test_feedback_language.lua"]),
+    ("Feedback Language & Die Logger", ["python3", "tools/run_lua54.py", "tools/test_feedback_language.lua"]),
+    ("AG-011 Big Playtest Repairs Gate", ["python3", "tools/run_lua54.py", "tools/test_ag011_repairs.lua"]),
 ]
 
 def main():

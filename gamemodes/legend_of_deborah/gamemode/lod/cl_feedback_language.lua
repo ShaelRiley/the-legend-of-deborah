@@ -1,14 +1,22 @@
 local Feed = LOD.CombatRollFeed
-local HISTORY = "legend_of_deborah/dialogger_history.json"
+local PREFERRED_HISTORY = "legend_of_deborah/die_logger_history.json"
+local FALLBACK_HISTORY = "legend_of_deborah/dialogger_history.json"
 local MAX_HISTORY = 1000
 Feed.history = Feed.history or {}
-if not Feed.historyLoaded and file.Exists(HISTORY, "DATA") then
-    local loaded = util.JSONToTable(file.Read(HISTORY, "DATA") or "")
-    if istable(loaded) then
-        for _, row in ipairs(loaded) do
-            if istable(row) and isstring(row.text) then
-                Feed.history[#Feed.history + 1] = {text = string.sub(row.text, 1, 512),
-                    stamp = tostring(row.stamp or "previous session")}
+
+if not Feed.historyLoaded then
+    local targetPath = file.Exists(PREFERRED_HISTORY, "DATA") and PREFERRED_HISTORY
+        or (file.Exists(FALLBACK_HISTORY, "DATA") and FALLBACK_HISTORY or nil)
+    if targetPath then
+        local loaded = util.JSONToTable(file.Read(targetPath, "DATA") or "")
+        if istable(loaded) then
+            for _, row in ipairs(loaded) do
+                if istable(row) and isstring(row.text) then
+                    Feed.history[#Feed.history + 1] = {
+                        text = string.sub(row.text, 1, 512),
+                        stamp = tostring(row.stamp or "previous session")
+                    }
+                end
             end
         end
     end
@@ -18,8 +26,9 @@ while #Feed.history > MAX_HISTORY do table.remove(Feed.history, 1) end
 
 local function saveHistory()
     file.CreateDir("legend_of_deborah")
-    file.Write(HISTORY, util.TableToJSON(Feed.history))
+    file.Write(PREFERRED_HISTORY, util.TableToJSON(Feed.history))
 end
+hook.Add("ShutDown", "LOD_DieLoggerSave", saveHistory)
 hook.Add("ShutDown", "LOD_DialoggerSave", saveHistory)
 
 function Feed:AckFeedback(entry, stage, sound)
@@ -38,8 +47,10 @@ end
 function Feed:RetainFeedback(entry)
     self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S")}
     while #self.history > MAX_HISTORY do table.remove(self.history, 1) end
-    -- Fixed batching (not debounce): continuous combat still reaches disk.
-    if not timer.Exists("LOD_DialoggerSave") then timer.Create("LOD_DialoggerSave", 2, 1, saveHistory) end
+    -- Fixed batching: continuous combat still reaches disk.
+    if not timer.Exists("LOD_DieLoggerSave") and not timer.Exists("LOD_DialoggerSave") then
+        timer.Create("LOD_DieLoggerSave", 2, 1, saveHistory)
+    end
     local grammar = LOD.FeedbackLanguage[entry.family] or LOD.FeedbackLanguage.routine
     local now, sounded = CurTime(), false
     local priority = grammar.priority or 0
@@ -63,8 +74,16 @@ function Feed:RetainFeedback(entry)
         end
     end
     self:AckFeedback(entry, 0, sounded)
+    hook.Run("LODDieLoggerUpdated")
     hook.Run("LODDialoggerUpdated")
 end
+
+local PAPER = Color(244, 237, 218)
+local PAPER_LIGHT = Color(251, 247, 233)
+local INK = Color(32, 32, 29)
+local RED = Color(170, 61, 50)
+local BLUE = Color(55, 91, 145)
+local MUTED = Color(112, 104, 91)
 
 hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
     local now = CurTime()
@@ -82,23 +101,30 @@ hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
     end
     local notice = Feed.notice
     if not notice then return end
-    -- Separate compact, outlined text below the top HUD. No screen flash/shake.
-    local w = math.min(620, ScrW() - 48)
+
+    -- Sol-styled HUD notice banner (parchment paper with red accent bar and crisp text)
+    local w = math.min(640, ScrW() - 48)
     local x, y = (ScrW() - w) * 0.5, ScrH() * 0.27
     surface.SetFont("LOD_CombatRoll")
     local lines, line = {}, ""
     for word in notice.entry.text:gmatch("%S+") do
         local candidate = line == "" and word or line .. " " .. word
-        if surface.GetTextSize(candidate) > w - 24 and line ~= "" then
+        if surface.GetTextSize(candidate) > w - 32 and line ~= "" then
             lines[#lines + 1], line = line, word
         else line = candidate end
     end
     lines[#lines + 1] = line
-    draw.RoundedBox(3, x, y, w, #lines * 20 + 16, Color(12, 16, 20, 235))
-    surface.SetDrawColor(238, 223, 176, 255)
-    surface.DrawOutlinedRect(x, y, w, #lines * 20 + 16, 2)
+
+    local h = #lines * 20 + 20
+    draw.RoundedBox(4, x, y, w, h, Color(18, 19, 21, 248))
+    draw.RoundedBox(2, x + 4, y + 4, w - 8, h - 8, PAPER)
+    surface.SetDrawColor(RED)
+    surface.DrawRect(x + 4, y + 4, w - 8, 4)
+    surface.SetDrawColor(BLUE)
+    surface.DrawRect(x + 4, y + h - 8, w - 8, 4)
+
     for i, text in ipairs(lines) do
-        draw.SimpleText(text, "LOD_CombatRoll", x + 12, y + 8 + (i - 1) * 20, Color(255, 240, 205))
+        draw.SimpleText(text, "LOD_CombatRoll", x + 16, y + 10 + (i - 1) * 20, INK)
     end
     Feed:AckFeedback(notice.entry, 1, false)
 end)
@@ -107,31 +133,110 @@ function Feed:OpenHistory()
     if IsValid(self.HistoryFrame) then self.HistoryFrame:Remove() end
     local frame = vgui.Create("DFrame")
     self.HistoryFrame = frame
-    frame:SetSize(math.min(900, ScrW() - 40), math.min(650, ScrH() - 40))
+    local w = math.min(940, ScrW() - 40)
+    local h = math.min(680, ScrH() - 40)
+    frame:SetSize(w, h)
     frame:Center()
-    frame:SetTitle("DIALOGGER / Last 1,000 events / Newest first")
+    frame:SetTitle("")
+    frame:ShowCloseButton(false)
+    frame:SetDraggable(true)
     frame:MakePopup()
+
+    frame.Paint = function(self, fw, fh)
+        draw.RoundedBox(4, 0, 0, fw, fh, Color(18, 19, 21, 248))
+        draw.RoundedBox(2, 8, 8, fw - 16, fh - 16, PAPER)
+        surface.SetDrawColor(RED)
+        surface.DrawRect(8, 8, fw - 16, 6)
+        surface.SetDrawColor(BLUE)
+        surface.DrawRect(8, fh - 14, fw - 16, 6)
+    end
+
+    local title = vgui.Create("DLabel", frame)
+    title:SetText("THE LEGEND OF DEBORAH / DIE LOGGER")
+    title:SetFont("LOD_SheetHeading")
+    title:SetTextColor(RED)
+    title:SetPos(24, 20)
+    title:SetSize(fw - 240, 30)
+
+    local subtitle = vgui.Create("DLabel", frame)
+    subtitle:SetText("Last 1,000 systemic combat events & roll histories (newest first)")
+    subtitle:SetFont("LOD_SheetSmall")
+    subtitle:SetTextColor(MUTED)
+    subtitle:SetPos(24, 48)
+    subtitle:SetSize(fw - 240, 20)
+
+    local closeBtn = vgui.Create("DButton", frame)
+    closeBtn:SetText("Close [ESC]")
+    closeBtn:SetFont("LOD_SheetKey")
+    closeBtn:SetTextColor(INK)
+    closeBtn:SetPos(fw - 130, 22)
+    closeBtn:SetSize(106, 26)
+    closeBtn.Paint = function(self, bw, bh)
+        draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
+        surface.SetDrawColor(self:IsHovered() and RED or MUTED)
+        surface.DrawOutlinedRect(0, 0, bw, bh, 1)
+    end
+    closeBtn.DoClick = function() if IsValid(frame) then frame:Remove() end end
+
+    local refreshBtn = vgui.Create("DButton", frame)
+    refreshBtn:SetText("Refresh")
+    refreshBtn:SetFont("LOD_SheetKey")
+    refreshBtn:SetTextColor(INK)
+    refreshBtn:SetPos(fw - 226, 22)
+    refreshBtn:SetSize(86, 26)
+    refreshBtn.Paint = function(self, bw, bh)
+        draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
+        surface.SetDrawColor(self:IsHovered() and BLUE or MUTED)
+        surface.DrawOutlinedRect(0, 0, bw, bh, 1)
+    end
+
     local scroll = vgui.Create("DScrollPanel", frame)
-    scroll:Dock(FILL)
+    scroll:SetPos(20, 76)
+    scroll:SetSize(fw - 40, fh - 96)
+    local canvas = scroll:GetCanvas()
+    canvas.Paint = function(_, cw, ch)
+        surface.SetDrawColor(80, 66, 41, 10)
+        for cy = 0, ch, 4 do surface.DrawRect(0, cy, cw, 1) end
+    end
+
     local function refresh()
         if not IsValid(frame) then return end
         scroll:Clear()
         for i = #Feed.history, 1, -1 do
             local row = Feed.history[i]
-            local label = vgui.Create("DLabel", scroll)
-            label:Dock(TOP)
-            label:DockMargin(8, 4, 8, 5)
-            label:SetFont("LOD_CombatRoll")
-            label:SetTextColor(Color(235, 231, 218))
-            label:SetText(row.stamp .. "  " .. row.text)
-            label:SetWrap(true)
-            label:SetAutoStretchVertical(true)
+            local entryPanel = vgui.Create("DPanel", scroll)
+            entryPanel:Dock(TOP)
+            entryPanel:DockMargin(4, 3, 4, 3)
+            entryPanel.Paint = function(self, pw, ph)
+                draw.RoundedBox(2, 0, 0, pw, ph, PAPER_LIGHT)
+                surface.SetDrawColor(Color(210, 200, 175))
+                surface.DrawOutlinedRect(0, 0, pw, ph, 1)
+            end
+
+            local stampLabel = vgui.Create("DLabel", entryPanel)
+            stampLabel:SetText(row.stamp or "")
+            stampLabel:SetFont("LOD_SheetKey")
+            stampLabel:SetTextColor(MUTED)
+            stampLabel:SetPos(8, 4)
+            stampLabel:SetSize(130, 20)
+
+            local textLabel = vgui.Create("DLabel", entryPanel)
+            textLabel:SetText(row.text or "")
+            textLabel:SetFont("LOD_CombatRoll")
+            textLabel:SetTextColor(INK)
+            textLabel:SetPos(144, 4)
+            textLabel:SetSize(fw - 210, 20)
+            textLabel:SetWrap(true)
+            textLabel:SetAutoStretchVertical(true)
+
+            entryPanel:InvalidateLayout(true)
+            timer.Simple(0, function()
+                if IsValid(entryPanel) and IsValid(textLabel) then
+                    entryPanel:SetTall(math.max(28, textLabel:GetTall() + 8))
+                end
+            end)
         end
     end
     refresh()
-    local refreshButton = vgui.Create("DButton", frame)
-    refreshButton:SetText("Refresh")
-    refreshButton:SetPos(frame:GetWide() - 150, 3)
-    refreshButton:SetSize(80, 20)
-    refreshButton.DoClick = refresh
+    refreshBtn.DoClick = refresh
 end

@@ -345,7 +345,7 @@ function System:CellKey(actor)
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
     local navigator = LOD.MazeNavigator
-    if not graph or not navigator or not navigator.WorldToCell or not valid(actor) then return nil end
+    if not graph or not navigator or not navigator.WorldToCell or not valid(actor) or not isfunction(actor.GetPos) then return nil end
     local cell = navigator:WorldToCell(graph, actor:GetPos())
     if not cell then return nil end
     return string.format("%d:%d:%d", cell.x or 0, cell.y or 0, cell.z or 0)

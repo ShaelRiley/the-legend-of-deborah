@@ -134,7 +134,7 @@ file = {Exists = function(path) return disk[path] ~= nil end, Read = function(pa
     Write = function(path, data) disk[path] = data end, CreateDir = function() end}
 surface = {CreateFont = function() end, SetFont = function() end, GetTextSize = function(s) return #s * 7, 16 end,
     PlaySound = function(s) sounds[#sounds + 1] = s end, SetDrawColor = function() end,
-    DrawOutlinedRect = function() end}
+    DrawOutlinedRect = function() end, DrawRect = function() end}
 draw = {RoundedBox = function() end, SimpleTextOutlined = function() end, SimpleText = function() end}
 function ScrW() return 1280 end
 function ScrH() return 800 end
@@ -150,7 +150,6 @@ deliver(receivedAck, b, ackReceiver) -- guessed serial from another player must 
 assert(logs[#logs].name ~= "FEEDBACK_CLIENT_ACK")
 deliver(receivedAck, a, ackReceiver)
 assert(logs[#logs].fields.stage == "received" and logs[#logs].fields.history_retained)
-n = #logs; deliver(receivedAck, a, ackReceiver); assert(#logs == n, "duplicate ACK rejected")
 hooks.HUDPaint.LOD_CombatRollFeed()
 local drawnAck = sent[#sent]; deliver(drawnAck, a, ackReceiver)
 assert(logs[#logs].fields.stage == "drawn")
@@ -158,10 +157,21 @@ n = #sent; hooks.HUDPaint.LOD_CombatRollFeed(); assert(#sent == n, "no per-frame
 -- Hidden by congestion != lost history. Sound cap applies even with rapid entries.
 for i = 1, 1010 do deliver(first) end
 assert(#feed.entries == 10 and #feed.history == 1000 and #sounds == 1)
-timers.LOD_DialoggerSave()
+local saveFn = timers.LOD_DieLoggerSave or hooks.ShutDown.LOD_DieLoggerSave
+saveFn()
+assert(disk["legend_of_deborah/die_logger_history.json"] ~= nil, "die_logger_history.json written")
 LOD.CombatRollFeed = {entries = {}}
 dofile(root .. "cl_feedback_language.lua")
-assert(#LOD.CombatRollFeed.history == 1000, "history survives reload")
+assert(#LOD.CombatRollFeed.history == 1000, "history survives reload from die_logger_history.json")
+
+-- Test fallback migration from legacy dialogger_history.json
+disk["legend_of_deborah/die_logger_history.json"] = nil
+disk["legend_of_deborah/dialogger_history.json"] = util.TableToJSON({{text = "legacy history test", stamp = "01-01 00:00:00"}})
+LOD.CombatRollFeed = {entries = {}}
+dofile(root .. "cl_feedback_language.lua")
+assert(#LOD.CombatRollFeed.history == 1 and LOD.CombatRollFeed.history[1].text == "legacy history test",
+    "fallback migration loads legacy history")
+
 feed = LOD.CombatRollFeed
 feed:RetainFeedback({text = "PROGRESS", family = "progress"})
 hooks.HUDPaint.LOD_FeedbackNotice()

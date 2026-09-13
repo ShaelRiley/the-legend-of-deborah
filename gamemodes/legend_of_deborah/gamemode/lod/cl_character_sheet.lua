@@ -457,11 +457,11 @@ function Sheet:Open(requestFresh)
     close:SetPos(frame:GetWide() - 126, 22)
     close:SetSize(104, 28)
 
-    local dialogger = makeChoiceButton(frame, "Dialogger", function()
+    local dieLoggerBtn = makeChoiceButton(frame, "Die Logger", function()
         if LOD.CombatRollFeed and LOD.CombatRollFeed.OpenHistory then LOD.CombatRollFeed:OpenHistory() end
     end)
-    dialogger:SetPos(28, 76)
-    dialogger:SetSize(130, 24)
+    dieLoggerBtn:SetPos(28, 76)
+    dieLoggerBtn:SetSize(130, 24)
 
     if not snapshot then
         local loading = label(frame, "Retrieving the server-authoritative Character Sheet...",

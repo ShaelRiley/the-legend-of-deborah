@@ -391,11 +391,9 @@ function Rolls:RollPlayerWeapon(ply, weaponClass)
 end
 
 function Rolls:_PlayerRollDetail(contract)
-    if contract.weaponClass == "weapon_357" then
-        return string.format("[rolls %s%s]", table.concat(contract.values or {}, ">"),
-            contract.capped and "; chain cap" or "")
-    end
-    return nil
+    if not contract or not contract.values or #contract.values == 0 then return nil end
+    local valuesStr = table.concat(contract.values, ">")
+    return string.format("[rolls %s%s]", valuesStr, contract.capped and "; chain cap" or "")
 end
 
 function Rolls:_FinishShotgunFeed(ply, contract)
@@ -556,6 +554,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 grenadeRolls[inflictor] = contract
                 Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
             end
+            local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or 1))
+            if continuations > 0 then
+                Rolls:EmitDiceExplosionFX(attacker, "grenade", continuations, 1)
+            end
             local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
             local aimMult = tonumber(inflictor.LODAimMultiplier) or 1
             local final = math.max(1, Rolls:ResolveActorDamage(contract, attacker, target,
@@ -583,8 +585,14 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             local total = Rolls:ResolveActorDamage(rolled, attacker, target, {physical = true})
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
+
+            local continuations = math.max(0, #(rolled.values or {}) - (rolled.baseDice or 1))
+            if continuations > 0 then
+                Rolls:EmitDiceExplosionFX(attacker, "weapon_crowbar", continuations, 1)
+            end
+            local detail = Rolls:_PlayerRollDetail(rolled)
             Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, rolled.formula,
-                total, target, nil, nil, "Hostile", "crowbar"))
+                total, target, detail, nil, "Hostile", "crowbar"))
         elseif weaponClass == "weapon_shotgun" then
             local contract = attacker.LODActiveShotgunRoll
             local blocked = LOD.GeneratedGeometryBallistics

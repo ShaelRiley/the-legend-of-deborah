@@ -2,7 +2,7 @@
 
 Current user-directed work is on `hybrid/antigravity`, starting at
 `b2bd3e1742b9cee6439c913f0141c7c2efd19150`; older sequencing below is historical.
-Added shared feedback grammar, persistent P → Dialogger history, status/element and
+Added shared feedback grammar, persistent P → Die Logger history, status/element and
 Magic outcomes, recovery/XP/lifecycle/objective notices, and correlated client
 receipt/draw evidence through the existing logger/exporter. Preserved gameplay
 rules and existing effects; protected level-up from being overwritten by Feedback.

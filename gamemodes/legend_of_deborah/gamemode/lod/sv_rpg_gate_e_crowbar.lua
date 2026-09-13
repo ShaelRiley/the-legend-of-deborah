@@ -325,6 +325,9 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     local ps = run and run.GetPlayerState and run:GetPlayerState(attacker) or nil
     local continuations = math.max(0,
         #(contract.values or {}) - (tonumber(contract.baseDice) or 1))
+    if continuations > 0 and rolls and rolls.EmitDiceExplosionFX then
+        rolls:EmitDiceExplosionFX(attacker, "weapon_crowbar", continuations, 1)
+    end
     if ps and self.ApplyFeedbackLoop then
         self:ApplyFeedbackLoop(attacker, ps, continuations, 0)
     end

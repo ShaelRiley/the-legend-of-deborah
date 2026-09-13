@@ -143,13 +143,17 @@ local colors = {
 }
 
 net.Receive("LOD_MagicFormFX", function()
+    local form = net.ReadString()
+    local content = net.ReadString()
+    local origin = net.ReadVector()
+    local destination = net.ReadVector()
     FX[#FX + 1] = {
-        form = net.ReadString(),
-        content = net.ReadString(),
-        origin = net.ReadVector(),
-        destination = net.ReadVector(),
+        form = form,
+        content = content,
+        origin = origin,
+        destination = destination,
         started = CurTime(),
-        lifetime = 0.24
+        lifetime = (form == "beam" or form == "blast") and 0.48 or 0.28
     }
 end)
 
@@ -162,13 +166,49 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
             table.remove(FX, i)
         else
             local fade = math.Clamp(1 - age / fx.lifetime, 0, 1)
+            local progress = 1 - fade
             local c = colors[fx.content] or colors.raw
             render.SetMaterial(material)
+
             if fx.form == "beam" then
-                render.DrawBeam(fx.origin, fx.destination, 7 + 5 * fade, 0, 1,
+                local startPos = fx.origin
+                if LocalPlayer and IsValid(LocalPlayer()) then
+                    local eye = LocalPlayer():EyePos()
+                    if startPos:DistToSqr(eye) < 1600 then
+                        local dir = (fx.destination - startPos):GetNormalized()
+                        startPos = startPos + dir * 18
+                    end
+                end
+                -- Thicker outer element-colored beam + bright inner core beam + target impact sprite
+                render.DrawBeam(startPos, fx.destination, 18 + 8 * fade, 0, 1,
+                    Color(c.r, c.g, c.b, math.floor(210 * fade)))
+                render.DrawBeam(startPos, fx.destination, 6 + 4 * fade, 0, 1,
+                    Color(255, 255, 255, math.floor(240 * fade)))
+                render.DrawSprite(fx.destination, 42 + 45 * progress, 42 + 45 * progress,
                     Color(c.r, c.g, c.b, math.floor(230 * fade)))
+
+            elseif fx.form == "blast" then
+                -- Radial expanding area attack wave originating from caster position
+                local center = fx.origin
+                local radius = 24 + 220 * math.sqrt(progress)
+                local alpha = math.floor(220 * fade)
+                local segments = 16
+
+                -- Draw radial expanding ring in 3D world space
+                local prevPos = center + Vector(radius, 0, 8)
+                for seg = 1, segments do
+                    local angle = (seg / segments) * math.pi * 2
+                    local nextPos = center + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 8)
+                    render.DrawBeam(prevPos, nextPos, 14 + 10 * fade, 0, 1,
+                        Color(c.r, c.g, c.b, alpha))
+                    prevPos = nextPos
+                end
+                -- Center shockwave burst sprite
+                render.DrawSprite(center + Vector(0, 0, 16), radius * 0.8, radius * 0.8,
+                    Color(c.r, c.g, c.b, math.floor(180 * fade)))
+
             else
-                render.DrawSprite(fx.destination, 54 + 70 * (1 - fade), 54 + 70 * (1 - fade),
+                render.DrawSprite(fx.destination, 54 + 70 * progress, 54 + 70 * progress,
                     Color(c.r, c.g, c.b, math.floor(210 * fade)))
             end
         end

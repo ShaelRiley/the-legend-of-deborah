@@ -307,6 +307,9 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     local effects = RPG.FeatEffectSystem
     local resource = IsValid(creditCaster) and Magic:_EnsureState(creditCaster) or nil
     local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or form.damageDice or 0))
+    if continuations > 0 and IsValid(creditCaster) and Rolls and Rolls.EmitDiceExplosionFX then
+        Rolls:EmitDiceExplosionFX(creditCaster, "magic_" .. form.id, continuations, 1)
+    end
     if effects and effects.ApplyFeedbackLoop and resource then
         local restored
         restored, context.feedbackRestored = effects:ApplyFeedbackLoop(
@@ -325,7 +328,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     Magic.Stats.targets = (Magic.Stats.targets or 0) + 1
     Magic.Stats.damage = (Magic.Stats.damage or 0) + actual
     if IsValid(creditCaster) and Rolls._Send and Rolls._DamageEventText then
-        local detail = string.format("[%s%s%s]", rollDetail(contract),
+        local detail = string.format("[rolls %s%s%s]", rollDetail(contract),
             content and ("; " .. string.upper(content.displayName)) or "; RAW",
             contract.capped and "; work cap" or "")
         Rolls:_Send(creditCaster, 0, Rolls:_DamageEventText(creditCaster,
