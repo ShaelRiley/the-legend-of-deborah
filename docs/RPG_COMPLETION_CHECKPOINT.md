@@ -43,7 +43,7 @@ Checkpoint F is **STATICALLY / DETERMINISTICALLY COMPLETE**.
 
 Task **AG-010** constructed the integrated automated RPG validation gate and prepared the playtest candidate for Shael's single organic `gm_flatgrass` session:
 
-- **Playtest Candidate SHA:** `[HEAD]`
+- **Playtest Candidate SHA:** `9d51942095d126e52a7aea65ebb0441bef454324`
 - **Integrated Automated Gate Runner:** `tools/test_checkpoint_g_integration.py`
 - **Suite Matrix Results:** 24/24 test suites passed with 0 failures (`CHECKPOINT_G_AUTOMATED_GATE_PASS`), covering:
   - Actor core, Level caps (Hero 20 / Monster 999), 60/30/10 tier generation, fixed named tiers, monster D+3 ceiling;
