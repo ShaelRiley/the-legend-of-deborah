@@ -11,6 +11,7 @@ local Progression = assert(LOD.CharacterProgressionSystem,
 local Rules = assert(LOD.RPGAbilityRules, "Soldier progression requires AbilityRules")
 
 local THRESHOLDS = {100, 250, 450}
+System.THRESHOLDS = THRESHOLDS
 System.Stats = System.Stats or {damageXP = 0, lifeXP = 0, levels = 0, retired = 0}
 
 local function dungeonLevel()
@@ -55,23 +56,42 @@ function System:Attach(ply, actorSeed, startingHP, level)
     return state
 end
 
-function System:Retire(ply)
-    if not IsValid(ply) then return false end
-    if ply.LODHumanSoldierProgressionState then
-        ply.LODHumanSoldierProgressionState = nil
+function System:Retire(target)
+    if not target then return false end
+    if type(target) == "table" and target.LODHumanSoldierProgressionState then
+        target.LODHumanSoldierProgressionState = nil
+        self.Stats.retired = (self.Stats.retired or 0) + 1
+        return true
+    elseif type(target) == "table" and target.actorType == "human_soldier" and target.soldierIncarnation then
+        target.soldierIncarnation = false
+        target.soldierXP = 0
+        target.soldierEarnedLevels = 0
         self.Stats.retired = (self.Stats.retired or 0) + 1
         return true
     end
     return false
 end
 
+function System:Reset(target)
+    return self:Retire(target)
+end
+
 function System:StateFor(actor)
-    return IsValid(actor) and actor.LODHumanSoldierProgressionState or nil
+    if not actor then return nil end
+    if type(actor) == "table" then
+        if actor.LODHumanSoldierProgressionState then
+            return actor.LODHumanSoldierProgressionState
+        elseif actor.actorType == "human_soldier" and actor.soldierIncarnation then
+            return actor
+        end
+    end
+    return nil
 end
 
 function System:_Advance(state)
     local earned = self:EarnedLevelsForXP(state.soldierXP)
-    local cap = Progression:EffectiveLevelCap("human_soldier", dungeonLevel())
+    local dLvl = state.dungeonLevel or dungeonLevel()
+    local cap = Progression:EffectiveLevelCap("human_soldier", dLvl)
     local wanted = math.min((state.soldierSpawnLevel or state.level) + earned, cap)
     local before = state.level
     local ps = {identity = state.actorId, starterWeaponClass = "weapon_smg1"}
@@ -83,7 +103,8 @@ function System:_Advance(state)
     return true
 end
 
-function System:Award(state, effectiveHeroHPDamage, lifeConsumed)
+function System:Award(target, effectiveHeroHPDamage, lifeConsumed)
+    local state = type(target) == "table" and (target.actorType == "human_soldier" and target or self:StateFor(target)) or nil
     if not state or state.actorType ~= "human_soldier" then return false, "not human Soldier" end
     local damage = math.max(0, math.floor(tonumber(effectiveHeroHPDamage) or 0))
     local life = lifeConsumed == true and 50 or 0

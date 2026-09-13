@@ -29,6 +29,21 @@ Checkpoint D is **closed completely** at the static/deterministic level (Task AG
 
 This closure tranche is **implemented and statically validated**.
 
+### Checkpoint E — Human Soldier Progression Authority (AG-006)
+
+Checkpoint E progression authority is **closed at the static/deterministic level** (Task AG-006):
+
+- **Single Incarnation Authority:** `LOD.SoldierProgression` is the single canonical authority for Human Soldier XP and advancement.
+- **Exact Thresholds:** Verified cumulative XP thresholds `100 / 250 / 450` producing +1/+2/+3 earned levels. Single lump awards crossing multiple thresholds process all advancements deterministically without losing an advancement.
+- **Automatic Advancement:** Soldier leveling uses `Progression:AdvanceAutomaticActor` (d8 growth, automatic feat/class progression) without invoking Hero level-up or feat-choice UI.
+- **Hero Isolation:** Active Soldier progression does NOT mutate underlying Hero level, XP, class, feat inventory, spell progression, or Form Magic state. Retiring a Soldier restores the unmutated Hero progression.
+- **Dungeon/World Constraint:** Soldier advancement respects the established `D+3` dungeon/world ceiling (`Progression:EffectiveLevelCap`).
+- **Reset/Retirement Seam:** Canonical idempotent `System:Retire(target)` and `System:Reset(target)` APIs safely detach and reset incarnation state.
+- **Seam Integration:** `ObserveEffectiveHeroDamage` and `Award(target, damage, lifeConsumed)` route damage and +50 personal life XP credit authoritatively into `LOD.SoldierProgression`.
+- **Deterministic Test Harness:** `tools/test_human_soldier_progression.lua` PASSES all 15 AG-006 requirements with 0 discrepancies.
+
+Checkpoint E remains **open** pending the remaining lifecycle/queue/wave-start integrity tranche.
+
 ## Next work
 
-Await Checkpoint-D closure packet and Checkpoint E task directives from Sol. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
+Await Checkpoint E lifecycle/integrity tranche directives from Sol. Human runtime testing remains deferred to the integrated Checkpoint-G playtest.
