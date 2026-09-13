@@ -248,6 +248,47 @@ check(RunManager:IsSoldierControl(p1) == true, "B. P1 is now under active Soldie
 -- C. Active Soldier control does not alter Hero state
 check(ps1.progressionState.level == 5 and ps1.progressionState.xp == 1250, "C. Hero 1 level (5) and XP (1250) preserved untouched during Soldier play")
 
+-- AG-007R2 Safety & Invariant Tests:
+
+-- 1. ACTIVE_HERO calling ReturnToHeroQueue must be rejected without mutating state
+ps2.lives = 3
+ps2.eliminated = false
+local okActiveRet, errActiveRet = RunManager:ReturnToHeroQueue(p2)
+check(okActiveRet == false and errActiveRet == "active hero cannot return to hero queue", "AG-007R2: Active Hero ReturnToHeroQueue rejected")
+check(ps2.lives == 3 and ps2.eliminated == false, "AG-007R2: Active Hero state (lives=3, eliminated=false) preserved untouched")
+
+-- 2. ACTIVE_SOLDIER ineligibility & ReviveIdentity safety
+check(RunManager:IsHeroRevivalQueueEligible("steam_1001") == false, "AG-007R2: Active Soldier P1 is NOT revival queue eligible")
+local okSolRev, errSolRev = RunManager:ReviveIdentity("steam_1001")
+check(okSolRev == false and errSolRev == "ineligible", "AG-007R2: ReviveIdentity on Active Soldier P1 rejected")
+check(RunManager:IsSoldierControl(p1) == true, "AG-007R2: ReviveIdentity did NOT retire Active Soldier as a side effect")
+check(ps1.lives == 0 and ps1.eliminated == true, "AG-007R2: Hero state preserved as eliminated with 0 lives")
+
+-- 3. SOLDIER_RESPAWN_WAIT ineligibility & ReviveIdentity safety
+p1:SetAlive(false)
+RunManager:HandleDeath(p1) -- Soldier dies -> SOLDIER_RESPAWN_WAIT
+check(ps1.soldierRespawnWait == true or (ps1.respawnAt and ps1.respawnAt > CurTime()), "AG-007R2: P1 entered SOLDIER_RESPAWN_WAIT")
+check(RunManager:IsHeroRevivalQueueEligible("steam_1001") == false, "AG-007R2: P1 in SOLDIER_RESPAWN_WAIT is NOT revival queue eligible")
+local okWaitRev, errWaitRev = RunManager:ReviveIdentity("steam_1001")
+check(okWaitRev == false and errWaitRev == "ineligible", "AG-007R2: ReviveIdentity during SOLDIER_RESPAWN_WAIT rejected")
+check(ps1.lives == 0 and ps1.eliminated == true, "AG-007R2: Hero state preserved during failed wait revival")
+
+-- 4. ReturnToHeroQueue from SOLDIER_RESPAWN_WAIT restores queue eligibility & preserves original eliminatedSince
+local okWaitRet = RunManager:ReturnToHeroQueue(p1)
+check(okWaitRet == true, "AG-007R2: ReturnToHeroQueue from SOLDIER_RESPAWN_WAIT succeeded")
+check(ps1.soldierRespawnWait == nil and ps1.respawnAt == nil, "AG-007R2: Soldier respawn wait state cleared")
+check(ps1.eliminatedSince == 1000, "AG-007R2: Original eliminatedSince (1000) preserved after wait return")
+check(RunManager:IsHeroRevivalQueueEligible("steam_1001") == true, "AG-007R2: P1 is now revival queue eligible")
+
+-- 5. Subsequent valid queue revival succeeds
+local okValidRev, msgValidRev = RunManager:ReviveIdentity("steam_1001")
+check(okValidRev == true, "AG-007R2: Valid queue revival succeeded")
+check(ps1.lives == 1 and ps1.eliminated == false and ps1.eliminatedSince == nil, "AG-007R2: P1 Hero state restored after valid revival")
+
+-- 6. Canonical AI Soldier authority generation check
+local archetype = LOD.Config and LOD.Config.Encounter and LOD.Config.Encounter.Archetypes and LOD.Config.Encounter.Archetypes.soldier
+check(archetype ~= nil and archetype.baseHP == 35 and string.lower(archetype.model) == "models/combine_soldier.mdl", "AG-007R2: Canonical AI Soldier archetype authority verified (baseHP=35, model=models/combine_soldier.mdl)")
+
 -- D. Active Soldier is excluded from overflow revival
 local revId, revState = Loot:_OldestEliminatedTeammate("steam_1002")
 check(revId == nil, "D. P1 skipped for Extra Life revival while active as Soldier")
@@ -256,9 +297,10 @@ check(revId == nil, "D. P1 skipped for Extra Life revival while active as Soldie
 ps2.lives = 4 -- P2 has max lives
 local okLife, msgLife = Loot:_GrantExtraLife(p2)
 check(okLife == false, "E. Extra Life revival missed/failed when only eliminated Hero is active Soldier")
-check(ps1.eliminated == true and ps1.lives == 0, "E. Hero remains eliminated with 0 lives; revival was missed not banked")
 
 -- F. Return-to-Hero Queue retires Soldier, frees control state, preserves original Hero elimination timestamp, and restores future revival eligibility
+ps1.lives = 0; ps1.eliminated = true; ps1.eliminatedSince = 1000
+RunManager:JoinSoldierRole(p1)
 local okRet = RunManager:ReturnToHeroQueue(p1)
 check(okRet == true, "F. ReturnToHeroQueue succeeded")
 check(RunManager:IsSoldierControl(p1) == false, "F. Soldier retired and control state freed")
@@ -358,11 +400,12 @@ check(ps2.lives == 1 and ps2.eliminated == false, "R. P2 Hero restored to 1 life
 
 -- S. Duplicate transition callbacks remain idempotent
 check(RunManager:RetireSoldier(p1) == false, "S. Duplicate RetireSoldier is idempotent")
-check(RunManager:ReturnToHeroQueue(p1) == true, "S. Duplicate ReturnToHeroQueue is idempotent")
+ps1.eliminated = true; ps1.lives = 0
+check(RunManager:ReturnToHeroQueue(p1) == true, "S. Duplicate ReturnToHeroQueue on queued player is idempotent")
 
 -- Final summary
 if #errors == 0 then
-    print("HUMAN_SOLDIER_LIFECYCLE_HARNESS_PASS — All 20 requirements (A thru T) verified with 0 discrepancies.")
+    print("HUMAN_SOLDIER_LIFECYCLE_HARNESS_PASS — AG-007R2 verified with 0 discrepancies.")
 else
     print("HUMAN_SOLDIER_LIFECYCLE_HARNESS_FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

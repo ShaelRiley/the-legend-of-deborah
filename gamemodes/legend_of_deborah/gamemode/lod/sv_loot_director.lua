@@ -244,19 +244,10 @@ end
 function Loot:_OldestEliminatedTeammate(excludeIdentity)
     local chosenId
     local chosenState
-    for id, ps in pairs(RunManager.State.PlayerState or {}) do
-        if id ~= excludeIdentity and ps.eliminated and (ps.lives or 0) <= 0 then
-            local candidatePly
-            if RunManager and RunManager.ConnectedPlayerForIdentity then
-                candidatePly = RunManager:ConnectedPlayerForIdentity(id)
-            end
-            if not candidatePly then
-                for _, p in ipairs(player.GetAll()) do
-                    if identityOf(p) == id then candidatePly = p break end
-                end
-            end
-            local isSoldierActive = candidatePly and RunManager and RunManager.IsSoldierControl and RunManager:IsSoldierControl(candidatePly)
-            if not isSoldierActive then
+    for id, ps in pairs(RunManager.State and RunManager.State.PlayerState or {}) do
+        if id ~= excludeIdentity then
+            local isEligible = RunManager and RunManager.IsHeroRevivalQueueEligible and RunManager:IsHeroRevivalQueueEligible(id)
+            if isEligible then
                 if not chosenState or (ps.eliminatedSince or math.huge) < (chosenState.eliminatedSince or math.huge) then
                     chosenId = id
                     chosenState = ps
@@ -295,29 +286,20 @@ function Loot:_GrantExtraLife(ply)
     end
 
     local ownerId = identityOf(ply)
-    local revivedId, revived = self:_OldestEliminatedTeammate(ownerId)
-    if not revivedId or not revived then return false end
+    local revivedId = self:_OldestEliminatedTeammate(ownerId)
+    if not revivedId then return false end
 
-    revived.lives = 1
-    revived.eliminated = false
-    revived.eliminatedSince = nil
-    revived.respawnAt = nil
-    revived.armor = 0
-
-    for _, candidate in ipairs(player.GetAll()) do
-        if identityOf(candidate) == revivedId then
-            RunManager.State.ActiveIdentity[revivedId] = true
-            if RunManager.RetireSoldier then RunManager:RetireSoldier(candidate) end
-            RunManager:_SyncPlayerVars(candidate)
-            timer.Simple(0, function()
-                if IsValid(candidate) and not candidate:Alive() then candidate:Spawn() end
-            end)
-            break
+    if RunManager and RunManager.ReviveIdentity then
+        local revived, disposition = RunManager:ReviveIdentity(revivedId)
+        if not revived then return false end
+        self.Stats.extraLives = (self.Stats.extraLives or 0) + 1
+        if disposition == "active" then
+            return true, "EXTRA LIFE REVIVED A TEAMMATE"
         end
+        return true, "EXTRA LIFE REVIVED A TEAMMATE — WAITING FOR AN ACTIVE SLOT"
     end
 
-    self.Stats.extraLives = (self.Stats.extraLives or 0) + 1
-    return true, "EXTRA LIFE REVIVED A TEAMMATE"
+    return false
 end
 
 function Loot:_GrantLargeCache(ply, rng)

@@ -55,6 +55,7 @@ AddCSLuaFile("lod/cl_spellbook.lua")
 AddCSLuaFile("lod/cl_pushback_fx.lua")
 AddCSLuaFile("lod/cl_character_sheet.lua")
 AddCSLuaFile("lod/cl_haste.lua")
+AddCSLuaFile("lod/cl_soldier_queue_ui.lua")
 
 include("shared.lua")
 include("lod/sv_required_map.lua")
@@ -204,5 +205,6 @@ if LOD.DeveloperToolsLoaded then
     include("lod/sv_m3_debug.lua")
     include("lod/sv_m3_testkit_qol.lua")
     include("lod/sv_m3_roster_debug.lua")
-    LOD.DeveloperToolModuleCount = 8
+    include("lod/sv_human_soldier_runtime_validation.lua")
+    LOD.DeveloperToolModuleCount = 9
 end

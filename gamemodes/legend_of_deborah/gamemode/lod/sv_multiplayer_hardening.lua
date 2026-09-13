@@ -40,23 +40,26 @@ end
 -- if a slot is available it activates immediately, otherwise it remains a normal
 -- waiting spectator until PromoteWaitingSpectators can admit it.
 function RunManager:ReviveIdentity(identity)
-    local ps = identity and self:GetPlayerState(identity)
-    if not ps or not ps.eliminated or (ps.lives or 0) > 0 then
-        return false, "identity is not eliminated"
+    local id = isstring(identity) and identity or self:IdentityOf(identity)
+    if not id then return false, "invalid identity" end
+
+    if not self:IsHeroRevivalQueueEligible(id) then
+        return false, "ineligible"
     end
+
+    local ps = self:GetPlayerState(id)
+    if not ps then return false, "no player state" end
 
     ps.lives = 1
     ps.eliminated = false
     ps.eliminatedSince = nil
     ps.respawnAt = nil
+    ps.soldierRespawnWait = nil
     ps.armor = 0
 
-    local ply = connectedPlayerForIdentity(identity)
+    local ply = connectedPlayerForIdentity(id)
     local activated = false
     if IsValid(ply) then
-        if self:IsSoldierControl(ply) then
-            self:RetireSoldier(ply)
-        end
         activated = self:TryActivatePlayer(ply) == true
         self:_SyncPlayerVars(ply)
         if activated then
@@ -68,7 +71,7 @@ function RunManager:ReviveIdentity(identity)
                 end
             end)
         else
-            self.State.WaitingSince[identity] = self.State.WaitingSince[identity] or CurTime()
+            self.State.WaitingSince[id] = self.State.WaitingSince[id] or CurTime()
             self:PutInRestrictedSpectator(ply)
         end
     end

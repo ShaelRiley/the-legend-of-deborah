@@ -116,12 +116,46 @@ function RunManager:IsSoldierControl(ply)
     return system and system:StateFor(ply) ~= nil or false
 end
 
+function RunManager:IsHeroRevivalQueueEligible(plyOrIdentity)
+    local id = isstring(plyOrIdentity) and plyOrIdentity or self:IdentityOf(plyOrIdentity)
+    if not id then return false end
+    local ps = self.State and self.State.PlayerState and self.State.PlayerState[id]
+    if not ps or not ps.eliminated or (ps.lives or 0) > 0 then
+        return false
+    end
+
+    local ply = self.ConnectedPlayerForIdentity and self:ConnectedPlayerForIdentity(id)
+    if not ply then
+        for _, p in ipairs(player.GetAll()) do
+            if self:IdentityOf(p) == id then ply = p break end
+        end
+    end
+
+    if IsValid(ply) then
+        if self:IsSoldierControl(ply) then
+            return false
+        end
+    end
+
+    if ps.soldierRespawnWait == true then
+        return false
+    end
+
+    if ps.respawnAt and ps.respawnAt > CurTime() then
+        return false
+    end
+
+    return true
+end
+
 function RunManager:AttachSoldier(ply, seed, hp, level)
     local system = LOD.SoldierProgression
     if not system or not IsValid(ply) then return nil end
+    local archetype = CC.Encounter and CC.Encounter.Archetypes and CC.Encounter.Archetypes.soldier
+    local baseHp = hp or (archetype and archetype.baseHP) or 35
     level = level or math.max(1, math.floor(tonumber(self.State and self.State.Level) or 1))
     seed = seed or LOD.Seeds.Derive(self.State.LevelSeed or 1, "soldier:" .. (self:IdentityOf(ply) or "0") .. ":" .. math.floor(CurTime()))
-    return system:Attach(ply, seed, hp or 40, level)
+    return system:Attach(ply, seed, baseHp, level)
 end
 
 function RunManager:RetireSoldier(target)
@@ -350,20 +384,25 @@ end
 
 function RunManager:ReturnToHeroQueue(ply)
     if not IsValid(ply) then return false, "invalid player" end
-    local isSol = self:IsSoldierControl(ply)
     local id = self:IdentityOf(ply)
-    local ps = id and self.State.PlayerState[id]
+    local ps = id and self.State and self.State.PlayerState and self.State.PlayerState[id]
+    if not ps then return false, "no player state" end
+
+    local isSol = self:IsSoldierControl(ply)
+    local inWait = ps.soldierRespawnWait == true or (ps.respawnAt and ps.respawnAt > CurTime() and ps.eliminated == true)
+
+    if not isSol and not inWait and (not ps.eliminated and (ps.lives or 0) > 0) then
+        return false, "active hero cannot return to hero queue"
+    end
 
     if isSol then
         self:RetireSoldier(ply)
     end
 
-    if ps then
-        ps.soldierRespawnWait = nil
-        ps.respawnAt = nil
-        ps.eliminated = true
-        ps.lives = 0
-    end
+    ps.soldierRespawnWait = nil
+    ps.respawnAt = nil
+    ps.eliminated = true
+    ps.lives = 0
 
     self:PutInRestrictedSpectator(ply)
     self:_SyncPlayerVars(ply)
