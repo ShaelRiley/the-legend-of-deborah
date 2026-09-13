@@ -366,6 +366,9 @@ function Loot:Collect(ent, ply)
     ply:EmitSound(ent.LODLootKind == "life" and "items/suitchargeok1.wav" or "items/itempickup.wav",
         64, ent.LODLootKind == "life" and 125 or 100, 0.78, CHAN_ITEM)
     if message then ply:ChatPrint(message) end
+    if message and LOD.RPGPresentation and LOD.RPGPresentation.Event then
+        LOD.RPGPresentation:Event(ply, "resource", message, {event = "loot_collected", kind = ent.LODLootKind})
+    end
     return true
 end
 

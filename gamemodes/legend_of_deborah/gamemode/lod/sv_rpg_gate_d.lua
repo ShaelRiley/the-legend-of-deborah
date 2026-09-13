@@ -230,7 +230,7 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
             result.finalHPDamage = 0
             result.evaded = true
             self.Stats.evasions = (self.Stats.evasions or 0) + 1
-            if rolls._Send then rolls:_Send(target, 3, "CAPSTONE EVADE — NO DAMAGE") end
+            if rolls._Send then rolls:_Send(target, 3, "CAPSTONE EVADE — NO DAMAGE", "resist", {event = "evaded"}) end
             target.LODRPGEvadedAt = CurTime()
             return result
         end
@@ -257,8 +257,9 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     target.LODRPGLastDiversion = {at = CurTime(), hp = affordableHP, magic = magicSpent}
     local rolls = LOD.CombatRolls
     if affordableHP > 0 and rolls and rolls._Send then
-        rolls:_Send(target, 3, string.format("ARCANE DIVERSION — %.1f HP -> %.1f MAGIC; %.1f HP REMAINS",
-            affordableHP, magicSpent, finalHP))
+        rolls:_Send(target, 3, string.format("ARCANE DIVERSION — %.1f HP prevented / %.1f Magic spent; %.1f HP DAMAGE",
+            affordableHP, magicSpent, finalHP), "resource", {event = "arcane_diversion",
+                prevented = affordableHP, spent = magicSpent, hp_damage = finalHP})
     end
     return result
 end

@@ -457,6 +457,12 @@ function Sheet:Open(requestFresh)
     close:SetPos(frame:GetWide() - 126, 22)
     close:SetSize(104, 28)
 
+    local dialogger = makeChoiceButton(frame, "Dialogger", function()
+        if LOD.CombatRollFeed and LOD.CombatRollFeed.OpenHistory then LOD.CombatRollFeed:OpenHistory() end
+    end)
+    dialogger:SetPos(28, 76)
+    dialogger:SetSize(130, 24)
+
     if not snapshot then
         local loading = label(frame, "Retrieving the server-authoritative Character Sheet...",
             "LOD_SheetHeading", BLUE)
@@ -479,8 +485,8 @@ function Sheet:Open(requestFresh)
     ready:SetContentAlignment(6)
 
     local body = vgui.Create("DScrollPanel", frame)
-    body:SetPos(24, 84)
-    body:SetSize(frame:GetWide() - 48, frame:GetTall() - 112)
+    body:SetPos(24, 110)
+    body:SetSize(frame:GetWide() - 48, frame:GetTall() - 138)
     local canvas = body:GetCanvas()
     canvas.Paint = function(_, w, h)
         surface.SetDrawColor(80, 66, 41, 12)

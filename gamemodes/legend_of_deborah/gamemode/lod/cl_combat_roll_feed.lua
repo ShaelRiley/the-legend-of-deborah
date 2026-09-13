@@ -51,17 +51,20 @@ local categoryColors = {
     [3] = Color(205, 205, 210)
 }
 
-local function addEntry(category, text)
-    Feed.entries[#Feed.entries + 1] = {
+local function addEntry(category, text, serial, family, tracked)
+    local entry = {
         category = category,
         text = tostring(text or ""),
-        created = CurTime()
+        created = CurTime(), serial = serial, family = family, tracked = tracked
     }
+    Feed.entries[#Feed.entries + 1] = entry
     while #Feed.entries > MAX_ENTRIES do table.remove(Feed.entries, 1) end
+    if Feed.RetainFeedback then Feed:RetainFeedback(entry) end
 end
 
 net.Receive("LOD_CombatRoll", function()
-    addEntry(net.ReadUInt(2), net.ReadString())
+    local category, text = net.ReadUInt(2), net.ReadString()
+    addEntry(category, text, net.ReadUInt(32), net.ReadString(), net.ReadBool())
 end)
 
 net.Receive("LOD_DiceExplosionFX", function()

@@ -69,9 +69,13 @@ end
 
 function FX:Trigger(kind, primary, secondary, serial)
     kind = math.floor(tonumber(kind) or 0)
+    -- Rapid combat must not erase a rare level-up. The Feedback proc still has
+    -- its world effect and retained dialogger sentence.
+    if kind == FX_FEEDBACK and self.active and self.active.kind == FX_LEVEL_UP
+        and CurTime() - self.active.created < LEVEL_UP_FX_SECONDS then return false end
     if kind == FX_FEAT_CONFIRM then
         playFeatSound()
-        return
+        return true
     end
 
     self.active = {
@@ -87,6 +91,7 @@ function FX:Trigger(kind, primary, secondary, serial)
     else
         playLevelSound()
     end
+    return true
 end
 
 net.Receive(NET_NAME, function()
@@ -95,11 +100,12 @@ net.Receive(NET_NAME, function()
     local primary = net.ReadString()
     local secondary = net.ReadString()
 
-    FX:Trigger(kind, primary, secondary, serial)
+    local triggered = FX:Trigger(kind, primary, secondary, serial)
 
     net.Start(ACK_NAME)
     net.WriteUInt(serial, 16)
     net.WriteUInt(kind, 3)
+    net.WriteBool(triggered == true)
     net.SendToServer()
 end)
 

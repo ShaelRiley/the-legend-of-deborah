@@ -8,8 +8,8 @@ if Feed.LODSemanticRendererInstalled then return end
 -- sound aggregation remain the event authority populated by cl_combat_roll_feed.
 hook.Remove("HUDPaint", "LOD_CombatRollFeed")
 
-local HOLD_SECONDS = 5.0
-local FADE_SECONDS = 1.0
+local HOLD_SECONDS = 9.0
+local FADE_SECONDS = 1.4
 local EXPLOSION_FX_SECONDS = 0.52
 local FONT = "LOD_CombatRoll"
 local ROW_HEIGHT = 18
@@ -188,6 +188,7 @@ local function drawEntry(entry, right, bottomY, maxWidth, alpha, lines, widths)
     -- firstY is the baseline of the top rendered row. Move one complete row above
     -- it before applying the inter-entry gap; the previous implementation moved
     -- only ENTRY_GAP pixels and therefore painted successive entries on top of one another.
+    if Feed.AckFeedback then Feed:AckFeedback(entry, 1, false) end
     return firstY - ROW_HEIGHT - ENTRY_GAP
 end
 

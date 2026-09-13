@@ -63,11 +63,25 @@ end
 -- The old 180-byte presentation cap could cut the character identity or source
 -- even though net.WriteString itself is not the constraint. Keep a finite 512-byte
 -- event packet while allowing the authored full semantic sentence to arrive.
-function Rolls:_Send(ply, category, text)
+function Rolls:_Send(ply, category, text, family, fields)
     if not IsValid(ply) or not ply:IsPlayer() then return end
+    text = string.sub(tostring(text or "ROLL"), 1, MESSAGE_LIMIT)
+    family = LOD.FeedbackLanguage and LOD.FeedbackLanguage[family] and family or "routine"
+    self.FeedbackSerial = ((self.FeedbackSerial or 0) + 1) % 4294967296
+    local serial = self.FeedbackSerial
+    local presentation = LOD.RPGPresentation
+    local tracked = false
+    if presentation and presentation.TrackFeedback then
+        local ok, result = pcall(presentation.TrackFeedback, presentation, ply, serial, family, text, fields)
+        tracked = ok and result == true
+        if not ok then ErrorNoHalt("[LOD:FEEDBACK] " .. tostring(result) .. "\n") end
+    end
     net.Start("LOD_CombatRoll")
     net.WriteUInt(math.Clamp(category or 0, 0, 3), 2)
-    net.WriteString(string.sub(tostring(text or "ROLL"), 1, MESSAGE_LIMIT))
+    net.WriteString(text)
+    net.WriteUInt(serial, 32)
+    net.WriteString(family)
+    net.WriteBool(tracked)
     net.Send(ply)
     self.Stats.feedMessages = (self.Stats.feedMessages or 0) + 1
 end

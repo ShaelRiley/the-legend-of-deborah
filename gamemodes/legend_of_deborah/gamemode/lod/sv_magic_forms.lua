@@ -631,9 +631,28 @@ function Forms:_CanCastPreSpend(ply, form, context)
     return true
 end
 
+local function castNotice(ply, form, content, reason, cost, remaining, serial)
+    local presentation = LOD.RPGPresentation
+    if not presentation or not presentation.Event then return end
+    local reasons = {magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
+        summon_cap = "summon limit reached", placement = "no clear summon placement",
+        status = "current status prevents Magic", entity = "summon unavailable", cast = "cast failed"}
+    local label = form and (form.displayName or form.id) or "Magic"
+    if content then label = label .. " / " .. (content.displayName or content.id) end
+    local text = reason and (label .. ": " .. (reasons[reason] or reason) .. " — no Magic spent")
+        or string.format("%s — %g Magic spent / %.1f remaining", label, cost, remaining)
+    presentation:Event(ply, reason and "blocked" or "magic", text,
+        {event = "magic_cast", form = form and form.id, content = content and content.id,
+            outcome = reason or "committed", spent = reason and 0 or cost, remaining = remaining,
+            cast_serial = serial}, reason and ("cast:" .. reason) or nil)
+end
+
 function Forms:CastSelected(ply)
     if not validCaster(ply) then return false end
-    if Status and not Status:CanInitiateMagic(ply) then return false end
+    if Status and not Status:CanInitiateMagic(ply) then
+        castNotice(ply, nil, nil, "status")
+        return false
+    end
     local state, form, content = self:SelectedCastState(ply)
     if not state or not form then return false end
     local ps = Magic:_EnsureState(ply)
@@ -646,6 +665,7 @@ function Forms:CastSelected(ply)
     if not preOK then
         self.Stats.failed = (self.Stats.failed or 0) + 1
         ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
+        castNotice(ply, form, content, preReason, 0, ps.magic)
         return false, preReason
     end
 
@@ -654,6 +674,7 @@ function Forms:CastSelected(ply)
     if ps.magic < cost then
         self.Stats.failed = (self.Stats.failed or 0) + 1
         ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
+        castNotice(ply, form, content, "magic", 0, ps.magic)
         return false, "magic"
     end
 
@@ -680,6 +701,7 @@ function Forms:CastSelected(ply)
         Magic.NextCast[ply] = previousCooldown
         Magic:_Sync(ply, ps)
         self.Stats.failed = (self.Stats.failed or 0) + 1
+        castNotice(ply, form, content, reason or "cast", 0, ps.magic, context.castSerial)
         return false, reason or "cast"
     end
 
@@ -692,6 +714,7 @@ function Forms:CastSelected(ply)
     if ply.AnimRestartGesture then
         ply:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_GMOD_GESTURE_RANGE_ZOMBIE, true)
     end
+    castNotice(ply, form, content, nil, cost, ps.magic, context.castSerial)
     return true
 end
 

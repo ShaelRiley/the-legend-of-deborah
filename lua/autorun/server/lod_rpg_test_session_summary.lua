@@ -76,6 +76,7 @@ function Summary:BeginSession(reason)
     self.Marks = {}
     self.Profiles = {}
     self.Dice = {}
+    self.Feedback = {dispatched = 0, received = 0, drawn = 0, sound_requested = 0, throttled = 0}
     self.LastValidation = nil
     file.Write(SESSION_PATH, sessionHeader(self.SessionReason))
 end
@@ -90,6 +91,17 @@ function Summary:Record(sequence, eventTime, eventName, fields)
     self.EventCount = (self.EventCount or 0) + 1
     self.LastSequence = tonumber(sequence) or self.LastSequence or 0
     self.EventCounts[eventName] = (self.EventCounts[eventName] or 0) + 1
+
+    self.Feedback = self.Feedback or {dispatched = 0, received = 0, drawn = 0, sound_requested = 0, throttled = 0}
+    if eventName == "FEEDBACK_DISPATCH" then
+        self.Feedback.dispatched = self.Feedback.dispatched + 1
+    elseif eventName == "FEEDBACK_SUPPRESSED" then
+        self.Feedback.throttled = self.Feedback.throttled + 1
+    elseif eventName == "FEEDBACK_CLIENT_ACK" then
+        if fields.stage == "received" then self.Feedback.received = self.Feedback.received + 1 end
+        if fields.stage == "drawn" then self.Feedback.drawn = self.Feedback.drawn + 1 end
+        if fields.sound_requested == true then self.Feedback.sound_requested = self.Feedback.sound_requested + 1 end
+    end
 
     local line = string.format("%06d\t%.3f\t%s", tonumber(sequence) or 0, tonumber(eventTime) or CurTime(), eventName)
     local encoded = encodedFields(fields)
@@ -200,6 +212,13 @@ function Summary:Render()
         end
     end
 
+    lines[#lines + 1] = ""
+    lines[#lines + 1] = "[FEEDBACK_DELIVERY]"
+    for _, key in ipairs({"dispatched", "received", "drawn", "sound_requested", "throttled"}) do
+        lines[#lines + 1] = key .. "=" .. tostring(self.Feedback and self.Feedback[key] or 0)
+    end
+    lines[#lines + 1] = "# drawn = client reports first feed/notice draw; crowded feed may retain without drawing"
+    lines[#lines + 1] = "# sound_requested = client called playback; audibility requires human confirmation"
     lines[#lines + 1] = ""
     lines[#lines + 1] = "[LATEST_PROFILES]"
     local players = {}

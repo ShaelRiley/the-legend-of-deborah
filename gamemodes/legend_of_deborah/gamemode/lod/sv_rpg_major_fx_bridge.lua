@@ -40,6 +40,9 @@ local function install()
         net.WriteString(tostring(secondary or ""))
         net.Send(ply)
 
+        logEvent("RPG_MAJOR_FX_DISPATCH", {player = string.format("player:%s#%d", tostring(ply:Nick()), ply:EntIndex()),
+            serial = serial, kind = kind, primary = tostring(primary or ""), secondary = tostring(secondary or "")})
+
         return true
     end
 
@@ -50,10 +53,12 @@ net.Receive(ACK_NAME, function(_, ply)
     if not IsValid(ply) then return end
     local serial = net.ReadUInt(16)
     local kind = net.ReadUInt(3)
+    local triggered = net.ReadBool()
     logEvent("RPG_MAJOR_FX_CLIENT_ACK", {
         player = string.format("player:%s#%d", tostring(ply:Nick()), ply:EntIndex()),
         serial = serial,
-        kind = kind
+        kind = kind,
+        triggered = triggered
     })
 end)
 

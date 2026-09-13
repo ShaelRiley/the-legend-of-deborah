@@ -510,6 +510,13 @@ function ProgressionDirector:CollectCard(index, ply)
     return true
 end
 
+local function reportDenied(ply, text)
+    ply:ChatPrint(text)
+    if LOD.RPGPresentation and LOD.RPGPresentation.Event then
+        LOD.RPGPresentation:Event(ply, "blocked", text, {event = "objective_denied"}, "objective_denied")
+    end
+end
+
 function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     local state = LOD.RunManager.State
     local card = PC.Cards[index]
@@ -519,14 +526,14 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
 
     if not state.Cards[index] then
         if IsValid(ply) then
-            ply:ChatPrint(string.format("ACCESS DENIED — %s / %s KEYCARD REQUIRED", card.letter, card.symbol))
+            reportDenied(ply, string.format("ACCESS DENIED — %s / %s KEYCARD REQUIRED", card.letter, card.symbol))
             ply:EmitSound("buttons/button10.wav", 65, 100, 0.7)
         end
         return false
     end
 
     if state.ObjectiveStage ~= index * 2 then
-        if IsValid(ply) then ply:ChatPrint("ACCESS DENIED — SECURITY SEQUENCE LOCKED") end
+        if IsValid(ply) then reportDenied(ply, "ACCESS DENIED — SECURITY SEQUENCE LOCKED") end
         return false
     end
 
@@ -598,12 +605,12 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
         not LOD.RunManager:IsActivePlayer(ply) then return false end
 
     if not state.JailKey then
-        ply:ChatPrint("ACCESS DENIED — JAIL KEY REQUIRED")
+        reportDenied(ply, "ACCESS DENIED — JAIL KEY REQUIRED")
         ply:EmitSound("buttons/button10.wav", 65, 100, 0.7)
         return false
     end
     if state.ObjectiveStage ~= Stages.UNLOCK_DEBORAH_CELL then
-        ply:ChatPrint("ACCESS DENIED — SECURITY SEQUENCE LOCKED")
+        reportDenied(ply, "ACCESS DENIED — SECURITY SEQUENCE LOCKED")
         return false
     end
 

@@ -1,3 +1,20 @@
+## 2026-09-13 — Final pre-playtest feedback candidate
+
+Current user-directed work is on `hybrid/antigravity`, starting at
+`b2bd3e1742b9cee6439c913f0141c7c2efd19150`; older sequencing below is historical.
+Added shared feedback grammar, persistent P → Dialogger history, status/element and
+Magic outcomes, recovery/XP/lifecycle/objective notices, and correlated client
+receipt/draw evidence through the existing logger/exporter. Preserved gameplay
+rules and existing effects; protected level-up from being overwritten by Feedback.
+See `docs/FEEDBACK_LANGUAGE.md` for the mapping and evidence interpretation.
+
+Validation: Checkpoint-G automated gate passes all 26 suites (25 existing + focused
+feedback harness), including syntax and protected gameplay regressions. No Source
+runtime or human audiovisual acceptance claimed. Next: Shael's single 15–20 minute
+`gm_flatgrass` session after a fresh install/restart of this hybrid candidate;
+return console, RPG summary, and detailed RPG session upload files. No main/VPS
+promotion or deployment performed.
+
 # Senior hybrid review — 2026-09-08
 
 Authority checked: live GDD modified 2026-09-08T06:07:17.109Z; accepted main c8bd0494c613a496dc533ae8ce89a9127a0485c6; hybrid 91ac49a6a5347c09a219f5d24bc670d312e0458a (harness 66ae1d4 plus AG-002). This entry supersedes the prior next-action paragraphs below. No feat definitions added: ordinary inventory remains 62/143, membership is not mechanical acceptance.

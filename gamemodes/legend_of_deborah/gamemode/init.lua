@@ -34,6 +34,7 @@ AddCSLuaFile("lod/cl_magic_hud.lua")
 AddCSLuaFile("lod/cl_dev_testing.lua")
 AddCSLuaFile("lod/cl_hit_confirm.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed.lua")
+AddCSLuaFile("lod/cl_feedback_language.lua")
 AddCSLuaFile("lod/cl_combat_roll_feed_semantics.lua")
 AddCSLuaFile("lod/cl_melee_contact_audit.lua")
 AddCSLuaFile("lod/cl_hostile_damage_audit.lua")
@@ -199,6 +200,7 @@ end)
 timer.Simple(1.0, function() reportWatcherUnifiedReady("one-second") end)
 
 LOD.DeveloperToolsLoaded = cvDeveloperMode and cvDeveloperMode:GetBool() or false
+include("lod/sv_feedback_observers.lua")
 LOD.DeveloperToolModuleCount = 0
 if LOD.DeveloperToolsLoaded then
     include("lod/sv_debug_tools.lua")

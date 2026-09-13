@@ -13,6 +13,8 @@ LOD = LOD or {}
 LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
+if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
+include("lod/sh_feedback_language.lua")
 include("lod/sh_rng.lua")
 if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end
 include("lod/sh_rpg_schema.lua")
@@ -33,6 +35,7 @@ if SERVER then
     include("lod/sv_rpg_wizard_feedback.lua")
     include("lod/sv_wizard_arcane_cap.lua")
     include("lod/sv_rpg_presentation.lua")
+    include("lod/sv_feedback_language.lua")
     include("lod/sv_rpg_major_fx_bridge.lua")
     include("lod/sv_rpg_validation.lua")
     include("lod/sv_rpg_gate_e_exploding_dice.lua")

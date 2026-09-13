@@ -96,13 +96,14 @@ function Presentation:InstallProgressionPresentation()
 
         ps = runManager and runManager.GetPlayerState and runManager:GetPlayerState(ply) or ps
         local afterLevel = tonumber(ps and ps.progressionState and ps.progressionState.level) or beforeLevel
-        if ok and afterLevel > beforeLevel and IsValid(ply) then
-            Presentation:SendFX(ply, FX_LEVEL_UP, "LEVEL UP!", "PRESS P TO SEE")
-            feed(ply, 2, string.format("LEVEL UP! %d → %d — Press P to see progression.",
+        local recipient = Presentation.FeedbackPlayer and Presentation:FeedbackPlayer(ply) or ply
+        if ok and afterLevel > beforeLevel and IsValid(recipient) then
+            Presentation:SendFX(recipient, FX_LEVEL_UP, "LEVEL UP!", "PRESS P TO SEE")
+            feed(recipient, 2, string.format("LEVEL UP! %d → %d — Press P to see progression.",
                 beforeLevel, afterLevel))
             Presentation.Stats.levelUpFX = (Presentation.Stats.levelUpFX or 0) + 1
             logEvent("RPG_LEVEL_UP_PRESENTATION", {
-                player = entityLabel(ply),
+                player = entityLabel(recipient),
                 from_level = beforeLevel,
                 to_level = afterLevel
             })
