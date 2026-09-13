@@ -10,15 +10,22 @@
 
 Checkpoints A, B, C, D, and E are statically and deterministically complete; integrated Garry's Mod runtime acceptance remains deferred to Checkpoint G.
 
-### Checkpoint E — Static & Deterministic Closure (AG-008)
+### Checkpoint E — Static & Deterministic Closure (AG-008 / AG-008R1 Repair)
 
-Task **AG-008** completed the static and deterministic requirements of Checkpoint E:
+Task **AG-008R1** repaired character sheet snapshot compatibility, deep multi-scenario RPG parity validation, and contract testing for Checkpoint E:
 
-- **AI/Human Soldier RPG Parity:** Verified 100% deterministic RPG generation parity between `human_soldier` and `ai` actor types via `LOD_CPS:GenerateMonsterProgression("soldier", seed, level, 35, actorType)` across all 11 progression fields (`tierId`, `level`, `classId`, `primaryAbility`, `growthProfile`, `baseAbilities`, `effectiveAbilities`, `progressionHitDieSides`, `derivedStats` including `maxHP`, `featIds`, and `featStackCounts`).
+- **AI/Human Soldier RPG Parity:** Verified 100% deterministic RPG generation parity between `human_soldier` and `ai` actor types across 5 distinct dungeon level / seed scenarios (`DL 1`, `DL 5`, `DL 10`, `DL 20`, `DL 25`), comparing all shared RPG build fields byte-for-byte (`tierId`, `dungeonLevel`, `level`, `classId`, `primaryAbility`, `secondaryAbilities`, `baseAbilities`, `growthAbilities`, `fighterTraining`, `effectiveAbilities`, `progressionHitDieSides`, `hitDieRollsByLevel`, `featSlotsGranted`, `featIds`, `featStackCounts`, `classCapstoneFeatId`, `capabilityTags`, `contentIds`, `usesMagic`, `derivedStats`).
+- **Character Sheet Snapshot & Renderer Contract:** Repaired `CPS:BuildClientSnapshot(ply)` for Soldiers:
+  - Empty `identityTraits = {}` array to prevent Hero trait schema dereference crashes.
+  - Full ability row schema (`score`, `modifier`, `role`, `base`, `growth`, `fighterTraining=0`, `identity=0`, `feat`, `label`).
+  - Enriched hit-die ledger rolls (`level`, `formula`, `values`, `total`, `conBonus`, `hpGain`, `capped`).
+  - Authoritative `featSlotsGranted` and `featStackCounts` for ordinary feats ledger.
+  - Read-only capstone definition snapshot (`resolved = true`, `selected = true`) for Level 20 Soldiers.
+- **Client Sheet Renderer:** Updated `cl_character_sheet.lua` with dedicated `"Soldier Incarnation"` role panel and `"Soldier progression d8"` label.
+- **Contract Test Suite:** Created `tools/test_soldier_character_sheet.lua` exercising production `BuildClientSnapshot` and emulating client widget traversal with 0 errors.
 - **4 + 6 + 10 Config Contract:** Enforced `CC.MaxActivePlayers = 4`, `CC.MaxActiveSoldiers = 6`, and `CC.Campaign.MaxPlayedIdentities = 10` in `sh_config.lua`.
-- **Read-Only Character Sheet & Choice Guard Rails:** Updated `CPS:BuildClientSnapshot(ply)` for Soldier control to return full read-only RPG snapshot metrics (`readOnly = true`, abilities, hit die rolls, ordinary feats, derived stats, SoldierXP thresholds). Blocked `CommitClass`, `CommitFeat`, `CommitCapstone` RPCs for Soldier callers with `"Soldier progression choices are read-only."`. Updated `cl_character_sheet.lua` to render clear Soldier read-only indicators.
-- **Auto Runtime Hook Removal:** Removed `InitPostEntity` autostart hook from `sv_human_soldier_runtime_validation.lua`, keeping explicit validation concommands `lod_rpg_ag007r2_runtime_validate` and `lod_rpg_ag008_runtime_validate`.
-- **20-Point Deterministic Test Suite:** Created `tools/test_checkpoint_e_closure.lua` verifying all 20 required Checkpoint E requirements with 0 discrepancies.
+- **Auto Runtime Hook Removal:** Removed `InitPostEntity` autostart hook from `sv_human_soldier_runtime_validation.lua`.
+- **Authored-Content Ambiguity:** `CANONICAL SOLDIER NAMING DETAIL UNDEFINED` in live GDD; using `"Human Soldier"` as presentation fallback.
 - **Engine Runtime Acceptance:** Garry's Mod engine runtime acceptance is explicitly deferred to Checkpoint G.
 
 Checkpoint E is **STATICALLY / DETERMINISTICALLY COMPLETE**.

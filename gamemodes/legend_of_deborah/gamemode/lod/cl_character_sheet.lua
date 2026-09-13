@@ -511,11 +511,28 @@ function Sheet:Open(requestFresh)
     local levelHeight = fitWrapped(level, leftWidth - 164, 26)
 
     local leftY = math.max(166, levelY + levelHeight + 16)
-    local _, identityTitleHeight = sectionTitle(canvas, "Identity Traits", 0, leftY, leftWidth)
-    leftY = leftY + identityTitleHeight + 8
-    for _, trait in ipairs(snapshot.identityTraits or {}) do
-        local _, traitHeight = addIdentityTrait(canvas, trait, 0, leftY, leftWidth)
-        leftY = leftY + traitHeight + 10
+    if snapshot.isSoldier then
+        local _, identityTitleHeight = sectionTitle(canvas, "Soldier Incarnation", 0, leftY, leftWidth)
+        leftY = leftY + identityTitleHeight + 8
+        local panel = paperPanel(canvas)
+        panel:SetPos(0, leftY)
+        panel:SetWide(leftWidth)
+        local category = label(panel, "ROLE / HUMAN SOLDIER", "LOD_SheetSubheading", BLUE)
+        category:SetPos(12, 10)
+        fitWrapped(category, leftWidth - 24, 22)
+        local desc = label(panel, "Human Soldier combat incarnation. Automatic d8 monster progression. Disposable role attached to active dungeon run.", "LOD_SheetSmall", INK)
+        desc:SetPos(12, 36)
+        local descH = fitWrapped(desc, leftWidth - 24, 40)
+        local height = 46 + descH + 10
+        panel:SetTall(height)
+        leftY = leftY + height + 10
+    else
+        local _, identityTitleHeight = sectionTitle(canvas, "Identity Traits", 0, leftY, leftWidth)
+        leftY = leftY + identityTitleHeight + 8
+        for _, trait in ipairs(snapshot.identityTraits or {}) do
+            local _, traitHeight = addIdentityTrait(canvas, trait, 0, leftY, leftWidth)
+            leftY = leftY + traitHeight + 10
+        end
     end
 
     local _, recordTitleHeight = sectionTitle(canvas, "Campaign Record", 0, leftY + 6, leftWidth)
@@ -632,8 +649,9 @@ function Sheet:Open(requestFresh)
         local classPanel = paperPanel(canvas)
         classPanel:SetPos(rightX, rightY)
         classPanel:SetWide(rightWidth)
+        local progLabel = snapshot.isSoldier and "Soldier progression d%d" or "Hero progression d%d"
         local classLine = label(classPanel,
-            string.format("%s  /  favored %s  /  Hero progression d%d",
+            string.format("%s  /  favored %s  /  " .. progLabel,
                 snapshot.className,
                 table.concat((function()
                     local result = {}

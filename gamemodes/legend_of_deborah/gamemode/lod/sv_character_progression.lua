@@ -1229,34 +1229,86 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         local ownedFeats = {}
         for _, featId in ipairs(soldierState.featIds or {}) do
             local definition = self:_FindFeat(featId)
-            if definition then ownedFeats[#ownedFeats + 1] = featSnapshot(definition, true) end
+            if definition then
+                local item = featSnapshot(definition, true)
+                item.stackCount = soldierState.featStackCounts and soldierState.featStackCounts[featId] or 1
+                local ability = definition.repeatableFallback and definition.effectParams
+                    and definition.effectParams.ability or nil
+                if ability then
+                    item.effect = string.format("Permanent +%d %s from this feat.",
+                        item.stackCount, string.upper(ability))
+                end
+                ownedFeats[#ownedFeats + 1] = item
+            end
         end
 
         local hitDieRolls = {}
         if soldierState.hitDieRollsByLevel then
-            for lvl = 1, (soldierState.level or 1) do
+            for lvl = 2, (soldierState.level or 1) do
                 local roll = soldierState.hitDieRollsByLevel[lvl]
-                if roll then hitDieRolls[#hitDieRolls + 1] = roll end
+                if roll then
+                    local conBonus = soldierState.derivedStats and soldierState.derivedStats.hpConBonusPerLevel or 0
+                    hitDieRolls[#hitDieRolls + 1] = {
+                        level = lvl,
+                        formula = roll.formula or ("d" .. tostring(soldierState.progressionHitDieSides or 8)),
+                        values = copyArray(roll.values or {roll.total or 1}),
+                        total = roll.total or 0,
+                        conBonus = conBonus,
+                        hpGain = math.max(1, (roll.total or 0) + conBonus),
+                        capped = roll.capped == true
+                    }
+                end
             end
         end
 
         local classDef = RPG.Classes and RPG.Classes[soldierState.classId]
-        local className = classDef and classDef.name or (soldierState.classId and string.upper(soldierState.classId)) or "Human Soldier"
+        local className = classDef and classDef.displayName or (soldierState.classId and string.upper(soldierState.classId)) or "Human Soldier"
+
+        local roles = {}
+        if soldierState.primaryAbility then roles[soldierState.primaryAbility] = "Primary Growth" end
+        for _, ability in ipairs(soldierState.secondaryAbilities or {}) do roles[ability] = "Secondary Growth" end
+        for _, ability in ipairs(ALL_ABILITIES) do roles[ability] = roles[ability] or "Ordinary Growth" end
 
         local abilities = {}
-        for _, name in ipairs(ALL_ABILITIES) do
-            local base = soldierState.baseAbilities and soldierState.baseAbilities[name] or 10
-            local eff = soldierState.effectiveAbilities and soldierState.effectiveAbilities[name] or base
-            local mod = math.floor((eff - 10) / 2)
+        for _, ability in ipairs(ALL_ABILITIES) do
+            local base = soldierState.baseAbilities and soldierState.baseAbilities[ability] or 10
+            local eff = soldierState.effectiveAbilities and soldierState.effectiveAbilities[ability] or base
+            local growth = soldierState.growthAbilities and soldierState.growthAbilities[ability] or 0
+            local mod = self:AbilityModifier(eff)
+            local featDelta = self:PermanentFeatAbilityDelta(soldierState, ability)
             abilities[#abilities + 1] = {
-                name = name,
-                label = string.upper(name),
-                base = base,
+                id = ability,
+                name = ability,
+                label = ABILITY_LABELS[ability] or string.upper(ability),
+                score = eff,
                 effective = eff,
                 modifier = mod,
                 formattedModifier = (mod >= 0 and "+" or "") .. tostring(mod),
+                role = roles[ability],
+                base = base,
+                growth = growth,
+                fighterTraining = 0,
+                identity = 0,
+                feat = featDelta,
                 provenanceText = string.format("Base %d, Effective %d (%+d)", base, eff, mod)
             }
+        end
+
+        local capstoneDraft = nil
+        local selectedCapstone = nil
+        if (soldierState.level or 1) >= 20 and soldierState.classCapstoneFeatId then
+            local classCapstones = Catalog.ClassCapstones and Catalog.ClassCapstones[soldierState.classId]
+            local capstoneDef = classCapstones and classCapstones[soldierState.classCapstoneFeatId]
+            if capstoneDef then
+                selectedCapstone = capstoneSnapshot(capstoneDef, true)
+                capstoneDraft = {
+                    earnedAtLevel = 20,
+                    draftType = "classCapstone",
+                    resolved = true,
+                    selectedFeatId = soldierState.classCapstoneFeatId,
+                    offers = { selectedCapstone }
+                }
+            end
         end
 
         return {
@@ -1285,24 +1337,24 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             effectiveAbilities = soldierState.effectiveAbilities or {},
             progressionHitDieSides = soldierState.progressionHitDieSides or 8,
             hitDieRolls = hitDieRolls,
+            rolledHitPointSubtotal = soldierState.derivedStats and soldierState.derivedStats.rolledHitPointSubtotal or 0,
+            hpConBonusPerLevel = soldierState.derivedStats and soldierState.derivedStats.hpConBonusPerLevel or 0,
             startingHP = soldierState.startingHP or 35,
             currentHP = IsValid(ply) and ply:Health() or (soldierState.derivedStats and soldierState.derivedStats.maxHP or 35),
             maxHP = soldierState.derivedStats and soldierState.derivedStats.maxHP or 35,
             derivedStats = soldierState.derivedStats or {maxHP = 35, ac = 12},
             ownedFeats = ownedFeats,
-            featSlotsGranted = #ownedFeats,
-            ordinaryFeatsCommitted = #ownedFeats,
+            featSlotsGranted = soldierState.featSlotsGranted or #ownedFeats,
+            ordinaryFeatsCommitted = soldierState.featSlotsGranted or #ownedFeats,
             featStackState = soldierState.featStackCounts or {},
-            selectedCapstone = soldierState.classCapstoneFeatId,
+            selectedCapstone = selectedCapstone,
+            capstoneDraft = capstoneDraft,
             pendingFeatCount = 0,
             lives = 0,
             eliminated = true,
             requiredChoicesComplete = true,
             deploymentComplete = true,
-            identityTraits = {
-                {title = "Role", text = "Human Soldier combat incarnation. Disposable role attached to active dungeon run."},
-                {title = "Progression", text = "Automatic d8 monster progression. Earns SoldierXP at 100 / 250 / 450 thresholds."}
-            }
+            identityTraits = {}
         }
     end
     local package = state and state.characterIdentityPackage

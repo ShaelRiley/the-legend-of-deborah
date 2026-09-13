@@ -325,44 +325,66 @@ check(CC.MaxActivePlayers == 4, "19. CC.MaxActivePlayers == 4")
 check(CC.MaxActiveSoldiers == 6, "19. CC.MaxActiveSoldiers == 6")
 check(CC.Campaign.MaxPlayedIdentities == 10, "19. CC.Campaign.MaxPlayedIdentities == 10")
 
--- 20. AI vs Human Soldier deterministic generation parity check
-local aiState, aiErr = CPS:GenerateMonsterProgression("soldier", 77123, 5, 35, "ai")
-local humanState, humanErr = CPS:GenerateMonsterProgression("soldier", 77123, 5, 35, "human_soldier")
-
-check(aiState ~= nil and humanState ~= nil, "20. AI and Human Soldier states generated successfully from identical seed (77123) and level (5)")
-
-local keysToCompare = {
-    "tierId", "dungeonLevel", "level", "classId", "primaryAbility",
-    "progressionHitDieSides", "classCapstoneFeatId"
+-- 20. AI vs Human Soldier deterministic generation parity check across multiple scenarios
+local allowedDiffKeys = {
+    actorType = true,
+    actorId = true,
+    controller = true,
+    soldierXP = true,
+    soldierEarnedLevels = true,
+    soldierIncarnation = true,
+    soldierActorSeed = true,
+    soldierSpawnLevel = true,
+    _isValid = true,
+    _isEntity = true
 }
-local parityOK = true
-for _, k in ipairs(keysToCompare) do
-    if aiState[k] ~= humanState[k] then
-        parityOK = false
-        print(string.format("  [PARITY MISMATCH] field=%s ai=%s human=%s", k, tostring(aiState[k]), tostring(humanState[k])))
+
+local function compareRPGValues(v1, v2, path)
+    if type(v1) ~= type(v2) then
+        return false, string.format("%s: type mismatch (%s vs %s)", path, type(v1), type(v2))
     end
+    if type(v1) ~= "table" then
+        if v1 ~= v2 then
+            return false, string.format("%s: value mismatch (%s vs %s)", path, tostring(v1), tostring(v2))
+        end
+        return true
+    end
+    local keys = {}
+    for k in pairs(v1) do if not allowedDiffKeys[k] then keys[k] = true end end
+    for k in pairs(v2) do if not allowedDiffKeys[k] then keys[k] = true end end
+    for k in pairs(keys) do
+        local p = path == "" and tostring(k) or (path .. "." .. tostring(k))
+        local ok, err = compareRPGValues(v1[k], v2[k], p)
+        if not ok then return false, err end
+    end
+    return true
 end
 
-if aiState.derivedStats and humanState.derivedStats then
-    if aiState.derivedStats.maxHP ~= humanState.derivedStats.maxHP then
-        parityOK = false
-        print(string.format("  [PARITY MISMATCH] derivedStats.maxHP ai=%s human=%s", tostring(aiState.derivedStats.maxHP), tostring(humanState.derivedStats.maxHP)))
-    end
-end
+local scenarios = {
+    {name = "Low-level ordinary (DL 1, seed 12345)", dungeonLevel = 1, seed = 12345},
+    {name = "Level-5 (DL 5, seed 77123)", dungeonLevel = 5, seed = 77123},
+    {name = "Elite/Champion-capable (DL 10, seed 88123)", dungeonLevel = 10, seed = 88123},
+    {name = "Level-20-capable (DL 20, seed 99123)", dungeonLevel = 20, seed = 99123},
+    {name = "Post-20 numeric growth (DL 25, seed 10123)", dungeonLevel = 25, seed = 10123}
+}
 
-if #aiState.featIds ~= #humanState.featIds then
-    parityOK = false
-    print(string.format("  [PARITY MISMATCH] featIds length ai=%d human=%d", #aiState.featIds, #humanState.featIds))
-else
-    for i = 1, #aiState.featIds do
-        if aiState.featIds[i] ~= humanState.featIds[i] then
-            parityOK = false
-            print(string.format("  [PARITY MISMATCH] featId[%d] ai=%s human=%s", i, tostring(aiState.featIds[i]), tostring(humanState.featIds[i])))
+local allParityPassed = true
+for _, sc in ipairs(scenarios) do
+    local aiState, aiErr = CPS:GenerateMonsterProgression("soldier", sc.seed, sc.dungeonLevel, 35, "ai")
+    local humanState, humanErr = CPS:GenerateMonsterProgression("soldier", sc.seed, sc.dungeonLevel, 35, "human_soldier")
+    if not aiState or not humanState then
+        allParityPassed = false
+        print(string.format("  [PARITY FAIL] %s generation error ai=%s human=%s", sc.name, tostring(aiErr), tostring(humanErr)))
+    else
+        local ok, err = compareRPGValues(aiState, humanState, "")
+        if not ok then
+            allParityPassed = false
+            print(string.format("  [PARITY FAIL] %s: %s", sc.name, err))
         end
     end
 end
 
-check(parityOK == true, "20. AI vs Human Soldier deterministic RPG generation parity PASSED across all build fields")
+check(allParityPassed == true, "20. AI vs Human Soldier deterministic RPG generation parity PASSED across all shared build fields (5/5 scenarios)")
 
 -- Summary
 if #errors == 0 then
