@@ -129,11 +129,9 @@ hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
     local UI=LOD.UI
     local w=math.min(640,ScrW()-48)
     local x,y=(ScrW()-w)*0.5,ScrH()*0.30
-    local lines=Feed:Layout(notice.entry,w-32)
+    local lines=Feed:Layout(notice.entry,w-32,true)
     local shown=math.min(#lines,6)
-    local h=shown*Feed.RowHeight+20
-    UI:Paper(x,y,w,h,UI.Roles[notice.entry.family] or UI.Colors.red)
-    Feed:DrawLines(lines,x+16,y+10,255,1,shown)
+    Feed:DrawLines(lines,x+16,y+10,255,1,shown,true)
     Feed:AckFeedback(notice.entry, 1, false)
 end)
 

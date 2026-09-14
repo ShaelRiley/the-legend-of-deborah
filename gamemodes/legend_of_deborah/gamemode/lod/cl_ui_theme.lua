@@ -1,5 +1,5 @@
 LOD = LOD or {}
--- The Player Sheet's printed-paper vocabulary, shared by every new surface.
+-- Paper menus and transparent gameplay readouts share semantic roles, not panels.
 LOD.UI = LOD.UI or {}
 local UI = LOD.UI
 UI.Colors = {
@@ -98,4 +98,25 @@ function UI:PageKey(key)
     elseif key == KEY_L then
         LOD.CombatRollFeed:ToggleHistory()
     end
+end
+
+-- Gameplay text needs luminous colors against the world; menus retain dark ink.
+-- Hue still means the same thing on both surfaces. No HUD background or border.
+UI.HUDColor = Color(255, 220, 100)
+UI.HUDRoles = {
+    prose = Color(240, 232, 205), routine = Color(240, 232, 205),
+    identity = Color(120, 180, 255), character = Color(255, 135, 115),
+    recipient = Color(255, 135, 115), source = Color(165, 215, 170),
+    dice = Color(205, 175, 255), continuation = UI.HUDColor, total = UI.HUDColor,
+    damage = Color(255, 135, 115), danger = Color(255, 135, 115),
+    resource = Color(165, 235, 165), life = Color(165, 235, 165), clear = Color(165, 235, 165),
+    status = Color(205, 175, 255), proc = Color(205, 175, 255),
+    resist = Color(120, 180, 255), magic = Color(120, 180, 255), soldier = Color(120, 180, 255),
+    progress = UI.HUDColor, objective = UI.HUDColor, weakness = Color(255, 135, 115),
+    blocked = Color(255, 135, 115), kill = Color(255, 135, 115)
+}
+function UI:HUDText(text, font, x, y, color, alignX, alignY)
+    color = color or self.HUDColor
+    draw.SimpleTextOutlined(text, font, x, y, color, alignX or TEXT_ALIGN_LEFT,
+        alignY or TEXT_ALIGN_TOP, 1, Color(0, 0, 0, math.floor((color.a or 255)*0.8)))
 end

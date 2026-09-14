@@ -20,6 +20,30 @@ function Log:RollDetail(contract)
     return table.concat(out)
 end
 
+-- Include the actual arithmetic subtotal even when damage is scaled, resisted,
+-- or clamped by the target's remaining HP. This does not reroll or resolve damage.
+function Log:RollBreakdown(contract)
+    local subtotal = tonumber(contract.bonus) or 0
+    for i, value in ipairs(contract.values or {}) do
+        subtotal = subtotal + (tonumber(contract.contributions and contract.contributions[i]) or value)
+    end
+    local text = self:RollDetail(contract)
+    local bonus = tonumber(contract.bonus) or 0
+    if bonus ~= 0 then text = text .. string.format(" %s %g bonus", bonus < 0 and "-" or "+", math.abs(bonus)) end
+    text = text .. string.format(" = %g rolled", subtotal)
+    local resolution = contract.feedResolution
+    if resolution and (resolution.resistance or 0) > 0 and resolution.reduced then
+        local reduced, sum = {}, bonus
+        for i, value in ipairs(resolution.reduced) do reduced[i] = tostring(value); sum = sum + value end
+        text = text .. string.format("; CON -%g/die: %s = %g", resolution.resistance,
+            table.concat(reduced, " + "), sum)
+    end
+    if resolution and math.abs(resolution.total - subtotal) > 0.001 then
+        text = text .. string.format("; resolved %g", resolution.total)
+    end
+    return text
+end
+
 -- One server-authored span record is used by the live tail and persisted history.
 -- Identity ranges have precedence over punctuation/number grammar: a numeric name
 -- or a name containing ' as ' cannot become a die or an event accidentally.
@@ -57,9 +81,18 @@ function Log:Segments(text, family, identities)
     end
     pattern('%d+d%d+!?[%+%-]?%d*','dice',3)
     pattern('[%+%-]?%d+%.?%d*','total',2)
-    pattern('[><=]+','continuation',3)
+    pattern('%b[]','prose',1)
+    local rollStart = text:find('[rolls ',1,true) or text:find('; rolls ',1,true)
+        or text:find('; boom ',1,true)
+    if rollStart then
+        local rollEnd = text:find(';',rollStart+2,true) or text:find(']',rollStart,true) or #text
+        mark(rollStart+7,rollEnd-1,'dice',3)
+    end
+    pattern('= [%d%.]+ rolled','total',4)
+    pattern('resolved [%d%.]+','total',4)
+    pattern('[><=]+','continuation',4)
     pattern('%f[%a]Magic%f[%A]','magic',3)
-    for _, word in ipairs({'APPLIED','REFRESHED','EXTENDED','HELD','MUTED','IMMOLATED','POISONED'}) do pattern(word,'status',3) end
+    for _, word in ipairs({'APPLIED','REFRESHED','EXTENDED','HELD','MUTED','IMMOLATED','POISONED','BLEEDING','CLUMSY','RECKLESS','INTIMIDATED'}) do pattern(word,'status',3) end
     for _, word in ipairs({'RESISTED','IMMUNE','RESISTANCE'}) do pattern(word,'resist',3) end
     for _, word in ipairs({'ENDED','RESTORED','GAINED'}) do pattern(word,'resource',3) end
     -- Longest full identity first, then standalone Steam names. Exact server names
@@ -69,10 +102,17 @@ function Log:Segments(text, family, identities)
         while name and name ~= '' and pos <= #text do
             local first,last = text:find(name,pos,true)
             if not first then break end
-            mark(first,last,'identity',10)
-            if identity.characterStart then
-                mark(first + identity.characterStart - 5, first + identity.characterStart - 2,'prose',11)
-                mark(first + identity.characterStart - 1,last,'character',11)
+            -- Standalone nicknames must be whole names, not substrings of words
+            -- or other users' longer identities.
+            local before, after = text:sub(first-1,first-1), text:sub(last+1,last+1)
+            local bounded = not identity.standalone or
+                (not before:match('[%w_]') and not after:match('[%w_]'))
+            if bounded and (priority[first] or 0) < 10 then
+                mark(first,last,'identity',10)
+                if identity.characterStart then
+                    mark(first + identity.characterStart - 5, first + identity.characterStart - 2,'prose',11)
+                    mark(first + identity.characterStart - 1,last,'character',11)
+                end
             end
             pos = last + 1
         end

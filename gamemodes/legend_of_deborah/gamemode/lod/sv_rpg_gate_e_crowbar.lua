@@ -339,7 +339,7 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     if rolls._Send and rolls._DamageEventText then
         local detail = contract.values and #contract.values > 0
             and string.format("[rolls %s; non-elemental Magic Crowbar projectile]",
-                table.concat(contract.values, ">"))
+                LOD.DieLogger:RollBreakdown(contract))
             or "[non-elemental Magic Crowbar projectile]"
         rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker,
             contract.formula, total, target, detail, nil,

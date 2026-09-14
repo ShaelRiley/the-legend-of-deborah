@@ -39,6 +39,10 @@ local function entityDisplayName(ent, fallback)
     return titleName(fallback or "Unknown")
 end
 
+function Rolls:EntityDisplayName(ent, fallback)
+    return entityDisplayName(ent, fallback)
+end
+
 local function damageText(amount)
     local value = math.max(0, tonumber(amount) or 0)
     if math.abs(value - math.floor(value + 0.5)) < 0.05 then
@@ -74,6 +78,9 @@ local function send(self, ply, category, text, family, fields)
             characterStart = full:sub(1, #connector) == connector and #connector + 1 or nil}
     end
     table.sort(identities, function(a,b) return #a.text > #b.text end)
+    for _, who in ipairs(player.GetAll()) do
+        identities[#identities + 1] = {text = clean(who:Nick(), 96), standalone = true}
+    end
     local segments = LOD.DieLogger:Segments(text, family, identities)
     fields = table.Copy(fields or {})
     fields.segments = segments

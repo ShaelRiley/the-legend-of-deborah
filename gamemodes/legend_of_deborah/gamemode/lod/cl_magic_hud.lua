@@ -5,12 +5,11 @@ LOD = LOD or {}
 -- 640x480 HUD canvas. IMPORTANT: Garry's Mod ScreenScale() scales from WIDTH,
 -- so using it for Y on a widescreen display pushes the Suit slot off-screen.
 -- Use one height-derived proportional scale for both axes/sizes instead.
-local MAGIC_COLOR = LOD.UI.Colors.blue
-local PANEL_COLOR = Color(0, 0, 0, 145)
+local MAGIC_COLOR = LOD.UI.HUDColor
 local DIVERSION_COLOR = Color(180, 225, 255, 235)
-local DIVERSION_PANEL = Color(72, 168, 255, 95)
 
 local lastDiversionSerial = -1
+local lastPlayer
 local diversionPulseUntil = 0
 local diversionTextUntil = 0
 local lastDivertedHP = 0
@@ -49,7 +48,11 @@ end)
 
 hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local ply = LocalPlayer()
-    if not IsValid(ply) then return end
+    if not IsValid(ply) or not ply:Alive() then
+        lastDiversionSerial = -1
+        diversionPulseUntil, diversionTextUntil = 0, 0
+        return
+    end
 
     local maximum = math.max(1, ply:GetNW2Int("LOD_MagicMax", 100))
     local magic = math.Clamp(ply:GetNW2Float("LOD_Magic", maximum), 0, maximum)
@@ -60,10 +63,11 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local x = ps(layout.x)
     local y = ps(layout.y)
     local w = ps(layout.w)
-    local h = ps(layout.h)
 
     local serial = ply:GetNW2Int("LOD_ArcaneDiversionSerial", 0)
-    if lastDiversionSerial < 0 then
+    if lastPlayer ~= ply or lastDiversionSerial < 0 or serial < lastDiversionSerial then
+        lastPlayer = ply
+        diversionPulseUntil, diversionTextUntil = 0, 0
         lastDiversionSerial = serial
     elseif serial ~= lastDiversionSerial then
         lastDiversionSerial = serial
@@ -73,24 +77,10 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
         diversionTextUntil = CurTime() + 1.10
     end
 
-    if CurTime() < diversionPulseUntil then
-        local alphaScale = math.Clamp((diversionPulseUntil - CurTime()) / 0.45, 0, 1)
-        draw.RoundedBox(ps(3), x - ps(3), y - ps(3), w + ps(6), h + ps(6),
-            Color(DIVERSION_PANEL.r, DIVERSION_PANEL.g, DIVERSION_PANEL.b,
-                math.floor(DIVERSION_PANEL.a * alphaScale)))
-    end
-
-    LOD.UI:Paper(x,y,w,h,LOD.UI.Colors.blue,245,3)
-
-    surface.SetTextColor(MAGIC_COLOR)
-    surface.SetFont("LOD_SheetKey")
-    surface.SetTextPos(x + ps(layout.textX), y + ps(layout.textY))
-    surface.DrawText("MAGIC")
-
-    surface.SetTextColor(MAGIC_COLOR)
-    surface.SetFont("LOD_SheetTitle")
-    surface.SetTextPos(x + ps(layout.digitX), y + ps(layout.digitY))
-    surface.DrawText(muted and "MUTE" or tostring(value))
+    local color = CurTime() < diversionPulseUntil and DIVERSION_COLOR or MAGIC_COLOR
+    LOD.UI:HUDText("MAGIC", "Default", x + ps(layout.textX), y + ps(layout.textY), color)
+    LOD.UI:HUDText(muted and "MUTE" or tostring(value), muted and "HudHintTextLarge" or "HudNumbers",
+        x + ps(layout.digitX), y + ps(layout.digitY), color)
 
     if CurTime() < diversionTextUntil and lastDivertedHP > 0 then
         local text = string.format("ARCANE -%.1f HP / -%.1f MAGIC", lastDivertedHP, lastDivertedMagic)

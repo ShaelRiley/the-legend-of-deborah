@@ -66,16 +66,6 @@ local function copyEntities(entities)
     return out
 end
 
-local function chainDetail(depth, chains)
-    local parts = {}
-    for i, values in ipairs(chains or {}) do
-        local rolled = {}
-        for j, value in ipairs(values or {}) do rolled[j] = tostring(value) end
-        parts[i] = table.concat(rolled, ">")
-    end
-    return string.format("[pierce #%d; chains %s]", depth, table.concat(parts, " | "))
-end
-
 -- Generated-geometry rejection normally re-traces from the player's muzzle. A
 -- deliberately piercing round has already passed through earlier hostiles, so
 -- subsequent damage events validate only the new segment between bodies. World
@@ -131,7 +121,10 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
         local startPos = tr.HitPos + direction * ADVANCE_EPSILON
         local targets = 1
         local cumulativeTotal = math.max(1, tonumber(contract.total) or tonumber(dmginfo:GetDamage()) or 1)
-        local cumulativeChains = {copyValues(contract.values)}
+        local cumulativeValues = copyValues(contract.values)
+        local cumulativeStarts = copyValues(contract.chainStarts or {1})
+        local cumulativeThresholds = copyValues(contract.thresholds)
+        local cumulativeCapped = contract.capped == true
         local cumulativeContributions = copyValues(contract.contributions)
         local cumulativeBonus = tonumber(contract.bonus) or 0
         local cumulativeBaseDice = math.max(1, math.floor(tonumber(contract.baseDice) or 1))
@@ -169,10 +162,10 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
             -- whole trigger/projectile, so its x2 multiplier also applies to every
             -- fresh pierce chain rather than only the first body's base roll.
             local depth = targets + 1
-            local bonusTotal, bonusValues, bonusContributions = 0, {}, {}
+            local bonusTotal, bonusValues, bonusContributions, bonusContract = 0, {}, {}, nil
             if Rolls and Rolls._RNG and Rolls.RollActorDamage then
                 local rng = Rolls:_RNG("magnum-pierce-bonus:" .. tostring(depth))
-                local bonusContract = Rolls:RollActorDamage(attacker, MAGNUM_BONUS_PROFILE, rng, 0)
+                bonusContract = Rolls:RollActorDamage(attacker, MAGNUM_BONUS_PROFILE, rng, 0)
                 bonusTotal = bonusContract.total
                 bonusValues = bonusContract.values or {}
                 bonusContributions = bonusContract.contributions or bonusValues
@@ -184,7 +177,15 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
 
             cumulativeTotal = cumulativeTotal
                 + math.max(1, tonumber(bonusTotal) or 1) * aimMultiplier
-            cumulativeChains[#cumulativeChains + 1] = copyValues(bonusValues)
+            local offset = #cumulativeValues
+            for _, start in ipairs(bonusContract and bonusContract.chainStarts or {1}) do
+                cumulativeStarts[#cumulativeStarts+1] = offset+start
+            end
+            for i, value in ipairs(bonusValues) do
+                cumulativeValues[offset+i] = value
+                cumulativeThresholds[offset+i] = bonusContract and bonusContract.thresholds and bonusContract.thresholds[i]
+            end
+            cumulativeCapped = cumulativeCapped or (bonusContract and bonusContract.capped == true)
             for _, contribution in ipairs(bonusContributions) do
                 cumulativeContributions[#cumulativeContributions + 1] = contribution
             end
@@ -207,9 +208,12 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 endPos = nextTrace.HitPos,
                 depth = depth,
                 total = cumulativeTotal,
-                detail = chainDetail(depth, cumulativeChains),
                 rpgContract = {
                     total = cumulativeTotal,
+                    values = copyValues(cumulativeValues),
+                    chainStarts = copyValues(cumulativeStarts),
+                    thresholds = copyValues(cumulativeThresholds),
+                    capped = cumulativeCapped,
                     contributions = copyValues(cumulativeContributions),
                     bonus = cumulativeBonus,
                     baseDice = cumulativeBaseDice

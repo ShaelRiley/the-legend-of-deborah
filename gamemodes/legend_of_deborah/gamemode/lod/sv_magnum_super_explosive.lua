@@ -214,7 +214,7 @@ if not Rolls.LODMagnumCylinderFeedInstalled then
                 contract.chamberShot or 1,
                 contract.cylinderSize or MAGNUM_FALLBACK_CLIP,
                 contract.cylinderBonus or 0,
-                LOD.DieLogger:RollDetail(contract),
+                LOD.DieLogger:RollBreakdown(contract),
                 contract.capped and "; chain cap" or "")
         end
         return basePlayerRollDetail(self, contract)

@@ -27,6 +27,7 @@ end
 
 function ENT:Initialize()
     local form = tostring(self.LODFormId or "bolt")
+    self:SetMagicForm(form)
     self:SetModel(MODELS[form] or MODELS.bolt)
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
@@ -41,7 +42,7 @@ function ENT:Initialize()
     local color = contentColor(self.LODContentId)
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(Color(color.r, color.g, color.b, 245))
-    if util.SpriteTrail then
+    if form ~= "bomb" and util.SpriteTrail then
         self.LODTrail = util.SpriteTrail(self, 0, color, false, 7, 1, 0.22,
             1 / 8, "trails/laser.vmt")
     end

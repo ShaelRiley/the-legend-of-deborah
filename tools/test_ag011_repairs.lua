@@ -196,7 +196,7 @@ assert(#rolled.values == 3, "Rogue max roll produces 2 continuations (3 dice tot
 assert(rolled.total == 10 + 10 + 1, "Additional continuation dice mechanically contribute to total damage")
 
 local detailText = rolls:_PlayerRollDetail(rolled)
-assert(detailText ~= nil and detailText:find("%[rolls 10@10%+ > 10@10%+ > 1@10%+%]"), "DIE-LOGGER text visibly reports explosion continuation: " .. tostring(detailText))
+assert(detailText ~= nil and detailText:find("%[rolls 10@10%+ > 10@10%+ > 1@10%+ = 21 rolled%]"), "DIE-LOGGER text visibly reports explosion continuation: " .. tostring(detailText))
 
 -- Check single FX correspondence for pistol
 netCalls = {}
@@ -303,6 +303,7 @@ player.GetAll=function() return {attacker} end
 dofile(root .. "sv_magic_forms.lua")
 local forms=assert(LOD.MagicForms)
 local hits={}
+local productionApplyDamage=forms._ApplyDamage
 forms._BlastTargets=function() return {victim1,victim2} end
 forms._ApplyDamage=function(_,_,_,target) hits[#hits+1]=target;return true end
 assert(forms:_CastBlast(attacker,{id="blast"},{id="fire"},{spatialBonusCells=0}))
@@ -372,5 +373,179 @@ book.Snapshot=nil;book:Open();LOD.UI:SelectPage("sheet")
 receives.LOD_MagicSpellbookSnapshot()
 assert(LOD.UI.ActivePage=="sheet" and not IsValid(book.Frame),"late I response cannot replace selected P page")
 print("PASS: dismissed and superseded Spellbook requests remain closed")
+
+-- An exploded shot with no target still has exactly one arithmetic record.
+local originalRoll = rolls.RollPlayerWeapon
+local pending = {}
+local originalTimer = timer.Simple
+timer.Simple = function(_, fn) pending[#pending+1] = fn end
+rolls.RollPlayerWeapon = function()
+    return {formula="1d10!", values={10,10,7}, contributions={10,10,7}, chainStarts={1},
+        baseDice=1,total=27,created=CurTime(),weaponClass="weapon_pistol",label="PISTOL"}
+end
+local bullet={}
+sent={};netCalls={}
+hooks.EntityFireBullets.LOD_DicePlayerFirearms(attacker,bullet)
+assert(bullet.Damage==27 and #sent==1 and sent[1].name=="LOD_DiceExplosionFX")
+for _,fn in ipairs(pending) do fn() end
+local miss=sent[#sent]
+assert(miss.name=="LOD_CombatRoll" and miss.args[2]:find("1d10! (0)",1,true)
+    and miss.args[2]:find("10 > 10 > 7 = 27 rolled",1,true),"exploded miss records all dice, subtotal and zero damage")
+local n=#sent
+for _,fn in ipairs(pending) do fn() end
+assert(#sent==n,"duplicate cleanup cannot duplicate exploded miss record")
+rolls.RollPlayerWeapon=originalRoll;timer.Simple=originalTimer
+
+-- Zero-damage Magic still reports the rolled arithmetic; no damage is applied.
+local oldMagicRoll, oldResolve=forms._RollDamage,rolls.ResolveActorDamage
+forms._RollDamage=function() return {formula="2d6!",values={6,2,3},contributions={6,2,3},
+    chainStarts={1,3},baseDice=2,total=11} end
+rolls.ResolveActorDamage=function() return 0 end
+victim1.Health=function() return 50 end
+sent={};netCalls={}
+assert(not productionApplyDamage(forms,attacker,attacker,victim1,{id="beam",damageDice=2,damageSides=6},nil,{},Vector(1,0,0)))
+assert(sent[#sent].name=="LOD_CombatRoll" and sent[#sent].args[2]:find("2d6! (0)",1,true)
+    and sent[#sent].args[2]:find("6 > 2 + 3 = 11 rolled",1,true))
+forms._RollDamage=oldMagicRoll;rolls.ResolveActorDamage=oldResolve
+
+-- Production Magnum callback carries earlier chains and fresh bonus dice into
+-- the actual damage authority rather than losing values at the piercing seam.
+local oldWeapon,oldActorRoll,oldTrace=attacker.GetActiveWeapon,rolls.RollActorDamage,util.TraceLine
+local pierceRNG=rolls._RNG
+rolls._RNG=function() return {} end
+local magnum={valid=true,GetClass=function() return "weapon_357" end}
+attacker.GetActiveWeapon=function() return magnum end
+victim2.Health=function() return 100 end
+local magnumContract={weaponClass="weapon_357",formula="1d12!",created=CurTime(),baseDice=1,
+    values={12,10,5},contributions={12,10,5},thresholds={8,7,6},chainStarts={1},total=27,targets={}}
+attacker.LODActivePlayerRoll=magnumContract
+rolls.RollActorDamage=function() return {values={12,4},contributions={12,4},thresholds={8,7},
+    chainStarts={1},baseDice=1,total=16} end
+local traces=0
+util.TraceLine=function()
+    traces=traces+1
+    return traces==1 and {Hit=true,HitPos=Vector(200,0,64),Entity=victim2} or {Hit=false}
+end
+DMG_BULLET=2;DMG_ENERGYBEAM=1024
+function DamageInfo()
+    return {SetAttacker=function(self,v) self.attacker=v end,GetAttacker=function(self) return self.attacker end,
+        SetInflictor=function(self,v) self.inflictor=v end,GetInflictor=function(self) return self.inflictor end,
+        SetDamage=function(self,v) self.damage=v end,GetDamage=function(self) return self.damage end,
+        SetDamageType=function(self,v) self.kind=v end,IsDamageType=function(self,v) return self.kind==v end,
+        SetDamagePosition=function() end,SetDamageForce=function() end}
+end
+victim2.TakeDamageInfo=function(self,info) hooks.EntityTakeDamage.LOD_DiceDamageAuthority(self,info) end
+dofile(root .. "sv_magnum_piercing.lua")
+local piercingBullet={Src=attacker:GetShootPos(),Dir=Vector(1,0,0)}
+hooks.EntityFireBullets.LOD_MagnumPiercing(attacker,piercingBullet)
+local firstInfo=DamageInfo();firstInfo:SetDamage(27)
+sent={};netCalls={}
+piercingBullet.Callback(attacker,{Entity=victim1,HitPos=Vector(100,0,64)},firstInfo)
+local pierced=sent[#sent]
+assert(pierced.name=="LOD_CombatRoll" and pierced.args[2]:find("2d12! (43)",1,true))
+assert(pierced.args[2]:find("12@8+ > 10@7+ > 5@6+ + 12@8+ > 4@7+ = 43 rolled",1,true),
+    "piercing retains original and new rolls, actual thresholds, independent starts and total")
+attacker.GetActiveWeapon=oldWeapon;rolls.RollActorDamage=oldActorRoll;util.TraceLine=oldTrace;rolls._RNG=pierceRNG
+print("PASS: zero-damage Magic and production Magnum piercing retain complete arithmetic")
+
+-- Deferred shotgun summaries keep each target's own resistance snapshot and
+-- still report a killing hit if the engine has already removed that target.
+local deadTarget={valid=false}
+local shell={formula="1d6!",values={6,4},contributions={6,4},chainStarts={1},baseDice=1,total=10,
+    pellets=6,hits={[victim1]=2,[deadTarget]=3},damageByTarget={[victim1]=3,[deadTarget]=4},
+    feedResolution={total=99,resistance=3,reduced={3,1}},
+    resolutionByTarget={[victim1]={total=8,resistance=1,reduced={5,3}},
+        [deadTarget]={total=6,resistance=2,reduced={4,2}}},targetNames={[deadTarget]="Defeated Soldier"}}
+sent={};netCalls={}
+rolls:_FinishShotgunFeed(attacker,shell)
+assert(#sent==2 and shell.feedReported,"removed shotgun target does not become a false miss")
+local seenOne,seenTwo=false,false
+for _,packet in ipairs(sent) do
+    local text=packet.args[2]
+    if text:find("(3)",1,true) then seenOne=text:find("CON -1/die: 5 + 3 = 8",1,true)~=nil end
+    if text:find("(4)",1,true) then seenTwo=text:find("CON -2/die: 4 + 2 = 6",1,true)~=nil end
+    assert(not text:find("resolved 99",1,true),"cannot inherit last target's resolution")
+end
+assert(seenOne and seenTwo,"target-specific shotgun resistance detail")
+
+-- HUD surfaces cannot draw paper or opaque panels; fonts and colors differ
+-- from menu ink without changing the underlying semantic spans.
+local drawings={}
+local oldPaper=LOD.UI.Paper
+LOD.UI.Paper=function() error("opaque paper in gameplay HUD") end
+local oldRounded=draw.RoundedBox
+draw.RoundedBox=function() error("opaque panel in gameplay HUD") end
+draw.SimpleTextOutlined=function(text,font,x,y,color)
+    drawings[#drawings+1]={text=text,font=font,x=x,y=y,color=color}
+end
+attacker.GetNW2Int=function(_,_,default) return default end
+attacker.GetNW2Float=function(_,_,default) return default end
+attacker.GetNW2Bool=function(_,_,default) return default end
+surface.DrawCircle=function() end
+surface.DrawPoly=function() end
+dofile(root .. "cl_combat_roll_feed_semantics.lua")
+dofile(root .. "cl_magic_hud.lua")
+dofile(root .. "cl_hud.lua")
+LOD.ClientState.synchronized=true;LOD.ClientState.ranked=true
+LOD.ClientState.objective="FIND THE RED KEYCARD"
+local hudFeed=LOD.CombatRollFeed
+hudFeed.diceExplosion=nil
+local hudText="Player dealt 1d10! (27) [rolls 10 > 10 > 7 = 27 rolled] damage to Enemy, via pistol"
+hudFeed.entries={{text=hudText,family="routine",created=CurTime()}}
+for _,size in ipairs({{1280,800},{1920,1080},{1024,768}}) do
+    ScrW=function() return size[1] end;ScrH=function() return size[2] end
+    drawings={}
+    hooks.HUDPaint.LOD_PersistentHUD()
+    hooks.HUDPaint.LOD_MagicHUD()
+    hooks.HUDPaint.LOD_CombatRollFeed()
+    local number,objective,dieColor=false,false,false
+    for _,item in ipairs(drawings) do
+        assert(item.x>=0 and item.x<size[1] and item.y>=0 and item.y<size[2],"HUD text remains on screen")
+        if item.font=="HudNumbers" then number=true end
+        if item.text:find("KEYCARD",1,true) then objective=true end
+        if item.color.r==LOD.UI.HUDRoles.dice.r and item.color.b==LOD.UI.HUDRoles.dice.b then dieColor=true end
+    end
+    assert(number and objective and dieColor,"stock Magic font, objective text and luminous dice spans")
+end
+LOD.UI.Paper=oldPaper;draw.RoundedBox=oldRounded
+print("PASS: transparent HUD at Deck/desktop/4:3 sizes and exploded-miss production settlement")
+
+-- Execute the bomb's real shared/server/client entry points with bounded render
+-- seams. Cosmetic bomb rendering never creates a laser trail or dynamic light.
+local entRoot="gamemodes/legend_of_deborah/entities/entities/lod_magic_projectile/"
+local env=setmetatable({ENT={},AddCSLuaFile=function() end},{__index=_G})
+env.include=function(name) assert(loadfile(entRoot..name,"t",env))() end
+env.include("shared.lua")
+local bomb=setmetatable({valid=true},{__index=env.ENT})
+bomb.NetworkVar=function(self,kind,index,name)
+    assert(kind=="String" and index==0 and name=="MagicForm")
+    self.SetMagicForm=function(self,value) self.form=value end
+    self.GetMagicForm=function(self) return self.form end
+end
+bomb:SetupDataTables()
+local trailCount=0
+local savedTrail=util.SpriteTrail
+util.SpriteTrail=function() trailCount=trailCount+1 end
+assert(loadfile(entRoot.."init.lua","t",env))()
+local noop=function() end
+for _,name in ipairs({"SetModel","SetMoveType","SetSolid","SetCollisionGroup","DrawShadow","SetRenderMode","SetColor"}) do bomb[name]=noop end
+bomb.LODFormId="bomb";bomb.LODDirection=Vector(1,0,0)
+bomb:Initialize()
+assert(bomb:GetMagicForm()=="bomb" and trailCount==0,"bomb identity replicated and no missile trail")
+assert(bomb.LODVelocity.x==900 and bomb.LODVelocity.z==240,"existing lob launch velocity preserved")
+local spheres,fuses,lights=0,0,0
+local oldRender=render
+env.render={SetMaterial=noop,DrawSphere=function(_,radius) assert(radius==6);spheres=spheres+1 end,
+    DrawBox=noop,DrawBeam=function() fuses=fuses+1 end,DrawSprite=noop}
+env.DynamicLight=function() lights=lights+1 end
+assert(loadfile(entRoot.."cl_init.lua","t",env))()
+bomb.GetPos=function() return Vector() end
+bomb.GetAngles=function() return {Up=function() return Vector(0,0,1) end,Right=function() return Vector(0,1,0) end} end
+bomb.EntIndex=function() return 7 end
+bomb.DrawModel=function() error("bomb must not draw its old missile-like model") end
+bomb:Draw()
+assert(spheres==1 and fuses==5 and lights==0,"sphere, bent fuse and three sparks, no dynamic lights")
+util.SpriteTrail=savedTrail
+print("PASS: replicated bomb identity, unchanged lob, round body/fuse render and bounded sparks")
 
 print("AG-011R1_REPAIRS_PASS: All focused deterministic tests passed cleanly.")

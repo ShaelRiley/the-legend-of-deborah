@@ -329,7 +329,11 @@ function Rolls:ResolveActorDamage(contract, attacker, target, tags)
     -- AbilityRules retains its richer internal tuple for validation/debugging,
     -- but callers may safely pass this result into math helpers without Lua
     -- expanding hidden table-valued returns into additional arguments.
-    local resolved = rules:ResolveDamageContract(contract, attacker, target, tags)
+    local resolved, reduced, resistance = rules:ResolveDamageContract(contract, attacker, target, tags)
+    if contract then
+        contract.feedResolution = {total = tonumber(resolved) or 0,
+            reduced = reduced, resistance = tonumber(resistance) or 0}
+    end
     return tonumber(resolved) or 0
 end
 
@@ -369,6 +373,8 @@ function Rolls:RollPlayerWeapon(ply, weaponClass)
         end
         contract.hits = setmetatable({}, {__mode = "k"})
         contract.damageByTarget = setmetatable({}, {__mode = "k"})
+        contract.resolutionByTarget = setmetatable({}, {__mode = "k"})
+        contract.targetNames = setmetatable({}, {__mode = "k"})
     end
 
     self.Stats.playerAttacks = self.Stats.playerAttacks + 1
@@ -377,22 +383,25 @@ end
 
 function Rolls:_PlayerRollDetail(contract)
     if not contract or not contract.values or #contract.values == 0 then return nil end
-    local valuesStr = LOD.DieLogger:RollDetail(contract)
+    local valuesStr = LOD.DieLogger:RollBreakdown(contract)
     return string.format("[rolls %s%s]", valuesStr, contract.capped and "; chain cap" or "")
 end
 
 function Rolls:_FinishShotgunFeed(ply, contract)
     if not IsValid(ply) then return end
     for target, hits in pairs(contract.hits or {}) do
-        if IsValid(target) and hits > 0 then
+        if hits > 0 then
             local damage = contract.damageByTarget[target] or 0
-            if damage > 0 and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyShotgunShellStun then
+            if IsValid(target) and damage > 0 and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyShotgunShellStun then
                 LOD.M3HitFeedback:ApplyShotgunShellStun(target)
             end
-            local detail = string.format("[%d/%d pellets; rolls %s]", hits,
-                contract.pellets or 6, LOD.DieLogger:RollDetail(contract))
+            local targetContract = setmetatable({feedResolution = (contract.resolutionByTarget or {})[target] or false},
+                {__index = contract})
+            local detail = string.format("[%d/%d pellets; rolls %s; shell share 1/%d per hit]", hits,
+                contract.pellets or 6, LOD.DieLogger:RollBreakdown(targetContract), SHOTGUN_SHARE_COUNT)
+            contract.feedReported = true
             self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula or "1d6!", damage,
-                target, detail, nil, "Hostile", "shotgun"))
+                target, detail, nil, (contract.targetNames or {})[target] or "Hostile", "shotgun"))
         end
     end
 end
@@ -421,7 +430,7 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
                 values = values,
                 contributions = contributions,
                 formula = rolled.formula, chainStarts = rolled.chainStarts,
-                baseDice = rolled.baseDice, capped = rolled.capped
+                baseDice = rolled.baseDice, capped = rolled.capped, thresholds = rolled.thresholds
             }
         end
         self.Stats.hostileAttacks = self.Stats.hostileAttacks + 1
@@ -437,7 +446,7 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
         values = values,
         contributions = contributions or values,
         formula = rolledContract.formula, chainStarts = rolledContract.chainStarts,
-        baseDice = rolledContract.baseDice, capped = rolledContract.capped,
+        baseDice = rolledContract.baseDice, capped = rolledContract.capped, thresholds = rolledContract.thresholds,
         bonus = profile.bonus or 0,
         scale = scale,
         final = math.max(1, math.floor(total * scale + 0.5))
@@ -447,13 +456,24 @@ end
 
 function Rolls:_HostileRollText(contract, source, target)
     local profile = contract.profile
-    local details = string.format("[rolls %s", LOD.DieLogger:RollDetail(contract))
+    local details = string.format("[rolls %s", LOD.DieLogger:RollBreakdown(contract))
     if math.abs((contract.scale or 1) - 1) > 0.01 then
         details = details .. string.format("; base %d x%.2f", contract.total, contract.scale)
     end
     details = details .. "]"
     return self:_DamageEventText(source, contract.formula or diceNotation(profile), contract.final,
         target, details, profile.label, "Player", profile.source)
+end
+
+-- Firearm dice commit at fire time. Exploded misses used to show the cue but
+-- no formula because only EntityTakeDamage emitted records. Settle once after
+-- the engine's synchronous hit callbacks, without inventing a hit or new RNG.
+function Rolls:_FinishExplodedMiss(ply, contract)
+    if not IsValid(ply) or contract.feedReported then return end
+    if #(contract.values or {}) <= (contract.baseDice or 1) then return end
+    contract.feedReported = true
+    self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula, 0, nil,
+        self:_PlayerRollDetail(contract), nil, "no damageable target", contract.label or contract.weaponClass))
 end
 
 local function qualifyingPlayerShooter(shooter)
@@ -489,6 +509,7 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
                 shooter.LODActiveShotgunRoll = nil
             end
             Rolls:_FinishShotgunFeed(shooter, contract)
+            Rolls:_FinishExplodedMiss(shooter, contract)
         end)
     else
         bullet.Damage = contract.total
@@ -498,6 +519,7 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
             if IsValid(shooter) and shooter.LODActivePlayerRoll == contract then
                 shooter.LODActivePlayerRoll = nil
             end
+            Rolls:_FinishExplodedMiss(shooter, contract)
         end)
     end
 end)
@@ -558,11 +580,11 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             dmginfo:SetDamage(final)
 
             local detailStr = string.format("[rolls %s; blast x%.2f]",
-                LOD.DieLogger:RollDetail(contract), falloff)
+                LOD.DieLogger:RollBreakdown(contract), falloff)
             if aimMult > 1 then
                 local multText = aimMult == 3 and "x3" or "x2"
                 detailStr = string.format("[rolls %s; blast x%.2f; AIM %s]",
-                    LOD.DieLogger:RollDetail(contract), falloff, multText)
+                    LOD.DieLogger:RollBreakdown(contract), falloff, multText)
             end
 
             Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, contract.formula or "1d20",
@@ -594,6 +616,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             if not blocked and contract and CurTime() - contract.created < 0.20 and dmginfo:GetDamage() > 0 then
                 local shellDamage = Rolls:ResolveActorDamage(contract, attacker, target, {physical = true})
                 dmginfo:SetDamage(math.max(1, shellDamage / SHOTGUN_SHARE_COUNT))
+                contract.resolutionByTarget = contract.resolutionByTarget or {}
+                contract.targetNames = contract.targetNames or {}
+                contract.resolutionByTarget[target] = contract.feedResolution
+                contract.targetNames[target] = Rolls:EntityDisplayName(target, "Hostile")
                 contract.hits[target] = (contract.hits[target] or 0) + 1
                 contract.damageByTarget[target] = (contract.damageByTarget[target] or 0) + dmginfo:GetDamage()
             end
@@ -621,9 +647,12 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 local detail = Rolls:_PlayerRollDetail(contract)
                 if pierce and pierce.depth and pierce.depth > 1 then
                     formula = string.format("%dd12!", damageContract.baseDice or pierce.depth)
-                    detail = pierce.detail or detail
+                    detail = string.format("[pierce #%d; rolls %s%s; AIM x%g]", pierce.depth,
+                        LOD.DieLogger:RollBreakdown(damageContract),
+                        damageContract.capped and "; chain cap" or "", tonumber(contract.aimMultiplier) or 1)
                 end
 
+                contract.feedReported = true
                 Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
                     dmginfo:GetDamage(), target, detail, nil,
                     "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))

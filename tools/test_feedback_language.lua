@@ -246,4 +246,24 @@ clock=clock+20
 hooks.HUDPaint.LOD_FeedbackNotice()
 assert(not feed.notice and #feed.notices==0,"old lifecycle notices expire rather than replay later")
 assert(#errors==0,table.concat(errors,"\n"))
+local resolvedChain={values={10,10,7},contributions={10,10,7},chainStarts={1},baseDice=1,bonus=2,
+    feedResolution={total=19.5,resistance=1,reduced={9,9,6}}}
+local breakdown=logger:RollBreakdown(resolvedChain)
+assert(breakdown=="10 > 10 > 7 + 2 bonus = 29 rolled; CON -1/die: 9 + 9 + 6 = 26; resolved 19.5")
+local text=rolls:_DamageEventText(a,"1d10!+2",19.5,b,"[rolls "..breakdown.."]")
+rolls:_Send(a,0,text)
+assert(sent[#sent][2][1]:find("1d10!+2 (19.5)",1,true),"damage total remains in parentheses")
+local wire=sent[#sent]
+assert(logger:ValidSegments(wire[6][1],text),"expanded arithmetic keeps exact semantic transport")
+-- A nickname-only observer event must still retain its identity color.
+rolls:_Send(a,3,"[STATUS] Player1: HELD APPLIED","status")
+local nickname=false
+for _,span in ipairs(sent[#sent][6][1]) do
+    if span.text=="Player1" and span.role=="identity" then nickname=true end
+end
+assert(nickname,"nickname-only event uses identity role")
+-- Font-sensitive caches cannot reuse menu line breaks on the transparent HUD.
+local sample={text="same record, different metrics",family="routine"}
+feed:Layout(sample,150,false);assert(sample.layoutFont=="LOD_CombatRoll")
+feed:Layout(sample,150,true);assert(sample.layoutFont=="ChatFont")
 print("FEEDBACK_LANGUAGE_PASS: isolation, typed transport, ACK ownership/dedup, Magic cost/refund, lifecycle, history and draw boundaries")
