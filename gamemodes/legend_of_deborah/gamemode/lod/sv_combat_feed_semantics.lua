@@ -54,12 +54,11 @@ end
 -- DIE-LOGGER sentence authority. Roll detail is mandatory, including long chains.
 -- Name/source budgets plus 3 KiB of dice detail fit inside the 4 KiB transport.
 function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget, damageSource)
-    local prefix = string.format("%s dealt %s (%s)",
-        entityDisplayName(source, fallbackSource), clean(formula, 48), damageText(amount))
-    local suffix = string.format(" damage to %s, via %s",
-        entityDisplayName(target, fallbackTarget), clean(damageSource or "unknown source", 96))
+    local prefix = string.format("(%s) DAMAGE — %s → %s, via %s; %s",
+        damageText(amount), entityDisplayName(source, fallbackSource), entityDisplayName(target, fallbackTarget),
+        clean(damageSource or "unknown source", 96), clean(formula, 48))
     local detailText = detail and detail ~= "" and (" " .. clean(detail, 3072)) or ""
-    return prefix .. detailText .. suffix
+    return prefix .. detailText
 end
 
 -- One bounded text + semantic-span record for live HUD, history and telemetry.

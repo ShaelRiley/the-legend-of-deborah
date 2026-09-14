@@ -1,6 +1,7 @@
 # Pre-playtest feedback language
 
 Current consolidation details and runtime gate: [Hybrid integration review](HYBRID_INTEGRATION_REVIEW.md).
+Latest Wizard reactions and total-first damage format: [Wizard reaction repair](WIZARD_REACTION_REPAIR.md).
 
 Presentation observes existing outcomes. It never rolls dice, modifies resources,
 selects progression, or authorizes transitions. This pass is governed by Shael's
@@ -31,7 +32,8 @@ developer evidence. New semantic sounds have a shared 0.35-second minimum interv
 and world sounds keep their own policies. Major notices use a bounded eight-entry
 priority queue and 2.8-second display, with eight-second queue expiry. New lifecycle
 notices retire stale lifecycle banners; danger/life preempts progression. A Wizard
-Feedback burst cannot erase an active level-up celebration.
+Feedback burst cannot erase an active level-up celebration; its independent
+reaction layer now remains audible/visible alongside level-up.
 
 The feed holds for nine seconds and fades for 1.4. Its visible ten-entry limit and
 screen-space clipping do not discard history. **L** or **P → DIE-LOGGER** opens 1,000 retained messages, 50 per page,
@@ -52,7 +54,9 @@ Use the existing developer logger/exporter. No additional courier file is needed
   `sound_requested` means playback was called, not that a person heard it.
 - `FEEDBACK_SUPPRESSED`: outcome retained in telemetry but repeated notice restrained.
 - `RPG_MAJOR_FX_DISPATCH` matches the existing `RPG_MAJOR_FX_CLIENT_ACK` by serial;
-  `triggered=false` records a Feedback overlay suppressed by level-up priority.
+  `triggered` records client acceptance of the presentation request, not human
+  perception. Wizard reactions use kind 1 (Feedback) and 4 (Diversion); level-up
+  no longer suppresses them.
 - `[FEEDBACK_DELIVERY]` in the existing summary totals delivery stages and restraint.
 
 Only developer mode requests feedback ACKs. They are recipient-bound, deduplicated,

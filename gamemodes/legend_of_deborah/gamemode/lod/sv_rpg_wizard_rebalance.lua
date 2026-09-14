@@ -142,24 +142,7 @@ if not CPS.LODWizardRebalanceCommitWrapped then
     end
 end
 
--- Gate D already emits the detailed ARCANE DIVERSION combat-feed line. Publish a
--- tiny serial + amounts through NW2 vars so the existing Magic HUD can visibly
--- acknowledge each actual absorption without a parallel combat message system.
-if not AbilityRules.LODWizardDiversionFeedbackWrapped then
-    AbilityRules.LODWizardDiversionFeedbackWrapped = true
-    local priorApplyPlayerDefense = AbilityRules.ApplyPlayerDefense
-    function AbilityRules:ApplyPlayerDefense(target, dmginfo)
-        local result = priorApplyPlayerDefense(self, target, dmginfo)
-        local diverted = tonumber(result and result.actualMagicDiversion) or 0
-        if IsValid(target) and target:IsPlayer() and diverted > 0 then
-            target:SetNW2Float("LOD_ArcaneDiversionHP", diverted)
-            target:SetNW2Float("LOD_ArcaneDiversionMagic", tonumber(result.magicSpent) or diverted)
-            target:SetNW2Int("LOD_ArcaneDiversionSerial",
-                target:GetNW2Int("LOD_ArcaneDiversionSerial", 0) + 1)
-        end
-        return result
-    end
-end
+-- Diversion feedback is emitted by the committed defense transaction in Gate D.
 
 local function newSyntheticState(classId, level, featIds, capstoneId)
     local state = CPS:NewProgressionState("wizard-rebalance-validation", "hero", "hero")

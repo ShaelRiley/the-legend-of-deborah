@@ -9,10 +9,9 @@ local ACK_NAME = "LOD_RPGMajorFXAck"
 local FX_FEEDBACK = 1
 local FX_LEVEL_UP = 2
 local FX_FEAT_CONFIRM = 3
-local FEEDBACK_FX_SECONDS = 0.52
 local LEVEL_UP_FX_SECONDS = 1.80
 
-FX.ClientVersion = 3
+FX.ClientVersion = 4
 FX.active = FX.active or nil
 
 surface.CreateFont("LOD_RPGMajorFXPrimary", {
@@ -28,29 +27,6 @@ surface.CreateFont("LOD_RPGMajorFXSecondary", {
     weight = 900,
     antialias = true
 })
-
--- Feedback deliberately uses the same typography scale as DIE EXPLODES rather
--- than the much larger level-up celebration.
-surface.CreateFont("LOD_RPGFeedbackFXPrimary", {
-    font = "DejaVu Sans",
-    size = 28,
-    weight = 900,
-    antialias = true
-})
-
-surface.CreateFont("LOD_RPGFeedbackFXSecondary", {
-    font = "DejaVu Sans",
-    size = 15,
-    weight = 800,
-    antialias = true
-})
-
-local function playFeedbackSound()
-    surface.PlaySound("ambient/energy/zap1.wav")
-    timer.Simple(0.035, function()
-        surface.PlaySound("buttons/button15.wav")
-    end)
-end
 
 local function playLevelSound()
     if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(5, false); return end
@@ -69,12 +45,12 @@ local function playFeatSound()
     end
 end
 
-function FX:Trigger(kind, primary, secondary, serial)
+function FX:Trigger(kind, primary, secondary, serial, origin, target)
     kind = math.floor(tonumber(kind) or 0)
-    -- Rapid combat must not erase a rare level-up. The Feedback proc still has
-    -- its world effect and retained DIE-LOGGER sentence.
-    if kind == FX_FEEDBACK and self.active and self.active.kind == FX_LEVEL_UP
-        and CurTime() - self.active.created < LEVEL_UP_FX_SECONDS then return false end
+    -- Wizard reactions have their own brief layer; a level-up cannot mute them.
+    if kind == FX_FEEDBACK or kind == 4 then
+        return LOD.WizardFX and LOD.WizardFX:Trigger(kind, primary, secondary, serial, origin, target) or false
+    end
     if kind == FX_FEAT_CONFIRM then
         playFeatSound()
         return true
@@ -88,11 +64,7 @@ function FX:Trigger(kind, primary, secondary, serial)
         created = CurTime()
     }
 
-    if kind == FX_FEEDBACK then
-        playFeedbackSound()
-    else
-        playLevelSound()
-    end
+    playLevelSound()
     return true
 end
 
@@ -102,7 +74,9 @@ net.Receive(NET_NAME, function()
     local primary = net.ReadString()
     local secondary = net.ReadString()
 
-    local triggered = FX:Trigger(kind, primary, secondary, serial)
+    local origin, target
+    if kind == FX_FEEDBACK or kind == 4 then origin, target = net.ReadVector(), net.ReadVector() end
+    local triggered = FX:Trigger(kind, primary, secondary, serial, origin, target)
 
     net.Start(ACK_NAME)
     net.WriteUInt(serial, 16)
@@ -115,59 +89,6 @@ local function alphaEnvelope(age, duration)
     local fadeIn = math.Clamp(age / 0.08, 0, 1)
     local fadeOut = math.Clamp((duration - age) / 0.42, 0, 1)
     return math.min(fadeIn, fadeOut)
-end
-
--- Feedback is a compact cyan return cue; only real continuations use dice rays.
-local function drawFeedbackBurst(fx, now)
-    local age = now - (fx.created or 0)
-    if age >= FEEDBACK_FX_SECONDS then
-        FX.active = nil
-        return
-    end
-
-    local fraction = math.Clamp(age / FEEDBACK_FX_SECONDS, 0, 1)
-    local fade = 1 - fraction
-    local alpha = math.floor(255 * fade)
-    local cx = ScrW() * 0.5
-    local cy = ScrH() * 0.43
-    local radius = 22 + 62 * fraction
-    local base = Color(75, 220, 255, alpha)
-    local bright = Color(210, 250, 255, alpha)
-    local outline = Color(5, 12, 18, math.floor(alpha * 0.92))
-
-    surface.SetDrawColor(base)
-    -- Inward cyan brackets communicate returned Magic energy. Actual dice use
-    -- outward gold rays; Feedback must not masquerade as a dice explosion.
-    local inset = radius * (1-fraction*0.5)
-    for _,sign in ipairs({-1,1}) do
-        surface.DrawLine(cx+sign*inset,cy-18,cx+sign*inset,cy+18)
-        surface.DrawLine(cx+sign*inset,cy-18,cx+sign*(inset-12),cy-18)
-        surface.DrawLine(cx+sign*inset,cy+18,cx+sign*(inset-12),cy+18)
-    end
-
-    draw.SimpleTextOutlined(
-        fx.primary ~= "" and fx.primary or "FEEDBACK!",
-        "LOD_RPGFeedbackFXPrimary",
-        cx,
-        cy - 6,
-        base,
-        TEXT_ALIGN_CENTER,
-        TEXT_ALIGN_CENTER,
-        2,
-        outline)
-
-    if fx.secondary and fx.secondary ~= "" then
-        draw.SimpleTextOutlined(
-            fx.secondary,
-            "LOD_RPGFeedbackFXSecondary",
-            cx,
-            cy + 22,
-            bright,
-            TEXT_ALIGN_CENTER,
-            TEXT_ALIGN_CENTER,
-            1,
-            outline)
-    end
 end
 
 -- Level-up remains intentionally larger and longer than ordinary combat feedback.
@@ -234,24 +155,20 @@ local function drawLevelUpBurst(fx, now)
     end
 end
 
--- PostDrawHUD intentionally renders after ordinary HUDPaint hooks. Major level-up
--- presentation and compact Feedback presentation therefore remain visible above
--- normal HUD layers without competing with the combat-roll feed's own draw order.
+-- The rare level-up layer is independent of the Wizard reaction layer.
 hook.Add("PostDrawHUD", "LOD_RPGMajorFX", function()
     if not FX.active then return end
-    if FX.active.kind == FX_FEEDBACK then
-        drawFeedbackBurst(FX.active, CurTime())
-    else
-        drawLevelUpBurst(FX.active, CurTime())
-    end
+    drawLevelUpBurst(FX.active, CurTime())
 end)
 
 -- Local presentation-only diagnostic. It does not alter progression or combat.
--- Usage: lod_rpg_major_fx_test level   OR   lod_rpg_major_fx_test feedback
+-- Usage: lod_rpg_major_fx_test level / feedback / diversion
 concommand.Add("lod_rpg_major_fx_test", function(_, _, args)
     local mode = string.lower(tostring(args and args[1] or "level"))
     if mode == "feedback" then
-        FX:Trigger(FX_FEEDBACK, "FEEDBACK!", "2d4+1 → 7 DAMAGE", 0)
+        FX:Trigger(FX_FEEDBACK, "FEEDBACK!", "(7) DAMAGE — 2d4+1", 0)
+    elseif mode == "diversion" then
+        FX:Trigger(4, "ARCANE DIVERSION", "4 HP SAVED / -4 MAGIC", 0)
     else
         FX:Trigger(FX_LEVEL_UP, "LEVEL UP!", "PRESS P TO SEE", 0)
     end

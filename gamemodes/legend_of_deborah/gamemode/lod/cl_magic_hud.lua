@@ -8,13 +8,6 @@ LOD = LOD or {}
 local MAGIC_COLOR = LOD.UI.HUDColor
 local DIVERSION_COLOR = Color(180, 225, 255, 235)
 
-local lastDiversionSerial = -1
-local lastPlayer
-local diversionPulseUntil = 0
-local diversionTextUntil = 0
-local lastDivertedHP = 0
-local lastDivertedMagic = 0
-
 local function ps(value)
     return value * (ScrH() / 480)
 end
@@ -49,8 +42,6 @@ end)
 hook.Add("HUDPaint", "LOD_MagicHUD", function()
     local ply = LocalPlayer()
     if not IsValid(ply) or not ply:Alive() then
-        lastDiversionSerial = -1
-        diversionPulseUntil, diversionTextUntil = 0, 0
         return
     end
 
@@ -62,29 +53,11 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
 
     local x = ps(layout.x)
     local y = ps(layout.y)
-    local w = ps(layout.w)
 
-    local serial = ply:GetNW2Int("LOD_ArcaneDiversionSerial", 0)
-    if lastPlayer ~= ply or lastDiversionSerial < 0 or serial < lastDiversionSerial then
-        lastPlayer = ply
-        diversionPulseUntil, diversionTextUntil = 0, 0
-        lastDiversionSerial = serial
-    elseif serial ~= lastDiversionSerial then
-        lastDiversionSerial = serial
-        lastDivertedHP = math.max(0, ply:GetNW2Float("LOD_ArcaneDiversionHP", 0))
-        lastDivertedMagic = math.max(0, ply:GetNW2Float("LOD_ArcaneDiversionMagic", 0))
-        diversionPulseUntil = CurTime() + 0.45
-        diversionTextUntil = CurTime() + 1.10
-    end
-
-    local color = CurTime() < diversionPulseUntil and DIVERSION_COLOR or MAGIC_COLOR
+    local diversion = LOD.WizardFX and LOD.WizardFX.active and LOD.WizardFX.active[4]
+    local color = diversion and CurTime() - diversion.created < 0.45 and DIVERSION_COLOR or MAGIC_COLOR
     LOD.UI:HUDText("MAGIC", "Default", x + ps(layout.textX), y + ps(layout.textY), color)
     LOD.UI:HUDText(muted and "MUTE" or tostring(value), muted and "HudHintTextLarge" or "HudNumbers",
         x + ps(layout.digitX), y + ps(layout.digitY), color)
 
-    if CurTime() < diversionTextUntil and lastDivertedHP > 0 then
-        local text = string.format("ARCANE -%.1f HP / -%.1f MAGIC", lastDivertedHP, lastDivertedMagic)
-        draw.SimpleText(text, "Default", x + w * 0.5, y - ps(4), DIVERSION_COLOR,
-            TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
-    end
 end)

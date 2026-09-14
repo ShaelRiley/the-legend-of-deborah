@@ -249,9 +249,15 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     target.LODRPGLastDiversion = {at = CurTime(), hp = affordableHP, magic = magicSpent}
     local rolls = LOD.CombatRolls
     if affordableHP > 0 and rolls and rolls._Send then
-        rolls:_Send(target, 3, string.format("ARCANE DIVERSION — %.1f HP prevented / %.1f Magic spent; %.1f HP DAMAGE",
-            affordableHP, magicSpent, finalHP), "resource", {event = "arcane_diversion",
+        rolls:_Send(target, 3, string.format("(%g) HP AFTER DIVERSION — ARCANE DIVERSION: %g HP prevented; %g incoming - %g diverted = %g HP; %g Magic lost",
+            finalHP, affordableHP, resolved, affordableHP, finalHP, magicSpent), "magic", {event = "arcane_diversion",
                 prevented = affordableHP, spent = magicSpent, hp_damage = finalHP})
+    end
+    local presentation = LOD.RPGPresentation
+    if affordableHP > 0 and IsValid(target) and target:IsPlayer() and presentation and presentation.SendFX then
+        presentation:SendFX(target, 4, "ARCANE DIVERSION",
+            string.format("%g HP SAVED / -%g MAGIC", affordableHP, magicSpent),
+            target:GetShootPos(), IsValid(attacker) and attacker:WorldSpaceCenter() or target:GetShootPos())
     end
     return result
 end

@@ -6,6 +6,7 @@ LOD.RPGMajorFXBridge = LOD.RPGMajorFXBridge or {}
 local Bridge = LOD.RPGMajorFXBridge
 local NET_NAME = "LOD_RPGMajorFX"
 local ACK_NAME = "LOD_RPGMajorFXAck"
+local diversionNext = setmetatable({}, {__mode = "k"})
 
 util.AddNetworkString(NET_NAME)
 util.AddNetworkString(ACK_NAME)
@@ -26,8 +27,14 @@ local function install()
     -- events were firing correctly, as confirmed by RPG_LEVEL_UP_PRESENTATION and
     -- WIZARD_FEEDBACK_PROC logs, but the shared combat-feed receiver was not
     -- producing a reliably visible overlay. This transport has one client owner.
-    function presentation:SendFX(ply, kind, primary, secondary)
+    local function sendFX(self, ply, kind, primary, secondary, origin, target)
         if not IsValid(ply) or not ply:IsPlayer() then return false end
+        -- Continuous damage keeps its complete logger record; cap cosmetic shield
+        -- packets at ten per second instead of amplifying reliable-channel bursts.
+        if kind == 4 then
+            if CurTime() < (diversionNext[ply] or 0) then return false end
+            diversionNext[ply] = CurTime() + 0.10
+        end
 
         self.MajorFXSerial = ((tonumber(self.MajorFXSerial) or 0) + 1) % 65536
         local serial = self.MajorFXSerial
@@ -37,12 +44,22 @@ local function install()
         net.WriteUInt(math.Clamp(math.floor(tonumber(kind) or 0), 0, 7), 3)
         net.WriteString(tostring(primary or ""))
         net.WriteString(tostring(secondary or ""))
+        if kind == 1 or kind == 4 then
+            net.WriteVector(origin or ply:GetShootPos())
+            net.WriteVector(target or origin or ply:GetShootPos())
+        end
         net.Send(ply)
 
         logEvent("RPG_MAJOR_FX_DISPATCH", {player = string.format("player:%s#%d", tostring(ply:Nick()), ply:EntIndex()),
             serial = serial, kind = kind, primary = tostring(primary or ""), secondary = tostring(secondary or "")})
 
         return true
+    end
+
+    function presentation:SendFX(...)
+        local ok, result = pcall(sendFX, self, ...)
+        if not ok then ErrorNoHalt("[LOD:RPG-MAJOR-FX] " .. tostring(result) .. "\n") end
+        return ok and result or false
     end
 
     return true

@@ -79,8 +79,17 @@ function Log:Segments(text, family, identities)
         end
     end
     pattern('^%b[]', family or 'routine', 2)
+    local modern = text:find(' DAMAGE — ',1,true)
     local a,b = text:find(' dealt ',1,true)
-    if a then
+    if modern and text:match('^%([%d%.]+%) DAMAGE') then
+        local actorStart = modern + #' DAMAGE — '
+        local arrow, arrowEnd = text:find(' → ',actorStart,true)
+        local via, viaEnd = text:find(', via ',actorStart,true)
+        local formula = viaEnd and text:find('; ',viaEnd+1,true)
+        if arrow then mark(actorStart,arrow-1,'identity',1) end
+        if arrowEnd and via then mark(arrowEnd+1,via-1,'recipient',1) end
+        if viaEnd and formula then mark(viaEnd+1,formula-1,'source',1) end
+    elseif a then
         mark(1,a-1,'identity',1)
         local c,d = text:find(' damage to ',b+1,true)
         local e,f
@@ -88,7 +97,7 @@ function Log:Segments(text, family, identities)
         if e then mark(d+1,e-1,'recipient',1); mark(f+1,#text,'source',1) end
     else
         local colon = text:find(': ',1,true)
-        if colon then
+        if colon and not text:match('^%([%d%.]+%) HP AFTER DIVERSION') then
             local start = text:find('] ',1,true)
             mark(start and start+2 or 1,colon-1,'identity',1)
         end
@@ -104,6 +113,7 @@ function Log:Segments(text, family, identities)
     end
     pattern('= [%d%.]+ rolled','total',4)
     pattern('resolved [%d%.]+','total',4)
+    pattern('^%([%d%.]+%)','total',5)
     pattern('[><=]+','continuation',4)
     pattern('%f[%a]Magic%f[%A]','magic',3)
     for _, word in ipairs({'APPLIED','REFRESHED','EXTENDED','HELD','MUTED','IMMOLATED','POISONED','BLEEDING','CLUMSY','RECKLESS','INTIMIDATED'}) do pattern(word,'status',3) end

@@ -18,7 +18,6 @@ WizardOffense.Stats = WizardOffense.Stats or {
     feedbackDamage = 0
 }
 
-util.AddNetworkString("LOD_WizardFeedbackFX")
 
 local function rules()
     return LOD.RPGAbilityRules
@@ -88,22 +87,14 @@ function WizardOffense:FeedbackDiceCount(contract)
     return math.max(0, #(contract and contract.values or {}))
 end
 
-function WizardOffense:EmitFeedbackFX(wizard, attacker)
-    if not IsValid(wizard) or not IsValid(attacker) then return end
-    local startPos = wizard:WorldSpaceCenter()
-    if wizard.EyePos then startPos = wizard:EyePos() end
-    local endPos = attacker:WorldSpaceCenter()
-
-    net.Start("LOD_WizardFeedbackFX")
-    net.WriteVector(startPos)
-    net.WriteVector(endPos)
-    net.Broadcast()
-
-    wizard:EmitSound("ambient/energy/zap5.wav", 82, 108, 0.92, CHAN_STATIC)
-    local effect = EffectData()
-    effect:SetOrigin(endPos)
-    effect:SetScale(0.65)
-    util.Effect("StunstickImpact", effect, true, true)
+function WizardOffense:EmitFeedbackFX(wizard, destination, damage, formula, target)
+    local presentation = LOD.RPGPresentation
+    if not IsValid(wizard) or not presentation or not presentation.SendFX then return end
+    local recipient = wizard:IsPlayer() and wizard or target
+    if not IsValid(recipient) or not recipient:IsPlayer() then return end
+    presentation:SendFX(recipient, 1, recipient == wizard and "FEEDBACK!" or "ENEMY FEEDBACK!",
+        string.format("(%g) DAMAGE — %s", damage, formula),
+        wizard:IsPlayer() and wizard:GetShootPos() or wizard:WorldSpaceCenter(), destination)
 end
 
 function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
@@ -138,12 +129,11 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
         baseDice = diceCount,
         ignoreWizardFullMagicIntBonus = true
     }
-    local resolved = select(1, abilityRules:ResolveDamageContract(contract, wizard, attacker,
-        {magic = true, wisScaled = false, feedbackIneligible = true, reactiveDamage = true}))
+    local resolved, reduced, resistance = abilityRules:ResolveDamageContract(contract, wizard, attacker,
+        {magic = true, wisScaled = false, feedbackIneligible = true, reactiveDamage = true})
     resolved = math.max(0, tonumber(resolved) or 0)
+    contract.feedResolution = {total=resolved, reduced=reduced, resistance=resistance}
     if resolved <= 0 then return false end
-
-    self:EmitFeedbackFX(wizard, attacker)
 
     local info = DamageInfo()
     info:SetAttacker(wizard)
@@ -160,8 +150,10 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
 
     -- The explicit resolved-event marker prevents all weapon reinterpretation;
     -- no temporary actor-global firearm state is needed for nested damage.
+    local feedbackDestination = attacker:WorldSpaceCenter()
     attacker:TakeDamageInfo(info)
     resolved = math.max(0, info:GetDamage())
+    self:EmitFeedbackFX(wizard, feedbackDestination, resolved, contract.formula, attacker)
 
     self.Stats.feedbackProcs = (self.Stats.feedbackProcs or 0) + 1
     self.Stats.feedbackDice = (self.Stats.feedbackDice or 0) + diceCount

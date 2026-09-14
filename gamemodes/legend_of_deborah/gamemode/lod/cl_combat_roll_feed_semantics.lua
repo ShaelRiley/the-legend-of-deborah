@@ -136,7 +136,7 @@ end)
 concommand.Add("lod_dice_feed_qol_test", function()
     local cv = GetConVar("lod_developer_mode")
     if not cv or not cv:GetBool() then return end
-    local text = "DIE-LOGGER layout sample: actor dealt 1d10! (27) [rolls 10 > 10 > 7] damage to target, via Magic"
+    local text = "(27) DAMAGE — actor → target, via Magic; 1d10! [rolls 10 > 10 > 7 = 27 rolled]"
     local entry = {category=0,text=text,created=CurTime(),family="routine"}
     Feed.entries[#Feed.entries+1] = entry
     if Feed.RetainFeedback then Feed:RetainFeedback(entry) end

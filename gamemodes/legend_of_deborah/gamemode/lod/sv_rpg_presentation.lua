@@ -3,7 +3,6 @@ LOD.RPGPresentation = LOD.RPGPresentation or {}
 
 local Presentation = LOD.RPGPresentation
 local function pack(...) return {n=select("#", ...), ...} end
-local FX_FEEDBACK = 1
 local FX_LEVEL_UP = 2
 local FX_FEAT_CONFIRM = 3
 
@@ -195,9 +194,7 @@ function Presentation:InstallFeedbackPresentation()
             local count = math.max(1, math.floor(tonumber(diceCount) or 1))
             local bonus = math.max(0, math.floor(tonumber(intBonus) or 0))
             local formula = string.format("%dd4%s", count, bonus > 0 and ("+" .. bonus) or "")
-            local detail = string.format("%s → %.1f DAMAGE", formula, damage)
-
-            Presentation:SendFX(ply, FX_FEEDBACK, "FEEDBACK!", detail)
+            -- ApplyFeedback owns the single committed audiovisual dispatch.
             Presentation.Stats.feedbackFX = (Presentation.Stats.feedbackFX or 0) + 1
             logEvent("WIZARD_FEEDBACK_PROC", {
                 player = entityLabel(ply),

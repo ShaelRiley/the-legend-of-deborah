@@ -489,7 +489,7 @@ hooks.EntityFireBullets.LOD_DicePlayerFirearms(attacker,bullet)
 assert(bullet.Damage==27 and #sent==1 and sent[1].name=="LOD_DiceExplosionFX")
 for _,fn in ipairs(pending) do fn() end
 local miss=sent[#sent]
-assert(miss.name=="LOD_CombatRoll" and miss.args[2]:find("1d10! (0)",1,true)
+assert(miss.name=="LOD_CombatRoll" and miss.args[2]:find("(0) DAMAGE",1,true)==1 and miss.args[2]:find("1d10!",1,true)
     and miss.args[2]:find("10 > 10 > 7 = 27 rolled",1,true),"exploded miss records all dice, subtotal and zero damage")
 local n=#sent
 for _,fn in ipairs(pending) do fn() end
@@ -504,7 +504,7 @@ rolls.ResolveActorDamage=function() return 0 end
 victim1.Health=function() return 50 end
 sent={};netCalls={}
 assert(not productionApplyDamage(forms,attacker,attacker,victim1,{id="beam",damageDice=2,damageSides=6},nil,{},Vector(1,0,0)))
-assert(sent[#sent].name=="LOD_CombatRoll" and sent[#sent].args[2]:find("2d6! (0)",1,true)
+assert(sent[#sent].name=="LOD_CombatRoll" and sent[#sent].args[2]:find("(0) DAMAGE",1,true)==1 and sent[#sent].args[2]:find("2d6!",1,true)
     and sent[#sent].args[2]:find("6 > 2 + 3 = 11 rolled",1,true))
 forms._RollDamage=oldMagicRoll;rolls.ResolveActorDamage=oldResolve
 
@@ -545,7 +545,7 @@ local firstInfo=DamageInfo();firstInfo:SetDamage(27)
 sent={};netCalls={}
 piercingBullet.Callback(attacker,{Entity=victim1,HitPos=Vector(100,0,64)},firstInfo)
 local pierced=sent[#sent]
-assert(pierced.name=="LOD_CombatRoll" and pierced.args[2]:find("2d12! (43)",1,true))
+assert(pierced.name=="LOD_CombatRoll" and pierced.args[2]:find("(43) DAMAGE",1,true)==1 and pierced.args[2]:find("2d12!",1,true))
 assert(pierced.args[2]:find("12@8+ > 10@7+ > 5@6+ + 12@8+ > 4@7+ = 43 rolled",1,true),
     "piercing retains original and new rolls, actual thresholds, independent starts and total")
 attacker.GetActiveWeapon=oldWeapon;rolls.RollActorDamage=oldActorRoll;util.TraceLine=oldTrace;rolls._RNG=pierceRNG

@@ -218,10 +218,12 @@ assert(summary.Feedback.dispatched == 1 and summary.Feedback.received == 1 and s
 assert(summary.Feedback.sound_requested == 1)
 dofile(root .. "cl_rpg_major_fx.lua")
 local fx = LOD.RPGMajorFX
+local reactions = 0
+LOD.WizardFX = {Trigger = function() reactions = reactions + 1; return true end}
 fx:Trigger(2, "LEVEL UP", "", 1)
-assert(fx:Trigger(1, "FEEDBACK", "", 2) == false and fx.active.kind == 2)
+assert(fx:Trigger(1, "FEEDBACK", "", 2) == true and fx.active.kind == 2 and reactions == 1)
 clock = clock + 2
-assert(fx:Trigger(1, "FEEDBACK", "", 3) == true and fx.active.kind == 1)
+assert(fx:Trigger(1, "FEEDBACK", "", 3) == true and reactions == 2)
 assert(#errors == 0, table.concat(errors, "\n"))
 -- Span identity is independent of sentence role and survives names with ' as '.
 local logger=LOD.DieLogger
@@ -264,7 +266,8 @@ local breakdown=logger:RollBreakdown(resolvedChain)
 assert(breakdown=="10 > 10 > 7 + 2 bonus = 29 rolled; CON -1/die: 9 + 9 + 6 = 26; resolved 19.5")
 local text=rolls:_DamageEventText(a,"1d10!+2",19.5,b,"[rolls "..breakdown.."]")
 rolls:_Send(a,0,text)
-assert(sent[#sent][2][1]:find("1d10!+2 (19.5)",1,true),"damage total remains in parentheses")
+assert(sent[#sent][2][1]:find("(19.5) DAMAGE",1,true)==1 and sent[#sent][2][1]:find("1d10!+2",1,true),
+    "damage total leads in parentheses, followed by the formula and complete rolls")
 local wire=sent[#sent]
 assert(logger:ValidSegments(wire[6][1],text),"expanded arithmetic keeps exact semantic transport")
 -- A nickname-only observer event must still retain its identity color.
