@@ -225,6 +225,7 @@ function HostileRegistry:List()
             self.set[ent] = nil
         end
     end
+    table.sort(out, function(a, b) return a:EntIndex() < b:EntIndex() end)
     self.list = out
     self.dirty = false
     return out

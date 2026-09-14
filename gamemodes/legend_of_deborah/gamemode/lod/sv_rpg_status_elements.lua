@@ -223,28 +223,41 @@ function System:ResetActorLife(actor)
         end
     end
     if Rules.ClearDodge then Rules:ClearDodge(actor) end
+    if Rules.SetHasteActive then Rules:SetHasteActive(actor, false) end
     self.ActorLives[actor] = nil
 end
 
 function System:BindActorLife(actor)
     if not valid(actor) then return end
     local state = actorState(actor)
-    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
+    local run = LOD.RunManager and LOD.RunManager.State
+    local epoch, graph = run and run.CampaignEpoch, run and run.Graph
+    local seed = run and run.LevelSeed
     local life = self.ActorLives[actor]
-    if life and life.state == state and life.epoch == epoch then return end
+    if life and life.state == state and life.epoch == epoch and life.graph == graph and life.seed == seed then return end
     if life then self:ResetActorLife(actor) end
-    self.ActorLives[actor] = {state = state, epoch = epoch}
+    self.ActorLives[actor] = {state = state, epoch = epoch, graph = graph, seed = seed}
 end
 
 hook.Add("PlayerDeath", "LOD_RPG_CombatLifeDeath", function(actor) System:ResetActorLife(actor) end)
 hook.Add("PlayerSpawn", "LOD_RPG_CombatLifeSpawn", function(actor) System:ResetActorLife(actor) end)
 hook.Add("PlayerDisconnected", "LOD_RPG_CombatLifeDisconnect", function(actor) System:ResetActorLife(actor) end)
+hook.Add("PreCleanupMap", "LOD_RPG_CombatLifeCleanup", function()
+    local actors = {}
+    for actor in pairs(System.Active) do actors[actor] = true end
+    for actor in pairs(System.ActorLives) do actors[actor] = true end
+    for actor in pairs(actors) do System:ResetActorLife(actor) end
+    System.ActorLives = setmetatable({}, {__mode = "k"})
+    System.DamageContexts = setmetatable({}, {__mode = "k"})
+    timer.Remove(SCHEDULER_TIMER)
+end)
 
 function System:Clear(target, id, reason)
     local states = statusTable(target, false)
     local entry = states and states[id]
     if not entry then return false end
     states[id] = nil
+    if next(states) == nil then self.Active[target] = nil end
     syncStatus(target, id, false, 0)
     if id == "morale_flee" and valid(target) then
         target.LODMoraleFleeSource = nil
@@ -449,7 +462,9 @@ function System:_ProcessImmolated(actor, entry, at)
     local damage, values = self:RollExploding(rng, 1, 6)
     self:_ApplyStatusDamage(actor, entry, damage, DMG_BURN, "Immolated",
         {element = "fire", contributions = values})
-    if not isAlive(actor) or (entry.expiresAt and at >= entry.expiresAt) then return end
+    self:BindActorLife(actor)
+    if not isAlive(actor) or not self.Active[actor] or self.Active[actor].immolated ~= entry
+        or (entry.expiresAt and at >= entry.expiresAt) then return end
     local save = self:ConditionSave(actor, "dex", rng)
     self.Stats.saves = self.Stats.saves + 1
     if save >= entry.dc then self:Clear(actor, "immolated", "extinguished")
@@ -469,7 +484,8 @@ function System:_ProcessBleeding(actor, entry, at)
     if at < (entry.nextTickAt or math.huge) then return end
     local rng = self:_RNG("bleeding:tick")
     self:_ApplyStatusDamage(actor, entry, rng:Int(1, 3), DMG_SLASH, "Bleeding")
-    if not isAlive(actor) then return end
+    self:BindActorLife(actor)
+    if not isAlive(actor) or not self.Active[actor] or self.Active[actor].bleeding ~= entry then return end
     local save = self:ConditionSave(actor, "con", rng)
     self.Stats.saves = self.Stats.saves + 1
     if save >= entry.dc then self:Clear(actor, "bleeding", "recovered")
@@ -478,24 +494,41 @@ end
 
 function System:Process(at)
     at = at or now()
-    for actor, states in pairs(self.Active) do
+    -- Snapshot the transaction before callbacks can kill, clear, replace or add
+    -- actors/statuses. Hash-table order must not choose who gets the next RNG roll.
+    local actors = {}
+    for actor in pairs(self.Active) do actors[#actors + 1] = actor end
+    table.sort(actors, function(a, b)
+        local sa, sb = actorState(a), actorState(b)
+        local ka = tostring(sa and sa.actorId or a.LODInstanceSeed or "")
+        local kb = tostring(sb and sb.actorId or b.LODInstanceSeed or "")
+        if ka ~= kb then return ka < kb end
+        return (a.EntIndex and a:EntIndex() or 0) < (b.EntIndex and b:EntIndex() or 0)
+    end)
+    local work = {}
+    for _, actor in ipairs(actors) do
         self:BindActorLife(actor)
-        states = self.Active[actor] or {}
+        local states = self.Active[actor] or {}
         if not isAlive(actor) then
-            self.Active[actor] = nil
+            self:ResetActorLife(actor)
         else
             local ids = {}
             for id in pairs(states) do ids[#ids + 1] = id end
+            table.sort(ids)
             for _, id in ipairs(ids) do
-                local entry = states[id]
-                if entry then
-                    if entry.expiresAt and at >= entry.expiresAt then
-                        self:Clear(actor, id, "expired")
-                    elseif id == "immolated" then self:_ProcessImmolated(actor, entry, at)
-                    elseif id == "poisoned" then self:_ProcessPoisoned(actor, entry, at)
-                    elseif id == "bleeding" then self:_ProcessBleeding(actor, entry, at) end
-                end
+                work[#work + 1] = {actor=actor, states=states, id=id, entry=states[id]}
             end
+        end
+    end
+    for _, item in ipairs(work) do
+        local actor, states, id, entry = item.actor, item.states, item.id, item.entry
+        self:BindActorLife(actor)
+        if isAlive(actor) and self.Active[actor] == states and states[id] == entry then
+            if entry.expiresAt and at >= entry.expiresAt then
+                self:Clear(actor, id, "expired")
+            elseif id == "immolated" then self:_ProcessImmolated(actor, entry, at)
+            elseif id == "poisoned" then self:_ProcessPoisoned(actor, entry, at)
+            elseif id == "bleeding" then self:_ProcessBleeding(actor, entry, at) end
         end
     end
     self:_Schedule()

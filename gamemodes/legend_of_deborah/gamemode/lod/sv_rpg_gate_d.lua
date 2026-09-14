@@ -259,6 +259,7 @@ end
 local function identityForPlayer(ply)
     local run = runManager()
     if not IsValid(ply) or not ply:IsPlayer() or not run or not run.IdentityOf then return nil end
+    if run.IsSoldierControl and run:IsSoldierControl(ply) then return nil end
     local identity = run:IdentityOf(ply)
     local ps = identity and run:GetPlayerState(identity) or nil
     return ps and ps.progressionState and identity or nil

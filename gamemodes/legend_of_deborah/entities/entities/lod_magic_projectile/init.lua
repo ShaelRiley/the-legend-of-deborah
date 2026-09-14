@@ -17,7 +17,9 @@ end
 local function traceFilter(self)
     return function(ent)
         if ent == self or ent == self.LODCaster then return false end
-        if IsValid(ent) and ent:IsPlayer() then return false end
+        if IsValid(ent) and ent:IsPlayer() then
+            return LOD.FactionManager and LOD.FactionManager:IsOpponent(self.LODCaster, ent) or false
+        end
         if IsValid(ent) and ent.LODSummonedSeeker then return false end
         local owner = IsValid(ent) and ent:GetOwner() or nil
         if owner == self.LODCaster then return false end

@@ -28,6 +28,17 @@ assert(math.abs(Rules:HasteDrainPerSecond(actor) - (100 / 15) * .85 / 3) < .0000
 assert(Rules:MovementMultiplier(actor) == 3, "Haste doubles resolved ordinary movement")
 actor.resource.magic = 0
 assert(not Rules:SetHasteActive(actor, true), "zero Magic rejects Haste")
+assert(Effects.HasteState[actor] == nil, "Inactive Haste does not remain in recurring drain work")
+actor.resource.magic = 20
+assert(Rules:SetHasteActive(actor, true))
+local originalDerived = Rules.Derived
+Rules.Derived = function(self, target)
+    self:SetHasteActive(target, false) -- shared life binding invalidates sustained state
+    return target.derived
+end
+assert(not Rules:IsHasteActive(actor) and not actor.hasteNetworked,
+    "Life invalidation during derived lookup cannot return stale active Haste")
+Rules.Derived = originalDerived
 local rank, drain = Effects:HasteProfile({featIds = {"INT_HASTE_1", "INT_HASTE_2", "INT_HASTE_3"}})
 assert(rank == 3 and drain == 1 / 3, "highest Haste rank replaces lower drain")
 print("Checkpoint D Haste headless PASS")

@@ -111,7 +111,6 @@ end
 
 function RunManager:IsSoldierControl(ply)
     if not IsValid(ply) then return false end
-    if ply.LODHumanSoldierProgressionState then return true end
     local system = LOD.SoldierProgression
     return system and system:StateFor(ply) ~= nil or false
 end
@@ -611,7 +610,7 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
 end
 
 function RunManager:ApplyPlayerState(ply)
-    if not IsValid(ply) or not self.State.BuildReady then return end
+    if not IsValid(ply) or not ply:Alive() or not self.State.BuildReady then return end
     local slotActive = self.IsSlotActivePlayer
         and self:IsSlotActivePlayer(ply) or self:IsActivePlayer(ply)
     local ps = self:GetPlayerState(ply)
@@ -672,7 +671,12 @@ function RunManager:ApplyPlayerState(ply)
     local maximumHealth = math.max(1, progression and progression.derivedStats
         and progression.derivedStats.maxHP or 100)
     ply:SetMaxHealth(maximumHealth)
-    ply:SetHealth(maximumHealth)
+    -- Respawn health and earned temporary overfill commit together. A delayed
+    -- Tetris callback must not overwrite RPG MaxHP or a later Soldier body.
+    local overfill = math.max(0, math.floor(tonumber(ps.nextLifeHPBonus) or 0))
+    ps.nextLifeHPBonus = 0
+    ply:SetHealth(maximumHealth + overfill)
+    ply:SetNW2Int("LOD_TetrisNextLifeBonus", 0)
     ply:SetArmor(ps.armor or 0)
     if ps.deploymentComplete then ps.deployedDungeonLevel = self.State.Level end
     self:RestoreInventory(ply, ps)
@@ -699,11 +703,13 @@ end
 
 function RunManager:HandleDeath(ply, attacker)
     if not IsValid(ply) or self.State.Failed then return end
+    if ply.LODHandledRunDeath then return end
 
     local id = self:IdentityOf(ply)
     local ps = id and self.State.PlayerState[id]
 
     if self:IsSoldierControl(ply) then
+        ply.LODHandledRunDeath = true
         self:RetireSoldier(ply)
         if ps then
             ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
@@ -717,11 +723,12 @@ function RunManager:HandleDeath(ply, attacker)
             end
         end)
         self:PromoteWaitingSpectators()
-        self:EvaluateWipe()
+        self:RequestWipeEvaluation()
         return
     end
 
     if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or not ps then return end
+    ply.LODHandledRunDeath = true
 
     self:CaptureInventory(ply, ps)
     ps.armor = 0
@@ -750,7 +757,17 @@ function RunManager:HandleDeath(ply, attacker)
     end)
 
     if ps.eliminated then self:PromoteWaitingSpectators() end
-    self:EvaluateWipe()
+    self:RequestWipeEvaluation()
+end
+
+function RunManager:RequestWipeEvaluation()
+    local state = self.State
+    if state.WipeEvaluationPending or state.Failed then return end
+    state.WipeEvaluationPending = true
+    timer.Simple(0, function()
+        state.WipeEvaluationPending = nil
+        if self.State == state then self:EvaluateWipe() end
+    end)
 end
 
 function RunManager:_ConnectedPlayedPlayers()
@@ -973,8 +990,12 @@ hook.Add("PlayerInitialSpawn", "LOD_PlayerInitialSpawn", function(ply)
 end)
 
 hook.Add("PlayerSpawn", "LOD_PlayerSpawn", function(ply)
+    ply.LODHandledRunDeath = nil
+    ply.LODRunSpawnSerial = (ply.LODRunSpawnSerial or 0) + 1
+    local serial, state, graph = ply.LODRunSpawnSerial, RunManager.State, RunManager.State.Graph
     timer.Simple(0, function()
-        if IsValid(ply) then RunManager:ApplyPlayerState(ply) end
+        if IsValid(ply) and ply:Alive() and ply.LODRunSpawnSerial == serial
+            and RunManager.State == state and state.Graph == graph then RunManager:ApplyPlayerState(ply) end
     end)
 end)
 

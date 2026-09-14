@@ -16,7 +16,10 @@ function table.Copy(value)
     return copy
 end
 
-hook = {Add = function() end, Run = function() end}
+local hooks = {}
+hook = {Add = function(event, name, fn)
+    hooks[event] = hooks[event] or {}; hooks[event][name] = fn
+end, Run = function() end}
 timer = {Create = function() end, Remove = function() end}
 concommand = {Add = function() end}
 game = {GetWorld = function() return {} end}
@@ -133,4 +136,53 @@ clock = 1000
 System:Process(clock)
 assert(not System:Has(moraleTarget, "morale_flee", clock), "flee expires through shared scheduler")
 
+-- Real scheduler, with only HP application replaced at the engine boundary.
+local a, b = actor(false), actor(false)
+a.LODProgressionState.actorId, b.LODProgressionState.actorId = "A", "B"
+System.Active, System.ActorLives = {}, {}
+local order = {}
+System._RNG = function() return scripted({1,20}) end
+System._ApplyStatusDamage = function(_, target)
+    order[#order+1] = target.LODProgressionState.actorId
+end
+local function bleeding(target)
+    return System:Apply(target, "bleeding", source, {direct=true, dc=10, rng=scripted({1})})
+end
+bleeding(b); bleeding(a)
+clock = clock + 1
+System:Process(clock)
+assert(table.concat(order) == "AB", "Simultaneous ticks use stable actor order, not hash insertion order")
+assert(System.Active[a] == nil and System.Active[b] == nil, "Last cleared status releases active table")
+
+order = {}; bleeding(a); bleeding(b)
+System._ApplyStatusDamage = function(self, target)
+    order[#order+1] = target.LODProgressionState.actorId
+    if target == a then self:Clear(b, "bleeding", "observer"); bleeding(b) end
+end
+clock = clock + 1; System:Process(clock)
+assert(table.concat(order) == "A" and System:Has(b, "bleeding"),
+    "A replaced status cannot execute from the old scheduler transaction")
+System:ResetActorLife(a); System:ResetActorLife(b)
+
+bleeding(a)
+System:Apply(a, "immolated", source, {direct=true, dc=100, duration=10})
+order = {}
+System._ApplyStatusDamage = function(self, target)
+    order[#order+1] = target.LODProgressionState.actorId
+    target.LODProgressionState = table.Copy(target.LODProgressionState)
+end
+clock = clock + 1; System:Process(clock)
+assert(#order == 1 and System.Active[a] == nil,
+    "Incarnation replacement during damage cancels the old tick's save and remaining statuses")
+
+LOD.RunManager = {State={CampaignEpoch=1,LevelSeed=1,Graph={}}}
+bleeding(a)
+LOD.RunManager.State.Graph = {} -- Same-seed rebuild is still a new world.
+assert(not System:Has(a, "bleeding"), "Same-seed topology replacement clears stale statuses")
+bleeding(a)
+System:BindActorLife(b)
+b.LODRPGNotYetImmuneUntil = clock + 10
+hooks.PreCleanupMap.LOD_RPG_CombatLifeCleanup()
+assert(not next(System.Active) and not next(System.ActorLives), "Cleanup clears all active status lifetimes")
+assert(b.LODRPGNotYetImmuneUntil == nil, "Cleanup also clears bound actors with no active status")
 print("status/element headless matrix PASS")

@@ -1,3 +1,5 @@
+> Current candidate — systems robustness audit (2026-09-14): shared Soldier/faction targeting, deterministic status transactions, idempotent loot/death, guarded spawn callbacks, and canonical Tetris timing/MaxHP overfill. Integrated gate **54/54**; approved 150-entry feat inventory has **zero blank descriptions**. See [SYSTEMS_ROBUSTNESS_AUDIT.md](SYSTEMS_ROBUSTNESS_AUDIT.md) for coverage and focused multiplayer acceptance. Shael must approve the exact pushed SHA before main promotion. Earlier candidate entries below are historical; no live deployment.
+
 > Current candidate: Bomb/Missile impact-area outlines, black lit-fuse bomb, and rounded-up half-range lateral Spatial Awareness with violet directional alerts. GDD row reconciled; 53/53 static gate, Source retest pending. See [MAGIC_AREA_AND_AWARENESS.md](MAGIC_AREA_AND_AWARENESS.md).
 
 > Current repair candidate: Shael’s playtest hit a reliable-channel overflow after a multi-kill Blast. Full RPG snapshots now coalesce/deduplicate; traffic is instrumented. Static gate: 53/53; Source retest required. See [RELIABLE_CHANNEL_REPAIR.md](RELIABLE_CHANNEL_REPAIR.md). No main promotion or live deployment.

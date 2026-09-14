@@ -28,7 +28,6 @@ function ENT:_TryCollect(ply)
     local ok = director:Collect(self, ply)
     if not ok then return end
 
-    self.LODCollected = true
     self:Remove()
 end
 

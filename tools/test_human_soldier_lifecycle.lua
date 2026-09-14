@@ -37,7 +37,12 @@ local function mockGMod()
         WriteTable = function() end,
         Send = function() end
     }
-    hook = {Add = function() end, GetTable = function() return {} end}
+    local hooks = {}
+    hook = {Add = function(event, name, fn)
+        hooks[event] = hooks[event] or {}; hooks[event][name] = fn
+    end, GetTable = function() return hooks end, Run = function(event, ...)
+        for _, fn in pairs(hooks[event] or {}) do fn(...) end
+    end}
     concommand = {Add = function() end}
     CreateConVar = function(name, default)
         return {
@@ -155,7 +160,7 @@ local function createMockPlayer(id, nick, entIndex)
         IsPlayer = function() return true end,
         Alive = function() return alive end,
         SetAlive = function(_, val) alive = val end,
-        Spawn = function(self) alive = true; if RunManager and RunManager.ApplyPlayerState then RunManager:ApplyPlayerState(self) end end,
+        Spawn = function(self) alive = true; hook.Run("PlayerSpawn", self) end,
         Spectate = function(_, mode) spectateMode = mode end,
         SpectateEntity = function() end,
         UnSpectate = function() spectateMode = nil end,
@@ -419,10 +424,86 @@ assert(RunManager:JoinSoldierRole(p1))
 local credited = SoldierProgression:StateFor(p1)
 ps2.lives = 2; ps2.eliminated = false
 RunManager.State.ActiveIdentity["steam_1002"] = true
+p2:Spawn()
 p2:SetAlive(false)
 RunManager:HandleDeath(p2, p1)
 check(ps2.lives == 1 and credited.soldierXP == 50,
     "Actual Hero life transaction awards exactly 50 SoldierXP")
+RunManager:HandleDeath(p2, p1)
+check(ps2.lives == 1 and credited.soldierXP == 50, "Duplicate death cannot consume another life or credit")
+
+local queued = {}
+timer.Simple = function(_, fn) queued[#queued+1] = fn end
+local failed = 0
+local originalFail = RunManager.FailCampaign
+RunManager.FailCampaign = function() failed = failed + 1 end
+RunManager:RequestWipeEvaluation()
+RunManager:RequestWipeEvaluation()
+check(#queued == 1 and failed == 0, "Wipe is coalesced until the current damage batch ends")
+local originalState = RunManager.State
+RunManager.State = {}
+queued[1]()
+check(failed == 0, "An old campaign's queued wipe cannot fail its replacement")
+RunManager.State = originalState
+RunManager.FailCampaign = originalFail
+
+queued = {}
+local applications = 0
+local originalApply = RunManager.ApplyPlayerState
+RunManager.ApplyPlayerState = function() applications = applications + 1 end
+p2:SetAlive(true)
+hook.GetTable().PlayerSpawn.LOD_PlayerSpawn(p2)
+hook.GetTable().PlayerSpawn.LOD_PlayerSpawn(p2)
+queued[1](); queued[2]()
+check(applications == 1, "Only the latest spawn callback applies a player loadout")
+queued = {}
+hook.GetTable().PlayerSpawn.LOD_PlayerSpawn(p2)
+p2:SetAlive(false); queued[1]()
+check(applications == 1, "Spawn followed by immediate death cannot restore dead-player HP or inventory")
+RunManager.ApplyPlayerState = originalApply
+
+-- Individualized loot has one grant authority even if Touch/Use repeat/reenter.
+p2:SetAlive(true); p2.EmitSound = function() end
+local pickup = {_isValid=true, LODLootOwnerIdentity="steam_1002", LODLootKind="health",
+    LODLootStaticId="audit-static", LODLootLevelSeed=RunManager.State.LevelSeed, EntIndex=function() return 300 end}
+local grants = 0
+local originalGrant = Loot._GrantHealth
+Loot._GrantHealth = function(self, ply)
+    grants = grants + 1
+    check(not self:Collect(pickup, ply), "Nested loot grant is rejected at the authority")
+    return true
+end
+check(not Loot:Collect(pickup, p1), "Wrong owner/Soldier cannot claim individualized Hero loot")
+check(Loot:Collect(pickup, p2) and grants == 1, "Owner receives one grant")
+check(not Loot:Collect(pickup, p2) and grants == 1, "Repeated direct collection does not duplicate resources")
+local duplicatePickup = {_isValid=true, LODLootOwnerIdentity="steam_1002", LODLootKind="health",
+    LODLootStaticId="audit-static", LODLootLevelSeed=RunManager.State.LevelSeed}
+check(not Loot:Collect(duplicatePickup, p2), "Consumed static identity rejects a duplicate entity")
+pickup.LODCollected=nil;pickup.LODLootStaticId=nil
+Loot._GrantHealth = function() return false end
+check(not Loot:Collect(pickup,p2) and not pickup.LODCollecting and not pickup.LODCollected,
+    "A currently unusable pickup remains available for a later legitimate collection")
+Loot._GrantHealth = originalGrant
+
+-- Hero spawn consumes Tetris overfill alongside the RPG health baseline.
+local appliedHP, appliedMaxHP, remainingOverfill
+p2.SetHealth = function(_, hp) appliedHP = hp end
+p2.SetMaxHealth = function(_, hp) appliedMaxHP = hp end
+p2.SetNW2Int = function(_, key, value)
+    if key == "LOD_TetrisNextLifeBonus" then remainingOverfill = value end
+end
+ps2.progressionState.derivedStats.maxHP = 175
+ps2.nextLifeHPBonus = 30
+ps2.deploymentComplete = true
+RunManager.State.BuildReport = {startPos = Vector(0, 0, 0)}
+RunManager:ApplyPlayerState(p2)
+check(appliedMaxHP == 175 and appliedHP == 205 and ps2.nextLifeHPBonus == 0,
+    "Hero respawn grants RPG MaxHP plus earned overfill in one transaction")
+check(remainingOverfill == 0,
+    "Consumed overfill is also cleared from the player-facing state")
+local retiredProfile = SoldierProgression:StateFor(p1)
+SoldierProgression:Retire(retiredProfile)
+check(not RunManager:IsSoldierControl(p1), "A captured retired profile cannot keep Soldier control active")
 
 -- Final summary
 if #errors == 0 then

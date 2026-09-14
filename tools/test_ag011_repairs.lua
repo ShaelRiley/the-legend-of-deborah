@@ -307,6 +307,7 @@ LOD.MazeNavigator={WorldToCell=function(_,_,pos) return pos end,
     CanTraverse=function(_,_,_,key) return key~="1:2:0" end}
 dofile(root .. "sv_magic_forms.lua")
 local forms=assert(LOD.MagicForms)
+local productionBlastTargets=forms._BlastTargets
 local hits={}
 local productionApplyDamage=forms._ApplyDamage
 attacker.GetPos=function() return Vector(1,1,0) end
@@ -364,6 +365,54 @@ for _,id in ipairs({"bomb","missile"}) do
     impactPackets[#impactPackets+1]=packet
 end
 forms._AreaTargets=oldArea
+
+-- One faction contract across area Magic, precision traces, summons and friendly fire.
+local soldier=table.Copy(victim1)
+soldier.LODHostile=false
+soldier.IsPlayer=function() return true end
+soldier.Alive=function() return true end
+soldier.EntIndex=function() return 90 end
+soldier.GetPos=function() return Vector(2,1,0) end
+soldier.WorldSpaceCenter=soldier.GetPos
+local teammate=table.Copy(soldier);teammate.EntIndex=function() return 91 end
+local oldSoldierControl,oldActive=LOD.RunManager.IsSoldierControl,LOD.RunManager.IsActivePlayer
+LOD.RunManager.IsSoldierControl=function(_,p) return p==soldier end
+LOD.RunManager.IsActivePlayer=function(_,p) return p==attacker or p==teammate end
+player.GetAll=function() return {attacker,soldier,teammate} end
+util.TraceLine=function() return {Hit=false} end
+dofile(root .. "sv_faction_manager.lua")
+local faction=LOD.FactionManager
+local targets=productionBlastTargets(forms,attacker,1)
+assert(#targets==2 and targets[2]==soldier,"Blast includes enemy Soldier, excludes cooperative teammate")
+local areaTargets=forms:_AreaTargets(attacker,Vector(),512)
+assert(#areaTargets==3,"Bomb/Missile radius includes both NPCs and human Soldier")
+local calls=0;hits={}
+util.TraceLine=function(spec)
+    calls=calls+1
+    if calls==1 then
+        for _,ignored in ipairs(spec.filter) do assert(ignored~=soldier,"Beam must not ignore enemy players") end
+        return {Hit=true,HitPos=Vector(100,0,64),Entity=soldier}
+    end
+    return {Hit=true,HitPos=wall,Entity=NULL}
+end
+forms:_CastBeam(attacker,{id="beam"},nil,{spatialBonusCells=0})
+assert(#hits==1 and hits[1]==soldier,"Beam damages an enemy Player once")
+local bolt={valid=true,LODCaster=attacker,LODFormId="bolt",LODCastContext={},
+    LODDirection=Vector(1,0,0),GetPos=function() return Vector() end,Remove=function() end}
+hits={};forms:ProjectileImpact(bolt,{HitPos=Vector(),Entity=soldier})
+assert(#hits==1 and hits[1]==soldier,"Bolt resolves direct Player opposition")
+local summon={valid=true,LODSummonedSeeker=true,LODCaster=attacker,WorldSpaceCenter=function() return Vector() end}
+hits={};assert(forms:ResolveSummonAttack(summon,soldier))
+assert(#hits==1 and hits[1]==soldier,"Summon damage agrees with Magic opposition")
+assert(not forms:ResolveSummonAttack(summon,teammate),"Summon cannot damage a cooperative Hero")
+local info={GetAttacker=function() return soldier end,GetInflictor=function() return soldier end,
+    SetDamage=function(self,n) self.damage=n end,ScaleDamage=function() end}
+assert(hooks.EntityTakeDamage.LOD_HostileFactionDamage(victim1,info)==true and info.damage==0,
+    "Human Soldier cannot bypass shared enemy friendly-fire protection")
+LOD.RunManager.IsSoldierControl,LOD.RunManager.IsActivePlayer=oldSoldierControl,oldActive
+player.GetAll=function() return {attacker} end
+LOD.FactionManager=nil
+util.TraceLine=function() return {Hit=false} end
 
 -- Real FX receiver/renderer, including bounded bursts and depth/skybox exclusion.
 local receives={}

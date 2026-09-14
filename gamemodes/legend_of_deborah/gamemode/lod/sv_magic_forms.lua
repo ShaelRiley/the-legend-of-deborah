@@ -107,7 +107,15 @@ local function validCaster(ply)
     return state and not state.Failed and not state.LevelCleared and not state.SimulationFrozen
 end
 
-local function activeHostiles()
+local function validTarget(caster, target)
+    if LOD.FactionManager and LOD.FactionManager.IsOpponent then
+        return LOD.FactionManager:IsOpponent(caster, target)
+    end
+    return IsValid(target) and target.LODHostile and not target.LODDead and target:Health() > 0
+end
+
+local function activeHostiles(caster)
+    if LOD.FactionManager and LOD.FactionManager.Opponents then return LOD.FactionManager:Opponents(caster) end
     local source = LOD.HostileRegistry and LOD.HostileRegistry.List
         and LOD.HostileRegistry:List() or ents.FindByClass("lod_hostile")
     local out = {}
@@ -418,7 +426,7 @@ function Forms:_BlastTargets(ply, cells)
         local cell = graph.Cells[key]
         if cell then footprint[#footprint + 1] = {x=cell.x,y=cell.y,z=cell.z} end
     end
-    for _, hostile in ipairs(activeHostiles()) do
+    for _, hostile in ipairs(activeHostiles(ply)) do
         local cell = Navigator:WorldToCell(graph, hostile:GetPos())
         local key = cell and string.format("%d:%d:%d", cell.x, cell.y, cell.z) or nil
         if key and seen[key] ~= nil and worldLineClear(ply, hostile, ply:GetShootPos()) then
@@ -450,7 +458,9 @@ function Forms:_CastBeam(ply, form, content, context)
     local cursor = origin
     local remaining = maximum
     local ignored = {ply}
-    for _, other in ipairs(player.GetAll()) do if other ~= ply then ignored[#ignored + 1] = other end end
+    for _, other in ipairs(player.GetAll()) do
+        if other ~= ply and not validTarget(ply, other) then ignored[#ignored + 1] = other end
+    end
     local hitCount = 0
     local endpoint = origin + direction * maximum
     local cap = RPG.Constants.MaxPenetrationTargetsPerProjectile or 4
@@ -460,7 +470,7 @@ function Forms:_CastBeam(ply, form, content, context)
         endpoint = tr.Hit and tr.HitPos or (cursor + direction * remaining)
         if not tr.Hit then break end
         local ent = tr.Entity
-        if not IsValid(ent) or not ent.LODHostile or ent.LODDead then break end
+        if not validTarget(ply, ent) then break end
         hitCount = hitCount + 1
         self:_ApplyDamage(ply, ply, ent, form, content, context, direction)
         ignored[#ignored + 1] = ent
@@ -513,7 +523,7 @@ end
 
 function Forms:_AreaTargets(caster, origin, radius)
     local targets = {}
-    for _, hostile in ipairs(activeHostiles()) do
+    for _, hostile in ipairs(activeHostiles(caster)) do
         if hostile:WorldSpaceCenter():DistToSqr(origin) <= radius * radius
             and worldLineClear(caster, hostile, origin) then
             targets[#targets + 1] = hostile
@@ -538,7 +548,7 @@ function Forms:ProjectileImpact(projectile, trace)
     local point = trace and trace.HitPos or projectile:GetPos()
     if form.id == "bolt" then
         local target = trace and trace.Entity or nil
-        if IsValid(target) and target.LODHostile and not target.LODDead then
+        if validTarget(caster, target) then
             self:_ApplyDamage(caster, caster, target, form, content, context, direction)
         end
     else
@@ -630,8 +640,8 @@ function Forms:_CastSummon(ply, form, content, context)
 end
 
 function Forms:ResolveSummonAttack(summon, target)
-    if not IsValid(summon) or not summon.LODSummonedSeeker or not IsValid(target)
-        or not target.LODHostile or target.LODDead then return false end
+    if not IsValid(summon) or not summon.LODSummonedSeeker
+        or not validTarget(summon, target) then return false end
     local caster = summon.LODCaster
     if not IsValid(caster) then return false end
     local content = summon.LODContentId and RPG.MagicContents[summon.LODContentId] or nil

@@ -28,7 +28,10 @@ local function runState()
     return state, state and state.Graph or nil
 end
 
-local function aliveHostile(ent)
+local function aliveOpponent(source, ent)
+    if LOD.FactionManager and LOD.FactionManager.IsOpponent then
+        return LOD.FactionManager:IsOpponent(source, ent)
+    end
     return IsValid(ent) and ent.LODHostile and not ent.LODDead and ent:Health() > 0
 end
 
@@ -69,8 +72,10 @@ function ENT:_AcquireTarget(graph)
     self.LODNextTargetRefresh = CurTime() + 0.20
     local here = Navigator and Navigator:WorldToCell(graph, self:GetPos()) or nil
     local best, bestGraph, bestWorld
-    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or ents.FindByClass("lod_hostile")) do
-        if aliveHostile(hostile) then
+    local candidates = LOD.FactionManager and LOD.FactionManager:Opponents(self)
+        or (LOD.HostileRegistry and LOD.HostileRegistry:List() or ents.FindByClass("lod_hostile"))
+    for _, hostile in ipairs(candidates) do
+        if aliveOpponent(self, hostile) then
             local there = Navigator and Navigator:WorldToCell(graph, hostile:GetPos()) or nil
             local graphDistance = here and there and Navigator:Distance(graph, here, there) or math.huge
             local world = self:GetPos():DistToSqr(hostile:GetPos())
@@ -87,7 +92,7 @@ end
 function ENT:_RouteTo(graph, target)
     if CurTime() < (self.LODNextRouteRefresh or 0) then return end
     self.LODNextRouteRefresh = CurTime() + 0.35
-    if not aliveHostile(target) or not Navigator then self.LODWaypoints = {} return end
+    if not aliveOpponent(self, target) or not Navigator then self.LODWaypoints = {} return end
     local from = Navigator:WorldToCell(graph, self:GetPos())
     local to = Navigator:WorldToCell(graph, target:GetPos())
     if not from or not to then self.LODWaypoints = {} return end
@@ -108,7 +113,7 @@ function ENT:_AdvanceWaypoint()
 end
 
 function ENT:_LineClear(target)
-    if not aliveHostile(target) then return false end
+    if not aliveOpponent(self, target) then return false end
     local tr = util.TraceHull({
         start = self:GetPos() + Vector(0, 0, 14),
         endpos = target:WorldSpaceCenter(),
@@ -117,7 +122,7 @@ function ENT:_LineClear(target)
         mask = MASK_SHOT,
         filter = function(ent)
             if ent == self or ent == self.LODCaster then return false end
-            if IsValid(ent) and ent:IsPlayer() then return false end
+            if IsValid(ent) and ent:IsPlayer() then return ent == target and aliveOpponent(self, ent) end
             if IsValid(ent) and ent.LODSummonedSeeker then return false end
             if IsValid(ent) and ent.LODHostile and ent ~= target then return false end
             return true
@@ -127,7 +132,7 @@ function ENT:_LineClear(target)
 end
 
 function ENT:_BeginRetreat(graph, target)
-    if not aliveHostile(target) or not Motion or not Navigator then return false end
+    if not aliveOpponent(self, target) or not Motion or not Navigator then return false end
     local here = Navigator:WorldToCell(graph, self:GetPos())
     if not here then return false end
     local away = self:GetPos() - target:GetPos()
@@ -145,7 +150,7 @@ function ENT:_RunRetreat(graph)
     local retreat = self.LODRetreat
     if not retreat then return false end
     local target = retreat.target
-    if not aliveHostile(target) then self.LODRetreat = nil return false end
+    if not aliveOpponent(self, target) then self.LODRetreat = nil return false end
     if horizontalDistance(self:GetPos(), target:GetPos()) >= RETREAT_TARGET_DISTANCE then
         self.LODRetreat = nil
         self.LODNextRouteRefresh = 0
@@ -161,7 +166,7 @@ function ENT:_RunRetreat(graph)
 end
 
 function ENT:_BeginCharge(target)
-    if not aliveHostile(target) or CurTime() < (self.LODNextCharge or 0) then return false end
+    if not aliveOpponent(self, target) or CurTime() < (self.LODNextCharge or 0) then return false end
     local distance = horizontalDistance(self:GetPos(), target:GetPos())
     if distance < MIN_CHARGE_RANGE or distance > CHARGE_RANGE or not self:_LineClear(target) then return false end
     local direction = target:GetPos() - self:GetPos()
@@ -182,7 +187,7 @@ function ENT:_BeginCharge(target)
 end
 
 function ENT:_ResolveChargeHit(target)
-    if aliveHostile(target) and LOD.MagicForms and LOD.MagicForms.ResolveSummonAttack then
+    if aliveOpponent(self, target) and LOD.MagicForms and LOD.MagicForms.ResolveSummonAttack then
         LOD.MagicForms:ResolveSummonAttack(self, target)
     end
     self.LODChargeState = nil
@@ -193,7 +198,7 @@ function ENT:_RunCharge(graph)
     local state = self.LODChargeState
     if not state then return false end
     local target = state.target
-    if not aliveHostile(target) then self.LODChargeState = nil return false end
+    if not aliveOpponent(self, target) then self.LODChargeState = nil return false end
     if state.phase == "windup" then
         if Motion then Motion:Stop(self) Motion:FaceToward(self, target:GetPos()) end
         if CurTime() >= state.releasesAt then
@@ -225,7 +230,7 @@ function ENT:_RunCharge(graph)
         mask = MASK_SHOT,
         filter = function(ent)
             if ent == self or ent == self.LODCaster then return false end
-            if IsValid(ent) and ent:IsPlayer() then return false end
+            if IsValid(ent) and ent:IsPlayer() then return ent == target and aliveOpponent(self, ent) end
             if IsValid(ent) and ent.LODSummonedSeeker then return false end
             if IsValid(ent) and ent.LODHostile and ent ~= target then return false end
             return true
@@ -266,7 +271,7 @@ function ENT:_BehaviourTick()
     if self:_RunRetreat(graph) then return end
 
     local target = self:_AcquireTarget(graph)
-    if not aliveHostile(target) then if Motion then Motion:Stop(self) end return end
+    if not aliveOpponent(self, target) then if Motion then Motion:Stop(self) end return end
     local distance = horizontalDistance(self:GetPos(), target:GetPos())
     if distance < MIN_CHARGE_RANGE then
         self:_BeginRetreat(graph, target)

@@ -335,9 +335,17 @@ function Loot:_MarkConsumed(ent, ply)
 end
 
 function Loot:Collect(ent, ply)
+    -- The grant authority owns admission and idempotence. Touch/Use are observers,
+    -- and must not be the only protection against repeated or reentrant grants.
+    if not IsValid(ent) or ent.LODCollected or ent.LODCollecting
+        or not IsValid(ply) or not ply:IsPlayer() or not ply:Alive()
+        or not self:IsPickupOwner(ent, ply) or not RunManager:IsActivePlayer(ply) then return false end
     local state = RunManager.State
     if not state or state.Failed or state.LevelCleared then return false end
     if ent.LODLootLevelSeed ~= state.LevelSeed then return false end
+    local lootState = self:_PlayerLootState(ply)
+    if ent.LODLootStaticId and lootState and lootState.consumedStatic[ent.LODLootStaticId] then return false end
+    ent.LODCollecting = true
 
     local payload = ent.LODLootPayload or {}
     local seed = LOD.Seeds.Derive(state.LevelSeed or 1,
@@ -359,8 +367,10 @@ function Loot:Collect(ent, ply)
         ok, message = self:_GrantExtraLife(ply)
     end
 
+    ent.LODCollecting = nil
     if not ok then return false end
 
+    ent.LODCollected = true
     self:_MarkConsumed(ent, ply)
     self.Stats.collected = (self.Stats.collected or 0) + 1
     ply:EmitSound(ent.LODLootKind == "life" and "items/suitchargeok1.wav" or "items/itempickup.wav",
@@ -745,9 +755,10 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
 end
 
 function Loot:OnHostileLootHandoff(hostile)
-    if not IsValid(hostile) then return end
+    if not IsValid(hostile) or hostile.LODLootHandoffCompleted then return end
     local state = RunManager.State
     if not state or state.Failed or state.LevelCleared or hostile.LODDeathLevelSeed ~= state.LevelSeed then return end
+    hostile.LODLootHandoffCompleted = true
 
     local guaranteedUseful = self:_ObjectiveClearDrop(hostile)
     local instanceSeed = hostile.LODInstanceSeed or hostile:GetNW2Int("LOD_InstanceSeed", hostile:EntIndex())

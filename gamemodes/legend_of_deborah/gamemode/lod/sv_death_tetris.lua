@@ -26,7 +26,6 @@ local EVENT_LINE_CLEAR = 4
 local EVENT_GAME_OVER = 5
 
 local HARD_DEATH_CAP = 60
-local LINE_WAIT_REDUCTION = 2
 
 local sessions = DeathTetris.Sessions or {}
 local deaths = DeathTetris.Deaths or {}
@@ -120,13 +119,8 @@ local function addLineReward(session, lines)
         ps.nextLifeHPBonus = (ps.nextLifeHPBonus or 0) + reward
     end
 
-    -- Every cleared line removes two seconds from the mandatory death wait.
-    -- Doubles/triples/Tetrises therefore remove 4/6/8 seconds respectively.
+    -- Line rewards grant next-life overfill; the mandatory deadline is immutable.
     local deathState = deaths[session.identity]
-    if deathState and deathState.mandatoryEndsAt then
-        deathState.mandatoryEndsAt = math.max(CurTime(),
-            deathState.mandatoryEndsAt - lines * LINE_WAIT_REDUCTION)
-    end
 
     local ply = connectedPlayerForIdentity(session.identity)
     if IsValid(ply) then
@@ -180,6 +174,7 @@ function DeathTetris:StartDeath(ply, mandatoryEndsAt)
     local identity = RunManager:IdentityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
     if not identity or not ps or ps.eliminated or ps.lives <= 0 then return nil end
+    if deaths[identity] then return deaths[identity] end
 
     local now = CurTime()
     local rules = LOD.RPGAbilityRules
@@ -304,7 +299,8 @@ net.Receive("LOD_DeathTetrisAction", function(_, ply)
     local identity = RunManager:IdentityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
     local deathState = identity and deaths[identity]
-    if not identity or not ps or not deathState or ps.eliminated or ps.lives <= 0 then return end
+    if not identity or not ps or not deathState or ps.eliminated or ps.lives <= 0
+        or not RunManager:IsActivePlayer(ply) then return end
 
     local action = net.ReadUInt(2)
     local now = CurTime()
@@ -320,7 +316,7 @@ net.Receive("LOD_DeathTetrisAction", function(_, ply)
 end)
 
 net.Receive("LOD_TetrisInput", function(_, ply)
-    if not IsValid(ply) or ply:Alive() then return end
+    if not IsValid(ply) or ply:Alive() or not RunManager:IsActivePlayer(ply) then return end
     local identity = RunManager:IdentityOf(ply)
     local session = identity and sessions[identity]
     local deathState = identity and deaths[identity]
@@ -362,8 +358,10 @@ net.Receive("LOD_TetrisInput", function(_, ply)
 end)
 
 hook.Add("PlayerDeath", "LOD_DeathTetrisPrepare", function(victim)
+    local runState, serial = RunManager.State, victim.LODRunSpawnSerial
     timer.Simple(0, function()
-        if not IsValid(victim) then return end
+        if not IsValid(victim) or victim:Alive() or RunManager.State ~= runState
+            or victim.LODRunSpawnSerial ~= serial then return end
         local ps = RunManager:GetPlayerState(victim)
         if not ps or ps.eliminated or ps.lives <= 0 or not ps.respawnAt then return end
         -- RunManager has now authored the normal 20-second wait. Preserve it as
@@ -372,22 +370,9 @@ hook.Add("PlayerDeath", "LOD_DeathTetrisPrepare", function(victim)
     end)
 end)
 
-hook.Add("PlayerSpawn", "LOD_DeathTetrisApplyNextLifeBonus", function(ply)
+hook.Add("PlayerSpawn", "LOD_DeathTetrisEndOnSpawn", function(ply)
     local identity = RunManager:IdentityOf(ply)
     if identity and deaths[identity] then DeathTetris:EndDeath(identity) end
-
-    timer.Simple(0.05, function()
-        if not IsValid(ply) or not ply:Alive() then return end
-        local ps = RunManager:GetPlayerState(ply)
-        local bonus = ps and math.max(0, math.floor(tonumber(ps.nextLifeHPBonus) or 0)) or 0
-        if bonus <= 0 then return end
-
-        ps.nextLifeHPBonus = 0
-        ply:SetHealth(100 + bonus)
-        ply:SetNW2Int("LOD_TetrisNextLifeBonus", 0)
-        print(string.format("[LOD:TETRIS] %s spawned with +%d next-life HP (%d total)",
-            ply:Nick(), bonus, 100 + bonus))
-    end)
 end)
 
 hook.Add("PlayerDisconnected", "LOD_DeathTetrisDisconnectCleanup", function(ply)

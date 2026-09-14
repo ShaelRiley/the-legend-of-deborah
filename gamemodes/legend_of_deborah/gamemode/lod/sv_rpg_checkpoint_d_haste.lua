@@ -58,18 +58,20 @@ local function usable(ply)
     return (tonumber(derived.hasteRank) or 0) > 0
 end
 function Rules:IsHasteActive(ply)
+    -- Derived-state lookup may invalidate the old life/level's sustained state.
+    if not usable(ply) then return false end
     local state = Effects.HasteState[ply]
-    return state and state.active == true and usable(ply) or false
+    return state and state.active == true or false
 end
 function Rules:SetHasteActive(ply, active)
-    local state = Effects.HasteState[ply] or {}; Effects.HasteState[ply] = state
     if active then
         local ps = Magic:_EnsureState(ply)
         active = usable(ply) and ps and (tonumber(ps.magic) or 0) > 0
     end
-    state.active, state.lastAt = active == true, CurTime()
-    if IsValid(ply) then ply:SetNW2Bool("LOD_HasteActive", state.active) end
-    return state.active
+    active = active == true
+    Effects.HasteState[ply] = active and {active=true, lastAt=CurTime()} or nil
+    if IsValid(ply) then ply:SetNW2Bool("LOD_HasteActive", active) end
+    return active
 end
 function Rules:HasteDrainPerSecond(ply)
     local derived = self:Derived(ply) or {}
@@ -97,7 +99,7 @@ end)
 timer.Create("LOD_RPG_CheckpointDHasteDrain", TICK, 0, function()
     for ply, state in pairs(Effects.HasteState) do
         if not Rules:IsHasteActive(ply) then
-            if IsValid(ply) then Rules:SetHasteActive(ply, false) end
+            Rules:SetHasteActive(ply, false)
         else
             local now, dt = CurTime(), math.Clamp(CurTime() - (state.lastAt or CurTime()), 0, .35)
             state.lastAt = now
