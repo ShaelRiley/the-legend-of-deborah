@@ -2,6 +2,9 @@
 
 Starting remote main: `8978796e886cdb5505d24ed0de085265fa99bac8`.
 Development branch: `astra/equipment-update`.
+Implementation commit: `e01d32be5b7fa45b01c06a1d8774966e9ca0e5f8`.
+Remote verification: all 36 changed files were expected; no baseline files were
+deleted; remote main remained at the starting SHA.
 
 This is a testable partial Equipment checkpoint, not completion of the Equipment
 milestone. Main remains the accepted RPG baseline. No Workshop publication,
@@ -51,6 +54,10 @@ and authored enemy explosive hazards are not ordinary grenade acquisition.
 Historical regression cases for the explosion cache remain to protect that seam.
 
 ## Validation
+
+Executed result: **58/58 integrated suites passed**, including both new equipment
+and projectile suites. The two conventional SWEP include adapters added afterward
+also passed Lua parsing. No GMod engine test was run.
 
 Run `python3 tools/test_checkpoint_g_integration.py` from the repository root.
 The two added suites execute actual shared item/server transaction and projectile
