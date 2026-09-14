@@ -697,7 +697,7 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetEyeAngles(Angle(0, 0, 0))
 end
 
-function RunManager:HandleDeath(ply)
+function RunManager:HandleDeath(ply, attacker)
     if not IsValid(ply) or self.State.Failed then return end
 
     local id = self:IdentityOf(ply)
@@ -726,6 +726,9 @@ function RunManager:HandleDeath(ply)
     self:CaptureInventory(ply, ps)
     ps.armor = 0
     ps.lives = math.max(0, ps.lives - 1)
+    if LOD.SoldierProgression and LOD.SoldierProgression.ObserveHeroLifeConsumed then
+        LOD.SoldierProgression:ObserveHeroLifeConsumed(attacker, ply)
+    end
     ps.respawnAt = nil
 
     if ps.lives > 0 then
@@ -975,8 +978,8 @@ hook.Add("PlayerSpawn", "LOD_PlayerSpawn", function(ply)
     end)
 end)
 
-hook.Add("PlayerDeath", "LOD_PlayerDeathLives", function(victim)
-    RunManager:HandleDeath(victim)
+hook.Add("PlayerDeath", "LOD_PlayerDeathLives", function(victim, inflictor, attacker)
+    RunManager:HandleDeath(victim, attacker)
 end)
 
 hook.Add("PlayerDisconnected", "LOD_PlayerDisconnected", function(ply)

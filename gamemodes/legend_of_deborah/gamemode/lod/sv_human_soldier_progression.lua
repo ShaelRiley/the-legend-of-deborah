@@ -51,6 +51,9 @@ end
 
 function System:Attach(ply, actorSeed, startingHP, level)
     if not IsValid(ply) or not ply:IsPlayer() then return nil, "invalid Soldier controller" end
+    -- Repeated admission must not reroll an already occupied incarnation.
+    local current = self:StateFor(ply)
+    if current then return current end
     local state, err = self:CreateIncarnation(actorSeed, startingHP, level)
     if not state then return nil, err end
     ply.LODHumanSoldierProgressionState = state
@@ -58,19 +61,14 @@ function System:Attach(ply, actorSeed, startingHP, level)
 end
 
 function System:Retire(target)
-    if not target then return false end
-    if type(target) == "table" and target.LODHumanSoldierProgressionState then
-        target.LODHumanSoldierProgressionState = nil
-        self.Stats.retired = (self.Stats.retired or 0) + 1
-        return true
-    elseif type(target) == "table" and target.actorType == "human_soldier" and target.soldierIncarnation then
-        target.soldierIncarnation = false
-        target.soldierXP = 0
-        target.soldierEarnedLevels = 0
-        self.Stats.retired = (self.Stats.retired or 0) + 1
-        return true
-    end
-    return false
+    local state = self:StateFor(target)
+    if not state then return false end
+    if target ~= state then target.LODHumanSoldierProgressionState = nil end
+    -- Revoke captured references too: delayed damage cannot develop a retired body.
+    state.soldierIncarnation = false
+    state.soldierXP, state.soldierEarnedLevels = 0, 0
+    self.Stats.retired = (self.Stats.retired or 0) + 1
+    return true
 end
 
 function System:Reset(target)
@@ -78,15 +76,11 @@ function System:Reset(target)
 end
 
 function System:StateFor(actor)
-    if not actor then return nil end
-    if type(actor) == "table" then
-        if actor.LODHumanSoldierProgressionState then
-            return actor.LODHumanSoldierProgressionState
-        elseif actor.actorType == "human_soldier" and actor.soldierIncarnation then
-            return actor
-        end
-    end
-    return nil
+    -- GMod type(player) is "Player", not "table". Plain profiles remain useful
+    -- for automatic generation/validation, but are never mistaken for controllers.
+    if not IsValid(actor) and type(actor) ~= "table" then return nil end
+    local state = actor.LODHumanSoldierProgressionState or actor
+    if state.actorType == "human_soldier" and state.soldierIncarnation == true then return state end
 end
 
 function System:_Advance(state)
@@ -105,15 +99,21 @@ function System:_Advance(state)
 end
 
 function System:Award(target, effectiveHeroHPDamage, lifeConsumed)
-    local state = type(target) == "table" and (target.actorType == "human_soldier" and target or self:StateFor(target)) or nil
-    if not state or state.actorType ~= "human_soldier" then return false, "not human Soldier" end
+    local state = self:StateFor(target)
+    if not state then return false, "not human Soldier" end
     local damage = math.max(0, math.floor(tonumber(effectiveHeroHPDamage) or 0))
     local life = lifeConsumed == true and 50 or 0
     if damage + life <= 0 then return false, "no credit" end
     state.soldierXP = math.max(0, math.floor(tonumber(state.soldierXP) or 0)) + damage + life
     self.Stats.damageXP = (self.Stats.damageXP or 0) + damage
     self.Stats.lifeXP = (self.Stats.lifeXP or 0) + life
-    return self:_Advance(state)
+    local before = state.level
+    local ok, err = self:_Advance(state)
+    if ok and IsValid(target) and target:IsPlayer() then
+        if state.level ~= before then Progression:_ApplyPlayerMaxHP(target, state) end
+        Progression:SyncPlayer(target)
+    end
+    return ok, err
 end
 
 function System:ObserveEffectiveHeroDamage(attacker, target, effectiveHeroHPDamage)
@@ -121,7 +121,17 @@ function System:ObserveEffectiveHeroDamage(attacker, target, effectiveHeroHPDama
     if not soldier or not IsValid(target) or target == attacker then return false, "ineligible" end
     local targetState = Rules:ProgressionState(target)
     if not targetState or targetState.actorType ~= "hero" then return false, "non-Hero target" end
-    return self:Award(soldier, effectiveHeroHPDamage, false)
+    local effective = math.min(math.max(0, target:Health()),
+        math.max(0, tonumber(effectiveHeroHPDamage) or 0))
+    return self:Award(attacker, effective, false)
+end
+
+-- Called only by the authority that actually consumes a personal Hero life.
+function System:ObserveHeroLifeConsumed(attacker, target)
+    if not IsValid(target) or attacker == target or not self:StateFor(attacker) then return false end
+    local state = Rules:ProgressionState(target)
+    if not state or state.actorType ~= "hero" then return false end
+    return self:Award(attacker, 0, true)
 end
 
 -- Existing actor consumers transparently receive the Soldier incarnation state,

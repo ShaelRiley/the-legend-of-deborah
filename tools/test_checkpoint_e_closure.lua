@@ -395,4 +395,5 @@ else
     for _, err in ipairs(errors) do
         print("  - " .. err)
     end
+    error("Checkpoint E closure validation failed")
 end

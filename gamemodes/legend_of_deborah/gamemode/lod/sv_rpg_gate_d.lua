@@ -414,7 +414,7 @@ function GM:EntityTakeDamage(target, dmginfo)
         and IsValid(target) and target:IsPlayer()
     then
         soldierProgression:ObserveEffectiveHeroDamage(dmginfo:GetAttacker(), target,
-            math.max(0, math.floor((tonumber(dmginfo:GetDamage()) or 0) + 0.5)))
+            dmginfo:GetDamage())
     end
     local featEffects = RPG.FeatEffectSystem
     if IsValid(target) and featEffects and featEffects.OnEffectiveDamage then

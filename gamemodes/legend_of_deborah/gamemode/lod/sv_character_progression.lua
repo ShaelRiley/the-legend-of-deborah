@@ -474,7 +474,7 @@ end
 
 function CharacterProgressionSystem:HasAuthoredPhysicalAttack(state)
     if not state then return false end
-    if state.actorType ~= "ai" then return true end
+    if state.actorType ~= "ai" and state.actorType ~= "human_soldier" then return true end
     local rolls = LOD.CombatRolls
     if state.archetypeId then
         return rolls and rolls.HostileDamageProfile and rolls:HostileDamageProfile(state.archetypeId) ~= nil or false
@@ -485,9 +485,9 @@ end
 
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
-    -- Current AI weapons have attack cadence, but no ordinary reload transaction.
-    -- A broad "ranged" tag must not make an unconsumed reload feat draftable.
-    if state and state.actorType == "ai" then
+    -- Human Soldiers develop the same generated build as AI Soldiers. Controller
+    -- input affordances must not perturb the shared eligibility/RNG candidate set.
+    if state and (state.actorType == "ai" or state.actorType == "human_soldier") then
         if tag == "reloadable_firearm" or tag == "hit_stun_source" then return false end
         if tag == "pushable_weapon" then return self:HasAuthoredPhysicalAttack(state) end
         if tag == "firearm" then return state.archetypeId == "soldier" or state.archetypeId == "blitzer" end
@@ -517,7 +517,8 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
         for id in pairs(catalog or {}) do if not arrayContains(owned or {}, id) then return true end end
         return false
     elseif tag == "magic_pool" then
-        return state and (state.actorType ~= "ai" or state.usesMagic == true) or false
+        return state and ((state.actorType ~= "ai" and state.actorType ~= "human_soldier")
+            or state.usesMagic == true) or false
     elseif tag == "offensive_magic_activation" then
         return state and state.usesMagic == true
             or self:_HasCapability(ps, state, "magic_form_owned")
@@ -1068,7 +1069,6 @@ function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, use
     }
     if ranged[archetypeId] then
         tags[#tags + 1] = "firearm"
-        if actorType == "human_soldier" then tags[#tags + 1] = "reloadable_firearm" end
     end
     if archetypeId == "soldier" or archetypeId == "blitzer" then
         tags[#tags + 1] = "multi_fire_burst"
@@ -1146,7 +1146,7 @@ function CharacterProgressionSystem:AdvanceAutomaticActor(ps, state, actorSeed, 
     local ceiling = self:EffectiveLevelCap(state.actorType, state.dungeonLevel)
     targetLevel = math.min(math.max(1, math.floor(tonumber(targetLevel) or state.level)),
         ceiling, self:ActorHardLevelCap(state))
-    while state.level < targetLevel do
+    while state.level < math.min(targetLevel, RPG.Constants.HeroMaxLevel) do
         local level = state.level + 1
         state.level = level
         self:_GenerateAutomaticHitDie(state, actorSeed, level)

@@ -1,5 +1,12 @@
 -- Human Soldier RPG & Return-to-Hero Lifecycle Deterministic Validator (AG-007R)
 local root = "."
+local luaType = type
+type = function(value)
+    if luaType(value) == "table" and value._isEntity then
+        return value.IsPlayer and value:IsPlayer() and "Player" or "Entity"
+    end
+    return luaType(value)
+end
 
 local mockTime = 1000
 
@@ -43,8 +50,8 @@ local function mockGMod()
     SysTime = function() return mockTime end
     os = os or {}
     os.time = os.time or function() return 1700000000 end
-    IsValid = function(v) return v ~= nil and type(v) == "table" and v._isValid == true end
-    isentity = function(v) return type(v) == "table" and v._isEntity == true end
+    IsValid = function(v) return luaType(v) == "table" and v._isValid == true end
+    isentity = function(v) return luaType(v) == "table" and v._isEntity == true end
     isfunction = function(v) return type(v) == "function" end
     istable = function(v) return type(v) == "table" end
     isstring = function(v) return type(v) == "string" end
@@ -404,6 +411,19 @@ check(RunManager:RetireSoldier(p1) == false, "S. Duplicate RetireSoldier is idem
 ps1.eliminated = true; ps1.lives = 0
 check(RunManager:ReturnToHeroQueue(p1) == true, "S. Duplicate ReturnToHeroQueue on queued player is idempotent")
 
+-- Credit comes from the committed life transaction, not a separate death hook.
+RunManager.State.Failed = false
+RunManager.State.LevelCleared = false
+RunManager.State.BuildReady = true
+assert(RunManager:JoinSoldierRole(p1))
+local credited = SoldierProgression:StateFor(p1)
+ps2.lives = 2; ps2.eliminated = false
+RunManager.State.ActiveIdentity["steam_1002"] = true
+p2:SetAlive(false)
+RunManager:HandleDeath(p2, p1)
+check(ps2.lives == 1 and credited.soldierXP == 50,
+    "Actual Hero life transaction awards exactly 50 SoldierXP")
+
 -- Final summary
 if #errors == 0 then
     print("HUMAN_SOLDIER_LIFECYCLE_HARNESS_PASS — AG-007R2 verified with 0 discrepancies.")
@@ -412,4 +432,5 @@ else
     for _, err in ipairs(errors) do
         print("  - " .. err)
     end
+    error("Human Soldier lifecycle validation failed")
 end

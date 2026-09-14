@@ -59,11 +59,29 @@ for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do
     end
 end
 
+local recomputes = 0
+local originalRecompute = LOD.CharacterProgressionSystem._RecomputeProgressionState
+function LOD.CharacterProgressionSystem:_RecomputeProgressionState(state)
+    recomputes = recomputes + 1
+    return originalRecompute(self, state)
+end
 local ceilingState = assert(LOD.CharacterProgressionSystem:GenerateMonsterProgression(
     "soldier", 999999, 1000, 40, "ai"))
 assert(ceilingState.level == 999, "monster hard cap generation")
 assert(#ceilingState.pendingFeatSlots == #RPG.OrdinaryFeatLevels,
     "Level-999 monster gained post-20 feat slots")
+assert(recomputes < 40, "Post-20 numeric growth must not rescan all HP rolls at every level")
+local bulk = table.Copy(ceilingState)
+local stepped = assert(LOD.CharacterProgressionSystem:GenerateMonsterProgression("soldier", 999999, 1, 40, "ai"))
+stepped.dungeonLevel = 1000
+for level = stepped.level + 1, 999 do
+    assert(LOD.CharacterProgressionSystem:AdvanceAutomaticActor({}, stepped, 999999, level))
+end
+assert(stepped.derivedStats.maxHP == bulk.derivedStats.maxHP
+    and stepped.derivedStats.rolledHitPointSubtotal == bulk.derivedStats.rolledHitPointSubtotal,
+    "Bulk high-level generation matches sequential automatic advancement")
+for level = 2, 999 do assert(stepped.hitDieRollsByLevel[level].total == bulk.hitDieRollsByLevel[level].total) end
+LOD.CharacterProgressionSystem._RecomputeProgressionState = originalRecompute
 
 local hero = LOD.CharacterProgressionSystem:NewProgressionState("hero", "hero", "hero")
 hero.classId = "wizard"

@@ -1,5 +1,13 @@
 -- Human Soldier Progression Authority Deterministic Validator (AG-006)
 local root = "."
+local luaType = type
+-- Engine boundary fidelity: GMod entities are not ordinary Lua tables.
+type = function(value)
+    if luaType(value) == "table" and value._isEntity then
+        return value.IsPlayer and value:IsPlayer() and "Player" or "Entity"
+    end
+    return luaType(value)
+end
 
 local function mockGMod()
     SERVER = true
@@ -14,8 +22,8 @@ local function mockGMod()
     hook = {Add = function() end, GetTable = function() return {} end}
     concommand = {Add = function() end}
     GetConVar = function() return {GetBool = function() return true end} end
-    IsValid = function(v) return v ~= nil and type(v) == "table" and v._isValid == true end
-    isentity = function(v) return type(v) == "table" and v._isEntity == true end
+    IsValid = function(v) return luaType(v) == "table" and v._isValid == true end
+    isentity = function(v) return luaType(v) == "table" and v._isEntity == true end
     isfunction = function(v) return type(v) == "function" end
     istable = function(v) return type(v) == "table" end
     isstring = function(v) return type(v) == "string" end
@@ -70,6 +78,9 @@ local System = assert(LOD.SoldierProgression, "SoldierProgression system require
 local CPS = assert(LOD.CharacterProgressionSystem, "CharacterProgressionSystem required")
 local Rules = assert(LOD.RPGAbilityRules, "RPGAbilityRules required")
 local RPG = assert(LOD.RPG, "LOD.RPG required")
+-- Observe the UI delivery seam without recreating its serializer here.
+local syncs = 0
+CPS.SyncPlayer = function() syncs = syncs + 1 end
 
 local errors = {}
 local function check(ok, message)
@@ -127,6 +138,9 @@ local mockPlayer = {
     _isEntity = true,
     IsPlayer = function() return true end,
     Alive = function() return true end,
+    Health = function() return 20 end,
+    SetMaxHealth = function(self, value) self.maximum = value end,
+    SetHealth = function() error("Level-up must not heal current HP") end,
     identity = "hero_test_id"
 }
 
@@ -137,6 +151,8 @@ end
 local soldierAttached, attachErr = System:Attach(mockPlayer, 88219, 40, 1)
 check(soldierAttached ~= nil, "Attached soldier incarnation to player: " .. tostring(attachErr))
 check(mockPlayer.LODHumanSoldierProgressionState == soldierAttached, "Player owns attached soldier state")
+check(type(mockPlayer) == "Player", "fixture models GMod Player type")
+check(System:Attach(mockPlayer, 99999, 80, 10) == soldierAttached, "Repeat attach does not reroll")
 
 -- Combat rules active state check
 local activeState = Rules:ProgressionState(mockPlayer)
@@ -148,6 +164,8 @@ local okAdv = System:Award(mockPlayer, 250, false)
 check(okAdv == true, "Award on player attached soldier succeeded")
 check(soldierAttached.soldierXP == 250, "Attached soldier XP updated to 250")
 check(soldierAttached.soldierEarnedLevels == 2, "Attached soldier earned levels updated to 2")
+check(mockPlayer.maximum == soldierAttached.derivedStats.maxHP and syncs == 1,
+    "Automatic level-up applies MaxHP and synchronizes controller")
 
 -- Verify stored Hero state was NOT mutated
 check(heroState.level == originalHeroCopy.level, "Hero level unmutated (5)")
@@ -159,6 +177,7 @@ check(#heroState.featIds == #originalHeroCopy.featIds and heroState.featIds[1] =
 local okRetire = System:Retire(mockPlayer)
 check(okRetire == true, "Retire on player returned true")
 check(mockPlayer.LODHumanSoldierProgressionState == nil, "Player LODHumanSoldierProgressionState cleared to nil")
+check(not System:Award(soldierAttached, 450, true), "Captured retired profile rejects late XP")
 local revertedState = Rules:ProgressionState(mockPlayer)
 check(revertedState == heroState, "Rules:ProgressionState reverted back to Hero state")
 check(revertedState.level == 5 and revertedState.classId == "wizard", "Reverted state is original Hero state")
@@ -205,6 +224,9 @@ local attackerPlayer = {
     _isEntity = true,
     IsPlayer = function() return true end,
     Alive = function() return true end,
+    Health = function() return 20 end,
+    SetMaxHealth = function(self, value) self.maximum = value end,
+    SetHealth = function() error("Level-up must not heal current HP") end,
     identity = "attacker_soldier"
 }
 local defenderHeroPlayer = {
@@ -212,6 +234,7 @@ local defenderHeroPlayer = {
     _isEntity = true,
     IsPlayer = function() return true end,
     Alive = function() return true end,
+    Health = function() return 100 end,
     identity = "defender_hero"
 }
 
@@ -241,6 +264,12 @@ check(okNonHero == false, "ObserveEffectiveHeroDamage rejected non-Hero target")
 local okLife, errLife = System:Award(attackerPlayer, 0, true)
 check(okLife == true, "Award with lifeConsumed=true succeeded: " .. tostring(errLife))
 check(seamSoldier.soldierXP == 150, "soldierXP increased by 50 to 150 for life consumed")
+defenderHeroPlayer.Health = function() return 3 end
+assert(System:ObserveEffectiveHeroDamage(attackerPlayer, defenderHeroPlayer, 1000))
+check(seamSoldier.soldierXP == 153, "Overkill credits only remaining Hero HP")
+assert(System:ObserveHeroLifeConsumed(attackerPlayer, defenderHeroPlayer))
+check(seamSoldier.soldierXP == 203, "Committed Hero-life consumption credits its Soldier attacker")
+check(not System:ObserveHeroLifeConsumed(attackerPlayer, attackerPlayer), "Self-death gives no life credit")
 
 if #errors == 0 then
     print("HUMAN_SOLDIER_PROGRESSION_HARNESS_PASS — All 15 requirements verified with 0 discrepancies.")
