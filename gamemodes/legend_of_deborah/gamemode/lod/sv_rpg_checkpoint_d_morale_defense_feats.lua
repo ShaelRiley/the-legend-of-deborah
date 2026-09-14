@@ -13,7 +13,8 @@ for rank, id in ipairs(IDS) do
         prerequisiteFeatIds = rank > 1 and {IDS[rank - 1]} or {}, requiredCapabilityTags = {"morale"}, incompatibleFeatIds = {},
         allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {"morale"}, synergyTags = {"morale", "defense"}, oneRank = true,
         effectHandlerId = "morale_save_bonus", effectParams = {moraleSaveBonus = BONUSES[rank],
-            description = "Replaces the lower-rank Morale Save bonus with +" .. BONUSES[rank] .. "."},
+            description = rank == 1 and "Adds +2 to Morale Saves."
+                or "Replaces Iron Nerve with a +4 Morale Save bonus."},
         directorBaseWeight = 1.0, eligibilityText = "CHA " .. (11 + rank * 2) .. (rank > 1 and " / requires Iron Nerve" or ""),
         actorText = "Heroes, human Soldiers, and AI actors subject to Morale"}
 end

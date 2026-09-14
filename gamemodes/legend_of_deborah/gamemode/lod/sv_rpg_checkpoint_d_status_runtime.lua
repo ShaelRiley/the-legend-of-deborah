@@ -42,15 +42,13 @@ end
 local function attributableActor(state)
     if not state then return false end
     return state.actorType == "hero" or state.actorType == "human_soldier"
-        or state.actorType == "ai"
+        or state.actorType == "ai" and (CPS:HasAuthoredPhysicalAttack(state) or state.usesMagic == true)
 end
 
 local function hasPhysicalAttackCapability(state)
     if not attributableActor(state) then return false end
     if state.actorType == "hero" or state.actorType == "human_soldier" then return true end
-    return listContains(state.capabilityTags, "firearm")
-        or listContains(state.capabilityTags, "pushable_weapon")
-        or listContains(state.capabilityTags, "hit_stun_source")
+    return CPS:HasAuthoredPhysicalAttack(state)
 end
 
 local baseHasCapability = CPS._HasCapability

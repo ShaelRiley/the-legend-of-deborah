@@ -355,6 +355,7 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_PusherWeaponHit", function(targe
     local attacker = dmginfo:GetAttacker()
     local weaponClass, weapon = ordinaryWeaponClass(attacker, dmginfo)
     local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
+    if context.statusDamage or context.passiveDamage or context.auraBurst or context.reactiveDamage or context.wallCrush then return end
     if IsValid(attacker) and attacker.LODHostile and context.physical
         and not context.magic and not context.statusDamage and not context.wallCrush then
         weaponClass, weapon = "native_physical", dmginfo:GetInflictor()

@@ -4,76 +4,11 @@ local Rolls = LOD.CombatRolls
 local HitFeedback = LOD.M3HitFeedback
 if not Rolls or not HitFeedback then return end
 
-local SHOTGUN_PROFILE = {
-    label = "SHOTGUN",
-    source = "shotgun",
-    count = 1,
-    sides = 6,
-    exploding = 6,
-    floor = 3
-}
-
-local SHOTGUN_PELLET_PROFILE = {
-    label = "SHOTGUN PELLETS",
-    source = "shotgun",
-    count = 1,
-    sides = 6,
-    exploding = 6
-}
-
-local SHOTGUN_BASE_PELLETS = 8
-local SHOTGUN_MAX_PELLETS = 36
+-- Damage and pellet rolls now belong to sv_combat_rolls.lua. This module retains
+-- the accepted four-times stun presentation; it must never replace the contract.
 local SHOTGUN_STUN_MULTIPLIER = 4
 local BASE_STUN_SECONDS = 0.30
 local BASE_STUN_RETRIGGER_SECONDS = 0.36
-
--- Keep the shared combat-roll authority, but give the Shotgun its authored
--- high-variance identity under the universal dice rules. The shared damage d6
--- recursively explodes only on natural 6 and keeps the existing floor of 3.
--- Every shell also rolls a separate exploding 1d6 for additional pellets. Eight
--- pellets are guaranteed; the old three independent 33% bonus-pellet checks are
--- retired. The hard pellet cap prevents pathological explosion chains from
--- creating an unbounded trace workload.
-if not Rolls.LODShotgunIdentityBalanced then
-    Rolls.LODShotgunIdentityBalanced = true
-    local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
-
-    function Rolls:RollPlayerWeapon(ply, weaponClass)
-        if weaponClass ~= "weapon_shotgun" then
-            return baseRollPlayerWeapon(self, ply, weaponClass)
-        end
-
-        local rng = self:_RNG("player:" .. weaponClass)
-        local total, values, contributions, capped = self:_RollExploding(SHOTGUN_PROFILE, rng)
-        local pelletBonus, pelletValues, _, pelletCapped = self:_RollExploding(SHOTGUN_PELLET_PROFILE, rng)
-
-        local contract = {
-            label = SHOTGUN_PROFILE.label,
-            weaponClass = weaponClass,
-            formula = "1d6",
-            total = total,
-            values = values,
-            contributions = contributions,
-            capped = capped == true,
-            created = CurTime(),
-            pellets = math.min(SHOTGUN_MAX_PELLETS, SHOTGUN_BASE_PELLETS + math.max(1, pelletBonus or 1)),
-            pelletRollTotal = math.max(1, pelletBonus or 1),
-            pelletRollValues = pelletValues or {},
-            pelletRollCapped = pelletCapped == true,
-            hits = setmetatable({}, {__mode = "k"}),
-            damageByTarget = setmetatable({}, {__mode = "k"})
-        }
-
-        -- The pellet-count die is a real exploding d6 and therefore participates
-        -- in the same joyful exploding-die feedback as the shared damage die.
-        if self.EmitDiceExplosionFX and #(contract.pelletRollValues or {}) > 1 then
-            self:EmitDiceExplosionFX(ply, "weapon_shotgun", #(contract.pelletRollValues or {}) - 1, 1)
-        end
-
-        self.Stats.playerAttacks = self.Stats.playerAttacks + 1
-        return contract
-    end
-end
 
 -- The original hit-stun authority was authored when 2x was the largest legal
 -- multiplier and therefore clamps there. Extend that same authority to 4x so

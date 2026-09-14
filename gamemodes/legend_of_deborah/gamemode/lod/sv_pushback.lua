@@ -168,6 +168,7 @@ function Pushback:_RollWallCrush(hostile, opts)
     hostile.LODPendingDamageAttribution = {attacker = sourceAttacker, source = source}
     hostile:TakeDamageInfo(info)
     hostile.LODPendingDamageAttribution = previousAttribution
+    total = math.max(0, info:GetDamage())
 
     self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
     self.Stats.crushDamage = (self.Stats.crushDamage or 0) + total

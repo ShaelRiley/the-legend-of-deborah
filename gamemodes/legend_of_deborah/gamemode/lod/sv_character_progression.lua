@@ -307,7 +307,11 @@ end
 
 function CharacterProgressionSystem:InitializeHero(runManager, ps, character)
     if not ps then return nil end
-    if ps.progressionState then return ps.progressionState end
+    if ps.progressionState then
+        if self:ReconcileFeatOwnership(ps.progressionState) then self:_RecomputeProgressionState(ps.progressionState) end
+        self:RepairCanonicalDrafts(ps, ps.progressionState)
+        return ps.progressionState
+    end
 
     self:PrepareCampaignState(runManager.State)
     local state = self:NewProgressionState(ps.identity, "hero", "hero")
@@ -376,6 +380,7 @@ end
 
 function CharacterProgressionSystem:_RecomputeProgressionState(state)
     if not state then return end
+    self:ReconcileFeatOwnership(state)
     state.level = self:ClampLevel(state.level, state)
     state.growthAbilities = self:_GrowthAtLevel(state, state.level)
     state.fighterTraining = self:_FighterTrainingAtLevel(state, state.level)
@@ -468,8 +473,27 @@ function CharacterProgressionSystem:_ApplyPlayerMaxHP(ply, state)
     if ply:Health() > maximum then ply:SetHealth(maximum) end
 end
 
+function CharacterProgressionSystem:HasAuthoredPhysicalAttack(state)
+    if not state then return false end
+    if state.actorType ~= "ai" then return true end
+    local rolls = LOD.CombatRolls
+    if state.archetypeId then
+        return rolls and rolls.HostileDamageProfile and rolls:HostileDamageProfile(state.archetypeId) ~= nil or false
+    end
+    -- Explicit capability providers for actors outside the archetype factory.
+    return arrayContains(state.capabilityTags or {}, "pushable_weapon")
+end
+
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
+    -- Current AI weapons have attack cadence, but no ordinary reload transaction.
+    -- A broad "ranged" tag must not make an unconsumed reload feat draftable.
+    if state and state.actorType == "ai" then
+        if tag == "reloadable_firearm" or tag == "hit_stun_source" then return false end
+        if tag == "pushable_weapon" then return self:HasAuthoredPhysicalAttack(state) end
+        if tag == "firearm" then return state.archetypeId == "soldier" or state.archetypeId == "blitzer" end
+        if tag == "crowbar" or tag == "minimap" then return false end
+    end
     if arrayContains(state and state.capabilityTags or {}, tag) then return true end
     if tag == "morale" then
         return state ~= nil and (state.actorType == nil or state.actorType == "hero"
@@ -716,6 +740,65 @@ function CharacterProgressionSystem:_FindFeat(featId)
     return ordinaryFeats[featId] or Catalog.FallbackFeats[featId]
 end
 
+-- One versioned ingress for historical ownership. Valid locked offers keep their
+-- order and seed; only removed IDs are replaced. No valid player choice is rerolled.
+function CharacterProgressionSystem:ReconcileFeatOwnership(state)
+    if not state or state.featCatalogRevision == "hybrid-stable-150-v1" then return false end
+    local function canonical(id)
+        if id == "STR_HERO_OF_LEGEND" then id = "WIS_HERO_OF_LEGEND" end
+        return self:_FindFeat(id) and id or nil
+    end
+    local ids, seen, counts = {}, {}, {}
+    for _, old in ipairs(state.featIds or {}) do
+        local id = canonical(old)
+        if id then
+            if not seen[id] then ids[#ids + 1] = id; seen[id] = true end
+            counts[id] = math.max(counts[id] or 0, (state.featStackCounts or {})[old] or 1)
+        end
+    end
+    state.featIds, state.featStackCounts = ids, counts
+    for _, draft in pairs(state.pendingFeatSlots or {}) do
+        local offers, offered = {}, {}
+        for _, old in ipairs(draft.offerFeatIds or {}) do
+            local id = canonical(old)
+            if id and not offered[id] then offers[#offers + 1] = id; offered[id] = true
+            else draft.needsCanonicalRepair = true end
+        end
+        if draft.selectedFeatId then
+            draft.selectedFeatId = canonical(draft.selectedFeatId)
+            if not draft.selectedFeatId then draft.resolved = false; draft.needsCanonicalRepair = true end
+        end
+        draft.offerFeatIds = offers
+    end
+    state.featCatalogRevision = "hybrid-stable-150-v1"
+    return true
+end
+
+function CharacterProgressionSystem:RepairCanonicalDrafts(ps, state)
+    if not ps or not state then return end
+    for _, draft in pairs(state.pendingFeatSlots or {}) do
+        if draft.needsCanonicalRepair then
+            local seen, pool = {}, {}
+            for _, id in ipairs(draft.offerFeatIds) do seen[id] = true end
+            local function add(catalog)
+                for _, id in ipairs(sortedKeys(catalog)) do
+                    local definition = catalog[id]
+                    if not seen[id] and self:_FeatEligible(ps, state, definition) then
+                        pool[#pool + 1] = {definition = definition, weight = self:_FeatWeight(ps, state, definition)}
+                    end
+                end
+            end
+            add(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats)
+            if #pool < 3 - #draft.offerFeatIds then add(Catalog.FallbackFeats) end
+            local rng = LOD.RNG.New(derive(draft.rngSeed or 1, "canonical-feat-repair-v1"))
+            for _, definition in ipairs(weightedDraw(rng, pool, math.max(0, 3 - #draft.offerFeatIds))) do
+                draft.offerFeatIds[#draft.offerFeatIds + 1] = definition.featId
+            end
+            draft.needsCanonicalRepair = nil
+        end
+    end
+end
+
 function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLevel)
     local runManager = LOD.RunManager
     if runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply) then
@@ -723,6 +806,8 @@ function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLeve
     end
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
+    if state and self:ReconcileFeatOwnership(state) then self:_RecomputeProgressionState(state) end
+    self:RepairCanonicalDrafts(ps, state)
     local draft = state and self:_NextPendingOrdinaryDraft(state) or nil
     if not draft then return false, "No unresolved ordinary feat draft." end
     if expectedEarnedAtLevel ~= nil
@@ -975,7 +1060,7 @@ function CharacterProgressionSystem:_AssignAutomaticGrowthProfile(state, seed)
     state.secondaryAbilities[2] = outside[rng:Int(1, #outside)]
 end
 
-function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, usesMagic)
+function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, usesMagic, actorType)
     local tags = {"hit_stun_source", "pushable_weapon"}
     local ranged = {
         soldier = true, blitzer = true, sniper = true, flamer = true,
@@ -984,7 +1069,7 @@ function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, use
     }
     if ranged[archetypeId] then
         tags[#tags + 1] = "firearm"
-        tags[#tags + 1] = "reloadable_firearm"
+        if actorType == "human_soldier" then tags[#tags + 1] = "reloadable_firearm" end
     end
     if archetypeId == "soldier" or archetypeId == "blitzer" then
         tags[#tags + 1] = "multi_fire_burst"
@@ -1108,7 +1193,7 @@ function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, acto
     state.progressionHitDieSides = template.progressionHitDieSides
     state.moraleBonus = template.moraleBonus
     state.usesMagic = template.usesMagic == true
-    state.capabilityTags = self:_AutomaticActorCapabilities(normalizedId, state.usesMagic)
+    state.capabilityTags = self:_AutomaticActorCapabilities(normalizedId, state.usesMagic, actorType)
     state.classId = self:_AssignAutomaticClass(template, actorSeed)
     self:_AssignAutomaticGrowthProfile(state, actorSeed)
 
@@ -1257,6 +1342,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local isSoldier = runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply)
     local soldierState = isSoldier and LOD.SoldierProgression and LOD.SoldierProgression:StateFor(ply)
     local state = soldierState or (ps and ps.progressionState)
+    if state and self:ReconcileFeatOwnership(state) then self:_RecomputeProgressionState(state) end
+    self:RepairCanonicalDrafts(ps, state)
     if isSoldier and soldierState then
         local nextTh = LOD.SoldierProgression and LOD.SoldierProgression:NextThreshold(soldierState.soldierXP or 0)
         local CC = LOD.Config

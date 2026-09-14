@@ -384,6 +384,7 @@ function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
         bonus = rolled.bonus,
         baseDice = rolled.baseDice,
         aceBonusDice = rolled.aceBonusDice,
+        wizardFullMagicIntBonus = rolled.wizardFullMagicIntBonus,
         capped = rolled.capped == true,
         ownerState = rules and rules:ProgressionState(ply),
         levelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed,
@@ -391,13 +392,15 @@ function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
     }
 
     if weaponClass == "weapon_shotgun" then
-        contract.pellets = SHOTGUN_SHARE_COUNT
-        contract.bonusChecks = {}
-        for index = 7, 9 do
-            local added = rng:Int(1, 3) == 1
-            contract.bonusChecks[#contract.bonusChecks + 1] = added
-            if added then contract.pellets = contract.pellets + 1 end
-            self.Stats.rolls = self.Stats.rolls + 1
+        -- Accepted Shotgun identity: eight pellets plus an independent universal
+        -- exploding utility d6, capped at 36. Utility rolls never enter damage feats.
+        local pelletBonus, pelletValues, _, pelletCapped = self:_RollExploding(
+            {count = 1, sides = 6, exploding = 6}, rng)
+        contract.pellets = math.min(36, 8 + math.max(1, pelletBonus or 1))
+        contract.pelletRollTotal, contract.pelletRollValues = pelletBonus, pelletValues
+        contract.pelletRollCapped = pelletCapped == true
+        if self.EmitDiceExplosionFX and #pelletValues > 1 then
+            self:EmitDiceExplosionFX(ply, "weapon_shotgun", #pelletValues - 1, 1)
         end
         contract.hits = setmetatable({}, {__mode = "k"})
         contract.damageByTarget = setmetatable({}, {__mode = "k"})
@@ -620,7 +623,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
     local attacker = dmginfo:GetAttacker()
     local inflictor = dmginfo:GetInflictor()
 
-    if target.LODHostile and qualifyingPlayerShooter(attacker) then
+    if (target.LODHostile or target:IsPlayer()) and qualifyingPlayerShooter(attacker) then
         local weaponClass = activeWeaponClass(attacker)
         -- Hero of Legend already enters through the Crowbar-family dice
         -- authority. It is not a firearm event, even if the player switches to
@@ -735,7 +738,8 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         return
     end
 
-    if target:IsPlayer() and target:Alive() and IsValid(attacker) and attacker.LODHostile then
+    if (target.LODHostile or target:IsPlayer()) and target:Health() > 0
+        and IsValid(attacker) and attacker.LODHostile then
         local profile, cacheOwner = hostileProfile(attacker, inflictor, dmginfo)
         if not profile then return end
         local contract = Rolls:RollHostileAttack(attacker, profile, dmginfo:GetDamage(), cacheOwner)
@@ -751,7 +755,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         end
         Rolls:QueueDamageReport(dmginfo, function(finalDamage)
             contract.final = finalDamage
-            Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target))
+            if target:IsPlayer() then Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target)) end
         end)
     end
 end)

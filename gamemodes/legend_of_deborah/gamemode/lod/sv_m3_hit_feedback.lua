@@ -146,7 +146,8 @@ function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
     -- The final damage authority calls this once, after Dodge and mitigation.
     local contexts = LOD.RPGStatusElements
     local context = contexts and contexts:DamageContext(dmginfo, hostile) or {}
-    if context.hitFeedbackHandled then return false end
+    if context.hitFeedbackHandled or context.passiveDamage or context.auraBurst or context.statusDamage
+        or context.reactiveDamage or context.wallCrush then return false end
     context.hitFeedbackHandled = true
     hostile.LODLastHitFeedbackEvent = {attacker = attacker, time = CurTime(), source = source}
     if contexts then contexts:AttachDamageContext(dmginfo, context) end

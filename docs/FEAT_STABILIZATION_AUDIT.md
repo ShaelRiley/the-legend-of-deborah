@@ -1,3 +1,92 @@
+# Hybrid stabilization candidate — 2026-09-14
+
+**Static release gate passed; awaiting Shael's Source-runtime playtest.**
+The candidate continues checkpoint `a14c42f9c6482c573644648026d626f10dd4e105`
+on `hybrid/antigravity`. Its exact published SHA is supplied with the handoff.
+No main promotion, public-server deployment, Workshop publication, or hybrid
+retirement has occurred. Only Shael's explicit approval of the exact tested SHA
+can authorize promotion.
+
+## Canonical feat audit
+
+Authority: targeted live-GDD AI navigation (00 → 01 → relevant 03/04 rules and
+exact human-detail anchors), with the retrieved revision recorded in
+`tools/fixtures/live_gdd_feats.json`, plus Shael's explicit scope and gate overrides.
+The fixture is validation evidence, not a replacement for the live document.
+
+- Active inventory: **135 ordinary/CROSS feats + 6 fallbacks + 9 capstones = 150**.
+  **Zero blank descriptions.** Ordinary ability gates are **13/15/17**.
+- Approved deferrals: Calculated Luck, Lucky Break, Point It Out, Rally the Hunt,
+  Command the Hunt, Polymorph, Aftershock, and previously held Snap Targeting.
+  Deferred and unknown IDs are removed from legacy ownership and pending drafts;
+  valid locked offers retain their order and seed. Repair is versioned and idempotent.
+- Exact active-set equality, names, descriptions, ability requirements, prerequisites,
+  actor scopes and replacement relationships are checked. All 135 ordinary feats
+  can enter a legal production draft. Capability checks reject actors lacking a
+  real consumer, including AI reload and hit-stun feats without authored transactions.
+- Every ordinary effect-handler ID maps to a loaded production function or installed
+  hook/timer, replacing the former string whitelist. Producer checks cover key event
+  paths; focused production-seam tests verify representative mechanics and exclusions.
+- Description/implementation discrepancies repaired include 37 previously blank
+  descriptions; exact Menace, Summon-management and Haste rank prose; complete
+  untruncated inspection text; Mana Barrier requirements and diversion arithmetic;
+  Fighter regeneration; shared Dodge/Now You See Me; first-rank Iron Nerve and
+  Spellward replacement wording; and the six retained CROSS mechanics.
+
+No known remaining active feat discrepancy is being waived. Consumer existence and
+static rule checks do not prove every engine interaction. This is a candidate for
+human acceptance, not a claim of complete Source-runtime verification.
+
+## Integrated repairs
+
+- Six retained CROSS feats now share damage, movement, Magic, push and Morale
+  authorities. Meteor Strike also reaches the shipped custom Crowbar SWEP; a
+  dodged hit preserves its charge, and the next confirmed hit consumes it.
+- Removed the late Shotgun override that bypassed shared attack metadata. Pellets
+  settle once per target before flat bonuses/defenses; utility pellet dice cannot
+  restore Magic. Magnum wrappers preserve the attack identity.
+- Human Soldier targets and AI-versus-AI attacks now enter the same dice/defense
+  path. AI rate-of-fire feats reach authored burst cooldowns. Damage feedback uses
+  final damage, including custom Crowbar, wall crush and reactive/aura paths.
+- Blast-Proof produces defender-specific views of immutable rolls, truncating only
+  the affected exploding chain. Terrifying/Panic use the correct saves, graph radius,
+  opponents, cooldowns and recursion protection. Life/level identity guards prevent
+  stale completions from applying to a replacement actor.
+- Aura Burst now has its missing successful-spend producer and captures targets at
+  cast start. Failed/refunded casts do not trigger it or overwrite prior Ace priming.
+  Passive auras wait their initial sealed interval. Aura damage cannot be reinterpreted
+  as a held-weapon attack or accidentally proc push, stun, Dodge, Feedback or Morale.
+- Wizard Feedback consumes the current incoming attack contract, not a recent global
+  attacker roll. Full-Magic bonuses are sealed before resource refunds; the cast
+  wrapper preserves all return values and restores temporary state even on errors.
+- Sparse Source-like live HUD and richer inspection/menu surfaces remain distinct.
+
+## Validation and finite human gate
+
+`git diff --check`, project Lua syntax validation, and
+`python3 tools/test_checkpoint_g_integration.py`: **49/49 suites passed**.
+Focused coverage includes CROSS mechanics, shared Dodge, immutable Blast-Proof,
+shotgun/CHA settlement, graph fear, cast success/refund, custom Crowbar, ownership
+migration, multiplayer damage routing and actor-life reset.
+
+Shael's next gate: fresh install and full GMod restart on `gm_flatgrass`; normal
+feat selection and ownership/description inspection; representative Crowbar,
+Shotgun and Magic combat with readable final dice totals; stationary/walking/sprinting
+Dodge; death/respawn, Soldier transition and a level change. With a second client,
+include reconnect/late join and opposing-player damage. Inspect live HUD obstruction
+and logger/history color consistency during ordinary play. The finite optional
+`lod_rpg_test_blast_proof` probe supplements actual gameplay.
+
+Finish with `lod_rpg_test_finish hybrid_stabilization`. Return `console_latest.txt`
+and `rpg_summary_latest.txt` from `garrysmod/data/legend_of_deborah/`; screenshots
+for visual defects, detailed session export only when event order needs diagnosis.
+Any reported defect enters repair → validation → pushed SHA → retest. Stop before merge.
+
+---
+
+The following checkpoint reports are preserved as historical evidence. Their
+incomplete-audit and not-yet-candidate status is superseded by the current entry above.
+
 # Active stabilization checkpoint — 2026-09-14
 
 This tranche continues `889d6e4e4e67a590d9d018d100a2a4c9055f2c1a` on

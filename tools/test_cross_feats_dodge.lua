@@ -1,7 +1,10 @@
 -- Engine-boundary fakes, production feat/dice/Morale/Dodge implementations.
+local registered = {}
+hook = {Add=function(event, id, fn) registered[event]=registered[event] or {}; registered[event][id]=fn end}
 dofile('tools/test_checkpoint_d_closure.lua')
 local base = 'gamemodes/legend_of_deborah/gamemode/lod/'
 dofile(base .. 'sv_combat_rolls.lua')
+dofile(base .. 'sv_combat_feed_semantics.lua')
 local Rules, Cross, Status = LOD.RPGAbilityRules, LOD.RPGCrossFeats, LOD.RPGStatusElements
 local Effects, Rolls = LOD.RPG.FeatEffectSystem, LOD.CombatRolls
 local now, serial, reports = 100, 0, {}
@@ -16,7 +19,7 @@ Rolls.EntityDisplayName = function(_, a) return 'actor' .. tostring(a.id) end
 local function actor(feats, human)
     serial = serial + 1
     local a = {valid=true,id=serial,hp=100,ground=false,LODHostile=not human,
-        state={featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
+        state={featCatalogRevision="hybrid-stable-150-v1",featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
     function a:IsPlayer() return human == true end
     function a:Alive() return self.hp > 0 end
     function a:Health() return self.hp end
@@ -128,7 +131,7 @@ assert(ok and reason=='flee' and data.save==1 and data.dc==14,'Terrifying keeps 
 target.LODMoraleCooldownUntil=0
 ok,reason,data=Status:AttemptMorale(source,target,{forceMorale=true,rng=rng({20,1,1,1})})
 assert(ok and reason=='saved' and data.save==20,'later encounter save rolls once')
-target.state={featIds={},derivedStats={},effectiveAbilities={cha=10}}
+target.state={featCatalogRevision="hybrid-stable-150-v1",featIds={},derivedStats={},effectiveAbilities={cha=10}}
 assert(Status:FirstTerrifyingSave(source,target),'new incarnation resets first save')
 
 -- Blast-Proof resolves a target-local view of the real shared roll. It ends
@@ -181,6 +184,152 @@ assert(not CPS:_HasCapability(nil,{magicFormIds={}},'magic_form_summon'))
 assert(not CPS:_HasCapability(nil,{magicFormIds={}},'discrete_magic_activation'))
 assert(Effects:HasUsableChaModDamage({featIds={'CHA_ABRASIVE_PERSONALITY_1'}}),'aura source makes Glow Up usable')
 
+-- The final Shotgun damage contract must retain all actor/attack metadata;
+-- pellet-count explosions are utility dice and cannot refund Boom Battery.
+source.state.featIds={'CROSS_BOOM_BATTERY'}
+source.resource.magic=90
+local weaponRNG=Rolls._RNG
+Rolls.EmitDiceExplosionFX=function() end
+Rolls._RNG=function() return rng({6,2,6,1}) end
+local token={}
+local weaponRoll=Rolls:RollPlayerWeapon(source,'weapon_shotgun',token)
+assert(weaponRoll.attackEvent==token and weaponRoll.profile and weaponRoll.chainStarts[1]==1)
+assert(weaponRoll.total==9 and weaponRoll.pellets==15 and weaponRoll.resolutionByTarget and weaponRoll.ownerState==source.state)
+near(source.resource.magic,90,'pellet-count continuation cannot grant Magic')
+Rolls._RNG=weaponRNG
+
+-- Historical ownership and locked offers migrate through the production ingress.
+local migrated=CPS:NewProgressionState('legacy','hero','hero')
+migrated.featIds={'STR_HERO_OF_LEGEND','DEX_AR2_SNAP','WIS_HERO_OF_LEGEND'}
+migrated.featStackCounts={STR_HERO_OF_LEGEND=1,DEX_AR2_SNAP=1}
+migrated.pendingFeatSlots={{earnedAtLevel=1,rngSeed=42,resolved=false,
+    offerFeatIds={'STR_HERO_OF_LEGEND','DEX_AR2_SNAP','CON_REGEN_11'}}}
+assert(CPS:ReconcileFeatOwnership(migrated))
+assert(#migrated.featIds==1 and migrated.featIds[1]=='WIS_HERO_OF_LEGEND')
+assert(migrated.featStackCounts.DEX_AR2_SNAP==nil)
+migrated.featQualificationAbilities={str=20,dex=20,con=20,int=20,wis=20,cha=20}
+CPS:RepairCanonicalDrafts({identity='legacy',starterWeaponClass='weapon_pistol'},migrated)
+local repaired=migrated.pendingFeatSlots[1]
+assert(repaired.rngSeed==42 and repaired.offerFeatIds[1]=='WIS_HERO_OF_LEGEND'
+    and repaired.offerFeatIds[2]=='CON_REGEN_11' and #repaired.offerFeatIds==3)
+assert(not CPS:ReconcileFeatOwnership(migrated),'migration is idempotent')
+assert(not CPS:_HasCapability({}, {actorType='ai',archetypeId='soldier',capabilityTags={'reloadable_firearm'}},'reloadable_firearm'))
+assert(not CPS:_HasCapability({}, {actorType='ai',archetypeId='runner'},'d4_damage'),'no inherited Hero pistol')
+Rolls.MeleeBalanceProfiles={runner={sides=4}}
+assert(CPS:_HasCapability({}, {actorType='ai',archetypeId='runner'},'d4_damage'),'canonical tuned melee dice qualify')
+assert(not CPS:_HasCapability({}, {actorType='ai',archetypeId='runner'},'d8_damage'),'obsolete melee dice do not qualify')
+
+-- Settle a real shotgun shell once per target, after per-die mitigation and
+-- aggregation but before once-per-target CHA/Glow Up. Cooldown needs actual damage.
+function DamageInfo()
+    local info={amount=0}
+    function info:SetDamage(n) self.amount=n end
+    function info:GetDamage() return self.amount end
+    function info:SetAttacker(a) self.attacker=a end
+    function info:GetAttacker() return self.attacker end
+    function info:SetInflictor(a) self.inflictor=a end
+    function info:GetInflictor() return self.inflictor end
+    function info:SetDamageType(t) self.kind=t end
+    function info:IsDamageType(t) return t~=nil and self.kind==t end
+    function info:SetDamagePosition() end
+    function info:SetDamageForce() end
+    return info
+end
+DMG_BULLET,DMG_ENERGYBEAM,DMG_GENERIC=2,4,0
+source=actor({'CHA_AGGRESSIVE_PERSONALITY','CON_GLOW_UP'},true)
+source.state.derivedStats={chaMod=4,conMod=2}
+local victimA,victimB=actor(),actor()
+local function acceptDamage(victim)
+    victim.applied=0
+    function victim:WorldSpaceCenter() return self.cell end
+    function victim:TakeDamageInfo(info)
+        self.applied=self.applied+1
+        registered.EntityTakeDamage.LOD_DiceDamageAuthority(self,info)
+        local context=Status:DamageContext(info,self)
+        LOD.RPG:ObserveDirectChaDamage(context.damageContract,info:GetDamage())
+        self.hp=self.hp-info:GetDamage()
+        Rolls:ReportResolvedDamage(info)
+    end
+end
+acceptDamage(victimA);acceptDamage(victimB)
+local shell={values={3},contributions={3},chainStarts={1},baseDice=1,bonus=0,total=3,
+    profile={sides=6},attackEvent={},hits={[victimA]=6,[victimB]=2},hitPositions={},
+    damageByTarget={},resolutionByTarget={},ownerState=source.state,levelSeed=3}
+local callbacks={};local originalSimple=timer.Simple
+timer.Simple=function(_,fn) callbacks[#callbacks+1]=fn end
+Rolls:SettleShotgun(source,shell)
+near(shell.damageByTarget[victimA],12,'full shell plus one CHA and CON contribution')
+near(shell.damageByTarget[victimB],8,'partial shell plus one CHA and CON contribution')
+assert(victimA.applied==1 and victimB.applied==1,'one defense transaction per victim')
+assert(#callbacks==1 and not source.LODCheckpointDAggressiveReadyAt,'attack completion schedules one cooldown')
+callbacks[1]()
+assert(source.LODCheckpointDAggressiveReadyAt>=now+1 and source.LODCheckpointDAggressiveReadyAt<=now+3)
+source.LODCheckpointDAggressiveReadyAt=nil
+local cancelled={values={3},contributions={3},chainStarts={1},bonus=0,total=3,profile={sides=6}}
+Rolls:ResolveActorDamage(cancelled,source,victimA,{physical=true})
+LOD.RPG:ObserveDirectChaDamage(cancelled,0)
+LOD.RPG:FinishAggressiveAttack(cancelled,source)
+assert(source.LODCheckpointDAggressiveReadyAt==nil,'zero final damage cannot consume readiness')
+local stale={values={3},contributions={3},chainStarts={1},bonus=0,total=3,profile={sides=6}}
+Rolls:ResolveActorDamage(stale,source,victimA,{physical=true})
+LOD.RPG:ObserveDirectChaDamage(stale,1)
+Status:ResetActorLife(source)
+callbacks[#callbacks]()
+assert(source.LODCheckpointDAggressiveReadyAt==nil,'old completion cannot modify a new life')
+timer.Simple=originalSimple
+
+-- Graph range is not a world-distance shortcut; gated neighbors remain excluded.
+dofile(base .. "sv_maze_generator.lua")
+local graph={Cells={}}
+local key=LOD.MazeGenerator.CellKey
+for x=0,3 do graph.Cells[key(x,0,0)]={x=x,y=0,z=0,neighbors={}} end
+for x=0,2 do
+    graph.Cells[key(x,0,0)].neighbors[key(x+1,0,0)]=true
+    graph.Cells[key(x+1,0,0)].neighbors[key(x,0,0)]=true
+end
+LOD.RunManager.State.Graph=graph
+local blocked=false
+LOD.MazeNavigator={WorldToCell=function(_,g,pos) return pos end,
+    CanTraverse=function(_,g,a,b) return not (blocked and b==key(2,0,0)) end}
+source.cell=graph.Cells[key(0,0,0)];victimA.cell=graph.Cells[key(2,0,0)]
+victimB.cell=graph.Cells[key(3,0,0)]
+source.state.featIds={'CROSS_TINY_TERROR','DEX_SHRINK'}
+near(Cross:MoraleBonus(source,victimA,{}),2,'Tiny Terror at two graph cells')
+near(Cross:MoraleBonus(source,victimB,{}),0,'Tiny Terror outside radius')
+blocked=true;near(Cross:MoraleBonus(source,victimA,{}),0,'closed graph edge excludes Tiny Terror');blocked=false
+source.state.featIds={'CROSS_BIG_SCARY','CON_BIG_GUY'}
+near(Cross:MoraleBonus(source,victimA,{physical=true}),0,'ordinary ranged hit gets no Big Scary')
+near(Cross:MoraleBonus(source,victimA,{wallCrush=true}),2,'physical wall crush gets Big Scary')
+source.state.featIds={'CHA_PANIC'}
+local neighbor=actor();neighbor.hp=49;neighbor.cell=source.cell
+local healthy=actor();healthy.cell=source.cell
+LOD.FactionManager={Opponents=function() return {victimB,neighbor,healthy} end}
+local attempts={};local attempt=Status.AttemptMorale
+Status.AttemptMorale=function(_,s,t,e) attempts[#attempts+1]={target=t,event=e} end
+Status:CascadeMorale(source,victimA,{})
+assert(#attempts==1 and attempts[1].target==neighbor and attempts[1].event.cascade)
+Status:CascadeMorale(source,victimA,{})
+assert(#attempts==1,'three-second per-target cascade immunity')
+now=now+3;Status:CascadeMorale(source,victimA,{cascade=true})
+assert(#attempts==1,'cascade never recursively triggers another')
+Status.AttemptMorale=attempt
+
+-- The real aura listener deals one supplemental event, with Glow Up once and
+-- an explicit marker preventing the weapon authority from rerolling an AI aura.
+source.state.featIds={'CHA_AURA_BURST_1','CON_GLOW_UP'}
+source.state.derivedStats={chaMod=4,conMod=2}
+victimA.cell=source.cell
+LOD.FactionManager.Opponents=function() return {victimA,victimB} end
+local before=victimA.hp
+local auraContext={auraBurst=LOD.RPG:PrepareCheckpointDAuraBurst(source)}
+victimA.cell=victimB.cell -- spell displacement cannot alter captured aura membership
+registered.LODDiscreteMagicSpent.LOD_CheckpointDAuraBurst(source,1,auraContext)
+near(before-victimA.hp,6,'Aura Burst consumes CHA and CON through shared source')
+local ignored=DamageInfo();ignored:SetDamage(6);ignored:SetAttacker(victimA)
+Status:AttachDamageContext(ignored,{actorDamageResolved=true,auraBurst=true})
+registered.EntityTakeDamage.LOD_DiceDamageAuthority(source,ignored)
+near(ignored:GetDamage(),6,'AI aura cannot become its ordinary weapon roll')
+
 -- Lifecycle reset clears per-life controls; persistent feat/dungeon consumption
 -- belongs to progression and must survive the same reset.
 target.state.notYetConsumedDungeonLevel=3
@@ -192,4 +341,83 @@ Status:ResetActorLife(target)
 assert(target.LODMoraleCooldownUntil==nil and target.LODMindOverMatterReadyAt==nil)
 assert(target.LODPersonalityAuraNextAt==nil and Effects.CloudStepState[target]==nil)
 assert(target.state.notYetConsumedDungeonLevel==3,'no extra Not Yet use from respawn')
+-- Execute the shipped custom Crowbar, not just the old stock-weapon hook.
+-- Only the engine trace/input/damage boundary is faked.
+local vecmt={}
+local function v(x,y,z) return setmetatable({x=x,y=y,z=z},vecmt) end
+vecmt.__add=function(a,b) return v(a.x+b.x,a.y+b.y,a.z+b.z) end
+vecmt.__mul=function(a,n) return v(a.x*n,a.y*n,a.z*n) end
+local wielder=actor({'CROSS_METEOR_STRIKE','STR_CROWBAR_D6','INT_CLOUD_STEP'},true)
+wielder.state.derivedStats={}
+function wielder:GetShootPos() return v(0,0,0) end
+function wielder:GetAimVector() return v(1,0,0) end
+function wielder:SetAnimation() end
+function wielder:LagCompensation() end
+local struck=actor();struck.cell=v(20,0,0)
+local crowbarContexts={}
+function struck:TakeDamageInfo(info)
+    local context=Status:DamageContext(info,self)
+    assert(context.actorDamageResolved and context.physical and context.melee and context.damageContract)
+    registered.EntityTakeDamage.LOD_DiceDamageAuthority(self,info)
+    crowbarContexts[#crowbarContexts+1]=context
+    -- First hit is dodged by the final-defense boundary. The next hit lands.
+    if #crowbarContexts==1 then info:SetDamage(0)
+    else self.hp=self.hp-info:GetDamage();Cross:ConsumeMeteor(context.meteor) end
+end
+util.TraceHull=function() return {Entity=struck,HitPos=struck.cell} end
+IsFirstTimePredicted=function() return true end
+SWEP={Primary={},Secondary={}}
+dofile('gamemodes/legend_of_deborah/entities/weapons/weapon_lod_crowbar/shared.lua')
+local club=SWEP
+function club:GetOwner() return wielder end
+function club:SetNextPrimaryFire() end
+function club:SendWeaponAnim() end
+function club:EmitSound() end
+Effects.CloudStepState[wielder]={used=true}
+local beforeRoll=Rolls._RNG
+Rolls._RNG=function() return rng({1,6,2}) end
+club:PrimaryAttack()
+assert(not Effects.CloudStepState[wielder].meteorUsed,'custom Crowbar miss/Dodge preserves Meteor')
+club:PrimaryAttack()
+assert(Effects.CloudStepState[wielder].meteorUsed and struck.hp==91,'custom Crowbar lands the independent Meteor chain')
+assert(crowbarContexts[2].damageContract.formula=='1d6!+1d6!')
+Rolls._RNG=beforeRoll
+
+-- Human Soldier targets and AI-vs-AI combat enter the real weapon resolver.
+local gunner=actor({},true)
+local pistol={valid=true,GetClass=function() return 'weapon_pistol' end}
+function gunner:GetActiveWeapon() return pistol end
+local soldierTarget=actor({},true)
+local gunRNG=Rolls._RNG;Rolls._RNG=function() return rng({3}) end
+local shot=Rolls:RollPlayerWeapon(gunner,'weapon_pistol',{})
+shot.targets={};gunner.LODActivePlayerRoll=shot
+local hit=DamageInfo();hit:SetDamage(25);hit:SetAttacker(gunner);hit:SetInflictor(pistol);hit:SetDamageType(DMG_BULLET)
+registered.EntityTakeDamage.LOD_DiceDamageAuthority(soldierTarget,hit)
+near(hit:GetDamage(),3,'human player target receives the dice contract')
+assert(Status:DamageContext(hit,soldierTarget).attackEvent==shot.attackEvent)
+local hostileShooter,hostileVictim=actor(),actor()
+hostileShooter.LODArchetypeId='soldier'
+local hostileHit=DamageInfo();hostileHit:SetDamage(6);hostileHit:SetAttacker(hostileShooter);hostileHit:SetInflictor(hostileShooter)
+registered.EntityTakeDamage.LOD_DiceDamageAuthority(hostileVictim,hostileHit)
+near(hostileHit:GetDamage(),4,'AI-vs-AI uses the same 1d10+1 contract')
+assert(Status:DamageContext(hostileHit,hostileVictim).physical)
+Rolls._RNG=gunRNG
+
+-- Wizard wrappers preserve the complete cast result and take the full-Magic
+-- snapshot before a damage roll can restore resources.
+LOD.Magic.CastForceShout=function() return nil,"blocked",7 end
+local full={marker=true}
+dofile(base .. "sv_rpg_wizard_feedback.lua")
+local wizard=LOD.RPGWizardOffense
+assert(wizard:Install())
+wizard.ActiveFullMagicSnapshots[source]=full
+local castResult=table.pack(LOD.Magic:CastForceShout(source))
+assert(castResult.n==3 and castResult[1]==nil and castResult[2]=="blocked" and castResult[3]==7)
+assert(wizard.ActiveFullMagicSnapshots[source]==full)
+wizard.ActiveFullMagicSnapshots[source]=nil
+source.state.classId='wizard';source.state.featIds={'CROSS_BOOM_BATTERY'}
+source.state.derivedStats={intMod=4};source.resource.magic=99
+local preRoll=Rolls:RollActorDamage(source,{sides=6,count=1},rng({6,6,1}),0)
+near(source.resource.magic,100)
+near(preRoll.wizardFullMagicIntBonus,0,'restoration during an attack cannot create a full-Magic start')
 print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')

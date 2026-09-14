@@ -31,6 +31,7 @@ rankOne.eligibilityText = "INT 13"
 rankOne.rankIndex = 1
 rankOne.replacesLowerRank = false
 rankOne.allowedActorTypes = {"hero", "human_soldier", "ai"}
+rankOne.effectHandlerId = "mana_barrier_diversion"
 rankOne.effectParams = rankOne.effectParams or {}
 rankOne.effectParams.manaBarrierFeatDiversionFraction = 0.15
 
@@ -49,7 +50,7 @@ feats.INT_MANA_BARRIER_2 = {
     featFamilyId = WizardRules.ManaBarrierFamilyId,
     rankIndex = 2,
     replacesLowerRank = true,
-    effectHandlerId = "gate_b_feat_ownership",
+    effectHandlerId = "mana_barrier_diversion",
     effectParams = {
         manaBarrierFeatDiversionFraction = 0.30,
         description = "Replaces Mana Barrier and sets ManaBarrierFeatDiversionFraction = 0.30. HPToMagicDiversionFraction still adds the actor's WizardClassHPToMagicDiversionFraction, if any, so a Wizard receives its innate class percentage plus 30 percentage points from Arcane Aegis. The same post-mitigation calculation and 1 Magic per 1 prevented HP exchange apply; diversion is limited by current whole Magic and any unpayable remainder is taken as HP damage normally."
@@ -74,7 +75,7 @@ feats.INT_MANA_BARRIER_3 = {
     featFamilyId = WizardRules.ManaBarrierFamilyId,
     rankIndex = 3,
     replacesLowerRank = true,
-    effectHandlerId = "gate_b_feat_ownership",
+    effectHandlerId = "mana_barrier_diversion",
     effectParams = {
         manaBarrierFeatDiversionFraction = 0.45,
         description = "Replaces lower Mana Barrier ranks and sets ManaBarrierFeatDiversionFraction = 0.45. HPToMagicDiversionFraction still adds the actor's WizardClassHPToMagicDiversionFraction, if any; a Level-20 Wizard therefore reaches the designed maximum 0.85 total diversion (0.40 class + 0.45 feat). It never increases Magic capacity above 100, never creates fractional HP prevention, never prevents non-damage death, and remains constrained by the actor's current available Magic."

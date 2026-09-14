@@ -108,7 +108,7 @@ function SWEP:PrimaryAttack()
     owner:LagCompensation(false)
 
     local target = trace.Entity
-    if not IsValid(target) or not target.LODHostile or target.LODDead then
+    if not IsValid(target) or not (target.LODHostile or target:IsPlayer()) or target.LODDead then
         owner:EmitSound(MISS_SOUND, 68, 100, 0.60, CHAN_WEAPON)
         return
     end
@@ -121,9 +121,9 @@ function SWEP:PrimaryAttack()
 
     local profile = effects and effects.CrowbarDamageProfile
         and effects:CrowbarDamageProfile(owner) or DAMAGE_PROFILE
-    local contract = rolls.RollActorDamage
-        and rolls:RollActorDamage(owner, profile,
-            rolls:_RNG("player:weapon_lod_crowbar"), aceBonus) or nil
+    local rng = rolls:_RNG("player:weapon_lod_crowbar")
+    local contract = rolls.RollActorDamage and rolls:RollActorDamage(owner, profile, rng, aceBonus) or nil
+    if contract and LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(owner, contract, rng) end
     local total = contract and rolls:ResolveActorDamage(contract, owner, target, {
         physical = true,
         authoredScale = aimMultiplier
@@ -140,12 +140,18 @@ function SWEP:PrimaryAttack()
     damage:SetDamageType(DMG_CLUB)
     damage:SetDamagePosition(trace.HitPos)
     damage:SetDamageForce(direction * 2200)
+    if LOD.RPGStatusElements then
+        LOD.RPGStatusElements:AttachDamageContext(damage, {actorDamageResolved = true,
+            physical = true, melee = true, attackEvent = contract and contract.attackEvent,
+            damageContract = contract, meteor = contract})
+    end
     target:TakeDamageInfo(damage)
+    total = math.max(0, damage:GetDamage())
 
     rolls.Stats.playerAttacks = (rolls.Stats.playerAttacks or 0) + 1
     if rolls._Send and rolls._DamageEventText then
         local detail = values and #values > 0
-            and string.format("[rolls %s]", table.concat(values, ">")) or nil
+            and string.format("[rolls %s]", LOD.DieLogger:RollBreakdown(contract)) or nil
         if aimMultiplier > 1 then
             local multText = "x" .. tostring(math.max(1, math.floor(aimMultiplier)))
             if detail then
@@ -159,6 +165,7 @@ function SWEP:PrimaryAttack()
             target, detail, nil, "Hostile", "crowbar"))
     end
 
+    if total <= 0 then return end
     if total < healthBefore and IsValid(target) and not target.LODDead
         and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyHitStun then
         LOD.M3HitFeedback:ApplyHitStun(target, 1, owner)
@@ -166,8 +173,12 @@ function SWEP:PrimaryAttack()
 
     self:EmitSound(HIT_SOUND, 66, 100, 0.72, CHAN_WEAPON)
 
+    local identity = rules and rules:ProgressionState(owner)
+    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
     timer.Simple(HIT_CONFIRM_DELAY, function()
-        if not IsValid(owner) or not owner:IsPlayer() then return end
+        if not IsValid(owner) or not owner:IsPlayer() or not owner:Alive()
+            or (rules and rules:ProgressionState(owner)) ~= identity
+            or epoch ~= (LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed) then return end
         net.Start("LOD_HitConfirm")
         net.Send(owner)
     end)

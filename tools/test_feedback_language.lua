@@ -109,7 +109,14 @@ local n = #sent; LOD.RunManager:_SyncPlayerVars(a); assert(#sent == n, "unchange
 local ps, form, content = {magic = 50}, {id = "blast", magicCost = 20}, {id = "fire", surcharge = 5}
 LOD.Magic = {NextCast = {}, Stats = {casts = 0}, _EnsureState = function() return ps end, _Sync = function() end}
 LOD.MagicProgression = {}
-LOD.RPGAbilityRules = {OffensiveMagicCost = function(_, _, cost) return cost end}
+local spentEvents=0
+LOD.RPG.PrepareCheckpointDAuraBurst=function() return {prepared=true} end
+hook.Add("LODDiscreteMagicSpent","test_spend_observer",function(_,cost,context)
+    assert(cost>0 and context.auraBurst.prepared)
+    spentEvents=spentEvents+1
+end)
+LOD.RPGAbilityRules = {OffensiveMagicCost = function(_, _, cost) return cost end,
+    CommitAttack=function(_,actor) actor.LODRPGNextAceReadyAt=clock+3;return true end}
 LOD.RPGStatusElements.CanInitiateMagic = function() return true end
 dofile(root .. "sv_magic_forms.lua")
 local forms = LOD.MagicForms
@@ -118,16 +125,19 @@ forms._NewContext = function() return {} end
 forms._CanCastPreSpend = function() return true end
 forms._CastBlast = function() return true end
 assert(forms:CastSelected(a) == true and ps.magic == 25)
+assert(spentEvents==1,"one successful discrete activation event")
 assert(logs[#logs].fields.spent == 25 and logs[#logs].fields.outcome == "committed")
 clock = clock + 2; ps.magic = 10
 local ok, reason = forms:CastSelected(a)
 assert(not ok and reason == "magic" and ps.magic == 10)
 assert(logs[#logs].fields.spent == 0 and logs[#logs].fields.text:find("insufficient Magic"))
 clock = clock + 2; ps.magic = 50; local cooldown = LOD.Magic.NextCast[a]
+local previousAce=a.LODRPGNextAceReadyAt
 forms._CastBlast = function() return false end
 ok, reason = forms:CastSelected(a)
 assert(not ok and reason == "cast" and ps.magic == 50 and LOD.Magic.NextCast[a] == cooldown)
 assert(logs[#logs].fields.outcome == "cast" and logs[#logs].fields.spent == 0)
+assert(spentEvents==1 and a.LODRPGNextAceReadyAt==previousAce,"failed casts neither emit spend nor consume priming")
 
 -- Execute actual client receiver/renderer and round-trip its acknowledgments.
 local disk, sounds = {}, {}

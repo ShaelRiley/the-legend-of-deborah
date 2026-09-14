@@ -58,6 +58,14 @@ def audit():
                 errors.append(f'REQUIREMENT_MISMATCH {runtime_id}')
             if any(v not in (13, 15, 17) for v in definition.get('abilityRequirements', {}).values()):
                 errors.append(f'DEPRECATED_ABILITY_GATE {runtime_id}')
+            actors = row['actors'].lower()
+            expected_actors = set()
+            if 'hero' in actors: expected_actors.add('hero')
+            if 'soldier' in actors: expected_actors.add('human_soldier')
+            if re.search(r'\bai\b', actors): expected_actors.add('ai')
+            if 'player-controlled actors' in actors: expected_actors.update(('hero', 'human_soldier'))
+            if set(values(definition.get('allowedActorTypes', {}))) != expected_actors:
+                errors.append(f'ACTOR_SCOPE_MISMATCH {runtime_id}')
             prereqs = values(definition.get('prerequisiteFeatIds', {}))
             if row['prerequisite'] == 'None' and prereqs:
                 errors.append(f'UNAUTHORED_PREREQUISITE {runtime_id}')

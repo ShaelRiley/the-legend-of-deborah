@@ -60,7 +60,7 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
     local ownerCell = navigator:WorldToCell(graph, owner:GetPos())
     if not ownerCell then return 0 end
     local damageContract = {bonus = 0}
-    Rules:AddChaModDerivedDamage(damageContract, owner, "sv_rpg_checkpoint_d_personality_aura_feats")
+    local cha, con = Rules:AddChaModDerivedDamage(damageContract, owner, "sv_rpg_checkpoint_d_personality_aura_feats")
     local damage = damageContract.bonus
     self.CheckpointDPersonalityAuraStats.pulses = self.CheckpointDPersonalityAuraStats.pulses + 1
     if damage <= 0 then return 0 end
@@ -74,7 +74,8 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
                 info:SetDamageType(DMG_GENERIC); info:SetDamagePosition(target:WorldSpaceCenter())
                 info:SetDamageForce(vector_origin)
                 Status:AttachDamageContext(info, {personalityAura = true, passiveDamage = true,
-                    statusProcIneligible = true, moraleIneligible = true, feedbackIneligible = true})
+                    actorDamageResolved = true, statusProcIneligible = true, moraleIneligible = true, feedbackIneligible = true})
+                self:QueueAuraDamageReport(info, owner, target, "Personality Aura", cha, con)
                 target:TakeDamageInfo(info)
                 hits = hits + 1
                 self.CheckpointDPersonalityAuraStats.damageEvents = self.CheckpointDPersonalityAuraStats.damageEvents + 1
@@ -102,7 +103,9 @@ hook.Add("Think", "LOD_CheckpointDPersonalityAura", function()
     RPG.CheckpointDPersonalityAuraNextThink = now + 0.25
     for _, owner in ipairs(allOwners()) do
         if RPG:CheckpointDPersonalityAuraProfile(Rules:ProgressionState(owner)) and alive(owner) then
-            if now >= (owner.LODPersonalityAuraNextAt or 0) then
+            if owner.LODPersonalityAuraNextAt == nil then
+                owner.LODPersonalityAuraNextAt = now + RPG:CheckpointDPersonalityAuraInterval(owner)
+            elseif now >= owner.LODPersonalityAuraNextAt then
                 RPG:ResolveCheckpointDPersonalityAura(owner)
                 owner.LODPersonalityAuraNextAt = now + RPG:CheckpointDPersonalityAuraInterval(owner)
             end

@@ -208,7 +208,7 @@ function System:ResetActorLife(actor)
         actor.LODCheckpointDAggressiveReadyAt, actor.LODCheckpointDAggressiveSerial, actor.LODCheckpointDAggressivePending = nil, nil, nil
         actor.LODPersonalityAuraNextAt, actor.LODPersonalityAuraRollSerial = nil, nil
         actor.LODRPGNextAceReadyAt, actor.LODRPGNotYetImmuneUntil, actor.LODMindOverMatterReadyAt = nil, nil, nil
-        actor.LODRPGBlastProofReadyAt = nil
+        actor.LODRPGBlastProofReadyAt, actor.LODWizardFeedbackNextReadyAt = nil, nil
         actor.LODRPGHealthRegenAccumulator, actor.LODRPGHealthRegenEligibleAt = nil, nil
     end
     local effects = RPG.FeatEffectSystem
@@ -550,13 +550,12 @@ end
 
 function System:CascadeMorale(source, target, event)
     if event.cascade or not owns(source, "CHA_PANIC") or not LOD.RPGCrossFeats
-        or not LOD.HostileRegistry then return end
+        or not LOD.FactionManager then return end
     local cells = LOD.RPGCrossFeats:CellsWithin(target, 2)
     local candidates = {}
-    for _, other in ipairs(LOD.HostileRegistry:List() or {}) do
+    for _, other in ipairs(LOD.FactionManager:Opponents(source)) do
         if other ~= target and other ~= source and isAlive(other) and not isPlayer(other)
             and other:Health() < other:GetMaxHealth() * .5
-            and (target.LODEncounterId == nil or other.LODEncounterId == target.LODEncounterId)
             and cells[self:CellKey(other)] ~= nil then candidates[#candidates + 1] = other end
     end
     table.sort(candidates, function(a, b) return a:EntIndex() < b:EntIndex() end)

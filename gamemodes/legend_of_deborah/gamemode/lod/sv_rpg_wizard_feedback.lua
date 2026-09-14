@@ -5,7 +5,6 @@ local WizardOffense = LOD.RPGWizardOffense
 
 WizardOffense.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 WizardOffense.SourceRevisionId = "ANLCKQkNcjBF3sFnckn_5ExOJDK0c-DXb291V5jp_bjHB-KnEf7LMJJeKGpB6mAQDFUwZk1ZhRLm1MfvE0i1TjrZSTmnbeVr2HOKoXy_KQ"
-WizardOffense.FeedbackContractMaxAge = 0.20
 WizardOffense.FeedbackCooldownSeconds = 1.0
 WizardOffense.ActiveFullMagicSnapshots = WizardOffense.ActiveFullMagicSnapshots
     or setmetatable({}, {__mode = "k"})
@@ -107,15 +106,10 @@ function WizardOffense:EmitFeedbackFX(wizard, attacker)
     util.Effect("StunstickImpact", effect, true, true)
 end
 
-local function valuesText(values)
-    local out = {}
-    for index, value in ipairs(values or {}) do out[index] = tostring(value) end
-    return table.concat(out, "+")
-end
-
 function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     if not IsValid(wizard) or not IsValid(attacker) then return false end
-    if not attacker.LODHostile or attacker.LODDead or attacker:Health() <= 0 then return false end
+    if attacker == wizard or attacker.LODDead or attacker:Health() <= 0
+        or not (attacker.LODHostile or attacker:IsPlayer()) then return false end
 
     local combatRolls = rolls()
     local abilityRules = rules()
@@ -145,7 +139,7 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
         ignoreWizardFullMagicIntBonus = true
     }
     local resolved = select(1, abilityRules:ResolveDamageContract(contract, wizard, attacker,
-        {magic = true, wisScaled = false}))
+        {magic = true, wisScaled = false, feedbackIneligible = true, reactiveDamage = true}))
     resolved = math.max(0, tonumber(resolved) or 0)
     if resolved <= 0 then return false end
 
@@ -160,32 +154,24 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     info:SetDamageForce(vector_origin)
     local statusElements = LOD.RPGStatusElements
     if statusElements and statusElements.AttachDamageContext then
-        statusElements:AttachDamageContext(info, {magic = true, feedbackIneligible = true})
+        statusElements:AttachDamageContext(info, {magic = true, actorDamageResolved = true, feedbackIneligible = true,
+            reactiveDamage = true, statusProcIneligible = true, moraleIneligible = true})
     end
 
-    -- Feedback has already passed through the RPG dice resolver. Temporarily hide
-    -- any same-frame firearm contract so the canonical player-firearm hook cannot
-    -- reinterpret this nested shock damage as the Wizard's held weapon attack.
-    local activePlayerRoll = wizard.LODActivePlayerRoll
-    local activeShotgunRoll = wizard.LODActiveShotgunRoll
-    wizard.LODActivePlayerRoll = nil
-    wizard.LODActiveShotgunRoll = nil
-    wizard.LODWizardFeedbackDamageActive = true
+    -- The explicit resolved-event marker prevents all weapon reinterpretation;
+    -- no temporary actor-global firearm state is needed for nested damage.
     attacker:TakeDamageInfo(info)
-    wizard.LODWizardFeedbackDamageActive = nil
-    wizard.LODActivePlayerRoll = activePlayerRoll
-    wizard.LODActiveShotgunRoll = activeShotgunRoll
+    resolved = math.max(0, info:GetDamage())
 
     self.Stats.feedbackProcs = (self.Stats.feedbackProcs or 0) + 1
     self.Stats.feedbackDice = (self.Stats.feedbackDice or 0) + diceCount
     self.Stats.feedbackDamage = (self.Stats.feedbackDamage or 0) + resolved
 
-    if combatRolls._Send then
-        local targetName = tostring(attacker.LODConfig and attacker.LODConfig.name
-            or attacker.LODArchetypeId or "enemy")
-        combatRolls:_Send(wizard, 3, string.format(
-            "FEEDBACK — %s [%s] = %.1f damage to %s",
-            contract.formula, valuesText(values), resolved, targetName))
+    if combatRolls._Send and combatRolls._DamageEventText then
+        local text = combatRolls:_DamageEventText(wizard, contract.formula, resolved, attacker,
+            "[rolls " .. LOD.DieLogger:RollBreakdown(contract) .. "]", nil, nil, "Feedback")
+        if wizard:IsPlayer() then combatRolls:_Send(wizard, 3, text, "magic", {event = "feedback", damage = resolved}) end
+        if attacker:IsPlayer() then combatRolls:_Send(attacker, 1, text, "magic", {event = "feedback", damage = resolved}) end
     end
     return true
 end
@@ -207,15 +193,12 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
     end
 
     local attacker = dmginfo and dmginfo.GetAttacker and dmginfo:GetAttacker() or nil
-    if not IsValid(attacker) or not attacker.LODHostile or attacker.LODDead then return false end
-    local source = attacker.LODWizardFeedbackLastHostileRoll
-    if not source or source.attacker ~= attacker
-        or now - (tonumber(source.at) or -999) > self.FeedbackContractMaxAge
-    then
-        return false
-    end
-
-    local diceCount = math.max(0, math.floor(tonumber(source.diceCount) or 0))
+    if not IsValid(attacker) or attacker == wizard or attacker.LODDead
+        or not (attacker.LODHostile or attacker:IsPlayer()) then return false end
+    local source = damageContext and damageContext.damageContract
+    if not source then return false end
+    source = source.feedResolution and source.feedResolution.resolvedContract or source
+    local diceCount = self:FeedbackDiceCount(source)
     if diceCount <= 0 then return false end
     local abilityRules = rules()
     local derived = abilityRules and abilityRules.Derived and abilityRules:Derived(wizard) or nil
@@ -231,8 +214,12 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
 
     wizard.LODWizardFeedbackNextReadyAt = now + self.FeedbackCooldownSeconds
     local intBonus = self:IntBonus(wizard)
+    local identity, attackerIdentity = self:ProgressionState(wizard), self:ProgressionState(attacker)
+    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
     timer.Simple(0, function()
-        if IsValid(wizard) and IsValid(attacker) then
+        if IsValid(wizard) and IsValid(attacker) and self:ProgressionState(wizard) == identity
+            and self:ProgressionState(attacker) == attackerIdentity
+            and epoch == (LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed) then
             WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
         end
     end)
@@ -260,33 +247,12 @@ function WizardOffense:Install()
 
     local priorRollActorDamage = combatRolls.RollActorDamage
     function combatRolls:RollActorDamage(attacker, profile, rng, bonusDice)
+        local sealedBonus = IsValid(attacker) and WizardOffense:AttackSnapshotBonus(attacker) or 0
         local rolled = priorRollActorDamage(self, attacker, profile, rng, bonusDice)
         if rolled and IsValid(attacker) then
-            rolled.wizardFullMagicIntBonus = WizardOffense:AttackSnapshotBonus(attacker)
+            rolled.wizardFullMagicIntBonus = sealedBonus
         end
         return rolled
-    end
-
-    local priorRollPlayerWeapon = combatRolls.RollPlayerWeapon
-    function combatRolls:RollPlayerWeapon(ply, weaponClass)
-        local contract = priorRollPlayerWeapon(self, ply, weaponClass)
-        if contract and IsValid(ply) then
-            contract.wizardFullMagicIntBonus = WizardOffense:FullMagicBonus(ply)
-        end
-        return contract
-    end
-
-    local priorRollHostileAttack = combatRolls.RollHostileAttack
-    function combatRolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
-        local contract = priorRollHostileAttack(self, hostile, profile, originalDamage, cacheOwner)
-        if contract and IsValid(hostile) then
-            hostile.LODWizardFeedbackLastHostileRoll = {
-                at = CurTime(),
-                attacker = hostile,
-                diceCount = WizardOffense:FeedbackDiceCount(contract)
-            }
-        end
-        return contract
     end
 
     local priorResolveDamageContract = abilityRules.ResolveDamageContract
@@ -323,12 +289,13 @@ function WizardOffense:Install()
         -- prior snapshot even if the underlying cast raises a Lua error.
         local previous = WizardOffense.ActiveFullMagicSnapshots[ply]
         WizardOffense.ActiveFullMagicSnapshots[ply] = WizardOffense:FullMagicBonus(ply)
-        local ok, result = xpcall(function()
+        local function pack(...) return {n = select("#", ...), ...} end
+        local results = pack(xpcall(function()
             return priorCastForceShout(self, ply)
-        end, debug.traceback)
+        end, debug.traceback))
         WizardOffense.ActiveFullMagicSnapshots[ply] = previous
-        if not ok then error(result, 0) end
-        return result
+        if not results[1] then error(results[2], 0) end
+        return unpack(results, 2, results.n)
     end
 
     self.IntegrationReady = true

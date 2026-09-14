@@ -32,7 +32,7 @@ local function owns(state, id)
 end
 
 local function ineligible(tags)
-    return tags.statusDamage or tags.statusProcIneligible or tags.feedbackIneligible or tags.passiveDamage
+    return tags.wallCrush or tags.environmental or tags.nonAttack or tags.statusDamage or tags.statusProcIneligible or tags.feedbackIneligible or tags.passiveDamage
         or tags.auraBurst or tags.personalityAura or tags.reactiveDamage
 end
 

@@ -275,7 +275,9 @@ local function installContract()
             end
             self.LODSoldierBurst = nil
             clearNetworkContract(self)
-            self.LODNextAttack = CurTime() + cfg.burstCooldown
+            local rules = LOD.RPGAbilityRules
+            local rate = rules and rules.RateOfFireMultiplier and rules:RateOfFireMultiplier(self) or 1
+            self.LODNextAttack = CurTime() + cfg.burstCooldown / rate
             self:_SetActivity(self:_SoldierIdleActivity(), true)
             return false
         end

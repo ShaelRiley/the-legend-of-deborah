@@ -69,7 +69,8 @@ function Rules:ApplyDodge(target, dmginfo)
     local context = status and status:DamageContext(dmginfo, target) or {}
     local attacker = dmginfo:GetAttacker()
     if not IsValid(attacker) or attacker == target or attacker == game.GetWorld()
-        or context.statusDamage or context.wallCrush or context.ignoreDodge or context.ignoreEvasion
+        or context.statusDamage or context.passiveDamage or context.auraBurst or context.reactiveDamage
+        or context.wallCrush or context.ignoreDodge or context.ignoreEvasion
         or context.unavoidable or context.scriptedKill or context.environmental
         or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_CRUSH) then return false end
     if target:IsPlayer() and not target:Alive() or target.LODDead then return false end

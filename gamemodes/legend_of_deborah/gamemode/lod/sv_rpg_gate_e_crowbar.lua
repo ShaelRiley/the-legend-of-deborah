@@ -140,7 +140,7 @@ function Effects:CrowbarProfile(state, derived)
     local walloper = owns(state, "STR_CROWBAR_D12")
     local bash = walloper or owns(state, "STR_CROWBAR_D6")
     local hero = owns(state, "WIS_HERO_OF_LEGEND")
-        or owns(state, "STR_HERO_OF_LEGEND")
+
     return {
         damageRank = walloper and 2 or (bash and 1 or 0),
         crowbarDamageDieSides = walloper and 12 or (bash and 6 or 3),
@@ -312,19 +312,18 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     info:SetDamagePosition(hitPos or target:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
     if LOD.RPGStatusElements then LOD.RPGStatusElements:AttachDamageContext(info,
-        {magic = true, wisScaled = true, nonElemental = true, crowbarPulse = true, attackEvent = contract.attackEvent, damageContract = contract}) end
+        {actorDamageResolved = true, magic = true, wisScaled = true, nonElemental = true, crowbarPulse = true, attackEvent = contract.attackEvent, damageContract = contract}) end
     target:TakeDamageInfo(info)
 
     local healthAfter = IsValid(target) and target:Health() or 0
     local defeated = not IsValid(target) or target.LODDead == true or healthAfter <= 0
     local effectiveDamage = math.max(0, healthBefore - math.max(0, healthAfter))
-    if effectiveDamage <= 0 and not defeated then return true end
     local stats = self.CrowbarStats
     stats.pulseHits = (stats.pulseHits or 0) + 1
     stats.lastPulseDamage = effectiveDamage
 
     local run = LOD.RunManager
-    local ps = run and run.GetPlayerState and run:GetPlayerState(attacker) or nil
+    local ps = LOD.Magic and LOD.Magic:_EnsureState(attacker) or nil
     local continuations = math.max(0,
         #(contract.values or {}) - (tonumber(contract.baseDice) or 1))
     if continuations > 0 and rolls and rolls.EmitDiceExplosionFX then
@@ -360,7 +359,7 @@ local function crowbarWeapon(attacker, dmginfo)
 end
 
 hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_CrowbarPush", function(target, dmginfo, took)
-    if took == false or not IsValid(target) or not target.LODHostile
+    if took == false or not Effects:ValidPushTarget(target)
         or target.LODDead or target:Health() <= 0 or not dmginfo
         or (tonumber(dmginfo:GetDamage()) or 0) <= 0 then return end
     local attacker = dmginfo:GetAttacker()

@@ -160,8 +160,8 @@ if not Rolls.LODMagnumCylinderDamageInstalled then
     Rolls.LODMagnumCylinderDamageInstalled = true
     local baseRollPlayerWeapon = Rolls.RollPlayerWeapon
 
-    function Rolls:RollPlayerWeapon(ply, weaponClass)
-        local contract = baseRollPlayerWeapon(self, ply, weaponClass)
+    function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
+        local contract = baseRollPlayerWeapon(self, ply, weaponClass, attackEvent)
         if weaponClass ~= "weapon_357" or not contract then return contract end
 
         local weapon = activeMagnum(ply)

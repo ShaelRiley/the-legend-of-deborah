@@ -1,6 +1,7 @@
 -- Checkpoint D Canonical Feat and Capstone Closure Validator
 LOD = LOD or {}; LOD.RPG = LOD.RPG or {}
 
+local observedTimers, observedHooks = {}, {}
 local function mockGMod()
     SERVER = true
     CLIENT = false
@@ -37,6 +38,15 @@ local function mockGMod()
     end
     team = team or {SetUp = function() end}
     timer = timer or {Simple = function() end, Create = function() end, Remove = function() end, Exists = function() return false end}
+    local createTimer, addHook = timer.Create, hook.Add
+    timer.Create = function(id, interval, repetitions, callback)
+        observedTimers[id] = callback
+        return createTimer(id, interval, repetitions, callback)
+    end
+    hook.Add = function(event, id, callback)
+        observedHooks[id] = callback
+        return addHook(event, id, callback)
+    end
     player = player or {GetAll = function() return {} end}
     resource = resource or {AddFile = function() end, AddWorkshop = function() end}
     LOD.CombatRolls = LOD.CombatRolls or {}
@@ -60,6 +70,12 @@ end
 mockGMod()
 
 dofile("gamemodes/legend_of_deborah/gamemode/shared.lua")
+-- These consumers are included by init.lua after the shared RPG graph. Their
+-- engine providers are inert here; the production method bodies remain intact.
+LOD.Magic = LOD.Magic or {}
+LOD.HostileMotionV2 = LOD.HostileMotionV2 or {}
+dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_magic_forms.lua")
+dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua")
 
 local RPG = LOD.RPG
 local Catalog = assert(RPG.IdentityCatalog, "IdentityCatalog required")
@@ -302,89 +318,92 @@ check(#metadataMismatches == 0, "Metadata Mismatch IDs: " .. table.concat(metada
 check(#prereqMismatches == 0, "Prerequisite Mismatch IDs: " .. table.concat(prereqMismatches, "; "))
 check(#replacementMismatches == 0, "Replacement Ladder Mismatch IDs: " .. table.concat(replacementMismatches, ", "))
 
--- 4. Effect Handler Reachability Check
-local unreachableHandlers = {}
-
-for k, def in pairs(implMap) do
-    local handler = def.effectHandlerId
-    if handler and handler ~= "gate_b_feat_ownership" then
-        local known = (LOD.RPGCrossFeats and ({cross_meteor_strike = LOD.RPGCrossFeats.AugmentMeteor,
-                cross_tiny_terror = LOD.RPGCrossFeats.MoraleBonus, cross_big_scary = LOD.RPGCrossFeats.MoraleBonus,
-                cross_crush_panic = LOD.RPGStatusElements.ObserveDamage, cross_boom_battery = LOD.RPGCrossFeats.RestoreBoomBattery,
-                cross_force_of_will = LOD.RPGCrossFeats.BridgeMagicPush})[handler])
-            or (Effects and Effects[handler])
-            or (Rules and Rules[handler])
-            or (CPS and CPS[handler])
-            or handler == "health_regeneration"
-            or handler == "status_proc_family"
-            or handler == "glow_up_cha_damage_rider"
-            or handler == "steadfast_control_resistance"
-            or handler == "con_blast_proof"
-            or handler == "big_guy_body_scale"
-            or handler == "not_yet_death_prevention"
-            or handler == "dex_exploding_damage_dice"
-            or handler == "dex_reload_cadence"
-            or handler == "dex_rate_of_fire"
-            or handler == "dex_burst_size"
-            or handler == "spring_heel"
-            or handler == "wall_jump"
-            or handler == "lateral_strafe"
-            or handler == "little_guy_body_scale"
-            or handler == "dex_smg_heat"
-            or handler == "magnum_deadeye"
-            or handler == "ammo_regeneration_floor"
-            or handler == "arcane_disruption_proc"
-            or handler == "mana_spring_regeneration"
-            or handler == "cloud_step"
-            or handler == "float_on"
-            or handler == "size_shifter"
-            or handler == "quantum_offensive_cost"
-            or handler == "summon_active_cap"
-            or handler == "map_open_movement"
-            or handler == "grant_distinct_magic_form"
-            or handler == "grant_distinct_magic_content"
-            or handler == "backpedal_movement"
-            or handler == "int_haste"
-            or handler == "haste_sustained_movement"
-            or handler == "magic_continuation_recovery"
-            or handler == "magic_kill_recovery"
-            or handler == "crowbar_family"
-            or handler == "pusher_weapon_knockback"
-            or handler == "steamroller_push_save"
-            or handler == "melee_reach"
-            or handler == "wis_navigation"
-            or handler == "wis_true_faith"
-            or handler == "incoming_magical_damage_reduction"
-            or handler == "incoming_physical_damage_reduction_cooldown"
-            or handler == "canonical_gps_navigation"
-            or handler == "magic_spatial_bonus_cells"
-            or handler == "rear_hostile_awareness"
-            or handler == "private_killer_instinct_priority"
-            or handler == "direct_look_hostile_information"
-            or handler == "magic_save_bonus"
-            or handler == "forceful_magic_push"
-            or handler == "weakness_bonus_advantage"
-            or handler == "cha_hitstun_presence"
-            or handler == "morale_save_bonus"
-            or handler == "morale_dc_intimidation"
-            or handler == "morale_proc_family"
-            or handler == "morale_failure_cascade"
-            or handler == "personality_aura_pulse"
-            or handler == "triggered_magic_aura_burst"
-            or handler == "academic_magic_regeneration"
-            or handler == "self_actualization_magic_damage"
-            or handler == "aggressive_personality_damage"
-            or handler == "winning_personality_qualification"
-            or handler == "private_sixth_sense_perception"
-            or handler == "russian_asset"
-
-        if not known then
-            table.insert(unreachableHandlers, k .. ":" .. tostring(handler))
-        end
-    end
+-- 4. Require a real loaded production consumer for every listed family. Handler
+-- labels alone are never proof: periodic families require their installed service.
+-- Focused integrated suites exercise arithmetic and event producers separately.
+local S, X, M = LOD.RPGStatusElements, LOD.RPGCrossFeats, LOD.MagicProgression
+local consumers = {
+    academic_magic_regeneration = Effects.AcademicMagicRegenMultiplier,
+    aggressive_personality_damage = RPG.ObserveDirectChaDamage,
+    ammo_regeneration_floor = Effects.AmmoRegenProfile,
+    arcane_disruption_proc = S.ResolveStatusProcFamilies,
+    backpedal_movement = Rules.ApplyVoluntaryMovementFeats,
+    big_guy_body_scale = Rules.PlayerTargetScale,
+    canonical_gps_navigation = observedTimers.LOD_CheckpointDWisGPS,
+    cha_hitstun_presence = Rules.HitStunMultiplier,
+    cloud_step = Rules.TryCloudStep,
+    con_blast_proof = Effects.BlastProofTargetContract,
+    cross_big_scary = X.MoraleBonus,
+    cross_boom_battery = X.RestoreBoomBattery,
+    cross_crush_panic = S.ObserveDamage,
+    cross_force_of_will = X.BridgeMagicPush,
+    cross_meteor_strike = X.AugmentMeteor,
+    cross_tiny_terror = X.MoraleBonus,
+    crowbar_family = Effects.ResolveCrowbarPushRequest,
+    dex_burst_size = Rules.ResolveBurstSize,
+    dex_exploding_damage_dice = Effects.ApplyExplodingDiceToDamageProfile,
+    dex_rate_of_fire = Effects.ProcessAttackRateObservation,
+    dex_reload_cadence = Effects.ProcessReloadObservation,
+    dex_smg_heat = Effects.ResolveSMGHeatSuppression,
+    direct_look_hostile_information = observedTimers.LOD_CheckpointDWisInformation,
+    float_on = Rules.TickFloatOn,
+    forceful_magic_push = Effects.ResolvePushDistance,
+    mana_barrier_diversion = Rules.ComputeMagicDiversion,
+    glow_up_cha_damage_rider = Rules.AddChaModDerivedDamage,
+    grant_distinct_magic_content = M.ApplyCheckpointDMagicGrantFeat,
+    grant_distinct_magic_form = M.ApplyCheckpointDMagicGrantFeat,
+    haste_sustained_movement = Rules.HasteDrainPerSecond,
+    health_regeneration = Effects._TickActor,
+    incoming_magical_damage_reduction = Rules.ApplyWisDefense,
+    incoming_physical_damage_reduction_cooldown = Rules.ApplyWisDefense,
+    lateral_strafe = Effects.ResolveStrafeInput,
+    little_guy_body_scale = Rules.PlayerTargetScale,
+    magic_continuation_recovery = Effects.ApplyFeedbackLoop,
+    magic_kill_recovery = Effects.ApplyArcRecovery,
+    magic_save_bonus = S.ConditionSave,
+    magic_spatial_bonus_cells = LOD.MagicForms.SpatialBonusCells,
+    magnum_deadeye = Rules.AimHoldSeconds,
+    mana_spring_regeneration = Effects.ResolveManaSpringTick,
+    map_open_movement = Rules.MovementMultiplier,
+    melee_reach = Rules.MeleeReach,
+    morale_dc_intimidation = S.MoraleDC,
+    morale_failure_cascade = S.CascadeMorale,
+    morale_proc_family = S.ResolveStatusProcFamilies,
+    morale_save_bonus = S.MoraleSave,
+    not_yet_death_prevention = Rules.ApplyNotYetDefense,
+    personality_aura_pulse = observedHooks.LOD_CheckpointDPersonalityAura,
+    private_killer_instinct_priority = observedTimers.LOD_CheckpointDKillerInstinct,
+    private_sixth_sense_perception = observedTimers.LOD_CheckpointDSixthSense,
+    pusher_weapon_knockback = Effects.TryPusherProc,
+    quantum_offensive_cost = Rules.OffensiveMagicCost,
+    rear_hostile_awareness = observedTimers.LOD_CheckpointDWisInformation,
+    russian_asset = Rules.TetrisOverfillMultiplier,
+    self_actualization_magic_damage = Rules.ResolveDamageContract,
+    size_shifter = Rules.ApplySizeShifterScale,
+    spring_heel = observedHooks.LOD_RPG_GateE_SpringHeel,
+    status_proc_family = S.ResolveStatusProcFamilies,
+    steadfast_control_resistance = Effects.ResolvePushDistance,
+    steamroller_push_save = LOD.Pushback.ResolveSharedPushSave,
+    summon_active_cap = M.MaxActiveSummons,
+    triggered_magic_aura_burst = observedHooks.LOD_CheckpointDAuraBurst,
+    wall_jump = Rules.TryWallJump,
+    weakness_bonus_advantage = S.ResolveElementDamage,
+    winning_personality_qualification = Effects.WinningPersonalityQualificationScore,
+    wis_navigation = Rules.MapDrainPerSecond,
+}
+for id, definition in pairs(implMap) do
+    check(type(consumers[definition.effectHandlerId]) == "function",
+        "Missing loaded consumer: " .. id .. ":" .. tostring(definition.effectHandlerId))
 end
-
-check(#unreachableHandlers == 0, "Unreachable Handlers: " .. table.concat(unreachableHandlers, ", "))
+local function sourceContains(file, token)
+    local f = assert(io.open("gamemodes/legend_of_deborah/gamemode/lod/" .. file, "r"))
+    local text = f:read("*a"); f:close()
+    return text:find(token, 1, true) ~= nil
+end
+check(sourceContains("sv_magic_forms.lua", 'hook.Run("LODDiscreteMagicSpent", ply, cost, context)'), "Aura Burst activation producer missing")
+check(sourceContains("sv_pushback.lua", 'attackerDerived.steamrollerSuccessfulSaveFraction'), "Steamroller shared save consumer missing")
+check(sourceContains("sv_smg_capacity_rebalance.lua", 'derived.ammoRegenFloorFraction'), "ammo-regeneration consumer missing")
+check(sourceContains("sv_soldier_shot_contract.lua", 'rules:RateOfFireMultiplier(self)'), "AI attack cadence consumer missing")
 
 -- 5. Class Capstones Validation (Fighter, Rogue, Wizard)
 local CANONICAL_CAPSTONES = {

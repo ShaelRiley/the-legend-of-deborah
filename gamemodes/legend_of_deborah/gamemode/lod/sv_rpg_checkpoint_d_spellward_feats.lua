@@ -22,7 +22,7 @@ for rank, id in ipairs(IDS) do
     definition.allowedActorTypes, definition.requiredSubsystemTags = {"hero", "human_soldier", "ai"}, {"status_saves"}
     definition.synergyTags, definition.oneRank = {"wisdom", "magic_save", "defense"}, true
     definition.effectHandlerId = "magic_save_bonus"
-    definition.effectParams = {magicSaveBonus = BONUSES[rank], description = "Replaces the lower-rank MagicSave bonus with +" .. BONUSES[rank] .. " against explicitly resistible magical effects."}
+    definition.effectParams = {magicSaveBonus = BONUSES[rank], description = (rank == 1 and "Adds +2 to Magic Saves" or ("Replaces the lower-rank Magic Save bonus with +" .. BONUSES[rank])) .. " against explicitly resistible magical effects."}
     definition.directorBaseWeight, definition.eligibilityText = 1.0,
         "WIS " .. (11 + rank * 2) .. (rank > 1 and " / requires " .. NAMES[rank - 1] or "")
     definition.actorText = "Heroes, human Soldiers, and AI"

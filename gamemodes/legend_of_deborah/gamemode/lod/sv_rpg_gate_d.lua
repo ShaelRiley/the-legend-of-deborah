@@ -48,6 +48,10 @@ end
 
 function AbilityRules:Derived(actor)
     local state = self:ProgressionState(actor)
+    local progression = LOD.CharacterProgressionSystem
+    if state and progression and progression.ReconcileFeatOwnership and progression:ReconcileFeatOwnership(state) then
+        progression:_RecomputeProgressionState(state)
+    end
     if LOD.RPGStatusElements and LOD.RPGStatusElements.BindActorLife then LOD.RPGStatusElements:BindActorLife(actor) end
     return state and state.derivedStats or nil
 end

@@ -290,7 +290,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     info:SetDamageType(DMG_ENERGYBEAM)
     info:SetDamagePosition(target:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
-    tags.attackEvent, tags.damageContract = context, contract
+    tags.attackEvent, tags.damageContract, tags.actorDamageResolved = context, contract, true
     if Status and Status.AttachDamageContext then Status:AttachDamageContext(info, tags) end
     local previousAttribution = target.LODPendingDamageAttribution
     local previousProxyDC = IsValid(creditCaster) and creditCaster.LODMagicProxyMoraleDC
@@ -690,7 +690,9 @@ function Forms:CastSelected(ply)
     -- affordability check succeeds. Pay before synchronous damage so Magic-recovery
     -- feats see the post-cost resource state, while the full-Magic bonus remains the
     -- cast-initiation snapshot sealed above.
+    context.auraBurst = RPG:PrepareCheckpointDAuraBurst(ply)
     context.castSerial = self:_NextCastSerial(ply)
+    local previousAceReady = ply.LODRPGNextAceReadyAt
     context.aceBonus = Rules.CommitAttack and Rules:CommitAttack(ply) and 1 or 0
     local previousCooldown = Magic.NextCast[ply] or 0
     ps.magic = math.max(0, ps.magic - cost)
@@ -707,6 +709,7 @@ function Forms:CastSelected(ply)
     if not castOK then
         ps.magic = math.min(100, ps.magic + cost)
         Magic.NextCast[ply] = previousCooldown
+        ply.LODRPGNextAceReadyAt = previousAceReady
         Magic:_Sync(ply, ps)
         self.Stats.failed = (self.Stats.failed or 0) + 1
         castNotice(ply, form, content, reason or "cast", 0, ps.magic, context.castSerial)
@@ -715,6 +718,9 @@ function Forms:CastSelected(ply)
 
     local effects = RPG.FeatEffectSystem
     if effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply, baseCost, cost) end
+    -- One observer event only after a real committed activation. Failed/refunded
+    -- casts and sustained utility drains cannot trigger Aura Burst.
+    if cost > 0 then hook.Run("LODDiscreteMagicSpent", ply, cost, context) end
     self.Stats.casts = (self.Stats.casts or 0) + 1
     Magic.Stats.casts = (Magic.Stats.casts or 0) + 1
 

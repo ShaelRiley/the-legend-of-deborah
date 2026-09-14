@@ -39,44 +39,72 @@ function RPG:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius)
 end
 
 RPG.CheckpointDAuraBurstStats = RPG.CheckpointDAuraBurstStats or {pulses = 0, targets = 0, damageEvents = 0}
-function RPG:ResolveCheckpointDAuraBurst(actor)
+function RPG:QueueAuraDamageReport(info, owner, target, label, cha, con)
+    local rolls = LOD.CombatRolls
+    if not rolls or not rolls.QueueDamageReport then return end
+    local formula = "CHA " .. tostring(cha) .. (con > 0 and (" + CON " .. tostring(con)) or "")
+    rolls:QueueDamageReport(info, function(finalDamage)
+        local text = rolls:_DamageEventText(owner, formula, finalDamage, target,
+            "[" .. label .. "; flat damage]", nil, "Hostile", label)
+        local fields = {event = "aura_damage", source = label, damage = finalDamage}
+        if IsValid(owner) and owner:IsPlayer() then rolls:_Send(owner, 0, text, "damage", fields) end
+        if IsValid(target) and target:IsPlayer() and target ~= owner then rolls:_Send(target, 1, text, "damage", fields) end
+    end)
+end
+
+-- Capture affected actors at activation start; synchronous spell pushes must not
+-- move enemies into/out of the supplemental aura. Apply only after cast success.
+function RPG:PrepareCheckpointDAuraBurst(actor)
     local state = Rules:ProgressionState(actor)
     local radius = self:CheckpointDAuraBurstProfile(state)
-    if radius == nil or not IsValid(actor) or actor.LODDead or actor:Health() <= 0 then return 0 end
+    if radius == nil or not IsValid(actor) or actor.LODDead or actor:Health() <= 0 then return nil end
     local run, navigator = LOD.RunManager and LOD.RunManager.State, LOD.MazeNavigator
     local graph = run and run.Graph
-    if not graph or not navigator or not LOD.FactionManager then return 0 end
+    if not graph or not navigator or not LOD.FactionManager then return nil end
     local ownerCell = navigator:WorldToCell(graph, actor:GetPos())
-    if not ownerCell then return 0 end
-    local derived = Rules:Derived(actor) or {}
-    local damageContract = {bonus = 0}
-    Rules:AddChaModDerivedDamage(damageContract, actor, "sv_rpg_checkpoint_d_aura_burst_feats")
-    local damage = damageContract.bonus
-    self.CheckpointDAuraBurstStats.pulses = self.CheckpointDAuraBurstStats.pulses + 1
-    if damage <= 0 then return 0 end
-    local hits = 0
+    if not ownerCell then return nil end
+    local contract = {bonus = 0}
+    local cha, con = Rules:AddChaModDerivedDamage(contract, actor, "sv_rpg_checkpoint_d_aura_burst_feats")
+    local pulse = {identity = state, graph = graph, targets = {}, cha = cha, con = con, damage = contract.bonus}
     for _, target in ipairs(LOD.FactionManager:Opponents(actor)) do
-        if IsValid(target) and target ~= actor and not target.LODDead and target:Health() > 0 then
-            local targetCell = navigator:WorldToCell(graph, target:GetPos())
-            if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
-                local info = DamageInfo()
-                info:SetAttacker(actor); info:SetInflictor(actor); info:SetDamage(damage)
-                info:SetDamageType(DMG_ENERGYBEAM); info:SetDamagePosition(target:WorldSpaceCenter())
-                info:SetDamageForce(vector_origin)
-                Status:AttachDamageContext(info, {magic = true, wisScaled = false, auraBurst = true,
-                    statusProcIneligible = true, moraleIneligible = true, feedbackIneligible = true})
-                target:TakeDamageInfo(info)
-                hits = hits + 1
-                self.CheckpointDAuraBurstStats.damageEvents = self.CheckpointDAuraBurstStats.damageEvents + 1
-            end
+        if IsValid(target) and target ~= actor and not target.LODDead and target:Health() > 0
+            and self:CheckpointDCellRadiusIncludes(ownerCell, navigator:WorldToCell(graph, target:GetPos()), radius) then
+            pulse.targets[#pulse.targets + 1] = {actor = target, identity = Rules:ProgressionState(target)}
+        end
+    end
+    return pulse
+end
+
+function RPG:ResolveCheckpointDAuraBurst(actor, pulse)
+    pulse = pulse or self:PrepareCheckpointDAuraBurst(actor)
+    if not pulse or not IsValid(actor) or pulse.identity ~= Rules:ProgressionState(actor)
+        or pulse.graph ~= (LOD.RunManager.State or {}).Graph then return 0 end
+    self.CheckpointDAuraBurstStats.pulses = self.CheckpointDAuraBurstStats.pulses + 1
+    if pulse.damage <= 0 then return 0 end
+    local hits = 0
+    for _, record in ipairs(pulse.targets) do
+        local target = record.actor
+        if IsValid(target) and record.identity == Rules:ProgressionState(target)
+            and not target.LODDead and target:Health() > 0 then
+            local info = DamageInfo()
+            info:SetAttacker(actor); info:SetInflictor(actor); info:SetDamage(pulse.damage)
+            info:SetDamageType(DMG_ENERGYBEAM); info:SetDamagePosition(target:WorldSpaceCenter())
+            info:SetDamageForce(vector_origin)
+            Status:AttachDamageContext(info, {magic = true, wisScaled = false, auraBurst = true,
+                actorDamageResolved = true, statusProcIneligible = true, moraleIneligible = true, feedbackIneligible = true})
+            self:QueueAuraDamageReport(info, actor, target, "Aura Burst", pulse.cha, pulse.con)
+            target:TakeDamageInfo(info)
+            hits = hits + 1
+            self.CheckpointDAuraBurstStats.damageEvents = self.CheckpointDAuraBurstStats.damageEvents + 1
         end
     end
     self.CheckpointDAuraBurstStats.targets = self.CheckpointDAuraBurstStats.targets + hits
     return hits
 end
 
-hook.Add("LODDiscreteMagicSpent", "LOD_CheckpointDAuraBurst", function(actor)
-    RPG:ResolveCheckpointDAuraBurst(actor)
+hook.Add("LODDiscreteMagicSpent", "LOD_CheckpointDAuraBurst", function(actor, cost, context)
+    if (tonumber(cost) or 0) <= 0 or not context or not context.auraBurst then return end
+    RPG:ResolveCheckpointDAuraBurst(actor, context.auraBurst)
 end)
 
 RPG.FeatEffectSystem:RegisterChaModDamageSource("aura_burst", function(state)
