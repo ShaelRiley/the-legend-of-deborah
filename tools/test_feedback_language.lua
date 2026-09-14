@@ -263,7 +263,15 @@ assert(#errors==0,table.concat(errors,"\n"))
 local resolvedChain={values={10,10,7},contributions={10,10,7},chainStarts={1},baseDice=1,bonus=2,
     feedResolution={total=19.5,resistance=1,reduced={9,9,6}}}
 local breakdown=logger:RollBreakdown(resolvedChain)
-assert(breakdown=="10 > 10 > 7 + 2 bonus = 29 rolled; CON -1/die: 9 + 9 + 6 = 26; resolved 19.5")
+assert(breakdown=="10 > 10 > 7 + 2 bonus = 29 rolled; CON -1/die: 9 + 9 + 6 + 2 bonus = 26; resolved 19.5")
+resolvedChain.bonus=-2
+resolvedChain.feedResolution.total=22
+assert(logger:RollBreakdown(resolvedChain):find("CON -1/die: 9 + 9 + 6 - 2 bonus = 22",1,true),
+    "negative flat modifiers remain explicit in the resisted subtotal")
+resolvedChain.bonus=0
+resolvedChain.feedResolution.total=24
+assert(logger:RollBreakdown(resolvedChain):find("CON -1/die: 9 + 9 + 6 = 24",1,true),
+    "zero modifiers do not add noise")
 local text=rolls:_DamageEventText(a,"1d10!+2",19.5,b,"[rolls "..breakdown.."]")
 rolls:_Send(a,0,text)
 assert(sent[#sent][2][1]:find("(19.5) DAMAGE",1,true)==1 and sent[#sent][2][1]:find("1d10!+2",1,true),

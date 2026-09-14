@@ -420,4 +420,32 @@ source.state.derivedStats={intMod=4};source.resource.magic=99
 local preRoll=Rolls:RollActorDamage(source,{sides=6,count=1},rng({6,6,1}),0)
 near(source.resource.magic,100)
 near(preRoll.wizardFullMagicIntBonus,0,'restoration during an attack cannot create a full-Magic start')
+-- The real instrumentation observes the preceding Dodge even when the later
+-- diversion authority returns nil. Disk/timer boundaries alone are stubbed.
+local installLogger
+CLIENT=false
+isbool=function(value) return type(value)=='boolean' end
+engine={ActiveGamemode=function() return 'legend_of_deborah' end}
+GetConVar=function() return {GetBool=function() return true end} end
+player.GetHumans=function() return {} end
+timer.Simple=function(_,fn) installLogger=fn end
+dofile('lua/autorun/server/lod_rpg_test_log.lua')
+local telemetry, log = {}, LOD.RPGTestLog
+log.BeginSession=function() return true end
+log.Write=function(_,kind,fields) telemetry[#telemetry+1]={kind=kind,fields=fields} end
+assert(installLogger and installLogger(),'production instrumentation installs')
+local dodger=actor();dodger.state.derivedStats=rogue
+Rules.DodgeMovement=function() return 360,200,400 end
+Rolls._RNG=function() return {Float=function() return .1 end} end
+local avoided=damage({})
+assert(Rules:ApplyDodge(dodger,avoided))
+assert(Rules:ApplyPlayerDefense(dodger,avoided)==nil,'observer preserves nil defense result')
+local observed=telemetry[#telemetry]
+assert(observed.kind=='PLAYER_DEFENSE' and observed.fields.dodged and observed.fields.evaded
+    and observed.fields.final==0,'telemetry agrees with canonical Dodge and zero HP damage')
+local landed=damage({})
+local defense=Rules:ApplyPlayerDefense(dodger,landed)
+observed=telemetry[#telemetry]
+assert(defense and defense.finalHPDamage==20 and not observed.fields.dodged and not observed.fields.evaded,
+    'ordinary undeflected hit cannot inherit a prior attack Dodge')
 print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')

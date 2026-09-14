@@ -103,7 +103,7 @@ for _,p in ipairs(packets) do
 end
 assert(majorCount==2 and shield and feedback,'one FX packet for each actual committed reaction')
 assert(shieldText:find('(6) HP AFTER DIVERSION',1,true)==1 and shieldText:find('8 incoming - 2 diverted = 6 HP',1,true))
-assert(feedbackText:find('(4) DAMAGE',1,true)==1 and feedbackText:find('CON -1/die: 1 + 1 = 4',1,true))
+assert(feedbackText:find('(4) DAMAGE',1,true)==1 and feedbackText:find('CON -1/die: 1 + 1 + 2 bonus = 4',1,true))
 assert(feedback[4][1]=='(4) DAMAGE — 2d4+2' and feedback[6][1].x==200)
 local before=#packets
 assert(not LOD.RPGPresentation:SendFX(wizard,4,'shield','spam'))

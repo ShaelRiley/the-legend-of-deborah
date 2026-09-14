@@ -299,12 +299,18 @@ local function install()
                 local ps = LOD.Magic and LOD.Magic._EnsureState and LOD.Magic:_EnsureState(target) or nil
                 magicAfter = ps and ps.magic or nil
             end
+            -- Dodge precedes diversion and can make its result nil. Observe the
+            -- shared damage context instead of reporting every Dodge as false.
+            local status = LOD.RPGStatusElements
+            local context = status and dmginfo and status:DamageContext(dmginfo, target) or {}
+            local dodged = context.dodged == true
             local fields = {
                 target = entityLabel(target),
                 attacker = dmginfo and entityLabel(dmginfo:GetAttacker()) or "invalid",
                 incoming = incoming,
                 final = dmginfo and dmginfo:GetDamage() or incoming,
-                evaded = result and result.evaded == true or false,
+                dodged = dodged,
+                evaded = dodged or (result and result.evaded == true) or false,
                 diverted_hp = result and result.actualMagicDiversion or 0,
                 magic_spent = result and result.magicSpent or 0,
                 magic_before = magicBefore,

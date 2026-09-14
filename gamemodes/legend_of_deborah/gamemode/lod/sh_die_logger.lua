@@ -49,8 +49,12 @@ function Log:RollBreakdown(contract)
     if resolution and (resolution.resistance or 0) > 0 and resolution.reduced then
         local reduced, sum = {}, bonus
         for i, value in ipairs(resolution.reduced) do reduced[i] = tostring(value); sum = sum + value end
+        local arithmetic = #reduced > 0 and table.concat(reduced, " + ") or "0"
+        if bonus ~= 0 then
+            arithmetic = arithmetic .. string.format(" %s %g bonus", bonus < 0 and "-" or "+", math.abs(bonus))
+        end
         text = text .. string.format("; CON -%g/die: %s = %g", resolution.resistance,
-            table.concat(reduced, " + "), sum)
+            arithmetic, sum)
     end
     if resolution and math.abs(resolution.total - subtotal) > 0.001 then
         text = text .. string.format("; resolved %g", resolution.total)
