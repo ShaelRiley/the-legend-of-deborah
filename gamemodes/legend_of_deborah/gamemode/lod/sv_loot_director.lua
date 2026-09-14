@@ -9,7 +9,6 @@ local CLEANUP_TIMER = "LOD_LootDirectorCleanup"
 local ENEMY_DROP_LIFETIME = 60
 local ENEMY_DROP_CAP_PER_IDENTITY = 24
 local MAX_ARMOR = 100
-local GRENADE_CAP = 3
 
 local AMMO = {
     weapon_pistol = {label = "Pistol", ammo = "Pistol", load = 18, cap = 54, small = 6, scarcity = 1.00},
@@ -23,11 +22,11 @@ local WEAPONS = {
     weapon_shotgun = {label = "Shotgun", load = 6, model = "models/weapons/w_shotgun.mdl"},
     weapon_smg1 = {label = "SMG", load = 45, model = "models/weapons/w_smg1.mdl"},
     weapon_357 = {label = ".357 Magnum", load = 6, model = "models/weapons/w_357.mdl"},
-    weapon_ar2 = {label = "AR2", load = 30, model = "models/weapons/w_irifle.mdl"},
-    weapon_frag = {label = "Grenade", load = 1, model = "models/weapons/w_grenade.mdl"}
+    weapon_ar2 = {label = "AR2", load = 30, model = "models/weapons/w_irifle.mdl"}
 }
 
 local KIND_MODEL = {
+    consumable = "models/props_junk/garbage_glassbottle003a.mdl",
     ammo = "models/items/boxsrounds.mdl",
     health = "models/items/healthkit.mdl",
     armor = "models/items/battery.mdl",
@@ -36,6 +35,7 @@ local KIND_MODEL = {
 }
 
 local KIND_COLOR = {
+    consumable = Color(130, 235, 160, 245),
     ammo = Color(255, 196, 64, 240),
     health = Color(170, 255, 170, 245),
     armor = Color(110, 185, 255, 245),
@@ -217,16 +217,6 @@ function Loot:_GrantWeapon(ply, weaponClass, rng)
     local spec = WEAPONS[weaponClass]
     if not spec then return false end
 
-    if weaponClass == "weapon_frag" then
-        local weapon = ply:GetWeapon("weapon_frag")
-        if not IsValid(weapon) then weapon = ply:Give("weapon_frag", true) end
-        local current = ply:GetAmmoCount("Grenade")
-        if not IsValid(weapon) and current <= 0 then return false end
-        if current >= GRENADE_CAP then return false end
-        ply:SetAmmo(math.min(GRENADE_CAP, current + 1), "Grenade")
-        return true, "Grenade acquired"
-    end
-
     if IsValid(ply:GetWeapon(weaponClass)) then
         return self:_GrantAmmo(ply, rng, "medium", weaponClass)
     end
@@ -355,6 +345,8 @@ function Loot:Collect(ent, ply)
     local ok, message
     if ent.LODLootKind == "ammo" then
         ok, message = self:_GrantAmmo(ply, rng, payload.tier or "small", payload.weaponClass)
+    elseif ent.LODLootKind == "consumable" then
+        if LOD.Equipment then ok, message = LOD.Equipment:Grant(ply, payload.itemId, 1) end
     elseif ent.LODLootKind == "health" then
         ok, message = self:_GrantHealth(ply, payload.amount or 25)
     elseif ent.LODLootKind == "armor" then
@@ -629,7 +621,7 @@ function Loot:BuildStaticPlan(graph)
         return copy[1]
     end
 
-    self:_AddStaticNode(plan, pickReward(reward3, "grenade"), "weapon", {weaponClass = "weapon_frag"}, 3, "reward", Vector(0, 0, 30))
+    self:_AddStaticNode(plan, pickReward(reward3, "throwable"), "consumable", {itemId = "healing_potion"}, 3, "reward", Vector(0, 0, 30))
     self:_AddStaticNode(plan, pickReward(reward4, "large-cache"), "cache", {}, 4, "reward", Vector(0, 0, 30))
     if level >= 2 then
         self:_AddStaticNode(plan, pickReward(reward2, "magnum"), "weapon", {weaponClass = "weapon_357"}, 2, "reward", Vector(0, 0, 30))
@@ -731,9 +723,9 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
         if weaponClass then
             kind = "weapon"
             payload.weaponClass = weaponClass
-        elseif rng:Chance(0.35) and ply:GetAmmoCount("Grenade") < GRENADE_CAP then
-            kind = "weapon"
-            payload.weaponClass = "weapon_frag"
+        elseif rng:Chance(0.35) then
+            kind = "consumable"
+            payload.itemId = "healing_potion"
         else
             kind = "cache"
         end
@@ -880,3 +872,4 @@ concommand.Add("lod_loot_status", function(ply)
     print("[LOD:LOOT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

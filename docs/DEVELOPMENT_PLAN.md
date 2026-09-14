@@ -11,20 +11,21 @@ workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
 ## Next scope
 
-The RPG Update remains the current release milestone. This main promotion is not
-public-server or Workshop deployment. Before a separately authorized deployment,
-reconcile the Instruction Booklet with the finished implementation and live GDD,
-and close outstanding release validation. The reviewed Fighter/Wizard sessions
-exercise solo combat and first-dungeon completion; they do not establish the full
-multiplayer death/revival/Soldier/reconnect/late-join matrix or every Magic Form.
-These evidence limits were disclosed before Shael approved main promotion.
+Shael's Equipment handoff explicitly promotes Equipment implementation ahead of
+public deployment. Work is isolated on `astra/equipment-update`; main remains the
+accepted RPG baseline. Workshop and public VPS are held until Equipment and Enemy
+are both complete, followed by separately authorized deployment.
 
-Use targeted live-GDD AI-tab navigation for new work. Preserve accepted mechanics,
-sparse Source-style HUD, shared authorities, deterministic server decisions, and
-the integrated gate. Material runtime changes after approval require fresh
-validation and appropriate human acceptance; prior approval is not blanket
-approval of future builds. Do not implement deferred Equipment/Enemy milestones
-without a new scope instruction.
+The first checkpoint implements Healing Potion/Throwable behavior and removes
+ordinary grenade acquisition. See [checkpoint](EQUIPMENT_CHECKPOINT.md) for scope,
+validation and the finite human test. The Equipment milestone is not complete:
+procedural wearables/economy, Block, Special Moves and Stink Bomb need the missing
+authored rules listed in [design proposal](EQUIPMENT_DESIGN_PROPOSAL.md). This
+proposal is unapproved and must not be treated as canonical game law.
+
+Preserve accepted RPG behavior and the current workflow. Do not restart the old
+hybrid/Antigravity process. The broader Instruction Booklet reconciliation and
+outstanding RPG multiplayer release validation remain required before deployment.
 
 ## History
 
@@ -32,3 +33,4 @@ The [pre-promotion plan](DEVELOPMENT_PLAN_HISTORICAL_2026_09_14.md) preserves ea
 checkpoint sequencing and candidate handoffs. It is historical evidence, not the
 current task queue. [Development status](DEVELOPMENT_STATUS.md) records promotion
 and validation. The live GDD remains design authority.
+

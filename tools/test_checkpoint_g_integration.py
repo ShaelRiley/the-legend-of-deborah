@@ -20,6 +20,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Potion Projectile Collision & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_potion_projectile.lua"]),
+    ("Equipment Ownership & Throwable Transactions", ["python3", "tools/run_lua54.py", "tools/test_equipment.lua"]),
     ("Git Diff Check", ["git", "diff", "--check"]),
     ("Lua Syntax Audit", ["python3", "tools/run_lua54.py", "--syntax"] + LUA_FILES),
     ("Checkpoint C Python Validator", ["python3", "tools/validate_checkpoint_c.py"]),

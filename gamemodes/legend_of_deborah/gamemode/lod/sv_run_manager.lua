@@ -449,7 +449,8 @@ function RunManager:CaptureInventory(ply, ps)
 
     local snapshot = {weapons = {}, ammo = {}}
     for _, wep in ipairs(ply:GetWeapons()) do
-        if IsValid(wep) then
+        if IsValid(wep) and wep:GetClass() ~= "weapon_frag"
+            and wep:GetClass() ~= "weapon_lod_throwable" then
             snapshot.weapons[#snapshot.weapons + 1] = {
                 class = wep:GetClass(),
                 clip1 = wep:Clip1(),
@@ -457,7 +458,9 @@ function RunManager:CaptureInventory(ply, ps)
             }
         end
     end
-    for ammoID, amount in pairs(ply:GetAmmo()) do snapshot.ammo[ammoID] = amount end
+    for ammoID, amount in pairs(ply:GetAmmo()) do
+        if game.GetAmmoName(ammoID) ~= "Grenade" then snapshot.ammo[ammoID] = amount end
+    end
     ps.inventory = snapshot
     ps.armor = ply:Armor()
 end
@@ -468,13 +471,16 @@ function RunManager:RestoreInventory(ply, ps)
     ply:RemoveAllAmmo()
 
     for _, weaponState in ipairs(ps.inventory.weapons or {}) do
-        local wep = ply:Give(weaponState.class, true)
+        local allowed = weaponState.class ~= "weapon_frag" and weaponState.class ~= "weapon_lod_throwable"
+        local wep = allowed and ply:Give(weaponState.class, true) or nil
         if IsValid(wep) then
             if weaponState.clip1 and weaponState.clip1 >= 0 then wep:SetClip1(weaponState.clip1) end
             if weaponState.clip2 and weaponState.clip2 >= 0 then wep:SetClip2(weaponState.clip2) end
         end
     end
-    for ammoID, amount in pairs(ps.inventory.ammo or {}) do ply:SetAmmo(amount, ammoID) end
+    for ammoID, amount in pairs(ps.inventory.ammo or {}) do
+        if game.GetAmmoName(ammoID) ~= "Grenade" then ply:SetAmmo(amount, ammoID) end
+    end
 end
 
 function RunManager:HoldPlayersForBuild()
@@ -1061,3 +1067,4 @@ end)
 hook.Add("ShutDown", "LOD_Cleanup", function()
     LOD.MazeBuilder:Cleanup()
 end)
+

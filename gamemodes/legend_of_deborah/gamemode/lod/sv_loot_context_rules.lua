@@ -10,7 +10,6 @@ if not Loot then return end
 local WEAPON_RARITY = {
     weapon_shotgun = {base = 1.00, perLevel = 0.00, cap = 1.00},
     weapon_smg1 = {base = 0.90, perLevel = 0.00, cap = 0.90},
-    weapon_frag = {base = 0.55, perLevel = 0.00, cap = 0.55},
     weapon_357 = {base = 0.28, perLevel = 0.06, cap = 0.55},
     weapon_ar2 = {base = 0.12, perLevel = 0.04, cap = 0.40}
 }
@@ -25,7 +24,6 @@ local WEAPON_ORDER = {
 local STATIC_REWARD_ORDER = {
     "weapon_shotgun",
     "weapon_smg1",
-    "weapon_frag",
     "weapon_357",
     "weapon_ar2"
 }
@@ -79,7 +77,7 @@ end
 
 -- The core static plan already reserves one optional weapon-reward node from
 -- Dungeon 1 onward. Retune that node through the same rarity table instead of
--- hard-coding it to Grenades, so every v1 weapon can physically appear in a
+-- hard-coding its firearm family, so every v1 weapon can physically appear in a
 -- Level-1 maze while Shotgun/SMG remain much more common outcomes. Also convert
 -- every authored armor/suit node into an ordinary health pickup before entities
 -- are spawned, so no battery/suit-restoration loot enters production play.
@@ -106,7 +104,7 @@ function Loot:BuildStaticPlan(graph)
             node.convertedFromArmor = true
         elseif not weaponRewardRewritten and chosen
             and node.kind == "weapon" and node.role == "reward"
-            and node.payload and node.payload.weaponClass == "weapon_frag"
+            and node.payload and node.payload.weaponClass == "weapon_shotgun"
         then
             node.payload.weaponClass = chosen
             node.weaponRarityRolled = true
@@ -169,3 +167,4 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
     -- ordinary no-drop rather than spawning an unusable entity.
     return category, pity and category ~= nil
 end
+

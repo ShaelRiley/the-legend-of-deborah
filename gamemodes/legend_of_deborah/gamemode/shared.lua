@@ -22,6 +22,8 @@ include("lod/sh_die_logger.lua")
 if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
 include("lod/sh_feedback_language.lua")
 include("lod/sh_rng.lua")
+if SERVER then AddCSLuaFile("lod/sh_equipment.lua") end
+include("lod/sh_equipment.lua")
 if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end
 include("lod/sh_rpg_schema.lua")
 
@@ -202,3 +204,4 @@ end
 function GM:PlayerDeathThink()
     return true
 end
+

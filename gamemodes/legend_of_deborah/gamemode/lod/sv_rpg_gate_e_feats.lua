@@ -115,7 +115,7 @@ local function ammoFloorDefinition(featId, displayName, requirement, prerequisit
         effectParams = {
             floorFraction = fraction,
             description = string.format(
-                "Replaces lower ammo-regeneration ranks and sets ordinary regenerative firearm AmmoRegenFloorFraction to %.2f; each owned eligible family stops at ceil(MaxFamilyCapacity × %.2f) without changing capacity, cadence, no-fire delay, Grenades, or AR2 secondary ammunition.",
+                "Replaces lower ammo-regeneration ranks and sets ordinary regenerative firearm AmmoRegenFloorFraction to %.2f; each owned eligible family stops at ceil(MaxFamilyCapacity × %.2f) without changing capacity, cadence, no-fire delay, consumables, or AR2 secondary ammunition.",
                 fraction, fraction)
         },
         directorBaseWeight = 1.0,
@@ -781,3 +781,4 @@ concommand.Add("lod_rpg_test_ammo_floor", function(ply, _, args)
 end)
 
 return FeatEffectSystem
+

@@ -13,14 +13,13 @@ local function runQA()
     ply:SetNW2Int("LOD_DEX", 15)
     LOD.CharacterProgressionSystem:GrantFeat(ply, "DEX_MAGNUM_DEADEYE")
 
-    local weapons = {"weapon_pistol", "weapon_357", "weapon_lod_crowbar", "weapon_smg1", "weapon_shotgun", "weapon_ar2", "weapon_frag"}
+    local weapons = {"weapon_pistol", "weapon_357", "weapon_lod_crowbar", "weapon_smg1", "weapon_shotgun", "weapon_ar2"}
     for _, w in ipairs(weapons) do ply:Give(w) end
     ply:GiveAmmo(999, "Pistol")
     ply:GiveAmmo(999, "357")
     ply:GiveAmmo(999, "SMG1")
     ply:GiveAmmo(999, "Buckshot")
     ply:GiveAmmo(999, "AR2")
-    ply:GiveAmmo(10, "Grenade")
 
     local function runSequence(seq, idx)
         if idx > #seq then
@@ -87,3 +86,4 @@ hook.Add("InitPostEntity", "AG003_AutoQA", function()
         end
     end)
 end)
+

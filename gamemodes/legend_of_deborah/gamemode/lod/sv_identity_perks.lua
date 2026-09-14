@@ -51,7 +51,7 @@ function Director:TargetRegistries()
     for _, profile in pairs(LOD.RPG.PlayerWeaponDamageProfiles) do
         if profile.weaponFamilyId then weapons[profile.weaponFamilyId] = profile.label end
     end
-    weapons.crowbar, weapons.grenade = "Crowbar", "Grenade"
+    weapons.crowbar = "Crowbar"
     for _, config in pairs(LOD.Config.Encounter.Archetypes) do
         local family = self:ModelFamily(config)
         if family then enemies[family] = family:gsub("_", " ") end
@@ -204,3 +204,4 @@ function Director:WeaponBonus(contract, tags, amount)
     local family = contract.profile and contract.profile.weaponFamilyId
     return family and (contract.identityWeaponStacks or {})[family] or 0
 end
+

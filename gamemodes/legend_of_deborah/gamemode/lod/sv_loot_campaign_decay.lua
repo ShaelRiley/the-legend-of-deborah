@@ -12,14 +12,13 @@ Loot.LODCampaignAssistanceDecayInstalled = true
 local RANDOM_USEFUL_CHANCE = 0.563
 local PITY_USEFUL_CHANCE = 0.90
 local OBJECTIVE_USEFUL_CHANCE = 1.00
-local GRENADE_CAP = 3
 
 local RANDOM_WEAPON_RESULTS = {
     "weapon_shotgun",
     "weapon_smg1",
     "weapon_357",
     "weapon_ar2",
-    "weapon_frag"
+    "__healing_potion"
 }
 
 -- Keep this synchronized with the final production ammo tuning loaded before
@@ -165,7 +164,7 @@ end
 
 -- Enemy-drop payloads also surrender state-reading. Health's emergency +10 HP
 -- bonus fades away, while the weapon band transitions from "missing weapon"
--- rescue toward an inventory-agnostic random firearm/grenade result.
+-- rescue toward an inventory-agnostic random firearm/consumable result.
 function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     local ownerIdentity = RunManager:IdentityOf(ply)
     if not ownerIdentity then return false end
@@ -192,8 +191,8 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
         if rng:Chance(assistance) then
             reward = self:_MissingWeaponReward(ply, rng)
             if not reward then
-                if rng:Chance(0.35) and ply:GetAmmoCount("Grenade") < GRENADE_CAP then
-                    reward = "weapon_frag"
+                if rng:Chance(0.35) then
+                    reward = "__healing_potion"
                 else
                     reward = "__cache"
                 end
@@ -202,7 +201,10 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
             reward = randomWeaponResult(rng)
         end
 
-        if reward == "__cache" then
+        if reward == "__healing_potion" then
+            kind = "consumable"
+            payload.itemId = "healing_potion"
+        elseif reward == "__cache" then
             kind = "cache"
         else
             kind = "weapon"
@@ -233,6 +235,7 @@ local function randomStaticResult(rng)
         return "health", {amount = 25}
     elseif roll < 54.8 then
         local reward = randomWeaponResult(rng)
+        if reward == "__healing_potion" then return "consumable", {itemId="healing_potion"} end
         return "weapon", {weaponClass = reward}
     elseif roll < 56.3 then
         return "life", {}
@@ -342,3 +345,4 @@ concommand.Add("lod_loot_decay_status", function(ply)
     print("[LOD:LOOT-DECAY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

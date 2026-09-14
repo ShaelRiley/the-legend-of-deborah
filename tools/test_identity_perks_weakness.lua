@@ -36,7 +36,7 @@ local weak = H:ApplyWeakness(lows,5)
 assert(weak.str<3,'base scores remain unclamped until derived stats')
 
 local weapons,enemies=D:TargetRegistries()
-assert(weapons.crowbar and weapons.grenade and weapons.magnum and not weapons.unarmed and not weapons.magic)
+assert(weapons.crowbar and not weapons.grenade and weapons.magnum and not weapons.unarmed and not weapons.magic)
 for _,family in ipairs({'ZOMBIE','FAST_ZOMBIE','SOLDIER'}) do assert(enemies[family]) end
 eq(D:ModelFamily({model='models/zombie/classic.mdl'}),'ZOMBIE')
 eq(D:ModelFamily({model='future-model.mdl',baseModel='models/combine_soldier.mdl'}),'SOLDIER')
@@ -187,3 +187,4 @@ eq(snap.perkDisplayName,package.identityPerkRecords[1].displayName)
 assert(not snap.mechanicalEffect:find('Breadcrumb'))
 assert(not D:EnsureState(old))
 print('IDENTITY_WEAKNESS_PASS — deterministic weakness, three legal perk handlers, stacking, migration, per-target dice, scaling, immunity and caps')
+

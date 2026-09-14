@@ -19,6 +19,10 @@ hook.Add("CreateMove", "LOD_MagicPredictedInput", function(cmd)
         return
     end
 
+    if LOD.Equipment and LOD.Equipment:IsActive(ply) then
+        attack2Held = cmd:KeyDown(IN_ATTACK2)
+        return
+    end
     local down = cmd:KeyDown(IN_ATTACK2)
     if down and not attack2Held then
         net.Start("LOD_MagicCastRequest")
@@ -108,3 +112,4 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function(
         end
     end
 end)
+

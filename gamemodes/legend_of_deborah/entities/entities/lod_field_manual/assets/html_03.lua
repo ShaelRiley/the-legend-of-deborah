@@ -31,11 +31,11 @@ after death.</div>
         <div class="card-grid">
           <div class="card"><h3>Weapons</h3><p>Your staging-room advanced weapon is yours. Additional weapon discoveries may also be individualized.</p></div>
           <div class="card"><h3>Ammunition</h3><p>Reserve ammunition is precious. Starting advanced weapons arrive loaded but with no reserve.</p></div>
-          <div class="card"><h3>Health & Armor</h3><p>Recovery exists, but should not be confused with invulnerability.</p></div>
+          <div class="card"><h3>Healing Potions</h3><p>Open <b>I → View Equipment → Hold Throwable</b>. <b>LMB throws</b> to heal the first living allied Hero struck; <b>RMB drinks</b>. Each use restores up to <b>25 HP</b> and consumes one potion.</p></div>
           <div class="card"><h3>Rare Life</h3><p>Extra-life rewards are exceptional. The normal budget is still three lives.</p></div>
         </div>
         <p>Ordinary dungeon loot is personal. A teammate cannot steal your individualized pickup, and you cannot steal theirs.</p>
-        <p>The system is generous in one particular way: cooperation does not require arguing over who “deserves” the box on the floor.</p>
+        <p>Carry up to three Healing Potions. Holding a Throwable suspends spell casting; switch weapons to resume Magic. A miss breaks the bottle without healing. Potions do not explode or regenerate. No ordinary grenade pickups remain.</p>
         <div class="note"><strong>DEBORAH'S NOTE:</strong> If you can see a useful thing and your teammate cannot, this may be functioning correctly.</div>
         <div class="folio-num">13</div>
       </div>
@@ -179,3 +179,4 @@ after death.</div>
         <p class="hand">• The map disappears after Dungeon 20. Learn the corridors before the corridors learn you.</p>
         <div class="silhouette">ROOM FOR YOUR OW
 ]========]
+

@@ -81,7 +81,7 @@ local WEAPONS = {
     [6] = {weapon_shotgun = true},
     [8] = {weapon_smg1 = true},
     [12] = {weapon_357 = true},
-    [20] = {weapon_frag = true},
+    [20] = {}, -- d20 remains available only through an explicitly authored capability.
     [10] = {weapon_ar2 = true}
 }
 local function stateHas(state, tag)
@@ -328,3 +328,4 @@ concommand.Add("lod_rpg_test_exploding_dice", function(ply, _, args)
 end)
 
 return Effects
+

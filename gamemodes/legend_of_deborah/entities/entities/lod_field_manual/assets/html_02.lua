@@ -154,12 +154,12 @@ return [========[
         <div class="kicker">One pool, two temptations</div>
         <h1>Magic</h1><div class="rule"></div>
         <div class="card-grid">
-          <div class="card"><h3>Force Shout</h3><p>Press <span class="keycap">RMB</span>. Costs <b>30 Magic</b>. Affects enemies in front of you, rolls <b>2d6!</b> damage, and pushes survivors away.</p></div>
+          <div class="card"><h3>Spellbook</h3><p>Press <span class="keycap">I</span> to choose an unlocked Form and Content. <span class="keycap">RMB</span> casts that combination; the book shows its cost.</p></div>
           <div class="card"><h3>The Map</h3><p>Press <span class="keycap">M</span>. While open, it continually drains your personal Magic. A full bar buys roughly <b>15 seconds</b> of uninterrupted viewing.</p></div>
         </div>
         <p>Magic regenerates over time when you are not spending it. A full recovery from empty takes about one minute.</p>
         <p>In cooperative play, each expeditioner's Magic is personal. One player's map does not drain another's bar.</p>
-        <div class="note"><strong>DEBORAH'S NOTE:</strong> The map and the shout are both excellent uses of Magic. This is the problem.</div>
+        <div class="note"><strong>DEBORAH'S NOTE:</strong> The map and your spells are both excellent uses of Magic. This is the problem.</div>
         <div class="folio-num">10</div>
       </div>
     </article>
@@ -184,3 +184,4 @@ return [========[
         <p>Color is never the only identifier: Red is R/triangle, Blue is B/circle, Yellow is Y/square.</p>
         <div class="note"><strong>A WORD TO THE WISE:</strong> A gate is not merely an obstacle. Once opened, it is where the expedition can begin again 
 ]========]
+

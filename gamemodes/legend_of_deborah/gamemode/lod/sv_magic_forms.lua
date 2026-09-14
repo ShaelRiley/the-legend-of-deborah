@@ -100,6 +100,7 @@ local function playerState(ply)
 end
 
 local function validCaster(ply)
+    if LOD.Equipment and LOD.Equipment:IsActive(ply) then return false end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
     local run = LOD.RunManager
     if run and run.IsActivePlayer and not run:IsActivePlayer(ply) then return false end
@@ -860,3 +861,4 @@ concommand.Add("lod_magic_forms_validate", function(ply)
     for _, err in ipairs(errors) do ErrorNoHalt("[LOD:MAGIC-C] - " .. tostring(err) .. "\n") end
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

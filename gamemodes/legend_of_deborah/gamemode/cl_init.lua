@@ -36,6 +36,7 @@ include("lod/cl_seeker.lua")
 include("lod/cl_magic.lua")
 include("lod/cl_wizard_fx.lua")
 include("lod/cl_spellbook.lua")
+include("lod/cl_equipment.lua")
 include("lod/cl_magic_form_fx.lua")
 include("lod/cl_pushback_fx.lua")
 include("lod/cl_character_sheet.lua")
@@ -162,3 +163,4 @@ hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
 end)
 
 include("lod/cl_rpg_dodge.lua")
+

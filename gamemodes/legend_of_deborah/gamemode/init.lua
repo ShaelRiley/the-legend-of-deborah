@@ -188,6 +188,8 @@ include("lod/sv_multiplayer_join_safety.lua")
 include("lod/sv_staging_deployment.lua")
 include("lod/sv_campaign_bootstrap_reliability.lua")
 include("lod/sv_staging_portal_interaction.lua")
+AddCSLuaFile("lod/cl_equipment.lua")
+include("lod/sv_equipment.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker
@@ -220,3 +222,4 @@ if LOD.DeveloperToolsLoaded then
     include("lod/sv_human_soldier_runtime_validation.lua")
     LOD.DeveloperToolModuleCount = 9
 end
+

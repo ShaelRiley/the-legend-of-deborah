@@ -226,6 +226,7 @@ end
 
 function Magic:CastForceShout(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    if LOD.Equipment and LOD.Equipment:IsActive(ply) then return false end
     local statusElements = LOD.RPGStatusElements
     if statusElements and not statusElements:CanInitiateMagic(ply) then return false end
     if RunManager and RunManager.IsActivePlayer and not RunManager:IsActivePlayer(ply) then return false end
@@ -348,6 +349,7 @@ end)
 -- RMB belongs to Magic globally in the current build. Strip secondary-fire input
 -- server-side as well as client-side so stock weapon alt-fire cannot leak through.
 hook.Add("StartCommand", "LOD_MagicSuppressSecondaryFire", function(ply, cmd)
+    if LOD.Equipment and LOD.Equipment:IsActive(ply) then return end
     if IsValid(ply) and ply:Alive() and RunManager and RunManager.IsActivePlayer and RunManager:IsActivePlayer(ply) then
         cmd:RemoveKey(IN_ATTACK2)
     end
@@ -422,3 +424,4 @@ concommand.Add("lod_magic_status", function(ply)
     print("[LOD:MAGIC] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

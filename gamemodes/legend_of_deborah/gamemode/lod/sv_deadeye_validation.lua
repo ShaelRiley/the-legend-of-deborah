@@ -17,7 +17,6 @@ local WEAPON_CLASSES = {
     "weapon_smg1",
     "weapon_shotgun",
     "weapon_ar2",
-    "weapon_frag"
 }
 
 local function developerAllowed(ply)
@@ -73,7 +72,6 @@ local function validateDeadeyeDefinition()
         weapon_smg1 = 2,
         weapon_shotgun = 2,
         weapon_ar2 = 2,
-        weapon_frag = 2
     }
     for weaponClass, multiplier in pairs(expected) do
         expect(Aim:CanAimClass(deadeye, weaponClass) == true,
@@ -218,7 +216,6 @@ concommand.Add("lod_deadeye_aim_testkit", function(ply, _, args)
     ply:GiveAmmo(99, "SMG1")
     ply:GiveAmmo(99, "Buckshot")
     ply:GiveAmmo(99, "AR2")
-    ply:GiveAmmo(10, "Grenade")
 
     local magnum = LOD.MagnumSuperExplosive
     if magnum and magnum.Stats then
@@ -267,3 +264,4 @@ concommand.Add("lod_deadeye_aim_status", function(ply)
     print("[LOD:DEADEYE] status: " .. line)
     ply:ChatPrint("[LOD:DEADEYE] " .. line)
 end)
+

@@ -11,11 +11,11 @@ local FIREARMS = {
 }
 
 local STATIC_REWARD_WEIGHTS = {
+    __healing_potion = 0.55,
     weapon_shotgun = 1.0,
     weapon_smg1 = 1.0,
     weapon_357 = 1.0,
-    weapon_ar2 = 1.0,
-    weapon_frag = 0.55
+    weapon_ar2 = 1.0
 }
 
 local AMMO_PROFILES = {
@@ -89,7 +89,7 @@ if Loot and not Loot.LODEqualFirearmAvailabilityInstalled then
 
     -- The staging-room starter replaced the historical two guaranteed Level-1
     -- firearm nodes. Static weapon rewards that still occur elsewhere treat all
-    -- four peer firearms equally; grenade remains a separate consumable reward.
+    -- four peer firearms equally; Healing Potion occupies the separate consumable reward.
     local baseBuildStaticPlan = Loot.BuildStaticPlan
     function Loot:BuildStaticPlan(graph)
         local ok, plan = baseBuildStaticPlan(self, graph)
@@ -107,8 +107,13 @@ if Loot and not Loot.LODEqualFirearmAvailabilityInstalled then
         local rewardClass = weightedPick(rewardRng, choices)
         if rewardClass then
             for _, node in ipairs(plan.nodes or {}) do
-                if node.kind == "weapon" and node.role == "reward" and node.payload then
-                    node.payload.weaponClass = rewardClass
+                if (node.kind == "weapon" or node.kind == "consumable")
+                    and node.role == "reward" and node.payload then
+                    if rewardClass == "__healing_potion" then
+                        node.kind, node.payload = "consumable", {itemId="healing_potion"}
+                    else
+                        node.kind, node.payload = "weapon", {weaponClass=rewardClass}
+                    end
                     node.equalAvailabilityRolled = true
                     break
                 end

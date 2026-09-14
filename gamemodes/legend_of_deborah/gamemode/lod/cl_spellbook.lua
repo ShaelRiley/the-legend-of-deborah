@@ -76,21 +76,33 @@ function Book:Open()
     UI:CloseButton(frame,function() Book:Close() end)
     frame.Paint = function(self,w,h)
         UI:Paper(0,0,w,h,C.red,255,8)
-        draw.SimpleText("THE LEGEND OF DEBORAH / SPELLBOOK","LOD_SheetHeading",24,20,C.red)
+        draw.SimpleText("INVENTORY + SPELLBOOK","LOD_SheetHeading",24,20,C.red)
         local ply = LocalPlayer()
         if IsValid(ply) then
             draw.SimpleText(string.format("Magic %.1f / %d",ply:GetNW2Float("LOD_Magic",100),
                 ply:GetNW2Int("LOD_MagicMax",100)),"LOD_SheetBody",24,52,C.blue)
         end
+        if not Book.EquipmentPage then
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
         draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,266,C.red)
-        draw.SimpleText("Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
+        end
+        draw.SimpleText(Book.EquipmentPage and "Hold Throwable to use it. Switch weapons to resume Magic; stored equipment does not suppress casting."
+            or "Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
             "LOD_SheetBody",24,h-64,C.ink)
         draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
             "LOD_SheetSmall",24,h-38,C.muted)
     end
 
     UI:PageLinks(frame,"book",frame:GetTall()-96)
+    local toggle = vgui.Create("DButton", frame)
+    toggle:SetPos(frame:GetWide()-210,48); toggle:SetSize(176,28)
+    toggle:SetText(self.EquipmentPage and "View Spellbook" or "View Equipment")
+    toggle.DoClick = function()
+        Book.EquipmentPage = not Book.EquipmentPage
+        Book:Open()
+        if Book.EquipmentPage then LOD.Equipment:Request("snapshot") end
+    end
+    if self.EquipmentPage then LOD.Equipment:BuildPanel(frame); return end
     local width = frame:GetWide()
     local gap = 10
     local left = 24
@@ -137,3 +149,4 @@ end)
 concommand.Add("lod_spellbook", function() Book:Toggle() end)
 
 hook.Add("ShutDown", "LOD_SpellbookClose", function() Book:Close() end)
+
