@@ -33,6 +33,7 @@ if SERVER then
     include("lod/sv_rpg_gate_c_catalog.lua")
     include("lod/sv_rpg_gate_e_feats.lua")
     include("lod/sv_rpg_checkpoint_d_status_catalog.lua")
+    include("lod/sv_identity_perks.lua")
     include("lod/sv_character_progression.lua")
     include("lod/sv_hero_ability_rolls.lua")
     include("lod/sv_rpg_gate_d.lua")

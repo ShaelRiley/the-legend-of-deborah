@@ -283,6 +283,7 @@ function ENT:Initialize()
     end
 
     self:SetModel(self.LODConfig.model)
+    if LOD.IdentityPerkDirector then self.EnemyModelFamilyId = LOD.IdentityPerkDirector:ModelFamily(self.LODConfig) end
     if self.LODArchetypeId == "blitzer" then
         self:SetRenderMode(RENDERMODE_TRANSCOLOR)
         self:SetColor(Color(70, 220, 90, 255))

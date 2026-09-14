@@ -124,7 +124,7 @@ function Validation:Run(printResult)
     validateSchema(errors, "FeatDefinition", {"featId", "abilityRequirements", "requiredCapabilityTags", "effectHandlerId", "directorBaseWeight"})
     validateSchema(errors, "ClassCapstoneDefinition", {"featId", "classId", "effectHandlerId"})
     validateSchema(errors, "PendingFeatDraft", {"earnedAtLevel", "draftType", "offerFeatIds", "selectedFeatId", "resolved"})
-    validateSchema(errors, "IdentityPerkDefinition", {"tableType", "tableIndex", "perkDisplayName", "effectHandlerId"})
+    validateSchema(errors, "IdentityPerkRecord", {"traitSlot", "traitIndex", "handlerId", "targetId", "seed", "displayName"})
     validateSchema(errors, "CharacterIdentityPackage", {"rosterSeed", "heroIdentityId", "originIndex", "backgroundIndex", "motiveIndex", "presentationSex", "fullDisplayName", "identityAbilityDelta", "resolvedIdentityPerkIds"})
 
     local heroState = CPS:NewProgressionState("validation:hero", "hero", "hero")

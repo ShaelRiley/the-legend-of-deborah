@@ -275,13 +275,7 @@ function CharacterProgressionSystem:_BuildIdentityPackage(runManager, ps, charac
     self:_ReserveIndex(runState, "nickname", nicknameIndex, heroIdentityId)
     runState.RPGAllocation.displayNames[fullDisplayName] = heroIdentityId
 
-    local identityAbilityDelta = RPG.NewAbilityBlock(0)
-    if motiveIndex == 64 then
-        local abilityIndex = LOD.RNG.New(derive(identitySeed, "identity:motive:64:ability")):Int(1, #ALL_ABILITIES)
-        identityAbilityDelta[ALL_ABILITIES[abilityIndex]] = 1
-    end
-
-    return {
+    local package = {
         rosterSeed = rosterSeed,
         heroIdentityId = heroIdentityId,
         originIndex = originIndex,
@@ -296,19 +290,23 @@ function CharacterProgressionSystem:_BuildIdentityPackage(runManager, ps, charac
         nickname = nickname,
         fullDisplayName = fullDisplayName,
         portraitCacheKey = tostring(derive(identitySeed, "portrait:" .. tostring(character.model))),
-        identityAbilityDelta = identityAbilityDelta,
+        identityAbilityDelta = RPG.NewAbilityBlock(0),
         resolvedIdentityPerkIds = {
             "origin:" .. originIndex,
             "background:" .. backgroundIndex,
             "motive:" .. motiveIndex
         }
     }
+    if LOD.IdentityPerkDirector then LOD.IdentityPerkDirector:EnsurePackage(package) end
+    return package
 end
 
 function CharacterProgressionSystem:InitializeHero(runManager, ps, character)
     if not ps then return nil end
     if ps.progressionState then
-        if self:ReconcileFeatOwnership(ps.progressionState) then self:_RecomputeProgressionState(ps.progressionState) end
+        local featsChanged = self:ReconcileFeatOwnership(ps.progressionState)
+        local identityChanged = LOD.IdentityPerkDirector and LOD.IdentityPerkDirector:EnsureState(ps.progressionState)
+        if featsChanged or identityChanged then self:_RecomputeProgressionState(ps.progressionState) end
         self:RepairCanonicalDrafts(ps, ps.progressionState)
         return ps.progressionState
     end
@@ -381,6 +379,7 @@ end
 function CharacterProgressionSystem:_RecomputeProgressionState(state)
     if not state then return end
     self:ReconcileFeatOwnership(state)
+    if LOD.IdentityPerkDirector then LOD.IdentityPerkDirector:EnsureState(state) end
     state.level = self:ClampLevel(state.level, state)
     state.growthAbilities = self:_GrowthAtLevel(state, state.level)
     state.fighterTraining = self:_FighterTrainingAtLevel(state, state.level)
@@ -1304,7 +1303,8 @@ function CharacterProgressionSystem:IsDeploymentEligible(ps)
         and draft.resolved == true and draft.selectedFeatId ~= nil
 end
 
-local function perkSnapshot(definition)
+local function perkSnapshot(definition, package, index)
+    if LOD.IdentityPerkDirector then return LOD.IdentityPerkDirector:Snapshot(definition, package, index) end
     return {
         tableType = definition.tableType,
         tableIndex = definition.tableIndex,
@@ -1342,6 +1342,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local isSoldier = runManager and runManager.IsSoldierControl and runManager:IsSoldierControl(ply)
     local soldierState = isSoldier and LOD.SoldierProgression and LOD.SoldierProgression:StateFor(ply)
     local state = soldierState or (ps and ps.progressionState)
+    if LOD.IdentityPerkDirector and LOD.IdentityPerkDirector:EnsureState(state) then self:_RecomputeProgressionState(state) end
     if state and self:ReconcileFeatOwnership(state) then self:_RecomputeProgressionState(state) end
     self:RepairCanonicalDrafts(ps, state)
     if isSoldier and soldierState then
@@ -1643,9 +1644,9 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         ammoRegenFloorFraction = state.derivedStats.ammoRegenFloorFraction,
         ammoRegenFamilies = ammoRegenFamilies,
         identityTraits = {
-            perkSnapshot(Catalog.Origins[package.originIndex]),
-            perkSnapshot(Catalog.Backgrounds[package.backgroundIndex]),
-            perkSnapshot(Catalog.Motives[package.motiveIndex])
+            perkSnapshot(Catalog.Origins[package.originIndex], package, 1),
+            perkSnapshot(Catalog.Backgrounds[package.backgroundIndex], package, 2),
+            perkSnapshot(Catalog.Motives[package.motiveIndex], package, 3)
         },
         featDraft = draft and {
             earnedAtLevel = draft.earnedAtLevel,

@@ -123,7 +123,7 @@ RPG.SystemBootstrap = {
     FeatDirector = "gate_c_cadence_and_capstone",
     FeatEffectSystem = "gate_e_batch_3_int_ammo_regeneration",
     IdentityGenerationSystem = "gate_b",
-    IdentityPerkSystem = "gate_b_identity_package",
+    IdentityPerkSystem = "three_shared_identity_handlers",
     CharacterSheetUI = "gate_c",
     PlayerCharacterText = "gate_b",
     CombatAttributionSystem = "gate_d_hero_xp",
@@ -211,15 +211,14 @@ RPG.Schema = {
     PendingFeatDraft = {
         "earnedAtLevel", "draftType", "offerFeatIds", "rngSeed", "selectedFeatId", "resolved"
     },
-    IdentityPerkDefinition = {
-        "tableType", "tableIndex", "categoryName", "perkDisplayName", "flavorText",
-        "effectHandlerId", "effectParams", "capabilityTags"
-    },
+    IdentityTraitDefinition = {"tableType", "tableIndex", "categoryName", "flavorText"},
+    IdentityPerkRecord = {"traitSlot", "traitIndex", "handlerId", "targetId", "targetName", "seed", "displayName"},
     CharacterIdentityPackage = {
         "rosterSeed", "heroIdentityId", "originIndex", "backgroundIndex", "motiveIndex",
         "masculineOrFeminineFirstNameIndex", "surnameIndex", "nicknameIndex", "presentationSex",
         "firstName", "surname", "nickname", "fullDisplayName", "portraitCacheKey",
-        "identityAbilityDelta", "resolvedIdentityPerkIds"
+        "identityAbilityDelta", "resolvedIdentityPerkIds", "identityPerkRecords", "identityPerkVersion",
+        "favoredWeaponStacks", "favoredEnemyStacks"
     }
 }
 
@@ -243,3 +242,12 @@ function RPG.NewAbilityBlock(defaultValue)
     local value = tonumber(defaultValue) or 0
     return {str = value, dex = value, con = value, int = value, wis = value, cha = value}
 end
+
+-- Canonical enabled direct-firearm damage sources; identity targets observe these IDs.
+LOD.RPG.PlayerWeaponDamageProfiles = {
+    weapon_pistol = {weaponFamilyId = "pistol", label = "PISTOL", source = "pistol", count = 1, sides = 4},
+    weapon_smg1 = {weaponFamilyId = "smg", label = "SMG", source = "SMG", count = 1, sides = 8},
+    weapon_ar2 = {weaponFamilyId = "ar2", label = "AR2", source = "AR2", count = 1, sides = 10},
+    weapon_357 = {weaponFamilyId = "magnum", label = "MAGNUM", source = ".357 Magnum", count = 1, sides = 12, exploding = 8},
+    weapon_shotgun = {weaponFamilyId = "shotgun", label = "SHOTGUN", source = "shotgun", count = 1, sides = 6, exploding = 6, floor = 3}
+}

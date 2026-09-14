@@ -157,6 +157,7 @@ function Effects:HeroOfLegendDamageProfile(actor)
     local profile = self:CrowbarDamageProfile(actor)
     profile.label = "HERO OF LEGEND"
     profile.source = "hero_of_legend"
+    profile.weaponFamilyId = nil
     profile.magicDamage = true
     profile.nonElemental = true
     return profile
@@ -165,6 +166,7 @@ end
 function Effects:CrowbarDamageProfile(actor)
     local profile = self:CrowbarProfile(Rules:ProgressionState(actor))
     return {
+        weaponFamilyId = "crowbar",
         label = "CROWBAR",
         source = "crowbar",
         count = 1,
@@ -324,8 +326,9 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
 
     local run = LOD.RunManager
     local ps = LOD.Magic and LOD.Magic:_EnsureState(attacker) or nil
+    local view = contract.feedResolution and contract.feedResolution.resolvedContract or contract
     local continuations = math.max(0,
-        #(contract.values or {}) - (tonumber(contract.baseDice) or 1))
+        #(view.values or {}) - (tonumber(view.baseDice) or 1))
     if continuations > 0 and rolls and rolls.EmitDiceExplosionFX then
         rolls:EmitDiceExplosionFX(attacker, "weapon_crowbar", continuations, 1)
     end
@@ -343,7 +346,7 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
                 LOD.DieLogger:RollBreakdown(contract))
             or "[non-elemental Magic Crowbar projectile]"
         rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker,
-            contract.formula, effectiveDamage, target, detail, nil,
+            LOD.DieLogger:DamageFormula(contract), effectiveDamage, target, detail, nil,
             "Hostile", "Hero of Legend"))
     end
     return true

@@ -22,6 +22,16 @@ end
 
 -- Include the actual arithmetic subtotal even when damage is scaled, resisted,
 -- or clamped by the target's remaining HP. This does not reroll or resolve damage.
+function Log:DamageFormula(contract)
+    local resolution = contract and contract.feedResolution
+    local view = resolution and resolution.resolvedContract or contract
+    local formula = view and view.formula
+    if formula and resolution and (resolution.favoredWeaponBonus or 0) > 0 then
+        formula = formula .. string.format(" + %d favored weapon", resolution.favoredWeaponBonus)
+    end
+    return formula
+end
+
 function Log:RollBreakdown(contract)
     local resolution = contract.feedResolution
     contract = resolution and resolution.resolvedContract or contract
@@ -33,6 +43,8 @@ function Log:RollBreakdown(contract)
     local bonus = tonumber(contract.bonus) or 0
     if bonus ~= 0 then text = text .. string.format(" %s %g bonus", bonus < 0 and "-" or "+", math.abs(bonus)) end
     text = text .. string.format(" = %g rolled", subtotal)
+    if contract.favoredEnemyDice then text = text .. string.format("; +%d favored-enemy primary dice included", contract.favoredEnemyDice) end
+    if resolution and (resolution.favoredWeaponBonus or 0) > 0 then text = text .. string.format("; +%d favored weapon", resolution.favoredWeaponBonus) end
     if contract.blastProofSuppressed then text = text .. "; BLAST-PROOF ended one chain" end
     if resolution and (resolution.resistance or 0) > 0 and resolution.reduced then
         local reduced, sum = {}, bonus

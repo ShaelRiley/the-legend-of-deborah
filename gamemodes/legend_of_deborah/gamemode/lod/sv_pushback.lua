@@ -191,7 +191,7 @@ function Pushback:_RollWallCrush(hostile, opts)
     if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
         local detail = string.format("[rolls %s; from %s push]",
             contract and LOD.DieLogger:RollBreakdown(contract) or tostring(total), source)
-        local formula = contract and contract.formula
+        local formula = contract and LOD.DieLogger:DamageFormula(contract)
             or string.format("%dd%d", profile.count or 1, profile.sides)
         rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
             hostile, detail, nil, "Hostile", "wall crush"))

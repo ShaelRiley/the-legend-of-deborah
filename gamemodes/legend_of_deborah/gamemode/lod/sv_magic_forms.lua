@@ -234,7 +234,8 @@ end
 
 function Forms:_ReportDamageRoll(creditCaster, target, form, content, contract, amount)
     if not IsValid(creditCaster) then return end
-    local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or form.damageDice or 0))
+    local view = contract.feedResolution and contract.feedResolution.resolvedContract or contract
+    local continuations = math.max(0, #(view.values or {}) - (view.baseDice or form.damageDice or 0))
     if continuations > 0 and Rolls.EmitDiceExplosionFX then
         Rolls:EmitDiceExplosionFX(creditCaster, "magic_" .. form.id, continuations, 1)
     end
@@ -243,7 +244,7 @@ function Forms:_ReportDamageRoll(creditCaster, target, form, content, contract, 
             content and ("; " .. string.upper(content.displayName)) or "; RAW",
             contract.capped and "; work cap" or "")
         Rolls:_Send(creditCaster, 0, Rolls:_DamageEventText(creditCaster,
-            contract.formula or string.format("%dd%d!", form.damageDice, form.damageSides),
+            LOD.DieLogger:DamageFormula(contract) or string.format("%dd%d!", form.damageDice, form.damageSides),
             amount, target, detail, nil, "Hostile", "magic " .. form.id))
     end
 end

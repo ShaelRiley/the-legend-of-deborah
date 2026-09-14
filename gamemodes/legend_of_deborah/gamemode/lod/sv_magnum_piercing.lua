@@ -212,6 +212,13 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 total = cumulativeTotal,
                 rpgContract = {
                     originContract = contract, attackEvent = contract.attackEvent,
+                    profile = contract.profile, formula = string.format("%dd12!", cumulativeBaseDice),
+                    wizardFullMagicIntBonus = contract.wizardFullMagicIntBonus,
+                    identityWeaponStacks = contract.identityWeaponStacks,
+                    identityEnemyStacks = contract.identityEnemyStacks,
+                    identityDieSeed = contract.identityDieSeed,
+                    primaryAuthoredDamageDie = contract.primaryAuthoredDamageDie,
+                    identityTargetViews = contract.identityTargetViews and setmetatable({}, {__mode = "k"}),
                     total = cumulativeTotal,
                     values = copyValues(cumulativeValues),
                     chainStarts = copyValues(cumulativeStarts),

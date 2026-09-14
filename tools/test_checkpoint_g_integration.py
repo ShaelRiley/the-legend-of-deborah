@@ -56,6 +56,7 @@ for path in sorted(Path(REPO_ROOT, "tools").glob("test_checkpoint_d_*.lua")):
         SUITES.append(("Feat: " + path.stem.removeprefix("test_checkpoint_d_"),
                        ["python3", "tools/run_lua54.py", str(path.relative_to(REPO_ROOT))]))
 SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54.py", "tools/test_feat_stabilization.lua"]))
+SUITES.append(("Hero Weakness & Identity Perks", ["python3", "tools/run_lua54.py", "tools/test_identity_perks_weakness.lua"]))
 SUITES.append(("Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
 SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 

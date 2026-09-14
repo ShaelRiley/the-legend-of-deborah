@@ -17,13 +17,9 @@ Rolls.Stats = Rolls.Stats or {
     feedMessages = 0
 }
 
-local PLAYER_WEAPONS = {
-    weapon_pistol = {label = "PISTOL", source = "pistol", count = 1, sides = 4},
-    weapon_smg1 = {label = "SMG", source = "SMG", count = 1, sides = 8},
-    weapon_ar2 = {label = "AR2", source = "AR2", count = 1, sides = 10},
-    weapon_357 = {label = "MAGNUM", source = ".357 Magnum", count = 1, sides = 12, exploding = 8},
-    weapon_shotgun = {label = "SHOTGUN", source = "shotgun", count = 1, sides = 6, exploding = 6, floor = 3}
-}
+local PLAYER_WEAPONS = assert(LOD.RPG.PlayerWeaponDamageProfiles)
+
+Rolls.PlayerDamageProfiles = PLAYER_WEAPONS
 
 -- Initial hostile attack dice preserve the approximate means of the accepted
 -- fixed-damage baseline while moving every direction of combat onto one roll
@@ -143,7 +139,7 @@ function Rolls:_RollExploding(profile, rng)
     local threshold = freshThreshold
     local natural = rng:Int(1, profile.sides)
 
-    while natural and #values < MAX_CHAIN_DICE do
+    while natural and #values < math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE) do
         values[#values + 1] = natural
         thresholds[#thresholds + 1] = threshold
         local contribution = math.max(profile.floor or natural, natural)
@@ -152,12 +148,12 @@ function Rolls:_RollExploding(profile, rng)
         self.Stats.rolls = self.Stats.rolls + 1
 
         local explodes = profile.exploding and natural >= threshold
-        if not explodes then break end
+        if not explodes or #values >= math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE) then break end
         threshold = parameters and parameters.continuation or threshold
         natural = rng:Int(1, profile.sides)
     end
 
-    return total, values, contributions, #values >= MAX_CHAIN_DICE, thresholds
+    return total, values, contributions, #values >= math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE), thresholds
 end
 
 -- Progression dice remain under the one dice authority but are not damage dice:
@@ -296,8 +292,11 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
     local authoredExplodes = resolvedProfile.exploding ~= nil
 
     for _ = 1, count do
+        local remaining = (resolvedProfile.rollLimit or math.huge) - #values
+        if remaining <= 0 then capped = true; break end
         chainStarts[#chainStarts + 1] = #values + 1
         local dieProfile = table.Copy(resolvedProfile)
+        dieProfile.rollLimit = remaining
         dieProfile.count = 1
         dieProfile.bonus = 0
         dieProfile.exploding = authoredExplodes and resolvedProfile.exploding
@@ -337,6 +336,7 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
         baseDice = count,
         aceBonusDice = math.max(0, math.floor(tonumber(bonusDice) or 0))
     }
+    if LOD.IdentityPerkDirector then LOD.IdentityPerkDirector:SealAttack(contract, attacker, rng) end
     if LOD.RPGCrossFeats then LOD.RPGCrossFeats:RestoreBoomBattery(attacker, contract) end
     return contract
 end
@@ -349,11 +349,15 @@ function Rolls:ResolveActorDamage(contract, attacker, target, tags)
     -- but callers may safely pass this result into math helpers without Lua
     -- expanding hidden table-valued returns into additional arguments.
     local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
-    local targetContract = effects and effects.BlastProofTargetContract
-        and effects:BlastProofTargetContract(contract, attacker, target) or contract
+    local identity = LOD.IdentityPerkDirector
+    local targetContract = identity and identity:TargetContract(contract, attacker, target, tags) or contract
+    targetContract = effects and effects.BlastProofTargetContract
+        and effects:BlastProofTargetContract(targetContract, attacker, target) or targetContract
     local resolved, reduced, resistance = rules:ResolveDamageContract(targetContract, attacker, target, tags)
+    local weaponBonus = identity and identity:WeaponBonus(targetContract, tags, tonumber(resolved) or 0) or 0
+    resolved = (tonumber(resolved) or 0) + weaponBonus
     if contract then
-        contract.feedResolution = {total = tonumber(resolved) or 0,
+        contract.feedResolution = {total = tonumber(resolved) or 0, favoredWeaponBonus = weaponBonus,
             reduced = reduced, resistance = tonumber(resistance) or 0,
             resolvedContract = targetContract ~= contract and targetContract or nil}
     end
@@ -385,6 +389,9 @@ function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
         baseDice = rolled.baseDice,
         aceBonusDice = rolled.aceBonusDice,
         wizardFullMagicIntBonus = rolled.wizardFullMagicIntBonus,
+        identityWeaponStacks = rolled.identityWeaponStacks, identityEnemyStacks = rolled.identityEnemyStacks,
+        identityDieSeed = rolled.identityDieSeed, primaryAuthoredDamageDie = rolled.primaryAuthoredDamageDie,
+        identityTargetViews = rolled.identityTargetViews,
         capped = rolled.capped == true,
         ownerState = rules and rules:ProgressionState(ply),
         levelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed,
@@ -431,7 +438,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
             local detail = string.format("[%d/%d pellets; rolls %s; shell share 1/%d per hit]", hits,
                 contract.pellets or 6, LOD.DieLogger:RollBreakdown(targetContract), SHOTGUN_SHARE_COUNT)
             contract.feedReported = true
-            self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula or "1d6!", damage,
+            self:_Send(ply, 0, self:_DamageEventText(ply, LOD.DieLogger:DamageFormula(targetContract) or "1d6!", damage,
                 target, detail, nil, (contract.targetNames or {})[target] or "Hostile", "shotgun"))
         end
     end
@@ -632,7 +639,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         if grenadeAttack(attacker, inflictor, dmginfo) then
             local contract = grenadeRolls[inflictor]
             if not contract then
-                local profile = {label = "GRENADE", count = 1, sides = 20}
+                local profile = {weaponFamilyId = "grenade", label = "GRENADE", count = 1, sides = 20}
                 local rng = Rolls:_RNG("player:grenade")
                 contract = Rolls:RollActorDamage(attacker, profile, rng, 0)
                 grenadeRolls[inflictor] = contract
@@ -659,7 +666,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             end
 
             Rolls:QueueDamageReport(dmginfo, function(finalDamage)
-                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, contract.formula or "1d20",
+                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(contract) or "1d20",
                     finalDamage, target, detailStr, nil, "Hostile", "grenade"))
             end)
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
@@ -681,7 +688,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             end
             local detail = Rolls:_PlayerRollDetail(rolled)
             Rolls:QueueDamageReport(dmginfo, function(finalDamage)
-                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, rolled.formula,
+                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(rolled),
                     finalDamage, target, detail, nil, "Hostile", "crowbar"))
             end)
         elseif weaponClass == "weapon_shotgun" then
@@ -717,12 +724,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     {physical = true, authoredScale = tonumber(contract.aimMultiplier) or 1})
                 dmginfo:SetDamage(resolved)
 
-                local formula = contract.weaponClass == "weapon_357"
-                    and string.format("%dd12!", damageContract.baseDice or contract.baseDice or 1)
-                    or contract.formula
-                local detail = Rolls:_PlayerRollDetail(contract)
+                local formula = LOD.DieLogger:DamageFormula(damageContract)
+                local detail = Rolls:_PlayerRollDetail(damageContract)
                 if pierce and pierce.depth and pierce.depth > 1 then
-                    formula = string.format("%dd12!", damageContract.baseDice or pierce.depth)
+                    formula = LOD.DieLogger:DamageFormula(damageContract) or string.format("%dd12!", damageContract.baseDice or pierce.depth)
                     detail = string.format("[pierce #%d; rolls %s%s; AIM x%g]", pierce.depth,
                         LOD.DieLogger:RollBreakdown(damageContract),
                         damageContract.capped and "; chain cap" or "", tonumber(contract.aimMultiplier) or 1)

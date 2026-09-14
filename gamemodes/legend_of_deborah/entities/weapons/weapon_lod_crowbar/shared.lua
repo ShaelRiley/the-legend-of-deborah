@@ -161,7 +161,7 @@ function SWEP:PrimaryAttack()
             end
         end
         rolls:_Send(owner, 0, rolls:_DamageEventText(owner,
-            contract and contract.formula or string.format("1d%d", profile.sides or 3), total,
+            contract and LOD.DieLogger:DamageFormula(contract) or string.format("1d%d", profile.sides or 3), total,
             target, detail, nil, "Hostile", "crowbar"))
     end
 

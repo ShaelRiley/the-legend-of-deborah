@@ -49,9 +49,9 @@ end
 function AbilityRules:Derived(actor)
     local state = self:ProgressionState(actor)
     local progression = LOD.CharacterProgressionSystem
-    if state and progression and progression.ReconcileFeatOwnership and progression:ReconcileFeatOwnership(state) then
-        progression:_RecomputeProgressionState(state)
-    end
+    local identityChanged = LOD.IdentityPerkDirector and LOD.IdentityPerkDirector:EnsureState(state)
+    local featsChanged = state and progression and progression.ReconcileFeatOwnership and progression:ReconcileFeatOwnership(state)
+    if identityChanged or featsChanged then progression:_RecomputeProgressionState(state) end
     if LOD.RPGStatusElements and LOD.RPGStatusElements.BindActorLife then LOD.RPGStatusElements:BindActorLife(actor) end
     return state and state.derivedStats or nil
 end
@@ -59,7 +59,7 @@ end
 function AbilityRules:CopyDamageProfile(profile, actor)
     local copy = {}
     for key, value in pairs(profile or {}) do copy[key] = value end
-    copy.rpgDerived = self:Derived(actor)
+    copy.rpgDerived = profile and profile.identityBonusDie and profile.rpgDerived or self:Derived(actor)
     return copy
 end
 

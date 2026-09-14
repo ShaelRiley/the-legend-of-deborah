@@ -1,3 +1,58 @@
+# RPG candidate amendment — starting scores and identity perks
+
+Continues `0fc49f3d4adc1eefbe08e0cc42e896e7f7ab8e3e` on `hybrid/antigravity`.
+Shael has not yet accepted the candidate. This amendment requires testing the new
+published SHA; it does not authorize main promotion or live deployment.
+
+Authority: live GDD `02 / LOD-ABL-002`, `04 / LOD-ID-002`, and exact human anchors
+“Hero starting ability generation” and “Identity Perk Director — three-handler authority”.
+Shael clarified that the permanent ability perk is **+2**, agreeing with the GDD.
+
+- New Heroes: roll six 4d6-drop-lowest scores until the raw total is at least 74;
+  rank with a dedicated deterministic tie stream; subtract 2d2 / 1d3 / 1d3 from
+  the lowest three. No post-penalty reroll or base-score clamp. Effective abilities
+  use the normal later 3..30 clamp. Store accepted raw dice, penalties and final
+  scores; the initial readout reports the arithmetic. Existing Hero base scores stay.
+- Exactly three independently generated, immutable identity records, one per
+  Origin/Background/Motive slot. Uniform handler and legal-target selection in
+  isolated identity substreams; duplicate targets stack. Trait names/flavor remain.
+- Ability Bonus grants permanent +2 per record, including stable feat qualification;
+  all three matching records may grant +6, subject only to the universal ceiling.
+- Favored Weapon grants +1 per stack per matching direct weapon attack per damaged
+  target, after resistance/scaling/elemental resolution and before diversion. It
+  cannot revive zero damage and does not multiply by Shotgun pellet count.
+- Favored Enemy appends one primary authored damage die per stack per matching
+  target, using model-lineage metadata. Target views preserve the shared original
+  roll and its attack identity. Dice inherit explosions, CON and scaling; shared
+  event limits and Blast-Proof still apply. No authored primary die means no bonus.
+- Combat source metadata is shared with the target registry. Magnum piercing,
+  Crowbar, grenade, Shotgun and Magic paths retain the relevant target dice and
+  truthful formula/continuation details. Supplemental Crowbar pulses do not inherit
+  the direct-weapon flat bonus.
+- Removed all 192 retired bespoke mechanic/label records from the runtime trait
+  catalog. Legacy packages receive the three deterministic records once, preserving
+  name, traits, base rolls and campaign identity. Inspection text comes from resolved
+  records, not historical trait mechanics. No new Think loop or per-trait callback.
+
+Validation: complete integrated gate **50/50**, including Lua syntax, diff whitespace,
+current feat inventory (150 entries, zero blank descriptions), and the new production
+weakness/perk suite. New coverage includes deterministic generation/ties, sub-74 final
+arrays, stack/cap/qualification behavior, registry/record legality, persistent migration,
+Shotgun aggregation, CON/scaling/immunity, explosions and Blast-Proof. Static evidence
+is not Source-runtime acceptance.
+
+Playtest amendment: start a **new campaign** to observe the weakness pass. Inspect
+all three generated perks on the Player Sheet; exercise a matching weapon or enemy
+when available and compare the extra damage/dice with the log. Confirm the same
+identity/perks survive death and a level transition. Existing integrated test remains.
+
+Milestone: the **full RPG Update** is the intended release. Shael reports the live
+server remains on Alpha 01. Release still requires integrated human acceptance and
+the GDD's final Instruction Booklet reconciliation before separately authorized live
+server deployment. Equipment and Enemy updates remain later milestones.
+
+---
+
 # Hybrid stabilization candidate — 2026-09-14
 
 **Static release gate passed; awaiting Shael's Source-runtime playtest.**

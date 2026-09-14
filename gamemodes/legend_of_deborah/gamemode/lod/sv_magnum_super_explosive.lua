@@ -50,7 +50,7 @@ if not Rolls.LODD12BoomchainInstalled then
         local thresholdStep = parameters and parameters.continuationStep or 1
         local natural = rng:Int(1, 12)
 
-        while natural and #values < MAX_CHAIN_DICE do
+        while natural and #values < math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE) do
             values[#values + 1] = natural
             thresholds[#thresholds + 1] = threshold
             local contribution = math.max(profile.floor or natural, natural)
@@ -58,12 +58,12 @@ if not Rolls.LODD12BoomchainInstalled then
             total = total + contribution
             self.Stats.rolls = (self.Stats.rolls or 0) + 1
 
-            if natural < threshold then break end
+            if natural < threshold or #values >= math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE) then break end
             threshold = math.max(boomchainFloor, threshold - thresholdStep)
             natural = rng:Int(1, 12)
         end
 
-        return total, values, contributions, #values >= MAX_CHAIN_DICE, thresholds
+        return total, values, contributions, #values >= math.min(MAX_CHAIN_DICE, profile.rollLimit or MAX_CHAIN_DICE), thresholds
     end
 end
 
