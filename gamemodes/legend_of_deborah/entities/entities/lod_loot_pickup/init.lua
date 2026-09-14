@@ -10,6 +10,7 @@ function ENT:Initialize()
     self:SetSolid(SOLID_BBOX)
     self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 28))
     self:SetTrigger(true)
+    self:SetUseType(SIMPLE_USE)
     self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(self.LODLootColor or Color(255, 196, 64, 240))
@@ -17,7 +18,7 @@ function ENT:Initialize()
     self:DrawShadow(false)
 end
 
-function ENT:_TryCollect(ply)
+function ENT:_TryCollect(ply, acceptEquipment)
     if self.LODCollected then return end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return end
 
@@ -25,7 +26,7 @@ function ENT:_TryCollect(ply)
     if not director or not director.Collect then return end
     if not director:IsPickupOwner(self, ply) then return end
 
-    local ok = director:Collect(self, ply)
+    local ok = director:Collect(self, ply, acceptEquipment)
     if not ok then return end
 
     self:Remove()
@@ -40,5 +41,5 @@ function ENT:Touch(ent)
 end
 
 function ENT:Use(activator)
-    self:_TryCollect(activator)
+    self:_TryCollect(activator, true)
 end

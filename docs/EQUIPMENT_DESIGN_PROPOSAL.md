@@ -1,6 +1,10 @@
 # Equipment decisions needed to complete the milestone
 
-**Proposed defaults for Shael's review; not implemented or canonical.**
+**Approved for implementation by Shael Riley on 2026-09-14.**
+
+Approval: “You may implement your proposal.” The live GDD records these decisions
+in LOD-EQUIP-015. The table below preserves the proposal as approved; provisional
+balance language does not constitute runtime acceptance.
 
 The live GDD defines the architecture but leaves Block semantics, the property
 catalog/value economy, initial Special Moves and Stink Bomb behavior unset.
@@ -9,7 +13,7 @@ rules during implementation. The Throwable handoff separately authorizes choosin
 small coherent potion impact details; that discretion was used for direct ally
 healing, documented in LOD-EQUIP-012..014 and the tuning registry.
 
-Approval of the proposal below would authorize authoring and implementing this
+Approval of the proposal below authorizes authoring and implementing this
 bounded first catalog, followed by ordinary human balance testing. It would not
 authorize public deployment or declare Equipment complete.
 

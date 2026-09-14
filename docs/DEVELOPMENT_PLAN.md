@@ -16,12 +16,12 @@ public deployment. Work is isolated on `astra/equipment-update`; main remains th
 accepted RPG baseline. Workshop and public VPS are held until Equipment and Enemy
 are both complete, followed by separately authorized deployment.
 
-The first checkpoint implements Healing Potion/Throwable behavior and removes
-ordinary grenade acquisition. See [checkpoint](EQUIPMENT_CHECKPOINT.md) for scope,
-validation and the finite human test. The Equipment milestone is not complete:
-procedural wearables/economy, Block, Special Moves and Stink Bomb need the missing
-authored rules listed in [design proposal](EQUIPMENT_DESIGN_PROPOSAL.md). This
-proposal is unapproved and must not be treated as canonical game law.
+The Throwable checkpoint is followed by Shael's approved first equipment catalog
+(2026-09-14: “You may implement your proposal”). Live GDD LOD-EQUIP-015 now owns
+Block semantics, the bounded property/value catalog, procedural wearables,
+Quickstep/Rebuff and Stink Bomb. See [checkpoint](EQUIPMENT_CHECKPOINT.md) for
+implementation and finite human acceptance. Equipment runtime acceptance remains
+pending; do not proceed into Enemy work or promote main on static evidence alone.
 
 Preserve accepted RPG behavior and the current workflow. Do not restart the old
 hybrid/Antigravity process. The broader Instruction Booklet reconciliation and

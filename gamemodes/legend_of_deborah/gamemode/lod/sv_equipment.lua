@@ -22,6 +22,7 @@ function E:Sync(ply)
     if not IsValid(ply) then return end
     local ps = heroState(ply)
     local state = ps and self:Ensure(ps)
+    if self.RefreshDerived then self:RefreshDerived(ply, ps) end
     local item = self:Equipped(state, "throwable")
     local def = self:Definition(item)
     ply:SetNW2String("LOD_ThrowableItem", item and item.definitionId or "")
@@ -93,7 +94,7 @@ function E:Use(ply, mode)
     if not def or (mode == "drink" and not def.drinkable) or not def.throwable then return false end
     if CurTime() < (self.NextUse[ply] or 0) then return false end
     -- Unknown effect definitions fail before spending an item.
-    if def.effect ~= "heal" then return false end
+    if def.effect ~= "heal" and def.effect ~= "poison_cloud" then return false end
     if mode == "drink" and ply:Health() >= ply:GetMaxHealth() then return false end
     local projectile
     if mode == "throw" then
@@ -145,6 +146,8 @@ end)
 -- Lifecycle applies existing identity-owned records. Never replenish on spawn.
 local baseApply = Run.ApplyPlayerState
 function Run:ApplyPlayerState(ply)
+    if E.ClearTransient then E:ClearTransient(ply) end
+    if E.RefreshDerived then E:RefreshDerived(ply, heroState(ply)) end
     baseApply(self, ply)
     E:Deactivate(ply)
     E:Sync(ply)
@@ -160,10 +163,12 @@ if LOD.StagingDeployment then
     end
 end
 hook.Add("PlayerDeath", "LOD_EquipmentDeath", function(ply)
+    if E.ClearTransient then E:ClearTransient(ply) end
     E:Deactivate(ply)
     E:Sync(ply)
 end)
 hook.Add("PlayerDisconnected", "LOD_EquipmentDisconnect", function(ply)
+    if E.ClearTransient then E:ClearTransient(ply) end
     if IsValid(E.Projectiles[ply]) then E.Projectiles[ply]:Remove() end
     E.PreviousWeapon[ply], E.NextUse[ply], requestTimes[ply] = nil, nil, nil
 end)

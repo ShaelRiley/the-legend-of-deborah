@@ -324,7 +324,7 @@ function Loot:_MarkConsumed(ent, ply)
     if state then state.consumedStatic[ent.LODLootStaticId] = true end
 end
 
-function Loot:Collect(ent, ply)
+function Loot:Collect(ent, ply, acceptEquipment)
     -- The grant authority owns admission and idempotence. Touch/Use are observers,
     -- and must not be the only protection against repeated or reentrant grants.
     if not IsValid(ent) or ent.LODCollected or ent.LODCollecting
@@ -345,6 +345,8 @@ function Loot:Collect(ent, ply)
     local ok, message
     if ent.LODLootKind == "ammo" then
         ok, message = self:_GrantAmmo(ply, rng, payload.tier or "small", payload.weaponClass)
+    elseif ent.LODLootKind == "wearable" then
+        if LOD.Equipment then ok, message = LOD.Equipment:CollectWearable(ent, ply, acceptEquipment == true) end
     elseif ent.LODLootKind == "consumable" then
         if LOD.Equipment then ok, message = LOD.Equipment:Grant(ply, payload.itemId, 1) end
     elseif ent.LODLootKind == "health" then
@@ -419,6 +421,9 @@ end
 function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     if not ownerIdentity or not pos then return nil end
     options = options or {}
+    if LOD.Equipment and LOD.Equipment.PrepareReward then
+        kind, payload = LOD.Equipment:PrepareReward(ownerIdentity, kind, payload, options)
+    end
 
     local ent = ents.Create("lod_loot_pickup")
     if not IsValid(ent) then return nil end
@@ -442,6 +447,7 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     ent:SetAngles(Angle(0, options.yaw or 0, 0))
     ent:Spawn()
     ent:Activate()
+    if kind == "wearable" and LOD.Equipment then LOD.Equipment:SyncPickup(ent) end
 
     self.Entities[#self.Entities + 1] = ent
     self:_ApplyTransmission(ent)
@@ -659,7 +665,7 @@ function Loot:EnsureStaticForPlayer(ply)
                 if cell then
                     local pos = LOD.MazeNavigator:CellCenter(cell) + node.offset
                     local ent = self:SpawnPickup(ownerIdentity, pos, node.kind, node.payload,
-                        {staticId = node.staticId, yaw = (node.id * 53) % 360})
+                        {staticId = node.staticId, yaw = (node.id * 53) % 360, equipmentEligible=node.role == "reward"})
                     if IsValid(ent) then
                         byId[node.staticId] = ent
                         self.Stats.staticSpawned = (self.Stats.staticSpawned or 0) + 1
@@ -738,7 +744,8 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     local angle = rng:Float(0, math.pi * 2)
     local radius = rng:Float(8, 18)
     local pos = basePos + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 0)
-    local ent = self:SpawnPickup(ownerIdentity, pos, kind, payload, {yaw = rng:Int(0, 359)})
+    local ent = self:SpawnPickup(ownerIdentity, pos, kind, payload,
+        {yaw = rng:Int(0, 359), equipmentEligible=true, equipmentSeed=hostile.LODInstanceSeed or hostile:EntIndex()})
     if IsValid(ent) then
         self.Stats.enemyDrops = (self.Stats.enemyDrops or 0) + 1
         return true
@@ -872,4 +879,3 @@ concommand.Add("lod_loot_status", function(ply)
     print("[LOD:LOOT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

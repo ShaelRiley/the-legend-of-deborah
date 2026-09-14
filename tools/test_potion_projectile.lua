@@ -69,3 +69,28 @@ p=projectile();ps.equipment={};p:Think();assert(p.valid==false,"No effects for r
 ps.equipment=itemState
 p=projectile();now=10;p:Think();assert(p.valid==false,"Bounded lifetime")
 print("POTION_PROJECTILE_PASS: swept arc, direct ally impact, one-shot resolution, cover and lifecycle expiry")
+-- Production cloud phase reuses shared targeting and Poisoned, never an explosion.
+LOD.Equipment.Definitions.stink_bomb={model='bottle',effect='poison_cloud'}
+LOD.Equipment.Report=function() end
+local target1,target2={},{}
+local eligible={target1}
+local attempts=0
+LOD.MagicForms={_AreaTargets=function(_,source,origin,radius)
+    assert(source==caster and radius==96);return eligible
+end}
+LOD.RPGStatusElements={Apply=function(_,target,id,source,options)
+    assert(id=='poisoned' and source==caster and not options,'Do not bypass CON save or set independent potency')
+    attempts=attempts+1
+    return false,'saved'
+end}
+p=projectile();p.LODPotionDefinition='stink_bomb'
+function p:SetNW2Float(k,v) self[k]=v end
+traceResult={Hit=true,HitPos=Vector(30,0,0),HitNormal=Vector(0,0,1)}
+now=10.05;p:Think()
+assert(p.LODCloudUntil==15.05 and p.valid~=false)
+p:Think();p:Think();assert(attempts==1,'Saved target never rerolls inside same cloud')
+eligible={target1,target2};p:Think();assert(attempts==2,'Later entrant gets one attempt')
+now=15.05;p:Think();assert(p.valid==false and attempts==2)
+p=projectile();p.LODCloudUntil=20;p.LODCloudTargets={};caster.alive=false;p:Think()
+assert(p.valid==false and attempts==2,'Death expires a cloud as well as flight')
+print('STINK_CLOUD_PASS: five-second cloud, canonical status application, saved-target dedupe, entrants and lifecycle')

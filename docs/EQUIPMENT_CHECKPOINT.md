@@ -1,4 +1,24 @@
-# Equipment checkpoint: Throwable consumables
+# Equipment checkpoint: approved initial catalog
+
+Development branch: `astra/equipment-update`.
+Baseline remote main: `8978796e886cdb5505d24ed0de085265fa99bac8`.
+Previous equipment branch HEAD: `894d22183b2ac851b5c350875567632922e1dfc9`.
+Shael approved the proposal on 2026-09-14; live GDD rule LOD-EQUIP-015 records it.
+
+The approved catalog is implemented on the development branch: deterministic
+wearables, one value/property economy, atomic hand/glove swaps, real RPG ability
+deltas, shared Block after Dodge, simultaneous Quickstep/Rebuff recognition,
+keyboard rebinding, and throw-only Stink Bomb using canonical Poisoned.
+
+First integrated gate: **61/61 suites passed**. Includes 2,500 generated catalog
+samples, actual RPG recomputation, Block event caching, Special Move transactions,
+cloud lifecycle, existing feat/description coverage and all previous regressions.
+No Garry's Mod runtime evidence is claimed. Final runtime instructions and exact
+remote preservation evidence follow in the final handoff.
+
+## Earlier checkpoint (historical evidence)
+
+## Throwable consumables
 
 Starting remote main: `8978796e886cdb5505d24ed0de085265fa99bac8`.
 Development branch: `astra/equipment-update`.

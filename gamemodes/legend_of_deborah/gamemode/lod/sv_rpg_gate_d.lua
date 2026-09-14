@@ -400,6 +400,7 @@ function GM:EntityTakeDamage(target, dmginfo)
         return true
     end
     if IsValid(target) and AbilityRules.ApplyDodge then AbilityRules:ApplyDodge(target, dmginfo) end
+    if IsValid(target) and AbilityRules.ApplyBlock then AbilityRules:ApplyBlock(target, dmginfo) end
     if IsValid(target) and AbilityRules.ApplyWisDefense then
         AbilityRules:ApplyWisDefense(target, dmginfo)
     end
@@ -452,6 +453,7 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     if AbilityRules.ApplyVoluntaryMovementFeats then
         AbilityRules:ApplyVoluntaryMovementFeats(ply, move)
     end
+    if AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
 end)
 
 hook.Add("EntityFireBullets", "LOD_RPG_GateD_AimSpread", function(shooter, bullet)

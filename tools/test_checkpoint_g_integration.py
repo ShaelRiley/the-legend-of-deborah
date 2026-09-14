@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Equipment Catalog, Swaps & Derived Stats", ["python3", "tools/run_lua54.py", "tools/test_equipment_catalog.lua"]),
+    ("Equipment Shared Block", ["python3", "tools/run_lua54.py", "tools/test_equipment_block.lua"]),
+    ("Equipment Special Moves & Input", ["python3", "tools/run_lua54.py", "tools/test_equipment_moves.lua"]),
     ("Potion Projectile Collision & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_potion_projectile.lua"]),
     ("Equipment Ownership & Throwable Transactions", ["python3", "tools/run_lua54.py", "tools/test_equipment.lua"]),
     ("Git Diff Check", ["git", "diff", "--check"]),

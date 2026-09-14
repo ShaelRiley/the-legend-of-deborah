@@ -22,9 +22,20 @@ function ENT:Think()
     local equipment, run = LOD.Equipment, LOD.RunManager
     local caster = self.LODPotionCaster
     local ps = IsValid(caster) and run:GetPlayerState(caster)
-    if CurTime() >= self.LODExpires or run.State ~= self.LODPotionRun
+    if CurTime() >= (self.LODCloudUntil or self.LODExpires) or run.State ~= self.LODPotionRun
         or run.State.LevelSeed ~= self.LODPotionLevelSeed or not equipment:CanAct(caster)
         or not ps or ps.equipment ~= self.LODPotionState then self:Remove(); return end
+    if self.LODCloudUntil then
+        -- One application attempt per target, including a successful CON save.
+        for _, target in ipairs(LOD.MagicForms:_AreaTargets(caster,self:GetPos(),96)) do
+            if not self.LODCloudTargets[target] then
+                self.LODCloudTargets[target]=true
+                LOD.RPGStatusElements:Apply(target,"poisoned",caster)
+            end
+        end
+        self:NextThink(CurTime()+0.1)
+        return true
+    end
     local dt = math.Clamp(CurTime() - self.LODLastThink, 0, 0.1)
     self.LODLastThink = CurTime()
     local start = self:GetPos()
@@ -39,11 +50,18 @@ function ENT:Think()
             local def = equipment.Definitions[self.LODPotionDefinition]
             if def and def.effect == "heal" and IsValid(trace.Entity) and trace.Entity:IsPlayer() then
                 equipment:Heal(caster, trace.Entity, def.amount)
+            elseif def and def.effect == "poison_cloud" then
+                self.LODCloudUntil=CurTime()+5
+                self.LODCloudTargets=setmetatable({}, {__mode="k"})
+                self:SetPos(self:GetPos()+(trace.HitNormal or Vector(0,0,1))*4)
+                self:SetNW2Float("LOD_CloudUntil",self.LODCloudUntil)
+                equipment:Report(caster,"STINK BOMB — poison cloud active", "stink_cloud")
             end
             self:EmitSound("physics/glass/glass_bottle_break1.wav", 62, 110, 0.65)
             local fx = EffectData(); fx:SetOrigin(self:GetPos()); fx:SetScale(0.5)
             util.Effect("GlassImpact", fx, true, true)
         end
+        if self.LODCloudUntil then self:NextThink(CurTime()); return true end
         self:Remove(); return
     end
     self:NextThink(CurTime())

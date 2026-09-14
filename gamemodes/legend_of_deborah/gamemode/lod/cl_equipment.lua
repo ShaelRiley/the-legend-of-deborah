@@ -11,52 +11,110 @@ function E:Request(action, id, slot)
 end
 
 function E:BuildPanel(frame)
-    local scroll = vgui.Create("DScrollPanel", frame)
-    scroll:SetPos(24, 88)
-    scroll:SetSize(frame:GetWide()-48, frame:GetTall()-200)
-    local content = vgui.Create("DPanel", scroll)
-    content:Dock(TOP)
-    content:SetTall(460)
-    content.Paint = function(_, w)
-        draw.SimpleText("EQUIPMENT", "LOD_SheetSubheading", 0, 0, C.red)
-        for i, slot in ipairs(E.SlotOrder) do
-            local item = E:Equipped(E.Snapshot, slot)
-            local def = E:Definition(item)
-            draw.SimpleText(E.SlotLabels[slot], "LOD_SheetBody", 0, 26+i*27, C.blue)
-            draw.SimpleText(def and (def.name .. " ×" .. item.count) or "Empty", "LOD_SheetBody", w*0.48, 26+i*27, C.ink)
+    local scroll=vgui.Create("DScrollPanel",frame)
+    scroll:SetPos(24,88);scroll:SetSize(frame:GetWide()-48,frame:GetTall()-200)
+    local content=vgui.Create("DPanel",scroll)
+    content:Dock(TOP);content.Paint=function() end
+    local width=frame:GetWide()-84
+    local y=0
+    local function label(text,font)
+        local panel=vgui.Create("DLabel",content)
+        panel:SetPos(0,y);panel:SetWide(width);panel:SetFont(font or "LOD_SheetSmall")
+        panel:SetTextColor(C.ink);panel:SetWrap(true);panel:SetAutoStretchVertical(true);panel:SetText(text)
+        -- Measure wrapped lines now so controls never overlap asynchronous layout.
+        surface.SetFont(font or "LOD_SheetSmall")
+        local lines,line=1,""
+        for word in text:gmatch("%S+") do
+            local test=line=="" and word or line.." "..word
+            if surface.GetTextSize(test)>width then lines=lines+1;line=word else line=test end
         end
-        draw.SimpleText("ITEMS", "LOD_SheetSubheading", 0, 288, C.red)
+        local _,height=surface.GetTextSize("Ag")
+        y=y+lines*height+10
     end
-    local ids = {}
-    for id in pairs(E.Snapshot.items) do ids[#ids+1] = id end
-    table.sort(ids)
-    local y = 320
-    for _, id in ipairs(ids) do
-        local item = E.Snapshot.items[id]
-        local def = E:Definition(item)
+    label("EQUIPMENT", "LOD_SheetSubheading")
+    for _,slot in ipairs(E.SlotOrder) do
+        local item=E:Equipped(E.Snapshot,slot)
+        label(E.SlotLabels[slot]..": "..(item and E:ItemName(item) or "Empty"))
+    end
+    local _,moves,block=E:Contributions(E.Snapshot)
+    label(string.format("Combined Block: %.0f%% (33%% cap)",block*100))
+    for _,id in ipairs(E.MoveOrder) do
+        local move=E.SpecialMoves[id]
+        if moves[id] then label(string.format("%s %s | %d base Magic | %gs cooldown — %s",
+            move.name,move.glyphs,move.magicCost,move.cooldown,move.description)) end
+    end
+    if E.BuildMoveBindings then y=E:BuildMoveBindings(content,y,width) end
+    label("OWNED ITEMS", "LOD_SheetSubheading")
+    local ids={};for id in pairs(E.Snapshot.items) do ids[#ids+1]=id end;table.sort(ids)
+    for _,id in ipairs(ids) do
+        local item=E.Snapshot.items[id]
+        local def=E:Definition(item)
         if def then
-            local label = vgui.Create("DLabel", content)
-            label:SetPos(0,y); label:SetSize(frame:GetWide()-60,48)
-            label:SetFont("LOD_SheetSmall"); label:SetTextColor(C.ink)
-            label:SetWrap(true); label:SetText(def.name .. " ×" .. item.count .. " — " .. def.description)
-            local equipped = E.Snapshot.slots.throwable == id
-            local button = vgui.Create("DButton", content)
-            button:SetPos(0,y+52); button:SetSize(155,30)
-            button:SetText(equipped and "Hold Throwable" or "Equip Throwable")
-            button.DoClick = function()
-                E:Request(equipped and "activate" or "equip", id, "throwable")
-                if equipped then LOD.Spellbook:Close() end
+            label(E:ItemName(item)..(def.throwable and " ×"..item.count or " | value "..E:Value(item)))
+            label(E:Description(item))
+            local equippedSlot
+            for _,slot in ipairs(E.SlotOrder) do if E.Snapshot.slots[slot]==id then equippedSlot=slot;break end end
+            local button=vgui.Create("DButton",content)
+            button:SetPos(0,y);button:SetSize(180,30)
+            button:SetText(equippedSlot and (def.throwable and "Hold Throwable" or "Unequip") or "Equip")
+            button.DoClick=function()
+                if equippedSlot then
+                    E:Request(def.throwable and "activate" or "unequip",id,equippedSlot)
+                    if def.throwable then LOD.Spellbook:Close() end
+                else E:Request("equip",id,E:Placement(E.Snapshot,item)) end
             end
-            if equipped then
-                local unequip = vgui.Create("DButton", content)
-                unequip:SetPos(165,y+52); unequip:SetSize(120,30); unequip:SetText("Unequip")
-                unequip.DoClick = function() E:Request("unequip", "", "throwable") end
+            if def.throwable and equippedSlot then
+                local remove=vgui.Create("DButton",content)
+                remove:SetPos(190,y);remove:SetSize(120,30);remove:SetText("Unequip")
+                remove.DoClick=function() E:Request("unequip",id,equippedSlot) end
+            elseif item.definitionId=="ring" then
+                local right=vgui.Create("DButton",content)
+                right:SetPos(190,y);right:SetSize(140,30);right:SetText("Equip Right Hand")
+                right.DoClick=function() E:Request("equip",id,"right_hand") end
             end
-            y = y + 96
+            y=y+44
         end
     end
-    content:SetTall(math.max(360,y))
+    content:SetTall(y+16)
 end
+
+-- World pickup and inventory share the item name/property/value formatter.
+hook.Add("HUDPaint","LOD_EquipmentComparison",function()
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then return end
+    local trace=ply:GetEyeTrace()
+    local ent=trace.Entity
+    if not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
+        or ply:GetPos():DistToSqr(ent:GetPos())>128*128 then return end
+    local encoded=ent:GetNW2String("LOD_Wearable","")
+    if encoded=="" then return end
+    if ent.LODItemJSON~=encoded then ent.LODItemJSON=encoded;ent.LODItemView=util.JSONToTable(encoded) end
+    local item=ent.LODItemView
+    if not E:ValidateWearable(item) then return end
+    local slot,displaced,oldValue=E:Placement(E.Snapshot,item)
+    local lines={E:ItemName(item),E:Description(item,true)}
+    for _,id in ipairs(displaced) do
+        local old=E.Snapshot.items[id]
+        lines[#lines+1]="Replaces "..E:ItemName(old)..": "..E:Description(old,true)
+    end
+    lines[#lines+1]=string.format("Value %g → %g (%+g) — approximate comparison",oldValue,E:Value(item),E:Value(item)-oldValue)
+    lines[#lines+1]=#displaced>0 and "E: ACCEPT REPLACEMENT" or "Touch or E: EQUIP"
+    local width=math.min(540,ScrW()-40)
+    surface.SetFont("DermaDefault")
+    local wrapped={}
+    for _,text in ipairs(lines) do
+        local line=""
+        for word in text:gmatch("%S+") do
+            local nextLine=line=="" and word or line.." "..word
+            if surface.GetTextSize(nextLine)>width-24 then wrapped[#wrapped+1]=line;line=word else line=nextLine end
+        end
+        wrapped[#wrapped+1]=line
+    end
+    local height=#wrapped*18+20
+    local x,y=20,math.max(20,ScrH()-height-70)
+    draw.RoundedBox(4,x,y,width,height,Color(20,27,32,235))
+    for i,text in ipairs(wrapped) do draw.SimpleText(text,"DermaDefault",x+12,y+10+(i-1)*18,Color(235,239,245)) end
+end)
 
 net.Receive("LOD_EquipmentSnapshot", function()
     local state = net.ReadTable()
