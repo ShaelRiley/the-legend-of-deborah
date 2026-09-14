@@ -150,7 +150,7 @@ Do not paste obsolete history for completeness. Point to durable files instead.
 
 ## 9. Branch/write discipline
 
-`main` is the accepted implementation branch. Hybrid Antigravity work follows `docs/ANTIGRAVITY_PROTOCOL.md` and may write only its authorized experimental branch until promotion. Never claim a commit/push succeeded without verifying the remote result.
+`main` is the canonical development and accepted implementation baseline. Astra / Work is the primary implementation and senior-engineering environment; Sol complements architecture, review, planning and bounded implementation. Antigravity and `hybrid/antigravity` are retired as active development workflows; their published history is retained. Follow `docs/DEVELOPMENT_WORKFLOW.md`, not the archived Antigravity protocol. Never claim a commit/push succeeded without verifying the remote result. Material runtime changes require appropriate fresh human acceptance, and deployment requires separate authorization.
 
 Do not modify the live GDD during routine implementation unless the active task explicitly includes a design correction or a genuine internal contradiction is discovered. If the GDD is genuinely silent on required authored behavior, isolate the gap instead of fabricating a rule.
 

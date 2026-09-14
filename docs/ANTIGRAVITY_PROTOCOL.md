@@ -1,3 +1,5 @@
+> RETIRED — 2026-09-14. Antigravity is no longer a development worker; `hybrid/antigravity` is retained only as historical evidence. The protocol below describes the former workflow and must not trigger new task packets, branch writes or synchronization. Follow [Development workflow](DEVELOPMENT_WORKFLOW.md).
+
 # The Legend of Deborah — Antigravity Hybrid Development Protocol
 
 This protocol governs Google Antigravity/Gemini work performed on the experimental Git branch `hybrid/antigravity`. It supplements `AGENTS.md`; it does not replace the live GDD, repository authority, or runtime-evidence rules.

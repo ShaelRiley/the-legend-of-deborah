@@ -2,9 +2,14 @@
 
 **The Legend of Deborah** is a procedural cooperative survival-maze gamemode for Garry's Mod, developed and runtime-tested on `gm_flatgrass`.
 
-Current implementation checkpoint: **Milestone 3 combat foundation / pre-Milestone 4 production systems**, with the single-player low-end optimization audit complete. Multiplayer remains the final development phase.
+Current baseline: **Shael-approved RPG candidate on main**, promoted from `87920e5ba3b27d46ff096f5a85cd41030a77f964` on 2026-09-14. Astra / Work leads implementation; Sol complements review, architecture, planning and bounded implementation. Antigravity and the hybrid workflow are retired. See [current status](docs/DEVELOPMENT_STATUS.md), [development plan](docs/DEVELOPMENT_PLAN.md), and [workflow](docs/DEVELOPMENT_WORKFLOW.md). Public-server and Workshop deployment remain separate from this promotion.
 
 The [Game Design Document](https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY/edit) is the design authority. This repository's `main` branch is the implementation authority.
+
+<details>
+<summary>Historical pre-RPG implementation and optimization checkpoint</summary>
+
+The following records the former Milestone 3 baseline, not current RPG scope or acceptance.
 
 ## Implemented and runtime-validated
 
@@ -55,6 +60,8 @@ Additional completed optimizations:
 - Distant gate bodies, keycards, and unreadable progression labels are culled.
 - Developer modules default off in production; the infinite-ammo testkit timer exists only while armed.
 
+</details>
+
 ## Developer mode
 
 Developer tools are disabled by default on a fresh installation. Set `lod_developer_mode 1` and fully restart GMod to load the server audit/test modules. Existing archived development installations retain their saved value.
@@ -82,7 +89,7 @@ Some composite `lod_m1_audit` floor-support or wall-top failures are known diagn
 After pulling a code change, fully quit GMod before relaunching; Lua hot reload is not an authoritative test path.
 
 ```bash
-cd ~/Downloads/the-legend-of-deborah && git pull --ff-only
+cd ~/Downloads/the-legend-of-deborah && git fetch origin main && git switch main && git pull --ff-only origin main && bash tools/install_dev.sh
 ```
 
 The required development map is `gm_flatgrass`.
