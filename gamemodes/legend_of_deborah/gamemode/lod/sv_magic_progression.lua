@@ -389,9 +389,12 @@ function MagicProgression:SendSnapshot(ply)
     local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
     local state = ps and ps.progressionState
     if not state then return end
-    net.Start("LOD_MagicSpellbookSnapshot")
-    net.WriteTable(self:Snapshot(state))
-    net.Send(ply)
+    LOD.SnapshotDelivery:Queue(ply, "LOD_MagicSpellbookSnapshot", function(recipient)
+        local currentRun = LOD.RunManager
+        local currentPS = currentRun and currentRun:GetPlayerState(recipient)
+        local current = currentPS and currentPS.progressionState
+        if current then return self:Snapshot(current) end
+    end)
 end
 
 if not Progression.LODMagicSnapshotSyncWrapped then

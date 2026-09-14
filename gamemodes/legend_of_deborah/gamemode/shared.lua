@@ -29,6 +29,7 @@ if SERVER then
     -- RPG server modules are loaded from the gamemode root, not from the
     -- shared schema file. Keeping this boundary explicit avoids nested relative
     -- include resolution such as lod/lod/sv_character_progression.lua.
+    include("lod/sv_snapshot_delivery.lua")
     include("lod/sv_rpg_gate_b_catalog.lua")
     include("lod/sv_rpg_gate_c_catalog.lua")
     include("lod/sv_rpg_gate_e_feats.lua")

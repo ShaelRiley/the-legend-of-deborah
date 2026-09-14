@@ -255,6 +255,17 @@ function Summary:Render()
     end
 
     lines[#lines + 1] = ""
+    lines[#lines + 1] = "[SNAPSHOT_TRAFFIC]"
+    local delivery = LOD.SnapshotDelivery
+    if delivery and delivery.Stats then
+        lines[#lines + 1] = "# counters since server initialization; reliable sheet/book snapshots only"
+        for _, key in ipairs({"requested", "coalesced", "unchanged", "sent", "bytes", "maxFlushBytes"}) do
+            lines[#lines + 1] = key .. "=" .. safe(delivery.Stats[key])
+        end
+    else
+        lines[#lines + 1] = "none"
+    end
+    lines[#lines + 1] = ""
     lines[#lines + 1] = "[LATEST_GATE_D_VALIDATE]"
     if self.LastValidation then
         lines[#lines + 1] = encodedFields(self.LastValidation)

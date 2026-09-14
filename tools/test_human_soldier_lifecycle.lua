@@ -109,6 +109,7 @@ function LOD.CombatRolls:RollProgressionHitDie(seed, sides)
     return {seed = seed, sides = sides, formula = "d" .. tostring(sides), values = {value}, total = value}
 end
 
+dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_snapshot_delivery.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_hero_ability_rolls.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua")

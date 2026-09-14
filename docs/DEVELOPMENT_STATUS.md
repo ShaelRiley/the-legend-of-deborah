@@ -1,3 +1,5 @@
+> Current repair candidate: Shael’s playtest hit a reliable-channel overflow after a multi-kill Blast. Full RPG snapshots now coalesce/deduplicate; traffic is instrumented. Static gate: 53/53; Source retest required. See [RELIABLE_CHANNEL_REPAIR.md](RELIABLE_CHANNEL_REPAIR.md). No main promotion or live deployment.
+
 > Latest candidate: adventure presentation polish is implemented and statically validated (52/52 suites). See [ADVENTURE_PRESENTATION.md](ADVENTURE_PRESENTATION.md). Shael’s playtest must use the revised exact SHA; main and live deployment remain gated.
 
 > Latest candidate amendment: canonical starting-score weakness pass and three-handler identity perks (+2 ability / favored weapon / favored enemy) implemented. Start a new campaign for generation acceptance; existing Hero base scores are preserved. Full RPG Update remains the release milestone; live Alpha 01 has not been deployed over.

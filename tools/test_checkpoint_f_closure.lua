@@ -225,6 +225,8 @@ LOD.RPG.IdentityCatalog = {
 Catalog = LOD.RPG.IdentityCatalog
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sh_heroes_of_legend.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_heroes_of_legend.lua")
+timer = timer or {Simple = function() end}
+dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_snapshot_delivery.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua")

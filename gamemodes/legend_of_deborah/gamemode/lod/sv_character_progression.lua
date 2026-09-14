@@ -1683,11 +1683,9 @@ function CharacterProgressionSystem:SyncPlayer(ply)
     end
     local featEffects = RPG.FeatEffectSystem
     if featEffects and featEffects.TrackActor then featEffects:TrackActor(ply, false) end
-    local snapshot = self:BuildClientSnapshot(ply)
-    if not snapshot then return end
-    net.Start("LOD_RPG_Snapshot")
-    net.WriteTable(snapshot)
-    net.Send(ply)
+    LOD.SnapshotDelivery:Queue(ply, "LOD_RPG_Snapshot", function(recipient)
+        return self:BuildClientSnapshot(recipient)
+    end)
 end
 
 function CharacterProgressionSystem:FormatPlayerHeroText(playerNick, heroDisplayName)
@@ -1724,6 +1722,7 @@ net.Receive("LOD_RPG_RequestSheet", function(_, ply)
     local now = CurTime()
     if (ply.LODNextRPGSheetRequest or 0) > now then return end
     ply.LODNextRPGSheetRequest = now + 0.10
+    LOD.SnapshotDelivery:Invalidate(ply)
     CharacterProgressionSystem:SyncPlayer(ply)
 end)
 

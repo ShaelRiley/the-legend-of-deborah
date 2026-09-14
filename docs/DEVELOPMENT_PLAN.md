@@ -1,3 +1,5 @@
+> Current repair candidate: Shael’s playtest hit a reliable-channel overflow after a multi-kill Blast. Full RPG snapshots now coalesce/deduplicate; traffic is instrumented. Static gate: 53/53; Source retest required. See [RELIABLE_CHANNEL_REPAIR.md](RELIABLE_CHANNEL_REPAIR.md). No main promotion or live deployment.
+
 > Latest candidate: adventure presentation polish is implemented and statically validated (52/52 suites). See [ADVENTURE_PRESENTATION.md](ADVENTURE_PRESENTATION.md). Shael’s playtest must use the revised exact SHA; main and live deployment remain gated.
 
 > Current RPG milestone amendment: implement and test the starting-score weakness pass and standardized identity perks; both are now in the revised hybrid candidate. Shael clarified static +2 ability perks. The full RPG Update ultimately targets the live server, presently Alpha 01 per Shael. Human acceptance and final Instruction Booklet reconciliation precede separately authorized live deployment.

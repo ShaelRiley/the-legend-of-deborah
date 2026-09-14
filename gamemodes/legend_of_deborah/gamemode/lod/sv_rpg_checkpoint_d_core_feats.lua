@@ -201,7 +201,7 @@ end
 
 local baseSync = Rules.SyncPlayer
 function Rules:SyncPlayer(ply)
-    baseSync(ply)
+    baseSync(self, ply)
     if not IsValid(ply) then return end
     local derived = self:Derived(ply)
     local scale = tonumber(derived and derived.playerTargetScale) or 1
