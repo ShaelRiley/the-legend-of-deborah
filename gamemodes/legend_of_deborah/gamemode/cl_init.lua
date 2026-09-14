@@ -1,4 +1,5 @@
 include("shared.lua")
+include("lod/cl_adventure_presentation.lua")
 include("lod/sh_tetris.lua")
 include("lod/cl_textured_box.lua")
 include("lod/cl_wall_visuals.lua")

@@ -26,7 +26,8 @@ end
 function ENT:Draw()
 end
 
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function()
+hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function(depth, skybox)
+    if depth or skybox then return end
     local eyePos = EyePos()
     local registered, drawn, culled = 0, 0, 0
     render.SetMaterial(cardMaterial)
@@ -37,8 +38,19 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function()
             if ent:GetPos():DistToSqr(eyePos) <= KEYCARD_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
                 local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 3)]
-                render.DrawBox(ent:GetPos(), Angle(0, CurTime() * 45 % 360, 0),
-                    Vector(-18, -28, -3), Vector(18, 28, 3), card.color)
+                local adventure = LOD.AdventurePresentation
+                local still = adventure and adventure:Reduced()
+                local pos = ent:GetPos() + Vector(0, 0, still and 0 or math.sin(CurTime()*1.8+ent:EntIndex())*3)
+                local ang = Angle(0, still and 0 or CurTime()*28%360, 0)
+                render.SetMaterial(cardMaterial)
+                render.DrawBox(pos, ang, Vector(-18,-28,-3), Vector(18,28,3), card.color)
+                -- Physical access pass: magnetic stripe, contacts, printed letter.
+                cam.Start3D2D(pos+Vector(0,0,3.2),ang,1)
+                    surface.SetDrawColor(28,32,36,255);surface.DrawRect(-18,-20,36,7)
+                    surface.SetDrawColor(245,211,129,255);surface.DrawRect(-13,1,9,8)
+                    draw.SimpleText(card.letter,"DermaDefaultBold",7,4,Color(255,250,231),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+                cam.End3D2D()
+                if adventure then adventure:Glint(pos+Vector(0,0,8),ent:EntIndex(),card.color) end
             else
                 culled = culled + 1
             end
@@ -50,7 +62,8 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function()
     RenderStats.keycardBodiesCulled = culled
 end)
 
-hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function()
+hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function(depth, skybox)
+    if depth or skybox then return end
     local eyePos = EyePos()
     local drawn, culled = 0, 0
     for ent in pairs(LOD.ClientKeycards) do

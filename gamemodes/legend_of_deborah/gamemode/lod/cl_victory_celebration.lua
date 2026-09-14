@@ -3,8 +3,8 @@ LOD.VictoryCelebrationClient = LOD.VictoryCelebrationClient or {}
 
 local Client = LOD.VictoryCelebrationClient
 local CONFETTI_MATERIALS = {
-    "particle/particle_glow_04",
-    "sprites/light_glow02_add"
+    "effects/fleck_cement1",
+    "effects/fleck_cement2"
 }
 local CONFETTI_COLORS = {
     Color(238, 88, 88),
@@ -16,7 +16,6 @@ local CONFETTI_COLORS = {
     Color(245, 245, 245)
 }
 local CHEER_SOUNDS = {
-    "vo/npc/male01/yeah02.wav",
     "vo/npc/female01/fantastic01.wav",
     "vo/npc/male01/nice.wav"
 }
@@ -39,29 +38,29 @@ local function soundExists(path)
     return isstring(path) and file.Exists("sound/" .. path, "GAME")
 end
 
-local function playCelebrationAudio()
+local function playCelebrationAudio(current)
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(6, false) end
     -- Garry's Mod itself ships this with its balloon implementation. It gives the
     -- celebration a silly toy-like punctuation before the citizen cheer layer.
     if soundExists("garrysmod/balloon_pop_cute.wav") then
         surface.PlaySound("garrysmod/balloon_pop_cute.wav")
         timer.Simple(0.16, function()
-            if soundExists("garrysmod/balloon_pop_cute.wav") then
+            if current() and soundExists("garrysmod/balloon_pop_cute.wav") then
                 surface.PlaySound("garrysmod/balloon_pop_cute.wav")
             end
         end)
     end
 
-    if soundExists("buttons/button9.wav") then surface.PlaySound("buttons/button9.wav") end
 
-    local delay = 0.08
+    local delay = 0.25
     for _, path in ipairs(CHEER_SOUNDS) do
         local soundPath = path
         if soundExists(soundPath) then
             local scheduledAt = delay
             timer.Simple(scheduledAt, function()
-                if soundExists(soundPath) then surface.PlaySound(soundPath) end
+                if current() and soundExists(soundPath) then surface.PlaySound(soundPath) end
             end)
-            delay = delay + 0.13
+            delay = delay + 1.1
         end
     end
 end
@@ -72,7 +71,7 @@ local function emitConfettiBurst(center, seedOffset)
 
     local localPly = LocalPlayer()
     local localCenter = IsValid(localPly) and localPly:GetPos() + Vector(0, 0, 190) or center + Vector(0, 0, 190)
-    local count = 90
+    local count = LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced() and 12 or 60
     for i = 1, count do
         local material = CONFETTI_MATERIALS[((i + (seedOffset or 0)) % #CONFETTI_MATERIALS) + 1]
         local pos = localCenter + Vector(math.Rand(-170, 170), math.Rand(-170, 170), math.Rand(0, 70))
@@ -96,10 +95,10 @@ local function emitConfettiBurst(center, seedOffset)
     emitter:Finish()
 end
 
-local function scheduleConfetti(center)
+local function scheduleConfetti(center, current)
     emitConfettiBurst(center, 0)
-    timer.Simple(0.70, function() emitConfettiBurst(center, 17) end)
-    timer.Simple(1.40, function() emitConfettiBurst(center, 31) end)
+    timer.Simple(0.70, function() if current() then emitConfettiBurst(center, 17) end end)
+    timer.Simple(1.40, function() if current() then emitConfettiBurst(center, 31) end end)
 end
 
 net.Receive("LOD_VictoryCelebration", function()
@@ -108,8 +107,15 @@ net.Receive("LOD_VictoryCelebration", function()
     Client.deborah = net.ReadEntity()
     Client.startedAt = CurTime()
     Client.endsAt = Client.startedAt + Client.duration
-    playCelebrationAudio()
-    scheduleConfetti(Client.center)
+    Client.generation = (Client.generation or 0) + 1
+    local generation = Client.generation
+    local function current()
+        local ply = LocalPlayer()
+        return generation == Client.generation and CurTime() < (Client.endsAt or 0)
+            and IsValid(ply) and ply:Alive()
+    end
+    playCelebrationAudio(current)
+    scheduleConfetti(Client.center, current)
 end)
 
 local function celebrationActive()
@@ -122,6 +128,7 @@ end
 hook.Add("CalcView", "LOD_VictoryCelebrationThirdPerson", function(ply, origin, angles, fov)
     if not celebrationActive() or not IsValid(ply) or not ply:Alive() then return end
 
+    if LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced() then return end
     local wanted = origin - angles:Forward() * 118 + Vector(0, 0, 34)
     local tr = util.TraceHull({
         start = origin,
@@ -156,6 +163,13 @@ hook.Add("HUDPaint", "LOD_VictoryCelebrationHUD", function()
         Color(248, 213, 105, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
     draw.SimpleText("DEBORAH IS FREE", "LOD_Victory_Subtitle", ScrW() * 0.5, y + 63,
         Color(238, 238, 238, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+    draw.SimpleText("SHE HAS NOTES.", "LOD_AdventureAside", ScrW() * 0.5, y + 94,
+        Color(246, 218, 158, math.floor(alpha*.85)), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+end)
+
+hook.Add("PreCleanupMap", "LOD_VictoryPresentationReset", function()
+    Client.generation = (Client.generation or 0) + 1
+    Client.endsAt, Client.startedAt, Client.deborah = nil, nil, nil
 end)
 
 concommand.Add("lod_victory_client_status", function()

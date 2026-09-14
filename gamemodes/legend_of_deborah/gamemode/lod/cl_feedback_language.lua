@@ -22,6 +22,7 @@ if not Feed.historyLoaded then
                         text = string.sub(row.text, 1, LOD.DieLogger.MaxText),
                         stamp = tostring(row.stamp or "previous session"),
                         family = row.family or "routine", category = row.category or 3,
+                        cue = row.cue, cueVariant = row.cueVariant,
                         segments = LOD.DieLogger:ValidSegments(row.segments, row.text) and row.segments or nil
                     }
                 end
@@ -64,16 +65,17 @@ end
 
 function Feed:RetainFeedback(entry)
     self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S"),
-        family = entry.family, category = entry.category, segments = entry.segments}
+        family = entry.family, category = entry.category, segments = entry.segments, cue = entry.cue, cueVariant = entry.cueVariant}
     while #self.history > MAX_HISTORY do table.remove(self.history, 1) end
     -- Fixed batching: continuous combat still reaches disk.
     if not timer.Exists("LOD_DieLoggerSave") then
         timer.Create("LOD_DieLoggerSave", 2, 1, saveHistory)
     end
     local grammar = LOD.FeedbackLanguage[entry.family] or LOD.FeedbackLanguage.routine
-    local now, sounded = CurTime(), false
+    local now = CurTime()
+    local sounded = LOD.AdventurePresentation and LOD.AdventurePresentation:OnFeedback(entry) or false
     local priority = grammar.priority or 0
-    if grammar.sound and (now >= (self.nextFeedbackSound or 0)
+    if not sounded and not (entry.cue and entry.cue > 0) and grammar.sound and (now >= (self.nextFeedbackSound or 0)
         or priority > (self.lastFeedbackPriority or 0)) then
         surface.PlaySound(grammar.sound)
         self.nextFeedbackSound = now + (priority >= 2 and 0.8 or 0.35)

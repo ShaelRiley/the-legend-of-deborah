@@ -148,10 +148,12 @@ observe(LOD.RunManager, "_SyncPlayerVars", nil, function(_, _, self, ply)
     end
 end)
 
-observe(LOD.ProgressionDirector, "Announce", nil, function(_, _, _, text)
+observe(LOD.ProgressionDirector, "Announce", nil, function(_, _, _, text, presentation)
     for _, ply in ipairs(player.GetAll()) do
         -- Existing banner stays the visual authority. Retain its EXACT sentence.
-        emit(ply, "objective", text, "announcement", {dungeon = LOD.RunManager.State.Level})
+        local fields = table.Copy(presentation or {})
+        fields.dungeon = LOD.RunManager.State.Level
+        emit(ply, "objective", text, fields.event or "announcement", fields)
     end
 end)
 

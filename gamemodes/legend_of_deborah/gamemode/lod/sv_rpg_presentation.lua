@@ -65,7 +65,7 @@ end
 
 local function definitionLabel(definition, fallback)
     if not definition then return tostring(fallback or "Feat") end
-    return tostring(definition.name or definition.label or definition.title or definition.id or fallback or "Feat")
+    return tostring(definition.displayName or definition.name or definition.label or definition.title or definition.id or fallback or "Feat")
 end
 
 function Presentation:InstallProgressionPresentation()

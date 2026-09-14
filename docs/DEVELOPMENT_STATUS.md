@@ -1,6 +1,8 @@
+> Latest candidate: adventure presentation polish is implemented and statically validated (52/52 suites). See [ADVENTURE_PRESENTATION.md](ADVENTURE_PRESENTATION.md). Shael’s playtest must use the revised exact SHA; main and live deployment remain gated.
+
 > Latest candidate amendment: canonical starting-score weakness pass and three-handler identity perks (+2 ability / favored weapon / favored enemy) implemented. Start a new campaign for generation acceptance; existing Hero base scores are preserved. Full RPG Update remains the release milestone; live Alpha 01 has not been deployed over.
 
-> Current hybrid release status (2026-09-14): **statically validated candidate awaiting Shael’s exact-SHA Source-runtime acceptance**. The 150-entry approved feat inventory has zero blank descriptions; the integrated gate passes 50/50 suites. See [FEAT_STABILIZATION_AUDIT.md](FEAT_STABILIZATION_AUDIT.md). No main promotion or deployment is authorized by static results. Earlier entries below are historical.
+> Current hybrid release status (2026-09-14): **statically validated candidate awaiting Shael’s exact-SHA Source-runtime acceptance**. The 150-entry approved feat inventory has zero blank descriptions; the integrated gate passes 52/52 suites. See [FEAT_STABILIZATION_AUDIT.md](FEAT_STABILIZATION_AUDIT.md). No main promotion or deployment is authorized by static results. Earlier entries below are historical.
 
 ## 2026-09-13 — Final pre-playtest feedback candidate
 

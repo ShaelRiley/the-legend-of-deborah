@@ -489,7 +489,7 @@ function ProgressionDirector:SyncAll()
     for _, ply in ipairs(player.GetAll()) do self:SyncPlayer(ply) end
 end
 
-function ProgressionDirector:Announce(text)
+function ProgressionDirector:Announce(text, presentation)
     net.Start("LOD_Announcement")
     net.WriteString(text)
     net.Broadcast()
@@ -505,7 +505,8 @@ function ProgressionDirector:CollectCard(index, ply)
     state.Cards[index] = true
     state.ObjectiveStage = index * 2
     local card = PC.Cards[index]
-    self:Announce(string.format("%s KEYCARD ACQUIRED — %s / %s", string.upper(card.name), card.letter, card.symbol))
+    self:Announce(string.format("%s KEYCARD ACQUIRED — %s / %s", string.upper(card.name), card.letter, card.symbol),
+        {event = "keycard_acquired", cardIndex = index})
     self:SyncAll()
     return true
 end
@@ -552,7 +553,8 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
             ErrorNoHalt("[LOD] Yellow Gate opened but production Jail Key failed to spawn at Core\n")
         end
     end
-    self:Announce(string.format("%s GATE OPEN — CHECKPOINT %d", string.upper(card.name), index))
+    self:Announce(string.format("%s GATE OPEN — CHECKPOINT %d", string.upper(card.name), index),
+        {event = "gate_opened", cardIndex = index})
     self:SyncAll()
     return true
 end
@@ -592,7 +594,7 @@ function ProgressionDirector:CollectJailKey(ply, keyEnt)
     state.JailKeyEntity = nil
     state.ObjectiveStage = Stages.UNLOCK_DEBORAH_CELL
     if IsValid(keyEnt) then keyEnt:Remove() end
-    self:Announce("JAIL KEY ACQUIRED — UNLOCK DEBORAH'S CELL")
+    self:Announce("JAIL KEY ACQUIRED — UNLOCK DEBORAH'S CELL", {event = "jail_key_acquired"})
     self:SyncAll()
     return true
 end
@@ -617,7 +619,7 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
     state.JailDoorOpen = true
     state.ObjectiveStage = Stages.RESCUE_DEBORAH
     if IsValid(doorEnt) and doorEnt.OpenDoor then doorEnt:OpenDoor() end
-    self:Announce("DEBORAH'S CELL UNLOCKED — RESCUE DEBORAH")
+    self:Announce("DEBORAH'S CELL UNLOCKED — RESCUE DEBORAH", {event = "jail_opened"})
     self:SyncAll()
     return true
 end

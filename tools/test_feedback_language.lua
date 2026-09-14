@@ -277,3 +277,21 @@ local sample={text="same record, different metrics",family="routine"}
 feed:Layout(sample,150,false);assert(sample.layoutFont=="LOD_CombatRoll")
 feed:Layout(sample,150,true);assert(sample.layoutFont=="ChatFont")
 print("FEEDBACK_LANGUAGE_PASS: isolation, typed transport, ACK ownership/dedup, Magic cost/refund, lifecycle, history and draw boundaries")
+
+-- Success metadata takes the same path as text/history; replay cannot replay a cue.
+dofile(root .. "cl_combat_roll_feed.lua")
+local accentCalls=0
+LOD.AdventurePresentation={OnFeedback=function(_,row)
+    if row.cue==1 then accentCalls=accentCalls+1;assert(row.cueVariant==2);return true end
+    return false
+end}
+P:Event(a,'objective','GREEN KEYCARD ACQUIRED',{event='keycard_acquired',cardIndex=2})
+local treasurePacket=sent[#sent]
+deliver(treasurePacket)
+assert(accentCalls==1 and feed.entries[#feed.entries].cue==1 and feed.history[#feed.history].cue==1)
+deliver(treasurePacket)
+assert(accentCalls==1,'duplicate transport cannot replay discovery sound')
+P:Event(a,'blocked','KEYCARD REQUIRED',{event='objective_denied'})
+deliver(sent[#sent])
+assert(accentCalls==1,'denial text cannot masquerade as success')
+print('PASS: discovery cue, logger/history parity and duplicate/denial isolation')

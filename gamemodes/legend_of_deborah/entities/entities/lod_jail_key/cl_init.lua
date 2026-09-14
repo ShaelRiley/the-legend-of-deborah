@@ -12,7 +12,8 @@ local beaconMaterial = Material("sprites/light_glow02_add")
 function ENT:Draw()
     if self:GetPos():DistToSqr(EyePos()) > DRAW_DISTANCE_SQR then return end
     local pos = self:GetPos()
-    local ang = Angle(0, CurTime() * 55 % 360, 0)
+    local still = LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced()
+    local ang = Angle(0, still and 0 or CurTime() * 35 % 360, 0)
     local temporaryCore = self:GetKeySource() == "temporary_core"
 
     render.SetMaterial(keyMaterial)
@@ -31,6 +32,8 @@ function ENT:Draw()
         render.DrawSprite(pos + Vector(0, 0, 74), 24 * pulse, 24 * pulse, Color(255, 238, 170, 190))
         render.DrawSprite(pos + Vector(0, 0, 118), 14 * pulse, 14 * pulse, Color(255, 245, 205, 145))
     end
+
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Glint(pos+Vector(0,0,12),self:EntIndex()) end
 
     local labelAng = Angle(0, EyeAngles().y - 90, 90)
     cam.Start3D2D(pos + Vector(0, 0, temporaryCore and 48 or 38), labelAng, 0.12)

@@ -84,6 +84,8 @@ local function send(self, ply, category, text, family, fields)
     local segments = LOD.DieLogger:Segments(text, family, identities)
     fields = table.Copy(fields or {})
     fields.segments = segments
+    fields.cue = LOD.AdventureCueForEvent and LOD.AdventureCueForEvent(fields) or 0
+    fields.cueVariant = math.Clamp(tonumber(fields.cardIndex) or 0, 0, 3)
     local presentation = LOD.RPGPresentation
     local tracked = false
     if presentation and presentation.TrackFeedback then
@@ -98,6 +100,8 @@ local function send(self, ply, category, text, family, fields)
     net.WriteString(family)
     net.WriteBool(tracked)
     net.WriteString(util.TableToJSON(segments))
+    net.WriteUInt(fields.cue, 4)
+    net.WriteUInt(fields.cueVariant, 2)
     net.Send(ply)
     self.Stats.feedMessages = (self.Stats.feedMessages or 0) + 1
 end

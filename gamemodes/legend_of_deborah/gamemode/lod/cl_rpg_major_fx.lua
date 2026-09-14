@@ -53,6 +53,7 @@ local function playFeedbackSound()
 end
 
 local function playLevelSound()
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(5, false); return end
     surface.PlaySound("buttons/button15.wav")
     timer.Simple(0.055, function()
         surface.PlaySound("items/suitchargeok1.wav")
@@ -60,6 +61,7 @@ local function playLevelSound()
 end
 
 local function playFeatSound()
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(7, false); return end
     if file.Exists("sound/ambient/office/keyboard1_clicks.wav", "GAME") then
         surface.PlaySound("ambient/office/keyboard1_clicks.wav")
     else
@@ -188,20 +190,15 @@ local function drawLevelUpBurst(fx, now)
     local bright = Color(255, 248, 205, alpha)
     local dark = Color(32, 20, 3, math.floor(alpha * 0.94))
 
-    surface.SetDrawColor(base.r, base.g, base.b, math.floor(36 * envelope))
-    surface.DrawRect(0, 0, w, h)
-
-    local bandWidth = math.min(w * 0.72, 820)
-    local bandHeight = 132
-    surface.SetDrawColor(dark.r, dark.g, dark.b, math.floor(154 * envelope))
-    surface.DrawRect(cx - bandWidth * 0.5, cy - bandHeight * 0.5, bandWidth, bandHeight)
+    local reduced = LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced()
+    if reduced then radius = 62 end
 
     surface.SetDrawColor(base)
     surface.DrawCircle(cx, cy, radius, base.r, base.g, base.b, alpha)
     surface.DrawCircle(cx, cy, radius * 0.72, bright.r, bright.g, bright.b, math.floor(alpha * 0.82))
     surface.DrawCircle(cx, cy, radius * 0.46, base.r, base.g, base.b, math.floor(alpha * 0.62))
 
-    for i = 0, 19 do
+    for i = 0, (reduced and 5 or 19) do
         local angle = (i / 20) * math.pi * 2 + fraction * 0.55
         local inner = radius * 0.68
         local outer = radius * (1.08 + ((i % 2) * 0.22))

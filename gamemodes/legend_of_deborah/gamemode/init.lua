@@ -18,6 +18,10 @@ LOD.DeveloperModeConVar = cvDeveloperMode
 
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("lod/cl_adventure_presentation.lua")
+for _, cue in ipairs({"discovery", "unlock", "learn", "level_up", "rescue", "feat"}) do
+    resource.AddFile("sound/legend_of_deborah/adventure/" .. cue .. ".wav")
+end
 AddCSLuaFile("lod/sh_config.lua")
 AddCSLuaFile("lod/sh_rng.lua")
 AddCSLuaFile("lod/sh_tetris.lua")
