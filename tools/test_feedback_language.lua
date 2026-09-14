@@ -58,6 +58,7 @@ LOD = {RPG = {}, RPGPresentation = {}, CombatRolls = {Stats = {}},
         GetPlayerState = function(_, who) if who == "1" then who = a end; return states[who] end,
         _SyncPlayerVars = function() return nil, "sync", nil, 4 end,
         IsSoldierControl = function(_, ply) return ply.soldier == true end}}
+dofile(root .. "sh_die_logger.lua")
 dofile(root .. "sh_feedback_language.lua")
 dofile(root .. "sv_feedback_language.lua")
 dofile(root .. "sv_combat_feed_semantics.lua")
@@ -70,8 +71,8 @@ P:Event(a, "status", "HELD APPLIED", nil, "held")
 assert(#sent == 1 and logs[#logs].name == "FEEDBACK_SUPPRESSED")
 P:Event(b, "status", "HELD APPLIED", nil, "held")
 assert(#sent == 2, "recipient cooldown isolation")
-rolls:_Send(a, 0, string.rep("x", 600))
-assert(#sent[#sent][2][1] == 512, "bounded complete transport")
+rolls:_Send(a, 0, string.rep("x", 5000))
+assert(#sent[#sent][2][1] == 4096, "bounded complete transport")
 dev = false; rolls:_Send(a, 0, "quiet"); assert(sent[#sent][5][1] == false); dev = true
 
 local baseCalls = 0
@@ -138,6 +139,7 @@ surface = {CreateFont = function() end, SetFont = function() end, GetTextSize = 
 draw = {RoundedBox = function() end, SimpleTextOutlined = function() end, SimpleText = function() end}
 function ScrW() return 1280 end
 function ScrH() return 800 end
+dofile(root .. "cl_ui_theme.lua")
 dofile(root .. "cl_combat_roll_feed.lua")
 dofile(root .. "cl_feedback_language.lua")
 dofile(root .. "cl_combat_roll_feed_semantics.lua")
@@ -155,7 +157,12 @@ local drawnAck = sent[#sent]; deliver(drawnAck, a, ackReceiver)
 assert(logs[#logs].fields.stage == "drawn")
 n = #sent; hooks.HUDPaint.LOD_CombatRollFeed(); assert(#sent == n, "no per-frame ACK traffic")
 -- Hidden by congestion != lost history. Sound cap applies even with rapid entries.
-for i = 1, 1010 do deliver(first) end
+deliver(first)
+assert(#feed.history == 1, "duplicate packet cannot replay history or sound")
+for i = 1, 1010 do
+    local distinct = table.Copy(first); distinct[3][1] = 10000+i
+    deliver(distinct)
+end
 assert(#feed.entries == 10 and #feed.history == 1000 and #sounds == 1)
 local saveFn = timers.LOD_DieLoggerSave or hooks.ShutDown.LOD_DieLoggerSave
 saveFn()
@@ -173,6 +180,7 @@ assert(#LOD.CombatRollFeed.history == 1 and LOD.CombatRollFeed.history[1].text =
     "fallback migration loads legacy history")
 
 feed = LOD.CombatRollFeed
+dofile(root .. "cl_combat_roll_feed_semantics.lua")
 feed:RetainFeedback({text = "PROGRESS", family = "progress"})
 hooks.HUDPaint.LOD_FeedbackNotice()
 assert(feed.notice.entry.text == "PROGRESS")
@@ -203,4 +211,39 @@ assert(fx:Trigger(1, "FEEDBACK", "", 2) == false and fx.active.kind == 2)
 clock = clock + 2
 assert(fx:Trigger(1, "FEEDBACK", "", 3) == true and fx.active.kind == 1)
 assert(#errors == 0, table.concat(errors, "\n"))
+-- Span identity is independent of sentence role and survives names with ' as '.
+local logger=LOD.DieLogger
+local name="Steam as 7 as Deborah Riley"
+local sentence=name.." dealt 1d10! (27) [rolls 10 > 10 > 7] damage to "..name..", via Magic"
+local segments=logger:Segments(sentence,"routine",{{text=name,characterStart=15}})
+assert(logger:ValidSegments(segments,sentence))
+local identities,characters=0,0
+for _,span in ipairs(segments) do
+    if span.role=="identity" and span.text=="Steam as 7" then identities=identities+1 end
+    if span.role=="character" and span.text=="Deborah Riley" then characters=characters+1 end
+end
+assert(identities==2 and characters==2,"actor/target identity uses exact Steam and character spans")
+local chain={values={10,10,7,3},chainStarts={1,4},baseDice=2,contributions={10,10,7,4}}
+assert(logger:RollDetail(chain)=="10 > 10 > 7 + 3=>4","base dice, continuations, contribution adjustments stay distinct")
+local chainText=string.rep("10 > ",127).."7"
+local longText=rolls:_DamageEventText(a,"4d10!",1277,b,"[rolls "..chainText.."]")
+assert(longText:find(chainText,1,true),"128-die detail is never dropped")
+rolls:_Send(a,0,longText)
+local record=sent[#sent]
+assert(record[2][1]==longText and logger:ValidSegments(record[6][1],longText))
+local entry={text=longText,segments=record[6][1],family="routine"}
+feed:RetainFeedback(entry)
+assert(feed.history[#feed.history].segments==entry.segments,"history retains identical server spans")
+local unbroken={text=string.rep("名",180),family="routine"}
+local lines,widths=feed:Layout(unbroken,160)
+local rebuilt={}
+for i,line in ipairs(lines) do
+    assert(widths[i]<=160,"long UTF-8 identity never leaves column")
+    for _,span in ipairs(line) do rebuilt[#rebuilt+1]=span.text end
+end
+assert(table.concat(rebuilt)==unbroken.text,"wrapping loses no UTF-8 text")
+clock=clock+20
+hooks.HUDPaint.LOD_FeedbackNotice()
+assert(not feed.notice and #feed.notices==0,"old lifecycle notices expire rather than replay later")
+assert(#errors==0,table.concat(errors,"\n"))
 print("FEEDBACK_LANGUAGE_PASS: isolation, typed transport, ACK ownership/dedup, Magic cost/refund, lifecycle, history and draw boundaries")

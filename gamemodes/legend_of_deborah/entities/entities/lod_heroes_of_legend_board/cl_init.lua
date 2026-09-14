@@ -2,14 +2,14 @@ include("shared.lua")
 
 if surface and surface.CreateFont then
     surface.CreateFont("LOD_BoardTitle", {
-        font = "DejaVu Sans",
+        font = "DejaVu Sans Condensed",
         size = 42,
         weight = 900,
         antialias = true
     })
 
     surface.CreateFont("LOD_BoardEntry", {
-        font = "DejaVu Sans",
+        font = "Georgia",
         size = 24,
         weight = 700,
         antialias = true
@@ -35,38 +35,44 @@ function ENT:Draw()
 
     if cam and cam.Start3D2D then
         cam.Start3D2D(boardOffset, boardAng, scale)
-            surface.SetDrawColor(20, 24, 28, 240)
-            surface.DrawRect(-width * 0.5, -20, width, height)
-            surface.SetDrawColor(180, 140, 60, 255)
-            surface.DrawOutlinedRect(-width * 0.5, -20, width, height, 4)
-
-            draw.SimpleTextOutlined("HEROES OF LEGEND", "LOD_BoardTitle",
-                0, 10, Color(245, 215, 120), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, Color(0, 0, 0, 255))
-
-            draw.SimpleTextOutlined("Top 10 Completed Party Runs", "LOD_BoardEntry",
-                0, 58, Color(180, 190, 200), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))
-
-            surface.SetDrawColor(180, 140, 60, 150)
-            surface.DrawLine(-width * 0.4, 90, width * 0.4, 90)
-
-            local entries = LOD and LOD.HeroesOfLegend and LOD.HeroesOfLegend.Entries or {}
-            local startY = 105
-            local lineHeight = 35
-
-            for i = 1, 10 do
-                local entry = entries[i]
-                local text
-                if entry then
-                    local formatted = LOD.HeroesOfLegend:FormatEntry(entry)
-                    text = string.format("%d. %s", i, formatted)
-                else
-                    text = string.format("%d. ---", i)
+            local UI=LOD and LOD.UI
+            if UI then
+                local C=UI.Colors
+                UI:Paper(-width*0.5,-20,width,height,C.red,255,8)
+                draw.SimpleText("HEROES OF LEGEND","LOD_BoardTitle",0,4,C.red,TEXT_ALIGN_CENTER)
+                local entries=LOD.HeroesOfLegend and LOD.HeroesOfLegend.Entries or {}
+                if self.LODBoardEntries ~= entries then
+                    self.LODBoardEntries=entries
+                    self.LODBoardPages={{}}
+                    surface.SetFont("LOD_BoardEntry")
+                    local function append(line)
+                        local pages=self.LODBoardPages
+                        if #pages[#pages]>=11 then pages[#pages+1]={} end
+                        pages[#pages][#pages[#pages]+1]=line
+                    end
+                    for i=1,10 do
+                        local text=entries[i] and LOD.HeroesOfLegend:FormatEntry(entries[i]) or "---"
+                        local line=tostring(i)..". "
+                        for token in text:gmatch("%S+%s*") do
+                            if surface.GetTextSize(line..token)>width-64 then append(line);line="    " end
+                            -- Do not let long unbroken Steam names leave the paper.
+                            for char in token:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+                                if surface.GetTextSize(line..char)>width-64 then append(line);line="    " end
+                                line=line..char
+                            end
+                        end
+                        append(line)
+                    end
                 end
-
-                local color = entry and Color(240, 240, 235) or Color(100, 110, 120)
-                draw.SimpleTextOutlined(text, "LOD_BoardEntry",
-                    -width * 0.42, startY + (i - 1) * lineHeight, color,
-                    TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))
+                local pages=self.LODBoardPages
+                local page=math.floor(CurTime()/12)%#pages+1
+                draw.SimpleText("COMPLETED PARTY RUNS / PAGE "..page.." OF "..#pages,
+                    "LOD_BoardEntry",0,60,C.blue,TEXT_ALIGN_CENTER)
+                for i,line in ipairs(pages[page]) do
+                    draw.SimpleText(line,"LOD_BoardEntry",-width*0.5+32,105+(i-1)*30,C.ink)
+                end
+                draw.SimpleText("Highest rescue count first / pages turn automatically",
+                    "LOD_SheetSmall",0,450,C.muted,TEXT_ALIGN_CENTER)
             end
         cam.End3D2D()
     end

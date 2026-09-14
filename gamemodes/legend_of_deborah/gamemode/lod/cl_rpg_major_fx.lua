@@ -70,7 +70,7 @@ end
 function FX:Trigger(kind, primary, secondary, serial)
     kind = math.floor(tonumber(kind) or 0)
     -- Rapid combat must not erase a rare level-up. The Feedback proc still has
-    -- its world effect and retained dialogger sentence.
+    -- its world effect and retained DIE-LOGGER sentence.
     if kind == FX_FEEDBACK and self.active and self.active.kind == FX_LEVEL_UP
         and CurTime() - self.active.created < LEVEL_UP_FX_SECONDS then return false end
     if kind == FX_FEAT_CONFIRM then
@@ -115,9 +115,7 @@ local function alphaEnvelope(age, duration)
     return math.min(fadeIn, fadeOut)
 end
 
--- Feedback is intentionally a cyan recolor of DIE EXPLODES: same 0.52-second
--- lifetime, center point, radius, two rings, twelve radial streaks, and text scale.
--- It does not tint or darken the rest of the screen.
+-- Feedback is a compact cyan return cue; only real continuations use dice rays.
 local function drawFeedbackBurst(fx, now)
     local age = now - (fx.created or 0)
     if age >= FEEDBACK_FX_SECONDS then
@@ -136,18 +134,13 @@ local function drawFeedbackBurst(fx, now)
     local outline = Color(5, 12, 18, math.floor(alpha * 0.92))
 
     surface.SetDrawColor(base)
-    surface.DrawCircle(cx, cy, radius, base.r, base.g, base.b, alpha)
-    surface.DrawCircle(cx, cy, radius * 0.72, base.r, base.g, base.b, math.floor(alpha * 0.75))
-
-    for i = 0, 11 do
-        local angle = (i / 12) * math.pi * 2 + fraction * 0.35
-        local inner = radius * 0.78
-        local outer = radius * 1.18
-        surface.DrawLine(
-            cx + math.cos(angle) * inner,
-            cy + math.sin(angle) * inner,
-            cx + math.cos(angle) * outer,
-            cy + math.sin(angle) * outer)
+    -- Inward cyan brackets communicate returned Magic energy. Actual dice use
+    -- outward gold rays; Feedback must not masquerade as a dice explosion.
+    local inset = radius * (1-fraction*0.5)
+    for _,sign in ipairs({-1,1}) do
+        surface.DrawLine(cx+sign*inset,cy-18,cx+sign*inset,cy+18)
+        surface.DrawLine(cx+sign*inset,cy-18,cx+sign*(inset-12),cy-18)
+        surface.DrawLine(cx+sign*inset,cy+18,cx+sign*(inset-12),cy+18)
     end
 
     draw.SimpleTextOutlined(

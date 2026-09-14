@@ -4,7 +4,7 @@ local Rolls = LOD.CombatRolls
 if not Rolls then return end
 if Rolls.LODSemanticCombatFeedFormatterInstalled then return end
 
-local MESSAGE_LIMIT = 512
+local MESSAGE_LIMIT = LOD.DieLogger.MaxText
 
 local function clean(value, limit)
     local text = tostring(value or "Unknown")
@@ -26,7 +26,8 @@ local function entityDisplayName(ent, fallback)
     if IsValid(ent) and ent:IsPlayer() then
         local progression = LOD.CharacterProgressionSystem
         if progression and progression.PlayerCharacterText then
-            return clean(progression:PlayerCharacterText(ent), 192)
+            local ok, name = pcall(progression.PlayerCharacterText, progression, ent)
+            if ok then return clean(name, 192) end
         end
         return clean(ent:Nick(), 96)
     end
@@ -46,29 +47,36 @@ local function damageText(amount)
     return string.format("%.1f", value)
 end
 
--- Combat feed presentation adapter. Preserve the full persistent player + Hero
--- identity and all semantic fields. If an unusually verbose diagnostic would push
--- the packet over the bounded feed budget, drop only that optional detail first.
+-- DIE-LOGGER sentence authority. Roll detail is mandatory, including long chains.
+-- Name/source budgets plus 3 KiB of dice detail fit inside the 4 KiB transport.
 function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget, damageSource)
     local prefix = string.format("%s dealt %s (%s)",
         entityDisplayName(source, fallbackSource), clean(formula, 48), damageText(amount))
     local suffix = string.format(" damage to %s, via %s",
         entityDisplayName(target, fallbackTarget), clean(damageSource or "unknown source", 96))
-    local detailText = detail and detail ~= "" and (" " .. clean(detail, 192)) or ""
-    local detailBudget = MESSAGE_LIMIT - #prefix - #suffix
-    if #detailText > math.max(0, detailBudget) then detailText = "" end
+    local detailText = detail and detail ~= "" and (" " .. clean(detail, 3072)) or ""
     return prefix .. detailText .. suffix
 end
 
--- The old 180-byte presentation cap could cut the character identity or source
--- even though net.WriteString itself is not the constraint. Keep a finite 512-byte
--- event packet while allowing the authored full semantic sentence to arrive.
-function Rolls:_Send(ply, category, text, family, fields)
+-- One bounded text + semantic-span record for live HUD, history and telemetry.
+local function send(self, ply, category, text, family, fields)
     if not IsValid(ply) or not ply:IsPlayer() then return end
     text = string.sub(tostring(text or "ROLL"), 1, MESSAGE_LIMIT)
     family = LOD.FeedbackLanguage and LOD.FeedbackLanguage[family] and family or "routine"
     self.FeedbackSerial = ((self.FeedbackSerial or 0) + 1) % 4294967296
     local serial = self.FeedbackSerial
+    local identities = {}
+    for _, who in ipairs(player.GetAll()) do
+        local full = entityDisplayName(who)
+        local nick = clean(who:Nick(), 192)
+        local connector = nick .. " as "
+        identities[#identities + 1] = {text = full,
+            characterStart = full:sub(1, #connector) == connector and #connector + 1 or nil}
+    end
+    table.sort(identities, function(a,b) return #a.text > #b.text end)
+    local segments = LOD.DieLogger:Segments(text, family, identities)
+    fields = table.Copy(fields or {})
+    fields.segments = segments
     local presentation = LOD.RPGPresentation
     local tracked = false
     if presentation and presentation.TrackFeedback then
@@ -82,8 +90,14 @@ function Rolls:_Send(ply, category, text, family, fields)
     net.WriteUInt(serial, 32)
     net.WriteString(family)
     net.WriteBool(tracked)
+    net.WriteString(util.TableToJSON(segments))
     net.Send(ply)
     self.Stats.feedMessages = (self.Stats.feedMessages or 0) + 1
+end
+
+function Rolls:_Send(...)
+    local ok, err = pcall(send, self, ...)
+    if not ok then ErrorNoHalt("[LOD:DIE-LOGGER] " .. tostring(err) .. "\n") end
 end
 
 Rolls.LODSemanticCombatFeedFormatterInstalled = true

@@ -176,14 +176,6 @@ local function worldLineClear(caster, target, fromPos)
     return not tr.Hit or tr.Fraction >= 0.995
 end
 
-local function rollDetail(contract)
-    local out = {}
-    for i, value in ipairs(contract and contract.values or {}) do
-        local threshold = contract.thresholds and contract.thresholds[i]
-        out[#out + 1] = threshold and string.format("%d@%d+", value, threshold) or tostring(value)
-    end
-    return table.concat(out, ">")
-end
 
 function Forms:_TrimContractToBudget(contract, context)
     if not contract then return nil end
@@ -328,7 +320,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     Magic.Stats.targets = (Magic.Stats.targets or 0) + 1
     Magic.Stats.damage = (Magic.Stats.damage or 0) + actual
     if IsValid(creditCaster) and Rolls._Send and Rolls._DamageEventText then
-        local detail = string.format("[rolls %s%s%s]", rollDetail(contract),
+        local detail = string.format("[rolls %s%s%s]", LOD.DieLogger:RollDetail(contract),
             content and ("; " .. string.upper(content.displayName)) or "; RAW",
             contract.capped and "; work cap" or "")
         Rolls:_Send(creditCaster, 0, Rolls:_DamageEventText(creditCaster,
@@ -355,12 +347,13 @@ function Forms:_NewContext(ply, form, content)
     }
 end
 
-local function broadcastFX(formId, contentId, origin, destination)
+local function broadcastFX(formId, contentId, origin, destination, caster)
     net.Start("LOD_MagicFormFX")
     net.WriteString(formId or "")
     net.WriteString(contentId or "raw")
     net.WriteVector(origin or vector_origin)
     net.WriteVector(destination or origin or vector_origin)
+    net.WriteEntity(IsValid(caster) and caster or NULL)
     net.Broadcast()
 end
 
@@ -410,7 +403,7 @@ function Forms:_CastBlast(ply, form, content, context)
     for _, target in ipairs(targets) do
         self:_ApplyDamage(ply, ply, target, form, content, context, direction)
     end
-    broadcastFX("blast", content and content.id, ply:GetShootPos(), ply:GetShootPos())
+    broadcastFX("blast", content and content.id, ply:GetShootPos(), ply:GetShootPos(), ply)
     return true
 end
 
@@ -440,7 +433,7 @@ function Forms:_CastBeam(ply, form, content, context)
         remaining = math.max(0, remaining - travelled)
         cursor = tr.HitPos + direction * 2
     end
-    broadcastFX("beam", content and content.id, origin, endpoint)
+    broadcastFX("beam", content and content.id, origin, endpoint, ply)
     return true
 end
 
@@ -596,7 +589,7 @@ function Forms:_CastSummon(ply, form, content, context)
     self.ActiveSummons[ply] = self.ActiveSummons[ply] or {}
     self.ActiveSummons[ply][#self.ActiveSummons[ply] + 1] = summon
     self.Stats.summons = (self.Stats.summons or 0) + 1
-    broadcastFX("summon", content and content.id, ply:GetShootPos(), position)
+    broadcastFX("summon", content and content.id, ply:GetShootPos(), position, ply)
     return true
 end
 

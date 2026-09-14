@@ -167,12 +167,12 @@ local spellSnapshots = setmetatable({}, {__mode = "k"})
 observe(LOD.MagicProgression, "SendSnapshot", nil, function(_, _, _, ply)
     if not IsValid(ply) then return end
     local state = heroState(ply)
-    if not state then return end
-    local current = {forms = table.Copy(state.magicFormIds or {}), contents = table.Copy(state.contentIds or {}),
+    if not state or LOD.RunManager:IsSoldierControl(ply) then spellSnapshots[ply] = nil return end
+    local current = {state = state, forms = table.Copy(state.magicFormIds or {}), contents = table.Copy(state.contentIds or {}),
         form = state.selectedMagicFormId, content = state.selectedMagicContentId,
         epoch = LOD.RunManager.State.CampaignEpoch}
     local previous = spellSnapshots[ply]; spellSnapshots[ply] = current
-    if not previous or previous.epoch ~= current.epoch then return end
+    if not previous or previous.epoch ~= current.epoch or previous.state ~= current.state then return end
     for _, spec in ipairs({{"forms", LOD.RPG.MagicForms, "FORM"}, {"contents", LOD.RPG.MagicContents, "CONTENT"}}) do
         local known = {}; for _, id in ipairs(previous[spec[1]]) do known[id] = true end
         for _, id in ipairs(current[spec[1]]) do
@@ -199,8 +199,10 @@ local resourceSnapshots = setmetatable({}, {__mode = "k"})
 observe(LOD.Magic, "_Sync", nil, function(_, _, _, ply, state)
     if not IsValid(ply) or not state then return end
     local previous = resourceSnapshots[ply]
-    resourceSnapshots[ply] = state.magic
-    if previous and previous < 100 and state.magic >= 100 then
+    local epoch = LOD.RunManager.State.CampaignEpoch
+    resourceSnapshots[ply] = {state = state, magic = state.magic, epoch = epoch}
+    if previous and previous.state == state and previous.epoch == epoch
+        and previous.magic < 100 and state.magic >= 100 then
         emit(ply, "resource", "MAGIC FULL — 100", "magic_full")
     end
 end)

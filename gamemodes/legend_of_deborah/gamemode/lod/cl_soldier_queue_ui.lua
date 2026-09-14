@@ -40,7 +40,7 @@ function UI:Open()
     frame:ShowCloseButton(false)
     frame:SetDeleteOnClose(true)
     frame.Paint = function(s, w, h)
-        draw.RoundedBox(6, 0, 0, w, h, DARK)
+        LOD.UI:Paper(0, 0, w, h, LOD.UI.Colors.red)
     end
 
     local btn = vgui.Create("DButton", frame)
@@ -76,9 +76,7 @@ function UI:Update()
     if gui.IsGameUIVisible() and (isSoldier or isEliminated) then
         self:Open()
     else
-        if not gui.IsGameUIVisible() then
-            self:Close()
-        end
+        self:Close()
     end
 end
 

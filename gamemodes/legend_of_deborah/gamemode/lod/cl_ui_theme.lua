@@ -1,0 +1,101 @@
+LOD = LOD or {}
+-- The Player Sheet's printed-paper vocabulary, shared by every new surface.
+LOD.UI = LOD.UI or {}
+local UI = LOD.UI
+UI.Colors = {
+    paper = Color(244, 237, 218), light = Color(251, 247, 233), ink = Color(32, 32, 29),
+    red = Color(170, 61, 50), blue = Color(55, 91, 145), peach = Color(237, 201, 162),
+    gold = Color(145, 104, 29), muted = Color(112, 104, 91), rule = Color(190, 177, 149),
+    green = Color(55, 108, 70), violet = Color(105, 73, 130), frame = Color(18, 19, 21, 248)
+}
+local C = UI.Colors
+UI.Roles = {prose = C.ink, identity = C.blue, character = C.red, recipient = C.red,
+    source = C.green, dice = C.violet, continuation = C.gold, total = C.gold,
+    damage = C.red, resource = C.green, status = C.violet, resist = C.blue,
+    magic = C.blue, progress = C.gold, objective = C.gold, danger = C.red,
+    life = C.green, soldier = C.blue, proc = C.violet, clear = C.green,
+    weakness = C.red, blocked = C.red, kill = C.red, routine = C.ink}
+function UI:Paper(x, y, w, h, accent, alpha, inset)
+    alpha, inset = alpha or 255, inset or 4
+    local function tint(c) return Color(c.r, c.g, c.b, math.min(c.a or 255, alpha)) end
+    draw.RoundedBox(3, x, y, w, h, tint(C.frame))
+    draw.RoundedBox(1, x + inset, y + inset, w - inset * 2, h - inset * 2, tint(C.paper))
+    surface.SetDrawColor(tint(accent or C.red))
+    surface.DrawRect(x + inset, y + inset, w - inset * 2, 3)
+    surface.SetDrawColor(tint(C.blue))
+    surface.DrawRect(x + inset, y + h - inset - 2, w - inset * 2, 2)
+end
+function UI:Button(button, accent)
+    button:SetFont("LOD_SheetKey")
+    button:SetTextColor(C.ink)
+    button.Paint = function(self, w, h)
+        draw.RoundedBox(1, 0, 0, w, h, self:IsHovered() and C.peach or C.light)
+        surface.SetDrawColor(self:IsEnabled() and (accent or C.blue) or C.rule)
+        surface.DrawOutlinedRect(0, 0, w, h, 1)
+    end
+end
+function UI:CloseButton(frame, callback)
+    frame:ShowCloseButton(false)
+    local close = vgui.Create("DButton", frame)
+    close:SetText("CLOSE / ESC")
+    close:SetPos(frame:GetWide() - 128, 22)
+    close:SetSize(104, 26)
+    self:Button(close, C.red)
+    close.DoClick = callback
+    frame.LODAcceptToggleAt=RealTime()+0.15
+    frame.OnKeyCodePressed = function(_, key)
+        if key == KEY_ESCAPE then callback()
+        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(key) end
+    end
+    return close
+end
+-- Closing pending requests is part of closing a page, so delayed snapshots cannot
+-- steal focus from the page the player deliberately chose.
+function UI:SelectPage(page)
+    self.ActivePage = page
+    if page ~= "sheet" and LOD.CharacterSheet then LOD.CharacterSheet:Close() end
+    if page ~= "book" and LOD.Spellbook then LOD.Spellbook:Close() end
+    if page ~= "history" and LOD.CombatRollFeed and IsValid(LOD.CombatRollFeed.HistoryFrame) then
+        LOD.CombatRollFeed.HistoryFrame:Remove()
+    end
+end
+
+surface.CreateFont("LOD_SheetTitle", {
+    font = "DejaVu Sans Condensed", size = 38, weight = 1000, antialias = true
+})
+surface.CreateFont("LOD_SheetHeading", {
+    font = "DejaVu Sans Condensed", size = 24, weight = 1000, antialias = true
+})
+surface.CreateFont("LOD_SheetSubheading", {
+    font = "DejaVu Sans Condensed", size = 18, weight = 900, antialias = true
+})
+surface.CreateFont("LOD_SheetBody", {
+    font = "Georgia", size = 17, weight = 500, antialias = true
+})
+surface.CreateFont("LOD_SheetSmall", {
+    font = "Georgia", size = 14, weight = 500, antialias = true
+})
+surface.CreateFont("LOD_SheetKey", {
+    font = "DejaVu Sans", size = 14, weight = 1000, antialias = true
+})
+
+
+function UI:PageLinks(frame, active, y)
+    local pages={{"sheet","P / CHARACTER",function() LOD.CharacterSheet:Open() end},
+        {"book","I / SPELLBOOK",function() LOD.Spellbook:Open() end},
+        {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end}}
+    for i,page in ipairs(pages) do
+        local button=vgui.Create("DButton",frame)
+        button:SetText(page[2]);button:SetPos(24+(i-1)*154,y);button:SetSize(144,24)
+        self:Button(button,page[1]==active and C.red or C.blue)
+        button.DoClick=page[3]
+    end
+end
+
+function UI:PageKey(key)
+    if key == KEY_P then LOD.CharacterSheet:Toggle()
+    elseif key == KEY_I then LOD.Spellbook:Toggle()
+    elseif key == KEY_L then
+        LOD.CombatRollFeed:ToggleHistory()
+    end
+end

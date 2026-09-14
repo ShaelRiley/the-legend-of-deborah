@@ -2,33 +2,15 @@ LOD = LOD or {}
 LOD.CharacterSheet = LOD.CharacterSheet or {}
 
 local Sheet = LOD.CharacterSheet
-local PAPER = Color(244, 237, 218)
-local PAPER_LIGHT = Color(251, 247, 233)
-local INK = Color(32, 32, 29)
-local RED = Color(170, 61, 50)
-local BLUE = Color(55, 91, 145)
-local PEACH = Color(237, 201, 162)
-local GOLD = Color(199, 154, 57)
-local MUTED = Color(112, 104, 91)
-
-surface.CreateFont("LOD_SheetTitle", {
-    font = "DejaVu Sans Condensed", size = 38, weight = 1000, antialias = true
-})
-surface.CreateFont("LOD_SheetHeading", {
-    font = "DejaVu Sans Condensed", size = 24, weight = 1000, antialias = true
-})
-surface.CreateFont("LOD_SheetSubheading", {
-    font = "DejaVu Sans Condensed", size = 18, weight = 900, antialias = true
-})
-surface.CreateFont("LOD_SheetBody", {
-    font = "Georgia", size = 17, weight = 500, antialias = true
-})
-surface.CreateFont("LOD_SheetSmall", {
-    font = "Georgia", size = 14, weight = 500, antialias = true
-})
-surface.CreateFont("LOD_SheetKey", {
-    font = "DejaVu Sans", size = 14, weight = 1000, antialias = true
-})
+local UI = LOD.UI
+local PAPER = UI.Colors.paper
+local PAPER_LIGHT = UI.Colors.light
+local INK = UI.Colors.ink
+local RED = UI.Colors.red
+local BLUE = UI.Colors.blue
+local PEACH = UI.Colors.peach
+local GOLD = UI.Colors.gold
+local MUTED = UI.Colors.muted
 
 local function label(parent, text, font, color)
     local item = vgui.Create("DLabel", parent)
@@ -414,6 +396,7 @@ local function addCapstoneCards(parent, snapshot, x, y, width)
 end
 
 function Sheet:Close()
+    if UI.ActivePage == "sheet" then UI.ActivePage = nil end
     if IsValid(self.Frame) then self.Frame:Remove() end
     self.Frame = nil
 end
@@ -424,6 +407,7 @@ function Sheet:Open(requestFresh)
         net.SendToServer()
     end
     self:Close()
+    UI:SelectPage("sheet")
 
     local snapshot = self.Snapshot
     local frame = vgui.Create("DFrame")
@@ -438,11 +422,8 @@ function Sheet:Open(requestFresh)
     -- P event. Do not let DFrame consume that same event as an immediate close.
     frame.LODAcceptToggleAt = RealTime() + 0.15
     frame.OnKeyCodePressed = function(_, code)
-        if code == KEY_ESCAPE
-            or (code == KEY_P and RealTime() >= frame.LODAcceptToggleAt)
-        then
-            Sheet:Close()
-        end
+        if code == KEY_ESCAPE then Sheet:Close()
+        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(code) end
     end
     frame.Paint = function(self, w, h)
         draw.RoundedBox(4, 0, 0, w, h, Color(18, 19, 21, 248))
@@ -457,16 +438,12 @@ function Sheet:Open(requestFresh)
     close:SetPos(frame:GetWide() - 126, 22)
     close:SetSize(104, 28)
 
-    local dieLoggerBtn = makeChoiceButton(frame, "Die Logger", function()
-        if LOD.CombatRollFeed and LOD.CombatRollFeed.OpenHistory then LOD.CombatRollFeed:OpenHistory() end
-    end)
-    dieLoggerBtn:SetPos(28, 76)
-    dieLoggerBtn:SetSize(130, 24)
+    UI:PageLinks(frame,"sheet",76)
 
     if not snapshot then
-        local loading = label(frame, "Retrieving the server-authoritative Character Sheet...",
+        local loading = label(frame, "Retrieving the Character Sheet...",
             "LOD_SheetHeading", BLUE)
-        loading:SetPos(40, 80)
+        loading:SetPos(40, 116)
         loading:SetSize(frame:GetWide() - 80, 50)
         return
     end
@@ -757,6 +734,8 @@ local function toggleSheet()
     if IsValid(Sheet.Frame) then Sheet:Close() else Sheet:Open(true) end
 end
 
+Sheet.Toggle = toggleSheet
+
 net.Receive("LOD_RPG_Snapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
@@ -769,7 +748,8 @@ net.Receive("LOD_RPG_Snapshot", function()
     then
         Sheet.AutoOpenedFor = snapshot.portraitCacheKey
         timer.Simple(0.15, function()
-            if Sheet.Snapshot == snapshot and not IsValid(Sheet.Frame) then Sheet:Open(false) end
+            if Sheet.Snapshot == snapshot and not IsValid(Sheet.Frame)
+                and (not UI.ActivePage or UI.ActivePage == "sheet") then Sheet:Open(false) end
         end)
     end
 end)

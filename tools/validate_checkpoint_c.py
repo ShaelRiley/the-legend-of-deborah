@@ -182,7 +182,7 @@ def main() -> int:
         (init, 'include("lod/sv_magic_forms.lua")', "server Form runtime bootstrap"),
         (init, 'AddCSLuaFile("lod/cl_spellbook.lua")', "Spellbook client distribution"),
         (client, 'include("lod/cl_spellbook.lua")', "Spellbook client bootstrap"),
-        (client, 'LODSpellbookMutualExclusionInstalled', "P/I asynchronous mutual exclusion"),
+        (read(root, "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua", errors), 'UI:SelectPage("sheet")', "P/I asynchronous mutual exclusion"),
     ]:
         require(errors, text, needle, label)
 

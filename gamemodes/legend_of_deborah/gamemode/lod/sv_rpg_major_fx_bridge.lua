@@ -17,11 +17,10 @@ end
 
 local function install()
     local presentation = LOD.RPGPresentation
-    if not presentation or not presentation.SendFX then return false end
+    if not presentation then return false end
     if presentation.MajorFXTransportInstalled then return true end
 
     presentation.MajorFXTransportInstalled = true
-    Bridge.LegacySendFX = presentation.SendFX
 
     -- Use a dedicated transport for major RPG presentation. The previous server
     -- events were firing correctly, as confirmed by RPG_LEVEL_UP_PRESENTATION and
@@ -62,7 +61,7 @@ net.Receive(ACK_NAME, function(_, ply)
     })
 end)
 
-timer.Simple(0, install)
+install()
 hook.Add("InitPostEntity", "LOD_RPGMajorFXBridgeInstall", install)
 
 concommand.Add("lod_rpg_major_fx_validate", function(ply)

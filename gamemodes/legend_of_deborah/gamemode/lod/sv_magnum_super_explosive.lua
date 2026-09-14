@@ -210,16 +210,11 @@ if not Rolls.LODMagnumCylinderFeedInstalled then
     local basePlayerRollDetail = Rolls._PlayerRollDetail
     function Rolls:_PlayerRollDetail(contract)
         if contract and contract.weaponClass == "weapon_357" then
-            local values = {}
-            for i, value in ipairs(contract.values or {}) do
-                local threshold = contract.boomThresholds and contract.boomThresholds[i] or D12_START_THRESHOLD
-                values[#values + 1] = string.format("%d@%d+", value, threshold)
-            end
             return string.format("[chamber %d/%d; +%d empty; boom %s%s]",
                 contract.chamberShot or 1,
                 contract.cylinderSize or MAGNUM_FALLBACK_CLIP,
                 contract.cylinderBonus or 0,
-                table.concat(values, ">"),
+                LOD.DieLogger:RollDetail(contract),
                 contract.capped and "; chain cap" or "")
         end
         return basePlayerRollDetail(self, contract)

@@ -13,6 +13,12 @@ LOD = LOD or {}
 LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
+if SERVER then
+    AddCSLuaFile("lod/cl_ui_theme.lua")
+    AddCSLuaFile("lod/sh_die_logger.lua")
+end
+if CLIENT then include("lod/cl_ui_theme.lua") end
+include("lod/sh_die_logger.lua")
 if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
 include("lod/sh_feedback_language.lua")
 include("lod/sh_rng.lua")

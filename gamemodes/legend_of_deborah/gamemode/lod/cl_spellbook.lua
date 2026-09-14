@@ -2,22 +2,20 @@ LOD = LOD or {}
 LOD.Spellbook = LOD.Spellbook or {}
 
 local Book = LOD.Spellbook
-local BG = Color(24, 24, 28, 248)
-local PANEL = Color(42, 44, 51, 245)
-local INK = Color(240, 237, 225)
-local MUTED = Color(130, 132, 140)
-local SELECTED = Color(184, 94, 52)
-local AVAILABLE = Color(67, 92, 122)
-
-surface.CreateFont("LOD_SpellbookTitle", {font = "DejaVu Sans Condensed", size = 34, weight = 1000})
-surface.CreateFont("LOD_SpellbookButton", {font = "DejaVu Sans Condensed", size = 20, weight = 900})
-surface.CreateFont("LOD_SpellbookSmall", {font = "DejaVu Sans", size = 15, weight = 600})
-
+local UI, C = LOD.UI, LOD.UI.Colors
+local descriptions = {
+    blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    missile = "Guided area", bolt = "Precision shot", summon = "Allied Seeker",
+    raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
+    ice = "Held", light = "Muted", electric = "Intimidated"
+}
 local function inputBusy()
     return gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping())
 end
 
 function Book:Close()
+    if UI.ActivePage == "book" then UI.ActivePage = nil end
+    self.PendingOpen = false
     if IsValid(self.Frame) then self.Frame:Remove() end
     self.Frame = nil
 end
@@ -26,25 +24,25 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
     local button = vgui.Create("DButton", parent)
     button:SetPos(x, y)
     button:SetSize(w, h)
-    local suffix = entry.owned and "" or "\nLOCKED"
-    if kind == "form" then
-        suffix = suffix .. string.format("\n%d Magic", tonumber(entry.magicCost) or 0)
-    elseif entry.id ~= "raw" then
-        suffix = suffix .. string.format("\n+%d Magic", tonumber(entry.surcharge) or 0)
-    end
-    button:SetText(string.upper(entry.displayName or entry.id) .. suffix)
-    button:SetFont("LOD_SpellbookButton")
-    button:SetTextColor(entry.owned and INK or MUTED)
+    button:SetText("")
     button:SetEnabled(entry.owned == true)
     button.Paint = function(self, width, height)
-        local color = entry.selected and SELECTED or (entry.owned and AVAILABLE or PANEL)
+        local selected = entry.selected == true
+        draw.RoundedBox(1,0,0,width,height,selected and C.peach or C.light)
+        surface.SetDrawColor(selected and C.red or C.rule)
+        surface.DrawOutlinedRect(0,0,width,height,selected and 2 or 1)
+        local color = entry.owned and C.blue or C.muted
+        draw.SimpleText(string.upper(entry.displayName or entry.id),"LOD_SheetSubheading",
+            width*0.5,16,color,TEXT_ALIGN_CENTER)
+        draw.SimpleText(selected and "SELECTED" or (entry.owned and "AVAILABLE" or "LOCKED"),
+            "LOD_SheetKey",width*0.5,44,selected and C.red or C.muted,TEXT_ALIGN_CENTER)
+        local cost = kind == "form" and string.format("%d base Magic",entry.magicCost or 0)
+            or string.format("+%d Magic",entry.surcharge or 0)
+        draw.SimpleText(cost,"LOD_SheetSmall",width*0.5,72,C.ink,TEXT_ALIGN_CENTER)
+        draw.SimpleText(descriptions[entry.id] or "","LOD_SheetSmall",width*0.5,100,C.muted,TEXT_ALIGN_CENTER)
         if self:IsHovered() and entry.owned then
-            color = Color(math.min(255, color.r + 18), math.min(255, color.g + 18),
-                math.min(255, color.b + 18), color.a)
+            surface.SetDrawColor(C.blue);surface.DrawRect(8,height-6,width-16,2)
         end
-        draw.RoundedBox(4, 0, 0, width, height, color)
-        surface.SetDrawColor(255, 255, 255, entry.selected and 150 or 35)
-        surface.DrawOutlinedRect(0, 0, width, height, entry.selected and 2 or 1)
     end
     button.DoClick = function()
         if not entry.owned then return end
@@ -59,6 +57,7 @@ end
 
 function Book:Open()
     self:Close()
+    LOD.UI:SelectPage("book")
     if LOD.CharacterSheet and LOD.CharacterSheet.Close then LOD.CharacterSheet:Close() end
     if not self.Snapshot then
         self.PendingOpen = true
@@ -74,21 +73,24 @@ function Book:Open()
     frame:SetSize(math.min(ScrW() - 32, 1120), math.min(ScrH() - 32, 590))
     frame:Center()
     frame:MakePopup()
-    frame:ShowCloseButton(true)
-    frame.Paint = function(self, w, h)
-        draw.RoundedBox(6, 0, 0, w, h, BG)
-        draw.SimpleText("SPELLBOOK", "LOD_SpellbookTitle", 24, 18, INK, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-        draw.SimpleText(string.format("Magic %.1f / %d", LocalPlayer():GetNW2Float("LOD_Magic", 100),
-            LocalPlayer():GetNW2Int("LOD_MagicMax", 100)), "LOD_SpellbookSmall",
-            w - 28, 28, INK, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-        draw.SimpleText("FORM — choose one delivery shape", "LOD_SpellbookSmall", 24, 72,
-            MUTED, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-        draw.SimpleText("CONTENT — choose RAW or one unlocked element", "LOD_SpellbookSmall", 24, 267,
-            MUTED, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-        draw.SimpleText("RMB casts the selected Form + Content through the shared Magic authority.",
-            "LOD_SpellbookSmall", 24, h - 34, MUTED, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    UI:CloseButton(frame,function() Book:Close() end)
+    frame.Paint = function(self,w,h)
+        UI:Paper(0,0,w,h,C.red,255,8)
+        draw.SimpleText("THE LEGEND OF DEBORAH / SPELLBOOK","LOD_SheetHeading",24,20,C.red)
+        local ply = LocalPlayer()
+        if IsValid(ply) then
+            draw.SimpleText(string.format("Magic %.1f / %d",ply:GetNW2Float("LOD_Magic",100),
+                ply:GetNW2Int("LOD_MagicMax",100)),"LOD_SheetBody",24,52,C.blue)
+        end
+        draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
+        draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,266,C.red)
+        draw.SimpleText("Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
+            "LOD_SheetBody",24,h-64,C.ink)
+        draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
+            "LOD_SheetSmall",24,h-38,C.muted)
     end
 
+    UI:PageLinks(frame,"book",frame:GetTall()-96)
     local width = frame:GetWide()
     local gap = 10
     local left = 24
@@ -108,7 +110,7 @@ function Book:Toggle()
     local now = RealTime()
     if (self.NextToggleAt or 0) > now then return end
     self.NextToggleAt = now + 0.15
-    if IsValid(self.Frame) then self:Close() else self:Open() end
+    if IsValid(self.Frame) or self.PendingOpen then self:Close() else self:Open() end
 end
 
 net.Receive("LOD_MagicSpellbookSnapshot", function()
@@ -133,86 +135,5 @@ hook.Add("PlayerBindPress", "LOD_SpellbookBindingFallback", function(ply, _, pre
 end)
 
 concommand.Add("lod_spellbook", function() Book:Toggle() end)
-
-local FX = {}
-local material = Material("sprites/light_glow02_add")
-local colors = {
-    raw = Color(210, 235, 255), earth = Color(194, 156, 88), fire = Color(255, 105, 45),
-    dark = Color(125, 72, 170), ice = Color(125, 220, 255), light = Color(255, 245, 170),
-    electric = Color(110, 180, 255)
-}
-
-net.Receive("LOD_MagicFormFX", function()
-    local form = net.ReadString()
-    local content = net.ReadString()
-    local origin = net.ReadVector()
-    local destination = net.ReadVector()
-    FX[#FX + 1] = {
-        form = form,
-        content = content,
-        origin = origin,
-        destination = destination,
-        started = CurTime(),
-        lifetime = (form == "beam" or form == "blast") and 0.48 or 0.28
-    }
-end)
-
-hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function()
-    local now = CurTime()
-    for i = #FX, 1, -1 do
-        local fx = FX[i]
-        local age = now - fx.started
-        if age >= fx.lifetime then
-            table.remove(FX, i)
-        else
-            local fade = math.Clamp(1 - age / fx.lifetime, 0, 1)
-            local progress = 1 - fade
-            local c = colors[fx.content] or colors.raw
-            render.SetMaterial(material)
-
-            if fx.form == "beam" then
-                local startPos = fx.origin
-                if LocalPlayer and IsValid(LocalPlayer()) then
-                    local eye = LocalPlayer():EyePos()
-                    if startPos:DistToSqr(eye) < 1600 then
-                        local dir = (fx.destination - startPos):GetNormalized()
-                        startPos = startPos + dir * 18
-                    end
-                end
-                -- Thicker outer element-colored beam + bright inner core beam + target impact sprite
-                render.DrawBeam(startPos, fx.destination, 18 + 8 * fade, 0, 1,
-                    Color(c.r, c.g, c.b, math.floor(210 * fade)))
-                render.DrawBeam(startPos, fx.destination, 6 + 4 * fade, 0, 1,
-                    Color(255, 255, 255, math.floor(240 * fade)))
-                render.DrawSprite(fx.destination, 42 + 45 * progress, 42 + 45 * progress,
-                    Color(c.r, c.g, c.b, math.floor(230 * fade)))
-
-            elseif fx.form == "blast" then
-                -- Radial expanding area attack wave originating from caster position
-                local center = fx.origin
-                local radius = 24 + 220 * math.sqrt(progress)
-                local alpha = math.floor(220 * fade)
-                local segments = 16
-
-                -- Draw radial expanding ring in 3D world space
-                local prevPos = center + Vector(radius, 0, 8)
-                for seg = 1, segments do
-                    local angle = (seg / segments) * math.pi * 2
-                    local nextPos = center + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 8)
-                    render.DrawBeam(prevPos, nextPos, 14 + 10 * fade, 0, 1,
-                        Color(c.r, c.g, c.b, alpha))
-                    prevPos = nextPos
-                end
-                -- Center shockwave burst sprite
-                render.DrawSprite(center + Vector(0, 0, 16), radius * 0.8, radius * 0.8,
-                    Color(c.r, c.g, c.b, math.floor(180 * fade)))
-
-            else
-                render.DrawSprite(fx.destination, 54 + 70 * progress, 54 + 70 * progress,
-                    Color(c.r, c.g, c.b, math.floor(210 * fade)))
-            end
-        end
-    end
-end)
 
 hook.Add("ShutDown", "LOD_SpellbookClose", function() Book:Close() end)

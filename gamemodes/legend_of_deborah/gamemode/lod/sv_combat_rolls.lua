@@ -78,14 +78,7 @@ function Rolls:_RNG(label)
     return LOD.RNG.New(seed)
 end
 
-function Rolls:_Send(ply, category, text)
-    if not IsValid(ply) or not ply:IsPlayer() then return end
-    net.Start("LOD_CombatRoll")
-    net.WriteUInt(math.Clamp(category or 0, 0, 3), 2)
-    net.WriteString(string.sub(tostring(text or "ROLL"), 1, 180))
-    net.Send(ply)
-    self.Stats.feedMessages = self.Stats.feedMessages + 1
-end
+-- DIE-LOGGER transport is installed once by sv_combat_feed_semantics.lua.
 
 -- Exploding dice are a joyful, important combat event. Keep the feedback packet
 -- tiny and shooter-local: kind 1 = Magnum, kind 2 = Shotgun, depth identifies a
@@ -251,17 +244,6 @@ local function damageText(amount)
     return string.format("%.1f", value)
 end
 
-function Rolls:_DamageEventText(source, formula, amount, target, detail, fallbackSource, fallbackTarget, damageSource)
-    local prefix = string.format("%s dealt %s (%s)",
-        entityDisplayName(source, fallbackSource), formula, damageText(amount))
-    local suffix = string.format(" damage to %s, via %s",
-        entityDisplayName(target, fallbackTarget), cleanName(damageSource or "unknown source"))
-    local detailText = detail and detail ~= "" and (" " .. detail) or ""
-    local detailBudget = 180 - #prefix - #suffix
-    if #detailText > detailBudget then detailText = "" end
-    return prefix .. detailText .. suffix
-end
-
 function Rolls:ReportEnemyHealth(hostile, contract, size, campaignPartyScale, finalHealth)
     if not contract then return end
     local raw = contract.total
@@ -289,7 +271,7 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
     local sides = math.max(2, math.floor(tonumber(resolvedProfile.sides) or 2))
     local count = math.max(1, math.floor(tonumber(resolvedProfile.count) or 1))
         + math.max(0, math.floor(tonumber(bonusDice) or 0))
-    local values, contributions, thresholds = {}, {}, {}
+    local values, contributions, thresholds, chainStarts = {}, {}, {}, {}
     local total = tonumber(resolvedProfile.bonus) or 0
     local capped = false
     local rogueExplodes = derived and derived.rogueAllDamageDiceExplode == true
@@ -298,6 +280,7 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
     local authoredExplodes = resolvedProfile.exploding ~= nil
 
     for _ = 1, count do
+        chainStarts[#chainStarts + 1] = #values + 1
         local dieProfile = table.Copy(resolvedProfile)
         dieProfile.count = 1
         dieProfile.bonus = 0
@@ -331,6 +314,7 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
         values = values,
         contributions = contributions,
         thresholds = thresholds,
+        chainStarts = chainStarts,
         bonus = tonumber(resolvedProfile.bonus) or 0,
         capped = capped,
         baseDice = count,
@@ -366,6 +350,7 @@ function Rolls:RollPlayerWeapon(ply, weaponClass)
         values = rolled.values,
         contributions = rolled.contributions,
         thresholds = rolled.thresholds,
+        chainStarts = rolled.chainStarts,
         bonus = rolled.bonus,
         baseDice = rolled.baseDice,
         aceBonusDice = rolled.aceBonusDice,
@@ -392,7 +377,7 @@ end
 
 function Rolls:_PlayerRollDetail(contract)
     if not contract or not contract.values or #contract.values == 0 then return nil end
-    local valuesStr = table.concat(contract.values, ">")
+    local valuesStr = LOD.DieLogger:RollDetail(contract)
     return string.format("[rolls %s%s]", valuesStr, contract.capped and "; chain cap" or "")
 end
 
@@ -405,7 +390,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
                 LOD.M3HitFeedback:ApplyShotgunShellStun(target)
             end
             local detail = string.format("[%d/%d pellets; rolls %s]", hits,
-                contract.pellets or 6, table.concat(contract.values or {}, ">"))
+                contract.pellets or 6, LOD.DieLogger:RollDetail(contract))
             self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula or "1d6!", damage,
                 target, detail, nil, "Hostile", "shotgun"))
         end
@@ -418,20 +403,25 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
     local total
     local values
     local contributions
+    local rolledContract
     if cached and cached.profile == profile then
         total = cached.total
         values = cached.values
         contributions = cached.contributions
+        rolledContract = cached
     else
         local rng = self:_RNG("hostile:" .. tostring(hostile.LODArchetypeId or "unknown"))
         local rolled = self:RollActorDamage(hostile, profile, rng, 0)
         total, values, contributions = rolled.total, rolled.values, rolled.contributions
+        rolledContract = rolled
         if IsValid(cacheOwner) then
             cacheOwner.LODCombatRollContract = {
                 profile = profile,
                 total = total,
                 values = values,
-                contributions = contributions
+                contributions = contributions,
+                formula = rolled.formula, chainStarts = rolled.chainStarts,
+                baseDice = rolled.baseDice, capped = rolled.capped
             }
         end
         self.Stats.hostileAttacks = self.Stats.hostileAttacks + 1
@@ -446,6 +436,8 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
         total = total,
         values = values,
         contributions = contributions or values,
+        formula = rolledContract.formula, chainStarts = rolledContract.chainStarts,
+        baseDice = rolledContract.baseDice, capped = rolledContract.capped,
         bonus = profile.bonus or 0,
         scale = scale,
         final = math.max(1, math.floor(total * scale + 0.5))
@@ -455,12 +447,12 @@ end
 
 function Rolls:_HostileRollText(contract, source, target)
     local profile = contract.profile
-    local details = string.format("[rolls %s", valueList(contract.values))
+    local details = string.format("[rolls %s", LOD.DieLogger:RollDetail(contract))
     if math.abs((contract.scale or 1) - 1) > 0.01 then
         details = details .. string.format("; base %d x%.2f", contract.total, contract.scale)
     end
     details = details .. "]"
-    return self:_DamageEventText(source, diceNotation(profile), contract.final,
+    return self:_DamageEventText(source, contract.formula or diceNotation(profile), contract.final,
         target, details, profile.label, "Player", profile.source)
 end
 
@@ -566,14 +558,14 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             dmginfo:SetDamage(final)
 
             local detailStr = string.format("[rolls %s; blast x%.2f]",
-                table.concat(contract.values or {}, ">"), falloff)
+                LOD.DieLogger:RollDetail(contract), falloff)
             if aimMult > 1 then
                 local multText = aimMult == 3 and "x3" or "x2"
                 detailStr = string.format("[rolls %s; blast x%.2f; AIM %s]",
-                    table.concat(contract.values or {}, ">"), falloff, multText)
+                    LOD.DieLogger:RollDetail(contract), falloff, multText)
             end
 
-            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, "1d20",
+            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, contract.formula or "1d20",
                 final, target, detailStr,
                 nil, "Hostile", "grenade"))
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then

@@ -1,5 +1,7 @@
 # Pre-playtest feedback language
 
+Current consolidation details and runtime gate: [Hybrid integration review](HYBRID_INTEGRATION_REVIEW.md).
+
 Presentation observes existing outcomes. It never rolls dice, modifies resources,
 selects progression, or authorizes transitions. This pass is governed by Shael's
 explicit presentation mandate; no gameplay rules or GDD tuning were changed.
@@ -13,8 +15,8 @@ explicit presentation mandate; no gameplay rules or GDD tuning were changed.
 | Feat / capstone procs | Existing Wizard Feedback and Arcane Surge retained. Recovery procs name the feat and actual restoration. Evasion names its capstone; Not Yet gets a life-priority notice. Status-producing feats use the shared status outcome. |
 | Magic | Form + Content, committed spend and remaining Magic; failures explain reason and no net spend. Preserve positional cast effects/sound. Full-resource crossing is quiet. New Forms/Contents get a progression notice. |
 | XP / SoldierXP / loot | Quiet actual gains; Soldier level gains get a stronger progression cue. Hero level-up remains the existing major celebration. |
-| Life / Soldier state | Explicit life count, elimination/revival or incarnation transition; compact outlined notice and distinct danger/life/Soldier cue. |
-| Keys / gates / rescue / run failure | Copy the exact existing announcement into the Die Logger. Preserve existing banners, physical gate sounds, pickups and rescue celebration. Denials also enter the feed. Successful dungeon build gets a ready notice. |
+| Life / Soldier state | Explicit life count, elimination/revival or incarnation transition; compact paper notice and distinct danger/life/Soldier cue. |
+| Keys / gates / rescue / run failure | Copy the exact existing announcement into the DIE-LOGGER. Preserve existing banners, physical gate sounds, pickups and rescue celebration. Denials also enter the feed. Successful dungeon build gets a ready notice. |
 
 Shared policy: `sh_feedback_language.lua`. Server delivery extends
 `LOD.RPGPresentation` and `CombatRolls:_Send`; outcome adapters live in
@@ -27,21 +29,22 @@ notices have a per-recipient 1.5-second limit; their suppressed outcomes still e
 developer evidence. New semantic sounds have a shared 0.35-second minimum interval
 (0.8 seconds after major cues); higher-priority cues can interrupt. Existing weapon
 and world sounds keep their own policies. Major notices use a bounded eight-entry
-priority queue and 2.8-second display. Danger/life preempts progression. A Wizard
+priority queue and 2.8-second display, with eight-second queue expiry. New lifecycle
+notices retire stale lifecycle banners; danger/life preempts progression. A Wizard
 Feedback burst cannot erase an active level-up celebration.
 
 The feed holds for nine seconds and fades for 1.4. Its visible ten-entry limit and
-screen-space clipping do not discard history. **P → Die Logger** opens the newest
-1,000 messages with timestamps and a Refresh button. History persists on the client
+screen-space clipping do not discard history. **L** or **P → DIE-LOGGER** opens 1,000 retained messages, 50 per page,
+with timestamps and a LATEST button. Server-authored semantic spans persist with
+each record and are shared by both renderers. History persists on the client
 in `data/legend_of_deborah/die_logger_history.json`, written in two-second batches
-and on shutdown. A crash can lose the final batch. This requested persistence was
-absent at the starting SHA; it now belongs to the existing CombatRollFeed object.
+and on shutdown. A crash can lose the final batch. Persistence belongs to the existing CombatRollFeed object.
 
 ## Evidence and interpretation
 
 Use the existing developer logger/exporter. No additional courier file is needed.
 
-- `FEEDBACK_DISPATCH`: serial, recipient, family, exact transmitted text, plus
+- `FEEDBACK_DISPATCH`: serial, recipient, family, exact transmitted text and semantic spans, plus
   source outcome fields where available (e.g. status save/DC, element multiplier,
   Magic cast serial/cost, XP delta, lifecycle snapshot).
 - `FEEDBACK_CLIENT_ACK`: same serial/recipient; `received` means inserted into
@@ -61,8 +64,8 @@ it does not gain a universal transaction ID from this presentation pass.
 
 ## Validation and playtest
 
-`python3 tools/test_checkpoint_g_integration.py` includes the existing 25 suites
-plus `test_feedback_language.lua`. The focused harness executes real typed
+`python3 tools/test_checkpoint_g_integration.py` includes 27 suites, including
+`test_feedback_language.lua` and `test_ag011_repairs.lua`. The focused harness executes real typed
 server/client feed packets, ACK ownership/deduplication, history reload/limits,
 first-draw boundaries, observer failure isolation/return preservation, lifecycle
 notices, Magic commit/refund behavior, summary counters and priority protection.
@@ -71,7 +74,7 @@ Headless checks cannot establish Source asset audibility, HUD occlusion, or over
 mix quality. Freshly install/restart both realms because feed/major-ACK wire formats
 changed. During the planned 15–20 minute `gm_flatgrass` session, watch status versus
 resistance cues, readable Magic failures, life/Soldier notices, level-up protection,
-and P → Die Logger after busy combat. Finish with the standard exporter and return
+and P → DIE-LOGGER after busy combat. Finish with the standard exporter and return
 `console_latest.txt`, `rpg_summary_latest.txt`, and `rpg_session_latest.txt` for this
 correlation pass.
 

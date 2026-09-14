@@ -100,6 +100,7 @@ vgui = {
             IsHovered = function() return false end,
             Remove = function(self) self.valid = false end,
             Clear = function(self) self.children = {} end,
+            GetVBar = function() return {SetScroll=function() end} end,
             GetCanvas = function() return { Paint = function() end } end
         }
         if parent and parent.children then
@@ -145,9 +146,12 @@ cellKeyResult = sys:CellKey(spatialActorWithGetPos)
 assert(cellKeyResult == "1:2:3", "CellKey works correctly for spatial actor fixture")
 print("PASS: Live RPG Validator GetPos non-spatial fixture safety")
 
--- 3. Test Die Logger OpenHistory VGUI Construction (Defect 1)
+-- 3. Test DIE-LOGGER OpenHistory VGUI Construction (Defect 1)
+dofile(root .. "sh_die_logger.lua")
+dofile(root .. "cl_ui_theme.lua")
 dofile(root .. "cl_combat_roll_feed.lua")
 dofile(root .. "cl_feedback_language.lua")
+dofile(root .. "cl_combat_roll_feed_semantics.lua")
 local feed = LOD.CombatRollFeed
 feed.history = {
     { stamp = "09-13 12:00:00", text = "Test event 1" },
@@ -155,21 +159,23 @@ feed.history = {
 }
 local frame = feed:OpenHistory()
 assert(IsValid(frame), "Feed:OpenHistory returned valid DFrame")
-assert(frame.w == 940 and frame.h == 680, "Frame size computed without variable scope error")
+assert(frame.w <= ScrW() - 40 and frame.h <= ScrH() - 40 and frame.w > 0 and frame.h > 0, "Frame size computed without variable scope error")
 
 -- Search for title label text
 local titleFound = false
 for _, p in ipairs(createdPanels) do
-    if p.text == "THE LEGEND OF DEBORAH / DIE LOGGER" then
+    if p.text == "THE LEGEND OF DEBORAH / DIE-LOGGER" then
         titleFound = true
         break
     end
 end
-assert(titleFound, "Die Logger title correctly set to THE LEGEND OF DEBORAH / DIE LOGGER")
+assert(titleFound, "DIE-LOGGER title correctly set to THE LEGEND OF DEBORAH / DIE-LOGGER")
 print("PASS: Feed:OpenHistory VGUI construction and scope validity")
 
--- 4. Test Rogue forced-max explosion continuation & Die Logger text & FX correspondence
+-- 4. Test Rogue forced-max explosion continuation & DIE-LOGGER text & FX correspondence
 dofile(root .. "sv_combat_rolls.lua")
+player = {GetAll = function() return {} end}
+dofile(root .. "sv_combat_feed_semantics.lua")
 local rolls = LOD.CombatRolls
 local mockRNG = {
     rolls = 0,
@@ -190,7 +196,7 @@ assert(#rolled.values == 3, "Rogue max roll produces 2 continuations (3 dice tot
 assert(rolled.total == 10 + 10 + 1, "Additional continuation dice mechanically contribute to total damage")
 
 local detailText = rolls:_PlayerRollDetail(rolled)
-assert(detailText ~= nil and detailText:find("%[rolls 10>10>1%]"), "Die Logger text visibly reports explosion continuation: " .. tostring(detailText))
+assert(detailText ~= nil and detailText:find("%[rolls 10@10%+ > 10@10%+ > 1@10%+%]"), "DIE-LOGGER text visibly reports explosion continuation: " .. tostring(detailText))
 
 -- Check single FX correspondence for pistol
 netCalls = {}
@@ -200,7 +206,7 @@ if continuations > 0 then
     rolls:EmitDiceExplosionFX(attacker, "weapon_pistol", continuations, 1)
 end
 assert(#sent == 1 and sent[1].name == "LOD_DiceExplosionFX", "Explosion FX fired for explosion continuation")
-print("PASS: Rogue forced-max explosion continuation & Die Logger text")
+print("PASS: Rogue forced-max explosion continuation & DIE-LOGGER text")
 
 -- 5. Test Grenade Explosion-FX Multiplicity Gated to 1 Per Grenade Attack (Defect 2)
 netCalls = {}
@@ -273,25 +279,98 @@ assert(nonExpFXCount == 0, "Non-exploding grenade emits ZERO explosion FX")
 rolls._RNG = origRNG
 print("PASS: Grenade explosion-FX multiplicity gated to exactly 1 per attack contract")
 
--- 6. Test Blast and Beam visual FX dispatch
+-- 6. Execute the production Blast/Beam paths and consume their actual FX packets.
+local vec = {}; vec.__index=vec
+function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},vec) end
+function vec.__add(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
+function vec.__sub(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
+function vec.__mul(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
+function vec:LengthSqr() return self.x*self.x+self.y*self.y+self.z*self.z end
+function vec:GetNormalized() local n=math.sqrt(self:LengthSqr());return self*(1/math.max(n,0.001)) end
+function vec:Distance(other) return math.sqrt((self-other):LengthSqr()) end
+function vec:DistToSqr(other) return (self-other):LengthSqr() end
+vector_origin=Vector()
+NULL={}
+LOD.CharacterProgressionSystem={}
+LOD.MagicProgression={}
+LOD.RPG.Constants={}
+net.WriteEntity=function(ent) table.insert(netCalls[#netCalls].args,ent) end
+attacker.GetShootPos=function() return Vector(0,0,64) end
+attacker.GetAimVector=function() return Vector(1,0,0) end
+attacker.EyePos=attacker.GetShootPos
+LOD.Config={CellSize=192}
+player.GetAll=function() return {attacker} end
 dofile(root .. "sv_magic_forms.lua")
-netCalls = {}
-sent = {}
-net.Start("LOD_MagicFormFX")
-net.WriteString("blast")
-net.WriteString("fire")
-net.WriteVector(Vector(0,0,0))
-net.WriteVector(Vector(0,0,0))
-net.Send(attacker)
-assert(sent[#sent].args[1] == "blast", "Blast visual presentation dispatched")
+local forms=assert(LOD.MagicForms)
+local hits={}
+forms._BlastTargets=function() return {victim1,victim2} end
+forms._ApplyDamage=function(_,_,_,target) hits[#hits+1]=target;return true end
+assert(forms:_CastBlast(attacker,{id="blast"},{id="fire"},{spatialBonusCells=0}))
+local blast=sent[#sent]
+assert(#hits==2 and blast.name=="LOD_MagicFormFX" and blast.args[1]=="blast" and blast.args[5]==attacker)
+local traceCalls=0
+local wall=Vector(300,0,64)
+util.TraceLine=function(spec)
+    traceCalls=traceCalls+1
+    if traceCalls==1 then return {Hit=true,HitPos=Vector(100,0,64),Entity=victim1} end
+    if traceCalls==2 then
+        assert(spec.filter[#spec.filter]==victim1,"pierced body is ignored")
+        return {Hit=true,HitPos=Vector(200,0,64),Entity=victim2}
+    end
+    assert(spec.filter[#spec.filter]==victim2,"second body is ignored")
+    return {Hit=true,HitPos=wall,Entity=NULL}
+end
+hits={}
+assert(forms:_CastBeam(attacker,{id="beam"},{id="fire"},{spatialBonusCells=0}))
+local beam=sent[#sent]
+assert(#hits==2 and hits[1]==victim1 and hits[2]==victim2 and traceCalls==3)
+assert(beam.args[1]=="beam" and beam.args[4]==wall and beam.args[5]==attacker,
+    "Beam effect endpoint is the production blocking trace; caster is explicit")
 
-net.Start("LOD_MagicFormFX")
-net.WriteString("beam")
-net.WriteString("ice")
-net.WriteVector(Vector(0,0,0))
-net.WriteVector(Vector(100,200,0))
-net.Send(attacker)
-assert(sent[#sent].args[1] == "beam", "Beam visual presentation dispatched")
-print("PASS: Blast and Beam visual FX dispatch")
+-- Real FX receiver/renderer, including bounded bursts and depth/skybox exclusion.
+local receives={}
+net.Receive=function(name,fn) receives[name]=fn end
+local reading,cursor
+local function read() cursor=cursor+1;return reading[cursor] end
+net.ReadString=read;net.ReadVector=read;net.ReadEntity=read
+function Material(path) return path end
+function LocalPlayer() return attacker end
+local beams,sprites,material=0,0,nil
+render={SetMaterial=function(m) material=m end,
+    DrawBeam=function(_,_,_,_,_,color)
+        beams=beams+1
+        if material=="trails/laser" and color.r~=255 then assert(color.b==255 and color.g==185,"Beam cyan core survives FIRE Content") end
+    end,
+    DrawSprite=function() sprites=sprites+1 end}
+surface.DrawLine=function() end
+dofile(root .. "cl_magic_form_fx.lua")
+local function deliver(packet) reading,cursor=packet.args,0;receives[packet.name]() end
+deliver(blast);deliver(beam)
+hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(true,false)
+assert(beams==0,"no effects in depth prepass")
+hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,true)
+assert(beams==0,"no effects in skybox")
+hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
+assert(beams>30 and sprites>0,"actual Blast arcs and Beam are rendered")
+for i=1,200 do deliver(beam) end
+beams=0
+hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
+assert(beams==96,"at most 48 two-layer Beam effects retained under burst")
+hooks.HUDPaint.LOD_MagicLocalCast()
+print("PASS: production Blast/Beam hits, actual trace endpoint, caster-local cue, bounded client rendering")
+
+-- Closing a pending Spellbook request cancels it; a late response only caches data.
+gui={IsConsoleVisible=function() return false end};chat={IsTyping=function() return false end}
+dofile(root .. "cl_spellbook.lua")
+local book=LOD.Spellbook
+book:Open();assert(book.PendingOpen)
+book:Close();assert(not book.PendingOpen)
+net.ReadTable=function() return {forms={},contents={}} end
+receives.LOD_MagicSpellbookSnapshot()
+assert(book.Snapshot and not IsValid(book.Frame) and not book.PendingOpen)
+book.Snapshot=nil;book:Open();LOD.UI:SelectPage("sheet")
+receives.LOD_MagicSpellbookSnapshot()
+assert(LOD.UI.ActivePage=="sheet" and not IsValid(book.Frame),"late I response cannot replace selected P page")
+print("PASS: dismissed and superseded Spellbook requests remain closed")
 
 print("AG-011R1_REPAIRS_PASS: All focused deterministic tests passed cleanly.")

@@ -2,7 +2,7 @@ LOD = LOD or {}
 LOD.RPGPresentation = LOD.RPGPresentation or {}
 
 local Presentation = LOD.RPGPresentation
-local CELEBRATION_NET = "LOD_RPGCelebrationFX"
+local function pack(...) return {n=select("#", ...), ...} end
 local FX_FEEDBACK = 1
 local FX_LEVEL_UP = 2
 local FX_FEAT_CONFIRM = 3
@@ -17,7 +17,6 @@ Presentation.Stats = Presentation.Stats or {
     arcaneSurgeNotices = 0
 }
 
-util.AddNetworkString(CELEBRATION_NET)
 
 local function combatRolls()
     return LOD.CombatRolls
@@ -64,16 +63,6 @@ local function feed(ply, category, text)
     end
 end
 
-function Presentation:SendFX(ply, kind, primary, secondary)
-    if not IsValid(ply) or not ply:IsPlayer() then return false end
-    net.Start(CELEBRATION_NET)
-    net.WriteUInt(math.Clamp(math.floor(tonumber(kind) or 0), 0, 7), 3)
-    net.WriteString(tostring(primary or ""))
-    net.WriteString(tostring(secondary or ""))
-    net.Send(ply)
-    return true
-end
-
 local function definitionLabel(definition, fallback)
     if not definition then return tostring(fallback or "Feat") end
     return tostring(definition.name or definition.label or definition.title or definition.id or fallback or "Feat")
@@ -91,7 +80,7 @@ function Presentation:InstallProgressionPresentation()
         local runManager = LOD.RunManager
         local ps = runManager and runManager.GetPlayerState and runManager:GetPlayerState(ply) or nil
         local beforeLevel = tonumber(ps and ps.progressionState and ps.progressionState.level) or 0
-        local results = {Presentation.BaseAdvanceHeroToLevel(self, ply, targetLevel)}
+        local results = pack(Presentation.BaseAdvanceHeroToLevel(self, ply, targetLevel))
         local ok = results[1] == true
 
         ps = runManager and runManager.GetPlayerState and runManager:GetPlayerState(ply) or ps
@@ -108,14 +97,14 @@ function Presentation:InstallProgressionPresentation()
                 to_level = afterLevel
             })
         end
-        return unpack(results)
+        return unpack(results,1,results.n)
     end
 
     self.BaseCommitFeat = progression.CommitFeat
     function progression:CommitFeat(ply, featId, expectedEarnedAtLevel)
         local definition = self._FindFeat and self:_FindFeat(featId) or nil
         local label = definitionLabel(definition, featId)
-        local results = {Presentation.BaseCommitFeat(self, ply, featId, expectedEarnedAtLevel)}
+        local results = pack(Presentation.BaseCommitFeat(self, ply, featId, expectedEarnedAtLevel))
         if results[1] == true and IsValid(ply) then
             Presentation:SendFX(ply, FX_FEAT_CONFIRM, "FEAT CHOSEN", label)
             feed(ply, 3, "FEAT CHOSEN — " .. label)
@@ -127,13 +116,13 @@ function Presentation:InstallProgressionPresentation()
                 kind = "ordinary"
             })
         end
-        return unpack(results)
+        return unpack(results,1,results.n)
     end
 
     if progression.CommitCapstone then
         self.BaseCommitCapstone = progression.CommitCapstone
         function progression:CommitCapstone(ply, featId)
-            local results = {Presentation.BaseCommitCapstone(self, ply, featId)}
+            local results = pack(Presentation.BaseCommitCapstone(self, ply, featId))
             if results[1] == true and IsValid(ply) then
                 local runManager = LOD.RunManager
                 local ps = runManager and runManager.GetPlayerState and runManager:GetPlayerState(ply) or nil
@@ -150,7 +139,7 @@ function Presentation:InstallProgressionPresentation()
                     kind = "capstone"
                 })
             end
-            return unpack(results)
+            return unpack(results,1,results.n)
         end
     end
 
@@ -209,9 +198,6 @@ function Presentation:InstallFeedbackPresentation()
             local detail = string.format("%s → %.1f DAMAGE", formula, damage)
 
             Presentation:SendFX(ply, FX_FEEDBACK, "FEEDBACK!", detail)
-            feed(ply, 0, string.format("FEEDBACK! %s = %.1f damage to %s",
-                formula, damage, IsValid(attacker) and tostring(attacker.LODConfig and attacker.LODConfig.name
-                    or attacker.LODArchetypeId or "enemy") or "enemy"))
             Presentation.Stats.feedbackFX = (Presentation.Stats.feedbackFX or 0) + 1
             logEvent("WIZARD_FEEDBACK_PROC", {
                 player = entityLabel(ply),

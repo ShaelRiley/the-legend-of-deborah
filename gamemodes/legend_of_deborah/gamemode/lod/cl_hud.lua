@@ -13,12 +13,12 @@ LOD.ClientState = LOD.ClientState or {
 }
 
 surface.CreateFont("LOD_HUD_Title", {
-    font = "DejaVu Sans",
+    font = "DejaVu Sans Condensed",
     size = 24,
     weight = 800
 })
 surface.CreateFont("LOD_HUD_Body", {
-    font = "DejaVu Sans",
+    font = "Georgia",
     size = 18,
     weight = 650
 })
@@ -77,6 +77,8 @@ net.Receive("LOD_Announcement", function()
     LOD.ClientAnnouncement = net.ReadString()
     LOD.ClientAnnouncementUntil = CurTime() + 4.0
 end)
+
+local UI, C = LOD.UI, LOD.UI.Colors
 
 local cardColors = {
     Color(205, 54, 54),
@@ -144,7 +146,7 @@ local function drawDeathState(ply, state)
     if eliminated then
         draw.SimpleText("OUT OF LIVES", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.43,
             Color(235, 105, 90), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        draw.SimpleText("SPECTATING UNTIL THE NEXT LEVEL", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.49,
+        draw.SimpleText("HERO QUEUE / WATCH FOR REVIVAL", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.49,
             Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         return
     end
@@ -196,16 +198,16 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     local panelW = 360
     local panelH = 150
 
-    draw.RoundedBox(6, margin, margin, panelW, panelH, Color(15, 18, 20, 210))
-    surface.SetDrawColor(220, 140, 48, 230)
+    UI:Paper(margin, margin, panelW, panelH, C.red, 245)
+    surface.SetDrawColor(C.red)
     surface.DrawRect(margin, margin, 5, panelH)
 
-    draw.SimpleText("THE LEGEND OF DEBORAH", "LOD_HUD_Title", margin + 18, margin + 10, Color(238, 194, 92))
+    draw.SimpleText("THE LEGEND OF DEBORAH", "LOD_HUD_Title", margin + 18, margin + 10, C.red)
     local levelText = state.synchronized
         and ("LEVEL " .. tostring(state.level) .. (state.ranked and "" or "  •  UNRANKED"))
         or "INITIALIZING RUN..."
     draw.SimpleText(levelText, "LOD_HUD_Small",
-        margin + 20, margin + 40, state.synchronized and state.ranked and Color(210, 210, 210) or Color(235, 160, 90))
+        margin + 20, margin + 40, state.synchronized and state.ranked and C.muted or C.red)
 
     local lives = ply:GetNW2Int("LOD_Lives", 0)
     local eliminated = ply:GetNW2Bool("LOD_Eliminated", false)
@@ -214,12 +216,15 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
     if not state.synchronized then
         lifeText = "INITIALIZING..."
         lifeColor = Color(245, 210, 115)
+    elseif ply:GetNW2Bool("LOD_IsSoldier", false) then
+        lifeText = "ROLE: HUMAN SOLDIER"
+        lifeColor = C.blue
     elseif eliminated then
         lifeText = "LIVES: 0 — SPECTATOR"
         lifeColor = Color(220, 95, 80)
     else
         lifeText = "LIVES: " .. tostring(lives)
-        lifeColor = Color(245, 245, 245)
+        lifeColor = C.ink
     end
     draw.SimpleText(lifeText, "LOD_HUD_Body", margin + 20, margin + 64, lifeColor)
 
@@ -228,28 +233,39 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
         local y = margin + 104
         local collected = state.cards[i]
         local color = collected and cardColors[i] or Color(82, 86, 88)
-        draw.RoundedBox(4, x - 16, y - 14, 92, 31, Color(28, 31, 33, 235))
+        draw.RoundedBox(4, x - 16, y - 14, 92, 31, C.light)
         drawSymbol(i, x, y + 1, color)
         draw.SimpleText(letters[i], "LOD_HUD_Body", x + 15, y, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         draw.SimpleText(collected and "CARD" or symbolNames[i], "LOD_HUD_Small", x + 33, y + 1, color, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 
+    local objectiveY = ScrW() < 1550 and 186 or 24
     local objectiveW = math.min(ScrW() - 60, 680)
     local objectiveX = (ScrW() - objectiveW) * 0.5
-    draw.RoundedBox(6, objectiveX, 24, objectiveW, 54, Color(13, 16, 18, 215))
-    draw.SimpleText(state.objective or "EXPEDITION", "LOD_HUD_Title", ScrW() * 0.5, 50, Color(238, 194, 92), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    UI:Paper(objectiveX, objectiveY, objectiveW, 54, C.blue, 245)
+    draw.SimpleText(state.objective or "EXPEDITION", "LOD_HUD_Title", ScrW() * 0.5, objectiveY + 26, C.ink, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
     if state.hasTarget and state.target then
         local arrow = objectiveArrow(state.target)
         if arrow then
-            draw.SimpleText(arrow, "LOD_HUD_Announcement", ScrW() * 0.5, 98, Color(238, 194, 92), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText(arrow, "LOD_HUD_Announcement", ScrW() * 0.5, objectiveY + 74, C.red, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     end
 
-    if LOD.ClientAnnouncement and CurTime() < (LOD.ClientAnnouncementUntil or 0) then
+    local feed = LOD.CombatRollFeed
+    local noticeBusy = feed and (feed.notice or #(feed.notices or {}) > 0)
+    if not noticeBusy and LOD.ClientAnnouncement and CurTime() < (LOD.ClientAnnouncementUntil or 0) then
         local alpha = math.Clamp(((LOD.ClientAnnouncementUntil or 0) - CurTime()) * 255, 0, 255)
-        draw.SimpleText(LOD.ClientAnnouncement, "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.28,
-            Color(245, 210, 115, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        local entry = {text=LOD.ClientAnnouncement,family="objective"}
+        LOD.AnnouncementEntry = LOD.AnnouncementEntry and LOD.AnnouncementEntry.text == entry.text and LOD.AnnouncementEntry or entry
+        local feed=LOD.CombatRollFeed
+        if feed and feed.Layout then
+            local width=math.min(680,ScrW()-48)
+            local lines=feed:Layout(LOD.AnnouncementEntry,width-32)
+            local y=ScrH()*0.35
+            UI:Paper((ScrW()-width)*0.5,y,width,#lines*feed.RowHeight+20,C.gold,alpha)
+            feed:DrawLines(lines,(ScrW()-width)*0.5+16,y+10,alpha)
+        end
     end
 
     if state.failed then

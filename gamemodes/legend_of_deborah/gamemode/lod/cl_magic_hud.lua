@@ -5,7 +5,7 @@ LOD = LOD or {}
 -- 640x480 HUD canvas. IMPORTANT: Garry's Mod ScreenScale() scales from WIDTH,
 -- so using it for Y on a widescreen display pushes the Suit slot off-screen.
 -- Use one height-derived proportional scale for both axes/sizes instead.
-local MAGIC_COLOR = Color(72, 168, 255, 255)
+local MAGIC_COLOR = LOD.UI.Colors.blue
 local PANEL_COLOR = Color(0, 0, 0, 145)
 local DIVERSION_COLOR = Color(180, 225, 255, 235)
 local DIVERSION_PANEL = Color(72, 168, 255, 95)
@@ -80,15 +80,15 @@ hook.Add("HUDPaint", "LOD_MagicHUD", function()
                 math.floor(DIVERSION_PANEL.a * alphaScale)))
     end
 
-    draw.RoundedBox(ps(2), x, y, w, h, PANEL_COLOR)
+    LOD.UI:Paper(x,y,w,h,LOD.UI.Colors.blue,245,3)
 
     surface.SetTextColor(MAGIC_COLOR)
-    surface.SetFont("Default")
+    surface.SetFont("LOD_SheetKey")
     surface.SetTextPos(x + ps(layout.textX), y + ps(layout.textY))
     surface.DrawText("MAGIC")
 
     surface.SetTextColor(MAGIC_COLOR)
-    surface.SetFont("HudNumbers")
+    surface.SetFont("LOD_SheetTitle")
     surface.SetTextPos(x + ps(layout.digitX), y + ps(layout.digitY))
     surface.DrawText(muted and "MUTE" or tostring(value))
 

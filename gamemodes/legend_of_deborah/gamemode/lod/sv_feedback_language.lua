@@ -21,7 +21,10 @@ end
 
 function P:FeedbackName(actor)
     if IsValid(actor) then
-        if actor:IsPlayer() then return actor:Nick() end
+        if actor:IsPlayer() then
+            local cp = LOD.CharacterProgressionSystem
+            return cp and cp.PlayerCharacterText and cp:PlayerCharacterText(actor) or actor:Nick()
+        end
         return tostring(actor.LODConfig and actor.LODConfig.name or actor.LODArchetypeId or actor:GetClass())
     end
     return "actor"
@@ -49,6 +52,8 @@ function P:_Event(actor, family, text, fields, cooldownKey)
         limits[cooldownKey] = now + 1.5
     end
     local grammar = LOD.FeedbackLanguage[family] or LOD.FeedbackLanguage.routine
+    local name = self:FeedbackName(ply)
+    if not text:find(name,1,true) then text = name .. ": " .. text end
     local prefix = grammar.label ~= "" and ("[" .. grammar.label .. "] ") or ""
     if LOD.CombatRolls then LOD.CombatRolls:_Send(ply, 3, prefix .. text, family, fields) end
 end

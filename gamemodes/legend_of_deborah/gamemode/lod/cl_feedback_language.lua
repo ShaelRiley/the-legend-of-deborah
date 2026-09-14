@@ -19,12 +19,16 @@ if not Feed.historyLoaded then
             for _, row in ipairs(loaded) do
                 if istable(row) and isstring(row.text) then
                     Feed.history[#Feed.history + 1] = {
-                        text = string.sub(row.text, 1, 512),
-                        stamp = tostring(row.stamp or "previous session")
+                        text = string.sub(row.text, 1, LOD.DieLogger.MaxText),
+                        stamp = tostring(row.stamp or "previous session"),
+                        family = row.family or "routine", category = row.category or 3,
+                        segments = LOD.DieLogger:ValidSegments(row.segments, row.text) and row.segments or nil
                     }
                 end
             end
         end
+
+        while #Feed.history > MAX_HISTORY do table.remove(Feed.history, 1) end
 
         -- Safe legacy migration: if loaded from fallback history, write to die_logger_history.json
         if loadedPath == FALLBACK_HISTORY and #Feed.history > 0 then
@@ -59,7 +63,8 @@ function Feed:AckFeedback(entry, stage, sound)
 end
 
 function Feed:RetainFeedback(entry)
-    self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S")}
+    self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S"),
+        family = entry.family, category = entry.category, segments = entry.segments}
     while #self.history > MAX_HISTORY do table.remove(self.history, 1) end
     -- Fixed batching: continuous combat still reaches disk.
     if not timer.Exists("LOD_DieLoggerSave") then
@@ -75,9 +80,19 @@ function Feed:RetainFeedback(entry)
         self.lastFeedbackPriority = priority
         sounded = true
     end
+    if entry.family == "life" or entry.family == "danger" or entry.family == "soldier" then
+        local function lifecycle(notice)
+            local f = notice.entry.family
+            return f == "life" or f == "danger" or f == "soldier"
+        end
+        if self.notice and lifecycle(self.notice) then self.notice = nil end
+        for i = #(self.notices or {}),1,-1 do
+            if lifecycle(self.notices[i]) then table.remove(self.notices,i) end
+        end
+    end
     if priority >= 2 then
         self.notices = self.notices or {}
-        self.notices[#self.notices + 1] = {entry = entry, priority = priority}
+        self.notices[#self.notices + 1] = {entry = entry, priority = priority, expires = now + 8}
         -- Preserve life/danger over progression if an extreme burst fills the queue.
         if #self.notices > 8 then
             local lowest = 1
@@ -91,16 +106,12 @@ function Feed:RetainFeedback(entry)
     hook.Run("LODDieLoggerUpdated")
 end
 
-local PAPER = Color(244, 237, 218)
-local PAPER_LIGHT = Color(251, 247, 233)
-local INK = Color(32, 32, 29)
-local RED = Color(170, 61, 50)
-local BLUE = Color(55, 91, 145)
-local MUTED = Color(112, 104, 91)
-
 hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
     local now = CurTime()
     if Feed.notice and now >= Feed.notice.untilAt then Feed.notice = nil end
+    for i = #(Feed.notices or {}), 1, -1 do
+        if now >= (Feed.notices[i].expires or 0) then table.remove(Feed.notices, i) end
+    end
     if Feed.notices and #Feed.notices > 0 then
         local highest = 1
         for i, item in ipairs(Feed.notices) do
@@ -109,148 +120,97 @@ hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
         if not Feed.notice or Feed.notices[highest].priority > Feed.notice.priority then
             local nextNotice = table.remove(Feed.notices, highest)
             if Feed.notice then table.insert(Feed.notices, 1, Feed.notice) end
-            Feed.notice = {entry = nextNotice.entry, priority = nextNotice.priority, untilAt = now + 2.8}
+            Feed.notice = {entry = nextNotice.entry, priority = nextNotice.priority, expires = nextNotice.expires, untilAt = now + 2.8}
         end
     end
     local notice = Feed.notice
     if not notice then return end
 
-    -- Sol-styled HUD notice banner (parchment paper with red accent bar and crisp text)
-    local w = math.min(640, ScrW() - 48)
-    local x, y = (ScrW() - w) * 0.5, ScrH() * 0.27
-    surface.SetFont("LOD_CombatRoll")
-    local lines, line = {}, ""
-    for word in notice.entry.text:gmatch("%S+") do
-        local candidate = line == "" and word or line .. " " .. word
-        if surface.GetTextSize(candidate) > w - 32 and line ~= "" then
-            lines[#lines + 1], line = line, word
-        else line = candidate end
-    end
-    lines[#lines + 1] = line
-
-    local h = #lines * 20 + 20
-    draw.RoundedBox(4, x, y, w, h, Color(18, 19, 21, 248))
-    draw.RoundedBox(2, x + 4, y + 4, w - 8, h - 8, PAPER)
-    surface.SetDrawColor(RED)
-    surface.DrawRect(x + 4, y + 4, w - 8, 4)
-    surface.SetDrawColor(BLUE)
-    surface.DrawRect(x + 4, y + h - 8, w - 8, 4)
-
-    for i, text in ipairs(lines) do
-        draw.SimpleText(text, "LOD_CombatRoll", x + 16, y + 10 + (i - 1) * 20, INK)
-    end
+    local UI=LOD.UI
+    local w=math.min(640,ScrW()-48)
+    local x,y=(ScrW()-w)*0.5,ScrH()*0.30
+    local lines=Feed:Layout(notice.entry,w-32)
+    local shown=math.min(#lines,6)
+    local h=shown*Feed.RowHeight+20
+    UI:Paper(x,y,w,h,UI.Roles[notice.entry.family] or UI.Colors.red)
+    Feed:DrawLines(lines,x+16,y+10,255,1,shown)
     Feed:AckFeedback(notice.entry, 1, false)
 end)
 
 function Feed:OpenHistory()
     if IsValid(self.HistoryFrame) then self.HistoryFrame:Remove() end
+    LOD.UI:SelectPage("history")
+    local UI, C = LOD.UI, LOD.UI.Colors
     local frame = vgui.Create("DFrame")
     self.HistoryFrame = frame
-    local w = math.min(940, ScrW() - 40)
-    local h = math.min(680, ScrH() - 40)
-    frame:SetSize(w, h)
-    frame:Center()
-    frame:SetTitle("")
-    frame:ShowCloseButton(false)
-    frame:SetDraggable(true)
-    frame:MakePopup()
-
-    frame.Paint = function(self, fw, fh)
-        draw.RoundedBox(4, 0, 0, fw, fh, Color(18, 19, 21, 248))
-        draw.RoundedBox(2, 8, 8, fw - 16, fh - 16, PAPER)
-        surface.SetDrawColor(RED)
-        surface.DrawRect(8, 8, fw - 16, 6)
-        surface.SetDrawColor(BLUE)
-        surface.DrawRect(8, fh - 14, fw - 16, 6)
+    frame.OnRemove = function()
+        if UI.ActivePage == "history" then UI.ActivePage = nil end
     end
-
-    local title = vgui.Create("DLabel", frame)
-    title:SetText("THE LEGEND OF DEBORAH / DIE LOGGER")
-    title:SetFont("LOD_SheetHeading")
-    title:SetTextColor(RED)
-    title:SetPos(24, 20)
-    title:SetSize(w - 240, 30)
-
-    local subtitle = vgui.Create("DLabel", frame)
-    subtitle:SetText("Last 1,000 systemic combat events & roll histories (newest first)")
-    subtitle:SetFont("LOD_SheetSmall")
-    subtitle:SetTextColor(MUTED)
-    subtitle:SetPos(24, 48)
-    subtitle:SetSize(w - 240, 20)
-
-    local closeBtn = vgui.Create("DButton", frame)
-    closeBtn:SetText("Close [ESC]")
-    closeBtn:SetFont("LOD_SheetKey")
-    closeBtn:SetTextColor(INK)
-    closeBtn:SetPos(w - 130, 22)
-    closeBtn:SetSize(106, 26)
-    closeBtn.Paint = function(self, bw, bh)
-        draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
-        surface.SetDrawColor(self:IsHovered() and RED or MUTED)
-        surface.DrawOutlinedRect(0, 0, bw, bh, 1)
-    end
-    closeBtn.DoClick = function() if IsValid(frame) then frame:Remove() end end
-
-    local refreshBtn = vgui.Create("DButton", frame)
-    refreshBtn:SetText("Refresh")
-    refreshBtn:SetFont("LOD_SheetKey")
-    refreshBtn:SetTextColor(INK)
-    refreshBtn:SetPos(w - 226, 22)
-    refreshBtn:SetSize(86, 26)
-    refreshBtn.Paint = function(self, bw, bh)
-        draw.RoundedBox(3, 0, 0, bw, bh, self:IsHovered() and PAPER_LIGHT or Color(230, 220, 195))
-        surface.SetDrawColor(self:IsHovered() and BLUE or MUTED)
-        surface.DrawOutlinedRect(0, 0, bw, bh, 1)
-    end
-
-    local scroll = vgui.Create("DScrollPanel", frame)
-    scroll:SetPos(20, 76)
-    scroll:SetSize(w - 40, h - 96)
-    local canvas = scroll:GetCanvas()
-    canvas.Paint = function(_, cw, ch)
-        surface.SetDrawColor(80, 66, 41, 10)
-        for cy = 0, ch, 4 do surface.DrawRect(0, cy, cw, 1) end
-    end
-
+    local w,h = math.min(1000,ScrW()-40),math.min(700,ScrH()-40)
+    frame:SetSize(w,h); frame:Center(); frame:SetTitle(""); frame:MakePopup()
+    frame.Paint = function(_,fw,fh) UI:Paper(0,0,fw,fh,C.red,255,8) end
+    UI:CloseButton(frame,function() frame:Remove() end)
+    local title = vgui.Create("DLabel",frame)
+    title:SetText("THE LEGEND OF DEBORAH / DIE-LOGGER")
+    title:SetFont("LOD_SheetHeading"); title:SetTextColor(C.red)
+    title:SetPos(24,20); title:SetSize(w-160,32)
+    local subtitle = vgui.Create("DLabel",frame)
+    subtitle:SetFont("LOD_SheetSmall"); subtitle:SetTextColor(C.muted)
+    subtitle:SetPos(24,54); subtitle:SetSize(w-48,22)
+    UI:PageLinks(frame,"history",78)
+    local legend = vgui.Create("DLabel",frame)
+    legend:SetText("ROLLS: + base die   > continuation   @N+ threshold   => contribution")
+    legend:SetFont("LOD_SheetSmall"); legend:SetTextColor(C.blue)
+    legend:SetPos(24,110); legend:SetSize(w-48,22)
+    local scroll = vgui.Create("DScrollPanel",frame)
+    scroll:SetPos(20,138); scroll:SetSize(w-40,h-198)
+    local page, pageSize, snapshot = 1, 50, {}
+    -- Freeze this view while inspecting. New combat cannot move rows under a click.
+    for i,row in ipairs(self.history) do snapshot[i] = row end
     local function refresh()
-        if not IsValid(frame) then return end
         scroll:Clear()
-        for i = #Feed.history, 1, -1 do
-            local row = Feed.history[i]
-            local entryPanel = vgui.Create("DPanel", scroll)
-            entryPanel:Dock(TOP)
-            entryPanel:DockMargin(4, 3, 4, 3)
-            entryPanel.Paint = function(self, pw, ph)
-                draw.RoundedBox(2, 0, 0, pw, ph, PAPER_LIGHT)
-                surface.SetDrawColor(Color(210, 200, 175))
-                surface.DrawOutlinedRect(0, 0, pw, ph, 1)
+        local pages = math.max(1,math.ceil(#snapshot/pageSize))
+        page = math.Clamp(page,1,pages)
+        subtitle:SetText(string.format("Page %d / %d | %d retained events | newest first | gameplay continues",page,pages,#snapshot))
+        local first = #snapshot-(page-1)*pageSize
+        for i=first,math.max(1,first-pageSize+1),-1 do
+            local row = snapshot[i]
+            local lines = Feed:Layout(row,w-82)
+            local panel = vgui.Create("DPanel",scroll)
+            panel:Dock(TOP); panel:DockMargin(4,3,4,3)
+            panel:SetTall(#lines*Feed.RowHeight+36)
+            panel.Paint = function(_,pw,ph)
+                draw.RoundedBox(1,0,0,pw,ph,C.light)
+                surface.SetDrawColor(C.rule); surface.DrawOutlinedRect(0,0,pw,ph,1)
+                draw.SimpleText(row.stamp or "","LOD_SheetKey",10,5,C.muted)
+                Feed:DrawLines(lines,10,28,255)
             end
-
-            local stampLabel = vgui.Create("DLabel", entryPanel)
-            stampLabel:SetText(row.stamp or "")
-            stampLabel:SetFont("LOD_SheetKey")
-            stampLabel:SetTextColor(MUTED)
-            stampLabel:SetPos(8, 4)
-            stampLabel:SetSize(130, 20)
-
-            local textLabel = vgui.Create("DLabel", entryPanel)
-            textLabel:SetText(row.text or "")
-            textLabel:SetFont("LOD_CombatRoll")
-            textLabel:SetTextColor(INK)
-            textLabel:SetPos(144, 4)
-            textLabel:SetSize(w - 210, 20)
-            textLabel:SetWrap(true)
-            textLabel:SetAutoStretchVertical(true)
-
-            entryPanel:InvalidateLayout(true)
-            timer.Simple(0, function()
-                if IsValid(entryPanel) and IsValid(textLabel) then
-                    entryPanel:SetTall(math.max(28, textLabel:GetTall() + 8))
-                end
-            end)
         end
+        scroll:GetVBar():SetScroll(0)
     end
+    local function button(label,x,callback)
+        local b=vgui.Create("DButton",frame); b:SetText(label); b:SetPos(x,h-48); b:SetSize(130,26)
+        UI:Button(b); b.DoClick=callback
+    end
+    button("NEWER",24,function() page=page-1;refresh() end)
+    button("OLDER",164,function() page=page+1;refresh() end)
+    button("LATEST",304,function()
+        snapshot={};for i,row in ipairs(Feed.history) do snapshot[i]=row end
+        page=1;refresh()
+    end)
     refresh()
-    refreshBtn.DoClick = refresh
     return frame
 end
+
+local nextToggle = 0
+local function toggleHistory()
+    if RealTime() < nextToggle then return end
+    nextToggle = RealTime()+0.15
+    if IsValid(Feed.HistoryFrame) then Feed.HistoryFrame:Remove() else Feed:OpenHistory() end
+end
+Feed.ToggleHistory = toggleHistory
+hook.Add("PlayerButtonDown","LOD_DieLoggerInput",function(ply,key)
+    if ply ~= LocalPlayer() or key ~= KEY_L or gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping()) then return end
+    toggleHistory()
+end)
+concommand.Add("lod_die_logger",toggleHistory)
