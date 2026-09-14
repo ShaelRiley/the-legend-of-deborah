@@ -207,11 +207,15 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
     wizard.LODWizardFeedbackNextReadyAt = now + self.FeedbackCooldownSeconds
     local intBonus = self:IntBonus(wizard)
     local identity, attackerIdentity = self:ProgressionState(wizard), self:ProgressionState(attacker)
-    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
+    local runState = LOD.RunManager and LOD.RunManager.State
+    local graph = runState and runState.Graph
+    local wizardLife, attackerLife = wizard.LODRunSpawnSerial, attacker.LODRunSpawnSerial
     timer.Simple(0, function()
         if IsValid(wizard) and IsValid(attacker) and self:ProgressionState(wizard) == identity
             and self:ProgressionState(attacker) == attackerIdentity
-            and epoch == (LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed) then
+            and wizard.LODRunSpawnSerial == wizardLife and attacker.LODRunSpawnSerial == attackerLife
+            and runState == (LOD.RunManager and LOD.RunManager.State)
+            and graph == (runState and runState.Graph) then
             WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
         end
     end)

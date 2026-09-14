@@ -121,6 +121,22 @@ assert(result.finalHPDamage==6 and ps.magic==96 and presentationErrors==1,
     'a presentation failure cannot abort or repeat the committed defense')
 net.WriteVector, ErrorNoHalt = originalWrite, originalError
 
+-- Deferred retaliation belongs to the same bodies and world, including same-seed rebuilds.
+for _, replace in ipairs({
+    function() wizard.LODRunSpawnSerial=(wizard.LODRunSpawnSerial or 0)+1 end,
+    function() enemy.LODRunSpawnSerial=(enemy.LODRunSpawnSerial or 0)+1 end,
+    function() LOD.RunManager.State.Graph={} end,
+    function() LOD.RunManager.State={LevelSeed=1} end
+}) do
+    pending={}; wizard.LODWizardFeedbackNextReadyAt=nil
+    contexts[incoming].feedbackIneligible=false; incoming:SetDamage(8)
+    LOD.RPGAbilityRules:ApplyPlayerDefense(wizard,incoming)
+    assert(#pending==1)
+    replace(); pending[1]()
+    assert(offense.Stats.feedbackProcs==1,'old return cannot attack a new body or rebuilt world')
+end
+local serverAck=receivers.LOD_RPGMajorFXAck
+
 SERVER,CLIENT=false,true
 clock=100
 LocalPlayer=function() return wizard end
@@ -136,6 +152,14 @@ major:Trigger(2,'LEVEL UP','',1)
 local baseline=#sounds
 local function deliver(p) readPacket,cursor=p,0; receivers[p.name]() end
 deliver(shield); deliver(feedback)
+local ack=packets[#packets]
+local beforeAck=#logs
+readPacket,cursor=ack,0; serverAck(0,enemy)
+assert(#logs==beforeAck,'another recipient cannot acknowledge a guessed serial')
+readPacket,cursor=ack,0; serverAck(0,wizard)
+assert(#logs==beforeAck+1)
+readPacket,cursor=ack,0; serverAck(0,wizard)
+assert(#logs==beforeAck+1,'replayed ACK cannot fabricate repeated delivery evidence')
 assert(major.active.kind==2 and fx.active[1] and fx.active[4],'both reactions coexist with level-up')
 assert(#sounds==baseline+2 and sounds[#sounds]~=sounds[#sounds-1],'independent catch/discharge sounds requested')
 hooks.PostDrawTranslucentRenderables.LOD_WizardReactionWorld(true,false)

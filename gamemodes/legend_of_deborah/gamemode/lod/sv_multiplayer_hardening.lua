@@ -61,8 +61,11 @@ function RunManager:ReviveIdentity(identity)
         activated = self:TryActivatePlayer(ply) == true
         self:_SyncPlayerVars(ply)
         if activated then
+            local state, graph, serial = self.State, self.State.Graph, ply.LODRunSpawnSerial
             timer.Simple(0, function()
-                if not IsValid(ply) or self.State.Failed or not self.State.BuildReady then return end
+                if not IsValid(ply) or self.State ~= state or state.Graph ~= graph
+                    or ply.LODRunSpawnSerial ~= serial or self:GetPlayerState(ply) ~= ps
+                    or state.Failed or not state.BuildReady then return end
                 if self:IsActivePlayer(ply) and not ply:Alive() then
                     ply:UnSpectate()
                     ply:Spawn()
@@ -138,8 +141,9 @@ if DeathTetris then
     end)
 
     hook.Add("PlayerInitialSpawn", "LOD_DeathTetrisRestoreIdentity", function(ply)
+        local state = RunManager.State
         timer.Simple(0.65, function()
-            if not IsValid(ply) then return end
+            if not IsValid(ply) or RunManager.State ~= state then return end
             local identity = RunManager:IdentityOf(ply)
             local ps = identity and RunManager:GetPlayerState(identity)
             local deathState = identity and DeathTetris.Deaths and DeathTetris.Deaths[identity]

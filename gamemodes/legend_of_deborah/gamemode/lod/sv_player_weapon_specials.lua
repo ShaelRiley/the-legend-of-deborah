@@ -298,9 +298,10 @@ function Specials:FireAR2Round(ply, ar2)
     ply:LagCompensation(true)
     local previousEvent = ply.LODCommittedAttackEvent
     ply.LODCommittedAttackEvent = ar2.attackEvent
-    ply:FireBullets(bullet)
+    local ok, err = xpcall(function() ply:FireBullets(bullet) end, debug.traceback)
     ply.LODCommittedAttackEvent = previousEvent
     ply:LagCompensation(false)
+    if not ok then ErrorNoHalt("[LOD:AR2] " .. tostring(err) .. "\n"); return false end
 
     self.Stats.ar2Rounds = (self.Stats.ar2Rounds or 0) + 1
     return true

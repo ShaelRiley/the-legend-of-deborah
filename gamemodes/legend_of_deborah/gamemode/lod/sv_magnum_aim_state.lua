@@ -317,33 +317,7 @@ if not Rolls.LODUniversalAimShotgunResolveInstalled then
     end
 end
 
-if not Magnum.LODMagnumAimBurstWrapped then
-    local fireHooks = hook.GetTable().EntityFireBullets
-    local baseBurstHook = fireHooks and fireHooks["LOD_MagnumCylinderBurst"] or nil
-    if baseBurstHook then
-        Magnum.LODMagnumAimBurstWrapped = true
-        hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
-            local weapon = IsValid(shooter) and shooter:GetActiveWeapon() or nil
-            if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357"
-                or weapon.LODMagnumInjectedBurst == true
-            then
-                return baseBurstHook(shooter, bullet)
-            end
-
-            local multiplier = tonumber(weapon.LODMagnumAimConsumedMultiplier) or 1
-            if multiplier <= 1 then
-                multiplier = select(1, Aim:CommitPrimaryAttack(shooter, "weapon_357"))
-            end
-
-            local result = baseBurstHook(shooter, bullet)
-            if multiplier > 1 then
-                local burst = Magnum.Bursts and Magnum.Bursts[shooter]
-                if burst then burst.aimMultiplier = multiplier end
-            end
-            return result
-        end)
-    end
-end
+-- Magnum snapshots Aim directly in its canonical burst commit.
 
 hook.Add("EntityFireBullets", "LOD_MagnumAimState_TriggerMarkerCleanup", function(shooter)
     local weapon = IsValid(shooter) and shooter:GetActiveWeapon() or nil

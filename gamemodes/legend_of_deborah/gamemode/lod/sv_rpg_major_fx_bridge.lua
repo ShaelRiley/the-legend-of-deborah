@@ -7,6 +7,7 @@ local Bridge = LOD.RPGMajorFXBridge
 local NET_NAME = "LOD_RPGMajorFX"
 local ACK_NAME = "LOD_RPGMajorFXAck"
 local diversionNext = setmetatable({}, {__mode = "k"})
+local pending = setmetatable({}, {__mode = "k"})
 
 util.AddNetworkString(NET_NAME)
 util.AddNetworkString(ACK_NAME)
@@ -39,6 +40,14 @@ local function install()
         self.MajorFXSerial = ((tonumber(self.MajorFXSerial) or 0) + 1) % 65536
         local serial = self.MajorFXSerial
 
+        local records = pending[ply] or {}
+        local count = 0
+        for id, record in pairs(records) do
+            if CurTime() - record.at > 15 then records[id] = nil else count = count + 1 end
+        end
+        if count >= 64 then records = {} end
+        pending[ply] = records
+
         net.Start(NET_NAME)
         net.WriteUInt(serial, 16)
         net.WriteUInt(math.Clamp(math.floor(tonumber(kind) or 0), 0, 7), 3)
@@ -49,6 +58,7 @@ local function install()
             net.WriteVector(target or origin or ply:GetShootPos())
         end
         net.Send(ply)
+        records[serial] = {kind=kind, at=CurTime()}
 
         logEvent("RPG_MAJOR_FX_DISPATCH", {player = string.format("player:%s#%d", tostring(ply:Nick()), ply:EntIndex()),
             serial = serial, kind = kind, primary = tostring(primary or ""), secondary = tostring(secondary or "")})
@@ -70,12 +80,19 @@ net.Receive(ACK_NAME, function(_, ply)
     local serial = net.ReadUInt(16)
     local kind = net.ReadUInt(3)
     local triggered = net.ReadBool()
+    local records = pending[ply]
+    local record = records and records[serial]
+    if not record or record.kind ~= kind or CurTime() - record.at > 15 then return end
+    records[serial] = nil
     logEvent("RPG_MAJOR_FX_CLIENT_ACK", {
         player = string.format("player:%s#%d", tostring(ply:Nick()), ply:EntIndex()),
         serial = serial,
         kind = kind,
         triggered = triggered
     })
+end)
+hook.Add("PlayerDisconnected", "LOD_RPGMajorFXCleanup", function(ply)
+    pending[ply], diversionNext[ply] = nil, nil
 end)
 
 install()

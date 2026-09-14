@@ -505,6 +505,17 @@ local retiredProfile = SoldierProgression:StateFor(p1)
 SoldierProgression:Retire(retiredProfile)
 check(not RunManager:IsSoldierControl(p1), "A captured retired profile cannot keep Soldier control active")
 
+-- Revival may commit eligibility now, but its deferred spawn cannot enter a new run.
+ps1.lives=0; ps1.eliminated=true; ps1.soldierRespawnWait=nil
+RunManager.State.ActiveIdentity["steam_1001"]=nil
+p1:SetAlive(false); queued={}
+check(RunManager:ReviveIdentity("steam_1001"), "Queued Hero revival is admitted through the slot authority")
+local revivalState=RunManager.State
+RunManager.State={}
+for _,fn in ipairs(queued) do fn() end
+check(not p1:Alive(), "Old revival callback cannot spawn into a replacement campaign")
+RunManager.State=revivalState
+
 -- Final summary
 if #errors == 0 then
     print("HUMAN_SOLDIER_LIFECYCLE_HARNESS_PASS — AG-007R2 verified with 0 discrepancies.")

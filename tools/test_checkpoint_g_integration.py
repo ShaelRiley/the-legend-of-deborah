@@ -48,6 +48,7 @@ SUITES = [
     ("Protected: Behavioral Regressions Gate", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_g_protected_regressions.lua"]),
     ("Feedback Language & Die Logger", ["python3", "tools/run_lua54.py", "tools/test_feedback_language.lua"]),
     ("Wizard Reaction Sound & Particles", ["python3", "tools/run_lua54.py", "tools/test_wizard_reaction_fx.lua"]),
+    ("Canonical Burst & Error Cleanup", ["python3", "tools/run_lua54.py", "tools/test_burst_authority_cleanup.lua"]),
     ("AG-011 Big Playtest Repairs Gate", ["python3", "tools/run_lua54.py", "tools/test_ag011_repairs.lua"]),
 ]
 

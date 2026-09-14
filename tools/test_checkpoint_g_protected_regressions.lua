@@ -200,10 +200,6 @@ if isfunction(Effects.InstallAR2RateOfFireAuthorityWrappers) then
     Effects.InstallAR2RateOfFireAuthorityWrappers()
 end
 
-if isfunction(Effects.InstallMagnumBurstSizeBridge) then
-    Effects.InstallMagnumBurstSizeBridge()
-end
-
 print("=== CHECKPOINT G PROTECTED REGRESSION HARNESS (AG-010R1) ===")
 
 local failures = 0

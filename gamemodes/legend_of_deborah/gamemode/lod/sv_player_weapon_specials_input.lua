@@ -11,7 +11,6 @@ if not Specials then return end
 -- the mutable public AR2 methods are actually owned by the corrected one-ammo seam.
 include("sv_rpg_gate_e_burst_size.lua")
 include("sv_rpg_gate_e_rate_of_fire_ar2.lua")
-include("sv_rpg_gate_e_burst_size_magnum.lua")
 include("sv_rpg_gate_e_burst_size_validation.lua")
 include("sv_rpg_gate_e_burst_size_runtime_validation.lua")
 

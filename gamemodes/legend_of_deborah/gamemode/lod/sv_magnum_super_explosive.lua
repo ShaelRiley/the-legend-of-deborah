@@ -264,16 +264,17 @@ local function fireInjectedRound(ply, burst)
 
     weapon.LODMagnumInjectedBurst = true
     ply:LagCompensation(true)
-    ply:FireBullets(bullet)
+    local ok, err = xpcall(function() ply:FireBullets(bullet) end, debug.traceback)
     ply:LagCompensation(false)
     weapon.LODMagnumInjectedBurst = nil
+    if not ok then ErrorNoHalt("[LOD:MAGNUM] " .. tostring(err) .. "\n"); return false end
 
     Magnum.Stats.injectedRounds = (Magnum.Stats.injectedRounds or 0) + 1
     return true
 end
 
-local function finishBurst(ply, burst)
-    if burst and burst.preserveFinal and IsValid(burst.weapon) and burst.weapon:Clip1() == 0 then
+local function finishBurst(ply, burst, completed)
+    if completed and burst and burst.preserveFinal and IsValid(burst.weapon) and burst.weapon:Clip1() == 0 then
         -- Apply preservation only after every injected projectile has rolled, so
         -- all bullets in the final-chamber burst continue to see chamber 6/+5.
         burst.weapon:SetClip1(1)
@@ -282,24 +283,42 @@ local function finishBurst(ply, burst)
     Magnum.Bursts[ply] = nil
 end
 
+function Magnum:BursterAuthoredBurstCount(maximum, clipAfterTrigger)
+    maximum = math.max(1, math.floor(tonumber(maximum) or 6))
+    local clip = math.Clamp(math.floor(tonumber(clipAfterTrigger) or maximum), 0, maximum)
+    local shot = math.Clamp(maximum - clip, 1, maximum)
+    if maximum >= 2 and shot == maximum-1 and clip == 1 then return 2 end
+    if shot == maximum and clip == 0 then return 3 end
+    return 1
+end
+
 -- Stock Magnum trigger pulls remain authoritative for chamber/ammo consumption.
 -- The fifth cartridge schedules one free follow-up projectile; the sixth/final
 -- cartridge schedules two. Low health can add exactly one more free projectile to
 -- any trigger. At very low percentage health, the final cartridge can be restored
 -- after its whole burst, allowing the player to attempt another final-chamber shot.
-hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
+function Magnum:CommitBurst(shooter, bullet)
     local weapon = activeMagnum(shooter)
     if not IsValid(weapon) or weapon.LODMagnumInjectedBurst then return end
 
+    local aim = LOD.UniversalAim
+    local aimMultiplier = tonumber(weapon.LODMagnumAimConsumedMultiplier) or 1
+    if aimMultiplier <= 1 and aim then
+        aimMultiplier = select(1, aim:CommitPrimaryAttack(shooter, "weapon_357"))
+    end
     local bonus, shotIndex, clipAfter, maximum = cylinderState(weapon)
     Magnum.Stats.triggerShots = (Magnum.Stats.triggerShots or 0) + 1
 
-    local extraRounds = 0
+    local authoredBurstCount = self:BursterAuthoredBurstCount(maximum, clipAfter)
+    local rules = LOD.RPGAbilityRules
+    local burstBonus = authoredBurstCount > 1 and rules and rules.BurstBonusRounds
+        and rules:BurstBonusRounds(shooter) or 0
+    local extraRounds = burstBonus
     if maximum >= 2 and shotIndex == maximum - 1 and clipAfter == 1 then
-        extraRounds = 1
+        extraRounds = extraRounds + 1
         Magnum.Stats.twoRoundBursts = (Magnum.Stats.twoRoundBursts or 0) + 1
     elseif shotIndex == maximum and clipAfter == 0 then
-        extraRounds = 2
+        extraRounds = extraRounds + 2
         Magnum.Stats.threeRoundBursts = (Magnum.Stats.threeRoundBursts or 0) + 1
     end
 
@@ -345,6 +364,10 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         weapon = weapon,
         direction = direction,
         remaining = extraRounds,
+        aimMultiplier = aimMultiplier,
+        burstBonusRounds = burstBonus,
+        authoredBurstCount = authoredBurstCount,
+        finalBurstCount = authoredBurstCount + burstBonus,
         nextAt = CurTime() + BURST_SPACING,
         spacing = BURST_SPACING,
         cylinderBonus = bonus,
@@ -354,6 +377,16 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         preserveFinal = preserveFinal,
         preserveChance = preserveChance
     }
+    if burstBonus > 0 then
+        self.Stats.bursterEligibleTriggers = (self.Stats.bursterEligibleTriggers or 0) + 1
+        self.Stats.bursterAddedProjectiles = (self.Stats.bursterAddedProjectiles or 0) + burstBonus
+        if LOD.RPGTestLog then LOD.RPGTestLog:Write("BURST_SIZE_MAGNUM_COMMIT", {
+            player=tostring(shooter), authored=authoredBurstCount, final=authoredBurstCount+burstBonus,
+            bonus=burstBonus, clipAfterTrigger=clipAfter}) end
+    end
+end
+hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bullet)
+    return Magnum:CommitBurst(shooter, bullet)
 end)
 
 hook.Add("Think", "LOD_MagnumCylinderBurstThink", function()
@@ -369,7 +402,7 @@ hook.Add("Think", "LOD_MagnumCylinderBurstThink", function()
             else
                 burst.remaining = (burst.remaining or 1) - 1
                 if burst.remaining <= 0 then
-                    finishBurst(ply, burst)
+                    finishBurst(ply, burst, true)
                 else
                     burst.nextAt = burst.nextAt + (burst.spacing or BURST_SPACING)
                 end
