@@ -16,10 +16,11 @@ concommand.Add("lod_equipment_catalog_testkit",function(ply)
     E:ClearTransient(ply)
     local ps=Run:GetPlayerState(ply)
     local state=E:Ensure(ps)
-    for _,record in ipairs({{"boots","move_quickstep",10001},{"ring","move_rebuff",20001},{"shield","block",30001}}) do
+    for _,record in ipairs({{"boots","move_quickstep",10001,"feet"},{"ring","move_rebuff",20001,"left_hand"},
+        {"ring","ability_str",21001,"right_hand"},{"shield","block",30001,"left_arm"}}) do
         local item=assert(withProperty(record[1],record[2],record[3]))
-        if not state.items[item.id] then E:AcquireWearable(state,item,true) end
-        E:Equip(state,item.id,E:Placement(state,item))
+        if not state.items[item.id] then E:AcquireWearable(state,item,true,record[4]) end
+        E:Equip(state,item.id,record[4])
     end
     for _,id in ipairs({"healing_potion","stink_bomb"}) do
         local count=state.items[id] and state.items[id].count or 0

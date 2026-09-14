@@ -27,7 +27,7 @@ hook.Add("Think","LOD_SpecialMoveKeyboard",function()
     for i=1,4 do
         local mirror=mirrors[i]:GetInt()
         local down=input.IsKeyDown(primary[i])
-        if mirror>=KEY_0 and mirror<=KEY_SCROLLLOCK then down=down or input.IsKeyDown(mirror) end
+        if mirror>=KEY_0 and mirror<=KEY_LAST then down=down or input.IsKeyDown(mirror) end
         if down and not held[i] then pressed[#pressed+1]=i end
         held[i]=down
     end
@@ -46,7 +46,7 @@ function E:BuildMoveBindings(parent,y,width)
         binder:SetPos((i-1)*width/4,y+28);binder:SetSize(width/4-6,30)
         binder:SetValue(mirrors[i]:GetInt());binder:SetTooltip(id)
         binder.OnChange=function(_,key)
-            if key>=KEY_0 and key<=KEY_SCROLLLOCK then RunConsoleCommand("lod_special_key_"..string.lower(id),tostring(key)) end
+            if key>=KEY_0 and key<=KEY_LAST then RunConsoleCommand("lod_special_key_"..string.lower(id),tostring(key)) end
         end
         local label=vgui.Create("DLabel",parent)
         label:SetPos((i-1)*width/4,y+60);label:SetSize(width/4-6,20);label:SetText(id)

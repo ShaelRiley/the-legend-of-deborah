@@ -26,6 +26,7 @@ local WEAPONS = {
 }
 
 local KIND_MODEL = {
+    wearable = "models/props_junk/cardboard_box004a.mdl",
     consumable = "models/props_junk/garbage_glassbottle003a.mdl",
     ammo = "models/items/boxsrounds.mdl",
     health = "models/items/healthkit.mdl",
@@ -35,6 +36,7 @@ local KIND_MODEL = {
 }
 
 local KIND_COLOR = {
+    wearable = Color(155, 195, 255, 245),
     consumable = Color(130, 235, 160, 245),
     ammo = Color(255, 196, 64, 240),
     health = Color(170, 255, 170, 245),

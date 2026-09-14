@@ -1,5 +1,8 @@
 include("shared.lua")
 local cloudMaterial=Material("particle/particle_smokegrenade")
+function ENT:Initialize()
+    self:SetRenderBounds(Vector(-100,-100,-40),Vector(100,100,80))
+end
 function ENT:Draw()
     local ends=self:GetNW2Float("LOD_CloudUntil",0)
     if ends<=0 then self:DrawModel(); return end
@@ -12,3 +15,4 @@ function ENT:Draw()
         render.DrawSprite(pos,96,96,Color(115,155,55,45*math.min(1,ends-CurTime())))
     end
 end
+function ENT:DrawTranslucent() self:Draw() end

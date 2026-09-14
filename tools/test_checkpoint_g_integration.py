@@ -20,6 +20,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Equipment Keyboard & UI Isolation", ["python3", "tools/run_lua54.py", "tools/test_equipment_input.lua"]),
+    ("Equipment Real Loot Transactions", ["python3", "tools/run_lua54.py", "tools/test_equipment_loot.lua"]),
     ("Equipment Catalog, Swaps & Derived Stats", ["python3", "tools/run_lua54.py", "tools/test_equipment_catalog.lua"]),
     ("Equipment Shared Block", ["python3", "tools/run_lua54.py", "tools/test_equipment_block.lua"]),
     ("Equipment Special Moves & Input", ["python3", "tools/run_lua54.py", "tools/test_equipment_moves.lua"]),

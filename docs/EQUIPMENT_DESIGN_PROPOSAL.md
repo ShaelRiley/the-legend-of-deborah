@@ -6,8 +6,9 @@ Approval: “You may implement your proposal.” The live GDD records these deci
 in LOD-EQUIP-015. The table below preserves the proposal as approved; provisional
 balance language does not constitute runtime acceptance.
 
-The live GDD defines the architecture but leaves Block semantics, the property
-catalog/value economy, initial Special Moves and Stink Bomb behavior unset.
+Before this approval, the live GDD defined the architecture but left Block
+semantics, the property catalog/value economy, initial Special Moves and Stink
+Bomb behavior unset.
 AGENTS.md §4 and live GDD LOD-TUNE-001 / LOD-IMPL-006 prohibit inventing these
 rules during implementation. The Throwable handoff separately authorizes choosing
 small coherent potion impact details; that discretion was used for direct ally

@@ -41,6 +41,24 @@ after death.</div>
       </div>
     </article>
 
+    <article class="source-page" data-title="Equipment & Special Moves">
+      <div class="page">
+        <div class="kicker">Choose what you carry</div>
+        <h1>Equipment &amp; Special Moves</h1><div class="rule"></div>
+        <p><b>I → View Equipment</b> shows your items, modifiers and Special Moves. Gear changes your effective abilities; it does not qualify you for permanent feats.</p>
+        <div class="card-grid">
+          <div class="card"><h3>Seven wearable positions</h3><p>Head, Body, Legs, Feet, Left Hand, Right Hand and Left Arm Accessory. Each ring uses one hand. One pair of gloves uses <b>both hands</b>. A shield uses the independent left-arm slot.</p></div>
+          <div class="card"><h3>Compare before replacing</h3><p>Free positions equip automatically. Look at an occupied-slot pickup to compare its actual modifiers and approximate value. <b>E accepts</b> the replacement and destroys the displaced item records. Gloves may replace two rings.</p></div>
+          <div class="card"><h3>Block</h3><p>A shield may Block physical bullets or melee after Dodge fails. Contributions share one roll and a <b>33% cap</b>. A successful Block prevents the hit's HP damage and control; listen for metal and watch the shield flash.</p></div>
+          <div class="card"><h3>Stink Bomb</h3><p><b>LMB throws; no drinking.</b> Its five-second cloud attempts to Poison enemies using the normal CON save. Poisoned hurts on maze-cell changes, not on application. Allies are excluded.</p></div>
+        </div>
+        <p>Equipped move-granting items all listen together. <b>Quickstep ↑ ↑ ↑</b> costs 10 base Magic, with a two-second cooldown. <b>Rebuff ← ↓ →</b> costs 20 base Magic, with a four-second cooldown: a one-cell Magic burst followed by a Push attempt. The item panel explains each effect.</p>
+        <p>Use <b>physical keyboard arrows</b>, or the rebindable mirror: <b>[ = ↑, ; = ←, , = ↓, \ = →</b>. Release between presses; gaps over 0.8 seconds reset the recipe. Menus, chat and holding a Throwable disable recognition. Controller directions do not issue move commands.</p>
+        <div class="note"><strong>FIELD NOTE:</strong> Gear and unspent consumables follow your Hero through death and dungeon changes. A new campaign starts a new inventory.</div>
+        <div class="folio-num">13a</div>
+      </div>
+    </article>
+
     <article class="source-page" data-title="Unwelcome Company I">
       <div class="page">
         <div class="kicker">A partial bestiary</div>

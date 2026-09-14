@@ -10,11 +10,118 @@ wearables, one value/property economy, atomic hand/glove swaps, real RPG ability
 deltas, shared Block after Dodge, simultaneous Quickstep/Rebuff recognition,
 keyboard rebinding, and throw-only Stink Bomb using canonical Poisoned.
 
-First integrated gate: **61/61 suites passed**. Includes 2,500 generated catalog
-samples, actual RPG recomputation, Block event caching, Special Move transactions,
-cloud lifecycle, existing feat/description coverage and all previous regressions.
-No Garry's Mod runtime evidence is claimed. Final runtime instructions and exact
-remote preservation evidence follow in the final handoff.
+Implementation checkpoint verified remotely:
+`6b790481209e49ec2701ee4830cce404d4372ae4`.
+The subsequent finalization commit carries the testkit, manual and final evidence.
+
+## Verification
+
+Final integrated gate: **63/63 suites passed**, with no failures.
+Run `python3 tools/test_checkpoint_g_integration.py` from the repository root.
+The five new equipment suites cover real catalog generation/derived stats, the
+real LootDirector collection transaction, shared Dodge/Block ordering and event
+caching, Special Move transactions, and the actual client keyboard adapter.
+Existing Throwable/projectile tests now exercise the production Stink Bomb too.
+The generator gate tests 2,500 samples over Dungeon Levels 1–999; every initial
+property is reachable, ranks/refunds stay bounded, and D100 clamps generation.
+All accepted RPG regression and nonblank feat-description suites remain green.
+
+No Garry's Mod engine was available. Prediction, collision feel, native Use,
+multiplayer delivery, mounted stock effects and UI/booklet layout still require
+human runtime acceptance. No exhaustive new runtime feat certification is claimed.
+
+## Scope and integration
+
+- Headwear, vest, trousers, boots, rings, paired gloves and shield use shared
+  property records. Six ability deltas update `equipmentAbilityDelta`; gear does
+  not change permanent feat qualification. Block contributes through one shared
+  defender roll after Dodge, before Magic diversion and effective-hit observers.
+- Budget/value/naming and pickup comparison use the same catalog. Optional
+  weapon/cache rewards independently convert at 25%; mandatory starters and the
+  outer useful-drop RNG are preserved. A free compatible position auto-equips;
+  native E accepts occupied-position replacements. Both displaced rings are
+  included in a glove comparison and removed in the committed swap.
+- Quickstep and Rebuff listen simultaneously. Duplicate grants expose one move.
+  Quickstep changes native movement data and relies on Source collision/gravity;
+  it creates no teleport or special Dodge exemption. Rebuff reuses graph-cell
+  targeting, shared Magic dice/damage and Push. Existing offensive-cost and
+  discrete-Magic-spend feat authorities apply where eligible.
+- Healing Potion remains drinkable/throwable. Stink Bomb is throw-only and uses
+  shared Poisoned, including normal source/defender CON and recovery. Each cloud
+  attempts application once per target, including saved targets. Both forms expire
+  across death, retirement, replacement identity, disconnect or dungeon change.
+- Stink Bomb is playable through the catalog testkit. Its normal drop frequency
+  was not defined in the approved proposal, so ordinary Healing Potion rewards
+  were preserved. This is a remaining release-design choice, not an inert effect.
+- The booklet gained equipment/Block/move/consumable guidance. This scoped update
+  does not certify the broader outstanding RPG manual release reconciliation.
+- The initial catalog deliberately excludes additional elemental/property families
+  and weapon/magic-item variants pending their own authored rules.
+
+Keyboard source limitation: GLua accepts keyboard codes and excludes native
+controller codes. Steam Input/OS software that synthesizes keyboard events is
+indistinguishable at this boundary; do not map controller directions to the move
+keys. The keyboard range follows the official [KEY enum](https://wiki.facepunch.com/gmod/Enums/KEY).
+The dash uses native movement data, consistent with [GMod movement guidance](https://wiki.facepunch.com/gmod/GM:Move).
+
+## One integrated human playtest
+
+Fully quit Garry's Mod. This works whether the local development branch already
+exists or is created from its remote tracking branch:
+
+```bash
+cd ~/Downloads/the-legend-of-deborah && git fetch origin astra/equipment-update && git switch astra/equipment-update && git pull --ff-only origin astra/equipment-update && bash tools/install_dev.sh
+```
+
+Start `gm_flatgrass`, complete staging and deploy as a Hero. Use a physical
+keyboard for the move test. Run:
+
+```text
+lod_equipment_catalog_testkit; lod_equipment_catalog_status
+```
+
+The kit marks the run unranked. It equips generated Quickstep boots, a Rebuff
+ring, a second ring and a shield, restores 100 Magic, supplies three of each
+consumable, and creates a real individualized glove pickup. The gear is generated
+at the D100 budget for inspection; it does not change the actual dungeon level.
+
+1. Before accepting the gloves, try **↑ ↑ ↑** near clear floor and a wall, then
+   **← ↓ →** near enemies. Check costs, cooldowns, collision, damage/Push and the
+   Die Log. Try the punctuation mirror and a rebind. Menus/chat/Throwable holding
+   must prevent recognition. Ordinary weapons, Magic and movement should work.
+2. Inspect the glove comparison. It should list both rings. Touching must leave
+   them intact; one **E** replaces them. Check updated abilities on **P**, both
+   occupied hands on **I**, and disappearance of Rebuff when its ring is replaced.
+   Look for Block results/metallic cue/shield flash during ordinary physical combat.
+3. In **I → View Equipment**, equip/hold Stink Bomb. Confirm only **LMB: THROW**;
+   RMB must not consume. Throw near enemies and observe cloud/CON/Poisoned output.
+   Switch to Healing Potion and check drinking, throwing to a second Hero, missing,
+   and last-unit Magic restoration. Walls/allies must respect the existing rules.
+4. Check death/respawn, next dungeon and reconnect: gear/unspent stacks persist,
+   consumed units and accepted pickups do not return, and each Hero remains
+   independent. Check Inventory and the new booklet page at Steam Deck resolution.
+
+Finish with:
+
+```text
+lod_equipment_catalog_status; lod_rpg_validate; lod_rpg_test_finish equipment_catalog
+```
+
+Upload `console_latest.txt` and `rpg_summary_latest.txt` from:
+
+`/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`
+
+Add video for movement, cloud or layout defects; add `rpg_session_latest.txt` only
+if detailed event order is needed. Do not rerun the kit during persistence checks,
+because replenishment is the kit's explicit purpose.
+
+## Recommendation and release state
+
+Ready for the approved catalog's integrated playtest. Equipment is not yet
+runtime-accepted or approved for promotion. Complete that gate and settle the
+remaining release-design/catalog scope before starting Enemy implementation.
+Main remains the accepted RPG baseline at `8978796e886cdb5505d24ed0de085265fa99bac8`.
+Workshop was not updated. Public VPS was not deployed or restarted.
 
 ## Earlier checkpoint (historical evidence)
 

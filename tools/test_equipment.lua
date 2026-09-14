@@ -58,6 +58,7 @@ ents = {Create=function()
     return created
 end}
 dofile(root.."sh_equipment.lua")
+dofile(root.."sh_equipment_catalog.lua")
 dofile(root.."sv_equipment.lua")
 local E=LOD.Equipment
 local p,q=player("hero"),player("ally")
@@ -130,6 +131,14 @@ reconnected.hp=20
 assert(not E:Use(reconnected,"drink") and state.items.test_throw_only.count==1)
 assert(E:Use(reconnected,"throw") and state.items.test_throw_only==nil)
 E.Definitions.test_throw_only=nil
+created:Remove();now=now+1
+assert(E:Grant(reconnected,"stink_bomb",1))
+assert(E:Equip(state,"stink_bomb","throwable"));E:Sync(reconnected);E:Activate(reconnected)
+assert(E:Prompt(E.Definitions.stink_bomb)=="LMB: THROW")
+assert(not E:Use(reconnected,"drink") and state.items.stink_bomb.count==1)
+assert(E:Use(reconnected,"throw") and not state.items.stink_bomb and created.LODPotionDefinition=="stink_bomb")
+assert(reconnected.hp==20 and not E:IsActive(reconnected),"Throw-only bomb consumes once and restores Magic without healing")
+
 -- Data-driven wearable occupancy: two rings, paired gloves and independent arm.
 E.Definitions.test_ring={slots={"left_hand","right_hand"}}
 E.Definitions.test_gloves={slots={"left_hand","right_hand"},occupancy={"left_hand","right_hand"}}
