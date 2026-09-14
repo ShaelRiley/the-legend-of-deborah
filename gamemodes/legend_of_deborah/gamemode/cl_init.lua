@@ -158,3 +158,5 @@ hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
             4, Color(0, 0, 0, 245))
     end
 end)
+
+include("lod/cl_rpg_dodge.lua")

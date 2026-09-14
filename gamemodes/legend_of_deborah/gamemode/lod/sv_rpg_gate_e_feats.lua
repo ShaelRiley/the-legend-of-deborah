@@ -293,7 +293,7 @@ function FeatEffectSystem:OnEffectiveDamage(actor, damage)
 end
 
 function FeatEffectSystem:_TickActor(actor, elapsed)
-    if not IsValid(actor) or (actor:IsPlayer() and not actor:Alive()) then
+    if not IsValid(actor) or actor.LODDead or actor:Health() <= 0 or (actor:IsPlayer() and not actor:Alive()) then
         self.RegenActors[actor] = nil
         return
     end

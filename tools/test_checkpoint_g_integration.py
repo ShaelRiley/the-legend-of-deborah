@@ -25,7 +25,7 @@ SUITES = [
     ("Checkpoint C Python Validator", ["python3", "tools/validate_checkpoint_c.py"]),
     ("Actor Core & Level Progression", ["python3", "tools/run_lua54.py", "tools/test_actor_progression.lua"]),
     ("Magic Forms & Contents Schema", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_c_headless.lua", "."]),
-    ("Implemented Feats & Capstones (129+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
+    ("Implemented Feats & Capstones (135+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
     ("Human Soldier RPG & XP Progression", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_progression.lua"]),
     ("Human Soldier Lifecycle & Isolation", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_lifecycle.lua"]),
     ("Checkpoint E Closure & Parity", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_e_closure.lua"]),
@@ -56,6 +56,7 @@ for path in sorted(Path(REPO_ROOT, "tools").glob("test_checkpoint_d_*.lua")):
         SUITES.append(("Feat: " + path.stem.removeprefix("test_checkpoint_d_"),
                        ["python3", "tools/run_lua54.py", str(path.relative_to(REPO_ROOT))]))
 SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54.py", "tools/test_feat_stabilization.lua"]))
+SUITES.append(("Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
 SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 
 def main():

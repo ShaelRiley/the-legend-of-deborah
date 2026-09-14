@@ -258,7 +258,8 @@ local function fireInjectedRound(ply, burst)
         Damage = 1,
         AmmoType = weapon:GetPrimaryAmmoType(),
         Attacker = ply,
-        Inflictor = weapon
+        Inflictor = weapon,
+        LODAttackEvent = burst.attackEvent
     }
 
     weapon.LODMagnumInjectedBurst = true
@@ -338,7 +339,9 @@ hook.Add("EntityFireBullets", "LOD_MagnumCylinderBurst", function(shooter, bulle
         return
     end
 
+    bullet.LODAttackEvent = bullet.LODAttackEvent or {}
     Magnum.Bursts[shooter] = {
+        attackEvent = bullet.LODAttackEvent,
         weapon = weapon,
         direction = direction,
         remaining = extraRounds,

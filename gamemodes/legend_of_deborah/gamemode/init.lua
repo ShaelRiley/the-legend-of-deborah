@@ -1,3 +1,4 @@
+AddCSLuaFile("lod/cl_rpg_dodge.lua")
 LOD = LOD or {}
 
 local DEVELOPER_MODE_HELP = "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."

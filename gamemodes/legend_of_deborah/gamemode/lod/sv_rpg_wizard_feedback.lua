@@ -59,7 +59,7 @@ function WizardOffense:FeedbackChanceFromDerived(derived)
 end
 
 function WizardOffense:CurrentMagic(actor)
-    if not IsValid(actor) or not actor:IsPlayer() then return nil, nil end
+    if not IsValid(actor) then return nil, nil end
     local authority = magic()
     local ps = authority and authority._EnsureState and authority:_EnsureState(actor) or nil
     if not ps then return nil, nil end

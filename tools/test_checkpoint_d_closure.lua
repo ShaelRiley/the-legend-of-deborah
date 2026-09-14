@@ -77,6 +77,12 @@ end
 
 -- 1. Canonical Inventory Specification (Audited against live GDD revision ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q)
 local CANONICAL_FEATS = {
+    CROSS_METEOR_STRIKE = {ability = "str", req = {str = 15, int = 15}, prereq = {"STR_CROWBAR_D6", "INT_CLOUD_STEP"}, family = "cross_meteor_strike", rank = 1, replaces = false},
+    CROSS_TINY_TERROR = {ability = "dex", req = {dex = 15, cha = 15}, prereq = {"DEX_SHRINK", "CHA_MENACE_1"}, family = "cross_tiny_terror", rank = 1, replaces = false},
+    CROSS_BIG_SCARY = {ability = "con", req = {con = 15, str = 13, cha = 15}, prereq = {"CON_BIG_GUY", "CHA_MENACE_1"}, family = "cross_big_scary", rank = 1, replaces = false},
+    CROSS_CRUSH_PANIC = {ability = "str", req = {str = 17, cha = 17}, prereq = {"STR_KNOCKBACK_1", "CHA_MENACE_2"}, family = "cross_crush_panic", rank = 1, replaces = false},
+    CROSS_BOOM_BATTERY = {ability = "dex", req = {dex = 15, int = 15}, prereq = {}, family = "cross_boom_battery", rank = 1, replaces = false},
+    CROSS_FORCE_OF_WILL = {ability = "str", req = {str = 15, wis = 15}, prereq = {"STR_KNOCKBACK_1", "WIS_FORCEFUL_MAGIC"}, family = "cross_force_of_will", rank = 1, replaces = false},
     -- CON
     CON_REGEN_11 = {ability = "con", req = {con = 13}, prereq = {}, family = "con_health_regeneration", rank = 1, replaces = false},
     CON_REGEN_22 = {ability = "con", req = {con = 15}, prereq = {"CON_REGEN_11"}, family = "con_health_regeneration", rank = 2, replaces = true},
@@ -302,7 +308,11 @@ local unreachableHandlers = {}
 for k, def in pairs(implMap) do
     local handler = def.effectHandlerId
     if handler and handler ~= "gate_b_feat_ownership" then
-        local known = (Effects and Effects[handler])
+        local known = (LOD.RPGCrossFeats and ({cross_meteor_strike = LOD.RPGCrossFeats.AugmentMeteor,
+                cross_tiny_terror = LOD.RPGCrossFeats.MoraleBonus, cross_big_scary = LOD.RPGCrossFeats.MoraleBonus,
+                cross_crush_panic = LOD.RPGStatusElements.ObserveDamage, cross_boom_battery = LOD.RPGCrossFeats.RestoreBoomBattery,
+                cross_force_of_will = LOD.RPGCrossFeats.BridgeMagicPush})[handler])
+            or (Effects and Effects[handler])
             or (Rules and Rules[handler])
             or (CPS and CPS[handler])
             or handler == "health_regeneration"
@@ -420,7 +430,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 129 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

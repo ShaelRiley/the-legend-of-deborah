@@ -56,6 +56,8 @@ def audit():
                                        override.get('requirement', row['requirement']))}
             if definition.get('abilityRequirements', {}) != requirements:
                 errors.append(f'REQUIREMENT_MISMATCH {runtime_id}')
+            if any(v not in (13, 15, 17) for v in definition.get('abilityRequirements', {}).values()):
+                errors.append(f'DEPRECATED_ABILITY_GATE {runtime_id}')
             prereqs = values(definition.get('prerequisiteFeatIds', {}))
             if row['prerequisite'] == 'None' and prereqs:
                 errors.append(f'UNAUTHORED_PREREQUISITE {runtime_id}')

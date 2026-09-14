@@ -39,10 +39,10 @@ Catalog.ClassCapstones = {
         },
         ROG_CAP_NOW_YOU_SEE_ME = {
             featId = "ROG_CAP_NOW_YOU_SEE_ME", displayName = "Now You See Me",
-            classId = "rogue", synergyTags = {"evasion"},
-            effectHandlerId = "rogue_capstone_evasion",
-            effectParams = {evasionChance = 0.20,
-                description = "Each eligible incoming direct attack event receives one deterministic 20% evasion roll before diversion and control."}
+            classId = "rogue", synergyTags = {"dodge"},
+            effectHandlerId = "shared_dodge_contribution",
+            effectParams = {dodgeChanceContribution = 0.20,
+                description = "Adds 20 percentage points to shared Dodge: 0% below one-quarter walk speed, 31% in ordinary qualified Rogue movement, and 42% at or above 90% sprint speed. Uses actual voluntary horizontal speed, the shared caps, and one roll per attack and target before diversion and control."}
         },
         ROG_CAP_ACE_IN_THE_HOLE = {
             featId = "ROG_CAP_ACE_IN_THE_HOLE", displayName = "Ace in the Hole",

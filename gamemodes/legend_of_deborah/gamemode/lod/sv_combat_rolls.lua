@@ -37,6 +37,11 @@ local HOSTILE_ATTACKS = {
     deadcrab = {label = "DEADCRAB", source = "death blast", count = 8, sides = 10, bonus = 11, reference = 55}
 }
 
+Rolls.HostileDamageProfiles = HOSTILE_ATTACKS
+function Rolls:HostileDamageProfile(archetypeId)
+    return (self.MeleeBalanceProfiles or {})[archetypeId] or self.HostileDamageProfiles[archetypeId]
+end
+
 -- Initial health pools are tuned from desired dice-era hit counts rather than
 -- inherited fixed HP. Several small dice keep ordinary durability readable;
 -- the variance layer subsequently constrains the result beneath visible size.
@@ -50,6 +55,17 @@ local ENEMY_HEALTH_PROFILES = {
 }
 
 local grenadeRolls = setmetatable({}, {__mode = "k"})
+Rolls.PendingDamageReports = Rolls.PendingDamageReports or setmetatable({}, {__mode = "k"})
+
+function Rolls:QueueDamageReport(info, report)
+    self.PendingDamageReports[info] = report
+end
+
+function Rolls:ReportResolvedDamage(info)
+    local report = self.PendingDamageReports[info]
+    self.PendingDamageReports[info] = nil
+    if report then report(math.max(0, info:GetDamage())) end
+end
 
 local function activeWeaponClass(ply)
     if not IsValid(ply) then return nil end
@@ -307,7 +323,8 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
     local formulaBonus = tonumber(resolvedProfile.bonus) or 0
     if formulaBonus > 0 then formula = formula .. "+" .. tostring(formulaBonus) end
     if formulaBonus < 0 then formula = formula .. tostring(formulaBonus) end
-    return {
+    local contract = {
+        attackEvent = resolvedProfile.attackEvent or (IsValid(attacker) and attacker.LODCommittedAttackEvent) or {},
         profile = resolvedProfile,
         formula = formula,
         total = total,
@@ -320,6 +337,8 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
         baseDice = count,
         aceBonusDice = math.max(0, math.floor(tonumber(bonusDice) or 0))
     }
+    if LOD.RPGCrossFeats then LOD.RPGCrossFeats:RestoreBoomBattery(attacker, contract) end
+    return contract
 end
 
 function Rolls:ResolveActorDamage(contract, attacker, target, tags)
@@ -329,23 +348,30 @@ function Rolls:ResolveActorDamage(contract, attacker, target, tags)
     -- AbilityRules retains its richer internal tuple for validation/debugging,
     -- but callers may safely pass this result into math helpers without Lua
     -- expanding hidden table-valued returns into additional arguments.
-    local resolved, reduced, resistance = rules:ResolveDamageContract(contract, attacker, target, tags)
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local targetContract = effects and effects.BlastProofTargetContract
+        and effects:BlastProofTargetContract(contract, attacker, target) or contract
+    local resolved, reduced, resistance = rules:ResolveDamageContract(targetContract, attacker, target, tags)
     if contract then
         contract.feedResolution = {total = tonumber(resolved) or 0,
-            reduced = reduced, resistance = tonumber(resistance) or 0}
+            reduced = reduced, resistance = tonumber(resistance) or 0,
+            resolvedContract = targetContract ~= contract and targetContract or nil}
     end
     return tonumber(resolved) or 0
 end
 
-function Rolls:RollPlayerWeapon(ply, weaponClass)
+function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
     local profile = PLAYER_WEAPONS[weaponClass]
     if not profile then return nil end
     local rng = self:_RNG("player:" .. weaponClass)
     local rules = LOD.RPGAbilityRules
     local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(ply) and 1 or 0
-    local rolled = self:RollActorDamage(ply, profile, rng, aceBonus)
+    local committedProfile = table.Copy(profile)
+    committedProfile.attackEvent = attackEvent
+    local rolled = self:RollActorDamage(ply, committedProfile, rng, aceBonus)
 
     local contract = {
+        attackEvent = rolled.attackEvent,
         label = profile.label,
         weaponClass = weaponClass,
         profile = rolled.profile,
@@ -359,6 +385,8 @@ function Rolls:RollPlayerWeapon(ply, weaponClass)
         baseDice = rolled.baseDice,
         aceBonusDice = rolled.aceBonusDice,
         capped = rolled.capped == true,
+        ownerState = rules and rules:ProgressionState(ply),
+        levelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed,
         created = CurTime()
     }
 
@@ -393,7 +421,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
         if hits > 0 then
             local damage = contract.damageByTarget[target] or 0
             if IsValid(target) and damage > 0 and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyShotgunShellStun then
-                LOD.M3HitFeedback:ApplyShotgunShellStun(target)
+                LOD.M3HitFeedback:ApplyShotgunShellStun(target, ply)
             end
             local targetContract = setmetatable({feedResolution = (contract.resolutionByTarget or {})[target] or false},
                 {__index = contract})
@@ -402,6 +430,35 @@ function Rolls:_FinishShotgunFeed(ply, contract)
             contract.feedReported = true
             self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula or "1d6!", damage,
                 target, detail, nil, (contract.targetNames or {})[target] or "Hostile", "shotgun"))
+        end
+    end
+end
+
+function Rolls:SettleShotgun(ply, contract)
+    if not IsValid(ply) then return end
+    local rules = LOD.RPGAbilityRules
+    if contract.ownerState and rules:ProgressionState(ply) ~= contract.ownerState then return end
+    if contract.levelSeed and contract.levelSeed ~= (LOD.RunManager.State or {}).LevelSeed then return end
+    local targets = {}
+    for target in pairs(contract.hits) do if IsValid(target) then targets[#targets + 1] = target end end
+    table.sort(targets, function(a, b) return a:EntIndex() < b:EntIndex() end)
+    for _, target in ipairs(targets) do
+        if not target.LODDead and target:Health() > 0 then
+            local hits = contract.hits[target]
+            local tags = {physical = true, shotgunHits = hits, shotgunShares = SHOTGUN_SHARE_COUNT,
+                settledShotgun = true, attackEvent = contract.attackEvent, damageContract = contract}
+            local total = self:ResolveActorDamage(contract, ply, target, tags)
+            contract.resolutionByTarget[target] = contract.feedResolution
+            local info = DamageInfo()
+            info:SetAttacker(ply)
+            info:SetInflictor(IsValid(contract.weapon) and contract.weapon or ply)
+            info:SetDamage(total)
+            info:SetDamageType(DMG_BULLET)
+            info:SetDamagePosition(contract.hitPositions[target] or target:WorldSpaceCenter())
+            info:SetDamageForce(vector_origin)
+            LOD.RPGStatusElements:AttachDamageContext(info, tags)
+            self:QueueDamageReport(info, function(finalDamage) contract.damageByTarget[target] = finalDamage end)
+            target:TakeDamageInfo(info)
         end
     end
 end
@@ -420,11 +477,15 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
         rolledContract = cached
     else
         local rng = self:_RNG("hostile:" .. tostring(hostile.LODArchetypeId or "unknown"))
-        local rolled = self:RollActorDamage(hostile, profile, rng, 0)
+        local committedProfile = table.Copy(profile)
+        committedProfile.attackEvent = IsValid(cacheOwner) and cacheOwner.LODAttackEvent or nil
+        local rolled = self:RollActorDamage(hostile, committedProfile, rng, 0)
         total, values, contributions = rolled.total, rolled.values, rolled.contributions
         rolledContract = rolled
         if IsValid(cacheOwner) then
             cacheOwner.LODCombatRollContract = {
+                originContract = rolled,
+                attackEvent = rolled.attackEvent,
                 profile = profile,
                 total = total,
                 values = values,
@@ -441,6 +502,8 @@ function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
     local scale = math.max(0, tonumber(originalDamage) or profile.reference or total)
         / math.max(1, profile.reference or total)
     local contract = {
+        originContract = rolledContract.originContract or rolledContract,
+        attackEvent = rolledContract.attackEvent,
         profile = profile,
         total = total,
         values = values,
@@ -486,7 +549,8 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
     local profile = PLAYER_WEAPONS[weaponClass]
     if not profile then return end
 
-    local contract = Rolls:RollPlayerWeapon(shooter, weaponClass)
+    bullet.LODAttackEvent = bullet.LODAttackEvent or shooter.LODCommittedAttackEvent or {}
+    local contract = Rolls:RollPlayerWeapon(shooter, weaponClass, bullet.LODAttackEvent)
     if not contract then return end
 
     -- An exploding roll has one or more continuation dice after its first die.
@@ -504,8 +568,11 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
         -- diluted into sub-1 pellet hits by the one-sixth share calculation.
         bullet.Damage = math.max(1, contract.total / SHOTGUN_SHARE_COUNT)
         shooter.LODActiveShotgunRoll = contract
+        contract.weapon = shooter:GetActiveWeapon()
+        contract.hitPositions = setmetatable({}, {__mode = "k"})
         timer.Simple(0, function()
-            if shooter.LODActiveShotgunRoll == contract then
+            Rolls:SettleShotgun(shooter, contract)
+            if IsValid(shooter) and shooter.LODActiveShotgunRoll == contract then
                 shooter.LODActiveShotgunRoll = nil
             end
             Rolls:_FinishShotgunFeed(shooter, contract)
@@ -549,7 +616,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
     if not IsValid(target) or not dmginfo then return end
     local statusElements = LOD.RPGStatusElements
     local statusContext = statusElements and statusElements:DamageContext(dmginfo, target)
-    if statusContext and statusContext.statusDamage then return end
+    if statusContext and (statusContext.statusDamage or statusContext.settledShotgun or statusContext.actorDamageResolved) then return end
     local attacker = dmginfo:GetAttacker()
     local inflictor = dmginfo:GetInflictor()
 
@@ -573,6 +640,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     Rolls:EmitDiceExplosionFX(attacker, "grenade", continuations, 1)
                 end
             end
+            if statusElements then statusElements:AttachDamageContext(dmginfo, {physical = true, attackEvent = contract.attackEvent, damageContract = contract}) end
             local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
             local aimMult = tonumber(inflictor.LODAimMultiplier) or 1
             local final = math.max(1, Rolls:ResolveActorDamage(contract, attacker, target,
@@ -587,9 +655,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     LOD.DieLogger:RollBreakdown(contract), falloff, multText)
             end
 
-            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, contract.formula or "1d20",
-                final, target, detailStr,
-                nil, "Hostile", "grenade"))
+            Rolls:QueueDamageReport(dmginfo, function(finalDamage)
+                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, contract.formula or "1d20",
+                    finalDamage, target, detailStr, nil, "Hostile", "grenade"))
+            end)
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
             local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
             local profile = effects and effects.CrowbarDamageProfile
@@ -597,6 +666,8 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 or {label = "CROWBAR", source = "crowbar", count = 1, sides = 3}
             local rng = Rolls:_RNG("player:weapon_crowbar")
             local rolled = Rolls:RollActorDamage(attacker, profile, rng, 0)
+            if LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(attacker, rolled, rng) end
+            if statusElements then statusElements:AttachDamageContext(dmginfo, {physical = true, melee = true, attackEvent = rolled.attackEvent, meteor = rolled, damageContract = rolled}) end
             local total = Rolls:ResolveActorDamage(rolled, attacker, target, {physical = true})
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
@@ -606,22 +677,23 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 Rolls:EmitDiceExplosionFX(attacker, "weapon_crowbar", continuations, 1)
             end
             local detail = Rolls:_PlayerRollDetail(rolled)
-            Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, rolled.formula,
-                total, target, detail, nil, "Hostile", "crowbar"))
+            Rolls:QueueDamageReport(dmginfo, function(finalDamage)
+                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, rolled.formula,
+                    finalDamage, target, detail, nil, "Hostile", "crowbar"))
+            end)
         elseif weaponClass == "weapon_shotgun" then
             local contract = attacker.LODActiveShotgunRoll
             local blocked = LOD.GeneratedGeometryBallistics
                 and LOD.GeneratedGeometryBallistics.PlayerBulletBlocked
                 and LOD.GeneratedGeometryBallistics:PlayerBulletBlocked(target, dmginfo)
             if not blocked and contract and CurTime() - contract.created < 0.20 and dmginfo:GetDamage() > 0 then
-                local shellDamage = Rolls:ResolveActorDamage(contract, attacker, target, {physical = true})
-                dmginfo:SetDamage(math.max(1, shellDamage / SHOTGUN_SHARE_COUNT))
-                contract.resolutionByTarget = contract.resolutionByTarget or {}
-                contract.targetNames = contract.targetNames or {}
-                contract.resolutionByTarget[target] = contract.feedResolution
                 contract.targetNames[target] = Rolls:EntityDisplayName(target, "Hostile")
                 contract.hits[target] = (contract.hits[target] or 0) + 1
-                contract.damageByTarget[target] = (contract.damageByTarget[target] or 0) + dmginfo:GetDamage()
+                contract.hitPositions[target] = dmginfo:GetDamagePosition()
+                -- Only the aggregate is a damage event. Defense, flat bonuses,
+                -- status riders and cooldowns must not run per cosmetic pellet.
+                dmginfo:SetDamage(0)
+                return true
             end
         else
             local contract = attacker.LODActivePlayerRoll
@@ -637,6 +709,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     and LOD.MagnumPiercing.DamageSegments
                     and LOD.MagnumPiercing.DamageSegments[dmginfo] or nil
                 local damageContract = pierce and pierce.rpgContract or contract
+                if statusElements then statusElements:AttachDamageContext(dmginfo, {physical = true, attackEvent = contract.attackEvent, damageContract = contract}) end
                 local resolved = Rolls:ResolveActorDamage(damageContract, attacker, target,
                     {physical = true, authoredScale = tonumber(contract.aimMultiplier) or 1})
                 dmginfo:SetDamage(resolved)
@@ -653,9 +726,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 end
 
                 contract.feedReported = true
-                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
-                    dmginfo:GetDamage(), target, detail, nil,
-                    "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))
+                Rolls:QueueDamageReport(dmginfo, function(finalDamage)
+                    Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
+                        finalDamage, target, detail, nil, "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))
+                end)
             end
         end
         return
@@ -673,9 +747,12 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         -- seam. Mind Over Matter (and future physical-only defenses) must use
         -- the same physical tag that resolved this hostile attack's contract.
         if statusElements and statusElements.AttachDamageContext then
-            statusElements:AttachDamageContext(dmginfo, {physical = true})
+            statusElements:AttachDamageContext(dmginfo, {physical = true, attackEvent = contract.attackEvent, damageContract = contract})
         end
-        Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target))
+        Rolls:QueueDamageReport(dmginfo, function(finalDamage)
+            contract.final = finalDamage
+            Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target))
+        end)
     end
 end)
 

@@ -116,6 +116,7 @@ local function installContract()
         bolt.LODOwner = self
         bolt.LODDirection = direction
         bolt.LODSpeed = cfg.projectileSpeed
+        bolt.LODAttackEvent = burst and burst.attackEvent or {}
         bolt.LODDamage = cfg.burstDamage
         bolt.LODLifetime = cfg.projectileLifetime
         bolt.LODContractOrigin = startPos
@@ -191,6 +192,7 @@ local function installContract()
         self.LODSoldierBurst = {
             target = target,
             facingPos = facingPos,
+            attackEvent = {},
             windupEnd = CurTime() + cfg.burstTelegraph,
             nextShot = nil,
             shotsRemaining = shots,

@@ -99,7 +99,7 @@ assert(math.abs(amount - 111) < 0.001 and resolution.kind == "weakness",
     "weakness wins the one-table elemental selection")
 source.LODProgressionState.featIds = {"WIS_ATTUNEMENT"}
 amount, resolution = System:ResolveElementDamage(100, source, target, {
-    element = "fire", targetWeaknesses = {fire = true}
+    magic = true, element = "fire", targetWeaknesses = {fire = true}
 }, scripted({1, 8}))
 assert(math.abs(amount - 188) < 0.001 and resolution.kind == "weakness",
     "Attunement keeps the better weakness-table result")

@@ -254,7 +254,7 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
         if not IsValid(ply) then Effects.WallJumpState[ply] = nil elseif ply:OnGround() then state.used = false end
     end
     for ply, state in pairs(Effects.CloudStepState) do
-        if not IsValid(ply) then Effects.CloudStepState[ply] = nil elseif ply:OnGround() then state.used = false end
+        if not IsValid(ply) then Effects.CloudStepState[ply] = nil elseif ply:OnGround() then state.used, state.meteorUsed = false, false end
     end
     for ply, state in pairs(Effects.FloatOnState) do
         if not IsValid(ply) then Effects.FloatOnState[ply] = nil

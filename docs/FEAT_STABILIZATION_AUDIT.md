@@ -1,3 +1,49 @@
+# Active stabilization checkpoint — 2026-09-14
+
+This tranche continues `889d6e4e4e67a590d9d018d100a2a4c9055f2c1a` on
+`hybrid/antigravity`. It is a preserved engineering checkpoint, not yet the
+human-acceptance handoff. Main promotion remains blocked on Shael's exact-SHA approval.
+
+Shael approved the scope reductions and confirmed all ordinary ability gates are
+13/15/17. Deferred: Calculated Luck, Lucky Break, Point It Out, Rally the Hunt,
+Command the Hunt, Polymorph, Aftershock, and previously held Snap Targeting.
+The retained live-GDD set is 135 ordinary feats + 6 fallbacks + 9 capstones.
+
+Current results:
+- All 150 loaded descriptions are nonblank; exact ordinary-set equality, names,
+  requirements and named prerequisites pass against the targeted live-GDD fixture.
+- All 135 ordinary feats can enter a legal draft through production capability
+  checks. Replaced lower ranks satisfy prerequisite ladders. Missing Form, Summon,
+  Morale, grant, and damage-source capability consumers are repaired.
+- Implemented the six retained CROSS feats and shared movement-qualified Dodge.
+  Now You See Me contributes to that shared roll; the independent evasion path is gone.
+- Repaired Terrifying's first-encounter lower-of-two save, Panic graph radius and
+  recursion/cooldown guards, actor-life cleanup, and per-actor Magic pools.
+- Blast-Proof resolves defender-specific views of immutable shared rolls, including
+  pre-rolled weapon attacks. Its old global-target wrappers and delayed test callbacks
+  are removed. Shotgun pellets settle once per target before defenses and flat bonuses.
+- Damage reporting observes final damage after Dodge/diversion. Seeker damage now
+  reaches shared rules and final reporting. Push, aura faction targeting, Glow Up,
+  AI weapon capabilities and Aggressive Personality's positive-damage trigger repaired.
+- Sparse live HUD/menu distinction preserved.
+
+Validation: `git diff --check`, project Lua syntax, and the complete integrated
+`python3 tools/test_checkpoint_g_integration.py` gate pass: **49/49 suites**.
+New production-seam checks cover CROSS mechanics, Dodge aggregation, Morale,
+Blast-Proof target isolation, offerability and lifecycle reset. Static checks do not
+certify Source behavior or complete semantic parity.
+
+Remaining before candidate handoff: targeted regressions for final shotgun/CHA
+settlement and graph fear behavior; legacy ownership/draft reconciliation; final
+consumer/actor audit and integrated review. Continue development without asking
+Shael to accept this intermediate checkpoint.
+
+---
+
+The previous checkpoint report below is preserved as historical evidence. Its
+missing-feat counts and independent-Dodge blocker are superseded by the active
+status above.
+
 # Hybrid feat stabilization checkpoint — 2026-09-14
 
 **Release blocked. This checkpoint is not an acceptance candidate.**

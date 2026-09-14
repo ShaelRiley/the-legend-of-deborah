@@ -48,6 +48,7 @@ end
 
 function AbilityRules:Derived(actor)
     local state = self:ProgressionState(actor)
+    if LOD.RPGStatusElements and LOD.RPGStatusElements.BindActorLife then LOD.RPGStatusElements:BindActorLife(actor) end
     return state and state.derivedStats or nil
 end
 
@@ -96,6 +97,8 @@ end
 function AbilityRules:MovementMultiplier(actor)
     local derived = self:Derived(actor)
     return math.Clamp(tonumber(derived and derived.movementSpeedMultiplier) or 1, 0.85, 1.20)
+        * (self.RogueMovementMultiplier and (not actor:IsPlayer() or actor:OnGround())
+            and self:RogueMovementMultiplier(actor) or 1)
 end
 
 function AbilityRules:AimSpreadMultiplier(actor)
@@ -171,6 +174,9 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
         self.Stats.magicResolutions = (self.Stats.magicResolutions or 0) + 1
     end
 
+    if tags.shotgunHits then
+        total = math.max(tonumber(tags.shotgunHits) or 0, total * tags.shotgunHits / tags.shotgunShares)
+    end
     return math.max(0, total), reduced, resistance
 end
 
@@ -187,13 +193,6 @@ function AbilityRules:CommitAttack(actor)
         and now >= (actor.LODRPGNextAceReadyAt or 0)
     if primeSeconds > 0 then actor.LODRPGNextAceReadyAt = now + primeSeconds end
     return primed
-end
-
-local function eligibleDirectAttack(target, attacker, dmginfo)
-    if not IsValid(target) or not target:IsPlayer() or not target:Alive() then return false end
-    if not IsValid(attacker) or attacker == target or attacker == game.GetWorld() then return false end
-    if dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_CRUSH) then return false end
-    return dmginfo:GetDamage() > 0
 end
 
 function AbilityRules:ComputeMagicDiversion(resolvedHPDamage, fraction, currentMagic, hpPerMagic, roundDesiredUp)
@@ -221,22 +220,6 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
         finalHPDamage = resolved,
         evaded = false
     }
-
-    local evasionChance = math.Clamp(tonumber(derived.rogueCapstoneEvasionChance) or 0, 0, 1)
-    if evasionChance > 0 and eligibleDirectAttack(target, attacker, dmginfo) then
-        local rolls = LOD.CombatRolls
-        local rng = rolls and rolls._RNG and rolls:_RNG("rogue-evasion:" .. tostring(target:EntIndex())) or nil
-        if rng and rng:Float(0, 1) < evasionChance then
-            dmginfo:SetDamage(0)
-            dmginfo:SetDamageForce(vector_origin)
-            result.finalHPDamage = 0
-            result.evaded = true
-            self.Stats.evasions = (self.Stats.evasions or 0) + 1
-            if rolls._Send then rolls:_Send(target, 3, "CAPSTONE EVADE — NO DAMAGE", "resist", {event = "evaded"}) end
-            target.LODRPGEvadedAt = CurTime()
-            return result
-        end
-    end
 
     local fraction = math.Clamp(tonumber(derived.hpToMagicDiversionFraction) or 0, 0, 1)
     local statusElements = LOD.RPGStatusElements
@@ -393,23 +376,34 @@ end
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
     local baseResult = baseEntityTakeDamage and baseEntityTakeDamage(self, target, dmginfo)
-    if baseResult == true then return true end
+    if baseResult == true then
+        if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo] = nil end
+        return true
+    end
     -- Immunity cancels the incoming event before mitigation can spend Magic or
     -- consume a defense cooldown. The lethal intercept itself remains post-diversion.
     if IsValid(target) and AbilityRules.NotYetImmunityActive
         and AbilityRules:NotYetImmunityActive(target) then
         dmginfo:SetDamage(0)
+        if LOD.CombatRolls and LOD.CombatRolls.ReportResolvedDamage then LOD.CombatRolls:ReportResolvedDamage(dmginfo) end
         return true
     end
+    if IsValid(target) and AbilityRules.ApplyDodge then AbilityRules:ApplyDodge(target, dmginfo) end
     if IsValid(target) and AbilityRules.ApplyWisDefense then
         AbilityRules:ApplyWisDefense(target, dmginfo)
     end
     local defenseResult
-    if IsValid(target) and target:IsPlayer() then
+    if IsValid(target) then
         defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
     if IsValid(target) and AbilityRules.ApplyNotYetDefense then
         AbilityRules:ApplyNotYetDefense(target, dmginfo)
+    end
+    if IsValid(target) and dmginfo:GetDamage() > 0 then
+        local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
+        if RPG.ObserveDirectChaDamage then RPG:ObserveDirectChaDamage(context.damageContract, dmginfo:GetDamage()) end
+        if context.meteor and LOD.RPGCrossFeats then LOD.RPGCrossFeats:ConsumeMeteor(context.meteor) end
+        if LOD.M3HitFeedback then LOD.M3HitFeedback:HandleDamageEvent(target, dmginfo, "resolved") end
     end
     local soldierProgression = LOD.SoldierProgression
     if soldierProgression and soldierProgression.ObserveEffectiveHeroDamage
@@ -431,6 +425,7 @@ function GM:EntityTakeDamage(target, dmginfo)
         statusElements:ObserveDamage(target, dmginfo, defenseResult)
     end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
+    if dmginfo and LOD.CombatRolls and LOD.CombatRolls.ReportResolvedDamage then LOD.CombatRolls:ReportResolvedDamage(dmginfo) end
     return baseResult
 end
 

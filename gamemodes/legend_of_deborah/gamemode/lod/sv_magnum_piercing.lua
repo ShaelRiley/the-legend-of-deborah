@@ -165,7 +165,9 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
             local bonusTotal, bonusValues, bonusContributions, bonusContract = 0, {}, {}, nil
             if Rolls and Rolls._RNG and Rolls.RollActorDamage then
                 local rng = Rolls:_RNG("magnum-pierce-bonus:" .. tostring(depth))
-                bonusContract = Rolls:RollActorDamage(attacker, MAGNUM_BONUS_PROFILE, rng, 0)
+                local bonusProfile = table.Copy(MAGNUM_BONUS_PROFILE)
+                bonusProfile.attackEvent = contract.attackEvent
+                bonusContract = Rolls:RollActorDamage(attacker, bonusProfile, rng, 0)
                 bonusTotal = bonusContract.total
                 bonusValues = bonusContract.values or {}
                 bonusContributions = bonusContract.contributions or bonusValues
@@ -209,6 +211,7 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 depth = depth,
                 total = cumulativeTotal,
                 rpgContract = {
+                    originContract = contract, attackEvent = contract.attackEvent,
                     total = cumulativeTotal,
                     values = copyValues(cumulativeValues),
                     chainStarts = copyValues(cumulativeStarts),

@@ -1358,6 +1358,35 @@
     "DEX_MAGNUM_DEADEYE": {
       "behavior": "Universal Deadeye: shared 0.50-second hold, ordinary x2 / Magnum x3.",
       "reason": "Accepted runtime stabilization 2026-09-10; docs/SOL_STABILIZATION.md. Preserve tested behavior; GDD prose needs reconciliation."
+    },
+    "INT_CALCULATED_LUCK": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "CROSS_LUCKY_BOOM": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "CHA_SPOT_1": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "CHA_SPOT_2": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "CHA_SPOT_3": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "INT_POLYMORPH": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "INT_AFTERSHOCK": {
+      "deferred": true,
+      "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
     }
-  }
+  },
+  "requirementAuthority": "Shael 2026-09-14: ordinary feat score gates are exclusively 13/15/17; conflicting older values are deprecated. Capstones and fallback availability retain their separate rules."
 }

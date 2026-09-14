@@ -540,6 +540,10 @@ function Sheet:Open(requestFresh)
         or string.format("Starting HP: %d\nCurrent HP: %d / %d\n%s\nLives: %d\nDungeon Level: %d",
             snapshot.startingHP or 100, snapshot.currentHP or 0, snapshot.maxHP or 100,
             xpLine, snapshot.lives or 0, snapshot.dungeonLevel or 1)
+    if snapshot.dodge and (snapshot.dodge.elevated or 0) > 0 then
+        recordText = recordText .. string.format("\nDodge: %.0f%% now / %.0f%% ordinary / %.0f%% elevated\nRequires voluntary horizontal movement; slow or still: 0%%.",
+            snapshot.dodge.current * 100, snapshot.dodge.ordinary * 100, snapshot.dodge.elevated * 100)
+    end
     if snapshot.healthRegenEnabled then
         recordText = recordText .. string.format(
             "\nHealth Regen: %.2f HP/s to %d%% MaxHP",

@@ -34,7 +34,7 @@ Feats[FEAT_ID] = {
     effectHandlerId = FAMILY,
     effectParams = {
         cooldownSeconds = COOLDOWN_SECONDS,
-        description = "Once every 2.0 seconds per defender, suppresses the first qualifying continuation created by an incoming actor-owned exploding damage die. The triggering die and all already-resolved damage remain; only that continuation is omitted."
+        description = "Once every 2.0 seconds per defender, suppresses the first qualifying continuation created by an incoming actor-owned exploding damage die. The triggering die and all already-resolved damage remain; that continuation is omitted and its chain ends. Independent damage-die chains are unaffected."
     },
     directorBaseWeight = 1.0,
     eligibilityText = "CON 15",
@@ -111,9 +111,9 @@ function Effects:TryBlastProofContinuation(defender, attacker, context)
     if defender:IsPlayer() and rolls and rolls._Send then
         rolls:_Send(defender, 3, "BLAST-PROOF — explosion continuation suppressed")
     end
-    print(string.format(
-        "[LOD:RPG] BLAST-PROOF suppressed continuation defender=%s sides=d%d chainDepth=%d readyIn=%.1fs",
-        tostring(stats.lastDefender), stats.lastSides, stats.lastChainDepth, COOLDOWN_SECONDS))
+    if attacker:IsPlayer() and attacker ~= defender and rolls and rolls._Send then
+        rolls:_Send(attacker, 3, "BLAST-PROOF — target prevented an explosion continuation", "resist", {event = "blast_proof"})
+    end
     return true
 end
 
@@ -136,92 +136,48 @@ if RPG.Schema and RPG.Schema.DerivedStats then
     end
 end
 
-local function installBlastProofRuntime()
-    local Rolls = LOD.CombatRolls
-    local damageHooks = hook.GetTable() and hook.GetTable().EntityTakeDamage
-    local baseDamageAuthority = damageHooks and damageHooks.LOD_DiceDamageAuthority
-    if not Rolls or not Rolls._RollExploding or not Rolls.RollActorDamage or not baseDamageAuthority then
-        return false
-    end
-    if Rolls.LODBlastProofContinuationInstalled then return true end
-
-    local baseActorDamage = Rolls.RollActorDamage
-    local baseRollExploding = Rolls._RollExploding
-
-    function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
-        local previous = self.LODBlastProofActorDamageActive
-        self.LODBlastProofActorDamageActive = true
-        local result
-        local ok, err = xpcall(function()
-            result = baseActorDamage(self, attacker, profile, rng, bonusDice)
-        end, debug.traceback)
-        self.LODBlastProofActorDamageActive = previous
-        if not ok then error(err, 0) end
-        return result
-    end
-
-    function Rolls:_RollExploding(profile, rng)
-        if self.LODBlastProofActorDamageActive ~= true
-            or not IsValid(self.LODBlastProofTarget)
-            or not IsValid(self.LODBlastProofAttacker)
-        then
-            return baseRollExploding(self, profile, rng)
-        end
-
-        local drawCount = 0
-        local proxy = {}
-        function proxy:Int(minimum, maximum)
-            drawCount = drawCount + 1
-            if drawCount > 1 and Effects:TryBlastProofContinuation(
-                Rolls.LODBlastProofTarget,
-                Rolls.LODBlastProofAttacker,
-                {
-                    incoming = true,
-                    damageDie = true,
-                    continuation = true,
-                    sides = tonumber(profile and profile.sides) or 0,
-                    chainDepth = drawCount - 1
-                })
-            then
-                return nil
+-- Shared attacks keep one immutable sampled roll. Each defender resolves a
+-- view of that roll: suppression ends only that defender's first eligible chain,
+-- never the attack's other independent chains or another victim's damage.
+function Effects:BlastProofTargetContract(contract, attacker, defender)
+    if not contract or not contract.values or not IsValid(defender) then return contract end
+    if LOD.RPGStatusElements and LOD.RPGStatusElements.BindActorLife then LOD.RPGStatusElements:BindActorLife(defender) end
+    contract.blastProofTargets = contract.blastProofTargets or setmetatable({}, {__mode = "k"})
+    local state = Rules:ProgressionState(defender)
+    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
+    local cached = contract.blastProofTargets[defender]
+    if cached and cached.identity == state and cached.epoch == epoch then return cached.contract end
+    local view = contract
+    local starts = {}
+    for _, index in ipairs(contract.chainStarts or {1}) do starts[index] = true end
+    for index = 2, #contract.values do
+        if not starts[index] and self:TryBlastProofContinuation(defender, attacker,
+            {incoming = true, damageDie = true, continuation = true,
+                sides = contract.profile and contract.profile.sides, chainDepth = index - 1}) then
+            view = {}
+            for key, value in pairs(contract) do view[key] = value end
+            view.originContract = contract.originContract or contract
+            view.values, view.contributions, view.thresholds, view.chainStarts = {}, {}, {}, {}
+            view.total = tonumber(contract.bonus) or 0
+            local finish = index
+            while finish <= #contract.values and not starts[finish] do finish = finish + 1 end
+            for i, value in ipairs(contract.values) do
+                if i < index or i >= finish then
+                    local nextIndex = #view.values + 1
+                    view.values[nextIndex] = value
+                    view.contributions[nextIndex] = (contract.contributions or {})[i] or value
+                    view.thresholds[nextIndex] = (contract.thresholds or {})[i]
+                    if starts[i] then view.chainStarts[#view.chainStarts + 1] = nextIndex end
+                    view.total = view.total + view.contributions[nextIndex]
+                end
             end
-            return rng:Int(minimum, maximum)
+            view.blastProofSuppressed = finish - index
+            break
         end
-        return baseRollExploding(self, profile, proxy)
     end
-
-    hook.Remove("EntityTakeDamage", "LOD_DiceDamageAuthority")
-    hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo)
-        local previousTarget = Rolls.LODBlastProofTarget
-        local previousAttacker = Rolls.LODBlastProofAttacker
-        Rolls.LODBlastProofTarget = target
-        Rolls.LODBlastProofAttacker = dmginfo and dmginfo:GetAttacker() or nil
-        local result
-        local ok, err = xpcall(function()
-            result = baseDamageAuthority(target, dmginfo)
-        end, debug.traceback)
-        Rolls.LODBlastProofTarget = previousTarget
-        Rolls.LODBlastProofAttacker = previousAttacker
-        if not ok then error(err, 0) end
-        return result
-    end)
-
-    Rolls.LODBlastProofContinuationInstalled = true
-    print("[LOD:RPG] Gate E Batch 15 Blast-Proof runtime installed")
-    return true
+    contract.blastProofTargets[defender] = {identity = state, epoch = epoch, contract = view}
+    return view
 end
-
--- This module is loaded from shared.lua before init.lua installs combat rolls and
--- the d12 Boomchain wrapper.  Install on the first server tick so we wrap the final
--- canonical _RollExploding implementation, including universal SUPER-d12 behavior.
-timer.Simple(0, function()
-    if installBlastProofRuntime() then return end
-    timer.Simple(0.25, function()
-        if not installBlastProofRuntime() then
-            ErrorNoHalt("[LOD:RPG] Gate E Batch 15 Blast-Proof runtime installation FAILED\n")
-        end
-    end)
-end)
 
 function Effects:ValidateBlastProof()
     local errors = {}
@@ -302,9 +258,9 @@ concommand.Add("lod_rpg_gate_e_blast_proof_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateBlastProof()
     local Rolls = LOD.CombatRolls
-    if not Rolls or Rolls.LODBlastProofContinuationInstalled ~= true then
+    if not Rolls or not Rolls.ResolveActorDamage or not Effects.BlastProofTargetContract then
         ok = false
-        errors[#errors + 1] = "runtime continuation interceptor unavailable"
+        errors[#errors + 1] = "runtime target contract resolver unavailable"
     end
     if ok then
         print("[LOD:RPG-E:B15] Blast-Proof validator PASS — CON15, incoming-only continuation suppression, 2.0s recharge")
@@ -316,161 +272,45 @@ concommand.Add("lod_rpg_gate_e_blast_proof_validate", function(ply)
     end
 end)
 
-local function scriptedRNG(values, onDraw)
-    return {
-        index = 0,
-        Int = function(self, minimum, maximum)
-            self.index = self.index + 1
-            if onDraw then onDraw(self.index) end
-            local value = tonumber(values and values[self.index]) or minimum
-            return math.Clamp(math.floor(value), minimum, maximum)
-        end
-    }
-end
-
-local function removeInjectedFeat(state)
-    for index = #(state and state.featIds or {}), 1, -1 do
-        if state.featIds[index] == FEAT_ID then
-            table.remove(state.featIds, index)
-            return
-        end
-    end
-end
-
+-- Finite synchronous probe: no delayed callbacks can retain temporary ownership
+-- across death, disconnect, or a level transition.
 concommand.Add("lod_rpg_test_blast_proof", function(ply)
     if not developerAllowed(ply) or not IsValid(ply) or not ply:IsPlayer() then return end
-    local Rolls = LOD.CombatRolls
-    local run = LOD.RunManager
-    local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
-    local state = ps and ps.progressionState or nil
-    if not Rolls or Rolls.LODBlastProofContinuationInstalled ~= true or not state then
-        ply:ChatPrint("Blast-Proof testkit unavailable: runtime or progression state missing.")
-        return
-    end
-
+    local state = Rules:ProgressionState(ply)
+    if not state then return end
     local attacker = ents.Create("base_anim")
-    if not IsValid(attacker) then
-        ply:ChatPrint("Blast-Proof testkit could not create a temporary actor.")
-        return
-    end
+    if not IsValid(attacker) then return end
     attacker:SetNoDraw(true)
     attacker:Spawn()
-
-    local alreadyOwned = owns(state, FEAT_ID)
-    if not alreadyOwned then state.featIds[#state.featIds + 1] = FEAT_ID end
-    local originalReadyAt = ply.LODRPGBlastProofReadyAt
-    local originalTarget = Rolls.LODBlastProofTarget
-    local originalAttacker = Rolls.LODBlastProofAttacker
-    local failures = {}
-    local initialSuppressions = Effects.BlastProofStats.suppressions or 0
-
-    local function expect(ok, message)
-        if not ok then failures[#failures + 1] = message end
-    end
-    local function setContext(source)
-        Rolls.LODBlastProofTarget = ply
-        Rolls.LODBlastProofAttacker = source
-    end
-    local function incoming(values, source, onDraw)
-        setContext(source or attacker)
-        return Rolls:RollActorDamage(source or attacker,
-            {count = 1, sides = 6, exploding = 6}, scriptedRNG(values, onDraw), 0)
-    end
-    local function cleanup()
-        Rolls.LODBlastProofTarget = originalTarget
-        Rolls.LODBlastProofAttacker = originalAttacker
-        ply.LODRPGBlastProofReadyAt = originalReadyAt
-        if not alreadyOwned then removeInjectedFeat(state) end
-        if IsValid(attacker) then attacker:Remove() end
-    end
-
-    -- Mid-chain: begin spent so the first continuation is permitted.  The test RNG
-    -- re-arms the defense while returning that first continuation's exploding 6;
-    -- the next continuation request must then be the one suppressed.
-    ply.LODRPGBlastProofReadyAt = CurTime() + 100
-    local mid = incoming({6, 6, 1}, attacker, function(drawIndex)
-        if drawIndex == 2 then ply.LODRPGBlastProofReadyAt = CurTime() - 0.01 end
-    end)
-    expect(mid and #mid.values == 2 and mid.values[1] == 6 and mid.values[2] == 6,
-        "mid-chain suppression must preserve both already-resolved dice")
-    expect((Effects.BlastProofStats.lastChainDepth or 0) == 2,
-        "mid-chain suppression must occur at continuation depth 2")
-
-    -- Ready defense suppresses the initiating explosion's continuation.
-    ply.LODRPGBlastProofReadyAt = nil
-    local beforeReady = Effects.BlastProofStats.suppressions or 0
-    local ready = incoming({6, 6, 1}, attacker)
-    expect(ready and #ready.values == 1 and ready.values[1] == 6,
-        "ready defense must retain the triggering die and omit its continuation")
-    expect((Effects.BlastProofStats.suppressions or 0) == beforeReady + 1,
-        "ready suppression telemetry")
-    local rechargeAt = ply.LODRPGBlastProofReadyAt
-    expect(rechargeAt and rechargeAt > CurTime(), "suppression must start cooldown")
-
-    -- While spent, the next legitimate explosion chain resolves normally.
-    local beforeSpent = Effects.BlastProofStats.suppressions or 0
-    local spent = incoming({6, 1}, attacker)
-    expect(spent and #spent.values == 2, "cooldown must allow later explosion continuation")
-    expect((Effects.BlastProofStats.suppressions or 0) == beforeSpent,
-        "cooldown must not consume another suppression")
-
-    -- The defender's own outgoing damage is not protected by Blast-Proof.
-    ply.LODRPGBlastProofReadyAt = nil
-    local beforeOutgoing = Effects.BlastProofStats.suppressions or 0
-    local outgoing = incoming({6, 1}, ply)
-    expect(outgoing and #outgoing.values == 2, "defender outgoing damage excluded")
-    expect((Effects.BlastProofStats.suppressions or 0) == beforeOutgoing,
-        "outgoing damage must not log suppression")
-
-    -- Direct exploding calls outside RollActorDamage model utility/non-damage dice;
-    -- the actor-damage-active guard must prevent Blast-Proof from touching them.
-    setContext(attacker)
-    ply.LODRPGBlastProofReadyAt = nil
-    local beforeUtility = Effects.BlastProofStats.suppressions or 0
-    local _, utilityValues = Rolls:_RollExploding(
-        {count = 1, sides = 6, exploding = 6}, scriptedRNG({6, 1}))
-    expect(utilityValues and #utilityValues == 2, "non-damage exploding roll excluded")
-    expect((Effects.BlastProofStats.suppressions or 0) == beforeUtility,
-        "non-damage roll must not log suppression")
-
-    -- Real automatic recharge check: spend it, then wait just over the exact 2.0 s.
-    ply.LODRPGBlastProofReadyAt = nil
-    local cooldownSeed = incoming({6, 1}, attacker)
-    expect(cooldownSeed and #cooldownSeed.values == 1, "cooldown seed suppression")
-    local suppressionsBeforeRecharge = Effects.BlastProofStats.suppressions or 0
-
-    print(string.format(
-        "[LOD:RPG-E:B15] Blast-Proof testkit phase 1 %s — mid-chain, ready, spent, outgoing, utility guards",
-        #failures == 0 and "PASS" or "FAILED"))
-    for _, message in ipairs(failures) do
-        ErrorNoHalt("[LOD:RPG-E:B15]  - " .. message .. "\n")
-    end
-
-    timer.Simple(COOLDOWN_SECONDS + 0.05, function()
-        if not IsValid(ply) then
-            if IsValid(attacker) then attacker:Remove() end
-            return
+    if LOD.RPGStatusElements then LOD.RPGStatusElements:BindActorLife(ply) end
+    local originalFeats, originalReady = state.featIds, ply.LODRPGBlastProofReadyAt
+    state.featIds = table.Copy(originalFeats or {})
+    if not owns(state, FEAT_ID) then state.featIds[#state.featIds + 1] = FEAT_ID end
+    local ok, failure = pcall(function()
+        local function sample()
+            return {values = {6, 6, 2, 3}, contributions = {6, 6, 2, 3},
+                chainStarts = {1, 4}, total = 17, bonus = 0, profile = {sides = 6}}
         end
-        local afterRecharge = incoming({6, 1}, attacker)
-        expect(afterRecharge and #afterRecharge.values == 1,
-            "automatic 2.0-second recharge must suppress again")
-        expect((Effects.BlastProofStats.suppressions or 0) == suppressionsBeforeRecharge + 1,
-            "recharge suppression telemetry")
-        expect((Effects.BlastProofStats.suppressions or 0) >= initialSuppressions + 4,
-            "expected finite test suppression count")
-        local passed = #failures == 0
-        if passed then
-            print("[LOD:RPG-E:B15] Blast-Proof TESTKIT PASS — mid-chain preservation, cooldown, 2.0s recharge, ownership/scope guards")
-            ply:ChatPrint("Gate E Batch 15 Blast-Proof testkit PASS.")
-        else
-            ErrorNoHalt("[LOD:RPG-E:B15] Blast-Proof TESTKIT FAILED\n")
-            for _, message in ipairs(failures) do
-                ErrorNoHalt("[LOD:RPG-E:B15]  - " .. message .. "\n")
-            end
-            ply:ChatPrint("Gate E Batch 15 Blast-Proof testkit FAILED; return logs.")
-        end
-        cleanup()
+        ply.LODRPGBlastProofReadyAt = nil
+        local original = sample()
+        local view = Effects:BlastProofTargetContract(original, attacker, ply)
+        assert(view.total == 9 and #view.values == 2, "first chain ends; independent die survives")
+        assert(original.total == 17 and #original.values == 4, "shared source remains immutable")
+        assert(Effects:BlastProofTargetContract(original, attacker, ply) == view, "target view reused")
+        local spent = sample()
+        assert(Effects:BlastProofTargetContract(spent, attacker, ply) == spent, "cooldown respected")
+        ply.LODRPGBlastProofReadyAt = CurTime() - 0.01
+        assert(Effects:BlastProofTargetContract(sample(), attacker, ply).total == 9, "recharged defense")
+        ply.LODRPGBlastProofReadyAt = nil
+        local selfRoll = sample()
+        assert(Effects:BlastProofTargetContract(selfRoll, ply, ply) == selfRoll, "self damage excluded")
+        local passed, errors = Effects:ValidateBlastProof()
+        assert(passed, table.concat(errors, "; "))
     end)
+    state.featIds, ply.LODRPGBlastProofReadyAt = originalFeats, originalReady
+    if IsValid(attacker) then attacker:Remove() end
+    print("[LOD:BLAST-PROOF] " .. (ok and "PASS" or ("FAIL: " .. tostring(failure))))
+    ply:ChatPrint("Blast-Proof test " .. (ok and "PASS." or "FAILED; return logs."))
 end)
 
 return Effects

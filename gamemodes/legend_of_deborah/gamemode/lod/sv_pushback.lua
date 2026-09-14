@@ -160,9 +160,14 @@ function Pushback:_RollWallCrush(hostile, opts)
     info:SetDamage(total)
     info:SetDamageType(DMG_CRUSH)
     info:SetDamageForce(vector_origin)
+    if LOD.RPGStatusElements then
+        LOD.RPGStatusElements:AttachDamageContext(info, {creditActor = sourceAttacker, wallCrush = true,
+            physicalPush = opts.magicPush ~= true, ignoreDodge = true, attackEvent = contract and contract.attackEvent})
+    end
+    local previousAttribution = hostile.LODPendingDamageAttribution
     hostile.LODPendingDamageAttribution = {attacker = sourceAttacker, source = source}
     hostile:TakeDamageInfo(info)
-    hostile.LODPendingDamageAttribution = nil
+    hostile.LODPendingDamageAttribution = previousAttribution
 
     self.Stats.wallCrushes = (self.Stats.wallCrushes or 0) + 1
     self.Stats.crushDamage = (self.Stats.crushDamage or 0) + total
@@ -184,7 +189,7 @@ function Pushback:_RollWallCrush(hostile, opts)
 
     if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
         local detail = string.format("[rolls %s; from %s push]",
-            values and table.concat(values, ">") or tostring(total), source)
+            contract and LOD.DieLogger:RollBreakdown(contract) or tostring(total), source)
         local formula = contract and contract.formula
             or string.format("%dd%d", profile.count or 1, profile.sides)
         rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
@@ -345,7 +350,10 @@ end
 
 function Pushback:Apply(hostile, opts)
     opts = opts or {}
-    if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return nil end
+    local eligibility = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if eligibility and eligibility.ValidPushTarget then
+        if not eligibility:ValidPushTarget(hostile) then return nil end
+    elseif not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return nil end
     if hostile.LODDeadcrabState == "latched" then return nil end
 
     local authoredDistance = math.max(0, tonumber(opts.distance) or 0)
@@ -370,12 +378,20 @@ function Pushback:Apply(hostile, opts)
     end
     local assembled = authoredDistance * (parts.outgoingMultiplier or 1)
         * (parts.magicPushMultiplier or 1)
-        * math.max(0, tonumber(attackerDerived and attackerDerived.bigGuyPhysicalPushMultiplier) or 1)
+        * (opts.magicPush == true and 1 or math.max(0, tonumber(attackerDerived and attackerDerived.bigGuyPhysicalPushMultiplier) or 1))
+    -- The explicit bridge adds the physical proc after Force Multiplier. It
+    -- never multiplies the +168 proc by the Magic multiplier a second time.
+    if LOD.RPGCrossFeats then assembled = LOD.RPGCrossFeats:BridgeMagicPush(opts.attacker, hostile, assembled, opts) end
     local sizeScale = hostile:GetNW2Float("LOD_SizeScale", 1)
     local pushImmune = opts.pushImmune == true or hostile.LODPushImmune == true
         or hostile:GetNW2Bool("LOD_PushImmune", false)
     local natural = opts.pushSaveNatural
         or (not pushImmune and self:_PushSaveNatural(opts.attacker, hostile) or 1)
+    local saveNaturals = {natural}
+    if not pushImmune and (opts.pushTagMultiplicity or 1) > 1 then
+        saveNaturals[2] = opts.pushSaveSecondNatural or self:_PushSaveNatural(opts.attacker, hostile)
+        natural = math.min(natural, saveNaturals[2])
+    end
     local distance, save = self:ResolveSharedPushSave(
         assembled, attackerDerived, defenderDerived, sizeScale, natural, {
             pushImmune = pushImmune,
@@ -385,6 +401,8 @@ function Pushback:Apply(hostile, opts)
             incomingMultiplier = parts.incomingMultiplier,
             steadfastMultiplier = parts.steadfastMultiplier
         })
+    save.naturals = saveNaturals
+    save.pushTagMultiplicity = opts.pushTagMultiplicity or 1
     self.Stats.pushes = (self.Stats.pushes or 0) + 1
     self.Stats.lastAuthoredDistance = authoredDistance
     self.Stats.lastAssembledDistance = assembled
@@ -411,9 +429,11 @@ function Pushback:Apply(hostile, opts)
     local rolls = LOD.CombatRolls
     if save.rolled and IsValid(opts.attacker) and opts.attacker:IsPlayer()
         and rolls and rolls._Send then
+        local diceText = #saveNaturals > 1 and string.format("lower(2d20) [%d, %d] -> %d",
+            saveNaturals[1], saveNaturals[2], save.natural) or ("d20=" .. save.natural)
         rolls:_Send(opts.attacker, 2, string.format(
-            "PUSH SAVE d20=%d; total %d vs DC %d; %s; distance %.1f",
-            save.natural, save.save, save.dc,
+            "PUSH SAVE %s; total %d vs DC %d; %s; distance %.1f",
+            diceText, save.save, save.dc,
             save.saveSucceeded and "BRACED" or "FAILED", distance))
     end
     if distance <= 0 then
@@ -492,6 +512,9 @@ function Pushback:Apply(hostile, opts)
     -- displacement, collision, or crush state independently.
     broadcastPushFX(hostile, startPos, destination, trace, crushed, opts)
 
+    hostile.LODMotionSpeed = 0
+    hostile.LODMotionVelocity = vector_origin
+    hostile.LODMotionMode = "push"
     local crushDamage = crushed and self:_RollWallCrush(hostile, opts) or 0
     local result = {
         authored = authoredDistance,

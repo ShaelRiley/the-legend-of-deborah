@@ -434,7 +434,10 @@ function DamageInfo()
         SetDamageType=function(self,v) self.kind=v end,IsDamageType=function(self,v) return self.kind==v end,
         SetDamagePosition=function() end,SetDamageForce=function() end}
 end
-victim2.TakeDamageInfo=function(self,info) hooks.EntityTakeDamage.LOD_DiceDamageAuthority(self,info) end
+victim2.TakeDamageInfo=function(self,info)
+    hooks.EntityTakeDamage.LOD_DiceDamageAuthority(self,info)
+    rolls:ReportResolvedDamage(info) -- final-defense observer seam
+end
 dofile(root .. "sv_magnum_piercing.lua")
 local piercingBullet={Src=attacker:GetShootPos(),Dir=Vector(1,0,0)}
 hooks.EntityFireBullets.LOD_MagnumPiercing(attacker,piercingBullet)

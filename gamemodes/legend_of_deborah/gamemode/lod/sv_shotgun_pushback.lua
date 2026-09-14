@@ -6,27 +6,20 @@ if not HitFeedback or not Pushback then return end
 
 local PUSH_DISTANCE = 168
 
-local function shooterFor(hostile)
-    local stamp = IsValid(hostile) and hostile.LODLastHitFeedbackEvent or nil
-    local attacker = stamp and stamp.attacker or nil
-    return IsValid(attacker) and attacker:IsPlayer() and attacker or nil
-end
-
 if not HitFeedback.LODShotgunPushbackWrapped then
     HitFeedback.LODShotgunPushbackWrapped = true
     local baseApplyShotgunShellStun = HitFeedback.ApplyShotgunShellStun
 
-    function HitFeedback:ApplyShotgunShellStun(hostile)
+    function HitFeedback:ApplyShotgunShellStun(hostile, attacker)
         -- Preserve the accepted one-stun-per-shell contract. The shell's authored
         -- push is independently resolved exactly once after pellet aggregation,
         -- so another actor's stun lock cannot suppress a legitimate push event.
         -- Pellet count can never multiply movement, saves, procs, or wall slams.
-        local applied = baseApplyShotgunShellStun(self, hostile)
+        local applied = baseApplyShotgunShellStun(self, hostile, attacker)
         if not IsValid(hostile) or hostile.LODDead or hostile:Health() <= 0 then
             return applied
         end
 
-        local attacker = shooterFor(hostile)
         local weapon = IsValid(attacker) and attacker:GetActiveWeapon() or nil
         local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
         local procDistance, pusherProc = 0, false
@@ -40,6 +33,7 @@ if not HitFeedback.LODShotgunPushbackWrapped then
             inflictor = weapon,
             distance = requestedDistance,
             source = pusherProc and "shotgun+pusher" or "shotgun",
+            pushTagMultiplicity = pusherProc and 2 or 1,
             pusherProc = pusherProc
         })
 

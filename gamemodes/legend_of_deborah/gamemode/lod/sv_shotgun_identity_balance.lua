@@ -118,10 +118,10 @@ if not HitFeedback.LODFourTimesStunSupported then
         return true
     end
 
-    function HitFeedback:ApplyShotgunShellStun(hostile)
+    function HitFeedback:ApplyShotgunShellStun(hostile, attacker)
         -- One aggregate stun per damaged target per shell; pellet count never
         -- multiplies control duration.
-        return self:ApplyHitStun(hostile, SHOTGUN_STUN_MULTIPLIER)
+        return self:ApplyHitStun(hostile, SHOTGUN_STUN_MULTIPLIER, attacker)
     end
 end
 

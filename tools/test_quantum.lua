@@ -82,6 +82,8 @@ local old=LOD.Magic; LOD.Magic=nil
 state.featIds={}; state.featQualificationAbilities.int=17
 assert(not cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[1]]))
 LOD.Magic=old
+LOD.RPG.MagicForms={blast={id="blast"}}
+state.magicFormIds={"blast"}
 state.featQualificationAbilities.int=12
 assert(not cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[1]]))
 state.featQualificationAbilities.int=17

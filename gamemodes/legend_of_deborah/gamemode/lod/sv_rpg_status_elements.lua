@@ -14,6 +14,7 @@ System.ResistanceMultipliers = {0.89, 0.78, 0.67, 0.56, 0.45, 0.34, 0.23, 0.12}
 System.Active = System.Active or setmetatable({}, {__mode = "k"})
 System.DamageContexts = System.DamageContexts or setmetatable({}, {__mode = "k"})
 System.Serial = System.Serial or 0
+System.ActorLives = System.ActorLives or setmetatable({}, {__mode = "k"})
 System.Stats = System.Stats or {
     applications = 0, saves = 0, immunities = 0, duplicates = 0,
     statusDamage = 0, weaknessHits = 0, resistanceHits = 0,
@@ -71,6 +72,7 @@ local function isAlive(actor)
 end
 
 local function listContains(values, wanted)
+    wanted = string.lower(tostring(wanted))
     for key, value in pairs(values or {}) do
         local candidate = type(key) == "string" and value == true and key or value
         if string.lower(tostring(candidate)) == wanted then return true end
@@ -180,6 +182,7 @@ function System:IsImmune(target, id)
 end
 
 function System:Has(target, id, at)
+    self:BindActorLife(target)
     local entry = statusTable(target, false)
     entry = entry and entry[id]
     if not entry then return false end
@@ -189,6 +192,53 @@ function System:Has(target, id, at)
     end
     return true, entry
 end
+
+function System:ResetActorLife(actor)
+    self.ActorLives[actor] = nil
+    local ids = {}
+    for id in pairs(self.Active[actor] or {}) do ids[#ids + 1] = id end
+    for _, id in ipairs(ids) do self:Clear(actor, id, "actor_lifecycle") end
+    self.Active[actor] = nil
+    if self.MoraleEncounters then
+        self.MoraleEncounters[actor] = nil
+        for _, record in pairs(self.MoraleEncounters) do record.sources[actor] = nil end
+    end
+    if valid(actor) then
+        actor.LODMoraleCooldownUntil, actor.LODPanicCascadeUntil, actor.LODCrashMoraleUntil = nil, nil, nil
+        actor.LODCheckpointDAggressiveReadyAt, actor.LODCheckpointDAggressiveSerial, actor.LODCheckpointDAggressivePending = nil, nil, nil
+        actor.LODPersonalityAuraNextAt, actor.LODPersonalityAuraRollSerial = nil, nil
+        actor.LODRPGNextAceReadyAt, actor.LODRPGNotYetImmuneUntil, actor.LODMindOverMatterReadyAt = nil, nil, nil
+        actor.LODRPGBlastProofReadyAt = nil
+        actor.LODRPGHealthRegenAccumulator, actor.LODRPGHealthRegenEligibleAt = nil, nil
+    end
+    local effects = RPG.FeatEffectSystem
+    if effects then
+        for _, name in ipairs({"WallJumpState", "CloudStepState", "FloatOnState", "SizeShifterState", "PusherCooldowns", "PusherRNGState"}) do
+            if effects[name] then effects[name][actor] = nil end
+        end
+    end
+    if effects then
+        for _, name in ipairs({"PusherCooldowns", "PusherRNGState"}) do
+            for _, targets in pairs(effects[name] or {}) do targets[actor] = nil end
+        end
+    end
+    if Rules.ClearDodge then Rules:ClearDodge(actor) end
+    self.ActorLives[actor] = nil
+end
+
+function System:BindActorLife(actor)
+    if not valid(actor) then return end
+    local state = actorState(actor)
+    local epoch = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
+    local life = self.ActorLives[actor]
+    if life and life.state == state and life.epoch == epoch then return end
+    if life then self:ResetActorLife(actor) end
+    self.ActorLives[actor] = {state = state, epoch = epoch}
+end
+
+hook.Add("PlayerDeath", "LOD_RPG_CombatLifeDeath", function(actor) System:ResetActorLife(actor) end)
+hook.Add("PlayerSpawn", "LOD_RPG_CombatLifeSpawn", function(actor) System:ResetActorLife(actor) end)
+hook.Add("PlayerDisconnected", "LOD_RPG_CombatLifeDisconnect", function(actor) System:ResetActorLife(actor) end)
 
 function System:Clear(target, id, reason)
     local states = statusTable(target, false)
@@ -244,6 +294,7 @@ function System:_ScheduleInitial(target, id, entry, rng)
 end
 
 function System:Apply(target, id, source, options)
+    self:BindActorLife(target)
     options = options or {}
     id = string.lower(tostring(id or ""))
     local definition = self.Registry[id]
@@ -322,7 +373,7 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
                 end
             end
         end
-        if hasAttunement then
+        if hasAttunement and (tags.magic == true or tags.magical == true) then
             local secondIndex = rng:Int(1, #self.WeaknessMultipliers)
             index = math.max(index, secondIndex)
         end
@@ -428,6 +479,8 @@ end
 function System:Process(at)
     at = at or now()
     for actor, states in pairs(self.Active) do
+        self:BindActorLife(actor)
+        states = self.Active[actor] or {}
         if not isAlive(actor) then
             self.Active[actor] = nil
         else
@@ -463,17 +516,62 @@ function System:MoraleDC(source)
         + (authored ~= nil and math.floor(tonumber(authored) or 0) or featBonus)
 end
 
-function System:MoraleSave(target, rng)
+function System:MoraleSave(target, rng, disadvantage)
     local state = actorState(target)
     local bonus = state and state.moraleBonus
     if bonus == "immune" then return math.huge, 20 end
     local natural = rng:Int(1, 20)
+    local naturals = {natural}
+    if disadvantage then
+        naturals[2] = rng:Int(1, 20)
+        natural = math.min(natural, naturals[2])
+    end
     return natural + modifier(score(target, "cha")) + math.floor((level(target) - 1) / 4)
         + math.floor(tonumber(bonus) or 0)
-        + math.floor(tonumber(derived(target) and derived(target).moraleSaveBonus) or 0), natural
+        + math.floor(tonumber(derived(target) and derived(target).moraleSaveBonus) or 0), natural, naturals
+end
+
+System.MoraleEncounters = System.MoraleEncounters or setmetatable({}, {__mode = "k"})
+function System:FirstTerrifyingSave(source, target)
+    if not owns(source, "CHA_MENACE_3") then return false end
+    local run = LOD.RunManager and LOD.RunManager.State or {}
+    local states = self.MoraleEncounters[target]
+    local identity = actorState(target)
+    local encounter = target.LODEncounterId or source.LODEncounterId or run.Graph
+    if not states or states.identity ~= identity or states.encounter ~= encounter then
+        states = {identity = identity, encounter = encounter, sources = setmetatable({}, {__mode = "k"})}
+        self.MoraleEncounters[target] = states
+    end
+    local sourceIdentity = actorState(source) or source
+    if states.sources[source] == sourceIdentity then return false end
+    states.sources[source] = sourceIdentity
+    return true
+end
+
+function System:CascadeMorale(source, target, event)
+    if event.cascade or not owns(source, "CHA_PANIC") or not LOD.RPGCrossFeats
+        or not LOD.HostileRegistry then return end
+    local cells = LOD.RPGCrossFeats:CellsWithin(target, 2)
+    local candidates = {}
+    for _, other in ipairs(LOD.HostileRegistry:List() or {}) do
+        if other ~= target and other ~= source and isAlive(other) and not isPlayer(other)
+            and other:Health() < other:GetMaxHealth() * .5
+            and (target.LODEncounterId == nil or other.LODEncounterId == target.LODEncounterId)
+            and cells[self:CellKey(other)] ~= nil then candidates[#candidates + 1] = other end
+    end
+    table.sort(candidates, function(a, b) return a:EntIndex() < b:EntIndex() end)
+    local at = event.at or now()
+    for _, other in ipairs(candidates) do
+        if at >= (other.LODPanicCascadeUntil or 0) then
+            other.LODPanicCascadeUntil = at + 3
+            self:AttemptMorale(source, other, {forceMorale = true, cascade = true, at = at})
+        end
+    end
 end
 
 function System:AttemptMorale(source, target, event)
+    self:BindActorLife(source)
+    self:BindActorLife(target)
     event = event or {}
     if event.statusDamage or event.moraleIneligible or not isAlive(target)
         or self:IsImmune(target, isPlayer(target) and "intimidated" or "morale_flee")
@@ -501,13 +599,23 @@ function System:AttemptMorale(source, target, event)
     if not trigger then return false, "no_trigger" end
     local rng = self:_RNG("morale", event.rng)
     local dc = self:MoraleDC(source)
-    local save = self:MoraleSave(target, rng)
+    if LOD.RPGCrossFeats then dc = dc + LOD.RPGCrossFeats:MoraleBonus(source, target, event) end
+    local save, natural, naturals = self:MoraleSave(target, rng, self:FirstTerrifyingSave(source, target))
     local cooldown = 30 + rng:Int(1, 20) + rng:Int(1, 20) + rng:Int(1, 20)
     if not isPlayer(target) then cooldown = cooldown * 0.25 end
     target.LODMoraleCooldownUntil = at + cooldown
     self.Stats.moraleChecks = self.Stats.moraleChecks + 1
+    local rolls = LOD.CombatRolls
+    if rolls and rolls._Send and rolls.EntityDisplayName then
+        local text = string.format("%s MORALE %s [%s] %+d = %d vs DC %d — %s",
+            rolls:EntityDisplayName(target), #naturals == 2 and "lower(2d20)" or "1d20",
+            table.concat(naturals, ","), save - natural, save, dc, save >= dc and "SAVE" or "FAIL")
+        if isPlayer(source) then rolls:_Send(source, 3, text, "status", {event = "morale", save = save, dc = dc}) end
+        if isPlayer(target) and target ~= source then rolls:_Send(target, 3, text, "status", {event = "morale", save = save, dc = dc}) end
+    end
     if save >= dc then return true, "saved", {dc = dc, save = save, cooldown = cooldown} end
     self.Stats.moraleFailures = self.Stats.moraleFailures + 1
+    self:CascadeMorale(source, target, event)
     if isPlayer(target) then
         local applied, reason, entry = self:Apply(target, "intimidated", source,
             {direct = true, rng = rng})
@@ -530,13 +638,16 @@ end
 function System:ObserveDamage(target, dmginfo, defenseResult)
     if not valid(target) or not dmginfo then return false end
     local context = self:DamageContext(dmginfo, target)
-    local source = dmginfo.GetAttacker and dmginfo:GetAttacker() or nil
+    local source = context.creditActor or (dmginfo.GetAttacker and dmginfo:GetAttacker() or nil)
     local before = math.max(0, target.Health and target:Health() or 0)
     local finalDamage = math.min(before, math.max(0, dmginfo:GetDamage()))
     if finalDamage <= 0 then return false end
     local survives = before - finalDamage > 0
     local maxHP = target.GetMaxHealth and target:GetMaxHealth() or before
     if survives and not context.statusDamage then
+        local crash = context.wallCrush and owns(source, "CROSS_CRUSH_PANIC")
+            and now() >= (target.LODCrashMoraleUntil or 0)
+        if crash then target.LODCrashMoraleUntil = now() + 3 end
         context.riderConsumedTargets = context.riderConsumedTargets
             or setmetatable({}, {__mode = "k"})
         if context.riderStatusId and not context.riderConsumedTargets[target] then
@@ -545,7 +656,8 @@ function System:ObserveDamage(target, dmginfo, defenseResult)
         end
         self:AttemptMorale(source, target, {
             hpBefore = before, maxHP = maxHP, finalHPDamage = finalDamage,
-            forceMorale = context.forceMorale, moraleIneligible = context.moraleIneligible,
+            forceMorale = context.forceMorale or crash, moraleIneligible = context.moraleIneligible,
+            melee = context.melee, physicalPush = context.physicalPush, wallCrush = context.wallCrush,
             statusDamage = context.statusDamage,
             humanTraumaFraction = context.humanTraumaFraction
         })

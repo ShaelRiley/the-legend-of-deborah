@@ -1,3 +1,5 @@
+> Active handoff, 2026-09-14: stabilize `hybrid/antigravity`; do not promote until Shael approves the exact tested SHA. Calculated Luck, Lucky Break, the three Spot feats, Polymorph, Aftershock and previously held Snap Targeting are deferred. Retain and implement the six other CROSS feats and shared Dodge. Ordinary score requirements are 13/15/17. This handoff supersedes older sequencing below; historical evidence remains intact.
+
 # Current Development Plan — Integrated RPG Completion
 
 **Status:** CURRENT EXECUTION AUTHORITY for sequencing. Historical gate/batch plans are subordinate evidence only.

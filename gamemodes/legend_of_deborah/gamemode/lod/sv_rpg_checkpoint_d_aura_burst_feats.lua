@@ -42,19 +42,21 @@ RPG.CheckpointDAuraBurstStats = RPG.CheckpointDAuraBurstStats or {pulses = 0, ta
 function RPG:ResolveCheckpointDAuraBurst(actor)
     local state = Rules:ProgressionState(actor)
     local radius = self:CheckpointDAuraBurstProfile(state)
-    if radius == nil or not IsValid(actor) or not actor:Alive() then return 0 end
+    if radius == nil or not IsValid(actor) or actor.LODDead or actor:Health() <= 0 then return 0 end
     local run, navigator = LOD.RunManager and LOD.RunManager.State, LOD.MazeNavigator
     local graph = run and run.Graph
-    if not graph or not navigator or not LOD.HostileRegistry then return 0 end
+    if not graph or not navigator or not LOD.FactionManager then return 0 end
     local ownerCell = navigator:WorldToCell(graph, actor:GetPos())
     if not ownerCell then return 0 end
     local derived = Rules:Derived(actor) or {}
-    local damage = math.max(0, math.floor(tonumber(derived.chaMod) or 0))
+    local damageContract = {bonus = 0}
+    Rules:AddChaModDerivedDamage(damageContract, actor, "sv_rpg_checkpoint_d_aura_burst_feats")
+    local damage = damageContract.bonus
     self.CheckpointDAuraBurstStats.pulses = self.CheckpointDAuraBurstStats.pulses + 1
     if damage <= 0 then return 0 end
     local hits = 0
-    for _, target in ipairs(LOD.HostileRegistry:List() or {}) do
-        if IsValid(target) and target.LODHostile and not target.LODDead and target:Health() > 0 then
+    for _, target in ipairs(LOD.FactionManager:Opponents(actor)) do
+        if IsValid(target) and target ~= actor and not target.LODDead and target:Health() > 0 then
             local targetCell = navigator:WorldToCell(graph, target:GetPos())
             if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
                 local info = DamageInfo()
@@ -75,6 +77,10 @@ end
 
 hook.Add("LODDiscreteMagicSpent", "LOD_CheckpointDAuraBurst", function(actor)
     RPG:ResolveCheckpointDAuraBurst(actor)
+end)
+
+RPG.FeatEffectSystem:RegisterChaModDamageSource("aura_burst", function(state)
+    return RPG:CheckpointDAuraBurstProfile(state) ~= nil and LOD.CharacterProgressionSystem:_HasCapability(nil, state, "discrete_magic_activation")
 end)
 
 function RPG:ValidateCheckpointDAuraBurstFeats()

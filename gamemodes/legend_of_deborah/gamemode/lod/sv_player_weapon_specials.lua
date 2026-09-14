@@ -243,6 +243,7 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
     self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
 
+    ar2.attackEvent = {}
     ar2.active = true
     ar2.weapon = weapon
     ar2.direction = direction
@@ -295,7 +296,10 @@ function Specials:FireAR2Round(ply, ar2)
     }
 
     ply:LagCompensation(true)
+    local previousEvent = ply.LODCommittedAttackEvent
+    ply.LODCommittedAttackEvent = ar2.attackEvent
     ply:FireBullets(bullet)
+    ply.LODCommittedAttackEvent = previousEvent
     ply:LagCompensation(false)
 
     self.Stats.ar2Rounds = (self.Stats.ar2Rounds or 0) + 1

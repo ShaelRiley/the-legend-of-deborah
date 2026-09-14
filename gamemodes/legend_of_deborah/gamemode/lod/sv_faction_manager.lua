@@ -22,6 +22,26 @@ function FactionManager:LivingTargets()
     return targets
 end
 
+-- Area feats need the same opposition as ordinary targeting, including human
+-- Soldiers. Never scan every entity or let an AI aura damage its own faction.
+function FactionManager:Opponents(source)
+    local run = LOD.RunManager
+    local soldier = run and run.IsSoldierControl and run:IsSoldierControl(source)
+    if self:IsHostile(source) or soldier then return self:LivingTargets() end
+    local out = {}
+    for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(hostile) and hostile ~= source and not hostile.LODDead and hostile:Health() > 0 then
+            out[#out + 1] = hostile
+        end
+    end
+    for _, actor in ipairs(player.GetAll()) do
+        if actor ~= source and IsValid(actor) and actor:Alive()
+            and run and run.IsSoldierControl and run:IsSoldierControl(actor) then out[#out + 1] = actor end
+    end
+    table.sort(out, function(a, b) return a:EntIndex() < b:EntIndex() end)
+    return out
+end
+
 function FactionManager:BestTarget(hostile, graph, homeCell)
     local navigator = LOD.MazeNavigator
     if not navigator or not graph then return nil end

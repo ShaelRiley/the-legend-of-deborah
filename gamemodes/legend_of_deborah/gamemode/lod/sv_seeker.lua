@@ -37,6 +37,8 @@ local SEEKER_DAMAGE_PROFILE = {
     reference = 11
 }
 
+if Rolls and Rolls.HostileDamageProfiles then Rolls.HostileDamageProfiles.seeker = SEEKER_DAMAGE_PROFILE end
+
 util.AddNetworkString("LOD_SeekerState")
 
 EC.Archetypes.seeker = EC.Archetypes.seeker or {
@@ -300,7 +302,8 @@ local function damagePlayer(seeker, target)
     local size = math.Clamp(seeker:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local contract = Rolls and Rolls:RollHostileAttack(seeker, SEEKER_DAMAGE_PROFILE,
         SEEKER_DAMAGE_PROFILE.reference * size) or nil
-    local amount = contract and contract.final
+    local amount = contract and Rolls:ResolveActorDamage(contract, seeker, target,
+        {physical = true, melee = true, authoredScale = contract.scale})
         or math.max(1, math.floor(SEEKER_DAMAGE_PROFILE.reference * size + 0.5))
 
     local info = DamageInfo()
@@ -309,11 +312,15 @@ local function damagePlayer(seeker, target)
     info:SetDamage(amount)
     info:SetDamageType(DMG_CLUB)
     info:SetDamagePosition(target:WorldSpaceCenter())
-    target:TakeDamageInfo(info)
-
-    if contract and Rolls and Rolls._Send and Rolls._HostileRollText then
-        Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, seeker, target))
+    if contract then
+        LOD.RPGStatusElements:AttachDamageContext(info, {physical = true, melee = true,
+            attackEvent = contract.attackEvent, damageContract = contract, actorDamageResolved = true})
+        Rolls:QueueDamageReport(info, function(finalDamage)
+            contract.final = finalDamage
+            Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, seeker, target))
+        end)
     end
+    target:TakeDamageInfo(info)
 
     Seeker.Stats.playerHits = (Seeker.Stats.playerHits or 0) + 1
     return true

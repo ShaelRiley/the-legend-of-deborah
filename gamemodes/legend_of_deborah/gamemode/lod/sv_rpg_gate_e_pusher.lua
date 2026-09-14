@@ -169,13 +169,21 @@ function Effects:_SetPusherCooldown(attacker, target, readyAt)
     byTarget[target] = readyAt
 end
 
+function Effects:ValidPushTarget(target)
+    if not IsValid(target) or target.LODDead or target:Health() <= 0 then return false end
+    if target.LODHostile then return true end
+    if not target:IsPlayer() or not target:Alive() then return false end
+    local run = LOD.RunManager
+    return run and ((run.IsActivePlayer and run:IsActivePlayer(target))
+        or (run.IsSoldierControl and run:IsSoldierControl(target))) or false
+end
+
 function Effects:TryPusherProc(attacker, target, now, forcedRoll)
     local profile = self:PusherProfile(Rules:ProgressionState(attacker))
     local at = tonumber(now) or CurTime()
     local stats = self.PusherStats
     if profile.rank <= 0 then return 0, false, "unowned" end
-    if not IsValid(target) or not target.LODHostile or target.LODDead
-        or target:Health() <= 0 or target.LODDeadcrabState == "latched"
+    if not self:ValidPushTarget(target) or target.LODDeadcrabState == "latched"
         or target.LODPushImmune == true
         or target:GetNW2Bool("LOD_PushImmune", false) then
         return 0, false, "ineligible"
@@ -342,11 +350,15 @@ end
 -- Crowbar-family hits are excluded because Bash and Pusher must assemble one
 -- physical-push request before the shared STR save in the Batch 14 authority.
 hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_PusherWeaponHit", function(target, dmginfo, took)
-    if took == false or not IsValid(target) or not target.LODHostile
-        or target.LODDead or target:Health() <= 0 or not dmginfo
+    if took == false or not Effects:ValidPushTarget(target) or not dmginfo
         or (tonumber(dmginfo:GetDamage()) or 0) <= 0 then return end
     local attacker = dmginfo:GetAttacker()
     local weaponClass, weapon = ordinaryWeaponClass(attacker, dmginfo)
+    local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
+    if IsValid(attacker) and attacker.LODHostile and context.physical
+        and not context.magic and not context.statusDamage and not context.wallCrush then
+        weaponClass, weapon = "native_physical", dmginfo:GetInflictor()
+    end
     if not weaponClass or weaponClass == "weapon_shotgun" then return end
     local distance, proc = Effects:TryPusherProc(attacker, target, CurTime())
     if not proc or distance <= 0 then return end

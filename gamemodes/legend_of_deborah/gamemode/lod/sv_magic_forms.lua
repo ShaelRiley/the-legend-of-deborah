@@ -212,7 +212,7 @@ function Forms:_RollDamage(attacker, form, context)
         sides = form.damageSides,
         bonus = tonumber(form.damageBonus) or 0,
         exploding = form.damageSides == 6 and 6 or nil,
-        magicDamage = true
+        magicDamage = true, attackEvent = context
     }
     local rng = Rolls:_RNG(string.format("magic-form:%s:%d", form.id, context.castSerial))
     local contract = Rolls:RollActorDamage(attacker, profile, rng, context.aceBonus or 0)
@@ -290,15 +290,18 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     info:SetDamageType(DMG_ENERGYBEAM)
     info:SetDamagePosition(target:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
+    tags.attackEvent, tags.damageContract = context, contract
     if Status and Status.AttachDamageContext then Status:AttachDamageContext(info, tags) end
+    local previousAttribution = target.LODPendingDamageAttribution
+    local previousProxyDC = IsValid(creditCaster) and creditCaster.LODMagicProxyMoraleDC
     if proxyAttack then
         target.LODPendingDamageAttribution = {attacker = creditCaster, source = "summon"}
         if tags.moraleDC ~= nil then creditCaster.LODMagicProxyMoraleDC = tags.moraleDC end
     end
     target:TakeDamageInfo(info)
     if proxyAttack then
-        creditCaster.LODMagicProxyMoraleDC = nil
-        if IsValid(target) then target.LODPendingDamageAttribution = nil end
+        creditCaster.LODMagicProxyMoraleDC = previousProxyDC
+        if IsValid(target) then target.LODPendingDamageAttribution = previousAttribution end
     end
 
     local after = IsValid(target) and target:Health() or 0

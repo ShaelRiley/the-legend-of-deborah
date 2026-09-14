@@ -175,7 +175,7 @@ RPG.Schema = {
         "fighterCapstoneIncomingPushMultiplier", "fighterCapstoneWallSlamBonusDice",
         "aimSpreadMultiplier", "movementSpeedMultiplier", "boomShift",
         "rogueAllDamageDiceExplode", "rogueBoomThresholdShift", "rogueCapstoneBoomThresholdShift",
-        "rogueCapstoneEvasionChance", "rogueAcePrimed", "damageResistancePerDie",
+        "dodgeChanceContribution", "rogueAcePrimed", "damageResistancePerDie",
         "rogueAcePrimeSeconds",
         "hpConBonusPerLevel", "startingHP", "progressionHitDieSides", "rolledHitPointSubtotal",
         "coreMaxHP", "maxHP", "conRegenMultiplier", "healthRegenEnabled", "healthRegenRank",

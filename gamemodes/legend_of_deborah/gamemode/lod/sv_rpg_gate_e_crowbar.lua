@@ -311,6 +311,8 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     info:SetDamageType(DMG_ENERGYBEAM)
     info:SetDamagePosition(hitPos or target:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
+    if LOD.RPGStatusElements then LOD.RPGStatusElements:AttachDamageContext(info,
+        {magic = true, wisScaled = true, nonElemental = true, crowbarPulse = true, attackEvent = contract.attackEvent, damageContract = contract}) end
     target:TakeDamageInfo(info)
 
     local healthAfter = IsValid(target) and target:Health() or 0
@@ -342,7 +344,7 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
                 LOD.DieLogger:RollBreakdown(contract))
             or "[non-elemental Magic Crowbar projectile]"
         rolls:_Send(attacker, 0, rolls:_DamageEventText(attacker,
-            contract.formula, total, target, detail, nil,
+            contract.formula, effectiveDamage, target, detail, nil,
             "Hostile", "Hero of Legend"))
     end
     return true
@@ -370,8 +372,10 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_CrowbarPush", function(target, d
     if Effects.TryPusherProc then
         procDistance, pusherProc = Effects:TryPusherProc(attacker, target, CurTime())
     end
+    local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
+    local meteorMultiplier = context.meteor and context.meteor.meteorState and 2 or 1
     local requested = Effects:ResolveCrowbarPushRequest(
-        profile.crowbarPushDistance, procDistance)
+        profile.crowbarPushDistance * meteorMultiplier, procDistance)
     local stats = Effects.CrowbarStats
     stats.meleeHits = (stats.meleeHits or 0) + 1
     stats.lastMeleeDamageDie = profile.crowbarDamageDieSides
@@ -389,6 +393,7 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_CrowbarPush", function(target, d
             distance = requested,
             source = pusherProc and "crowbar+pusher" or "crowbar",
             crowbarPush = true,
+            pushTagMultiplicity = pusherProc and profile.crowbarPushDistance > 0 and 2 or 1,
             pusherProc = pusherProc
         })
         stats.lastPushResult = result

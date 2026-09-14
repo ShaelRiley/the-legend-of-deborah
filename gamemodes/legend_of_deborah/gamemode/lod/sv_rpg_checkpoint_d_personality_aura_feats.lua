@@ -56,15 +56,17 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
     if radius == nil or not alive(owner) then return 0 end
     local run, navigator = LOD.RunManager and LOD.RunManager.State, LOD.MazeNavigator
     local graph = run and run.Graph
-    if not graph or not navigator or not LOD.HostileRegistry then return 0 end
+    if not graph or not navigator or not LOD.FactionManager then return 0 end
     local ownerCell = navigator:WorldToCell(graph, owner:GetPos())
     if not ownerCell then return 0 end
-    local damage = math.max(0, math.floor(tonumber((Rules:Derived(owner) or {}).chaMod) or 0))
+    local damageContract = {bonus = 0}
+    Rules:AddChaModDerivedDamage(damageContract, owner, "sv_rpg_checkpoint_d_personality_aura_feats")
+    local damage = damageContract.bonus
     self.CheckpointDPersonalityAuraStats.pulses = self.CheckpointDPersonalityAuraStats.pulses + 1
     if damage <= 0 then return 0 end
     local hits = 0
-    for _, target in ipairs(LOD.HostileRegistry:List() or {}) do
-        if IsValid(target) and target.LODHostile and not target.LODDead and target:Health() > 0 then
+    for _, target in ipairs(LOD.FactionManager:Opponents(owner)) do
+        if IsValid(target) and target ~= owner and not target.LODDead and target:Health() > 0 then
             local targetCell = navigator:WorldToCell(graph, target:GetPos())
             if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
                 local info = DamageInfo()
@@ -106,6 +108,10 @@ hook.Add("Think", "LOD_CheckpointDPersonalityAura", function()
             end
         end
     end
+end)
+
+RPG.FeatEffectSystem:RegisterChaModDamageSource("personality_aura", function(state)
+    return RPG:CheckpointDPersonalityAuraProfile(state) ~= nil
 end)
 
 function RPG:ValidateCheckpointDPersonalityAuraFeats()

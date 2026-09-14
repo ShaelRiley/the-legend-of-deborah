@@ -78,7 +78,10 @@ end
 
 local WEAPONS = {
     [4] = {weapon_pistol = true},
-    [8] = {weapon_smg1 = true, weapon_lod_crowbar = true, weapon_crowbar = true},
+    [6] = {weapon_shotgun = true},
+    [8] = {weapon_smg1 = true},
+    [12] = {weapon_357 = true},
+    [20] = {weapon_frag = true},
     [10] = {weapon_ar2 = true}
 }
 local function stateHas(state, tag)
@@ -103,10 +106,18 @@ local function liveHas(ps, wanted)
 end
 local function hasDamageCapability(ps, state, sides)
     local tag, wanted = "d" .. sides .. "_damage", WEAPONS[sides] or {}
-    if stateHas(state, tag) or inventoryHas(ps, wanted) or liveHas(ps, wanted) then return true end
+    if stateHas(state, tag) then return true end
+    if state and state.actorType == "ai" then
+        local rolls = LOD.CombatRolls
+        local profile = rolls and rolls.HostileDamageProfile and rolls:HostileDamageProfile(state.archetypeId)
+        return profile ~= nil and profile.sides == sides
+    end
+    if inventoryHas(ps, wanted) or liveHas(ps, wanted) then return true end
     if ps and wanted[ps.starterWeaponClass] then return true end
-    -- Pistol and Crowbar-family d8 access are guaranteed cooperative-Hero baseline tools.
-    return ps ~= nil and (sides == 4 or sides == 8)
+    local crowbar = Effects.CrowbarProfile and Effects:CrowbarProfile(state)
+    if ps and crowbar and crowbar.crowbarDamageDieSides == sides then return true end
+    -- The guaranteed baseline pistol is d4; the baseline Crowbar is d3.
+    return ps ~= nil and sides == 4
 end
 
 if not Progression.LODDexExplodingCapabilityWrapped then
@@ -251,7 +262,7 @@ function Effects:ValidateExplodingDice()
         expect(progression.formula == "d10" and #progression.values == 1, "progression dice isolated")
     else expect(false, "CombatRolls exploding authority unavailable") end
 
-    local ps = {starterWeaponClass="weapon_ar2"}
+    local ps = {starterWeaponClass="weapon_ar2", inventory={weapons={{class="weapon_smg1"}}}}
     local state = {featIds={},featQualificationAbilities={dex=17},classId="fighter",secondaryAbilities={},capabilityTags={}}
     expect(Progression:_FeatEligible(ps,state,Feats[CHAIN[1]]), "Perfect Ten legal with d10 capability")
     expect(not Progression:_FeatEligible(ps,state,Feats[CHAIN[2]]), "Eight Is Enough prerequisite")

@@ -23,6 +23,8 @@ end
 -- Include the actual arithmetic subtotal even when damage is scaled, resisted,
 -- or clamped by the target's remaining HP. This does not reroll or resolve damage.
 function Log:RollBreakdown(contract)
+    local resolution = contract.feedResolution
+    contract = resolution and resolution.resolvedContract or contract
     local subtotal = tonumber(contract.bonus) or 0
     for i, value in ipairs(contract.values or {}) do
         subtotal = subtotal + (tonumber(contract.contributions and contract.contributions[i]) or value)
@@ -31,7 +33,7 @@ function Log:RollBreakdown(contract)
     local bonus = tonumber(contract.bonus) or 0
     if bonus ~= 0 then text = text .. string.format(" %s %g bonus", bonus < 0 and "-" or "+", math.abs(bonus)) end
     text = text .. string.format(" = %g rolled", subtotal)
-    local resolution = contract.feedResolution
+    if contract.blastProofSuppressed then text = text .. "; BLAST-PROOF ended one chain" end
     if resolution and (resolution.resistance or 0) > 0 and resolution.reduced then
         local reduced, sum = {}, bonus
         for i, value in ipairs(resolution.reduced) do reduced[i] = tostring(value); sum = sum + value end

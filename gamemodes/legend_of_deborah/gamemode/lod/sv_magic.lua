@@ -16,7 +16,7 @@ local SHOUT_RANGE = 1100
 local SHOUT_HALF_ANGLE = 30
 local SHOUT_DOT = math.cos(math.rad(SHOUT_HALF_ANGLE))
 local SHOUT_PUSH = 336
-local SHOUT_PROFILE = {label = "FORCE SHOUT", source = "force shout", count = 1, sides = 6, exploding = 6}
+local SHOUT_PROFILE = {label = "FORCE SHOUT", source = "force shout", magicDamage = true, count = 1, sides = 6, exploding = 6}
 local MAGIC_TIMER = "LOD_MagicRegen"
 
 util.AddNetworkString("LOD_MagicCastRequest")
@@ -24,6 +24,7 @@ util.AddNetworkString("LOD_MagicShoutFX")
 
 Magic.Stats = Magic.Stats or {casts = 0, targets = 0, damage = 0}
 Magic.NextCast = Magic.NextCast or setmetatable({}, {__mode = "k"})
+Magic.ActivePools = Magic.ActivePools or setmetatable({}, {__mode = "k"})
 
 local GENERIC_SHOUTS = {
     male = {
@@ -58,6 +59,7 @@ local CHARACTER_SHOUTS = {
 }
 
 local function playerState(ply)
+    if not IsValid(ply) or not ply:IsPlayer() then return nil end
     return RunManager and RunManager.GetPlayerState and RunManager:GetPlayerState(ply) or nil
 end
 
@@ -100,7 +102,7 @@ end
 
 function Magic:_Sync(ply, ps)
     if not IsValid(ply) then return end
-    ps = ps or playerState(ply)
+    ps = self:_EnsureState(ply) or ps
     local value = ps and tonumber(ps.magic) or MAX_MAGIC
     value = math.Clamp(value or MAX_MAGIC, 0, MAX_MAGIC)
     if ps then ps.magic = value end
@@ -109,8 +111,16 @@ function Magic:_Sync(ply, ps)
 end
 
 function Magic:_EnsureState(ply)
-    local ps = playerState(ply)
+    if not IsValid(ply) then return nil end
+    local rules = LOD.RPGAbilityRules
+    local progression = rules and rules:ProgressionState(ply)
+    local ps
+    if progression and (progression.actorType == "human_soldier"
+        or (not ply:IsPlayer() and progression.usesMagic == true)) then
+        ps = progression
+    elseif ply:IsPlayer() then ps = playerState(ply) end
     if not ps then return nil end
+    self.ActivePools[ply] = true
     if ps.magic == nil then ps.magic = MAX_MAGIC end
     ps.magic = math.Clamp(tonumber(ps.magic) or MAX_MAGIC, 0, MAX_MAGIC)
     return ps
@@ -345,8 +355,18 @@ end)
 
 timer.Create(MAGIC_TIMER, REGEN_TICK, 0, function()
     if not RunManager or not RunManager.State or RunManager.State.Failed then return end
-    for _, ply in ipairs(player.GetHumans()) do
-        if IsValid(ply) and ply:Alive() and RunManager:IsActivePlayer(ply) then
+    local actors, seen = {}, {}
+    for _, ply in ipairs(player.GetHumans()) do actors[#actors + 1] = ply; seen[ply] = true end
+    for actor in pairs(Magic.ActivePools) do
+        if not IsValid(actor) or actor.LODDead or actor:Health() <= 0 then Magic.ActivePools[actor] = nil
+        elseif not seen[actor] then actors[#actors + 1] = actor end
+    end
+    table.sort(actors, function(a, b) return a:EntIndex() < b:EntIndex() end)
+    for _, ply in ipairs(actors) do
+        local active = IsValid(ply) and not ply.LODDead and ply:Health() > 0
+            and (not ply:IsPlayer() or RunManager:IsActivePlayer(ply)
+                or (RunManager.IsSoldierControl and RunManager:IsSoldierControl(ply)))
+        if active then
             local ps = Magic:_EnsureState(ply)
             if ps then
                 local rules = LOD.RPGAbilityRules

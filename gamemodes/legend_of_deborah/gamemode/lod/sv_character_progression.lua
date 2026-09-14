@@ -411,7 +411,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.rogueAllDamageDiceExplode = state.classId == "rogue"
     mods.rogueBoomThresholdShift = state.classId == "rogue" and 1 or 0
     mods.rogueCapstoneBoomThresholdShift = capParams.boomThresholdShift or 0
-    mods.rogueCapstoneEvasionChance = capParams.evasionChance or 0
+    mods.dodgeChanceContribution = capParams.dodgeChanceContribution or 0
     mods.rogueAcePrimeSeconds = capParams.primeSeconds or 0
     mods.damageResistancePerDie = math.Clamp(mods.conMod, 0, 3)
     mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
@@ -471,19 +471,56 @@ end
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
     if arrayContains(state and state.capabilityTags or {}, tag) then return true end
-    if tag == "offensive_magic_activation" then
+    if tag == "morale" then
+        return state ~= nil and (state.actorType == nil or state.actorType == "hero"
+            or state.actorType == "human_soldier" or state.actorType == "ai")
+    elseif tag == "magic_form_owned" or tag == "discrete_magic_activation" then
+        for _, id in ipairs(state and state.magicFormIds or {}) do
+            if RPG.MagicForms and RPG.MagicForms[id] then return true end
+        end
+        return false
+    elseif tag == "magic_form_summon" then
+        return arrayContains(state and state.magicFormIds or {}, "summon")
+    elseif tag == "elemental_magic_attack" then
+        if not self:_HasCapability(ps, state, "magic_form_owned") then return false end
+        for _, id in ipairs(state and state.contentIds or {}) do
+            if RPG.MagicContents and RPG.MagicContents[id] then return true end
+        end
+        return false
+    elseif tag == "magic_form_grant_available" or tag == "magic_content_grant_available" then
+        local forms = tag == "magic_form_grant_available"
+        local catalog = forms and RPG.MagicForms or RPG.MagicContents
+        local owned = state and (forms and state.magicFormIds or state.contentIds) or {}
+        for id in pairs(catalog or {}) do if not arrayContains(owned or {}, id) then return true end end
+        return false
+    elseif tag == "magic_pool" then
+        return state and (state.actorType ~= "ai" or state.usesMagic == true) or false
+    elseif tag == "offensive_magic_activation" then
         return state and state.usesMagic == true
-            or (LOD.Magic ~= nil and type(LOD.Magic.CastForceShout) == "function")
+            or self:_HasCapability(ps, state, "magic_form_owned")
     elseif tag == "d10_damage" or tag == "multi_fire_burst" then
         return ps and ps.starterWeaponClass == "weapon_ar2"
     elseif tag == "smg" then
         return ps and ps.starterWeaponClass == "weapon_smg1"
     elseif tag == "crowbar" or tag == "pushable_weapon" or tag == "tetris"
-        or tag == "firearm" or tag == "reloadable_firearm" or tag == "magic_pool"
+        or tag == "firearm" or tag == "reloadable_firearm"
         or tag == "minimap" or tag == "cooperative_hero" or tag == "hit_stun_source"
         or tag == "magic_push"
     then
         return true
+    end
+    return false
+end
+
+function CharacterProgressionSystem:HasFeatPrerequisite(state, wanted)
+    if arrayContains(state.featIds or {}, wanted) then return true end
+    local feats = Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats
+    local prerequisite = feats[wanted]
+    if not prerequisite then return false end
+    for _, id in ipairs(state.featIds or {}) do
+        local owned = feats[id]
+        if owned and owned.replacesLowerRank and owned.featFamilyId == prerequisite.featFamilyId
+            and (owned.rankIndex or 1) > (prerequisite.rankIndex or 1) then return true end
     end
     return false
 end
@@ -504,7 +541,7 @@ function CharacterProgressionSystem:_FeatEligible(ps, state, definition)
         if not self:_HasCapability(ps, state, tag) then return false end
     end
     for _, prerequisiteId in ipairs(definition.prerequisiteFeatIds or {}) do
-        if not arrayContains(state.featIds, prerequisiteId) then return false end
+        if not self:HasFeatPrerequisite(state, prerequisiteId) then return false end
     end
     for _, incompatibleId in ipairs(definition.incompatibleFeatIds or {}) do
         if arrayContains(state.featIds, incompatibleId) then return false end
@@ -1324,6 +1361,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             className = className,
             classHitDie = soldierState.progressionHitDieSides or 8,
             classPassive = classDef and classDef.passiveText or "Automatic Monster Combat Progression",
+            dodge = LOD.RPGAbilityRules.DodgeSnapshot and LOD.RPGAbilityRules:DodgeSnapshot(ply),
             primaryAbility = soldierState.primaryAbility,
             secondaryAbilities = soldierState.secondaryAbilities,
             abilities = abilities,
@@ -1455,7 +1493,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             state.fighterTraining.str or 0, state.fighterTraining.con or 0,
             state.level, string.upper(state.primaryAbility))
     elseif state.classId == "rogue" then
-        classPassive = "Exploding-Dice Mastery: all actor-owned damage dice can explode; d6 and SUPER-d12 thresholds improve."
+        classPassive = "Exploding-Dice Mastery; +11% ordinary all-direction movement (+22% total while sprinting); shared Dodge contributes 11% or 22% according to actual voluntary horizontal speed."
     elseif state.classId == "wizard" then
         classPassive = string.format("Arcane Diversion: %d%% of otherwise-final HP damage is diverted to Magic when available.",
             math.floor((state.derivedStats.wizardClassHpToMagicDiversionFraction or 0) * 100 + 0.5))
@@ -1492,6 +1530,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         className = class and class.displayName or nil,
         classHitDie = class and class.heroProgressionHitDieSides or nil,
         classPassive = classPassive,
+        dodge = LOD.RPGAbilityRules.DodgeSnapshot and LOD.RPGAbilityRules:DodgeSnapshot(ply),
         primaryAbility = state.primaryAbility,
         secondaryAbilities = copyArray(state.secondaryAbilities),
         abilities = abilities,

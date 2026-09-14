@@ -51,17 +51,36 @@ function RPG:CheckpointDAggressiveCooldownSeconds(actor)
     return LOD.RNG.New(seed):Int(1, 3)
 end
 
+function RPG:FinishAggressiveAttack(contract, actor)
+    if not IsValid(actor) or actor.LODCheckpointDAggressivePending ~= contract then return end
+    actor.LODCheckpointDAggressivePending = nil
+    if contract.LODCheckpointDAggressiveDidDamage then
+        actor.LODCheckpointDAggressiveReadyAt = CurTime() + self:CheckpointDAggressiveCooldownSeconds(actor)
+    end
+end
+
+function RPG:ObserveDirectChaDamage(contract, damage)
+    local origin = contract and (contract.originContract or contract)
+    if origin and origin.LODCheckpointDAggressiveActive and origin.LODCheckpointDAggressiveHasBonus
+        and (tonumber(damage) or 0) > 0 then origin.LODCheckpointDAggressiveDidDamage = true end
+end
+
 local function aggressiveReadyForContract(contract, actor, now)
+    contract = contract.originContract or contract
     if contract.LODCheckpointDAggressiveActor == actor then return contract.LODCheckpointDAggressiveActive == true end
-    if now < (tonumber(actor.LODCheckpointDAggressiveReadyAt) or 0) then return false end
+    if now < (tonumber(actor.LODCheckpointDAggressiveReadyAt) or 0)
+        or actor.LODCheckpointDAggressivePending then return false end
     contract.LODCheckpointDAggressiveActor = actor
     contract.LODCheckpointDAggressiveActive = true
-    actor.LODCheckpointDAggressiveReadyAt = now + RPG:CheckpointDAggressiveCooldownSeconds(actor)
+    actor.LODCheckpointDAggressivePending = contract
+    timer.Simple(0, function() RPG:FinishAggressiveAttack(contract, actor) end)
     return true
 end
 
 Effects:RegisterChaModDamageSource("checkpoint_d_direct_cha_damage", function(state)
-    return owns(state, "CHA_SELF_ACTUALIZATION") or owns(state, "CHA_AGGRESSIVE_PERSONALITY")
+    local progression = LOD.CharacterProgressionSystem
+    return (owns(state, "CHA_SELF_ACTUALIZATION") and progression:_HasCapability(nil, state, "magic_form_owned"))
+        or (owns(state, "CHA_AGGRESSIVE_PERSONALITY") and progression:_HasCapability(nil, state, "attributable_damaging_attack"))
 end)
 
 if not Rules.LODCheckpointDDirectChaDamageWrapped then
@@ -78,7 +97,10 @@ if not Rules.LODCheckpointDDirectChaDamageWrapped then
         if not selfActualization and not aggressive then return total, reduced, resistance end
         local derived = self:Derived(attacker) or {}
         local chaBonus = math.max(0, math.floor(tonumber(derived.chaMod) or 0))
-        if chaBonus <= 0 then return total, reduced, resistance end
+        if aggressive and chaBonus > 0 then
+            local origin = contract.originContract or contract
+            origin.LODCheckpointDAggressiveHasBonus = true
+        end
         total = total + (selfActualization and chaBonus or 0) + (aggressive and chaBonus or 0)
         -- Glow Up keys off an actual authored CHA_MOD contribution. Even when
         -- both independent feats qualify, it adds CON_MOD only once per event.

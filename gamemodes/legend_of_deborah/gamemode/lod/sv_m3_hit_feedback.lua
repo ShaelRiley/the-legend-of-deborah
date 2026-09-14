@@ -120,11 +120,11 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     return true
 end
 
-function HitFeedback:ApplyShotgunShellStun(hostile)
+function HitFeedback:ApplyShotgunShellStun(hostile, attacker)
     -- One shared Shotgun roll may deliver up to nine pellet damage events.
     -- The roll authority aggregates those events, then calls this once per
     -- damaged target so stun can never scale with pellet count.
-    return self:ApplyHitStun(hostile, 2)
+    return self:ApplyHitStun(hostile, 2, attacker)
 end
 
 local function activeShotgunContract(attacker)
@@ -143,12 +143,13 @@ function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
     local incoming = dmginfo:GetDamage() or 0
     if incoming <= 0 then return false end
 
-    -- EntityTakeDamage and NextBot OnInjured may both observe one impact.
-    -- Collapse those observations to one gameplay response.
-    local now = CurTime()
-    local stamp = hostile.LODLastHitFeedbackEvent
-    if stamp and stamp.attacker == attacker and now - stamp.time < 0.025 then return false end
-    hostile.LODLastHitFeedbackEvent = {attacker = attacker, time = now, source = source or "unknown"}
+    -- The final damage authority calls this once, after Dodge and mitigation.
+    local contexts = LOD.RPGStatusElements
+    local context = contexts and contexts:DamageContext(dmginfo, hostile) or {}
+    if context.hitFeedbackHandled then return false end
+    context.hitFeedbackHandled = true
+    hostile.LODLastHitFeedbackEvent = {attacker = attacker, time = CurTime(), source = source}
+    if contexts then contexts:AttachDamageContext(dmginfo, context) end
 
     sendHitConfirm(attacker)
 
@@ -157,32 +158,17 @@ function HitFeedback:HandleDamageEvent(hostile, dmginfo, source)
     -- Shotgun pellet damage is aggregated by the combat-roll authority. It
     -- applies one doubled stun after the shell has resolved; applying the
     -- ordinary response here would make stun depend on pellet hook timing.
-    if incoming < hostile:Health() and not activeShotgunContract(attacker) then
+    if incoming < hostile:Health() and not context.settledShotgun and not activeShotgunContract(attacker) then
         self:ApplyHitStun(hostile, 1, attacker)
     end
     return true
 end
-
--- This is the primary authoritative route. It is also the exact hook used by
--- the damage audit, so combat feedback and diagnostics see the same event.
-hook.Add("EntityTakeDamage", "LOD_M3_HitConfirmAndStun", function(ent, dmginfo)
-    if not IsValid(ent) or not ent.LODHostile then return end
-    HitFeedback:HandleDamageEvent(ent, dmginfo, "EntityTakeDamage")
-end)
 
 local function installHostilePatch()
     local stored = scripted_ents.GetStored("lod_hostile")
     local class = stored and stored.t
     if not class or class.LODHitFeedbackPatched then return false end
     class.LODHitFeedbackPatched = true
-
-    -- Keep OnInjured as a defensive fallback for unusual addon/runtime damage
-    -- paths. The dedupe above prevents a normal shot from producing two cues.
-    local baseOnInjured = class.OnInjured
-    function class:OnInjured(dmginfo)
-        if baseOnInjured then baseOnInjured(self, dmginfo) end
-        HitFeedback:HandleDamageEvent(self, dmginfo, "OnInjured")
-    end
 
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
