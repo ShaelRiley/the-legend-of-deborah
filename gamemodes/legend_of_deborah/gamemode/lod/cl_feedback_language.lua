@@ -73,13 +73,19 @@ function Feed:RetainFeedback(entry)
     end
     local grammar = LOD.FeedbackLanguage[entry.family] or LOD.FeedbackLanguage.routine
     local now = CurTime()
+    if LOD.RPGWisInformation and LOD.RPGWisInformation.OnFeedback then
+        LOD.RPGWisInformation:OnFeedback(entry)
+    end
     local sounded = LOD.AdventurePresentation and LOD.AdventurePresentation:OnFeedback(entry) or false
     local priority = grammar.priority or 0
-    if not sounded and not (entry.cue and entry.cue > 0) and grammar.sound and (now >= (self.nextFeedbackSound or 0)
-        or priority > (self.lastFeedbackPriority or 0)) then
+    local soundReady = entry.family=="awareness" and now>=(self.nextAwarenessSound or 0)
+        or entry.family~="awareness" and (now>=(self.nextFeedbackSound or 0)
+            or priority>(self.lastFeedbackPriority or 0))
+    if not sounded and not (entry.cue and entry.cue > 0) and grammar.sound and soundReady then
         surface.PlaySound(grammar.sound)
         self.nextFeedbackSound = now + (priority >= 2 and 0.8 or 0.35)
         self.lastFeedbackPriority = priority
+        if entry.family=="awareness" then self.nextAwarenessSound=now+0.8 end
         sounded = true
     end
     if entry.family == "life" or entry.family == "danger" or entry.family == "soldier" then

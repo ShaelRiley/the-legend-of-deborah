@@ -35,8 +35,10 @@ end
 net = {Start = function(name) packet = {name = name} end,
     WriteUInt = write, WriteString = function(s) write(s, "string") end,
     WriteBool = function(b) write(b, "bool") end,
+    WriteVector = function(v) write(v,"vector") end,
     ReadUInt = read, ReadString = function() return read("string") end,
     ReadBool = function() return read("bool") end,
+    ReadVector = function() return read("vector") end,
     Send = function(ply) packet.ply = ply; sent[#sent+1] = packet end,
     SendToServer = function() sent[#sent+1] = packet end,
     Receive = function(name, fn) receives[name] = fn end}
@@ -295,3 +297,30 @@ P:Event(a,'blocked','KEYCARD REQUIRED',{event='objective_denied'})
 deliver(sent[#sent])
 assert(accentCalls==1,'denial text cannot masquerade as success')
 print('PASS: discovery cue, logger/history parity and duplicate/denial isolation')
+
+local awarenessCalls=0
+local position={x=384,y=-768,z=64}
+LOD.RPGWisInformation={OnFeedback=function(_,row)
+    if row.family=='awareness' then
+        awarenessCalls=awarenessCalls+1
+        assert(row.position.x==384 and row.position.y==-768)
+    end
+end}
+feed.nextFeedbackSound=clock+10;feed.lastFeedbackPriority=3
+local beforeSounds=#sounds
+rolls:_Send(a,3,'[AWARENESS] LEFT: SHAMBLER','awareness',{event='spatial_awareness',position=position})
+local awarenessPacket=sent[#sent]
+deliver(awarenessPacket)
+assert(awarenessCalls==1 and #sounds==beforeSounds+1,'awareness light and audible alert share logger delivery')
+assert(feed.history[#feed.history].text=='[AWARENESS] LEFT: SHAMBLER','awareness retained in history')
+deliver(awarenessPacket)
+assert(awarenessCalls==1 and #sounds==beforeSounds+1,'duplicate cannot replay light or sound')
+feed.lastFeedbackPriority=0
+rolls:_Send(a,3,'[AWARENESS] RIGHT: RUNNER','awareness',{event='spatial_awareness',position=position})
+deliver(sent[#sent])
+assert(#sounds==beforeSounds+1,'ordinary priority changes cannot bypass awareness sound spacing')
+clock=clock+1
+rolls:_Send(a,3,'[AWARENESS] BEHIND YOU: SOLDIER','awareness',{event='spatial_awareness',position=position})
+deliver(sent[#sent])
+assert(#sounds==beforeSounds+2,'awareness rearms its distinct sound after spacing')
+print('PASS: spatial awareness event position, history, priority sound and replay isolation')

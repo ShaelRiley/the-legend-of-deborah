@@ -2,6 +2,24 @@ local FX = {}
 local localCast
 local beamMaterial = Material("trails/laser")
 local material = Material("sprites/light_glow02_add")
+local boundaryMaterial = CreateMaterial("LOD_MagicAreaBoundary", "UnlitGeneric", {
+    ["$basetexture"]="color/white", ["$vertexcolor"]="1", ["$vertexalpha"]="1",
+    ["$translucent"]="1", ["$ignorez"]="0"
+})
+local function reduced()
+    local cv=GetConVar("lod_reduced_effects")
+    return cv and cv:GetBool()
+end
+local function circle(center, radius, plane, color, width)
+    local previous
+    for i=0,32 do
+        local angle=i/32*math.pi*2
+        local a,b=math.cos(angle)*radius,math.sin(angle)*radius
+        local point=center+Vector(plane==2 and 0 or a,plane==1 and 0 or (plane==2 and a or b),plane==0 and 0 or b)
+        if previous then render.DrawBeam(previous,point,width,0,1,color) end
+        previous=point
+    end
+end
 local colors = {
     raw = Color(210, 235, 255), earth = Color(194, 156, 88), fire = Color(255, 105, 45),
     dark = Color(125, 72, 170), ice = Color(125, 220, 255), light = Color(255, 245, 170),
@@ -14,18 +32,60 @@ net.Receive("LOD_MagicFormFX", function()
     local origin = net.ReadVector()
     local destination = net.ReadVector()
     local caster = net.ReadEntity()
-    if IsValid(caster) and caster == LocalPlayer() and (form == "blast" or form == "beam") then
-        localCast = {form=form,content=content,started=CurTime()}
+    local shape=net.ReadUInt(2)
+    local radius, edges = 0, {}
+    if shape==1 then
+        radius=net.ReadFloat()
+    elseif shape==2 then
+        local zero=net.ReadVector()
+        local size,height=net.ReadFloat(),net.ReadFloat()
+        local count=net.ReadUInt(16)
+        if count>4096 then return end
+        local cells, occupied={},{}
+        for i=1,count do
+            local x,y,z=net.ReadUInt(8),net.ReadUInt(8),net.ReadUInt(8)
+            cells[i]={x=x,y=y,z=z}
+            occupied[x..":"..y..":"..z]=true
+        end
+        -- Inset floor marks stay visible beside thick container walls.
+        -- These identify affected cells, not an invented circular Blast radius.
+        local half=size/2-10
+        local dirs={{1,0},{0,1},{-1,0},{0,-1}}
+        for _,cell in ipairs(cells) do
+            local center=zero+Vector(cell.x*size,cell.y*size,cell.z*height+3)
+            for _,d in ipairs(dirs) do
+                local neighbor=(cell.x+d[1])..":"..(cell.y+d[2])..":"..cell.z
+                do
+                    local side=center+Vector(d[1]*half,d[2]*half,0)
+                    local tangent=Vector(-d[2]*half,d[1]*half,0)
+                    edges[#edges+1]={side-tangent,side+tangent,occupied[neighbor] and 1.5 or 4}
+                end
+            end
+        end
+    end
+    if IsValid(caster) and caster == LocalPlayer() then
+        localCast = {form=form,content=content,shape=shape,started=CurTime()}
+    end
+    -- Long-lived area outlines have a separate small concurrency budget.
+    if shape>0 then
+        local areas=0
+        for i=#FX,1,-1 do
+            if FX[i].shape>0 then
+                areas=areas+1
+                if areas>=4 then table.remove(FX,i) end
+            end
+        end
     end
     while #FX >= 48 do table.remove(FX,1) end
     FX[#FX + 1] = {
         caster = caster,
+        shape=shape, radius=radius, edges=edges,
         form = form,
         content = content,
         origin = origin,
         destination = destination,
         started = CurTime(),
-        lifetime = (form == "beam" or form == "blast") and 0.48 or 0.28
+        lifetime = shape>0 and 1.15 or (form == "beam" and 0.48 or 0.28)
     }
 end)
 
@@ -62,36 +122,28 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
                 render.DrawSprite(fx.destination, 42 + 45 * progress, 42 + 45 * progress,
                     Color(c.r, c.g, c.b, math.floor(230 * fade)))
 
-            elseif fx.form == "blast" then
-                -- Radial expanding area attack wave originating from caster position
-                local center = fx.origin - Vector(0,0,28)
-                local radius = 24 + 220 * math.sqrt(progress)
-                local alpha = math.floor(220 * fade)
-                local segments = 16
-
-                -- Draw radial expanding ring in 3D world space
-                local prevPos = center + Vector(radius, 0, 8)
-                for seg = 1, segments do
-                    local angle = (seg / segments) * math.pi * 2
-                    local nextPos = center + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 8)
-                    render.DrawBeam(prevPos, nextPos, 14 + 10 * fade, 0, 1,
-                        Color(c.r, c.g, c.b, alpha))
-                    prevPos = nextPos
-                end
-                -- Vertical arcs are readable at eye height from inside the pulse.
-                for meridian=0,1 do
-                    local previous
-                    for seg=0,12 do
-                        local angle=seg/12*math.pi
-                        local nextPos=center+Vector(meridian==0 and math.cos(angle)*radius or 0,
-                            meridian==1 and math.cos(angle)*radius or 0,math.sin(angle)*radius)
-                        if previous then render.DrawBeam(previous,nextPos,6,0,1,Color(c.r,c.g,c.b,alpha)) end
-                        previous=nextPos
+            elseif fx.shape>0 then
+                render.SetMaterial(boundaryMaterial)
+                local ink=Color(c.r,c.g,c.b,math.floor(220*math.min(1,fade*2)))
+                local center=fx.shape==1 and fx.destination or fx.origin
+                if fx.shape==1 then
+                    -- Three fixed great circles reveal the real 3D blast sphere.
+                    -- The small inner pulse is decorative; the outer limit never moves.
+                    for plane=0,2 do circle(center,fx.radius,plane,ink,2.5) end
+                    if not reduced() then
+                        circle(center,fx.radius*math.min(1,age/0.3),0,
+                            Color(c.r,c.g,c.b,math.floor(100*fade)),4)
+                    end
+                else
+                    for _,edge in ipairs(fx.edges) do
+                        render.DrawBeam(edge[1],edge[2],edge[3],0,1,ink)
                     end
                 end
-                -- Center shockwave burst sprite
-                render.DrawSprite(center + Vector(0, 0, 16), radius * 0.8, radius * 0.8,
-                    Color(c.r, c.g, c.b, math.floor(180 * fade)))
+                -- Fixed center marker avoids a camera-following/muzzle illusion.
+                render.DrawBeam(center-Vector(9,0,0),center+Vector(9,0,0),3,0,1,ink)
+                render.DrawBeam(center-Vector(0,9,0),center+Vector(0,9,0),3,0,1,ink)
+                render.SetMaterial(material)
+                render.DrawSprite(center,20,20,Color(c.r,c.g,c.b,math.floor(160*fade)))
 
             else
                 render.DrawSprite(fx.destination, 54 + 70 * progress, 54 + 70 * progress,
@@ -107,16 +159,24 @@ end)
 hook.Add("HUDPaint","LOD_MagicLocalCast",function()
     if not localCast then return end
     local age=CurTime()-localCast.started
-    if age>0.6 then localCast=nil return end
-    local alpha=math.floor(210*(1-age/0.6))
+    local duration=localCast.shape>0 and 1.15 or 0.6
+    if age>duration then localCast=nil return end
+    local alpha=math.floor(210*(1-age/duration))
     local x,y=ScrW()*0.5,ScrH()*0.5
-    local radius=localCast.form=="blast" and 44+age*80 or 24
+    local radius=24
     surface.SetDrawColor(70,195,255,alpha)
     for _,sign in ipairs({-1,1}) do
         surface.DrawLine(x+sign*radius,y-12,x+sign*radius,y+12)
         surface.DrawLine(x+sign*radius,y+sign*12,x+sign*(radius-8),y+sign*12)
     end
-    draw.SimpleTextOutlined(string.upper(localCast.form).." / "..string.upper(localCast.content),
+    local label=string.upper(localCast.form).." / "..string.upper(localCast.content)
+    if localCast.shape==2 then label="BLAST / CONNECTED CELLS / LINE OF SIGHT"
+    elseif localCast.shape==1 then label=string.upper(localCast.form).." / IMPACT AREA / LINE OF SIGHT" end
+    draw.SimpleTextOutlined(label,
         "LOD_SheetKey",x,y+radius+14,Color(230,241,247,alpha),TEXT_ALIGN_CENTER,
         TEXT_ALIGN_TOP,1,Color(20,24,30,alpha))
 end)
+
+local function clear() FX={};localCast=nil end
+hook.Add("PostCleanupMap","LOD_MagicFormPresentationCleanup",clear)
+hook.Add("ShutDown","LOD_MagicFormPresentationShutdown",clear)

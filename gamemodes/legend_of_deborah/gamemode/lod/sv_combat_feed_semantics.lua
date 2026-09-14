@@ -102,6 +102,7 @@ local function send(self, ply, category, text, family, fields)
     net.WriteString(util.TableToJSON(segments))
     net.WriteUInt(fields.cue, 4)
     net.WriteUInt(fields.cueVariant, 2)
+    if family=="awareness" then net.WriteVector(fields.position or ply:GetPos()) end
     net.Send(ply)
     self.Stats.feedMessages = (self.Stats.feedMessages or 0) + 1
 end

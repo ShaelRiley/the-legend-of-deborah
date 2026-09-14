@@ -360,13 +360,29 @@ function Forms:_NewContext(ply, form, content)
     }
 end
 
-local function broadcastFX(formId, contentId, origin, destination, caster)
+local function broadcastFX(formId, contentId, origin, destination, caster, area)
     net.Start("LOD_MagicFormFX")
     net.WriteString(formId or "")
     net.WriteString(contentId or "raw")
     net.WriteVector(origin or vector_origin)
     net.WriteVector(destination or origin or vector_origin)
     net.WriteEntity(IsValid(caster) and caster or NULL)
+    -- Shape comes from the targeting transaction, never a guessed client radius.
+    net.WriteUInt(area and area.kind or 0, 2)
+    if area and area.kind == 1 then
+        net.WriteFloat(area.radius)
+    elseif area and area.kind == 2 then
+        local maze = LOD.Config.Maze
+        net.WriteVector(LOD.MazeBuilder:CellCenter({x=0,y=0,z=0}))
+        net.WriteFloat(maze.CellSize)
+        net.WriteFloat(maze.LevelHeight)
+        net.WriteUInt(#area.cells, 16)
+        -- The canonical maze is 21x21 with at most four layers: three bytes per
+        -- reachable cell, no per-cell packet and no client navigation scan.
+        for _, cell in ipairs(area.cells) do
+            net.WriteUInt(cell.x, 8); net.WriteUInt(cell.y, 8); net.WriteUInt(cell.z, 8)
+        end
+    end
     net.Broadcast()
 end
 
@@ -397,7 +413,11 @@ function Forms:_BlastTargets(ply, cells)
             end
         end
     end
-    local targets = {}
+    local targets, footprint = {}, {}
+    for _, key in ipairs(queue) do
+        local cell = graph.Cells[key]
+        if cell then footprint[#footprint + 1] = {x=cell.x,y=cell.y,z=cell.z} end
+    end
     for _, hostile in ipairs(activeHostiles()) do
         local cell = Navigator:WorldToCell(graph, hostile:GetPos())
         local key = cell and string.format("%d:%d:%d", cell.x, cell.y, cell.z) or nil
@@ -406,17 +426,19 @@ function Forms:_BlastTargets(ply, cells)
         end
     end
     table.sort(targets, function(a, b) return a:EntIndex() < b:EntIndex() end)
-    return targets
+    return targets, footprint
 end
 
 function Forms:_CastBlast(ply, form, content, context)
     local rangeCells = 1 + context.spatialBonusCells
     local direction = ply:GetAimVector():GetNormalized()
-    local targets = self:_BlastTargets(ply, rangeCells)
+    local targets, footprint = self:_BlastTargets(ply, rangeCells)
+    local origin = ply:GetShootPos()
     for _, target in ipairs(targets) do
         self:_ApplyDamage(ply, ply, target, form, content, context, direction)
     end
-    broadcastFX("blast", content and content.id, ply:GetShootPos(), ply:GetShootPos(), ply)
+    broadcastFX("blast", content and content.id, origin, origin, ply,
+        {kind=2, cells=footprint or {}})
     return true
 end
 
@@ -525,7 +547,8 @@ function Forms:ProjectileImpact(projectile, trace)
         end
     end
     self.Stats.projectileImpacts = (self.Stats.projectileImpacts or 0) + 1
-    broadcastFX(form.id, content and content.id, projectile:GetPos(), point)
+    broadcastFX(form.id, content and content.id, projectile:GetPos(), point, caster,
+        form.id ~= "bolt" and {kind=1, radius=projectile.LODBlastRadius or 0} or nil)
     if form.id == "missile" and self.ActiveMissiles[caster] == projectile then self.ActiveMissiles[caster] = nil end
     projectile:Remove()
 end

@@ -11,7 +11,7 @@ UI.Colors = {
 local C = UI.Colors
 UI.Roles = {prose = C.ink, identity = C.blue, character = C.red, recipient = C.red,
     source = C.green, dice = C.violet, continuation = C.gold, total = C.gold,
-    damage = C.red, resource = C.green, status = C.violet, resist = C.blue,
+    damage = C.red, resource = C.green, status = C.violet, awareness = C.violet, resist = C.blue,
     magic = C.blue, progress = C.gold, objective = C.gold, danger = C.red,
     life = C.green, soldier = C.blue, proc = C.violet, clear = C.green,
     weakness = C.red, blocked = C.red, kill = C.red, routine = C.ink}
@@ -110,7 +110,7 @@ UI.HUDRoles = {
     dice = Color(205, 175, 255), continuation = UI.HUDColor, total = UI.HUDColor,
     damage = Color(255, 135, 115), danger = Color(255, 135, 115),
     resource = Color(165, 235, 165), life = Color(165, 235, 165), clear = Color(165, 235, 165),
-    status = Color(205, 175, 255), proc = Color(205, 175, 255),
+    status = Color(205, 175, 255), proc = Color(205, 175, 255), awareness = Color(195, 130, 255),
     resist = Color(120, 180, 255), magic = Color(120, 180, 255), soldier = Color(120, 180, 255),
     progress = UI.HUDColor, objective = UI.HUDColor, weakness = Color(255, 135, 115),
     blocked = Color(255, 135, 115), kill = Color(255, 135, 115)

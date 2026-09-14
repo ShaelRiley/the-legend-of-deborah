@@ -299,13 +299,29 @@ net.WriteEntity=function(ent) table.insert(netCalls[#netCalls].args,ent) end
 attacker.GetShootPos=function() return Vector(0,0,64) end
 attacker.GetAimVector=function() return Vector(1,0,0) end
 attacker.EyePos=attacker.GetShootPos
-LOD.Config={CellSize=192}
+LOD.Config={CellSize=192,Maze={CellSize=384,LevelHeight=384}}
+LOD.MazeBuilder={CellCenter=function(_,c) return Vector(c.x*384,c.y*384,c.z*384) end}
+net.WriteFloat=net.WriteUInt
 player.GetAll=function() return {attacker} end
+LOD.MazeNavigator={WorldToCell=function(_,_,pos) return pos end,
+    CanTraverse=function(_,_,_,key) return key~="1:2:0" end}
 dofile(root .. "sv_magic_forms.lua")
 local forms=assert(LOD.MagicForms)
 local hits={}
 local productionApplyDamage=forms._ApplyDamage
-forms._BlastTargets=function() return {victim1,victim2} end
+attacker.GetPos=function() return Vector(1,1,0) end
+victim1.GetPos=function() return Vector(2,1,0) end
+victim2.GetPos=function() return Vector(1,2,0) end
+for _,v in ipairs({victim1,victim2}) do v.Health=function() return 50 end;v.WorldSpaceCenter=v.GetPos end
+LOD.HostileRegistry={List=function() return {victim1,victim2} end}
+LOD.RunManager.State.Graph={Cells={
+    ["1:1:0"]={x=1,y=1,z=0,neighbors={["2:1:0"]=true,["1:2:0"]=true}},
+    ["2:1:0"]={x=2,y=1,z=0,neighbors={}},["1:2:0"]={x=1,y=2,z=0,neighbors={}}}}
+util.TraceLine=function() return {Hit=false} end
+local actualTargets,footprint=forms:_BlastTargets(attacker,1)
+assert(#actualTargets==1 and actualTargets[1]==victim1 and #footprint==2,
+    "Blast targeting and presentation share the same traversal; closed gate excluded")
+forms._BlastTargets=function() return {victim1,victim2},{{x=1,y=1,z=0},{x=2,y=1,z=0}} end
 forms._ApplyDamage=function(_,_,_,target) hits[#hits+1]=target;return true end
 assert(forms:_CastBlast(attacker,{id="blast"},{id="fire"},{spatialBonusCells=0}))
 local blast=sent[#sent]
@@ -329,14 +345,36 @@ assert(#hits==2 and hits[1]==victim1 and hits[2]==victim2 and traceCalls==3)
 assert(beam.args[1]=="beam" and beam.args[4]==wall and beam.args[5]==attacker,
     "Beam effect endpoint is the production blocking trace; caster is explicit")
 
+-- Bomb/Missile impact cues use the exact point and radius passed to targeting.
+local oldArea=forms._AreaTargets
+local impactPackets={}
+LOD.RPG.MagicForms={bomb={id="bomb"},missile={id="missile"},bolt={id="bolt"}}
+for _,id in ipairs({"bomb","missile"}) do
+    local point=Vector(300,100,64)
+    forms._AreaTargets=function(_,who,origin,radius)
+        assert(who==attacker and origin==point and radius==512);return {}
+    end
+    local projectile={valid=true,LODCaster=attacker,LODFormId=id,LODCastContext={},
+        LODBlastRadius=512,LODDirection=Vector(1,0,0),GetPos=function() return Vector(250,100,64) end,
+        Remove=function(self) self.removed=true end}
+    forms:ProjectileImpact(projectile,{HitPos=point})
+    local packet=sent[#sent]
+    assert(packet.args[4]==point and packet.args[6]==1 and packet.args[7]==512 and projectile.removed,
+        "impact sphere must match server damage center/radius")
+    impactPackets[#impactPackets+1]=packet
+end
+forms._AreaTargets=oldArea
+
 -- Real FX receiver/renderer, including bounded bursts and depth/skybox exclusion.
 local receives={}
 net.Receive=function(name,fn) receives[name]=fn end
 local reading,cursor
 local function read() cursor=cursor+1;return reading[cursor] end
-net.ReadString=read;net.ReadVector=read;net.ReadEntity=read
+net.ReadString=read;net.ReadVector=read;net.ReadEntity=read;net.ReadUInt=read;net.ReadFloat=read
 function Material(path) return path end
+function CreateMaterial(path,shader,params) assert(params["$vertexcolor"]=="1"); return path end
 function LocalPlayer() return attacker end
+function GetConVar() return {GetBool=function() return false end} end
 local beams,sprites,material=0,0,nil
 render={SetMaterial=function(m) material=m end,
     DrawBeam=function(_,_,_,_,_,color)
@@ -347,13 +385,25 @@ render={SetMaterial=function(m) material=m end,
 surface.DrawLine=function() end
 dofile(root .. "cl_magic_form_fx.lua")
 local function deliver(packet) reading,cursor=packet.args,0;receives[packet.name]() end
-deliver(blast);deliver(beam)
+deliver(blast);deliver(beam);for _,packet in ipairs(impactPackets) do deliver(packet) end
 hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(true,false)
 assert(beams==0,"no effects in depth prepass")
 hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,true)
 assert(beams==0,"no effects in skybox")
 hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
-assert(beams>30 and sprites>0,"actual Blast arcs and Beam are rendered")
+assert(beams>=12 and sprites>0,"actual Blast cell footprints and Beam are rendered")
+hooks.PostCleanupMap.LOD_MagicFormPresentationCleanup()
+deliver(impactPackets[1])
+local oldBeam=render.DrawBeam
+local maximumRadius=0
+render.DrawBeam=function(a,b,...)
+    maximumRadius=math.max(maximumRadius,a:Distance(impactPackets[1].args[4]),b:Distance(impactPackets[1].args[4]))
+    oldBeam(a,b,...)
+end
+hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
+assert(math.abs(maximumRadius-512)<.001,'rendered sphere matches exact damage radius and impact center')
+render.DrawBeam=oldBeam
+hooks.PostCleanupMap.LOD_MagicFormPresentationCleanup()
 for i=1,200 do deliver(beam) end
 beams=0
 hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
@@ -538,8 +588,17 @@ bomb:Initialize()
 assert(bomb:GetMagicForm()=="bomb" and trailCount==0,"bomb identity replicated and no missile trail")
 assert(bomb.LODVelocity.x==900 and bomb.LODVelocity.z==240,"existing lob launch velocity preserved")
 local spheres,fuses,lights=0,0,0
+local soundStarts,soundStops=0,0
+local materialParams={}
+env.CreateMaterial=function(name,shader,params) materialParams[name]=params;return name end
+env.CreateSound=function(_,path)
+    assert(path=="ambient/gas/steam2.wav")
+    return {SetSoundLevel=function(_,level) assert(level==55) end,
+        PlayEx=function(_,volume,pitch) assert(volume==.18 and pitch==135);soundStarts=soundStarts+1 end,
+        Stop=function() soundStops=soundStops+1 end}
+end
 local oldRender=render
-env.render={SetMaterial=noop,DrawSphere=function(_,radius) assert(radius==6);spheres=spheres+1 end,
+env.render={SetMaterial=noop,DrawSphere=function(_,radius,_,_,color) assert(radius==6 and color.r==24 and color.g==25 and color.b==28);spheres=spheres+1 end,
     DrawBox=noop,DrawBeam=function() fuses=fuses+1 end,DrawSprite=noop}
 env.DynamicLight=function() lights=lights+1 end
 assert(loadfile(entRoot.."cl_init.lua","t",env))()
@@ -549,6 +608,10 @@ bomb.EntIndex=function() return 7 end
 bomb.DrawModel=function() error("bomb must not draw its old missile-like model") end
 bomb:Draw()
 assert(spheres==1 and fuses==5 and lights==0,"sphere, bent fuse and three sparks, no dynamic lights")
+bomb:Draw();assert(soundStarts==1,"one hiss per projectile")
+bomb:OnRemove();assert(soundStops==1,"fuse hiss ends with projectile")
+assert(materialParams.LOD_BombIronVertexColor["$vertexcolor"]=="1","body material consumes black mesh tint")
+assert(materialParams.LOD_BombFuseVertexColor["$vertexcolor"]=="1","fuse material consumes pale mesh tint")
 util.SpriteTrail=savedTrail
 print("PASS: replicated bomb identity, unchanged lob, round body/fuse render and bounded sparks")
 

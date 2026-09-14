@@ -26,11 +26,11 @@ surface.CreateFont("LOD_DiceExplosionSmall", {
     antialias = true
 })
 
-local function addEntry(category, text, serial, family, tracked, segments, cue, cueVariant)
+local function addEntry(category, text, serial, family, tracked, segments, cue, cueVariant, position)
     local entry = {
         category = category, segments = segments, cue = cue, cueVariant = cueVariant,
         text = tostring(text or ""),
-        created = CurTime(), serial = serial, family = family, tracked = tracked
+        created = CurTime(), serial = serial, family = family, tracked = tracked, position=position
     }
     Feed.entries[#Feed.entries + 1] = entry
     while #Feed.entries > MAX_ENTRIES do table.remove(Feed.entries, 1) end
@@ -42,6 +42,7 @@ net.Receive("LOD_CombatRoll", function()
     local serial, family, tracked = net.ReadUInt(32), net.ReadString(), net.ReadBool()
     local segments = util.JSONToTable(net.ReadString())
     local cue, cueVariant = net.ReadUInt(4), net.ReadUInt(2)
+    local position=family=="awareness" and net.ReadVector() or nil
     if not LOD.DieLogger:ValidSegments(segments, text) then
         segments = LOD.DieLogger:Segments(text, family)
     end
@@ -53,7 +54,7 @@ net.Receive("LOD_CombatRoll", function()
     Feed.seenSerials[serial] = true
     Feed.serialOrder[#Feed.serialOrder + 1] = serial
     if #Feed.serialOrder > 1024 then Feed.seenSerials[table.remove(Feed.serialOrder, 1)] = nil end
-    addEntry(category, text, serial, family, tracked, segments, cue, cueVariant)
+    addEntry(category, text, serial, family, tracked, segments, cue, cueVariant, position)
 end)
 
 net.Receive("LOD_DiceExplosionFX", function()

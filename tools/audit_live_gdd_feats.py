@@ -99,6 +99,9 @@ def audit():
         if ident not in expected:
             errors.append(f'NONCANONICAL_EXPOSED {ident}')
     # Known mechanical release blocker, not masked by a nonblank description.
+    spatial = inventory['ordinary']['WIS_SPATIAL_AWARENESS']
+    if spatial['effectParams']['description'] != expected['WIS_SPATIAL_AWARENESS']['effect']:
+        errors.append('SPATIAL_AWARENESS_DESCRIPTION_RULE_MISMATCH')
     evasion = inventory['capstones']['rogue']['ROG_CAP_NOW_YOU_SEE_ME']
     if evasion['effectParams'].get('evasionChance') is not None:
         errors.append('NONCANONICAL_DODGE: Now You See Me still declares independent evasion')

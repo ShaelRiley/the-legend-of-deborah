@@ -8,7 +8,7 @@ local definitions = {
     {
         id = "WIS_SPATIAL_AWARENESS", name = "Spatial Awareness", wis = 15,
         effectHandlerId = "rear_hostile_awareness",
-        effectParams = {description = "Warns the player when a hostile monster occupies the rear awareness strip behind their current facing. SpatialAwarenessRangeCells = MagicSpatialBonusCells = max(1, WIS_MOD); this uses the ordinary Wisdom spatial bonus only, not TotalMagicSpatialBonusCells, so Astral Reach does not extend Spatial Awareness. Quantize the player's current horizontal facing to the nearest canonical north/east/south/west maze direction for footprint construction. For each depth d from 1 through SpatialAwarenessRangeCells, the eligible rear strip contains exactly three cells: the cell d squares directly behind the player, the cell one square to the left of that rear cell, and the cell one square to the right of that rear cell. No cells directly beside or ahead of the player's current cell are included; the first eligible row begins one square behind, producing a straight three-cell-wide column extending rearward. A hostile monster must occupy one of those authoritative maze cells and must not be concealed from the player by closed walls, closed gates, or ordinary blocking world geometry; Spatial Awareness is not a wallhack and grants no information about monsters outside the footprint. When at least one monster qualifies, select the nearest by rear depth, then lower lateral offset magnitude, then stable actor identity as deterministic ties. On initial acquisition of a qualifying monster, or when the selected qualifying monster changes after the prior selection ceases to qualify, display a concise notice in the ordinary die-readout notification area containing the monster's canonical type, for example \"BEHIND YOU: SHAMBLER\", and play one very soft, subtle non-positional awareness cue. Do not spam the notice continuously while the same selected monster remains qualified. The feat is informational only: it grants no target lock, aim assist, damage bonus, detection through architecture, enemy reveal marker, minimap marker, or AI behavior change.", widthCells = 3, depthAbility = "wis", minimumDepthCells = 1, ordinaryLOS = true}
+        effectParams = {description = "Warns about visible hostile monsters behind you and directly to either side. RearRangeCells = max(1, WIS_MOD), without Astral Reach. Quantize horizontal facing to the nearest cardinal maze direction. The rear footprint remains three cells wide for depths 1 through RearRangeCells: directly behind, plus one cell on either side of each rear cell. Add a single-cell-wide ray directly left and directly right from the player's current cell, each extending SideRangeCells = ceil(RearRangeCells / 2). No forward cells or other floors qualify. Closed walls, closed gates and ordinary blocking geometry still block detection. Retain the selected monster while it qualifies; otherwise choose by shortest footprint depth, then smallest absolute lateral offset, then stable actor identity. On acquisition or replacement after the prior selection ceases to qualify, name the monster in a private BEHIND YOU, LEFT or RIGHT notice in the live die-readout and Die Log, play a clearly audible alert, and briefly show a violet directional light toward its position at detection. The light is a transient directional notification, not an enemy outline, minimap marker or persistent tracker. Do not repeat the alert while the same selected monster remains qualified. No target lock, aim assist, combat bonus, through-wall detection or AI behavior change.", widthCells = 3, depthAbility = "wis", minimumDepthCells = 1, ordinaryLOS = true}
     },
     {
         id = "WIS_OMNISCIENCE", name = "Omniscience", wis = 17,
@@ -68,9 +68,14 @@ function RPG:CheckpointDWisRearOffsets(wisMod, yaw)
                 x = bx * d + rx * lateral,
                 y = by * d + ry * lateral,
                 depth = d,
-                lateral = lateral
+                lateral = lateral,
+                direction = "BEHIND YOU"
             }
         end
+    end
+    for d=1,math.ceil(depth/2) do
+        offsets[#offsets+1]={x=-fy*d,y=fx*d,depth=d,lateral=d,direction="LEFT"}
+        offsets[#offsets+1]={x=fy*d,y=-fx*d,depth=d,lateral=d,direction="RIGHT"}
     end
     return offsets
 end
@@ -108,12 +113,15 @@ function RPG:CheckpointDWisRearHostiles(ply, wisMod)
     if not IsValid(ply) then return {} end
     local wanted = rearCoordinatesFor(ply, wisMod)
     local found = {}
-    for _, ent in ipairs(ents.GetAll()) do
-        if IsValid(ent) and ent.LODHostile and not ent.LODDead then
+    local registry=LOD.HostileRegistry
+    local candidates=registry and registry.List and registry:List() or ents.FindByClass("lod_hostile")
+    for _, ent in ipairs(candidates) do
+        if IsValid(ent) and ent.LODHostile and not ent.LODDead and ent:Health()>0 then
             local x, y, z = cellForPosition(ent:GetPos())
             local offset = wanted[x .. ":" .. y .. ":" .. z]
             if offset and ordinaryLOS(ply, ent) then
-                found[#found + 1] = {entity = ent, depth = offset.depth, lateral = offset.lateral}
+                found[#found + 1] = {entity = ent, depth = offset.depth,
+                    lateral = math.abs(offset.lateral),direction=offset.direction}
             end
         end
     end
@@ -125,9 +133,12 @@ function RPG:CheckpointDWisRearHostiles(ply, wisMod)
     return found
 end
 
-local function privateFeed(ply, text)
+local function privateFeed(ply, text, position)
     local rolls = LOD.CombatRolls
-    if rolls and rolls._Send then rolls:_Send(ply, 3, text); return end
+    if rolls and rolls._Send then
+        rolls:_Send(ply,3,"[AWARENESS] "..text,"awareness",{event="spatial_awareness",position=position})
+        return
+    end
     if IsValid(ply) then ply:ChatPrint(text) end
 end
 
@@ -163,21 +174,32 @@ RPG.CheckpointDWisInformationStats = RPG.CheckpointDWisInformationStats or {
     spatialAlerts = 0, omniscienceUpdates = 0
 }
 
+local spatialState=setmetatable({}, {__mode="k"})
 local function scanPlayer(ply)
     local state = Rules:ProgressionState(ply)
-    if not humanEligible(ply, state) then return end
+    if not humanEligible(ply, state) then spatialState[ply]=nil; return end
 
     if owns(state, "WIS_SPATIAL_AWARENESS") then
         local derived = Rules:Derived(ply) or {}
         local hostiles = RPG:CheckpointDWisRearHostiles(ply, derived.wisMod)
-        local occupied = #hostiles > 0
-        if occupied and not ply.LODWisSpatialOccupied then
-            privateFeed(ply, "BEHIND YOU")
+        local seed=LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed
+        local previous=spatialState[ply]
+        local selected
+        if previous and previous.state==state and previous.seed==seed then
+            for _,entry in ipairs(hostiles) do
+                if entry.entity==previous.entity then selected=entry; break end
+            end
+        end
+        local retained=selected~=nil
+        selected=selected or hostiles[1]
+        if selected and not retained then
+            privateFeed(ply, selected.direction..": "..string.upper(hostileType(selected.entity)),
+                selected.entity:WorldSpaceCenter())
             RPG.CheckpointDWisInformationStats.spatialAlerts = RPG.CheckpointDWisInformationStats.spatialAlerts + 1
         end
-        ply.LODWisSpatialOccupied = occupied
+        spatialState[ply]=selected and {entity=selected.entity,state=state,seed=seed} or nil
     else
-        ply.LODWisSpatialOccupied = false
+        spatialState[ply]=nil
     end
 
     if owns(state, "WIS_OMNISCIENCE") then
@@ -200,6 +222,10 @@ local function scanPlayer(ply)
     end
 end
 
+hook.Add("PlayerDisconnected","LOD_SpatialAwarenessDisconnect",function(ply) spatialState[ply]=nil end)
+hook.Add("PlayerDeath","LOD_SpatialAwarenessDeath",function(ply) spatialState[ply]=nil end)
+hook.Add("PreCleanupMap","LOD_SpatialAwarenessCleanup",function() spatialState=setmetatable({}, {__mode="k"}) end)
+
 timer.Create("LOD_CheckpointDWisInformation", 0.20, 0, function()
     for _, ply in ipairs(player.GetHumans()) do scanPlayer(ply) end
 end)
@@ -214,11 +240,11 @@ function RPG:ValidateCheckpointDWisInformationFeats()
     expect(omniscience and #omniscience.allowedActorTypes == 2 and omniscience.allowedActorTypes[1] == "hero"
         and omniscience.allowedActorTypes[2] == "human_soldier", "Omniscience human-only actors")
     local one = self:CheckpointDWisRearOffsets(-2, 0)
-    expect(#one == 3, "rear depth clamps to one cell")
+    expect(#one == 5, "rear depth clamps to one cell plus two side cells")
     expect(one[1].x == -1 and one[1].y == 1 and one[2].x == -1 and one[2].y == 0
         and one[3].x == -1 and one[3].y == -1, "yaw zero rear strip geometry")
     local two = self:CheckpointDWisRearOffsets(2, 90)
-    expect(#two == 6, "WIS modifier controls rear depth")
+    expect(#two == 8, "WIS modifier controls rear depth and ceil half side range")
     expect(two[1].x == -1 and two[1].y == -1 and two[4].x == -1 and two[4].y == -2,
         "cardinal rotation remains deterministic")
     expect(omniscience and table.concat(omniscience.effectParams.fields, ",") == "type,level,class,hp",

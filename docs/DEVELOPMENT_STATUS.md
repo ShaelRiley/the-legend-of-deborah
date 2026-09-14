@@ -1,3 +1,5 @@
+> Current candidate: Bomb/Missile impact-area outlines, black lit-fuse bomb, and rounded-up half-range lateral Spatial Awareness with violet directional alerts. GDD row reconciled; 53/53 static gate, Source retest pending. See [MAGIC_AREA_AND_AWARENESS.md](MAGIC_AREA_AND_AWARENESS.md).
+
 > Current repair candidate: Shael’s playtest hit a reliable-channel overflow after a multi-kill Blast. Full RPG snapshots now coalesce/deduplicate; traffic is instrumented. Static gate: 53/53; Source retest required. See [RELIABLE_CHANNEL_REPAIR.md](RELIABLE_CHANNEL_REPAIR.md). No main promotion or live deployment.
 
 > Latest candidate: adventure presentation polish is implemented and statically validated (52/52 suites). See [ADVENTURE_PRESENTATION.md](ADVENTURE_PRESENTATION.md). Shael’s playtest must use the revised exact SHA; main and live deployment remain gated.

@@ -12,6 +12,7 @@ LOD.FeedbackLanguage = {
     blocked = {label = "BLOCKED", priority = 1}, -- preserve existing denial sounds
     objective = {label = "OBJECTIVE", priority = 0}, -- existing banner/world cues
     danger = {label = "DANGER", priority = 3, sound = "buttons/button10.wav"},
+    awareness = {label = "AWARENESS", priority = 2, sound = "buttons/blip1.wav"},
     life = {label = "LIFE", priority = 3, sound = "items/suitchargeok1.wav"},
     soldier = {label = "SOLDIER", priority = 2, sound = "buttons/combine_button1.wav"},
     progress = {label = "PROGRESS", priority = 2, sound = "items/suitchargeok1.wav"},
