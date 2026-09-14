@@ -128,9 +128,9 @@ local CANONICAL_FEATS = {
     INT_ARCANE_PROC_1 = {ability = "int", req = {int = 13}, prereq = {}, family = "int_arcane_disruption_proc", rank = 1, replaces = false},
     INT_ARCANE_PROC_2 = {ability = "int", req = {int = 15}, prereq = {"INT_ARCANE_PROC_1"}, family = "int_arcane_disruption_proc", rank = 2, replaces = true},
     INT_ARCANE_PROC_3 = {ability = "int", req = {int = 17}, prereq = {"INT_ARCANE_PROC_2"}, family = "int_arcane_disruption_proc", rank = 3, replaces = true},
-    INT_MANA_BARRIER_1 = {ability = "int", req = {int = 12}, prereq = {}, family = "mana_barrier", rank = 1, replaces = false},
-    INT_MANA_BARRIER_2 = {ability = "int", req = {int = 16}, prereq = {"INT_MANA_BARRIER_1"}, family = "mana_barrier", rank = 2, replaces = true},
-    INT_MANA_BARRIER_3 = {ability = "int", req = {int = 18}, prereq = {"INT_MANA_BARRIER_2"}, family = "mana_barrier", rank = 3, replaces = true},
+    INT_MANA_BARRIER_1 = {ability = "int", req = {int = 13}, prereq = {}, family = "mana_barrier", rank = 1, replaces = false},
+    INT_MANA_BARRIER_2 = {ability = "int", req = {int = 15}, prereq = {"INT_MANA_BARRIER_1"}, family = "mana_barrier", rank = 2, replaces = true},
+    INT_MANA_BARRIER_3 = {ability = "int", req = {int = 17}, prereq = {"INT_MANA_BARRIER_2"}, family = "mana_barrier", rank = 3, replaces = true},
     INT_MANA_SPRING = {ability = "int", req = {int = 13}, prereq = {}, family = "int_mana_spring", rank = 1, replaces = false},
     INT_CLOUD_STEP = {ability = "int", req = {int = 13}, prereq = {}, family = "int_cloud_step", rank = 1, replaces = false},
     INT_FLOAT_ON = {ability = "int", req = {int = 15}, prereq = {}, family = "int_float_on", rank = 1, replaces = false},
@@ -234,7 +234,7 @@ local canonicalKeys = {}
 for k in pairs(CANONICAL_FEATS) do table.insert(canonicalKeys, k) end
 table.sort(canonicalKeys)
 
-print("[AUDIT] Canonical Feats Count: " .. tostring(#canonicalKeys))
+print("[AUDIT] Expected Implemented Feats Count: " .. tostring(#canonicalKeys))
 print("[AUDIT] Implementation Feats Count: " .. tostring(#implKeys))
 
 local missingIDs = {}
@@ -420,7 +420,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — All 124 canonical feats and 9 class capstones verified with 0 discrepancies.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 129 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

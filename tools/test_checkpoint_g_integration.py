@@ -2,6 +2,7 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -24,7 +25,7 @@ SUITES = [
     ("Checkpoint C Python Validator", ["python3", "tools/validate_checkpoint_c.py"]),
     ("Actor Core & Level Progression", ["python3", "tools/run_lua54.py", "tools/test_actor_progression.lua"]),
     ("Magic Forms & Contents Schema", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_c_headless.lua", "."]),
-    ("Feats & Capstones Closure (124+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
+    ("Implemented Feats & Capstones (129+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
     ("Human Soldier RPG & XP Progression", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_progression.lua"]),
     ("Human Soldier Lifecycle & Isolation", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_lifecycle.lua"]),
     ("Checkpoint E Closure & Parity", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_e_closure.lua"]),
@@ -47,6 +48,15 @@ SUITES = [
     ("Feedback Language & Die Logger", ["python3", "tools/run_lua54.py", "tools/test_feedback_language.lua"]),
     ("AG-011 Big Playtest Repairs Gate", ["python3", "tools/run_lua54.py", "tools/test_ag011_repairs.lua"]),
 ]
+
+# Complete existing deterministic feat-family coverage rather than a handler-name
+# whitelist. These use production seams and remain distinct from Source acceptance.
+for path in sorted(Path(REPO_ROOT, "tools").glob("test_checkpoint_d_*.lua")):
+    if path.name != "test_checkpoint_d_closure.lua":
+        SUITES.append(("Feat: " + path.stem.removeprefix("test_checkpoint_d_"),
+                       ["python3", "tools/run_lua54.py", str(path.relative_to(REPO_ROOT))]))
+SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54.py", "tools/test_feat_stabilization.lua"]))
+SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 
 def main():
     print("=== CHECKPOINT G INTEGRATED AUTOMATED RPG VALIDATION GATE ===")

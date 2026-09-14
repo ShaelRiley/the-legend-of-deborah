@@ -196,14 +196,16 @@ local function eligibleDirectAttack(target, attacker, dmginfo)
     return dmginfo:GetDamage() > 0
 end
 
-function AbilityRules:ComputeMagicDiversion(resolvedHPDamage, fraction, currentMagic, hpPerMagic)
-    local resolved = math.floor(math.max(0, tonumber(resolvedHPDamage) or 0) + 0.5)
-    local authoredFraction = math.Clamp(tonumber(fraction) or 0, 0, 1)
+function AbilityRules:ComputeMagicDiversion(resolvedHPDamage, fraction, currentMagic, hpPerMagic, roundDesiredUp)
+    local resolved = math.max(0, tonumber(resolvedHPDamage) or 0)
+    local authoredFraction = math.Clamp(tonumber(fraction) or 0, 0, 0.50)
     local available = math.max(0, tonumber(currentMagic) or 0)
     local exchange = math.max(0.01, tonumber(hpPerMagic) or 1)
-    local desiredHP = math.floor(resolved * authoredFraction + 0.5)
-    local fundingMagic = exchange > 1 and available or math.floor(available)
-    local divertedHP = math.min(desiredHP, fundingMagic * exchange)
+    local desiredHP = resolved * authoredFraction
+    -- Wizard class Shield uses upward rounding (LOD-MAG-002). The exact
+    -- non-Wizard Mana Barrier rows retain continuous diversion.
+    if roundDesiredUp ~= false then desiredHP = math.min(resolved, math.ceil(desiredHP)) end
+    local divertedHP = math.min(desiredHP, available * exchange)
     local spentMagic = divertedHP / exchange
     return divertedHP, spentMagic, math.max(0, resolved - divertedHP)
 end
@@ -238,6 +240,8 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
 
     local fraction = math.Clamp(tonumber(derived.hpToMagicDiversionFraction) or 0, 0, 1)
     local statusElements = LOD.RPGStatusElements
+    local damageContext = statusElements and statusElements:DamageContext(dmginfo, target) or {}
+    if damageContext.ignoreManaBarrier == true then return result end
     if statusElements and statusElements:Has(target, "arcane_shattered") then fraction = 0 end
     if fraction <= 0 then return result end
     local magic = LOD.Magic
@@ -245,7 +249,8 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     if not ps or (tonumber(ps.magic) or 0) <= 0 then return result end
 
     local affordableHP, magicSpent, finalHP = self:ComputeMagicDiversion(resolved, fraction,
-        ps.magic, derived.livingAegisHPPerMagic)
+        ps.magic, derived.livingAegisHPPerMagic,
+        (tonumber(derived.wizardClassHpToMagicDiversionFraction) or 0) > 0)
     ps.magic = math.max(0, (tonumber(ps.magic) or 0) - magicSpent)
     if magic._Sync then magic:_Sync(target, ps) end
     dmginfo:SetDamage(finalHP)
@@ -387,7 +392,18 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
-    if baseEntityTakeDamage then baseEntityTakeDamage(self, target, dmginfo) end
+    local baseResult = baseEntityTakeDamage and baseEntityTakeDamage(self, target, dmginfo)
+    if baseResult == true then return true end
+    -- Immunity cancels the incoming event before mitigation can spend Magic or
+    -- consume a defense cooldown. The lethal intercept itself remains post-diversion.
+    if IsValid(target) and AbilityRules.NotYetImmunityActive
+        and AbilityRules:NotYetImmunityActive(target) then
+        dmginfo:SetDamage(0)
+        return true
+    end
+    if IsValid(target) and AbilityRules.ApplyWisDefense then
+        AbilityRules:ApplyWisDefense(target, dmginfo)
+    end
     local defenseResult
     if IsValid(target) and target:IsPlayer() then
         defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
@@ -415,6 +431,7 @@ function GM:EntityTakeDamage(target, dmginfo)
         statusElements:ObserveDamage(target, dmginfo, defenseResult)
     end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
+    return baseResult
 end
 
 hook.Add("OnNPCKilled", "LOD_RPG_GateD_XPSettlement", function(hostile)
@@ -538,7 +555,7 @@ function AbilityRules:ValidateGateD(ply)
     local diverted, spent, remaining = self:ComputeMagicDiversion(50, 0.40, 10, 1)
     expect(diverted == 10 and spent == 10 and remaining == 40, "Wizard diversion budget")
     local flooredDiverted = self:ComputeMagicDiversion(50, 0.40, 10.9, 1)
-    expect(flooredDiverted == 10, "ordinary diversion whole Magic")
+    expect(flooredDiverted == 10.9, "fractional Magic funds diversion")
     local aegisDiverted, aegisSpent, aegisRemaining = self:ComputeMagicDiversion(50, 0.50, 10, 1.25)
     expect(aegisDiverted == 12.5 and aegisSpent == 10 and aegisRemaining == 37.5,
         "Living Aegis exchange")

@@ -17,8 +17,8 @@ for _, item in ipairs(definitions) do
         allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {"damage_defense"},
         synergyTags = {"wisdom", "defense", item.id == "WIS_TRUE_FAITH" and "magic" or "physical"}, oneRank = true,
         effectHandlerId = item.id == "WIS_TRUE_FAITH" and "incoming_magical_damage_reduction" or "incoming_physical_damage_reduction_cooldown",
-        effectParams = item.id == "WIS_TRUE_FAITH" and {reductionAbility = "wis"}
-            or {reductionAbility = "wis", cooldownDice = {3, 4}},
+        effectParams = item.id == "WIS_TRUE_FAITH" and {description = "Grants MagicalDamageReduction = max(0, WIS_MOD). Whenever this actor receives an incoming damage event tagged magical=true from any source, reduce that event's aggregated magical damage by MagicalDamageReduction after ordinary damage dice/Boom resolution, CON DamageResistancePerDie, source-side scaling, and elemental/identity modifiers, but before Arcane Shield HP-to-Magic diversion, lethal intercepts, and final HP loss. Apply True Faith exactly once per resolved damage event, never once per die, pellet, Boom continuation, or internal sub-hit, and never reduce damage below 0. Physical-only events with magical=false receive no reduction. If an unusual event is tagged both physical=true and magical=true, it qualifies because it is still an explicitly magical damage source. True Faith does not alter MagicSave, Arcane Integrity, elemental resistance/weakness, status saves, Magic cost, or any non-damage effect.", reductionAbility = "wis"}
+            or {description = "While this feat is ready, the first incoming damage event tagged physical=true automatically receives PhysicalDamageReduction = max(0, WIS_MOD), applied once to the event's aggregated physical damage after ordinary damage dice/Boom resolution, CON DamageResistancePerDie, source-side scaling, and elemental/identity modifiers, but before Arcane Shield HP-to-Magic diversion, lethal intercepts, and final HP loss. Never reduce damage below 0. After an eligible physical event consumes the ready state, roll MindOverMatterCooldownSeconds = 3d4 seconds and do not apply Mind Over Matter again until that cooldown expires. These three d4 timing dice are sealed, non-damage utility dice and never explode or inherit Rogue damage-die mastery, DEX BoomShift, Wizard magical Boom rules, weapon-specific explosion rules, or other attack-die modifiers. When the cooldown expires, Mind Over Matter becomes ready again. Magical-only events with physical=false do not consume the ready state. A mixed physical=true/magical=true event may receive True Faith's magical reduction and, when Mind Over Matter is ready, Mind Over Matter's physical reduction on the same resolved event; each applies once and final damage is clamped at 0. Mind Over Matter does not alter Push, wall-slam damage, hit-stun, status saves, MagicSave, or any non-damage physical effect.", reductionAbility = "wis", cooldownDice = {3, 4}},
         directorBaseWeight = 1.0, eligibilityText = "WIS " .. item.wis .. (item.prerequisite and " / requires True Faith" or ""),
         actorText = "Heroes, human Soldiers, and AI"}
 end
@@ -50,7 +50,7 @@ function RPG:CheckpointDMindOverMatterCooldownSeconds(target)
 end
 
 RPG.CheckpointDWisDefenseStats = RPG.CheckpointDWisDefenseStats or {trueFaithEvents = 0, mindEvents = 0}
-local function applyWisDefense(target, dmginfo)
+function Rules:ApplyWisDefense(target, dmginfo)
     if not IsValid(target) or not dmginfo or dmginfo:GetDamage() <= 0 then return end
         local state = Rules:ProgressionState(target)
         local hasTrueFaith = owns(state, "WIS_TRUE_FAITH")
@@ -75,18 +75,8 @@ local function applyWisDefense(target, dmginfo)
         if consumeMind then target.LODMindOverMatterReadyAt = now + RPG:CheckpointDMindOverMatterCooldownSeconds(target) end
 end
 
--- Gate D invokes its player-specific diversion authority inside the gamemode
--- damage method. This wrapper is intentionally outside it: the two WIS feats
--- apply to every RPG actor (including AI) before diversion/intercepts, while
--- preserving Gate D as the sole final HP/application seam.
-if not GM.LODCheckpointDWisDefenseWrapped then
-    GM.LODCheckpointDWisDefenseWrapped = true
-    local baseEntityTakeDamage = GM.EntityTakeDamage
-    function GM:EntityTakeDamage(target, dmginfo)
-        applyWisDefense(target, dmginfo)
-        return baseEntityTakeDamage(self, target, dmginfo)
-    end
-end
+-- Gate D calls ApplyWisDefense after upstream cancellation and before diversion.
+-- Register an authority method instead of wrapping the gamemode damage method.
 
 function RPG:ValidateCheckpointDWisDefenseFeats()
     local errors = {}; local function expect(ok, message) if not ok then errors[#errors + 1] = message end end

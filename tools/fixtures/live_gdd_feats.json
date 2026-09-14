@@ -1,0 +1,1363 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revision": "ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q",
+  "sourceTab": "HUMAN — Complete GDD",
+  "rows": [
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Sets the current CON regeneration feat-family contribution to 11% MaxHP and enables passive Health Regeneration if no other source already enabled it. After 5.0 continuous seconds without taking effective damage, regenerate at BaseHealthRegen = 1.0% MaxHP/second × ConRegenMultiplier toward the actor's final HealthRegenCeilingFraction. Regeneration stops when that ceiling is reached or effective damage is taken, and never restores temporary Tetris overfill. This 11% feat contribution stacks additively with the Fighter's innate 22% contribution and any other independently authored additive regeneration-ceiling contributions.",
+      "id": "CON_REGEN_11",
+      "name": "Second Wind",
+      "pos": 399253,
+      "prerequisite": "None",
+      "requirement": "CON 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets PoisonProcChance = 0.11. On an eligible target-hit event under the common status-proc rules, a successful proc creates one poison-status application attempt using the attacker's CON for PoisonDC and the defender's CON for PoisonSave. A failed save applies the canonical Poisoned state; a successful save prevents it. Existing Poisoned reapplication/recovery rules remain authoritative.",
+      "id": "CON_POISON_PROC_1",
+      "name": "Venomous",
+      "pos": 399948,
+      "prerequisite": "None",
+      "requirement": "CON 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Venomous and sets PoisonProcChance = 0.22. All targeting, one-roll-per-target-hit, CON save, Poisoned reapplication, and non-stacking rules are unchanged.",
+      "id": "CON_POISON_PROC_2",
+      "name": "Toxic",
+      "pos": 400461,
+      "prerequisite": "Venomous",
+      "requirement": "CON 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Toxic and sets PoisonProcChance = 0.33. All other Venomous-family semantics remain unchanged. PoisonStepDamage created later by this condition is status damage and can never itself roll this or any other offensive status-proc family.",
+      "id": "CON_POISON_PROC_3",
+      "name": "Virulent",
+      "pos": 400748,
+      "prerequisite": "Toxic",
+      "requirement": "CON 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI that already possess at least one explicit CHA_MOD-derived damage source",
+      "effect": "Whenever an owned rule would contribute max(0, CHA_MOD) as damage to a resolved damage event, Glow Up contributes GlowUpDamageBonus = max(0, CON_MOD) to that same event exactly once. This includes CHA-derived flat add-ons such as Aggressive Personality and Self-Actualization and CHA-derived damage events such as the Abrasive Personality family and Aura Burst family; future effects qualify only when their authored damage rule explicitly contributes CHA_MOD as damage. Glow Up never creates a damage event on its own, never adds CON_MOD more than once to the same resolved damage event even if multiple CHA-derived rules contribute to it, and does not alter damage dice, Boom behavior, Push, hit-stun, status-proc chance, Magic cost, Morale, or other riders. For ordinary player feat drafts and AI FeatDirector candidate construction, Glow Up is ineligible and must not be offered unless the actor already owns at least one currently usable CHA_MOD-derived damage rule; this dynamic prerequisite is checked before candidate weighting so Glow Up cannot appear as a dead pick. Losing or suppressing the qualifying effect later does not remove an already-owned Glow Up, but Glow Up simply contributes nothing while no qualifying CHA-derived damage is being produced.",
+      "id": "CON_GLOW_UP",
+      "name": "Glow Up",
+      "pos": 401113,
+      "prerequisite": "None",
+      "requirement": "CON 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Replaces Second Wind's feat-family contribution and sets the current CON regeneration feat-family contribution to 22% MaxHP. Uses the same 5.0-second damage-free delay and CON-scaled rate. It does not stack with Second Wind inside the feat family, but this 22% feat contribution stacks additively with the Fighter's innate 22% contribution and any other independently authored additive regeneration-ceiling contributions.",
+      "id": "CON_REGEN_22",
+      "name": "Rapid Recovery",
+      "pos": 402516,
+      "prerequisite": "Second Wind",
+      "requirement": "CON 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Replaces lower Recovery ranks and sets the current CON regeneration feat-family contribution to 33% MaxHP. Uses the same delay/rate and does not stack with lower ranks inside the feat family. This 33% feat contribution stacks additively with the Fighter's innate 22% contribution and any other independently authored additive regeneration-ceiling contributions. Therefore the completed current feat chain yields a 33% ceiling for a non-Fighter with no other source and a 55% ceiling for a Fighter before any separately authored future contribution.",
+      "id": "CON_REGEN_33",
+      "name": "Unbroken",
+      "pos": 403012,
+      "prerequisite": "Rapid Recovery",
+      "requirement": "CON 17"
+    },
+    {
+      "actors": "Non-Rogue heroes, human Soldiers, and AI with d10 damage rolls",
+      "effect": "The actor's ordinary player-owned/actor-owned d10 damage dice become exploding dice. A fresh d10 explodes only on natural 10. Continuation d10s use threshold max(2, 10 - BoomShift). Every explosion adds another d10 to the same damage chain and is subject to the universal 32-die safety cap.",
+      "id": "DEX_EXPLODE_D10",
+      "name": "Perfect Ten",
+      "pos": 403632,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets ClumsyProcChance = 0.11. On an eligible target-hit event under the common status-proc rules, a successful proc creates one clumsy-tagged application attempt using the attacker's DEX for ClumsyDC and the defender's DEX for ClumsySave. A failed save applies canonical Clumsy; a successful save prevents it.",
+      "id": "DEX_CLUMSY_PROC_1",
+      "name": "Distracting",
+      "pos": 404026,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Distracting and sets ClumsyProcChance = 0.22. All common status-proc aggregation, save, duration, and non-stacking rules remain unchanged.",
+      "id": "DEX_CLUMSY_PROC_2",
+      "name": "Disorienting",
+      "pos": 404461,
+      "prerequisite": "Distracting",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Disorienting and sets ClumsyProcChance = 0.33. All other Distracting-family semantics remain unchanged; repeated failed applications may only extend canonical Clumsy according to its existing later-expiration rule and never compound its movement/spread multipliers.",
+      "id": "DEX_CLUMSY_PROC_3",
+      "name": "Discombobulating",
+      "pos": 404742,
+      "prerequisite": "Disorienting",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets ImmolateProcChance = 0.11. On an eligible target-hit under the shared Status-proc feat-family rules, a successful proc creates exactly one Immolated application attempt using the attacker's DEX for ImmolateDC and the defender's DEX for ImmolateSave. A successful save prevents ignition. If that attack already guarantees an Immolated save through an authored fire/immolate rule, skip this redundant proc roll.",
+      "id": "DEX_IMMOLATE_PROC_1",
+      "name": "Singeing",
+      "pos": 405155,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Singeing and sets ImmolateProcChance = 0.22. All other Singeing-family semantics remain unchanged.",
+      "id": "DEX_IMMOLATE_PROC_2",
+      "name": "Scorching",
+      "pos": 405694,
+      "prerequisite": "Singeing",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Scorching and sets ImmolateProcChance = 0.33. All other Singeing-family semantics remain unchanged; Immolated never stacks parallel tick streams and follows its canonical stored-DC/later-expiration reapplication rule.",
+      "id": "DEX_IMMOLATE_PROC_3",
+      "name": "Incendiary",
+      "pos": 405931,
+      "prerequisite": "Scorching",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Non-Rogue heroes, human Soldiers, and AI with d8 damage rolls",
+      "effect": "The actor's ordinary d8 damage dice become exploding dice. A fresh d8 explodes only on natural 8. Continuation d8s use threshold max(2, 8 - BoomShift). This does not alter unrelated d10/d6/d12 chains except through the feats/rules governing those dice.",
+      "id": "DEX_EXPLODE_D8",
+      "name": "Eight Is Enough",
+      "pos": 406290,
+      "prerequisite": "Perfect Ten",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Non-Rogue heroes, human Soldiers, and AI with d4 damage rolls",
+      "effect": "The actor's ordinary d4 damage dice become exploding dice. A fresh d4 explodes only on natural 4. Continuation d4s use threshold max(2, 4 - BoomShift). This is the deepest small-die explosion feat and can create frequent chains on high-DEX builds, but still obeys the universal 32-die cap.",
+      "id": "DEX_EXPLODE_D4",
+      "name": "Fourtunate",
+      "pos": 406655,
+      "prerequisite": "Eight Is Enough",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers; AI only if its authored weapon actually uses the shared reload authority",
+      "effect": "Sets ReloadTimeMultiplier = 0.80 for ordinary reloadable weapons. It does not shorten SMG overheat recovery, AR2 targeting-laser delay, Magic cooldowns, enemy authored telegraphs, or other non-reload timers.",
+      "id": "DEX_FAST_RELOAD",
+      "name": "Quick Reload",
+      "pos": 407056,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers; eligible reload-using AI",
+      "effect": "Replaces Quick Reload and sets total ReloadTimeMultiplier = 0.60 for ordinary reloadable weapons. All Quick Reload exclusions remain authoritative.",
+      "id": "DEX_FAST_RELOAD_2",
+      "name": "Lightning Reload",
+      "pos": 407419,
+      "prerequisite": "Quick Reload",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers; eligible reload-using AI",
+      "effect": "Replaces Lightning Reload and sets total ReloadTimeMultiplier = 0.40. This is the standard reload-family capstone and still does not modify overheat recovery, targeting tells, Magic cooldowns, burst-internal spacing, or enemy telegraphs.",
+      "id": "DEX_FAST_RELOAD_3",
+      "name": "Blink Reload",
+      "pos": 407688,
+      "prerequisite": "Lightning Reload",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only when they possess at least one ordinary firearm family that uses the shared ammunition-regeneration authority",
+      "effect": "Raises the actor's ordinary regenerative firearm AmmoRegenFloorFraction from 0.33 to 0.44. For each eligible owned family, AmmoRegenFloorRounds = ceil(MaxFamilyCapacity × 0.44). The feat changes only how far free regeneration may refill; it does not accelerate the family's existing per-round regeneration cadence, shorten its no-fire eligibility delay, increase maximum ammunition capacity, create an unowned weapon, or make Grenades/AR2 secondary ammunition regenerative.",
+      "id": "INT_AMMO_FLOOR_44",
+      "name": "Field Supply",
+      "pos": 408047,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable nonmagical damaging attack",
+      "effect": "Sets ArcaneDisruptionProcChance = 0.11. When an eligible physical=true, magical=false target-hit event damages a surviving target whose Arcane Shield is online, a successful proc forces exactly one post-damage Arcane Integrity save using the ordinary attacker-INT ArcaneBreakDC and defender-INT ArcaneIntegritySave formulas. This does not retag the underlying damage as magical. The physical hit remains ordinarily Feedback-eligible, and any Feedback resolution from that hit completes before this proc-created Arcane Integrity save. Magical hits do not roll this family because they already force Arcane Integrity saves automatically.",
+      "id": "INT_ARCANE_PROC_1",
+      "name": "Disruptor",
+      "pos": 408723,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable nonmagical damaging attack",
+      "effect": "Replaces Disruptor and sets ArcaneDisruptionProcChance = 0.22. All shield-online eligibility, physical-damage classification, Feedback sequencing, and Arcane Integrity rules remain unchanged.",
+      "id": "INT_ARCANE_PROC_2",
+      "name": "Spellbreaker",
+      "pos": 409493,
+      "prerequisite": "Disruptor",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable nonmagical damaging attack",
+      "effect": "Replaces Spellbreaker and sets ArcaneDisruptionProcChance = 0.33. All other Disruptor-family semantics remain unchanged. The family never rerolls or extends an already-shattered Arcane Shield timer.",
+      "id": "INT_ARCANE_PROC_3",
+      "name": "Nullifier",
+      "pos": 409827,
+      "prerequisite": "Spellbreaker",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers with regenerative firearm ammunition",
+      "effect": "Replaces Field Supply and raises AmmoRegenFloorFraction to 0.55. AmmoRegenFloorRounds = ceil(MaxFamilyCapacity × 0.55). All ordinary eligibility, interruption, ownership, maximum-capacity, and non-regenerating-ammunition exclusions remain unchanged.",
+      "id": "INT_AMMO_FLOOR_55",
+      "name": "Deep Reserves",
+      "pos": 410168,
+      "prerequisite": "Field Supply",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers with regenerative firearm ammunition",
+      "effect": "Replaces lower Field Supply ranks and raises AmmoRegenFloorFraction to 0.66. AmmoRegenFloorRounds = ceil(MaxFamilyCapacity × 0.66). This is the capstone free-ammunition floor; ordinary pickups may still fill to 100% capacity, but passive regeneration still stops at the feat-defined floor.",
+      "id": "INT_AMMO_FLOOR_66",
+      "name": "War Stock",
+      "pos": 410551,
+      "prerequisite": "Deep Reserves",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI whose equipped/authored ordinary firearm uses the shared attack-cadence authority",
+      "effect": "Sets RateOfFireMultiplier = 1.10. For eligible ordinary firearm primary attacks, NextPrimaryAttackInterval = BasePrimaryAttackInterval / RateOfFireMultiplier. It changes trigger/attack opportunity cadence only: it does not shorten reloads, Magic cooldowns, SMG cooling or 2-second overheat lockout, AR2 targeting-laser duration, internal AR2 three-shot spacing, Magnum free-projectile burst spacing, or enemy telegraph duration.",
+      "id": "DEX_RATE_OF_FIRE_1",
+      "name": "Hair Trigger",
+      "pos": 410971,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and eligible firearm-using AI",
+      "effect": "Replaces Hair Trigger and sets total RateOfFireMultiplier = 1.20. The same exclusions remain authoritative. Faster SMG firing may therefore accumulate heat sooner in real time; the separate Cold Hands ladder may independently suppress some per-shot heat additions, but Rate of Fire itself grants no heat-system exemption.",
+      "id": "DEX_RATE_OF_FIRE_2",
+      "name": "Rapid Fire",
+      "pos": 411557,
+      "prerequisite": "Hair Trigger",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and eligible firearm-using AI",
+      "effect": "Replaces lower Rate-of-Fire ranks and sets total RateOfFireMultiplier = 1.30. AR2 gains shorter recovery between completed burst cycles but retains its full targeting-laser tell and authored internal burst spacing; Magnum gains shorter trigger-to-trigger recovery but retains authored chamber-burst projectile spacing; AI firearm users recover between completed authored attack cycles faster but retain the complete readable telegraph for every attack.",
+      "id": "DEX_RATE_OF_FIRE_3",
+      "name": "Lead Storm",
+      "pos": 411983,
+      "prerequisite": "Rapid Fire",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI actors with at least one weapon attack explicitly tagged multiFireBurst",
+      "effect": "BurstBonusRounds = 1. Whenever an authored attack event is already a legal multi-fire burst before feat processing, add one additional round/projectile to that burst. This feat never creates a burst from a single-fire attack and never treats exploding dice, Shotgun pellets, penetration, chained Magic projectiles, or unrelated extra-projectile procs as bursts.",
+      "id": "DEX_BURSTER_1",
+      "name": "Extra Round",
+      "pos": 412539,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI actors with at least one weapon attack explicitly tagged multiFireBurst",
+      "effect": "Replaces Extra Round and sets BurstBonusRounds = 2 for eligible authored burst events.",
+      "id": "DEX_BURSTER_2",
+      "name": "Extended Volley",
+      "pos": 413043,
+      "prerequisite": "Extra Round",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI actors with at least one weapon attack explicitly tagged multiFireBurst",
+      "effect": "Replaces Extended Volley and sets BurstBonusRounds = 3 for eligible authored burst events.",
+      "id": "DEX_BURSTER_3",
+      "name": "Full Barrage",
+      "pos": 413283,
+      "prerequisite": "Extended Volley",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Doubles the apex height of every voluntary jump generated by the actor, including the ordinary ground jump, Wall Jump's wall-kick jump, and Cloud Step's feat-granted additional jump when those feats are owned. Under unchanged gravity, implementation should scale the takeoff vertical impulse to achieve 2.0x baseline jump height rather than simply doubling vertical velocity. Spring Heel changes only the vertical jump component and does not multiply Wall Jump's lateral kick. Spring Heel does not amplify Push, knockback, falls, scripted relocation, ladders, stairs, or other non-jump movement. Canonical anti-top, gate, ceiling, and progression blockers remain authoritative; the feat improves combat/navigation mobility but never grants permission to bypass the maze graph or locked progression.",
+      "id": "DEX_SPRING_HEEL",
+      "name": "Spring Heel",
+      "pos": 415313,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Grants exactly one wall-assisted jump per airborne cycle. After leaving legitimate ground, a fresh Space press first checks whether Wall Jump is unused and the actor's movement hull is within WallJumpProbeDistance = 24 world units of a valid static blocking wall surface. A valid wall surface is approximately vertical, physically reachable by a short hull/trace test from the actor without crossing blocking geometry, and belongs to world/generated architecture rather than another actor, a movable physics prop, or a cosmetic/nonblocking surface. If several walls qualify, use the nearest valid surface; deterministic trace order/stable surface identity breaks an exact tie. When valid, the press consumes the one Wall Jump for that airborne cycle, applies the actor's ordinary voluntary-jump vertical takeoff impulse, and adds a bounded horizontal kick directly away from the contacted wall normal. The exact lateral kick magnitude is an implementation movement-tuning value, but it must visibly clear the player hull from the wall without becoming a faster general traversal method than ordinary movement. Wall Jump costs no Magic, does not consume Cloud Step, and resets only after legitimate ground contact. A wall contact by itself never resets Wall Jump or Cloud Step, so repeated wall climbing/bouncing cannot create unlimited jumps. Input priority while airborne is WALL JUMP > CLOUD STEP > FLOAT ON: if a valid unused Wall Jump exists on a fresh Space press, it fires instead of Cloud Step; if no Wall Jump is currently eligible, Cloud Step may consume that press under its own rules; Float On is the lowest-priority hold-at-apex behavior and never intercepts a fresh Space press that can legally produce Wall Jump or Cloud Step. Spring Heel may increase Wall Jump's vertical apex under its ordinary voluntary-jump rule but does not amplify the lateral kick. Canonical anti-top, gate, ceiling, and progression blockers remain authoritative, so Wall Jump may improve maneuvering but never authorizes container-top travel, locked-gate bypass, or movement through invalid maze geometry.",
+      "id": "DEX_WALL_JUMP",
+      "name": "Wall Jump",
+      "pos": 416201,
+      "prerequisite": "None",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Increases the actor's ordinary voluntary lateral strafe movement by 11%. StrafeSpeedMultiplier = 1.11. Apply the multiplier only to the movement component generated by left/right strafe input along the actor's local right vector; forward/backward movement remains at its otherwise-current speed. When forward/backward and strafe inputs are held together, only the lateral component receives this feat's multiplier rather than multiplying the entire combined movement vector. This modifier participates once in the ordinary locomotion-speed pipeline and may coexist with other legitimate movement-mode modifiers, but it does not alter jump impulse, airborne acceleration, ladder speed, forced Push/knockback, scripted relocation, or any non-voluntary movement.",
+      "id": "DEX_STRAFER_1",
+      "name": "Strafer",
+      "pos": 418381,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Replaces Strafer's 11% bonus with a 22% increase to ordinary voluntary lateral strafe movement. StrafeSpeedMultiplier = 1.22. All targeting, component-only application, locomotion-pipeline, and exclusion rules from Strafer remain authoritative; the ranks do not stack.",
+      "id": "DEX_SIDELER_2",
+      "name": "Sideler",
+      "pos": 419224,
+      "prerequisite": "Strafer",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Replaces Sideler's 22% bonus with a 33% increase to ordinary voluntary lateral strafe movement. StrafeSpeedMultiplier = 1.33. All targeting, component-only application, locomotion-pipeline, and exclusion rules from Strafer remain authoritative; the ranks do not stack.",
+      "id": "DEX_LATERAL_MOVER_3",
+      "name": "Lateral Mover",
+      "pos": 419579,
+      "prerequisite": "Sideler",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Sets PlayerTargetScale = 0.70 while the feat is active. The third-person/world presentation and player-facing combat hurt volume scale to 70% of the ordinary character presentation, making the actor a meaningfully smaller target. The authoritative movement/collision hull, stair legality, USE reach, weapon traces, and progression interactions remain unchanged so shrinking cannot enter illegal gaps, crawl through gates, stand inside walls, or bypass canonical geometry. First-person camera/weapon presentation may be adjusted for readability but may not change authoritative reach or collision.",
+      "id": "DEX_SHRINK",
+      "name": "Little Guy",
+      "pos": 419946,
+      "prerequisite": "None",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with Crowbar/melee-family access",
+      "effect": "The Crowbar/Long-Sword-family base damage die becomes 1d6 instead of 1d3. Every successful nonlethal hit also applies a 168-world-unit physical push through LOD.Pushback. The d6 uses the universal exploding-d6 rule. If the push is stopped by valid architecture, ordinary wall crush remains 1d3 unless another feat changes that crush.",
+      "id": "STR_CROWBAR_D6",
+      "name": "Bash",
+      "pos": 421675,
+      "prerequisite": "None",
+      "requirement": "STR 13"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with Crowbar/melee-family access",
+      "effect": "The Crowbar/Long-Sword-family base damage die becomes 1d12, replacing Bash's d6 while retaining its 168-unit push. Because every d12 in LOD is a SUPER exploding d12, this melee die uses the normal fresh 8+ SUPER-d12 chain and any legal DEX BoomShift continuation effects. It does not add a d12 on top of the d6; it replaces the lower rank's base die.",
+      "id": "STR_CROWBAR_D12",
+      "name": "Walloper",
+      "pos": 422114,
+      "prerequisite": "Bash",
+      "requirement": "STR 15"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with Crowbar/melee-family access",
+      "effect": "A wall crush caused specifically by this actor's Crowbar/Long-Sword-family push uses two wall-slam dice instead of one. Without a Pusher-family feat, Wrecking Bar changes the ordinary wall-slam die count from 1d3 to 2d3; it owns die count, not die class. If Pusher, Shover, or Space Hog is also active, preserve Wrecking Bar's two-die count but raise the die class to that feat family's active wall-slam die, producing 2d8, 2d10, or 2d12 respectively rather than allowing either feat to downgrade or erase the other. The Pusher/Shover 2d8/2d10 versions are explicitly classExplosionImmune: no Rogue passive, Perfect Ten/Eight Is Enough effect, item, or other ordinary explosion-enabler may make those sealed pre-capstone wall-slam dice explode. The Space Hog 2d12 version uses the universal SUPER-d12 explosion rules for each die independently, with Rogue-class d12 thresholds if applicable. This replacement occurs once per qualifying push event and never once per sub-hit or pellet.",
+      "id": "STR_CROWBAR_CRUSH",
+      "name": "Wrecking Bar",
+      "pos": 422575,
+      "prerequisite": "Walloper",
+      "requirement": "STR 17"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with Crowbar/Long-Sword-family access",
+      "effect": "Define HeroOfLegendHPThreshold = min(100, MaxHP). Whenever the actor commits a legitimate Crowbar/Long-Sword-family primary swing while CurrentHP >= HeroOfLegendHPThreshold, that swing also emits exactly one Hero of Legend pulse. The pulse is a bright laser-energy duplicate shaped to match the equipped Crowbar/Long-Sword-family weapon itself rather than a generic bolt, projected forward in the swing/aim direction, and the emission produces one distinct shrill piercing 3D sound with ordinary world attenuation. Eligibility is checked once at swing commit and is threshold-based, not exact-equality-based. If MaxHP is below 100, Hero of Legend therefore requires the actor to be at or above that lower MaxHP; if MaxHP is 100 or greater, the feat activates at CurrentHP >= 100 even when that actor's MaxHP is substantially higher. Tetris overfill and any other legitimate effect that raises CurrentHP above the threshold continue to satisfy it. Dropping below HeroOfLegendHPThreshold disables future pulses until CurrentHP returns to the threshold, while a pulse already emitted remains valid even if the actor is damaged before impact. The pulse begins immediately beyond ordinary melee reach, travels straight for at most 8 grid-cell lengths, and terminates on the first blocking world geometry or first eligible hostile hit; it cannot pass walls, closed gates, props that ordinarily block attacks, or multiple bodies. On an eligible hostile hit, resolve exactly one ranged Crowbar-family damage event using the weapon's current authored Crowbar damage die and the actor's ordinary STR PhysicalDamageMultiplier. Bash therefore upgrades the pulse from the baseline Crowbar die to d6 and Walloper upgrades it to the universal SUPER d12; all otherwise-legitimate universal explosion/continuation rules for that damage die still apply. The pulse is tagged crowbarPulse and physical for current damage/resistance authorities but is not a melee contact, does not inherit Crowbar pushback, cannot wall-crush, and does not satisfy melee-only triggers such as Momentum Fighter or Meteor Strike. It costs no ammunition and no Magic, emits at most once per committed swing, and cannot recursively generate another Hero of Legend pulse.",
+      "id": "STR_HERO_OF_LEGEND",
+      "name": "Hero of Legend",
+      "pos": 423680,
+      "prerequisite": "None",
+      "requirement": "STR 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one ordinary weapon attack capable of damaging a pushable hostile",
+      "effect": "Sets WeaponKnockbackProcChance = 0.25 and WeaponKnockbackProcDistance = 168 world units. After a successful nonlethal ordinary weapon hit resolves its damage against an eligible pushable hostile, make at most one deterministic Pusher-family proc roll for that resolved target-hit event. Shotgun makes one roll per damaged target per shell after pellet aggregation; each true projectile in an authored multi-projectile attack may create its own target-hit event, but individual pellets, damage dice, penetration-added dice, and Boomchain continuations never create additional proc rolls by themselves. On success, Pusher contributes exactly one independent Push-tag source to that logical target-hit event. If the hit has no other authored physical push, the proc creates a push-tagged RequestedPushDistance of 168 world units and therefore resolves as a normal single-tag Push save. If the hit already has an authored physical push, add +168 world units to that event's RequestedPushDistance before compatible multipliers and retain both independent Push-tag sources for the shared save. Thus Shotgun's inherent Push tag plus a successful Pusher-family proc produces PushTagMultiplicity = 2: there is still only one combined push and one logical PushSave event, but the defender rolls that PushSave with disadvantage under the universal duplicate save-bearing effect-tag rule. Higher Pusher-family ranks replace lower ranks and therefore remain one Pusher-family tag source rather than creating multiple copies merely from rank ownership. The completed request then resolves through the shared STR-based push save before LOD.Pushback collision/movement resolution. On failure, a pre-existing push still resolves normally. Pusher-family proc generation also uses a shared per-attacker/per-target success cooldown: PusherProcTargetCooldownSeconds = 0.50. While that cooldown is active for the same attacker-target pair, later hits make no Pusher-family proc roll, although any authored push on those hits still resolves normally. A successful Pusher-family proc starts the 0.50-second cooldown; a failed eligible roll does not. Different targets track cooldown independently. Separately and regardless of whether the proc succeeded, this actor's ordinary physical-push wall-slam/wall-crush base die becomes 1d8 instead of the shared 1d3. Pusher-family d8 wall-slam dice are tagged classExplosionImmune=true. They are deliberately non-exploding for every class and cannot be made explosive by Rogue mastery, Eight Is Enough, equipment, or another ordinary explosion-enabler; unlocking explosion inside this family is reserved for Space Hog. The knockback proc is a utility proc, not a damage die, and is not Luck-Ring eligible unless a later rule explicitly says otherwise.",
+      "id": "STR_KNOCKBACK_1",
+      "name": "Pusher",
+      "pos": 426033,
+      "prerequisite": "None",
+      "requirement": "STR 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one ordinary weapon attack capable of damaging a pushable hostile",
+      "effect": "Replaces Pusher and sets WeaponKnockbackProcChance = 0.50 while retaining WeaponKnockbackProcDistance = 168 world units. On a successful proc, an otherwise non-pushing weapon hit gains a push-tagged RequestedPushDistance of 168 world units and an already-pushing hit gains +168 units to its RequestedPushDistance; the completed request then resolves through the shared STR-based push save before physical displacement. The actor's ordinary physical-push wall-slam/wall-crush base die becomes 1d10. Shover-family d10 wall-slam dice are tagged classExplosionImmune=true. They remain non-exploding for every class and cannot be made explosive by Rogue mastery, Perfect Ten, equipment, or another ordinary explosion-enabler. Shover inherits PusherProcTargetCooldownSeconds = 0.50 and all per-attacker/per-target cooldown semantics. All Pusher targeting, aggregation, collision, one-proc-per-target-hit, and non-Luck-Ring rules remain unchanged.",
+      "id": "STR_KNOCKBACK_2",
+      "name": "Shover",
+      "pos": 428950,
+      "prerequisite": "Pusher",
+      "requirement": "STR 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one ordinary weapon attack capable of damaging a pushable hostile",
+      "effect": "Replaces Shover and sets WeaponKnockbackProcChance = 0.75 while retaining WeaponKnockbackProcDistance = 168 world units. On a successful proc, an otherwise non-pushing weapon hit gains a push-tagged RequestedPushDistance of 168 world units and an already-pushing hit gains +168 units to its RequestedPushDistance; the completed request then resolves through the shared STR-based push save before physical displacement. The actor's ordinary physical-push wall-slam/wall-crush base die becomes 1d12. Space Hog removes the lower ranks' classExplosionImmune seal. Because every d12 in LOD is a SUPER exploding d12, Space Hog is the first and only rank in this family whose wall-slam die explodes: a fresh wall-slam d12 begins at the universal 8+ threshold and subsequent continuation dice use the ordinary descending SUPER-d12 rule plus any legal DEX BoomShift assistance. Higher Pusher-family ranks replace, rather than stack with, the lower rank's proc chance and wall-slam die. Space Hog inherits PusherProcTargetCooldownSeconds = 0.50. A single resolved push can still cause at most one wall crush.",
+      "id": "STR_KNOCKBACK_3",
+      "name": "Space Hog",
+      "pos": 430039,
+      "prerequisite": "Shover",
+      "requirement": "STR 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one authored push-capable attack or effect",
+      "effect": "Whenever a push-tagged event credited to this actor reaches the shared STR push save, a successful PushSave applies 50% of SizeAdjustedPushDistance instead of the ordinary 0%; a failed PushSave still applies 100%. Steamroller does not create push where none exists, does not alter PushDC or PushSave, does not grant extra saves, and never bypasses PushImmune. Any resulting nonzero displacement continues through ordinary defender-side post-save multipliers, LOD.Pushback collision handling, and wall-slam/wall-crush rules.",
+      "id": "STR_STEAMROLLER",
+      "name": "Steamroller",
+      "pos": 431288,
+      "prerequisite": "None",
+      "requirement": "STR 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible attributable damaging attack",
+      "effect": "Sets BleedProcChance = 0.11 under the shared status-proc feat-family rules. On an eligible target-hit event, a successful proc creates exactly one Bleeding application attempt. Bloodletter is STR-governed for feat qualification, but Bleeding remains a canonical CON-resisted condition: the attacker's CON sets BleedDC and the defender's CON sets BleedSave. A successful save prevents Bleeding. If the authored attack already guarantees a Bleeding application attempt, skip the redundant Bloodletter-family proc roll.",
+      "id": "STR_BLEED_PROC_1",
+      "name": "Bloodletter",
+      "pos": 431940,
+      "prerequisite": "None",
+      "requirement": "STR 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Bloodletter and sets BleedProcChance = 0.22. All shared target-hit aggregation, CON-based BleedDC/BleedSave, Bleeding tick/recovery, and non-stacking rules remain unchanged.",
+      "id": "STR_BLEED_PROC_2",
+      "name": "Deep Wounds",
+      "pos": 432585,
+      "prerequisite": "Bloodletter",
+      "requirement": "STR 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Deep Wounds and sets BleedProcChance = 0.33. All other Bloodletter-family semantics remain unchanged; higher ranks replace rather than stack with lower ranks, and BleedTickDamage can never itself roll Bloodletter or another offensive status-proc family.",
+      "id": "STR_BLEED_PROC_3",
+      "name": "Exsanguinator",
+      "pos": 432903,
+      "prerequisite": "Deep Wounds",
+      "requirement": "STR 17"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with melee-family access",
+      "effect": "Ordinary melee-family reach is multiplied by 1.25, after which the existing geometry trace remains authoritative. This cannot strike through walls, gates, floors, or other blocking architecture.",
+      "id": "STR_MELEE_REACH",
+      "name": "Long Reach",
+      "pos": 433304,
+      "prerequisite": "None",
+      "requirement": "STR 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Incoming ordinary hit-stun duration and non-scripted push displacement are each multiplied by 0.75. Authored boss mechanics that explicitly ignore resistance remain exceptions.",
+      "id": "CON_STEADFAST",
+      "name": "Hard to Move",
+      "pos": 433604,
+      "prerequisite": "None",
+      "requirement": "CON 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Once every 2.0 seconds per defender, when an incoming damage die would legitimately create a continuation die because its kept result met that die chain's current explosion threshold, Blast-Proof suppresses that one explosion continuation. The triggering die still contributes its full resolved damage value; only the continuation die that would have been created is omitted. The 2.0-second cooldown begins when a continuation is actually suppressed. While the cooldown is active, later explosion events resolve normally. Blast-Proof applies to any incoming actor-owned damage die that can generate an explosion continuation, including universal d6/SUPER-d12 chains, feat-enabled exploding d4/d8/d10 damage dice, and future exploding Magic damage dice. It does not trigger on non-damage count dice such as Shotgun pellet-count rolls, health-generation dice, loot/progression/random utility rolls, or the defender's own outgoing damage rolls. If one attack contains several independent exploding damage dice, only the first qualifying continuation encountered in authoritative resolution order is suppressed while Blast-Proof is ready. It may suppress either an initiating explosion or a later continuation explosion; in either case that specific chain ends at the suppressed die because no next die is created. The combat-roll feed records BLAST-PROOF when a continuation is prevented.",
+      "id": "CON_BLAST_PROOF",
+      "name": "Blast-Proof",
+      "pos": 433847,
+      "prerequisite": "None",
+      "requirement": "CON 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Sets PlayerTargetScale to 1.30. Third-person/world presentation and combat hurt volume become 130% size while the authoritative movement/collision hull remains unchanged. Melee reach is multiplied by 1.15 and actor-authored physical push dealt is multiplied by 1.20. The larger hurt volume is the balancing drawback. Big Guy and Little Guy are mutually exclusive.",
+      "id": "CON_BIG_GUY",
+      "name": "Big Guy",
+      "pos": 435301,
+      "prerequisite": "None",
+      "requirement": "CON 15 and STR 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Once per dungeon for each owning actor, damage that would reduce the actor from above 1 HP to 0 or less instead leaves that actor at exactly 1 HP and grants 0.50 seconds of damage immunity. The trigger is consumed for that dungeon even if the actor is healed, dies later, respawns, disconnects/reconnects, or changes floors; it resets only when the campaign advances to a new dungeon. An AI actor spawned for the first time in a dungeon begins with its one use available and cannot gain another use within that dungeon through despawn/recreation exploits.",
+      "id": "CON_NOT_YET",
+      "name": "Not Yet",
+      "pos": 435757,
+      "prerequisite": "None",
+      "requirement": "CON 15"
+    },
+    {
+      "actors": "Player-controlled cooperative heroes with Tetris access",
+      "effect": "Doubles all temporary HP overfill earned from qualifying Tetris line-clear rewards: TetrisOverfillMultiplier = 2.0, so the baseline single/double/triple/quad rewards become +20/+60/+100/+160 HP and all accumulated qualifying Tetris reward is doubled before being applied. This reward multiplier applies to both death Tetris and post-rescue/victory Tetris. Separately, only for death Tetris, DeathTetrisMaxSeconds increases from the normally hidden 60-second hard cap to 120 seconds. Russian Asset does not change the mandatory 20-second death/respawn lockout, does not delay the moment F becomes available to respawn, does not require the player to remain dead for 120 seconds, and does not extend post-rescue/victory Tetris beyond its ordinary 20-second duration. Pressing F at any eligible time after the 20-second minimum still immediately finalizes the current death-Tetris score and respawns normally.",
+      "id": "CON_RUSSIAN_ASSET",
+      "name": "Russian Asset",
+      "pos": 436372,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers who possess/use the SMG",
+      "effect": "Sets SMGHeatSuppressionChance = 0.11 and SMGOverheatThreshold = 8 heat. On every successfully fired SMG round, before that round adds its normal one shot-equivalent of heat, the server makes one deterministic heat-suppression roll from the dedicated SMG-heat substream. Cold Hands heat-suppression rolls are not Luck-Ring eligible and cannot be rerolled or advantaged unless a later feat explicitly says otherwise. On success, that round adds 0 heat; on failure, it adds the ordinary +1 heat. The SMG overheats when accumulated heat reaches 8 rather than the baseline 6. Damage, ammunition consumption, fire rate, sub-threshold cooling, visual/audio heat stages, and the fixed 2.0-second overheat lockout are unchanged.",
+      "id": "DEX_SMG_COLD_HANDS_1",
+      "name": "Cold Hands",
+      "pos": 437380,
+      "prerequisite": "None",
+      "requirement": "DEX 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers who possess/use the SMG",
+      "effect": "Replaces Cold Hands and sets SMGHeatSuppressionChance = 0.22 and SMGOverheatThreshold = 10 heat. Each successfully fired SMG round independently has a 22% server-authoritative deterministic chance to add no heat; otherwise it adds the ordinary +1 heat. The SMG overheats when accumulated heat reaches 10. All baseline cooling, heat feedback, and the fixed 2.0-second overheat lockout remain unchanged.",
+      "id": "DEX_SMG_COLD_HANDS_2",
+      "name": "Ice in the Veins",
+      "pos": 438213,
+      "prerequisite": "Cold Hands",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers who possess/use the SMG",
+      "effect": "Replaces lower Cold Hands ranks and sets SMGHeatSuppressionChance = 0.33 and SMGOverheatThreshold = 12 heat. Each successfully fired SMG round independently has a 33% server-authoritative deterministic chance to add no heat; otherwise it adds the ordinary +1 heat. The SMG overheats when accumulated heat reaches 12. The capstone therefore combines a higher heat ceiling with frequent heatless shots but still never grants immunity to overheating and never changes SMG damage, ammunition consumption, firing cadence, cooling rate, visual/audio heat feedback, or the fixed 2.0-second lockout.",
+      "id": "DEX_SMG_COLD_HANDS_3",
+      "name": "Absolute Zero",
+      "pos": 438739,
+      "prerequisite": "Ice in the Veins",
+      "requirement": "DEX 17"
+    },
+    {
+      "actors": "Player-controlled actors using the AR2",
+      "effect": "The player AR2's pre-burst targeting-laser delay is multiplied by 0.80, never below a 0.50-second absolute readability floor. The weapon still requires the laser tell before every three-round burst.",
+      "id": "DEX_AR2_SNAP",
+      "name": "Snap Targeting",
+      "pos": 439459,
+      "prerequisite": "None",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Player-controlled actors using the .357 Magnum",
+      "effect": "Magnum Aim State requires 0.35 seconds of perfect stillness instead of 0.50 seconds. Movement, jump input, aim movement, weapon switching, death, and firing cancel/consume the state exactly as normal.",
+      "id": "DEX_MAGNUM_DEADEYE",
+      "name": "Deadeye",
+      "pos": 439737,
+      "prerequisite": "None",
+      "requirement": "DEX 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Sets ManaBarrierFeatDiversionFraction = 0.15. This feat family is unavailable to Wizard-class actors; it is the INT-gated HP→Magic diversion path for eligible non-Wizards. For an eligible non-Wizard with Mana Barrier, Mana Barrier grants ArcaneShieldCapability and HPToMagicDiversionFraction = ManaBarrierFeatDiversionFraction = 0.15 while Arcane Shield is online; while shattered, effective HPToMagicDiversionFraction = 0 until the shared 5d6! shatter timer clears. After an incoming damage event has completed all ordinary damage resolution, including attack dice/Boomchains, weakness/resistance/immunity handling, CON DamageResistancePerDie, and other authored mitigation or amplification, but immediately before HP is removed, define ResolvedHPDamage as the HP damage that would otherwise be applied; it may be fractional. DesiredHPDiversion = ResolvedHPDamage × HPToMagicDiversionFraction. ActualHPDiversion = min(DesiredHPDiversion, CurrentMagic). MagicSpent = ActualHPDiversion and FinalHPDamage = ResolvedHPDamage - ActualHPDiversion. Fractional HP diversion and fractional Magic damage are legal. Magic cannot fall below 0. This diversion authority applies to ordinary damage events from actors or the environment, including damage to temporary Tetris overfill, but not direct kill commands, non-damage death states, or effects explicitly tagged ignoreManaBarrier. HP-to-Magic diversion loss is classified as Magic damage, not voluntary Magic spending, so spend/cast triggers do not fire merely because the barrier absorbed damage. If the barrier reduces Magic to 0, normal zero-Magic consequences still occur, including forced minimap closure; ordinary regeneration rules then govern recovery.",
+      "id": "INT_MANA_BARRIER_1",
+      "name": "Mana Barrier",
+      "pos": 440025,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Replaces Mana Barrier and sets ManaBarrierFeatDiversionFraction = 0.30. This feat remains unavailable to Wizard-class actors. For eligible non-Wizards, HPToMagicDiversionFraction = 0.30. The same post-mitigation continuous calculation and 1 Magic per 1 prevented HP exchange apply; fractional HP diversion and fractional Magic damage are legal, diversion is limited by CurrentMagic, and any unpayable remainder is taken as HP damage normally.",
+      "id": "INT_MANA_BARRIER_2",
+      "name": "Arcane Aegis",
+      "pos": 441812,
+      "prerequisite": "Mana Barrier",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Replaces lower Mana Barrier ranks and sets ManaBarrierFeatDiversionFraction = 0.45. This feat remains unavailable to Wizard-class actors. For eligible non-Wizards, HPToMagicDiversionFraction = 0.45. It never increases Magic capacity above 100, explicitly permits fractional HP prevention and fractional Magic damage, never prevents non-damage death, and remains constrained by the actor's CurrentMagic.",
+      "id": "INT_MANA_BARRIER_3",
+      "name": "Mystic Bastion",
+      "pos": 442346,
+      "prerequisite": "Arcane Aegis",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Whenever Magic reaches 0, the next time regeneration becomes legally permitted the actor receives a 1.50 multiplier to its already INT-scaled Magic regeneration for 4.0 seconds. The timer does not run and no regeneration occurs while the minimap or another regeneration-suppressing sustained effect remains active.",
+      "id": "INT_MANA_SPRING",
+      "name": "Mana Spring",
+      "pos": 442842,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Grants exactly one additional voluntary jump per airborne cycle. After leaving authoritative ground, a fresh Space press while airborne may consume 5 Magic to perform one additional jump; if fewer than 5 Magic is available, no Cloud Step occurs and no partial cost is paid. The additional jump uses ordinary jump strength unless another compatible movement feat modifies voluntary jump height; Spring Heel therefore doubles both the ground jump and Cloud Step jump when both are owned. When Wall Jump is also owned, a fresh airborne Space press that has a valid unused Wall Jump resolves Wall Jump first and leaves Cloud Step unused; once the actor is no longer eligible for that wall jump, a later fresh Space press may still consume Cloud Step normally. Cloud Step and Wall Jump are separate once-per-airborne-cycle resources and may therefore both occur before the next legitimate ground contact. Cloud Step resets only after legitimate ground contact and cannot create repeated air jumps from wall contact, props, Push, or scripted movement. Canonical anti-top, gate, ceiling, and progression blockers remain authoritative.",
+      "id": "INT_CLOUD_STEP",
+      "name": "Cloud Step",
+      "pos": 443236,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Once per airborne cycle, the actor may hold Space at the apex of an eligible jump to enter a controllable float for up to 3.0 seconds. Float On spends Magic continuously at 5 Magic per second, so using the complete 3.0-second duration costs exactly 15 Magic; partial use costs only the proportional amount actually floated. The float ends immediately when Space is released, the 3.0-second cap is reached, available Magic is exhausted, or legitimate ground contact occurs. Floating suppresses ordinary downward acceleration enough to maintain the intended brief Princess-Peach-style hang time but does not create upward flight; ordinary horizontal air control remains available. Once Float On has been started or exhausted during an airborne cycle, it cannot be started again until legitimate ground contact resets it. Float On is always the lowest-priority Space behavior. A fresh airborne Space press that can legally trigger Wall Jump or Cloud Step resolves that discrete jump instead of starting Float. If Cloud Step is owned and still unused, Float On remains ineligible at an earlier apex; it may activate only after Cloud Step has actually been performed. When Wall Jump is also owned, Wall Jump may occur before or after Cloud Step according to wall proximity, and a later eligible apex may still start Float; merely owning an unused Wall Jump does not suppress Float when no valid wall is currently within WallJumpProbeDistance. This supports the canonical sequence ground jump -> Wall Jump when near a wall -> Cloud Step after moving clear -> hold Space at the later apex for Float, while also supporting ground jump -> Cloud Step -> Wall Jump -> Float if the actor reaches a wall later in the same airborne cycle. Without Cloud Step, Float On may activate at the apex of the ordinary ground jump or, if a Wall Jump was used afterward, at the later Wall Jump apex. Canonical anti-top, gate, ceiling, and progression blockers remain authoritative.",
+      "id": "INT_FLOAT_ON",
+      "name": "Float On",
+      "pos": 444451,
+      "prerequisite": "None",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Crouching gradually transforms the actor toward SizeShifterTargetScale = 0.33 over a full 3.0-second baseline-to-minimum transition; releasing crouch reverses the transformation toward that actor's ordinary non-Size-Shifter PlayerTargetScale at the same continuous rate, so partial transformations reverse smoothly rather than snapping or restarting a fresh timer. Size Shifter is a one-rank feat and costs no Magic. The third-person/world model, combat hurt volume, camera presentation where safe, and shared PushSizeScale track the current interpolated Size Shifter scale so a deeply shrunken actor is harder to hit but also easier to push and is pushed farther under the canonical size-based push rules. The authoritative movement/collision hull, stair legality, USE reach, weapon traces, gate permissions, and progression geometry never shrink below their ordinary crouched legal values, so Size Shifter cannot crawl through walls, locked gates, illegal gaps, or other geometry that the normal actor could not traverse. If Little Guy or Big Guy is also owned, that feat defines the actor's ordinary non-Size-Shifter return scale; Size Shifter still approaches an absolute 0.33 while crouched and returns toward that build's ordinary scale when crouch is released.",
+      "id": "INT_SIZE_SHIFTER",
+      "name": "Size Shifter",
+      "pos": 446491,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible active attack-tagged Magic activation",
+      "effect": "Reduces the Magic cost of eligible offensive Magic activated through RMB or the equivalent rebindable active-Magic action by 11%. QuantumCostMultiplier = 0.89. EligibleOffensiveMagicBaseCost is the ordinary resolved Magic cost that would otherwise be spent for that damaging/attack-tagged activation after its authored Form/Content combination and other ordinary base-cost construction but before this feat-family reduction. FinalOffensiveMagicCost = max(1, ceil(EligibleOffensiveMagicBaseCost × QuantumCostMultiplier)). This feat affects only Magic actually spent to initiate eligible offensive attack Magic; it does not change Magic regeneration, Max Magic, Magic damage, dice, Boom rules, status chances, cooldowns, Arcane Shield diversion, Feedback, the minimap, Haste, Polymorph, GPS, passive/supplemental Magic effects, or any other utility/non-attack Magic cost. Within this feat family, only the highest owned rank applies.",
+      "id": "INT_QUANTUM_MATHEMATICS_1",
+      "name": "Quantum Mathematics",
+      "pos": 447850,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible active attack-tagged Magic activation",
+      "effect": "Replaces Quantum Mathematics' 11% reduction with a 22% reduction to eligible offensive RMB/equivalent active-Magic costs. QuantumCostMultiplier = 0.78 and FinalOffensiveMagicCost = max(1, ceil(EligibleOffensiveMagicBaseCost × 0.78)). All eligibility, exclusions, rounding, and non-stacking rules from Quantum Mathematics remain authoritative.",
+      "id": "INT_QUANTUM_MECHANICS_2",
+      "name": "Quantum Mechanics",
+      "pos": 448936,
+      "prerequisite": "Quantum Mathematics",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible active attack-tagged Magic activation",
+      "effect": "Replaces Quantum Mechanics' 22% reduction with a 33% reduction to eligible offensive RMB/equivalent active-Magic costs. QuantumCostMultiplier = 0.67 and FinalOffensiveMagicCost = max(1, ceil(EligibleOffensiveMagicBaseCost × 0.67)). All eligibility, exclusions, rounding, and non-stacking rules from Quantum Mathematics remain authoritative.",
+      "id": "INT_QUANTUM_MASTERY_3",
+      "name": "Quantum Mastery",
+      "pos": 449444,
+      "prerequisite": "Quantum Mechanics",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Cooperative Heroes with the Summon Form unlocked",
+      "effect": "Raises that Hero's caster-specific MaxActiveSummons from the default 1 to 2. This is a cap replacement, not an additive +1 stack. It changes only the number of that caster's own allied Seeker summons that may coexist; it does not alter Summon duration, Magic cost, placement range, Seeker attack behavior, inherited SummonMagicPayload, Content, damage, or AI behavior. If the caster is already at the cap, another Summon cast is illegal and spends no Magic rather than replacing an existing summon.",
+      "id": "INT_MIDDLE_MANAGER",
+      "name": "Middle Manager",
+      "pos": 449944,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Cooperative Heroes with the Summon Form unlocked",
+      "effect": "Raises that Hero's caster-specific MaxActiveSummons to 3, replacing the Middle Manager cap rather than stacking with it. All Summon cost, duration, placement, payload inheritance, Content, damage, AI, and lifecycle rules remain unchanged.",
+      "id": "INT_TASKMASTER",
+      "name": "Taskmaster",
+      "pos": 450538,
+      "prerequisite": "Middle Manager",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Cooperative Heroes with the Summon Form unlocked",
+      "effect": "Raises that Hero's caster-specific MaxActiveSummons to 4, replacing the Taskmaster cap rather than stacking with it. Four is the authored maximum unless a future explicit rule changes it. All other Summon rules remain unchanged.",
+      "id": "INT_OVERLORD",
+      "name": "Overlord",
+      "pos": 450874,
+      "prerequisite": "Taskmaster",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Cooperative Heroes with at least one unlocked non-Summon Magic Form",
+      "effect": "Each successful committed cast of BLAST, BEAM, BOMB, MISSILE, or BOLT schedules exactly one phantom echo 0.50 seconds later at no additional Magic cost. The server snapshots the original cast's launch origin, authoritative maze cell where applicable, launch orientation or initial vector, Form identity, selected Content damage type, and the caster-side Magic damage state needed to reproduce that attack. The echo originates from that exact captured launch point and initial direction, never from the caster's position 0.50 seconds later. It uses the original Form's geometry, collision rules, target budget, delivery behavior, selected Content damage type, WIS MagicPowerMultiplier, elemental damage resolution, Boom authority, and all other otherwise-applicable caster-side Magic damage modifiers, but reduces only the Form's authored base damage-die count according to AftershockDiceCount = max(1, floor(OriginalFormBaseDamageDiceCount / 2)). With the current Form catalog this yields Blast 1d6, Beam 1d6, Bomb 1d6, Missile 1d6, and Bolt 2d6 before ordinary scaling and Boom resolution. The echo is damage-only and carries no Content rider, status, control, Push, or other non-damage rider: Earth creates no Push; Fire no Immolated; Dark no Poisoned; Ice no Held; Light no Muted; Electric no Morale rider. Current target-side weakness, resistance, immunity, blockers, collision, and other ordinary Magic interactions are resolved when the phantom attack actually launches or lands. Aftershock never triggers from SUMMON, summoned-Seeker proxy attacks, another Aftershock echo, passive or scripted Magic, or a failed or cancelled cast, and an echo cannot recursively schedule another echo. A committed original cast still produces its scheduled echo if the caster moves afterward; only invalid session/level cleanup or cancellation before original cast commitment removes the pending echo. The phantom is a real second Form attack against then-current world state, not delayed guaranteed damage to the original targets. Its visual presentation reuses the Form effect at AftershockVisualAlpha = 0.50 × OriginalVisualAlpha and deterministically generates the complementary opposite color by rotating the original effect hue 180 degrees while preserving saturation and lightness/value as closely as renderer constraints allow; achromatic originals use a deterministic high-contrast complementary fallback. For steerable Missile, the echo begins from the captured original launch transform and thereafter retains ordinary Missile steering behavior; the other eligible Forms use their corresponding captured-origin semantics.",
+      "id": "INT_AFTERSHOCK",
+      "name": "Aftershock",
+      "pos": 451192,
+      "prerequisite": "None",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Player-controlled Heroes and human Soldiers with ordinary minimap access",
+      "effect": "While this actor's personal minimap is actually open, MapOpenMovementMultiplier = 1.25. Apply this to the actor's ordinary voluntary locomotion speed after walk/run/sprint mode, DEX movement scaling, and other compatible ordinary movement modifiers. The bonus begins only after the map is successfully opened and ends immediately when it closes for any reason. It does not alter jump velocity, Wall Jump, Cloud Step, Float On, Push/knockback, falling, projectile motion, or forced movement. If Haste is active simultaneously, first resolve the ordinary map-modified walking or sprinting speed and then apply HasteMovementMultiplier = 2.00; this composes through the same locomotion pipeline rather than creating a parallel speed algorithm. Map viewing and Haste remain separate Magic consumers and their legal drain rates add while both are active. Within this feat family, only the highest owned rank applies. The feat provides no benefit when lod_mapless or another authoritative state prevents the minimap from opening.",
+      "id": "INT_WORLD_WALKER_1",
+      "name": "World Walker",
+      "pos": 453922,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled Heroes and human Soldiers with ordinary minimap access",
+      "effect": "Replaces World Walker's 25% map-open movement bonus with MapOpenMovementMultiplier = 1.50. All activation, forced-close, locomotion, Haste composition, mapless, and non-stacking rules from World Walker remain authoritative.",
+      "id": "INT_GLOBETROTTER_2",
+      "name": "Globetrotter",
+      "pos": 455062,
+      "prerequisite": "World Walker",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Player-controlled Heroes and human Soldiers with ordinary minimap access",
+      "effect": "Replaces Globetrotter's 50% map-open movement bonus with MapOpenMovementMultiplier = 1.75. All activation, forced-close, locomotion, Haste composition, mapless, and non-stacking rules from World Walker remain authoritative.",
+      "id": "INT_MIND_STRIDER_3",
+      "name": "Mind Strider",
+      "pos": 455411,
+      "prerequisite": "Globetrotter",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Cooperative Heroes with fewer than all six canonical Magic Forms unlocked",
+      "effect": "Immediately grants exactly one additional distinct Magic Form from the canonical six-Form catalog. The granted Form is selected deterministically from the Hero's currently unowned Forms using a dedicated grand_unified_theory RNG substream; the player does not choose it, and acquisition never rerolls because I is opened, closed, or revisited. The Form persists for that campaign exactly like a scheduled class-progression Form grant. Grand Unified Theory composes with the synchronized class milestone chart rather than replacing it: a Wizard who would normally own four Forms by Level 10 may reach five, while a Rogue or Fighter who would normally own two may reach three. If this feat is acquired before a later scheduled Form grant, that later grant selects another still-unowned Form when available; no duplicate or wasted Form is generated until the six-Form catalog is exhausted. A Hero who already owns all six Forms is ineligible for this feat and it must not be offered as a dead choice. Grand Unified Theory grants no Content, does not alter Form damage, Magic costs, WIS/Astral spatial scaling, Boom rules, or spell-selection limits, and does not grant Wizard-only class passives.",
+      "id": "INT_GRAND_UNIFIED_THEORY",
+      "name": "Grand Unified Theory",
+      "pos": 455760,
+      "prerequisite": "None",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Cooperative Heroes with fewer than all six canonical Contents unlocked",
+      "effect": "Immediately grants exactly one additional distinct Content from the canonical six-Content catalog. The granted Content is selected deterministically from the Hero's currently unowned Contents using a dedicated extracurricular_activity RNG substream; the player does not choose it, and acquisition never rerolls because I is opened, closed, or revisited. The Content persists for that campaign exactly like a scheduled class-progression Content grant and may be attached to any owned compatible Magic Form through the ordinary shared Form/Content spellcasting authority. Extracurricular Activity composes with the synchronized Level-4/8/14 Content/stat track rather than replacing it: a Wizard who would normally own three Contents by Level 14 may reach four, while a Rogue or Fighter who would normally own one may reach two. If this feat is acquired before a later scheduled Content grant, that later grant selects another still-unowned Content when available; no duplicate or wasted Content is generated until the six-Content catalog is exhausted. A Hero who already owns all six Contents is ineligible for this feat and it must not be offered as a dead choice. Extracurricular Activity grants no Magic Form, does not alter Form or Content damage, Magic costs, WIS/Astral spatial scaling, Boom rules, status rider strength, or spell-selection limits, and does not grant Wizard-only class passives.",
+      "id": "INT_EXTRACURRICULAR_ACTIVITY",
+      "name": "Extracurricular Activity",
+      "pos": 457085,
+      "prerequisite": "None",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Adds a dedicated rebindable Polymorph action whose default keyboard binding is J. Activation is legal only while alive, player-controlled, not already polymorphed, and CurrentMagic = 100. Pressing the Polymorph action consumes the entire Magic pool immediately, sets CurrentMagic = 0, and transforms the actor into a chicken for PolymorphDurationSeconds = 4d6! seconds. Each of the four duration d6 chains uses the universal fixed natural-6 recursive explosion rule; these are timing dice rather than damage dice and therefore do not inherit Rogue damage-die mastery, DEX BoomShift, Wizard magical Boom rules, weapon-specific thresholds, or other damage-die modifiers. Minimum duration is 4 seconds, there is no fixed maximum, and expected duration is 16.8 seconds. Polymorph cannot be cancelled voluntarily once begun. While in chicken form, the actor is removed from ordinary hostile AI target-candidate selection and any AI target lock that exists only because that actor was a hostile target is cleared immediately; this is temporary target suppression, not a faction change, charm, invulnerability, or deletion from combat. AI may not deliberately reacquire or aim a new hostile attack at the chicken until the form ends. Attacks/projectiles already validly committed before transformation may finish resolving, and the chicken remains fully vulnerable to incidental line-of-fire hits, penetration, explosions, cones, persistent hazards, environmental damage, status damage, Reckless-friendly-fire geometry, and any other damage source that reaches it without requiring a new hostile target selection. Chicken form is a disengagement utility state: the actor cannot initiate weapon fire, melee attacks, damaging Magic, active spellcasting, or other attack-tagged actions while transformed. Tapping Space while airborne performs a chicken flap that adds another ordinary upward jump impulse; there is no per-airborne-cycle flap count while Polymorph remains active, so repeated taps create the intended comic chicken flight. Canonical ceilings, anti-container-top blockers, locked gates, progression barriers, map bounds, and other topology protections remain authoritative, so repeated flapping can aid escape and vertical maneuvering but can never fly over or through forbidden progression geometry. The world model becomes a readable chicken presentation and emits intermittent spatialized chicken clucks/boks during the transformation; audiovisual presentation must not obscure combat information. When PolymorphDurationSeconds expires, the actor automatically returns to their ordinary character form and normal hostile-target eligibility. Magic regeneration remains suppressed for PolymorphPostRecoveryDelaySeconds = 5.0 after reversion; after that delay, ordinary INT-scaled Magic regeneration rules resume. Because a new Polymorph requires CurrentMagic = 100 again, the full-pool requirement plus forced zeroing and post-form regeneration delay provide the feat's effective cooldown without a second independent cooldown timer.",
+      "id": "INT_POLYMORPH",
+      "name": "Polymorph",
+      "pos": 458622,
+      "prerequisite": "None",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "While the actor is voluntarily moving with backward movement input, BackpedalMovementMultiplier = 1.25. Backpedaling is true whenever the actor has nonzero voluntary horizontal movement input and their signed forward/back movement input is negative relative to their current facing; holding S alone or together with lateral movement therefore qualifies, while pure strafing, forward movement, knockback, Push, sliding, falling, and other forced movement do not. Apply BackpedalMovementMultiplier to the actor's resolved voluntary locomotion speed after ordinary walk/run/sprint mode, DEX movement scaling, and other compatible ordinary movement modifiers. It does not replace or disable normal sprint. If Haste is active, Haste applies normally to the already backpedal-modified legal locomotion speed, so the two feats compose multiplicatively rather than through a separate movement authority. The feat changes no forward-only movement, pure lateral movement, jump velocity, Wall Jump, Cloud Step, Float On, projectile motion, or forced movement.",
+      "id": "INT_WAS_DEBORAH",
+      "name": "W,A,S,Deborah",
+      "pos": 461747,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Adds a dedicated rebindable Haste toggle whose default keyboard binding is H. Haste begins OFF. Pressing H while alive, player-controlled, and at positive Magic toggles Haste ON; pressing H again toggles it OFF. While Haste is ON and funded, HasteMovementMultiplier = 2.00 and applies to the actor's resolved voluntary locomotion speed after ordinary walk/run/sprint mode, DEX movement scaling, MapOpenMovementMultiplier when applicable, and other compatible ordinary movement modifiers. Haste therefore doubles ordinary walking and ordinary Shift sprinting alike; it never replaces, consumes, disables, or changes access to the actor's normal sprint. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate, using the same personal WIS-scaled utility-Magic rate as map viewing. Magic regeneration is suppressed while Haste is actively draining. Haste and map viewing are independent sustained Magic consumers: at base Haste, if both are active simultaneously, TotalUtilityMagicDrainRate = CurrentMapOpenMagicDrainRate + HasteMagicDrainRate = 2 × CurrentMapOpenMagicDrainRate. Reaching 0 Magic immediately turns Haste OFF and returns locomotion to its ordinary legal speed; death or loss of player control likewise ends the active Haste state. A map force-close caused by damage or map-Magic exhaustion ends only the map state and its map-open movement bonus; it does not itself toggle Haste OFF if Haste still has positive Magic. Haste changes no jump velocity, Wall Jump, Cloud Step, Float On, Push/knockback, falling, projectile motion, or forced movement.",
+      "id": "INT_HASTE_1",
+      "name": "Haste",
+      "pos": 462887,
+      "prerequisite": "None",
+      "requirement": "INT 13"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Replaces Haste's drain multiplier with HasteDrainMultiplier = 2/3 while preserving HasteMovementMultiplier = 2.00 for both walking and ordinary sprinting. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate × 2/3 after the actor's normal WIS utility-Magic scaling has already determined the map-equivalent rate. Map viewing remains a separate sustained consumer, so if Haste and the map are active together their legal rates add. All Haste toggle, normal-sprint preservation, regeneration-suppression, and zero-Magic termination rules remain unchanged.",
+      "id": "INT_HASTE_2",
+      "name": "Mana Rush",
+      "pos": 464521,
+      "prerequisite": "Haste",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Replaces Mana Rush's drain multiplier with HasteDrainMultiplier = 1/3 while preserving HasteMovementMultiplier = 2.00 for both walking and ordinary sprinting. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate × 1/3 after ordinary WIS utility-Magic scaling. Haste and map viewing remain independent sustained Magic consumers: if both are active simultaneously, each applies its own legal drain and the rates add; either one suppresses Magic regeneration while active. All other Haste toggle, normal-sprint preservation, and zero-Magic termination rules remain unchanged.",
+      "id": "INT_HASTE_3",
+      "name": "Aether Drive",
+      "pos": 465157,
+      "prerequisite": "Mana Rush",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Every continuation die actually generated by an offensive Magic attack restores 1 Magic to the caster, capped at 6 restored Magic per committed cast/attack event. Initial dice do not count. Weapon-only Boomchains do not trigger this feat unless another cross-system feat explicitly bridges them.",
+      "id": "INT_FEEDBACK_LOOP",
+      "name": "Feedback Loop",
+      "pos": 465819,
+      "prerequisite": "None",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Defeating an AI hostile with a Magic-tagged damage event restores 5 Magic. This has a 2.0-second per-actor internal cooldown and can never raise Magic above 100.",
+      "id": "INT_ARC_RECOVERY",
+      "name": "Arc Recovery",
+      "pos": 466198,
+      "prerequisite": "None",
+      "requirement": "INT 17"
+    },
+    {
+      "actors": "Heroes and human Soldiers",
+      "effect": "The first Luck-Ring reroll actually generated in each rolling 5.0-second window costs 8 Magic instead of 10. Additional rerolls during that window cost the normal 10. This alters cost only; it never changes the fixed 100-Magic capacity or the favorable-result comparator.",
+      "id": "INT_CALCULATED_LUCK",
+      "name": "Calculated Luck",
+      "pos": 466441,
+      "prerequisite": "Luck Ring owned/equipped",
+      "requirement": "INT 15"
+    },
+    {
+      "actors": "Heroes and human Soldiers with minimap access",
+      "effect": "Adds +4 to BreadcrumbCells after the normal WIS formula. The additional route length follows the same canonical current-objective route and player-facing navigation authority as the ordinary breadcrumb.",
+      "id": "WIS_SURVEYOR",
+      "name": "Surveyor",
+      "pos": 466808,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets MuteProcChance = 0.11. On an eligible target-hit event under the common status-proc rules, a successful proc creates one mute-tagged application attempt using the ordinary attacker-WIS MagicDC and defender-WIS MagicSave formulas. Failure applies canonical Muted; success prevents it.",
+      "id": "WIS_MUTE_PROC_1",
+      "name": "Hushing",
+      "pos": 467091,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Hushing and sets MuteProcChance = 0.22. All common status-proc aggregation, WIS-save, Muted duration, passive-Magic preservation, and non-stacking rules remain unchanged.",
+      "id": "WIS_MUTE_PROC_2",
+      "name": "Silencing",
+      "pos": 467499,
+      "prerequisite": "Hushing",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Silencing and sets MuteProcChance = 0.33. All other Hushing-family semantics remain unchanged; repeated failed applications may only extend Muted under its existing later-expiration rule.",
+      "id": "WIS_MUTE_PROC_3",
+      "name": "Dead Air",
+      "pos": 467803,
+      "prerequisite": "Silencing",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets HeldProcChance = 0.11 under the shared status-proc feat-family rules. On a successful proc, the target makes exactly one ordinary WIS MagicSave against the attacker's WIS-based MagicDC; failure applies canonical Held. This creates a Held attempt only and never bypasses the defender's Wisdom.",
+      "id": "WIS_HELD_PROC_1",
+      "name": "Snaring",
+      "pos": 468125,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Snaring and sets HeldProcChance = 0.22. All other Snaring-family semantics remain unchanged; repeated failed applications may only extend Held under its existing later-expiration rule.",
+      "id": "WIS_HELD_PROC_2",
+      "name": "Binding",
+      "pos": 468542,
+      "prerequisite": "Snaring",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Binding and sets HeldProcChance = 0.33. All other Snaring-family semantics remain unchanged; repeated failed applications may only extend Held under its existing later-expiration rule.",
+      "id": "WIS_HELD_PROC_3",
+      "name": "Entrapping",
+      "pos": 468858,
+      "prerequisite": "Binding",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets RecklessProcChance = 0.11 under the shared status-proc feat-family rules. On a successful proc, the target makes exactly one ordinary WIS MagicSave against the attacker's WIS-based MagicDC; failure applies canonical Reckless. This creates a Reckless attempt only and never bypasses the defender's Wisdom.",
+      "id": "WIS_RECKLESS_PROC_1",
+      "name": "Agitating",
+      "pos": 469177,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Agitating and sets RecklessProcChance = 0.22. All other Agitating-family semantics remain unchanged; repeated failed applications may only extend Reckless under its existing later-expiration rule.",
+      "id": "WIS_RECKLESS_PROC_2",
+      "name": "Unhinging",
+      "pos": 469612,
+      "prerequisite": "Agitating",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Unhinging and sets RecklessProcChance = 0.33. All other Agitating-family semantics remain unchanged; repeated failed applications may only extend Reckless under its existing later-expiration rule.",
+      "id": "WIS_RECKLESS_PROC_3",
+      "name": "Maddening",
+      "pos": 469948,
+      "prerequisite": "Unhinging",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes and human Soldiers with minimap access",
+      "effect": "Replaces Surveyor's +4 bonus with +8 BreadcrumbCells total. Current-floor and canonical current-objective routing restrictions remain absolute.",
+      "id": "WIS_CARTOGRAPHER",
+      "name": "Cartographer",
+      "pos": 470284,
+      "prerequisite": "Surveyor",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes and human Soldiers with minimap access",
+      "effect": "After the normal WIS UtilityMagicCostMultiplier is calculated, minimap drain is multiplied by an additional 0.85, with final MapDrainPerSecond never lower than 3.0 Magic/second. Magic regeneration remains completely disabled while the map is open.",
+      "id": "WIS_FRUGAL_MAP",
+      "name": "Frugal Cartography",
+      "pos": 470520,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Grants MagicalDamageReduction = max(0, WIS_MOD). Whenever this actor receives an incoming damage event tagged magical=true from any source, reduce that event's aggregated magical damage by MagicalDamageReduction after ordinary damage dice/Boom resolution, CON DamageResistancePerDie, source-side scaling, and elemental/identity modifiers, but before Arcane Shield HP-to-Magic diversion, lethal intercepts, and final HP loss. Apply True Faith exactly once per resolved damage event, never once per die, pellet, Boom continuation, or internal sub-hit, and never reduce damage below 0. Physical-only events with magical=false receive no reduction. If an unusual event is tagged both physical=true and magical=true, it qualifies because it is still an explicitly magical damage source. True Faith does not alter MagicSave, Arcane Integrity, elemental resistance/weakness, status saves, Magic cost, or any non-damage effect.",
+      "id": "WIS_TRUE_FAITH",
+      "name": "True Faith",
+      "pos": 470860,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "While this feat is ready, the first incoming damage event tagged physical=true automatically receives PhysicalDamageReduction = max(0, WIS_MOD), applied once to the event's aggregated physical damage after ordinary damage dice/Boom resolution, CON DamageResistancePerDie, source-side scaling, and elemental/identity modifiers, but before Arcane Shield HP-to-Magic diversion, lethal intercepts, and final HP loss. Never reduce damage below 0. After an eligible physical event consumes the ready state, roll MindOverMatterCooldownSeconds = 3d4 seconds and do not apply Mind Over Matter again until that cooldown expires. These three d4 timing dice are sealed, non-damage utility dice and never explode or inherit Rogue damage-die mastery, DEX BoomShift, Wizard magical Boom rules, weapon-specific explosion rules, or other attack-die modifiers. When the cooldown expires, Mind Over Matter becomes ready again. Magical-only events with physical=false do not consume the ready state. A mixed physical=true/magical=true event may receive True Faith's magical reduction and, when Mind Over Matter is ready, Mind Over Matter's physical reduction on the same resolved event; each applies once and final damage is clamped at 0. Mind Over Matter does not alter Push, wall-slam damage, hit-stun, status saves, MagicSave, or any non-damage physical effect.",
+      "id": "WIS_MIND_OVER_MATTER",
+      "name": "Mind Over Matter",
+      "pos": 471845,
+      "prerequisite": "True Faith",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Player-controlled Heroes only",
+      "effect": "Adds a private old-school synthetic GPS navigation assist with a dedicated rebindable toggle whose default keyboard binding is G. GPS starts enabled immediately when the feat is acquired. Acquisition displays a concise tooltip/system notice: GPS ENABLED — If it gets annoying, press G to turn it off. Press G again to turn it back on. Pressing the GPS action toggles the feature without spending Magic; every toggle plays a short electronic switch/chime and produces the ordinary bounded on-screen system notice GPS ON or GPS OFF. While enabled, GPS becomes eligible once the Hero remains in the same canonical maze cell without meaningful locomotion for GPSIdleDelaySeconds = 3 + 1d6 seconds. The d6 is a sealed non-damage utility die and never explodes or inherits attack-die modifiers. Aim/facing may change while stationary. GPS speaks at most one guidance bark per stationary episode; meaningful locomotion re-arms it, so remaining still does not cause repeated chatter. When triggered, GPS reads only the authoritative canonical route from the Hero's current cell to the currently active progression objective and emits one short 2000s/early-2010s-style direction assembled from a small fixed synthetic/concatenative voice bank. Supported phrase families include TURN LEFT, TURN RIGHT, TURN AROUND, CONTINUE FORWARD, IN N SQUARES TURN LEFT/RIGHT, IN N SQUARES TAKE THE STAIRS UP/DOWN, TAKE THE STAIRS UP/DOWN, and YOU HAVE ARRIVED AT YOUR DESTINATION. N is derived from the contiguous legal route segment to the next turn, stair transition, or objective rather than guessed. GPS never invents a shortcut, predicts future progression stages, reveals enemies or loot, or performs a second pathfinding authority: it consumes the same canonical current-objective route used by ordinary navigation/breadcrumb logic. GPS is supplemental information and remains available even when lod_mapless 1 removes the visual minimap; it does not itself reveal a map or persistent route display. Active combat, death/spectating, staging, cutscenes, and other states where a navigation bark would be intrusive suspend the idle trigger. GPS has no Magic cost and does not alter Magic regeneration, BreadcrumbCells, movement, combat statistics, rewards, or objective logic.",
+      "id": "WIS_GPS",
+      "name": "GPS",
+      "pos": 473272,
+      "prerequisite": "None",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Cooperative Heroes with at least one Magic Form unlocked",
+      "effect": "Adds AstralReachBonusCells = 2 to the shared Magic Form spatial-scaling authority. This flat +2-cell bonus layers on top of the caster's ordinary MagicSpatialBonusCells = max(1, WIS_MOD); it does not replace Wisdom scaling or create a second range algorithm. The +2 applies only to each Form dimension already marked Wisdom-scaled: Blast gains +2 cells of graph reach; Beam gains +2 cells of linear reach; Bomb keeps fixed throw range but gains +2 cells of explosion radius; Missile gains +2 cells of guided-flight range and +2 cells of explosion radius; Bolt gains +2 cells of projectile reach. Future Magic Forms inherit the same semantic rule automatically: Astral Reach adds +2 cells to each spatial dimension the core Wisdom authority marks scalable and does nothing to dimensions the Form keeps static. Existing geometry, obstruction, target-once, penetration, and attack-work rules remain unchanged. Astral Reach changes no damage dice, Magic cost, Boom rules, Content surcharge/riders, Push, status behavior, projectile speed, steering responsiveness, minimap range, BreadcrumbCells, GPS, Force Shout, or any non-Form system.",
+      "id": "WIS_ASTRAL_REACH",
+      "name": "Astral Reach",
+      "pos": 475585,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers only",
+      "effect": "Warns the player when a hostile monster occupies the rear awareness strip behind their current facing. SpatialAwarenessRangeCells = MagicSpatialBonusCells = max(1, WIS_MOD); this uses the ordinary Wisdom spatial bonus only, not TotalMagicSpatialBonusCells, so Astral Reach does not extend Spatial Awareness. Quantize the player's current horizontal facing to the nearest canonical north/east/south/west maze direction for footprint construction. For each depth d from 1 through SpatialAwarenessRangeCells, the eligible rear strip contains exactly three cells: the cell d squares directly behind the player, the cell one square to the left of that rear cell, and the cell one square to the right of that rear cell. No cells directly beside or ahead of the player's current cell are included; the first eligible row begins one square behind, producing a straight three-cell-wide column extending rearward. A hostile monster must occupy one of those authoritative maze cells and must not be concealed from the player by closed walls, closed gates, or ordinary blocking world geometry; Spatial Awareness is not a wallhack and grants no information about monsters outside the footprint. When at least one monster qualifies, select the nearest by rear depth, then lower lateral offset magnitude, then stable actor identity as deterministic ties. On initial acquisition of a qualifying monster, or when the selected qualifying monster changes after the prior selection ceases to qualify, display a concise notice in the ordinary die-readout notification area containing the monster's canonical type, for example \"BEHIND YOU: SHAMBLER\", and play one very soft, subtle non-positional awareness cue. Do not spam the notice continuously while the same selected monster remains qualified. The feat is informational only: it grants no target lock, aim assist, damage bonus, detection through architecture, enemy reveal marker, minimap marker, or AI behavior change.",
+      "id": "WIS_SPATIAL_AWARENESS",
+      "name": "Spatial Awareness",
+      "pos": 476818,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes and human Soldiers",
+      "effect": "While controlled by a human and wielding an equipped damage-dealing weapon, Killer Instinct remains dormant unless at least two living hostile actors are simultaneously inside the player's ordinary forward view and pass the same player-facing visibility/line-of-sight authority used for legal target identification. When that multi-hostile condition first becomes true and remains continuously true for 0.50 seconds, perform one target-priority evaluation; while it remains true, reevaluate no more than once every 1.00 second. If fewer than two valid hostiles remain, immediately clear the highlight and stop all Killer Instinct evaluation until the condition becomes true again; there is no general per-frame Think scan. Candidate discovery must reuse the existing visible/targetable hostile set or equivalent cached authority and may not iterate every world entity solely for this feat. For each valid candidate, compute a cheap deterministic EstimatedEffectiveDamagePerShot for one ordinary primary-fire trigger pull from the equipped weapon's current authored attack profile, using current deterministic attacker/target modifiers and mean damage-die values; do not roll dice, simulate Boom chains, predict future status procs, or Monte Carlo attacks. EstimatedShotsToKill = max(1, ceil(CurrentHP / max(1, EstimatedEffectiveDamagePerShot))). If one or more candidates have EstimatedShotsToKill = 1, select the one with the greatest EstimatedEffectiveDamagePerShot - CurrentHP kill margin; otherwise select the candidate with the lowest EstimatedShotsToKill. Break any remaining tie by lower CurrentHP, then stable actor ID. Render one red outline/halo tightly around the selected hostile model. The outline is informational only: it grants no aim assist, targeting lock, damage, AI-priority change, extra detection range, through-wall awareness, or tracking after ordinary visibility is lost, and it clears immediately when the target dies or becomes invalid.",
+      "id": "WIS_KILLER_INSTINCT",
+      "name": "Killer Instinct",
+      "pos": 478872,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes and human Soldiers",
+      "effect": "While controlled by a human, whenever this actor directly looks at a monster through the canonical look-at/target-identification trace, render an Omniscience readout above that monster at the same presentation anchor used for player identity text. For an ordinary AI monster, the readout shows the monster's canonical type/archetype name, current Combat Level, current class, and current Hit Points as CurrentHP/MaxHP. Example structure: Soldier • Level 21 • Fighter • HP 84/117. The values update live while the target remains valid. Omniscience is informational only: it grants no extra targeting range, no through-wall or off-screen awareness, no outline or tracking after look-away, and no combat/stat bonus. A human-controlled Soldier is still a monster for Omniscience purposes, but its existing HumanSoldierText remains the primary identity line; Omniscience appends the same Type/Level/Class/HP readout rather than replacing or hiding the controlling player's identity. Non-monster world entities and cooperative Heroes do not receive this monster-stat readout.",
+      "id": "WIS_OMNISCIENCE",
+      "name": "Omniscience",
+      "pos": 480910,
+      "prerequisite": "None",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +2 to MagicSave against explicitly resistible magical effects.",
+      "id": "WIS_SPELLWARD",
+      "name": "Spellward",
+      "pos": 482047,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Cooperative heroes",
+      "effect": "Sixth Sense grants three personal perception effects. First, the owner can visually perceive any entity whose authoritative state includes invisible=true. Invisibility is a reusable shared entity-state primitive rather than a Watcher-specific exception: Watchers use it now, and future enemies, effects, or actors may use the same state. An invisible entity is rendered only for the owning client as a clearly readable translucent silhouette/outline at its true current world position whenever that entity would otherwise satisfy ordinary world visibility and line-of-sight rules if invisibility were ignored. Second, Sixth Sense grants Nearby Hostile Sense: every living hostile entity on the owner's current floor whose cell-coordinate distance is within 2 grid cells is rendered to that owner as a readable through-geometry outline even when intervening walls or props block line of sight. For this sensor, NearbyCellDistance = max(abs(enemyCellX-ownerCellX), abs(enemyCellY-ownerCellY)); the effect applies when NearbyCellDistance <= 2 and floorId matches. This local 5x5-cell neighborhood intentionally ignores wall connectivity and closed-gate edges for perception only. Invisible hostiles within that neighborhood are also revealed by the same outline. Third, Sixth Sense grants Watcher Motion Sense: whenever a living Watcher is in its authoritative moving/locomotion state, each Sixth Sense owner on the same floor receives a private 3D positional Watcher movement sound attached to that Watcher's true current position. This cue plays whether the Watcher is visible or invisible and does not require line of sight; ordinary spatial attenuation provides direction and proximity, so a distant Watcher does not become an all-floor audio beacon. The cue starts when authoritative Watcher locomotion begins and stops when locomotion stops, the Watcher dies/despawns, the player changes floor, or Sixth Sense is no longer active. The movement sound is transmitted/rendered only for eligible Sixth Sense owners; players without the feat receive no such sound event. These effects create no minimap marker, breadcrumb, directional arrow, nameplate through the world, aim assistance, target lock, ballistic permission through geometry, AI aggro knowledge, or interaction permission. Sixth Sense never changes an entity's invisible state, cloak duration, AI/state machine, collision, targetability rules, or visibility to any other player; players without the feat perceive the entity normally. The server authoritatively determines feat ownership, invisible state, hostility, floor, cell coordinates, and Watcher locomotion state; owning clients render only authorized silhouettes and private Watcher movement audio. FeatDirector may offer Sixth Sense whenever the actor is a cooperative hero who meets WIS 12; Watchers or any other invisibility-using enemy need not currently be present because the 2-cell hostile-sense effect is independently useful.",
+      "id": "WIS_SIXTH_SENSE",
+      "name": "Sixth Sense",
+      "pos": 482178,
+      "prerequisite": "None",
+      "requirement": "WIS 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Replaces Spellward's +2 with +4 total MagicSave. It does not invent a save against pure weapon damage or effects that are authored as unresistible.",
+      "id": "WIS_SPELLBREAKER",
+      "name": "Spellbreaker",
+      "pos": 485192,
+      "prerequisite": "Spellward",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Replaces Spellbreaker's +4 with +6 total MagicSave against explicitly resistible magical effects. It never creates a save where the authored effect supplies none and never overrides explicit boss/elite immunity or unresistible-effect tags.",
+      "id": "WIS_SPELLBANE",
+      "name": "Spellbane",
+      "pos": 485414,
+      "prerequisite": "Spellbreaker",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with a Magic push",
+      "effect": "Actor-authored magic_push displacement is multiplied by 1.25. Force Shout is the initial intended beneficiary. Physical-push feats do not automatically stack unless a cross-system bridge makes the event eligible for both families.",
+      "id": "WIS_FORCEFUL_MAGIC",
+      "name": "Force Multiplier",
+      "pos": 485725,
+      "prerequisite": "None",
+      "requirement": "WIS 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, eligible AI",
+      "effect": "When the actor's Magic attack exploits an elemental weakness, roll the weakness-bonus table twice and keep the more favorable bonus. This affects the weakness damage roll only and does not duplicate the hit, stun, knockback, or Magic cost.",
+      "id": "WIS_ATTUNEMENT",
+      "name": "Attunement",
+      "pos": 486049,
+      "prerequisite": "Elemental system active and actor owns an elemental Magic attack",
+      "requirement": "WIS 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with an eligible hit-stun source",
+      "effect": "After the normal ChaHitStunInflictMultiplier is calculated, multiply eligible hit stun inflicted by this actor by 1.10. This applies once per resolved target hit/event, not once per pellet or sub-hit, and remains subject to the ordinary retrigger guard, resistance, anti-stunlock rules, and hard caps. This is separate from the Menacing intimidation family: Unnerving Presence improves hit-stun pressure, while Menacing/Dreadful/Terrifying improve Morale pressure.",
+      "id": "CHA_HITSTUN_1",
+      "name": "Unnerving Presence",
+      "pos": 486424,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with an eligible hit-stun source",
+      "effect": "Replaces Unnerving Presence's feat multiplier with 1.20 total. It stacks multiplicatively with the continuous CHA-derived hit-stun multiplier but does not create hit stun on attacks that normally have none.",
+      "id": "CHA_HITSTUN_2",
+      "name": "Dazing Presence",
+      "pos": 486994,
+      "prerequisite": "Unnerving Presence",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with an eligible hit-stun source",
+      "effect": "Replaces the lower-rank feat multiplier with 1.30 total. Weapon-specific and weakness multipliers still resolve afterward, and all anti-stunlock/retrigger/cap safeguards remain authoritative.",
+      "id": "CHA_HITSTUN_3",
+      "name": "Overwhelming Presence",
+      "pos": 487317,
+      "prerequisite": "Dazing Presence",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI actors subject to Morale",
+      "effect": "Adds +2 to MoraleSave when this actor is the defender in an eligible Morale check. This defensive family is controller-agnostic: for AI it helps resist Morale Flee, while for human-controlled actors it helps resist the brief Intimidated state caused by a qualifying massive hit.",
+      "id": "CHA_NERVE_1",
+      "name": "Iron Nerve",
+      "pos": 487628,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI actors subject to Morale",
+      "effect": "Replaces Iron Nerve and adds +4 total to MoraleSave. It changes courage only and does not grant immunity to Morale, remove a legal trauma trigger, or shorten an already-running fear/intimidation state unless another rule explicitly says so.",
+      "id": "CHA_NERVE_2",
+      "name": "Unbreakable Nerve",
+      "pos": 487994,
+      "prerequisite": "Iron Nerve",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "This is rank 1 of the dedicated offensive intimidation family. Adds +2 to MoraleDC whenever this actor is the credited attacker for a Morale check. AI actors may acquire this family through the same ordinary deterministic FeatDirector eligibility and selection rules as other AI-legal feats whenever their CHA and prerequisites qualify; it is not reserved for player characters. Against a human-controlled defender, also set HumanMoraleTraumaFraction = 0.30 for damage credited to this actor, so a single hit dealing more than 30% of current MaxHP may trigger Morale instead of the ordinary greater-than-one-third requirement. This never enables the below-50%-HP trigger or repeated-below-half trigger against humans. Against AI defenders, trigger cadence remains the ordinary AI Morale cadence; Menacing improves the opposed check rather than creating extra checks.",
+      "id": "CHA_MENACE_1",
+      "name": "Menacing",
+      "pos": 488335,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Replaces Menacing's +2 with +4 total MoraleDC. Against human-controlled defenders, replaces Menacing's trauma threshold with HumanMoraleTraumaFraction = 0.25, so a single hit dealing more than 25% of current MaxHP may trigger Morale. It still never enables a human below-50%-HP or repeated-below-half trigger. Dreadful replaces rather than stacks with Menacing's threshold and DC bonus.",
+      "id": "CHA_MENACE_2",
+      "name": "Dreadful",
+      "pos": 489263,
+      "prerequisite": "Menacing",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Retains Dreadful's +4 total MoraleDC. Against human-controlled defenders, replaces Dreadful's trauma threshold with HumanMoraleTraumaFraction = 0.20, so a single hit dealing more than 20% of current MaxHP may trigger Morale; it still never enables the below-50%-HP or repeated-below-half trigger against humans. In addition, the first Morale Save each eligible defender makes against this actor during an encounter is rolled twice and the lower natural d20 is kept before modifiers. Later Morale Saves by that defender against the same actor return to one d20. Terrifying therefore specializes an actor into intimidation by widening the set of genuinely traumatic hits against human-controlled targets and making its first fear attempt especially difficult, while the defender's controller-based Morale cooldown remains unchanged and continues to prevent repeated player lockout.",
+      "id": "CHA_MENACE_3",
+      "name": "Terrifying",
+      "pos": 489715,
+      "prerequisite": "Dreadful",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Sets IntimidationProcChance = 0.11. If an eligible target-hit event damages a surviving defender whose MoraleCheckCooldown is inactive and that same event did not already require a Morale check from an ordinary trauma trigger, a successful proc forces exactly one Morale check even when the hit would otherwise be below the defender's trauma threshold. The ordinary attacker-CHA MoraleDC and defender-CHA MoraleSave formulas apply, and the normal controller-specific cooldown begins after that check whether it succeeds or fails.",
+      "id": "CHA_FEAR_PROC_1",
+      "name": "Daunting",
+      "pos": 490662,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Daunting and sets IntimidationProcChance = 0.22. All one-check-per-damage-event, Morale cooldown, controller-specific failure, and anti-player-lockout rules remain unchanged.",
+      "id": "CHA_FEAR_PROC_2",
+      "name": "Cowing",
+      "pos": 491312,
+      "prerequisite": "Daunting",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with at least one eligible attributable damaging attack",
+      "effect": "Replaces Cowing and sets IntimidationProcChance = 0.33. All other Daunting-family semantics remain unchanged. Menacing→Dreadful→Terrifying is a separate complementary family: its MoraleDC bonuses, human trauma-threshold reductions, and Terrifying first-save disadvantage apply normally to Morale checks forced by this proc family, allowing deliberate investment in both frequency and potency without duplicate proc rolls.",
+      "id": "CHA_FEAR_PROC_3",
+      "name": "Overawing",
+      "pos": 491618,
+      "prerequisite": "Cowing",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "When an enemy fails a Morale Save against this actor, every other eligible AI hostile below 50% MaxHP within 2 graph cells may immediately make one Morale check against the same actor. A secondary failure does not recursively trigger another cascade, and each potential secondary target has a 3.0-second cascade-immunity timer.",
+      "id": "CHA_PANIC",
+      "name": "Panic Is Contagious",
+      "pos": 492163,
+      "prerequisite": "Dreadful",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "AI Watchers and human-controlled Soldiers only",
+      "effect": "After normal CHA SpotSystem formulas, add +1 SpotTargetRangeCells, +1 SpotDrawRangeCells, and +2 SpotMarkDurationSeconds, still respecting the global SpotSystem clamps and same-floor rule.",
+      "id": "CHA_SPOT_1",
+      "name": "Point It Out",
+      "pos": 492564,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "AI Watchers and human-controlled Soldiers only",
+      "effect": "Replaces the prior spotting bonus with +2 target-range cells, +2 draw-radius cells, and +4 mark-duration seconds total, subject to clamps and same-floor restrictions.",
+      "id": "CHA_SPOT_2",
+      "name": "Rally the Hunt",
+      "pos": 492836,
+      "prerequisite": "Point It Out",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "AI Watchers and human-controlled Soldiers only",
+      "effect": "Replaces the prior spotting bonus with +3 target-range cells, +3 draw-radius cells, and +6 mark-duration seconds total, subject to clamps and same-floor restrictions.",
+      "id": "CHA_SPOT_3",
+      "name": "Command the Hunt",
+      "pos": 493096,
+      "prerequisite": "Rally the Hunt",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI",
+      "effect": "Rank 1 of the passive personality-aura family. While this actor is alive, roll a sealed non-exploding 3d4-second AuraPulseInterval; when it expires, every living hostile actor whose authoritative canonical maze-cell identity is the same cell as this actor takes PersonalityAuraDamage = max(0, CHA_MOD) flat untyped passive damage. After the pulse resolves, immediately roll a fresh sealed 3d4-second interval and repeat while the owner remains alive. The three timing d4s are utility dice and never explode or inherit BoomShift, Rogue die mastery, Wizard magical Boom rules, or other damage-die modifiers. PersonalityAuraDamage is not an attack, not physical, and not magical; it has no damage dice and therefore receives no per-die CON resistance. It is FeedbackIneligible=true, MoraleIneligible=true, StatusProcIneligible=true, and cannot trigger Bloodletter, Aggressive Personality, Self-Actualization, hit-stun, Push, wall-slam, or any other effect requiring an attributable offensive hit. Ordinary lethal handling and kill attribution still apply. Rank 1 affects only hostiles occupying the owner's own canonical cell at the instant of the pulse.",
+      "id": "CHA_ABRASIVE_PERSONALITY_1",
+      "name": "Abrasive Personality",
+      "pos": 493361,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI",
+      "effect": "Replaces Abrasive Personality's radius while retaining the same max(0, CHA_MOD) flat damage, sealed 3d4-second rerolled pulse interval, and passive-damage exclusions. Set PersonalityAuraCellRadius = 1. At each pulse, affect every living hostile on the same canonical floor whose cell lies in the 3x3 grid neighborhood centered on the owner: the owner's own cell plus every cell that touches it by an edge or corner. Equivalently, for canonical same-floor row/column coordinates, max(abs(TargetRow-OwnerRow), abs(TargetColumn-OwnerColumn)) <= 1. The radius is cell-based rather than a raw world-unit sphere.",
+      "id": "CHA_NARCISSISM_2",
+      "name": "Narcissism",
+      "pos": 494604,
+      "prerequisite": "Abrasive Personality",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI",
+      "effect": "Replaces Narcissism's radius while retaining the same max(0, CHA_MOD) flat damage, sealed 3d4-second rerolled pulse interval, and passive-damage exclusions. Set PersonalityAuraCellRadius = 2. At each pulse, affect every living hostile on the same canonical floor within the 5x5 grid neighborhood centered on the owner: the owner's cell, every cell touching it, and every cell touching any of those cells out to two grid spaces. Equivalently, max(abs(TargetRow-OwnerRow), abs(TargetColumn-OwnerColumn)) <= 2. Higher ranks replace rather than stack with lower ranks, so one owner produces exactly one personality-aura pulse stream regardless of rank.",
+      "id": "CHA_MEGALOMANIA_3",
+      "name": "Megalomania",
+      "pos": 495298,
+      "prerequisite": "Narcissism",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one discrete active Magic activation",
+      "effect": "Rank 1 of the triggered Magic-aura family. Whenever this actor successfully initiates a discrete active Magic use that actually spends Magic, resolve exactly one AuraBurst pulse centered on the actor as an add-on to that Magic activation. AuraBurstDamage = max(0, CHA_MOD) flat magical aura damage to every living hostile actor whose authoritative canonical maze-cell identity is the same cell as the owner at the instant the Magic use begins. The burst is a separate supplemental damage event rather than additional damage dice on the triggering spell or ability; it does not inherit that Magic use's Form, Content, element, damage dice, Boom behavior, rider, targeting, or status effects. AuraBurstDamage has no damage dice and therefore receives no per-die CON resistance. It is magical=true but is not itself an active Magic activation, cannot recursively trigger Aura Burst, and is ineligible for Self-Actualization, ordinary offensive status procs, Bloodletter, hit-stun, Push, wall-slam, Feedback, or Morale. Ordinary magical-damage defenses such as True Faith may reduce it. Continuous or maintenance Magic drains, including map viewing, Haste, Float On, Arcane Shield diversion, passive regeneration, and other resource-over-time accounting, do not generate repeated bursts. Rank 1 affects only hostiles occupying the owner's own canonical cell.",
+      "id": "CHA_AURA_BURST_1",
+      "name": "Aura Burst",
+      "pos": 496026,
+      "prerequisite": "None",
+      "requirement": "CHA 13"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one discrete active Magic activation",
+      "effect": "Replaces Aura Burst's radius while retaining the same one-pulse-per-discrete-Magic-activation trigger, max(0, CHA_MOD) flat magical AuraBurstDamage, and triggered-aura exclusions. Set AuraBurstCellRadius = 1. Each qualifying Magic activation affects every living hostile on the same canonical floor whose cell lies in the 3x3 grid neighborhood centered on the owner: the owner's own cell plus every cell touching it by an edge or corner. Equivalently, for canonical same-floor row/column coordinates, max(abs(TargetRow-OwnerRow), abs(TargetColumn-OwnerColumn)) <= 1. The radius is cell-based rather than a raw world-unit sphere.",
+      "id": "CHA_RADIANCE_2",
+      "name": "Radiance",
+      "pos": 497503,
+      "prerequisite": "Aura Burst",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one discrete active Magic activation",
+      "effect": "Replaces Radiance's radius while retaining the same one-pulse-per-discrete-Magic-activation trigger, max(0, CHA_MOD) flat magical AuraBurstDamage, and triggered-aura exclusions. Set AuraBurstCellRadius = 2. Each qualifying Magic activation affects every living hostile on the same canonical floor within the 5x5 grid neighborhood centered on the owner: the owner's cell, every cell touching it, and every cell touching any of those cells out to two grid spaces. Equivalently, max(abs(TargetRow-OwnerRow), abs(TargetColumn-OwnerColumn)) <= 2. Higher ranks replace rather than stack with lower Aura Burst ranks, so one Magic activation produces exactly one AuraBurst pulse regardless of owned rank. Aura Burst/Radiance/Majesty and Abrasive Personality/Narcissism/Megalomania are independent feat families: an actor may own both, their eligibility and timers/triggers remain separate, and when both legitimately resolve against the same target their damage events both apply rather than one suppressing or replacing the other.",
+      "id": "CHA_MAJESTY_3",
+      "name": "Majesty",
+      "pos": 498256,
+      "prerequisite": "Radiance",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with a canonical Magic pool and passive Magic regeneration",
+      "effect": "Adds the owner's positive Charisma modifier to the same canonical passive Magic-regeneration calculation that normally uses Intelligence. Set AcademicRegenCHAContribution = max(0, CHA_MOD) and EffectiveMagicRegenModifier = INT_MOD + AcademicRegenCHAContribution, then compute MagicRegenMultiplier = clamp(1 + 0.10 × EffectiveMagicRegenModifier, 0.50, 2.00). This is cumulative with the ordinary INT contribution rather than replacing it. Academic Achievement changes only passive Magic regeneration speed: it does not enable regeneration while the canonical Magic system says regeneration is suspended, does not increase Max Magic, does not alter active Magic costs, map drain, spell damage, MagicSave, or any other INT/CHA rule, and cannot regenerate above the actor's ordinary Magic maximum.",
+      "id": "CHA_ACADEMIC_ACHIEVEMENT",
+      "name": "Academic Achievement",
+      "pos": 499400,
+      "prerequisite": "None",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible magical attack",
+      "effect": "Adds a flat outgoing damage bonus equal to max(0, CHA_MOD) to each eligible attributable magical attack or active damaging Magic event initiated by this actor. Apply the bonus exactly once per resolved target damage event after ordinary source-side damage multipliers; it does not alter die count, die size, Boom qualification, continuation generation, status-application chance, or Magic cost. Multi-target Magic may receive the bonus once for each genuinely damaged target, but individual damage dice, Boom continuations, pellets, cosmetic sub-hits, and other internal subcomponents never multiply it. Feedback, PoisonStepDamage, BleedTickDamage, ImmolatedDamage, environmental damage, reflected/reactive damage, and other non-attack or status-damage events are ineligible. Eligibility tests magical=true independently of any physical tag. A mixed physical=true/magical=true attack receives Self-Actualization and may also receive Aggressive Personality if the actor owns both feats, with each feat contributing its flat bonus once to the same resolved damage event.",
+      "id": "CHA_SELF_ACTUALIZATION",
+      "name": "Self-Actualization",
+      "pos": 500342,
+      "prerequisite": "None",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, and AI with at least one eligible physical attack",
+      "effect": "Aggressive Personality has a ready/cooldown state. While ready, the next eligible attributable physical attack activation that produces at least one physical=true damage event may add a flat outgoing damage bonus equal to max(0, CHA_MOD) to each eligible resolved target damage event created by that same originating attack, regardless of whether those events are also tagged magical=true. Apply the bonus exactly once per legitimately damaged target event after ordinary source-side damage multipliers; it does not alter damage dice, Boom qualification, push distance, wall-slam dice, status-proc chances, or other rider mechanics. After that originating attack finishes resolving and the bonus has applied at least once, consume the ready state and roll AggressivePersonalityCooldownSeconds = 1d3 seconds. This cooldown d3 is a sealed non-damage utility die and never explodes or inherits Rogue die mastery, BoomShift, Wizard magical Boom rules, weapon-specific explosion rules, or other attack-die modifiers. While the cooldown is active, Aggressive Personality contributes no CHA damage and qualifying attacks do not restart, extend, or reroll the cooldown. When the cooldown expires, the feat becomes ready again. A Shotgun shell or other single authored multi-target attack checks readiness once for the originating attack and, when ready, may grant the bonus once per damaged target after ordinary aggregation; pellets or internal sub-hits never consume separate cooldowns. Each genuinely separate bullet or authored projectile fired as a separate attack activation must find the feat ready on its own. Push-only effects, wall-slam/crush damage, Feedback, status damage, environmental damage, and other non-attack or reactive damage are ineligible and do not consume readiness. A mixed physical=true/magical=true event remains eligible for Aggressive Personality and may also receive Self-Actualization if the actor owns both feats; the two independently satisfied damage-class predicates may therefore both contribute once. If Aggressive Personality is on cooldown, it contributes no CHA-derived damage for Glow Up or any other effect that keys off an actual CHA_MOD damage contribution.",
+      "id": "CHA_AGGRESSIVE_PERSONALITY",
+      "name": "Aggressive Personality",
+      "pos": 501538,
+      "prerequisite": "None",
+      "requirement": "CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI using ordinary feat eligibility",
+      "effect": "On acquisition, permanently increase the actor's intrinsic CHA score by +1, subject to the ordinary permanent ability-score ceiling. This is a real CHA increase and therefore immediately participates in all ordinary CHA-derived calculations. For the sole purpose of checking the printed ability-score prerequisite of an INT feat, EffectiveINTFeatQualificationScore = max(INT, CHA), using the actor's current CHA after this +1 increase. Winning Personality does not change the actor's actual INT score or INT_MOD and never substitutes CHA for INT in gameplay formulas, Magic regeneration, Arcane Break or Arcane Integrity contests, Wizard class mechanics, feat-effect scaling, or any other INT-derived mechanic. All non-ability prerequisites and restrictions remain fully authoritative, including prerequisite feats, class exclusions, controller/weapon access, and ordinary feat availability. The substituted qualification score also applies when constructing legal feat-draft or AI FeatDirector candidate pools, so an INT feat unlocked by Winning Personality may appear through the ordinary selection process. The permanent +1 CHA remains useful even if the actor never selects or uses an INT feat through Winning Personality.",
+      "id": "CHA_WINNING_PERSONALITY",
+      "name": "Winning Personality",
+      "pos": 503870,
+      "prerequisite": "None",
+      "requirement": "CHA 17"
+    },
+    {
+      "actors": "Player-controlled heroes/human Soldiers with Crowbar-family access",
+      "effect": "Once per airborne cycle, a Crowbar-family hit made after consuming Cloud Step's feat-granted second jump and before legitimate ground contact adds one extra 1d6 physical-damage chain and doubles that hit's Crowbar-origin push distance before other compatible push multipliers. The bonus d6 obeys the universal exploding rule. Missing the swing does not consume the once-per-airborne-cycle strike; landing resets it.",
+      "id": "CROSS_METEOR_STRIKE",
+      "name": "Meteor Strike",
+      "pos": 505212,
+      "prerequisite": "Bash; Cloud Step",
+      "requirement": "STR 15 and INT 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers",
+      "effect": "While Little Guy is active, MoraleDC gains an additional +2 against enemies within 2 graph cells of the actor. This stacks with the Menacing family but applies only at close range.",
+      "id": "CROSS_TINY_TERROR",
+      "name": "Tiny Terror",
+      "pos": 505764,
+      "prerequisite": "Little Guy; Menacing",
+      "requirement": "DEX 15 and CHA 15"
+    },
+    {
+      "actors": "Player-controlled heroes and human Soldiers",
+      "effect": "When this actor deals melee damage or a physical push/wall-crush event, that event's MoraleDC gains an additional +2. It stacks with the Menacing family and exists specifically to make an intimidating giant bruiser build possible without changing ordinary ranged intimidation.",
+      "id": "CROSS_BIG_SCARY",
+      "name": "Big Scary",
+      "pos": 506058,
+      "prerequisite": "Big Guy; Menacing",
+      "requirement": "CON 15, STR 13, and CHA 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI with physical push",
+      "effect": "A wall crush caused by this actor immediately requests a Morale check from the crushed target if it is otherwise morale-eligible, even if its normal one-second Morale recheck gate has not elapsed. This special request has a 3.0-second per-target cooldown. Other morale eligibility, immunity, and flee rules remain unchanged.",
+      "id": "CROSS_CRUSH_PANIC",
+      "name": "Crash the Party",
+      "pos": 506450,
+      "prerequisite": "Pusher; Dreadful",
+      "requirement": "STR 17 and CHA 17"
+    },
+    {
+      "actors": "Heroes, human Soldiers, Magic-using AI",
+      "effect": "Actor-owned non-Magic damage Boomchains may now feed Magic: every second continuation die generated by the same non-Magic attack restores 1 Magic, up to 5 Magic per attack event. This does not alter explosion thresholds and never raises Magic above 100.",
+      "id": "CROSS_BOOM_BATTERY",
+      "name": "Boom Battery",
+      "pos": 506890,
+      "prerequisite": "Capability: exploding_nonmagic_damage_dice",
+      "requirement": "DEX 15 and INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, eligible AI",
+      "effect": "The actor's Magic-origin pushes are additionally eligible for Pusher/Shover/Space Hog processing as already-pushing events. Force Multiplier resolves first; then, only when that attacker-target pair is not inside the shared 0.50-second PusherProcTargetCooldown, the Pusher-family proc may add its +168-world-unit physical displacement on success, and any resulting valid wall slam uses the actor's active Pusher-family wall-slam die. Force of Will does not make non-pushing Magic damage eligible for a Pusher proc. This is an explicit bridge feat; without it the physical-weapon Pusher family and magic_push family remain separate.",
+      "id": "CROSS_FORCE_OF_WILL",
+      "name": "Force of Will",
+      "pos": 507276,
+      "prerequisite": "Pusher; Force Multiplier",
+      "requirement": "STR 15 and WIS 15"
+    },
+    {
+      "actors": "Heroes and human Soldiers",
+      "effect": "Once per attack event, if a Luck-Ring reroll changes a non-exploding natural die result into an exploding kept result, refund 5 Magic after that die's reroll cost is paid. Continuation dice and later rerolls proceed normally; the refund can occur only once per attack event.",
+      "id": "CROSS_LUCKY_BOOM",
+      "name": "Lucky Break",
+      "pos": 508021,
+      "prerequisite": "Capability: exploding_nonmagic_damage_dice; Luck Ring owned/equipped",
+      "requirement": "DEX 17 and INT 15"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.str. Repeatable across later feat opportunities until intrinsic FeatQualification STR reaches 30.",
+      "id": "FALLBACK_STR",
+      "name": "Put Your Back Into It",
+      "pos": 518276,
+      "prerequisite": "None",
+      "requirement": "FeatQualification STR < 30"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.dex. Repeatable across later feat opportunities until intrinsic FeatQualification DEX reaches 30.",
+      "id": "FALLBACK_DEX",
+      "name": "Light Feet",
+      "pos": 518503,
+      "prerequisite": "None",
+      "requirement": "FeatQualification DEX < 30"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.con. Repeatable across later feat opportunities until intrinsic FeatQualification CON reaches 30.",
+      "id": "FALLBACK_CON",
+      "name": "Tough It Out",
+      "pos": 518719,
+      "prerequisite": "None",
+      "requirement": "FeatQualification CON < 30"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.int. Repeatable across later feat opportunities until intrinsic FeatQualification INT reaches 30.",
+      "id": "FALLBACK_INT",
+      "name": "Quick Study",
+      "pos": 518937,
+      "prerequisite": "None",
+      "requirement": "FeatQualification INT < 30"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.wis. Repeatable across later feat opportunities until intrinsic FeatQualification WIS reaches 30.",
+      "id": "FALLBACK_WIS",
+      "name": "Keep Your Wits",
+      "pos": 519154,
+      "prerequisite": "None",
+      "requirement": "FeatQualification WIS < 30"
+    },
+    {
+      "actors": "Heroes, human Soldiers, AI",
+      "effect": "Adds +1 permanent featAbilityDelta.cha. Repeatable across later feat opportunities until intrinsic FeatQualification CHA reaches 30.",
+      "id": "FALLBACK_CHA",
+      "name": "Make an Impression",
+      "pos": 519374,
+      "prerequisite": "None",
+      "requirement": "FeatQualification CHA < 30"
+    }
+  ],
+  "overrides": {
+    "STR_HERO_OF_LEGEND": {
+      "runtimeId": "WIS_HERO_OF_LEGEND",
+      "requirement": "WIS 15",
+      "reason": "Explicit Shael decision 2026-09-06; WIS-based non-elemental Magic projectile. docs/RPG_GATE_E_FEAT_MATRIX.md."
+    },
+    "DEX_AR2_SNAP": {
+      "deferred": true,
+      "reason": "Explicit Shael deferral 2026-09-06 pending timing contradiction; docs/RPG_GATE_E_FEAT_MATRIX.md."
+    },
+    "DEX_MAGNUM_DEADEYE": {
+      "behavior": "Universal Deadeye: shared 0.50-second hold, ordinary x2 / Magnum x3.",
+      "reason": "Accepted runtime stabilization 2026-09-10; docs/SOL_STABILIZATION.md. Preserve tested behavior; GDD prose needs reconciliation."
+    }
+  }
+}

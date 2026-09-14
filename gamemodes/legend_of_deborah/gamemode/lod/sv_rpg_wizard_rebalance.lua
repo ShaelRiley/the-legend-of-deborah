@@ -31,13 +31,13 @@ local rankThree = assert(feats.INT_MANA_BARRIER_3,
 -- The Mana Barrier family is now the non-Wizard INT route to HP->Magic defense.
 rankOne.actorText = "Eligible non-Wizard heroes, human Soldiers, and Magic-using AI"
 rankOne.effectParams = rankOne.effectParams or {}
-rankOne.effectParams.description = "Sets ManaBarrierFeatDiversionFraction = 0.15. This feat family is unavailable to Wizard-class actors; it is the INT-gated HP-to-Magic diversion path for eligible non-Wizards. Diversion uses continuous post-mitigation HP damage and continuous Magic rather than whole-number rounding."
+rankOne.effectParams.description = "Sets ManaBarrierFeatDiversionFraction = 0.15. This feat family is unavailable to Wizard-class actors; it is the INT-gated HP-to-Magic diversion path for eligible non-Wizards. Uses continuous post-mitigation HP-to-Magic diversion, limited by CurrentMagic, at 1 Magic per HP."
 rankTwo.actorText = "Eligible non-Wizard heroes, human Soldiers, and Magic-using AI"
 rankTwo.effectParams = rankTwo.effectParams or {}
-rankTwo.effectParams.description = "Replaces Mana Barrier and sets ManaBarrierFeatDiversionFraction = 0.30. This feat is unavailable to Wizard-class actors. Diversion uses the shared continuous post-mitigation HP-to-Magic authority."
+rankTwo.effectParams.description = "Replaces Mana Barrier and sets ManaBarrierFeatDiversionFraction = 0.30. This feat is unavailable to Wizard-class actors. Uses continuous post-mitigation HP-to-Magic diversion, limited by CurrentMagic, at 1 Magic per HP."
 rankThree.actorText = "Eligible non-Wizard heroes, human Soldiers, and Magic-using AI"
 rankThree.effectParams = rankThree.effectParams or {}
-rankThree.effectParams.description = "Replaces lower Mana Barrier ranks and sets ManaBarrierFeatDiversionFraction = 0.45. This feat is unavailable to Wizard-class actors. Diversion uses the shared continuous post-mitigation HP-to-Magic authority."
+rankThree.effectParams.description = "Replaces lower Mana Barrier ranks and sets ManaBarrierFeatDiversionFraction = 0.45. This feat is unavailable to Wizard-class actors. Uses continuous post-mitigation HP-to-Magic diversion, limited by CurrentMagic, at 1 Magic per HP."
 
 -- Russian Asset keeps its stable feat ID for save compatibility; only its authored
 -- qualification moves from CON to INT.
@@ -79,7 +79,7 @@ function WizardRules:ClassDiversionFraction(state)
     if not state or state.classId ~= "wizard" then return 0 end
     local level = math.Clamp(math.floor(tonumber(state.level) or 1), 1, 20)
     return math.Clamp(self.WizardDiversionBase
-        + self.WizardDiversionPerLevelAfterFirst * (level - 1), 0, 0.575)
+        + self.WizardDiversionPerLevelAfterFirst * (level - 1), 0, 0.50)
 end
 
 function WizardRules:ManaBarrierFeatDiversionFraction(state)
@@ -104,7 +104,7 @@ function WizardRules:ApplyDerived(state)
     derived.wizardCapstoneDiversionBonus = tonumber(derived.wizardCapstoneDiversionBonus) or 0
     derived.magicBoomThresholdShift = state.classId == "wizard"
         and self.MagicBoomThresholdShift or 0
-    derived.hpToMagicDiversionFraction = math.min(1,
+    derived.hpToMagicDiversionFraction = math.min(0.50,
         derived.wizardClassHpToMagicDiversionFraction
         + derived.manaBarrierFeatDiversionFraction
         + derived.wizardCapstoneDiversionBonus)
@@ -140,20 +140,6 @@ if not CPS.LODWizardRebalanceCommitWrapped then
         end
         return priorCommitFeat(self, ply, featId, expectedEarnedAtLevel)
     end
-end
-
--- Continuous diversion fixes the small-hit dead zone produced by whole-number
--- rounding. Gate D remains the sole damage application seam; only its pure math
--- helper changes.
-function AbilityRules:ComputeMagicDiversion(resolvedHPDamage, fraction, currentMagic, hpPerMagic)
-    local resolved = math.max(0, tonumber(resolvedHPDamage) or 0)
-    local authoredFraction = math.Clamp(tonumber(fraction) or 0, 0, 1)
-    local available = math.max(0, tonumber(currentMagic) or 0)
-    local exchange = math.max(0.01, tonumber(hpPerMagic) or 1)
-    local desiredHP = resolved * authoredFraction
-    local divertedHP = math.min(desiredHP, available * exchange)
-    local spentMagic = divertedHP / exchange
-    return divertedHP, spentMagic, math.max(0, resolved - divertedHP)
 end
 
 -- Gate D already emits the detailed ARCANE DIVERSION combat-feed line. Publish a
@@ -230,7 +216,7 @@ function WizardRules:Validate(ply)
         "Wizard Level-4 innate diversion")
     expect(closeEnough(l10.derivedStats.wizardClassHpToMagicDiversionFraction, 0.325),
         "Wizard Level-10 innate diversion")
-    expect(closeEnough(l20.derivedStats.wizardClassHpToMagicDiversionFraction, 0.575),
+    expect(closeEnough(l20.derivedStats.wizardClassHpToMagicDiversionFraction, 0.50),
         "Wizard Level-20 innate diversion")
     expect(closeEnough(l1.derivedStats.magicBoomThresholdShift, -1)
         and closeEnough(rogueBarrier.derivedStats.magicBoomThresholdShift, 0),
@@ -240,7 +226,7 @@ function WizardRules:Validate(ply)
         "Wizard ignores legacy Mana Barrier ownership")
     expect(closeEnough(rogueBarrier.derivedStats.hpToMagicDiversionFraction, 0.15),
         "non-Wizard Mana Barrier diversion")
-    expect(closeEnough(l20LivingAegis.derivedStats.hpToMagicDiversionFraction, 0.675)
+    expect(closeEnough(l20LivingAegis.derivedStats.hpToMagicDiversionFraction, 0.50)
         and closeEnough(l20LivingAegis.derivedStats.livingAegisHPPerMagic, 1.50),
         "Living Aegis Level-20 diversion/exchange")
 
@@ -252,9 +238,9 @@ function WizardRules:Validate(ply)
 
     local divertedSmall, spentSmall, remainingSmall =
         AbilityRules:ComputeMagicDiversion(3, 0.10, 100, 1)
-    expect(closeEnough(divertedSmall, 0.3) and closeEnough(spentSmall, 0.3)
-        and closeEnough(remainingSmall, 2.7),
-        "fractional small-hit diversion")
+    expect(closeEnough(divertedSmall, 1) and closeEnough(spentSmall, 1)
+        and closeEnough(remainingSmall, 2),
+        "small-hit diversion rounds upward")
     local divertedLimited, spentLimited, remainingLimited =
         AbilityRules:ComputeMagicDiversion(10, 0.50, 0.35, 1)
     expect(closeEnough(divertedLimited, 0.35) and closeEnough(spentLimited, 0.35)

@@ -1,3 +1,5 @@
+> Current hybrid release status (2026-09-14): **blocked by the live-GDD feat audit**. See [FEAT_STABILIZATION_AUDIT.md](FEAT_STABILIZATION_AUDIT.md). Earlier completion claims below are historical and do not establish current feat completeness.
+
 ## 2026-09-13 — Final pre-playtest feedback candidate
 
 Current user-directed work is on `hybrid/antigravity`, starting at

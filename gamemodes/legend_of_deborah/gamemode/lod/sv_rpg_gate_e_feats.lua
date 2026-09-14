@@ -34,9 +34,8 @@ local function regenDefinition(featId, displayName, requirement, prerequisite, r
             ceilingFraction = ceiling,
             damageFreeDelaySeconds = 5.0,
             baseMaxHPPerSecond = 0.01,
-            description = rank == 1
-                and "Enables passive Health Regeneration after 5.0 damage-free seconds, restoring 1.0% MaxHP/second × CON regeneration multiplier up to 11% MaxHP; never restores Tetris overfill."
-                or string.format("Replaces lower Recovery ranks and raises the passive Health-Regeneration ceiling to %d%% MaxHP; the 5.0-second delay and CON-scaled rate remain unchanged.", math.floor(ceiling * 100 + 0.5))
+            description = string.format("%sAdds %d%% MaxHP to the regeneration ceiling; highest rank only. Stacks with a Fighter's innate 33%%. After 5.0 damage-free seconds, regenerate 1.0%% MaxHP/second times the CON regeneration multiplier toward the combined ceiling. Never restores Tetris overfill.",
+                rank > 1 and "Replaces lower Recovery ranks. " or "Enables passive Health Regeneration. ", math.floor(ceiling * 100 + 0.5))
         },
         directorBaseWeight = 1.0,
         eligibilityText = string.format("CON %d%s", requirement,
@@ -165,21 +164,14 @@ function FeatEffectSystem:HealthRegenProfile(state)
             bestDefinition = Feats[featId]
         end
     end
-    if not bestDefinition then
-        return {
-            enabled = false,
-            rank = 0,
-            ceilingFraction = 0,
-            damageFreeDelaySeconds = 5.0,
-            baseMaxHPPerSecond = 0.01
-        }
-    end
-    local params = bestDefinition.effectParams or {}
+    local params = bestDefinition and bestDefinition.effectParams or {}
+    local innate = state and state.classId == "fighter" and 0.33 or 0
+    local contribution = tonumber(params.ceilingFraction) or 0
     return {
-        enabled = true,
+        enabled = innate + contribution > 0,
         rank = bestRank,
-        featId = bestDefinition.featId,
-        ceilingFraction = tonumber(params.ceilingFraction) or 0,
+        featId = bestDefinition and bestDefinition.featId or nil,
+        ceilingFraction = innate + contribution,
         damageFreeDelaySeconds = tonumber(params.damageFreeDelaySeconds) or 5.0,
         baseMaxHPPerSecond = tonumber(params.baseMaxHPPerSecond) or 0.01
     }

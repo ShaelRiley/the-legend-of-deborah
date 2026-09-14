@@ -71,22 +71,14 @@ function WizardRules:ValidateArcaneCap()
     return #errors == 0, errors
 end
 
--- Existing source files expose lod_rpg_wizard_validate. Preserve the reconciled
--- rebalance validator's unrelated assertions, filtering only its two obsolete
--- >50% expectations, then append the canonical cap checks.
+-- Preserve all assertions from the current Wizard validator and append cap checks.
 function WizardRules:Validate(ply)
     local errors = {}
     local current
     if priorValidate then
         local _, oldErrors, oldCurrent = priorValidate(self, ply)
         current = oldCurrent
-        for _, message in ipairs(oldErrors or {}) do
-            if message ~= "Wizard Level-20 innate diversion"
-                and message ~= "Living Aegis Level-20 diversion/exchange"
-            then
-                errors[#errors + 1] = message
-            end
-        end
+        for _, message in ipairs(oldErrors or {}) do errors[#errors + 1] = message end
     end
     local capOK, capErrors = self:ValidateArcaneCap()
     for _, message in ipairs(capErrors or {}) do errors[#errors + 1] = message end

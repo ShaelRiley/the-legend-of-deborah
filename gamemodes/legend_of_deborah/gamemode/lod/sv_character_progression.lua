@@ -1199,7 +1199,7 @@ local function featSnapshot(definition, selected)
         displayName = definition.displayName,
         governingAbilities = copyArray(definition.governingAbilities),
         eligibilityText = definition.eligibilityText,
-        effect = concise(definition.effectParams and definition.effectParams.description, 320),
+        effect = definition.effectParams and definition.effectParams.description or "",
         repeatableFallback = definition.repeatableFallback == true,
         selected = selected == true
     }
@@ -1209,7 +1209,7 @@ local function capstoneSnapshot(definition, selected)
     return {
         featId = definition.featId,
         displayName = definition.displayName,
-        effect = concise(definition.effectParams and definition.effectParams.description, 360),
+        effect = definition.effectParams and definition.effectParams.description or "",
         selected = selected == true
     }
 end

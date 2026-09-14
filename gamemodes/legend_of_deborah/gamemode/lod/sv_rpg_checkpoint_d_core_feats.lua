@@ -32,7 +32,7 @@ register({
     incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier", "ai"},
     requiredSubsystemTags = {"pushback"}, synergyTags = {"physical_push", "magic_push"},
     oneRank = true, repeatableFallback = false, effectHandlerId = "steamroller_push_save",
-    effectParams = {successfulSaveFraction = 0.50}, directorBaseWeight = 1.0,
+    effectParams = {description = "Whenever a push-tagged event credited to this actor reaches the shared STR push save, a successful PushSave applies 50% of SizeAdjustedPushDistance instead of the ordinary 0%; a failed PushSave still applies 100%. Steamroller does not create push where none exists, does not alter PushDC or PushSave, does not grant extra saves, and never bypasses PushImmune. Any resulting nonzero displacement continues through ordinary defender-side post-save multipliers, LOD.Pushback collision handling, and wall-slam/wall-crush rules.", successfulSaveFraction = 0.50}, directorBaseWeight = 1.0,
     eligibilityText = "STR 17 / requires an authored push-capable attack or effect",
     actorText = "Heroes, human Soldiers, and AI with an authored push-capable attack or effect"
 })
@@ -78,7 +78,7 @@ register({
     allowedActorTypes = {"hero", "human_soldier"}, requiredSubsystemTags = {},
     synergyTags = {"melee_reach", "physical_push", "body_size"}, oneRank = true,
     repeatableFallback = false, effectHandlerId = "big_guy_body_scale",
-    effectParams = {playerTargetScale = 1.30, meleeReachMultiplier = 1.15,
+    effectParams = {description = "Sets PlayerTargetScale to 1.30. Third-person/world presentation and combat hurt volume become 130% size while the authoritative movement/collision hull remains unchanged. Melee reach is multiplied by 1.15 and actor-authored physical push dealt is multiplied by 1.20. The larger hurt volume is the balancing drawback. Big Guy and Little Guy are mutually exclusive.", playerTargetScale = 1.30, meleeReachMultiplier = 1.15,
         physicalPushMultiplier = 1.20}, directorBaseWeight = 1.0,
     eligibilityText = "CON 15 and STR 13", actorText = "Player-controlled Heroes and human Soldiers"
 })
@@ -91,7 +91,7 @@ register({
     allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {},
     synergyTags = {"survival", "damage_immunity"}, oneRank = true,
     repeatableFallback = false, effectHandlerId = "not_yet_death_prevention",
-    effectParams = {remainingHP = 1, immunitySeconds = 0.50}, directorBaseWeight = 1.0,
+    effectParams = {description = "Once per dungeon for each owning actor, damage that would reduce the actor from above 1 HP to 0 or less instead leaves that actor at exactly 1 HP and grants 0.50 seconds of damage immunity. The trigger is consumed for that dungeon even if the actor is healed, dies later, respawns, disconnects/reconnects, or changes floors; it resets only when the campaign advances to a new dungeon. An AI actor spawned for the first time in a dungeon begins with its one use available and cannot gain another use within that dungeon through despawn/recreation exploits.", remainingHP = 1, immunitySeconds = 0.50}, directorBaseWeight = 1.0,
     eligibilityText = "CON 15", actorText = "Heroes, human Soldiers, and AI"
 })
 
@@ -165,6 +165,15 @@ if not Progression.LODCheckpointDGlowUpCapabilityWrapped then
     end
 end
 
+function Rules:NotYetImmunityActive(target)
+    if not IsValid(target) then return false end
+    local state = self:ProgressionState(target)
+    local run = LOD.RunManager and LOD.RunManager.State
+    local dungeonLevel = math.max(1, math.floor(tonumber(run and run.Level) or 1))
+    return state ~= nil and state.notYetConsumedDungeonLevel == dungeonLevel
+        and CurTime() < (tonumber(target.LODRPGNotYetImmuneUntil) or 0)
+end
+
 function Rules:ApplyNotYetDefense(target, dmginfo)
     if not IsValid(target) or not dmginfo then return false end
     local derived = self:Derived(target)
@@ -174,7 +183,7 @@ function Rules:ApplyNotYetDefense(target, dmginfo)
     local run = LOD.RunManager and LOD.RunManager.State
     local dungeonLevel = math.max(1, math.floor(tonumber(run and run.Level) or 1))
     if state.notYetConsumedDungeonLevel == dungeonLevel then
-        if CurTime() < (tonumber(target.LODRPGNotYetImmuneUntil) or 0) then
+        if self:NotYetImmunityActive(target) then
             dmginfo:SetDamage(0)
             return true
         end

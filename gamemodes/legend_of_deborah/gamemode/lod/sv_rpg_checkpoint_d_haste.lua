@@ -13,6 +13,11 @@ local IDS = {"INT_HASTE_1", "INT_HASTE_2", "INT_HASTE_3"}
 local NAMES = {"Haste", "Mana Rush", "Aether Drive"}
 local DRAINS = {1, 2 / 3, 1 / 3}
 
+local DESCRIPTIONS = {
+    "Adds a dedicated rebindable Haste toggle whose default keyboard binding is H. Haste begins OFF. Pressing H while alive, player-controlled, and at positive Magic toggles Haste ON; pressing H again toggles it OFF. While Haste is ON and funded, HasteMovementMultiplier = 2.00 and applies to the actor's resolved voluntary locomotion speed after ordinary walk/run/sprint mode, DEX movement scaling, MapOpenMovementMultiplier when applicable, and other compatible ordinary movement modifiers. Haste therefore doubles ordinary walking and ordinary Shift sprinting alike; it never replaces, consumes, disables, or changes access to the actor's normal sprint. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate, using the same personal WIS-scaled utility-Magic rate as map viewing. Magic regeneration is suppressed while Haste is actively draining. Haste and map viewing are independent sustained Magic consumers: at base Haste, if both are active simultaneously, TotalUtilityMagicDrainRate = CurrentMapOpenMagicDrainRate + HasteMagicDrainRate = 2 × CurrentMapOpenMagicDrainRate. Reaching 0 Magic immediately turns Haste OFF and returns locomotion to its ordinary legal speed; death or loss of player control likewise ends the active Haste state. A map force-close caused by damage or map-Magic exhaustion ends only the map state and its map-open movement bonus; it does not itself toggle Haste OFF if Haste still has positive Magic. Haste changes no jump velocity, Wall Jump, Cloud Step, Float On, Push/knockback, falling, projectile motion, or forced movement.",
+    "Replaces Haste's drain multiplier with HasteDrainMultiplier = 2/3 while preserving HasteMovementMultiplier = 2.00 for both walking and ordinary sprinting. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate × 2/3 after the actor's normal WIS utility-Magic scaling has already determined the map-equivalent rate. Map viewing remains a separate sustained consumer, so if Haste and the map are active together their legal rates add. All Haste toggle, normal-sprint preservation, regeneration-suppression, and zero-Magic termination rules remain unchanged.",
+    "Replaces Mana Rush's drain multiplier with HasteDrainMultiplier = 1/3 while preserving HasteMovementMultiplier = 2.00 for both walking and ordinary sprinting. HasteMagicDrainRate = CurrentMapOpenMagicDrainRate × 1/3 after ordinary WIS utility-Magic scaling. Haste and map viewing remain independent sustained Magic consumers: if both are active simultaneously, each applies its own legal drain and the rates add; either one suppresses Magic regeneration while active. All other Haste toggle, normal-sprint preservation, and zero-Magic termination rules remain unchanged.",
+}
 for rank, id in ipairs(IDS) do
     assert(Feats[id] == nil, "duplicate canonical feat " .. id)
     Feats[id] = {
@@ -22,7 +27,7 @@ for rank, id in ipairs(IDS) do
         requiredCapabilityTags = {"magic_pool"}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
         requiredSubsystemTags = {"movement", "magic"}, synergyTags = {"movement", "magic", "sustained"}, oneRank = true,
         effectHandlerId = "haste_sustained_movement", effectParams = {movementMultiplier = 2.0, drainMultiplier = DRAINS[rank],
-            description = "A rebindable Haste toggle doubles ordinary voluntary walking and sprinting while draining the current WIS-scaled map-equivalent Magic rate. Highest rank replaces the drain multiplier."},
+            description = DESCRIPTIONS[rank]},
         directorBaseWeight = 1.0, eligibilityText = "INT " .. tostring(11 + rank * 2) .. (rank > 1 and " / requires " .. IDS[rank - 1] or " / Magic pool"),
         actorText = "Player-controlled Heroes and human Soldiers only"
     }

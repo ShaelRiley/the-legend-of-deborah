@@ -26,6 +26,8 @@ local feats = Catalog.LevelOneOrdinaryFeats
 local rankOne = assert(feats.INT_MANA_BARRIER_1,
     "live-GDD Mana Barrier rank 1 must exist before Wizard rules load")
 rankOne.featFamilyId = WizardRules.ManaBarrierFamilyId
+rankOne.abilityRequirements = {int = 13}
+rankOne.eligibilityText = "INT 13"
 rankOne.rankIndex = 1
 rankOne.replacesLowerRank = false
 rankOne.allowedActorTypes = {"hero", "human_soldier", "ai"}
@@ -36,7 +38,7 @@ feats.INT_MANA_BARRIER_2 = {
     featId = "INT_MANA_BARRIER_2",
     displayName = "Arcane Aegis",
     governingAbilities = {"int"},
-    abilityRequirements = {int = 16},
+    abilityRequirements = {int = 15},
     prerequisiteFeatIds = {"INT_MANA_BARRIER_1"},
     requiredCapabilityTags = {"magic_pool"},
     incompatibleFeatIds = {},
@@ -53,7 +55,7 @@ feats.INT_MANA_BARRIER_2 = {
         description = "Replaces Mana Barrier and sets ManaBarrierFeatDiversionFraction = 0.30. HPToMagicDiversionFraction still adds the actor's WizardClassHPToMagicDiversionFraction, if any, so a Wizard receives its innate class percentage plus 30 percentage points from Arcane Aegis. The same post-mitigation calculation and 1 Magic per 1 prevented HP exchange apply; diversion is limited by current whole Magic and any unpayable remainder is taken as HP damage normally."
     },
     directorBaseWeight = 1.0,
-    eligibilityText = "INT 16 / Mana Barrier",
+    eligibilityText = "INT 15 / Mana Barrier",
     actorText = "Heroes, human Soldiers, Magic-using AI"
 }
 
@@ -61,7 +63,7 @@ feats.INT_MANA_BARRIER_3 = {
     featId = "INT_MANA_BARRIER_3",
     displayName = "Mystic Bastion",
     governingAbilities = {"int"},
-    abilityRequirements = {int = 18},
+    abilityRequirements = {int = 17},
     prerequisiteFeatIds = {"INT_MANA_BARRIER_2"},
     requiredCapabilityTags = {"magic_pool"},
     incompatibleFeatIds = {},
@@ -78,7 +80,7 @@ feats.INT_MANA_BARRIER_3 = {
         description = "Replaces lower Mana Barrier ranks and sets ManaBarrierFeatDiversionFraction = 0.45. HPToMagicDiversionFraction still adds the actor's WizardClassHPToMagicDiversionFraction, if any; a Level-20 Wizard therefore reaches the designed maximum 0.85 total diversion (0.40 class + 0.45 feat). It never increases Magic capacity above 100, never creates fractional HP prevention, never prevents non-damage death, and remains constrained by the actor's current available Magic."
     },
     directorBaseWeight = 1.0,
-    eligibilityText = "INT 18 / Arcane Aegis",
+    eligibilityText = "INT 17 / Arcane Aegis",
     actorText = "Heroes, human Soldiers, Magic-using AI"
 }
 
