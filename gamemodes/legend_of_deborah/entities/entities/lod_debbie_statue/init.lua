@@ -16,7 +16,9 @@ function ENT:FreezeDeborahPose()
         local sequence=self:LookupSequence(name)
         if sequence and sequence>=0 then
             for _,cycle in ipairs({0,.25,.5,.75}) do
-                self:ResetSequence(sequence);self:SetCycle(cycle);self:SetupBones()
+                self:ResetSequence(sequence);self:SetCycle(cycle)
+                -- SetupBones is client-only; server bone queries must not call it.
+                if self.SetupBones then self:SetupBones() end
                 local ls=self:GetBonePosition(bones.L_UpperArm)
                 local rs=self:GetBonePosition(bones.R_UpperArm)
                 local lh=self:GetBonePosition(bones.L_Hand)

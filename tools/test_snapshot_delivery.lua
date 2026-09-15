@@ -121,3 +121,34 @@ assert(seen[p]==1 and seen[p2]==2,'no cross-player state leakage')
 assert(next(Delivery.Players[p].pending)==nil and not Delivery.Players[p].scheduled,'idle has no recurring work')
 print('[SNAPSHOT_DELIVERY] PASS: production XP burst, latest-state delivery, dedup, resync, lifecycle and multiplayer isolation')
 
+
+-- First-time class selection must deliver the feat draft through the actual
+-- deferred producer, not only generate it successfully on the server.
+function p:GetMaxHealth() return 100 end
+for _,classId in ipairs({'fighter','rogue','wizard'}) do
+    Delivery:Invalidate(p);packets={}
+    ps.progressionState=nil;ps.deploymentComplete=false
+    LOD.RunManager.State.Level=1
+    local fresh=CPS:InitializeHero(LOD.RunManager,ps,{id='test',name='Test Hero',model=ps.model,presentationSex='male'})
+    assert(not CPS:IsDeploymentEligible(ps))
+    assert(CPS:CommitClass(p,classId));flush()
+    local sheet
+    for _,packet in ipairs(packets) do if packet.name=='LOD_RPG_Snapshot' then sheet=packet.snapshot end end
+    assert(sheet and sheet.classId==classId and sheet.classPassive:match('%S'))
+    if classId=='fighter' then assert(sheet.classPassive:find('33% cap',1,true)) end
+    assert(sheet.featDraft and #sheet.featDraft.offers==3 and sheet.pendingFeatCount==1)
+    local trio={};for i,offer in ipairs(sheet.featDraft.offers) do
+        assert(offer.effect:match('%S'));trio[i]=offer.featId
+    end
+    assert(trio[1]~=trio[2] and trio[2]~=trio[3] and trio[1]~=trio[3])
+    assert(not CPS:IsDeploymentEligible(ps),'Class alone must not bypass the feat requirement')
+    -- Reopening/reconnecting after a failed delivery must retain the same trio.
+    Delivery:Invalidate(p);CPS:SyncPlayer(p);flush()
+    local replay=CPS:BuildClientSnapshot(p)
+    for i,id in ipairs(trio) do assert(replay.featDraft.offers[i].featId==id) end
+    assert(CPS:CommitFeat(p,trio[1],1));flush()
+    assert(CPS:IsDeploymentEligible(ps),'Committed class + feat must unlock the portal prerequisite')
+    local completed=CPS:BuildClientSnapshot(p)
+    assert(completed.pendingFeatCount==0 and completed.ordinaryFeatsCommitted==1)
+end
+print('CLASS_DRAFT_DELIVERY_PASS: Fighter/Rogue/Wizard commit -> three delivered offers -> stable refresh -> feat commit -> deployment eligible')

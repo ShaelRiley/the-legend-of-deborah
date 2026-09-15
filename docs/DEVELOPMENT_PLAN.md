@@ -9,7 +9,35 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — four working Wall Jumps
+## Current checkpoint — Fighter feat-draft delivery blocker
+
+Starting dev HEAD `0902ab038902c763d94ed28be9c95995ad370458` on
+`astra/equipment-update`. Fresh evidence: `console_latest(20260915-143951).txt`
+and `rpg_session_latest(20260915-143950).txt`. Fighter commits at session time
+18.030, followed by repeated snapshot failures at sv_character_progression.lua
+1609: bad argument #6 to format (no value). The class description introduced
+in the loot/class checkpoint contained an unescaped literal percent in a
+string.format template. Draft generation succeeded, but the deferred snapshot
+producer failed, leaving the client without its offers and staging correctly
+blocked on the uncommitted feat. Escape the percent; no eligibility, draft,
+class balance or portal rule changes.
+
+The production snapshot test now covers Fighter, Rogue and Wizard from class
+commit through three delivered choices, stable refresh, feat commit and the
+actual IsDeploymentEligible predicate used by the portal. It reproduced the
+exact logged formatting failure before repair. The prior test exercised Rogue
+and missed the Fighter-specific template. The same console also identifies an
+independent statue timer error from invoking client-only SetupBones on the
+server. Guard that call; a server-realm test verifies pose selection, frozen
+sequence/cycle and scowl finish without that method.
+
+All 81 automated suites pass after repair. Native acceptance remains pending:
+pull/install, restart, choose Fighter and confirm the three feats appear; choose
+one, collect the starter and enter the portal. Existing valid offers are retained
+on refresh. No live GDD correction is needed for these implementation defects.
+No main promotion/deployment; earlier native-crash diagnosis remains unconfirmed.
+
+## Previous checkpoint — four working Wall Jumps
 
 Starting dev HEAD `e22fd90c8ab96d5ccb2790963a4cac8961c97348` on
 `astra/equipment-update`. The user reported Wall Jump had no effect. Its brush-only

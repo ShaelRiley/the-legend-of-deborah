@@ -92,3 +92,29 @@ LOD.UI.ActivePage='equipment';events.LOD_StagingInteractionPrompt();assert(#pain
 LOD.UI.ActivePage=nil;player.GetPos=function() return Vector(200,0,0) end
 events.LOD_StagingInteractionPrompt();assert(#paints==1,'No out-of-range statue prompt')
 print('PRESENTATION_POLISH_PASS: opaque boundaries/40% fills, inside/outside, fade/reduced/caps, opposite-portal statue placement and standard rebound prompt')
+
+-- Reproduce the server realm: Entity has no client-only SetupBones method.
+ENT={};AddCSLuaFile=function() end;include=function() end
+LOD.RPGTestLog=nil
+local frozen={valid=true,sequence=0,cycle=0,nw={},flexes={}}
+local positions={L_UpperArm=Vector(0,10,60),R_UpperArm=Vector(0,-10,60),L_Hand=Vector(0,-8,50),R_Hand=Vector(0,8,50)}
+function frozen:LookupBone(name) return name:match('Bip01_(.*)') end
+function frozen:LookupSequence(name) return ({LineIdle01=1,LineIdle02=2,LineIdle03=3})[name] end
+function frozen:ResetSequence(n) self.sequence=n end
+function frozen:SetCycle(n) self.cycle=n end
+function frozen:GetBonePosition(id) return positions[id] end
+function frozen:GetSequence() return self.sequence end
+function frozen:SetPlaybackRate(n) self.rate=n end
+function frozen:SetNW2Int(k,v) self.nw[k]=v end
+frozen.SetNW2Float=frozen.SetNW2Int
+function frozen:SetFlexScale(n) self.flexScale=n end
+function frozen:GetFlexNum() return 2 end
+function frozen:GetFlexName(i) return i==0 and 'right_lowerer' or 'left_lowerer' end
+function frozen:SetFlexWeight(i,v) self.flexes[i]=v end
+dofile('gamemodes/legend_of_deborah/entities/entities/lod_debbie_statue/init.lua')
+assert(frozen.SetupBones==nil)
+ENT.FreezeDeborahPose(frozen)
+assert(frozen.rate==0 and frozen.nw.LOD_StatueSequence==frozen.sequence)
+assert(frozen.nw.LOD_StatueCycle==frozen.cycle and frozen.flexes[0]==.8)
+assert(frozen.LODStatueArmsCrossed,'Frozen pose must finish without client-only APIs on the server')
+print('STATUE_SERVER_REALM_PASS: bone queries/frozen state/scowl complete without SetupBones')
