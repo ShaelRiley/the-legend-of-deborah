@@ -55,7 +55,7 @@ function E:InventoryMove(id,target,origin)
     elseif target=='weapon' then
         local weapon=LocalPlayer():GetWeapon(def.weaponClass)
         if not IsValid(weapon) then self:InventoryMessage('Weapon unavailable.');return false end
-        input.SelectWeapon(weapon);LOD.Spellbook:Close();return true
+        input.SelectWeapon(weapon);E:Close();return true
     else self:Request('equip',id,target) end
     self.InventoryNextAction=RealTime()+.12
     self:InventoryMessage('Equipment change requested.')
@@ -138,7 +138,7 @@ function E:InventoryDetails()
     else
         if slot then
             button('UNEQUIP',function() E:InventoryMove(id,'inventory',slot) end)
-            if def.throwable then button('HOLD THROWABLE',function() E:Request('activate',id,'throwable');LOD.Spellbook:Close() end) end
+            if def.throwable then button('HOLD THROWABLE',function() E:Request('activate',id,'throwable');E:Close() end) end
         else button('EQUIP',function() E:InventoryMove(id,E:Placement(E.Snapshot,item)) end) end
         if item.definitionId=='ring' then
             button('EQUIP LEFT HAND',function() E:InventoryMove(id,'left_hand') end)
@@ -231,3 +231,28 @@ function E:BuildPanel(frame)
         if view.CurrentSnapshot~=E.Snapshot and not dragging() then E:RefreshInventory() end
     end
 end
+
+-- A sibling Player Menu page, with its own frame and equipment snapshot lifecycle.
+function E:Close()
+    if UI.ActivePage=='equipment' then UI.ActivePage=nil end
+    if IsValid(self.Frame) then self.Frame:Remove() end
+    self.Frame=nil;self.InventoryView=nil
+end
+function E:Open()
+    self:Close();UI:SelectPage('equipment')
+    local frame=vgui.Create('DFrame');self.Frame=frame
+    frame:SetTitle('');frame:SetSize(math.min(ScrW()-32,1120),math.min(ScrH()-32,740))
+    frame:Center();frame:MakePopup()
+    UI:CloseButton(frame,function() E:Close() end)
+    frame.Paint=function(_,w,h)
+        UI:Paper(0,0,w,h,C.red,255,8)
+        draw.SimpleText('EQUIPMENT','LOD_SheetHeading',24,20,C.red)
+    end
+    self:BuildPanel(frame)
+    UI:PageLinks(frame,'equipment',frame:GetTall()-96)
+    label(frame,'Drag onto a body slot, or select an item and click its slot.',24,frame:GetTall()-64,frame:GetWide()-48,36)
+    label(frame,'Select an equipped potion → HOLD THROWABLE. Gameplay continues.',24,frame:GetTall()-34,frame:GetWide()-48,30,'DermaDefault')
+    self:Request('snapshot')
+end
+concommand.Add('lod_equipment',function() E:Open() end)
+hook.Add('ShutDown','LOD_EquipmentPageClose',function() E:Close() end)

@@ -30,7 +30,7 @@ scroll positions, small-screen geometry, transport deltas and Lua syntax. Family
 icons were rendered from the production drawing routine for visual inspection.
 There is no Source renderer or real-network performance measurement in this check.
 
-Open I → View Equipment during the combined playtest. Confirm the body slots and
+Open Player Menu → Equipment during the combined playtest. Confirm the body slots and
 item grid are readable; drag a wearable to its slot and back, then equip a potion
 in Throwable. A screenshot suffices for a layout defect. Existing equipment,
 portrait, wallet and enemy runtime gates remain in their checkpoint documents;

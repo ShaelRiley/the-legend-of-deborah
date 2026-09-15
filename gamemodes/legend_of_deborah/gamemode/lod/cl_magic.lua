@@ -3,7 +3,9 @@ LOD.MagicFX = LOD.MagicFX or {waves = {}}
 
 local FX = LOD.MagicFX
 FX.waves = FX.waves or {}
-local beamMaterial = Material("sprites/light_glow02_add")
+local A=LOD.MagicArea
+local beamMaterial=A.Material
+local glowMaterial=Material("sprites/light_glow02_add")
 local attack2Held = false
 local localCastUntil = 0
 
@@ -39,6 +41,7 @@ net.Receive("LOD_MagicShoutFX", function()
     if direction == vector_origin then return end
     direction = direction:GetNormalized()
 
+    while #FX.waves>=12 do table.remove(FX.waves,1) end
     FX.waves[#FX.waves + 1] = {
         caster = caster,
         origin = origin,
@@ -76,6 +79,7 @@ local function drawRing(origin, direction, distance, alpha, width)
     local segments = 24
     local previous
 
+    A:Disc(center,radius,right,up,Color(155,225,255,math.floor(alpha*.4)))
     render.SetMaterial(beamMaterial)
     for i = 0, segments do
         local theta = (i / segments) * math.pi * 2
@@ -86,11 +90,13 @@ local function drawRing(origin, direction, distance, alpha, width)
         previous = point
     end
 
+    render.SetMaterial(glowMaterial)
     render.DrawSprite(center, 22 + distance * 0.018, 22 + distance * 0.018,
         Color(190, 235, 255, math.floor(alpha * 0.6)))
 end
 
-hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function()
+hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function(depth,skybox)
+    if depth or skybox then return end
     local now = CurTime()
     for i = #FX.waves, 1, -1 do
         local wave = FX.waves[i]
@@ -100,16 +106,21 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicForceShoutWaves", function(
             table.remove(FX.waves, i)
         else
             local fade = math.Clamp(1 - progress, 0, 1)
-            local alpha = math.floor(210 * fade)
+            local alpha = math.floor(255 * fade)
             local distance = 80 + progress * 980
             drawRing(wave.origin, wave.direction, distance, alpha, 10 * fade + 2)
 
             local trailing = math.Clamp(progress - 0.14, 0, 1)
-            if trailing > 0 then
+            local reduced=GetConVar("lod_reduced_effects")
+            if trailing > 0 and not (reduced and reduced:GetBool()) then
                 drawRing(wave.origin, wave.direction, 50 + trailing * 900,
-                    math.floor(120 * fade), 6 * fade + 1)
+                    math.floor(255 * fade), 6 * fade + 1)
             end
         end
     end
 end)
 
+
+local function clearWaves() FX.waves={};localCastUntil=0 end
+hook.Add("PostCleanupMap","LOD_MagicShoutCleanup",clearWaves)
+hook.Add("ShutDown","LOD_MagicShoutShutdown",clearWaves)

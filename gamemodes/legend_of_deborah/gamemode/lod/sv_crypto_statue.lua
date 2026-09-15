@@ -18,8 +18,8 @@ function C:EnsureStatue()
     if not S.HutCenter then return false end
     local statue=ents.Create('lod_debbie_statue')
     if not IsValid(statue) then return false end
-    statue:SetPos(S.HutCenter-S.HutAngles:Forward()*64+S.HutAngles:Right()*96)
-    statue:SetAngles(Angle(0,S.HutAngles.y-90,0))
+    statue:SetPos(S.HutCenter+S.HutAngles:Forward()*((S.HutHalfForward or 180)-40))
+    statue:SetAngles(Angle(0,S.HutAngles.y+180,0))
     statue:Spawn();statue:Activate()
     self.Statue=S:_RegisterHutEntity(statue)
     return true

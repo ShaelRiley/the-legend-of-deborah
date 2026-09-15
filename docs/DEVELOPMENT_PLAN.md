@@ -9,7 +9,18 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — visual equipment inventory
+## Current checkpoint — Equipment tab, filled Magic areas and rear statue
+
+The author's follow-up presentation direction is implemented on the same combined
+`astra/equipment-update` candidate under live GDD LOD-UI-009. Equipment is now a
+first-class sibling tab with its own frame; Magic areas have solid outer boundaries
+and approximately 40%-opaque interiors; the Deborah statue is behind the Hermit
+and uses the portal/manual prompt style. The author's subsequent correction
+explicitly retains the existing face HUD position. All 75 integrated automated
+suites pass; Source visual acceptance is pending. See
+[presentation checkpoint](PRESENTATION_POLISH.md).
+
+## Previous checkpoint — visual equipment inventory
 
 The author's CRPG equipment direction is implemented on the combined
 `astra/equipment-update` candidate under live GDD LOD-UI-008. A left body map and

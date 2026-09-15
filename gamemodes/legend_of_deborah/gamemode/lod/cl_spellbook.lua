@@ -70,40 +70,27 @@ function Book:Open()
     local frame = vgui.Create("DFrame")
     self.Frame = frame
     frame:SetTitle("")
-    frame:SetSize(math.min(ScrW() - 32, 1120), math.min(ScrH() - 32, self.EquipmentPage and 740 or 590))
+    frame:SetSize(math.min(ScrW() - 32, 1120), math.min(ScrH() - 32, 590))
     frame:Center()
     frame:MakePopup()
     UI:CloseButton(frame,function() Book:Close() end)
     frame.Paint = function(self,w,h)
         UI:Paper(0,0,w,h,C.red,255,8)
-        draw.SimpleText("INVENTORY + SPELLBOOK","LOD_SheetHeading",24,20,C.red)
+        draw.SimpleText("SPELLBOOK","LOD_SheetHeading",24,20,C.red)
         local ply = LocalPlayer()
         if IsValid(ply) then
             draw.SimpleText(string.format("Magic %.1f / %d",ply:GetNW2Float("LOD_Magic",100),
                 ply:GetNW2Int("LOD_MagicMax",100)),"LOD_SheetBody",24,52,C.blue)
         end
-        if not Book.EquipmentPage then
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
         draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,266,C.red)
-        end
-        draw.SimpleText(Book.EquipmentPage and "Drag items onto body slots. Select a potion, then Hold Throwable to use it."
-            or "Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
+        draw.SimpleText("Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
             "LOD_SheetBody",24,h-64,C.ink)
-        draw.SimpleText(Book.EquipmentPage and "Gameplay continues. Switch weapons to resume Magic after using a Throwable."
-            or "Locked entries unlock through progression. Gameplay continues while this book is open.",
+        draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
             "LOD_SheetSmall",24,h-38,C.muted)
     end
 
     UI:PageLinks(frame,"book",frame:GetTall()-96)
-    local toggle = vgui.Create("DButton", frame)
-    toggle:SetPos(frame:GetWide()-210,48); toggle:SetSize(176,28)
-    toggle:SetText(self.EquipmentPage and "View Spellbook" or "View Equipment")
-    toggle.DoClick = function()
-        Book.EquipmentPage = not Book.EquipmentPage
-        Book:Open()
-        if Book.EquipmentPage then LOD.Equipment:Request("snapshot") end
-    end
-    if self.EquipmentPage then LOD.Equipment:BuildPanel(frame); return end
     local width = frame:GetWide()
     local gap = 10
     local left = 24
@@ -130,7 +117,7 @@ net.Receive("LOD_MagicSpellbookSnapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
     Book.Snapshot = snapshot
-    if Book.PendingOpen or (IsValid(Book.Frame) and not Book.EquipmentPage) then Book:Open() end
+    if Book.PendingOpen or IsValid(Book.Frame) then Book:Open() end
 end)
 
 hook.Add("PlayerButtonDown", "LOD_SpellbookInput", function(ply, key)

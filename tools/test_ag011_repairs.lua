@@ -432,6 +432,16 @@ render={SetMaterial=function(m) material=m end,
     end,
     DrawSprite=function() sprites=sprites+1 end}
 surface.DrawLine=function() end
+local fillCalls={}
+function EyePos() return Vector(100000,100000,100000) end
+render.DrawSphere=function(pos,radius,longitude,latitude,color)
+    assert(longitude<=32 and latitude<=16)
+    fillCalls[#fillCalls+1]={kind='sphere',radius=radius,pos=pos,color=color}
+end
+render.DrawQuadEasy=function(pos,normal,w,h,color)
+    fillCalls[#fillCalls+1]={kind='cell',size=w,pos=pos,color=color}
+end
+dofile(root .. "cl_magic_area.lua")
 dofile(root .. "cl_magic_form_fx.lua")
 local function deliver(packet) reading,cursor=packet.args,0;receives[packet.name]() end
 deliver(blast);deliver(beam);for _,packet in ipairs(impactPackets) do deliver(packet) end
@@ -441,6 +451,13 @@ hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,true)
 assert(beams==0,"no effects in skybox")
 hooks.PostDrawTranslucentRenderables.LOD_MagicFormPresentation(false,false)
 assert(beams>=12 and sprites>0,"actual Blast cell footprints and Beam are rendered")
+local cellFill,sphereFill=false,false
+for _,fill in ipairs(fillCalls) do
+    assert(fill.color.a==102,'Area fill peaks at 40% opacity')
+    if fill.kind=='cell' then cellFill=true else sphereFill=true end
+end
+assert(cellFill and sphereFill,'Both graph-cell and spherical areas have full interior fills')
+
 hooks.PostCleanupMap.LOD_MagicFormPresentationCleanup()
 deliver(impactPackets[1])
 local oldBeam=render.DrawBeam
@@ -665,3 +682,4 @@ util.SpriteTrail=savedTrail
 print("PASS: replicated bomb identity, unchanged lob, round body/fuse render and bounded sparks")
 
 print("AG-011R1_REPAIRS_PASS: All focused deterministic tests passed cleanly.")
+

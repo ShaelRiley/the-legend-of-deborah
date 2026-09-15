@@ -31,7 +31,7 @@ after death.</div>
         <div class="card-grid">
           <div class="card"><h3>Weapons</h3><p>Your staging-room advanced weapon is yours. Additional weapon discoveries may also be individualized.</p></div>
           <div class="card"><h3>Ammunition</h3><p>Reserve ammunition is precious. Starting advanced weapons arrive loaded but with no reserve.</p></div>
-          <div class="card"><h3>Healing Potions</h3><p>Open <b>I → View Equipment → Hold Throwable</b>. <b>LMB throws</b> to heal the first living allied Hero struck; <b>RMB drinks</b>. Each use restores up to <b>25 HP</b> and consumes one potion.</p></div>
+          <div class="card"><h3>Healing Potions</h3><p>Open <b>Player Menu → Equipment → Hold Throwable</b>. <b>LMB throws</b> to heal the first living allied Hero struck; <b>RMB drinks</b>. Each use restores up to <b>25 HP</b> and consumes one potion.</p></div>
           <div class="card"><h3>Rare Life</h3><p>Extra-life rewards are exceptional. The normal budget is still three lives.</p></div>
         </div>
         <p>Ordinary dungeon loot is personal. A teammate cannot steal your individualized pickup, and you cannot steal theirs.</p>
@@ -45,7 +45,7 @@ after death.</div>
       <div class="page">
         <div class="kicker">Choose what you carry</div>
         <h1>Equipment &amp; Special Moves</h1><div class="rule"></div>
-        <p><b>I → View Equipment</b> shows every weapon and wearable, its benefits, drawback and value. Every new piece rolls four to seven benefits, one elemental affinity and a drawback. Its name describes real effects. Deeper dungeons and rarer loot have larger budgets, even after Hero Level 20.</p>
+        <p><b>Player Menu → Equipment</b> shows every weapon and wearable, its benefits, drawback and value. Every new piece rolls four to seven benefits, one elemental affinity and a drawback. Its name describes real effects. Deeper dungeons and rarer loot have larger budgets, even after Hero Level 20.</p>
         <div class="card-grid">
           <div class="card"><h3>Seven wearable positions</h3><p>Head, Body, Legs, Feet, Left Hand, Right Hand and Left Arm Accessory. Each ring uses one hand. One pair of gloves uses <b>both hands</b>. A shield uses the independent left-arm slot.</p></div>
           <div class="card"><h3>Compare before replacing</h3><p>Free positions equip automatically. Look at an occupied-slot pickup to compare its actual modifiers and approximate value. <b>E accepts</b> the replacement and destroys the displaced item records. Gloves may replace two rings.</p></div>

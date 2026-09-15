@@ -56,6 +56,7 @@ function UI:SelectPage(page)
     if page ~= "wallet" and LOD.Wallet then LOD.Wallet:Close() end
     if page ~= "sheet" and LOD.CharacterSheet then LOD.CharacterSheet:Close() end
     if page ~= "book" and LOD.Spellbook then LOD.Spellbook:Close() end
+    if page ~= "equipment" and LOD.Equipment and LOD.Equipment.Close then LOD.Equipment:Close() end
     if page ~= "history" and LOD.CombatRollFeed and IsValid(LOD.CombatRollFeed.HistoryFrame) then
         LOD.CombatRollFeed.HistoryFrame:Remove()
     end
@@ -84,12 +85,13 @@ surface.CreateFont("LOD_SheetKey", {
 function UI:PageLinks(frame, active, y)
     local pages={{"sheet","P / CHARACTER",function() LOD.CharacterSheet:Open() end},
         {"book","I / SPELLBOOK",function() LOD.Spellbook:Open() end},
+        {"equipment","EQUIPMENT",function() LOD.Equipment:Open() end},
         {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end}}
     if LOD.Wallet then pages[#pages+1]={"wallet","WALLET",function() LOD.Wallet:Open() end} end
     local tabWidth=math.min(144,(frame:GetWide()-48-10*(#pages-1))/#pages)
     for i,page in ipairs(pages) do
         local button=vgui.Create("DButton",frame)
-        button:SetText(page[2]);button:SetPos(24+(i-1)*(tabWidth+10),y);button:SetSize(tabWidth,24)
+        button:SetText(frame:GetWide()<760 and (page[1]=="sheet" and "P / HERO" or page[1]=="book" and "I / MAGIC" or page[1]=="history" and "L / LOG" or page[2]) or page[2]);button:SetPos(24+(i-1)*(tabWidth+10),y);button:SetSize(tabWidth,24)
         self:Button(button,page[1]==active and C.red or C.blue)
         button.DoClick=page[3]
     end

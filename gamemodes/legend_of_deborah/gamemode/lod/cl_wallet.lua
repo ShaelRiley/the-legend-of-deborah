@@ -95,11 +95,3 @@ net.Receive('LOD_WalletSnapshot',function()
     if UI.ActivePage=='wallet' and IsValid(W.Frame) then W:Render() end
 end)
 net.Receive('LOD_WalletOpen',function() W:Open() end)
-hook.Add('HUDPaint','LOD_DebbieStatuePrompt',function()
-    local ply=LocalPlayer()
-    if UI.ActivePage or not IsValid(ply) or not ply:Alive() or ply:GetNW2Bool('LOD_Deployed',false) then return end
-    local ent=ply:GetEyeTrace().Entity
-    if not IsValid(ent) or ent:GetClass()~='lod_debbie_statue' or ply:GetPos():DistToSqr(ent:GetPos())>128^2 then return end
-    local key=string.upper(input.LookupBinding('+use') or 'E')
-    UI:HUDText(key..': DEBBIE FUND TOKENS / WALLET','HudHintTextLarge',ScrW()*.5,ScrH()*.64,UI.HUDColor,TEXT_ALIGN_CENTER)
-end)

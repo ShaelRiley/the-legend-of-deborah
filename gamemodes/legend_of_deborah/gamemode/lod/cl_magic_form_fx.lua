@@ -2,10 +2,8 @@ local FX = {}
 local localCast
 local beamMaterial = Material("trails/laser")
 local material = Material("sprites/light_glow02_add")
-local boundaryMaterial = CreateMaterial("LOD_MagicAreaBoundary", "UnlitGeneric", {
-    ["$basetexture"]="color/white", ["$vertexcolor"]="1", ["$vertexalpha"]="1",
-    ["$translucent"]="1", ["$ignorez"]="0"
-})
+local A=LOD.MagicArea
+local boundaryMaterial=A.Material
 local function reduced()
     local cv=GetConVar("lod_reduced_effects")
     return cv and cv:GetBool()
@@ -20,11 +18,7 @@ local function circle(center, radius, plane, color, width)
         previous=point
     end
 end
-local colors = {
-    raw = Color(210, 235, 255), earth = Color(194, 156, 88), fire = Color(255, 105, 45),
-    dark = Color(125, 72, 170), ice = Color(125, 220, 255), light = Color(255, 245, 170),
-    electric = Color(110, 180, 255)
-}
+local colors=A.Colors
 
 net.Receive("LOD_MagicFormFX", function()
     local form = net.ReadString()
@@ -34,7 +28,7 @@ net.Receive("LOD_MagicFormFX", function()
     local caster = net.ReadEntity()
     if LOD.StatusPortrait then LOD.StatusPortrait:Attack(caster) end
     local shape=net.ReadUInt(2)
-    local radius, edges = 0, {}
+    local radius, edges, tiles = 0, {}, {}
     if shape==1 then
         radius=net.ReadFloat()
     elseif shape==2 then
@@ -54,12 +48,13 @@ net.Receive("LOD_MagicFormFX", function()
         local dirs={{1,0},{0,1},{-1,0},{0,-1}}
         for _,cell in ipairs(cells) do
             local center=zero+Vector(cell.x*size,cell.y*size,cell.z*height+3)
+            tiles[#tiles+1]={center=center,size=size}
             for _,d in ipairs(dirs) do
                 local neighbor=(cell.x+d[1])..":"..(cell.y+d[2])..":"..cell.z
                 do
                     local side=center+Vector(d[1]*half,d[2]*half,0)
                     local tangent=Vector(-d[2]*half,d[1]*half,0)
-                    edges[#edges+1]={side-tangent,side+tangent,occupied[neighbor] and 1.5 or 4}
+                    edges[#edges+1]={side-tangent,side+tangent,occupied[neighbor] and 1.5 or 4,not occupied[neighbor]}
                 end
             end
         end
@@ -80,7 +75,7 @@ net.Receive("LOD_MagicFormFX", function()
     while #FX >= 48 do table.remove(FX,1) end
     FX[#FX + 1] = {
         caster = caster,
-        shape=shape, radius=radius, edges=edges,
+        shape=shape, radius=radius, edges=edges, tiles=tiles,
         form = form,
         content = content,
         origin = origin,
@@ -125,9 +120,10 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
 
             elseif fx.shape>0 then
                 render.SetMaterial(boundaryMaterial)
-                local ink=Color(c.r,c.g,c.b,math.floor(220*math.min(1,fade*2)))
+                local ink,fill=A:Ink(c,math.min(1,fade*2))
                 local center=fx.shape==1 and fx.destination or fx.origin
                 if fx.shape==1 then
+                    A:Sphere(center,fx.radius,fill,reduced())
                     -- Three fixed great circles reveal the real 3D blast sphere.
                     -- The small inner pulse is decorative; the outer limit never moves.
                     for plane=0,2 do circle(center,fx.radius,plane,ink,2.5) end
@@ -136,8 +132,9 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
                             Color(c.r,c.g,c.b,math.floor(100*fade)),4)
                     end
                 else
+                    for _,tile in ipairs(fx.tiles) do A:Cell(tile.center,tile.size,fill) end
                     for _,edge in ipairs(fx.edges) do
-                        render.DrawBeam(edge[1],edge[2],edge[3],0,1,ink)
+                        render.DrawBeam(edge[1],edge[2],edge[3],0,1,edge[4] and ink or fill)
                     end
                 end
                 -- Fixed center marker avoids a camera-following/muzzle illusion.

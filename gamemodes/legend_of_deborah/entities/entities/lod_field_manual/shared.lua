@@ -193,6 +193,7 @@ if CLIENT then
     end
 
     hook.Add("HUDPaint", "LOD_FieldManualAndPortalPrompts", function()
+        if LOD and LOD.StagingPromptOwnedByGamemode then return end
         if LOD and LOD.FieldManual and IsValid(LOD.FieldManual.Frame) then return end
         local ply = LocalPlayer()
         if not IsValid(ply) or ply:GetNW2Bool("LOD_Deployed", false) then return end
@@ -216,3 +217,4 @@ if CLIENT then
         end
     end)
 end
+

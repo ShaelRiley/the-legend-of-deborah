@@ -37,9 +37,10 @@ net.Start=function(n) pending={name=n} end
 net.WriteString=function(s) pending[#pending+1]=s end
 net.SendToServer=function() requests[#requests+1]=pending end
 local ply=fixture.actor('ui-owner');LocalPlayer=function() return ply end
-local closed=0;LOD.Spellbook={EquipmentPage=true,Close=function() closed=closed+1 end}
+local closed=0;LOD.Spellbook={Close=function() error("Equipment must not close the Spellbook") end}
 input={SelectWeapon=function(w) ply.selected=w end}
 dofile(root..'cl_equipment.lua');dofile(root..'cl_equipment_icons.lua');dofile(root..'cl_equipment_inventory.lua')
+local realClose=E.Close;E.Close=function() closed=closed+1 end
 local state={items={},slots={},activeWeaponClass='weapon_pistol'}
 for i,family in ipairs({'headwear','vest','trousers','boots','ring','ring','gloves','shield','weapon_pistol','weapon_smg1'}) do
     local item=E:Generate(100+i,5,family,'i'..i);item.id='i'..i;state.items[item.id]=item
@@ -109,3 +110,27 @@ draw={NoTexture=function() end,SimpleText=function() end}
 for _,item in pairs(state.items) do E:DrawItemIcon(item,0,0,56,{r=0,g=0,b=0,a=255}) end
 assert(drawCalls>=11)
 print('EQUIPMENT_INVENTORY_UI_PASS: body/grid layout, owned icons/stacks, correct/invalid/stale drops, paired hands, native weapon selection, server-only mutation, retained/deferred snapshot UI and scroll')
+
+-- Real sibling-page lifecycle: no Spellbook snapshot dependency or delayed focus theft.
+E.Close=realClose;LOD.Spellbook=nil
+for _,name in ipairs({'SetTitle','Center','MakePopup','ShowCloseButton'}) do panel[name]=function() end end
+surface.CreateFont=function() end
+ScrW=function() return 640 end;ScrH=function() return 480 end
+LOD.UI.Colors={};dofile(root..'cl_ui_theme.lua')
+gui={IsConsoleVisible=function() return false end};chat={IsTyping=function() return false end}
+dofile(root..'cl_spellbook.lua')
+LOD.Spellbook:Open();assert(LOD.Spellbook.PendingOpen)
+E:Open();assert(LOD.UI.ActivePage=='equipment' and E.Frame and not LOD.Spellbook.PendingOpen)
+local ownedFrame=E.Frame
+net.ReadTable=function() return {forms={},contents={}} end
+receivers.LOD_MagicSpellbookSnapshot()
+assert(E.Frame==ownedFrame and LOD.UI.ActivePage=='equipment' and not IsValid(LOD.Spellbook.Frame))
+local equipmentTab
+for _,p in ipairs(ownedFrame.children) do if p.text=='EQUIPMENT' then equipmentTab=p end end
+assert(equipmentTab,'Equipment has its own first-class tab')
+LOD.Spellbook:Open();assert(ownedFrame.valid==false and not E.Frame and LOD.UI.ActivePage=='book')
+net.ReadTable=function() return table.Copy(state) end
+receivers.LOD_EquipmentSnapshot();assert(not E.Frame and LOD.UI.ActivePage=='book')
+E:Open();assert(not IsValid(LOD.Spellbook.Frame) and LOD.UI.ActivePage=='equipment')
+E:Close();receivers.LOD_EquipmentSnapshot();assert(not E.Frame and not LOD.UI.ActivePage)
+print('EQUIPMENT_PAGE_PASS: independent frame, direct sibling tab, pending request cancellation, late snapshot isolation')
