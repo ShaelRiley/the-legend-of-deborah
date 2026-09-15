@@ -152,8 +152,8 @@ hook.Add("Think", "LOD_HostileHurtPoseAuthoritative", function()
     end
 end)
 
--- Death presentation fires OnNPCKilled before _BeginDeathPresentation marks the
--- hostile dead. Run next tick, then hold exactly the same readable hurt pose for
+-- OnNPCKilled bookkeeping runs inside the native death callback. Apply the pose
+-- next tick, then hold exactly the same readable hurt pose for
 -- every frame of the one-second blink/dematerialization sequence.
 hook.Remove("OnNPCKilled", "LOD_HostileDeathPainPose")
 hook.Add("OnNPCKilled", "LOD_HostileDeathPainPose", function(npc)

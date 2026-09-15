@@ -384,6 +384,9 @@ local function install()
                     inflictor = entityLabel(inflictor),
                     target = entityLabel(target),
                     target_hp_before = hpBefore,
+                    -- Historical event name: this is still EntityTakeDamage,
+                    -- before Source applies damage or enters the death callback.
+                    phase = "pre_engine_apply",
                     final_engine_damage = dmginfo:GetDamage(),
                     damage_type = dmginfo:GetDamageType()
                 }

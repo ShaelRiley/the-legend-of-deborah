@@ -9,7 +9,19 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Equipment tab, filled Magic areas and rear statue
+## Current checkpoint — Soldier crash investigation and wallet repair
+
+The 2026-09-15 playtest force-closed. The full log records a successful Raw Bolt
+hit followed by a lethal AR2 hit on the same Soldier; it ends before death/XP
+completion. The native fault is not established. Repair the independently
+reproduced wallet SQL-quoting defect, defer native corpse mutations out of the
+death callback, guard duplicate kill settlement and add bounded death-stage
+diagnostics. All 76 integrated automated suites pass. Source crash resolution
+remains pending: repeat only Bolt → AR2 Soldier kill on a fresh application start.
+See [evidence, repair and finite gate](CRASH_REPAIR_2026_09_15.md). No main
+promotion or deployment; retain the combined candidate's feature scope.
+
+## Previous checkpoint — Equipment tab, filled Magic areas and rear statue
 
 The author's follow-up presentation direction is implemented on the same combined
 `astra/equipment-update` candidate under live GDD LOD-UI-009. Equipment is now a

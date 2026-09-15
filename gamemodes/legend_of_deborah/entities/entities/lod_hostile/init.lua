@@ -91,6 +91,18 @@ LOD.HostileDeathPresentation = LOD.HostileDeathPresentation or {
 }
 local DeathPresentation = LOD.HostileDeathPresentation
 DeathPresentation.Active = DeathPresentation.Active or {}
+DeathPresentation.Pending = DeathPresentation.Pending or {}
+
+local function deathStage(hostile, stage)
+    if not IsValid(hostile) then return end
+    local log = LOD.RPGTestLog
+    if log and log.Write then
+        log:Write("HOSTILE_DEATH_STAGE", {
+            stage = stage, entity = hostile:EntIndex(),
+            archetype = hostile.LODArchetypeId, health = hostile:Health()
+        })
+    end
+end
 
 local function deathRecordNextDue(record)
     if not record.finished and record.blinkTick < DEATH_BLINK_COUNT then
@@ -107,6 +119,9 @@ end
 
 function DeathPresentation:_ScheduleNext()
     local earliest
+    for _, pending in ipairs(self.Pending) do
+        if not earliest or pending.due < earliest then earliest = pending.due end
+    end
     for _, record in ipairs(self.Active) do
         local due = deathRecordNextDue(record)
         if due and (not earliest or due < earliest) then earliest = due end
@@ -129,6 +144,16 @@ end
 function DeathPresentation:_RunDue()
     self.SharedTicks = (self.SharedTicks or 0) + 1
     local now = CurTime() + 0.001
+
+    -- Keep collision/model changes outside the native damage/death callback.
+    -- Reuse this scheduler rather than allocating a timer per corpse.
+    for index = #self.Pending, 1, -1 do
+        local pending = self.Pending[index]
+        if now >= pending.due then
+            table.remove(self.Pending, index)
+            if IsValid(pending.hostile) then pending.hostile:_BeginDeathPresentation() end
+        end
+    end
 
     for index = #self.Active, 1, -1 do
         local record = self.Active[index]
@@ -170,6 +195,13 @@ function DeathPresentation:_RunDue()
     self:_ScheduleNext()
 end
 
+function DeathPresentation:Queue(hostile)
+    if hostile.LODDeathQueued then return end
+    hostile.LODDeathQueued = true
+    self.Pending[#self.Pending + 1] = {hostile = hostile, due = CurTime() + 0.001}
+    self:_ScheduleNext()
+end
+
 function DeathPresentation:Add(hostile)
     if not IsValid(hostile) then return false end
     self.TotalDeaths = (self.TotalDeaths or 0) + 1
@@ -196,7 +228,7 @@ concommand.Add("lod_death_scheduler_status", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
 
     local deaths = DeathPresentation.TotalDeaths or 0
-    local active = #DeathPresentation.Active
+    local active = #DeathPresentation.Active + #DeathPresentation.Pending
     local running = timer.Exists(DEATH_SHARED_TIMER)
     local avoided = deaths * 10
     local passed = deaths > 0 and active == 0 and not running
@@ -823,19 +855,23 @@ end
 
 function ENT:_FinishDeathPresentation()
     if not IsValid(self) then return end
+    deathStage(self, "loot_enter")
     self:SetNoDraw(true)
     self:_SpawnPlaceholderLoot()
+    deathStage(self, "loot_complete")
     self:Remove()
 end
 
 function ENT:_BeginDeathPresentation()
-    if self.LODDead then return end
+    if self.LODDeathPresentationStarted then return end
+    self.LODDeathPresentationStarted = true
     self.LODDead = true
     self.LODActivated = false
     self.LODTarget = nil
     self.LODWaypoints = {}
     self.LODSoldierBurst = nil
-    self.LODDeathLevelSeed = LOD.RunManager and LOD.RunManager.State.LevelSeed or nil
+    self.LODDeathLevelSeed = self.LODDeathLevelSeed or (LOD.RunManager and LOD.RunManager.State.LevelSeed or nil)
+    deathStage(self, "presentation_enter")
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
 
@@ -858,15 +894,26 @@ function ENT:_BeginDeathPresentation()
     self:_SetActivity(ACT_DIESIMPLE or ACT_DIEBACKWARD or ACT_IDLE, true)
 
     DeathPresentation:Add(self)
+    deathStage(self, "presentation_ready")
 end
 
 function ENT:OnKilled(dmginfo)
     if self.LODDead then return end
+    -- Claim death before any extension hook can re-enter it. Keep attribution
+    -- synchronous, but do not mutate native collision/model state in this stack.
+    self.LODDead = true
+    self.LODActivated = false
+    self.LODTarget = nil
+    self.LODSoldierBurst = nil
+    self.LODDeathLevelSeed = LOD.RunManager and LOD.RunManager.State.LevelSeed or nil
+    deathStage(self, "callback_enter")
+    DeathPresentation:Queue(self)
     if LOD.EncounterDirector and LOD.EncounterDirector.OnHostileKilled then
         LOD.EncounterDirector:OnHostileKilled(self, dmginfo)
     end
+    deathStage(self, "encounter_complete")
     hook.Run("OnNPCKilled", self, dmginfo:GetAttacker(), dmginfo:GetInflictor())
-    self:_BeginDeathPresentation()
+    deathStage(self, "kill_hooks_complete")
 end
 
 function ENT:OnRemove()

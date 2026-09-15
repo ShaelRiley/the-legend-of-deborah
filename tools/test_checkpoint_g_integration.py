@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Hostile Native Death Handoff", ["python3", "tools/run_lua54.py", "tools/test_hostile_death_handoff.lua"]),
     ("Equipment/Area/Statue Presentation", ["python3", "tools/run_lua54.py", "tools/test_presentation_polish.lua"]),
     ("Equipment Body Map & Drag Inventory", ["python3", "tools/run_lua54.py", "tools/test_equipment_inventory_ui.lua"]),
     ("Reactive Character Status Portrait", ["python3", "tools/run_lua54.py", "tools/test_status_portrait.lua"]),

@@ -7,7 +7,11 @@ local function query(statement)
     return result
 end
 local function encode(value)
-    return assert(util.TableToJSON(value), 'wallet JSON encoding failed')
+    local encoded=util.TableToJSON(value)
+    assert(encoded, 'wallet JSON encoding failed')
+    -- assert returns every argument: forwarding it to SQLStr also passed its
+    -- message as bNoQuotes, leaving JSON unquoted on the real engine binding.
+    return encoded
 end
 local function number(n) return type(n)=='number' and n==n and n>=0 and n<9007199254740991 end
 function Store:ValidAccount(id)

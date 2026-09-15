@@ -4,7 +4,7 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local E,Run=LOD.Equipment,fixture.Run
 getmetatable(Vector()).__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 local hooks=fixture.hooks
-sql={Query=WalletSQLQuery,LastError=WalletSQLError,SQLStr=function(s) return "'"..s:gsub("'","''").."'" end}
+sql={Query=WalletSQLQuery,LastError=WalletSQLError,SQLStr=function(s,noQuotes) local escaped=s:gsub("'","''");return noQuotes and escaped or "'"..escaped.."'" end}
 util.TableToJSON=WalletJSONEncode
 util.JSONToTable=function(s,_,preserve) assert(preserve,'Wallet must preserve string keys');return WalletJSONDecode(s) end
 local errors={};ErrorNoHalt=function(s) errors[#errors+1]=s end
