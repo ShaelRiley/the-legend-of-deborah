@@ -23,7 +23,7 @@ local function installRenderer()
         if not self:GetNW2Bool("LOD_SoldierShotTelegraph", false) then return end
 
         local archetype = self:GetNW2String("LOD_Archetype", "")
-        if archetype ~= "soldier" and archetype ~= "blitzer" then return end
+        if archetype ~= "soldier" and archetype ~= "blitzer" and archetype ~= "sniper" then return end
 
         local origin = self:GetNW2Vector("LOD_SoldierShotOrigin", vector_origin)
         local direction = self:GetNW2Vector("LOD_SoldierShotDirection", vector_origin)
@@ -38,10 +38,12 @@ local function installRenderer()
         -- origin and direction. The extension only keeps the warning legible when
         -- the intended point is near the local player's first-person camera.
         local visualDistance = math.Clamp(targetDistance + 256, 512, 1600)
+        if archetype == "sniper" then visualDistance = targetDistance end
         local endPos = origin + direction * visualDistance
 
         render.SetMaterial(aimMaterial)
         local color = archetype == "blitzer" and BLITZER_LASER_COLOR or SOLDIER_LASER_COLOR
+        if archetype == "sniper" then color = Color(40, 100, 255, 220) end
         render.DrawBeam(origin, endPos, LASER_WIDTH, 0, 1, color)
     end
 
@@ -56,3 +58,4 @@ if not installRenderer() then
         end
     end)
 end
+

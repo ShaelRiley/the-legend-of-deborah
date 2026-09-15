@@ -22,20 +22,37 @@ formulas. Live GDD LOD-EQUIP-016 owns the new 60-property catalog, budget/rarity
 curves, active-weapon contributions, statuses and acquisition behavior. Earlier
 LOD-EQUIP-015 Block, Throwable and Special Move semantics remain in force.
 See [economy rules and handoff](PROCEDURAL_ITEM_ECONOMY.md) and
-[checkpoint](EQUIPMENT_CHECKPOINT.md). Equipment runtime acceptance remains pending;
-do not proceed into Enemy work or promote main on static evidence alone.
+[checkpoint](EQUIPMENT_CHECKPOINT.md). Equipment runtime acceptance remains pending. The later explicit user direction
+authorizes Enemy development alongside the Equipment playtest; main promotion
+still requires appropriate runtime acceptance.
 
 The subsequent 2026-09-15 completion assessment found and repaired a real
 Equipment blocker: full procedural pickup records exceeded the engine's
 NW2String limit, breaking comparison data. Owner-checked inspection messages now
 carry the complete record, with production server/client transport tests; all
 66 integrated suites pass. See [completion assessment](EQUIPMENT_ASSESSMENT.md).
-The user's conditional Enemy instruction remains next after Equipment completion;
-this repair does not establish the still-missing in-game acceptance evidence.
+The subsequent user direction explicitly supersedes the conditional Enemy hold.
+Equipment and Enemy can now be tested together on the same development branch.
 
 Preserve accepted RPG behavior and the current workflow. Do not restart the old
 hybrid/Antigravity process. The broader Instruction Booklet reconciliation and
 outstanding RPG multiplayer release validation remain required before deployment.
+
+## Combined Equipment / Enemy checkpoint
+
+Shael explicitly requested Enemy variety while testing Equipment. The first
+combined checkpoint adds the Sniper graph-retreat/crossbow controller, Sniper and
+Blitzer variants of eligible Firing Line encounters, and repairs the unified
+spawner's missing Blitzer entry. Existing equipment and perk changes are retained.
+See [Enemy update checkpoint](ENEMY_UPDATE.md) for the finite playtest and remaining
+scope. All 67 integrated suites pass; this is a development-branch candidate,
+not in-game acceptance or completion of the full Enemy milestone.
+
+Continue the missing canonical enemies and final hunt/boss/timer work. The live
+GDD leaves required attack tuning unresolved for Flamer, Big Crab, Razor and Arc
+Caster; do not fabricate those numbers. Sniper tuning is explicitly delegated and
+is recorded in tab 07. Authored Climber behavior and the remaining explicitly
+specified work can continue independently of those gaps.
 
 ## History
 
@@ -44,7 +61,7 @@ bounded detour on the same Equipment development branch. Independent category
 rolls and duplicate stacking are retained and explicitly tested; new ability
 perks support +2 or +1/+1, and every visible title/flavor follows the resolved
 mechanics. Existing Heroes keep their permanent rolls. All 66 integrated suites
-pass; Equipment runtime acceptance and Enemy sequencing otherwise remain as above.
+pass; Equipment runtime acceptance remains pending.
 
 The [pre-promotion plan](DEVELOPMENT_PLAN_HISTORICAL_2026_09_14.md) preserves earlier
 checkpoint sequencing and candidate handoffs. It is historical evidence, not the

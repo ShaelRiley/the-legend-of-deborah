@@ -13,5 +13,11 @@ end
 
 function ENT:DrawTranslucent()
     render.SetMaterial(glow)
-    render.DrawSprite(self:GetPos(), 14, 14, Color(255, 145, 70, 235))
+    if self:GetNW2Bool("LOD_SniperBolt", false) then
+        render.DrawBeam(self:GetPos() - self:GetForward() * 14, self:GetPos(), 2.5, 0, 1, Color(40, 100, 255))
+        render.DrawSprite(self:GetPos(), 14, 14, Color(40, 100, 255, 235))
+    else
+        render.DrawSprite(self:GetPos(), 14, 14, Color(255, 145, 70, 235))
+    end
 end
+

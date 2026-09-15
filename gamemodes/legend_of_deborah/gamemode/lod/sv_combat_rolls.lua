@@ -623,7 +623,7 @@ local function hostileProfile(attacker, inflictor, dmginfo)
     local profile = HOSTILE_ATTACKS[id]
     if not profile then return nil end
 
-    if id == "soldier" or id == "blitzer" or id == "bioblaster" then
+    if id == "soldier" or id == "blitzer" or id == "bioblaster" or id == "sniper" then
         return profile, IsValid(inflictor) and inflictor or nil
     end
     if id == "deadcrab" and dmginfo:IsDamageType(DMG_BLAST) then

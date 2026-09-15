@@ -93,6 +93,8 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = now + stunSeconds
 
+    if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
+
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil
         hostile:SetNW2Bool("LOD_SoldierTelegraph", false)
@@ -298,3 +300,4 @@ concommand.Add("lod_dice_shotgun_stun_probe", function(ply)
     print("[LOD:DICE-SHOTGUN] " .. text)
     ply:ChatPrint(text)
 end)
+
