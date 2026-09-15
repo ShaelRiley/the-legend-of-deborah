@@ -94,33 +94,14 @@ local function makeChoiceButton(parent, text, callback)
 end
 
 local function portraitPanel(parent, snapshot)
-    local portrait = vgui.Create("DModelPanel", parent)
-    portrait:SetModel(snapshot.model or "models/player/kleiner.mdl")
-    portrait:SetFOV(25)
-    portrait:SetAnimated(false)
-    portrait:SetAmbientLight(Color(105, 91, 72))
-    portrait:SetDirectionalLight(BOX_FRONT, Color(255, 213, 165))
-    portrait:SetDirectionalLight(BOX_TOP, Color(170, 185, 210))
-    portrait:SetColor(Color(255, 255, 255))
+    local portrait = LOD.CharacterPortrait:Create(parent, snapshot.model)
+    portrait.LODPose = {sheet=true}
     local basePaint = portrait.Paint
     portrait.Paint = function(self, w, h)
         draw.RoundedBox(2, 0, 0, w, h, Color(30, 32, 36))
         basePaint(self, w, h)
         surface.SetDrawColor(RED)
         surface.DrawOutlinedRect(0, 0, w, h, 3)
-    end
-    portrait.LayoutEntity = function(self, ent)
-        ent:SetAngles(Angle(0, 25, 0))
-        if self.LODPortraitFramed then return end
-        local bone = ent:LookupBone("ValveBiped.Bip01_Head1")
-        local head = bone and select(1, ent:GetBonePosition(bone)) or Vector(0, 0, 64)
-        self:SetLookAt(head + Vector(0, 0, -2))
-        self:SetCamPos(head + Vector(48, 8, 3))
-        self.LODPortraitFramed = true
-        for _, flexName in ipairs({"smile", "right_smile", "left_smile"}) do
-            local flex = ent:GetFlexIDByName(flexName)
-            if flex and flex >= 0 then ent:SetFlexWeight(flex, 0.65) end
-        end
     end
     return portrait
 end
@@ -791,3 +772,4 @@ concommand.Add("lod_character_sheet", function()
 end)
 
 hook.Add("ShutDown", "LOD_CharacterSheetClose", function() Sheet:Close() end)
+

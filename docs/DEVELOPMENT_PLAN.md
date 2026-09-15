@@ -9,7 +9,17 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — persistent $DEB / DFT economy and Wizard balance
+## Current checkpoint — reactive character status portrait
+
+The author's Doom-inspired HUD direction is implemented on the same combined
+`astra/equipment-update` candidate. The live GDD LOD-UI-007 records the local HUD's
+character-name-only exception, shared Character Sheet face, status replacement and
+reactive expressions; tab 07 records cosmetic timing/layout choices.
+See [portrait checkpoint](STATUS_PORTRAIT_CHECKPOINT.md) for implementation and the
+finite visual gate. This preserves the equipment, enemy, wallet and Wizard changes
+below. All 73 integrated automated suites pass; Source visual acceptance is pending.
+
+## Previous checkpoint — persistent $DEB / DFT economy and Wizard balance
 
 Shael accepted all [proposed wallet/DFT defaults](DEB_DFT_PROPOSAL.md) on 2026-09-15
 and requested completion. The live GDD now records LOD-ECON-001 and the Wizard

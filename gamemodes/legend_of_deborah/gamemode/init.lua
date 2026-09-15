@@ -237,3 +237,6 @@ include("lod/sv_crypto_store.lua")
 include("lod/sv_crypto_director.lua")
 include("lod/sv_crypto_statue.lua")
 include("lod/sv_crypto_runtime.lua")
+
+AddCSLuaFile("lod/cl_character_portrait.lua")
+AddCSLuaFile("lod/cl_status_portrait.lua")

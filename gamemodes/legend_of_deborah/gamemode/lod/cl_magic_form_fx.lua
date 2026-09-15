@@ -32,6 +32,7 @@ net.Receive("LOD_MagicFormFX", function()
     local origin = net.ReadVector()
     local destination = net.ReadVector()
     local caster = net.ReadEntity()
+    if LOD.StatusPortrait then LOD.StatusPortrait:Attack(caster) end
     local shape=net.ReadUInt(2)
     local radius, edges = 0, {}
     if shape==1 then
@@ -180,3 +181,4 @@ end)
 local function clear() FX={};localCast=nil end
 hook.Add("PostCleanupMap","LOD_MagicFormPresentationCleanup",clear)
 hook.Add("ShutDown","LOD_MagicFormPresentationShutdown",clear)
+
