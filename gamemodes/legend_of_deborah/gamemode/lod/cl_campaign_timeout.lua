@@ -1,6 +1,7 @@
 local T=LOD.CampaignTimeout
 T.Client=T.Client or {}
 local C=T.Client
+if C.ResetScene then C.ResetScene() end
 local fire=Material("sprites/light_glow02_add")
 local smoke=Material("particle/particle_smokegrenade")
 surface.CreateFont("LOD_TimeOver",{font="DejaVu Sans",size=64,weight=1000})
@@ -47,6 +48,8 @@ local function resetScene()
     C.scene=nil;C.startView=nil;C.lastBurst=nil;C.frozenWorld=nil
 end
 
+C.ResetScene=resetScene
+hook.Add("PostCleanupMap","LOD_TimeoutClientMapCleanup",resetScene)
 net.Receive(T.Message,function()
     local epoch=net.ReadUInt(32)
     local started,remaining,failed=net.ReadBool(),net.ReadFloat(),net.ReadBool()

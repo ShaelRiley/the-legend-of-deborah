@@ -5,9 +5,9 @@ Color=function(...) return {...} end
 surface={CreateFont=function() end}
 draw={}
 isstring=function(v) return type(v)=='string' end
-util={Decompress=function(value) return value end}
+util={Decompress=function(value,limit) assert(limit==8*1024*1024);return value end}
 KEY_ESCAPE,KEY_P,KEY_I,KEY_L=70,25,18,21
-RealTime=function() return 20 end
+local now=20;RealTime=function() return now end
 local timers={};timer={Simple=function(_,callback) timers[#timers+1]=callback end}
 ScrW=function() return 800 end;ScrH=function() return 600 end
 math.Clamp=function(v,a,b) return math.max(a,math.min(b,v)) end
@@ -20,9 +20,10 @@ net={
     Receive=function(id,fn) receivers[id]=fn end,
     Start=function(id) started=id end,
     SendToServer=function()
-        assert(started=='LOD_RequestInstructionManual','reader requests canonical server payload')
-        requests=requests+1;started=nil
+        assert(started=='LOD_RequestInstructionManual' or started=='LOD_InstructionManualAck')
+        if started=='LOD_RequestInstructionManual' then requests=requests+1 end;started=nil
     end,
+    WriteUInt=function() end,
     ReadString=function() local v=table.remove(reads,1);return v end,
     ReadUInt=function() local v=table.remove(reads,1);return v end,
     ReadData=function() local v=table.remove(reads,1);return v end
@@ -72,6 +73,7 @@ for _,p in ipairs(panels) do if p.text=='MANUAL' then manualButton=p end end
 expect(manualButton,'P menu has Manual tab');manualButton.DoClick()
 expect(UI.ActivePage=='manual' and IsValid(M.Frame),'tab opens canonical reader')
 expect(requests==1 and M.Browser.html==nil,'visible reader requests payload instead of client-only files')
+M:Close();now=now+3;M:Open();expect(requests==1,'reopening preserves an in-flight transfer')
 local payload='<!doctype html><html><body>TIME OVER</body></html>'
 reads={'manual-test',124,1,1,1,#payload,#payload,payload}
 receivers.LOD_InstructionManualPayload()
@@ -99,7 +101,7 @@ expect(UI.ActivePage==nil and not IsValid(M.Frame),'Escape bridge closes reader'
 M:Open();UI:SelectPage(nil)
 expect(not IsValid(M.Frame),'terminal transition closes reader through shared menu')
 M.HTML=nil;M:Open();expect(requests==2 and IsValid(M.LoadingLabel),'missing payload still opens visible reader')
-timers[#timers]();expect(M.LoadingLabel.text:find('DID NOT RESPOND',1,true),'no-response timeout exposes retry')
+now=now+16;timers[#timers]();expect(M.LoadingLabel.text:find('DID NOT RESPOND',1,true),'no-response timeout exposes retry')
 M.LoadingLabel.DoClick();expect(requests==3,'visible retry requests payload again')
 -- No player, alive, staging, deployment, or role stubs were supplied. Opening
 -- therefore demonstrably does not depend on those world-state authorities.

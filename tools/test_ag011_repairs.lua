@@ -1,3 +1,4 @@
+GM = GM or {}
 -- Deterministic test harness for AG-011R1 Big Playtest Repairs
 local root = "gamemodes/legend_of_deborah/gamemode/lod/"
 unpack = table.unpack

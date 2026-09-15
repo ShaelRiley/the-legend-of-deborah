@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["pickup"] = "stability-20260915-04"
+LOD.RuntimeReceipts["pickup"] = "stability-20260915-05"
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
@@ -34,11 +34,21 @@ function ENT:_TryCollect(ply, acceptEquipment)
     if not director or not director.Collect then return end
     if not director:IsPickupOwner(self, ply) then return end
 
-    local ok = director:Collect(self, ply, acceptEquipment)
-    if not ok then return end
-
-    -- Keep removal outside native touch traversal; the grant is already sealed.
-    timer.Simple(0, function() if IsValid(self) then self:Remove() end end)
+    if self.LODCollectPending then
+        -- Explicit Use wins over a Touch queued in this same native frame.
+        self.LODCollectPending.accept = self.LODCollectPending.accept or acceptEquipment == true
+        return
+    end
+    local claim = {accept = acceptEquipment == true}
+    self.LODCollectPending = claim
+    timer.Simple(0, function()
+        if not IsValid(self) or self.LODCollectPending ~= claim then return end
+        self.LODCollectPending = nil
+        if not IsValid(ply) or not ply:Alive() then return end
+        -- Collect revalidates identity, life, campaign and consumed state here.
+        -- Both Give and pickup retirement happen outside native Touch/Use.
+        if director:Collect(self, ply, claim.accept) and IsValid(self) then self:Remove() end
+    end)
 end
 
 function ENT:StartTouch(ent)

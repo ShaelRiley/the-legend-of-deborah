@@ -156,7 +156,7 @@ hook.Add("WeaponEquip", "LOD_SMGCapacityEquip", function(weapon, ply)
     -- WeaponEquip runs inside the native Give stack. Even GetClass/Primary
     -- access is deferred so the engine can finish constructing the weapon.
     timer.Simple(0, function()
-        if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= SMG_CLASS then return end
+        if not IsValid(ply) or not IsValid(weapon) or weapon:GetOwner() ~= ply or weapon:GetClass() ~= SMG_CLASS then return end
         configureInstance(weapon)
         clampSMG(ply)
     end)

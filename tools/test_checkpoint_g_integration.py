@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Durable Stability Diagnostics", ["python3", "tools/run_lua54.py", "tools/test_stability_diagnostics.lua"]),
+    ("Release Include & Registration Wiring", ["python3", "tools/validate_release_wiring.py"]),
+    ("Shotgun Native Bullet Aggregation", ["python3", "tools/run_lua54.py", "tools/test_shotgun_native_path.lua"]),
     ("Canonical Manual & Portable Menu", ["python3", "tools/run_lua54.py", "tools/test_instruction_manual.lua"]),
     ("Canonical Manual Server Transport", ["python3", "tools/run_lua54.py", "tools/test_manual_transport.lua"]),
     ("Manual Source & Reader Navigation", ["python3", "tools/test_manual_document.py"]),

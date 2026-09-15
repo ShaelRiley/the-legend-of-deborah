@@ -6,7 +6,7 @@ function IsValid(e) return type(e)=='table' and e.valid~=false end
 function CurTime() return now end
 function Color() return {} end
 function AddCSLuaFile() end
-function include(path) return dofile(root..path) end
+function include(path) return dofile(root..path:gsub("^legend_of_deborah/gamemode/", "")) end
 math.Clamp=function(v,a,b) return math.max(a,math.min(b,v)) end
 math.NormalizeAngle=function(v) return (v+180)%360-180 end
 local vec={};vec.__index=vec

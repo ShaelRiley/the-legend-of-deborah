@@ -4,8 +4,8 @@ local Catalog = assert(RPG.IdentityCatalog, "GPS requires RPG catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "GPS requires ordinary feats")
 local Rules = assert(LOD.RPGAbilityRules, "GPS requires ability rules")
 local GPS_ID = "WIS_GPS"
-AddCSLuaFile("lod/sh_gps_voice.lua")
-include("lod/sh_gps_voice.lua")
+AddCSLuaFile("legend_of_deborah/gamemode/lod/sh_gps_voice.lua")
+include("legend_of_deborah/gamemode/lod/sh_gps_voice.lua")
 local Voice = LOD.GPSVoice
 
 assert(Feats[GPS_ID] == nil, "duplicate canonical feat " .. GPS_ID)

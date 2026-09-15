@@ -451,3 +451,4 @@ assert(defense and defense.finalHPDamage==20 and not observed.fields.dodged and 
     'ordinary undeflected hit cannot inherit a prior attack Dodge')
 print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')
 
+return {hooks=registered, actor=actor, Rules=Rules, Rolls=Rolls, Status=Status}

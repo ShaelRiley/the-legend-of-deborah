@@ -1,5 +1,6 @@
 LOD.WardenPresentation=LOD.WardenPresentation or {}
 local V=LOD.WardenPresentation
+if V.DisposeProps then V.DisposeProps() end
 local glow=Material("sprites/light_glow02_add")
 local beam=Material("cable/redlaser")
 local blue=Color(110,185,255,230)
@@ -67,6 +68,8 @@ local props={}
 local function dispose()
     for k,e in pairs(props) do if IsValid(e) then e:Remove() end;props[k]=nil end
 end
+V.DisposeProps=dispose
+hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",dispose)
 prepareProps=function(phase)
     local name=phase==2 and "toilet" or (phase==3 and "crowbar" or nil)
     for k,p in pairs(props) do if k~=name then if IsValid(p) then p:Remove() end;props[k]=nil end end

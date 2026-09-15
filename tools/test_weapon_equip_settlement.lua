@@ -54,6 +54,7 @@ function weapon:GetClass()
     assert(self.settled, "WeaponEquip interrogated an unsettled native weapon instance")
     return self.class
 end
+function weapon:GetOwner() assert(self.settled);return self.owner end
 function weapon:Clip1() return self.clip end
 function weapon:SetClip1(value) self.clip = value end
 
@@ -64,10 +65,13 @@ assert(#queued == 1 and weapon.Primary == nil,
 
 -- Player:Give returns; ownership and the native entity are now settled.
 weapon.settled = true
+weapon.owner = player
 player.weapons.weapon_smg1 = weapon
 queued[1]()
 assert(weapon.Primary and weapon.Primary.ClipSize == 25)
 assert(weapon:Clip1() == 25 and player:GetAmmoCount("SMG1") == 20,
     "deferred SMG capacity settlement changed authored ammo accounting")
 
+weapon.clip=40;weapon.owner={};onEquip(weapon,player);queued[#queued]()
+assert(weapon.clip==40,'stale equip callback mutated a weapon belonging to another player')
 print("WEAPON_EQUIP_SETTLEMENT_PASS: real SMG hook performs zero synchronous native access and preserves 25/75 accounting")

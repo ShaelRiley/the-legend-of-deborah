@@ -81,61 +81,65 @@ local function forwardedDamage(source, attacker, hitPos)
     return out
 end
 
+LOD.HostileCombatHulls = LOD.HostileCombatHulls or {}
+function LOD.HostileCombatHulls:Resolve(attacker, bullet, tr)
+    if IsValid(tr.Entity) and (tr.Entity.LODHostile or tr.Entity:IsPlayer()) then
+        return tr.Entity, tr.HitPos
+    end
+    local startPos = tr.StartPos or bullet.Src or attacker:GetShootPos()
+    local endPos = tr.HitPos
+    if not startPos or not endPos then return end
+
+    local best, bestT, bestPos
+
+    -- Broad-phase only against entities overlapping the traced shot
+    -- segment. The small asymmetric sweep covers the maximum difference
+    -- between an LOD hostile's fixed collision bounds and its 1.33x
+    -- fallback combat volume. The exact AABB test below remains
+    -- authoritative, so nearby entities cannot become false hits.
+    local candidates = ents.FindAlongRay(
+        startPos,
+        endPos,
+        Vector(-4, -4, -24),
+        Vector(4, 4, 0)
+    )
+    -- Specialist visual volumes may sit above/below the fixed movement hull.
+    -- Exact segment/AABB testing still ends at the original world impact.
+    if LOD.EnemyRoster then
+        local seen={} for _,e in ipairs(candidates) do seen[e]=true end
+        for e in pairs(LOD.EnemyRoster.Active) do
+            if IsValid(e) and not seen[e] and LOD.EnemyRoster:CombatBounds(e) then candidates[#candidates+1]=e end
+        end
+    end
+    for _, hostile in ipairs(candidates) do
+        if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead then
+            local mins, maxs = combatBounds(hostile)
+            local t, hitPos = segmentAABB(startPos, endPos, mins, maxs)
+            if t and (not bestT or t < bestT) then
+                best, bestT, bestPos = hostile, t, hitPos
+            end
+        end
+    end
+
+    return best, bestPos
+end
+
 hook.Add("EntityFireBullets", "LOD_ScaledHostileCombatHull", function(shooter, bullet)
     if not qualifyingShooter(shooter) then return end
-
+    -- Shotgun collection calls this same geometric resolver before settlement.
+    -- Never apply nested native damage for its individual pellets.
+    if shooter:GetActiveWeapon():GetClass() == "weapon_shotgun" then return end
     local previousCallback = bullet.Callback
     bullet.Callback = function(attacker, tr, dmginfo)
-        if previousCallback then previousCallback(attacker, tr, dmginfo) end
-        if not qualifyingShooter(attacker) then return end
-        if not dmginfo or dmginfo:GetDamage() <= 0 then return end
-
-        -- If Source already hit an LOD hostile, preserve the engine result.
-        if IsValid(tr.Entity) and tr.Entity.LODHostile then return end
-
-        local startPos = tr.StartPos or bullet.Src or attacker:GetShootPos()
-        local endPos = tr.HitPos
-        if not startPos or not endPos then return end
-
-        local best, bestT, bestPos
-
-        -- Broad-phase only against entities overlapping the traced shot
-        -- segment. The small asymmetric sweep covers the maximum difference
-        -- between an LOD hostile's fixed collision bounds and its 1.33x
-        -- fallback combat volume. The exact AABB test below remains
-        -- authoritative, so nearby entities cannot become false hits.
-        local candidates = ents.FindAlongRay(
-            startPos,
-            endPos,
-            Vector(-4, -4, -24),
-            Vector(4, 4, 0)
-        )
-        -- Specialist visual volumes may sit above/below the fixed movement hull.
-        -- Exact segment/AABB testing still ends at the original world impact.
-        if LOD.EnemyRoster then
-            local seen={} for _,e in ipairs(candidates) do seen[e]=true end
-            for e in pairs(LOD.EnemyRoster.Active) do
-                if IsValid(e) and not seen[e] and LOD.EnemyRoster:CombatBounds(e) then candidates[#candidates+1]=e end
-            end
-        end
-        for _, hostile in ipairs(candidates) do
-            if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead then
-                local mins, maxs = combatBounds(hostile)
-                local t, hitPos = segmentAABB(startPos, endPos, mins, maxs)
-                if t and (not bestT or t < bestT) then
-                    best, bestT, bestPos = hostile, t, hitPos
-                end
-            end
-        end
-
-        if not IsValid(best) then return end
-
-        -- The fallback target lies before the engine's original impact, so the
-        -- bullet should terminate on the hostile rather than damage an object
-        -- behind it. World impacts are unaffected by setting DamageInfo to zero.
+        local result = previousCallback and previousCallback(attacker, tr, dmginfo)
+        if result and result.damage == false then return result end
+        if not qualifyingShooter(attacker) or not dmginfo or dmginfo:GetDamage() <= 0 then return result end
+        if IsValid(tr.Entity) and (tr.Entity.LODHostile or tr.Entity:IsPlayer()) then return result end
+        local best, bestPos = LOD.HostileCombatHulls:Resolve(attacker, bullet, tr)
+        if not IsValid(best) then return result end
         local redirected = forwardedDamage(dmginfo, attacker, bestPos)
         dmginfo:SetDamage(0)
         best:TakeDamageInfo(redirected)
+        return result
     end
 end)
-

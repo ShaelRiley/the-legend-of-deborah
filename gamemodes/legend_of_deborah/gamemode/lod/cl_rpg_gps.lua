@@ -6,7 +6,7 @@ local NET_TOGGLE = "LOD_RPGWisGPSToggle"
 local NET_BARK = "LOD_RPGWisGPSBark"
 local fallbackLatch = false
 
-include("lod/sh_gps_voice.lua")
+include("legend_of_deborah/gamemode/lod/sh_gps_voice.lua")
 local Voice = LOD.GPSVoice
 local BANK, VOICE = Voice.Bank, Voice.Markers
 

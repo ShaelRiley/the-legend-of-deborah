@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["equipment"] = "stability-20260915-04"
+LOD.RuntimeReceipts["equipment"] = "stability-20260915-05"
 local E = assert(LOD.Equipment)
 local Run = assert(LOD.RunManager)
 E.NextUse = setmetatable({}, {__mode="k"})
@@ -245,7 +245,9 @@ end)
 hook.Add("WeaponEquip", "LOD_RejectOrdinaryGrenadeGrant", function(weapon, ply)
     timer.Simple(0, function()
         if not IsValid(weapon) or weapon:GetClass() ~= "weapon_frag" then return end
-        if IsValid(ply) then ply:StripWeapon("weapon_frag"); ply:SetAmmo(0, "Grenade") end
+        if IsValid(ply) and weapon:GetOwner() == ply then
+            ply:SetAmmo(0, "Grenade")
+        end
         if IsValid(weapon) then weapon:Remove() end
     end)
 end)

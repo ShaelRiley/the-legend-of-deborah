@@ -537,6 +537,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
 end)
 
 hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModels)
+hook.Add("PostCleanupMap", "LOD_WallVisualsMapCleanup", removeModels)
 
 concommand.Add("lod_wall_visuals_status", function()
     rebuildWorldCache()

@@ -1,7 +1,7 @@
 LOD = LOD or {}
 LOD.RuntimeAudit = LOD.RuntimeAudit or {}
 local Audit = LOD.RuntimeAudit
-Audit.Build = "stability-20260915-04"
+Audit.Build = "stability-20260915-05"
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
 
 local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "crowbar", "statue", "manual"}
@@ -19,6 +19,7 @@ function Audit:Snapshot()
         install = installation, missing = #missing > 0 and table.concat(missing, ",") or "none",
         architecture = jit and jit.arch or "unknown", branch = tostring(BRANCH or "unknown"),
         engine = tostring(VERSIONSTR or VERSION or "unknown"),
+        lua_errors = self.ErrorCount or 0,
         lua_kb = math.floor(collectgarbage("count")),
         entities = ents.GetCount and ents.GetCount() or #ents.GetAll(),
         meshes = LOD.TexturedBox and LOD.TexturedBox.MeshCacheCount and LOD.TexturedBox:MeshCacheCount() or 0
@@ -28,7 +29,7 @@ end
 function Audit:Report()
     local data = self:Snapshot()
     local parts = {}
-    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_kb", "entities", "meshes"}) do
+    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes"}) do
         parts[#parts + 1] = key .. "=" .. tostring(data[key])
     end
     print("[LOD BUILD_IDENTITY] " .. table.concat(parts, " "))
@@ -49,4 +50,38 @@ end)
 timer.Create("LOD_RuntimeStabilityHeartbeat", 30, 0, function()
     local cv = GetConVar("lod_developer_mode")
     if cv and cv:GetBool() then Audit:Report() end
+end)
+
+-- Keep the first errors and the last native boundary across a force-close.
+-- A fixed ring bounds disk/memory, even if a broken Think hook repeats forever.
+Audit.Journal = Audit.Journal or {}
+Audit.ErrorCount = Audit.ErrorCount or 0
+Audit.NextErrorRecord = Audit.NextErrorRecord or 0
+function Audit:Record(kind, detail)
+    if self.WritingJournal then return end
+    self.WritingJournal = true
+    local ok, err = pcall(function()
+        local line = string.format("%.3f %s %s %s", RealTime(), self.Build,
+            tostring(kind), string.sub(tostring(detail or ""), 1, 3000))
+        local entries = self.Journal
+        entries[#entries + 1] = line
+        if #entries > 64 then table.remove(entries, 1) end
+        file.CreateDir("legend_of_deborah")
+        file.Write("legend_of_deborah/stability_" .. (SERVER and "server" or "client") .. "_latest.txt",
+            table.concat(entries, "\n") .. "\n")
+    end)
+    self.WritingJournal = nil
+    if not ok then print("[LOD STABILITY JOURNAL] " .. tostring(err)) end
+end
+hook.Add("OnLuaError", "LOD_RuntimeLuaErrors", function(message, realm, stack)
+    Audit.ErrorCount = Audit.ErrorCount + 1
+    if RealTime() < Audit.NextErrorRecord then return end
+    Audit.NextErrorRecord = RealTime() + 1
+    local lines = {"count=" .. Audit.ErrorCount .. " realm=" .. tostring(realm), tostring(message)}
+    for i = 1, math.min(12, #(stack or {})) do
+        local frame = stack[i]
+        lines[#lines + 1] = tostring(frame.File or frame.short_src or frame.source)
+            .. ":" .. tostring(frame.Line or frame.currentline) .. " " .. tostring(frame.Function or frame.name)
+    end
+    Audit:Record("LUA_ERROR", table.concat(lines, "\n"))
 end)

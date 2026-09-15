@@ -53,9 +53,9 @@ end
 -- steal focus from the page the player deliberately chose.
 function UI:SelectPage(page)
     self.ActivePage = page
-    if page ~= "wallet" and LOD.Wallet then LOD.Wallet:Close() end
-    if page ~= "sheet" and LOD.CharacterSheet then LOD.CharacterSheet:Close() end
-    if page ~= "book" and LOD.Spellbook then LOD.Spellbook:Close() end
+    if page ~= "wallet" and LOD.Wallet and LOD.Wallet.Close then LOD.Wallet:Close() end
+    if page ~= "sheet" and LOD.CharacterSheet and LOD.CharacterSheet.Close then LOD.CharacterSheet:Close() end
+    if page ~= "book" and LOD.Spellbook and LOD.Spellbook.Close then LOD.Spellbook:Close() end
     if page ~= "manual" and LOD.FieldManual and LOD.FieldManual.Close then LOD.FieldManual:Close() end
     if page ~= "equipment" and LOD.Equipment and LOD.Equipment.Close then LOD.Equipment:Close() end
     if page ~= "history" and LOD.CombatRollFeed and IsValid(LOD.CombatRollFeed.HistoryFrame) then

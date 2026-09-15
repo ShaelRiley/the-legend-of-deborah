@@ -123,7 +123,8 @@ hook.Add("WeaponEquip","LOD_ProceduralWeaponRecord",function(weapon,ply)
     -- WeaponEquip fires synchronously inside Player:Give. Touch neither the
     -- player state nor the fresh native weapon until construction has settled.
     timer.Simple(0,function()
-        if not IsValid(ply) or not IsValid(weapon) then return end
+        if not IsValid(ply) or not ply:Alive() or not IsValid(weapon)
+            or weapon:GetOwner() ~= ply then return end
         local ps=hero(ply)
         if not ps then return end
         E:EnsureWeapon(ply,weapon:GetClass())

@@ -51,7 +51,8 @@ local function actor(id,enemy)
     function p:GetNW2Float(k,default) return self.nw[k] or default end
     function p:Give(c)
         if self.failGive then return nil end
-        local w={valid=true,class=c,clip=0,nw={}}
+        local w={valid=true,class=c,clip=0,nw={},owner=self}
+        function w:GetOwner() return self.owner end
         function w:GetClass() return self.class end
         function w:SetClip1(v) self.clip=v end
         function w:Clip1() return self.clip end

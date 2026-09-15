@@ -68,7 +68,7 @@ end
 -- stock weapon implementation.
 hook.Add("WeaponEquip", "LOD_ShotgunSeventhShellEquip", function(weapon, ply)
     timer.Simple(0, function()
-        if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= SHOTGUN_CLASS then return end
+        if not IsValid(ply) or not IsValid(weapon) or weapon:GetOwner() ~= ply or weapon:GetClass() ~= SHOTGUN_CLASS then return end
         forceSeventhShell(ply, weapon, false, "acquisition")
     end)
 end)

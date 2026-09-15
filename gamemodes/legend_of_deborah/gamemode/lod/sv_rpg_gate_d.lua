@@ -200,7 +200,7 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
         self.Stats.magicResolutions = (self.Stats.magicResolutions or 0) + 1
     end
 
-    if tags.shotgunHits then
+    if tags.shotgunHits and total > 0 and authoredScale > 0 then
         total = math.max(tonumber(tags.shotgunHits) or 0, total * tags.shotgunHits / tags.shotgunShares)
     end
     if LOD.Equipment and LOD.Equipment.DamageMultiplier then

@@ -172,6 +172,7 @@ local function mockGMod()
 
     local loadedIncludes = {}
     include = include or function(path)
+        path = path:gsub("^legend_of_deborah/gamemode/", "")
         local normPath = path:lower()
         if loadedIncludes[normPath] then return end
         loadedIncludes[normPath] = true

@@ -1,5 +1,6 @@
 include("lod/sh_runtime_audit.lua")
 include("shared.lua")
+include("lod/cl_instruction_manual.lua")
 include("lod/cl_adventure_presentation.lua")
 include("lod/sh_tetris.lua")
 include("lod/cl_textured_box.lua")
@@ -184,6 +185,5 @@ include("lod/cl_neil_brute.lua")
 include("lod/cl_warden.lua")
 include("lod/cl_enemy_roster.lua")
 
-include("lod/cl_instruction_manual.lua")
 include("lod/sh_campaign_timeout.lua")
 include("lod/cl_campaign_timeout.lua")

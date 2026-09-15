@@ -57,6 +57,7 @@ local function mockGMod()
         return {seed = seed, sides = sides, formula = "d" .. tostring(sides), values = {value}, total = value}
     end
     include = include or function(path)
+        path = path:gsub("^legend_of_deborah/gamemode/", "")
         local f = io.open("gamemodes/legend_of_deborah/gamemode/" .. path, "rb")
         if not f then error("Cannot open " .. path) end
         local code = f:read("*a")

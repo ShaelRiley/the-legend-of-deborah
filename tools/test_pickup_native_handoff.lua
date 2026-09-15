@@ -39,7 +39,7 @@ util.IsValidModel=function() return true end
 Angle=function() return {} end
 local oldCollect=Loot.Collect
 local grants=0
-Loot.Collect=function(_,ent,p) assert(ent.LODLootReady and ent.LODLootRegistered);assert(p==hero);grants=grants+1;ent.LODCollected=true;return true end
+Loot.Collect=function(_,ent,p) assert(ent.LODLootReady and ent.LODLootRegistered and not ent.inTouch);assert(p==hero);grants=grants+1;ent.LODCollected=true;return true end
 for _,family in ipairs({'boots','helmet','ring','weapon_357'}) do
  -- Use available canonical definitions for each model family.
  if E.Definitions[family] then
@@ -48,8 +48,8 @@ for _,family in ipairs({'boots','helmet','ring','weapon_357'}) do
   assert(ent.LODLootRegistered and not ent.LODLootReady and not ent.LODCollected)
   flush();assert(ent.LODLootReady)
   local n=grants;ent.inTouch=true;ent:Touch(hero);ent:Touch(hero);ent:Use(hero);ent.inTouch=false
-  assert(ent.valid and grants==n+1,'one grant, no removal inside touch')
-  flush();assert(not ent.valid)
+  assert(ent.valid and grants==n,'no native grant or removal inside touch')
+  flush();assert(not ent.valid and grants==n+1,'one deferred grant')
  end
 end
 local ent=assert(Loot:SpawnPickup('pickup-owner',Vector(),'life',{}))

@@ -404,6 +404,7 @@ function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
         identityTargetViews = rolled.identityTargetViews,
         capped = rolled.capped == true,
         ownerState = rules and rules:ProgressionState(ply),
+        ownerLife = ply.LODCombatLifeSerial or 0,
         levelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed,
         created = CurTime()
     }
@@ -456,10 +457,12 @@ function Rolls:_FinishShotgunFeed(ply, contract)
 end
 
 function Rolls:SettleShotgun(ply, contract)
-    if not IsValid(ply) then return end
+    if not IsValid(ply) or not ply:Alive() or contract.settled then return end
+    if contract.ownerLife and contract.ownerLife ~= (ply.LODCombatLifeSerial or 0) then return end
     local rules = LOD.RPGAbilityRules
     if contract.ownerState and rules:ProgressionState(ply) ~= contract.ownerState then return end
     if contract.levelSeed and contract.levelSeed ~= (LOD.RunManager.State or {}).LevelSeed then return end
+    contract.settled = true
     local targets = {}
     for target in pairs(contract.hits) do if IsValid(target) then targets[#targets + 1] = target end end
     table.sort(targets, function(a, b) return a:EntIndex() < b:EntIndex() end)
@@ -483,6 +486,7 @@ function Rolls:SettleShotgun(ply, contract)
             target:TakeDamageInfo(info)
         end
     end
+    return true
 end
 
 function Rolls:RollHostileAttack(hostile, profile, originalDamage, cacheOwner)
@@ -591,14 +595,40 @@ hook.Add("EntityFireBullets", "LOD_DicePlayerFirearms", function(shooter, bullet
         bullet.Damage = math.max(1, contract.total / SHOTGUN_SHARE_COUNT)
         shooter.LODActiveShotgunRoll = contract
         contract.weapon = shooter:GetActiveWeapon()
+        contract.sourcePosition = bullet.Src or shooter:GetShootPos()
         contract.hitPositions = setmetatable({}, {__mode = "k"})
+        local previousCallback = bullet.Callback
+        bullet.Callback = function(attacker, tr, info)
+            local result = previousCallback and previousCallback(attacker, tr, info)
+            if result and result.damage == false then return result end
+            local target, hitPos = tr.Entity, tr.HitPos
+            if LOD.HostileCombatHulls then
+                target, hitPos = LOD.HostileCombatHulls:Resolve(attacker, bullet, tr)
+            end
+            if IsValid(target) and (target.LODHostile or target:IsPlayer()) then
+                local blocked = LOD.GeneratedGeometryBallistics
+                    and LOD.GeneratedGeometryBallistics:SegmentBlocked(contract.sourcePosition, hitPos, attacker, target)
+                if not blocked and not contract.settled and not target.LODDead and info:GetDamage() > 0 then
+                    contract.targetNames[target] = Rolls:EntityDisplayName(target, "Hostile")
+                    contract.hits[target] = math.min(contract.pellets, (contract.hits[target] or 0) + 1)
+                    contract.hitPositions[target] = hitPos
+                end
+                -- Source combines same-target pellet damage. Count before that
+                -- merge and suppress the native pellet: one shell/target event.
+                info:SetDamage(0)
+                return {damage = false, effects = not result or result.effects ~= false}
+            end
+            return result
+        end
         timer.Simple(0, function()
-            Rolls:SettleShotgun(shooter, contract)
+            local settled = Rolls:SettleShotgun(shooter, contract)
             if IsValid(shooter) and shooter.LODActiveShotgunRoll == contract then
                 shooter.LODActiveShotgunRoll = nil
             end
-            Rolls:_FinishShotgunFeed(shooter, contract)
-            Rolls:_FinishExplodedMiss(shooter, contract)
+            if settled then
+                Rolls:_FinishShotgunFeed(shooter, contract)
+                Rolls:_FinishExplodedMiss(shooter, contract)
+            end
         end)
     else
         bullet.Damage = contract.total
@@ -706,19 +736,9 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     finalDamage, target, detail, nil, "Hostile", "crowbar"))
             end)
         elseif weaponClass == "weapon_shotgun" then
-            local contract = attacker.LODActiveShotgunRoll
-            local blocked = LOD.GeneratedGeometryBallistics
-                and LOD.GeneratedGeometryBallistics.PlayerBulletBlocked
-                and LOD.GeneratedGeometryBallistics:PlayerBulletBlocked(target, dmginfo)
-            if not blocked and contract and CurTime() - contract.created < 0.20 and dmginfo:GetDamage() > 0 then
-                contract.targetNames[target] = Rolls:EntityDisplayName(target, "Hostile")
-                contract.hits[target] = (contract.hits[target] or 0) + 1
-                contract.hitPositions[target] = dmginfo:GetDamagePosition()
-                -- Only the aggregate is a damage event. Defense, flat bonuses,
-                -- status riders and cooldowns must not run per cosmetic pellet.
-                dmginfo:SetDamage(0)
-                return true
-            end
+            -- Pellets are collected by their bullet callback, never inferred
+            -- from Source's merged CTakeDamageInfo. No second damage path.
+            return
         else
             local contract = attacker.LODActivePlayerRoll
             local blocked = LOD.GeneratedGeometryBallistics
@@ -795,3 +815,21 @@ concommand.Add("lod_dice_status", function(ply)
     print("[LOD:DICE] " .. text)
     if IsValid(ply) then ply:ChatPrint(text) end
 end)
+
+-- Hooks compose changes without returning (which would short-circuit peers).
+-- Source requires true from the final gamemode seam to commit those changes.
+local baseFireBullets = GM.EntityFireBullets
+function GM:EntityFireBullets(shooter, bullet)
+    local result = baseFireBullets and baseFireBullets(self, shooter, bullet)
+    if result == false then return false end
+    return true
+end
+
+local function clearPendingFirearms(ply)
+    if not IsValid(ply) then return end
+    ply.LODCombatLifeSerial = (ply.LODCombatLifeSerial or 0) + 1
+    ply.LODActiveShotgunRoll, ply.LODActivePlayerRoll = nil, nil
+end
+hook.Add("PlayerDeath", "LOD_CombatAttackLife", clearPendingFirearms)
+hook.Add("PlayerSpawn", "LOD_CombatAttackLife", clearPendingFirearms)
+hook.Add("PlayerDisconnected", "LOD_CombatAttackLife", clearPendingFirearms)

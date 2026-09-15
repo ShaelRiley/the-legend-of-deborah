@@ -2,6 +2,10 @@ AddCSLuaFile("lod/cl_rpg_dodge.lua")
 LOD = LOD or {}
 AddCSLuaFile("lod/sh_runtime_audit.lua")
 include("lod/sh_runtime_audit.lua")
+util.AddNetworkString("LOD_OpenFieldManual")
+AddCSLuaFile("lod/cl_instruction_manual.lua")
+include("lod/sv_instruction_manual.lua")
+
 
 local DEVELOPER_MODE_HELP = "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
 local devCheckoutMarker = file.Exists("legend_of_deborah/dev_checkout_mode.txt", "DATA")
@@ -260,9 +264,6 @@ AddCSLuaFile("lod/cl_equipment_icons.lua")
 AddCSLuaFile("lod/cl_weapon_appearance.lua")
 AddCSLuaFile("lod/cl_equipment_inventory.lua")
 
-util.AddNetworkString("LOD_OpenFieldManual")
-AddCSLuaFile("lod/cl_instruction_manual.lua")
-include("lod/sv_instruction_manual.lua")
 
 AddCSLuaFile("lod/sh_campaign_timeout.lua")
 AddCSLuaFile("lod/cl_campaign_timeout.lua")

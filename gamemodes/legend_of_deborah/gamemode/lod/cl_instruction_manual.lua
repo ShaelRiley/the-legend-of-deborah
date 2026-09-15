@@ -6,7 +6,9 @@ local UI = LOD.UI
 local REQUEST_NET = "LOD_RequestInstructionManual"
 local PAYLOAD_NET = "LOD_InstructionManualPayload"
 local MAX_PACKED_BYTES = 4 * 1024 * 1024
-local MAX_CHUNKS = 64
+local ACK_NET = "LOD_InstructionManualAck"
+local MAX_CHUNKS = 255
+local MAX_HTML_BYTES = 8 * 1024 * 1024
 Manual.Page = Manual.Page or cookie.GetNumber("lod_manual_page", 0)
 Manual.Scroll = Manual.Scroll or cookie.GetNumber("lod_manual_scroll", 0)
 Manual.TextSize = Manual.TextSize or cookie.GetNumber("lod_manual_text_size", 18)
@@ -15,15 +17,21 @@ local rejectTransfer
 
 function Manual:RequestPayload()
     local now = RealTime()
-    if self.RequestedAt and now - self.RequestedAt < 2 then return end
+    if self.RequestedAt then return end
     self.RequestedAt = now
+    self.ProgressAt = now
+    self.Transfer = nil
     net.Start(REQUEST_NET)
     net.SendToServer()
-    timer.Simple(8, function()
-        if Manual.RequestedAt == now and not isstring(Manual.HTML) then
+    local function watchdog()
+        if Manual.RequestedAt ~= now or isstring(Manual.HTML) then return end
+        if RealTime() - (Manual.ProgressAt or now) >= 15 then
             rejectTransfer("BOOKLET SERVER DID NOT RESPOND")
+        else
+            timer.Simple(1, watchdog)
         end
-    end)
+    end
+    timer.Simple(1, watchdog)
 end
 
 function Manual:LoadDocument()
@@ -32,6 +40,7 @@ function Manual:LoadDocument()
     if IsValid(self.LoadingLabel) then self.LoadingLabel:Remove() end
     self.LoadingLabel = nil
     browser.LODManualDocument = true
+    if LOD.RuntimeAudit then LOD.RuntimeAudit:Record("MANUAL_HTML", "bytes=" .. #self.HTML) end
     browser:SetHTML(self.HTML)
 end
 
@@ -52,6 +61,7 @@ rejectTransfer = function(message)
 end
 
 net.Receive(PAYLOAD_NET, function()
+    if not Manual.RequestedAt then return end
     local version = net.ReadString()
     local chapters = net.ReadUInt(8)
     local transferId = net.ReadUInt(16)
@@ -61,7 +71,7 @@ net.Receive(PAYLOAD_NET, function()
     local size = net.ReadUInt(16)
     if version == "" or chapters < 1 or transferId < 1 or index < 1 or index > count
         or count < 1 or count > MAX_CHUNKS or total < 1 or total > MAX_PACKED_BYTES
-        or size < 1 or size > 60000
+        or size < 1 or size > 16384
     then
         rejectTransfer("BOOKLET TRANSFER REJECTED")
         return
@@ -74,12 +84,13 @@ net.Receive(PAYLOAD_NET, function()
     end
 
     local transfer = Manual.Transfer
-    if not transfer or transfer.id ~= transferId then
+    if not transfer then
+        if index ~= 1 then rejectTransfer("BOOKLET TRANSFER OUT OF ORDER"); return end
         transfer = {id = transferId, version = version, chapters = chapters,
             count = count, total = total, chunks = {}, received = 0}
         Manual.Transfer = transfer
     end
-    if transfer.version ~= version or transfer.chapters ~= chapters
+    if transfer.id ~= transferId or index ~= transfer.received + 1 or transfer.version ~= version or transfer.chapters ~= chapters
         or transfer.count ~= count or transfer.total ~= total
     then
         rejectTransfer("BOOKLET TRANSFER MISMATCH")
@@ -89,6 +100,11 @@ net.Receive(PAYLOAD_NET, function()
         transfer.chunks[index] = data
         transfer.received = transfer.received + 1
     end
+    Manual.ProgressAt = RealTime()
+    if IsValid(Manual.LoadingLabel) then
+        Manual.LoadingLabel:SetText(string.format("RETRIEVING INSTRUCTION BOOKLET… %d%%", math.floor(index * 100 / count)))
+    end
+    net.Start(ACK_NET); net.WriteUInt(transferId, 16); net.WriteUInt(index, 8); net.SendToServer()
     if transfer.received ~= count then return end
 
     local packed = table.concat(transfer.chunks)
@@ -96,7 +112,7 @@ net.Receive(PAYLOAD_NET, function()
         rejectTransfer("BOOKLET TRANSFER TRUNCATED")
         return
     end
-    local html = util.Decompress(packed)
+    local html = util.Decompress(packed, MAX_HTML_BYTES)
     if not isstring(html) or not string.find(html, "<!doctype html>", 1, true) then
         rejectTransfer("BOOKLET DECOMPRESSION FAILED")
         return
@@ -119,6 +135,7 @@ function Manual:Close()
 end
 
 function Manual:Open()
+    if LOD.RuntimeAudit then LOD.RuntimeAudit:Record("MANUAL_OPEN", "cached=" .. tostring(isstring(self.HTML))) end
     if IsValid(self.Frame) then self.Frame:MakePopup(); return end
     UI:SelectPage("manual")
     local page = math.Clamp(math.floor(tonumber(self.Page) or 0), 0, self.Chapters - 1)
@@ -151,6 +168,7 @@ function Manual:Open()
     browser:SetAllowLua(false)
     browser.OnDocumentReady = function(panel)
         if Manual.Browser ~= browser or not IsValid(browser) or not browser.LODManualDocument then return end
+        if LOD.RuntimeAudit then LOD.RuntimeAudit:Record("MANUAL_READY", Manual.Version) end
         panel:AddFunction("lod", "position", function(nextPage, nextScroll, nextSize)
             if Manual.Browser ~= browser or not IsValid(browser) then return end
             nextPage, nextScroll, nextSize = tonumber(nextPage), tonumber(nextScroll), tonumber(nextSize)
@@ -176,4 +194,4 @@ end
 -- Registration is independent of whether a physical book exists on this map.
 net.Receive("LOD_OpenFieldManual", function() Manual:Open() end)
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["manual_reader"] = "stability-20260915-04"
+LOD.RuntimeReceipts["manual_reader"] = "stability-20260915-05"
