@@ -1,9 +1,20 @@
 LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["meshes"] = "stability-20260915-01"
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox
-local boxMeshCache = boxMeshCache or {}
-local slabMeshCache = slabMeshCache or {}
+-- Reclaim owned native meshes on Lua refresh, map cleanup and shutdown.
+if TexturedBox.ClearMeshCache then TexturedBox:ClearMeshCache() end
+local meshCache, cacheCount, clock = {}, 0, 0
+local MAX_MESHES = 256
+function TexturedBox:ClearMeshCache()
+    for _, entry in pairs(meshCache) do entry.mesh:Destroy() end
+    meshCache, cacheCount = {}, 0
+end
+function TexturedBox:MeshCacheCount() return cacheCount end
+hook.Add("PostCleanupMap", "LOD_TexturedBoxMeshes", function() TexturedBox:ClearMeshCache() end)
+hook.Add("ShutDown", "LOD_TexturedBoxMeshes", function() TexturedBox:ClearMeshCache() end)
 local DEFAULT_TILE = 384
 
 function TexturedBox:GetIndustrialMaterial(fallbackPath)
@@ -98,22 +109,40 @@ local function buildSlabMesh(mins, maxs, tile)
     return obj
 end
 
-function TexturedBox:GetMesh(mins, maxs, tile)
-    tile = tile or DEFAULT_TILE
-    local key = cacheKey("box", mins, maxs, tile)
-    if not boxMeshCache[key] then
-        boxMeshCache[key] = buildBoxMesh(mins, maxs, tile)
-    end
-    return boxMeshCache[key]
+local function finite(n)
+    return type(n) == "number" and n == n and n > -math.huge and n < math.huge
 end
-
-function TexturedBox:GetSlabMesh(mins, maxs, tile)
-    tile = tile or DEFAULT_TILE
-    local key = cacheKey("slab", mins, maxs, tile)
-    if not slabMeshCache[key] then
-        slabMeshCache[key] = buildSlabMesh(mins, maxs, tile)
+local function getMesh(prefix, mins, maxs, tile, build)
+    tile = tonumber(tile) or DEFAULT_TILE
+    if not mins or not maxs or not finite(tile) then return nil end
+    for _, axis in ipairs({"x", "y", "z"}) do
+        if not finite(mins[axis]) or not finite(maxs[axis]) or maxs[axis] < mins[axis] then return nil end
     end
-    return slabMeshCache[key]
+    if maxs.x == mins.x or maxs.y == mins.y then return nil end
+    tile = math.max(1, tile)
+    local key = cacheKey(prefix, mins, maxs, tile)
+    clock = clock + 1
+    local entry = meshCache[key]
+    if entry then entry.used = clock; return entry.mesh end
+    if cacheCount >= MAX_MESHES then
+        local oldest, age
+        for k, v in pairs(meshCache) do
+            if not age or v.used < age then oldest, age = k, v.used end
+        end
+        meshCache[oldest].mesh:Destroy()
+        meshCache[oldest] = nil
+        cacheCount = cacheCount - 1
+    end
+    local obj = build(mins, maxs, tile)
+    meshCache[key] = {mesh=obj, used=clock}
+    cacheCount = cacheCount + 1
+    return obj
+end
+function TexturedBox:GetMesh(mins, maxs, tile)
+    return getMesh("box", mins, maxs, tile, buildBoxMesh)
+end
+function TexturedBox:GetSlabMesh(mins, maxs, tile)
+    return getMesh("slab", mins, maxs, tile, buildSlabMesh)
 end
 
 local function drawMesh(obj, position, angles, material, color)
@@ -150,3 +179,4 @@ function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, til
     if not position or not mins or not maxs or not material then return end
     drawMesh(self:GetSlabMesh(mins, maxs, tile), position, angles, material, color)
 end
+

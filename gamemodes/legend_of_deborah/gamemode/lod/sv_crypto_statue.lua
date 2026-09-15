@@ -1,3 +1,6 @@
+LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["statue"] = "stability-20260915-01"
 local C,Store,Run,S=LOD.CryptoDirector,LOD.CryptoStore,LOD.RunManager,LOD.StagingDeployment
 util.AddNetworkString('LOD_WalletRequest')
 util.AddNetworkString('LOD_WalletSnapshot')
@@ -23,7 +26,7 @@ function C:EnsureStatue()
     statue:SetPos(S.HutCenter-S.HutAngles:Forward()*((S.HutHalfForward or 180)-40)
         +S.HutAngles:Right()*math.min(80,(S.HutHalfRight or 130)-40))
     statue:SetAngles(Angle(0,S.HutAngles.y,0))
-    statue:Spawn();statue:Activate()
+    statue:Spawn()
     self.Statue=S:_RegisterHutEntity(statue)
     return true
 end

@@ -1,3 +1,6 @@
+LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["equipment"] = "stability-20260915-01"
 local E = assert(LOD.Equipment)
 local Run = assert(LOD.RunManager)
 E.NextUse = setmetatable({}, {__mode="k"})
@@ -137,7 +140,6 @@ function E:Use(ply, mode)
         projectile:SetPos(ply:GetShootPos())
         projectile:SetAngles(ply:EyeAngles())
         projectile:Spawn()
-        projectile:Activate()
         if not IsValid(projectile) then return false end
         self.Projectiles[ply] = projectile
     end

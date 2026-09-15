@@ -68,12 +68,13 @@ local function actor()
     function h:SetNoDraw(v) native(self);self.noDraw=v end
     function h:GetNoDraw() return self.noDraw end
     function h:Remove() native(self);self.valid=false end
-    function h:_SpawnPlaceholderLoot()
-        assert(not insideDamage)
-        if self.LODDeathLevelSeed==LOD.RunManager.State.LevelSeed then drops=drops+1 end
-    end
     return h
 end
+-- Installed after the entity definition: no scripted_ents patch is needed.
+LOD.LootDirector={OnHostileLootHandoff=function(_,h)
+    assert(not insideDamage)
+    if h.LODDeathLevelSeed==LOD.RunManager.State.LevelSeed then drops=drops+1 end
+end}
 local function kill(h)
     insideDamage=true;damageLive=true
     h:OnKilled(damage)

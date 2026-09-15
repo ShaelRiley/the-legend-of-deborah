@@ -1,4 +1,6 @@
 LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["staging"] = "stability-20260915-01"
 LOD.StagingDeployment = LOD.StagingDeployment or {}
 
 local Staging = LOD.StagingDeployment
@@ -336,7 +338,6 @@ function Staging:EnsureRoomDecor()
         sign:SetPos(localOffset(center, angles, halfForward - 48, 0, 96))
         sign:SetAngles(Angle(0, angles.y + 180, 0))
         sign:Spawn()
-        sign:Activate()
         self.SignEntity = self:_RegisterHutEntity(sign)
     end
 
@@ -351,7 +352,6 @@ function Staging:EnsureRoomDecor()
             torch:SetPos(localOffset(center, angles, torchForward, torchRight * side, 34))
             torch:SetAngles(Angle(0, angles.y + 180, 0))
             torch:Spawn()
-            torch:Activate()
             self.TorchEntities[#self.TorchEntities + 1] = self:_RegisterHutEntity(torch)
         end
     end
@@ -364,7 +364,6 @@ function Staging:EnsureRoomDecor()
         pedestal:SetPos(Vector(starterPos.x, starterPos.y, center.z + 2))
         pedestal:SetAngles(angles)
         pedestal:Spawn()
-        pedestal:Activate()
         self.StarterPedestalEntity = self:_RegisterHutEntity(pedestal)
     end
 
@@ -374,7 +373,6 @@ function Staging:EnsureRoomDecor()
         manual:SetPos(manualPos)
         manual:SetAngles(manualAng)
         manual:Spawn()
-        manual:Activate()
         self.ManualEntity = self:_RegisterHutEntity(manual)
     end
 
@@ -383,7 +381,6 @@ function Staging:EnsureRoomDecor()
         mirror:SetPos(mirrorPos)
         mirror:SetAngles(mirrorAng)
         mirror:Spawn()
-        mirror:Activate()
         self.MirrorEntity = self:_RegisterHutEntity(mirror)
     end
 
@@ -394,7 +391,6 @@ function Staging:EnsureRoomDecor()
         board:SetPos(boardPos)
         board:SetAngles(mirrorAng)
         board:Spawn()
-        board:Activate()
         self.HeroesBoardEntity = self:_RegisterHutEntity(board)
     end
 
@@ -440,7 +436,6 @@ function Staging:EnsureHut()
         guide:SetPos(localOffset(room.center, room.angles, self.HutGuideDistance, 0, 0))
         guide:SetAngles(Angle(0, room.angles.y + 180, 0))
         guide:Spawn()
-        guide:Activate()
         self.GuideEntity = self:_RegisterHutEntity(guide)
     end
 
@@ -451,7 +446,6 @@ function Staging:EnsureHut()
         portal:SetPos(localOffset(room.center, room.angles, -self.HutPortalDistance, 0, 0))
         portal:SetAngles(room.angles)
         portal:Spawn()
-        portal:Activate()
         self.PortalEntity = self:_RegisterHutEntity(portal)
     end
 
@@ -626,7 +620,6 @@ function Staging:EnsureStarterPickup(ply)
     ent:SetPos(self:_StarterPosition())
     ent:SetAngles(Angle(0, self.HutAngles.y + 90, 0))
     ent:Spawn()
-    ent:Activate()
     self.StarterEntities[identity] = ent
     self:_ApplyStarterTransmission(ent, identity)
     return true

@@ -1,3 +1,6 @@
+LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["hostile"] = "stability-20260915-01"
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
@@ -831,31 +834,21 @@ function ENT:OnInjured(dmginfo)
     end
 end
 
+-- Resolve at call time: scripted entity registration order must not select a
+-- legacy prop_dynamic fallback or leave a copied/inherited class unpatched.
 function ENT:_SpawnPlaceholderLoot()
-    local state = LOD.RunManager and LOD.RunManager.State
-    if not state or state.LevelSeed ~= self.LODDeathLevelSeed or state.Failed or state.LevelCleared then return end
-
-    local loot = ents.Create("prop_dynamic")
-    if not IsValid(loot) then return end
-    loot:SetModel(PLACEHOLDER_LOOT_MODEL)
-    loot:SetPos(self:GetPos() + Vector(0, 0, 8))
-    loot:SetAngles(Angle(0, self:GetAngles().y, 0))
-    loot:SetSolid(SOLID_NONE)
-    loot:SetMoveType(MOVETYPE_NONE)
-    loot:SetRenderMode(RENDERMODE_TRANSCOLOR)
-    loot:SetColor(Color(255, 196, 64, 235))
-    loot:SetModelScale(1.15, 0)
-    loot.LODPlaceholderLoot = true
-    loot:Spawn()
-    loot:EmitSound("items/itempickup.wav", 55, 128, 0.45, CHAN_ITEM)
-
-    PlaceholderLoot:Register(loot, self.LODDeathLevelSeed)
+    local loot = LOD and LOD.LootDirector
+    if loot and loot.OnHostileLootHandoff then
+        return loot:OnHostileLootHandoff(self)
+    end
+    deathStage(self, "loot_authority_missing")
 end
 
 function ENT:_FinishDeathPresentation()
     if not IsValid(self) then return end
     deathStage(self, "loot_enter")
     self:SetNoDraw(true)
+    deathStage(self, "loot_hidden")
     self:_SpawnPlaceholderLoot()
     deathStage(self, "loot_complete")
     self:Remove()

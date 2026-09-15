@@ -25,6 +25,12 @@ local MIN_GHOST_SAMPLES = 4
 local MAX_GHOST_SAMPLES = 16
 local GHOST_SAMPLE_SPACING = 28
 local MAX_FREE_GHOSTS_PER_MODEL = 32
+local MAX_FREE_GHOSTS = 64
+local function freeGhostCount()
+    local count = 0
+    for _, pool in pairs(FX.modelPools) do count = count + #pool.free end
+    return count
+end
 
 local function trailColor(source, alpha)
     source = string.lower(tostring(source or ""))
@@ -68,7 +74,7 @@ end
 local function releaseGhost(model, ghost)
     if not IsValid(ghost) then return end
     local pool = poolForModel(model)
-    if not pool or #pool.free >= MAX_FREE_GHOSTS_PER_MODEL then
+    if not pool or #pool.free >= MAX_FREE_GHOSTS_PER_MODEL or freeGhostCount() >= MAX_FREE_GHOSTS then
         ghost:Remove()
         return
     end
@@ -274,7 +280,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function(
     end
 end)
 
-hook.Add("ShutDown", "LOD_PushbackGhostCacheCleanup", function()
+local function cleanupGhosts()
     for _, event in ipairs(FX.trails) do
         if event.ghosts then
             for _, ghost in ipairs(event.ghosts) do
@@ -290,4 +296,7 @@ hook.Add("ShutDown", "LOD_PushbackGhostCacheCleanup", function()
         end
         FX.modelPools[model] = nil
     end
-end)
+end
+hook.Add("ShutDown", "LOD_PushbackGhostCacheCleanup", cleanupGhosts)
+hook.Add("PostCleanupMap", "LOD_PushbackGhostCacheCleanup", cleanupGhosts)
+

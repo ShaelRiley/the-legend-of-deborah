@@ -1,4 +1,6 @@
 LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["crowbar"] = "stability-20260915-01"
 LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
@@ -276,7 +278,6 @@ function Effects:CommitHeroOfLegendPulse(attacker, weapon, startPos, direction, 
         (math.max(0, tonumber(reach) or 96) + 1) - originOffset)
     pulse.LODDamageContract = contract
     pulse:Spawn()
-    pulse:Activate()
     self.ActiveHeroOfLegendPulse = pulse
 
     local stats = self.CrowbarStats
@@ -641,3 +642,4 @@ end)
 
 RPG.SystemBootstrap.FeatEffectSystem = "gate_e_batch_14_crowbar"
 return Effects
+

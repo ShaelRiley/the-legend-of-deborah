@@ -1,3 +1,4 @@
+include("lod/sh_runtime_audit.lua")
 include("shared.lua")
 include("lod/cl_adventure_presentation.lua")
 include("lod/sh_tetris.lua")

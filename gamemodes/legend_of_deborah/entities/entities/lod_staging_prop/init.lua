@@ -113,7 +113,11 @@ function ENT:_TryStarterClaim(ply)
     net.Send(ply)
 
     self.LODStageClaimed = true
-    self:Remove()
+    -- StartTouch/Touch may be running Source's trigger traversal. Keep the
+    -- transaction idempotent immediately, but remove only after it returns.
+    timer.Simple(0, function()
+        if IsValid(self) then self:Remove() end
+    end)
 end
 
 function ENT:StartTouch(ent)
@@ -182,3 +186,4 @@ concommand.Add("lod_staging_manual_status", function(ply)
     print("[LOD:STAGING-MANUAL] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

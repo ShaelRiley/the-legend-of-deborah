@@ -1,4 +1,6 @@
 LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["loot"] = "stability-20260915-01"
 LOD.LootDirector = LOD.LootDirector or {}
 
 local Loot = LOD.LootDirector
@@ -833,19 +835,6 @@ function Loot:OnHostileLootHandoff(hostile)
     end
 end
 
-function Loot:InstallHostileHandoff()
-    local stored = scripted_ents.GetStored("lod_hostile")
-    local class = stored and stored.t
-    if not class then return false end
-    if class.LODLootDirectorInstalled then return true end
-    class.LODLootDirectorInstalled = true
-
-    function class:_SpawnPlaceholderLoot()
-        Loot:OnHostileLootHandoff(self)
-    end
-    return true
-end
-
 -- The former shared Level-1 weapon entities are replaced by individualized
 -- LootDirector copies. The progression wrapper calls this method dynamically.
 function MazeBuilder:_BuildLevelOneWeaponAccess()
@@ -889,12 +878,7 @@ hook.Add("PlayerInitialSpawn", "LOD_LootTransmissionForJoiningPlayer", function(
     end)
 end)
 
-if not Loot:InstallHostileHandoff() then
-    hook.Add("OnEntityCreated", "LOD_InstallLootHandoff", function(ent)
-        if IsValid(ent) and ent:GetClass() == "lod_hostile" then Loot:InstallHostileHandoff() end
-    end)
-end
-
+-- lod_hostile resolves LootDirector directly; no class-table mutation.
 timer.Create(CLEANUP_TIMER, 1, 0, function()
     Loot:_PruneEntities()
 end)

@@ -9,7 +9,22 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — consistent GPS and loot crash candidate
+## Current checkpoint — native crash audit repair candidate
+
+Audit of dev HEAD `d59d2df2274cd11fb6311b7c3d89bef2a6b8ed9e` completed;
+all 366 production sources match remote content. Latest detailed log again
+ends at `loot_enter` (Shambler #1272), without the preceding candidate's new
+loot/profile markers. Actual loaded build and native fault remain unproven.
+
+Direct hostile-to-LootDirector handoff replaces the load-order class patch and
+native placeholder fallback. Remove twelve additional unnecessary activation
+calls, defer starter-pickup retirement beyond touch, bound/reclaim native mesh
+and afterimage caches, and unwind mirror render state after Lua errors.
+Installer/build receipts now identify loaded components and resource trends.
+All 85 automated suites pass. Main/public release remains held for fresh native
+acceptance. See [native audit, evidence and acceptance](NATIVE_CRASH_AUDIT_20260915.md).
+
+## Previous checkpoint — consistent GPS and loot crash candidate
 
 Starting dev HEAD `a671934496c51a2306e7e5634642e3bbfcee781c` on
 `astra/equipment-update`. GPS retains its voice, WIS 17 gate and G toggle,

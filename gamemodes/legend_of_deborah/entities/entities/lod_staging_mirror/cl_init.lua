@@ -1,3 +1,6 @@
+LOD = LOD or {}
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["mirror"] = "stability-20260915-01"
 include("shared.lua")
 
 local RT_W, RT_H = 320, 640
@@ -105,7 +108,10 @@ hook.Add("PreRender", "LOD_StagingMirrorRender", function()
 
     renderingMirror = true
 
+    local targetOpen, cameraOpen = false, false
+    local ok, err = xpcall(function()
     render.PushRenderTarget(rawRT)
+    targetOpen = true
         render.Clear(22, 25, 29, 255, true, true)
         render.RenderView({
             origin = origin,
@@ -121,21 +127,36 @@ hook.Add("PreRender", "LOD_StagingMirrorRender", function()
             drawviewer = true
         })
     render.PopRenderTarget()
+    targetOpen = false
 
     render.PushRenderTarget(displayRT)
+    targetOpen = true
         render.Clear(22, 25, 29, 255, true, true)
         cam.Start2D()
+        cameraOpen = true
             surface.SetMaterial(rawMat)
             surface.SetDrawColor(255, 255, 255, 255)
             -- Flip V explicitly so the reflected image is upright and fill the
             -- entire display target rather than the upper half of the frame.
             surface.DrawTexturedRectUV(0, 0, RT_W, RT_H, 0, 1, 1, 0)
         cam.End2D()
+        cameraOpen = false
     render.PopRenderTarget()
+    targetOpen = false
 
+    end, debug.traceback)
+    -- A Lua error from RenderView/another addon's draw hook must not strand
+    -- the engine on this render target or leave the recursion guard latched.
+    if cameraOpen then cam.End2D() end
+    if targetOpen then render.PopRenderTarget() end
     renderingMirror = false
+    if not ok then
+        nextUpdate = CurTime() + 5
+        ErrorNoHalt("[LOD mirror] " .. tostring(err) .. "\n")
+    end
 end)
 
 hook.Add("ShouldDrawLocalPlayer", "LOD_StagingMirrorLocalPlayer", function()
     if renderingMirror then return true end
 end)
+

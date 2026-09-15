@@ -51,6 +51,21 @@ ln -sfn "$REPO_DIR" "$TARGET"
 # this marker and therefore retain the production default (developer mode off).
 printf 'enabled\n' > "$DEV_MODE_MARKER"
 
+# Record the checkout the installer mounted. Runtime receipts independently
+# identify loaded modules, so an old/mixed mount is visible in crash evidence.
+BUILD_COMMIT="$(git -C "$REPO_DIR" rev-parse HEAD)"
+BUILD_DIRTY="clean"
+if [[ -n "$(git -C "$REPO_DIR" status --porcelain --untracked-files=no)" ]]; then
+  BUILD_DIRTY="modified"
+fi
+printf '%s %s\n' "$BUILD_COMMIT" "$BUILD_DIRTY" > "$RPG_DATA_DIR/dev_build.txt"
+for other_addon in "$ADDONS_DIR"/*; do
+  if [[ "$other_addon" != "$TARGET" && -f "$other_addon/gamemodes/legend_of_deborah/gamemode/init.lua" ]]; then
+    echo "WARNING: another addon contains the Deborah gamemode: $other_addon" >&2
+  fi
+done
+
+
 # AG-002R-E used an out-of-repository autorun harness. If an interrupted test
 # leaves it behind, Garry's Mod will otherwise execute it on every startup: it
 # toggles developer mode, performs developer ingress, changes level, chooses a
@@ -151,3 +166,4 @@ echo
 echo "Launch Garry's Mod with gm_flatgrass and gamemode legend_of_deborah."
 echo "For the legacy M1 audit you can still run:"
 echo "  lod_m1_audit"
+

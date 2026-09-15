@@ -1,5 +1,7 @@
 AddCSLuaFile("lod/cl_rpg_dodge.lua")
 LOD = LOD or {}
+AddCSLuaFile("lod/sh_runtime_audit.lua")
+include("lod/sh_runtime_audit.lua")
 
 local DEVELOPER_MODE_HELP = "Enable Legend of Deborah developer/testing affordances. Requires a restart when changing module availability."
 local devCheckoutMarker = file.Exists("legend_of_deborah/dev_checkout_mode.txt", "DATA")
