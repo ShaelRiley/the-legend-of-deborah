@@ -4,15 +4,29 @@ local function expect(ok,label) assert(ok,label) end
 Color=function(...) return {...} end
 surface={CreateFont=function() end}
 draw={}
+isstring=function(v) return type(v)=='string' end
+util={Decompress=function(value) return value end}
 KEY_ESCAPE,KEY_P,KEY_I,KEY_L=70,25,18,21
 RealTime=function() return 20 end
+local timers={};timer={Simple=function(_,callback) timers[#timers+1]=callback end}
 ScrW=function() return 800 end;ScrH=function() return 600 end
 math.Clamp=function(v,a,b) return math.max(a,math.min(b,v)) end
 local saved={lod_manual_page=7,lod_manual_scroll=123,lod_manual_text_size=21}
 cookie={GetNumber=function(k,d) return saved[k] or d end,Set=function(k,v) saved[k]=v end}
 IsValid=function(p) return type(p)=="table" and not p.removed end
 include=function(path) return assert(loadfile(base..path))() end
-local receivers={};net={Receive=function(id,fn) receivers[id]=fn end}
+local receivers,started,requests,reads={},nil,0,nil
+net={
+    Receive=function(id,fn) receivers[id]=fn end,
+    Start=function(id) started=id end,
+    SendToServer=function()
+        assert(started=='LOD_RequestInstructionManual','reader requests canonical server payload')
+        requests=requests+1;started=nil
+    end,
+    ReadString=function() local v=table.remove(reads,1);return v end,
+    ReadUInt=function() local v=table.remove(reads,1);return v end,
+    ReadData=function() local v=table.remove(reads,1);return v end
+}
 local panels={}
 local Panel={}
 function Panel:SetSize(w,h) self.w,self.h=w,h end
@@ -32,7 +46,8 @@ function Panel:AddFunction(ns,name,fn)
     self.callbacks[ns..'.'..name]=fn
 end
 function Panel:QueueJavascript(s) self.js=s end
-for _,k in ipairs({'SetFont','SetTextColor','ShowCloseButton','Center','SetTitle','SetDraggable','SetDeleteOnClose'}) do Panel[k]=function() end end
+for _,k in ipairs({'SetFont','SetTextColor','SetContentAlignment','SetWrap','SetMouseInputEnabled',
+    'ShowCloseButton','Center','SetTitle','SetDraggable','SetDeleteOnClose'}) do Panel[k]=function() end end
 vgui={Create=function(kind,parent)
     local p=setmetatable({kind=kind,parent=parent,callbacks={}},{__index=Panel});panels[#panels+1]=p;return p
 end}
@@ -56,6 +71,10 @@ local manualButton
 for _,p in ipairs(panels) do if p.text=='MANUAL' then manualButton=p end end
 expect(manualButton,'P menu has Manual tab');manualButton.DoClick()
 expect(UI.ActivePage=='manual' and IsValid(M.Frame),'tab opens canonical reader')
+expect(requests==1 and M.Browser.html==nil,'visible reader requests payload instead of client-only files')
+local payload='<!doctype html><html><body>TIME OVER</body></html>'
+reads={'manual-test',124,1,1,1,#payload,#payload,payload}
+receivers.LOD_InstructionManualPayload()
 expect(M.Frame:GetWide()<=ScrW() and M.Frame:GetTall()<=ScrH(),'small-screen frame fits')
 expect(not M.Browser.allowLua,'arbitrary Lua disabled')
 expect(M.Browser.html:find('TIME OVER',1,true),'complete generated document loaded')
@@ -79,6 +98,9 @@ M.Browser.callbacks['lod.close']()
 expect(UI.ActivePage==nil and not IsValid(M.Frame),'Escape bridge closes reader')
 M:Open();UI:SelectPage(nil)
 expect(not IsValid(M.Frame),'terminal transition closes reader through shared menu')
+M.HTML=nil;M:Open();expect(requests==2 and IsValid(M.LoadingLabel),'missing payload still opens visible reader')
+timers[#timers]();expect(M.LoadingLabel.text:find('DID NOT RESPOND',1,true),'no-response timeout exposes retry')
+M.LoadingLabel.DoClick();expect(requests==3,'visible retry requests payload again')
 -- No player, alive, staging, deployment, or role stubs were supplied. Opening
 -- therefore demonstrably does not depend on those world-state authorities.
 print('PASS: one reader, both entry points, portable access, bookmark, navigation, stale callback isolation')

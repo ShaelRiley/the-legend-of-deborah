@@ -262,11 +262,7 @@ AddCSLuaFile("lod/cl_equipment_inventory.lua")
 
 util.AddNetworkString("LOD_OpenFieldManual")
 AddCSLuaFile("lod/cl_instruction_manual.lua")
-AddCSLuaFile("lod/manual/manifest.lua")
-local instructionManual = include("lod/manual/manifest.lua")
-for index = 1, instructionManual.chunks do
-    AddCSLuaFile(string.format("lod/manual/html_%02d.lua", index))
-end
+include("lod/sv_instruction_manual.lua")
 
 AddCSLuaFile("lod/sh_campaign_timeout.lua")
 AddCSLuaFile("lod/cl_campaign_timeout.lua")

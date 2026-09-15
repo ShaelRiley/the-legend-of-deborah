@@ -21,6 +21,7 @@ LUA_FILES = get_lua_files()
 
 SUITES = [
     ("Canonical Manual & Portable Menu", ["python3", "tools/run_lua54.py", "tools/test_instruction_manual.lua"]),
+    ("Canonical Manual Server Transport", ["python3", "tools/run_lua54.py", "tools/test_manual_transport.lua"]),
     ("Manual Source & Reader Navigation", ["python3", "tools/test_manual_document.py"]),
     ("Campaign Clock & TIME OVER Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_campaign_timeout.lua"]),
     ("Complete Enemy Roster & Animation Safety", ["python3", "tools/run_lua54.py", "tools/test_enemy_roster.lua"]),

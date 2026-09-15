@@ -34,6 +34,7 @@ local function mockGMod()
     util = util or {}
     util.AddNetworkString = util.AddNetworkString or function() end
     util.CRC = util.CRC or function(v) return tostring(v) end
+    util.Compress = util.Compress or function(v) return v end
     util.IsValidModel = util.IsValidModel or function() return true end
 
     net = net or {}
@@ -42,6 +43,7 @@ local function mockGMod()
     net.WriteTable = net.WriteTable or function() end
     net.WriteString = net.WriteString or function() end
     net.WriteUInt = net.WriteUInt or function() end
+    net.WriteData = net.WriteData or function() end
     net.Send = net.Send or function() end
     net.Broadcast = net.Broadcast or function() end
 

@@ -3,22 +3,111 @@ LOD = LOD or {}
 LOD.FieldManual = LOD.FieldManual or {}
 local Manual = LOD.FieldManual
 local UI = LOD.UI
-local manifest = include("lod/manual/manifest.lua")
-Manual.Manifest = manifest
+local REQUEST_NET = "LOD_RequestInstructionManual"
+local PAYLOAD_NET = "LOD_InstructionManualPayload"
+local MAX_PACKED_BYTES = 4 * 1024 * 1024
+local MAX_CHUNKS = 64
 Manual.Page = Manual.Page or cookie.GetNumber("lod_manual_page", 0)
 Manual.Scroll = Manual.Scroll or cookie.GetNumber("lod_manual_scroll", 0)
 Manual.TextSize = Manual.TextSize or cookie.GetNumber("lod_manual_text_size", 18)
-local html
+Manual.Chapters = Manual.Chapters or 124
+local rejectTransfer
 
-local function document()
-    if html then return html end
-    local chunks = {}
-    for index = 1, manifest.chunks do
-        chunks[index] = include(string.format("lod/manual/html_%02d.lua", index))
-    end
-    html = table.concat(chunks)
-    return html
+function Manual:RequestPayload()
+    local now = RealTime()
+    if self.RequestedAt and now - self.RequestedAt < 2 then return end
+    self.RequestedAt = now
+    net.Start(REQUEST_NET)
+    net.SendToServer()
+    timer.Simple(8, function()
+        if Manual.RequestedAt == now and not isstring(Manual.HTML) then
+            rejectTransfer("BOOKLET SERVER DID NOT RESPOND")
+        end
+    end)
 end
+
+function Manual:LoadDocument()
+    local browser = self.Browser
+    if not IsValid(browser) or not isstring(self.HTML) then return end
+    if IsValid(self.LoadingLabel) then self.LoadingLabel:Remove() end
+    self.LoadingLabel = nil
+    browser.LODManualDocument = true
+    browser:SetHTML(self.HTML)
+end
+
+rejectTransfer = function(message)
+    Manual.Transfer = nil
+    Manual.RequestedAt = nil
+    if IsValid(Manual.LoadingLabel) then
+        Manual.LoadingLabel:SetText(message .. "\nClick to retry.")
+        Manual.LoadingLabel:SetMouseInputEnabled(true)
+        Manual.LoadingLabel.DoClick = function()
+            if IsValid(Manual.LoadingLabel) then
+                Manual.LoadingLabel:SetText("RETRIEVING INSTRUCTION BOOKLET…")
+                Manual.LoadingLabel:SetMouseInputEnabled(false)
+            end
+            Manual:RequestPayload()
+        end
+    end
+end
+
+net.Receive(PAYLOAD_NET, function()
+    local version = net.ReadString()
+    local chapters = net.ReadUInt(8)
+    local transferId = net.ReadUInt(16)
+    local index = net.ReadUInt(8)
+    local count = net.ReadUInt(8)
+    local total = net.ReadUInt(24)
+    local size = net.ReadUInt(16)
+    if version == "" or chapters < 1 or transferId < 1 or index < 1 or index > count
+        or count < 1 or count > MAX_CHUNKS or total < 1 or total > MAX_PACKED_BYTES
+        or size < 1 or size > 60000
+    then
+        rejectTransfer("BOOKLET TRANSFER REJECTED")
+        return
+    end
+
+    local data = net.ReadData(size)
+    if not isstring(data) or #data ~= size then
+        rejectTransfer("BOOKLET TRANSFER INCOMPLETE")
+        return
+    end
+
+    local transfer = Manual.Transfer
+    if not transfer or transfer.id ~= transferId then
+        transfer = {id = transferId, version = version, chapters = chapters,
+            count = count, total = total, chunks = {}, received = 0}
+        Manual.Transfer = transfer
+    end
+    if transfer.version ~= version or transfer.chapters ~= chapters
+        or transfer.count ~= count or transfer.total ~= total
+    then
+        rejectTransfer("BOOKLET TRANSFER MISMATCH")
+        return
+    end
+    if not transfer.chunks[index] then
+        transfer.chunks[index] = data
+        transfer.received = transfer.received + 1
+    end
+    if transfer.received ~= count then return end
+
+    local packed = table.concat(transfer.chunks)
+    if #packed ~= total then
+        rejectTransfer("BOOKLET TRANSFER TRUNCATED")
+        return
+    end
+    local html = util.Decompress(packed)
+    if not isstring(html) or not string.find(html, "<!doctype html>", 1, true) then
+        rejectTransfer("BOOKLET DECOMPRESSION FAILED")
+        return
+    end
+    Manual.Transfer = nil
+    Manual.RequestedAt = nil
+    Manual.Version = version
+    Manual.Chapters = chapters
+    Manual.HTML = html
+    Manual:LoadDocument()
+end)
 
 function Manual:Close()
     cookie.Set("lod_manual_page", self.Page or 0)
@@ -32,7 +121,7 @@ end
 function Manual:Open()
     if IsValid(self.Frame) then self.Frame:MakePopup(); return end
     UI:SelectPage("manual")
-    local page = math.Clamp(math.floor(tonumber(self.Page) or 0), 0, manifest.chapters - 1)
+    local page = math.Clamp(math.floor(tonumber(self.Page) or 0), 0, self.Chapters - 1)
     local scroll = math.max(0, tonumber(self.Scroll) or 0)
     local size = math.floor(math.Clamp(tonumber(self.TextSize) or 18, 15, 26))
     local frame = vgui.Create("DFrame")
@@ -49,19 +138,25 @@ function Manual:Open()
     local browser = vgui.Create("DHTML", frame)
     self.Browser = browser
     browser:SetPos(12, 110); browser:SetSize(frame:GetWide() - 24, frame:GetTall() - 122)
+    local loading = vgui.Create("DButton", frame)
+    self.LoadingLabel = loading
+    loading:SetPos(24, 130); loading:SetSize(frame:GetWide() - 48, frame:GetTall() - 162)
+    loading:SetText("RETRIEVING INSTRUCTION BOOKLET…")
+    loading:SetFont("LOD_SheetHeading"); loading:SetTextColor(UI.Colors.blue)
+    loading:SetContentAlignment(5); loading:SetWrap(true)
     -- Garry's Mod installs AddFunction into the current document, so registering
     -- before SetHTML loses the bridge when Chromium replaces about:blank. Bind
     -- after every document-ready event and restore the bookmark from that same
     -- event. Arbitrary RunLua remains disabled.
     browser:SetAllowLua(false)
     browser.OnDocumentReady = function(panel)
-        if Manual.Browser ~= browser or not IsValid(browser) then return end
+        if Manual.Browser ~= browser or not IsValid(browser) or not browser.LODManualDocument then return end
         panel:AddFunction("lod", "position", function(nextPage, nextScroll, nextSize)
             if Manual.Browser ~= browser or not IsValid(browser) then return end
             nextPage, nextScroll, nextSize = tonumber(nextPage), tonumber(nextScroll), tonumber(nextSize)
             if not nextPage or nextPage ~= nextPage or not nextScroll or nextScroll ~= nextScroll
                 or not nextSize or nextSize ~= nextSize then return end
-            Manual.Page = math.Clamp(math.floor(nextPage), 0, manifest.chapters - 1)
+            Manual.Page = math.Clamp(math.floor(nextPage), 0, Manual.Chapters - 1)
             Manual.Scroll = math.Clamp(nextScroll, 0, 1000000)
             Manual.TextSize = math.Clamp(nextSize, 15, 26)
         end)
@@ -75,8 +170,10 @@ function Manual:Open()
         end)
         browser:QueueJavascript(string.format("window.LODManual.restore(%d,%.1f,%d);", page, scroll, size))
     end
-    browser:SetHTML(document())
+    if isstring(self.HTML) then self:LoadDocument() else self:RequestPayload() end
 end
 
 -- Registration is independent of whether a physical book exists on this map.
 net.Receive("LOD_OpenFieldManual", function() Manual:Open() end)
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts["manual_reader"] = "stability-20260915-04"

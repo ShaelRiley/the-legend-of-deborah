@@ -9,7 +9,27 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Hermit starter-weapon crash repair
+## Current checkpoint — native manual payload transport
+
+The 2026-09-15 native console proves why both manual entry points appeared inert:
+`cl_instruction_manual.lua` aborted on startup because the client could not
+include `lod/manual/manifest.lua`. The earlier lifecycle regression exercised a
+local filesystem double and therefore proved the reader after initialization,
+not the actual server-to-client delivery prerequisite that failed in GMod.
+
+The client no longer includes the generated manifest or HTML chunks. The server
+loads the one canonical generated document, compresses it once, and streams it
+on demand in ordered messages capped at 60,000 bytes. P → Manual and staging E
+now create the visible frame immediately, request the same payload, validate and
+reassemble it, and cache it for subsequent openings. A failed or malformed
+transfer leaves a visible retry control rather than an absent reader. Runtime
+identity is `stability-20260915-04` and now requires `manual` and
+`manual_reader` receipts. All 95 integrated suites pass, including production
+client-launch and server-transport regressions. Native GMod acceptance remains
+pending; no main promotion or public deployment is included. See
+[Canonical instruction manual](INSTRUCTION_MANUAL.md).
+
+## Previous checkpoint — Hermit starter-weapon crash repair
 
 The first 2026-09-15 force-close report ended without a Lua traceback immediately
 after class/feat setup. Candidate `stability-20260915-02` moved the whole starter

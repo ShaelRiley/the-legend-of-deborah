@@ -175,7 +175,7 @@ ents.GetCount=function() return 77 end
 timer.Create=function() end
 function GetConVar() return {GetBool=function() return false end} end
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua')
-for _,key in ipairs({'hostile','pickup','loot','staging','equipment','crowbar','statue'}) do
+for _,key in ipairs({'hostile','pickup','loot','staging','equipment','crowbar','statue','manual'}) do
  LOD.RuntimeReceipts[key]=LOD.RuntimeAudit.Build
 end
 local snapshot=LOD.RuntimeAudit:Snapshot()

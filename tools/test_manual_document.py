@@ -22,7 +22,7 @@ for i in range(1,count+1):
     content=(builder.TARGET/f'html_{i:02}.lua').read_text()
     assert len(content.encode())<64000
     chunks.append(content.split('return [====[',1)[1].rsplit(']====]',1)[0])
-assert ''.join(chunks)==html, 'Both entry points must receive the generated canonical document'
+assert ''.join(chunks)==html, 'Server transport source must equal the canonical document'
 assert (builder.SOURCE/'manual.html').read_text()==html
 entries=[e for c in book['chapters'] for e in c.get('entries',[])]
 assert len(entries)==150 and len({e['id'] for e in entries})==150
@@ -32,6 +32,12 @@ assert not list((ROOT/'gamemodes/legend_of_deborah/entities/entities/lod_field_m
 assert 'SetHTML' not in (ROOT/'gamemodes/legend_of_deborah/entities/entities/lod_field_manual/cl_init.lua').read_text()
 source=(ROOT/'gamemodes/legend_of_deborah/gamemode/lod/cl_instruction_manual.lua').read_text()
 assert 'IsDeployed' not in source and 'LOD_Staged' not in source
+assert 'lod/manual/manifest.lua' not in source, 'Client must not depend on the failed payload-file delivery path'
+server=(ROOT/'gamemodes/legend_of_deborah/gamemode/lod/sv_instruction_manual.lua').read_text()
+assert 'util.Compress(html)' in server and 'net.WriteData(data, #data)' in server
+init=(ROOT/'gamemodes/legend_of_deborah/gamemode/init.lua').read_text()
+assert 'include("lod/sv_instruction_manual.lua")' in init
+assert 'AddCSLuaFile("lod/manual/' not in init, 'Generated manual payload is server-streamed, not client-file distributed'
 for term in ['TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff','Stink Bomb','Arcane Surge','DFTs mint only','Beam Sweeper']:
     assert term in html,term
 subprocess.run(['node',str(ROOT/'tools/test_manual_reader.js')],check=True,cwd=ROOT)

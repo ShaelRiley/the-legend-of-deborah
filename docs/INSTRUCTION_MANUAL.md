@@ -1,6 +1,32 @@
 # Canonical instruction manual
 
-## September 15, 2026 launch repair
+## September 15, 2026 native payload transport repair
+
+Fresh native evidence identifies the actual launch failure. The client console
+reports `Couldn't include file 'lod/manual/manifest.lua'` from line 6 of
+`cl_instruction_manual.lua`. Because that include ran while the module loaded,
+initialization stopped before the network receiver or `LOD.FieldManual:Open()`
+could be registered. Both staging E and P → Manual were consequently inert. The
+previous DHTML lifecycle repair was valid but downstream of this earlier fault;
+its local harness did not model Garry's Mod client-file distribution.
+
+The generated manifest and HTML chunks are now server-only source artifacts.
+At server initialization they are concatenated into the one canonical document
+and compressed once. Opening either entry point creates the reader frame
+immediately and requests that payload. The server sends ordered, reliable chunks
+of at most 60,000 bytes; the client bounds and verifies the transfer metadata,
+reassembles and decompresses the exact document, then invokes the existing DHTML
+lifecycle. The document is cached for later openings. A rejected, incomplete or
+malformed transfer presents a retry control inside the already-visible frame.
+
+The runtime audit now requires a server `manual` receipt and client
+`manual_reader` receipt under build `stability-20260915-04`. The dedicated
+transport regression proves exact byte preservation across multiple bounded
+messages, while the client regression proves the window opens before delivery,
+requests the payload, and completes the canonical bookmark/navigation bridge
+after receipt.
+
+## Earlier September 15, 2026 DHTML lifecycle repair
 
 The initial portable-reader implementation registered `DHTML:AddFunction`
 callbacks before `SetHTML`. Garry's Mod binds those functions to the current HTML
