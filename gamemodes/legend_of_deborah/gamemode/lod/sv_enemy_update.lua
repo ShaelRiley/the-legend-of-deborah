@@ -193,11 +193,11 @@ function U:Tick(hostile)
     end
     waypoint = hostile:_AdvanceWaypoint()
     if waypoint then
-        hostile:_SetActivity(ACT_RUN)
+        hostile:_SetActivity(ACT_RUN_AIM_RIFLE or ACT_RUN)
         motion:MoveToward(hostile, waypoint)
     else
         motion:Stop(hostile); motion:FaceToward(hostile, target:GetPos())
-        hostile:_SetActivity(ACT_IDLE_ANGRY)
+        hostile:_SetActivity(ACT_IDLE_ANGRY_SMG1 or ACT_IDLE_ANGRY)
         if canAttack and now >= (hostile.LODNextAttack or 0) and self:CanShoot(hostile, target) then
             self:BeginShot(hostile, target, now, state.LevelSeed)
         end

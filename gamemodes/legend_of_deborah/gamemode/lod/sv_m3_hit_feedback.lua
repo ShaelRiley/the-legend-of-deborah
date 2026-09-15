@@ -93,6 +93,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = now + stunSeconds
 
+    if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile) end
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
     if hostile.LODBruteCharge and LOD.NeilBrute then LOD.NeilBrute:CancelCharge(hostile) end
     if hostile.LODArchetypeId == "warden" and LOD.Warden then LOD.Warden:Interrupt(hostile) end

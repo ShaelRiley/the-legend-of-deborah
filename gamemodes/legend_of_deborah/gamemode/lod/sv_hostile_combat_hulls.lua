@@ -53,6 +53,10 @@ local function segmentAABB(startPos, endPos, mins, maxs)
 end
 
 local function combatBounds(hostile)
+    if LOD.EnemyRoster then
+        local lo,hi=LOD.EnemyRoster:CombatBounds(hostile)
+        if lo then return lo,hi end
+    end
     local size = math.Clamp(hostile:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local origin = hostile:GetPos()
 
@@ -106,6 +110,14 @@ hook.Add("EntityFireBullets", "LOD_ScaledHostileCombatHull", function(shooter, b
             Vector(-4, -4, -24),
             Vector(4, 4, 0)
         )
+        -- Specialist visual volumes may sit above/below the fixed movement hull.
+        -- Exact segment/AABB testing still ends at the original world impact.
+        if LOD.EnemyRoster then
+            local seen={} for _,e in ipairs(candidates) do seen[e]=true end
+            for e in pairs(LOD.EnemyRoster.Active) do
+                if IsValid(e) and not seen[e] and LOD.EnemyRoster:CombatBounds(e) then candidates[#candidates+1]=e end
+            end
+        end
         for _, hostile in ipairs(candidates) do
             if IsValid(hostile) and hostile.LODHostile and not hostile.LODDead then
                 local mins, maxs = combatBounds(hostile)
@@ -126,3 +138,4 @@ hook.Add("EntityFireBullets", "LOD_ScaledHostileCombatHull", function(shooter, b
         best:TakeDamageInfo(redirected)
     end
 end)
+

@@ -7,7 +7,7 @@ local EC = LOD.Config.Encounter
 
 if not EncounterDirector then return end
 
-local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper"}
+local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper", "climber", "flamer", "bigcrab", "sentry", "razor", "arccaster", "lurker", "beamsweeper", "nodule"}
 
 local function cellKey(cell)
     return cell and LOD.MazeGenerator.CellKey(cell.x, cell.y, cell.z) or nil
@@ -83,9 +83,11 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
                     ent.LODSpawnSource = "encounter"
                     ent.LODSpawnRelocatedFromStair = relocatedFromStair
                     ent.LODActivated = true
-                    ent:SetPos(center + offsets[ordinal])
+                    local placement=encounter.rosterPlacements and encounter.rosterPlacements[archetypeId]
+                    ent.LODRosterPlacement=placement
+                    ent:SetPos(placement and placement.pos or center + offsets[ordinal])
+                    if placement and placement.yaw then ent:SetAngles(Angle(0,placement.yaw,0)) end
                     ent:Spawn()
-                    ent:Activate()
 
                     -- Fail-safe: Initialize should already have applied variance.
                     if IsValid(ent) and not ent.LODVariance and EnemyVariance and EnemyVariance.Apply then
@@ -99,6 +101,7 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
                         if LOD.HostileMotionV2 and LOD.HostileMotionV2.SnapSpawn then
                             LOD.HostileMotionV2:SnapSpawn(ent)
                         end
+                        if placement and placement.range then ent.LODConfig.fireRange=math.min(ent.LODConfig.fireRange,placement.range) end
                         ent.LODNextRouteRefresh = 0
                         encounter.entities[#encounter.entities + 1] = ent
                         self.Entities[#self.Entities + 1] = ent

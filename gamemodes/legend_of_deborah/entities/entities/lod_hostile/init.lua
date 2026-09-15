@@ -262,6 +262,7 @@ local function healthMultiplier()
 end
 
 function ENT:_SetActivity(activity, force)
+    if LOD.HostileAnimation then return LOD.HostileAnimation:Apply(self, activity, force) end
     activity = activity or ACT_IDLE
     if force or self.LODCurrentActivity ~= activity then
         self.LODCurrentActivity = activity

@@ -9,7 +9,19 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Gordon the Warden
+## Current checkpoint — complete ordinary enemy roster
+
+Implements all nine missing v1 ordinary enemies over development baseline
+`90477d7acc61091710c9ba18e49f1920073b1bc0`: Climber, Nodule, Flamer, Big Crab,
+Sentry, Razor, Arc Caster, Lurker and Beam Sweeper. Existing ordinary enemies and
+Neil/Brute/Gordon remain intact. Fix model-unsupported Sniper activity requests
+and retreat animation selection at the shared activity/Motion V2 authorities.
+Author-approved tuning is recorded in live GDD 07; the manual teaches the roster.
+All 89 automated suites pass. Native visual/co-op acceptance and the fatal-crash
+release hold remain open. Heavy remains explicitly deferred beyond v1.
+See [roster, validation and finite test](ENEMY_UPDATE.md).
+
+## Previous checkpoint — Gordon the Warden
 
 Implements Gordon over development baseline
 `253af3b273f53d5c6910931fc4c5d738f8418be8`, on `astra/equipment-update`.

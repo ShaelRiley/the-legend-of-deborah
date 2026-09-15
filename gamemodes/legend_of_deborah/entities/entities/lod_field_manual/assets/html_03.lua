@@ -124,6 +124,41 @@ after death.</div>
       </div>
     </article>
 
+    <article class="source-page" data-title="Wall and Flame Threats">
+      <div class="page"><div class="kicker">Read the warning, choose your answer</div>
+        <h1>Wall and Flame Threats</h1><div class="rule"></div>
+        <div class="card-grid">
+          <div class="card"><h3>Climber</h3><p>Hot pink, crawling along walls. Sidestep its leap. If it latches onto your face, keep firing; allies can shoot it too. A hit interrupts its bite but does not remove it.</p></div>
+          <div class="card"><h3>Nodule</h3><p>An upright growth fills one square with green gas. Stay outside that square or shoot the growth. Leaving its square stops the gas damage; killing it stops the cloud.</p></div>
+          <div class="card"><h3>Flamer</h3><p>The red guard gives an ignition warning before a short flame cone. Keep your distance, interrupt the warning or use a corner. Fire may leave you Immolated.</p></div>
+          <div class="card"><h3>Big Crab</h3><p>An oversized crab breathing the same dangerous fire. It cannot reach around a wall. Its death produces ordinary loot, not more crabs.</p></div>
+        </div><div class="folio-num">15a</div>
+      </div>
+    </article>
+    <article class="source-page" data-title="Machines and Ambushers">
+      <div class="page"><div class="kicker">Position is a defense</div>
+        <h1>Machines and Ambushers</h1><div class="rule"></div>
+        <div class="card-grid">
+          <div class="card"><h3>Sentry</h3><p>A fixed turret watching a frontal arc. Use the alternate approach, attack from behind or leave the optional reward alone.</p></div>
+          <div class="card"><h3>Razor</h3><p>The rotor cue announces a fast, committed dive. Dodge sideways or around a corner; backing straight away is less reliable.</p></div>
+          <div class="card"><h3>Arc Caster</h3><p>The electrical circle marks where the eruption will occur. Leave it, break sight or interrupt the charge. The mark does not follow you.</p></div>
+          <div class="card"><h3>Lurker</h3><p>Look up for a hanging venom ambusher. Its slow glob can be dodged; a damaging hit may Poison you. It cannot grab or lift you.</p></div>
+        </div><div class="folio-num">15b</div>
+      </div>
+    </article>
+    <article class="source-page" data-title="Read the Firing Line">
+      <div class="page"><div class="kicker">A line is a promise</div>
+        <h1>Read the Firing Line</h1><div class="rule"></div>
+        <div class="card-grid">
+          <div class="card"><h3>Beam Sweeper</h3><p>The charge shows a sweep lane. Crouch beneath the beam, retreat behind its origin or use cover. Interrupt before release; afterward, move. One sweep can damage you only once.</p></div>
+          <div class="card"><h3>Sniper</h3><p>The blue crossbow guard seeks long sightlines and retreats when approached. Break sight during its warning or step out of the bolt's path.</p></div>
+          <div class="card"><h3>Blitzer</h3><p>A green guard fires variable bursts with slight shot deviation. Distance and cover reduce its erratic suppression.</p></div>
+        </div>
+        <p>All these foes use the same class, level, status and elemental rules as the existing roster. Defeated enemies can drop ordinary run equipment.</p>
+        <div class="folio-num">15c</div>
+      </div>
+    </article>
+
     <article class="source-page" data-title="Lives, Death & Return">
       <div class="page">
         <div class="kicker">Death matters, but it has paperwork</div>

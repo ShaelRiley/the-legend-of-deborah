@@ -82,8 +82,8 @@ function Validation:Run(printResult)
         end
     end
 
-    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 20 then
-        addError(errors, "archetype progression template count must be 20")
+    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 21 then
+        addError(errors, "archetype progression template count must be 21")
     end
     for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates or {}) do
         local weights = template.aiClassWeights or {}
@@ -247,3 +247,4 @@ hook.Add("InitPostEntity", "LOD_RPG_CoreValidation", function()
     local cvDeveloperMode = GetConVar("lod_developer_mode")
     if cvDeveloperMode and cvDeveloperMode:GetBool() then Validation:Run(true) end
 end)
+

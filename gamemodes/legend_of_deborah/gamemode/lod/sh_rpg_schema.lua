@@ -98,6 +98,7 @@ RPG.ArchetypeProgressionTemplates = {
     sentry = archetypeTemplate(12, 10, 14, 8, 11, 7, 55, 35, 10, 10, 50, 8, false, "sentry"),
     razor = archetypeTemplate(10, 16, 9, 5, 9, 5, 20, 75, 5, 6, 40, 6, false, "razor"),
     arccaster = archetypeTemplate(8, 9, 11, 14, 16, 10, 10, 15, 75, 8, 50, 4, true, "arccaster"),
+    nodule = archetypeTemplate(8, 6, 14, 6, 10, 4, 70, 10, 20, 8, 35, 5, false, "nodule"),
     lurker = archetypeTemplate(12, 11, 12, 4, 11, 5, 45, 45, 10, 8, 40, 6, false, "lurker"),
     beamsweeper = archetypeTemplate(9, 10, 13, 13, 14, 7, 20, 30, 50, 10, 55, 7, false, "beamsweeper"),
     neil = archetypeTemplate(10, 13, 11, 12, 12, 14, 20, 40, 40, 10, 150, 8, false, "neil"),

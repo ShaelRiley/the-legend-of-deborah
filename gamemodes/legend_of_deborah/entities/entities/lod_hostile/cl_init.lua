@@ -20,7 +20,8 @@ local SEEKER_ROLL_TELEPORT_GUARD = 180
 -- These are presentation offsets only; graph/physics position remains unchanged.
 local DEVICE_VISUAL_LIFT = {
     watcher = 42,
-    seeker = 8
+    seeker = 8,
+    razor = 42
 }
 
 local function visualModelBounds(ent)
@@ -62,6 +63,8 @@ local function applyVisualScale(ent, seekerRoll)
     local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
     local model = ent:GetModel() or ""
     local archetype = ent:GetNW2String("LOD_Archetype", "")
+    if archetype=="bigcrab" then size=2.4+(size-.33) end
+    if archetype=="climber" then size=size*.55 end
     local deviceLift = DEVICE_VISUAL_LIFT[archetype] or 0
     if archetype=="warden" and ent:GetNW2Int("LOD_WardenPhase",1)==2 then deviceLift=18*size end
     local roll = archetype == "seeker" and (seekerRoll or 0) or 0
@@ -80,6 +83,7 @@ local function applyVisualScale(ent, seekerRoll)
     local verticalCompensation
     if motionV2 then
         verticalCompensation = -(mins.z * size) + deviceLift
+        if archetype=="lurker" then verticalCompensation=-(maxs.z*size) end
     else
         verticalCompensation = mins.z * (1 - size) + deviceLift
     end
@@ -87,12 +91,17 @@ local function applyVisualScale(ent, seekerRoll)
 
     local matrix = Matrix()
     matrix:Scale(Vector(size, size, size))
+    if archetype=="nodule" then
+        matrix:Rotate(Angle(180,0,0))
+        verticalCompensation=maxs.z*size
+    end
     if archetype == "seeker" and roll ~= 0 then
         -- Motion V2 already yaws the entity toward each actual travel segment.
         -- Local pitch therefore reads as physical forward rolling in the current
         -- direction of motion while leaving the authoritative entity angles flat.
         matrix:Rotate(Angle(roll, 0, 0))
     end
+    ent.LODVisualVerticalCompensation=verticalCompensation
     matrix:SetTranslation(Vector(0, 0, verticalCompensation))
     ent:EnableMatrix("RenderMultiply", matrix)
 
@@ -175,6 +184,7 @@ function ENT:Draw()
         LOD.MonsterIdentity:DrawBody(self)
         LOD.MonsterIdentity:DrawAura(self,size)
     else self:DrawModel() end
+    if LOD.EnemyRosterVisual then LOD.EnemyRosterVisual:Draw(self,size) end
     if LOD.WardenPresentation then LOD.WardenPresentation:Draw(self,size) end
     if LOD.NeilBrutePresentation then LOD.NeilBrutePresentation:Draw(self,size) end
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end

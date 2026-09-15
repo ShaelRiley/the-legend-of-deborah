@@ -154,6 +154,12 @@ function Motion:SnapSpawn(hostile)
     local cell = Navigator:WorldToCell(graph, hostile:GetPos())
     if not cell then return false end
 
+    if hostile.LODRosterPlacement and hostile.LODRosterPlacement.ceiling then
+        quiesceEngineLocomotion(hostile)
+        hostile:SetPos(hostile.LODRosterPlacement.pos)
+        return true
+    end
+    if hostile.LODWallInitialized then return true end
     local safe = self:CellFloorPoint(cell, hostile:GetPos())
     local yaw = hostile:GetAngles().y
     hostile:SetPos(safe)
@@ -195,6 +201,7 @@ function Motion:MoveToward(hostile, waypoint)
         return false
     end
 
+    if LOD.HostileAnimation then LOD.HostileAnimation:Move(hostile) end
     local now = CurTime()
     local last = hostile.LODMotionLastUpdate or now
     local dt = math.Clamp(now - last, 0, MAX_STEP_DT)
@@ -298,6 +305,7 @@ local function installPatch()
     function class:_BehaviourTick()
         if LOD.Warden and LOD.Warden:Tick(self) then return end
         if LOD.NeilBrute and LOD.NeilBrute:Tick(self) then return end
+        if LOD.EnemyRoster and LOD.EnemyRoster:Tick(self) then return end
         if LOD.EnemyUpdate and LOD.EnemyUpdate:Tick(self) then return end
         if self.LODDead or not self.LODActivated then
             Motion:Stop(self)

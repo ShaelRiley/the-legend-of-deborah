@@ -95,6 +95,10 @@ local HOSTILE_AUDIO = {
     }
 }
 
+function CombatAudio:RegisterHostileProfile(id, profile)
+    HOSTILE_AUDIO[id]=profile
+end
+
 -- Every playable character slot has its own death signature. Named character
 -- clips are preferred when mounted; a distinct gender-correct citizen pain clip
 -- is the guaranteed fallback so no female model can ever emit a male death voice

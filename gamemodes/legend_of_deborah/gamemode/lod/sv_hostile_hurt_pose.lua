@@ -22,6 +22,7 @@ local ACTIVITIES = {
 
 local function validSequence(hostile, sequence)
     return IsValid(hostile) and isnumber(sequence) and sequence >= 0
+        and (not LOD.HostileAnimation or LOD.HostileAnimation:Valid(hostile, sequence))
 end
 
 local function sequenceName(hostile, sequence)

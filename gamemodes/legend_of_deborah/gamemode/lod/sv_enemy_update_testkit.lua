@@ -71,3 +71,40 @@ concommand.Add("lod_enemy_update_status", function(ply)
     table.sort(parts)
     tell(ply, "Active encounter roster: " .. table.concat(parts, ", ") .. "; dungeon=" .. tostring(Run.State.Level))
 end)
+
+-- One named archetype per request keeps acceptance readable and preserves caps.
+concommand.Add("lod_enemy_roster_testkit",function(ply,_,args)
+    if not allowed(ply) then return end
+    local E=LOD.EnemyRoster;local id=string.lower(tostring(args[1] or ""))
+    if not E or not E.Definitions[id] then
+        tell(ply,"Choose: climber, nodule, flamer, bigcrab, sentry, razor, arccaster, lurker, beamsweeper");return
+    end
+    local s,plan=Run.State,Director.Plan
+    if not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen or not plan then return end
+    if Director:GetActiveCount()+1>math.min(EC.ActiveHostileTarget,EC.ActiveHostileCeiling) then tell(ply,"Clear nearby enemies first.");return end
+    local chosen
+    for _,spot in ipairs(U:TestCells(ply,s.Graph)) do
+        local role=(s.Graph.CellTags[spot.key] or {}).role
+        if E:Placement(s.Graph,spot.cell,id,role) then chosen=spot;break end
+    end
+    if not chosen then tell(ply,"No safe "..id.." placement nearby; move to another open junction or reward branch.");return end
+    Run:MarkUnranked("enemy_roster_testkit")
+    local tag=s.Graph.CellTags[chosen.key] or {}
+    local encounter=Director:_AddEncounter(plan,chosen.cell,tag.sector,tag.role,"roster_testkit",{[id]=1},false)
+    if not Director:_SpawnEncounter(encounter) then encounter.cleared=true;tell(ply,"Spawn deferred by population reserve.");return end
+    for _,e in ipairs(encounter.entities) do e.LODTarget=ply end
+    tell(ply,id.." placed "..chosen.distance.." cells away; normal XP, drops and progression.")
+end)
+concommand.Add("lod_enemy_animation_status",function(ply)
+    if not allowed(ply) then return end
+    local bad=0
+    for _,e in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
+        if IsValid(e) and not e.LODDead then
+            local seq=e:GetSequence();local valid=LOD.HostileAnimation:Valid(e,seq)
+            if not valid then bad=bad+1 end
+            tell(ply,string.format("%s #%d model=%s sequence=%s playback=%.2f valid=%s",
+                e.LODArchetypeId or "?",e:EntIndex(),e:GetModel(),e:GetSequenceName(seq),e:GetPlaybackRate(),tostring(valid)))
+        end
+    end
+    tell(ply,"Invalid/reference live sequences: "..bad)
+end)
