@@ -135,7 +135,7 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     contract.feedResolution = {total=resolved, reduced=reduced, resistance=resistance}
     if resolved <= 0 then return false end
 
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     info:SetAttacker(wizard)
     info:SetInflictor(wizard)
     info:SetDamage(resolved)

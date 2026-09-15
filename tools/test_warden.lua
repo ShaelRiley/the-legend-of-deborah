@@ -1,5 +1,6 @@
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
+GM=GM or {};dofile(root.."sv_damage_info.lua")
 local noop=function() end
 function table.Count(t) local n=0;for _ in pairs(t) do n=n+1 end;return n end
 math.Round=function(n) return math.floor(n+0.5) end

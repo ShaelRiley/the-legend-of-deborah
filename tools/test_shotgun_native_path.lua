@@ -18,6 +18,7 @@ local function victim()
  function v:GetPos() return Vector(30,0,0) end
  function v:TakeDamageInfo(info)
   self.hits=self.hits+1;self.amount=self.amount+info:GetDamage()
+  self.hp=self.hp-info:GetDamage()
   env.hooks.EntityTakeDamage.LOD_DiceDamageAuthority(self,info)
   Rolls:ReportResolvedDamage(info)
  end
@@ -44,6 +45,10 @@ local c=fire(same)
 assert(c.hits[close]==9 and close.hits==0,'collect all nine before any native damage')
 flush();assert(close.hits==1 and close.amount==9,'CON3 must not collapse a full shell to one pellet')
 Rolls:SettleShotgun(source,c);assert(close.hits==1,'shell settlement is idempotent')
+local armored=victim()
+function armored:TakeDamageInfo(info) self.hp=self.hp-math.floor(info:GetDamage()/2) end
+local armorShell=fire({armored,armored,armored,armored});flush()
+assert(armorShell.damageByTarget[armored]==2,'feed must reflect native armor after mitigation')
 local a,b=victim(),victim();fire({a,a,a,a,a,b,b,b,b});flush()
 assert(a.hits==1 and a.amount==5 and b.hits==1 and b.amount==4,'split shell must aggregate per target')
 local blocked=victim();blocked.blocked=true;fire({blocked});flush();assert(blocked.hits==0,'cover blocks shell')

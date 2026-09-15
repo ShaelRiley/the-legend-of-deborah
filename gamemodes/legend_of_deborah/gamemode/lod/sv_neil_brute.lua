@@ -203,7 +203,7 @@ function H:Damage(ent,target)
     local profile=rolls.HostileDamageProfiles.brute
     local contract=rolls:RollHostileAttack(ent,profile,ent.LODConfig.meleeDamage)
     local amount=rolls:ResolveActorDamage(contract,ent,target,{physical=true,melee=true,authoredScale=contract.scale})
-    local info=DamageInfo();info:SetAttacker(ent);info:SetInflictor(ent)
+    local info=LOD.NewDamageInfo();info:SetAttacker(ent);info:SetInflictor(ent)
     info:SetDamage(amount);info:SetDamageType(DMG_CLUB);info:SetDamagePosition(target:WorldSpaceCenter())
     LOD.RPGStatusElements:AttachDamageContext(info,{physical=true,melee=true,attackEvent=contract.attackEvent,
         damageContract=contract,actorDamageResolved=true})

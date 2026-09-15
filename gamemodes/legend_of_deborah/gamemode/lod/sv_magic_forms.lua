@@ -289,7 +289,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     end
 
     local before = target:Health()
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     local proxyAttack = IsValid(creditCaster) and attacker ~= creditCaster
     -- A summoned Seeker is the mechanical resolver/inflictor, but the originating
     -- Hero remains the durable damage/status source. DMG_ENERGYBEAM is already an

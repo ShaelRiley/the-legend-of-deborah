@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Shared Native DamageInfo Lifetime", ["python3", "tools/run_lua54.py", "tools/test_shared_damage_lifetime.lua"]),
     ("Durable Stability Diagnostics", ["python3", "tools/run_lua54.py", "tools/test_stability_diagnostics.lua"]),
     ("Release Include & Registration Wiring", ["python3", "tools/validate_release_wiring.py"]),
     ("Shotgun Native Bullet Aggregation", ["python3", "tools/run_lua54.py", "tools/test_shotgun_native_path.lua"]),

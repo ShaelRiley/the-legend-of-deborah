@@ -1,8 +1,8 @@
 # Current stabilization candidate
 
 The author has prioritized integrated release stability over feature work. See
-`docs/RELEASE_STABILITY_20260915.md` for the repaired boundaries, 98-suite static
-gate and required native acceptance. Runtime identity is `stability-20260915-05`.
+`docs/RELEASE_STABILITY_20260915.md` for the repaired boundaries, 99-suite static
+gate and required native acceptance. Runtime identity is `stability-20260915-06`.
 Live promotion remains held pending that native gate.
 
 # Current development plan

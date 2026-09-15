@@ -280,7 +280,7 @@ concommand.Add("lod_dice_shotgun_stun_probe", function(ply)
     local contract = {created = CurTime()}
     ply.LODActiveShotgunRoll = contract
 
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     info:SetAttacker(ply)
     info:SetInflictor(ply)
     info:SetDamage(1)

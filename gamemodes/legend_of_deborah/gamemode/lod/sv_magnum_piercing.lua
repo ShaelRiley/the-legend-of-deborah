@@ -197,7 +197,7 @@ hook.Add("EntityFireBullets", "LOD_MagnumPiercing", function(shooter, bullet)
                 Rolls:EmitDiceExplosionFX(attacker, "weapon_357", #bonusValues - 1, depth)
             end
 
-            local info = DamageInfo()
+            local info = LOD.NewDamageInfo()
             info:SetAttacker(attacker)
             info:SetInflictor(weapon)
             info:SetDamage(cumulativeTotal)

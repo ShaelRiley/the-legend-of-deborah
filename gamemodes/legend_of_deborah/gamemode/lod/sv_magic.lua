@@ -294,7 +294,7 @@ function Magic:CastForceShout(ply)
             end
 
             local wasAlive = hostile:Health() > 0 and not hostile.LODDead
-            local info = DamageInfo()
+            local info = LOD.NewDamageInfo()
             info:SetAttacker(ply)
             info:SetInflictor(ply)
             info:SetDamage(total)

@@ -71,7 +71,7 @@ local function combatBounds(hostile)
 end
 
 local function forwardedDamage(source, attacker, hitPos)
-    local out = DamageInfo()
+    local out = LOD.NewDamageInfo()
     out:SetAttacker(IsValid(source:GetAttacker()) and source:GetAttacker() or attacker)
     out:SetInflictor(IsValid(source:GetInflictor()) and source:GetInflictor() or attacker)
     out:SetDamage(math.max(0, source:GetDamage()))

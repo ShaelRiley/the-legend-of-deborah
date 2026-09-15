@@ -136,7 +136,7 @@ function SWEP:PrimaryAttack()
     total = math.max(1, math.floor(tonumber(total) or 1))
     local healthBefore = target:Health()
 
-    local damage = DamageInfo()
+    local damage = LOD.NewDamageInfo()
     damage:SetAttacker(owner)
     damage:SetInflictor(self)
     damage:SetDamage(total)

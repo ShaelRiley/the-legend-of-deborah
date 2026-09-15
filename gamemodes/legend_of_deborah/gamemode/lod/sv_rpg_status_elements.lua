@@ -432,7 +432,7 @@ function System:_ApplyStatusDamage(target, entry, amount, damageType, label, opt
     end
     resolved = math.max(0, tonumber(resolved) or 0)
     if resolved <= 0 then return false end
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     if valid(entry.source) then info:SetAttacker(entry.source) else info:SetAttacker(game.GetWorld()) end
     info:SetInflictor(valid(entry.source) and entry.source or game.GetWorld())
     info:SetDamage(resolved)

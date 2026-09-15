@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["crowbar"] = "stability-20260915-05"
+LOD.RuntimeReceipts["crowbar"] = "stability-20260915-06"
 LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
@@ -307,7 +307,7 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     })
     total = math.max(1, math.floor(tonumber(total) or 1))
     local healthBefore = target:Health()
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     info:SetAttacker(attacker)
     info:SetInflictor(pulse)
     info:SetDamage(total)
@@ -387,24 +387,26 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_CrowbarPush", function(target, d
     if requested <= 0 then return end
 
     stats.pushRequests = (stats.pushRequests or 0) + 1
-    local pushback = LOD.Pushback
-    if pushback and pushback.Apply then
-        local savesBefore = pushback.Stats and pushback.Stats.saveRolls or 0
-        local result = pushback:Apply(target, {
-            attacker = attacker,
-            inflictor = weapon,
-            distance = requested,
-            source = pusherProc and "crowbar+pusher" or "crowbar",
-            crowbarPush = true,
-            pushTagMultiplicity = pusherProc and profile.crowbarPushDistance > 0 and 2 or 1,
-            pusherProc = pusherProc
-        })
-        stats.lastPushResult = result
-        local savesAfter = pushback.Stats and pushback.Stats.saveRolls or savesBefore
-        if requested >= PUSH_DISTANCE * 2 and savesAfter - savesBefore == 1 then
-            stats.combinedSingleSaves = (stats.combinedSingleSaves or 0) + 1
+    LOD.DeferDamageReaction(attacker, target, function()
+        local pushback = LOD.Pushback
+        if pushback and pushback.Apply then
+            local savesBefore = pushback.Stats and pushback.Stats.saveRolls or 0
+            local result = pushback:Apply(target, {
+                attacker = attacker,
+                inflictor = weapon,
+                distance = requested,
+                source = pusherProc and "crowbar+pusher" or "crowbar",
+                crowbarPush = true,
+                pushTagMultiplicity = pusherProc and profile.crowbarPushDistance > 0 and 2 or 1,
+                pusherProc = pusherProc
+            })
+            stats.lastPushResult = result
+            local savesAfter = pushback.Stats and pushback.Stats.saveRolls or savesBefore
+            if requested >= PUSH_DISTANCE * 2 and savesAfter - savesBefore == 1 then
+                stats.combinedSingleSaves = (stats.combinedSingleSaves or 0) + 1
+            end
         end
-    end
+    end)
 end)
 
 function Effects:ValidateCrowbarFamily()

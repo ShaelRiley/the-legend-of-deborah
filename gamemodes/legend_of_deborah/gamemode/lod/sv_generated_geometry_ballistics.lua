@@ -8,6 +8,7 @@ local Ballistics = LOD.GeneratedGeometryBallistics
 -- share one generated-cover trace without retaining combat entities. Impact
 -- coordinates and frame number keep same-frame shotgun pellets independent.
 local playerBulletDecision = setmetatable({}, {__mode = "k"})
+function Ballistics:ForgetDamageInfo(info) playerBulletDecision[info] = nil end
 
 local function damagePoint(target, dmginfo)
     local pos = dmginfo and dmginfo.GetDamagePosition and dmginfo:GetDamagePosition() or vector_origin

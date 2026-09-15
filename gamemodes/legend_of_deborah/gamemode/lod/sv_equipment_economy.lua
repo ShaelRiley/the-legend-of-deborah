@@ -291,17 +291,24 @@ function E:PostDamage(target,info,taken)
     for _,id in ipairs(candidates) do
         local chance=bounded(snapshot.extras,"proc_"..id,0,35)/100
         local roll=rng:Float();local result="missed chance"
+        local deferred=false
+        local function report(outcome)
+            LOD.CombatRolls:_Send(attacker,3,string.format("EQUIPMENT %s — %.1f%% roll / %.1f%% chance: %s",id,roll*100,chance*100,outcome),
+                "status",{event="equipment_rider",status=id,chance=chance,roll=roll,outcome=outcome})
+        end
         if roll<chance then
             attempts=attempts+1
             if id=="intimidated" then
                 local _,reason=Status:AttemptMorale(attacker,target,{forceMorale=true});result=reason or "Morale attempted"
             elseif id=="push" then
-                local applied=LOD.Pushback:Apply(target,{attacker=attacker,origin=snapshot.origin,distance=96,source="equipment"})
-                result=applied and "Push resolved" or "Push rejected"
+                deferred=true
+                LOD.DeferDamageReaction(attacker,target,function()
+                    local applied=LOD.Pushback:Apply(target,{attacker=attacker,origin=snapshot.origin,distance=96,source="equipment"})
+                    report(applied and "Push resolved" or "Push rejected")
+                end)
             else local _,reason=Status:Apply(target,id,attacker,{dc=snapshot.dc[id]});result=reason or "attempted" end
         end
-        LOD.CombatRolls:_Send(attacker,3,string.format("EQUIPMENT %s — %.1f%% roll / %.1f%% chance: %s",id,roll*100,chance*100,result),
-            "status",{event="equipment_rider",status=id,chance=chance,roll=roll,outcome=result})
+        if not deferred then report(result) end
         if attempts>=2 then break end
     end
 end

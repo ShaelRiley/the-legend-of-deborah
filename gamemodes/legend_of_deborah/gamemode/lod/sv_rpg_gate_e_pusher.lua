@@ -363,16 +363,18 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_PusherWeaponHit", function(targe
     if not weaponClass or weaponClass == "weapon_shotgun" then return end
     local distance, proc = Effects:TryPusherProc(attacker, target, CurTime())
     if not proc or distance <= 0 then return end
-    local pushback = LOD.Pushback
-    if pushback and pushback.Apply then
-        pushback:Apply(target, {
-            attacker = attacker,
-            inflictor = weapon,
-            distance = distance,
-            source = "pusher proc",
-            pusherProc = true
-        })
-    end
+    LOD.DeferDamageReaction(attacker, target, function()
+        local pushback = LOD.Pushback
+        if pushback and pushback.Apply then
+            pushback:Apply(target, {
+                attacker = attacker,
+                inflictor = weapon,
+                distance = distance,
+                source = "pusher proc",
+                pusherProc = true
+            })
+        end
+    end)
 end)
 
 local function developerAllowed(ply)

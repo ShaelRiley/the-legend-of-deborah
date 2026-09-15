@@ -8,6 +8,8 @@ errors=[];checked=0;registrations=defaultdict(list)
 for p in files:
     if '/manual/html_' in str(p):continue
     text=p.read_text()
+    if p.name != 'sv_damage_info.lua' and re.search(r'(?<![\w.:])DamageInfo\(\)', re.sub(r'--[^\n]*','',text)):
+        errors.append(f'{p.relative_to(ROOT)}: bypasses shared native damage lifetime')
     # Comments are excluded; long comments are not used for include examples.
     text=re.sub(r'--[^\n]*','',text)
     for name in re.findall(r'\b(?:include|AddCSLuaFile)\(\s*["\']([^"\']+)["\']\s*\)',text):

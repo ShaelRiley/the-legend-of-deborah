@@ -68,7 +68,7 @@ net.Receive(REQUEST_NET, function(length, ply)
 end)
 
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["manual"] = "stability-20260915-05"
+LOD.RuntimeReceipts["manual"] = "stability-20260915-06"
 
 -- One chunk in flight per client: never fill the reliable channel with the
 -- illustrated book. Receipt of a matching ACK is the only way to advance.

@@ -69,7 +69,7 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
         if IsValid(target) and target ~= owner and not target.LODDead and target:Health() > 0 then
             local targetCell = navigator:WorldToCell(graph, target:GetPos())
             if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
-                local info = DamageInfo()
+                local info = LOD.NewDamageInfo()
                 info:SetAttacker(owner); info:SetInflictor(owner); info:SetDamage(damage)
                 info:SetDamageType(DMG_GENERIC); info:SetDamagePosition(target:WorldSpaceCenter())
                 info:SetDamageForce(vector_origin)

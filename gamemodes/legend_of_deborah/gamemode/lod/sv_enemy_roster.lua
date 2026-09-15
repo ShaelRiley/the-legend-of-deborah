@@ -71,7 +71,7 @@ function E:Damage(e,p,event,kind)
         riderStatusId=rider,riderConsumedTargets=event.riders}
     if rider then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,rider=="immolated" and "dex" or "con") end
     local amount=rolls:ResolveActorDamage(c,e,p,tags)
-    local info=DamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
+    local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
     info:SetDamageType(magic and DMG_ENERGYBEAM or (kind=="flame" and DMG_BURN or ((kind=="venom" or kind=="gas") and DMG_POISON or DMG_SLASH)))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)

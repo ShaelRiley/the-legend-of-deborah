@@ -1,7 +1,7 @@
 LOD = LOD or {}
 LOD.RuntimeAudit = LOD.RuntimeAudit or {}
 local Audit = LOD.RuntimeAudit
-Audit.Build = "stability-20260915-05"
+Audit.Build = "stability-20260915-06"
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
 
 local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "crowbar", "statue", "manual"}

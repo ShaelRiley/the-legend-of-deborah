@@ -474,7 +474,7 @@ function Rolls:SettleShotgun(ply, contract)
                 authoredScale=tonumber(contract.aimMultiplier) or 1, attackMultiplier=tonumber(contract.aimMultiplier) or 1}
             local total = self:ResolveActorDamage(contract, ply, target, tags)
             contract.resolutionByTarget[target] = contract.feedResolution
-            local info = DamageInfo()
+            local info = LOD.NewDamageInfo()
             info:SetAttacker(ply)
             info:SetInflictor(IsValid(contract.weapon) and contract.weapon or ply)
             info:SetDamage(total)
@@ -482,8 +482,12 @@ function Rolls:SettleShotgun(ply, contract)
             info:SetDamagePosition(contract.hitPositions[target] or target:WorldSpaceCenter())
             info:SetDamageForce(vector_origin)
             LOD.RPGStatusElements:AttachDamageContext(info, tags)
-            self:QueueDamageReport(info, function(finalDamage) contract.damageByTarget[target] = finalDamage end)
+            local before = target:Health()
             target:TakeDamageInfo(info)
+            -- Source armor and native rejection happen after Lua mitigation.
+            -- The shell feed/control uses actual HP lost, including overkill.
+            local after = IsValid(target) and math.max(0, target:Health()) or 0
+            contract.damageByTarget[target] = math.max(0, before - after)
         end
     end
     return true

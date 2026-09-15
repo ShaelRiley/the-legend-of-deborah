@@ -56,7 +56,7 @@ local function damagePlayer(self, owner, victim, hitPos)
     if not IsValid(victim) or not victim:IsPlayer() or not victim:Alive() then return false end
     if LOD.FactionManager and not LOD.FactionManager:IsValidPlayerTarget(victim) then return false end
 
-    local dmg = DamageInfo()
+    local dmg = LOD.NewDamageInfo()
     dmg:SetDamage(self.LODDamage or 45)
     dmg:SetDamageType(DMG_ENERGYBEAM)
     dmg:SetAttacker(IsValid(owner) and owner or self)

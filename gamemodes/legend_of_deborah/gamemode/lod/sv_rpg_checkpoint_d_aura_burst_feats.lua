@@ -86,7 +86,7 @@ function RPG:ResolveCheckpointDAuraBurst(actor, pulse)
         local target = record.actor
         if IsValid(target) and record.identity == Rules:ProgressionState(target)
             and not target.LODDead and target:Health() > 0 then
-            local info = DamageInfo()
+            local info = LOD.NewDamageInfo()
             info:SetAttacker(actor); info:SetInflictor(actor); info:SetDamage(pulse.damage)
             info:SetDamageType(DMG_ENERGYBEAM); info:SetDamagePosition(target:WorldSpaceCenter())
             info:SetDamageForce(vector_origin)

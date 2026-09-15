@@ -154,7 +154,7 @@ function Pushback:_RollWallCrush(hostile, opts)
     -- shotgun-triggered crush cannot look like a second bullet hit and cannot
     -- create another firearm hit-confirm or hit-stun event.
     local world = game.GetWorld()
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     info:SetAttacker(world)
     info:SetInflictor(world)
     info:SetDamage(total)

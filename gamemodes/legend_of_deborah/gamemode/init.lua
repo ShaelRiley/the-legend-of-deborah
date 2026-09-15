@@ -2,6 +2,7 @@ AddCSLuaFile("lod/cl_rpg_dodge.lua")
 LOD = LOD or {}
 AddCSLuaFile("lod/sh_runtime_audit.lua")
 include("lod/sh_runtime_audit.lua")
+include("lod/sv_damage_info.lua")
 util.AddNetworkString("LOD_OpenFieldManual")
 AddCSLuaFile("lod/cl_instruction_manual.lua")
 include("lod/sv_instruction_manual.lua")

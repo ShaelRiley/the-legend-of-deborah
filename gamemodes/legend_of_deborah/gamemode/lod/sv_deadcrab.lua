@@ -181,7 +181,7 @@ local function blastPlayers(self, origin)
             if distance <= cfg.explosionRadius then
                 local closeness = 1 - math.Clamp(distance / cfg.explosionRadius, 0, 1)
                 local amount = math.max(8, math.floor(cfg.explosionDamage * (0.30 + 0.70 * closeness) + 0.5))
-                local dmg = DamageInfo()
+                local dmg = LOD.NewDamageInfo()
                 dmg:SetAttacker(self)
                 dmg:SetInflictor(self)
                 dmg:SetDamageType(DMG_BLAST)

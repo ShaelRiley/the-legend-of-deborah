@@ -125,7 +125,7 @@ function W:Damage(e,p,kind,shared)
     local tags={physical=kind~="orb",magic=kind=="orb",melee=kind=="crowbar",element=kind=="orb" and "raw" or nil,
         authoredScale=contract.scale,attackEvent=contract.attackEvent,damageContract=contract}
     local amount=rolls:ResolveActorDamage(contract,e,p,tags)
-    local info=DamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
+    local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
     info:SetDamageType(kind=="crowbar" and DMG_CLUB or (kind=="bomb" and DMG_BLAST or DMG_ENERGYBEAM))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)

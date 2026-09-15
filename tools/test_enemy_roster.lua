@@ -1,6 +1,7 @@
 -- Production roster/state/placement/animation tests with only engine boundaries doubled.
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
+GM=GM or {};dofile(root.."sv_damage_info.lua")
 local noop=function() end
 local v=getmetatable(Vector())
 v.__div=function(a,b) return a*(1/b) end

@@ -175,6 +175,7 @@ print("PASS: Feed:OpenHistory VGUI construction and scope validity")
 
 -- 4. Test Rogue forced-max explosion continuation & DIE-LOGGER text & FX correspondence
 dofile(root .. "sh_rpg_schema.lua")
+dofile(root.."sv_damage_info.lua")
 dofile(root .. "sv_combat_rolls.lua")
 player = {GetAll = function() return {} end}
 dofile(root .. "sv_combat_feed_semantics.lua")

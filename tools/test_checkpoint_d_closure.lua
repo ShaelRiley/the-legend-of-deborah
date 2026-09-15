@@ -9,6 +9,7 @@ local function mockGMod()
     AddCSLuaFile = function() end
     DeriveGamemode = function() end
     GM = {}
+    dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_damage_info.lua")
     Vector = function(x,y,z) return {x=x or 0, y=y or 0, z=z or 0} end
     Color = function(r,g,b,a) return {r=r, g=g, b=b, a=a} end
     util = util or {}

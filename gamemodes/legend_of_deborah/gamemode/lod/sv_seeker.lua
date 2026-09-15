@@ -306,7 +306,7 @@ local function damagePlayer(seeker, target)
         {physical = true, melee = true, authoredScale = contract.scale})
         or math.max(1, math.floor(SEEKER_DAMAGE_PROFILE.reference * size + 0.5))
 
-    local info = DamageInfo()
+    local info = LOD.NewDamageInfo()
     info:SetAttacker(seeker)
     info:SetInflictor(seeker)
     info:SetDamage(amount)

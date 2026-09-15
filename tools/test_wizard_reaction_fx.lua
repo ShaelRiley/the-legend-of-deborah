@@ -72,6 +72,7 @@ local contexts=setmetatable({},{__mode='k'})
 LOD.RPGStatusElements={DamageContext=function(_,d) return contexts[d] end, Has=function() return false end,
     AttachDamageContext=function(_,d,c) contexts[d]=c end}
 dofile(root..'sh_die_logger.lua')
+dofile(root.."sv_damage_info.lua")
 dofile(root..'sv_combat_rolls.lua')
 dofile(root..'sv_combat_feed_semantics.lua')
 dofile(root..'sv_rpg_gate_d.lua')
