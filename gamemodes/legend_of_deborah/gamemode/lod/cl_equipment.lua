@@ -100,14 +100,9 @@ net.Receive("LOD_EquipmentSnapshot", function()
     if E.RefreshInventory then E:RefreshInventory() end
 end)
 
-hook.Add("HUDPaint","LOD_ProceduralWeaponName",function()
-    local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then return end
-    local weapon=ply:GetActiveWeapon()
-    if not IsValid(weapon) then return end
-    local name=weapon:GetNW2String("LOD_ItemName","")
-    if name~="" then draw.SimpleText(name,"DermaDefault",ScrW()*.5,ScrH()-48,Color(235,220,170),TEXT_ALIGN_CENTER) end
-end)
+-- Full carried-item names live on Equipment. Remove the old hook on Lua refresh
+-- too, so it cannot remain underneath the relocated character portrait.
+hook.Remove("HUDPaint", "LOD_ProceduralWeaponName")
 
 hook.Add("HUDPaint", "LOD_ThrowableControls", function()
     local ply = LocalPlayer()

@@ -56,6 +56,8 @@ function H:Wrap(text,width)
         else line=nextLine end
     end
     if line~='' then lines[#lines+1]=line end
+    self.CaptionWidth=0
+    for _,wrapped in ipairs(lines) do self.CaptionWidth=math.max(self.CaptionWidth,surface.GetTextSize(wrapped)) end
     self.WrapText=text;self.WrapWidth=width;self.Lines=lines
     return lines
 end
@@ -85,22 +87,25 @@ function H:Draw()
     pose.mode=now<self.HurtUntil and 'hurt' or now<self.AttackUntil and 'attack' or 'idle'
     pose.reduced=reduced and reduced:GetBool() or false
     pose.walk=ply:OnGround() and math.Clamp(ply:GetVelocity():Length2D()/math.max(1,ply:GetWalkSpeed()),0,1) or 0
-    local size=math.Clamp(ScrH()*.12,96,128)
-    local width=math.min(340,ScrW()*.5-44)
-    local textWidth=math.max(80,width-size-12)
-    local lines=self:Wrap(self.Caption,textWidth)
-    local bottom=ScrH()-math.max(100,ScrH()*.14)
-    local y=bottom-math.max(size,#lines*18)
+    local size=math.Clamp(ScrH()*.12,64,128)
+    local magicX,magicY,magicW,magicH=LOD.MagicHUD:Bounds()
+    local x,y=magicX+magicW+12,magicY+magicH-size
+    local lines=self:Wrap(self.Caption,math.min(340,ScrW()*.5-44))
+    -- Captions grow upward; ailments never displace the face or cover Magic.
+    -- Keep their right edge out of the lower-right combat-feed column.
+    local feedLeft=ScrW()-22-math.min(600,ScrW()*.44)
+    local textX=math.max(22,math.min(x+(size-self.CaptionWidth)*.5,feedLeft-12-self.CaptionWidth))
+    local textY=y-8-#lines*18
     if not IsValid(self.Panel) then
         self.Panel=P:Create(nil,self.Model);self.Panel:SetPaintedManually(true)
     else P:Configure(self.Panel,self.Model) end
     local panel=self.Panel;panel.LODPose=pose
-    panel:SetPos(22,y);panel:SetSize(size,size)
-    draw.RoundedBox(2,22,y,size,size,Color(20,22,25,180))
+    panel:SetPos(x,y);panel:SetSize(size,size)
+    draw.RoundedBox(2,x,y,size,size,Color(20,22,25,180))
     panel:PaintManual()
     local color=self.Harmful and Color(255,135,100) or self.Affected and Color(145,230,170) or UI.HUDColor
     for i,line in ipairs(lines) do
-        UI:HUDText(line,'LOD_HUD_Small',34+size,y+(i-1)*18,color)
+        UI:HUDText(line,'LOD_HUD_Small',textX+self.CaptionWidth*.5,textY+(i-1)*18,color,TEXT_ALIGN_CENTER)
     end
 end
 hook.Add('HUDPaint','LOD_StatusPortrait',function() H:Draw() end)

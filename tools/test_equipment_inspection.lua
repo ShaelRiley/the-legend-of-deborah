@@ -9,7 +9,7 @@ IsValid=function(x) return type(x)=='table' and x.valid==true end
 LOD.RunManager={State={LevelSeed=4},IdentityOf=function(_,p) return p.identity end}
 LOD.UI={Colors={}}
 local hooks={}
-hook={Add=function(_,id,fn) hooks[id]=fn end}
+hook={Add=function(_,id,fn) hooks[id]=fn end,Remove=function(_,id) hooks[id]=nil end}
 Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a} end
 util={AddNetworkString=function() end}
 local handlers,sends,requests={},0,0
@@ -44,7 +44,10 @@ ent.LODCollected=true;assert(not E:SendPickupView(owner,ent));ent.LODCollected=n
 ent.LODLootExpiresAt=10;assert(not E:SendPickupView(owner,ent));ent.LODLootExpiresAt=nil
 owner.disabled=true;assert(not E:SendPickupView(owner,ent));owner.disabled=nil
 assert(sends==1,'Invalid queries never disclose items')
+hooks.LOD_ProceduralWeaponName=function() error('Obsolete carried-name HUD') end
 dofile(root..'cl_equipment.lua')
+assert(not hooks.LOD_ProceduralWeaponName,'Remove carried-name HUD even on reload')
+assert(hooks.LOD_ThrowableControls,'Keep functional throw/drink prompts')
 local client=handlers.LOD_EquipmentInspect
 assert(not E:PickupView(ent) and requests==1)
 E:PickupView(ent);assert(requests==1)

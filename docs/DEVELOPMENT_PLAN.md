@@ -9,7 +9,22 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Soldier crash investigation and wallet repair
+## Current checkpoint — status portrait beside Magic
+
+The author's latest HUD direction explicitly supersedes the earlier face-position
+hold. The portrait now sits immediately right of the scaled Magic readout, aligned
+to its bottom, with the character-name/status caption wrapped above it. Remove
+the persistent carried-weapon name and always suppress stock secondary-ammo/ALT
+FIRE; retain primary ammo, Equipment item names and functional Magic/potion prompts.
+Live GDD LOD-UI-009 and tab 07 record the correction. All 76 integrated suites pass,
+including responsive layout checks at 640×480, Steam Deck, 4:3, 16:9 and ultrawide.
+Source visual acceptance remains pending. See [portrait checkpoint update](STATUS_PORTRAIT_CHECKPOINT.md).
+
+The preceding native crash remains unresolved: no fresh playtest evidence was
+provided. Preserve its repair/diagnostic candidate and finite Soldier-kill retest
+below. No main promotion or deployment.
+
+## Open runtime checkpoint — Soldier crash investigation and wallet repair
 
 The 2026-09-15 playtest force-closed. The full log records a successful Raw Bolt
 hit followed by a lethal AR2 hit on the same Soldier; it ends before death/XP

@@ -11,12 +11,14 @@ V.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 math.Clamp=function(v,a,b) return math.min(b,math.max(a,v)) end
 IsValid=function(x) return type(x)=='table' and not x.removed end
 GetConVar=function() return {GetBool=function() return reduced end} end
-OBS_MODE_NONE=0;BOX_FRONT=1;BOX_TOP=2;PLAYERANIMEVENT_ATTACK_PRIMARY=1;PLAYERANIMEVENT_ATTACK_SECONDARY=2
+OBS_MODE_NONE=0;BOX_FRONT=1;BOX_TOP=2;PLAYERANIMEVENT_ATTACK_PRIMARY=1;PLAYERANIMEVENT_ATTACK_SECONDARY=2;TEXT_ALIGN_CENTER=1
 local width,height=640,480
 ScrW=function() return width end;ScrH=function() return height end
 local menu=false;gui={IsGameUIVisible=function() return menu end}
 local events={};hook={Add=function(_,id,fn) events[id]=fn end}
-local labels={};LOD={UI={HUDColor={},HUDText=function(_,s) labels[#labels+1]=s end}}
+local labels,positions={},{};LOD={UI={HUDColor={},HUDText=function(_,s,_,x,y)
+    labels[#labels+1]=s;positions[#positions+1]={text=s,x=x,y=y}
+end}}
 surface={SetFont=function() end,GetTextSize=function(s) return #s*7,14 end}
 draw={RoundedBox=function() end}
 local flexNames={'smile','right_lowerer','blink','jaw_drop','left_inner_raiser','right_cheek_raiser'}
@@ -58,9 +60,9 @@ function ply:GetVelocity() return {Length2D=function() return ply.speed end} end
 function ply:OnGround() return true end
 function ply:GetWalkSpeed() return 200 end
 LOD.CharacterSheet={Snapshot={model=ply.model,fullDisplayName='Jane "Steel" Doe',portraitCacheKey='hero1',playerName='DO NOT SHOW'}}
-dofile(root..'cl_character_portrait.lua');dofile(root..'cl_status_portrait.lua')
+dofile(root..'cl_magic_hud.lua');dofile(root..'cl_character_portrait.lua');dofile(root..'cl_status_portrait.lua')
 local P,H=LOD.CharacterPortrait,LOD.StatusPortrait
-local function tick() now=now+.11;labels={};H:Draw() end
+local function tick() now=now+.11;labels={};positions={};H:Draw() end
 local function near(a,b) assert(math.abs(a-b)<1e-6) end
 -- Name without the account name; same face/framing as the shared sheet renderer.
 tick();assert(H.Caption=='Jane "Steel" Doe' and H.Model==ply.model)
@@ -75,7 +77,24 @@ for _,id in ipairs(H.Order) do ply.bools[H.Conditions[id].key]=true end
 tick();assert(H.Harmful and #H.Order==9 and not H.Caption:find('Jane',1,true))
 for _,id in ipairs(H.Order) do assert(H.Caption:find(H.Conditions[id].label,1,true)) end
 for _,line in ipairs(H.Lines) do assert(surface.GetTextSize(line)<=H.WrapWidth) end
-assert(H.Panel.x+H.Panel.w+12+H.WrapWidth < width*.56-22,'Clear combat-feed column at 640px')
+local function checkLayout()
+    local mx,my,mw,mh=LOD.MagicHUD:Bounds()
+    assert(H.Panel.x>mx+mw and H.Panel.x+H.Panel.w<width,'Face immediately right of Magic')
+    near(H.Panel.y+H.Panel.h,my+mh)
+    local feedLeft=width-22-math.min(600,width*.44)
+    for _,p in ipairs(positions) do
+        local half=surface.GetTextSize(p.text)*.5
+        assert(p.x-half>=0 and p.x+half<feedLeft,'Caption clears screen edge and combat feed')
+        assert(p.y>=0 and p.y+18<H.Panel.y,'Caption above the stable face and Magic row')
+    end
+end
+for _,viewport in ipairs({{640,480},{1024,768},{1280,800},{1280,720},{1920,1080},{3440,1440}}) do
+    width,height=viewport[1],viewport[2];tick();checkLayout()
+end
+assert(events.LOD_MagicReplacesSuitBattery('CHudSecondaryAmmo')==false,'Hide ALT FIRE')
+assert(events.LOD_MagicReplacesSuitBattery('CHudAmmo')==nil,'Retain primary ammo')
+assert(events.LOD_MagicReplacesSuitBattery('CHudHealth')==nil,'Retain Health')
+width,height=640,480;tick()
 -- Successful attack event (not held input), damage precedence, expiry and fatigue.
 events.LOD_PortraitShot(ply);tick();assert(H.Pose.mode=='attack' and H.Panel.ent.weights[0]==.9)
 ply.hp=40;tick();assert(H.Pose.mode=='hurt' and H.Panel.ent.weights[2]==.75)

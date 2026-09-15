@@ -5,6 +5,7 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local E,CPS,Rules,Status=LOD.Equipment,LOD.CharacterProgressionSystem,LOD.RPGAbilityRules,LOD.RPGStatusElements
 local hooks,timers={},{}
 hook.Add=function(event,id,fn) hooks[id]=fn end
+hook.Remove=function(event,id) hooks[id]=nil end
 hook.Run=function() end
 timer.Simple=function(_,fn) timers[#timers+1]=fn end
 net.Start=function() end;net.WriteTable=function() end;net.Send=function() end

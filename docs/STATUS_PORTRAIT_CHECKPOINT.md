@@ -1,5 +1,33 @@
 # Reactive character HUD portrait
 
+## Current layout correction
+
+The latest author direction supersedes the initial lower-left placement and the
+subsequent request to retain it. This follow-up builds on crash-repair candidate
+`2b6029663bc83b0c6972bbdf81e9789091112e8a` on `astra/equipment-update`.
+
+The portrait now shares the real scaled Magic bounds (including its Steam Deck
+layout), sits 12 px to their right, and aligns to their bottom. Its size scales
+from 64 to 128 px. The character-name/status caption wraps above it and clears the
+combat-feed column; adding ailments does not displace the face. Shared Character
+Sheet appearance, expressions and reduced-effects behavior are retained.
+
+The persistent carried-weapon-name HUD hook is removed, including on Lua refresh;
+full item names remain in Equipment. `CHudSecondaryAmmo` is always suppressed, so
+the stock ALT FIRE readout cannot reappear on AR2/SMG. Primary ammo, Health, Magic
+and the functional potion throw/drink prompts remain available. No combat inputs,
+server state, statue placement or crash-handling code changes in this follow-up.
+
+Live GDD LOD-UI-009 and the tab 07 portrait tuning row were corrected and verified
+in place. All **76 integrated automated suites pass**. Existing client tests now
+check portrait/caption bounds at 640×480, 1024×768, 1280×800, 1280×720, 1920×1080
+and 3440×1440, all simultaneous ailments, primary-ammo preservation, secondary-ammo
+suppression and removal of the old name hook on refresh. These are headless layout
+checks, not Source screenshots or native-crash acceptance. Check the bottom HUD
+during the already requested Soldier-kill retest; the crash cause remains unconfirmed.
+
+## Initial portrait checkpoint (historical)
+
 Candidate: `astra/equipment-update`, based on `903c50e7d47837c6f801dd333f8f5e40e9e045fe`.
 Main remains `8978796e886cdb5505d24ed0de085265fa99bac8`; no deployment or promotion.
 

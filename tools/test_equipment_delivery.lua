@@ -8,6 +8,7 @@ CurTime=function() return now end
 IsValid=function(p) return type(p)=='table' and p.valid==true end
 ErrorNoHalt=function(message) error(message) end
 hook.Add=function(_,id,fn) hooks[id]=fn end
+hook.Remove=function(_,id) hooks[id]=nil end
 hook.Run=function() end
 timer.Simple=function(delay,fn) timers[#timers+1]={delay=delay,fn=fn} end
 local function flush()

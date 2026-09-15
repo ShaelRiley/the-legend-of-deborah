@@ -35,8 +35,15 @@ local function hudSuitLayout()
     }
 end
 
+-- Share the actual scaled readout bounds with the adjacent status portrait.
+LOD.MagicHUD = LOD.MagicHUD or {}
+function LOD.MagicHUD:Bounds()
+    local layout = hudSuitLayout()
+    return ps(layout.x), ps(layout.y), ps(layout.w), ps(layout.h)
+end
+
 hook.Add("HUDShouldDraw", "LOD_MagicReplacesSuitBattery", function(name)
-    if name == "CHudBattery" then return false end
+    if name == "CHudBattery" or name == "CHudSecondaryAmmo" then return false end
 end)
 
 hook.Add("HUDPaint", "LOD_MagicHUD", function()
