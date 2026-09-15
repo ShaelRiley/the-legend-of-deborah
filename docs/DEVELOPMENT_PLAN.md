@@ -9,33 +9,26 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — low-end and distant-player performance
+## Current checkpoint — persistent $DEB / DFT economy and Wizard balance
 
-Shael's latest direction prioritizes low-end CPU/memory use and laggy connections.
-The combined `astra/equipment-update` candidate now coalesces equipment snapshots
-through the existing 100 ms presentation window, suppresses identical snapshots,
-and sends changed/removed records after a full baseline. Gameplay effects stay
-immediate. Pickup comparisons retain one layout; unchanged equipment skips repeated
-stat aggregation. See [performance evidence and runtime gate](PERFORMANCE_CHECKPOINT.md).
-All 69 automated suites pass; Source FPS/RAM and real-network acceptance remain pending.
-This technical checkpoint does not settle the outstanding $DEB/DFT proposal defaults.
+Shael accepted all [proposed wallet/DFT defaults](DEB_DFT_PROPOSAL.md) on 2026-09-15
+and requested completion. The live GDD now records LOD-ECON-001 and the Wizard
+changes in normalized tabs 02/03/06 and their HUMAN counterparts.
 
-## Current author priority — persistent $DEB / DFT economy
+The combined `astra/equipment-update` candidate contains server-local transactional
+wallets, rescue contribution allocation, persistent lifetime score, once-per-server
+Combat Level 1/5/10/20 DFTs, rare drops, eight-slot collections and pending milestones,
+and free once-per-token-per-run recreation or permanent sale at the staging statue.
+Wizards gain one distinct starting Content; Summon is Wizard-only with base cost 12.
+See [current evidence and finite runtime gate](CRYPTO_CHECKPOINT.md).
+All 72 integrated automated suites pass. Source multiplayer/restart acceptance
+remains pending; do not equate automated checks with a live-server acceptance.
 
-Shael identifies the fake-crypto update as essential Equipment scope. His new
-$DEB and item-backed Debbie Fund Tokens supersede the older six-currency,
-cosmetic-DFT specification. This is now ahead of further Enemy expansion.
-See [the concrete implementation proposal](DEB_DFT_PROPOSAL.md): account persistence,
-contribution-sensitive rewards with a share for every cooperative participant,
-once-per-server 1/5/10/20 milestones, eight DFT slots, very rare drops, statue-based
-once-per-run recreation and sale. The missing allocation/drop defaults and level
-interpretation are explicitly proposed there for an author decision; no wallet or
-DFT implementation is claimed by the accompanying staging checkpoint.
-
-The same checkpoint fixes actual recurring-staging omissions: reset deployment
-before every next-maze build, issue one sealed repeat Hermit gift without another
-firearm, and align the larger HEROES OF LEGEND board beside the mirror. Preserve
-the existing combined Equipment/Enemy candidate and test these together.
+The same candidate preserves the equipment, perk, enemy, recurring-staging, Hermit
+and leaderboard changes for one combined playtest. The low-end/distant-player
+[performance checkpoint](PERFORMANCE_CHECKPOINT.md) also remains intact: equipment
+snapshot coalescing/deltas, retained pickup layouts and unchanged-stat caching.
+Source FPS/RAM and real-network performance acceptance remain pending.
 
 ## Next scope
 

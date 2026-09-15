@@ -86,7 +86,7 @@ def main() -> int:
 
     expected_forms = {
         "blast": (2, 6, 45), "beam": (2, 6, 20), "bomb": (3, 6, 20),
-        "missile": (3, 6, 25), "bolt": (4, 6, 15), "summon": (0, 0, 40),
+        "missile": (3, 6, 25), "bolt": (4, 6, 15), "summon": (0, 0, 12),
     }
     for form_id, (dice, sides, cost) in expected_forms.items():
         pattern = rf'{form_id}\s*=\s*\{{[^\n]*damageDice\s*=\s*{dice}[^\n]*damageSides\s*=\s*{sides}[^\n]*magicCost\s*=\s*{cost}'
@@ -237,3 +237,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

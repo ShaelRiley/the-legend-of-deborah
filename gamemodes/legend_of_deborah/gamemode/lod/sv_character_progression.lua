@@ -493,6 +493,7 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
         if tag == "firearm" then return state.archetypeId == "soldier" or state.archetypeId == "blitzer" end
         if tag == "crowbar" or tag == "minimap" then return false end
     end
+    if tag == "magic_form_summon" and (not state or state.classId ~= "wizard") then return false end
     if arrayContains(state and state.capabilityTags or {}, tag) then return true end
     if tag == "morale" then
         return state ~= nil and (state.actorType == nil or state.actorType == "hero"
@@ -503,7 +504,7 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
         end
         return false
     elseif tag == "magic_form_summon" then
-        return arrayContains(state and state.magicFormIds or {}, "summon")
+        return state and state.classId == "wizard" and arrayContains(state.magicFormIds or {}, "summon")
     elseif tag == "elemental_magic_attack" then
         if not self:_HasCapability(ps, state, "magic_form_owned") then return false end
         for _, id in ipairs(state and state.contentIds or {}) do
@@ -514,7 +515,10 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
         local forms = tag == "magic_form_grant_available"
         local catalog = forms and RPG.MagicForms or RPG.MagicContents
         local owned = state and (forms and state.magicFormIds or state.contentIds) or {}
-        for id in pairs(catalog or {}) do if not arrayContains(owned or {}, id) then return true end end
+        for id in pairs(catalog or {}) do
+            if (not forms or id ~= "summon" or state and state.classId == "wizard")
+                and not arrayContains(owned or {}, id) then return true end
+        end
         return false
     elseif tag == "magic_pool" then
         return state and ((state.actorType ~= "ai" and state.actorType ~= "human_soldier")

@@ -5,7 +5,7 @@ local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
     blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
-    missile = "Guided area", bolt = "Precision shot", summon = "Allied Seeker",
+    missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
 }
@@ -149,4 +149,3 @@ end)
 concommand.Add("lod_spellbook", function() Book:Toggle() end)
 
 hook.Add("ShutDown", "LOD_SpellbookClose", function() Book:Close() end)
-

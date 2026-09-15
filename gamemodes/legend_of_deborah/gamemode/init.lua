@@ -231,3 +231,9 @@ if LOD.DeveloperToolsLoaded then
     include("lod/sv_human_soldier_runtime_validation.lua")
     LOD.DeveloperToolModuleCount = 9
 end
+
+AddCSLuaFile("lod/cl_wallet.lua")
+include("lod/sv_crypto_store.lua")
+include("lod/sv_crypto_director.lua")
+include("lod/sv_crypto_statue.lua")
+include("lod/sv_crypto_runtime.lua")

@@ -100,7 +100,7 @@ auto.classId = "wizard"
 auto.level = 8
 CPS:_GenerateAutomaticHitDie(auto, 202, 8)
 assert(#auto.magicFormIds == 3, "automatic Wizard should own Level 1/2/5 Forms by Level 8")
-assert(#auto.contentIds == 2, "automatic Wizard should own Level 4/8 Contents by Level 8")
+assert(#auto.contentIds == 3, "automatic Wizard owns Level 1/4/8 Contents by Level 8")
 
 -- Install a minimal pre-cap Wizard implementation so the cap adapter is tested as
 -- an actual wrapper, including preservation of Living Aegis efficiency.
@@ -125,3 +125,4 @@ assert(math.abs(WizardRules:ClassDiversionFraction({classId="wizard", level=17})
 assert(math.abs(WizardRules:ClassDiversionFraction({classId="wizard", level=20}) - 0.50) < 0.00001)
 
 print("Checkpoint C headless regression PASS")
+

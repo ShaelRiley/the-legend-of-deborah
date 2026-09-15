@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Persistent Wallet, DFTs & SQLite Rollback", ["python3", "tools/test_crypto_sqlite.py"]),
+    ("Wizard Summon & Starting Content", ["python3", "tools/run_lua54.py", "tools/test_wizard_balance.lua", "."]),
+    ("Wallet Client & Navigation", ["python3", "tools/run_lua54.py", "tools/test_wallet_ui.lua"]),
     ("Equipment Network Delta & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_equipment_delivery.lua"]),
     ("Recurring Hermit Gifts & Staging Board", ["python3", "tools/run_lua54.py", "tools/test_hermit_return.lua"]),
     ("Enemy Variety & Shared Combat Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_enemy_update.lua"]),

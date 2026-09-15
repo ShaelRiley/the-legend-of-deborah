@@ -6,7 +6,7 @@ local Delivery = LOD.SnapshotDelivery
 -- Multi-kill XP settlement used to write the entire sheet/book forty times in one
 -- tick. Resolve only the latest state after that transaction and deduplicate it.
 -- Fixed channels keep each player's pending/cache storage bounded.
-local CHANNELS = {"LOD_RPG_Snapshot", "LOD_MagicSpellbookSnapshot", "LOD_EquipmentSnapshot"}
+local CHANNELS = {"LOD_RPG_Snapshot", "LOD_MagicSpellbookSnapshot", "LOD_EquipmentSnapshot", "LOD_WalletSnapshot"}
 local allowed = {}; for _, name in ipairs(CHANNELS) do allowed[name] = true end
 local INTERVAL = 0.1 -- presentation delivery only; gameplay never waits for this
 local function weakKeys() return setmetatable({}, {__mode = "k"}) end

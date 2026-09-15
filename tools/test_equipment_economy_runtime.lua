@@ -214,3 +214,5 @@ E.MaximumStoredEquipment=capacity
 local extra=E:NewItem(owner,'boots','bag');owner.ps.equipment.items[extra.id]=extra
 assert(E:Discard(owner.ps.equipment,extra.id) and not owner.ps.equipment.items[extra.id])
 print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; natural reward distribution')
+-- Reuse these Source boundaries for the real SQLite wallet integration gate.
+return {actor=actor,Run=Run,hooks=hooks,timers=timers}

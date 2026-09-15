@@ -354,6 +354,8 @@ function Loot:Collect(ent, ply, acceptEquipment)
         ok, message = self:_GrantAmmo(ply, rng, payload.tier or "small", payload.weaponClass)
     elseif ent.LODLootKind == "wearable" then
         if LOD.Equipment then ok, message = LOD.Equipment:CollectWearable(ent, ply, acceptEquipment == true) end
+    elseif ent.LODLootKind == "dft" then
+        if LOD.CryptoDirector then ok, message = LOD.CryptoDirector:CollectToken(ply, payload.token) end
     elseif ent.LODLootKind == "consumable" then
         if LOD.Equipment then ok, message = LOD.Equipment:Grant(ply, payload.itemId, 1, ent) end
     elseif ent.LODLootKind == "health" then
@@ -435,7 +437,7 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     local ent = ents.Create("lod_loot_pickup")
     if not IsValid(ent) then return nil end
 
-    local model = KIND_MODEL[kind]
+    local model = kind == "dft" and "models/props_lab/huladoll.mdl" or KIND_MODEL[kind]
     if kind == "weapon" and payload and WEAPONS[payload.weaponClass] then
         model = WEAPONS[payload.weaponClass].model
     end
@@ -783,6 +785,7 @@ function Loot:OnHostileLootHandoff(hostile)
             local lootState = self:_PlayerLootState(ply)
             if lootState then
                 lootState.killSerial = (lootState.killSerial or 0) + 1
+                if LOD.CryptoDirector then LOD.CryptoDirector:RareOpportunity(ply, hostile, lootState.killSerial) end
                 self.Stats.enemyRolls = (self.Stats.enemyRolls or 0) + 1
 
                 local ownerIdentity = identityOf(ply) or "unknown"

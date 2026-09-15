@@ -509,6 +509,13 @@ function RunManager:NewCampaign()
         and LOD.Seeds.Normalize(customRosterSeed) or self:_DefaultRosterSeed()
     self.State.RescueCount = 0
     self.State.RunId = "run_" .. tostring(self.State.CampaignSeed) .. "_epoch_" .. tostring(self.CampaignEpoch)
+    if LOD.CryptoStore and LOD.CryptoStore.Ready then
+        local ok,id=pcall(LOD.CryptoStore.NextRunID,LOD.CryptoStore)
+        if ok then self.State.RunId=id else
+            self:MarkUnranked("wallet run identity unavailable")
+            ErrorNoHalt("[LOD:WALLET] "..tostring(id).."\n")
+        end
+    end
     if customRosterAllowed then
         self.State.Ranked = false
         self.State.UnrankedReason = self.State.UnrankedReason or "custom roster seed"
@@ -739,6 +746,7 @@ function RunManager:HandleDeath(ply, attacker)
     self:CaptureInventory(ply, ps)
     ps.armor = 0
     ps.lives = math.max(0, ps.lives - 1)
+    if LOD.CryptoDirector then LOD.CryptoDirector:HeroLifeConsumed(ply, attacker) end
     if LOD.SoldierProgression and LOD.SoldierProgression.ObserveHeroLifeConsumed then
         LOD.SoldierProgression:ObserveHeroLifeConsumed(attacker, ply)
     end

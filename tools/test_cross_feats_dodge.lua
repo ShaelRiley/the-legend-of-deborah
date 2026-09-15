@@ -167,6 +167,7 @@ for id, definition in pairs(LOD.RPG.IdentityCatalog.OrdinaryFeats) do
         primaryAbility='str',featIds=table.Copy(definition.prerequisiteFeatIds or {}),
         capabilityTags={},featQualificationAbilities={str=30,dex=30,con=30,int=30,wis=30,cha=30},
         magicFormIds={'blast','bomb','beam','cone','aura','summon'}, contentIds={'earth','fire','ice','electric','dark','light'}}
+    if id=='INT_MIDDLE_MANAGER' or id=='INT_TASKMASTER' or id=='INT_OVERLORD' then feasible.classId='wizard' end
     if id=='CON_GLOW_UP' then feasible.featIds={'CHA_AGGRESSIVE_PERSONALITY'} end
     if id=='INT_GRAND_UNIFIED_THEORY' then feasible.magicFormIds={'blast'} end
     if id=='INT_EXTRACURRICULAR_ACTIVITY' then feasible.contentIds={'earth'} end
@@ -449,3 +450,4 @@ observed=telemetry[#telemetry]
 assert(defense and defense.finalHPDamage==20 and not observed.fields.dodged and not observed.fields.evaded,
     'ordinary undeflected hit cannot inherit a prior attack Dodge')
 print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')
+

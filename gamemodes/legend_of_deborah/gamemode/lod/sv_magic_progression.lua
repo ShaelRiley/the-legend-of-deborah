@@ -10,7 +10,7 @@ local MagicProgression = LOD.MagicProgression
 if not Progression or not RPG then return end
 
 MagicProgression.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
-MagicProgression.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
+MagicProgression.SourceRevisionId = "ANLCKQnZT-gY2E1o8eVywRbHM5oeUT9ScZUoFZs5V2oLQzgLW4w8BjAaD1g3FEkxN8ductzcuN9LQ6NoOWHxcYdQu5vbznuuI7oCo86mog"
 
 RPG.MagicForms = RPG.MagicForms or {
     blast = {id = "blast", displayName = "Blast", damageDice = 2, damageSides = 6, magicCost = 45},
@@ -18,8 +18,11 @@ RPG.MagicForms = RPG.MagicForms or {
     bomb = {id = "bomb", displayName = "Bomb", damageDice = 3, damageSides = 6, magicCost = 20},
     missile = {id = "missile", displayName = "Missile", damageDice = 3, damageSides = 6, magicCost = 25},
     bolt = {id = "bolt", displayName = "Bolt", damageDice = 4, damageSides = 6, magicCost = 15},
-    summon = {id = "summon", displayName = "Summon", damageDice = 0, damageSides = 0, magicCost = 40}
+    summon = {id = "summon", displayName = "Summon", damageDice = 0, damageSides = 0, magicCost = 12}
 }
+
+-- Apply the approved cost on refresh as well as a clean server start.
+RPG.MagicForms.summon.magicCost = 12
 
 RPG.MagicContents = RPG.MagicContents or {
     earth = {id = "earth", displayName = "Earth", ability = "str", surcharge = 10, element = "earth", rider = "push"},
@@ -80,6 +83,22 @@ function MagicProgression:EnsureState(state)
     state.magicFormIds = state.magicFormIds or {}
     state.contentIds = state.contentIds or {}
     state.magicGrantMilestones = state.magicGrantMilestones or {}
+    -- Migrate retired non-Wizard ownership once without taking away a Form.
+    if state.classId ~= "wizard" and contains(state.magicFormIds, "summon") then
+        local available={}
+        for _,id in ipairs(FORM_ORDER) do
+            if id ~= "summon" and not contains(state.magicFormIds,id) then available[#available+1]=id end
+        end
+        local rng=LOD.RNG.New(derive(campaignSeed(), tostring(state.actorId)..":summon_migration"))
+        local replacement=#available>0 and available[rng:Int(1,#available)] or nil
+        local forms={}
+        for _,id in ipairs(state.magicFormIds) do
+            if id~="summon" then forms[#forms+1]=id end
+        end
+        if replacement then forms[#forms+1]=replacement end
+        state.magicFormIds=forms
+        if state.selectedMagicFormId=="summon" then state.selectedMagicFormId=replacement or forms[1] end
+    end
     state.favoredEnemyStacks = tonumber(state.favoredEnemyStacks) or 0
     state.favoredWeaponStacks = tonumber(state.favoredWeaponStacks) or 0
     if state.selectedMagicFormId and not contains(state.magicFormIds, state.selectedMagicFormId) then
@@ -101,7 +120,8 @@ function MagicProgression:_GrantDistinct(state, kind, milestone, seed)
 
     local available = {}
     for _, id in ipairs(order) do
-        if catalog[id] and not contains(owned, id) then available[#available + 1] = id end
+        if catalog[id] and not contains(owned, id)
+            and (kind ~= "form" or id ~= "summon" or state.classId == "wizard") then available[#available + 1] = id end
     end
     state.magicGrantMilestones[key] = true
     if #available == 0 then return false, "exhausted" end
@@ -117,6 +137,7 @@ function MagicProgression:GrantForm(state, formId, milestone)
     self:EnsureState(state)
     formId = string.lower(tostring(formId or ""))
     if not RPG.MagicForms[formId] then return false, "invalid form" end
+    if formId == "summon" and state.classId ~= "wizard" then return false, "Wizard only" end
     if not contains(state.magicFormIds, formId) then
         table.insert(state.magicFormIds, formId)
     end
@@ -142,6 +163,7 @@ end
 function MagicProgression:SelectForm(state, formId)
     self:EnsureState(state)
     formId = string.lower(tostring(formId or ""))
+    if formId == "summon" and state.classId ~= "wizard" then return false end
     if RPG.MagicForms[formId] and contains(state.magicFormIds, formId) then
         state.selectedMagicFormId = formId
         return true
@@ -213,6 +235,7 @@ function MagicProgression:ApplyScheduledGrants(state, seed)
 
     -- Level 1 occurs before class choice and is always one deterministic Form.
     form(1, "level_1_all")
+    if state.classId == "wizard" then content(1, "level_1_wizard") end
     if state.classId == "wizard" then form(2, "level_2_wizard") end
     content(4, "level_4_all")
     form(5, "level_5_all")
@@ -449,7 +472,7 @@ function MagicProgression:Validate()
     synthetic.level = 14
     self:ApplyScheduledGrants(synthetic, 424242)
     expect(#synthetic.magicFormIds == 4, "Wizard four scheduled Forms by 14")
-    expect(#synthetic.contentIds == 3, "Wizard three scheduled Contents by 14")
+    expect(#synthetic.contentIds == 4, "Wizard four scheduled Contents by 14")
     local replay = Progression:NewProgressionState("magic-validation", "hero", "hero")
     replay.classId = "wizard"
     replay.level = 14

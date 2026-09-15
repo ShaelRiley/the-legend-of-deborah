@@ -53,6 +53,7 @@ end
 -- steal focus from the page the player deliberately chose.
 function UI:SelectPage(page)
     self.ActivePage = page
+    if page ~= "wallet" and LOD.Wallet then LOD.Wallet:Close() end
     if page ~= "sheet" and LOD.CharacterSheet then LOD.CharacterSheet:Close() end
     if page ~= "book" and LOD.Spellbook then LOD.Spellbook:Close() end
     if page ~= "history" and LOD.CombatRollFeed and IsValid(LOD.CombatRollFeed.HistoryFrame) then
@@ -84,9 +85,11 @@ function UI:PageLinks(frame, active, y)
     local pages={{"sheet","P / CHARACTER",function() LOD.CharacterSheet:Open() end},
         {"book","I / SPELLBOOK",function() LOD.Spellbook:Open() end},
         {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end}}
+    if LOD.Wallet then pages[#pages+1]={"wallet","WALLET",function() LOD.Wallet:Open() end} end
+    local tabWidth=math.min(144,(frame:GetWide()-48-10*(#pages-1))/#pages)
     for i,page in ipairs(pages) do
         local button=vgui.Create("DButton",frame)
-        button:SetText(page[2]);button:SetPos(24+(i-1)*154,y);button:SetSize(144,24)
+        button:SetText(page[2]);button:SetPos(24+(i-1)*(tabWidth+10),y);button:SetSize(tabWidth,24)
         self:Button(button,page[1]==active and C.red or C.blue)
         button.DoClick=page[3]
     end
@@ -120,3 +123,4 @@ function UI:HUDText(text, font, x, y, color, alignX, alignY)
     draw.SimpleTextOutlined(text, font, x, y, color, alignX or TEXT_ALIGN_LEFT,
         alignY or TEXT_ALIGN_TOP, 1, Color(0, 0, 0, math.floor((color.a or 255)*0.8)))
 end
+

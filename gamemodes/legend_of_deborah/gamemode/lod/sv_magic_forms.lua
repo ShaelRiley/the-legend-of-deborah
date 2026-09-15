@@ -144,6 +144,7 @@ function Forms:SelectedCastState(ply)
     if not state then return nil end
     MagicProgression:EnsureState(state)
     local formId = state.selectedMagicFormId
+    if formId == "summon" and state.classId ~= "wizard" then return nil end
     if not formId or not RPG.MagicForms[formId] or not contains(state.magicFormIds, formId) then return nil end
     local contentId = state.selectedMagicContentId
     if contentId and (not RPG.MagicContents[contentId] or not contains(state.contentIds, contentId)) then
@@ -614,6 +615,7 @@ local function frozenProgressionState(source)
 end
 
 function Forms:_CastSummon(ply, form, content, context)
+    if not actorState(ply) or actorState(ply).classId ~= "wizard" then return false, "wizard_only" end
     local state = actorState(ply)
     local cap = MagicProgression:MaxActiveSummons(state)
     if self:_SummonCount(ply) >= cap then return false, "summon_cap" end
@@ -792,7 +794,7 @@ function Forms:Validate()
     expect(forms.bomb and forms.bomb.damageDice == 3 and forms.bomb.magicCost == 20, "Bomb catalog")
     expect(forms.missile and forms.missile.damageDice == 3 and forms.missile.magicCost == 25, "Missile catalog")
     expect(forms.bolt and forms.bolt.damageDice == 4 and forms.bolt.magicCost == 15, "Bolt catalog")
-    expect(forms.summon and forms.summon.magicCost == 40, "Summon catalog")
+    expect(forms.summon and forms.summon.magicCost == 12, "Summon catalog")
     local contents = RPG.MagicContents or {}
     expect(contents.earth and contents.earth.surcharge == 10 and contents.earth.rider == "push", "Earth")
     expect(contents.fire and contents.fire.surcharge == 15 and contents.fire.rider == "immolated", "Fire")

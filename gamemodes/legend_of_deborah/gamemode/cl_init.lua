@@ -164,3 +164,5 @@ hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
 end)
 
 include("lod/cl_rpg_dodge.lua")
+
+include("lod/cl_wallet.lua")

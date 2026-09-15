@@ -133,9 +133,10 @@ local missingWeapon=LOD.LootDirector._MissingWeaponReward
 function LOD.LootDirector:_MissingWeaponReward(ply,rng)
     return missingWeapon(self,ply,rng) or rng:Pick({"weapon_shotgun","weapon_smg1","weapon_357","weapon_ar2"})
 end
-function E:AcquireWorldItem(ply,item,accept)
+function E:AcquireWorldItem(ply,item,accept,source)
     local ps=hero(ply)
-    if not ps or not self:CanAct(ply) or not self:ValidateWearable(item) then return false end
+    local statue=source=="dft" and LOD.CryptoDirector and LOD.CryptoDirector:CanUseStatue(ply)
+    if not ps or not (self:CanAct(ply) or statue) or not self:ValidateWearable(item) then return false end
     local state=self:Ensure(ps)
     if not self:CanStore(state,item) then return false end
     local slot,displaced=self:Placement(state,item)
