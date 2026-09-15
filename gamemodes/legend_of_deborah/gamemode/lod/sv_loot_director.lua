@@ -427,13 +427,25 @@ function Loot:_EnforceTransientCap(ownerIdentity)
     end
 end
 
+-- Finite native-stage breadcrumbs identify the last completed operation if the
+-- engine closes without a Lua traceback. Never serialize full item records.
+function Loot:TraceStage(stage, ent, kind, model)
+    local log = LOD.RPGTestLog
+    if log and log.Write then log:Write("LOOT_NATIVE_STAGE", {
+        stage=stage, entity=IsValid(ent) and ent:EntIndex() or -1,
+        kind=kind, model=model
+    }) end
+end
+
 function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     if not ownerIdentity or not pos then return nil end
     options = options or {}
+    self:TraceStage("reward_prepare", nil, kind)
     if LOD.Equipment and LOD.Equipment.PrepareReward then
         kind, payload = LOD.Equipment:PrepareReward(ownerIdentity, kind, payload, options)
     end
 
+    self:TraceStage("entity_create", nil, kind)
     local ent = ents.Create("lod_loot_pickup")
     if not IsValid(ent) then return nil end
 
@@ -453,21 +465,28 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     ent.LODLootLevelSeed = RunManager.State and RunManager.State.LevelSeed
     ent.LODLootSpawnedAt = CurTime()
     ent.LODLootExpiresAt = options.staticId and nil or (CurTime() + ENEMY_DROP_LIFETIME)
+    self:TraceStage("model_validate", ent, kind, model)
     ent.LODLootModel = safeModel(model)
     ent.LODLootColor = KIND_COLOR[kind] or KIND_COLOR.ammo
     ent.LODLootScale = kind == "life" and 1.35 or 1.05
     ent:SetPos(pos)
     ent:SetAngles(Angle(0, options.yaw or 0, 0))
+    self:TraceStage("spawn_enter", ent, kind, ent.LODLootModel)
     ent:Spawn()
+    if not IsValid(ent) then return nil end
+    self:TraceStage("spawn_complete", ent, kind, ent.LODLootModel)
     ent:SetNW2String("LOD_LootName",kind=="wearable" and LOD.Equipment:ItemName(payload.item)
         or kind=="consumable" and LOD.Equipment.Definitions[payload.itemId].name
         or ({ammo="Ammunition",health="Health",armor="Armor",life="Extra Life",cache="Supply Cache"})[kind] or kind)
-    ent:Activate()
+    -- This anim trigger has no physics to activate. Activate after model scale
+    -- can rebuild model collision and is a documented native crash risk.
     if LOD.WeaponAppearance then LOD.WeaponAppearance:Stamp(ent,payload.item) end
     if kind == "wearable" and LOD.Equipment then LOD.Equipment:SyncPickup(ent) end
 
     self.Entities[#self.Entities + 1] = ent
     self:_ApplyTransmission(ent)
+    ent.LODLootRegistered = true
+    self:TraceStage("registered", ent, kind, ent.LODLootModel)
     if not options.staticId then self:_EnforceTransientCap(ownerIdentity) end
     return ent
 end
@@ -785,6 +804,7 @@ function Loot:OnHostileLootHandoff(hostile)
     if not state or state.Failed or state.LevelCleared or hostile.LODDeathLevelSeed ~= state.LevelSeed then return end
     hostile.LODLootHandoffCompleted = true
 
+    self:TraceStage("handoff_begin", hostile)
     local guaranteedUseful = self:_ObjectiveClearDrop(hostile)
     local instanceSeed = hostile.LODInstanceSeed or hostile:GetNW2Int("LOD_InstanceSeed", hostile:EntIndex())
 
@@ -801,6 +821,7 @@ function Loot:OnHostileLootHandoff(hostile)
                 local rng = LOD.RNG.New(seed)
                 local category, pity = self:_DropCategory(ply, lootState, rng, guaranteedUseful)
 
+                self:TraceStage("category_resolved", hostile, category or "none")
                 if category and self:_SpawnEnemyResult(ply, hostile, category, rng) then
                     lootState.dryKills = 0
                     if pity then self.Stats.pityDrops = (self.Stats.pityDrops or 0) + 1 end

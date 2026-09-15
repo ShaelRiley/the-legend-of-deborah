@@ -5,6 +5,7 @@ include("shared.lua")
 local DEFAULT_MODEL = "models/items/boxsrounds.mdl"
 
 function ENT:Initialize()
+    self.LODLootReady = false
     self:SetModel(self.LODLootModel or DEFAULT_MODEL)
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_BBOX)
@@ -16,10 +17,15 @@ function ENT:Initialize()
     self:SetColor(self.LODLootColor or Color(255, 196, 64, 240))
     self:SetModelScale(self.LODLootScale or 1.05, 0)
     self:DrawShadow(false)
+    -- Spawn/trigger activation can overlap a player. Admit collection only once
+    -- the director has finished metadata and owner-transmission registration.
+    timer.Simple(0, function()
+        if IsValid(self) and self.LODLootRegistered then self.LODLootReady = true end
+    end)
 end
 
 function ENT:_TryCollect(ply, acceptEquipment)
-    if self.LODCollected then return end
+    if not self.LODLootReady or self.LODCollected then return end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return end
 
     local director = LOD and LOD.LootDirector
@@ -29,7 +35,8 @@ function ENT:_TryCollect(ply, acceptEquipment)
     local ok = director:Collect(self, ply, acceptEquipment)
     if not ok then return end
 
-    self:Remove()
+    -- Keep removal outside native touch traversal; the grant is already sealed.
+    timer.Simple(0, function() if IsValid(self) then self:Remove() end end)
 end
 
 function ENT:StartTouch(ent)

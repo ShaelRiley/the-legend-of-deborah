@@ -847,7 +847,6 @@ function ENT:_SpawnPlaceholderLoot()
     loot:SetModelScale(1.15, 0)
     loot.LODPlaceholderLoot = true
     loot:Spawn()
-    loot:Activate()
     loot:EmitSound("items/itempickup.wav", 55, 128, 0.45, CHAN_ITEM)
 
     PlaceholderLoot:Register(loot, self.LODDeathLevelSeed)

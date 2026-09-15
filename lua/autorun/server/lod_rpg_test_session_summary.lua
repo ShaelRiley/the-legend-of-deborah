@@ -156,7 +156,7 @@ end
 
 local PROFILE_KEYS = {
     "class", "level", "hp", "max_hp", "magic",
-    "strx", "aimx", "movex", "dr_per_die", "regenx", "magicx", "mapx",
+    "str_bonus", "strx", "aimx", "movex", "dr_per_die", "regenx", "wis_bonus", "magicx", "mapx",
     "crumbs", "stun_inflict_x", "stun_resist_x", "diversion",
     "rogue_explodes", "boom_shift", "rogue_boom_shift", "rogue_capstone_shift",
     "ace_prime_seconds", "fighter_capstone_x", "wizard_capstone_magic_x"
@@ -343,3 +343,4 @@ hook.Add("InitPostEntity", "LOD.RPGTestSessionSummary.AttachPost", function()
     timer.Simple(0, attach)
 end)
 timer.Simple(0, attach)
+

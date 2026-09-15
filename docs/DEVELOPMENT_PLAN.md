@@ -9,7 +9,47 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — flat Strength and Wisdom damage
+## Current checkpoint — consistent GPS and loot crash candidate
+
+Starting dev HEAD `a671934496c51a2306e7e5634642e3bbfcee781c` on
+`astra/equipment-update`. GPS retains its voice, WIS 17 gate and G toggle,
+but triggers after 1 second stationary and repeats after phrase duration plus
+4 seconds. Two-cell same-floor proximity uses the existing faction opponent
+registry, including human Soldiers and enemies behind walls. Movement, combat
+input, staging/death/spectating and lost ownership cancel speech and reset the
+idle trigger. Shared voice tokens/durations, one channel and generation checks
+prevent delayed file opens or timers reviving canceled speech. No random wait,
+new pathfinder or enemy replication. Missing routes retry at most once a second.
+Live GDD 04 and the exact HUMAN GPS row are reconciled.
+
+Crash evidence: `rpg_test_session(20260915-151547).txt` reaches sequence 308,
+time 142.245, Soldier #1174 at `loot_enter`, without `loot_complete`. Its death
+callback and corpse presentation completed; a separate nonlethal Bio Blaster
+hit and client feedback also completed. The periodically copied summary is
+older (sequence 263), so use the full session for event order. These logs show
+the older percentage-stat build, not acceptance evidence for the flat-stat patch.
+There is no native stack trace; the exact crash cause remains unconfirmed.
+
+The loot path called Activate after an anim pickup's SetModelScale. Facepunch
+explicitly documents potential collision-rebuild crashes for that combination:
+https://wiki.facepunch.com/gmod/Entity:SetModelScale
+Remove unnecessary activation from real pickups and the fallback decoration.
+Arm touch collection next tick, after metadata/transmission registration; defer
+successful pickup removal beyond touch traversal. Keep automatic collection and
+existing grant idempotence. Add bounded LOOT_NATIVE_STAGE breadcrumbs around
+handoff/category selection, model validation, spawn and registration. Profile
+logs now include the new flat STR/WIS bonuses; summaries retain legacy fields
+for older evidence. This is a repair candidate, not a proven native-crash fix.
+
+All 84 automated suites pass. New tests exercise production GPS cadence and
+async cancellation plus real pickup initialization/registration with simulated
+spawn overlap and duplicate touches. Headless checks cannot validate native
+collision behavior or audible timing. Next finite native gate: play normally,
+stand still in a safe corridor to hear GPS, and collect a killed Soldier's drop.
+If force-close recurs, preserve console_latest.txt and rpg_test_session.txt before
+relaunch. No main promotion or public deployment.
+
+## Previous checkpoint — flat Strength and Wisdom damage
 
 Starting dev HEAD `2a098bc73080ba69bd3653da412730058c34a422` on
 `astra/equipment-update`. Author rebalance replaces percentage STR/WIS damage

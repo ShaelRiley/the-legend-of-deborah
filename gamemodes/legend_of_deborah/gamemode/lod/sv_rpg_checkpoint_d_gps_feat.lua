@@ -4,6 +4,9 @@ local Catalog = assert(RPG.IdentityCatalog, "GPS requires RPG catalog")
 local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "GPS requires ordinary feats")
 local Rules = assert(LOD.RPGAbilityRules, "GPS requires ability rules")
 local GPS_ID = "WIS_GPS"
+AddCSLuaFile("lod/sh_gps_voice.lua")
+include("lod/sh_gps_voice.lua")
+local Voice = LOD.GPSVoice
 
 assert(Feats[GPS_ID] == nil, "duplicate canonical feat " .. GPS_ID)
 Feats[GPS_ID] = {
@@ -14,9 +17,9 @@ Feats[GPS_ID] = {
     allowedActorTypes = {"hero"}, requiredSubsystemTags = {"navigation", "information"},
     synergyTags = {"wisdom", "navigation", "information"}, oneRank = true,
     effectHandlerId = "canonical_gps_navigation",
-    effectParams = {description = "Adds a private old-school synthetic GPS navigation assist with a dedicated rebindable toggle whose default keyboard binding is G. GPS starts enabled immediately when the feat is acquired. Acquisition displays a concise tooltip/system notice: GPS ENABLED — If it gets annoying, press G to turn it off. Press G again to turn it back on. Pressing the GPS action toggles the feature without spending Magic; every toggle plays a short electronic switch/chime and produces the ordinary bounded on-screen system notice GPS ON or GPS OFF. While enabled, GPS becomes eligible once the Hero remains in the same canonical maze cell without meaningful locomotion for GPSIdleDelaySeconds = 3 + 1d6 seconds. The d6 is a sealed non-damage utility die and never explodes or inherits attack-die modifiers. Aim/facing may change while stationary. GPS speaks at most one guidance bark per stationary episode; meaningful locomotion re-arms it, so remaining still does not cause repeated chatter. When triggered, GPS reads only the authoritative canonical route from the Hero's current cell to the currently active progression objective and emits one short 2000s/early-2010s-style direction assembled from a small fixed synthetic/concatenative voice bank. Supported phrase families include TURN LEFT, TURN RIGHT, TURN AROUND, CONTINUE FORWARD, IN N SQUARES TURN LEFT/RIGHT, IN N SQUARES TAKE THE STAIRS UP/DOWN, TAKE THE STAIRS UP/DOWN, and YOU HAVE ARRIVED AT YOUR DESTINATION. N is derived from the contiguous legal route segment to the next turn, stair transition, or objective rather than guessed. GPS never invents a shortcut, predicts future progression stages, reveals enemies or loot, or performs a second pathfinding authority: it consumes the same canonical current-objective route used by ordinary navigation/breadcrumb logic. GPS is supplemental information and remains available even when lod_mapless 1 removes the visual minimap; it does not itself reveal a map or persistent route display. Active combat, death/spectating, staging, cutscenes, and other states where a navigation bark would be intrusive suspend the idle trigger. GPS has no Magic cost and does not alter Magic regeneration, BreadcrumbCells, movement, combat statistics, rewards, or objective logic.",
-        idleBaseSeconds = 3, idleDieSides = 6, defaultKey = "G",
-        magicCost = 0, maxBarksPerStationaryEpisode = 1
+    effectParams = {description = "Adds a private old-school synthetic GPS navigation assist with a dedicated rebindable toggle whose default keyboard binding is G. GPS starts enabled immediately when the feat is acquired. Acquisition displays a concise tooltip/system notice: GPS ENABLED — If it gets annoying, press G to turn it off. Press G again to turn it back on. Pressing the GPS action toggles the feature without spending Magic; every toggle plays a short electronic switch/chime and produces the ordinary bounded on-screen system notice GPS ON or GPS OFF. While enabled, GPS speaks after 1 second standing still without living enemies within 2 cells on the same floor, including enemies behind walls and human Soldiers. It repeats after a 4-second silence following each phrase. Movement, danger, combat or inactive states reset the trigger and cancel speech. Aim/facing may change while stationary. When triggered, GPS reads only the authoritative canonical route from the Hero's current cell to the currently active progression objective and emits one short 2000s/early-2010s-style direction assembled from a small fixed synthetic/concatenative voice bank. Supported phrase families include TURN LEFT, TURN RIGHT, TURN AROUND, CONTINUE FORWARD, IN N SQUARES TURN LEFT/RIGHT, IN N SQUARES TAKE THE STAIRS UP/DOWN, TAKE THE STAIRS UP/DOWN, and YOU HAVE ARRIVED AT YOUR DESTINATION. N is derived from the contiguous legal route segment to the next turn, stair transition, or objective rather than guessed. GPS never invents a shortcut, predicts future progression stages, reveals enemies or loot, or performs a second pathfinding authority: it consumes the same canonical current-objective route used by ordinary navigation/breadcrumb logic. GPS is supplemental information and remains available even when lod_mapless 1 removes the visual minimap; it does not itself reveal a map or persistent route display. Active combat, death/spectating, staging, cutscenes, and other states where a navigation bark would be intrusive suspend the idle trigger. GPS has no Magic cost and does not alter Magic regeneration, BreadcrumbCells, movement, combat statistics, rewards, or objective logic.",
+        idleBaseSeconds = 1, repeatPauseSeconds = 4, nearbyCellRadius = 2, defaultKey = "G",
+        magicCost = 0
     },
     directorBaseWeight = 1.0, eligibilityText = "WIS 17",
     actorText = "Player-controlled Heroes only"
@@ -32,8 +35,7 @@ util.AddNetworkString(NET_BARK)
 resource.AddFile("sound/lod/gps_voice_bank.mp3")
 
 local runtime = setmetatable({}, {__mode = "k"})
-local MOVE_SPEED_SQR = 32 * 32
-local COMBAT_QUIET_SECONDS = 3.0
+local MOVE_SPEED_SQR = 8 * 8
 
 local function owns(state)
     for _, id in ipairs(state and state.featIds or {}) do
@@ -54,29 +56,32 @@ local function sendState(ply, enabled, acquired)
     net.Send(ply)
 end
 
-local function resetEpisode(r)
-    r.cellKey = nil
-    r.idleStarted = nil
-    r.delay = nil
-    r.barked = false
+local function resetEpisode(r, ply)
+    if r.speakingUntil and IsValid(ply) then
+        net.Start(NET_BARK); net.WriteString(""); net.Send(ply)
+    end
+    r.cellKey, r.idleStarted, r.anchor, r.nextBark, r.speakingUntil = nil, nil, nil, nil, nil
 end
 
 local function cellKey(cell)
     return cell and string.format("%d:%d:%d", cell.x or 0, cell.y or 0, cell.z or 0) or nil
 end
 
-local function sealedIdleDelay(ply, r)
-    r.episode = (r.episode or 0) + 1
-    local identity = ply:SteamID64() or tostring(ply:UserID())
-    local roll = math.floor(util.SharedRandom("LOD_WIS_GPS:" .. identity, 1, 7, r.episode))
-    return 3 + math.Clamp(roll, 1, 6)
+local function nearbyEnemy(ply, graph, cell)
+    local faction = LOD.FactionManager
+    if not faction or not faction.Opponents then return true end
+    for _, enemy in ipairs(faction:Opponents(ply)) do
+        local other = LOD.MazeNavigator:WorldToCell(graph, enemy:GetPos())
+        if other and other.z == cell.z and math.max(math.abs(other.x-cell.x), math.abs(other.y-cell.y)) <= 2 then
+            return true
+        end
+    end
+    return false
 end
 
 local function activeCombat(ply)
     if ply:KeyDown(IN_ATTACK) or ply:KeyDown(IN_ATTACK2) then return true end
-    local audit = LOD.HostileDamageAudit
-    local record = audit and audit.LastByPlayer and audit.LastByPlayer[ply]
-    return record and (CurTime() - (record.at or 0)) < COMBAT_QUIET_SECONDS or false
+    return false
 end
 
 local function intrusiveState(ply)
@@ -86,6 +91,7 @@ local function intrusiveState(ply)
     if not rm or not rm.IsActivePlayer or not rm:IsActivePlayer(ply) then return true end
     if rs and (rs.Failed or rs.LevelCleared or rs.IntermissionEnd) then return true end
     if ply:GetObserverMode() ~= OBS_MODE_NONE then return true end
+    if ply:GetNW2Bool("LOD_Staged", false) then return true end
     return activeCombat(ply)
 end
 
@@ -159,32 +165,37 @@ end
 
 local function updateGPS(ply)
     if not heroOwnsGPS(ply) then
+        if runtime[ply] then resetEpisode(runtime[ply], ply); sendState(ply, false, false) end
         runtime[ply] = nil
         return
     end
 
     local r = runtime[ply]
+    local state = Rules:ProgressionState(ply)
+    if r and r.progression ~= state then resetEpisode(r, ply); r = nil end
     if not r then
-        r = {enabled = true, episode = 0}
+        r = {enabled = true, progression = state}
         runtime[ply] = r
         sendState(ply, true, true)
     end
 
     if not r.enabled or intrusiveState(ply) then
-        resetEpisode(r)
+        resetEpisode(r, ply)
         return
     end
 
     local graph = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.Graph
     local navigator = LOD.MazeNavigator
-    if not graph or not navigator then resetEpisode(r); return end
+    if not graph or not navigator then resetEpisode(r, ply); return end
     local cell = navigator:WorldToCell(graph, ply:GetPos())
-    if not cell then resetEpisode(r); return end
+    if not cell then resetEpisode(r, ply); return end
 
-    local moving = ply:GetVelocity():Length2DSqr() >= MOVE_SPEED_SQR
+    if nearbyEnemy(ply, graph, cell) then resetEpisode(r, ply); return end
+    local moving = ply:GetVelocity():LengthSqr() >= MOVE_SPEED_SQR
+        or (r.anchor and ply:GetPos():DistToSqr(r.anchor) > 16)
     local key = cellKey(cell)
     if moving or (r.cellKey and r.cellKey ~= key) then
-        resetEpisode(r)
+        resetEpisode(r, ply)
         r.cellKey = key
         return
     end
@@ -192,15 +203,17 @@ local function updateGPS(ply)
     if r.cellKey ~= key or not r.idleStarted then
         r.cellKey = key
         r.idleStarted = CurTime()
-        r.delay = sealedIdleDelay(ply, r)
-        r.barked = false
+        r.anchor = ply:GetPos()
+        r.nextBark = CurTime() + 1
         return
     end
 
-    if r.barked or CurTime() < r.idleStarted + r.delay then return end
+    if CurTime() < r.nextBark then return end
+    r.nextBark = CurTime() + 1 -- bounded retry if the current route is unavailable
     local text = guidanceFor(ply, cell)
     if not text then return end
-    r.barked = true
+    r.speakingUntil = CurTime() + Voice.Duration(text)
+    r.nextBark = r.speakingUntil + 4
     net.Start(NET_BARK)
     net.WriteString(text)
     net.Send(ply)
@@ -208,10 +221,10 @@ end
 
 net.Receive(NET_TOGGLE, function(_, ply)
     if not heroOwnsGPS(ply) then return end
-    local r = runtime[ply] or {enabled = true, episode = 0}
+    local r = runtime[ply] or {enabled = true, progression = Rules:ProgressionState(ply)}
     runtime[ply] = r
     r.enabled = not r.enabled
-    resetEpisode(r)
+    resetEpisode(r, ply)
     sendState(ply, r.enabled, false)
 end)
 
@@ -225,8 +238,8 @@ function RPG:ValidateCheckpointDWisGPS()
     local gps = Feats[GPS_ID]
     expect(gps and gps.abilityRequirements.wis == 17, "GPS WIS 17 gate")
     expect(gps and #gps.allowedActorTypes == 1 and gps.allowedActorTypes[1] == "hero", "GPS Hero-only")
-    expect(gps and gps.effectParams.idleBaseSeconds == 3 and gps.effectParams.idleDieSides == 6,
-        "GPS sealed 3+1d6 delay")
+    expect(gps and gps.effectParams.idleBaseSeconds == 1 and gps.effectParams.repeatPauseSeconds == 4,
+        "GPS fixed idle trigger and repeat pause")
     expect(gps and gps.effectParams.magicCost == 0, "GPS no Magic cost")
     expect(self:CheckpointDWisGPSGuidance({
         {x=1,y=1,z=0},{x=2,y=1,z=0},{x=3,y=1,z=0},{x=3,y=2,z=0}
@@ -250,3 +263,4 @@ concommand.Add("lod_rpg_validate_wis_gps", function(ply)
     print("[LOD:WIS-GPS] " .. (ok and "PASS" or "FAIL")
         .. (#errors > 0 and (" " .. table.concat(errors, "; ")) or ""))
 end)
+

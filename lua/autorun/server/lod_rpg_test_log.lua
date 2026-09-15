@@ -73,12 +73,12 @@ local function addProfile(fields, prefix, actor)
     if not derived then return end
     fields[prefix .. "class"] = state and state.classId or ""
     fields[prefix .. "level"] = state and state.level or ""
-    fields[prefix .. "strx"] = derived.physicalDamageMultiplier
+    fields[prefix .. "str_bonus"] = derived.physicalDamageBonus
     fields[prefix .. "aimx"] = derived.aimSpreadMultiplier
     fields[prefix .. "movex"] = derived.movementSpeedMultiplier
     fields[prefix .. "dr_per_die"] = derived.damageResistancePerDie
     fields[prefix .. "regenx"] = derived.magicRegenMultiplier
-    fields[prefix .. "magicx"] = derived.magicPowerMultiplier
+    fields[prefix .. "wis_bonus"] = derived.magicDamageBonus
     fields[prefix .. "mapx"] = derived.utilityMagicCostMultiplier
     fields[prefix .. "crumbs"] = derived.breadcrumbCells
     fields[prefix .. "stun_inflict_x"] = derived.chaHitStunInflictMultiplier
