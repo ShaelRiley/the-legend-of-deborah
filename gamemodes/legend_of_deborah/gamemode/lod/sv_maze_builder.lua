@@ -184,9 +184,9 @@ function MazeBuilder:_BuildFloors(graph)
     -- physics entities on the partial upper layers. Transition cells retain
     -- individual perforated geometry for their stair apertures.
     for z = 1, graph.Layers - 1 do
-        for y = 1, MC.Height do
+        for y = 1, (graph.Height or MC.Height) do
             local x = 1
-            while x <= MC.Width do
+            while x <= (graph.Width or MC.Width) do
                 local k = cellKey(x, y, z)
                 local cell = graph.Cells[k]
                 local transition = transitions[k]
@@ -196,7 +196,7 @@ function MazeBuilder:_BuildFloors(graph)
                     x = x + 1
                 elseif cell then
                     local runEnd = x
-                    while runEnd + 1 <= MC.Width do
+                    while runEnd + 1 <= (graph.Width or MC.Width) do
                         local nextKey = cellKey(runEnd + 1, y, z)
                         if not graph.Cells[nextKey] or transitions[nextKey] then break end
                         runEnd = runEnd + 1
@@ -326,3 +326,4 @@ function MazeBuilder:Build(graph)
         goalPos = self:CellCenter(graph.Goal) + Vector(0, 0, 12)
     }
 end
+

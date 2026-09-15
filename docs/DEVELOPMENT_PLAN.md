@@ -9,7 +9,20 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Neil and the Brute
+## Current checkpoint — Gordon the Warden
+
+Implements Gordon over development baseline
+`253af3b273f53d5c6910931fc4c5d738f8418be8`, on `astra/equipment-update`.
+The two-level arena, three combat phases, protected co-op entry/respawn,
+ordered party health scaling and death-only center Jail Key replace the temporary
+Core shortcut. Author-approved tuning is in live GDD 07. All 88 automated suites
+pass. Mount Gordon Workshop model 2893593226 for visual testing. The adaptive
+soundtrack remains dependent on its unshipped MusicDirector/suite system;
+Gordon publishes its tension hooks and supplies entrance/phase/victory cues.
+Native visual/co-op acceptance and the fatal-crash release hold remain open.
+See [implementation, dependencies and finite playtest](WARDEN_CHECKPOINT.md).
+
+## Previous checkpoint — Neil and the Brute
 
 Implements the post-Yellow hunt over development baseline
 `e7576355967084b9fca246022ce9a4b3a7da6148`, on `astra/equipment-update`.

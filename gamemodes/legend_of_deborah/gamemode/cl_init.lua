@@ -181,3 +181,4 @@ include("lod/cl_rpg_dodge.lua")
 include("lod/cl_wallet.lua")
 
 include("lod/cl_neil_brute.lua")
+include("lod/cl_warden.lua")

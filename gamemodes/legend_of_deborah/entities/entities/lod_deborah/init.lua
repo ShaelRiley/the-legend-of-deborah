@@ -24,3 +24,14 @@ function ENT:StartTouch(ent)
         LOD.ProgressionDirector:OnDeborahTouched(ent)
     end
 end
+
+
+-- Run only the explicitly unlocked celebration; no locomotion or hull changes.
+function ENT:Think()
+    if self:GetNW2Bool("LOD_RescueCheerSequence",false) then
+        self:FrameAdvance()
+        if self:GetCycle()>=0.99 then self:SetCycle(0) end
+        self:NextThink(CurTime()+0.05)
+    else self:NextThink(CurTime()+0.25) end
+    return true
+end

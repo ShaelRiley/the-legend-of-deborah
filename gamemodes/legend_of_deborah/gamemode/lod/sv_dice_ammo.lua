@@ -32,6 +32,17 @@ local PROFILES = {
     }
 }
 
+-- Predictable boss resupply follows these same inventory/clip capacity rules.
+function Ammo:GrantWardenResupply(ply)
+    for weaponClass, profile in pairs(PROFILES) do
+        local weapon=ply:GetWeapon(weaponClass)
+        if IsValid(weapon) then
+            local room=math.max(0,profile.cap-math.max(0,weapon:Clip1())-ply:GetAmmoCount(profile.ammo))
+            ply:GiveAmmo(math.min(30,room),profile.ammo,true)
+        end
+    end
+end
+
 Ammo.PlayerState = Ammo.PlayerState or setmetatable({}, {__mode = "k"})
 Ammo.Stats = Ammo.Stats or {roundsRegenerated = 0, capClamps = 0}
 
@@ -238,3 +249,4 @@ concommand.Add("lod_dice_ammo_probe", function(ply)
             regenPass and "PASS" or "FAIL", capPass and regenPass and "PASS" or "FAIL"))
     end)
 end)
+

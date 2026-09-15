@@ -147,6 +147,9 @@ function EncounterDirector:_BuildCellTags(graph, sectorByKey)
     markSafe(progression.CoreCell, "boss")
     markSafe(progression.DeborahCell, "safe")
 
+    for k in pairs(progression.Warden and progression.Warden.cells or {}) do
+        tags[k] = {sector = sectorByKey[k], role = "boss", safe = true}
+    end
     graph.CellTags = tags
     return tags
 end
@@ -404,3 +407,4 @@ end
 hook.Add("Think", "LOD_EncounterDirectorThink", function()
     EncounterDirector:Think()
 end)
+

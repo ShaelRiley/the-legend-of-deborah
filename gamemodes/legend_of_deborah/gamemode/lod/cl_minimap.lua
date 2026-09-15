@@ -154,7 +154,7 @@ local function currentGridPosition(ply)
     local x = math.floor(((pos.x - MC.Origin.x) / MC.CellSize) + ((MC.Width + 1) * 0.5) + 0.5)
     local y = math.floor(((pos.y - MC.Origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5)
     local z = math.floor(((pos.z - MC.Origin.z) / MC.LevelHeight) + 0.5)
-    return math.Clamp(x, 1, MC.Width), math.Clamp(y, 1, MC.Height), math.max(0, z)
+    return math.Clamp(x, 1, Map.gridWidth or MC.Width), math.Clamp(y, 1, MC.Height), math.max(0, z)
 end
 
 local function bitOpen(mask, index)
@@ -266,6 +266,8 @@ local function buildGraphIndex()
         end
     end
 
+    Map.gridWidth = MC.Width
+    for _, cell in ipairs(Map.cells) do Map.gridWidth = math.max(Map.gridWidth, cell.x) end
     Map.cache.floorCells = floorCells
     Map.cache.floorStairs = floorStairs
     Map.cache.floorGates = floorGates
@@ -608,7 +610,9 @@ local function drawObjectiveMarker(state, x, y)
     end
     if stage==10 then label="NEIL";color=Color(70,220,95)
     elseif stage==11 then label="BLACK KEY"
-    elseif stage==12 then label="BLACK GATE" end
+    elseif stage==12 then label="BLACK GATE"
+    elseif stage==13 then label="WARDEN ARENA"
+    elseif stage==14 then label="GORDON" end
     surface.DrawCircle(x, y, pulse, color.r, color.g, color.b, color.a)
     surface.DrawCircle(x, y, pulse + 1, color.r, color.g, color.b, 180)
     draw.SimpleText(label, "LOD_Map_Small", x, y - 11,
@@ -632,7 +636,7 @@ local function renderStaticTopology(gz)
     local cells = Map.cache.floorCells[gz]
     if not cells then return false end
 
-    local cellSize = MAP_RT_SIZE / math.max(MC.Width, MC.Height)
+    local cellSize = MAP_RT_SIZE / math.max(Map.gridWidth or MC.Width, MC.Height)
     render.PushRenderTarget(topologyRT)
     render.Clear(COLORS.grid.r, COLORS.grid.g, COLORS.grid.b, 255, true, true)
     cam.Start2D()
@@ -693,7 +697,7 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     local panelY = 96
     local gridX, gridY = panelX + 26, panelY + 68
     local gridSize = 284
-    local cellSize = gridSize / math.max(MC.Width, MC.Height)
+    local cellSize = gridSize / math.max(Map.gridWidth or MC.Width, MC.Height)
     local gx, gy, gz = currentGridPosition(ply)
     gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
 

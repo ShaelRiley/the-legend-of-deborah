@@ -63,6 +63,7 @@ local function applyVisualScale(ent, seekerRoll)
     local model = ent:GetModel() or ""
     local archetype = ent:GetNW2String("LOD_Archetype", "")
     local deviceLift = DEVICE_VISUAL_LIFT[archetype] or 0
+    if archetype=="warden" and ent:GetNW2Int("LOD_WardenPhase",1)==2 then deviceLift=18*size end
     local roll = archetype == "seeker" and (seekerRoll or 0) or 0
     local signature = string.format("%s:%.4f:%s:%s:%.2f:%.2f",
         model, size, tostring(motionV2), archetype, deviceLift, roll)
@@ -159,13 +160,16 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
 end
 
 function ENT:Draw()
+    if self:GetNW2Bool("LOD_WardenHidden", false) then return end
     local archetype = self:GetNW2String("LOD_Archetype", "")
+    if LOD.WardenPresentation then LOD.WardenPresentation:Pose(self) end
     local seekerRoll = archetype == "seeker" and updateSeekerRoll(self) or 0
     local size, verticalCompensation = applyVisualScale(self, seekerRoll)
     if LOD.MonsterIdentity then
         LOD.MonsterIdentity:DrawBody(self)
         LOD.MonsterIdentity:DrawAura(self,size)
     else self:DrawModel() end
+    if LOD.WardenPresentation then LOD.WardenPresentation:Draw(self,size) end
     if LOD.NeilBrutePresentation then LOD.NeilBrutePresentation:Draw(self,size) end
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end

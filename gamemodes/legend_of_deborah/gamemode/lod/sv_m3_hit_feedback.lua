@@ -95,6 +95,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
 
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
     if hostile.LODBruteCharge and LOD.NeilBrute then LOD.NeilBrute:CancelCharge(hostile) end
+    if hostile.LODArchetypeId == "warden" and LOD.Warden then LOD.Warden:Interrupt(hostile) end
 
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil

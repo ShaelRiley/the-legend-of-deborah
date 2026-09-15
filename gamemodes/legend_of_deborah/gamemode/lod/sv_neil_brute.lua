@@ -110,7 +110,7 @@ function H:Start()
     local meta=g.Progression.Hunt;if not meta then return false end
     local h=s.NeilHunt
     if h and h.started then return true end
-    local reserve=baseReserve and baseReserve(W) or 0
+    local reserve=W and W.GetDeficitReservation and math.max(0,W:GetDeficitReservation()-2) or 0
     if LOD.EncounterDirector:GetActiveCount()+reserve+2>EC.ActiveHostileCeiling then return false end
     h={seed=s.LevelSeed,neilCell=meta.neilCell,started=false}
     local pair={}

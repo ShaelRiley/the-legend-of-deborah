@@ -2,6 +2,7 @@
 LOD.NearLook={}
 function LOD.NearLook:Visible(ply,ent)
     if not IsValid(ent) or ent==ply or ent:GetNoDraw() then return false end
+    if ent.GetNW2Bool and ent:GetNW2Bool("LOD_WardenHidden",false) then return false end
     if ent:GetNW2Bool('LOD_Watcher',false) then
         local now=CurTime()
         if ent:GetNW2Float('LOD_WatcherInvisibleUntil',0)>now then return false end

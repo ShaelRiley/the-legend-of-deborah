@@ -17,7 +17,9 @@ ProgressionDirector.Stages = ProgressionDirector.Stages or {
     RESCUE_DEBORAH = 9,
     FIND_NEIL = 10,
     TAKE_BLACK_KEYCARD = 11,
-    OPEN_BLACK_GATE = 12
+    OPEN_BLACK_GATE = 12,
+    ENTER_WARDEN = 13,
+    DEFEAT_WARDEN = 14
 }
 local Stages = ProgressionDirector.Stages
 
@@ -400,7 +402,9 @@ function ProgressionDirector:GetObjectiveText()
         "RESCUE DEBORAH",
         "FIND NEIL AND THE BLACK KEYCARD",
         "TAKE THE BLACK KEYCARD — K / KEY",
-        "OPEN BLACK GATE — K / KEY"
+        "OPEN BLACK GATE — K / KEY",
+        "ENTER GORDON’S ARENA",
+        "DEFEAT GORDON THE WARDEN"
     }
     return objectives[stage] or "EXPEDITION"
 end
@@ -417,6 +421,10 @@ function ProgressionDirector:GetObjectiveGraphTarget()
         local target = hunt and (stage == Stages.FIND_NEIL and hunt.neilCell or hunt.dropCell)
         target = target or (progression.Hunt and progression.Hunt.neilCell)
         return target and {kind = 1, a = copyCell(target)} or nil
+    end
+    if stage == Stages.ENTER_WARDEN or stage == Stages.DEFEAT_WARDEN then
+        local a = progression.Warden
+        return a and {kind = 1, a = copyCell(stage == Stages.ENTER_WARDEN and a.entry or a.center)} or nil
     end
     if stage == Stages.OPEN_BLACK_GATE then
         local gate = progression.Gates[4]
@@ -481,7 +489,7 @@ function ProgressionDirector:SyncPlayer(ply)
 
     net.Start("LOD_RunState")
     net.WriteUInt(math.max(1, state.Level or 1), 20)
-    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 12), 4)
+    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 14), 4)
     for i = 1, 4 do net.WriteBool(state.Cards and state.Cards[i] == true) end
     for i = 1, 4 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
     net.WriteBool(state.JailKey == true)
@@ -538,6 +546,9 @@ end
 
 function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     local state = LOD.RunManager.State
+    if gateEnt and gateEnt.LODWardenEntry then
+        return LOD.Warden and LOD.Warden:Join(ply, gateEnt) or false
+    end
     local card = PC.Cards[index]
     if state.Failed or state.LevelCleared then return false end
     if index < 1 or index > 4 then return false end
@@ -566,7 +577,9 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
 
     if IsValid(gateEnt) and gateEnt.OpenGate then gateEnt:OpenGate() end
     if index == 3 and LOD.NeilBrute then LOD.NeilBrute:Start() end
-    if index == 4 then
+    if index == 4 and state.Graph.Progression.Warden then
+        state.ObjectiveStage = Stages.ENTER_WARDEN
+    elseif index == 4 then
         local keyEnt = self:EnsureCoreJailKey()
         if not IsValid(keyEnt) then
             ErrorNoHalt("[LOD] Black Gate opened but production Jail Key failed to spawn at Core\n")
@@ -597,6 +610,7 @@ end
 function ProgressionDirector:EnsureCoreJailKey()
     local state = LOD.RunManager.State
     local progression = state.Graph and state.Graph.Progression
+    if progression and progression.Warden then return LOD.Warden:EnsureKey() end
     if not progression or state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY
         or not state.GatesOpen[4] then return nil end
     local pos = LOD.MazeBuilder:CellCenter(progression.CoreCell) + Vector(0, 0, PC.KeycardHeight)
@@ -610,6 +624,11 @@ function ProgressionDirector:CollectJailKey(ply, keyEnt)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or
         not LOD.RunManager:IsActivePlayer(ply) then return false end
 
+    if state.Graph and state.Graph.Progression.Warden then
+        local w = state.Warden
+        if not w or not w.dead or keyEnt ~= state.JailKeyEntity or not IsValid(keyEnt)
+            or ply:NearestPoint(keyEnt:GetPos()):DistToSqr(keyEnt:GetPos()) > PC.KeycardTriggerRadius^2 then return false end
+    end
     state.JailKey = true
     state.JailKeyEntity = nil
     state.ObjectiveStage = Stages.UNLOCK_DEBORAH_CELL
@@ -639,6 +658,15 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
     state.JailDoorOpen = true
     state.ObjectiveStage = Stages.RESCUE_DEBORAH
     if IsValid(doorEnt) and doorEnt.OpenDoor then doorEnt:OpenDoor() end
+    if state.Graph and state.Graph.Progression.Warden then
+        for _, e in ipairs(ents.FindByClass("lod_deborah")) do
+            e:SetNW2Bool("LOD_RescueCheer", true)
+            for _, name in ipairs({"cheer1", "cheer", "clap", "applause"}) do
+                local seq=e:LookupSequence(name)
+                if seq and seq>=0 then e:ResetSequence(seq);e:SetCycle(0);e:SetPlaybackRate(1);e:SetNW2Bool("LOD_RescueCheerSequence",true);break end
+            end
+        end
+    end
     self:Announce("DEBORAH'S CELL UNLOCKED — RESCUE DEBORAH", {event = "jail_opened"})
     self:SyncAll()
     return true

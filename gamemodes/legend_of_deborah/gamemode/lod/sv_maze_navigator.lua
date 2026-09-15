@@ -47,8 +47,8 @@ function MazeNavigator:WorldToCell(graph, pos)
     local y = math.floor(((pos.y - MC.Origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5)
     local z = math.floor(((pos.z - MC.Origin.z) / MC.LevelHeight) + 0.5)
 
-    x = math.Clamp(x, 1, MC.Width)
-    y = math.Clamp(y, 1, MC.Height)
+    x = math.Clamp(x, 1, graph.Width or MC.Width)
+    y = math.Clamp(y, 1, graph.Height or MC.Height)
     z = math.Clamp(z, 0, math.max(0, (graph.Layers or 1) - 1))
 
     local direct = graph.Cells[cellKey(x, y, z)]
@@ -228,3 +228,4 @@ function MazeNavigator:PathToWaypoints(graph, path)
 
     return out
 end
+

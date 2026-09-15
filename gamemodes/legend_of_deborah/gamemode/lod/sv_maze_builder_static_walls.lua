@@ -82,6 +82,8 @@ end
 local function hasOpenEdge(graph, cell, nx, ny, nz)
     local ck = cellKey(cell.x, cell.y, cell.z)
     local nk = cellKey(nx, ny, nz)
+    -- The boss gallery overlooks an authored void; it has no corridor wall.
+    if graph.WardenVoid and graph.WardenVoid[nk] then return true end
     if not graph.Cells[nk] then return false end
     return graph.Edges and graph.Edges[edgeKeyFromKeys(ck, nk)] ~= nil
 end
@@ -209,3 +211,4 @@ function MazeBuilder:_BuildWalls(graph)
         self.BuildFailures = (self.BuildFailures or 0) + 1
     end
 end
+

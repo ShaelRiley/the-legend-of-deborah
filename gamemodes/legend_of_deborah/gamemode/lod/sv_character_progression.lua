@@ -1238,10 +1238,18 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
     if not IsValid(hostile) or not hostile.LODHostile then return nil end
     if hostile.LODProgressionState then return hostile.LODProgressionState end
     local state, err = self:GenerateMonsterProgression(hostile.LODArchetypeId, actorSeed,
-        dungeonLevel, hostile:GetMaxHealth(), "ai")
+        dungeonLevel, hostile.LODArchetypeId == "warden" and 1000 or hostile:GetMaxHealth(), "ai")
     if not state then
         ErrorNoHalt("[LOD:RPG] " .. tostring(err) .. "\n")
         return nil
+    end
+    if hostile.LODArchetypeId == "warden" then
+        local size = hostile.LODVariance and hostile.LODVariance.size or 1
+        local rng = LOD.RNG.New(derive(actorSeed, "warden-health-variation"))
+        local variation = rng:Float(0.94, 1.06)
+        local party = math.Clamp(tonumber(hostile.LODWardenParty) or 1, 1, 4)
+        state.wardenHPScale = size * variation * (1 + 0.2 * (party - 1))
+        state.derivedStats.maxHP = math.max(1, math.floor(state.derivedStats.maxHP * state.wardenHPScale + 0.5))
     end
     hostile.LODProgressionState = state
     self:SyncMonsterIdentity(hostile,state)

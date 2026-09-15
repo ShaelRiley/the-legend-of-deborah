@@ -110,14 +110,14 @@ function MazeBuilder:_BuildFloors(graph)
     local transitions = upperTransitionMap(graph)
 
     -- Ground layer: merge deterministic contiguous row runs.
-    for y = 1, MC.Height do
+    for y = 1, (graph.Height or MC.Height) do
         local x = 1
-        while x <= MC.Width do
+        while x <= (graph.Width or MC.Width) do
             local k = cellKey(x, y, 0)
             local cell = graph.Cells[k]
             if cell then
                 local runEnd = x
-                while runEnd + 1 <= MC.Width do
+                while runEnd + 1 <= (graph.Width or MC.Width) do
                     local nextKey = cellKey(runEnd + 1, y, 0)
                     if not graph.Cells[nextKey] then break end
                     runEnd = runEnd + 1
@@ -133,8 +133,8 @@ function MazeBuilder:_BuildFloors(graph)
     -- Elevated layers: explicit cell-local floors. Transition cells retain their
     -- authored stair aperture; every other occupied cell gets a complete slab.
     for z = 1, graph.Layers - 1 do
-        for y = 1, MC.Height do
-            for x = 1, MC.Width do
+        for y = 1, (graph.Height or MC.Height) do
+            for x = 1, (graph.Width or MC.Width) do
                 local k = cellKey(x, y, z)
                 local cell = graph.Cells[k]
                 if cell then
@@ -167,3 +167,4 @@ function MazeBuilder:Build(graph)
     report.floorAnchorSource = self.FloorAnchorSource
     return true, report
 end
+

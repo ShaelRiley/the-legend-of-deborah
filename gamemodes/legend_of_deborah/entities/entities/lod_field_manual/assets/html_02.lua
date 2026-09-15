@@ -181,7 +181,7 @@ return [========[
         <p>Cards are team-wide progress. If one expedition member collects a card, the team has it. Opening a colored gate establishes a new checkpoint.</p>
         <h3>After Yellow</h3>
         <p><b>Hunt Neil for the Black Keycard.</b> The green suitcase carrier flees between opened floors. His Brute bodyguard charges: dodge aside and punish wall impacts. Defeat Neil to release the card; killing the Brute first is optional.</p>
-        <p>Open <b>Black</b> for checkpoint four. In this test build, take the Core Jail Key, unlock Deborah's cell, and rescue her. Gordon the Warden comes later.</p>
+        <p>Open <b>Black</b> for checkpoint four, then enter Gordon the Warden’s two-level arena. Dodge his four-shot appearances, avoid the toilet bomber’s glowing fuses, and keep moving when he draws his crowbar. Respawn in the protected entrance alcove; Gordon keeps his remaining health. Defeat him, collect the Jail Key at the arena center, unlock Deborah’s cell, and touch her to rescue her.</p>
         <p>Gate IDs: Red R/triangle, Blue B/circle, Yellow Y/square, Black K/key.</p>
         <div class="note"><strong>A WORD TO THE WISE:</strong> A gate is not merely an obstacle. Once opened, it is where the expedition can begin again 
 ]========]

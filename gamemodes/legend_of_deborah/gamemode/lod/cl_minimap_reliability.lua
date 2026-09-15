@@ -156,6 +156,8 @@ local function rebuildGraphIndex()
         end
     end
 
+    Map.gridWidth = MC.Width
+    for _, cell in ipairs(Map.cells) do Map.gridWidth = math.max(Map.gridWidth, cell.x) end
     Map.cache.floorCells = floorCells
     Map.cache.floorStairs = floorStairs
     Map.cache.floorGates = floorGates
@@ -283,7 +285,7 @@ hook.Add("PreDrawHUD", "LOD_MinimapNearestRealCell", function()
     end
 
     local pos = ply:GetPos()
-    local gx = math.Clamp(math.floor(((pos.x - MC.Origin.x) / MC.CellSize) + ((MC.Width + 1) * 0.5) + 0.5), 1, MC.Width)
+    local gx = math.Clamp(math.floor(((pos.x - MC.Origin.x) / MC.CellSize) + ((MC.Width + 1) * 0.5) + 0.5), 1, Map.gridWidth or MC.Width)
     local gy = math.Clamp(math.floor(((pos.y - MC.Origin.y) / MC.CellSize) + ((MC.Height + 1) * 0.5) + 0.5), 1, MC.Height)
     local maxFloor = math.max(0, (Map.layers or 1) - 1)
     local gz = math.Clamp(math.floor(((pos.z - MC.Origin.z) / MC.LevelHeight) + 0.5), 0, maxFloor)

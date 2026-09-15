@@ -293,6 +293,7 @@ function FeatEffectSystem:OnEffectiveDamage(actor, damage)
 end
 
 function FeatEffectSystem:_TickActor(actor, elapsed)
+    if IsValid(actor) and actor.LODArchetypeId == "warden" and LOD.Warden and #LOD.Warden:Targets() == 0 then return end
     if not IsValid(actor) or actor.LODDead or actor:Health() <= 0 or (actor:IsPlayer() and not actor:Alive()) then
         self.RegenActors[actor] = nil
         return

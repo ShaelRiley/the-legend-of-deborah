@@ -102,14 +102,14 @@ end
 function WanderingDirector:GetTargetPopulation(graph)
     graph = graph or (LOD.RunManager and LOD.RunManager.State.Graph)
     if not graph then return 0 end
-    return math.max(0, graph.Layers or 0) * WC.PerFloor
+    return math.max(0, graph.WanderLayers or graph.Layers or 0) * WC.PerFloor
 end
 
 function WanderingDirector:GetDeficitReservation(graph)
     graph = graph or (LOD.RunManager and LOD.RunManager.State.Graph)
     if not graph then return 0 end
     local deficit = 0
-    for floor = 0, math.max(0, (graph.Layers or 1) - 1) do
+    for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         deficit = deficit + math.max(0, WC.PerFloor - self:_LivingOnFloor(floor))
     end
     return deficit
@@ -235,13 +235,13 @@ function WanderingDirector:_InitializeForGraph(graph)
     self.NextRespawn = {}
     self.SpawnOrdinal = {}
 
-    for floor = 0, math.max(0, (graph.Layers or 1) - 1) do
+    for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         for _ = 1, WC.PerFloor do self:_SpawnOne(graph, floor, "initial") end
         self.NextRespawn[floor] = nil
     end
 
     print(string.format("[LOD:WANDER] initialized floors=%d target=%d",
-        graph.Layers or 1, self:GetTargetPopulation(graph)))
+        graph.WanderLayers or graph.Layers or 1, self:GetTargetPopulation(graph)))
 end
 
 local function currentCellFor(hostile, graph)
@@ -442,7 +442,7 @@ function WanderingDirector:Think()
     if now < (self.NextThink or 0) then return end
     self.NextThink = now + WC.ThinkInterval
 
-    for floor = 0, math.max(0, (graph.Layers or 1) - 1) do
+    for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         local living = self:_LivingOnFloor(floor)
         if living < WC.PerFloor then
             if not self.NextRespawn[floor] then
@@ -474,7 +474,7 @@ concommand.Add("lod_m3_wanderers", function(ply)
     end
 
     local now = CurTime()
-    for floor = 0, math.max(0, (graph.Layers or 1) - 1) do
+    for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         local living = WanderingDirector:_LivingOnFloor(floor)
         local nextAt = WanderingDirector.NextRespawn[floor]
         local wait = nextAt and math.max(0, nextAt - now) or 0
@@ -534,3 +534,4 @@ concommand.Add("lod_wander_schedule_status", function(ply)
     print("[LOD:WANDER-SCHEDULE] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+
