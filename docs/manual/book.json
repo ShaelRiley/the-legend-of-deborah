@@ -608,10 +608,10 @@
       "title": "Down, but not finished",
       "art": "deborah:4",
       "text": [
-        "Heroes start with three lives. On death, your ordinary weapons, ammunition, and gear are lost. Your character identity, XP, class, feats, and persistent DFT collection remain. Reconnecting does not restore a lost life or reroll your character.",
+        "Heroes start with three lives. On death, your weapons, magazines, reserve ammunition, equipped wearables, stored gear, and throwable potions stay with your Hero for the respawn. Your character identity, XP, class, feats, and persistent DFT collection remain too. Reconnecting does not restore a lost life or reroll your character.",
         "A normal death has a mandatory 20-second respawn lockout. Play Tetris while waiting, or spectate. After the lockout, press F to finalize your reward and respawn. You can keep playing until the normal 60-second death-Tetris maximum, when respawn happens automatically.",
         "When no living or respawnable cooperative Hero remains, the campaign wipes. A human Soldier does not keep the Hero campaign alive. Defeating Gordon on the same tick as the final Hero's loss is not a rescue; someone still has to reach Deborah.",
-        "Successful rescue can bring eliminated teammates back under the campaign's comeback rules, up to the maximum of four lives. It does not retroactively undo ordinary equipment lost on death."
+        "Successful rescue can bring eliminated teammates back under the campaign's comeback rules, up to the maximum of four lives. A revived Hero returns with the same saved weapons, ammunition, wearables, stored gear, and throwable potions."
       ]
     },
     {

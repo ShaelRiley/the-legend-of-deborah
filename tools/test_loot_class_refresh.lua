@@ -65,15 +65,12 @@ local capacity=E.MaximumStoredEquipment;E.MaximumStoredEquipment=0
 assert(not E:AcquireWorldItem(carrier,second,false,'pickup') and not bag.items[second.id])
 E.MaximumStoredEquipment=capacity
 assert(E:AcquireWorldItem(carrier,second,false,'pickup'),'Freeing capacity permits the same untouched drop')
--- Death clears the entire run bag/slots and derived effects, retaining progression.
+-- Death retention leaves the entire run bag/slots and derived effects intact.
 E:AddConsumable(state,'healing_potion',2)
-local saved=p;local level=p.level
-E:LoseOnDeath(attacker,attacker.ps)
-assert(next(attacker.ps.equipment.items)==nil and next(attacker.ps.equipment.slots)==nil)
-assert(next(attacker.ps.inventory.weapons)==nil and next(attacker.ps.inventory.ammo)==nil)
-assert(attacker.ps.progressionState==saved and saved.level==level and not saved.equipmentShieldEquipped)
-for _,n in pairs(saved.equipmentAbilityDelta) do assert(n==0) end
-local newer=E:NewItem(attacker,'shield','shield');assert(newer.id~=shield.id,'New life cannot reuse stale equipment identity')
+local saved=p;local level=p.level;local savedState=attacker.ps.equipment
+assert(savedState.items[shield.id] and savedState.slots.left_arm==shield.id)
+assert(savedState.items.healing_potion.count==2 and savedState.slots.throwable=='healing_potion')
+assert(attacker.ps.progressionState==saved and saved.level==level and saved.equipmentShieldEquipped)
 
 -- Real near-look selection, including obstructed, side and cloaked targets.
 dofile(root..'sh_near_look.lua')
@@ -99,7 +96,7 @@ target.pos=nil;target.nw.LOD_Watcher=true;target.nw.LOD_WatcherInvisibleUntil=Cu
 assert(not LOD.NearLook:Find(attacker,512,function() return true end))
 target.nw.LOD_WatcherInvisibleUntil=0
 assert(not LOD.NearLook:Find(attacker,512,function() return false end))
-print('LOOT_CLASS_REFRESH_PASS: backstab 2x/3x/4x and once-per-event geometry; shield-only STR Block; death loss; near-look cone/LOS/cloak')
+print('LOOT_CLASS_REFRESH_PASS: backstab 2x/3x/4x and once-per-event geometry; shield-only STR Block; death retention; near-look cone/LOS/cloak')
 
 -- Frozen statue rendering, bounded shared mesh and optional light budget.
 ENT={};include=function() end

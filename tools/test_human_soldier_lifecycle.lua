@@ -82,7 +82,10 @@ local function mockGMod()
         Remove = function() end,
         Exists = function() return false end
     }
-    game = {GetMap = function() return "gm_flatgrass" end}
+    game = {
+        GetMap = function() return "gm_flatgrass" end,
+        GetAmmoName = function(id) return id == 10 and "Grenade" or "Buckshot" end
+    }
     resource = {AddFile = function() end, AddWorkshop = function() end}
     scripted_ents = {Register = function() end, Get = function() return {} end, GetStored = function() return {} end}
     ErrorNoHalt = function(msg) end
@@ -149,6 +152,9 @@ end
 
 local function createMockPlayer(id, nick, entIndex)
     local weapons = {}
+    local ammo = {}
+    local armor = 0
+    local activeClass = nil
     local alive = true
     local spectateMode = nil
     local p = {
@@ -172,23 +178,32 @@ local function createMockPlayer(id, nick, entIndex)
         SetMaxHealth = function() end,
         SetHealth = function() end,
         Health = function() return 100 end,
-        SetArmor = function() end,
-        Armor = function() return 0 end,
-        StripWeapons = function() weapons = {} end,
-        RemoveAllAmmo = function() end,
+        SetArmor = function(_, value) armor = value end,
+        Armor = function() return armor end,
+        StripWeapons = function() weapons = {}; activeClass = nil end,
+        RemoveAllAmmo = function() ammo = {} end,
         GetWeapons = function() return weapons end,
-        GetAmmo = function() return {} end,
-        SetAmmo = function() end,
+        GetAmmo = function() return ammo end,
+        SetAmmo = function(_, amount, ammoID) ammo[ammoID] = amount end,
         Give = function(_, cls)
-            local w = {_isValid = true, GetClass = function() return cls end, Clip1 = function() return 30 end, Clip2 = function() return 0 end, GetPrimaryAmmoType = function() return 1 end}
+            local clip1, clip2 = 30, 0
+            local w = {_isValid = true, GetClass = function() return cls end,
+                Clip1 = function() return clip1 end, Clip2 = function() return clip2 end,
+                SetClip1 = function(_, value) clip1 = value end,
+                SetClip2 = function(_, value) clip2 = value end,
+                GetPrimaryAmmoType = function() return 1 end}
             table.insert(weapons, w)
+            activeClass = activeClass or cls
             return w
         end,
         GetWeapon = function(_, cls)
             for _, w in ipairs(weapons) do if w:GetClass() == cls then return w end end
             return nil
         end,
-        GetAmmoCount = function() return 0 end,
+        HasWeapon = function(self, cls) return self:GetWeapon(cls) ~= nil end,
+        GetActiveWeapon = function(self) return activeClass and self:GetWeapon(activeClass) or nil end,
+        SelectWeapon = function(_, cls) activeClass = cls end,
+        GetAmmoCount = function(_, ammoID) return ammo[ammoID] or 0 end,
         SetNW2Bool = function() end,
         SetNW2Int = function() end,
         SetNW2String = function() end,
@@ -242,6 +257,36 @@ hero2State.xp = 600
 hero2State.classId = "fighter"
 ps2.progressionState = hero2State
 ps2.lives = 3
+
+-- A normal Hero death snapshots the still-owned native loadout even though the
+-- engine already reports Alive() == false, then restores that exact run state.
+local pistol = p2:Give("weapon_pistol")
+local shotgun = p2:Give("weapon_shotgun")
+pistol:SetClip1(7); shotgun:SetClip1(3); p2:SelectWeapon("weapon_shotgun")
+p2:SetAmmo(19, 1); p2:SetAmmo(4, 10); p2:SetArmor(27)
+local retainedEquipment = {items={hat={definitionId="hat",count=1},
+    healing_potion={definitionId="healing_potion",count=2}},
+    slots={head="hat",throwable="healing_potion"}}
+ps2.equipment = retainedEquipment
+p2:SetAlive(false)
+hook.Run("PlayerDeath", p2, nil, p1)
+check(ps2.lives == 2 and ps2.equipment == retainedEquipment,
+    "Respawn retention keeps wearable and throwable equipment records")
+check(#ps2.inventory.weapons == 2 and ps2.inventory.activeWeaponClass == "weapon_shotgun"
+    and ps2.inventory.ammo[1] == 19 and ps2.inventory.ammo[10] == nil and ps2.armor == 27,
+    "PlayerDeath captures weapons, active selection, reserve ammo and armor without stock grenades")
+p2:StripWeapons(); p2:RemoveAllAmmo(); p2:SetArmor(0)
+p2:Spawn()
+local restoredPistol, restoredShotgun = p2:GetWeapon("weapon_pistol"), p2:GetWeapon("weapon_shotgun")
+check(IsValid(restoredPistol) and restoredPistol:Clip1() == 7
+    and IsValid(restoredShotgun) and restoredShotgun:Clip1() == 3
+    and p2:GetAmmoCount(1) == 19 and p2:Armor() == 27,
+    "Hero respawn restores native weapons, magazines, reserve ammunition and armor")
+check(p2:GetActiveWeapon() == restoredShotgun and ps2.equipment == retainedEquipment,
+    "Hero respawn restores the wielded weapon without replacing the equipment bag")
+ps2.lives = 3
+ps2.respawnAt = nil
+p2.LODHandledRunDeath = nil
 
 print("--- AG-007R ASSERTION TESTS A THRU T ---")
 

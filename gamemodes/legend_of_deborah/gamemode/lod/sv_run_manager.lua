@@ -443,20 +443,26 @@ function RunManager:PromoteWaitingSpectators()
     return promotedCount
 end
 
-function RunManager:CaptureInventory(ply, ps)
+function RunManager:CaptureInventory(ply, ps, allowDead)
     ps = ps or self:GetPlayerState(ply)
     if not IsValid(ply) or not ps then return end
 
-    if not ply:Alive() then return end -- never recapture a dead body after its loot was lost
+    -- PlayerDeath runs after Alive() becomes false, while the player's weapon
+    -- entities still hold the authoritative magazines. Only that hook opts in;
+    -- a later disconnect must never replace a good snapshot with an empty body.
+    if not allowDead and not ply:Alive() then return end
     local snapshot = {weapons = {}, ammo = {}}
+    local activeWeapon = ply:GetActiveWeapon()
     for _, wep in ipairs(ply:GetWeapons()) do
         if IsValid(wep) and wep:GetClass() ~= "weapon_frag"
             and wep:GetClass() ~= "weapon_lod_throwable" and wep:GetClass() ~= "weapon_lod_empty_hands" then
+            local class = wep:GetClass()
             snapshot.weapons[#snapshot.weapons + 1] = {
-                class = wep:GetClass(),
+                class = class,
                 clip1 = wep:Clip1(),
                 clip2 = wep:Clip2()
             }
+            if wep == activeWeapon then snapshot.activeWeaponClass = class end
         end
     end
     for ammoID, amount in pairs(ply:GetAmmo()) do
@@ -482,6 +488,8 @@ function RunManager:RestoreInventory(ply, ps)
     for ammoID, amount in pairs(ps.inventory.ammo or {}) do
         if game.GetAmmoName(ammoID) ~= "Grenade" then ply:SetAmmo(amount, ammoID) end
     end
+    local activeClass = ps.inventory.activeWeaponClass
+    if activeClass and ply:HasWeapon(activeClass) then ply:SelectWeapon(activeClass) end
 end
 
 function RunManager:HoldPlayersForBuild()
@@ -744,9 +752,6 @@ function RunManager:HandleDeath(ply, attacker)
     if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or not ps then return end
     ply.LODHandledRunDeath = true
 
-    ps.inventory = {weapons={},ammo={}}
-    if LOD.Equipment and LOD.Equipment.LoseOnDeath then LOD.Equipment:LoseOnDeath(ply,ps) end
-    ps.armor = 0
     ps.lives = math.max(0, ps.lives - 1)
     if LOD.CryptoDirector then LOD.CryptoDirector:HeroLifeConsumed(ply, attacker) end
     if LOD.SoldierProgression and LOD.SoldierProgression.ObserveHeroLifeConsumed then
@@ -1026,6 +1031,12 @@ hook.Add("PlayerSpawn", "LOD_PlayerSpawn", function(ply)
 end)
 
 hook.Add("PlayerDeath", "LOD_PlayerDeathLives", function(victim, inflictor, attacker)
+    local ps = RunManager:GetPlayerState(victim)
+    if ps and not RunManager:IsSoldierControl(victim)
+        and RunManager:IsPlayedIdentity(victim) and RunManager:IsActivePlayer(victim)
+    then
+        RunManager:CaptureInventory(victim, ps, true)
+    end
     RunManager:HandleDeath(victim, attacker)
 end)
 

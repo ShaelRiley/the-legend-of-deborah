@@ -9,7 +9,25 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — manual launch and HUD layout repair
+## Current checkpoint — Hero respawn loadout retention
+
+The author explicitly corrected the older death-loss rule: consuming a Hero life
+must not empty that Hero's run inventory. `PlayerDeath` now captures the native
+loadout at the authoritative death seam even though Source already reports the
+victim as dead. The saved state includes ordinary weapon classes, both magazine
+values, reserve ammunition, armor and the actively wielded ordinary weapon.
+Respawn restores that snapshot and reselects the wielded weapon.
+
+The identity-owned equipment bag is no longer replaced on death, so equipped
+wearables, stored items and grenade-slot potions survive unchanged, including
+final-life elimination followed by a later campaign revival. Human Soldier deaths
+remain isolated and cannot overwrite the stored Hero loadout. The manual now
+teaches the corrected retention rule. Deterministic lifecycle coverage exercises
+death capture through the real hook and the subsequent spawn restore. Native
+Garry's Mod multiplayer acceptance remains pending; no main promotion or public
+deployment is included.
+
+## Previous checkpoint — manual launch and HUD layout repair
 
 The portable reader had installed its JavaScript-to-Lua bridge before Chromium
 loaded the manual document, contrary to the DHTML lifecycle contract. A document

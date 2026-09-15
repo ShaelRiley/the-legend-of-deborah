@@ -298,21 +298,6 @@ function E:PostDamage(target,info,taken)
 end
 hook.Add("PostEntityTakeDamage","LOD_EquipmentHitRiders",function(target,info,taken) E:PostDamage(target,info,taken) end)
 
--- RunManager calls once at authoritative Hero life consumption, before any
--- respawn/disconnect snapshot. Wallets and per-run DFT entitlements are separate.
-function E:LoseOnDeath(ply,ps)
-    ps.equipmentLifeSerial=(ps.equipmentLifeSerial or 0)+1
-    ps.equipment={items={},slots={}}
-    ps.inventory={weapons={},ammo={}}
-    local p=ps.progressionState
-    if p then
-        p.equipmentKey=nil;p.equipmentAbilityDelta={};p.equipmentExtras={}
-        p.equipmentBlockChanceContribution=0;p.equipmentShieldEquipped=false
-        CPS:_RecomputeProgressionState(p)
-    end
-    if self.ClearTransient then self:ClearTransient(ply) end
-end
-
 -- Native weapons are family adapters. Distinct stored rolls share that family's
 -- magazine/reserve, so swapping copies cannot refill ammunition.
 function E:MaterializeWeapon(ply,id)
