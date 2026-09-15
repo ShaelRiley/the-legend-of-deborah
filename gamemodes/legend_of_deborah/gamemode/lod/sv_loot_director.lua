@@ -716,6 +716,8 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
         {value = "health", weight = 12 * (hpRatio < 0.25 and 3.0 or (hpRatio < 0.55 and 2.0 or 0.55))},
         {value = "armor", weight = 5 * (armorRatio < 0.25 and 2.2 or (armorRatio < 0.60 and 1.4 or 0.45))},
         {value = "weapon", weight = 2.8 * (weaponMissing and 1.8 or 0.75)},
+        {value = "wearable", weight = 8},
+        {value = "consumable", weight = 6},
         {value = "life", weight = self:_CanUseExtraLife(ply) and 1.5 or 0}
     }
 
@@ -745,6 +747,8 @@ function Loot:ResolveEnemyReward(ply, category, rng)
         else
             kind = "cache"
         end
+    elseif category == "consumable" then
+        payload.itemId = "healing_potion"
     elseif category == "life" then
         if not self:_CanUseExtraLife(ply) then return false end
         kind = "life"

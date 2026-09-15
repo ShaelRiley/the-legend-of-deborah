@@ -151,6 +151,25 @@ function E:Use(ply, mode)
     return true
 end
 
+-- The native gun stays owned: stowing cannot refill a magazine, destroy its
+-- roll, or leave its bonuses active. Empty hands has no attack of its own.
+function E:InventoryWeapon(ply,id,stow)
+    if not self:CanAct(ply) then return false end
+    local state=self:Ensure(heroState(ply))
+    local def=self:Definition(state.items[id])
+    if not def or not def.weapon or state.slots[def.weaponClass]~=id then return false end
+    if not IsValid(ply:GetWeapon(def.weaponClass)) then return false end
+    if stow then
+        local active=ply:GetActiveWeapon()
+        if not IsValid(active) or active:GetClass()~=def.weaponClass then return false end
+        if not ply:HasWeapon("weapon_lod_empty_hands") then ply:Give("weapon_lod_empty_hands",true) end
+        if not ply:HasWeapon("weapon_lod_empty_hands") then return false end
+    end
+    ply:SelectWeapon(stow and "weapon_lod_empty_hands" or def.weaponClass)
+    self:Sync(ply)
+    return true
+end
+
 net.Receive("LOD_EquipmentRequest", function(bits, ply)
     if bits > 4096 or not IsValid(ply) then return end
     local now = CurTime()
@@ -166,6 +185,8 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
     local state = E:Ensure(heroState(ply))
     if action == "activate" then
         if id=="" or state.slots.throwable==id then E:Activate(ply) end
+    elseif action == "select_weapon" then E:InventoryWeapon(ply,id,false)
+    elseif action == "stow_weapon" then E:InventoryWeapon(ply,id,true)
     elseif action == "deactivate" then E:Deactivate(ply)
     elseif action == "equip" then
         if E:Equip(state, id, slot) then E:Sync(ply) end

@@ -45,7 +45,7 @@ function ENT:Initialize()
     self.LODHostile = false
     self:SetModel("models/roller.mdl")
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
-    self:SetColor(Color(245, 195, 55, 255))
+    self:SetColor((LOD.MagicForms and LOD.MagicForms.ContentColors or {})[self.LODContentId or "raw"] or Color(210,235,255))
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-13, -13, 0), Vector(13, 13, 28))
     self:SetHealth(18)

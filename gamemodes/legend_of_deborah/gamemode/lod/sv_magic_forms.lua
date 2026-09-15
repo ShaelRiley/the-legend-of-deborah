@@ -662,8 +662,11 @@ function Forms:ResolveSummonAttack(summon, target)
             and summon.LODSummonMagicPayload.wizardFullMagicIntBonus or 0
     }
     summon.LODAttackSerial = (summon.LODAttackSerial or 0) + 1
-    return self:_ApplyDamage(summon, caster, target, form, content, context,
-        (target:WorldSpaceCenter() - summon:WorldSpaceCenter()):GetNormalized())
+    local origin,point=summon:WorldSpaceCenter(),target:WorldSpaceCenter()
+    local result=self:_ApplyDamage(summon, caster, target, form, content, context,
+        (point-origin):GetNormalized())
+    if result then broadcastFX("summon_hit",content and content.id or "raw",origin,point,caster) end
+    return result
 end
 
 function Forms:_CanCastPreSpend(ply, form, context)

@@ -178,6 +178,9 @@ function E:PrepareReward(owner,kind,payload,options)
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.2) then
         return "consumable",{itemId="stink_bomb"}
     end
+    if kind=="wearable" and not payload.item then
+        return "wearable",{item=self:Generate(seed,Run.State.Level or 1,nil,key)}
+    end
     if kind~="weapon" and kind~="cache" then return kind,payload end
     if options.equipmentEligible and rng:Chance(.35) then
         return "wearable",{item=self:Generate(seed,Run.State.Level or 1,nil,key)}

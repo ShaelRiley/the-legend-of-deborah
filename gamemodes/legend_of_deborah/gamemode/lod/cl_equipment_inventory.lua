@@ -29,6 +29,11 @@ local function textHeight(text,width,font)
     local _,height=surface.GetTextSize('Ag');return lines*height+6
 end
 function E:InventorySlot(id)
+    local def=self:Definition(self.Snapshot.items[id])
+    if def and def.weapon then
+        if self.Snapshot.activeWeaponClass==def.weaponClass and self.Snapshot.slots[def.weaponClass]==id then return 'weapon' end
+        return nil
+    end
     for _,slot in ipairs(self.SlotOrder) do if self.Snapshot.slots[slot]==id then return slot end end
 end
 function E:InventoryCompatible(id,slot)
@@ -46,16 +51,16 @@ function E:InventoryMove(id,target,origin)
     if not def then self:InventoryMessage('That item is no longer available.');return false end
     if RealTime()<(self.InventoryNextAction or 0) then return false end
     if target=='inventory' then
-        if not origin or self.Snapshot.slots[origin]~=id or def.weapon then
-            self:InventoryMessage('Weapons stay owned; choose one in the weapon slot.');return false
+        if not origin or (def.weapon and self:InventorySlot(id)~=origin) or (not def.weapon and self.Snapshot.slots[origin]~=id) then
+            self:InventoryMessage('That item is no longer equipped.');return false
         end
-        self:Request('unequip',id,origin)
+        self:Request(def.weapon and 'stow_weapon' or 'unequip',id,origin)
     elseif not self:InventoryCompatible(id,target) then
         self:InventoryMessage('That item does not fit this slot.');return false
     elseif target=='weapon' then
         local weapon=LocalPlayer():GetWeapon(def.weaponClass)
         if not IsValid(weapon) then self:InventoryMessage('Weapon unavailable.');return false end
-        input.SelectWeapon(weapon);E:Close();return true
+        self:Request('select_weapon',id,'weapon')
     else self:Request('equip',id,target) end
     self.InventoryNextAction=RealTime()+.12
     self:InventoryMessage('Equipment change requested.')
@@ -134,7 +139,9 @@ function E:InventoryDetails()
         local b=vgui.Create('DButton',view.Details);b:SetPos(0,y);b:SetSize(width,28);b:SetText(title);UI:Button(b,C.blue)
         b.DoClick=action;y=y+34
     end
-    if def.weapon then button('SELECT WEAPON',function() E:InventoryMove(id,'weapon') end)
+    if def.weapon then
+        if slot then button('STOW WEAPON',function() E:InventoryMove(id,'inventory','weapon') end)
+        else button('EQUIP WEAPON',function() E:InventoryMove(id,'weapon') end) end
     else
         if slot then
             button('UNEQUIP',function() E:InventoryMove(id,'inventory',slot) end)
@@ -168,19 +175,23 @@ function E:RefreshInventory()
         p:SetPos((col+.5)*view.LeftWidth/3-size/2,28+row*view.RowHeight)
         view.SlotTiles[#view.SlotTiles+1]=p
     end
-    local ids={};for id,item in pairs(self.Snapshot.items) do if self:Definition(item) then ids[#ids+1]=id end end
+    local ids={};for id,item in pairs(self.Snapshot.items) do if self:Definition(item) and (self:Definition(item).throwable or not self:InventorySlot(id)) then ids[#ids+1]=id end end
     table.sort(ids,function(a,b)
         local da,db=self:Definition(self.Snapshot.items[a]),self:Definition(self.Snapshot.items[b])
         if da.name==db.name then return a<b end;return da.name<db.name
     end)
     local columns=math.max(2,math.floor((view.RightWidth-20)/72));local cell=(view.RightWidth-20)/columns
-    for i,id in ipairs(ids) do
-        local p=tile(view.Bag,id,nil,'',math.min(64,cell-6))
-        p:SetPos(((i-1)%columns)*cell,math.floor((i-1)/columns)*98)
-        local name=self:Definition(self.Snapshot.items[id]).name
-        label(view.Bag,name,p:GetX(),p:GetY()+p:GetTall()+2,cell-6,30,'DermaDefault')
+    -- At least three rows, including a free row after the last occupied row.
+    local count=math.max(columns*3,(math.ceil(#ids/columns)+1)*columns)
+    for i=1,count do
+        local id=ids[i]
+        local p=tile(view.Bag,id,nil,'',math.min(52,cell-6))
+        p:SetPos(((i-1)%columns)*cell,math.floor((i-1)/columns)*72)
+        if id then
+            local name=self:Definition(self.Snapshot.items[id]).name
+            label(view.Bag,name,p:GetX(),p:GetY()+p:GetTall()+2,cell-6,18,'DermaDefault')
+        end
     end
-    if #ids==0 then label(view.Bag,'No owned equipment.',4,4,view.RightWidth-24,40) end
     self:InventoryDetails()
     view.BagScroll:GetVBar():SetScroll(bagScroll)
     view.DetailScroll:GetVBar():SetScroll(detailScroll)
@@ -219,7 +230,7 @@ function E:BuildPanel(frame)
     local rx=view.LeftWidth+18
     view.Message=label(view,'Drag to equip. Right-click a worn slot to unequip.',rx,0,view.RightWidth,36)
     local bag=vgui.Create('DScrollPanel',view);view.BagScroll=bag
-    bag:SetPos(rx,40);bag:SetSize(view.RightWidth,math.max(86,math.floor(h*.48)-40))
+    bag:SetPos(rx,40);bag:SetSize(view.RightWidth,math.min(228,math.max(86,h-150)))
     view.Bag=bag:GetCanvas()
     view.Bag:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('inventory',panels,dropped) end)
     bag:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('inventory',panels,dropped) end)

@@ -57,7 +57,7 @@ local function bag(id)
     for _,p in ipairs(view.Bag.children) do if p.LODItemId==id and IsValid(p) then return p end end
 end
 local function slot(name) for _,p in ipairs(view.SlotTiles) do if p.LODOriginSlot==name then return p end end end
-assert(bag('healing_potion') and bag('stink_bomb') and bag('i9') and bag('i10'))
+assert(bag('healing_potion') and bag('stink_bomb') and not bag('i9') and bag('i10'))
 assert(bag('healing_potion').tooltip:find('Healing',1,true))
 -- Hover is cosmetic; wrong slots and foreign drag panels send nothing.
 local count=#requests
@@ -88,8 +88,12 @@ assert(E:Equip(state,'i7','right_hand') and state.items.i5 and state.items.i6)
 assert(E:Equip(state,'i5','left_hand') and not state.slots.right_hand and state.items.i7)
 -- Native gun selection is separate from wearing clothing; no gun ownership loss.
 ply:Give('weapon_smg1');now=now+1
-assert(E:InventoryMove('i10','weapon') and ply.selected and closed==1)
-assert(not E:InventoryMove('i10','inventory','weapon_smg1'))
+assert(E:InventoryMove('i10','weapon') and requests[#requests][1]=='select_weapon' and closed==0)
+now=now+1;assert(E:InventoryMove('i9','inventory','weapon'))
+assert(requests[#requests][1]=='stow_weapon')
+now=now+1;assert(not E:InventoryMove('i10','inventory','weapon'))
+local empty=0;for _,p in ipairs(view.Bag.children) do if p.kind=='DButton' and not p.LODItemId then empty=empty+1 end end
+assert(empty>=2,'Visible empty inventory destinations remain available')
 -- Every potion fits only Throwable. Keyboard/click fallback uses same request.
 now=now+1;assert(E:InventoryMove('stink_bomb','throwable'))
 assert(not E:InventoryCompatible('stink_bomb','weapon') and not E:InventoryCompatible('healing_potion','body'))

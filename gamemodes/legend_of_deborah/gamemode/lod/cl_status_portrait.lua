@@ -70,6 +70,35 @@ function H:Visible(ply)
     local state=LOD.ClientState
     return not state or not (state.failed or state.levelCleared)
 end
+-- Full procedural names live on Equipment; two compact lines fit the HUD.
+function H:WeaponCaption(ply,width)
+    local weapon=ply:GetActiveWeapon()
+    local name=IsValid(weapon) and weapon:GetNW2String('LOD_ItemName','') or ''
+    if name=='' and IsValid(weapon) and weapon:GetClass()~='weapon_lod_empty_hands' then
+        name=weapon:GetPrintName() or ''
+    end
+    local key=name..':'..width
+    if key==self.WeaponKey then return self.WeaponLines end
+    surface.SetFont('DermaDefault')
+    local lines,line={},''
+    for word in name:gmatch('%S+') do
+        local candidate=line=='' and word or line..' '..word
+        if surface.GetTextSize(candidate)>width and line~='' then
+            lines[#lines+1]=line;line=word
+        else line=candidate end
+    end
+    if line~='' then lines[#lines+1]=line end
+    for i=1,math.min(2,#lines) do
+        local text=lines[i]
+        if surface.GetTextSize(text)>width or (i==2 and #lines>2) then
+            while #text>0 and surface.GetTextSize(text..'...')>width do text=text:sub(1,-2) end
+            lines[i]=text..'...'
+        end
+    end
+    while #lines>2 do table.remove(lines) end
+    self.WeaponKey=key;self.WeaponLines=lines
+    return lines
+end
 function H:Draw()
     local ply=LocalPlayer()
     if not self:Visible(ply) then
@@ -90,6 +119,10 @@ function H:Draw()
     local size=math.Clamp(ScrH()*.12,64,128)
     local magicX,magicY,magicW,magicH=LOD.MagicHUD:Bounds()
     local x,y=magicX+magicW+12,magicY+magicH-size
+    local feedLeft=ScrW()-22-math.min(600,ScrW()*.44)
+    local weaponWidth=math.max(48,math.min(300,feedLeft-12-x))
+    local weaponLines=self:WeaponCaption(ply,weaponWidth)
+    y=y-(#weaponLines>0 and #weaponLines*14+5 or 0)
     local lines=self:Wrap(self.Caption,math.min(340,ScrW()*.5-44))
     -- Captions grow upward; ailments never displace the face or cover Magic.
     -- Keep their right edge out of the lower-right combat-feed column.
@@ -103,6 +136,9 @@ function H:Draw()
     panel:SetPos(x,y);panel:SetSize(size,size)
     draw.RoundedBox(2,x,y,size,size,Color(20,22,25,180))
     panel:PaintManual()
+    for i,line in ipairs(weaponLines) do
+        UI:HUDText(line,'DermaDefault',x+weaponWidth*.5,y+size+5+(i-1)*14,UI.HUDColor,TEXT_ALIGN_CENTER)
+    end
     local color=self.Harmful and Color(255,135,100) or self.Affected and Color(145,230,170) or UI.HUDColor
     for i,line in ipairs(lines) do
         UI:HUDText(line,'LOD_HUD_Small',textX+self.CaptionWidth*.5,textY+(i-1)*18,color,TEXT_ALIGN_CENTER)

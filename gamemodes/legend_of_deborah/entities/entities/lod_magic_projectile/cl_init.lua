@@ -13,7 +13,7 @@ local ironColor, fuseColor = Color(24, 25, 28), Color(245, 221, 156)
 
 function ENT:Initialize()
     -- Include the cosmetic fuse in culling bounds. Server hull/travel stay intact.
-    self:SetRenderBounds(Vector(-16,-16,-16),Vector(16,16,20))
+    self:SetRenderBounds(Vector(-48,-48,-48),Vector(48,48,48))
 end
 
 function ENT:DrawBomb()
@@ -55,17 +55,21 @@ end
 
 function ENT:Draw()
     if self:GetMagicForm() == "bomb" then self:DrawBomb() return end
-    self:DrawModel()
-    local color = self:GetColor()
-    local light = DynamicLight(self:EntIndex())
-    if light then
-        light.pos = self:GetPos()
-        light.r = color.r
-        light.g = color.g
-        light.b = color.b
-        light.brightness = 1.4
-        light.Decay = 900
-        light.Size = 96
-        light.DieTime = CurTime() + 0.08
+    local p,c=self:GetPos(),self:GetColor()
+    local forward=self:GetAngles():Forward()
+    render.SetMaterial(emberMaterial)
+    -- The projectile is an enchanted comet, not a stock rocket/crossbow model.
+    local width=self:GetMagicForm()=="missile" and 17 or 9
+    render.DrawBeam(p-forward*30,p,width,0,1,c)
+    render.DrawSprite(p,width*2,width*2,c)
+    render.DrawSprite(p,width*.7,width*.7,Color(255,255,255))
+    local cv=GetConVar("lod_reduced_effects")
+    if not (cv and cv:GetBool()) then
+        local up,right=self:GetAngles():Up(),self:GetAngles():Right()
+        for i=1,3 do
+            local a=CurTime()*12+i*math.pi*2/3
+            local q=p+(up*math.cos(a)+right*math.sin(a))*8-forward*12
+            render.DrawBeam(q-forward*10,q,2,0,1,c)
+        end
     end
 end

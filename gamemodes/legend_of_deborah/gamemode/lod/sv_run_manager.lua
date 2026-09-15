@@ -450,7 +450,7 @@ function RunManager:CaptureInventory(ply, ps)
     local snapshot = {weapons = {}, ammo = {}}
     for _, wep in ipairs(ply:GetWeapons()) do
         if IsValid(wep) and wep:GetClass() ~= "weapon_frag"
-            and wep:GetClass() ~= "weapon_lod_throwable" then
+            and wep:GetClass() ~= "weapon_lod_throwable" and wep:GetClass() ~= "weapon_lod_empty_hands" then
             snapshot.weapons[#snapshot.weapons + 1] = {
                 class = wep:GetClass(),
                 clip1 = wep:Clip1(),
@@ -471,7 +471,7 @@ function RunManager:RestoreInventory(ply, ps)
     ply:RemoveAllAmmo()
 
     for _, weaponState in ipairs(ps.inventory.weapons or {}) do
-        local allowed = weaponState.class ~= "weapon_frag" and weaponState.class ~= "weapon_lod_throwable"
+        local allowed = weaponState.class ~= "weapon_frag" and weaponState.class ~= "weapon_lod_throwable" and weaponState.class ~= "weapon_lod_empty_hands"
         local wep = allowed and ply:Give(weaponState.class, true) or nil
         if IsValid(wep) then
             if weaponState.clip1 and weaponState.clip1 >= 0 then wep:SetClip1(weaponState.clip1) end

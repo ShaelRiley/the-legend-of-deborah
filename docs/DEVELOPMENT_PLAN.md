@@ -9,7 +9,23 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — labyrinth-entry crash candidate and granite Deborah
+## Current checkpoint — elemental magic and equipment inventory
+
+The latest author request restores the procedural weapon name below the HUD face,
+adds weapon stow/re-equip with empty inventory tiles, and mixes wearables/potions
+into ordinary enemy drops. Six Forms now share original elemental impact
+choreography; detonation cores/lobes/smoke supplement the existing accurate area
+indicators. Bolt/Missile use enchanted comet visuals; Summon has an elemental
+aura and contact effects. Work is bounded and supports reduced effects.
+Live GDD 03 LOD-FX-001, 06 LOD-UI-008/009 and 07 record the current direction.
+77 automated suites pass. GMod visual/interaction acceptance remains pending.
+Next gate: ordinary gm_flatgrass run, cast equipped spells, stow/re-equip a gun
+through Equipment, and collect mixed ordinary enemy drops. Preserve prior native
+crash diagnostics; this checkpoint supplies no new evidence resolving that crash.
+See [magic and inventory checkpoint](MAGIC_INVENTORY_CHECKPOINT.md).
+No main promotion or deployment.
+
+## Previous checkpoint — labyrinth-entry crash candidate and granite Deborah
 
 The fresh staging playtest force-closed on reported labyrinth entry. Its 139-event
 session ends after successful DFT recreation, without combat, death or a native

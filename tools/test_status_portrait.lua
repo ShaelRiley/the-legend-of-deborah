@@ -49,6 +49,7 @@ for _,fn in ipairs({'SetFOV','SetAnimated','SetAmbientLight','SetDirectionalLigh
 vgui={Create=function() created=created+1;return setmetatable({},panel) end}
 local ply={hp=100,maximum=100,bools={LOD_PlayedIdentity=true},speed=0,model='models/player/alyx.mdl',observer=0}
 function LocalPlayer() return ply end
+function ply:GetActiveWeapon() return self.weapon end
 function ply:Alive() return self.hp>0 end
 function ply:Health() return self.hp end
 function ply:GetMaxHealth() return self.maximum end
@@ -80,16 +81,21 @@ for _,line in ipairs(H.Lines) do assert(surface.GetTextSize(line)<=H.WrapWidth) 
 local function checkLayout()
     local mx,my,mw,mh=LOD.MagicHUD:Bounds()
     assert(H.Panel.x>mx+mw and H.Panel.x+H.Panel.w<width,'Face immediately right of Magic')
-    near(H.Panel.y+H.Panel.h,my+mh)
+    near(H.Panel.y+H.Panel.h+(#H.WeaponLines>0 and #H.WeaponLines*14+5 or 0),my+mh)
     local feedLeft=width-22-math.min(600,width*.44)
     for _,p in ipairs(positions) do
         local half=surface.GetTextSize(p.text)*.5
         assert(p.x-half>=0 and p.x+half<feedLeft,'Caption clears screen edge and combat feed')
-        assert(p.y>=0 and p.y+18<H.Panel.y,'Caption above the stable face and Magic row')
+        if p.y>H.Panel.y then
+            assert(p.y>=H.Panel.y+H.Panel.h and p.y+14<=my+mh,'Weapon below face')
+        else assert(p.y>=0 and p.y+18<H.Panel.y,'Status above face') end
     end
 end
 for _,viewport in ipairs({{640,480},{1024,768},{1280,800},{1280,720},{1920,1080},{3440,1440}}) do
     width,height=viewport[1],viewport[2];tick();checkLayout()
+    ply.weapon={GetNW2String=function() return 'Deborah’s Watery Revolver of Holding and Impossible Long Names' end}
+    tick();checkLayout();assert(#H.WeaponLines==2)
+    ply.weapon=nil
 end
 assert(events.LOD_MagicReplacesSuitBattery('CHudSecondaryAmmo')==false,'Hide ALT FIRE')
 assert(events.LOD_MagicReplacesSuitBattery('CHudAmmo')==nil,'Retain primary ammo')

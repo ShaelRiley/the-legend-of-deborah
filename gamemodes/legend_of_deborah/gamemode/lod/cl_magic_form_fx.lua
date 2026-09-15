@@ -81,8 +81,9 @@ net.Receive("LOD_MagicFormFX", function()
         origin = origin,
         destination = destination,
         started = CurTime(),
-        lifetime = shape>0 and 1.15 or (form == "beam" and 0.48 or 0.28)
+        lifetime = shape>0 and 1.15 or 0.9
     }
+    if LOD.MagicSpectacle then LOD.MagicSpectacle:Begin(FX[#FX]) end
 end)
 
 hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function(depth, skybox)
@@ -97,6 +98,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
             local fade = math.Clamp(1 - age / fx.lifetime, 0, 1)
             local progress = 1 - fade
             local c = colors[fx.content] or colors.raw
+            if LOD.MagicSpectacle and #FX-i<12 then LOD.MagicSpectacle:Draw(fx,age,reduced()) end
             render.SetMaterial(material)
 
             if fx.form == "beam" then
@@ -167,9 +169,7 @@ hook.Add("HUDPaint","LOD_MagicLocalCast",function()
         surface.DrawLine(x+sign*radius,y-12,x+sign*radius,y+12)
         surface.DrawLine(x+sign*radius,y+sign*12,x+sign*(radius-8),y+sign*12)
     end
-    local label=string.upper(localCast.form).." / "..string.upper(localCast.content)
-    if localCast.shape==2 then label="BLAST / CONNECTED CELLS / LINE OF SIGHT"
-    elseif localCast.shape==1 then label=string.upper(localCast.form).." / IMPACT AREA / LINE OF SIGHT" end
+    local label=string.upper(localCast.form:gsub("_"," ")).." / "..string.upper(localCast.content)
     draw.SimpleTextOutlined(label,
         "LOD_SheetKey",x,y+radius+14,Color(230,241,247,alpha),TEXT_ALIGN_CENTER,
         TEXT_ALIGN_TOP,1,Color(20,24,30,alpha))
