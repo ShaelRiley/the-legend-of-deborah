@@ -9,7 +9,18 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — campaign clock and TIME OVER
+## Current checkpoint — canonical illustrated instruction manual
+
+The author requested a revised console-booklet-style guide and one canonical
+in-game reader shared by staging E and the portable P → Manual tab. The reader
+now loads independently of the physical book, remembers its page and scroll,
+and uses the shared menu lifecycle. The guide covers the current continuation,
+with original Deborah and antagonist art plus the complete feat/equipment
+reference. See [manual authority, evidence, and native check](INSTRUCTION_MANUAL.md).
+Native Garry's Mod rendering/input acceptance and the existing crash release hold
+remain pending. No public deployment is included.
+
+## Previous checkpoint — campaign clock and TIME OVER
 
 Implements the author's explicit 2026-09-15 continuation over `af5b4f7` on
 `astra/equipment-update`: one 1,800-second campaign clock, first-Hero portal

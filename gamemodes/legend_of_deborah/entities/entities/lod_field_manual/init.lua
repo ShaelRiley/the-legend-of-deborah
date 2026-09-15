@@ -1,10 +1,6 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-for index = 1, 4 do AddCSLuaFile(string.format("assets/html_%02d.lua", index)) end
-for index = 1, 2 do AddCSLuaFile(string.format("assets/page_1_%02d.lua", index)) end
 include("shared.lua")
-
-util.AddNetworkString("LOD_OpenFieldManual")
 
 function ENT:Initialize()
     self:SetModel("models/props_junk/PopCan01a.mdl")

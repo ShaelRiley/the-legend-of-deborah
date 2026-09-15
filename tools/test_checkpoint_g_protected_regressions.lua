@@ -185,7 +185,7 @@ local function mockGMod()
         f:close()
         local fn, err = load(code, path)
         if not fn then error("Load error in " .. path .. ": " .. tostring(err)) end
-        fn()
+        return fn()
     end
 end
 

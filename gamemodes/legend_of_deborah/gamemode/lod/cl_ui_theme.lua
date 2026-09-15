@@ -56,6 +56,7 @@ function UI:SelectPage(page)
     if page ~= "wallet" and LOD.Wallet then LOD.Wallet:Close() end
     if page ~= "sheet" and LOD.CharacterSheet then LOD.CharacterSheet:Close() end
     if page ~= "book" and LOD.Spellbook then LOD.Spellbook:Close() end
+    if page ~= "manual" and LOD.FieldManual and LOD.FieldManual.Close then LOD.FieldManual:Close() end
     if page ~= "equipment" and LOD.Equipment and LOD.Equipment.Close then LOD.Equipment:Close() end
     if page ~= "history" and LOD.CombatRollFeed and IsValid(LOD.CombatRollFeed.HistoryFrame) then
         LOD.CombatRollFeed.HistoryFrame:Remove()
@@ -86,7 +87,8 @@ function UI:PageLinks(frame, active, y)
     local pages={{"sheet","P / CHARACTER",function() LOD.CharacterSheet:Open() end},
         {"book","I / SPELLBOOK",function() LOD.Spellbook:Open() end},
         {"equipment","EQUIPMENT",function() LOD.Equipment:Open() end},
-        {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end}}
+        {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end},
+        {"manual","MANUAL",function() LOD.FieldManual:Open() end}}
     if LOD.Wallet then pages[#pages+1]={"wallet","WALLET",function() LOD.Wallet:Open() end} end
     local tabWidth=math.min(144,(frame:GetWide()-48-10*(#pages-1))/#pages)
     for i,page in ipairs(pages) do
@@ -125,4 +127,3 @@ function UI:HUDText(text, font, x, y, color, alignX, alignY)
     draw.SimpleTextOutlined(text, font, x, y, color, alignX or TEXT_ALIGN_LEFT,
         alignY or TEXT_ALIGN_TOP, 1, Color(0, 0, 0, math.floor((color.a or 255)*0.8)))
 end
-
