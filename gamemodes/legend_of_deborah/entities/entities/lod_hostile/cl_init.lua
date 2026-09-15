@@ -106,6 +106,12 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "warden" then
+        -- Include the broadened citizen and pig-mask ears in client culling.
+        -- Cosmetic bounds only: authoritative collision remains unchanged.
+        ent:SetRenderBounds(
+            Vector((mins.x - 24) * size, (mins.y - 24) * size, mins.z * size + verticalCompensation),
+            Vector((maxs.x + 24) * size, (maxs.y + 24) * size, (maxs.z + 16) * size + verticalCompensation))
     else
         ent:SetRenderBounds(
             Vector(mins.x * size, mins.y * size, mins.z * size + verticalCompensation),

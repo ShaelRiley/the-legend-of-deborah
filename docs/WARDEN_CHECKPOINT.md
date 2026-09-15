@@ -51,13 +51,17 @@ An ordinary same-batch party wipe still wins. Rescue uses the existing celebrati
 
 ## Assets and sound integration
 
-Mount [Half-Life 2: Survivor Gordon Freeman Playermodel](https://steamcommunity.com/sharedfiles/filedetails/?id=2893593226)
-(Workshop **2893593226**) before visual testing. Its published model path is
-`models/player/gordon.mdl`. Subscribe on a listen-server installation; add the
-item to a dedicated server's mounted Workshop collection. `resource.AddWorkshop`
-declares the client dependency; it does not install server content. No third-party
-model files are redistributed. An announced Kleiner fallback keeps an unmounted
-server playable, but does not count as accepted Gordon art.
+Gordon uses a level-seeded random stock male citizen (`male_01` through
+`male_09` in `models/Humans/Group01`). Cached client bone scales broaden his
+pelvis, torso and thighs. A head-attached pink pig mask has a protruding snout,
+paired nostrils, dark eye apertures and triangular ears, drawn with built-in
+spheres and quads. It disappears during cloaking and stays through all visible
+phases. Client render bounds include the heavier silhouette and ears.
+
+No external Gordon model, Workshop subscription, downloaded texture or mask
+entity is required. Appearance selection uses its own seeded stream and does
+not change combat rolls. Server collision, encounter logic and tuning are
+preserved. Reduced effects lowers mask tessellation.
 
 The toilet and crowbar use reusable, nonphysical client models, created outside
 render callbacks. There are no native grenade entities, extra dynamic lights,
@@ -81,7 +85,7 @@ phase cancellation, independent bomb fuses, shared blast rolls and target
 defenses, resupply receipts, preserved HP/phase, center-key identity/recovery,
 ordinary wipe precedence and stale callbacks.
 
-After installing the development build and mounting Gordon's model, deploy a
+After installing the development build, deploy a
 Hero on `gm_flatgrass`, then run:
 
 ```text
@@ -96,7 +100,7 @@ Finite native gate: observe all three phases and both arena floors, die/respawn
 without a boss reset, then defeat Gordon and complete key → door → Deborah.
 For co-op, verify a second eligible Hero can enter/rejoin through the rear gate.
 Check toilet seating, crowbar pose, projectile readability, gallery visibility,
-Deborah's cheer and the true Gordon model. These remain unobserved here.
+Deborah's cheer, the heavier citizen silhouette and pig-mask fit. These remain unobserved here.
 
 **This is not native-crash acceptance.** No Garry's Mod runtime is available in
 this environment. Main, Workshop release and live VPS are not updated. Preserve

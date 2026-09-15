@@ -77,6 +77,23 @@ prepareProps=function(phase)
 end
 function V:Pose(e)
     if e:GetNW2String("LOD_Archetype", "")~="warden" then return end
+    local model=e:GetModel()
+    if e.LODWardenBuildModel~=model then
+        e.LODWardenBuildModel=model;e.LODWardenSeated=nil
+        -- Citizen meshes have no heavy bodygroup. Broaden their existing torso
+        -- and upper legs locally, once per model; never touch the server hull.
+        for name,scale in pairs({
+            ["ValveBiped.Bip01_Pelvis"]=Vector(1.12,1.32,1.30),
+            ["ValveBiped.Bip01_Spine"]=Vector(1.10,1.48,1.45),
+            ["ValveBiped.Bip01_Spine1"]=Vector(1.08,1.35,1.32),
+            ["ValveBiped.Bip01_Spine2"]=Vector(1.05,1.22,1.22),
+            ["ValveBiped.Bip01_L_Thigh"]=Vector(1,1.20,1.20),
+            ["ValveBiped.Bip01_R_Thigh"]=Vector(1,1.20,1.20)
+        }) do
+            local bone=e:LookupBone(name)
+            if bone then e:ManipulateBoneScale(bone,scale) end
+        end
+    end
     local seated=e:GetNW2Int("LOD_WardenPhase",1)==2
     if e.LODWardenSeated==seated then return end
     e.LODWardenSeated=seated
@@ -87,8 +104,43 @@ function V:Pose(e)
         end
     end
 end
+local maskPink=Color(218,147,143)
+local snoutPink=Color(238,166,158)
+local innerPink=Color(148,69,75)
+local maskDark=Color(43,25,30)
+function V:DrawPigMask(e,size)
+    if e:GetNW2Bool("LOD_WardenHidden",false) then return end
+    local attachment=e:LookupAttachment("eyes")
+    local eyes=attachment and attachment>0 and e:GetAttachment(attachment)
+    local pos,ang
+    if eyes then pos,ang=eyes.Pos,eyes.Ang
+    else
+        local bone=e:LookupBone("ValveBiped.Bip01_Head1")
+        local matrix=bone and e:GetBoneMatrix(bone)
+        if not matrix then return end -- never float a mask at the actor origin
+        pos,ang=matrix:GetTranslation(),e:GetAngles()
+    end
+    local f,r,u=ang:Forward(),ang:Right(),ang:Up()
+    local center=pos+f*(3*size)-u*(2*size)
+    local function point(x,y,z) return center+f*(x*size)+r*(y*size)+u*(z*size) end
+    local segments=reduced() and 10 or 16
+    render.SetColorMaterial()
+    render.DrawSphere(center,8.8*size,segments,8,maskPink)
+    -- Rounded, protruding snout with two dark nostrils; black eye apertures
+    -- and folded triangular ears make the silhouette readable at a distance.
+    render.DrawSphere(point(7,0,-2),4.7*size,segments,8,snoutPink)
+    for _,side in ipairs({-1,1}) do
+        render.DrawSphere(point(11.1,side*1.8,-1.8),1.15*size,8,6,maskDark)
+        render.DrawSphere(point(7.1,side*3.5,3.0),1.9*size,8,6,maskDark)
+        local a,b,c=point(0,side*5,6),point(-1,side*12,13),point(2,side*10,4)
+        render.DrawQuad(a,b,c,c,maskPink);render.DrawQuad(c,b,a,a,maskPink)
+        local ia,ib,ic=point(1,side*6,6),point(0,side*10.5,11.5),point(2.6,side*9.5,5)
+        render.DrawQuad(ia,ib,ic,ic,innerPink);render.DrawQuad(ic,ib,ia,ia,innerPink)
+    end
+end
 function V:Draw(e,size)
-    if e:GetNW2String("LOD_Archetype","")~="warden" then return end
+    if e:GetNW2String("LOD_Archetype","")~="warden" or e:GetNW2Bool("LOD_WardenHidden",false) then return end
+    self:DrawPigMask(e,size)
     local phase=e:GetNW2Int("LOD_WardenPhase",1)
     local p=props[phase==2 and "toilet" or (phase==3 and "crowbar" or "")]
     if not IsValid(p) then return end

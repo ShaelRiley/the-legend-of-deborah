@@ -16,7 +16,8 @@ Implements Gordon over development baseline
 The two-level arena, three combat phases, protected co-op entry/respawn,
 ordered party health scaling and death-only center Jail Key replace the temporary
 Core shortcut. Author-approved tuning is in live GDD 07. All 88 automated suites
-pass. Mount Gordon Workshop model 2893593226 for visual testing. The adaptive
+pass. Gordon uses a seeded stock male citizen with a heavy build and procedural
+pig mask, requiring no external model download. The adaptive
 soundtrack remains dependent on its unshipped MusicDirector/suite system;
 Gordon publishes its tension hooks and supplies entrance/phase/victory cues.
 Native visual/co-op acceptance and the fatal-crash release hold remain open.

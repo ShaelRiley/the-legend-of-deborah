@@ -8,14 +8,17 @@ local C={invisible=3,warning=0.65,visible=2,shotGap=0.22,shotSpeed=460,shotLife=
     meleeRange=95,maxHazards=16,syncGap=0.2}
 W.Config=C
 LOD.Config.Encounter.Archetypes.warden={class="lod_hostile",name="Gordon the Warden",
-    model="models/player/gordon.mdl",baseHP=1000,speed=240,meleeDamage=8,meleeCooldown=C.meleeGap,
+    model="models/Humans/Group01/male_02.mdl",baseHP=1000,speed=240,meleeDamage=8,meleeCooldown=C.meleeGap,
     meleeRange=C.meleeRange,threat=10,activity=ACT_RUN}
 W.Profiles={orb={label="WARDEN ORB",source="magic",count=2,sides=6,bonus=2,reference=9},
     bomb={label="WARDEN BOMB",source="blast",count=3,sides=6,bonus=2,reference=12.5},
     crowbar={label="WARDEN CROWBAR",source="melee",count=2,sides=4,bonus=3,reference=8}}
--- Asset dependency, rather than redistributing another author's model. Servers
--- must mount this item; clients receive it through the standard Workshop path.
-if resource and resource.AddWorkshop then resource.AddWorkshop("2893593226") end
+-- Only citizens shipped with Garry's Mod. A separate seeded stream keeps
+-- appearance selection independent of combat rolls and stable for this dungeon.
+function W:CitizenModel(seed)
+    local rng=LOD.RNG.New(LOD.Seeds.Derive(seed or 1,"warden-citizen-model"))
+    return string.format("models/Humans/Group01/male_%02d.mdl",rng:Int(1,9))
+end
 local baseReserve=LOD.WanderingDirector.GetDeficitReservation
 function LOD.WanderingDirector:GetDeficitReservation(...)
     local w=R.State and R.State.Warden
@@ -78,8 +81,7 @@ function W:Commit()
     e.LODArchetypeId="warden";e.LODEncounterId="warden";e.LODEncounterOrdinal=910001
     e.LODHomeCellKey=key(a.center);e.LODActivated=true;e.LODMajorThreat=true;e.majorThreat=true
     local cfg=LOD.Config.Encounter.Archetypes.warden
-    cfg.model="models/player/gordon.mdl"
-    if util.IsValidModel and not util.IsValidModel(cfg.model) then cfg.model="models/player/kleiner.mdl" end
+    cfg.model=self:CitizenModel(s.LevelSeed)
     e:SetPos(N:CellCenter(a.center));e:Spawn()
     if not IsValid(e) then return false end
     LOD.EnemyVariance:Apply(e);LOD.HostileMotionV2:SnapSpawn(e)
@@ -90,11 +92,6 @@ function W:Commit()
     local gate=a.lock.entity
     if IsValid(gate) then gate:SetOpened(false);gate:SetNotSolid(false);gate:SetSolid(SOLID_BBOX) end
     e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Int("LOD_WardenPhase",1);e:DrawShadow(false)
-    -- Gordon is supplied by the explicit Workshop dependency. Avoid a missing
-    -- model native path if a dedicated server has not yet mounted the addon.
-    if util.IsValidModel and not util.IsValidModel("models/player/gordon.mdl") then
-        P:Announce("GORDON MODEL NOT MOUNTED — INSTALL WORKSHOP 2893593226")
-    end
     for _,p in ipairs(player.GetAll()) do if hero(p) then
         p:EmitSound("ambient/alarms/klaxon1.wav",60,115,0.45)
         if a.court[key(N:WorldToCell(s.Graph,p:GetPos()))] then self:Resupply(p) end
