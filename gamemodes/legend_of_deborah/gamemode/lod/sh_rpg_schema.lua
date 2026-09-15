@@ -171,7 +171,7 @@ RPG.Schema = {
     DerivedStats = {
         "strMod", "dexMod", "conMod", "intMod", "wisMod", "chaMod",
         "fighterTrainingLead", "fighterClassStrBonus", "fighterClassConBonus",
-        "physicalDamageMultiplier", "fighterCapstonePhysicalDamageMultiplier",
+        "physicalDamageMultiplier", "fighterStrengthBypassesCon", "fighterCapstonePhysicalDamageMultiplier",
         "fighterCapstoneMaxHPMultiplier", "fighterCapstoneOutgoingPushMultiplier",
         "fighterCapstoneIncomingPushMultiplier", "fighterCapstoneWallSlamBonusDice",
         "aimSpreadMultiplier", "movementSpeedMultiplier", "boomShift",

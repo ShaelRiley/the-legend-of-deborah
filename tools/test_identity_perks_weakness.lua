@@ -140,14 +140,14 @@ for _,tag in ipairs({'wallCrush','environmental','nonAttack','statusDamage','pas
 local naked={total=4,values={4}}
 eq(D:TargetContract(naked,hero,zombie,{}),naked,'no authored primary means no extra die')
 
--- Per-die CON and whole-hit scaling precede the one flat weapon bonus.
+-- Per-die CON and Fighter STR penetration precede the one flat weapon bonus.
 zombie.state.derivedStats.damageResistancePerDie=2
 hero.state.derivedStats.physicalDamageMultiplier=1.5
 local c=Rolls:RollActorDamage(hero,profile,LOD.RNG.New(42),0)
 local amount=Rolls:ResolveActorDamage(c,hero,zombie,{physical=true})
 local resolution=c.feedResolution
 local subtotal=0;for _,value in ipairs(resolution.reduced) do subtotal=subtotal+value end
-near(amount,subtotal*1.5+2)
+near(amount,subtotal+resolution.resolvedContract.total*.5+2)
 local immuneResolve=R.ResolveDamageContract
 R.ResolveDamageContract=function() return 0,{},0 end
 near(Rolls:ResolveActorDamage(c,hero,zombie,{physical=true}),0)

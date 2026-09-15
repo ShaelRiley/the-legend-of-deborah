@@ -409,6 +409,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.fighterClassStrBonus = state.fighterTraining.str or 0
     mods.fighterClassConBonus = state.fighterTraining.con or 0
     mods.physicalDamageMultiplier = math.Clamp(1 + 0.05 * mods.strMod, 0.50, 1.50)
+    mods.fighterStrengthBypassesCon = state.classId == "fighter"
     mods.aimSpreadMultiplier = math.Clamp(1 - 0.04 * mods.dexMod, 0.60, 1.40)
     mods.movementSpeedMultiplier = math.Clamp(1 + 0.02 * mods.dexMod, 0.85, 1.20)
     mods.boomShift = math.Clamp(math.floor(math.max(mods.dexMod, 0) / 2), 0, 2)
@@ -1604,7 +1605,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local class = state.classId and RPG.Classes[state.classId] or nil
     local classPassive
     if state.classId == "fighter" then
-        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s.",
+        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s. Positive Strength damage bypasses Constitution resistance.",
             state.fighterTraining.str or 0, state.fighterTraining.con or 0,
             state.level, string.upper(state.primaryAbility))
     elseif state.classId == "rogue" then

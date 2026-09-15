@@ -162,7 +162,7 @@ end
 local CLASS_CARDS = {
     fighter = {
         title = "Fighter", subtitle = "STR / CON | Hero d10",
-        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability."
+        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability. Positive Strength damage bypasses Constitution resistance."
     },
     rogue = {
         title = "Rogue", subtitle = "DEX / CHA | Hero d8",
@@ -772,4 +772,3 @@ concommand.Add("lod_character_sheet", function()
 end)
 
 hook.Add("ShutDown", "LOD_CharacterSheetClose", function() Sheet:Close() end)
-

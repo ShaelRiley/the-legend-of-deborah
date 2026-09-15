@@ -9,7 +9,28 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — monster class and elemental identity
+## Current checkpoint — Fighter Strength bypasses Constitution resistance
+
+The author buffed every Fighter-class actor's positive Strength damage bonus:
+calculate that bonus from the physical roll before CON reduction, while base
+damage still receives the existing per-die resistance. If U is the unreduced
+aggregate, R the reduced aggregate and S the STR multiplier above 1, resolve
+R + U × (S − 1). Keep the existing behavior for penalties, non-Fighters and Magic.
+Apply authored scale, capstone, shotgun shares, gear, elements and subsequent
+defenses normally. The class flag follows committed equipment snapshots; class
+choice and Character Sheet text explain the benefit. Live GDD 02 LOD-CLS-006 and
+03 LOD-CBT-006 contain the author's correction. Starting dev HEAD:
+`574c032ca3e1c7411f91c57732871fc430215469` on `astra/equipment-update`.
+`tools/test_fighter_strength.lua` tests the real derived-state and damage paths,
+class/actor parity, low and exploding dice, flat bonuses, penalties, scaling,
+shotgun shares, elemental/gear defenses and committed attack identity. All 80
+automated regression suites pass; the identity-perk expectation now includes the
+Fighter bypass while preserving its single flat favored-weapon bonus.
+Native acceptance remains pending: attack a resistant enemy as a Fighter and
+compare the final damage with the die readout. Existing crash diagnostics remain;
+this balance change provides no new native-crash evidence. No main promotion or deployment.
+
+## Previous checkpoint — monster class and elemental identity
 
 The author's monster-readability request adds subtle class modulation: Fighter
 keeps its archetype paint, Rogue adds pale green, Wizard adds pale violet.

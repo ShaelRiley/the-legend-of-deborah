@@ -161,18 +161,27 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
     local total = tonumber(contract.bonus) or 0
     local contributions = contract.contributions or contract.values or {}
     local reduced = {}
+    local conPrevented = 0
 
     for index, value in ipairs(contributions) do
         local before = math.max(0, tonumber(value) or 0)
         local after = before > 0 and math.max(1, before - resistance) or 0
         reduced[index] = after
+        conPrevented = conPrevented + before - after
         total = total + after
         if after < before then self.Stats.conDiceReduced = (self.Stats.conDiceReduced or 0) + 1 end
     end
 
-    total = total * math.max(0, tonumber(tags.authoredScale) or 1)
+    local authoredScale = math.max(0, tonumber(tags.authoredScale) or 1)
+    total = total * authoredScale
     if tags.physical then
-        total = total * math.Clamp(tonumber(sourceDerived and sourceDerived.physicalDamageMultiplier) or 1, 0.50, 1.50)
+        local strength = math.Clamp(tonumber(sourceDerived and sourceDerived.physicalDamageMultiplier) or 1, 0.50, 1.50)
+        total = total * strength
+        if sourceDerived and sourceDerived.fighterStrengthBypassesCon and strength > 1 then
+            -- Restore only the positive STR uplift lost to per-die CON. Base
+            -- dice remain reduced; later capstone, share and defense rules apply.
+            total = total + conPrevented * authoredScale * (strength - 1)
+        end
         total = total * math.max(0, tonumber(sourceDerived and sourceDerived.fighterCapstonePhysicalDamageMultiplier) or 1)
         self.Stats.physicalResolutions = (self.Stats.physicalResolutions or 0) + 1
     elseif tags.magic and tags.wisScaled ~= false then
@@ -554,13 +563,13 @@ function AbilityRules:ValidateGateD(ply)
         and loaded12.continuationStep == 3, "Loaded Dice SUPER-d12")
 
     local fighterDamage = self:ResolveDamageValues({contributions = {10, 5}},
-        {physicalDamageMultiplier = 1.5, fighterCapstonePhysicalDamageMultiplier = 1.2},
+        {physicalDamageMultiplier = 1.5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
         {damageResistancePerDie = 2}, {physical = true})
-    expect(math.abs(fighterDamage - 19.8) < 0.0001, "Fighter/STR/CON order")
+    expect(math.abs(fighterDamage - 22.2) < 0.0001, "Fighter STR bypasses CON")
     local aimedFighterDamage = self:ResolveDamageValues({contributions = {10, 5}},
-        {physicalDamageMultiplier = 1.5, fighterCapstonePhysicalDamageMultiplier = 1.2},
+        {physicalDamageMultiplier = 1.5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
         {damageResistancePerDie = 2}, {physical = true, authoredScale = 2})
-    expect(math.abs(aimedFighterDamage - 39.6) < 0.0001, "Magnum aim/source order")
+    expect(math.abs(aimedFighterDamage - 44.4) < 0.0001, "Magnum aim/source order")
     local wizardDamage = self:ResolveDamageValues({contributions = {6, 4}},
         {magicPowerMultiplier = 1.6, wizardCapstoneMagicPowerMultiplier = 1.2},
         {damageResistancePerDie = 1}, {magic = true})
