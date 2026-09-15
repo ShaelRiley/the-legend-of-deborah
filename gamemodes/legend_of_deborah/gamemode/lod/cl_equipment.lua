@@ -45,6 +45,7 @@ function E:BuildPanel(frame)
     end
     if E.BuildMoveBindings then y=E:BuildMoveBindings(content,y,width) end
     label("OWNED ITEMS", "LOD_SheetSubheading")
+    label("Up to 32 equipment records. Unequip unwanted clothing, then Discard to make room. Only your active weapon contributes.")
     local ids={};for id in pairs(E.Snapshot.items) do ids[#ids+1]=id end;table.sort(ids)
     for _,id in ipairs(ids) do
         local item=E.Snapshot.items[id]
@@ -56,8 +57,13 @@ function E:BuildPanel(frame)
             for _,slot in ipairs(E.SlotOrder) do if E.Snapshot.slots[slot]==id then equippedSlot=slot;break end end
             local button=vgui.Create("DButton",content)
             button:SetPos(0,y);button:SetSize(180,30)
-            button:SetText(equippedSlot and (def.throwable and "Hold Throwable" or "Unequip") or "Equip")
+            button:SetText(def.weapon and "Select Weapon" or (equippedSlot and (def.throwable and "Hold Throwable" or "Unequip") or "Equip"))
             button.DoClick=function()
+                if def.weapon then
+                    local weapon=LocalPlayer():GetWeapon(def.weaponClass)
+                    if IsValid(weapon) then input.SelectWeapon(weapon);LOD.Spellbook:Close() end
+                    return
+                end
                 if equippedSlot then
                     E:Request(def.throwable and "activate" or "unequip",id,equippedSlot)
                     if def.throwable then LOD.Spellbook:Close() end
@@ -71,6 +77,11 @@ function E:BuildPanel(frame)
                 local right=vgui.Create("DButton",content)
                 right:SetPos(190,y);right:SetSize(140,30);right:SetText("Equip Right Hand")
                 right.DoClick=function() E:Request("equip",id,"right_hand") end
+            end
+            if def.wearable and not equippedSlot then
+                local discard=vgui.Create("DButton",content)
+                discard:SetPos(340,y);discard:SetSize(100,30);discard:SetText("Discard")
+                discard.DoClick=function() E:Request("discard",id,"") end
             end
             y=y+44
         end
@@ -99,7 +110,7 @@ hook.Add("HUDPaint","LOD_EquipmentComparison",function()
     end
     lines[#lines+1]=string.format("Value %g → %g (%+g) — approximate comparison",oldValue,E:Value(item),E:Value(item)-oldValue)
     lines[#lines+1]=#displaced>0 and "E: ACCEPT REPLACEMENT" or "Touch or E: EQUIP"
-    local width=math.min(540,ScrW()-40)
+    local width=math.min(900,ScrW()-40)
     surface.SetFont("DermaDefault")
     local wrapped={}
     for _,text in ipairs(lines) do
@@ -121,6 +132,15 @@ net.Receive("LOD_EquipmentSnapshot", function()
     if not istable(state) or not istable(state.items) or not istable(state.slots) then return end
     E.Snapshot = state
     if LOD.Spellbook.EquipmentPage and IsValid(LOD.Spellbook.Frame) then LOD.Spellbook:Open() end
+end)
+
+hook.Add("HUDPaint","LOD_ProceduralWeaponName",function()
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then return end
+    local weapon=ply:GetActiveWeapon()
+    if not IsValid(weapon) then return end
+    local name=weapon:GetNW2String("LOD_ItemName","")
+    if name~="" then draw.SimpleText(name,"DermaDefault",ScrW()*.5,ScrH()-48,Color(235,220,170),TEXT_ALIGN_CENTER) end
 end)
 
 hook.Add("HUDPaint", "LOD_ThrowableControls", function()

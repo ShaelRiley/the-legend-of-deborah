@@ -119,15 +119,18 @@ function SWEP:PrimaryAttack()
         return
     end
 
+    if LOD.Equipment and LOD.Equipment.RefreshDerived and LOD.RunManager then
+        LOD.Equipment:RefreshDerived(owner,LOD.RunManager:GetPlayerState(owner))
+    end
     local profile = effects and effects.CrowbarDamageProfile
         and effects:CrowbarDamageProfile(owner) or DAMAGE_PROFILE
     local rng = rolls:_RNG("player:weapon_lod_crowbar")
     local contract = rolls.RollActorDamage and rolls:RollActorDamage(owner, profile, rng, aceBonus) or nil
+    if LOD.Equipment and LOD.Equipment.SealWeaponAttack then LOD.Equipment:SealWeaponAttack(owner,contract,"weapon_lod_crowbar") end
     if contract and LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(owner, contract, rng) end
-    local total = contract and rolls:ResolveActorDamage(contract, owner, target, {
-        physical = true,
-        authoredScale = aimMultiplier
-    }) or (rolls:_RollFormula(profile,
+    local tags={actorDamageResolved=true,physical=true,melee=true,attackEvent=contract and contract.attackEvent,
+        damageContract=contract,meteor=contract,authoredScale=aimMultiplier}
+    local total = contract and rolls:ResolveActorDamage(contract, owner, target, tags) or (rolls:_RollFormula(profile,
         rolls:_RNG("player:weapon_lod_crowbar:fallback")) * aimMultiplier)
     local values = contract and contract.values or nil
     total = math.max(1, math.floor(tonumber(total) or 1))
@@ -141,9 +144,7 @@ function SWEP:PrimaryAttack()
     damage:SetDamagePosition(trace.HitPos)
     damage:SetDamageForce(direction * 2200)
     if LOD.RPGStatusElements then
-        LOD.RPGStatusElements:AttachDamageContext(damage, {actorDamageResolved = true,
-            physical = true, melee = true, attackEvent = contract and contract.attackEvent,
-            damageContract = contract, meteor = contract})
+        LOD.RPGStatusElements:AttachDamageContext(damage,tags)
     end
     target:TakeDamageInfo(damage)
     total = math.max(0, damage:GetDamage())

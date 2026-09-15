@@ -51,7 +51,8 @@ function ENT:Initialize()
     self:SetHealth(18)
     self:SetMaxHealth(18)
     self.LODConfig = {speed = 165}
-    self.LODExpiresAt = CurTime() + LIFETIME
+    local gear=self.LODProgressionState and self.LODProgressionState.equipmentExtras or {}
+    self.LODExpiresAt = CurTime() + LIFETIME*(1+math.Clamp(gear.summon_duration or 0,-50,50)/100)
     self.LODNextTargetRefresh = 0
     self.LODNextRouteRefresh = 0
     self.LODNextCharge = CurTime() + 0.75

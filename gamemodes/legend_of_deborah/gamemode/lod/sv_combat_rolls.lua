@@ -342,6 +342,8 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
 end
 
 function Rolls:ResolveActorDamage(contract, attacker, target, tags)
+    tags=tags or {}
+    if LOD.Equipment and LOD.Equipment.PrepareDamageTags then LOD.Equipment:PrepareDamageTags(contract,attacker,tags) end
     local rules = LOD.RPGAbilityRules
     if not rules or not rules.ResolveDamageContract then return tonumber(contract and contract.total) or 0 end
     -- Public combat-roll resolution is intentionally a single-value contract.
@@ -365,6 +367,13 @@ function Rolls:ResolveActorDamage(contract, attacker, target, tags)
 end
 
 function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
+    if LOD.Equipment and LOD.Equipment.RefreshDerived and LOD.RunManager then
+        LOD.Equipment:RefreshDerived(ply,LOD.RunManager:GetPlayerState(ply))
+    end
+    attackEvent=attackEvent or {}
+    if LOD.Equipment and LOD.Equipment.SealWeaponAttack then
+        LOD.Equipment:SealWeaponAttack(ply,{attackEvent=attackEvent},weaponClass)
+    end
     local profile = PLAYER_WEAPONS[weaponClass]
     if not profile then return nil end
     local rng = self:_RNG("player:" .. weaponClass)
@@ -415,6 +424,7 @@ function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
         contract.targetNames = setmetatable({}, {__mode = "k"})
     end
 
+    if LOD.Equipment and LOD.Equipment.SealWeaponAttack then LOD.Equipment:SealWeaponAttack(ply,contract,weaponClass) end
     self.Stats.playerAttacks = self.Stats.playerAttacks + 1
     return contract
 end
@@ -676,9 +686,11 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                 or {label = "CROWBAR", source = "crowbar", count = 1, sides = 3}
             local rng = Rolls:_RNG("player:weapon_crowbar")
             local rolled = Rolls:RollActorDamage(attacker, profile, rng, 0)
+            if LOD.Equipment and LOD.Equipment.SealWeaponAttack then LOD.Equipment:SealWeaponAttack(attacker,rolled,"weapon_lod_crowbar") end
             if LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(attacker, rolled, rng) end
-            if statusElements then statusElements:AttachDamageContext(dmginfo, {physical = true, melee = true, attackEvent = rolled.attackEvent, meteor = rolled, damageContract = rolled}) end
-            local total = Rolls:ResolveActorDamage(rolled, attacker, target, {physical = true})
+            local tags={physical=true,melee=true,attackEvent=rolled.attackEvent,meteor=rolled,damageContract=rolled}
+            local total = Rolls:ResolveActorDamage(rolled, attacker, target, tags)
+            if statusElements then statusElements:AttachDamageContext(dmginfo,tags) end
             dmginfo:SetDamage(total)
             Rolls.Stats.playerAttacks = Rolls.Stats.playerAttacks + 1
 
@@ -719,9 +731,10 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     and LOD.MagnumPiercing.DamageSegments
                     and LOD.MagnumPiercing.DamageSegments[dmginfo] or nil
                 local damageContract = pierce and pierce.rpgContract or contract
-                if statusElements then statusElements:AttachDamageContext(dmginfo, {physical = true, attackEvent = contract.attackEvent, damageContract = contract}) end
-                local resolved = Rolls:ResolveActorDamage(damageContract, attacker, target,
-                    {physical = true, authoredScale = tonumber(contract.aimMultiplier) or 1})
+                local tags={physical=true,attackEvent=contract.attackEvent,damageContract=contract,
+                    authoredScale=tonumber(contract.aimMultiplier) or 1}
+                local resolved = Rolls:ResolveActorDamage(damageContract, attacker, target,tags)
+                if statusElements then statusElements:AttachDamageContext(dmginfo,tags) end
                 dmginfo:SetDamage(resolved)
 
                 local formula = LOD.DieLogger:DamageFormula(damageContract)

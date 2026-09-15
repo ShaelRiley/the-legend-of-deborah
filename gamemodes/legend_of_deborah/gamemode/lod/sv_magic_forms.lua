@@ -357,6 +357,7 @@ function Forms:_NewContext(ply, form, content)
     local sealedFull = wizardOffense and wizardOffense.FullMagicBonus
         and wizardOffense:FullMagicBonus(ply) or 0
     return {
+        equipmentSnapshot=LOD.Equipment and LOD.Equipment.CaptureAttack and LOD.Equipment:CaptureAttack(ply,nil) or nil,
         caster = ply,
         formId = form.id,
         contentId = content and content.id or nil,
@@ -861,4 +862,3 @@ concommand.Add("lod_magic_forms_validate", function(ply)
     for _, err in ipairs(errors) do ErrorNoHalt("[LOD:MAGIC-C] - " .. tostring(err) .. "\n") end
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

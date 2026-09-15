@@ -16,7 +16,7 @@ function Rules:ApplyBlock(target, info)
     local context = status and status:DamageContext(info,target) or {}
     local attacker = info:GetAttacker()
     if not IsValid(attacker) or attacker == target or attacker == game.GetWorld()
-        or context.dodged or context.magic or context.element or context.statusDamage
+        or context.dodged or context.magic or (context.element and not context.physical) or context.statusDamage
         or context.passiveDamage or context.auraBurst or context.reactiveDamage
         or context.wallCrush or context.environmental or context.unavoidable or context.scriptedKill
         or context.ignoreBlock or info:IsDamageType(DMG_FALL) or info:IsDamageType(DMG_CRUSH)

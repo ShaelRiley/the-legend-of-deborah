@@ -16,12 +16,14 @@ public deployment. Work is isolated on `astra/equipment-update`; main remains th
 accepted RPG baseline. Workshop and public VPS are held until Equipment and Enemy
 are both complete, followed by separately authorized deployment.
 
-The Throwable checkpoint is followed by Shael's approved first equipment catalog
-(2026-09-14: “You may implement your proposal”). Live GDD LOD-EQUIP-015 now owns
-Block semantics, the bounded property/value catalog, procedural wearables,
-Quickstep/Rebuff and Stink Bomb. See [checkpoint](EQUIPMENT_CHECKPOINT.md) for
-implementation and finite human acceptance. Equipment runtime acceptance remains
-pending; do not proceed into Enemy work or promote main on static evidence alone.
+Shael's 2026-09-15 direction expands the approved first equipment catalog into a
+unified procedural weapon/wearable economy and explicitly authorizes its missing
+formulas. Live GDD LOD-EQUIP-016 owns the new 60-property catalog, budget/rarity
+curves, active-weapon contributions, statuses and acquisition behavior. Earlier
+LOD-EQUIP-015 Block, Throwable and Special Move semantics remain in force.
+See [economy rules and handoff](PROCEDURAL_ITEM_ECONOMY.md) and
+[checkpoint](EQUIPMENT_CHECKPOINT.md). Equipment runtime acceptance remains pending;
+do not proceed into Enemy work or promote main on static evidence alone.
 
 Preserve accepted RPG behavior and the current workflow. Do not restart the old
 hybrid/Antigravity process. The broader Instruction Booklet reconciliation and
@@ -33,4 +35,3 @@ The [pre-promotion plan](DEVELOPMENT_PLAN_HISTORICAL_2026_09_14.md) preserves ea
 checkpoint sequencing and candidate handoffs. It is historical evidence, not the
 current task queue. [Development status](DEVELOPMENT_STATUS.md) records promotion
 and validation. The live GDD remains design authority.
-

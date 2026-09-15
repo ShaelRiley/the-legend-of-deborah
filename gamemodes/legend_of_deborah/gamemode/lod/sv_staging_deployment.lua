@@ -618,7 +618,8 @@ function Staging:EnsureStarterPickup(ply)
     local ent = ents.Create("lod_staging_prop")
     if not IsValid(ent) then return false end
     ent:SetStageKind(ent.KIND_WEAPON or 3)
-    ent:SetStageLabel("TAKE THIS — " .. spec.label)
+    local item=LOD.Equipment and LOD.Equipment.NewItem and LOD.Equipment:NewItem(ply,weaponClass,"initial:"..weaponClass)
+    ent:SetStageLabel("TAKE THIS — " .. (item and LOD.Equipment:ItemName(item) or spec.label))
     ent.LODStageModel = spec.model
     ent.LODStagingOwnerIdentity = identity
     ent.LODStagingWeaponClass = weaponClass
@@ -681,7 +682,8 @@ function Staging:ClaimStarter(ply, ent)
     self.StarterEntities[identity] = nil
     self.Stats.starterClaims = (self.Stats.starterClaims or 0) + 1
     ply:EmitSound("items/ammo_pickup.wav", 65, 104, 0.8, CHAN_ITEM)
-    ply:ChatPrint("STARTER ACQUIRED — " .. string.upper(spec.label))
+    local item=LOD.Equipment and LOD.Equipment.EnsureWeapon and LOD.Equipment:EnsureWeapon(ply,weaponClass)
+    ply:ChatPrint("STARTER ACQUIRED — " .. (item and LOD.Equipment:ItemName(item) or string.upper(spec.label)))
     return true
 end
 

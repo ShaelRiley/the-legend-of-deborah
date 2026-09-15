@@ -167,6 +167,10 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
         if direction == vector_origin then return false end
 
         ar2.active = true
+        ar2.attackEvent = {}
+        if LOD.Equipment and LOD.Equipment.SealWeaponAttack then
+            LOD.Equipment:SealWeaponAttack(ply,{attackEvent=ar2.attackEvent},"weapon_ar2")
+        end
         ar2.weapon = weapon
         ar2.direction = direction
         ar2.fireAt = now + AR2_TELEGRAPH
@@ -214,7 +218,8 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
             Damage = 1,
             AmmoType = "AR2",
             Attacker = ply,
-            Inflictor = weapon
+            Inflictor = weapon,
+            LODAttackEvent = ar2.attackEvent
         }
 
         ply:LagCompensation(true)

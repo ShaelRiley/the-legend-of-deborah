@@ -126,7 +126,7 @@ function E:Use(ply, mode)
 end
 
 net.Receive("LOD_EquipmentRequest", function(bits, ply)
-    if bits > 1024 or not IsValid(ply) then return end
+    if bits > 4096 or not IsValid(ply) then return end
     local now = CurTime()
     if now < (requestTimes[ply] or 0) then return end
     requestTimes[ply] = now + 0.10
@@ -140,6 +140,8 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
         if E:Equip(state, id, slot) then E:Sync(ply) end
     elseif action == "unequip" then
         if E:Unequip(state, slot) then E:Sync(ply) end
+    elseif action == "discard" and E.Discard then
+        if E:Discard(state,id) then E:Sync(ply) end
     end
 end)
 

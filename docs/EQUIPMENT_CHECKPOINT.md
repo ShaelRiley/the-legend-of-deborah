@@ -1,4 +1,17 @@
-# Equipment checkpoint: approved initial catalog
+# Equipment checkpoint: unified procedural economy
+
+Current scope is Shael's 2026-09-15 procedural-weapon/economy expansion under live
+GDD LOD-EQUIP-016. [Current rules, integration evidence and one test procedure](PROCEDURAL_ITEM_ECONOMY.md).
+All six Hero weapon families and seven wearable families now use the same versioned
+generator. It has 60 properties, four to seven benefits plus one drawback, rarity
+and quality rolls, dungeon budgets through D999, actual-effect names and shared
+combat/status/stat adapters. Older equipment remains readable without rerolling.
+
+The previous checkpoint below is historical: its D100 cap, three-affix limit and
+25% wearable conversion are superseded. Its runtime observations are not upgraded
+by the new headless results.
+
+## Historical checkpoint: approved initial catalog
 
 Development branch: `astra/equipment-update`.
 Baseline remote main: `8978796e886cdb5505d24ed0de085265fa99bac8`.

@@ -26,6 +26,8 @@ if SERVER then AddCSLuaFile("lod/sh_equipment.lua") end
 include("lod/sh_equipment.lua")
 if SERVER then AddCSLuaFile("lod/sh_equipment_catalog.lua") end
 include("lod/sh_equipment_catalog.lua")
+if SERVER then AddCSLuaFile("lod/sh_equipment_economy.lua") end
+include("lod/sh_equipment_economy.lua")
 if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end
 include("lod/sh_rpg_schema.lua")
 

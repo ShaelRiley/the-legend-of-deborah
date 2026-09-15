@@ -19,6 +19,8 @@ local AMMO = {
 }
 
 local WEAPONS = {
+    weapon_pistol = {label = "Pistol", load = 18, model = "models/weapons/w_pistol.mdl"},
+    weapon_lod_crowbar = {label = "Crowbar", load = -1, model = "models/weapons/w_crowbar.mdl"},
     weapon_shotgun = {label = "Shotgun", load = 6, model = "models/weapons/w_shotgun.mdl"},
     weapon_smg1 = {label = "SMG", load = 45, model = "models/weapons/w_smg1.mdl"},
     weapon_357 = {label = ".357 Magnum", load = 6, model = "models/weapons/w_357.mdl"},
@@ -433,6 +435,10 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     local model = KIND_MODEL[kind]
     if kind == "weapon" and payload and WEAPONS[payload.weaponClass] then
         model = WEAPONS[payload.weaponClass].model
+    end
+    if kind=="wearable" and payload and LOD.Equipment then
+        local def=LOD.Equipment:Definition(payload.item)
+        if def then model=def.model end
     end
 
     ent.LODLootOwnerIdentity = ownerIdentity

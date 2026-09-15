@@ -45,7 +45,7 @@ after death.</div>
       <div class="page">
         <div class="kicker">Choose what you carry</div>
         <h1>Equipment &amp; Special Moves</h1><div class="rule"></div>
-        <p><b>I → View Equipment</b> shows your items, modifiers and Special Moves. Gear changes your effective abilities; it does not qualify you for permanent feats.</p>
+        <p><b>I → View Equipment</b> shows every weapon and wearable, its benefits, drawback and value. Every new piece rolls four to seven benefits, one elemental affinity and a drawback. Its name describes real effects. Deeper dungeons and rarer loot have larger budgets, even after Hero Level 20.</p>
         <div class="card-grid">
           <div class="card"><h3>Seven wearable positions</h3><p>Head, Body, Legs, Feet, Left Hand, Right Hand and Left Arm Accessory. Each ring uses one hand. One pair of gloves uses <b>both hands</b>. A shield uses the independent left-arm slot.</p></div>
           <div class="card"><h3>Compare before replacing</h3><p>Free positions equip automatically. Look at an occupied-slot pickup to compare its actual modifiers and approximate value. <b>E accepts</b> the replacement and destroys the displaced item records. Gloves may replace two rings.</p></div>
@@ -56,6 +56,22 @@ after death.</div>
         <p>Use <b>physical keyboard arrows</b>, or the rebindable mirror: <b>[ = ↑, ; = ←, , = ↓, \ = →</b>. Release between presses; gaps over 0.8 seconds reset the recipe. Menus, chat and holding a Throwable disable recognition. Controller directions do not issue move commands.</p>
         <div class="note"><strong>FIELD NOTE:</strong> Gear and unspent consumables follow your Hero through death and dungeon changes. A new campaign starts a new inventory.</div>
         <div class="folio-num">13a</div>
+      </div>
+    </article>
+
+    <article class="source-page" data-title="Procedural Weapons">
+      <div class="page">
+        <div class="kicker">No ordinary guns</div>
+        <h1>Procedural Weapons</h1><div class="rule"></div>
+        <p>Deborah's Watery Revolver of Holding and Neil's Earthly SMG of Charm are names built from properties. <b>Watery means Ice</b>; Charm means CHA. Read the full item panel for the complete combination.</p>
+        <div class="card-grid">
+          <div class="card"><h3>One active weapon</h3><p>Only the weapon in your hands contributes its bonuses and penalties. Holstered weapons do not stack. Your rings, clothes and shield keep contributing while equipped. Gear changes effective abilities, never permanent feat eligibility.</p></div>
+          <div class="card"><h3>Element and riders</h3><p>Every weapon has an element and at least one hit-effect chance. Holding attempts Held; Bloodletting attempts Bleeding. A successful chance still respects normal saves and immunity. Only damaging hits on surviving enemies can trigger up to two equipment riders.</p></div>
+          <div class="card"><h3>Make a build</h3><p>Compare damage, resistance, movement, saves, regeneration, summons and navigation. Some effects require half health, standing still, or at least 75 Magic. Higher value is an approximate budget comparison, not an instruction to replace a favorite item.</p></div>
+          <div class="card"><h3>Keep the roll</h3><p>Looking, leaving and returning never rerolls a pickup. <b>E accepts</b> a same-family weapon replacement. Replacing a gun keeps its current ammunition. Your item record survives death and dungeon transitions; a new campaign generates a new collection.</p></div>
+        </div>
+        <div class="note"><strong>FIELD NOTE:</strong> Several benefits plus a real penalty make unusual combinations. Shared caps still govern Dodge, Block and other effects. No gear can increase the 100 Magic capacity.</div>
+        <div class="folio-num">13b</div>
       </div>
     </article>
 
@@ -197,4 +213,3 @@ after death.</div>
         <p class="hand">• The map disappears after Dungeon 20. Learn the corridors before the corridors learn you.</p>
         <div class="silhouette">ROOM FOR YOUR OW
 ]========]
-

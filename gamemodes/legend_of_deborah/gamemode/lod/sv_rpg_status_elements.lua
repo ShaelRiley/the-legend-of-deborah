@@ -353,6 +353,9 @@ function System:Apply(target, id, source, options)
 end
 
 function System:AttachDamageContext(dmginfo, context)
+    if context and context.damageContract and LOD.Equipment and LOD.Equipment.PrepareDamageTags then
+        LOD.Equipment:PrepareDamageTags(context.damageContract,nil,context)
+    end
     if dmginfo then self.DamageContexts[dmginfo] = context or {} end
     return dmginfo
 end
@@ -372,8 +375,9 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
     current = current and string.lower(tostring(current)) or nil
     local weaknesses = tags.targetWeaknesses or target and target.LODElementalWeaknesses
         or state and state.elementalWeaknesses
+    local gear=state and state.equipmentExtras or {}
     rng = self:_RNG("element:" .. element, rng or tags.rng)
-    if listContains(weaknesses, element) then
+    if listContains(weaknesses, element) or (tonumber(gear["weak_"..element]) or 0)<0 then
         local index = rng:Int(1, #self.WeaknessMultipliers)
         local hasAttunement = false
         if attacker then
@@ -395,7 +399,7 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
         return math.max(0, amount * multiplier), {kind = "weakness", multiplier = multiplier,
             index = index, element = element, hitStunMultiplier = 2.5, knockback = true}
     end
-    if current == element then
+    if current == element or (tonumber(gear["ward_"..element]) or 0)>0 then
         local index = rng:Int(1, #self.ResistanceMultipliers)
         local multiplier = self.ResistanceMultipliers[index]
         self.Stats.resistanceHits = self.Stats.resistanceHits + 1

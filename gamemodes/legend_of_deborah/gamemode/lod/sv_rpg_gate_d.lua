@@ -60,6 +60,8 @@ function AbilityRules:CopyDamageProfile(profile, actor)
     local copy = {}
     for key, value in pairs(profile or {}) do copy[key] = value end
     copy.rpgDerived = profile and profile.identityBonusDie and profile.rpgDerived or self:Derived(actor)
+    local snapshot=profile and profile.attackEvent and profile.attackEvent.equipmentSnapshot
+    if snapshot and snapshot.derived then copy.rpgDerived=snapshot.derived end
     return copy
 end
 
@@ -153,6 +155,7 @@ end
 function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived, tags)
     contract = contract or {}
     tags = tags or {}
+    if tags.equipmentSnapshot then sourceDerived=tags.equipmentSnapshot.derived or sourceDerived end
     local resistance = tags.ignoreConDamageResistance and 0
         or math.Clamp(math.floor(tonumber(targetDerived and targetDerived.damageResistancePerDie) or 0), 0, 3)
     local total = tonumber(contract.bonus) or 0
@@ -180,6 +183,9 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
 
     if tags.shotgunHits then
         total = math.max(tonumber(tags.shotgunHits) or 0, total * tags.shotgunHits / tags.shotgunShares)
+    end
+    if LOD.Equipment and LOD.Equipment.DamageMultiplier then
+        total=total*LOD.Equipment:DamageMultiplier(sourceDerived,targetDerived,tags)
     end
     return math.max(0, total), reduced, resistance
 end

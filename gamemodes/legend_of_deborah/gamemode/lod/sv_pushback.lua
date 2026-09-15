@@ -238,7 +238,8 @@ function Pushback:ResolveSharedPushSave(requestedDistance, attackerDerived,
         and defenderDerived.levelProficiency) or 0
     local d20 = math.Clamp(math.floor(tonumber(natural) or 1), 1, 20)
     local dc = 10 + attackSTR + attackProficiency
-    local save = d20 + defendSTR + defendProficiency + sizeModifier
+    local gearSave=defenderDerived and defenderDerived.equipmentExtras and defenderDerived.equipmentExtras.save_str or 0
+    local save = d20 + defendSTR + defendProficiency + sizeModifier + math.Clamp(gearSave,-6,6)
     local succeeded = save >= dc
     local successfulFraction = succeeded
         and math.Clamp(tonumber(opts.successfulSaveFraction) or 0, 0, 1) or 1
@@ -358,6 +359,12 @@ function Pushback:Apply(hostile, opts)
     if hostile.LODDeadcrabState == "latched" then return nil end
 
     local authoredDistance = math.max(0, tonumber(opts.distance) or 0)
+    if LOD.Equipment and LOD.Equipment.Extras then
+        local attackGear=LOD.Equipment:Extras(opts.attacker)
+        local defendGear=LOD.Equipment:Extras(hostile)
+        authoredDistance=authoredDistance*(1+math.Clamp(attackGear.push_out or 0,-50,50)/100)
+            *(1-math.Clamp(defendGear.push_resist or 0,-50,50)/100)
+    end
     local rules = LOD.RPGAbilityRules
     local attackerDerived = rules and rules.Derived and rules:Derived(opts.attacker) or nil
     local defenderDerived = rules and rules.Derived and rules:Derived(hostile) or nil
