@@ -9,7 +9,17 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — reactive character status portrait
+## Current checkpoint — visual equipment inventory
+
+The author's CRPG equipment direction is implemented on the combined
+`astra/equipment-update` candidate under live GDD LOD-UI-008. A left body map and
+right icon grid support compatible drag/drop and click-to-equip, paired gloves,
+weapon selection and consumable stacks. Owner snapshots preserve the window and
+active drag; stale requests cannot remove a replacement item. All 74 integrated
+automated suites pass; Source visual acceptance remains pending.
+See [equipment inventory checkpoint](EQUIPMENT_INVENTORY_UI.md).
+
+## Previous checkpoint — reactive character status portrait
 
 The author's Doom-inspired HUD direction is implemented on the same combined
 `astra/equipment-update` candidate. The live GDD LOD-UI-007 records the local HUD's

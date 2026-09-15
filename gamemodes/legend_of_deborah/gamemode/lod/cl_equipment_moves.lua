@@ -39,20 +39,20 @@ end)
 
 function E:BuildMoveBindings(parent,y,width)
     local heading=vgui.Create("DLabel",parent)
-    heading:SetPos(0,y);heading:SetSize(width,24);heading:SetText("Special Moves: arrow keys or rebindable keyboard mirror")
+    heading:SetPos(0,y);heading:SetSize(width,48);heading:SetWrap(true);heading:SetText("Special Moves: arrow keys or rebindable keyboard mirror")
     heading:SetFont("LOD_SheetSmall");heading:SetTextColor(UI.Colors.ink)
     for i,id in ipairs(directions) do
         local binder=vgui.Create("DBinder",parent)
-        binder:SetPos((i-1)*width/4,y+28);binder:SetSize(width/4-6,30)
+        binder:SetPos((i-1)*width/4,y+52);binder:SetSize(width/4-6,30)
         binder:SetValue(mirrors[i]:GetInt());binder:SetTooltip(id)
         binder.OnChange=function(_,key)
             if key>=KEY_0 and key<=KEY_LAST then RunConsoleCommand("lod_special_key_"..string.lower(id),tostring(key)) end
         end
         local label=vgui.Create("DLabel",parent)
-        label:SetPos((i-1)*width/4,y+60);label:SetSize(width/4-6,20);label:SetText(id)
+        label:SetPos((i-1)*width/4,y+84);label:SetSize(width/4-6,20);label:SetText(id)
         label:SetTextColor(UI.Colors.ink)
     end
-    return y+94
+    return y+118
 end
 
 local blockUntil=0

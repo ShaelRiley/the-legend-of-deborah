@@ -164,12 +164,13 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
     end
     if not E:CanAct(ply) then return end
     local state = E:Ensure(heroState(ply))
-    if action == "activate" then E:Activate(ply)
+    if action == "activate" then
+        if id=="" or state.slots.throwable==id then E:Activate(ply) end
     elseif action == "deactivate" then E:Deactivate(ply)
     elseif action == "equip" then
         if E:Equip(state, id, slot) then E:Sync(ply) end
     elseif action == "unequip" then
-        if E:Unequip(state, slot) then E:Sync(ply) end
+        if state.slots[slot]==id and E:Unequip(state, slot) then E:Sync(ply) end
     elseif action == "discard" and E.Discard then
         if E:Discard(state,id) then E:Sync(ply) end
     end

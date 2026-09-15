@@ -11,85 +11,6 @@ function E:Request(action, id, slot)
     net.SendToServer()
 end
 
-function E:BuildPanel(frame)
-    local scroll=vgui.Create("DScrollPanel",frame)
-    scroll:SetPos(24,88);scroll:SetSize(frame:GetWide()-48,frame:GetTall()-200)
-    local content=vgui.Create("DPanel",scroll)
-    content:Dock(TOP);content.Paint=function() end
-    local width=frame:GetWide()-84
-    local y=0
-    local function label(text,font)
-        local panel=vgui.Create("DLabel",content)
-        panel:SetPos(0,y);panel:SetWide(width);panel:SetFont(font or "LOD_SheetSmall")
-        panel:SetTextColor(C.ink);panel:SetWrap(true);panel:SetAutoStretchVertical(true);panel:SetText(text)
-        -- Measure wrapped lines now so controls never overlap asynchronous layout.
-        surface.SetFont(font or "LOD_SheetSmall")
-        local lines,line=1,""
-        for word in text:gmatch("%S+") do
-            local test=line=="" and word or line.." "..word
-            if surface.GetTextSize(test)>width then lines=lines+1;line=word else line=test end
-        end
-        local _,height=surface.GetTextSize("Ag")
-        y=y+lines*height+10
-    end
-    label("EQUIPMENT", "LOD_SheetSubheading")
-    for _,slot in ipairs(E.SlotOrder) do
-        local item=E:Equipped(E.Snapshot,slot)
-        label(E.SlotLabels[slot]..": "..(item and E:ItemName(item) or "Empty"))
-    end
-    local _,moves,block=E:Contributions(E.Snapshot)
-    label(string.format("Combined Block: %.0f%% (33%% cap)",block*100))
-    for _,id in ipairs(E.MoveOrder) do
-        local move=E.SpecialMoves[id]
-        if moves[id] then label(string.format("%s %s | %d base Magic | %gs cooldown — %s",
-            move.name,move.glyphs,move.magicCost,move.cooldown,move.description)) end
-    end
-    if E.BuildMoveBindings then y=E:BuildMoveBindings(content,y,width) end
-    label("OWNED ITEMS", "LOD_SheetSubheading")
-    label("Up to 32 equipment records. Unequip unwanted clothing, then Discard to make room. Only your active weapon contributes.")
-    local ids={};for id in pairs(E.Snapshot.items) do ids[#ids+1]=id end;table.sort(ids)
-    for _,id in ipairs(ids) do
-        local item=E.Snapshot.items[id]
-        local def=E:Definition(item)
-        if def then
-            label(E:ItemName(item)..(def.throwable and " ×"..item.count or " | value "..E:Value(item)))
-            label(E:Description(item))
-            local equippedSlot
-            for _,slot in ipairs(E.SlotOrder) do if E.Snapshot.slots[slot]==id then equippedSlot=slot;break end end
-            local button=vgui.Create("DButton",content)
-            button:SetPos(0,y);button:SetSize(180,30)
-            button:SetText(def.weapon and "Select Weapon" or (equippedSlot and (def.throwable and "Hold Throwable" or "Unequip") or "Equip"))
-            button.DoClick=function()
-                if def.weapon then
-                    local weapon=LocalPlayer():GetWeapon(def.weaponClass)
-                    if IsValid(weapon) then input.SelectWeapon(weapon);LOD.Spellbook:Close() end
-                    return
-                end
-                if equippedSlot then
-                    E:Request(def.throwable and "activate" or "unequip",id,equippedSlot)
-                    if def.throwable then LOD.Spellbook:Close() end
-                else E:Request("equip",id,E:Placement(E.Snapshot,item)) end
-            end
-            if def.throwable and equippedSlot then
-                local remove=vgui.Create("DButton",content)
-                remove:SetPos(190,y);remove:SetSize(120,30);remove:SetText("Unequip")
-                remove.DoClick=function() E:Request("unequip",id,equippedSlot) end
-            elseif item.definitionId=="ring" then
-                local right=vgui.Create("DButton",content)
-                right:SetPos(190,y);right:SetSize(140,30);right:SetText("Equip Right Hand")
-                right.DoClick=function() E:Request("equip",id,"right_hand") end
-            end
-            if def.wearable and not equippedSlot then
-                local discard=vgui.Create("DButton",content)
-                discard:SetPos(340,y);discard:SetSize(100,30);discard:SetText("Discard")
-                discard.DoClick=function() E:Request("discard",id,"") end
-            end
-            y=y+44
-        end
-    end
-    content:SetTall(y+16)
-end
-
 -- Cache on the entity object, never its recyclable EntIndex. Retry a request
 -- after entering PVS/reconnecting; records never reroll on inspection.
 function E:PickupView(ent)
@@ -176,7 +97,7 @@ net.Receive("LOD_EquipmentSnapshot", function()
     E.Snapshot = state
     E.HasSnapshot = true
     comparison=nil
-    if LOD.Spellbook.EquipmentPage and IsValid(LOD.Spellbook.Frame) then LOD.Spellbook:Open() end
+    if E.RefreshInventory then E:RefreshInventory() end
 end)
 
 hook.Add("HUDPaint","LOD_ProceduralWeaponName",function()

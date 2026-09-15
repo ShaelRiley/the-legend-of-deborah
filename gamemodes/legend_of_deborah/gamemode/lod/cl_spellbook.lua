@@ -70,7 +70,7 @@ function Book:Open()
     local frame = vgui.Create("DFrame")
     self.Frame = frame
     frame:SetTitle("")
-    frame:SetSize(math.min(ScrW() - 32, 1120), math.min(ScrH() - 32, 590))
+    frame:SetSize(math.min(ScrW() - 32, 1120), math.min(ScrH() - 32, self.EquipmentPage and 740 or 590))
     frame:Center()
     frame:MakePopup()
     UI:CloseButton(frame,function() Book:Close() end)
@@ -86,10 +86,11 @@ function Book:Open()
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
         draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,266,C.red)
         end
-        draw.SimpleText(Book.EquipmentPage and "Hold Throwable to use it. Switch weapons to resume Magic; stored equipment does not suppress casting."
+        draw.SimpleText(Book.EquipmentPage and "Drag items onto body slots. Select a potion, then Hold Throwable to use it."
             or "Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
             "LOD_SheetBody",24,h-64,C.ink)
-        draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
+        draw.SimpleText(Book.EquipmentPage and "Gameplay continues. Switch weapons to resume Magic after using a Throwable."
+            or "Locked entries unlock through progression. Gameplay continues while this book is open.",
             "LOD_SheetSmall",24,h-38,C.muted)
     end
 
@@ -129,7 +130,7 @@ net.Receive("LOD_MagicSpellbookSnapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
     Book.Snapshot = snapshot
-    if IsValid(Book.Frame) or Book.PendingOpen then Book:Open() end
+    if Book.PendingOpen or (IsValid(Book.Frame) and not Book.EquipmentPage) then Book:Open() end
 end)
 
 hook.Add("PlayerButtonDown", "LOD_SpellbookInput", function(ply, key)

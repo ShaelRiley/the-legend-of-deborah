@@ -131,3 +131,14 @@ E.Request=function(_,action) assert(action=='snapshot');requested=requested+1 en
 current.state={equipmentDelta=true,state={items={},slots={}},removed={}}
 receivers.LOD_EquipmentSnapshot();assert(requested==1)
 print('EQUIPMENT_DELTA_PASS: production server writer and client receiver; unchanged record retention; change/add/remove/role reset/full recovery')
+
+-- A delayed body-map drag cannot unequip a newly replaced item in that slot.
+assert(E:AddConsumable(p.ps.equipment,'stink_bomb',1))
+assert(E:Equip(p.ps.equipment,'stink_bomb','throwable'))
+now=now+1;reads={'unequip','healing_potion','throwable'}
+receivers.LOD_EquipmentRequest(160,p)
+assert(p.ps.equipment.slots.throwable=='stink_bomb')
+now=now+1;reads={'unequip','stink_bomb','throwable'}
+receivers.LOD_EquipmentRequest(160,p)
+assert(not p.ps.equipment.slots.throwable and p.ps.equipment.items.stink_bomb)
+print('EQUIPMENT_STALE_DROP_PASS: server checks expected item before unequipping')

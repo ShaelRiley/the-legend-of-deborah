@@ -240,3 +240,6 @@ include("lod/sv_crypto_runtime.lua")
 
 AddCSLuaFile("lod/cl_character_portrait.lua")
 AddCSLuaFile("lod/cl_status_portrait.lua")
+
+AddCSLuaFile("lod/cl_equipment_icons.lua")
+AddCSLuaFile("lod/cl_equipment_inventory.lua")
