@@ -37,7 +37,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function(depth, skybox
             registered = registered + 1
             if ent:GetPos():DistToSqr(eyePos) <= KEYCARD_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 3)]
+                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 4)]
                 local adventure = LOD.AdventurePresentation
                 local still = adventure and adventure:Reduced()
                 local pos = ent:GetPos() + Vector(0, 0, still and 0 or math.sin(CurTime()*1.8+ent:EntIndex())*3)
@@ -70,7 +70,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function(dep
         if IsValid(ent) then
             if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
                 drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 3)]
+                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 4)]
                 local ang = Angle(0, EyeAngles().y - 90, 90)
                 cam.Start3D2D(ent:GetPos() + Vector(0, 0, 38), ang, 0.12)
                     draw.RoundedBox(4, -130, -30, 260, 60, Color(16, 18, 20, 230))
@@ -85,3 +85,4 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function(dep
     RenderStats.keycardLabelsDrawn = drawn
     RenderStats.keycardLabelsCulled = culled
 end)
+

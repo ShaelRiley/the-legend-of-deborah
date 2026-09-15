@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Neil, Brute & Black Gate Hunt", ["python3", "tools/run_lua54.py", "tools/test_neil_brute.lua"]),
     ("Native Resource Ownership & Error Unwinding", ["python3", "tools/run_lua54.py", "tools/test_native_resource_lifecycle.lua"]),
     ("GPS Cadence & Voice Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_gps_cadence.lua"]),
     ("Pickup Native Creation & Touch Handoff", ["python3", "tools/run_lua54.py", "tools/test_pickup_native_handoff.lua"]),

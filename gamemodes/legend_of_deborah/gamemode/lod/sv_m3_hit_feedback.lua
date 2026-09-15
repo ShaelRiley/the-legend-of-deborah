@@ -94,6 +94,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     hostile.LODHitStunUntil = now + stunSeconds
 
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
+    if hostile.LODBruteCharge and LOD.NeilBrute then LOD.NeilBrute:CancelCharge(hostile) end
 
     if hostile.LODSoldierBurst then
         hostile.LODSoldierBurst = nil
@@ -300,4 +301,3 @@ concommand.Add("lod_dice_shotgun_stun_probe", function(ply)
     print("[LOD:DICE-SHOTGUN] " .. text)
     ply:ChatPrint(text)
 end)
-

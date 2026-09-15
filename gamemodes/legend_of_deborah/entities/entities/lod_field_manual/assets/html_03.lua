@@ -206,7 +206,8 @@ after death.</div>
           <li><b>Fight what matters.</b> Accuracy and ammunition conservation remain useful habits even when the dice are funny.</li>
           <li><b>Find Red.</b> Then return to/open the Red Gate. That gate becomes your checkpoint.</li>
           <li><b>Repeat in Blue, then Yellow.</b></li>
-          <li><b>Take the Jail Key, unlock Deborah's cell, touch Deborah.</b></li>
+          <li><b>Hunt Neil, take his Black Keycard, open the Black Gate.</b> Bait the Brute into walls.</li>
+          <li><b>Take the Core Jail Key, unlock Deborah's cell, touch Deborah.</b></li>
         </ol>
         <p>That is enough knowledge to win your first dungeon. Whether it is enough luck is a separate department.</p>
         <div class="note"><strong>DEBORAH'S NOTE:</strong> You know enough now. This is the dangerous part.</div>

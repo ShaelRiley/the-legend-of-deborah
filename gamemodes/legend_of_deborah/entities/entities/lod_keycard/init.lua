@@ -26,7 +26,7 @@ function ENT:Think()
             -- trigger radius vertically and making obvious body contact fail.
             local nearest = ply:NearestPoint(self:GetPos())
             if nearest:DistToSqr(self:GetPos()) <= radiusSqr then
-                if LOD.ProgressionDirector:CollectCard(self:GetCardIndex(), ply) then
+                if LOD.ProgressionDirector:CollectCard(self:GetCardIndex(), ply, self) then
                     -- Same recognizable pickup timbre, ascending pitch by progression
                     -- color: Red < Blue < Yellow. The card is therefore legible by ear
                     -- without inventing three unrelated interface sounds.
@@ -41,3 +41,4 @@ function ENT:Think()
     self:NextThink(CurTime() + 0.08)
     return true
 end
+

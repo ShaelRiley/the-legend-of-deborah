@@ -14,7 +14,10 @@ ProgressionDirector.Stages = ProgressionDirector.Stages or {
     OPEN_YELLOW_GATE = 6,
     TAKE_JAIL_KEY = 7,
     UNLOCK_DEBORAH_CELL = 8,
-    RESCUE_DEBORAH = 9
+    RESCUE_DEBORAH = 9,
+    FIND_NEIL = 10,
+    TAKE_BLACK_KEYCARD = 11,
+    OPEN_BLACK_GATE = 12
 }
 local Stages = ProgressionDirector.Stages
 
@@ -363,11 +366,12 @@ end
 function ProgressionDirector:ResetLevelState(graph)
     local state = LOD.RunManager.State
     state.Graph = graph
-    state.Cards = {false, false, false}
-    state.GatesOpen = {false, false, false}
+    state.Cards = {false, false, false, false}
+    state.GatesOpen = {false, false, false, false}
     state.JailKey = false
     state.JailDoorOpen = false
     state.JailKeyEntity = nil
+    state.NeilHunt = nil
     state.ObjectiveStage = Stages.FIND_RED_KEYCARD
     state.CheckpointIndex = 0
     state.CheckpointPos = nil
@@ -393,7 +397,10 @@ function ProgressionDirector:GetObjectiveText()
         "OPEN YELLOW GATE — Y / SQUARE",
         "TAKE JAIL KEY",
         "UNLOCK DEBORAH'S CELL",
-        "RESCUE DEBORAH"
+        "RESCUE DEBORAH",
+        "FIND NEIL AND THE BLACK KEYCARD",
+        "TAKE THE BLACK KEYCARD — K / KEY",
+        "OPEN BLACK GATE — K / KEY"
     }
     return objectives[stage] or "EXPEDITION"
 end
@@ -405,6 +412,16 @@ function ProgressionDirector:GetObjectiveGraphTarget()
     if not progression then return nil end
 
     local stage = state.ObjectiveStage or Stages.FIND_RED_KEYCARD
+    if stage == Stages.FIND_NEIL or stage == Stages.TAKE_BLACK_KEYCARD then
+        local hunt = state.NeilHunt
+        local target = hunt and (stage == Stages.FIND_NEIL and hunt.neilCell or hunt.dropCell)
+        target = target or (progression.Hunt and progression.Hunt.neilCell)
+        return target and {kind = 1, a = copyCell(target)} or nil
+    end
+    if stage == Stages.OPEN_BLACK_GATE then
+        local gate = progression.Gates[4]
+        return gate and {kind = 2, a = copyCell(gate.beforeCell), b = copyCell(gate.afterCell)} or nil
+    end
     if stage == Stages.FIND_RED_KEYCARD or stage == Stages.FIND_BLUE_KEYCARD or
         stage == Stages.FIND_YELLOW_KEYCARD then
         local index = math.floor((stage + 1) / 2)
@@ -446,7 +463,7 @@ function ProgressionDirector:GetObjectiveTarget()
     local state = LOD.RunManager.State
     local stage = state.ObjectiveStage or Stages.FIND_RED_KEYCARD
     if stage == Stages.OPEN_RED_GATE or stage == Stages.OPEN_BLUE_GATE or
-        stage == Stages.OPEN_YELLOW_GATE or stage == Stages.UNLOCK_DEBORAH_CELL then
+        stage == Stages.OPEN_YELLOW_GATE or stage == Stages.OPEN_BLACK_GATE or stage == Stages.UNLOCK_DEBORAH_CELL then
         local target = self:GetObjectiveGraphTarget()
         if not target or not target.b then return nil end
         local a = LOD.MazeBuilder:CellCenter(target.a)
@@ -464,12 +481,12 @@ function ProgressionDirector:SyncPlayer(ply)
 
     net.Start("LOD_RunState")
     net.WriteUInt(math.max(1, state.Level or 1), 20)
-    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 9), 4)
-    for i = 1, 3 do net.WriteBool(state.Cards and state.Cards[i] == true) end
-    for i = 1, 3 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
+    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 12), 4)
+    for i = 1, 4 do net.WriteBool(state.Cards and state.Cards[i] == true) end
+    for i = 1, 4 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
     net.WriteBool(state.JailKey == true)
     net.WriteBool(state.JailDoorOpen == true)
-    net.WriteUInt(math.Clamp(state.CheckpointIndex or 0, 0, 3), 2)
+    net.WriteUInt(math.Clamp(state.CheckpointIndex or 0, 0, 4), 3)
     net.WriteBool(state.Ranked == true)
     net.WriteBool(state.Failed == true)
     net.WriteBool(state.LevelCleared == true)
@@ -495,7 +512,8 @@ function ProgressionDirector:Announce(text, presentation)
     net.Broadcast()
 end
 
-function ProgressionDirector:CollectCard(index, ply)
+function ProgressionDirector:CollectCard(index, ply, cardEnt)
+    if index == 4 then return LOD.NeilBrute and LOD.NeilBrute:CollectBlackCard(ply, cardEnt) or false end
     local state = LOD.RunManager.State
     if state.Failed or state.LevelCleared then return false end
     if index < 1 or index > 3 or state.Cards[index] then return false end
@@ -522,7 +540,7 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     local state = LOD.RunManager.State
     local card = PC.Cards[index]
     if state.Failed or state.LevelCleared then return false end
-    if index < 1 or index > 3 then return false end
+    if index < 1 or index > 4 then return false end
     if state.GatesOpen[index] then return true end
 
     if not state.Cards[index] then
@@ -533,13 +551,13 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
         return false
     end
 
-    if state.ObjectiveStage ~= index * 2 then
+    if state.ObjectiveStage ~= (index == 4 and Stages.OPEN_BLACK_GATE or index * 2) then
         if IsValid(ply) then reportDenied(ply, "ACCESS DENIED — SECURITY SEQUENCE LOCKED") end
         return false
     end
 
     state.GatesOpen[index] = true
-    state.ObjectiveStage = index < 3 and (index * 2 + 1) or Stages.TAKE_JAIL_KEY
+    state.ObjectiveStage = index < 3 and (index * 2 + 1) or (index == 3 and Stages.FIND_NEIL or Stages.TAKE_JAIL_KEY)
     state.CheckpointIndex = index
 
     local graph = state.Graph
@@ -547,10 +565,11 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     if meta then state.CheckpointPos = LOD.MazeBuilder:CellCenter(meta.afterCell) + Vector(0, 0, 12) end
 
     if IsValid(gateEnt) and gateEnt.OpenGate then gateEnt:OpenGate() end
-    if index == 3 then
+    if index == 3 and LOD.NeilBrute then LOD.NeilBrute:Start() end
+    if index == 4 then
         local keyEnt = self:EnsureCoreJailKey()
         if not IsValid(keyEnt) then
-            ErrorNoHalt("[LOD] Yellow Gate opened but production Jail Key failed to spawn at Core\n")
+            ErrorNoHalt("[LOD] Black Gate opened but production Jail Key failed to spawn at Core\n")
         end
     end
     self:Announce(string.format("%s GATE OPEN — CHECKPOINT %d", string.upper(card.name), index),
@@ -578,7 +597,8 @@ end
 function ProgressionDirector:EnsureCoreJailKey()
     local state = LOD.RunManager.State
     local progression = state.Graph and state.Graph.Progression
-    if not progression or state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY then return nil end
+    if not progression or state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY
+        or not state.GatesOpen[4] then return nil end
     local pos = LOD.MazeBuilder:CellCenter(progression.CoreCell) + Vector(0, 0, PC.KeycardHeight)
     return self:SpawnJailKey(pos, "temporary_core")
 end
@@ -627,7 +647,7 @@ end
 function ProgressionDirector:CanRescueDeborah()
     local state = LOD.RunManager.State
     return not state.Failed and not state.LevelCleared and state.GatesOpen and
-        state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and
+        state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and state.GatesOpen[4] and
         state.JailKey == true and state.JailDoorOpen == true and
         state.ObjectiveStage == Stages.RESCUE_DEBORAH
 end

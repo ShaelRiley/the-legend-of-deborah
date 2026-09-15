@@ -19,7 +19,7 @@ end
 
 local function validJailEdge(progression)
     local jail = progression and progression.JailEdge
-    local yellow = progression and progression.Gates and progression.Gates[3]
+    local yellow = progression and progression.Gates and (progression.Gates[4] or progression.Gates[3])
     return jail and yellow and jail.beforeCell and jail.afterCell and jail.edgeKey and
         jail.beforeCell.z == jail.afterCell.z and
         (jail.pathIndex or -1) > (yellow.pathIndex or math.huge)
@@ -49,9 +49,9 @@ concommand.Add("lod_m2_status", function(ply)
         boolText(state.LevelCleared)
     ))
     printTo(ply, string.format(
-        "cards R=%s B=%s Y=%s | gates R=%s B=%s Y=%s | jailKey=%s jailDoor=%s | objective=%s",
-        boolText(state.Cards and state.Cards[1]), boolText(state.Cards and state.Cards[2]), boolText(state.Cards and state.Cards[3]),
-        boolText(state.GatesOpen and state.GatesOpen[1]), boolText(state.GatesOpen and state.GatesOpen[2]), boolText(state.GatesOpen and state.GatesOpen[3]),
+        "cards R=%s B=%s Y=%s K=%s | gates R=%s B=%s Y=%s K=%s | jailKey=%s jailDoor=%s | objective=%s",
+        boolText(state.Cards and state.Cards[1]), boolText(state.Cards and state.Cards[2]), boolText(state.Cards and state.Cards[3]), boolText(state.Cards and state.Cards[4]),
+        boolText(state.GatesOpen and state.GatesOpen[1]), boolText(state.GatesOpen and state.GatesOpen[2]), boolText(state.GatesOpen and state.GatesOpen[3]), boolText(state.GatesOpen and state.GatesOpen[4]),
         boolText(state.JailKey), boolText(state.JailDoorOpen),
         ProgressionDirector:GetObjectiveText()
     ))
@@ -137,7 +137,7 @@ concommand.Add("lod_m2_tp", function(ply, _, args)
     if kind == "gate" then
         local index = math.floor(tonumber(args[2]) or 1)
         local gate = progression.Gates[index]
-        if not gate then ply:ChatPrint("Gate index must be 1-3.") return end
+        if not gate then ply:ChatPrint("Gate index must be 1-4.") return end
         debugTeleport(ply, LOD.MazeBuilder:CellCenter(gate.beforeCell) + Vector(0, 0, 24), PC.Cards[index].name .. " gate approach")
         return
     end
@@ -152,7 +152,7 @@ concommand.Add("lod_m2_tp", function(ply, _, args)
         return
     end
 
-    ply:ChatPrint("Usage: lod_m2_tp card <1-3> | gate <1-3> | core | deborah")
+    ply:ChatPrint("Usage: lod_m2_tp card <1-3> | gate <1-4> | core | deborah")
 end)
 
 concommand.Add("lod_m2_seed_test", function(ply, _, args)
@@ -203,13 +203,15 @@ concommand.Add("lod_m2_audit", function(ply)
     end
 
     require(progression.Validation and progression.Validation.valid == true, "ordered progression validation false")
-    require(#(progression.Gates or {}) == 3, "gate plan count is not 3")
+    local gateCount = progression.Hunt and 4 or 3
+    require(#(progression.Gates or {}) == gateCount, "gate plan count mismatch")
     require(#(progression.Keycards or {}) == 3, "keycard plan count is not 3")
     require(validJailEdge(progression), "JailEdge is missing, vertical, or not after Yellow Gate")
     require(progression.JailEdge and graph.Edges and graph.Edges[progression.JailEdge.edgeKey] ~= nil,
         "JailEdge is not a canonical graph edge")
     require(progression.Validation and progression.Validation.orderedRoute ==
-        "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah",
+        (progression.Hunt and "Start>Red>Blue>Yellow>Neil>Black Keycard>Black Gate>Temporary Core Jail Key>Jail Door>Deborah" or
+        "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah"),
         "ordered route does not include Jail Key and Jail Door")
     require(progression.Gates[1].pathIndex < progression.Gates[2].pathIndex and progression.Gates[2].pathIndex < progression.Gates[3].pathIndex,
         "gate path indices are not strictly ordered")
@@ -225,12 +227,13 @@ concommand.Add("lod_m2_audit", function(ply)
     local jailKeyEntities = ents.FindByClass("lod_jail_key")
     local jailDoorEntities = ents.FindByClass("lod_jail_door")
     local deborahEntities = ents.FindByClass("lod_deborah")
-    require(#gateEntities == 3, "runtime gate entity count is " .. #gateEntities)
+    require(#gateEntities == gateCount, "runtime gate entity count is " .. #gateEntities)
     require(#jailDoorEntities == 1, "runtime jail-door entity count is " .. #jailDoorEntities)
     require(#deborahEntities == 1, "runtime Deborah entity count is " .. #deborahEntities)
 
     local expectedCardsRemaining = 0
     for i = 1, 3 do if not (state.Cards and state.Cards[i]) then expectedCardsRemaining = expectedCardsRemaining + 1 end end
+    if state.NeilHunt and state.NeilHunt.dead and not state.Cards[4] then expectedCardsRemaining = expectedCardsRemaining + 1 end
     require(#cardEntities == expectedCardsRemaining,
         string.format("runtime keycard count=%d expected=%d", #cardEntities, expectedCardsRemaining))
     local expectedJailKeys = state.ObjectiveStage == 7 and not state.JailKey and 1 or 0
@@ -253,7 +256,7 @@ concommand.Add("lod_m2_audit", function(ply)
 
     for _, gateEnt in ipairs(gateEntities) do
         local index = gateEnt:GetGateIndex()
-        if index >= 1 and index <= 3 then
+        if index >= 1 and index <= gateCount then
             require(gateEnt:GetOpened() == (state.GatesOpen and state.GatesOpen[index] == true),
                 PC.Cards[index].name .. " gate entity/state mismatch")
         else
@@ -281,3 +284,4 @@ concommand.Add("lod_m2_audit", function(ply)
         for _, reason in ipairs(reasons) do printTo(ply, "audit reason: " .. reason) end
     end
 end)
+

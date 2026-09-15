@@ -52,6 +52,7 @@ local function currentStateSignature()
         gates[1] and "1" or "0",
         gates[2] and "1" or "0",
         gates[3] and "1" or "0",
+        gates[4] and "1" or "0",
         state.jailDoorOpen and "1" or "0",
         objective and tostring(objective.x) or "-",
         objective and tostring(objective.y) or "-",

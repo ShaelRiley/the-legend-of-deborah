@@ -9,7 +9,20 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — native crash audit repair candidate
+## Current checkpoint — Neil and the Brute
+
+Implements the post-Yellow hunt over development baseline
+`e7576355967084b9fca246022ce9a4b3a7da6148`, on `astra/equipment-update`.
+Neil uses legal multi-floor escape routes; the Brute escorts him, responds to
+damage, and has a committed charge with wall-stun counterplay. Neil alone
+releases the physical Black Keycard. The fourth gate establishes checkpoint 4
+before the explicitly permitted temporary Core Jail Key. Gordon remains next.
+The author's follow-up approved choosing the missing encounter tuning; values
+are recorded in live GDD 07. All 86 automated suites pass; native combat feel,
+multiplayer acceptance and the outstanding fatal-crash gate are not yet accepted.
+See [implementation and finite playtest](NEIL_BRUTE_CHECKPOINT.md).
+
+## Previous checkpoint — native crash audit repair candidate
 
 Audit of dev HEAD `d59d2df2274cd11fb6311b7c3d89bef2a6b8ed9e` completed;
 all 366 production sources match remote content. Latest detailed log again

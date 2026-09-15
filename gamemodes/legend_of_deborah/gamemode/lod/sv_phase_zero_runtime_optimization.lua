@@ -33,6 +33,7 @@ local function gateSignature()
     if gates and gates[1] then signature = signature + 1 end
     if gates and gates[2] then signature = signature + 2 end
     if gates and gates[3] then signature = signature + 4 end
+    if gates and gates[4] then signature = signature + 8 end
     return signature
 end
 
@@ -389,3 +390,4 @@ concommand.Add("lod_hostile_registry_status", function(ply)
     print("[LOD:HOSTILE-REGISTRY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+

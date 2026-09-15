@@ -123,7 +123,7 @@ function MazeBuilder:Build(graph)
     report.progressionEntities = #self.Entities - before
     report.entityCount = #self.Entities
     report.progression = {
-        gates = 3,
+        gates = #(graph.Progression.Gates or {}),
         keycards = 3,
         jailDoor = 1,
         deborah = 1,
@@ -131,3 +131,4 @@ function MazeBuilder:Build(graph)
     }
     return true, report
 end
+

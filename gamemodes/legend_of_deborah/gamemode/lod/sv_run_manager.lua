@@ -28,8 +28,8 @@ local function freshState(campaignEpoch)
         RPGAllocation = nil,
         CharacterOrder = nil,
         WaitingSince = {},
-        Cards = {false, false, false},
-        GatesOpen = {false, false, false},
+        Cards = {false, false, false, false},
+        GatesOpen = {false, false, false, false},
         JailKey = false,
         JailDoorOpen = false,
         ObjectiveStage = 1,
@@ -1081,4 +1081,3 @@ end)
 hook.Add("ShutDown", "LOD_Cleanup", function()
     LOD.MazeBuilder:Cleanup()
 end)
-

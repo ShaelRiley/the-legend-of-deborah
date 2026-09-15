@@ -157,3 +157,4 @@ commands.lod_enemy_update_testkit(player);assert(not LOD.RunManager.unranked,'ki
 D.activeCount=0;commands.lod_enemy_update_testkit(player)
 assert(LOD.RunManager.unranked and #D.Plan.encounters==2 and LOD.RunManager.State.Level==1,'finite unranked kit, actual dungeon unchanged')
 print('enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle')
+return {actor=actor,hero=player,commands=commands,hooks=hooks,setTime=function(v) now=v end}

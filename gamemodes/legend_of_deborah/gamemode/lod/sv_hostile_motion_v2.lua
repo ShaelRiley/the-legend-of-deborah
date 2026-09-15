@@ -296,6 +296,7 @@ local function installPatch()
     -- variance, wandering, hit-stun, and death retain their state machines while
     -- sharing one motion kernel.
     function class:_BehaviourTick()
+        if LOD.NeilBrute and LOD.NeilBrute:Tick(self) then return end
         if LOD.EnemyUpdate and LOD.EnemyUpdate:Tick(self) then return end
         if self.LODDead or not self.LODActivated then
             Motion:Stop(self)

@@ -43,11 +43,11 @@ net.Receive("LOD_RunState", function()
     state.synchronized = true
     state.level = net.ReadUInt(20)
     state.objectiveStage = net.ReadUInt(4)
-    state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
-    state.gates = {net.ReadBool(), net.ReadBool(), net.ReadBool()}
+    state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool(), net.ReadBool()}
+    state.gates = {net.ReadBool(), net.ReadBool(), net.ReadBool(), net.ReadBool()}
     state.jailKey = net.ReadBool()
     state.jailDoorOpen = net.ReadBool()
-    state.checkpoint = net.ReadUInt(2)
+    state.checkpoint = net.ReadUInt(3)
     state.ranked = net.ReadBool()
     state.failed = net.ReadBool()
     state.levelCleared = net.ReadBool()
@@ -83,9 +83,10 @@ local UI = LOD.UI
 local cardColors = {
     Color(205, 54, 54),
     Color(64, 118, 210),
-    Color(224, 190, 52)
+    Color(224, 190, 52),
+    Color(190, 190, 200)
 }
-local letters = {"R", "B", "Y"}
+local letters = {"R", "B", "Y", "K"}
 local nextRestartRequest = 0
 local function drawSymbol(index, x, y, color)
     surface.SetDrawColor(color)
@@ -178,7 +179,7 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
         and ("LEVEL " .. tostring(state.level) .. "   " .. role .. (state.ranked and "" or "   UNRANKED"))
         or "INITIALIZING RUN..."
     UI:HUDText(levelText,"HudHintTextLarge",margin,margin)
-    for i = 1, 3 do
+    for i = 1, 4 do
         local x, y = margin+8+(i-1)*92, margin+32
         local collected = state.cards[i]
         local color = collected and cardColors[i] or Color(170,170,170,175)

@@ -83,7 +83,8 @@ local COLORS = {
 local gateColors = {
     Color(205, 54, 54),
     Color(64, 118, 210),
-    Color(224, 190, 52)
+    Color(224, 190, 52),
+    Color(190, 190, 200)
 }
 local OBJECTIVE_LABELS = {[1] = "CARD", [2] = "GATE", [3] = "KEY", [4] = "JAIL", [5] = "D"}
 
@@ -161,14 +162,14 @@ local function bitOpen(mask, index)
 end
 
 local function gateCode(codes, shift)
-    return bit.band(bit.rshift(codes or 0, shift), 3)
+    return bit.band(bit.rshift(codes or 0, shift), 7)
 end
 
 local ROUTE_DIRS = {
     {dx = 0, dy = 1, dz = 0, bit = 0, gateShift = 0},
-    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 2},
-    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 4},
-    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 6},
+    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 3},
+    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 6},
+    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 9},
     {dx = 0, dy = 0, dz = 1, bit = 4},
     {dx = 0, dy = 0, dz = -1, bit = 5}
 }
@@ -314,7 +315,7 @@ net.Receive("LOD_MapChunk", function()
             y = net.ReadUInt(7),
             z = net.ReadUInt(3),
             openings = net.ReadUInt(6),
-            gates = net.ReadUInt(8),
+            gates = net.ReadUInt(12),
             stairDirection = net.ReadUInt(2)
         }
         cell.key = cellKey(cell.x, cell.y, cell.z)
@@ -370,7 +371,7 @@ local function gateStateSignature()
     local state = LOD.ClientState or {}
     local gates = state.gates or {}
     local signature = 0
-    for gateIndex = 1, 3 do
+    for gateIndex = 1, 4 do
         if gates[gateIndex] == true then
             signature = bit.bor(signature, bit.lshift(1, gateIndex - 1))
         end
@@ -597,15 +598,20 @@ local function drawObjectiveMarker(state, x, y)
     local pulse = 6 + math.abs(math.sin(CurTime() * 4.5)) * 3
     local kind = state.objectiveKind or 0
     local color = COLORS.routeBright
+    local stage=state.objectiveStage or 1
+    local label=OBJECTIVE_LABELS[kind] or "GOAL"
     if kind == 1 then
-        local cardIndex = math.Clamp(math.floor(((state.objectiveStage or 1) + 1) / 2), 1, 3)
+        local cardIndex = stage==11 and 4 or math.Clamp(math.floor((stage + 1) / 2), 1, 3)
         color = gateColors[cardIndex] or color
     elseif kind == 5 then
         color = COLORS.deborah
     end
+    if stage==10 then label="NEIL";color=Color(70,220,95)
+    elseif stage==11 then label="BLACK KEY"
+    elseif stage==12 then label="BLACK GATE" end
     surface.DrawCircle(x, y, pulse, color.r, color.g, color.b, color.a)
     surface.DrawCircle(x, y, pulse + 1, color.r, color.g, color.b, 180)
-    draw.SimpleText(OBJECTIVE_LABELS[kind] or "GOAL", "LOD_Map_Small", x, y - 11,
+    draw.SimpleText(label, "LOD_Map_Small", x, y - 11,
         color, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
 end
 

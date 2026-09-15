@@ -340,7 +340,8 @@ function CombatAudio:_MonitorRunState()
         self.LastGates = {
             state.GatesOpen and state.GatesOpen[1] == true or false,
             state.GatesOpen and state.GatesOpen[2] == true or false,
-            state.GatesOpen and state.GatesOpen[3] == true or false
+            state.GatesOpen and state.GatesOpen[3] == true or false,
+            state.GatesOpen and state.GatesOpen[4] == true or false
         }
         self.LastFailed = state.Failed == true
         self.LastLevelCleared = state.LevelCleared == true
@@ -348,8 +349,8 @@ function CombatAudio:_MonitorRunState()
         if hadPriorLevel and state.BuildReady then broadcastCue(UI_CUES.levelReady) end
     end
 
-    self.LastGates = self.LastGates or {false, false, false}
-    for i = 1, 3 do
+    self.LastGates = self.LastGates or {false, false, false, false}
+    for i = 1, 4 do
         local open = state.GatesOpen and state.GatesOpen[i] == true or false
         if open and not self.LastGates[i] then broadcastCue(UI_CUES.checkpoint) end
         self.LastGates[i] = open

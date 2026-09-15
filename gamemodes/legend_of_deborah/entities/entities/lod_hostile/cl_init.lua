@@ -166,6 +166,7 @@ function ENT:Draw()
         LOD.MonsterIdentity:DrawBody(self)
         LOD.MonsterIdentity:DrawAura(self,size)
     else self:DrawModel() end
+    if LOD.NeilBrutePresentation then LOD.NeilBrutePresentation:Draw(self,size) end
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 

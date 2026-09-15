@@ -130,7 +130,8 @@ C.Progression = {
             letter = "Y",
             symbol = "SQUARE",
             color = Color(224, 190, 52)
-        }
+        },
+        {id = "black", name = "Black", letter = "K", symbol = "KEY", color = Color(90, 90, 100)}
     }
 }
 
@@ -293,3 +294,4 @@ C.Debug = {
     GraphChunkEdges = 80,
     SeedTestMax = 1000
 }
+

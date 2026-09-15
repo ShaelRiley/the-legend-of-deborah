@@ -143,7 +143,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             registered = registered + 1
             if ent:GetPos():DistToSqr(eyePos) <= GATE_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
-                local index = math.Clamp(ent:GetGateIndex(), 1, 3)
+                local index = math.Clamp(ent:GetGateIndex(), 1, 4)
                 local card = PC.Cards[index]
                 local mins, maxs = gateLocalBounds(ent)
                 local frac = openingFraction(ent)
@@ -188,7 +188,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", functio
         if IsValid(ent) then
             if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
                 drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 3)]
+                local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 4)]
                 local halfHeight = GATE_VISUAL_HEIGHT * 0.5
                 local z = -halfHeight + GATE_SIGN_HEIGHT
                 if ent:GetGateAxis() == 0 then
@@ -230,3 +230,4 @@ concommand.Add("lod_progression_render_status", function()
         passed and "PASS" or "FAIL"
     ))
 end)
+

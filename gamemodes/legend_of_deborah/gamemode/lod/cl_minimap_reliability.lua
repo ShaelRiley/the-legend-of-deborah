@@ -39,14 +39,14 @@ local function bitOpen(mask, index)
 end
 
 local function gateCode(codes, shift)
-    return bit.band(bit.rshift(codes or 0, shift), 3)
+    return bit.band(bit.rshift(codes or 0, shift), 7)
 end
 
 local ROUTE_DIRS = {
     {dx = 0, dy = 1, dz = 0, bit = 0, gateShift = 0},
-    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 2},
-    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 4},
-    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 6},
+    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 3},
+    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 6},
+    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 9},
     {dx = 0, dy = 0, dz = 1, bit = 4},
     {dx = 0, dy = 0, dz = -1, bit = 5}
 }
@@ -185,7 +185,7 @@ net.Receive("LOD_MapChunk", function()
             y = net.ReadUInt(7),
             z = net.ReadUInt(3),
             openings = net.ReadUInt(6),
-            gates = net.ReadUInt(8),
+            gates = net.ReadUInt(12),
             stairDirection = net.ReadUInt(2)
         }
         cell.key = cellKey(cell.x, cell.y, cell.z)
@@ -311,3 +311,4 @@ hook.Add("PreDrawHUD", "LOD_MinimapNearestRealCell", function()
     Map.cache.adjacency[aliasKey] = {{key = nearest.key, gate = 0, jail = false}}
     Map.cache.reach = nil
 end)
+

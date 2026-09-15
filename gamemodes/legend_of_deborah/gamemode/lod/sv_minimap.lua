@@ -12,9 +12,9 @@ util.AddNetworkString("LOD_MapDenied")
 
 local DIRS = {
     {dx = 0, dy = 1, dz = 0, bit = 0, gateShift = 0}, -- N
-    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 2}, -- E
-    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 4}, -- S
-    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 6}, -- W
+    {dx = 1, dy = 0, dz = 0, bit = 1, gateShift = 3}, -- E
+    {dx = 0, dy = -1, dz = 0, bit = 2, gateShift = 6}, -- S
+    {dx = -1, dy = 0, dz = 0, bit = 3, gateShift = 9}, -- W
     {dx = 0, dy = 0, dz = 1, bit = 4},                 -- UP
     {dx = 0, dy = 0, dz = -1, bit = 5}                 -- DOWN
 }
@@ -121,7 +121,7 @@ local function encodeCanonicalCells(graph)
                     local gateIndex = gates[ek] or 0
                     if gateIndex > 0 then
                         gateCodes = bit.bor(gateCodes,
-                            bit.lshift(math.Clamp(gateIndex, 0, 3), dir.gateShift))
+                            bit.lshift(math.Clamp(gateIndex, 0, 4), dir.gateShift))
                     end
                 end
             end
@@ -223,7 +223,7 @@ function Minimap:Send(ply)
             net.WriteUInt(math.Clamp(cell.y or 0, 0, 127), 7)
             net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
             net.WriteUInt(cell.openings or 0, 6)
-            net.WriteUInt(cell.gates or 0, 8)
+            net.WriteUInt(cell.gates or 0, 12)
             net.WriteUInt(cell.stairDirection or 0, 2)
         end
         net.Send(ply)
@@ -239,3 +239,4 @@ end)
 hook.Add("PlayerInitialSpawn", "LOD_MinimapInitialEntitlement", function(ply)
     Minimap:Revoke(ply)
 end)
+
