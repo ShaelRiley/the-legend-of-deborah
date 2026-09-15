@@ -3,6 +3,14 @@
 Development branch: `astra/equipment-update`; continuation baseline `af5b4f7`.
 No main promotion, VPS deployment or Workshop publication is included.
 
+## HUD follow-up
+
+The ordinary countdown now occupies a dedicated upper-left row at `(22, 72)`,
+below the run/card readout. It no longer shares the objective's upper-right top
+band or grows leftward into long/wrapped goal text. TIME OVER letterbox placement
+is unchanged. The production timer harness records the normal draw call and locks
+its anchor and alignment.
+
 ## Authority
 
 Read the live GDD entrypoint/index and relevant Core Loop / Lifecycle rules,
@@ -74,7 +82,7 @@ removed. Map changes/server restarts use their ordinary fresh-campaign lifecycle
 
 ## Verification
 
-`python3 tools/test_checkpoint_g_integration.py`: all 90 suites pass, including
+`python3 tools/test_checkpoint_g_integration.py`: all 93 suites pass, including
 repository Lua syntax, geometry/enemies, equipment, lifecycle, RPG and prior
 protected regressions. The new production-code harness verifies untimed staging,
 Soldier rejection, exactly-once start, continuous deadlines through changed level

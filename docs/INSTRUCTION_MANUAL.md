@@ -1,6 +1,17 @@
 # Canonical instruction manual
 
-## September 15, 2026 checkpoint
+## September 15, 2026 launch repair
+
+The initial portable-reader implementation registered `DHTML:AddFunction`
+callbacks before `SetHTML`. Garry's Mod binds those functions to the current HTML
+document and requires registration after it has loaded, so Chromium document
+replacement could discard the bridge. The reader now binds its bounded position,
+close and P/I/L functions from `OnDocumentReady` and queues bookmark restoration
+from the same event. The regression double rejects any pre-document callback
+registration, covering the native lifecycle that the original permissive mock
+missed. Both launch paths still converge on `LOD.FieldManual:Open()`.
+
+## Initial September 15, 2026 checkpoint
 
 The continuation on `astra/equipment-update` replaces the staging-only reader
 with `LOD.FieldManual`, loaded by the gamemode on every client. The shared Player
@@ -19,7 +30,7 @@ The reader provides a chapter selector, literal text search, previous/next,
 scrolling, 15–26 px text sizes, keyboard navigation, and a saved page/scroll/text
 size. It uses ES5 JavaScript and embedded images; no network requests, external
 fonts, or Workshop art are needed. General DHTML Lua execution is disabled;
-only bounded bookmark, ready, close, and P/I/L callbacks are exposed. Stale
+only bounded bookmark, close, and P/I/L callbacks are exposed. Stale
 callbacks cannot change a newly opened reader.
 
 ## One content authority
@@ -65,7 +76,7 @@ taught as available features.
 
 ## Evidence and next native check
 
-All 92 integrated automated suites passed. Gates include: canonical menu/reader lifecycle harness; production JavaScript
+All 93 integrated automated suites pass. Gates include: canonical menu/reader lifecycle harness; production JavaScript
 navigation test with a DOM double; generated-content parity and offline-asset
 checks, including catalog parity with the final production graph; the complete integrated regression suite. The existing protected
 regression harness now returns a loaded module's value, matching real `include`.

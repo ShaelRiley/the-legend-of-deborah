@@ -113,13 +113,16 @@ assert(a.x==c.x and a.y==c.y and a.z==c.z and b.r==d.r)
 -- Replay real server serialization through the actual client receiver.
 CLIENT=true;SERVER=false
 local serverReceivers=receivers;receivers={}
-local drawn,sounds=0,0
+local drawn,sounds,drawCalls=0,0,{}
 surface={CreateFont=noop,PlaySound=function() sounds=sounds+1 end,SetDrawColor=noop,DrawRect=noop}
 Material=function(x) return x end;render={SetMaterial=noop,DrawSprite=noop}
-draw={SimpleText=function() drawn=drawn+1 end,SimpleTextOutlined=function() drawn=drawn+1 end}
+local function recordDraw(text,font,x,y,_,alignX,alignY)
+ drawn=drawn+1;drawCalls[#drawCalls+1]={text=text,font=font,x=x,y=y,alignX=alignX,alignY=alignY}
+end
+draw={SimpleText=recordDraw,SimpleTextOutlined=recordDraw}
 ScrW=function() return 1920 end;ScrH=function() return 1080 end;EyePos=function() return Vector(0,0,300) end
 LerpVector=function(f,a,b) return a+(b-a)*f end
-TEXT_ALIGN_CENTER=1;TEXT_ALIGN_TOP=2;color_black=Color(0,0,0);color_white=Color(255,255,255)
+TEXT_ALIGN_LEFT=0;TEXT_ALIGN_CENTER=1;TEXT_ALIGN_TOP=2;color_black=Color(0,0,0);color_white=Color(255,255,255)
 KEY_E=18;local down=false;input={IsKeyDown=function() return down end};gui={IsGameUIVisible=function() return false end}
 local originalHUD=function() return 42 end
 hook.Add('HUDPaint','LOD_TestHUD',originalHUD)
@@ -130,10 +133,17 @@ local function read() readIndex=readIndex+1;return packet[readIndex] end
 net.ReadUInt=read;net.ReadBool=read;net.ReadFloat=read;net.ReadVector=read
 local function receive() readIndex=0;receivers[T.Message]() end
 T:Sync();receive();assert(not T:IsCinematic());assert(hooks.HUDPaint.LOD_TestHUD()==42)
+hooks.HUDPaint.LOD_TimeoutHUD()
+local timerDraw=drawCalls[#drawCalls]
+assert(timerDraw.text=='30:00  •  AWAITING FIRST HERO' and timerDraw.x==22 and timerDraw.y==72,
+ 'campaign clock has a dedicated row below the upper-left run/card block')
+assert(timerDraw.alignX==TEXT_ALIGN_LEFT and timerDraw.alignY==TEXT_ALIGN_TOP,
+ 'campaign clock grows rightward without occupying the objective anchor')
 T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD()==nil)
 local clock=T:Clock();clock.scene.started=now-22;clock.scene.ready=true
 T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==22)
-hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==2)
+local beforeCinematicDraws=drawn
+hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+2)
 local soundCount=sounds;now=now+1;T:Sync();receive();assert(sounds==soundCount,'snapshot replayed entrance audio')
 R:NewCampaign();receive();assert(not T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD==originalHUD)
-print('PASS campaign timer, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport and HUD restoration')
+print('PASS campaign timer layout, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport and HUD restoration')

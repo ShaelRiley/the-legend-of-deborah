@@ -120,13 +120,12 @@ function H:Draw()
     local magicX,magicY,magicW,magicH=LOD.MagicHUD:Bounds()
     local x,y=magicX+magicW+12,magicY+magicH-size
     local feedLeft=ScrW()-22-math.min(600,ScrW()*.44)
-    local weaponWidth=math.max(48,math.min(300,feedLeft-12-x))
+    local weaponX=x+size+10
+    local weaponWidth=math.max(48,math.min(300,feedLeft-12-weaponX))
     local weaponLines=self:WeaponCaption(ply,weaponWidth)
-    y=y-(#weaponLines>0 and #weaponLines*14+5 or 0)
     local lines=self:Wrap(self.Caption,math.min(340,ScrW()*.5-44))
     -- Captions grow upward; ailments never displace the face or cover Magic.
     -- Keep their right edge out of the lower-right combat-feed column.
-    local feedLeft=ScrW()-22-math.min(600,ScrW()*.44)
     local textX=math.max(22,math.min(x+(size-self.CaptionWidth)*.5,feedLeft-12-self.CaptionWidth))
     local textY=y-8-#lines*18
     if not IsValid(self.Panel) then
@@ -136,8 +135,9 @@ function H:Draw()
     panel:SetPos(x,y);panel:SetSize(size,size)
     draw.RoundedBox(2,x,y,size,size,Color(20,22,25,180))
     panel:PaintManual()
+    local weaponY=y+(size-#weaponLines*14)*.5
     for i,line in ipairs(weaponLines) do
-        UI:HUDText(line,'DermaDefault',x+weaponWidth*.5,y+size+5+(i-1)*14,UI.HUDColor,TEXT_ALIGN_CENTER)
+        UI:HUDText(line,'DermaDefault',weaponX,weaponY+(i-1)*14,UI.HUDColor,TEXT_ALIGN_LEFT)
     end
     local color=self.Harmful and Color(255,135,100) or self.Affected and Color(145,230,170) or UI.HUDColor
     for i,line in ipairs(lines) do

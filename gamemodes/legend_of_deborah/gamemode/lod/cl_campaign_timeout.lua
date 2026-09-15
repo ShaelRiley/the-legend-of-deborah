@@ -176,6 +176,8 @@ hook.Add("HUDPaint","LOD_TimeoutHUD",function()
     local seconds=math.ceil(remaining)
     local text=C.started and string.format("COLLAPSE  %02d:%02d",math.floor(seconds/60),seconds%60) or "30:00  •  AWAITING FIRST HERO"
     local color=remaining<=60 and Color(255,130,105) or Color(245,215,155)
-    draw.SimpleTextOutlined(text,"LOD_TimeOverPrompt",w*0.5,22,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP,1,color_black)
+    -- The objective owns the upper-right band and may wrap toward center. Keep
+    -- the campaign clock in its own row beneath the upper-left run/card block.
+    draw.SimpleTextOutlined(text,"LOD_TimeOverPrompt",22,72,color,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP,1,color_black)
 end)
 hook.Add("ShutDown","LOD_TimeoutClientCleanup",resetScene)

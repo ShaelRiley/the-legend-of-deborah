@@ -81,14 +81,18 @@ for _,line in ipairs(H.Lines) do assert(surface.GetTextSize(line)<=H.WrapWidth) 
 local function checkLayout()
     local mx,my,mw,mh=LOD.MagicHUD:Bounds()
     assert(H.Panel.x>mx+mw and H.Panel.x+H.Panel.w<width,'Face immediately right of Magic')
-    near(H.Panel.y+H.Panel.h+(#H.WeaponLines>0 and #H.WeaponLines*14+5 or 0),my+mh)
+    near(H.Panel.y+H.Panel.h,my+mh)
     local feedLeft=width-22-math.min(600,width*.44)
     for _,p in ipairs(positions) do
-        local half=surface.GetTextSize(p.text)*.5
-        assert(p.x-half>=0 and p.x+half<feedLeft,'Caption clears screen edge and combat feed')
-        if p.y>H.Panel.y then
-            assert(p.y>=H.Panel.y+H.Panel.h and p.y+14<=my+mh,'Weapon below face')
-        else assert(p.y>=0 and p.y+18<H.Panel.y,'Status above face') end
+        local textWidth=surface.GetTextSize(p.text)
+        if p.text==H.WeaponLines[1] or p.text==H.WeaponLines[2] then
+            assert(p.x>=H.Panel.x+H.Panel.w,'Weapon name is right of face')
+            assert(p.y>=H.Panel.y and p.y+14<=H.Panel.y+H.Panel.h,'Weapon name is vertically centered on face')
+        else
+            local half=textWidth*.5
+            assert(p.x-half>=0 and p.x+half<feedLeft,'Caption clears screen edge and combat feed')
+            assert(p.y>=0 and p.y+18<H.Panel.y,'Status above face')
+        end
     end
 end
 for _,viewport in ipairs({{640,480},{1024,768},{1280,800},{1280,720},{1920,1080},{3440,1440}}) do
@@ -133,4 +137,4 @@ flexNames={};local bare=P:Create(nil,'models/player/combine_soldier.mdl');bare.L
 bare.LODPose={mode='hurt',fatigue=.5};bare:PaintManual();bare:Remove()
 width,height=1280,800;tick();assert(H.Panel.w<=128 and H.Panel.y>0)
 events.LOD_PortraitCleanup();assert(H.Panel.removed)
-print('STATUS_PORTRAIT_PASS: shared face, all statuses/buff extension, damage/attack/fatigue/bob, reduced effects, retained model, wrapping, lifecycle and role isolation')
+print('STATUS_PORTRAIT_PASS: HP-aligned face, weapon right, shared face, statuses/buffs, damage/attack/fatigue/bob, reduced effects, retained model, wrapping, lifecycle and role isolation')

@@ -7,8 +7,10 @@ subsequent request to retain it. This follow-up builds on crash-repair candidate
 `2b6029663bc83b0c6972bbdf81e9789091112e8a` on `astra/equipment-update`.
 
 The portrait now shares the real scaled Magic bounds (including its Steam Deck
-layout), sits 12 px to their right, and aligns to their bottom. Its size scales
-from 64 to 128 px. The character-name/status caption wraps above it and clears the
+layout), sits 12 px to their right, and aligns to the stock HP/Magic bottom edge.
+Its size scales from 64 to 128 px. Equipped weapon text no longer lifts the
+portrait: the name is capped at two compact lines and centered vertically to the
+portrait's right. The character-name/status caption wraps above it and clears the
 combat-feed column; adding ailments does not displace the face. Shared Character
 Sheet appearance, expressions and reduced-effects behavior are retained.
 
@@ -18,8 +20,9 @@ the stock ALT FIRE readout cannot reappear on AR2/SMG. Primary ammo, Health, Mag
 and the functional potion throw/drink prompts remain available. No combat inputs,
 server state, statue placement or crash-handling code changes in this follow-up.
 
-Live GDD LOD-UI-009 and the tab 07 portrait tuning row were corrected and verified
-in place. All **76 integrated automated suites pass**. Existing client tests now
+Live GDD LOD-UI-009 and the tab 07 portrait tuning row informed the original
+placement; the latest explicit author direction controls this correction. All
+**93 integrated automated suites pass**. Existing client tests now
 check portrait/caption bounds at 640×480, 1024×768, 1280×800, 1280×720, 1920×1080
 and 3440×1440, all simultaneous ailments, primary-ammo preservation, secondary-ammo
 suppression and removal of the old name hook on refresh. These are headless layout

@@ -22,9 +22,15 @@ function Panel:SetPos(x,y) self.x,self.y=x,y end
 function Panel:SetText(t) self.text=t end
 function Panel:Remove() self.removed=true end
 function Panel:MakePopup() self.popup=true end
-function Panel:SetHTML(s) self.html=s end
+function Panel:SetHTML(s)
+    self.html=s;self.documentLoaded=true
+    if self.OnDocumentReady then self:OnDocumentReady('asset://garrysmod/html/lod_manual') end
+end
 function Panel:SetAllowLua(b) self.allowLua=b end
-function Panel:AddFunction(ns,name,fn) self.callbacks[ns..'.'..name]=fn end
+function Panel:AddFunction(ns,name,fn)
+    assert(self.documentLoaded,'DHTML:AddFunction called before document ready')
+    self.callbacks[ns..'.'..name]=fn
+end
 function Panel:QueueJavascript(s) self.js=s end
 for _,k in ipairs({'SetFont','SetTextColor','ShowCloseButton','Center','SetTitle','SetDraggable','SetDeleteOnClose'}) do Panel[k]=function() end end
 vgui={Create=function(kind,parent)
@@ -53,16 +59,17 @@ expect(UI.ActivePage=='manual' and IsValid(M.Frame),'tab opens canonical reader'
 expect(M.Frame:GetWide()<=ScrW() and M.Frame:GetTall()<=ScrH(),'small-screen frame fits')
 expect(not M.Browser.allowLua,'arbitrary Lua disabled')
 expect(M.Browser.html:find('TIME OVER',1,true),'complete generated document loaded')
+expect(M.Browser.callbacks['lod.position'] and M.Browser.callbacks['lod.close'] and M.Browser.callbacks['lod.tab'],
+    'document-ready event installs the bounded bridge')
+expect(M.Browser.js:find('restore(7,123.0,21)',1,true),'document-ready event restores bookmark')
 local original=M.Frame;receivers.LOD_OpenFieldManual()
 expect(M.Frame==original,'staging E reuses already-open reader')
-M.Browser.callbacks['lod.ready']()
-expect(M.Browser.js:find('restore(7,123.0,21)',1,true),'bookmark survives document startup')
 M.Browser.callbacks['lod.position'](16,251,23)
 local oldBrowser=M.Browser
 oldBrowser.callbacks['lod.tab'](80)
 expect(UI.ActivePage=='sheet' and not IsValid(M.Frame),'P from DHTML switches to sheet')
 expect(saved.lod_manual_page==16 and saved.lod_manual_scroll==251,'tab switch saves bookmark')
-receivers.LOD_OpenFieldManual();M.Browser.callbacks['lod.ready']()
+receivers.LOD_OpenFieldManual()
 expect(M.Browser.js:find('restore(16,251.0,23)',1,true),'E resumes same bookmark')
 oldBrowser.callbacks['lod.position'](0,0,18)
 expect(M.Page==16,'stale browser callback cannot overwrite new reader')

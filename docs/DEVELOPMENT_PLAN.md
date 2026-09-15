@@ -9,7 +9,23 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — wearable and potion drop repair
+## Current checkpoint — manual launch and HUD layout repair
+
+The portable reader had installed its JavaScript-to-Lua bridge before Chromium
+loaded the manual document, contrary to the DHTML lifecycle contract. A document
+replacement could therefore discard every callback and leave the launched reader
+nonfunctional. Bridge installation and bookmark restoration now happen from
+`OnDocumentReady`; both staging E and Player Menu continue to use that one reader.
+
+The campaign clock has its own upper-left row below the run/card block instead of
+sharing the objective's upper-right band. The status portrait stays bottom-aligned
+with the stock HP/Magic row, even when a weapon is equipped, and the wielded weapon
+name is now centered vertically to the portrait's right. All 93 integrated suites
+pass, including engine-lifecycle and six-viewport layout regressions. Native
+Garry's Mod input/rendering acceptance remains pending; no main promotion or
+public deployment is included.
+
+## Previous checkpoint — wearable and potion drop repair
 
 The final campaign-assistance override had retained an older category table and
 enemy-spawn routine, shadowing the Equipment Update logic loaded earlier. Natural
