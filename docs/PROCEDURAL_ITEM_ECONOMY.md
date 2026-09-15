@@ -68,6 +68,8 @@ On a natural optional weapon/cache opportunity, 35% becomes a wearable and 65% r
 
 Inventory bounds: at most 32 stored permanent equipment records, plus the two finite consumable stacks. Replacing occupied slots is permitted at capacity; a free-slot acquisition is rejected before any engine grant when full. The inventory provides Discard for owned, unequipped wearables. Equipped items and weapons cannot be discarded through that action. Item IDs are at most 220 characters; equipment requests cap at 4,096 bits and retain the existing per-player rate limit. A dropped/missing engine gun with an existing record is not a fresh magazine entitlement. Optional weapon rewards continue selecting a variant when all firearm families are owned.
 
+Pickup comparison records travel in an owner-only net message requested while nearby. They do not use NW2String, whose 511-character value limit cannot carry a complete procedural item. The server checks owner, range, current level, collection/expiry and action eligibility; requests accept only the entity field and are rate-limited. The client caches the full record on the entity object and retries after a missing response. Inspecting never generates or acquires equipment.
+
 ## Verification status
 
 Development branch: `astra/equipment-update`; parent checkpoint `3951f0a681deca7679cb4a6a715e3c43263ab476`.
@@ -76,7 +78,7 @@ Main remains `8978796e886cdb5505d24ed0de085265fa99bac8`.
 Live GDD: [The Legend of Deborah — Garry's Mod Game Design Document](https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY).
 Navigation used 00/01, 02/03/07/90; new author-directed rule 016 is mirrored into HUMAN and indexed in 01/07.
 
-Implemented on the development branch and statically/headlessly validated. The integrated gate has 65 suites, including the complete previous 63 regression suites and two new economy suites. Run `python3 tools/test_checkpoint_g_integration.py`.
+Implemented on the development branch and statically/headlessly validated. The integrated gate has 66 suites, including the complete previous 63 regression suites, two economy suites and the pickup inspection transport suite. Run `python3 tools/test_checkpoint_g_integration.py`.
 
 The distribution gate validates 16,000 items, reachability of all 60 properties, version-1 retention, signed-value integrity, every family, glove occupancy and depth scaling. Among 10,000 D20 revolvers it found zero duplicate mechanical property/magnitude combinations (names and IDs excluded); observed rarity counts were 6,490 / 2,515 / 892 / 103. This is sample evidence, not a uniqueness guarantee. Mean budget per single-slot opportunity at D1/D20/D21/D100/D500/D999 was 109.53 / 184.81 / 187.04 / 268.19 / 441.42 / 567.55.
 

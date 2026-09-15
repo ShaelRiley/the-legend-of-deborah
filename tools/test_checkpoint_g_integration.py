@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Equipment Owner-Only Pickup Inspection", ["python3", "tools/run_lua54.py", "tools/test_equipment_inspection.lua"]),
     ("Procedural Economy Distribution & Versioning", ["python3", "tools/run_lua54.py", "tools/test_equipment_economy.lua"]),
     ("Procedural Economy Production Integration", ["python3", "tools/run_lua54.py", "tools/test_equipment_economy_runtime.lua"]),
     ("Equipment Keyboard & UI Isolation", ["python3", "tools/run_lua54.py", "tools/test_equipment_input.lua"]),

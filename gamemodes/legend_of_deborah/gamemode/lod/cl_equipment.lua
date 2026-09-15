@@ -89,6 +89,25 @@ function E:BuildPanel(frame)
     content:SetTall(y+16)
 end
 
+-- Cache on the entity object, never its recyclable EntIndex. Retry a request
+-- after entering PVS/reconnecting; records never reroll on inspection.
+function E:PickupView(ent)
+    if ent.LODItemView then return ent.LODItemView end
+    local now=CurTime()
+    if now>=(self.NextInspect or 0) then
+        self.NextInspect=now+.5
+        net.Start("LOD_EquipmentInspect")
+        net.WriteEntity(ent)
+        net.SendToServer()
+    end
+end
+net.Receive("LOD_EquipmentInspect",function()
+    local ent,item=net.ReadEntity(),net.ReadTable()
+    if IsValid(ent) and ent:GetClass()=="lod_loot_pickup" and E:ValidateWearable(item) then
+        ent.LODItemView=item
+    end
+end)
+
 -- World pickup and inventory share the item name/property/value formatter.
 hook.Add("HUDPaint","LOD_EquipmentComparison",function()
     local ply=LocalPlayer()
@@ -97,10 +116,7 @@ hook.Add("HUDPaint","LOD_EquipmentComparison",function()
     local ent=trace.Entity
     if not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
         or ply:GetPos():DistToSqr(ent:GetPos())>128*128 then return end
-    local encoded=ent:GetNW2String("LOD_Wearable","")
-    if encoded=="" then return end
-    if ent.LODItemJSON~=encoded then ent.LODItemJSON=encoded;ent.LODItemView=util.JSONToTable(encoded) end
-    local item=ent.LODItemView
+    local item=E:PickupView(ent)
     if not E:ValidateWearable(item) then return end
     local slot,displaced,oldValue=E:Placement(E.Snapshot,item)
     local lines={E:ItemName(item),E:Description(item,true)}

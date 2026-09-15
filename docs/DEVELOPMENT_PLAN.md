@@ -25,6 +25,14 @@ See [economy rules and handoff](PROCEDURAL_ITEM_ECONOMY.md) and
 [checkpoint](EQUIPMENT_CHECKPOINT.md). Equipment runtime acceptance remains pending;
 do not proceed into Enemy work or promote main on static evidence alone.
 
+The subsequent 2026-09-15 completion assessment found and repaired a real
+Equipment blocker: full procedural pickup records exceeded the engine's
+NW2String limit, breaking comparison data. Owner-checked inspection messages now
+carry the complete record, with production server/client transport tests; all
+66 integrated suites pass. See [completion assessment](EQUIPMENT_ASSESSMENT.md).
+The user's conditional Enemy instruction remains next after Equipment completion;
+this repair does not establish the still-missing in-game acceptance evidence.
+
 Preserve accepted RPG behavior and the current workflow. Do not restart the old
 hybrid/Antigravity process. The broader Instruction Booklet reconciliation and
 outstanding RPG multiplayer release validation remain required before deployment.
