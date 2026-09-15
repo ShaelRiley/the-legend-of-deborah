@@ -504,6 +504,7 @@ local function drawSprayStencil(model, instance, eyePos)
 end
 
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic() then return end
     if not Wall.world or #Wall.world == 0 then return end
     local ply = LocalPlayer()
     if not IsValid(ply) then return end

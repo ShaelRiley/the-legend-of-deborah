@@ -893,7 +893,13 @@ function RunManager:FailCampaign(reason)
     self.State.Failed = true
     self.State.FailureReason = reason or "campaign failure"
     self:FinalizeCampaignRun()
-    for _, ply in ipairs(player.GetAll()) do self:PutInRestrictedSpectator(ply) end
+    if self.State.CampaignClock and self.State.CampaignClock.scene then
+        -- Expiry may be detected by a rescue Touch/Use callback. The timeout
+        -- service performs native player/entity changes on Think after this
+        -- authoritative failure/finalization has committed.
+    else
+        for _, ply in ipairs(player.GetAll()) do self:PutInRestrictedSpectator(ply) end
+    end
     if LOD.ProgressionDirector then
         LOD.ProgressionDirector:Announce("CAMPAIGN FAILED — " .. string.upper(self.State.FailureReason))
         LOD.ProgressionDirector:SyncAll()

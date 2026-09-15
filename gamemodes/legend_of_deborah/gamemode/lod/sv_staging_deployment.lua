@@ -700,6 +700,7 @@ function Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
     ply:SetPos(destination)
     ply:SetEyeAngles(Angle(0, 0, 0))
     ply:SetLocalVelocity(vector_origin)
+    if LOD.CampaignTimeout then LOD.CampaignTimeout:Start(ply) end
     deploymentStage(ply, "after_teleport", state)
     RunManager:_SyncPlayerVars(ply)
     deploymentStage(ply, "after_player_sync", state)

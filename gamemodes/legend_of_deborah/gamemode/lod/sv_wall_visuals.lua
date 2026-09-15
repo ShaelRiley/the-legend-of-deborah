@@ -48,6 +48,7 @@ end
 
 function WallVisuals:Clear()
     if not self.Payload and (self.LogicalCount or 0) == 0 then return end
+    self.Segments = nil
     self.Payload = nil
     self.EdgeKeys = nil
     self.LogicalCount = 0
@@ -90,6 +91,7 @@ function WallVisuals:SetSegments(graph, segments)
         return false
     end
 
+    self.Segments = compact
     self.Payload = payload
     self.EdgeKeys = edgeKeys
     self.LogicalCount = #compact

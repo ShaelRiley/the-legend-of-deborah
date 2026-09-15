@@ -17,6 +17,8 @@ local RestartAudit = LOD.CampaignRestartAudit
 local function canRequestRestart(ply)
     if not RunManager or not RunManager.State or not RunManager.State.Failed then return false end
     if restartInProgress then return false end
+    local clock = RunManager.State.CampaignClock
+    if clock and clock.scene and not clock.scene.ready then return false end
     if not IsValid(ply) then return true end
 
     -- Any connected player may restart a completed/failed server-session run.

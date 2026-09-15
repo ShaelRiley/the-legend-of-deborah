@@ -168,6 +168,9 @@ after death.</div>
         <p>Your teammates continue playing. Their survival does not freeze because you died.</p>
         <p>At zero lives, you remain a spectator for the rest of the current dungeon unless a rare life effect restores you.</p>
         <p>Friendly fire is disabled, and teammates do not body-block one another.</p>
+        <h2>The prison has thirty minutes.</h2>
+        <p>The first Hero entering the labyrinth starts one <b>30-minute campaign clock</b>. Initial staging is untimed. Once started, the clock continues through every rescue, new dungeon, intermission, death and disconnect. Rescuing Deborah never replenishes it.</p>
+        <p>At zero, <b>TIME OVER</b> ends the expedition regardless of lives. Watch the prison collapse; its wreckage remains until <b>PRESS E TO BEGIN A NEW RUN</b> appears. E returns everyone to a fresh Level 1 and untimed staging.</p>
         <div class="diagram"><b>3 → 2 → 1 → 0</b><br>Spend carefully. Extra lives are not a routine income stream.</div>
         <div class="note"><strong>DEBORAH'S NOTE:</strong> There is no ordinary “downed” state. If you are dead, the game is unusually confident about it.</div>
         <div class="folio-num">16</div>

@@ -102,6 +102,7 @@ local function scheduleConfetti(center, current)
 end
 
 net.Receive("LOD_VictoryCelebration", function()
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic() then return end
     Client.center = net.ReadVector()
     Client.duration = math.max(0, net.ReadFloat())
     Client.deborah = net.ReadEntity()

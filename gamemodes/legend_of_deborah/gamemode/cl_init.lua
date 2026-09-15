@@ -183,3 +183,6 @@ include("lod/cl_wallet.lua")
 include("lod/cl_neil_brute.lua")
 include("lod/cl_warden.lua")
 include("lod/cl_enemy_roster.lua")
+
+include("lod/sh_campaign_timeout.lua")
+include("lod/cl_campaign_timeout.lua")

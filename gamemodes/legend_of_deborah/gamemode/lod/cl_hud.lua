@@ -155,6 +155,7 @@ local function drawDeathState(ply, state)
 end
 
 hook.Add("PlayerBindPress", "LOD_FailedCampaignRestart", function(_, bind, pressed)
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic() then return end
     if not pressed or not LOD.ClientState or not LOD.ClientState.failed then return end
     if not string.find(string.lower(bind or ""), "+use", 1, true) then return end
 

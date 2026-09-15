@@ -259,3 +259,8 @@ AddCSLuaFile("lod/cl_status_portrait.lua")
 AddCSLuaFile("lod/cl_equipment_icons.lua")
 AddCSLuaFile("lod/cl_weapon_appearance.lua")
 AddCSLuaFile("lod/cl_equipment_inventory.lua")
+
+AddCSLuaFile("lod/sh_campaign_timeout.lua")
+AddCSLuaFile("lod/cl_campaign_timeout.lua")
+include("lod/sh_campaign_timeout.lua")
+include("lod/sv_campaign_timeout.lua")

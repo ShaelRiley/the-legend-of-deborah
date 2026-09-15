@@ -9,7 +9,18 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — complete ordinary enemy roster
+## Current checkpoint — campaign clock and TIME OVER
+
+Implements the author's explicit 2026-09-15 continuation over `af5b4f7` on
+`astra/equipment-update`: one 1,800-second campaign clock, first-Hero portal
+commit start, continuous cross-level timing, global destruction cinematic,
+persistent aftermath and canonical E restart. The handoff supersedes the live
+GDD's older per-dungeon timer and rescue exemption. All 90 integrated automated
+suites pass; Source camera/physics/audio and multiplayer acceptance remain pending.
+The existing native-crash release hold remains open. See
+[TIME OVER checkpoint and one integrated playtest](CAMPAIGN_TIMEOUT.md).
+
+## Previous checkpoint — complete ordinary enemy roster
 
 Implements all nine missing v1 ordinary enemies over development baseline
 `90477d7acc61091710c9ba18e49f1920073b1bc0`: Climber, Nodule, Flamer, Big Crab,
