@@ -38,6 +38,7 @@ SUITES = [
     ("Hostile Native Death Handoff", ["python3", "tools/run_lua54.py", "tools/test_hostile_death_handoff.lua"]),
     ("Equipment/Area/Statue Presentation", ["python3", "tools/run_lua54.py", "tools/test_presentation_polish.lua"]),
     ("Magic Spectacle, Weapon Stowing & Natural Drops", ["python3", "tools/run_lua54.py", "tools/test_magic_inventory_refresh.lua"]),
+    ("Final Loot Override Wearables & Potions", ["python3", "tools/run_lua54.py", "tools/test_equipment_drop_mix.lua"]),
     ("Equipment Body Map & Drag Inventory", ["python3", "tools/run_lua54.py", "tools/test_equipment_inventory_ui.lua"]),
     ("Reactive Character Status Portrait", ["python3", "tools/run_lua54.py", "tools/test_status_portrait.lua"]),
     ("Persistent Wallet, DFTs & SQLite Rollback", ["python3", "tools/test_crypto_sqlite.py"]),

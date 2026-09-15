@@ -9,7 +9,26 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — canonical illustrated instruction manual
+## Current checkpoint — wearable and potion drop repair
+
+The final campaign-assistance override had retained an older category table and
+enemy-spawn routine, shadowing the Equipment Update logic loaded earlier. Natural
+enemy loot could therefore produce procedural weapon records but never select a
+wearable category; it also omitted the equipment-eligible identity needed for
+wearable conversion and the Healing Potion/Stink Bomb split. The final authority
+now preserves the authored 75% useful band and relative wearable 24, consumable
+12 and weapon 12 weights at every campaign-assistance depth. All seven wearable
+families and both throwable consumables reach world pickups.
+
+Prepared rewards are validated before native entity creation, generator errors
+are contained at that boundary, pickup naming no longer dereferences unchecked
+consumable records, and loot pickups retain native model scale rather than
+requesting a collision-adjacent scale mutation. All 93 integrated automated
+suites pass. Native Garry's Mod collection and force-close acceptance remain
+pending; no public deployment or main promotion is included. See
+[wearable drop repair](WEARABLE_DROP_REPAIR.md).
+
+## Previous checkpoint — canonical illustrated instruction manual
 
 The author requested a revised console-booklet-style guide and one canonical
 in-game reader shared by staging E and the portable P → Manual tab. The reader

@@ -18,7 +18,6 @@ function ENT:Initialize()
     self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(self.LODLootColor or Color(255, 196, 64, 240))
-    self:SetModelScale(self.LODLootScale or 1.05, 0)
     self:DrawShadow(false)
     -- Spawn/trigger activation can overlap a player. Admit collection only once
     -- the director has finished metadata and owner-transmission registration.

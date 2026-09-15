@@ -439,12 +439,58 @@ function Loot:TraceStage(stage, ent, kind, model)
     }) end
 end
 
+function Loot:_PreparedRewardValid(kind, payload)
+    if type(kind) ~= "string" or type(payload) ~= "table" then return false end
+    if kind == "wearable" then
+        local equipment = LOD.Equipment
+        local item = payload.item
+        return equipment and equipment.ValidateWearable and equipment:ValidateWearable(item)
+            and equipment:Definition(item) ~= nil
+    end
+    if kind == "consumable" then
+        local equipment = LOD.Equipment
+        local def = equipment and equipment.Definitions and equipment.Definitions[payload.itemId]
+        return def ~= nil and def.throwable == true
+    end
+    if kind == "weapon" then return WEAPONS[payload.weaponClass] ~= nil end
+    if kind == "dft" then return payload.token ~= nil end
+    return KIND_MODEL[kind] ~= nil
+end
+
+function Loot:_PickupName(kind, payload)
+    if kind == "wearable" and LOD.Equipment then
+        return LOD.Equipment:ItemName(payload.item)
+    end
+    if kind == "consumable" and LOD.Equipment then
+        local def = LOD.Equipment.Definitions[payload.itemId]
+        return def and def.name or "Consumable"
+    end
+    if kind == "weapon" then
+        local def = WEAPONS[payload.weaponClass]
+        return def and def.label or "Weapon"
+    end
+    return ({ammo="Ammunition",health="Health",armor="Armor",life="Extra Life",
+        cache="Supply Cache",dft="Debbie Fund Token"})[kind] or kind
+end
+
 function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     if not ownerIdentity or not pos then return nil end
     options = options or {}
     self:TraceStage("reward_prepare", nil, kind)
     if LOD.Equipment and LOD.Equipment.PrepareReward then
-        kind, payload = LOD.Equipment:PrepareReward(ownerIdentity, kind, payload, options)
+        local prepared, preparedKind, preparedPayload = pcall(
+            LOD.Equipment.PrepareReward, LOD.Equipment, ownerIdentity, kind, payload, options)
+        if not prepared then
+            self:TraceStage("reward_prepare_error", nil, kind, "rejected")
+            print("[LOD:LOOT] rejected reward after equipment preparation error: " .. tostring(preparedKind))
+            return nil
+        end
+        kind, payload = preparedKind, preparedPayload
+    end
+    if not self:_PreparedRewardValid(kind, payload) then
+        self:TraceStage("reward_invalid", nil, kind, "rejected")
+        print("[LOD:LOOT] rejected invalid prepared reward kind=" .. tostring(kind))
+        return nil
     end
 
     self:TraceStage("entity_create", nil, kind)
@@ -470,19 +516,19 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     self:TraceStage("model_validate", ent, kind, model)
     ent.LODLootModel = safeModel(model)
     ent.LODLootColor = KIND_COLOR[kind] or KIND_COLOR.ammo
-    ent.LODLootScale = kind == "life" and 1.35 or 1.05
     ent:SetPos(pos)
     ent:SetAngles(Angle(0, options.yaw or 0, 0))
     self:TraceStage("spawn_enter", ent, kind, ent.LODLootModel)
     ent:Spawn()
     if not IsValid(ent) then return nil end
     self:TraceStage("spawn_complete", ent, kind, ent.LODLootModel)
-    ent:SetNW2String("LOD_LootName",kind=="wearable" and LOD.Equipment:ItemName(payload.item)
-        or kind=="consumable" and LOD.Equipment.Definitions[payload.itemId].name
-        or ({ammo="Ammunition",health="Health",armor="Armor",life="Extra Life",cache="Supply Cache"})[kind] or kind)
-    -- This anim trigger has no physics to activate. Activate after model scale
-    -- can rebuild model collision and is a documented native crash risk.
-    if LOD.WeaponAppearance then LOD.WeaponAppearance:Stamp(ent,payload.item) end
+    ent:SetNW2String("LOD_LootName", string.sub(self:_PickupName(kind, payload), 1, 256))
+    -- The pickup uses a fixed bounding box at native model scale. Avoid both
+    -- collision rebuilds and cosmetic appearance work for ordinary wearables.
+    local itemDef = kind == "wearable" and LOD.Equipment and LOD.Equipment:Definition(payload.item)
+    if itemDef and itemDef.weapon and LOD.WeaponAppearance then
+        LOD.WeaponAppearance:Stamp(ent, payload.item)
+    end
     if kind == "wearable" and LOD.Equipment then LOD.Equipment:SyncPickup(ent) end
 
     self.Entities[#self.Entities + 1] = ent

@@ -9,7 +9,10 @@ Loot.LODCampaignAssistanceDecayInstalled = true
 -- linearly surrender its need-aware assistance. Dungeon 11+ retains only seeded
 -- random loot outcomes; there is no pity, objective guarantee, deficit steering,
 -- or resource-budget supplementation.
-local RANDOM_USEFUL_CHANCE = 0.563
+-- Equipment's current authored availability replaces the older 56.3% table.
+-- Campaign assistance may still fade deficit steering, but it must not erase
+-- the wearable/consumable categories or lower the ordinary useful-drop band.
+local RANDOM_USEFUL_CHANCE = 0.75
 local PITY_USEFUL_CHANCE = 0.90
 local OBJECTIVE_USEFUL_CHANCE = 1.00
 
@@ -17,8 +20,7 @@ local RANDOM_WEAPON_RESULTS = {
     "weapon_shotgun",
     "weapon_smg1",
     "weapon_357",
-    "weapon_ar2",
-    "__healing_potion"
+    "weapon_ar2"
 }
 
 -- Keep this synchronized with the final production ammo tuning loaded before
@@ -111,7 +113,7 @@ function Loot:_ChooseAmmoFamily(ply, rng, preferredClass)
     return weightedPick(rng, choices)
 end
 
--- Total useful-drop frequency remains the familiar 56.3% base random table.
+-- Total useful-drop frequency uses the current authored 75% base random table.
 -- What decays is the director's intervention: objective guarantees, five-kill
 -- pity, and category weighting toward the player's current deficits.
 function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
@@ -145,13 +147,17 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
         directedHealth = healthBand + formerArmorBand
     end
 
-    local directedWeapon = 2.8 * (weaponMissing and 1.8 or 0.75)
+    local directedWeapon = 12 * (weaponMissing and 1.8 or 0.75)
     local directedLife = self:_CanUseExtraLife(ply) and 1.5 or 0
 
     local category = weightedPick(rng, {
         {value = "ammo", weight = blend(35.0, directedAmmo, assistance)},
         {value = "health", weight = blend(17.0, directedHealth, assistance)},
-        {value = "weapon", weight = blend(2.8, directedWeapon, assistance)},
+        {value = "weapon", weight = blend(12.0, directedWeapon, assistance)},
+        -- These are equipment opportunities, not anti-starvation assistance;
+        -- preserve them at every dungeon depth while deficit steering decays.
+        {value = "wearable", weight = 24.0},
+        {value = "consumable", weight = 12.0},
         {value = "life", weight = blend(1.5, directedLife, assistance)}
     })
 
@@ -164,7 +170,8 @@ end
 
 -- Enemy-drop payloads also surrender state-reading. Health's emergency +10 HP
 -- bonus fades away, while the weapon band transitions from "missing weapon"
--- rescue toward an inventory-agnostic random firearm/consumable result.
+-- rescue toward an inventory-agnostic random firearm result. Consumables own
+-- their separate category and equipment preparation supplies their 80/20 split.
 function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     local ownerIdentity = RunManager:IdentityOf(ply)
     if not ownerIdentity then return false end
@@ -201,15 +208,14 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
             reward = randomWeaponResult(rng)
         end
 
-        if reward == "__healing_potion" then
-            kind = "consumable"
-            payload.itemId = "healing_potion"
-        elseif reward == "__cache" then
+        if reward == "__cache" then
             kind = "cache"
         else
             kind = "weapon"
             payload.weaponClass = reward
         end
+    elseif category == "consumable" then
+        payload.itemId = "healing_potion"
     elseif category == "life" then
         if not self:_CanUseExtraLife(ply) then return false end
         kind = "life"
@@ -219,7 +225,11 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     local angle = rng:Float(0, math.pi * 2)
     local radius = rng:Float(8, 18)
     local pos = basePos + Vector(math.cos(angle) * radius, math.sin(angle) * radius, 0)
-    local ent = self:SpawnPickup(ownerIdentity, pos, kind, payload, {yaw = rng:Int(0, 359)})
+    local ent = self:SpawnPickup(ownerIdentity, pos, kind, payload, {
+        yaw = rng:Int(0, 359),
+        equipmentEligible = true,
+        equipmentSeed = hostile.LODInstanceSeed or hostile:EntIndex()
+    })
     if IsValid(ent) then
         self.Stats.enemyDrops = (self.Stats.enemyDrops or 0) + 1
         return true
@@ -345,4 +355,3 @@ concommand.Add("lod_loot_decay_status", function(ply)
     print("[LOD:LOOT-DECAY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

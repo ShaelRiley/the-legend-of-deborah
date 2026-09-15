@@ -25,7 +25,7 @@ ents.Create=function(class)
  function ent:SetCollisionGroup() end
  function ent:SetRenderMode() end
  function ent:SetColor() end
- function ent:SetModelScale(v) self.scale=v end
+ function ent:SetModelScale() error('loot pickups must retain native model scale') end
  function ent:DrawShadow() end
  function ent:Spawn() self.spawning=true;self:Initialize();self.spawning=false end
  function ent:Activate() error('scaled pickup must not reactivate native model collision') end
@@ -53,7 +53,7 @@ for _,family in ipairs({'boots','helmet','ring','weapon_357'}) do
  end
 end
 local ent=assert(Loot:SpawnPickup('pickup-owner',Vector(),'life',{}))
-assert(ent.scale==1.35);ent:Remove();flush();assert(not ent.LODLootReady,'removed before arming')
+assert(ent.scale==nil);ent:Remove();flush();assert(not ent.LODLootReady,'removed before arming')
 assert(stages[#stages]=='registered')
 Loot.Collect=oldCollect
-print('PICKUP_NATIVE_HANDOFF_PASS: real initialization and director registration, no scaled activation, overlap guard, deferred removal and duplicate touch isolation')
+print('PICKUP_NATIVE_HANDOFF_PASS: real initialization and director registration, native model scale, overlap guard, deferred removal and duplicate touch isolation')
