@@ -203,6 +203,7 @@ local baseSync = Rules.SyncPlayer
 function Rules:SyncPlayer(ply)
     baseSync(self, ply)
     if not IsValid(ply) then return end
+    if self.ApplySizeShifterScale then self:ApplySizeShifterScale(ply); return end
     local derived = self:Derived(ply)
     local scale = tonumber(derived and derived.playerTargetScale) or 1
     ply:SetNW2Float("LOD_PlayerTargetScale", scale)
@@ -228,3 +229,4 @@ function Rules:ValidateCheckpointDCoreFeats()
     expect(not Effects:HasUsableChaModDamage({featIds = {}}), "Glow Up no invented CHA damage source")
     return #errors == 0, errors
 end
+

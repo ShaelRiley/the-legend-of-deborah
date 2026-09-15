@@ -21,6 +21,8 @@ if CLIENT then include("lod/cl_ui_theme.lua") end
 include("lod/sh_die_logger.lua")
 if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
 include("lod/sh_feedback_language.lua")
+if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
+include("lod/sh_player_scale_collision.lua")
 include("lod/sh_rng.lua")
 if SERVER then AddCSLuaFile("lod/sh_equipment.lua") end
 include("lod/sh_equipment.lua")

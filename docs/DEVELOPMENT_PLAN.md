@@ -9,7 +9,21 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — elemental magic and equipment inventory
+## Current checkpoint — Size Shifter wall-entrapment repair
+
+The player reported becoming stuck in a wall with Size Shifter. The old code
+changed native model scale without an explicit movement-hull authority, and
+routine derived-stat sync briefly restored baseline size before reapplying the
+current transformation. Shared client/server movement now installs ordinary
+standing/crouched hulls; server size changes preserve those hulls and reject
+blocked growth. A blocked transition retains its progress and resumes smoothly
+when clear. Derived-stat sync applies the current size once, without the baseline
+snap. The live INT_SIZE_SHIFTER rule already requires legal ordinary movement;
+no GDD redesign was needed. All 78 automated suites pass. Native runtime
+acceptance remains pending: crouch, move along a wall/corner, then release crouch;
+repeat below a low ceiling. See [Size Shifter repair](SIZE_SHIFTER_REPAIR.md).
+
+## Previous checkpoint — elemental magic and equipment inventory
 
 The latest author request restores the procedural weapon name below the HUD face,
 adds weapon stow/re-equip with empty inventory tiles, and mixes wearables/potions

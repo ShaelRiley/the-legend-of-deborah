@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Size Shifter Collision & Growth", ["python3", "tools/run_lua54.py", "tools/test_size_shifter_collision.lua"]),
     ("Hostile Native Death Handoff", ["python3", "tools/run_lua54.py", "tools/test_hostile_death_handoff.lua"]),
     ("Equipment/Area/Statue Presentation", ["python3", "tools/run_lua54.py", "tools/test_presentation_polish.lua"]),
     ("Magic Spectacle, Weapon Stowing & Natural Drops", ["python3", "tools/run_lua54.py", "tools/test_magic_inventory_refresh.lua"]),

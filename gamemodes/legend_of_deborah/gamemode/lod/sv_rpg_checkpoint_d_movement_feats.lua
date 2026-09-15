@@ -148,17 +148,17 @@ function Rules:PushSizeScale(ply) return self:PlayerTargetScale(ply) end
 function Rules:ApplySizeShifterScale(ply)
     if not IsValid(ply) then return end
     local scale = self:PlayerTargetScale(ply)
+    local collision=LOD.PlayerScaleCollision
+    local current=ply.GetModelScale and ply:GetModelScale() or scale
+    if collision then
+        collision:Preserve(ply)
+        if scale>current and not collision:CanScale(ply,scale) then return false end
+    end
     ply:SetNW2Float("LOD_PlayerTargetScale", scale)
     ply:SetNW2Float("LOD_SizeScale", scale)
-    ply:SetModelScale(scale, 0)
-end
-if not Rules.LODCheckpointDSizeShifterSyncWrapped then
-    Rules.LODCheckpointDSizeShifterSyncWrapped = true
-    local baseSync = Rules.SyncPlayer
-    function Rules:SyncPlayer(ply)
-        baseSync(self, ply)
-        self:ApplySizeShifterScale(ply)
-    end
+    if current~=scale then ply:SetModelScale(scale, 0) end
+    if collision then collision:Preserve(ply) end
+    return true
 end
 function Rules:TryWallJump(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() then return false end
@@ -263,12 +263,13 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
     for _, ply in ipairs(player and player.GetAll and player.GetAll() or {}) do
         if IsValid(ply) then
             local derived = Rules:Derived(ply) or {}
-            local state = Effects.SizeShifterState[ply] or {progress = 0, scale = tonumber(derived.playerTargetScale) or 1, at = CurTime()}
+            local state = Effects.SizeShifterState[ply] or {progress = 0, scale = ply.GetModelScale and ply:GetModelScale() or tonumber(derived.playerTargetScale) or 1, at = CurTime()}
             Effects.SizeShifterState[ply] = state
             local now, dt = CurTime(), math.max(0, CurTime() - (state.at or CurTime()))
             state.at = now
             local crouching = ply.Crouching and ply:Crouching() or (ply.KeyDown and ply:KeyDown(IN_DUCK))
             local rate = dt / 3.0
+            local oldProgress,oldScale=state.progress,state.scale
             if derived.sizeShifterEnabled == true then
                 state.progress = math.Clamp((tonumber(state.progress) or 0) + (crouching and rate or -rate), 0, 1)
             else
@@ -276,7 +277,12 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
             end
             local base = math.max(.01, tonumber(derived.playerTargetScale) or 1)
             local scale = Effects:SizeShifterScale(base, state.progress)
-            if scale ~= state.scale then state.scale = scale; Rules:ApplySizeShifterScale(ply) end
+            if scale ~= state.scale then
+                state.scale=scale
+                if Rules:ApplySizeShifterScale(ply)==false then
+                    state.progress,state.scale=oldProgress,oldScale
+                end
+            end
         end
     end
     if player and player.GetAll then
@@ -317,3 +323,4 @@ concommand.Add("lod_rpg_validate_wall_jump", function(ply)
     local ok, errors = Rules:ValidateCheckpointDWallJump()
     print("[LOD:WALL-JUMP] " .. (ok and "PASS" or "FAIL") .. (#errors > 0 and (" " .. table.concat(errors, "; ")) or ""))
 end)
+

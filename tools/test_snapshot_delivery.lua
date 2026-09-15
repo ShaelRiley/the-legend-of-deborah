@@ -22,7 +22,7 @@ local p = {valid=true, IsPlayer=function() return true end,
     Nick=function() return 'Tester' end, Health=function() return 92 end, EntIndex=function() return 1 end,
     SetMaxHealth=function() end, SetHealth=function() end,
     SetNW2Int=function(self,key,value) self[key]=value end,
-    SetNW2Float=function() end, SetNW2Bool=function() end, SetModelScale=function() end,
+    SetNW2Float=function() end, SetNW2Bool=function() end, SetModelScale=function() end, SetHull=function() end, SetHullDuck=function() end,
     GetNW2Int=function(_,_,v) return v or 0 end, GetNW2Bool=function(_,_,v) return v or false end,
     GetVelocity=function() return {Length2D=function() return 0 end} end,
     GetWalkSpeed=function() return 200 end, GetRunSpeed=function() return 400 end,
@@ -120,3 +120,4 @@ local seen={};for _,packet in ipairs(packets) do seen[packet.player]=packet.snap
 assert(seen[p]==1 and seen[p2]==2,'no cross-player state leakage')
 assert(next(Delivery.Players[p].pending)==nil and not Delivery.Players[p].scheduled,'idle has no recurring work')
 print('[SNAPSHOT_DELIVERY] PASS: production XP burst, latest-state delivery, dedup, resync, lifecycle and multiplayer isolation')
+
