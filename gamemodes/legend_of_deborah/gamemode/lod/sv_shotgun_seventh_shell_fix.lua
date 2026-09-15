@@ -67,9 +67,8 @@ end
 -- give-time topoff establishes the authored seven-shell tube without replacing the
 -- stock weapon implementation.
 hook.Add("WeaponEquip", "LOD_ShotgunSeventhShellEquip", function(weapon, ply)
-    if not IsValid(weapon) or weapon:GetClass() ~= SHOTGUN_CLASS then return end
     timer.Simple(0, function()
-        if not IsValid(ply) or not IsValid(weapon) then return end
+        if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= SHOTGUN_CLASS then return end
         forceSeventhShell(ply, weapon, false, "acquisition")
     end)
 end)

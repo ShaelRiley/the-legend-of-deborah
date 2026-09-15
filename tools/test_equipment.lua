@@ -152,6 +152,10 @@ assert(state.slots.left_hand=="gloves" and state.slots.right_hand=="gloves" and 
 assert(E:Equip(state,"ring1","left_hand"))
 assert(state.slots.right_hand==nil and state.items.gloves and state.slots.left_arm=="shield")
 assert(hooks["PlayerCanPickupWeapon:LOD_NoOrdinaryGrenades"](p,weapon("weapon_frag"))==false)
+local unsettled={GetClass=function() error("starter admission inspected unsettled weapon") end}
+p.LODStarterNativeGrant="weapon_smg1"
+assert(hooks["PlayerCanPickupWeapon:LOD_NoOrdinaryGrenades"](p,unsettled)==true)
+p.LODStarterNativeGrant=nil
 assert(hooks["PlayerCanPickupItem:LOD_NoGrenadeAmmo"](p,weapon("item_ammo_grenade"))==false)
 R.State={LevelSeed=73,PlayerState={hero={magic=100}}}
 R:ApplyPlayerState(reconnected)

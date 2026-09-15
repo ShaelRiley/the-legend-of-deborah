@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["crowbar"] = "stability-20260915-02"
+LOD.RuntimeReceipts["crowbar"] = "stability-20260915-03"
 LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG

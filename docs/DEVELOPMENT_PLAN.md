@@ -11,22 +11,25 @@ workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
 ## Current checkpoint — Hermit starter-weapon crash repair
 
-The 2026-09-15 force-close evidence ends without a Lua traceback immediately
-after class/feat setup; the tester reports that the process closed when the
-Hermit's weapon was collected. The runtime identity proves that session mounted
-clean commit `e7576355967084b9fca246022ce9a4b3a7da6148`. The exact native fault
-is not proven because the process emitted no stack or dump.
+The first 2026-09-15 force-close report ended without a Lua traceback immediately
+after class/feat setup. Candidate `stability-20260915-02` moved the whole starter
+transaction beyond Touch and added durable breadcrumbs. A subsequent native test
+still force-closed and proves that candidate did not resolve the defect: the last
+stage is `before_native_give` for `weapon_smg1`, with no `after_native_give`.
+The remaining native seam is therefore synchronous `Player:Give`, including the
+project's `WeaponEquip` and pickup-policy callbacks fired from that call.
 
-Starter collection now reserves the identity-bound claim during Touch/StartTouch
-but defers the complete native weapon grant, WeaponEquip hooks, ammo mutation,
-equipment stamping, acknowledgement and pickup removal until the next tick.
-The solid pickup retains native model scale. The client keeps the fanfare and HUD
-confirmation without creating/drawing a duplicate native weapon model or taking
-over the camera. `STAGING_STARTER_STAGE` breadcrumbs bracket every native seam,
-and runtime identity is now `stability-20260915-02`. All 93 integrated suites
-pass, including direct regressions proving no grant/removal inside touch,
-idempotence, retry after grant failure and model/camera elimination. Native GMod
-acceptance remains pending; no main promotion or public deployment is included.
+Every project `WeaponEquip` hook now performs zero synchronous weapon/player
+inspection or mutation and schedules its complete work for the next tick. This
+includes SMG capacity, shotgun capacity/seventh-shell, AR2 balance, procedural
+equipment recording and grenade rejection. The protected one-time starter grant
+also bypasses the project's capacity callback without interrogating the
+half-constructed weapon. The native grant is protected against Lua errors and
+retains the existing stage breadcrumbs. Runtime identity is now
+`stability-20260915-03`. All 94 integrated suites pass, including a real SMG-hook
+regression that throws on any access before simulated native settlement. Native
+GMod acceptance remains pending; no main promotion or public deployment is
+included.
 See [Hermit starter crash repair](HERMIT_STARTER_CRASH_REPAIR.md).
 
 ## Previous checkpoint — Hero respawn loadout retention

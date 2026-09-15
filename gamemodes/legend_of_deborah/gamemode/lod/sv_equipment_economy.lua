@@ -111,16 +111,24 @@ end
 local sync=E.Sync
 function E:Sync(ply) self:StampWeapons(ply);return sync(self,ply) end
 hook.Add("PlayerCanPickupWeapon","LOD_EquipmentInventoryCapacity",function(ply,weapon)
+    -- The one-time starter grant has already reserved inventory admission. Do
+    -- not interrogate its half-constructed native weapon from inside Give.
+    if IsValid(ply) and ply.LODStarterNativeGrant then return true end
     local ps=hero(ply)
     if not ps or not IsValid(weapon) then return end
     local class=weapon:GetClass();local def=E.Definitions[class]
     if def and def.weapon and not E:CanStore(E:Ensure(ps),{definitionId=class,count=1}) then return false end
 end)
 hook.Add("WeaponEquip","LOD_ProceduralWeaponRecord",function(weapon,ply)
-    local ps=hero(ply)
-    if not ps or not IsValid(weapon) then return end
-    E:EnsureWeapon(ply,weapon:GetClass())
-    timer.Simple(0,function() if IsValid(ply) and hero(ply)==ps then E:Sync(ply) end end)
+    -- WeaponEquip fires synchronously inside Player:Give. Touch neither the
+    -- player state nor the fresh native weapon until construction has settled.
+    timer.Simple(0,function()
+        if not IsValid(ply) or not IsValid(weapon) then return end
+        local ps=hero(ply)
+        if not ps then return end
+        E:EnsureWeapon(ply,weapon:GetClass())
+        if hero(ply)==ps then E:Sync(ply) end
+    end)
 end)
 -- Check the actual weapon, including SetActiveWeapon/restore paths; switch-intent
 -- hooks can be cancelled and cannot be the ownership/stat authority.

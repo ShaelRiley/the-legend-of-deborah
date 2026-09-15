@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["staging"] = "stability-20260915-02"
+LOD.RuntimeReceipts["staging"] = "stability-20260915-03"
 LOD.StagingDeployment = LOD.StagingDeployment or {}
 
 local Staging = LOD.StagingDeployment
@@ -677,7 +677,17 @@ function Staging:ClaimStarter(ply, ent)
         starterClaimStage(ply, "weapon_already_owned", weaponClass)
     else
         starterClaimStage(ply, "before_native_give", weaponClass)
-        local weapon = ply:Give(weaponClass, true)
+        -- Player:Give synchronously publishes WeaponEquip while the native weapon
+        -- is still being constructed. Project hooks recognize this guard and do
+        -- no inventory or weapon-instance work until the next tick.
+        ply.LODStarterNativeGrant = weaponClass
+        local ok, weapon = pcall(ply.Give, ply, weaponClass, true)
+        ply.LODStarterNativeGrant = nil
+        if not ok then
+            starterClaimStage(ply, "native_give_lua_error", weaponClass)
+            ErrorNoHalt("[LOD:STAGING] Starter Player:Give failed: " .. tostring(weapon) .. "\n")
+            return false
+        end
         if not IsValid(weapon) then
             starterClaimStage(ply, "native_give_failed", weaponClass)
             return false

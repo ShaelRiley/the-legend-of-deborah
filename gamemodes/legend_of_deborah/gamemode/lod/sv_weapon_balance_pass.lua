@@ -128,10 +128,10 @@ configureAR2Definition()
 hook.Add("InitPostEntity", "LOD_AR2BalanceDefinition", configureAR2Definition)
 hook.Add("OnReloaded", "LOD_AR2BalanceReloadDefinition", configureAR2Definition)
 hook.Add("WeaponEquip", "LOD_AR2BalanceEquip", function(weapon, ply)
-    if not IsValid(weapon) or weapon:GetClass() ~= AR2_CLASS then return end
-    configureAR2Instance(weapon)
     timer.Simple(0, function()
-        if IsValid(ply) then clampAR2(ply) end
+        if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= AR2_CLASS then return end
+        configureAR2Instance(weapon)
+        clampAR2(ply)
     end)
 end)
 

@@ -111,10 +111,10 @@ configureShotgunDefinition()
 hook.Add("InitPostEntity", "LOD_ShotgunAmmoTuningDefinition", configureShotgunDefinition)
 hook.Add("OnReloaded", "LOD_ShotgunAmmoTuningReloadDefinition", configureShotgunDefinition)
 hook.Add("WeaponEquip", "LOD_ShotgunAmmoTuningEquip", function(weapon, ply)
-    if not IsValid(weapon) or weapon:GetClass() ~= SHOTGUN_CLASS then return end
-    configureShotgunInstance(weapon)
     timer.Simple(0, function()
-        if IsValid(ply) then clampShotgun(ply) end
+        if not IsValid(ply) or not IsValid(weapon) or weapon:GetClass() ~= SHOTGUN_CLASS then return end
+        configureShotgunInstance(weapon)
+        clampShotgun(ply)
     end)
 end)
 

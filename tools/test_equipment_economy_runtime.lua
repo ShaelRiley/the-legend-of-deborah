@@ -93,6 +93,24 @@ assert(E:InventoryWeapon(owner,b.id,false),'Select a stored copy')
 assert(weapon.clip==2 and owner.ammo['357']==9,'Same-family selection cannot replenish ammo')
 assert(owner.ps.equipment.items[a.id] and E:Equipped(owner.ps.equipment,'weapon_357').id==b.id)
 assert(not Loot:Collect(pickup(b,'drop-b'),owner,true),'Consumed reward replay rejected')
+
+-- Player:Give publishes WeaponEquip before the native weapon is fully settled.
+-- The production capacity gate must not inspect a protected starter weapon, and
+-- procedural record creation must wait until the next tick.
+local settling=actor('settling');Run.State.PlayerState.settling=settling.ps
+settling.LODStarterNativeGrant='weapon_smg1'
+local unsafe={valid=true,GetClass=function() error('capacity inspected unsettled starter weapon') end}
+assert(hooks.LOD_EquipmentInventoryCapacity(settling,unsafe)==true)
+local pendingBefore=#timers
+settling:Give('weapon_smg1')
+settling.LODStarterNativeGrant=nil
+assert(#timers==pendingBefore+1 and not settling.ps.equipment,
+    'procedural WeaponEquip work ran inside native Give')
+local settle=table.remove(timers)
+settle()
+assert(E:Equipped(settling.ps.equipment,'weapon_smg1'),
+    'deferred procedural weapon record did not settle')
+
 local copy=table.Copy(owner.ps.equipment)
 owner.weapons['weapon_357']=nil;owner:Give('weapon_357');E:Sync(owner)
 assert(E:Equipped(owner.ps.equipment,'weapon_357').id==copy.slots.weapon_357,'Weapon restoration retains item roll')
@@ -217,6 +235,6 @@ assert(not E:Discard(owner.ps.equipment,E:Equipped(owner.ps.equipment,'weapon_pi
 E.MaximumStoredEquipment=capacity
 local extra=E:NewItem(owner,'boots','bag');owner.ps.equipment.items[extra.id]=extra
 assert(E:Discard(owner.ps.equipment,extra.id) and not owner.ps.equipment.items[extra.id])
-print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; natural reward distribution')
+print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; natural reward distribution')
 -- Reuse these Source boundaries for the real SQLite wallet integration gate.
 return {actor=actor,Run=Run,hooks=hooks,timers=timers}
