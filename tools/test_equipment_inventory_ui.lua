@@ -14,6 +14,8 @@ function panel:SetText(t) self.text=t end
 function panel:SetTooltip(t) self.tooltip=t end
 function panel:SetContentAlignment() return self end
 function panel:Droppable(name) self.drag=name end
+function panel:SetDoubleClickingEnabled(v) self.doubleClick=v end
+function panel:OnMousePressed() dragndrop.m_DragWatch=self end
 function panel:Receiver(name,fn) self.receiver=fn end
 function panel:GetCanvas() if not self.canvas then self.canvas=create('DPanel',self) end return self.canvas end
 function panel:GetVBar()
@@ -79,6 +81,12 @@ E:Equip(state,'i7','left_hand');receivers.LOD_EquipmentSnapshot()
 assert(slot('head')==oldTile and E.Snapshot.slots.right_hand=='i7')
 drawing=false;view.Think();assert(slot('right_hand').LODItemId=='i7' and slot('left_hand').LODItemId=='i7')
 assert(view.BagScroll:GetVBar():GetScroll()==80 and view.DetailScroll:GetVBar():GetScroll()==40)
+-- Native DLabel arms a drag-watch before crossing the 20-pixel threshold.
+local pressed=slot('head');assert(pressed.doubleClick==false)
+pressed:OnMousePressed(1)
+local previous=E.Snapshot;E.Snapshot=table.Copy(previous)
+E:RefreshInventory();assert(IsValid(pressed) and slot('head')==pressed,'Mouse-down tile survives incoming snapshot')
+dragndrop.m_DragWatch=nil;view.Think()
 -- Paired glove removal and ring displacement use canonical shared occupancy.
 now=now+1;assert(E:InventoryMove('i7','inventory','right_hand'))
 assert(requests[#requests][1]=='unequip' and requests[#requests][2]=='i7')

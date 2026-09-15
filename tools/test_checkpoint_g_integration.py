@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Loot/Class/Identification Refresh", ["python3", "tools/run_lua54.py", "tools/test_loot_class_refresh.lua"]),
     ("Fighter Strength / Constitution Bypass", ["python3", "tools/run_lua54.py", "tools/test_fighter_strength.lua"]),
     ("Monster Class, Affinity & Aura", ["python3", "tools/run_lua54.py", "tools/test_monster_identity.lua"]),
     ("Size Shifter Collision & Growth", ["python3", "tools/run_lua54.py", "tools/test_size_shifter_collision.lua"]),

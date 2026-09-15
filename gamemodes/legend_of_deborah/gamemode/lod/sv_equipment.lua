@@ -39,6 +39,7 @@ function E:Sync(ply)
     local ps = heroState(ply)
     local state = ps and self:Ensure(ps)
     if self.RefreshDerived then self:RefreshDerived(ply, ps) end
+    if state and LOD.RPGAbilityRules and LOD.RPGAbilityRules.BlockChance then state.blockChance=LOD.RPGAbilityRules:BlockChance(ply) end
     local item = self:Equipped(state, "throwable")
     local def = self:Definition(item)
     ply:SetNW2String("LOD_ThrowableItem", item and item.definitionId or "")
@@ -157,14 +158,18 @@ function E:InventoryWeapon(ply,id,stow)
     if not self:CanAct(ply) then return false end
     local state=self:Ensure(heroState(ply))
     local def=self:Definition(state.items[id])
-    if not def or not def.weapon or state.slots[def.weaponClass]~=id then return false end
+    if not def or not def.weapon then return false end
+    if not stow and not IsValid(ply:GetWeapon(def.weaponClass)) and self.MaterializeWeapon then
+        if not self:MaterializeWeapon(ply,id) then return false end
+    end
     if not IsValid(ply:GetWeapon(def.weaponClass)) then return false end
     if stow then
         local active=ply:GetActiveWeapon()
-        if not IsValid(active) or active:GetClass()~=def.weaponClass then return false end
+        if state.slots[def.weaponClass]~=id or not IsValid(active) or active:GetClass()~=def.weaponClass then return false end
         if not ply:HasWeapon("weapon_lod_empty_hands") then ply:Give("weapon_lod_empty_hands",true) end
         if not ply:HasWeapon("weapon_lod_empty_hands") then return false end
     end
+    if not stow and not self:Equip(state,id,def.weaponClass) then return false end
     ply:SelectWeapon(stow and "weapon_lod_empty_hands" or def.weaponClass)
     self:Sync(ply)
     return true
@@ -193,7 +198,7 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
     elseif action == "unequip" then
         if state.slots[slot]==id and E:Unequip(state, slot) then E:Sync(ply) end
     elseif action == "discard" and E.Discard then
-        if E:Discard(state,id) then E:Sync(ply) end
+        if E.DiscardOwned and E:DiscardOwned(ply,id) then E:Sync(ply) end
     end
 end)
 

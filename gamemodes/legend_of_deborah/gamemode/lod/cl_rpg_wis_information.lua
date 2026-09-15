@@ -77,8 +77,7 @@ hook.Add("HUDPaint", "LOD_RPGWisOmniscience", function()
     local data = Information.Omniscience
     local ply = LocalPlayer()
     if not IsValid(ply) or not data or not IsValid(data.target) then return end
-    local trace = ply:GetEyeTrace()
-    if not trace or trace.Entity ~= data.target then return end
+    if not LOD.NearLook:Qualifies(ply,data.target,4096) then return end
 
     local x, y = hostileIdentityAnchor(data.target)
     draw.SimpleText(tostring(data.type), "DermaDefaultBold", x, y,
@@ -88,3 +87,4 @@ hook.Add("HUDPaint", "LOD_RPGWisOmniscience", function()
     draw.SimpleText(string.format("HP %d/%d", data.hp or 0, data.maxHP or 0),
         "DermaDefault", x, y + 16, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 end)
+

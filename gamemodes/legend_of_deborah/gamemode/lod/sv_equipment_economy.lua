@@ -36,11 +36,13 @@ function E:RefreshDerived(ply,ps)
     local state=self:Ensure(ps)
     local weapon=IsValid(ply) and ply:GetActiveWeapon() or nil
     state.activeWeaponClass=IsValid(weapon) and weapon:GetClass() or nil
-    local signature={state.activeWeaponClass or ""}
+    local signature={state.activeWeaponClass or "",state.slots[state.activeWeaponClass or ""] or ""}
     for _,slot in ipairs(self.SlotOrder) do signature[#signature+1]=state.slots[slot] or "" end
     local key=table.concat(signature,"|")
     local p=ps.progressionState
     if p.equipmentKey==key then return end
+    local shield=self:Definition(self:Equipped(state,"left_arm"))
+    p.equipmentShieldEquipped=shield and shield.name=="Shield" or false
     local a,_,block,x=self:Contributions(state)
     p.equipmentKey,p.equipmentAbilityDelta,p.equipmentBlockChanceContribution,p.equipmentExtras=key,a,block,x
     CPS:_RecomputeProgressionState(p)
@@ -78,6 +80,7 @@ function E:NewItem(ply,class,source)
     local ps=hero(ply);if not ps then return nil end
     local state=self:Ensure(ps)
     if not source then state.serial=(state.serial or 0)+1;source="grant:"..state.serial end
+    source="life:"..tostring(ps.equipmentLifeSerial or 0)..":"..source
     local key=self:RewardKey(ps.identity or Run:IdentityOf(ply),source)
     return self:Generate(LOD.Seeds.Derive(Run.State.CampaignSeed or 1,key),Run.State.Level or 1,class,key)
 end
@@ -94,7 +97,7 @@ function E:EnsureWeapon(ply,class)
     return item
 end
 function E:StampWeapons(ply)
-    if not hero(ply) then return end
+    if not hero(ply) or not ply:Alive() then return end
     for _,class in ipairs(self.WeaponFamilies) do
         local weapon=ply:GetWeapon(class)
         if IsValid(weapon) then
@@ -140,8 +143,14 @@ function E:AcquireWorldItem(ply,item,accept,source)
     local state=self:Ensure(ps)
     if not self:CanStore(state,item) then return false end
     local slot,displaced=self:Placement(state,item)
-    if not slot or state.items[item.id] or #displaced>0 and not accept then return false end
+    local bag=source=="pickup"
+    if not slot or state.items[item.id] or (not bag and #displaced>0 and not accept) then return false end
     local def=self:Definition(item)
+    if bag then
+        state.items[item.id]=table.Copy(item)
+        self:Sync(ply)
+        return true,self:ItemName(item).." added to inventory"
+    end
     if def.weapon and not IsValid(ply:GetWeapon(def.weaponClass)) then
         -- Preserve all existing class-specific magazine/cap adapters. Suppress
         -- initial-record creation during this transaction so a grant cannot
@@ -159,7 +168,7 @@ function E:AcquireWorldItem(ply,item,accept,source)
     return true,self:ItemName(item).." equipped — "..self:Description(item,true)
 end
 function E:CollectWearable(ent,ply,accept)
-    return self:AcquireWorldItem(ply,ent.LODLootPayload and ent.LODLootPayload.item,accept)
+    return self:AcquireWorldItem(ply,ent.LODLootPayload and ent.LODLootPayload.item,accept,"pickup")
 end
 function LOD.LootDirector:_GrantWeapon(ply,class,rng)
     if not hero(ply) or not E.Definitions[class] then return grantWeapon(self,ply,class,rng) end
@@ -287,3 +296,39 @@ function E:PostDamage(target,info,taken)
     end
 end
 hook.Add("PostEntityTakeDamage","LOD_EquipmentHitRiders",function(target,info,taken) E:PostDamage(target,info,taken) end)
+
+-- RunManager calls once at authoritative Hero life consumption, before any
+-- respawn/disconnect snapshot. Wallets and per-run DFT entitlements are separate.
+function E:LoseOnDeath(ply,ps)
+    ps.equipmentLifeSerial=(ps.equipmentLifeSerial or 0)+1
+    ps.equipment={items={},slots={}}
+    ps.inventory={weapons={},ammo={}}
+    local p=ps.progressionState
+    if p then
+        p.equipmentKey=nil;p.equipmentAbilityDelta={};p.equipmentExtras={}
+        p.equipmentBlockChanceContribution=0;p.equipmentShieldEquipped=false
+        CPS:_RecomputeProgressionState(p)
+    end
+    if self.ClearTransient then self:ClearTransient(ply) end
+end
+
+-- Native weapons are family adapters. Distinct stored rolls share that family's
+-- magazine/reserve, so swapping copies cannot refill ammunition.
+function E:MaterializeWeapon(ply,id)
+    local ps=hero(ply);if not ps or not self:CanAct(ply) then return false end
+    local state=self:Ensure(ps);local item=state.items[id];local def=self:Definition(item)
+    if not def or not def.weapon then return false end
+    if IsValid(ply:GetWeapon(def.weaponClass)) then return true end
+    return grantWeapon(LOD.LootDirector,ply,def.weaponClass,LOD.RNG.New(item.seed))
+end
+function E:DiscardOwned(ply,id)
+    local ps=hero(ply);if not ps or not self:CanAct(ply) then return false end
+    local state=self:Ensure(ps);local def=self:Definition(state.items[id])
+    if not self:Discard(state,id) then return false end
+    if def.weapon then
+        local retained=false
+        for _,item in pairs(state.items) do if item.definitionId==def.weaponClass then retained=true;break end end
+        if not retained and ply:HasWeapon(def.weaponClass) then ply:StripWeapon(def.weaponClass) end
+    end
+    return true
+end

@@ -324,6 +324,7 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
     if formulaBonus < 0 then formula = formula .. tostring(formulaBonus) end
     local contract = {
         attackEvent = resolvedProfile.attackEvent or (IsValid(attacker) and attacker.LODCommittedAttackEvent) or {},
+        sourcePosition = IsValid(attacker) and attacker.GetPos and attacker:GetPos() or nil,
         profile = resolvedProfile,
         formula = formula,
         total = total,
@@ -466,7 +467,8 @@ function Rolls:SettleShotgun(ply, contract)
         if not target.LODDead and target:Health() > 0 then
             local hits = contract.hits[target]
             local tags = {physical = true, shotgunHits = hits, shotgunShares = SHOTGUN_SHARE_COUNT,
-                settledShotgun = true, attackEvent = contract.attackEvent, damageContract = contract}
+                settledShotgun = true, attackEvent = contract.attackEvent, damageContract = contract,
+                authoredScale=tonumber(contract.aimMultiplier) or 1, attackMultiplier=tonumber(contract.aimMultiplier) or 1}
             local total = self:ResolveActorDamage(contract, ply, target, tags)
             contract.resolutionByTarget[target] = contract.feedResolution
             local info = DamageInfo()
@@ -664,7 +666,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             local falloff = math.Clamp(dmginfo:GetDamage() / GRENADE_REFERENCE_DAMAGE, 0.05, 1)
             local aimMult = tonumber(inflictor.LODAimMultiplier) or 1
             local final = math.max(1, Rolls:ResolveActorDamage(contract, attacker, target,
-                {physical = true, authoredScale = falloff * aimMult}))
+                {physical = true, authoredScale = falloff * aimMult, attackMultiplier = aimMult}))
             dmginfo:SetDamage(final)
 
             local detailStr = string.format("[rolls %s; blast x%.2f]",
@@ -732,7 +734,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
                     and LOD.MagnumPiercing.DamageSegments[dmginfo] or nil
                 local damageContract = pierce and pierce.rpgContract or contract
                 local tags={physical=true,attackEvent=contract.attackEvent,damageContract=contract,
-                    authoredScale=tonumber(contract.aimMultiplier) or 1}
+                    authoredScale=tonumber(contract.aimMultiplier) or 1, attackMultiplier=tonumber(contract.aimMultiplier) or 1}
                 local resolved = Rolls:ResolveActorDamage(damageContract, attacker, target,tags)
                 if statusElements then statusElements:AttachDamageContext(dmginfo,tags) end
                 dmginfo:SetDamage(resolved)

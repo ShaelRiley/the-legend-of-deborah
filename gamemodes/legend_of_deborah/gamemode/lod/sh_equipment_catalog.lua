@@ -188,6 +188,6 @@ function E:AcquireWearable(state, item, accept, requestedSlot)
     if not slot or #displaced > 0 and not accept then return false end
     state.items[item.id] = item
     if not self:Equip(state,item.id,slot) then state.items[item.id]=nil; return false end
-    for _, id in ipairs(displaced) do state.items[id] = nil end
+    -- Displaced equipment remains owned in the bag, including duplicate guns.
     return true
 end

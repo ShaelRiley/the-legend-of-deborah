@@ -30,53 +30,37 @@ net.Receive("LOD_EquipmentInspect",function()
     end
 end)
 
--- One layout, not a growing history of inspected equipment. Item records and
--- received snapshots are replaced atomically; either change invalidates it.
-local comparison
-local comparisonBackground=Color(20,27,32,235)
-local comparisonInk=Color(235,239,245)
-function E:ComparisonLayout(ent,item,width)
-    if comparison and comparison.entity==ent and comparison.item==item
-        and comparison.snapshot==self.Snapshot and comparison.width==width then return comparison end
-    comparison=nil
-    if not E:ValidateWearable(item) then return end
-    local slot,displaced,oldValue=E:Placement(E.Snapshot,item)
-    local lines={E:ItemName(item),E:Description(item,true)}
-    for _,id in ipairs(displaced) do
-        local old=E.Snapshot.items[id]
-        lines[#lines+1]="Replaces "..E:ItemName(old)..": "..E:Description(old,true)
+-- Pickup comparison is retired. Show the full name, without replacement prompts.
+local nameCache
+function E:PickupNameLayout(ent,name,width)
+    if nameCache and nameCache.entity==ent and nameCache.name==name and nameCache.width==width then return nameCache end
+    surface.SetFont("Trebuchet24")
+    local lines,line={},""
+    for word in name:gmatch("%S+") do
+        local nextLine=line=="" and word or line.." "..word
+        if line~="" and surface.GetTextSize(nextLine)>width then lines[#lines+1]=line;line=word else line=nextLine end
     end
-    lines[#lines+1]=string.format("Value %g → %g (%+g) — approximate comparison",oldValue,E:Value(item),E:Value(item)-oldValue)
-    lines[#lines+1]=#displaced>0 and "E: ACCEPT REPLACEMENT" or "Touch or E: EQUIP"
-    surface.SetFont("DermaDefault")
-    local wrapped={}
-    for _,text in ipairs(lines) do
-        local line=""
-        for word in text:gmatch("%S+") do
-            local nextLine=line=="" and word or line.." "..word
-            if surface.GetTextSize(nextLine)>width-24 then wrapped[#wrapped+1]=line;line=word else line=nextLine end
-        end
-        wrapped[#wrapped+1]=line
-    end
-    comparison={entity=ent,item=item,snapshot=self.Snapshot,width=width,lines=wrapped,height=#wrapped*18+20}
-    return comparison
+    if line~="" then lines[#lines+1]=line end
+    nameCache={entity=ent,name=name,width=width,lines=lines};return nameCache
 end
-
--- World pickup and inventory share the item name/property/value formatter.
+local target,nextScan=nil,0
 hook.Add("HUDPaint","LOD_EquipmentComparison",function()
     local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then comparison=nil;return end
-    local ent=ply:GetEyeTrace().Entity
-    if not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
-        or ply:GetPos():DistToSqr(ent:GetPos())>128*128 then comparison=nil;return end
-    local layout=E:ComparisonLayout(ent,E:PickupView(ent),math.min(900,ScrW()-40))
-    if not layout then return end
-    local height=layout.height
-    local x,y=20,math.max(20,ScrH()-height-70)
-    draw.RoundedBox(4,x,y,layout.width,height,comparisonBackground)
-    for i,text in ipairs(layout.lines) do draw.SimpleText(text,"DermaDefault",x+12,y+10+(i-1)*18,comparisonInk) end
+    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then target=nil;return end
+    if CurTime()>=nextScan then
+        nextScan=CurTime()+.15
+        target=LOD.NearLook:Find(ply,512,function(e) return e:GetClass()=="lod_loot_pickup" end)
+    end
+    if not IsValid(target) or not LOD.NearLook:Qualifies(ply,target,512) then return end
+    local name=target:GetNW2String("LOD_LootName","")
+    if name=="" then return end
+    local layout=E:PickupNameLayout(target,name,math.min(900,ScrW()-48))
+    for i,line in ipairs(layout.lines) do
+        draw.SimpleTextOutlined(line,"Trebuchet24",ScrW()*.5,ScrH()*.58+(i-1)*26,
+            color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP,1,Color(0,0,0,230))
+    end
 end)
-hook.Add("PreCleanupMap","LOD_EquipmentComparisonCleanup",function() comparison=nil end)
+hook.Add("PreCleanupMap","LOD_EquipmentComparisonCleanup",function() nameCache=nil;target=nil;nextScan=0 end)
 
 net.Receive("LOD_EquipmentSnapshot", function()
     local state = net.ReadTable()

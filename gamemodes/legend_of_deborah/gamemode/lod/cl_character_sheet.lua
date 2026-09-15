@@ -162,11 +162,11 @@ end
 local CLASS_CARDS = {
     fighter = {
         title = "Fighter", subtitle = "STR / CON | Hero d10",
-        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability. Positive Strength damage bypasses Constitution resistance."
+        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability. Positive Strength damage bypasses Constitution resistance. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33% cap)."
     },
     rogue = {
         title = "Rogue", subtitle = "DEX / CHA | Hero d8",
-        body = "Every Rogue-owned damage die can explode. Rogue d6 and SUPER-d12 thresholds are easier to trigger."
+        body = "Every Rogue-owned damage die can explode. Rogue d6 and SUPER-d12 thresholds are easier to trigger. Attacks from behind bypass Constitution resistance and add one damage multiple: normal x2, aimed x3, Deadeye x4."
     },
     wizard = {
         title = "Wizard", subtitle = "INT / WIS | Hero d4",

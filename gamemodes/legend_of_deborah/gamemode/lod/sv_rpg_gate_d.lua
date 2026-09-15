@@ -199,8 +199,42 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
     return math.max(0, total), reduced, resistance
 end
 
+AbilityRules.BackstabEvents=setmetatable({}, {__mode="k"})
+function AbilityRules:Backstab(contract,attacker,target,tags,source)
+    if not source or not source.rogueBackstabEnabled or not (tags.physical or tags.magic)
+        or tags.statusDamage or tags.passiveDamage or tags.reactiveDamage or tags.auraBurst
+        or tags.environmental or tags.wallCrush or not IsValid(attacker) or not IsValid(target)
+        or attacker==target or not target.GetForward or not target.GetPos then return false end
+    local event=contract.attackEvent or contract
+    local cache=self.BackstabEvents[event]
+    if not cache then cache=setmetatable({}, {__mode="k"});self.BackstabEvents[event]=cache end
+    if cache[target]~=nil then return cache[target] end
+    local origin=tags.equipmentSnapshot and tags.equipmentSnapshot.origin
+        or contract.sourcePosition or contract.originContract and contract.originContract.sourcePosition or attacker:GetPos()
+    local offset=origin-target:GetPos();offset=Vector(offset.x,offset.y,0)
+    local facing=target:IsPlayer() and target.EyeAngles and target:EyeAngles():Forward() or target:GetForward()
+    facing=Vector(facing.x,facing.y,0)
+    local yes=offset:LengthSqr()>1 and facing:LengthSqr()>0
+        and offset:GetNormalized():Dot(facing:GetNormalized())<=-.5
+    cache[target]=yes
+    if yes and LOD.RPGPresentation and LOD.RPGPresentation.Event then
+        local viewer=attacker:IsPlayer() and attacker or target:IsPlayer() and target
+        if viewer then LOD.RPGPresentation:Event(viewer,"damage","BACKSTAB — bonus damage multiple; Constitution bypassed",{event="backstab"}) end
+    end
+    return yes
+end
 function AbilityRules:ResolveDamageContract(contract, attacker, target, tags)
-    return self:ResolveDamageValues(contract, self:Derived(attacker), self:Derived(target), tags)
+    tags=tags or {}
+    local source=tags.equipmentSnapshot and tags.equipmentSnapshot.derived
+        or contract.profile and contract.profile.rpgDerived or self:Derived(attacker)
+    tags.backstab=self:Backstab(contract,attacker,target,tags,source)
+    local resolvedTags=tags
+    if tags.backstab then
+        resolvedTags=setmetatable({ignoreConDamageResistance=true,
+            authoredScale=math.max(0,tonumber(tags.authoredScale) or 1)
+                *(1+1/math.max(1,tonumber(tags.attackMultiplier) or 1))},{__index=tags})
+    end
+    return self:ResolveDamageValues(contract,source,self:Derived(target),resolvedTags)
 end
 
 function AbilityRules:CommitAttack(actor)

@@ -5,7 +5,9 @@ util.AddNetworkString("LOD_BlockPulse")
 
 function Rules:BlockChance(actor)
     local state, derived = self:ProgressionState(actor), self:Derived(actor)
-    return math.Clamp((tonumber(state and state.equipmentBlockChanceContribution) or 0)
+    local strength=state and state.classId=="fighter" and state.equipmentShieldEquipped
+        and math.max(0,tonumber(derived and derived.strMod) or 0)/100 or 0
+    return math.Clamp(strength + (tonumber(state and state.equipmentBlockChanceContribution) or 0)
         + (tonumber(derived and derived.blockChanceContribution) or 0), 0, LOD.Equipment.BlockCap)
 end
 

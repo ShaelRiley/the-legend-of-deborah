@@ -251,7 +251,7 @@ function E:CanStore(state,item,slot)
         local def=self:Definition(owned)
         if def and (def.wearable or def.weapon) then stored=stored+1 end
     end
-    return stored-#displaced<self.MaximumStoredEquipment
+    return stored<self.MaximumStoredEquipment
 end
 function E:AcquireWearable(state,item,accept,slot)
     if not self:CanStore(state,item,slot) then return false end
@@ -261,8 +261,11 @@ end
 function E:Discard(state,id)
     local item=state and state.items[id]
     local def=self:Definition(item)
-    if not def or not def.wearable then return false end
-    for _,value in pairs(state.slots) do if value==id then return false end end
+    if not def then return false end
+    for _,value in pairs(state.slots) do
+        if value==id and (not def.weapon or state.activeWeaponClass==def.weaponClass) then return false end
+    end
+    self:UnequipItem(state,id)
     state.items[id]=nil
     return true
 end

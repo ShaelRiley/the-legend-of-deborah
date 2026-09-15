@@ -10,7 +10,7 @@ local positions={
     {'throwable','THROWABLE',2,3,'bottle'}
 }
 E.BodyPositions=positions
-local function dragging() return dragndrop and dragndrop.IsDragging() end
+local function dragging() return dragndrop and (dragndrop.IsDragging() or IsValid(dragndrop.m_DragWatch)) end
 local function label(parent,text,x,y,w,h,font)
     local p=vgui.Create('DLabel',parent);p:SetPos(x,y);p:SetSize(w,h)
     p:SetFont(font or 'LOD_SheetSmall');p:SetTextColor(C.ink);p:SetText(text);p:SetWrap(true)
@@ -51,6 +51,7 @@ function E:InventoryMove(id,target,origin)
     if not def then self:InventoryMessage('That item is no longer available.');return false end
     if RealTime()<(self.InventoryNextAction or 0) then return false end
     if target=='inventory' then
+        origin=origin or self:InventorySlot(id)
         if not origin or (def.weapon and self:InventorySlot(id)~=origin) or (not def.weapon and self.Snapshot.slots[origin]~=id) then
             self:InventoryMessage('That item is no longer equipped.');return false
         end
@@ -58,8 +59,6 @@ function E:InventoryMove(id,target,origin)
     elseif not self:InventoryCompatible(id,target) then
         self:InventoryMessage('That item does not fit this slot.');return false
     elseif target=='weapon' then
-        local weapon=LocalPlayer():GetWeapon(def.weaponClass)
-        if not IsValid(weapon) then self:InventoryMessage('Weapon unavailable.');return false end
         self:Request('select_weapon',id,'weapon')
     else self:Request('equip',id,target) end
     self.InventoryNextAction=RealTime()+.12
@@ -77,6 +76,7 @@ function E:InventoryReceive(target,panels,dropped)
 end
 local function tile(parent,id,slot,title,size)
     local p=vgui.Create('DButton',parent);p:SetSize(size,size);p:SetText('')
+    if p.SetDoubleClickingEnabled then p:SetDoubleClickingEnabled(false) end
     p.LODItemId=id;p.LODOriginSlot=slot;p.LODInventoryView=E.InventoryView
     if id then
         p:Droppable(DRAG)
@@ -94,7 +94,7 @@ local function tile(parent,id,slot,title,size)
             E:DrawItemIcon(item,6,4,math.min(w-12,h-17),C.blue)
             local def=E:Definition(item)
             local tag=def.throwable and ('x'..item.count) or (equipped and 'WORN' or '')
-            if def.weapon then tag=E.Snapshot.activeWeaponClass==def.weaponClass and 'ACTIVE' or 'READY' end
+            if def.weapon then tag=equipped and 'ACTIVE' or 'STORED' end
             draw.SimpleText(tag,'DermaDefault',w*.5,h-14,C.ink,TEXT_ALIGN_CENTER)
         elseif self.LODIcon then E:DrawItemIcon(nil,8,6,math.min(w-16,h-12),C.rule,self.LODIcon) end
     end
@@ -151,12 +151,12 @@ function E:InventoryDetails()
             button('EQUIP LEFT HAND',function() E:InventoryMove(id,'left_hand') end)
             button('EQUIP RIGHT HAND',function() E:InventoryMove(id,'right_hand') end)
         end
-        if def.wearable and not slot then button('DISCARD',function()
+    end
+    if not slot then button('TRASH ITEM',function()
             Derma_Query('Permanently discard '..E:ItemName(item)..'?','Discard equipment','Discard',function()
                 E:Request('discard',id,'')
             end,'Keep')
         end) end
-    end
 end
 function E:RefreshInventory()
     local view=self.InventoryView;if not IsValid(view) or dragging() then return end
@@ -196,7 +196,7 @@ function E:RefreshInventory()
     view.BagScroll:GetVBar():SetScroll(bagScroll)
     view.DetailScroll:GetVBar():SetScroll(detailScroll)
     local _,moves,block=self:Contributions(self.Snapshot)
-    local summary=string.format('Block: %.0f%% / 33%% cap',block*100)
+    local summary=string.format('Block: %.0f%% / 33%% cap',(tonumber(self.Snapshot.blockChance) or block)*100)
     for _,id in ipairs(self.MoveOrder) do if moves[id] then
         local m=self.SpecialMoves[id];summary=summary..'\n'..m.name..' '..m.glyphs..' | '..m.magicCost..' Magic | '..m.cooldown..'s\n'..m.description
     end end

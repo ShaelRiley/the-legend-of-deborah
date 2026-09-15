@@ -56,7 +56,7 @@ assert(E:AcquireWearable(state,left,false));assert(E:AcquireWearable(state,right
 local _,displaced,value=E:Placement(state,gloves)
 assert(#displaced==2 and value==E:Value(left)+E:Value(right))
 assert(not E:AcquireWearable(state,gloves,false));assert(E:AcquireWearable(state,gloves,true))
-assert(not state.items[left.id] and not state.items[right.id])
+assert(state.items[left.id] and state.items[right.id])
 local a,_,_,x=E:Contributions(state)
 for _,r in ipairs(gloves.properties) do local p=E.EconomyProperties[r.id]
     if p.ability then assert(a[p.ability]==r.amount,'Gloves must count once')

@@ -43,7 +43,7 @@ function C:PromotePending(a)
     end
 end
 function C:Milestone(id,level)
-    if not self:Ranked() or not Store:ValidAccount(id) then return false end
+    if not self:Ranked() or not Run.State.LevelCleared or not Store:ValidAccount(id) then return false end
     local key=tostring(level)
     local event='milestone:'..id..':'..key
     return Store:Transaction(event,'milestone',{id},function(accounts)
@@ -58,7 +58,7 @@ function C:Milestone(id,level)
     end)
 end
 function C:CheckMilestones(plyOrId)
-    if not self:Ranked() then return end
+    if not self:Ranked() or not Run.State.LevelCleared then return end
     local id=type(plyOrId)=='string' and plyOrId or self:Account(plyOrId)
     if not Store:ValidAccount(id) then return end
     local ps=Run:GetPlayerState(id)
@@ -103,6 +103,22 @@ function C:Settle()
     local ok,receipt=Store:Transaction(event,'rescue',ids,function(accounts)
         for id,share in pairs(allocations) do
             local a=accounts[id];a.balance=a.balance+share.amount;a.score=a.score+share.amount
+            if share.role=='hero' then
+                local ps=Run:GetPlayerState(id);local progression=ps and ps.progressionState
+                for _,level in ipairs(self.Milestones) do
+                    local key=tostring(level)
+                    if progression and progression.level>=level and not a.milestones[key] then
+                        a.milestones[key]=true
+                        a.pending[key]=self:GenerateToken(id,'milestone:'..key,'Combat Level '..key,r.Level)
+                    end
+                end
+                self:PromotePending(a)
+                local seed=LOD.Seeds.Derive(r.LevelSeed,'dft:rescue:'..id..':'..event)
+                if count(a.tokens)<8 and LOD.RNG.New(seed):Int(1,1000)==1 then
+                    local token=self:GenerateToken(id,event,'Rare rescue reward',r.Level)
+                    a.tokens[token.id]=token
+                end
+            end
             Store:History(id,event,'rescue',share)
         end
         return true,{run=r.RunId,level=r.Level,pool=pool,soldierPool=soldierPool,allocations=allocations}
@@ -116,18 +132,11 @@ function C:Settle()
     end
     return ok,receipt
 end
-function C:RareOpportunity(ply,hostile,serial)
-    if not self:Ranked() or not Run:IsActivePlayer(ply) or Run:IsSoldierControl(ply) then return end
-    local id=self:Account(ply);if not id then return end
-    local source='rare:'..Run.State.RunId..':'..Run.State.Level..':'..serial..':'..tostring(hostile.LODInstanceSeed or hostile:EntIndex())
-    local seed=LOD.Seeds.Derive(Run.State.LevelSeed,'dft:drop:'..id..':'..source)
-    if LOD.RNG.New(seed):Int(1,1000)~=1 then return end
-    local token=self:GenerateToken(id,source,'Rare enemy drop',Run.State.Level)
-    return LOD.LootDirector:SpawnPickup(id,hostile:GetPos()+Vector(0,0,20),'dft',{token=token},{})
-end
+-- Ordinary kills grant run-owned items. DFT minting belongs to rescue settlement.
+function C:RareOpportunity() return nil end
 function C:CollectToken(ply,token)
     local id=self:Account(ply)
-    if not self:Ranked() or not id or not token or token.id~=id..':'..token.source then return false end
+    if not self:Ranked() or not Run.State.LevelCleared or not id or not token or token.id~=id..':'..token.source then return false end
     local event='mint:'..token.id
     local ok=Store:Transaction(event,'rare_dft',{id},function(accounts)
         local a=accounts[id]

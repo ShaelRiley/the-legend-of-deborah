@@ -447,6 +447,7 @@ function RunManager:CaptureInventory(ply, ps)
     ps = ps or self:GetPlayerState(ply)
     if not IsValid(ply) or not ps then return end
 
+    if not ply:Alive() then return end -- never recapture a dead body after its loot was lost
     local snapshot = {weapons = {}, ammo = {}}
     for _, wep in ipairs(ply:GetWeapons()) do
         if IsValid(wep) and wep:GetClass() ~= "weapon_frag"
@@ -743,7 +744,8 @@ function RunManager:HandleDeath(ply, attacker)
     if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or not ps then return end
     ply.LODHandledRunDeath = true
 
-    self:CaptureInventory(ply, ps)
+    ps.inventory = {weapons={},ammo={}}
+    if LOD.Equipment and LOD.Equipment.LoseOnDeath then LOD.Equipment:LoseOnDeath(ply,ps) end
     ps.armor = 0
     ps.lives = math.max(0, ps.lives - 1)
     if LOD.CryptoDirector then LOD.CryptoDirector:HeroLifeConsumed(ply, attacker) end

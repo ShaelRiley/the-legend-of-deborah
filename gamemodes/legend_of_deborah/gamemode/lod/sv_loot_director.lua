@@ -459,6 +459,9 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     ent:SetPos(pos)
     ent:SetAngles(Angle(0, options.yaw or 0, 0))
     ent:Spawn()
+    ent:SetNW2String("LOD_LootName",kind=="wearable" and LOD.Equipment:ItemName(payload.item)
+        or kind=="consumable" and LOD.Equipment.Definitions[payload.itemId].name
+        or ({ammo="Ammunition",health="Health",armor="Armor",life="Extra Life",cache="Supply Cache"})[kind] or kind)
     ent:Activate()
     if kind == "wearable" and LOD.Equipment then LOD.Equipment:SyncPickup(ent) end
 
@@ -703,7 +706,7 @@ function Loot:_ObjectiveClearDrop(hostile)
 end
 
 function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
-    local usefulChance = guaranteedUseful and 1.0 or (lootState.dryKills >= 5 and 0.90 or 0.563)
+    local usefulChance = guaranteedUseful and 1.0 or (lootState.dryKills >= 5 and 0.90 or 0.75)
     if not rng:Chance(usefulChance) then return nil, false end
 
     local hpRatio = ply:Health() / math.max(1, ply:GetMaxHealth())
@@ -715,9 +718,9 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
         {value = "ammo", weight = 35 * (0.55 + ammoNeed * 1.85)},
         {value = "health", weight = 12 * (hpRatio < 0.25 and 3.0 or (hpRatio < 0.55 and 2.0 or 0.55))},
         {value = "armor", weight = 5 * (armorRatio < 0.25 and 2.2 or (armorRatio < 0.60 and 1.4 or 0.45))},
-        {value = "weapon", weight = 2.8 * (weaponMissing and 1.8 or 0.75)},
-        {value = "wearable", weight = 8},
-        {value = "consumable", weight = 6},
+        {value = "weapon", weight = 12 * (weaponMissing and 1.8 or 0.75)},
+        {value = "wearable", weight = 24},
+        {value = "consumable", weight = 12},
         {value = "life", weight = self:_CanUseExtraLife(ply) and 1.5 or 0}
     }
 
@@ -789,7 +792,6 @@ function Loot:OnHostileLootHandoff(hostile)
             local lootState = self:_PlayerLootState(ply)
             if lootState then
                 lootState.killSerial = (lootState.killSerial or 0) + 1
-                if LOD.CryptoDirector then LOD.CryptoDirector:RareOpportunity(ply, hostile, lootState.killSerial) end
                 self.Stats.enemyRolls = (self.Stats.enemyRolls or 0) + 1
 
                 local ownerIdentity = identityOf(ply) or "unknown"

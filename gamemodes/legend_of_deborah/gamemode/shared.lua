@@ -24,6 +24,8 @@ include("lod/sh_feedback_language.lua")
 if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
 include("lod/sh_player_scale_collision.lua")
 include("lod/sh_rng.lua")
+if SERVER then AddCSLuaFile("lod/sh_near_look.lua") end
+include("lod/sh_near_look.lua")
 if SERVER then AddCSLuaFile("lod/sh_equipment.lua") end
 include("lod/sh_equipment.lua")
 if SERVER then AddCSLuaFile("lod/sh_equipment_catalog.lua") end

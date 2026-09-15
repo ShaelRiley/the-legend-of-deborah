@@ -47,7 +47,7 @@ assert(not Loot:Collect(gloves,owner,false),'Touch cannot replace occupied items
 assert(not gloves.LODCollected and not gloves.LODCollecting)
 owner.soldier=true;assert(not Loot:Collect(gloves,owner,true));owner.soldier=false
 assert(Loot:Collect(gloves,owner,true),'One native Use acceptance commits whole swap')
-assert(not owner.ps.equipment.items[item.id] and not owner.ps.equipment.items[ring.id])
+assert(owner.ps.equipment.items[item.id] and owner.ps.equipment.items[ring.id])
 assert(owner.ps.equipment.slots.left_hand==paired.id and owner.ps.equipment.slots.right_hand==paired.id)
 local replay=pickup(3,'gloves','static-three');assert(not Loot:Collect(replay,owner,true),'Consumed static identity cannot respawn')
 local late=pickup(4,'boots','static-four');Run.State.LevelSeed=8

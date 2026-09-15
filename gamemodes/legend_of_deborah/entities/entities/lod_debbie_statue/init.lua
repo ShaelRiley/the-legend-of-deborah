@@ -38,6 +38,8 @@ function ENT:FreezeDeborahPose()
         self.LODStatuePose=best.name;self.LODStatueArmsCrossed=best.crossed
     end
     self:SetPlaybackRate(0)
+    self:SetNW2Int("LOD_StatueSequence",best and best.sequence or self:GetSequence())
+    self:SetNW2Float("LOD_StatueCycle",best and best.cycle or 0)
     local scowl={right_lowerer=.8,left_lowerer=.8,right_lid_tightener=.35,left_lid_tightener=.35,
         right_corner_depressor=.35,left_corner_depressor=.35}
     self:SetFlexScale(1)
@@ -52,9 +54,10 @@ end
 
 function ENT:Initialize()
     self:SetModel(LOD.Config.Models.Deborah)
+    self:SetModelScale(1.2,0)
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_BBOX)
-    self:SetCollisionBounds(Vector(-16,-16,0),Vector(16,16,74))
+    self:SetCollisionBounds(Vector(-20,-20,0),Vector(20,20,89))
     self:SetUseType(SIMPLE_USE)
     self:SetMaterial('models/props_wasteland/rockgranite02a')
     self:SetColor(Color(170,175,180))

@@ -13,7 +13,7 @@ local definitions = {
     {
         id = "WIS_OMNISCIENCE", name = "Omniscience", wis = 17,
         effectHandlerId = "direct_look_hostile_information",
-        effectParams = {description = "While controlled by a human, whenever this actor directly looks at a monster through the canonical look-at/target-identification trace, render an Omniscience readout above that monster at the same presentation anchor used for player identity text. For an ordinary AI monster, the readout shows the monster's canonical type/archetype name, current Combat Level, current class, and current Hit Points as CurrentHP/MaxHP. Example structure: Soldier • Level 21 • Fighter • HP 84/117. The values update live while the target remains valid. Omniscience is informational only: it grants no extra targeting range, no through-wall or off-screen awareness, no outline or tracking after look-away, and no combat/stat bonus. A human-controlled Soldier is still a monster for Omniscience purposes, but its existing HumanSoldierText remains the primary identity line; Omniscience appends the same Type/Level/Class/HP readout rather than replacing or hiding the controlling player's identity. Non-monster world entities and cooperative Heroes do not receive this monster-stat readout.", fields = {"type", "level", "class", "hp"}}
+        effectParams = {description = "While controlled by a human, whenever this actor looks at or within six degrees of a visible monster through the shared near-look identification authority, render an Omniscience readout above that monster at the same presentation anchor used for player identity text. For an ordinary AI monster, the readout shows the monster's canonical type/archetype name, current Combat Level, current class, and current Hit Points as CurrentHP/MaxHP. Example structure: Soldier • Level 21 • Fighter • HP 84/117. The values update live while the target remains valid. Omniscience is informational only: it grants no extra targeting range, no through-wall or off-screen awareness, no outline or tracking after look-away, and no combat/stat bonus. A human-controlled Soldier is still a monster for Omniscience purposes, but its existing HumanSoldierText remains the primary identity line; Omniscience appends the same Type/Level/Class/HP readout rather than replacing or hiding the controlling player's identity. Non-monster world entities and cooperative Heroes do not receive this monster-stat readout.", fields = {"type", "level", "class", "hp"}}
     }
 }
 for _, item in ipairs(definitions) do
@@ -148,12 +148,12 @@ local function hostileType(hostile)
 end
 
 local function hostileLevel(hostile)
-    local state = hostile.LODProgressionState
+    local state = Rules:ProgressionState(hostile)
     return math.Clamp(math.floor(tonumber(state and state.level or hostile.LODCharacterLevel) or 1), 1, 255)
 end
 
 local function hostileClass(hostile)
-    local state = hostile.LODProgressionState or {}
+    local state = Rules:ProgressionState(hostile) or {}
     return tostring(state.className or state.classId or state.class or hostile.LODArchetypeId or hostile:GetClass() or "Hostile")
 end
 
@@ -203,9 +203,10 @@ local function scanPlayer(ply)
     end
 
     if owns(state, "WIS_OMNISCIENCE") then
-        local trace = ply:GetEyeTrace()
-        local target = trace and trace.Entity or nil
-        if not (IsValid(target) and target.LODHostile and not target.LODDead) then target = nil end
+        local target = LOD.NearLook:Find(ply,4096,function(ent)
+            return (ent.LODHostile or ent:IsPlayer() and ent:GetNW2Bool("LOD_IsSoldier",false))
+                and not ent.LODDead and ent:Health()>0
+        end)
         local changed = target ~= ply.LODWisOmniscienceTarget
         local hpChanged = IsValid(target) and target:Health() ~= ply.LODWisOmniscienceHP
         if changed or hpChanged or CurTime() >= (ply.LODWisOmniscienceNextSync or 0) then
@@ -260,3 +261,4 @@ concommand.Add("lod_rpg_validate_wis_information", function(ply)
     print("[LOD:WIS-INFORMATION] " .. (ok and "PASS" or "FAIL")
         .. (#errors > 0 and (" " .. table.concat(errors, "; ")) or ""))
 end)
+

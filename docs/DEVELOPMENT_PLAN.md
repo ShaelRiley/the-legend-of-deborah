@@ -9,7 +9,39 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Fighter Strength bypasses Constitution resistance
+## Current checkpoint — ordinary loot, carried copies and class combat
+
+Author direction is reconciled in live GDD 03 LOD-CBT-007, 06 inventory/DFT rules
+and LOD-UI-010, and 07 tuning. Starting dev HEAD:
+`5892fe2a68bd239d4977f64b0b66304f4fdd5e0d` on `astra/equipment-update`.
+
+Ordinary useful-drop chance is 75% (90% at the existing dry-streak threshold).
+Wearables, guns and consumables have increased category weights; all seven
+wearable families are reachable. Auto pickup stores distinct rolls, including
+multiple copies of a weapon family, without replacing equipped gear. Copies
+share the family's existing ammunition. Dragging in/out works across snapshot
+arrival, and any unequipped item can be trashed. Full bags preserve the drop.
+Equipment remains through mazes/reconnects and is cleared at Hero death. DFTs
+are separate persistent rewards minted only during rescue settlement, retaining
+transactional rollback/replay protection and the eight-token cap.
+
+Pickup comparison is deprecated in favor of large full names. Drops and
+Omniscience use bounded near-look selection with line of sight and cloak guards.
+Rogues add one damage multiple and bypass CON resistance from the rear; Fighters
+add positive STR modifier percentage points to shield Block under the shared
+33% cap. Debbie is frozen client/server, 1.2 scale, with stone wings and soft
+blue/gold light, preserving the granite Deborah pose and staging placement.
+
+All 81 automated suites pass, including SQLite rollback, actual acquisition,
+copy selection/ammo, all-family loot, trash/death, snapshot/drag protection,
+backstab multipliers, shield gating, near-look visibility and bounded statue FX.
+The field manual and class UI describe the revised rules. In-game acceptance is
+pending. Next finite gate: collect two same-family guns and a wearable, drag
+them in/out, trash a stored copy, and verify the equipped roll/ammunition remain
+correct. The crash diagnostics are retained; this pass provides no fresh native
+crash evidence. No main promotion or deployment.
+
+## Previous checkpoint — Fighter Strength bypasses Constitution resistance
 
 The author buffed every Fighter-class actor's positive Strength damage bonus:
 calculate that bonus from the physical roll before CON reduction, while base

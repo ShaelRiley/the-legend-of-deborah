@@ -36,7 +36,7 @@ end
 local a,b,soldier=actor('76561198000000001'),actor('76561198000000002'),actor('76561198000000003')
 all={a,b,soldier};player.GetAll=function() return all end
 Run.State={Ranked=true,Level=1,LevelSeed=77,CampaignSeed=73,BuildReady=true,PlayerState={}}
-for _,p in ipairs(all) do Run.State.PlayerState[p.id]=p.ps end
+for _,p in ipairs(all) do Run.State.PlayerState[p.id]=p.ps;p.ps.progressionState.level=1 end
 GM.EntityTakeDamage=function() end
 LOD.SoldierProgression.Attach=function(_,p) p.soldier=true;return {} end
 dofile(root..'sv_faction_manager.lua')
@@ -71,7 +71,10 @@ assert(not C:Settle(),'No currency before rescue')
 Run.State.LevelCleared=true
 assert(C:Settle());assert(account(a).balance==70 and account(b).balance==30)
 assert(account(a).score==70)
+assert(account(a).milestones['1'] and account(b).milestones['1'])
+local rescueTokens=WalletJSONEncode(account(b).tokens)
 assert(not C:Settle());assert(account(a).balance==70)
+assert(WalletJSONEncode(account(b).tokens)==rescueTokens,'Rescue retry cannot duplicate or reroll tokens')
 -- Database identity survives connection close/reopen and production-store reload.
 WalletSQLReconnect();dofile(root..'sv_crypto_store.lua')
 assert(LOD.CryptoStore:Read(a.id).balance==70)
@@ -101,9 +104,13 @@ shares=C:Allocations(C:LevelState(),2)
 assert(shares[a.id].role=='soldier' and shares[a.id].amount==0)
 local sum=0;for _,share in pairs(shares) do sum=sum+share.amount end;assert(sum==200)
 a.soldier=false;a.hp=100;b.hp=100;a.active=false;b.active=false
--- Milestones are frozen once, persist through sale and stop at eight slots.
-for _,level in ipairs({1,5,10,20}) do assert(C:Milestone(a.id,level));assert(not C:Milestone(a.id,level)) end
+-- DFTs are rescue rewards only; milestones remain frozen and capped.
+assert(not C:Milestone(a.id,1))
+Run.State.LevelCleared=true
+assert(account(a).milestones['1'] and not C:Milestone(a.id,1))
+for _,level in ipairs({5,10,20}) do assert(C:Milestone(a.id,level));assert(not C:Milestone(a.id,level)) end
 assert(size(account(a).tokens)==4)
+Run.State.LevelCleared=false
 local token=next(account(a).tokens)
 local frozen=account(a).tokens[token].item
 assert(C:Recreate(a,token));assert(account(a).tokens[token].lastRun==Run.State.RunId)
@@ -117,14 +124,16 @@ local value=E:Value(frozen);local balance=account(a).balance
 assert(C:Sell(a,token));assert(account(a).balance==balance+value and account(a).score==70)
 assert(not C:Sell(a,token));assert(not C:Milestone(a.id,1),'Selling never renews milestone')
 -- Fill another account, earn a pending frozen milestone, sell and promote without reroll.
-for i=1,8 do assert(C:CollectToken(b,C:GenerateToken(b.id,'test-rare:'..i,'Rare enemy drop',2))) end
+Run.State.LevelCleared=true
+for i=1,8-size(account(b).tokens) do assert(C:CollectToken(b,C:GenerateToken(b.id,'test-rare:'..i,'Rare enemy drop',2))) end
 assert(size(account(b).tokens)==8)
 local ninth=C:GenerateToken(b.id,'test-rare:9','Rare enemy drop',2)
 assert(not C:CollectToken(b,ninth))
-assert(C:Milestone(b.id,1));assert(account(b).pending['1'])
-local pending=account(b).pending['1'];local sellId=next(account(b).tokens)
+assert(C:Milestone(b.id,5));assert(account(b).pending['5'])
+local pending=account(b).pending['5'];local sellId=next(account(b).tokens)
+Run.State.LevelCleared=false
 assert(C:Sell(b,sellId));local after=account(b)
-assert(size(after.tokens)==8 and not after.pending['1'] and after.tokens[pending.id].item.name==pending.item.name)
+assert(size(after.tokens)==8 and not after.pending['5'] and after.tokens[pending.id].item.name==pending.item.name)
 assert(not C:Sell(a,pending.id),'Cannot sell another account token')
 -- Rollback includes ledger/account and engine inventory; failure leaves entitlement reusable.
 token=next(account(a).tokens)
@@ -139,7 +148,10 @@ assert(C:Recreate(a,token))
 -- Normal weapon admission failures cannot spend a DFT recreation.
 local weaponToken=C:GenerateToken(a.id,'weapon-failure','Rare enemy drop',2)
 weaponToken.item=E:Generate(401,2,'weapon_357','weapon-failure')
+assert(not C:CollectToken(a,weaponToken))
+Run.State.LevelCleared=true
 assert(C:CollectToken(a,weaponToken))
+Run.State.LevelCleared=false
 a.weapons.weapon_357=nil;a.failGive=true
 assert(not C:Recreate(a,weaponToken.id));assert(not account(a).tokens[weaponToken.id].lastRun)
 a.failGive=false;assert(C:Recreate(a,weaponToken.id))
@@ -148,21 +160,14 @@ Run.State.RunId=Store:NextRunID()
 local cap=E.MaximumStoredEquipment;E.MaximumStoredEquipment=0
 assert(not C:Recreate(a,weaponToken.id));assert(account(a).tokens[weaponToken.id].lastRun~=Run.State.RunId)
 E.MaximumStoredEquipment=cap;assert(C:Recreate(a,weaponToken.id))
--- Separate rare stream has the authored low frequency and deterministic replay.
+-- Ordinary enemy opportunities never create DFTs.
 a.active=true
 local Loot=LOD.LootDirector
 local spawn=Loot.SpawnPickup
-local rareHits,rareIDs=0,{}
-function Loot:SpawnPickup(id,pos,kind,payload)
-    assert(kind=='dft' and id==a.id);assert(E:ValidateWearable(payload.token.item))
-    rareHits=rareHits+1;rareIDs[#rareIDs+1]=payload.token.id
-    return {valid=true}
-end
+local rareHits=0
+function Loot:SpawnPickup() rareHits=rareHits+1 end
 for i=1,10000 do C:RareOpportunity(a,enemy,i) end
-assert(rareHits>=2 and rareHits<=25,'Expected approximately ten 1/1000 hits')
-local sequence=table.concat(rareIDs,'|');rareHits=0;rareIDs={}
-for i=1,10000 do C:RareOpportunity(a,enemy,i) end
-assert(table.concat(rareIDs,'|')==sequence,'No reroll on deterministic replay')
+assert(rareHits==0)
 Loot.SpawnPickup=spawn
 -- Existing death handoff is the once-only opportunity authority.
 local opportunity=C.RareOpportunity;local attempts=0
@@ -175,7 +180,7 @@ enemy.GetNW2Int=function(_,_,fallback) return fallback end
 enemy.LODDeathLevelSeed=Run.State.LevelSeed
 a.active=true;b.active=false;soldier.active=false
 Loot:OnHostileLootHandoff(enemy);Loot:OnHostileLootHandoff(enemy)
-assert(attempts==1,'Repeated death handoff cannot roll again')
+assert(attempts==0,'Ordinary enemy death never rolls a DFT')
 C.RareOpportunity=opportunity;Loot._ObjectiveClearDrop=objective;Loot._PlayerLootState=lootstate;Loot._DropCategory=drop
 a.active=false
 -- Authentic statue, role, life, staging and LOS gates are rechecked per action.

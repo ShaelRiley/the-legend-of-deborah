@@ -63,37 +63,24 @@ readItem=item;client();assert(E:PickupView(nextEnt).name==item.name)
 nextEnt.valid=false;nextEnt.LODItemView=nil;client();assert(not nextEnt.LODItemView)
 print('EQUIPMENT_INSPECTION_PASS: full records; owner/range/lifecycle/size/rate guards; retry/cache/recycled entity safety')
 
--- Actual HUD hook: stationary inspection formats once instead of once per frame.
-local measures,descriptions,draws=0,0,{}
+-- The replacement HUD displays a cached full name, without comparison text.
+local measures,draws=0,{}
 local screenWidth=1024
 ScrW=function() return screenWidth end;ScrH=function() return 768 end
-surface={SetFont=function() end,GetTextSize=function(text) measures=measures+1;return #text*6,12 end}
-draw={RoundedBox=function() end,SimpleText=function(text) draws[#draws+1]=text end}
+surface={SetFont=function() end,GetTextSize=function(text) measures=measures+1;return #text*12,24 end}
+draw={SimpleTextOutlined=function(text) draws[#draws+1]=text end}
 owner.Alive=function() return true end
-owner.GetEyeTrace=function() return {Entity=ent} end
 LocalPlayer=function() return owner end
-local describe=E.Description
-function E:Description(...) descriptions=descriptions+1;return describe(self,...) end
+function ent:GetNW2String() return self.LODItemView.name end
+LOD.NearLook={Find=function() return distance<=512^2 and ent or nil end,
+    Qualifies=function() return distance<=512^2 end}
 local hud=hooks.LOD_EquipmentComparison
-hud();local firstMeasures,firstDescriptions=measures,descriptions
-local firstLines=table.concat(draws,'\n')
-assert(firstMeasures>0 and firstDescriptions>0)
-for _=1,600 do draws={};hud();assert(table.concat(draws,'\n')==firstLines) end
-assert(measures==firstMeasures and descriptions==firstDescriptions,'No text allocations/measurements on cache hits')
-local function rebuild(change)
-    local before=measures;change();hud();assert(measures>before,'Changed comparison must rebuild')
-end
-rebuild(function() screenWidth=640 end)
--- Receiver replaces snapshot; a new equipped ring changes the comparison text.
-LOD.Spellbook={};istable=function(x) return type(x)=='table' end
-local ring=E:Generate(12,20,'ring','owned')
-readItem={items={[ring.id]=ring},slots={left_hand=ring.id}}
-rebuild(function() handlers.LOD_EquipmentSnapshot() end)
-rebuild(function() ent.LODItemView=E:Generate(42,5,'boots','new-view') end)
-rebuild(function() ent=pickup(item);ent.LODItemView=item end)
-rebuild(function() hooks.LOD_EquipmentComparisonCleanup() end)
-distance=129^2;draws={};hud();assert(#draws==0);distance=0
-rebuild(function() end)
-LOD.UI.ActivePage='book';draws={};hud();assert(#draws==0);LOD.UI.ActivePage=nil
-rebuild(function() end)
-print('EQUIPMENT_HUD_CACHE_PASS: 601 identical frames, one layout; snapshot/item/entity/width/cleanup invalidation; range/UI guards')
+hud();local firstMeasures=measures
+local full=table.concat(draws,' ')
+assert(firstMeasures>0 and full==item.name,'Full name; no replacement decision')
+for _=1,600 do draws={};hud();assert(table.concat(draws,' ')==full) end
+assert(measures==firstMeasures,'No repeated layout work')
+screenWidth=640;draws={};hud();assert(measures>firstMeasures and table.concat(draws,' ')==full)
+distance=513^2;draws={};hud();assert(#draws==0);distance=0
+LOD.UI.ActivePage='book';draws={};hud();assert(#draws==0)
+print('EQUIPMENT_NAME_HUD_PASS: full wrapped name, 601-frame cache, range/menu guards, no comparison')

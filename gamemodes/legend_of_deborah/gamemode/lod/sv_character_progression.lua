@@ -413,6 +413,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.aimSpreadMultiplier = math.Clamp(1 - 0.04 * mods.dexMod, 0.60, 1.40)
     mods.movementSpeedMultiplier = math.Clamp(1 + 0.02 * mods.dexMod, 0.85, 1.20)
     mods.boomShift = math.Clamp(math.floor(math.max(mods.dexMod, 0) / 2), 0, 2)
+    mods.rogueBackstabEnabled = state.classId == "rogue"
     mods.rogueAllDamageDiceExplode = state.classId == "rogue"
     mods.rogueBoomThresholdShift = state.classId == "rogue" and 1 or 0
     mods.rogueCapstoneBoomThresholdShift = capParams.boomThresholdShift or 0
@@ -1605,11 +1606,11 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local class = state.classId and RPG.Classes[state.classId] or nil
     local classPassive
     if state.classId == "fighter" then
-        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s. Positive Strength damage bypasses Constitution resistance.",
+        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s. Positive Strength damage bypasses Constitution resistance. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33% cap).",
             state.fighterTraining.str or 0, state.fighterTraining.con or 0,
             state.level, string.upper(state.primaryAbility))
     elseif state.classId == "rogue" then
-        classPassive = "Exploding-Dice Mastery; +11% ordinary all-direction movement (+22% total while sprinting); shared Dodge contributes 11% or 22% according to actual voluntary horizontal speed."
+        classPassive = "Backstab: attacks from behind bypass Constitution resistance and add one damage multiple (normal x2, aimed x3, Deadeye x4). Exploding-Dice Mastery; +11% ordinary all-direction movement (+22% total while sprinting); shared Dodge contributes 11% or 22% according to actual voluntary horizontal speed."
     elseif state.classId == "wizard" then
         classPassive = string.format("Arcane Diversion: %d%% of otherwise-final HP damage is diverted to Magic when available.",
             math.floor((state.derivedStats.wizardClassHpToMagicDiversionFraction or 0) * 100 + 0.5))

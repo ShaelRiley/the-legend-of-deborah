@@ -34,7 +34,8 @@ for i=1,80 do
     assert(kind=='wearable' and E:ValidateWearable(payload.item))
     families[payload.item.definitionId]=true
 end
-assert(families.vest and families.headwear and families.ring and families.boots)
+for _,id in ipairs({"vest","headwear","ring","boots","trousers","gloves","shield"}) do assert(families[id],"Natural wearable family: "..id) end
+assert(categories.wearable>300 and categories.consumable>150 and categories.weapon>150)
 local gearKind,gearPayload=E:PrepareReward('stored','wearable',{}, {staticId='vest-drop',equipmentEligible=true})
 local gearPickup={valid=true,LODLootOwnerIdentity='stored',LODLootLevelSeed=Run.State.LevelSeed,
     LODLootKind=gearKind,LODLootPayload=gearPayload,LODLootStaticId='vest-drop'}

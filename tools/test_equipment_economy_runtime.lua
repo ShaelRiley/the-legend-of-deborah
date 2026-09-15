@@ -79,17 +79,19 @@ local function pickup(item,source)
 end
 local a=E:NewItem(owner,'weapon_357','drop-a');local ent=pickup(a,'drop-a')
 owner.failGive=true
-assert(not Loot:Collect(ent,owner,true),'Failed Give cannot consume pickup')
-assert(not ent.LODCollected and not E:Equipped(owner.ps.equipment,'weapon_357'))
+assert(Loot:Collect(ent,owner,false),'Automatic bag pickup needs no native Give')
+assert(ent.LODCollected and owner.ps.equipment.items[a.id] and not owner:GetWeapon('weapon_357'))
+assert(not E:InventoryWeapon(owner,a.id,false),'Failed native materialization leaves stored item intact')
+assert(owner.ps.equipment.items[a.id])
 owner.failGive=false
-assert(Loot:Collect(ent,owner,false),'First weapon auto-equips even with WeaponEquip callback')
+assert(E:InventoryWeapon(owner,a.id,false))
 local weapon=owner:GetWeapon('weapon_357');weapon.clip=2;owner.ammo['357']=9
 local b=E:NewItem(owner,'weapon_357','drop-b');local replacement=pickup(b,'drop-b')
-assert(not Loot:Collect(replacement,owner,false),'Touch cannot replace a weapon')
-assert(E:Equipped(owner.ps.equipment,'weapon_357').id==a.id)
-assert(Loot:Collect(replacement,owner,true),'Native E replaces the owned variant')
-assert(weapon.clip==2 and owner.ammo['357']==9,'Same-family replacement cannot replenish ammo')
-assert(not owner.ps.equipment.items[a.id] and E:Equipped(owner.ps.equipment,'weapon_357').id==b.id)
+assert(Loot:Collect(replacement,owner,false),'Touch stores duplicate weapon without a decision')
+assert(E:Equipped(owner.ps.equipment,'weapon_357').id==a.id,'Pickup does not replace equipped roll')
+assert(E:InventoryWeapon(owner,b.id,false),'Select a stored copy')
+assert(weapon.clip==2 and owner.ammo['357']==9,'Same-family selection cannot replenish ammo')
+assert(owner.ps.equipment.items[a.id] and E:Equipped(owner.ps.equipment,'weapon_357').id==b.id)
 assert(not Loot:Collect(pickup(b,'drop-b'),owner,true),'Consumed reward replay rejected')
 local copy=table.Copy(owner.ps.equipment)
 owner.weapons['weapon_357']=nil;owner:Give('weapon_357');E:Sync(owner)
@@ -98,7 +100,7 @@ for _,class in ipairs(E.WeaponFamilies) do owner:Give(class) end
 E:Sync(owner)
 for _,class in ipairs(E.WeaponFamilies) do assert(E:ValidateWearable(E:Equipped(owner.ps.equipment,class))) end
 local weaponCount=0;for _,item in pairs(owner.ps.equipment.items) do if E:Definition(item).weapon then weaponCount=weaponCount+1 end end
-assert(weaponCount==6,'Repeated Give restores, never creates extra records')
+assert(weaponCount==7,'Repeated Give preserves the two acquired copies, never creates extra records')
 -- Network synchronization must not repeat aggregation of unchanged equipment.
 local aggregate,aggregations=E.Contributions,0
 function E:Contributions(...) aggregations=aggregations+1;return aggregate(self,...) end
@@ -106,7 +108,7 @@ owner.ps.progressionState.equipmentKey=nil
 E:Sync(owner)
 for _=1,100 do E:Sync(owner) end
 assert(aggregations==1,'Unchanged synchronization skips property aggregation')
-owner:SelectWeapon('weapon_357');E:Sync(owner)
+owner:SelectWeapon('weapon_pistol');E:Sync(owner)
 assert(aggregations==2,'Weapon change immediately refreshes derived stats')
 E.Contributions=aggregate
 
@@ -210,6 +212,7 @@ assert(mandatory.item.definitionId=='weapon_smg1')
 local capacity=E.MaximumStoredEquipment;E.MaximumStoredEquipment=6
 local fullPickup=pickup(E:NewItem(owner,'boots','full'),'full')
 assert(not Loot:Collect(fullPickup,owner,false) and not fullPickup.LODCollected)
+owner:SelectWeapon('weapon_pistol');E:Sync(owner)
 assert(not E:Discard(owner.ps.equipment,E:Equipped(owner.ps.equipment,'weapon_pistol').id))
 E.MaximumStoredEquipment=capacity
 local extra=E:NewItem(owner,'boots','bag');owner.ps.equipment.items[extra.id]=extra
