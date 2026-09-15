@@ -9,6 +9,23 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
+## Current author priority — persistent $DEB / DFT economy
+
+Shael identifies the fake-crypto update as essential Equipment scope. His new
+$DEB and item-backed Debbie Fund Tokens supersede the older six-currency,
+cosmetic-DFT specification. This is now ahead of further Enemy expansion.
+See [the concrete implementation proposal](DEB_DFT_PROPOSAL.md): account persistence,
+contribution-sensitive rewards with a share for every cooperative participant,
+once-per-server 1/5/10/20 milestones, eight DFT slots, very rare drops, statue-based
+once-per-run recreation and sale. The missing allocation/drop defaults and level
+interpretation are explicitly proposed there for an author decision; no wallet or
+DFT implementation is claimed by the accompanying staging checkpoint.
+
+The same checkpoint fixes actual recurring-staging omissions: reset deployment
+before every next-maze build, issue one sealed repeat Hermit gift without another
+firearm, and align the larger HEROES OF LEGEND board beside the mirror. Preserve
+the existing combined Equipment/Enemy candidate and test these together.
+
 ## Next scope
 
 Shael's Equipment handoff explicitly promotes Equipment implementation ahead of

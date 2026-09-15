@@ -197,6 +197,7 @@ include("lod/sv_equipment_moves.lua")
 include("lod/sv_equipment_testkit.lua")
 include("lod/sv_enemy_update.lua")
 include("lod/sv_enemy_update_testkit.lua")
+include("lod/sv_hermit_repeat_gifts.lua")
 AddCSLuaFile("lod/cl_equipment_moves.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:

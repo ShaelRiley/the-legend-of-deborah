@@ -64,8 +64,10 @@ function E:Activate(ply)
     return true
 end
 
-function E:Grant(ply, definitionId, count)
-    if not self:CanAct(ply) then return false end
+function E:Grant(ply, definitionId, count, source)
+    local staging = LOD.StagingDeployment
+    local stagedGift = staging and staging.CanCollectGift and staging:CanCollectGift(ply, source)
+    if not self:CanAct(ply) and not stagedGift then return false end
     local state = self:Ensure(heroState(ply))
     if not self:AddConsumable(state, definitionId, count or 1) then return false end
     self:Sync(ply)

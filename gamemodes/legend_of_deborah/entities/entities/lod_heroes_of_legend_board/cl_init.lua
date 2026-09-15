@@ -29,9 +29,10 @@ function ENT:Draw()
     boardAng:RotateAroundAxis(boardAng:Forward(), 90)
 
     local scale = 0.1
-    local width = 800
-    local height = 500
-    local boardOffset = pos + ang:Forward() * 2 + Vector(0, 0, 50)
+    -- Match the mirror surface: 64 x 132 world units, aligned at its top.
+    local width = 640
+    local height = 1320
+    local boardOffset = pos + ang:Forward() * 4.8 + Vector(0, 0, 135)
 
     if cam and cam.Start3D2D then
         cam.Start3D2D(boardOffset, boardAng, scale)
@@ -47,7 +48,7 @@ function ENT:Draw()
                     surface.SetFont("LOD_BoardEntry")
                     local function append(line)
                         local pages=self.LODBoardPages
-                        if #pages[#pages]>=11 then pages[#pages+1]={} end
+                        if #pages[#pages]>=math.floor((height-180)/30) then pages[#pages+1]={} end
                         pages[#pages][#pages[#pages]+1]=line
                     end
                     for i=1,10 do
@@ -72,7 +73,7 @@ function ENT:Draw()
                     draw.SimpleText(line,"LOD_BoardEntry",-width*0.5+32,105+(i-1)*30,C.ink)
                 end
                 draw.SimpleText("Highest rescue count first / pages turn automatically",
-                    "LOD_SheetSmall",0,450,C.muted,TEXT_ALIGN_CENTER)
+                    "LOD_SheetSmall",0,height-50,C.muted,TEXT_ALIGN_CENTER)
             end
         cam.End3D2D()
     end
@@ -81,3 +82,4 @@ end
 function ENT:DrawTranslucent()
     self:Draw()
 end
+

@@ -333,7 +333,10 @@ function Loot:Collect(ent, ply, acceptEquipment)
     -- and must not be the only protection against repeated or reentrant grants.
     if not IsValid(ent) or ent.LODCollected or ent.LODCollecting
         or not IsValid(ply) or not ply:IsPlayer() or not ply:Alive()
-        or not self:IsPickupOwner(ent, ply) or not RunManager:IsActivePlayer(ply) then return false end
+        or not self:IsPickupOwner(ent, ply) then return false end
+    local staging = LOD.StagingDeployment
+    local stagedGift = staging and staging.CanCollectGift and staging:CanCollectGift(ply, ent)
+    if not RunManager:IsActivePlayer(ply) and not stagedGift then return false end
     local state = RunManager.State
     if not state or state.Failed or state.LevelCleared then return false end
     if ent.LODLootLevelSeed ~= state.LevelSeed then return false end
@@ -352,7 +355,7 @@ function Loot:Collect(ent, ply, acceptEquipment)
     elseif ent.LODLootKind == "wearable" then
         if LOD.Equipment then ok, message = LOD.Equipment:CollectWearable(ent, ply, acceptEquipment == true) end
     elseif ent.LODLootKind == "consumable" then
-        if LOD.Equipment then ok, message = LOD.Equipment:Grant(ply, payload.itemId, 1) end
+        if LOD.Equipment then ok, message = LOD.Equipment:Grant(ply, payload.itemId, 1, ent) end
     elseif ent.LODLootKind == "health" then
         ok, message = self:_GrantHealth(ply, payload.amount or 25)
     elseif ent.LODLootKind == "armor" then
@@ -717,10 +720,7 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
     return weightedPick(rng, entries), lootState.dryKills >= 5 and not guaranteedUseful
 end
 
-function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
-    local ownerIdentity = identityOf(ply)
-    if not ownerIdentity then return false end
-
+function Loot:ResolveEnemyReward(ply, category, rng)
     local kind = category
     local payload = {}
     if category == "ammo" then
@@ -748,6 +748,14 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
         kind = "life"
     end
 
+    return kind, payload
+end
+
+function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
+    local ownerIdentity = identityOf(ply)
+    if not ownerIdentity then return false end
+    local kind, payload = self:ResolveEnemyReward(ply, category, rng)
+    if not kind then return false end
     local basePos = hostile:GetPos() + Vector(0, 0, 12)
     local angle = rng:Float(0, math.pi * 2)
     local radius = rng:Float(8, 18)

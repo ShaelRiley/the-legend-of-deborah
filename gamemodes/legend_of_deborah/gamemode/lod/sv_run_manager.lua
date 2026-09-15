@@ -933,6 +933,10 @@ function RunManager:AdvanceLevel()
     end
 
     for _, ps in pairs(self.State.PlayerState) do
+        -- Every successful maze returns through the shared hut. Preserve the
+        -- identity-bound starter claim and inventory; require a new portal use.
+        ps.deploymentComplete = false
+        ps.stagingIntroShown = false
         ps.respawnAt = nil
         if ps.lives <= 0 or ps.eliminated then
             ps.lives = 1

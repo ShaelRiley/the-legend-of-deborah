@@ -389,8 +389,8 @@ function Staging:EnsureRoomDecor()
 
     local board = ents.Create("lod_heroes_of_legend_board")
     if IsValid(board) then
-        local boardPos = mirrorPos - mirrorAng:Right() * 64
-        boardPos.z = center.z + 10
+        local boardPos = mirrorPos - mirrorAng:Right() * 88
+        boardPos.z = mirrorPos.z
         board:SetPos(boardPos)
         board:SetAngles(mirrorAng)
         board:Spawn()
