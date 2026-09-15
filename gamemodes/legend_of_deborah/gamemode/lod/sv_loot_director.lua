@@ -463,6 +463,7 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
         or kind=="consumable" and LOD.Equipment.Definitions[payload.itemId].name
         or ({ammo="Ammunition",health="Health",armor="Armor",life="Extra Life",cache="Supply Cache"})[kind] or kind)
     ent:Activate()
+    if LOD.WeaponAppearance then LOD.WeaponAppearance:Stamp(ent,payload.item) end
     if kind == "wearable" and LOD.Equipment then LOD.Equipment:SyncPickup(ent) end
 
     self.Entities[#self.Entities + 1] = ent

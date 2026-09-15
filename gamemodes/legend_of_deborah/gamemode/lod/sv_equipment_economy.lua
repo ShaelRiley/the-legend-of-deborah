@@ -103,6 +103,7 @@ function E:StampWeapons(ply)
         if IsValid(weapon) then
             local item=self:EnsureWeapon(ply,class)
             weapon:SetNW2String("LOD_ItemName",self:ItemName(item))
+            if LOD.WeaponAppearance then LOD.WeaponAppearance:Stamp(weapon,item) end
         end
     end
 end

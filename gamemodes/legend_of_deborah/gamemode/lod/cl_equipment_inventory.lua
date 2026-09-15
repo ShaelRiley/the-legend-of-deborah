@@ -129,6 +129,7 @@ function E:InventoryDetails()
     local def=self:Definition(item);local slot=self:InventorySlot(id)
     text(self:ItemName(item),'LOD_SheetSubheading')
     text(self:Description(item))
+    if def.weapon and LOD.WeaponAppearance then text(LOD.WeaponAppearance:Describe(LOD.WeaponAppearance:ItemStyle(item))) end
     text(def.throwable and ('Quantity: '..item.count..' / '..def.maxStack) or ('Value: '..self:Value(item)))
     local names={};for _,s in ipairs(def.occupancy or def.slots) do names[#names+1]=self.SlotLabels[s] end
     text('Fits: '..table.concat(names,', ')..(def.occupancy and ' (both together)' or ''))

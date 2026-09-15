@@ -75,6 +75,22 @@ after death.</div>
       </div>
     </article>
 
+    <article class="source-page" data-title="Reading Your Weapon">
+      <div class="page">
+        <div class="kicker">An enchanted weapon has a vocabulary</div>
+        <h1>Reading Your Weapon</h1><div class="rule"></div>
+        <p>Your gun keeps its familiar shape, with a crafted frame, elemental core and property fittings. The same item keeps the same appearance in your hands, in the inventory and as a drop. A recreated DFT keeps its frozen appearance too.</p>
+        <div class="card-grid">
+          <div class="card"><h3>Shape tells the story</h3><p><b>Anvils</b> suggest Might, physical force and Push. <b>Fins</b> mean agility, speed or evasion. <b>Plates</b> mean Constitution, protection, saves or elemental wards. <b>Coils</b> carry Magic and renewal; <b>lenses</b> carry Wisdom and navigation.</p></div>
+          <div class="card"><h3>Know the hit effect</h3><p><b>Cages</b> suggest Holding or Silence. <b>Fangs</b> suggest Burning or Bleeding. <b>Buds</b> signal healing or Poison. <b>Shards</b> suggest Ice or Shattering; <b>crests</b> suggest Charm, Fear or summons. Read the engraving to distinguish related effects.</p></div>
+          <div class="card"><h3>Read the markings</h3><p>The core uses the same element color as Magic. Each property has an abbreviation and one to four magnitude marks. A <b>red fractured mark</b> warns of a drawback. One to four pale bands show rarity. Open Equipment for the exact Visual Key and numerical properties.</p></div>
+          <div class="card"><h3>Watch conditions</h3><p>LOW, CHG and STL engravings gain a border when their low-health, charged-Magic or stationary condition is met. Gentle core motion is cosmetic. Reduced effects keep the engravings and shape cues while stopping the pulse.</p></div>
+        </div>
+        <div class="note"><strong>FIELD NOTE:</strong> Shape is a quick clue, not a replacement for the item sheet. Related properties share a visual family; glyphs identify the exact effect. Finish and machining vary between rolls without adding hidden bonuses.</div>
+        <div class="folio-num">13c</div>
+      </div>
+    </article>
+
     <article class="source-page" data-title="Unwelcome Company I">
       <div class="page">
         <div class="kicker">A partial bestiary</div>

@@ -9,7 +9,41 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Fighter feat-draft delivery blocker
+## Current checkpoint — procedural weapon visual identity
+
+Starting dev HEAD `5125fb03310529f5319b7c3755ee21da09161654` on
+`astra/equipment-update`. Author direction permits a broad visual system. Live
+GDD 07 now records the grammar and performance limits. Shared appearance data
+projects all 60 catalog properties, magnitudes, quality, rarity and seed into
+stable fittings, labeled glyphs, magnitude bars, penalty fractures, a dominant
+element core and procedural machining/finish. Receiver plates have brushed,
+ceramic, carbon-weave or hammered detailing; stat and rider silhouettes use
+anvils, fins, coils, plates, lenses, crests, buds, fangs, shards and cages.
+First-person, visible third-person active weapons, owner-visible world pickups
+and inventory share the grammar. Equipment details and the canonical booklet
+teach the visual key; exact values remain on the item sheet. Conditional marks
+use existing HP/Magic/movement state. No gameplay or animation authority changes.
+
+A versioned compact descriptor is stamped only when the selected immutable
+record changes. Same-family copy selection updates appearance; merely collecting
+a copy does not. DFT recreation preserves the frozen appearance. No weapon/hand
+material mutations, extra entities, emitters, dynamic lights or entity scans.
+Weak caches, fixed materials, near/distant detail tiers and per-frame world caps
+bound work; reduced effects keep meaningful marks while stopping the pulse.
+Attachment-less melee viewmodels follow the hand bone when available.
+
+All 82 automated suites pass. The new validator covers every property/shape,
+2,500 distinct sampled appearance fingerprints, deterministic frozen/reordered
+records, malformed payloads, actual copy selection, unchanged sends, renderer
+quality/distance/frame limits, balanced render contexts and cache cleanup.
+Largest sampled wire descriptor: 78 bytes, under the 480-character ceiling.
+These checks cannot establish native aesthetic quality. Next finite in-game
+gate: inspect two same-family guns, equip each, and compare their element core,
+rider fittings, glyphs, hand/sight clearance and the Equipment Visual Key.
+Viewmodel attachment positioning, surface lighting and readability need native
+visual acceptance. No main promotion or deployment.
+
+## Previous checkpoint — Fighter feat-draft delivery blocker
 
 Starting dev HEAD `0902ab038902c763d94ed28be9c95995ad370458` on
 `astra/equipment-update`. Fresh evidence: `console_latest(20260915-143951).txt`
