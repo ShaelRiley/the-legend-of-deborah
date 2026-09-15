@@ -9,7 +9,38 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — procedural weapon visual identity
+## Current checkpoint — flat Strength and Wisdom damage
+
+Starting dev HEAD `2a098bc73080ba69bd3653da412730058c34a422` on
+`astra/equipment-update`. Author rebalance replaces percentage STR/WIS damage
+with the effective ability modifier as one flat addition per resolved attack
+contract per target. Live GDD 02/03 now replace the superseded full-positive-STR
+penetration rule. Only physical Fighter attacks protect ceil(max(STR_MOD,0)/2)
+from CON. The remaining modifier joins the first positive damage contribution
+before its usual CON subtraction and minimum-1 floor; the protected portion is
+added afterward. Other original contributions retain per-die CON, and existing
+separate flat bonuses retain their treatment. No positive contribution means
+no invented hit. WIS uses the same flat addition without Fighter penetration;
+wisScaled=false keeps its existing exemption. Negative modifiers have no bypass.
+
+STR 20 adds 5, with 3 protected for a Fighter. A base roll of 1 against CON
+reduction 3 resolves to 4 for that Fighter, versus 3 for another class or a
+WIS 20 magic attack, before later modifiers. Exploding chains and shotgun shares
+do not multiply the number of additions. Existing aim/backstab multiples,
+capstones, equipment, element resistance and downstream defenses still apply.
+Committed attacks preserve firing-time STR/WIS and class. Killer Instinct now
+shares the pure base arithmetic without changing combat telemetry. Class cards,
+Character Sheet tooltips/passive text and developer status reflect flat bonuses.
+
+All 82 automated suites pass, including real shared damage dispatch, flat/odd/
+negative modifiers, low/zero dice, WIS, class isolation, explosions, shotgun
+shares, aim/backstab stacks, committed stats, gear/elements and Hero/AI/Soldier
+parity. The all-class staging snapshot regression remains green. Next finite
+native gate: play the high-STR Fighter again and check low physical rolls against
+a CON-resistant enemy; inspect the STR tooltip and damage log. Actual in-game
+balance acceptance remains pending. No main promotion or deployment.
+
+## Previous checkpoint — procedural weapon visual identity
 
 Starting dev HEAD `5125fb03310529f5319b7c3755ee21da09161654` on
 `astra/equipment-update`. Author direction permits a broad visual system. Live

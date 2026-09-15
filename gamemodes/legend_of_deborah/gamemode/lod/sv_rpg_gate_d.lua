@@ -152,40 +152,50 @@ function AbilityRules:HitStunMultiplier(attacker, defender)
     return inflicted * resisted
 end
 
-function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived, tags)
-    contract = contract or {}
-    tags = tags or {}
-    if tags.equipmentSnapshot then sourceDerived=tags.equipmentSnapshot.derived or sourceDerived end
+-- Pure arithmetic shared by live damage and informational estimates. The stat
+-- modifier belongs to the attack, never to each exploding die or pellet.
+function AbilityRules:ResolveBaseDamageValues(contract, sourceDerived, targetDerived, tags)
+    contract, tags = contract or {}, tags or {}
+    if tags.equipmentSnapshot then sourceDerived = tags.equipmentSnapshot.derived or sourceDerived end
+    sourceDerived = sourceDerived or {}
     local resistance = tags.ignoreConDamageResistance and 0
         or math.Clamp(math.floor(tonumber(targetDerived and targetDerived.damageResistancePerDie) or 0), 0, 3)
-    local total = tonumber(contract.bonus) or 0
-    local contributions = contract.contributions or contract.values or {}
-    local reduced = {}
-    local conPrevented = 0
-
-    for index, value in ipairs(contributions) do
+    local modifier = tags.physical and (tonumber(sourceDerived.physicalDamageBonus) or 0)
+        or (tags.magic and tags.wisScaled ~= false and (tonumber(sourceDerived.magicDamageBonus) or 0)) or 0
+    local protected = tags.physical and sourceDerived.fighterStrengthBypassesCon
+        and math.ceil(math.max(0, modifier) / 2) or 0
+    local total, reduced, conDiceReduced = tonumber(contract.bonus) or 0, {}, 0
+    local applied = false
+    for index, value in ipairs(contract.contributions or contract.values or {}) do
         local before = math.max(0, tonumber(value) or 0)
-        local after = before > 0 and math.max(1, before - resistance) or 0
+        local after = 0
+        if before > 0 then
+            if not applied then
+                before = before + modifier - protected
+                applied = true
+            end
+            after = math.max(1, before - resistance)
+            if after < before then conDiceReduced = conDiceReduced + 1 end
+        end
         reduced[index] = after
-        conPrevented = conPrevented + before - after
         total = total + after
-        if after < before then self.Stats.conDiceReduced = (self.Stats.conDiceReduced or 0) + 1 end
     end
+    if applied then total = total + protected end
+    return total, reduced, resistance, conDiceReduced
+end
+
+function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived, tags)
+    contract, tags = contract or {}, tags or {}
+    if tags.equipmentSnapshot then sourceDerived = tags.equipmentSnapshot.derived or sourceDerived end
+    local total, reduced, resistance, conDiceReduced = self:ResolveBaseDamageValues(contract, sourceDerived, targetDerived, tags)
+    self.Stats.conDiceReduced = (self.Stats.conDiceReduced or 0) + conDiceReduced
 
     local authoredScale = math.max(0, tonumber(tags.authoredScale) or 1)
     total = total * authoredScale
     if tags.physical then
-        local strength = math.Clamp(tonumber(sourceDerived and sourceDerived.physicalDamageMultiplier) or 1, 0.50, 1.50)
-        total = total * strength
-        if sourceDerived and sourceDerived.fighterStrengthBypassesCon and strength > 1 then
-            -- Restore only the positive STR uplift lost to per-die CON. Base
-            -- dice remain reduced; later capstone, share and defense rules apply.
-            total = total + conPrevented * authoredScale * (strength - 1)
-        end
         total = total * math.max(0, tonumber(sourceDerived and sourceDerived.fighterCapstonePhysicalDamageMultiplier) or 1)
         self.Stats.physicalResolutions = (self.Stats.physicalResolutions or 0) + 1
     elseif tags.magic and tags.wisScaled ~= false then
-        total = total * math.Clamp(tonumber(sourceDerived and sourceDerived.magicPowerMultiplier) or 1, 0.60, 1.60)
         total = total * math.max(0, tonumber(sourceDerived and sourceDerived.wizardCapstoneMagicPowerMultiplier) or 1)
         self.Stats.magicResolutions = (self.Stats.magicResolutions or 0) + 1
     end
@@ -530,14 +540,14 @@ concommand.Add("lod_rpg_gate_d_status", function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
     local derived = IsValid(ply) and AbilityRules:Derived(ply) or nil
     local line = string.format(
-        "class=%s STRx=%.2f aimx=%.2f movex=%.2f DR=%d regenx=%.2f magicx=%.2f mapx=%.2f crumbs=%d stunx=%.2f diversion=%.2f XP=%d",
+        "class=%s STRbonus=%+d aimx=%.2f movex=%.2f DR=%d regenx=%.2f WISbonus=%+d mapx=%.2f crumbs=%d stunx=%.2f diversion=%.2f XP=%d",
         tostring(derived and AbilityRules:ProgressionState(ply).classId or "none"),
-        tonumber(derived and derived.physicalDamageMultiplier) or 1,
+        tonumber(derived and derived.physicalDamageBonus) or 0,
         tonumber(derived and derived.aimSpreadMultiplier) or 1,
         tonumber(derived and derived.movementSpeedMultiplier) or 1,
         math.floor(tonumber(derived and derived.damageResistancePerDie) or 0),
         AbilityRules:MagicRegenMultiplier(ply),
-        (tonumber(derived and derived.magicPowerMultiplier) or 1) * (tonumber(derived and derived.wizardCapstoneMagicPowerMultiplier) or 1),
+        tonumber(derived and derived.magicDamageBonus) or 0,
         AbilityRules:UtilityMagicCostMultiplier(ply), AbilityRules:BreadcrumbCells(ply),
         tonumber(derived and derived.chaHitStunInflictMultiplier) or 1,
         tonumber(derived and derived.hpToMagicDiversionFraction) or 0,
@@ -597,17 +607,17 @@ function AbilityRules:ValidateGateD(ply)
         and loaded12.continuationStep == 3, "Loaded Dice SUPER-d12")
 
     local fighterDamage = self:ResolveDamageValues({contributions = {10, 5}},
-        {physicalDamageMultiplier = 1.5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
+        {physicalDamageBonus = 5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
         {damageResistancePerDie = 2}, {physical = true})
-    expect(math.abs(fighterDamage - 22.2) < 0.0001, "Fighter STR bypasses CON")
+    expect(math.abs(fighterDamage - 19.2) < 0.0001, "Fighter STR bypasses CON")
     local aimedFighterDamage = self:ResolveDamageValues({contributions = {10, 5}},
-        {physicalDamageMultiplier = 1.5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
+        {physicalDamageBonus = 5, fighterStrengthBypassesCon = true, fighterCapstonePhysicalDamageMultiplier = 1.2},
         {damageResistancePerDie = 2}, {physical = true, authoredScale = 2})
-    expect(math.abs(aimedFighterDamage - 44.4) < 0.0001, "Magnum aim/source order")
+    expect(math.abs(aimedFighterDamage - 38.4) < 0.0001, "Magnum aim/source order")
     local wizardDamage = self:ResolveDamageValues({contributions = {6, 4}},
-        {magicPowerMultiplier = 1.6, wizardCapstoneMagicPowerMultiplier = 1.2},
+        {magicDamageBonus = 5, wizardCapstoneMagicPowerMultiplier = 1.2},
         {damageResistancePerDie = 1}, {magic = true})
-    expect(math.abs(wizardDamage - 15.36) < 0.0001, "Wizard/WIS/CON order")
+    expect(math.abs(wizardDamage - 15.6) < 0.0001, "Wizard/WIS/CON order")
 
     local diverted, spent, remaining = self:ComputeMagicDiversion(50, 0.40, 10, 1)
     expect(diverted == 10 and spent == 10 and remaining == 40, "Wizard diversion budget")

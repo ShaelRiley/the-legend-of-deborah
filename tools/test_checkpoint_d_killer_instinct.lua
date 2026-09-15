@@ -13,8 +13,8 @@ expect(source:find("LOD.EncounterDirector and LOD.EncounterDirector.Entities", 1
 expect(source:find("LOD.WanderingDirector and LOD.WanderingDirector.Entities", 1, true), "missing wander cache")
 expect(not source:find("ents.GetAll", 1, true), "Killer Instinct may not world-scan")
 expect(not source:find("Rules:ResolveDamageValues", 1, true), "estimation must not mutate live damage telemetry")
-expect(source:find("damageResistancePerDie", 1, true), "must mirror deterministic target resistance")
-expect(source:find("physicalDamageMultiplier", 1, true), "must mirror deterministic source scaling")
+expect(source:find("Rules:Derived(target)", 1, true), "must pass actual target resistance to shared arithmetic")
+expect(source:find("ResolveBaseDamageValues", 1, true), "must mirror deterministic source scaling")
 expect(source:find("(math.max(1, tonumber(profile.sides) or 1) + 1) * 0.5", 1, true), "must use mean die values")
 
 local function record(damage, hp, stableId)
@@ -42,3 +42,4 @@ expect(selectRecord({record(6,15,4), record(6,12,8), record(6,12,3)}).stableId =
     "shots/HP/stable-id ordering failed")
 expect(((3 + 1) * 0.5) == 2, "d3 mean damage invariant failed")
 print("KILLER_INSTINCT_HARNESS_PASS")
+

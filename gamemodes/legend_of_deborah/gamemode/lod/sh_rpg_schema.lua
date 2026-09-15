@@ -171,7 +171,7 @@ RPG.Schema = {
     DerivedStats = {
         "strMod", "dexMod", "conMod", "intMod", "wisMod", "chaMod",
         "fighterTrainingLead", "fighterClassStrBonus", "fighterClassConBonus",
-        "physicalDamageMultiplier", "fighterStrengthBypassesCon", "rogueBackstabEnabled", "fighterCapstonePhysicalDamageMultiplier",
+        "physicalDamageBonus", "fighterStrengthBypassesCon", "rogueBackstabEnabled", "fighterCapstonePhysicalDamageMultiplier",
         "fighterCapstoneMaxHPMultiplier", "fighterCapstoneOutgoingPushMultiplier",
         "fighterCapstoneIncomingPushMultiplier", "fighterCapstoneWallSlamBonusDice",
         "aimSpreadMultiplier", "movementSpeedMultiplier", "boomShift",
@@ -184,7 +184,7 @@ RPG.Schema = {
         "healthRegenBaseMaxHPPerSecond", "wizardClassHpToMagicDiversionFraction",
         "manaBarrierFeatDiversionFraction", "wizardCapstoneDiversionBonus", "livingAegisHPPerMagic",
         "hpToMagicDiversionFraction", "magicRegenMultiplier", "wizardCapstoneMagicRegenMultiplier",
-        "magicPowerMultiplier", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",
+        "magicDamageBonus", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",
         "utilityMagicCostMultiplier", "breadcrumbCells", "breadcrumbFeatRank",
         "breadcrumbFeatBonusCells", "frugalMapEnabled", "mapDrainFeatMultiplier",
         "minimumMapDrainPerSecond", "chaHitStunInflictMultiplier",

@@ -408,7 +408,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.fighterTrainingLead = state.classId == "fighter" and state.primaryAbility or nil
     mods.fighterClassStrBonus = state.fighterTraining.str or 0
     mods.fighterClassConBonus = state.fighterTraining.con or 0
-    mods.physicalDamageMultiplier = math.Clamp(1 + 0.05 * mods.strMod, 0.50, 1.50)
+    mods.physicalDamageBonus = mods.strMod
     mods.fighterStrengthBypassesCon = state.classId == "fighter"
     mods.aimSpreadMultiplier = math.Clamp(1 - 0.04 * mods.dexMod, 0.60, 1.40)
     mods.movementSpeedMultiplier = math.Clamp(1 + 0.02 * mods.dexMod, 0.85, 1.20)
@@ -423,7 +423,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
     mods.conRegenMultiplier = math.Clamp(1 + 0.10 * mods.conMod, 0.50, 2.00)
     mods.magicRegenMultiplier = math.Clamp(1 + 0.10 * mods.intMod, 0.50, 2.00)
-    mods.magicPowerMultiplier = math.Clamp(1 + 0.06 * mods.wisMod, 0.60, 1.60)
+    mods.magicDamageBonus = mods.wisMod
     mods.utilityMagicCostMultiplier = math.Clamp(1 - 0.04 * mods.wisMod, 0.60, 1.40)
     mods.breadcrumbCells = math.Clamp(6 + 2 * mods.wisMod, 2, 24)
     mods.chaHitStunInflictMultiplier = math.Clamp(1 + 0.03 * mods.chaMod, 0.75, 1.30)
@@ -1606,7 +1606,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local class = state.classId and RPG.Classes[state.classId] or nil
     local classPassive
     if state.classId == "fighter" then
-        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s. Positive Strength damage bypasses Constitution resistance. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33%% cap).",
+        classPassive = string.format("Fighter Training: +%d STR / +%d CON at Level %d; training alternates from %s. Physical attacks add the STR modifier as flat damage; half its positive bonus, rounded up, bypasses Constitution resistance for Fighters. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33%% cap).",
             state.fighterTraining.str or 0, state.fighterTraining.con or 0,
             state.level, string.upper(state.primaryAbility))
     elseif state.classId == "rogue" then

@@ -156,13 +156,18 @@ local function addAbilityRow(parent, ability, x, y, width)
     role:SetSize(width - 158, 24)
     local tip = string.format("Base %d + growth %d + Fighter Training %d + identity %d + feat %d",
         ability.base, ability.growth, ability.fighterTraining, ability.identity, ability.feat)
+    if ability.id == "str" then
+        tip = tip .. "\nPhysical damage: " .. mod .. " flat per attack. Fighters protect half the positive bonus, rounded up, from CON resistance."
+    elseif ability.id == "wis" then
+        tip = tip .. "\nMagic damage: " .. mod .. " flat per WIS-scaled attack."
+    end
     panel:SetTooltip(tip)
 end
 
 local CLASS_CARDS = {
     fighter = {
         title = "Fighter", subtitle = "STR / CON | Hero d10",
-        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability. Positive Strength damage bypasses Constitution resistance. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33% cap)."
+        body = "Fighter Training grants one additional STR-or-CON point every Level, beginning with the Primary favored ability. Physical attacks add the STR modifier as flat damage; half its positive bonus, rounded up, bypasses Constitution resistance for Fighters. With an equipped shield, positive STR modifier adds percentage points to the shared Block chance (33% cap)."
     },
     rogue = {
         title = "Rogue", subtitle = "DEX / CHA | Hero d8",

@@ -114,17 +114,10 @@ function RPG:CheckpointDKillerInstinctEstimatedDamage(ply, target, profile)
         for index = 1, count do values[index] = damage end
     end
     if #values == 0 then return 0 end
-    -- Mirror the deterministic physical-damage arithmetic without invoking the
-    -- live resolver: an informational estimate must never mutate combat telemetry.
+    -- Share the pure arithmetic; inspection must not mutate combat telemetry.
     local sourceDerived = Rules:Derived(ply) or {}
     local targetDerived = Rules:Derived(target) or {}
-    local resistance = math.Clamp(math.floor(tonumber(targetDerived.damageResistancePerDie) or 0), 0, 3)
-    local total = 0
-    for _, value in ipairs(values) do
-        local before = math.max(0, tonumber(value) or 0)
-        total = total + (before > 0 and math.max(1, before - resistance) or 0)
-    end
-    total = total * math.Clamp(tonumber(sourceDerived.physicalDamageMultiplier) or 1, 0.50, 1.50)
+    local total = Rules:ResolveBaseDamageValues({contributions = values}, sourceDerived, targetDerived, {physical = true})
     total = total * math.max(0, tonumber(sourceDerived.fighterCapstonePhysicalDamageMultiplier) or 1)
     return math.max(0, total)
 end
@@ -268,3 +261,4 @@ concommand.Add("lod_rpg_validate_killer_instinct", function(ply)
     print("[LOD:KILLER-INSTINCT] " .. (ok and "PASS" or "FAIL")
         .. (#errors > 0 and (" " .. table.concat(errors, "; ")) or ""))
 end)
+

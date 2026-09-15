@@ -142,17 +142,17 @@ eq(D:TargetContract(naked,hero,zombie,{}),naked,'no authored primary means no ex
 
 -- Per-die CON and Fighter STR penetration precede the one flat weapon bonus.
 zombie.state.derivedStats.damageResistancePerDie=2
-hero.state.derivedStats.physicalDamageMultiplier=1.5
+hero.state.derivedStats.physicalDamageBonus=5
 local c=Rolls:RollActorDamage(hero,profile,LOD.RNG.New(42),0)
 local amount=Rolls:ResolveActorDamage(c,hero,zombie,{physical=true})
 local resolution=c.feedResolution
 local subtotal=0;for _,value in ipairs(resolution.reduced) do subtotal=subtotal+value end
-near(amount,subtotal+resolution.resolvedContract.total*.5+2)
+near(amount,subtotal+3+2)
 local immuneResolve=R.ResolveDamageContract
 R.ResolveDamageContract=function() return 0,{},0 end
 near(Rolls:ResolveActorDamage(c,hero,zombie,{physical=true}),0)
 R.ResolveDamageContract=immuneResolve
-hero.state.derivedStats.physicalDamageMultiplier=1
+hero.state.derivedStats.physicalDamageBonus=0
 zombie.state.derivedStats.damageResistancePerDie=0
 
 -- Shotgun target aggregation invokes the same bonus once, irrespective of pellets.
