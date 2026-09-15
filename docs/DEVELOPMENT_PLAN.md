@@ -9,7 +9,27 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Hero respawn loadout retention
+## Current checkpoint — Hermit starter-weapon crash repair
+
+The 2026-09-15 force-close evidence ends without a Lua traceback immediately
+after class/feat setup; the tester reports that the process closed when the
+Hermit's weapon was collected. The runtime identity proves that session mounted
+clean commit `e7576355967084b9fca246022ce9a4b3a7da6148`. The exact native fault
+is not proven because the process emitted no stack or dump.
+
+Starter collection now reserves the identity-bound claim during Touch/StartTouch
+but defers the complete native weapon grant, WeaponEquip hooks, ammo mutation,
+equipment stamping, acknowledgement and pickup removal until the next tick.
+The solid pickup retains native model scale. The client keeps the fanfare and HUD
+confirmation without creating/drawing a duplicate native weapon model or taking
+over the camera. `STAGING_STARTER_STAGE` breadcrumbs bracket every native seam,
+and runtime identity is now `stability-20260915-02`. All 93 integrated suites
+pass, including direct regressions proving no grant/removal inside touch,
+idempotence, retry after grant failure and model/camera elimination. Native GMod
+acceptance remains pending; no main promotion or public deployment is included.
+See [Hermit starter crash repair](HERMIT_STARTER_CRASH_REPAIR.md).
+
+## Previous checkpoint — Hero respawn loadout retention
 
 The author explicitly corrected the older death-loss rule: consuming a Hero life
 must not empty that Hero's run inventory. `PlayerDeath` now captures the native

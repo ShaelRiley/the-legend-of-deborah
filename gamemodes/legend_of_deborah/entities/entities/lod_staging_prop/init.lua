@@ -89,34 +89,50 @@ function ENT:Initialize()
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(Color(248, 213, 105, 255))
     self:SetUseType(SIMPLE_USE)
-    self:SetModelScale(1.08, 0)
     self:DrawShadow(false)
 end
 
 function ENT:_TryStarterClaim(ply)
-    if self.LODStageClaimed then return end
+    if self.LODStageClaimed or self.LODStageClaimPending then return end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return end
 
     local staging = LOD and LOD.StagingDeployment
     if not staging or not staging.ClaimStarter then return end
 
-    local weaponClass = self.LODStagingWeaponClass or ""
-    local weaponModel = self:GetModel() or ""
-    local weaponLabel = WEAPON_LABELS[weaponClass] or string.upper(self:GetStageLabel() or "STARTER")
-
-    if not staging:ClaimStarter(ply, self) then return end
-
-    net.Start("LOD_StagingStarterCelebration")
-        net.WriteString(weaponClass)
-        net.WriteString(weaponLabel)
-        net.WriteString(weaponModel)
-    net.Send(ply)
-
-    self.LODStageClaimed = true
-    -- StartTouch/Touch may be running Source's trigger traversal. Keep the
-    -- transaction idempotent immediately, but remove only after it returns.
+    -- Giving a native weapon fires WeaponEquip and mutates the player's entity
+    -- collection. Never do that while Source is still traversing this trigger's
+    -- StartTouch/Touch callback. Reserve the claim immediately, then perform the
+    -- complete transaction on the next tick after the native touch stack unwinds.
+    self.LODStageClaimPending = true
     timer.Simple(0, function()
-        if IsValid(self) then self:Remove() end
+        if not IsValid(self) then return end
+        if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then
+            self.LODStageClaimPending = false
+            return
+        end
+
+        local liveStaging = LOD and LOD.StagingDeployment
+        if not liveStaging or not liveStaging.ClaimStarter
+            or not liveStaging:ClaimStarter(ply, self)
+        then
+            self.LODStageClaimPending = false
+            return
+        end
+
+        local weaponClass = self.LODStagingWeaponClass or ""
+        local weaponModel = self:GetModel() or ""
+        local weaponLabel = WEAPON_LABELS[weaponClass] or string.upper(self:GetStageLabel() or "STARTER")
+        net.Start("LOD_StagingStarterCelebration")
+            net.WriteString(weaponClass)
+            net.WriteString(weaponLabel)
+            -- Retained for wire compatibility with already-connected clients.
+            -- The repaired client no longer creates a second native weapon model.
+            net.WriteString(weaponModel)
+        net.Send(ply)
+
+        self.LODStageClaimed = true
+        self.LODStageClaimPending = false
+        self:Remove()
     end)
 end
 
@@ -186,4 +202,3 @@ concommand.Add("lod_staging_manual_status", function(ply)
     print("[LOD:STAGING-MANUAL] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

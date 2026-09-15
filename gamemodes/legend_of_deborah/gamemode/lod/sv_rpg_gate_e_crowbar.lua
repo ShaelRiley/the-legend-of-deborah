@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["crowbar"] = "stability-20260915-01"
+LOD.RuntimeReceipts["crowbar"] = "stability-20260915-02"
 LOD.RPG = LOD.RPG or {}
 
 local RPG = LOD.RPG
@@ -642,4 +642,3 @@ end)
 
 RPG.SystemBootstrap.FeatEffectSystem = "gate_e_batch_14_crowbar"
 return Effects
-

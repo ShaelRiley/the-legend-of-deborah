@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["meshes"] = "stability-20260915-01"
+LOD.RuntimeReceipts["meshes"] = "stability-20260915-02"
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox
@@ -179,4 +179,3 @@ function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, til
     if not position or not mins or not maxs or not material then return end
     drawMesh(self:GetSlabMesh(mins, maxs, tile), position, angles, material, color)
 end
-

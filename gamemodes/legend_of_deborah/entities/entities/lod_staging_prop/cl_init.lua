@@ -248,7 +248,6 @@ local celebration = nil
 local celebrationSerial = 0
 
 local function clearCelebration()
-    if celebration and IsValid(celebration.weaponModel) then celebration.weaponModel:Remove() end
     celebration = nil
 end
 
@@ -270,33 +269,25 @@ local function playFanfare(serial)
     end
 end
 
-local function beginCelebration(weaponClass, weaponLabel, modelPath)
+local function beginCelebration(weaponClass, weaponLabel)
     clearCelebration()
     celebrationSerial = celebrationSerial + 1
 
-    local weaponModel = nil
-    if modelPath ~= "" and util.IsValidModel(modelPath) then
-        weaponModel = ClientsideModel(modelPath, RENDERGROUP_OPAQUE)
-        if IsValid(weaponModel) then
-            weaponModel:SetNoDraw(true)
-            weaponModel:SetModelScale(1.05, 0)
-        end
-    end
-
     celebration = {
         serial = celebrationSerial,
-        started = CurTime(),
         finishes = CurTime() + CELEBRATION_DURATION,
         weaponClass = weaponClass,
-        weaponLabel = weaponLabel ~= "" and weaponLabel or "STARTER WEAPON",
-        weaponModel = weaponModel
+        weaponLabel = weaponLabel ~= "" and weaponLabel or "STARTER WEAPON"
     }
 
     playFanfare(celebrationSerial)
 end
 
 net.Receive("LOD_StagingStarterCelebration", function()
-    beginCelebration(net.ReadString(), net.ReadString(), net.ReadString())
+    local weaponClass = net.ReadString()
+    local weaponLabel = net.ReadString()
+    net.ReadString() -- legacy model path; intentionally no native client model
+    beginCelebration(weaponClass, weaponLabel)
 end)
 
 hook.Add("Think", "LOD_StagingCelebrationLifetime", function()
@@ -304,51 +295,6 @@ hook.Add("Think", "LOD_StagingCelebrationLifetime", function()
 end)
 
 hook.Add("ShutDown", "LOD_StagingCelebrationCleanup", clearCelebration)
-
-hook.Add("CalcView", "LOD_StagingStarterCelebrationView", function(ply, origin, angles, fov)
-    if not celebration or CurTime() >= celebration.finishes or not IsValid(ply) or not ply:Alive() then return end
-
-    local target = ply:GetPos() + Vector(0, 0, 56)
-    local desired = target - angles:Forward() * 92 + angles:Right() * 38 + Vector(0, 0, 30)
-    local trace = util.TraceHull({
-        start = target,
-        endpos = desired,
-        mins = Vector(-4, -4, -4),
-        maxs = Vector(4, 4, 4),
-        mask = MASK_SOLID_BRUSHONLY,
-        filter = ply
-    })
-    local cameraPos = trace.HitPos + trace.HitNormal * 3
-
-    return {
-        origin = cameraPos,
-        angles = (target - cameraPos):Angle(),
-        fov = math.min(fov, 74),
-        drawviewer = true
-    }
-end)
-
-hook.Add("ShouldDrawLocalPlayer", "LOD_StagingStarterCelebrationPlayer", function()
-    if celebration and CurTime() < celebration.finishes then return true end
-end)
-
-hook.Add("PreDrawViewModel", "LOD_StagingStarterCelebrationHideViewModel", function()
-    if celebration and CurTime() < celebration.finishes then return true end
-end)
-
-hook.Add("PostDrawTranslucentRenderables", "LOD_StagingStarterCelebrationWeapon", function(drawingDepth, drawingSkybox)
-    if drawingDepth or drawingSkybox or not celebration or CurTime() >= celebration.finishes then return end
-    local ply = LocalPlayer()
-    local weaponModel = celebration.weaponModel
-    if not IsValid(ply) or not IsValid(weaponModel) then return end
-
-    local elapsed = CurTime() - celebration.started
-    local rise = math.sin(math.Clamp(elapsed / CELEBRATION_DURATION, 0, 1) * math.pi) * 7
-    weaponModel:SetPos(ply:GetPos() + Vector(0, 0, 94 + rise))
-    weaponModel:SetAngles(Angle(0, (CurTime() * 105) % 360, -7))
-    weaponModel:SetupBones()
-    weaponModel:DrawModel()
-end)
 
 hook.Add("HUDPaint", "LOD_StagingCelebrationHUD", function()
     local ply = LocalPlayer()

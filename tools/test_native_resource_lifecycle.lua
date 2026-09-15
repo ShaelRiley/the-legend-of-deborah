@@ -74,12 +74,17 @@ for _,m in ipairs({'view-error','2d-error','ok'}) do
 end
 assert(errors==2)
 
--- Starter grants settle once; removal happens after the touch stack unwinds.
-local queued,grants,inTouch={},0,false
+-- Starter grants settle once, and every native grant/removal operation happens
+-- only after the touch stack unwinds.
+local queued,grants,inTouch,allowGrant={},0,false,true
 timer={Simple=function(_,fn) queued[#queued+1]=fn end}
 net={Start=noop,WriteString=noop,Send=noop}
 util={AddNetworkString=noop};concommand={Add=noop}
-LOD.StagingDeployment={ClaimStarter=function() grants=grants+1;return true end}
+LOD.StagingDeployment={ClaimStarter=function()
+ assert(not inTouch,'starter grant ran inside native touch traversal')
+ grants=grants+1
+ return allowGrant
+end}
 ENT={}
 dofile('gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/init.lua')
 local pickup=setmetatable({LODStagingWeaponClass='weapon_357'}, {__index=ENT})
@@ -89,7 +94,56 @@ function pickup:Remove() assert(not inTouch);self.valid=false end
 function ply:IsPlayer() return true end
 function ply:Alive() return true end
 inTouch=true;pickup:_TryStarterClaim(ply);pickup:_TryStarterClaim(ply);inTouch=false
-assert(grants==1 and #queued==1 and IsValid(pickup));queued[1]();assert(not IsValid(pickup))
+assert(grants==0 and #queued==1 and IsValid(pickup) and pickup.LODStageClaimPending)
+queued[1]();queued={}
+assert(grants==1 and not IsValid(pickup),'deferred starter grant did not settle once')
+
+-- A failed deferred grant releases the reservation and leaves the pickup for a
+-- later retry rather than consuming or duplicating the starter.
+local retry=setmetatable({LODStagingWeaponClass='weapon_smg1'}, {__index=ENT})
+function retry:GetModel() return 'test' end
+function retry:GetStageLabel() return 'test' end
+function retry:Remove() assert(not inTouch);self.valid=false end
+allowGrant=false;retry:_TryStarterClaim(ply)
+assert(#queued==1 and retry.LODStageClaimPending);queued[1]();queued={}
+assert(IsValid(retry) and not retry.LODStageClaimPending)
+allowGrant=true;retry:_TryStarterClaim(ply);assert(#queued==1);queued[1]();queued={}
+assert(not IsValid(retry) and grants==3,'failed starter grant was not safely retryable')
+
+-- The physical pickup uses the native model scale: scaled solid trigger models
+-- are an unnecessary collision rebuild risk in Source.
+MOVETYPE_NONE=1;SOLID_BBOX=2;COLLISION_GROUP_DEBRIS_TRIGGER=3
+RENDERMODE_TRANSCOLOR=4;SIMPLE_USE=5
+function Color() return {} end
+util.IsValidModel=function() return true end
+local initialized=setmetatable({LODStageModel='test'}, {__index=ENT})
+function initialized:GetStageKind() return 3 end
+function initialized:SetModel() end
+function initialized:SetMoveType() end
+function initialized:SetSolid() end
+function initialized:SetCollisionBounds() end
+function initialized:SetTrigger(value) self.trigger=value end
+function initialized:SetCollisionGroup() end
+function initialized:SetRenderMode() end
+function initialized:SetColor() end
+function initialized:SetUseType() end
+function initialized:SetModelScale() error('starter pickup must retain native model scale') end
+function initialized:DrawShadow() end
+initialized:Initialize();assert(initialized.trigger)
+
+-- The pickup celebration retains its sound/HUD acknowledgement without making
+-- a duplicate clientside weapon model or taking over the player's camera.
+local stagingReceiver,reads,clientModels=nil,0,0
+function Material() return {} end
+surface={CreateFont=noop}
+net.Receive=function(name,fn) if name=='LOD_StagingStarterCelebration' then stagingReceiver=fn end end
+net.ReadString=function() reads=reads+1;return reads==1 and 'weapon_357' or reads==2 and '.357 MAGNUM' or 'test' end
+function ClientsideModel() clientModels=clientModels+1;return {} end
+dofile('gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/cl_init.lua')
+assert(stagingReceiver);stagingReceiver()
+assert(clientModels==0,'starter celebration created a native client model')
+assert(not (hooks.CalcView and hooks.CalcView.LOD_StagingStarterCelebrationView))
+assert(not (hooks.PostDrawTranslucentRenderables and hooks.PostDrawTranslucentRenderables.LOD_StagingStarterCelebrationWeapon))
 -- The afterimage cache used to retain 32 native models for EVERY model path.
 -- Exercise many models and verify the global free-object bound after expiry.
 local ghostLive, receivers, packet, cursor = 0, {}, {}, 0
@@ -129,4 +183,4 @@ assert(snapshot.missing=='none' and snapshot.entities==77 and snapshot.realm=='s
 assert(snapshot.install=='abcdef clean ' and snapshot.lua_kb>0)
 LOD.RuntimeReceipts.loot=nil
 assert(LOD.RuntimeAudit:Snapshot().missing=='loot')
-print('NATIVE_RESOURCE_LIFECYCLE_PASS: mesh and ghost bounds/cleanup, invalid geometry, mirror error unwinding, deferred starter retirement, loaded build receipts')
+print('NATIVE_RESOURCE_LIFECYCLE_PASS: mesh and ghost bounds/cleanup, invalid geometry, mirror error unwinding, deferred starter grant/removal, safe celebration, loaded build receipts')

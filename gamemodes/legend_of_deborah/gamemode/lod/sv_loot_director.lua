@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["loot"] = "stability-20260915-01"
+LOD.RuntimeReceipts["loot"] = "stability-20260915-02"
 LOD.LootDirector = LOD.LootDirector or {}
 
 local Loot = LOD.LootDirector

@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["mirror"] = "stability-20260915-01"
+LOD.RuntimeReceipts["mirror"] = "stability-20260915-02"
 include("shared.lua")
 
 local RT_W, RT_H = 320, 640
@@ -159,4 +159,3 @@ end)
 hook.Add("ShouldDrawLocalPlayer", "LOD_StagingMirrorLocalPlayer", function()
     if renderingMirror then return true end
 end)
-

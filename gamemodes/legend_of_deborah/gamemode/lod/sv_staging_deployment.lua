@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["staging"] = "stability-20260915-01"
+LOD.RuntimeReceipts["staging"] = "stability-20260915-02"
 LOD.StagingDeployment = LOD.StagingDeployment or {}
 
 local Staging = LOD.StagingDeployment
@@ -649,6 +649,17 @@ function Staging:PlacePlayerInHut(ply, announce)
     return true
 end
 
+local function starterClaimStage(ply, stage, weaponClass)
+    local log = LOD.RPGTestLog
+    if log and log.Write then
+        log:Write("STAGING_STARTER_STAGE", {
+            stage = stage,
+            player = identityOf(ply),
+            weapon = weaponClass
+        })
+    end
+end
+
 function Staging:ClaimStarter(ply, ent)
     if not IsValid(ply) or not ply:Alive() or not slotActive(ply) then return false end
     local identity = identityOf(ply)
@@ -659,24 +670,37 @@ function Staging:ClaimStarter(ply, ent)
     local weaponClass = self:_AssignStarter(ps)
     local spec = starterSpec(weaponClass)
     if not spec then return false end
+    starterClaimStage(ply, "begin", weaponClass)
 
     if IsValid(ply:GetWeapon(weaponClass)) then
         self.Stats.duplicateStarterPrevented = (self.Stats.duplicateStarterPrevented or 0) + 1
+        starterClaimStage(ply, "weapon_already_owned", weaponClass)
     else
+        starterClaimStage(ply, "before_native_give", weaponClass)
         local weapon = ply:Give(weaponClass, true)
-        if not IsValid(weapon) then return false end
+        if not IsValid(weapon) then
+            starterClaimStage(ply, "native_give_failed", weaponClass)
+            return false
+        end
+        starterClaimStage(ply, "after_native_give", weaponClass)
         weapon:SetClip1(spec.clip)
+        starterClaimStage(ply, "after_clip", weaponClass)
     end
     ply:SetAmmo(0, spec.ammo)
     if weaponClass == "weapon_ar2" then ply:SetAmmo(0, "AR2AltFire") end
+    starterClaimStage(ply, "after_ammo", weaponClass)
 
     ps.starterClaimed = true
     ps.starterClaimedLevel = RunManager.State and RunManager.State.Level or 1
     self.StarterEntities[identity] = nil
     self.Stats.starterClaims = (self.Stats.starterClaims or 0) + 1
+    starterClaimStage(ply, "after_record", weaponClass)
     ply:EmitSound("items/ammo_pickup.wav", 65, 104, 0.8, CHAN_ITEM)
+    starterClaimStage(ply, "after_sound", weaponClass)
     local item=LOD.Equipment and LOD.Equipment.EnsureWeapon and LOD.Equipment:EnsureWeapon(ply,weaponClass)
+    starterClaimStage(ply, "after_equipment", weaponClass)
     ply:ChatPrint("STARTER ACQUIRED — " .. (item and LOD.Equipment:ItemName(item) or string.upper(spec.label)))
+    starterClaimStage(ply, "complete", weaponClass)
     return true
 end
 
