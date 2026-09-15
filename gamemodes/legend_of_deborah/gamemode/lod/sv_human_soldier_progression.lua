@@ -56,6 +56,7 @@ function System:Attach(ply, actorSeed, startingHP, level)
     if current then return current end
     local state, err = self:CreateIncarnation(actorSeed, startingHP, level)
     if not state then return nil, err end
+    Progression:SyncMonsterIdentity(ply,state)
     ply.LODHumanSoldierProgressionState = state
     return state
 end
@@ -63,7 +64,10 @@ end
 function System:Retire(target)
     local state = self:StateFor(target)
     if not state then return false end
-    if target ~= state then target.LODHumanSoldierProgressionState = nil end
+    if target ~= state then
+        Progression:SyncMonsterIdentity(target,nil)
+        target.LODHumanSoldierProgressionState = nil
+    end
     -- Revoke captured references too: delayed damage cannot develop a retired body.
     state.soldierIncarnation = false
     state.soldierXP, state.soldierEarnedLevels = 0, 0
@@ -174,3 +178,4 @@ concommand.Add("lod_rpg_validate_soldier_progression", function(ply)
     print("[LOD:SOLDIER-XP] " .. (ok and "PASS" or "FAIL")
         .. (#errors > 0 and (" " .. table.concat(errors, "; ")) or ""))
 end)
+

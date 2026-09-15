@@ -1181,6 +1181,23 @@ function CharacterProgressionSystem:AdvanceAutomaticActor(ps, state, actorSeed, 
     return true
 end
 
+function CharacterProgressionSystem:AssignMonsterElement(state,actorSeed)
+    if state.monsterElementAssigned then return end
+    state.monsterElementAssigned=true
+    -- Independent of class/tier/HP/feat streams: this addition cannot reroll them.
+    local rng=LOD.RNG.New(derive(actorSeed or 1,"monster_element_v1"))
+    if rng:Int(1,3)==1 then
+        state.currentElement=rng:Pick(RPG.Elements)
+        state.elementalWeaknesses={RPG.ElementOpposites[state.currentElement]}
+    end
+end
+
+function CharacterProgressionSystem:SyncMonsterIdentity(actor,state)
+    if not IsValid(actor) or not actor.SetNW2String then return end
+    actor:SetNW2String("LOD_MonsterClass",state and state.classId or "")
+    actor:SetNW2String("LOD_MonsterElement",state and (actor.LODElement or state.currentElement) or "")
+end
+
 function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, actorSeed,
     dungeonLevel, startingHP, actorType)
     local template, normalizedId = self:ArchetypeProgressionTemplate(archetypeId)
@@ -1199,6 +1216,7 @@ function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, acto
     state.capabilityTags = self:_AutomaticActorCapabilities(normalizedId, state.usesMagic, actorType)
     state.classId = self:_AssignAutomaticClass(template, actorSeed)
     self:_AssignAutomaticGrowthProfile(state, actorSeed)
+    self:AssignMonsterElement(state,actorSeed)
 
     local ps = {identity = state.actorId}
     if normalizedId == "soldier" or normalizedId == "blitzer" then
@@ -1224,6 +1242,7 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
         return nil
     end
     hostile.LODProgressionState = state
+    self:SyncMonsterIdentity(hostile,state)
     hostile.LODCharacterLevel = state.level
     hostile.LODMonsterTier = state.tierId
     hostile:SetNW2Int("LOD_CharacterLevel", state.level)
@@ -1232,6 +1251,10 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
     hostile:SetHealth(state.derivedStats.maxHP)
     return state
 end
+
+hook.Add("OnNPCKilled","LOD_MonsterAuraRetire",function(actor)
+    if IsValid(actor) and actor.LODHostile then actor:SetNW2String("LOD_MonsterElement","") end
+end)
 
 function CharacterProgressionSystem:ValidateActorProgressionCore()
     local errors = {}

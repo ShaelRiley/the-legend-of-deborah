@@ -9,7 +9,23 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — Size Shifter wall-entrapment repair
+## Current checkpoint — monster class and elemental identity
+
+The author's monster-readability request adds subtle class modulation: Fighter
+keeps its archetype paint, Rogue adds pale green, Wizard adds pale violet.
+An independent seeded one-in-three roll assigns one of the six existing elements
+to generated monsters, including human-controlled Soldier incarnations. Matching
+resistance and reciprocal weakness use the shared damage ladders. Separate
+depth-tested elemental motes and aimed element words respect cloaking and reduced
+effects. No dynamic lights, emitters, added entities or monster-list scans.
+Live GDD 03 LOD-ELEM-002, 07 and the exact HUMAN spawn paragraph reconcile the
+former 50% rule with the author's one-third direction. Automated validation and
+the finite native playtest are recorded in [Monster identity](MONSTER_IDENTITY.md).
+Next runtime gate: meet ordinary enemies, compare class tints and elemental cues,
+then hit a typed monster with matching and opposing Magic. Prior native crash
+causes remain unresolved; preserve existing diagnostics. No main promotion or deployment.
+
+## Previous checkpoint — Size Shifter wall-entrapment repair
 
 The player reported becoming stuck in a wall with Size Shifter. The old code
 changed native model scale without an explicit movement-hull authority, and

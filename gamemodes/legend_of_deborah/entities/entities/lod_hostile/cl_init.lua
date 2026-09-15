@@ -162,7 +162,10 @@ function ENT:Draw()
     local archetype = self:GetNW2String("LOD_Archetype", "")
     local seekerRoll = archetype == "seeker" and updateSeekerRoll(self) or 0
     local size, verticalCompensation = applyVisualScale(self, seekerRoll)
-    self:DrawModel()
+    if LOD.MonsterIdentity then
+        LOD.MonsterIdentity:DrawBody(self)
+        LOD.MonsterIdentity:DrawAura(self,size)
+    else self:DrawModel() end
     if archetype ~= "soldier" and archetype ~= "blitzer" then return end
     if not self:GetNW2Bool("LOD_SoldierTelegraph", false) then return end
 

@@ -377,7 +377,8 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
         or state and state.elementalWeaknesses
     local gear=state and state.equipmentExtras or {}
     rng = self:_RNG("element:" .. element, rng or tags.rng)
-    if listContains(weaknesses, element) or (tonumber(gear["weak_"..element]) or 0)<0 then
+    if listContains(weaknesses, element) or (RPG.ElementOpposites and RPG.ElementOpposites[current]==element)
+        or (tonumber(gear["weak_"..element]) or 0)<0 then
         local index = rng:Int(1, #self.WeaknessMultipliers)
         local hasAttunement = false
         if attacker then

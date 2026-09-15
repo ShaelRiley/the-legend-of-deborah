@@ -43,6 +43,10 @@ local function watcherVisible(ent, now)
     return true
 end
 
+function FX:IsVisible(ent)
+    return not isWatcherPresentationTarget(ent) or watcherVisible(ent, CurTime())
+end
+
 local function movementPresentation(ent, now)
     local state = FX.Motion[ent]
     if not state then

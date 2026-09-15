@@ -12,6 +12,7 @@ RPG.AbilitySet = {}
 for _, ability in ipairs(RPG.Abilities) do RPG.AbilitySet[ability] = true end
 
 RPG.Elements = {"earth", "fire", "dark", "ice", "light", "electric"}
+RPG.ElementOpposites = {earth="electric",electric="earth",fire="ice",ice="fire",dark="light",light="dark"}
 RPG.StatusIds = {"clumsy", "immolated", "poisoned", "bleeding", "muted",
     "held", "reckless", "arcane_shattered", "intimidated", "morale_flee"}
 
@@ -141,7 +142,7 @@ RPG.Schema = {
         "featSlotsGranted", "featIds", "featStackCounts", "pendingFeatSlots",
         "classCapstoneFeatId", "pendingClassCapstoneDraft", "dungeonEntryLevel",
         "replacementXpEarnedThisDungeon", "capabilityTags", "contentIds",
-        "moraleBonus", "usesMagic", "currentElement", "elementalWeaknesses",
+        "moraleBonus", "usesMagic", "currentElement", "elementalWeaknesses", "monsterElementAssigned",
         "statusImmunities"
     },
     ArchetypeProgressionTemplate = {
