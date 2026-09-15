@@ -11,7 +11,9 @@ function CreateConVar() return {} end
 function GetConVar() return {GetBool=function() return enabled end} end
 function table.Count(t) local n=0 for _ in pairs(t) do n=n+1 end return n end
 function table.Copy(t) local r={} for k,v in pairs(t) do r[k]=v end return r end
-hook={Add=noop}; timer={Simple=noop}; concommand={Add=function(n,f) commands[n]=f end}
+local pending={}
+hook={Add=noop}; timer={Simple=function(_,fn) pending[#pending+1]=fn end}; concommand={Add=function(n,f) commands[n]=f end}
+local function flush() local batch=pending;pending={};for _,fn in ipairs(batch) do fn() end end
 GM={}; player={GetAll=function() return {} end}
 local lootCalls=0
 LOD={Config={MaxActivePlayers=2, Campaign={MaxPlayedIdentities=4}, Lives={StartingLives=3}},
@@ -31,7 +33,7 @@ local function actor(id)
  function p:Nick() return self.id end
  function p:SetNW2Bool(k,v) self.nw[k]=v end
  p.SetNW2Int=p.SetNW2Bool; p.SetNW2String=p.SetNW2Bool
- function p:SetPos(v) self.pos=v; self.teleports=self.teleports+1 end
+function p:SetPos(v) self.pos=v; self.teleports=self.teleports+1 end
  p.SetEyeAngles=noop; p.SetLocalVelocity=noop; p.ChatPrint=noop; p.EmitSound=noop
  p.Spectate=noop; p.SpectateEntity=noop
  function p:Give() error('unexpected equipment grant') end
@@ -44,6 +46,7 @@ local function reset()
  CheckpointPos=Vector(100,200,300),CharacterOrder={{id=1,name='A'},{id=2,name='B'}},
  PlayerState={},ActiveIdentity={},PlayedIdentities={},CharacterByIdentity={},WaitingSince={},Cards={}}
  a.teleports=0; a.admin=true; a.alive=true; enabled=true; lootCalls=0
+ pending={}
 end
 local ingress=commands.lod_dev_enter_maze
 reset(); enabled=false; ingress(a); assert(a.teleports==0 and run.State.Ranked)
@@ -76,6 +79,28 @@ ps.chosen=true; local starterChecks=0
 staging.EnsureStarterPickup=function() starterChecks=starterChecks+1 end
 assert(not staging:DeployPlayer(a) and starterChecks==1 and a.teleports==0)
 ps.starterClaimed=true; assert(staging:DeployPlayer(a))
+assert(a.teleports==0 and not ps.deploymentComplete and lootCalls==0,'No native mutation in input callback')
+assert(not staging:DeployPlayer(a) and #pending==1,'One pending request per player')
+flush()
 assert(run.State.Ranked and run:IsActivePlayer(a) and a.teleports==1)
 assert(not staging:DeployPlayer(a) and a.teleports==1) -- production duplicate denied
+for _,change in ipairs({'dead','level','seed','run','state','character','frozen','failed','cleared','inactive','choices','starter','invalid'}) do
+ reset();assert(run:TryActivatePlayer(a));ps=run:GetPlayerState(a);ps.chosen=true;ps.starterClaimed=true
+ assert(staging:DeployPlayer(a))
+ if change=='dead' then a.alive=false
+ elseif change=='level' then run.State.Level=3
+ elseif change=='seed' then run.State.LevelSeed=456
+ elseif change=='run' then run.State.RunId='other'
+ elseif change=='state' then run.State=table.Copy(run.State)
+ elseif change=='character' then run.State.PlayerState.a=table.Copy(ps)
+ elseif change=='frozen' then run.State.SimulationFrozen=true
+ elseif change=='failed' then run.State.Failed=true
+ elseif change=='cleared' then run.State.LevelCleared=true
+ elseif change=='inactive' then run.State.ActiveIdentity.a=nil
+ elseif change=='choices' then ps.chosen=false
+ elseif change=='starter' then ps.starterClaimed=false
+ elseif change=='invalid' then a.valid=false end
+ flush();assert(a.teleports==0 and lootCalls==0 and not ps.deploymentPending,change)
+ a.valid=true
+end
 print('PASS: developer authorization, production admission/capacity, lives, deployment isolation, unranked bypass, unchanged portal prerequisites')

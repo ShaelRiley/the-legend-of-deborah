@@ -687,25 +687,38 @@ function Staging:ClaimStarter(ply, ent)
     return true
 end
 
+local function deploymentStage(ply, stage, state)
+    local log = LOD.RPGTestLog
+    if log and log.Write then
+        log:Write("STAGING_DEPLOY_STAGE", {stage=stage, player=identityOf(ply),
+            level=state and state.Level, seed=state and state.LevelSeed})
+    end
+end
+
 function Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
+    deploymentStage(ply, "begin", state)
     ps.deploymentComplete = true
     ps.deployedAtLevel = state.Level
     ps.deployedAtLevelSeed = state.LevelSeed
     ps.deployedDungeonLevel = state.Level
     ply:SetNW2Bool("LOD_Staged", false)
     ply:SetNW2Bool("LOD_Deployed", true)
+    deploymentStage(ply, "before_teleport", state)
     ply:SetPos(destination)
     ply:SetEyeAngles(Angle(0, 0, 0))
     ply:SetLocalVelocity(vector_origin)
+    deploymentStage(ply, "after_teleport", state)
     RunManager:_SyncPlayerVars(ply)
+    deploymentStage(ply, "after_player_sync", state)
     if Loot and Loot.EnsureStaticForPlayer then Loot:EnsureStaticForPlayer(ply) end
+    deploymentStage(ply, "after_static_loot", state)
 end
 
 function Staging:DeployPlayer(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or not slotActive(ply) then return false end
     local identity = identityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
-    if not ps or ps.deploymentComplete then return false end
+    if not ps or ps.deploymentComplete or ps.deploymentPending then return false end
 
     local progression = LOD.CharacterProgressionSystem
     if not progression or not progression:IsDeploymentEligible(ps) then
@@ -725,14 +738,33 @@ function Staging:DeployPlayer(ply)
     end
 
     local state = RunManager.State
-    if not state or not state.BuildReady or state.Failed or state.LevelCleared then return false end
+    if not state or not state.BuildReady or state.Failed or state.LevelCleared or state.SimulationFrozen then return false end
     local destination = state.CheckpointPos or (state.BuildReport and state.BuildReport.startPos)
     if not destination then return false end
-    self:_ExecuteDeploymentTransition(ply, ps, destination, state)
-
-    ply:EmitSound("ambient/machines/teleport3.wav", 72, 104, 0.75, CHAN_ITEM)
-    ply:ChatPrint("DEPLOYED — ENTER THE DUNGEON")
-    self.Stats.deployments = (self.Stats.deployments or 0) + 1
+    -- KeyPress/ENT:Use can run during player movement. Never teleport or spawn
+    -- native pickup entities while that engine callback is still on the stack.
+    -- Retain staging until the timer commits; duplicate input shares one request.
+    local request = {level=state.Level, seed=state.LevelSeed, run=state.RunId}
+    ps.deploymentPending = request
+    deploymentStage(ply, "queued", state)
+    timer.Simple(0, function()
+        if ps.deploymentPending ~= request then return end
+        ps.deploymentPending = nil
+        if not IsValid(ply) or not ply:Alive() or not slotActive(ply)
+            or RunManager:GetPlayerState(ply) ~= ps or RunManager.State ~= state
+            or state.Level ~= request.level or state.LevelSeed ~= request.seed or state.RunId ~= request.run
+            or not state.BuildReady or state.Failed or state.LevelCleared or state.SimulationFrozen
+            or ps.deploymentComplete or not ps.starterClaimed
+            or not progression:IsDeploymentEligible(ps) then
+            deploymentStage(ply, "cancelled", state)
+            return
+        end
+        self:_ExecuteDeploymentTransition(ply, ps, destination, state)
+        ply:EmitSound("ambient/machines/teleport3.wav", 72, 104, 0.75, CHAN_ITEM)
+        ply:ChatPrint("DEPLOYED — ENTER THE DUNGEON")
+        self.Stats.deployments = (self.Stats.deployments or 0) + 1
+        deploymentStage(ply, "complete", state)
+    end)
     return true
 end
 

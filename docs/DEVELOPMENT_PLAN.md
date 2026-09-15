@@ -9,7 +9,22 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — status portrait beside Magic
+## Current checkpoint — labyrinth-entry crash candidate and granite Deborah
+
+The fresh staging playtest force-closed on reported labyrinth entry. Its 139-event
+session ends after successful DFT recreation, without combat, death or a native
+fault trace. The portal now queues its native teleport/pickup work outside the
+input callback, coalesces duplicate Use requests, and cancels stale player/run
+state. Bounded deployment-stage logs identify the next failure boundary.
+The statue is beyond the portal opposite the Hermit, offset from its approach,
+with the configured Deborah model, gray granite, frozen folded-arm idle selection
+and scowl flexes. Live GDD LOD-UI-009 records the revised presentation direction.
+All 76 automated suites pass; native crash resolution and statue visual acceptance
+remain pending. Next gate: fresh-start gm_flatgrass, inspect the statue and enter
+the labyrinth normally. See [entry-crash evidence](LABYRINTH_ENTRY_REPAIR.md).
+No main promotion or deployment.
+
+## Previous checkpoint — status portrait beside Magic
 
 The author's latest HUD direction explicitly supersedes the earlier face-position
 hold. The portrait now sits immediately right of the scaled Magic readout, aligned

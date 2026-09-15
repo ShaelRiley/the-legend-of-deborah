@@ -61,7 +61,7 @@ reduced=true;quads={};events.LOD_MagicForceShoutWaves(false,false);assert(#quads
 for i=1,50 do receivers.LOD_MagicShoutFX() end
 assert(#LOD.MagicFX.waves==12,'Bounded legacy wave bursts')
 events.LOD_MagicShoutCleanup();assert(#LOD.MagicFX.waves==0)
--- Spawn the actual statue behind the Hermit, facing away from the portal wall.
+-- Spawn beyond the portal, opposite the Hermit and clear of the central pad.
 local S={HutCenter=Vector(10,20,30),HutAngles=Angle(0,0,0),HutHalfForward=200,HutGuideDistance=76,
     EnsureHut=function() return true end,_RegisterHutEntity=function(_,e) return e end}
 LOD.StagingDeployment=S;LOD.RunManager={};LOD.CryptoDirector={};LOD.CryptoStore={}
@@ -69,8 +69,8 @@ local statue={valid=true,SetPos=function(s,p) s.pos=p end,SetAngles=function(s,a
 ents={Create=function(class) assert(class=='lod_debbie_statue');return statue end}
 util={AddNetworkString=function() end}
 dofile(root..'lod/sv_crypto_statue.lua');assert(LOD.CryptoDirector:EnsureStatue())
-assert(statue.pos.x>S.HutCenter.x+S.HutGuideDistance+32 and statue.pos.x<S.HutCenter.x+S.HutHalfForward-16)
-assert(statue.pos.y==S.HutCenter.y and statue.angle.y==180)
+assert(statue.pos.x<S.HutCenter.x-S.HutGuideDistance-32 and statue.pos.x>S.HutCenter.x-S.HutHalfForward+16)
+assert(statue.pos.y-S.HutCenter.y==80 and statue.angle.y==0)
 -- One shared prompt painter for statue, portal and manual, honoring rebound Use.
 include=function() end
 ScrW=function() return 1280 end;ScrH=function() return 800 end
@@ -91,4 +91,4 @@ assert(LOD.StagingPromptOwnedByGamemode,'Legacy entity prompt defers to gamemode
 LOD.UI.ActivePage='equipment';events.LOD_StagingInteractionPrompt();assert(#paints==1)
 LOD.UI.ActivePage=nil;player.GetPos=function() return Vector(200,0,0) end
 events.LOD_StagingInteractionPrompt();assert(#paints==1,'No out-of-range statue prompt')
-print('PRESENTATION_POLISH_PASS: opaque boundaries/40% fills, inside/outside, fade/reduced/caps, rear statue placement and standard rebound prompt')
+print('PRESENTATION_POLISH_PASS: opaque boundaries/40% fills, inside/outside, fade/reduced/caps, opposite-portal statue placement and standard rebound prompt')

@@ -18,8 +18,11 @@ function C:EnsureStatue()
     if not S.HutCenter then return false end
     local statue=ents.Create('lod_debbie_statue')
     if not IsValid(statue) then return false end
-    statue:SetPos(S.HutCenter+S.HutAngles:Forward()*((S.HutHalfForward or 180)-40))
-    statue:SetAngles(Angle(0,S.HutAngles.y+180,0))
+    -- Beyond the portal, opposite the Hermit. Offset sideways so neither the
+    -- statue nor a player using it occupies the pad's central approach lane.
+    statue:SetPos(S.HutCenter-S.HutAngles:Forward()*((S.HutHalfForward or 180)-40)
+        +S.HutAngles:Right()*math.min(80,(S.HutHalfRight or 130)-40))
+    statue:SetAngles(Angle(0,S.HutAngles.y,0))
     statue:Spawn();statue:Activate()
     self.Statue=S:_RegisterHutEntity(statue)
     return true
