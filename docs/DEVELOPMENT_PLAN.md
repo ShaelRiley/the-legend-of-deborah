@@ -9,7 +9,33 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
-## Current checkpoint — ordinary loot, carried copies and class combat
+## Current checkpoint — four working Wall Jumps
+
+Starting dev HEAD `e22fd90c8ab96d5ccb2790963a4cac8961c97348` on
+`astra/equipment-update`. The user reported Wall Jump had no effect. Its brush-only
+trace and HitWorld-only acceptance excluded the labyrinth's `lod_static_box`
+collision architecture. Use MASK_PLAYERSOLID with the actual standing/crouched
+hull and accept map world, generated static boxes, gates and jail doors. Reject
+actors, props, cosmetics, embedded starts, floors and ceilings.
+
+Wall Jump now permits four successful kicks before landing, each on a fresh
+jump press. Set ordinary vertical takeoff and the existing 160-unit outward
+normal speed so falling/inward momentum cannot cancel the jump; preserve
+horizontal tangential velocity. Spring Heel scales only vertical takeoff. The
+shared feed reports the used count. Cloud Step stays independent and lower
+priority; failures do not spend uses. Ground contact resets the counter, including
+when a landing jump press precedes Think. Death/actor lifecycle resets remain.
+
+Live GDD 04 LOD-FEAT-005 and the exact HUMAN DEX_WALL_JUMP row are updated, as are
+the feat description and exact-row test fixture. All 81 automated suites pass.
+The expanded movement suite exercises input, generated-wall probes, four/fifth
+kick behavior, crouch, falling/inward velocity, ground/death reset, Cloud Step,
+Spring Heel and invalid/held cases. Native acceptance remains pending: with Wall
+Jump owned, jump alongside a labyrinth wall and release/repress Jump for each
+kick; the feed should count 1/4 through 4/4 before landing restores the allowance.
+No main promotion or deployment; previous crash diagnostics remain.
+
+## Previous checkpoint — ordinary loot, carried copies and class combat
 
 Author direction is reconciled in live GDD 03 LOD-CBT-007, 06 inventory/DFT rules
 and LOD-UI-010, and 07 tuning. Starting dev HEAD:

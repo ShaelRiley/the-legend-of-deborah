@@ -7,6 +7,8 @@ local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "Wa
 local Effects = assert(RPG.FeatEffectSystem, "Wall Jump requires feat effects")
 local Rules = assert(LOD.RPGAbilityRules, "Wall Jump requires AbilityRules")
 local PROBE_DISTANCE, LATERAL_KICK, VERTICAL_NORMAL_LIMIT = 24, 160, 0.20
+local WALL_JUMP_LIMIT = 4
+local WALL_CLASSES = {lod_static_box=true, lod_gate=true, lod_jail_door=true}
 local FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND, FLOAT_APEX_SPEED = 3.0, 5.0, 30
 local DIRECTIONS = {
     {x = 1, y = 0}, {x = 0, y = 1}, {x = -1, y = 0}, {x = 0, y = -1},
@@ -21,7 +23,7 @@ Feats.DEX_WALL_JUMP = {
     prerequisiteFeatIds = {}, requiredCapabilityTags = {}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
     requiredSubsystemTags = {"movement"}, synergyTags = {"movement", "jump", "wall"}, oneRank = true,
     effectHandlerId = "wall_jump", effectParams = {probeDistance = PROBE_DISTANCE, lateralKick = LATERAL_KICK,
-        verticalNormalLimit = VERTICAL_NORMAL_LIMIT, description = "Once per airborne cycle, a fresh Space press within 24 units of a valid static vertical wall applies the ordinary voluntary-jump vertical impulse and a bounded kick away from that wall. It resets only on legitimate ground contact."},
+        verticalNormalLimit = VERTICAL_NORMAL_LIMIT, maximumJumps = WALL_JUMP_LIMIT, description = "Kick off a wall up to four times before landing. Each fresh Jump press within 24 units of a static vertical wall (including maze walls) gives an ordinary jump and a kick away. No Magic cost. Landing restores all four kicks; wall contact does not. Spring Heel improves the jump height."},
     directorBaseWeight = 1.0, eligibilityText = "DEX 15", actorText = "Player-controlled Heroes and human Soldiers only"
 }
 Catalog.OrdinaryFeats = Feats
@@ -33,7 +35,7 @@ Feats.INT_CLOUD_STEP = {
     prerequisiteFeatIds = {}, requiredCapabilityTags = {"magic_pool"}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
     requiredSubsystemTags = {"movement", "magic"}, synergyTags = {"movement", "jump", "magic"}, oneRank = true,
     effectHandlerId = "cloud_step", effectParams = {magicCost = 5,
-        description = "Once per airborne cycle, a fresh Space press may spend exactly 5 Magic for one additional voluntary jump. A valid unused Wall Jump has priority and leaves Cloud Step unused."},
+        description = "Once per airborne cycle, a fresh Space press may spend exactly 5 Magic for one additional voluntary jump. A valid Wall Jump with a remaining use has priority and leaves Cloud Step unused."},
     directorBaseWeight = 1.0, eligibilityText = "INT 13 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
 }
 assert(Feats.INT_FLOAT_ON == nil, "duplicate canonical feat INT_FLOAT_ON")
@@ -102,7 +104,9 @@ function Rules:WallJumpVerticalImpulse(actor)
     return base * math.max(0, tonumber(self:SpringHeelImpulseMultiplier(actor)) or 1)
 end
 function Effects:ValidWallJumpTrace(trace)
-    if type(trace) ~= "table" or trace.Hit ~= true or trace.HitWorld ~= true then return false end
+    if type(trace) ~= "table" or trace.Hit ~= true or trace.StartSolid or trace.AllSolid then return false end
+    local ent=trace.Entity
+    if trace.HitWorld ~= true and not (IsValid(ent) and ent.GetClass and WALL_CLASSES[ent:GetClass()]) then return false end
     return math.abs(tonumber((trace.HitNormal or {}).z) or 1) <= VERTICAL_NORMAL_LIMIT
 end
 function Effects:SelectWallJumpTrace(traces)
@@ -119,13 +123,15 @@ function Effects:SelectWallJumpTrace(traces)
 end
 function Rules:FindWallJumpSurface(ply)
     if not util or not util.TraceHull or not IsValid(ply) then return nil end
-    local start, mins, maxs = ply:GetPos(), ply:GetHull()
+    local start = ply:GetPos()
+    local mins,maxs
+    if ply:Crouching() then mins,maxs=ply:GetHullDuck() else mins,maxs=ply:GetHull() end
     local derived = self:Derived(ply) or {}
     local probe = math.max(1, tonumber(derived.wallJumpProbeDistance) or PROBE_DISTANCE)
     local traces = {}
     for _, direction in ipairs(DIRECTIONS) do
         traces[#traces + 1] = util.TraceHull({start = start, endpos = start + Vector(direction.x * probe, direction.y * probe, 0),
-            mins = mins, maxs = maxs, filter = ply, mask = MASK_PLAYERSOLID_BRUSHONLY or MASK_SOLID_BRUSHONLY or MASK_PLAYERSOLID})
+            mins = mins, maxs = maxs, filter = ply, mask = MASK_PLAYERSOLID})
     end
     return Effects:SelectWallJumpTrace(traces)
 end
@@ -165,14 +171,27 @@ function Rules:TryWallJump(ply)
     local derived = self:Derived(ply)
     if not derived or derived.wallJumpEnabled ~= true then return false end
     local state = Effects.WallJumpState[ply] or {}; Effects.WallJumpState[ply] = state
-    if state.used then return false end
+    local count=state.count or (state.used and 1 or 0)
+    if count>=WALL_JUMP_LIMIT then return false end
+    if ply.GetMoveType and ply:GetMoveType()~=MOVETYPE_WALK then return false end
+    if ply.InVehicle and ply:InVehicle() or ply.IsFrozen and ply:IsFrozen() then return false end
+    local status=LOD.RPGStatusElements
+    if status and not status:CanMoveVoluntarily(ply) then return false end
     local trace = self:FindWallJumpSurface(ply)
     if not trace then return false end
     local vertical = self:WallJumpVerticalImpulse(ply)
     if vertical <= 0 then return false end
     local normal, kick = trace.HitNormal or vector_origin, math.max(0, tonumber(derived.wallJumpLateralKick) or LATERAL_KICK)
-    state.used, state.lastSurfaceFraction, state.lastAt = true, tonumber(trace.Fraction) or 1, CurTime()
-    ply:SetVelocity(Vector((tonumber(normal.x) or 0) * kick, (tonumber(normal.y) or 0) * kick, vertical))
+    local outward=Vector(normal.x,normal.y,0):GetNormalized()
+    local velocity=ply:GetVelocity()
+    -- Player:SetVelocity adds base velocity: cancel inward/falling motion so
+    -- the result is a real takeoff, without stacking four kicks into a launch.
+    local delta=kick-(velocity.x*outward.x+velocity.y*outward.y)
+    state.count,state.used,state.lastSurfaceFraction,state.lastAt=count+1,nil,tonumber(trace.Fraction) or 1,CurTime()
+    ply:SetVelocity(Vector(outward.x*delta,outward.y*delta,vertical-velocity.z))
+    if LOD.RPGPresentation then
+        LOD.RPGPresentation:Event(ply,"movement",string.format("Wall Jump — %d/%d",state.count,WALL_JUMP_LIMIT),{event="wall_jump",used=state.count})
+    end
     return true
 end
 function Rules:TryCloudStep(ply)
@@ -194,6 +213,11 @@ function Rules:TryCloudStep(ply)
     return true
 end
 function Rules:HandleAirborneJump(ply)
+    -- KeyPress can precede the Think reset on a rapid landing/takeoff.
+    if IsValid(ply) and ply:OnGround() then
+        Effects.WallJumpState[ply]=nil
+        return false
+    end
     if self:TryWallJump(ply) then return true end
     if self:TryCloudStep(ply) then return true end
     return false
@@ -251,7 +275,7 @@ function Rules:TickFloatOn(ply, now)
 end
 hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
     for ply, state in pairs(Effects.WallJumpState) do
-        if not IsValid(ply) then Effects.WallJumpState[ply] = nil elseif ply:OnGround() then state.used = false end
+        if not IsValid(ply) then Effects.WallJumpState[ply] = nil elseif ply:OnGround() then state.count,state.used = 0,nil end
     end
     for ply, state in pairs(Effects.CloudStepState) do
         if not IsValid(ply) then Effects.CloudStepState[ply] = nil elseif ply:OnGround() then state.used, state.meteorUsed = false, false end
@@ -299,10 +323,11 @@ function Rules:ValidateCheckpointDWallJump()
     expect(def and def.abilityRequirements.dex == 15, "Wall Jump definition/DEX requirement")
     expect(def and def.allowedActorTypes[1] == "hero" and def.allowedActorTypes[2] == "human_soldier", "Wall Jump actor restriction")
     expect(Effects:ValidWallJumpTrace({Hit = true, HitWorld = true, HitNormal = {z = 0}}), "vertical world wall accepted")
-    expect(not Effects:ValidWallJumpTrace({Hit = true, HitWorld = false, HitNormal = {z = 0}}), "non-world wall rejected")
+    expect(not Effects:ValidWallJumpTrace({Hit = true, HitWorld = false, HitNormal = {z = 0}}), "non-architecture rejected")
     expect(not Effects:ValidWallJumpTrace({Hit = true, HitWorld = true, HitNormal = {z = 1}}), "floor rejected")
     local chosen = Effects:SelectWallJumpTrace({{Hit = true, HitWorld = true, Fraction = .8, HitNormal = {z = 0}}, {Hit = true, HitWorld = true, Fraction = .2, HitNormal = {z = 0}}})
     expect(chosen and chosen.Fraction == .2, "nearest valid wall selected")
+    expect(def.effectParams.maximumJumps == 4, "four Wall Jumps per airborne cycle")
     local cloud = Feats.INT_CLOUD_STEP
     expect(cloud and cloud.abilityRequirements.int == 13 and cloud.effectParams.magicCost == 5,
         "Cloud Step definition/cost")
