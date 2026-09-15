@@ -39,6 +39,13 @@ outstanding RPG multiplayer release validation remain required before deployment
 
 ## History
 
+The subsequent user-requested [identity perk correction](PERK_UPDATE.md) is a
+bounded detour on the same Equipment development branch. Independent category
+rolls and duplicate stacking are retained and explicitly tested; new ability
+perks support +2 or +1/+1, and every visible title/flavor follows the resolved
+mechanics. Existing Heroes keep their permanent rolls. All 66 integrated suites
+pass; Equipment runtime acceptance and Enemy sequencing otherwise remain as above.
+
 The [pre-promotion plan](DEVELOPMENT_PLAN_HISTORICAL_2026_09_14.md) preserves earlier
 checkpoint sequencing and candidate handoffs. It is historical evidence, not the
 current task queue. [Development status](DEVELOPMENT_STATUS.md) records promotion

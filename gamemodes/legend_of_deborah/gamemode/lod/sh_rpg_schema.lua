@@ -212,7 +212,7 @@ RPG.Schema = {
         "earnedAtLevel", "draftType", "offerFeatIds", "rngSeed", "selectedFeatId", "resolved"
     },
     IdentityTraitDefinition = {"tableType", "tableIndex", "categoryName", "flavorText"},
-    IdentityPerkRecord = {"traitSlot", "traitIndex", "handlerId", "targetId", "targetName", "seed", "displayName"},
+    IdentityPerkRecord = {"traitSlot", "traitIndex", "handlerId", "targetId", "secondaryTargetId", "abilityBonuses", "targetName", "seed", "displayName", "traitName", "flavorText"},
     CharacterIdentityPackage = {
         "rosterSeed", "heroIdentityId", "originIndex", "backgroundIndex", "motiveIndex",
         "masculineOrFeminineFirstNameIndex", "surnameIndex", "nicknameIndex", "presentationSex",

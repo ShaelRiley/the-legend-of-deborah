@@ -40,7 +40,7 @@ assert(weapons.crowbar and not weapons.grenade and weapons.magnum and not weapon
 for _,family in ipairs({'ZOMBIE','FAST_ZOMBIE','SOLDIER'}) do assert(enemies[family]) end
 eq(D:ModelFamily({model='models/zombie/classic.mdl'}),'ZOMBIE')
 eq(D:ModelFamily({model='future-model.mdl',baseModel='models/combine_soldier.mdl'}),'SOLDIER')
-local seen={}
+local seen,bySlot,triples,shapes={},{},{},{}
 for seed=1,300 do
     local p={rosterSeed=seed,heroIdentityId='hero',originIndex=1,backgroundIndex=2,motiveIndex=3}
     local q=table.Copy(p)
@@ -48,18 +48,47 @@ for seed=1,300 do
     eq(#p.identityPerkRecords,3)
     for i,record in ipairs(p.identityPerkRecords) do
         seen[record.handlerId]=true
+        bySlot[i]=bySlot[i] or {};bySlot[i][record.handlerId]=true
         eq(record.handlerId,q.identityPerkRecords[i].handlerId); eq(record.targetId,q.identityPerkRecords[i].targetId)
         assert(#D:Description(record)>20)
-        if record.handlerId=='ABILITY_BONUS' then assert(LOD.RPG.NewAbilityBlock(0)[record.targetId]~=nil)
+        if record.handlerId=='ABILITY_BONUS' then
+            assert(LOD.RPG.NewAbilityBlock(0)[record.targetId]~=nil)
+            local points,count=0,0
+            for id,amount in pairs(record.abilityBonuses) do
+                assert(LOD.RPG.NewAbilityBlock(0)[id]~=nil and (amount==1 or amount==2))
+                eq(amount,q.identityPerkRecords[i].abilityBonuses[id]);points=points+amount;count=count+1
+                assert(D:Description(record):find('+'..amount..' '..id:upper(),1,true))
+            end
+            eq(points,2);shapes[count]=true
+            if count==2 then assert(record.secondaryTargetId~=record.targetId) end
         elseif record.handlerId=='FAVORED_WEAPON' then assert(weapons[record.targetId])
         else assert(enemies[record.targetId]) end
+        local snap=D:Snapshot({tableType=record.traitSlot,tableIndex=record.traitIndex,
+            categoryName='OBSOLETE TITLE',flavorText='OBSOLETE FLAVOR'},p,i)
+        eq(snap.categoryName,record.traitName);eq(snap.flavorText,record.flavorText)
+        assert(not snap.categoryName:find('OBSOLETE') and #snap.flavorText>25)
+        if i==3 then assert(snap.flavorText:find('Deborah',1,true),'Motive must explain the rescue') end
+    end
+    if p.identityPerkRecords[1].handlerId==p.identityPerkRecords[2].handlerId
+        and p.identityPerkRecords[2].handlerId==p.identityPerkRecords[3].handlerId then
+        triples[p.identityPerkRecords[1].handlerId]=true
     end
     local records=p.identityPerkRecords
     assert(not D:EnsurePackage(p)); eq(p.identityPerkRecords,records,'no reroll')
 end
 assert(seen.ABILITY_BONUS and seen.FAVORED_ENEMY and seen.FAVORED_WEAPON)
+assert(shapes[1] and shapes[2],'Both +2 and +1/+1 must occur')
+for _,family in ipairs({'ABILITY_BONUS','FAVORED_WEAPON','FAVORED_ENEMY'}) do
+    assert(triples[family],'All three slots may roll '..family)
+    for i=1,3 do assert(bySlot[i][family],'Each slot must allow every family') end
+end
 local w,e,a=D:Aggregate({{handlerId='ABILITY_BONUS',targetId='str'},{handlerId='ABILITY_BONUS',targetId='str'},{handlerId='ABILITY_BONUS',targetId='str'}})
 eq(a.str,6,'three static +2 records stack')
+local _,_,split=D:Aggregate({
+    {handlerId='ABILITY_BONUS',targetId='str',abilityBonuses={str=1,dex=1}},
+    {handlerId='ABILITY_BONUS',targetId='str',abilityBonuses={str=1,dex=1}},
+    {handlerId='ABILITY_BONUS',targetId='str',abilityBonuses={str=2}}})
+eq(split.str,4);eq(split.dex,2)
 w,e=D:Aggregate({{handlerId='FAVORED_WEAPON',targetId='pistol'},{handlerId='FAVORED_WEAPON',targetId='pistol'},{handlerId='FAVORED_ENEMY',targetId='ZOMBIE'}})
 eq(w.pistol,2);eq(e.ZOMBIE,1)
 for _,catalog in ipairs({LOD.RPG.IdentityCatalog.Origins,LOD.RPG.IdentityCatalog.Backgrounds,LOD.RPG.IdentityCatalog.Motives}) do
@@ -174,6 +203,23 @@ abilityHero.state.baseAbilities.str=29
 CPS:_RecomputeProgressionState(abilityHero.state)
 eq(abilityHero.state.effectiveAbilities.str,30)
 eq(abilityHero.state.featQualificationAbilities.str,30)
+abilityHero.state.baseAbilities=LOD.RPG.NewAbilityBlock(10)
+abilityHero.state.identityAbilityDelta=split
+CPS:_RecomputeProgressionState(abilityHero.state)
+eq(abilityHero.state.effectiveAbilities.str,14);eq(abilityHero.state.effectiveAbilities.dex,12)
+eq(abilityHero.state.featQualificationAbilities.str,14);eq(abilityHero.state.featQualificationAbilities.dex,12)
+
+local legacy={rosterSeed=99,heroIdentityId='kept',originIndex=1,backgroundIndex=2,motiveIndex=3,
+    identityPerkVersion='identity-three-handlers-v1',identityPerkRecords={
+        {handlerId='ABILITY_BONUS',targetId='str'},
+        {handlerId='FAVORED_WEAPON',targetId='pistol'},
+        {handlerId='FAVORED_WEAPON',targetId='pistol'}}}
+assert(D:EnsurePackage(legacy))
+eq(legacy.identityAbilityDelta.str,2);eq(legacy.favoredWeaponStacks.pistol,2)
+assert(not legacy.identityPerkRecords[1].secondaryTargetId,'Existing permanent scores cannot reroll')
+eq(legacy.identityPerkRecords[3].handlerId,'FAVORED_WEAPON')
+assert(legacy.identityPerkRecords[3].flavorText:find('Deborah'))
+assert(not D:EnsurePackage(legacy),'Migration runs once')
 
 -- Existing Hero migration changes only old perk mechanics, not rolled base scores.
 local old=actor(10,'hero').state
@@ -187,4 +233,3 @@ eq(snap.perkDisplayName,package.identityPerkRecords[1].displayName)
 assert(not snap.mechanicalEffect:find('Breadcrumb'))
 assert(not D:EnsureState(old))
 print('IDENTITY_WEAKNESS_PASS — deterministic weakness, three legal perk handlers, stacking, migration, per-target dice, scaling, immunity and caps')
-

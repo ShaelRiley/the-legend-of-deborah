@@ -6,12 +6,21 @@ local SLOTS = {"origin", "background", "motive"}
 local FAMILIES = {"FAVORED_WEAPON", "FAVORED_ENEMY", "ABILITY_BONUS"}
 -- Canonical permanent ability contribution; duplicate targets stack.
 Director.AbilityBonus = 2
-Director.Version = "identity-three-handlers-v1"
-local NAMES = {
-    FAVORED_WEAPON = {"Old Reliable", "Weapon of Choice", "Practiced Hands"},
-    FAVORED_ENEMY = {"Personal Grudge", "Know Your Enemy", "Natural Nemesis"},
-    ABILITY_BONUS = {"Natural Talent", "Hidden Potential", "Born Ready"}
+Director.Version = "identity-three-handlers-v2"
+local ABILITY_COPY = {
+    str={name="Strength",home="Foundry Row",job="Freight Handler",practice="lifting heavy loads"},
+    dex={name="Dexterity",home="Rooftop Quarter",job="Watch Repairer",practice="working with precise hands"},
+    con={name="Constitution",home="Quarry Town",job="Endurance Courier",practice="enduring exhausting shifts"},
+    int={name="Intelligence",home="Library District",job="Archive Researcher",practice="solving intricate problems"},
+    wis={name="Wisdom",home="Border Watch",job="Trail Scout",practice="noticing what others overlook"},
+    cha={name="Charisma",home="Market Square",job="Union Negotiator",practice="winning people over"}
 }
+local WEAPON_NAMES = {crowbar="Crowbar",pistol="Pistol",shotgun="Shotgun",smg="SMG",magnum="Revolver",ar2="Pulse Rifle"}
+local ENEMY_NAMES = {ZOMBIE="Zombie",FAST_ZOMBIE="Fast Zombie",SOLDIER="Soldier",HEADCRAB="Headcrab",ROLLER="Roller"}
+local function friendlyName(id)
+    local name=tostring(id):match("([^/]+)%.mdl$") or tostring(id)
+    return (name:gsub("_"," "):lower():gsub("%a[%w']*",function(word) return word:sub(1,1):upper()..word:sub(2) end))
+end
 local MODEL_LINEAGES = {
     ["models/zombie/classic.mdl"] = "ZOMBIE",
     ["models/zombie/fast.mdl"] = "FAST_ZOMBIE",
@@ -49,12 +58,12 @@ function Director:TargetRegistries()
     end
     local weapons, enemies = {}, {}
     for _, profile in pairs(LOD.RPG.PlayerWeaponDamageProfiles) do
-        if profile.weaponFamilyId then weapons[profile.weaponFamilyId] = profile.label end
+        if profile.weaponFamilyId then weapons[profile.weaponFamilyId] = WEAPON_NAMES[profile.weaponFamilyId] or profile.label end
     end
     weapons.crowbar = "Crowbar"
     for _, config in pairs(LOD.Config.Encounter.Archetypes) do
         local family = self:ModelFamily(config)
-        if family then enemies[family] = family:gsub("_", " ") end
+        if family then enemies[family] = ENEMY_NAMES[family] or friendlyName(family) end
     end
     assert(next(enemies), "identity target registry requires enabled enemy models")
     self.FavoredWeaponTargetRegistry, self.EnemyModelFamilyRegistry = weapons, enemies
@@ -64,37 +73,105 @@ function Director:Aggregate(records)
     local weapon, enemy, ability = {}, {}, LOD.RPG.NewAbilityBlock(0)
     for _, record in ipairs(records) do
         local id = record.targetId
-        if record.handlerId == "ABILITY_BONUS" then ability[id] = (ability[id] or 0) + self.AbilityBonus
+        if record.handlerId == "ABILITY_BONUS" then
+            -- Legacy records retain their permanent +2; new records explicitly
+            -- store either one +2 or two distinct +1 contributions.
+            for target,amount in pairs(record.abilityBonuses or {[id]=self.AbilityBonus}) do
+                ability[target]=(ability[target] or 0)+amount
+            end
         elseif record.handlerId == "FAVORED_WEAPON" then weapon[id] = (weapon[id] or 0) + 1
         elseif record.handlerId == "FAVORED_ENEMY" then enemy[id] = (enemy[id] or 0) + 1
         else error("unknown identity handler") end
     end
     return weapon, enemy, ability
 end
+function Director:WritePresentation(record)
+    local slot,target=record.traitSlot,record.targetName
+    if record.handlerId=="ABILITY_BONUS" then
+        local names,homes,jobs,practices,amounts={},{},{},{},{}
+        for _,id in ipairs(ABILITIES) do
+            local amount=record.abilityBonuses[id]
+            if amount then
+                local c=ABILITY_COPY[id]
+                names[#names+1]=c.name;homes[#homes+1]=c.home;jobs[#jobs+1]=c.job;practices[#practices+1]=c.practice
+                amounts[#amounts+1]="+"..amount.." "..string.upper(id)
+            end
+        end
+        local talents=table.concat(names," and ")
+        record.targetName=table.concat(amounts,", ")
+        record.displayName="Ability Bonus — "..record.targetName
+        if slot=="origin" then
+            record.traitName=table.concat(homes," / ")
+            record.flavorText="Growing up around "..table.concat(homes," and ").." meant "..table.concat(practices," and ").."; "..talents:lower().." became second nature."
+        elseif slot=="background" then
+            record.traitName=table.concat(jobs," & ")
+            record.flavorText="Before the labyrinth, you earned your living by "..table.concat(practices," and ")..", developing your "..talents:lower().."."
+        else
+            record.traitName="Bring Her Home: "..talents
+            record.flavorText="Deborah once helped you find your "..talents:lower().."; now you intend to use "..(#names==1 and "it" or "both").." to bring her home."
+        end
+    elseif record.handlerId=="FAVORED_WEAPON" then
+        record.displayName="Favored Weapon — "..target
+        if slot=="origin" then
+            record.traitName=target.." Range Settlement"
+            record.flavorText="In your hometown, "..target.." practice was a family ritual; you learned to make each hit count."
+        elseif slot=="background" then
+            record.traitName=target.." Instructor"
+            record.flavorText="Teaching "..target.." technique for a living left you with a practiced knack for harder hits."
+        else
+            record.traitName="Deborah's "..target.." Backup"
+            record.flavorText="You promised Deborah you would cover her escape; your well-practiced "..target.." is how you mean to keep that promise."
+        end
+    else
+        record.displayName="Favored Enemy — "..target
+        if slot=="origin" then
+            record.traitName=target.." Quarantine Zone"
+            record.flavorText="You grew up behind barricades facing the "..target.." family and learned where those creatures are vulnerable."
+        elseif slot=="background" then
+            record.traitName=target.." Control Contractor"
+            record.flavorText="Paid work against the "..target.." family taught you to exploit its vulnerabilities with whatever weapon was available."
+        else
+            record.traitName=target.." Vendetta"
+            record.flavorText="The "..target.." family has already taken too much from you; rescuing Deborah is your refusal to lose anyone else."
+        end
+    end
+end
 function Director:EnsurePackage(package)
     if not package or package.identityPerkVersion == self.Version then return false end
     local weapons, enemies = self:TargetRegistries()
     local targets = {FAVORED_WEAPON = sortedKeys(weapons), FAVORED_ENEMY = sortedKeys(enemies), ABILITY_BONUS = ABILITIES}
     local records = {}
+    local legacy=package.identityPerkVersion=="identity-three-handlers-v1" and package.identityPerkRecords
     for i, slot in ipairs(SLOTS) do
         local label = tostring(package.heroIdentityId) .. ":IdentityPerk:" .. slot .. ":" .. package[slot .. "Index"]
         local seed = LOD.Seeds.Derive(package.rosterSeed, label)
         local rng = LOD.RNG.New(seed)
         local handler = FAMILIES[rng:Int(1, #FAMILIES)]
         local target = targets[handler][rng:Int(1, #targets[handler])]
-        local bank = NAMES[handler]
-        local names = LOD.RNG.New(LOD.Seeds.Derive(seed, "display-name"))
+        -- Upgrade existing immutable rolls without changing handler or target.
+        if legacy and legacy[i] then handler,target=legacy[i].handlerId,legacy[i].targetId end
         local targetName = handler == "ABILITY_BONUS" and string.upper(target)
-            or (handler == "FAVORED_WEAPON" and weapons[target] or enemies[target])
+            or (handler == "FAVORED_WEAPON" and weapons[target] or enemies[target]) or friendlyName(target)
         records[i] = {traitSlot = slot, traitIndex = package[slot .. "Index"], handlerId = handler,
-            targetId = target, targetName = targetName, seed = seed,
-            displayName = bank[names:Int(1, #bank)] .. " (" .. targetName .. ")"}
+            targetId = target, targetName = targetName, seed = seed}
+        local record=records[i]
+        if handler=="ABILITY_BONUS" then
+            record.abilityBonuses={[target]=2}
+            local shape=LOD.RNG.New(LOD.Seeds.Derive(seed,"ability-shape-v2"))
+            if not legacy and shape:Int(1,2)==2 then
+                local others={};for _,id in ipairs(ABILITIES) do if id~=target then others[#others+1]=id end end
+                record.secondaryTargetId=others[shape:Int(1,#others)]
+                record.abilityBonuses={[target]=1,[record.secondaryTargetId]=1}
+            end
+        end
+        self:WritePresentation(record)
     end
     package.identityPerkRecords = records
     package.favoredWeaponStacks, package.favoredEnemyStacks, package.identityAbilityDelta = self:Aggregate(records)
     package.resolvedIdentityPerkIds = {}
     for i, record in ipairs(records) do
         package.resolvedIdentityPerkIds[i] = record.traitSlot .. ":" .. record.handlerId .. ":" .. record.targetId
+            ..(record.secondaryTargetId and "+"..record.secondaryTargetId or "")
     end
     package.identityPerkVersion = self.Version
     return true
@@ -114,7 +191,12 @@ function Director:ActorPackage(actor)
 end
 function Director:Description(record)
     if record.handlerId == "ABILITY_BONUS" then
-        return string.format("Permanently grants +%d %s. Duplicate perks stack.", self.AbilityBonus, record.targetName)
+        local parts={}
+        for _,id in ipairs(ABILITIES) do
+            local amount=(record.abilityBonuses or {[record.targetId]=self.AbilityBonus})[id]
+            if amount then parts[#parts+1]="+"..amount.." "..string.upper(id) end
+        end
+        return "Permanently grants "..table.concat(parts," and ")..". Counts toward feat qualification. Duplicate perks stack."
     elseif record.handlerId == "FAVORED_WEAPON" then
         return "Favored Weapon: +1 flat damage with " .. record.targetName
             .. " per direct attack per damaged target, after resistance and scaling. Once per shotgun target; excludes supplemental effects. Duplicate perks stack."
@@ -125,9 +207,10 @@ end
 function Director:Snapshot(definition, package, index)
     local record = assert(package.identityPerkRecords[index], "identity record missing")
     return {tableType = definition.tableType, tableIndex = definition.tableIndex,
-        categoryName = definition.categoryName, flavorText = definition.flavorText,
+        categoryName = record.traitName, flavorText = record.flavorText,
         perkDisplayName = record.displayName, mechanicalEffect = self:Description(record),
-        handlerId = record.handlerId, targetId = record.targetId}
+        handlerId = record.handlerId, targetId = record.targetId, secondaryTargetId=record.secondaryTargetId,
+        abilityBonuses=record.abilityBonuses and table.Copy(record.abilityBonuses)}
 end
 -- Capture the permanent identity and die definition at commitment. A source with
 -- mixed dice must declare its primary die; arbitrary damage tables are ineligible.
@@ -204,4 +287,3 @@ function Director:WeaponBonus(contract, tags, amount)
     local family = contract.profile and contract.profile.weaponFamilyId
     return family and (contract.identityWeaponStacks or {})[family] or 0
 end
-
