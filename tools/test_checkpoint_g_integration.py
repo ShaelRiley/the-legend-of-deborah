@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Equipment Network Delta & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_equipment_delivery.lua"]),
     ("Recurring Hermit Gifts & Staging Board", ["python3", "tools/run_lua54.py", "tools/test_hermit_return.lua"]),
     ("Enemy Variety & Shared Combat Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_enemy_update.lua"]),
     ("Equipment Owner-Only Pickup Inspection", ["python3", "tools/run_lua54.py", "tools/test_equipment_inspection.lua"]),

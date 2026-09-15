@@ -5,8 +5,8 @@ local Delivery = LOD.SnapshotDelivery
 -- State snapshots are replaceable observations, unlike ordered DIE-LOGGER events.
 -- Multi-kill XP settlement used to write the entire sheet/book forty times in one
 -- tick. Resolve only the latest state after that transaction and deduplicate it.
--- These two fixed channels keep each player's pending/cache storage bounded.
-local CHANNELS = {"LOD_RPG_Snapshot", "LOD_MagicSpellbookSnapshot"}
+-- Fixed channels keep each player's pending/cache storage bounded.
+local CHANNELS = {"LOD_RPG_Snapshot", "LOD_MagicSpellbookSnapshot", "LOD_EquipmentSnapshot"}
 local allowed = {}; for _, name in ipairs(CHANNELS) do allowed[name] = true end
 local INTERVAL = 0.1 -- presentation delivery only; gameplay never waits for this
 local function weakKeys() return setmetatable({}, {__mode = "k"}) end
@@ -21,7 +21,7 @@ local function equal(a, b)
     return true
 end
 
-function Delivery:Queue(ply, name, build)
+function Delivery:Queue(ply, name, build, write)
     if not IsValid(ply) or not ply:IsPlayer() then return end
     assert(allowed[name], "unregistered snapshot channel")
     local state = self.Players[ply]
@@ -31,7 +31,7 @@ function Delivery:Queue(ply, name, build)
     end
     self.Stats.requested = self.Stats.requested + 1
     if state.pending[name] then self.Stats.coalesced = self.Stats.coalesced + 1 end
-    state.pending[name] = build
+    state.pending[name] = {build=build, write=write}
     if state.scheduled then return end
     state.scheduled = true
     timer.Simple(INTERVAL, function()
@@ -42,18 +42,19 @@ function Delivery:Queue(ply, name, build)
         state.pending = {}
         local flushBytes = 0
         for _, channel in ipairs(CHANNELS) do
-            local builder = pending[channel]
-            if builder then
+            local queued = pending[channel]
+            if queued then
                 local ok, err = pcall(function()
                     -- Read at dispatch: never send a captured, retired incarnation.
-                    local snapshot = builder(ply)
+                    local snapshot = queued.build(ply)
                     if not snapshot then state.last[channel] = nil; return end
                     if equal(snapshot, state.last[channel]) then
                         self.Stats.unchanged = self.Stats.unchanged + 1
                         return
                     end
                     net.Start(channel)
-                    net.WriteTable(snapshot)
+                    if queued.write then queued.write(snapshot, state.last[channel], equal)
+                    else net.WriteTable(snapshot) end
                     local bytes = net.BytesWritten and net.BytesWritten() or 0
                     net.Send(ply)
                     -- Some Soldier fields alias mutable server tables.
@@ -76,9 +77,10 @@ end
 
 -- Explicit client requests recover a snapshot sent before InitPostEntity, or a
 -- discarded local UI cache. They still share the same bounded delivery window.
-function Delivery:Invalidate(ply)
+function Delivery:Invalidate(ply, channel)
     local state = self.Players[ply]
-    if state then state.last = {} end
+    if not state then return end
+    if channel then state.last[channel] = nil else state.last = {} end
 end
 
 hook.Add("PlayerDisconnected", "LOD_SnapshotDeliveryDisconnect", function(ply)

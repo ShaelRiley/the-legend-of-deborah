@@ -36,12 +36,12 @@ function E:RefreshDerived(ply,ps)
     local state=self:Ensure(ps)
     local weapon=IsValid(ply) and ply:GetActiveWeapon() or nil
     state.activeWeaponClass=IsValid(weapon) and weapon:GetClass() or nil
-    local a,_,block,x=self:Contributions(state)
     local signature={state.activeWeaponClass or ""}
     for _,slot in ipairs(self.SlotOrder) do signature[#signature+1]=state.slots[slot] or "" end
     local key=table.concat(signature,"|")
     local p=ps.progressionState
     if p.equipmentKey==key then return end
+    local a,_,block,x=self:Contributions(state)
     p.equipmentKey,p.equipmentAbilityDelta,p.equipmentBlockChanceContribution,p.equipmentExtras=key,a,block,x
     CPS:_RecomputeProgressionState(p)
     CPS:_ApplyPlayerMaxHP(ply,p)

@@ -8,7 +8,9 @@ CurTime=function() return now end
 IsValid=function(x) return type(x)=='table' and x.valid==true end
 LOD.RunManager={State={LevelSeed=4},IdentityOf=function(_,p) return p.identity end}
 LOD.UI={Colors={}}
-hook={Add=function() end}
+local hooks={}
+hook={Add=function(_,id,fn) hooks[id]=fn end}
+Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a} end
 util={AddNetworkString=function() end}
 local handlers,sends,requests={},0,0
 local readEntity,readItem,sentEntity,sentItem,recipient
@@ -57,3 +59,38 @@ readItem=item;client();assert(E:PickupView(nextEnt).name==item.name)
 -- An object no longer valid at delivery cannot acquire a cached record.
 nextEnt.valid=false;nextEnt.LODItemView=nil;client();assert(not nextEnt.LODItemView)
 print('EQUIPMENT_INSPECTION_PASS: full records; owner/range/lifecycle/size/rate guards; retry/cache/recycled entity safety')
+
+-- Actual HUD hook: stationary inspection formats once instead of once per frame.
+local measures,descriptions,draws=0,0,{}
+local screenWidth=1024
+ScrW=function() return screenWidth end;ScrH=function() return 768 end
+surface={SetFont=function() end,GetTextSize=function(text) measures=measures+1;return #text*6,12 end}
+draw={RoundedBox=function() end,SimpleText=function(text) draws[#draws+1]=text end}
+owner.Alive=function() return true end
+owner.GetEyeTrace=function() return {Entity=ent} end
+LocalPlayer=function() return owner end
+local describe=E.Description
+function E:Description(...) descriptions=descriptions+1;return describe(self,...) end
+local hud=hooks.LOD_EquipmentComparison
+hud();local firstMeasures,firstDescriptions=measures,descriptions
+local firstLines=table.concat(draws,'\n')
+assert(firstMeasures>0 and firstDescriptions>0)
+for _=1,600 do draws={};hud();assert(table.concat(draws,'\n')==firstLines) end
+assert(measures==firstMeasures and descriptions==firstDescriptions,'No text allocations/measurements on cache hits')
+local function rebuild(change)
+    local before=measures;change();hud();assert(measures>before,'Changed comparison must rebuild')
+end
+rebuild(function() screenWidth=640 end)
+-- Receiver replaces snapshot; a new equipped ring changes the comparison text.
+LOD.Spellbook={};istable=function(x) return type(x)=='table' end
+local ring=E:Generate(12,20,'ring','owned')
+readItem={items={[ring.id]=ring},slots={left_hand=ring.id}}
+rebuild(function() handlers.LOD_EquipmentSnapshot() end)
+rebuild(function() ent.LODItemView=E:Generate(42,5,'boots','new-view') end)
+rebuild(function() ent=pickup(item);ent.LODItemView=item end)
+rebuild(function() hooks.LOD_EquipmentComparisonCleanup() end)
+distance=129^2;draws={};hud();assert(#draws==0);distance=0
+rebuild(function() end)
+LOD.UI.ActivePage='book';draws={};hud();assert(#draws==0);LOD.UI.ActivePage=nil
+rebuild(function() end)
+print('EQUIPMENT_HUD_CACHE_PASS: 601 identical frames, one layout; snapshot/item/entity/width/cleanup invalidation; range/UI guards')

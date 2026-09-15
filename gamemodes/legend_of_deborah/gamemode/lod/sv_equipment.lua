@@ -12,6 +12,22 @@ local function heroState(ply)
     return Run:GetPlayerState(ply)
 end
 
+local function writeSnapshot(snapshot, previous, equal)
+    if not previous then net.WriteTable(snapshot); return end
+    -- Reliable, ordered delivery has already established a full baseline. Keep
+    -- unchanged rolls client-side; weapon switches normally send just slots and
+    -- active class. Explicit snapshot requests always reset to a full baseline.
+    local state, removed = {items={}}, {}
+    for key, value in pairs(snapshot) do if key ~= "items" then state[key] = value end end
+    for id, item in pairs(snapshot.items) do
+        if not equal(item, previous.items[id]) then state.items[id] = item end
+    end
+    for id in pairs(previous.items) do
+        if not snapshot.items[id] then removed[#removed+1] = id end
+    end
+    net.WriteTable({equipmentDelta=true, state=state, removed=removed})
+end
+
 function E:CanAct(ply)
     local state = Run.State
     return heroState(ply) ~= nil and ply:Alive() and Run:IsActivePlayer(ply)
@@ -27,9 +43,17 @@ function E:Sync(ply)
     local def = self:Definition(item)
     ply:SetNW2String("LOD_ThrowableItem", item and item.definitionId or "")
     ply:SetNW2Int("LOD_ThrowableCount", item and item.count or 0)
-    net.Start("LOD_EquipmentSnapshot")
-    net.WriteTable(state or {items={}, slots={}})
-    net.Send(ply)
+    if LOD.SnapshotDelivery then
+        LOD.SnapshotDelivery:Queue(ply, "LOD_EquipmentSnapshot", function(recipient)
+            -- Resolve ownership at dispatch, including Hero/Soldier transitions.
+            local current = heroState(recipient)
+            return current and E:Ensure(current) or {items={}, slots={}}
+        end, writeSnapshot)
+    else
+        net.Start("LOD_EquipmentSnapshot")
+        net.WriteTable(state or {items={}, slots={}})
+        net.Send(ply)
+    end
     if item and ply:Alive() and Run:IsActivePlayer(ply) and not ply:HasWeapon(self.WeaponClass) then
         ply:Give(self.WeaponClass, true)
     elseif not def then self:Deactivate(ply) end
@@ -133,7 +157,11 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
     if now < (requestTimes[ply] or 0) then return end
     requestTimes[ply] = now + 0.10
     local action, id, slot = net.ReadString(), net.ReadString(), net.ReadString()
-    if action == "snapshot" then E:Sync(ply); return end
+    if action == "snapshot" then
+        if LOD.SnapshotDelivery then LOD.SnapshotDelivery:Invalidate(ply, "LOD_EquipmentSnapshot") end
+        E:Sync(ply)
+        return
+    end
     if not E:CanAct(ply) then return end
     local state = E:Ensure(heroState(ply))
     if action == "activate" then E:Activate(ply)

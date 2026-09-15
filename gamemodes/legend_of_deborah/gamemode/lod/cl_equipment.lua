@@ -1,6 +1,7 @@
 local E, UI = LOD.Equipment, LOD.UI
 local C = UI.Colors
 E.Snapshot = {items={}, slots={}}
+E.HasSnapshot = false
 
 function E:Request(action, id, slot)
     net.Start("LOD_EquipmentRequest")
@@ -108,15 +109,15 @@ net.Receive("LOD_EquipmentInspect",function()
     end
 end)
 
--- World pickup and inventory share the item name/property/value formatter.
-hook.Add("HUDPaint","LOD_EquipmentComparison",function()
-    local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then return end
-    local trace=ply:GetEyeTrace()
-    local ent=trace.Entity
-    if not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
-        or ply:GetPos():DistToSqr(ent:GetPos())>128*128 then return end
-    local item=E:PickupView(ent)
+-- One layout, not a growing history of inspected equipment. Item records and
+-- received snapshots are replaced atomically; either change invalidates it.
+local comparison
+local comparisonBackground=Color(20,27,32,235)
+local comparisonInk=Color(235,239,245)
+function E:ComparisonLayout(ent,item,width)
+    if comparison and comparison.entity==ent and comparison.item==item
+        and comparison.snapshot==self.Snapshot and comparison.width==width then return comparison end
+    comparison=nil
     if not E:ValidateWearable(item) then return end
     local slot,displaced,oldValue=E:Placement(E.Snapshot,item)
     local lines={E:ItemName(item),E:Description(item,true)}
@@ -126,7 +127,6 @@ hook.Add("HUDPaint","LOD_EquipmentComparison",function()
     end
     lines[#lines+1]=string.format("Value %g → %g (%+g) — approximate comparison",oldValue,E:Value(item),E:Value(item)-oldValue)
     lines[#lines+1]=#displaced>0 and "E: ACCEPT REPLACEMENT" or "Touch or E: EQUIP"
-    local width=math.min(900,ScrW()-40)
     surface.SetFont("DermaDefault")
     local wrapped={}
     for _,text in ipairs(lines) do
@@ -137,16 +137,45 @@ hook.Add("HUDPaint","LOD_EquipmentComparison",function()
         end
         wrapped[#wrapped+1]=line
     end
-    local height=#wrapped*18+20
+    comparison={entity=ent,item=item,snapshot=self.Snapshot,width=width,lines=wrapped,height=#wrapped*18+20}
+    return comparison
+end
+
+-- World pickup and inventory share the item name/property/value formatter.
+hook.Add("HUDPaint","LOD_EquipmentComparison",function()
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() or UI.ActivePage then comparison=nil;return end
+    local ent=ply:GetEyeTrace().Entity
+    if not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
+        or ply:GetPos():DistToSqr(ent:GetPos())>128*128 then comparison=nil;return end
+    local layout=E:ComparisonLayout(ent,E:PickupView(ent),math.min(900,ScrW()-40))
+    if not layout then return end
+    local height=layout.height
     local x,y=20,math.max(20,ScrH()-height-70)
-    draw.RoundedBox(4,x,y,width,height,Color(20,27,32,235))
-    for i,text in ipairs(wrapped) do draw.SimpleText(text,"DermaDefault",x+12,y+10+(i-1)*18,Color(235,239,245)) end
+    draw.RoundedBox(4,x,y,layout.width,height,comparisonBackground)
+    for i,text in ipairs(layout.lines) do draw.SimpleText(text,"DermaDefault",x+12,y+10+(i-1)*18,comparisonInk) end
 end)
+hook.Add("PreCleanupMap","LOD_EquipmentComparisonCleanup",function() comparison=nil end)
 
 net.Receive("LOD_EquipmentSnapshot", function()
     local state = net.ReadTable()
+    if istable(state) and state.equipmentDelta then
+        if not E.HasSnapshot then E:Request("snapshot");return end
+        local patch, removed=state.state,state.removed
+        if not istable(patch) or not istable(patch.items) or not istable(patch.slots) or not istable(removed) then return end
+        -- Copy only the item index; immutable rolls can be shared between views.
+        -- A fresh snapshot identity also invalidates the comparison layout.
+        local items={}
+        for id,item in pairs(E.Snapshot.items) do items[id]=item end
+        for _,id in ipairs(removed) do items[id]=nil end
+        for id,item in pairs(patch.items) do items[id]=item end
+        patch.items=items
+        state=patch
+    end
     if not istable(state) or not istable(state.items) or not istable(state.slots) then return end
     E.Snapshot = state
+    E.HasSnapshot = true
+    comparison=nil
     if LOD.Spellbook.EquipmentPage and IsValid(LOD.Spellbook.Frame) then LOD.Spellbook:Open() end
 end)
 

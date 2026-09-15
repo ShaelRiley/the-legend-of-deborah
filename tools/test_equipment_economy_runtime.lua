@@ -98,6 +98,17 @@ E:Sync(owner)
 for _,class in ipairs(E.WeaponFamilies) do assert(E:ValidateWearable(E:Equipped(owner.ps.equipment,class))) end
 local weaponCount=0;for _,item in pairs(owner.ps.equipment.items) do if E:Definition(item).weapon then weaponCount=weaponCount+1 end end
 assert(weaponCount==6,'Repeated Give restores, never creates extra records')
+-- Network synchronization must not repeat aggregation of unchanged equipment.
+local aggregate,aggregations=E.Contributions,0
+function E:Contributions(...) aggregations=aggregations+1;return aggregate(self,...) end
+owner.ps.progressionState.equipmentKey=nil
+E:Sync(owner)
+for _=1,100 do E:Sync(owner) end
+assert(aggregations==1,'Unchanged synchronization skips property aggregation')
+owner:SelectWeapon('weapon_357');E:Sync(owner)
+assert(aggregations==2,'Weapon change immediately refreshes derived stats')
+E.Contributions=aggregate
+
 assert(Loot:_MissingWeaponReward(owner,LOD.RNG.New(1)),'Owning all families must still allow new variants')
 local level=Run.State.LevelSeed;Run.State.LevelSeed=8
 assert(not Loot:Collect(pickup(E:NewItem(owner,'boots','stale'),'stale'),target,true),'Foreign owner rejected')

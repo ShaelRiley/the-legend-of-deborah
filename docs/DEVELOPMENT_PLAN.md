@@ -9,6 +9,17 @@ Sol complements it with architecture, review, planning, and bounded implementati
 where useful. Antigravity and `hybrid/antigravity` are retired as active development
 workers/workflows. See [Development workflow](DEVELOPMENT_WORKFLOW.md).
 
+## Current checkpoint — low-end and distant-player performance
+
+Shael's latest direction prioritizes low-end CPU/memory use and laggy connections.
+The combined `astra/equipment-update` candidate now coalesces equipment snapshots
+through the existing 100 ms presentation window, suppresses identical snapshots,
+and sends changed/removed records after a full baseline. Gameplay effects stay
+immediate. Pickup comparisons retain one layout; unchanged equipment skips repeated
+stat aggregation. See [performance evidence and runtime gate](PERFORMANCE_CHECKPOINT.md).
+All 69 automated suites pass; Source FPS/RAM and real-network acceptance remain pending.
+This technical checkpoint does not settle the outstanding $DEB/DFT proposal defaults.
+
 ## Current author priority — persistent $DEB / DFT economy
 
 Shael identifies the fake-crypto update as essential Equipment scope. His new
