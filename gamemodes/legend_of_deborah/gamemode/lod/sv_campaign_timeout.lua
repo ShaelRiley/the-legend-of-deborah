@@ -42,7 +42,7 @@ function T:Start(ply)
     local cv = GetConVar("sv_hibernate_think")
     if cv and not cv:GetBool() then c.restoreHibernate = true; RunConsoleCommand("sv_hibernate_think", "1") end
     self:Sync()
-    LOD.ProgressionDirector:Announce("PRISON COLLAPSE IN 30:00 — CAMPAIGN CLOCK STARTED")
+    LOD.ProgressionDirector:Announce("PRISON COLLAPSE IN 30:00 — DUNGEON CLOCK STARTED")
     log("CAMPAIGN_CLOCK_START", {epoch=s.CampaignEpoch, level=s.Level, duration=self.Duration})
     return true
 end
@@ -52,6 +52,15 @@ function T:RestoreHibernate(c)
     local cv = GetConVar("sv_hibernate_think")
     if cv then RunConsoleCommand("sv_hibernate_think", "0") end
     c.restoreHibernate = nil
+end
+
+function T:ResetAfterRescue()
+    self:RestoreHibernate(self:Clock())
+    -- No deadline means a full, paused clock. Warnings and sync cadence also
+    -- belong to the next dungeon, rather than carrying over from this one.
+    Run.State.CampaignClock = {}
+    self:Sync()
+    log("DUNGEON_CLOCK_RESET", {epoch=Run.State.CampaignEpoch, level=Run.State.Level, duration=self.Duration})
 end
 
 function T:Bounds()
@@ -216,7 +225,9 @@ for _,name in ipairs({"CompleteLevel","AdvanceLevel","BuildCurrentLevel","TryAct
     Run[name]=function(self,...)
         T:Expire()
         if T:Clock().scene then return false,"TIME OVER" end
-        return base(self,...)
+        local ok,result=base(self,...)
+        if name == "CompleteLevel" and ok then T:ResetAfterRescue() end
+        return ok,result
     end
 end
 local newCampaign=Run.NewCampaign

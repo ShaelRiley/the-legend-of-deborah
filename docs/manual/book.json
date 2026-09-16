@@ -20,7 +20,7 @@
       "steps": [
         "In staging, visit the Hermit. Choose Fighter, Rogue, or Wizard and settle your first feat choice. Collect your starter weapon.",
         "Press P to inspect your character. Use Equipment to choose gear, and I to set your spell. Read any unfamiliar effect before entering.",
-        "Use the portal. The first Hero entering starts the campaign's single 30:00 clock.",
+        "Use the portal. The first Hero entering each dungeon starts its 30:00 collapse clock.",
         "Find the cards and open their gates: Red, Blue, Yellow, then Black. Neil carries the Black Keycard.",
         "Defeat Gordon. Collect the Jail Key at the arena center, open Deborah's jail, then touch Deborah to complete the rescue."
       ],
@@ -94,7 +94,7 @@
       "text": [
         "Staging comes before Dungeon 1 and after each successful rescue. Speak to the Hermit, inspect your character in the mirror, check the Heroes of Legend board, and visit the Debbie statue for your wallet collection.",
         "Your first Hermit visit issues one identity-bound advanced starter weapon; reopening the conversation does not issue another. Later staging visits offer one standard random-drop gift. Finish pending class and feat decisions, then choose your loadout.",
-        "Take care on return visits: the campaign clock keeps running once it has started. It does not refill because you rescued Deborah, changed floors, or returned to staging.",
+        "Rescuing Deborah resets the collapse clock to 30:00. It stays paused through the celebration and your return to staging, until the first Hero enters the next dungeon. Your weapons, magazines, reserve ammunition, equipped gear, stored items, and consumable stacks stay with your Hero.",
         "The portal commits you to the active dungeon. A Hero who remains behind cannot pause the countdown for teammates already inside."
       ]
     },
@@ -639,7 +639,7 @@
       "text": [
         "Move pieces left or right, rotate with Up/Forward, soft-drop with Down/Back, and hard-drop with Jump. Clearing several lines at once earns the corresponding reward, not the sum of separate single-line clears.",
         "Rewards become temporary HP overfill. They do not permanently increase maximum HP and cannot be refilled by ordinary regeneration. Topping out ends the board session while preserving the bonus already earned; it does not erase the mandatory death wait.",
-        "After rescue, Victory Tetris lasts 20 seconds. Russian Asset doubles qualifying HP rewards in both Tetris modes. It also raises the death-Tetris maximum to 120 seconds, but F still becomes available after the same 20-second lockout. It never extends Victory Tetris or the campaign clock."
+        "After rescue, Victory Tetris lasts 20 seconds. Russian Asset doubles qualifying HP rewards in both Tetris modes. It also raises the death-Tetris maximum to 120 seconds, but F still becomes available after the same 20-second lockout. It never extends Victory Tetris or the active dungeon clock."
       ]
     },
     {

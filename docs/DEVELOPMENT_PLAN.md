@@ -1,4 +1,26 @@
-# Current candidate — surface-only weapon identity
+# Current candidate — dungeon transition retention
+
+`dungeon-return-20260916-01`, developed directly on `main` after promoting the
+accepted weapon build `fdea1ac0bc1e69765cff7e629a7590f85eeef5a2`.
+
+Successful rescue resets the collapse clock to 30:00 and pauses it through
+intermission, generation and staging. The next dungeon's first Hero deployment
+starts its deadline; an expired rescue still loses before rewards. Native Hero
+inventory snapshots reject Soldier and pending respawn bodies. Restoring owned
+weapons bypasses new-item capacity admission with scoped exception cleanup.
+Equipment records, slots and stacks remain bound to the same Hero state.
+
+Finite automated gate: real completion/advancement/build/deferred-spawn test with
+a full bag, exact weapon/clips/ammo/active selection, stored rolls and consumables,
+Soldier retirement, overlapping builds and failed-Give cleanup; timer regression
+for reset, paused staging, next start and deadline race; integrated suite.
+Validation: all 103 integrated suites pass, including the new transition harness.
+Finite GMod gate: complete one dungeon with carried gear, wait in next staging,
+confirm 30:00 and retained weapons/items, then deploy and confirm countdown.
+Native GMod acceptance of these transition fixes remains pending. No server
+installation or Workshop publication is included.
+
+# Accepted weapon visuals — promoted to main
 
 Author request: remove procedural cosmetic gun attachments; represent stored
 properties with tint, partial procedural textures, radiant aura and muzzle color.
@@ -14,8 +36,9 @@ rules and generated canonical manual now reflect the author correction.
 All 102 integrated suites pass; the historical LuaJIT 2.0.4 crash replay still
 passes 1,400 exact rewards (with the authorized adjective substitution).
 See `docs/WEAPON_SURFACES.md` for implementation boundaries and the visual gate.
-Native GMod visual acceptance is pending. Push to `astra/equipment-update` for
-Shael's playtest; main promotion and public-server deployment remain separate.
+Shael accepted the weapon visuals on 2026-09-16. Verified main was fast-forwarded
+to `fdea1ac0bc1e69765cff7e629a7590f85eeef5a2`. The equipment branch is closed;
+all subsequent work is on main unless Shael explicitly directs otherwise.
 
 # Previous stabilization candidate
 

@@ -1,7 +1,7 @@
-# Campaign clock and TIME OVER — 2026-09-15
+# Dungeon collapse clock and TIME OVER — updated 2026-09-16
 
-Development branch: `astra/equipment-update`; continuation baseline `af5b4f7`.
-No main promotion, VPS deployment or Workshop publication is included.
+Development branch: `main`; build `dungeon-return-20260916-01`.
+No VPS deployment or Workshop publication is included.
 
 ## HUD follow-up
 
@@ -14,18 +14,20 @@ its anchor and alignment.
 ## Authority
 
 Read the live GDD entrypoint/index and relevant Core Loop / Lifecycle rules,
-including LOD-TIMER-001, plus its exact Time Over HUMAN detail. The explicit
-2026-09-15 handoff overrides two older GDD rules: the clock now belongs to the
-whole campaign, and rescuing Deborah does not cancel or reset it. This is an
-implementation of that handoff, not a routine rewrite of the live document.
+including LOD-TIMER-001. The 2026-09-16 author correction supersedes the earlier
+campaign-wide countdown. The normalized rule now explicitly gives every dungeon
+a fresh 1,800 seconds, paused after rescue and throughout return staging.
 
 ## Implemented lifecycle
 
-The successful staging deployment transaction starts one server SysTime deadline
-immediately after the first Hero's teleport. It is absent before that moment and
-cannot be restarted by later entrants, deaths, respawns, Soldiers, spectating,
-intermissions, generated levels, or reconnects. It lives on campaign state, not
-level state. One-second snapshots carry the campaign epoch, started flag,
+The successful staging deployment starts a server SysTime deadline immediately
+after the first Hero's teleport into each dungeon. Successful rescue clears that
+deadline, restores hibernation ownership, resets warning state and broadcasts
+30:00 paused. Victory/intermission, generation and next staging do not consume it.
+Later entrants, deaths, respawns, Soldiers, spectating, reconnects and regeneration
+of an uncleared dungeon do not reset an active deadline. The clock is stored on
+campaign state but its deadline belongs to the current uncleared dungeon.
+One-second snapshots carry the campaign epoch, started flag,
 remaining time and terminal/cinematic state; clients interpolate between them.
 The production limit is fixed at 1,800 seconds. Warnings occur at 10, 5 and 1
 minute, then 30 and 10 seconds, using existing announcements/dialogger observers.
@@ -82,11 +84,12 @@ removed. Map changes/server restarts use their ordinary fresh-campaign lifecycle
 
 ## Verification
 
-`python3 tools/test_checkpoint_g_integration.py`: all 93 suites pass, including
+`python3 tools/test_checkpoint_g_integration.py`: all 103 suites pass, covering
 repository Lua syntax, geometry/enemies, equipment, lifecycle, RPG and prior
 protected regressions. The new production-code harness verifies untimed staging,
-Soldier rejection, exactly-once start, continuous deadlines through changed level
-and freeze state, expired rescue rejection before rewards, empty-server failure,
+Soldier rejection, exactly-once start per dungeon, reset after successful rescue,
+paused intermission/staging, unchanged deadlines during regeneration/freeze,
+expired rescue rejection before rewards, empty-server failure,
 late viewer initialization, once-only finalization, bounded physics and removal,
 early/duplicate restart rejection, real NewCampaign cleanup, stable wreckage
 transforms, real server/client packet round-trip and HUD restoration.
@@ -105,12 +108,13 @@ Engine API references checked: [SysTime](https://wiki.facepunch.com/gmod/Global.
 Fully quit Garry's Mod, then install this candidate:
 
 ```bash
-cd ~/Downloads/the-legend-of-deborah && git fetch origin astra/equipment-update && git switch astra/equipment-update && git pull --ff-only origin astra/equipment-update && bash tools/install_dev.sh
+cd ~/Downloads/the-legend-of-deborah && git fetch origin main && git switch main && git pull --ff-only origin main && bash tools/install_dev.sh
 ```
 
 On gm_flatgrass with a second client if available, leave one Hero in staging while
 another enters: the shared clock must begin only on that entry. Continue through
-one rescue into next-level staging and confirm it is still counting down. Enter
+one rescue into next-level staging and confirm it stays at 30:00, with every
+weapon and item retained. Enter
 the next maze, then use this one-line host/admin console batch:
 
 ```text

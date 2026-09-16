@@ -1,7 +1,9 @@
 # Development workflow
 
-Effective after Shael's 2026-09-14 approval and promotion of
-`87920e5ba3b27d46ff096f5a85cd41030a77f964` to `main`.
+Effective after Shael's 2026-09-16 acceptance and promotion of weapon build
+`fdea1ac0bc1e69765cff7e629a7590f85eeef5a2` to `main`.
+The equipment branch is closed. Develop and publish directly on `main` from now
+on, unless Shael explicitly requests another branch.
 
 - **Main:** canonical development and accepted implementation baseline.
 - **Astra / Work:** primary implementation and senior-engineering environment.
@@ -14,8 +16,7 @@ Effective after Shael's 2026-09-14 approval and promotion of
 
 ## Working loop
 
-Start from verified remote main and a clean checkout; use an isolated task branch
-when needed. Follow AGENTS.md and targeted live-GDD navigation. Implement through
+Start from verified remote main and a clean checkout; remain on main. Follow AGENTS.md and targeted live-GDD navigation. Implement through
 canonical authorities, run the integrated gate and relevant focused regressions,
 and preserve coherent work in verified commits. Give Shael an exact candidate SHA
 for changes requiring Source acceptance. Do not equate green static tests with

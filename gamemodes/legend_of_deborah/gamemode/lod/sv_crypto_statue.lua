@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["statue"] = "weapon-surfaces-20260916-01"
+LOD.RuntimeReceipts["statue"] = "dungeon-return-20260916-01"
 local C,Store,Run,S=LOD.CryptoDirector,LOD.CryptoStore,LOD.RunManager,LOD.StagingDeployment
 util.AddNetworkString('LOD_WalletRequest')
 util.AddNetworkString('LOD_WalletSnapshot')

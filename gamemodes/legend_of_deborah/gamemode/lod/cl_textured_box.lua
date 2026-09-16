@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["meshes"] = "weapon-surfaces-20260916-01"
+LOD.RuntimeReceipts["meshes"] = "dungeon-return-20260916-01"
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox

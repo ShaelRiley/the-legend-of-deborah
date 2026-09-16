@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["equipment"] = "weapon-surfaces-20260916-01"
+LOD.RuntimeReceipts["equipment"] = "dungeon-return-20260916-01"
 local E = assert(LOD.Equipment)
 local Run = assert(LOD.RunManager)
 E.NextUse = setmetatable({}, {__mode="k"})

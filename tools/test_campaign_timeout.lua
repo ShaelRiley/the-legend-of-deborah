@@ -51,6 +51,7 @@ local function actor()
  local p={valid=true}
  function p:GetPos() return self.pos or Vector() end;function p:SetPos(v) self.pos=v end
  function p:IsPlayer() return true end;function p:IsAdmin() return true end;function p:Alive() return true end
+ p.GetWeapons=function() return {} end;p.GetAmmo=function() return {} end;p.GetActiveWeapon=noop;p.Armor=function() return 0 end;p.Nick=function() return 'Hero' end
  p.Spectate=noop;p.SpectateEntity=noop;p.StripWeapons=noop;p.ChatPrint=noop;p.SetNW2Float=noop
  function p:SteamID64() return tostring(self.id or 1) end;function p:EntIndex() return self.id or 1 end
  function p:Remove() self.valid=false end
@@ -66,6 +67,7 @@ LOD.MazeBuilder={Entities={},WorldFloorZ=0}
 LOD.MazeNavigator={CellCenter=function(_,c) return Vector(c.x*384,c.y*384,c.z*384) end}
 LOD.WallVisuals={Segments={}}
 R._SyncPlayerVars=noop;R.RetireSoldier=noop
+R.IsActivePlayer=function(_,p) return p==hero end
 R.IsDungeonPlayer=function(_,p) return p==hero and p.deployed end
 R.IsSoldierControl=function(_,p) return p.soldier==true end
 R.BuildCurrentLevel=function(self) builds=builds+1;self.State.BuildReady=true;self.State.Graph={Cells={a={x=0,y=0,z=0},b={x=21,y=21,z=2}}};return true end
@@ -83,9 +85,21 @@ assert(not T:Start(hero));hero.deployed=true;hero.soldier=true;assert(not T:Star
 assert(T:Start(hero));local deadline=T:Clock().deadline
 assert(deadline==now+1800 and vars.sv_hibernate_think:GetBool())
 assert(not T:Start(hero));assert(T:Clock().deadline==deadline)
-now=now+120;s.LevelCleared=true;s.IntermissionEnd=gameTime+60;s.Level=7;s.SimulationFrozen=true
-R:BuildCurrentLevel();assert(T:Clock().deadline==deadline and T:Remaining(T:Clock(),now)==1680,'level transition reset clock')
-humans={};now=deadline;assert(not R:CompleteLevel(hero));assert(rescued==0,'late rescue got rewards')
+now=now+120;s.SimulationFrozen=true
+R:BuildCurrentLevel();assert(T:Clock().deadline==deadline and T:Remaining(T:Clock(),now)==1680,'regeneration reset active clock')
+T:Clock().warned={ [600]=true }
+assert(R:CompleteLevel(hero) and rescued==1)
+assert(not T:Clock().deadline and not T:Clock().warned and T:Remaining(T:Clock(),now)==1800)
+assert(not vars.sv_hibernate_think:GetBool(),'rescue did not release hibernation override')
+assert(not T:Start(hero),'intermission restarted clock')
+assert(not R:CompleteLevel(hero),'duplicate rescue accepted')
+now=now+4000;T:Step();assert(not s.Failed and T:Remaining(T:Clock(),now)==1800,'intermission consumed time')
+assert(R:AdvanceLevel());hero.deployed=false
+now=now+4000;T:Step();assert(not T:Start(hero) and not T:Clock().deadline,'return staging consumed time')
+hero.deployed=true;assert(T:Start(hero));deadline=T:Clock().deadline
+assert(deadline==now+1800 and not T:Start(hero),'next dungeon start not exactly once')
+local beforeLateRescue=rescued
+humans={};now=deadline;assert(not R:CompleteLevel(hero));assert(rescued==beforeLateRescue,'late rescue got rewards')
 assert(s.Failed and s.Finalized and finalized==1 and s.IntermissionEnd==nil)
 T:Step();local scene=T:Clock().scene
 assert(scene and not scene.started,'empty-server cinematic consumed without viewer')

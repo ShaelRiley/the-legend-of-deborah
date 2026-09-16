@@ -445,7 +445,8 @@ end
 
 function RunManager:CaptureInventory(ply, ps, allowDead)
     ps = ps or self:GetPlayerState(ply)
-    if not IsValid(ply) or not ps then return end
+    if not IsValid(ply) or not ps or self:IsSoldierControl(ply)
+        or ply.LODRunInventoryReady == false then return end
 
     -- PlayerDeath runs after Alive() becomes false, while the player's weapon
     -- entities still hold the authoritative magazines. Only that hook opts in;
@@ -479,7 +480,16 @@ function RunManager:RestoreInventory(ply, ps)
 
     for _, weaponState in ipairs(ps.inventory.weapons or {}) do
         local allowed = weaponState.class ~= "weapon_frag" and weaponState.class ~= "weapon_lod_throwable" and weaponState.class ~= "weapon_lod_empty_hands"
-        local wep = allowed and ply:Give(weaponState.class, true) or nil
+        local wep
+        if allowed then
+            -- Reconstruct an owned weapon, without admitting another bag item or
+            -- inspecting a half-constructed native entity in the pickup hook.
+            ply.LODInventoryNativeRestore = weaponState.class
+            local ok, result = pcall(ply.Give, ply, weaponState.class, true)
+            ply.LODInventoryNativeRestore = nil
+            if not ok then error(result) end
+            wep = result
+        end
         if IsValid(wep) then
             if weaponState.clip1 and weaponState.clip1 >= 0 then wep:SetClip1(weaponState.clip1) end
             if weaponState.clip2 and weaponState.clip2 >= 0 then wep:SetClip2(weaponState.clip2) end
@@ -497,6 +507,7 @@ function RunManager:HoldPlayersForBuild()
         if IsValid(ply) then
             local ps = self:GetPlayerState(ply)
             if ps and ply:Alive() then self:CaptureInventory(ply, ps) end
+            ply.LODRunInventoryReady = false
             ply:Spectate(OBS_MODE_FIXED)
             ply:SpectateEntity(NULL)
             ply:SetPos(CC.Maze.Origin + Vector(0, 0, 128))
@@ -702,6 +713,7 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetArmor(ps.armor or 0)
     if ps.deploymentComplete then ps.deployedDungeonLevel = self.State.Level end
     self:RestoreInventory(ply, ps)
+    ply.LODRunInventoryReady = true
     ps.respawnAt = nil
     self:_SyncPlayerVars(ply)
 
@@ -950,6 +962,9 @@ function RunManager:AdvanceLevel()
     self.State.ActiveIdentity = {}
 
     for _, ply in ipairs(player.GetAll()) do
+        -- Retirement removes the role marker before HoldPlayersForBuild. Keep
+        -- that Soldier body's weapons away from the dormant Hero snapshot.
+        if self:IsSoldierControl(ply) then ply.LODRunInventoryReady = false end
         self:RetireSoldier(ply)
     end
 
@@ -1022,6 +1037,7 @@ end)
 
 hook.Add("PlayerSpawn", "LOD_PlayerSpawn", function(ply)
     ply.LODHandledRunDeath = nil
+    ply.LODRunInventoryReady = false
     ply.LODRunSpawnSerial = (ply.LODRunSpawnSerial or 0) + 1
     local serial, state, graph = ply.LODRunSpawnSerial, RunManager.State, RunManager.State.Graph
     timer.Simple(0, function()

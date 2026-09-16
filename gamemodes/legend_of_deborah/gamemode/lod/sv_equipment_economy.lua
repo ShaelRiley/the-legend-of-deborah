@@ -111,9 +111,9 @@ end
 local sync=E.Sync
 function E:Sync(ply) self:StampWeapons(ply);return sync(self,ply) end
 hook.Add("PlayerCanPickupWeapon","LOD_EquipmentInventoryCapacity",function(ply,weapon)
-    -- The one-time starter grant has already reserved inventory admission. Do
-    -- not interrogate its half-constructed native weapon from inside Give.
-    if IsValid(ply) and ply.LODStarterNativeGrant then return true end
+    -- Starter admission is reserved; restoration reconstructs already owned
+    -- weapons. Neither needs a spare bag slot or native inspection inside Give.
+    if IsValid(ply) and (ply.LODStarterNativeGrant or ply.LODInventoryNativeRestore) then return true end
     local ps=hero(ply)
     if not ps or not IsValid(weapon) then return end
     local class=weapon:GetClass();local def=E.Definitions[class]
