@@ -15,6 +15,12 @@ local cardMaterial = CreateMaterial("lod_keycard_opaque_v1", "UnlitGeneric", {
 
 LOD.ClientKeycards = LOD.ClientKeycards or setmetatable({}, {__mode = "k"})
 
+-- Transmission can resume before SetupDataTables installs the accessors.
+-- Keep registry membership while waiting so the next ready frame recovers.
+local function networkReady(ent)
+    return ent.GetCardIndex
+end
+
 function ENT:Initialize()
     LOD.ClientKeycards[self] = true
 end
@@ -40,7 +46,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function(depth, skybox
     render.SetMaterial(cardMaterial)
     render.CullMode(MATERIAL_CULLMODE_NONE)
     for ent in pairs(LOD.ClientKeycards) do
-        if IsValid(ent) then
+        if IsValid(ent) and networkReady(ent) then
             registered = registered + 1
             if ent:GetPos():DistToSqr(eyePos) <= KEYCARD_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
@@ -74,7 +80,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function(dep
     local eyePos = EyePos()
     local drawn, culled = 0, 0
     for ent in pairs(LOD.ClientKeycards) do
-        if IsValid(ent) then
+        if IsValid(ent) and networkReady(ent) then
             if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
                 drawn = drawn + 1
                 local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 4)]

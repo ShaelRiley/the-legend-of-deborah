@@ -154,7 +154,10 @@ Initialize call when it returns. The prior floor/gate registries dropped those
 entities permanently. Full-update removals now preserve registry membership;
 NotifyShouldTransmit(true) restores it, including keycards and the jail door
 which shared the same defect. Real removal still deregisters; render hooks skip
-invalid entities. Static-box bounds refresh on transmission recovery.
+invalid entities and entities whose network accessors are not ready yet.
+Static-box transmission recovery schedules bounds refresh for the next ready
+Think; the notification itself never calls the network accessors. Membership is
+retained through partial initialization so drawing resumes without another event.
 Regression: `tools/test_geometry_fullupdate.lua`. Native reproduction: on a
 local developer session with cheats enabled, `cl_fullupdate` must retain the
 floor and gate visuals without rejoining or rebuilding the dungeon.

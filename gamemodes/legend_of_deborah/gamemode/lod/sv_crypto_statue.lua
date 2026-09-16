@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["statue"] = "collapse-recovery-20260916-01"
+LOD.RuntimeReceipts["statue"] = "geometry-init-20260916-01"
 local C,Store,Run,S=LOD.CryptoDirector,LOD.CryptoStore,LOD.RunManager,LOD.StagingDeployment
 util.AddNetworkString('LOD_WalletRequest')
 util.AddNetworkString('LOD_WalletSnapshot')

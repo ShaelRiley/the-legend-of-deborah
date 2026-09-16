@@ -19,11 +19,19 @@ end
 
 local visualBoxes = visualBoxes or setmetatable({}, {__mode = "k"})
 
+-- Transmission can resume before SetupDataTables installs the accessors.
+-- Keep registry membership while waiting so the next ready frame recovers.
+local function networkReady(ent)
+    return ent.GetBoxMins and ent.GetBoxMaxs and ent.GetBoxKind
+end
+
 local function refreshRenderBounds(ent)
+    if not networkReady(ent) then return false end
     local mins = ent:GetBoxMins()
     local maxs = ent:GetBoxMaxs()
     local margin = Vector(32, 32, 32)
     ent:SetRenderBounds(mins - margin, maxs + margin)
+    return true
 end
 
 function ENT:Initialize()
@@ -34,8 +42,7 @@ end
 
 function ENT:Think()
     visualBoxes[self] = true
-    if CurTime() >= (self._LODNextBoundsRefresh or 0) then
-        refreshRenderBounds(self)
+    if CurTime() >= (self._LODNextBoundsRefresh or 0) and refreshRenderBounds(self) then
         self._LODNextBoundsRefresh = CurTime() + 1
     end
 end
@@ -48,7 +55,7 @@ end
 hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, transmitting)
     if transmitting and IsValid(ent) and ent:GetClass() == "lod_static_box" then
         visualBoxes[ent] = true
-        refreshRenderBounds(ent)
+        -- Defer bounds until Think; accessors may not exist in this hook.
         ent._LODNextBoundsRefresh = 0
     end
 end)
@@ -98,7 +105,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
     if drawingDepth or drawingSkybox or drawing3DSkybox then return end
 
     for ent in pairs(visualBoxes) do
-        if IsValid(ent) then
+        if IsValid(ent) and networkReady(ent) then
             local kind = ent:GetBoxKind()
 
             -- Ordinary floor runs render only their top and underside. Their

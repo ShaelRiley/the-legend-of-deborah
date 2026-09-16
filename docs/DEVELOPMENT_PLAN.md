@@ -1,4 +1,28 @@
-# Current candidate — collapse restart, camera and client recovery
+# Current candidate — client geometry initialization repair
+
+`geometry-init-20260916-01`, developed directly on `main` from verified
+`0ef180ae886fd91b8a5e9ebbd6502c084de63f17`.
+
+The reported repeated GetBoxMins error is reproduced by notifying transmission
+before SetupDataTables supplies the client accessors. The previous full-update
+harness assumed these accessors already existed and missed this lifecycle order.
+Static-box transmission recovery now only restores membership and schedules a
+bounds refresh. Bounds and all four affected entity render paths wait for their
+required accessors; incomplete entities remain registered and recover on the
+next ready frame without another Initialize or transmission notification.
+
+Live GDD: 00/01 and 07 client presentation/reconnection authority. Routine
+implementation correction; no design or tuning changes. Finite automated gate:
+actual notification/render hooks with absent and individually missing accessors,
+deferred bounds retry, full-update recovery and genuine removal; integrated gate.
+Validation: the expanded regression fails with the reported GetBoxMins error on
+the prior implementation and passes with this repair. All 104 integrated suites
+pass, including the Lua syntax audit.
+Native gate remains pending: join the updated server, then perform one client
+full update and verify floors/gates remain visible with no recurring Lua errors.
+No server installation or Workshop publication is included.
+
+# Previous candidate — collapse restart, camera and client recovery
 
 `collapse-recovery-20260916-01`, developed directly on `main` from verified
 `4e0aad2497aa5a20172a4b1493c826bf6151b9ad`, preserving the newer server listing,

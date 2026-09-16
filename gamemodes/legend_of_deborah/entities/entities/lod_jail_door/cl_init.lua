@@ -13,6 +13,12 @@ local doorMaterial = CreateMaterial("lod_jail_door_solid_v1", "UnlitGeneric", {
 
 LOD.ClientJailDoors = LOD.ClientJailDoors or setmetatable({}, {__mode = "k"})
 
+-- Transmission can resume before SetupDataTables installs the accessors.
+-- Keep registry membership while waiting so the next ready frame recovers.
+local function networkReady(ent)
+    return ent.GetDoorAxis and ent.GetOpened and ent.GetOpenedAt
+end
+
 function ENT:Initialize()
     LOD.ClientJailDoors[self] = true
 end
@@ -29,6 +35,7 @@ hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_jail_door", function(ent, tran
 end)
 
 function ENT:Draw()
+    if not networkReady(self) then return end
     if self:GetPos():DistToSqr(EyePos()) > DRAW_DISTANCE_SQR then return end
     local frac = 0
     if self:GetOpened() then
@@ -53,7 +60,7 @@ end
 
 hook.Add("PostDrawTranslucentRenderables", "LOD_DrawJailDoorLabel", function()
     for ent in pairs(LOD.ClientJailDoors) do
-        if IsValid(ent) and ent:GetPos():DistToSqr(EyePos()) <= LABEL_DISTANCE_SQR then
+        if IsValid(ent) and networkReady(ent) and ent:GetPos():DistToSqr(EyePos()) <= LABEL_DISTANCE_SQR then
             local z = -PC.GateBlockerHeight * 0.5 + 126
             local positions
             if ent:GetDoorAxis() == 0 then

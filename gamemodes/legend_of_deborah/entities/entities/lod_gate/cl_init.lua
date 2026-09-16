@@ -34,6 +34,12 @@ local solidMaterial = CreateMaterial("lod_gate_solid_v3", "UnlitGeneric", {
 
 LOD.ClientGates = LOD.ClientGates or setmetatable({}, {__mode = "k"})
 
+-- Transmission can resume before SetupDataTables installs the accessors.
+-- Keep registry membership while waiting so the next ready frame recovers.
+local function networkReady(ent)
+    return ent.GetGateAxis and ent.GetGateIndex and ent.GetOpened and ent.GetOpenedAt
+end
+
 function ENT:Initialize()
     LOD.ClientGates[self] = true
 end
@@ -146,7 +152,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
     local eyePos = EyePos()
     local registered, drawn, culled = 0, 0, 0
     for ent in pairs(LOD.ClientGates) do
-        if IsValid(ent) then
+        if IsValid(ent) and networkReady(ent) then
             registered = registered + 1
             if ent:GetPos():DistToSqr(eyePos) <= GATE_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
@@ -192,7 +198,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", functio
     local eyePos = EyePos()
     local drawn, culled = 0, 0
     for ent in pairs(LOD.ClientGates) do
-        if IsValid(ent) then
+        if IsValid(ent) and networkReady(ent) then
             if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
                 drawn = drawn + 1
                 local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 4)]
