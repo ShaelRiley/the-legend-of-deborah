@@ -205,6 +205,19 @@ function E:Generate(seed, level, requestedFamily, contextId)
     return item
 end
 
+-- The September 16 reward corpus and distribution test segfault in upstream
+-- LuaJIT 2.0.4 with JIT enabled, but pass with only this function (and its
+-- closures) interpreted. The installed x86 GMod reports that same VM version.
+-- Keep the engine-wide compiler and the shared RNG/combat paths enabled. This
+-- low-frequency, bounded generator keeps exactly the same draws and item data;
+-- do not reroll rewards, change jit.opt, or toggle global JIT state per call.
+-- See docs/GENERATOR_CRASH_REPAIR_20260916.md for reproduction and limits.
+E.GenerationExecutionMode = "default"
+if jit and jit.off and tonumber(jit.version_num) and jit.version_num <= 20004 then
+    jit.off(E.Generate, true)
+    E.GenerationExecutionMode = "interpreter-legacy-jit"
+end
+
 function E:Description(item, compact)
     if not item or item.version~=2 then return legacyDescription(self,item,compact) end
     local out={self.Rarities[item.rarity].name.." · Dungeon "..item.dungeonLevel}

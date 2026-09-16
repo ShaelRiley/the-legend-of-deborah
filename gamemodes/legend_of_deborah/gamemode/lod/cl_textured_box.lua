@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["meshes"] = "stability-20260916-07"
+LOD.RuntimeReceipts["meshes"] = "stability-20260916-08"
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox

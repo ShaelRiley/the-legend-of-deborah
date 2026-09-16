@@ -1,7 +1,7 @@
 LOD = LOD or {}
 LOD.RuntimeAudit = LOD.RuntimeAudit or {}
 local Audit = LOD.RuntimeAudit
-Audit.Build = "stability-20260916-07"
+Audit.Build = "stability-20260916-08"
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
 
 local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "crowbar", "statue", "manual"}
@@ -29,6 +29,7 @@ function Audit:Snapshot()
         wall_models = validCount(LOD.WallVisualsClient and LOD.WallVisualsClient.models),
         loot_entities = validCount(LOD.LootDirector and LOD.LootDirector.Entities),
         jit_version = jit and jit.version or "unknown",
+        equipment_generation = LOD.Equipment and LOD.Equipment.GenerationExecutionMode or "unloaded",
         lua_kb = math.floor(collectgarbage("count")),
         entities = ents.GetCount and ents.GetCount() or #ents.GetAll(),
         meshes = LOD.TexturedBox and LOD.TexturedBox.MeshCacheCount and LOD.TexturedBox:MeshCacheCount() or 0
@@ -38,7 +39,7 @@ end
 function Audit:Report()
     local data = self:Snapshot()
     local parts = {}
-    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes", "wall_models", "loot_entities", "jit_version"}) do
+    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes", "wall_models", "loot_entities", "jit_version", "equipment_generation"}) do
         parts[#parts + 1] = key .. "=" .. tostring(data[key])
     end
     print("[LOD BUILD_IDENTITY] " .. table.concat(parts, " "))

@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Exact Native-Crash Reward Replay", ["python3", "tools/run_lua54.py", "tools/test_equipment_crash_replay.lua"]),
     ("Force-close Evidence Export", ["python3", "tools/test_crash_evidence_export.py"]),
     ("Canonical Blue Minimap Marker", ["python3", "tools/run_lua54.py", "tools/test_minimap_player_marker.lua"]),
     ("Shared Native DamageInfo Lifetime", ["python3", "tools/run_lua54.py", "tools/test_shared_damage_lifetime.lua"]),

@@ -1,15 +1,23 @@
 # Current stabilization candidate
 
-The September 16 force-close remains a **release blocker**. Its final original
-session event is weapon `reward_prepare` after a Shambler death; this does not
-prove a unique native cause. The prior candidate is not runtime accepted.
+Candidate `stability-20260916-08` repairs a **reproduced native LuaJIT 2.0.4
+equipment-generation SIGSEGV**. The new 3960-event original session ends during
+wearable generation after an SMG Deadcrab kill; its mirror omits 53 final events.
+Both realms load 07 on x86 LuaJIT 2.0.4. The exact reward corpus crashes a
+standalone historical 2.0.4 VM with compilation enabled and passes when only
+`Equipment:Generate` and its closures are interpreted. Apply that scoped
+workaround on legacy LuaJIT; keep global JIT, deterministic item contents and
+all gameplay systems intact. Modern 2.0/2.1 tests alone missed this defect.
 
-Candidate `stability-20260916-07` repairs the confirmed native-ConVar deployment
-exception and duplicate/displaced player map marker, and records reproducible
-loot inputs plus durable resource/boundary evidence. See
-`docs/CRASH_MAP_REPAIR_20260916.md` for evidence, tests and the finite next gate.
-Live promotion remains held. The earlier 99-suite pass and repairs remain in
-`docs/RELEASE_STABILITY_20260915.md`; historical checkpoints below are retained.
+All **102 integrated suites pass**, plus historical-VM exact-corpus, 16,000-item
+distribution and production pickup/preparation tests. Re-enabling generator
+compilation restores SIGSEGV in the standalone regression control. This proves
+the defect/workaround outside GMod; **fresh x86 GMod acceptance remains required**
+before attributing the user's termination conclusively or promoting the build.
+See `docs/GENERATOR_CRASH_REPAIR_20260916.md` for evidence, reproduction and the
+single sustained-playtest gate. Preserve the map/timer and earlier stabilization
+repairs in `docs/CRASH_MAP_REPAIR_20260916.md` and
+`docs/RELEASE_STABILITY_20260915.md`. No main promotion or live deployment.
 
 # Current development plan
 

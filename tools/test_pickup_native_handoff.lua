@@ -70,6 +70,29 @@ end
 assert(begin and complete and complete.key==begin.key and complete.seed==begin.seed)
 local replay=E:Generate(begin.seed,begin.level,begin.family~='random' and begin.family or nil,begin.key)
 assert(replay.id==generated.LODLootPayload.item.id and replay.name==generated.LODLootPayload.item.name)
+-- Replay the actual final preparation, not just a direct generator call. The
+-- campaign seed is reconstructed from the reversible hash and cross-checked
+-- against all fourteen recorded seed/key pairs (not claimed as a logged field).
+local oldRun=env.Run.State
+env.Run.State={RunId='campaign:26',CampaignSeed=664744883,LevelSeed=1504071172,Level=1}
+local corpus=dofile('tools/fixtures/equipment_crash_20260916.lua')
+for _,row in ipairs(corpus) do
+ assert(LOD.Seeds.Derive(env.Run.State.CampaignSeed,row.key)==row.seed)
+end
+records={}
+local final=corpus[#corpus]
+local native=assert(Loot:SpawnPickup('76561198025505071',Vector(),'wearable',{},
+ {equipmentSeed=660600545,equipmentEligible=true}))
+local expected=E:Generate(final.seed,final.level,nil,final.key)
+assert(native.LODLootPayload.item.id==expected.id and native.LODLootPayload.item.name==expected.name)
+assert(E:Description(native.LODLootPayload.item)==E:Description(expected))
+local finalBegin,finalComplete
+for _,row in ipairs(records) do
+ if row.stage=='equipment_generate_begin' then finalBegin=row end
+ if row.stage=='equipment_generate_complete' then finalComplete=row end
+end
+assert(finalBegin.seed==996257890 and finalBegin.key==final.key and finalComplete.family=='gloves')
+env.Run.State=oldRun
 local generate=E.Generate;E.Generate=function() error('injected preparation failure') end
 local before=serial;stages={}
 assert(not Loot:SpawnPickup('pickup-owner',Vector(),'weapon',{weaponClass='weapon_357'},{}))
