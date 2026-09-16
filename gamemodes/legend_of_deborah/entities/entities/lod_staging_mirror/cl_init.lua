@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["mirror"] = "stability-20260915-06"
+LOD.RuntimeReceipts["mirror"] = "stability-20260916-07"
 include("shared.lua")
 
 local RT_W, RT_H = 320, 640

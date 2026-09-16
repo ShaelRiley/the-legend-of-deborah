@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["loot"] = "stability-20260915-06"
+LOD.RuntimeReceipts["loot"] = "stability-20260916-07"
 LOD.LootDirector = LOD.LootDirector or {}
 
 local Loot = LOD.LootDirector
@@ -431,12 +431,21 @@ end
 
 -- Finite native-stage breadcrumbs identify the last completed operation if the
 -- engine closes without a Lua traceback. Never serialize full item records.
-function Loot:TraceStage(stage, ent, kind, model)
+function Loot:TraceStage(stage, ent, kind, model, detail)
+    local fields = {stage=stage, entity=IsValid(ent) and ent:EntIndex() or -1,
+        kind=kind, model=model}
+    -- Plain bounded reproduction inputs only; never serialize entities/items.
+    for key, value in pairs(detail or {}) do
+        fields[key] = type(value) == "string" and string.sub(value, 1, 240) or value
+    end
     local log = LOD.RPGTestLog
-    if log and log.Write then log:Write("LOOT_NATIVE_STAGE", {
-        stage=stage, entity=IsValid(ent) and ent:EntIndex() or -1,
-        kind=kind, model=model
-    }) end
+    if log and log.Write then log:Write("LOOT_NATIVE_STAGE", fields) end
+    if LOD.RuntimeAudit and LOD.RuntimeAudit.Record then
+        local parts = {}
+        for key, value in pairs(fields) do parts[#parts + 1] = key .. "=" .. tostring(value) end
+        table.sort(parts)
+        LOD.RuntimeAudit:Record("LOOT_NATIVE_STAGE", table.concat(parts, " "))
+    end
 end
 
 function Loot:_PreparedRewardValid(kind, payload)
@@ -487,6 +496,7 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
         end
         kind, payload = preparedKind, preparedPayload
     end
+    self:TraceStage("reward_prepared", nil, kind)
     if not self:_PreparedRewardValid(kind, payload) then
         self:TraceStage("reward_invalid", nil, kind, "rejected")
         print("[LOD:LOOT] rejected invalid prepared reward kind=" .. tostring(kind))

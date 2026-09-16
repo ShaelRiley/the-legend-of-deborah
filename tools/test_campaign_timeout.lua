@@ -27,7 +27,15 @@ concommand={Add=function(id,f) commands[id]=f end}
 local vars={}
 function CreateConVar(id,default) local cv={value=tonumber(default) or 0};function cv:GetBool() return self.value~=0 end;function cv:GetInt() return self.value end;function cv:SetBool(v) self.value=v and 1 or 0 end;vars[id]=cv;return cv end
 GetConVar=function(id) return vars[id] end
-CreateConVar('lod_developer_mode','1');CreateConVar('sv_hibernate_think','0')
+CreateConVar('lod_developer_mode','1')
+-- Engine-owned ConVars reject Lua setters. The old permissive mock hid a real
+-- deployment-aborting exception; match the native API and command boundary.
+vars.sv_hibernate_think={value=0,GetBool=function(self) return self.value~=0 end,
+ SetBool=function() error('attempted to modify ConVar not created by Lua') end}
+RunConsoleCommand=function(id,value)
+ assert(id=='sv_hibernate_think' and (value=='0' or value=='1'))
+ vars[id].value=tonumber(value)
+end
 local packet,packets={},{}
 local write=function(x) packet[#packet+1]=x end
 net={Receive=function(id,f) receivers[id]=f end,Start=function(id) packet={};packets[id]=packet end,

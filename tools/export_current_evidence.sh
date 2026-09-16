@@ -3,14 +3,17 @@ set -euo pipefail
 
 MARKER="sol_deadeye_stable"
 OPEN_DOLPHIN=0
+CRASH=0
 
 usage() {
   cat <<'USAGE'
-usage: tools/export_current_evidence.sh [--marker <text>] [--open]
+usage: tools/export_current_evidence.sh [--marker <text>] [--open] [--crash]
 
 Exports the current Garry's Mod evidence trio to ~/Downloads/LOD-current-evidence,
 verifies the console mirror watcher, confirms console_latest.txt matches console.log,
 and checks that the requested marker is present in current RPG evidence.
+--crash exports original final-event logs and stability journals without needing
+a running game, mirror watcher, or completed acceptance marker.
 USAGE
 }
 
@@ -20,6 +23,10 @@ while [[ $# -gt 0 ]]; do
       [[ $# -ge 2 ]] || { echo "ERROR: --marker requires a value" >&2; exit 2; }
       MARKER="$2"
       shift 2
+      ;;
+    --crash)
+      CRASH=1
+      shift
       ;;
     --open)
       OPEN_DOLPHIN=1
@@ -69,6 +76,39 @@ RPG_SESSION="$DATA_DIR/rpg_session_latest.txt"
 MIRROR_PID_FILE="$DATA_DIR/.console_mirror.pid"
 DEST_DIR="${LOD_EVIDENCE_EXPORT_DIR:-$HOME/Downloads/LOD-current-evidence}"
 TEMP_DIR="${DEST_DIR}.tmp.$$"
+
+# A force-close can occur after the last periodic mirror/summary. Preserve the
+# original session tail and realm journals; do not require finalization commands.
+if [[ "$CRASH" -eq 1 ]]; then
+  mkdir -p -- "$TEMP_DIR"
+  trap 'rm -rf -- "$TEMP_DIR"' EXIT
+  copied=0
+  for path in "$CONSOLE_LOG" \
+      "$DATA_DIR/rpg_test_session.txt" "$DATA_DIR/rpg_test_summary.txt" \
+      "$RPG_SESSION" "$RPG_SUMMARY" \
+      "$DATA_DIR/stability_server_latest.txt" "$DATA_DIR/stability_client_latest.txt" \
+      "$DATA_DIR/dev_build.txt"; do
+    if [[ -f "$path" ]]; then
+      cp -- "$path" "$TEMP_DIR/$(basename "$path")"
+      copied=$((copied + 1))
+    fi
+  done
+  if [[ "$copied" -eq 0 ]]; then
+    echo "ERROR: no crash evidence found in $GMOD_DIR" >&2
+    exit 1
+  fi
+  # Keep older exports; every crash gets its own directory.
+  mkdir -p -- "$DEST_DIR"
+  crash_dest="$(mktemp -d "$DEST_DIR/crash-$(date -u +%Y%m%dT%H%M%SZ)-XXXXXX")"
+  cp -a -- "$TEMP_DIR/." "$crash_dest/"
+  rm -rf -- "$TEMP_DIR"
+  trap - EXIT
+  printf '[PASS] crash evidence exported to: %s\n' "$crash_dest"
+  if [[ "$OPEN_DOLPHIN" -eq 1 ]] && command -v dolphin >/dev/null 2>&1; then
+    nohup dolphin "$crash_dest" >/dev/null 2>&1 &
+  fi
+  exit 0
+fi
 
 SOURCES=("$CONSOLE_MIRROR" "$RPG_SUMMARY" "$RPG_SESSION")
 

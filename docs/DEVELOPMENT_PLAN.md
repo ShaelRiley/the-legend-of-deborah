@@ -1,9 +1,15 @@
 # Current stabilization candidate
 
-The author has prioritized integrated release stability over feature work. See
-`docs/RELEASE_STABILITY_20260915.md` for the repaired boundaries, 99-suite static
-gate and required native acceptance. Runtime identity is `stability-20260915-06`.
-Live promotion remains held pending that native gate.
+The September 16 force-close remains a **release blocker**. Its final original
+session event is weapon `reward_prepare` after a Shambler death; this does not
+prove a unique native cause. The prior candidate is not runtime accepted.
+
+Candidate `stability-20260916-07` repairs the confirmed native-ConVar deployment
+exception and duplicate/displaced player map marker, and records reproducible
+loot inputs plus durable resource/boundary evidence. See
+`docs/CRASH_MAP_REPAIR_20260916.md` for evidence, tests and the finite next gate.
+Live promotion remains held. The earlier 99-suite pass and repairs remain in
+`docs/RELEASE_STABILITY_20260915.md`; historical checkpoints below are retained.
 
 # Current development plan
 

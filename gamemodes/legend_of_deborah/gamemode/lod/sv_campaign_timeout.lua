@@ -40,7 +40,7 @@ function T:Start(ply)
     -- still uses RunManager's SimulationFrozen contract. SysTime also survives
     -- any engine hibernation gap; reconnect checks precede Hero activation.
     local cv = GetConVar("sv_hibernate_think")
-    if cv and not cv:GetBool() then c.restoreHibernate = true; cv:SetBool(true) end
+    if cv and not cv:GetBool() then c.restoreHibernate = true; RunConsoleCommand("sv_hibernate_think", "1") end
     self:Sync()
     LOD.ProgressionDirector:Announce("PRISON COLLAPSE IN 30:00 — CAMPAIGN CLOCK STARTED")
     log("CAMPAIGN_CLOCK_START", {epoch=s.CampaignEpoch, level=s.Level, duration=self.Duration})
@@ -50,7 +50,7 @@ end
 function T:RestoreHibernate(c)
     if not c or not c.restoreHibernate then return end
     local cv = GetConVar("sv_hibernate_think")
-    if cv then cv:SetBool(false) end
+    if cv then RunConsoleCommand("sv_hibernate_think", "0") end
     c.restoreHibernate = nil
 end
 

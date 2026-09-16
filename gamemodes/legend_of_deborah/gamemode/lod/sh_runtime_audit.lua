@@ -1,11 +1,17 @@
 LOD = LOD or {}
 LOD.RuntimeAudit = LOD.RuntimeAudit or {}
 local Audit = LOD.RuntimeAudit
-Audit.Build = "stability-20260915-06"
+Audit.Build = "stability-20260916-07"
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
 
 local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "crowbar", "statue", "manual"}
     or {"meshes", "mirror", "manual_reader"}
+
+local function validCount(objects)
+    local count = 0
+    for _, object in pairs(objects or {}) do if IsValid(object) then count = count + 1 end end
+    return count
+end
 
 function Audit:Snapshot()
     local missing = {}
@@ -20,6 +26,9 @@ function Audit:Snapshot()
         architecture = jit and jit.arch or "unknown", branch = tostring(BRANCH or "unknown"),
         engine = tostring(VERSIONSTR or VERSION or "unknown"),
         lua_errors = self.ErrorCount or 0,
+        wall_models = validCount(LOD.WallVisualsClient and LOD.WallVisualsClient.models),
+        loot_entities = validCount(LOD.LootDirector and LOD.LootDirector.Entities),
+        jit_version = jit and jit.version or "unknown",
         lua_kb = math.floor(collectgarbage("count")),
         entities = ents.GetCount and ents.GetCount() or #ents.GetAll(),
         meshes = LOD.TexturedBox and LOD.TexturedBox.MeshCacheCount and LOD.TexturedBox:MeshCacheCount() or 0
@@ -29,10 +38,11 @@ end
 function Audit:Report()
     local data = self:Snapshot()
     local parts = {}
-    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes"}) do
+    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes", "wall_models", "loot_entities", "jit_version"}) do
         parts[#parts + 1] = key .. "=" .. tostring(data[key])
     end
     print("[LOD BUILD_IDENTITY] " .. table.concat(parts, " "))
+    self:Record("BUILD_IDENTITY", table.concat(parts, " "))
     if SERVER and LOD.RPGTestLog and LOD.RPGTestLog.Write then
         LOD.RPGTestLog:Write("BUILD_IDENTITY", data)
     end

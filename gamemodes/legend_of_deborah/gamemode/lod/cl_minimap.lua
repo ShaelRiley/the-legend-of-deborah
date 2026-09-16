@@ -77,7 +77,8 @@ local COLORS = {
     routeBlocked = Color(225, 100, 82),
     footer = Color(170, 174, 176),
     deborah = Color(245, 180, 225, 255),
-    player = Color(248, 213, 105, 255)
+    player = Color(72, 132, 255, 255),
+    playerOutline = Color(7, 12, 24, 245)
 }
 
 local gateColors = {
@@ -591,6 +592,16 @@ local function drawPlayerMarker(px, py, size)
     local yaw = math.rad(EyeAngles().y)
     local dx = math.cos(yaw)
     local dy = -math.sin(yaw)
+    -- Draw once in the topology renderer's coordinates. An independent overlay
+    -- used MC.Width instead of Map.gridWidth and drifted on expanded boss maps.
+    local outline = COLORS.playerOutline
+    local ex, ey = px + dx * (size + 7), py + dy * (size + 7)
+    surface.SetDrawColor(outline)
+    surface.DrawCircle(px, py, size + 2, outline.r, outline.g, outline.b, outline.a)
+    surface.DrawLine(px - 1, py, ex - 1, ey)
+    surface.DrawLine(px + 1, py, ex + 1, ey)
+    surface.DrawLine(px, py - 1, ex, ey - 1)
+    surface.DrawLine(px, py + 1, ex, ey + 1)
     surface.SetDrawColor(COLORS.player)
     surface.DrawCircle(px, py, size, COLORS.player.r, COLORS.player.g, COLORS.player.b, COLORS.player.a)
     surface.DrawLine(px, py, px + dx * (size + 7), py + dy * (size + 7))

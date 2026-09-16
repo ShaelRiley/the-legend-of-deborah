@@ -2,10 +2,10 @@ local env=dofile('tools/test_equipment_economy_runtime.lua')
 local Loot,E=LOD.LootDirector,LOD.Equipment
 local hero=env.actor('pickup-owner');env.Run.State.PlayerState={['pickup-owner']=hero.ps}
 player.GetAll=function() return {hero} end
-local pending,stages={},{}
+local pending,stages,records={},{},{}
 timer.Simple=function(_,fn) pending[#pending+1]=fn end
 local function flush() local work=pending;pending={};for _,fn in ipairs(work) do fn() end end
-LOD.RPGTestLog={Write=function(_,event,fields) assert(event=='LOOT_NATIVE_STAGE');stages[#stages+1]=fields.stage end}
+LOD.RPGTestLog={Write=function(_,event,fields) assert(event=='LOOT_NATIVE_STAGE');stages[#stages+1]=fields.stage;records[#records+1]=fields end}
 local oldInclude=include;include=function() end;ENT={}
 dofile('gamemodes/legend_of_deborah/entities/entities/lod_loot_pickup/init.lua');include=oldInclude
 local serial=2000
@@ -55,5 +55,25 @@ end
 local ent=assert(Loot:SpawnPickup('pickup-owner',Vector(),'life',{}))
 assert(ent.scale==nil);ent:Remove();flush();assert(not ent.LODLootReady,'removed before arming')
 assert(stages[#stages]=='registered')
+-- Retain exact generator inputs before entering procedural preparation; replay
+-- must reproduce the very same immutable item, not a vaguely similar reward.
+records={}
+local generated=assert(Loot:SpawnPickup('pickup-owner',Vector(),'weapon',
+ {weaponClass='weapon_357'},{equipmentSeed=731,equipmentEligible=true}))
+local begin,complete,prepared
+for i,row in ipairs(records) do
+ if row.stage=='equipment_generate_begin' then begin=row;assert(not complete) end
+ if row.stage=='equipment_generate_complete' then complete=row;assert(begin) end
+ if row.stage=='reward_prepared' then prepared=i;assert(complete) end
+ if row.stage=='entity_create' then assert(prepared,'native creation preceded preparation evidence') end
+end
+assert(begin and complete and complete.key==begin.key and complete.seed==begin.seed)
+local replay=E:Generate(begin.seed,begin.level,begin.family~='random' and begin.family or nil,begin.key)
+assert(replay.id==generated.LODLootPayload.item.id and replay.name==generated.LODLootPayload.item.name)
+local generate=E.Generate;E.Generate=function() error('injected preparation failure') end
+local before=serial;stages={}
+assert(not Loot:SpawnPickup('pickup-owner',Vector(),'weapon',{weaponClass='weapon_357'},{}))
+assert(serial==before and stages[#stages]=='reward_prepare_error','failed preparation reached native creation')
+E.Generate=generate
 Loot.Collect=oldCollect
 print('PICKUP_NATIVE_HANDOFF_PASS: real initialization and director registration, native model scale, overlap guard, deferred removal and duplicate touch isolation')

@@ -193,20 +193,30 @@ function E:PrepareReward(owner,kind,payload,options)
     end
     local key=self:RewardKey(owner,source)
     local seed=LOD.Seeds.Derive(Run.State.CampaignSeed or 1,key)
+    local function generate(family)
+        local fields={seed=seed, level=Run.State.Level or 1, family=family or "random", key=key}
+        LOD.LootDirector:TraceStage("equipment_generate_begin",nil,kind,nil,fields)
+        local item=self:Generate(seed,fields.level,family,key)
+        fields.family=item and item.definitionId or "invalid"
+        LOD.LootDirector:TraceStage("equipment_generate_complete",nil,kind,nil,fields)
+        return item
+    end
+    LOD.LootDirector:TraceStage("reward_inputs",nil,kind,nil,
+        {seed=seed,level=Run.State.Level or 1,key=key,weapon=payload.weaponClass})
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-conversion-v2"))
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.2) then
         return "consumable",{itemId="stink_bomb"}
     end
     if kind=="wearable" and not payload.item then
-        return "wearable",{item=self:Generate(seed,Run.State.Level or 1,nil,key)}
+        return "wearable",{item=generate(nil)}
     end
     if kind~="weapon" and kind~="cache" then return kind,payload end
     if options.equipmentEligible and rng:Chance(.35) then
-        return "wearable",{item=self:Generate(seed,Run.State.Level or 1,nil,key)}
+        return "wearable",{item=generate(nil)}
     end
     if kind=="cache" then return kind,payload end
     if not self.Definitions[payload.weaponClass] then return kind,payload end
-    return "wearable",{item=self:Generate(seed,Run.State.Level or 1,payload.weaponClass,key)}
+    return "wearable",{item=generate(payload.weaponClass)}
 end
 
 -- Do not allow the inventory UI to detach properties while retaining the gun.
