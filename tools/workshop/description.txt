@@ -1,100 +1,90 @@
 [h1]THE LEGEND OF DEBORAH[/h1]
-[b]Public Alpha — a procedural cooperative action-RPG labyrinth for Garry's Mod[/b]
+[b]Public Alpha - a procedural cooperative action-RPG labyrinth for Garry's Mod[/b]
 
-Deborah is trapped somewhere inside an impossible freight-container labyrinth built over gm_flatgrass. Enter as a Hero, descend through a newly generated maze, fight through escalating enemy factions, find the keys, survive the Wardens, rescue Deborah — and then do it again as the labyrinth rebuilds itself.
+Deborah is trapped somewhere inside an impossible freight-container labyrinth built over gm_flatgrass. Enter as a Hero, descend through a newly generated maze, fight through escalating threats, find the keys, survive the Wardens, rescue Deborah - and then do it again as the labyrinth rebuilds itself.
 
-Every dungeon is procedurally generated. The route, floors, gates, encounters, loot, vertical transitions, enemy composition, and rewards change from run to run while the server validates that the level remains solvable.
+Every dungeon is procedurally generated. Routes, floors, gates, encounters, loot, vertical transitions, enemy composition, and rewards change from run to run while the server validates that progression remains solvable.
 
 [b]The current build is vastly larger than the original Workshop alpha.[/b]
 
-[h2]NEW: FULL RPG CHARACTER SYSTEM[/h2]
+[h2]FULL RPG CHARACTER SYSTEM[/h2]
 [list]
 [*][b]Three Hero classes:[/b] Fighter, Rogue, and Wizard.
-[*][b]Levels 1–20[/b] with experience, class progression, and capstones.
-[*]Six ability scores — STR, DEX, CON, INT, WIS, and CHA — now materially affect combat, survival, movement, magic, navigation, morale, and enemy behavior.
-[*]Randomized character generation using 4d6-drop-the-lowest ability rolls.
+[*][b]Levels 1-20[/b] with XP, class progression, feats, perks, and capstones.
+[*]Six ability scores - STR, DEX, CON, INT, WIS, and CHA - affect combat, survival, movement, magic, navigation, morale, and enemy behavior.
+[*]Randomized 4d6-drop-lowest character generation.
 [*]Large feat system with prerequisites, replacement ranks, class restrictions, active abilities, reactions, movement feats, combat feats, information feats, and magic feats.
-[*]Perks, feat drafting, character sheets, class cards, persistent progression, and in-game feedback for triggered abilities.
-[*]Class-specific combat identities including Fighter durability/Strength mechanics, Rogue rear attacks and mobility, and Wizard Arcane Diversion/Feedback systems.
+[*]Character sheets, class cards, feat drafting, persistent progression, and visible ability feedback.
+[*]Distinct class combat identities: Fighter durability and Strength, Rogue mobility and rear attacks, and Wizard Arcane Diversion/Feedback.
 [/list]
 
-[h2]NEW: PROCEDURAL EQUIPMENT, INVENTORY, AND LOOT[/h2]
+[h2]PROCEDURAL EQUIPMENT, INVENTORY, AND LOOT[/h2]
 [list]
-[*]Procedurally rolled weapons with persistent individual properties rather than generic copies.
-[*]Wearable equipment families with randomized stat and combat effects.
+[*]Procedurally rolled weapons with persistent individual properties.
+[*]Wearable equipment with randomized stat and combat effects.
 [*]Consumable throwables including Healing Potions and Stink Bombs.
-[*]Inventory and equipment interface with item storage, equipment slots, multiple carried copies, comparisons, swapping, and trashing.
+[*]Inventory/equipment UI with storage, slots, multiple carried copies, swapping, and trashing.
 [*]Individualized enemy drops and reward generation.
 [*]DFT / Debbie Fund Token campaign rewards and Debbie-coin economy systems.
-[*]Hero equipment and weapon state persist correctly through death, rescue, staging, and dungeon transitions according to current campaign rules.
+[*]Hero weapons and equipment persist through death, rescue, staging, and dungeon transitions according to campaign rules.
 [/list]
 
-[h2]NEW: PROCEDURAL WEAPON APPEARANCE[/h2]
-Weapons now visibly reflect their generated properties. Instead of bolting random props onto guns, the current system uses partial weapon finishes, procedural surface treatments, elemental coloration, restrained glow/aura effects, and muzzle presentation while preserving the native Source weapon silhouette.
+[h2]PROCEDURAL WEAPON APPEARANCE[/h2]
+Generated weapon properties now alter their appearance through partial finishes, procedural surface treatments, elemental coloration, restrained glow/aura effects, and muzzle presentation while preserving the native Source weapon silhouette.
 
-Fire, Ice, Electric, Earth, Air, and other generated properties can become visually legible before you even open the item sheet.
+[h2]EXPANDED ENEMY ROSTER[/h2]
+The labyrinth now contains Shamblers, Runners, Soldiers, Deadcrabs, Bio Blasters, Climbers, Nodules, Flamers, Big Crabs, Sentries, Razors, Arc Casters, Lurkers, Beam Sweepers, and other specialized threats.
 
-[h2]NEW: MUCH LARGER ENEMY ROSTER[/h2]
-The labyrinth now contains a broad authored enemy roster with distinct movement and combat behavior, including Shamblers, Runners, Soldiers, Deadcrabs, Bio Blasters, Climbers, Nodules, Flamers, Big Crabs, Sentries, Razors, Arc Casters, Lurkers, Beam Sweepers, and other specialized threats.
+Enemies use the procedural maze graph for high-level navigation through the dynamically generated container complex.
 
-Enemies use the procedural maze graph for high-level navigation rather than pretending the newly generated container geometry is a normal static map.
+[h2]NEIL, THE BRUTE, AND THE BLACK KEYCARD[/h2]
+Late-dungeon progression includes a multi-floor hunt for Neil and his Brute protector. The Brute escorts Neil, reacts to threats, pursues surviving Heroes, and commits to a telegraphed charge with wall-impact counterplay. The hunt advances the Black Keycard sequence and deeper Core progression.
 
-[h2]NEW: NEIL, THE BRUTE, AND THE BLACK KEYCARD[/h2]
-Late-dungeon progression now includes the Neil hunt and his Brute protector. Neil can flee through the multi-floor maze while the Brute escorts him, reacts to threats, pursues survivors, and commits to a telegraphed charge attack with wall-impact counterplay.
+[h2]GORDON THE WARDEN[/h2]
+The final Warden is a multi-phase boss encounter in a dedicated multi-level arena. Gordon uses a stock citizen presentation with a procedural pig mask - no external model dependency - and brings pursuit, ranged pressure, phase escalation, reinforcements, protected co-op respawns, and Jail Key progression.
 
-Defeating the hunt advances the Black Keycard sequence and deeper Core progression.
-
-[h2]NEW: GORDON THE WARDEN[/h2]
-The final Warden encounter is now a multi-phase boss battle in a dedicated multi-level arena.
-
-Gordon uses a stock citizen presentation with a procedural pig mask — no external model dependency — and brings pursuit, ranged pressure, phase escalation, reinforcements, protected co-op respawns, and a death-only Jail Key progression sequence.
-
-[h2]NEW: ELEMENTS, STATUS EFFECTS, AND DEEPER COMBAT[/h2]
+[h2]ELEMENTS, STATUS EFFECTS, AND DEEPER COMBAT[/h2]
 [list]
 [*]Elemental strengths, weaknesses, and resistances.
 [*]Monster class and elemental identities.
-[*]Physical and magical damage now interact with the Hero ability system.
-[*]Status effects, hit reactions, movement effects, knockback, control interruption, and specialized enemy attacks.
-[*]Expanded shotgun, SMG, AR2, Magnum, melee, and magic behavior.
-[*]Weapon and spell feedback, combat telemetry, damage logs, and clearer HUD presentation.
+[*]Physical and magical damage interact with Hero ability scores.
+[*]Status effects, hit reactions, knockback, movement effects, and control interruption.
+[*]Expanded Shotgun, SMG, AR2, Magnum, melee, and magic behavior.
+[*]Combat feedback, damage logs, and expanded HUD presentation.
 [/list]
 
-[h2]NEW: 30-MINUTE DUNGEON COLLAPSE[/h2]
-Once the Heroes enter a dungeon, the labyrinth is living on borrowed time.
+[h2]30-MINUTE DUNGEON COLLAPSE[/h2]
+Once the Heroes deploy, the active dungeon has 30 minutes remaining. Rescue Deborah before TIME OVER and the labyrinth's cinematic destruction sequence.
 
-A 30-minute collapse clock governs the active dungeon. Rescue Deborah before time expires. If TIME OVER occurs, the labyrinth enters a cinematic destruction sequence.
+A successful rescue resets the next dungeon clock to 30:00. It stays paused during intermission, generation, and staging, then starts when the next Hero deploys.
 
-Successful rescue resets the next dungeon's clock to 30:00. The timer remains paused during intermission, generation, and staging, then begins when the next Hero deploys.
-
-[h2]NEW: MAP, GPS, HUD, AND IN-GAME MANUAL[/h2]
+[h2]MAP, GPS, HUD, AND IN-GAME MANUAL[/h2]
 [list]
-[*]Improved multi-floor map/minimap presentation with gate-aware navigation information.
+[*]Multi-floor map/minimap presentation with gate-aware navigation.
 [*]WIS-driven navigation and GPS systems.
-[*]Expanded RPG HUD, status portrait, objective presentation, campaign clock, ability feedback, and equipment information.
-[*]A canonical illustrated in-game instruction manual accessible from staging and the Player Menu.
-[*]The manual documents classes, abilities, feats, equipment, enemies, progression, and the increasingly strange economics of the labyrinth.
+[*]Expanded RPG HUD, status portrait, objectives, campaign clock, ability feedback, and equipment information.
+[*]An illustrated in-game instruction manual accessible from staging and the Player Menu.
 [/list]
 
-[h2]NEW: ASYMMETRIC MULTIPLAYER TESTING[/h2]
-The public alpha server now supports up to [b]12 simultaneous connections[/b] for large multiplayer tests:
+[h2]ASYMMETRIC MULTIPLAYER TESTING[/h2]
+The public alpha server supports up to [b]12 simultaneous connections[/b] for large tests:
 [list]
-[*]Up to [b]4 Heroes[/b] attempting the campaign.
-[*]Up to [b]6 human-controlled Soldiers[/b] participating in the labyrinth's hostile ecosystem.
+[*]Up to [b]4 Heroes[/b].
+[*]Up to [b]6 human-controlled Soldiers[/b].
 [*]Up to [b]2 additional spectators[/b].
 [/list]
+The core adventure remains designed around a 1-4 Hero party. The larger ceiling supports the developing human-Soldier and spectator systems.
 
-The core adventure remains designed around a 1–4 Hero party; the expanded connection ceiling exists to support the developing human-Soldier and spectator systems.
-
-[h2]NEW: PRESENTATION AND WORLD POLISH[/h2]
+[h2]WORLD AND PRESENTATION[/h2]
 [list]
-[*]Expanded shipping-container visual language, procedural section coloration, and a large bank of fictional container brands and markings.
-[*]Procedural midnight presentation and Source-era industrial UI direction.
-[*]Improved staging flow, character presentation, victory/intermission handling, and dungeon-to-dungeon continuity.
-[*]More robust animation selection so custom enemies do not fall into unsupported T-poses during normal movement or retreat behavior.
+[*]Expanded shipping-container visual language, procedural section coloration, and fictional freight brands/markings.
+[*]Procedural midnight presentation and Source-era industrial UI.
+[*]Improved staging, character presentation, victory/intermission flow, and dungeon-to-dungeon continuity.
+[*]Animation repairs for custom enemies that previously fell into unsupported T-poses.
 [/list]
 
 [h2]STABILITY AND PERFORMANCE[/h2]
-A large part of development has focused on making a procedural Source-engine game survive prolonged real play. The current build includes extensive fixes for entity count, wall rendering, hostile scans, minimap networking, reliable-channel pressure, equipment generation, native weapon-grant timing, loot spawning, intermission cleanup, and cross-level state retention.
+Development has heavily targeted prolonged real play: entity-count reductions, faster wall rendering, bounded hostile scans, minimap networking, reliable-channel pressure, equipment generation, native weapon-grant timing, loot spawning, intermission cleanup, and cross-level state retention.
 
 The project now carries more than one hundred integrated automated regression suites in addition to ongoing native Garry's Mod playtesting.
 
@@ -109,9 +99,7 @@ Console:
 [code]connect 40.160.86.240:27015[/code]
 
 [h2]INSTALLATION[/h2]
-Subscribe to this Workshop item and launch Garry's Mod. The gamemode is intended to be self-contained and does not require a third-party Workshop collection.
-
-The required base map is [b]gm_flatgrass[/b].
+Subscribe to this Workshop item and launch Garry's Mod. The gamemode is intended to be self-contained and requires no third-party Workshop collection.
 
 [h2]PUBLIC ALPHA NOTICE[/h2]
 The Legend of Deborah is under active development. Systems, tuning, enemies, equipment, progression, visuals, and campaign rules may continue to change as multiplayer testing expands.
