@@ -44,7 +44,14 @@ hostname "The Legend of Deborah"
 sv_lan 0
 hide_server 0
 sv_location us
+sv_region -1
 sv_password ""
+
+# Keep Steam master-server advertisement on the game/query socket that UFW
+# exposes publicly, and report an unambiguous Deborah identity to the browser.
+sv_master_share_game_socket 1
+host_name_store 1
+sv_gamename_override "The Legend of Deborah"
 
 # Public alpha concurrency: 4 Heroes + up to 6 human Soldiers + 2 spectators.
 # Keep Source/GMod server-query metadata explicit so the browser reports the
@@ -53,6 +60,10 @@ sv_visiblemaxplayers 12
 host_info_show 2
 host_players_show 2
 host_rules_show 1
+
+# Source normally heartbeats automatically; send one immediately as well so a
+# freshly restarted public server is announced to the Steam master list promptly.
+heartbeat
 EOF
 
 printf '\nLaunching public LOD dedicated server\n'
@@ -69,6 +80,9 @@ exec ./srcds_run \
     -console \
     -port 27015 \
     +maxplayers 12 \
+    +sv_lan 0 \
+    +hide_server 0 \
+    +sv_region -1 \
     +gamemode legend_of_deborah \
     +map gm_flatgrass \
     +exec lod_public_server.cfg \
