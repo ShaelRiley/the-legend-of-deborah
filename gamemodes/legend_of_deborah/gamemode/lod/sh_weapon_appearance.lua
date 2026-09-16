@@ -94,11 +94,12 @@ function V:Decode(packet)
 end
 function V:Describe(style)
     if not style then return '' end
-    local out={style.finish..'; '..style.element..' core; '..style.structure..' frame.'}
+    local element=style.element=='ice' and 'Wintery (Ice)' or style.element
+    local out={element..' tint, aura and muzzle flash; '..style.finish..' surface patches.'}
     for _,t in ipairs(style.traits) do
-        out[#out+1]=t.glyph..': '..t.label..' ('..t.shape..(t.negative and ', fractured' or '')..', '..t.bars..'/4 marks).'
+        out[#out+1]=t.glyph..': '..t.label..' ('..t.bars..'/4 strength'..(t.negative and ', penalty' or '')..').'
     end
-    return 'Visual key: '..table.concat(out,' ')
+    return 'Visual key: '..table.concat(out,' ')..' The frozen roll determines the patch pattern and glow; inspect properties for exact effects.'
 end
 function V:Stamp(ent,item)
     if not IsValid(ent) then return end
@@ -109,4 +110,19 @@ function V:Stamp(ent,item)
     if ent.LODAppearancePacket~=packet then
         ent.LODAppearancePacket=packet;ent:SetNW2String('LOD_WeaponAppearance',packet)
     end
+end
+
+-- Observe the final native shot without editing bullets or re-entering combat.
+-- One tiny message per gun/tick; pellets never become separate FX allocations.
+if SERVER then
+    util.AddNetworkString('LOD_WeaponSurfaceFlash')
+    for i=1,4 do resource.AddFile('materials/lod/weapon_finish/patch_'..i..'.vtf') end
+    local last=setmetatable({}, {__mode='k'})
+    hook.Add('PostEntityFireBullets','LOD_ProceduralWeaponMuzzle',function(actor)
+        if not IsValid(actor) or not actor:IsPlayer() then return end
+        local weapon=actor:GetActiveWeapon()
+        if not IsValid(weapon) or weapon:GetNW2String('LOD_WeaponAppearance','')=='' then return end
+        local tick=engine.TickCount();if last[weapon]==tick then return end;last[weapon]=tick
+        net.Start('LOD_WeaponSurfaceFlash');net.WriteEntity(weapon);net.SendPVS(actor:GetShootPos())
+    end)
 end

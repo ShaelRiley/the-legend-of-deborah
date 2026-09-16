@@ -36,58 +36,152 @@ function weapon:SetNW2String(k,v) if k=='LOD_WeaponAppearance' then writes=write
 for i=1,100 do V:Stamp(weapon,copy) end;assert(writes==0,'Unchanged records do not send appearance again')
 print('APPEARANCE_DATA_PASS: 2500 distinct sampled fingerprints; all '..#E.EconomyOrder..' properties; max packet '..maxBytes..' bytes; frozen/order identity; copy selection; unchanged sends')
 
--- Execute actual renderer under both detail modes and every grammar shape.
+-- Exercise the real renderer with strict engine-resource and material doubles.
 local vectors={};vectors.__index=vectors
 function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},vectors) end
 vectors.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 vectors.__sub=function(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
 vectors.__mul=function(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
 function vectors:DistToSqr(b) local d=self-b;return d.x*d.x+d.y*d.y+d.z*d.z end
-function Angle(p,y,r) return {p=p or 0,y=y or 0,r=r or 0,RotateAroundAxis=function() end,
-    Forward=function() return Vector(1,0,0) end,Right=function() return Vector(0,1,0) end,Up=function() return Vector(0,0,1) end} end
+function Angle() return {Forward=function() return Vector(1,0,0) end} end
 function Color(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
-CreateMaterial=function(name) return name end
-local calls,texts,planes,now,low,tick=0,{},0,0,false,1
-local function drawCall() calls=calls+1 end
-render={SetMaterial=function() end,DrawBox=drawCall,DrawBeam=drawCall,DrawSphere=drawCall}
-surface={CreateFont=function() end,SetDrawColor=function() end,DrawRect=drawCall,DrawLine=drawCall,DrawOutlinedRect=drawCall}
-draw={SimpleText=function(text) texts[#texts+1]=text;drawCall() end}
-cam={Start3D2D=function() planes=planes+1 end,End3D2D=function() planes=planes-1 end}
+local calls,now,low,tick=0,0,false,1
+local function forbidden() error('Attachment/global render state allocation forbidden') end
+render={SetMaterial=function() end,DrawSprite=function() calls=calls+1 end,
+    DrawBox=forbidden,DrawBeam=forbidden,DrawSphere=forbidden,MaterialOverride=forbidden,SetColorModulation=forbidden}
+ClientsideModel=forbidden;ParticleEmitter=forbidden;DynamicLight=forbidden;Mesh=forbidden
+surface={SetDrawColor=function() end,DrawRect=function() end,DrawLine=function() end}
 CurTime=function() return now end;FrameNumber=function() return tick end;EyePos=function() return Vector() end
 GetConVar=function() return {GetBool=function() return low end} end
 E.DrawItemIcon=function() end
-local hooks={};hook.Add=function(_,id,fn) hooks[id]=fn end
+local hooks,receivers={},{}
+hook.Add=function(_,id,fn) hooks[id]=fn end
+net.Receive=function(id,fn) receivers[id]=fn end
+local created,materials=0,{}
+local function material(name,params,stock)
+    local m={params=params or {},name=name}
+    function m:GetName() return self.name end
+    function m:GetShader() return 'VertexLitGeneric' end
+    function m:IsError() return false end
+    function m:GetString() return '' end
+    function m:GetInt() return 0 end
+    function m:GetTexture(key)
+        if key~='$basetexture' then return nil end
+        return {GetName=function() return name..'_base' end,IsError=function() return false end}
+    end
+    function m:SetVector(k,v) assert(not stock,'Mutated shared stock material');self.params[k]=v end
+    function m:SetFloat(k,v) assert(not stock);self.params[k]=v end
+    return m
+end
+function Material(name) return material(name,nil,true) end
+function CreateMaterial(name,_,params)
+    assert(not materials[name],'Unbounded duplicate native material allocation')
+    created=created+1;materials[name]=material(name,params);return materials[name]
+end
+util.CRC=function(s) return s:gsub('[^%w]','_') end
 dofile(root..'cl_weapon_appearance.lua')
-local ent={valid=true,pos=Vector()}
-function ent:GetNW2String() return V:Encode(copy) end
-function ent:GetNoDraw() return false end
-function ent:GetPos() return self.pos end
-function ent:LookupAttachment() return 1 end
-function ent:GetAttachment() return {Pos=Vector(10,0,0),Ang=Angle()} end
-function ent:GetClass() return 'weapon_357' end
-function ent:OBBCenter() return Vector() end
-function ent:LocalToWorld(p) return p end
-function ent:GetAngles() return Angle() end
+local function entity(paths)
+    local ent={valid=true,pos=Vector(),model='gun',slots={},paths=paths or {'models/weapons/v_hands','models/weapons/pistol','models/weapons/pistol_grip'}}
+    function ent:GetNW2String() return self.packet or V:Encode(copy) end
+    function ent:GetNoDraw() return self.hidden or false end
+    function ent:GetNW2Bool() return self.watcher or false end
+    function ent:GetPos() return self.pos end
+    function ent:LookupAttachment() return self.noMuzzle and 0 or 1 end
+    function ent:GetAttachment() return {Pos=Vector(10,0,0),Ang=Angle()} end
+    function ent:GetClass() return self.class or 'weapon_357' end
+    function ent:OBBCenter() return Vector() end
+    function ent:LocalToWorld(p) return p end
+    function ent:GetAngles() return Angle() end
+    function ent:GetModel() return self.model end
+    function ent:GetMaterials() return self.paths end
+    function ent:GetSubMaterial(i) return self.slots[i] or '' end
+    function ent:SetSubMaterial(i,v) assert(i~=0 or not self.paths[1]:find('hands'));self.slots[i]=v end
+    function ent:GetOwner() return self.owner end
+    function ent:GetActiveWeapon() return self.weapon end
+    function ent:DrawModel() self.drawn=(self.drawn or 0)+1; if self.failDraw then error('draw failure') end end
+    return ent
+end
+local ent=entity();local style=V:ItemStyle(copy)
 for _,id in ipairs(E.EconomyOrder) do
-    local g=V.Grammar[id];local style=V:Compile({1,42,4,100,{{g.index,2}}})
-    for _,reduced in ipairs({false,true}) do
-        low=reduced;calls=0;texts={};V:Draw(ent,style,'weapon_357',nil,true)
-        assert(calls>5 and calls<130 and planes==0)
-        assert(texts[1]==g.glyph,'Every actual property engraving is drawn')
+    local g=V.Grammar[id];local st=V:Compile({1,42,4,100,{{g.index,2}}})
+    for _,mode in ipairs({false,true}) do
+        low=mode;calls=0;V:Apply(ent,st,nil,true)
+        local changed=0;for _,s in pairs(ent.slots) do if s~='' then changed=changed+1 end end
+        assert(changed==1 and ent:GetSubMaterial(0)=='','Exactly one gun surface; stock hands')
+        V:Draw(ent,st,'weapon_357',nil,true);assert(calls==(low and 1 or 2))
+        V:Restore(ent);for _,s in pairs(ent.slots) do assert(s=='') end
     end
 end
-local style=V:ItemStyle(copy);local same=V:ItemStyle(copy);assert(style==same)
-low=false;calls=0;for i=1,20 do V:Draw(ent,style,'weapon_357',nil,false) end
-local capped=calls;V:Draw(ent,style,'weapon_357',nil,false);assert(calls==capped)
-tick=tick+1;low=true;calls=0;for i=1,4 do V:Draw(ent,style,'weapon_357',nil,false) end
-capped=calls;V:Draw(ent,style,'weapon_357',nil,false);assert(calls==capped)
+for _,m in pairs(materials) do
+    assert(m.params['$basetexture']:find('_base',1,true),'Native base map discarded')
+    assert(m.params['$detailblendmode']=='0','Sparse neutral-field mask required')
+end
+local n=created
+for i=1,1000 do
+    local st=V:Compile({1,i,1,100,{{1,2}}});V:Apply(ent,st,nil,true);V:Restore(ent)
+end
+assert(created<=8,'Material pool must depend on surfaces/finishes, not item identity')
+-- Another skin remains owned by its creator. Mid-draw replacement is respected.
+V:Apply(ent,style,nil,true);local slot
+for k,v in pairs(ent.slots) do if v~='' then slot=k end end
+ent.slots[slot]='another_skin';V:Restore(ent);assert(ent.slots[slot]=='another_skin')
+V:Apply(ent,style,nil,true);assert(ent.slots[slot]=='another_skin');ent.slots[slot]=''
+-- Model change with reused native viewmodel: do not restore old slot into new model.
+V:Apply(ent,style,nil,true);ent.model='changed';ent.slots={};V:Restore(ent);assert(next(ent.slots)==nil)
+local hands=entity({'models/weapons/v_hands'});V:Apply(hands,style,nil,true);assert(next(hands.slots)==nil)
+local unknown=entity({'models/custom/gun'});V:Apply(unknown,style,nil,true);assert(next(unknown.slots)==nil)
+-- Caps, hidden actors, distance and no attachment fallback.
+low=false;calls=0;for i=1,20 do V:Draw(ent,style,'weapon_357',nil,false) end;assert(calls==16)
+tick=tick+1;low=true;calls=0;for i=1,20 do V:Draw(ent,style,'weapon_357',nil,false) end;assert(calls==4)
 ent.pos=Vector(2000,0,0);calls=0;V:Draw(ent,style,'weapon_357',nil,false);assert(calls==0)
-ent.pos=Vector();ent.LookupAttachment=function() return 0 end
-V:Draw(ent,style,'weapon_lod_crowbar',nil,true);assert(planes==0)
-ent.LookupBone=function() return 0 end
-ent.GetBonePosition=function() return Vector(99,0,0),Angle() end
-local anchor=V:Anchor(ent,'weapon_lod_crowbar',true);assert(anchor.x>99,'Melee ornament follows the animated hand bone')
-hooks.LOD_ProceduralWeaponAppearance(ent,nil,ent)
-E:DrawItemIcon(copy,0,0,48,pale);assert(planes==0)
-hooks.LOD_WeaponAppearanceCleanup();assert(V:ItemStyle(copy)~=same)
-print('APPEARANCE_RENDER_PASS: all shapes/glyphs; quality modes; balanced 3D2D; frame/distance caps; attachment fallback; weak-cache cleanup')
+ent.pos=Vector();ent.noMuzzle=true;V:Draw(ent,style,'weapon_lod_crowbar',nil,true);ent.noMuzzle=false
+local owner=entity();owner.weapon=ent;ent.owner=owner
+owner.hidden=true;calls=0;V:Draw(ent,style,'weapon_357',owner,true);assert(calls==0);owner.hidden=false
+LocalPlayer=function() return owner end
+-- Prediction/server duplicate, shell-event preservation, fade and melee exclusion.
+net.ReadEntity=function() return ent end
+calls=0;low=false;now=1;hooks.LOD_ProceduralWeaponPredictedFlash(owner)
+V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls==4)
+now=1.1;receivers.LOD_WeaponSurfaceFlash();calls=0;V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls==2)
+assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,20)==nil)
+now=2;assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,5003)==true)
+ent.class='weapon_lod_crowbar';assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,5003)==nil);ent.class=nil
+-- Real paired hooks, suppressed-draw fallback, pickup error cleanup.
+hooks.LOD_ProceduralWeaponSurface(ent,owner,ent);hooks.LOD_ProceduralWeaponAppearance(ent,owner,ent)
+hooks.LOD_ProceduralWorldWeaponSurface(owner)
+assert(ent.RenderOverride,'World finish must wrap the actual weapon draw')
+ent.RenderOverride(ent);assert(ent.drawn==1);ent.drawn=0
+local protected=entity();protected.RenderOverride=function() end;local override=protected.RenderOverride
+V:WorldWeapon(protected);assert(protected.RenderOverride==override,'Respect another renderer')
+V:Apply(ent,style,nil,true);hooks.LOD_WeaponSurfaceRestore();for _,v in pairs(ent.slots) do assert(v=='') end
+ent.failDraw=true;local errors=0;ErrorNoHalt=function() errors=errors+1 end
+assert(V:DrawPickup(ent));assert(errors==1);for _,v in pairs(ent.slots) do assert(v=='') end
+ent.failDraw=false;assert(V:DrawPickup(ent));assert(ent.drawn==2)
+E:DrawItemIcon(copy,0,0,48,pale)
+local same=V:ItemStyle(copy);V:Apply(ent,style,nil,true);hooks.LOD_WeaponAppearanceCleanup()
+assert(ent.RenderOverride==nil,'Owned draw wrapper must be removed on cleanup');assert(V:ItemStyle(copy)~=same);for _,v in pairs(ent.slots) do assert(v=='') end
+-- Pool reaches its hard native allocation ceiling across many source paths.
+for i=1,200 do V:Surface('models/weapons/custom_'..i,style) end
+assert(created==128)
+-- Frozen names are display-migrated, never rewritten.
+local old={definition=copy.definition,name='Watery Revolver of Watery Warding'}
+assert(E:ItemName(old)=='Wintery Revolver of Wintery Warding' and old.name:find('Watery'))
+print('APPEARANCE_RENDER_PASS: no attachments; native base/hand preservation; one surface; 128-material ceiling; hooks/restoration; visibility/budgets; muzzle dedup/fade; frozen name migration')
+-- Native shot observer runs on server: no bullet mutation/extra shots, one
+-- publication for a shotgun's pellets and one for the next shot tick.
+SERVER=true
+local assets,sent={},0
+resource={AddFile=function(path) assets[#assets+1]=path end}
+util.AddNetworkString=function() end
+engine={TickCount=function() return tick end}
+net.Start=function(id) assert(id=='LOD_WeaponSurfaceFlash') end
+net.WriteEntity=function(w) assert(w==ent) end
+net.SendPVS=function(p) assert(p==owner.pos);sent=sent+1 end
+function owner:IsPlayer() return true end
+function owner:GetShootPos() return self.pos end
+dofile(root..'sh_weapon_appearance.lua')
+assert(#assets==4)
+for i=1,36 do assert(hooks.LOD_ProceduralWeaponMuzzle(owner)==nil) end
+assert(sent==1);tick=tick+1;hooks.LOD_ProceduralWeaponMuzzle(owner);assert(sent==2)
+ent.packet='';tick=tick+1;hooks.LOD_ProceduralWeaponMuzzle(owner);assert(sent==2)
+print('APPEARANCE_SERVER_PASS: four bundled textures; native shot observer; 36-pellet coalescing; unstyled exclusion')

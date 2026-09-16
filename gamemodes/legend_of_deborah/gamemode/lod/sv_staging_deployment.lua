@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["staging"] = "stability-20260916-08"
+LOD.RuntimeReceipts["staging"] = "weapon-surfaces-20260916-01"
 LOD.StagingDeployment = LOD.StagingDeployment or {}
 
 local Staging = LOD.StagingDeployment

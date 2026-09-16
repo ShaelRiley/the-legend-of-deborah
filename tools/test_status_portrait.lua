@@ -97,7 +97,7 @@ local function checkLayout()
 end
 for _,viewport in ipairs({{640,480},{1024,768},{1280,800},{1280,720},{1920,1080},{3440,1440}}) do
     width,height=viewport[1],viewport[2];tick();checkLayout()
-    ply.weapon={GetNW2String=function() return 'Deborah’s Watery Revolver of Holding and Impossible Long Names' end}
+    ply.weapon={GetNW2String=function() return 'Deborah’s Wintery Revolver of Holding and Impossible Long Names' end}
     tick();checkLayout();assert(#H.WeaponLines==2)
     ply.weapon=nil
 end

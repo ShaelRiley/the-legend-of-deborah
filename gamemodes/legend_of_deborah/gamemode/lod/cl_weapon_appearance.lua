@@ -1,19 +1,24 @@
--- Geometry and engraving only: no emitters, dynamic lights, extra entities,
--- model scaling, RenderOverride, or mutations to weapon/hand materials.
+-- Surface-only gun identity. Never create cosmetic geometry/model entities or
+-- mutate stock materials, collision, animation, scale, or gameplay state.
+if LOD.WeaponSurfaceRestore then LOD.WeaponSurfaceRestore() end
 local V,E=LOD.WeaponAppearance,LOD.Equipment
 local cache=setmetatable({}, {__mode='k'})
 local itemCache=setmetatable({}, {__mode='k'})
+local applied=setmetatable({}, {__mode='k'})
+local flashes=setmetatable({}, {__mode='k'})
+local worldDraws=setmetatable({}, {__mode='k'})
+-- Source materials cannot be freed. Retain a bounded pool across map/Lua reloads;
+-- keys depend on stock material + four finishes, never on a random item ID.
+LOD.WeaponSurfacePool=LOD.WeaponSurfacePool or {rows={},count=0}
+local pool=LOD.WeaponSurfacePool
 local colors={};for name,c in pairs(V.Colors) do colors[name]=Color(c[1],c[2],c[3]) end
-local ink=Color(23,29,36);local pale=Color(218,225,227)
-local metal=CreateMaterial('LOD_WeaponCraftMetal','VertexLitGeneric',{
-    ['$basetexture']='color/white',['$model']='1',['$vertexcolor']='1',['$phong']='1',['$phongboost']='.35',['$phongexponent']='24'})
-local ceramic=CreateMaterial('LOD_WeaponCraftCeramic','VertexLitGeneric',{
-    ['$basetexture']='color/white',['$model']='1',['$vertexcolor']='1',['$phong']='1',['$phongboost']='.1',['$phongexponent']='6'})
-local glow=CreateMaterial('LOD_WeaponCraftInk','UnlitGeneric',{
-    ['$basetexture']='color/white',['$vertexcolor']='1',['$vertexalpha']='1',['$translucent']='1',['$ignorez']='0'})
-surface.CreateFont('LOD_WeaponRune',{font='DejaVu Sans',size=18,weight=800})
+local pale,ink=Color(218,225,227),Color(23,29,36)
+local glow=Material('sprites/light_glow02_add')
 local lengths={weapon_pistol=9,weapon_357=13,weapon_smg1=16,weapon_ar2=21,weapon_shotgun=25,weapon_lod_crowbar=17}
 local frame,count=-1,0
+local function reduced()
+    local c=GetConVar('lod_reduced_effects');return c and c:GetBool()
+end
 function V:ItemStyle(item)
     if not item then return nil end
     local row=itemCache[item]
@@ -26,45 +31,16 @@ function V:EntityStyle(ent)
     if not row or row.packet~=packet then row={packet=packet,style=self:Decode(packet)};cache[ent]=row end
     return row.style
 end
--- All silhouettes are assembled from small base-engine primitives.
-function V:Module(kind,pos,ang,size,color,reduced)
-    local f,r,u=ang:Forward(),ang:Right(),ang:Up()
-    local function box(x,y,z,sx,sy,sz)
-        render.DrawBox(pos+f*x+r*y+u*z,ang,Vector(-sx,-sy,-sz),Vector(sx,sy,sz),color)
-    end
-    if kind=='anvil' then box(0,0,0,size, size*.75,size*.5);box(0,0,size*.6,size*.65,size*.4,size*.3)
-    elseif kind=='fin' or kind=='fang' then
-        local tilt=Angle(ang.p,ang.y,ang.r);tilt:RotateAroundAxis(r,kind=='fin' and 35 or -35)
-        render.DrawBox(pos,tilt,Vector(-size*.3,-size*.25,-size),Vector(size*.3,size*.25,size),color)
-    elseif kind=='shard' then
-        local tilt=Angle(ang.p,ang.y,ang.r);tilt:RotateAroundAxis(f,45)
-        render.DrawBox(pos,tilt,Vector(-size*.3,-size*.4,-size),Vector(size*.3,size*.4,size),color)
-    elseif kind=='plate' then box(0,0,0,size*.65,size*.65,size*.2)
-    elseif kind=='crown' then
-        box(0,0,0,size,size*.4,size*.25)
-        for i=-1,1 do box(i*size*.8,0,size*.6,size*.18,size*.3,size*.6) end
-    elseif kind=='cage' then
-        for i=-1,1,2 do box(0,i*size*.65,0,size*.8,size*.15,size*.8) end
-        box(0,0,size*.7,size*.8,size*.8,size*.15)
-    elseif kind=='bud' then
-        render.DrawSphere(pos,size*.65,6,4,color);render.DrawSphere(pos+u*size*.8,size*.4,6,4,color)
-    elseif kind=='lens' then render.DrawSphere(pos,size*.7,8,4,color)
-    elseif kind=='coil' then
-        local steps=reduced and 6 or 10
-        for i=1,steps do
-            local a,b=(i-1)/steps*math.pi*4,i/steps*math.pi*4
-            render.DrawBeam(pos+f*((i-1)/steps*size*2-size)+r*(math.cos(a)*size*.6)+u*(math.sin(a)*size*.6),
-                pos+f*(i/steps*size*2-size)+r*(math.cos(b)*size*.6)+u*(math.sin(b)*size*.6),size*.18,0,1,color)
-        end
-    end
+function V:Visible(ent,owner,view)
+    if not IsValid(ent) or (not view and ent:GetNoDraw()) then return false end
+    if IsValid(owner) and (owner:GetNoDraw() or owner:GetNW2Bool('LOD_Watcher',false)) then return false end
+    return view or ent:GetPos():DistToSqr(EyePos())<=1200*1200
 end
 function V:Anchor(ent,class,view)
     local length=lengths[class] or 13
     local id=ent:LookupAttachment('muzzle')
     local muzzle=id and id>0 and ent:GetAttachment(id)
-    if muzzle then return muzzle.Pos-muzzle.Ang:Forward()*(length*.6),muzzle.Ang,length end
-    -- Animated melee viewmodels may have no muzzle. Follow their hand bone
-    -- so the fittings travel with the swing instead of floating at the origin.
+    if muzzle then return muzzle.Pos-muzzle.Ang:Forward()*(length*.6),muzzle.Ang,length,muzzle.Pos end
     if view and ent.LookupBone and ent.GetBonePosition then
         local bone=ent:LookupBone('ValveBiped.Bip01_R_Hand')
         if bone then
@@ -74,96 +50,171 @@ function V:Anchor(ent,class,view)
     end
     return ent:LocalToWorld(ent:OBBCenter()),ent:GetAngles(),length
 end
-function V:Glyph(trait,x,y,width,height,active)
-    local c=colors[trait.color] or pale
-    surface.SetDrawColor(ink);surface.DrawRect(x,y,width,height)
-    draw.SimpleText(trait.glyph,'LOD_WeaponRune',x+width*.5,y+2,c,TEXT_ALIGN_CENTER)
-    surface.SetDrawColor(c)
-    for i=1,trait.bars do surface.DrawRect(x+3+(i-1)*(width-6)/4,y+height-6,(width-10)/4,3) end
-    if trait.negative then
-        surface.DrawLine(x+2,y+2,x+width*.4,y+height*.45)
-        surface.DrawLine(x+width*.4,y+height*.45,x+width*.25,y+height*.65)
-        surface.DrawLine(x+width*.25,y+height*.65,x+width-2,y+height-2)
+local function gunSurface(path)
+    path=path:lower()
+    if not path:find('weapons/',1,true) then return false end
+    for _,word in ipairs({'hand','arm','glove','finger','skin','sleeve','lens','scope','glass'}) do
+        if path:find(word,1,true) then return false end
     end
-    if active then surface.DrawOutlinedRect(x,y,width,height,2) end
+    return true
 end
-local function condition(t,owner)
-    if not IsValid(owner) then return false end
-    if t.id=='injured' then return owner:Health()<=owner:GetMaxHealth()*.5
-    elseif t.id=='charged' then return owner:GetNW2Float('LOD_Magic',0)>=75
-    elseif t.id=='still' then return owner:GetVelocity():Length2D()<5 end
-    return false
+function V:Surface(path,style)
+    local pattern=style.hash%4+1
+    local key=path..':'..pattern
+    local row=pool.rows[key]
+    if row==false then return nil end
+    if not row then
+        if pool.count>=128 then return nil end
+        local source=Material(path)
+        if source:IsError() or source:GetShader()~='VertexLitGeneric' then pool.rows[key]=false;return nil end
+        local texture=source:GetTexture('$basetexture')
+        if not texture or texture:IsError() then pool.rows[key]=false;return nil end
+        -- Neutral grey leaves most texels untouched in detail mode 0. Only the
+        -- sparse procedural marks change texture; the native base map survives.
+        local params={['$basetexture']=texture:GetName(),['$model']='1',
+            ['$detail']='lod/weapon_finish/patch_'..pattern,['$detailblendmode']='0',
+            ['$detailscale']='1',['$detailblendfactor']='.65',['$phong']='1',
+            ['$phongboost']='.25',['$phongexponent']='18'}
+        for _,name in ipairs({'$bumpmap','$envmapmask'}) do
+            local t=source:GetTexture(name);if t and not t:IsError() then params[name]=t:GetName() end
+        end
+        local env=source:GetString('$envmap');if env and env~='' then params['$envmap']=env end
+        for _,name in ipairs({'$basealphaenvmapmask','$normalmapalphaenvmapmask','$selfillum','$alphatest'}) do
+            local value=source:GetInt(name);if value and value~=0 then params[name]=tostring(value) end
+        end
+        pool.count=pool.count+1
+        row={material=CreateMaterial('LOD_WeaponSurface_'..util.CRC(key),'VertexLitGeneric',params)}
+        pool.rows[key]=row
+    end
+    local c=colors[style.element] or pale
+    local amount=.18+style.rarity*.035
+    row.material:SetVector('$color2',Vector(1-amount+amount*c.r/255,1-amount+amount*c.g/255,1-amount+amount*c.b/255))
+    row.material:SetFloat('$detailscale',1+style.variant*2)
+    row.material:SetFloat('$detailblendfactor',.45+style.variant*.3)
+    row.material:SetFloat('$phongexponent',({24,6,12,36})[pattern])
+    return '!'..row.material:GetName()
 end
-function V:Draw(ent,style,class,owner,view)
-    if not style or not IsValid(ent) or ent:GetNoDraw() and not view then return end
-    if IsValid(owner) and (owner:GetNoDraw() or owner:GetNW2Bool('LOD_Watcher',false)) then return end
-    local distance=view and 0 or ent:GetPos():DistToSqr(EyePos())
-    if distance>1200*1200 then return end
-    local reduced=GetConVar('lod_reduced_effects');reduced=reduced and reduced:GetBool()
-    if not view then
-        local tick=FrameNumber();if frame~=tick then frame,count=tick,0 end
-        if count>=(reduced and 4 or 8) then return end;count=count+1
+function V:Restore(ent)
+    local state=applied[ent];if not state then return end
+    applied[ent]=nil
+    if IsValid(ent) and ent:GetModel()==state.model and ent:GetSubMaterial(state.slot)==state.ours then
+        ent:SetSubMaterial(state.slot,state.previous)
     end
-    local pos,ang,length=self:Anchor(ent,class,view)
-    local f,r,u=ang:Forward(),ang:Right(),ang:Up()
-    local color=colors[style.element];local size=.65+style.variant*.35
-    local time=reduced and 0 or CurTime()
-    local pulse=reduced and 1 or .9+.1*math.sin(time*2+style.phase)
-    render.SetMaterial(style.finish=='ceramic' and ceramic or metal)
-    -- Two narrow receiver plates form a finish-bearing frame without covering
-    -- sights, the muzzle, reload components, or the actor's hands.
-    local finish=style.finish=='carbon' and Color(45,53,62) or style.finish=='ceramic' and pale or color
-    for _,side in ipairs({-1,1}) do
-        render.DrawBox(pos+r*(side*1.4),ang,Vector(-length*.25,-.16,-.65),Vector(length*.25,.16,.65),finish)
-    end
-    -- Finish texture is geometric: carbon cross-weave, long brushed grooves,
-    -- hammered studs, or a clean ceramic face. No per-item texture allocation.
-    render.SetMaterial(glow)
-    for i=1,4 do
-        local at=pos+f*((i-2.5)*length*.09)+r*1.57
-        if style.finish=='hammered metal' then
-            render.DrawBox(at,ang,Vector(-.16,-.12,-.16),Vector(.16,.12,.16),pale)
-        elseif style.finish=='carbon' then
-            render.DrawBeam(at-f*.4-u*.5,at+f*.4+u*.5,.07,0,1,pale)
-            render.DrawBeam(at-f*.4+u*.5,at+f*.4-u*.5,.07,0,1,pale)
-        elseif style.finish=='brushed metal' then
-            render.DrawBeam(at-u*.45,at+u*.45,.06,0,1,ink)
+end
+function V:Apply(ent,style,owner,view)
+    self:Restore(ent)
+    if not style or not self:Visible(ent,owner,view) then return end
+    local row=cache[ent] or {};cache[ent]=row
+    local model=ent:GetModel()
+    if row.model~=model then
+        row.model=model;row.surfaces={}
+        for index,path in ipairs(ent:GetMaterials() or {}) do
+            if gunSurface(path) then row.surfaces[#row.surfaces+1]={slot=index-1,path=path} end
         end
     end
-    render.SetMaterial(style.finish=='ceramic' and ceramic or metal)
-    self:Module(style.structure,pos-u*.7,ang,size,finish,reduced)
-    self:Module(V.Grammar['element_'..style.element] and V.Grammar['element_'..style.element].shape or 'lens',
-        pos+f*(length*.2)+u*1.3,ang,size*pulse,color,reduced)
-    if style.rider then self:Module(style.rider.shape,pos-f*(length*.25)+u,ang,size,pale,reduced) end
-    -- Rarity is craftsmanship: one to four bands, never a second element color.
-    for i=1,style.rarity do
-        render.DrawBox(pos+f*(-length*.2+i*.65)+u*.8,ang,Vector(-.12,-1.3,-.12),Vector(.12,1.3,.12),pale)
-    end
-    if distance>512*512 then return end
-    render.SetMaterial(glow)
-    for i,t in ipairs(style.traits) do
-        local spot=pos+f*((i-(#style.traits+1)/2)*length/(#style.traits+1))
-        self:Module(t.shape,spot+u*(1.7+style.variant*.3),ang,.22+t.strength*.3,colors[t.color],true)
-    end
-    local plane=Angle(ang.p,ang.y,ang.r);plane:RotateAroundAxis(f,90)
-    local scale=length/(#style.traits*40)
-    cam.Start3D2D(pos+r*1.62,plane,scale)
-    for i,t in ipairs(style.traits) do self:Glyph(t,(i-1-#style.traits/2)*40,-20,38,40,condition(t,owner)) end
-    -- Stable machining serial: every property/amount contributes to this pattern.
-    surface.SetDrawColor(color)
-    for i=0,15 do if math.floor(style.hash/2^i)%2==1 then surface.DrawRect(-32+i*4,25,2,3) end end
-    cam.End3D2D()
+    local choices=row.surfaces or {}
+    if #choices==0 then return end
+    -- One gun-only material region, never arms or a full-model override. Even
+    -- single-material guns retain their base map under a sparse detail mask.
+    local surface=choices[style.hash%#choices+1]
+    local previous=ent:GetSubMaterial(surface.slot)
+    if previous and previous~='' then return end -- respect unrelated skins
+    local material=self:Surface(surface.path,style);if not material then return end
+    applied[ent]={model=model,slot=surface.slot,previous=previous,ours=material}
+    ent:SetSubMaterial(surface.slot,material)
 end
-hook.Add('PostDrawViewModel','LOD_ProceduralWeaponAppearance',function(vm,ply,weapon)
-    if not IsValid(weapon) then return end
-    V:Draw(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true)
+function V:Draw(ent,style,class,owner,view,weapon)
+    if not style or not self:Visible(ent,owner,view) then return end
+    local low=reduced()
+    if not view then
+        local tick=FrameNumber();if frame~=tick then frame,count=tick,0 end
+        if count>=(low and 4 or 8) then return end;count=count+1
+    end
+    local pos,ang,length,muzzle=self:Anchor(ent,class,view)
+    local c=colors[style.element] or pale
+    local pulse=low and 1 or .9+.1*math.sin(CurTime()*2+style.phase)
+    local alpha=(view and 24 or 38)+style.rarity*4
+    local size=(view and 4 or 8)+style.rarity+style.variant*2
+    render.SetMaterial(glow)
+    render.DrawSprite(pos,size*pulse,size*pulse,Color(c.r,c.g,c.b,alpha))
+    if not low then
+        render.DrawSprite(pos+ang:Forward()*length*.18,size*.6,size*.6,Color(c.r,c.g,c.b,alpha*.7))
+    end
+    local flash=flashes[weapon or ent]
+    if flash and flash.untilTime>CurTime() and muzzle and class~='weapon_lod_crowbar' then
+        local fade=math.min(1,(flash.untilTime-CurTime())/.075)
+        local radius=(low and 8 or 13)*fade
+        render.DrawSprite(muzzle,radius,radius,Color(c.r,c.g,c.b,230*fade))
+        if not low then render.DrawSprite(muzzle+ang:Forward()*2,radius*.45,radius*.45,Color(c.r,c.g,c.b,255*fade)) end
+    end
+end
+function V:Flash(weapon)
+    if not IsValid(weapon) or not lengths[weapon:GetClass()] or weapon:GetClass()=='weapon_lod_crowbar' then return end
+    if not self:EntityStyle(weapon) then return end
+    local prior=flashes[weapon]
+    -- Collapse shotgun pellets and predicted/server copies of the same shot.
+    if prior and CurTime()-prior.started<.05 then return end
+    flashes[weapon]={started=CurTime(),untilTime=CurTime()+.075}
+end
+hook.Add('PreDrawViewModel','LOD_ProceduralWeaponSurface',function(vm,ply,weapon)
+    V:Apply(vm,IsValid(weapon) and V:EntityStyle(weapon),ply,true)
 end)
-hook.Add('PostPlayerDraw','LOD_ProceduralWorldWeaponAppearance',function(ply)
+hook.Add('PostDrawViewModel','LOD_ProceduralWeaponAppearance',function(vm,ply,weapon)
+    V:Restore(vm)
+    if IsValid(weapon) then V:Draw(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,weapon) end
+end)
+-- Native world weapons may render separately from their player. Scope the
+-- surface to the gun's actual DrawModel call, not the player's pre/post pair.
+-- Install only on already-rendered, settled client weapons; respect any addon
+-- override and keep the original native DrawModel path (no extra model draw).
+function V:WorldWeapon(weapon)
+    if worldDraws[weapon] or weapon.RenderOverride~=nil then return end
+    local function drawWeapon(ent,flags)
+        local owner=ent:GetOwner()
+        local active=IsValid(owner) and owner:GetActiveWeapon()==ent
+        local style=active and V:EntityStyle(ent) or nil
+        V:Apply(ent,style,owner,false)
+        local ok,err=pcall(ent.DrawModel,ent,flags)
+        V:Restore(ent)
+        if not ok then ErrorNoHalt(tostring(err)..'\n');return end
+        if active and (flags==nil or flags==STUDIO_RENDER) then V:Draw(ent,style,ent:GetClass(),owner,false,ent) end
+    end
+    worldDraws[weapon]=drawWeapon;weapon.RenderOverride=drawWeapon
+end
+hook.Add('PrePlayerDraw','LOD_ProceduralWorldWeaponSurface',function(ply)
     local weapon=ply:GetActiveWeapon();if not IsValid(weapon) then return end
-    V:Draw(weapon,V:EntityStyle(weapon),weapon:GetClass(),ply,false)
+    V:WorldWeapon(weapon)
+end)
+-- Native bullet prediction is available in multiplayer; the server message
+-- below also covers singleplayer and remote weapons. Never alter bullet data.
+hook.Add('EntityFireBullets','LOD_ProceduralWeaponPredictedFlash',function(actor)
+    if IsValid(actor) and actor==LocalPlayer() then V:Flash(actor:GetActiveWeapon()) end
+end)
+-- Player model animation hook: suppress only the stock third-person muzzle
+-- event after scheduling its elemental replacement; retain shell/sound events.
+hook.Add('PlayerFireAnimationEvent','LOD_ProceduralWeaponMuzzle',function(ply,_,_,event)
+    if event~=5003 or not IsValid(ply) then return end
+    local weapon=ply:GetActiveWeapon()
+    if not IsValid(weapon) or weapon:GetClass()=='weapon_lod_crowbar' or not V:EntityStyle(weapon) then return end
+    V:Flash(weapon);return true
+end)
+net.Receive('LOD_WeaponSurfaceFlash',function()
+    local weapon=net.ReadEntity()
+    if not IsValid(weapon) then return end
+    local owner=weapon:GetOwner()
+    if not IsValid(owner) or owner:GetActiveWeapon()~=weapon then return end
+    -- Local prediction already displayed this shot; only use server fallback
+    -- when it did not produce a recent predicted shot.
+    local prior=flashes[weapon]
+    if owner==LocalPlayer() and prior and CurTime()-prior.started<.2 then return end
+    V:Flash(weapon)
 end)
 function V:DrawPickup(ent)
     local style=self:EntityStyle(ent);if not style then return false end
+    self:Apply(ent,style,nil,false)
+    local ok,err=pcall(ent.DrawModel,ent)
+    self:Restore(ent)
+    if not ok then ErrorNoHalt(tostring(err)..'\n');return true end
     self:Draw(ent,style,'pickup',nil,false);return true
 end
 local baseIcon=E.DrawItemIcon
@@ -183,6 +234,19 @@ function E:DrawItemIcon(item,x,y,size,color,family)
     surface.SetDrawColor(ink)
     for i=0,7 do if math.floor(style.hash/2^i)%2==1 then surface.DrawRect(x+size*.22+i*size*.06,y+size*.4,2,size*.12) end end
 end
+local function restoreAll() for ent in pairs(applied) do V:Restore(ent) end end
+local function teardown()
+    restoreAll()
+    for ent,fn in pairs(worldDraws) do
+        if IsValid(ent) and ent.RenderOverride==fn then ent.RenderOverride=nil end
+    end
+    worldDraws=setmetatable({}, {__mode='k'})
+end
+LOD.WeaponSurfaceRestore=teardown
+-- Fallback if an external hook suppresses a paired draw, plus map/role changes.
+hook.Add('PostRender','LOD_WeaponSurfaceRestore',restoreAll)
 hook.Add('PreCleanupMap','LOD_WeaponAppearanceCleanup',function()
-    cache=setmetatable({}, {__mode='k'});itemCache=setmetatable({}, {__mode='k'});frame,count=-1,0
+    teardown();cache=setmetatable({}, {__mode='k'});itemCache=setmetatable({}, {__mode='k'})
+    flashes=setmetatable({}, {__mode='k'});frame,count=-1,0
 end)
+hook.Add('ShutDown','LOD_WeaponSurfaceShutdown',teardown)

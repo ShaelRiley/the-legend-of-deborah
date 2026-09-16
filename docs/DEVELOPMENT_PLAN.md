@@ -1,4 +1,23 @@
-# Current stabilization candidate
+# Current candidate — surface-only weapon identity
+
+Author request: remove procedural cosmetic gun attachments; represent stored
+properties with tint, partial procedural textures, radiant aura and muzzle color.
+Use **Wintery** as the Ice flavor adjective. Candidate runtime identity:
+`weapon-surfaces-20260916-01`, based on verified remote main/dev
+`55c48d5152a3847c9b93f8078b85fc6ded95d7f3`.
+
+Implementation uses sparse bundled detail maps over the native gun texture,
+scoped gun-only submaterials, bounded soft sprites and observed native shots.
+No attachment geometry or extra model entities. Frozen records are preserved;
+legacy Watery names migrate only when displayed. The live GDD tuning/economy
+rules and generated canonical manual now reflect the author correction.
+All 102 integrated suites pass; the historical LuaJIT 2.0.4 crash replay still
+passes 1,400 exact rewards (with the authorized adjective substitution).
+See `docs/WEAPON_SURFACES.md` for implementation boundaries and the visual gate.
+Native GMod visual acceptance is pending. Push to `astra/equipment-update` for
+Shael's playtest; main promotion and public-server deployment remain separate.
+
+# Previous stabilization candidate
 
 Candidate `stability-20260916-08` repairs a **reproduced native LuaJIT 2.0.4
 equipment-generation SIGSEGV**. The new 3960-event original session ends during

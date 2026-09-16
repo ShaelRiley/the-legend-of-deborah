@@ -54,7 +54,7 @@ property("breadcrumb", {stat="breadcrumb", label="Breadcrumb cells",epithet="Way
 property("block", {stat="block",label="Block contribution",epithet="Guarding",maximum=33,half=120,unit="%",family="shield"})
 property("summon_cap", {stat="summon_cap",label="Active summon capacity",epithet="Command",fixed=1,cost=45,precision=1})
 E.ElementOrder = {"earth","fire","dark","ice","light","electric"}
-local adjectives = {earth="Earthly",fire="Fiery",dark="Umbral",ice="Watery",light="Radiant",electric="Crackling"}
+local adjectives = {earth="Earthly",fire="Fiery",dark="Umbral",ice="Wintery",light="Radiant",electric="Crackling"}
 for _, element in ipairs(E.ElementOrder) do
     property("element_"..element, {element=element,label=element.." damage",epithet=adjectives[element],qualifier=adjectives[element],
         maximum=50,half=80,unit="%",group="element"})
@@ -229,7 +229,7 @@ function E:Description(item, compact)
         else out[#out+1]=p.label..string.format(" %+.1f%s",r.amount,p.unit or "") end
     end
     if self:Definition(item).weapon then out[#out+1]="Active weapon only; damage has the named element" end
-    if not compact then out[#out+1]="Watery = Ice. Hit chances attempt normal saves; up to two riders per target/attack. Gear totals use shared caps." end
+    if not compact then out[#out+1]="Wintery = Ice. Hit chances attempt normal saves; up to two riders per target/attack. Gear totals use shared caps." end
     return table.concat(out,"; ")
 end
 

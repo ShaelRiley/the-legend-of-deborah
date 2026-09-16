@@ -123,7 +123,9 @@ end
 
 function E:ItemName(item)
     local def = self:Definition(item)
-    return item and item.name or def and def.name or "Unknown item"
+    local name = item and item.name or def and def.name or "Unknown item"
+    -- Display migration only: frozen DFT records and old reward evidence stay intact.
+    return (name:gsub("%f[%a]Watery%f[%A]", "Wintery"))
 end
 
 function E:Description(item, compact)

@@ -531,7 +531,8 @@
         "Equipment has a bag and dedicated slots. You can keep multiple copies of a weapon family and select the one to equip. Touching a pickup stores the item; it does not silently replace your carefully chosen gear.",
         "Wearable families are headwear, vest, trousers, boots, rings, gloves, and shields. A ring can use either hand. A pair of gloves occupies both hands; displacing it frees both. The shield uses the left-arm accessory slot, not a ring slot.",
         "Your ordinary equipment storage holds 32 records plus the two consumable stacks. Only equipped wearables and the currently wielded weapon contribute their effects. A powerful weapon sitting in the bag does nothing to your current attack.",
-        "Compare an item's name, properties, drawback, and Value before equipping it. Unequip first if you want to trash an item. Trashing destroys the selected unequipped record, including a whole consumable stack when selected."
+        "Compare an item's name, properties, drawback, and Value before equipping it. Unequip first if you want to trash an item. Trashing destroys the selected unequipped record, including a whole consumable stack when selected.",
+        "A weapon’s element colors its surface tint, soft aura and muzzle flash. Sparse brushed, ceramic, carbon or hammered patches preserve the stock gun and its detail. Finish and glow variations follow the saved roll; rarity strengthens the presentation. Inspect the listed properties for exact effects. Wintery means Ice, including Wintery Warding and Wintery Frailty."
       ]
     },
     {
