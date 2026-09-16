@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["hostile"] = "dungeon-return-20260916-01"
+LOD.RuntimeReceipts["hostile"] = "brute-attacks-20260916-01"
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")

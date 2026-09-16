@@ -130,6 +130,43 @@ H:ChargeTick(brute,g,{},11)
 assert(brute.LODBrutePhase=='stunned' and brute.LODBruteStunUntil==13 and not brute.LODBruteCharge)
 assert(brute:GetPos():DistToSqr(origin)==0)
 
+-- Exercise the ordinary Tick dispatcher, not just BeginCharge directly.
+-- Damaging Neil must trigger an armed defender; repeated damage to Neil must
+-- not cancel the Brute's committed warning, and Neil's death must not leave a
+-- permanent attack veto on the surviving Brute.
+local liveH={seed=s.LevelSeed,neil=h.neil,brute=brute,heroes={env.hero},threats={},nextThreat=1000}
+s.NeilHunt=liveH
+brute.LODBruteStunUntil=nil;brute.LODHitStunUntil=nil;brute.LODNextAttack=0
+brute.LODWaypoints={};brute:SetPos(N:CellCenter(g.Cells[key(h.neilCell)]))
+env.hero:SetPos(brute:GetPos()+Vector(80,0,0))
+util.TraceLine=function() return {Hit=false} end
+util.TraceHull=function(opts)
+ if opts.mask==MASK_NPCSOLID then return {Hit=false} end
+ return {Hit=true,Entity=env.hero}
+end
+local defendedHits=0;local damageBeforeDefense=H.Damage
+H.Damage=function(_,e,p) assert(e==brute and p==env.hero);defendedHits=defendedHits+1 end
+env.setTime(20);H:NeilDamaged(h.neil,2)
+assert(liveH.defendCell,'missing defense request')
+H:Tick(brute)
+assert(brute.LODBruteCharge and brute.LODBrutePhase=='windup','defense route disabled the Brute attack')
+local committed=brute.LODBruteCharge
+H:NeilDamaged(h.neil,2)
+assert(brute.LODBruteCharge==committed,'shooting Neil cancelled the Brute warning')
+env.setTime(committed.ready-.01);H:Tick(brute);assert(defendedHits==0)
+env.setTime(committed.ready);H:Tick(brute)
+env.setTime(committed.ready+.05);H:Tick(brute)
+assert(defendedHits==1,'ordinary defense Tick failed to deal exactly one charge hit')
+H:Impact(brute,22,false)
+h.neil.LODDead=true;H:NeilKilled(h.neil)
+assert(not liveH.defendCell,'Neil death stranded a defense order')
+env.setTime(brute.LODNextAttack-.01);H:Tick(brute);assert(not brute.LODBruteCharge,'cooldown bypassed')
+env.setTime(brute.LODNextAttack);H:Tick(brute)
+assert(brute.LODBruteCharge,'surviving Brute pursued without attacking')
+H:CancelCharge(brute);H.Damage=damageBeforeDefense
+h.neil.LODDead=nil;s.NeilHunt=h
+flush() -- stale test-hunt key callback cannot affect the authoritative hunt
+
 -- Sighting commits a direction and never steals control from a stair route.
 brute.LODBruteStunUntil=nil;brute:SetPos(N:CellCenter(g.Cells[key(h.neilCell)]))
 brute.LODWaypoints={{pos=brute:GetPos(),stair=true}};brute.LODWaypointIndex=1
@@ -205,4 +242,4 @@ local function roundTrip()
  for i=1,4 do assert(codes[i]==1,'gate vanished/corrupted in client topology') end
 end
 roundTrip();dofile(root..'cl_minimap_reliability.lua');roundTrip()
-print('NEIL_BRUTE_PASS: seeded multi-floor progression, pair/reserve, defense, death-only key, Black checkpoint, stale callbacks, charge/hit-stun/stairs, testkit, both minimap decoders')
+print('NEIL_BRUTE_PASS: seeded multi-floor progression, pair/reserve, armed defense/repeated Neil hits/survivor attacks/cooldown, death-only key, Black checkpoint, stale callbacks, charge/hit-stun/stairs, testkit, both minimap decoders')

@@ -1,4 +1,28 @@
-# Current candidate — dungeon transition retention
+# Current candidate — Brute attack restoration
+
+`brute-attacks-20260916-01`, developed on `main` from verified
+`15387a51366b6f7e2343736a9cb2519d24afdc25`.
+
+Reproduced: the ordinary Brute Tick refused attacks while a Neil defense order
+existed; hits on Neil cancelled the Brute's telegraph; Neil's death could leave
+that defense order permanently set while the Brute continued pursuit. Defense
+routing now permits the authored charge. Further damage to Neil replans routing
+without cancelling a committed Brute attack. Neil death clears obsolete defense
+routing and refreshes survivor pursuit. Charge damage/timing, ordinary hit stun,
+control cancellation, stairs, gates and wall-impact vulnerability are retained.
+
+Live GDD: entrypoint/index, 05 LOD-OBJ-002 / LOD-ENEMY-003, exact HUMAN Neil/Brute
+paragraphs, and 07 existing charge/hunt tuning. No design or tuning changes.
+Finite automated gate: reproduce the old failure through ordinary Tick; prove
+warning, one charge hit, cooldown and attacks after Neil's death; reuse existing
+charge/wall/stair/control tests and the integrated gate.
+Validation: all 103 integrated suites pass; the new ordinary-Tick regression
+failed against the prior build and passes with this correction.
+Finite GMod gate: damage Neil, let the Brute finish his warning, and confirm a
+charge; kill Neil first and confirm the surviving Brute can still attack.
+Native GMod acceptance remains pending; no server deployment is included.
+
+# Previous candidate — dungeon transition retention
 
 `dungeon-return-20260916-01`, developed directly on `main` after promoting the
 accepted weapon build `fdea1ac0bc1e69765cff7e629a7590f85eeef5a2`.

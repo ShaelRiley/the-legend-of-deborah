@@ -314,7 +314,8 @@ function H:Tick(ent)
         if self:ChargeTick(ent,g,heroes,now) then return true end
         local target
         for _,p in ipairs(heroes) do if activeHero(p) and (not target or ent:GetPos():DistToSqr(p:GetPos())<ent:GetPos():DistToSqr(target:GetPos())) then target=p end end
-        if target and not h.defendCell and now>=(ent.LODNextAttack or 0) and (not status or status:CanInitiateAttack(ent))
+        -- A defense destination controls routing, not attack eligibility.
+        if target and now>=(ent.LODNextAttack or 0) and (not status or status:CanInitiateAttack(ent))
             and self:BeginCharge(ent,target,g,now) then motion:Stop(ent);return true end
         local destination=ent.LODHuntDestination
         if now>=(ent.LODHuntRouteAt or 0) then
@@ -350,7 +351,9 @@ function H:NeilDamaged(ent,amount)
     if not h or h.dead or ent~=h.neil or amount<=0 or h.seed~=s.LevelSeed then return end
     h.nextThreat=0;ent.LODHuntRouteAt=0
     local c=currentCell(ent,s.Graph);h.defendCell=key(c)
-    if living(h.brute) then self:CancelCharge(h.brute);h.brute.LODHuntRouteAt=0 end
+    -- Replan escort movement without cancelling an already telegraphed attack.
+    -- Only damage/control applied to the Brute may interrupt that commitment.
+    if living(h.brute) then h.brute.LODHuntRouteAt=0 end
     log("NEIL_DEFENSE_TRIGGER",{cell=h.defendCell,damage=amount})
 end
 hook.Add("PostEntityTakeDamage","LOD_NeilDefense",function(ent,info,took)
@@ -359,7 +362,9 @@ end)
 function H:NeilKilled(ent)
     local s=R.State;local h=s and s.NeilHunt
     if not h or ent~=h.neil or h.dead or h.seed~=s.LevelSeed or s.Failed or s.LevelCleared then return end
-    h.dead=true;h.dropPos=Vector(ent:GetPos().x,ent:GetPos().y,ent:GetPos().z)
+    h.dead=true;h.defendCell=nil
+    if living(h.brute) then h.brute.LODHuntRouteAt=0;h.brute.LODHuntDestination=nil end
+    h.dropPos=Vector(ent:GetPos().x,ent:GetPos().y,ent:GetPos().z)
     h.dropCell=table.Copy(currentCell(ent,s.Graph) or h.neilCell)
     s.ObjectiveStage=S.TAKE_BLACK_KEYCARD
     -- No native creation/removal inside the engine damage callback.

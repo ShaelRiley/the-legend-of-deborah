@@ -1,3 +1,13 @@
+## 2026-09-16 attack regression repair — main
+
+The production Tick regression reproduced an attack veto tied to the defense
+route. This was absent from earlier tests, which called BeginCharge directly.
+Defense orders now govern destination only; hits on Neil cannot erase the
+Brute's committed warning, and Neil death clears stale defense routing. The
+regression follows Tick through windup, one contact hit, recovery cooldown and
+surviving-Brute attack initiation. Existing interruption, wall, stair and gate
+constraints remain covered. Build: `brute-attacks-20260916-01`.
+
 # Neil and the Brute
 
 Repository: `ShaelRiley/the-legend-of-deborah`; branch: `astra/equipment-update`.
