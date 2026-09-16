@@ -1,4 +1,37 @@
-# Current candidate — Brute attack restoration
+# Current candidate — collapse restart, camera and client recovery
+
+`collapse-recovery-20260916-01`, developed directly on `main` from verified
+`4e0aad2497aa5a20172a4b1493c826bf6151b9ad`, preserving the newer server listing,
+loading artwork and client branding delivery commits.
+
+Collapse completion starts server-owned deadlines: automatic new campaign after
+20 seconds; fresh E press allowed after 5 seconds. Periodic aftermath snapshots
+show both countdowns. The existing epoch-guarded restart transaction owns manual
+and automatic requests. Server hibernation ownership lasts until restart, so an
+empty server cannot strand an already-started aftermath.
+
+The camera now faces the native Flattywood sign from its opposite side, pitched
+40 degrees down with FOV110, horizontal stand-off 1.6 times prison radius and
+a 160,000-unit far plane covering the distant skybox sign.
+Stock BSP sign geometry/skybox conversion was inspected; 4:3 visible-frame tests
+cover the prison footprint and full sign height. Native composition remains a
+visual acceptance gate.
+
+Source full updates may call OnRemove(true) without a subsequent Initialize.
+Floor, gate, keycard and jail-door render registries now retain that membership
+and recover it on NotifyShouldTransmit. A production draw-hook regression proves
+reappearance after temporary invalidity and genuine removal without ghost draws.
+No every-frame entity scans or network polling are added.
+
+Live GDD: 00/01, 05 LOD-TIMER-001, 06 lifecycle and 07 tuning. The explicit new
+restart/camera direction is recorded in 05/07. Finite gate: timer deadline/race,
+manual key lockout, empty-server auto restart, camera projection and full-update
+render recovery. All 104 integrated suites pass. GMod check: trigger a collapse,
+inspect the sign/prison framing, let the countdown restart unaided; verify the
+five-second E shortcut and client cl_fullupdate recovery in a separate run.
+No server installation or Workshop publication is included.
+
+# Previous candidate — Brute attack restoration
 
 `brute-attacks-20260916-01`, developed on `main` from verified
 `15387a51366b6f7e2343736a9cb2519d24afdc25`.

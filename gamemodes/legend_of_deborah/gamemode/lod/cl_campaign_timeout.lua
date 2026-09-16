@@ -56,7 +56,7 @@ net.Receive(T.Message,function()
     local hasScene=net.ReadBool()
     local scene
     if hasScene then
-        scene={elapsed=net.ReadFloat(),center=net.ReadVector(),radius=net.ReadFloat(),ground=net.ReadFloat(),ready=net.ReadBool()}
+        scene={elapsed=net.ReadFloat(),center=net.ReadVector(),radius=net.ReadFloat(),ground=net.ReadFloat(),ready=net.ReadBool(),manualRemaining=net.ReadFloat(),autoRemaining=net.ReadFloat()}
     end
     if C.epoch and epoch<C.epoch then return end
     local entering=scene and (not C.scene or epoch~=C.epoch)
@@ -91,7 +91,7 @@ hook.Add("CalcView","LOD_TimeoutCamera",function(_,origin)
     if elapsed>4 and elapsed<15 then
         angles.r=math.sin(elapsed*13)*0.25
     end
-    return {origin=pos,angles=angles,fov=90,znear=8,zfar=60000,drawviewer=false}
+    return {origin=pos,angles=angles,fov=T.CameraFOV,znear=8,zfar=T.CameraFar,drawviewer=false}
 end)
 hook.Add("HUDShouldDraw","LOD_TimeoutStockHUD",function()
     if T:IsCinematic() then return false end
@@ -154,9 +154,15 @@ hook.Add("PostDrawTranslucentRenderables","LOD_TimeoutExplosions",function(depth
     end
 end)
 
+local function aftermathRemaining(field)
+    local s=C.scene
+    if not s or not s.ready then return nil end
+    return math.max(0,(s[field] or 0)-(RealTime()-C.received))
+end
+
 local nextRestart=0
 hook.Add("Think","LOD_TimeoutRestartKey",function()
-    if not C.scene or not C.scene.ready then C.useDown=input.IsKeyDown(KEY_E);return end
+    if not C.scene or not C.scene.ready or aftermathRemaining("manualRemaining")>0 then C.useDown=input.IsKeyDown(KEY_E);return end
     local down=input.IsKeyDown(KEY_E)
     if down and not C.useDown and not gui.IsGameUIVisible() and RealTime()>=nextRestart then
         nextRestart=RealTime()+1
@@ -170,7 +176,13 @@ hook.Add("HUDPaint","LOD_TimeoutHUD",function()
         surface.SetDrawColor(0,0,0,235)
         surface.DrawRect(0,0,w,h*0.105);surface.DrawRect(0,h*0.87,w,h*0.13)
         draw.SimpleTextOutlined("TIME OVER","LOD_TimeOver",w*0.5,h*0.045,Color(255,180,95),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,2,color_black)
-        local text=C.scene.ready and "PRESS E TO BEGIN A NEW RUN" or "THE PRISON IS COMING APART"
+        local text="THE PRISON IS COMING APART"
+        if C.scene.ready then
+            local wait=math.ceil(aftermathRemaining("manualRemaining"))
+            local automatic=math.ceil(aftermathRemaining("autoRemaining"))
+            text=wait>0 and string.format("NEW RUN IN %ds  •  E AVAILABLE IN %ds",automatic,wait)
+                or string.format("PRESS E FOR A NEW RUN  •  AUTO RESTART IN %ds",automatic)
+        end
         draw.SimpleText(text,"LOD_TimeOverPrompt",w*0.5,h*0.93,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
         return
     end

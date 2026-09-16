@@ -17,9 +17,16 @@ function ENT:Initialize()
     LOD.ClientJailDoors[self] = true
 end
 
-function ENT:OnRemove()
-    LOD.ClientJailDoors[self] = nil
+function ENT:OnRemove(fullUpdate)
+    -- Source may retain this entity across cl_fullupdate without Initialize.
+    if not fullUpdate then LOD.ClientJailDoors[self] = nil end
 end
+
+hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_jail_door", function(ent, transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass() == "lod_jail_door" then
+        LOD.ClientJailDoors[ent] = true
+    end
+end)
 
 function ENT:Draw()
     if self:GetPos():DistToSqr(EyePos()) > DRAW_DISTANCE_SQR then return end

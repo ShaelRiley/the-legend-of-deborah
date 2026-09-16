@@ -123,15 +123,58 @@ for _=1,12 do T:Step() end
 assert(scene.ready and #scene.props==24 and spawned==24)
 local oldScene=scene
 local oldBuilds=builds
-assert(R:RestartFailedCampaign(hero));assert(not R:RestartFailedCampaign(actor()),'second client duplicate restart accepted')
+assert(not R:RestartFailedCampaign(hero),'manual restart skipped post-collapse wait')
+now=scene.readyAt+4.99;assert(not R:RestartFailedCampaign(hero))
+now=scene.readyAt+5;assert(R:RestartFailedCampaign(hero));assert(not R:RestartFailedCampaign(actor()),'second client duplicate restart accepted')
 flush();assert(builds==oldBuilds+1 and R.State.Level==1 and not R.State.Failed)
 assert(not T:Clock().deadline and not T:Clock().scene and not vars.sv_hibernate_think:GetBool())
 for _,p in ipairs(oldScene.props) do assert(not IsValid(p),'wreckage leaked') end
 assert(finalized==1)
+-- Nobody presses E: a large tick gap and an empty server must still restart
+-- once, through the same deferred campaign transaction, exactly after 20s.
+T:Clock().deadline=now;T:Expire();T:Step();local automatic=T:Clock().scene
+now=automatic.started+T.Settle
+for _=1,13 do T:Step() end
+assert(automatic.ready and automatic.readyAt==now)
+humans={};local autoBuilds=builds
+now=automatic.readyAt+19.99;T:Step();flush();assert(builds==autoBuilds)
+now=automatic.readyAt+20;T:Step();T:Step();flush()
+assert(builds==autoBuilds+1 and not R.State.Failed and not T:Clock().scene)
+assert(not vars.sv_hibernate_think:GetBool(),'automatic restart leaked hibernation ownership')
+humans={hero}
 -- Shared transforms produce the same settled ruin after dropped frames/join.
 local a,b=T:ContainerPose(Vector(10,20,900),Angle(),Vector(),4000,0,22,13)
 local c,d=T:ContainerPose(Vector(10,20,900),Angle(),Vector(),4000,0,200,13)
 assert(a.x==c.x and a.y==c.y and a.z==c.z and b.r==d.r)
+-- Native-map camera contract: opposite Flattywood, oblique rather than
+-- overhead, sign and prison inside the visible 4:3 letterboxed projection.
+for _,radius in ipairs({5700,6500}) do
+ local center=Vector(0,0,-11500);local camera=T:Camera(center,radius)
+ local dx,dy,dz=camera.x-center.x,camera.y-center.y,camera.z-center.z
+ local horizontal=math.sqrt(dx*dx+dy*dy)
+ local pitch=math.atan(dz/horizontal)
+ assert(math.abs(math.deg(pitch)-40)<.01 and dx>0)
+ local sign=T.FlattywoodSign-center
+ assert(dx*sign.x+dy*sign.y<0,'camera on same side as Flattywood')
+ local forward=(center-camera);forward:Normalize()
+ local right=Vector(-forward.y,forward.x,0);right:Normalize()
+ local up=Vector(-forward.z*right.y,forward.z*right.x,forward.x*right.y-forward.y*right.x)
+ local tanH=math.tan(math.rad(T.CameraFOV/2));local tanV=tanH/(4/3)
+ local function project(p)
+  local v=p-camera
+  local depth=v.x*forward.x+v.y*forward.y+v.z*forward.z
+  return (v.x*right.x+v.y*right.y+v.z*right.z)/(depth*tanH),
+   .5-(v.x*up.x+v.y*up.y+v.z*up.z)/(depth*tanV)*.5
+ end
+ for _,z in ipairs({-8704,-3840}) do
+  local x,y=project(Vector(T.FlattywoodSign.x,T.FlattywoodSign.y,z))
+  assert(math.abs(x)<1 and y>.105 and y<.87,'Flattywood clipped by frame/letterbox')
+ end
+ for _,x in ipairs({-4032,4032}) do for _,y in ipairs({-4032,4032}) do
+  local px,py=project(Vector(x,y,-12000))
+  assert(math.abs(px)<1 and py>.105 and py<.87,'prison footprint clipped')
+ end end
+end
 -- Replay real server serialization through the actual client receiver.
 CLIENT=true;SERVER=false
 local serverReceivers=receivers;receivers={}
@@ -162,10 +205,18 @@ assert(timerDraw.text=='30:00  •  AWAITING FIRST HERO' and timerDraw.x==22 and
 assert(timerDraw.alignX==TEXT_ALIGN_LEFT and timerDraw.alignY==TEXT_ALIGN_TOP,
  'campaign clock grows rightward without occupying the objective anchor')
 T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD()==nil)
-local clock=T:Clock();clock.scene.started=now-22;clock.scene.ready=true
+local clock=T:Clock();clock.scene.started=now-22;clock.scene.ready=true;clock.scene.readyAt=now
 T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==22)
+local view=hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())
+assert(view.fov==T.CameraFOV and view.zfar>(view.origin-T.FlattywoodSign):Length(),'camera clips distant Flattywood')
 local beforeCinematicDraws=drawn
 hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+2)
 local soundCount=sounds;now=now+1;T:Sync();receive();assert(sounds==soundCount,'snapshot replayed entrance audio')
+local sent=0;net.SendToServer=function() sent=sent+1 end
+down=true;hooks.Think.LOD_TimeoutRestartKey();assert(sent==0)
+now=clock.scene.readyAt+5;T:Sync();receive();hooks.Think.LOD_TimeoutRestartKey();assert(sent==0,'held E skipped fresh press')
+down=false;hooks.Think.LOD_TimeoutRestartKey();down=true;hooks.Think.LOD_TimeoutRestartKey()
+assert(sent==1 and T.Client.scene.manualRemaining==0 and T.Client.scene.autoRemaining==15)
+hooks.HUDPaint.LOD_TimeoutHUD();assert(drawCalls[#drawCalls].text:find('AUTO RESTART IN 15s',1,true))
 R:NewCampaign();receive();assert(not T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD==originalHUD)
 print('PASS campaign timer layout, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport and HUD restoration')

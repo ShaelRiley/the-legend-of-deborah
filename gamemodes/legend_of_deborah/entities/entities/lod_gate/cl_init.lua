@@ -38,9 +38,16 @@ function ENT:Initialize()
     LOD.ClientGates[self] = true
 end
 
-function ENT:OnRemove()
-    LOD.ClientGates[self] = nil
+function ENT:OnRemove(fullUpdate)
+    -- Source may retain this entity across cl_fullupdate without Initialize.
+    if not fullUpdate then LOD.ClientGates[self] = nil end
 end
+
+hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_gate", function(ent, transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass() == "lod_gate" then
+        LOD.ClientGates[ent] = true
+    end
+end)
 
 function ENT:Draw()
 end

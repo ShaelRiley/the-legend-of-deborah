@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["mirror"] = "brute-attacks-20260916-01"
+LOD.RuntimeReceipts["mirror"] = "collapse-recovery-20260916-01"
 include("shared.lua")
 
 local RT_W, RT_H = 320, 640

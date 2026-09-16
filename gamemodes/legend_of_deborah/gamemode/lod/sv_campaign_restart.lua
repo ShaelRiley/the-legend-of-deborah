@@ -18,7 +18,12 @@ local function canRequestRestart(ply)
     if not RunManager or not RunManager.State or not RunManager.State.Failed then return false end
     if restartInProgress then return false end
     local clock = RunManager.State.CampaignClock
-    if clock and clock.scene and not clock.scene.ready then return false end
+    if clock and clock.scene then
+        local scene, timeout = clock.scene, LOD.CampaignTimeout
+        if not scene.ready or not scene.readyAt or not timeout then return false end
+        local delay = IsValid(ply) and timeout.ManualRestartDelay or timeout.AutoRestartDelay
+        if SysTime() < scene.readyAt + delay then return false end
+    end
     if not IsValid(ply) then return true end
 
     -- Any connected player may restart a completed/failed server-session run.

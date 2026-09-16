@@ -19,9 +19,16 @@ function ENT:Initialize()
     LOD.ClientKeycards[self] = true
 end
 
-function ENT:OnRemove()
-    LOD.ClientKeycards[self] = nil
+function ENT:OnRemove(fullUpdate)
+    -- Source may retain this entity across cl_fullupdate without Initialize.
+    if not fullUpdate then LOD.ClientKeycards[self] = nil end
 end
+
+hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_keycard", function(ent, transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass() == "lod_keycard" then
+        LOD.ClientKeycards[ent] = true
+    end
+end)
 
 function ENT:Draw()
 end

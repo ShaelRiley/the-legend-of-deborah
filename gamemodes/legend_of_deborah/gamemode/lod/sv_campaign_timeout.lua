@@ -27,6 +27,8 @@ function T:Sync(ply)
         net.WriteFloat(scene.radius)
         net.WriteFloat(scene.ground)
         net.WriteBool(scene.ready == true)
+        net.WriteFloat(scene.readyAt and math.max(0, scene.readyAt + self.ManualRestartDelay - now) or -1)
+        net.WriteFloat(scene.readyAt and math.max(0, scene.readyAt + self.AutoRestartDelay - now) or -1)
     end
     if IsValid(ply) then net.Send(ply) else net.Broadcast() end
 end
@@ -93,6 +95,8 @@ end
 function T:BeginScene(scene)
     if scene.started then return false end
     scene.started = SysTime()
+    local cv = GetConVar("sv_hibernate_think")
+    if cv and not cv:GetBool() then self:Clock().restoreHibernate = true; RunConsoleCommand("sv_hibernate_think", "1") end
     -- Called from Think, never from a movement, damage or native Touch callback.
     for _, ply in ipairs(player.GetAll()) do
         if LOD.Equipment then LOD.Equipment:ClearTransient(ply) end
@@ -159,7 +163,13 @@ function T:Step()
             if #player.GetHumans()==0 then self:RestoreHibernate(c);return end
             self:BeginScene(scene)
         end
-        if scene.ready then return end
+        if scene.ready then
+            -- Continue serving aftermath snapshots and restart on the server,
+            -- even if nobody presses E or the last viewer disconnects.
+            if now >= scene.readyAt + self.AutoRestartDelay then Run:RestartFailedCampaign() end
+            if now >= (c.nextSync or 0) then c.nextSync=now+1;self:Sync() end
+            return
+        end
         local elapsed=now-scene.started
         local budget=96
         while budget>0 do
@@ -180,7 +190,8 @@ function T:Step()
                 if IsValid(phys) then phys:EnableMotion(false);phys:Sleep() end
             end end
             scene.ready=true
-            self:RestoreHibernate(c)
+            scene.readyAt=now
+            c.nextSync=now+1
             self:Sync()
             log("CAMPAIGN_AFTERMATH_READY",{physics=#scene.props})
         end

@@ -33,15 +33,25 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
+    visualBoxes[self] = true
     if CurTime() >= (self._LODNextBoundsRefresh or 0) then
         refreshRenderBounds(self)
         self._LODNextBoundsRefresh = CurTime() + 1
     end
 end
 
-function ENT:OnRemove()
-    visualBoxes[self] = nil
+function ENT:OnRemove(fullUpdate)
+    -- Source may retain this entity across cl_fullupdate without Initialize.
+    if not fullUpdate then visualBoxes[self] = nil end
 end
+
+hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass() == "lod_static_box" then
+        visualBoxes[ent] = true
+        refreshRenderBounds(ent)
+        ent._LODNextBoundsRefresh = 0
+    end
+end)
 
 function ENT:Draw()
 end

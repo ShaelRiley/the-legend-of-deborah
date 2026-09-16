@@ -105,7 +105,7 @@
       "text": [
         "The campaign begins with 1,800 seconds. Its clock starts exactly once, when the first Hero commits to entering the labyrinth. A successful rescue advances the dungeon; it does not start a new timer.",
         "Death, Tetris, menus, map use, staging visits, spectating, and disconnections do not pause or extend this clock. An empty server does not bank extra time for your return.",
-        "At zero, TIME OVER ends the campaign. The prison collapses in a destruction sequence, then the aftermath remains on screen. When the restart prompt is ready, press E to begin a fresh campaign at Dungeon 1 with a fresh clock and roster.",
+        "At zero, TIME OVER ends the campaign and the prison collapses. A fresh campaign starts automatically 20 seconds after the collapse finishes. After five seconds of aftermath, you can press E to restart sooner at Dungeon 1 with a fresh clock and roster.",
         "A rescue completed earlier in the campaign does not exempt the party from the eventual timeout."
       ],
       "quote": "I appreciate the sightseeing. I would appreciate the rescue more."

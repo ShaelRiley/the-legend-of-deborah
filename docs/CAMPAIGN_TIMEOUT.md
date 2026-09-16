@@ -1,6 +1,6 @@
 # Dungeon collapse clock and TIME OVER — updated 2026-09-16
 
-Development branch: `main`; build `dungeon-return-20260916-01`.
+Development branch: `main`; build `collapse-recovery-20260916-01`.
 No VPS deployment or Workshop publication is included.
 
 ## HUD follow-up
@@ -34,7 +34,8 @@ minute, then 30 and 10 seconds, using existing announcements/dialogger observers
 
 A 20 Hz service checks the deadline independently of the game's simulation freeze.
 `sv_hibernate_think` is temporarily enabled if necessary, then restored on failure
-or reset. SysTime still catches up across any hibernation gap. Expiry checks also
+or restart/reset. During a collapse, ownership continues through the automatic
+restart deadline, including an empty server. SysTime still catches up across any hibernation gap. Expiry checks also
 precede CompleteLevel, AdvanceLevel, BuildCurrentLevel and TryActivatePlayer, so
 an expired rescue cannot enter XP, wallet, celebration or next-level wrappers.
 
@@ -47,8 +48,11 @@ mark failure immediately and start presentation when a human reconnects.
 
 ## Presentation and engine budgets
 
-- A 3-second camera pullback fits bounds computed from the actual generated cells,
-  including Gordon's extra wing. The wall shell rises 900 units over two seconds
+- A 3-second camera pullback frames bounds computed from the actual generated cells,
+  including Gordon's extra wing, from opposite the native Flattywood sign.
+  Downward pitch40, FOV110, a 160,000-unit far plane and stand-off1.6× bounds
+  radius preserve the prison
+  foreground and sign backdrop instead of the former overhead view. The wall shell rises 900 units over two seconds
   for the magical suspension reveal; ordinary gameplay geometry is unchanged.
 - At 4 seconds, failure propagates across the prison for seven seconds. Existing
   client container models tumble and scatter using deterministic absolute-time
@@ -73,10 +77,12 @@ mark failure immediately and start presentation when a human reconnects.
   without replaying elapsed explosion beats.
 
 Restart requests use the existing `LOD_RestartCampaign` message and its
-RestartFailedCampaign guard/epoch transaction. Requests are rejected until the
-server says aftermath is ready; only the first simultaneous request schedules a
-new campaign. E uses a fresh physical keypress and ignores held input from the
-cutscene. Cleanup removes the native wreckage; NewCampaign resets level, state,
+RestartFailedCampaign guard/epoch transaction. Requests are rejected until five seconds after the server finishes the
+collapse and bounded cleanup. Twenty seconds after that same completion point,
+the server automatically invokes the existing restart authority. Only the first
+accepted request schedules a campaign; repeated service ticks and simultaneous
+clients cannot duplicate it. E uses a fresh keypress and ignores held input from
+the cutscene. Both countdowns use server snapshot durations, interpolated locally. Cleanup removes the native wreckage; NewCampaign resets level, state,
 roster and timer, and the normal builder replaces the wall manifest. New staging
 again waits for first Hero entry. Admin map cleanup does not regenerate a timed-out
 campaign: client ruin remains, though native props removed by that command stay
@@ -84,7 +90,7 @@ removed. Map changes/server restarts use their ordinary fresh-campaign lifecycle
 
 ## Verification
 
-`python3 tools/test_checkpoint_g_integration.py`: all 103 suites pass, covering
+`python3 tools/test_checkpoint_g_integration.py`: all 104 suites pass, covering
 repository Lua syntax, geometry/enemies, equipment, lifecycle, RPG and prior
 protected regressions. The new production-code harness verifies untimed staging,
 Soldier rejection, exactly-once start per dungeon, reset after successful rescue,
@@ -123,8 +129,32 @@ lod_dev_timeout_in 10; lod_campaign_clock_status
 
 The command shortens an already-started clock and marks this campaign unranked.
 Watch both clients reach TIME OVER, including any spectator/staged client. Try E
-during collapse: it must do nothing. After 22 seconds, inspect the persistent ruin
-and have both clients press E: exactly one fresh Level 1 should appear, with no
+during collapse and the first five seconds of aftermath: it must do nothing.
+Inspect the ruin, prison framing and Flattywood backdrop. Allow 20 seconds of
+aftermath without input: exactly one fresh Level 1 should appear. In a second
+run, have both clients press E after five seconds: the same reset should occur, with no
 stale camera/overlay and a fresh clock awaiting first deployment. Enter again to
 confirm a new 30:00 countdown. Capture a short video plus `console_latest.txt` and
 `rpg_summary_latest.txt`; use `lod_campaign_clock_status` if state is ambiguous.
+
+## Native-map framing evidence
+
+The stock-map BSP mirrored at
+https://github.com/sbarisic/libTech/blob/568d0653a9d7832d7a91253db701c88714dc46ec/libTech/content/maps/gm_flatgrass.bsp
+contains GM_CONSTRUCT/FLATSIGN faces centered near (-5099.77,236.30,-15432).
+Its sky_camera origin is (32,0,-15040), scale16. The resulting apparent sign
+center is (-82108.37,3780.76,-6272), on the negative-X side of the prison. Only
+this derived camera bearing is used; no BSP or external assets are shipped.
+
+## Client geometry after resynchronization
+
+[Facepunch's OnRemove contract](https://wiki.facepunch.com/gmod/ENTITY:OnRemove)
+explains that a client full update can remove an entity locally without another
+Initialize call when it returns. The prior floor/gate registries dropped those
+entities permanently. Full-update removals now preserve registry membership;
+NotifyShouldTransmit(true) restores it, including keycards and the jail door
+which shared the same defect. Real removal still deregisters; render hooks skip
+invalid entities. Static-box bounds refresh on transmission recovery.
+Regression: `tools/test_geometry_fullupdate.lua`. Native reproduction: on a
+local developer session with cheats enabled, `cl_fullupdate` must retain the
+floor and gate visuals without rejoining or rebuilding the dungeon.
