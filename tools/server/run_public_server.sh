@@ -45,13 +45,21 @@ sv_lan 0
 hide_server 0
 sv_location us
 sv_password ""
+
+# Public alpha concurrency: 4 Heroes + up to 6 human Soldiers + 2 spectators.
+# Keep Source/GMod server-query metadata explicit so the browser reports the
+# real population instead of relying on engine privacy/disclosure defaults.
+sv_visiblemaxplayers 12
+host_info_show 2
+host_players_show 2
+host_rules_show 1
 EOF
 
 printf '\nLaunching public LOD dedicated server\n'
 printf '  root:      %s\n' "$SERVER_ROOT"
 printf '  gamemode:  legend_of_deborah\n'
 printf '  map:       gm_flatgrass\n'
-printf '  players:   4 max\n'
+printf '  players:   12 max (4 Heroes + 6 Soldiers + 2 spectators)\n'
 printf '  port:      27015\n\n'
 printf 'Keep this terminal open. Press Ctrl+C to stop the server.\n\n'
 
@@ -60,7 +68,7 @@ exec ./srcds_run \
     -game garrysmod \
     -console \
     -port 27015 \
-    +maxplayers 4 \
+    +maxplayers 12 \
     +gamemode legend_of_deborah \
     +map gm_flatgrass \
     +exec lod_public_server.cfg \
