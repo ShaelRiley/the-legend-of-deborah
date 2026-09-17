@@ -1,6 +1,7 @@
 -- Actual inventory/equipment authorities with only VGUI/net/input boundaries doubled.
 local fixture=dofile('tools/test_equipment_economy_runtime.lua')
 local E=LOD.Equipment;local root='gamemodes/legend_of_deborah/gamemode/lod/'
+KEY_O=25;CreateClientConVar=function() return {GetInt=function() return KEY_O end} end
 local now=10;RealTime=function() return now end
 unpack=table.unpack
 local nodes,receivers,requests={}, {}, {}

@@ -26,6 +26,8 @@ function T:Sync(ply)
         net.WriteVector(scene.center)
         net.WriteFloat(scene.radius)
         net.WriteFloat(scene.ground)
+        net.WriteVector(scene.interior or scene.center)
+        net.WriteVector(scene.interiorAim or scene.center+Vector(100,0,0))
         net.WriteBool(scene.ready == true)
         net.WriteFloat(scene.readyAt and math.max(0, scene.readyAt + self.ManualRestartDelay - now) or -1)
         net.WriteFloat(scene.readyAt and math.max(0, scene.readyAt + self.AutoRestartDelay - now) or -1)
@@ -84,6 +86,16 @@ function T:Expire()
     if c.scene or s.Failed or not c.deadline or SysTime() < c.deadline then return false end
     local center, radius, ground = self:Bounds()
     c.scene = {center=center, radius=radius, ground=ground, props={}, geometry={}, samples={}}
+    local graph=s.Graph
+    local start=graph and graph.Start
+    if start then
+        c.scene.interior=LOD.MazeNavigator:CellCenter(start)+Vector(0,0,64)
+        local cell=graph.Cells[LOD.MazeGenerator.CellKey(start.x,start.y,start.z)]
+        local keys={};for key in pairs(cell and cell.neighbors or {}) do keys[#keys+1]=key end;table.sort(keys)
+        local neighbor=keys[1] and graph.Cells[keys[1]]
+        c.scene.interiorAim=neighbor and LOD.MazeNavigator:CellCenter(neighbor)+Vector(0,0,64)
+            or c.scene.interior+Vector(128,0,0)
+    end
     s.IntermissionEnd = nil
     -- This is the ordinary once-only finalization authority, including records.
     Run:FailCampaign("TIME OVER")
@@ -122,7 +134,7 @@ function T:BeginScene(scene)
         local seg=segments[math.floor((i-1)*#segments/math.min(self.PhysicsLimit,#segments))+1]
         local d=directions[seg[4]]
         local pos=MC.Origin+Vector((seg[1]-(MC.Width+1)*0.5+d[1]*0.5)*MC.CellSize,
-            (seg[2]-(MC.Height+1)*0.5+d[2]*0.5)*MC.CellSize,seg[3]*MC.LevelHeight+GC.ContainerHeight*0.5+900)
+            (seg[2]-(MC.Height+1)*0.5+d[2]*0.5)*MC.CellSize,seg[3]*MC.LevelHeight+GC.ContainerHeight*0.5+180)
         scene.samples[#scene.samples+1]={pos=pos,ang=Angle(0,d[3],0),at=self:ReleaseAt(pos,scene.center,scene.radius)+0.2}
     end
     table.sort(scene.samples,function(a,b) return a.at<b.at end)
@@ -258,6 +270,11 @@ hook.Add("SetupPlayerVisibility","LOD_TimeoutVisibility",function()
     if not scene then return end
     AddOriginToPVS(T:Camera(scene.center,scene.radius))
     AddOriginToPVS(scene.center)
+    if scene.interior then AddOriginToPVS(scene.interior) end
+    for _,at in ipairs({1.2,2.6,4,5.5,7}) do
+        local pos=T:CinematicView(scene.center,scene.radius,scene.ground,at)
+        AddOriginToPVS(pos)
+    end
     for _,ent in ipairs(scene.props) do if IsValid(ent) then AddOriginToPVS(ent:GetPos()) end end
 end)
 hook.Add("StartCommand","LOD_TimeoutControl",function(_,cmd)

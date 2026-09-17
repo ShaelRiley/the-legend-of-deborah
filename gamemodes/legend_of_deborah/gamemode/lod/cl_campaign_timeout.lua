@@ -56,7 +56,7 @@ net.Receive(T.Message,function()
     local hasScene=net.ReadBool()
     local scene
     if hasScene then
-        scene={elapsed=net.ReadFloat(),center=net.ReadVector(),radius=net.ReadFloat(),ground=net.ReadFloat(),ready=net.ReadBool(),manualRemaining=net.ReadFloat(),autoRemaining=net.ReadFloat()}
+        scene={elapsed=net.ReadFloat(),center=net.ReadVector(),radius=net.ReadFloat(),ground=net.ReadFloat(),interior=net.ReadVector(),interiorAim=net.ReadVector(),ready=net.ReadBool(),manualRemaining=net.ReadFloat(),autoRemaining=net.ReadFloat()}
     end
     if C.epoch and epoch<C.epoch then return end
     local entering=scene and (not C.scene or epoch~=C.epoch)
@@ -81,17 +81,17 @@ hook.Add("CalcView","LOD_TimeoutCamera",function(_,origin)
     local s=C.scene
     if not s then return end
     local elapsed=T:Elapsed()
-    local target=s.center
-    local wide=T:Camera(target,s.radius)
-    local fraction=math.Clamp(elapsed/3,0,1)
-    fraction=1-(1-fraction)^3
-    local from=C.startView or origin
-    local pos=LerpVector(fraction,from,wide)
-    local angles=(target-pos):Angle()
-    if elapsed>4 and elapsed<15 then
-        angles.r=math.sin(elapsed*13)*0.25
+    local pos,target,fov=T:CinematicView(s.center,s.radius,s.ground,elapsed,s.interior or C.startView or origin)
+    if elapsed<1.2 then target=s.interiorAim or target end
+    -- Short hull sweep from a known shot focus prevents the camera entering a
+    -- surviving slab. No per-entity camera probes or geometry mutations.
+    if elapsed>=1.2 and elapsed<5.5 then
+        local trace=util.TraceHull({start=target,endpos=pos,mins=Vector(-6,-6,-6),maxs=Vector(6,6,6),mask=MASK_SOLID})
+        if trace.Hit and not trace.StartSolid then pos=trace.HitPos+trace.HitNormal*10 end
     end
-    return {origin=pos,angles=angles,fov=T.CameraFOV,znear=8,zfar=T.CameraFar,drawviewer=false}
+    local angles=(target-pos):Angle()
+    if elapsed>T.Reveal and elapsed<T.Collapse then angles.r=math.sin(elapsed*19)*.35 end
+    return {origin=pos,angles=angles,fov=fov,znear=4,zfar=T.CameraFar,drawviewer=false}
 end)
 hook.Add("HUDShouldDraw","LOD_TimeoutStockHUD",function()
     if T:IsCinematic() then return false end
@@ -118,8 +118,8 @@ hook.Add("Think","LOD_TimeoutPresentation",function()
             end
         end
     end
-    if elapsed>=4 and elapsed<15 then
-        local burst=math.floor((elapsed-4)*3)
+    if elapsed>=T.Reveal and elapsed<T.Collapse then
+        local burst=math.floor((elapsed-T.Reveal)*6)
         if C.lastBurst~=burst then
             C.lastBurst=burst
             -- A local non-diegetic mix is audible at the distant cinematic camera.
@@ -132,13 +132,14 @@ end)
 hook.Add("PostDrawTranslucentRenderables","LOD_TimeoutExplosions",function(depth,sky)
     local s=C.scene
     if not s or depth or sky then return end
-    local elapsed=T:Elapsed()
-    if elapsed<4 or elapsed>20 then return end
+    -- Unlike the settled camera, smoke continues aging during the aftermath.
+    local elapsed=math.max(0,s.elapsed+RealTime()-C.received)
+    if elapsed<T.Reveal or elapsed>T.Collapse+3 then return end
     local reduced=LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced()
-    local current=math.floor((elapsed-4)*3)
+    local current=math.floor((math.min(elapsed,T.Collapse)-T.Reveal)*6)
     -- At most 24 fire/smoke quads, no emitters, lights, or networked blasts.
     for i=math.max(0,current-(reduced and 3 or 7)),math.min(32,current) do
-        local age=elapsed-(4+i/3)
+        local age=elapsed-(T.Reveal+i/6)
         if age>=0 and age<3 then
             local x=((i*37)%101)/100-0.5
             local y=((i*61)%103)/102-0.5
@@ -175,14 +176,15 @@ hook.Add("HUDPaint","LOD_TimeoutHUD",function()
     if C.scene then
         surface.SetDrawColor(0,0,0,235)
         surface.DrawRect(0,0,w,h*0.105);surface.DrawRect(0,h*0.87,w,h*0.13)
-        draw.SimpleTextOutlined("TIME OVER","LOD_TimeOver",w*0.5,h*0.045,Color(255,180,95),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,2,color_black)
+        draw.SimpleTextOutlined(C.scene.ready and "GAME OVER" or "TIME OVER","LOD_TimeOver",w*0.5,h*0.045,Color(255,180,95),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,2,color_black)
         local text="THE PRISON IS COMING APART"
         if C.scene.ready then
             local wait=math.ceil(aftermathRemaining("manualRemaining"))
             local automatic=math.ceil(aftermathRemaining("autoRemaining"))
             text=wait>0 and string.format("NEW RUN IN %ds  •  E AVAILABLE IN %ds",automatic,wait)
-                or string.format("PRESS E FOR A NEW RUN  •  AUTO RESTART IN %ds",automatic)
+                or string.format("PRESS E TO START A NEW GAME  •  AUTO RESTART IN %ds",automatic)
         end
+        if C.scene.ready then draw.SimpleText("THE PRISON HAS COLLAPSED","LOD_TimeOverPrompt",w*.5,h*.84,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER) end
         draw.SimpleText(text,"LOD_TimeOverPrompt",w*0.5,h*0.93,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
         return
     end

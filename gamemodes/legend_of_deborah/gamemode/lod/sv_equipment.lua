@@ -104,7 +104,9 @@ end
 
 function E:Heal(source, target, amount)
     if not self:CanAct(target) then return false end
+    local cured = LOD.RPGStatusElements and LOD.RPGStatusElements:CureNegative(target) or 0
     local ok, message = LOD.LootDirector:_GrantHealth(target, amount)
+    if cured > 0 then ok = true; message = (message or "Remedied") .. " / " .. cured .. " ailments cured" end
     if ok then
         target:EmitSound("items/smallmedkit1.wav", 65, 100, 0.8)
         self:Report(target, "HEALING POTION — " .. message, "potion_heal")
@@ -124,8 +126,9 @@ function E:Use(ply, mode)
     if not def or (mode == "drink" and not def.drinkable) or not def.throwable then return false end
     if CurTime() < (self.NextUse[ply] or 0) then return false end
     -- Unknown effect definitions fail before spending an item.
-    if def.effect ~= "heal" and def.effect ~= "poison_cloud" then return false end
-    if mode == "drink" and ply:Health() >= ply:GetMaxHealth() then return false end
+    if def.effect ~= "heal" and def.effect ~= "poison_cloud" and def.effect ~= "magic_bomb" then return false end
+    if mode == "drink" and ply:Health() >= ply:GetMaxHealth()
+        and not next(LOD.RPGStatusElements and LOD.RPGStatusElements.Active[ply] or {}) then return false end
     local projectile
     if mode == "throw" then
         if IsValid(self.Projectiles[ply]) then return false end
@@ -188,20 +191,24 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
         E:Sync(ply)
         return
     end
-    if not E:CanAct(ply) then return end
+    if not E:CanAct(ply) then E:Sync(ply);return end
     local state = E:Ensure(heroState(ply))
     if action == "activate" then
         if id=="" or state.slots.throwable==id then E:Activate(ply) end
-    elseif action == "select_weapon" then E:InventoryWeapon(ply,id,false)
-    elseif action == "stow_weapon" then E:InventoryWeapon(ply,id,true)
+    elseif action == "select_weapon" then
+        if E:InventoryWeapon(ply,id,false) then ply:EmitSound("items/ammo_pickup.wav",55,120,.45) end
+    elseif action == "stow_weapon" then
+        if E:InventoryWeapon(ply,id,true) then ply:EmitSound("items/ammo_pickup.wav",55,90,.45) end
     elseif action == "deactivate" then E:Deactivate(ply)
     elseif action == "equip" then
-        if E:Equip(state, id, slot) then E:Sync(ply) end
+        if E:Equip(state, id, slot) then ply:EmitSound("items/ammo_pickup.wav",55,120,.45);E:Sync(ply) end
     elseif action == "unequip" then
-        if state.slots[slot]==id and E:Unequip(state, slot) then E:Sync(ply) end
+        if state.slots[slot]==id and E:Unequip(state, slot) then ply:EmitSound("items/ammo_pickup.wav",55,90,.45);E:Sync(ply) end
     elseif action == "discard" and E.Discard then
-        if E.DiscardOwned and E:DiscardOwned(ply,id) then E:Sync(ply) end
+        if E.DiscardOwned and E:DiscardOwned(ply,id) then ply:EmitSound("physics/metal/metal_box_impact_hard3.wav",55,90,.65);E:Sync(ply) end
     end
+    if LOD.SnapshotDelivery then LOD.SnapshotDelivery:Invalidate(ply,"LOD_EquipmentSnapshot") end
+    E:Sync(ply)
 end)
 
 -- Lifecycle applies existing identity-owned records. Never replenish on spawn.

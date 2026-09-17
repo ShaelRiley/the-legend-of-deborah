@@ -43,6 +43,18 @@ function S:Draw(fx,age,low)
         end
     end
     if explosive then
+        -- A finite pressure shell makes the instant of detonation unmistakable.
+        -- The existing exact area renderer remains the gameplay boundary.
+        if t<.38 then
+            local radius=extent*(.3+5*t)
+            local last
+            for i=0,(low and 12 or 24) do
+                local a=i/(low and 12 or 24)*math.pi*2
+                local q=p+Vector(math.cos(a)*radius,math.sin(a)*radius,5+radius*.12)
+                if last then ray(last,q,3*(1-t/.38),white) end
+                last=q
+            end
+        end
         -- A brief hot core, rapidly expanding lobes and rising smoke give the
         -- detonation a physical sequence. None of these rings claim a hit radius.
         sprite(p,extent*(.4+3*t),extent*(.4+3*t),Color(c.r,c.g,c.b,math.floor(180*fade)))

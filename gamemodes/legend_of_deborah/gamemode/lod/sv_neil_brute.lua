@@ -6,7 +6,9 @@ local P, N, R = LOD.ProgressionDirector, LOD.MazeNavigator, LOD.RunManager
 local EC, PC = LOD.Config.Encounter, LOD.Config.Progression
 local S = P.Stages
 H.Config = {windup=1.25, chargeSpeed=560, chargeSeconds=1.2, cooldown=3,
-    wallStun=2, chargeRange=760, minimumChargeRange=1}
+    wallStun=2, chargeRange=760, minimumChargeRange=1,
+    meleeReach=115, meleeWindup=.45, meleeRecovery=1.3,
+    rangedRange=1500, rangedWindup=.9, rangedRecovery=3.5, projectileSpeed=620, projectileDamage=16}
 local C = H.Config
 EC.Archetypes.neil = {class="lod_hostile", name="Neil", model="models/gman_high.mdl",
     baseHP=150, speed=220, meleeDamage=0, meleeCooldown=3, meleeRange=0, threat=3, activity=ACT_RUN}
@@ -187,7 +189,7 @@ function H:SetPhase(ent,phase)
     log("BRUTE_PHASE",{phase=phase,entity=ent:EntIndex()})
 end
 function H:CancelCharge(ent)
-    ent.LODBruteCharge=nil;self:SetPhase(ent,"escort")
+    ent.LODBruteCharge=nil;ent.LODBruteAttack=nil;self:SetPhase(ent,"escort")
 end
 function H:Impact(ent,now,wall)
     ent.LODBruteCharge=nil;ent.LODNextAttack=now+(ent.LODConfig.meleeCooldown or C.cooldown)
@@ -276,6 +278,49 @@ function H:ChargeTick(ent,g,heroes,now)
     return true
 end
 
+-- Shared selection and a finite wind-up: every cancellation returns to routing.
+function H:SelectAttack(distance, visible, chargeReady, rangedReady)
+    if not visible then return nil end
+    if distance<=C.meleeReach then return "melee" end
+    if distance<=C.chargeRange and chargeReady then return "charge" end
+    if distance<=C.rangedRange and rangedReady then return "ranged" end
+end
+function H:BeginAlternative(ent,target,kind,now)
+    ent.LODBruteAttack={kind=kind,target=target,ready=now+(kind=="melee" and C.meleeWindup or C.rangedWindup)}
+    self:SetPhase(ent,kind.."_windup")
+    ent:SetNW2Float("LOD_BruteReady",ent.LODBruteAttack.ready)
+    ent:EmitSound(kind=="melee" and "NPC_AntlionGuard.Anger" or "npc/zombie_poison/pz_warn1.wav",78,90,.8)
+end
+function H:AlternativeTick(ent,now)
+    local a=ent.LODBruteAttack;if not a then return false end
+    local target=a.target
+    if not activeHero(target) then ent.LODBruteAttack=nil;return false end
+    LOD.HostileMotionV2:Stop(ent);LOD.HostileMotionV2:FaceToward(ent,target:GetPos())
+    if now<a.ready then return true end
+    ent.LODBruteAttack=nil
+    local origin=ent:WorldSpaceCenter()
+    local tr=util.TraceLine({start=origin,endpos=target:WorldSpaceCenter(),mask=MASK_SOLID,filter=ent})
+    local visible=not tr.Hit or tr.Entity==target
+    if a.kind=="melee" then
+        if visible and ent:GetPos():DistToSqr(target:GetPos())<=(C.meleeReach+18)^2 then self:Damage(ent,target) end
+        ent.LODNextAttack=now+C.meleeRecovery
+    else
+        if visible then
+            local bolt=ents.Create("lod_bio_bolt")
+            if IsValid(bolt) then
+                bolt.LODOwner=ent;bolt.LODSpeed=C.projectileSpeed;bolt.LODDamage=C.projectileDamage
+                bolt.LODLifetime=C.rangedRange/C.projectileSpeed
+                bolt.LODDirection=(target:WorldSpaceCenter()+target:GetVelocity()*.12-origin):GetNormalized()
+                bolt:SetPos(origin);bolt:SetAngles(bolt.LODDirection:Angle());bolt:Spawn();bolt:Activate()
+                ent:EmitSound("Weapon_AR2.Single",76,85,.8)
+            end
+        end
+        ent.LODNextRanged=now+C.rangedRecovery;ent.LODNextAttack=now+.6
+    end
+    self:SetPhase(ent,"recover")
+    return true
+end
+
 function H:Tick(ent)
     if ent.LODArchetypeId~="neil" and ent.LODArchetypeId~="brute" then return false end
     local s=R.State;local g=s and s.Graph;local h=s and s.NeilHunt
@@ -311,12 +356,20 @@ function H:Tick(ent)
     else
         if now<(ent.LODBruteStunUntil or 0) then motion:Stop(ent);return true end
         if status and not status:CanInitiateAttack(ent) then self:CancelCharge(ent) end
-        if self:ChargeTick(ent,g,heroes,now) then return true end
+        if self:ChargeTick(ent,g,heroes,now) or self:AlternativeTick(ent,now) then return true end
         local target
         for _,p in ipairs(heroes) do if activeHero(p) and (not target or ent:GetPos():DistToSqr(p:GetPos())<ent:GetPos():DistToSqr(target:GetPos())) then target=p end end
         -- A defense destination controls routing, not attack eligibility.
-        if target and now>=(ent.LODNextAttack or 0) and (not status or status:CanInitiateAttack(ent))
-            and self:BeginCharge(ent,target,g,now) then motion:Stop(ent);return true end
+        if target and now>=(ent.LODNextAttack or 0) and (not status or status:CanInitiateAttack(ent)) then
+            local tr=util.TraceLine({start=ent:WorldSpaceCenter(),endpos=target:WorldSpaceCenter(),mask=MASK_SOLID,filter=ent})
+            local kind=self:SelectAttack(ent:GetPos():Distance(target:GetPos()),not tr.Hit or tr.Entity==target,
+                now>=(ent.LODNextChargeChoice or 0),now>=(ent.LODNextRanged or 0))
+            if kind=="charge" then
+                if self:BeginCharge(ent,target,g,now) then ent.LODNextChargeChoice=now+6;motion:Stop(ent);return true end
+                kind=now>=(ent.LODNextRanged or 0) and "ranged" or nil
+            end
+            if kind then self:BeginAlternative(ent,target,kind,now);motion:Stop(ent);return true end
+        end
         local destination=ent.LODHuntDestination
         if now>=(ent.LODHuntRouteAt or 0) then
             ent.LODHuntRouteAt=now+EC.RouteRefreshSeconds

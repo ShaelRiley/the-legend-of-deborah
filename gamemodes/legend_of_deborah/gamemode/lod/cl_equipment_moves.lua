@@ -52,7 +52,13 @@ function E:BuildMoveBindings(parent,y,width)
         label:SetPos((i-1)*width/4,y+84);label:SetSize(width/4-6,20);label:SetText(id)
         label:SetTextColor(UI.Colors.ink)
     end
-    return y+118
+    local equipment=vgui.Create("DBinder",parent)
+    equipment:SetPos(0,y+113);equipment:SetSize(90,30)
+    equipment:SetValue(GetConVar("lod_equipment_key"):GetInt());equipment:SetTooltip("Equipment menu")
+    equipment.OnChange=function(_,key) RunConsoleCommand("lod_equipment_key",tostring(key)) end
+    local text=vgui.Create("DLabel",parent);text:SetPos(100,y+113);text:SetSize(width-100,30)
+    text:SetText("Equipment menu (default O)");text:SetTextColor(UI.Colors.ink)
+    return y+153
 end
 
 local blockUntil=0

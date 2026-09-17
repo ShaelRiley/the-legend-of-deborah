@@ -36,8 +36,11 @@ function ENT:DrawBomb()
     local bend = root+(up*3+right*1.5)*remaining
     local tip = bend+(up*1.5+right*3)*remaining
     render.SetMaterial(fuseMaterial)
-    render.DrawBeam(root,bend,1.2,0,0.5,fuseColor)
-    render.DrawBeam(bend,tip,1.2,0.5,1,fuseColor)
+    for segment=0,7 do
+        local a,b=segment/8,(segment+1)/8
+        local function point(t) return t<.5 and (root+(bend-root)*(t*2)) or (bend+(tip-bend)*((t-.5)*2)) end
+        render.DrawBeam(point(a),point(b),1.4,0,1,segment%2==0 and Color(255,230,45) or color_white)
+    end
     render.SetMaterial(emberMaterial)
     local pulse = 3 + math.sin(CurTime()*25+self:EntIndex())*0.6
     render.DrawSprite(tip,pulse,pulse,Color(255,185,65))

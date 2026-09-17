@@ -101,7 +101,21 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
             if LOD.MagicSpectacle and #FX-i<12 then LOD.MagicSpectacle:Draw(fx,age,reduced()) end
             render.SetMaterial(material)
 
-            if fx.form == "beam" then
+            if fx.form == "cone" then
+                local direction=(fx.destination-fx.origin):GetNormalized()
+                local angle=direction:Angle();local side,up=angle:Right(),angle:Up()
+                local distance=fx.origin:Distance(fx.destination)*math.min(1,age/.25)
+                local center=fx.origin+direction*distance
+                local radius=distance*math.tan(math.rad(32))
+                local last
+                for segment=0,24 do
+                    local a=segment*math.pi*2/24
+                    local point=center+(side*math.cos(a)+up*math.sin(a))*radius
+                    if last then render.DrawBeam(last,point,5*fade,0,1,Color(c.r,c.g,c.b,180*fade)) end
+                    if segment%6==0 then render.DrawBeam(fx.origin,point,2*fade,0,1,Color(c.r,c.g,c.b,90*fade)) end
+                    last=point
+                end
+            elseif fx.form == "beam" then
                 local startPos = fx.origin
                 if IsValid(fx.caster) and fx.caster == LocalPlayer() then
                     local eye = LocalPlayer():EyePos()

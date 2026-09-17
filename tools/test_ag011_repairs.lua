@@ -675,7 +675,7 @@ bomb.GetAngles=function() return {Up=function() return Vector(0,0,1) end,Right=f
 bomb.EntIndex=function() return 7 end
 bomb.DrawModel=function() error("bomb must not draw its old missile-like model") end
 bomb:Draw()
-assert(spheres==1 and fuses==5 and lights==0,"sphere, bent fuse and three sparks, no dynamic lights")
+assert(spheres==1 and fuses==11 and lights==0,"sphere, bent fuse and three sparks, no dynamic lights")
 bomb:Draw();assert(soundStarts==1,"one hiss per projectile")
 bomb:OnRemove();assert(soundStops==1,"fuse hiss ends with projectile")
 assert(materialParams.LOD_BombIronVertexColor["$vertexcolor"]=="1","body material consumes black mesh tint")

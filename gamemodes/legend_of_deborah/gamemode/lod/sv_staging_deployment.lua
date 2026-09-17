@@ -216,6 +216,8 @@ function Staging:_ClearHutPresentation()
     self.SignEntity = nil
     self.ManualEntity = nil
     self.MirrorEntity = nil
+    self.HeroesBoardEntity = nil
+    self.StakeholdersBoardEntity = nil
     self.StarterPedestalEntity = nil
     self.TorchEntities = {}
 end
@@ -314,16 +316,18 @@ function Staging:EnsureRoomDecor()
         and IsValid(self.ManualEntity)
         and IsValid(self.MirrorEntity)
         and IsValid(self.HeroesBoardEntity)
+        and IsValid(self.StakeholdersBoardEntity)
         and IsValid(self.StarterPedestalEntity)
     then
         return true
     end
 
-    for _, ent in ipairs({self.SignEntity, self.ManualEntity, self.MirrorEntity, self.HeroesBoardEntity, self.StarterPedestalEntity}) do
+    for _, ent in ipairs({self.SignEntity, self.ManualEntity, self.MirrorEntity, self.HeroesBoardEntity, self.StakeholdersBoardEntity, self.StarterPedestalEntity}) do
         removeEntity(ent)
     end
     for _, torch in ipairs(self.TorchEntities or {}) do removeEntity(torch) end
     self.SignEntity, self.ManualEntity, self.MirrorEntity, self.HeroesBoardEntity, self.StarterPedestalEntity = nil, nil, nil, nil, nil
+    self.StakeholdersBoardEntity = nil
     self.TorchEntities = {}
 
     local center, angles = self.HutCenter, self.HutAngles
@@ -392,12 +396,19 @@ function Staging:EnsureRoomDecor()
         board:SetAngles(mirrorAng)
         board:Spawn()
         self.HeroesBoardEntity = self:_RegisterHutEntity(board)
+        local stakeholders=ents.Create("lod_heroes_of_legend_board")
+        if IsValid(stakeholders) then
+            stakeholders:SetPos(mirrorPos+mirrorAng:Right()*88)
+            stakeholders:SetAngles(mirrorAng);stakeholders:SetNW2Bool("LOD_Stakeholders",true)
+            stakeholders:Spawn();self.StakeholdersBoardEntity=self:_RegisterHutEntity(stakeholders)
+        end
     end
 
     return IsValid(self.SignEntity)
         and IsValid(self.ManualEntity)
         and IsValid(self.MirrorEntity)
         and IsValid(self.HeroesBoardEntity)
+        and IsValid(self.StakeholdersBoardEntity)
         and IsValid(self.StarterPedestalEntity)
         and #self.TorchEntities >= 2
 end
@@ -705,7 +716,7 @@ function Staging:ClaimStarter(ply, ent)
     self.StarterEntities[identity] = nil
     self.Stats.starterClaims = (self.Stats.starterClaims or 0) + 1
     starterClaimStage(ply, "after_record", weaponClass)
-    ply:EmitSound("items/ammo_pickup.wav", 65, 104, 0.8, CHAN_ITEM)
+    ply:EmitSound("ambient/energy/weld1.wav", 60, 125, 0.5, CHAN_ITEM)
     starterClaimStage(ply, "after_sound", weaponClass)
     local item=LOD.Equipment and LOD.Equipment.EnsureWeapon and LOD.Equipment:EnsureWeapon(ply,weaponClass)
     starterClaimStage(ply, "after_equipment", weaponClass)

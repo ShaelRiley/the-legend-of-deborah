@@ -4,7 +4,7 @@ LOD.Spellbook = LOD.Spellbook or {}
 local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
-    blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
     missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
@@ -20,6 +20,22 @@ function Book:Close()
     self.Frame = nil
 end
 
+function Book:Availability(entry,kind)
+    if not entry.owned then return "LOCKED",C.muted end
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() then return "UNAVAILABLE",C.muted end
+    if ply:GetNW2Bool("LOD_StatusMuted",false) or ply:GetNW2Bool("LOD_StatusIntimidated",false)
+        or ply:GetNW2Int("LOD_ThrowableCount",0)>0 and LOD.Equipment:IsActive(ply) then return "BLOCKED",C.red end
+    if CurTime()<ply:GetNW2Float("LOD_MagicNextCast",0) then return "COOLDOWN",C.gold end
+    local snap=self.Snapshot or {};local base,surcharge=0,0
+    for _,f in ipairs(snap.forms or {}) do if f.selected then base=f.magicCost or 0 end end
+    for _,c in ipairs(snap.contents or {}) do if c.selected then surcharge=c.surcharge or 0 end end
+    if kind=="form" then base=entry.magicCost or 0 else surcharge=entry.surcharge or 0 end
+    local cost=math.ceil((base+surcharge)*(snap.costMultiplier or 1))
+    if ply:GetNW2Float("LOD_Magic",0)<cost then return "NEED MAGIC",C.red end
+    return entry.selected and "READY / SELECTED" or "AVAILABLE",C.blue
+end
+
 local function selectionButton(parent, entry, kind, x, y, w, h)
     local button = vgui.Create("DButton", parent)
     button:SetPos(x, y)
@@ -31,11 +47,14 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         draw.RoundedBox(1,0,0,width,height,selected and C.peach or C.light)
         surface.SetDrawColor(selected and C.red or C.rule)
         surface.DrawOutlinedRect(0,0,width,height,selected and 2 or 1)
-        local color = entry.owned and C.blue or C.muted
+        local label,color = Book:Availability(entry,kind)
         draw.SimpleText(string.upper(entry.displayName or entry.id),"LOD_SheetSubheading",
             width*0.5,16,color,TEXT_ALIGN_CENTER)
-        draw.SimpleText(selected and "SELECTED" or (entry.owned and "AVAILABLE" or "LOCKED"),
-            "LOD_SheetKey",width*0.5,44,selected and C.red or C.muted,TEXT_ALIGN_CENTER)
+        local labelFont="LOD_SheetKey"
+        surface.SetFont(labelFont)
+        if surface.GetTextSize(label)>width-8 then labelFont="DermaDefault" end
+        draw.SimpleText(label,
+            labelFont,width*0.5,44,color,TEXT_ALIGN_CENTER)
         local cost = kind == "form" and string.format("%d base Magic",entry.magicCost or 0)
             or string.format("+%d Magic",entry.surcharge or 0)
         draw.SimpleText(cost,"LOD_SheetSmall",width*0.5,72,C.ink,TEXT_ALIGN_CENTER)
@@ -95,7 +114,8 @@ function Book:Open()
     local gap = 10
     local left = 24
     local usable = width - left * 2
-    local formW = math.floor((usable - gap * 5) / 6)
+    local formCount=math.max(1,#(self.Snapshot.forms or {}))
+    local formW = math.floor((usable - gap * (formCount-1)) / formCount)
     for i, entry in ipairs(self.Snapshot.forms or {}) do
         selectionButton(frame, entry, "form", left + (i - 1) * (formW + gap), 100, formW, 140)
     end

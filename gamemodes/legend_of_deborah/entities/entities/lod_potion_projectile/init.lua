@@ -7,14 +7,18 @@ function ENT:Initialize()
     local def = equipment.Definitions[self.LODPotionDefinition]
     if not def or not IsValid(self.LODPotionCaster) then self:Remove(); return end
     self:SetModel(def.model)
-    self:SetModelScale(0.65, 0)
-    self:SetColor(Color(130, 235, 160))
+    self:SetModelScale(def.effect=="magic_bomb" and 0.18 or 0.65, 0)
+    self:SetNW2String("LOD_BombType",def.effect=="magic_bomb" and self.LODPotionDefinition or "")
+    local presentation=def.status and equipment.StatusPresentation[def.status]
+    local color=presentation and Color(presentation.color[1],presentation.color[2],presentation.color[3])
+        or def.effect=="magic_bomb" and LOD.MagicForms.ContentColors[def.element or "raw"] or Color(130,235,160)
+    self:SetColor(color)
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
     self.LODVelocity = self.LODPotionCaster:GetAimVector() * equipment.ThrowSpeed + Vector(0, 0, equipment.ThrowLift)
     self.LODLastThink = CurTime()
     self.LODExpires = CurTime() + equipment.ProjectileLifetime
-    util.SpriteTrail(self, 0, Color(130, 235, 160), false, 4, 0, 0.25, 0.1, "trails/laser.vmt")
+    util.SpriteTrail(self, 0, color, false, 4, 0, 0.25, 0.1, "trails/laser.vmt")
     self:NextThink(CurTime())
 end
 
@@ -41,7 +45,7 @@ function ENT:Think()
     local start = self:GetPos()
     local finish = start + self.LODVelocity * dt
     local trace = util.TraceHull({start=start, endpos=finish, mins=Vector(-3,-3,-3), maxs=Vector(3,3,3),
-        mask=MASK_SHOT, filter={self, caster}})
+        mask=MASK_SOLID, filter={self, caster}})
     self.LODVelocity = self.LODVelocity + Vector(0,0,-GetConVar("sv_gravity"):GetFloat() * dt)
     self:SetPos(trace.HitPos or finish)
     if trace.Hit then
@@ -50,6 +54,8 @@ function ENT:Think()
             local def = equipment.Definitions[self.LODPotionDefinition]
             if def and def.effect == "heal" and IsValid(trace.Entity) and trace.Entity:IsPlayer() then
                 equipment:Heal(caster, trace.Entity, def.amount)
+            elseif def and def.effect == "magic_bomb" then
+                LOD.MagicForms:DetonateThrowable(caster,self:GetPos()+(trace.HitNormal or Vector(0,0,1))*4,def)
             elseif def and def.effect == "poison_cloud" then
                 self.LODCloudUntil=CurTime()+5
                 self.LODCloudTargets=setmetatable({}, {__mode="k"})

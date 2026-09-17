@@ -10,7 +10,7 @@ for seed=1,300 do
         assert(#s.contentIds==0 and not has(s.magicFormIds,'summon'))
         s.level=20;P:ApplyScheduledGrants(s,seed)
         for n=1,7 do P:_GrantDistinct(s,'form','feat'..n,seed) end
-        assert(#s.magicFormIds==5 and not has(s.magicFormIds,'summon'))
+        assert(#s.magicFormIds==6 and not has(s.magicFormIds,'summon'))
         assert(not P:GrantForm(s,'summon') and not P:SelectForm(s,'summon'))
         assert(not CPS:_HasCapability({},s,'magic_form_grant_available'))
         s.capabilityTags={'magic_form_summon'}

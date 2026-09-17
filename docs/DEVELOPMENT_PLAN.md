@@ -1,4 +1,16 @@
-# Current candidate — client geometry initialization repair
+# Current candidate — integrated gameplay refresh
+
+The 2026-09-17 author-directed 26-part pass is implemented on `main` from
+`aeaa6b3e24a53b9578be35cae2238f916eebb9e0`. See
+[the checkpoint and finite native checklist](INTEGRATED_REFRESH_20260917.md).
+All 107 integrated suites pass, including 512 deterministic encounter plans,
+real SQLite sale/fusion rollback, Haste input, status remedies/procs, vertical
+Magic cover, derived UI, observer range and identity presentation. Native
+GMod composition, stock material topology, feel and multiplayer acceptance
+remain pending. No server deployment or Workshop publication is included.
+The newer geometry/full-update repair below remains a regression constraint.
+
+# Previous candidate — client geometry initialization repair
 
 `geometry-init-20260916-01`, developed directly on `main` from verified
 `0ef180ae886fd91b8a5e9ebbd6502c084de63f17`.

@@ -17,13 +17,24 @@ end
 function M:DrawBody(ent)
     local r,g,b=render.GetColorModulation()
     local c=self:Tint(ent)
+    for _,id in ipairs(LOD.Equipment.StatusOrder or {}) do
+        local spec=LOD.Equipment.StatusPresentation[id]
+        if ent:GetNW2Bool('LOD_Status'..spec.key,false) then
+            c={c[1]*(.65+.35*spec.color[1]/255),c[2]*(.65+.35*spec.color[2]/255),c[3]*(.65+.35*spec.color[3]/255)};break
+        end
+    end
     render.SetColorModulation(r*c[1],g*c[2],b*c[3])
-    ent:DrawModel()
+    local ok,err=pcall(ent.DrawModel,ent)
     render.SetColorModulation(r,g,b)
+    if not ok then ErrorNoHalt(tostring(err)..'\n') end
 end
 function M:DrawAura(ent,size)
     if not active(ent) then return end
     local c=LOD.MagicArea.Colors[ent:GetNW2String('LOD_MonsterElement','')]
+    for _,id in ipairs(LOD.Equipment.StatusOrder or {}) do
+        local spec=LOD.Equipment.StatusPresentation[id]
+        if ent:GetNW2Bool('LOD_Status'..spec.key,false) then c=Color(spec.color[1],spec.color[2],spec.color[3]);break end
+    end
     if not c or ent:GetPos():DistToSqr(EyePos())>1600*1600 then return end
     size=size or 1
     local center=ent:GetPos()+(ent:WorldSpaceCenter()-ent:GetPos())*size
@@ -60,6 +71,13 @@ hook.Add('HUDPaint','LOD_MonsterElementCaption',function()
     if not active(ent) or ent:GetPos():DistToSqr(ply:GetPos())>1600*1600 then return end
     local element=ent:GetNW2String('LOD_MonsterElement','')
     local opposite=LOD.RPG.ElementOpposites[element]
+    local statuses={}
+    for _,id in ipairs(LOD.Equipment.StatusOrder or {}) do
+        local spec=LOD.Equipment.StatusPresentation and LOD.Equipment.StatusPresentation[id]
+        if spec and ent:GetNW2Bool('LOD_Status'..spec.key,false) then statuses[#statuses+1]=spec.label end
+    end
+    if #statuses>0 then draw.SimpleTextOutlined(table.concat(statuses,' / '),'DermaDefault',ScrW()*.5,ScrH()*.5+82,
+        color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP,1,Color(0,0,0,220)) end
     if not opposite then return end
     local text=string.upper(element)..' / RESISTS '..string.upper(element)..' / WEAK TO '..string.upper(opposite)
     draw.SimpleTextOutlined(text,'DermaDefault',ScrW()*.5,ScrH()*.5+64,

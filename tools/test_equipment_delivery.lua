@@ -56,6 +56,7 @@ dofile(root..'cl_equipment.lua')
 local Delivery=LOD.SnapshotDelivery
 local function player(id)
     local p={valid=true,ps={equipment={items={},slots={}}},nw={}}
+    function p:EmitSound() end
     function p:IsPlayer() return true end
     function p:EntIndex() return id end
     function p:Alive() return true end

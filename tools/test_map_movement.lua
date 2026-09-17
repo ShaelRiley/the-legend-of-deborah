@@ -7,6 +7,7 @@ local actor = {alive = true}
 function actor:IsPlayer() return true end
 function actor:Alive() return self.alive end
 function actor:SetNW2Bool() end
+function actor:SetNW2Float() end
 function IsValid(v) return v == actor end
 function CurTime() return now end
 function GetConVar(name) if name == 'lod_mapless' then return {GetBool = function() return mapless end} end end
@@ -50,6 +51,10 @@ for rank=0,3 do
 end
 -- Same SetupMove hook that scales walk/run speed; vertical velocity is untouched.
 local move={speed=200,client=200,vertical=300}
+function move:GetForwardSpeed() return 200 end
+function move:GetSideSpeed() return 0 end
+function move:SetForwardSpeed(v) self.forward=v end
+function move:SetSideSpeed(v) self.side=v end
 function move:GetMaxSpeed() return self.speed end
 function move:GetMaxClientSpeed() return self.client end
 function move:SetMaxSpeed(v) self.speed=v end

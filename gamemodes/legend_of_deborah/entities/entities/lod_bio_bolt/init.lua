@@ -12,6 +12,7 @@ function ENT:Initialize()
     self.LODDamage = self.LODDamage or 45
     self.LODExpireAt = CurTime() + (self.LODLifetime or 1.8)
     self.LODLastThink = CurTime()
+    self.LODRun = LOD.RunManager and LOD.RunManager.State
     self.LODLevelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
 end
 
@@ -87,8 +88,10 @@ local function fallbackPlayerNearby(endPos)
 end
 
 function ENT:Think()
-    local currentSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
-    if self.LODLevelSeed and currentSeed ~= self.LODLevelSeed then
+    local state = LOD.RunManager and LOD.RunManager.State
+    local currentSeed = state and state.LevelSeed
+    if state ~= self.LODRun or not state or state.Failed or state.LevelCleared
+        or not IsValid(self.LODOwner) or self.LODLevelSeed and currentSeed ~= self.LODLevelSeed then
         self:Remove()
         return
     end
@@ -110,7 +113,7 @@ function ENT:Think()
         endpos = endPos,
         mins = Vector(-hull, -hull, -hull),
         maxs = Vector(hull, hull, hull),
-        mask = MASK_SHOT,
+        mask = MASK_SOLID,
         filter = traceFilter(self, owner)
     })
 
@@ -129,7 +132,7 @@ function ENT:Think()
                 local obstruction = util.TraceLine({
                     start = startPos,
                     endpos = victim:WorldSpaceCenter(),
-                    mask = MASK_SHOT,
+                    mask = MASK_SOLID,
                     filter = function(hit)
                         if hit == self or hit == owner or hit == victim then return false end
                         if IsValid(hit) and hit.LODHostile then return false end

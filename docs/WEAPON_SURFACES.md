@@ -1,4 +1,18 @@
-# Weapon surface presentation
+# Current weapon identity — aura, muzzle, two tints
+
+The 2026-09-17 author request retires all procedural surface patterns. The four
+patch assets and their generator are removed. Native material-region mappings
+protect control surfaces and independently tint A/B while preserving base and
+normal textures. Unknown or single-gun-material meshes retain their canonical
+finish. Inspect native topology with `lod_weapon_regions`; Source runtime
+acceptance is still pending. Muzzle size, duration and spoke family now vary
+visibly with the immutable descriptor. The 128-material ceiling, scoped restoration,
+world draw budgets, prediction deduplication and native hands remain protected.
+See [integrated checkpoint](INTEGRATED_REFRESH_20260917.md).
+
+The following preserves the superseded pattern checkpoint as historical evidence.
+
+# Previous weapon surface presentation
 
 The current author direction replaces the geometric gun fittings and changes
 Ice flavor from Watery to **Wintery**. The live GDD (00 entrypoint → 01 index →

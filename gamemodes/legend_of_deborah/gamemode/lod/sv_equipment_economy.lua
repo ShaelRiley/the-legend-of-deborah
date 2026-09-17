@@ -93,7 +93,7 @@ function E:EnsureWeapon(ply,class)
     -- Re-equipping a stored record does not generate another item.
     for id,item in pairs(state.items) do if item.definitionId==class then self:Equip(state,id,class);return item end end
     local item=self:NewItem(ply,class,"initial:"..class)
-    if item then state.items[item.id]=item;self:Equip(state,item.id,class) end
+    if item then item.economyExcluded=true;state.items[item.id]=item;self:Equip(state,item.id,class) end
     return item
 end
 function E:StampWeapons(ply)
@@ -204,8 +204,8 @@ function E:PrepareReward(owner,kind,payload,options)
     LOD.LootDirector:TraceStage("reward_inputs",nil,kind,nil,
         {seed=seed,level=Run.State.Level or 1,key=key,weapon=payload.weaponClass})
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-conversion-v2"))
-    if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.2) then
-        return "consumable",{itemId="stink_bomb"}
+    if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.35) then
+        return "consumable",{itemId=(not self.BombTypes or rng:Chance(.35)) and "stink_bomb" or rng:Pick(self.BombTypes)}
     end
     if kind=="wearable" and not payload.item then
         return "wearable",{item=generate(nil)}
@@ -258,7 +258,7 @@ function E:PrepareDamageTags(contract,attacker,tags)
         or contract.attackEvent and contract.attackEvent.equipmentSnapshot)
     if not snapshot then return end
     tags.equipmentSnapshot=snapshot
-    if snapshot.weapon and tags.physical and snapshot.element then tags.element=snapshot.element end
+    if snapshot.weapon and tags.physical and not tags.throwable and snapshot.element then tags.element=snapshot.element end
 end
 function E:DamageMultiplier(sourceDerived,targetDerived,tags)
     local snapshot=tags.equipmentSnapshot
@@ -285,7 +285,7 @@ function E:PostDamage(target,info,taken)
     local snapshot=contract and (contract.equipmentSnapshot or contract.originContract and contract.originContract.equipmentSnapshot)
     local attacker=info:GetAttacker()
     if not snapshot or not snapshot.weapon or not context.physical or context.statusDamage or context.magic or context.passiveDamage
-        or context.auraBurst or context.reactiveDamage or context.dodged or context.blocked
+        or context.throwable or context.auraBurst or context.reactiveDamage or context.dodged or context.blocked
         or not hero(attacker) or hero(attacker).identity~=snapshot.ownerIdentity or not E:CanAct(attacker) or Run.State.RunId~=snapshot.runId
         or Run.State.LevelSeed~=snapshot.levelSeed or attacker==target then return end
     if not LOD.FactionManager or not LOD.FactionManager:IsOpponent(attacker,target) then return end

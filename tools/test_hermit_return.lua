@@ -85,7 +85,7 @@ cam={Start3D2D=function(_,__,s) scale=s end,End3D2D=noop}
 LOD.UI={Colors={},Paper=function(_,x,y,w,h) width=w;height=h end}
 LOD.HeroesOfLegend={Entries={}}
 dofile('gamemodes/legend_of_deborah/entities/entities/lod_heroes_of_legend_board/cl_init.lua')
-local board={GetPos=function() return Vector(0,0,0) end,GetAngles=function() return {Forward=function() return Vector(1,0,0) end} end}
+local board={GetNW2Bool=function() return false end,GetPos=function() return Vector(0,0,0) end,GetAngles=function() return {Forward=function() return Vector(1,0,0) end} end}
 ENT.Draw(board);assert(width*scale==64 and height*scale==132,'board matches full-length mirror surface')
 assert(88 > 64/2+5+width*scale/2,'adjacent board leaves a positive frame gap')
 print('hermit_board PASS: mirror-size panel and non-overlapping placement')

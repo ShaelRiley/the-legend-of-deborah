@@ -23,5 +23,16 @@ function V:Draw(ent,size)
         render.SetMaterial(beam)
         render.DrawBeam(start,finish,8,0,1,Color(255,165,65,225))
         render.DrawWireframeSphere(start+Vector(0,0,35*size),42*size,12,6,Color(255,200,100,220),false)
+    elseif id=="brute" then
+        local phase=ent:GetNW2String("LOD_BrutePhase","")
+        if phase=="ranged_windup" or phase=="melee_windup" then
+            local remaining=math.max(0,ent:GetNW2Float("LOD_BruteReady",0)-CurTime())
+            local color=phase=="ranged_windup" and Color(100,255,125,220) or Color(255,105,45,220)
+            render.SetMaterial(beam)
+            render.DrawWireframeSphere(ent:WorldSpaceCenter(),(30+16*math.sin(CurTime()*12))*size,10,6,color,false)
+            if phase=="ranged_windup" then
+                render.DrawBeam(ent:WorldSpaceCenter(),ent:WorldSpaceCenter()+ent:GetForward()*80,4+4/(1+remaining),0,1,color)
+            end
+        end
     end
 end

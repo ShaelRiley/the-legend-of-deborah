@@ -71,7 +71,7 @@ function E:Placement(graph,c,id,role)
         local origin=center+Vector(0,0,56)
         local range=EC.Archetypes[id].fireRange
         for degrees=-45,45,15 do
-            local tr=util.TraceLine({start=origin,endpos=origin+Angle(0,yaw+degrees,0):Forward()*range,mask=MASK_SHOT})
+            local tr=util.TraceLine({start=origin,endpos=origin+Angle(0,yaw+degrees,0):Forward()*range,mask=MASK_SOLID})
             if tr.StartSolid then return nil end
             if tr.Hit then range=math.min(range,origin:Distance(tr.HitPos)-8) end
         end
@@ -95,14 +95,14 @@ for id,t in pairs(templates) do EC.Templates[id]=t end
 local baseEligible=D._EligibleTemplates
 function D:_EligibleTemplates(sector,role)
     local out=table.Copy(baseEligible(self,sector,role))
-    if sector>=2 then
+    if sector>=1 then
         if role=="ambush" or role=="arena" then out[#out+1]="climber_wall";out[#out+1]="flamer_pressure" end
         if role=="arena" or role=="reward" then out[#out+1]="bigcrab_breath";out[#out+1]="sentry_flank";out[#out+1]="lurker_ceiling";out[#out+1]="nodule_gas" end
     end
-    if sector>=3 then
+    if sector>=2 then
         out[#out+1]="razor_cover"
-        if role=="arena" or role=="objective" then out[#out+1]="arccaster_zone" end
-        if role=="arena" or role=="reward" then out[#out+1]="beamsweeper_lane" end
+        if role=="arena" or role=="ambush" then out[#out+1]="arccaster_zone" end
+        if role=="arena" or role=="reward" or role=="ambush" then out[#out+1]="beamsweeper_lane" end
     end
     return out
 end
@@ -120,11 +120,14 @@ function D:_SpawnEncounter(encounter)
     if not encounter or encounter.spawned or encounter.cleared then return baseSpawn(self,encounter) end
     local graph=LOD.RunManager.State.Graph
     encounter.rosterPlacements={}
+    E.PlacementStats=E.PlacementStats or {}
     for _,id in ipairs(sorted(encounter.composition)) do
         if E.Definitions[id] then
             local p=E:Placement(graph,graph.Cells[encounter.cellKey],id,encounter.role)
-            if p then encounter.rosterPlacements[id]=p
+            local stats=E.PlacementStats[id] or {accepted=0,rejected=0};E.PlacementStats[id]=stats
+            if p then stats.accepted=stats.accepted+1;encounter.rosterPlacements[id]=p
             else
+                stats.rejected=stats.rejected+1
                 encounter.composition.shambler=(encounter.composition.shambler or 0)+encounter.composition[id]
                 encounter.composition[id]=nil
             end
@@ -134,3 +137,11 @@ function D:_SpawnEncounter(encounter)
 end
 -- Constrained Flamer weight, with no other new wandering archetypes.
 LOD.WanderingDirector.Config.ArchetypeWeights.flamer=3
+
+concommand.Add("lod_encounter_distribution",function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    for _,id in ipairs(sorted(E.Definitions)) do
+        local stats=(E.PlacementStats or {})[id] or {}
+        print(string.format("[LOD:ROSTER] %s accepted=%d rejected=%d",id,stats.accepted or 0,stats.rejected or 0))
+    end
+end)

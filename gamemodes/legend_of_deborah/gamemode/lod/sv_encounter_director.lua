@@ -207,10 +207,29 @@ function EncounterDirector:_AddEncounter(plan, cell, sector, role, templateId, c
     return encounter
 end
 
+-- A plan evaluates hundreds of candidate cells against a handful of anchors.
+-- One bounded BFS per anchor replaces repeated full path reconstruction. The
+-- cache exists only inside this synchronous plan, so gate changes cannot stale it.
+function EncounterDirector:_PlanningDistances(graph, startCell)
+    local start=keyOf(startCell);local distances={[start]=0};local queue={start};local head=1
+    while queue[head] do
+        local current=queue[head];head=head+1
+        for _,nextKey in ipairs(sortedKeys(graph.Cells[current].neighbors)) do
+            if distances[nextKey]==nil and LOD.MazeNavigator:CanTraverse(graph,current,nextKey) then
+                distances[nextKey]=distances[current]+1;queue[#queue+1]=nextKey
+            end
+        end
+    end
+    return distances
+end
+
 function EncounterDirector:_FarEnough(graph, plan, cell)
     for _, encounter in ipairs(plan.encounters) do
         if encounter.cell then
-            local distance = LOD.MazeNavigator:Distance(graph, cell, encounter.cell)
+            plan.distanceCache=plan.distanceCache or {}
+            local anchor=keyOf(encounter.cell)
+            plan.distanceCache[anchor]=plan.distanceCache[anchor] or self:_PlanningDistances(graph,encounter.cell)
+            local distance=plan.distanceCache[anchor][keyOf(cell)] or math.huge
             if distance < EC.MajorSpacingCells then return false end
         end
     end
@@ -259,6 +278,7 @@ function EncounterDirector:BuildPlan(graph)
         self:_AddEncounter(plan, cell, sector, "objective", objectiveTemplates[index], composition, true)
     end
 
+    local startDistances=self:_PlanningDistances(graph,graph.Start)
     for sector = 1, 4 do
         local budget = (EC.SectorBaseThreat[sector] or 5) * scale
         plan.sectorBudget[sector] = budget
@@ -268,7 +288,7 @@ function EncounterDirector:BuildPlan(graph)
         for k, cell in pairs(graph.Cells) do
             local tag = tags[k]
             if tag and tag.sector == sector and not tag.safe and not tag.objective and tag.role ~= "boss" and tag.role ~= "resupply" then
-                local startDistance = LOD.MazeNavigator:Distance(graph, graph.Start, cell)
+                local startDistance = startDistances[keyOf(cell)] or math.huge
                 if startDistance >= EC.ActivationDistanceCells + 1
                     and self:_FarEnough(graph, plan, cell)
                     and not self:_VisibleFromStart(graph, cell)
@@ -277,6 +297,7 @@ function EncounterDirector:BuildPlan(graph)
                 end
             end
         end
+        table.sort(candidates,function(a,b) return keyOf(a)<keyOf(b) end)
         rng:Shuffle(candidates)
 
         local placed = 0
@@ -297,6 +318,7 @@ function EncounterDirector:BuildPlan(graph)
         end
     end
 
+    plan.distanceCache=nil
     graph.EncounterPlan = plan
     self.Plan = plan
     return true, plan

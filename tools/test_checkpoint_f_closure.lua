@@ -517,10 +517,10 @@ if not heroSnap then print("HERO SNAP IS NIL! PS:", RunManager:GetPlayerState(he
 assertTest(heroSnap ~= nil and heroSnap.isSoldier == false, "Hero snapshot remains authoritative and is not Soldier")
 
 -- T & U. Spellbook Forms and Contents schema
-assertTest(#MagicProgression.FormOrder == 6, "Spellbook exposes exactly six canonical Forms")
+assertTest(#MagicProgression.FormOrder == 7, "Spellbook exposes seven canonical Forms")
 assertTest(#MagicProgression.ContentOrder == 6, "Spellbook exposes RAW + six canonical Contents")
 
-local expectedForms = {blast = true, beam = true, bomb = true, missile = true, bolt = true, summon = true}
+local expectedForms = {cone = true, blast = true, beam = true, bomb = true, missile = true, bolt = true, summon = true}
 for _, fId in ipairs(MagicProgression.FormOrder) do
     assertTest(expectedForms[fId] == true, "Form " .. fId .. " is in canonical FormOrder")
 end

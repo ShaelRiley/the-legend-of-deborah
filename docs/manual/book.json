@@ -59,6 +59,10 @@
           "Character Sheet / Spellbook / Die Log"
         ],
         [
+          "O",
+          "Equipment (rebindable in Equipment; console command lod_equipment)"
+        ],
+        [
           "M",
           "Toggle the Magic-powered map"
         ],
@@ -72,7 +76,7 @@
         ]
       ],
       "text": [
-        "Equipment, Wallet, and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock."
+        "Wallet and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock."
       ]
     },
     {
@@ -103,9 +107,9 @@
       "title": "Thirty minutes. One campaign.",
       "art": "deborah:5",
       "text": [
-        "The campaign begins with 1,800 seconds. Its clock starts exactly once, when the first Hero commits to entering the labyrinth. A successful rescue advances the dungeon; it does not start a new timer.",
+        "Each dungeon has 1,800 seconds. Its clock starts when the first Hero commits to entering the labyrinth. A successful rescue resets the next dungeon clock to 30:00; it stays paused through staging until the first Hero enters.",
         "Death, Tetris, menus, map use, staging visits, spectating, and disconnections do not pause or extend this clock. An empty server does not bank extra time for your return.",
-        "At zero, TIME OVER ends the campaign and the prison collapses. A fresh campaign starts automatically 20 seconds after the collapse finishes. After five seconds of aftermath, you can press E to restart sooner at Dungeon 1 with a fresh clock and roster.",
+        "At zero, a seven-second prison demolition ends in GAME OVER: THE PRISON HAS COLLAPSED. A fresh campaign starts automatically 20 seconds after the collapse finishes. After five seconds of aftermath, PRESS E TO START A NEW GAME restarts sooner at Dungeon 1 with a fresh clock and roster.",
         "A rescue completed earlier in the campaign does not exempt the party from the eventual timeout."
       ],
       "quote": "I appreciate the sightseeing. I would appreciate the rescue more."
@@ -163,7 +167,8 @@
         "Your Hero has a generated name, appearance, Origin, Background, and Motive. Those three traits each grant a permanent perk: a favored weapon, a favored enemy, or ability points. Each chooses independently; matching perks can stack.",
         "An ability perk gives either +2 to one ability or +1 to each of two different abilities. Read the actual trait on your Character Sheet to see what your Hero received.",
         "Your starting scores use six rolls of four six-sided dice, dropping each lowest die. The initial array must total at least 74. A stored weakness pass then reduces the weakest score by 2d2 and the next two by 1d3 each. There is no second reroll after these reductions.",
-        "Death, reconnection, and dungeon transitions preserve your identity, class, growth, XP, and feats. A true campaign restart creates a fresh roster."
+        "Death, reconnection, and dungeon transitions preserve your identity, class, growth, XP, and feats. A true campaign restart creates a fresh roster.",
+        "The Character Sheet groups meaningful final build statistics into Offense, Defense, Magic, Elemental, Status, Movement, Recovery and Summons / Utility. Inactive zero-value modifiers stay hidden."
       ]
     },
     {
@@ -271,7 +276,8 @@
         "A damage expression such as 2d6 means two six-sided dice. Eligible damage dice can explode: a qualifying result adds another die, which may continue the chain. Generation, progression, healing, and other sealed rolls do not inherit damage explosions.",
         "Strength adds once to a physical damage contract per target; Wisdom does the same for Wisdom-scaled Magic. Constitution reduces positive die contributions, with the ordinary minimum-one rule. Strength and Wisdom are flat additions, not percentage multipliers.",
         "Aimed and Backstab multiples, equipment, elements, Dodge, Block, and Arcane Shield then matter according to their rules. A zero or immune attack does not become damaging merely because a bonus exists.",
-        "Watch the lower-right readout, or press L for the Die Log. Both display the same authoritative events: rolls, saves, damage, Dodge, status effects, regeneration, Magic, Push, XP, and more. A DODGE can be recorded even when damage is zero. Names and labels carry meaning as well as color."
+        "Watch the lower-right readout, or press L for the Die Log. Both display the same authoritative events: rolls, saves, damage, Dodge, status effects, regeneration, Magic, Push, XP, and more. A DODGE can be recorded even when damage is zero. Names and labels carry meaning as well as color.",
+        "Nearby player rolls appear in your Die Logger. Wisdom expands your listening range. Look directly at a teammate to see their username as their character, in the same semantic colors. Active ailments replace the HUD character name, color the portrait and trigger an onset cue; afflicted enemies show matching effects and status events."
       ]
     },
     {
@@ -370,27 +376,32 @@
         "Open I for the Spellbook. Choose an owned Form to decide how the spell travels, then an owned Content to decide its element and rider. Cast with right mouse. The Form's base cost and the Content's surcharge combine before applicable cost rules.",
         "Every Hero begins with one eligible random Form and RAW Content. Wizards receive an additional distinct Content at Level 1. The normal Content grants occur at Levels 4, 8, and 14. Only a Wizard can acquire or cast SUMMON.",
         "Magic tops out at 100. Intelligence governs regeneration; Wisdom governs spell power and approved range, radius, and utility scaling. A spell's visible area boundary marks its actual area, while a Beam ends where world geometry stops it.",
-        "If you are holding a Healing Potion or Stink Bomb, its throwable controls take priority. Switch back to a normal weapon to cast."
+        "When holding any throwable, its controls take priority. Switch back to a normal weapon to cast.",
+        "Spellbook labels distinguish READY / AVAILABLE, LOCKED, NEED MAGIC, COOLDOWN, and BLOCKED. Solid floors stop all spell areas. Open stairwells and shafts still allow exposed vertical hits."
       ]
     },
     {
       "id": "forms",
-      "title": "Six Forms of Magic",
+      "title": "Seven Forms of Magic",
       "rows": [
         [
-          "BLAST · 45",
-          "2d6; connected cells around caster. No innate Push."
+          "CONE · 22",
+          "3d6; immediate forward force cone, 64° wide. WIS scales reach; Content supplies its element and rider."
         ],
         [
-          "BEAM · 20",
-          "2d6; narrow straight laser pierces bodies, stops at world geometry."
+          "BLAST · 30",
+          "2d6; connected visible cells around the caster. Solid walls and floors block damage."
+        ],
+        [
+          "BEAM · 18",
+          "3d6; piercing line, 0.65-second cast recovery. Stops at solid geometry."
         ],
         [
           "BOMB · 20",
           "3d6; lobbed area attack. Throw range fixed; radius scales with WIS."
         ],
         [
-          "MISSILE · 25",
+          "MISSILE · 28",
           "3d6; steerable projectile with area impact. WIS affects range and radius."
         ],
         [
@@ -530,9 +541,9 @@
       "text": [
         "Equipment has a bag and dedicated slots. You can keep multiple copies of a weapon family and select the one to equip. Touching a pickup stores the item; it does not silently replace your carefully chosen gear.",
         "Wearable families are headwear, vest, trousers, boots, rings, gloves, and shields. A ring can use either hand. A pair of gloves occupies both hands; displacing it frees both. The shield uses the left-arm accessory slot, not a ring slot.",
-        "Your ordinary equipment storage holds 32 records plus the two consumable stacks. Only equipped wearables and the currently wielded weapon contribute their effects. A powerful weapon sitting in the bag does nothing to your current attack.",
-        "Compare an item's name, properties, drawback, and Value before equipping it. Unequip first if you want to trash an item. Trashing destroys the selected unequipped record, including a whole consumable stack when selected.",
-        "A weapon’s element colors its surface tint, soft aura and muzzle flash. Sparse brushed, ceramic, carbon or hammered patches preserve the stock gun and its detail. Finish and glow variations follow the saved roll; rarity strengthens the presentation. Inspect the listed properties for exact effects. Wintery means Ice, including Wintery Warding and Wintery Frailty."
+        "Your ordinary equipment storage holds 32 records plus consumable stacks. Only equipped wearables and the currently wielded weapon contribute their effects. A powerful weapon sitting in the bag does nothing to your current attack.",
+        "Drag equipment onto a highlighted valid slot to equip; drag it into the bag to stow. Drop unwanted, unequipped equipment onto the visible trash can to destroy it immediately with a disposal sound. Protected progression objects cannot be trashed. The server confirms the final position after every action.",
+        "Weapon identity uses a soft aura, distinct muzzle behavior, and two independently selected tints on configured native material regions, while preserving a control region. Surface patterns are retired. Models without separable native regions preserve their original surfaces. Wintery means Ice, including Wintery Warding and Wintery Frailty."
       ]
     },
     {
@@ -579,7 +590,8 @@
         "Healing Potions and Stink Bombs each stack up to three. Equip a stack in the Throwable slot, then select it as your held weapon. Its controls appear on screen.",
         "Healing Potion: right mouse drinks it to restore up to 25 HP. At full ordinary HP, drinking is rejected without consuming one. Left mouse throws it; the first living allied Hero hit receives the healing. There is no healing splash. A missed throw still spends the bottle.",
         "Stink Bomb: left mouse throws a five-second poison cloud with a 96-unit radius. Enemies entering make the normal Constitution save against Poisoned. You cannot drink a Stink Bomb.",
-        "Neither bottle spends Magic. Holding one takes over right-mouse handling; switch weapons before trying to cast a spell."
+        "Neither bottle spends Magic. Holding one takes over right-mouse handling; switch weapons before trying to cast a spell.",
+        "Healing Potions are remedies: they also clear every active negative condition, even at full HP. Magic bombs cover Physical, RAW, all six elements and every condition. They share normal throwable slots and saves; their 144-unit explosion cannot hit through solid walls or floors."
       ],
       "quote": "The red one is medicine. Please read the label."
     },
@@ -737,7 +749,8 @@
         "The Debbie Fund takes rescue funding very seriously. Its $DEB units are Debbie Coins—'Debs'—and its collectibles are Debbie Fund Tokens, or DFTs. These are server-local game records, with no cash value or outside wallet.",
         "A successful rescue creates a pool of 100 × Dungeon Level Debs. Qualifying Soldier-attributable Hero life losses assign 11% each to the Soldier side, capped at 33% of the pool; Soldier damage contributions determine its allocation.",
         "The remaining Hero pool is divided half equally and half by damage and effective allied healing, with hostile-loss adjustments. Eligible dead or disconnected participants can retain their claim. Switching to Soldier play forfeits a Hero share.",
-        "Rescue awards increase wallet balance and lifetime rescue earnings. DFT sales increase spendable balance but do not inflate that lifetime rescue score. The staging Heroes of Legend board records party rescue achievements; it is not a count of monster kills."
+        "Rescue awards increase wallet balance and lifetime rescue earnings. DFT sales increase spendable balance but do not inflate that lifetime rescue score. The staging Heroes of Legend board records party rescue achievements; it is not a count of monster kills.",
+        "Debbie also buys ordinary unequipped procedural equipment at its listed Value in $DEB. Select two to eight items to fuse into one legal generated item worth 85–100% of the combined input. Inputs are permanently consumed. Free starting weapons and items recreated from DFTs cannot be sold or fused. The Stakeholders board left of the mirror ranks the wealthiest half of connected players by $DEB plus the sale value of their DFT holdings."
       ]
     },
     {

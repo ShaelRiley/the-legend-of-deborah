@@ -28,6 +28,22 @@ for index,id in ipairs(E.EconomyOrder) do
         color=p.element or p.ward or p.weakness or 'neutral',maximum=p.maximum or p.fixed or 1,
         negative=p.weakness~=nil,role=p.element and 'element' or p.rider and 'rider' or p.ward and 'ward' or p.weakness and 'weakness' or 'stat'}
 end
+V.MaterialRegions={
+    weapon_pistol={a={"pistol_body","pistol_slide"},b={"pistol_magazine","pistol_barrel"},control={"pistol_grip","pistol"}},
+    weapon_357={a={"357_body","357_cylinder"},b={"357_barrel"},control={"357_grip","357"}},
+    weapon_smg1={a={"smg_body","smg1_body"},b={"smg_magazine","smg1_barrel"},control={"smg_grip","smg1"}},
+    weapon_ar2={a={"irifle","ar2_body"},b={"irifle_detail","ar2_barrel"},control={"irifle_grip","ar2_grip"}},
+    weapon_shotgun={a={"shotgun_receiver","shotgun_body"},b={"shotgun_barrel"},control={"shotgun_stock","shotgun"}},
+    weapon_lod_crowbar={a={"crowbar_shaft"},b={"crowbar_tip"},control={"crowbar_grip","crowbar"}}
+}
+function V:MaterialRegion(class,path)
+    local mapping=self.MaterialRegions[class];if not mapping then return "control" end
+    local name=path:lower():match("([^/]+)$")
+    for _,region in ipairs({"control","a","b"}) do
+        for _,candidate in ipairs(mapping[region]) do if name==candidate then return region end end
+    end
+    return "control"
+end
 local function finite(x) return type(x)=='number' and x==x and math.abs(x)<math.huge end
 local function hash(s)
     local n=17;for i=1,#s do n=(n*131+s:byte(i))%2147483647 end;return n
@@ -75,7 +91,12 @@ function V:Compile(data)
     end
     result.hash=hash(table.concat(fingerprint,'|'))
     result.structure=result.structure or 'plate'
-    result.finish=({'brushed metal','ceramic','carbon','hammered metal'})[result.hash%4+1]
+    result.finish='two-tone native finish'
+    result.tintA=result.element
+    result.tintB=({'earth','fire','dark','ice','light','electric'})[math.floor(result.hash/997)%6+1]
+    result.muzzleFamily=result.structure
+    result.muzzleDuration=.09+result.rarity*.015
+    result.muzzleSize=12+result.rarity*2+math.max(0,dominant)*6
     result.variant=(result.hash%997)/997
     result.phase=(result.hash%628)/100
     return result
@@ -95,17 +116,18 @@ end
 function V:Describe(style)
     if not style then return '' end
     local element=style.element=='ice' and 'Wintery (Ice)' or style.element
-    local out={element..' tint, aura and muzzle flash; '..style.finish..' surface patches.'}
+    local out={element..' aura and muzzle behavior; independent Tint A / Tint B with protected native surfaces.'}
     for _,t in ipairs(style.traits) do
         out[#out+1]=t.glyph..': '..t.label..' ('..t.bars..'/4 strength'..(t.negative and ', penalty' or '')..').'
     end
-    return 'Visual key: '..table.concat(out,' ')..' The frozen roll determines the patch pattern and glow; inspect properties for exact effects.'
+    return 'Visual key: '..table.concat(out,' ')..' The frozen roll determines tints and muzzle behavior; inspect properties for exact effects.'
 end
 function V:Stamp(ent,item)
     if not IsValid(ent) then return end
     -- Item rolls are immutable; copy selection supplies another record identity.
     if ent.LODAppearanceItem==item then return end
     ent.LODAppearanceItem=item
+    ent:SetNW2String('LOD_WeaponAppearanceClass',item.definitionId or '')
     local packet=self:Encode(item)
     if ent.LODAppearancePacket~=packet then
         ent.LODAppearancePacket=packet;ent:SetNW2String('LOD_WeaponAppearance',packet)
@@ -116,7 +138,7 @@ end
 -- One tiny message per gun/tick; pellets never become separate FX allocations.
 if SERVER then
     util.AddNetworkString('LOD_WeaponSurfaceFlash')
-    for i=1,4 do resource.AddFile('materials/lod/weapon_finish/patch_'..i..'.vtf') end
+    -- Retired pattern textures are no longer distributed or used.
     local last=setmetatable({}, {__mode='k'})
     hook.Add('PostEntityFireBullets','LOD_ProceduralWeaponMuzzle',function(actor)
         if not IsValid(actor) or not actor:IsPlayer() then return end

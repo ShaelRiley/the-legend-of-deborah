@@ -94,6 +94,8 @@ end)
 
 util.AddNetworkString("LOD_HasteToggle")
 net.Receive("LOD_HasteToggle", function(_, ply)
+    if CurTime() < (ply.LODNextHasteToggle or 0) then return end
+    ply.LODNextHasteToggle = CurTime() + 0.2
     Rules:SetHasteActive(ply, not Rules:IsHasteActive(ply))
 end)
 timer.Create("LOD_RPG_CheckpointDHasteDrain", TICK, 0, function()

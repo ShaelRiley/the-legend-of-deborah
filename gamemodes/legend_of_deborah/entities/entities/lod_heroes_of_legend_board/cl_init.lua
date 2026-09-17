@@ -21,6 +21,7 @@ function ENT:Initialize()
 end
 
 function ENT:Draw()
+    local stakeholders=self:GetNW2Bool("LOD_Stakeholders",false)
     local pos = self:GetPos()
     local ang = self:GetAngles()
 
@@ -40,8 +41,8 @@ function ENT:Draw()
             if UI then
                 local C=UI.Colors
                 UI:Paper(-width*0.5,-20,width,height,C.red,255,8)
-                draw.SimpleText("HEROES OF LEGEND","LOD_BoardTitle",0,4,C.red,TEXT_ALIGN_CENTER)
-                local entries=LOD.HeroesOfLegend and LOD.HeroesOfLegend.Entries or {}
+                draw.SimpleText(stakeholders and "STAKEHOLDERS" or "HEROES OF LEGEND","LOD_BoardTitle",0,4,C.red,TEXT_ALIGN_CENTER)
+                local entries=stakeholders and (LOD.Stakeholders or {}) or (LOD.HeroesOfLegend and LOD.HeroesOfLegend.Entries or {})
                 if self.LODBoardEntries ~= entries then
                     self.LODBoardEntries=entries
                     self.LODBoardPages={{}}
@@ -51,8 +52,8 @@ function ENT:Draw()
                         if #pages[#pages]>=math.floor((height-180)/30) then pages[#pages+1]={} end
                         pages[#pages][#pages[#pages]+1]=line
                     end
-                    for i=1,10 do
-                        local text=entries[i] and LOD.HeroesOfLegend:FormatEntry(entries[i]) or "---"
+                    for i=1,(stakeholders and math.max(1,#entries) or 10) do
+                        local text=entries[i] and (stakeholders and (entries[i].name.." — "..entries[i].value.." $DEB") or LOD.HeroesOfLegend:FormatEntry(entries[i])) or "---"
                         local line=tostring(i)..". "
                         for token in text:gmatch("%S+%s*") do
                             if surface.GetTextSize(line..token)>width-64 then append(line);line="    " end
@@ -67,12 +68,12 @@ function ENT:Draw()
                 end
                 local pages=self.LODBoardPages
                 local page=math.floor(CurTime()/12)%#pages+1
-                draw.SimpleText("COMPLETED PARTY RUNS / PAGE "..page.." OF "..#pages,
+                draw.SimpleText((stakeholders and "$DEB + DFT VALUE / " or "COMPLETED PARTY RUNS / ").."PAGE "..page.." OF "..#pages,
                     "LOD_BoardEntry",0,60,C.blue,TEXT_ALIGN_CENTER)
                 for i,line in ipairs(pages[page]) do
                     draw.SimpleText(line,"LOD_BoardEntry",-width*0.5+32,105+(i-1)*30,C.ink)
                 end
-                draw.SimpleText("Highest rescue count first / pages turn automatically",
+                draw.SimpleText(stakeholders and "Combined holdings / top half of connected players" or "Highest rescue count first / pages turn automatically",
                     "LOD_SheetSmall",0,height-50,C.muted,TEXT_ALIGN_CENTER)
             end
         cam.End3D2D()

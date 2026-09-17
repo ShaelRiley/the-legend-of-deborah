@@ -15,6 +15,12 @@ LOD.WanderingDirector={GetDeficitReservation=function() return 3 end}
 dofile(root..'sh_rng.lua');dofile(root..'sv_maze_generator.lua');dofile(root..'sv_progression_director.lua')
 dofile(root..'sv_neil_brute.lua')
 local H,P,N,R,D=LOD.NeilBrute,LOD.ProgressionDirector,LOD.MazeNavigator,LOD.RunManager,LOD.EncounterDirector
+assert(H:SelectAttack(80,true,true,true)=='melee')
+assert(H:SelectAttack(400,true,true,true)=='charge')
+assert(H:SelectAttack(400,true,false,true)=='ranged')
+assert(H:SelectAttack(1200,true,true,true)=='ranged')
+assert(H:SelectAttack(1200,false,true,true)==nil)
+assert(H:SelectAttack(400,true,false,false)==nil)
 local function key(c) return LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 local function edge(a,b) return a<b and a..'|'..b or b..'|'..a end
 local graphs={}
@@ -138,7 +144,7 @@ local liveH={seed=s.LevelSeed,neil=h.neil,brute=brute,heroes={env.hero},threats=
 s.NeilHunt=liveH
 brute.LODBruteStunUntil=nil;brute.LODHitStunUntil=nil;brute.LODNextAttack=0
 brute.LODWaypoints={};brute:SetPos(N:CellCenter(g.Cells[key(h.neilCell)]))
-env.hero:SetPos(brute:GetPos()+Vector(80,0,0))
+env.hero:SetPos(brute:GetPos()+Vector(180,0,0))
 util.TraceLine=function() return {Hit=false} end
 util.TraceHull=function(opts)
  if opts.mask==MASK_NPCSOLID then return {Hit=false} end
@@ -162,7 +168,7 @@ h.neil.LODDead=true;H:NeilKilled(h.neil)
 assert(not liveH.defendCell,'Neil death stranded a defense order')
 env.setTime(brute.LODNextAttack-.01);H:Tick(brute);assert(not brute.LODBruteCharge,'cooldown bypassed')
 env.setTime(brute.LODNextAttack);H:Tick(brute)
-assert(brute.LODBruteCharge,'surviving Brute pursued without attacking')
+assert(brute.LODBruteCharge or brute.LODBruteAttack,'surviving Brute pursued without attacking')
 H:CancelCharge(brute);H.Damage=damageBeforeDefense
 h.neil.LODDead=nil;s.NeilHunt=h
 flush() -- stale test-hunt key callback cannot affect the authoritative hunt
@@ -171,7 +177,7 @@ flush() -- stale test-hunt key callback cannot affect the authoritative hunt
 brute.LODBruteStunUntil=nil;brute:SetPos(N:CellCenter(g.Cells[key(h.neilCell)]))
 brute.LODWaypoints={{pos=brute:GetPos(),stair=true}};brute.LODWaypointIndex=1
 util.TraceLine=function() return {Hit=false} end
-env.hero:SetPos(brute:GetPos()+Vector(80,0,0))
+env.hero:SetPos(brute:GetPos()+Vector(180,0,0))
 assert(not H:BeginCharge(brute,env.hero,g,30),'charge interrupted stairs')
 brute.LODWaypoints={};assert(H:BeginCharge(brute,env.hero,g,30),'point-blank threat became harmless')
 local q=brute.LODBruteCharge;local direction=q.direction

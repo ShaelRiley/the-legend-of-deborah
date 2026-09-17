@@ -1,11 +1,22 @@
 include("shared.lua")
+local glowMaterial=Material('sprites/light_glow02_add')
 local cloudMaterial=Material("particle/particle_smokegrenade")
 function ENT:Initialize()
     self:SetRenderBounds(Vector(-100,-100,-40),Vector(100,100,80))
 end
 function ENT:Draw()
     local ends=self:GetNW2Float("LOD_CloudUntil",0)
-    if ends<=0 then self:DrawModel(); return end
+    if ends<=0 then
+        self:DrawModel()
+        local def=LOD.Equipment.Definitions[self:GetNW2String("LOD_BombType","")]
+        if def then
+            local spec=def.status and LOD.Equipment.StatusPresentation[def.status]
+            local c=spec and Color(spec.color[1],spec.color[2],spec.color[3]) or LOD.MagicArea.Colors[def.element or 'raw']
+            render.SetMaterial(glowMaterial)
+            render.DrawSprite(self:GetPos(),22,22,c)
+        end
+        return
+    end
     if ends<=CurTime() then return end
     render.SetMaterial(cloudMaterial)
     local origin=self:GetPos()

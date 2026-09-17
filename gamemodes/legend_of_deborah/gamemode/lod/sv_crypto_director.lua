@@ -183,7 +183,7 @@ function C:Recreate(ply,tokenId)
         local token=accounts[id].tokens[tokenId]
         if not token then return false,'Token unavailable.' end
         if token.lastRun==runId then return false,'Already recreated this run.' end
-        local item=table.Copy(token.item);item.id='recreated:'..runId..':'..tokenId
+        local item=table.Copy(token.item);item.id='recreated:'..runId..':'..tokenId;item.recreatedFrom=tokenId
         -- The admission path validates the statue again, then applies normal
         -- capacity, replacement, weapon and derived-state behavior.
         local def=E:Definition(item)

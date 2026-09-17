@@ -61,6 +61,8 @@ function ply:GetVelocity() return {Length2D=function() return ply.speed end} end
 function ply:OnGround() return true end
 function ply:GetWalkSpeed() return 200 end
 LOD.CharacterSheet={Snapshot={model=ply.model,fullDisplayName='Jane "Steel" Doe',portraitCacheKey='hero1',playerName='DO NOT SHOW'}}
+LOD.Equipment={Definitions={healing_potion={}}};dofile(root..'sh_magic_bombs.lua')
+surface.PlaySound=function() end;surface.SetDrawColor=function() end;surface.DrawOutlinedRect=function() end
 dofile(root..'cl_magic_hud.lua');dofile(root..'cl_character_portrait.lua');dofile(root..'cl_status_portrait.lua')
 local P,H=LOD.CharacterPortrait,LOD.StatusPortrait
 local function tick() now=now+.11;labels={};positions={};H:Draw() end
@@ -105,6 +107,7 @@ assert(events.LOD_MagicReplacesSuitBattery('CHudSecondaryAmmo')==false,'Hide ALT
 assert(events.LOD_MagicReplacesSuitBattery('CHudAmmo')==nil,'Retain primary ammo')
 assert(events.LOD_MagicReplacesSuitBattery('CHudHealth')==nil,'Retain Health')
 width,height=640,480;tick()
+ply.bools={LOD_PlayedIdentity=true};tick()
 -- Successful attack event (not held input), damage precedence, expiry and fatigue.
 events.LOD_PortraitShot(ply);tick();assert(H.Pose.mode=='attack' and H.Panel.ent.weights[0]==.9)
 ply.hp=40;tick();assert(H.Pose.mode=='hurt' and H.Panel.ent.weights[2]==.75)

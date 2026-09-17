@@ -43,12 +43,12 @@ vectors.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 vectors.__sub=function(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
 vectors.__mul=function(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
 function vectors:DistToSqr(b) local d=self-b;return d.x*d.x+d.y*d.y+d.z*d.z end
-function Angle() return {Forward=function() return Vector(1,0,0) end} end
+function Angle() return {Forward=function() return Vector(1,0,0) end,Right=function() return Vector(0,1,0) end,Up=function() return Vector(0,0,1) end} end
 function Color(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
 local calls,now,low,tick=0,0,false,1
 local function forbidden() error('Attachment/global render state allocation forbidden') end
 render={SetMaterial=function() end,DrawSprite=function() calls=calls+1 end,
-    DrawBox=forbidden,DrawBeam=forbidden,DrawSphere=forbidden,MaterialOverride=forbidden,SetColorModulation=forbidden}
+    DrawBox=forbidden,DrawBeam=function() calls=calls+1 end,DrawSphere=forbidden,MaterialOverride=forbidden,SetColorModulation=forbidden}
 ClientsideModel=forbidden;ParticleEmitter=forbidden;DynamicLight=forbidden;Mesh=forbidden
 surface={SetDrawColor=function() end,DrawRect=function() end,DrawLine=function() end}
 CurTime=function() return now end;FrameNumber=function() return tick end;EyePos=function() return Vector() end
@@ -81,7 +81,7 @@ end
 util.CRC=function(s) return s:gsub('[^%w]','_') end
 dofile(root..'cl_weapon_appearance.lua')
 local function entity(paths)
-    local ent={valid=true,pos=Vector(),model='gun',slots={},paths=paths or {'models/weapons/v_hands','models/weapons/pistol','models/weapons/pistol_grip'}}
+    local ent={valid=true,pos=Vector(),model='gun',slots={},paths=paths or {'models/weapons/v_hands','models/weapons/357_body','models/weapons/357_barrel','models/weapons/357_grip'}}
     function ent:GetNW2String() return self.packet or V:Encode(copy) end
     function ent:GetNoDraw() return self.hidden or false end
     function ent:GetNW2Bool() return self.watcher or false end
@@ -107,14 +107,14 @@ for _,id in ipairs(E.EconomyOrder) do
     for _,mode in ipairs({false,true}) do
         low=mode;calls=0;V:Apply(ent,st,nil,true)
         local changed=0;for _,s in pairs(ent.slots) do if s~='' then changed=changed+1 end end
-        assert(changed==1 and ent:GetSubMaterial(0)=='','Exactly one gun surface; stock hands')
+        assert(changed==2 and ent:GetSubMaterial(0)=='' and ent:GetSubMaterial(3)=='','Two configured tints; protected grip and hands')
         V:Draw(ent,st,'weapon_357',nil,true);assert(calls==(low and 1 or 2))
         V:Restore(ent);for _,s in pairs(ent.slots) do assert(s=='') end
     end
 end
 for _,m in pairs(materials) do
     assert(m.params['$basetexture']:find('_base',1,true),'Native base map discarded')
-    assert(m.params['$detailblendmode']=='0','Sparse neutral-field mask required')
+    assert(m.params['$detail']==nil,'Retired surface patterns must never be applied')
 end
 local n=created
 for i=1,1000 do
@@ -141,8 +141,8 @@ LocalPlayer=function() return owner end
 -- Prediction/server duplicate, shell-event preservation, fade and melee exclusion.
 net.ReadEntity=function() return ent end
 calls=0;low=false;now=1;hooks.LOD_ProceduralWeaponPredictedFlash(owner)
-V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls==4)
-now=1.1;receivers.LOD_WeaponSurfaceFlash();calls=0;V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls==2)
+V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls>=6 and calls<=8)
+now=1.1;receivers.LOD_WeaponSurfaceFlash();now=1.3;calls=0;V:Draw(ent,style,'weapon_357',owner,true,ent);assert(calls==2)
 assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,20)==nil)
 now=2;assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,5003)==true)
 ent.class='weapon_lod_crowbar';assert(hooks.LOD_ProceduralWeaponMuzzle(owner,nil,nil,5003)==nil);ent.class=nil
@@ -166,7 +166,7 @@ assert(created==128)
 -- Frozen names are display-migrated, never rewritten.
 local old={definition=copy.definition,name='Watery Revolver of Watery Warding'}
 assert(E:ItemName(old)=='Wintery Revolver of Wintery Warding' and old.name:find('Watery'))
-print('APPEARANCE_RENDER_PASS: no attachments; native base/hand preservation; one surface; 128-material ceiling; hooks/restoration; visibility/budgets; muzzle dedup/fade; frozen name migration')
+print('APPEARANCE_RENDER_PASS: no attachments; native base/hand preservation; two tint regions plus control; 128-material ceiling; hooks/restoration; visibility/budgets; muzzle dedup/fade; frozen name migration')
 -- Native shot observer runs on server: no bullet mutation/extra shots, one
 -- publication for a shotgun's pellets and one for the next shot tick.
 SERVER=true
@@ -180,8 +180,8 @@ net.SendPVS=function(p) assert(p==owner.pos);sent=sent+1 end
 function owner:IsPlayer() return true end
 function owner:GetShootPos() return self.pos end
 dofile(root..'sh_weapon_appearance.lua')
-assert(#assets==4)
+assert(#assets==0)
 for i=1,36 do assert(hooks.LOD_ProceduralWeaponMuzzle(owner)==nil) end
 assert(sent==1);tick=tick+1;hooks.LOD_ProceduralWeaponMuzzle(owner);assert(sent==2)
 ent.packet='';tick=tick+1;hooks.LOD_ProceduralWeaponMuzzle(owner);assert(sent==2)
-print('APPEARANCE_SERVER_PASS: four bundled textures; native shot observer; 36-pellet coalescing; unstyled exclusion')
+print('APPEARANCE_SERVER_PASS: no procedural pattern textures; native shot observer; 36-pellet coalescing; unstyled exclusion')

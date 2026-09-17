@@ -5,6 +5,18 @@ if not Rolls then return end
 if Rolls.LODSemanticCombatFeedFormatterInstalled then return end
 
 local MESSAGE_LIMIT = LOD.DieLogger.MaxText
+-- Match the information-system cell progression: max(1, WIS modifier) cells.
+Rolls.InformationTuning={minimumCells=1,defaultCellSize=384}
+function Rolls:InformationRadius(observer)
+    local rules=LOD.RPGAbilityRules
+    local state=rules and rules.ProgressionState and rules:ProgressionState(observer)
+    local derived=state and state.derivedStats
+    local modifier=derived and tonumber(derived.wisMod)
+        or math.floor(((state and state.effectiveAbilities and state.effectiveAbilities.wis or 10)-10)/2)
+    local cell=LOD.Config and LOD.Config.Maze and LOD.Config.Maze.CellSize or self.InformationTuning.defaultCellSize
+    return math.max(self.InformationTuning.minimumCells,modifier)*cell
+end
+
 
 local function clean(value, limit)
     local text = tostring(value or "Unknown")
@@ -92,17 +104,29 @@ local function send(self, ply, category, text, family, fields)
         tracked = ok and result == true
         if not ok then ErrorNoHalt("[LOD:FEEDBACK] " .. tostring(result) .. "\n") end
     end
-    net.Start("LOD_CombatRoll")
-    net.WriteUInt(math.Clamp(category or 0, 0, 3), 2)
-    net.WriteString(text)
-    net.WriteUInt(serial, 32)
-    net.WriteString(family)
-    net.WriteBool(tracked)
-    net.WriteString(util.TableToJSON(segments))
-    net.WriteUInt(fields.cue, 4)
-    net.WriteUInt(fields.cueVariant, 2)
-    if family=="awareness" then net.WriteVector(fields.position or ply:GetPos()) end
-    net.Send(ply)
+    local function packet(acknowledge,cue)
+        net.Start("LOD_CombatRoll")
+        net.WriteUInt(math.Clamp(category or 0, 0, 3), 2)
+        net.WriteString(text);net.WriteUInt(serial,32);net.WriteString(family)
+        net.WriteBool(acknowledge);net.WriteString(util.TableToJSON(segments))
+        net.WriteUInt(cue,4);net.WriteUInt(fields.cueVariant,2)
+        if family=="awareness" then net.WriteVector(fields.position or ply:GetPos()) end
+    end
+    packet(tracked,fields.cue);net.Send(ply)
+    -- Wallet, inventory, progression and private spatial-awareness notices stay
+    -- private. Observers receive combat rolls/status outcomes, without sending
+    -- acknowledgments or replaying the owner's personal reward cues.
+    if family=="routine" or family=="status" or family=="clear" or family=="resist"
+        or family=="weakness" or family=="proc" then
+        local recipients={}
+        for _,observer in ipairs(player.GetAll()) do
+            if observer~=ply and observer:Alive() then
+                local radius=self:InformationRadius(observer)
+                if observer:GetPos():DistToSqr(ply:GetPos())<=radius*radius then recipients[#recipients+1]=observer end
+            end
+        end
+        if #recipients>0 then packet(false,0);net.Send(recipients) end
+    end
     self.Stats.feedMessages = (self.Stats.feedMessages or 0) + 1
 end
 

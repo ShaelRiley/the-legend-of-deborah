@@ -48,6 +48,7 @@ end
 local function actor(id, human)
     return {valid = true, id = id, IsPlayer = function() return human end,
         EntIndex = function() return id end, Nick = function() return "Player" .. id end,
+        SetNW2Float=function() end, GetPos = function() return {DistToSqr=function() return 100000000 end} end,
         GetClass = function() return "enemy" end, Alive = function() return true end, EmitSound = function() end}
 end
 local a, b, enemy = actor(1,true), actor(2,true), actor(3,false)
@@ -106,6 +107,18 @@ assert(logs[#logs].fields.text:find("ELIMINATED"))
 states[a].lives = 1; states[a].eliminated = false; LOD.RunManager:_SyncPlayerVars(a)
 assert(logs[#logs].fields.text:find("REVIVED"))
 local n = #sent; LOD.RunManager:_SyncPlayerVars(a); assert(#sent == n, "unchanged sync is silent")
+
+-- Nearby packets are selected by the observer's authoritative Wisdom and never ACK for the owner.
+local oldRules,oldPosition=LOD.RPGAbilityRules,b.GetPos
+local wis=10;local distance=600
+LOD.RPGAbilityRules={ProgressionState=function(_,p) return {derivedStats={wisMod=math.floor((wis-10)/2)}} end}
+b.GetPos=function() return {DistToSqr=function() return distance*distance end} end
+local count=#sent;rolls:_Send(a,0,'1d6 = 4');assert(#sent==count+1,'out-of-range observer received roll')
+wis=14;count=#sent;rolls:_Send(a,0,'1d6 = 4');assert(#sent==count+2)
+assert(sent[#sent].ply[1]==b and sent[#sent][5][1]==false,'observer must not acknowledge another player feedback')
+assert(rolls:InformationRadius(b)==768)
+count=#sent;rolls:_Send(a,0,'private wallet','resource');assert(#sent==count+1)
+LOD.RPGAbilityRules=oldRules;b.GetPos=oldPosition
 
 -- Exercise real CastSelected with bounded spatial seams, preserving cost/refund/cooldown.
 local ps, form, content = {magic = 50}, {id = "blast", magicCost = 20}, {id = "fire", surcharge = 5}

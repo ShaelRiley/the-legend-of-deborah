@@ -507,6 +507,9 @@ end)
 hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     if not IsValid(ply) or not ply:Alive() then return end
     local multiplier = AbilityRules:MovementMultiplier(ply)
+    move:SetForwardSpeed(move:GetForwardSpeed() * multiplier)
+    move:SetSideSpeed(move:GetSideSpeed() * multiplier)
+    ply:SetNW2Float("LOD_VoluntaryMovementMultiplier", multiplier)
     move:SetMaxClientSpeed(move:GetMaxClientSpeed() * multiplier)
     move:SetMaxSpeed(move:GetMaxSpeed() * multiplier)
     if AbilityRules.ApplyVoluntaryMovementFeats then

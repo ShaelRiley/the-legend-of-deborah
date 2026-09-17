@@ -177,6 +177,15 @@ for _,radius in ipairs({5700,6500}) do
 end
 -- Replay real server serialization through the actual client receiver.
 CLIENT=true;SERVER=false
+assert(T.Settle>=5 and T.Settle<=7.5)
+local positions={}
+for _,at in ipairs({.6,2,3.3,4.8,6.8}) do
+ local origin,focus,fov=T:CinematicView(Vector(0,0,-11500),4000,-12200,at,Vector(0,0,-12000))
+ assert((origin-Vector(0,0,-12200)):Length()<4100,'Camera made prison distant')
+ positions[#positions+1]=origin
+ if at>5.5 then assert(focus==T.FlattywoodSign,'Final shot lost sign') end
+end
+for i=2,#positions do assert((positions[i]-positions[i-1]):Length()>100,'Repeated static cinematic composition') end
 local serverReceivers=receivers;receivers={}
 local drawn,sounds,drawCalls=0,0,{}
 surface={CreateFont=noop,PlaySound=function() sounds=sounds+1 end,SetDrawColor=noop,DrawRect=noop}
@@ -205,12 +214,12 @@ assert(timerDraw.text=='30:00  •  AWAITING FIRST HERO' and timerDraw.x==22 and
 assert(timerDraw.alignX==TEXT_ALIGN_LEFT and timerDraw.alignY==TEXT_ALIGN_TOP,
  'campaign clock grows rightward without occupying the objective anchor')
 T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD()==nil)
-local clock=T:Clock();clock.scene.started=now-22;clock.scene.ready=true;clock.scene.readyAt=now
-T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==22)
+local clock=T:Clock();clock.scene.started=now-T.Settle;clock.scene.ready=true;clock.scene.readyAt=now
+T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==T.Settle)
 local view=hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())
-assert(view.fov==T.CameraFOV and view.zfar>(view.origin-T.FlattywoodSign):Length(),'camera clips distant Flattywood')
+assert(view.fov>=80 and view.fov<=95 and view.zfar>(view.origin-T.FlattywoodSign):Length(),'camera clips distant Flattywood')
 local beforeCinematicDraws=drawn
-hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+2)
+hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+3)
 local soundCount=sounds;now=now+1;T:Sync();receive();assert(sounds==soundCount,'snapshot replayed entrance audio')
 local sent=0;net.SendToServer=function() sent=sent+1 end
 down=true;hooks.Think.LOD_TimeoutRestartKey();assert(sent==0)

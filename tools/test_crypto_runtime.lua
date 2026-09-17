@@ -20,6 +20,7 @@ Run.AdvanceLevel=function(self) self.State.Level=self.State.Level+1;self.State.L
 local all={}
 local function actor(id,enemy)
     local p=fixture.actor(id,enemy)
+    p.Nick=function() return id end
     p.EyePos=p.GetPos;p.WorldSpaceCenter=p.GetPos
     p.GetAmmo=function(self) return self.ammo end
     p.RemoveAllAmmo=function(self) self.ammo={} end
@@ -220,6 +221,43 @@ CurTime=oldTime
 Run.State.Ranked=false
 assert(not C:Sell(a,token) and not C:Recreate(a,token) and not C:Milestone(a.id,1))
 Run.State.Ranked=true
+-- Debbie junk exchanges use the real SQLite transaction/ledger and equipment generator.
+dofile(root..'sv_debbie_junk.lua')
+a.active=false;b.active=false;a.ps.deploymentComplete=false;b.ps.deploymentComplete=false
+local function junk(p,seed)
+    local item=E:Generate(seed,8,'ring','junk:'..p.id..':'..seed)
+    E:Ensure(p.ps).items[item.id]=item;return item
+end
+local first=junk(a,8001);local second=junk(b,8002)
+local firstValue=E:Value(first);local balance=account(a).balance;local other=account(b).balance
+assert(not C:ExchangeJunk(b,'sell_items',{first.id}),'Foreign inventory ID accepted')
+assert(not C:ExchangeJunk(a,'sell_items',{first.id,first.id}),'Duplicate selection accepted')
+WalletSQLFail('INSERT INTO lod_crypto_ledger')
+assert(not C:ExchangeJunk(a,'sell_items',{first.id}));assert(a.ps.equipment.items[first.id] and account(a).balance==balance)
+assert(C:ExchangeJunk(a,'sell_items',{first.id}));assert(not a.ps.equipment.items[first.id] and account(a).balance==balance+firstValue)
+assert(not C:ExchangeJunk(a,'sell_items',{first.id}));assert(account(a).balance==balance+firstValue)
+assert(C:ExchangeJunk(b,'sell_items',{second.id}));assert(account(b).balance==other+E:Value(second))
+local one,two=junk(a,8011),junk(a,8012);balance=account(a).balance
+local originalBag=WalletJSONEncode(a.ps.equipment)
+WalletSQLFail('INSERT INTO lod_crypto_ledger')
+assert(not C:ExchangeJunk(a,'fuse_items',{one.id,two.id}))
+assert(WalletJSONEncode(a.ps.equipment)==originalBag and account(a).balance==balance,'Fusion partially consumed on rollback')
+local input=E:Value(one)+E:Value(two);local ok,receipt=C:ExchangeJunk(a,'fuse_items',{one.id,two.id});assert(ok,receipt)
+local fused=a.ps.equipment.items[receipt.item];assert(fused and E:ValidateWearable(fused))
+assert(E:Value(fused)>=input*.85 and E:Value(fused)<=input)
+assert(not a.ps.equipment.items[one.id] and not a.ps.equipment.items[two.id] and account(a).balance==balance)
+assert(not C:ExchangeJunk(a,'fuse_items',{one.id,two.id}),'Replay created a second fused item')
+local locked=junk(a,8099);locked.recreatedFrom='token'
+assert(not C:ExchangeJunk(a,'sell_items',{locked.id}) and not C:ExchangeJunk(a,'fuse_items',{locked.id,fused.id}))
+local rows=C:StakeholderRows({a,b,soldier});assert(#rows==2 and rows[1].value>=rows[2].value)
+for _,row in ipairs(rows) do
+    local p=row.id==a.id and a or row.id==b.id and b or soldier
+    local expected=account(p).balance;for _,token in pairs(account(p).tokens) do expected=expected+E:Value(token.item) end
+    assert(row.value==expected,'Stakeholders must include both wallet balance and canonical DFT valuation')
+end
+assert(#C:StakeholderRows({a})==1)
+print('JUNK_SQLITE_PASS: ownership/duplicate/replay; real sale/fusion rollback and atomicity; 85–100% valid value; DFT mint exclusion; Stakeholder sorting/denominations/rounding')
+
 -- Corruption remains present and visible, rather than resetting the account.
 assert(sql.Query("UPDATE lod_crypto_accounts SET body='{}' WHERE account="..sql.SQLStr(a.id))~=false)
 assert(not Store:Read(a.id));assert(#errors>=3)

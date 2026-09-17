@@ -12,6 +12,7 @@ function actor:WaterLevel() return self.water end
 function actor:IsPlayer() return true end
 function actor:Alive() return self.alive end
 function actor:SetNW2Bool() end
+function actor:SetNW2Float() end
 function IsValid(v) return v == actor end
 function CurTime() return now end
 function GetConVar(name) if name == 'lod_mapless' then return {GetBool = function() return mapless end} end end
@@ -79,7 +80,7 @@ for rank=0,3 do
         end
     end
     local af,as=realized(move(10,5))
-    near(af,10); near(as,5*multiplier)
+    near(af,10*1.04); near(as,5*1.04*multiplier)
     near(move(10000,0).speed,208)
 end
 local baseline=208/math.sqrt(2)

@@ -236,6 +236,23 @@ assert(not E:Discard(owner.ps.equipment,E:Equipped(owner.ps.equipment,'weapon_pi
 E.MaximumStoredEquipment=capacity
 local extra=E:NewItem(owner,'boots','bag');owner.ps.equipment.items[extra.id]=extra
 assert(E:Discard(owner.ps.equipment,extra.id) and not owner.ps.equipment.items[extra.id])
+-- Every advertised ordinary status rider reaches the actual authoritative status API.
+for _,id in ipairs(E.RiderOrder) do
+    if Status.Registry[id] and id~='intimidated' then
+        Status:CureNegative(target)
+        snapshot.extras={['proc_'..id]=35};snapshot.dc[id]=100
+        contract.attackEvent={};Status:AttachDamageContext(info,{physical=true,damageContract=contract})
+        E:PostDamage(target,info,true)
+        assert(Status:Has(target,id),'Advertised '..id..' weapon proc never applied')
+    end
+end
+Status:CureNegative(target)
+local morale=Status.AttemptMorale;local moraleCalls=0
+Status.AttemptMorale=function(_,a,b,context) assert(a==owner and b==target and context.forceMorale);moraleCalls=moraleCalls+1;return false,'saved' end
+snapshot.extras={proc_intimidated=35};contract.attackEvent={}
+Status:AttachDamageContext(info,{physical=true,damageContract=contract});E:PostDamage(target,info,true)
+assert(moraleCalls==1,'Intimidated weapon must invoke shared Morale save');Status.AttemptMorale=morale
+
 print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; natural reward distribution')
 -- Reuse these Source boundaries for the real SQLite wallet integration gate.
 return {actor=actor,Run=Run,hooks=hooks,timers=timers}

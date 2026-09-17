@@ -70,6 +70,30 @@ function W:Render()
                 y=y+46
             else label('SLOT '..i..' — EMPTY') end
         end
+        label('DEBBIE — SELL / FUSE JUNK','LOD_SheetSubheading')
+        label('Stow equipment first. Select up to eight items. Fusion consumes them for one item worth 85–100% of their combined value. Free starting weapons and DFT recreations are excluded.')
+        local selected={}
+        for _,item in ipairs(state.junk or {}) do
+            local check=vgui.Create('DCheckBoxLabel',content)
+            check:SetPos(0,y);check:SetSize(width,26);check:SetText(item.name..' / '..item.value..' value')
+            check:SetTextColor(C.ink);check.OnChange=function(_,value) selected[item.id]=value or nil end
+            y=y+30
+        end
+        for i,action in ipairs({'sell_items','fuse_items'}) do
+            local button=vgui.Create('DButton',content);button:SetPos((i-1)*width*.5,y);button:SetSize(width*.48,32)
+            button:SetText(i==1 and 'SELL SELECTED FOR $DEB' or 'FUSE SELECTED');button:SetEnabled(state.atStatue and state.ranked)
+            UI:Button(button,i==1 and C.gold or C.blue)
+            button.DoClick=function()
+                local ids={};for id in pairs(selected) do ids[#ids+1]=id end
+                if #ids<1 or #ids>8 or action=='fuse_items' and #ids<2 then return end
+                Derma_Query('Permanently consume the selected items?', 'Debbie exchange', 'Continue',function()
+                    net.Start('LOD_JunkExchange');net.WriteString(action);net.WriteUInt(#ids,4)
+                    for _,id in ipairs(ids) do net.WriteString(id) end
+                    net.SendToServer()
+                end,'Keep items')
+            end
+        end
+        y=y+48
         label('RECENT TRANSACTIONS','LOD_SheetSubheading')
         for _,row in ipairs(state.history or {}) do
             local b=row.body
@@ -95,3 +119,5 @@ net.Receive('LOD_WalletSnapshot',function()
     if UI.ActivePage=='wallet' and IsValid(W.Frame) then W:Render() end
 end)
 net.Receive('LOD_WalletOpen',function() W:Open() end)
+
+net.Receive("LOD_Stakeholders",function() LOD.Stakeholders=net.ReadTable() end)

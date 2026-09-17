@@ -15,7 +15,7 @@ for _,row in ipairs({{'immolated','IMMOLATED','Immolated'},{'poisoned','POISONED
 end
 function H:Reset()
     self.HP=nil;self.Identity=nil;self.HurtUntil=0;self.AttackUntil=0;self.NextSample=0
-    self.Caption=nil;self.Lines=nil;self.Pose=nil;self.WrapText=nil;self.WrapWidth=nil
+    self.Caption=nil;self.Lines=nil;self.Pose=nil;self.WrapText=nil;self.WrapWidth=nil;self.PreviousConditions={};self.StatusColor=nil
 end
 H:Reset()
 function H:Attack(ply)
@@ -34,13 +34,22 @@ function H:Sample(ply,snapshot,now)
     if self.Identity~=identity then self:Reset();self.Identity=identity end
     if self.HP and hp<self.HP then self.HurtUntil=now+.45 end
     self.HP=hp
-    local labels={};local harmful=false
+    local labels={};local harmful=false;local primary;local current={}
     for _,id in ipairs(self.Order) do
         local condition=self.Conditions[id]
         if ply:GetNW2Bool(condition.key,false) then
             labels[#labels+1]=condition.label;harmful=harmful or not condition.beneficial
+            current[id]=true;primary=primary or id
+            local spec=LOD.Equipment.StatusPresentation and LOD.Equipment.StatusPresentation[id]
+            if spec and not self.PreviousConditions[id] then
+                surface.PlaySound(spec.sound)
+                self.OnsetUntil=now+.7
+            end
         end
     end
+    self.PreviousConditions=current
+    local spec=primary and LOD.Equipment.StatusPresentation and LOD.Equipment.StatusPresentation[primary]
+    self.StatusColor=spec and Color(spec.color[1],spec.color[2],spec.color[3],120)
     self.Caption=#labels>0 and table.concat(labels,' / ') or name
     self.Harmful=harmful;self.Affected=#labels>0;self.Model=model
     self.Pose={fatigue=1-math.Clamp(hp/math.max(1,ply:GetMaxHealth()),0,1)}
@@ -113,7 +122,7 @@ function H:Draw()
     end
     if not self.Pose then return end
     local pose=self.Pose
-    pose.mode=now<self.HurtUntil and 'hurt' or now<self.AttackUntil and 'attack' or 'idle'
+    pose.mode=(now<self.HurtUntil or self.Harmful) and 'hurt' or now<self.AttackUntil and 'attack' or 'idle'
     pose.reduced=reduced and reduced:GetBool() or false
     pose.walk=ply:OnGround() and math.Clamp(ply:GetVelocity():Length2D()/math.max(1,ply:GetWalkSpeed()),0,1) or 0
     local size=math.Clamp(ScrH()*.12,64,128)
@@ -133,7 +142,10 @@ function H:Draw()
     else P:Configure(self.Panel,self.Model) end
     local panel=self.Panel;panel.LODPose=pose
     panel:SetPos(x,y);panel:SetSize(size,size)
-    draw.RoundedBox(2,x,y,size,size,Color(20,22,25,180))
+    draw.RoundedBox(2,x,y,size,size,self.StatusColor or Color(20,22,25,180))
+    if now<(self.OnsetUntil or 0) and self.StatusColor then
+        surface.SetDrawColor(self.StatusColor);surface.DrawOutlinedRect(x-4,y-4,size+8,size+8,4)
+    end
     panel:PaintManual()
     local weaponY=y+(size-#weaponLines*14)*.5
     for i,line in ipairs(weaponLines) do

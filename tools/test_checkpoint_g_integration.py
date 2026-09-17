@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Spell Availability & Teammate Identity", ["python3", "tools/run_lua54.py", "tools/test_refresh_ui.lua"]),
+    ("Deterministic Encounter Distribution", ["python3", "tools/run_lua54.py", "tools/test_encounter_distribution.lua"]),
+    ("Integrated Combat, Remedy & Derived UI", ["python3", "tools/run_lua54.py", "tools/test_integrated_refresh.lua"]),
     ("Client Geometry Full-Update Recovery", ["python3", "tools/run_lua54.py", "tools/test_geometry_fullupdate.lua"]),
     ("Dungeon Transition Inventory", ["python3", "tools/run_lua54.py", "tools/test_dungeon_transition.lua"]),
     ("Exact Native-Crash Reward Replay", ["python3", "tools/run_lua54.py", "tools/test_equipment_crash_replay.lua"]),

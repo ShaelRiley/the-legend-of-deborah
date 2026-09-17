@@ -12,6 +12,7 @@ function actor:WaterLevel() return self.water end
 function actor:IsPlayer() return true end
 function actor:Alive() return self.alive end
 function actor:SetNW2Bool() end
+function actor:SetNW2Float() end
 function IsValid(v) return v == actor end
 function CurTime() return now end
 function GetConVar(name) if name == 'lod_mapless' then return {GetBool = function() return mapless end} end end
@@ -64,13 +65,13 @@ cps:_RecomputeProgressionState(state)
 for _,cap in ipairs({100,200,400}) do
     local m=move(-100,50,cap)
     near(m.speed,cap*1.04*1.25); near(m.client,m.speed)
-    near(m.forward,-125); near(m.side,62.5); assert(m.vertical==320)
+    near(m.forward,-125*1.04); near(m.side,62.5*1.04); assert(m.vertical==320)
 end
 near(move(100,0).speed,208); near(move(0,100).speed,208)
 near(move(0,0).speed,208)
 -- Low analog input scales along with cap, maintaining desired-vector fraction.
 local analog=move(-10,5)
-near(analog.forward,-12.5); near(analog.side,6.25)
+near(analog.forward,-12.5*1.04); near(analog.side,6.25*1.04)
 actor.grounded=false; near(move(-100,50).speed,208); actor.grounded=true
 actor.mode=9; near(move(-100,50).speed,208); actor.mode=MOVETYPE_WALK
 actor.water=2; near(move(-100,50).speed,208); actor.water=0

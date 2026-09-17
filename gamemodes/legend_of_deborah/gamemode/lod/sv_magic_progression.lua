@@ -13,10 +13,11 @@ MagicProgression.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8l
 MagicProgression.SourceRevisionId = "ANLCKQnZT-gY2E1o8eVywRbHM5oeUT9ScZUoFZs5V2oLQzgLW4w8BjAaD1g3FEkxN8ductzcuN9LQ6NoOWHxcYdQu5vbznuuI7oCo86mog"
 
 RPG.MagicForms = RPG.MagicForms or {
-    blast = {id = "blast", displayName = "Blast", damageDice = 2, damageSides = 6, magicCost = 45},
-    beam = {id = "beam", displayName = "Beam", damageDice = 2, damageSides = 6, magicCost = 20},
+    cone = {id = "cone", displayName = "Cone", damageDice = 3, damageSides = 6, magicCost = 22},
+    blast = {id = "blast", displayName = "Blast", damageDice = 2, damageSides = 6, magicCost = 30},
+    beam = {id = "beam", displayName = "Beam", damageDice = 3, damageSides = 6, magicCost = 18},
     bomb = {id = "bomb", displayName = "Bomb", damageDice = 3, damageSides = 6, magicCost = 20},
-    missile = {id = "missile", displayName = "Missile", damageDice = 3, damageSides = 6, magicCost = 25},
+    missile = {id = "missile", displayName = "Missile", damageDice = 3, damageSides = 6, magicCost = 28},
     bolt = {id = "bolt", displayName = "Bolt", damageDice = 4, damageSides = 6, magicCost = 15},
     summon = {id = "summon", displayName = "Summon", damageDice = 0, damageSides = 0, magicCost = 12}
 }
@@ -33,7 +34,7 @@ RPG.MagicContents = RPG.MagicContents or {
     electric = {id = "electric", displayName = "Electric", ability = "cha", surcharge = 10, element = "electric", rider = "morale"}
 }
 
-local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon"}
+local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone"}
 local CONTENT_ORDER = {"earth", "fire", "dark", "ice", "light", "electric"}
 MagicProgression.FormOrder = FORM_ORDER
 MagicProgression.ContentOrder = CONTENT_ORDER
@@ -394,6 +395,7 @@ function MagicProgression:Snapshot(state)
         }
     end
     return {
+        costMultiplier=state and state.derivedStats and state.derivedStats.quantumCostMultiplier or 1,
         forms = forms,
         contents = contents,
         selectedFormId = state and state.selectedMagicFormId or nil,
@@ -457,7 +459,7 @@ end)
 function MagicProgression:Validate()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    expect(#FORM_ORDER == 6, "six Forms")
+    expect(#FORM_ORDER == 7, "seven Forms")
     expect(#CONTENT_ORDER == 6, "six Contents")
     local seen = {}
     for _, id in ipairs(FORM_ORDER) do

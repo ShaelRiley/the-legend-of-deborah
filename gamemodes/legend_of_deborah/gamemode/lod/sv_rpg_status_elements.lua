@@ -193,6 +193,18 @@ function System:Has(target, id, at)
     return true, entry
 end
 
+-- Remedies remove conditions through Clear so locks, replication, hooks and
+-- presentation all follow the same path as natural expiry. Do not reset feats.
+function System:CureNegative(actor)
+    local ids, count = {}, 0
+    for id in pairs(self.Active[actor] or {}) do ids[#ids + 1] = id end
+    table.sort(ids)
+    for _, id in ipairs(ids) do
+        if self:Clear(actor, id, "remedy") then count = count + 1 end
+    end
+    return count
+end
+
 function System:ResetActorLife(actor)
     self.ActorLives[actor] = nil
     local ids = {}

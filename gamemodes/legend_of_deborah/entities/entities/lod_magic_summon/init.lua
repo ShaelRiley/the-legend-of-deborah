@@ -2,11 +2,11 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
-local WINDUP_SECONDS = 0.85
+local WINDUP_SECONDS = 0.45
 local CHARGE_SPEED = 560
 local CHARGE_SECONDS = 1.20
 local CHARGE_RANGE = 760
-local MIN_CHARGE_RANGE = 150
+local MIN_CHARGE_RANGE = 48
 local CHARGE_COOLDOWN = 2.80
 local CONTACT_DISTANCE = 58
 local RETREAT_TARGET_DISTANCE = 320
@@ -16,11 +16,13 @@ local LIFETIME = 20
 local Navigator = LOD.MazeNavigator
 local Motion = LOD.HostileMotionV2
 
+-- Arrival/departure are finite, self-owned effects; never use stock Smoke,
+-- whose emitter lifetime is not controlled by this entity.
 local function smoke(pos, scale)
     local fx = EffectData()
-    fx:SetOrigin(pos)
+    fx:SetOrigin(pos + Vector(0, 0, 14))
     fx:SetScale(scale or 1.2)
-    util.Effect("Smoke", fx, true, true)
+    util.Effect("lod_summon_puff", fx, true, true)
 end
 
 local function runState()
@@ -120,7 +122,7 @@ function ENT:_LineClear(target)
         endpos = target:WorldSpaceCenter(),
         mins = Vector(-12, -12, -12),
         maxs = Vector(12, 12, 12),
-        mask = MASK_SHOT,
+        mask = MASK_SOLID,
         filter = function(ent)
             if ent == self or ent == self.LODCaster then return false end
             if IsValid(ent) and ent:IsPlayer() then return ent == target and aliveOpponent(self, ent) end
@@ -203,6 +205,9 @@ function ENT:_RunCharge(graph)
     if state.phase == "windup" then
         if Motion then Motion:Stop(self) Motion:FaceToward(self, target:GetPos()) end
         if CurTime() >= state.releasesAt then
+            local aim = target:GetPos() + target:GetVelocity() * 0.12 - self:GetPos()
+            aim.z = 0
+            if aim:LengthSqr() > 0 then state.direction = aim:GetNormalized() end
             state.phase = "charge"
             state.endsAt = CurTime() + CHARGE_SECONDS
             self:EmitSound("ambient/energy/zap5.wav", 78, 108, 0.8, CHAN_WEAPON)
@@ -214,7 +219,8 @@ function ENT:_RunCharge(graph)
         self.LODNextCharge = CurTime() + CHARGE_COOLDOWN
         return false
     end
-    if horizontalDistance(self:GetPos(), target:GetPos()) <= CONTACT_DISTANCE then
+    if horizontalDistance(self:GetPos(), target:GetPos()) <= CONTACT_DISTANCE
+        and math.abs(self:GetPos().z - target:GetPos().z) <= 72 and self:_LineClear(target) then
         self:_ResolveChargeHit(target)
         self:_BeginRetreat(graph, target)
         return true
@@ -228,7 +234,7 @@ function ENT:_RunCharge(graph)
         endpos = probe + Vector(0, 0, 14),
         mins = Vector(-13, -13, -13),
         maxs = Vector(13, 13, 13),
-        mask = MASK_SHOT,
+        mask = MASK_SOLID,
         filter = function(ent)
             if ent == self or ent == self.LODCaster then return false end
             if IsValid(ent) and ent:IsPlayer() then return ent == target and aliveOpponent(self, ent) end
@@ -263,7 +269,8 @@ end
 function ENT:_BehaviourTick()
     if not IsValid(self.LODCaster) then self:Remove() return end
     local state, graph = runState()
-    if not state or not graph or state.Failed or state.LevelCleared or state.SimulationFrozen then
+    if CurTime() >= (self.LODExpiresAt or 0) or not state or not graph or state.Failed or state.LevelCleared then self:Remove() return end
+    if state.SimulationFrozen then
         if Motion then Motion:Stop(self) end
         return
     end
@@ -274,9 +281,10 @@ function ENT:_BehaviourTick()
     local target = self:_AcquireTarget(graph)
     if not aliveOpponent(self, target) then if Motion then Motion:Stop(self) end return end
     local distance = horizontalDistance(self:GetPos(), target:GetPos())
-    if distance < MIN_CHARGE_RANGE then
-        self:_BeginRetreat(graph, target)
-        self:_RunRetreat(graph)
+    if distance <= CONTACT_DISTANCE and math.abs(self:GetPos().z-target:GetPos().z) <= 72
+        and self:_LineClear(target) then
+        if CurTime() >= (self.LODNextCharge or 0) then self:_ResolveChargeHit(target) end
+        if Motion then Motion:Stop(self) end
         return
     end
     if distance <= CHARGE_RANGE and self:_LineClear(target) and CurTime() >= (self.LODNextCharge or 0) then

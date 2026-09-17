@@ -18,6 +18,10 @@ if not Magic or not RPG or not Progression or not MagicProgression or not Rules 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
 Forms.Tuning = {
+    BaseConeRange = 480,
+    ConeHalfAngle = 32,
+    CastCooldown = 0.85,
+    BeamCooldown = 0.65,
     BaseBeamRange = 1152,
     BaseBombBlastRadius = 96,
     BaseBombThrowRange = 1152,
@@ -180,7 +184,7 @@ local function worldLineClear(caster, target, fromPos)
     local tr = util.TraceLine({
         start = fromPos or caster:GetShootPos(),
         endpos = target:WorldSpaceCenter(),
-        mask = MASK_SHOT,
+        mask = MASK_SOLID,
         filter = worldObstructionFilter(caster, target)
     })
     return not tr.Hit or tr.Fraction >= 0.995
@@ -222,7 +226,7 @@ function Forms:_RollDamage(attacker, form, context)
         sides = form.damageSides,
         bonus = tonumber(form.damageBonus) or 0,
         exploding = form.damageSides == 6 and 6 or nil,
-        magicDamage = true, attackEvent = context
+        magicDamage = not form.physical, attackEvent = context
     }
     local rng = Rolls:_RNG(string.format("magic-form:%s:%d", form.id, context.castSerial))
     local contract = Rolls:RollActorDamage(attacker, profile, rng, context.aceBonus or 0)
@@ -233,8 +237,7 @@ function Forms:_DamageContext(content)
     local context = {magic = true}
     if not content then return context end
     context.element = content.element
-    if content.rider == "immolated" or content.rider == "poisoned"
-        or content.rider == "held" or content.rider == "muted" then
+    if Status and Status.Registry and Status.Registry[content.rider] then
         context.riderStatusId = content.rider
     elseif content.rider == "morale" then
         context.forceMorale = true
@@ -268,7 +271,9 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         contract.wizardFullMagicIntBonus = context.sealedWizardFullMagicIntBonus
     end
     local tags = self:_DamageContext(content)
-    tags.wisScaled = true
+    tags.throwable = form.throwable == true
+    tags.wisScaled = not form.physical
+    if form.physical then tags.magic=false;tags.physical=true end
     -- Rider DC is part of the caster-side Magic attack state. Seal it from the
     -- mechanical attacker (a copied summon state for proxy attacks), while the
     -- resulting status itself may retain the Hero as its durable source.
@@ -298,7 +303,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     info:SetAttacker(proxyAttack and creditCaster or (IsValid(attacker) and attacker or creditCaster))
     info:SetInflictor(IsValid(attacker) and attacker or creditCaster)
     info:SetDamage(total)
-    info:SetDamageType(DMG_ENERGYBEAM)
+    info:SetDamageType(form.physical and DMG_BLAST or DMG_ENERGYBEAM)
     info:SetDamagePosition(target:WorldSpaceCenter())
     info:SetDamageForce(vector_origin)
     tags.attackEvent, tags.damageContract, tags.actorDamageResolved = context, contract, true
@@ -440,6 +445,35 @@ function Forms:_BlastTargets(ply, cells)
     return targets, footprint
 end
 
+-- All instantaneous/area forms share generated solid cover semantics. Open
+-- stairs and shafts remain legal: elevation alone never rejects an exposed hit.
+function Forms:LineOfEffect(caster, target, origin)
+    return worldLineClear(caster, target, origin)
+end
+
+function Forms:_ConeTargets(caster, origin, direction, range)
+    local targets = {}
+    local threshold = math.cos(math.rad(self.Tuning.ConeHalfAngle))
+    for _, target in ipairs(self:_AreaTargets(caster, origin, range)) do
+        local offset = target:WorldSpaceCenter() - origin
+        if offset:LengthSqr() > 0 and offset:GetNormalized():Dot(direction) >= threshold then
+            targets[#targets + 1] = target
+        end
+    end
+    return targets
+end
+
+function Forms:_CastCone(ply, form, content, context)
+    local origin, direction = ply:GetShootPos(), ply:GetAimVector():GetNormalized()
+    if direction == vector_origin then return false end
+    local range = self.Tuning.BaseConeRange + context.spatialBonusCells * cellSize()
+    for _, target in ipairs(self:_ConeTargets(ply, origin, direction, range)) do
+        self:_ApplyDamage(ply, ply, target, form, content, context, direction)
+    end
+    broadcastFX("cone", content and content.id, origin, origin + direction * range, ply)
+    return true
+end
+
 function Forms:_CastBlast(ply, form, content, context)
     local rangeCells = 1 + context.spatialBonusCells
     local direction = ply:GetAimVector():GetNormalized()
@@ -469,7 +503,7 @@ function Forms:_CastBeam(ply, form, content, context)
     local cap = RPG.Constants.MaxPenetrationTargetsPerProjectile or 4
     while remaining > 1 and hitCount < cap do
         local tr = util.TraceLine({start = cursor, endpos = cursor + direction * remaining,
-            mask = MASK_SHOT, filter = ignored})
+            mask = MASK_SOLID, filter = ignored})
         endpoint = tr.Hit and tr.HitPos or (cursor + direction * remaining)
         if not tr.Hit then break end
         local ent = tr.Entity
@@ -549,6 +583,7 @@ function Forms:ProjectileImpact(projectile, trace)
     if not form or not context or not IsValid(caster) then projectile:Remove() return end
     local direction = projectile.LODDirection or projectile:GetForward()
     local point = trace and trace.HitPos or projectile:GetPos()
+    if trace and trace.HitNormal then point = point + trace.HitNormal * 2 end
     if form.id == "bolt" then
         local target = trace and trace.Entity or nil
         if validTarget(caster, target) then
@@ -564,6 +599,20 @@ function Forms:ProjectileImpact(projectile, trace)
         form.id ~= "bolt" and {kind=1, radius=projectile.LODBlastRadius or 0} or nil)
     if form.id == "missile" and self.ActiveMissiles[caster] == projectile then self.ActiveMissiles[caster] = nil end
     projectile:Remove()
+end
+
+function Forms:DetonateThrowable(caster,origin,definition)
+    local form={id="bomb",throwable=true,displayName=definition.name,damageDice=LOD.Equipment.BombTuning.damageDice,
+        damageSides=LOD.Equipment.BombTuning.damageSides,physical=definition.element==nil}
+    local content={id=definition.element or "raw",displayName=definition.name,element=definition.element,
+        rider=definition.status=="intimidated" and "morale" or definition.status}
+    local context=self:_NewContext(caster,form,content)
+    context.castSerial=self:_NextCastSerial(caster)
+    local radius=LOD.Equipment.BombTuning.radius
+    for _,target in ipairs(self:_AreaTargets(caster,origin,radius)) do
+        self:_ApplyDamage(caster,caster,target,form,content,context,(target:WorldSpaceCenter()-origin):GetNormalized())
+    end
+    broadcastFX("bomb",content.id,origin,origin,caster,{kind=1,radius=radius})
 end
 
 function Forms:_SummonCount(ply)
@@ -738,11 +787,13 @@ function Forms:CastSelected(ply)
     local previousCooldown = Magic.NextCast[ply] or 0
     ps.magic = math.max(0, ps.magic - cost)
     ps.gateEControlMagicTestHoldUntil = nil
-    Magic.NextCast[ply] = now + 0.85
+    Magic.NextCast[ply] = now + (form.id == "beam" and self.Tuning.BeamCooldown or self.Tuning.CastCooldown)
+    ply:SetNW2Float("LOD_MagicNextCast", Magic.NextCast[ply])
     Magic:_Sync(ply, ps)
 
     local castOK, reason
-    if form.id == "blast" then castOK = self:_CastBlast(ply, form, content, context)
+    if form.id == "cone" then castOK = self:_CastCone(ply, form, content, context)
+    elseif form.id == "blast" then castOK = self:_CastBlast(ply, form, content, context)
     elseif form.id == "beam" then castOK = self:_CastBeam(ply, form, content, context)
     elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" then
         castOK = self:_SpawnProjectile(ply, form, content, context)
@@ -750,6 +801,7 @@ function Forms:CastSelected(ply)
     if not castOK then
         ps.magic = math.min(100, ps.magic + cost)
         Magic.NextCast[ply] = previousCooldown
+        ply:SetNW2Float("LOD_MagicNextCast", previousCooldown)
         ply.LODRPGNextAceReadyAt = previousAceReady
         Magic:_Sync(ply, ps)
         self.Stats.failed = (self.Stats.failed or 0) + 1
@@ -792,10 +844,10 @@ function Forms:Validate()
     expect(t.MaxActiveGuidedMissilesPerCaster == 1, "one active guided Missile")
     expect(t.BaseBoltRange == 1920 and t.BoltProjectileSpeed == 2400, "Bolt tuning")
     local forms = RPG.MagicForms or {}
-    expect(forms.blast and forms.blast.damageDice == 2 and forms.blast.magicCost == 45, "Blast catalog")
-    expect(forms.beam and forms.beam.damageDice == 2 and forms.beam.magicCost == 20, "Beam catalog")
+    expect(forms.blast and forms.blast.damageDice == 2 and forms.blast.magicCost == 30, "Blast catalog")
+    expect(forms.beam and forms.beam.damageDice == 3 and forms.beam.magicCost == 18, "Beam catalog")
     expect(forms.bomb and forms.bomb.damageDice == 3 and forms.bomb.magicCost == 20, "Bomb catalog")
-    expect(forms.missile and forms.missile.damageDice == 3 and forms.missile.magicCost == 25, "Missile catalog")
+    expect(forms.missile and forms.missile.damageDice == 3 and forms.missile.magicCost == 28, "Missile catalog")
     expect(forms.bolt and forms.bolt.damageDice == 4 and forms.bolt.magicCost == 15, "Bolt catalog")
     expect(forms.summon and forms.summon.magicCost == 12, "Summon catalog")
     local contents = RPG.MagicContents or {}

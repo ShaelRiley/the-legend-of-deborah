@@ -6,6 +6,7 @@ local cache=setmetatable({}, {__mode='k'})
 local itemCache=setmetatable({}, {__mode='k'})
 local applied=setmetatable({}, {__mode='k'})
 local flashes=setmetatable({}, {__mode='k'})
+local regions=setmetatable({}, {__mode='k'})
 local worldDraws=setmetatable({}, {__mode='k'})
 -- Source materials cannot be freed. Retain a bounded pool across map/Lua reloads;
 -- keys depend on stock material + four finishes, never on a random item ID.
@@ -58,9 +59,9 @@ local function gunSurface(path)
     end
     return true
 end
-function V:Surface(path,style)
-    local pattern=style.hash%4+1
-    local key=path..':'..pattern
+function V:Surface(path,style,region)
+    region=region or 'a'
+    local key=path..':tint-v2:'..region
     local row=pool.rows[key]
     if row==false then return nil end
     if not row then
@@ -69,59 +70,64 @@ function V:Surface(path,style)
         if source:IsError() or source:GetShader()~='VertexLitGeneric' then pool.rows[key]=false;return nil end
         local texture=source:GetTexture('$basetexture')
         if not texture or texture:IsError() then pool.rows[key]=false;return nil end
-        -- Neutral grey leaves most texels untouched in detail mode 0. Only the
-        -- sparse procedural marks change texture; the native base map survives.
-        local params={['$basetexture']=texture:GetName(),['$model']='1',
-            ['$detail']='lod/weapon_finish/patch_'..pattern,['$detailblendmode']='0',
-            ['$detailscale']='1',['$detailblendfactor']='.65',['$phong']='1',
-            ['$phongboost']='.25',['$phongexponent']='18'}
+        local params={['$basetexture']=texture:GetName(),['$model']='1',['$phong']='1',['$phongboost']='.25'}
         for _,name in ipairs({'$bumpmap','$envmapmask'}) do
             local t=source:GetTexture(name);if t and not t:IsError() then params[name]=t:GetName() end
         end
-        local env=source:GetString('$envmap');if env and env~='' then params['$envmap']=env end
         for _,name in ipairs({'$basealphaenvmapmask','$normalmapalphaenvmapmask','$selfillum','$alphatest'}) do
-            local value=source:GetInt(name);if value and value~=0 then params[name]=tostring(value) end
+            local v=source:GetInt(name);if v and v~=0 then params[name]=tostring(v) end
         end
         pool.count=pool.count+1
         row={material=CreateMaterial('LOD_WeaponSurface_'..util.CRC(key),'VertexLitGeneric',params)}
         pool.rows[key]=row
     end
-    local c=colors[style.element] or pale
-    local amount=.18+style.rarity*.035
+    local c=colors[region=='b' and style.tintB or style.tintA] or colors[style.element] or pale
+    local amount=.3+style.rarity*.035
     row.material:SetVector('$color2',Vector(1-amount+amount*c.r/255,1-amount+amount*c.g/255,1-amount+amount*c.b/255))
-    row.material:SetFloat('$detailscale',1+style.variant*2)
-    row.material:SetFloat('$detailblendfactor',.45+style.variant*.3)
-    row.material:SetFloat('$phongexponent',({24,6,12,36})[pattern])
     return '!'..row.material:GetName()
 end
 function V:Restore(ent)
     local state=applied[ent];if not state then return end
     applied[ent]=nil
-    if IsValid(ent) and ent:GetModel()==state.model and ent:GetSubMaterial(state.slot)==state.ours then
-        ent:SetSubMaterial(state.slot,state.previous)
+    if not IsValid(ent) or ent:GetModel()~=state.model then return end
+    for _,row in ipairs(state.rows) do
+        if ent:GetSubMaterial(row.slot)==row.ours then ent:SetSubMaterial(row.slot,row.previous) end
     end
 end
 function V:Apply(ent,style,owner,view)
     self:Restore(ent)
     if not style or not self:Visible(ent,owner,view) then return end
-    local row=cache[ent] or {};cache[ent]=row
-    local model=ent:GetModel()
-    if row.model~=model then
-        row.model=model;row.surfaces={}
+    local class=ent:GetClass()
+    if view and IsValid(owner) then local weapon=owner:GetActiveWeapon();if IsValid(weapon) then class=weapon:GetClass() end end
+    if class=="lod_loot_pickup" then class=ent:GetNW2String("LOD_WeaponAppearanceClass","") end
+    local mapping=regions[ent]
+    if not mapping or mapping.model~=ent:GetModel() or mapping.class~=class then
+        mapping={model=ent:GetModel(),class=class,surfaces={},control=false}
         for index,path in ipairs(ent:GetMaterials() or {}) do
-            if gunSurface(path) then row.surfaces[#row.surfaces+1]={slot=index-1,path=path} end
+            if gunSurface(path) then
+                local region=self:MaterialRegion(class,path)
+                if region=='control' then mapping.control=true
+                else mapping.surfaces[#mapping.surfaces+1]={slot=index-1,path=path,region=region} end
+            end
+        end
+        regions[ent]=mapping
+    end
+    local surfaces,control=mapping.surfaces,mapping.control
+    -- Single gun-material meshes cannot expose independent native sections.
+    -- Preserve them intact instead of recoloring the whole gun or its hands.
+    if not control then return end
+    local state={model=ent:GetModel(),rows={}}
+    for _,surface in ipairs(surfaces) do
+        local previous=ent:GetSubMaterial(surface.slot)
+        if not previous or previous=='' then
+            local material=self:Surface(surface.path,style,surface.region)
+            if material then
+                state.rows[#state.rows+1]={slot=surface.slot,previous=previous,ours=material}
+                ent:SetSubMaterial(surface.slot,material)
+            end
         end
     end
-    local choices=row.surfaces or {}
-    if #choices==0 then return end
-    -- One gun-only material region, never arms or a full-model override. Even
-    -- single-material guns retain their base map under a sparse detail mask.
-    local surface=choices[style.hash%#choices+1]
-    local previous=ent:GetSubMaterial(surface.slot)
-    if previous and previous~='' then return end -- respect unrelated skins
-    local material=self:Surface(surface.path,style);if not material then return end
-    applied[ent]={model=model,slot=surface.slot,previous=previous,ours=material}
-    ent:SetSubMaterial(surface.slot,material)
+    applied[ent]=state
 end
 function V:Draw(ent,style,class,owner,view,weapon)
     if not style or not self:Visible(ent,owner,view) then return end
@@ -142,10 +148,18 @@ function V:Draw(ent,style,class,owner,view,weapon)
     end
     local flash=flashes[weapon or ent]
     if flash and flash.untilTime>CurTime() and muzzle and class~='weapon_lod_crowbar' then
-        local fade=math.min(1,(flash.untilTime-CurTime())/.075)
-        local radius=(low and 8 or 13)*fade
+        local fade=math.min(1,(flash.untilTime-CurTime())/(style.muzzleDuration or .12))
+        local radius=(style.muzzleSize or 16)*(low and .7 or 1)*fade
         render.DrawSprite(muzzle,radius,radius,Color(c.r,c.g,c.b,230*fade))
-        if not low then render.DrawSprite(muzzle+ang:Forward()*2,radius*.45,radius*.45,Color(c.r,c.g,c.b,255*fade)) end
+        if not low then
+            render.DrawSprite(muzzle+ang:Forward()*2,radius*.4,radius*.4,Color(255,245,220,255*fade))
+            local count=style.muzzleFamily=='fin' and 2 or style.muzzleFamily=='coil' and 4 or 3
+            for i=1,count do
+                local a=i*math.pi*2/count+style.phase
+                local tip=muzzle+ang:Forward()*radius*.6+(ang:Right()*math.cos(a)+ang:Up()*math.sin(a))*radius*.5
+                render.DrawBeam(muzzle,tip,1.5,0,1,Color(c.r,c.g,c.b,190*fade))
+            end
+        end
     end
 end
 function V:Flash(weapon)
@@ -154,7 +168,7 @@ function V:Flash(weapon)
     local prior=flashes[weapon]
     -- Collapse shotgun pellets and predicted/server copies of the same shot.
     if prior and CurTime()-prior.started<.05 then return end
-    flashes[weapon]={started=CurTime(),untilTime=CurTime()+.075}
+    flashes[weapon]={started=CurTime(),untilTime=CurTime()+(self:EntityStyle(weapon).muzzleDuration or .12)}
 end
 hook.Add('PreDrawViewModel','LOD_ProceduralWeaponSurface',function(vm,ply,weapon)
     V:Apply(vm,IsValid(weapon) and V:EntityStyle(weapon),ply,true)
@@ -250,3 +264,15 @@ hook.Add('PreCleanupMap','LOD_WeaponAppearanceCleanup',function()
     flashes=setmetatable({}, {__mode='k'});frame,count=-1,0
 end)
 hook.Add('ShutDown','LOD_WeaponSurfaceShutdown',teardown)
+
+-- Inspect the actual mounted Source topology when authoring another mapping.
+concommand.Add('lod_weapon_regions',function()
+    local p=LocalPlayer();if not IsValid(p) then return end
+    local weapon=p:GetActiveWeapon();if not IsValid(weapon) then return end
+    for _,ent in ipairs({weapon,p:GetViewModel()}) do
+        if IsValid(ent) then
+            print('[LOD:REGIONS] '..weapon:GetClass()..' '..ent:GetModel())
+            for index,path in ipairs(ent:GetMaterials()) do print(index-1,path,V:MaterialRegion(weapon:GetClass(),path)) end
+        end
+    end
+end)

@@ -187,3 +187,5 @@ include("lod/cl_enemy_roster.lua")
 
 include("lod/sh_campaign_timeout.lua")
 include("lod/cl_campaign_timeout.lua")
+
+include("lod/cl_teammate_identity.lua")

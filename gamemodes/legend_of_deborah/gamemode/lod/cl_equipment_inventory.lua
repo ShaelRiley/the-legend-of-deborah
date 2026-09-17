@@ -50,7 +50,12 @@ function E:InventoryMove(id,target,origin)
     local item=self.Snapshot.items[id];local def=self:Definition(item)
     if not def then self:InventoryMessage('That item is no longer available.');return false end
     if RealTime()<(self.InventoryNextAction or 0) then return false end
-    if target=='inventory' then
+    if target=='trash' then
+        if self:InventorySlot(id) or def.essential or def.protected or item.bound then
+            self:InventoryMessage('Stow this item first. Protected items cannot be trashed.');return false
+        end
+        self:Request('discard',id,'')
+    elseif target=='inventory' then
         origin=origin or self:InventorySlot(id)
         if not origin or (def.weapon and self:InventorySlot(id)~=origin) or (not def.weapon and self.Snapshot.slots[origin]~=id) then
             self:InventoryMessage('That item is no longer equipped.');return false
@@ -61,6 +66,7 @@ function E:InventoryMove(id,target,origin)
     elseif target=='weapon' then
         self:Request('select_weapon',id,'weapon')
     else self:Request('equip',id,target) end
+    self.InventoryPending={id=id,target=target,snapshot=self.Snapshot}
     self.InventoryNextAction=RealTime()+.12
     self:InventoryMessage('Equipment change requested.')
     return true
@@ -72,7 +78,7 @@ function E:InventoryReceive(target,panels,dropped)
         self.InventorySelectedId=tile.LODItemId;self:InventoryDetails()
     end
     if dropped then return self:InventoryMove(tile.LODItemId,target,tile.LODOriginSlot) end
-    return target=='inventory' or self:InventoryCompatible(tile.LODItemId,target)
+    return target=='inventory' or target=='trash' and not self:InventorySlot(tile.LODItemId) or self:InventoryCompatible(tile.LODItemId,target)
 end
 local function tile(parent,id,slot,title,size)
     local p=vgui.Create('DButton',parent);p:SetSize(size,size);p:SetText('')
@@ -86,9 +92,12 @@ local function tile(parent,id,slot,title,size)
     p.Paint=function(self,w,h)
         local item=E.Snapshot.items[self.LODItemId];local selected=E.InventorySelectedId==self.LODItemId and item
         draw.RoundedBox(2,0,0,w,h,selected and C.peach or C.light)
+        if E.InventoryFlashId==self.LODItemId and RealTime()<(E.InventoryFlashUntil or 0) then
+            surface.SetDrawColor(C.green or C.blue);surface.DrawOutlinedRect(1,1,w-2,h-2,3)
+        end
         local equipped=self.LODItemId and E:InventorySlot(self.LODItemId)
         local compatible=slot and E.InventorySelectedId and E:InventoryCompatible(E.InventorySelectedId,slot)
-        surface.SetDrawColor(compatible and C.green or selected and C.red or equipped and C.blue or C.rule)
+        surface.SetDrawColor(compatible and C.green or (dragging() and slot and E.InventorySelectedId) and C.red or selected and C.red or equipped and C.blue or C.rule)
         surface.DrawOutlinedRect(0,0,w,h,selected and 3 or 1)
         if item then
             E:DrawItemIcon(item,6,4,math.min(w-12,h-17),C.blue)
@@ -161,6 +170,17 @@ function E:InventoryDetails()
 end
 function E:RefreshInventory()
     local view=self.InventoryView;if not IsValid(view) or dragging() then return end
+    local pending=self.InventoryPending
+    if pending and pending.snapshot~=self.Snapshot then
+        local actual=self:InventorySlot(pending.id)
+        local success=pending.target=='trash' and self.Snapshot.items[pending.id]==nil
+            or pending.target=='inventory' and actual==nil
+            or pending.target~='trash' and pending.target~='inventory' and actual==pending.target
+        self:InventoryMessage(success and (pending.target=='trash' and 'DISPOSED — item destroyed.' or 'EQUIPMENT UPDATED')
+            or 'Action declined — inventory restored to the server state.')
+        if success then self.InventoryFlashUntil=RealTime()+.45;self.InventoryFlashId=pending.id end
+        self.InventoryPending=nil
+    end
     view.CurrentSnapshot=self.Snapshot
     for _,p in ipairs(view.SlotTiles or {}) do p:Remove() end
     view.SlotTiles={}
@@ -229,7 +249,15 @@ function E:BuildPanel(frame)
         view.Bindings:SetSize(view.LeftWidth-18,self:BuildMoveBindings(view.Bindings,0,view.LeftWidth-18))
     end
     local rx=view.LeftWidth+18
-    view.Message=label(view,'Drag to equip. Right-click a worn slot to unequip.',rx,0,view.RightWidth,36)
+    view.Message=label(view,'Drag to equip or stow. Drop junk into TRASH.',rx,0,view.RightWidth-88,36)
+    local trash=vgui.Create('DButton',view);trash:SetPos(rx+view.RightWidth-82,0);trash:SetSize(80,34)
+    trash:SetText('    TRASH');
+    trash.PaintOver=function(_,w,h)
+        surface.SetDrawColor(C.red);surface.DrawOutlinedRect(7,10,12,16,2)
+        surface.DrawRect(5,7,16,2);surface.DrawRect(10,4,6,2)
+    end
+    trash:SetTooltip('Drag unequipped junk here to destroy it permanently.');UI:Button(trash,C.red)
+    trash:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('trash',panels,dropped) end)
     local bag=vgui.Create('DScrollPanel',view);view.BagScroll=bag
     bag:SetPos(rx,40);bag:SetSize(view.RightWidth,math.min(228,math.max(86,h-150)))
     view.Bag=bag:GetCanvas()
@@ -248,7 +276,7 @@ end
 function E:Close()
     if UI.ActivePage=='equipment' then UI.ActivePage=nil end
     if IsValid(self.Frame) then self.Frame:Remove() end
-    self.Frame=nil;self.InventoryView=nil
+    self.Frame=nil;self.InventoryView=nil;self.InventoryPending=nil
 end
 function E:Open()
     self:Close();UI:SelectPage('equipment')
@@ -268,3 +296,13 @@ function E:Open()
 end
 concommand.Add('lod_equipment',function() E:Open() end)
 hook.Add('ShutDown','LOD_EquipmentPageClose',function() E:Close() end)
+
+local equipmentKey=CreateClientConVar("lod_equipment_key",tostring(KEY_O),true,false,"Equipment menu key")
+local nextEquipment=0
+hook.Add("PlayerButtonDown","LOD_EquipmentMenuKey",function(ply,key)
+    if ply~=LocalPlayer() or key~=equipmentKey:GetInt() or not IsFirstTimePredicted()
+        or gui.IsConsoleVisible() or gui.IsGameUIVisible() or vgui.GetKeyboardFocus()
+        or chat.IsTyping() or RealTime()<nextEquipment then return end
+    nextEquipment=RealTime()+.2
+    if IsValid(E.Frame) then E:Close() else E:Open() end
+end)

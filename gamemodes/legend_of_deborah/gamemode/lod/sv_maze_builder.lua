@@ -67,6 +67,7 @@ end
 
 function MazeBuilder:_Register(ent)
     if IsValid(ent) then
+        ent.LODGeneratedGeometry=true
         self.Entities[#self.Entities + 1] = ent
     else
         self.BuildFailures = (self.BuildFailures or 0) + 1

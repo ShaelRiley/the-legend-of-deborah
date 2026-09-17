@@ -85,8 +85,8 @@ def main() -> int:
     entities = {rel: read(root, rel, errors) for rel in entity_rels}
 
     expected_forms = {
-        "blast": (2, 6, 45), "beam": (2, 6, 20), "bomb": (3, 6, 20),
-        "missile": (3, 6, 25), "bolt": (4, 6, 15), "summon": (0, 0, 12),
+        "cone": (3, 6, 22), "blast": (2, 6, 30), "beam": (3, 6, 18), "bomb": (3, 6, 20),
+        "missile": (3, 6, 28), "bolt": (4, 6, 15), "summon": (0, 0, 12),
     }
     for form_id, (dice, sides, cost) in expected_forms.items():
         pattern = rf'{form_id}\s*=\s*\{{[^\n]*damageDice\s*=\s*{dice}[^\n]*damageSides\s*=\s*{sides}[^\n]*magicCost\s*=\s*{cost}'
@@ -149,7 +149,7 @@ def main() -> int:
     require(errors, forms, 'distance = 336', "Earth canonical Push distance")
     require(errors, forms, 'magicPush = true', "Earth Magic push tag")
     require(errors, forms, 'profile.magicDamage', "magic-die tagging") if False else None
-    require(errors, forms, 'magicDamage = true', "Wizard magical Boom tagging")
+    require(errors, forms, 'magicDamage = not form.physical', "Wizard magical Boom tagging (physical throwables excluded)")
     require(errors, forms, 'damageBonus = 4', "Summon ordinary Seeker +4 base damage")
     require(errors, forms, 'summon.LODProgressionState = frozenProgressionState(state)', "sealed Summon RPG state")
     require(errors, forms, 'target.LODPendingDamageAttribution = {attacker = creditCaster, source = "summon"}', "Summon Hero direct attribution")
@@ -205,7 +205,7 @@ def main() -> int:
     ]:
         require(errors, projectile_init, needle, label)
     for needle, label in [
-        ('WINDUP_SECONDS = 0.85', "Summon Seeker windup"),
+        ('WINDUP_SECONDS = 0.45', "Summon Seeker windup"),
         ('CHARGE_SPEED = 560', "Summon Seeker charge speed"),
         ('CHARGE_RANGE = 760', "Summon Seeker charge range"),
         ('CHARGE_COOLDOWN = 2.80', "Summon Seeker charge cooldown"),
@@ -231,7 +231,7 @@ def main() -> int:
             print(f" - {message}")
         return 1
     print("Checkpoint C static validation PASS")
-    print("forms=6 contents=6 deterministic-progression=true arcane-cap=0.50 summon-proxy=true spellbook=true")
+    print("forms=7 contents=6 deterministic-progression=true arcane-cap=0.50 summon-proxy=true spellbook=true")
     return 0
 
 

@@ -274,7 +274,7 @@ end
 function E:Discard(state,id)
     local item=state and state.items[id]
     local def=self:Definition(item)
-    if not def then return false end
+    if not def or def.essential or def.protected or item.bound then return false end
     for _,value in pairs(state.slots) do
         if value==id and (not def.weapon or state.activeWeaponClass==def.weaponClass) then return false end
     end

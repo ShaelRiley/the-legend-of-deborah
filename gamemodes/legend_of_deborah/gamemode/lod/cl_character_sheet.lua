@@ -600,6 +600,11 @@ function Sheet:Open(requestFresh)
             snapshot.crowbarDamageDieSides or 3, damageLabel,
             snapshot.crowbarPushDistance or 0, wrecking, hero)
     end
+    local family
+    for _,row in ipairs(snapshot.directedStats or {}) do
+        if row.family~=family then family=row.family;recordText=recordText.."\n\n"..string.upper(family) end
+        recordText=recordText.."\n"..row.label..": "..row.value
+    end
     local recordLabel = label(record, recordText, "LOD_SheetBody", INK)
     recordLabel:SetPos(12, 10)
     local recordHeight = fitWrapped(recordLabel, leftWidth - 24, 112) + 20

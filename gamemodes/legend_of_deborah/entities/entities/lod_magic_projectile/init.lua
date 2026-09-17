@@ -89,7 +89,7 @@ function ENT:Think()
         endpos = endPos,
         mins = Vector(-3, -3, -3),
         maxs = Vector(3, 3, 3),
-        mask = MASK_SHOT,
+        mask = MASK_SOLID,
         filter = traceFilter(self)
     })
     self.LODTravelled = (self.LODTravelled or 0) + delta:Length()

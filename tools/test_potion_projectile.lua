@@ -8,14 +8,14 @@ local vmt={}
 function Vector(x,y,z) return setmetatable({x=x,y=y,z=z},vmt) end
 vmt.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 vmt.__mul=function(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
-MASK_SHOT,MOVETYPE_NONE,SOLID_NONE=1,0,0
+MASK_SOLID,MOVETYPE_NONE,SOLID_NONE=1,0,0
 function GetConVar() return {GetFloat=function() return 600 end} end
 function AddCSLuaFile() end
 function include() end
 local effects, heals, traceResult=0,0,nil
 util={SpriteTrail=function() end,Effect=function() effects=effects+1 end,
     TraceHull=function(options)
-        assert(options.mask==MASK_SHOT and #options.filter==2)
+        assert(options.mask==MASK_SOLID and #options.filter==2)
         return traceResult or {Hit=false,HitPos=options.endpos}
     end}
 function EffectData() return {SetOrigin=function() end,SetScale=function() end} end
@@ -44,6 +44,7 @@ local function projectile()
     function e:SetPos(p) self.pos=p end
     function e:NextThink() end
     function e:EmitSound() end
+    function e:SetNW2String(k,v) self[k]=v end
     function e:Remove() self.valid=false end
     e:Initialize()
     return e

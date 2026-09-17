@@ -32,7 +32,7 @@ function E:Safe(graph,c)
     return not c or (tag and (tag.safe or tag.role=="boss" or tag.role=="resupply"))
 end
 function E:Visible(e,p,origin)
-    local tr=util.TraceLine({start=origin or e:WorldSpaceCenter(),endpos=p:WorldSpaceCenter(),mask=MASK_SHOT,
+    local tr=util.TraceLine({start=origin or e:WorldSpaceCenter(),endpos=p:WorldSpaceCenter(),mask=MASK_SOLID,
         filter=function(v) return v~=e and not v.LODHostile end})
     return not tr.Hit or tr.Entity==p
 end
@@ -193,7 +193,19 @@ function E:Tick(e)
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
     e:_RefreshTarget(s.Graph);local p=e.LODTarget
     local can=self:Target(p) and statuses:CanInitiateAttack(e)
-        and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=e.LODConfig.fireRange^2 and self:Visible(e,p,self:Origin(e))
+        and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))
+    if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
+        local direction=p:GetPos()-e:GetPos();direction.z=0
+        local yaw=direction:Angle().y
+        local origin=e:GetPos()+Vector(0,0,56)
+        local range=EC.Archetypes.beamsweeper.fireRange
+        for offset=-45,45,15 do
+            local tr=util.TraceLine({start=origin,endpos=origin+Angle(0,yaw+offset,0):Forward()*range,mask=MASK_SOLID,
+                filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
+            if tr.Hit then range=math.min(range,origin:Distance(tr.HitPos)-8) end
+        end
+        if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
+    end
     if can and (d.kind=="bullet" or d.kind=="beam") then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
@@ -229,7 +241,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
         if active and q.seed==s.LevelSeed and q.run==s and IsValid(q.owner) and not q.owner.LODDead and now<q.expires then
             local finish=q.pos+q.velocity*dt
             local radius=q.kind=="venom" and 7 or 2
-            local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SHOT,
+            local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SOLID,
                 filter=function(v) return v~=q.owner and not v.LODHostile end})
             if tr.Hit then
                 if E:Target(tr.Entity) then E:Damage(q.owner,tr.Entity,q.event,q.kind) end
