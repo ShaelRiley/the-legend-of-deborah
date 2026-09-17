@@ -205,18 +205,21 @@ function E:Generate(seed, level, requestedFamily, contextId)
     return item
 end
 
--- The September 16 reward corpus and distribution test segfault in upstream
--- LuaJIT 2.0.4 with JIT enabled, but pass with only this function (and its
--- closures) interpreted. The installed x86 GMod reports that same VM version.
--- Keep the engine-wide compiler and the shared RNG/combat paths enabled. This
--- low-frequency, bounded generator keeps exactly the same draws and item data;
--- do not reroll rewards, change jit.opt, or toggle global JIT state per call.
--- See docs/GENERATOR_CRASH_REPAIR_20260916.md for reproduction and limits.
+-- The reward corpus crashes in upstream LuaJIT 2.0.4 when compiled. The
+-- September 17 x64 GMod dump also faults inside lua_shared while Generate is
+-- active, reporting LuaJIT 2.1.0-beta3 and generation mode "default". A version
+-- number is not a safe capability test for engine-specific LuaJIT builds.
+-- Interpret this bounded, low-frequency generator and its nested closures on
+-- every LuaJIT. Keep the global compiler, shared RNG and combat paths enabled;
+-- preserve every RNG draw and item field. Apply once when the function loads,
+-- never toggle global JIT state per reward. See docs/GENERATOR_CRASH_REPAIR_20260917.md.
 E.GenerationExecutionMode = "default"
-if jit and jit.off and tonumber(jit.version_num) and jit.version_num <= 20004 then
+if jit and type(jit.off) == "function" then
     jit.off(E.Generate, true)
-    E.GenerationExecutionMode = "interpreter-legacy-jit"
+    E.GenerationExecutionMode = "interpreter-generator"
 end
+LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
+LOD.RuntimeReceipts.equipment_generator = "generator-jit-20260917-01"
 
 function E:Description(item, compact)
     if not item or item.version~=2 then return legacyDescription(self,item,compact) end

@@ -26,6 +26,7 @@ SUITES = [
     ("Client Geometry Full-Update Recovery", ["python3", "tools/run_lua54.py", "tools/test_geometry_fullupdate.lua"]),
     ("Dungeon Transition Inventory", ["python3", "tools/run_lua54.py", "tools/test_dungeon_transition.lua"]),
     ("Exact Native-Crash Reward Replay", ["python3", "tools/run_lua54.py", "tools/test_equipment_crash_replay.lua"]),
+    ("Equipment LuaJIT Compatibility Boundary", ["python3", "tools/run_lua54.py", "tools/test_equipment_jit_guard.lua"]),
     ("Force-close Evidence Export", ["python3", "tools/test_crash_evidence_export.py"]),
     ("Canonical Blue Minimap Marker", ["python3", "tools/run_lua54.py", "tools/test_minimap_player_marker.lua"]),
     ("Shared Native DamageInfo Lifetime", ["python3", "tools/run_lua54.py", "tools/test_shared_damage_lifetime.lua"]),

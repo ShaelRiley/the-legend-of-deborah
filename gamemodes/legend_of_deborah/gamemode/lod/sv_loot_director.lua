@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["loot"] = "geometry-init-20260916-01"
+LOD.RuntimeReceipts["loot"] = "generator-jit-20260917-01"
 LOD.LootDirector = LOD.LootDirector or {}
 
 local Loot = LOD.LootDirector

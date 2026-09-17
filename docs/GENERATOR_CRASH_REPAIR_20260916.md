@@ -1,5 +1,9 @@
 # Legacy LuaJIT equipment-generation crash repair
 
+**Follow-up:** the [September 17 native dump and beta-runtime reproduction](GENERATOR_CRASH_REPAIR_20260917.md)
+supersede the version-limited safeguard below. The generator is now interpreted
+on all LuaJIT builds. This document retains the original evidence and conclusions.
+
 Development branch: `astra/equipment-update`; starting remote HEAD
 `e09434522e5b96e3c3d7537386fe991bb7ac8655`. Remote main was verified as
 `8978796e886cdb5505d24ed0de085265fa99bac8`. Candidate identity:

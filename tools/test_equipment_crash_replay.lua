@@ -1,4 +1,5 @@
--- Run under Lua 5.4 AND historical LuaJIT 2.0.4; modern LuaJIT is not a proxy.
+-- Run under Lua 5.4 AND historical LuaJIT 2.0.4 / 2.1.0-beta3;
+-- a modern rolling LuaJIT build is not a proxy for GMod's embedded runtime.
 -- Optional --unsafe-jit deliberately removes the workaround in this standalone
 -- process to reproduce the pre-repair SIGSEGV. Never expose that switch in GMod.
 local root = 'gamemodes/legend_of_deborah/gamemode/lod/'

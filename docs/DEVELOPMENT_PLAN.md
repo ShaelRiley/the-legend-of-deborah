@@ -1,4 +1,16 @@
-# Current candidate — integrated gameplay refresh
+# Current candidate — maze-deployment generator crash repair
+
+`generator-jit-20260917-01`, developed on `main` from `eb20c8f`.
+The supplied x64 minidump identifies Equipment.Generate during initial maze
+loot allocation and reports LuaJIT 2.1.0-beta3 with the old safeguard skipped.
+The recorded reward corpus independently segfaults on upstream 2.1.0-beta3
+with generator compilation enabled. Extend the function-only interpreter
+safeguard to every LuaJIT; preserve loot determinism and the integrated refresh.
+The generator now has its own loaded-component receipt. All 108 suites pass.
+See [evidence and the single deployment acceptance action](GENERATOR_CRASH_REPAIR_20260917.md).
+Native acceptance remains pending; no deployment or Workshop publication.
+
+# Previous candidate — integrated gameplay refresh
 
 The 2026-09-17 author-directed 26-part pass is implemented on `main` from
 `aeaa6b3e24a53b9578be35cae2238f916eebb9e0`. See

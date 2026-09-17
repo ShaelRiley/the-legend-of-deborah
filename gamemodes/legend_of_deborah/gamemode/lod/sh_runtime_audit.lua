@@ -1,11 +1,11 @@
 LOD = LOD or {}
 LOD.RuntimeAudit = LOD.RuntimeAudit or {}
 local Audit = LOD.RuntimeAudit
-Audit.Build = "geometry-init-20260916-01"
+Audit.Build = "generator-jit-20260917-01"
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
 
-local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "crowbar", "statue", "manual"}
-    or {"meshes", "mirror", "manual_reader"}
+local expected = SERVER and {"hostile", "pickup", "loot", "staging", "equipment", "equipment_generator", "crowbar", "statue", "manual"}
+    or {"meshes", "mirror", "manual_reader", "equipment_generator"}
 
 local function validCount(objects)
     local count = 0

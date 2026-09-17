@@ -194,4 +194,4 @@ end
 -- Registration is independent of whether a physical book exists on this map.
 net.Receive("LOD_OpenFieldManual", function() Manual:Open() end)
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["manual_reader"] = "geometry-init-20260916-01"
+LOD.RuntimeReceipts["manual_reader"] = "generator-jit-20260917-01"

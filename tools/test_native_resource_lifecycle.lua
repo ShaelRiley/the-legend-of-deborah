@@ -175,7 +175,7 @@ ents.GetCount=function() return 77 end
 timer.Create=function() end
 function GetConVar() return {GetBool=function() return false end} end
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua')
-for _,key in ipairs({'hostile','pickup','loot','staging','equipment','crowbar','statue','manual'}) do
+for _,key in ipairs({'hostile','pickup','loot','staging','equipment','equipment_generator','crowbar','statue','manual'}) do
  LOD.RuntimeReceipts[key]=LOD.RuntimeAudit.Build
 end
 local snapshot=LOD.RuntimeAudit:Snapshot()
@@ -183,4 +183,7 @@ assert(snapshot.missing=='none' and snapshot.entities==77 and snapshot.realm=='s
 assert(snapshot.install=='abcdef clean ' and snapshot.lua_kb>0)
 LOD.RuntimeReceipts.loot=nil
 assert(LOD.RuntimeAudit:Snapshot().missing=='loot')
+LOD.RuntimeReceipts.loot=LOD.RuntimeAudit.Build
+LOD.RuntimeReceipts.equipment_generator='geometry-init-20260916-01'
+assert(LOD.RuntimeAudit:Snapshot().missing=='equipment_generator','Old generator must not pass new build receipts')
 print('NATIVE_RESOURCE_LIFECYCLE_PASS: mesh and ghost bounds/cleanup, invalid geometry, mirror error unwinding, deferred starter grant/removal, safe celebration, loaded build receipts')

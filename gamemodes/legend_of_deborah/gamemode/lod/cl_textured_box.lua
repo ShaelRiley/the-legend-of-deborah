@@ -1,6 +1,6 @@
 LOD = LOD or {}
 LOD.RuntimeReceipts = LOD.RuntimeReceipts or {}
-LOD.RuntimeReceipts["meshes"] = "geometry-init-20260916-01"
+LOD.RuntimeReceipts["meshes"] = "generator-jit-20260917-01"
 LOD.TexturedBox = LOD.TexturedBox or {}
 
 local TexturedBox = LOD.TexturedBox
