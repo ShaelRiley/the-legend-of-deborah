@@ -116,7 +116,7 @@ local token=next(account(a).tokens)
 local frozen=account(a).tokens[token].item
 assert(C:Recreate(a,token));assert(account(a).tokens[token].lastRun==Run.State.RunId)
 local owned=E:Equipped(a.ps.equipment,E:Placement({items={},slots={}},frozen))
-assert(owned and owned.name==frozen.name and owned.id~=frozen.id)
+assert(owned and owned.name==frozen.name and owned.id~=frozen.id and owned.recreatedFrom==token and owned.economyExcluded)
 assert(WalletJSONEncode(owned.properties)==WalletJSONEncode(frozen.properties))
 assert(not C:Recreate(a,token),'Second click cannot recreate')
 Run.State.Level=3;assert(not C:Recreate(a,token),'New maze is same run')
@@ -249,6 +249,41 @@ assert(not a.ps.equipment.items[one.id] and not a.ps.equipment.items[two.id] and
 assert(not C:ExchangeJunk(a,'fuse_items',{one.id,two.id}),'Replay created a second fused item')
 local locked=junk(a,8099);locked.recreatedFrom='token'
 assert(not C:ExchangeJunk(a,'sell_items',{locked.id}) and not C:ExchangeJunk(a,'fuse_items',{locked.id,fused.id}))
+-- Actual recreated equipment remains excluded after stowing/restoring, including
+-- mixed piles. Either legacy provenance field independently prevents conversion.
+local reproduced=0
+for id,item in pairs(a.ps.equipment.items) do
+    if item.recreatedFrom then
+        reproduced=reproduced+1;E:UnequipItem(a.ps.equipment,id)
+        local before=WalletJSONEncode(a.ps.equipment);local funds=account(a).balance
+        assert(not C:ExchangeJunk(a,'sell_items',{id,fused.id}))
+        assert(not C:ExchangeJunk(a,'fuse_items',{id,fused.id}))
+        assert(before==WalletJSONEncode(a.ps.equipment) and funds==account(a).balance)
+    end
+end
+assert(reproduced>1,'Exercise real token recreations across runs, not only synthetic flags')
+local legacy=junk(a,8100);a.ps.equipment.items[legacy.id]=nil;legacy.id='recreated:legacy';a.ps.equipment.items[legacy.id]=legacy
+assert(not E:JunkEligible(a.ps.equipment,legacy.id))
+a.ps.equipment.items[legacy.id]=nil
+local wearing=junk(a,8110);assert(E:Equip(a.ps.equipment,wearing.id,'left_hand'))
+E:Sync(a)
+local wornBag=WalletJSONEncode(a.ps.equipment);balance=account(a).balance
+WalletSQLFail('INSERT INTO lod_crypto_ledger')
+assert(not C:ExchangeJunk(a,'sell_items',{wearing.id}))
+assert(wornBag==WalletJSONEncode(a.ps.equipment) and balance==account(a).balance,'Failed sale unequipped gear')
+assert(C:ExchangeJunk(a,'sell_items',{wearing.id}))
+assert(not a.ps.equipment.slots.left_hand and not a.ps.equipment.items[wearing.id])
+local worn,spare=junk(a,8111),junk(a,8112);assert(E:Equip(a.ps.equipment,worn.id,'right_hand'))
+assert(C:ExchangeJunk(a,'fuse_items',{worn.id,spare.id}))
+assert(not a.ps.equipment.slots.right_hand and not a.ps.equipment.items[worn.id])
+-- The network adapter sends a matching result and refresh even on denied input.
+local strings={'sell_items',locked.id};local uints={1,57};local responses={}
+net.ReadString=function() return table.remove(strings,1) end
+net.ReadUInt=function() return table.remove(uints,1) end
+net.WriteTable=function(row) responses[#responses+1]=row end
+handlers.LOD_JunkExchange(100,a)
+assert(responses[#responses].request==57 and not responses[#responses].ok)
+assert(responses[#responses].message:find('DFT-created',1,true))
 local rows=C:StakeholderRows({a,b,soldier});assert(#rows==2 and rows[1].value>=rows[2].value)
 for _,row in ipairs(rows) do
     local p=row.id==a.id and a or row.id==b.id and b or soldier

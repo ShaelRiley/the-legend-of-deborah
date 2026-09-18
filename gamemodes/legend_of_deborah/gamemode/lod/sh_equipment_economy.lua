@@ -259,16 +259,17 @@ function E:Contributions(state)
     return abilities,moves,math.min(self.BlockCap,math.max(0,block)),extras
 end
 
-function E:CanStore(state,item,slot)
-    if not state then return false end
-    local placement,displaced=self:Placement(state,item,slot)
-    if not placement then return false end
+function E:StoredEquipmentCount(state)
     local stored=0
-    for _,owned in pairs(state.items) do
+    for _,owned in pairs(state and state.items or {}) do
         local def=self:Definition(owned)
         if def and (def.wearable or def.weapon) then stored=stored+1 end
     end
-    return stored<self.MaximumStoredEquipment
+    return stored
+end
+function E:CanStore(state,item,slot)
+    if not state or not self:Placement(state,item,slot) then return false end
+    return self:StoredEquipmentCount(state)<self.MaximumStoredEquipment
 end
 function E:AcquireWearable(state,item,accept,slot)
     if not self:CanStore(state,item,slot) then return false end

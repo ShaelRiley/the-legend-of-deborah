@@ -17,6 +17,10 @@ nodes.search.value='no_such_deborah_term_91';nodes.find.onclick();assert(nodes.s
 let prevented=0;document.onkeydown({target:{tagName:'INPUT'},keyCode:80,preventDefault:()=>prevented++});assert.equal(prevented,0,'typing P does not switch menu');
 document.onkeydown({target:{tagName:'BODY'},keyCode:80,preventDefault:()=>prevented++});assert.equal(events.at(-1),80);
 document.onkeydown({target:{tagName:'INPUT'},keyCode:27,preventDefault:()=>prevented++});assert.equal(events.at(-1),'close');
+document.onkeydown({target:{tagName:'BODY'},keyCode:79,key:'o',preventDefault:()=>prevented++});assert.equal(events.at(-1),79,'O reaches the restricted tab bridge');
+const before=events.length;document.onkeydown({target:{tagName:'INPUT'},keyCode:79,key:'o',preventDefault:()=>prevented++});assert.equal(events.length,before,'O remains usable in search text');
+let rebound;window.lod.tab=(code,name)=>rebound=[code,name];
+document.onkeydown({target:{tagName:'BODY'},keyCode:85,key:'u',preventDefault:()=>prevented++});assert.deepEqual(rebound,[85,'u'],'Non-default bindings forward their key name');
 for(let i=0;i<40;i++)nodes.larger.onclick();assert.equal(pages[0].style.fontSize,'26px');
 for(let i=0;i<40;i++)nodes.smaller.onclick();assert.equal(pages[0].style.fontSize,'15px');
 for(let i=0;i<pages.length;i++){nodes.contents.value=String(i);nodes.contents.onchange();assert.equal(pages.filter(p=>p.className.includes(' active')).length,1);assert.equal(nodes.contents.value,String(i));}

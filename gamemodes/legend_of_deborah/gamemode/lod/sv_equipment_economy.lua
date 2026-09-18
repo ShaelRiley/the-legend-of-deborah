@@ -154,6 +154,9 @@ function E:AcquireWorldItem(ply,item,accept,source)
     local ps=hero(ply)
     local statue=source=="dft" and LOD.CryptoDirector and LOD.CryptoDirector:CanUseStatue(ply)
     if not ps or not (self:CanAct(ply) or statue) or not self:ValidateWearable(item) then return false end
+    -- Seal provenance at admission as well as at token recreation. Copies keep
+    -- this flag across equipment changes, respawns and inventory restoration.
+    if source=="dft" then item=table.Copy(item);item.economyExcluded=true end
     local state=self:Ensure(ps)
     if not self:CanStore(state,item) then return false end
     local slot,displaced=self:Placement(state,item)

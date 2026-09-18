@@ -1,4 +1,14 @@
-# Current candidate — usable Wall placement, aiming preview, offensive starters
+# Current candidate — Equipment access, real capacity and Debbie exchange
+
+Author-directed continuation from `cace700`: O matches P/I menu input mechanics;
+the inventory displays actual equipment capacity and separate consumable stacks;
+Debbie has prominent carried-equipment and DFT pages, drag/drop sell/fuse piles,
+atomic equipped-item exchange and enforced DFT-recreation exclusion.
+All 114 automated suites pass. See [implementation and native check](EQUIPMENT_EXCHANGE_REPAIR_20260918.md).
+Native menu/drop feel and multiplayer visual acceptance remain pending.
+No server deployment is included.
+
+# Previous candidate — usable Wall placement, aiming preview, offensive starters
 
 Author-directed repair from `3e7a83b`: forgiving bounded Wall fitting, an owner-only
 server-calculated aiming preview with rejection reasons, and direct-damage first

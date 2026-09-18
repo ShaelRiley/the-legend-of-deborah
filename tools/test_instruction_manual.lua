@@ -106,3 +106,14 @@ M.LoadingLabel.DoClick();expect(requests==3,'visible retry requests payload agai
 -- No player, alive, staging, deployment, or role stubs were supplied. Opening
 -- therefore demonstrably does not depend on those world-state authorities.
 print('PASS: one reader, both entry points, portable access, bookmark, navigation, stale callback isolation')
+
+KEY_O=24
+local equipmentCalls=0;local bound=KEY_O
+LOD.Equipment={MenuKey={GetInt=function() return bound end},Toggle=function() equipmentCalls=equipmentCalls+1;M:Close() end}
+input={GetKeyName=function(code) return code==KEY_O and 'o' or 'u' end}
+M:Open();M.Browser.LODManualDocument=true;M.Browser.documentLoaded=true;M.Browser:OnDocumentReady()
+M.Browser.callbacks['lod.tab'](79,'o');expect(equipmentCalls==1,'Embedded booklet forwards O')
+bound=30;M:Open();M.Browser.LODManualDocument=true;M.Browser.documentLoaded=true;M.Browser:OnDocumentReady()
+M.Browser.callbacks['lod.tab'](79,'o');expect(equipmentCalls==1,'Old binding is not active')
+M.Browser.callbacks['lod.tab'](85,'u');expect(equipmentCalls==2,'Booklet honors rebound Equipment key')
+print('MANUAL_EQUIPMENT_KEY_PASS: embedded keyboard bridge/default and rebound O route through shared navigation')

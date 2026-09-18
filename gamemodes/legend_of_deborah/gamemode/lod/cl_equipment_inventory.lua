@@ -196,14 +196,24 @@ function E:RefreshInventory()
         p:SetPos((col+.5)*view.LeftWidth/3-size/2,28+row*view.RowHeight)
         view.SlotTiles[#view.SlotTiles+1]=p
     end
-    local ids={};for id,item in pairs(self.Snapshot.items) do if self:Definition(item) and (self:Definition(item).throwable or not self:InventorySlot(id)) then ids[#ids+1]=id end end
+    local ids,consumables={},{}
+    for id,item in pairs(self.Snapshot.items) do
+        local def=self:Definition(item)
+        if def and def.throwable then consumables[#consumables+1]=id
+        elseif def and not self:InventorySlot(id) then ids[#ids+1]=id end
+    end
+    table.sort(consumables)
     table.sort(ids,function(a,b)
         local da,db=self:Definition(self.Snapshot.items[a]),self:Definition(self.Snapshot.items[b])
         if da.name==db.name then return a<b end;return da.name<db.name
     end)
     local columns=math.max(2,math.floor((view.RightWidth-20)/72));local cell=(view.RightWidth-20)/columns
-    -- At least three rows, including a free row after the last occupied row.
-    local count=math.max(columns*3,(math.ceil(#ids/columns)+1)*columns)
+    -- Equipped gear consumes capacity too; stacks have their own per-type cap.
+    -- Draw only real free equipment slots, never padding out a decorative row.
+    local stored=self:StoredEquipmentCount(self.Snapshot)
+    local free=math.max(0,self.MaximumStoredEquipment-stored)
+    local count=#ids+free
+    view.Capacity:SetText(string.format('GEAR %d / %d (includes equipped) · %d free. Consumables use separate stacks.',stored,self.MaximumStoredEquipment,free))
     for i=1,count do
         local id=ids[i]
         local p=tile(view.Bag,id,nil,'',math.min(52,cell-6))
@@ -211,6 +221,16 @@ function E:RefreshInventory()
         if id then
             local name=self:Definition(self.Snapshot.items[id]).name
             label(view.Bag,name,p:GetX(),p:GetY()+p:GetTall()+2,cell-6,18,'DermaDefault')
+        end
+    end
+    local consumableY=math.ceil(count/columns)*72
+    if #consumables>0 then
+        label(view.Bag,'CONSUMABLE STACKS (separate limits)',0,consumableY,view.RightWidth-20,28,'DermaDefault')
+        for i,id in ipairs(consumables) do
+            local item=self.Snapshot.items[id];local def=self:Definition(item)
+            local p=tile(view.Bag,id,nil,'',math.min(52,cell-6))
+            p:SetPos(((i-1)%columns)*cell,consumableY+30+math.floor((i-1)/columns)*86)
+            label(view.Bag,def.name..' '..item.count..' / '..def.maxStack,p:GetX(),p:GetY()+p:GetTall()+2,cell-6,30,'DermaDefault')
         end
     end
     self:InventoryDetails()
@@ -250,6 +270,7 @@ function E:BuildPanel(frame)
     end
     local rx=view.LeftWidth+18
     view.Message=label(view,'Drag to equip or stow. Drop junk into TRASH.',rx,0,view.RightWidth-88,36)
+    view.Capacity=label(view,'',rx,36,view.RightWidth,36,'DermaDefault')
     local trash=vgui.Create('DButton',view);trash:SetPos(rx+view.RightWidth-82,0);trash:SetSize(80,34)
     trash:SetText('    TRASH');
     trash.PaintOver=function(_,w,h)
@@ -259,11 +280,11 @@ function E:BuildPanel(frame)
     trash:SetTooltip('Drag unequipped junk here to destroy it permanently.');UI:Button(trash,C.red)
     trash:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('trash',panels,dropped) end)
     local bag=vgui.Create('DScrollPanel',view);view.BagScroll=bag
-    bag:SetPos(rx,40);bag:SetSize(view.RightWidth,math.min(228,math.max(86,h-150)))
+    bag:SetPos(rx,76);bag:SetSize(view.RightWidth,math.min(228,math.max(68,h-190)))
     view.Bag=bag:GetCanvas()
     view.Bag:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('inventory',panels,dropped) end)
     bag:Receiver(DRAG,function(_,panels,dropped) return E:InventoryReceive('inventory',panels,dropped) end)
-    local dy=40+bag:GetTall()+12
+    local dy=76+bag:GetTall()+12
     local detail=vgui.Create('DScrollPanel',view);view.DetailScroll=detail;detail:SetPos(rx,dy);detail:SetSize(view.RightWidth,h-dy)
     view.Details=detail:GetCanvas()
     self:RefreshInventory()
@@ -305,9 +326,16 @@ hook.Add('ShutDown','LOD_EquipmentPageClose',function() E:Close() end)
 
 local equipmentKey=CreateClientConVar("lod_equipment_key",tostring(KEY_O),true,false,"Equipment menu key")
 E.MenuKey=equipmentKey
+local function inputBusy()
+    return gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping())
+end
 hook.Add("PlayerButtonDown","LOD_EquipmentMenuKey",function(ply,key)
-    if ply~=LocalPlayer() or key~=equipmentKey:GetInt() or not IsFirstTimePredicted()
-        or gui.IsConsoleVisible() or gui.IsGameUIVisible() or vgui.GetKeyboardFocus()
-        or chat.IsTyping() or RealTime()<nextEquipment then return end
-    E:Toggle()
+    if ply~=LocalPlayer() or key~=equipmentKey:GetInt() or inputBusy() then return end
+    UI:PageKey(key)
+end)
+-- Match Character Sheet and Spellbook: bound keys may arrive on either event.
+-- Popup frames route the same key through PageKey; Toggle debounces duplicates.
+hook.Add("PlayerBindPress","LOD_EquipmentBindingFallback",function(ply,_,pressed)
+    if ply~=LocalPlayer() or not pressed or inputBusy() or not input.IsKeyDown(equipmentKey:GetInt()) then return end
+    UI:PageKey(equipmentKey:GetInt())
 end)

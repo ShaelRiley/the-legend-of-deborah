@@ -159,3 +159,38 @@ E.MenuKey={GetInt=function() return 90 end}
 now=now+1;LOD.UI:PageKey(KEY_O);assert(E.Frame)
 E.Frame:OnKeyCodePressed(90);assert(not E.Frame)
 print('EQUIPMENT_TOGGLE_PASS: focused frame open/close, shared debounce and rebinding')
+
+-- Same native input/fallback mechanics as P/I, even when a popup owns focus and
+-- single-player prediction says false. Text entry and chat keep their keys.
+local typing=false;chat.IsTyping=function() return typing end
+vgui.GetKeyboardFocus=function() return {valid=true,GetClassName=function() return 'DButton' end} end
+IsFirstTimePredicted=function() return false end
+input.IsKeyDown=function(key) return key==KEY_O end
+E.MenuKey={GetInt=function() return KEY_O end}
+now=now+1;fixture.hooks.LOD_EquipmentMenuKey(ply,KEY_O);assert(E.Frame)
+fixture.hooks.LOD_EquipmentBindingFallback(ply,'',true);assert(E.Frame,'Duplicate hooks debounce')
+now=now+1;fixture.hooks.LOD_EquipmentBindingFallback(ply,'',true);assert(not E.Frame)
+typing=true;now=now+1;fixture.hooks.LOD_EquipmentMenuKey(ply,KEY_O);assert(not E.Frame)
+typing=false;vgui.GetKeyboardFocus=function() return {valid=true,GetClassName=function() return 'DTextEntry' end} end
+now=now+1;fixture.hooks.LOD_EquipmentMenuKey(ply,KEY_O);assert(not E.Frame)
+vgui.GetKeyboardFocus=function() return nil end
+-- No fake spare row: one admission counter governs empty tiles at every size.
+E.Snapshot={items={},slots={}}
+for i=1,E.MaximumStoredEquipment do
+    local item=E:Generate(450+i,5,'ring','capacity:'..i);E.Snapshot.items[item.id]=item
+end
+E:AddConsumable(E.Snapshot,'healing_potion',3)
+E:Open()
+local function emptyTiles()
+    local count=0;for _,p in ipairs(E.InventoryView.Bag.children) do
+        if p.kind=='DButton' and not p.LODItemId then count=count+1 end
+    end;return count
+end
+assert(E:StoredEquipmentCount(E.Snapshot)==32 and emptyTiles()==0)
+local removeId
+for id,item in pairs(E.Snapshot.items) do if E:Definition(item).wearable then removeId=id;break end end
+E.Snapshot.items[removeId]=nil;E:RefreshInventory();assert(emptyTiles()==1)
+assert(E.InventoryView.Capacity.text:find('31 / 32',1,true))
+for id,item in pairs(E.Snapshot.items) do if E:Definition(item).wearable then E:Equip(E.Snapshot,id,'left_hand');break end end
+E:RefreshInventory();assert(emptyTiles()==1,'Equipping does not create capacity')
+print('EQUIPMENT_CAPACITY_INPUT_PASS: real capacity and stack separation; popup/single-player/bound input, debounce, chat and text entry')

@@ -42,3 +42,5 @@ for term in ['TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff'
     assert term in html,term
 subprocess.run(['node',str(ROOT/'tools/test_manual_reader.js')],check=True,cwd=ROOT)
 print('PASS: canonical bytes, all 150 feat entries, 60 properties, offline assets, portable access')
+
+assert "call('tab',e.keyCode,e.key||'')" in html and 'e.keyCode===79' in html, 'Reader must forward Equipment key and rebound key name'

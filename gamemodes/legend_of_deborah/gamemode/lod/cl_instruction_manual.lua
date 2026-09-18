@@ -181,9 +181,15 @@ function Manual:Open()
         panel:AddFunction("lod", "close", function()
             if Manual.Browser == browser then Manual:Close() end
         end)
-        panel:AddFunction("lod", "tab", function(code)
+        panel:AddFunction("lod", "tab", function(code, name)
             if Manual.Browser ~= browser then return end
             local key = ({[80] = KEY_P, [73] = KEY_I, [76] = KEY_L})[tonumber(code)]
+            local equipment=LOD.Equipment
+            if equipment and equipment.MenuKey then
+                local bound=equipment.MenuKey:GetInt()
+                local keyName=input.GetKeyName and input.GetKeyName(bound)
+                if bound==KEY_O and tonumber(code)==79 or keyName and keyName:lower()==tostring(name or ''):lower() then key=bound end
+            end
             if key then UI:PageKey(key) end
         end)
         browser:QueueJavascript(string.format("window.LODManual.restore(%d,%.1f,%d);", page, scroll, size))
