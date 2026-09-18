@@ -19,12 +19,8 @@ end
 function ENT:DrawBomb()
     if not self.LODFuseStarted then
         self.LODFuseStarted = CurTime()
-        self.LODFuseSound = CreateSound(self, "ambient/gas/steam2.wav")
-        if self.LODFuseSound then
-            self.LODFuseSound:SetSoundLevel(55)
-            self.LODFuseSound:PlayEx(0.18, 135)
-        end
     end
+    if LOD.LoopAudio then LOD.LoopAudio:Touch("fuse",self,"ambient/gas/steam2.wav",.12,135,55,.35) end
     local origin, angles = self:GetPos(), self:GetAngles()
     local up, right = angles:Up(), angles:Right()
     render.SetMaterial(iron)
@@ -53,10 +49,16 @@ function ENT:DrawBomb()
 end
 
 function ENT:OnRemove()
-    if self.LODFuseSound then self.LODFuseSound:Stop(); self.LODFuseSound=nil end
+    if LOD.LoopAudio then LOD.LoopAudio:Stop("fuse",self) end
 end
 
 function ENT:Draw()
+    if self:GetMagicForm() == "watermelon" then
+        self:DrawModel()
+        render.SetMaterial(emberMaterial)
+        render.DrawSprite(self:GetPos(),22,22,Color(125,240,85,45))
+        return
+    end
     if self:GetMagicForm() == "bomb" then self:DrawBomb() return end
     local p,c=self:GetPos(),self:GetColor()
     local forward=self:GetAngles():Forward()

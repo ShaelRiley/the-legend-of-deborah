@@ -9,7 +9,12 @@ local WATCHER_FALLBACK_LOOP = "ambient/machines/combine_terminal_loop1.wav"
 
 Sixth.Nearby = Sixth.Nearby or {}
 Sixth.VisibleInvisible = Sixth.VisibleInvisible or {}
-Sixth.WatcherSounds = Sixth.WatcherSounds or setmetatable({}, {__mode = "k"})
+-- Retire handles and hooks from the previous implementation before a live refresh.
+hook.Remove('EntityRemoved','LOD_RPGSixthSenseEntityRemoved')
+hook.Remove('ShutDown','LOD_RPGSixthSenseStopAudio')
+for _,patch in pairs(Sixth.WatcherSounds or {}) do patch:Stop() end
+Sixth.WatcherSounds=nil
+if LOD.LoopAudio then LOD.LoopAudio:StopGroup('watcher') end
 
 local function readEntities()
     local out = {}
@@ -27,25 +32,16 @@ local function watcherSoundPath()
 end
 
 local function syncWatcherSounds(authorized)
-    local keep = {}
-    for _, watcher in ipairs(authorized) do
+    local audio=LOD.LoopAudio;if not audio then return end
+    local keep={}
+    for _,watcher in ipairs(authorized) do
         if IsValid(watcher) then
-            keep[watcher] = true
-            if not Sixth.WatcherSounds[watcher] then
-                local patch = CreateSound(watcher, watcherSoundPath())
-                if patch then
-                    patch:PlayEx(0.30, 100)
-                    patch:SetSoundLevel(68)
-                    Sixth.WatcherSounds[watcher] = patch
-                end
-            end
+            keep[watcher]=true
+            audio:Touch('watcher',watcher,watcherSoundPath(),.22,100,68,2)
         end
     end
-    for watcher, patch in pairs(Sixth.WatcherSounds) do
-        if not keep[watcher] or not IsValid(watcher) then
-            if patch then patch:Stop() end
-            Sixth.WatcherSounds[watcher] = nil
-        end
+    for watcher in pairs(audio.Groups.watcher or {}) do
+        if not keep[watcher] then audio:Stop('watcher',watcher) end
     end
 end
 
@@ -62,15 +58,4 @@ hook.Add("PreDrawHalos", "LOD_RPGSixthSenseHalos", function()
     if #Sixth.VisibleInvisible > 0 then
         halo.Add(Sixth.VisibleInvisible, INVISIBLE_COLOR, 2, 2, 1, true, false)
     end
-end)
-
-hook.Add("EntityRemoved", "LOD_RPGSixthSenseEntityRemoved", function(ent)
-    local patch = Sixth.WatcherSounds[ent]
-    if patch then patch:Stop() end
-    Sixth.WatcherSounds[ent] = nil
-end)
-
-hook.Add("ShutDown", "LOD_RPGSixthSenseStopAudio", function()
-    for _, patch in pairs(Sixth.WatcherSounds) do if patch then patch:Stop() end end
-    Sixth.WatcherSounds = setmetatable({}, {__mode = "k"})
 end)

@@ -3,6 +3,7 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 local MODELS = {
+    watermelon = "models/props_junk/watermelon01.mdl",
     bomb = "models/Items/AR2_Grenade.mdl",
     missile = "models/weapons/w_missile_closed.mdl",
     bolt = "models/crossbow_bolt.mdl"
@@ -37,14 +38,14 @@ function ENT:Initialize()
     self:DrawShadow(false)
     self.LODDirection = (self.LODDirection or self:GetForward()):GetNormalized()
     self.LODVelocity = self.LODDirection * math.max(1, tonumber(self.LODSpeed) or 900)
-    if form == "bomb" then self.LODVelocity = self.LODVelocity + Vector(0, 0, 240) end
+    if (form == "bomb" or form == "watermelon") then self.LODVelocity = self.LODVelocity + Vector(0, 0, 240) end
     self.LODTravelled = 0
     self.LODLastThink = CurTime()
     self.LODLevelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
     local color = contentColor(self.LODContentId)
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
-    self:SetColor(Color(color.r, color.g, color.b, 245))
-    if form ~= "bomb" and util.SpriteTrail then
+    self:SetColor(form == "watermelon" and Color(255,255,255,255) or Color(color.r, color.g, color.b, 245))
+    if form ~= "bomb" and form ~= "watermelon" and util.SpriteTrail then
         self.LODTrail = util.SpriteTrail(self, 0, color, false, 7, 1, 0.22,
             1 / 8, "trails/laser.vmt")
     end
@@ -75,7 +76,7 @@ function ENT:Think()
     steer(self, dt)
 
     local form = tostring(self.LODFormId or "bolt")
-    if form == "bomb" then
+    if (form == "bomb" or form == "watermelon") then
         self.LODVelocity = self.LODVelocity + Vector(0, 0, -600) * dt
         local horizontal = Vector(self.LODVelocity.x, self.LODVelocity.y, 0)
         if horizontal:LengthSqr() > 1 then self.LODDirection = horizontal:GetNormalized() end
@@ -87,8 +88,8 @@ function ENT:Think()
     local tr = util.TraceHull({
         start = startPos,
         endpos = endPos,
-        mins = Vector(-3, -3, -3),
-        maxs = Vector(3, 3, 3),
+        mins = form == "watermelon" and Vector(-7,-7,-7) or Vector(-3, -3, -3),
+        maxs = form == "watermelon" and Vector(7,7,7) or Vector(3, 3, 3),
         mask = MASK_SOLID,
         filter = traceFilter(self)
     })

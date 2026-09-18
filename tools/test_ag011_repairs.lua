@@ -288,6 +288,7 @@ function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},vec) end
 function vec.__add(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 function vec.__sub(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
 function vec.__mul(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
+function vec:Length() return math.sqrt(self:LengthSqr()) end
 function vec:LengthSqr() return self.x*self.x+self.y*self.y+self.z*self.z end
 function vec:GetNormalized() local n=math.sqrt(self:LengthSqr());return self*(1/math.max(n,0.001)) end
 function vec:Distance(other) return math.sqrt((self-other):LengthSqr()) end
@@ -655,6 +656,31 @@ bomb.LODFormId="bomb";bomb.LODDirection=Vector(1,0,0)
 bomb:Initialize()
 assert(bomb:GetMagicForm()=="bomb" and trailCount==0,"bomb identity replicated and no missile trail")
 assert(bomb.LODVelocity.x==900 and bomb.LODVelocity.z==240,"existing lob launch velocity preserved")
+-- The new Form shares swept movement and cleanup, without physics debris.
+local melon=setmetatable({valid=true,LODFormId='watermelon',LODCaster=attacker,
+ LODDirection=Vector(1,0,0),LODSpeed=580,LODMaximumTravel=960}, {__index=env.ENT})
+melon.NetworkVar=bomb.NetworkVar;melon:SetupDataTables()
+for _,name in ipairs({'SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetAngles','NextThink'}) do melon[name]=noop end
+melon.SetModel=function(self,value) self.model=value end
+melon.SetColor=function(self,value) self.color=value end
+melon.SetPos=function(self,value) self.pos=value end;melon.GetPos=function(self) return self.pos end
+melon.Remove=function(self) self.valid=false end
+local melonNow=10;env.CurTime=function() return melonNow end
+melon:SetPos(Vector());melon:Initialize()
+assert(melon.model=='models/props_junk/watermelon01.mdl' and melon.color.r==255 and trailCount==0)
+assert(melon.LODVelocity.x==580 and melon.LODVelocity.z==240)
+local priorHull,priorImpact=util.TraceHull,forms.ProjectileImpact
+local impacts=0
+util.TraceHull=function(trace)
+ assert(trace.mask==MASK_SOLID and trace.mins.x==-7 and trace.maxs.z==7)
+ return {Hit=true,HitPos=trace.endpos}
+end
+forms.ProjectileImpact=function(_,ent,trace) assert(ent==melon and trace.Hit);impacts=impacts+1;ent:Remove() end
+melonNow=10.05;melon:Think();assert(impacts==1 and not melon.valid and melon.LODVelocity.z<240)
+melon.valid=true;melon.LODCaster={valid=false};melon:Think();assert(not melon.valid and impacts==1)
+melon.valid=true;melon.LODCaster=attacker;melon.LODLevelSeed='previous-level';melon:Think()
+assert(not melon.valid and impacts==1,'Level retirement must not detonate projectiles')
+util.TraceHull=priorHull;forms.ProjectileImpact=priorImpact;env.CurTime=CurTime
 local spheres,fuses,lights=0,0,0
 local soundStarts,soundStops=0,0
 local materialParams={}
@@ -662,9 +688,13 @@ env.CreateMaterial=function(name,shader,params) materialParams[name]=params;retu
 env.CreateSound=function(_,path)
     assert(path=="ambient/gas/steam2.wav")
     return {SetSoundLevel=function(_,level) assert(level==55) end,
-        PlayEx=function(_,volume,pitch) assert(volume==.18 and pitch==135);soundStarts=soundStarts+1 end,
+        PlayEx=function(_,volume,pitch) assert(volume==.12 and pitch==135);soundStarts=soundStarts+1 end,
         Stop=function() soundStops=soundStops+1 end}
 end
+-- The projectile now leases its hiss from the shared loop owner.
+local oldLoop=LOD.LoopAudio
+local loopEnv=setmetatable({CreateSound=env.CreateSound,LocalPlayer=function() return nil end}, {__index=_G})
+assert(loadfile(root..'cl_loop_audio.lua','t',loopEnv))()
 local oldRender=render
 env.render={SetMaterial=noop,DrawSphere=function(_,radius,_,_,color) assert(radius==6 and color.r==24 and color.g==25 and color.b==28);spheres=spheres+1 end,
     DrawBox=noop,DrawBeam=function() fuses=fuses+1 end,DrawSprite=noop}
@@ -680,6 +710,7 @@ bomb:Draw();assert(soundStarts==1,"one hiss per projectile")
 bomb:OnRemove();assert(soundStops==1,"fuse hiss ends with projectile")
 assert(materialParams.LOD_BombIronVertexColor["$vertexcolor"]=="1","body material consumes black mesh tint")
 assert(materialParams.LOD_BombFuseVertexColor["$vertexcolor"]=="1","fuse material consumes pale mesh tint")
+LOD.LoopAudio:Reset();LOD.LoopAudio=oldLoop
 util.SpriteTrail=savedTrail
 print("PASS: replicated bomb identity, unchanged lob, round body/fuse render and bounded sparks")
 

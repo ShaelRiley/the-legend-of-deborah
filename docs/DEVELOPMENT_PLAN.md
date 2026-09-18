@@ -1,4 +1,15 @@
-# Current candidate — maze-deployment generator crash repair
+# Current candidate — audio ownership, weapon regions and Watermelon
+
+The 2026-09-18 author-directed pass is implemented from `6aba7b0` on `main`.
+See [changes, tuning and finite native acceptance](AUDIO_WEAPONS_WATERMELON_20260918.md).
+Looping ambience has finite ownership; the Hermit shares the original musical
+cue lane; six stock weapons have three real color regions; Watermelon is an
+integrated eighth magic Form. All 109 automated suites pass. Native GMod sound,
+animated region placement and multiplayer visual acceptance remain pending.
+The prior maze-deployment crash repair is preserved. No deployment or Workshop
+publication is included.
+
+# Previous candidate — maze-deployment generator crash repair
 
 `generator-jit-20260917-01`, developed on `main` from `eb20c8f`.
 The supplied x64 minidump identifies Equipment.Generate during initial maze

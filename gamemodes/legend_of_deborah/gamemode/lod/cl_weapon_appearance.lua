@@ -81,8 +81,9 @@ function V:Surface(path,style,region)
         row={material=CreateMaterial('LOD_WeaponSurface_'..util.CRC(key),'VertexLitGeneric',params)}
         pool.rows[key]=row
     end
-    local c=colors[region=='b' and style.tintB or style.tintA] or colors[style.element] or pale
-    local amount=.3+style.rarity*.035
+    local rgb=region=='b' and style.tintBRGB or style.tintARGB
+    local c=rgb and Color(rgb[1],rgb[2],rgb[3]) or colors[region=='b' and style.tintB or style.tintA] or colors[style.element] or pale
+    local amount=.58+style.rarity*.035
     row.material:SetVector('$color2',Vector(1-amount+amount*c.r/255,1-amount+amount*c.g/255,1-amount+amount*c.b/255))
     return '!'..row.material:GetName()
 end
@@ -170,23 +171,32 @@ function V:Flash(weapon)
     if prior and CurTime()-prior.started<.05 then return end
     flashes[weapon]={started=CurTime(),untilTime=CurTime()+(self:EntityStyle(weapon).muzzleDuration or .12)}
 end
-hook.Add('PreDrawViewModel','LOD_ProceduralWeaponSurface',function(vm,ply,weapon)
+hook.Add('PreDrawViewModel','LOD_ProceduralWeaponSurface',function(vm,ply,weapon,flags)
+    if V.SegmentDrawing and V.SegmentDrawing[vm] then return end
+    if V.DrawSegmented and IsValid(weapon) and V:DrawSegmented(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,flags) then
+        V:Draw(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,weapon)
+        return true -- the default draw and PostDrawViewModel are suppressed together
+    end
     V:Apply(vm,IsValid(weapon) and V:EntityStyle(weapon),ply,true)
 end)
 hook.Add('PostDrawViewModel','LOD_ProceduralWeaponAppearance',function(vm,ply,weapon)
+    if V.SegmentDrawing and V.SegmentDrawing[vm] then return end
     V:Restore(vm)
     if IsValid(weapon) then V:Draw(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,weapon) end
 end)
 -- Native world weapons may render separately from their player. Scope the
 -- surface to the gun's actual DrawModel call, not the player's pre/post pair.
 -- Install only on already-rendered, settled client weapons; respect any addon
--- override and keep the original native DrawModel path (no extra model draw).
+-- override and keep drawing the original native mesh.
 function V:WorldWeapon(weapon)
     if worldDraws[weapon] or weapon.RenderOverride~=nil then return end
     local function drawWeapon(ent,flags)
         local owner=ent:GetOwner()
         local active=IsValid(owner) and owner:GetActiveWeapon()==ent
         local style=active and V:EntityStyle(ent) or nil
+        if V.DrawSegmented and V:DrawSegmented(ent,style,ent:GetClass(),owner,false,flags) then
+            V:Draw(ent,style,ent:GetClass(),owner,false,ent);return
+        end
         V:Apply(ent,style,owner,false)
         local ok,err=pcall(ent.DrawModel,ent,flags)
         V:Restore(ent)
@@ -225,6 +235,9 @@ net.Receive('LOD_WeaponSurfaceFlash',function()
 end)
 function V:DrawPickup(ent)
     local style=self:EntityStyle(ent);if not style then return false end
+    if V.DrawSegmented and V:DrawSegmented(ent,style,ent:GetNW2String('LOD_WeaponAppearanceClass',''),nil,false) then
+        self:Draw(ent,style,'pickup',nil,false);return true
+    end
     self:Apply(ent,style,nil,false)
     local ok,err=pcall(ent.DrawModel,ent)
     self:Restore(ent)

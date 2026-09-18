@@ -13,6 +13,10 @@ function S:Begin(fx)
     if CurTime()<(self.NextSound or 0) then return end
     self.NextSound=CurTime()+.12
     local explosive=fx.form=='bomb' or fx.form=='missile' or fx.form=='blast'
+    if fx.form=='watermelon' then
+        sound.Play('physics/flesh/flesh_squishy_impact_hard1.wav',fx.destination,76,100,.7)
+        return
+    end
     sound.Play(explosive and 'ambient/explosions/explode_4.wav' or sounds[fx.content] or sounds.raw,
         fx.destination,explosive and 78 or 68,fx.content=='dark' and 80 or 105,.55)
 end
@@ -34,6 +38,21 @@ function S:Draw(fx,age,low)
     local explosive=fx.form=='bomb' or fx.form=='missile' or fx.form=='blast'
     local extent=explosive and math.min(110,math.max(36,(fx.radius or 0)*.55)) or 36
     local n=low and 4 or 12
+    if fx.form=='watermelon' then
+        -- A finite spray of rind/flesh/seed pieces, no physics gibs or entities.
+        for i=1,(low and 8 or 18) do
+            local d=direction(i,18)
+            local q=p+d*(55+i%5*12)*t+Vector(0,0,90*t-140*t*t)
+            local a=Angle(i*37+t*210,i*71+t*130,i*17)
+            local size=2+i%3
+            render.SetMaterial(flat)
+            render.DrawBox(q,a,Vector(-size,-size,-2),Vector(size,size,0),Color(45,125,32,230*fade))
+            render.DrawBox(q,a,Vector(-size*.9,-size*.9,0),Vector(size*.9,size*.9,1),Color(230,240,170,230*fade))
+            render.DrawBox(q,a,Vector(-size*.8,-size*.8,1),Vector(size*.8,size*.8,3),Color(240,50,65,230*fade))
+            render.DrawBox(q,a,Vector(-.4,-.8,3),Vector(.4,.8,3.2),Color(25,20,15,230*fade))
+        end
+        -- Content still supplies its normal secondary accents and AoE boundary.
+    end
     if fx.form=='summon' then
         -- An ascending double helix assembles the summon rather than detonating it.
         for i=1,n do

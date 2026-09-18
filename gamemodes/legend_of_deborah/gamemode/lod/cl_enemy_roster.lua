@@ -1,3 +1,4 @@
+if LOD.LoopAudio then LOD.LoopAudio:StopGroup('gas') end
 LOD.EnemyRosterVisual={}
 local V=LOD.EnemyRosterVisual
 local glow=Material("sprites/light_glow02_add")
@@ -7,16 +8,11 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
-local gasSounds=setmetatable({}, {__mode="k"})
 function V:Gas(e)
     if not e:GetNW2Bool("LOD_RosterAlive",false) then return end
     local pos=e:GetPos()
     if pos:DistToSqr(EyePos())>1600^2 then return end
-    if not gasSounds[e] then
-        local sound=CreateSound(e,"ambient/gas/steam_loop1.wav")
-        if sound then sound:PlayEx(.35,85);gasSounds[e]=sound end
-    end
-    e.LODGasLastDraw=CurTime()
+    if LOD.LoopAudio then LOD.LoopAudio:Touch('gas',e,'ambient/gas/steam_loop1.wav',.18,85,62,.35) end
     local mc=LOD.Config.Maze;local origin=mc.Origin
     local x=math.floor((pos.x-origin.x)/mc.CellSize+(mc.Width+1)*.5+.5)
     local y=math.floor((pos.y-origin.y)/mc.CellSize+(mc.Height+1)*.5+.5)
@@ -29,12 +25,6 @@ function V:Gas(e)
         render.DrawSprite(p,100,80,gasColor)
     end
 end
-hook.Add("Think","LOD_RosterGasAudioRetire",function()
-    for e,sound in pairs(gasSounds) do
-        if not IsValid(e) or CurTime()-(e.LODGasLastDraw or 0)>.25 then sound:Stop();gasSounds[e]=nil end
-    end
-end)
-hook.Add("ShutDown","LOD_RosterGasAudioShutdown",function() for _,sound in pairs(gasSounds) do sound:Stop() end end)
 net.Receive("LOD_RosterProjectiles",function()
     local count=net.ReadUInt(7);local list={}
     for i=1,count do list[i]={pos=net.ReadVector(),velocity=net.ReadVector(),venom=net.ReadBool()} end

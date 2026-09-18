@@ -4,7 +4,7 @@ LOD.Spellbook = LOD.Spellbook or {}
 local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
-    cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
     missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
@@ -48,7 +48,10 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         surface.SetDrawColor(selected and C.red or C.rule)
         surface.DrawOutlinedRect(0,0,width,height,selected and 2 or 1)
         local label,color = Book:Availability(entry,kind)
-        draw.SimpleText(string.upper(entry.displayName or entry.id),"LOD_SheetSubheading",
+        local title=string.upper(entry.displayName or entry.id)
+        local titleFont="LOD_SheetSubheading";surface.SetFont(titleFont)
+        if surface.GetTextSize(title)>width-8 then titleFont="LOD_SheetSmall" end
+        draw.SimpleText(title,titleFont,
             width*0.5,16,color,TEXT_ALIGN_CENTER)
         local labelFont="LOD_SheetKey"
         surface.SetFont(labelFont)

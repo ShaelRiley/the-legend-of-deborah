@@ -18,6 +18,9 @@ if not Magic or not RPG or not Progression or not MagicProgression or not Rules 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
 Forms.Tuning = {
+    WatermelonSpeed = 580,
+    WatermelonRange = 960,
+    WatermelonRadius = 144,
     BaseConeRange = 480,
     ConeHalfAngle = 32,
     CastCooldown = 0.85,
@@ -525,7 +528,11 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     local direction = ply:GetAimVector():GetNormalized()
     if direction == vector_origin then ent:Remove() return false end
     local speed, range, radius = 0, 0, 0
-    if form.id == "bomb" then
+    if form.id == "watermelon" then
+        speed = self.Tuning.WatermelonSpeed
+        range = self.Tuning.WatermelonRange
+        radius = self.Tuning.WatermelonRadius + context.spatialBonusCells * cellSize()
+    elseif form.id == "bomb" then
         speed = self.Tuning.BombProjectileSpeed
         range = self.Tuning.BaseBombThrowRange
         radius = self.Tuning.BaseBombBlastRadius + context.spatialBonusCells * cellSize()
@@ -576,6 +583,8 @@ end
 
 function Forms:ProjectileImpact(projectile, trace)
     if not IsValid(projectile) then return end
+    if projectile.LODImpactResolved then return end
+    projectile.LODImpactResolved = true
     local caster = projectile.LODCaster
     local form = RPG.MagicForms[projectile.LODFormId]
     local content = projectile.LODContentId and RPG.MagicContents[projectile.LODContentId] or nil
@@ -795,7 +804,7 @@ function Forms:CastSelected(ply)
     if form.id == "cone" then castOK = self:_CastCone(ply, form, content, context)
     elseif form.id == "blast" then castOK = self:_CastBlast(ply, form, content, context)
     elseif form.id == "beam" then castOK = self:_CastBeam(ply, form, content, context)
-    elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" then
+    elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" or form.id == "watermelon" then
         castOK = self:_SpawnProjectile(ply, form, content, context)
     elseif form.id == "summon" then castOK, reason = self:_CastSummon(ply, form, content, context) end
     if not castOK then

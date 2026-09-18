@@ -42,6 +42,9 @@ function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},vectors)
 vectors.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 vectors.__sub=function(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
 vectors.__mul=function(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
+vectors.__unm=function(a) return a*-1 end
+function vectors:Dot(b) return self.x*b.x+self.y*b.y+self.z*b.z end
+function vectors:GetNormalized() return self*(1/math.sqrt(self:Dot(self))) end
 function vectors:DistToSqr(b) local d=self-b;return d.x*d.x+d.y*d.y+d.z*d.z end
 function Angle() return {Forward=function() return Vector(1,0,0) end,Right=function() return Vector(0,1,0) end,Up=function() return Vector(0,0,1) end} end
 function Color(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
@@ -160,6 +163,45 @@ ent.failDraw=false;assert(V:DrawPickup(ent));assert(ent.drawn==2)
 E:DrawItemIcon(copy,0,0,48,pale)
 local same=V:ItemStyle(copy);V:Apply(ent,style,nil,true);hooks.LOD_WeaponAppearanceCleanup()
 assert(ent.RenderOverride==nil,'Owned draw wrapper must be removed on cleanup');assert(V:ItemStyle(copy)~=same);for _,v in pairs(ent.slots) do assert(v=='') end
+-- Every stock family also works with a single gun material. The same mesh is
+-- partitioned into disjoint intervals, with at most two active clip planes.
+local clipping,planes=false,{}
+render.EnableClipping=function(enabled) local old=clipping;clipping=enabled;return old end
+render.PushCustomClipPlane=function(n,d) planes[#planes+1]={n=n,d=d};assert(#planes<=2) end
+render.PopCustomClipPlane=function() assert(#planes>0);table.remove(planes) end
+dofile(root..'cl_weapon_segments.lua')
+for class,spec in pairs(V.Segments) do
+ for _,prefix in ipairs({'c','v','w'}) do
+    local e=entity({'models/weapons/v_hands','models/weapons/'..spec.stem})
+    e.model='models/weapons/'..prefix..'_'..spec.stem..'.mdl';e.class=class
+    e.OBBMins=function() return Vector(-20,-2,-2) end;e.OBBMaxs=function() return Vector(20,2,2) end
+    local draws={}
+    function e:DrawModel()
+        assert(self:GetSubMaterial(0)=='','Hands must retain their material')
+        assert(not V:DrawSegmented(self,style,class,nil,true),'Recursive segmented draw')
+        local copy={};for _,p in ipairs(planes) do copy[#copy+1]=p end
+        draws[#draws+1]={material=self:GetSubMaterial(1),planes=copy}
+    end
+    assert(V:DrawSegmented(e,style,class,nil,true));assert(#draws==3)
+    assert(draws[1].material=='' and draws[2].material~='' and draws[3].material~=draws[2].material)
+    local normal,lo,hi=V:SegmentPlanes(e,spec)
+    for index,distance in ipairs({lo-1,(lo+hi)/2,hi+1}) do
+        local point=normal*distance;local visible=0
+        for j,draw in ipairs(draws) do
+            local inside=true;for _,p in ipairs(draw.planes) do if p.n:Dot(point)<p.d then inside=false end end
+            if inside then assert(j==index);visible=visible+1 end
+        end
+        assert(visible==1,'Complementary regions must not overlap or leave a gap')
+    end
+    assert(not clipping and #planes==0 and e:GetSubMaterial(1)=='')
+    function e:DrawModel() error('deliberate render failure') end
+    assert(V:DrawSegmented(e,style,class,nil,true))
+    assert(not clipping and #planes==0 and e:GetSubMaterial(1)=='' and not V.SegmentDrawing[e])
+    clipping=true;assert(not V:DrawSegmented(e,style,class,nil,true) and clipping);clipping=false
+    e.slots[1]='external';assert(not V:DrawSegmented(e,style,class,nil,true));assert(e.slots[1]=='external')
+ end
+end
+print('WEAPON_SEGMENTS_PASS: all six families/view-world meshes, two-plane ceiling, three disjoint regions, hands, external ownership and error cleanup')
 -- Pool reaches its hard native allocation ceiling across many source paths.
 for i=1,200 do V:Surface('models/weapons/custom_'..i,style) end
 assert(created==128)

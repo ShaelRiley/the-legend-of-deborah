@@ -28,7 +28,8 @@ LOD.AdventureCues = {
     [4] = {id = "treasure", sound = "discovery", priority = 1, duration = 1.4, caption = "FINDERS. KEEPERS."},
     [5] = {id = "level_up", priority = 3, duration = 1.8},
     [6] = {id = "rescue", priority = 4, duration = 2.4},
-    [7] = {id = "feat", priority = 1, duration = .65}
+    [7] = {id = "feat", priority = 1, duration = .65},
+    [8] = {id = "gift", sound = "discovery", priority = 2, duration = 1.5}
 }
 function LOD.AdventureCueForEvent(fields)
     fields = fields or {}

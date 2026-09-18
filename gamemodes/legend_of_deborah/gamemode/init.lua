@@ -24,6 +24,8 @@ end
 LOD.DeveloperModeConVar = cvDeveloperMode
 
 AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("lod/cl_loop_audio.lua")
+AddCSLuaFile("lod/cl_weapon_segments.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("lod/cl_adventure_presentation.lua")
 for _, cue in ipairs({"discovery", "unlock", "learn", "level_up", "rescue", "feat"}) do

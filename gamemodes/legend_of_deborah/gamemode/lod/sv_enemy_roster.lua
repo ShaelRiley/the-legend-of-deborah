@@ -107,7 +107,8 @@ function E:Release(e,a,now)
     a.released=true;a.finish=now+(a.kind=="beam" and 1.2 or (a.kind=="flame" and .8 or (a.kind=="dive" and .65 or .15)))
     a.last=now;e:SetNW2Int("LOD_RosterAttack",2);e:SetNW2Float("LOD_RosterRelease",now)
     e:SetNW2Float("LOD_RosterFinish",a.finish)
-    e:EmitSound(a.kind=="flame" and "ambient/fire/mtov_flame2.wav" or (a.kind=="venom" and "npc/barnacle/barnacle_digesting1.wav" or "ambient/energy/weld2.wav"),74,100,.7)
+    -- Release is finite: an emitted looping flame asset outlives this attack.
+    e:EmitSound(a.kind=="flame" and "ambient/fire/ignite.wav" or (a.kind=="venom" and "npc/barnacle/barnacle_digesting1.wav" or "ambient/energy/weld2.wav"),74,100,.7)
     if a.kind=="bullet" or a.kind=="venom" then
         if #self.Projectiles<64 then
             self.Projectiles[#self.Projectiles+1]={owner=e,pos=a.origin,velocity=a.direction*(a.kind=="bullet" and 950 or 380),

@@ -70,11 +70,11 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 EyePos=function() return Vector(10000,0,0) end
 dofile(root..'cl_magic_area.lua');dofile(root..'cl_magic_spectacle.lua')
 local S=LOD.MagicSpectacle
-for _,form in ipairs({'blast','beam','bolt','bomb','missile','summon','summon_hit'}) do
+for _,form in ipairs({'blast','beam','bolt','bomb','missile','summon','summon_hit','watermelon'}) do
     for _,content in ipairs({'raw','earth','ice','fire','electric','dark','light'}) do
         local fx={form=form,content=content,origin=Vector(),destination=Vector(10,0,0),radius=100,tiles={},shape=1}
         calls=0;S:Draw(fx,.18,false);local normal=calls
-        assert(normal>5 and normal<130)
+        assert(normal>5 and normal<(form=='watermelon' and 140 or 130))
         calls=0;S:Draw(fx,.18,true);assert(calls>0 and calls<normal)
         calls=0;S:Draw(fx,.95,false);assert(calls==0)
         S:Begin(fx)
@@ -92,7 +92,7 @@ local packet,index
 local function read() index=index+1;return packet[index] end
 net.ReadString=read;net.ReadVector=read;net.ReadEntity=read;net.ReadUInt=read;net.ReadFloat=read
 for i=1,100 do
-    packet={'bomb','electric',Vector(),Vector(100,0,0),false,1,100};index=0
+    packet={i%2==0 and 'watermelon' or 'bomb','electric',Vector(),Vector(100,0,0),false,1,100};index=0
     receivers.LOD_MagicFormFX()
 end
 calls=0;hooks.LOD_MagicFormPresentation(true,false);assert(calls==0)
@@ -100,4 +100,4 @@ hooks.LOD_MagicFormPresentation(false,true);assert(calls==0)
 hooks.LOD_MagicFormPresentation(false,false);assert(calls>0 and calls<1000,'Four area impacts bound rendering under a burst')
 hooks.LOD_MagicFormPresentationCleanup();calls=0
 hooks.LOD_MagicFormPresentation(false,false);assert(calls==0)
-print('MAGIC_SPECTACLE_PASS: seven content signatures, six forms, reduced work, expiry, net dispatch, burst budget, sound throttle, cleanup')
+print('MAGIC_SPECTACLE_PASS: seven content signatures, all projectile forms, reduced work, expiry, net dispatch, burst budget, sound throttle, cleanup')

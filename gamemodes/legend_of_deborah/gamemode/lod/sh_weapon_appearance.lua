@@ -36,6 +36,17 @@ V.MaterialRegions={
     weapon_shotgun={a={"shotgun_receiver","shotgun_body"},b={"shotgun_barrel"},control={"shotgun_stock","shotgun"}},
     weapon_lod_crowbar={a={"crowbar_shaft"},b={"crowbar_tip"},control={"crowbar_grip","crowbar"}}
 }
+-- Stock single-material guns need geometric regions, not fictional submaterials.
+-- Distances behind the animated muzzle delimit grip/stock, receiver, barrel.
+-- Crowbar has no muzzle: divide its longest native model axis into grip/shaft/tip.
+V.Segments={
+    weapon_pistol={stem='pistol',rear=6,front=2,control='grip',a='slide',b='muzzle'},
+    weapon_357={stem='357',rear=9,front=4,control='grip',a='cylinder',b='barrel'},
+    weapon_smg1={stem='smg1',rear=14,front=6,control='stock / grip',a='receiver',b='barrel'},
+    weapon_ar2={stem='irifle',rear=18,front=8,control='stock / grip',a='receiver',b='emitter'},
+    weapon_shotgun={stem='shotgun',rear=23,front=12,control='stock',a='receiver / pump',b='barrel'},
+    weapon_lod_crowbar={stem='crowbar',low=.28,high=.78,control='grip',a='shaft',b='hook'}
+}
 function V:MaterialRegion(class,path)
     local mapping=self.MaterialRegions[class];if not mapping then return "control" end
     local name=path:lower():match("([^/]+)$")
@@ -94,6 +105,20 @@ function V:Compile(data)
     result.finish='two-tone native finish'
     result.tintA=result.element
     result.tintB=({'earth','fire','dark','ice','light','electric'})[math.floor(result.hash/997)%6+1]
+    local traitColors={anvil='earth',fin='ice',plate='light',bud='fire',coil='electric',crown='light',fang='fire',cage='dark',shard='ice',lens='electric'}
+    result.tintB=traitColors[result.rider and result.rider.shape or result.structure] or result.tintB
+    if result.tintA==result.tintB then result.tintB=({earth='ice',ice='earth',fire='electric',electric='fire',dark='light',light='dark'})[result.tintA] or 'light' end
+    -- Mechanic families choose the hue pair; the full frozen roll varies shades.
+    -- Store RGB triplets in the derived descriptor, never expand the network packet.
+    local function shade(name,salt)
+        local base=V.Colors[name] or V.Colors.neutral;local out={}
+        for i=1,3 do
+            local jitter=math.floor(result.hash/(salt*7^(i-1)))%37-18
+            out[i]=math.max(20,math.min(255,base[i]+jitter))
+        end
+        return out
+    end
+    result.tintARGB=shade(result.tintA,31);result.tintBRGB=shade(result.tintB,173)
     result.muzzleFamily=result.structure
     result.muzzleDuration=.09+result.rarity*.015
     result.muzzleSize=12+result.rarity*2+math.max(0,dominant)*6

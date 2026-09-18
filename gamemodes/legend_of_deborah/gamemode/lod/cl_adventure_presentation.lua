@@ -1,5 +1,6 @@
 -- One client-only accent lane. The authoritative feed remains the event/history
 -- authority; these short ornaments never change rules, input, view or visibility.
+if LOD.AdventurePresentation and LOD.AdventurePresentation.Reset then LOD.AdventurePresentation:Reset() end
 LOD.AdventurePresentation = LOD.AdventurePresentation or {}
 local A = LOD.AdventurePresentation
 local volume = CreateClientConVar("lod_adventure_volume", "0.65", true, false, "Volume of original discovery and celebration accents", 0, 1)

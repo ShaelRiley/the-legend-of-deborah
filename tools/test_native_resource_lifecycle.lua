@@ -139,8 +139,10 @@ surface={CreateFont=noop}
 net.Receive=function(name,fn) if name=='LOD_StagingStarterCelebration' then stagingReceiver=fn end end
 net.ReadString=function() reads=reads+1;return reads==1 and 'weapon_357' or reads==2 and '.357 MAGNUM' or 'test' end
 function ClientsideModel() clientModels=clientModels+1;return {} end
+local giftCue
+LOD.AdventurePresentation={Play=function(_,index) giftCue=index end}
 dofile('gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/cl_init.lua')
-assert(stagingReceiver);stagingReceiver()
+assert(stagingReceiver);stagingReceiver();assert(giftCue==8,'Hermit gift uses shared musical accent lane')
 assert(clientModels==0,'starter celebration created a native client model')
 assert(not (hooks.CalcView and hooks.CalcView.LOD_StagingStarterCelebrationView))
 assert(not (hooks.PostDrawTranslucentRenderables and hooks.PostDrawTranslucentRenderables.LOD_StagingStarterCelebrationWeapon))

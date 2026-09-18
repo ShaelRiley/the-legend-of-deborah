@@ -77,11 +77,13 @@ net.Start=function() end;net.WriteString=function() end;net.WriteVector=function
 net.WriteUInt=function() end;net.WriteFloat=function() end;net.Broadcast=function() end
 local applied={};local apply=F._ApplyDamage
 F._ApplyDamage=function(_,_,_,t,form,content) applied[t]=true;return true end
-for _,id in ipairs({'bomb','missile'}) do
+for _,id in ipairs({'bomb','missile','watermelon'}) do
  applied={};local projectile={valid=true,LODCaster=actor,LODFormId=id,LODCastContext={},LODDirection=Vector(1,0,0),LODBlastRadius=500,
  GetPos=actor.GetShootPos,Remove=function(self) self.valid=false end}
  F:ProjectileImpact(projectile,{HitPos=actor:GetShootPos()})
  assert(applied[front] and not applied[above] and not projectile.valid)
+ projectile.valid=true;applied={};F:ProjectileImpact(projectile,{HitPos=actor:GetShootPos()})
+ assert(next(applied)==nil,'A second impact callback must not repeat damage')
 end
 assert(#E.BombTypes==17)
 for _,id in ipairs(E.BombTypes) do
@@ -103,6 +105,33 @@ for _,row in ipairs(rows) do by[row.label]=row.value end
 assert(by['Offensive cost multiplier']=='50.0%')
 assert(by['Health regeneration']=='1.50 HP/s' and by['Health regeneration cap']=='33.0%')
 assert(not by['Haste'] and not by['Current speed multiplier']);assert(#rows<30)
+-- Watermelon is selected/granted by the canonical progression, then cast through
+-- the actual resource transaction and projectile setup. Only engine entities are doubled.
+local P=LOD.MagicProgression
+assert(P:GrantForm(state,'watermelon') and P:SelectForm(state,'watermelon'))
+state.selectedMagicContentId=nil
+assert(LOD.RPG.MagicForms.watermelon.damageDice==3 and LOD.RPG.MagicForms.watermelon.magicCost==24)
+local projectile
+function V:Angle() return {p=0,y=0,r=0} end
+ents=ents or {}
+local oldCreate=ents.Create
+ents.Create=function(class)
+ assert(class=='lod_magic_projectile')
+ projectile={valid=true,SetPos=function(self,v) self.pos=v end,SetAngles=function() end,
+ Spawn=function(self) self.spawned=true end,Activate=function() end,Remove=function(self) self.valid=false end}
+ return projectile
+end
+LOD.Magic.NextCast={};LOD.Magic.Stats={casts=0}
+LOD.Magic._Sync=function() end
+actor.ps.magic=100;LOD.Magic.NextCast[actor]=nil
+assert(F:CastSelected(actor))
+assert(actor.ps.magic==88,'Resolved 50% cost modifier applies to the new Form')
+assert(projectile.LODFormId=='watermelon' and projectile.LODCaster==actor and projectile.spawned)
+assert(projectile.LODSpeed==580 and projectile.LODMaximumTravel==960 and projectile.LODBlastRadius>=144)
+assert(not F:CastSelected(actor),'Shared cast cooldown applies')
+LOD.Magic.NextCast[actor]=nil;actor.ps.magic=0
+assert(not F:CastSelected(actor) and actor.ps.magic==0,'Cannot cast without Magic')
+ents.Create=oldCreate
 -- Finite summon puff is above its origin, bounded, and self-retires even without its summon.
 local now=0;CurTime=function() return now end;Material=function() return {} end;EFFECT={}
 dofile('gamemodes/legend_of_deborah/entities/effects/lod_summon_puff/init.lua')

@@ -252,21 +252,7 @@ local function clearCelebration()
 end
 
 local function playFanfare(serial)
-    local notes = {
-        {delay = 0.00, pitch = 96},
-        {delay = 0.12, pitch = 118},
-        {delay = 0.24, pitch = 142},
-        {delay = 0.39, pitch = 170}
-    }
-
-    for _, note in ipairs(notes) do
-        timer.Simple(note.delay, function()
-            if not celebration or celebration.serial ~= serial then return end
-            local ply = LocalPlayer()
-            if not IsValid(ply) then return end
-            sound.Play("buttons/button17.wav", ply:EyePos(), 66, note.pitch, 0.62)
-        end)
-    end
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(8,false) end
 end
 
 local function beginCelebration(weaponClass, weaponLabel)
@@ -295,6 +281,7 @@ hook.Add("Think", "LOD_StagingCelebrationLifetime", function()
 end)
 
 hook.Add("ShutDown", "LOD_StagingCelebrationCleanup", clearCelebration)
+hook.Add("PreCleanupMap", "LOD_StagingCelebrationReset", clearCelebration)
 
 hook.Add("HUDPaint", "LOD_StagingCelebrationHUD", function()
     local ply = LocalPlayer()

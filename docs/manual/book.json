@@ -382,7 +382,7 @@
     },
     {
       "id": "forms",
-      "title": "Seven Forms of Magic",
+      "title": "Eight Forms of Magic",
       "rows": [
         [
           "CONE · 22",
@@ -407,6 +407,10 @@
         [
           "BOLT · 15",
           "4d6; fast precision shot. No area or body piercing."
+        ],
+        [
+          "WATERMELON · 24",
+          "3d6; lob a magical watermelon that shatters into rind, flesh and seeds. Wider area, slower flight than Bomb; WIS scales radius."
         ],
         [
           "SUMMON · 12",
@@ -543,7 +547,7 @@
         "Wearable families are headwear, vest, trousers, boots, rings, gloves, and shields. A ring can use either hand. A pair of gloves occupies both hands; displacing it frees both. The shield uses the left-arm accessory slot, not a ring slot.",
         "Your ordinary equipment storage holds 32 records plus consumable stacks. Only equipped wearables and the currently wielded weapon contribute their effects. A powerful weapon sitting in the bag does nothing to your current attack.",
         "Drag equipment onto a highlighted valid slot to equip; drag it into the bag to stow. Drop unwanted, unequipped equipment onto the visible trash can to destroy it immediately with a disposal sound. Protected progression objects cannot be trashed. The server confirms the final position after every action.",
-        "Weapon identity uses a soft aura, distinct muzzle behavior, and two independently selected tints on configured native material regions, while preserving a control region. Surface patterns are retired. Models without separable native regions preserve their original surfaces. Wintery means Ice, including Wintery Warding and Wintery Frailty."
+        "Weapon identity uses a soft aura, distinct muzzle behavior, and two independently selected tints while preserving a canonical grip or stock. Each stock weapon has three physical regions, including models with a single native material. Tint A follows the element; Tint B follows a mechanical trait family, with shades derived from the individual roll. Surface patterns are retired. Wintery means Ice, including Wintery Warding and Wintery Frailty."
       ]
     },
     {
