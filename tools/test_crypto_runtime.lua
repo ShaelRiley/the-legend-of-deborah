@@ -293,6 +293,35 @@ end
 assert(#C:StakeholderRows({a})==1)
 print('JUNK_SQLITE_PASS: ownership/duplicate/replay; real sale/fusion rollback and atomicity; 85–100% valid value; DFT mint exclusion; Stakeholder sorting/denominations/rounding')
 
+-- Four-action token exchange uses real SQLite and cannot refresh recreation.
+local tokenA,tokenB=a.id..':test-fusion:1',a.id..':test-fusion:2'
+local expectedValue
+assert(Store:Transaction('seed-token-exchange','test',{a.id},function(accounts)
+    local items={E:Generate(9081,8,'ring','token-input:1'),E:Generate(9082,8,'ring','token-input:2')}
+    expectedValue=E:Value(items[1])+E:Value(items[2])
+    accounts[a.id].tokens={}
+    for i,key in ipairs({tokenA,tokenB}) do accounts[a.id].tokens[key]={id=key,item=items[i],reason='test',source='test',depth=8,run=Run.State.RunId,lastRun=i==1 and Run.State.RunId or nil} end
+    return true,{}
+end))
+local before=account(a);local walletBefore=before.balance
+assert(not C:ExchangeTokens(b,'sell_tokens',{tokenA}),'Cross-player token isolation')
+assert(not C:ExchangeTokens(a,'sell_tokens',{tokenA,tokenA}),'Duplicate token denied')
+WalletSQLFail('INSERT OR REPLACE INTO lod_crypto_accounts')
+assert(not C:ExchangeTokens(a,'fuse_tokens',{tokenA,tokenB}))
+assert(account(a).tokens[tokenA] and account(a).tokens[tokenB] and account(a).balance==walletBefore,'Failed commit preserves both DFTs')
+assert(C:ExchangeTokens(a,'fuse_tokens',{tokenA,tokenB}))
+local fusedToken
+for _,t in pairs(account(a).tokens) do fusedToken=t end
+assert(fusedToken and fusedToken.lastRun==Run.State.RunId and not account(a).tokens[tokenA])
+assert(E:Value(fusedToken.item)>=expectedValue*.85 and E:Value(fusedToken.item)<=expectedValue)
+assert(not C:Recreate(a,fusedToken.id),'Fusion must not refresh used recreation')
+assert(not C:ExchangeTokens(a,'fuse_tokens',{tokenA,tokenB}),'No replay fusion')
+WalletSQLReconnect();assert(account(a).tokens[fusedToken.id].lastRun==Run.State.RunId,'DFT provenance and entitlement survive reopen')
+assert(C:ExchangeTokens(a,'sell_tokens',{fusedToken.id}))
+assert(account(a).balance==walletBefore+E:Value(fusedToken.item) and account(a).score==before.score)
+assert(not C:ExchangeTokens(a,'sell_tokens',{fusedToken.id}),'Sale settles once')
+print('DFT_EXCHANGE_SQLITE_PASS: batch ownership/duplicates, fusion value, commit rollback, recreation inheritance, SQLite reopen, single settlement, lifetime-score isolation')
+
 -- Corruption remains present and visible, rather than resetting the account.
 assert(sql.Query("UPDATE lod_crypto_accounts SET body='{}' WHERE account="..sql.SQLStr(a.id))~=false)
 assert(not Store:Read(a.id));assert(#errors>=3)

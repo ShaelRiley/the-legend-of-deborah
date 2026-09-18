@@ -59,7 +59,7 @@ net.Receive("LOD_MagicFormFX", function()
             end
         end
     end
-    if IsValid(caster) and caster == LocalPlayer() then
+    if IsValid(caster) and caster == LocalPlayer() and form ~= "watermelon_bounce" then
         localCast = {form=form,content=content,shape=shape,started=CurTime()}
     end
     -- Long-lived area outlines have a separate small concurrency budget.

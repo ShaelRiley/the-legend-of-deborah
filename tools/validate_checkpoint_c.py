@@ -156,7 +156,7 @@ def main() -> int:
     require(errors, forms, 'Attribution.LODMagicSummonCreditWrapped', "Summon proxy/status/wall-crush attribution bridge")
     require(errors, forms, 'creditCaster.LODMagicProxyMoraleDC = tags.moraleDC', "sealed Summon Morale DC")
     require(errors, forms, 'tags.riderDC = Status:ConditionDC(attacker, definition.ability)', "sealed Summon rider DC")
-    require(errors, forms, 'function Magic:CastForceShout(ply)', "single RMB Magic activation seam")
+    require(errors, forms, 'function Magic:CastForceShout(ply,button)', "single mouse-button Magic activation seam")
 
     for needle, label in [
         ('ArcaneDiversionCap = 0.50', "Arcane hard cap"),

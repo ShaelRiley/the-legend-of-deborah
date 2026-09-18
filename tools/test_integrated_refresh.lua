@@ -110,7 +110,7 @@ assert(not by['Haste'] and not by['Current speed multiplier']);assert(#rows<30)
 local P=LOD.MagicProgression
 assert(P:GrantForm(state,'watermelon') and P:SelectForm(state,'watermelon'))
 state.selectedMagicContentId=nil
-assert(LOD.RPG.MagicForms.watermelon.damageDice==3 and LOD.RPG.MagicForms.watermelon.magicCost==24)
+assert(LOD.RPG.MagicForms.watermelon.damageDice==2 and LOD.RPG.MagicForms.watermelon.magicCost==24)
 local projectile
 function V:Angle() return {p=0,y=0,r=0} end
 ents=ents or {}
@@ -127,7 +127,7 @@ actor.ps.magic=100;LOD.Magic.NextCast[actor]=nil
 assert(F:CastSelected(actor))
 assert(actor.ps.magic==88,'Resolved 50% cost modifier applies to the new Form')
 assert(projectile.LODFormId=='watermelon' and projectile.LODCaster==actor and projectile.spawned)
-assert(projectile.LODSpeed==580 and projectile.LODMaximumTravel==960 and projectile.LODBlastRadius>=144)
+assert(projectile.LODSpeed==580 and projectile.LODMaximumTravel==4000 and projectile.LODBlastRadius>=72)
 assert(not F:CastSelected(actor),'Shared cast cooldown applies')
 LOD.Magic.NextCast[actor]=nil;actor.ps.magic=0
 assert(not F:CastSelected(actor) and actor.ps.magic==0,'Cannot cast without Magic')

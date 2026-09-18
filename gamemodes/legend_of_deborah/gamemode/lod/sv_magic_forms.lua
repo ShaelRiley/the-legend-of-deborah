@@ -18,15 +18,17 @@ if not Magic or not RPG or not Progression or not MagicProgression or not Rules 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
 Forms.Tuning = {
-    Wall = {lifetime=10, baseWidth=192, widthPerBonus=96, maxWidth=1152, height=112,
+    Wall = {lifetime=10, durationPerWis=2, maxLifetime=30, baseWidth=288, height=112,
         thickness=12, reach=240, minWidth=48, contact=24, interval=.1, hitDelay=1,
         stunMultiplier=2.5, maxActive=1, maxGlobal=16, clearance=4, minHeight=48,
         groundProbe=512, fitStep=24, fitAttempts=5, previewInterval=.15, previewHeartbeat=.5},
     SuperBall = {speed=900, lifetime=6, bounces=32, hits=6, perTargetDelay=.3,
         maxActive=2, maxGlobal=32, radius=8, gravity=260, jitter=.18, steps=4, separation=.5},
+    Watermelon = {lifetime=8, radius=7, gravity=600, restitution=.78, minLift=220,
+        hitDelay=.35, separation=1, steps=4},
     WatermelonSpeed = 580,
-    WatermelonRange = 960,
-    WatermelonRadius = 144,
+    WatermelonRange = 4000,
+    WatermelonRadius = 72,
     BaseConeRange = 480,
     ConeHalfAngle = 32,
     CastCooldown = 0.85,
@@ -154,11 +156,12 @@ function Forms:SpatialBonusCells(actor, state)
     return bonus
 end
 
-function Forms:SelectedCastState(ply)
+function Forms:SelectedCastState(ply,button)
     local state = actorState(ply)
     if not state then return nil end
     MagicProgression:EnsureState(state)
-    local formId = state.selectedMagicFormId
+    local formId = button and state.magicBindings[tostring(button)] or state.selectedMagicFormId
+    if button and not state.magicBindings[tostring(button)] then return nil end
     if not MagicProgression:FormAllowed(state,formId) then return nil end
     if not formId or not RPG.MagicForms[formId] or not contains(state.magicFormIds, formId) then return nil end
     local contentId = state.selectedMagicContentId
@@ -533,6 +536,8 @@ function Forms:_CastBeam(ply, form, content, context)
     return true
 end
 
+Forms.BroadcastFX = function(_,...) return broadcastFX(...) end
+
 function Forms:_SpawnProjectile(ply, form, content, context)
     local ent = ents.Create("lod_magic_projectile")
     if not IsValid(ent) then return false end
@@ -572,7 +577,7 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     ent.LODSteeringDegreesPerSecond = form.id == "missile"
         and self.Tuning.MissileSteeringDegreesPerSecond or 0
     -- The ricochet begins at the shoot origin: never teleport its hull past a wall.
-    ent:SetPos(ply:GetShootPos() + direction * (form.id=="super_ball" and 0 or 24))
+    ent:SetPos(ply:GetShootPos() + direction * ((form.id=="super_ball" or form.id=="watermelon") and 0 or 24))
     ent:SetAngles(direction:Angle())
     ent:Spawn()
     ent:Activate()
@@ -631,7 +636,9 @@ function Forms:ProjectileImpact(projectile, trace)
         end
     else
         for _, target in ipairs(self:_AreaTargets(caster, point, projectile.LODBlastRadius or 0)) do
-            self:_ApplyDamage(caster, caster, target, form, content, context, direction)
+            local rider=content
+            if projectile.LODMelon and projectile.LODMelon.riders[target] and content then rider=table.Copy(content);rider.rider=nil end
+            self:_ApplyDamage(caster, caster, target, form, rider, context, direction)
         end
     end
     self.Stats.projectileImpacts = (self.Stats.projectileImpacts or 0) + 1
@@ -782,6 +789,7 @@ local function castNotice(ply, form, content, reason, cost, remaining, serial)
     local presentation = LOD.RPGPresentation
     if not presentation or not presentation.Event then return end
     local reasons = {wall_cap="Wall limit reached", wall_placement="aim at a clear floor gap", wall_ground="no floor within reach",
+        wall_reach="floor is beyond Wall reach", wall_slope="surface is too steep", wall_anchor_blocked="ground probe begins inside solid geometry",
         wall_space="not enough clear space", wall_ceiling="ceiling too low", wall_narrow="gap too narrow", wall_blocked="solid cover blocks placement", super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
         summon_cap = "summon limit reached", placement = "no clear summon placement",
         status = "current status prevents Magic", entity = "summon unavailable", cast = "cast failed"}
@@ -795,13 +803,13 @@ local function castNotice(ply, form, content, reason, cost, remaining, serial)
             cast_serial = serial}, reason and ("cast:" .. reason) or nil)
 end
 
-function Forms:CastSelected(ply)
+function Forms:CastSelected(ply,button)
     if not validCaster(ply) then return false end
     if Status and not Status:CanInitiateMagic(ply) then
         castNotice(ply, nil, nil, "status")
         return false
     end
-    local state, form, content = self:SelectedCastState(ply)
+    local state, form, content = self:SelectedCastState(ply,button)
     if not state or not form then return false end
     local ps = Magic:_EnsureState(ply)
     if not ps then return false end
@@ -879,8 +887,8 @@ end
 -- Existing client and server input continues to call this method. Replacing only
 -- its implementation keeps RMB, suppression, Wizard snapshot wrapping, and old
 -- test tooling on one authoritative activation seam.
-function Magic:CastForceShout(ply)
-    return Forms:CastSelected(ply)
+function Magic:CastForceShout(ply,button)
+    return Forms:CastSelected(ply,button)
 end
 
 function Forms:Validate()

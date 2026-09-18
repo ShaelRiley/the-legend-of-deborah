@@ -211,9 +211,10 @@ function E:RefreshInventory()
     -- Equipped gear consumes capacity too; stacks have their own per-type cap.
     -- Draw only real free equipment slots, never padding out a decorative row.
     local stored=self:StoredEquipmentCount(self.Snapshot)
-    local free=math.max(0,self.MaximumStoredEquipment-stored)
+    local capacity=self:StorageCapacity(self.Snapshot)
+    local free=math.max(0,capacity-stored)
     local count=#ids+free
-    view.Capacity:SetText(string.format('GEAR %d / %d (includes equipped) · %d free. Consumables use separate stacks.',stored,self.MaximumStoredEquipment,free))
+    view.Capacity:SetText((stored>capacity and ("OVER CAPACITY: "..(stored-capacity).." retained items; free space before pickup. ") or "")..string.format('GEAR %d / %d (includes equipped) · %d free. Consumables use separate stacks.',stored,capacity,free))
     for i=1,count do
         local id=ids[i]
         local p=tile(view.Bag,id,nil,'',math.min(52,cell-6))

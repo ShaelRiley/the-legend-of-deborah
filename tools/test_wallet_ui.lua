@@ -39,9 +39,9 @@ state.tokens[1]={id='server-token-1',item={name='Frozen Hat'},reason='Combat Lev
 net.ReadTable=function() return state end
 handlers.LOD_WalletSnapshot()
 local function find(text) for i=#nodes,1,-1 do local p=nodes[i];if not p.removed and p.text==text then return p end end end
-assert(find('CARRIED EQUIPMENT — SELL / FUSE'),'Equipment is the default statue screen')
+assert(find('Sell Equipment'),'Equipment is the default statue screen')
 assert(not find('RECREATE & EQUIP — FREE'),'Token services live on a separate clear page')
-find('DFTs — RECREATE / SELL').DoClick()
+find('DFT Collection / Recreate').DoClick()
 local slots=0
 for _,p in ipairs(nodes) do if not p.removed and p.text and p.text:match('^SLOT ') then slots=slots+1 end end
 assert(slots==8,'Wallet presents exactly eight slots')
@@ -61,7 +61,7 @@ state.equipment={
     {id='token-copy',name='Frozen Ring',value=200,reason='DFT-created equipment cannot be sold or fused.'}
 }
 for i=1,8 do state.equipment[#state.equipment+1]={id='extra'..i,name='Boots '..i,value=10} end
-find('CARRIED EQUIPMENT — SELL / FUSE').DoClick()
+find('Sell Equipment').DoClick()
 local function item(id)
     for i=#nodes,1,-1 do local p=nodes[i];if not p.removed and p.LODExchangeId==id then return p end end
 end
@@ -78,7 +78,7 @@ item('hat').DoClick();W.Frame.Think();assert(W.Scroll:GetVBar():GetScroll()==120
 for i=1,6 do assert(W:SelectExchange('extra'..i,true)) end
 assert(not W:SelectExchange('extra7',true),'Pile never exceeds eight')
 for i=1,6 do W:SelectExchange('extra'..i,false) end
-W.Frame.Think();find('FUSE INTO EQUIPMENT').DoClick();W.Frame.Think()
+W.Frame.Think();find('Fuse Equipment').DoClick();W.Frame.Think();item('hat').DoClick();item('gun').DoClick();W.Frame.Think()
 W.ConfirmButton.DoClick()
 local request=sent[#sent];assert(request.channel=='LOD_JunkExchange' and request[1]=='fuse_items' and request[2]==2)
 assert(request[3]=='gun' and request[4]=='hat' and type(request[5])=='number' and #request==5)
@@ -105,7 +105,22 @@ local frame=W.Frame
 for _,p in ipairs(nodes) do
     if not p.removed and p.parent==frame and p.y==76 then assert(p.x+p.w<=frame:GetWide()-24,'Navigation fits 640px viewport') end
 end
+-- Both DFT actions share actual drag/drop/confirm; cancel holds no server items.
+state.tokens[2]={id='server-token-2',item={name='Frozen Boots'},value=60,available=true}
+find('Fuse DFTs').DoClick()
+assert(item('server-token-1') and item('server-token-2'))
+W.PilePanel.receiver(nil,{item('server-token-1')},true);W.PilePanel.receiver(nil,{item('server-token-2')},true);W.Frame.Think()
+W:ConfirmExchange();request=sent[#sent];assert(request[1]=='fuse_tokens' and request[2]==2)
+net.ReadTable=function() return {request=request[5],ok=false,message='Invalid fusion'} end
+handlers.LOD_JunkResult();W.Frame.Think();assert(W.Pile['server-token-1'])
+find('Sell DFTs').DoClick();assert(not next(W.Pile),'Changing action clears staging safely')
+item('server-token-1').DoClick();W.Frame.Think();W:ConfirmExchange();request=sent[#sent];assert(request[1]=='sell_tokens' and request[2]==1)
+net.ReadTable=function() return {request=request[4],ok=true,message='Sold'} end
+handlers.LOD_JunkResult();assert(not W.ExchangePending and not next(W.Pile))
+net.ReadTable=function() return state end
+item('server-token-2').DoClick();local messages=#sent
 UI:SelectPage('book');assert(frame.removed and not W.Frame and UI.ActivePage=='book')
+assert(not next(W.Pile) and #sent==messages,'Cancel never consumes or sends staged items')
 local before=#nodes;handlers.LOD_WalletSnapshot();assert(#nodes==before and UI.ActivePage=='book','Delayed snapshot does not reopen/focus Wallet')
 handlers.LOD_WalletOpen();assert(W.Frame and UI.ActivePage=='wallet')
 W:Close();handlers.LOD_WalletSnapshot();assert(not W.Frame and not UI.ActivePage)

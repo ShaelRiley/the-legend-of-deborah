@@ -43,7 +43,7 @@ function W:ConfirmExchange()
         ids[#ids+1]=id
     end
     local action=self.ExchangeAction or 'sell_items'
-    if #ids<1 or #ids>8 or action=='fuse_items' and #ids<2 then return end
+    if #ids<1 or #ids>8 or (action=='fuse_items' or action=='fuse_tokens') and #ids<2 then return end
     table.sort(ids)
     self.ExchangeSerial=((self.ExchangeSerial or 0)%65535)+1
     self.ExchangePending={request=self.ExchangeSerial,at=RealTime()}
@@ -54,10 +54,16 @@ function W:ConfirmExchange()
 end
 function W:BuildExchange(content,width,y)
     local state=self.Snapshot
+    local tokens=self.Section=='token_exchange'
+    local rows=state.equipment or state.junk or {}
+    if tokens then
+        rows={}
+        for _,token in ipairs(state.tokens or {}) do rows[#rows+1]={id=token.id,name=E:ItemName(token.item),value=token.value,description=E:Description(token.item)} end
+    end
     local sourceScroll=IsValid(self.SourceScroll) and self.SourceScroll:GetVBar():GetScroll() or self.SourceScrollPosition or 0
     local pileScroll=IsValid(self.PileScroll) and self.PileScroll:GetVBar():GetScroll() or self.PileScrollPosition or 0
     self.Pile=self.Pile or {};self.ExchangeItems={}
-    for _,row in ipairs(state.equipment or state.junk or {}) do self.ExchangeItems[row.id]=row end
+    for _,row in ipairs(rows) do self.ExchangeItems[row.id]=row end
     for id in pairs(self.Pile) do
         if not self.ExchangeItems[id] or self.ExchangeItems[id].reason then self.Pile[id]=nil end
     end
@@ -65,15 +71,9 @@ function W:BuildExchange(content,width,y)
         local p=vgui.Create('DLabel',parent);p:SetPos(x,top);p:SetSize(w,h);p:SetText(value)
         p:SetFont(font or 'LOD_SheetSmall');p:SetTextColor(C.ink);p:SetWrap(true);return p
     end
-    text(content,'CARRIED EQUIPMENT — SELL OR FUSE',0,y,width,30,'LOD_SheetSubheading');y=y+34
-    text(content,'Drag gear into the pile, then confirm. Click an item to add/remove it. Equipped gear is removed only on success. DFT-created items can never be sold or fused.',0,y,width,44,'DermaDefault');y=y+48
-    for i,entry in ipairs({{'sell_items','SELL FOR $DEB'},{'fuse_items','FUSE INTO EQUIPMENT'}}) do
-        local action,title=entry[1],entry[2]
-        local b=vgui.Create('DButton',content);b:SetPos((i-1)*width*.5,y);b:SetSize(width*.48,32);b:SetText(title)
-        b:SetEnabled(not self.ExchangePending);UI:Button(b,(self.ExchangeAction or 'sell_items')==action and C.red or C.blue)
-        b.DoClick=function() self.ExchangeAction=action;self.ExchangeMessage=nil;self.RenderPending=true end
-    end
-    y=y+44
+    local selling=self.ExchangeAction=='sell_items' or self.ExchangeAction=='sell_tokens'
+    text(content,(selling and 'SELL ' or 'FUSE ')..(tokens and 'DFTs' or 'EQUIPMENT'),0,y,width,30,'LOD_SheetSubheading');y=y+34
+    text(content,tokens and 'Drag tokens into the pile. Fusion returns one upgraded DFT; it inherits any recreation already used this run.' or 'Drag gear into the pile. Equipped gear changes only on success. DFT-created equipment is ineligible.',0,y,width,44,'DermaDefault');y=y+48
     local half=math.floor((width-16)/2)
     local panelHeight=math.min(260,math.max(120,self.Frame:GetTall()-140-y-210))
     local source,pile=vgui.Create('DPanel',content),vgui.Create('DPanel',content)
@@ -82,7 +82,7 @@ function W:BuildExchange(content,width,y)
     local function paint(panel,inPile)
         panel.Paint=function(_,w,h)
             UI:Paper(0,0,w,h,inPile and C.gold or C.blue)
-            draw.SimpleText(inPile and 'EXCHANGE PILE' or 'YOUR EQUIPMENT','LOD_SheetKey',10,10,C.ink)
+            draw.SimpleText(inPile and (selling and 'SALE PILE' or 'FUSION PILE') or (tokens and 'YOUR DFTs' or 'YOUR EQUIPMENT'),'LOD_SheetKey',10,10,C.ink)
         end
         panel:Receiver(DRAG,function(_,panels,dropped) return self:ReceiveExchange(panels,dropped,inPile) end)
     end
@@ -93,7 +93,7 @@ function W:BuildExchange(content,width,y)
         scroll:Receiver(DRAG,function(_,panels,dropped) return self:ReceiveExchange(panels,dropped,inPile) end)
         local canvas=scroll:GetCanvas();local rowY=0
         canvas:Receiver(DRAG,function(_,panels,dropped) return self:ReceiveExchange(panels,dropped,inPile) end)
-        for _,row in ipairs(state.equipment or state.junk or {}) do
+        for _,row in ipairs(rows) do
             if (self.Pile[row.id]==true)==inPile then
                 local b=vgui.Create('DButton',canvas);b:SetPos(0,rowY)
                 local suffix=row.reason or ((row.equipped and 'EQUIPPED · ' or '')..row.value..' $DEB value'..((row.count or 1)>1 and (' · ×'..row.count) or ''))
@@ -119,12 +119,12 @@ function W:BuildExchange(content,width,y)
     list(source,false);list(pile,true);y=y+panelHeight+10
     local count,value=0,0
     for id in pairs(self.Pile) do count=count+1;value=value+self.ExchangeItems[id].value end
-    local selling=(self.ExchangeAction or 'sell_items')=='sell_items'
+
     text(content,selling and string.format('%d / 8 items · Receive %g $DEB',count,value)
         or string.format('%d / 8 items · New gear: %g–%g Value (85–100%%)',count,math.ceil(value*.85),value),0,y,width,32,'LOD_SheetSubheading');y=y+36
-    text(content,'Confirm permanently consumes the pile, including any equipped gear. Fusion puts one new item in your inventory; it does not automatically equip it.',0,y,width,38,'DermaDefault');y=y+42
+    text(content,tokens and 'Confirm consumes these tokens. Fusion returns one DFT with upgraded equipment; it does not reset a used recreation.' or 'Confirm consumes the pile, including equipped gear. Fusion returns one item to inventory.',0,y,width,38,'DermaDefault');y=y+42
     local confirm=vgui.Create('DButton',content);confirm:SetPos(0,y);confirm:SetSize(width,38)
-    confirm:SetText(selling and ('CONFIRM SALE — '..value..' $DEB') or 'CONFIRM FUSION — RECEIVE NEW EQUIPMENT')
+    confirm:SetText(selling and ('CONFIRM SALE — '..value..' $DEB') or (tokens and 'CONFIRM FUSION — RECEIVE UPGRADED DFT' or 'CONFIRM FUSION — RECEIVE NEW EQUIPMENT'))
     confirm:SetEnabled(not self.ExchangePending and state.atStatue and state.ranked and count>=(selling and 1 or 2) and count<=8)
     UI:Button(confirm,C.red);confirm.DoClick=function() self:ConfirmExchange() end;self.ConfirmButton=confirm;y=y+46
     local message=self.ExchangeMessage or (not state.ranked and 'Unranked run: persistent equipment exchanges are disabled.' or state.atStatue and 'Your wallet and inventory change only after Debbie accepts the exchange.' or 'Visit Debbie in staging to confirm an exchange.')
@@ -172,13 +172,21 @@ function W:Render()
     else
         label(string.format('%g $DEB   |   Lifetime score: %g',state.balance,state.score),'LOD_SheetHeading')
         local servicesY=y;local wide=width>=700
-        for i,entry in ipairs({{'equipment','CARRIED EQUIPMENT — SELL / FUSE'},{'tokens','DFTs — RECREATE / SELL'}}) do
-            local page,title=entry[1],entry[2]
-            local button=vgui.Create('DButton',content);button:SetPos(wide and (i-1)*(width+12)/2 or 0,wide and servicesY or y);button:SetSize(wide and (width-12)/2 or width,38);button:SetText(title)
-            UI:Button(button,(self.Section or 'equipment')==page and C.red or C.blue)
-            button.DoClick=function() self.Section=page;self.Scroll:GetVBar():SetScroll(0);self:Render() end;if not wide or i==2 then y=y+46 end
+        for i,entry in ipairs({{'equipment','fuse_items','Fuse Equipment'}, {'equipment','sell_items','Sell Equipment'},
+            {'token_exchange','fuse_tokens','Fuse DFTs'}, {'token_exchange','sell_tokens','Sell DFTs'}, {'tokens',nil,'DFT Collection / Recreate'}}) do
+            local page,action,title=entry[1],entry[2],entry[3]
+            local button=vgui.Create('DButton',content)
+            button:SetPos(wide and ((i-1)%2)*(width+12)/2 or 0,servicesY+(wide and math.floor((i-1)/2) or i-1)*46)
+            button:SetSize(wide and (width-12)/2 or width,38);button:SetText(title)
+            button:SetEnabled(not self.ExchangePending)
+            UI:Button(button,self.ExchangeAction==action and self.Section==page and C.red or C.blue)
+            button.DoClick=function()
+                self.Section=page;self.ExchangeAction=action;self.Pile={};self.ExchangeMessage=nil
+                self.Scroll:GetVBar():SetScroll(0);self:Render()
+            end
         end
-        if (self.Section or 'equipment')=='equipment' then
+        y=servicesY+(wide and 3 or 5)*46
+        if self.Section~='tokens' then
             y=self:BuildExchange(content,width,y)
         else
         label('Debbie Fund Tokens preserve equipment between runs. Each token can recreate its exact item once per run; the token remains yours.')
@@ -229,6 +237,7 @@ function W:Render()
     scroll:GetVBar():SetScroll(scrollPosition)
 end
 function W:Open()
+    self.Section=self.Section or 'equipment';self.ExchangeAction=self.ExchangeAction or 'sell_items'
     self:Close();UI:SelectPage('wallet')
     local frame=vgui.Create('DFrame');self.Frame=frame
     frame:SetTitle('');frame:SetSize(math.min(ScrW()-32,1040),math.min(ScrH()-32,740));frame:Center();frame:MakePopup()
@@ -250,7 +259,7 @@ net.Receive('LOD_WalletSnapshot',function()
     W.Snapshot=state
     if UI.ActivePage=='wallet' and IsValid(W.Frame) then W:Render() end
 end)
-net.Receive('LOD_WalletOpen',function() W.Section='equipment';W:Open() end)
+net.Receive('LOD_WalletOpen',function() W.Section='equipment';W.ExchangeAction='sell_items';W:Open() end)
 net.Receive('LOD_JunkResult',function()
     local result=net.ReadTable()
     if not istable(result) or not W.ExchangePending or result.request~=W.ExchangePending.request then return end

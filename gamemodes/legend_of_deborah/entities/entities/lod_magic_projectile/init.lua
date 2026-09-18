@@ -47,6 +47,7 @@ function ENT:Initialize()
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(form == "watermelon" and Color(255,255,255,255) or Color(color.r, color.g, color.b, 245))
     if form == "super_ball" then LOD.MagicForms:InitSuperBall(self) end
+    if form == "watermelon" then LOD.MagicForms:InitWatermelon(self) end
     if form ~= "bomb" and form ~= "watermelon" and form ~= "super_ball" and util.SpriteTrail then
         self.LODTrail = util.SpriteTrail(self, 0, color, false, 7, 1, 0.22,
             1 / 8, "trails/laser.vmt")
@@ -76,6 +77,7 @@ function ENT:Think()
     self.LODLastThink = now
     if dt <= 0 then self:NextThink(CurTime()) return true end
     if self.LODFormId=="super_ball" then return LOD.MagicForms:StepSuperBall(self,dt,traceFilter(self)) end
+    if self.LODFormId=="watermelon" then return LOD.MagicForms:StepWatermelon(self,dt,traceFilter(self)) end
     steer(self, dt)
 
     local form = tostring(self.LODFormId or "bolt")

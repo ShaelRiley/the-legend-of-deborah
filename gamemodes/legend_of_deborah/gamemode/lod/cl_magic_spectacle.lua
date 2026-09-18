@@ -14,6 +14,9 @@ function S:Begin(fx)
     self.NextSound=CurTime()+.12
     local explosive=fx.form=='bomb' or fx.form=='missile' or fx.form=='blast'
     if fx.form=='super_ball' then return end -- projectile owns its bounded bounce sound
+    if fx.form=='watermelon_bounce' then
+        sound.Play('physics/flesh/flesh_impact_hard1.wav',fx.destination,65,115,.5);return
+    end
     if fx.form=='watermelon' then
         sound.Play('physics/flesh/flesh_squishy_impact_hard1.wav',fx.destination,76,100,.7)
         return
@@ -39,6 +42,9 @@ function S:Draw(fx,age,low)
     local explosive=fx.form=='bomb' or fx.form=='missile' or fx.form=='blast'
     local extent=explosive and math.min(110,math.max(36,(fx.radius or 0)*.55)) or 36
     local n=low and 4 or 12
+    if fx.form=='watermelon_bounce' then
+        sprite(p,18+25*t,18+25*t,Color(145,225,75,230*fade));return
+    end
     if fx.form=='watermelon' then
         -- A finite spray of rind/flesh/seed pieces, no physics gibs or entities.
         for i=1,(low and 8 or 18) do

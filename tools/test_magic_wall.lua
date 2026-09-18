@@ -58,7 +58,7 @@ end
 util.TraceLine=trace;util.TraceHull=trace
 local context={spatialBonusCells=1}
 local p=assert(F:WallPlacement(owner,context));assert(p.maxs.y-p.mins.y<260 and p.maxs.y-p.mins.y>=240)
-assert(F:WallWidth({spatialBonusCells=4})>F:WallWidth(context) and F:WallWidth({spatialBonusCells=100})==1152)
+assert(F:WallWidth({spatialBonusCells=4})==288 and F:WallWidth({spatialBonusCells=100})==288)
 local hero=fixture.actor('teammate')
 function hero:GetOwner() end
 function hero:GetParent() end
@@ -142,7 +142,7 @@ target.pos=Vector(215,0,36);now=4;local before=hits;wall:Think();assert(hits==be
 table.remove(boxes)
 owner.ps.magic=100;LOD.Magic.NextCast[owner]=0
 local ok,why=F:CastSelected(owner);assert(not ok and why=='wall_cap' and owner.ps.magic==100)
-now=11;wall:Think();assert(not wall.valid and not next(F.ActiveWalls) and owner.nw.LOD_WallRemaining==1)
+now=wall.ExpiresAt+.1;wall:Think();assert(not wall.valid and not next(F.ActiveWalls) and owner.nw.LOD_WallRemaining==1)
 table.remove(boxes)
 local function cast() owner.ps.magic=100;LOD.Magic.NextCast[owner]=0;assert(F:CastSelected(owner));return spawned[#spawned] end
 local reset=cast();R.State.LevelSeed=R.State.LevelSeed+1;reset:Think();assert(not reset.valid)
@@ -184,7 +184,7 @@ owner.ps.progressionState.classId='rogue';commands.lod_magic_test_all(owner)
 assert(#owner.ps.progressionState.magicFormIds==8)
 assert(not LOD.MagicProgression:SelectForm(owner.ps.progressionState,'wall'))
 owner.ps.progressionState.selectedMagicFormId='wall';assert(not F:SelectedCastState(owner))
-print('MAGIC_WALL_PASS: geometric gap fitting, Wisdom cap, Hero overlap, enemy rejection, cast cost/cap, both-side cover/contact/riders, stun factor, lifecycle, ten-Form dev grant and class enforcement')
+print('MAGIC_WALL_PASS: geometric gap fitting, fixed width/Wisdom duration, Hero overlap, enemy rejection, cast cost/cap, both-side cover/contact/riders, stun factor, lifecycle, ten-Form dev grant and class enforcement')
 
 -- Production collision rule, in both argument orders, keeps human Soldiers solid.
 local file=assert(io.open('gamemodes/legend_of_deborah/gamemode/shared.lua'))

@@ -342,8 +342,11 @@ function Magic:CastForceShout(ply)
     return true
 end
 
-net.Receive("LOD_MagicCastRequest", function(_, ply)
-    Magic:CastForceShout(ply)
+net.Receive("LOD_MagicCastRequest", function(bits, ply)
+    if bits>8 then return end
+    local button=bits>=3 and net.ReadUInt(3) or 2
+    if button<2 or button>5 then return end
+    Magic:CastForceShout(ply,button)
 end)
 
 -- RMB belongs to Magic globally in the current build. Strip secondary-fire input

@@ -7,7 +7,13 @@ function F:WallPreviewState(ply)
     if not IsValid(ply) or not ply:Alive() or not run or not run.State
         or run.State.Failed or run.State.LevelCleared or run.State.SimulationFrozen then return nil end
     local state,form,content=self:SelectedCastState(ply)
-    if not state or not form or form.id~='wall' then return nil end
+    if not state then return nil end
+    if not form or form.id~='wall' then
+        for button=3,5 do
+            if state.magicBindings[tostring(button)]=='wall' then state,form,content=self:SelectedCastState(ply,button);break end
+        end
+    end
+    if not form or form.id~='wall' then return nil end
     local p,reason,ghost=self:WallPlacement(ply,{spatialBonusCells=self:SpatialBonusCells(ply,state)})
     local canPlace=p~=nil
     local status=LOD.RPGStatusElements

@@ -76,7 +76,8 @@
         ]
       ],
       "text": [
-        "Wallet and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock."
+        "Wallet and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock.",
+        "In the Spellbook, click a Form with LMB or RMB to bind RMB, or click it with M3, M4, or M5 to bind that mouse button. Binding labels appear on the Forms. Your selected Content applies to all bound Forms; bindings stay with your character through reconnects and dungeon transitions. A single-Form character keeps RMB casting."
       ]
     },
     {
@@ -373,7 +374,7 @@
       "title": "Put a spell together",
       "art": "deborah:5",
       "text": [
-        "Open I for the Spellbook. Choose an owned Form to decide how the spell travels, then an owned Content to decide its element and rider. Cast with right mouse. The Form's base cost and the Content's surcharge combine before applicable cost rules.",
+        "Open I for the Spellbook. Choose an owned Form to decide how the spell travels, then an owned Content to decide its element and rider. Cast with the Form’s bound mouse button (RMB by default). The Form's base cost and the Content's surcharge combine before applicable cost rules.",
         "Every Hero begins with one random direct-damage Form and RAW Content. Wall and Summon never replace that starting spell; Wizards may learn them through later grants. Wizards receive an additional distinct Content at Level 1. The normal Content grants occur at Levels 4, 8, and 14. Only a Wizard can acquire or cast SUMMON or WALL.",
         "Magic tops out at 100. Intelligence governs regeneration; Wisdom governs spell power and approved range, radius, and utility scaling. A spell's visible area boundary marks its actual area, while a Beam ends where world geometry stops it.",
         "When holding any throwable, its controls take priority. Switch back to a normal weapon to cast.",
@@ -414,7 +415,7 @@
         ],
         [
           "WATERMELON · 24",
-          "3d6; lob a magical watermelon that shatters into rind, flesh and seeds. Wider area, slower flight than Bomb; WIS scales radius."
+          "Roll 1d6 bounces on throw. Enemy contacts deal 1d6 with a brief per-target cooldown; the last bounce shatters for 2d6 area damage. Lower base blast radius than Bomb, with WIS radius scaling. Expires after eight seconds; clear rind/flesh effects mark the shatter."
         ],
         [
           "SUMMON · 12",
@@ -422,7 +423,7 @@
         ],
         [
           "WALL · 35",
-          "Wizard only: 10-second barrier; Heroes walk through, enemies are blocked. Contact deals 2d6 with 2.5× normal hit stun, once per second per target. One active Wall per caster. Width grows with Wisdom and fits the available gap. Aim where you need the Wall: its blue preview marks a valid cast; a red preview and text explain blocked placement, cooldown, capacity or insufficient Magic. The barrier fits under low ceilings and can overhang a ledge from its ground anchor."
+          "Wizard only. A barrier up to 288 units wide, 112 high and 12 thick fits nearby clear space; WIS increases its 10-second duration by two seconds per positive modifier, up to 30 seconds. Heroes pass through; enemies are blocked and take 2d6 contact damage. The server preview shows the actual fitted shape and placement reason. Only one active Wall per caster."
         ]
       ],
       "text": [
@@ -762,7 +763,7 @@
         "A successful rescue creates a pool of 100 × Dungeon Level Debs. Qualifying Soldier-attributable Hero life losses assign 11% each to the Soldier side, capped at 33% of the pool; Soldier damage contributions determine its allocation.",
         "The remaining Hero pool is divided half equally and half by damage and effective allied healing, with hostile-loss adjustments. Eligible dead or disconnected participants can retain their claim. Switching to Soldier play forfeits a Hero share.",
         "Rescue awards increase wallet balance and lifetime rescue earnings. DFT sales increase spendable balance but do not inflate that lifetime rescue score. The staging Heroes of Legend board records party rescue achievements; it is not a count of monster kills.",
-        "At Debbie, choose CARRIED EQUIPMENT — SELL / FUSE. Drag ordinary equipment into the exchange pile, or click to add/remove it. Choose Sell to receive its listed Value in $DEB, or select two to eight items and choose Fuse to receive one legal generated item worth 85–100% of their combined value. Confirm permanently consumes the pile; equipped items are unequipped only when the exchange succeeds. Fused gear returns to your inventory. Choose DFTs — RECREATE / SELL for the separate token services. Free starting weapons and items recreated from DFTs cannot be sold or fused. The Stakeholders board left of the mirror ranks the wealthiest half of connected players by $DEB plus the sale value of their DFT holdings."
+        "At Debbie, choose Fuse Equipment, Sell Equipment, Fuse DFTs, or Sell DFTs. Drag eligible items into the labeled pile, review the value, and confirm. You can also click items to add or remove them. Closing the menu cancels staging without moving anything. Sales award the displayed value in $DEB. Fusion consumes two to eight inputs and returns one legal item worth 85–100% of their combined value and more than any single input; unsupported piles are rejected intact. Equipment fusion returns carried gear; DFT fusion returns a persistent upgraded token. DFT-created gear and free starting weapons cannot be sold or fused. If any fused DFT was recreated this run, the new token remains used for this run. DFT Collection / Recreate retains the free recreation service."
       ]
     },
     {

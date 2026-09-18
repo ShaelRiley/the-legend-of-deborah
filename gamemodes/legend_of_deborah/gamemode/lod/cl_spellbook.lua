@@ -4,7 +4,7 @@ LOD.Spellbook = LOD.Spellbook or {}
 local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
-    wall = "Wizard barrier / 10s", super_ball = "Ricocheting multi-hit", watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    wall = "Barrier / WIS duration", super_ball = "Ricocheting multi-hit", watermelon = "1d6 bounces + shatter", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
     missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
@@ -51,6 +51,11 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         surface.DrawOutlinedRect(0,0,width,height,selected and 2 or 1)
         local label,color = Book:Availability(entry,kind)
         local title=string.upper(entry.displayName or entry.id)
+        if kind=='form' then
+            for key,id in pairs(Book.Snapshot.bindings or {}) do
+                if id==entry.id then title=title..' ['..(key=='2' and 'RMB' or 'M'..key)..']' end
+            end
+        end
         local titleFont="LOD_SheetSubheading";surface.SetFont(titleFont)
         if surface.GetTextSize(title)>width-8 then titleFont="LOD_SheetSmall" end
         draw.SimpleText(title,titleFont,
@@ -68,13 +73,23 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
             surface.SetDrawColor(C.blue);surface.DrawRect(8,height-6,width-16,2)
         end
     end
-    button.DoClick = function()
+    local function select(buttonCode)
         if not entry.owned then return end
         surface.PlaySound("buttons/button14.wav")
-        net.Start("LOD_MagicSpellbookSelect")
-        net.WriteUInt(kind == "form" and 0 or 1, 1)
-        net.WriteString(entry.id)
+        if kind=='form' then
+            local button=({[MOUSE_MIDDLE]=3,[MOUSE_4]=4,[MOUSE_5]=5})[buttonCode] or 2
+            net.Start("LOD_MagicBindForm");net.WriteString(entry.id);net.WriteUInt(button,3)
+        else
+            net.Start("LOD_MagicSpellbookSelect");net.WriteUInt(1,1);net.WriteString(entry.id)
+        end
         net.SendToServer()
+    end
+    button.DoClick=function() select(MOUSE_LEFT) end
+    button.DoRightClick=function() select(MOUSE_RIGHT) end
+    local nativePressed=button.OnMousePressed
+    button.OnMousePressed=function(self,code)
+        if code==MOUSE_MIDDLE or code==MOUSE_4 or code==MOUSE_5 then select(code)
+        elseif nativePressed then nativePressed(self,code) end
     end
     return button
 end
@@ -108,7 +123,7 @@ function Book:Open()
         end
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
         draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,303,C.red)
-        draw.SimpleText("Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
+        draw.SimpleText("Click a Form with LMB/RMB to bind RMB; click with M3/M4/M5 to bind that button.",
             "LOD_SheetBody",24,h-64,C.ink)
         draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
             "LOD_SheetSmall",24,h-38,C.muted)

@@ -2,6 +2,14 @@
 LOD = LOD or {}
 LOD.Equipment = LOD.Equipment or {}
 local E = LOD.Equipment
+E.MaximumStoredEquipment = 32
+-- Capacity is a character rule, shared by admission, exchange and presentation.
+-- No current authored perk/affix adds slots; future grants use this same delta.
+function E:StorageCapacity(state)
+    if CLIENT and state and state.storageCapacity then return state.storageCapacity end
+    return math.max(0,math.min(256,math.floor(self.MaximumStoredEquipment+(tonumber(state and state.capacityBonus) or 0))))
+end
+
 E.SlotOrder = {"head", "body", "legs", "feet", "left_hand", "right_hand", "left_arm", "throwable"}
 E.SlotLabels = {head="Head", body="Body", legs="Legs", feet="Feet", left_hand="Left Hand",
     right_hand="Right Hand", left_arm="Left Arm Accessory", throwable="Throwable"}

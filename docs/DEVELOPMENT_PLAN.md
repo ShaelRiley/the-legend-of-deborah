@@ -1,4 +1,14 @@
-# Current candidate — Equipment access, real capacity and Debbie exchange
+# Current candidate — integrated equipment, exchanges and Magic
+
+Author-directed six-part continuation preserves `402ecb2` and extends the server
+inventory/SQLite/UI/Magic authorities: four Debbie drag-and-drop actions, durable
+DFT exclusions and fusion recreation inheritance, authoritative capacity snapshots,
+feet-hull Wall placement with Wisdom duration, server-rolled Watermelon bounces,
+and persisted RMB/M3/M4/M5 bindings. All 116 automated suites pass. See
+[implementation, tuning and native acceptance](EQUIPMENT_MAGIC_INTEGRATION_20260918.md).
+Native multiplayer acceptance remains pending; no server deployment is included.
+
+# Previous candidate — Equipment access, real capacity and Debbie exchange
 
 Author-directed continuation from `cace700`: O matches P/I menu input mechanics;
 the inventory displays actual equipment capacity and separate consumable stacks;

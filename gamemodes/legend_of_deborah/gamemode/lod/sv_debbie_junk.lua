@@ -33,17 +33,58 @@ function E:FusionResult(seed,value,context)
     end
     if best and difference<=value*.15 and self:ValidateWearable(best) then return best end
 end
+function C:ExchangeTokens(ply,action,ids)
+    if busy[ply] or not self:CanUseStatue(ply) then return false,'Use Debbie in staging.' end
+    if action~='sell_tokens' and action~='fuse_tokens' then return false,'Invalid exchange.' end
+    if type(ids)~='table' or #ids<1 or #ids>8 or action=='fuse_tokens' and #ids<2 then return false,'Select 2–8 DFTs to fuse, or 1–8 to sell.' end
+    local seen={}
+    for _,token in ipairs(ids) do
+        if type(token)~='string' or #token>220 or seen[token] then return false,'Invalid or duplicate token.' end
+        seen[token]=true
+    end
+    table.sort(ids)
+    local id=self:Account(ply)
+    local event=action..':'..id..':'..util.CRC(table.concat(ids,'|'))
+    busy[ply]=true
+    local ok,receipt=Store:Transaction(event,action,{id},function(accounts)
+        local account=accounts[id];local value,used,highest=0,false,0
+        for _,key in ipairs(ids) do
+            local token=account.tokens[key]
+            if not token then return false,'Token unavailable. Refresh your pile.' end
+            value=value+E:Value(token.item);highest=math.max(highest,E:Value(token.item))
+            used=used or token.lastRun==Run.State.RunId
+        end
+        local result
+        if action=='fuse_tokens' then
+            result=E:FusionResult(LOD.Seeds.Derive(Run.State.CampaignSeed,event),value,'dft-fused:'..util.CRC(event))
+            if not result or E:Value(result)<=highest then return false,'No upgraded equipment fits this pile’s value. Try a different combination.' end
+        end
+        for _,key in ipairs(ids) do account.tokens[key]=nil end
+        if result then
+            local key=id..':fusion:'..util.CRC(event)
+            -- Fusion cannot refresh a recreation spent by any constituent token.
+            account.tokens[key]={id=key,item=result,reason='DFT fusion',source=event,depth=Run.State.Level or 1,
+                run=Run.State.RunId,lastRun=used and Run.State.RunId or nil,inputs=table.Copy(ids)}
+        else account.balance=account.balance+value end
+        local record={amount=result and 0 or value,inputValue=value,items=ids,item=result and result.id}
+        Store:History(id,event,action,record)
+        return true,record
+    end)
+    busy[ply]=nil
+    self:Sync(ply)
+    return ok,receipt
+end
 function C:ExchangeJunk(ply,action,ids)
     if busy[ply] or not self:CanUseStatue(ply) then return false,'Use Debbie in staging.' end
     if action~='sell_items' and action~='fuse_items' then return false,'Invalid exchange.' end
     if type(ids)~='table' or #ids<1 or #ids>8 or (action=='fuse_items' and #ids<2) then return false,'Select 2–8 items to fuse, or 1–8 to sell.' end
     local ps=Run:GetPlayerState(ply);local current=E:Ensure(ps)
-    local seen,value={},0
+    local seen,value,highest={},0,0
     for _,id in ipairs(ids) do
         if type(id)~='string' or #id>220 or seen[id] then return false,'Invalid or duplicate item.' end
         local rejection=E:JunkRejection(current,id)
         if rejection then return false,rejection end
-        seen[id]=true;value=value+E:Value(current.items[id])
+        seen[id]=true;value=value+E:Value(current.items[id]);highest=math.max(highest,E:Value(current.items[id]))
     end
     table.sort(ids)
     local nextState=table.Copy(current)
@@ -52,8 +93,9 @@ function C:ExchangeJunk(ply,action,ids)
     local result
     if action=='fuse_items' then
         result=E:FusionResult(LOD.Seeds.Derive(Run.State.CampaignSeed,event),value,'fused:'..util.CRC(event))
-        if not result then return false,'No legal equipment fits this pile’s combined value. Try a different combination.' end
+        if not result or E:Value(result)<=highest then return false,'No upgraded equipment fits this pile’s value. Try a different combination.' end
         if current.items[result.id] then return false,'This fusion was already completed.' end
+        if not E:CanStore(nextState,result) then return false,"Free inventory space before fusing." end
         nextState.items[result.id]=result
     end
     busy[ply]=true
@@ -94,8 +136,10 @@ net.Receive('LOD_JunkExchange',function(bits,ply)
     if count>8 then return end
     local ids={};for i=1,count do ids[i]=net.ReadString() end
     local request=net.ReadUInt(16)
-    local ok,reason=C:ExchangeJunk(ply,action,ids)
-    local message=ok and (action=='sell_items' and ('Sold for '..reason.amount..' $DEB.') or 'Fusion complete. Your new equipment is in your inventory.')
+    local tokens=action=='sell_tokens' or action=='fuse_tokens'
+    local ok,reason
+    if tokens then ok,reason=C:ExchangeTokens(ply,action,ids) else ok,reason=C:ExchangeJunk(ply,action,ids) end
+    local message=ok and ((action=='sell_items' or action=='sell_tokens') and ('Sold for '..reason.amount..' $DEB.') or (tokens and 'Fusion complete. Your upgraded DFT is in your collection.' or 'Fusion complete. Your new equipment is in your inventory.'))
         or (type(reason)=='string' and reason or 'Exchange failed; inventory preserved.')
     if not ok then C:Report(ply,message,'junk_denied') end
     net.Start('LOD_JunkResult');net.WriteTable({request=request,ok=ok==true,message=message});net.Send(ply)

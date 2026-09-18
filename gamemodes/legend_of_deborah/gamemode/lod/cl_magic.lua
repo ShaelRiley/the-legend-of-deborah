@@ -15,24 +15,37 @@ local function activePlayer()
     return IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_PlayedIdentity", false) and ply or nil
 end
 
+local extraHeld={}
+local function inputCovered()
+    return LOD.UI and LOD.UI.ActivePage or gui.IsGameUIVisible() or gui.IsConsoleVisible()
+        or vgui.CursorVisible() or IsValid(vgui.GetKeyboardFocus())
+        or (chat and chat.IsTyping and chat.IsTyping())
+end
+local function requestCast(button)
+    net.Start("LOD_MagicCastRequest");net.WriteUInt(button,3);net.SendToServer()
+end
 hook.Add("CreateMove", "LOD_MagicPredictedInput", function(cmd)
-    local ply = activePlayer()
-    if not ply then
-        attack2Held = false
-        return
+    local ply=activePlayer()
+    local down=cmd:KeyDown(IN_ATTACK2)
+    local covered=inputCovered()
+    local throwable=ply and LOD.Equipment and LOD.Equipment:IsActive(ply)
+    if ply and not covered and not throwable and down and not attack2Held then requestCast(2) end
+    attack2Held=down
+    local snapshot=LOD.Spellbook and LOD.Spellbook.Snapshot
+    for button,key in pairs({[3]=MOUSE_MIDDLE,[4]=MOUSE_4,[5]=MOUSE_5}) do
+        local held=input.IsMouseDown(key)
+        if ply and not covered and not throwable and held and not extraHeld[button]
+            and snapshot and snapshot.bindings and snapshot.bindings[tostring(button)] then requestCast(button) end
+        extraHeld[button]=held
     end
-
-    if LOD.Equipment and LOD.Equipment:IsActive(ply) then
-        attack2Held = cmd:KeyDown(IN_ATTACK2)
-        return
-    end
-    local down = cmd:KeyDown(IN_ATTACK2)
-    if down and not attack2Held then
-        net.Start("LOD_MagicCastRequest")
-        net.SendToServer()
-    end
-    attack2Held = down
-    cmd:RemoveKey(IN_ATTACK2)
+    if not throwable or covered then cmd:RemoveKey(IN_ATTACK2) end
+    if covered then cmd:RemoveKey(IN_ATTACK) end
+end)
+-- Consume native bind actions for assigned auxiliary buttons (e.g. +zoom).
+hook.Add("PlayerBindPress","LOD_MagicAuxiliaryBindings",function(ply,bind,pressed,code)
+    local snapshot=LOD.Spellbook and LOD.Spellbook.Snapshot
+    local button=({[MOUSE_MIDDLE]=3,[MOUSE_4]=4,[MOUSE_5]=5})[code]
+    if button and snapshot and snapshot.bindings and snapshot.bindings[tostring(button)] then return true end
 end)
 
 net.Receive("LOD_MagicShoutFX", function()

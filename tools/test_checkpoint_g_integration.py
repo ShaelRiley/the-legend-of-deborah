@@ -114,6 +114,8 @@ SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54
 SUITES.append(("Hero Weakness & Identity Perks", ["python3", "tools/run_lua54.py", "tools/test_identity_perks_weakness.lua"]))
 SUITES.append(("Snapshot Burst & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_snapshot_delivery.lua"]))
 SUITES.append(("Watcher Scan Dispatch", ["python3", "tools/run_lua54.py", "tools/test_watcher_dispatch.lua"]))
+SUITES.append(("Watermelon Bounce and Shatter Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_watermelon_bounces.lua"]))
+SUITES.append(("Multiple Mouse Magic Bindings", ["python3", "tools/run_lua54.py", "tools/test_magic_mouse_bindings.lua"]))
 SUITES.append(("Wall Placement and Preview", ["python3", "tools/run_lua54.py", "tools/test_wall_placement_preview.lua"]))
 SUITES.append(("Wall Form and Magic Testkit", ["python3", "tools/run_lua54.py", "tools/test_magic_wall.lua"]))
 SUITES.append(("Super Ball Ricochet Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_super_ball.lua"]))

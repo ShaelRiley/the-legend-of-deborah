@@ -42,6 +42,7 @@ function E:Sync(ply)
     local ps = heroState(ply)
     local state = ps and self:Ensure(ps)
     if self.RefreshDerived then self:RefreshDerived(ply, ps) end
+    if state then state.storageCapacity=self:StorageCapacity(state) end
     if state and LOD.RPGAbilityRules and LOD.RPGAbilityRules.BlockChance then state.blockChance=LOD.RPGAbilityRules:BlockChance(ply) end
     local item = self:Equipped(state, "throwable")
     local def = self:Definition(item)
@@ -51,7 +52,9 @@ function E:Sync(ply)
         LOD.SnapshotDelivery:Queue(ply, "LOD_EquipmentSnapshot", function(recipient)
             -- Resolve ownership at dispatch, including Hero/Soldier transitions.
             local current = heroState(recipient)
-            return current and E:Ensure(current) or {items={}, slots={}}
+            local snapshot=current and E:Ensure(current) or {items={}, slots={}}
+            snapshot.storageCapacity=E:StorageCapacity(snapshot)
+            return snapshot
         end, writeSnapshot)
     else
         net.Start("LOD_EquipmentSnapshot")

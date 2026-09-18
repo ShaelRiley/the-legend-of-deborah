@@ -39,7 +39,17 @@ local bad,why=F:WallPlacement(owner,ctx);assert(not bad and why=='ground')
 reset();boxes[2]={lo=Vector(-10,-10,1),hi=Vector(500,10,200)}
 bad,why=F:WallPlacement(owner,ctx);assert(not bad and why=='blocked')
 reset();boxes[1]={lo=Vector(-2000,-2000,-450),hi=Vector(2000,2000,-418)}
-bad,why=F:WallPlacement(owner,ctx);assert(not bad and why=='ground')
+bad,why=F:WallPlacement(owner,ctx);assert(not bad and why=='reach')
+reset()
+local ordinaryLine=util.TraceLine
+util.TraceLine=function(d)
+    if d.endpos.z<d.start.z and math.abs(d.endpos.x-d.start.x)<.001 and math.abs(d.endpos.y-d.start.y)<.001 then
+        return {Hit=false,Fraction=1,HitPos=d.endpos}
+    end
+    return ordinaryLine(d)
+end
+assert(F:WallPlacement(owner,ctx),'Generated-floor feet hull must succeed even when the vertical line probe misses')
+util.TraceLine=ordinaryLine
 -- Broad deterministic aim corpus: not one hand-picked horizontal test ray.
 reset();local successes=0
 for _,pitch in ipairs({-80,-60,-30,0,30,60,80}) do

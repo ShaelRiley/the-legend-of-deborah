@@ -194,3 +194,16 @@ assert(E.InventoryView.Capacity.text:find('31 / 32',1,true))
 for id,item in pairs(E.Snapshot.items) do if E:Definition(item).wearable then E:Equip(E.Snapshot,id,'left_hand');break end end
 E:RefreshInventory();assert(emptyTiles()==1,'Equipping does not create capacity')
 print('EQUIPMENT_CAPACITY_INPUT_PASS: real capacity and stack separation; popup/single-player/bound input, debounce, chat and text entry')
+
+-- Dynamic capacity is one shared count; shrink retains overflow rather than losing gear.
+E.Snapshot.capacityBonus=4;E.Snapshot.storageCapacity=nil
+E:RefreshInventory();assert(emptyTiles()==5 and E:StorageCapacity(E.Snapshot)==36)
+local retained=E:StoredEquipmentCount(E.Snapshot)
+E.Snapshot.capacityBonus=-4;E:RefreshInventory()
+assert(emptyTiles()==0 and E:StoredEquipmentCount(E.Snapshot)==retained)
+assert(E.InventoryView.Capacity.text:find('OVER CAPACITY',1,true))
+local candidate=E:Generate(777,5,'ring','capacity:new')
+assert(not E:CanStore(E.Snapshot,candidate),'Overflow blocks new pickups')
+local saved=table.Copy(E.Snapshot);assert(E:StorageCapacity(saved)==28,'Capacity modifier persists with character bag')
+E.Snapshot.capacityBonus=4;E:RefreshInventory();assert(E:CanStore(E.Snapshot,candidate))
+print('DYNAMIC_CAPACITY_PASS: expansion/shrink, exact vacancies, preserved overflow, shared admission and state roundtrip')

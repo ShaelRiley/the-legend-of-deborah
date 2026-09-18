@@ -59,7 +59,7 @@ function F:ConstrainWallMovement(actor,from,to)
 end
 function F:WallWidth(context)
     local t=self.Tuning.Wall
-    return math.min(t.maxWidth,t.baseWidth+t.widthPerBonus*math.max(1,context.spatialBonusCells or 1))
+    return t.baseWidth
 end
 function F:WallPlacement(ply,context)
     local t=self.Tuning.Wall
@@ -89,12 +89,17 @@ function F:WallPlacement(ply,context)
     local reason='space'
     local preview
     local function fit(candidate)
-        local floor=util.TraceLine({start=candidate+Vector(0,0,t.clearance*2),
-            endpos=candidate-Vector(0,0,t.groundProbe),mask=MASK_SOLID,filter=filter})
-        if not floor.Hit or floor.StartSolid or floor.HitNormal.z<.65 then return nil,'ground' end
+        -- Use the same small feet hull/collision group as generated-floor support.
+        -- Thin line probes are not a reliable support test for SOLID_BBOX slabs.
+        local floor=util.TraceHull({start=candidate+Vector(0,0,t.clearance*2),
+            endpos=candidate-Vector(0,0,t.groundProbe),mins=Vector(-2,-2,0),maxs=Vector(2,2,2),
+            mask=MASK_SOLID,collisiongroup=COLLISION_GROUP_PLAYER_MOVEMENT,filter=filter})
+        if floor.StartSolid or floor.AllSolid then return nil,'anchor_blocked' end
+        if not floor.Hit then return nil,'ground' end
+        if not floor.HitNormal or floor.HitNormal.z<.65 then return nil,'slope' end
         local origin=floor.HitPos+Vector(0,0,t.clearance)
         -- Only exposed ground in reach; no snapping through floors or far down shafts.
-        if origin:DistToSqr(eye)>(t.reach+72)^2 then return nil,'ground' end
+        if origin:DistToSqr(eye)>(t.reach+72)^2 then return nil,'reach' end
         local sight=util.TraceLine({start=eye,endpos=origin+Vector(0,0,t.clearance),mask=MASK_SOLID,filter=filter})
         if sight.StartSolid or sight.Hit and (sight.Fraction or 0)<.995 then return nil,'blocked' end
         local head=util.TraceHull({start=origin,endpos=origin+Vector(0,0,t.height),
@@ -151,7 +156,9 @@ function F:_CastWall(ply,form,content,context)
     ent.LODWallNormal=p.normal;ent.LODWallHits={};ent.LODWallRiders={}
     ent.LODRunState=LOD.RunManager.State;ent.LODLevelSeed=ent.LODRunState.LevelSeed
     ent:SetPos(p.origin);ent:SetWallMins(p.mins);ent:SetWallMaxs(p.maxs)
-    ent:SetExpiresAt(CurTime()+self.Tuning.Wall.lifetime)
+    local wis=LOD.RPGAbilityRules:Derived(ply).wisMod or 0
+    ent:SetExpiresAt(CurTime()+math.min(self.Tuning.Wall.maxLifetime,
+        self.Tuning.Wall.lifetime+self.Tuning.Wall.durationPerWis*math.max(0,wis)))
     ent:SetColor(self.ContentColors[ent.LODContentId] or self.ContentColors.raw)
     ent:Spawn();ent:Activate()
     self.ActiveWalls[ent]=ply;self:SyncWalls(ply)

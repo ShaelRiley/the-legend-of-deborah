@@ -657,8 +657,9 @@ bomb:Initialize()
 assert(bomb:GetMagicForm()=="bomb" and trailCount==0,"bomb identity replicated and no missile trail")
 assert(bomb.LODVelocity.x==900 and bomb.LODVelocity.z==240,"existing lob launch velocity preserved")
 -- The new Form shares swept movement and cleanup, without physics debris.
+dofile(root..'sv_magic_watermelon.lua')
 local melon=setmetatable({valid=true,LODFormId='watermelon',LODCaster=attacker,
- LODDirection=Vector(1,0,0),LODSpeed=580,LODMaximumTravel=960}, {__index=env.ENT})
+ LODDirection=Vector(1,0,0),LODSpeed=580,LODMaximumTravel=4000,LODCastContext={castSerial=1}}, {__index=env.ENT})
 melon.NetworkVar=bomb.NetworkVar;melon:SetupDataTables()
 for _,name in ipairs({'SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetAngles','NextThink'}) do melon[name]=noop end
 melon.SetModel=function(self,value) self.model=value end
@@ -666,21 +667,16 @@ melon.SetColor=function(self,value) self.color=value end
 melon.SetPos=function(self,value) self.pos=value end;melon.GetPos=function(self) return self.pos end
 melon.Remove=function(self) self.valid=false end
 local melonNow=10;env.CurTime=function() return melonNow end
+local savedCountRNG=LOD.CombatRolls._RNG
+LOD.CombatRolls._RNG=function() return {Int=function() return 1 end} end
 melon:SetPos(Vector());melon:Initialize()
+LOD.CombatRolls._RNG=savedCountRNG
 assert(melon.model=='models/props_junk/watermelon01.mdl' and melon.color.r==255 and trailCount==0)
 assert(melon.LODVelocity.x==580 and melon.LODVelocity.z==240)
-local priorHull,priorImpact=util.TraceHull,forms.ProjectileImpact
-local impacts=0
-util.TraceHull=function(trace)
- assert(trace.mask==MASK_SOLID and trace.mins.x==-7 and trace.maxs.z==7)
- return {Hit=true,HitPos=trace.endpos}
-end
-forms.ProjectileImpact=function(_,ent,trace) assert(ent==melon and trace.Hit);impacts=impacts+1;ent:Remove() end
-melonNow=10.05;melon:Think();assert(impacts==1 and not melon.valid and melon.LODVelocity.z<240)
-melon.valid=true;melon.LODCaster={valid=false};melon:Think();assert(not melon.valid and impacts==1)
+melon.valid=true;melon.LODCaster={valid=false};melon:Think();assert(not melon.valid)
 melon.valid=true;melon.LODCaster=attacker;melon.LODLevelSeed='previous-level';melon:Think()
-assert(not melon.valid and impacts==1,'Level retirement must not detonate projectiles')
-util.TraceHull=priorHull;forms.ProjectileImpact=priorImpact;env.CurTime=CurTime
+assert(not melon.valid,'Level retirement must not detonate projectiles')
+env.CurTime=CurTime
 local spheres,fuses,lights=0,0,0
 local soundStarts,soundStops=0,0
 local materialParams={}

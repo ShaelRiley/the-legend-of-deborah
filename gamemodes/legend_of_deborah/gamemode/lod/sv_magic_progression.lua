@@ -37,7 +37,7 @@ RPG.MagicContents = RPG.MagicContents or {
 }
 
 -- Explicit author addition; also install it on a Lua refresh of an existing catalog.
-RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=3,damageSides=6,magicCost=24}
+RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=2,damageSides=6,magicCost=24}
 RPG.MagicForms.super_ball = {id="super_ball",displayName="Super Ball",damageDice=2,damageSides=6,magicCost=32}
 RPG.MagicForms.wall = {id="wall",displayName="Wall",wizardOnly=true,utility=true,damageDice=2,damageSides=6,magicCost=35}
 local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball", "wall"}
@@ -55,7 +55,7 @@ local function addSchemaField(name)
     fields[#fields + 1] = name
 end
 for _, field in ipairs({
-    "magicFormIds", "selectedMagicFormId", "selectedMagicContentId",
+    "magicFormIds", "selectedMagicFormId", "selectedMagicContentId", "magicBindings",
     "magicGrantMilestones", "classMilestoneAbilityDelta",
     "favoredEnemyStacks", "favoredWeaponStacks"
 }) do addSchemaField(field) end
@@ -119,7 +119,38 @@ function MagicProgression:EnsureState(state)
     if state.selectedMagicContentId and not contains(state.contentIds, state.selectedMagicContentId) then
         state.selectedMagicContentId = nil
     end
+    self:NormalizeBindings(state)
     return state
+end
+
+-- One persisted map per character; selectedMagicFormId remains the RMB authority.
+function MagicProgression:NormalizeBindings(state)
+    local bindings,seen={},{}
+    local old=state.magicBindings or {}
+    for button=2,5 do
+        local id=button==2 and state.selectedMagicFormId or old[tostring(button)]
+        if id and contains(state.magicFormIds,id) and self:FormAllowed(state,id) and not seen[id] then
+            bindings[tostring(button)]=id;seen[id]=true
+        end
+    end
+    state.magicBindings=bindings
+end
+function MagicProgression:BindForm(state,id,button)
+    self:EnsureState(state)
+    if not state or not contains(state.magicFormIds,id) or not self:FormAllowed(state,id)
+        or not ({[2]=true,[3]=true,[4]=true,[5]=true})[button] then return false end
+    if #state.magicFormIds<2 then button=2 end
+    local b=state.magicBindings;local key=tostring(button);local previous
+    for k,v in pairs(b) do if v==id then previous=k;b[k]=nil;break end end
+    local displaced=b[key];b[key]=id
+    if previous and previous~=key then b[previous]=displaced end
+    if not b["2"] then
+        local used={};for _,v in pairs(b) do used[v]=true end
+        for _,v in ipairs(state.magicFormIds) do if not used[v] and self:FormAllowed(state,v) then b["2"]=v;break end end
+    end
+    state.selectedMagicFormId=b["2"]
+    self:NormalizeBindings(state)
+    return true
 end
 
 function MagicProgression:_GrantDistinct(state, kind, milestone, seed)
@@ -178,8 +209,7 @@ function MagicProgression:SelectForm(state, formId)
     formId = string.lower(tostring(formId or ""))
     if not self:FormAllowed(state,formId) then return false end
     if RPG.MagicForms[formId] and contains(state.magicFormIds, formId) then
-        state.selectedMagicFormId = formId
-        return true
+        return self:BindForm(state,formId,2)
     end
     return false
 end
@@ -426,6 +456,7 @@ function MagicProgression:Snapshot(state)
         costMultiplier=state and state.derivedStats and state.derivedStats.quantumCostMultiplier or 1,
         forms = forms,
         contents = contents,
+        bindings = table.Copy(state and state.magicBindings or {}),
         selectedFormId = state and state.selectedMagicFormId or nil,
         selectedContentId = state and state.selectedMagicContentId or nil,
         magicFormIds = copyArray(state and state.magicFormIds),
@@ -472,7 +503,7 @@ net.Receive("LOD_MagicSpellbookSelect", function(_, ply)
 
     if kind == "form" then
         if RPG.MagicForms[id] and contains(state.magicFormIds, id) then
-            state.selectedMagicFormId = id
+            MagicProgression:SelectForm(state,id)
         end
     else
         if id == "raw" then
@@ -481,6 +512,20 @@ net.Receive("LOD_MagicSpellbookSelect", function(_, ply)
             state.selectedMagicContentId = id
         end
     end
+    MagicProgression:SendSnapshot(ply)
+end)
+
+util.AddNetworkString("LOD_MagicBindForm")
+local bindingTimes=setmetatable({}, {__mode='k'})
+net.Receive("LOD_MagicBindForm",function(bits,ply)
+    if bits>300 or not IsValid(ply) or CurTime()<(bindingTimes[ply] or 0) then return end
+    bindingTimes[ply]=CurTime()+.1
+    local id,button=net.ReadString(),net.ReadUInt(3)
+    local run=LOD.RunManager
+    if not run or run:IsSoldierControl(ply) then return end
+    local ps=run:GetPlayerState(ply);local state=ps and ps.progressionState
+    if not state or state.actorType~='hero' then return end
+    MagicProgression:BindForm(state,id,button)
     MagicProgression:SendSnapshot(ply)
 end)
 

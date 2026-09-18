@@ -4,7 +4,6 @@ local E = assert(LOD.Equipment)
 local legacyValidate, legacyValue, legacyDescription = E.ValidateWearable, E.Value, E.Description
 local acquire = E.AcquireWearable
 E.EconomyVersion, E.ScalingDungeonCap = 2, 999
-E.MaximumStoredEquipment = 32
 E.WeaponLoot = {variantChance=.5}
 E.WeaponFamilies = {"weapon_pistol", "weapon_lod_crowbar", "weapon_shotgun", "weapon_smg1", "weapon_357", "weapon_ar2"}
 local weaponNames = {"Pistol", "Crowbar", "Shotgun", "SMG", "Revolver", "Pulse Rifle"}
@@ -269,7 +268,7 @@ function E:StoredEquipmentCount(state)
 end
 function E:CanStore(state,item,slot)
     if not state or not self:Placement(state,item,slot) then return false end
-    return self:StoredEquipmentCount(state)<self.MaximumStoredEquipment
+    return self:StoredEquipmentCount(state)<self:StorageCapacity(state)
 end
 function E:AcquireWearable(state,item,accept,slot)
     if not self:CanStore(state,item,slot) then return false end
