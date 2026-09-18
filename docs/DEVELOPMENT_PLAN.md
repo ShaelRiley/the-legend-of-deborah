@@ -1,4 +1,15 @@
-# Current candidate — audio ownership, weapon regions and Watermelon
+# Current candidate — wielded colors, ordinary pistol/crowbar loot, Super Ball
+
+The 2026-09-18 author-directed continuation from `d7fe92a` repairs the held
+render path and hand completion, adds starter-family variants to ordinary
+Dungeon-1 loot, and integrates Super Ball as the ninth Form. All 111 automated
+suites pass, including 4,800 loot samples and geometric ricochet/lifecycle tests.
+See [implementation, tuning, evidence and one native action](WIELDED_LOOT_SUPER_BALL_20260918.md).
+Native wielded colors, multiplayer presentation and bounce feel remain pending.
+Prior crash safeguards and newer gameplay systems are preserved; no deployment
+or Workshop publication is included.
+
+# Previous candidate — audio ownership, weapon regions and Watermelon
 
 The 2026-09-18 author-directed pass is implemented from `6aba7b0` on `main`.
 See [changes, tuning and finite native acceptance](AUDIO_WEAPONS_WATERMELON_20260918.md).

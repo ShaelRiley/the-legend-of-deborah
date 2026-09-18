@@ -13,6 +13,7 @@ function S:Begin(fx)
     if CurTime()<(self.NextSound or 0) then return end
     self.NextSound=CurTime()+.12
     local explosive=fx.form=='bomb' or fx.form=='missile' or fx.form=='blast'
+    if fx.form=='super_ball' then return end -- projectile owns its bounded bounce sound
     if fx.form=='watermelon' then
         sound.Play('physics/flesh/flesh_squishy_impact_hard1.wav',fx.destination,76,100,.7)
         return

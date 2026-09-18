@@ -134,6 +134,9 @@ end)
 
 hook.Add("PreDrawViewModel", "LOD_SMGHeat_ViewModel", function(vm, ply, weapon)
     if not IsValid(weapon) or weapon:GetClass() ~= "weapon_smg1" then return end
+    -- Procedural segmented draws own their materials and finish inside PreDraw.
+    -- Avoid an unpaired global tint when that draw suppresses native PostDraw.
+    if LOD.WeaponAppearance and LOD.WeaponAppearance:EntityStyle(weapon) then return end
     local _, fraction = heatColor(weapon:GetNW2Float("LOD_SMGHeat", 0))
     if fraction <= 0 then return end
     render.SetColorModulation(1, 1 - 0.78 * fraction, 1 - 0.78 * fraction)

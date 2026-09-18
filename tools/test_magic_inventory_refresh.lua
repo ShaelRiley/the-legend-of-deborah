@@ -70,7 +70,7 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 EyePos=function() return Vector(10000,0,0) end
 dofile(root..'cl_magic_area.lua');dofile(root..'cl_magic_spectacle.lua')
 local S=LOD.MagicSpectacle
-for _,form in ipairs({'blast','beam','bolt','bomb','missile','summon','summon_hit','watermelon'}) do
+for _,form in ipairs({'blast','beam','bolt','bomb','missile','summon','summon_hit','watermelon','super_ball'}) do
     for _,content in ipairs({'raw','earth','ice','fire','electric','dark','light'}) do
         local fx={form=form,content=content,origin=Vector(),destination=Vector(10,0,0),radius=100,tiles={},shape=1}
         calls=0;S:Draw(fx,.18,false);local normal=calls

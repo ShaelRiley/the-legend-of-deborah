@@ -144,7 +144,11 @@ end)
 local grantWeapon=LOD.LootDirector._GrantWeapon
 local missingWeapon=LOD.LootDirector._MissingWeaponReward
 function LOD.LootDirector:_MissingWeaponReward(ply,rng)
-    return missingWeapon(self,ply,rng) or rng:Pick({"weapon_shotgun","weapon_smg1","weapon_357","weapon_ar2"})
+    local allowed=self:_AllowedWeaponClasses(Run.State.Level or 1)
+    -- Starter ownership must not exclude upgraded pistols/crowbars until every
+    -- other gun is collected. Retain a missing-family preference on half the rolls.
+    if rng:Chance(E.WeaponLoot.variantChance) then return rng:Pick(allowed) end
+    return missingWeapon(self,ply,rng) or rng:Pick(allowed)
 end
 function E:AcquireWorldItem(ply,item,accept,source)
     local ps=hero(ply)

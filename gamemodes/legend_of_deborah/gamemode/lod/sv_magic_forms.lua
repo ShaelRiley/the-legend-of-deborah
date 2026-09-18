@@ -18,6 +18,8 @@ if not Magic or not RPG or not Progression or not MagicProgression or not Rules 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
 Forms.Tuning = {
+    SuperBall = {speed=900, lifetime=6, bounces=32, hits=6, perTargetDelay=.3,
+        maxActive=2, maxGlobal=32, radius=8, gravity=260, jitter=.18, steps=4, separation=.5},
     WatermelonSpeed = 580,
     WatermelonRange = 960,
     WatermelonRadius = 144,
@@ -42,6 +44,7 @@ Forms.ContentColors = {
     dark = Color(125, 72, 170), ice = Color(125, 220, 255), light = Color(255, 245, 170),
     electric = Color(110, 180, 255)
 }
+Forms.ActiveSuperBalls = Forms.ActiveSuperBalls or {}
 Forms.ActiveMissiles = Forms.ActiveMissiles or setmetatable({}, {__mode = "k"})
 Forms.ActiveSummons = Forms.ActiveSummons or setmetatable({}, {__mode = "k"})
 Forms.CastSerial = Forms.CastSerial or setmetatable({}, {__mode = "k"})
@@ -528,7 +531,10 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     local direction = ply:GetAimVector():GetNormalized()
     if direction == vector_origin then ent:Remove() return false end
     local speed, range, radius = 0, 0, 0
-    if form.id == "watermelon" then
+    if form.id == "super_ball" then
+        speed = self.Tuning.SuperBall.speed
+        range = speed * self.Tuning.SuperBall.lifetime
+    elseif form.id == "watermelon" then
         speed = self.Tuning.WatermelonSpeed
         range = self.Tuning.WatermelonRange
         radius = self.Tuning.WatermelonRadius + context.spatialBonusCells * cellSize()
@@ -557,11 +563,13 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     ent.LODBlastRadius = radius
     ent.LODSteeringDegreesPerSecond = form.id == "missile"
         and self.Tuning.MissileSteeringDegreesPerSecond or 0
-    ent:SetPos(ply:GetShootPos() + direction * 24)
+    -- The ricochet begins at the shoot origin: never teleport its hull past a wall.
+    ent:SetPos(ply:GetShootPos() + direction * (form.id=="super_ball" and 0 or 24))
     ent:SetAngles(direction:Angle())
     ent:Spawn()
     ent:Activate()
     if form.id == "missile" then self.ActiveMissiles[ply] = ent end
+    if form.id == "super_ball" then self.ActiveSuperBalls[ent] = ply end
     return true
 end
 
@@ -579,6 +587,18 @@ function Forms:_AreaTargets(caster, origin, radius)
         return a:EntIndex() < b:EntIndex()
     end)
     return targets
+end
+
+function Forms:SuperBallHit(projectile,target,origin,usedRider)
+    local caster,context=projectile.LODCaster,projectile.LODCastContext
+    if not context or not validTarget(caster,target) or not worldLineClear(caster,target,origin) then return false end
+    local content=RPG.MagicContents[projectile.LODContentId]
+    if usedRider and content then content=table.Copy(content);content.rider=nil end
+    local before=target:Health()
+    self:_ApplyDamage(caster,caster,target,RPG.MagicForms.super_ball,content,context,projectile.LODDirection)
+    projectile.LODBallLastDamaged=not IsValid(target) or target:Health()<before
+    broadcastFX('super_ball',projectile.LODContentId,origin,projectile:GetPos(),caster)
+    return true
 end
 
 function Forms:ProjectileImpact(projectile, trace)
@@ -728,6 +748,14 @@ function Forms:ResolveSummonAttack(summon, target)
 end
 
 function Forms:_CanCastPreSpend(ply, form, context)
+    if form.id=="super_ball" then
+        local own,total=0,0
+        for ent,caster in pairs(self.ActiveSuperBalls) do
+            if not IsValid(ent) then self.ActiveSuperBalls[ent]=nil
+            else total=total+1;if caster==ply then own=own+1 end end
+        end
+        if own>=self.Tuning.SuperBall.maxActive or total>=self.Tuning.SuperBall.maxGlobal then return false,"super_ball_cap" end
+    end
     if form.id == "missile" and IsValid(self.ActiveMissiles[ply]) then return false, "guided_missile_cap" end
     if form.id == "summon" then
         local state = actorState(ply)
@@ -741,7 +769,7 @@ end
 local function castNotice(ply, form, content, reason, cost, remaining, serial)
     local presentation = LOD.RPGPresentation
     if not presentation or not presentation.Event then return end
-    local reasons = {magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
+    local reasons = {super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
         summon_cap = "summon limit reached", placement = "no clear summon placement",
         status = "current status prevents Magic", entity = "summon unavailable", cast = "cast failed"}
     local label = form and (form.displayName or form.id) or "Magic"
@@ -804,7 +832,7 @@ function Forms:CastSelected(ply)
     if form.id == "cone" then castOK = self:_CastCone(ply, form, content, context)
     elseif form.id == "blast" then castOK = self:_CastBlast(ply, form, content, context)
     elseif form.id == "beam" then castOK = self:_CastBeam(ply, form, content, context)
-    elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" or form.id == "watermelon" then
+    elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" or form.id == "watermelon" or form.id == "super_ball" then
         castOK = self:_SpawnProjectile(ply, form, content, context)
     elseif form.id == "summon" then castOK, reason = self:_CastSummon(ply, form, content, context) end
     if not castOK then

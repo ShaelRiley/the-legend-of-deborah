@@ -31,11 +31,13 @@ function V:SegmentPlanes(ent,spec)
 end
 function V:DrawSegmented(ent,style,class,owner,view,flags)
     if not style or not self:Visible(ent,owner,view) or self.SegmentDrawing[ent] then return false end
-    if flags and bit.band(flags,STUDIO_RENDER)==0 then return false end
+    if flags and flags~=0 and bit.band(flags,STUDIO_RENDER)==0 then return false end
     local spec=self.Segments[class];if not spec then return false end
     local model=string.lower(ent:GetModel() or '')
     -- Only the stock family is authorized for spatial partitioning.
-    if not model:match('^models/weapons/[cvw]_'..spec.stem..'%.mdl$') then return false end
+    local name=model:match('^models/weapons/(.+)%.mdl$')
+    name=name and name:match('([^/]+)$')
+    if not name or not name:match('^[cvw]_'..spec.stem..'$') then return false end
     if ent.GetMaterial and ent:GetMaterial()~='' then return false end
     local mapping=mappings[ent]
     if not mapping or mapping.model~=model or mapping.class~=class then
@@ -61,7 +63,8 @@ function V:DrawSegmented(ent,style,class,owner,view,flags)
     end
     local normal,low,high=self:SegmentPlanes(ent,spec);if not normal then return false end
     local old=render.EnableClipping(true)
-    if old then render.EnableClipping(old);return false end -- don't exceed POSIX's two-plane limit
+    -- Enabled is not a clip-stack depth. Native held draws can enter with it
+    -- already enabled; restore that state, but still render all three regions.
     local planes=0
     local function push(n,d) render.PushCustomClipPlane(n,d);planes=planes+1 end
     local function pop() while planes>0 do render.PopCustomClipPlane();planes=planes-1 end end

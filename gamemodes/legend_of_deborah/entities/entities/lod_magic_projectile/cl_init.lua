@@ -8,6 +8,7 @@ local iron = CreateMaterial("LOD_BombIronVertexColor", "VertexLitGeneric", {
 local fuseMaterial = CreateMaterial("LOD_BombFuseVertexColor", "UnlitGeneric", {
     ["$basetexture"]="color/white", ["$vertexcolor"]="1", ["$vertexalpha"]="1"
 })
+local ballMaterial = Material("sprites/sent_ball")
 local emberMaterial = Material("sprites/light_glow02_add")
 local ironColor, fuseColor = Color(24, 25, 28), Color(245, 221, 156)
 
@@ -53,6 +54,11 @@ function ENT:OnRemove()
 end
 
 function ENT:Draw()
+    if self:GetMagicForm()=="super_ball" then
+        render.SetMaterial(ballMaterial)
+        render.DrawSprite(self:GetPos(),16,16,self:GetColor())
+        return
+    end
     if self:GetMagicForm() == "watermelon" then
         self:DrawModel()
         render.SetMaterial(emberMaterial)

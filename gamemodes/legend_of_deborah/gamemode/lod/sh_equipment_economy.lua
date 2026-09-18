@@ -5,6 +5,7 @@ local legacyValidate, legacyValue, legacyDescription = E.ValidateWearable, E.Val
 local acquire = E.AcquireWearable
 E.EconomyVersion, E.ScalingDungeonCap = 2, 999
 E.MaximumStoredEquipment = 32
+E.WeaponLoot = {variantChance=.5}
 E.WeaponFamilies = {"weapon_pistol", "weapon_lod_crowbar", "weapon_shotgun", "weapon_smg1", "weapon_357", "weapon_ar2"}
 local weaponNames = {"Pistol", "Crowbar", "Shotgun", "SMG", "Revolver", "Pulse Rifle"}
 local weaponModels = {"w_pistol", "w_crowbar", "w_shotgun", "w_smg1", "w_357", "w_irifle"}

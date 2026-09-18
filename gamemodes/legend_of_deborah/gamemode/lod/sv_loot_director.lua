@@ -203,7 +203,7 @@ function Loot:_GrantArmor(ply, amount)
 end
 
 function Loot:_AllowedWeaponClasses(level)
-    local out = {"weapon_shotgun", "weapon_smg1"}
+    local out = {"weapon_pistol", "weapon_lod_crowbar", "weapon_shotgun", "weapon_smg1"}
     if (level or 1) >= 2 then out[#out + 1] = "weapon_357" end
     if (level or 1) >= 3 then out[#out + 1] = "weapon_ar2" end
     return out

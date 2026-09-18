@@ -197,10 +197,33 @@ for class,spec in pairs(V.Segments) do
     function e:DrawModel() error('deliberate render failure') end
     assert(V:DrawSegmented(e,style,class,nil,true))
     assert(not clipping and #planes==0 and e:GetSubMaterial(1)=='' and not V.SegmentDrawing[e])
-    clipping=true;assert(not V:DrawSegmented(e,style,class,nil,true) and clipping);clipping=false
+    clipping=true;assert(V:DrawSegmented(e,style,class,nil,true) and clipping);clipping=false
     e.slots[1]='external';assert(not V:DrawSegmented(e,style,class,nil,true));assert(e.slots[1]=='external')
  end
 end
+-- Reproduce the actual held entry points: native clipping already enabled,
+-- c_model view mesh, remote world mesh, record switches and base hand completion.
+local held=entity({'models/weapons/v_hands','models/weapons/357'})
+held.model='models/weapons/w_357.mdl';held.owner=owner;owner.weapon=held
+local vm=entity(held.paths);vm.model='models/weapons/c_357.mdl'
+local completed=0
+hook.Run=function(event,...)
+ assert(event=='PostDrawViewModel');completed=completed+1
+ hooks.LOD_ProceduralWeaponAppearance(...)
+end
+for _,packet in ipairs({V:Encode(copy),V:Encode(E:Generate(776,9,'weapon_357','held-swap'))}) do
+ held.packet=packet;clipping=true
+ local before=vm.drawn or 0
+ assert(hooks.LOD_ProceduralWeaponSurface(vm,owner,held,0)==true)
+ assert(vm.drawn==before+3 and clipping and #planes==0)
+ for _,v in pairs(vm.slots) do assert(v=='') end
+end
+assert(completed==2,'Each manual wielded draw must finish the native hands path once')
+V:WorldWeapon(held);clipping=true;held.RenderOverride(held,0)
+assert(held.drawn==3 and clipping and #planes==0)
+LOD.MagicFX={ViewModelHidden=function() return true end}
+local before=vm.drawn;assert(hooks.LOD_ProceduralWeaponSurface(vm,owner,held,0)==true and vm.drawn==before)
+LOD.MagicFX=nil;clipping=false;owner.weapon=ent
 print('WEAPON_SEGMENTS_PASS: all six families/view-world meshes, two-plane ceiling, three disjoint regions, hands, external ownership and error cleanup')
 -- Pool reaches its hard native allocation ceiling across many source paths.
 for i=1,200 do V:Surface('models/weapons/custom_'..i,style) end

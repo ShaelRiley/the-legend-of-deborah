@@ -4,7 +4,7 @@ LOD.Spellbook = LOD.Spellbook or {}
 local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
-    watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    super_ball = "Ricocheting multi-hit", watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
     missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
@@ -27,6 +27,7 @@ function Book:Availability(entry,kind)
     if ply:GetNW2Bool("LOD_StatusMuted",false) or ply:GetNW2Bool("LOD_StatusIntimidated",false)
         or ply:GetNW2Int("LOD_ThrowableCount",0)>0 and LOD.Equipment:IsActive(ply) then return "BLOCKED",C.red end
     if CurTime()<ply:GetNW2Float("LOD_MagicNextCast",0) then return "COOLDOWN",C.gold end
+    if kind=="form" and entry.id=="super_ball" and ply:GetNW2Int("LOD_SuperBallRemaining",1)<=0 then return "BALL LIMIT",C.gold end
     local snap=self.Snapshot or {};local base,surcharge=0,0
     for _,f in ipairs(snap.forms or {}) do if f.selected then base=f.magicCost or 0 end end
     for _,c in ipairs(snap.contents or {}) do if c.selected then surcharge=c.surcharge or 0 end end
@@ -52,16 +53,16 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         local titleFont="LOD_SheetSubheading";surface.SetFont(titleFont)
         if surface.GetTextSize(title)>width-8 then titleFont="LOD_SheetSmall" end
         draw.SimpleText(title,titleFont,
-            width*0.5,16,color,TEXT_ALIGN_CENTER)
+            width*0.5,height<120 and 5 or 16,color,TEXT_ALIGN_CENTER)
         local labelFont="LOD_SheetKey"
         surface.SetFont(labelFont)
         if surface.GetTextSize(label)>width-8 then labelFont="DermaDefault" end
         draw.SimpleText(label,
-            labelFont,width*0.5,44,color,TEXT_ALIGN_CENTER)
+            labelFont,width*0.5,height<120 and 27 or 44,color,TEXT_ALIGN_CENTER)
         local cost = kind == "form" and string.format("%d base Magic",entry.magicCost or 0)
             or string.format("+%d Magic",entry.surcharge or 0)
-        draw.SimpleText(cost,"LOD_SheetSmall",width*0.5,72,C.ink,TEXT_ALIGN_CENTER)
-        draw.SimpleText(descriptions[entry.id] or "","LOD_SheetSmall",width*0.5,100,C.muted,TEXT_ALIGN_CENTER)
+        draw.SimpleText(cost,"LOD_SheetSmall",width*0.5,height<120 and 47 or 72,C.ink,TEXT_ALIGN_CENTER)
+        draw.SimpleText(descriptions[entry.id] or "","LOD_SheetSmall",width*0.5,height<120 and 66 or 100,C.muted,TEXT_ALIGN_CENTER)
         if self:IsHovered() and entry.owned then
             surface.SetDrawColor(C.blue);surface.DrawRect(8,height-6,width-16,2)
         end
@@ -105,7 +106,7 @@ function Book:Open()
                 ply:GetNW2Int("LOD_MagicMax",100)),"LOD_SheetBody",24,52,C.blue)
         end
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
-        draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,266,C.red)
+        draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,303,C.red)
         draw.SimpleText("Right mouse casts the selected Form + Content. Base cost plus Content; feats may reduce the cost.",
             "LOD_SheetBody",24,h-64,C.ink)
         draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
@@ -118,14 +119,15 @@ function Book:Open()
     local left = 24
     local usable = width - left * 2
     local formCount=math.max(1,#(self.Snapshot.forms or {}))
-    local formW = math.floor((usable - gap * (formCount-1)) / formCount)
+    local columns=math.min(5,formCount)
+    local formW = math.floor((usable - gap * (columns-1)) / columns)
     for i, entry in ipairs(self.Snapshot.forms or {}) do
-        selectionButton(frame, entry, "form", left + (i - 1) * (formW + gap), 100, formW, 140)
+        selectionButton(frame, entry, "form", left + ((i - 1)%columns) * (formW + gap), 100+math.floor((i-1)/columns)*98, formW, 88)
     end
 
     local contentW = math.floor((usable - gap * 6) / 7)
     for i, entry in ipairs(self.Snapshot.contents or {}) do
-        selectionButton(frame, entry, "content", left + (i - 1) * (contentW + gap), 295, contentW, 140)
+        selectionButton(frame, entry, "content", left + (i - 1) * (contentW + gap), 327, contentW, 113)
     end
 end
 

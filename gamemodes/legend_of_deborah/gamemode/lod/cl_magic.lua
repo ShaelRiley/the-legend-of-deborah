@@ -8,6 +8,7 @@ local beamMaterial=A.Material
 local glowMaterial=Material("sprites/light_glow02_add")
 local attack2Held = false
 local localCastUntil = 0
+function FX:ViewModelHidden() return CurTime()<localCastUntil end
 
 local function activePlayer()
     local ply = LocalPlayer()

@@ -36,7 +36,8 @@ RPG.MagicContents = RPG.MagicContents or {
 
 -- Explicit author addition; also install it on a Lua refresh of an existing catalog.
 RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=3,damageSides=6,magicCost=24}
-local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon"}
+RPG.MagicForms.super_ball = {id="super_ball",displayName="Super Ball",damageDice=2,damageSides=6,magicCost=32}
+local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball"}
 local CONTENT_ORDER = {"earth", "fire", "dark", "ice", "light", "electric"}
 MagicProgression.FormOrder = FORM_ORDER
 MagicProgression.ContentOrder = CONTENT_ORDER
@@ -461,14 +462,14 @@ end)
 function MagicProgression:Validate()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    expect(#FORM_ORDER == 8, "eight Forms")
+    expect(#FORM_ORDER == 9, "nine Forms")
     expect(#CONTENT_ORDER == 6, "six Contents")
     local seen = {}
     for _, id in ipairs(FORM_ORDER) do
         expect(RPG.MagicForms[id] ~= nil, "Form catalog " .. id)
         seen[id] = true
     end
-    expect(seen.blast and seen.beam and seen.bomb and seen.missile and seen.bolt and seen.summon and seen.cone and seen.watermelon,
+    expect(seen.blast and seen.beam and seen.bomb and seen.missile and seen.bolt and seen.summon and seen.cone and seen.watermelon and seen.super_ball,
         "canonical Form IDs")
 
     local synthetic = Progression:NewProgressionState("magic-validation", "hero", "hero")

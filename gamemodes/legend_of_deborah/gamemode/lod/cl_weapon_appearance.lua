@@ -173,9 +173,13 @@ function V:Flash(weapon)
 end
 hook.Add('PreDrawViewModel','LOD_ProceduralWeaponSurface',function(vm,ply,weapon,flags)
     if V.SegmentDrawing and V.SegmentDrawing[vm] then return end
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic()
+        or LOD.MagicFX and LOD.MagicFX.ViewModelHidden and LOD.MagicFX:ViewModelHidden() then return true end
     if V.DrawSegmented and IsValid(weapon) and V:DrawSegmented(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,flags) then
-        V:Draw(vm,V:EntityStyle(weapon),weapon:GetClass(),ply,true,weapon)
-        return true -- the default draw and PostDrawViewModel are suppressed together
+        -- Suppressing the native draw also suppresses its Post hook. Run the
+        -- completion path once so base GMod draws c_hands and restores effects.
+        hook.Run('PostDrawViewModel',vm,ply,weapon,flags)
+        return true
     end
     V:Apply(vm,IsValid(weapon) and V:EntityStyle(weapon),ply,true)
 end)
