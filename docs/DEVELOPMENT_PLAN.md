@@ -4,7 +4,8 @@ Author-directed six-part continuation preserves `402ecb2` and extends the server
 inventory/SQLite/UI/Magic authorities: four Debbie drag-and-drop actions, durable
 DFT exclusions and fusion recreation inheritance, authoritative capacity snapshots,
 feet-hull Wall placement with Wisdom duration, server-rolled Watermelon bounces,
-and persisted RMB/M3/M4/M5 bindings. All 116 automated suites pass. See
+and persisted RMB/M3/M4/M5 bindings. Wall now holds to aim and releases to cast;
+idle selection shows no guide. All 116 automated suites pass. See
 [implementation, tuning and native acceptance](EQUIPMENT_MAGIC_INTEGRATION_20260918.md).
 Native multiplayer acceptance remains pending; no server deployment is included.
 

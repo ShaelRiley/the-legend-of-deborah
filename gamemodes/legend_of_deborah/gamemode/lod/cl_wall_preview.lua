@@ -2,7 +2,7 @@ LOD.WallPreview=LOD.WallPreview or {}
 local P=LOD.WallPreview
 local material=Material('models/debug/debugwhite')
 local angle=Angle(0,0,0)
-local labels={ready='WALL — RMB TO CAST',ground='WALL — AIM AT NEARBY GROUND',
+local labels={ready='WALL — RELEASE TO CAST',ground='WALL — AIM AT NEARBY GROUND',
     reach='WALL — FLOOR TOO FAR AWAY',slope='WALL — SURFACE TOO STEEP',anchor_blocked='WALL — AIM OUTSIDE SOLID GEOMETRY',
     space='WALL — NOT ENOUGH SPACE',narrow='WALL — GAP TOO NARROW',ceiling='WALL — CEILING TOO LOW',
     blocked='WALL — SOLID COVER',magic='WALL — NEED MAGIC',cap='WALL — ONE ALREADY ACTIVE',
@@ -15,6 +15,7 @@ net.Receive('LOD_WallPreview',function()
     P.Record=record
 end)
 function P:Current()
+    if not LOD.MagicFX or not LOD.MagicFX:WallAimActive() then return end
     local r=self.Record
     if not r or RealTime()>r.expires then self.Record=nil;return end
     local ply=LocalPlayer()
@@ -42,7 +43,7 @@ hook.Add('HUDPaint','LOD_WallPlacementHint',function()
     local label=labels[r.reason] or labels.space
     if r.ready then
         local book=LOD.Spellbook and LOD.Spellbook.Snapshot
-        for key,id in pairs(book and book.bindings or {}) do if id=='wall' then label='WALL — '..(key=='2' and 'RMB' or 'M'..key)..' TO CAST' end end
+        for key,id in pairs(book and book.bindings or {}) do if id=='wall' then label='WALL — RELEASE '..(key=='2' and 'RMB' or 'M'..key)..' TO CAST' end end
     end
     LOD.UI:HUDText(label,'LOD_SheetKey',ScrW()*.5,ScrH()*.58,color(r,255),TEXT_ALIGN_CENTER)
 end)

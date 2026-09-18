@@ -50,3 +50,20 @@ The new Watermelon and mouse-binding suites are registered in the integrated gat
 No Garry's Mod client or multiplayer server was run in this environment. Headless Source/VGUI boundary doubles and SQLite tests establish automated behavior, not native sound/rendering, real input delivery, network latency or final combat feel. The supplied video is evidence of the prior failure, not evidence that this candidate fixes native play.
 
 One combined `gm_flatgrass` session with two players: switch P/I/O/L/Wallet/Manual while testing text entry; use Debbie's four actions and cancel a staged pile; recreate a DFT and verify its gear is ineligible; select Wall and Watermelon, bind Forms across RMB/M3/M4/M5, place a wall on ordinary corridor floor and against invalid cover, then throw Watermelons and observe the logged bounce budget/shatter. Reconnect one player and verify their own bindings, inventory and wallet. Existing admin setup: `lod_developer_mode 1; lod_magic_test_all`; wallet settlement requires a ranked staging session, so perform economy checks before enabling developer mode. Collect `console_latest.txt` and `rpg_summary_latest.txt`.
+
+## Follow-up — hold to aim, release to place
+
+The author's subsequent direction changes Wall input on every supported binding:
+press/hold RMB, M3, M4 or M5 to show the existing authoritative preview; release
+that button to send one cast request. Merely equipping Wall displays no plane or
+hint. Release hides the guide immediately, even when its last server packet is
+still fresh. The ready hint explicitly names the button to release. Other Forms
+retain press-to-cast behavior; server placement/cost/cooldown validation is unchanged.
+
+Menus, text entry, throwable priority, death, losing/rebinding Wall, or map cleanup
+cancel the armed gesture without a release cast. Holding through a cancelled
+state cannot re-arm it; a fresh press is required. The shared input and preview
+regressions exercise all four buttons, single release/no repeat, every cancellation,
+and idle/held/released rendering. The canonical manual and Spellbook hint agree.
+Fresh full integrated gate after this follow-up: **116/116 suites pass**.
+Native GMod input/visual acceptance remains pending.

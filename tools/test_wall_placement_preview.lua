@@ -106,8 +106,13 @@ local function feed(values)
  net.ReadBool=read;net.ReadString=read;net.ReadVector=read
  receivers.LOD_WallPreview()
 end
+LOD.MagicFX={WallAimActive=function(self) return self.WallAimButton end}
 feed({true,true,'ready',true,record.shape.origin,record.shape.mins,record.shape.maxs})
+hooks.LOD_WallPlacementGhost(false,false);assert(rendered==0 and not LOD.WallPreview:Current(),'Equipped but idle Wall has no guide')
+LOD.MagicFX.WallAimButton=2
 hooks.LOD_WallPlacementGhost(false,false);assert(rendered==1)
+LOD.MagicFX.WallAimButton=nil;hooks.LOD_WallPlacementGhost(false,false);assert(rendered==1,'Release hides even a still-fresh server preview')
+LOD.MagicFX.WallAimButton=2
 hooks.LOD_WallPlacementGhost(true,false);assert(rendered==1)
 LOD.UI.ActivePage='book';hooks.LOD_WallPlacementGhost(false,false);assert(rendered==1);LOD.UI.ActivePage=nil
 owner.hp=0;assert(not LOD.WallPreview:Current());owner.hp=100

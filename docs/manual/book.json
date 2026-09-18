@@ -423,7 +423,7 @@
         ],
         [
           "WALL · 35",
-          "Wizard only. A barrier up to 288 units wide, 112 high and 12 thick fits nearby clear space; WIS increases its 10-second duration by two seconds per positive modifier, up to 30 seconds. Heroes pass through; enemies are blocked and take 2d6 contact damage. The server preview shows the actual fitted shape and placement reason. Only one active Wall per caster."
+          "Wizard only. A barrier up to 288 units wide, 112 high and 12 thick fits nearby clear space; WIS increases its 10-second duration by two seconds per positive modifier, up to 30 seconds. Heroes pass through; enemies are blocked and take 2d6 contact damage. The server preview shows the actual fitted shape and placement reason. Only one active Wall per caster. Hold its bound mouse button to see the aiming guide; release to place. Opening a menu cancels the pending placement."
         ]
       ],
       "text": [

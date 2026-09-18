@@ -42,15 +42,40 @@ local cmd={down=false,KeyDown=function(self,key) return key==IN_ATTACK2 and self
 dofile(root..'cl_magic.lua')
 local inputTick=hooks.LOD_MagicPredictedInput
 inputTick(cmd);cmd.down=true;inputTick(cmd);inputTick(cmd);assert(#sent==1 and sent[1].button==2)
-for n,key in ipairs({MOUSE_MIDDLE,MOUSE_4,MOUSE_5}) do held[key]=true;inputTick(cmd);assert(sent[#sent].button==n+2) end
-assert(#sent==4);inputTick(cmd);assert(#sent==4,'Held keys do not repeat')
-held={};cmd.down=false;inputTick(cmd);covered=true
-held[MOUSE_MIDDLE]=true;cmd.down=true;inputTick(cmd);covered=false;inputTick(cmd)
+for n,key in ipairs({MOUSE_MIDDLE,MOUSE_4}) do held[key]=true;inputTick(cmd);assert(sent[#sent].button==n+2) end
+held[MOUSE_5]=true;inputTick(cmd);assert(#sent==3 and LOD.MagicFX:WallAimActive()==5,'Wall press only arms its aiming guide')
+inputTick(cmd);assert(#sent==3,'Holding never casts Wall')
+held={};cmd.down=false;inputTick(cmd);assert(#sent==4 and sent[4].button==5 and not LOD.MagicFX:WallAimActive(),'Release casts once and hides guide')
+inputTick(cmd);assert(#sent==4,'Release does not repeat')
+covered=true;held[MOUSE_MIDDLE]=true;cmd.down=true;inputTick(cmd);covered=false;inputTick(cmd)
 assert(#sent==4,'A menu click cannot leak into casting when the menu closes')
 held={};cmd.down=false;inputTick(cmd);throwable=true;held[MOUSE_4]=true;cmd.down=true;inputTick(cmd)
 assert(#sent==4,'Throwable priority covers every magic binding')
 throwable=false;held={};cmd.down=false;inputTick(cmd);focus={valid=true};cmd.down=true;inputTick(cmd);assert(#sent==4,'Text entry blocks casting')
 assert(hooks.LOD_MagicAuxiliaryBindings(owner,'+zoom',true,MOUSE_4)==true)
+focus=nil;cmd.down=false;inputTick(cmd)
+-- Repeat hold/release for every binding, and cancel every disruptive transition.
+local keys={[3]=MOUSE_MIDDLE,[4]=MOUSE_4,[5]=MOUSE_5}
+local function setDown(button,value) if button==2 then cmd.down=value else held[keys[button]]=value end end
+for button=2,5 do
+    LOD.Spellbook.Snapshot.bindings={[tostring(button)]='wall'}
+    local before=#sent
+    setDown(button,true);inputTick(cmd);assert(#sent==before and LOD.MagicFX:WallAimActive()==button)
+    setDown(button,false);inputTick(cmd);assert(#sent==before+1 and sent[#sent].button==button and not LOD.MagicFX:WallAimActive())
+    for _,cancel in ipairs({'menu','text','throwable','death','rebind','cleanup'}) do
+        before=#sent;setDown(button,true);inputTick(cmd);assert(LOD.MagicFX:WallAimActive()==button)
+        if cancel=='menu' then covered=true
+        elseif cancel=='text' then focus={valid=true}
+        elseif cancel=='throwable' then throwable=true
+        elseif cancel=='death' then owner.hp=0
+        elseif cancel=='rebind' then LOD.Spellbook.Snapshot.bindings[tostring(button)]='beam'
+        else hooks.LOD_WallAimCancel() end
+        inputTick(cmd);assert(not LOD.MagicFX:WallAimActive())
+        covered=false;focus=nil;throwable=false;owner.hp=100
+        LOD.Spellbook.Snapshot.bindings[tostring(button)]='wall'
+        inputTick(cmd);setDown(button,false);inputTick(cmd);assert(#sent==before,'Cancelled gesture must not cast on release: '..cancel)
+    end
+end
 -- Real selection buttons, including RMB and extra-button presses.
 focus=nil;LOD.UI.Colors={};LOD.UI.CloseButton=function() end;LOD.UI.PageLinks=function() end
 LOD.UI.SelectPage=function(self,page) self.ActivePage=page end

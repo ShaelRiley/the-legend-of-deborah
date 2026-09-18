@@ -6,7 +6,8 @@ FX.waves = FX.waves or {}
 local A=LOD.MagicArea
 local beamMaterial=A.Material
 local glowMaterial=Material("sprites/light_glow02_add")
-local attack2Held = false
+local buttonHeld = {}
+local wallArmed = {}
 local localCastUntil = 0
 function FX:ViewModelHidden() return CurTime()<localCastUntil end
 
@@ -15,7 +16,6 @@ local function activePlayer()
     return IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_PlayedIdentity", false) and ply or nil
 end
 
-local extraHeld={}
 local function inputCovered()
     return LOD.UI and LOD.UI.ActivePage or gui.IsGameUIVisible() or gui.IsConsoleVisible()
         or vgui.CursorVisible() or IsValid(vgui.GetKeyboardFocus())
@@ -24,22 +24,48 @@ end
 local function requestCast(button)
     net.Start("LOD_MagicCastRequest");net.WriteUInt(button,3);net.SendToServer()
 end
+local function boundForm(snapshot,button)
+    return snapshot and (snapshot.bindings and snapshot.bindings[tostring(button)]
+        or button==2 and snapshot.selectedFormId) or nil
+end
+function FX:WallAimActive()
+    local button=self.WallAimButton
+    local snapshot=LOD.Spellbook and LOD.Spellbook.Snapshot
+    local ply=activePlayer()
+    return button and wallArmed[button] and boundForm(snapshot,button)=='wall'
+        and ply and not inputCovered() and not (LOD.Equipment and LOD.Equipment:IsActive(ply))
+        and button or nil
+end
 hook.Add("CreateMove", "LOD_MagicPredictedInput", function(cmd)
     local ply=activePlayer()
-    local down=cmd:KeyDown(IN_ATTACK2)
     local covered=inputCovered()
     local throwable=ply and LOD.Equipment and LOD.Equipment:IsActive(ply)
-    if ply and not covered and not throwable and down and not attack2Held then requestCast(2) end
-    attack2Held=down
+    local allowed=ply and not covered and not throwable
     local snapshot=LOD.Spellbook and LOD.Spellbook.Snapshot
-    for button,key in pairs({[3]=MOUSE_MIDDLE,[4]=MOUSE_4,[5]=MOUSE_5}) do
-        local held=input.IsMouseDown(key)
-        if ply and not covered and not throwable and held and not extraHeld[button]
-            and snapshot and snapshot.bindings and snapshot.bindings[tostring(button)] then requestCast(button) end
-        extraHeld[button]=held
+    local down={[2]=cmd:KeyDown(IN_ATTACK2),[3]=input.IsMouseDown(MOUSE_MIDDLE),
+        [4]=input.IsMouseDown(MOUSE_4),[5]=input.IsMouseDown(MOUSE_5)}
+    FX.WallAimButton=nil
+    for button=2,5 do
+        local held=down[button]
+        local form=boundForm(snapshot,button)
+        -- Covering the game, losing the form, or changing role/life cancels the
+        -- gesture. Closing a menu while still holding cannot re-arm it.
+        if not allowed or form~='wall' then wallArmed[button]=nil end
+        if allowed and held and not buttonHeld[button] then
+            if form=='wall' then wallArmed[button]=true
+            elseif form then requestCast(button) end
+        elseif not held and buttonHeld[button] then
+            if allowed and wallArmed[button] and form=='wall' then requestCast(button) end
+            wallArmed[button]=nil
+        end
+        if held and wallArmed[button] then FX.WallAimButton=button end
+        buttonHeld[button]=held
     end
     if not throwable or covered then cmd:RemoveKey(IN_ATTACK2) end
     if covered then cmd:RemoveKey(IN_ATTACK) end
+end)
+hook.Add("PreCleanupMap","LOD_WallAimCancel",function()
+    wallArmed={};FX.WallAimButton=nil
 end)
 -- Consume native bind actions for assigned auxiliary buttons (e.g. +zoom).
 hook.Add("PlayerBindPress","LOD_MagicAuxiliaryBindings",function(ply,bind,pressed,code)
