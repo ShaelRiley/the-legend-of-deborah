@@ -171,7 +171,10 @@ function RunManager:_SyncPlayerVars(ply)
     ply:SetNW2Bool("LOD_PlayedIdentity", ps ~= nil)
     ply:SetNW2Int("LOD_Lives", ps and ps.lives or 0)
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
+    local previousSoldier=ply.LODWallCollisionSoldier
+    ply.LODWallCollisionSoldier=isSoldier
     ply:SetNW2Bool("LOD_IsSoldier", isSoldier)
+    if previousSoldier~=isSoldier and ply.CollisionRulesChanged then ply:CollisionRulesChanged() end
     if isSoldier then
         ply:SetNW2String("LOD_Character", "Human Soldier")
     else

@@ -288,7 +288,7 @@ local function installPatch()
 
     class.LODWatcherScanEscapeHandoffInstalled = true
 
-    local baseRunWatcherTick = class._RunWatcherTick
+    local baseRunWatcherTick = Watcher.ScanTick or class._RunWatcherTick
     function class:_RunWatcherTick()
         if self.LODArchetypeId ~= "watcher" then return baseRunWatcherTick(self) end
 
@@ -310,7 +310,7 @@ local function installPatch()
         return result
     end
 
-    local baseBehaviourTick = class._BehaviourTick
+    local baseBehaviourTick = Unified.BehaviourTick or class._BehaviourTick
     function class:_BehaviourTick()
         if self.LODArchetypeId ~= "watcher" then return baseBehaviourTick(self) end
 
@@ -354,6 +354,9 @@ local function installPatch()
         return result
     end
 
+    Handoff.ScanTick = class._RunWatcherTick
+    Handoff.BehaviourTick = class._BehaviourTick
+
     local baseOnRemove = class.OnRemove
     function class:OnRemove()
         self.LODWatcherScanEscapePending = nil
@@ -363,6 +366,7 @@ local function installPatch()
     return true
 end
 
+Handoff.EnsureInstalled = installPatch
 installPatch()
 hook.Add("OnEntityCreated", "LOD_WatcherScanEscapeHandoffInstall", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end

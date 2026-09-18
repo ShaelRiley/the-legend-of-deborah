@@ -236,6 +236,12 @@ function Motion:MoveToward(hostile, waypoint)
 
     if not waypoint.stair then nextPos.z = goal.z end
 
+    local magicForms=LOD.MagicForms
+    local wallBlocked=false
+    if magicForms and magicForms.ConstrainWallMovement then
+        nextPos,wallBlocked=magicForms:ConstrainWallMovement(hostile,pos,nextPos)
+    end
+
     -- Physical execution is intentionally independent of Source collision
     -- response. The graph and validated local waypoint compiler are the movement
     -- authority; SetPos cannot become stuck while trying to resolve generated
@@ -246,12 +252,12 @@ function Motion:MoveToward(hostile, waypoint)
     local moved = nextPos - pos
     hostile.LODMotionVelocity = dt > 0 and (moved / dt) or vector_origin
     hostile.LODMotionSpeed = dt > 0 and (moved:Length2D() / dt) or 0
-    hostile.LODMotionMode = waypoint.stair and "stair" or "ground"
+    hostile.LODMotionMode = wallBlocked and "magic-wall" or waypoint.stair and "stair" or "ground"
     hostile.LODMotionLastPos = nextPos
     hostile.LODMotionTravel = (hostile.LODMotionTravel or 0) + moved:Length()
     advanceStrideVariance(hostile, moved:Length())
     if statusElements then statusElements:ObserveCell(hostile) end
-    return step >= distance - 0.05
+    return not wallBlocked and step >= distance - 0.05
 end
 
 local function soldierFamily(hostile)

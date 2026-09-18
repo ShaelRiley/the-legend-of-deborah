@@ -18,6 +18,9 @@ if not Magic or not RPG or not Progression or not MagicProgression or not Rules 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
 Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
 Forms.Tuning = {
+    Wall = {lifetime=10, baseWidth=192, widthPerBonus=96, maxWidth=1152, height=112,
+        thickness=12, reach=240, minWidth=48, contact=24, interval=.1, hitDelay=1,
+        stunMultiplier=2.5, maxActive=1, maxGlobal=16},
     SuperBall = {speed=900, lifetime=6, bounces=32, hits=6, perTargetDelay=.3,
         maxActive=2, maxGlobal=32, radius=8, gravity=260, jitter=.18, steps=4, separation=.5},
     WatermelonSpeed = 580,
@@ -44,6 +47,7 @@ Forms.ContentColors = {
     dark = Color(125, 72, 170), ice = Color(125, 220, 255), light = Color(255, 245, 170),
     electric = Color(110, 180, 255)
 }
+Forms.ActiveWalls = Forms.ActiveWalls or {}
 Forms.ActiveSuperBalls = Forms.ActiveSuperBalls or {}
 Forms.ActiveMissiles = Forms.ActiveMissiles or setmetatable({}, {__mode = "k"})
 Forms.ActiveSummons = Forms.ActiveSummons or setmetatable({}, {__mode = "k"})
@@ -154,7 +158,7 @@ function Forms:SelectedCastState(ply)
     if not state then return nil end
     MagicProgression:EnsureState(state)
     local formId = state.selectedMagicFormId
-    if formId == "summon" and state.classId ~= "wizard" then return nil end
+    if not MagicProgression:FormAllowed(state,formId) then return nil end
     if not formId or not RPG.MagicForms[formId] or not contains(state.magicFormIds, formId) then return nil end
     local contentId = state.selectedMagicContentId
     if contentId and (not RPG.MagicContents[contentId] or not contains(state.contentIds, contentId)) then
@@ -340,6 +344,9 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         })
     end
 
+    if survives and actual > 0 and form.id=="wall" and LOD.M3HitFeedback then
+        LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,self.Tuning.Wall.stunMultiplier)
+    end
     local effects = RPG.FeatEffectSystem
     local resource = IsValid(creditCaster) and Magic:_EnsureState(creditCaster) or nil
     local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or form.damageDice or 0))
@@ -589,6 +596,9 @@ function Forms:_AreaTargets(caster, origin, radius)
     return targets
 end
 
+Forms.TargetIsOpponent = function(_,caster,target) return validTarget(caster,target) end
+Forms.LineOfEffect = function(_,caster,target,origin) return worldLineClear(caster,target,origin) end
+
 function Forms:SuperBallHit(projectile,target,origin,usedRider)
     local caster,context=projectile.LODCaster,projectile.LODCastContext
     if not context or not validTarget(caster,target) or not worldLineClear(caster,target,origin) then return false end
@@ -748,6 +758,7 @@ function Forms:ResolveSummonAttack(summon, target)
 end
 
 function Forms:_CanCastPreSpend(ply, form, context)
+    if form.id=="wall" then return self:CanPlaceWall(ply,context) end
     if form.id=="super_ball" then
         local own,total=0,0
         for ent,caster in pairs(self.ActiveSuperBalls) do
@@ -769,7 +780,7 @@ end
 local function castNotice(ply, form, content, reason, cost, remaining, serial)
     local presentation = LOD.RPGPresentation
     if not presentation or not presentation.Event then return end
-    local reasons = {super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
+    local reasons = {wall_cap="Wall limit reached", wall_placement="aim at a clear floor gap", super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
         summon_cap = "summon limit reached", placement = "no clear summon placement",
         status = "current status prevents Magic", entity = "summon unavailable", cast = "cast failed"}
     local label = form and (form.displayName or form.id) or "Magic"
@@ -829,7 +840,8 @@ function Forms:CastSelected(ply)
     Magic:_Sync(ply, ps)
 
     local castOK, reason
-    if form.id == "cone" then castOK = self:_CastCone(ply, form, content, context)
+    if form.id == "wall" then castOK = self:_CastWall(ply, form, content, context)
+    elseif form.id == "cone" then castOK = self:_CastCone(ply, form, content, context)
     elseif form.id == "blast" then castOK = self:_CastBlast(ply, form, content, context)
     elseif form.id == "beam" then castOK = self:_CastBeam(ply, form, content, context)
     elseif form.id == "bomb" or form.id == "missile" or form.id == "bolt" or form.id == "watermelon" or form.id == "super_ball" then

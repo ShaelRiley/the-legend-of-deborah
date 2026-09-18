@@ -75,7 +75,7 @@ local function sendHitConfirm(attacker)
     net.Send(attacker)
 end
 
-function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
+function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMultiplier)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return false end
     if hostile.LODDeadcrabState == "latched" then return false end
 
@@ -88,10 +88,11 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
     local abilityMultiplier = rules and rules.HitStunMultiplier
         and rules:HitStunMultiplier(attacker, hostile) or 1
     durationMultiplier = math.Clamp((tonumber(durationMultiplier) or 1) * abilityMultiplier, 0.50, 2)
+    durationMultiplier = durationMultiplier * math.Clamp(tonumber(formMultiplier) or 1, 1, 2.5)
     local stunSeconds = STUN_SECONDS * durationMultiplier
     local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
     hostile.LODNextHitStun = now + retriggerSeconds
-    hostile.LODHitStunUntil = now + stunSeconds
+    hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
 
     if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile) end
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end

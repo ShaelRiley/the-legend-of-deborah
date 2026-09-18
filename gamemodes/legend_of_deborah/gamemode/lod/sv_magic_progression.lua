@@ -24,6 +24,7 @@ RPG.MagicForms = RPG.MagicForms or {
 
 -- Apply the approved cost on refresh as well as a clean server start.
 RPG.MagicForms.summon.magicCost = 12
+RPG.MagicForms.summon.wizardOnly = true
 
 RPG.MagicContents = RPG.MagicContents or {
     earth = {id = "earth", displayName = "Earth", ability = "str", surcharge = 10, element = "earth", rider = "push"},
@@ -37,7 +38,8 @@ RPG.MagicContents = RPG.MagicContents or {
 -- Explicit author addition; also install it on a Lua refresh of an existing catalog.
 RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=3,damageSides=6,magicCost=24}
 RPG.MagicForms.super_ball = {id="super_ball",displayName="Super Ball",damageDice=2,damageSides=6,magicCost=32}
-local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball"}
+RPG.MagicForms.wall = {id="wall",displayName="Wall",wizardOnly=true,damageDice=2,damageSides=6,magicCost=35}
+local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball", "wall"}
 local CONTENT_ORDER = {"earth", "fire", "dark", "ice", "light", "electric"}
 MagicProgression.FormOrder = FORM_ORDER
 MagicProgression.ContentOrder = CONTENT_ORDER
@@ -82,26 +84,31 @@ local function campaignSeed()
     return state and state.CampaignSeed or 1
 end
 
+function MagicProgression:FormAllowed(state,id)
+    local def=RPG.MagicForms[id]
+    return def~=nil and (not def.wizardOnly or state and state.classId=="wizard")
+end
+
 function MagicProgression:EnsureState(state)
     if not state then return nil end
     state.magicFormIds = state.magicFormIds or {}
     state.contentIds = state.contentIds or {}
     state.magicGrantMilestones = state.magicGrantMilestones or {}
-    -- Migrate retired non-Wizard ownership once without taking away a Form.
-    if state.classId ~= "wizard" and contains(state.magicFormIds, "summon") then
-        local available={}
-        for _,id in ipairs(FORM_ORDER) do
-            if id ~= "summon" and not contains(state.magicFormIds,id) then available[#available+1]=id end
+    -- Class changes/reconnects cannot retain Wizard-only ownership or selection.
+    for _,restricted in ipairs(FORM_ORDER) do
+        if not self:FormAllowed(state,restricted) and contains(state.magicFormIds,restricted) then
+            local available={}
+            for _,id in ipairs(FORM_ORDER) do
+                if self:FormAllowed(state,id) and not contains(state.magicFormIds,id) then available[#available+1]=id end
+            end
+            local rng=LOD.RNG.New(derive(campaignSeed(),tostring(state.actorId)..":"..restricted.."_migration"))
+            local replacement=#available>0 and available[rng:Int(1,#available)] or nil
+            local forms={}
+            for _,id in ipairs(state.magicFormIds) do if id~=restricted then forms[#forms+1]=id end end
+            if replacement then forms[#forms+1]=replacement end
+            state.magicFormIds=forms
+            if state.selectedMagicFormId==restricted then state.selectedMagicFormId=replacement or forms[1] end
         end
-        local rng=LOD.RNG.New(derive(campaignSeed(), tostring(state.actorId)..":summon_migration"))
-        local replacement=#available>0 and available[rng:Int(1,#available)] or nil
-        local forms={}
-        for _,id in ipairs(state.magicFormIds) do
-            if id~="summon" then forms[#forms+1]=id end
-        end
-        if replacement then forms[#forms+1]=replacement end
-        state.magicFormIds=forms
-        if state.selectedMagicFormId=="summon" then state.selectedMagicFormId=replacement or forms[1] end
     end
     state.favoredEnemyStacks = tonumber(state.favoredEnemyStacks) or 0
     state.favoredWeaponStacks = tonumber(state.favoredWeaponStacks) or 0
@@ -125,7 +132,7 @@ function MagicProgression:_GrantDistinct(state, kind, milestone, seed)
     local available = {}
     for _, id in ipairs(order) do
         if catalog[id] and not contains(owned, id)
-            and (kind ~= "form" or id ~= "summon" or state.classId == "wizard") then available[#available + 1] = id end
+            and (kind ~= "form" or self:FormAllowed(state,id)) then available[#available + 1] = id end
     end
     state.magicGrantMilestones[key] = true
     if #available == 0 then return false, "exhausted" end
@@ -141,7 +148,7 @@ function MagicProgression:GrantForm(state, formId, milestone)
     self:EnsureState(state)
     formId = string.lower(tostring(formId or ""))
     if not RPG.MagicForms[formId] then return false, "invalid form" end
-    if formId == "summon" and state.classId ~= "wizard" then return false, "Wizard only" end
+    if not self:FormAllowed(state,formId) then return false, "Wizard only" end
     if not contains(state.magicFormIds, formId) then
         table.insert(state.magicFormIds, formId)
     end
@@ -167,7 +174,7 @@ end
 function MagicProgression:SelectForm(state, formId)
     self:EnsureState(state)
     formId = string.lower(tostring(formId or ""))
-    if formId == "summon" and state.classId ~= "wizard" then return false end
+    if not self:FormAllowed(state,formId) then return false end
     if RPG.MagicForms[formId] and contains(state.magicFormIds, formId) then
         state.selectedMagicFormId = formId
         return true
@@ -384,7 +391,7 @@ function MagicProgression:Snapshot(state)
     for _, id in ipairs(FORM_ORDER) do
         local def = RPG.MagicForms[id]
         forms[#forms + 1] = {
-            id = id, displayName = def.displayName, magicCost = def.magicCost,
+            id = id, displayName = def.displayName, wizardOnly=def.wizardOnly, magicCost = def.magicCost,
             owned = contains(state and state.magicFormIds, id),
             selected = state and state.selectedMagicFormId == id or false
         }
@@ -462,14 +469,14 @@ end)
 function MagicProgression:Validate()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    expect(#FORM_ORDER == 9, "nine Forms")
+    expect(#FORM_ORDER == 10, "ten Forms")
     expect(#CONTENT_ORDER == 6, "six Contents")
     local seen = {}
     for _, id in ipairs(FORM_ORDER) do
         expect(RPG.MagicForms[id] ~= nil, "Form catalog " .. id)
         seen[id] = true
     end
-    expect(seen.blast and seen.beam and seen.bomb and seen.missile and seen.bolt and seen.summon and seen.cone and seen.watermelon and seen.super_ball,
+    expect(seen.blast and seen.beam and seen.bomb and seen.missile and seen.bolt and seen.summon and seen.cone and seen.watermelon and seen.super_ball and seen.wall,
         "canonical Form IDs")
 
     local synthetic = Progression:NewProgressionState("magic-validation", "hero", "hero")

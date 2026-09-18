@@ -108,7 +108,7 @@ end
 
 local function sharedLOS(watcher, target)
     if not IsValid(watcher) or not livingPlayer(target) then return false end
-    if watcher._HasLineOfSight then return watcher:_HasLineOfSight(target) end
+    if Watcher.HasLOS then return Watcher.HasLOS(watcher,target) end
     local tr = util.TraceLine({
         start = watcher:WorldSpaceCenter(),
         endpos = target:EyePos(),
@@ -745,7 +745,7 @@ local function installPatch()
         local hasLOS = sharedLOS(self, target)
 
         if self.LODWatcherScan then
-            if distance < MIN_SCAN_RANGE then
+            if distance < MIN_SCAN_RANGE and not self.LODWatcherCorneredScan then
                 cancelActiveScan(self, 0.35)
                 beginBackoff(self, graph, target)
                 runBackoff(self, graph, target)
@@ -763,8 +763,15 @@ local function installPatch()
 
         if distance < MIN_SCAN_RANGE then
             runBackoff(self, graph, target)
+            -- A boxed-in support unit must remain dangerous. Legal LOS scanning
+            -- can continue at close range when no retreat segment is available.
+            if self.LODMotionMode=="watcher-backoff-blocked" and hasLOS then
+                self.LODWatcherCorneredScan=true
+                dispatchWatcherScan(self)
+            end
             return
         end
+        self.LODWatcherCorneredScan=nil
 
         if self.LODWatcherUnifiedBackoff then
             if distance < BACKOFF_RELEASE_RANGE then
@@ -802,6 +809,8 @@ local function installPatch()
         approachTarget(self, graph, target)
     end
 
+    Unified.BehaviourTick = class._BehaviourTick
+
     local baseOnRemove = class.OnRemove
     function class:OnRemove()
         if self.LODArchetypeId == "watcher" then
@@ -815,6 +824,7 @@ local function installPatch()
     return true
 end
 
+Unified.EnsureInstalled = installPatch
 installPatch()
 hook.Add("OnEntityCreated", "LOD_WatcherUnifiedControllerInstall", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installPatch() end

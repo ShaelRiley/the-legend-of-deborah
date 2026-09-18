@@ -108,6 +108,8 @@ local function hasLOS(self, target)
     return not tr.Hit or tr.Fraction >= 0.995
 end
 
+Watcher.HasLOS = hasLOS
+
 local function sendScanState(self, target, active)
     if not IsValid(self) then return end
     net.Start("LOD_WatcherScanState")
@@ -321,6 +323,8 @@ local function installHostilePatch()
         return false
     end
 
+    Watcher.ScanTick = class._RunWatcherTick
+
     local baseBehaviourTick = class._BehaviourTick
     function class:_BehaviourTick()
         if self.LODArchetypeId == "watcher" and self:_RunWatcherTick() then return end
@@ -346,6 +350,7 @@ local function installHostilePatch()
     return true
 end
 
+Watcher.EnsureInstalled = installHostilePatch
 installHostilePatch()
 hook.Add("OnEntityCreated", "LOD_WatcherInstallBeforeSpawn", function(ent)
     if IsValid(ent) and ent:GetClass() == "lod_hostile" then installHostilePatch() end

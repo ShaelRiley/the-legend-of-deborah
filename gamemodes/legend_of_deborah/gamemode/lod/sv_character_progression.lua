@@ -518,7 +518,7 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
         local catalog = forms and RPG.MagicForms or RPG.MagicContents
         local owned = state and (forms and state.magicFormIds or state.contentIds) or {}
         for id in pairs(catalog or {}) do
-            if (not forms or id ~= "summon" or state and state.classId == "wizard")
+            if (not forms or not catalog[id].wizardOnly or state and state.classId == "wizard")
                 and not arrayContains(owned or {}, id) then return true end
         end
         return false

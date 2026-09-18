@@ -294,15 +294,20 @@ function E:Open()
     label(frame,'Select an equipped potion → HOLD THROWABLE. Gameplay continues.',24,frame:GetTall()-34,frame:GetWide()-48,30,'DermaDefault')
     self:Request('snapshot')
 end
-concommand.Add('lod_equipment',function() E:Open() end)
+local nextEquipment=0
+function E:Toggle()
+    if RealTime()<nextEquipment then return end
+    nextEquipment=RealTime()+.2
+    if IsValid(self.Frame) then self:Close() else self:Open() end
+end
+concommand.Add('lod_equipment',function() E:Toggle() end)
 hook.Add('ShutDown','LOD_EquipmentPageClose',function() E:Close() end)
 
 local equipmentKey=CreateClientConVar("lod_equipment_key",tostring(KEY_O),true,false,"Equipment menu key")
-local nextEquipment=0
+E.MenuKey=equipmentKey
 hook.Add("PlayerButtonDown","LOD_EquipmentMenuKey",function(ply,key)
     if ply~=LocalPlayer() or key~=equipmentKey:GetInt() or not IsFirstTimePredicted()
         or gui.IsConsoleVisible() or gui.IsGameUIVisible() or vgui.GetKeyboardFocus()
         or chat.IsTyping() or RealTime()<nextEquipment then return end
-    nextEquipment=RealTime()+.2
-    if IsValid(E.Frame) then E:Close() else E:Open() end
+    E:Toggle()
 end)

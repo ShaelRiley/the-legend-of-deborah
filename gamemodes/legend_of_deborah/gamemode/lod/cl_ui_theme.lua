@@ -84,9 +84,11 @@ surface.CreateFont("LOD_SheetKey", {
 
 
 function UI:PageLinks(frame, active, y)
+    local key=LOD.Equipment and LOD.Equipment.MenuKey
+    local equipmentLabel=(key and input.GetKeyName and input.GetKeyName(key:GetInt()) or "O"):upper().." / EQUIPMENT"
     local pages={{"sheet","P / CHARACTER",function() LOD.CharacterSheet:Open() end},
         {"book","I / SPELLBOOK",function() LOD.Spellbook:Open() end},
-        {"equipment","EQUIPMENT",function() LOD.Equipment:Open() end},
+        {"equipment",equipmentLabel,function() LOD.Equipment:Open() end},
         {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end},
         {"manual","MANUAL",function() LOD.FieldManual:Open() end}}
     if LOD.Wallet then pages[#pages+1]={"wallet","WALLET",function() LOD.Wallet:Open() end} end
@@ -100,7 +102,12 @@ function UI:PageLinks(frame, active, y)
 end
 
 function UI:PageKey(key)
-    if key == KEY_P then LOD.CharacterSheet:Toggle()
+    local focus=vgui.GetKeyboardFocus and vgui.GetKeyboardFocus()
+    if IsValid(focus) and (focus.IsEditing and focus:IsEditing()
+        or focus.GetClassName and (focus:GetClassName()=="DTextEntry" or focus:GetClassName()=="DBinder")) then return end
+    local equipment=LOD.Equipment
+    if equipment and equipment.MenuKey and key==equipment.MenuKey:GetInt() then equipment:Toggle()
+    elseif key == KEY_P then LOD.CharacterSheet:Toggle()
     elseif key == KEY_I then LOD.Spellbook:Toggle()
     elseif key == KEY_L then
         LOD.CombatRollFeed:ToggleHistory()

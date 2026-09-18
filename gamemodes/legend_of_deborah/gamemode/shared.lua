@@ -204,9 +204,19 @@ function GM:PlayerShouldTakeDamage(victim, attacker)
 end
 
 function GM:ShouldCollide(ent1, ent2)
+    if IsValid(ent1) and IsValid(ent2) then
+        local other=ent1:GetClass()=="lod_magic_wall" and ent2 or ent2:GetClass()=="lod_magic_wall" and ent1
+        if other and other:IsPlayer() and not other:GetNW2Bool("LOD_IsSoldier",false) then return false end
+    end
     if IsValid(ent1) and IsValid(ent2) and ent1:IsPlayer() and ent2:IsPlayer() then
         return false
     end
+end
+
+if CLIENT then
+    hook.Add("EntityNetworkedVarChanged","LOD_WallRoleCollision",function(ent,key,old,new)
+        if key=="LOD_IsSoldier" and old~=new and IsValid(ent) and ent:IsPlayer() then ent:CollisionRulesChanged() end
+    end)
 end
 
 -- The base gamemode normally permits manual respawn input after death. Deborah's

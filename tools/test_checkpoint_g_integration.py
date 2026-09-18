@@ -113,6 +113,8 @@ for path in sorted(Path(REPO_ROOT, "tools").glob("test_checkpoint_d_*.lua")):
 SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54.py", "tools/test_feat_stabilization.lua"]))
 SUITES.append(("Hero Weakness & Identity Perks", ["python3", "tools/run_lua54.py", "tools/test_identity_perks_weakness.lua"]))
 SUITES.append(("Snapshot Burst & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_snapshot_delivery.lua"]))
+SUITES.append(("Watcher Scan Dispatch", ["python3", "tools/run_lua54.py", "tools/test_watcher_dispatch.lua"]))
+SUITES.append(("Wall Form and Magic Testkit", ["python3", "tools/run_lua54.py", "tools/test_magic_wall.lua"]))
 SUITES.append(("Super Ball Ricochet Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_super_ball.lua"]))
 SUITES.append(("Ordinary Procedural Pistol and Crowbar Loot", ["python3", "tools/run_lua54.py", "tools/test_weapon_loot_roster.lua"]))
 SUITES.append(("Looping Audio Ownership", ["python3", "tools/run_lua54.py", "tools/test_loop_audio.lua"]))

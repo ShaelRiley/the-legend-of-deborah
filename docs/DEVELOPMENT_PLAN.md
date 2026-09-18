@@ -1,4 +1,13 @@
-# Current candidate — wielded colors, ordinary pistol/crowbar loot, Super Ball
+# Current candidate — Equipment O toggle, Watcher scan and Wizard Wall
+
+The 2026-09-18 author-directed continuation from `c6bd155` fixes focused Equipment
+toggling and Watcher dispatch, adds the tenth Form (Wizard-only Wall, Heroes pass
+through) and an admin all-Forms test command. All 113 automated suites pass.
+See [implementation, tuning, evidence and native session](EQUIPMENT_WATCHER_WALL_20260918.md).
+Native Wall rendering/collision and Watcher scan/retreat acceptance remain pending.
+No server deployment or Workshop publication is included.
+
+# Previous candidate — wielded colors, ordinary pistol/crowbar loot, Super Ball
 
 The 2026-09-18 author-directed continuation from `d7fe92a` repairs the held
 render path and hand completion, adds starter-family variants to ordinary

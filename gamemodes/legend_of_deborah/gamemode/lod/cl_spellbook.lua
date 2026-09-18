@@ -4,7 +4,7 @@ LOD.Spellbook = LOD.Spellbook or {}
 local Book = LOD.Spellbook
 local UI, C = LOD.UI, LOD.UI.Colors
 local descriptions = {
-    super_ball = "Ricocheting multi-hit", watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
+    wall = "Wizard barrier / 10s", super_ball = "Ricocheting multi-hit", watermelon = "Shattering melon", cone = "Directional force cone", blast = "Surrounding area", beam = "Piercing line", bomb = "Lobbed area",
     missile = "Guided area", bolt = "Precision shot", summon = "Wizard-only Seeker",
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
@@ -21,13 +21,14 @@ function Book:Close()
 end
 
 function Book:Availability(entry,kind)
-    if not entry.owned then return "LOCKED",C.muted end
+    if not entry.owned then return entry.wizardOnly and "WIZARD / LOCKED" or "LOCKED",C.muted end
     local ply=LocalPlayer()
     if not IsValid(ply) or not ply:Alive() then return "UNAVAILABLE",C.muted end
     if ply:GetNW2Bool("LOD_StatusMuted",false) or ply:GetNW2Bool("LOD_StatusIntimidated",false)
         or ply:GetNW2Int("LOD_ThrowableCount",0)>0 and LOD.Equipment:IsActive(ply) then return "BLOCKED",C.red end
     if CurTime()<ply:GetNW2Float("LOD_MagicNextCast",0) then return "COOLDOWN",C.gold end
     if kind=="form" and entry.id=="super_ball" and ply:GetNW2Int("LOD_SuperBallRemaining",1)<=0 then return "BALL LIMIT",C.gold end
+    if kind=="form" and entry.id=="wall" and ply:GetNW2Int("LOD_WallRemaining",1)<=0 then return "WALL LIMIT",C.gold end
     local snap=self.Snapshot or {};local base,surcharge=0,0
     for _,f in ipairs(snap.forms or {}) do if f.selected then base=f.magicCost or 0 end end
     for _,c in ipairs(snap.contents or {}) do if c.selected then surcharge=c.surcharge or 0 end end

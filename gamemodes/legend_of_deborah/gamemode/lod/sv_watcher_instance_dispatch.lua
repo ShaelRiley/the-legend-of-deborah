@@ -10,22 +10,36 @@ if not Unified then return end
 -- RunBehaviour resolves self:_BehaviourTick() every cycle, so this remains safe
 -- even if NEXTBOT captured the native coroutine before RunBehaviour replacement.
 
+-- OnEntityCreated hook iteration is unordered. A late generic mover can replace
+-- the stored class tick after the Watcher marker is set. Keep the actual Watcher
+-- functions, and install their dependencies in order even on the first spawn.
+local function ensureAuthorities()
+    local watcher,handoff=LOD.Watcher,LOD.WatcherScanEscapeHandoff
+    if watcher and watcher.EnsureInstalled then watcher.EnsureInstalled() end
+    if Unified.EnsureInstalled then Unified.EnsureInstalled() end
+    if handoff and handoff.EnsureInstalled then handoff.EnsureInstalled() end
+    return watcher,handoff
+end
 local function unifiedWatcherTick()
-    local stored = scripted_ents.GetStored("lod_hostile")
-    local class = stored and stored.t
-    if not class or not class.LODWatcherUnifiedControllerInstalled then return nil end
-    return class._BehaviourTick
+    local _,handoff=ensureAuthorities()
+    return handoff and handoff.BehaviourTick or Unified.BehaviourTick
 end
 
 local function bindFinalMethods(self)
     if not IsValid(self) or self:GetClass() ~= "lod_hostile" then return false end
-    local stored = scripted_ents.GetStored("lod_hostile")
-    local class = stored and stored.t
-    if not class then return false end
-    if class._BehaviourTick then self._BehaviourTick = class._BehaviourTick end
-    if class._RunWatcherTick then self._RunWatcherTick = class._RunWatcherTick end
-    self.LODWatcherFinalMethodsBound = true
-    return true
+    local watcher,handoff=ensureAuthorities()
+    if self.LODArchetypeId == "watcher" then
+        self._BehaviourTick = unifiedWatcherTick()
+        self._RunWatcherTick = handoff and handoff.ScanTick or watcher and watcher.ScanTick
+    else
+        -- Preserve the existing late-method binding repair for other archetypes.
+        local stored=scripted_ents.GetStored("lod_hostile")
+        local class=stored and stored.t
+        if class and class._BehaviourTick then self._BehaviourTick=class._BehaviourTick end
+        if class and class._RunWatcherTick then self._RunWatcherTick=class._RunWatcherTick end
+    end
+    self.LODWatcherFinalMethodsBound = self._BehaviourTick ~= nil and self._RunWatcherTick ~= nil
+    return self.LODWatcherFinalMethodsBound
 end
 
 local function stopWatcherSafely(self)
@@ -46,6 +60,7 @@ end
 
 local function watcherRunLoop(self)
     markWatcherBound(self)
+    bindFinalMethods(self)
     while true do
         local watcherTick = unifiedWatcherTick()
         if watcherTick then
@@ -137,8 +152,8 @@ concommand.Add("lod_watcher_dispatch_status", function(ply)
     for _, ent in ipairs(ents.FindByClass("lod_hostile")) do
         if IsValid(ent) and not ent.LODDead and ent.LODArchetypeId == "watcher" then
             live = live + 1
-            if class and ent._BehaviourTick == class._BehaviourTick then tickBound = tickBound + 1 end
-            if class and ent._RunWatcherTick == class._RunWatcherTick then scanBound = scanBound + 1 end
+            if class and ent._BehaviourTick == unifiedWatcherTick() then tickBound = tickBound + 1 end
+            if class and ent._RunWatcherTick == (LOD.WatcherScanEscapeHandoff.ScanTick or LOD.Watcher.ScanTick) then scanBound = scanBound + 1 end
         end
     end
     local pass = live == 0 or (tickBound == live and scanBound == live)

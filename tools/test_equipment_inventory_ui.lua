@@ -139,7 +139,7 @@ net.ReadTable=function() return {forms={},contents={}} end
 receivers.LOD_MagicSpellbookSnapshot()
 assert(E.Frame==ownedFrame and LOD.UI.ActivePage=='equipment' and not IsValid(LOD.Spellbook.Frame))
 local equipmentTab
-for _,p in ipairs(ownedFrame.children) do if p.text=='EQUIPMENT' then equipmentTab=p end end
+for _,p in ipairs(ownedFrame.children) do if p.text=='O / EQUIPMENT' then equipmentTab=p end end
 assert(equipmentTab,'Equipment has its own first-class tab')
 LOD.Spellbook:Open();assert(ownedFrame.valid==false and not E.Frame and LOD.UI.ActivePage=='book')
 net.ReadTable=function() return table.Copy(state) end
@@ -147,3 +147,15 @@ receivers.LOD_EquipmentSnapshot();assert(not E.Frame and LOD.UI.ActivePage=='boo
 E:Open();assert(not IsValid(LOD.Spellbook.Frame) and LOD.UI.ActivePage=='equipment')
 E:Close();receivers.LOD_EquipmentSnapshot();assert(not E.Frame and not LOD.UI.ActivePage)
 print('EQUIPMENT_PAGE_PASS: independent frame, direct sibling tab, pending request cancellation, late snapshot isolation')
+
+-- Native frame keyboard focus suppresses PlayerButtonDown; the menu router must
+-- still close the page, debounce the same press, and honor a rebound key.
+KEY_ESCAPE=70;KEY_P=71;KEY_I=72;KEY_L=73
+E:Open();now=now+1
+E.Frame:OnKeyCodePressed(KEY_O);assert(not E.Frame)
+LOD.UI:PageKey(KEY_O);assert(not E.Frame,'One press cannot immediately reopen')
+now=now+1;LOD.UI:PageKey(KEY_O);assert(E.Frame)
+E.MenuKey={GetInt=function() return 90 end}
+now=now+1;LOD.UI:PageKey(KEY_O);assert(E.Frame)
+E.Frame:OnKeyCodePressed(90);assert(not E.Frame)
+print('EQUIPMENT_TOGGLE_PASS: focused frame open/close, shared debounce and rebinding')
