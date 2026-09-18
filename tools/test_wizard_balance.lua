@@ -37,3 +37,25 @@ local F=assert(LOD.MagicForms)
 assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,nil)==12)
 assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,LOD.RPG.MagicContents.fire)==27)
 print('WIZARD_BALANCE_PASS: 300 seeds, class-only acquisition, legacy migration, distinct starting Content and cost 12')
+-- Class may already be selected when restoring/creating a Hero. The old tests
+-- only granted Level 1 before class selection and missed Wizard utility starts.
+local later={summon=0,wall=0}
+for seed=1,3000 do
+ local s={actorId='starter:'..seed,actorType='hero',classId='wizard',level=1}
+ P:ApplyScheduledGrants(s,seed)
+ assert(#s.magicFormIds==1 and not LOD.RPG.MagicForms[s.magicFormIds[1]].utility)
+ local first=s.magicFormIds[1]
+ P:ApplyScheduledGrants(s,seed+1);assert(#s.magicFormIds==1 and s.magicFormIds[1]==first)
+ s.level=14;P:ApplyScheduledGrants(s,seed)
+ for _,id in ipairs(s.magicFormIds) do if later[id] then later[id]=later[id]+1 end end
+end
+assert(later.summon>100 and later.wall>100,'Utility Forms remain available in later grants')
+for _,utility in ipairs({'summon','wall'}) do
+ local old={actorId='utility-start:'..utility,actorType='hero',classId='wizard',level=1,
+  magicFormIds={utility},selectedMagicFormId=utility,magicGrantMilestones={['form:level_1_all']=true}}
+ assert(P:ApplyScheduledGrants(old,99));assert(has(old.magicFormIds,utility) and #old.magicFormIds==2)
+ assert(not LOD.RPG.MagicForms[old.selectedMagicFormId].utility)
+ local selected=old.selectedMagicFormId;P:ApplyScheduledGrants(old,100)
+ assert(#old.magicFormIds==2 and old.selectedMagicFormId==selected,'Repair is idempotent without utility confiscation')
+end
+print('OFFENSIVE_STARTER_PASS: 3000 preselected Wizards, deterministic first damage Form, later Summon='..later.summon..' Wall='..later.wall..', utility-only save repair')

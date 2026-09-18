@@ -1,8 +1,14 @@
 -- Static box collision, bounded contact service, shared spell transaction.
 -- No VPhysics, free-running timers or client-authored gameplay geometry.
 local F=LOD.MagicForms
-local function placementFilter(ent)
-    return not (IsValid(ent) and ent:IsPlayer() and not ent:GetNW2Bool('LOD_IsSoldier',false))
+local function placementFilter(ply)
+    return function(ent)
+        if ent==ply then return false end
+        if not IsValid(ent) then return true end
+        -- Held weapons/hands and cosmetic children must not veto the aiming ray.
+        if ent:GetOwner()==ply or ent:GetParent()==ply then return false end
+        return not (ent:IsPlayer() and not ent:GetNW2Bool('LOD_IsSoldier',false))
+    end
 end
 local function counts(caster)
     local own,total=0,0
@@ -57,52 +63,84 @@ function F:WallWidth(context)
 end
 function F:WallPlacement(ply,context)
     local t=self.Tuning.Wall
-    local aim=ply:GetAimVector();local flat=Vector(aim.x,aim.y,0)
-    if flat:LengthSqr()<.01 then return nil end
+    local eye,aim=ply:GetShootPos(),ply:GetAimVector()
+    local flat=Vector(aim.x,aim.y,0)
+    if flat:LengthSqr()<.01 then
+        local forward=ply:GetForward()
+        flat=Vector(forward.x,forward.y,0)
+    end
+    if flat:LengthSqr()<.01 then flat=Vector(1,0,0) end
     flat=flat:GetNormalized()
-    -- Cardinal faces match the maze and produce exact Source AABB collision.
     local normal=math.abs(flat.x)>=math.abs(flat.y) and Vector(flat.x>=0 and 1 or -1,0,0)
         or Vector(0,flat.y>=0 and 1 or -1,0)
     local tangent=Vector(-normal.y,normal.x,0)
-    local view=util.TraceLine({start=ply:GetShootPos(),endpos=ply:GetShootPos()+aim*t.reach,mask=MASK_SOLID,filter=placementFilter})
-    if view.StartSolid or view.HitSky then return nil end
-    local point=view.HitPos-(view.Hit and flat*(t.thickness+2) or vector_origin)
-    local floor=util.TraceLine({start=point+Vector(0,0,16),endpos=point-Vector(0,0,160),mask=MASK_SOLID,filter=placementFilter})
-    if not floor.Hit or floor.StartSolid or floor.HitNormal.z<.7 then return nil end
-    local origin=floor.HitPos+Vector(0,0,1)
+    local filter=placementFilter(ply)
+    local view=util.TraceLine({start=eye,endpos=eye+aim*t.reach,mask=MASK_SOLID,filter=filter})
+    local point=view.HitPos or eye+flat*t.reach
+    if view.StartSolid or view.HitSky then return nil,'blocked' end
+    -- A grazing shot along a crate needs clearance perpendicular to its face,
+    -- not a tiny displacement along the nearly parallel aim vector.
+    if view.Hit then point=point+view.HitNormal*(t.thickness*.5+t.clearance) end
+    -- Looking up places on the floor ahead, not in the ceiling above the caster.
+    point.z=math.min(point.z,eye.z)
     local half=t.thickness*.5
     local slim=Vector(half,half,0)
-    local high=Vector(half,half,t.height)
-    -- Full-height sweeps trim both ends before crates/ceilings/characters.
-    local distances={}
-    for index,sign in ipairs({-1,1}) do
-        local tr=util.TraceHull({start=origin,endpos=origin+tangent*(self:WallWidth(context)*.5*sign),
-            mins=-slim,maxs=high,mask=MASK_SOLID,filter=placementFilter})
-        if tr.StartSolid or tr.AllSolid then return nil end
-        distances[index]=math.max(0,self:WallWidth(context)*.5*(tr.Fraction or 1)-1)
+    local widthLimit=self:WallWidth(context)*.5
+    local reason='space'
+    local preview
+    local function fit(candidate)
+        local floor=util.TraceLine({start=candidate+Vector(0,0,t.clearance*2),
+            endpos=candidate-Vector(0,0,t.groundProbe),mask=MASK_SOLID,filter=filter})
+        if not floor.Hit or floor.StartSolid or floor.HitNormal.z<.65 then return nil,'ground' end
+        local origin=floor.HitPos+Vector(0,0,t.clearance)
+        -- Only exposed ground in reach; no snapping through floors or far down shafts.
+        if origin:DistToSqr(eye)>(t.reach+72)^2 then return nil,'ground' end
+        local sight=util.TraceLine({start=eye,endpos=origin+Vector(0,0,t.clearance),mask=MASK_SOLID,filter=filter})
+        if sight.StartSolid or sight.Hit and (sight.Fraction or 0)<.995 then return nil,'blocked' end
+        local head=util.TraceHull({start=origin,endpos=origin+Vector(0,0,t.height),
+            mins=-slim,maxs=slim,mask=MASK_SOLID,filter=filter})
+        if head.StartSolid or head.AllSolid then return nil,'space' end
+        local height=head.Hit and math.min(t.height,head.HitPos.z-origin.z-t.clearance) or t.height
+        if height<t.minHeight then return nil,'ceiling' end
+        local distances={}
+        for index,sign in ipairs({-1,1}) do
+            local tr=util.TraceHull({start=origin,endpos=origin+tangent*(widthLimit*sign),
+                mins=-slim,maxs=slim+Vector(0,0,height),mask=MASK_SOLID,filter=filter})
+            if tr.StartSolid or tr.AllSolid then return nil,'space' end
+            distances[index]=math.max(0,widthLimit*(tr.Fraction or 1)-t.clearance)
+        end
+        if distances[1]+distances[2]<t.minWidth then return nil,'narrow' end
+        origin=origin+tangent*((distances[2]-distances[1])*.5)
+        local width=(distances[1]+distances[2])*.5
+        local ext=Vector(math.abs(tangent.x)*width+math.abs(normal.x)*half,
+            math.abs(tangent.y)*width+math.abs(normal.y)*half,0)
+        local mins,maxs=-ext,ext+Vector(0,0,height)
+        preview={origin=origin,mins=mins,maxs=maxs,normal=normal}
+        local volume=util.TraceHull({start=origin,endpos=origin,mins=mins,maxs=maxs,mask=MASK_SOLID,filter=filter})
+        if volume.StartSolid or volume.AllSolid or volume.Hit then return nil,'space' end
+        -- Magic needs one ground anchor, not physical support under both ends.
+        -- The swept volume and per-hit LOS still forbid through-solid geometry.
+        return preview
     end
-    if distances[1]+distances[2]<t.minWidth then return nil end
-    origin=origin+tangent*((distances[2]-distances[1])*.5)
-    local width=(distances[1]+distances[2])*.5
-    local ext=Vector(math.abs(tangent.x)*width+math.abs(normal.x)*half,
-        math.abs(tangent.y)*width+math.abs(normal.y)*half,0)
-    local mins,maxs=-ext,ext+Vector(0,0,t.height)
-    -- Heroes pass through; geometry and enemy occupancy still constrain placement.
-    local volume=util.TraceHull({start=origin,endpos=origin,mins=mins,maxs=maxs,mask=MASK_SOLID,filter=placementFilter})
-    if volume.Hit or volume.StartSolid or volume.AllSolid then return nil end
-    -- Require support at both ends: never bridge a sealed floor or open pit.
-    for _,sign in ipairs({-1,1}) do
-        local foot=origin+tangent*(width*sign)
-        local support=util.TraceLine({start=foot+Vector(0,0,4),endpos=foot-Vector(0,0,12),mask=MASK_SOLID,filter=placementFilter})
-        if not support.Hit or support.StartSolid or support.HitNormal.z<.7 then return nil end
+    for attempt=0,t.fitAttempts-1 do
+        local candidate=point-flat*(attempt*t.fitStep)
+        if (candidate-ply:GetPos()):Dot(flat)<-t.clearance then break end
+        local result,why=fit(candidate)
+        if result then return result end
+        reason=why
     end
-    return {origin=origin,mins=mins,maxs=maxs,normal=normal}
+    preview=preview or {origin=point,mins=Vector(-half,-half,0),maxs=Vector(half,half,t.height),normal=normal}
+    return nil,reason,preview
+end
+function F:WallCapacityAvailable(ply)
+    local own,total=counts(ply)
+    return own<self.Tuning.Wall.maxActive and total<self.Tuning.Wall.maxGlobal
 end
 function F:CanPlaceWall(ply,context)
-    local own,total=counts(ply)
-    if own>=self.Tuning.Wall.maxActive or total>=self.Tuning.Wall.maxGlobal then return false,'wall_cap' end
-    context.wallPlacement=self:WallPlacement(ply,context)
-    if not context.wallPlacement then return false,'wall_placement' end
+    if not self:WallCapacityAvailable(ply) then return false,'wall_cap' end
+    local reason
+    context.wallPlacement,reason=self:WallPlacement(ply,context)
+    if not context.wallPlacement then return false,'wall_'..(reason or 'placement') end
     return true
 end
 function F:_CastWall(ply,form,content,context)

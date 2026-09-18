@@ -374,7 +374,7 @@
       "art": "deborah:5",
       "text": [
         "Open I for the Spellbook. Choose an owned Form to decide how the spell travels, then an owned Content to decide its element and rider. Cast with right mouse. The Form's base cost and the Content's surcharge combine before applicable cost rules.",
-        "Every Hero begins with one eligible random Form and RAW Content. Wizards receive an additional distinct Content at Level 1. The normal Content grants occur at Levels 4, 8, and 14. Only a Wizard can acquire or cast SUMMON or WALL.",
+        "Every Hero begins with one random direct-damage Form and RAW Content. Wall and Summon never replace that starting spell; Wizards may learn them through later grants. Wizards receive an additional distinct Content at Level 1. The normal Content grants occur at Levels 4, 8, and 14. Only a Wizard can acquire or cast SUMMON or WALL.",
         "Magic tops out at 100. Intelligence governs regeneration; Wisdom governs spell power and approved range, radius, and utility scaling. A spell's visible area boundary marks its actual area, while a Beam ends where world geometry stops it.",
         "When holding any throwable, its controls take priority. Switch back to a normal weapon to cast.",
         "Spellbook labels distinguish READY / AVAILABLE, LOCKED, NEED MAGIC, COOLDOWN, and BLOCKED. Solid floors stop all spell areas. Open stairwells and shafts still allow exposed vertical hits."
@@ -422,7 +422,7 @@
         ],
         [
           "WALL · 35",
-          "Wizard only: 10-second barrier; Heroes walk through, enemies are blocked. Contact deals 2d6 with 2.5× normal hit stun, once per second per target. One active Wall per caster. Width grows with Wisdom and fits the available gap."
+          "Wizard only: 10-second barrier; Heroes walk through, enemies are blocked. Contact deals 2d6 with 2.5× normal hit stun, once per second per target. One active Wall per caster. Width grows with Wisdom and fits the available gap. Aim where you need the Wall: its blue preview marks a valid cast; a red preview and text explain blocked placement, cooldown, capacity or insufficient Magic. The barrier fits under low ceilings and can overhang a ledge from its ground anchor."
         ]
       ],
       "text": [

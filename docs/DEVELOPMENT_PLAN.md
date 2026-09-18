@@ -1,4 +1,13 @@
-# Current candidate — Equipment O toggle, Watcher scan and Wizard Wall
+# Current candidate — usable Wall placement, aiming preview, offensive starters
+
+Author-directed repair from `3e7a83b`: forgiving bounded Wall fitting, an owner-only
+server-calculated aiming preview with rejection reasons, and direct-damage first
+Forms for every Wizard. Wall and Summon remain available through later grants.
+All 114 automated suites pass, including 84 aiming cases and 3,000 Wizard starts.
+See [correction, evidence and finite native check](WALL_PLACEMENT_REPAIR_20260918.md).
+Native placement/preview feel remains pending. No server deployment is included.
+
+# Previous candidate — Equipment O toggle, Watcher scan and Wizard Wall
 
 The 2026-09-18 author-directed continuation from `c6bd155` fixes focused Equipment
 toggling and Watcher dispatch, adds the tenth Form (Wizard-only Wall, Heroes pass

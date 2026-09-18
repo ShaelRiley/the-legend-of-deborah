@@ -20,7 +20,8 @@ Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOf
 Forms.Tuning = {
     Wall = {lifetime=10, baseWidth=192, widthPerBonus=96, maxWidth=1152, height=112,
         thickness=12, reach=240, minWidth=48, contact=24, interval=.1, hitDelay=1,
-        stunMultiplier=2.5, maxActive=1, maxGlobal=16},
+        stunMultiplier=2.5, maxActive=1, maxGlobal=16, clearance=4, minHeight=48,
+        groundProbe=512, fitStep=24, fitAttempts=5, previewInterval=.15, previewHeartbeat=.5},
     SuperBall = {speed=900, lifetime=6, bounces=32, hits=6, perTargetDelay=.3,
         maxActive=2, maxGlobal=32, radius=8, gravity=260, jitter=.18, steps=4, separation=.5},
     WatermelonSpeed = 580,
@@ -780,7 +781,8 @@ end
 local function castNotice(ply, form, content, reason, cost, remaining, serial)
     local presentation = LOD.RPGPresentation
     if not presentation or not presentation.Event then return end
-    local reasons = {wall_cap="Wall limit reached", wall_placement="aim at a clear floor gap", super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
+    local reasons = {wall_cap="Wall limit reached", wall_placement="aim at a clear floor gap", wall_ground="no floor within reach",
+        wall_space="not enough clear space", wall_ceiling="ceiling too low", wall_narrow="gap too narrow", wall_blocked="solid cover blocks placement", super_ball_cap = "Super Ball limit reached", magic = "insufficient Magic", guided_missile_cap = "guided missile already active",
         summon_cap = "summon limit reached", placement = "no clear summon placement",
         status = "current status prevents Magic", entity = "summon unavailable", cast = "cast failed"}
     local label = form and (form.displayName or form.id) or "Magic"

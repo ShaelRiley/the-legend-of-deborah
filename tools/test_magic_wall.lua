@@ -57,9 +57,11 @@ local function trace(d)
 end
 util.TraceLine=trace;util.TraceHull=trace
 local context={spatialBonusCells=1}
-local p=assert(F:WallPlacement(owner,context));assert(p.maxs.y-p.mins.y<260 and p.maxs.y-p.mins.y>240)
+local p=assert(F:WallPlacement(owner,context));assert(p.maxs.y-p.mins.y<260 and p.maxs.y-p.mins.y>=240)
 assert(F:WallWidth({spatialBonusCells=4})>F:WallWidth(context) and F:WallWidth({spatialBonusCells=100})==1152)
 local hero=fixture.actor('teammate')
+function hero:GetOwner() end
+function hero:GetParent() end
 boxes[#boxes+1]={entity=hero,lo=Vector(220,-16,0),hi=Vector(260,16,72)}
 assert(F:WallPlacement(owner,context),'Hero overlapping the placement is legal')
 hero.nw.LOD_IsSoldier=true
@@ -79,6 +81,7 @@ ents={Create=function(class)
  function e:Spawn() self:Initialize() end
  function e:Remove() self.valid=false;self:OnRemove() end
  function e:GetOwner() end
+ function e:GetParent() end
  function e:IsPlayer() return false end
  spawned[#spawned+1]=e;return e
 end}
@@ -201,3 +204,6 @@ assert(math.abs(target.LODHitStunUntil-now-.75)<.0001,'2.5 x 0.30s base stun')
 now=now+2;LOD.M3HitFeedback:ApplyHitStun(target,1,owner)
 assert(math.abs(target.LODHitStunUntil-now-.30)<.0001,'Ordinary hits keep their original stun')
 print('WALL_COLLISION_STUN_PASS: Hero passage, Soldier blocking, actual .75s stun and unchanged ordinary .30s')
+
+return {F=F,Run=R,owner=owner,boxes=boxes,trace=trace,actor=fixture.actor,
+    setTime=function(value) now=value end}

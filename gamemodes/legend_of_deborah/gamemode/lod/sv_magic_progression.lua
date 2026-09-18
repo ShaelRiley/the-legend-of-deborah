@@ -25,6 +25,7 @@ RPG.MagicForms = RPG.MagicForms or {
 -- Apply the approved cost on refresh as well as a clean server start.
 RPG.MagicForms.summon.magicCost = 12
 RPG.MagicForms.summon.wizardOnly = true
+RPG.MagicForms.summon.utility = true
 
 RPG.MagicContents = RPG.MagicContents or {
     earth = {id = "earth", displayName = "Earth", ability = "str", surcharge = 10, element = "earth", rider = "push"},
@@ -38,7 +39,7 @@ RPG.MagicContents = RPG.MagicContents or {
 -- Explicit author addition; also install it on a Lua refresh of an existing catalog.
 RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=3,damageSides=6,magicCost=24}
 RPG.MagicForms.super_ball = {id="super_ball",displayName="Super Ball",damageDice=2,damageSides=6,magicCost=32}
-RPG.MagicForms.wall = {id="wall",displayName="Wall",wizardOnly=true,damageDice=2,damageSides=6,magicCost=35}
+RPG.MagicForms.wall = {id="wall",displayName="Wall",wizardOnly=true,utility=true,damageDice=2,damageSides=6,magicCost=35}
 local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball", "wall"}
 local CONTENT_ORDER = {"earth", "fire", "dark", "ice", "light", "electric"}
 MagicProgression.FormOrder = FORM_ORDER
@@ -132,7 +133,8 @@ function MagicProgression:_GrantDistinct(state, kind, milestone, seed)
     local available = {}
     for _, id in ipairs(order) do
         if catalog[id] and not contains(owned, id)
-            and (kind ~= "form" or self:FormAllowed(state,id)) then available[#available + 1] = id end
+            and (kind ~= "form" or self:FormAllowed(state,id))
+            and (kind ~= "form" or milestone ~= "level_1_all" and #owned>0 or not catalog[id].utility) then available[#available + 1] = id end
     end
     state.magicGrantMilestones[key] = true
     if #available == 0 then return false, "exhausted" end
@@ -244,7 +246,23 @@ function MagicProgression:ApplyScheduledGrants(state, seed)
         end
     end
 
-    -- Level 1 occurs before class choice and is always one deterministic Form.
+    -- Restore the offensive starter for older utility-only saves. Keep earned
+    -- utility ownership; deterministic/idempotent so reconnect never rerolls it.
+    if state.magicGrantMilestones['form:level_1_all'] then
+        local offense=false
+        for _,id in ipairs(state.magicFormIds) do
+            if RPG.MagicForms[id] and not RPG.MagicForms[id].utility then offense=true;break end
+        end
+        if not offense then
+            state.magicGrantMilestones['form:level_1_all']=nil
+            local before=state.selectedMagicFormId
+            form(1,'level_1_all')
+            if before and RPG.MagicForms[before] and RPG.MagicForms[before].utility then
+                state.selectedMagicFormId=state.magicFormIds[#state.magicFormIds]
+            end
+        end
+    end
+    -- Level 1 always supplies a direct-damage Form, including preselected Wizards.
     form(1, "level_1_all")
     if state.classId == "wizard" then content(1, "level_1_wizard") end
     if state.classId == "wizard" then form(2, "level_2_wizard") end
