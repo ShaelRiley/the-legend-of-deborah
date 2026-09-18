@@ -20,6 +20,75 @@ state.classId='fighter';P:EnsureState(state);assert(not state.magicBindings['5']
 state.magicFormIds={'bolt'};state.selectedMagicFormId='bolt';P:EnsureState(state)
 assert(P:BindForm(state,'bolt',5) and state.magicBindings['2']=='bolt' and not state.magicBindings['5'],'Single form always uses RMB')
 local _,none=F:SelectedCastState(owner,5);assert(not none,'Unbound auxiliary button never falls back to RMB')
+-- Native startup installs the Wizard feedback wrapper after the network receiver
+-- and Forms dispatcher. Exercise that complete chain, including non-Wizards.
+local serverReceivers={}
+net.Receive=function(name,fn) serverReceivers[name]=fn end
+dofile(root..'sv_magic.lua')
+dofile(root..'sv_magic_forms.lua')
+dofile(root..'sv_rpg_wizard_feedback.lua')
+local W,M=LOD.RPGWizardOffense,LOD.Magic
+assert(W:Install(),'Install the same cast wrapper used by the live server')
+local requestButton,dispatched,raiseCast
+net.ReadUInt=function(bits) assert(bits==3);return requestButton end
+local receive=assert(serverReceivers.LOD_MagicCastRequest)
+-- Only terminal world effects/placement are doubled; selection, wrapper,
+-- ownership, cost, cooldown, context sealing and cast transaction remain real.
+local endpoints={_CastWall='wall',_CastCone='cone',_CastBlast='blast',_CastBeam='beam',
+ _CastSummon='summon',_SpawnProjectile='projectile'}
+for method,kind in pairs(endpoints) do
+ F[method]=function(_,ply,form,content,context)
+  if raiseCast then error('mouse binding cast error') end
+  dispatched={form=form.id,kind=kind,context=context,bonus=W:AttackSnapshotBonus(ply)}
+  return true
+ end
+end
+F.CanPlaceWall=function() return true end
+F._SummonCount=function() return 0 end
+F._SummonPlacement=function() return Vector() end
+local allForms={};for id in pairs(LOD.RPG.MagicForms) do allForms[#allForms+1]=id end;table.sort(allForms)
+local cases=0
+for _,class in ipairs({'fighter','rogue','wizard'}) do
+ state.classId=class;state.magicFormIds=table.Copy(allForms);state.contentIds={};state.selectedMagicContentId=nil
+ state.derivedStats={intMod=3,wisMod=0};state.featIds={}
+ state.selectedMagicFormId='bolt';state.magicBindings=nil;P:EnsureState(state)
+ for _,id in ipairs(allForms) do
+  if P:FormAllowed(state,id) then
+   for button=3,5 do
+    state.selectedMagicFormId=id=='bolt' and 'beam' or 'bolt';state.magicBindings=nil;P:EnsureState(state)
+    assert(P:BindForm(state,id,button))
+    owner.ps.magic=100;M.NextCast[owner]=0;dispatched=nil;requestButton=button
+    receive(3,owner)
+    assert(dispatched and dispatched.form==id,class..' M'..button..' must cast '..id..', not RMB')
+    assert(dispatched.context.formId==id and dispatched.bonus==(class=='wizard' and 3 or 0))
+    local cost=LOD.RPGAbilityRules:OffensiveMagicCost(owner,F:TotalBaseCost(LOD.RPG.MagicForms[id]))
+    assert(owner.ps.magic==100-cost,'Charge the assigned Form cost')
+    assert(W.ActiveFullMagicSnapshots[owner]==nil,'No leaked Wizard snapshot')
+    dispatched=nil;receive(3,owner);assert(not dispatched,'Shared cooldown still rejects repeats')
+    M.NextCast[owner]=0;owner.ps.magic=0;receive(3,owner);assert(not dispatched,'Insufficient Magic still rejects')
+    cases=cases+1
+   end
+  end
+ end
+end
+state.classId='wizard';state.magicFormIds=table.Copy(allForms);state.selectedMagicFormId='bolt';state.magicBindings=nil;P:EnsureState(state)
+owner.ps.magic=100;M.NextCast[owner]=0;dispatched=nil;requestButton=5
+receive(3,owner);assert(not dispatched and owner.ps.magic==100,'Unbound M5 cannot fall back through the wrapper')
+for _,button in ipairs({0,1,6,7}) do requestButton=button;receive(3,owner);assert(not dispatched) end
+requestButton=2;receive(9,owner);assert(not dispatched,'Oversized request rejected')
+receive(3,owner);assert(dispatched.form=='bolt','Explicit RMB still casts its binding')
+M.NextCast[owner]=0;owner.ps.magic=100;dispatched=nil
+receive(0,owner);assert(dispatched.form=='bolt','Legacy request still defaults to RMB')
+M.NextCast[owner]=0;owner.ps.magic=100;dispatched=nil
+assert(M:CastForceShout(owner) and dispatched.form=='bolt','Buttonless developer calls retain selected Form')
+M.NextCast[owner]=0;owner.ps.magic=100
+local previous={marker=true};W.ActiveFullMagicSnapshots[owner]=previous;raiseCast=true
+local ok,err=pcall(function() M:CastForceShout(owner,2) end)
+assert(not ok and tostring(err):find('mouse binding cast error',1,true))
+assert(W.ActiveFullMagicSnapshots[owner]==previous,'Error unwinding restores the preceding snapshot')
+W.ActiveFullMagicSnapshots[owner]=nil;raiseCast=false
+assert(M:CastForceShout({valid=false},5)==false,'Invalid caster still rejected')
+print('MAGIC_MOUSE_SERVER_DISPATCH_PASS: '..cases..' class/Form/button casts through receiver and installed Wizard wrapper')
 -- Real client input path: all four buttons, menu/chat/throwable and release latch.
 MOUSE_LEFT,MOUSE_RIGHT,MOUSE_MIDDLE,MOUSE_4,MOUSE_5=107,108,109,110,111
 IN_ATTACK,IN_ATTACK2=1,2

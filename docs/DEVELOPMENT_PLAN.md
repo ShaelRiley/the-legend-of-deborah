@@ -1,4 +1,23 @@
-# Current candidate — integrated equipment, exchanges and Magic
+# Current candidate — auxiliary mouse Magic dispatch repair
+
+Author-reported M3/M4/M5 casts repeated RMB's Form on `6e136b3`. The installed
+Wizard feedback wrapper dropped the requested button for every class. Forward
+that argument through both wrapper paths; keep the existing cast resolver and
+full-Magic snapshot/error cleanup. No rules or tuning change. Current author
+direction governs independent bindings; live GDD 00 → 01 → 03/06 preserves the
+shared Magic authority (older single-Form UI wording is superseded by that direction).
+
+The expanded mouse-binding regression reproduced the failure before the fix
+(`fighter M3 must cast beam, not RMB`) and now passes all 78 eligible
+class/Form/auxiliary-button combinations through the real network receiver,
+installed Wizard wrapper and cast transaction. Terminal world effects are
+doubled; costs, cooldowns, binding ownership, unbound/invalid request rejection,
+RMB/legacy requests and snapshot cleanup remain real. All 116 integrated suites
+pass with zero failures. Native acceptance: on `gm_flatgrass`, assign four different Forms to
+RMB/M3/M4/M5 and cast each; Wall retains hold-to-aim/release-to-place. No public
+server deployment or Workshop publication is included.
+
+# Previous candidate — integrated equipment, exchanges and Magic
 
 Author-directed six-part continuation preserves `402ecb2` and extends the server
 inventory/SQLite/UI/Magic authorities: four Debbie drag-and-drop actions, durable

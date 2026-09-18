@@ -277,17 +277,19 @@ function WizardOffense:Install()
     end
 
     local priorCastForceShout = magicAuthority.CastForceShout
-    function magicAuthority:CastForceShout(ply)
-        if not IsValid(ply) then return priorCastForceShout(self, ply) end
+    function magicAuthority:CastForceShout(ply, button)
+        if not IsValid(ply) then return priorCastForceShout(self, ply, button) end
 
         -- Force Shout spends Magic before rolling its damage. Snapshot the authored
         -- full-Magic bonus just for the synchronous cast, then always restore the
         -- prior snapshot even if the underlying cast raises a Lua error.
+        -- Preserve the requested binding: dropping it silently selects RMB's
+        -- Form for every auxiliary button, including non-Wizard casts.
         local previous = WizardOffense.ActiveFullMagicSnapshots[ply]
         WizardOffense.ActiveFullMagicSnapshots[ply] = WizardOffense:FullMagicBonus(ply)
         local function pack(...) return {n = select("#", ...), ...} end
         local results = pack(xpcall(function()
-            return priorCastForceShout(self, ply)
+            return priorCastForceShout(self, ply, button)
         end, debug.traceback))
         WizardOffense.ActiveFullMagicSnapshots[ply] = previous
         if not results[1] then error(results[2], 0) end
