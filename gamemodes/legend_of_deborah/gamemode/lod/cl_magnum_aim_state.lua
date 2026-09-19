@@ -2,7 +2,7 @@ LOD = LOD or {}
 
 local glowTexture = "sprites/light_glow02_add"
 local lockColor = Color(255, 205, 72, 230)
-local LOCK_SOUND = "buttons/button14.wav"
+local LOCK_SOUND = "legend_of_deborah/feedback/aim_lock.wav"
 
 local AIMABLE_CLASSES = {
     weapon_lod_crowbar = true,

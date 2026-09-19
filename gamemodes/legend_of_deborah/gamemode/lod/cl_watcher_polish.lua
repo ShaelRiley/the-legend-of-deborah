@@ -147,7 +147,7 @@ net.Receive("LOD_WatcherScanPulse", function()
     if IsValid(target) then
         local targetPos = target:IsPlayer() and target:EyePos() or target:WorldSpaceCenter()
         effectAt("StunstickImpact", targetPos, 1.0)
-        sound.Play("buttons/button17.wav", targetPos, 68, 128, 0.55)
+        sound.Play("legend_of_deborah/feedback/enemy_warning.wav", targetPos, 68, 128, 0.55)
     end
 end)
 

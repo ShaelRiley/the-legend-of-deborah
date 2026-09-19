@@ -33,6 +33,7 @@ local function actor(feats, human)
     function a:Nick() return "Actor" end
     function a:GetClass() return "lod_hostile" end
     function a:GetPos() return self.cell end
+    function a:WorldSpaceCenter() return Vector() end
     return a
 end
 local function near(a,b,label) assert(math.abs(a-b)<1e-8,(label or '')..': '..tostring(a)..' ~= '..tostring(b)) end
@@ -450,5 +451,27 @@ observed=telemetry[#telemetry]
 assert(defense and defense.finalHPDamage==20 and not observed.fields.dodged and not observed.fields.evaded,
     'ordinary undeflected hit cannot inherit a prior attack Dodge')
 print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')
+
+-- Poison packets bypass both Wizard diversion and generic Mana Barrier.
+local poisonHero=actor({},true)
+poisonHero.GetShootPos=function() return Vector() end
+poisonHero.GetAimVector=function() return Vector(1,0,0) end
+poisonHero.state.derivedStats={hpToMagicDiversionFraction=.5,wizardClassHpToMagicDiversionFraction=.5,livingAegisHPPerMagic=2}
+local originalContext=Status.DamageContext
+LOD.Magic._EnsureState=function(_,who) return who.resource end;LOD.Magic._Sync=function() end
+DMG_POISON=131072
+for _,context in ipairs({{element='poison'},{poison=true},{damageType='poison'},{native=true}}) do
+    Status.DamageContext=function() return context end
+    local d=damage({});d.IsDamageType=function(_,mask) return context.native and mask==DMG_POISON end
+    poisonHero.resource.magic=90
+    local result=Rules:ApplyPlayerDefense(poisonHero,d)
+    assert(d:GetDamage()==20 and poisonHero.resource.magic==90 and result.actualMagicDiversion==0,'Poison spent Magic or reduced HP loss')
+end
+Status.DamageContext=function() return {} end
+LOD.RPGPresentation.SendFX=function() end
+local ordinary=damage({});Rules:ApplyPlayerDefense(poisonHero,ordinary)
+assert(ordinary:GetDamage()==10 and poisonHero.resource.magic==85,'ordinary Arcane Diversion regressed')
+Status.DamageContext=originalContext
+print('POISON_DIVERSION_PASS: contextual/native Poison bypass, ordinary diversion retained')
 
 return {hooks=registered, actor=actor, Rules=Rules, Rolls=Rolls, Status=Status}

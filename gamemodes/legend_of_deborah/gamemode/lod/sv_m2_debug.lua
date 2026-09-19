@@ -142,8 +142,8 @@ concommand.Add("lod_m2_tp", function(ply, _, args)
         return
     end
 
-    if kind == "deborah" then
-        debugTeleport(ply, LOD.MazeBuilder:CellCenter(progression.DeborahCell) + Vector(0, 0, 24), "Deborah chamber")
+    if kind == "deborah" or kind == "rescue" or kind == "cash" then
+        debugTeleport(ply, LOD.MazeBuilder:CellCenter(progression.DeborahCell) + Vector(0, 0, 24), (LOD.Damsels and LOD.Damsels:Current().objective or "Rescue chamber"))
         return
     end
 
@@ -210,8 +210,8 @@ concommand.Add("lod_m2_audit", function(ply)
     require(progression.JailEdge and graph.Edges and graph.Edges[progression.JailEdge.edgeKey] ~= nil,
         "JailEdge is not a canonical graph edge")
     require(progression.Validation and progression.Validation.orderedRoute ==
-        (progression.Hunt and "Start>Red>Blue>Yellow>Neil>Black Keycard>Black Gate>Temporary Core Jail Key>Jail Door>Deborah" or
-        "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah"),
+        (progression.Hunt and "Start>Red>Blue>Yellow>Neil>Black Keycard>Black Gate>Temporary Core Jail Key>Jail Door>Rescue Target" or
+        "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Rescue Target"),
         "ordered route does not include Jail Key and Jail Door")
     require(progression.Gates[1].pathIndex < progression.Gates[2].pathIndex and progression.Gates[2].pathIndex < progression.Gates[3].pathIndex,
         "gate path indices are not strictly ordered")
@@ -229,7 +229,7 @@ concommand.Add("lod_m2_audit", function(ply)
     local deborahEntities = ents.FindByClass("lod_deborah")
     require(#gateEntities == gateCount, "runtime gate entity count is " .. #gateEntities)
     require(#jailDoorEntities == 1, "runtime jail-door entity count is " .. #jailDoorEntities)
-    require(#deborahEntities == 1, "runtime Deborah entity count is " .. #deborahEntities)
+    require(#deborahEntities == 1, "runtime rescue-target entity count is " .. #deborahEntities)
 
     local expectedCardsRemaining = 0
     for i = 1, 3 do if not (state.Cards and state.Cards[i]) then expectedCardsRemaining = expectedCardsRemaining + 1 end end
@@ -266,7 +266,7 @@ concommand.Add("lod_m2_audit", function(ply)
 
     local pass = #reasons == 0
     printTo(ply, string.format(
-        "M2 AUDIT %s | level=%d layoutAttempt=%d gates=%d cardsRemaining=%d jailKeys=%d jailDoor=%d Deborah=%d played=%d active=%d checkpoint=%d objective=%d",
+        "M2 AUDIT %s | level=%d layoutAttempt=%d gates=%d cardsRemaining=%d jailKeys=%d jailDoor=%d rescueTarget=%d played=%d active=%d checkpoint=%d objective=%d",
         pass and "PASS" or "FAIL",
         state.Level or -1,
         graph.ProgressionLayoutAttempt or -1,

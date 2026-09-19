@@ -188,7 +188,7 @@ function Minimap:Send(ply)
     local cells, chunks = cachedCanonicalCells(state, graph)
 
     net.Start("LOD_MapBegin")
-    net.WriteUInt(state.Level or 1, 20)
+    net.WriteDouble(state.Level or 1)
     net.WriteUInt(math.Clamp(graph.Layers or 1, 1, 7), 3)
     net.WriteUInt(math.min(#cells, 65535), 16)
     net.WriteUInt(math.min(chunks, 255), 8)
@@ -214,7 +214,7 @@ function Minimap:Send(ply)
         local count = math.max(0, last - first + 1)
 
         net.Start("LOD_MapChunk")
-        net.WriteUInt(state.Level or 1, 20)
+        net.WriteDouble(state.Level or 1)
         net.WriteUInt(chunkIndex, 8)
         net.WriteUInt(count, 8)
         for i = first, last do

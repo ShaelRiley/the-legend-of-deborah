@@ -192,3 +192,5 @@ include("lod/sh_campaign_timeout.lua")
 include("lod/cl_campaign_timeout.lua")
 
 include("lod/cl_teammate_identity.lua")
+
+include("lod/cl_damsels.lua")

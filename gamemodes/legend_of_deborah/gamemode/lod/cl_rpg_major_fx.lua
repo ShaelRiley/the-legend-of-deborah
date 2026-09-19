@@ -29,20 +29,10 @@ surface.CreateFont("LOD_RPGMajorFXSecondary", {
 })
 
 local function playLevelSound()
-    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(5, false); return end
-    surface.PlaySound("buttons/button15.wav")
-    timer.Simple(0.055, function()
-        surface.PlaySound("items/suitchargeok1.wav")
-    end)
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(5, false) end
 end
-
 local function playFeatSound()
-    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(7, false); return end
-    if file.Exists("sound/ambient/office/keyboard1_clicks.wav", "GAME") then
-        surface.PlaySound("ambient/office/keyboard1_clicks.wav")
-    else
-        surface.PlaySound("buttons/button14.wav")
-    end
+    if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(7, false) end
 end
 
 function FX:Trigger(kind, primary, secondary, serial, origin, target)

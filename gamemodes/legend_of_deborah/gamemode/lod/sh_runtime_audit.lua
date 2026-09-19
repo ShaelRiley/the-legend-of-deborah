@@ -21,6 +21,8 @@ function Audit:Snapshot()
     local installation = file.Read("legend_of_deborah/dev_build.txt", "DATA") or "unrecorded"
     installation = string.sub(string.gsub(installation, "[\r\n]", " "), 1, 160)
     return {
+        damsels = LOD.Damsels and LOD.Damsels.Version or 'missing',
+        feedback_audio = LOD.Audio and LOD.Audio.Version or 'missing',
         build = self.Build, realm = SERVER and "server" or "client",
         install = installation, missing = #missing > 0 and table.concat(missing, ",") or "none",
         architecture = jit and jit.arch or "unknown", branch = tostring(BRANCH or "unknown"),
@@ -39,7 +41,7 @@ end
 function Audit:Report()
     local data = self:Snapshot()
     local parts = {}
-    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes", "wall_models", "loot_entities", "jit_version", "equipment_generation"}) do
+    for _, key in ipairs({"build", "realm", "install", "missing", "architecture", "branch", "engine", "lua_errors", "lua_kb", "entities", "meshes", "wall_models", "loot_entities", "jit_version", "equipment_generation", "damsels", "feedback_audio"}) do
         parts[#parts + 1] = key .. "=" .. tostring(data[key])
     end
     print("[LOD BUILD_IDENTITY] " .. table.concat(parts, " "))

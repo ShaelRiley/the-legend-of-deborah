@@ -84,6 +84,6 @@ net.Receive("LOD_DiceExplosionFX", function()
     -- the longer HEV confirmation cadence. Sound remains shooter-local.
     if now >= (Feed.nextExplosionSound or 0) then
         Feed.nextExplosionSound = now + 0.10
-        surface.PlaySound("buttons/button9.wav")
+        LOD.Audio:Play('dice_explode')
     end
 end)

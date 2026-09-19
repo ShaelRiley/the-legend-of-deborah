@@ -153,14 +153,15 @@ end
 function E:AcquireWorldItem(ply,item,accept,source)
     local ps=hero(ply)
     local statue=source=="dft" and LOD.CryptoDirector and LOD.CryptoDirector:CanUseStatue(ply)
-    if not ps or not (self:CanAct(ply) or statue) or not self:ValidateWearable(item) then return false end
+    local gift=source=="damsel" and self:CanManageInventory(ply)
+    if not ps or not (self:CanAct(ply) or statue or gift) or not self:ValidateWearable(item) then return false end
     -- Seal provenance at admission as well as at token recreation. Copies keep
     -- this flag across equipment changes, respawns and inventory restoration.
     if source=="dft" then item=table.Copy(item);item.economyExcluded=true end
     local state=self:Ensure(ps)
     if not self:CanStore(state,item) then return false end
     local slot,displaced=self:Placement(state,item)
-    local bag=source=="pickup"
+    local bag=source=="pickup" or source=="damsel"
     if not slot or state.items[item.id] or (not bag and #displaced>0 and not accept) then return false end
     local def=self:Definition(item)
     if bag then
@@ -334,14 +335,14 @@ hook.Add("PostEntityTakeDamage","LOD_EquipmentHitRiders",function(target,info,ta
 -- Native weapons are family adapters. Distinct stored rolls share that family's
 -- magazine/reserve, so swapping copies cannot refill ammunition.
 function E:MaterializeWeapon(ply,id)
-    local ps=hero(ply);if not ps or not self:CanAct(ply) then return false end
+    local ps=hero(ply);if not ps or not self:CanManageInventory(ply) then return false end
     local state=self:Ensure(ps);local item=state.items[id];local def=self:Definition(item)
     if not def or not def.weapon then return false end
     if IsValid(ply:GetWeapon(def.weaponClass)) then return true end
     return grantWeapon(LOD.LootDirector,ply,def.weaponClass,LOD.RNG.New(item.seed))
 end
 function E:DiscardOwned(ply,id)
-    local ps=hero(ply);if not ps or not self:CanAct(ply) then return false end
+    local ps=hero(ply);if not ps or not self:CanManageInventory(ply) then return false end
     local state=self:Ensure(ps);local def=self:Definition(state.items[id])
     if not self:Discard(state,id) then return false end
     if def.weapon then

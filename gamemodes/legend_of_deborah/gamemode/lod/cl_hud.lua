@@ -41,7 +41,7 @@ surface.CreateFont("LOD_HUD_Countdown", {
 net.Receive("LOD_RunState", function()
     local state = LOD.ClientState
     state.synchronized = true
-    state.level = net.ReadUInt(20)
+    state.level = net.ReadDouble()
     state.objectiveStage = net.ReadUInt(4)
     state.cards = {net.ReadBool(), net.ReadBool(), net.ReadBool(), net.ReadBool()}
     state.gates = {net.ReadBool(), net.ReadBool(), net.ReadBool(), net.ReadBool()}
@@ -226,7 +226,7 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
         draw.SimpleText("THE SERVER AND CONNECTED GROUP STAY TOGETHER", "LOD_HUD_Small", ScrW() * 0.5, ScrH() * 0.55,
             Color(215, 215, 215), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     elseif state.levelCleared then
-        draw.SimpleText("DEBORAH RESCUED", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.42,
+        draw.SimpleText((LOD.Damsels and LOD.Damsels:Current().victory or "LEVEL CLEAR"), "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.42,
             Color(245, 210, 115), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         draw.SimpleText("BUILDING THE NEXT LABYRINTH", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.47,
             Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)

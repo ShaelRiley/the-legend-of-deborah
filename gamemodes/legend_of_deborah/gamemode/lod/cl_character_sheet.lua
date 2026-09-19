@@ -87,7 +87,7 @@ local function makeChoiceButton(parent, text, callback)
     end
     button.DoClick = function(self)
         self:SetEnabled(false)
-        surface.PlaySound("buttons/button14.wav")
+        LOD.Audio:Play('confirm')
         callback()
     end
     return button

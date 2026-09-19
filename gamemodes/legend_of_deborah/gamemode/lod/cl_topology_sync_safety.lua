@@ -87,7 +87,7 @@ end
 net.Receive("LOD_TopologyIdentity", function()
     local buildSerial = net.ReadUInt(32)
     local epoch = net.ReadUInt(32)
-    local level = net.ReadUInt(20)
+    local level = net.ReadDouble()
     local seed = net.ReadUInt(32)
     local layoutAttempt = net.ReadUInt(8)
     local mazeAttempt = net.ReadUInt(8)

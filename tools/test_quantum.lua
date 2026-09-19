@@ -51,6 +51,7 @@ function actor:EntIndex() return 1 end
 file={Exists=function() return false end}
 net.WriteEntity=noop; net.WriteVector=noop; net.Broadcast=noop
 hook.Run=noop
+LOD.Audio=dofile('tools/audio_test_double.lua')
 assert(loadfile(root..'sv_magic.lua'))()
 local magic=LOD.Magic
 local ids={'INT_QUANTUM_MATHEMATICS_1','INT_QUANTUM_MECHANICS_2','INT_QUANTUM_MASTERY_3'}

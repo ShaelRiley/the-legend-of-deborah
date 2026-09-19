@@ -157,6 +157,8 @@ local function mockGMod()
         Exists = function() return false end
     }
     game = game or {GetMap = function() return "gm_flatgrass" end}
+    SetGlobalBool = function() end
+    GetGlobalBool = function(_,default) return default end
     resource = resource or {AddFile = function() end, AddWorkshop = function() end}
     scripted_ents = scripted_ents or {Register = function() end, Get = function() return {} end, GetStored = function() return {} end}
     ErrorNoHalt = ErrorNoHalt or function() end

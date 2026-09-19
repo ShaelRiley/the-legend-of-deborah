@@ -1,4 +1,24 @@
-# Current candidate — auxiliary mouse Magic dispatch repair
+# Current candidate — damsel progression, endless cash and audio cleanup
+
+Current author direction replaces repeat-Deborah rescues with the finite 20-damsel
+arc, followed by endless cash objectives. The candidate also addresses staging
+equipment access, Poison diversion, Climber clearance, Arc Caster recovery,
+Nodule combat bounds, ambient loop ownership and gold allied summons.
+
+See [DAMSEL_PROGRESSION_AND_AUDIO.md](DAMSEL_PROGRESSION_AND_AUDIO.md) for the
+roster, reward/persistence rules, audio decisions, regression coverage and finite
+native playtest commands. GDD navigation used 00 → 01 → 02/03/05/06/07. Beam
+Sweepers retain their authored stationary role. The current request supplies the
+new roster, rewards, palette and endless-mode design discretion.
+
+Validation: `python3 tools/test_checkpoint_g_integration.py` passes all 120
+suites with zero failures; staged diff whitespace checks pass. Native Garry's Mod
+audiovisual/multiplayer acceptance is pending a fresh build playtest.
+Do not deploy the public server or publish Workshop as part of this checkpoint.
+
+---
+
+# Previous candidate — auxiliary mouse Magic dispatch repair
 
 Author-reported M3/M4/M5 casts repeated RMB's Form on `6e136b3`. The installed
 Wizard feedback wrapper dropped the requested button for every class. Forward

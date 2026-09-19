@@ -54,6 +54,9 @@ end
 function MazeBuilder:_SpawnDeborah(meta)
     local ent = ents.Create("lod_deborah")
     if not IsValid(ent) then return nil end
+    local state = LOD.RunManager.State
+    ent.LODRescueTarget = state.RescueTarget
+    state.RescueEntity = ent
     ent:SetPos(self:CellCenter(meta) + Vector(0, 0, 1))
     ent:SetAngles(Angle(0, 180, 0))
     ent:Spawn()

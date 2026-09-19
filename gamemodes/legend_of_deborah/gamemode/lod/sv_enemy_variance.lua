@@ -183,6 +183,13 @@ function EnemyVariance:Apply(hostile)
         hpScale = hpScale,
         speedScale = cfg.speed and (cfg.speed / (originalConfig.speed or cfg.speed)) or 1
     }
+    local campaignLevel=LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.Level or 1
+    local pressure=LOD.Damsels and LOD.Damsels:EndlessPressure(campaignLevel)
+    if pressure then
+        for _,field in ipairs({"burstCooldown","meleeCooldown"}) do
+            if cfg[field] then cfg[field]=cfg[field]*pressure.recovery end
+        end
+    end
     hostile.LODHealthDice = healthContract
     hostile:SetNW2Float("LOD_SizeScale", size)
     hostile:SetNW2Int("LOD_InstanceSeed", seed)

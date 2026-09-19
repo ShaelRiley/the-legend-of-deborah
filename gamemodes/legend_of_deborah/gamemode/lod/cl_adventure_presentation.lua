@@ -19,6 +19,7 @@ function A:Reset()
     self.active, self.nextCue = nil, {}
 end
 function A:Play(index, visual, variant)
+    if LOD.Audio and LOD.Audio:Muted() then return false end
     local spec = LOD.AdventureCues[index]
     local ply, now = LocalPlayer(), CurTime()
     if not spec or not IsValid(ply) then return false end
@@ -27,13 +28,14 @@ function A:Play(index, visual, variant)
     local sounded = false
     if now >= (self.soundUntil or 0) or spec.priority > (self.soundPriority or 0) then
         if self.soundPath and IsValid(self.soundOwner) then self.soundOwner:StopSound(self.soundPath) end
-        local path = "legend_of_deborah/adventure/" .. (spec.sound or spec.id) .. ".wav"
+        local path = spec.feedback and ("legend_of_deborah/feedback/"..spec.feedback..".wav")
+            or "legend_of_deborah/adventure/" .. (spec.sound or spec.id) .. ".wav"
         if self.assetExists[path] == nil then self.assetExists[path] = file.Exists("sound/" .. path, "GAME") end
         if self.assetExists[path] and volume:GetFloat() > 0 then
-            ply:EmitSound(path, 0, 100, volume:GetFloat(), CHAN_AUTO)
+            if spec.feedback then sounded=LOD.Audio:Play(spec.feedback,volume:GetFloat())
+            else ply:EmitSound(path, 0, 100, volume:GetFloat(), CHAN_AUTO);sounded=true end
             self.soundOwner, self.soundPath = ply, path
             self.soundPriority, self.soundUntil = spec.priority, now + spec.duration
-            sounded = true
         end
     end
     if visual and spec.caption then

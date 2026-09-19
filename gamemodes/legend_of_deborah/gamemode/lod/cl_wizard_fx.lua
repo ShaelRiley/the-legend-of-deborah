@@ -8,7 +8,7 @@ local glow = Material("sprites/light_glow02_add")
 local arcMaterial = Material("cable/blue_elec")
 local DURATION = 0.80
 local colors = {[1] = Color(125, 185, 255), [4] = Color(95, 240, 220)}
-local sounds = {[1] = "ambient/energy/zap1.wav", [4] = "items/suitchargeok1.wav"}
+local sounds = {[1] = "legend_of_deborah/feedback/feedback.wav", [4] = "legend_of_deborah/feedback/diversion.wav"}
 surface.CreateFont("LOD_WizardCue", {font="Trebuchet MS", size=21, weight=900, antialias=true})
 surface.CreateFont("LOD_WizardDetail", {font="Trebuchet MS", size=16, weight=700, antialias=true})
 

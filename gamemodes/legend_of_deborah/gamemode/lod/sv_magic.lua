@@ -240,7 +240,7 @@ function Magic:CastForceShout(ply)
     local rules = LOD.RPGAbilityRules
     local cost = rules and rules.OffensiveMagicCost and rules:OffensiveMagicCost(ply, SHOUT_COST) or SHOUT_COST
     if ps.magic < cost then
-        ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
+        LOD.Audio:Emit(ply,'deny')
         return false
     end
 

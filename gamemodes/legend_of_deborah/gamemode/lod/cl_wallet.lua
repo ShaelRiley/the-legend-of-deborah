@@ -264,7 +264,7 @@ net.Receive('LOD_JunkResult',function()
     local result=net.ReadTable()
     if not istable(result) or not W.ExchangePending or result.request~=W.ExchangePending.request then return end
     W.ExchangePending=nil;W.ExchangeMessage=result.message
-    if result.ok then W.Pile={};surface.PlaySound('buttons/button14.wav') end
+    if result.ok then W.Pile={};LOD.Audio:Play('confirm') end
     W.RenderPending=true
 end)
 

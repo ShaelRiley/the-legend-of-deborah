@@ -77,7 +77,9 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawJailDoorLabel", function()
             for _, item in ipairs(positions) do
                 cam.Start3D2D(item[1], item[2], 0.12)
                     draw.RoundedBox(4, -180, -36, 360, 72, Color(18, 20, 22, 242))
-                    draw.SimpleText("DEBORAH — JAIL", "DermaLarge", 0, -9, Color(225, 225, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                    local target=LOD.Damsels and LOD.Damsels:Current()
+                    local label=target and (target.type=="cash" and "STOLEN CASH — VAULT" or string.upper(target.name).." — JAIL") or "RESCUE CHAMBER"
+                    draw.SimpleText(label, "DermaLarge", 0, -9, Color(225, 225, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                     draw.SimpleText(ent:GetOpened() and "UNLOCKED" or "USE JAIL KEY", "DermaDefaultBold", 0, 21,
                         ent:GetOpened() and Color(100, 230, 120) or Color(255, 222, 104), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 cam.End3D2D()

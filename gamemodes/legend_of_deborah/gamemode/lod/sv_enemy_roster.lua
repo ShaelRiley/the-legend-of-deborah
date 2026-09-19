@@ -41,6 +41,14 @@ function E:Origin(e)
     return e:GetPos()+Vector(0,0,e.LODArchetypeId=="bigcrab" and 32 or 48)
 end
 function E:Prepare(e)
+    if e.LODArchetypeId=="nodule" and LOD.HostileShapes then
+        local size=e:GetNW2Float('LOD_SizeScale',1)
+        if e.LODNoduleHullScale~=size then
+            local lo,hi=LOD.HostileShapes:NoduleBounds(e)
+            e:SetSolid(SOLID_BBOX);e:SetCollisionBounds(lo,hi)
+            e.LODNoduleHullScale=size
+        end
+    end
     if e.LODRosterReady then return end
     e.LODRosterReady=true;self.Active[e]=true;e:SetNW2Bool("LOD_RosterAlive",true)
     local d=self.Definitions[e.LODArchetypeId]
@@ -211,7 +219,11 @@ function E:Tick(e)
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
-    if can then
+    -- Arc Casters advance between commitments. Previously merely seeing a target
+    -- inside the very long cast range held them still for the entire cooldown.
+    local reposition=d.kind=="arc" and now<(e.LODNextAttack or 0)
+        and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2
+    if can and not reposition then
         motion:Stop(e)
         if not d.stationary then motion:FaceToward(e,p:GetPos()) end
         if now>=(e.LODNextAttack or 0) then self:Begin(e,p,now) end
@@ -279,6 +291,10 @@ end
 function E:CombatBounds(e)
     local pos=e:GetPos();local size=math.Clamp(e:GetNW2Float("LOD_SizeScale",1),.33,1.33)
     local id=e.LODArchetypeId
+    if id=="nodule" and LOD.HostileShapes then
+        local lo,hi=LOD.HostileShapes:NoduleBounds(e)
+        return pos+lo,pos+hi
+    end
     if id=="climber" then return pos+Vector(-14,-14,-8),pos+Vector(14,14,38*size) end
     if id=="lurker" then return pos+Vector(-18,-18,-64*size),pos+Vector(18,18,0) end
     if id=="bigcrab" then local scale=2.4+size-.33;return pos+Vector(-18*scale,-18*scale,0),pos+Vector(18*scale,18*scale,24*scale) end

@@ -1,4 +1,5 @@
 local env=dofile('tools/test_equipment_economy_runtime.lua')
+LOD.RunManager.IsDungeonPlayer=LOD.RunManager.IsActivePlayer
 local Loot,E=LOD.LootDirector,LOD.Equipment
 local hero=env.actor('pickup-owner');env.Run.State.PlayerState={['pickup-owner']=hero.ps}
 player.GetAll=function() return {hero} end

@@ -75,7 +75,7 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
     end
     local function select(buttonCode)
         if not entry.owned then return end
-        surface.PlaySound("buttons/button14.wav")
+        LOD.Audio:Play('confirm')
         if kind=='form' then
             local button=({[MOUSE_MIDDLE]=3,[MOUSE_4]=4,[MOUSE_5]=5})[buttonCode] or 2
             net.Start("LOD_MagicBindForm");net.WriteString(entry.id);net.WriteUInt(button,3)

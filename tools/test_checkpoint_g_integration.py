@@ -123,6 +123,10 @@ SUITES.append(("Ordinary Procedural Pistol and Crowbar Loot", ["python3", "tools
 SUITES.append(("Looping Audio Ownership", ["python3", "tools/run_lua54.py", "tools/test_loop_audio.lua"]))
 SUITES.append(("Adventure Presentation", ["python3", "tools/run_lua54.py", "tools/test_adventure_presentation.lua"]))
 SUITES.append(("Original Adventure Audio", ["python3", "tools/test_adventure_audio.py"]))
+SUITES.append(("Damsel Campaign & Endless Progression", ["python3", "tools/run_lua54.py", "tools/test_damsel_progression.lua"]))
+SUITES.append(("Damsel Staging, Late Join & Dialogue", ["python3", "tools/run_lua54.py", "tools/test_damsel_staging.lua"]))
+SUITES.append(("Feedback Audio Lifecycle & Coalescing", ["python3", "tools/run_lua54.py", "tools/test_damsel_audio.lua"]))
+SUITES.append(("Feedback Audio Assets", ["python3", "tools/test_feedback_audio.py"]))
 SUITES.append(("Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
 SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 

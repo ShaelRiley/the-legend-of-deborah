@@ -61,6 +61,7 @@ LOD = {RPG = {}, RPGPresentation = {}, CombatRolls = {Stats = {}},
         GetPlayerState = function(_, who) if who == "1" then who = a end; return states[who] end,
         _SyncPlayerVars = function() return nil, "sync", nil, 4 end,
         IsSoldierControl = function(_, ply) return ply.soldier == true end}}
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root .. "sh_die_logger.lua")
 dofile(root .. "sh_feedback_language.lua")
 dofile(root .. "sv_feedback_language.lua")

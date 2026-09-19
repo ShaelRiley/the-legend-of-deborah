@@ -283,3 +283,7 @@ include("lod/sv_campaign_timeout.lua")
 
 include("lod/sv_sheet_director.lua")
 AddCSLuaFile("lod/cl_teammate_identity.lua")
+
+AddCSLuaFile("lod/cl_damsels.lua")
+include("lod/sv_damsels.lua")
+include("lod/sv_audio_lifecycle.lua")

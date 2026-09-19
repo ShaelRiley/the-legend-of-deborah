@@ -106,6 +106,8 @@ function Heroes:SubmitRun(runData)
     local newEntry = {
         runId = runIdStr,
         rescueCount = rescues,
+        highestLevel = math.max(1,math.floor(tonumber(runData.highestLevel) or rescues+1)),
+        cashRecovered = math.max(0,math.floor(tonumber(runData.cashRecovered) or 0)),
         partyMembers = partyMembersCopy,
         completionOrder = self.NextCompletionOrder,
         timestamp = os and os.time and os.time() or 0

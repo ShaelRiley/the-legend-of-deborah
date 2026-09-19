@@ -282,7 +282,7 @@ local function buildGraphIndex()
 end
 
 net.Receive("LOD_MapBegin", function()
-    Map.level = net.ReadUInt(20)
+    Map.level = net.ReadDouble()
     Map.layers = net.ReadUInt(3)
     Map.expectedCells = net.ReadUInt(16)
     Map.expectedChunks = net.ReadUInt(8)
@@ -307,7 +307,7 @@ net.Receive("LOD_MapBegin", function()
 end)
 
 net.Receive("LOD_MapChunk", function()
-    local level = net.ReadUInt(20)
+    local level = net.ReadDouble()
     local chunkIndex = net.ReadUInt(8)
     local count = net.ReadUInt(8)
     if Map.level ~= level then return end
@@ -335,7 +335,7 @@ end)
 net.Receive("LOD_MapDenied", function()
     Map.open = false
     local text = net.ReadString()
-    surface.PlaySound("buttons/button10.wav")
+    LOD.Audio:Play('deny')
     notification.AddLegacy(text ~= "" and text or "NO MAP", NOTIFY_HINT, 2.5)
 end)
 
@@ -353,13 +353,13 @@ hook.Add("Think", "LOD_MinimapToggleInput", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
     if not hasAccess(ply) then
-        surface.PlaySound("buttons/button10.wav")
+        LOD.Audio:Play('deny')
         notification.AddLegacy("NO MAP — FIND ONE", NOTIFY_HINT, 2.5)
         return
     end
 
     Map.open = not Map.open
-    surface.PlaySound(Map.open and "buttons/button15.wav" or "buttons/button19.wav")
+    LOD.Audio:Play(Map.open and 'map_open' or 'map_close')
     if Map.open then
         local level = currentClientLevel()
         if mapReadyForLevel(level) then

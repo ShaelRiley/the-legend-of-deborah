@@ -22,6 +22,9 @@ ProgressionDirector.Stages = ProgressionDirector.Stages or {
     DEFEAT_WARDEN = 14
 }
 local Stages = ProgressionDirector.Stages
+-- Preserve the serialized numeric stages and legacy debug aliases.
+Stages.UNLOCK_RESCUE_CELL=Stages.UNLOCK_DEBORAH_CELL
+Stages.RESCUE_TARGET=Stages.RESCUE_DEBORAH
 
 util.AddNetworkString("LOD_RunState")
 util.AddNetworkString("LOD_Announcement")
@@ -297,13 +300,13 @@ local function simulateProgression(graph, gates, keycards, jailEdge)
         return false, "Core/Jail Key source is unreachable after Yellow Gate"
     end
     if coreReach[keyForCell(jailEdge.afterCell)] then
-        return false, "Deborah side is reachable while JailEdge is locked"
+        return false, "Rescue target side is reachable while JailEdge is locked"
     end
 
     blocked[jailEdge.edgeKey] = nil
     local rescueReach = bfs(graph, graph.Start, blocked)
     if not rescueReach[keyForCell(jailEdge.afterCell)] then
-        return false, "Deborah is unreachable after JailEdge unlock"
+        return false, "Rescue target is unreachable after JailEdge unlock"
     end
     return true
 end
@@ -358,7 +361,7 @@ function ProgressionDirector:Plan(graph, masterLevelSeed)
         DeborahCell = deborahCell,
         Validation = {
             valid = true,
-            orderedRoute = "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Deborah"
+            orderedRoute = "Start>Red Card>Red Gate>Blue Card>Blue Gate>Yellow Card>Yellow Gate>Jail Key>Jail Door>Rescue Target"
         }
     }
 
@@ -390,6 +393,7 @@ end
 
 function ProgressionDirector:GetObjectiveText()
     local stage = (LOD.RunManager.State and LOD.RunManager.State.ObjectiveStage) or 1
+    local target = LOD.Damsels and LOD.Damsels:Current()
     local objectives = {
         "FIND RED KEYCARD — R / TRIANGLE",
         "OPEN RED GATE — R / TRIANGLE",
@@ -398,8 +402,8 @@ function ProgressionDirector:GetObjectiveText()
         "FIND YELLOW KEYCARD — Y / SQUARE",
         "OPEN YELLOW GATE — Y / SQUARE",
         "TAKE JAIL KEY",
-        "UNLOCK DEBORAH'S CELL",
-        "RESCUE DEBORAH",
+        target and (target.type == "cash" and "UNLOCK THE CASH VAULT" or "UNLOCK " .. string.upper(target.name) .. "'S CELL") or "UNLOCK THE RESCUE CHAMBER",
+        target and target.objective or "SECURE THE RESCUE OBJECTIVE",
         "FIND NEIL AND THE BLACK KEYCARD",
         "TAKE THE BLACK KEYCARD — K / KEY",
         "OPEN BLACK GATE — K / KEY",
@@ -488,7 +492,7 @@ function ProgressionDirector:SyncPlayer(ply)
     local graphTarget = self:GetObjectiveGraphTarget()
 
     net.Start("LOD_RunState")
-    net.WriteUInt(math.max(1, state.Level or 1), 20)
+    net.WriteDouble(math.max(1, state.Level or 1))
     net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 14), 4)
     for i = 1, 4 do net.WriteBool(state.Cards and state.Cards[i] == true) end
     for i = 1, 4 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
@@ -508,6 +512,7 @@ function ProgressionDirector:SyncPlayer(ply)
         if graphTarget.b then writeCell(graphTarget.b) end
     end
     net.Send(ply)
+    if LOD.Damsels and LOD.Damsels.Sync then LOD.Damsels:Sync(ply) end
 end
 
 function ProgressionDirector:SyncAll()
@@ -557,7 +562,7 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     if not state.Cards[index] then
         if IsValid(ply) then
             reportDenied(ply, string.format("ACCESS DENIED — %s / %s KEYCARD REQUIRED", card.letter, card.symbol))
-            ply:EmitSound("buttons/button10.wav", 65, 100, 0.7)
+            LOD.Audio:Emit(ply,'deny')
         end
         return false
     end
@@ -633,7 +638,7 @@ function ProgressionDirector:CollectJailKey(ply, keyEnt)
     state.JailKeyEntity = nil
     state.ObjectiveStage = Stages.UNLOCK_DEBORAH_CELL
     if IsValid(keyEnt) then keyEnt:Remove() end
-    self:Announce("JAIL KEY ACQUIRED — UNLOCK DEBORAH'S CELL", {event = "jail_key_acquired"})
+    self:Announce("JAIL KEY ACQUIRED — " .. self:GetObjectiveText(), {event = "jail_key_acquired"})
     self:SyncAll()
     return true
 end
@@ -647,7 +652,7 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
 
     if not state.JailKey then
         reportDenied(ply, "ACCESS DENIED — JAIL KEY REQUIRED")
-        ply:EmitSound("buttons/button10.wav", 65, 100, 0.7)
+        LOD.Audio:Emit(ply,'deny')
         return false
     end
     if state.ObjectiveStage ~= Stages.UNLOCK_DEBORAH_CELL then
@@ -658,7 +663,7 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
     state.JailDoorOpen = true
     state.ObjectiveStage = Stages.RESCUE_DEBORAH
     if IsValid(doorEnt) and doorEnt.OpenDoor then doorEnt:OpenDoor() end
-    if state.Graph and state.Graph.Progression.Warden then
+    if state.Graph and state.Graph.Progression.Warden and (not state.RescueTarget or state.RescueTarget.type=="damsel") then
         for _, e in ipairs(ents.FindByClass("lod_deborah")) do
             e:SetNW2Bool("LOD_RescueCheer", true)
             for _, name in ipairs({"cheer1", "cheer", "clap", "applause"}) do
@@ -667,12 +672,12 @@ function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
             end
         end
     end
-    self:Announce("DEBORAH'S CELL UNLOCKED — RESCUE DEBORAH", {event = "jail_opened"})
+    self:Announce("CELL UNLOCKED — " .. (LOD.Damsels and LOD.Damsels:Current().objective or "SECURE THE RESCUE OBJECTIVE"), {event = "jail_opened"})
     self:SyncAll()
     return true
 end
 
-function ProgressionDirector:CanRescueDeborah()
+function ProgressionDirector:CanRescueTarget()
     local state = LOD.RunManager.State
     return not state.Failed and not state.LevelCleared and state.GatesOpen and
         state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and state.GatesOpen[4] and
@@ -680,8 +685,15 @@ function ProgressionDirector:CanRescueDeborah()
         state.ObjectiveStage == Stages.RESCUE_DEBORAH
 end
 
-function ProgressionDirector:OnDeborahTouched(ply)
+function ProgressionDirector:OnRescueTargetTouched(ply, target)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
-    if not LOD.RunManager:IsActivePlayer(ply) or not self:CanRescueDeborah() then return false end
+    if not LOD.RunManager:IsActivePlayer(ply) or not self:CanRescueTarget() then return false end
+    if LOD.Damsels and (not IsValid(target) or target ~= LOD.RunManager.State.RescueEntity) then return false end
     return LOD.RunManager:CompleteLevel(ply)
+end
+
+-- Compatibility for existing diagnostics; production uses the typed objective.
+ProgressionDirector.CanRescueDeborah = ProgressionDirector.CanRescueTarget
+function ProgressionDirector:OnDeborahTouched(ply)
+    return self:OnRescueTargetTouched(ply, LOD.RunManager.State.RescueEntity)
 end

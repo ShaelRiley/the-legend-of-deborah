@@ -133,7 +133,7 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
     local AR2_BURST_SHOTS = 3
     local AR2_BURST_SPACING = 0.09
     local AR2_RECOVERY = 0.25
-    local AR2_TELEGRAPH_SOUND = "buttons/button17.wav"
+    local AR2_TELEGRAPH_SOUND = "legend_of_deborah/feedback/ar2_warning.wav"
 
     local function activeWeapon(ply)
         if not IsValid(ply) then return nil end

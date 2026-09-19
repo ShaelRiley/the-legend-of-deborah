@@ -27,6 +27,7 @@ function ScrW() return 1280 end
 function ScrH() return 800 end
 TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP,CHAN_AUTO=1,2,0
 LOD={Config={Progression={Cards={{color=Color(240,80,80),letter='R'},{color=Color(80,190,110),letter='G'}}}}}
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root..'sh_feedback_language.lua')
 dofile(root..'cl_adventure_presentation.lua')
 local A=LOD.AdventurePresentation

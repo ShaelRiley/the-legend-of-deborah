@@ -38,7 +38,7 @@ assert 'util.Compress(html)' in server and 'net.WriteData(data, #data)' in serve
 init=(ROOT/'gamemodes/legend_of_deborah/gamemode/init.lua').read_text()
 assert 'include("lod/sv_instruction_manual.lua")' in init
 assert 'AddCSLuaFile("lod/manual/' not in init, 'Generated manual payload is server-streamed, not client-file distributed'
-for term in ['TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff','Stink Bomb','Arcane Surge','DFTs mint only','Beam Sweeper']:
+for term in ['TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff','Stink Bomb','Arcane Surge','DFTs normally mint','Abundance','SECURE THE BAG','Nessa','Beam Sweeper']:
     assert term in html,term
 subprocess.run(['node',str(ROOT/'tools/test_manual_reader.js')],check=True,cwd=ROOT)
 print('PASS: canonical bytes, all 150 feat entries, 60 properties, offline assets, portable access')

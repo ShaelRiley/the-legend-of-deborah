@@ -684,7 +684,7 @@ env.CreateMaterial=function(name,shader,params) materialParams[name]=params;retu
 env.CreateSound=function(_,path)
     assert(path=="ambient/gas/steam2.wav")
     return {SetSoundLevel=function(_,level) assert(level==55) end,
-        PlayEx=function(_,volume,pitch) assert(volume==.12 and pitch==135);soundStarts=soundStarts+1 end,
+        PlayEx=function(_,volume,pitch) assert(volume==.12/4 and pitch==135);soundStarts=soundStarts+1 end,
         Stop=function() soundStops=soundStops+1 end}
 end
 -- The projectile now leases its hiss from the shared loop owner.

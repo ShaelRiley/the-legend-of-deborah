@@ -16,7 +16,7 @@ local function notice(text)
 end
 
 local function switchChime()
-    surface.PlaySound("buttons/button14.wav")
+    LOD.Audio:Play('gps')
 end
 
 local function requestToggle()
@@ -41,7 +41,7 @@ local function speak(text)
             if IsValid(channel) then channel:Stop() end
             return
         end
-        if not IsValid(channel) or errCode then surface.PlaySound("buttons/blip1.wav"); return end
+        if not IsValid(channel) or errCode then LOD.Audio:Play('gps'); return end
         activeChannel = channel
         local index = 1
         local function current() return serial == generation and IsValid(channel) end

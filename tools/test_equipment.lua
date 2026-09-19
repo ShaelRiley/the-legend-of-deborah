@@ -59,6 +59,7 @@ ents = {Create=function()
 end}
 dofile(root.."sh_equipment.lua")
 dofile(root.."sh_equipment_catalog.lua")
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root.."sv_equipment.lua")
 local E=LOD.Equipment
 local p,q=player("hero"),player("ally")

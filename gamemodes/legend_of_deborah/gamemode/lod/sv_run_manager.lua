@@ -17,6 +17,10 @@ local function freshState(campaignEpoch)
         RosterSeed = nil,
         LevelSeed = nil,
         Level = 1,
+        HighestLevel = 1,
+        RescuedDamsels = {},
+        DamselClaims = {},
+        CashRecovered = 0,
         Ranked = true,
         BuildReady = false,
         Graph = nil,
@@ -91,6 +95,10 @@ end
 function RunManager:_ValidateConfiguredModels()
     local invalid = {}
     if not util.IsValidModel(CC.Models.Deborah) then invalid[#invalid + 1] = CC.Models.Deborah end
+    if LOD.Damsels then
+        for _,model in ipairs(LOD.Damsels.Models) do if not util.IsValidModel(model) then invalid[#invalid+1]=model end end
+        if not util.IsValidModel(LOD.Damsels.CashModel) then invalid[#invalid+1]=LOD.Damsels.CashModel end
+    end
     for _, character in ipairs(CC.Models.Characters) do
         if not util.IsValidModel(character.model) then invalid[#invalid + 1] = character.model end
     end
@@ -579,6 +587,8 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     end
 
     self.State.BuildReady = false
+    if LOD.Damsels then self.State.RescueTarget = LOD.Damsels:Target(self.State.Level) end
+    self.State.HighestLevel = math.max(self.State.HighestLevel or 1, self.State.Level)
     self:HoldPlayersForBuild()
     local levelSeed = levelSeedOverride or LOD.Seeds.DeriveLevel(self.State.CampaignSeed, self.State.Level)
     if levelSeedOverride then self:MarkUnranked("debug level-seed override") end
@@ -902,6 +912,8 @@ function RunManager:FinalizeCampaignRun()
     LOD.HeroesOfLegend:SubmitRun({
         runId = runId,
         rescueCount = self.State.RescueCount or 0,
+        highestLevel = self.State.HighestLevel or self.State.Level,
+        cashRecovered = self.State.CashRecovered or 0,
         partyMembers = partyMembers
     })
 
@@ -946,11 +958,20 @@ function RunManager:CompleteLevel(ply)
         end
     end
 
-    self.State.RescueCount = (self.State.RescueCount or 0) + 1
+    if LOD.Damsels then
+        self.State.RescueTarget = LOD.Damsels:Target(self.State.Level)
+        if self.State.RescueTarget.type == "damsel" then
+            self.State.RescuedDamsels = self.State.RescuedDamsels or {}
+            self.State.RescuedDamsels[self.State.Level] = true
+            self.State.RescueCount = table.Count(self.State.RescuedDamsels)
+            if self.State.Level == 20 then self.State.Abundance = true end
+        else self.State.CashRecovered = (self.State.CashRecovered or 0) + 1 end
+    else self.State.RescueCount = (self.State.RescueCount or 0) + 1 end
     self.State.LevelCleared = true
     self.State.IntermissionEnd = CurTime() + CC.Progression.IntermissionSeconds
 
-    LOD.ProgressionDirector:Announce(string.format("DEBORAH RESCUED — LEVEL %d CLEAR", self.State.Level))
+    LOD.ProgressionDirector:Announce(string.format("%s — LEVEL %d CLEAR",
+        self.State.RescueTarget and self.State.RescueTarget.victory or "OBJECTIVE SECURED", self.State.Level))
     LOD.ProgressionDirector:SyncAll()
     print(string.format("[LOD] Level %d cleared by %s; advancing in %d seconds", self.State.Level, ply:Nick(), CC.Progression.IntermissionSeconds))
     return true

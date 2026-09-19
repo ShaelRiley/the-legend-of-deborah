@@ -174,7 +174,7 @@ end
 -- cl_minimap.lua installs the original receiver first. Registering the same net
 -- message after it replaces that callback with this exact-count receiver.
 net.Receive("LOD_MapChunk", function()
-    local level = net.ReadUInt(20)
+    local level = net.ReadDouble()
     local chunkIndex = net.ReadUInt(8)
     local count = net.ReadUInt(8)
     local payload = {}

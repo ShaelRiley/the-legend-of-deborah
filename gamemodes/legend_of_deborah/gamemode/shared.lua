@@ -20,10 +20,16 @@ end
 if CLIENT then include("lod/cl_ui_theme.lua") end
 include("lod/sh_die_logger.lua")
 if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
+if SERVER then AddCSLuaFile("lod/sh_audio.lua") end
+include("lod/sh_audio.lua")
 include("lod/sh_feedback_language.lua")
 if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
 include("lod/sh_player_scale_collision.lua")
 include("lod/sh_rng.lua")
+if SERVER then AddCSLuaFile("lod/sh_damsels.lua") end
+include("lod/sh_damsels.lua")
+if SERVER then AddCSLuaFile("lod/sh_hostile_shapes.lua") end
+include("lod/sh_hostile_shapes.lua")
 if SERVER then AddCSLuaFile("lod/sh_near_look.lua") end
 include("lod/sh_near_look.lua")
 if SERVER then AddCSLuaFile("lod/sh_equipment.lua") end

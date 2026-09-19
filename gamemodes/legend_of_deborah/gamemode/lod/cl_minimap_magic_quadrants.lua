@@ -74,7 +74,7 @@ local function closeForNoMagic()
     if not Map.open then return end
     Map.open = false
     sendState(false)
-    surface.PlaySound("buttons/button10.wav")
+    LOD.Audio:Play('deny')
     notification.AddLegacy("MAP CLOSED — NO MAGIC", NOTIFY_HINT, 2.0)
 end
 
@@ -83,7 +83,7 @@ net.Receive("LOD_MapMagicForcedClose", function()
     Map.open = false
     Client.lastOpen = false
     Client.nextHeartbeat = 0
-    surface.PlaySound("buttons/button10.wav")
+    LOD.Audio:Play('deny')
     if reason and reason ~= "" then notification.AddLegacy(reason, NOTIFY_HINT, 2.2) end
 end)
 

@@ -30,7 +30,7 @@ concommand={Add=function(id,f) commands[id]=f end}
 hook={Add=function(_,id,f) hooks[id]=f end}
 timer={Simple=noop}
 scripted_ents={GetStored=function() end}
-net={Start=noop,Send=noop}
+net={WriteDouble=function() end,Start=noop,Send=noop}
 util={AddNetworkString=noop}
 function GetConVar() return {GetBool=function() return true end} end
 LOD={}

@@ -235,9 +235,11 @@ net.Receive=function(id,fn) receivers[id]=fn end
 net.Start=function(id) packet={id=id,values={}} end
 local function write(v,kind) packet.values[#packet.values+1]={v,kind} end
 net.WriteUInt=function(v,bits) assert(v>=0 and v<2^bits);write(v,bits) end
+net.WriteDouble=function(v) write(v,'double') end
 net.WriteBool=function(v) write(v,'bool') end;net.WriteFloat=function(v) write(v,'float') end
 net.Send=function() packets[#packets+1]=packet end
 local function read(kind) local row=packet.values[readAt];readAt=readAt+1;assert(row[2]==kind,'wire field width mismatch');return row[1] end
+net.ReadDouble=function() return read('double') end
 net.ReadUInt=read;net.ReadBool=function() return read('bool') end;net.ReadFloat=function() return read('float') end
 dofile(root..'sv_minimap.lua');dofile(root..'cl_minimap.lua')
 local function roundTrip()
@@ -247,5 +249,7 @@ local function roundTrip()
  local codes={};for _,floor in pairs(LOD.Minimap.cache.floorGates) do for _,gate in ipairs(floor) do codes[gate.gate]=(codes[gate.gate] or 0)+1 end end
  for i=1,4 do assert(codes[i]==1,'gate vanished/corrupted in client topology') end
 end
-roundTrip();dofile(root..'cl_minimap_reliability.lua');roundTrip()
+s.Level=2^20+21 -- campaign transport must not wrap at the former 20-bit boundary
+roundTrip();assert(LOD.Minimap.level==s.Level)
+dofile(root..'cl_minimap_reliability.lua');roundTrip();assert(LOD.Minimap.level==s.Level)
 print('NEIL_BRUTE_PASS: seeded multi-floor progression, pair/reserve, armed defense/repeated Neil hits/survivor attacks/cooldown, death-only key, Black checkpoint, stale callbacks, charge/hit-stun/stairs, testkit, both minimap decoders')

@@ -31,6 +31,7 @@ net={Receive=function(n,f) handlers[n]=f end,Start=function(n) sent[#sent+1]={ch
     WriteUInt=function(n) table.insert(sent[#sent],n) end,WriteString=function(s) table.insert(sent[#sent],s) end,SendToServer=function() end}
 LOD.Equipment={ItemName=function(_,i) return i.name end,Description=function() return 'Frozen attributes' end,Placement=function() return 'head',{} end}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua')
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_wallet.lua')
 local W,UI=LOD.Wallet,LOD.UI
 W:Open();assert(UI.ActivePage=='wallet' and sent[#sent][1]=='snapshot')

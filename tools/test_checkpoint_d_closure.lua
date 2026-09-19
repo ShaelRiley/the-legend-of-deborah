@@ -17,6 +17,10 @@ local function mockGMod()
     util.CRC = util.CRC or function(v) return tostring(v) end
     net = net or {}
     net.Receive = net.Receive or function() end
+    net.WriteDouble = net.WriteDouble or function() end
+    net.WriteUInt = net.WriteUInt or function() end
+    net.WriteFloat = net.WriteFloat or function() end
+    table.Count = table.Count or function(t) local n=0;for _ in pairs(t) do n=n+1 end;return n end
     hook = hook or {}
     hook.Add = hook.Add or function() end
     hook.GetTable = hook.GetTable or function() return {} end

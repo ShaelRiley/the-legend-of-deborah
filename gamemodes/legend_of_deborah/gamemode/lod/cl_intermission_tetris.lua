@@ -34,11 +34,11 @@ local feedbackNames = {
 }
 
 local eventSounds = {
-    [1] = "buttons/button15.wav",
-    [2] = "physics/metal/metal_box_impact_soft2.wav",
-    [3] = "physics/metal/metal_box_impact_soft1.wav",
-    [4] = "buttons/button9.wav",
-    [5] = "buttons/button10.wav"
+    [1] = "legend_of_deborah/feedback/tetris_rotate.wav",
+    [2] = "legend_of_deborah/feedback/tetris_move.wav",
+    [3] = "legend_of_deborah/feedback/tetris_drop.wav",
+    [4] = "legend_of_deborah/feedback/tetris_clear.wav",
+    [5] = "legend_of_deborah/feedback/tetris_end.wav"
 }
 
 local fWasDown = false
@@ -198,7 +198,7 @@ hook.Add("PostDrawHUD", "LOD_IntermissionTetrisPresentation", function()
         draw.RoundedBox(5, x, y, w, h, Color(12, 15, 17, 225))
         surface.SetDrawColor(220, 140, 48, 240)
         surface.DrawRect(x, y, 5, h)
-        draw.SimpleText("DEBORAH RESCUED", "LOD_IntermissionTetrisBody",
+        draw.SimpleText((LOD.Damsels and LOD.Damsels:Current().victory or "LEVEL CLEAR"), "LOD_IntermissionTetrisBody",
             x + 18, y + 10, Color(238, 194, 92), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
         draw.SimpleText(string.format("F — PLAY TETRIS FOR NEXT-LEVEL HP     %02ds", math.ceil(remaining)),
             "LOD_IntermissionTetrisBody", x + 18, y + 34,

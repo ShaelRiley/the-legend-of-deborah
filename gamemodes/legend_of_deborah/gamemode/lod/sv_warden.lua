@@ -93,7 +93,7 @@ function W:Commit()
     if IsValid(gate) then gate:SetOpened(false);gate:SetNotSolid(false);gate:SetSolid(SOLID_BBOX) end
     e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Int("LOD_WardenPhase",1);e:DrawShadow(false)
     for _,p in ipairs(player.GetAll()) do if hero(p) then
-        p:EmitSound("ambient/alarms/klaxon1.wav",60,115,0.45)
+        if LOD.Audio then LOD.Audio:ToPlayer(p,'boss_arrive') end
         if a.court[key(N:WorldToCell(s.Graph,p:GetPos()))] then self:Resupply(p) end
     end end
     P:Announce("GORDON THE WARDEN");P:SyncAll()

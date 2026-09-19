@@ -20,6 +20,7 @@ end
 function Store:Validate(a,account)
     assert(type(a)=='table' and a.version==1 and number(a.balance) and a.balance%1==0 and number(a.score) and a.score%1==0, 'corrupt wallet balance/version')
     assert(type(a.tokens)=='table' and type(a.milestones)=='table' and type(a.pending)=='table', 'corrupt wallet collection')
+    assert(a.abundanceClaimAt==nil or (number(a.abundanceClaimAt) and a.abundanceClaimAt%1==0), 'corrupt Abundance timestamp')
     local n=0
     local function token(t)
         assert(type(t)=='table' and type(t.id)=='string' and #t.id<=220

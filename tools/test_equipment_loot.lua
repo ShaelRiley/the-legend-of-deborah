@@ -28,6 +28,7 @@ function Run:IsSoldierControl(p) return p.soldier end
 LOD={RunManager=Run,MazeBuilder={},RPGPresentation={Event=function() end}}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 dofile(root..'sh_rng.lua');dofile(root..'sh_equipment.lua');dofile(root..'sh_equipment_catalog.lua')
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root..'sv_loot_director.lua');dofile(root..'sv_equipment.lua');dofile(root..'sv_equipment_wearables.lua')
 local E,Loot=LOD.Equipment,LOD.LootDirector
 E.Sync=function() end -- snapshots are transport; collection path below is production

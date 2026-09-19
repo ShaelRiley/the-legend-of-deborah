@@ -122,29 +122,11 @@ local function spawnArrivalParticles(center)
 end
 
 local function playDepartureCue()
-    local ply = LocalPlayer()
-    if not IsValid(ply) then return end
-    local pos = ply:EyePos()
-
-    sound.Play("ambient/machines/teleport3.wav", pos, 72, 88, 0.68)
-    sound.Play("buttons/button17.wav", pos, 64, 92, 0.34)
-
-    timer.Simple(0.10, function()
-        local p = LocalPlayer()
-        if IsValid(p) then sound.Play("buttons/button17.wav", p:EyePos(), 66, 116, 0.40) end
-    end)
-    timer.Simple(0.22, function()
-        local p = LocalPlayer()
-        if IsValid(p) then sound.Play("buttons/button17.wav", p:EyePos(), 68, 146, 0.48) end
-    end)
+    if LOD and LOD.Audio then LOD.Audio:Play('portal_depart') end
 end
 
 local function playArrivalCue()
-    local ply = LocalPlayer()
-    if not IsValid(ply) then return end
-    local pos = ply:EyePos()
-    sound.Play("ambient/energy/zap1.wav", pos, 68, 112, 0.48)
-    sound.Play("buttons/button17.wav", pos, 70, 178, 0.56)
+    if LOD and LOD.Audio then LOD.Audio:Play('portal_arrive') end
 end
 
 local function beginDeparture(portal)

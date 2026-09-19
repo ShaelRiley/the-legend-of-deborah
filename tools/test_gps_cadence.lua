@@ -71,6 +71,7 @@ hook={Add=function(id,key,fn) hooks[key]=fn end}
 notification={AddLegacy=function() notices=notices+1 end};chat={AddText=noop};surface={PlaySound=noop}
 sound={PlayFile=function(_,_,fn) pending[#pending+1]=fn end}
 timer.Simple=function(_,fn) timers[#timers+1]=fn end
+LOD.Audio=dofile('tools/audio_test_double.lua')
 include('lod/cl_rpg_gps.lua')
 local function state(enabled) local i=0;net.ReadBool=function() i=i+1;return i==1 and enabled or false end;receivers.LOD_RPGWisGPSState() end
 local function bark(text) net.ReadString=function() return text end;receivers.LOD_RPGWisGPSBark() end

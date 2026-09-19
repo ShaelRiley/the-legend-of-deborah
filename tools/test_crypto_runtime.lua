@@ -8,6 +8,7 @@ sql={Query=WalletSQLQuery,LastError=WalletSQLError,SQLStr=function(s,noQuotes) l
 util.TableToJSON=WalletJSONEncode
 util.JSONToTable=function(s,_,preserve) assert(preserve,'Wallet must preserve string keys');return WalletJSONDecode(s) end
 local errors={};ErrorNoHalt=function(s) errors[#errors+1]=s end
+net.WriteUInt=function() end;net.WriteFloat=function() end;net.WriteBool=function() end
 local handlers={};net.Receive=function(name,fn) handlers[name]=fn end
 net.ReadString=function() return '' end
 LOD.SnapshotDelivery={Queue=function() end,Invalidate=function() end}
@@ -321,6 +322,108 @@ assert(C:ExchangeTokens(a,'sell_tokens',{fusedToken.id}))
 assert(account(a).balance==walletBefore+E:Value(fusedToken.item) and account(a).score==before.score)
 assert(not C:ExchangeTokens(a,'sell_tokens',{fusedToken.id}),'Sale settles once')
 print('DFT_EXCHANGE_SQLITE_PASS: batch ownership/duplicates, fusion value, commit rollback, recreation inheritance, SQLite reopen, single settlement, lifetime-score isolation')
+
+-- Damsel rewards use the same wallet transaction and native inventory authority.
+net.WriteUInt=function() end;net.WriteFloat=function() end;net.WriteBool=function() end
+dofile(root..'sv_damsels.lua')
+local D=LOD.Damsels
+local now=1900000000;local realTime=os.time;os.time=function() return now end
+Run.State.Abundance=true;Run.State.Level=21;Run.State.HighestLevel=21;Run.State.CampaignEpoch=8
+Run.State.BuildReady=true;Run.State.LevelCleared=false;Run.State.Failed=false;Run.State.SimulationFrozen=false
+Run.State.RescuedDamsels={};Run.State.DamselClaims={};Run.State.Ranked=true
+for i=1,20 do Run.State.RescuedDamsels[i]=true end
+for _,p in ipairs({a,b}) do p.active=false;p.inHut=true;p.soldier=false;p.ps.deploymentComplete=false;p.ps.eliminated=false;p.hp=100 end
+local function rescued(i)
+    local ent={valid=true,LODDamselLevel=i,LODCampaignEpoch=8,GetPos=function() return Vector() end,WorldSpaceCenter=function() return Vector() end}
+    D.Entities[i]=ent;return ent
+end
+blocked=false;rescued(20)
+assert(Store:Transaction('abundance-clean','test',{a.id,b.id},function(accounts)
+    for _,acc in pairs(accounts) do acc.tokens={};acc.pending={};acc.abundanceClaimAt=nil end
+    return true,{}
+end))
+assert(D:CanUse(a,D.Entities[20]))
+assert(C:ClaimAbundance(a));assert(size(account(a).tokens)==1 and account(a).abundanceClaimAt==now)
+assert(not C:ClaimAbundance(a));assert(size(account(a).tokens)==1)
+assert(C:ClaimAbundance(b) and size(account(b).tokens)==1,'daily gift is per account')
+WalletSQLReconnect()
+local rejoined=actor(a.id);rejoined.active=false;rejoined.inHut=true
+rejoined.ps=a.ps;Run.State.PlayerState[a.id]=rejoined.ps
+assert(not C:ClaimAbundance(rejoined),'reconnect/storage reopen cannot refresh cooldown')
+Run.State.RunId=Store:NextRunID()
+assert(not C:ClaimAbundance(a),'new campaign cannot bypass persistent cooldown')
+now=now+86399;assert(not C:ClaimAbundance(a))
+now=now+1
+WalletSQLFail('INSERT OR REPLACE INTO lod_crypto_accounts')
+assert(not C:ClaimAbundance(a));assert(account(a).abundanceClaimAt==now-86400,'failed commit consumes no cooldown')
+assert(C:ClaimAbundance(a) and size(account(a).tokens)==2)
+local abundanceToken
+for id,t in pairs(account(a).tokens) do if t.source:find('abundance:') then abundanceToken=id end end
+assert(C:Recreate(a,abundanceToken))
+local protected=false
+for _,item in pairs(E:Ensure(a.ps).items) do if item.recreatedFrom==abundanceToken then protected=item.economyExcluded end end
+assert(protected,'Abundance recreation retains existing anti-resale/fusion provenance')
+now=now+86400
+assert(Store:Transaction('abundance-full','test',{a.id},function(accounts)
+    for i=1,8-size(accounts[a.id].tokens) do
+        local t=C:GenerateToken(a.id,'capacity:'..i,'test',21);accounts[a.id].tokens[t.id]=t
+    end
+    return true,{}
+end))
+assert(not C:ClaimAbundance(a) and account(a).abundanceClaimAt==now-86400,'full wallet leaves gift unclaimed')
+assert(C:Sell(a,next(account(a).tokens)));assert(C:ClaimAbundance(a))
+Run.State.Ranked=false;assert(not C:ClaimAbundance(b));Run.State.Ranked=true
+blocked=true;assert(not C:ClaimAbundance(b));blocked=false
+b.ps.deploymentComplete=true;assert(not C:ClaimAbundance(b));b.ps.deploymentComplete=false
+-- Campaign and per-visit rewards survive a new player object; failed services retry.
+local calls=0;local originalGrant=D.Grant;local lines={}
+D.Dialogue=function(_,_,level,line,result) lines[#lines+1]={level,line,result} end
+D.Grant=function() calls=calls+1;return true,'claimed' end
+D.NextTalk[a]=nil;assert(D:Use(a,rescued(9)))
+D.NextTalk[a]=nil;assert(not D:Use(a,D.Entities[9]) and calls==1)
+D.NextTalk[rejoined]=nil;assert(not D:Use(rejoined,D.Entities[9]) and calls==1)
+Run.State.Level=22;D.NextTalk[a]=nil;assert(not D:Use(a,D.Entities[9]) and calls==1)
+D.NextTalk[a]=nil;assert(D:Use(a,rescued(6)))
+Run.State.Level=23;D.NextTalk[a]=nil;assert(D:Use(a,D.Entities[6]) and calls==3)
+D.Grant=function() return false,'full' end
+D.NextTalk[a]=nil;assert(not D:Use(a,rescued(10)))
+D.Grant=originalGrant
+-- Execute production reward handlers, including strict ammo family boundaries.
+Run._SyncPlayerVars=function() end
+dofile(root..'sv_magic.lua')
+a.ps.equipment={items={},slots={}};a.weapons={};a.ammo={}
+a.GetNW2Int=a.GetNW2Float
+for i=1,5 do a:Give(D.Definitions[i].parameter) end
+assert(D:Grant(a,D.Definitions[1],'pistol'))
+assert(a:GetAmmoCount('Pistol')>0 and a:GetAmmoCount('SMG1')==0,'Nessa cannot refill another family')
+assert(not D:Grant(a,D.Definitions[1],'pistol-full'))
+for i=2,5 do assert(D:Grant(a,D.Definitions[i],'ammo:'..i)) end
+LOD.RPGStatusElements.Active[a]={poisoned={expiresAt=CurTime()+100}}
+assert(D:Grant(a,D.Definitions[7],'cure') and not LOD.RPGStatusElements.Active[a])
+assert(not D:Grant(a,D.Definitions[7],'cure-empty'))
+a.hp=1;assert(D:Grant(a,D.Definitions[6],'heal') and a.hp==26)
+a.ps.magic=1;assert(D:Grant(a,D.Definitions[8],'magic') and a.ps.magic==26)
+for i=9,15 do
+    assert(D:Grant(a,D.Definitions[i],'equipment:'..i),'gift slot '..i)
+end
+local gifts=0
+for _,item in pairs(a.ps.equipment.items) do if item.id:find("damsel:",1,true) then assert(item.economyExcluded);gifts=gifts+1 end end
+assert(gifts==7,'seven distinct generated gear slots, all resale/fusion excluded')
+assert(D:Grant(a,D.Definitions[16],'consumable'))
+assert(D:Grant(a,D.Definitions[17],'full') and a.hp==a.max)
+local beforeDeb=account(a).balance
+assert(D:Grant(a,D.Definitions[18],'coins'))
+assert(account(a).balance>=beforeDeb+25 and account(a).balance<=beforeDeb+75)
+assert(not D:Grant(a,D.Definitions[18],'coins-replay'))
+a.ps.lives=1;assert(D:Grant(a,D.Definitions[19],'life') and a.ps.lives==2)
+-- After statue recreation, real inventory admission allows staged equipment.
+assert(not E:CanAct(a) and E:CanManageInventory(a))
+local item=E:Generate(123,20,'weapon_pistol','staged-weapon')
+assert(E:AcquireWorldItem(a,item,true,'damsel'))
+assert(E:InventoryWeapon(a,item.id,false),'stage player equips/selects owned weapon after statue')
+a.ps.deploymentComplete=true;assert(not E:CanManageInventory(a));a.ps.deploymentComplete=false
+os.time=realTime
+print('DAMSEL_REWARDS_SQLITE_PASS: per-player rolling24h/reconnect/reset/rollback/full-wallet; existing DFT provenance; identity claims, real ammo/health/magic/gear/potion/coins/life; staging equipment')
 
 -- Corruption remains present and visible, rather than resetting the account.
 assert(sql.Query("UPDATE lod_crypto_accounts SET body='{}' WHERE account="..sql.SQLStr(a.id))~=false)

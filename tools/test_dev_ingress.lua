@@ -22,6 +22,7 @@ LOD={Config={MaxActivePlayers=2, Campaign={MaxPlayedIdentities=4}, Lives={Starti
  IsDeploymentEligible=function(_,ps) return ps.chosen == true end},
  LootDirector={EnsureStaticForPlayer=function() lootCalls=lootCalls+1 end}}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua')
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua')
 local run, staging=LOD.RunManager,LOD.StagingDeployment
 local function actor(id)

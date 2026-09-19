@@ -50,6 +50,7 @@ net.ReadEntity=function() return player end
 local reading=0
 net.ReadVector=function() reading=reading+1;return reading%2==1 and Vector() or Vector(1,0,0) end
 vector_origin=Vector()
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root..'lod/cl_magic.lua')
 receivers.LOD_MagicShoutFX()
 quads={};beams={};events.LOD_MagicForceShoutWaves(true,false);assert(#quads==0 and #beams==0)

@@ -14,6 +14,7 @@ for _,row in ipairs({{'immolated','IMMOLATED','Immolated'},{'poisoned','POISONED
     H:RegisterCondition(row[1],row[2],'LOD_Status'..row[3])
 end
 function H:Reset()
+    self.ConditionsSampled=false
     self.HP=nil;self.Identity=nil;self.HurtUntil=0;self.AttackUntil=0;self.NextSample=0
     self.Caption=nil;self.Lines=nil;self.Pose=nil;self.WrapText=nil;self.WrapWidth=nil;self.PreviousConditions={};self.StatusColor=nil
 end
@@ -34,7 +35,8 @@ function H:Sample(ply,snapshot,now)
     if self.Identity~=identity then self:Reset();self.Identity=identity end
     if self.HP and hp<self.HP then self.HurtUntil=now+.45 end
     self.HP=hp
-    local labels={};local harmful=false;local primary;local current={}
+    local labels={};local harmful=false;local primary;local current={};local onsetSound
+    local hadBaseline=self.ConditionsSampled
     for _,id in ipairs(self.Order) do
         local condition=self.Conditions[id]
         if ply:GetNW2Bool(condition.key,false) then
@@ -42,11 +44,13 @@ function H:Sample(ply,snapshot,now)
             current[id]=true;primary=primary or id
             local spec=LOD.Equipment.StatusPresentation and LOD.Equipment.StatusPresentation[id]
             if spec and not self.PreviousConditions[id] then
-                surface.PlaySound(spec.sound)
+                if hadBaseline then onsetSound=onsetSound or spec.sound end
                 self.OnsetUntil=now+.7
             end
         end
     end
+    if onsetSound and (not LOD.Audio or not LOD.Audio:Muted()) then surface.PlaySound(onsetSound) end
+    self.ConditionsSampled=true
     self.PreviousConditions=current
     local spec=primary and LOD.Equipment.StatusPresentation and LOD.Equipment.StatusPresentation[primary]
     self.StatusColor=spec and Color(spec.color[1],spec.color[2],spec.color[3],120)

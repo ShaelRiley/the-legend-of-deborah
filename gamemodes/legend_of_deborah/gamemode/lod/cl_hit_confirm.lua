@@ -1,6 +1,6 @@
 LOD = LOD or {}
 
-local HIT_CONFIRM_SOUND = "buttons/blip1.wav"
+local HIT_CONFIRM_SOUND = "hit_confirm"
 local nextConfirm = 0
 
 local function playHitConfirm()
@@ -11,7 +11,7 @@ local function playHitConfirm()
     -- Deliberately non-diegetic and local to the shooter. Keep this to one
     -- extremely short transient so rapid gunfire confirms hits without creating
     -- a sustained synth tone or masking enemy/world audio.
-    surface.PlaySound(HIT_CONFIRM_SOUND)
+    LOD.Audio:Play(HIT_CONFIRM_SOUND)
 end
 
 net.Receive("LOD_HitConfirm", playHitConfirm)

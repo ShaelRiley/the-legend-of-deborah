@@ -96,7 +96,7 @@ net.Receive("LOD_MagicShoutFX", function()
         -- SWEPs can retain/replay that sequence after a Magic cast, producing a
         -- phantom firing animation with no shot. The server-authored player
         -- gesture and force-wave FX carry the cast presentation instead.
-        surface.PlaySound("ambient/levels/citadel/weapon_disintegrate2.wav")
+        LOD.Audio:Play('cast')
     end
 end)
 

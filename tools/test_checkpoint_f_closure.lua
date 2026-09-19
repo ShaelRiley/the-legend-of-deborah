@@ -439,7 +439,7 @@ end
 
 -- K. Exact presentation check
 local formattedText = Heroes:FormatEntry(Heroes.Entries[1])
-assertTest(string.find(formattedText, "rescued Deborah 0 times") ~= nil, "FormatEntry produces exact '<Party> rescued Deborah <N> times' presentation")
+assertTest(string.find(formattedText, "reached Level 1 — 0 damsels, 0 cash bags",1,true) ~= nil, "FormatEntry records highest level, damsels and cash")
 
 -- --- SUITE 4: RANKING, TIE-BREAK & PERSISTENCE (REQUIREMENTS L - O) ---
 mockFS = {}

@@ -14,6 +14,7 @@ function A:Reset()
     for group in pairs(self.Groups) do self:StopGroup(group) end
 end
 function A:Muted()
+    if LOD.Audio and LOD.Audio:Muted() then return true end
     local state=LOD.ClientState
     if state and (state.failed or state.levelCleared) then return true end
     local ply=LocalPlayer()
@@ -35,17 +36,22 @@ function A:Touch(group,entity,path,volume,pitch,level,lease)
             end
         end
         if count>=self.Limits[group] then
-            if entity:GetPos():DistToSqr(EyePos())>=distance then return end
+            if entity:GetPos():DistToSqr(EyePos())>=distance*.64 then return end
             self:Stop(group,farthest)
         end
         local patch=CreateSound(entity,path);if not patch then return end
-        patch:SetSoundLevel(level);patch:PlayEx(volume,pitch)
+        patch:SetSoundLevel(level);patch:PlayEx(volume / self.Limits[group],pitch)
         row={patch=patch,path=path};rows[entity]=row
     end
+    -- Callers renew only while the effect is audible. A missed renewal expires
+    -- the patch instead of relying on OnRemove to stop a native loop.
     row.expires=CurTime()+math.min(2,math.max(.1,lease or .5))
     return row.patch
 end
 hook.Add('Think','LOD_LoopAudioLeases',function()
+    local campaign=LOD.Damsels and LOD.Damsels.Campaign
+    local generation=campaign and (tostring(campaign.seed)..':'..tostring(campaign.level))
+    if generation~=A.Generation then A:Reset();A.Generation=generation end
     if A:Muted() then A:Reset();return end
     for group,rows in pairs(A.Groups) do
         for entity,row in pairs(rows) do

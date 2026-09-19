@@ -4,15 +4,25 @@ local C=LOD.Climber
 local E=LOD.EnemyRoster
 local N=LOD.MazeNavigator
 local key=E.Key
+-- Containers extend half their 128-unit width into a logical cell. The old
+-- 30-unit inset placed the Climber *inside* that wall.
+local function laneOffset()
+    return LOD.Config.Maze.CellSize*.5 - ((LOD.Config.Geometry and LOD.Config.Geometry.ContainerWidth or 128)*.5 + 22)
+end
+local function clearLane(pos)
+    local tr=util.TraceHull({start=pos,endpos=pos,mins=Vector(-14,-14,-8),maxs=Vector(14,14,42),mask=MASK_NPCSOLID,
+        filter=function(v) return not v.LODHostile and not v:IsPlayer() end})
+    return not tr.Hit and not tr.StartSolid
+end
 local axes={Vector(1,0,0),Vector(0,1,0),Vector(-1,0,0),Vector(0,-1,0)}
 function C:Lanes(graph,c)
     local out={};if E:Safe(graph,c) then return out end
     local center=N:CellCenter(c)+Vector(0,0,100)
-    local offset=LOD.Config.Maze.CellSize*.5-30
+    local offset=laneOffset()
     for i,v in ipairs(axes) do
         local k=LOD.MazeGenerator.CellKey(c.x+v.x,c.y+v.y,c.z)
         -- Only true closed wall faces, never a gate or an open edge.
-        if not c.neighbors[k] then out[i]={cell=c,side=i,pos=center+v*offset,normal=v} end
+        if not c.neighbors[k] and clearLane(center+v*offset) then out[i]={cell=c,side=i,pos=center+v*offset,normal=v} end
     end
     return out
 end
@@ -45,7 +55,11 @@ function C:Route(e,graph,p,fleeing)
             if domain[k] and N:CanTraverse(graph,key(lane.cell),k) then
                 if n.z==lane.cell.z then
                     local nextLane=self:Lanes(graph,n)[lane.side]
-                    if nextLane then candidates[#candidates+1]=nextLane end
+                    if nextLane then candidates[#candidates+1]=nextLane
+                    else
+                        nextLane=self:NearestLane(graph,n,lane.pos)
+                        if nextLane then nextLane.connector=true;candidates[#candidates+1]=nextLane end
+                    end
                 else
                     local nextLane=self:NearestLane(graph,n,lane.pos)
                     if nextLane then nextLane.stairFrom=lane.cell;candidates[#candidates+1]=nextLane end
@@ -63,7 +77,10 @@ function C:Route(e,graph,p,fleeing)
     for _,nextLane in ipairs(nodes) do
         if key(last.cell)==key(nextLane.cell) then
             local center=N:CellCenter(last.cell)+Vector(0,0,100)
-            points[#points+1]={pos=center+(last.normal+nextLane.normal)*(LOD.Config.Maze.CellSize*.5-30)}
+            points[#points+1]={pos=center+(last.normal+nextLane.normal)*(laneOffset())}
+        elseif nextLane.connector and last.cell.z==nextLane.cell.z then
+            points[#points+1]={pos=N:CellCenter(last.cell)+Vector(0,0,100)}
+            points[#points+1]={pos=N:CellCenter(nextLane.cell)+Vector(0,0,100)}
         elseif last.cell.z~=nextLane.cell.z then
             -- Floor change follows the actual authored stair itinerary only.
             for _,wp in ipairs(N:PathToWaypoints(graph,{last.cell,nextLane.cell})) do
@@ -96,6 +113,7 @@ function C:Interrupt(e)
 end
 function C:Tick(e,s,now)
     local motion=LOD.HostileMotionV2
+    motion:Stop(e) -- quiesce native NextBot velocity/gravity before manual wall travel
     local dt=math.Clamp(now-(e.LODWallLast or now),0,.05);e.LODWallLast=now
     local c=N:WorldToCell(s.Graph,e:GetPos())
     if not c then motion:Stop(e);return true end

@@ -9,7 +9,7 @@
       "quote": "You brought a rescue party. Good. Now bring a plan.",
       "text": [
         "Somewhere inside a towering prison of shipping containers, Deborah is waiting for you. The passages change. The guards grow stronger. The Warden has a toilet. You have thirty minutes.",
-        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, defeat Gordon, and get Deborah out! Each successful rescue leads to a harder dungeon in the same campaign. How many times can your party rescue her before its luck—or its time—runs out?",
+        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, and defeat Gordon. Levels 1–19 rescue nineteen different damsels; Level 1 begins with Nessa. Deborah herself waits at Level 20. From Level 21 onward, Gordon steals cash instead. SECURE THE BAG, then see how far the server can go!",
         "This booklet uses the game's default keyboard and mouse controls. Its little-console-booklet look is a tribute; your adventure runs in Garry's Mod. Rebound game actions follow your configured bindings."
       ]
     },
@@ -22,7 +22,7 @@
         "Press P to inspect your character. Use Equipment to choose gear, and I to set your spell. Read any unfamiliar effect before entering.",
         "Use the portal. The first Hero entering each dungeon starts its 30:00 collapse clock.",
         "Find the cards and open their gates: Red, Blue, Yellow, then Black. Neil carries the Black Keycard.",
-        "Defeat Gordon. Collect the Jail Key at the arena center, open Deborah's jail, then touch Deborah to complete the rescue."
+        "Defeat Gordon. Collect the Jail Key at the arena center, open the rescue chamber, then touch or use the current damsel to complete the level. From Level 21, recover the marked cash case instead."
       ],
       "quote": "Beating the Warden isn't the rescue. Come and get me!"
     },
@@ -99,8 +99,12 @@
       "text": [
         "Staging comes before Dungeon 1 and after each successful rescue. Speak to the Hermit, inspect your character in the mirror, check the Heroes of Legend board, and visit the Debbie statue for your wallet collection.",
         "Your first Hermit visit issues one identity-bound advanced starter weapon; reopening the conversation does not issue another. Later staging visits offer one standard random-drop gift. Finish pending class and feat decisions, then choose your loadout.",
-        "Rescuing Deborah resets the collapse clock to 30:00. It stays paused through the celebration and your return to staging, until the first Hero enters the next dungeon. Your weapons, magazines, reserve ammunition, equipped gear, stored items, and consumable stacks stay with your Hero.",
-        "The portal commits you to the active dungeon. A Hero who remains behind cannot pause the countdown for teammates already inside."
+        "Completing a dungeon resets the collapse clock to 30:00. It stays paused through the celebration and your return to staging, until the first Hero enters the next dungeon. Your weapons, magazines, reserve ammunition, equipped gear, stored items, and consumable stacks stay with your Hero.",
+        "The portal commits you to the active dungeon. A Hero who remains behind cannot pause the countdown for teammates already inside.",
+        "Each rescued damsel stays in the staging room for the rest of the campaign. Approach her and press E for a short conversation and service. Restoratives refresh once per dungeon visit; equipment, the rescue fund grant, and the reserve life are once per Hero identity per campaign. Reconnecting does not renew a claim. Gifts you cannot use remain unclaimed.",
+        "The roster is Nessa, Bessa, Tessa, Odessa; Nell, Belle, Estelle, Mirabelle; May, Faye, Kay, Desiree; Jean, Colleen, Maureen, Josephine; Dora, Cora, Eleonora; and finally Deborah. Early families share complementary clothing and accents. The final four keep their natural appearances.",
+        "The first five replenish Pistol, SMG, Shotgun, .357 and AR2 ammunition respectively. Belle heals, Estelle cures ailments, and Mirabelle restores Magic. May through Maureen gift gloves, a ring, boots, headwear, a vest, trousers and a shield. Josephine supplies a Healing Potion; Dora restores full health; Cora grants 25–75 Debs; Eleonora restores one reserve life up to the normal maximum. Generated gear gifts cannot be resold or fused.",
+        "After Deborah’s rescue, Gordon announces his new vocation: stealing cash for the love of the game. Dungeons continue indefinitely with increasing encounter pressure and bounded enemy counts. The rescue roster resets with the campaign; persistent wallet records and Abundance cooldowns follow the existing server wallet rules."
       ]
     },
     {
@@ -140,8 +144,8 @@
           "Open Black Gate → enter Gordon's arena"
         ],
         [
-          "6 · Deborah",
-          "Defeat Gordon → take Jail Key → open jail → touch Deborah"
+          "6 · Rescue target",
+          "Defeat Gordon → take Jail Key → open chamber → rescue damsel / secure cash"
         ]
       ],
       "text": [
@@ -636,7 +640,7 @@
       "text": [
         "Heroes start with three lives. On death, your weapons, magazines, reserve ammunition, equipped wearables, stored gear, and throwable potions stay with your Hero for the respawn. Your character identity, XP, class, feats, and persistent DFT collection remain too. Reconnecting does not restore a lost life or reroll your character.",
         "A normal death has a mandatory 20-second respawn lockout. Play Tetris while waiting, or spectate. After the lockout, press F to finalize your reward and respawn. You can keep playing until the normal 60-second death-Tetris maximum, when respawn happens automatically.",
-        "When no living or respawnable cooperative Hero remains, the campaign wipes. A human Soldier does not keep the Hero campaign alive. Defeating Gordon on the same tick as the final Hero's loss is not a rescue; someone still has to reach Deborah.",
+        "When no living or respawnable cooperative Hero remains, the campaign wipes. A human Soldier does not keep the Hero campaign alive. Defeating Gordon on the same tick as the final Hero's loss is not a rescue; someone still has to reach the rescue target.",
         "Successful rescue can bring eliminated teammates back under the campaign's comeback rules, up to the maximum of four lives. A revived Hero returns with the same saved weapons, ammunition, wearables, stored gear, and throwable potions."
       ]
     },
@@ -751,7 +755,7 @@
         "Beyond Black Gate is a two-level arena: a lower court and an upper gallery. Gordon is the heavy man in a pig mask. Entering commits the encounter and closes the back gate.",
         "An entry or respawn alcove provides protection and one aid allowance per Hero identity per dungeon: up to 25 HP, up to 30 ammunition per owned gun, and one Healing Potion. Repeated entry is not an unlimited supply.",
         "Above roughly 60% HP, Gordon alternates a three-second cloak with a visible warning before launching four slow homing orbs. Around 60%, he rides his toilet and leaves bombs with three-second fuses. Around 25%, he clears that ordnance and charges with his crowbar.",
-        "The fight does not reset just because a Hero dies. Defeat him, take the Jail Key at the arena center, open the jail, and touch Deborah. Gordon's death alone never completes the dungeon."
+        "The fight does not reset just because a Hero dies. Defeat him, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. Gordon's death alone never completes the dungeon."
       ]
     },
     {
@@ -762,7 +766,7 @@
         "The Debbie Fund takes rescue funding very seriously. Its $DEB units are Debbie Coins—'Debs'—and its collectibles are Debbie Fund Tokens, or DFTs. These are server-local game records, with no cash value or outside wallet.",
         "A successful rescue creates a pool of 100 × Dungeon Level Debs. Qualifying Soldier-attributable Hero life losses assign 11% each to the Soldier side, capped at 33% of the pool; Soldier damage contributions determine its allocation.",
         "The remaining Hero pool is divided half equally and half by damage and effective allied healing, with hostile-loss adjustments. Eligible dead or disconnected participants can retain their claim. Switching to Soldier play forfeits a Hero share.",
-        "Rescue awards increase wallet balance and lifetime rescue earnings. DFT sales increase spendable balance but do not inflate that lifetime rescue score. The staging Heroes of Legend board records party rescue achievements; it is not a count of monster kills.",
+        "Rescue awards increase wallet balance and lifetime rescue earnings. DFT sales increase spendable balance but do not inflate that lifetime rescue score. The staging Heroes of Legend board records the highest dungeon reached, damsels rescued, and cash bags recovered; it is not a count of monster kills.",
         "At Debbie, choose Fuse Equipment, Sell Equipment, Fuse DFTs, or Sell DFTs. Drag eligible items into the labeled pile, review the value, and confirm. You can also click items to add or remove them. Closing the menu cancels staging without moving anything. Sales award the displayed value in $DEB. Fusion consumes two to eight inputs and returns one legal item worth 85–100% of their combined value and more than any single input; unsupported piles are rejected intact. Equipment fusion returns carried gear; DFT fusion returns a persistent upgraded token. DFT-created gear and free starting weapons cannot be sold or fused. If any fused DFT was recreated this run, the new token remains used for this run. DFT Collection / Recreate retains the free recreation service."
       ]
     },
@@ -771,7 +775,7 @@
       "title": "A little something to keep",
       "art": "deborah:2",
       "text": [
-        "DFTs mint only when a rescue succeeds. Combat Level milestones 1, 5, 10, and 20 can each award one token per account on this server. A rare rescue roll also gives each participating Hero a one-in-1,000 chance. Ordinary enemy kills do not mint DFTs.",
+        "DFTs normally mint when a dungeon objective is completed. Combat Level milestones 1, 5, 10, and 20 can each award one token per account on this server. A rare rescue roll also gives each participating Hero a one-in-1,000 chance. Ordinary enemy kills do not mint DFTs. Rescuing Deborah at Level 20 also unlocks Abundance: visit her in staging for one free DFT per Steam account every rolling 24 hours. Reconnecting or restarting a campaign does not reset the timer. The eight-token capacity still applies; a full wallet leaves the gift available until you make room. Recreated equipment retains the usual resale and fusion exclusions.",
         "Your collection has eight slots. Milestone items waiting for space stay frozen; making room does not reroll them. Tokens persist across ordinary death and campaign restart.",
         "At the staging Debbie statue, recreate a token's frozen item for free once per token per run. The DFT remains in your collection. The same token becomes available to recreate again in the next run.",
         "You may instead sell a DFT permanently for its displayed Value in Debs. Read the confirmation carefully: selling the token removes it. Wallet viewing is portable; the statue's staging, proximity, and role rules still govern its physical services."
@@ -782,7 +786,7 @@
       "title": "Deborah's parting advice",
       "art": "deborah:4",
       "steps": [
-        "Check the clock before lingering in staging. Every rescue belongs to the same countdown.",
+        "The clock pauses in staging and starts when the first Hero deploys. Every new dungeon gives you thirty minutes.",
         "Keep a useful spell selected. A bottle in your hand means you are holding a bottle—not casting.",
         "Move sideways out of committed charges. A longer corridor is not always a safer escape.",
         "Compare gear drawbacks as carefully as benefits. Keep your permanent feat requirements in mind.",

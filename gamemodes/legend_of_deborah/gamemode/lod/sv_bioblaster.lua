@@ -174,7 +174,7 @@ local function beginBlast(self, target)
     then
         CombatAudio:PlayHostileAttack(self)
     end
-    self:EmitSound("buttons/button17.wav", 66, 76, 0.45, CHAN_ITEM)
+    self:EmitSound("legend_of_deborah/feedback/enemy_warning.wav", 66, 76, 0.45, CHAN_ITEM)
     return true
 end
 

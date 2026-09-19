@@ -172,7 +172,7 @@ local function beginScan(self, target)
     }
     Watcher.Stats.scansStarted = (Watcher.Stats.scansStarted or 0) + 1
     sendScanState(self, target, true)
-    emitCue(self, "npc/scanner/scanner_scan1.wav", "buttons/blip1.wav", 70, 105, 0.78)
+    emitCue(self, "npc/scanner/scanner_scan1.wav", "legend_of_deborah/feedback/enemy_warning.wav", 70, 105, 0.78)
     stopAndFace(self, target)
     return true
 end
@@ -215,7 +215,7 @@ local function completeScan(self, graph, target)
     self.LODWatcherScan = nil
     self.LODNextWatcherScan = CurTime() + SCAN_REPEAT_SECONDS
     sendScanState(self, nil, false)
-    emitCue(self, "npc/scanner/scanner_photo1.wav", "buttons/button17.wav", 74, 118, 0.82)
+    emitCue(self, "npc/scanner/scanner_photo1.wav", "legend_of_deborah/feedback/enemy_warning.wav", 74, 118, 0.82)
 
     local alerted = alertWanderers(self, graph, target)
     Watcher.Stats.scansCompleted = (Watcher.Stats.scansCompleted or 0) + 1
@@ -245,7 +245,7 @@ local function processScan(self, graph)
     stopAndFace(self, target)
     if not scan.midCue and CurTime() >= scan.midAt then
         scan.midCue = true
-        emitCue(self, "npc/scanner/scanner_scan2.wav", "buttons/button15.wav", 72, 118, 0.78)
+        emitCue(self, "npc/scanner/scanner_scan2.wav", "legend_of_deborah/feedback/enemy_warning.wav", 72, 118, 0.78)
     end
     if CurTime() >= scan.completesAt then
         completeScan(self, graph, target)

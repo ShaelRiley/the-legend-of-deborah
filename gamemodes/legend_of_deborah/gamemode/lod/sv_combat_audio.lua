@@ -118,14 +118,14 @@ local CHARACTER_DEATH = {
 
 local UI_CUES = {
     meleeImpact = {path = "physics/body/body_medium_impact_hard1.wav", level = 67, volume = 0.55, pitch = 104},
-    lifeLost = {path = "buttons/button18.wav", level = 58, volume = 0.55, pitch = 92},
-    lastLife = {path = "buttons/button11.wav", level = 62, volume = 0.72, pitch = 82},
-    respawn = {path = "items/suitchargeok1.wav", level = 58, volume = 0.58, pitch = 108},
-    checkpoint = {path = "buttons/button9.wav", level = 60, volume = 0.62, pitch = 112},
-    objectiveClear = {path = "buttons/button14.wav", level = 58, volume = 0.45, pitch = 108},
-    levelReady = {path = "buttons/button15.wav", level = 55, volume = 0.42, pitch = 105},
-    levelClear = {path = "buttons/button9.wav", level = 65, volume = 0.72, pitch = 122},
-    campaignFail = {path = "ambient/alarms/warningbell1.wav", level = 72, volume = 0.80, pitch = 82}
+    lifeLost = {cue = "life_lost"},
+    lastLife = {cue = "last_life"},
+    respawn = {cue = "respawn"},
+    checkpoint = {silent = true},
+    objectiveClear = {cue = "objective_clear"},
+    levelReady = {silent = true},
+    levelClear = {silent = true},
+    campaignFail = {cue = "danger"},
 }
 
 local function soundFileExists(path)
@@ -157,7 +157,9 @@ local function nextFromPool(holder, field, pool)
 end
 
 local function playCueOnPlayer(ply, cue)
-    if not IsValid(ply) or not cue or not soundFileExists(cue.path) then return end
+    if not IsValid(ply) or not cue or cue.silent then return end
+    if cue.cue then return LOD.Audio:ToPlayer(ply,cue.cue) end
+    if not soundFileExists(cue.path) then return end
     ply:EmitSound(cue.path, cue.level or 60, cue.pitch or 100, cue.volume or 0.7, CHAN_AUTO)
 end
 
@@ -268,6 +270,7 @@ function CombatAudio:PlayHostileFootstep(hostile)
 end
 
 function CombatAudio:PlayEncounterActivation(encounter, anchor)
+    if LOD.Audio and LOD.Audio:Muted() then return end
     if not encounter or not IsValid(anchor) then return end
     local profile = HOSTILE_AUDIO[anchor.LODArchetypeId or ""]
     if not profile then return end

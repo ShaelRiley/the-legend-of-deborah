@@ -287,7 +287,9 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
     local fraction = math.Clamp(tonumber(derived.hpToMagicDiversionFraction) or 0, 0, 1)
     local statusElements = LOD.RPGStatusElements
     local damageContext = statusElements and statusElements:DamageContext(dmginfo, target) or {}
-    if damageContext.ignoreManaBarrier == true then return result end
+    if damageContext.ignoreManaBarrier == true or damageContext.poison == true
+        or damageContext.damageType == "poison" or damageContext.element == "poison"
+        or (dmginfo.IsDamageType and DMG_POISON and dmginfo:IsDamageType(DMG_POISON)) then return result end
     if statusElements and statusElements:Has(target, "arcane_shattered") then fraction = 0 end
     if fraction <= 0 then return result end
     local magic = LOD.Magic

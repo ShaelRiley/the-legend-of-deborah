@@ -638,7 +638,7 @@ function ENT:_BeginSoldierBurst(target)
     self:SetNW2Vector("LOD_SoldierAimDirection", committedDirection)
     self:SetNW2Vector("LOD_SoldierAim", targetAimPos)
     self:_SetActivity(self:_SoldierAttackActivity(), true)
-    self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
+    self:EmitSound("legend_of_deborah/feedback/enemy_warning.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
     return true
 end
 

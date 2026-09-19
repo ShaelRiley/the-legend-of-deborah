@@ -110,6 +110,7 @@ local item={LODHermitGiftId='gift',LODLootOwnerIdentity='a',LODLootKind='consuma
     LODLootPayload={itemId='healing_potion'},LODLootStaticId='gift',LODLootLevelSeed=555}
 a.hermitGift={id='gift',level=4,claimed=false};S.StarterEntities.a=item
 LOD.MazeBuilder={}
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root..'sv_loot_director.lua');dofile(root..'sv_hermit_repeat_gifts.lua')
 assert(not E:CanAct(pa),'staging still forbids combat/move/throw actions')
 assert(not E:Grant(pa,'healing_potion',1),'unattributed staging grants are denied')

@@ -131,6 +131,7 @@ dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_wizard_rules.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua")
+LOD.Audio=dofile('tools/audio_test_double.lua')
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_loot_director.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_hardening.lua")
 

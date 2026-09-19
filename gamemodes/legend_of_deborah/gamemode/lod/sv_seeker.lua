@@ -258,7 +258,7 @@ local function beginWindup(seeker, graph, target)
     Seeker.Stats.windups = (Seeker.Stats.windups or 0) + 1
     sendState(seeker, 1, WINDUP_SECONDS)
 
-    emitOneShot(seeker, "buttons/button17.wav", 78, 132, 0.95, CHAN_ITEM)
+    emitOneShot(seeker, "legend_of_deborah/feedback/enemy_warning.wav", 78, 132, 0.95, CHAN_ITEM)
     local stateRef = seeker.LODSeekerState
     timer.Simple(WINDUP_SECONDS * 0.55, function()
         if IsValid(seeker) and seeker.LODSeekerState == stateRef and stateRef.phase == "windup" then

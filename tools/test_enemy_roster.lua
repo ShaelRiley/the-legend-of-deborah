@@ -178,3 +178,36 @@ graph.CellTags={}
 E.Projectiles={{owner=enemy,pos=Vector(),velocity=Vector(1,0,0),expires=9999,seed=s.LevelSeed,run={},kind='venom',event={}}}
 at(120);env.hooks.LOD_EnemyRosterAttacks();assert(#E.Projectiles==0)
 print('ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup')
+
+-- Recovery movement, physical container clearance and rendered Nodule volume.
+s.SimulationFrozen=false;s.Failed=false;s.LevelCleared=false;s.BuildReady=true
+at(150);p:SetPos(Vector(600,0,0));local mobile=actor('arccaster')
+mobile.LODActivated=true;mobile.LODTarget=p;mobile.LODNextAttack=155
+mobile._RefreshTarget=noop;mobile._RefreshRoute=function(self) self.routeAsked=true end
+mobile._AdvanceWaypoint=function() return Vector(40,0,0) end
+util.TraceLine=function(t) return {Hit=false,HitPos=t.endpos} end
+E:Tick(mobile);assert(mobile.routeAsked and mobile.waypoint,'Arc Caster must travel during recovery inside cast range')
+local half=LOD.Config.Maze.CellSize*.5
+local wallHalf=(LOD.Config.Geometry and LOD.Config.Geometry.ContainerWidth or 128)*.5
+local center=N:CellCenter(cell)
+util.TraceHull=function(t)
+    local delta=t.start-center
+    return {Hit=math.abs(delta.x)+14>half-wallHalf or math.abs(delta.y)+14>half-wallHalf}
+end
+local safeLane=C:NearestLane(graph,cell,center)
+assert(safeLane,'real wall thickness rejected every Climber lane')
+assert(math.max(math.abs(safeLane.pos.x-center.x),math.abs(safeLane.pos.y-center.y))+14<=half-wallHalf)
+dofile(root..'sh_hostile_shapes.lua')
+util.GetModelBounds=function() return Vector(-18,-14,-52),Vector(18,14,4) end
+SOLID_BBOX=2
+local nodule=actor('nodule',Vector(80,90,10));local size=.5
+nodule.GetNW2Float=function() return size end;nodule.GetModel=function() return 'models/barnacle.mdl' end
+nodule.SetSolid=function(_,solid) assert(solid==SOLID_BBOX) end
+nodule.SetCollisionBounds=function(self,lo,hi) self.lo=lo;self.hi=hi end
+for _,value in ipairs({.5,1,1.33}) do
+    size=value;E:Prepare(nodule)
+    local lo,hi=E:CombatBounds(nodule)
+    assert(nodule.lo.z==0 and nodule.hi.z==56*size and nodule.hi.x==18*size)
+    assert(lo.z==10 and hi.z==10+56*size and lo.x==80-18*size,'inverted visible body and combat hull differ')
+end
+print('ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity')

@@ -219,7 +219,7 @@ local function installContract()
         -- to be stable. Hold the aimed idle presentation during the tell; switch
         -- to the firing activity only when the actual burst begins.
         self:_SetActivity(self:_SoldierIdleActivity(), true)
-        self:EmitSound("buttons/button17.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
+        self:EmitSound("legend_of_deborah/feedback/enemy_warning.wav", 64, self.LODArchetypeId == "blitzer" and 136 or 115, 0.72)
         return true
     end
 

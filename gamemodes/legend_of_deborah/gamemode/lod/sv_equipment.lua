@@ -37,6 +37,16 @@ function E:CanAct(ply)
         and state and not state.Failed and not state.LevelCleared and not state.SimulationFrozen
 end
 
+-- Inventory management remains legal in the hut; combat activation does not.
+function E:CanManageInventory(ply)
+    if self:CanAct(ply) then return true end
+    local ps=heroState(ply);local state=Run.State;local staging=LOD.StagingDeployment
+    return ps~=nil and ply:Alive() and not ps.eliminated and not ps.deploymentComplete
+        and Run.IsSlotActivePlayer and Run:IsSlotActivePlayer(ply)
+        and state and state.BuildReady and not state.Failed and not state.LevelCleared and not state.SimulationFrozen
+        and staging and staging:IsPlayerInHut(ply) or false
+end
+
 function E:Sync(ply)
     if not IsValid(ply) then return end
     local ps = heroState(ply)
@@ -111,7 +121,7 @@ function E:Heal(source, target, amount)
     local ok, message = LOD.LootDirector:_GrantHealth(target, amount)
     if cured > 0 then ok = true; message = (message or "Remedied") .. " / " .. cured .. " ailments cured" end
     if ok then
-        target:EmitSound("items/smallmedkit1.wav", 65, 100, 0.8)
+        LOD.Audio:Emit(target,'heal')
         self:Report(target, "HEALING POTION — " .. message, "potion_heal")
         if source ~= target and IsValid(source) then
             self:Report(source, "HEALING POTION — " .. message .. " to ally", "potion_heal_ally")
@@ -163,7 +173,7 @@ end
 -- The native gun stays owned: stowing cannot refill a magazine, destroy its
 -- roll, or leave its bonuses active. Empty hands has no attack of its own.
 function E:InventoryWeapon(ply,id,stow)
-    if not self:CanAct(ply) then return false end
+    if not self:CanManageInventory(ply) then return false end
     local state=self:Ensure(heroState(ply))
     local def=self:Definition(state.items[id])
     if not def or not def.weapon then return false end
@@ -194,21 +204,21 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
         E:Sync(ply)
         return
     end
-    if not E:CanAct(ply) then E:Sync(ply);return end
+    if not E:CanManageInventory(ply) then E:Sync(ply);return end
     local state = E:Ensure(heroState(ply))
     if action == "activate" then
         if id=="" or state.slots.throwable==id then E:Activate(ply) end
     elseif action == "select_weapon" then
-        if E:InventoryWeapon(ply,id,false) then ply:EmitSound("items/ammo_pickup.wav",55,120,.45) end
+        if E:InventoryWeapon(ply,id,false) then LOD.Audio:Emit(ply,'confirm') end
     elseif action == "stow_weapon" then
-        if E:InventoryWeapon(ply,id,true) then ply:EmitSound("items/ammo_pickup.wav",55,90,.45) end
+        if E:InventoryWeapon(ply,id,true) then LOD.Audio:Emit(ply,'confirm') end
     elseif action == "deactivate" then E:Deactivate(ply)
     elseif action == "equip" then
-        if E:Equip(state, id, slot) then ply:EmitSound("items/ammo_pickup.wav",55,120,.45);E:Sync(ply) end
+        if E:Equip(state, id, slot) then LOD.Audio:Emit(ply,'confirm');E:Sync(ply) end
     elseif action == "unequip" then
-        if state.slots[slot]==id and E:Unequip(state, slot) then ply:EmitSound("items/ammo_pickup.wav",55,90,.45);E:Sync(ply) end
+        if state.slots[slot]==id and E:Unequip(state, slot) then LOD.Audio:Emit(ply,'confirm');E:Sync(ply) end
     elseif action == "discard" and E.Discard then
-        if E.DiscardOwned and E:DiscardOwned(ply,id) then ply:EmitSound("physics/metal/metal_box_impact_hard3.wav",55,90,.65);E:Sync(ply) end
+        if E.DiscardOwned and E:DiscardOwned(ply,id) then LOD.Audio:Emit(ply,'item_discard');E:Sync(ply) end
     end
     if LOD.SnapshotDelivery then LOD.SnapshotDelivery:Invalidate(ply,"LOD_EquipmentSnapshot") end
     E:Sync(ply)

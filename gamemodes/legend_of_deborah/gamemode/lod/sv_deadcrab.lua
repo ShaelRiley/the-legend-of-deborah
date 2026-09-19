@@ -236,10 +236,6 @@ local function detonate(self)
     end
 
     if self._SpawnPlaceholderLoot then self:_SpawnPlaceholderLoot() end
-    timer.Simple(0.08, function()
-        sound.Play("items/itempickup.wav", origin, 78, 146, 0.88)
-        sound.Play("buttons/button9.wav", origin, 70, 132, 0.62)
-    end)
 
     self:Remove()
 end
@@ -275,7 +271,7 @@ local function latch(self, target)
         timer.Simple(delay, function()
             if not IsValid(self) or self.LODDead or self.LODDeadcrabState ~= "latched" then return end
             local pos = livingPlayer(target) and target:EyePos() or self:WorldSpaceCenter()
-            sound.Play("buttons/button17.wav", pos, 78, 102 + i * 12, 0.88)
+            LOD.Audio:At(pos,'enemy_warning')
         end)
     end
 

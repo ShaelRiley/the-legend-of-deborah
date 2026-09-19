@@ -43,11 +43,11 @@ local feedbackNames = {
 }
 
 local eventSounds = {
-    [1] = "buttons/button15.wav", -- rotate
-    [2] = "physics/metal/metal_box_impact_soft2.wav", -- hard drop
-    [3] = "physics/metal/metal_box_impact_soft1.wav", -- natural lock
-    [4] = "buttons/button9.wav", -- line clear
-    [5] = "buttons/button10.wav" -- game over
+    [1] = "legend_of_deborah/feedback/tetris_rotate.wav", -- rotate
+    [2] = "legend_of_deborah/feedback/tetris_move.wav", -- hard drop
+    [3] = "legend_of_deborah/feedback/tetris_drop.wav", -- natural lock
+    [4] = "legend_of_deborah/feedback/tetris_clear.wav", -- line clear
+    [5] = "legend_of_deborah/feedback/tetris_end.wav" -- game over
 }
 
 local DEATH_ACTION_ENTER_TETRIS = 1

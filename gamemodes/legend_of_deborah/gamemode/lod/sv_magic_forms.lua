@@ -820,7 +820,7 @@ function Forms:CastSelected(ply,button)
     local preOK, preReason = self:_CanCastPreSpend(ply, form, context)
     if not preOK then
         self.Stats.failed = (self.Stats.failed or 0) + 1
-        ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
+        LOD.Audio:Emit(ply,'deny')
         castNotice(ply, form, content, preReason, 0, ps.magic)
         return false, preReason
     end
@@ -829,7 +829,7 @@ function Forms:CastSelected(ply,button)
     local cost = Rules.OffensiveMagicCost and Rules:OffensiveMagicCost(ply, baseCost) or baseCost
     if ps.magic < cost then
         self.Stats.failed = (self.Stats.failed or 0) + 1
-        ply:EmitSound("buttons/button10.wav", 52, 85, 0.45, CHAN_ITEM)
+        LOD.Audio:Emit(ply,'deny')
         castNotice(ply, form, content, "magic", 0, ps.magic)
         return false, "magic"
     end

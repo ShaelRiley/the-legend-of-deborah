@@ -101,3 +101,4 @@ end
 hero.throwGive=true
 assert(not pcall(R.RestoreInventory,R,hero,hero.ps) and not hero.LODInventoryNativeRestore,'failed native grant leaked admission bypass')
 print('DUNGEON_TRANSITION_PASS: actual rescue/build/respawn, full-bag native restore, exact weapons/ammo/active selection, stacks/slots/rolls, Soldier isolation, stale spawn guard, failed-Give cleanup')
+return {Run=R,hero=hero,soldier=soldier,fixture=env}

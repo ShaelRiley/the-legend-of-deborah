@@ -25,14 +25,15 @@ util.AddNetworkString("LOD_VictoryCelebration")
 Celebration.Stats = Celebration.Stats or {starts = 0, balloons = 0}
 Celebration.ActiveUntil = Celebration.ActiveUntil or 0
 
-local function activeDeborah()
+local function activeRescueTarget()
+    if IsValid(RunManager.State.RescueEntity) then return RunManager.State.RescueEntity end
     for _, ent in ipairs(ents.FindByClass("lod_deborah")) do
         if IsValid(ent) then return ent end
     end
 end
 
 local function celebrationCenter(ply)
-    local deborah = activeDeborah()
+    local deborah = activeRescueTarget()
     if IsValid(deborah) then return deborah:GetPos() + Vector(0, 0, 42), deborah end
     if IsValid(ply) then return ply:GetPos() + Vector(0, 0, 42), nil end
     return MC.Origin + Vector(0, 0, 64), nil

@@ -34,12 +34,12 @@ Specials.AR2Config = {
     multiFireBurst = true
 }
 
-local SMG_WARM_SOUND = "buttons/button17.wav"
-local SMG_NEAR_SOUND = "buttons/button15.wav"
+local SMG_WARM_SOUND = "legend_of_deborah/feedback/heat_warm.wav"
+local SMG_NEAR_SOUND = "legend_of_deborah/feedback/heat_near.wav"
 local SMG_OVERHEAT_SOUND = "ambient/machines/steam_release_2.wav"
 local SMG_COOL_SOUND = "ambient/machines/steam_release_1.wav"
-local SMG_READY_SOUND = "buttons/button14.wav"
-local AR2_TELEGRAPH_SOUND = "buttons/button17.wav"
+local SMG_READY_SOUND = "legend_of_deborah/feedback/weapon_ready.wav"
+local AR2_TELEGRAPH_SOUND = "legend_of_deborah/feedback/ar2_warning.wav"
 
 Specials.PlayerState = Specials.PlayerState or setmetatable({}, {__mode = "k"})
 Specials.Stats = Specials.Stats or {

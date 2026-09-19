@@ -153,7 +153,10 @@ end
 local function weightedArchetype(rng)
     local total = 0
     local candidates = {}
+    local state=LOD.RunManager and LOD.RunManager.State
+    local pressure=LOD.Damsels and LOD.Damsels:EndlessPressure(state and state.Level).specialistWeight or 1
     for id, weight in pairs(WC.ArchetypeWeights) do
+        if id~="shambler" and id~="runner" then weight=weight*pressure end
         if weight > 0 and EC.Archetypes[id] then
             total = total + weight
             candidates[#candidates + 1] = {id = id, weight = weight}
@@ -442,14 +445,15 @@ function WanderingDirector:Think()
     if now < (self.NextThink or 0) then return end
     self.NextThink = now + WC.ThinkInterval
 
+    local respawnSeconds=WC.RespawnSeconds*(LOD.Damsels and LOD.Damsels:EndlessPressure(state.Level).reinforcement or 1)
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         local living = self:_LivingOnFloor(floor)
         if living < WC.PerFloor then
             if not self.NextRespawn[floor] then
-                self.NextRespawn[floor] = now + WC.RespawnSeconds
+                self.NextRespawn[floor] = now + respawnSeconds
             elseif now >= self.NextRespawn[floor] then
                 if self:_SpawnOne(graph, floor, "replacement") then living = living + 1 end
-                self.NextRespawn[floor] = living < WC.PerFloor and (now + WC.RespawnSeconds) or nil
+                self.NextRespawn[floor] = living < WC.PerFloor and (now + respawnSeconds) or nil
             end
         else
             self.NextRespawn[floor] = nil

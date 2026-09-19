@@ -716,7 +716,7 @@ function Staging:ClaimStarter(ply, ent)
     self.StarterEntities[identity] = nil
     self.Stats.starterClaims = (self.Stats.starterClaims or 0) + 1
     starterClaimStage(ply, "after_record", weaponClass)
-    ply:EmitSound("ambient/energy/weld1.wav", 60, 125, 0.5, CHAN_ITEM)
+    if LOD.Audio then LOD.Audio:ToPlayer(ply,'gift') end
     starterClaimStage(ply, "after_sound", weaponClass)
     local item=LOD.Equipment and LOD.Equipment.EnsureWeapon and LOD.Equipment:EnsureWeapon(ply,weaponClass)
     starterClaimStage(ply, "after_equipment", weaponClass)
@@ -762,7 +762,7 @@ function Staging:DeployPlayer(ply)
     local progression = LOD.CharacterProgressionSystem
     if not progression or not progression:IsDeploymentEligible(ps) then
         self.Stats.portalDenied = (self.Stats.portalDenied or 0) + 1
-        ply:EmitSound("buttons/button10.wav", 58, 92, 0.7, CHAN_ITEM)
+        LOD.Audio:Emit(ply,'deny')
         ply:ChatPrint("THE PORTAL REMAINS CLOSED - PRESS P AND COMMIT YOUR CLASS + LEVEL-1 FEAT")
         if progression and progression.SyncPlayer then progression:SyncPlayer(ply) end
         return false
@@ -770,7 +770,7 @@ function Staging:DeployPlayer(ply)
 
     if not ps.starterClaimed then
         self.Stats.portalDenied = (self.Stats.portalDenied or 0) + 1
-        ply:EmitSound("buttons/button10.wav", 58, 92, 0.7, CHAN_ITEM)
+        LOD.Audio:Emit(ply,'deny')
         ply:ChatPrint("THE PORTAL REMAINS CLOSED — TAKE THE WEAPON FIRST")
         self:EnsureStarterPickup(ply)
         return false

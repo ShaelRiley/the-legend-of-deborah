@@ -13,7 +13,10 @@ function Heroes:FormatEntry(entry)
         membersStr = tostring(entry.partyMembers or "")
     end
     local count = tonumber(entry.rescueCount) or 0
-    return string.format("%s rescued Deborah %d times", membersStr, count)
+    if entry.highestLevel then
+        return string.format("%s reached Level %d — %d damsels, %d cash bags",membersStr,entry.highestLevel,count,entry.cashRecovered or 0)
+    end
+    return string.format("%s cleared %d dungeons", membersStr, count)
 end
 
 function Heroes:IsValidEntry(entry)
@@ -21,6 +24,10 @@ function Heroes:IsValidEntry(entry)
     if type(entry.runId) ~= "string" or entry.runId == "" then return false end
     local rescues = tonumber(entry.rescueCount)
     if not rescues or rescues < 0 or math.floor(rescues) ~= rescues then return false end
+    for _,field in ipairs({"highestLevel","cashRecovered"}) do
+        local v=entry[field]
+        if v~=nil and (type(v)~="number" or v~=v or v==math.huge or v%1~=0 or v<(field=="highestLevel" and 1 or 0)) then return false end
+    end
     local seq = tonumber(entry.completionOrder)
     if not seq or seq < 1 or math.floor(seq) ~= seq then return false end
     if type(entry.partyMembers) ~= "table" or #entry.partyMembers == 0 then return false end
@@ -38,8 +45,8 @@ function Heroes:CompareEntries(a, b)
     end
     if not validA then return false end
 
-    local rA = tonumber(a.rescueCount) or 0
-    local rB = tonumber(b.rescueCount) or 0
+    local rA = tonumber(a.highestLevel) or (tonumber(a.rescueCount) or 0)+1
+    local rB = tonumber(b.highestLevel) or (tonumber(b.rescueCount) or 0)+1
     if rA ~= rB then
         return rA > rB
     end

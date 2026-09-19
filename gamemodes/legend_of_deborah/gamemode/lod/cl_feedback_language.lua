@@ -81,8 +81,8 @@ function Feed:RetainFeedback(entry)
     local soundReady = entry.family=="awareness" and now>=(self.nextAwarenessSound or 0)
         or entry.family~="awareness" and (now>=(self.nextFeedbackSound or 0)
             or priority>(self.lastFeedbackPriority or 0))
-    if not sounded and not (entry.cue and entry.cue > 0) and grammar.sound and soundReady then
-        surface.PlaySound(grammar.sound)
+    if not sounded and not (entry.cue and entry.cue > 0) and grammar.cueId and soundReady then
+        LOD.Audio:Play(grammar.cueId)
         self.nextFeedbackSound = now + (priority >= 2 and 0.8 or 0.35)
         self.lastFeedbackPriority = priority
         if entry.family=="awareness" then self.nextAwarenessSound=now+0.8 end

@@ -163,7 +163,13 @@ function Loot:_ChooseAmmoFamily(ply, rng, preferredClass)
     return weightedPick(rng, candidates)
 end
 
-function Loot:_GrantAmmo(ply, rng, tier, preferredClass)
+function Loot:_GrantAmmo(ply, rng, tier, preferredClass, strictPreferred)
+    if strictPreferred then
+        local profile=AMMO[preferredClass]
+        if not profile then return false end
+        local total,_,weapon=self:_FamilyTotal(ply,preferredClass,profile)
+        if not weapon or total>=profile.cap then return false end
+    end
     local weaponClass = self:_ChooseAmmoFamily(ply, rng, preferredClass)
     local profile = weaponClass and AMMO[weaponClass]
     if not profile then return false end
@@ -378,8 +384,7 @@ function Loot:Collect(ent, ply, acceptEquipment)
     ent.LODCollected = true
     self:_MarkConsumed(ent, ply)
     self.Stats.collected = (self.Stats.collected or 0) + 1
-    ply:EmitSound(ent.LODLootKind == "life" and "items/suitchargeok1.wav" or "items/itempickup.wav",
-        64, ent.LODLootKind == "life" and 125 or 100, 0.78, CHAN_ITEM)
+    LOD.Audio:Emit(ply,ent.LODLootKind == 'life' and 'life' or 'loot_pickup')
     if message then ply:ChatPrint(message) end
     if message and LOD.RPGPresentation and LOD.RPGPresentation.Event then
         LOD.RPGPresentation:Event(ply, "resource", message, {event = "loot_collected", kind = ent.LODLootKind})
@@ -545,7 +550,17 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     self:_ApplyTransmission(ent)
     ent.LODLootRegistered = true
     self:TraceStage("registered", ent, kind, ent.LODLootModel)
-    if not options.staticId then self:_EnforceTransientCap(ownerIdentity) end
+    if not options.staticId then
+        self:_EnforceTransientCap(ownerIdentity)
+        if LOD.Audio then
+            for _,recipient in ipairs(player.GetAll()) do
+                if RunManager:IdentityOf(recipient)==ownerIdentity and RunManager:IsDungeonPlayer(recipient) then
+                    LOD.Audio:ToPlayer(recipient,'loot_spawn')
+                    break
+                end
+            end
+        end
+    end
     return ent
 end
 

@@ -162,9 +162,9 @@ hook.Add("HUDPaint", "LOD_VictoryCelebrationHUD", function()
         Color(10, 10, 10, math.floor(alpha * 0.7)), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
     draw.SimpleText("CONGRATULATIONS", "LOD_Victory_Title", ScrW() * 0.5, y,
         Color(248, 213, 105, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-    draw.SimpleText("DEBORAH IS FREE", "LOD_Victory_Subtitle", ScrW() * 0.5, y + 63,
+    draw.SimpleText((LOD.Damsels and LOD.Damsels:Current().victory or "LEVEL CLEAR"), "LOD_Victory_Subtitle", ScrW() * 0.5, y + 63,
         Color(238, 238, 238, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-    draw.SimpleText("SHE HAS NOTES.", "LOD_AdventureAside", ScrW() * 0.5, y + 94,
+    draw.SimpleText((LOD.Damsels and LOD.Damsels:Current().type=="cash" and "FISCAL LIBERATION." or "ANOTHER SOUL DELIVERED."), "LOD_AdventureAside", ScrW() * 0.5, y + 94,
         Color(246, 218, 158, math.floor(alpha*.85)), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 end)
 

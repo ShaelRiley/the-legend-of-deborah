@@ -47,7 +47,8 @@ function ENT:Initialize()
     self.LODHostile = false
     self:SetModel("models/roller.mdl")
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
-    self:SetColor((LOD.MagicForms and LOD.MagicForms.ContentColors or {})[self.LODContentId or "raw"] or Color(210,235,255))
+    self:SetColor(Color(255,195,45))
+    self:SetMaterial("models/debug/debugwhite")
     self:SetCollisionGroup(COLLISION_GROUP_NPC)
     self:SetCollisionBounds(Vector(-13, -13, 0), Vector(13, 13, 28))
     self:SetHealth(18)
@@ -67,7 +68,7 @@ function ENT:Initialize()
     self.LODMotionLastUpdate = CurTime()
     self:SetNW2Bool("LOD_MagicSummon", true)
     smoke(self:GetPos() + Vector(0, 0, 12), 1.5)
-    self:EmitSound("ambient/energy/weld1.wav", 72, 118, 0.6, CHAN_ITEM)
+    if LOD.Audio then LOD.Audio:At(self:GetPos(),'summon_arrive') end
 end
 
 function ENT:_AcquireTarget(graph)
@@ -185,7 +186,7 @@ function ENT:_BeginCharge(target)
         distance = 0
     }
     if Motion then Motion:Stop(self) Motion:FaceToward(self, target:GetPos()) end
-    self:EmitSound("buttons/button17.wav", 72, 132, 0.75, CHAN_ITEM)
+    if LOD.Audio then LOD.Audio:At(self:GetPos(),'summon_attack') end
     return true
 end
 
@@ -328,5 +329,5 @@ function ENT:OnRemove()
     if self.LODRemovedFX then return end
     self.LODRemovedFX = true
     smoke(self:GetPos() + Vector(0, 0, 12), 1.5)
-    self:EmitSound("ambient/energy/weld2.wav", 70, 82, 0.5, CHAN_ITEM)
+    if LOD.Audio then LOD.Audio:At(self:GetPos(),'summon_depart') end
 end
