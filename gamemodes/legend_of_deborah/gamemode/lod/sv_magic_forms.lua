@@ -517,16 +517,22 @@ function Forms:_CastBeam(ply, form, content, context)
     end
     local hitCount = 0
     local endpoint = origin + direction * maximum
-    local cap = RPG.Constants.MaxPenetrationTargetsPerProjectile or 4
-    while remaining > 1 and hitCount < cap do
+    local cap = RPG.Constants.MaxPenetrationTargetsPerProjectile or 128
+    local seen, steps = {}, 0
+    while remaining > 1 and hitCount < cap and steps < 512 do
+        steps = steps + 1
         local tr = util.TraceLine({start = cursor, endpos = cursor + direction * remaining,
             mask = MASK_SOLID, filter = ignored})
         endpoint = tr.Hit and tr.HitPos or (cursor + direction * remaining)
         if not tr.Hit then break end
         local ent = tr.Entity
-        if not validTarget(ply, ent) then break end
-        hitCount = hitCount + 1
-        self:_ApplyDamage(ply, ply, ent, form, content, context, direction)
+        local body = IsValid(ent) and (ent.LODHostile or ent.LODSummonedSeeker or (ent.IsPlayer and ent:IsPlayer()))
+        if not body or seen[ent] then break end
+        seen[ent] = true
+        if validTarget(ply, ent) then
+            hitCount = hitCount + 1
+            self:_ApplyDamage(ply, ply, ent, form, content, context, direction)
+        end
         ignored[#ignored + 1] = ent
         local travelled = math.max(1, cursor:Distance(tr.HitPos) + 2)
         remaining = math.max(0, remaining - travelled)

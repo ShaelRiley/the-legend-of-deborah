@@ -568,6 +568,51 @@ local pierced=sent[#sent]
 assert(pierced.name=="LOD_CombatRoll" and pierced.args[2]:find("(43) DAMAGE",1,true)==1 and pierced.args[2]:find("2d12!",1,true))
 assert(pierced.args[2]:find("12@8+ > 10@7+ > 5@6+ + 12@8+ > 4@7+ = 43 rolled",1,true),
     "piercing retains original and new rolls, actual thresholds, independent starts and total")
+do
+    local chain, damaged = {}, {}
+    for i=1,14 do
+        local id=i
+        chain[i]={valid=true,LODHostile=true,Health=function(self) return self.LODDead and 0 or 100 end,
+            TakeDamageInfo=function(self,info) assert(not damaged[id]);damaged[id]=info:GetDamage();self.LODDead=true end}
+    end
+    chain[7].LODDead=true -- an already dead body must be transparent
+    local cursor=1
+    util.TraceLine=function(spec)
+        assert(spec.endpos.x==8192,'Magnum has one fixed range endpoint')
+        cursor=cursor+1
+        if chain[cursor] then return {Hit=true,HitPos=Vector(cursor*100,0,64),Entity=chain[cursor]} end
+        return {Hit=true,HitPos=Vector(2000,0,64),Entity=NULL}
+    end
+    local bullet={Src=attacker:GetShootPos(),Dir=Vector(1,0,0),Callback=function() chain[1].valid=false end}
+    hooks.EntityFireBullets.LOD_MagnumPiercing(attacker,bullet)
+    bullet.Callback(attacker,{Entity=chain[1],HitPos=Vector(100,0,64)},firstInfo)
+    assert(cursor==15 and damaged[2] and damaged[14] and not damaged[7],
+        'Magnum continues beyond eight bodies after the first callback kills/removes its target')
+    local count=0;for _ in pairs(damaged) do count=count+1 end;assert(count==12)
+    local baseDamage=forms._ApplyDamage
+    damaged={};cursor=0
+    for _,body in ipairs(chain) do body.valid=true;body.LODDead=false end
+    chain[7].LODDead=true
+    forms._ApplyDamage=function(_,_,_,body)
+        for i,b in ipairs(chain) do if b==body then assert(not damaged[i]);damaged[i]=true end end
+        body.LODDead=true
+    end
+    local fixedEnd
+    util.TraceLine=function(spec)
+        fixedEnd=fixedEnd or spec.endpos.x;assert(spec.endpos.x==fixedEnd,'Beam range never grows between bodies')
+        cursor=cursor+1
+        if chain[cursor] then return {Hit=true,HitPos=Vector(cursor*10,0,64),Entity=chain[cursor]} end
+        return {Hit=true,HitPos=Vector(200,0,64),Entity=NULL}
+    end
+    forms:_CastBeam(attacker,{id='beam'},nil,{spatialBonusCells=0})
+    assert(cursor==15 and damaged[1] and damaged[14] and not damaged[7],'Beam crosses every valid target and ignores a corpse')
+    cursor=0;chain[1].LODDead=false;damaged={}
+    util.TraceLine=function() cursor=cursor+1;return {Hit=true,HitPos=Vector(10,0,64),Entity=chain[1]} end
+    forms:_CastBeam(attacker,{id='beam'},nil,{spatialBonusCells=0})
+    assert(cursor==2 and damaged[1],'Repeated trace entity cannot be hit twice or loop forever')
+    forms._ApplyDamage=baseDamage
+    print('PIERCING_TRAJECTORY_PASS: fourteen bodies, lethal first callback, dead intermediate, fixed range, wall stop and duplicate guard')
+end
 attacker.GetActiveWeapon=oldWeapon;rolls.RollActorDamage=oldActorRoll;util.TraceLine=oldTrace;rolls._RNG=pierceRNG
 print("PASS: zero-damage Magic and production Magnum piercing retain complete arithmetic")
 

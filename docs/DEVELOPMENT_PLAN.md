@@ -1,3 +1,29 @@
+# Current checkpoint — full-trajectory Magnum and Beam
+
+Built on verified remote `4520bedf744b5bf72f027d1ab9a7be71f6062593`.
+Both attacks now continue beyond the previous eight/four target limits through
+living opponents, corpses and friendly combat bodies to their fixed range/world
+endpoint. The first Magnum impact is captured before an earlier callback can
+kill/remove it. Shared factions still govern damage; each actor is hit at most
+once. Generated-geometry obstruction, cumulative Magnum Boomchains, Aim scaling
+and the shared attack-event dice budget remain intact.
+
+The shared 128-target safeguard exceeds supported simultaneous actors, with a
+512-iteration guard for malformed traces. Magnum range no longer extends after
+each body. The manual already describes the full-line behavior; live GDD 03/07
+records the correction and authorized safeguards as LOD-PIERCING-002.
+
+Validation: production trajectory tests pass fourteen bodies, lethal first
+callback, dead intermediate body, fixed range, wall stop and repeated-entity
+guard. All 121 registered integrated suites pass with zero failures. Native aligned
+multiplayer actors and generated-wall acceptance remain pending.
+
+Next: Cloud Step and monster defense readability/rebalancing, then the shared
+equipment/input/travel systems. Shadow flicker remains unreproduced/nonblocking.
+No deployment or Workshop publication.
+
+---
+
 # Current checkpoint — Gordon/Neil feedback and Fake Gordon Clones
 
 Built on verified remote `eccb286d4a7341c0b044d1dd2d79be0d74888192`.

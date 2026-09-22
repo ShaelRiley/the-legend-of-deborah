@@ -30,7 +30,7 @@ RPG.Constants = {
     MaxDamageDicePerChain = 32,
     MaxDamageDicePerAttackEvent = 128,
     MaxProjectilesPerAttackEvent = 16,
-    MaxPenetrationTargetsPerProjectile = 4,
+    MaxPenetrationTargetsPerProjectile = 128,
     RPGThreatMultiplierMin = 0.75,
     RPGThreatMultiplierMax = 2.00
 }

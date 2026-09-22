@@ -59,7 +59,7 @@ function Validation:Run(printResult)
     if constants.MaxDamageDicePerChain ~= 32 then addError(errors, "damage chain cap must be 32") end
     if constants.MaxDamageDicePerAttackEvent ~= 128 then addError(errors, "attack damage-die cap must be 128") end
     if constants.MaxProjectilesPerAttackEvent ~= 16 then addError(errors, "attack projectile cap must be 16") end
-    if constants.MaxPenetrationTargetsPerProjectile ~= 4 then addError(errors, "penetration target cap must be 4") end
+    if constants.MaxPenetrationTargetsPerProjectile ~= 128 then addError(errors, "penetration target cap must be 128") end
     if constants.RPGThreatMultiplierMin ~= 0.75 or constants.RPGThreatMultiplierMax ~= 2.00 then
         addError(errors, "RPG threat multiplier bounds must be 0.75..2.00")
     end
