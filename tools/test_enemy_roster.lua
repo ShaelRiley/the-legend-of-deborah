@@ -197,6 +197,18 @@ end
 local safeLane=C:NearestLane(graph,cell,center)
 assert(safeLane,'real wall thickness rejected every Climber lane')
 assert(math.max(math.abs(safeLane.pos.x-center.x),math.abs(safeLane.pos.y-center.y))+14<=half-wallHalf)
+local wallSpawn=E:Placement(graph,cell,'climber','ambush')
+assert(wallSpawn and wallSpawn.wallLane and wallSpawn.pos.z==safeLane.pos.z,
+    'Climber must spawn directly in its validated wall lane')
+util.TraceHull=function(t) return {Hit=false,HitPos=t.endpos} end
+local runner=actor('climber',safeLane.pos)
+runner.LODHomeCellKey=key(1,1,0);runner.LODWallInitialized=true
+runner.LODNextAttack=9999;runner.LODTarget=p;runner.LODWallLast=150
+runner.LODWallRoute={{pos=safeLane.pos},{pos=safeLane.pos+Vector(0,40,0)}}
+runner.LODWallRouteIndex=2;runner.LODWallNextRoute=0
+local committed=runner.LODWallRoute
+at(150.05);C:Tick(runner,s,time)
+assert(runner.LODWallRoute==committed,'Timed refresh replaced a partially traversed wall route')
 dofile(root..'sh_hostile_shapes.lua')
 util.GetModelBounds=function() return Vector(-18,-14,-52),Vector(18,14,4) end
 SOLID_BBOX=2

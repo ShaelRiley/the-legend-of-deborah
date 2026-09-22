@@ -171,10 +171,20 @@ function C:Tick(e,s,now)
             e:EmitSound("npc/fast_zombie/leap1.wav",74,115,.8);return true
         end
     end
-    if now>=(e.LODWallNextRoute or 0) then self:Route(e,s.Graph,p,fleeing);e.LODWallNextRoute=now+.8 end
     local wp=e.LODWallRoute and e.LODWallRoute[e.LODWallRouteIndex or 1]
+    if not wp and now>=(e.LODWallNextRoute or 0) then
+        self:Route(e,s.Graph,p,fleeing);e.LODWallNextRoute=now+.8
+        wp=e.LODWallRoute and e.LODWallRoute[e.LODWallRouteIndex or 1]
+    end
     if wp then
-        if self:Step(e,wp.pos,e.LODConfig.speed,dt,wp.stair) then e.LODWallRouteIndex=e.LODWallRouteIndex+1;e.LODWallLane=wp.lane end
+        local before=e:GetPos()
+        if self:Step(e,wp.pos,e.LODConfig.speed,dt,wp.stair) then
+            e.LODWallRouteIndex=e.LODWallRouteIndex+1;e.LODWallLane=wp.lane;e.LODWallBlockedSince=nil
+        elseif e:GetPos():DistToSqr(before)>.01 then e.LODWallBlockedSince=nil
+        else
+            e.LODWallBlockedSince=e.LODWallBlockedSince or now
+            if now-e.LODWallBlockedSince>.8 then e.LODWallRoute=nil;e.LODWallBlockedSince=nil end
+        end
         if now>=(e.LODNextScrape or 0) then e.LODNextScrape=now+.65;e:EmitSound("npc/fast_zombie/foot1.wav",62,130,.6) end
     else motion:Stop(e);e:_SetActivity(ACT_IDLE) end
     return true

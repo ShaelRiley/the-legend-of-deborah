@@ -43,7 +43,11 @@ function E:Placement(graph,c,id,role)
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     if not d.stationary then
-        if id=="climber" and not LOD.Climber:NearestLane(graph,c,center) then return nil end
+        if id=="climber" then
+            local lane=LOD.Climber:NearestLane(graph,c,center)
+            if not lane then return nil end
+            return {pos=lane.pos,wallLane=lane}
+        end
         return {pos=center}
     end
     local tag=(graph.CellTags or {})[key(c)] or {}

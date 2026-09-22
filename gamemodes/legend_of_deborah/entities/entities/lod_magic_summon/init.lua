@@ -94,6 +94,8 @@ function ENT:_AcquireTarget(graph)
 end
 
 function ENT:_RouteTo(graph, target)
+    local active=self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
+    if active and active.stair then return end
     if CurTime() < (self.LODNextRouteRefresh or 0) then return end
     self.LODNextRouteRefresh = CurTime() + 0.35
     if not aliveOpponent(self, target) or not Navigator then self.LODWaypoints = {} return end
@@ -273,6 +275,14 @@ function ENT:_BehaviourTick()
     if CurTime() >= (self.LODExpiresAt or 0) or not state or not graph or state.Failed or state.LevelCleared then self:Remove() return end
     if state.SimulationFrozen then
         if Motion then Motion:Stop(self) end
+        return
+    end
+    -- Finish a graph-authored flight before target refresh, charging or retreat
+    -- can replace it with a planar goal on the wrong physical floor.
+    local active=self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
+    if active and active.stair then
+        local waypoint=self:_AdvanceWaypoint()
+        if waypoint and Motion then Motion:MoveToward(self,waypoint) end
         return
     end
     if CurTime() >= (self.LODExpiresAt or 0) then self:Remove() return end

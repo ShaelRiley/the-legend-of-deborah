@@ -27,7 +27,7 @@ local cellKey = LOD.MazeGenerator.CellKey
 
 local FLOOR_LIFT = 2
 local MAX_STEP_DT = 0.050
-local CELL_INTERIOR_MARGIN = 32
+local CELL_INTERIOR_MARGIN = (LOD.Config.Geometry.ContainerWidth or 128)*.5 + 24
 local MIN_FACE_DELTA_SQR = 0.25
 
 Motion.Version = 2
@@ -129,9 +129,8 @@ function Motion:CellFloorPoint(cell, sourcePos)
     local center = Navigator:CellCenter(cell)
     if not sourcePos then return center + Vector(0, 0, FLOOR_LIFT) end
 
-    -- Keep local pursuit and spawn offsets at least 32 units inside a cell edge.
-    -- The stable humanoid hull is 16 units wide per side, leaving another 16
-    -- units of deterministic clearance from a closed container wall.
+    -- A closed container occupies half its width inside the logical cell.
+    -- Reserve that volume plus the humanoid half-hull and clearance.
     local limit = math.max(32, MC.CellSize * 0.5 - CELL_INTERIOR_MARGIN)
     return Vector(
         math.Clamp(sourcePos.x, center.x - limit, center.x + limit),
@@ -154,9 +153,13 @@ function Motion:SnapSpawn(hostile)
     local cell = Navigator:WorldToCell(graph, hostile:GetPos())
     if not cell then return false end
 
-    if hostile.LODRosterPlacement and hostile.LODRosterPlacement.ceiling then
+    if hostile.LODRosterPlacement and (hostile.LODRosterPlacement.ceiling or hostile.LODRosterPlacement.wallLane) then
         quiesceEngineLocomotion(hostile)
         hostile:SetPos(hostile.LODRosterPlacement.pos)
+        if hostile.LODRosterPlacement.wallLane then
+            hostile.LODWallInitialized=true
+            hostile.LODWallLane=hostile.LODRosterPlacement.wallLane
+        end
         return true
     end
     if hostile.LODWallInitialized then return true end
@@ -521,4 +524,3 @@ concommand.Add("lod_motion_suppression_status", function(ply)
     print("[LOD:MOTION-SUPPRESSION] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

@@ -1,3 +1,36 @@
+# Current checkpoint — committed stair travel and Climber placement
+
+Developed from verified remote main `2ea2c4a3c0ca13df24f9a2563a1551c7e8d17c6f`,
+which durably contains the September 22 recovery checkpoint above `4942c43`.
+The recovery tree passed all 120 registered suites with zero failures.
+
+Summons now complete the authored stair flight before periodic replanning,
+charging or retreat can replace it. Climbers retain unfinished wall routes,
+retry blocked routes after 0.8 seconds, and spawn directly in a validated wall
+lane preserved by shared spawn settlement. Local humanoid pursuit reserves the
+actual container half-width plus hull clearance instead of entering the wall.
+The canonical maze graph and movement authority remain in use.
+
+Validation: all 121 integrated suites pass with zero failures. The new navigation
+suite executes the production waypoint compiler, motion kernel and summon route
+refresh across four stair orientations in both directions. It checks monotonic
+route progress, completion, landing elevation, charge exclusion, container hull
+clearance and Climber spawn settlement. Roster tests verify wall-route retention.
+Live GDD 00 → 01 → 05/07; tab 07 records LOD-NAV-20260922.
+Native GMod stair/collision/render acceptance remains pending; static tests are
+not a claim of observed multiplayer behavior.
+
+Next: complete the remaining Priority 2 audit (DFT announcements/persistence,
+black-gate collision, ambient-owner cleanup, staging flickering shadow and unique
+damsel services), then Priority 4 UI/feat wording and subsequent combat/content
+work in SEPTEMBER22_MASTER_BRIEF.md. Existing tests cover DFT rollback, gate
+routing, loop leases, ordinary pistol/crowbar loot and the damsel roster; do not
+rewrite those systems absent contradictory evidence. The native staging shadow
+cause is not yet established. Later combat, items, events and Hector remain open.
+No public-server deployment or Workshop publication is included.
+
+---
+
 # Current checkpoint — progression, sales and live rankings
 
 Second checkpoint in the active ten-priority brief: doubled Hero XP thresholds,
