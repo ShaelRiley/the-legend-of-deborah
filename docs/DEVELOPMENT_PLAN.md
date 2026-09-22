@@ -1,3 +1,37 @@
+# Current checkpoint — free Cloud Step movement and invisible overhead walls
+
+Built on verified remote `d2faa8497732468e8c5167d29a72cfe54713d04d`.
+The author's later direction replaces the unpushed apex-clamp prototype: preserve
+full expressive movement and contain the maze using invisible walls above crates.
+Cloud Step costs 3 Magic, targets twice the former vertical takeoff impulse and
+adds a normalized 120-unit boost in the held direction while preserving horizontal
+momentum. Spring Heel and subsequent Wall Jumps retain full strength at any altitude.
+The ordinary locomotion cap remains separate. Wall Jump priority, once-per-airborne
+state, shared capabilities, movement restrictions and Meteor Strike remain intact.
+An original 130 ms cue and eight-sprite 0.35-second cloud ring identify success.
+
+Existing invisible merged wall boxes extend through overhead void to world Z 16384.
+Lower columns stop beneath legal upper-floor crossings and the gallery overlook;
+merge keys include top height. Closed gates and the jail door extend their own
+collision upward; opening clears the entire column. Visual sizes remain authored,
+with no additional VPhysics, per-frame traces, lights or recurring timers.
+
+The earlier clamp prototype passed 121 suites but was superseded before any main
+push. The revised production checks preserve full jump combinations and verify
+walls at five vault heights, 4,759 legal crossings and 38 stairs over eight generated
+seeds, split-height merging, gallery openings, and complete gate/jail opening.
+An initial gallery fixture incorrectly retained a Cell inside WardenVoid; corrected
+to match the real arena topology. Peak wall count in those seeds: 616 merged boxes.
+Full revised regression: all 122 registered suites pass with zero failures. Manual/catalog/readers rebuilt.
+Live GDD 04/05/07 records LOD-CLOUD-STEP-003 and LOD-WORLD-OVERHEAD-001.
+Native collision, traversal and audiovisual acceptance remain pending.
+
+Next: monster defense readability/rebalancing, then shared equipment/input/travel
+before event/minigame and finale dependencies. Shadow flicker is unreproduced and
+nonblocking. No VPS deployment or Workshop publication.
+
+---
+
 # Current checkpoint — full-trajectory Magnum and Beam
 
 Built on verified remote `4520bedf744b5bf72f027d1ab9a7be71f6062593`.

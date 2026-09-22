@@ -360,6 +360,10 @@ Buff Cloud Step I:
 
 Keep traversal safe against unintended wall-top/maze bypasses.
 
+Later author clarification: preserve fun, emergent tactical movement. Use invisible
+walls above the crates to prevent jumping over maze boundaries; do not limit jump
+height or damp movement for containment. Preserve legal upper-floor paths and stairs.
+
 ## Piercing attacks
 
 The **.357 Magnum** and **Beam** magic form must always pierce targets along their full valid trajectory.

@@ -96,7 +96,7 @@ local function logicalY(index)
     return (index - (MC.Height + 1) / 2) * MC.CellSize
 end
 
-local function addGroup(groups, axis, cell, d)
+local function addGroup(groups, axis, cell, d, topZ)
     local fixed2
     local index
     if axis == "x" then
@@ -107,10 +107,10 @@ local function addGroup(groups, axis, cell, d)
         index = cell.y
     end
 
-    local groupKey = string.format("%d:%s:%d", cell.z, axis, fixed2)
+    local groupKey = string.format("%d:%s:%d:%g", cell.z, axis, fixed2, topZ)
     local group = groups[groupKey]
     if not group then
-        group = {axis = axis, z = cell.z, fixed2 = fixed2, indices = {}}
+        group = {axis = axis, z = cell.z, fixed2 = fixed2, topZ = topZ, indices = {}}
         groups[groupKey] = group
     end
     group.indices[index] = true
@@ -121,7 +121,8 @@ function MazeBuilder:_SpawnMergedWallRun(group, firstIndex, lastIndex)
     local halfLength = count * MC.CellSize * 0.5
     local halfThickness = GC.ContainerWidth * 0.5
     local visibleWallHeight = GC.ContainerHeight * GC.WallStack
-    local collisionHeight = math.max(visibleWallHeight, GC.AntiBypassHeight or MC.LevelHeight)
+    local collisionHeight = math.max(visibleWallHeight, group.topZ and (group.topZ - group.z * MC.LevelHeight)
+        or GC.AntiBypassHeight or MC.LevelHeight)
     local halfHeight = collisionHeight * 0.5
     local fixed = group.fixed2 * 0.5
     local pos
@@ -169,10 +170,32 @@ function MazeBuilder:_BuildMergedWallCollision(groups)
     end
 end
 
+-- Extend each closed boundary through overhead void, but never through an
+-- authored upper-floor opening or the boss gallery's open overlook. Group by
+-- top height as well as plane so merging cannot seal an adjacent legal route.
+function MazeBuilder:WallCollisionTop(graph, cell, nx, ny, maximumLayer)
+    local top = math.max((cell.z + 1) * MC.LevelHeight,
+        (GC.AntiBypassCeilingZ or 16384) - MC.Origin.z)
+    for z = cell.z + 1, maximumLayer do
+        local a, b = cellKey(cell.x, cell.y, z), cellKey(nx, ny, z)
+        local crossing = graph.Cells[a] and graph.Cells[b]
+            and graph.Edges and graph.Edges[edgeKeyFromKeys(a,b)]
+        local gallery = graph.WardenVoid and (graph.WardenVoid[a] or graph.WardenVoid[b])
+        if crossing or gallery then return z * MC.LevelHeight end
+    end
+    return top
+end
+
 function MazeBuilder:_BuildWalls(graph)
     local seen = {}
     local groups = {}
     local visualSegments = {}
+    local maximumLayer = 0
+    for _, cell in pairs(graph.Cells) do maximumLayer = math.max(maximumLayer, cell.z) end
+    for key in pairs(graph.WardenVoid or {}) do
+        local z = tonumber(string.match(key, "[^:]+:[^:]+:([^:]+)"))
+        if z then maximumLayer = math.max(maximumLayer, z) end
+    end
 
     for _, keyValue in ipairs(sortedKeys(graph.Cells)) do
         local cell = graph.Cells[keyValue]
@@ -190,7 +213,8 @@ function MazeBuilder:_BuildWalls(graph)
                     visualSegments[#visualSegments + 1] = {
                         cell.x, cell.y, cell.z, directionIndex
                     }
-                    addGroup(groups, (d.name == "N" or d.name == "S") and "x" or "y", cell, d)
+                    addGroup(groups, (d.name == "N" or d.name == "S") and "x" or "y", cell, d,
+                        self:WallCollisionTop(graph, cell, nx, ny, maximumLayer))
                 end
             end
         end

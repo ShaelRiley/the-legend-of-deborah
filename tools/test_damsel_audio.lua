@@ -25,7 +25,7 @@ LOD={RunManager={State={BuildReady=false},BuildCurrentLevel=function(self,succes
 end}}
 function LOD.RunManager:NewCampaign() return self:BuildCurrentLevel() end
 dofile(root..'sh_audio.lua');local A=LOD.Audio
-assert(#resources==58)
+assert(#resources==59)
 local paths={};for id,c in pairs(A.Cues) do assert(not paths[c.path]);paths[c.path]=id end
 assert(not A:ToPlayer(a,'hit_confirm') and hooks.LOD_GenerationSoundBarrier({})==false)
 dofile(root..'sv_audio_lifecycle.lua')

@@ -8,6 +8,7 @@ local Effects = assert(RPG.FeatEffectSystem, "Wall Jump requires feat effects")
 local Rules = assert(LOD.RPGAbilityRules, "Wall Jump requires AbilityRules")
 local PROBE_DISTANCE, LATERAL_KICK, VERTICAL_NORMAL_LIMIT = 24, 160, 0.20
 local WALL_JUMP_LIMIT = 4
+local CLOUD_MAGIC_COST, CLOUD_IMPULSE_MULTIPLIER, CLOUD_HORIZONTAL_BOOST = 3, 2, 120
 local WALL_CLASSES = {lod_static_box=true, lod_gate=true, lod_jail_door=true}
 local FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND, FLOAT_APEX_SPEED = 3.0, 5.0, 30
 local DIRECTIONS = {
@@ -34,8 +35,8 @@ Feats.INT_CLOUD_STEP = {
     replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"int"}, abilityRequirements = {int = 13},
     prerequisiteFeatIds = {}, requiredCapabilityTags = {"magic_pool"}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
     requiredSubsystemTags = {"movement", "magic"}, synergyTags = {"movement", "jump", "magic"}, oneRank = true,
-    effectHandlerId = "cloud_step", effectParams = {magicCost = 5,
-        description = "Once per airborne cycle, a fresh Space press may spend exactly 5 Magic for one additional voluntary jump. A valid Wall Jump with a remaining use has priority and leaves Cloud Step unused."},
+    effectHandlerId = "cloud_step", effectParams = {magicCost = CLOUD_MAGIC_COST, impulseMultiplier = CLOUD_IMPULSE_MULTIPLIER, horizontalBoost = CLOUD_HORIZONTAL_BOOST,
+        description = "Once per airborne cycle, a fresh Space press may spend 3 Magic for a double-impulse extra jump with a directional boost, blocked by invisible maze walls. A valid Wall Jump with a remaining use has priority and leaves Cloud Step unused."},
     directorBaseWeight = 1.0, eligibilityText = "INT 13 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
 }
 assert(Feats.INT_FLOAT_ON == nil, "duplicate canonical feat INT_FLOAT_ON")
@@ -74,7 +75,7 @@ if not Effects.LODCheckpointDWallJumpDerivedWrapped then
         base(self, state, derived)
         local profile = self:WallJumpProfile(state)
         derived.wallJumpEnabled, derived.wallJumpProbeDistance, derived.wallJumpLateralKick = profile.enabled, profile.probeDistance, profile.lateralKick
-        derived.cloudStepEnabled, derived.cloudStepMagicCost = profile.cloudStep, 5
+        derived.cloudStepEnabled, derived.cloudStepMagicCost = profile.cloudStep, CLOUD_MAGIC_COST
         derived.floatOnEnabled, derived.floatOnMaximumSeconds, derived.floatOnMagicPerSecond = profile.floatOn, FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND
         derived.sizeShifterEnabled, derived.sizeShifterTargetScale, derived.sizeShifterTransitionSeconds = profile.sizeShifter, .33, 3.0
     end
@@ -194,6 +195,25 @@ function Rules:TryWallJump(ply)
     end
     return true
 end
+-- Movement remains expressive; generated invisible walls own maze boundaries.
+function Rules:CloudStepVerticalImpulse(ply)
+    return self:WallJumpVerticalImpulse(ply) * CLOUD_IMPULSE_MULTIPLIER
+end
+function Rules:CloudStepHorizontalVelocity(ply, velocity)
+    local forward, side = 0, 0
+    if ply.KeyDown then
+        forward = (ply:KeyDown(IN_FORWARD) and 1 or 0) - (ply:KeyDown(IN_BACK) and 1 or 0)
+        side = (ply:KeyDown(IN_MOVERIGHT) and 1 or 0) - (ply:KeyDown(IN_MOVELEFT) and 1 or 0)
+    end
+    local x, y = velocity.x, velocity.y
+    local length = math.sqrt(forward * forward + side * side)
+    if length > 0 then
+        local yaw = math.rad(ply:EyeAngles().y)
+        x = x + (math.cos(yaw) * forward + math.sin(yaw) * side) / length * CLOUD_HORIZONTAL_BOOST
+        y = y + (math.sin(yaw) * forward - math.cos(yaw) * side) / length * CLOUD_HORIZONTAL_BOOST
+    end
+    return x, y
+end
 function Rules:TryCloudStep(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() then return false end
     local derived = self:Derived(ply)
@@ -202,14 +222,25 @@ function Rules:TryCloudStep(ply)
     if state.used then return false end
     local magic = LOD.Magic
     local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
-    local cost = math.max(0, tonumber(derived.cloudStepMagicCost) or 5)
+    local cost = math.max(0, tonumber(derived.cloudStepMagicCost) or CLOUD_MAGIC_COST)
     if not resource or (tonumber(resource.magic) or 0) < cost then return false end
-    local vertical = self:WallJumpVerticalImpulse(ply)
+    if ply.GetMoveType and ply:GetMoveType() ~= MOVETYPE_WALK then return false end
+    if ply.InVehicle and ply:InVehicle() or ply.IsFrozen and ply:IsFrozen() then return false end
+    local status = LOD.RPGStatusElements
+    if status and not status:CanMoveVoluntarily(ply) then return false end
+    local vertical = self:CloudStepVerticalImpulse(ply)
     if vertical <= 0 then return false end
     resource.magic = math.max(0, (tonumber(resource.magic) or 0) - cost)
     if magic._Sync then magic:_Sync(ply, resource) end
     state.used, state.lastAt = true, CurTime()
-    ply:SetVelocity(Vector(0, 0, vertical))
+    local velocity = ply:GetVelocity()
+    local x, y = self:CloudStepHorizontalVelocity(ply, velocity)
+    ply:SetVelocity(Vector(x - velocity.x, y - velocity.y, vertical - velocity.z))
+    if LOD.Audio then LOD.Audio:At(ply:GetPos(), "cloud_step", 700) end
+    if util and util.Effect and EffectData then
+        local data = EffectData(); data:SetOrigin(ply:GetPos())
+        util.Effect("lod_cloud_step", data, true, true)
+    end
     return true
 end
 function Rules:HandleAirborneJump(ply)
@@ -329,7 +360,7 @@ function Rules:ValidateCheckpointDWallJump()
     expect(chosen and chosen.Fraction == .2, "nearest valid wall selected")
     expect(def.effectParams.maximumJumps == 4, "four Wall Jumps per airborne cycle")
     local cloud = Feats.INT_CLOUD_STEP
-    expect(cloud and cloud.abilityRequirements.int == 13 and cloud.effectParams.magicCost == 5,
+    expect(cloud and cloud.abilityRequirements.int == 13 and cloud.effectParams.magicCost == CLOUD_MAGIC_COST,
         "Cloud Step definition/cost")
     local float = Feats.INT_FLOAT_ON
     expect(float and float.abilityRequirements.int == 15 and float.effectParams.maximumSeconds == 3

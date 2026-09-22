@@ -271,7 +271,7 @@
         "A feat may require permanent ability scores, a previous rank, a weapon or Magic capability, or a particular actor type. The draft filters these requirements before presenting three distinct offers. Choose one; the other two are not yours.",
         "Ranked families usually replace their own lower rank. Separate sources add only where their rules say they do. Six repeatable fallback feats can raise individual permanent abilities when offered, up to the intrinsic score ceiling.",
         "The reference chapters at the back include every current ordinary feat, all six fallbacks, and the nine class capstones. Their requirements and effect descriptions come from the same catalog used by the game.",
-        "Wall Jump grants four successful kicks before landing, each requiring a fresh Jump press near a static vertical wall. Holding Jump and touching a wall do not refill them. Cloud Step is a separate ability; Wall Jump takes priority when a legal wall kick is available."
+        "Wall Jump grants four successful kicks before landing, each requiring a fresh Jump press near a static vertical wall. Holding Jump and touching a wall do not refill them. Cloud Step is separate: spend 3 Magic once before landing for a double-impulse extra jump. Hold a direction for a modest horizontal boost. Wall Jump takes priority when a legal kick is available. These jumps retain their full strength; invisible walls above the crates block maze shortcuts while leaving legal upper-floor paths and stairs open."
       ]
     },
     {

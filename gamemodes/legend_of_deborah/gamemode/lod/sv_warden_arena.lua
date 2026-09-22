@@ -65,7 +65,7 @@ function B:_BuildProgressionEntities(g)
     build(self,g)
     local a=g.Progression.Warden
     if a then
-        local e=self:_SpawnProgressionGate(a.lock);self:_Register(e)
+        local e=self:_SpawnProgressionGate(a.lock, g);self:_Register(e)
         if IsValid(e) then e.LODWardenEntry=true;e:OpenGate() end
     end
 end

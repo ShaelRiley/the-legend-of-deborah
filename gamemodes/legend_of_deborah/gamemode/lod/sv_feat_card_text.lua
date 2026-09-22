@@ -92,7 +92,7 @@ local function apply(definition)
         description=string.format('Your hit has a %d%% chance to attempt %s. The target saves with %s against your %s modifier; success prevents the condition. Hits already attempting that condition do not roll again.',percent(p.procChance),conditions[p.statusId],string.upper(p.dcAbility),string.upper(p.dcAbility))
     end
     if definition.featId=='INT_CLOUD_STEP' then
-        description=string.format('Once before landing, press Jump in the air to spend %g Magic on an extra jump. A valid Wall Jump takes priority and preserves this use.',p.magicCost)
+        description=string.format('Once before landing, press Jump in the air for a %g-Magic extra jump with %g× takeoff impulse. Hold a direction for a horizontal boost. Invisible walls block maze shortcuts; Wall Jump takes priority.',p.magicCost,p.impulseMultiplier)
     elseif definition.featId=='INT_FLOAT_ON' then
         description=string.format('Once before landing, hold Jump at your apex to float for up to %g seconds, spending %g Magic per second. Release Jump, land or run out of Magic to end it.',p.maximumSeconds,p.magicPerSecond)
     elseif definition.repeatableFallback then

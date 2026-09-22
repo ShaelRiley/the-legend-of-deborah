@@ -46,10 +46,14 @@ C.Geometry = {
     ContainerWidth = 128,
     ContainerHeight = 128,
     WallStack = 2,
-    -- Visible walls remain two containers high. Authoritative collision extends
-    -- to the next logical floor so ordinary jumping cannot turn container tops
-    -- into graph/progression shortcuts.
+    -- Visible walls remain two containers high. This is the minimum collision
+    -- height; invisible columns extend through overhead void below, leaving
+    -- canonical upper-floor openings clear without limiting jump impulses.
     AntiBypassHeight = C.Maze.LevelHeight,
+    -- Invisible wall columns reach the Source map ceiling. The wall compiler
+    -- clips a lower column below any legal upper-floor crossing/gallery.
+    -- This contains jumps physically without damping ability velocity.
+    AntiBypassCeilingZ = 16384,
     -- Floors are deliberately substantial steel deck plates rather than thin
     -- abstract planes. Their top surface remains exactly at CellCenter.z; extra
     -- thickness extends downward, so navigation/stair landing elevations do not

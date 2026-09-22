@@ -19,6 +19,9 @@ function ENT:Initialize()
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_BBOX)
     local mins, maxs = doorBounds(self:GetDoorAxis())
+    -- Preserve the visible door origin/height; invisible collision above it
+    -- opens atomically with this same entity, leaving no orphan header blocker.
+    maxs.z = math.max(maxs.z, (self.LODOverheadHeight or PC.GateBlockerHeight) - PC.GateBlockerHeight * .5)
     self:SetCollisionBounds(mins, maxs)
     self:SetCollisionGroup(COLLISION_GROUP_NONE)
     self:SetUseType(SIMPLE_USE)

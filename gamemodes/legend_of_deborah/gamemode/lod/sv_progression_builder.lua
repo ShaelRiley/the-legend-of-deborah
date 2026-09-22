@@ -9,7 +9,17 @@ local LEVEL_ONE_WEAPONS = {
     {class = "weapon_smg1", clip = 45, cardIndex = 2, offset = Vector(-72, 0, 28)}
 }
 
-function MazeBuilder:_SpawnProgressionGate(meta)
+function MazeBuilder:ProgressionBarrierHeight(meta, graph)
+    graph = graph or (LOD.RunManager and LOD.RunManager.State.Graph)
+    if not graph or not self.WallCollisionTop then return PC.GateBlockerHeight end
+    local highest = tonumber(graph.Layers) and (graph.Layers - 1) or 0
+    for _, cell in pairs(graph.Cells or {}) do highest = math.max(highest, cell.z) end
+    local before, after = meta.beforeCell, meta.afterCell
+    return self:WallCollisionTop(graph, before, after.x, after.y, highest)
+        - before.z * LOD.Config.Maze.LevelHeight
+end
+
+function MazeBuilder:_SpawnProgressionGate(meta, graph)
     local a = self:CellCenter(meta.beforeCell)
     local b = self:CellCenter(meta.afterCell)
     local delta = b - a
@@ -19,6 +29,7 @@ function MazeBuilder:_SpawnProgressionGate(meta)
     ent:SetGateIndex(meta.index)
     ent:SetGateAxis(math.abs(delta.x) > math.abs(delta.y) and 0 or 1)
     ent:SetPos((a + b) * 0.5 + Vector(0, 0, height * 0.5))
+    ent.LODOverheadHeight = self:ProgressionBarrierHeight(meta, graph)
     ent:Spawn()
     ent:Activate()
     meta.entity = ent
@@ -36,7 +47,7 @@ function MazeBuilder:_SpawnKeycard(meta)
     return ent
 end
 
-function MazeBuilder:_SpawnJailDoor(meta)
+function MazeBuilder:_SpawnJailDoor(meta, graph)
     local a = self:CellCenter(meta.beforeCell)
     local b = self:CellCenter(meta.afterCell)
     local delta = b - a
@@ -45,6 +56,7 @@ function MazeBuilder:_SpawnJailDoor(meta)
     if not IsValid(ent) then return nil end
     ent:SetDoorAxis(math.abs(delta.x) > math.abs(delta.y) and 0 or 1)
     ent:SetPos((a + b) * 0.5 + Vector(0, 0, height * 0.5))
+    ent.LODOverheadHeight = self:ProgressionBarrierHeight(meta, graph)
     ent:Spawn()
     ent:Activate()
     meta.entity = ent
@@ -103,9 +115,9 @@ function MazeBuilder:_BuildProgressionEntities(graph)
         return
     end
 
-    for _, gate in ipairs(progression.Gates or {}) do self:_Register(self:_SpawnProgressionGate(gate)) end
+    for _, gate in ipairs(progression.Gates or {}) do self:_Register(self:_SpawnProgressionGate(gate, graph)) end
     for _, card in ipairs(progression.Keycards or {}) do self:_Register(self:_SpawnKeycard(card)) end
-    self:_Register(self:_SpawnJailDoor(progression.JailEdge))
+    self:_Register(self:_SpawnJailDoor(progression.JailEdge, graph))
     self:_Register(self:_SpawnDeborah(progression.DeborahCell))
 end
 
