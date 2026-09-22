@@ -78,6 +78,8 @@ function CPS:SyncPlayer() return true end
 function CPS:_ApplyPlayerMaxHP() end
 
 local root = assert(arg[1], "repo root required")
+-- Use the real shared tuning for the Hero/enemy cap validator.
+dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua")
 dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_magic_progression.lua")
 local MagicProgression = assert(LOD.MagicProgression)
 

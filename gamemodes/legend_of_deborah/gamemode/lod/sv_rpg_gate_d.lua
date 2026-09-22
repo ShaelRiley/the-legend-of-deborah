@@ -206,7 +206,7 @@ function AbilityRules:ResolveDamageValues(contract, sourceDerived, targetDerived
     if LOD.Equipment and LOD.Equipment.DamageMultiplier then
         total=total*LOD.Equipment:DamageMultiplier(sourceDerived,targetDerived,tags)
     end
-    return math.max(0, total), reduced, resistance
+    return math.max(0, total), reduced, resistance, conDiceReduced
 end
 
 AbilityRules.BackstabEvents=setmetatable({}, {__mode="k"})
@@ -233,6 +233,16 @@ function AbilityRules:Backstab(contract,attacker,target,tags,source)
     end
     return yes
 end
+function AbilityRules:EnemyDefenseNotice(attacker, target, key, text, fields)
+    local presentation = LOD.RPGPresentation
+    if not presentation or not presentation.Event or not IsValid(attacker) or not attacker:IsPlayer() then return end
+    local defense = self:Derived(target)
+    if not defense or not defense.enemyDefense then return end
+    local name = presentation.FeedbackName and presentation:FeedbackName(target) or "Enemy"
+    local family = key == "shatter_break" and "proc" or (key == "feedback" and "danger" or "resist")
+    presentation:Event(attacker, family, name .. " — " .. text, fields, "enemy_defense:" .. key)
+end
+
 function AbilityRules:ResolveDamageContract(contract, attacker, target, tags)
     tags=tags or {}
     local source=tags.equipmentSnapshot and tags.equipmentSnapshot.derived
@@ -244,7 +254,13 @@ function AbilityRules:ResolveDamageContract(contract, attacker, target, tags)
             authoredScale=math.max(0,tonumber(tags.authoredScale) or 1)
                 *(1+1/math.max(1,tonumber(tags.attackMultiplier) or 1))},{__index=tags})
     end
-    return self:ResolveDamageValues(contract,source,self:Derived(target),resolvedTags)
+    local resolved, reduced, resistance, count = self:ResolveDamageValues(contract,source,self:Derived(target),resolvedTags)
+    if (count or 0) > 0 then
+        self:EnemyDefenseNotice(attacker, target, "con", string.format(
+            "CONSTITUTION resisted: -%g per die. Backstabs bypass it; favor stronger hits.", resistance),
+            {event="enemy_con_resistance", resistance=resistance, dice=count})
+    end
+    return resolved, reduced, resistance
 end
 
 function AbilityRules:CommitAttack(actor)
@@ -298,7 +314,7 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
 
     local affordableHP, magicSpent, finalHP = self:ComputeMagicDiversion(resolved, fraction,
         ps.magic, derived.livingAegisHPPerMagic,
-        (tonumber(derived.wizardClassHpToMagicDiversionFraction) or 0) > 0)
+        not derived.enemyDefense and (tonumber(derived.wizardClassHpToMagicDiversionFraction) or 0) > 0)
     ps.magic = math.max(0, (tonumber(ps.magic) or 0) - magicSpent)
     if magic._Sync then magic:_Sync(target, ps) end
     dmginfo:SetDamage(finalHP)
@@ -313,6 +329,12 @@ function AbilityRules:ApplyPlayerDefense(target, dmginfo)
         rolls:_Send(target, 3, string.format("(%g) HP AFTER DIVERSION — ARCANE DIVERSION: %g HP prevented; %g incoming - %g diverted = %g HP; %g Magic lost",
             finalHP, affordableHP, resolved, affordableHP, finalHP, magicSpent), "magic", {event = "arcane_diversion",
                 prevented = affordableHP, spent = magicSpent, hp_damage = finalHP})
+    end
+    if affordableHP > 0 then
+        self:EnemyDefenseNotice(attacker, target, "arcane", string.format(
+            "ARCANE SHIELD resisted %.0f%%; %.1f HP got through. Magic can break the shield; Poison bypasses it.",
+            100 * affordableHP / resolved, finalHP),
+            {event="enemy_arcane_diversion", prevented=affordableHP, hp_damage=finalHP})
     end
     local presentation = LOD.RPGPresentation
     if affordableHP > 0 and IsValid(target) and target:IsPlayer() and presentation and presentation.SendFX then

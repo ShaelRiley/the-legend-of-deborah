@@ -14,7 +14,8 @@ function WizardRules:ClassDiversionFraction(state)
     if not state or state.classId ~= "wizard" then return 0 end
     local level = math.Clamp(math.floor(tonumber(state.level) or 1), 1,
         RPG and RPG.Constants and RPG.Constants.HeroMaxLevel or 20)
-    return math.min(self.ArcaneDiversionCap,
+    return math.min(state.derivedStats and state.derivedStats.enemyDefense
+        and RPG.EnemyDefenseTuning.diversionCap or self.ArcaneDiversionCap,
         self.WizardDiversionBase + self.WizardDiversionPerLevelAfterFirst * (level - 1))
 end
 
@@ -29,7 +30,8 @@ if not WizardRules.LODArcaneCapApplyWrapped then
         if not state or not state.derivedStats then return end
         local derived = state.derivedStats
         derived.wizardClassHpToMagicDiversionFraction = self:ClassDiversionFraction(state)
-        derived.hpToMagicDiversionFraction = math.min(self.ArcaneDiversionCap,
+        derived.hpToMagicDiversionFraction = math.min(derived.enemyDefense
+            and RPG.EnemyDefenseTuning.diversionCap or self.ArcaneDiversionCap,
             math.max(0, tonumber(derived.wizardClassHpToMagicDiversionFraction) or 0)
             + math.max(0, tonumber(derived.manaBarrierFeatDiversionFraction) or 0)
             + math.max(0, tonumber(derived.wizardCapstoneDiversionBonus) or 0))
@@ -46,8 +48,9 @@ end
 function WizardRules:ValidateArcaneCap()
     local errors = {}
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
-    local function state(level, capstoneBonus)
+    local function state(level, capstoneBonus, enemy)
         local s = {classId = "wizard", level = level, derivedStats = {
+            enemyDefense = enemy == true,
             manaBarrierFeatDiversionFraction = 0,
             wizardCapstoneDiversionBonus = capstoneBonus or 0,
             livingAegisHPPerMagic = capstoneBonus and capstoneBonus > 0 and 1.50 or 1
@@ -68,6 +71,10 @@ function WizardRules:ValidateArcaneCap()
         "Living Aegis cannot exceed cap")
     expect(closeEnough(l20Aegis.derivedStats.livingAegisHPPerMagic, 1.50),
         "Living Aegis efficiency remains available")
+    expect(closeEnough(state(1, 0, true).derivedStats.hpToMagicDiversionFraction, 0.10),
+        "Enemy Level 1 retains 10%")
+    expect(closeEnough(state(20, .10, true).derivedStats.hpToMagicDiversionFraction, 0.30),
+        "Enemy combined diversion capped at 30%")
     return #errors == 0, errors
 end
 

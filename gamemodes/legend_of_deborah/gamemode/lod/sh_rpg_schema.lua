@@ -35,6 +35,11 @@ RPG.Constants = {
     RPGThreatMultiplierMax = 2.00
 }
 
+-- Enemy-side balance uses the same derived damage/status authorities as Heroes.
+RPG.EnemyDefenseTuning = {conPerDieCap = 1, diversionCap = .30,
+    feedbackChanceCap = .15, feedbackCooldown = 2,
+    shatterDCBonus = 4, shatterDurationMultiplier = 1.5, shatterMinimumSeconds = 24}
+
 RPG.OrdinaryFeatLevels = {1, 3, 6, 9, 12, 15, 18}
 
 RPG.HeroXPThresholds = {
@@ -177,7 +182,7 @@ RPG.Schema = {
         "fighterCapstoneIncomingPushMultiplier", "fighterCapstoneWallSlamBonusDice",
         "aimSpreadMultiplier", "movementSpeedMultiplier", "boomShift",
         "rogueAllDamageDiceExplode", "rogueBoomThresholdShift", "rogueCapstoneBoomThresholdShift",
-        "dodgeChanceContribution", "rogueAcePrimed", "damageResistancePerDie",
+        "dodgeChanceContribution", "rogueAcePrimed", "damageResistancePerDie", "enemyDefense",
         "rogueAcePrimeSeconds",
         "hpConBonusPerLevel", "startingHP", "progressionHitDieSides", "rolledHitPointSubtotal",
         "coreMaxHP", "maxHP", "conRegenMultiplier", "healthRegenEnabled", "healthRegenRank",

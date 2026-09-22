@@ -53,7 +53,9 @@ function WizardOffense:IntBonus(actor)
 end
 
 function WizardOffense:FeedbackChanceFromDerived(derived)
-    return math.Clamp(tonumber(derived and derived.hpToMagicDiversionFraction) or 0, 0, 1)
+    local chance = math.Clamp(tonumber(derived and derived.hpToMagicDiversionFraction) or 0, 0, 1)
+    if derived and derived.enemyDefense then return math.min(chance, LOD.RPG.EnemyDefenseTuning.feedbackChanceCap) end
+    return chance
 end
 
 function WizardOffense:CurrentMagic(actor)
@@ -98,7 +100,7 @@ function WizardOffense:EmitFeedbackFX(wizard, destination, damage, formula, targ
 end
 
 function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
-    if not IsValid(wizard) or not IsValid(attacker) then return false end
+    if not IsValid(wizard) or not IsValid(attacker) or wizard.LODDead or wizard:Health() <= 0 then return false end
     if attacker == wizard or attacker.LODDead or attacker:Health() <= 0
         or not (attacker.LODHostile or attacker:IsPlayer()) then return false end
 
@@ -153,6 +155,10 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     local feedbackDestination = attacker:WorldSpaceCenter()
     attacker:TakeDamageInfo(info)
     resolved = math.max(0, info:GetDamage())
+    if abilityRules.EnemyDefenseNotice then
+        abilityRules:EnemyDefenseNotice(attacker, wizard, "feedback",
+            "FEEDBACK retaliates. Break its shield with Magic to suppress retaliation.", {event="enemy_feedback"})
+    end
     self:EmitFeedbackFX(wizard, feedbackDestination, resolved, contract.formula, attacker)
 
     self.Stats.feedbackProcs = (self.Stats.feedbackProcs or 0) + 1
@@ -204,18 +210,21 @@ function WizardOffense:TryFeedback(wizard, dmginfo, defenseResult)
     self.Stats.feedbackChecks = (self.Stats.feedbackChecks or 0) + 1
     if rng:Float(0, 1) >= chance then return false end
 
-    wizard.LODWizardFeedbackNextReadyAt = now + self.FeedbackCooldownSeconds
+    wizard.LODWizardFeedbackNextReadyAt = now + (derived and derived.enemyDefense
+        and LOD.RPG.EnemyDefenseTuning.feedbackCooldown or self.FeedbackCooldownSeconds)
     local intBonus = self:IntBonus(wizard)
     local identity, attackerIdentity = self:ProgressionState(wizard), self:ProgressionState(attacker)
     local runState = LOD.RunManager and LOD.RunManager.State
     local graph = runState and runState.Graph
     local wizardLife, attackerLife = wizard.LODRunSpawnSerial, attacker.LODRunSpawnSerial
     timer.Simple(0, function()
-        if IsValid(wizard) and IsValid(attacker) and self:ProgressionState(wizard) == identity
+        if IsValid(wizard) and IsValid(attacker) and not wizard.LODDead and wizard:Health() > 0
+            and self:ProgressionState(wizard) == identity
             and self:ProgressionState(attacker) == attackerIdentity
             and wizard.LODRunSpawnSerial == wizardLife and attacker.LODRunSpawnSerial == attackerLife
             and runState == (LOD.RunManager and LOD.RunManager.State)
-            and graph == (runState and runState.Graph) then
+            and graph == (runState and runState.Graph)
+            and not (LOD.RPGStatusElements and LOD.RPGStatusElements:Has(wizard, "arcane_shattered")) then
             WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
         end
     end)
@@ -347,7 +356,8 @@ function WizardOffense:Validate(ply)
         magic = tonumber(currentMagic) or 0,
         fullMagicBonus = fullMagicBonus,
         feedbackChance = self:FeedbackChanceFromDerived(derived),
-        feedbackCooldown = self.FeedbackCooldownSeconds,
+        feedbackCooldown = derived and derived.enemyDefense and LOD.RPG.EnemyDefenseTuning.feedbackCooldown
+            or self.FeedbackCooldownSeconds,
         cooldownRemaining = cooldownRemaining
     }
 end

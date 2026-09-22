@@ -69,6 +69,13 @@ function Rules:ApplyWisDefense(target, dmginfo)
             context.trueFaithReduction = trueFaith
             context.mindOverMatterReduction = mind
             Status:AttachDamageContext(dmginfo, context)
+            local attacker = dmginfo.GetAttacker and dmginfo:GetAttacker()
+            if self.EnemyDefenseNotice then
+                if trueFaith > 0 then self:EnemyDefenseNotice(attacker, target, "true_faith",
+                    "TRUE FAITH resisted Magic damage. Use physical attacks.", {event="enemy_true_faith"}) end
+                if mind > 0 then self:EnemyDefenseNotice(attacker, target, "mind_over_matter",
+                    "MIND OVER MATTER resisted physical damage. Strike again during recovery, or use Magic.", {event="enemy_mind_over_matter"}) end
+            end
             if trueFaith > 0 then RPG.CheckpointDWisDefenseStats.trueFaithEvents = RPG.CheckpointDWisDefenseStats.trueFaithEvents + 1 end
             if mind > 0 then RPG.CheckpointDWisDefenseStats.mindEvents = RPG.CheckpointDWisDefenseStats.mindEvents + 1 end
         end

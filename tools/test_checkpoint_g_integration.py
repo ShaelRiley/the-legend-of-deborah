@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Monster Defense Balance & Tactical Feedback", ["python3", "tools/run_lua54.py", "tools/test_monster_defenses.lua"]),
     ("Invisible Overhead Walls & Free Movement", ["python3", "tools/run_lua54.py", "tools/test_maze_overhead_walls.lua"]),
     ("September 22 Navigation Recovery", ["python3", "tools/run_lua54.py", "tools/test_navigation_recovery.lua"]),
     ("Spell Availability & Teammate Identity", ["python3", "tools/run_lua54.py", "tools/test_refresh_ui.lua"]),

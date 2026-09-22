@@ -160,7 +160,7 @@ def main() -> int:
 
     for needle, label in [
         ('ArcaneDiversionCap = 0.50', "Arcane hard cap"),
-        ('math.min(self.ArcaneDiversionCap', "Arcane class clamp"),
+        ('RPG.EnemyDefenseTuning.diversionCap or self.ArcaneDiversionCap', "Role-specific Arcane class clamp"),
         ('state(17)', "Arcane Level-17 validation"),
         ('"Level 17 reaches cap"', "Arcane Level-17 expectation"),
         ('"Level 20 stays capped"', "Arcane Level-20 expectation"),
@@ -231,7 +231,7 @@ def main() -> int:
             print(f" - {message}")
         return 1
     print("Checkpoint C static validation PASS")
-    print("forms=7 contents=6 deterministic-progression=true arcane-cap=0.50 summon-proxy=true spellbook=true")
+    print("forms=7 contents=6 deterministic-progression=true arcane-cap=Hero:0.50/enemy:0.30 summon-proxy=true spellbook=true")
     return 0
 
 

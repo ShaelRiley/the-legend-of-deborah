@@ -1,3 +1,40 @@
+# Current checkpoint — readable, less oppressive monster defenses
+
+Built on verified remote `e004e9a1999da5f895281a7e24f0027a4b46a503`, preserving
+full-strength Cloud Step and invisible overhead walls. Enemy-side AI and possessed
+Soldiers use the same canonical derived/damage/status systems with CON reduction
+capped at 1 per die, Arcane Diversion capped at 30% without whole-HP rounding,
+and Feedback capped at 15% with a two-second cooldown. Hero rules remain intact.
+
+Enemy shield breaks receive +4 DC and last 1.5 times their rolled duration, at
+least 24 seconds. A break or defeat cancels deferred Feedback from the same hit.
+Attacker-facing feed messages identify Constitution, Arcane Shield, Feedback,
+failed/successful breaks, True Faith and Mind Over Matter, with a relevant tactic.
+Existing semantic feedback families and 1.5-second per-reason throttles avoid spam;
+a shield-break success has its own key so an earlier resistance message cannot hide it.
+Other immunity, Dodge/Block, element, equipment, save and Hero feat rules remain.
+
+Targeted production checks cover AI/Soldier parity, unchanged Hero caps/rounding,
+small-hit leakage, Magic affordability, Poison, 24/45-second break windows, attacker
+messages, same-hit break/death cancellation and the actual Mind Over Matter recovery.
+The first Fighter regression failed its old enemy-CON expectations; those explicit
+enemy results now reflect the authorized cap while its Hero/pure arithmetic matrix
+is retained. A new fixture's nonexistent status Get accessor was corrected to the
+production Has return contract. The first full run passed 122/123: an obsolete
+source-text assertion expected one universal Arcane clamp. It now recognizes the
+role-specific clamp, and the existing runtime validator covers both roles.
+Its standalone fixture now loads real shared tuning rather than an incomplete
+RPG table; the targeted Checkpoint C runtime and source validators pass.
+Final full regression: all 123 registered suites pass with zero failures.
+Live GDD 02/03/07 and the rebuilt manual record LOD-ENEMY-DEFENSE-001.
+Native multiplayer damage feel and feedback readability remain pending.
+
+Next: Priority 7 shared equipment/input-combo/safe-travel systems, then event and
+minigame dependencies before the finale. Shadow flicker remains unreproduced and
+nonblocking. No VPS deployment or Workshop publication.
+
+---
+
 # Current checkpoint — free Cloud Step movement and invisible overhead walls
 
 Built on verified remote `d2faa8497732468e8c5167d29a72cfe54713d04d`.

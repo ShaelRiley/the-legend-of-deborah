@@ -424,7 +424,9 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.rogueCapstoneBoomThresholdShift = capParams.boomThresholdShift or 0
     mods.dodgeChanceContribution = capParams.dodgeChanceContribution or 0
     mods.rogueAcePrimeSeconds = capParams.primeSeconds or 0
-    mods.damageResistancePerDie = math.Clamp(mods.conMod, 0, 3)
+    mods.enemyDefense = state.actorType == "ai" or state.actorType == "human_soldier"
+    mods.damageResistancePerDie = math.Clamp(mods.conMod, 0,
+        mods.enemyDefense and RPG.EnemyDefenseTuning.conPerDieCap or 3)
     mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
     mods.conRegenMultiplier = math.Clamp(1 + 0.10 * mods.conMod, 0.50, 2.00)
     mods.magicRegenMultiplier = (effective.int < 10 and math.max(.85, 1 + .025 * (effective.int - 10))

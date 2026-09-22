@@ -8,23 +8,24 @@ state.baseAbilities.str=30;C:_RecomputeProgressionState(state)
 target.LODProgressionState.baseAbilities.con=16;C:_RecomputeProgressionState(target.LODProgressionState)
 local contract={contributions={10,5},bonus=0}
 assert(state.derivedStats.fighterStrengthBypassesCon==true)
--- One +10 modifier, despite two dice. CON remains per original contribution.
-near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,{physical=true}),19)
-assert(contract.feedResolution.reduced[1]==12 and contract.feedResolution.reduced[2]==2)
+-- One +10 modifier, despite two dice. Enemy CON now caps at 1 per original contribution.
+-- The pure Hero-cap (3 per die) checks below retain the prior arithmetic.
+near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,{physical=true}),23)
+assert(contract.feedResolution.reduced[1]==14 and contract.feedResolution.reduced[2]==4)
 for _,class in ipairs({'rogue','wizard'}) do
     state.classId=class;C:_RecomputeProgressionState(state)
     assert(state.derivedStats.fighterStrengthBypassesCon==false)
-    near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,{physical=true}),19,class)
+    near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,{physical=true}),23,class)
 end
 state.classId='fighter';state.baseAbilities.str=20;state.baseAbilities.wis=20
 C:_RecomputeProgressionState(state)
 assert(state.derivedStats.physicalDamageBonus==5 and state.derivedStats.magicDamageBonus==5)
 local low={contributions={1}}
-near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{physical=true}),4,'STR20 low roll protects 3')
-near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{magic=true}),3,'WIS20 receives CON even on Fighter')
+near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{physical=true}),5,'STR20 low roll against enemy CON cap')
+near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{magic=true}),5,'WIS20 receives enemy CON even on Fighter')
 for _,class in ipairs({'rogue','wizard'}) do
     state.classId=class;C:_RecomputeProgressionState(state)
-    near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{physical=true}),3,'no other class penetrates')
+    near(LOD.CombatRolls:ResolveActorDamage(low,source,target,{physical=true}),5,'other classes use the same enemy CON cap')
 end
 -- Exploding chains receive one bonus, including odd bonuses and penalties;
 -- leading zero contributions cannot consume it or create an extra hit.
@@ -93,9 +94,9 @@ state.classId='fighter';state.baseAbilities.str=30;C:_RecomputeProgressionState(
 LOD.RPGStatusElements._RNG=function(_,_,rng) return rng end
 target.LODProgressionState.currentElement='fire'
 local elementTags={physical=true,element='fire',rng={Int=function() return 2 end}}
-near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,elementTags),19*.78,'element resistance retained')
+near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,elementTags),23*.78,'element resistance retained')
 elementTags.element='ice'
-near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,elementTags),19*1.22,'element weakness retained')
+near(LOD.CombatRolls:ResolveActorDamage(contract,source,target,elementTags),23*1.22,'element weakness retained')
 -- Shared derived authority includes monster and disposable Human Soldier Fighters.
 for _,actorType in ipairs({'ai','human_soldier'}) do
     local s=C:NewProgressionState('class-test','soldier',actorType)

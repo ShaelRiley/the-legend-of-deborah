@@ -330,13 +330,26 @@ function System:Apply(target, id, source, options)
     end
     local rng = self:_RNG(id .. ":apply", options.rng)
     local dc = self:ConditionDC(source, definition.ability, options.dc)
+    local enemyShatter = id == "arcane_shattered" and derived(target) and derived(target).enemyDefense
+    local tuning = enemyShatter and RPG.EnemyDefenseTuning
+    if enemyShatter then dc = dc + tuning.shatterDCBonus end
     if not options.direct and not definition.direct then
         local save = self:ConditionSave(target, definition.ability, rng)
         self.Stats.saves = self.Stats.saves + 1
-        if save >= dc then return false, "saved", {dc = dc, save = save} end
+        if save >= dc then
+            if enemyShatter and LOD.RPGAbilityRules.EnemyDefenseNotice then
+                LOD.RPGAbilityRules:EnemyDefenseNotice(source, target, "shatter_save",
+                    "SHIELD HELD: resisted the break. Try Magic again; Poison bypasses diversion.",
+                    {event="enemy_shatter_save", dc=dc, save=save})
+            end
+            return false, "saved", {dc = dc, save = save}
+        end
     end
     local duration = options.duration
     if duration == nil and definition.duration then duration = definition.duration(self, rng) end
+    if enemyShatter and duration then
+        duration = math.max(tuning.shatterMinimumSeconds, duration * tuning.shatterDurationMultiplier)
+    end
     local expiresAt = duration and (now() + math.max(0, duration)) or nil
     local states = statusTable(target, true)
     local existing = states[id]
@@ -360,6 +373,11 @@ function System:Apply(target, id, source, options)
     self.Stats.applications = self.Stats.applications + 1
     syncStatus(target, id, true, expiresAt)
     hook.Run("LODStatusApplied", target, id, source, entry)
+    if enemyShatter and LOD.RPGAbilityRules.EnemyDefenseNotice then
+        LOD.RPGAbilityRules:EnemyDefenseNotice(source, target, "shatter_break",
+            string.format("SHIELD BROKEN for %g seconds: Arcane Diversion and Feedback are disabled. Attack now!", duration or 0),
+            {event="enemy_shatter_break", duration=duration})
+    end
     self:_Schedule()
     return true, "applied", entry
 end

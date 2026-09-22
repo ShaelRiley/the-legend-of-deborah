@@ -249,8 +249,17 @@
       "art": "deborah:5",
       "text": [
         "Arcane Surge rewards a full Magic pool. An eligible attack committed at full Magic receives a bonus equal to your positive Intelligence modifier. Its commitment snapshot matters: spending the spell’s cost does not retroactively erase an earned full-pool bonus.",
-        "Feedback is a reactive counterattack. When an eligible hit deals HP damage to a Wizard whose shield is online, Feedback’s chance equals that Wizard’s current diversion fraction. A successful response has a one-second cooldown. It rolls one d4 for each actual die in the incoming damage contract, including continuations, then adds positive INT modifier.",
+        "Feedback is a reactive counterattack. When an eligible hit deals HP damage to a Wizard whose shield is online, Feedback’s chance equals your current diversion fraction. A successful response has a one-second cooldown. It rolls one d4 for each actual die in the incoming damage contract, including continuations, then adds positive INT modifier.",
         "Feedback is Magic damage, but does not add Wisdom or recursively trigger Feedback. An Arcane Shattered shield cannot produce this response. The separate Feedback Loop feat restores Magic from eligible damage-die continuations; read its entry for the per-cast cap."
+      ]
+    },
+    {
+      "id": "enemy-defenses",
+      "title": "Read the resistance",
+      "text": [
+        "Monsters and controlled Soldiers have lighter defenses than Heroes: Constitution removes at most 1 HP per damage die, and Arcane Shield absorbs at most 30% without rounding small hits away. Hero Constitution, shield and Feedback rules stay as described in their class entries.",
+        "Enemy Feedback has at most a 15% chance and a two-second cooldown. Magical hits have an easier shield-break check; a successful break disables diversion and Feedback for at least 24 seconds, or 1.5 times the rolled duration if longer. A break or defeat also cancels a still-pending retaliation.",
+        "Read the combat feed for the reason and a useful response. Backstabs bypass Constitution; larger hits lose less to its per-die reduction. Magic can break Arcane Shield, while Poison bypasses diversion. True Faith resists Magic, so try physical attacks. Mind Over Matter resists a physical hit, then leaves a recovery window for your follow-up."
       ]
     },
     {
