@@ -123,7 +123,7 @@ local function drawDeathState(ply, state)
     if eliminated then
         draw.SimpleText("OUT OF LIVES", "LOD_HUD_Announcement", ScrW() * 0.5, ScrH() * 0.43,
             Color(235, 105, 90), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        draw.SimpleText("HERO QUEUE / WATCH FOR REVIVAL", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.49,
+        draw.SimpleText("F3: RESURRECTION / NEW HERO / SOLDIERS", "LOD_HUD_Body", ScrW() * 0.5, ScrH() * 0.49,
             Color(235, 235, 235), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         return
     end

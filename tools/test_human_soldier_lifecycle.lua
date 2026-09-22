@@ -446,7 +446,7 @@ RunManager:JoinSoldierRole(p1) -- P1 active as Soldier
 p1:SetAlive(true)
 RunManager.State.Failed = false
 local wipe = RunManager:EvaluateWipe()
-check(wipe == true and RunManager.State.Failed == true, "Q. Active Soldier does NOT prevent cooperative party wipe when all Heroes are eliminated")
+check(wipe == false and RunManager.State.Failed == false, "Q. Total-party elimination retains the current dungeon")
 RunManager.State.Failed = false
 
 -- R. Next-level transition retires Soldier state and applies canonical Hero comeback rules
@@ -552,7 +552,7 @@ SoldierProgression:Retire(retiredProfile)
 check(not RunManager:IsSoldierControl(p1), "A captured retired profile cannot keep Soldier control active")
 
 -- Revival may commit eligibility now, but its deferred spawn cannot enter a new run.
-ps1.lives=0; ps1.eliminated=true; ps1.soldierRespawnWait=nil
+ps1.lives=0; ps1.eliminated=true; ps1.soldierRespawnWait=nil; ps1.queue="hero"
 RunManager.State.ActiveIdentity["steam_1001"]=nil
 p1:SetAlive(false); queued={}
 check(RunManager:ReviveIdentity("steam_1001"), "Queued Hero revival is admitted through the slot authority")
@@ -561,6 +561,31 @@ RunManager.State={}
 for _,fn in ipairs(queued) do fn() end
 check(not p1:Alive(), "Old revival callback cannot spawn into a replacement campaign")
 RunManager.State=revivalState
+
+-- New Hero replacement preserves the dungeon and account-bound ledgers.
+ps1.lives=0; ps1.eliminated=true; ps1.queue="hero"
+RunManager.State.BuildReady=true; RunManager.State.Failed=false; RunManager.State.LevelCleared=false
+RunManager.State.ActiveIdentity["steam_1001"]=nil
+local campaign=RunManager.State
+campaign.Cards={true,false,false,false};campaign.CampaignClock={deadline=98765}
+campaign.DamselClaims={steam_1001={nessa=true}}
+local cards,clock,claims=campaign.Cards,campaign.CampaignClock,campaign.DamselClaims
+local oldXP=ps1.progressionState.xp
+check(RunManager:BeginNewHero(p1), "An eliminated Hero can begin a fresh character")
+local fresh=RunManager:GetPlayerState(p1)
+check(fresh~=ps1 and fresh.progressionState.level==1 and fresh.progressionState.xp==0,
+    "Replacement starts at Level 1 with zero XP")
+check(fresh.equipment==nil and fresh.inventory==nil, "Replacement cannot inherit abandoned equipment")
+check(campaign==RunManager.State and cards==campaign.Cards and clock==campaign.CampaignClock and claims==campaign.DamselClaims,
+    "Replacement preserves dungeon clock, gates and account claims")
+check(fresh.progressionState.characterIdentityPackage.heroIdentityId==ps1.identity..":hero:"..fresh.heroGeneration and fresh.ordinal~=ps1.ordinal,
+    "Replacement receives a distinct procedural Hero identity")
+check(not RunManager:BeginNewHero(p1), "Repeated replacement request cannot reset a living Hero")
+-- Model reuse never prevents a late admission.
+for i=1,80 do campaign.PlayedIdentities["departed:"..i]=true end
+RunManager.State.CharacterOrder=LOD.Config.Models.Characters
+local late=table.Copy(p2);late.SteamID64=function() return "late_join" end
+check(RunManager:_AdmitIdentity(late)~=nil, "Admission continues beyond the old ten-model roster")
 
 -- Final summary
 if #errors == 0 then

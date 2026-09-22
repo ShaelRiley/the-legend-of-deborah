@@ -223,6 +223,9 @@ function CharacterProgressionSystem:_BuildIdentityPackage(runManager, ps, charac
     local runState = runManager.State
     local rosterSeed = assert(runState.RosterSeed, "RosterSeed must exist before hero identity generation")
     local heroIdentityId = ps.identity
+    if (ps.heroGeneration or 1) > 1 then
+        heroIdentityId = tostring(ps.identity) .. ":hero:" .. tostring(ps.heroGeneration)
+    end
     local identitySeed = self:HeroIdentitySeed(rosterSeed, heroIdentityId)
     local presentationSex = character and character.presentationSex or nil
     assert(presentationSex == "male" or presentationSex == "female",
@@ -264,7 +267,7 @@ function CharacterProgressionSystem:_BuildIdentityPackage(runManager, ps, charac
             end
             if found then break end
         end
-        assert(found, "could not allocate a unique procedural hero display name")
+        if not found then fullDisplayName = fullDisplayName .. " " .. tostring(ps.ordinal or 1) end
     end
 
     self:_ReserveIndex(runState, "origin", originIndex, heroIdentityId)

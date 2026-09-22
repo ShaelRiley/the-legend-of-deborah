@@ -61,7 +61,7 @@ reset(); run.State.BuildReady=false; ingress(a); assert(a.teleports==0)
 reset(); run.State.CheckpointPos=nil; ingress(a); assert(a.teleports==0 and next(run.State.PlayerState)==nil)
 reset(); run.State.ActiveIdentity={x=true,y=true}; ingress(a)
 assert(not run.State.ActiveIdentity.a and next(run.State.PlayerState)==nil and run.State.Ranked)
-reset(); run.State.WardenStarted=true; ingress(a); assert(not run.State.PlayerState.a)
+reset(); run.State.WardenStarted=true; ingress(a); assert(run.State.PlayerState.a)
 reset(); run.State.PlayerState.a={identity='a',lives=0,eliminated=true}; run.State.ActiveIdentity.a=true
 ingress(a); assert(a.teleports==0 and run.State.Ranked)
 reset(); assert(run:TryActivatePlayer(b)); local peer=run:GetPlayerState(b)

@@ -105,7 +105,6 @@ function RunManager:_ConnectedPartyCountForBuild()
     local newAdmissions = 0
     local played = self:_PlayedCount()
     local maxActive = CC.MaxActivePlayers or 4
-    local maxPlayed = CC.Campaign and CC.Campaign.MaxPlayedIdentities or 10
 
     for _, ply in ipairs(self:_SortedConnectedPlayers()) do
         if count >= maxActive then break end
@@ -114,7 +113,7 @@ function RunManager:_ConnectedPartyCountForBuild()
             if not ps.eliminated and (ps.lives or 0) > 0 then
                 count = count + 1
             end
-        elseif not self.State.WardenStarted and played + newAdmissions < maxPlayed then
+        else
             count = count + 1
             newAdmissions = newAdmissions + 1
         end

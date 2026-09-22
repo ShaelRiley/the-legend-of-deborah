@@ -318,13 +318,13 @@ RunManager:JoinSoldierRole(pA)
 pA:SetAlive(true)
 RunManager.State.Failed = false
 local wipe = RunManager:EvaluateWipe()
-check(wipe == true and RunManager.State.Failed == true, "18. Active Soldier does NOT prevent cooperative party wipe when all Heroes are eliminated")
+check(wipe == false and RunManager.State.Failed == false, "18. All Heroes eliminated retains the dungeon until timeout")
 RunManager.State.Failed = false
 
 -- 19. Config contract: 4 Heroes + 6 Soldiers = 10 Max Played Identities
 check(CC.MaxActivePlayers == 4, "19. CC.MaxActivePlayers == 4")
 check(CC.MaxActiveSoldiers == 6, "19. CC.MaxActiveSoldiers == 6")
-check(CC.Campaign.MaxPlayedIdentities == 10, "19. CC.Campaign.MaxPlayedIdentities == 10")
+check(CC.Campaign.MaxPlayedIdentities == nil, "19. CC.Campaign.MaxPlayedIdentities removed")
 
 -- 20. AI vs Human Soldier deterministic generation parity check across multiple scenarios
 local allowedDiffKeys = {

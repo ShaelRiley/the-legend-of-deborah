@@ -8,7 +8,7 @@ C.MaxActivePlayers = 4
 C.MaxActiveSoldiers = 6
 
 C.Campaign = {
-    MaxPlayedIdentities = 10
+    -- Models cycle; campaign admission is bounded only by active role slots.
 }
 
 C.Lives = {

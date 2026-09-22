@@ -246,7 +246,6 @@ concommand.Add("lod_m2_audit", function(ply)
 
     local playedCount = table.Count(state.PlayedIdentities or {})
     local activeCount = RunManager:_ActiveCount()
-    require(playedCount <= LOD.Config.Campaign.MaxPlayedIdentities, "played identity cap exceeded")
     require(activeCount <= LOD.Config.MaxActivePlayers, "active-player cap exceeded")
 
     for id, ps in pairs(state.PlayerState or {}) do

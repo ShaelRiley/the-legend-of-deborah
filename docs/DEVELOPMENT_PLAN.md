@@ -1,3 +1,22 @@
+# Current checkpoint — persistent dungeon and Hero queues
+
+Active author brief: implement the ten-priority retention, combat, equipment,
+events and Hector expansion from main. Completed first checkpoint: final-life
+choices, new Level-1 Hero in the same dungeon, persistent queue selection,
+model reuse and removal of total-party-wipe failure. Account claims stay outside
+the replaced character. F3 reopens the choices. Live GDD 00 → 01 → 06 and the
+HUMAN opening amendment record LOD-RETENTION-001; this supersedes old wipe law.
+
+Validation: all 120 registered suites covered successfully (118 passed the
+full run; corrected obsolete closure assertions and syntax rechecked separately).
+Manual source/readers and new replacement/lifecycle tests pass.
+
+Next: critical navigation/collision/DFT defects, then shared progression and
+capabilities, equipment/events, and Hector. This checkpoint does not claim those
+remaining requirements implemented. Native GMod multiplayer acceptance pending.
+
+---
+
 # Current candidate — damsel progression, endless cash and audio cleanup
 
 Current author direction replaces repeat-Deborah rescues with the finite 20-damsel

@@ -1,89 +1,62 @@
--- Human Soldier ESC / Return-to-Hero Queue UI Integration Seam (AG-007R2)
 if SERVER then return end
-
 LOD = LOD or {}
 LOD.SoldierQueueUI = LOD.SoldierQueueUI or {}
-
 local UI = LOD.SoldierQueueUI
-UI.Panel = UI.Panel or nil
-
-local RED = Color(170, 61, 50, 240)
-local RED_HOVER = Color(200, 75, 60, 255)
-local WHITE = Color(255, 255, 255, 255)
-local DARK = Color(30, 30, 30, 220)
-
-surface.CreateFont("LOD_SoldierQueueBtn", {
-    font = "DejaVu Sans Condensed",
-    size = 18,
-    weight = 900,
-    antialias = true
-})
 
 function UI:Close()
-    if IsValid(self.Panel) then
-        self.Panel:Remove()
-        self.Panel = nil
-    end
+    if IsValid(self.Panel) then self.Panel:Remove() end
+    self.Panel = nil
 end
 
 function UI:Open()
     if IsValid(self.Panel) then return end
-
     local ply = LocalPlayer()
-    if not IsValid(ply) then return end
-
+    if not IsValid(ply) or not ply:GetNW2Bool("LOD_Eliminated", false) then return end
     local frame = vgui.Create("DFrame")
-    frame:SetTitle("")
-    frame:SetSize(280, 50)
-    frame:SetPos(ScrW() / 2 - 140, 20)
+    frame:SetTitle("YOUR HERO'S NEXT CHAPTER")
+    frame:SetSize(math.min(520, ScrW()-32), 330)
+    frame:Center()
     frame:SetDraggable(false)
-    frame:ShowCloseButton(false)
-    frame:SetDeleteOnClose(true)
-    frame.Paint = function(s, w, h)
-        LOD.UI:Paper(0, 0, w, h, LOD.UI.Colors.red)
+    frame:MakePopup()
+    frame.Paint = function(_, w, h) LOD.UI:Paper(0, 0, w, h, LOD.UI.Colors.red) end
+    local choices = {
+        {"WAIT FOR RESURRECTION", "Keep your Hero and spectate. A revival restores one life.", "lod_return_to_hero_queue"},
+        {"BEGIN A NEW HERO", "Abandon this character. Start at Level 1 in this dungeon.", "lod_begin_new_hero"},
+        {"JOIN THE SOLDIERS", "Play an enemy Soldier. Return later to await resurrection.", "lod_join_human_soldier"}
+    }
+    for i, choice in ipairs(choices) do
+        local button = vgui.Create("DButton", frame)
+        button:SetPos(16, 40+(i-1)*90)
+        button:SetSize(frame:GetWide()-32, 40)
+        button:SetText(choice[1])
+        local description = vgui.Create("DLabel", frame)
+        description:SetPos(16, 82+(i-1)*90)
+        description:SetSize(frame:GetWide()-32, 38)
+        description:SetWrap(true)
+        description:SetText(choice[2])
+        description:SetTextColor(Color(240,235,220))
+        button.DoClick = function()
+            if choice[3] == "lod_begin_new_hero" then
+                Derma_Query("Discard this Hero's levels and carried equipment? Your $DEB and DFTs remain.",
+                    "BEGIN A NEW HERO", "Begin", function() RunConsoleCommand(choice[3]); UI:Close() end,
+                    "Cancel")
+            else
+                RunConsoleCommand(choice[3])
+                UI:Close()
+            end
+        end
     end
-
-    local btn = vgui.Create("DButton", frame)
-    btn:SetPos(10, 8)
-    btn:SetSize(260, 34)
-    btn:SetText("RETURN TO HERO QUEUE")
-    btn:SetFont("LOD_SoldierQueueBtn")
-    btn:SetTextColor(WHITE)
-    btn.Paint = function(s, w, h)
-        local col = s:IsHovered() and RED_HOVER or RED
-        draw.RoundedBox(4, 0, 0, w, h, col)
-    end
-
-    btn.DoClick = function()
-        RunConsoleCommand("lod_return_to_hero_queue")
-        UI:Close()
-    end
-
     self.Panel = frame
 end
 
-function UI:Update()
-    local ply = LocalPlayer()
-    if not IsValid(ply) then
-        self:Close()
-        return
-    end
-
-    local isSoldier = ply:GetNW2Bool("LOD_IsSoldier", false)
-    local isEliminated = ply:GetNW2Bool("LOD_Eliminated", false)
-
-    -- Open UI prompt when game menu / ESC is visible while controlling Soldier or spectating in queue
-    if gui.IsGameUIVisible() and (isSoldier or isEliminated) then
-        self:Open()
-    else
-        self:Close()
-    end
-end
-
 hook.Add("Think", "LOD_SoldierQueueUIThink", function()
-    UI:Update()
+    local ply = LocalPlayer()
+    if not IsValid(ply) then UI:Close(); return end
+    local eliminated = ply:GetNW2Bool("LOD_Eliminated", false)
+    if not eliminated then UI.seen = nil; UI:Close(); return end
+    local serial = ply:GetNW2Int("LOD_HeroSerial", 0)
+    if UI.seen ~= serial then UI.seen = serial; UI:Open() end
+    if input.IsKeyDown(KEY_F3) then UI:Open() end
 end)
-
-concommand.Add("lod_ui_return_to_hero_queue", function()
-    RunConsoleCommand("lod_return_to_hero_queue")
-end)
+concommand.Add("lod_hero_choices", function() UI:Open() end)
+concommand.Add("lod_ui_return_to_hero_queue", function() RunConsoleCommand("lod_return_to_hero_queue") end)

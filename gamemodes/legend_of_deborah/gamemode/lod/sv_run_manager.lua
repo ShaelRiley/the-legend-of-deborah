@@ -144,7 +144,7 @@ function RunManager:IsHeroRevivalQueueEligible(plyOrIdentity)
         end
     end
 
-    if ps.soldierRespawnWait == true then
+    if ps.queue == "soldier" or ps.soldierRespawnWait == true then
         return false
     end
 
@@ -179,6 +179,8 @@ function RunManager:_SyncPlayerVars(ply)
     ply:SetNW2Bool("LOD_PlayedIdentity", ps ~= nil)
     ply:SetNW2Int("LOD_Lives", ps and ps.lives or 0)
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
+    ply:SetNW2Int("LOD_HeroSerial", ps and ps.ordinal or 0)
+    ply:SetNW2Bool("LOD_SoldierWaiting", ps and ps.soldierRespawnWait == true or false)
     local previousSoldier=ply.LODWallCollisionSoldier
     ply.LODWallCollisionSoldier=isSoldier
     ply:SetNW2Bool("LOD_IsSoldier", isSoldier)
@@ -194,18 +196,20 @@ function RunManager:_SyncPlayerVars(ply)
     if LOD.ProgressionDirector then LOD.ProgressionDirector:SyncPlayer(ply) end
 end
 
-function RunManager:_AdmitIdentity(ply)
+function RunManager:_AdmitIdentity(ply, generation)
     local id = self:IdentityOf(ply)
     if not id or self.State.PlayedIdentities[id] then return self.State.PlayerState[id] end
-    if self:_PlayedCount() >= CC.Campaign.MaxPlayedIdentities then return nil end
 
-    local ordinal = self:_PlayedCount() + 1
-    local character = self.State.CharacterOrder and self.State.CharacterOrder[ordinal]
+    local ordinal = (self.State.HeroSerial or self:_PlayedCount()) + 1
+    self.State.HeroSerial = ordinal
+    local order = self.State.CharacterOrder or {}
+    local character = #order > 0 and order[(ordinal - 1) % #order + 1]
     if not character then return nil end
 
     local ps = {
         identity = id,
         ordinal = ordinal,
+        heroGeneration = generation or 1,
         lives = CC.Lives.StartingLives,
         eliminated = false,
         eliminatedSince = nil,
@@ -281,7 +285,7 @@ function RunManager:TryActivatePlayer(ply)
     end
 
     if not ps then
-        if self:_PlayedCount() >= CC.Campaign.MaxPlayedIdentities or self.State.WardenStarted then
+        if not self.State.BuildReady then
             self.State.WaitingSince[id] = self.State.WaitingSince[id] or CurTime()
             self:PutInRestrictedSpectator(ply)
             return false
@@ -387,6 +391,7 @@ function RunManager:JoinSoldierRole(ply)
     local soldierState, err = self:AttachSoldier(ply)
     if not soldierState then return false, err or "failed to attach soldier" end
 
+    ps.queue = "soldier"
     ps.soldierRespawnWait = nil
     ply:UnSpectate()
     ply:Spawn()
@@ -410,6 +415,9 @@ function RunManager:ReturnToHeroQueue(ply)
         self:RetireSoldier(ply)
     end
 
+    if isSol and ply.StripWeapons then ply:StripWeapons() end
+    ply.LODRunInventoryReady = false
+    ps.queue = "hero"
     ps.soldierRespawnWait = nil
     ps.respawnAt = nil
     ps.eliminated = true
@@ -417,6 +425,40 @@ function RunManager:ReturnToHeroQueue(ply)
 
     self:PutInRestrictedSpectator(ply)
     self:_SyncPlayerVars(ply)
+    return true
+end
+
+function RunManager:BeginNewHero(ply)
+    local state, old = self.State, self:GetPlayerState(ply)
+    if not IsValid(ply) or not old or not old.eliminated or (old.lives or 0) > 0
+        or not state.BuildReady or state.Failed or state.LevelCleared then
+        return false, "Only an eliminated Hero can begin again."
+    end
+    if self:_ActiveCount() >= CC.MaxActivePlayers then return false, "All Hero slots are occupied." end
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:Expire() then return false, "Time over." end
+    local id = old.identity
+    self:RetireSoldier(ply)
+    if LOD.Equipment and LOD.Equipment.ClearTransient then LOD.Equipment:ClearTransient(ply) end
+    if LOD.RPGStatusElements then LOD.RPGStatusElements:ResetActorLife(ply) end
+    ply.LODRunInventoryReady = false
+    ply:StripWeapons()
+    if ply.RemoveAllAmmo then ply:RemoveAllAmmo() end
+    local staging = LOD.StagingDeployment
+    local starter = staging and staging.StarterEntities and staging.StarterEntities[id]
+    if IsValid(starter) then starter:Remove() end
+    if staging and staging.StarterEntities then staging.StarterEntities[id] = nil end
+    state.ActiveIdentity[id], state.PlayedIdentities[id], state.PlayerState[id] = nil, nil, nil
+    local ps = self:_AdmitIdentity(ply, (old.heroGeneration or 1) + 1)
+    if not ps then
+        state.PlayerState[id], state.PlayedIdentities[id] = old, true
+        self:PutInRestrictedSpectator(ply)
+        return false, "Hero creation unavailable."
+    end
+    -- Account-bound damsel/DFT/crypto claims are deliberately outside ps.
+    ps.queue = "hero"
+    self:TryActivatePlayer(ply)
+    ply:UnSpectate()
+    ply:Spawn()
     return true
 end
 
@@ -442,7 +484,7 @@ function RunManager:PromoteWaitingSpectators()
                         ply:Spawn()
                     end
                 end
-            elseif not ps and self:_PlayedCount() < CC.Campaign.MaxPlayedIdentities and not self.State.WardenStarted then
+            elseif not ps then
                 if self:TryActivatePlayer(ply) then
                     promotedCount = promotedCount + 1
                     ply:UnSpectate()
@@ -788,6 +830,7 @@ function RunManager:HandleDeath(ply, attacker)
         ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
     else
         ps.eliminated = true
+        ps.queue = "hero"
         ps.eliminatedSince = ps.eliminatedSince or CurTime()
         self.State.ActiveIdentity[id] = nil
         ps.respawnAt = nil
@@ -847,23 +890,10 @@ function RunManager:UpdateFreezeState()
 end
 
 function RunManager:EvaluateWipe()
-    if self.State.Failed or self.State.LevelCleared then return false end
-    local connected = self:_ConnectedPlayedPlayers()
-    if #connected == 0 then
-        self:UpdateFreezeState()
-        return false
-    end
-
-    for _, ply in ipairs(connected) do
-        local ps = self:GetPlayerState(ply)
-        if ps then
-            if self:IsActivePlayer(ply) and ply:Alive() and not self:IsSoldierControl(ply) then return false end
-            if (ps.lives or 0) > 0 and not ps.eliminated then return false end
-        end
-    end
-
-    self:FailCampaign("total party wipe")
-    return true
+    -- Retain this shared seam for death/disconnect callers. Only the dungeon
+    -- clock can fail a campaign; an empty Hero queue is recoverable.
+    self:UpdateFreezeState()
+    return false
 end
 
 function RunManager:FinalizeCampaignRun()
@@ -997,6 +1027,8 @@ function RunManager:AdvanceLevel()
         -- identity-bound starter claim and inventory; require a new portal use.
         ps.deploymentComplete = false
         ps.stagingIntroShown = false
+        ps.queue = "hero"
+        ps.soldierRespawnWait = nil
         ps.respawnAt = nil
         if ps.lives <= 0 or ps.eliminated then
             ps.lives = 1
@@ -1133,6 +1165,12 @@ concommand.Add("lod_return_to_hero_queue", function(ply)
             print("[LOD] ReturnToHeroQueue failed: " .. tostring(err))
         end
     end
+end)
+
+concommand.Add("lod_begin_new_hero", function(ply)
+    if not IsValid(ply) then return end
+    local ok, err = RunManager:BeginNewHero(ply)
+    if not ok and ply.ChatPrint then ply:ChatPrint(err) end
 end)
 
 hook.Add("ShutDown", "LOD_Cleanup", function()
