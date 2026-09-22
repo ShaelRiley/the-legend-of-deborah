@@ -755,6 +755,8 @@
         "Beyond Black Gate is a two-level arena: a lower court and an upper gallery. Gordon is the heavy man in a pig mask. Entering commits the encounter and closes the back gate.",
         "An entry or respawn alcove provides protection and one aid allowance per Hero identity per dungeon: up to 25 HP, up to 30 ammunition per owned gun, and one Healing Potion. Repeated entry is not an unlimited supply.",
         "Above roughly 60% HP, Gordon alternates a three-second cloak with a visible warning before launching four slow homing orbs. Around 60%, he rides his toilet and leaves bombs with three-second fuses. Around 25%, he clears that ordnance and charges with his crowbar.",
+        "If his cloaked phase goes twelve seconds without damage, Gordon reveals himself and pauses attacks for a two-second taunt. Hitting him ends the taunt. Crowbar stagger works once every three seconds against Gordon; gun hit stun keeps its usual rules.",
+        "Fake Gordon Clones join at Dungeon Levels 4, 8, 12 and 16, up to four. Each has one-third of the real Gordon’s maximum HP. They spread around the arena and have no boss health bar. Defeating a clone does not release the Jail Key; defeating the real Gordon ends the encounter.",
         "The fight does not reset just because a Hero dies. Defeat him, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. Gordon's death alone never completes the dungeon."
       ]
     },

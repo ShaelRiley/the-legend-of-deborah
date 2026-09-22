@@ -870,6 +870,8 @@ function ENT:_BeginDeathPresentation()
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     self:SetNW2Bool("LOD_WardenHidden", false)
     self:SetNW2Float("LOD_DeathPulseStart", CurTime())
+    self:SetNW2Float("LOD_WardenTauntUntil", 0)
+    self:SetNW2Float("LOD_NeilHurtAt", -10)
     self:SetNoDraw(false)
     if LOD.Audio then LOD.Audio:At(self:WorldSpaceCenter(), "enemy_defeated") end
 

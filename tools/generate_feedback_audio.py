@@ -30,11 +30,12 @@ SCORES = {
  'status_shattered':([86,74,62],.24), 'status_confused':([74,77,69],.23),
  'portal_depart':([62,74,81],.24), 'portal_arrive':([81,86],.20),
  'cast':([57,69,74],.18), 'summon_attack':([65,74],.12),
- 'boss_arrive':([50,62,65],.30), 'item_discard':([69,62],.10),
+ 'boss_arrive':([50,62,65],.30), 'boss_taunt':([62,50,57,45],.30), 'item_discard':([69,62],.10),
  'heal':([65,74,77],.21), 'status_reckless':([81,77,86],.20),
  'summon_arrive':([62,77,86],.22), 'summon_depart':([77,69,62],.18)
 }
-def render(pitches,duration):
+VOICES = {'boss_taunt':'square'}
+def render(pitches,duration,voice='mallet'):
     count=int(duration*RATE)
     data=[0.0]*count
     step=duration/len(pitches)
@@ -46,14 +47,15 @@ def render(pitches,duration):
             t=n/RATE;u=n/max(1,length-1)
             envelope=min(1,t/.004)*math.exp(-3*u)*min(1,(1-u)/.22)
             phase=2*math.pi*hz*t
-            data[start+n]=(math.sin(phase)+.15*math.sin(phase*2)*math.exp(-20*t)+.045*math.sin(phase*3))*envelope
+            tone = (math.sin(phase)+math.sin(phase*3)/3+math.sin(phase*5)/5) if voice=='square' else (math.sin(phase)+.15*math.sin(phase*2)*math.exp(-20*t)+.045*math.sin(phase*3))
+            data[start+n]=tone*envelope
     rms=math.sqrt(sum(v*v for v in data)/len(data))
     gain=min(.40/max(abs(v) for v in data),.105/max(rms,1e-9))
     return [round(v*gain*32767) for v in data]
 def main():
     ROOT.mkdir(parents=True,exist_ok=True)
     for name,(notes,length) in SCORES.items():
-        samples=render(notes,length)
+        samples=render(notes,length,VOICES.get(name,'mallet'))
         with wave.open(str(ROOT/(name+'.wav')),'wb') as f:
             f.setnchannels(1);f.setsampwidth(2);f.setframerate(RATE)
             f.writeframes(struct.pack('<'+'h'*len(samples),*samples))

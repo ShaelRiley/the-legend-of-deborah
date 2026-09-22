@@ -71,12 +71,14 @@ end
 V.DisposeProps=dispose
 hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",dispose)
 prepareProps=function(phase)
-    local name=phase==2 and "toilet" or (phase==3 and "crowbar" or nil)
-    for k,p in pairs(props) do if k~=name then if IsValid(p) then p:Remove() end;props[k]=nil end end
-    if not name or IsValid(props[name]) then return end
-    local model=phase==2 and "models/props_c17/FurnitureToilet001a.mdl" or "models/weapons/w_crowbar.mdl"
-    local p=ClientsideModel(model,RENDERGROUP_OPAQUE)
-    if IsValid(p) then p:SetNoDraw(true);props[name]=p end
+    -- Clones can enter different phases. Reuse the same two props for every
+    -- draw, allocated on the encounter snapshot, never inside the render hook.
+    for name,model in pairs({toilet="models/props_c17/FurnitureToilet001a.mdl",crowbar="models/weapons/w_crowbar.mdl"}) do
+        if not IsValid(props[name]) then
+            local p=ClientsideModel(model,RENDERGROUP_OPAQUE)
+            if IsValid(p) then p:SetNoDraw(true);props[name]=p end
+        end
+    end
 end
 function V:Pose(e)
     if e:GetNW2String("LOD_Archetype", "")~="warden" then return end
@@ -96,6 +98,16 @@ function V:Pose(e)
             local bone=e:LookupBone(name)
             if bone then e:ManipulateBoneScale(bone,scale) end
         end
+    end
+    local taunting=e:GetNW2Float("LOD_WardenTauntUntil",0)>CurTime()
+    if taunting or e.LODWasTaunting then
+        local sway=taunting and math.sin(CurTime()*12)*25 or 0
+        for name,angle in pairs({
+            ["ValveBiped.Bip01_Spine2"]=Angle(sway*.4,0,sway*.5),
+            ["ValveBiped.Bip01_L_UpperArm"]=Angle(0,0,taunting and -75+sway or 0),
+            ["ValveBiped.Bip01_R_UpperArm"]=Angle(0,0,taunting and 75+sway or 0)
+        }) do local bone=e:LookupBone(name);if bone then e:ManipulateBoneAngles(bone,angle) end end
+        e.LODWasTaunting=taunting
     end
     local seated=e:GetNW2Int("LOD_WardenPhase",1)==2
     if e.LODWardenSeated==seated then return end

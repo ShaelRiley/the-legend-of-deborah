@@ -18,9 +18,9 @@ if not HitFeedback.LODFourTimesStunSupported then
     HitFeedback.LODFourTimesStunSupported = true
     local baseApplyHitStun = HitFeedback.ApplyHitStun
 
-    function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker)
+    function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, ...)
         local requested = math.Clamp(tonumber(durationMultiplier) or 1, 1, 4)
-        local applied = baseApplyHitStun(self, hostile, math.min(requested, 2), attacker)
+        local applied = baseApplyHitStun(self, hostile, math.min(requested, 2), attacker, ...)
         if not applied or requested <= 2 then return applied end
 
         local stamp = IsValid(hostile) and hostile.LODLastHitFeedbackEvent or nil

@@ -169,7 +169,7 @@ function SWEP:PrimaryAttack()
     if total <= 0 then return end
     if total < healthBefore and IsValid(target) and not target.LODDead
         and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyHitStun then
-        LOD.M3HitFeedback:ApplyHitStun(target, 1, owner)
+        LOD.M3HitFeedback:ApplyHitStun(target, 1, owner, nil, "melee")
     end
 
     self:EmitSound(HIT_SOUND, 66, 100, 0.72, CHAN_WEAPON)

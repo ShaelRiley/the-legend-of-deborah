@@ -1,6 +1,17 @@
 LOD.NeilBrutePresentation = {}
 local V = LOD.NeilBrutePresentation
 local beam = Material("cable/redlaser")
+function V:Pose(ent)
+    if ent:GetNW2String("LOD_Archetype","")~="neil" then return end
+    local elapsed=CurTime()-ent:GetNW2Float("LOD_NeilHurtAt",-10)
+    local amount=elapsed>=0 and elapsed<.4 and math.sin(elapsed/.4*math.pi) or 0
+    if amount==0 and not ent.LODNeilRecoil then return end
+    ent.LODNeilRecoil=amount>0
+    for name,scale in pairs({["ValveBiped.Bip01_Spine2"]=18,["ValveBiped.Bip01_Head1"]=10}) do
+        local bone=ent:LookupBone(name)
+        if bone then ent:ManipulateBoneAngles(bone,Angle(0,0,amount*scale)) end
+    end
+end
 function V:Draw(ent,size)
     local id=ent:GetNW2String("LOD_Archetype","")
     if id=="neil" then

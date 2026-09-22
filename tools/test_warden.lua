@@ -154,3 +154,85 @@ W:AddHazard(w,'bomb',p:GetPos(),Vector(),nil,204);e.hp=250;time(208)
 env.hooks.LOD_WardenOrdnance()
 assert(w.phase==3 and #w.hazards==0 and explosions==1,'phase three detonated a stale bomb')
 print('WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation')
+-- Actual hit-stun authority through every installed wrapper. Melee protection
+-- belongs to the boss, not the attacking player or all damage categories.
+hook.Remove=noop
+dofile(root..'sv_shotgun_identity_balance.lua')
+dofile(root..'sv_hostile_hurt_pose.lua')
+dofile(root..'sv_soldier_shot_contract.lua')
+local boss=actor();boss.LODArchetypeId='warden';boss.LODHostile=true
+boss.LookupSequence=function() return 1 end;boss.GetSequenceName=function() return 'flinch' end
+boss.GetSequence=function() return 1 end;boss.SetSequence=noop;boss.SetCycle=noop;boss.SetPlaybackRate=noop
+boss.ResetSequence=noop
+local feedback=LOD.M3HitFeedback
+time(300);assert(feedback:ApplyHitStun(boss,1,p,nil,'melee'))
+assert(boss.LODBossMeleeStaggerReady==303)
+time(300.5);assert(not feedback:ApplyHitStun(boss,1,p,nil,'melee'))
+assert(feedback:ApplyHitStun(boss,1,p),'firearms retain stun during melee immunity')
+time(301);assert(feedback:ApplyHitStun(boss,1,p,2.5),'Wall stun survives every wrapper')
+assert(math.abs(boss.LODHitStunUntil-301.75)<1e-6)
+time(303);assert(feedback:ApplyHitStun(boss,1,p,nil,'melee'))
+local tw={hiddenUntil=320,volley={count=0},swing={}}
+boss.LODBossLastDamage=300;time(311);assert(not W:Taunt(tw,boss,clock))
+time(312);assert(W:Taunt(tw,boss,clock) and tw.tauntUntil==314 and not tw.volley and not tw.swing)
+assert(boss.nw.LOD_WardenHidden==false and boss.nw.LOD_WardenTauntUntil==314)
+time(313);env.hooks.LOD_BossDamagePresentation(boss,{GetDamage=function() return 10 end},true)
+assert(not W:Taunt(tw,boss,clock) and not tw.tauntUntil and tw.hiddenUntil==316)
+boss.LODBossLastDamage=300;time(315);assert(not W:Taunt(tw,boss,clock),'taunt cooldown prevents repeated reveals')
+local neil=actor();neil.LODArchetypeId='neil'
+env.hooks.LOD_BossDamagePresentation(neil,{GetDamage=function() return 10 end},false)
+assert(not neil.nw.LOD_NeilHurtAt)
+env.hooks.LOD_BossDamagePresentation(neil,{GetDamage=function() return 10 end},true)
+assert(neil.nw.LOD_NeilHurtAt==315)
+print('BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers, idle reveal, damage/cooldown cancellation and Neil recoil dispatch')
+-- Real bounded clone creation and isolated lifecycle: exact grade thresholds,
+-- one-third HP, distinct legal cells, independent attack state, one global budget.
+for level,count in pairs({[1]=0,[3]=0,[4]=1,[7]=1,[8]=2,[12]=3,[16]=4,[20]=4,[100]=4}) do assert(W:CloneCount(level)==count) end
+LOD.RPGStatusElements.CanInitiateAttack=function() return true end
+LOD.RPGStatusElements.CanMoveVoluntarily=function() return true end
+s.Level=16;w.clones={};w.cloneStates={};w.dead=false;s.Failed=false;s.LevelCleared=false
+w.actor=e;e.hp=1000;e.maximum=1000;w.hazards={};w.phase=1
+assert(W:SpawnClones(s,w,a) and #w.clones==4)
+local cells={};local afterClones=created
+for i,clone in ipairs(w.clones) do
+ local body=clone.actor;local cell=key(N:WorldToCell(g,body:GetPos()))
+ assert(body:GetMaxHealth()==333 and body:Health()==333 and not cells[cell] and a.court[cell])
+ assert(body.nw.LOD_WardenClone==i and not body.LODMajorThreat)
+ assert(w.cloneStates[body]==clone);cells[cell]=true
+ clone.hiddenUntil=0;time(400+i);W:Tick(body)
+ assert(clone.volley and clone.phase==1,'clone uses the real phase scheduler')
+end
+assert(W:SpawnClones(s,w,a) and created==afterClones,'clone creation is idempotent')
+local ids={}
+for i=1,16 do
+ local owner=(i%2==0) and w or w.clones[1]
+ assert(W:AddHazard(owner,'bomb',p:GetPos(),Vector(),nil,clock))
+end
+assert(not W:AddHazard(w.clones[2],'bomb',p:GetPos(),Vector(),nil,clock))
+for _,q in ipairs(W:AllHazards(w)) do assert(not ids[q.id]);ids[q.id]=true end
+assert(#W:AllHazards(w)==16,'clones share the sixteen-hazard cap')
+local objective=s.ObjectiveStage;W:Killed(w.clones[1].actor)
+assert(w.clones[1].dead and not w.dead and s.ObjectiveStage==objective,'clone death cannot complete Gordon')
+assert(#W:AllHazards(w)==8,'dead clone ordnance is retired')
+local serializedBoss
+net.WriteEntity=function(body) serializedBoss=body end
+W:Sync();assert(serializedBoss==e,'only the real Gordon owns the boss health bar')
+print('WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD')
+local originalTargets,originalRoute=W.Targets,W.Route
+local heroes={}
+for i=1,4 do heroes[i]=actor();heroes[i]:SetPos(Vector(10000+i*500,10000,0)) end
+W.Targets=function() return heroes end
+local selected={};W.Route=function(_,body,arena,target) selected[target]=true end
+for _,clone in ipairs(w.clones) do
+ if not clone.dead then
+  clone.actor.hp=50;clone.actor.LODHitStunUntil=nil;clone.actor.LODNextHitStun=nil
+  clone.swing=nil;time(clock+1);W:Tick(clone.actor)
+ end
+end
+local selectedCount=0;for _ in pairs(selected) do selectedCount=selectedCount+1 end
+assert(selectedCount==3,'three surviving clones prefer three different Heroes')
+W.Targets=originalTargets;W.Route=originalRoute
+local fullReservation=LOD.WanderingDirector:GetDeficitReservation(g)
+local missing=table.remove(w.clones);assert(LOD.WanderingDirector:GetDeficitReservation(g)==fullReservation+1)
+w.clones[#w.clones+1]=missing
+print('WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns')

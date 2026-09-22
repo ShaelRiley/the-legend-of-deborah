@@ -181,6 +181,7 @@ function ENT:Draw()
     if not dying and self:GetNW2Bool("LOD_WardenHidden", false) then return end
     local archetype = self:GetNW2String("LOD_Archetype", "")
     if LOD.WardenPresentation then LOD.WardenPresentation:Pose(self) end
+    if LOD.NeilBrutePresentation then LOD.NeilBrutePresentation:Pose(self) end
     local seekerRoll = archetype == "seeker" and updateSeekerRoll(self) or 0
     local size, verticalCompensation = applyVisualScale(self, seekerRoll)
     if dying then

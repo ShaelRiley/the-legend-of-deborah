@@ -5,7 +5,7 @@ local W=LOD.Warden
 local P,N,R=LOD.ProgressionDirector,LOD.MazeNavigator,LOD.RunManager
 local C={invisible=3,warning=0.65,visible=2,shotGap=0.22,shotSpeed=460,shotLife=8,
     homing=0.45,bombGap=1.6,bombFuse=3,bombRadius=180,meleeGap=0.85,meleeWarning=0.3,
-    meleeRange=95,maxHazards=16,syncGap=0.2}
+    meleeRange=95,maxHazards=16,syncGap=0.2,tauntIdle=12,tauntDuration=2,tauntCooldown=16}
 W.Config=C
 LOD.Config.Encounter.Archetypes.warden={class="lod_hostile",name="Gordon the Warden",
     model="models/Humans/Group01/male_02.mdl",baseHP=1000,speed=240,meleeDamage=8,meleeCooldown=C.meleeGap,
@@ -20,9 +20,12 @@ function W:CitizenModel(seed)
     return string.format("models/Humans/Group01/male_%02d.mdl",rng:Int(1,9))
 end
 local baseReserve=LOD.WanderingDirector.GetDeficitReservation
+function W:CloneCount(level) return math.min(4,math.max(0,math.floor((tonumber(level) or 1)/4))) end
 function LOD.WanderingDirector:GetDeficitReservation(...)
     local w=R.State and R.State.Warden
-    return baseReserve(self,...) + ((w and w.started) and 0 or 1)
+    local clones=W:CloneCount(R.State and R.State.Level)
+    local pending=(w and w.started) and math.max(0,clones-#(w.clones or {})) or 1+clones
+    return baseReserve(self,...) + pending
 end
 local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 local function alive(e) return IsValid(e) and not e.LODDead and e:Health()>0 end
@@ -32,6 +35,46 @@ function W:State()
     local s=R.State;local w=s and s.Warden
     if not s or not w or w.seed~=s.LevelSeed then return end
     return s,w,s.Graph.Progression.Warden
+end
+function W:Actors(w)
+    local out={w}
+    for _,clone in ipairs(w.clones or {}) do if not clone.dead then out[#out+1]=clone end end
+    return out
+end
+function W:AllHazards(w)
+    local out={}
+    for _,actorState in ipairs(self:Actors(w)) do
+        for _,q in ipairs(actorState.hazards) do out[#out+1]=q end
+    end
+    return out
+end
+function W:SpawnClones(s,w,a)
+    w.clones=w.clones or {};w.cloneStates=w.cloneStates or {}
+    local offsets={{1,-1},{1,1},{0,-1},{0,1}}
+    for index=#w.clones+1,self:CloneCount(s.Level) do
+        if LOD.EncounterDirector:GetActiveCount()+baseReserve(LOD.WanderingDirector,s.Graph)+1>LOD.Config.Encounter.ActiveHostileCeiling then return false end
+        local offset=offsets[index]
+        local cell=s.Graph.Cells[key({x=a.center.x+offset[1],y=a.center.y+offset[2],z=a.center.z})]
+        if not cell then return false end
+        local clone=ents.Create("lod_hostile");if not IsValid(clone) then return false end
+        clone.LODArchetypeId="warden";clone.LODEncounterId="warden_clone";clone.LODEncounterOrdinal=910001+index
+        clone.LODWardenClone=index;clone.LODWardenParty=w.actor.LODWardenParty
+        clone.LODHomeCellKey=key(cell);clone.LODActivated=true
+        clone:SetPos(N:CellCenter(cell));clone:Spawn()
+        if not IsValid(clone) then return false end
+        LOD.EnemyVariance:Apply(clone);LOD.HostileMotionV2:SnapSpawn(clone)
+        local hp=math.max(1,math.floor(w.actor:GetMaxHealth()/3))
+        clone:SetMaxHealth(hp);clone:SetHealth(hp)
+        if clone.LODProgressionState then clone.LODProgressionState.derivedStats.maxHP=hp end
+        clone:SetNW2String("LOD_MonsterName","Fake Gordon Clone")
+        clone:SetNW2Int("LOD_WardenClone",index);clone:SetNW2Int("LOD_WardenPhase",1)
+        clone:SetNW2Bool("LOD_WardenHidden",true);clone:DrawShadow(false)
+        clone.LODBossLastDamage=CurTime()
+        local state={actor=clone,phase=1,hazards={},cloneIndex=index,hiddenUntil=CurTime()+C.invisible+index*.2}
+        w.clones[index]=state;w.cloneStates[clone]=state
+        LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=clone
+    end
+    return true
 end
 function W:InCell(p,c) return key(N:WorldToCell(R.State.Graph,p:GetPos()))==key(c) end
 function W:Protected(p)
@@ -73,8 +116,9 @@ function W:Join(p,gate)
 end
 function W:Commit()
     local s,w,a=self:State();if not s or w.started or w.dead then return false end
-    local reserve=LOD.WanderingDirector:GetDeficitReservation(s.Graph)-1
-    if LOD.EncounterDirector:GetActiveCount()+reserve+1>LOD.Config.Encounter.ActiveHostileCeiling then return false end
+    local bossCount=1+self:CloneCount(s.Level)
+    local reserve=LOD.WanderingDirector:GetDeficitReservation(s.Graph)-bossCount
+    if LOD.EncounterDirector:GetActiveCount()+reserve+bossCount>LOD.Config.Encounter.ActiveHostileCeiling then return false end
     local e=ents.Create("lod_hostile");if not IsValid(e) then return false end
     local party=0;for _,p in ipairs(player.GetAll()) do if R:IsActivePlayer(p) then party=party+1 end end
     e.LODWardenParty=math.Clamp(party,1,4)
@@ -86,9 +130,11 @@ function W:Commit()
     if not IsValid(e) then return false end
     LOD.EnemyVariance:Apply(e);LOD.HostileMotionV2:SnapSpawn(e)
     w.actor=e;w.started=true;w.hiddenUntil=CurTime()+C.invisible
+    e.LODBossLastDamage=CurTime()
     s.WardenStarted=true;s.ObjectiveStage=P.Stages.DEFEAT_WARDEN
     s.CheckpointPos=N:CellCenter(a.entry)+Vector(0,0,12)
     LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=e
+    self:SpawnClones(s,w,a)
     local gate=a.lock.entity
     if IsValid(gate) then gate:SetOpened(false);gate:SetNotSolid(false);gate:SetSolid(SOLID_BBOX) end
     e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Int("LOD_WardenPhase",1);e:DrawShadow(false)
@@ -103,11 +149,14 @@ function W:Commit()
 end
 function W:SetPhase(w,e,phase,now)
     if w.phase==phase then return end
-    w.phase=phase;w.hazards={};w.volley=nil;w.swing=nil;w.hiddenUntil=nil;w.nextBomb=now+1
+    w.phase=phase;w.hazards={};w.volley=nil;w.swing=nil;w.hiddenUntil=nil;w.nextBomb=now+1;w.tauntUntil=nil
+    e:SetNW2Float("LOD_WardenTauntUntil",0)
     e:SetNW2Bool("LOD_WardenHidden",false);e:SetNW2Int("LOD_WardenPhase",phase)
     e:EmitSound("ambient/energy/weld2.wav",75,phase==2 and 90 or 125,0.7)
-    hook.Run("LOD_EncounterMusicPressure","warden",phase==3 and 3 or 2)
-    P:Announce(phase==2 and "GORDON — TOILET BOMBER" or "GORDON — CROWBAR BERSERKER")
+    if not w.cloneIndex then
+        hook.Run("LOD_EncounterMusicPressure","warden",phase==3 and 3 or 2)
+        P:Announce(phase==2 and "GORDON — TOILET BOMBER" or "GORDON — CROWBAR BERSERKER")
+    end
     log("WARDEN_PHASE",{phase=phase,health=e:Health(),maximum=e:GetMaxHealth()})
 end
 function W:RollAttack(e,kind)
@@ -133,9 +182,10 @@ function W:Damage(e,p,kind,shared)
     p:TakeDamageInfo(info)
 end
 function W:AddHazard(w,kind,pos,velocity,target,now)
-    if #w.hazards>=C.maxHazards then return false end
-    w.nextHazard=w.nextHazard+1
-    w.hazards[#w.hazards+1]={id=w.nextHazard,kind=kind,pos=pos,velocity=velocity,target=target,
+    local _,root=self:State();root=root or w
+    if #self:AllHazards(root)>=C.maxHazards then return false end
+    root.nextHazard=(root.nextHazard or 0)+1
+    w.hazards[#w.hazards+1]={id=root.nextHazard,kind=kind,pos=pos,velocity=velocity,target=target,
         expires=now+(kind=="orb" and C.shotLife or C.bombFuse)}
     return true
 end
@@ -182,8 +232,17 @@ function W:Route(e,a,target,now,roaming)
         if roaming then
             local keys={};for k in pairs(a.court) do keys[#keys+1]=k end;table.sort(keys)
             e.LODWardenRouteOrdinal=(e.LODWardenRouteOrdinal or 0)+1
-            local rng=LOD.RNG.New(LOD.Seeds.Derive(R.State.LevelSeed,"warden-route:"..e.LODWardenRouteOrdinal))
-            dest=g.Cells[rng:Pick(keys)]
+            local rng=LOD.RNG.New(LOD.Seeds.Derive(R.State.LevelSeed,"warden-route:"..tostring(e.LODEncounterOrdinal)..":"..e.LODWardenRouteOrdinal))
+            local _,root=self:State();local best=-1
+            for _,cellKey in ipairs(keys) do
+                local candidate=g.Cells[cellKey];local position=N:CellCenter(candidate)
+                local separation=LOD.Config.Maze.CellSize^2*9
+                for _,other in ipairs(self:Actors(root)) do
+                    if other.actor~=e and alive(other.actor) then separation=math.min(separation,position:DistToSqr(other.actor:GetPos())) end
+                end
+                local score=separation+rng:Float(0,LOD.Config.Maze.CellSize^2)
+                if score>best then dest=candidate;best=score end
+            end
         else dest=target and N:WorldToCell(g,target:GetPos()) end
         if dest then
             e.LODWaypoints=N:PathToWaypoints(g,N:FindPath(g,from,dest)) or {};e.LODWaypointIndex=1
@@ -197,15 +256,33 @@ function W:Route(e,a,target,now,roaming)
     else e:_SetActivity(ACT_IDLE);LOD.HostileMotionV2:Stop(e) end
 end
 function W:Interrupt(e)
-    local _,w=self:State()
+    local _,w=self:State();w=w and (w.cloneStates and w.cloneStates[e] or w)
     if not w or e~=w.actor then return end
-    w.volley=nil;w.swing=nil;w.hiddenUntil=CurTime()+C.invisible
+    w.volley=nil;w.swing=nil;w.hiddenUntil=CurTime()+C.invisible;w.tauntUntil=nil
+    e:SetNW2Float("LOD_WardenTauntUntil",0)
     -- Flying ordnance keeps its existing fuse; the interrupted wind-up cannot
     -- resume after the outer hit-stun wrapper starts dispatching AI again.
 end
+function W:Taunt(w,e,now)
+    if not w.tauntUntil and now<(w.hiddenUntil or 0)
+        and now-(e.LODBossLastDamage or now)>=C.tauntIdle and now>=(w.nextTaunt or 0) then
+        w.volley=nil;w.swing=nil;w.tauntUntil=now+C.tauntDuration;w.nextTaunt=now+C.tauntCooldown
+        e:SetNW2Bool("LOD_WardenHidden",false);e:SetNW2Float("LOD_WardenTauntUntil",w.tauntUntil)
+        if LOD.Audio then LOD.Audio:Emit(e,"boss_taunt") end
+    end
+    if not w.tauntUntil then return false end
+    if now>=w.tauntUntil or (e.LODBossLastDamage or 0)>w.tauntUntil-C.tauntDuration then
+        w.tauntUntil=nil;w.hiddenUntil=now+C.invisible;e:SetNW2Float("LOD_WardenTauntUntil",0)
+        return false
+    end
+    LOD.HostileMotionV2:Stop(e)
+    e:_SetActivity(ACT_IDLE)
+    return true
+end
 function W:Tick(e)
     if e.LODArchetypeId~="warden" then return false end
-    local s,w,a=self:State();local now=CurTime();local motion=LOD.HostileMotionV2
+    local s,w,a=self:State();w=w and (w.cloneStates and w.cloneStates[e] or w)
+    local now=CurTime();local motion=LOD.HostileMotionV2
     if not s or e~=w.actor or not alive(e) or w.dead or s.Failed or s.LevelCleared then motion:Stop(e);return true end
     local targets=self:Targets()
     if s.SimulationFrozen or #targets==0 then
@@ -218,6 +295,7 @@ function W:Tick(e)
     self:SetPhase(w,e,math.max(w.phase,phase),now)
     local target=targets[1]
     for _,p in ipairs(targets) do if e:GetPos():DistToSqr(p:GetPos())<e:GetPos():DistToSqr(target:GetPos()) then target=p end end
+    if w.cloneIndex then target=targets[(w.cloneIndex%#targets)+1] end
     local status=LOD.RPGStatusElements
     local canAttack=not status or status:CanInitiateAttack(e)
     local canMove=not status or status:CanMoveVoluntarily(e)
@@ -225,6 +303,7 @@ function W:Tick(e)
         w.volley=nil;w.swing=nil;w.hiddenUntil=now+C.invisible;motion:Stop(e);return true
     end
     if w.phase==1 then
+        if self:Taunt(w,e,now) then return true end
         if now<(w.hiddenUntil or 0) then
             e:SetNW2Bool("LOD_WardenHidden",true)
             if canMove then self:Route(e,a,target,now,true) else motion:Stop(e) end
@@ -236,7 +315,7 @@ function W:Tick(e)
             end
             local v=w.volley
             if v.count<4 and now>=v.next then
-                local aim=targets[(v.count%#targets)+1];local pos=e:WorldSpaceCenter()+Vector(0,0,12)
+                local aim=targets[((v.count+(w.cloneIndex or 0))%#targets)+1];local pos=e:WorldSpaceCenter()+Vector(0,0,12)
                 self:AddHazard(w,"orb",pos,(aim:WorldSpaceCenter()-pos):GetNormalized()*C.shotSpeed,aim,now)
                 v.count=v.count+1;v.next=now+C.shotGap
             end
@@ -278,8 +357,11 @@ function W:EnsureKey()
 end
 function W:Killed(e)
     local s,w,a=self:State()
+    local clone=w and w.cloneStates and w.cloneStates[e]
+    if clone then clone.dead=true;clone.hazards={};clone.volley=nil;clone.swing=nil;return end
     if not s or e~=w.actor or w.dead then return end
     w.dead=true;w.hazards={};w.volley=nil;w.swing=nil
+    for _,other in ipairs(w.clones or {}) do other.dead=true;other.hazards={};other.volley=nil;other.swing=nil end
     s.ObjectiveStage=P.Stages.TAKE_JAIL_KEY
     -- Preserve ordinary end-of-batch wipe precedence. No rescue/level-complete
     -- call, and no model/collision/entity mutation inside the lethal callback.
@@ -296,6 +378,11 @@ function W:Killed(e)
     end)
 end
 hook.Add("OnNPCKilled","LOD_WardenDeath",function(e) W:Killed(e) end)
+hook.Add("PostEntityTakeDamage","LOD_BossDamagePresentation",function(e,info,tookDamage)
+    if not tookDamage or not alive(e) or info:GetDamage()<=0 then return end
+    if e.LODArchetypeId=="warden" then e.LODBossLastDamage=CurTime()
+    elseif e.LODArchetypeId=="neil" then e:SetNW2Float("LOD_NeilHurtAt",CurTime()) end
+end)
 hook.Add("EntityTakeDamage","LOD_WardenAlcove",function(target,info)
     if W:Protected(target) or (IsValid(target) and target.LODArchetypeId=="warden" and W:Protected(info:GetAttacker())) then
         info:SetDamage(0);return true
@@ -308,8 +395,9 @@ function W:Sync()
     net.Start("LOD_WardenState");net.WriteBool(active==true)
     if active then
         net.WriteEntity(w.actor);net.WriteFloat(w.actor:Health());net.WriteFloat(w.actor:GetMaxHealth());net.WriteUInt(w.phase,2)
-        net.WriteUInt(#w.hazards,5)
-        for _,q in ipairs(w.hazards) do
+        local hazards=self:AllHazards(w)
+        net.WriteUInt(#hazards,5)
+        for _,q in ipairs(hazards) do
             net.WriteUInt(q.id%65536,16);net.WriteBool(q.kind=="bomb");net.WriteVector(q.pos)
             net.WriteVector(q.velocity);net.WriteFloat(q.expires)
         end
@@ -327,10 +415,15 @@ hook.Add("Think","LOD_WardenOrdnance",function()
     if not s or not w.started or w.dead or not alive(w.actor) or s.Failed or s.LevelCleared then return end
     local now=CurTime();local dt=math.Clamp(now-(w.lastHazardTick or now),0,0.1);w.lastHazardTick=now
     local targets=W:Targets()
-    if s.SimulationFrozen or #targets==0 then w.hazards={};return end
-    local fraction=w.actor:Health()/math.max(1,w.actor:GetMaxHealth())
-    W:SetPhase(w,w.actor,math.max(w.phase,fraction<=0.25 and 3 or (fraction<=0.60 and 2 or 1)),now)
-    if #w.hazards>0 then W:Hazards(w,w.actor,targets,dt,now) end
+    for _,actorState in ipairs(W:Actors(w)) do
+        local actor=actorState.actor
+        if s.SimulationFrozen or #targets==0 or not alive(actor) then actorState.hazards={}
+        else
+            local fraction=actor:Health()/math.max(1,actor:GetMaxHealth())
+            W:SetPhase(actorState,actor,math.max(actorState.phase,fraction<=0.25 and 3 or (fraction<=0.60 and 2 or 1)),now)
+            if #actorState.hazards>0 then W:Hazards(actorState,actor,targets,dt,now) end
+        end
+    end
 end)
 local nextThink=0
 hook.Add("Think","LOD_WardenService",function()
@@ -343,6 +436,7 @@ hook.Add("Think","LOD_WardenService",function()
         W:Prepare();local _,w,a=W:State()
         if w then
             if not w.dead then
+                if w.started and #(w.clones or {})<W:CloneCount(s.Level) and LOD.EncounterDirector:GetActiveCount()<LOD.Config.Encounter.ActiveHostileCeiling then W:SpawnClones(s,w,a) end
                 for _,p in ipairs(player.GetAll()) do if hero(p) then
                     if W:InCell(p,a.entry) then W:Resupply(p)
                     elseif a.court[key(N:WorldToCell(s.Graph,p:GetPos()))] and not w.started then W:Commit() end

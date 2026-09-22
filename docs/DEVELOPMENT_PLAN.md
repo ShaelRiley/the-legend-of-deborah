@@ -1,3 +1,39 @@
+# Current checkpoint — Gordon/Neil feedback and Fake Gordon Clones
+
+Built on verified remote `eccb286d4a7341c0b044d1dd2d79be0d74888192`.
+Gordon's first phase reveals a two-second taunt after twelve damage-free seconds
+while cloaked, with a sixteen-second repeat gate and interruption on damage.
+An original bounded square-wave laugh and procedural arm/torso pose identify it.
+Neil receives a 0.4-second recoil pose on actual damage. Death clears these poses.
+
+The actual procedural Crowbar tags its shared stagger request as melee. Gordon and
+clones accept melee stagger once every three seconds; damage and firearm stun
+remain intact. All three installed stun wrappers now forward the form multiplier
+and source kind, preserving Wall's intended stun as well as the new melee gate.
+
+Dungeon Levels 4/8/12/16 add 1/2/3/4 Fake Gordon Clones, capped at four. Each uses
+the existing actor/phase/damage/navigation authorities at floor(real MaxHP / 3),
+minimum 1. Legal distinct court cells, individual route seeds, separation scoring
+and target offsets distribute the actors. Pending spawn reservations persist;
+creation is idempotent and dead clones are not replenished. Main and clones share
+sixteen hazards with unique IDs. Only the real boss owns the HUD and Jail Key;
+clone death retires its ordnance, and real-boss death retires all clone attacks.
+Two client props are reused for all actors, including differing clone phases.
+
+Validation: all 121 integrated suites pass with zero failures. Expanded production
+boss tests additionally pass clone thresholds, exact HP and legal spawn cells,
+independent phase execution, shared caps/IDs, separate Hero targeting, pending
+reservations, death/HUD isolation, taunt interruption and the installed stun wrapper
+chain. Ordered real-boss health, Neil/Brute, Wall and audio regressions also pass.
+Manual source/readers rebuilt; live GDD 03/07 records LOD-GORDON-EXPANSION-001.
+Native multiplayer boss, animation and sound acceptance remains pending.
+
+Next: Priority 6 Cloud Step, guaranteed full-trajectory Magnum/Beam piercing and
+monster defense readability/rebalancing, then shared equipment/input/travel systems
+before the event and finale framework. No public deployment or Workshop publication.
+
+---
+
 # Current checkpoint — enemy death pulse and defeat cue
 
 Built on GitHub main `efb2a4c2ef68f5b142c42ebece6d041c56de2410`.

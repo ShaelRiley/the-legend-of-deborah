@@ -75,12 +75,14 @@ local function sendHitConfirm(attacker)
     net.Send(attacker)
 end
 
-function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMultiplier)
+function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMultiplier, hitKind)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return false end
     if hostile.LODDeadcrabState == "latched" then return false end
 
     local now = CurTime()
     if now < (hostile.LODNextHitStun or 0) then return false end
+    local bossMelee = hitKind == "melee" and hostile.LODArchetypeId == "warden"
+    if bossMelee and now < (hostile.LODBossMeleeStaggerReady or 0) then return false end
 
     local stamp = hostile.LODLastHitFeedbackEvent
     attacker = IsValid(attacker) and attacker or (stamp and stamp.attacker or nil)
@@ -91,6 +93,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     durationMultiplier = durationMultiplier * math.Clamp(tonumber(formMultiplier) or 1, 1, 2.5)
     local stunSeconds = STUN_SECONDS * durationMultiplier
     local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
+    if bossMelee then hostile.LODBossMeleeStaggerReady = now + 3 end
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
 

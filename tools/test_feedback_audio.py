@@ -6,14 +6,14 @@ import re
 import struct
 import wave
 from pathlib import Path
-from generate_feedback_audio import ROOT, RATE, SCORES, render
+from generate_feedback_audio import ROOT, RATE, SCORES, VOICES, render
 identities=set()
 for name,(pitches,duration) in SCORES.items():
     with wave.open(str(ROOT/(name+'.wav')),'rb') as f:
         assert (f.getnchannels(),f.getsampwidth(),f.getframerate())==(1,2,RATE)
         raw=f.readframes(f.getnframes())
     samples=struct.unpack('<'+'h'*(len(raw)//2),raw)
-    assert list(samples)==render(pitches,duration),name
+    assert list(samples)==render(pitches,duration,VOICES.get(name,'mallet')),name
     assert samples[0]==samples[-1]==0 and len(samples)/RATE<=.30
     rms=math.sqrt(sum(x*x for x in samples)/len(samples))/32767
     assert .09<rms<.11 and max(abs(x) for x in samples)/32767<=.401,(name,rms)
