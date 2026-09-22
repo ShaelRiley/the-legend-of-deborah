@@ -169,7 +169,8 @@ function DeathPresentation:_RunDue()
                 and now >= record.startedAt + (record.blinkTick + 1) * DEATH_BLINK_INTERVAL
             do
                 record.blinkTick = record.blinkTick + 1
-                if IsValid(hostile) then hostile:SetNoDraw(not hostile:GetNoDraw()) end
+                -- Clients interpolate the red silhouette from one timestamp;
+                -- do not replicate eight hide/show mutations per corpse.
 
                 if record.blinkTick % 2 == 1 then
                     hook.Run("LOD_HostileDeathBlinkPulse", record.origin, record.levelSeed,
@@ -867,6 +868,10 @@ function ENT:_BeginDeathPresentation()
     deathStage(self, "presentation_enter")
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
+    self:SetNW2Bool("LOD_WardenHidden", false)
+    self:SetNW2Float("LOD_DeathPulseStart", CurTime())
+    self:SetNoDraw(false)
+    if LOD.Audio then LOD.Audio:At(self:WorldSpaceCenter(), "enemy_defeated") end
 
     if self.loco then self.loco:SetDesiredSpeed(0) end
     self:SetVelocity(vector_origin)

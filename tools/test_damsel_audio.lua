@@ -25,7 +25,7 @@ LOD={RunManager={State={BuildReady=false},BuildCurrentLevel=function(self,succes
 end}}
 function LOD.RunManager:NewCampaign() return self:BuildCurrentLevel() end
 dofile(root..'sh_audio.lua');local A=LOD.Audio
-assert(#resources==56)
+assert(#resources==57)
 local paths={};for id,c in pairs(A.Cues) do assert(not paths[c.path]);paths[c.path]=id end
 assert(not A:ToPlayer(a,'hit_confirm') and hooks.LOD_GenerationSoundBarrier({})==false)
 dofile(root..'sv_audio_lifecycle.lua')
@@ -38,6 +38,10 @@ assert(#packets==0,'startup must produce no cues')
 for i=1,100 do A:At({},'loot_spawn') end
 assert(#packets==2 and packets[1].p~=packets[2].p,'one cue per recipient, not per loot entity')
 now=now+.23;A:At({},'loot_spawn');assert(#packets==4)
+local beforeDefeat=#packets
+for i=1,100 do A:At({},'enemy_defeated') end
+assert(#packets==beforeDefeat+2,'simultaneous defeats coalesce per listener')
+now=now+.13;A:At({},'enemy_defeated');assert(#packets==beforeDefeat+4)
 assert(A:ToPlayer(a,'hit_confirm') and A:ToPlayer(a,'spatial_awareness'))
 assert(not A:ToPlayer(a,'hit_confirm'))
 now=now+.05;assert(A:ToPlayer(a,'hit_confirm') and not A:ToPlayer(a,'spatial_awareness'))

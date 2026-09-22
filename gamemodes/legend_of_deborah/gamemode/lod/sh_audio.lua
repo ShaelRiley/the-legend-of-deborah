@@ -9,11 +9,12 @@ local names={'hit_confirm','spatial_awareness','loot_spawn','loot_pickup','confi
     'respawn','objective_clear','map_open','map_close','gps','dice_explode','aim_lock','heat_warm','heat_near',
     'weapon_ready','ar2_warning','enemy_warning','tetris_rotate','tetris_move','tetris_drop','tetris_clear','tetris_end',
     'diversion','feedback','status_poisoned','status_immolated','status_held','status_muted','status_intimidated',
-    'portal_depart','portal_arrive','cast','summon_attack','boss_arrive','item_discard','heal','status_reckless','status_clumsy','status_shattered','status_confused','summon_arrive','summon_depart'}
+    'portal_depart','portal_arrive','cast','summon_attack','boss_arrive','item_discard','heal','status_reckless','status_clumsy','status_shattered','status_confused','summon_arrive','summon_depart','enemy_defeated'}
 for index,id in ipairs(names) do
     A.Cues[id]={index=index,path='legend_of_deborah/feedback/'..id..'.wav',volume=.65,cooldown=.12}
 end
 A.Cues.hit_confirm.volume=.5;A.Cues.hit_confirm.cooldown=.045
+A.Cues.enemy_defeated.volume=.5;A.Cues.enemy_defeated.cooldown=.12
 A.Cues.spatial_awareness.cooldown=.8
 A.Cues.loot_spawn.cooldown=.22;A.Cues.loot_spawn.volume=.5
 A.Next=A.Next or {}

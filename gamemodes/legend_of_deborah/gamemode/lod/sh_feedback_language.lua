@@ -1,4 +1,8 @@
 LOD = LOD or {}
+-- One second, normal -> red -> normal -> red, matching the corpse lifetime.
+function LOD.EnemyDeathPulse(elapsed)
+    return .5 - .5 * math.cos(math.max(0, math.min(1, elapsed)) * math.pi * 3)
+end
 -- Presentation policy only. No gameplay probabilities, costs or durations.
 LOD.FeedbackLanguage = {
     routine = {label = "", priority = 0},

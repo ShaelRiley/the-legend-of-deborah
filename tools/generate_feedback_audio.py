@@ -8,7 +8,7 @@ RATE = 22050
 ROOT = Path(__file__).resolve().parents[1] / 'sound/legend_of_deborah/feedback'
 # MIDI pitch contours, total duration. Hit = one note, no echo, 45 ms.
 SCORES = {
- 'hit_confirm':([81],.045), 'spatial_awareness':([74,86],.16),
+ 'hit_confirm':([81],.045), 'enemy_defeated':([86,81],.06), 'spatial_awareness':([74,86],.16),
  'loot_spawn':([69,77],.18), 'loot_pickup':([77,81],.13),
  'confirm':([74],.10), 'deny':([65,62],.16), 'dialogue':([69],.09),
  'gift':([62,69,77],.27), 'status':([74,73],.17), 'status_clear':([73,77],.17),

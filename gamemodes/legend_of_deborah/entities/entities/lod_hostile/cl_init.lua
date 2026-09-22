@@ -1,6 +1,7 @@
 include("shared.lua")
 
 local aimMaterial = Material("cable/redlaser")
+local deathMaterial = Material("models/debug/debugwhite")
 local LASER_WIDTH = 2.5
 local SIGHT_FORWARD_OFFSET = 18
 local SIGHT_DOWN_OFFSET = 10
@@ -175,11 +176,27 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
 end
 
 function ENT:Draw()
-    if self:GetNW2Bool("LOD_WardenHidden", false) then return end
+    local deathAt = self:GetNW2Float("LOD_DeathPulseStart", -1)
+    local dying = deathAt >= 0
+    if not dying and self:GetNW2Bool("LOD_WardenHidden", false) then return end
     local archetype = self:GetNW2String("LOD_Archetype", "")
     if LOD.WardenPresentation then LOD.WardenPresentation:Pose(self) end
     local seekerRoll = archetype == "seeker" and updateSeekerRoll(self) or 0
     local size, verticalCompensation = applyVisualScale(self, seekerRoll)
+    if dying then
+        self:DrawModel()
+        local pulse = LOD.EnemyDeathPulse(CurTime() - deathAt)
+        render.SuppressEngineLighting(true)
+        render.MaterialOverride(deathMaterial)
+        render.SetColorModulation(1, 0, 0)
+        render.SetBlend(pulse)
+        self:DrawModel()
+        render.SetBlend(1)
+        render.SetColorModulation(1, 1, 1)
+        render.MaterialOverride(nil)
+        render.SuppressEngineLighting(false)
+        return
+    end
     if LOD.MonsterIdentity then
         LOD.MonsterIdentity:DrawBody(self)
         LOD.MonsterIdentity:DrawAura(self,size)

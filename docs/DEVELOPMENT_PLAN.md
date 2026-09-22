@@ -1,3 +1,25 @@
+# Current checkpoint — enemy death pulse and defeat cue
+
+Built on GitHub main `efb2a4c2ef68f5b142c42ebece6d041c56de2410`.
+Dead hostile bodies smoothly interpolate normal → red silhouette → normal → red
+through their existing one-second presentation. A single replicated timestamp
+replaces repeated server hide/show updates. Cloaked Gordon corpses become visible.
+The shared scheduler, deferred native mutations, one-time loot handoff and level-seed
+isolation are preserved. The 60 ms original defeat cue is coalesced per listener
+with a 120 ms cooldown; it never overlaps itself during simultaneous kills.
+
+Validation: production death handoff/batching and interpolation bounds, audio
+lifecycle/coalescing, deterministic audio assets, monster identity and changed-file
+Lua syntax checks pass. This follows the complete 121-suite pass on the parent UI
+checkpoint. Native silhouette appearance and audible mix remain unobserved.
+Live GDD 03/07 records the presentation and tuning under LOD-DEATH-PULSE-001.
+
+Next: finish Priority 5 Gordon/Neil feedback, melee stagger protection and clones;
+then Priority 6 Cloud Step, full-trajectory piercing and monster defenses.
+The staging shadow remains unreproduced/nonblocking. No deployment is included.
+
+---
+
 # Current checkpoint — Debbie review and feat card text
 
 Built on verified GitHub main `5d0d0f5f51636d8267de5ad2f7565338519462c8`.

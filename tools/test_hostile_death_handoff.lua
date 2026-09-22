@@ -61,6 +61,7 @@ local function actor()
         self.mutations=self.mutations+1
     end
     h.SetNW2Bool=native;h.SetNW2Entity=native;h.SetVelocity=native
+    function h:SetNW2Float(key,value) native(self);self[key]=value end
     h.SetCollisionGroup=native;h.SetSolid=native;h.SetMoveType=native
     h.DrawShadow=native;h.StartActivity=native;h.SetPlaybackRate=native
     h.loco={SetDesiredSpeed=function() native(h) end}
@@ -93,10 +94,12 @@ assert(encounters==1 and credits==1 and #D.Pending==1 and #D.Active==0)
 assert(stages[1].stage=='callback_enter' and stages[3].stage=='kill_hooks_complete')
 tick(.01)
 assert(a.LODDeathPresentationStarted and a.mutations>0 and a.poseCount==1)
+assert(a.LOD_DeathPulseStart==now and a.noDraw==false,'Corpse starts visible with one interpolation timestamp')
 assert(#D.Pending==0 and #D.Active==1 and D.TotalDeaths==1)
 a:OnKilled(damage);a:_BeginDeathPresentation()
 assert(credits==1 and D.TotalDeaths==1 and a.poseCount==1)
-tick(1.3)
+tick(.4);assert(a.noDraw==false,'Smooth silhouette does not hide the whole corpse')
+tick(.9)
 assert(not IsValid(a) and drops==1 and pulses==4 and notes==3)
 assert(#D.Active==0 and not timers.LOD_HostileDeathPresentationShared)
 assert(stages[#stages].stage=='loot_complete')
@@ -119,3 +122,10 @@ for _,h in ipairs(batch) do assert(not IsValid(h)) end
 assert(#D.Active==0 and #D.Pending==0 and not timers.LOD_HostileDeathPresentationShared)
 assert(drops==1 and credits==22 and encounters==22)
 print('HOSTILE_DEATH_HANDOFF_PASS: deferred native mutations, single settlement, corpse lifecycle, removed entities, shared batching, stale level isolation')
+
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua')
+assert(LOD.EnemyDeathPulse(0)==0 and LOD.EnemyDeathPulse(1)==1)
+assert(math.abs(LOD.EnemyDeathPulse(1/3)-1)<1e-8)
+assert(math.abs(LOD.EnemyDeathPulse(2/3))<1e-8)
+for i=0,100 do assert(LOD.EnemyDeathPulse(i/100)>=0 and LOD.EnemyDeathPulse(i/100)<=1) end
+print('DEATH_PULSE_PASS: normal/red/normal/red interpolation remains bounded')
