@@ -84,11 +84,14 @@ W.ConfirmButton.DoClick()
 local request=sent[#sent];assert(request.channel=='LOD_JunkExchange' and request[1]=='fuse_items' and request[2]==2)
 assert(request[3]=='gun' and request[4]=='hat' and type(request[5])=='number' and #request==5)
 W:ConfirmExchange();assert(sent[#sent]==request,'No duplicate confirmation while pending')
+local pendingPile=W.Pile;assert(not W:ClearExchange() and W.Pile==pendingPile,'Clear cannot disguise a pending exchange')
 assert(not W:SelectExchange('extra1',true))
 net.ReadTable=function() return {request=request[5]+1,ok=true} end
 handlers.LOD_JunkResult();assert(W.ExchangePending,'An unrelated response cannot release this request')
 net.ReadTable=function() return {request=request[5],ok=false,message='Inventory changed.'} end
 handlers.LOD_JunkResult();W.Frame.Think();assert(not W.ExchangePending and W.Pile.hat and W.ExchangeMessage=='Inventory changed.')
+local beforeClear=#sent;assert(W:ClearExchange() and not next(W.Pile) and #sent==beforeClear,'Clear is local cancellation without inventory mutation')
+W:SelectExchange('hat',true);W:SelectExchange('gun',true)
 W:ConfirmExchange();request=sent[#sent]
 net.ReadTable=function() return {request=request[5],ok=true,message='Fusion complete.'} end
 handlers.LOD_JunkResult();assert(not next(W.Pile) and not W.ExchangePending)

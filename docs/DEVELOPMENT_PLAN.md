@@ -1,3 +1,38 @@
+# Current checkpoint — Debbie review and feat card text
+
+Built on verified GitHub main `5d0d0f5f51636d8267de5ad2f7565338519462c8`.
+The recovery and navigation checkpoints remain intact. The author cannot currently
+reproduce the staging shadow flicker; it is unreproduced and nonblocking. Existing
+DFT rollback/award, black-gate, audio-owner cleanup and damsel roster checks remain
+regression constraints; this pass found no contradictory evidence requiring a rewrite.
+
+Debbie now displays item statistics and displaced equipped-item comparisons inside
+exchange cards. Source/pile targets, numbered review steps, pending state, explicit
+sale/fusion consequences and a local CLEAR PILE action clarify the transaction.
+Pending exchanges cannot be cleared or confirmed twice. Sell All visually protects
+equipped rows as well as enforcing the existing authoritative transaction rules.
+
+All 135 ordinary feats, nine capstones and six fallback feats have edited card text.
+One presentation module populates the existing catalog descriptions after registration;
+character sheet, offers and manual keep their existing shared consumers. Ranked values
+come from mechanical parameters. A comparison against the previous catalog confirms
+all 150 descriptions changed and every other catalog field stayed identical. Manual
+source, HTML and distributed client chunks were rebuilt.
+
+Live GDD 00 → 01 → 04/06 governs this checkpoint. LOD-FEAT-CARDS-001 and
+LOD-DEBBIE-READABILITY-001 record the authorized presentation revisions. The first
+complete run passed 120/121 suites: the release audit's verbatim Spatial Awareness
+expectation rejected the edited text. The fixture retains the old authored row and
+records an explicit presentation override; the targeted release audit then passed.
+Final complete regression: all 121 registered suites pass with zero failures.
+
+Next: Priority 5 enemy-death feedback and Gordon/Neil boss polish, then Cloud Step,
+full-trajectory piercing and enemy-defense readability before dependent equipment and
+events. Native GMod visual/multiplayer acceptance remains pending. No VPS deployment
+or Workshop publication is authorized by this checkpoint.
+
+---
+
 # Current checkpoint — committed stair travel and Climber placement
 
 Developed from verified remote main `2ea2c4a3c0ca13df24f9a2563a1551c7e8d17c6f`,

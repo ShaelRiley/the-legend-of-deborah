@@ -1387,8 +1387,11 @@
     "INT_AFTERSHOCK": {
       "deferred": true,
       "reason": "Shael explicitly approved deferral during final hybrid stabilization, 2026-09-14."
+    },
+    "WIS_SPATIAL_AWARENESS": {
+      "presentationAuthority": "Author September 22 master brief Priority 4; live GDD tab 04 LOD-FEAT-CARDS-001. Original effect row retained; presentation only.",
+      "cardText": "Warn when an enemy becomes visible behind or beside you on your floor. Rear range: your WIS modifier, minimum 1 cell, in a 3-cell-wide strip; side range: half that, rounded up. A violet direction cue and named alert identify one target; no repeat while it stays detected."
     }
   },
   "requirementAuthority": "Shael 2026-09-14: ordinary feat score gates are exclusively 13/15/17; conflicting older values are deprecated. Capstones and fallback availability retain their separate rules."
 }
-

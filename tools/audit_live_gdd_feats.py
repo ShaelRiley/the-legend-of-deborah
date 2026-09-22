@@ -98,9 +98,12 @@ def audit():
     for ident in set(inventory['ordinary']) | set(inventory['fallback']):
         if ident not in expected:
             errors.append(f'NONCANONICAL_EXPOSED {ident}')
-    # Known mechanical release blocker, not masked by a nonblank description.
+    # Preserve the original authored row; explicit presentation overrides may
+    # shorten its card without changing the separately tested spatial footprint.
     spatial = inventory['ordinary']['WIS_SPATIAL_AWARENESS']
-    if spatial['effectParams']['description'] != expected['WIS_SPATIAL_AWARENESS']['effect']:
+    spatial_text = source['overrides'].get('WIS_SPATIAL_AWARENESS', {}).get(
+        'cardText', expected['WIS_SPATIAL_AWARENESS']['effect'])
+    if spatial['effectParams']['description'] != spatial_text:
         errors.append('SPATIAL_AWARENESS_DESCRIPTION_RULE_MISMATCH')
     evasion = inventory['capstones']['rogue']['ROG_CAP_NOW_YOU_SEE_ME']
     if evasion['effectParams'].get('evasionChance') is not None:

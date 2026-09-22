@@ -15,6 +15,26 @@ local function wrappedHeight(value,width,font)
     local _,height=surface.GetTextSize('Ag');return lines*height+8
 end
 local function dragging() return dragndrop and (dragndrop.IsDragging() or IsValid(dragndrop.m_DragWatch)) end
+function W:ExchangeDetails(row)
+    local lines={row.description or ''}
+    local state=E.Snapshot
+    local item=state and state.items and state.items[row.id]
+    if item and not row.equipped then
+        local _,displaced=E:Placement(state,item)
+        for _,id in ipairs(displaced or {}) do
+            local worn=state.items[id]
+            if worn and id~=row.id then
+                lines[#lines+1]='CURRENTLY EQUIPPED — '..E:ItemName(worn)..'\n'..E:Description(worn,true)
+            end
+        end
+    end
+    return table.concat(lines,'\n')
+end
+function W:ClearExchange()
+    if self.ExchangePending then return false end
+    self.Pile={};self.ExchangeMessage='Pile cleared. Your items remain yours.';self.RenderPending=true
+    return true
+end
 function W:SelectExchange(id,inPile)
     if self.ExchangePending then return false end
     local row=self.ExchangeItems and self.ExchangeItems[id]
@@ -74,7 +94,10 @@ function W:BuildExchange(content,width,y)
     end
     local selling=self.ExchangeAction=='sell_items' or self.ExchangeAction=='sell_tokens' or self.ExchangeAction=='sell_unequipped'
     text(content,(selling and 'SELL ' or 'FUSE ')..(tokens and 'DFTs' or 'EQUIPMENT'),0,y,width,30,'LOD_SheetSubheading');y=y+34
-    text(content,tokens and 'Drag tokens into the pile. Fusion returns one upgraded DFT; it inherits any recreation already used this run.' or 'Drag gear into the pile. Equipped gear changes only on success. DFT-created equipment is ineligible.',0,y,width,44,'DermaDefault');y=y+48
+    local instruction=self.ExchangePending and 'WAITING FOR DEBBIE — Your exchange is being processed.'
+        or '1. Click or drag items into the pile.  2. Review the total.  3. Confirm, or clear the pile.'
+    local instructionHeight=wrappedHeight(instruction,width,'DermaDefault')
+    text(content,instruction,0,y,width,instructionHeight,'DermaDefault');y=y+instructionHeight+8
     if selling and not tokens then
         local all=vgui.Create('DButton',content);all:SetPos(0,y);all:SetSize(width,34)
         all:SetText('SELL ALL UNEQUIPPED — REVIEW PILE')
@@ -113,23 +136,25 @@ function W:BuildExchange(content,width,y)
         for _,row in ipairs(rows) do
             if (self.Pile[row.id]==true)==inPile then
                 local b=vgui.Create('DButton',canvas);b:SetPos(0,rowY)
-                local suffix=row.reason or ((row.equipped and 'EQUIPPED · ' or '')..row.value..' $DEB value'..((row.count or 1)>1 and (' · ×'..row.count) or ''))
-                b:SetText('');b:SetTooltip(row.name..'\n'..suffix..'\n'..(row.description or ''))
+                local blocked=row.reason or (self.ExchangeAction=='sell_unequipped' and row.equipped and 'EQUIPPED — protected from Sell All')
+                local suffix=blocked or ((row.equipped and 'EQUIPPED · ' or '')..row.value..' $DEB value'..((row.count or 1)>1 and (' · ×'..row.count) or ''))
+                local details=self:ExchangeDetails(row)
+                b:SetText('');b:SetTooltip(row.name..'\n'..suffix..'\n'..details)
                 UI:Button(b,row.reason and C.rule or C.blue)
-                local caption=row.name..'\n'..suffix
+                local caption=row.name..'\n'..suffix..(details~='' and ('\n'..details) or '')
                 local height=math.max(76,wrappedHeight(caption,half-52,'DermaDefault'))
                 b:SetSize(half-36,height+8);b:SetDoubleClickingEnabled(false)
                 local name=text(b,caption,8,4,half-52,height,'DermaDefault')
                 name:SetMouseInputEnabled(false)
                 b.LODExchangeId=row.id;b.LODWalletFrame=self.Frame
                 b:Receiver(DRAG,function(_,panels,dropped) return self:ReceiveExchange(panels,dropped,inPile) end)
-                if not row.reason then b:Droppable(DRAG) end
-                b:SetEnabled(not self.ExchangePending and not row.reason)
+                if not blocked then b:Droppable(DRAG) end
+                b:SetEnabled(not self.ExchangePending and not blocked)
                 b.DoClick=function() self:SelectExchange(row.id,not inPile) end
                 rowY=rowY+height+14
             end
         end
-        if rowY==0 then text(canvas,inPile and 'DROP ITEMS HERE' or 'No more carried equipment.',8,12,half-40,80) end
+        if rowY==0 then text(canvas,inPile and 'DROP ITEMS HERE\nClick an item to add it. Click again to return it.' or (tokens and 'No more DFTs.' or 'No more carried equipment.'),8,12,half-40,100) end
         scroll:InvalidateLayout(true)
         scroll:GetVBar():SetScroll(inPile and pileScroll or sourceScroll)
     end
@@ -139,11 +164,16 @@ function W:BuildExchange(content,width,y)
 
     text(content,selling and string.format('%d items · Receive %g $DEB',count,value)
         or string.format('%d / 8 items · New gear: %g–%g Value (85–100%%)',count,math.ceil(value*.85),value),0,y,width,32,'LOD_SheetSubheading');y=y+36
-    text(content,tokens and 'Confirm consumes these tokens. Fusion returns one DFT with upgraded equipment; it does not reset a used recreation.' or (self.ExchangeAction=='sell_unequipped' and 'Confirm sells only the reviewed unequipped items. Equipped and protected gear cannot be sold here.' or selling and 'Confirm sells the reviewed pile, including any equipped items you selected.' or 'Confirm consumes the pile and returns one upgraded item to inventory.'),0,y,width,38,'DermaDefault');y=y+42
-    local confirm=vgui.Create('DButton',content);confirm:SetPos(0,y);confirm:SetSize(width,38)
-    confirm:SetText(selling and ('CONFIRM SALE — '..value..' $DEB') or (tokens and 'CONFIRM FUSION — RECEIVE UPGRADED DFT' or 'CONFIRM FUSION — RECEIVE NEW EQUIPMENT'))
+    local consequence=tokens and (selling and 'Confirm permanently sells these tokens.' or 'Confirm consumes these tokens for one upgraded DFT. Used recreations stay used.') or (self.ExchangeAction=='sell_unequipped' and 'Confirm sells only this unequipped pile. Equipped and protected gear are excluded.' or selling and 'Confirm sells this pile, including any equipped items selected.' or 'Confirm consumes this pile for one upgraded item. Selected equipped gear is removed on success.')
+    local consequenceHeight=wrappedHeight(consequence,width,'DermaDefault')
+    text(content,consequence,0,y,width,consequenceHeight,'DermaDefault');y=y+consequenceHeight+8
+    local confirm=vgui.Create('DButton',content);confirm:SetPos(0,y);confirm:SetSize(width*.72-8,38)
+    confirm:SetText(self.ExchangePending and 'WAITING FOR DEBBIE…' or selling and ('CONFIRM SALE — '..value..' $DEB') or 'CONFIRM FUSION')
     confirm:SetEnabled(not self.ExchangePending and state.atStatue and state.ranked and count>=(selling and 1 or 2) and count<=maximum)
-    UI:Button(confirm,C.red);confirm.DoClick=function() self:ConfirmExchange() end;self.ConfirmButton=confirm;y=y+46
+    UI:Button(confirm,C.red);confirm.DoClick=function() self:ConfirmExchange() end;self.ConfirmButton=confirm
+    local clear=vgui.Create('DButton',content);clear:SetPos(width*.72,y);clear:SetSize(width*.28,38)
+    clear:SetText('CLEAR PILE');clear:SetEnabled(not self.ExchangePending and count>0);UI:Button(clear,C.blue)
+    clear.DoClick=function() self:ClearExchange() end;self.ClearButton=clear;y=y+46
     local message=self.ExchangeMessage or (not state.ranked and 'Unranked run: persistent equipment exchanges are disabled.' or state.atStatue and 'Your wallet and inventory change only after Debbie accepts the exchange.' or 'Visit Debbie in staging to confirm an exchange.')
     local messageHeight=wrappedHeight(message,width)
     text(content,message,0,y,width,messageHeight)
