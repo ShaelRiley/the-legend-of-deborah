@@ -185,6 +185,8 @@ function RunManager:_SyncPlayerVars(ply)
     ply.LODWallCollisionSoldier=isSoldier
     ply:SetNW2Bool("LOD_IsSoldier", isSoldier)
     if previousSoldier~=isSoldier and ply.CollisionRulesChanged then ply:CollisionRulesChanged() end
+    local package = ps and ps.progressionState and ps.progressionState.characterIdentityPackage
+    ply:SetNW2String("LOD_HeroName", package and package.fullDisplayName or ps and ps.characterName or "Spectator")
     if isSoldier then
         ply:SetNW2String("LOD_Character", "Human Soldier")
     else

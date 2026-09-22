@@ -74,16 +74,16 @@ for rank=0,3 do
         for _,side in ipairs({-10000,10000}) do
             local m=move(f,side)
             local actualF,actualS=realized(m)
-            local scale=208/math.sqrt(f*f+side*side)
+            local scale=222/math.sqrt(f*f+side*side)
             near(actualF,f*scale); near(actualS,side*scale*multiplier)
             assert(m.vertical==320)
         end
     end
     local af,as=realized(move(10,5))
-    near(af,10*1.04); near(as,5*1.04*multiplier)
-    near(move(10000,0).speed,208)
+    near(af,10*1.11); near(as,5*1.11*multiplier)
+    near(move(10000,0).speed,222)
 end
-local baseline=208/math.sqrt(2)
+local baseline=222/math.sqrt(2)
 actor.grounded=false
 local f,s=realized(move(10000,10000)); near(f,baseline); near(s,baseline)
 actor.grounded=true; actor.mode=9
@@ -98,7 +98,7 @@ state.featIds={'DEX_STRAFER_1','DEX_SIDELER_2','DEX_LATERAL_MOVER_3',
 cps:_RecomputeProgressionState(state)
 receivers.LOD_MapMagicState(0,actor)
 f,s=realized(move(-10000,10000,400))
-near(f,-400*1.04*1.75*1.25/math.sqrt(2)); near(s,-f*1.33)
+near(math.sqrt(f*f+s*s),520); near(s,-f*1.33)
 -- Differing client/server caps and zero client cap retain the original axis.
 f,s=effects:ResolveStrafeInput(10000,10000,400,200,1.33)
 near(f,200/math.sqrt(2)); near(s,f*1.33)

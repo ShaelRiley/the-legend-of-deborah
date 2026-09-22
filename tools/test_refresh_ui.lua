@@ -8,6 +8,8 @@ local function player(name,character)
  local p={name=name,character=character,bools={},floats={LOD_Magic=50}}
  function p:IsPlayer() return true end
  function p:Alive() return true end
+ function p:Health() return 75 end
+ function p:GetMaxHealth() return 100 end
  function p:Nick() return self.name end
  function p:GetNW2Bool(k,d) return self.bools[k] or d end
  function p:GetNW2Float(k,d) return self.floats[k] or d end
@@ -37,9 +39,9 @@ owner.look=teammate
 dofile(root..'cl_teammate_identity.lua')
 hooks.LOD_TeammateIdentity();local text='';local rows={};local colors={}
 for _,span in ipairs(drawn) do text=text..span.text;rows[span.y]=true;colors[span.color]=true end
-assert(text==teammate.name..' as '..teammate.character)
+assert(text==teammate.name..'75 / 100 HP'..'as '..teammate.character)
 assert(colors.username and colors.connector and colors.character)
-local n=0;for _ in pairs(rows) do n=n+1 end;assert(n>=2,'Identity must wrap')
+local n=0;for _ in pairs(rows) do n=n+1 end;assert(n>=3,'Identity, health and Hero name must occupy distinct rows')
 owner.look={IsPlayer=function() return false end};drawn={};hooks.LOD_TeammateIdentity();assert(#drawn==0,'Wall trace revealed teammate')
 owner.look=teammate;teammate.bools.LOD_IsSoldier=true;hooks.LOD_TeammateIdentity();assert(#drawn==0,'Enemy classified as teammate')
 print('REFRESH_UI_PASS: Quantum-adjusted resource/cooldown/status/ownership availability; trace-only identity, semantic colors and wrapping')

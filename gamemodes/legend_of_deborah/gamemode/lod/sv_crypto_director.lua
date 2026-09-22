@@ -8,7 +8,10 @@ function C:Ranked()
 end
 function C:Account(ply)
     local id=IsValid(ply) and ply:IsPlayer() and Run:IdentityOf(ply)
-    return Store:ValidAccount(id) and id or nil
+    if Store:ValidAccount(id) then
+        Store.Names=Store.Names or {};Store.Names[id]=string.sub(ply:Nick(),1,96)
+        return id
+    end
 end
 function C:LevelState()
     local r=Run.State
@@ -138,7 +141,7 @@ function C:CollectToken(ply,token)
     local id=self:Account(ply)
     if not self:Ranked() or not Run.State.LevelCleared or not id or not token or token.id~=id..':'..token.source then return false end
     local event='mint:'..token.id
-    local ok=Store:Transaction(event,'rare_dft',{id},function(accounts)
+    local ok,receipt=Store:Transaction(event,'rare_dft',{id},function(accounts)
         local a=accounts[id]
         if count(a.tokens)>=8 then return false,'full' end
         if a.tokens[token.id] then return false,'already' end
@@ -147,7 +150,8 @@ function C:CollectToken(ply,token)
         return true,{token=token.id}
     end)
     if ok then self:Sync(ply) end
-    return ok,'Debbie Fund Token collected — '..E:ItemName(token.item)
+    if not ok then return false,receipt=='full' and 'Your DFT collection is full.' or receipt=='storage' and 'Wallet storage unavailable; no token was awarded.' or 'Token award unavailable.' end
+    return true,'Debbie Fund Token collected — '..E:ItemName(token.item)
 end
 function C:Sell(ply,tokenId)
     if not self:CanUseStatue(ply) then return false,'Use the Debbie statue in staging.' end

@@ -425,8 +425,14 @@ heroD.LODHumanSoldierProgressionState = { level = 2 }
 
 -- Visitor E never admitted to play
 
-RunManager:FailCampaign("total party wipe")
+local live=Heroes:LiveSnapshot()
+assertTest(#live==1 and live[1].inProgress and #live[1].partyMembers==4, "Live snapshot includes active, eliminated and Soldier participants")
+assertTest(#Heroes.Entries==0, "Live snapshot leaves completed persistence untouched")
+assertTest(Heroes:FormatEntry(live[1]):find("IN PROGRESS",1,true)~=nil, "Live entries identify their status")
+RunManager:FailCampaign("timer expired")
 assertTest(#Heroes.Entries == 1, "Run finalized with 4 participating heroes")
+local completed=Heroes:LiveSnapshot()
+assertTest(#completed==1 and not completed[1].inProgress, "Completion replaces the live row without duplication")
 
 local party = Heroes.Entries[1].partyMembers
 assertTest(#party == 4, "Participant set contains exactly 4 heroes (A, B, C, D) and excludes visitor E")

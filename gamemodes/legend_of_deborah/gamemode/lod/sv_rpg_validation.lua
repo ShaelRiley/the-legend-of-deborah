@@ -53,7 +53,7 @@ function Validation:Run(printResult)
     then
         addError(errors, "actor Level bounds must be Hero 1..20 / monster 1..999")
     end
-    if constants.HeroMaxXP ~= 48000 then addError(errors, "HeroMaxXP must be 48000") end
+    if constants.HeroMaxXP ~= 96000 then addError(errors, "HeroMaxXP must be 96000") end
     if constants.AbilityMin ~= 3 or constants.AbilityMax ~= 30 then addError(errors, "ability bounds must be 3..30") end
     if constants.MagicCapacity ~= 100 then addError(errors, "Magic capacity must remain exactly 100") end
     if constants.MaxDamageDicePerChain ~= 32 then addError(errors, "damage chain cap must be 32") end
@@ -106,8 +106,8 @@ function Validation:Run(printResult)
     end
 
     local expectedXP = {
-        0, 150, 400, 800, 1500, 2500, 3800, 5400, 7300, 9500,
-        12000, 14800, 17900, 21300, 25000, 29000, 33300, 37900, 42800, 48000
+        0, 300, 800, 1600, 3000, 5000, 7600, 10800, 14600, 19000,
+        24000, 29600, 35800, 42600, 50000, 58000, 66600, 75800, 85600, 96000
     }
     for level, threshold in ipairs(expectedXP) do
         if not RPG.HeroXPThresholds or RPG.HeroXPThresholds[level] ~= threshold then

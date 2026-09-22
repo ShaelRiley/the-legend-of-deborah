@@ -1,6 +1,8 @@
 -- Server-local SQLite transactions. No profile reset on decoding/storage failure.
 LOD.CryptoStore = {}
 local Store=LOD.CryptoStore
+Store.Names={}
+Store.Revision=0
 local function query(statement)
     local result=sql.Query(statement)
     if result==false then error(sql.LastError() or 'wallet database error') end
@@ -68,11 +70,13 @@ function Store:Transaction(eventId,kind,ids,mutate)
         local accepted,receipt=mutate(accounts)
         if not accepted then query('ROLLBACK');begun=false;return false,receipt end
         for id,a in pairs(accounts) do
+            a.name=self.Names[id] or a.name
             self:Validate(a,id)
             query('INSERT OR REPLACE INTO lod_crypto_accounts(account,body) VALUES('..sql.SQLStr(id)..','..sql.SQLStr(encode(a))..')')
         end
         query('INSERT INTO lod_crypto_ledger(event,kind,body) VALUES('..sql.SQLStr(eventId)..','..sql.SQLStr(kind)..','..sql.SQLStr(encode(receipt or {}))..')')
         query('COMMIT');begun=false
+        self.Revision=self.Revision+1
         return true,receipt
     end)
     if begun then sql.Query('ROLLBACK') end
@@ -82,6 +86,19 @@ function Store:Transaction(eventId,kind,ids,mutate)
     end
     return result,detail
 end
+function Store:Holdings()
+    if self.HoldingsRevision==self.Revision then return self.HoldingsCache end
+    local ok,rows=pcall(query,'SELECT account,body FROM lod_crypto_accounts ORDER BY account')
+    if not ok then return self.HoldingsCache or {} end
+    local out={}
+    for _,row in ipairs(rows or {}) do
+        local valid,account=pcall(self.Validate,self,util.JSONToTable(row.body,false,true),row.account)
+        if valid then out[row.account]=account end
+    end
+    self.HoldingsCache,self.HoldingsRevision=out,self.Revision
+    return out
+end
+
 function Store:NextRunID()
     query('INSERT INTO lod_crypto_runs DEFAULT VALUES')
     local rows=query('SELECT last_insert_rowid() AS id')

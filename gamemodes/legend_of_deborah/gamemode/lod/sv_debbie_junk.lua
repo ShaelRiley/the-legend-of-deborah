@@ -74,19 +74,31 @@ function C:ExchangeTokens(ply,action,ids)
     self:Sync(ply)
     return ok,receipt
 end
+local function sameInventory(a,b)
+    if type(a)~='table' or type(b)~='table' then return a==b end
+    for key,value in pairs(a) do if not sameInventory(value,b[key]) then return false end end
+    for key in pairs(b) do if a[key]==nil then return false end end
+    return true
+end
 function C:ExchangeJunk(ply,action,ids)
     if busy[ply] or not self:CanUseStatue(ply) then return false,'Use Debbie in staging.' end
-    if action~='sell_items' and action~='fuse_items' then return false,'Invalid exchange.' end
-    if type(ids)~='table' or #ids<1 or #ids>8 or (action=='fuse_items' and #ids<2) then return false,'Select 2–8 items to fuse, or 1–8 to sell.' end
+    if action~='sell_items' and action~='sell_unequipped' and action~='fuse_items' then return false,'Invalid exchange.' end
+    if type(ids)~='table' or #ids<1 or #ids>(action=='sell_unequipped' and 256 or 8) or (action=='fuse_items' and #ids<2) then return false,'Select 2–8 items to fuse, or 1–8 to sell.' end
     local ps=Run:GetPlayerState(ply);local current=E:Ensure(ps)
     local seen,value,highest={},0,0
     for _,id in ipairs(ids) do
         if type(id)~='string' or #id>220 or seen[id] then return false,'Invalid or duplicate item.' end
+        if action=="sell_unequipped" then
+            for _,equipped in pairs(current.slots) do
+                if equipped==id then return false,"Equipment changed. Review the sale; equipped items are protected." end
+            end
+        end
         local rejection=E:JunkRejection(current,id)
         if rejection then return false,rejection end
         seen[id]=true;value=value+E:Value(current.items[id]);highest=math.max(highest,E:Value(current.items[id]))
     end
     table.sort(ids)
+    local reviewed=table.Copy(current)
     local nextState=table.Copy(current)
     for _,id in ipairs(ids) do E:UnequipItem(nextState,id);nextState.items[id]=nil end
     local event=action..':'..Run.State.RunId..':'..self:Account(ply)..':'..util.CRC(table.concat(ids,'|'))
@@ -102,8 +114,11 @@ function C:ExchangeJunk(ply,action,ids)
     local id=self:Account(ply)
     local ok,receipt=Store:Transaction(event,action,{id},function(accounts)
         if ps.equipment~=current then return false,'Inventory changed.' end
-        if action=='sell_items' then accounts[id].balance=accounts[id].balance+value end
-        local record={amount=action=='sell_items' and value or 0,inputValue=value,item=result and result.id,items=ids}
+        -- Recheck inside the transaction, including in-place slot/provenance
+        -- changes; a table identity check alone does not protect the review.
+        if not sameInventory(current,reviewed) then return false,'Inventory changed. Review the exchange again.' end
+        if action=='sell_items' or action=='sell_unequipped' then accounts[id].balance=accounts[id].balance+value end
+        local record={amount=(action=='sell_items' or action=='sell_unequipped') and value or 0,inputValue=value,item=result and result.id,items=ids}
         Store:History(id,event,action,record)
         return true,record
     end)
@@ -130,16 +145,16 @@ util.AddNetworkString('LOD_JunkExchange')
 util.AddNetworkString('LOD_JunkResult')
 local times=setmetatable({}, {__mode='k'})
 net.Receive('LOD_JunkExchange',function(bits,ply)
-    if bits>15000 or not IsValid(ply) or CurTime()<(times[ply] or 0) then return end
+    if bits>460000 or not IsValid(ply) or CurTime()<(times[ply] or 0) then return end
     times[ply]=CurTime()+.5
-    local action,count=net.ReadString(),net.ReadUInt(4)
-    if count>8 then return end
+    local action,count=net.ReadString(),net.ReadUInt(9)
+    if count>(action=="sell_unequipped" and 256 or 8) then return end
     local ids={};for i=1,count do ids[i]=net.ReadString() end
     local request=net.ReadUInt(16)
     local tokens=action=='sell_tokens' or action=='fuse_tokens'
     local ok,reason
     if tokens then ok,reason=C:ExchangeTokens(ply,action,ids) else ok,reason=C:ExchangeJunk(ply,action,ids) end
-    local message=ok and ((action=='sell_items' or action=='sell_tokens') and ('Sold for '..reason.amount..' $DEB.') or (tokens and 'Fusion complete. Your upgraded DFT is in your collection.' or 'Fusion complete. Your new equipment is in your inventory.'))
+    local message=ok and ((action=='sell_items' or action=='sell_tokens' or action=='sell_unequipped') and ('Sold for '..reason.amount..' $DEB.') or (tokens and 'Fusion complete. Your upgraded DFT is in your collection.' or 'Fusion complete. Your new equipment is in your inventory.'))
         or (type(reason)=='string' and reason or 'Exchange failed; inventory preserved.')
     if not ok then C:Report(ply,message,'junk_denied') end
     net.Start('LOD_JunkResult');net.WriteTable({request=request,ok=ok==true,message=message});net.Send(ply)
@@ -166,21 +181,23 @@ end
 
 util.AddNetworkString("LOD_Stakeholders")
 function C:StakeholderRows(players)
-    local rows={}
+    local accounts,names={},{}
+    for id,account in pairs(Store.Holdings and Store:Holdings() or {}) do accounts[id]=account end
     for _,ply in ipairs(players) do
         local id=self:Account(ply)
         local account=id and Store:Read(id)
-        if account then
-            local value=account.balance
-            for _,token in pairs(account.tokens) do value=value+E:Value(token.item) end
-            if value>0 then rows[#rows+1]={id=id,name=ply:Nick(),value=value} end
-        end
+        if account then accounts[id]=account;names[id]=ply:Nick() end
+    end
+    local rows={}
+    for id,account in pairs(accounts) do
+        local value=account.balance
+        for _,token in pairs(account.tokens) do value=value+E:Value(token.item) end
+        if value>0 then rows[#rows+1]={id=id,name=names[id] or account.name or id,value=value} end
     end
     table.sort(rows,function(a,b) if a.value~=b.value then return a.value>b.value end return a.id<b.id end)
-    local cap=math.max(1,math.ceil(#players/2))
-    while #rows>cap do table.remove(rows) end
     return rows
 end
+
 local nextBoard=0
 hook.Add("Think","LOD_StakeholdersUpdate",function()
     if CurTime()<nextBoard then return end;nextBoard=CurTime()+2

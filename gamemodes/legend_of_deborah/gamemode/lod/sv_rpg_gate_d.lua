@@ -102,7 +102,7 @@ end
 
 function AbilityRules:MovementMultiplier(actor)
     local derived = self:Derived(actor)
-    return math.Clamp(tonumber(derived and derived.movementSpeedMultiplier) or 1, 0.85, 1.20)
+    return math.Clamp(tonumber(derived and derived.movementSpeedMultiplier) or 1, 0.90, 1.55)
         * (self.RogueMovementMultiplier and (not actor:IsPlayer() or actor:OnGround())
             and self:RogueMovementMultiplier(actor) or 1)
 end
@@ -116,7 +116,7 @@ function AbilityRules:MagicRegenMultiplier(actor)
     local derived = self:Derived(actor)
     local ability = tonumber(derived and derived.magicRegenMultiplier) or 1
     local capstone = tonumber(derived and derived.wizardCapstoneMagicRegenMultiplier) or 1
-    return math.Clamp(ability, 0.50, 2.00) * math.max(0, capstone)
+    return math.Clamp(ability, 0.85, 3.00) * math.max(0, capstone)
 end
 
 function AbilityRules:UtilityMagicCostMultiplier(actor)
@@ -517,6 +517,8 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     if AbilityRules.ApplyVoluntaryMovementFeats then
         AbilityRules:ApplyVoluntaryMovementFeats(ply, move)
     end
+    move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
+    move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
     if AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
 end)
 

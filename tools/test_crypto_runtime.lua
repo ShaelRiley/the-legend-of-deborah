@@ -277,6 +277,43 @@ assert(not a.ps.equipment.slots.left_hand and not a.ps.equipment.items[wearing.i
 local worn,spare=junk(a,8111),junk(a,8112);assert(E:Equip(a.ps.equipment,worn.id,'right_hand'))
 assert(C:ExchangeJunk(a,'fuse_items',{worn.id,spare.id}))
 assert(not a.ps.equipment.slots.right_hand and not a.ps.equipment.items[worn.id])
+-- Bulk sale revalidates all reviewed IDs and commits the complete pile once.
+local bulk,total={},0
+for i=1,12 do local item=junk(a,8200+i);bulk[#bulk+1]=item.id;total=total+E:Value(item) end
+assert(E:Equip(a.ps.equipment,bulk[1],'left_hand'))
+balance=account(a).balance
+assert(not C:ExchangeJunk(a,'sell_unequipped',bulk),'A stale equipped selection must reject the whole sale')
+assert(a.ps.equipment.items[bulk[12]] and account(a).balance==balance)
+E:UnequipItem(a.ps.equipment,bulk[1])
+local protected={bulk[1],locked.id}
+assert(not C:ExchangeJunk(a,'sell_unequipped',protected),'DFT equipment is protected in bulk sales')
+local exchangeStore=LOD.CryptoStore
+local transact=exchangeStore.Transaction
+for _,change in ipairs({'equipped','protected','removed'}) do
+    local saved=table.Copy(a.ps.equipment)
+    function exchangeStore:Transaction(event,kind,ids,mutate)
+        if change=='equipped' then a.ps.equipment.slots.left_hand=bulk[1]
+        elseif change=='protected' then a.ps.equipment.items[bulk[1]].economyExcluded=true
+        else a.ps.equipment.items[bulk[1]]=nil end
+        local atCommit=WalletJSONEncode(a.ps.equipment)
+        local ok,reason=transact(self,event,kind,ids,mutate)
+        assert(WalletJSONEncode(a.ps.equipment)==atCommit,'Failure altered inventory')
+        return ok,reason
+    end
+    assert(not C:ExchangeJunk(a,'sell_unequipped',bulk),'In-transaction '..change..' change accepted')
+    assert(account(a).balance==balance,'Rejected review paid currency')
+    a.ps.equipment=saved
+end
+exchangeStore.Transaction=transact
+WalletSQLFail('INSERT INTO lod_crypto_ledger')
+assert(not C:ExchangeJunk(a,'sell_unequipped',bulk))
+for _,id in ipairs(bulk) do assert(a.ps.equipment.items[id],'Rollback lost an item') end
+assert(account(a).balance==balance)
+assert(C:ExchangeJunk(a,'sell_unequipped',bulk))
+for _,id in ipairs(bulk) do assert(not a.ps.equipment.items[id]) end
+assert(account(a).balance==balance+total)
+assert(not C:ExchangeJunk(a,'sell_unequipped',bulk),'Bulk replay settled twice')
+assert(account(a).balance==balance+total)
 -- The network adapter sends a matching result and refresh even on denied input.
 local strings={'sell_items',locked.id};local uints={1,57};local responses={}
 net.ReadString=function() return table.remove(strings,1) end
@@ -285,13 +322,18 @@ net.WriteTable=function(row) responses[#responses+1]=row end
 handlers.LOD_JunkExchange(100,a)
 assert(responses[#responses].request==57 and not responses[#responses].ok)
 assert(responses[#responses].message:find('DFT-created',1,true))
-local rows=C:StakeholderRows({a,b,soldier});assert(#rows==2 and rows[1].value>=rows[2].value)
+local expectedCount=0
+for _,p in ipairs({a,b,soldier}) do
+    local value=account(p).balance;for _,token in pairs(account(p).tokens) do value=value+E:Value(token.item) end
+    if value>0 then expectedCount=expectedCount+1 end
+end
+local rows=C:StakeholderRows({a,b,soldier});assert(#rows==expectedCount and #rows>=2 and rows[1].value>=rows[2].value)
 for _,row in ipairs(rows) do
     local p=row.id==a.id and a or row.id==b.id and b or soldier
     local expected=account(p).balance;for _,token in pairs(account(p).tokens) do expected=expected+E:Value(token.item) end
     assert(row.value==expected,'Stakeholders must include both wallet balance and canonical DFT valuation')
 end
-assert(#C:StakeholderRows({a})==1)
+assert(#C:StakeholderRows({a})==expectedCount,'Persisted holders remain visible while offline')
 print('JUNK_SQLITE_PASS: ownership/duplicate/replay; real sale/fusion rollback and atomicity; 85–100% valid value; DFT mint exclusion; Stakeholder sorting/denominations/rounding')
 
 -- Four-action token exchange uses real SQLite and cannot refresh recreation.

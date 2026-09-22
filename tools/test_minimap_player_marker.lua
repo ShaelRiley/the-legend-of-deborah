@@ -1,3 +1,4 @@
+ScrH=function() return 1080 end
 -- Exercise the actual HUD renderer, including maps wider than the base grid.
 local noop=function() end
 local hooks={}
@@ -6,7 +7,8 @@ hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]
 local circles,lines,color={},{},nil
 surface=setmetatable({DrawCircle=function(x,y,r,red,green,blue) circles[#circles+1]={x=x,y=y,r=r,red=red,green=green,blue=blue} end,
  SetDrawColor=function(c) color=c end,DrawLine=function(...) lines[#lines+1]={color=color} end}, {__index=function() return noop end})
-draw={RoundedBox=noop,SimpleText=noop}
+local peerMarkers={}
+draw={RoundedBox=function(_,x,y,w,h,c) if c.r==100 and c.g==235 then peerMarkers[#peerMarkers+1]={x=x,y=y} end end,SimpleText=noop}
 GetRenderTarget=function() return {GetName=function() return 'map' end} end
 CreateMaterial=function() return {} end
 Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a} end
@@ -17,7 +19,7 @@ EyeAngles=function() return {y=0} end
 local player={pos={x=0,y=0,z=0},alive=true,access=true}
 function player:Alive() return self.alive end
 function player:GetPos() return self.pos end
-function player:GetNW2Bool() return self.access end
+function player:GetNW2Bool(key) if key=='LOD_IsSoldier' then return false end;return self.access end
 function player:GetNW2Int(_,default) return default end
 LocalPlayer=function() return player end
 IsValid=function(p) return p==player end
@@ -47,6 +49,21 @@ for _,width in ipairs({21,29,37}) do
   assert(#lines==5 and lines[5].color.b==255,'one outlined blue direction needle')
  end
 end
+local peer={pos={x=0,y=0,z=384},Alive=function() return true end,GetPos=function(self) return self.pos end,
+ GetNW2Bool=function(_,key) return key=='LOD_Deployed' end}
+_G.player={GetAll=function() return {player,peer} end}
+IsValid=function(p) return p==player or p==peer end
+M.gridWidth=21;M.layers=2;M.open=true;M.cache.topologyFloor=0;M.cache.reach=nil
+M.byKey={['11:11:0']={x=11,y=11,z=0},['11:11:1']={x=11,y=11,z=1}}
+M.cells={M.byKey['11:11:0'],M.byKey['11:11:1']}
+player.pos={x=0,y=0,z=0}
+peerMarkers={};hooks.HUDPaint.LOD_MinimapHUD();assert(#peerMarkers==0,'Other floors must stay hidden')
+peer.pos.z=0
+peerMarkers={};hooks.HUDPaint.LOD_MinimapHUD();assert(#peerMarkers==1,'Current-floor Hero must appear once')
+ScrH=function() return 2160 end;ScrW=function() return 3840 end
+circles={};hooks.HUDPaint.LOD_MinimapHUD()
+local grid=568
+assert(math.abs(circles[2].x-(3840-(grid+52)-20+26+10.5*grid/21))<1e-8,'4K map must scale its grid')
 for _,state in ipairs({'closed','dead','no-access'}) do
  M.open=state~='closed';player.alive=state~='dead';player.access=state~='no-access'
  circles={};hooks.HUDPaint.LOD_MinimapHUD();assert(#circles==0,'marker bypassed map/player access')

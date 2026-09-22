@@ -17,9 +17,10 @@ function D:ApplyAppearance(ent,level,seed)
             if not material then
                 local source=Material(path);local texture=source:GetTexture('$basetexture')
                 if texture then
-                    material=CreateMaterial('LOD_Damsel_'..util.CRC(id),'VertexLitGeneric',{
-                        ['$basetexture']=texture:GetName(),['$model']='1',
-                        ['$color2']=string.format('[%f %f %f]',cloth.r/255,cloth.g/255,cloth.b/255)})
+                    local values=table.Copy(source:GetKeyValues() or {})
+                    values['$basetexture']=texture:GetName();values['$model']='1'
+                    values['$color2']=string.format('[%f %f %f]',cloth.r/255,cloth.g/255,cloth.b/255)
+                    material=CreateMaterial('LOD_Damsel_'..util.CRC(id),source:GetShader() or 'VertexLitGeneric',values)
                     self.Materials[id]=material
                 end
             end
@@ -31,16 +32,6 @@ function D:DrawActor(ent,staged)
     local level=ent:GetNW2Int('LOD_DamselLevel',1)
     self:ApplyAppearance(ent,level,ent:GetNW2Int('LOD_DamselSeed',1))
     ent:DrawModel()
-    -- A complementary enamel brooch supplies the accent without recoloring the
-    -- citizen's combined hair/face texture or creating extra native entities.
-    if ent.LODDamselAccent then
-        local bone=ent:LookupBone('ValveBiped.Bip01_Spine2')
-        local matrix=bone and ent:GetBoneMatrix(bone)
-        if matrix then
-            local pos=matrix:GetTranslation()+ent:GetForward()*6+ent:GetRight()*4
-            render.SetColorMaterial();render.DrawSphere(pos,2.4,6,6,ent.LODDamselAccent)
-        end
-    end
     if ent:GetPos():DistToSqr(EyePos())>650^2 then return end
     if staged then
         local sight=ent:WorldSpaceCenter()-EyePos()

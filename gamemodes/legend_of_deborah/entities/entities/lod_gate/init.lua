@@ -38,10 +38,12 @@ function ENT:Use(activator)
 end
 
 function ENT:OpenGate()
-    if self:GetOpened() then return end
+    local wasOpen=self:GetOpened()
     self:SetOpened(true)
-    self:SetOpenedAt(CurTime())
+    if not wasOpen then self:SetOpenedAt(CurTime()) end
     self:SetSolid(SOLID_NONE)
     self:SetNotSolid(true)
+    if self.CollisionRulesChanged then self:CollisionRulesChanged() end
+    if wasOpen then return end
     self:EmitSound("doors/door1_move.wav", 75, 100, 0.9)
 end

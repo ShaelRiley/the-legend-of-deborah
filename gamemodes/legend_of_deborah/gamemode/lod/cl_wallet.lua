@@ -18,10 +18,11 @@ local function dragging() return dragndrop and (dragndrop.IsDragging() or IsVali
 function W:SelectExchange(id,inPile)
     if self.ExchangePending then return false end
     local row=self.ExchangeItems and self.ExchangeItems[id]
-    if not row or row.reason then return false end
+    if not row or row.reason or (self.ExchangeAction=='sell_unequipped' and row.equipped) then return false end
     self.Pile=self.Pile or {}
     local count=0;for _ in pairs(self.Pile) do count=count+1 end
-    if inPile and not self.Pile[id] and count>=8 then self.ExchangeMessage='Maximum eight items per exchange.';self.RenderPending=true;return false end
+    local maximum=self.ExchangeAction=='sell_unequipped' and 256 or 8
+    if inPile and not self.Pile[id] and count>=maximum then self.ExchangeMessage='Maximum '..maximum..' items per exchange.';self.RenderPending=true;return false end
     self.Pile[id]=inPile or nil;self.ExchangeMessage=nil;self.RenderPending=true
     return true
 end
@@ -39,16 +40,16 @@ function W:ConfirmExchange()
     local ids={}
     for id in pairs(self.Pile or {}) do
         local row=self.ExchangeItems[id]
-        if not row or row.reason then self.ExchangeMessage='Inventory changed. Review your pile.';self.RenderPending=true;return end
+        if not row or row.reason or (self.ExchangeAction=='sell_unequipped' and row.equipped) then self.ExchangeMessage='Inventory changed. Review your pile.';self.RenderPending=true;return end
         ids[#ids+1]=id
     end
     local action=self.ExchangeAction or 'sell_items'
-    if #ids<1 or #ids>8 or (action=='fuse_items' or action=='fuse_tokens') and #ids<2 then return end
+    if #ids<1 or #ids>(action=='sell_unequipped' and 256 or 8) or (action=='fuse_items' or action=='fuse_tokens') and #ids<2 then return end
     table.sort(ids)
     self.ExchangeSerial=((self.ExchangeSerial or 0)%65535)+1
     self.ExchangePending={request=self.ExchangeSerial,at=RealTime()}
     self.ExchangeMessage='Waiting for Debbie…';self.RenderPending=true
-    net.Start('LOD_JunkExchange');net.WriteString(action);net.WriteUInt(#ids,4)
+    net.Start('LOD_JunkExchange');net.WriteString(action);net.WriteUInt(#ids,9)
     for _,id in ipairs(ids) do net.WriteString(id) end
     net.WriteUInt(self.ExchangeSerial,16);net.SendToServer()
 end
@@ -71,9 +72,25 @@ function W:BuildExchange(content,width,y)
         local p=vgui.Create('DLabel',parent);p:SetPos(x,top);p:SetSize(w,h);p:SetText(value)
         p:SetFont(font or 'LOD_SheetSmall');p:SetTextColor(C.ink);p:SetWrap(true);return p
     end
-    local selling=self.ExchangeAction=='sell_items' or self.ExchangeAction=='sell_tokens'
+    local selling=self.ExchangeAction=='sell_items' or self.ExchangeAction=='sell_tokens' or self.ExchangeAction=='sell_unequipped'
     text(content,(selling and 'SELL ' or 'FUSE ')..(tokens and 'DFTs' or 'EQUIPMENT'),0,y,width,30,'LOD_SheetSubheading');y=y+34
     text(content,tokens and 'Drag tokens into the pile. Fusion returns one upgraded DFT; it inherits any recreation already used this run.' or 'Drag gear into the pile. Equipped gear changes only on success. DFT-created equipment is ineligible.',0,y,width,44,'DermaDefault');y=y+48
+    if selling and not tokens then
+        local all=vgui.Create('DButton',content);all:SetPos(0,y);all:SetSize(width,34)
+        all:SetText('SELL ALL UNEQUIPPED — REVIEW PILE')
+        all:SetEnabled(not self.ExchangePending)
+        UI:Button(all,C.blue)
+        all.DoClick=function()
+            self.ExchangeAction='sell_unequipped';self.Pile={}
+            for _,row in ipairs(rows) do
+                if not row.equipped and not row.reason then self.Pile[row.id]=true end
+            end
+            self.ExchangeMessage='Review these items and total, then confirm. Equipped and protected gear are excluded.'
+            self.RenderPending=true
+        end
+        y=y+42
+    end
+    local maximum=self.ExchangeAction=='sell_unequipped' and 256 or 8
     local half=math.floor((width-16)/2)
     local panelHeight=math.min(260,math.max(120,self.Frame:GetTall()-140-y-210))
     local source,pile=vgui.Create('DPanel',content),vgui.Create('DPanel',content)
@@ -120,12 +137,12 @@ function W:BuildExchange(content,width,y)
     local count,value=0,0
     for id in pairs(self.Pile) do count=count+1;value=value+self.ExchangeItems[id].value end
 
-    text(content,selling and string.format('%d / 8 items · Receive %g $DEB',count,value)
+    text(content,selling and string.format('%d items · Receive %g $DEB',count,value)
         or string.format('%d / 8 items · New gear: %g–%g Value (85–100%%)',count,math.ceil(value*.85),value),0,y,width,32,'LOD_SheetSubheading');y=y+36
-    text(content,tokens and 'Confirm consumes these tokens. Fusion returns one DFT with upgraded equipment; it does not reset a used recreation.' or 'Confirm consumes the pile, including equipped gear. Fusion returns one item to inventory.',0,y,width,38,'DermaDefault');y=y+42
+    text(content,tokens and 'Confirm consumes these tokens. Fusion returns one DFT with upgraded equipment; it does not reset a used recreation.' or (self.ExchangeAction=='sell_unequipped' and 'Confirm sells only the reviewed unequipped items. Equipped and protected gear cannot be sold here.' or selling and 'Confirm sells the reviewed pile, including any equipped items you selected.' or 'Confirm consumes the pile and returns one upgraded item to inventory.'),0,y,width,38,'DermaDefault');y=y+42
     local confirm=vgui.Create('DButton',content);confirm:SetPos(0,y);confirm:SetSize(width,38)
     confirm:SetText(selling and ('CONFIRM SALE — '..value..' $DEB') or (tokens and 'CONFIRM FUSION — RECEIVE UPGRADED DFT' or 'CONFIRM FUSION — RECEIVE NEW EQUIPMENT'))
-    confirm:SetEnabled(not self.ExchangePending and state.atStatue and state.ranked and count>=(selling and 1 or 2) and count<=8)
+    confirm:SetEnabled(not self.ExchangePending and state.atStatue and state.ranked and count>=(selling and 1 or 2) and count<=maximum)
     UI:Button(confirm,C.red);confirm.DoClick=function() self:ConfirmExchange() end;self.ConfirmButton=confirm;y=y+46
     local message=self.ExchangeMessage or (not state.ranked and 'Unranked run: persistent equipment exchanges are disabled.' or state.atStatue and 'Your wallet and inventory change only after Debbie accepts the exchange.' or 'Visit Debbie in staging to confirm an exchange.')
     local messageHeight=wrappedHeight(message,width)

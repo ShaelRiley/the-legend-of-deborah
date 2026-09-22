@@ -703,11 +703,12 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
         requestMap(false)
     end
 
-    local panelW, panelH = 336, 408
+    local scale = math.Clamp(ScrH()/1080, 1, 2)
+    local panelW, panelH = 284*scale+52, 284*scale+124
     local panelX = ScrW() - panelW - 20
     local panelY = 96
     local gridX, gridY = panelX + 26, panelY + 68
-    local gridSize = 284
+    local gridSize = 284*scale
     local cellSize = gridSize / math.max(Map.gridWidth or MC.Width, MC.Height)
     local gx, gy, gz = currentGridPosition(ply)
     gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
@@ -821,6 +822,20 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
             if a then markerX, markerY = mapCellCenter(a, gridX, gridY, cellSize) end
         end
         if markerX then drawObjectiveMarker(state, markerX, markerY) end
+    end
+
+    if not ply:GetNW2Bool("LOD_IsSoldier",false) and player and player.GetAll then
+        for _,peer in ipairs(player.GetAll()) do
+            if peer~=ply and IsValid(peer) and peer:Alive() and peer:GetNW2Bool("LOD_Deployed",false)
+                and not peer:GetNW2Bool("LOD_IsSoldier",false) then
+                local x,y,z=currentGridPosition(peer)
+                if z==gz and Map.byKey[cellKey(x,y,z)] then
+                    local px,py=gridX+(x-.5)*cellSize,gridY+(MC.Height-y+.5)*cellSize
+                    draw.RoundedBox(3,px-4,py-4,8,8,Color(0,0,0))
+                    draw.RoundedBox(2,px-3,py-3,6,6,Color(100,235,175))
+                end
+            end
+        end
     end
 
     if Map.byKey[startKey] then

@@ -46,8 +46,8 @@ for rank=0,3 do
     state.featIds={}
     for i=1,rank do state.featIds[i]=ids[i] end
     cps:_RecomputeProgressionState(state)
-    close(); near(rules:MovementMultiplier(actor),1.04)
-    open(); near(rules:MovementMultiplier(actor),1.04*(1+rank*.25))
+    close(); near(rules:MovementMultiplier(actor),1.11)
+    open(); near(rules:MovementMultiplier(actor),1.11*(1+rank*.25))
 end
 -- Same SetupMove hook that scales walk/run speed; vertical velocity is untouched.
 local move={speed=200,client=200,vertical=300}
@@ -60,22 +60,22 @@ function move:GetMaxClientSpeed() return self.client end
 function move:SetMaxSpeed(v) self.speed=v end
 function move:SetMaxClientSpeed(v) self.client=v end
 hooks.LOD_RPG_GateD_Movement(actor,move)
-near(move.speed,200*1.04*1.75); near(move.client,move.speed); assert(move.vertical==300)
+near(move.speed,200*1.11*1.75); near(move.client,move.speed); assert(move.vertical==300)
 -- Other actors cannot inherit this actor's open-map bonus.
 near(rules:MovementMultiplier({}),1)
-permitted=false; near(rules:MovementMultiplier(actor),1.04); permitted=true
-mapless=true; near(rules:MovementMultiplier(actor),1.04); mapless=false
-magicState.magic=0; near(rules:MovementMultiplier(actor),1.04); magicState.magic=100
-LOD.RunManager.State.Failed=true; near(rules:MovementMultiplier(actor),1.04); LOD.RunManager.State.Failed=false
-LOD.RunManager.State.SimulationFrozen=true; near(rules:MovementMultiplier(actor),1.04); LOD.RunManager.State.SimulationFrozen=false
-now=12; near(rules:MovementMultiplier(actor),1.04); open()
-actor.alive=false; near(rules:MovementMultiplier(actor),1.04); actor.alive=true
-hooks.LOD_MinimapMagicDeathStop(actor); near(rules:MovementMultiplier(actor),1.04)
-open(); close(); near(rules:MovementMultiplier(actor),1.04)
+permitted=false; near(rules:MovementMultiplier(actor),1.11); permitted=true
+mapless=true; near(rules:MovementMultiplier(actor),1.11); mapless=false
+magicState.magic=0; near(rules:MovementMultiplier(actor),1.11); magicState.magic=100
+LOD.RunManager.State.Failed=true; near(rules:MovementMultiplier(actor),1.11); LOD.RunManager.State.Failed=false
+LOD.RunManager.State.SimulationFrozen=true; near(rules:MovementMultiplier(actor),1.11); LOD.RunManager.State.SimulationFrozen=false
+now=12; near(rules:MovementMultiplier(actor),1.11); open()
+actor.alive=false; near(rules:MovementMultiplier(actor),1.11); actor.alive=true
+hooks.LOD_MinimapMagicDeathStop(actor); near(rules:MovementMultiplier(actor),1.11)
+open(); close(); near(rules:MovementMultiplier(actor),1.11)
 -- Drain remains the existing WIS-scaled map consumer and force-closes at zero.
 magicState.magic=0.01; open(); now=now+.1; timers.LOD_MinimapMagicDrain()
 assert(magicState.magic==0); assert(not LOD.MinimapMagic:IsOpen(actor))
-near(rules:MovementMultiplier(actor),1.04)
+near(rules:MovementMultiplier(actor),1.11)
 -- Printed gates and prerequisite chain use the existing director.
 state.featIds={}; state.featQualificationAbilities.int=12
 assert(not cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[1]]))

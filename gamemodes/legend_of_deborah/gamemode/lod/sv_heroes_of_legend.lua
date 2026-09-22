@@ -125,11 +125,34 @@ function Heroes:SubmitRun(runData)
     return newEntry
 end
 
+function Heroes:LiveSnapshot()
+    local entries=table.Copy(self.Entries)
+    local run=LOD.RunManager;local state=run and run.State
+    if state and state.Ranked and state.RunId and not state.Finalized and not state.Failed then
+        local party={};local identities={}
+        for id in pairs(state.PlayedIdentities or {}) do identities[#identities+1]=id end
+        table.sort(identities)
+        for _,id in ipairs(identities) do
+            local ps=state.PlayerState[id]
+            if ps then party[#party+1]=LOD.CharacterProgressionSystem:PlayerCharacterText(ps) end
+        end
+        if #party>0 then
+            for i=#entries,1,-1 do if entries[i].runId==state.RunId then table.remove(entries,i) end end
+            entries[#entries+1]={runId=state.RunId,rescueCount=state.RescueCount or 0,
+                highestLevel=state.HighestLevel or state.Level or 1,cashRecovered=state.CashRecovered or 0,
+                partyMembers=party,completionOrder=self.NextCompletionOrder,inProgress=true}
+        end
+    end
+    self:SortEntries(entries)
+    while #entries>self.MAX_ENTRIES do table.remove(entries) end
+    return entries
+end
+
 function Heroes:SyncAll(ply)
     if not SERVER or not net or not net.Start then return end
     net.Start("LOD_HeroesOfLegend_Sync")
     if net.WriteTable then
-        net.WriteTable(self.Entries)
+        net.WriteTable(self:LiveSnapshot())
     end
     if ply then
         if net.Send then net.Send(ply) end
@@ -148,3 +171,11 @@ if SERVER and hook and hook.Add then
 end
 
 Heroes:Initialize()
+
+local nextLive=0
+hook.Add("Think","LOD_HeroesLiveSnapshot",function()
+    if CurTime()<nextLive then return end
+    nextLive=CurTime()+2
+    local fingerprint=util.TableToJSON(Heroes:LiveSnapshot())
+    if fingerprint~=Heroes.LiveFingerprint then Heroes.LiveFingerprint=fingerprint;Heroes:SyncAll() end
+end)

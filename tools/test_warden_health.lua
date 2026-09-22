@@ -13,7 +13,7 @@ for _,level in ipairs({1,5,20,100}) do
    function e:SetHealth(n) self.hp=n end
    local expected=assert(C:GenerateMonsterProgression('warden',1337,level,1000,'ai'))
    local state=assert(C:AttachMonsterProgression(e,1337,level))
-   assert(state.level==level+2 and state.tierId=='champion')
+   assert(state.level==level+math.floor(level/3)+2 and state.tierId=='champion')
    local rng=LOD.RNG.New(LOD.Seeds.Derive(1337,'rpg:warden-health-variation'))
    local hp=math.floor(expected.derivedStats.maxHP*size*rng:Float(0.94,1.06)*(1+0.2*(party-1))+0.5)
    assert(e.hp==hp and e.maximum==hp,'wrong RPG -> variation -> party health order '..e.hp..' vs '..hp..' scale='..state.wardenHPScale)
@@ -24,4 +24,4 @@ for _,level in ipairs({1,5,20,100}) do
   end
  end
 end
-print('WARDEN_HEALTH_PASS: production actor pipeline; D+2 Champion, 1000 reference+d20/CON, size/variance then 1/1.2/1.4/1.6 party HP; no damage multiplier or reattach healing')
+print('WARDEN_HEALTH_PASS: production actor pipeline; D+floor(D/3)+2 Champion, 1000 reference+d20/CON, size/variance then 1/1.2/1.4/1.6 party HP; no damage multiplier or reattach healing')

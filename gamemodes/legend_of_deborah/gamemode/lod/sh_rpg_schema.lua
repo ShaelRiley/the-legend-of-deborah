@@ -23,7 +23,7 @@ RPG.Constants = {
     -- Compatibility alias for older Hero-only consumers. New actor-aware code
     -- must use HeroMaxLevel/MonsterMaxLevel through CharacterProgressionSystem.
     MaxLevel = 20,
-    HeroMaxXP = 48000,
+    HeroMaxXP = 96000,
     AbilityMin = 3,
     AbilityMax = 30,
     MagicCapacity = 100,
@@ -38,11 +38,11 @@ RPG.Constants = {
 RPG.OrdinaryFeatLevels = {1, 3, 6, 9, 12, 15, 18}
 
 RPG.HeroXPThresholds = {
-    [1] = 0, [2] = 150, [3] = 400, [4] = 800, [5] = 1500,
-    [6] = 2500, [7] = 3800, [8] = 5400, [9] = 7300, [10] = 9500,
-    [11] = 12000, [12] = 14800, [13] = 17900, [14] = 21300,
-    [15] = 25000, [16] = 29000, [17] = 33300, [18] = 37900,
-    [19] = 42800, [20] = 48000
+    [1] = 0, [2] = 300, [3] = 800, [4] = 1600, [5] = 3000,
+    [6] = 5000, [7] = 7600, [8] = 10800, [9] = 14600, [10] = 19000,
+    [11] = 24000, [12] = 29600, [13] = 35800, [14] = 42600,
+    [15] = 50000, [16] = 58000, [17] = 66600, [18] = 75800,
+    [19] = 85600, [20] = 96000
 }
 
 RPG.Classes = {

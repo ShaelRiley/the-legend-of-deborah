@@ -253,6 +253,44 @@ snapshot.extras={proc_intimidated=35};contract.attackEvent={}
 Status:AttachDamageContext(info,{physical=true,damageContract=contract});E:PostDamage(target,info,true)
 assert(moraleCalls==1,'Intimidated weapon must invoke shared Morale save');Status.AttemptMorale=morale
 
-print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; natural reward distribution')
+-- Worn-item capabilities travel from inventory through real aggregation and
+-- attack capture, without granting a feat or substituting a hand-built snapshot.
+local wearer=actor('capability-wearer')
+wearer.ps.progressionState.classId='rogue'
+wearer.ps.progressionState.featIds={}
+wearer:Give('weapon_pistol');wearer:SelectWeapon('weapon_pistol')
+E:Sync(wearer)
+local trousers=E:NewItem(wearer,'trousers','capability-proof')
+trousers.properties={{id='proc_bleeding',amount=35,power=100},
+    {id='regen_ceiling',amount=40,power=100},{id='regen_rate',amount=50,power=100}}
+wearer.ps.equipment.items[trousers.id]=trousers
+assert(E:Equip(wearer.ps.equipment,trousers.id,'legs'))
+E:RefreshDerived(wearer,wearer.ps)
+local gearDerived=Rules:Derived(wearer)
+assert(#wearer.ps.progressionState.featIds==0 and gearDerived.healthRegenEnabled)
+assert(gearDerived.healthRegenCeilingFraction==.4)
+wearer.hp=10
+local effects=LOD.RPG.FeatEffectSystem
+effects:TrackActor(wearer,true)
+now=now+6;effects:_TickActor(wearer,1)
+assert(wearer.hp>10,'Worn regeneration did not heal a featless non-Fighter')
+local gearContract={attackEvent={}}
+E:SealWeaponAttack(wearer,gearContract,'weapon_pistol')
+assert(gearContract.equipmentSnapshot.extras.proc_bleeding==35)
+local opponents=LOD.FactionManager.IsOpponent
+LOD.FactionManager.IsOpponent=function(_,a,b) return a==wearer and b==target end
+local gearInfo={GetDamage=function() return 10 end,GetAttacker=function() return wearer end}
+Status:CureNegative(target)
+Status:AttachDamageContext(gearInfo,{physical=true,damageContract=gearContract})
+E:PostDamage(target,gearInfo,true)
+assert(Status:Has(target,'bleeding'),'Bloodletting trousers failed without a bleed feat')
+Status:CureNegative(target)
+LOD.FactionManager.IsOpponent=opponents
+E:UnequipItem(wearer.ps.equipment,trousers.id);E:RefreshDerived(wearer,wearer.ps)
+assert(not Rules:Derived(wearer).healthRegenEnabled)
+assert(not E:CaptureAttack(wearer,'weapon_pistol').extras.proc_bleeding)
+assert(#wearer.ps.progressionState.featIds==0,'Equipment mutated permanent feat ownership')
+
+print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution')
 -- Reuse these Source boundaries for the real SQLite wallet integration gate.
 return {actor=actor,Run=Run,hooks=hooks,timers=timers}

@@ -1,3 +1,43 @@
+# Current checkpoint — progression, sales and live rankings
+
+Second checkpoint in the active ten-priority brief: doubled Hero XP thresholds,
+stronger bounded INT/DEX curves, three-dungeon monster scaling, a 520-unit ordinary
+movement cap, atomic Sell All Unequipped, persisted/live Stakeholders and live
+Heroes of Legend. Procedural look-at identity and same-floor Hero map markers
+improve multiplayer readability. Open gates reassert collision removal; rolling
+summons use travel-driven rotation and model ground offset; damsel materials retain
+source shading and the stray blue brooch sphere is removed. DFT collection reports
+success only after storage accepts the token.
+
+GDD 00 → 01 → 02/06/07 and HUMAN amendment LOD-PROGRESSION-002 govern these changes.
+Existing earned Hero levels survive the XP threshold change. Ordinary movement
+bonuses combine before the safety cap; special movement remains independently
+validated. Bulk sale rejects the complete transaction if a reviewed item becomes
+equipped; DFT-created and protected gear remain excluded.
+
+Validation: targeted Lua movement, actor progression/Warden HP, wallet UI,
+look-at UI, minimap, snapshot, protected regressions and real SQLite economy
+checks pass. SQLite tests cover twelve-item sale, newly equipped selection,
+DFT exclusion, rollback, exact payout and replay. Leaderboard tests cover live
+participants, immutable completed storage and completion without duplication.
+Recovery validation: all 120 registered suites passed together with zero failures.
+Additional production-path regressions prove worn Bloodletting and regeneration
+on a featless non-Fighter, removal on unequip, and all-or-nothing rejection when
+inventory changes inside the sale transaction (equipped/protected/removed). Native GMod
+multiplayer, lighting, stairs, summon rotation and 4K visual acceptance are pending.
+
+Shared item capabilities are verified through the existing Equipment.Contributions,
+derived-state, attack-snapshot and status/regeneration pathways; no parallel feat
+system was added. Recovery preserves local commit c9d96c6 above remote 4942c43.
+The complete author brief is preserved in SEPTEMBER22_MASTER_BRIEF.md.
+
+Next: finish Priority 2 navigation/stairs/Climber/summon and persistence/cleanup
+checks before combat/piercing/defense revisions, procedural items/events and Hector.
+Those later requirements remain incomplete; follow the preserved brief in order.
+No public-server deployment or Workshop publication is included.
+
+---
+
 # Current checkpoint — persistent dungeon and Hero queues
 
 Active author brief: implement the ten-priority retention, combat, equipment,

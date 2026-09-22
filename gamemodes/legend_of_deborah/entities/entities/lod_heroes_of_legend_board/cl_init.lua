@@ -49,11 +49,24 @@ function ENT:Draw()
                     surface.SetFont("LOD_BoardEntry")
                     local function append(line)
                         local pages=self.LODBoardPages
-                        if #pages[#pages]>=math.floor((height-180)/30) then pages[#pages+1]={} end
+                        if not stakeholders and #pages[#pages]>=math.floor((height-180)/30) then pages[#pages+1]={} end
                         pages[#pages][#pages[#pages]+1]=line
                     end
                     for i=1,(stakeholders and math.max(1,#entries) or 10) do
-                        local text=entries[i] and (stakeholders and (entries[i].name.." — "..entries[i].value.." $DEB") or LOD.HeroesOfLegend:FormatEntry(entries[i])) or "---"
+                        if stakeholders and i>1 and (i-1)%10==0 then self.LODBoardPages[#self.LODBoardPages+1]={} end
+                        local entry=entries[i]
+                        local text=entry and LOD.HeroesOfLegend:FormatEntry(entry) or "---"
+                        if stakeholders and entry then
+                            local name=""
+                            for char in entry.name:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+                                if surface.GetTextSize(name..char.."…")>width-110 then name=name.."…";break end
+                                name=name..char
+                            end
+                            append(tostring(i)..". "..name)
+                            append("    "..entry.value.." $DEB")
+                            text=nil
+                        end
+                        if text then
                         local line=tostring(i)..". "
                         for token in text:gmatch("%S+%s*") do
                             if surface.GetTextSize(line..token)>width-64 then append(line);line="    " end
@@ -64,16 +77,17 @@ function ENT:Draw()
                             end
                         end
                         append(line)
+                        end
                     end
                 end
                 local pages=self.LODBoardPages
                 local page=math.floor(CurTime()/12)%#pages+1
-                draw.SimpleText((stakeholders and "$DEB + DFT VALUE / " or "COMPLETED PARTY RUNS / ").."PAGE "..page.." OF "..#pages,
+                draw.SimpleText((stakeholders and "$DEB + DFT VALUE / " or "PARTY RUNS / ").."PAGE "..page.." OF "..#pages,
                     "LOD_BoardEntry",0,60,C.blue,TEXT_ALIGN_CENTER)
                 for i,line in ipairs(pages[page]) do
                     draw.SimpleText(line,"LOD_BoardEntry",-width*0.5+32,105+(i-1)*30,C.ink)
                 end
-                draw.SimpleText(stakeholders and "Combined holdings / top half of connected players" or "Highest rescue count first / pages turn automatically",
+                draw.SimpleText(stakeholders and "All qualifying holders / 10 per page" or "Highest rescue count first / pages turn automatically",
                     "LOD_SheetSmall",0,height-50,C.muted,TEXT_ALIGN_CENTER)
             end
         cam.End3D2D()

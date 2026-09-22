@@ -80,7 +80,7 @@ LOD.SnapshotDelivery:Invalidate(p); CPS:SyncPlayer(p);flush()
 assert(#packets==2,'explicit resync recovers both unchanged snapshots')
 packets={}
 LOD.RunManager.State.Level=2
-assert(CPS:SetHeroXP(p,1500))
+assert(CPS:SetHeroXP(p,3000))
 assert(state.level==5 and #state.magicFormIds==2,'level-five grants are immediate')
 flush()
 assert(#packets==2,'level-up sends final sheet and changed book once each')

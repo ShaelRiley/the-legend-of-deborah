@@ -125,8 +125,10 @@ function CharacterProgressionSystem:DungeonEntityLevelCeiling(dungeonLevel)
 end
 
 function CharacterProgressionSystem:EffectiveLevelCap(actorTypeOrState, dungeonLevel)
+    local actorType = type(actorTypeOrState) == "table" and actorTypeOrState.actorType or actorTypeOrState
+    local bonus = (actorType == "ai" or actorType == "human_soldier") and math.floor(math.max(1, tonumber(dungeonLevel) or 1) / 3) or 0
     return math.min(self:ActorHardLevelCap(actorTypeOrState),
-        self:DungeonEntityLevelCeiling(dungeonLevel))
+        self:DungeonEntityLevelCeiling(dungeonLevel) + bonus)
 end
 
 function CharacterProgressionSystem:ClampLevel(level, actorTypeOrState)
@@ -414,7 +416,7 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.physicalDamageBonus = mods.strMod
     mods.fighterStrengthBypassesCon = state.classId == "fighter"
     mods.aimSpreadMultiplier = math.Clamp(1 - 0.04 * mods.dexMod, 0.60, 1.40)
-    mods.movementSpeedMultiplier = math.Clamp(1 + 0.02 * mods.dexMod, 0.85, 1.20)
+    mods.movementSpeedMultiplier = math.Clamp(1 + 0.055 * mods.dexMod, 0.90, 1.55)
     mods.boomShift = math.Clamp(math.floor(math.max(mods.dexMod, 0) / 2), 0, 2)
     mods.rogueBackstabEnabled = state.classId == "rogue"
     mods.rogueAllDamageDiceExplode = state.classId == "rogue"
@@ -425,7 +427,8 @@ function CharacterProgressionSystem:_RecomputeProgressionState(state)
     mods.damageResistancePerDie = math.Clamp(mods.conMod, 0, 3)
     mods.hpConBonusPerLevel = math.min(mods.conMod, 6)
     mods.conRegenMultiplier = math.Clamp(1 + 0.10 * mods.conMod, 0.50, 2.00)
-    mods.magicRegenMultiplier = math.Clamp(1 + 0.10 * mods.intMod, 0.50, 2.00)
+    mods.magicRegenMultiplier = (effective.int < 10 and math.max(.85, 1 + .025 * (effective.int - 10))
+        or 1 + 2 * (math.min(20, effective.int - 10) / 20)^1.5)
     mods.magicDamageBonus = mods.wisMod
     mods.utilityMagicCostMultiplier = math.Clamp(1 - 0.04 * mods.wisMod, 0.60, 1.40)
     mods.breadcrumbCells = math.Clamp(6 + 2 * mods.wisMod, 2, 24)
@@ -961,7 +964,7 @@ function CharacterProgressionSystem:SetHeroXP(ply, xp)
     if requested < (state.xp or 0) then return false, "Campaign XP cannot decrease." end
     state.xp = requested
     local dungeonLevel = runManager and runManager.State and runManager.State.Level or 1
-    return self:AdvanceHeroToLevel(ply, self:HeroLevelForXPAtDungeon(requested, dungeonLevel))
+    return self:AdvanceHeroToLevel(ply, math.max(state.level, self:HeroLevelForXPAtDungeon(requested, dungeonLevel)))
 end
 
 function CharacterProgressionSystem:AwardHeroXP(ply, amount)
@@ -1030,7 +1033,7 @@ function CharacterProgressionSystem:ResolveMonsterSpawnLevel(seed, dungeonLevel,
         tierId, offset = self:TierForRoll(tierRoll)
     end
     local dungeon = math.max(1, math.floor(tonumber(dungeonLevel) or 1))
-    local level = math.min(dungeon + offset,
+    local level = math.min(dungeon + math.floor(dungeon / 3) + offset,
         self:EffectiveLevelCap("ai", dungeon), RPG.Constants.MonsterMaxLevel)
     return level, tierId, offset
 end
@@ -1279,8 +1282,8 @@ function CharacterProgressionSystem:ValidateActorProgressionCore()
     expect(self:ActorHardLevelCap("ai") == 999, "monster hard cap")
     expect(self:EffectiveLevelCap("hero", 1) == 4, "Hero D+3 ceiling")
     expect(self:EffectiveLevelCap("ai", 1000) == 999, "monster 999 clamp")
-    expect(self:HeroLevelForXPAtDungeon(48000, 1) == 4, "banked Hero XP blocked at D+3")
-    expect(self:HeroLevelForXPAtDungeon(48000, 17) == 20, "banked Hero XP released")
+    expect(self:HeroLevelForXPAtDungeon(RPG.Constants.HeroMaxXP, 1) == 4, "banked Hero XP blocked at D+3")
+    expect(self:HeroLevelForXPAtDungeon(RPG.Constants.HeroMaxXP, 17) == 20, "banked Hero XP released")
     expect(RPG.Classes.wizard.heroProgressionHitDieSides == 4, "Wizard d4")
     expect(RPG.ArchetypeProgressionTemplates.soldier.progressionHitDieSides == 8, "Soldier d8")
 
@@ -1295,9 +1298,9 @@ function CharacterProgressionSystem:ValidateActorProgressionCore()
     local neilLevel, neilTier = self:ResolveMonsterSpawnLevel(1, 30, "neil")
     local bruteLevel, bruteTier = self:ResolveMonsterSpawnLevel(1, 30, "brute")
     local gordonLevel, gordonTier = self:ResolveMonsterSpawnLevel(1, 30, "gordon")
-    expect(neilLevel == 30 and neilTier == "typical", "Neil fixed tier")
-    expect(bruteLevel == 31 and bruteTier == "elite", "Brute fixed tier")
-    expect(gordonLevel == 32 and gordonTier == "champion", "Gordon fixed tier")
+    expect(neilLevel == 40 and neilTier == "typical", "Neil fixed tier")
+    expect(bruteLevel == 41 and bruteTier == "elite", "Brute fixed tier")
+    expect(gordonLevel == 42 and gordonTier == "champion", "Gordon fixed tier")
 
     local first, firstErr = self:GenerateMonsterProgression("shambler", 8675309, 25, 40, "ai")
     local replay, replayErr = self:GenerateMonsterProgression("shambler", 8675309, 25, 40, "ai")
@@ -1319,7 +1322,7 @@ function CharacterProgressionSystem:ValidateActorProgressionCore()
             }, "|")
         end
         expect(fingerprint(first) == fingerprint(replay), "deterministic monster replay")
-        expect(first.level >= 21 and first.level <= 28, "Level-21+ monster sample")
+        expect(first.level >= 33 and first.level <= 36, "Level-21+ monster sample")
         local expectedGrowth = self:_GrowthAtLevel(first, first.level)
         for _, ability in ipairs(ALL_ABILITIES) do
             expect(first.growthAbilities[ability] == expectedGrowth[ability],

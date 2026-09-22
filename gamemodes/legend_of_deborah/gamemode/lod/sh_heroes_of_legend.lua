@@ -14,7 +14,7 @@ function Heroes:FormatEntry(entry)
     end
     local count = tonumber(entry.rescueCount) or 0
     if entry.highestLevel then
-        return string.format("%s reached Level %d — %d damsels, %d cash bags",membersStr,entry.highestLevel,count,entry.cashRecovered or 0)
+        return string.format("%s reached Level %d — %d damsels, %d cash bags",(entry.inProgress and "[IN PROGRESS] " or "")..membersStr,entry.highestLevel,count,entry.cashRecovered or 0)
     end
     return string.format("%s cleared %d dungeons", membersStr, count)
 end

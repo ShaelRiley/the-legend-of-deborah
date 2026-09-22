@@ -59,33 +59,33 @@ local function move(forward,side,cap,jump)
     return m
 end
 cps:_RecomputeProgressionState(state)
-near(move(-100,0).speed,208)
+near(move(-100,0).speed,222)
 state.featIds={'INT_WAS_DEBORAH'}
 cps:_RecomputeProgressionState(state)
 for _,cap in ipairs({100,200,400}) do
     local m=move(-100,50,cap)
-    near(m.speed,cap*1.04*1.25); near(m.client,m.speed)
-    near(m.forward,-125*1.04); near(m.side,62.5*1.04); assert(m.vertical==320)
+    near(m.speed,math.min(520,cap*1.11*1.25)); near(m.client,m.speed)
+    near(m.forward,-125*1.11); near(m.side,62.5*1.11); assert(m.vertical==320)
 end
-near(move(100,0).speed,208); near(move(0,100).speed,208)
-near(move(0,0).speed,208)
+near(move(100,0).speed,222); near(move(0,100).speed,222)
+near(move(0,0).speed,222)
 -- Low analog input scales along with cap, maintaining desired-vector fraction.
 local analog=move(-10,5)
-near(analog.forward,-12.5*1.04); near(analog.side,6.25*1.04)
-actor.grounded=false; near(move(-100,50).speed,208); actor.grounded=true
-actor.mode=9; near(move(-100,50).speed,208); actor.mode=MOVETYPE_WALK
-actor.water=2; near(move(-100,50).speed,208); actor.water=0
-near(move(-100,50,200,true).speed,208)
+near(analog.forward,-12.5*1.11); near(analog.side,6.25*1.11)
+actor.grounded=false; near(move(-100,50).speed,222); actor.grounded=true
+actor.mode=9; near(move(-100,50).speed,222); actor.mode=MOVETYPE_WALK
+actor.water=2; near(move(-100,50).speed,222); actor.water=0
+near(move(-100,50,200,true).speed,222)
 actor.alive=false; near(move(-100,50).speed,200); actor.alive=true
 state.featIds={'INT_WAS_DEBORAH','INT_WORLD_WALKER_1','INT_GLOBETROTTER_2','INT_MIND_STRIDER_3'}
 cps:_RecomputeProgressionState(state)
 receivers.LOD_MapMagicState(0,actor)
-near(move(-100,50).speed,200*1.04*1.75*1.25)
-near(move(100,50).speed,200*1.04*1.75)
+near(move(-100,50).speed,200*1.11*1.75*1.25)
+near(move(100,50).speed,200*1.11*1.75)
 requestedOpen=false; receivers.LOD_MapMagicState(0,actor)
-near(move(-100,50).speed,200*1.04*1.25)
+near(move(-100,50).speed,200*1.11*1.25)
 state.featIds={}; cps:_RecomputeProgressionState(state)
-near(move(-100,50).speed,208)
+near(move(-100,50).speed,222)
 local def=LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_WAS_DEBORAH
 state.featQualificationAbilities.int=12; assert(not cps:_FeatEligible({},state,def))
 state.featQualificationAbilities.int=13; assert(cps:_FeatEligible({},state,def))

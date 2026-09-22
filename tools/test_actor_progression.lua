@@ -47,7 +47,7 @@ for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do
     local state, err = LOD.CharacterProgressionSystem:GenerateMonsterProgression(
         archetypeId, LOD.Seeds.Derive(424242, archetypeId), 25, 40, "ai")
     assert(state, err)
-    assert(state.level >= 25 and state.level <= 28, archetypeId .. " assigned Level")
+    assert(state.level >= 33 and state.level <= 36, archetypeId .. " assigned Level")
     assert(#state.pendingFeatSlots == #RPG.OrdinaryFeatLevels,
         archetypeId .. " ordinary slot count")
     assert(state.classCapstoneFeatId, archetypeId .. " Level-20 capstone")
@@ -94,6 +94,25 @@ LOD.CharacterProgressionSystem:_RecomputeProgressionState(hero)
 assert(hero.level == 20, "Hero hard cap regression")
 assert(hero.progressionHitDieSides == 4, "Wizard progression die regression")
 
+hero.primaryAbility=nil;hero.secondaryAbilities={}
+for _,score in ipairs({1,10,20,30,99}) do
+    hero.baseAbilities=RPG.NewAbilityBlock(score)
+    LOD.CharacterProgressionSystem:_RecomputeProgressionState(hero)
+    local d=hero.derivedStats
+    assert(d.magicRegenMultiplier>=.85 and d.magicRegenMultiplier<=3)
+    assert(d.movementSpeedMultiplier>=.90 and d.movementSpeedMultiplier<=1.55)
+end
+hero.baseAbilities=RPG.NewAbilityBlock(10)
+LOD.CharacterProgressionSystem:_RecomputeProgressionState(hero)
+assert(hero.derivedStats.magicRegenMultiplier==1)
+hero.baseAbilities.int=30
+LOD.CharacterProgressionSystem:_RecomputeProgressionState(hero)
+assert(hero.derivedStats.magicRegenMultiplier==3,'High INT gives threefold regen')
+for _,d in ipairs({2,3,5,6,9}) do
+    local level=LOD.CharacterProgressionSystem:ResolveMonsterSpawnLevel(1,d,'gordon')
+    assert(level==d+math.floor(d/3)+2,'Champion quality scales every third dungeon')
+    assert(LOD.CharacterProgressionSystem:EffectiveLevelCap('ai',d)==d+math.floor(d/3)+3)
+end
 local banked = LOD.CharacterProgressionSystem:NewProgressionState("banked", "hero", "hero")
 banked.classId = "wizard"
 banked.primaryAbility = "int"
@@ -106,11 +125,11 @@ LOD.RunManager = {
     State = {Level = 1, CampaignSeed = 777, PlayerState = {banked = {identity = "banked", progressionState = banked}}}
 }
 function LOD.RunManager:GetPlayerState(identity) return self.State.PlayerState[identity] end
-assert(LOD.CharacterProgressionSystem:SetHeroXP("banked", 48000))
-assert(banked.xp == 48000 and banked.level == 4, "Hero banked-XP ceiling transaction")
+assert(LOD.CharacterProgressionSystem:SetHeroXP("banked", 96000))
+assert(banked.xp == 96000 and banked.level == 4, "Hero banked-XP ceiling transaction")
 LOD.RunManager.State.Level = 17
 assert(LOD.CharacterProgressionSystem:ProcessBankedHeroXP(LOD.RunManager) == 16)
-assert(banked.level == 20 and banked.xp == 48000, "Hero banked-XP release transaction")
+assert(banked.level == 20 and banked.xp == 96000, "Hero banked-XP release transaction")
 
 LOD.RPGAbilityRules = {}
 function LOD.RPGAbilityRules:ProgressionState(actor)
