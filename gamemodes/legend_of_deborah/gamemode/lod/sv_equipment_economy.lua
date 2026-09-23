@@ -103,6 +103,8 @@ function E:StampWeapons(ply)
         if IsValid(weapon) then
             local item=self:EnsureWeapon(ply,class)
             weapon:SetNW2String("LOD_ItemName",self:ItemName(item))
+            local def=self:Definition(item)
+            if def.maxCharges then weapon:SetNW2Int("LOD_WandCharges",item.charges) end
             if LOD.WeaponAppearance then LOD.WeaponAppearance:Stamp(weapon,item) end
         end
     end
@@ -141,7 +143,15 @@ hook.Add("PlayerPostThink","LOD_ProceduralActiveWeapon",function(ply)
     if state.activeWeaponClass~=class then E:Sync(ply) end
 end)
 
-local grantWeapon=LOD.LootDirector._GrantWeapon
+local originalGrantWeapon=LOD.LootDirector._GrantWeapon
+local function grantWeapon(director,ply,class,rng)
+    local def=E.Definitions[class]
+    if def and def.maxCharges then
+        if IsValid(ply:GetWeapon(class)) then return true end
+        return IsValid(ply:Give(class,true))
+    end
+    return originalGrantWeapon(director,ply,class,rng)
+end
 local missingWeapon=LOD.LootDirector._MissingWeaponReward
 function LOD.LootDirector:_MissingWeaponReward(ply,rng)
     local allowed=self:_AllowedWeaponClasses(Run.State.Level or 1)
@@ -234,7 +244,11 @@ function E:PrepareReward(owner,kind,payload,options)
     end
     if kind=="cache" then return kind,payload end
     if not self.Definitions[payload.weaponClass] then return kind,payload end
-    return "wearable",{item=generate(payload.weaponClass)}
+    local family=payload.weaponClass
+    if options.equipmentEligible and LOD.RNG.New(LOD.Seeds.Derive(seed,"wand-weapon-v1")):Chance(1/8) then
+        family="weapon_lod_wand"
+    end
+    return "wearable",{item=generate(family)}
 end
 
 -- Do not allow the inventory UI to detach properties while retaining the gun.
@@ -302,7 +316,8 @@ function E:PostDamage(target,info,taken)
     local contract=context.damageContract
     local snapshot=contract and (contract.equipmentSnapshot or contract.originContract and contract.originContract.equipmentSnapshot)
     local attacker=info:GetAttacker()
-    if not snapshot or not snapshot.weapon or not context.physical or context.statusDamage or context.magic or context.passiveDamage
+    if not snapshot or not snapshot.weapon or not (context.physical or context.wand)
+        or context.statusDamage or context.magic and not context.wand or context.passiveDamage
         or context.throwable or context.auraBurst or context.reactiveDamage or context.dodged or context.blocked
         or not hero(attacker) or hero(attacker).identity~=snapshot.ownerIdentity or not E:CanAct(attacker) or Run.State.RunId~=snapshot.runId
         or Run.State.LevelSeed~=snapshot.levelSeed or attacker==target then return end

@@ -57,6 +57,7 @@ local function actor(id,enemy)
         function w:SetClip1(v) self.clip=v end
         function w:Clip1() return self.clip end
         function w:SetNW2String(k,v) self.nw[k]=v end
+        w.SetNW2Int=w.SetNW2String
         self.weapons[c]=w
         if hooks.LOD_ProceduralWeaponRecord then hooks.LOD_ProceduralWeaponRecord(w,self) end
         return w
@@ -119,7 +120,7 @@ for _,class in ipairs(E.WeaponFamilies) do owner:Give(class) end
 E:Sync(owner)
 for _,class in ipairs(E.WeaponFamilies) do assert(E:ValidateWearable(E:Equipped(owner.ps.equipment,class))) end
 local weaponCount=0;for _,item in pairs(owner.ps.equipment.items) do if E:Definition(item).weapon then weaponCount=weaponCount+1 end end
-assert(weaponCount==7,'Repeated Give preserves the two acquired copies, never creates extra records')
+assert(weaponCount==#E.WeaponFamilies+1,'Repeated Give preserves the two acquired copies, never creates extra records')
 -- Network synchronization must not repeat aggregation of unchanged equipment.
 local aggregate,aggregations=E.Contributions,0
 function E:Contributions(...) aggregations=aggregations+1;return aggregate(self,...) end

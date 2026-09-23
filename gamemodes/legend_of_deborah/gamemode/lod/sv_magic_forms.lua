@@ -290,6 +290,10 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         contract.wizardFullMagicIntBonus = context.sealedWizardFullMagicIntBonus
     end
     local tags = self:_DamageContext(content)
+    if context.wand then
+        tags.wand=true
+        contract.equipmentSnapshot=context.equipmentSnapshot
+    end
     tags.throwable = form.throwable == true
     tags.wisScaled = not form.physical
     if form.physical then tags.magic=false;tags.physical=true end
@@ -537,6 +541,7 @@ function Forms:_CastBeam(ply, form, content, context)
     local cap = RPG.Constants.MaxPenetrationTargetsPerProjectile or 128
     local seen, steps = {}, 0
     while remaining > 1 and hitCount < cap and steps < 512 do
+        if context.sourceValid and not context.sourceValid() then break end
         steps = steps + 1
         local tr = util.TraceLine({start = cursor, endpos = cursor + direction * remaining,
             mask = MASK_SOLID, filter = ignored})

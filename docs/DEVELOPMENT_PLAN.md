@@ -1,4 +1,94 @@
-# Current checkpoint — Tanuki's Ring
+# Current checkpoint — Wand weapon category
+
+Built on independently verified remote main
+`320034957fa998d768b87211972be421391c9660`; working tree was clean and no newer
+work was replaced. Read AGENTS.md and live GDD 00 → 01 → relevant 02/03/06/07/90.
+Retrieved only the exact HUMAN Arcane-item class-permission detail needed to
+resolve the brief's existing Rogue success roll. A fresh protected-control-aware
+read preceded GDD synchronization; recorded and read back `LOD-WAND-001` in
+02/03/06/07/90 and HUMAN under the retained September22 author's express design,
+balancing and synchronization delegation. The finite Beam weapon supersedes the
+old guided-orb Magic Wand concept for this category.
+
+`weapon_lod_wand` is a procedural weapon in the existing generator, inventory,
+selection, acquisition, persistence and appearance-stamping paths. Each distinct
+item starts with **12 charges** stored on its owned record. **LMB attempts Beam;
+0 personal Magic; 0.65s cadence shared across copies**. Native clip/reserve is not
+authoritative: no reload, ammo refill, ammo regeneration, copy swap or weapon
+recreation can replenish charges. Zero remains a valid stored record; frozen
+recreation preserves the frozen count. Mandatory starter families and frozen
+records are unchanged. After established wearable conversion, eligible optional
+weapon rewards use an independent named1/8 substream for Wand selection.
+
+Canonical class permissions are executable, not just a derived label. Wizard
+activation is automatic. Rogue rolls one deterministic non-exploding utility
+d100, succeeding at min(95,5 × Combat Level)%:5/50/95/95 at Levels1/10/19/20.
+A committed failed Rogue attempt consumes one charge and cooldown but creates no
+Beam and spends no Magic. Fighter/other classes may carry but cannot activate.
+Missing ownership, wrong native owner/active weapon, blocked status, empty pool,
+cooldown, invalid aim and invalid lifecycle spend and roll nothing. Muted and
+Intimidated use canonical status checks. The class roll and result use the shared
+RNG and combat feed; it never enters damage dice or Boom logic.
+
+Successful activation uses the existing Beam resolver: **3d6 plus shared WIS**,
+ordered one-hit-per-body piercing, blocking architecture,1152-unit base range
+plus existing spatial reach, shared global work/dice limits and cyan-core VFX.
+The new Wand contract explicitly records3d6 while leaving ordinary Spellbook
+Beam gameplay untouched. Each Wand's rolled affinity provides element/accent.
+Its existing procedural weapon-hit rider chances use the shared equipment rider
+resolver after effective HP damage to a survivor; no second automatic Content
+rider is added. Compatible damage-side class/feat/gear/status/defense/attribution
+and XP authorities remain shared. Charged activation grants no Form or Content,
+spends no personal Magic, and emits no Magic-spent event, Quantum refund, Aura
+Burst or scheduled Aftershock. RMB remains the ordinary Spellbook binding.
+
+Bind the exact item/slot, native weapon, Hero identity/state/life and run/seed/graph
+through the existing equipment-move source authority. Revalidate before spending
+and before every subsequent Beam contact, so a synchronous death, role, equipment
+or dungeon change cannot continue damaging later targets. Native Wand attempts
+reveal Veil and end Statue. No delayed Wand entity, timer or second combat system.
+Inventory descriptions show remaining/max charges; the held Wand has a persistent
+charge/depleted HUD. Character Sheet directed stats now show the exact class-use
+chance or PROHIBITED. Both manual readers document finite use and failure rules.
+Presentation uses a bundled baton silhouette and shared Beam/cast cue; native
+first-person model and co-op presentation acceptance remain pending.
+
+Validation: **133 integrated suites pass, zero failures**, including Lua syntax,
+release wiring, generator distribution/crash replay, shared combat/Magic/gear,
+accepted movement/overhead barriers, rescue and Hero/Soldier queues. The new suite
+executes actual item generation/admission/selection, class utility thresholds,
+Beam damage and ordered contacts, world blockers, shared procedural status riders,
+no duplicate automatic rider, per-copy charge consumption and serialized restore,
+native weapon adapter/HUD, cooldown across copies, and stale identity/life/role/
+run/graph/equipment rejection. The initial focused harness exposed recursive
+copying of fake native entities through their owner references; corrected the
+native boundary double to preserve entity identity, without changing production
+logic or weakening assertions. After the integrated pass, strengthened live-charge
+ownership/lifecycle negatives so empty-charge denial cannot mask a defect; focused
+Wand tests pass again. Generated manual and whitespace checks pass. These are
+automated/headless results, not native Source acceptance.
+
+Native gate pending: on gm_flatgrass, as a developer-mode admin with a Wizard
+Hero, run `lod_wand_testkit`; fire through two aligned enemies toward a wall.
+Confirm both are hit once, the Beam ends at the blocker, charges decrement once,
+Magic stays unchanged and reload does nothing. Swap/stow/reselect, respawn and
+transition: each copy must retain its count. Repeat as Rogue to observe logged
+success/failure and charge loss on failures; Fighter activation must fail free.
+Check another player's view, first-person baton, charge HUD and Veil/Statue break.
+The testkit selects an already-owned Wand without refilling it and marks the run
+unranked. Capture console_latest.txt and rpg_summary_latest.txt. No VPS or Workshop
+deployment; prior native acceptance obligations remain open.
+
+Next bounded P7 checkpoint: **Boots of the Moon**. Reconcile lower-gravity equipment
+with live movement/lifecycle authorities and the accepted overhead-wall constraint.
+Define finite equipped ownership, gravity composition/restoration, source removal,
+role/death/level change and maze-boundary checks before implementation. Preserve
+fun ordinary movement, rescue progression and Hero/Soldier queues. Then Magic
+Hourglass; do not begin either as part of this completed Wand checkpoint.
+
+---
+
+# Previous checkpoint — Tanuki's Ring
 
 Built on independently verified remote main
 `c29e372617380de753c1b11547891dbea75d496e`; clean working tree, no newer work

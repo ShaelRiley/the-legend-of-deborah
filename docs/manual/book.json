@@ -735,6 +735,35 @@
       ]
     },
     {
+      "id": "wand",
+      "title": "A little borrowed sorcery",
+      "rows": [
+        [
+          "Wand",
+          "LMB: piercing Beam · 12 charges · No reload"
+        ],
+        [
+          "Wizard",
+          "Automatic class permission"
+        ],
+        [
+          "Rogue",
+          "d100 ≤ 5 × Combat Level, capped at95"
+        ],
+        [
+          "Fighter",
+          "May carry; cannot activate"
+        ]
+      ],
+      "text": [
+        "Each Wand is a distinct procedural weapon with its own twelve-charge pool. Equip a copy through Equipment and press LMB to attempt a Beam. One accepted attempt spends one charge and no personal Magic, with at least0.65 seconds between attempts. RMB still casts your selected Spellbook Magic.",
+        "Wizards activate Wands normally. Rogues make one non-exploding d100 roll:5% success at Level1,50% at Level10,95% at Levels19 and20. A failed Rogue attempt still consumes the charge and cooldown but produces no Beam. Other classes cannot activate it. Muted and Intimidated prevent activation without spending a charge.",
+        "A successful Wand Beam deals3d6 plus Wisdom through the shared Magic combat rules. It pierces eligible bodies once each in order and stops at blocking architecture or its normal range, extended by your existing spatial bonuses. Its cyan core keeps the familiar Beam identity; the Wand affinity supplies elemental damage and color accents.",
+        "The Wand uses its rolled equipment status chances and normal saves after effective damage; it does not add a second automatic Content rider. Your normal compatible damage modifiers and defenses still apply. Wand use does not unlock Beam or a Content in the Spellbook, and spending a charge does not count as spending personal Magic.",
+        "The remaining charges are always shown while the Wand is held and in its Equipment description. Empty Wands remain in your inventory. Reloading, ammunition pickups, regeneration, swapping copies, weapon recreation, respawning and dungeon transitions never refill a copy. Stored and frozen copies preserve their recorded charges. Attack attempts reveal Veil and end Statue."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

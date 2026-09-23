@@ -20,6 +20,11 @@ function D:Rows(actor)
         percent('Defense','Moving Dodge',dodge.ordinary or 0)
         percent('Defense','Fast-moving Dodge',dodge.elevated or 0)
     end
+    if state.actorType=='hero' then
+        local chance=math.floor((d.arcaneItemUseChance or 0)*100+.5)
+        add('Magic','Wand / Scroll use',chance>0 and (chance..'%') or 'PROHIBITED',
+            chance==0 and 'Class prohibition' or chance==100 and 'Wizard class' or 'Rogue: d100 per attempt; failed finite use still consumes a charge')
+    end
     percent('Magic','Regeneration multiplier',R:MagicRegenMultiplier(actor),1)
     local cost=tonumber(d.quantumCostMultiplier) or 1
     percent('Magic','Offensive cost multiplier',cost,1)

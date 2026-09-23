@@ -13,6 +13,11 @@ for i, class in ipairs(E.WeaponFamilies) do
         model="models/weapons/"..weaponModels[i]..".mdl"}
     E.SlotOrder[#E.SlotOrder+1], E.SlotLabels[class] = class, weaponNames[i]
 end
+-- Charged weapons retain their resource on the owned record, never native ammo.
+E.Definitions.weapon_lod_wand={name="Wand",weapon=true,weaponClass="weapon_lod_wand",
+    slots={"weapon_lod_wand"},model="models/weapons/w_stunbaton.mdl",maxCharges=12,cooldown=.65}
+E.WeaponFamilies[#E.WeaponFamilies+1]="weapon_lod_wand"
+E.SlotOrder[#E.SlotOrder+1]="weapon_lod_wand";E.SlotLabels.weapon_lod_wand="Wand"
 -- Innate techniques are authoritative definition grants, not permanent feats.
 -- Generic/frozen records retain their existing IDs, properties and valuation.
 E.SpecialMoves.psychic_crush = {id="psychic_crush", name="Psychic Crush", displayName="Psychic Crush",
@@ -169,7 +174,7 @@ end
 function E:ValidateWearable(item)
     if not item or item.version~=2 then
         local definition=self:Definition(item)
-        if definition and definition.moves then return false end
+        if definition and (definition.moves or definition.maxCharges) then return false end
         -- The old validator refers to self:Budget; bind its original schedule.
         local proxy=setmetatable({Budget=function(_,d,f)
             return (10+2*math.floor((math.max(1,math.min(100,math.floor(tonumber(d) or 1)))-1)/5))*(f=="gloves" and 2 or 1)
@@ -183,6 +188,8 @@ function E:ValidateWearable(item)
         or not self.Rarities[item.rarity] or item.rarity<(def.minimumRarity or 1) or not finite(item.quality) or item.quality<90 or item.quality>110 or item.quality%1~=0
         or item.budget~=self:Budget(item.dungeonLevel,item.definitionId,item.rarity,item.quality)
         or type(item.properties)~="table" or #item.properties~=self.Rarities[item.rarity].affixes+1 then return false end
+    if def.maxCharges and (not finite(item.charges) or item.charges%1~=0
+        or item.charges<0 or item.charges>def.maxCharges) then return false end
     local used, groups, positive, negative, elements, riders={},{},0,0,0,0
     for _,r in ipairs(item.properties) do
         local p=self.EconomyProperties[r.id]
@@ -216,6 +223,7 @@ function E:Generate(seed, level, requestedFamily, contextId)
     local d=math.max(1,math.min(self.ScalingDungeonCap,math.floor(tonumber(level) or 1)))
     local item={version=2,id="gear2:"..tostring(contextId or seed)..":"..family,definitionId=family,count=1,
         seed=seed,dungeonLevel=d,rarity=rarity,quality=rng:Int(90,110),properties={}}
+    if def.maxCharges then item.charges=def.maxCharges end
     item.budget=self:Budget(d,family,rarity,item.quality)
     local used,groups={},{}
     local function add(id,power,sign)
@@ -299,6 +307,8 @@ LOD.RuntimeReceipts.equipment_generator = "generator-jit-20260917-01"
 function E:Description(item, compact)
     if not item or item.version~=2 then return legacyDescription(self,item,compact) end
     local out={self.Rarities[item.rarity].name.." · Dungeon "..item.dungeonLevel}
+    local def=self:Definition(item)
+    if def.maxCharges then out[#out+1]=string.format("CHARGES %d/%d · No reload · LMB Beam · 0 Magic; Wizard automatic, Rogue 5%% per Level (max95%%); failure spends a charge",item.charges,def.maxCharges) end
     for _,id in ipairs(self:Definition(item).moves or {}) do
         local m=self.SpecialMoves[id]
         local trigger=m.passive and (m.trigger.." / passive") or m.glyphs

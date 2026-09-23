@@ -192,3 +192,22 @@ concommand.Add("lod_tanuki_testkit",function(ply)
     E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
     E:Report(ply,"TANUKI TEST — stand still for 2 seconds: stone, concealed and invulnerable. Movement, attacks or use restart the wait. No Magic cost. Run unranked.","tanuki_testkit")
 end)
+
+concommand.Add("lod_wand_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("wand_testkit")
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="weapon_lod_wand" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"weapon_lod_wand","wand-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the Wand.","special_move_rejected");return
+        end
+    end
+    if not E:InventoryWeapon(ply,item.id,false) then return end
+    E:Report(ply,"WAND TEST — LMB piercing Beam; 12 finite charges, no reload or Magic cost. Wizard automatic; Rogue d100 <= 5 × Level (max95); failure spends a charge. Existing Wand not refilled; run unranked.","wand_testkit")
+end)
