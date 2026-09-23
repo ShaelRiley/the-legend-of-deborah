@@ -920,6 +920,28 @@
       ]
     },
     {
+      "id": "enemy-support",
+      "title": "The prison support detail",
+      "rows": [
+        [
+          "Stitcher",
+          "A slave Vortigaunt channels recovery into one wounded ally. The green link announces a 1.5-second window to interrupt it or break its line of sight. Each completed channel restores 12% of the ally’s maximum HP, rounded up and capped at 24 HP; it cannot revive the dead."
+        ],
+        [
+          "Bulwark",
+          "A Combine elite protects one ally with a blue tether. Its six-second guard adds 25 percentage points to ordinary physical Block, still capped at 33%. Magic bypasses Block. Kill or interrupt the Bulwark, draw the ally more than 240 units away, or break the tether with cover."
+        ],
+        [
+          "Cantor",
+          "A Metrocop calls up to three nearby allies onto one visible Hero for four seconds. The gold call changes their target priority without adding damage or speed. Break sightlines, interrupt the caller, or turn the pursuing group into your team’s firing line."
+        ]
+      ],
+      "text": [
+        "These enemies support existing companions; they neither summon reinforcements nor revive fallen enemies. Support does not stack. When nobody qualifies for support, each specialist can still fire a weak ordinary projectile.",
+        "Their distinctive links and call warnings remain visible with reduced effects. Generated class and elemental affinity are independent of the support role."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

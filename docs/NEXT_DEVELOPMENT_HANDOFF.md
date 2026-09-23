@@ -1,40 +1,84 @@
-# Handoff — Bestiary B2
+# Handoff — Bestiary B3
 
-Resume `ShaelRiley/the-legend-of-deborah` on `main`. B1 is the latest gameplay
-checkpoint, “Add Bestiary control cohort and freeze expansion baseline”. Verify
-current remote HEAD and preserve intervening work; the publication response gives
-the exact verified SHA. Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B3 only**,
+including validation, commit and verified non-forced push to `main`.
+
+Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
+Latest checkpoint: **Add Bestiary ally-support cohort with canonical lifecycle**.
+The publication response supplies its exact verified SHA; fetch current remote
+`main`, confirm that checkpoint and preserve intervening work. B2's parent was
+`4e20da5f93d06b9707c93979bb191915a937c503`.
+Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
-compatible existing assets, tests, diagnostics, documentation, live GDD amendments,
-focused parallel delegation, commits and non-forced pushes directly to `main`.
-Resolve routine ambiguities. **Do not deploy to the VPS or publish to Workshop.**
+compatible existing assets, naming, UX, tests, diagnostics, documentation,
+live GDD amendments, focused parallel delegation, commits and non-forced pushes
+directly to `main`. Resolve ordinary ambiguities. **Do not deploy to the VPS or
+publish to Steam Workshop.**
 
-Read AGENTS.md, the active DEVELOPMENT_PLAN.md roadmap/current checkpoint,
-docs/briefs/BESTIARY_UPDATE.md and docs/BESTIARY_EXPANSION.md. Follow live GDD
-00 →01 → relevant subsystem tabs, including LOD-ROADMAP-ECOSYSTEM-001 and
-LOD-BESTIARY-B1-001. Retrieve exact HUMAN detail only if needed; no chat archaeology
-or repeated broad audit. Baseline is frozen18; target63; B1 delivers21,42 remain.
+Recover from AGENTS.md, the active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
+this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live GDD
+00 → 01 → relevant subsystem tabs, including LOD-ROADMAP-ECOSYSTEM-001 and
+LOD-BESTIARY-B1-001 / LOD-BESTIARY-B2-001. Read exact HUMAN details only if needed;
+no historical-chat recovery or repeated broad audit. Missing historical art does
+not block implementation.
 
-Complete **B2 only**: a substantial bounded ally-support cohort with three distinct
-roles (interruptible recovery, positional protection, rally/status support),
-concrete production compositions and shared-authority implementation. Reconcile
-available healing/mitigation/status seams and amend GDD before fixing design.
-Do not count differently colored buff casters. Preserve entity budgets, faction
-unity, RNG isolation, topology, progression and exact-dungeon lifecycle; no new
-reinforcement bodies or revival. Proposed finite target24/63, subject to actual
-meaningful implemented identities. Preserve all bosses, Gordon →Hector →Deborah,
-finale/staging succession, Abundance and Level-21 cash progression.
+B1 implemented Gaoler Ice/Held, Silencer Light/Muted and Repulsor Earth/Push.
+B2 implements Stitcher interrupted bounded ally healing with exclusive mending
+reservation; Bulwark breakable positional canonical Block; Cantor bounded group
+target focus. All have production compositions and real class/feat/HP/XP/spawn
+wiring. Canonical healing, statuses, mitigation, targeting and rewards remain
+owners; exact dungeon plus source/recipient/Hero incarnation guards retire stale
+work. Native Source acceptance remains pending. See DEVELOPMENT_PLAN.md for final
+B2 integration results:158 suites exercised,155 initially passed, three stale
+fixture/validator assumptions corrected and all affected reruns plus final B2
+passed; zero remaining failures (not a second full run). The512-plan/4910-
+encounter production sample also passed.
 
-Reserve the final third for validation/fixes/documentation/publication. Use focused
-tests while editing; once coherent run `python3 tools/test_checkpoint_g_integration.py`.
-B1 passed all157 suites with zero failures; see DEVELOPMENT_PLAN.md for evidence. Native acceptance remains pending,
-scheduled after Bestiary →Big Loot →Events →integration/emergence audit →low-end
-performance audit →crash/progression-safety audit. Do not advance another phase.
+Frozen baseline **18**, whole Bestiary target **63**, implemented **24/63**,
+**6/45 additions banked**, **39 remaining**. Never rebase or count cosmetics,
+numerical permutations, bosses, event-only actors, friendly summons or definitions
+without actual production behavior.
 
-Record expansion progress, results, remaining native checks and concrete B3 in
-the plan. Update/read-back verify relevant GDD amendments and manual, then commit
-and non-force-push immediately when green. If CLI credentials remain absent, use
-authenticated GitHub blob/tree/commit/ref operations, compare every blob and the
-complete remote tree to the validated local tree, update non-forced, fetch and
-verify. End with verified SHA, scope, tests, count and next checkpoint.
+Complete one coherent **B3 flank/pursuit cohort**. Proposed roles:
+
+1. A flanker choosing a legal alternate approach around the visible Hero's lane.
+2. A skirmisher committing a ranged attack before retreating to a reachable position.
+3. An interceptor warning before occupying a reachable escape junction.
+
+These are proposed roles, not fixed or already implemented mechanics. Reconcile
+existing navigation, targeting, commitment, geometry and placement authorities;
+choose concrete identities and tuning and record substantive decisions in the
+live GDD. Each must elicit distinct counterplay and appear in complementary
+production compositions. Finite target **27/63**, subject to the counting contract.
+No teleporting, through-wall knowledge, locked-gate bypass, unavoidable damage,
+reinforcement spawning or full director rewrite. Preserve faction unity,
+independent deterministic RNG streams, budgets and multiplayer lifecycle.
+
+Explicitly wire canonical progression templates, supported class/feat capability,
+HP growth, XP and actual unified spawning. Prove bounded route/target work, real
+reachability/cover, interruption, expiration, source/target lifecycle and reset /
+same-seed replacement using exact dungeon identity. Preserve every prior cohort,
+all bosses, Gordon → Hector → Deborah, finale and sole Deborah staging successor,
+Abundance and Level-21 cash progression.
+
+Reserve roughly the final third for validation, fixes, documentation and
+publication. Use targeted tests while editing, then run
+`python3 tools/test_checkpoint_g_integration.py` once coherent. Fix attributable
+failures; repeat broadly only for a concrete remaining risk. Separate automated
+evidence from native Source acceptance. Update/read-back verify GDD amendments,
+canonical manual, ledger, plan and handoff with the implemented count, results,
+native checks and a concrete next checkpoint. Commit and publish immediately
+after green validation.
+
+CLI push credentials were unavailable in B1/B2. If still unavailable, use
+authenticated GitHub blob/tree/commit/ref tools: verify every blob, compare the
+exact complete validated tree, advance main non-forced, fetch and verify remote
+SHA, parent and tree. Never overwrite newer work or force-push.
+
+Phase order: **Bestiary → Big Loot → Event System → systems integration/emergence
+audit → low-end PC performance audit → final crash/progression-safety audit →
+human playtest**. Outstanding native acceptance does not block this sequence.
+Finish B3 only; do not begin another checkpoint or phase. End with verified SHA,
+implemented scope, tests, expansion progress, remaining native checks and the
+next continuation prompt.

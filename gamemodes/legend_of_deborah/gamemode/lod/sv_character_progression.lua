@@ -498,6 +498,10 @@ function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     -- Human Soldiers develop the same generated build as AI Soldiers. Controller
     -- input affordances must not perturb the shared eligibility/RNG candidate set.
     if state and (state.actorType == "ai" or state.actorType == "human_soldier") then
+        if tag == "offensive_magic_activation" then
+            local template = self:ArchetypeProgressionTemplate(state.archetypeId)
+            if template and template.offensiveMagic == false then return false end
+        end
         if tag == "reloadable_firearm" or tag == "hit_stun_source" then return false end
         if tag == "pushable_weapon" then return self:HasAuthoredPhysicalAttack(state) end
         if tag == "firearm" then return state.archetypeId == "soldier" or state.archetypeId == "blitzer" end
@@ -1090,7 +1094,10 @@ function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, use
     end
     if usesMagic then
         tags[#tags + 1] = "magic_pool"
-        tags[#tags + 1] = "offensive_magic_activation"
+        local template = self:ArchetypeProgressionTemplate(archetypeId)
+        if not template or template.offensiveMagic ~= false then
+            tags[#tags + 1] = "offensive_magic_activation"
+        end
     end
     return tags
 end

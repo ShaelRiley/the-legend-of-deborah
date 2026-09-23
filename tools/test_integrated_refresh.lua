@@ -25,7 +25,12 @@ function actor:GetRunSpeed() return 400 end
 -- Every negative condition uses the same cure path, including infinite-tick ailments.
 for id in pairs(S.Registry) do assert(S:Apply(actor,id,enemy,{direct=true,dc=100,duration=20})) end
 assert(E:Heal(actor,actor,25),'Full-HP potion must remain a remedy')
-for id in pairs(S.Registry) do assert(not S:Has(actor,id),id..' survived potion') end
+for id,definition in pairs(S.Registry) do
+ if definition.beneficial then
+  assert(S:Has(actor,id),id..' was incorrectly removed by a negative-condition remedy')
+  assert(S:Clear(actor,id,'fixture cleanup'))
+ else assert(not S:Has(actor,id),id..' survived potion') end
+end
 assert(not S.Active[actor]);assert(not actor.nw.LOD_StatusHeld and not actor.nw.LOD_StatusPoisoned)
 -- Production movement hook gets funded Haste from owned/recomputed feat state.
 local state=actor.ps.progressionState;state.featIds={'INT_HASTE_1'}

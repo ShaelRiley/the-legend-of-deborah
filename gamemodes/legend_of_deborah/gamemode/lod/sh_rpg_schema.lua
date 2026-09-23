@@ -109,11 +109,19 @@ RPG.ArchetypeProgressionTemplates = {
     gaoler = archetypeTemplate(8, 9, 11, 14, 16, 10, 10, 15, 75, 8, 50, 4, true, "gaoler"),
     silencer = archetypeTemplate(8, 13, 10, 12, 14, 10, 20, 40, 40, 6, 45, 4, true, "silencer"),
     repulsor = archetypeTemplate(14, 8, 13, 10, 13, 9, 45, 15, 40, 10, 50, 6, true, "repulsor"),
+    stitcher = archetypeTemplate(8, 10, 10, 14, 16, 10, 10, 15, 75, 6, 50, 4, true, "stitcher"),
+    bulwark = archetypeTemplate(14, 8, 15, 12, 13, 9, 60, 10, 30, 10, 60, 7, true, "bulwark"),
+    cantor = archetypeTemplate(10, 13, 11, 10, 12, 16, 35, 65, 0, 8, 50, 6, false, "cantor"),
     neil = archetypeTemplate(10, 13, 11, 12, 12, 14, 20, 40, 40, 10, 150, 8, false, "neil"),
     brute = archetypeTemplate(18, 7, 18, 4, 8, 9, 90, 5, 5, 12, 250, 10, false, "brute"),
     warden = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "warden"),
     hector = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "hector")
 }
+
+-- These actors cast support magic and use physical fallback shots. Their Magic
+-- pools/classes remain canonical without inventing an offensive casting source.
+RPG.ArchetypeProgressionTemplates.stitcher.offensiveMagic = false
+RPG.ArchetypeProgressionTemplates.bulwark.offensiveMagic = false
 
 for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do
     template.archetypeId = archetypeId

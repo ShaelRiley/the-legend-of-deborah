@@ -82,8 +82,20 @@ function Validation:Run(printResult)
         end
     end
 
-    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 25 then
-        addError(errors, "archetype progression template count must be 25")
+    local expectedArchetypes = {
+        "shambler", "runner", "climber", "soldier", "deadcrab", "bioblaster",
+        "blitzer", "sniper", "flamer", "bigcrab", "watcher", "seeker", "sentry",
+        "razor", "arccaster", "nodule", "lurker", "beamsweeper", "gaoler",
+        "silencer", "repulsor", "stitcher", "bulwark", "cantor",
+        "neil", "brute", "warden", "hector"
+    }
+    if countKeys(RPG.ArchetypeProgressionTemplates) ~= #expectedArchetypes then
+        addError(errors, "archetype progression template count must be " .. #expectedArchetypes)
+    end
+    for _, archetypeId in ipairs(expectedArchetypes) do
+        if not (RPG.ArchetypeProgressionTemplates or {})[archetypeId] then
+            addError(errors, "missing archetype progression template " .. archetypeId)
+        end
     end
     for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates or {}) do
         local weights = template.aiClassWeights or {}

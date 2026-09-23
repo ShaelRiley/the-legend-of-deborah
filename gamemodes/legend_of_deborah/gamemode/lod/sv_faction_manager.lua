@@ -70,6 +70,11 @@ function FactionManager:BestTarget(hostile, graph, homeCell)
         if ally then return ally, distance end
     end
 
+    if LOD.EnemySupport then
+        local rallied, distance = LOD.EnemySupport:RallyTarget(hostile, graph, homeCell)
+        if rallied then return rallied, distance end
+    end
+
     local best, bestGraphDistance, bestWorldDistance
     for _, ply in ipairs(self:LivingTargets()) do
         local targetCell = navigator:WorldToCell(graph, ply:GetPos())

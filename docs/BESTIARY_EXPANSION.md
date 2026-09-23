@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline and B1
+# Bestiary expansion — frozen baseline through B2
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1 adds three identities: **21/63**, or **3/45 additions**; **42 remain**.
+B1 and B2 add six identities: **24/63**, or **6/45 additions**; **39 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -92,33 +92,61 @@ ceiling, attack/projectile budgets, transition/objective protections and dungeon
 lifecycle remain constraints. Bosses, finale, staging succession, Abundance and
 Level-21 cash progression are unchanged by this cohort.
 
-## Remaining gaps and B2 proposal
+## B2 — prison support detail
 
-After B1, the normal roster still lacks strong ally recovery/protection roles,
-linked support priorities, explicit flank/ambush behavior beyond direct pursuit,
-corpse/resource interaction and richer persistent zone denial. B1 addresses soft
-anti-caster and displacement pressure; it does not claim the full ecology update.
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `stitcher` / Stitcher | Green slave Vortigaunt channels for 1.5s to heal one injured ally by ceil(12% MaxHP), capped at 24 HP. Interrupt or break its range/cover. No revival or condition cure. | Stitcher + two Shamblers. |
+| `bulwark` / Bulwark | Blue Combine elite channels for 1s, granting one ally a 6s tether with +25 percentage points of canonical physical Block, capped at 33%. Break the 240-unit tether/cover, disrupt its source, or use Magic. | Bulwark + Soldier. |
+| `cantor` / Cantor | Gold Metrocop calls for 1s, focusing up to three allies on one visible Hero for 4s through ordinary targeting. Break sightlines or disrupt the caller; no damage/speed increase. | Cantor + two Runners. |
 
-**B2 proposal: one three-enemy ally-support cohort**, with finite target **24/63**:
+Production templates `stitcher_detail`, `bulwark_line`, `cantor_charge` enter
+sector-2+ arena/ambush selection. Enrichment never duplicates the support source;
+ordinary companion scaling remains. The unified spawner appends all three IDs,
+preserving earlier ordinals. Reference HP/speed/threat are 35/100/3.5,
+65/90/4 and 40/140/3.5 respectively. Shared physical fallback is 1d4+1, range600,
+0.7s warning and 2.2s recovery. Support cooldowns after warning: 6/8/8 seconds;
+ally ranges360/240/420. Support requires a visible acquired Hero within600 to
+start. Candidates must be activated living ordinary hostiles, excluding self,
+named bosses/clones, event Skeletons and player-controlled or friendly actors.
+No enemy healing grants Hero support currency.
 
-1. A recovery specialist whose interruptible, bounded ally heal creates a focus
-   target without revival or new bodies.
-2. A protection specialist that briefly guards a nearby ally, using existing
-   damage modifiers and legible break/position counterplay.
-3. A rally specialist that provides a bounded existing ally status, with clear
-   interruptible commitment and no reinforcement spawning.
+Selection inspects at most128 cached registry candidates, on the same physical
+floor, at most two traversable graph edges away, with range and LOS checks.
+A beneficial mending reservation admits only one recovery channel per recipient
+and expires after the 1.5s warning plus 0.2s service grace; a later release safely
+fails. Recovery sorts by lowest health ratio, then distance and stable entity ID; the
+other roles use distance/ID. Affect at most1/1/3 recipients. Source and recipient
+progression/status-life identities plus exact dungeon objects are captured;
+rally also captures its Hero's identity. Released guard/rally use beneficial
+nonstacking status entries and the shared expiry scheduler. Invalid source,
+recipient, cover, range, graph/progression/campaign scope, freeze or reset retires
+them; no status timer or damage resolver is duplicated. Healing uses the existing
+capped LootDirector health grant. Guard adds only to the existing Block roll.
+Rally feeds FactionManager target selection and ordinary route/leash constraints.
 
-Reconcile existing shared healing, mitigation and status authorities against the
-live GDD before fixing B2 names, values or content. Each must create a different
-tactical response; do not count three differently colored buff casters. Admit
-coherent support-plus-pressure templates through existing placement and threat
-budgets; validate ally eligibility, faction, bounded targeting, interruption,
-nonstacking, death and dungeon replacement. This is proposed scope only: B1 does
-not implement B2.
+All three own canonical progression templates with class/feat eligibility, HP
+growth and XP. Stitcher/Bulwark support Magic does not advertise damaging-Magic
+feat capability. Their normal class defenses and physical fallback eligibility
+remain. No changes to bosses, Gordon → Hector → Deborah, sole staging successor,
+Abundance or cash progression. See DEVELOPMENT_PLAN.md for measured validation;
+implementation count does not imply native Source acceptance.
 
-Subsequent Bestiary checkpoints expand further tactical families before the
-campaign-aware director work: themes, novelty memory, topology, pacing and
-quantitative campaign coverage. The phase exits near 63 production identities
-with those ecology guarantees, then proceeds to Big Loot and Event System in the
-authorized order. Native visual/combat/co-op acceptance remains outstanding and
-is recorded separately from automated evidence.
+## Next checkpoint — B3: flank and pursuit cohort
+
+Proposed finite target **27/63**, subject to three genuinely distinct identities:
+(1) a junction flanker that uses a legal alternate route around the visible
+Hero's current lane; (2) a skirmisher that commits a ranged attack then retreats
+to a reachable firing position; (3) an interceptor that warns before occupying
+a reachable escape junction. These are proposed roles, not implemented rules.
+Reconcile concrete mechanics with existing navigation, pursuit, commitment and
+placement authorities; avoid teleports, through-wall knowledge, locked-gate
+bypasses, compulsory damage or a director rewrite. Require different tactical
+responses and actual complementary production compositions.
+
+Preserve prior cohorts and prove bounded route work, deterministic choices,
+reachable placement, cancellation and same-seed replacement safety through real
+spawn/progression paths. Retain further tactical-family expansion and the whole
+phase's campaign-aware director: themes, novelty memory, topology, pacing and
+quantitative coverage. Finish Bestiary before Big Loot, Events and the three
+audits, then human playtest. B3 is not started in B2.

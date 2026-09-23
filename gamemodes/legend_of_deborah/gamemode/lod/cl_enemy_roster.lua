@@ -5,7 +5,8 @@ local glow=Material("sprites/light_glow02_add")
 local beam=Material("cable/redlaser")
 local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color(110,190,255),
     lurker=Color(110,240,55),beamsweeper=Color(120,225,255),sentry=Color(255,75,45),razor=Color(255,165,60),
-    gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70)}
+    gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70),
+    stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
@@ -43,7 +44,61 @@ hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth
         end
     end
 end)
+-- Support tells are semantic geometry, retained in reduced-effects mode. They
+-- use existing entity snapshots; no per-frame actor scans or particle emitters.
+local supportColors={colors.stitcher,colors.bulwark,colors.cantor}
+local supportRecipients={{2,"SupportGuard"},{3,"SupportRally"}}
+local supportKinds={stitcher=1,bulwark=2,cantor=3}
+local function supportIcon(kind,center,color,width)
+    local side=(EyePos()-center):Angle():Right();local up=Vector(0,0,1)
+    render.SetMaterial(beam)
+    if kind==1 then
+        render.DrawBeam(center-side*11,center+side*11,width,0,1,color)
+        render.DrawBeam(center-up*11,center+up*11,width,0,1,color)
+    elseif kind==2 then
+        local points={center-side*13+up*12,center+side*13+up*12,
+            center+side*11-up*4,center-up*17,center-side*11-up*4}
+        for i=1,#points do render.DrawBeam(points[i],points[i%#points+1],width,0,1,color) end
+    else
+        for i=0,1 do
+            local top=center+up*(14-i*12)
+            render.DrawBeam(top-side*10-up*10,top,width,0,1,color)
+            render.DrawBeam(top,top+side*10-up*10,width,0,1,color)
+        end
+    end
+end
+function V:Support(e)
+    if e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local now=CurTime();local origin=e:WorldSpaceCenter()+Vector(0,0,26)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local kind=supportKinds[id] and e:GetNW2Int("LOD_SupportKind",0) or 0
+    if kind>=1 and kind<=3 then
+        local color=supportColors[kind]
+        local charging=now<e:GetNW2Float("LOD_SupportReady",0)
+        supportIcon(kind,origin,color,charging and 2 or 4)
+        local target=e:GetNW2Entity("LOD_SupportTarget")
+        if IsValid(target) then
+            render.SetMaterial(beam)
+            render.DrawBeam(origin,target:WorldSpaceCenter(),charging and 1 or 3,0,1,color)
+            if kind==1 then supportIcon(1,target:WorldSpaceCenter()+Vector(0,0,30),color,2) end
+        end
+    end
+    local healed=e:GetNW2Float("LOD_SupportHealedAt",0)
+    if healed>0 and now>=healed and now-healed<.4 then supportIcon(1,origin,colors.stitcher,4) end
+    for _,entry in ipairs(supportRecipients) do
+        local id,suffix=entry[1],entry[2]
+        local source=e:GetNW2Entity("LOD_"..suffix.."Source")
+        if e:GetNW2Bool("LOD_Status"..suffix,false)
+            and now<e:GetNW2Float("LOD_Status"..suffix.."Until",0) and IsValid(source) then
+            local color=supportColors[id]
+            supportIcon(id,origin,color,3)
+            render.SetMaterial(beam)
+            render.DrawBeam(source:WorldSpaceCenter(),e:WorldSpaceCenter(),2,0,1,color)
+        end
+    end
+end
 function V:Draw(e,size)
+    self:Support(e)
     if e:GetNW2String("LOD_Archetype","")=="nodule" then self:Gas(e);return end
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end

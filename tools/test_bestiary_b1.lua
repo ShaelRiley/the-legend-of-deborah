@@ -12,6 +12,7 @@ function v:Normalize() local n=self:GetNormalized();self.x,self.y,self.z=n.x,n.y
 local am={};am.__index=am
 function Angle(p,y,r) return setmetatable({p=p or 0,y=y or 0,r=r or 0},am) end
 function am:Forward() local y=math.rad(self.y);return Vector(math.cos(y),math.sin(y),0) end
+function am:Right() local y=math.rad(self.y);return Vector(math.sin(y),-math.cos(y),0) end
 function v:Angle() return Angle(0,math.deg(math.atan(self.y,self.x)),0) end
 function math.AngleDifference(a,b) return (a-b+180)%360-180 end
 ACT_IDLE,ACT_RUN_AIM_RIFLE,ACT_IDLE_ANGRY_SMG1,ACT_RANGE_ATTACK1,ACT_FLY=4,5,6,7,8
@@ -224,12 +225,19 @@ render={SetMaterial=noop,SetColorMaterial=noop,
     DrawSprite=function(pos,w,h,color) sprites[#sprites+1]={pos=pos,w=w,h=h,color=color} end}
 LOD.MagicArea={Disc=function(_,pos,radius) discs[#discs+1]={pos=pos,radius=radius} end}
 dofile(root..'cl_enemy_roster.lua')
+local function visualActor(id,pos)
+    local e=actor(id,pos)
+    local function read(self,key,default) local value=self.nw[key];if value==nil then return default end;return value end
+    e.GetNW2Bool=read;e.GetNW2Entity=read;e.GetNW2Float=read;e.GetNW2Int=read
+    e.GetNW2String=function() return id end
+    return e
+end
 for _,id in ipairs({'gaoler','repulsor'}) do
-    local e=actor(id);local aim=Vector(70,80,3)
+    local e=visualActor(id);local aim=Vector(70,80,3)
     e.GetNW2String=function() return id end;e.GetNW2Vector=function(_,name) return name=='LOD_RosterAim' and aim or Vector(0,0,48) end
-    e.GetNW2Float=function() return 220 end
+    e.nw.LOD_RosterRange=220
     for _,reduced in ipairs({false,true}) do for stage=1,2 do
-        low=reduced;e.GetNW2Int=function() return stage end;discs={};beams={}
+        low=reduced;e.nw.LOD_RosterAttack=stage;discs={};beams={}
         LOD.EnemyRosterVisual:Draw(e,1)
         local radius=id=='repulsor' and 220 or 112
         assert(#discs==1 and discs[1].pos==aim and discs[1].radius==radius,'warning geometry must match actual attack bounds')
@@ -249,6 +257,34 @@ assert(#sprites==1 and sprites[1].w==24 and sprites[1].color.r==255 and sprites[
 assert(#beams==1 and beams[1].width==5,'Light bolt trail width')
 at(time+.31);sprites={};env.hooks.LOD_RosterProjectiles(false,false);assert(#sprites==0,'stale projectile packets expire visually')
 print('BESTIARY_B1_VISUAL_PASS: exact warning discs/rings at full and reduced effects; two-bit Light decode; finite visual timeout')
+-- B2 presentation uses the same production renderer and keyed network boundary.
+local ally=visualActor('shambler',Vector(80,0,0))
+for index,id in ipairs({'stitcher','bulwark','cantor'}) do
+    local e=visualActor(id);e.nw.LOD_SupportKind=index;e.nw.LOD_SupportReady=time+1
+    e.nw.LOD_SupportTarget=ally
+    for _,reduced in ipairs({false,true}) do
+        low=reduced;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+        assert(#beams==({5,6,5})[index],'support cross/shield/chevrons and tether survive reduced effects')
+    end
+    e.nw.LOD_SupportKind=0;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+    assert(#beams==0,'cancelled support charge disappears')
+end
+for _,suffix in ipairs({'SupportGuard','SupportRally'}) do
+    ally.nw['LOD_Status'..suffix]=true;ally.nw['LOD_Status'..suffix..'Until']=time+3
+    ally.nw['LOD_'..suffix..'Source']=visualActor('bulwark')
+    for _,reduced in ipairs({false,true}) do
+        low=reduced;beams={};LOD.EnemyRosterVisual:Draw(ally,1)
+        assert(#beams==(suffix=='SupportGuard' and 6 or 5),'recipient protection/rally source remains legible')
+    end
+    ally.nw['LOD_Status'..suffix..'Until']=time-.1;beams={};LOD.EnemyRosterVisual:Draw(ally,1)
+    assert(#beams==0,'expired support hides despite stale status boolean')
+    ally.nw['LOD_Status'..suffix]=false
+end
+ally.nw.LOD_SupportHealedAt=time;beams={};LOD.EnemyRosterVisual:Draw(ally,1)
+assert(#beams==2,'successful healing flashes one cross')
+at(time+.5);beams={};LOD.EnemyRosterVisual:Draw(ally,1);assert(#beams==0,'healing cue expires')
+print('BESTIARY_B2_VISUAL_PASS: distinct support glyphs and source tethers; full/reduced effects; cancellation/status/healing visual expiration')
+
 
 -- Use the accepted actor fixture to exercise real generation (including feat
 -- drafts, class/growth and HP), then the production attribution settlement.

@@ -96,7 +96,10 @@ local templates={
     beamsweeper_lane={name="Beam Crossing",composition={beamsweeper=1}},
     gaoler_hold={name="Gaoler's Pursuit",composition={gaoler=1,runner=1}},
     silencer_screen={name="Silence Detail",composition={silencer=1,shambler=1}},
-    repulsor_screen={name="Repulsor Screen",composition={repulsor=1,soldier=1}}
+    repulsor_screen={name="Repulsor Screen",composition={repulsor=1,soldier=1}},
+    stitcher_detail={name="Stitcher's Detail",composition={stitcher=1,shambler=2}},
+    bulwark_line={name="Bulwark Line",composition={bulwark=1,soldier=1}},
+    cantor_charge={name="Cantor's Charge",composition={cantor=1,runner=2}}
 }
 for id,t in pairs(templates) do EC.Templates[id]=t end
 local baseEligible=D._EligibleTemplates
@@ -114,13 +117,17 @@ function D:_EligibleTemplates(sector,role)
         if role=="arena" or role=="ambush" then out[#out+1]="arccaster_zone" end
         if role=="arena" or role=="reward" or role=="ambush" then out[#out+1]="beamsweeper_lane" end
     end
+    if sector>=2 and (role=="arena" or role=="ambush") then
+        out[#out+1]="stitcher_detail";out[#out+1]="bulwark_line";out[#out+1]="cantor_charge"
+    end
     return out
 end
--- No duplicate stationary hazards in one cell when party/depth enriches a template.
+-- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
+-- or support sources in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and E.Definitions[k].stationary then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

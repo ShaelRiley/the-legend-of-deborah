@@ -7,7 +7,7 @@ local EC = LOD.Config.Encounter
 
 if not EncounterDirector then return end
 
-local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper", "climber", "flamer", "bigcrab", "sentry", "razor", "arccaster", "lurker", "beamsweeper", "nodule", "gaoler", "silencer", "repulsor"}
+local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper", "climber", "flamer", "bigcrab", "sentry", "razor", "arccaster", "lurker", "beamsweeper", "nodule", "gaoler", "silencer", "repulsor", "stitcher", "bulwark", "cantor"}
 
 local function cellKey(cell)
     return cell and LOD.MazeGenerator.CellKey(cell.x, cell.y, cell.z) or nil

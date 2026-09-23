@@ -12,7 +12,8 @@ local rngValue=0.1
 LOD={Equipment={BlockCap=.33},RunManager={State={Graph={},LevelSeed=1}},
     RPGAbilityRules={Stats={},ProgressionState=function(_,p) return p.state end,
         Derived=function(_,p) return p.state.derivedStats end},
-    RPGStatusElements={DamageContext=function(_,info) return info.context end,
+    RPGStatusElements={Has=function() return false end, -- ordinary equipment-only actors; B2 tests real support statuses
+        DamageContext=function(_,info) return info.context end,
         AttachDamageContext=function(_,info,c) info.context=c end},
     CombatRolls={_RNG=function() return {Float=function() draws=draws+1;return rngValue end} end,
         _Send=function(_,_,_,text) reports[#reports+1]=text end,EntityDisplayName=function() return 'Hero' end}}

@@ -149,6 +149,9 @@ function System:ConditionSave(target, ability, rng)
 end
 
 System.Registry = {
+    support_mending = {direct=true, beneficial=true, reapply="ignore"},
+    support_guard = {direct=true, beneficial=true, reapply="ignore"},
+    support_rally = {direct=true, beneficial=true, reapply="ignore"},
     clumsy = {ability = "dex", duration = function(self, rng) return 1 + rng:Int(1, 4) end,
         reapply = "extend"},
     immolated = {ability = "dex", duration = function(self, rng) return self:RollExploding(rng, 3, 6) end,
@@ -186,6 +189,10 @@ function System:Has(target, id, at)
     local entry = statusTable(target, false)
     entry = entry and entry[id]
     if not entry then return false end
+    if entry.valid and not entry.valid(target, entry) then
+        self:Clear(target, id, "support invalidated")
+        return false
+    end
     if entry.expiresAt and (at or now()) >= entry.expiresAt then
         self:Clear(target, id, "expired")
         return false
@@ -197,7 +204,9 @@ end
 -- presentation all follow the same path as natural expiry. Do not reset feats.
 function System:CureNegative(actor)
     local ids, count = {}, 0
-    for id in pairs(self.Active[actor] or {}) do ids[#ids + 1] = id end
+    for id in pairs(self.Active[actor] or {}) do
+        if not (self.Registry[id] and self.Registry[id].beneficial) then ids[#ids + 1] = id end
+    end
     table.sort(ids)
     for _, id in ipairs(ids) do
         if self:Clear(actor, id, "remedy") then count = count + 1 end
@@ -394,7 +403,8 @@ function System:Apply(target, id, source, options)
         self:_Schedule()
         return true, "extended", existing
     end
-    local entry = {id = id, source = source, dc = dc, appliedAt = now(), expiresAt = expiresAt}
+    local entry = {id = id, source = source, dc = dc, appliedAt = now(), expiresAt = expiresAt,
+        valid = options.valid, support = options.support}
     states[id] = entry
     self:_ScheduleInitial(target, id, entry, rng)
     self.Stats.applications = self.Stats.applications + 1
@@ -586,7 +596,9 @@ function System:Process(at)
         local actor, states, id, entry = item.actor, item.states, item.id, item.entry
         self:BindActorLife(actor)
         if isAlive(actor) and self.Active[actor] == states and states[id] == entry then
-            if entry.expiresAt and at >= entry.expiresAt then
+            if entry.valid and not entry.valid(actor, entry) then
+                self:Clear(actor, id, "support invalidated")
+            elseif entry.expiresAt and at >= entry.expiresAt then
                 self:Clear(actor, id, "expired")
             elseif id == "immolated" then self:_ProcessImmolated(actor, entry, at)
             elseif id == "poisoned" then self:_ProcessPoisoned(actor, entry, at)

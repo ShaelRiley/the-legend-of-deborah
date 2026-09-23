@@ -15,7 +15,10 @@ E.Definitions={
     -- B1 custodians: Content is attack identity, independent of rolled affinity/class.
     gaoler={name="Gaoler",model="models/vortigaunt.mdl",baseHP=40,speed=100,damage=5.5,range=720,warning=1.25,recovery=3.2,threat=3.5,activity=ACT_WALK,kind="arc",contentId="ice",color=Color(90,180,255),dice={1,6,2}},
     silencer={name="Silencer",model="models/combine_super_soldier.mdl",baseHP=30,speed=150,damage=5.5,range=800,warning=.9,recovery=2.8,threat=3,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bolt",contentId="light",color=Color(235,225,175),dice={1,6,2}},
-    repulsor={name="Repulsor",model="models/vortigaunt.mdl",baseHP=55,speed=125,damage=5.5,range=220,warning=1.1,recovery=3,threat=3.5,activity=ACT_WALK,kind="pulse",contentId="earth",color=Color(190,135,55),dice={1,6,2}}
+    repulsor={name="Repulsor",model="models/vortigaunt.mdl",baseHP=55,speed=125,damage=5.5,range=220,warning=1.1,recovery=3,threat=3.5,activity=ACT_WALK,kind="pulse",contentId="earth",color=Color(190,135,55),dice={1,6,2}},
+    stitcher={name="Stitcher",model="models/vortigaunt_slave.mdl",baseHP=35,speed=100,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_WALK,kind="bullet",support="recovery",color=Color(90,230,150),dice={1,4,1}},
+    bulwark={name="Bulwark",model="models/combine_super_soldier.mdl",baseHP=65,speed=90,damage=3.5,range=600,warning=.7,recovery=2.2,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",support="protection",color=Color(100,150,240),dice={1,4,1}},
+    cantor={name="Cantor",model="models/police.mdl",baseHP=40,speed=140,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",support="rally",color=Color(235,180,70),dice={1,4,1}}
 }
 for id,d in pairs(E.Definitions) do
     EC.Archetypes[id]={class="lod_hostile",name=d.name,model=d.model,baseHP=d.baseHP,speed=d.speed,
@@ -82,6 +85,7 @@ function E:Cancel(e)
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
 end
 function E:Interrupt(e)
+    if LOD.EnemySupport then LOD.EnemySupport:Interrupt(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
     if a and not (a.released and a.kind=="beam") then self:Cancel(e) end
@@ -237,10 +241,11 @@ function E:Tick(e)
     local d=self.Definitions[e.LODArchetypeId];if not d then return false end
     local s=state();local motion=LOD.HostileMotionV2;local now=CurTime()
     if e.LODDead or not e.LODActivated or not s or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then
-        self:Cancel(e);if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
+        self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
     end
     self:Prepare(e)
-    if not self:Live(e.LODRosterContext,s) then self:Cancel(e);motion:Stop(e);return true end
+    if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;motion:Stop(e);return true end
+    if d.support and LOD.EnemySupport and LOD.EnemySupport:Tick(e,now) then motion:Stop(e);return true end
     if d.kind=="climber" then return LOD.Climber:Tick(e,s,now) end
     if d.kind=="gas" then
         motion:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -276,7 +281,7 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
@@ -300,6 +305,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     if now<(E.NextService or 0) then return end
     local dt=math.Clamp(now-(E.LastService or now),0,.05);E.LastService=now;E.NextService=now+.025
     local active=s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
+    if LOD.EnemySupport then LOD.EnemySupport:Service(now,active) end
     for e in pairs(E.Active) do
         if not IsValid(e) or e.LODDead then E.Active[e]=nil
         elseif not active then E:Cancel(e)
@@ -347,7 +353,10 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         beamsweeper={"npc/stalker/stalker_pain1.wav","npc/stalker/stalker_die1.wav"},
         gaoler={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
         silencer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
-        repulsor={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"}
+        repulsor={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
+        stitcher={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
+        bulwark={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        cantor={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"}
     }
     for id,b in pairs(banks) do LOD.CombatAudio:RegisterHostileProfile(id,{pain={b[1]},death={b[2]},
         footsteps=b[3] and {b[3]} or {},footDistance=60,footInterval=.5,footVolume=.5,footPitch=100,activation={b[1]}}) end
