@@ -4,7 +4,7 @@ LOD.EventRegistry = LOD.EventRegistry or {Definitions = {}}
 local R = LOD.EventRegistry
 R.Contracts = {REWARD = true, BLOCKADE = true, HAZARD = true, UTILITY = true}
 -- Authored release gate, independent of catalog size and the server convar.
--- Approved four-archetype population; catalog completeness still fails closed.
+-- Approved production population; catalog completeness still fails closed.
 R.PopulationReady = true
 
 function R:Register(def)
@@ -46,8 +46,8 @@ function R:Select(seed)
     end
     local count = LOD.RNG.New(LOD.Seeds.Derive(seed, "dungeon-events:count:v1")):Int(1, 4)
     -- Exact d4 remains authoritative. A rare archetype occupies only the fourth
-    -- slot: the current four-entry catalog therefore includes treasure on 25%
-    -- of rolls. Future rare entries share that slot instead of multiplying it.
+    -- slot: the sole rare treasure entry therefore appears on 25% of rolls.
+    -- Future rare entries share that slot instead of multiplying it.
     local pool = #rare > 0 and common or ids
     LOD.RNG.New(LOD.Seeds.Derive(seed, "dungeon-events:catalog:v1")):Shuffle(pool)
     local selected = {}

@@ -104,13 +104,55 @@ function D:ValidateRoutes(g, extraEdges, extraCells)
     return true
 end
 
+-- A drop adds only a physical one-way passage. Both endpoints must already be
+-- in the same reachable component at EVERY ordered lock stage, including jail.
+-- Thus using the aperture never advances progression, and ordinary stairs return.
+function D:ValidateDrop(g, placement, reserved, environment)
+    local source, destination = g.Cells[placement.cellKey], g.Cells[placement.destinationCellKey]
+    if not source or not destination or source.x ~= destination.x or source.y ~= destination.y
+        or source.z ~= destination.z + 1 then return false, "drop must reach the floor immediately below" end
+    local protected = self:ProtectedCells(g)
+    for _, k in ipairs({placement.cellKey, placement.destinationCellKey}) do
+        if protected[k] or (reserved and reserved[k]) then return false, "drop endpoint reserved" end
+        for _, cell in ipairs(g.CriticalPath or {}) do
+            if key(cell) == k then return false, "drop endpoint must be optional" end
+        end
+    end
+    local p, blocked = g.Progression, copy(environment and environment.edges)
+    local cells = environment and environment.cells
+    for _, gate in ipairs(p.Gates or {}) do blocked[gate.edgeKey] = true end
+    blocked[p.JailEdge.edgeKey] = true
+    if p.Warden and p.Warden.lock then blocked[p.Warden.lock.edgeKey] = true end
+    local reached = false
+    for stage = 0, #p.Gates + 1 do
+        local reach = walk(g, key(g.Start), blocked, cells)
+        if not not reach[placement.cellKey] ~= not not reach[placement.destinationCellKey] then
+            return false, "drop crosses progression stage"
+        end
+        if reach[placement.cellKey] then
+            reached = true
+            if not walk(g, placement.destinationCellKey, blocked, cells)[placement.cellKey]
+                or not walk(g, placement.cellKey, blocked, cells)[placement.destinationCellKey] then
+                return false, "drop has no ordinary return route"
+            end
+        end
+        local gate = p.Gates[stage + 1]
+        local ek = gate and gate.edgeKey or p.JailEdge.edgeKey
+        blocked[ek] = environment and environment.edges and environment.edges[ek] or nil
+    end
+    return reached, reached and nil or "drop endpoints unreachable"
+end
+
 function D:ValidatePlacement(g, def, placement, reserved, environment)
     if not g or not g.Cells or not g.Progression or type(placement) ~= "table" then return false, "missing placement graph" end
     local k = placement.cellKey or key(placement.cell)
     if not k or not g.Cells[k] then return false, "missing event cell" end
     local protected = self:ProtectedCells(g)
     if protected[k] or (reserved and reserved[k]) then return false, "reserved event cell" end
-    if placement.addedEdges or placement.destination or placement.destinationCell then return false, "shortcut contract not implemented" end
+    if placement.addedEdges or placement.destination or placement.destinationCell
+        or (placement.destinationCellKey and not (def.contract == "HAZARD" and def.dropFloor == true)) then
+        return false, "shortcut contract not implemented"
+    end
     local valid, err = self:ValidateRoutes(g)
     if not valid then return false, err end
     if def.contract == "UTILITY" or def.contract == "REWARD" then
@@ -122,6 +164,10 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
         end
     elseif def.contract == "HAZARD" then
         if def.reversible ~= true then return false, "hazard requires reversible contract" end
+        if def.dropFloor then
+            valid, err = self:ValidateDrop(g, placement, reserved, environment)
+            if not valid then return false, err end
+        end
         for c in pairs(placement.blockedCells or {}) do
             if not g.Cells[c] or protected[c] or (reserved and reserved[c]) then return false, "hazard affects protected cell" end
         end
@@ -220,6 +266,7 @@ function D:Plan(g, options)
             if not accepted then return false, "event placement exhausted: " .. id .. ": " .. tostring(lastErr) end
             local cellKey = accepted.cellKey or key(accepted.cell)
             reserved[cellKey] = true
+            if accepted.destinationCellKey then reserved[accepted.destinationCellKey] = true end
             for c in pairs(accepted.blockedCells or {}) do reserved[c] = true end
             if accepted.edgeKey then
                 local e = g.Edges[accepted.edgeKey]
@@ -247,7 +294,7 @@ function D:Plan(g, options)
         if instance.contract == "BLOCKADE" then environment.edges[instance.placement.edgeKey] = true end
     end
     for _, instance in ipairs(plan.instances) do
-        if instance.contract == "BLOCKADE" then
+        if instance.contract == "BLOCKADE" or Registry.Definitions[instance.archetype].dropFloor then
             local ok, err = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
             if not ok then return false, "combined event contract rejected: " .. tostring(err) end
         end
@@ -474,6 +521,16 @@ function Run:FailCampaign(...)
     D:Cleanup("campaign failed")
     local result = baseFailure(self, ...); D:SyncAll(); return result
 end
+hook.Add("Think", "LOD_DungeonEventThink", function()
+    local context = D.Context
+    if not context then return end
+    for _, instance in ipairs(context.plan.instances) do
+        local def = Registry.Definitions[instance.archetype]
+        if def.Tick and D:IsCurrent(instance) and instance.state == "active" then
+            def.Tick(D, instance)
+        end
+    end
+end)
 hook.Add("ShutDown", "LOD_DungeonEventCleanup", function() D:Cleanup("shutdown") end)
 hook.Add("PlayerInitialSpawn", "LOD_DungeonEventSnapshot", function(ply)
     timer.Simple(1, function() if IsValid(ply) then D:SyncPlayer(ply) end end)

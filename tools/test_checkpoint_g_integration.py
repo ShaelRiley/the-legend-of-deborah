@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("False Floor Hazard & Native Geometry Boundaries", ["python3", "tools/test_crypto_sqlite.py", "tools/test_false_floor.lua"]),
     ("Combined Event Population & Rarity", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_population.lua"]),
     ("Vending Machine Wallet & Potion Settlement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_vending_machine.lua"]),
     ("Treasure Chest DFT Transactions", ["python3", "tools/test_crypto_sqlite.py", "tools/test_treasure_chest.lua"]),

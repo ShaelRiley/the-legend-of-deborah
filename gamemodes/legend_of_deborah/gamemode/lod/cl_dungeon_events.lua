@@ -12,17 +12,23 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     if not IsValid(ply) or not ply:Alive() or LOD.UI.ActivePage then return end
     local tr=ply:GetEyeTrace()
     local ent=tr and tr.Entity
-    if not IsValid(ent) or ent:GetClass()~='lod_dungeon_event' or ply:GetPos():DistToSqr(ent:GetPos())>160*160 then return end
+    if not IsValid(ent) or (ent:GetClass()~='lod_dungeon_event' and ent:GetNW2String('LOD_EventArchetype','')~='false_floor')
+        or ply:GetPos():DistToSqr(ent:GetPos())>160*160 then return end
+    local eventID=ent.GetEventID and ent:GetEventID() or ent:GetNW2String('LOD_EventID','')
     local row
     for _,event in ipairs(LOD.DungeonEvents.events) do
-        if event.id==ent:GetEventID() and event.entityIndex==ent:EntIndex() then row=event;break end
+        if event.id==eventID and event.entityIndex==ent:EntIndex() then row=event;break end
     end
     local key=string.upper(input.LookupBinding('+use') or 'E')
     local archetype=row and row.archetype or ent:GetNW2String('LOD_EventArchetype','slot_machine')
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='vending_machine' then
+    if archetype=='false_floor' then
+        lines={'FALSE FLOOR','The central panel drops you one floor. Walk around its rim to avoid it.',
+            'Return by the existing stairs. Ordinary fall damage applies.',
+            row and row.details and row.details.open and 'OPEN — resets after 3 seconds when clear.' or 'ARMED — stepping onto the panel opens it.'}
+    elseif archetype=='vending_machine' then
         local details=row and row.details or {}
         local held=details.held or 0
         if LOD.Equipment and LOD.Equipment.HasSnapshot then

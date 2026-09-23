@@ -1,7 +1,7 @@
 -- Combined production catalog through real RunManager generation, graph proofs,
 -- native Use callbacks and SQLite. Only Source boundaries use existing doubles.
 local equipment=dofile('tools/test_equipment_economy_runtime.lua')
-local F=dofile('tools/dungeon_event_fixture.lua')({lod=LOD,run=equipment.Run})
+local F=dofile('tools/dungeon_event_fixture.lua')({lod=LOD,run=equipment.Run,realFloors=true})
 local root,E,Run,D,R,Store=F.root,LOD.Equipment,F.Run,F.D,F.R,F.Store
 for i=#F.online,1,-1 do table.remove(F.online,i) end
 local function actor(id,class)
@@ -292,7 +292,46 @@ assert(integrated.selectedCount==4 and #integrated.instances==5)
 local integratedSignature,firstEncounters=planSignature(integrated),encounterSignature
 integrated=build(2)
 assert(planSignature(integrated)==integratedSignature and encounterSignature==firstEncounters)
+-- Activate the real fifth catalog member without weakening the accepted
+-- four-entry transactional regression above. Count/rare streams must remain
+-- unchanged; false floor competes for one of three common slots.
+dofile(root..'sv_safe_teleport.lua')
+dofile(root..'sv_event_false_floor.lua')
+assert(#R:Catalog()==5 and R.Definitions.false_floor.contract=='HAZARD')
+local catalogSeen,countSeeds,hazardCounts={},{},{}
+for currentSeed=1,128 do
+ local chosen,n=R:Select(currentSeed)
+ assert(n==LOD.RNG.New(LOD.Seeds.Derive(currentSeed,'dungeon-events:count:v1')):Int(1,4))
+ assert(#chosen==n)
+ local distinct={}
+ for ordinal,id in ipairs(chosen) do
+  assert(not distinct[id]);distinct[id]=true;catalogSeen[id]=true
+  assert(id~='treasure_chest' or ordinal==4,'Rare treasure cannot leak into common selection')
+ end
+ assert((distinct.treasure_chest==true)==(n==4))
+ if distinct.false_floor then countSeeds[n]=countSeeds[n] or currentSeed end
+end
+assert(count(catalogSeen)==5,'All five production archetypes must remain selectable')
+for n=1,4 do
+ assert(countSeeds[n],'False floor must participate at every d4 count')
+ local combined=build(countSeeds[n]);local floor
+ for _,i in ipairs(combined.instances) do if i.archetype=='false_floor' then floor=i end end
+ assert(floor and floor.placement.destinationCellKey)
+ assert(not D:ProtectedCells(Run.State.Graph)[floor.placement.destinationCellKey])
+ for _,i in ipairs(combined.instances) do
+  if i~=floor then assert(i.cellKey~=floor.placement.destinationCellKey,'Landing must be reserved from sibling events') end
+ end
+ hazardCounts[n]=true
+end
+local sampled=0
+for sampleSeed=1,64 do
+ local selected=R:Select(sampleSeed);local hazard=false
+ for _,id in ipairs(selected) do if id=='false_floor' then hazard=true end end
+ if hazard then build(sampleSeed);sampled=sampled+1 end
+ if sampled==12 then break end
+end
+assert(sampled==12,'Bounded varied production sample must realize the selected hazard')
 D.Plan,util.TraceLine,Run._ActiveCount=originalPlan,originalTrace,originalParty
 D:Cleanup('encounter population seam complete');ED:Cleanup()
-print('EVENT_ENCOUNTER_SEAM_PASS: '..encounterCount..' production encounters / '..protectedCount..' protected cells; seed 2 retains four archetypes and five event entities')
-print('EVENT_POPULATION_PASS: real combined 1d4/rarity/member generation, graph independence, opt-out/preview, two-account settlement, reconnect, bounded rollback/retry and stale callback rejection')
+print('EVENT_ENCOUNTER_SEAM_PASS: legacy seed 2 retained; '..sampled..' actual five-entry hazard-selected seeds realize with production encounters and both endpoints reserved')
+print('EVENT_POPULATION_PASS: four-entry transactional regressions plus actual five-entry production/encounter catalog; exact 1d4, rare fourth slot, safe hazard endpoints, opt-out/preview, reconnect and rollback')

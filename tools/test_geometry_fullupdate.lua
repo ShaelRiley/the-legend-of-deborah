@@ -24,7 +24,12 @@ LOD.TexturedBox={DrawSlab=function() slabs=slabs+1 end,Draw=function() bodies=bo
 local function transmit(e,on) for _,fn in pairs(hooks.NotifyShouldTransmit) do fn(e,on) end end
 for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}) do
  ENT={};dofile('gamemodes/legend_of_deborah/entities/entities/'..name..'/cl_init.lua')
- local e=setmetatable({valid=true},{__index=ENT})
+ local e=setmetatable({valid=true,nw={}},{__index=ENT})
+ -- NW2 accessors are native Entity methods, unlike generated datatable
+ -- accessors that can briefly disappear during a full update.
+ function e:GetNW2Bool(key,default) local v=self.nw[key];if v==nil then return default end;return v end
+ function e:SetNW2Bool(key,value) self.nw[key]=value end
+ e.GetNW2String,e.SetNW2String=e.GetNW2Bool,e.SetNW2Bool
  e.GetClass=function() return name end;e.GetPos=function() return Vector() end;e.GetAngles=function() return angle_zero end
  -- NotifyShouldTransmit may precede SetupDataTables. Exercise exactly the
  -- screenshot's missing GetBoxMins path and render callbacks in that frame.
@@ -58,9 +63,18 @@ for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}
   e[key]=getter;renderFrame();assert(visible(),name..' did not recover '..key)
  end
  e:Initialize();assert(visible(),name..' initial registration')
+ if name=='lod_static_box' then
+  e:SetNW2String('LOD_EventArchetype','false_floor')
+  e:SetNW2Bool('LOD_GeometryHidden',true)
+  renderFrame();assert(not visible(),'open false floor must skip the real slab draw hook')
+  e:OnRemove(true);transmit(e,false);transmit(e,true)
+  renderFrame();assert(not visible(),'full update cannot reveal a hidden open false floor')
+  e:SetNW2Bool('LOD_GeometryHidden',false)
+  renderFrame();assert(visible(),'rearmed false floor must redraw without Initialize or another transmission')
+ end
  e:OnRemove(true);transmit(e,false)
  local getters={}
- for k,v in pairs(e) do if k:match('^Get') and k~='GetClass' and k~='GetPos' and k~='GetAngles' then getters[k]=v;e[k]=nil end end
+ for k,v in pairs(e) do if k:match('^Get') and not k:match('^GetNW2') and k~='GetClass' and k~='GetPos' and k~='GetAngles' then getters[k]=v;e[k]=nil end end
  transmit(e,true);renderFrame()
  for k,v in pairs(getters) do e[k]=v end
  renderFrame();assert(visible(),name..' failed to recover without another notification')
@@ -76,4 +90,4 @@ for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}
  e:OnRemove(false);e.valid=false;transmit(e,true)
  assert(not visible(),name..' stale invalid entity revived')
 end
-print('GEOMETRY_FULLUPDATE_PASS: floors, gates, keycards and jail recover without Initialize; early/partial accessors safe; real draw hooks; deferred bounds; genuine removal stays removed')
+print('GEOMETRY_FULLUPDATE_PASS: floors, gates, keycards and jail recover without Initialize; false floor hidden state survives full update and rearms through native NW2 state; partial accessors, draw hooks, deferred bounds and genuine removal')

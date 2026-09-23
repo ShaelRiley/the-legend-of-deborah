@@ -76,6 +76,7 @@ function MazeBuilder:_Register(ent)
 end
 
 function MazeBuilder:Cleanup()
+    self.FloorCells = {}
     if LOD.PlaceholderLoot and LOD.PlaceholderLoot.Clear then
         LOD.PlaceholderLoot:Clear()
     end
@@ -145,13 +146,49 @@ function MazeBuilder:_BuildFloorRun(firstCell, lastCell)
     local runHalf = (lastCell.x - firstCell.x + 1) * MC.CellSize * 0.5
     local half = MC.CellSize * 0.5
     local t = GC.FloorThickness
-    self:_Register(spawnBox(
+    local floor = self:_Register(spawnBox(
         center + Vector(0, 0, -t * 0.5),
         angle_zero,
         Vector(-runHalf, -half, -t * 0.5),
         Vector(runHalf, half, t * 0.5),
         1
     ))
+    if firstCell == lastCell and firstCell.z > 0 then
+        self.FloorCells = self.FloorCells or {}
+        self.FloorCells[cellKey(firstCell.x, firstCell.y, firstCell.z)] = floor
+    end
+end
+
+-- Replace one ordinary elevated slab with a central lid and its walk-around rim.
+-- The immutable original remains owned by the builder for atomic restoration.
+function MazeBuilder:CreateFalseFloor(cell, apertureHalf)
+    local original = self.FloorCells and self.FloorCells[cellKey(cell.x, cell.y, cell.z)]
+    if not IsValid(original) or original.LODFalseFloor then return nil end
+    local h, t, a = MC.CellSize * .5, GC.FloorThickness, apertureHalf
+    if a <= 32 or a + 64 > h then return nil end
+    local center = self:CellCenter(cell) + Vector(0, 0, -t * .5)
+    local floor = {original = original, rims = {}}
+    local bounds = {{-h,-h,-a,h},{a,-h,h,h},{-a,-h,a,-a},{-a,a,a,h},{-a,-a,a,a}}
+    for i, b in ipairs(bounds) do
+        local ent = self:_Register(spawnBox(center, angle_zero, Vector(b[1],b[2],-t*.5), Vector(b[3],b[4],t*.5), 1))
+        if not IsValid(ent) then
+            for _, e in ipairs(floor.rims) do if IsValid(e) then e:Remove() end end
+            return nil
+        end
+        if i == 5 then floor.lid = ent else floor.rims[#floor.rims+1] = ent end
+    end
+    original.LODFalseFloor = floor
+    original:SetNotSolid(true)
+    original:SetNW2Bool("LOD_GeometryHidden",true)
+    return floor
+end
+
+function MazeBuilder:RestoreFalseFloor(floor)
+    if floor and IsValid(floor.original) and floor.original.LODFalseFloor == floor then
+        floor.original.LODFalseFloor = nil
+        floor.original:SetNotSolid(false)
+        floor.original:SetNW2Bool("LOD_GeometryHidden",false)
+    end
 end
 
 function MazeBuilder:_BuildPerforatedFloor(cell, edge)

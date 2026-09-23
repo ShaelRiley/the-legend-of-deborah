@@ -105,7 +105,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
     if drawingDepth or drawingSkybox or drawing3DSkybox then return end
 
     for ent in pairs(visualBoxes) do
-        if IsValid(ent) and networkReady(ent) then
+        if IsValid(ent) and networkReady(ent) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
             local kind = ent:GetBoxKind()
 
             -- Ordinary floor runs render only their top and underside. Their
@@ -115,6 +115,9 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
             -- faces because their vertical risers are real geometry.
             if kind == 1 then
                 drawFloorSlab(ent, floorColor)
+                if ent:GetNW2String("LOD_EventArchetype", "") == "false_floor" then
+                    render.DrawWireframeBox(ent:GetPos(), ent:GetAngles(), ent:GetBoxMins(), ent:GetBoxMaxs(), stairEdgeColor, false)
+                end
             elseif kind == 2 then
                 drawFullMetalBox(ent, stairColor)
                 render.DrawWireframeBox(

@@ -162,6 +162,31 @@ function T:Landing(ply,graph,cell,pos)
     return dest
 end
 
+-- Natural false-floor descent shares the standing-hull and supported-landing
+-- authority. Check the WHOLE aperture column, not merely the initiating body.
+function T:DropLanding(ply,graph,source,destination,floor,half)
+    if not self:FlatCell(graph,source) or not self:FlatCell(graph,destination)
+        or source.x~=destination.x or source.y~=destination.y or source.z~=destination.z+1 then return nil end
+    local center, lower = N:CellCenter(source), N:CellCenter(destination)
+    local pos, mins, maxs = ply:GetPos(), ply:GetHull()
+    if math.abs(pos.z+mins.z-center.z)>4 or pos.x+mins.x<center.x-half+2
+        or pos.x+maxs.x>center.x+half-2 or pos.y+mins.y<center.y-half+2
+        or pos.y+maxs.y>center.y+half-2 then return nil end
+    local landing = self:Landing(ply,graph,destination,Vector(pos.x,pos.y,lower.z))
+    if not landing then return nil end
+    local filter={ply,floor.original,floor.lid}
+    local tr=util.TraceHull({start=Vector(center.x,center.y,center.z+2),
+        endpos=Vector(center.x,center.y,lower.z+2),mins=Vector(-half+1,-half+1,0),
+        maxs=Vector(half-1,half-1,maxs.z),mask=MASK_PLAYERSOLID,filter=filter})
+    if tr.Hit or tr.StartSolid or tr.AllSolid then return nil end
+    for _,ent in ipairs(ents.FindInBox(Vector(center.x-half+1,center.y-half+1,lower.z+2),
+        Vector(center.x+half-1,center.y+half-1,center.z+maxs.z))) do
+        if ent~=ply and ent~=floor.original and ent~=floor.lid
+            and (ent:IsPlayer() or ent:IsNPC() or ent.LODHostile or ent:GetClass()=="trigger_hurt") then return nil end
+    end
+    return landing
+end
+
 function T:Resolve(target,anchor,mode)
     if not self:Hero(target) or not self:Hero(anchor) or target==anchor then return nil,"Hero unavailable" end
     if mode~="throw" and mode~="drink" then return nil,"Invalid destination mode" end

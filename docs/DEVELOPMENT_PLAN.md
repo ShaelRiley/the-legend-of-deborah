@@ -1,4 +1,84 @@
-# Current checkpoint — Combined Dungeon Events activation
+# Current checkpoint — Optional physical False-floor hazard
+
+Built on verified remote main `d87ac3a4a7483c41c3dbc06c8f298c9e999b2590`;
+no intervening work replaced. Read AGENTS.md, retained P9 false-floor brief and
+live GDD 00 → 01 → relevant 05/06/07/90 rules. Added and read-back verified
+LOD-EVENT-FALSE-FLOOR-001 in those subsystem tabs and HUMAN under the current
+explicit design delegation. The fresh file-backed read found no protected controls.
+
+**Scope/activation:** one optional `false_floor` HAZARD joins the approved
+production catalog as its fourth common archetype. Existing non-exploding 1d4
+selects one to three unique common entries, or three common plus rare DFT treasure
+on four. No count truncation, extra roll, economy change or population-setting
+reset. Default-on population and saved operator opt-outs remain. No VPS deployment
+or Steam Workshop publication.
+
+**Placement and play:** a centered 128×128-unit physical panel in an ordinary
+upper-floor cell opens beneath a grounded deployed Hero whose standing footprint
+fits inside it. The directly aligned destination is exactly one floor down. Both
+cells reserve distinct optional locations outside protected objectives, encounters,
+stairs, voids and critical routes. Every ordered gate/jail stage must give both
+endpoints equivalent reachability and an ordinary bidirectional route between them.
+Combined hazards/blockades must preserve that proof. The surrounding rim stays
+solid, so players can avoid the panel. Canonical graph topology remains unchanged.
+
+The builder splits only the selected existing slab into four rim boxes and a lid.
+The shared SafeTeleport standing-hull/generated-floor authority checks the landing
+and full drop column. Exact Hero/body life/account, event entity and current
+campaign/dungeon ownership are revalidated before activation. Native gravity and
+ordinary fall consequences apply; no teleport, velocity rewrite or deferred
+player-displacement callback. Shared opening lasts at least three seconds and
+closes/rearms only when the aperture is empty. No claim, reward or account lockout.
+
+Existing EventDirector owns the shared tick, lifecycle, snapshots, preview and
+cleanup. Partial creation leaves the original slab solid. Cleanup restores it only
+when safe; an occupied open assembly loses all event bindings and remains inert
+under the existing builder until full geometry teardown, avoiding entombment. Armed/open state and lower endpoint reach late joins through current
+snapshots; native geometry stays transmitted while custom rendering hides the
+open lid. The manual reflects the five-entry catalog and physical hazard;
+regenerated 138 chapters/31 transport chunks.
+
+Validation: production-code tests exercise the real floor compiler/anchor,
+independent ordered-stage and return-route proofs, invalid/reserved/critical
+endpoints, bounded placement rejection, partial slab-creation failure and retry,
+actual generated floor support/standing hull/drop column, obstructed/water/occupied
+landing rejection, grounded/role/life eligibility, shared reset and physics-object
+occupancy, repeat use by a second Hero, late-join snapshots, regeneration, stale
+open/reset callbacks and ownership replacement during clearance. Occupied cleanup
+transfers inert geometry to builder ownership without closing through a body.
+The combined five-entry catalog passes all count outcomes and the first 12
+hazard-selected production/encounter seeds; prior four-entry settlement tests remain.
+Native geometry rendering tests preserve hidden/rearmed state through full updates.
+Manual byte/content/reader checks pass. Focused review found no remaining concrete
+geometry, progression or lifecycle defect.
+
+Initial integrated run: 141/142 passed; the existing full-update fixture lacked
+native GetNW2Bool, newly consumed by floor rendering. Added real stored getter/setter
+semantics and hide/full-update/rearm assertions; the focused suite then passed.
+Final integrated gate: `python3 tools/test_checkpoint_g_integration.py` passed
+all **142 suites**, zero failures.
+Native Source gravity, collision, presentation and packet transport acceptance
+remain pending; automated boundary doubles do not establish native acceptance.
+
+One native procedure: on gm_flatgrass with two deployed Heroes, run
+`lod_event_preview_generate false_floor`, redeploy and follow the printed locator.
+Walk around the rim, then step onto the center: verify one-floor descent, ordinary
+stair return, shared opening and safe reset after at least three seconds. Have the
+second Hero occupy the landing/opening to verify refusal/delayed closure; join or
+reconnect while it is open, then regenerate to verify no old panel remains. Capture
+console_latest.txt + rpg_summary_latest.txt; screenshots for geometry/prompt defects.
+Earlier native multiplayer/economy obligations remain open.
+
+Next bounded checkpoint: **one permanent warp-hole UTILITY shortcut**, from retained
+P9. Reconcile exact use/pairing/reset/tuning with the live GDD first; extend current
+event endpoint validation and SafeTeleport rather than add navigation or movement
+authorities. Prove both ends preserve progression/objective order and safe arrival,
+validate combined-catalog lifecycle/cleanup, then commit/push. Bribe/skeleton
+blockades, Game Master minigames and Hector remain separate subsequent gates.
+
+---
+
+# Previous checkpoint — Combined Dungeon Events activation
 
 Built on verified remote main `2354e81d5a95dbe99f93b1c84713f9d5941120e7`;
 no intervening work replaced. Read AGENTS.md/current checkpoint and live GDD

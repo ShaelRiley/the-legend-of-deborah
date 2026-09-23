@@ -107,6 +107,7 @@ end
 -- to the visible corridor/platform they represent, eliminating the long-entity
 -- visibility ambiguity that repeatedly made solid upper floors appear absent.
 function MazeBuilder:_BuildFloors(graph)
+    self.FloorCells = {}
     local transitions = upperTransitionMap(graph)
 
     -- Ground layer: merge deterministic contiguous row runs.

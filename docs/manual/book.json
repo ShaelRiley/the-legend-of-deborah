@@ -957,7 +957,7 @@
         ]
       ],
       "text": [
-        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, and vending machines. A 4 includes all three plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. Events never replace the required rescue objective.",
+        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, and False-floor hazards. A 4 selects three of those plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. Events never replace the required rescue objective.",
         "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
         "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
@@ -1034,6 +1034,16 @@
         "Insufficient funds, a full potion stack, a storage failure, or leaving the interaction before it can complete spends nothing and leaves your purchase available. Correct the problem and retry. A successful purchase charges exactly $10 DEB and delivers one bottle.",
         "The machine remembers your account’s completed purchase through death, replacement Heroes, reconnects, and regeneration of the same dungeon. Drinking or discarding the bottle does not restock the machine, and reconnecting does not replace a lost bottle. A new dungeon or campaign provides a new purchase.",
         "This optional machine can appear alongside other Dungeon Events. For an administrator preview, use lod_event_preview_generate vending_machine. Purchases spend real server-local $DEB; the preview does not provide free currency."
+      ]
+    },
+    {
+      "id": "false-floor",
+      "title": "Watch your step",
+      "text": [
+        "A False-floor hazard is a small panel in an optional upper-floor room. Stepping fully onto it as a grounded Hero can open the floor beneath you. There is no E prompt to activate it. The solid rim around the panel gives you room to go around.",
+        "The fall leads one floor down. Ordinary gravity and falling consequences apply. The destination preserves your current progression access, and the existing stairs provide a route back; the trap never opens a locked progression shortcut.",
+        "The panel stays open for at least three seconds. It closes and rearms only after its opening is clear, so keep moving after landing. All Heroes share the same panel state, and the hazard can trigger again. If the landing is unsafe or occupied before activation, the panel stays closed.",
+        "For an administrator preview, use lod_event_preview_generate false_floor. Redeploy after generation and follow the printed locator."
       ]
     },
     {

@@ -59,11 +59,19 @@ ents={Create=function(class)
  function e:SetPos(v) self.pos=v end
  function e:WorldSpaceCenter() return self.pos end
  function e:EntIndex() return self.index end
+ function e:GetClass() return self.class end
+ function e:IsPlayer() return false end
+ function e:IsNPC() return false end
  function e:Remove() self.valid=false end
  function e:SetNW2String(k,v) self.nw[k]=v end
  e.SetNW2Bool,e.SetNW2Int=e.SetNW2String,e.SetNW2String
  function e:GetNW2String(k,default) return self.nw[k] or default end
- for _,m in ipairs({'SetModel','SetAngles','SetMoveType','SetSolid','SetUseType','DrawShadow','Spawn','Activate','EmitSound','SetNotSolid','SetCollisionGroup'}) do e[m]=noop end
+ for _,m in ipairs({'SetModel','SetAngles','SetMoveType','SetSolid','SetUseType','DrawShadow','Spawn','Activate','EmitSound','SetCollisionGroup'}) do e[m]=noop end
+ for _,name in ipairs({'BoxMins','BoxMaxs','BoxKind','NotSolid','NoDraw','Color'}) do
+  e['Set'..name]=function(self,v) self[name]=v end
+  e['Get'..name]=function(self) return self[name] end
+ end
+ function e:IsLODCollisionReady() return not F.collisionFailure end
  e.index=#created+1;created[#created+1]=e;return e
 end}
 LOD=options.lod or {}
@@ -78,6 +86,10 @@ function Run:IsSoldierControl(p) return p.soldier==true end
 function Run:MarkUnranked() self.State.Ranked=false end
 LOD.RunManager=Run
 LOD.MazeBuilder={CellCenter=function(_,c) return Vector(c.x*384,c.y*384,c.z*384) end,_Register=noop}
+if options.realFloors then
+ dofile(root..'sv_maze_builder.lua')
+ dofile(root..'sv_maze_builder_floor_anchor.lua')
+end
 LOD.Equipment=LOD.Equipment or {ValidateWearable=function() return true end}
 local online={}
 player={GetAll=function() return online end}
@@ -88,6 +100,14 @@ local function actor(id)
  function p:IsAdmin() return true end
  function p:Alive() return not self.dead end
  function p:GetPos() return self.pos end
+ function p:SetPos(v) self.pos=v;self.moves=(self.moves or 0)+1 end
+ function p:GetHull() local half=self.hullHalf or 16;return Vector(-half,-half,0),Vector(half,half,self.hullHeight or 72) end
+ function p:GetMoveType() return self.moveType or MOVETYPE_WALK end
+ function p:InVehicle() return self.vehicle==true end
+ function p:OnGround() return self.grounded~=false end
+ function p:GetGroundEntity() return self.groundEntity end
+ function p:SetGroundEntity(v) self.groundEntity=v end
+ function p:GetClass() return 'player' end
  p.EyePos,p.WorldSpaceCenter=p.GetPos,p.GetPos
  function p:ChatPrint(text) self.lastChat=text end
  p.EmitSound=noop
@@ -149,11 +169,17 @@ Run.HoldPlayersForBuild=noop;Run._SortedConnectedPlayers=function() return {} en
 Run.PromoteWaitingSpectators=noop
 LOD.ProgressionDirector.SyncPlayer=noop
 F.nativeBuilds,F.nativeCleanups=0,0
+local nativeCleanup=options.realFloors and LOD.MazeBuilder.Cleanup
 LOD.MazeBuilder.Build=function(_,g)
  F.nativeBuilds=F.nativeBuilds+1
+ if options.realFloors then
+  LOD.MazeBuilder:Cleanup();LOD.MazeBuilder.Entities={};LOD.MazeBuilder.BuildFailures=0
+  LOD.MazeBuilder:_BuildFloors(g)
+  if LOD.MazeBuilder.BuildFailures>0 then return false,'floor geometry failed' end
+ end
  return true,{startPos=LOD.MazeBuilder:CellCenter(g.Start),entityCount=1}
 end
-LOD.MazeBuilder.Cleanup=function() F.nativeCleanups=F.nativeCleanups+1 end
+LOD.MazeBuilder.Cleanup=function(self) F.nativeCleanups=F.nativeCleanups+1;if nativeCleanup then return nativeCleanup(self) end end
 game={GetMap=function() return 'gm_flatgrass' end}
 for _,p in ipairs(online) do p.SteamID64=function(self) return self.id end end
 dofile(root..'sh_event_registry.lua');dofile(root..'sv_event_director.lua');dofile(root..'sv_event_slot_machine.lua')
