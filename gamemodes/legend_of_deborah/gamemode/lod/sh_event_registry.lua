@@ -3,6 +3,9 @@ LOD = LOD or {}
 LOD.EventRegistry = LOD.EventRegistry or {Definitions = {}}
 local R = LOD.EventRegistry
 R.Contracts = {REWARD = true, BLOCKADE = true, HAZARD = true, UTILITY = true}
+-- Authored release gate, independent of catalog size and the server convar.
+-- Enable only in the complete-catalog activation/production rarity checkpoint.
+R.PopulationReady = false
 
 function R:Register(def)
     assert(type(def) == "table" and type(def.id) == "string"

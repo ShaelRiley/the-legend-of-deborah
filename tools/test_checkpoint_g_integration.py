@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Vending Machine Wallet & Potion Settlement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_vending_machine.lua"]),
     ("Treasure Chest DFT Transactions", ["python3", "tools/test_crypto_sqlite.py", "tools/test_treasure_chest.lua"]),
     ("Chest Keys & Locked Loot Claims", ["python3", "tools/test_crypto_sqlite.py", "tools/test_locked_chest.lua"]),
     ("Dungeon Events & Transactional Slot Machine", ["python3", "tools/test_crypto_sqlite.py", "tools/test_dungeon_events.lua"]),

@@ -957,7 +957,7 @@
         ]
       ],
       "text": [
-        "Dungeon Events are being introduced in stages. Three archetypes—the slot machine, locked loot chest, and DFT treasure chest—are available only in administrator-enabled, unranked previews. Normal random population of 1–4 different events remains disabled while the playable catalog is expanded. A treasure event can contain one or two physical chests.",
+        "Dungeon Events are being introduced in stages. Four archetypes—the slot machine, locked loot chest, DFT treasure chest, and vending machine—are available only in administrator-enabled, unranked previews. Normal random population of 1–4 different events remains disabled pending a separate activation and rarity pass. A treasure event can contain one or two physical chests.",
         "The machine is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine."
       ]
@@ -1008,6 +1008,30 @@
         "Press E to spend one Chest Key when the DFT is successfully delivered. A Rogue without a key may pick the lock; hold Sprint + E to choose lockpicking while carrying keys. Each account gets one attempt per chest at 5% per Combat Level, up to 95%. A failed pick consumes the attempt but no key; you can return with a key.",
         "A full DFT collection spends neither key nor lockpick attempt. Make room in your collection, then return. A storage failure spends no key. If a successful pick cannot deliver its DFT, the chest stays unlocked for your account: retry for the same reward without another roll or key.",
         "This event is currently an unranked developer preview. Administrators can run lod_event_preview_generate treasure_chest to generate it and print every chest location. The existing lod_chest_key_testkit supplies one key only if you have none. Preview interactions can spend real carried keys and award persistent server-local DFTs; these collectibles have no cash value. Leaving the dungeon ends access to its chests."
+      ]
+    },
+    {
+      "id": "vending-machine",
+      "title": "A bottle for the road",
+      "rows": [
+        [
+          "Healing Potion · $10 DEB",
+          "One bottle per Steam account per campaign dungeon. Each Hero has an independent purchase."
+        ],
+        [
+          "Potion effect",
+          "Restores 25 HP and cures negative statuses when used. Buying the bottle does not heal you."
+        ],
+        [
+          "Carrying capacity",
+          "Healing Potions stack up to three and use the Throwable slot."
+        ]
+      ],
+      "text": [
+        "Press E at a vending machine to buy one standard Healing Potion for your equipment inventory. The price uses your persistent, server-local $DEB balance, which has no cash value. The potion is ordinary run equipment, not a DFT.",
+        "Insufficient funds, a full potion stack, a storage failure, or leaving the interaction before it can complete spends nothing and leaves your purchase available. Correct the problem and retry. A successful purchase charges exactly $10 DEB and delivers one bottle.",
+        "The machine remembers your account’s completed purchase through death, replacement Heroes, reconnects, and regeneration of the same dungeon. Drinking or discarding the bottle does not restock the machine, and reconnecting does not replace a lost bottle. A new dungeon or campaign provides a new purchase.",
+        "This optional event is currently an unranked developer preview. Administrators can run lod_event_preview_generate vending_machine to generate it and print its location. Purchases spend real server-local $DEB; the preview does not provide free currency."
       ]
     },
     {

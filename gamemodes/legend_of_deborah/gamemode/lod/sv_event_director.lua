@@ -4,7 +4,7 @@ LOD.EventDirector = LOD.EventDirector or {Serial = 0}
 local D, Registry = LOD.EventDirector, LOD.EventRegistry
 local Run, Builder = LOD.RunManager, LOD.MazeBuilder
 local cvEnabled = CreateConVar("lod_events_enabled", "0", FCVAR_ARCHIVE,
-    "Enable full 1d4 dungeon events only when the production catalog is complete.")
+    "Enable full 1d4 dungeon events only after the production population release gate.")
 D.MaxPlacementAttempts = 64
 util.AddNetworkString("LOD_DungeonEvents")
 
@@ -169,6 +169,9 @@ function D:Plan(g, options)
     local seed = g.MasterLevelSeed or g.LevelSeed or 1
     local plan = {seed = seed, mode = "disabled", selectedCount = 0, instances = {}}
     if not options.enabled and not options.preview then return true, plan end
+    if not options.preview and Registry.PopulationReady ~= true then
+        return false, "production event population gated: catalog activation and rarity tuning pending"
+    end
     if LOD.GraphIntegrity and not LOD.GraphIntegrity:Audit(g).valid then return false, "invalid maze graph integrity" end
     local selected, count
     if options.preview then

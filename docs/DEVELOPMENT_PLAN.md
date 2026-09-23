@@ -1,4 +1,87 @@
-# Current checkpoint — DFT treasure chests and atomic key settlement
+# Current checkpoint — Debbie Vending and explicit population activation gate
+
+Built on verified remote main `d250ac903afcb5060272cbaf560de49266483f9f`;
+no intervening work replaced. Read AGENTS.md, current checkpoint, retained P9 and
+live GDD 00 → 01 → relevant 05/06/07/90 rules. Fresh file-backed read found no
+protected controls. Under retained author delegation, added and read-back verified
+LOD-EVENT-VENDING-001 in 05/06/07/90 and HUMAN. Existing equipment, chest, DFT,
+wallet and generation behavior remain regression constraints.
+
+**Implemented:** `vending_machine`, one optional nonblocking UTILITY machine.
+Native Use buys one existing Healing Potion for10 server-local $DEB, once per
+Steam account per campaign dungeon. Teammates have independent purchases. The
+standard potion enters run-owned Equipment; it does not immediately heal. Existing
+25 HP healing, negative-status cure, drink/throw controls, Throwable occupancy,
+auto-equipping an empty Throwable slot and stack maximum3 are unchanged. Wearable
+bag capacity does not replace the consumable-stack rule. No new food/item family,
+DFT, currency, random reward conversion or separate purchase network request.
+
+`Equipment:AddConsumable` stages inventory admission on a detached copy. Existing
+`CryptoStore:Transaction` and its inventory participant commit price debit,
+immutable receipt/history and the staged inventory together. Revalidate exact
+account/Hero, equipment pointer/content/life, deployment/role, clock, native entity
+and generation after SQL serialization/writes; assignment immediately precedes
+COMMIT. Storage failure restores only the owned staged reference. No native Give,
+network or feedback divides settlement; postcommit sync failures do not reopen
+purchases. Normal inventory synchronization restores native representation if
+needed. Full potion stack, insufficient funds and invalid/stale state spend
+nothing. Persistent receipts survive reconnect, replacement Heroes, same-dungeon
+regeneration and SQLite reconnect. Drinking/throwing/discarding/losing the potion
+never refreshes that purchase. A new campaign/dungeon permits a new purchase.
+Lifetime score, DFT collection and other wallet rules remain unchanged.
+
+Uses the stock HL2 vending-machine model, existing Use/range/LOS and cleanup,
+confirmation cue and Equipment/Wallet sync. Recipient snapshots/HUD show offer,
+price, stack, funds/full/storage refusal and purchased state; current inventory/
+wallet snapshots refresh counts. Manual regenerated:137 chapters,31 chunks.
+
+**Activation:** four production archetypes now exist, but automatic population
+remains OFF. New explicit `EventRegistry.PopulationReady=false` gate rejects full
+planning even if a saved `lod_events_enabled 1` requests it. A fourth registration
+cannot silently activate unreviewed population. Registry selection remains exact
+1d4 with distinct archetypes; representative tests deliberately enable the gate
+only inside their fixtures. Single-event previews still work. Admin/developer
+`lod_event_preview_generate vending_machine` runs actual generation, marks the
+campaign unranked, prints the locator and warns that purchases spend actual
+persistent $DEB. No free-currency testkit was added. No VPS or Workshop deployment.
+
+Validation: focused production-code/real-SQLite vending suite passes actual
+generation/native Use and potion consumption; deterministic1–4 selection with
+the real four-entry catalog; incomplete and complete catalog activation rejection;
+funds/full-stack retries; detached admission rejection/throw; receipt/account reads
+and history/account/ledger/COMMIT failures; exact inventory rollback; stale Hero,
+account, inventory contents/reference/life, role, deployment, native entity and
+campaign/dungeon; duplicate/reentrant interactions, consumed-item replay,
+independent accounts, postcommit feedback failure, late-join/reconnect snapshots,
+actual HUD and cleanup. Prior chest/DFT/foundation/manual regressions pass.
+Integrated gate: `python3 tools/test_checkpoint_g_integration.py` passes all
+140 suites with zero failures. Independent review found no remaining purchase-loss,
+duplication, stale-state or activation-gate defect. Native Source acceptance is
+not inferred from automated results.
+
+Native acceptance pending: on gm_flatgrass, use two deployed Heroes with at least
+10 $DEB from ordinary play and fewer than3 potions. Run
+`lod_event_preview_generate vending_machine`, redeploy and follow its locator.
+Verify posted price, one purchase debiting10 and adding one usable potion, independent
+teammate purchase, full-stack refusal, and no repurchase after consumption/reconnect/
+same-dungeon regeneration. Check model, collision, Use/controller and Wallet UI.
+Preview spends actual persistent funds. Capture console_latest.txt +
+rpg_summary_latest.txt; screenshot presentation defects. Earlier native checks
+remain pending; automated evidence is not native Source acceptance.
+
+Next bounded checkpoint: **Complete-catalog activation readiness**. Exercise the
+actual four-archetype catalog together across every1d4 count, placement retry,
+member cleanup and lifecycle path. Resolve and record treasure rarity before any
+activation: with four unique entries, count4 necessarily includes treasure, so
+its inclusion probability cannot be below25% without expanding the catalog or
+explicitly revising design. Choose and document a coherent finite activation path,
+then validate/commit/push that checkpoint. Do not flip PopulationReady merely
+because catalog size is four. Further blockade/hazard/shortcut catalog, Game Master
+minigames and Hector remain deferred; do not implement them opportunistically.
+
+---
+
+# Previous checkpoint — DFT treasure chests and atomic key settlement
 
 Built on verified remote main `25263756da7ab548aae0ad02a33a1fdba700b4cd`;
 no intervening work replaced. Read AGENTS.md, the current handoff, retained P9,

@@ -8,7 +8,12 @@ local packets,receivers,convars=F.packets,F.receivers,F.convars
 local graphSignature,originalGraph,generate=F.graphSignature,F.originalGraph,F.generate
 assert(not R:Select(1),'One playable archetype cannot silently cap production count')
 local ok,disabled=D:Plan(graph);assert(ok and disabled.mode=='disabled' and #disabled.instances==0)
+assert(R.PopulationReady==false,'Automatic population requires a separate authored release gate')
+local gated,gateReason=D:Plan(graph,{enabled=true})
+assert(not gated and gateReason:find('catalog activation and rarity tuning pending'))
+R.PopulationReady=true
 assert(not D:Plan(graph,{enabled=true}),'Explicit enable cannot bypass incomplete catalog gate')
+R.PopulationReady=false
 local lifecycle={Create=function(_,instance) local e=ents.Create('fixture_event');e:SetPos(LOD.MazeBuilder:CellCenter(instance.cell));return e end,Interact=function() return true,{fixture=true} end}
 local defs={}
 for _,entry in ipairs({{'fixture_reward','REWARD'},{'fixture_blockade','BLOCKADE'},{'fixture_hazard','HAZARD'},{'fixture_utility','UTILITY'}}) do
@@ -16,6 +21,7 @@ for _,entry in ipairs({{'fixture_reward','REWARD'},{'fixture_blockade','BLOCKADE
   Create=lifecycle.Create,Interact=lifecycle.Interact,CanResolve=function() return true end}
  defs[def.contract]=R:Register(def)
 end
+assert(not D:Plan(graph,{enabled=true}),'Registering a complete catalog must not activate production population')
 local seen={}
 for seed=1,256 do
  local selected,n=R:Select(seed)
@@ -91,6 +97,7 @@ end
 local plannedCounts={}
 defs.BLOCKADE.Place=function() return table.Copy(blockade) end
 Slot.production=false
+R.PopulationReady=true -- Deliberately exercise the future approved population path.
 for seed=1,64 do
  graph.MasterLevelSeed=seed
  local accepted,plan=D:Plan(graph,{enabled=true})
@@ -105,6 +112,8 @@ for seed=1,64 do
  end
 end
 for n=1,4 do assert(plannedCounts[n],'Real full event plan supports count '..n) end
+R.PopulationReady=false
+assert(not D:Plan(graph,{enabled=true}),'Reset release gate must reject even the validated complete fixture catalog')
 Slot.production=true;graph.MasterLevelSeed=Run.State.LevelSeed
 -- Retire the representative catalog: production still has exactly one playable archetype.
 for _,def in pairs(defs) do R.Definitions[def.id]=nil end

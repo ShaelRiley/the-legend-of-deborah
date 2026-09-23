@@ -22,7 +22,27 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if chest then
+    if archetype=='vending_machine' then
+        local details=row and row.details or {}
+        local held=details.held or 0
+        if LOD.Equipment and LOD.Equipment.HasSnapshot then
+            local item=LOD.Equipment.Snapshot.items.healing_potion
+            held=item and item.count or 0
+        end
+        local balance=details.balance
+        if LOD.Wallet and LOD.Wallet.Snapshot and type(LOD.Wallet.Snapshot.balance)=='number' then
+            balance=LOD.Wallet.Snapshot.balance
+        end
+        lines={'DEBBIE VENDING','1 Healing Potion — 10 $DEB. One purchase per account per dungeon.',
+            'Potion stack: '..held..'/3. Added to Equipment; does not heal immediately.'}
+        if not row then lines[#lines+1]='Synchronizing machine…'
+        elseif row.claimUnavailable then lines[#lines+1]='Wallet unavailable — nothing spent; retry shortly.'
+        elseif row.claimed then lines[#lines+1]='PURCHASED — return next dungeon.'
+        elseif details.unavailable then lines[#lines+1]='Wallet unavailable — nothing spent; retry shortly.'
+        elseif held>=3 then lines[#lines+1]='Potion stack full — make room; nothing spent.'
+        elseif (balance or 0)<10 then lines[#lines+1]='You need 10 $DEB. Nothing spent.'
+        else lines[#lines+1]='['..key..'] BUY 1 HEALING POTION — 10 $DEB' end
+    elseif chest then
         lines=treasure and {'TREASURE CHEST','One persistent DFT per account. Collection capacity: 8.'}
             or {'LOCKED CHEST','One procedural wearable for each Hero account.'}
         if treasure and row then lines[#lines+1]='Chest '..tostring(row.memberIndex or 1)..' of '..tostring(row.memberCount or 1) end
