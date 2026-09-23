@@ -650,6 +650,27 @@
       ]
     },
     {
+      "id": "fighting-streets",
+      "title": "Gloves of the Fighting Streets",
+      "rows": [
+        [
+          "Ember Fist",
+          "← ↓ → · 12 Magic · 2-second cooldown"
+        ],
+        [
+          "Cinder Rise",
+          "→ ↓ → · 18 Magic · 4-second cooldown"
+        ]
+      ],
+      "text": [
+        "These paired gloves occupy both hands and grant both techniques while equipped. They are at least Rare; their affixes and innate techniques contribute to their value. Stowing them removes the techniques.",
+        "Ember Fist launches a straight elemental fireball up to five cells (1920 units), dealing 2d6 plus Wisdom as Magic to the first enemy hit. Solid cover stops it; there is no splash or piercing. The gloves’ affinity determines the element and its ordinary Content rider: Earth Push, Fire Immolated, Dark Poisoned, Ice Held, Light Muted or Electric Morale.",
+        "Cinder Rise strikes visible enemies in your current maze square for 2d8 plus Wisdom as Magic, using the gloves’ element. Surviving damaged enemies attempt the ordinary Immolated save. Its upward effect does not move your Hero; walls and floors block its hits.",
+        "Both use ordinary offensive Magic cost modifiers, without a Content surcharge. A committed miss still costs Magic. An invalid source, blocked launch, insufficient Magic or cooldown spends nothing. Stale fireballs disappear if you die, change roles or dungeons, or remove the source gloves; they do not refund Magic.",
+        "Rebuff uses the same sequence as Ember Fist, but its ring cannot stay equipped alongside these two-hand gloves. Read your equipped item’s details before entering the sequence."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

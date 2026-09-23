@@ -101,6 +101,12 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_MagicFormPresentation", function
             if LOD.MagicSpectacle and #FX-i<12 then LOD.MagicSpectacle:Draw(fx,age,reduced()) end
             render.SetMaterial(material)
 
+            if fx.form == "cinder_rise" then
+                local rise=math.min(1,age/.3)
+                local center=fx.origin+(fx.destination-fx.origin)*rise
+                render.DrawBeam(fx.origin,center,12*fade,0,1,Color(c.r,c.g,c.b,150*fade))
+                render.DrawSprite(center,26*fade,26*fade,Color(c.r,c.g,c.b,220*fade))
+            end
             if fx.form == "cone" then
                 local direction=(fx.destination-fx.origin):GetNormalized()
                 local angle=direction:Angle();local side,up=angle:Right(),angle:Up()
@@ -192,4 +198,3 @@ end)
 local function clear() FX={};localCast=nil end
 hook.Add("PostCleanupMap","LOD_MagicFormPresentationCleanup",clear)
 hook.Add("ShutDown","LOD_MagicFormPresentationShutdown",clear)
-

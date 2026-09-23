@@ -71,6 +71,9 @@ function ENT:Think()
     local currentSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
     if self.LODLevelSeed and currentSeed ~= self.LODLevelSeed then self:Remove() return end
     if not IsValid(self.LODCaster) then self:Remove() return end
+    if LOD.MagicForms.ProjectileContextValid and not LOD.MagicForms:ProjectileContextValid(self) then
+        self:Remove();return
+    end
 
     local now = CurTime()
     local dt = math.Clamp(now - (self.LODLastThink or now), 0, 0.05)

@@ -1,6 +1,7 @@
 local E, Run = assert(LOD.Equipment), assert(LOD.RunManager)
 local Rules, Forms, Magic = assert(LOD.RPGAbilityRules), assert(LOD.MagicForms), assert(LOD.Magic)
 E.MoveSessions = setmetatable({}, {__mode="k"})
+E.MoveProjectiles = setmetatable({}, {__mode="k"})
 Rules.VoluntaryDashes = setmetatable({}, {__mode="k"})
 util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
@@ -11,6 +12,8 @@ function E:ClearTransient(ply)
     if Rules.ClearDodge then Rules:ClearDodge(ply) end
     for _, targets in pairs(Rules.BlockEvents or {}) do targets[ply]=nil end
     if IsValid(self.Projectiles[ply]) then self.Projectiles[ply]:Remove() end
+    if IsValid(self.MoveProjectiles[ply]) then self.MoveProjectiles[ply]:Remove() end
+    self.MoveProjectiles[ply]=nil
 end
 
 function E:MoveSession(ply)
@@ -72,9 +75,79 @@ function Rules:ApplyVoluntaryDash(ply, data)
     data:SetVelocity(dash.direction*speed+Vector(0,0,velocity.z))
 end
 
+-- Innate delivery binds the actual equipped record, not just a family name.
+function E:PrepareMoveAttack(ply,move)
+    local session=self:MoveSession(ply)
+    local state=session.ps.equipment
+    local source
+    for _,slot in ipairs(self.SlotOrder) do
+        local item=self:Equipped(state,slot)
+        if item and item.definitionId==move.family then source=item;break end
+    end
+    if not source then return nil end
+    local def=self:Definition(source)
+    for _,slot in ipairs(def.occupancy or {}) do
+        if self:Equipped(state,slot)~=source then return nil end
+    end
+    local element
+    for _,record in ipairs(source.properties or {}) do
+        local property=self:RecordDefinition(source,record)
+        if property and property.element and record.amount>0 then element=property.element;break end
+    end
+    local content=LOD.RPG.MagicContents[element or "fire"]
+    if not content then return nil end
+    content=table.Copy(content)
+    if move.rider then content.rider=move.rider end
+    local context=Forms:_NewContext(ply,move,content)
+    context.moveBinding={session=session,graph=Run.State.Graph,source=source,state=state}
+    context.deliveryForm=move
+    context.deliveryContent=content
+    return context
+end
+
+function E:MoveAttackValid(ply,context)
+    local binding=context and context.moveBinding
+    if not binding or not IsValid(ply) or not self:CanAct(ply)
+        or self:MoveSession(ply)~=binding.session or Run.State.Graph~=binding.graph
+        or binding.session.ps.equipment~=binding.state then return false end
+    local source=binding.source
+    if binding.state.items[source.id]~=source then return false end
+    for _,slot in ipairs(self:Definition(source).occupancy or {}) do
+        if self:Equipped(binding.state,slot)~=source then return false end
+    end
+    return true
+end
+
 -- Handlers preflight before the single resource/cooldown commit, then resolve
 -- through shared authorities. New items register here instead of new listeners.
 E.MoveHandlers = {
+    projectile = {
+        prepare=function(ply,move)
+            if IsValid(E.MoveProjectiles[ply]) then return nil end
+            local context=E:PrepareMoveAttack(ply,move)
+            if not context then return nil end
+            local ok,ent=Forms:_SpawnProjectile(ply,move,context.deliveryContent,context)
+            if not ok then return nil end
+            E.MoveProjectiles[ply]=ent
+            return context
+        end,
+        resolve=function() end
+    },
+    strike = {
+        prepare=function(ply,move)
+            if not Run.State.Graph or not LOD.MazeNavigator:WorldToCell(Run.State.Graph,ply:GetPos()) then return nil end
+            return E:PrepareMoveAttack(ply,move)
+        end,
+        resolve=function(ply,move,context)
+            local targets,footprint=Forms:_BlastTargets(ply,move.cells)
+            for _,target in ipairs(targets) do
+                Forms:_ApplyDamage(ply,ply,target,move,context.deliveryContent,context,
+                    (target:GetPos()-ply:GetPos()):GetNormalized())
+            end
+            Forms:BroadcastFX(move.id,context.deliveryContent.id,ply:GetPos(),ply:GetPos()+Vector(0,0,72),ply,
+                {kind=2,cells=footprint})
+        end
+    },
     dash = {
         prepare=function(ply,move)
             return Rules:BeginVoluntaryDash(ply,move) and {} or nil

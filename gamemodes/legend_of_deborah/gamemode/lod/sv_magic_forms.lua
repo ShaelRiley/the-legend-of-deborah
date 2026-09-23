@@ -563,7 +563,14 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     local direction = ply:GetAimVector():GetNormalized()
     if direction == vector_origin then ent:Remove() return false end
     local speed, range, radius = 0, 0, 0
-    if form.id == "super_ball" then
+    local delivery=form.projectile
+    if delivery then
+        speed,range=delivery.speed,delivery.range
+        local origin=ply:GetShootPos()
+        local trace=util.TraceHull({start=origin,endpos=origin,mins=Vector(-3,-3,-3),
+            maxs=Vector(3,3,3),mask=MASK_SOLID,filter=ply})
+        if trace.StartSolid or trace.AllSolid then ent:Remove();return false end
+    elseif form.id == "super_ball" then
         speed = self.Tuning.SuperBall.speed
         range = speed * self.Tuning.SuperBall.lifetime
     elseif form.id == "watermelon" then
@@ -586,9 +593,10 @@ function Forms:_SpawnProjectile(ply, form, content, context)
         return false
     end
     ent.LODCaster = ply
-    ent.LODFormId = form.id
+    ent.LODFormId = delivery and delivery.form or form.id
     ent.LODContentId = content and content.id or nil
     ent.LODCastContext = context
+    ent.LODExpiresAt = delivery and CurTime()+delivery.lifetime or nil
     ent.LODDirection = direction
     ent.LODSpeed = speed
     ent.LODMaximumTravel = range
@@ -596,13 +604,23 @@ function Forms:_SpawnProjectile(ply, form, content, context)
     ent.LODSteeringDegreesPerSecond = form.id == "missile"
         and self.Tuning.MissileSteeringDegreesPerSecond or 0
     -- The ricochet begins at the shoot origin: never teleport its hull past a wall.
-    ent:SetPos(ply:GetShootPos() + direction * ((form.id=="super_ball" or form.id=="watermelon") and 0 or 24))
+    ent:SetPos(ply:GetShootPos() + direction * ((delivery or form.id=="super_ball" or form.id=="watermelon") and 0 or 24))
     ent:SetAngles(direction:Angle())
     ent:Spawn()
     ent:Activate()
+    if not IsValid(ent) then return false end
     if form.id == "missile" then self.ActiveMissiles[ply] = ent end
     if form.id == "super_ball" then self.ActiveSuperBalls[ent] = ply end
-    return true
+    return true,ent
+end
+
+-- Only equipment deliveries opt into this stronger source/life binding. Normal
+-- Forms retain their existing projectile lifecycle and presentation contracts.
+function Forms:ProjectileContextValid(projectile)
+    local context=projectile.LODCastContext
+    if not context or not context.moveBinding then return true end
+    return (not projectile.LODExpiresAt or CurTime()<projectile.LODExpiresAt)
+        and LOD.Equipment:MoveAttackValid(projectile.LODCaster,context)
 end
 
 function Forms:_AreaTargets(caster, origin, radius)
@@ -640,15 +658,16 @@ function Forms:ProjectileImpact(projectile, trace)
     if not IsValid(projectile) then return end
     if projectile.LODImpactResolved then return end
     projectile.LODImpactResolved = true
+    if not self:ProjectileContextValid(projectile) then projectile:Remove();return end
     local caster = projectile.LODCaster
-    local form = RPG.MagicForms[projectile.LODFormId]
-    local content = projectile.LODContentId and RPG.MagicContents[projectile.LODContentId] or nil
     local context = projectile.LODCastContext
+    local form = context and context.deliveryForm or RPG.MagicForms[projectile.LODFormId]
+    local content = context and context.deliveryContent or (projectile.LODContentId and RPG.MagicContents[projectile.LODContentId] or nil)
     if not form or not context or not IsValid(caster) then projectile:Remove() return end
     local direction = projectile.LODDirection or projectile:GetForward()
     local point = trace and trace.HitPos or projectile:GetPos()
     if trace and trace.HitNormal then point = point + trace.HitNormal * 2 end
-    if form.id == "bolt" then
+    if projectile.LODFormId == "bolt" then
         local target = trace and trace.Entity or nil
         if validTarget(caster, target) then
             self:_ApplyDamage(caster, caster, target, form, content, context, direction)
@@ -661,8 +680,8 @@ function Forms:ProjectileImpact(projectile, trace)
         end
     end
     self.Stats.projectileImpacts = (self.Stats.projectileImpacts or 0) + 1
-    broadcastFX(form.id, content and content.id, projectile:GetPos(), point, caster,
-        form.id ~= "bolt" and {kind=1, radius=projectile.LODBlastRadius or 0} or nil)
+    broadcastFX(projectile.LODFormId, content and content.id, projectile:GetPos(), point, caster,
+        projectile.LODFormId ~= "bolt" and {kind=1, radius=projectile.LODBlastRadius or 0} or nil)
     if form.id == "missile" and self.ActiveMissiles[caster] == projectile then self.ActiveMissiles[caster] = nil end
     projectile:Remove()
 end

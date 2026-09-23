@@ -83,5 +83,6 @@ net.Receive("LOD_SpecialMoveFX",function()
         util.Effect("cball_bounce",fx)
         return
     end
+    if id=="ember_fist" or id=="cinder_rise" then return end -- shared elemental delivery FX
     util.Effect(id=="quickstep" and "cball_bounce" or "ManhackSparks",fx)
 end)

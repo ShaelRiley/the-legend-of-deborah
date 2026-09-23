@@ -84,3 +84,25 @@ concommand.Add("lod_equipment_economy_status",function(ply)
         end
     end
 end)
+
+concommand.Add("lod_fighting_streets_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("fighting_streets_testkit")
+    E:ClearTransient(ply)
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="fighting_gloves" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"fighting_gloves","fighting-streets-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the technique gloves.","special_move_rejected");return
+        end
+    end
+    E:Equip(state,item.id,"left_hand")
+    E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
+    ps.magic=100;LOD.Magic:_Sync(ply,ps)
+    E:Report(ply,"FIGHTING STREETS TEST — Ember Fist ← ↓ →; Cinder Rise → ↓ →. Both hands equipped; 100 Magic; run unranked.","fighting_streets_testkit")
+end)

@@ -23,9 +23,24 @@ E.SpecialMoves.psychic_crush = {id="psychic_crush", name="Psychic Crush", displa
 E.MoveOrder[#E.MoveOrder+1] = "psychic_crush"
 E.Definitions.psychic_crown = {name="Crown of Psychic Crushing", wearable=true, slots={"head"},
     model="models/props_junk/cardboard_box004a.mdl", moves={"psychic_crush"}, minimumRarity=2}
+E.SpecialMoves.ember_fist = {id="ember_fist", name="Ember Fist", displayName="Ember Fist",
+    recipe={"LEFT","DOWN","RIGHT"}, glyphs="← ↓ →", magicCost=12, cooldown=2,
+    value=35, family="fighting_gloves", innateOnly=true, effect="projectile", offensive=true,
+    damageDice=2, damageSides=6, projectile={form="bolt",speed=1200,range=1920,lifetime=1.6},
+    description="Launch a straight fireball up to 1920 units: 2d6 + WIS Magic, using these gloves' element and its normal Content rider. No splash; cover stops it."}
+E.SpecialMoves.cinder_rise = {id="cinder_rise", name="Cinder Rise", displayName="Cinder Rise",
+    recipe={"RIGHT","DOWN","RIGHT"}, glyphs="→ ↓ →", magicCost=18, cooldown=4,
+    value=45, family="fighting_gloves", innateOnly=true, effect="strike", offensive=true,
+    cells=0, damageDice=2, damageSides=8, rider="immolated",
+    description="Rising strike in your current square: 2d8 + WIS Magic using these gloves' element; surviving damaged enemies attempt the normal Immolated save. Cover blocks it; no Hero displacement."}
+E.MoveOrder[#E.MoveOrder+1] = "ember_fist"
+E.MoveOrder[#E.MoveOrder+1] = "cinder_rise"
+E.Definitions.fighting_gloves = {name="Gloves of the Fighting Streets", wearable=true,
+    slots={"left_hand","right_hand"}, occupancy={"left_hand","right_hand"}, budgetMultiplier=2,
+    model="models/props_junk/cardboard_box004a.mdl", moves={"ember_fist","cinder_rise"}, minimumRarity=2}
 -- Preserve the original generator's random-family stream for recorded rewards.
 -- Newly rolled world rewards opt into innate families on a separate substream.
-E.InnateFamilyOrder = {"psychic_crown"}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil
@@ -104,7 +119,8 @@ function E:Budget(level, family, rarity, quality)
     local d=finite(level) and math.floor(level) or 1
     d=math.max(1,math.min(self.ScalingDungeonCap,d))
     local base=100+math.floor(12*math.sqrt(d-1)+4*math.log(d)/math.log(2))
-    return math.floor(base*(family=="gloves" and 2 or 1)*(self.Rarities[rarity or 1].factor/100)*(quality or 100)/100)+self:InnateValue(family,quality)
+    local multiplier=self.Definitions[family] and self.Definitions[family].budgetMultiplier or (family=="gloves" and 2 or 1)
+    return math.floor(base*multiplier*(self.Rarities[rarity or 1].factor/100)*(quality or 100)/100)+self:InnateValue(family,quality)
 end
 function E:Magnitude(def, power)
     if def.fixed then return def.fixed end

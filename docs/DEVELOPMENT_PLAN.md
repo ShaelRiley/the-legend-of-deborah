@@ -1,4 +1,74 @@
-# Current checkpoint — Feather of Resurrection and canonical revival
+# Current checkpoint — Gloves of the Fighting Streets
+
+Built on verified remote `1a7d351b33bde23c3c792623dcb5e33b8c85f0b1`.
+No newer remote work was present. Read AGENTS.md, the current checkpoint and
+live GDD 00/01, relevant 03/06/07/90 rules. The live GDD lacked the named glove
+contract; the retained September 22 master brief explicitly supplies both recipes
+and delegates balancing/design decisions and GDD synchronization. Added and read
+back `LOD-FIGHTING-STREETS-001` in 03/07/90, with the same contract appended to
+HUMAN. No repetition of the completed Feather audit was required.
+
+The minimum-Rare v2 paired gloves occupy both hands once, with doubled ordinary
+glove affix opportunity plus a quality-scaled 80-point innate allowance. Existing
+frozen items and the original seven-family generation stream remain unchanged;
+the independent 1/8 innate reward pool now selects Crown or Gloves. Inventory,
+affinity, naming, value, sale and recreation use the existing item authorities.
+
+- Ember Fist: LEFT DOWN RIGHT; 12 base Magic; two-second cooldown; one straight
+  1200-unit/second projectile, maximum 1920 units and 1.6 seconds. Direct hit
+  deals 2d6 plus canonical WIS Magic with the gloves' sealed affinity and its
+  existing Content rider. No splash or piercing. The native swept hull starts
+  at the shoot origin; blocked placement or failed entity creation spends nothing.
+- Cinder Rise: RIGHT DOWN RIGHT; 18 base Magic; four-second cooldown; current
+  graph square with line of effect. Deals 2d8 plus canonical WIS Magic using
+  the gloves' affinity, then canonical Immolated on a surviving damaged target
+  subject to its ordinary save. Rising elemental presentation does not relocate
+  the Hero. A successfully committed empty shot/area spends Magic.
+
+Both use the existing combo dispatcher, offensive cost modifiers (no Content
+surcharge), shared damage/dice/equipment/defense/status/feed authorities and
+bounded work. No new Spellbook Form, input listener or permanent feat. Rebuff
+shares Ember Fist's recipe but requires a ring displaced by the paired gloves;
+only currently equipped grants compete. Delayed impacts reject changed Hero,
+life, run, level, graph, source record, equipped occupancy or active role, and
+expire without refund. Only one technique projectile per caster can be active.
+The canonical manual and both generated readers now explain both techniques.
+
+Validation: production-path tests cover generated rarity/value/paired slots,
+natural reward families, descriptions, actual combo recognition, projectile
+Initialize/Think/impact, blocked/failed launch, no-splash misses, cooldown and
+Magic commit, shared elemental damage and Immolated save/application, cover and
+local-square exclusion, source/life/role/run/graph/expiry rejection, and the
+Rebuff collision. Initial fixture runs exposed missing entity/faction doubles
+and an incorrect test assumption that Held prevents stationary casting; the
+fixture now follows the existing shared rule. A ring-swap fixture also exposed
+that the runtime testkit needed explicit occupied-slot acceptance; displaced
+items remain in the bag. No production rule was changed to satisfy these tests.
+All 128 integrated suites pass with zero failures, including unchanged exact
+crash replay, LuaJIT, movement/overhead barriers, Feather/queue, safe travel,
+Crown/Quickstep/Rebuff, manual and release-wiring regressions. Lua syntax and git
+whitespace checks pass. Automated checks are not native Source acceptance.
+
+Native gate remains pending: on gm_flatgrass as a developer-mode admin, run
+`lod_fighting_streets_testkit`. It equips one generated pair, fills Magic and
+marks the run unranked; displaced rings remain owned. Use both displayed recipes
+against an exposed enemy, then cover/adjacent-square exclusions. Check Magic,
+shared damage/save feedback, two-hand occupancy and cancellation after stowing.
+With another player, confirm ally exclusion and shared projectile/strike visuals.
+Capture console_latest.txt and rpg_summary_latest.txt; add screenshots only for
+appearance defects. The pickup uses the existing stock equipment-box placeholder.
+
+Next bounded P7 checkpoint: Ring of Invisibility through the shared equipment
+combo and canonical Invisible/target-acquisition authorities. Reconcile live
+GDD break/end rules and missing delegated tuning before implementing. Then
+remaining P7 items precede events/minigames and Hector/finale. Preserve all
+accepted movement, overhead barriers, rescue and queue behavior. Feather,
+Crown, responsive-sheet and safe-travel native acceptance remain pending.
+No VPS or Workshop deployment performed.
+
+---
+
+# Previous checkpoint — Feather of Resurrection and canonical revival
 
 Built on verified remote `8e132f9fb0a0228e271c9e4d8ec29b444432b3d7`.
 Recovered that published tree in a fresh main checkout; no surviving unpushed

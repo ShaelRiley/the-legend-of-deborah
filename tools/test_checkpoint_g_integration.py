@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Fighting Streets Techniques", ["python3", "tools/run_lua54.py", "tools/test_fighting_streets.lua"]),
     ("Feather & Canonical Hero Revival", ["python3", "tools/run_lua54.py", "tools/test_resurrection_feather.lua"]),
     ("Safe Teleport & Summon Card", ["python3", "tools/run_lua54.py", "tools/test_summon_card.lua"]),
     ("Responsive Character Sheet & Canonical Feat Text", ["python3", "tools/run_lua54.py", "tools/test_character_sheet_layout.lua"]),
