@@ -1,4 +1,105 @@
-# Current checkpoint — Deborah finale and staging succession
+# Active roadmap — ecology expansions, integration, performance and safety
+
+The author's current direction supersedes the earlier “P10 native acceptance
+next” sequencing. Complete the phases below **in this order**, banking substantial
+validated implementation checkpoints within each. Human playtesting follows the
+three audits; outstanding native acceptance is retained, not silently accepted
+or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
+
+Last verified gameplay main: `b8c737d27386be9ff5d74e53e39eaf94a9e5875c`,
+`Add Deborah finale celebration and campaign-bound staging succession`.
+Its 156 automated suites passed; native Source acceptance remains pending.
+Always verify current remote main and preserve intervening commits.
+
+## Ordered phases and exit conditions
+
+| Order | Phase | Implementation chunks and finite exit condition |
+| --- | --- | --- |
+| 1 | **Bestiary Update** | Freeze the actual meaningful normal-enemy baseline and target; expand related tactical families through shared combat/AI authorities, then integrate campaign-aware encounter ecology, topology, novelty memory and pacing. Exit at approximately 3.5× the frozen baseline with production-available enemies, reproducible campaign sampling, bounded threat/entities and preserved progression. See [author brief](briefs/BESTIARY_UPDATE.md). |
+| 2 | **Big Loot Update** | Freeze the actual meaningful item baseline; expand coherent effect/slot families, then upgrade loot selection, motifs, history, need/novelty and risk-aware placement. Exit at approximately 3.5× that baseline with legible production items, validated exposure/repetition/value and intact inventory, persistence, sell/fuse and wallet transactions. See [author brief](briefs/BIG_LOOT_UPDATE.md). |
+| 3 | **Event System Update** | Freeze the actual meaningful production-event baseline; implement related event families through current placement/transaction authorities, then integrate event ecology with the already expanded encounter and loot systems. Exit at approximately 3.5× that baseline with campaign sampling and complete lifecycle proofs. Preserve the exact non-exploding 1d4 count and solvability; breadth does not inflate density. See [author brief](briefs/EVENT_SYSTEM_UPDATE.md). |
+| 4 | **Full systems integration and emergence audit** | Trace generation → encounter → combat/status → equipment/loot → events/rewards → progression/lifecycle/UI across real production paths. Consolidate demonstrated duplicate authorities, remove redundant work, reconcile conflicting contracts and test representative cross-system combinations. Exit with one owner per state/transaction, preserved independent RNG/ownership where required, measurable interaction coverage and no known contradictory or redundant authority. Optimize for varied, legible, emergent decisions; do not add content merely to grow the audit. |
+| 5 | **Low-end PC performance audit** | Establish reproducible representative and worst-case scenarios and explicit budgets from available evidence. Profile/measure server AI, traces, generation, client render/model/particle work, memory/resource retention and networking; repair demonstrated hot spots using shared scheduling, bounds and existing reduced-effects paths. Exit with documented before/after evidence and workload limits, no gameplay-authority regressions, and explicit hardware/native measurement gaps. Container timing or operation counts are not native FPS acceptance. |
+| 6 | **Final pre-playtest crash and progression-safety audit** | Stress build failures, campaign resets, same-seed regeneration, native entity/damage lifetimes, missing assets, delayed callbacks, persistence/transaction failures, concurrent interactions, death/revival/disconnect/late join, all-Hero absence, gates/keys/rescue, Hector/finale/Abundance and Level21+. Repair concrete crash, leak, deadlock, stranded-control and progression-softlock paths. Exit with all required automated gates green, no known unresolved game-ending blocker, durable diagnostics and one concise human playtest plan. Do not claim proof that unobserved native crashes are impossible. |
+| 7 | **Shael's human playtest** | Exercise the integrated build after phases1–6. Include outstanding native Source visuals/collision/controls/audio/real-network checks, low-end hardware measurements, Hector 1–4-player tuning, finale/succession and campaign continuity. Capture evidence, then repair demonstrated issues in separate bounded checkpoints. Deployment remains separately authorized. |
+
+The 3.5× targets apply to each **whole update**, not every chunk. Count stable,
+mechanically meaningful identities; exclude cosmetics, numerical roll permutations
+and renamed duplicates. Record baseline IDs, inclusions/exclusions and target once
+at the start of each phase. Do not rebase the denominator as additions ship.
+The source briefs' whole-update definitions of done remain in force; their request
+to finish one enormous checkpoint is superseded only by this chunking policy.
+
+## Checkpoint size and compute policy
+
+- **One coherent production result per checkpoint:** usually a small cohort of
+  several related meaningful enemies/items/events sharing an authority, or one
+  complete director/lifecycle integration. Prefer multiple related behaviors to
+  one-file or cosmetic microcommits. Do not combine the three major updates.
+- Before edits, state the finite scope, exclusions, affected authorities and
+  observable pass condition. The first checkpoint may combine necessary baseline
+  discovery with a real playable cohort; it must not stop at a taxonomy or unused
+  framework. Select cohort size from actual complexity, not a fabricated quota.
+- Reserve roughly the final third of the available session budget for testing,
+  fixes, documentation, commit and remote verification. At rising context/time
+  pressure, stop adding scope and close the coherent slice already underway.
+  If it proves too large, reduce scope at a clean boundary while preserving the
+  remaining work explicitly; do not weaken acceptance or push broken work.
+- Read AGENTS, this current section and only the active brief. Follow live GDD
+  00 → 01 → relevant subsystem tabs; exact HUMAN anchors only when necessary.
+  Reuse the recorded baseline, accepted tests and sampling harnesses. No repeated
+  broad equipment/event/bestiary audit without contradictory evidence.
+- Reuse shared authorities and deterministic streams; introduce abstractions only
+  when the current slice demonstrates their need. Focus parallel delegation on
+  independent work with clear file ownership; avoid duplicate investigations.
+- Run targeted tests during editing. For each gameplay checkpoint run the required
+  canonical integration gate once the slice is stable:
+  `python3 tools/test_checkpoint_g_integration.py`. Repeat only the affected tests
+  after bounded fixes unless a shared-authority risk requires another full run.
+  Documentation-only checkpoints require reference/content review and diff checks,
+  not an unrelated gameplay rerun. Never describe an inherited pass as a new run.
+- Record substantive decisions in relevant live GDD tabs and verify by readback;
+  update the manual for changed player-facing behavior. Prepend the new checkpoint
+  below this roadmap with scope, coverage, results, native gaps and the next slice.
+  Keep this phase order intact until the author changes it.
+- Commit and non-force-push each coherent green checkpoint immediately. Recheck
+  remote main first. If CLI credentials remain unavailable, use authenticated
+  GitHub blobs/tree/commit/ref operations, compare every blob and the complete tree
+  with the tested local tree, update the ref non-forced, fetch and verify. Preserve
+  newer work; never force-push or hold completed work for another feature.
+- A phase ends only when its full brief/exit condition is met. Move to the next
+  phase at a checkpoint boundary. Do not use anticipated future audits to defer a
+  concrete bug or safety/performance regression introduced by the current chunk.
+
+## Next checkpoint — B1: bestiary baseline and first tactical cohort
+
+Read [BESTIARY_UPDATE.md](briefs/BESTIARY_UPDATE.md). Inspect the current production
+normal roster, definitions, shared behavior/combat authorities, director admission
+and tests. Record the baseline and missing tactical niches; choose one coherent
+cohort of several meaningful enemy identities that combines existing mechanics
+and can ship without a full director rewrite. Add only the definition/behavior
+support needed for that cohort and make it genuinely production-consumed through
+valid existing encounter/placement paths. Preserve existing named bosses, enemy
+faction unity, budgets, navigation and the finale.
+
+Prove distinct tactical behavior, deterministic definitions/selection, valid
+placement, authoritative damage/status/rewards and lifecycle cleanup. Update
+GDD/manual/plan, run the integration gate and publish. State the implemented
+count against the frozen whole-phase target and name B2's next coherent slice.
+No Big Loot or Event expansion in B1. The full encounter ecology overhaul follows
+roster expansion within phase1; retain its requirements without prebuilding a
+second unused director. [Copyable handoff](NEXT_DEVELOPMENT_HANDOFF.md).
+
+## Roadmap checkpoint evidence
+
+Planning-only change based on current author sequencing. Retained the three source
+briefs byte-for-byte, reviewed links and precedence, and checked the diff. No game
+code changed and no new gameplay-suite run is claimed. The live GDD sequencing
+amendment is LOD-ROADMAP-ECOSYSTEM-001 in 00/07/90 and HUMAN, verified by readback.
+
+---
+
+# Last gameplay checkpoint — Deborah finale and staging succession
 
 Built on verified remote main `5d05f3e372bd158fb6d49d3e5ce1094f84aa64c7`.
 Read AGENTS.md, the preceding checkpoint, P10 in SEPTEMBER22_MASTER_BRIEF.md,
@@ -82,10 +183,10 @@ or animation defects. Native Source animation, lineup/camera composition,
 real-network synchronization, Hector core aimability/collision/horizon visibility,
 and 1–4-player balance remain pending.
 
-**Next bounded checkpoint:** P10 native acceptance and any demonstrated finale,
-succession or Hector presentation/lifecycle repairs. Use the single procedure
-above and preserve its failed evidence; do not begin another minigame or economy
-expansion as part of this gate. Public deployment still needs separate authority.
+**Historical next-gate note, superseded by the author roadmap above:** the P10
+native procedure remains an outstanding acceptance obligation. It is scheduled
+within the later human playtest and no longer blocks the Bestiary, Big Loot or
+Event System updates. Public deployment still requires separate authority.
 
 ---
 
