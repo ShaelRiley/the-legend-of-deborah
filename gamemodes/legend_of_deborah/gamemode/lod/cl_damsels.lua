@@ -42,7 +42,7 @@ function D:DrawActor(ent,staged)
     cam.Start3D2D(pos,ang,.1)
         draw.RoundedBox(3,-125,-24,250,staged and 70 or 48,Color(20,22,24,225))
         draw.SimpleText(string.upper(def.name),'DermaLarge',0,0,Color(240,196,94),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
-        if staged then draw.SimpleText('[E]  TALK','DermaDefaultBold',0,30,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER) end
+        if staged then draw.SimpleText(level==20 and '[E]  ABUNDANCE' or '[E]  TALK','DermaDefaultBold',0,30,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER) end
     cam.End3D2D()
 end
 net.Receive('LOD_DamselState',function()

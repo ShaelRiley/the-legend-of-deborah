@@ -65,7 +65,8 @@ function S:PlacePlayerInHut(ply, announce)
     if repeatVisit then ps.stagingIntroShown = true end
     local ok = place(self, ply, repeatVisit and false or announce)
     if ok and shouldAnnounce then
-        ply:ChatPrint("DUNGEON HERMIT: Welcome back. Your next gift is on the pedestal. Use the portal when you are ready.")
+        local name = self.GuideName and self:GuideName() or "DUNGEON HERMIT"
+        ply:ChatPrint(name .. ": Welcome back. Your next gift is on the pedestal. Use the portal when you are ready.")
     end
     return ok
 end

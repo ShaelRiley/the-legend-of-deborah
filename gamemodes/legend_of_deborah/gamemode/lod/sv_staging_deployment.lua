@@ -212,6 +212,7 @@ function Staging:_ClearHutPresentation()
     for _, ent in ipairs(self.HutEntities or {}) do removeEntity(ent) end
     self.HutEntities = {}
     self.GuideEntity = nil
+    self.GuideRetry = nil
     self.PortalEntity = nil
     self.SignEntity = nil
     self.ManualEntity = nil
@@ -225,7 +226,6 @@ end
 function Staging:_HutValid()
     return self.HutCenter ~= nil
         and self.HutAnchorSource == "native-enclosed-room"
-        and IsValid(self.GuideEntity)
         and IsValid(self.PortalEntity)
 end
 
@@ -413,8 +413,96 @@ function Staging:EnsureRoomDecor()
         and #self.TorchEntities >= 2
 end
 
+-- Succession is a view of canonical rescue settlement, never a second reward
+-- or progression flag. The roster and guide share precisely one Deborah entity.
+function Staging:DeborahSucceeded()
+    local s = RunManager.State
+    return s and s.RescuedDamsels and s.RescuedDamsels[20] == true or false
+end
+
+function Staging:GuideName()
+    if self:DeborahSucceeded() then return "DEBORAH" end
+    return RunManager.State and RunManager.State.HectorRevealed and "HECTOR THE DIRECTOR" or "DUNGEON HERMIT"
+end
+
+function Staging:_ReconcileGuide()
+    if not self.HutCenter or not self.HutAngles then return false end
+    local s, damsels = RunManager.State, LOD.Damsels
+    if not s then return false end
+    local successor = self:DeborahSucceeded()
+    local guide = self.GuideEntity
+    if IsValid(guide) and (guide.LODCampaignEpoch ~= s.CampaignEpoch or guide.LODCampaignState ~= s
+        or guide.LODStagingDeborah ~= successor) then
+        guide:Remove()
+        if damsels and damsels.Entities and damsels.Entities[20] == guide then damsels.Entities[20] = nil end
+        guide = nil; self.GuideEntity = nil
+    end
+    -- Retire stale registrations so repeated rebuilds do not accumulate actors.
+    for i = #self.HutEntities, 1, -1 do
+        if not IsValid(self.HutEntities[i]) then table.remove(self.HutEntities, i) end
+    end
+    if successor and damsels then
+        damsels.Entities = damsels.Entities or {}
+        local roster = damsels.Entities[20]
+        if IsValid(roster) and roster ~= guide then
+            if roster.LODCampaignEpoch == s.CampaignEpoch and roster.LODCampaignState == s and not IsValid(guide) then guide = roster
+            else roster:Remove() end
+        end
+    end
+    if not IsValid(guide) then
+        -- Cosmetic creation can fail without denying the portal or accepted rescue.
+        -- Repeated EnsureHut calls retry at most once a second in this exact state.
+        local retry = self.GuideRetry
+        if retry and retry.state == s and retry.successor == successor and CurTime() < retry.at then return false end
+        self.GuideRetry = {state=s, successor=successor, at=CurTime()+1}
+        local ok, err = pcall(function()
+            guide = ents.Create(successor and "lod_rescued_damsel" or "lod_staging_prop")
+            if not IsValid(guide) then error("guide creation unavailable") end
+            guide.LODCampaignEpoch = s.CampaignEpoch
+            guide.LODCampaignState = s
+            guide.LODStagingDeborah = successor
+            if successor then guide.LODDamselLevel = 20
+            else guide:SetStageKind(guide.KIND_GUIDE or 1); guide:SetStageLabel(self:GuideName()) end
+            guide:SetPos(localOffset(self.HutCenter, self.HutAngles, self.HutGuideDistance or 72, 0, 0))
+            guide:SetAngles(Angle(0, self.HutAngles.y + 180, 0))
+            guide:Spawn()
+            if not IsValid(guide) or RunManager.State ~= s then error("guide lost during creation") end
+            guide:Activate()
+            if not IsValid(guide) or RunManager.State ~= s then error("guide lost during activation") end
+        end)
+        if not ok then
+            if IsValid(guide) then guide:Remove() end
+            ErrorNoHalt("[LOD:STAGING] Cosmetic guide unavailable: " .. tostring(err) .. "\n")
+            return false
+        end
+    end
+    self.GuideRetry = nil
+    guide.LODStagingDeborah = successor
+    guide:SetPos(localOffset(self.HutCenter, self.HutAngles, self.HutGuideDistance or 72, 0, 0))
+    guide:SetAngles(Angle(0, self.HutAngles.y + 180, 0))
+    if not successor then guide:SetStageLabel(self:GuideName()) end
+    self.GuideEntity = guide
+    local registered = false
+    for _, ent in ipairs(self.HutEntities) do if ent == guide then registered = true; break end end
+    if not registered then self:_RegisterHutEntity(guide) end
+    if damsels and damsels.Entities then damsels.Entities[20] = successor and guide or nil end
+    return true
+end
+
+function Staging:EnsureGuide()
+    local ok, result = pcall(self._ReconcileGuide, self)
+    if not ok then
+        -- An already-valid actor can disappear during a native presentation call.
+        -- Room/portal access must not inherit cosmetic failures.
+        ErrorNoHalt("[LOD:STAGING] Guide reconciliation: " .. tostring(result) .. "\n")
+        return false
+    end
+    return result
+end
+
 function Staging:EnsureHut()
     if self:_HutValid() then
+        self:EnsureGuide()
         self:EnsureRoomDecor()
         return true
     end
@@ -440,15 +528,7 @@ function Staging:EnsureHut()
     self.HutStarterDistance = math.Clamp(room.halfForward * 0.12, 16, 30)
     self.HutSpawnBack = math.Clamp(room.halfForward * 0.045, 8, 14)
 
-    local guide = ents.Create("lod_staging_prop")
-    if IsValid(guide) then
-        guide:SetStageKind(guide.KIND_GUIDE or 1)
-        guide:SetStageLabel("DUNGEON HERMIT")
-        guide:SetPos(localOffset(room.center, room.angles, self.HutGuideDistance, 0, 0))
-        guide:SetAngles(Angle(0, room.angles.y + 180, 0))
-        guide:Spawn()
-        self.GuideEntity = self:_RegisterHutEntity(guide)
-    end
+    self:EnsureGuide()
 
     local portal = ents.Create("lod_staging_prop")
     if IsValid(portal) then
@@ -652,7 +732,10 @@ function Staging:PlacePlayerInHut(ply, announce)
 
     if announce ~= false and not ps.stagingIntroShown then
         ps.stagingIntroShown = true
-        ply:ChatPrint("DUNGEON HERMIT: It's dangerous to go alone. Take this.")
+        ply:ChatPrint(self:GuideName() .. (self:DeborahSucceeded()
+            and ": Welcome to our refuge. Your first weapon is on the pedestal."
+            or (RunManager.State.HectorRevealed and ": The disguise is over. Your weapon remains on the pedestal."
+                or ": It's dangerous to go alone. Take this.")))
         ply:ChatPrint("Press P to choose your Class and Level-1 Feat, take your weapon, then use the blue portal.")
     end
 
@@ -859,9 +942,14 @@ if not RunManager.LODStagingBuildWrapped then
         local ok, result = baseBuildCurrentLevel(self, ...)
         if not ok then return ok, result end
 
+        local builtState = self.State
+        local graph, epoch, runId = builtState.Graph, builtState.CampaignEpoch, builtState.RunId
+        local level, seed = builtState.Level, builtState.LevelSeed
         Staging:EnsureHut()
         timer.Simple(0, function()
-            if not self.State or not self.State.BuildReady then return end
+            if self.State ~= builtState or builtState.Graph ~= graph or builtState.CampaignEpoch ~= epoch
+                or builtState.RunId ~= runId or builtState.Level ~= level or builtState.LevelSeed ~= seed
+                or not builtState.BuildReady or builtState.Failed or builtState.LevelCleared then return end
             for _, ply in ipairs(player.GetAll()) do
                 local ps = self:GetPlayerState(ply)
                 if IsValid(ply) and ps and self:IsSlotActivePlayer(ply)

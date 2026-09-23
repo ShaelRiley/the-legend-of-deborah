@@ -20,6 +20,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Deborah Finale Client Presentation & Cleanup", ["python3", "tools/run_lua54.py", "tools/test_deborah_finale_presentation.lua"]),
+    ("Deborah Staging Succession & Canonical Services", ["python3", "tools/run_lua54.py", "tools/test_deborah_succession.lua"]),
     ("Hector Encounter, Native Death & Level-20 Rescue Gate", ["python3", "tools/run_lua54.py", "tools/test_hector_encounter.lua"]),
     ("Hector Canonical Actor Health & Defenses", ["python3", "tools/run_lua54.py", "tools/test_hector_health.lua"]),
     ("Hector Horizon & Telegraph Presentation", ["python3", "tools/run_lua54.py", "tools/test_hector_presentation.lua"]),

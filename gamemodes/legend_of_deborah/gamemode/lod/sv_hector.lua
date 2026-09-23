@@ -149,6 +149,12 @@ function H:Spawn(h)
         e:SetColor(Color(210,55,65));e:DrawShadow(false)
         LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=e
         h.stage=1;h.revealUntil=CurTime()+C.reveal;h.nextAttack=h.revealUntil
+        h.state.HectorRevealed=true -- campaign knowledge; fresh campaigns restore the secret
+        local staging=LOD.StagingDeployment
+        if staging and staging.EnsureGuide then
+            local shown,why=pcall(staging.EnsureGuide,staging)
+            if not shown then ErrorNoHalt("[LOD:HECTOR] Guide identity presentation: "..tostring(why).."\n") end
+        end
         P:Announce("HECTOR THE DIRECTOR — ATTACK THE DIRECTOR'S HEART IN THE COURT")
         P:SyncAll();self:Sync()
         hook.Run("LOD_EncounterMusicPressure","warden",3)

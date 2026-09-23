@@ -24,9 +24,15 @@ timer.Adjust=function(id,delay) timers[id].delay=delay end
 timer.Remove=function(id) timers[id]=nil end
 local function flush() local q=queued;queued={};for _,fn in ipairs(q) do fn() end end
 local packets,packet={},nil
+local failFinaleNetwork=false
 net.Start=function(id) packet={id=id,values={}};packets[#packets+1]=packet end
-local function write(v) packet.values[#packet.values+1]=v end
+local function write(v)
+ if failFinaleNetwork and packet.id=='LOD_DeborahFinale' then error('injected finale packet failure') end
+ packet.values[#packet.values+1]=v
+end
 net.WriteBool,net.WriteUInt,net.WriteFloat,net.WriteVector,net.WriteEntity,net.WriteString=write,write,write,write,write,write
+net.WriteInt=write;net.Receive=noop
+util.IsValidModel=function() return false end
 net.Broadcast=noop;net.Send=function(p) packet.recipient=p end
 util.TraceLine=function(t) return {Hit=false,HitPos=t.endpos} end
 util.TraceHull=function(t) return {Hit=false,HitPos=t.endpos} end
@@ -41,6 +47,9 @@ local function actor(class)
  e.SetNW2String,e.SetNW2Int,e.SetNW2Float,e.SetNW2Entity=e.SetNW2Bool,e.SetNW2Bool,e.SetNW2Bool,e.SetNW2Bool
  function e:GetClass() return self.class end
  function e:GetNW2Int(k,default) return self.nw[k] or default end
+ e.GetNW2Float=e.GetNW2Int
+ function e:GetModel() return "models/player/group01/male_01.mdl" end
+ function e:GetAngles() return {y=0} end
  function e:EntIndex() return self.index end
  function e:Health() return self.hp end
  function e:GetMaxHealth() return self.maximum end
@@ -79,6 +88,7 @@ R.CaptureInventory=noop;R.FinalizeCampaignRun=noop;R.PutInRestrictedSpectator=no
 R.BuildCurrentLevel=function(self) LOD.ProgressionDirector:ResetLevelState(self.State.Graph);self.State.RescueTarget=LOD.Damsels:Target(self.State.Level);return true end
 function R:IsActivePlayer(p) return p.active~=false end
 function R:IsSoldierControl(p) return p.soldier==true end
+function R:IsPlayedIdentity(p) return p.ps~=nil end
 function R:IdentityOf(p) return p.id end
 function R:GetPlayerState(p) return type(p)=='table' and p.ps or self.State.PlayerState[p] end
 local function hero(id)
@@ -96,6 +106,8 @@ local P,W,N=LOD.ProgressionDirector,LOD.Warden,LOD.MazeNavigator
 P.Announce=noop;P.SyncAll=noop
 dofile(root..'sv_hector.lua')
 local H=LOD.Hector
+dofile(root..'sh_tetris.lua');dofile(root..'sv_intermission_tetris.lua');dofile(root..'sv_victory_celebration.lua')
+local V=LOD.VictoryCelebration
 LOD.CharacterProgressionSystem={AwardHeroXP=function(_,id,n) local ps=R:GetPlayerState(id);ps.progressionState.xp=ps.progressionState.xp+n;return true end}
 dofile(root..'sv_rpg_gate_d.lua')
 local Attribution=LOD.CombatAttributionSystem
@@ -119,6 +131,7 @@ local function setup(level)
  R.State={Level=level or 20,LevelSeed=seed,CampaignSeed=41,CampaignEpoch=2,RunId='hector:test',Graph=graph,BuildReady=true,
   PlayerState={[p.id]=p.ps,[q.id]=q.ps},RescuedDamsels={}}
  P:ResetLevelState(graph)
+ if hooks.LOD_DeborahFinaleLifecycle then hooks.LOD_DeborahFinaleLifecycle() end
  local s=R.State;s.GatesOpen={true,true,true,true};s.NeilHunt={started=true};s.RescueTarget=LOD.Damsels:Target(s.Level)
  for _,v in ipairs(players) do v.alive=true;v.valid=true;v.active=true;v.soldier=false;v.ps.lives=3;v.ps.deploymentComplete=true;v:SetPos(N:CellCenter(graph.Progression.Warden.center)+Vector(200,0,0)) end
  graph.Progression.Warden.lock.entity=actor('lod_gate')
@@ -268,14 +281,27 @@ local dropBefore=drops;Loot:OnHostileLootHandoff(core);Loot:OnHostileLootHandoff
 assert(drops==dropBefore+2,'native corpse loot duplicate or missing account award')
 core:Remove();assert(H:RescueAllowed(s),'normal corpse retirement revoked rescue receipt')
 p:SetPos(card:GetPos());assert(P:CollectJailKey(p,card) and P:TryOpenJailDoor(p,graph.Progression.JailEdge.entity) and P:CanRescueTarget())
+local rescueBaseXP=p.ps.progressionState.xp+q.ps.progressionState.xp
 assert(R:CompleteLevel(p) and s.Abundance and not R:CompleteLevel(p))
+assert(p.ps.progressionState.xp+q.ps.progressionState.xp==rescueBaseXP+5000,'rescue XP must settle once')
+assert(s.IntermissionEnd==clock+20 and LOD.IntermissionTetris.Pending[p.id].endsAt==s.IntermissionEnd,
+ 'finale altered authoritative twenty-second intermission')
+local finale=assert(V.Finale,'legitimate rescue did not activate finale')
+assert(finale.startedAt==clock and finale.endsAt==clock+6.5 and V:FinaleCurrent(finale))
+assert(finale==s.DeborahFinaleTransition and #finale.heroes==2)
+local serial=finale.serial
+assert(not R:CompleteLevel(p) and V.Finale==finale and finale.serial==serial,'duplicate rescue restarted finale')
 assert(R:AdvanceLevel() and R.State.Level==21 and R.State.RescueTarget.type=='cash' and R.State.RescueTarget.objective=='SECURE THE BAG')
 assert(h.retired and not R.State.Hector)
+assert(not V:FinaleCurrent(finale),'Level21 retained finale ownership')
 -- Levels 1-19 and 21+ retain ordinary Gordon's key/release path.
 for _,level in ipairs({1,19,21,42}) do
  s,w,g=setup(level);kill(g);flush();assert(not s.Hector and IsValid(s.JailKeyEntity),'ordinary Gordon key changed')
  p:SetPos(s.JailKeyEntity:GetPos());assert(P:CollectJailKey(p,s.JailKeyEntity));assert(P:TryOpenJailDoor(p,actor('door')))
  assert(P:CanRescueTarget() and H:RescueAllowed(s))
+ assert(R:CompleteLevel(p) and not V.Finale,'ordinary rescue or cash spawned finale')
+ assert(s.IntermissionEnd==clock+20 and (level<20 and s.RescuedDamsels[level] or s.CashRecovered==1),
+  'ordinary rescue/cash settlement changed')
 end
 -- A Level-20 Gordon retains his ownership marker after the current level
 -- advances. Delayed native death cannot masquerade as ordinary cash-mode Gordon.
@@ -347,3 +373,111 @@ end
 s,w,h,core=reveal();arm=function() H:BeginAttack(h,{p},clock) end;arm();R:FailCampaign('test failure')
 assert(h.retired and not IsValid(core) and not h.pending and not H:CanDamage(core,damage(p,1)))
 print('HECTOR_ENCOUNTER_PASS: legitimate Gordon/native death handoff, L20-only rescue lock, canonical contributor rewards, exactly-once receipt, reveal/telegraphs/12 hazards/phases, life/deployment/disconnect/absence, late joins, exact state/graph/campaign ownership, same-seed reset, partial creation/failure/timeout cleanup, Level21 cash continuation')
+
+-- Expanded finale uses the real Gordon/Hector receipt, accepted rescue wrapper,
+-- rescue rewards and optional Tetris window; cosmetic methods never settle loot.
+local function rescueFinale(expectMissing)
+ local state,warden,encounter,body=reveal()
+ state.RescuedDamsels={};for level=1,19 do state.RescuedDamsels[level]=true end
+ body.hp=0;kill(body);time(clock+.01);LOD.HostileDeathPresentation:_RunDue()
+ local key=assert(state.JailKeyEntity);p:SetPos(key:GetPos())
+ assert(P:CollectJailKey(p,key) and P:TryOpenJailDoor(p,graph.Progression.JailEdge.entity))
+ assert(R:CompleteLevel(p));if not expectMissing then assert(V.Finale) end;return state,V.Finale,encounter
+end
+s,w,g=setup()
+assert(not V:CaptureFinale() and not R:CompleteLevel(p) and not V.Finale,
+ 'premature Level20 finale before Hector death')
+local state,record,encounter=rescueFinale()
+assert(#record.damsels==19 and #record.heroes==2 and record.endsAt<=state.IntermissionEnd)
+assert(record.center:DistToSqr(N:CellCenter(encounter.arena.center))<.01,
+ 'finale tableau placed in narrow jail rather than canonical court')
+for i,level in ipairs(record.damsels) do assert(level==i and level~=20,'duplicate or incorrect damsel tableau roster') end
+local acceptedXP=p.ps.progressionState.xp+q.ps.progressionState.xp
+assert(not V:StartFinale(record) and V.Finale==record,'direct duplicate start')
+H:Cleanup();assert(V:FinaleCurrent(record),'normal Hector cleanup revoked accepted rescue finale')
+local movement,buttons=0,0
+local command={ClearMovement=function() movement=movement+1 end,ClearButtons=function() buttons=buttons+1 end}
+hooks.LOD_VictoryCelebrationMovementLock(p,command)
+assert(movement==1 and buttons==1,'participating Hero not locked during explicit interval')
+local deadline=record.endsAt
+for _,axis in ipairs({'dead','disconnect','spawn','life','soldier','inactive','playerState'}) do
+ state,record=rescueFinale();deadline=record.endsAt
+ local hp=record.heroes[1];local who=hp.entity
+ local oldps=who.ps;local oldspawn=who.LODRunSpawnSerial;local oldlife=oldps.equipmentLifeSerial
+ if axis=='dead' then who.alive=false elseif axis=='disconnect' then who.valid=false
+ elseif axis=='spawn' then who.LODRunSpawnSerial=oldspawn+1
+ elseif axis=='life' then oldps.equipmentLifeSerial=oldlife+1
+ elseif axis=='soldier' then who.soldier=true elseif axis=='inactive' then who.active=false
+ else who.ps=table.Copy(oldps) end
+ assert(not V:HeroPresent(hp),'stale participant '..axis)
+ local before=movement;hooks.LOD_VictoryCelebrationMovementLock(who,command)
+ assert(movement==before,'stale Hero remained control-locked: '..axis)
+ who.ps=oldps;who.alive=true;who.valid=true;who.active=true;who.soldier=false
+ who.LODRunSpawnSerial=oldspawn;oldps.equipmentLifeSerial=oldlife
+end
+assert(not V:HeroPresent(record.heroes[1]) and record.endsAt==deadline,'retired Hero rejoined timeline')
+acceptedXP=p.ps.progressionState.xp+q.ps.progressionState.xp
+local newcomer=hero('late-hero');newcomer.ps.deployedDungeonLevel=20
+state.PlayerState[newcomer.id]=newcomer.ps
+V:SyncFinale(newcomer);local snapshot=packets[#packets]
+assert(snapshot.id=='LOD_DeborahFinale' and snapshot.recipient==newcomer and snapshot.values[1])
+assert(snapshot.values[2]==false and snapshot.values[3]==record.serial and snapshot.values[4]==record.startedAt and snapshot.values[5]==deadline,
+ 'late join reset finale timing')
+assert(#record.heroes==2,'late join altered accepted participant roster')
+local before=movement;hooks.LOD_VictoryCelebrationMovementLock(newcomer,command)
+assert(movement==before,'new spectator inherited participant movement lock')
+newcomer.valid=false;table.remove(players)
+state.RescueEntity:Remove();assert(V:FinaleCurrent(record),'missing cosmetic rescue model invalidated legitimate clear')
+assert(p.ps.progressionState.xp+q.ps.progressionState.xp==acceptedXP and state.Abundance)
+time(deadline+.01);hooks.LOD_VictoryCelebrationMovementLock(p,command)
+assert(movement==before and not V:FinaleCurrent(record),'movement remained locked beyond interval')
+-- Replacing an exact ownership component invalidates only presentation; accepted
+-- rewards are immutable. Same numeric seed or identical graph values do not help.
+local function shallow(value) local copy={} for k,v in pairs(value) do copy[k]=v end;return copy end
+for _,axis in ipairs({'state','graph','progression','epoch','campaignSeed','runId','seed','level','failed','cleared','build','transition','intermission'}) do
+ state,record=rescueFinale();local xp=p.ps.progressionState.xp+q.ps.progressionState.xp
+ if axis=='state' then R.State=shallow(state)
+ elseif axis=='graph' then state.Graph=shallow(graph)
+ elseif axis=='progression' then state.Graph.Progression=shallow(state.Graph.Progression)
+ elseif axis=='epoch' then state.CampaignEpoch=state.CampaignEpoch+1
+ elseif axis=='campaignSeed' then state.CampaignSeed=state.CampaignSeed+1
+ elseif axis=='runId' then state.RunId='new-run'
+ elseif axis=='seed' then state.LevelSeed=state.LevelSeed+1
+ elseif axis=='level' then state.Level=21
+ elseif axis=='failed' then state.Failed=true
+ elseif axis=='cleared' then state.LevelCleared=false
+ elseif axis=='build' then state.BuildReady=false
+ elseif axis=='transition' then state.DeborahFinaleTransition={}
+ else state.IntermissionEnd=state.IntermissionEnd+1 end
+ assert(not V:FinaleCurrent(record),'stale finale ownership '..axis)
+ before=movement;hooks.LOD_VictoryCelebrationMovementLock(p,command)
+ assert(movement==before,'stale owner held controls '..axis)
+ V:SyncFinale(q);assert(packets[#packets].values[1]==false,'stale snapshot transmitted '..axis)
+ assert(p.ps.progressionState.xp+q.ps.progressionState.xp==xp,'presentation invalidation replayed rewards')
+ V:EndFinale()
+end
+state,record=rescueFinale();P:ResetLevelState(graph)
+assert(not V:FinaleCurrent(record),'same-seed regeneration retained accepted finale')
+state,record=rescueFinale();R:FailCampaign('finale interrupted')
+assert(not V:FinaleCurrent(record),'campaign failure retained finale')
+
+V:EndFinale();failFinaleNetwork=true;state,record=rescueFinale(true);failFinaleNetwork=false
+assert(state.LevelCleared and state.Abundance and state.RescuedDamsels[20] and not record,
+ 'partial finale network creation unwound legitimate rescue')
+assert(R:AdvanceLevel() and R.State.Level==21 and R.State.RescueTarget.objective=='SECURE THE BAG',
+ 'presentation failure blocked endless progression')
+
+-- An inactive cosmetic packet failure must never veto the real endless handoff.
+state,record=rescueFinale()
+local startPacket=net.Start
+net.Start=function(id)
+ if id=='LOD_DeborahFinale' then error('injected finale teardown net.Start failure') end
+ return startPacket(id)
+end
+assert(R:AdvanceLevel() and R.State.Level==21 and R.State.RescueTarget.objective=='SECURE THE BAG',
+ 'cosmetic teardown exception blocked authoritative Level21 advancement')
+net.Start=startPacket
+assert(not V.Finale and p:GetNW2Float('LOD_VictoryCelebrationUntil',0)==0
+ and q:GetNW2Float('LOD_VictoryCelebrationUntil',0)==0,'teardown failure retained finale/control locks')
+
+print('DEBORAH_FINALE_SERVER_PASS: real accepted rescue and Tetris window; once-only XP/activation; exact campaign/graph/transition; canonical damsels/Hero snapshot; life/role/disconnect/late join; removed actor safety; timed controls; same-seed reset/failure; Level21 and ordinary rescues')

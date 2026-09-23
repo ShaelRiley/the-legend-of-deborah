@@ -1,4 +1,95 @@
-# Current checkpoint — Hector the Director and Level-20 rescue gate
+# Current checkpoint — Deborah finale and staging succession
+
+Built on verified remote main `5d05f3e372bd158fb6d49d3e5ce1094f84aa64c7`.
+Read AGENTS.md, the preceding checkpoint, P10 in SEPTEMBER22_MASTER_BRIEF.md,
+and live GDD 00 → 01 → relevant 05/06/07/90. Before implementation, recorded
+and read-back verified **LOD-FINALE-001** in 05/06/07/90 and HUMAN under explicit
+author design delegation. This supersedes older finale deferrals and the Hermit's
+continued presence after Deborah's rescue. No VPS or Workshop deployment.
+
+**Activation and timing:** only the accepted Level-20 rescue after the legitimate
+Hector defeat receipt starts the expanded finale. Existing rescue XP, currency,
+roster and Abundance settlement remain authoritative. The first **6.5 seconds**
+of the unchanged **20-second** victory/Tetris interval show Deborah, actually
+rescued damsels and up to four surviving participating Heroes: rescue title
+0–1.5s; four one-second affectionate lean/cheek-kiss or wave/gratitude slots
+1.5–5.5s; finite-story victory and Level-21 invitation 5.5–6.5s. Optional F/Tetris
+remains available immediately and dismisses the local finale presentation.
+
+**Presentation/lifecycle:** cosmetic client doubles use canonical models and
+palettes; actual Heroes never move for choreography. Supported native bone/sequence
+animation has a gratitude fallback. Reduced effects retain normal view and titles.
+Exact accepted transition, campaign state/epoch/seed/run, dungeon seed, graph and
+progression bind snapshots and callbacks. Captured Hero state, identity, spawn
+and equipment life bind participants. Death, disconnect and role/life changes
+retire participants; late join/reconnect receives the elapsed phase without
+opening audio, replacement kiss slots, reward replay or clock extension. Reset,
+failure, same-seed rebuild, advance, stale snapshots and map cleanup retire the
+camera, actors, local target override, HUD and short movement lock. Cosmetic
+failure cannot reject settlement or obstruct progression. Levels 1–19 and 21+
+retain their ordinary celebration and objective rules.
+
+**Presentation bounds:** server snapshots every 0.25s; client lease 0.75s.
+The tableau uses the open court center, with 48-unit Hero spacing and two damsel
+rows (up to ten per row, 34-unit columns, 48/90 units behind center). The full
+view traces a 6-unit hull from court focus at +52 Z to a camera about 245 units
+forward and 65 units higher, with a 6-unit drift. Supported spine/head lean is
+12 degrees with a one-second sine envelope; unsupported models use wave/gratitude.
+Render or trace failure restores the original view and leaves readable titles.
+Death or a not-yet-ready local player suspends view/models; revival may observe
+the elapsed phase without restoring a retired receiving slot or opening cue.
+
+**Succession/services:** the Hermit has always been Hector. Pre-reveal guide names
+and lines remain secret; accepted reveal records campaign knowledge. Canonical
+RescuedDamsels[20] replaces him with the roster's **single Deborah** at the old
+guide anchor immediately after rescue and through subsequent staging rebuilds.
+Fresh campaigns restore the unrevealed Hermit. Deborah inherits the existing
+pedestal starter and stored repeat-gift services with their unchanged identity,
+claim IDs and settlement; her Use remains the existing Abundance account claim
+with its rolling 24-hour cooldown. The portal, manual, mirror, statue exchange,
+boards and other damsel services remain intact. Missing cosmetic guides retry
+without blocking deployment. The manual now contains 144 chapters; both readers
+share the same regenerated 31-chunk source.
+
+**Validation:** `python3 tools/test_checkpoint_g_integration.py` passed all **156
+automated suites with zero failures**; `git diff --check` is clean. Two new
+production-path suites cover client presentation and staging succession; the
+Hector suite now also executes real rescue, victory and intermission/Tetris
+through Level 21. Existing SQLite tests retain Abundance/cooldown and gift
+settlement coverage. A final focused regression additionally proves cosmetic
+inactive-notification failure cannot block advancement. An interim run during
+protocol/test construction had two stale-fixture failures (opening-cue schema
+and retired-participant expectations); both were corrected and the full gate
+rerun green. No native Source acceptance is claimed.
+
+**One native acceptance procedure:** in a fresh local gm_flatgrass campaign with
+two Heroes, run server-console `lod_developer_mode 1; lod_damsel_test_stage 20`.
+This existing unranked fixture supplies the nineteen previously rescued damsels.
+Redeploy; use `lod_rpg_gate_c_level 20` and resolve pending choices if needed,
+then run `lod_warden_testkit` as each admin Hero. Defeat Gordon and Hector normally,
+checking the core's aimability, collision, horizon presentation and marked attacks;
+collect the key and rescue Deborah. Confirm one finale, the correct rescued cast
+and surviving Heroes, readable affectionate beats, immediate reward settlement,
+F/Tetris and reduced-effects behavior. Reconnect one client during the finale:
+no replay or extra rewards. At the normal 20-second handoff, confirm SECURE THE BAG
+and one Deborah at the old guide position, no Hermit, retained pedestal gift and
+Abundance feedback (this unranked fixture must refuse wallet minting). Rebuild
+staging and progress once more, then start a fresh
+campaign and confirm the secret Hermit returns. Repeat a short finale with a
+reset/death during presentation and verify ordinary camera/input/HUD recovery.
+Capture console_latest.txt + rpg_summary_latest.txt; screenshots only for framing
+or animation defects. Native Source animation, lineup/camera composition,
+real-network synchronization, Hector core aimability/collision/horizon visibility,
+and 1–4-player balance remain pending.
+
+**Next bounded checkpoint:** P10 native acceptance and any demonstrated finale,
+succession or Hector presentation/lifecycle repairs. Use the single procedure
+above and preserve its failed evidence; do not begin another minigame or economy
+expansion as part of this gate. Public deployment still needs separate authority.
+
+---
+
+# Previous checkpoint — Hector the Director and Level-20 rescue gate
 
 Built on verified remote main `25147e4c769c337bd5269a45f7a18dc8d84bc69e`;
 no intervening work replaced. Read AGENTS.md, retained P10 and live GDD

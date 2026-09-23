@@ -94,7 +94,7 @@
     },
     {
       "id": "staging",
-      "title": "A moment with the Hermit",
+      "title": "Back in staging",
       "art": "deborah:2",
       "text": [
         "Staging comes before Dungeon 1 and after each successful rescue. Speak to the Hermit, inspect your character in the mirror, check the Heroes of Legend board, and visit the Debbie statue for your wallet collection.",
@@ -104,6 +104,7 @@
         "Each rescued damsel stays in the staging room for the rest of the campaign. Approach her and press E for a short conversation and service. Restoratives refresh once per dungeon visit; equipment, the rescue fund grant, and the reserve life are once per Hero identity per campaign. Reconnecting does not renew a claim. Gifts you cannot use remain unclaimed.",
         "The roster is Nessa, Bessa, Tessa, Odessa; Nell, Belle, Estelle, Mirabelle; May, Faye, Kay, Desiree; Jean, Colleen, Maureen, Josephine; Dora, Cora, Eleonora; and finally Deborah. Early families share complementary clothing and accents. The final four keep their natural appearances.",
         "The first five replenish Pistol, SMG, Shotgun, .357 and AR2 ammunition respectively. Belle heals, Estelle cures ailments, and Mirabelle restores Magic. May through Maureen gift gloves, a ring, boots, headwear, a vest, trousers and a shield. Josephine supplies a Healing Potion; Dora restores full health; Cora grants 25–75 Debs; Eleonora restores one reserve life up to the normal maximum. Generated gear gifts cannot be resold or fused.",
+        "After Deborah’s Level-20 rescue, she takes the Hermit’s place in staging. There is only one Deborah: approach her at the old guide position and press E for Abundance. The pedestal still provides the same one-time starter or one stored gift per dungeon visit; speaking to Deborah does not issue another. She remains your host throughout the endless campaign. A fresh campaign restores the original staging cast.",
         "After Deborah’s rescue, Gordon announces his new vocation: stealing cash for the love of the game. Dungeons continue indefinitely with increasing encounter pressure and bounded enemy counts. The rescue roster resets with the campaign; persistent wallet records and Abundance cooldowns follow the existing server wallet rules."
       ]
     },
@@ -938,7 +939,18 @@
         "Attack the Director’s Heart: the red figure at the arena center, tethered to the giant above. This reachable core takes your ordinary weapon and spell hits. The distant body is a spectacle, not a separate target. Fight from the lower court or its upper gallery; the protected entrance permits neither outgoing nor incoming Hector damage.",
         "Hector opens with blue missile volleys and titanic crowbar strikes. Below roughly 60% health, bombs and purple corrupted Villain of Lore bolts enter the rotation. Below roughly 25%, attacks arrive faster and ground strikes may mark several Heroes. Watch the warning text, leave fixed ground circles before impact, and dodge the traveling orbs.",
         "Death and revival use the normal Hero rules. Returning Heroes resume the same fight; Hector does not heal or restart because everyone temporarily leaves the court. His attacks stop while no visible, living Hero is available there. The dungeon’s collapse clock still matters.",
-        "Hector grants ordinary combat credit and enemy drops, with no separate currency prize. After his defeat, take the Jail Key, open Deborah’s chamber, and rescue her to finish Level 20. The existing Level 21-and-beyond SECURE THE BAG campaign then continues."
+        "Hector grants ordinary combat credit and enemy drops, with no separate currency prize. After his defeat, take the Jail Key, open Deborah’s chamber, and rescue her to finish Level 20. The existing Level 21-and-beyond SECURE THE BAG campaign then continues.",
+        "The familiar Hermit is revealed as Hector the Director. Only after his defeat and your successful rescue of Deborah does the finite rescue story end. Deborah succeeds him in staging; the campaign continues into SECURE THE BAG."
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "The rescue story is won",
+      "text": [
+        "Deborah’s legitimate rescue begins a 6.5-second celebration inside the normal 20-second victory window. The rescued damsels cheer, and surviving participating Heroes receive her thanks and affectionate celebration beats. Your rescue rewards settle immediately; the celebration grants no extra reward.",
+        "The opening announces Deborah’s rescue, followed by the Hero celebration, then THE RESCUE STORY IS WON. Your actual Hero stays in place. Movement briefly pauses for the participating survivors, then returns. F can open the usual optional Tetris throughout the victory window and dismisses the finale view.",
+        "Reduced effects keeps your ordinary view and the story titles. If you join late, you see the current moment. Missing actors, a death or a reconnect cannot restart the celebration or pay the rescue again.",
+        "At the usual end of the victory window, return to staging for Dungeon 21. Deborah occupies the former Hermit’s position and offers Abundance through the same once-per-account, rolling 24-hour claim. Prepare your equipment, then use the portal to SECURE THE BAG."
       ]
     },
     {

@@ -2,6 +2,7 @@ local D,Run,E,C,Store,S = LOD.Damsels,LOD.RunManager,LOD.Equipment,LOD.CryptoDir
 util.AddNetworkString('LOD_DamselState')
 util.AddNetworkString('LOD_DamselDialogue')
 D.Entities = D.Entities or {}
+D.StagingRetry = {}
 D.NextTalk = setmetatable({}, {__mode='k'})
 function D:Sync(ply)
     local s=Run.State
@@ -24,7 +25,7 @@ function D:Dialogue(ply,level,line,result)
 end
 function D:ClearStaging()
     for _,ent in pairs(self.Entities) do if IsValid(ent) then ent:Remove() end end
-    self.Entities={}
+    self.Entities={};self.StagingRetry={}
 end
 function D:Placement(def,used)
     local spec=def.placement
@@ -64,20 +65,34 @@ end
 function D:EnsureStaging()
     if not S.HutCenter then return end
     local s=Run.State;local used={}
+    if S.EnsureGuide then S:EnsureGuide() end
+    if Run.State~=s then return end
     for i=1,20 do
         local ent=self.Entities[i]
-        if IsValid(ent) and s.RescuedDamsels and s.RescuedDamsels[i] then used[i]=ent:GetPos()
+        if IsValid(ent) and ent.LODCampaignEpoch==s.CampaignEpoch and ent.LODCampaignState==s and s.RescuedDamsels and s.RescuedDamsels[i] then used[i]=ent:GetPos()
         elseif IsValid(ent) then ent:Remove();self.Entities[i]=nil end
     end
     for i=1,20 do
-        if s.RescuedDamsels and s.RescuedDamsels[i] and not IsValid(self.Entities[i]) then
+        if not (i==20 and S.EnsureGuide) and s.RescuedDamsels and s.RescuedDamsels[i] and not IsValid(self.Entities[i]) then
             local pos,ang=self:Placement(self.Definitions[i],used)
             if pos then
-                local ent=ents.Create('lod_rescued_damsel')
-                if IsValid(ent) then
-                    ent.LODDamselLevel=i;ent.LODCampaignEpoch=s.CampaignEpoch
-                    ent:SetPos(pos);ent:SetAngles(ang);ent:Spawn();ent:Activate()
-                    self.Entities[i]=ent;used[i]=pos
+                local retry=self.StagingRetry[i]
+                if not retry or retry.state~=s or CurTime()>=retry.at then
+                    self.StagingRetry[i]={state=s,at=CurTime()+1}
+                    local ent
+                    local ok,err=pcall(function()
+                        ent=ents.Create('lod_rescued_damsel')
+                        if not IsValid(ent) then error('actor creation unavailable') end
+                        ent.LODDamselLevel=i;ent.LODCampaignEpoch=s.CampaignEpoch;ent.LODCampaignState=s
+                        ent:SetPos(pos);ent:SetAngles(ang);ent:Spawn();ent:Activate()
+                        if not IsValid(ent) or Run.State~=s then error('actor lost during creation') end
+                        self.Entities[i]=ent;used[i]=pos;self.StagingRetry[i]=nil
+                    end)
+                    if not ok then
+                        if IsValid(ent) then ent:Remove() end
+                        ErrorNoHalt('[LOD:DAMSELS] Cosmetic actor unavailable: '..tostring(err)..'\n')
+                    end
+                    if Run.State~=s then return end
                 end
             else ErrorNoHalt('[LOD:DAMSELS] No safe staging placement for '..self.Definitions[i].name..'\n') end
         end
@@ -90,6 +105,7 @@ function D:CanUse(ply,ent)
         or not ps or ps.eliminated or ps.deploymentComplete or not Run:IsSlotActivePlayer(ply)
         or Run:IsSoldierControl(ply) or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
         or not S:IsPlayerInHut(ply) or ply:GetPos():DistToSqr(ent:GetPos())>112^2 then return false end
+    if ent.LODDamselLevel==20 and S.EnsureGuide and (ent~=S.GuideEntity or ent.LODCampaignState~=s) then return false end
     local tr=util.TraceLine({start=ply:EyePos(),endpos=ent:WorldSpaceCenter(),filter={ply,ent},mask=MASK_SOLID_BRUSHONLY})
     return not tr.Hit
 end
@@ -198,6 +214,23 @@ function S:EnsureHut(...)
     if ok then D:EnsureStaging() end
     return ok
 end
+-- The accepted rescue remains the sole settlement authority. Succession is a
+-- best-effort presentation update after that exact state/graph transition.
+local complete=Run.CompleteLevel
+if complete then
+    function Run:CompleteLevel(...)
+        local s=self.State
+        local graph,epoch,runId=s.Graph,s.CampaignEpoch,s.RunId
+        local finale=s.Level==20 and not (s.RescuedDamsels and s.RescuedDamsels[20])
+        local ok,why=complete(self,...)
+        if ok and finale and self.State==s and s.Graph==graph and s.CampaignEpoch==epoch and s.RunId==runId
+            and s.RescuedDamsels and s.RescuedDamsels[20] and S.EnsureGuide then
+            local shown,err=pcall(S.EnsureGuide,S)
+            if not shown then ErrorNoHalt('[LOD:DAMSELS] Succession presentation: '..tostring(err)..'\n') end
+        end
+        return ok,why
+    end
+end
 local new=Run.NewCampaign
 function Run:NewCampaign(...)
     D:ClearStaging()
@@ -212,7 +245,9 @@ hook.Add('KeyPress','LOD_DamselUse',function(ply,key)
     -- also inside the wide talk cone. Actors themselves never intercept traces.
     local trace=ply.GetEyeTrace and ply:GetEyeTrace()
     if trace and IsValid(trace.Entity) and trace.HitPos and trace.HitPos:DistToSqr(ply:EyePos())<=144^2 then
-        for _,prop in ipairs(S.HutEntities or {}) do if prop==trace.Entity then return end end
+        for _,prop in ipairs(S.HutEntities or {}) do
+            if prop==trace.Entity and prop~=D.Entities[prop.LODDamselLevel] then return end
+        end
     end
     local best,dot=nil,.88
     for _,ent in pairs(D.Entities) do

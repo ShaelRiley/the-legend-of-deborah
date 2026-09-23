@@ -43,6 +43,10 @@ for level, row in ipairs(rows) do
         placement={wall=math.floor((level-1)/5)+1, along=({-.72,-.43,-.08,.29,.66})[(level-1)%5+1],
             inset=({38,58,42,62,40})[(level-1)%5+1], yaw=({18,-20,12,-16,0})[(level-1)%5+1]}}
 end
+D.Definitions[20].dialogue = {
+    "Hector wore the Hermit’s smile. This refuge is ours now. Your pedestal gifts continue; Abundance is one token each day.",
+    "The rescue story is won. The road continues: take your gift, then secure the bag. Abundance awaits each day."
+}
 function D:Model(def)
     return def.level==20 and LOD.Config.Models.Deborah or self.Models[def.modelIndex]
 end

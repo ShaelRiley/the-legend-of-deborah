@@ -1,5 +1,17 @@
 # Canonical instruction manual
 
+## Level-20 finale and Deborah succession
+
+The canonical source now teaches the 6.5-second celebration inside the existing
+20-second victory/Tetris window, participating Heroes and rescued damsels, the
+reduced-effects option, late arrivals, and the normal Level-21 handoff. Deborah
+replaces the Hermit at his staging anchor; the pedestal retains its existing
+starter/repeat-gift authority and her Use retains canonical Abundance. Earlier
+staging and Game Master dialogue preserve the secret before Hector’s reveal.
+Both manual renderings are regenerated from the same source. Automated parity
+and transport checks are part of the checkpoint gate; native rendering remains
+pending. See DEVELOPMENT_PLAN.md for current evidence and one native procedure.
+
 ## September 23, 2026 Hector and Level-20 rescue gate
 
 The canonical source now teaches the Level-20 sequence: Gordon's defeat reveals
