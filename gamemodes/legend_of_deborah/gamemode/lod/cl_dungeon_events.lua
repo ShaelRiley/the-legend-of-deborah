@@ -18,11 +18,14 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
         if event.id==ent:GetEventID() and event.entityIndex==ent:EntIndex() then row=event;break end
     end
     local key=string.upper(input.LookupBinding('+use') or 'E')
-    local chest=(row and row.archetype=='locked_chest')
-        or ent:GetNW2String('LOD_EventArchetype','slot_machine')=='locked_chest'
+    local archetype=row and row.archetype or ent:GetNW2String('LOD_EventArchetype','slot_machine')
+    local treasure=archetype=='treasure_chest'
+    local chest=treasure or archetype=='locked_chest'
     local lines
     if chest then
-        lines={'LOCKED CHEST','One procedural wearable for each Hero account.'}
+        lines=treasure and {'TREASURE CHEST','One persistent DFT per account. Collection capacity: 8.'}
+            or {'LOCKED CHEST','One procedural wearable for each Hero account.'}
+        if treasure and row then lines[#lines+1]='Chest '..tostring(row.memberIndex or 1)..' of '..tostring(row.memberCount or 1) end
         local details=row and row.details or {}
         local keys=details.keys or 0
         local equipment=LOD.Equipment
@@ -30,8 +33,11 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
             local stack=equipment.Snapshot.items.chest_key
             keys=stack and stack.count or 0
         end
-        if not row or details.unavailable then lines[#lines+1]='Synchronizing chest…'
-        elseif row.claimed then lines[#lines+1]='OPENED — reward added to Equipment.'
+        if not row then lines[#lines+1]='Synchronizing chest…'
+        elseif row.claimUnavailable then lines[#lines+1]='Wallet unavailable — nothing spent; retry shortly.'
+        elseif row.claimed then lines[#lines+1]=treasure and 'OPENED — DFT recorded in Wallet.' or 'OPENED — reward added to Equipment.'
+        elseif details.unavailable then lines[#lines+1]='Reward unavailable — nothing spent; retry shortly.'
+        elseif details.collectionFull then lines[#lines+1]='DFT collection full — sell a token in staging; nothing spent.'
         elseif details.unlocked then lines[#lines+1]='['..key..'] COLLECT — lock already picked'
         else
             if keys>0 then lines[#lines+1]='['..key..'] USE 1 CHEST KEY  ('..keys..' held)'

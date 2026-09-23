@@ -1,4 +1,94 @@
-# Current checkpoint — Chest Key and ordinary locked-loot chest
+# Current checkpoint — DFT treasure chests and atomic key settlement
+
+Built on verified remote main `25263756da7ab548aae0ad02a33a1fdba700b4cd`;
+no intervening work replaced. Read AGENTS.md, the current handoff, retained P9,
+and live GDD 00 → 01 → relevant 03/05/06/07/90 rules. A fresh file-backed GDD read
+found no protected controls. Under the retained author delegation, added and
+read-back verified LOD-EVENT-TREASURE-001 in 05/06/07/90 and HUMAN. This explicitly
+promotes active-dungeon treasure minting as an exception to the older rescue-only
+DFT restriction; existing rescue, milestone and Abundance authorities remain.
+
+**Implemented:** `treasure_chest`, one nonblocking REWARD archetype with one
+uniform non-exploding 1d2 determining one or two physical chests. The selected
+archetype counts once toward event count. Each member has its own stable ordinal,
+entity, validated optional cell, account claims and snapshots. Registry accepts
+maxInstances=2 only for nonblocking REWARD definitions. Dedicated instance-count
+and per-member placement streams preserve singleton generation. Every member
+gets at most64 placement candidates; a rejected second placement/creation rejects
+and cleans the whole group. Build reports distinguish archetypes from instances;
+developer preview prints every member locator.
+
+Each Steam account receives one persistent DFT per member per campaign dungeon.
+Ordinary and treasure chests share one lock/key admission path and actual Rogue
+derived device-use odds. Normal Use spends one finite Chest Key; Rogue without
+a key picks once, and sprint+Use deliberately picks while carrying keys. Failure
+spends only that attempt; a later key still works. Treasure capacity is the existing
+eight-token collection, independent of equipment bag capacity. Full/unavailable
+collection before admission spends no key or attempt. Successful interrupted picks
+retain their unlocked state and identical frozen token for free retry. Stored
+attempts/rewards survive replacement Heroes and same-dungeon layout changes;
+member identities never include replacement layout seed or selected event order.
+A seed override may change the generated member count, never renew either claim.
+
+CryptoDirector generates the existing versioned equipment-backed token and owns
+TreasureCapacity/SettleTreasureChest; CryptoStore remains the only database writer.
+Its additive optional transaction participant validates exact account/Hero,
+equipment pointer/content/life, role, deployment, clock and dungeon after fallible
+SQL writes/serialization, applies detached key/claim references immediately before
+COMMIT, and compensates owned references on failure. No native grant, network or
+presentation divides settlement. Account/token/immutable receipt/history commit
+together. Repeated Use, token sale/recreation, reconnect and volatile claim loss
+cannot remint. Existing balance/lifetime score are unchanged. Ordinary inventory
+remains run-owned; wallet receipts persist across ordinary server restarts.
+
+Owner snapshots/HUD show member ordinal, keys, actual Rogue odds, spent/unlocked
+attempt, collection-full/storage failure and recorded Wallet reward. Reuse stock
+crate presentation, normal Use, Die Log, equipment and wallet sync. Manual updated
+and regenerated (136 chapters,31 chunks). Independent focused review found no
+remaining loss, duplication, stale lifecycle or solvability defect.
+
+**Activation:** `lod_events_enabled 0` remains the default. Three production
+archetypes cannot satisfy full1d4 unique selection, so enabling full population
+still fails closed. `lod_event_preview_generate treasure_chest` is a developer-only
+unranked real generation preview. It explicitly warns that it spends actual keys
+and awards persistent server-local DFTs. Existing `lod_chest_key_testkit` supplies
+one key only when none is held; no direct DFT mint command was added. Production
+rarity/frequency tuning remains deferred until catalog activation. No VPS or
+Workshop deployment.
+
+Validation: focused production-code/real-SQLite tests pass for both generated
+member counts, distinct optional cells, solvability and rejected-member cleanup;
+key and frozen-token identity; full equipment bag vs full DFT collection;
+receipt/account reads and history/account/ledger/COMMIT failure rollback and retry;
+actual Rogue success/failure and retained attempts; duplicate replay after sale
+and SQLite reconnect; replacement Hero, changed layout seed, lifecycle/account/
+equipment invalidation; late joins, actual HUD, and campaign/dungeon cleanup.
+Ordinary chest, wallet, foundation event and manual regressions remain green.
+Integrated gate: `python3 tools/test_checkpoint_g_integration.py` passes all
+139 suites with zero failures. No native Source acceptance is inferred from this
+automated gate.
+
+Native acceptance pending: on gm_flatgrass with two deployed Heroes (one Rogue),
+run `lod_event_preview_generate treasure_chest`, redeploy, and use the printed
+locator(s). Use `lod_chest_key_testkit` for one key if needed. Verify one key → one
+Wallet DFT, Rogue sprint+Use outcome/retained attempt, independent teammate/member
+claims, full-collection refusal, and replay after reconnect/regeneration. Preview
+awards are persistent. Capture console_latest.txt + rpg_summary_latest.txt;
+screenshot prompt/model defects. Native collision, model, controller/Use, Wallet
+presentation and co-op acceptance remain pending; prior native checks stay open.
+
+Next bounded checkpoint: **Vending machine UTILITY event**, a modest fourth
+archetype from retained P9. Reconcile/record consumable choice and transparent price
+in the live GDD, reuse wallet/inventory transaction participation, prove capacity
+and storage failures spend nothing, independent purchases, stale lifecycle and
+late-join feedback, then validate/commit/push. Keep automatic population OFF until
+an explicit complete-catalog activation gate proves actual four-archetype count/
+uniqueness/placement and resolves production rarity tuning. Bribe/skeleton
+blockades, hazards/warp shortcuts, Game Master minigames and Hector stay deferred.
+
+---
+
+# Previous checkpoint — Chest Key and ordinary locked-loot chest
 
 Built on verified remote main `e380dbbfdcb86cd9f65a8849a8bd99a4f56322e5`;
 no intervening work replaced. Read AGENTS.md, current checkpoint, retained P9 and

@@ -8,6 +8,10 @@ function R:Register(def)
     assert(type(def) == "table" and type(def.id) == "string"
         and def.id:match("^[a-z][a-z0-9_]*$") and #def.id <= 48, "invalid event archetype")
     assert(self.Contracts[def.contract], "invalid event placement contract")
+    assert(def.maxInstances == nil or (type(def.maxInstances) == "number"
+        and (def.maxInstances == 1 or def.maxInstances == 2)), "invalid event instance bound")
+    assert(def.maxInstances ~= 2 or (def.contract == "REWARD" and def.nonblocking == true),
+        "multiple event instances require nonblocking REWARD")
     assert(not self.Definitions[def.id], "duplicate event archetype")
     assert(type(def.Create) == "function" and type(def.Interact) == "function", "event lifecycle required")
     self.Definitions[def.id] = def

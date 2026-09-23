@@ -253,4 +253,73 @@ D:SyncPlayer(a);receivers.LOD_DungeonEvents();assert(#LOD.DungeonEvents.events==
 local token=LOD.DungeonEvents.token
 net.ReadTable=function() return {token=tostring(tonumber(token)-1),events={{id='old-dungeon'}}} end
 receivers.LOD_DungeonEvents();assert(LOD.DungeonEvents.token==token and #LOD.DungeonEvents.events==0,'Delayed old snapshot cannot resurrect cleared dungeon')
-print('DUNGEON_EVENTS_PASS: exact deterministic 1d4/unique four-contract catalog, real full plans, graph/route/placement rejection and bounds; real generation/native Use/SQLite rollback-retry/replay; lifecycle identity/cleanup, reconnect snapshots and client prompts')
+-- One selected reward archetype can own two independently validated children.
+-- Registration bounds reject truncation/coercion and unsupported blocker groups.
+for _,value in ipairs({0,3,1.5,'2',false}) do
+ assert(not pcall(function() R:Register({id='bad_members',contract='REWARD',nonblocking=true,maxInstances=value,Create=lifecycle.Create,Interact=lifecycle.Interact}) end))
+end
+for _,contract in ipairs({'UTILITY','BLOCKADE','HAZARD'}) do
+ assert(not pcall(function() R:Register({id='bad_members',contract=contract,nonblocking=true,maxInstances=2,Create=lifecycle.Create,Interact=lifecycle.Interact}) end))
+end
+assert(not pcall(function() R:Register({id='bad_members',contract='REWARD',maxInstances=2,Create=lifecycle.Create,Interact=lifecycle.Interact}) end))
+local multi=R:Register({id='fixture_multi',contract='REWARD',nonblocking=true,maxInstances=2,Create=lifecycle.Create,Interact=lifecycle.Interact})
+local one,two,twoSeed
+local originalMemberSeed=graph.MasterLevelSeed
+local singletonBefore=select(2,D:Plan(graph,{preview='slot_machine'}))
+for seed=1,32 do
+ graph.MasterLevelSeed=seed
+ local accepted,plan=D:Plan(graph,{preview=multi.id});assert(accepted)
+ local expected=LOD.RNG.New(LOD.Seeds.Derive(LOD.Seeds.Derive(seed,'dungeon-events:archetype:'..multi.id..':v1'),'instance-count:v1')):Int(1,2)
+ assert(plan.selectedCount==1 and #plan.instances==expected)
+ local acceptedAgain,again=D:Plan(graph,{preview=multi.id});assert(acceptedAgain)
+ for index,child in ipairs(plan.instances) do
+  assert(child.id=='1:fixture_multi:'..index and child.memberIndex==index and child.memberCount==expected)
+  assert(child.id==again.instances[index].id and child.cellKey==again.instances[index].cellKey and child.seed==again.instances[index].seed)
+  assert(D:ValidatePlacement(graph,multi,child.placement) and D:ValidateRoutes(graph))
+ end
+ if expected==1 then one=plan else
+  two,twoSeed=plan,seed
+  assert(plan.instances[1].cellKey~=plan.instances[2].cellKey and plan.instances[1].seed~=plan.instances[2].seed)
+ end
+end
+assert(one and two,'Both finite member counts must occur')
+graph.MasterLevelSeed=originalMemberSeed
+local singletonAfter=select(2,D:Plan(graph,{preview='slot_machine'}))
+assert(singletonBefore.instances[1].id=='1:slot_machine' and singletonBefore.instances[1].id==singletonAfter.instances[1].id
+ and singletonBefore.instances[1].cellKey==singletonAfter.instances[1].cellKey and singletonBefore.instances[1].seed==singletonAfter.instances[1].seed,
+ 'Member count and placement streams must preserve existing singleton identities and placements')
+graph.MasterLevelSeed=twoSeed
+local placementCalls=0
+multi.Place=function() placementCalls=placementCalls+1;return table.Copy(two.instances[1].placement) end
+assert(not D:Plan(graph,{preview=multi.id}) and placementCalls==1+D.MaxPlacementAttempts,
+ 'Rejecting second child exhausts its finite budget and rejects the whole archetype; never truncate to one')
+multi.Place=nil
+Run.State.Graph=graph;Run.State.BuildReady=true
+local createCalls=0
+multi.Create=function(d,i)
+ createCalls=createCalls+1
+ local entity=lifecycle.Create(d,i);assert(d:Track(i,entity))
+ if i.memberIndex==2 then error('injected second-member creation failure') end
+ return entity
+end
+local priorEntities=#created
+assert(not D:Activate(graph,two) and createCalls==2 and not D.Context)
+for index=priorEntities+1,#created do assert(not IsValid(created[index]),'Second-member failure leaked child entity') end
+multi.Create=lifecycle.Create
+local accepted,retry=D:Plan(graph,{preview=multi.id});assert(accepted and #retry.instances==2 and D:Activate(graph,retry))
+local rows=D:Snapshot(a)
+assert(rows.selectedCount==1 and #rows.events==2)
+for index,row in ipairs(rows.events) do assert(row.memberIndex==index and row.memberCount==2 and row.id==retry.instances[index].id) end
+local first,second=retry.instances[1],retry.instances[2]
+local firstEntity,secondEntity=first.entities[1],second.entities[1]
+a.pos=first.entities[1]:GetPos();assert(D:Interact(first.entities[1],a))
+assert(D:Snapshot(a).events[1].claimed and not D:Snapshot(a).events[2].claimed,'Child claims must remain independent')
+a.pos=second.entities[1]:GetPos();assert(D:Interact(second.entities[1],a))
+assert(#D:Snapshot(newcomer).events==2 and not D:Snapshot(newcomer).events[1].claimed and not D:Snapshot(newcomer).events[2].claimed)
+assert(D:Snapshot(reconnect).events[1].claimed and D:Snapshot(reconnect).events[2].claimed,'Reconnect must preserve each independent child claim')
+D:Cleanup('multi test teardown')
+assert(first.state=='cleaned' and second.state=='cleaned' and not IsValid(firstEntity) and not IsValid(secondEntity) and not D:IsCurrent(second))
+R.Definitions[multi.id]=nil
+graph.MasterLevelSeed=Run.State.LevelSeed
+assert(graphSignature(graph)==originalGraph,'Multi placements must preserve real maze/progression topology')
+print('DUNGEON_EVENTS_PASS: exact deterministic 1d4/unique four-contract catalog, bounded multi-member REWARD identity/placement/rejection/cleanup/snapshots, real full plans, graph/route/placement rejection and bounds; real generation/native Use/SQLite rollback-retry/replay; lifecycle identity/cleanup, reconnect snapshots and client prompts')

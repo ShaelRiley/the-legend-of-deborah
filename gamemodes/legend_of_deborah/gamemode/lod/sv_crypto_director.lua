@@ -137,6 +137,41 @@ function C:Settle()
 end
 -- Ordinary kills grant run-owned items. DFT minting belongs to rescue settlement.
 function C:RareOpportunity() return nil end
+-- Dungeon treasure uses the same finite persistent collection and mint ledger
+-- as other DFT awards. Its EventDirector binding supplies authorization; unlike
+-- rescue minting this occurs before LevelCleared, including explicit unranked
+-- developer previews. No direct client request reaches this seam.
+function C:TreasureCapacity(id)
+    if not Store.Ready or not Store:ValidAccount(id) then return false,'storage' end
+    local account=Store:Read(id)
+    if not account then return false,'storage' end
+    if count(account.tokens)>=8 then return false,'full' end
+    return true
+end
+function C:SettleTreasureChest(id,token,participant)
+    local r=Run.State
+    local source=type(token)=='table' and token.source
+    if not Store.Ready or not Store:ValidAccount(id) or type(source)~='string'
+        or source:sub(1,15)~='treasure-chest:' or type(token)~='table'
+        or token.id~=id..':'..source or token.source~=source
+        or not r or token.run~=r.RunId or token.depth~=r.Level
+        or not E:ValidateWearable(token.item) or type(participant)~='table'
+        or type(participant.validate)~='function' or type(participant.apply)~='function'
+        or type(participant.rollback)~='function' then return false,'stale' end
+    local event='mint:'..token.id
+    local frozen=table.Copy(token)
+    return Store:Transaction(event,'dungeon_treasure',{id},function(accounts)
+        local current,reason=participant.validate()
+        if not current then return false,reason or 'stale' end
+        local a=accounts[id]
+        if a.tokens[frozen.id] then return false,'already' end
+        if count(a.tokens)>=8 then return false,'full' end
+        a.tokens[frozen.id]=frozen
+        local receipt={token=frozen.id,name=E:ItemName(frozen.item),source=source}
+        Store:History(id,event,'dungeon_treasure',receipt)
+        return true,receipt
+    end,participant)
+end
 function C:CollectToken(ply,token)
     local id=self:Account(ply)
     if not self:Ranked() or not Run.State.LevelCleared or not id or not token or token.id~=id..':'..token.source then return false end

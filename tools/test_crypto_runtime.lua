@@ -501,6 +501,95 @@ a.ps.deploymentComplete=true;assert(not E:CanManageInventory(a));a.ps.deployment
 os.time=realTime
 print('DAMSEL_REWARDS_SQLITE_PASS: per-player rolling24h/reconnect/reset/rollback/full-wallet; existing DFT provenance; identity claims, real ammo/health/magic/gear/potion/coins/life; staging equipment')
 
+-- Cross-authority treasure settlement uses the real wallet transaction. Only
+-- detached Lua references participate; no native grant is needed for a DFT.
+local treasureId='76561198000000901'
+local function treasure(label)
+    return C:GenerateToken(treasureId,'treasure-chest:'..Run.State.RunId..':'..Run.State.Level..':'..label,
+        'Dungeon treasure chest',Run.State.Level)
+end
+local function settlement(token)
+    local owner={equipment={keys=1},claim=nil}
+    local original=owner.equipment
+    local staged={keys=0}
+    local result={token=token.id}
+    local participant={}
+    participant.validate=function() return owner.equipment==original and owner.claim==nil,'stale' end
+    participant.apply=function() owner.equipment=staged;owner.claim=result end
+    participant.rollback=function()
+        if owner.equipment==staged then owner.equipment=original end
+        if owner.claim==result then owner.claim=nil end
+    end
+    return owner,participant,original,staged
+end
+assert(C:TreasureCapacity(treasureId))
+local t=treasure('one')
+for _,pattern in ipairs({'INSERT INTO lod_crypto_history','INSERT OR REPLACE INTO lod_crypto_accounts',
+    'INSERT INTO lod_crypto_ledger','COMMIT'}) do
+    local owner,participant,original=settlement(t)
+    WalletSQLFail(pattern)
+    local ok,why=C:SettleTreasureChest(treasureId,t,participant)
+    assert(not ok and why=='storage')
+    assert(owner.equipment==original and owner.equipment.keys==1 and owner.claim==nil)
+    assert(not Store:Read(treasureId).tokens[t.id] and not Store:Receipt('mint:'..t.id))
+    assert(#Store:Recent(treasureId)==0,'failed settlement left history')
+end
+local owner,participant=settlement(t)
+local ok,receipt=C:SettleTreasureChest(treasureId,t,participant)
+assert(ok and receipt.token==t.id and owner.equipment.keys==0 and owner.claim.token==t.id)
+local treasury=assert(Store:Read(treasureId))
+assert(treasury.tokens[t.id] and treasury.balance==0 and treasury.score==0)
+assert(size(treasury.tokens)==1 and #Store:Recent(treasureId)==1)
+-- Selling/removing a token does not restore its immutable entitlement.
+assert(Store:Transaction('treasure-fixture-sale','test',{treasureId},function(accounts)
+    accounts[treasureId].tokens[t.id]=nil;return true
+end))
+owner,participant=settlement(t)
+local duplicate,why=C:SettleTreasureChest(treasureId,t,participant)
+assert(not duplicate and why=='already' and owner.equipment.keys==1 and owner.claim==nil)
+WalletSQLReconnect()
+assert(Store:Receipt('mint:'..t.id).token==t.id and not Store:Read(treasureId).tokens[t.id])
+-- A guard is checked again after serialization, before reference application.
+local late=treasure('late')
+owner,participant=settlement(late)
+local validations=0
+participant.validate=function() validations=validations+1;return validations==1,'stale' end
+assert(not C:SettleTreasureChest(treasureId,late,participant))
+assert(validations==2 and owner.equipment.keys==1 and not Store:Receipt('mint:'..late.id))
+local throwing=treasure('throwing')
+local original,staged
+owner,participant,original,staged=settlement(throwing)
+participant.apply=function() owner.equipment=staged;error('injected participant failure') end
+assert(not C:SettleTreasureChest(treasureId,throwing,participant))
+assert(owner.equipment==original and not Store:Read(treasureId).tokens[throwing.id])
+-- Compensation must not overwrite another owner's replacement.
+local replacement={keys=7}
+participant.apply=function() owner.equipment=replacement;error('replacement during apply') end
+assert(not C:SettleTreasureChest(treasureId,throwing,participant))
+assert(owner.equipment==replacement)
+assert(Store:Transaction('treasure-fill','test',{treasureId},function(accounts)
+    for i=1,8 do local fill=treasure('fill-'..i);accounts[treasureId].tokens[fill.id]=fill end
+    return true
+end))
+local capacity,reason=C:TreasureCapacity(treasureId)
+assert(not capacity and reason=='full')
+owner,participant=settlement(late)
+local full,fullReason=C:SettleTreasureChest(treasureId,late,participant)
+assert(not full and fullReason=='full' and owner.equipment.keys==1 and not Store:Receipt('mint:'..late.id))
+assert(Store:Transaction('treasure-free','test',{treasureId},function(accounts)
+    local tokenId=next(accounts[treasureId].tokens);accounts[treasureId].tokens[tokenId]=nil;return true
+end))
+assert(C:SettleTreasureChest(treasureId,late,participant) and owner.equipment.keys==0)
+assert(size(Store:Read(treasureId).tokens)==8)
+local wrong=treasure('wrong');wrong.run='retired-campaign'
+assert(not C:SettleTreasureChest(treasureId,wrong,participant))
+wrong=treasure('wrong');wrong.depth=Run.State.Level+1
+assert(not C:SettleTreasureChest(treasureId,wrong,participant))
+wrong=treasure('wrong');wrong.source='other-source';wrong.id=treasureId..':'..wrong.source
+assert(not C:SettleTreasureChest(treasureId,wrong,participant))
+assert(not C:SettleTreasureChest(treasureId,t,{}))
+print('TREASURE_SQLITE_PASS: finite DFT capacity; guarded key/claim reference settlement; history/account/ledger/COMMIT rollback; stale/throwing participant; replacement preservation; retry, sale/reopen replay and score isolation')
+
 -- Corruption remains present and visible, rather than resetting the account.
 assert(sql.Query("UPDATE lod_crypto_accounts SET body='{}' WHERE account="..sql.SQLStr(a.id))~=false)
 assert(not Store:Read(a.id));assert(#errors>=3)

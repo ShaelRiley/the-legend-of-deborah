@@ -20,13 +20,13 @@ function Chest.Record(instance,identity,create)
     return records.accounts[identity]
 end
 
-local function seed(instance,identity,label)
+function Chest.Seed(instance,identity,label)
     return LOD.Seeds.Derive(LOD.Seeds.DeriveLevel(Run.State.CampaignSeed,instance.level),
         'dungeon-events:locked-chest:'..label..':'..identity)
 end
 
 function Chest.Reward(instance,identity)
-    local n=seed(instance,identity,'reward')
+    local n=Chest.Seed(instance,identity,'reward')
     return E:Generate(n,instance.level,E:RewardWearableFamily(n),Chest.EventKey(instance,identity))
 end
 
@@ -35,7 +35,7 @@ function Chest.Claim(instance,identity)
     return record and record.claimed and record.result or nil
 end
 
-local function chance(ply,ps)
+function Chest.Chance(ply,ps)
     if not ps or not ps.progressionState or ps.progressionState.classId~='rogue' then return nil end
     local d=Rules:Derived(ply) or {}
     return math.Clamp(math.floor((d.arcaneItemUseChance or 0)*100+.5),0,100)
@@ -45,7 +45,7 @@ function Chest.Snapshot(instance,ply,identity)
     local ps=Run:GetPlayerState(ply)
     local key=ps and ps.equipment and ps.equipment.items.chest_key
     local record=Chest.Record(instance,identity)
-    return {keys=key and key.count or 0,threshold=chance(ply,ps),
+    return {keys=key and key.count or 0,threshold=Chest.Chance(ply,ps),
         attempted=record and record.pick~=nil or false,
         unlocked=record and record.pick and record.pick.success or false}
 end
@@ -54,7 +54,7 @@ function Chest.Create(director,instance,graph)
     local ent=ents.Create('lod_dungeon_event')
     if not IsValid(ent) then return nil,'entity_creation' end
     if not director:Track(instance,ent) then ent:Remove();return nil,'stale' end
-    ent:SetNW2String('LOD_EventArchetype','locked_chest')
+    ent:SetNW2String('LOD_EventArchetype',instance.archetype)
     ent:SetPos(LOD.MazeBuilder:CellCenter(instance.cell)+Vector(0,0,8))
     ent:SetEventID(instance.id)
     ent:Spawn();ent:Activate()
@@ -69,15 +69,16 @@ local function equal(a,b)
     return true
 end
 
-function Chest.Interact(director,instance,ply,identity)
+-- Shared lock/key admission; each reward authority supplies preparation and settlement.
+function Chest.Open(def,director,instance,ply,identity)
     if not director:IsCurrent(instance) then return false,'stale event' end
     local ps=Run:GetPlayerState(ply)
     if not ps then return false,'Hero unavailable' end
-    local record=Chest.Record(instance,identity,true)
+    local record=def.Record(instance,identity,true)
     if not record then return false,'stale event' end
     if record.claimed then return false,'already' end
     local original=E:Ensure(ps)
-    local threshold=chance(ply,ps)
+    local threshold=Chest.Chance(ply,ps)
     local key=original.items.chest_key
     local hasKey=key and key.count>0
     local unlocked=record.pick and record.pick.success
@@ -91,23 +92,24 @@ function Chest.Interact(director,instance,ply,identity)
         local c=Run.State.CampaignClock
         return director:IsCurrent(instance) and IsValid(ply) and ply:Alive()
             and Run:IsActivePlayer(ply) and not Run:IsSoldierControl(ply)
-            and Run:GetPlayerState(ply)==ps and ps.equipment==original
+            and ply:SteamID64()==identity and Run:GetPlayerState(ply)==ps and ps.equipment==original
             and ps.equipmentLifeSerial==life and ps.deploymentComplete and not ps.inStaging
             and not ps.eliminated and (ps.lives or 0)>0 and not Run.State.SimulationFrozen
             and not (c and (c.scene or (c.deadline and SysTime()>=c.deadline)))
-            and Chest.Record(instance,identity)==record and not record.claimed and equal(original,before)
+            and def.Record(instance,identity)==record and not record.claimed and equal(original,before)
     end
 
-    record.reward=record.reward or Chest.Reward(instance,identity)
-    if not record.reward or not E:ValidateWearable(record.reward) then return false,'Reward unavailable; nothing spent.' end
+    record.reward=record.reward or def.Reward(instance,identity)
+    if not record.reward then return false,'Reward unavailable; nothing spent.' end
     -- All admission/debit work happens in a detached inventory. The canonical
     -- helpers cannot consume a live key on a full bag or failed native-free grant.
     if not unlocked and not picking and not E:Consume(staged,'chest_key') then return false,'Chest Key unavailable.' end
-    if not E:StoreWearable(staged,record.reward) then return false,'Make room in Equipment; nothing spent.' end
+    local prepared,reason=def.Prepare(instance,identity,record.reward,staged)
+    if not prepared then return false,reason end
     if not current() then return false,'stale event' end
 
     if picking then
-        local roll=LOD.RNG.New(seed(instance,identity,'lockpick')):Int(1,100)
+        local roll=LOD.RNG.New(def.Seed(instance,identity,'lockpick')):Int(1,100)
         record.pick={roll=roll,threshold=threshold,success=roll<=threshold}
         -- Record before presentation. Reentrant Use sees the director's busy claim.
         pcall(function()
@@ -119,15 +121,35 @@ function Chest.Interact(director,instance,ply,identity)
         if not current() then return false,'Reward pending; retry the same unlocked chest.' end
     end
 
-    local result={itemId=record.reward.id,name=E:ItemName(record.reward),
-        method=(unlocked or picking) and 'lockpick' or 'key'}
-    -- No callbacks/yields between inventory replacement and the retained claim.
-    ps.equipment=staged
-    record.claimed,record.result=true,result
+    local result=def.Result(record.reward,(unlocked or picking) and 'lockpick' or 'key')
+    if def.Commit then
+        local committed,receipt=def.Commit(instance,ply,identity,ps,record,original,staged,current,result)
+        if not committed then return false,receipt end
+        result=receipt
+    else
+        -- No callbacks/yields between inventory replacement and the retained claim.
+        ps.equipment=staged
+        record.claimed,record.result=true,result
+    end
     pcall(E.Sync,E,ply)
     pcall(function() LOD.Audio:Emit(ply,'confirm') end)
-    pcall(E.Report,E,ply,'LOCKED CHEST — '..result.name..' added to Equipment.','chest_reward')
+    pcall(def.Feedback,ply,result)
     return true,result
+end
+
+function Chest.Prepare(instance,identity,reward,staged)
+    if not E:ValidateWearable(reward) then return false,'Reward unavailable; nothing spent.' end
+    if not E:StoreWearable(staged,reward) then return false,'Make room in Equipment; nothing spent.' end
+    return true
+end
+function Chest.Result(reward,method)
+    return {itemId=reward.id,name=E:ItemName(reward),method=method}
+end
+function Chest.Feedback(ply,result)
+    E:Report(ply,'LOCKED CHEST — '..result.name..' added to Equipment.','chest_reward')
+end
+function Chest.Interact(director,instance,ply,identity)
+    return Chest.Open(Chest,director,instance,ply,identity)
 end
 
 LOD.EventRegistry:Register(Chest)

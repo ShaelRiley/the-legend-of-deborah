@@ -69,9 +69,20 @@ function Store:Receipt(eventId)
     if ok then return result end
     return nil,'storage'
 end
-function Store:Transaction(eventId,kind,ids,mutate)
-    local begun=false
+-- An optional participant coordinates detached, run-owned inventory with the
+-- durable wallet. It must only validate or assign owned Lua references: no
+-- native grants, presentation, network callbacks or yields. Apply runs after all
+-- fallible encoding/writes, immediately before COMMIT. On failure, rollback must
+-- restore only references still owned by that participant, never a replacement
+-- Hero/inventory. Existing wallet-only callers need no participant.
+function Store:Transaction(eventId,kind,ids,mutate,participant)
+    local begun,applied=false,false
     local ok,result,detail=pcall(function()
+        if participant then
+            assert(type(participant)=='table' and type(participant.validate)=='function'
+                and type(participant.apply)=='function' and type(participant.rollback)=='function',
+                'invalid wallet transaction participant')
+        end
         query('BEGIN IMMEDIATE');begun=true
         if query('SELECT event FROM lod_crypto_ledger WHERE event='..sql.SQLStr(eventId)) then
             query('ROLLBACK');begun=false;return false,'already'
@@ -86,11 +97,21 @@ function Store:Transaction(eventId,kind,ids,mutate)
             query('INSERT OR REPLACE INTO lod_crypto_accounts(account,body) VALUES('..sql.SQLStr(id)..','..sql.SQLStr(encode(a))..')')
         end
         query('INSERT INTO lod_crypto_ledger(event,kind,body) VALUES('..sql.SQLStr(eventId)..','..sql.SQLStr(kind)..','..sql.SQLStr(encode(receipt or {}))..')')
+        if participant then
+            local current,reason=participant.validate()
+            if not current then query('ROLLBACK');begun=false;return false,reason or 'stale' end
+            applied=true
+            participant.apply(receipt)
+        end
         query('COMMIT');begun=false
         self.Revision=self.Revision+1
         return true,receipt
     end)
     if begun then sql.Query('ROLLBACK') end
+    if applied and not ok then
+        local restored,err=pcall(participant.rollback)
+        if not restored then ErrorNoHalt('[LOD:WALLET] participant rollback failed: '..tostring(err)..'\n') end
+    end
     if not ok then
         ErrorNoHalt('[LOD:WALLET] transaction failed: '..tostring(result)..'\n')
         return false,'storage'

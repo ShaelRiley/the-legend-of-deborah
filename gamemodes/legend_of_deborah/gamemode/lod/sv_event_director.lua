@@ -182,50 +182,59 @@ function D:Plan(g, options)
     plan.selectedCount = count
     local reserved, hazardEdges, hazardCells = {}, {}, {}
     for ordinal, id in ipairs(selected) do
-        local def, candidates = Registry.Definitions[id], sorted(g.Cells)
+        local def = Registry.Definitions[id]
         local eventSeed = LOD.Seeds.Derive(seed, "dungeon-events:archetype:" .. id .. ":v1")
-        LOD.RNG.New(LOD.Seeds.Derive(eventSeed, "placement")):Shuffle(candidates)
-        local accepted, lastErr
-        for i = 1, math.min(#candidates, self.MaxPlacementAttempts) do
-            local cell = g.Cells[candidates[i]]
-            local placement
-            if def.Place then
-                local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell)
-                if not called then return false, callbackErr end
-                placement = result
-            else placement = {cellKey = candidates[i]} end
-            if placement then
-                local ok, err, fatal = self:ValidatePlacement(g, def, placement, reserved)
-                if fatal then return false, err end
-                if ok and def.contract == "HAZARD" then
-                    local edges, cells = copy(hazardEdges), copy(hazardCells)
-                    for k in pairs(placement.blockedEdges or {}) do edges[k] = true end
-                    for k in pairs(placement.blockedCells or {}) do cells[k] = true end
-                    ok, err = self:ValidateRoutes(g, edges, cells)
+        -- A selected archetype remains one event. Its finite REWARD members each
+        -- require a full placement proof; a rejected child rejects the whole plan.
+        local multiple = def.maxInstances == 2
+        local memberCount = multiple and LOD.RNG.New(LOD.Seeds.Derive(eventSeed, "instance-count:v1")):Int(1, 2) or 1
+        for memberIndex = 1, memberCount do
+            local memberSeed = multiple and LOD.Seeds.Derive(eventSeed, "instance:" .. memberIndex .. ":v1") or eventSeed
+            local candidates = sorted(g.Cells)
+            LOD.RNG.New(LOD.Seeds.Derive(memberSeed, "placement")):Shuffle(candidates)
+            local accepted, lastErr
+            for i = 1, math.min(#candidates, self.MaxPlacementAttempts) do
+                local cell = g.Cells[candidates[i]]
+                local placement
+                if def.Place then
+                    local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell)
+                    if not called then return false, callbackErr end
+                    placement = result
+                else placement = {cellKey = candidates[i]} end
+                if placement then
+                    local ok, err, fatal = self:ValidatePlacement(g, def, placement, reserved)
+                    if fatal then return false, err end
+                    if ok and def.contract == "HAZARD" then
+                        local edges, cells = copy(hazardEdges), copy(hazardCells)
+                        for k in pairs(placement.blockedEdges or {}) do edges[k] = true end
+                        for k in pairs(placement.blockedCells or {}) do cells[k] = true end
+                        ok, err = self:ValidateRoutes(g, edges, cells)
+                    end
+                    if ok then accepted = placement; break end
+                    lastErr = err
                 end
-                if ok then accepted = placement; break end
-                lastErr = err
             end
+            if not accepted then return false, "event placement exhausted: " .. id .. ": " .. tostring(lastErr) end
+            local cellKey = accepted.cellKey or key(accepted.cell)
+            reserved[cellKey] = true
+            for c in pairs(accepted.blockedCells or {}) do reserved[c] = true end
+            if accepted.edgeKey then
+                local e = g.Edges[accepted.edgeKey]
+                reserved[accepted.edgeKey], reserved[key(e.a)], reserved[key(e.b)] = true, true, true
+            end
+            for ek in pairs(accepted.blockedEdges or {}) do
+                local e = g.Edges[ek]
+                reserved[ek], reserved[key(e.a)], reserved[key(e.b)] = true, true, true
+            end
+            if def.contract == "HAZARD" then
+                for e in pairs(accepted.blockedEdges or {}) do hazardEdges[e] = true end
+                for c in pairs(accepted.blockedCells or {}) do hazardCells[c] = true end
+            end
+            plan.instances[#plan.instances + 1] = {id = tostring(ordinal) .. ":" .. id .. (multiple and (":" .. memberIndex) or ""), archetype = id,
+                memberIndex = memberIndex, memberCount = memberCount,
+                contract = def.contract, cellKey = cellKey, cell = g.Cells[cellKey], placement = accepted,
+                seed = memberSeed, state = "planned", claims = {}, entities = {}}
         end
-        if not accepted then return false, "event placement exhausted: " .. id .. ": " .. tostring(lastErr) end
-        local cellKey = accepted.cellKey or key(accepted.cell)
-        reserved[cellKey] = true
-        for c in pairs(accepted.blockedCells or {}) do reserved[c] = true end
-        if accepted.edgeKey then
-            local e = g.Edges[accepted.edgeKey]
-            reserved[accepted.edgeKey], reserved[key(e.a)], reserved[key(e.b)] = true, true, true
-        end
-        for ek in pairs(accepted.blockedEdges or {}) do
-            local e = g.Edges[ek]
-            reserved[ek], reserved[key(e.a)], reserved[key(e.b)] = true, true, true
-        end
-        if def.contract == "HAZARD" then
-            for e in pairs(accepted.blockedEdges or {}) do hazardEdges[e] = true end
-            for c in pairs(accepted.blockedCells or {}) do hazardCells[c] = true end
-        end
-        plan.instances[#plan.instances + 1] = {id = tostring(ordinal) .. ":" .. id, archetype = id,
-            contract = def.contract, cellKey = cellKey, cell = g.Cells[cellKey], placement = accepted,
-            seed = eventSeed, state = "planned", claims = {}, entities = {}}
     end
     -- Prove every blockade can resolve without borrowing access through another
     -- unresolved event. Conservative rejection is preferable to a circular cost
@@ -386,6 +395,7 @@ function D:Snapshot(ply)
         end
         if self:IsCurrent(instance) then snapshot.events[#snapshot.events + 1] = {id = instance.id, archetype = instance.archetype,
             contract = instance.contract, cellKey = instance.cellKey, state = instance.state,
+            memberIndex = instance.memberIndex, memberCount = instance.memberCount,
             claimed = claim and claim.state == "resolved" or false, result = claim and claim.result, claimUnavailable = err ~= nil, details = details,
             entityIndex = IsValid(instance.entities[1]) and instance.entities[1]:EntIndex() or 0} end
     end
@@ -410,7 +420,7 @@ function Builder:Build(g)
     g.EventPlan = plan
     local activated, err = D:Activate(g, plan)
     if not activated then self:Cleanup(); return false, err end
-    report.eventCount, report.eventMode = #plan.instances, plan.mode
+    report.eventCount, report.eventInstanceCount, report.eventMode = plan.selectedCount, #plan.instances, plan.mode
     return true, report
 end
 local baseCleanup = Builder.Cleanup
@@ -452,16 +462,24 @@ concommand.Add("lod_event_preview_generate", function(ply, _, args)
     if not dev or not dev:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
     local id = args[1] or "slot_machine"
     if not Registry.Definitions[id] then return end
+    local notice = Registry.Definitions[id].previewNotice
+    if notice then
+        print('[LOD:EVENT-PREVIEW] ' .. notice)
+        if IsValid(ply) then ply:ChatPrint(notice) end
+    end
     D.NextPreview = id
     Run:MarkUnranked("single dungeon event preview")
     local ok, err = Run:Regenerate()
-    local line
+    local lines = {}
     if ok and D.Context and D.Context.plan.instances[1] then
-        local instance = D.Context.plan.instances[1]
-        local pos = Builder:CellCenter(instance.cell)
-        line = string.format("[LOD:EVENT-PREVIEW] %s at cell %s; developer locator: setpos %.1f %.1f %.1f",
-            id, instance.cellKey, pos.x, pos.y, pos.z + 64)
-    else line = "[LOD:EVENT-PREVIEW] generation rejected: " .. tostring(err) end
-    print(line)
-    if IsValid(ply) then ply:ChatPrint(line) end
+        for _, instance in ipairs(D.Context.plan.instances) do
+            local pos = Builder:CellCenter(instance.cell)
+            lines[#lines + 1] = string.format("[LOD:EVENT-PREVIEW] %s (%d/%d) at cell %s; developer locator: setpos %.1f %.1f %.1f",
+                id, instance.memberIndex, instance.memberCount, instance.cellKey, pos.x, pos.y, pos.z + 64)
+        end
+    else lines[1] = "[LOD:EVENT-PREVIEW] generation rejected: " .. tostring(err) end
+    for _, line in ipairs(lines) do
+        print(line)
+        if IsValid(ply) then ply:ChatPrint(line) end
+    end
 end)
