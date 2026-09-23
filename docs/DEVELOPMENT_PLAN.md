@@ -1,4 +1,63 @@
-# Current checkpoint — safe Hero relocation and Summon Card
+# Current checkpoint — Feather of Resurrection and canonical revival
+
+Built on verified remote `8e132f9fb0a0228e271c9e4d8ec29b444432b3d7`.
+Recovered that published tree in a fresh main checkout; no surviving unpushed
+Feather implementation was found. Live GDD 00/01 then relevant 06/07/90 rules
+were read. Existing `LOD-RESURRECTION-FEATHER-001` in 06/07 already specifies
+the behavior and tuning from the interrupted session; no GDD changes were needed.
+
+Feather of Resurrection occupies the canonical finite Throwable slot, stacks to
+three and uses either mouse button. The existing oldest-eligible elimination
+timestamp/ordinal selector excludes Soldier control, Soldier respawn waits and
+ordinary positive-life respawns. `RunManager:ReviveIdentity` validates eligibility
+before invoking an optional synchronous debit, then restores exactly one life.
+No eligible target, invalid owner, inactive item, timeout or failed debit spends
+anything. Success spends one Feather, no Magic, and applies the 0.6-second cooldown.
+Queue return preserves the original elimination timestamp. Full Hero slots defer
+admission; reconnect does not grant another life. Identity, progression and surviving
+inventory remain unchanged; this does not create gear, wallet value or claims.
+
+The shared deferred revival callback now spawns an alive former-Soldier spectator
+through normal Hero spawning, and rejects changed run, graph, level, identity,
+body serial, death, Soldier state or disconnected player. Summon Card drops keep
+their original independent draw. Feather draws 1/8 of eligible potion opportunities
+that did not select a Card, using resurrection-feather-v1 (7/64 overall). Other
+conversion/affix streams and authored non-eligible rewards remain unchanged.
+The pale newspaper charm is a stock-model placeholder pending native appearance
+acceptance. The canonical manual source and both readers document Cards/Feathers.
+
+Targeted production checks pass queue ordering, both controls, debit failure,
+empty queue, Soldier exclusion/return, slot/reconnect handling, stale callbacks,
+inventory references, cooldown/no-Magic spending, stack exhaustion and seeded
+natural rewards. Initial fixture execution lacked the Source CreateConVar boundary;
+that double was supplied. The first integrated run passed 126/127: the old final
+drop-mix test required a healing share predating Feathers. Its category thresholds
+now account for the 49/64 remaining ordinary pool and explicitly require natural
+Cards and Feathers, retaining the native reward-creation failure checks.
+Final integrated regression: all 127 suites pass with zero failures, including
+unchanged recorded crash replay, LuaJIT, Hero/Soldier lifecycle, safe travel,
+manual synchronization and release-wiring gates. Changed Lua syntax and git
+whitespace checks pass. These are headless/static checks, not Source acceptance.
+
+Native multiplayer/appearance acceptance remains pending. On gm_flatgrass, as a
+developer-mode admin, run `lod_feather_testkit` with an eliminated teammate in the
+Hero Queue. Use either mouse button: one Feather spent, one restored life and a
+normal Hero body. Repeat with no eligible teammate, then with Soldier control and
+return to the queue; only the eligible queue use succeeds. The testkit marks the
+run unranked. Capture console_latest.txt and rpg_summary_latest.txt; screenshots
+are only needed for appearance defects. No VPS or Workshop deployment performed.
+
+Next bounded P7 checkpoint: Gloves of the Fighting Streets through the existing
+equipment-combo and shared combat authorities. Reconcile its live-GDD attack and
+cost rules first; the finite gate is both authored recipes with equipped ownership,
+resource commit, authoritative hit/status handling and lifecycle rejection. Remaining
+P7 items precede event/minigame and Hector/finale work. Preserve the accepted movement,
+overhead barriers, rescue progression and queue semantics; native Crown, responsive
+Character Sheet and safe-travel acceptance remain pending.
+
+---
+
+# Previous checkpoint — safe Hero relocation and Summon Card
 
 Built on verified remote `5bbc6088eaafb9f6d8314dee3fe349b20fb441ea`.
 `LOD.SafeTeleport` now owns exact graph-cell membership, unlocked-route checks,

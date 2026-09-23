@@ -37,7 +37,7 @@ end
 -- owns the four active slots. A revived identity becomes campaign-eligible first;
 -- if a slot is available it activates immediately, otherwise it remains a normal
 -- waiting spectator until PromoteWaitingSpectators can admit it.
-function RunManager:ReviveIdentity(identity)
+function RunManager:ReviveIdentity(identity, debit)
     local id = isstring(identity) and identity or self:IdentityOf(identity)
     if not id then return false, "invalid identity" end
 
@@ -48,11 +48,16 @@ function RunManager:ReviveIdentity(identity)
     local ps = self:GetPlayerState(id)
     if not ps then return false, "no player state" end
 
+    -- A consumable caller commits its unit only after final queue eligibility,
+    -- before any life, slot, inventory or native-body mutation. No yield here.
+    if debit and debit() ~= true then return false, "debit failed" end
+
     ps.lives = 1
     ps.eliminated = false
     ps.eliminatedSince = nil
     ps.respawnAt = nil
     ps.soldierRespawnWait = nil
+    ps.queue = "hero"
     ps.armor = 0
 
     local ply = connectedPlayerForIdentity(id)
@@ -62,11 +67,16 @@ function RunManager:ReviveIdentity(identity)
         self:_SyncPlayerVars(ply)
         if activated then
             local state, graph, serial = self.State, self.State.Graph, ply.LODRunSpawnSerial
+            local levelSeed = state.LevelSeed
             timer.Simple(0, function()
                 if not IsValid(ply) or self.State ~= state or state.Graph ~= graph
+                    or state.LevelSeed ~= levelSeed
                     or ply.LODRunSpawnSerial ~= serial or self:GetPlayerState(ply) ~= ps
-                    or state.Failed or not state.BuildReady then return end
-                if self:IsActivePlayer(ply) and not ply:Alive() then
+                    or state.Failed or not state.BuildReady or state.LevelCleared
+                    or ps.eliminated or (ps.lives or 0) <= 0 or self:IsSoldierControl(ply) then return end
+                -- Returning from Soldier control can leave an alive spectator.
+                -- It still needs the canonical Hero body/loadout spawn path.
+                if self:IsActivePlayer(ply) then
                     ply:UnSpectate()
                     ply:Spawn()
                 end

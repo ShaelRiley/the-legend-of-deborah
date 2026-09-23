@@ -139,6 +139,7 @@ function E:Use(ply, mode)
     if not def or (mode == "drink" and not def.drinkable) or not def.throwable then return false end
     if CurTime() < (self.NextUse[ply] or 0) then return false end
     if def.effect == "summon_hero" then return self:BeginSummonCard(ply,mode) end
+    if def.effect == "revive_hero" then return self:UseResurrectionFeather(ply) end
     -- Unknown effect definitions fail before spending an item.
     if def.effect ~= "heal" and def.effect ~= "poison_cloud" and def.effect ~= "magic_bomb" then return false end
     if mode == "drink" and ply:Health() >= ply:GetMaxHealth()

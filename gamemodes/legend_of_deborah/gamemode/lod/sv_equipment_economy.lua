@@ -218,6 +218,10 @@ function E:PrepareReward(owner,kind,payload,options)
         and LOD.RNG.New(LOD.Seeds.Derive(seed,"summon-card-v1")):Chance(1/8) then
         return "consumable",{itemId="summon_card"}
     end
+    if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible
+        and LOD.RNG.New(LOD.Seeds.Derive(seed,"resurrection-feather-v1")):Chance(1/8) then
+        return "consumable",{itemId="resurrection_feather"}
+    end
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.35) then
         return "consumable",{itemId=(not self.BombTypes or rng:Chance(.35)) and "stink_bomb" or rng:Pick(self.BombTypes)}
     end

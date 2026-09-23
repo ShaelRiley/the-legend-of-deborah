@@ -613,10 +613,12 @@
       "title": "A bottle for a friend",
       "art": "deborah:2",
       "text": [
-        "Healing Potions and Stink Bombs each stack up to three. Equip a stack in the Throwable slot, then select it as your held weapon. Its controls appear on screen.",
+        "Healing Potions, Stink Bombs, Summon Cards and Feathers of Resurrection each stack up to three. Equip a stack in the Throwable slot, then select it as your held weapon. Its controls appear on screen.",
         "Healing Potion: right mouse drinks it to restore up to 25 HP. At full ordinary HP, drinking is rejected without consuming one. Left mouse throws it; the first living allied Hero hit receives the healing. There is no healing splash. A missed throw still spends the bottle.",
         "Stink Bomb: left mouse throws a five-second poison cloud with a 96-unit radius. Enemies entering make the normal Constitution save against Poisoned. You cannot drink a Stink Bomb.",
-        "Neither bottle spends Magic. Holding one takes over right-mouse handling; switch weapons before trying to cast a spell.",
+        "Summon Card: choose another deployed Hero. Left mouse brings them to a safe adjacent square; right mouse brings them to your square or its nearest safe equivalent. Closed gates still apply. A cancelled or failed selection spends nothing.",
+        "Feather of Resurrection: either mouse button restores the oldest eligible zero-life Hero in the Hero Queue with exactly one life, preserving their character and surviving inventory. Active Soldiers and Soldier respawn waits are excluded; returning to the Hero Queue restores eligibility. Full Hero slots defer admission. No eligible Hero means no Feather spent.",
+        "These bottles, cards and Feathers spend no Magic. Holding one replaces spell controls; switch weapons before trying to cast a spell.",
         "Healing Potions are remedies: they also clear every active negative condition, even at full HP. Magic bombs cover Physical, RAW, all six elements and every condition. They share normal throwable slots and saves; their 144-unit explosion cannot hit through solid walls or floors."
       ],
       "quote": "The red one is medicine. Please read the label."
