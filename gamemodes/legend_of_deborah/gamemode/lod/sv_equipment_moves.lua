@@ -106,7 +106,7 @@ function E:BindMoveSource(ply,move)
         if self:Equipped(state,slot)~=source then return nil end
     end
     return {session=session,graph=Run.State.Graph,source=source,state=state,
-        slot=sourceSlot,identity=session.ps.identity}
+        slot=sourceSlot,itemId=state.slots[sourceSlot],identity=session.ps.identity}
 end
 
 function E:PrepareMoveAttack(ply,move)
@@ -135,7 +135,7 @@ function E:MoveAttackValid(ply,context)
         or self:MoveSession(ply)~=binding.session or Run.State.Graph~=binding.graph
         or binding.session.ps.equipment~=binding.state or binding.session.ps.identity~=binding.identity then return false end
     local source=binding.source
-    if binding.state.items[source.id]~=source or self:Equipped(binding.state,binding.slot)~=source then return false end
+    if binding.state.items[binding.itemId or source.id]~=source or self:Equipped(binding.state,binding.slot)~=source then return false end
     for _,slot in ipairs(self:Definition(source).occupancy or {}) do
         if self:Equipped(binding.state,slot)~=source then return false end
     end

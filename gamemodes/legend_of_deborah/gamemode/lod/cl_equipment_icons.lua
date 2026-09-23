@@ -1,6 +1,7 @@
 -- Small code-native silhouettes, independent of the placeholder wearable models.
 local E=LOD.Equipment
 local shapes={
+    hourglass={{5,3},{27,3},{27,7},{19,16},{27,25},{27,29},{5,29},{5,25},{13,16},{5,7}},
     headwear={{5,20},{7,10},{13,6},{23,7},{26,19},{30,21},{30,24},{3,24},{3,21}},
     vest={{7,5},{12,3},{16,8},{20,3},{25,5},{28,14},{23,16},{23,29},{9,29},{9,16},{4,14}},
     trousers={{8,3},{25,3},{24,29},{18,29},{16,15},{14,29},{8,29}},
@@ -52,6 +53,7 @@ local function polygons(family,x,y,scale)
 end
 function E:IconFamily(item)
     local id=item and item.definitionId or ''
+    if id=='magic_hourglass' then return 'hourglass' end
     if id=='moon_boots' then return 'boots' end
     if id=='healing_potion' or id=='stink_bomb' then return 'bottle' end
     if id=='weapon_lod_crowbar' then return 'crowbar' end

@@ -67,6 +67,36 @@ function T:ResetAfterRescue()
     log("DUNGEON_CLOCK_RESET", {epoch=Run.State.CampaignEpoch, level=Run.State.Level, duration=self.Duration})
 end
 
+-- A source captures the exact live clock, not just a duration or campaign ID.
+function T:ExtensionBinding()
+    local s=Run.State
+    return {run=s,clock=self:Clock(),graph=s.Graph,levelSeed=s.LevelSeed,
+        deadline=self:Clock().deadline}
+end
+
+-- Trusted synchronous transaction: commit validates/debits its source and then
+-- returns the rolled seconds. No networking or deferred work precedes mutation.
+function T:TryExtend(binding,commit)
+    local s,c=Run.State,self:Clock()
+    if not binding or binding.run~=s or binding.clock~=c or binding.graph~=s.Graph
+        or binding.levelSeed~=s.LevelSeed or binding.deadline~=c.deadline
+        or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or not c.deadline or c.scene then return false end
+    if SysTime()>=c.deadline then self:Expire();return false end
+    local seconds=commit()
+    if not seconds then return false end
+    assert(type(seconds)=="number" and seconds>0 and seconds<math.huge and seconds==math.floor(seconds),
+        "Clock extension transaction must return positive whole seconds")
+    c.deadline=c.deadline+seconds
+    local remaining=self:Remaining(c,SysTime())
+    for threshold in pairs(c.warned or {}) do
+        if remaining>threshold then c.warned[threshold]=nil end
+    end
+    self:Sync()
+    log("DUNGEON_CLOCK_EXTENDED",{epoch=s.CampaignEpoch,level=s.Level,seconds=seconds,remaining=remaining})
+    return true
+end
+
 function T:Bounds()
     local low, high
     for _, cell in pairs(Run.State.Graph and Run.State.Graph.Cells or {}) do

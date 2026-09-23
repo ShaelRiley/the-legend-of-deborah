@@ -1,4 +1,84 @@
-# Current checkpoint — Boots of the Moon
+# Current checkpoint — Magic Hourglass
+
+Built on independently verified remote main
+`1455c867fe630ebfcfa81ad0a6c5fce1ea890aee`; clean working tree, no newer work
+replaced. Read AGENTS.md and live GDD 00 → 01 → relevant 05/06/07/90. The retained
+P7 author brief fixes **2d4 minutes** and delegates missing design/balancing and
+GDD synchronization. After a fresh protected-control-aware file-backed read,
+recorded `LOD-HOURGLASS-001` in 05/06/07/90 and HUMAN and verified 07 readback.
+This is the explicit item exception to the ordinary no-clock-extension lifecycle
+law; deployments, reconnects and regeneration still cannot extend the clock.
+
+**Magic Hourglass** is a rare finite Throwable stack, maximum three. Equip/hold
+and press either LMB or RMB to consume one for exactly two non-exploding utility
+d4 rolls, adding their sum × 60 seconds to the current shared deadline. All Hero
+classes may use it; no Wand permission roll, personal Magic cost, damage/Boom
+modifiers or projectile. The shared successful item cooldown remains 0.6 seconds.
+Additional legitimate units accumulate even above 30:00. This does not refill
+items on spawn or confer a permanent feat.
+
+Extended the existing equipment source binding to retain the slot's actual item
+key, allowing finite consumables to use the same ownership/lifecycle validation
+as procedural equipment. Bind the exact item/slot/native weapon/owner, Hero
+identity/state/life, run/seed/graph and current clock/deadline. CampaignTimeout
+owns the synchronous validation → source debit → utility roll → extension
+transaction; CombatRolls owns utility RNG and Die Log delivery. No client-supplied
+duration or deferred callback. Failed debit and invalid/stale source or clock
+roll/spend nothing. At or after expiry, canonical TIME OVER finalization wins.
+
+The ordinary clock packet broadcasts the new remaining time immediately and
+supplies late joins. Die Log records both dice and minutes added. Only warning
+thresholds now below the extended remaining time are rearmed. Successful rescue
+discards bonus time and resets/pauses the next dungeon at 30:00; unused stacks
+follow existing Hero inventory persistence. Existing movement, barriers, rescue
+and Hero/Soldier queue authorities are unchanged.
+
+Equipment-eligible Healing Potion opportunities that selected neither Summon
+Card nor Feather roll the independent magic-hourglass-v1 substream at 1/16
+(49/1024 overall in that input category). Prior Card/Feather results, unrelated
+conversion/affix streams, authored non-eligible rewards and frozen records remain
+intact. Reuse the stock bottle with gold held tint, a code-native hourglass
+inventory icon, contextual USE prompt and ordinary confirmation cue. The model
+is provisional until native visual acceptance. Both manual readers share the
+new chapter. `lod_hourglass_testkit` fills/equips three, marks unranked and changes
+neither clock nor Magic by itself.
+
+Validation: **135 integrated suites pass, zero failures**, including Lua syntax,
+release wiring, generated manual, loot/JIT/crash replay, shared equipment/combat,
+movement/overhead barriers, rescue and Hero/Soldier queue regressions. Focused
+Hourglass, canonical campaign-timer and whitespace checks pass as well.
+First integrated run passed 134/135; its only
+failure was the old Healing Potion distribution floor before Hourglasses took
+1/16 of the remaining pool. Scaled the existing healing/bomb coverage bounds by
+15/16, retained Card/Feather thresholds and added explicit natural Hourglass
+coverage. The corrected loot-mix suite passes. No production behavior changed
+to satisfy that expectation. New coverage executes real inventory, source binding,
+clock transaction, deterministic rewards and client packet receiver. It proves
+minimum/maximum/intermediate dice, one debit/two rolls, cooldown/depletion,
+failed-debit and ownership/role/life/clock rejection, stale source/clock records,
+accumulation, warnings, rescue reset and late-join snapshots. The existing timer
+suite now proves an extension postpones its original deadline, then rejects
+another at expiry through real once-only campaign finalization. Initial focused
+fixtures lacked native Vector addition and retained a frozen flag after their
+stubbed deployment; corrected those boundaries without weakening production
+guards. These are automated/headless results, not native Source acceptance.
+
+Native gate pending: developer-mode admin on gm_flatgrass, deployed with a
+teammate, run `lod_hourglass_testkit`; consume once and compare both HUD clocks
+with the two Die Log dice. Repeat to depletion, swap/remove the stack, and verify
+paused/expired clocks reject use. Capture console_latest.txt and
+rpg_summary_latest.txt; visual/held-model and co-op acceptance remain open.
+No VPS or Workshop deployment; earlier native obligations remain pending.
+
+Next bounded checkpoint: retained brief **P8 live Stakeholders / Heroes of Legend
+boards**. Reconcile live GDD and existing board/ledger authorities first. Prove
+all qualifying current-session $DEB holders, ten rows/page, deterministic order,
+live versus completed runs and no duplicate identities when a run completes.
+Do not re-audit completed P7 items absent contradictory runtime evidence.
+
+---
+
+# Previous checkpoint — Boots of the Moon
 
 Built on independently verified remote main
 `0534845b185739f1a67e3bff0f5a900a1bc8da83`; clean working tree, no newer work

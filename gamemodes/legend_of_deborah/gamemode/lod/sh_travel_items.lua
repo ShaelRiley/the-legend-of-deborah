@@ -1,4 +1,11 @@
 local E = assert(LOD.Equipment)
+E.Definitions.magic_hourglass = {
+    id="magic_hourglass", name="Magic Hourglass", slots={"throwable"}, throwable=true,
+    drinkable=true, effect="extend_clock", maxStack=3,
+    model="models/props_junk/garbage_glassbottle003a.mdl", heldScale=1,
+    heldColor=Color(235,195,105), prompt="LMB / RMB: USE HOURGLASS",
+    description="Consume to add 2d4 minutes (2–8) to the whole party's current dungeon clock. No Magic cost. Cannot extend a paused or expired clock; bonus time ends at rescue."
+}
 E.Definitions.summon_card = {
     id="summon_card", name="Summon Card", slots={"throwable"}, throwable=true,
     drinkable=true, effect="summon_hero", maxStack=3,

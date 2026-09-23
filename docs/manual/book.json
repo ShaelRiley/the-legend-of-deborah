@@ -719,6 +719,21 @@
       ]
     },
     {
+      "id": "magic-hourglass",
+      "title": "A little more time",
+      "rows": [
+        [
+          "Magic Hourglass",
+          "LMB / RMB: USE · Adds 2d4 minutes · Stack of 3"
+        ]
+      ],
+      "text": [
+        "This rare consumable buys the whole party more time. Equip and hold it in the Throwable slot, then press either mouse button. One Hourglass is consumed; the server rolls two ordinary four-sided dice and adds their sum in minutes to the current dungeon clock. The Die Log shows both dice, and everyone's clock updates immediately.",
+        "The result is always two through eight minutes: no exploding dice, class bonuses or Magic cost. Any Hero class can use it, with the ordinary 0.6-second item cooldown. A stack holds at most three, and each legitimate use adds its full result even above 30:00.",
+        "Use it before time runs out. At or after the deadline, TIME OVER wins; the Hourglass cannot reverse the collapse. Paused staging clocks, failed or cleared dungeons, Soldier bodies and unequipped items cannot spend it. Successful rescue resets the next dungeon to 30:00, while unused Hourglasses remain in your Hero's inventory."
+      ]
+    },
+    {
       "id": "moon-boots",
       "title": "Boots of the Moon",
       "rows": [

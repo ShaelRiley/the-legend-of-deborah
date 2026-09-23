@@ -98,8 +98,17 @@ assert(R:AdvanceLevel());hero.deployed=false
 now=now+4000;T:Step();assert(not T:Start(hero) and not T:Clock().deadline,'return staging consumed time')
 hero.deployed=true;assert(T:Start(hero));deadline=T:Clock().deadline
 assert(deadline==now+1800 and not T:Start(hero),'next dungeon start not exactly once')
+local extension=T:ExtensionBinding()
+s.SimulationFrozen=false -- Native build/deployment resumes simulation; the build double above does not.
+assert(T:TryExtend(extension,function() return 120 end))
+assert(T:Clock().deadline==deadline+120)
+assert(not T:TryExtend(extension,function() error('old extension receipt replayed') end))
+now=deadline;assert(not T:Expire(),'original deadline ignored its committed extension')
+deadline=deadline+120
 local beforeLateRescue=rescued
-humans={};now=deadline;assert(not R:CompleteLevel(hero));assert(rescued==beforeLateRescue,'late rescue got rewards')
+humans={};now=deadline
+assert(not T:TryExtend(T:ExtensionBinding(),function() error('expired clock spent a source') end))
+assert(not R:CompleteLevel(hero));assert(rescued==beforeLateRescue,'late rescue got rewards')
 assert(s.Failed and s.Finalized and finalized==1 and s.IntermissionEnd==nil)
 T:Step();local scene=T:Clock().scene
 assert(scene and not scene.started,'empty-server cinematic consumed without viewer')
