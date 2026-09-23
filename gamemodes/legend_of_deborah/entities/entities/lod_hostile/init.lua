@@ -209,7 +209,7 @@ end
 function DeathPresentation:Add(hostile)
     if not IsValid(hostile) then return false end
     self.TotalDeaths = (self.TotalDeaths or 0) + 1
-    self.Active[#self.Active + 1] = {
+    local record = {
         hostile = hostile,
         origin = hostile:WorldSpaceCenter(),
         levelSeed = hostile.LODDeathLevelSeed,
@@ -221,7 +221,9 @@ function DeathPresentation:Add(hostile)
 
     -- The death activity has already been selected, so the pain-pose module can
     -- supersede it synchronously without allocating a next-tick callback.
+    self.Active[#self.Active + 1] = record
     hook.Run("LOD_HostileDeathApplyPose", hostile)
+    if LOD.EnemyRemains then LOD.EnemyRemains:Open(hostile,record) end
     self:_ScheduleNext()
     return true
 end
@@ -853,6 +855,7 @@ function ENT:_FinishDeathPresentation()
     if not IsValid(self) then return end
     if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
     if self.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(self)) then return end
+    if LOD.EnemyRemains then LOD.EnemyRemains:Retire(self.LODRemainsReceipt) end
     deathStage(self, "loot_enter")
     self:SetNoDraw(true)
     deathStage(self, "loot_hidden")
@@ -920,6 +923,7 @@ function ENT:OnKilled(dmginfo)
     self.LODTarget = nil
     self.LODSoldierBurst = nil
     self.LODDeathLevelSeed = LOD.RunManager and LOD.RunManager.State.LevelSeed or nil
+    if LOD.EnemyRemains then LOD.EnemyRemains:Seal(self) end
     deathStage(self, "callback_enter")
     DeathPresentation:Queue(self)
     if LOD.EncounterDirector and LOD.EncounterDirector.OnHostileKilled then

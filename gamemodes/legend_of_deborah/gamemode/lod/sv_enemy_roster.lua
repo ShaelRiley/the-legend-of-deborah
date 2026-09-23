@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    afterburst={name="Afterburst",model="models/zombie/classic.mdl",baseHP=50,speed=105,damage=5.5,range=112,warning=.9,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",color=Color(215,115,65),dice={1,6,2}},
+    carrion={name="Carrion",model="models/zombie/fast.mdl",baseHP=45,speed=155,damage=5.5,range=112,warning=.8,recovery=2.2,threat=4,activity=ACT_RUN,kind="melee",melee="single",color=Color(160,190,85),dice={1,6,2}},
     reaper={name="Reaper",model="models/zombie/classic.mdl",baseHP=55,speed=140,damage=5.5,range=144,warning=1.1,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="sweep",color=Color(135,190,125),dice={1,6,2}},
     drubber={name="Drubber",model="models/zombie/fast.mdl",baseHP=60,speed=125,damage=5.5,range=112,warning=1,recovery=2.8,threat=4,activity=ACT_RUN,kind="melee",melee="double",color=Color(220,160,70),dice={1,6,2}},
     fencer={name="Fencer",model="models/police.mdl",baseHP=35,speed=180,damage=5.5,range=144,warning=.9,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="feint",color=Color(195,155,235),dice={1,6,2}},
@@ -121,6 +123,7 @@ function E:Cancel(e)
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
 end
 function E:Interrupt(e,attackEvent,attacker)
+    if LOD.EnemyRemains then LOD.EnemyRemains:Interrupt(e) end
     if LOD.EnemyReactions then LOD.EnemyReactions:Interrupt(e,attackEvent,attacker) end
     if LOD.EnemySupport then LOD.EnemySupport:Interrupt(e) end
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
@@ -133,6 +136,11 @@ end
 function E:Damage(e,p,event,kind)
     if e.LODSkeletonHero and not LOD.SkeletonHero:Live(e) then return end
     if not IsValid(e) or e.LODDead or not self:Target(p) then return end
+    return self:_DamagePacket(e,p,event,kind)
+end
+-- Shared packet construction; ordinary callers enter through Damage's living
+-- gate. Post-defeat callers enter only through EnemyRemains' sealed receipt.
+function E:_DamagePacket(e,p,event,kind)
     local rolls=LOD.CombatRolls
     local profile=rolls.HostileDamageProfiles[e.LODArchetypeId]
     if e.LODSkeletonHero and kind=="arc" then profile=table.Copy(profile);profile.magicDamage=true end
@@ -321,6 +329,7 @@ function E:Tick(e)
     end
     self:Prepare(e)
     if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemyReactions then LOD.EnemyReactions:Cancel(e,true) end;if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;motion:Stop(e);return true end
+    if LOD.EnemyRemains and LOD.EnemyRemains.Pending[e] then motion:Stop(e);return true end
     if e.LODMeleeRecovery then
         local recovery=e.LODMeleeRecovery
         if self:ValidSourceLife(recovery.life) and now<recovery.expires then
@@ -394,6 +403,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     if now<(E.NextService or 0) then return end
     local dt=math.Clamp(now-(E.LastService or now),0,.05);E.LastService=now;E.NextService=now+.025
     local active=s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
+    if LOD.EnemyRemains then LOD.EnemyRemains:Service(now,active) end
     if LOD.EnemyReactions then LOD.EnemyReactions:Service(now,active) end
     if LOD.EnemySupport then LOD.EnemySupport:Service(now,active) end
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Service(now,active) end
@@ -440,6 +450,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        afterburst={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die2.wav","npc/zombie/foot1.wav"},
+        carrion={"npc/fast_zombie/wake1.wav","npc/fast_zombie/fz_scream1.wav","npc/fast_zombie/foot1.wav"},
         reaper={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die1.wav","npc/zombie/foot1.wav"},
         drubber={"npc/fast_zombie/fz_pain1.wav","npc/fast_zombie/fz_die1.wav","npc/fast_zombie/foot1.wav"},
         fencer={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},

@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B7 builds on verified remote `main` `0ceeed48a6cb703711716ec31951eae2fdf5cf96`,
-`Add Bestiary trap-and-escape cohort with bounded lifetimes`.
-The current B7 checkpoint below is the newest implementation record. Its exact
+B8 builds on verified remote `main` `1f56389ea096766fae09a69fa31e2811ed2064dd`,
+`Add Bestiary melee-spacing cohort with finite commitments`.
+The current B8 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,76 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B7: melee spacing-and-commitment cohort
+## Current checkpoint — B8: volatile-and-remains cohort
+
+Built on verified remote `1f56389ea096766fae09a69fa31e2811ed2064dd`.
+**Afterburst and Carrion** bring the implemented normal roster to **41/63**:
+frozen baseline18,**23/45 additions banked**,**22 remain**.
+
+**Playable scope:** Afterburst leaves a fixed warned post-defeat physical burst;
+Carrion exclusively consumes nearby ordinary remains through interruptible
+stationary feeding for capped recovery. Consuming Afterburst before release
+extinguishes the burst. Both retain ordinary narrow physical melee and existing
+canonical class/feat/HP/XP/drops. Production pairs Afterburst+Soldier and
+Carrion+two Shamblers in sector2+ arena/ambush,with singleton specialists and
+ordinary companion scaling. No new bodies,wandering weights or director rewrite.
+Design/tuning readback: live GDD03/05/07,LOD-BESTIARY-B8-001. Canonical manual
+regenerated:152 chapters/31 transport chunks.
+
+**Ownership:** canonical lethal callback seals once; deferred native corpse
+scheduler opens the exact receipt and retains its one-second lifetime and loot
+conversion. Explicit corpse status-life plus source/progression/entity/death
+record and exact run/graph/progression/campaign distinguish death effects from
+living attacks. Ordinary Damage/ValidSourceLife reject dead owners unchanged;
+the receipt-controlled burst alone shares packet construction. Source removal,
+revival/replacement,stale scope,freeze/failure/clear and invalid geometry retire
+work. At most96 receipts,128 cached candidates per opening,32 captured Heroes;
+no world corpse scans,new timers,native bodies or chain reactions. Claim before
+callbacks;one irreversible attempt per corpse;normal XP and drops settle once.
+Reward handoff also rejects same-seed graph or source incarnation replacement.
+Native corpse Draw preserves the burst warning;full/reduced semantics match.
+
+**Validation:** B8 behavioral,production and presentation gates pass. Real lethal
+callback/deferred corpse service,canonical XP/loot handoff and capped health grant
+are exercised with native entities/HP/trace/spawn/render/network boundaries
+doubled. Coverage includes living fallback,burst escape/cover/height,missed
+service,consumption-before-burst,competing claims,source/Hero and dungeon lifetime
+matrices,interruption/Held/Muted/morale,late join/revival/disconnect,one shared
+multiplayer roll and lethal-first order independence. Production validates32
+actor generation seeds,replay after unrelated RNG,class/feat eligibility,HP/XP,
+unified spawn/variance,ceiling,retry,placement/fallback and old ordinals.
+512 deterministic plans/4936 encounters across32 mazes,parties1–4,dungeons1–5:
+Afterburst planned/legal/early47/44/7;Carrion40/40/8;all prior thresholds pass.
+One fresh canonical integration run passed **all172 suites with zero failures**,
+including all prior cohorts,protected combat/status/progression,bosses/finale/
+succession/Abundance/cash,repository Lua syntax,release wiring and manual readers/
+transport. No gameplay edits followed this integrated pass.
+
+**Native acceptance retained:** after ordered phases,on gm_flatgrass observe
+actual corpse pulse/burst timing and loot,feeding tether/interruption/consumption,
+physical health/Block/Dodge,scaled poses and audio,full/reduced effects,cover,
+locked gates/false floors,same-seed reset/freeze/removal,death/revival/disconnect,
+1–4-player rewards/networking and practical encounter balance. Preserve all
+prior cohort,boss and campaign checks. Automated evidence is not Source
+observation or acceptance. Capture console_latest.txt + rpg_summary_latest.txt;
+request session log only for event ordering. No deployment or Workshop update.
+
+## Next checkpoint — B9: tether-and-cover cohort
+
+Provisional bounded two-identity scope: a visibly warned tether/reel attacker
+and a finite deployable-cover engineer. These are proposals, not authored
+mechanics. Reconcile canonical Pushback/locomotion/Block, existing barriers,
+Climber/Deadcrab attachments and progression geometry before choosing concrete
+identities. Target43/63 only if two distinct production behaviors validate.
+No private movement lock, locked-gate/void bypass, permanent route obstruction,
+reward-bearing summoned bodies or unbounded props. Require breakable/escapable
+commitments, legal alternate passage, source/target/run lifetimes and explicit
+entity/work caps. If a proposal cannot meet those contracts, choose a comparably
+bounded distinct tactical identity and record the design before implementation.
+Retain remaining roster breadth and whole-phase campaign-aware director ecology;
+do not begin Big Loot or Events.
+
+## Previous checkpoint — B7: melee spacing-and-commitment cohort
 
 Built on verified remote `0ceeed48a6cb703711716ec31951eae2fdf5cf96`.
 **Reaper, Drubber and Fencer** bring the implemented normal roster to **39/63**:
@@ -127,18 +196,6 @@ Gordon→Hector→Deborah,sole staging successor,Abundance andLevel21 cash. Nati
 entities/collision/HP application/rendering/networking remain boundary doubles;
 automated evidence is not Source observation or acceptance. Capture
 console_latest.txt + rpg_summary_latest.txt at the scheduled playtest.
-
-## Next checkpoint — B8: volatile-and-remains cohort
-
-Provisional bounded two-identity scope: a clearly warned post-defeat burst and a
-corpse-consuming scavenger. Reconcile Deadcrab's living suicide fuse, ordinary
-death/XP/drop settlement, corpse lifecycle and support healing before authoring
-design. Target41/63 only if two distinct production identities validate; do not
-add a cosmetic third to meet a quota. Prove readable escape/cover, exactly-once
-rewards, finite delayed work and bounded corpse queries/claims with exact scope.
-No corpse farming, unbounded explosion chains or body proliferation. Retain
-remaining roster expansion and whole-phase campaign-aware ecology; do not begin
-Big Loot or Events.
 
 ## Previous checkpoint — B6: trap-and-escape cohort
 

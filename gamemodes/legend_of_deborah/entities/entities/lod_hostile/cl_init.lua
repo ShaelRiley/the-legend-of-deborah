@@ -116,6 +116,9 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "afterburst" then
+        ent:SetRenderBounds(Vector(-144,-144,math.min(0,mins.z*size+verticalCompensation)),
+            Vector(144,144,math.max(80,maxs.z*size+verticalCompensation)))
     elseif archetype == "warden" then
         -- Include the broadened citizen and pig-mask ears in client culling.
         -- Cosmetic bounds only: authoritative collision remains unchanged.
@@ -196,6 +199,7 @@ function ENT:Draw()
         render.SetColorModulation(1, 1, 1)
         render.MaterialOverride(nil)
         render.SuppressEngineLighting(false)
+        if LOD.EnemyRosterVisual then LOD.EnemyRosterVisual:Remains(self) end
         return
     end
     if LOD.MonsterIdentity then

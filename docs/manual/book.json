@@ -1053,6 +1053,24 @@
       ]
     },
     {
+      "id": "enemy-remains",
+      "title": "Watch what you leave behind",
+      "rows": [
+        [
+          "Afterburst",
+          "The rust-orange zombie fights at close range. Defeating it leaves a fixed orange circle and shrinking bar around its corpse: after 0.8 seconds it bursts once. Back outside the circle or use cover before collecting its ordinary drop. Killing it stops its living attacks, but does not erase this warning."
+        ],
+        [
+          "Carrion",
+          "The green fast zombie can claim a nearby defeated ally when injured. A crossed-jaw mark, tether and shrinking bar announce 0.6 seconds of stationary feeding. Interrupt, kill or separate it, break the tether with cover, or defeat it before its Shambler escorts. A successful meal restores at most 30 HP, capped at maximum health. It gets one attempt per corpse and waits six seconds before another."
+        ]
+      ],
+      "text": [
+        "An Afterburst appears with a Soldier; Carrion travels with Shamblers. Carrion can consume an Afterburst before it bursts, extinguishing the circle. Neither action creates another enemy or an extra reward; consumed remains still yield their ordinary drop on schedule.",
+        "Both enemies also warn a narrow, fixed melee sector. Sidestep or interrupt it. Held permits their stationary attacks and feeding; Muted does not stop these physical actions. Circles, tethers and countdowns remain readable with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

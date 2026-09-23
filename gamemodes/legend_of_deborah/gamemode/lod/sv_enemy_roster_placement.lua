@@ -91,6 +91,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    afterburst_detail={name="Afterburst Detail",composition={afterburst=1,soldier=1}},
+    carrion_feast={name="Carrion Feast",composition={carrion=1,shambler=2}},
     climber_wall={name="Wall Hunt",composition={climber=1,shambler=1}},
     nodule_gas={name="Gas Pocket",composition={nodule=1}},
     flamer_pressure={name="Flame Pressure",composition={flamer=1,shambler=1}},
@@ -144,6 +146,7 @@ function D:_EligibleTemplates(sector,role)
         out[#out+1]="caromer_screen";out[#out+1]="reeler_chase";out[#out+1]="forker_crossfire"
         out[#out+1]="pavise_advance";out[#out+1]="repriser_detail";out[#out+1]="redliner_pressure"
         out[#out+1]="wirewright_chase";out[#out+1]="snarer_detail";out[#out+1]="cordon_screen"
+        out[#out+1]="afterburst_detail";out[#out+1]="carrion_feast"
         out[#out+1]="reaper_detail";out[#out+1]="drubber_chase";out[#out+1]="fencer_screen"
     end
     return out

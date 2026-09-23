@@ -889,6 +889,7 @@ end
 
 function Loot:OnHostileLootHandoff(hostile)
     if not IsValid(hostile) or hostile.LODLootHandoffCompleted then return end
+    if hostile.LODRemainsReceipt and not LOD.EnemyRemains:RewardOwned(hostile) then return end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
@@ -905,6 +906,7 @@ function Loot:OnHostileLootHandoff(hostile)
         if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
         if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
         if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return end
+        if hostile.LODRemainsReceipt and not LOD.EnemyRemains:RewardOwned(hostile) then return end
         if RunManager:IsActivePlayer(ply) then
             local lootState = self:_PlayerLootState(ply)
             if lootState then
@@ -921,6 +923,7 @@ function Loot:OnHostileLootHandoff(hostile)
                 if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
                 if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
                 if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return end
+                if hostile.LODRemainsReceipt and not LOD.EnemyRemains:RewardOwned(hostile) then return end
                 if category and self:_SpawnEnemyResult(ply, hostile, category, rng) then
                     lootState.dryKills = 0
                     if pity then self.Stats.pityDrops = (self.Stats.pityDrops or 0) + 1 end

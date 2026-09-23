@@ -11,6 +11,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     caromer=Color(90,210,240),reeler=Color(235,180,95),forker=Color(150,240,180),
     wirewright=Color(80,220,235),snarer=Color(100,165,255),cordon=Color(245,150,60),
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
+    afterburst=Color(255,150,65),carrion=Color(160,220,95),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
@@ -293,14 +294,14 @@ end
 -- Geometry and fixed-deadline countdowns are identical at either effects level.
 function V:Melee(e)
     local mode=e:GetNW2Int("LOD_MeleeMode",0);local now=CurTime()
-    if mode<1 or mode>3 or not e:GetNW2Bool("LOD_RosterAlive",false)
+    if mode<1 or mode>4 or not e:GetNW2Bool("LOD_RosterAlive",false)
         or e:GetNW2Int("LOD_RosterAttack",0)==0 or now>=e:GetNW2Float("LOD_MeleeUntil",0)
         or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local origin=e:GetNW2Vector("LOD_MeleeOrigin",e:GetPos())+Vector(0,0,3)
     local dir=e:GetNW2Vector("LOD_MeleeDirection",Vector(1,0,0))
     local side=Vector(-dir.y,dir.x,0)
     local ready=e:GetNW2Float("LOD_MeleeReady",0)
-    local color=({colors.reaper,colors.drubber,colors.fencer})[mode]
+    local color=({colors.reaper,colors.drubber,colors.fencer,colors.carrion})[mode]
     render.SetMaterial(beam)
     local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
     local function countdown(deadline,duration)
@@ -319,7 +320,10 @@ function V:Melee(e)
         end
         line(point(half),origin,width)
     end
-    if mode==1 then
+    if mode==4 then
+        sector(112,30,8,now<ready and 2 or 4)
+        countdown(ready,e:GetNW2String("LOD_Archetype","")=="afterburst" and .9 or .8)
+    elseif mode==1 then
         sector(144,90,12,now<ready and 2 or 4)
         countdown(ready,1.1)
     elseif mode==2 then
@@ -345,7 +349,37 @@ function V:Melee(e)
         countdown(ready,.9)
     end
 end
+-- Invoked directly by the native corpse Draw branch as well as living Draw.
+function V:Remains(e)
+    if e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local now=CurTime();render.SetMaterial(beam)
+    local ready=e:GetNW2Float("LOD_RemainsBurstReady",0)
+    if now<e:GetNW2Float("LOD_RemainsBurstUntil",0) then
+        local origin=e:GetNW2Vector("LOD_RemainsOrigin",e:GetPos())+Vector(0,0,3)
+        local color=colors.afterburst
+        for i=1,24 do
+            local a,b=(i-1)*math.pi/12,i*math.pi/12
+            render.DrawBeam(origin+Vector(math.cos(a)*128,math.sin(a)*128,0),
+                origin+Vector(math.cos(b)*128,math.sin(b)*128,0),now<ready and 2 or 4,0,1,color)
+        end
+        local left=origin+Vector(-24,0,52)
+        render.DrawBeam(left,left+Vector(48*math.Clamp((ready-now)/.8,0,1),0,0),3,0,1,color)
+    end
+    local target=e:GetNW2Entity("LOD_RemainsTarget",NULL)
+    if e:GetNW2Bool("LOD_RosterAlive",false) and IsValid(target) and now<e:GetNW2Float("LOD_RemainsFeedUntil",0) then
+        local origin=e:GetNW2Vector("LOD_RemainsFeedOrigin",e:GetPos())+Vector(0,0,40)
+        local aim=e:GetNW2Vector("LOD_RemainsFeedAim",target:GetPos())+Vector(0,0,8)
+        render.DrawBeam(origin,aim,3,0,1,colors.carrion)
+        -- Crossed jaws and a shrinking bar distinguish consumption from healing support.
+        render.DrawBeam(aim+Vector(-12,-12,0),aim+Vector(12,12,0),3,0,1,colors.carrion)
+        render.DrawBeam(aim+Vector(-12,12,0),aim+Vector(12,-12,0),3,0,1,colors.carrion)
+        local left=origin+Vector(-24,0,16)
+        local fraction=math.Clamp((e:GetNW2Float("LOD_RemainsFeedReady",0)-now)/.6,0,1)
+        render.DrawBeam(left,left+Vector(48*fraction,0,0),3,0,1,colors.carrion)
+    end
+end
 function V:Draw(e,size)
+    self:Remains(e)
     self:Support(e)
     self:Pursuit(e)
     self:Reaction(e)
@@ -355,7 +389,7 @@ function V:Draw(e,size)
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
     if id=="wirewright" or id=="snarer" or id=="cordon" then self:Trap(e);return end
-    if id=="reaper" or id=="drubber" or id=="fencer" then self:Melee(e);return end
+    if id=="reaper" or id=="drubber" or id=="fencer" or id=="afterburst" or id=="carrion" then self:Melee(e);return end
     local origin=e:GetNW2Vector("LOD_RosterOrigin",e:GetPos())
     local aim=e:GetNW2Vector("LOD_RosterAim",origin)
     local range=e:GetNW2Float("LOD_RosterRange",280)

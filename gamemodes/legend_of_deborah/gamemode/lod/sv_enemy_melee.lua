@@ -51,7 +51,7 @@ function E:BeginMelee(e,p,now)
         if self:Target(heroes[i]) then a.participants[#a.participants+1]=self:CaptureLife(e,heroes[i]) end
     end
     e.LODRosterAttack=a;e.LODMeleeAdvanceUntil=nil
-    e:SetNW2Int("LOD_RosterAttack",1);e:SetNW2Int("LOD_MeleeMode",d.melee=="sweep" and 1 or (d.melee=="double" and 2 or 3))
+    e:SetNW2Int("LOD_RosterAttack",1);e:SetNW2Int("LOD_MeleeMode",d.melee=="sweep" and 1 or (d.melee=="double" and 2 or (d.melee=="single" and 4 or 3)))
     e:SetNW2Vector("LOD_MeleeOrigin",a.origin);e:SetNW2Vector("LOD_MeleeStart",a.start)
     e:SetNW2Vector("LOD_MeleeDirection",dir);e:SetNW2Float("LOD_MeleeReady",a.ready)
     e:SetNW2Float("LOD_MeleeSecond",a.second or 0);e:SetNW2Float("LOD_MeleeUntil",a.expires)

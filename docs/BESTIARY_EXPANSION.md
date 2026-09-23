@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B7
+# Bestiary expansion — frozen baseline through B8
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B7 add twenty-one identities: **39/63**, or **21/45 additions**; **24 remain**.
+B1–B8 add twenty-three identities: **41/63**, or **23/45 additions**; **22 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -436,15 +436,78 @@ canonical usable physical feats, independent seeded generation and rewards.
 Counts describe implementation, not native acceptance. See DEVELOPMENT_PLAN.md
 for measured gates and retained Source checks.
 
-## Next checkpoint — B8: volatile-and-remains cohort
+## B8 — volatile-and-remains cohort
 
-Provisional two-identity scope: a clearly warned post-defeat burst and a
-corpse-consuming scavenger. Reconcile Deadcrab's living suicide fuse, ordinary
-death/XP/drop settlement, corpse lifetime and support healing before authoring
-mechanics. These proposals are not game law. Target41/63 only if both create
-distinct decisions and validate through production; prefer a coherent two-enemy
-checkpoint to a cosmetic third. Prove exactly-once rewards, finite delayed work,
-cover/counterplay, bounded corpse queries/claims and exact dungeon/life scopes;
-no corpse farming, chained unbounded explosions or body proliferation.
-Retain further roster expansion and whole-phase campaign-aware ecology before
-Big Loot, Events, the three audits and human playtest.
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `afterburst` / Afterburst | Rust-orange zombie leaves a frozen radius128 warning on legitimate defeat; one physical burst after0.8s. Retreat or use cover before collecting the ordinary drop. | Afterburst + Soldier. |
+| `carrion` / Carrion | Injured green fast zombie exclusively claims a nearby corpse and channels a visible stationary0.6s feeding tether. Interrupt, separate, obstruct, or prioritize it before its escorts. | Carrion + two Shamblers. |
+
+Both retain ordinary narrow warned physical melee. Sector2+ arena/ambush,
+singleton specialists, ordinary companion enrichment, canonical generated
+class/usable feats/HP/XP, unified appended ordinals and safe/objective/transition/
+hull admission. No wandering weights, director rewrite or new native bodies.
+
+**Post-defeat ownership:** only `lod_hostile:OnKilled` seals a receipt after its
+existing death claim. Deferred `HostileDeathPresentation:Add` opens that exact
+receipt, retaining the ordinary one-second corpse and scheduled loot conversion.
+No native mutations or retained DamageInfo in the lethal callback. Opening must
+occur within0.1s of sealing; otherwise the new gameplay effect forfeits and normal
+presentation/rewards continue. Clear dead statuses once and bind a distinct corpse
+status-life token. Exact source entity/receipt/progression/corpse record plus
+run/graph/progression/campaign epoch/seed/run ID retire stale work. Positive HP,
+removal, life replacement, same-seed rebuild, freeze/failure/clear, displacement
+or invalid supported geometry cancels gameplay. Ordinary living-source damage
+contracts remain unchanged; only the sealed burst enters shared packet assembly.
+
+Burst freezes position and at most32 eligible Hero incarnations, uses one shared
+physical1d6+2 contract and at most one hit per Hero, current LOS, same cell and
+feet-height−4..72. No monster damage or corpse chains. Late joins/revivals never
+inherit warnings. The0.8s deadline has0.1s grace; missed service forfeits. Native
+corpse Draw explicitly renders the full/reduced circle and bar despite the living
+attack draw branch being skipped; conservative bounds include the radius128 tell.
+
+Carrion candidates are selected only on real corpse opening from at most128
+cached registry entries, then proximity/EntIndex order. Range240,same supported
+legal cell,current corpse LOS; a visible acquired Hero within600 and its exact
+incarnation bind the channel. One irrevocable claim per corpse,one pending feed
+per source,cooldown6s from commitment. No retry after interruption. Source drift
+beyond4,hit-stun,attack prohibition,morale or lost ownership cancels. Held/Muted
+permit stationary feeding. Heal min(30,ceil(MaxHP*0.20)) through existing capped
+LootDirector health grant; never cure,revive,grant support currency or XP.
+Consume before native callbacks,hide the corpse and cancel any unspent burst;
+ordinary loot remains at its scheduled time. LootDirector rechecks the defeated
+receipt identity around its existing handoff; old same-seed graph/actor lifetimes
+cannot issue new drops. Gameplay cancellation alone does not revoke earned loot.
+
+At most96 active gameplay receipts,with ordinary presentation/rewards as the
+cap fallback. Shared roster service and shared corpse scheduler remain the only
+schedulers; no corpse scans,private status clock,reinforcement bodies or props.
+Semantic full/reduced circle/tether/crossed jaws/countdown cull at2400 units.
+
+Reference HP/speed/range/melee warning/recovery/threat: Afterburst50/105/112/
+0.9s/2.5s/3.5;Carrion45/155/112/0.8s/2.2s/4. Living physical1d6+2,narrow30-degree
+half-angle radius112,one beat,0.2s melee grace and existing fixed stationary
+recovery. Feeding grace0.1s. Floor support and source drift use B7's canonical
+floor+2±4,normal.z>=0.7 and exact nonprotected nontransition cell checks.
+Models zombie/classic and zombie/fast;RGB215,115,65 and160,190,85.
+Progression STR/DEX/CON/INT/WIS/CHA;Fighter/Rogue/Wizard weights;hit die;baseXP;
+morale: Afterburst13/8/12/7/9/8;85/15/0;d10;50;6.
+Carrion12/14/11/8/10/8;50/50/0;d8;50;5. Both usesMagic=false.
+
+See DEVELOPMENT_PLAN.md for fresh automated evidence and retained native gaps.
+
+## Next checkpoint — B9: tether-and-cover cohort
+
+Provisional bounded two-identity scope: a visibly warned tether/reel attacker
+and a finite deployable-cover engineer. These are proposals, not authored
+mechanics. Reconcile canonical Pushback/locomotion/Block, existing barriers,
+Climber/Deadcrab attachments and progression geometry before choosing concrete
+identities. Target43/63 only if two distinct production behaviors validate.
+No private movement lock, locked-gate/void bypass, permanent route obstruction,
+reward-bearing summoned bodies or unbounded props. Require breakable/escapable
+commitments, legal alternate passage, source/target/run lifetimes and explicit
+entity/work caps. If a proposal cannot meet those contracts, choose a comparably
+bounded distinct tactical identity and record the design before implementation.
+Retain remaining roster breadth and whole-phase campaign-aware director ecology;
+do not begin Big Loot or Events.
