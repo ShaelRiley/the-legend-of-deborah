@@ -210,6 +210,7 @@ end)
 hook.Add("PlayerInitialSpawn","LOD_StakeholdersJoin",function(ply)
     timer.Simple(2,function()
         if not IsValid(ply) then return end
-        net.Start("LOD_Stakeholders");net.WriteTable(C.Stakeholders or {});net.Send(ply)
+        -- A join must not depend on the next periodic cache refresh.
+        net.Start("LOD_Stakeholders");net.WriteTable(C:StakeholderRows(player.GetHumans()));net.Send(ply)
     end)
 end)

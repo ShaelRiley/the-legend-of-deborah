@@ -87,7 +87,7 @@ function ENT:Draw()
                 for i,line in ipairs(pages[page]) do
                     draw.SimpleText(line,"LOD_BoardEntry",-width*0.5+32,105+(i-1)*30,C.ink)
                 end
-                draw.SimpleText(stakeholders and "All qualifying holders / 10 per page" or "Highest rescue count first / pages turn automatically",
+                draw.SimpleText(stakeholders and "All qualifying holders / 10 per page" or "Highest dungeon reached first / pages turn automatically",
                     "LOD_SheetSmall",0,height-50,C.muted,TEXT_ALIGN_CENTER)
             end
         cam.End3D2D()
@@ -97,4 +97,3 @@ end
 function ENT:DrawTranslucent()
     self:Draw()
 end
-

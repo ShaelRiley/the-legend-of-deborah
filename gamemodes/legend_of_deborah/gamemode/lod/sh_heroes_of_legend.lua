@@ -52,7 +52,8 @@ function Heroes:CompareEntries(a, b)
     end
     local cA = tonumber(a.completionOrder) or 0
     local cB = tonumber(b.completionOrder) or 0
-    return cA < cB
+    if cA ~= cB then return cA < cB end
+    return a.runId < b.runId
 end
 
 function Heroes:SortEntries(entries)

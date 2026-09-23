@@ -1,4 +1,68 @@
-# Current checkpoint — Magic Hourglass
+# Current checkpoint — live rankings and complete party history
+
+Built on independently verified remote main
+`f85bac96e5662e676cd960462de656c4d06521e1`. The stalled Magic Hourglass
+checkpoint was recovered from local `4bec7d2` and published with the exact same
+Git tree `3b9c503256228a484dbfdbf8dfdfb0e8bc8655c3`; its retained 135-suite
+integrated pass was not repeated merely to recover publication. No newer remote
+work was replaced. Read AGENTS.md and live GDD 00 → 01 → relevant 06/07/90;
+06's current live-ranking amendment, LOD-LB participation/ranked eligibility,
+LOD-RETENTION-001 and the retained September 22 P8 brief govern this checkpoint.
+No new game law or tuning was introduced, so no GDD amendment was needed.
+
+The earlier progression checkpoint already implemented all positive persisted
+$DEB/DFT holdings, current-session names, deterministic value/account ordering,
+ten holders per page and a ranked live party row. Preserved that implementation.
+Closed the actual remaining participation/lifecycle defects: BEGIN A NEW HERO
+now archives the retired Hero's canonical display identity and admission order
+only after successful replacement. No inventory, lives or usable progression is
+retained. A repeated request or failed creation cannot duplicate the archive;
+a new campaign starts empty. Live and completed rankings now use one RunManager
+party projection, so all participating Hero generations survive in consistent
+admission order, including disconnected/eliminated/Soldier-role participants.
+
+Processed immutable runs cannot be projected as live again, even if finalization
+flags lag. Loading completed storage filters duplicate run IDs and clears stale
+live labels. A run-ID fallback makes equal legacy sequence ties deterministic.
+Stakeholder late joins read current holdings rather than a possibly stale
+broadcast cache. Corrected the board footer to describe its actual highest-dungeon
+ranking. Existing top-ten party cutoff, ranked eligibility, holdings valuation,
+12-second automatic pages and two-second update cadence remain authoritative.
+
+Validation: the focused lifecycle, ranking, client-board and real-SQLite suites
+pass. **All 136 integrated suites pass with zero failures**, including syntax,
+release wiring, generated manual, P7 items, campaign clock, accepted movement and
+Hero/Soldier lifecycle regressions. These are automated/headless results, not
+native Source acceptance. New coverage runs
+the actual board renderer and client receiver for 23 holders across 10/10/3-row
+pages, continuous ranks, page cycling, empty/shrinking data, long names and live
+completion. Real SQLite covers additional holders, ties, current names, account
+deduplication, transaction cache invalidation and fresh late-join delivery.
+Lifecycle tests cover replacement/replay/failure and resource-free retired
+identity snapshots; ranking tests cover admission ordering, immutable completion,
+processed-run suppression and duplicate persisted records. The first expanded
+SQLite fixture used the pre-reload store instance after its intentional database
+restart; corrected it to the current exchange store without relaxing assertions.
+
+Native acceptance remains pending: on gm_flatgrass inspect both boards with a
+teammate, confirm a qualifying ranked live run and an online positive holder,
+then compare party membership after BEGIN A NEW HERO and at timer completion.
+Observe pages with more than ten qualifying holders when available; do not mint
+production balances for a visual test. Capture console_latest.txt and
+rpg_summary_latest.txt, plus a board screenshot for layout defects. Earlier P7
+native acceptance obligations remain open. No VPS or Workshop deployment.
+
+Next bounded checkpoint: retained P9 **Dungeon Events framework**. Reconcile the
+live GDD and existing generation/graph/reward/lifecycle authorities, then implement
+one registered event pipeline with deterministic 1d4 unique archetype selection,
+validated placement classes, lifecycle cleanup and late-join state. Establish a
+finite solvability/seed/repeat/cleanup gate before stacking authored event content;
+the brief's chest/Game Master/other event requirements remain unimplemented.
+Do not repeat completed P7/P8 audits absent contradictory runtime evidence.
+
+---
+
+# Previous checkpoint — Magic Hourglass
 
 Built on independently verified remote main
 `1455c867fe630ebfcfa81ad0a6c5fce1ea890aee`; clean working tree, no newer work

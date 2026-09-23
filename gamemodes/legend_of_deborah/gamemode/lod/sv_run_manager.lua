@@ -28,6 +28,7 @@ local function freshState(campaignEpoch)
         CharacterByIdentity = {},
         ActiveIdentity = {},
         PlayedIdentities = {},
+        RetiredPartyMembers = {},
         PlayerState = {},
         RPGAllocation = nil,
         CharacterOrder = nil,
@@ -456,6 +457,13 @@ function RunManager:BeginNewHero(ply)
         self:PutInRestrictedSpectator(ply)
         return false, "Hero creation unavailable."
     end
+    -- Keep the retired identity in this party run without retaining its usable
+    -- inventory, lives or progression. Failed/replayed replacements add nothing.
+    state.RetiredPartyMembers = state.RetiredPartyMembers or {}
+    state.RetiredPartyMembers[#state.RetiredPartyMembers + 1] = {
+        text = self:PartyMemberText(old), ordinal = old.ordinal or 0,
+        identity = old.identity, generation = old.heroGeneration or 1
+    }
     -- Account-bound damsel/DFT/crypto claims are deliberately outside ps.
     ps.queue = "hero"
     self:TryActivatePlayer(ply)
@@ -898,6 +906,38 @@ function RunManager:EvaluateWipe()
     return false
 end
 
+function RunManager:PartyMemberText(ps)
+    local progression = LOD.CharacterProgressionSystem
+    if progression and progression.PlayerCharacterText then
+        return progression:PlayerCharacterText(ps)
+    end
+    return (ps.lastPlayerName or "Unknown Player") .. " as " .. (ps.characterName or "Hero")
+end
+
+-- One participant projection for live rankings and immutable completed runs.
+function RunManager:PartyRunMembers()
+    local state = self.State or {}
+    local members = {}
+    for _, member in ipairs(state.RetiredPartyMembers or {}) do
+        members[#members + 1] = member
+    end
+    for id, played in pairs(state.PlayedIdentities or {}) do
+        local ps = played and state.PlayerState and state.PlayerState[id]
+        if ps then
+            members[#members + 1] = {text = self:PartyMemberText(ps),
+                ordinal = ps.ordinal or 0, identity = id, generation = ps.heroGeneration or 1}
+        end
+    end
+    table.sort(members, function(a, b)
+        if a.ordinal ~= b.ordinal then return a.ordinal < b.ordinal end
+        if a.identity ~= b.identity then return a.identity < b.identity end
+        return a.generation < b.generation
+    end)
+    local party = {}
+    for _, member in ipairs(members) do party[#party + 1] = member.text end
+    return party
+end
+
 function RunManager:FinalizeCampaignRun()
     if not self.State or self.State.Finalized then return false end
     self.State.Finalized = true
@@ -910,31 +950,7 @@ function RunManager:FinalizeCampaignRun()
         return false
     end
 
-    local playedIdentities = self.State.PlayedIdentities or {}
-    local sortedIdentities = {}
-    for id, played in pairs(playedIdentities) do
-        if played then
-            local ps = self.State.PlayerState and self.State.PlayerState[id]
-            if ps then
-                table.insert(sortedIdentities, ps)
-            end
-        end
-    end
-    table.sort(sortedIdentities, function(a, b)
-        return (a.ordinal or 0) < (b.ordinal or 0)
-    end)
-
-    local partyMembers = {}
-    local progression = LOD.CharacterProgressionSystem
-    for _, ps in ipairs(sortedIdentities) do
-        local memberText
-        if progression and progression.PlayerCharacterText then
-            memberText = progression:PlayerCharacterText(ps)
-        else
-            memberText = (ps.lastPlayerName or "Unknown Player") .. " as " .. (ps.characterName or "Hero")
-        end
-        table.insert(partyMembers, memberText)
-    end
+    local partyMembers = self:PartyRunMembers()
 
     if #partyMembers == 0 then
         return false

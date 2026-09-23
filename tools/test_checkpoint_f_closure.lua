@@ -397,6 +397,13 @@ mockFS[Heroes.DATA_PATH] = encodeJSON({
 Heroes:Load()
 assertTest(#Heroes.Entries == 2, "Persisted load filters out malformed record while retaining valid records")
 assertTest(Heroes.Entries[1].runId == "valid_2", "Valid records properly sorted (valid_2 with 5 rescues ranks #1)")
+mockFS[Heroes.DATA_PATH] = encodeJSON({nextCompletionOrder=20,entries={
+    {runId="duplicate",rescueCount=2,completionOrder=1,partyMembers={"Original"},inProgress=true},
+    {runId="duplicate",rescueCount=9,completionOrder=2,partyMembers={"Repeated"}}
+}})
+Heroes:Load()
+assertTest(#Heroes.Entries==1 and Heroes.Entries[1].partyMembers[1]=="Original"
+    and not Heroes.Entries[1].inProgress, "Loading completed storage filters duplicate runs and stale live labels")
 
 -- --- SUITE 3: PARTICIPANT SET & CANONICAL PLAYERCHARACTERTEXT (REQUIREMENTS I - K) ---
 mockFS = {}
@@ -425,20 +432,32 @@ heroD.LODHumanSoldierProgressionState = { level = 2 }
 
 -- Visitor E never admitted to play
 
+-- Admission order is authoritative even when account IDs sort differently.
+RunManager:GetPlayerState(heroA).ordinal=4
+RunManager:GetPlayerState(heroD).ordinal=1
+
 local live=Heroes:LiveSnapshot()
 assertTest(#live==1 and live[1].inProgress and #live[1].partyMembers==4, "Live snapshot includes active, eliminated and Soldier participants")
 assertTest(#Heroes.Entries==0, "Live snapshot leaves completed persistence untouched")
 assertTest(Heroes:FormatEntry(live[1]):find("IN PROGRESS",1,true)~=nil, "Live entries identify their status")
+assertTest(live[1].partyMembers[1]==CPS:PlayerCharacterText(RunManager:GetPlayerState(heroD)),
+    "Live party follows canonical admission order, not account-name order")
 RunManager:FailCampaign("timer expired")
 assertTest(#Heroes.Entries == 1, "Run finalized with 4 participating heroes")
 local completed=Heroes:LiveSnapshot()
 assertTest(#completed==1 and not completed[1].inProgress, "Completion replaces the live row without duplication")
+assertTest(table.concat(live[1].partyMembers,"|")==table.concat(completed[1].partyMembers,"|"),
+    "Finalization preserves the live party's exact text and order")
+RunManager.State.Finalized=false;RunManager.State.Failed=false
+assertTest(not Heroes:LiveSnapshot()[1].inProgress,
+    "Processed immutable run cannot reappear as live if lifecycle flags lag")
+RunManager.State.Finalized=true
 
 local party = Heroes.Entries[1].partyMembers
 assertTest(#party == 4, "Participant set contains exactly 4 heroes (A, B, C, D) and excludes visitor E")
 
 -- I. Ordering & Soldier role check
-for idx, ps in ipairs({RunManager:GetPlayerState(heroA), RunManager:GetPlayerState(heroB), psC, RunManager:GetPlayerState(heroD)}) do
+for idx, ps in ipairs({RunManager:GetPlayerState(heroD), RunManager:GetPlayerState(heroB), psC, RunManager:GetPlayerState(heroA)}) do
     local expectedText = CPS:PlayerCharacterText(ps)
     assertTest(party[idx] == expectedText, string.format("Hero %d stored member string matches PlayerCharacterText canonical output", idx))
 end

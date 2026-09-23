@@ -571,6 +571,7 @@ campaign.Cards={true,false,false,false};campaign.CampaignClock={deadline=98765}
 campaign.DamselClaims={steam_1001={nessa=true}}
 local cards,clock,claims=campaign.Cards,campaign.CampaignClock,campaign.DamselClaims
 local oldXP=ps1.progressionState.xp
+local retiredText=RunManager:PartyMemberText(ps1)
 check(RunManager:BeginNewHero(p1), "An eliminated Hero can begin a fresh character")
 local fresh=RunManager:GetPlayerState(p1)
 check(fresh~=ps1 and fresh.progressionState.level==1 and fresh.progressionState.xp==0,
@@ -581,6 +582,19 @@ check(campaign==RunManager.State and cards==campaign.Cards and clock==campaign.C
 check(fresh.progressionState.characterIdentityPackage.heroIdentityId==ps1.identity..":hero:"..fresh.heroGeneration and fresh.ordinal~=ps1.ordinal,
     "Replacement receives a distinct procedural Hero identity")
 check(not RunManager:BeginNewHero(p1), "Repeated replacement request cannot reset a living Hero")
+check(#campaign.RetiredPartyMembers==1 and campaign.RetiredPartyMembers[1].text==retiredText,
+    "Fresh Hero retains exactly one immutable retired party identity")
+local partyText=table.concat(RunManager:PartyRunMembers(), " / ")
+check(partyText:find(retiredText,1,true)~=nil and partyText:find(RunManager:PartyMemberText(fresh),1,true)~=nil,
+    "Live and completed party projection includes both Hero generations")
+ps1.characterName="mutated retired state"
+check(campaign.RetiredPartyMembers[1].text==retiredText and campaign.RetiredPartyMembers[1].equipment==nil,
+    "Retired party record retains text only, not mutable character resources")
+fresh.lives=0;fresh.eliminated=true;campaign.ActiveIdentity[fresh.identity]=nil
+local priorOrder=campaign.CharacterOrder;campaign.CharacterOrder={}
+check(not RunManager:BeginNewHero(p1) and #campaign.RetiredPartyMembers==1,
+    "Failed Hero creation cannot duplicate the retired participant")
+campaign.CharacterOrder=priorOrder
 -- Model reuse never prevents a late admission.
 for i=1,80 do campaign.PlayedIdentities["departed:"..i]=true end
 RunManager.State.CharacterOrder=LOD.Config.Models.Characters

@@ -35,7 +35,8 @@ function Heroes:Load()
     local maxSeq = 0
     if type(rawEntries) == "table" then
         for _, entry in ipairs(rawEntries) do
-            if self:IsValidEntry(entry) then
+            if self:IsValidEntry(entry) and not self.ProcessedRunIds[entry.runId] then
+                entry.inProgress = nil
                 table.insert(self.Entries, entry)
                 self.ProcessedRunIds[entry.runId] = true
                 if entry.completionOrder > maxSeq then
@@ -128,14 +129,9 @@ end
 function Heroes:LiveSnapshot()
     local entries=table.Copy(self.Entries)
     local run=LOD.RunManager;local state=run and run.State
-    if state and state.Ranked and state.RunId and not state.Finalized and not state.Failed then
-        local party={};local identities={}
-        for id in pairs(state.PlayedIdentities or {}) do identities[#identities+1]=id end
-        table.sort(identities)
-        for _,id in ipairs(identities) do
-            local ps=state.PlayerState[id]
-            if ps then party[#party+1]=LOD.CharacterProgressionSystem:PlayerCharacterText(ps) end
-        end
+    if state and state.Ranked and state.RunId and not state.Finalized and not state.Failed
+        and not self.ProcessedRunIds[state.RunId] then
+        local party=run:PartyRunMembers()
         if #party>0 then
             for i=#entries,1,-1 do if entries[i].runId==state.RunId then table.remove(entries,i) end end
             entries[#entries+1]={runId=state.RunId,rescueCount=state.RescueCount or 0,

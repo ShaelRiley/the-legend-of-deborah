@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Live Ranking Boards & Pagination", ["python3", "tools/run_lua54.py", "tools/test_live_boards.lua"]),
     ("Magic Hourglass & Shared Clock", ["python3", "tools/run_lua54.py", "tools/test_magic_hourglass.lua"]),
     ("Moon Boots Gravity", ["python3", "tools/run_lua54.py", "tools/test_moon_boots.lua"]),
     ("Finite Wand Weapon", ["python3", "tools/run_lua54.py", "tools/test_wand.lua"]),

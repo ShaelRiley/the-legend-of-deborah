@@ -334,6 +334,40 @@ for _,row in ipairs(rows) do
     assert(row.value==expected,'Stakeholders must include both wallet balance and canonical DFT valuation')
 end
 assert(#C:StakeholderRows({a})==expectedCount,'Persisted holders remain visible while offline')
+-- More than two pages, equal-value account ordering, current-session names and
+-- changes after the cache was populated all pass through the real SQLite store.
+local holders={}
+for i=1,23 do
+    local id=string.format('765611981%08d',i)
+    holders[i]=actor(id)
+    assert(exchangeStore:Transaction('board:'..i,'board_fixture',{id},function(accounts)
+        accounts[id].balance=100000;accounts[id].name='Offline '..i;return true
+    end))
+end
+holders[1].Nick=function() return 'Current session name' end
+local ordered=C:StakeholderRows({holders[1],holders[1]})
+local last,seen=nil,{}
+for _,row in ipairs(ordered) do
+    assert(not seen[row.id],'No duplicate account when current and persisted records overlap');seen[row.id]=true
+    if last then assert(last.value>row.value or (last.value==row.value and last.id<row.id)) end
+    last=row
+end
+assert(#ordered==expectedCount+23 and seen[holders[23].id])
+local function findRow(rows,id) for _,row in ipairs(rows) do if row.id==id then return row end end end
+assert(findRow(ordered,holders[1].id).name=='Current session name')
+assert(exchangeStore:Transaction('board:updated','board_fixture',{holders[23].id},function(accounts)
+    accounts[holders[23].id].balance=200000;return true
+end))
+assert(C:StakeholderRows({})[1].id==holders[23].id,'Committed holdings invalidate the ranking cache')
+local oldHumans=player.GetHumans;player.GetHumans=function() return {holders[1]} end
+local oldWrite,oldSend=net.WriteTable,net.Send
+local delivered,recipient
+net.WriteTable=function(rows) delivered=rows end;net.Send=function(ply) recipient=ply end
+C.Stakeholders={}
+hooks.LOD_StakeholdersJoin(holders[1]);table.remove(fixture.timers)()
+assert(recipient==holders[1] and #delivered==expectedCount+23 and delivered[1].id==holders[23].id,
+    'Late join gets fresh complete holdings even with an empty broadcast cache')
+net.WriteTable,net.Send=oldWrite,oldSend;player.GetHumans=oldHumans
 print('JUNK_SQLITE_PASS: ownership/duplicate/replay; real sale/fusion rollback and atomicity; 85–100% valid value; DFT mint exclusion; Stakeholder sorting/denominations/rounding')
 
 -- Four-action token exchange uses real SQLite and cannot refresh recreation.
