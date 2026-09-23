@@ -469,6 +469,12 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
+    local status=LOD.RPGStatusElements
+    if status and status.IsStatue and status:IsStatue(target) then
+        dmginfo:SetDamage(0)
+        if LOD.CombatRolls and LOD.CombatRolls.ReportResolvedDamage then LOD.CombatRolls:ReportResolvedDamage(dmginfo) end
+        return true
+    end
     local baseResult = baseEntityTakeDamage and baseEntityTakeDamage(self, target, dmginfo)
     if baseResult == true then
         if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo] = nil end
@@ -542,6 +548,7 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
     move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
     if AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
+    if LOD.Equipment and LOD.Equipment.ObserveStatue then LOD.Equipment:ObserveStatue(ply,move) end
     if LOD.Equipment and LOD.Equipment.ObserveStomp then LOD.Equipment:ObserveStomp(ply,move) end
 end)
 

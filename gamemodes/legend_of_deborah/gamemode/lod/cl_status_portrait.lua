@@ -13,6 +13,7 @@ for _,row in ipairs({{'immolated','IMMOLATED','Immolated'},{'poisoned','POISONED
     {'arcane_shattered','SHIELD SHATTERED','ArcaneShattered'},{'intimidated','INTIMIDATED','Intimidated'}}) do
     H:RegisterCondition(row[1],row[2],'LOD_Status'..row[3])
 end
+H:RegisterCondition('statue','STATUE','LOD_Statue',true)
 function H:Reset()
     self.ConditionsSampled=false
     self.HP=nil;self.Identity=nil;self.HurtUntil=0;self.AttackUntil=0;self.NextSample=0

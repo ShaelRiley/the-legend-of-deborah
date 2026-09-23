@@ -378,6 +378,7 @@ hook.Add("EntityFireBullets", "LOD_PlayerWeaponSpecials_SMGHeat", function(shoot
 end)
 
 hook.Add("StartCommand", "LOD_PlayerWeaponSpecials_Input", function(ply, cmd)
+    if LOD.Equipment and LOD.Equipment.ObserveStatueInput then LOD.Equipment:ObserveStatueInput(ply,cmd) end
     if not IsValid(ply) or not ply:Alive() then return end
     local state = stateFor(ply)
     local weapon = activeWeapon(ply)

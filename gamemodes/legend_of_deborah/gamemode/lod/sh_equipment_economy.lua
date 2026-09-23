@@ -63,7 +63,13 @@ E.SpecialMoves.heavy_stomp = {id="heavy_stomp", name="Heavy Stomp", displayName=
     description="Land on an enemy for 2d6 + STR physical damage and a ceiling-checked upward bounce. Once per airborne excursion; land on solid non-actor support to rearm. No Magic cost."}
 E.Definitions.plumber_boots = {name="Boots of the Heavy Plumber", wearable=true, slots={"feet"},
     model="models/props_junk/cardboard_box004a.mdl", moves={"heavy_stomp"}, minimumRarity=2}
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots"}
+E.SpecialMoves.statue = {id="statue", name="Statue", displayName="Statue", passive=true,
+    recipe={}, trigger="Stand still for 2 seconds", magicCost=0, cooldown=0,
+    value=50, family="tanuki_ring", innateOnly=true,
+    description="Become stone, concealed from enemies and immune to damage while still. Movement, attacks or item/Magic use end it and restart the two-second wait. No Magic cost."}
+E.Definitions.tanuki_ring = {name="Tanuki's Ring", wearable=true, slots={"left_hand","right_hand"},
+    model="models/props_junk/cardboard_box004a.mdl", moves={"statue"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots", "tanuki_ring"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil

@@ -352,6 +352,7 @@ end)
 -- RMB belongs to Magic globally in the current build. Strip secondary-fire input
 -- server-side as well as client-side so stock weapon alt-fire cannot leak through.
 hook.Add("StartCommand", "LOD_MagicSuppressSecondaryFire", function(ply, cmd)
+    if LOD.Equipment and LOD.Equipment.ObserveStatueInput then LOD.Equipment:ObserveStatueInput(ply,cmd) end
     if LOD.Equipment and LOD.Equipment:IsActive(ply) then return end
     if IsValid(ply) and ply:Alive() and RunManager and RunManager.IsActivePlayer and RunManager:IsActivePlayer(ply) then
         cmd:RemoveKey(IN_ATTACK2)

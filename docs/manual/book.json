@@ -719,6 +719,22 @@
       ]
     },
     {
+      "id": "tanuki-ring",
+      "title": "Tanuki’s Ring",
+      "rows": [
+        [
+          "Statue",
+          "Stand still for 2 seconds · Passive · No Magic cost"
+        ]
+      ],
+      "text": [
+        "Equip this Rare-or-better ring in either hand and stand still on solid ground for two continuous seconds. You become stone: enemies stop seeing and targeting you, and direct hits, explosions, hazards and damaging statuses cannot take your HP while Statue remains active.",
+        "Movement immediately ends Statue, including jumps, crouching, forced propulsion, moving supports and teleportation. Attacking, casting Magic, using an item or interacting also ends it, even if the action fails. Dealing HP damage ends it too. You must stand still for another full two seconds; looking around alone is allowed.",
+        "Statue costs no Magic and has no fixed duration or cooldown. It does not cure existing conditions or stop the dungeon collapse clock. Removing or moving the ring, dying, changing role or changing dungeon cancels it. An interrupted connection cannot retain an old activation.",
+        "Other players can see your stone body. A brief original transformation chime and stone flourish mark activation, and STATUE appears above your status portrait. Separate sources of invisibility retain their own rules."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

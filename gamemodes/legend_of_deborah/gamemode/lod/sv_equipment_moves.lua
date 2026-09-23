@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
 function E:ClearTransient(ply)
+    if self.EndStatue then self:EndStatue(ply,"lifecycle changed");self.StatueInputAt[ply]=nil end
     if self.StompFlights then self.StompFlights[ply]=nil end
     if self.EndCloak then self:EndCloak(ply,"lifecycle changed") end
     self.MoveSessions[ply] = nil
@@ -220,6 +221,7 @@ function E:ExecuteMove(ply, id, session)
     if not move or not self:CanAct(ply) or self:IsActive(ply) then return false end
     -- An old call/session cannot spend the resources of a fresh Hero/life/run.
     if session~=self:MoveSession(ply) then return false end
+    if self.EndStatue then self.StatueInputAt[ply]=CurTime();self:EndStatue(ply,"technique attempt") end
     local status=LOD.RPGStatusElements
     if not status:CanInitiateMagic(ply) then return false end
     local _,grants=self:Contributions(session.ps.equipment)

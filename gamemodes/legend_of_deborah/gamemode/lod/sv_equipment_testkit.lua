@@ -171,3 +171,24 @@ concommand.Add("lod_heavy_plumber_testkit",function(ply)
     E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
     E:Report(ply,"HEAVY PLUMBER TEST — land on an enemy from above: 2d6 + STR and safe upward bounce. No Magic cost; touch solid non-actor ground to rearm. Run unranked.","heavy_plumber_testkit")
 end)
+
+concommand.Add("lod_tanuki_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("tanuki_testkit")
+    E:ClearTransient(ply)
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="tanuki_ring" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"tanuki_ring","tanuki-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the Tanuki's Ring.","special_move_rejected");return
+        end
+    end
+    E:Equip(state,item.id,"left_hand")
+    E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
+    E:Report(ply,"TANUKI TEST — stand still for 2 seconds: stone, concealed and invulnerable. Movement, attacks or use restart the wait. No Magic cost. Run unranked.","tanuki_testkit")
+end)

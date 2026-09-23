@@ -77,7 +77,7 @@ for _=1,90 do tick() end
 assert(created==count,'Retain panel/model during normal HUD frames')
 -- Every current ailment remains in the caption, even with all active together.
 for _,id in ipairs(H.Order) do ply.bools[H.Conditions[id].key]=true end
-tick();assert(H.Harmful and #H.Order==9 and not H.Caption:find('Jane',1,true))
+tick();assert(H.Harmful and #H.Order==10 and not H.Caption:find('Jane',1,true))
 for _,id in ipairs(H.Order) do assert(H.Caption:find(H.Conditions[id].label,1,true)) end
 for _,line in ipairs(H.Lines) do assert(surface.GetTextSize(line)<=H.WrapWidth) end
 local function checkLayout()
@@ -141,3 +141,9 @@ bare.LODPose={mode='hurt',fatigue=.5};bare:PaintManual();bare:Remove()
 width,height=1280,800;tick();assert(H.Panel.w<=128 and H.Panel.y>0)
 events.LOD_PortraitCleanup();assert(H.Panel.removed)
 print('STATUS_PORTRAIT_PASS: HP-aligned face, weapon right, shared face, statuses/buffs, damage/attack/fatigue/bob, reduced effects, retained model, wrapping, lifecycle and role isolation')
+
+for _,condition in pairs(H.Conditions) do ply.bools[condition.key]=false end
+ply.bools.LOD_Statue=true;tick()
+assert(H.Caption=='STATUE' and H.Affected and not H.Harmful,'Statue is a beneficial canonical HUD state')
+ply.bools.LOD_Statue=false;tick();assert(not H.Caption:find('STATUE',1,true))
+print('STATUE_PORTRAIT_PASS: replicated beneficial state and cleanup')

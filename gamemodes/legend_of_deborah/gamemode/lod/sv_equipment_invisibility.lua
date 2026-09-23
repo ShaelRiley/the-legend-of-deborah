@@ -45,16 +45,7 @@ function E:BeginCloak(ply,record)
     self.Cloaks[ply]=record
     P:SetInvisibleSource(ply,"equipment_veil",record)
     ply:SetNW2Float("LOD_VeilUntil",record.ends)
-    -- Bounded existing registry; discard knowledge, not already released shots.
-    for _,enemy in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
-        if IsValid(enemy) then
-            if enemy.LODTarget==ply then
-                enemy.LODTarget=nil;enemy.LODNextTargetRefresh=0
-                enemy.LODWatcherAlertedAt=nil;enemy.LODWatcherAlertSource=nil
-                enemy.LODWaypoints={};enemy.LODWaypointIndex=1;enemy.LODNextRouteRefresh=0
-            end
-        end
-    end
+    P:ForgetHostileTarget(ply)
 end
 
 E.MoveHandlers.cloak={

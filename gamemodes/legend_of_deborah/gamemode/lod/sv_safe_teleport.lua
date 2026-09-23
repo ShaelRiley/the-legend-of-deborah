@@ -210,6 +210,7 @@ function T:Relocate(targetBinding,anchorBinding,mode,spend)
     local dest,why=self:Resolve(target,anchor,mode)
     if not dest then return false,why end
     if spend and not spend() then return false,"Card unavailable" end
+    if LOD.Equipment.EndStatue then LOD.Equipment:EndStatue(target,"teleport") end
     if LOD.Equipment.StompFlights then LOD.Equipment.StompFlights[target]=nil end
     if LOD.RPGAbilityRules.StopVoluntaryDash then LOD.RPGAbilityRules:StopVoluntaryDash(target)
     elseif LOD.RPGAbilityRules.VoluntaryDashes then LOD.RPGAbilityRules.VoluntaryDashes[target]=nil end

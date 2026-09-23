@@ -205,7 +205,34 @@ function System:CureNegative(actor)
     return count
 end
 
+System.Statues=setmetatable({}, {__mode="k"})
+function System:SetStatue(actor,record)
+    if not valid(actor) or self.Statues[actor] or not record.valid(actor,record) then return false end
+    self.Statues[actor]=record
+    actor:SetNW2Bool("LOD_Statue",true)
+    return true
+end
+function System:ClearStatue(actor,expected)
+    if not self.Statues[actor] or self.Statues[actor]~=expected then return false end
+    self.Statues[actor]=nil
+    if valid(actor) then actor:SetNW2Bool("LOD_Statue",false) end
+    return true
+end
+function System:IsStatue(actor)
+    local record=self.Statues[actor]
+    if not record then return false end
+    if not valid(actor) or not record.valid(actor,record) then
+        self:ClearStatue(actor,record)
+        record.ended(actor,record,"source/lifecycle changed")
+        return false
+    end
+    return true
+end
+
 function System:ResetActorLife(actor)
+    if LOD.Equipment and LOD.Equipment.EndStatue then LOD.Equipment:EndStatue(actor,"actor lifecycle") end
+    local statue=self.Statues[actor]
+    if statue then self:ClearStatue(actor,statue);statue.ended(actor,statue,"actor lifecycle") end
     self.ActorLives[actor] = nil
     local ids = {}
     for id in pairs(self.Active[actor] or {}) do ids[#ids + 1] = id end
@@ -855,6 +882,7 @@ hook.Add("FinishMove", "LOD_RPG_StatusPoisonCell", function(ply)
 end)
 
 hook.Add("StartCommand", "LOD_RPG_StatusActionLocks", function(ply, cmd)
+    if LOD.Equipment and LOD.Equipment.ObserveStatueInput then LOD.Equipment:ObserveStatueInput(ply,cmd) end
     if System:Has(ply, "held") then
         cmd:RemoveKey(IN_FORWARD)
         cmd:RemoveKey(IN_BACK)

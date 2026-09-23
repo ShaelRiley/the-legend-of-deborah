@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Tanuki Statue", ["python3", "tools/run_lua54.py", "tools/test_tanuki_ring.lua"]),
     ("Heavy Plumber Stomp", ["python3", "tools/run_lua54.py", "tools/test_heavy_plumber.lua"]),
     ("Thunder Hat Charge", ["python3", "tools/run_lua54.py", "tools/test_thunder_charge.lua"]),
     ("Ring of Invisibility", ["python3", "tools/run_lua54.py", "tools/test_invisibility_ring.lua"]),

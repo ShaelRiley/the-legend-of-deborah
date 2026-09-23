@@ -1,4 +1,91 @@
-# Current checkpoint — Boots of the Heavy Plumber
+# Current checkpoint — Tanuki's Ring
+
+Built on independently verified remote main
+`c29e372617380de753c1b11547891dbea75d496e`; clean working tree, no newer work
+replaced. Followed live GDD 00 → 01 → relevant 03/06/07/90. The retained
+September 22 P7 author brief delegates missing implementation/balancing and GDD
+synchronization. Recorded and read back `LOD-TANUKI-RING-001` in 03/06/07/90 and
+HUMAN after a fresh protected-control-aware document read.
+
+The minimum-Rare, one-hand **Tanuki's Ring** grants passive **Statue** after two
+continuous seconds of server-observed stillness on solid non-actor ground.
+No arrow recipe, Magic spending, cooldown or fixed duration. Innate allowance
+is floor(50 x quality / 100); the existing independent 1/8 innate wearable pool
+includes the ring without changing original seven-family RNG or frozen records.
+Ordinary equipment ownership, occupancy, inventory and derived grants apply.
+
+Canonical status authority owns the positive, source-bound Statue state outside
+the curable negative-condition registry. Its damage gate runs before native
+Dodge/Block, mitigation, Magic diversion, status observation and attribution.
+Valid Statue takes no direct, ambient, AOE or damaging-status HP loss. Incoming
+hits do not end it; existing ailments keep their clocks and recovery rolls.
+Scripted death and campaign TIME OVER remain authoritative. Canonical Invisible
+sources own enemy acquisition; the shared bounded pursuit cleanup now serves both
+Statue and Veil. Damage factions are unchanged, and unrelated concealment survives
+Statue cleanup. Human observers see the stone body.
+
+Normal SetupMove samples the wait and FinishMove confirms actual position and
+velocity before activation. Require deployed, living, walking Hero, ready graph,
+no vehicle, moving/actor support, dash or forced displacement. Maximum sample gap
+0.25s, maximum drift1 unit from the initial anchor, maximum velocity/base velocity
+1 unit/s. Missing observations reset instead of crediting idle time. Movement,
+jump/crouch, attack/use input, any Magic/technique/item-use attempt and effective
+outgoing HP damage reset the full wait; looking around alone is permitted. Shared
+input suppressors notify Statue before removing Held/weapon/Magic keys, so blocked
+attempts cannot preserve invulnerability. Actual motion is rechecked at every
+damage/acquisition decision, and safe teleport retires the state before moving.
+No motion clamp, extra jump, wall traversal or per-item timer was added.
+
+Wait and activation bind the exact item and hand slot, Hero state/identity/life,
+run/seed/graph. Source mutation, same-tick remove/re-equip, death/respawn/disconnect,
+role/staging/freeze/failure/level changes and map cleanup invalidate both. Expected
+source tokens reject stale callbacks. Source-owned stone material restores its
+prior value without overwriting an intervening external material change. Shared
+Invisible maintenance also retires invalid protection without new recurring scans.
+The HUD's existing beneficial-condition path shows STATUE. An original generated
+0.24-second four-note cue and 0.3-second procedural stone flourish accompany the
+bundled granite material. No third-party assets. Item descriptions and both manual
+readers explain activation and breaks. `lod_tanuki_testkit` equips the ring,
+preserves displaced inventory and marks the run unranked without refilling Magic.
+
+Validation: **132 integrated suites pass, zero failures**; Lua syntax, generated
+manual and whitespace gates pass. The focused suite exercises real equipment
+ownership/rewards, exact two-second timing, free activation, real GM damage denial
+before defense spending, an actual scheduled Immolated tick with unchanged HP,
+Magic and ailment clock, canonical enemy target loss, input/physics breaks,
+source-safe concealment/material cleanup and lifecycle rejection. Existing Ring,
+Gloves, Hat, Boots, Quickstep, LuaJIT/crash replay, overhead barriers, rescue and
+Hero/Soldier queues remain passing. Original audio is reproducible mono PCM,
+bounded in duration/size and within the existing 6-bit cue transport. First
+integrated run:131/132; only the audio test's fixed59-cue expectation failed after
+the new60th cue. Updated that catalog expectation and retained all behavior checks.
+Focused Statue/audio checks and the final integrated run pass. Final review then
+moved technique cancellation after the existing session guard so a stale callback
+cannot cancel a fresh Statue; the new assertion and all six equipment-move family
+suites pass on that final tree. These results are
+automated/headless evidence, not native Source acceptance.
+
+Native gate pending: as a developer-mode admin on gm_flatgrass, run
+`lod_tanuki_testkit`. Stop on solid ground for two seconds; verify stone appearance,
+STATUE HUD, one brief chime/flourish, target loss and no HP/Magic loss from enemy
+hits or ambient/AOE damage. Move or attack: protection must end immediately, with
+a fresh two-second wait. Check forced push, moving support, ring removal, death,
+dungeon transition and another player's view. Capture console_latest.txt and
+rpg_summary_latest.txt. Check stone material restoration and co-op audiovisual
+readability; the stock pickup representation remains provisional. No VPS or Steam
+Workshop deployment; prior native acceptance obligations remain open.
+
+Next bounded P7 checkpoint: **Wand weapon category**. Reconcile the retained
+Wizard/Rogue/class restrictions, Beam delivery, finite charges/no reload and
+procedural element/Content/status brief with live GDD and the existing weapon,
+Magic, item identity and resource authorities before implementation. Define finite
+ownership/class/resource/delivery/lifecycle checks; preserve accepted movement,
+overhead barriers, rescue progression and Hero/Soldier queues. Do not re-audit
+completed checkpoints without new contradictory evidence.
+
+---
+
+# Previous checkpoint — Boots of the Heavy Plumber
 
 Built on verified remote `61f5577f3d7c1a19c2eb7797a6ed3cb2b5950920`.
 Clean local main matched remote; no newer work was overwritten. Read AGENTS.md
