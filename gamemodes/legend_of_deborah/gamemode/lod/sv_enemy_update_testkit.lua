@@ -77,7 +77,8 @@ concommand.Add("lod_enemy_roster_testkit",function(ply,_,args)
     if not allowed(ply) then return end
     local E=LOD.EnemyRoster;local id=string.lower(tostring(args[1] or ""))
     if not E or not E.Definitions[id] then
-        tell(ply,"Choose: climber, nodule, flamer, bigcrab, sentry, razor, arccaster, lurker, beamsweeper");return
+        local ids={};for candidate in pairs(E and E.Definitions or {}) do ids[#ids+1]=candidate end;table.sort(ids)
+        tell(ply,"Choose: "..table.concat(ids,", "));return
     end
     local s,plan=Run.State,Director.Plan
     if not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen or not plan then return end

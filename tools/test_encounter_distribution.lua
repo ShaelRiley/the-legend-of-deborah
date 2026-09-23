@@ -15,6 +15,16 @@ util.TraceLine=function(t)
  return {Hit=f<1,HitPos=t.start+delta*f,HitNormal=Vector(0,0,1),Fraction=f,StartSolid=false}
 end
 local counts,viable,early,plans,total={},{},{},0,0
+local b1={gaoler=true,silencer=true,repulsor=true}
+local function signature(plan)
+ local rows={}
+ for _,enc in ipairs(plan.encounters) do
+  local composition={};for id,count in pairs(enc.composition) do composition[#composition+1]=id..'='..count end
+  table.sort(composition)
+  rows[#rows+1]=table.concat({enc.cellKey,enc.role,tostring(enc.sector),table.concat(composition,',')},':')
+ end
+ return table.concat(rows,';')
+end
 for seed=1,32 do
  local graph
  for attempt=1,64 do
@@ -33,9 +43,13 @@ for seed=1,32 do
   party=variant%4+1;Run.State.Level=variant%5+1
   graph.MasterLevelSeed=seed*7919+variant*104729
   local ok,plan=D:BuildPlan(graph);assert(ok,plan);plans=plans+1
+  if seed==1 and variant==1 then
+   local again,repeated=D:BuildPlan(graph);assert(again and signature(plan)==signature(repeated),'same inputs changed production encounter plan')
+  end
   for _,enc in ipairs(plan.encounters) do
    total=total+1
    for id,count in pairs(enc.composition) do
+    if b1[id] then assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B1 entered an unapproved production path') end
     counts[id]=(counts[id] or 0)+count
     if E.Definitions[id] then
      local p=E:Placement(graph,graph.Cells[enc.cellKey],id,enc.role)
@@ -46,7 +60,7 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-for _,id in ipairs({'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule'}) do
+for _,id in ipairs({'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor'}) do
  assert((counts[id] or 0)>=25,id..' effectively absent from normal encounter generation')
  assert((viable[id] or 0)>=20,id..' always rejected by placement policy')
  assert((early[id] or 0)>=5,id..' unavailable in early/mid sectors')

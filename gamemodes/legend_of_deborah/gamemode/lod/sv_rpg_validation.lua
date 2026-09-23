@@ -82,8 +82,8 @@ function Validation:Run(printResult)
         end
     end
 
-    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 22 then
-        addError(errors, "archetype progression template count must be 22")
+    if countKeys(RPG.ArchetypeProgressionTemplates) ~= 25 then
+        addError(errors, "archetype progression template count must be 25")
     end
     for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates or {}) do
         local weights = template.aiClassWeights or {}

@@ -4,7 +4,8 @@ local V=LOD.EnemyRosterVisual
 local glow=Material("sprites/light_glow02_add")
 local beam=Material("cable/redlaser")
 local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color(110,190,255),
-    lurker=Color(110,240,55),beamsweeper=Color(120,225,255),sentry=Color(255,75,45),razor=Color(255,165,60)}
+    lurker=Color(110,240,55),beamsweeper=Color(120,225,255),sentry=Color(255,75,45),razor=Color(255,165,60),
+    gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
@@ -27,7 +28,7 @@ function V:Gas(e)
 end
 net.Receive("LOD_RosterProjectiles",function()
     local count=net.ReadUInt(7);local list={}
-    for i=1,count do list[i]={pos=net.ReadVector(),velocity=net.ReadVector(),venom=net.ReadBool()} end
+    for i=1,count do list[i]={pos=net.ReadVector(),velocity=net.ReadVector(),kind=net.ReadUInt(2)} end
     projectiles=list;received=CurTime()
 end)
 hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth,sky)
@@ -35,9 +36,10 @@ hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth
     for _,q in ipairs(projectiles) do
         local pos=q.pos+q.velocity*math.min(.1,CurTime()-received)
         if EyePos():DistToSqr(pos)<2400^2 then
-            local c=q.venom and colors.lurker or colors.sentry
-            render.SetMaterial(glow);render.DrawSprite(pos,q.venom and 24 or 10,q.venom and 24 or 10,c)
-            render.SetMaterial(beam);render.DrawBeam(pos-q.velocity:GetNormalized()*24,pos,q.venom and 5 or 2,0,1,c)
+            local c=q.kind==1 and colors.lurker or (q.kind==2 and colors.silencer or colors.sentry)
+            local wide=q.kind~=0
+            render.SetMaterial(glow);render.DrawSprite(pos,wide and 24 or 10,wide and 24 or 10,c)
+            render.SetMaterial(beam);render.DrawBeam(pos-q.velocity:GetNormalized()*24,pos,wide and 5 or 2,0,1,c)
         end
     end
 end)
@@ -52,14 +54,15 @@ function V:Draw(e,size)
     local cv=GetConVar("lod_reduced_effects");local low=cv and cv:GetBool()
     local pulse=stage==1 and (12+4*math.sin(CurTime()*16)) or 24
     render.SetMaterial(glow);render.DrawSprite(origin,pulse,pulse,color)
-    if id=="arccaster" then
+    if id=="arccaster" or id=="gaoler" or id=="repulsor" then
+        local radius=id=="repulsor" and range or 112
         render.SetColorMaterial()
-        if LOD.MagicArea then LOD.MagicArea:Disc(aim,112,Vector(1,0,0),Vector(0,1,0),Color(color.r,color.g,color.b,102)) end
+        if LOD.MagicArea then LOD.MagicArea:Disc(aim,radius,Vector(1,0,0),Vector(0,1,0),Color(color.r,color.g,color.b,102)) end
         render.SetMaterial(beam)
         for i=1,24 do
             local a,b=(i-1)*math.pi/12,i*math.pi/12
-            local p=aim+Vector(math.cos(a)*112,math.sin(a)*112,0)
-            local q=aim+Vector(math.cos(b)*112,math.sin(b)*112,0)
+            local p=aim+Vector(math.cos(a)*radius,math.sin(a)*radius,0)
+            local q=aim+Vector(math.cos(b)*radius,math.sin(b)*radius,0)
             render.DrawBeam(p,q,3,0,1,color)
             if stage==2 and (not low or i%4==0) then render.DrawBeam(p,p+Vector(0,0,85),4,0,1,color) end
         end

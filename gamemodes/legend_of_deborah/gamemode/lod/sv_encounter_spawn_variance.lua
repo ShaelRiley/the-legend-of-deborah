@@ -7,7 +7,7 @@ local EC = LOD.Config.Encounter
 
 if not EncounterDirector then return end
 
-local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper", "climber", "flamer", "bigcrab", "sentry", "razor", "arccaster", "lurker", "beamsweeper", "nodule"}
+local SPAWN_ORDER = {"shambler", "runner", "deadcrab", "bioblaster", "soldier", "blitzer", "sniper", "climber", "flamer", "bigcrab", "sentry", "razor", "arccaster", "lurker", "beamsweeper", "nodule", "gaoler", "silencer", "repulsor"}
 
 local function cellKey(cell)
     return cell and LOD.MazeGenerator.CellKey(cell.x, cell.y, cell.z) or nil
@@ -162,4 +162,3 @@ concommand.Add("lod_m3_map_variance", function(ply)
     tell(ply, string.format("%s total=%d uniqueSizes=%d missingVariance=%d missingOrdinal=%d",
         passed and "PASS" or "FAIL", total, unique, missing, missingOrdinal))
 end)
-

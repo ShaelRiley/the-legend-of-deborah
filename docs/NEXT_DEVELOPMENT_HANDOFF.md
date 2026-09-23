@@ -1,83 +1,40 @@
-# Handoff — Bestiary B1
+# Handoff — Bestiary B2
 
-Resume development of **The Legend of Deborah** and complete **one substantial,
-bounded Bestiary checkpoint**, including validation, commit and verified non-forced
-push to `main`.
+Resume `ShaelRiley/the-legend-of-deborah` on `main`. B1 is the latest gameplay
+checkpoint, “Add Bestiary control cohort and freeze expansion baseline”. Verify
+current remote HEAD and preserve intervening work; the publication response gives
+the exact verified SHA. Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
-Repository: `ShaelRiley/the-legend-of-deborah`.
-Last gameplay checkpoint: `b8c737d27386be9ff5d74e53e39eaf94a9e5875c`,
-`Add Deborah finale celebration and campaign-bound staging succession`.
-A subsequent documentation checkpoint establishes this roadmap; verify current
-remote main before editing and preserve all intervening work.
-Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
+I authorize implementation, necessary refactoring, design/tuning decisions,
+compatible existing assets, tests, diagnostics, documentation, live GDD amendments,
+focused parallel delegation, commits and non-forced pushes directly to `main`.
+Resolve routine ambiguities. **Do not deploy to the VPS or publish to Workshop.**
 
-## Authorization and phase order
+Read AGENTS.md, the active DEVELOPMENT_PLAN.md roadmap/current checkpoint,
+docs/briefs/BESTIARY_UPDATE.md and docs/BESTIARY_EXPANSION.md. Follow live GDD
+00 →01 → relevant subsystem tabs, including LOD-ROADMAP-ECOSYSTEM-001 and
+LOD-BESTIARY-B1-001. Retrieve exact HUMAN detail only if needed; no chat archaeology
+or repeated broad audit. Baseline is frozen18; target63; B1 delivers21,42 remain.
 
-I authorize implementation, necessary shared-authority refactoring, game-mechanics
-and tuning decisions, compatible existing/base-game assets, naming, UX, tests,
-diagnostics, documentation, live GDD amendments, focused parallel delegation,
-commits and non-forced pushes directly to main. Resolve ordinary ambiguities.
-Do not deploy to the VPS or publish to Steam Workshop; never overwrite newer work,
-force-push, expose secrets or weaken acceptance to obtain a green result.
+Complete **B2 only**: a substantial bounded ally-support cohort with three distinct
+roles (interruptible recovery, positional protection, rally/status support),
+concrete production compositions and shared-authority implementation. Reconcile
+available healing/mitigation/status seams and amend GDD before fixing design.
+Do not count differently colored buff casters. Preserve entity budgets, faction
+unity, RNG isolation, topology, progression and exact-dungeon lifecycle; no new
+reinforcement bodies or revival. Proposed finite target24/63, subject to actual
+meaningful implemented identities. Preserve all bosses, Gordon →Hector →Deborah,
+finale/staging succession, Abundance and Level-21 cash progression.
 
-The required order is **Bestiary Update → Big Loot Update → Event System Update →
-full systems integration/emergence audit → low-end PC performance audit → final
-crash/progression-safety audit → my human playtest**. Complete each major phase
-through significant, independently bankable chunks. Outstanding native acceptance
-remains documented and does not block this authorized development sequence.
+Reserve the final third for validation/fixes/documentation/publication. Use focused
+tests while editing; once coherent run `python3 tools/test_checkpoint_g_integration.py`.
+B1 passed all157 suites with zero failures; see DEVELOPMENT_PLAN.md for evidence. Native acceptance remains pending,
+scheduled after Bestiary →Big Loot →Events →integration/emergence audit →low-end
+performance audit →crash/progression-safety audit. Do not advance another phase.
 
-## Recover efficiently
-
-1. Verify remote main and working-tree state. Read AGENTS.md and the active roadmap
-   plus newest checkpoint in docs/DEVELOPMENT_PLAN.md.
-2. Read docs/briefs/BESTIARY_UPDATE.md. The other complete source briefs are retained
-   alongside it; do not audit those systems now. Historical SHA/roster examples
-   are not the current baseline.
-3. Follow live GDD 00 → 01 → only relevant subsystem tabs, including
-   LOD-ROADMAP-ECOSYSTEM-001; retrieve exact HUMAN detail only where necessary.
-4. Inspect actual normal-enemy definitions, shared AI/combat/status authorities,
-   encounter placement/admission, lifecycle and relevant tests. Reuse completed
-   work and existing diagnostics. Missing historical chats/images are unnecessary.
-
-## B1 deliverable
-
-Establish and record the gameplay-meaningful normal-enemy baseline, counted IDs,
-inclusions/exclusions, tactical gaps and approximately 3.5× whole-phase target.
-Freeze that baseline; cosmetics and trivial numerical permutations do not count.
-
-Choose and implement a coherent first cohort of several tactically distinct enemy
-identities using existing mechanics and assets. Add only necessary shared
-support; integrate the cohort into valid production encounter/placement paths.
-Deliver playable behavior and meaningful tests, not just a taxonomy or unused
-registry. Select a scope large enough to matter and small enough to finish this
-session. Complete only B1; do not attempt the entire 3.5× expansion, director
-overhaul, Big Loot or Event Update in the same checkpoint.
-
-Preserve canonical combat/status/XP/drop authorities, faction unity, deterministic
-RNG isolation, topology and progression safety, active-hostile ceilings, equipment
-and multiplayer lifecycles, Gordon → Hector → Deborah, the finale, the sole
-Deborah staging successor/Abundance, and Level21+ SECURE THE BAG.
-
-Prove distinctive tactics, production selection and placement, authoritative
-combat/rewards, bounded workload, death/disconnect/reset/partial-spawn cleanup and
-same-seed reproducibility. Record substantive decisions in the live GDD and
-verify readback. Update the manual for player-facing changes.
-
-## Bank the result
-
-Reserve roughly the final third of the session for validation, fixes, documentation
-and publication. Stop adding scope when that reserve is reached. Use targeted tests
-while editing; once coherent, run:
-`python3 tools/test_checkpoint_g_integration.py`
-Fix attributable failures without bypassing real boundaries. Avoid repeated full
-runs unless a remaining shared-system risk requires them. The inherited baseline
-is 156 passing suites; native acceptance remains pending, not implied by mocks.
-
-Update DEVELOPMENT_PLAN.md with B1 scope, count against the frozen target, evidence,
-remaining native checks and a concrete B2. Preserve the ordered roadmap. Commit
-and publish immediately when green. Recheck remote main; if CLI credentials remain
-absent, use authenticated GitHub blob/tree/commit/ref operations with a non-forced
-update and exact tested-tree verification. Fetch and verify afterward.
-
-End with the verified SHA, implemented scope, test result, expansion progress,
-remaining native checks and next bounded checkpoint. Do not begin B2 in this turn.
+Record expansion progress, results, remaining native checks and concrete B3 in
+the plan. Update/read-back verify relevant GDD amendments and manual, then commit
+and non-force-push immediately when green. If CLI credentials remain absent, use
+authenticated GitHub blob/tree/commit/ref operations, compare every blob and the
+complete remote tree to the validated local tree, update non-forced, fetch and
+verify. End with verified SHA, scope, tests, count and next checkpoint.

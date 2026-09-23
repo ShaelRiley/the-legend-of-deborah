@@ -93,7 +93,10 @@ local templates={
     razor_cover={name="Rotor Cover Break",composition={razor=1,soldier=1}},
     arccaster_zone={name="Arc Control",composition={arccaster=1,shambler=2}},
     lurker_ceiling={name="Ceiling Venom",composition={lurker=1}},
-    beamsweeper_lane={name="Beam Crossing",composition={beamsweeper=1}}
+    beamsweeper_lane={name="Beam Crossing",composition={beamsweeper=1}},
+    gaoler_hold={name="Gaoler's Pursuit",composition={gaoler=1,runner=1}},
+    silencer_screen={name="Silence Detail",composition={silencer=1,shambler=1}},
+    repulsor_screen={name="Repulsor Screen",composition={repulsor=1,soldier=1}}
 }
 for id,t in pairs(templates) do EC.Templates[id]=t end
 local baseEligible=D._EligibleTemplates
@@ -104,6 +107,9 @@ function D:_EligibleTemplates(sector,role)
         if role=="arena" or role=="reward" then out[#out+1]="bigcrab_breath";out[#out+1]="sentry_flank";out[#out+1]="lurker_ceiling";out[#out+1]="nodule_gas" end
     end
     if sector>=2 then
+        if role=="arena" or role=="ambush" then
+            out[#out+1]="gaoler_hold";out[#out+1]="silencer_screen";out[#out+1]="repulsor_screen"
+        end
         out[#out+1]="razor_cover"
         if role=="arena" or role=="ambush" then out[#out+1]="arccaster_zone" end
         if role=="arena" or role=="reward" or role=="ambush" then out[#out+1]="beamsweeper_lane" end

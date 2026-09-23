@@ -11,14 +11,18 @@ E.Definitions={
     razor={name="Razor",model="models/manhack.mdl",baseHP=22,speed=185,damage=11,range=560,warning=.65,recovery=1.8,threat=2.8,activity=ACT_FLY or ACT_RUN,kind="dive",dice={2,6,4}},
     arccaster={name="Arc Caster",model="models/vortigaunt.mdl",baseHP=40,speed=100,damage=13.5,range=1000,warning=1.25,recovery=2.8,threat=3.5,activity=ACT_WALK,kind="arc",dice={3,6,3}},
     lurker={name="Lurker",model="models/barnacle.mdl",baseHP=24,speed=0,damage=5.5,range=1000,warning=1,recovery=3,threat=2.5,activity=ACT_IDLE,kind="venom",stationary=true,dice={1,4,3}},
-    beamsweeper={name="Beam Sweeper",model="models/stalker.mdl",baseHP=50,speed=0,damage=10,range=640,warning=1.4,recovery=3,threat=3.8,activity=ACT_IDLE,kind="beam",stationary=true,dice={2,6,3}}
+    beamsweeper={name="Beam Sweeper",model="models/stalker.mdl",baseHP=50,speed=0,damage=10,range=640,warning=1.4,recovery=3,threat=3.8,activity=ACT_IDLE,kind="beam",stationary=true,dice={2,6,3}},
+    -- B1 custodians: Content is attack identity, independent of rolled affinity/class.
+    gaoler={name="Gaoler",model="models/vortigaunt.mdl",baseHP=40,speed=100,damage=5.5,range=720,warning=1.25,recovery=3.2,threat=3.5,activity=ACT_WALK,kind="arc",contentId="ice",color=Color(90,180,255),dice={1,6,2}},
+    silencer={name="Silencer",model="models/combine_super_soldier.mdl",baseHP=30,speed=150,damage=5.5,range=800,warning=.9,recovery=2.8,threat=3,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bolt",contentId="light",color=Color(235,225,175),dice={1,6,2}},
+    repulsor={name="Repulsor",model="models/vortigaunt.mdl",baseHP=55,speed=125,damage=5.5,range=220,warning=1.1,recovery=3,threat=3.5,activity=ACT_WALK,kind="pulse",contentId="earth",color=Color(190,135,55),dice={1,6,2}}
 }
 for id,d in pairs(E.Definitions) do
     EC.Archetypes[id]={class="lod_hostile",name=d.name,model=d.model,baseHP=d.baseHP,speed=d.speed,
         meleeDamage=0,meleeRange=0,meleeCooldown=99,burstDamage=d.damage,fireRange=d.range,
         burstTelegraph=d.warning,burstCooldown=d.recovery,activity=d.activity,threat=d.threat}
     LOD.CombatRolls.HostileDamageProfiles[id]={label=string.upper(d.name),source=d.kind,
-        count=d.dice[1],sides=d.dice[2],bonus=d.dice[3],reference=d.damage}
+        count=d.dice[1],sides=d.dice[2],bonus=d.dice[3],reference=d.damage,magicDamage=d.contentId~=nil}
 end
 E.Active=E.Active or setmetatable({}, {__mode="k"})
 E.Projectiles=E.Projectiles or {}
@@ -26,6 +30,23 @@ local N=LOD.MazeNavigator
 local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 E.Key=key
 local function state() return LOD.RunManager and LOD.RunManager.State end
+-- Seeds repeat deliberately; object identity and campaign scope distinguish rebuilds.
+function E:Bind(record,s)
+    record.run=s;record.seed=s.LevelSeed;record.graph=s.Graph
+    record.progression=s.Graph and s.Graph.Progression
+    record.epoch=s.CampaignEpoch;record.campaignSeed=s.CampaignSeed;record.runId=s.RunId
+    return record
+end
+function E:Live(record,s)
+    return record and s and record.run==s and record.seed==s.LevelSeed and record.graph==s.Graph
+        and record.progression==(s.Graph and s.Graph.Progression) and record.epoch==s.CampaignEpoch
+        and record.campaignSeed==s.CampaignSeed and record.runId==s.RunId
+end
+function E:CanCast(e)
+    local statuses=LOD.RPGStatusElements
+    local d=self.Definitions[e.LODArchetypeId]
+    return statuses:CanInitiateAttack(e) and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
+end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
 function E:AcquireTarget(p) return LOD.FactionManager:CanAcquirePlayerTarget(p) end
 function E:Safe(graph,c)
@@ -52,6 +73,7 @@ function E:Prepare(e)
     end
     if e.LODRosterReady then return end
     e.LODRosterReady=true;self.Active[e]=true;e:SetNW2Bool("LOD_RosterAlive",true)
+    e.LODRosterContext=self:Bind({},state())
     local d=self.Definitions[e.LODArchetypeId]
     if d.color then e:SetColor(d.color) end
     if d.stationary then e.LODRosterAnchor=e:GetPos();e.LODRosterYaw=e:GetAngles().y end
@@ -74,15 +96,16 @@ function E:Damage(e,p,event,kind)
     event.roll=event.roll or rolls:RollHostileAttack(e,profile,e.LODConfig.burstDamage)
     local c={};for k,v in pairs(event.roll) do c[k]=v end
     if e.LODSkeletonHero and event.skeletonFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.skeletonFullMagicBonus end
-    local magic=kind=="arc" or kind=="beam"
+    local d=self.Definitions[e.LODArchetypeId]
+    local magic=kind=="arc" or kind=="beam" or (d and d.contentId~=nil)
     local rider=(kind=="flame" and "immolated") or (kind=="venom" and "poisoned") or nil
     event.riders=event.riders or setmetatable({}, {__mode="k"})
     local tags={physical=not magic,magic=magic,melee=kind=="dive" or kind=="climber",
         element=kind=="flame" and "fire" or (magic and "raw" or nil),
         attackEvent=c.attackEvent,damageContract=c,authoredScale=c.scale,
         riderStatusId=rider,riderConsumedTargets=event.riders}
-    local content=event.skeletonContent
-    if e.LODSkeletonHero and magic and content then
+    local content=event.skeletonContent or (d and d.contentId and LOD.RPG.MagicContents[d.contentId])
+    if magic and content then
         for k,v in pairs(LOD.MagicForms:_DamageContext(content)) do tags[k]=v end
         local definition=tags.riderStatusId and LOD.RPGStatusElements.Registry[tags.riderStatusId]
         if definition and definition.ability then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,definition.ability) end
@@ -95,13 +118,14 @@ function E:Damage(e,p,event,kind)
     rolls:QueueDamageReport(info,function(final) c.final=final;rolls:_Send(p,1,rolls:_HostileRollText(c,e,p)) end)
     local before=p:Health()
     p:TakeDamageInfo(info)
-    if IsValid(e) and IsValid(p) and e.LODSkeletonHero and content and LOD.SkeletonHero:Live(e) then
+    if IsValid(e) and not e.LODDead and IsValid(p) and content
+        and (not e.LODSkeletonHero or LOD.SkeletonHero:Live(e)) then
         local after=p:Health()
-        LOD.MagicForms:ApplyContentPush(e,e,p,content,(p:GetPos()-e:GetPos()):GetNormalized(),
+        LOD.MagicForms:ApplyContentPush(e,e,p,content,(p:GetPos()-(event.pushOrigin or e:GetPos())):GetNormalized(),
             math.max(0,math.min(before,before-after)))
     end
 end
-local sounds={flame="ambient/fire/ignite.wav",arc="npc/vort/attack_charge.wav",venom="npc/barnacle/barnacle_tongue_pull1.wav",
+local sounds={flame="ambient/fire/ignite.wav",arc="npc/vort/attack_charge.wav",bolt="npc/vort/attack_charge.wav",pulse="npc/vort/attack_charge.wav",venom="npc/barnacle/barnacle_tongue_pull1.wav",
     beam="npc/stalker/laser_burn.wav",bullet="npc/turret_floor/active.wav",dive="npc/manhack/mh_engine_start1.wav"}
 function E:Begin(e,p,now)
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
@@ -109,7 +133,9 @@ function E:Begin(e,p,now)
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
     local a={kind=d.kind,target=p,origin=origin,aim=aim,ready=now+cfg.burstTelegraph,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
+    self:Bind(a,state())
     if d.kind=="arc" then a.aim=Vector(p:GetPos().x,p:GetPos().y,p:GetPos().z+3) end
+    if d.kind=="pulse" then a.aim=Vector(origin.x,origin.y,e:GetPos().z+3);a.event.pushOrigin=origin end
     if d.kind=="beam" then
         a.origin=e:GetPos()+Vector(0,0,56);a.yaw=e.LODRosterYaw or e:GetAngles().y;a.previous=-45
         a.aim=a.origin+Angle(0,a.yaw,0):Forward()*cfg.fireRange
@@ -129,7 +155,7 @@ function E:Finish(e,now)
     e:_SetActivity(ACT_IDLE)
 end
 function E:Release(e,a,now)
-    if e.LODSkeletonHero and (a.released or a.skeletonCommitting) then return false end
+    if a.released or (e.LODSkeletonHero and a.skeletonCommitting) then return false end
     if e.LODSkeletonHero and not LOD.SkeletonHero:CommitArc(e,a) then
         if IsValid(e) and e.LODRosterAttack==a then self:Finish(e,now) end
         return false
@@ -139,17 +165,21 @@ function E:Release(e,a,now)
     e:SetNW2Float("LOD_RosterFinish",a.finish)
     -- Release is finite: an emitted looping flame asset outlives this attack.
     e:EmitSound(a.kind=="flame" and "ambient/fire/ignite.wav" or (a.kind=="venom" and "npc/barnacle/barnacle_digesting1.wav" or "ambient/energy/weld2.wav"),74,100,.7)
-    if a.kind=="bullet" or a.kind=="venom" then
+    if a.kind=="bullet" or a.kind=="venom" or a.kind=="bolt" then
         if #self.Projectiles<64 then
-            self.Projectiles[#self.Projectiles+1]={owner=e,pos=a.origin,velocity=a.direction*(a.kind=="bullet" and 950 or 380),
-                expires=now+e.LODConfig.fireRange/(a.kind=="bullet" and 950 or 380),seed=a.seed,run=a.run,kind=a.kind,event=a.event}
+            local speed=a.kind=="bullet" and 950 or (a.kind=="bolt" and 540 or 380)
+            local q={owner=e,pos=a.origin,velocity=a.direction*speed,
+                expires=now+e.LODConfig.fireRange/speed,kind=a.kind,event=a.event}
+            -- Preserve the commitment's scope, never bind a stale release to a new run.
+            for _,k in ipairs({"seed","run","graph","progression","epoch","campaignSeed","runId"}) do q[k]=a[k] end
+            self.Projectiles[#self.Projectiles+1]=q
         end
     end
 end
 function E:Attack(e,a,now)
     if not a.released then
         if not self:AcquireTarget(a.target) or not self:Visible(e,a.target,a.origin)
-            or not LOD.RPGStatusElements:CanInitiateAttack(e) then self:Finish(e,now);return end
+            or not self:CanCast(e) then self:Finish(e,now);return end
         if now<a.ready then return end
         self:Release(e,a,now)
         if not a.released then return end
@@ -169,13 +199,14 @@ function E:Attack(e,a,now)
                 a.hit[p]=true;self:Damage(e,p,a.event,kind)
             end
         end
-    elseif kind=="flame" or kind=="arc" or kind=="beam" then
+    elseif kind=="flame" or kind=="arc" or kind=="beam" or kind=="pulse" then
         local current=kind=="beam" and math.Clamp((now-(a.finish-1.2))/1.2,0,1)*90-45 or 0
         for _,p in ipairs(player.GetAll()) do
             if self:Target(p) and not a.hit[p] then
                 local pos=p:WorldSpaceCenter();local delta=pos-a.origin;local inside=false
                 if kind=="flame" then inside=delta:Length()<=range and delta:GetNormalized():Dot(a.direction)>=math.cos(math.rad(28))
                 elseif kind=="arc" then inside=(pos-a.aim):Length2D()<=112 and pos.z>=a.aim.z-3 and pos.z<=a.aim.z+192
+                elseif kind=="pulse" then inside=delta:Length()<=range
                 else
                     local yaw=math.AngleDifference(delta:Angle().y,a.yaw)
                     local lo,hi=p:WorldSpaceAABB()
@@ -209,6 +240,7 @@ function E:Tick(e)
         self:Cancel(e);if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
     end
     self:Prepare(e)
+    if not self:Live(e.LODRosterContext,s) then self:Cancel(e);motion:Stop(e);return true end
     if d.kind=="climber" then return LOD.Climber:Tick(e,s,now) end
     if d.kind=="gas" then
         motion:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -230,7 +262,7 @@ function E:Tick(e)
         if not statuses:CanInitiateAttack(e) or statuses:Has(e,"morale_flee") then return true end
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
     e:_RefreshTarget(s.Graph);local p=e.LODTarget
-    local can=self:AcquireTarget(p) and statuses:CanInitiateAttack(e)
+    local can=self:AcquireTarget(p) and self:CanCast(e)
         and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))
     if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
         local direction=p:GetPos()-e:GetPos();direction.z=0
@@ -273,16 +305,16 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
         elseif not active then E:Cancel(e)
         elseif e.LODRosterAttack then
             local a=e.LODRosterAttack
-            if a.seed~=s.LevelSeed or a.run~=s then E:Cancel(e)
-            elseif not (a.released and a.kind=="beam") and (now<(e.LODHitStunUntil or 0) or not LOD.RPGStatusElements:CanInitiateAttack(e)) then E:Finish(e,now)
+            if not E:Live(a,s) then E:Cancel(e)
+            elseif not (a.released and a.kind=="beam") and (now<(e.LODHitStunUntil or 0) or not E:CanCast(e)) then E:Finish(e,now)
             else E:Attack(e,a,now) end
         end
     end
     local kept={}
     for _,q in ipairs(E.Projectiles) do
-        if active and q.seed==s.LevelSeed and q.run==s and IsValid(q.owner) and not q.owner.LODDead and now<q.expires then
+        if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires then
             local finish=q.pos+q.velocity*dt
-            local radius=q.kind=="venom" and 7 or 2
+            local radius=(q.kind=="venom" or q.kind=="bolt") and 7 or 2
             local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SOLID,
                 filter=function(v) return v~=q.owner and not v.LODHostile end})
             if tr.Hit then
@@ -295,7 +327,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     if active and (#kept>0 or E.HadProjectiles) and now>=(E.NextSync or 0) then
         E.HadProjectiles=#kept>0
         E.NextSync=now+.1;net.Start("LOD_RosterProjectiles");net.WriteUInt(#kept,7)
-        for _,q in ipairs(kept) do net.WriteVector(q.pos);net.WriteVector(q.velocity);net.WriteBool(q.kind=="venom") end
+        for _,q in ipairs(kept) do net.WriteVector(q.pos);net.WriteVector(q.velocity);net.WriteUInt(q.kind=="venom" and 1 or (q.kind=="bolt" and 2 or 0),2) end
         net.Broadcast()
     end
 end)
@@ -312,7 +344,10 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         arccaster={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
         nodule={"npc/barnacle/barnacle_tongue_pull1.wav","npc/barnacle/barnacle_die1.wav"},
         lurker={"npc/barnacle/barnacle_tongue_pull1.wav","npc/barnacle/barnacle_die1.wav"},
-        beamsweeper={"npc/stalker/stalker_pain1.wav","npc/stalker/stalker_die1.wav"}
+        beamsweeper={"npc/stalker/stalker_pain1.wav","npc/stalker/stalker_die1.wav"},
+        gaoler={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
+        silencer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        repulsor={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"}
     }
     for id,b in pairs(banks) do LOD.CombatAudio:RegisterHostileProfile(id,{pain={b[1]},death={b[2]},
         footsteps=b[3] and {b[3]} or {},footDistance=60,footInterval=.5,footVolume=.5,footPitch=100,activation={b[1]}}) end

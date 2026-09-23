@@ -898,6 +898,28 @@
       ]
     },
     {
+      "id": "enemy-control",
+      "title": "The control detail",
+      "rows": [
+        [
+          "Gaoler",
+          "Icy-blue Vortigaunt. Its Ice attack marks a fixed patch of floor before erupting. Leave the mark or interrupt the charge: a failed Wisdom save can leave you Held while its Runner closes in."
+        ],
+        [
+          "Silencer",
+          "Pale-ivory Combine elite. A visible line warns of a straight, non-homing Light bolt. Sidestep or take cover. A failed Wisdom save can leave you Muted; guns and melee remain available."
+        ],
+        [
+          "Repulsor",
+          "Brown-and-gold Vortigaunt. It warns before an Earth pulse around its fixed casting position. Leave the ring or take cover. The hit can push you into a Soldier’s firing line."
+        ]
+      ],
+      "text": [
+        "These specialists appear with ordinary attackers. Identify the control threat early, then choose whether to interrupt it, evade its commitment, or remove its companion.",
+        "Held and Muted use the ordinary saves and recovery rules. Their warning colors identify the attack; a creature’s class and elemental affinity still belong to that individual. Cover and movement remain useful answers for every class."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

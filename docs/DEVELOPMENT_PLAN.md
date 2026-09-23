@@ -71,24 +71,83 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Next checkpoint — B1: bestiary baseline and first tactical cohort
+## Current checkpoint — B1: prison control cohort
 
-Read [BESTIARY_UPDATE.md](briefs/BESTIARY_UPDATE.md). Inspect the current production
-normal roster, definitions, shared behavior/combat authorities, director admission
-and tests. Record the baseline and missing tactical niches; choose one coherent
-cohort of several meaningful enemy identities that combines existing mechanics
-and can ship without a full director rewrite. Add only the definition/behavior
-support needed for that cohort and make it genuinely production-consumed through
-valid existing encounter/placement paths. Preserve existing named bosses, enemy
-faction unity, budgets, navigation and the finale.
+Built on verified remote `main` `855b3b9709675b5b035b12c58658eb74f3037fa9`.
+The actual production baseline is frozen at **18 normal identities**; see
+[BESTIARY_EXPANSION.md](BESTIARY_EXPANSION.md) for the counted IDs, code evidence,
+exclusions and tactical-gap matrix. Whole-phase target **63** (=18 × 3.5).
+B1 adds **Gaoler, Silencer and Repulsor**: **21/63**, **3/45 additions** banked,
+**42 additions remain**. No cosmetic, class, tier, affinity or stat permutations
+inflate this count. This is implementation progress, not native acceptance.
 
-Prove distinct tactical behavior, deterministic definitions/selection, valid
-placement, authoritative damage/status/rewards and lifecycle cleanup. Update
-GDD/manual/plan, run the integration gate and publish. State the implemented
-count against the frozen whole-phase target and name B2's next coherent slice.
-No Big Loot or Event expansion in B1. The full encounter ecology overhaul follows
-roster expansion within phase1; retain its requirements without prebuilding a
-second unused director. [Copyable handoff](NEXT_DEVELOPMENT_HANDOFF.md).
+**Playable scope:** Gaoler commits an icy floor mark with canonical Held;
+Silencer fires a warned, finite nonhoming Light bolt with canonical Muted;
+Repulsor commits a short-range Earth pulse and outward shared Push. They pair
+with Runner, Shambler and Soldier respectively in production sector-2+ arena/
+ambush templates. All use the existing roster service, canonical actor progression
+and class/feat/affinity generation, shared combat/dice/status/XP/drop authorities,
+physical placement and deterministic unified spawner. No wandering additions,
+new assets, private control timers, extra native projectile entities or director
+rewrite. Canonical Content does not force defensive elemental affinity.
+
+**Lifecycle/bounds:** each attack/projectile binds exact state, graph, progression,
+campaign epoch/seed/run ID and dungeon seed. Same-seed graph replacement cannot
+carry a prior attack forward. Mute/hit-stun cancels unreleased custodian magic;
+released nonhoming bolts persist only within their finite owner/dungeon lifetime.
+Held retains shared voluntary-movement restrictions. Per-target attack dedup,
+cover, faction validity and positive-damage/surviving-target riders remain shared.
+Earth push direction follows the frozen pulse origin even if the caster moves.
+Preserved64-projectile service cap,0.025s service/0.1s snapshots,96-hostile ceiling,
+80 target and16 wanderers/floor. The existing partial native-create policy retains
+successfully spawned actors with stable ordinals and never replays an encounter.
+
+**Design/manual:** live GDD00 →01 → relevant02/03/05/07, including
+LOD-ROADMAP-ECOSYSTEM-001, governed this checkpoint. Added/read-back verified
+LOD-BESTIARY-B1-001 in03/05/07 plus actor-generation tuning in07. Its authored
+abilities, weights, growth dice, XP, warning/cooldown/range and Content values
+are recorded there. Added “The control detail” to the canonical manual:145
+chapters,31 regenerated transport chunks, both readers use the same bytes.
+
+**Validation:** `python3 tools/test_checkpoint_g_integration.py` passed all
+**157 suites with zero failures**. The new B1 suite exercises attacks, canonical
+saves/riders/push, interruption, exact-dungeon cleanup, projectile bounds, partial
+native spawn failure, full/reduced-effects presentation, seeded actor progression
+and single-settlement XP. Existing combat/loot, boss/finale, Abundance and Level-21
+regressions remain green. `git diff --check` is clean. The expanded512-plan production sample
+across32 generated mazes, party1–4 and dungeon1–5 produced4906 encounters:
+Gaoler170 planned/168 legal/44 early; Silencer115/113/42; Repulsor136/132/40.
+Identical relevant seeds reproduce the same full plan. Geometry traces are Source
+boundary doubles; these are not observed native spawns or native performance.
+Review caught missing progression-template wiring and a displaced-pulse push
+vector; both were repaired before the integrated gate, without loosening tests.
+
+**Remaining native checks:** on a local gm_flatgrass campaign, enable developer
+mode and use the existing `lod_enemy_roster_testkit gaoler`, `silencer` and
+`repulsor` one at a time. Verify visible names/paint/model poses, exact tells at
+full/reduced effects, cover/escape/interrupt counterplay, Held/Muted saves and
+Earth push near walls/stairs, ordinary XP/loot and1–4-player balance. Reconnect,
+death/revival, reset and same-seed rebuild must not replay attacks or rewards.
+The kit marks the run unranked and preserves reserve/placement checks. Capture
+console_latest.txt + rpg_summary_latest.txt. All earlier Hector/finale/staging/
+Abundance/Level-21 native obligations remain pending for the planned human
+playtest. No VPS deployment or Workshop publication.
+
+## Next checkpoint — B2: bounded ally-support cohort
+
+Implement one coherent three-enemy support cohort: interruptible ally recovery,
+position-dependent protection, and a distinct rally/status specialist. Reconcile
+existing healing, mitigation and status authorities with the live GDD before
+fixing names/tuning. No revival, new reinforcement bodies or private parallel
+buff/damage authority. Each identity must produce a different tactical response,
+with production compositions and clear tell/interrupt/position counterplay.
+Finite target24/63 if all three qualify; baseline remains18. Prove faction and
+ally eligibility, deterministic bounded targeting, nonstacking, death/reset/
+disconnect cleanup, shared rewards and native-failure boundaries. Run the required
+integrated gate, update GDD/manual/ledger, and publish one bankable checkpoint.
+B2 has not begun. Full ecological director work follows further tactical cohorts
+within phase1. Big Loot and Event expansion remain subsequent phases.
+[Copyable handoff](NEXT_DEVELOPMENT_HANDOFF.md).
 
 ## Roadmap checkpoint evidence
 
