@@ -12,7 +12,9 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     if not IsValid(ply) or not ply:Alive() or LOD.UI.ActivePage then return end
     local tr=ply:GetEyeTrace()
     local ent=tr and tr.Entity
-    if not IsValid(ent) or (ent:GetClass()~='lod_dungeon_event' and ent:GetNW2String('LOD_EventArchetype','')~='false_floor')
+    if not IsValid(ent) or (ent:GetClass()~='lod_dungeon_event'
+        and ent:GetNW2String('LOD_EventArchetype','')~='false_floor'
+        and ent:GetNW2String('LOD_EventArchetype','')~='skeleton_blockade')
         or ply:GetPos():DistToSqr(ent:GetPos())>160*160 then return end
     local eventID=ent.GetEventID and ent:GetEventID() or ent:GetNW2String('LOD_EventID','')
     local row,endpoint
@@ -22,7 +24,8 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
                 for index,point in ipairs(event.details and event.details.endpoints or {}) do
                     if point.entityIndex==ent:EntIndex() then row,endpoint=event,index;break end
                 end
-            elseif event.entityIndex==ent:EntIndex() then row=event end
+            elseif event.entityIndex==ent:EntIndex()
+                or event.archetype=='skeleton_blockade' and event.details and event.details.barrierIndex==ent:EntIndex() then row=event end
             if row then break end
         end
     end
@@ -31,7 +34,13 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='bribe_blockade' then
+    if archetype=='skeleton_blockade' then
+        local details=row and row.details or {}
+        lines={details.name or 'SKELETON OF A HERO',
+            details.class and string.upper(details.class)..' — LEVEL '..tostring(details.level or '?') or 'Hero-derived hostile miniboss',
+            details.opened and 'DEFEATED — passage open for everyone.' or 'Defeat the Skeleton on this side to open the passage.'}
+        if not row then lines[#lines+1]='Synchronizing encounter…' end
+    elseif archetype=='bribe_blockade' then
         local details=row and row.details or {}
         local cache=ent:GetNW2String('LOD_BribeRole','')=='cache'
         lines={cache and 'LOST-PROPERTY CACHE' or 'BRIBE BLOCKADE — 50 $DEB OF EQUIPMENT',

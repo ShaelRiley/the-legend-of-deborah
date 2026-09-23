@@ -24,6 +24,15 @@ function Rules:DodgeChance(derived, speed, walkTarget, sprintTarget)
     return math.Clamp(contribution, 0, elevated and .66 or .33), elevated and "elevated" or "ordinary"
 end
 
+-- Hero-derived hostile movement uses DEX as Heroes do, while the established
+-- monster speed contract remains unchanged. Status and Rogue multipliers are
+-- applied by the caller exactly once to both motion and dodge thresholds.
+function Rules:HostileDexMovementMultiplier(actor)
+    if not actor.LODSkeletonHero then return 1 end
+    local derived = self:Derived(actor)
+    return math.Clamp(tonumber(derived and derived.movementSpeedMultiplier) or 1, .90, 1.55)
+end
+
 function Rules:DodgeMovement(actor)
     if not IsValid(actor) then return 0, 0, 0 end
     if actor:IsPlayer() then
@@ -36,7 +45,7 @@ function Rules:DodgeMovement(actor)
     -- graph movement authority's most recent ordinary step is admissible.
     local cfg = actor.LODConfig or {}
     local status = LOD.RPGStatusElements
-    local multiplier = status and status:LocomotionMultiplier(actor) or 1
+    local multiplier = (status and status:LocomotionMultiplier(actor) or 1) * self:HostileDexMovementMultiplier(actor)
     local walk = (tonumber(cfg.speed) or 90) * multiplier * self:RogueMovementMultiplier(actor, false)
     local sprint = (tonumber(cfg.sprintSpeed) or tonumber(cfg.speed) or 90) * multiplier
         * self:RogueMovementMultiplier(actor, cfg.sprintSpeed ~= nil)

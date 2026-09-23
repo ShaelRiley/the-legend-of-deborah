@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Skeleton Hero Generation & Shared Combat", ["python3", "tools/run_lua54.py", "tools/test_skeleton_hero.lua"]),
+    ("Skeleton Blockade Production Generation", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_blockade.lua"]),
+    ("Skeleton Blockade Death & Rewards", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_lifecycle.lua"]),
     ("Bribe Blockade Generation & Ownership", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_bribe_blockade.lua"]),
     ("Bribe Blockade Atomic Payment", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_bribe_payment.lua"]),
     ("Warp Hole Utility & Safe Traversal", ["python3", "tools/test_crypto_sqlite.py", "tools/test_warp_hole.lua"]),

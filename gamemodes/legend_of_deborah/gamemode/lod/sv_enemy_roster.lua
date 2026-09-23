@@ -66,11 +66,14 @@ function E:Interrupt(e)
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
 function E:Damage(e,p,event,kind)
+    if e.LODSkeletonHero and not LOD.SkeletonHero:Live(e) then return end
     if not IsValid(e) or e.LODDead or not self:Target(p) then return end
     local rolls=LOD.CombatRolls
     local profile=rolls.HostileDamageProfiles[e.LODArchetypeId]
+    if e.LODSkeletonHero and kind=="arc" then profile=table.Copy(profile);profile.magicDamage=true end
     event.roll=event.roll or rolls:RollHostileAttack(e,profile,e.LODConfig.burstDamage)
     local c={};for k,v in pairs(event.roll) do c[k]=v end
+    if e.LODSkeletonHero and event.skeletonFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.skeletonFullMagicBonus end
     local magic=kind=="arc" or kind=="beam"
     local rider=(kind=="flame" and "immolated") or (kind=="venom" and "poisoned") or nil
     event.riders=event.riders or setmetatable({}, {__mode="k"})
@@ -78,18 +81,30 @@ function E:Damage(e,p,event,kind)
         element=kind=="flame" and "fire" or (magic and "raw" or nil),
         attackEvent=c.attackEvent,damageContract=c,authoredScale=c.scale,
         riderStatusId=rider,riderConsumedTargets=event.riders}
-    if rider then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,rider=="immolated" and "dex" or "con") end
+    local content=event.skeletonContent
+    if e.LODSkeletonHero and magic and content then
+        for k,v in pairs(LOD.MagicForms:_DamageContext(content)) do tags[k]=v end
+        local definition=tags.riderStatusId and LOD.RPGStatusElements.Registry[tags.riderStatusId]
+        if definition and definition.ability then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,definition.ability) end
+    elseif rider then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,rider=="immolated" and "dex" or "con") end
     local amount=rolls:ResolveActorDamage(c,e,p,tags)
     local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
     info:SetDamageType(magic and DMG_ENERGYBEAM or (kind=="flame" and DMG_BURN or ((kind=="venom" or kind=="gas") and DMG_POISON or DMG_SLASH)))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)
     rolls:QueueDamageReport(info,function(final) c.final=final;rolls:_Send(p,1,rolls:_HostileRollText(c,e,p)) end)
+    local before=p:Health()
     p:TakeDamageInfo(info)
+    if IsValid(e) and IsValid(p) and e.LODSkeletonHero and content and LOD.SkeletonHero:Live(e) then
+        local after=p:Health()
+        LOD.MagicForms:ApplyContentPush(e,e,p,content,(p:GetPos()-e:GetPos()):GetNormalized(),
+            math.max(0,math.min(before,before-after)))
+    end
 end
 local sounds={flame="ambient/fire/ignite.wav",arc="npc/vort/attack_charge.wav",venom="npc/barnacle/barnacle_tongue_pull1.wav",
     beam="npc/stalker/laser_burn.wav",bullet="npc/turret_floor/active.wav",dive="npc/manhack/mh_engine_start1.wav"}
 function E:Begin(e,p,now)
+    if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
     local a={kind=d.kind,target=p,origin=origin,aim=aim,ready=now+cfg.burstTelegraph,
@@ -99,6 +114,7 @@ function E:Begin(e,p,now)
         a.origin=e:GetPos()+Vector(0,0,56);a.yaw=e.LODRosterYaw or e:GetAngles().y;a.previous=-45
         a.aim=a.origin+Angle(0,a.yaw,0):Forward()*cfg.fireRange
     end
+    if e.LODSkeletonHero then a.skeletonContent=e.LODSkeletonPendingContent end
     e.LODRosterAttack=a
     e:SetNW2Int("LOD_RosterAttack",1);e:SetNW2Vector("LOD_RosterOrigin",a.origin)
     e:SetNW2Vector("LOD_RosterAim",a.aim);e:SetNW2Float("LOD_RosterReady",a.ready)
@@ -113,6 +129,11 @@ function E:Finish(e,now)
     e:_SetActivity(ACT_IDLE)
 end
 function E:Release(e,a,now)
+    if e.LODSkeletonHero and (a.released or a.skeletonCommitting) then return false end
+    if e.LODSkeletonHero and not LOD.SkeletonHero:CommitArc(e,a) then
+        if IsValid(e) and e.LODRosterAttack==a then self:Finish(e,now) end
+        return false
+    end
     a.released=true;a.finish=now+(a.kind=="beam" and 1.2 or (a.kind=="flame" and .8 or (a.kind=="dive" and .65 or .15)))
     a.last=now;e:SetNW2Int("LOD_RosterAttack",2);e:SetNW2Float("LOD_RosterRelease",now)
     e:SetNW2Float("LOD_RosterFinish",a.finish)
@@ -131,6 +152,7 @@ function E:Attack(e,a,now)
             or not LOD.RPGStatusElements:CanInitiateAttack(e) then self:Finish(e,now);return end
         if now<a.ready then return end
         self:Release(e,a,now)
+        if not a.released then return end
     end
     local kind=a.kind;local range=e.LODConfig.fireRange
     if kind=="dive" then
@@ -175,6 +197,12 @@ function E:LegalStep(e,from,to)
     return key(a)==key(b) or (a.neighbors[key(b)] and N:CanTraverse(graph,key(a),key(b)))
 end
 function E:Tick(e)
+    -- This shared dispatch also sees non-roster Fighter/Rogue skeletons before
+    -- ordinary melee/Soldier execution. Late native method binding cannot erase
+    -- the exact-event guard by replacing an instance method.
+    if e.LODSkeletonHero and not LOD.SkeletonHero:Live(e) then
+        e.LODSoldierBurst=nil;self:Cancel(e);LOD.HostileMotionV2:Stop(e);return true
+    end
     local d=self.Definitions[e.LODArchetypeId];if not d then return false end
     local s=state();local motion=LOD.HostileMotionV2;local now=CurTime()
     if e.LODDead or not e.LODActivated or not s or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then

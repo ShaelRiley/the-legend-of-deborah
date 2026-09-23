@@ -861,6 +861,8 @@ end
 
 function ENT:_BeginDeathPresentation()
     if self.LODDeathPresentationStarted then return end
+    if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+        or not LOD.EventSkeletonBlockade.ResolveDeath(self)) then return end
     self.LODDeathPresentationStarted = true
     self.LODDead = true
     self.LODActivated = false
@@ -902,6 +904,8 @@ end
 
 function ENT:OnKilled(dmginfo)
     if self.LODDead then return end
+    if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+        or not LOD.EventSkeletonBlockade.AcceptDeath(self)) then return end
     -- Claim death before any extension hook can re-enter it. Keep attribution
     -- synchronous, but do not mutate native collision/model state in this stack.
     self.LODDead = true
@@ -920,6 +924,7 @@ function ENT:OnKilled(dmginfo)
 end
 
 function ENT:OnRemove()
+    if self.LODSkeletonHero and LOD.EventSkeletonBlockade then LOD.EventSkeletonBlockade.Removed(self) end
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end

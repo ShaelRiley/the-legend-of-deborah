@@ -148,6 +148,14 @@ local function drawReader(ent, card, locked)
     end
 end
 
+local function gateCard(ent)
+    if ent:GetNW2String("LOD_EventArchetype", "")=="skeleton_blockade" then
+        return {letter="DEFEAT",symbol="SKELETON",color=Color(205,175,235)}
+    end
+    if ent:GetGateIndex()==0 then return {letter="TOLL",symbol="50 $DEB",color=Color(220,180,65)} end
+    return PC.Cards[math.Clamp(ent:GetGateIndex(),1,4)]
+end
+
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
     local eyePos = EyePos()
     local registered, drawn, culled = 0, 0, 0
@@ -156,8 +164,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             registered = registered + 1
             if ent:GetPos():DistToSqr(eyePos) <= GATE_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
-                local index = math.Clamp(ent:GetGateIndex(), 1, 4)
-                local card = ent:GetGateIndex()==0 and {letter="TOLL",symbol="50 $DEB",color=Color(220,180,65)} or PC.Cards[index]
+                local card = gateCard(ent)
                 local mins, maxs = gateLocalBounds(ent)
                 local frac = openingFraction(ent)
 
@@ -185,15 +192,13 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
     RenderStats.gateBodiesCulled = culled
 end)
 
-local function gateCard(ent)
-    if ent:GetGateIndex()==0 then return {letter="TOLL",symbol="50 $DEB",color=Color(220,180,65)} end
-    return PC.Cards[math.Clamp(ent:GetGateIndex(),1,4)]
-end
 local function drawGateLabel(ent, card, pos, ang)
     cam.Start3D2D(pos, ang, 0.12)
         draw.RoundedBox(4, -180, -36, 360, 72, Color(18, 20, 22, 242))
         draw.SimpleText(card.letter .. " / " .. card.symbol, "DermaLarge", 0, -9, card.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        draw.SimpleText(ent:GetOpened() and "UNLOCKED" or (ent:GetGateIndex()==0 and "USE TOLL TERMINAL" or "USE READER WITH KEYCARD"), "DermaDefaultBold", 0, 21,
+        local prompt=card.symbol=="SKELETON" and "DEFEAT THE SKELETON ON THIS SIDE"
+            or (ent:GetGateIndex()==0 and "USE TOLL TERMINAL" or "USE READER WITH KEYCARD")
+        draw.SimpleText(ent:GetOpened() and "UNLOCKED" or prompt, "DermaDefaultBold", 0, 21,
             ent:GetOpened() and Color(100, 230, 120) or Color(245, 245, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
@@ -247,4 +252,3 @@ concommand.Add("lod_progression_render_status", function()
         passed and "PASS" or "FAIL"
     ))
 end)
-

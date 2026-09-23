@@ -92,20 +92,8 @@ function B.Create(director,i,g)
         ent:SetEventID(i.id);ent:Spawn();ent:Activate()
         if not IsValid(ent) or not director:Track(i,ent) then return nil,'bribe interaction lost' end
     end
-    local e=g.Edges[i.placement.edgeKey]
-    local after=key(e.a)==i.cellKey and e.b or e.a
-    local barrier=ents.Create('lod_gate')
-    if not IsValid(barrier) then return nil,'barrier creation failed' end
-    if not director:Track(i,barrier) then barrier:Remove();return nil,'stale barrier' end
-    i.barrier=barrier;barrier.LODBribeRole='barrier'
-    barrier:SetNW2String('LOD_EventArchetype',B.id)
-    barrier:SetGateIndex(0)
-    barrier:SetGateAxis(e.a.x~=e.b.x and 0 or 1)
-    local height=LOD.Config.Progression.GateBlockerHeight
-    barrier:SetPos((Builder:CellCenter(i.cell)+Builder:CellCenter(after))*.5+Vector(0,0,height*.5))
-    barrier.LODOverheadHeight=Builder:ProgressionBarrierHeight({beforeCell=i.cell,afterCell=after},g)
-    barrier:Spawn();barrier:Activate()
-    if not IsValid(barrier) or not director:Track(i,barrier) then return nil,'barrier lost during creation' end
+    local barrier,err=director:CreateBlockadeBarrier(i,g,'bribe')
+    if not barrier then return nil,err end
     return i.entities[1]
 end
 function B.Interact(director,i,ply,identity,entity) return B.Review(director,i,ply,identity,entity) end

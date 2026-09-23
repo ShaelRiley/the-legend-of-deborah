@@ -957,7 +957,7 @@
         ]
       ],
       "text": [
-        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, False-floor hazards, and bribe blockades; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
+        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, False-floor hazards, bribe blockades, and Skeleton of a Hero blockades; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
         "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
         "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
@@ -1082,6 +1082,31 @@
         "When the Warden falls, finish the job. Jail Key, jail door, Deborah."
       ],
       "quote": "You've read the book. Now make yourself useful."
+    },
+    {
+      "id": "skeleton-blockade",
+      "title": "Skeleton of a Hero",
+      "rows": [
+        [
+          "Class",
+          "Fighter, Rogue or Wizard, chosen when the dungeon is built."
+        ],
+        [
+          "Combat Level",
+          "Dungeon Level + 2, capped at 20."
+        ],
+        [
+          "Passage",
+          "Defeat the Skeleton once; the route opens for everyone."
+        ]
+      ],
+      "text": [
+        "A Skeleton of a Hero guards a required passage. Its name begins “Skeleton of” and comes from the same name generator as your Hero. Its abilities, identity perks, class growth, health dice and eligible automatic feats use the ordinary Hero framework, with AI choices restricted to abilities its controller can use.",
+        "The Fighter closes in for melee, the Rogue fires SMG bursts, and the Wizard warns before striking a ground arc. Wizard arcs spend 12 base Magic plus their Content cost, modified by ordinary offensive Magic rules. Wizards cycle their generated Contents and must regenerate when their Magic runs low. Shared defenses, status effects and class rules still apply.",
+        "The Skeleton is always on the approachable side of its barrier. Fight it before crossing. A legitimate defeat opens the tall barrier for every Hero, including later arrivals; your normal keycard, boss and rescue sequence remains intact. Regenerating the dungeon creates a fresh encounter.",
+        "Combat XP follows ordinary killing-blow and damage-contribution rules, and normal individualized enemy drops apply. There is no extra cash, DFT or guaranteed equipment award. Removing the enemy is not a combat victory.",
+        "Administrator preview: lod_event_preview_generate skeleton_blockade. Redeploy and follow the printed location. The preview is unranked."
+      ]
     }
   ]
 }

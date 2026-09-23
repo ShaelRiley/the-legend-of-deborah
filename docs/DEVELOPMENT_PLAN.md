@@ -1,4 +1,98 @@
-# Current checkpoint — Solvable item-value bribe blockade
+# Current checkpoint — Skeleton of a Hero combat blockade
+
+Built on verified remote main `7427922b2ee6bfc93a01a41e0abc9d847a66953f`;
+no intervening work replaced. Read AGENTS.md, retained P9 Skeleton brief and live
+GDD 00 → 01 → relevant 02/03/04/05/06/07/90 rules. Recorded and read-back verified
+LOD-EVENT-SKELETON-001 in those tabs and HUMAN under explicit author design
+delegation. File-backed read found no protected controls. No VPS deployment or
+Steam Workshop publication.
+
+**Scope/activation:** `skeleton_blockade` is one common BLOCKADE from Dungeon
+Level 1; catalog size seven before Level 5, eight thereafter. Exact ordinary
+non-exploding 1d4, unique types, rare fourth slot, independent streams, default-on
+population and saved operator opt-outs remain unchanged.
+
+The hostile is a canonical `lod_hostile` generated from the Hero ability/naming/
+identity framework, with uniform seeded Fighter/Rogue/Wizard choice and Combat
+Level `min(20,D+2)`. It has 100 starting HP plus class d10/d8/d4 progression dice,
+canonical growth/derived stats, identity perks, eligible automatic AI drafts at
+1/3/6/9/12/15/18 and a Level-20 class capstone. It earns no XP and has no extra
+party/size/HP/damage jitter. Ordinary enemy defense tuning remains. AI actor and
+actual-capability restrictions exclude unusable player UI, movement, equipment
+and spell-form grants. Hero and ordinary enemy generation are unchanged.
+
+Fighter reuses Runner melee, Rogue Soldier SMG bursts, Wizard Arc Caster warnings
+and ground arcs. Shared class/dice/defense/status/navigation/health regeneration
+and death authorities execute the generated profile. Skeleton DEX movement and
+Rogue Dodge use matching shared locomotion targets. Wizard retains normal owned
+Content milestones (1/4/8/14), cycles them, and pays 12 base offensive Magic plus
+Content surcharge at release through canonical cost/pool rules. Interrupted or
+unfunded casts do not release; ordinary regeneration supplies subsequent casts.
+Content context, saves, status/Morale and Earth Push use existing authorities.
+Stock skeleton model/class tint has no mechanical color bonus or gear inventory.
+
+**Solvability:** hostile occupies the approachable flat endpoint of one required
+horizontal route; its tall gate uses the same physical event-barrier constructor
+as the bribe. Both endpoints and edge reserve against existing encounters/events.
+Closed-mask proof guarantees approach before opening, with every other blockade
+and future objective boundary closed. Fully resolved ordered routes, combined
+shortcut and hazard proofs remain mandatory. Since two cuts of the same required
+route cannot both be approached with all blockades closed, a dual-bribe/Skeleton
+selection deliberately rejects the whole build within the existing bounds. It
+never drops or rerolls selected types/count to manufacture success.
+
+**Lifecycle/rewards:** canonical lethal callback seals one exact-hostile receipt
+before kill hooks. XP uses existing effective-damage 40/60 attribution and normal
+archetype values; ordinary individualized enemy drops apply once, without bonus
+cash/DFT/guaranteed item. The existing shared death scheduler opens native collision
+after the damage stack. Revalidate exact event/graph/state/epoch/entity ownership
+around opening and between reward recipients; seal shared resolution before sync.
+Accepted deaths finish through a later temporary pause, while new attacks/deaths
+remain frozen. Stale same-seed callbacks, replaced entities, removal and cleanup
+cannot resolve or reward. Lost required live resources abort through canonical
+campaign failure/cleanup instead of leaving an orphan barrier. Partial/zero-HP
+creation rejects and cleans every resource. Late joins receive shared name/class/
+level and defeated/open state. Ordinary and optimized navigation refresh at once.
+
+Manual regenerated: 141 chapters, 31 transport chunks, with new encounter rules,
+class attacks, rewards, shared passage and administrator preview.
+
+Validation: `python3 tools/test_checkpoint_g_integration.py` passed all **148
+automated suites**, zero failures. New profile suite covers 180 seeded profiles
+plus deterministic repeats, actual shared class damage/Content/Magic regeneration,
+DEX movement/Dodge, canonical native spawn, stale attacks and reentrant cast
+payment. Production suite covers 11 accepted full builds and 2 bounded rejects,
+all eight archetypes/count outcomes, actual encounter reservations, independent
+combat/objective proofs, partial/zero-HP creation, late joins and path refresh.
+Lifecycle suite exercises actual deferred hostile death, two-Hero XP attribution,
+ordinary loot handoff, duplicate lethal events, opening failure, missing/replaced
+resources, paused accepted death, stale outgoing damage and same-seed callbacks.
+A final targeted lifecycle rerun also passed the post-sync teardown guard: an
+opening snapshot callback cannot continue corpse mutation on a removed actor.
+Initial full integration passed147/148; the older stabilization fixture omitted
+native DamageInfo:GetAttacker and a nil-input passthrough needed preservation.
+Corrected both, then the full148 passed. This is automated evidence only; no
+native Source acceptance is claimed.
+
+One native procedure: on gm_flatgrass with two deployed Heroes and developer mode,
+run `lod_event_preview_generate skeleton_blockade`, redeploy, follow the printed
+locator and fight from the approachable side. Both Heroes contribute; verify
+class-appropriate attacks and defenses, visible skeleton/telegraphs, one XP/drop
+settlement and one tall-gate opening. Reconnect to check shared open state; repeat
+preview to observe the other class adapters and fresh reset. Check ordinary key,
+boss and rescue order. Capture console_latest.txt + rpg_summary_latest.txt;
+screenshots only for model/telegraph/label/collision defects. Native Source
+multiplayer, collision, animations, targeting and prior acceptance remain pending.
+
+Next bounded checkpoint: **one Game Master minigame** from retained P9. Reconcile
+its exact wager/challenge/win/loss/reward contract with the live GDD; use existing
+event, equipment/economy and lifecycle authorities. Prove optional approachable
+placement, server-owned challenge/settlement, simultaneous Heroes, cleanup and
+late joins; validate, commit and push. Hector remains a separate later gate.
+
+---
+
+# Previous checkpoint — Solvable item-value bribe blockade
 
 Built on verified remote main `290668078f26f13276e1af05b4ab675de8ddb165`;
 no intervening work replaced. Read AGENTS.md, retained P9 bribe brief and live

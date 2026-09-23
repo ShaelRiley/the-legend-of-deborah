@@ -65,7 +65,7 @@ Rules.ApplyWisDefense = function() wisCalls=wisCalls+1 end
 CurTime = function() return 10 end
 LOD.RunManager = {State={Level=3}}
 local actor = {valid=true, state={notYetConsumedDungeonLevel=3}, LODRPGNotYetImmuneUntil=10.5}
-local damage = {amount=20,SetDamage=function(self,n) self.amount=n end}
+local damage = {amount=20,SetDamage=function(self,n) self.amount=n end,GetAttacker=function() return nil end}
 assert(GM:EntityTakeDamage(actor,damage)==true,'upstream cancellation must survive wrapper')
 assert(wisCalls==0 and damage.amount==20,'cancelled hit must not run downstream defenses')
 baseResult=nil

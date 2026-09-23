@@ -232,7 +232,8 @@ function Motion:MoveToward(hostile, waypoint)
     local statusMultiplier = statusElements and statusElements:LocomotionMultiplier(hostile) or 1
     local rules = LOD.RPGAbilityRules
     local rogueMultiplier = rules and rules.RogueMovementMultiplier and rules:RogueMovementMultiplier(hostile) or 1
-    local speed = math.max(1, (cfg.speed or 90) * statusMultiplier * rogueMultiplier)
+    local dexMultiplier = rules and rules.HostileDexMovementMultiplier and rules:HostileDexMovementMultiplier(hostile) or 1
+    local speed = math.max(1, (cfg.speed or 90) * statusMultiplier * rogueMultiplier * dexMultiplier)
     local step = math.min(distance, speed * dt)
     local direction = delta / distance
     local nextPos = pos + direction * step

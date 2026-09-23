@@ -411,6 +411,8 @@ local function replacementAward(identity, amount, hostile)
 end
 
 function Attribution:_Award(identity, amount, hostile)
+    if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+        or not LOD.EventSkeletonBlockade.RewardOwned(hostile)) then return 0 end
     amount = replacementAward(identity, math.max(0, math.floor(amount or 0)), hostile)
     if amount <= 0 then return 0 end
     local progression = LOD.CharacterProgressionSystem
@@ -445,6 +447,11 @@ function Attribution:LargestRemainderShares(pool, damageByIdentity)
 end
 
 function Attribution:Settle(hostile)
+    if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+        or not LOD.EventSkeletonBlockade.RewardOwned(hostile)) then
+        self.Ledgers[hostile] = nil
+        return false
+    end
     local ledger = self.Ledgers[hostile]
     if not ledger or ledger.resolved then return false end
     ledger.resolved = true
@@ -469,6 +476,13 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
+    local source = dmginfo and dmginfo:GetAttacker()
+    if IsValid(source) and source.LODSkeletonHero and (not LOD.SkeletonHero
+        or not LOD.SkeletonHero:Live(source)) then
+        dmginfo:SetDamage(0)
+        if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo] = nil end
+        return true
+    end
     local status=LOD.RPGStatusElements
     if status and status.IsStatue and status:IsStatue(target) then
         dmginfo:SetDamage(0)

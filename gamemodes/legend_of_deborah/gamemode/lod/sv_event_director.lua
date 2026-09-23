@@ -430,6 +430,29 @@ function D:Track(instance, entity)
     return true
 end
 
+-- One physical authority for event-owned required-route barriers. Track before
+-- any native initialization so partial creation belongs to ordinary teardown.
+function D:CreateBlockadeBarrier(instance, g, role)
+    local e = g.Edges[instance.placement.edgeKey]
+    local after = key(e.a) == instance.cellKey and e.b or e.a
+    local barrier = ents.Create("lod_gate")
+    if not IsValid(barrier) then return nil, "barrier creation failed" end
+    if not self:Track(instance, barrier) then barrier:Remove(); return nil, "stale barrier" end
+    instance.barrier = barrier
+    barrier.LODEventBarrier = true
+    if role == "bribe" then barrier.LODBribeRole = "barrier" end
+    barrier:SetNW2String("LOD_EventArchetype", instance.archetype)
+    barrier:SetNW2String("LOD_EventID", instance.id)
+    barrier:SetGateIndex(0)
+    barrier:SetGateAxis(e.a.x ~= e.b.x and 0 or 1)
+    local height = LOD.Config.Progression.GateBlockerHeight
+    barrier:SetPos((Builder:CellCenter(instance.cell) + Builder:CellCenter(after)) * .5 + Vector(0,0,height*.5))
+    barrier.LODOverheadHeight = Builder:ProgressionBarrierHeight({beforeCell=instance.cell,afterCell=after}, g)
+    barrier:Spawn(); barrier:Activate()
+    if not IsValid(barrier) or not self:Track(instance, barrier) then return nil, "barrier lost during creation" end
+    return barrier
+end
+
 function D:Cleanup(reason)
     local context = self.Context
     self.Context = nil -- invalidate first; entity OnRemove callbacks cannot claim

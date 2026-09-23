@@ -281,6 +281,18 @@ function Forms:_ReportDamageRoll(creditCaster, target, form, content, contract, 
     end
 end
 
+-- Shared Earth Content post-hit push for Form and AI deliveries. Damage/status
+-- resolution has already completed; zero damage and lethal hits cannot push.
+function Forms:ApplyContentPush(attacker, creditCaster, target, content, direction, actual)
+    if not IsValid(target) or target.LODDead or target:Health() <= 0 or (actual or 0) <= 0
+        or not content or content.rider ~= "push" or not Pushback or not Pushback.Apply then return false end
+    return Pushback:Apply(target, {
+        attacker = IsValid(attacker) and attacker or creditCaster,
+        origin = IsValid(creditCaster) and creditCaster:GetPos() or nil,
+        direction = direction, distance = 336, source = "earth content", magicPush = true
+    })
+end
+
 function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, context, direction)
     if not IsValid(target) or target.LODDead or target:Health() <= 0 then return false end
     if (context.damageDiceUsed or 0) >= (RPG.Constants.MaxDamageDicePerAttackEvent or 128) then return false end
@@ -354,16 +366,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     local after = IsValid(target) and target:Health() or 0
     local actual = math.max(0, math.min(before, before - after))
     local survives = IsValid(target) and not target.LODDead and after > 0
-    if survives and actual > 0 and content and content.rider == "push" and Pushback and Pushback.Apply then
-        Pushback:Apply(target, {
-            attacker = IsValid(attacker) and attacker or creditCaster,
-            origin = IsValid(creditCaster) and creditCaster:GetPos() or nil,
-            direction = direction,
-            distance = 336,
-            source = "earth content",
-            magicPush = true
-        })
-    end
+    self:ApplyContentPush(attacker, creditCaster, target, content, direction, actual)
 
     local stunMultiplier=form.hitStunMultiplier or (form.id=="wall" and self.Tuning.Wall.stunMultiplier)
     if survives and actual > 0 and stunMultiplier and LOD.M3HitFeedback then
