@@ -957,7 +957,7 @@
         ]
       ],
       "text": [
-        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, False-floor hazards, bribe blockades, and Skeleton of a Hero blockades; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
+        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, False-floor hazards, bribe blockades, Skeleton of a Hero blockades, and the Game Master’s Equipment Quiz; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
         "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
         "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
@@ -1106,6 +1106,36 @@
         "The Skeleton is always on the approachable side of its barrier. Fight it before crossing. A legitimate defeat opens the tall barrier for every Hero, including later arrivals; your normal keycard, boss and rescue sequence remains intact. Regenerating the dungeon creates a fresh encounter.",
         "Combat XP follows ordinary killing-blow and damage-contribution rules, and normal individualized enemy drops apply. There is no extra cash, DFT or guaranteed equipment award. Removing the enemy is not a combat victory.",
         "Administrator preview: lod_event_preview_generate skeleton_blockade. Redeploy and follow the printed location. The preview is unranked."
+      ]
+    },
+    {
+      "id": "equipment-quiz",
+      "title": "The Game Master: know what you wear",
+      "rows": [
+        [
+          "Before accepting",
+          "One attempt per account per dungeon. Decline freely."
+        ],
+        [
+          "Correct answer",
+          "One DFT, only when collection succeeds."
+        ],
+        [
+          "Wrong answer",
+          "The real worn item is stolen."
+        ],
+        [
+          "Time limit",
+          "30 seconds after acceptance; the dungeon keeps running."
+        ]
+      ],
+      "text": [
+        "A suspiciously familiar grin waits in an optional hidden alcove. Press E at the Game Master and read his offer. You have 30 seconds to accept. Your task is to identify one piece of equipment you are wearing among two plausible phonies. The three cards show names, slots and properties. You cannot consult Equipment, Character Sheet, Wallet or the other Player Menu pages while answering.",
+        "Only ordinary procedural wearables are at risk. Weapons, consumables, protected or bound gear, free starting items and DFT-created equipment are excluded. Paired gloves count as one item and occupy both hands. No eligible equipment, a full eight-token DFT collection or unavailable reward storage means no accepted attempt.",
+        "Answer within 30 seconds. A wrong submitted answer removes the selected real item and its equipment effects. Cancelling, closing, timing out, dying, disconnecting, moving out of range or line of sight, or losing the current challenge forfeits the attempt without theft or reward. The world does not pause or protect you.",
+        "A correct answer earns one persistent, server-local DFT with no cash value. If storage fails after your answer, the result reads pending rather than success. Your menus reopen; use the same Game Master to retry the same frozen reward while the same Hero life, worn item and dungeon remain valid. Losing that binding forfeits an uncollected reward.",
+        "The Game Master disappears for you after your attempt ends. Other Heroes retain their own independent attempt and may play simultaneously. Reconnecting, changing Heroes or regenerating this dungeon does not grant another attempt. A new dungeon does. Late arrivals see the encounter appropriate to their own account.",
+        "Administrator preview: lod_event_preview_generate equipment_quiz. Redeploy with eligible ordinary wearable equipment and follow the printed locator. The preview is unranked but confirmed play risks actual equipment and awards a persistent DFT."
       ]
     }
   ]

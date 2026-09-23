@@ -95,6 +95,7 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
 end
 
 function Book:Open()
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     self:Close()
     LOD.UI:SelectPage("book")
     if LOD.CharacterSheet and LOD.CharacterSheet.Close then LOD.CharacterSheet:Close() end

@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Equipment Quiz Lifecycle & Atomic Settlement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_equipment_quiz.lua"]),
+    ("Game Master Production Alcove Placement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_quiz_generation.lua"]),
+    ("Minigame Shell & Equipment UI Restrictions", ["python3", "tools/run_lua54.py", "tools/test_minigame_ui.lua"]),
     ("Skeleton Hero Generation & Shared Combat", ["python3", "tools/run_lua54.py", "tools/test_skeleton_hero.lua"]),
     ("Skeleton Blockade Production Generation", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_blockade.lua"]),
     ("Skeleton Blockade Death & Rewards", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_lifecycle.lua"]),

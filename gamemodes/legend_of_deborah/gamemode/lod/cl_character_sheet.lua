@@ -361,6 +361,7 @@ function Sheet:Close()
 end
 
 function Sheet:Open(requestFresh)
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     local snapshot = self.Snapshot
     local savedScroll = requestFresh == false and snapshot
         and self.RenderedIdentity == snapshot.portraitCacheKey and IsValid(self.Scroll)

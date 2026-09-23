@@ -4,6 +4,7 @@ E.Snapshot = {items={}, slots={}}
 E.HasSnapshot = false
 
 function E:Request(action, id, slot)
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     net.Start("LOD_EquipmentRequest")
     net.WriteString(action)
     net.WriteString(id or "")
@@ -14,6 +15,7 @@ end
 -- Cache on the entity object, never its recyclable EntIndex. Retry a request
 -- after entering PVS/reconnecting; records never reroll on inspection.
 function E:PickupView(ent)
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     if ent.LODItemView then return ent.LODItemView end
     local now=CurTime()
     if now>=(self.NextInspect or 0) then

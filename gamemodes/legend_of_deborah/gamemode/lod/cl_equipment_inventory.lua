@@ -249,6 +249,7 @@ function E:RefreshInventory()
     if view.Bindings then view.Bindings:SetPos(0,view.Summary:GetY()+height+4) end
 end
 function E:BuildPanel(frame)
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     local view=vgui.Create('DPanel',frame);self.InventoryView=view
     view:SetPos(24,88);view:SetSize(frame:GetWide()-48,frame:GetTall()-200);view.Paint=function() end
     local w,h=view:GetWide(),view:GetTall()
@@ -302,6 +303,7 @@ function E:Close()
     self.Frame=nil;self.InventoryView=nil;self.InventoryPending=nil
 end
 function E:Open()
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     self:Close();UI:SelectPage('equipment')
     local frame=vgui.Create('DFrame');self.Frame=frame
     frame:SetTitle('');frame:SetSize(math.min(ScrW()-32,1120),math.min(ScrH()-32,740))

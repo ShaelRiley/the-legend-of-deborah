@@ -1,4 +1,113 @@
-# Current checkpoint — Skeleton of a Hero combat blockade
+# Current checkpoint — Game Master Equipment Quiz
+
+Built on verified remote main `c0526c9f5a4ebe68af890131ed888899183eb45e`;
+no intervening work replaced. Read AGENTS.md, retained P9 Game Master brief and
+live GDD 00 → 01 → relevant 05/06/07/90 rules plus the exact HUMAN crypto anchor.
+Recorded and read-back verified LOD-EVENT-QUIZ-001 in 05/06/07/90 and HUMAN under
+explicit author design delegation. File-backed read found no protected controls.
+No VPS deployment or Steam Workshop publication.
+
+**Scope/activation:** `equipment_quiz` is one common optional REWARD from Dungeon
+Level 1: eight archetypes before Level 5, nine thereafter. Preserve exact ordinary
+non-exploding 1d4, unique types, rare fourth slot, independent streams, default-on
+population and saved operator opt-outs. Only Equipment Quiz is implemented; the
+lightweight VGUI shell can host later challenges without implementing them now.
+
+The Game Master uses the grinning red Staging Hermit model/pose without revealing
+Hector. His ordinary flat off-critical-path dead-end alcove and flat approach
+mouth reserve against encounters and other events. The mouth may meet an ordinary
+critical route, but not an objective/encounter cell. Existing ordered route proofs
+and combined hazards/blockades/shortcuts remain authoritative. Candidate exhaustion
+rejects the entire build within 64 candidates without dropping/rerolling selected
+events. Optional access may follow already-proven blockade resolution.
+
+**Challenge/consent:** each Steam account gets one accepted attempt per campaign
+dungeon, retained across reconnects, replacement Heroes and same-dungeon layout
+regeneration. Simultaneous Heroes play independently. Use opens a 30-second offer
+with explicit loss risk; decline is free. Acceptance starts a separate 30-second
+answer window. Select uniformly among distinct worn procedural items in the seven
+wearable positions; paired gloves count once. Canonical exchange protections
+exclude weapons, consumables, starter/protected/bound/economy-excluded gear and
+DFT recreations. No eligible item, full eight-token collection, unavailable store
+or failed decoy construction spends no attempt.
+
+Three uniformly styled cards show the real item and two plausible canonical
+same-family/same-depth decoys. At most 32 deterministic generation trials produce
+distinct cards, then deterministic shuffle. Cards contain only name, slot and
+mechanical description; dungeon metadata, seed, ownership, item ID and correct
+marker are omitted. Decoys never enter inventory, drops or trade.
+
+**Settlement/lifecycle:** exact current event/native entity/graph/state/generation,
+account, Hero object/identity, body spawn serial, equipment life, item record,
+nested owners, complete selected-item contents and occupied slots bind the session.
+Wrong answers stage canonical UnequipItem/Discard, revalidate the complete live
+inventory against callback changes, then seal theft once and refresh canonical
+stats/effects through Equipment Sync. Correct answers use GenerateToken and shared
+CryptoDirector:SettleDungeonToken with existing CryptoStore account/receipt/history
+transaction. Treasure delegates to that same authority; no parallel inventory,
+wallet, currency or progression system. Success requires canonical commit or
+verified exact-token durable receipt recovery. Duplicate/reentrant inputs cannot
+award or steal twice.
+
+Reward storage failure retains the same correct answer and frozen token as pending;
+Use/retry only retries settlement while the exact life/item/event remains valid.
+Pending releases UI/equipment restrictions. No reward reroll or second guess.
+Cancel, close, answer timeout, death, disconnect, range/LOS loss or lifecycle/item
+invalidation spends the accepted attempt but takes nothing and awards nothing.
+An unaccepted offer ends freely. Cleanup invalidates sessions and clears locks;
+0.25-second maintenance reuses the EventDirector Tick dispatch. Terminal NPC
+visibility is per account; other Heroes and unplayed late joiners still see him.
+A new dungeon/campaign resets attempts; regenerated layouts do not.
+
+**UI boundary:** the reusable shell closes existing sensitive pages/popups and
+blocks supported Player Menu tabs, direct opens, keys, commands and request paths
+while answering. Server rejects ordinary equipment management and suppresses
+inventory snapshot/inspection delivery during play. Combat and movement remain
+available; the world never pauses or grants invulnerability. This enforces normal
+UI use, not secrecy against modified clients retaining prior snapshots. Phase
+ordering rejects stale/duplicate/downgraded UI packets. Pending is never shown as
+success. The canonical manual now contains 142 chapters in 31 transport chunks.
+
+Validation: `python3 tools/test_checkpoint_g_integration.py` passed all **151
+automated suites**, zero failures. A final focused lifecycle rerun also passed
+the receipt-recovery and adversarial callback refinements completed during the
+full run. The three new suites exercise actual native
+API boundaries with engine doubles: production generation, real equipment and
+SQLite settlement, and actual client shell/routes. The production suite covers
+10 accepted full quiz builds and 1 bounded rejection, every catalog partner, all
+four count outcomes, actual encounter reservations, independent ordered progression,
+deterministic retry, partial/failed Spawn cleanup, late joins and exact teardown.
+Lifecycle tests cover eligibility, same-family deterministic secret-free cards,
+paired gear, stat refresh, simultaneous Heroes, failed item staging, full collections,
+SQL ledger/COMMIT rollback, pre/postcommit exceptions and receipt recovery, reentry,
+range/LOS/clock/freeze cancellation, exact owner replacement, reconnect and cleanup.
+Client tests cover supported open/console/request routes, modal/packet semantics,
+pending/cancel unlock and per-recipient exact-entity disappearance. No native Source
+acceptance is claimed.
+
+One native procedure: on gm_flatgrass with two deployed Heroes wearing expendable
+ordinary gear and room for one DFT, enable developer mode and run
+`lod_event_preview_generate equipment_quiz`; redeploy and visit the printed locator.
+Both accept: confirm readable three-card layout and blocked P/I/O/Wallet routes;
+one answer correctly and the other incorrectly. Verify exactly one DFT versus
+exact worn-item loss/stat refresh, independent disappearance, and reconnect no
+replay. On a fresh dungeon repeat with cancel/30-second timeout and regeneration:
+no theft/reward, no lingering UI lock, no renewed same-dungeon attempt. Check
+Hermit grounding/grin, alcove approach and ordinary objective order. Capture
+console_latest.txt + rpg_summary_latest.txt; screenshots only for visual defects.
+Native Source multiplayer, collision, animations and ordinary input acceptance
+remain pending, along with earlier native acceptance obligations.
+
+Next bounded checkpoint: **Hector the Director encounter and Level-20 rescue gate**.
+Reconcile the retained P10/live GDD exact combat contract before implementation;
+reuse canonical boss/projectile/status/lifecycle authorities and enforce
+Gordon → Hector → Deborah, preserving Levels 1–19 and Level 21+ cash progression.
+Keep finale presentation as a separately scoped follow-up if needed. Do not start
+other Game Master minigames during that gate. Validate, commit and push separately.
+
+---
+
+# Previous checkpoint — Skeleton of a Hero combat blockade
 
 Built on verified remote main `7427922b2ee6bfc93a01a41e0abc9d847a66953f`;
 no intervening work replaced. Read AGENTS.md, retained P9 Skeleton brief and live

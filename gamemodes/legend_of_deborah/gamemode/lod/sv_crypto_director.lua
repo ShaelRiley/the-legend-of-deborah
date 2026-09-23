@@ -148,11 +148,13 @@ function C:TreasureCapacity(id)
     if count(account.tokens)>=8 then return false,'full' end
     return true
 end
-function C:SettleTreasureChest(id,token,participant)
+-- Shared persistent dungeon DFT settlement; callers retain lifecycle ownership.
+function C:SettleDungeonToken(id,token,participant,kind)
+    local prefix=kind=='dungeon_treasure' and 'treasure-chest:' or kind=='equipment_quiz' and 'equipment-quiz:'
     local r=Run.State
     local source=type(token)=='table' and token.source
     if not Store.Ready or not Store:ValidAccount(id) or type(source)~='string'
-        or source:sub(1,15)~='treasure-chest:' or type(token)~='table'
+        or not prefix or source:sub(1,#prefix)~=prefix or type(token)~='table'
         or token.id~=id..':'..source or token.source~=source
         or not r or token.run~=r.RunId or token.depth~=r.Level
         or not E:ValidateWearable(token.item) or type(participant)~='table'
@@ -160,7 +162,7 @@ function C:SettleTreasureChest(id,token,participant)
         or type(participant.rollback)~='function' then return false,'stale' end
     local event='mint:'..token.id
     local frozen=table.Copy(token)
-    return Store:Transaction(event,'dungeon_treasure',{id},function(accounts)
+    return Store:Transaction(event,kind,{id},function(accounts)
         local current,reason=participant.validate()
         if not current then return false,reason or 'stale' end
         local a=accounts[id]
@@ -168,9 +170,12 @@ function C:SettleTreasureChest(id,token,participant)
         if count(a.tokens)>=8 then return false,'full' end
         a.tokens[frozen.id]=frozen
         local receipt={token=frozen.id,name=E:ItemName(frozen.item),source=source}
-        Store:History(id,event,'dungeon_treasure',receipt)
+        Store:History(id,event,kind,receipt)
         return true,receipt
     end,participant)
+end
+function C:SettleTreasureChest(id,token,participant)
+    return self:SettleDungeonToken(id,token,participant,'dungeon_treasure')
 end
 function C:CollectToken(ply,token)
     local id=self:Account(ply)

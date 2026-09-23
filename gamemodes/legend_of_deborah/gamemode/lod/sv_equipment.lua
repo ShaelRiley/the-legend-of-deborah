@@ -39,6 +39,7 @@ end
 
 -- Inventory management remains legal in the hut; combat activation does not.
 function E:CanManageInventory(ply)
+    if self.InventoryLocked and self:InventoryLocked(ply) then return false end
     if self:CanAct(ply) then return true end
     local ps=heroState(ply);local state=Run.State;local staging=LOD.StagingDeployment
     return ps~=nil and ply:Alive() and not ps.eliminated and not ps.deploymentComplete
@@ -61,12 +62,13 @@ function E:Sync(ply)
     if LOD.SnapshotDelivery then
         LOD.SnapshotDelivery:Queue(ply, "LOD_EquipmentSnapshot", function(recipient)
             -- Resolve ownership at dispatch, including Hero/Soldier transitions.
+            if E.InventoryLocked and E:InventoryLocked(recipient) then return nil end
             local current = heroState(recipient)
             local snapshot=current and E:Ensure(current) or {items={}, slots={}}
             snapshot.storageCapacity=E:StorageCapacity(snapshot)
             return snapshot
         end, writeSnapshot)
-    else
+    elseif not (self.InventoryLocked and self:InventoryLocked(ply)) then
         net.Start("LOD_EquipmentSnapshot")
         net.WriteTable(state or {items={}, slots={}})
         net.Send(ply)
@@ -203,6 +205,7 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
     requestTimes[ply] = now + 0.10
     local action, id, slot = net.ReadString(), net.ReadString(), net.ReadString()
     if action == "snapshot" then
+        if E.InventoryLocked and E:InventoryLocked(ply) then return end
         if LOD.SnapshotDelivery then LOD.SnapshotDelivery:Invalidate(ply, "LOD_EquipmentSnapshot") end
         E:Sync(ply)
         return

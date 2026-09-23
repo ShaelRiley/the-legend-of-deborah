@@ -172,6 +172,41 @@ function D:BlockadeApproach(g, placement, environment)
     end
 end
 
+-- A hidden alcove is an ordinary flat optional dead end, not new geometry or
+-- a shortcut. Reserve its flat mouth too so later events cannot occupy access.
+function D:AlcovePlacement(g, cell)
+    if not LOD.SafeTeleport or not LOD.SafeTeleport:FlatCell(g, cell) then return nil end
+    local k, mouth = key(cell)
+    for n in pairs(cell.neighbors or {}) do
+        if mouth then return nil end
+        mouth = n
+    end
+    if not mouth or not g.Cells[mouth] or g.Cells[mouth].z ~= cell.z
+        or not LOD.SafeTeleport:FlatCell(g, g.Cells[mouth]) then return nil end
+    for _, c in ipairs(g.CriticalPath or {}) do if key(c) == k then return nil end end
+    return {cellKey = k, approachCellKey = mouth}
+end
+
+function D:ValidateAlcove(g, placement, reserved, environment)
+    local expected = self:AlcovePlacement(g, g.Cells[placement.cellKey])
+    if not expected or expected.approachCellKey ~= placement.approachCellKey then
+        return false, "alcove requires flat optional dead end and mouth"
+    end
+    local mouth = placement.approachCellKey
+    if self:ProtectedCells(g)[mouth] or (reserved and reserved[mouth]) then
+        return false, "alcove approach reserved"
+    end
+    local blocked = copy(environment and environment.edges)
+    -- Every listed blockade has its own all-closed resolution proof. This
+    -- optional visit may follow those resolutions and ordinary gate objectives.
+    for e in pairs(environment and environment.resolvableEdges or {}) do blocked[e] = nil end
+    blocked[g.Progression.JailEdge.edgeKey] = true
+    if g.Progression.Warden and g.Progression.Warden.lock then blocked[g.Progression.Warden.lock.edgeKey] = true end
+    local reached = walk(g, key(g.Start), blocked, environment and environment.cells)
+    if not reached[placement.cellKey] or not reached[mouth] then return false, "alcove approach unreachable" end
+    return true
+end
+
 function D:ValidatePlacement(g, def, placement, reserved, environment)
     if not g or not g.Cells or not g.Progression or type(placement) ~= "table" then return false, "missing placement graph" end
     local k = placement.cellKey or key(placement.cell)
@@ -188,6 +223,10 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
     if def.contract == "UTILITY" or def.contract == "REWARD" then
         if def.nonblocking ~= true or next(placement.blockedCells or {}) or next(placement.blockedEdges or {}) then
             return false, "optional event must be nonblocking"
+        end
+        if def.optionalAlcove then
+            valid, err = self:ValidateAlcove(g, placement, reserved, environment)
+            if not valid then return false, err end
         end
         if def.pairedWarp then
             valid, err = self:ValidateEndpointPair(g, placement, reserved, environment)
@@ -270,7 +309,13 @@ function D:Plan(g, options)
         for memberIndex = 1, memberCount do
             local memberSeed = multiple and LOD.Seeds.Derive(eventSeed, "instance:" .. memberIndex .. ":v1") or eventSeed
             local candidates = sorted(g.Cells)
-            if def.contract=="BLOCKADE" then
+            if def.optionalAlcove then
+                local alcoves = {}
+                for _, k in ipairs(candidates) do
+                    if self:AlcovePlacement(g, g.Cells[k]) then alcoves[#alcoves + 1] = k end
+                end
+                candidates = alcoves
+            elseif def.contract=="BLOCKADE" then
                 -- A required-route obstruction can only cut the canonical
                 -- start-to-rescue path. Spend the finite budget on those cells.
                 local critical={}
@@ -290,6 +335,7 @@ function D:Plan(g, options)
                     local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell, placeEnvironment)
                     if not called then return false, callbackErr end
                     placement = result
+                elseif def.optionalAlcove then placement = self:AlcovePlacement(g, cell)
                 else placement = {cellKey = candidates[i]} end
                 if placement then
                     local ok, err, fatal = self:ValidatePlacement(g, def, placement, reserved)
@@ -298,13 +344,19 @@ function D:Plan(g, options)
                         -- Test the growing combined proof while candidates can
                         -- still be rejected. A later toll must not strand an
                         -- earlier pair/cache; a later shortcut may not bypass a toll.
-                        local env={edges=copy(hazardEdges),cells=copy(hazardCells)}
+                        local env={edges=copy(hazardEdges),cells=copy(hazardCells),resolvableEdges={}}
                         for _,prior in ipairs(plan.instances) do
-                            if prior.contract=="BLOCKADE" then env.edges[prior.placement.edgeKey]=true end
+                            if prior.contract=="BLOCKADE" then
+                                env.edges[prior.placement.edgeKey]=true
+                                env.resolvableEdges[prior.placement.edgeKey]=true
+                            end
                         end
                         for ek in pairs(placement.blockedEdges or {}) do env.edges[ek]=true end
                         for ck in pairs(placement.blockedCells or {}) do env.cells[ck]=true end
-                        if def.contract=="BLOCKADE" then env.edges[placement.edgeKey]=true end
+                        if def.contract=="BLOCKADE" then
+                            env.edges[placement.edgeKey]=true
+                            env.resolvableEdges[placement.edgeKey]=true
+                        end
                         local routes=copy(env.edges)
                         for _,prior in ipairs(plan.instances) do
                             if prior.contract=="BLOCKADE" then routes[prior.placement.edgeKey]=nil end
@@ -315,7 +367,7 @@ function D:Plan(g, options)
                         if ok then
                             for _,prior in ipairs(plan.instances) do
                                 local pd=Registry.Definitions[prior.archetype]
-                                if prior.contract=="BLOCKADE" or pd.dropFloor or pd.pairedWarp then
+                                if prior.contract=="BLOCKADE" or pd.dropFloor or pd.pairedWarp or pd.optionalAlcove then
                                     ok,err,fatal=self:ValidatePlacement(g,pd,prior.placement,nil,env)
                                     if not ok then break end
                                 end
@@ -330,6 +382,7 @@ function D:Plan(g, options)
             if not accepted then return false, "event placement exhausted: " .. id .. ": " .. tostring(lastErr) end
             local cellKey = accepted.cellKey or key(accepted.cell)
             reserved[cellKey] = true
+            if accepted.approachCellKey then reserved[accepted.approachCellKey] = true end
             if accepted.destinationCellKey then reserved[accepted.destinationCellKey] = true end
             if accepted.cacheCellKey then reserved[accepted.cacheCellKey] = true end
             for c in pairs(accepted.blockedCells or {}) do reserved[c] = true end
@@ -354,13 +407,17 @@ function D:Plan(g, options)
     -- Prove every blockade can resolve without borrowing access through another
     -- unresolved event. Conservative rejection is preferable to a circular cost
     -- dependency; richer staged-payment planning belongs with that catalog.
-    local environment = {edges = copy(hazardEdges), cells = copy(hazardCells)}
+    local environment = {edges = copy(hazardEdges), cells = copy(hazardCells), resolvableEdges = {}}
     for _, instance in ipairs(plan.instances) do
-        if instance.contract == "BLOCKADE" then environment.edges[instance.placement.edgeKey] = true end
+        if instance.contract == "BLOCKADE" then
+            environment.edges[instance.placement.edgeKey] = true
+            environment.resolvableEdges[instance.placement.edgeKey] = true
+        end
     end
     for _, instance in ipairs(plan.instances) do
         if instance.contract == "BLOCKADE" or Registry.Definitions[instance.archetype].dropFloor
-            or Registry.Definitions[instance.archetype].pairedWarp then
+            or Registry.Definitions[instance.archetype].pairedWarp
+            or Registry.Definitions[instance.archetype].optionalAlcove then
             local ok, err = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
             if not ok then return false, "combined event contract rejected: " .. tostring(err) end
         end

@@ -144,6 +144,7 @@ hook.Add("HUDPaint", "LOD_FeedbackNotice", function()
 end)
 
 function Feed:OpenHistory()
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     if IsValid(self.HistoryFrame) then self.HistoryFrame:Remove() end
     LOD.UI:SelectPage("history")
     local UI, C = LOD.UI, LOD.UI.Colors

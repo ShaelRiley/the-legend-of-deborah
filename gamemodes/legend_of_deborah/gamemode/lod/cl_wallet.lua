@@ -180,6 +180,7 @@ function W:BuildExchange(content,width,y)
     return y+messageHeight+10
 end
 function W:Request(action,id)
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     net.Start('LOD_WalletRequest');net.WriteString(action);net.WriteString(id or '');net.SendToServer()
 end
 function W:Close()
@@ -275,7 +276,7 @@ function W:Render()
         label('RECENT TRANSACTIONS','LOD_SheetSubheading')
         for _,row in ipairs(state.history or {}) do
             local b=row.body
-            label(row.kind..(b.amount and (' · '..b.amount..' $DEB') or '')..(b.name and (' · '..b.name) or '')
+            label((row.kind=='equipment_quiz' and 'Game Master reward' or row.kind)..(b.amount and (' · '..b.amount..' $DEB') or '')..(b.name and (' · '..b.name) or '')
                 ..(b.level and (' · Combat Level '..b.level) or ''))
         end
     end
@@ -284,6 +285,7 @@ function W:Render()
     scroll:GetVBar():SetScroll(scrollPosition)
 end
 function W:Open()
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     self.Section=self.Section or 'equipment';self.ExchangeAction=self.ExchangeAction or 'sell_items'
     self:Close();UI:SelectPage('wallet')
     local frame=vgui.Create('DFrame');self.Frame=frame

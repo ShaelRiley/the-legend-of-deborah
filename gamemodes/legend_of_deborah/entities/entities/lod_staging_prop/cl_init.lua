@@ -86,6 +86,9 @@ local function applyGuidePose(ent)
     end
 end
 
+-- Shared with the optional Game Master; identical smile and silhouette.
+LOD.ApplyHermitPose = applyGuidePose
+
 local function labelColor(kind)
     if kind == KIND_PORTAL then return Color(110, 165, 255) end
     if kind == KIND_WEAPON then return Color(248, 213, 105) end

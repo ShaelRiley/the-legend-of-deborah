@@ -9,7 +9,7 @@ net.Receive('LOD_DungeonEvents',function()
 end)
 hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or LOD.UI.ActivePage then return end
+    if not IsValid(ply) or not ply:Alive() or LOD.UI.ActivePage or (LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked()) then return end
     local tr=ply:GetEyeTrace()
     local ent=tr and tr.Entity
     if not IsValid(ent) or (ent:GetClass()~='lod_dungeon_event'
@@ -34,7 +34,13 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='skeleton_blockade' then
+    if archetype=='equipment_quiz' then
+        local details=row and row.details or {}
+        if details.spent then return end
+        lines={'GAME MASTER — EQUIPMENT QUIZ',
+            'Identify your worn equipment. Correct: one DFT. Wrong: that item is stolen.',
+            '['..key..'] REVIEW CHALLENGE — accepting spends your one attempt this dungeon.'}
+    elseif archetype=='skeleton_blockade' then
         local details=row and row.details or {}
         lines={details.name or 'SKELETON OF A HERO',
             details.class and string.upper(details.class)..' — LEVEL '..tostring(details.level or '?') or 'Hero-derived hostile miniboss',

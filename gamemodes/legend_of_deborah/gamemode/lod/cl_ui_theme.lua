@@ -51,7 +51,14 @@ function UI:CloseButton(frame, callback)
 end
 -- Closing pending requests is part of closing a page, so delayed snapshots cannot
 -- steal focus from the page the player deliberately chose.
+-- This is ordinary UI enforcement, not protection against modified clients or
+-- equipment snapshots remembered before accepting a challenge.
+function UI:IsMinigameLocked()
+    return LOD.Minigame and LOD.Minigame:IsLocked() or false
+end
+
 function UI:SelectPage(page)
+    if self:IsMinigameLocked() then return false end
     self.ActivePage = page
     if page ~= "wallet" and LOD.Wallet and LOD.Wallet.Close then LOD.Wallet:Close() end
     if page ~= "sheet" and LOD.CharacterSheet and LOD.CharacterSheet.Close then LOD.CharacterSheet:Close() end
@@ -102,6 +109,7 @@ function UI:PageLinks(frame, active, y)
 end
 
 function UI:PageKey(key)
+    if self:IsMinigameLocked() then return false end
     local focus=vgui.GetKeyboardFocus and vgui.GetKeyboardFocus()
     if IsValid(focus) and (focus.IsEditing and focus:IsEditing()
         or focus.GetClassName and (focus:GetClassName()=="DTextEntry" or focus:GetClassName()=="DBinder")) then return end

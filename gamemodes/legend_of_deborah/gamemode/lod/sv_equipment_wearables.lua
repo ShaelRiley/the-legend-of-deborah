@@ -35,6 +35,7 @@ function E:SyncPickup(ent)
     ent.LODItemViewReady = self:ValidateWearable(ent.LODLootPayload and ent.LODLootPayload.item)
 end
 function E:SendPickupView(ply, ent)
+    if self.InventoryLocked and self:InventoryLocked(ply) then return false end
     if not self:CanAct(ply) or not IsValid(ent) or ent:GetClass()~="lod_loot_pickup"
         or not ent.LODItemViewReady or ent.LODCollected
         or ent.LODLootOwnerIdentity~=Run:IdentityOf(ply)

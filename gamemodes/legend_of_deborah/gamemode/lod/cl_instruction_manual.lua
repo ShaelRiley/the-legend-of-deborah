@@ -135,6 +135,7 @@ function Manual:Close()
 end
 
 function Manual:Open()
+    if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end
     if LOD.RuntimeAudit then LOD.RuntimeAudit:Record("MANUAL_OPEN", "cached=" .. tostring(isstring(self.HTML))) end
     if IsValid(self.Frame) then self.Frame:MakePopup(); return end
     UI:SelectPage("manual")
