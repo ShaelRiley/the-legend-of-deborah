@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B4 builds on verified remote `main` `965d857e8dbbb62a0dfbf313e3d366741cef9ce2`,
-`Add Bestiary flank and pursuit cohort with bounded routes`.
-The current B4 checkpoint below is the newest implementation record. Its exact
+B6 builds on verified remote `main` `0616d9d0582687e6112152737d59964f8aedca6d`,
+`Add Bestiary projectile-pattern cohort with bounded trajectories`.
+The current B6 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,91 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B5: projectile-pattern cohort
+## Current checkpoint — B6: trap-and-escape cohort
+
+Built on verified remote `0616d9d0582687e6112152737d59964f8aedca6d`.
+**Wirewright, Snarer and Cordon** bring the normal roster to **36/63**:
+frozen baseline18, **18/45 additions banked**, **27 remain**.
+
+**Playable scope:** Wirewright warns then channels a finite, jumpable low
+tripwire across a frozen observed cell. Snarer arms a frozen proximity circle;
+entry starts a separate1.25s escape countdown before canonical Ice/Held.
+Cordon is a destructible pressure node itself, warning then pulsing an annulus
+with a safe inner pocket and exterior. Break cover/contact, move, interrupt or
+destroy the source; waiting out a trap also works. Pairs: Wirewright+Runner,
+Snarer+Soldier, Cordon+Shambler, sector2+ arena/ambush and one specialist per
+composition. All own canonical classes/usable feats/HP/XP and unified spawning.
+No new wandering weights. Exact tuning lives in BESTIARY_EXPANSION.md.
+
+**Authorities/lifecycle:** trap policy extends EnemyRoster's existing attack
+record and25ms scheduler, shared combat/status/Block/Dodge and exact actor-life
+helpers. No new native bodies, world scan, status timer, reward path or RNG.
+At most16 pending/live traps,one per source,32 captured Hero records each.
+Finite warning,live and snap deadlines cannot extend or catch up after a stall.
+All charges/traps retire on source/primary-Hero progression/status-life and exact
+run/graph/progression/campaign replacement, including same-seed rebuilds, as well
+as interruption/freeze/failure/clear/death/removal. Incidental Hero incarnations
+are frozen at commitment and revalidated separately; late joins and revivals
+cannot inherit an unseen warning. Muted disarms Snarer; Held does not forbid
+stationary physical/Ice attacks. Source displacement beyond32 disarms.
+
+**Review repairs:** reset wire samples on arming so warning-tail crossings are
+never retroactively damaged. A pulse's own lethal hit on its primary Hero cannot
+skip other admitted Heroes due to participant ordering; shared source-life
+validation remains immediate. Require native floor support at circle center or
+wire center/endpoints on admission and every service, so an opened false floor
+retires its trap despite an unchanged graph. Detached records cannot settle.
+
+**Design/manual:** live GDD00→01→02/03/05/07 governed the checkpoint.
+LOD-BESTIARY-B6-001 records mechanics, production, tuning and refinements in
+03/05/07; amendments and current summaries are read-back verified. The canonical
+manual has150 chapters/31 transport chunks. Full/reduced tells preserve exact
+wire capsule/end-height, snare boundary/teeth/countdown and unfilled double ring;
+all hide on death/cancel/deadline and use existing rendering/snapshot owners.
+
+**Validation:** one required `python3 tools/test_checkpoint_g_integration.py`
+run passed **all166 suites,zero failures**. No broad rerun was needed.
+Targeted B6 behavior,production and rendering gates passed. Actual AI→warning→arm→shared service→
+shared combat/GM mitigation/native-doubled HP tests prove swept wire counterplay,
+no retroactive contact,ring safe center/exterior,snare bait/save/immunity/zero/
+lethal behavior,fixed deadlines,interruption,caps and no fresh participant scans.
+Exact source/primary-Hero life/progression and dungeon/campaign replacement cases
+include same-seed rebuilds; multiplayer proves single settlement,lethal-primary
+order independence and no incidental late-join/revival inheritance. Native
+support removal and illegal geometry cases pass with bounded support/LOS work.
+Production gate covers48 generated actor seeds,real class/usable feats/HP/XP,
+unified spawn/variance/capacity preflight/retry idempotence and singleton pairing.
+
+Sampling passed **512 deterministic plans /4935 encounters**,32 generated mazes,
+parties1–4,dungeons1–5. Planned/legal/early: **Wirewright40/40/9,
+Snarer35/33/14,Cordon57/53/12**. Prior cohort exposure thresholds still pass.
+No deployment or Workshop publication. Native collision,entities,health
+application,rendering and networking remain boundary doubles; these results
+are automated evidence,not Source runtime observation or acceptance.
+
+**Native checks retained:** after the ordered phases,on gm_flatgrass observe
+actual paired encounters,practical wire jumping/end clearance and sweep heights,
+proximity bait/snap readability,ring center/outer counterplay,turret/Vortigaunt
+poses,audio and full/reduced tells. Test changing cover,gates and false floors,
+interruption,death/revival/disconnect,freeze/reset/same-seed replacement,and1–4
+Hero health/reward balance and networking. Preserve all prior cohorts,bosses,
+Gordon→Hector→Deborah,sole Deborah staging succession,Abundance andLevel21 cash.
+Evidence:console_latest.txt + rpg_summary_latest.txt; runtime acceptance pending.
+
+## Next checkpoint — B7: melee spacing-and-commitment cohort
+
+Complete one coherent cohort,provisionally a lateral melee sweep,a two-beat
+strike with a real escape window,and a backstep-then-thrust specialist. These
+are proposals,not authored rules: reconcile against Shambler,Runner,Razor,
+Redliner and existing close-combat authorities before choosing identities.
+Require genuinely distinct movement/spacing decisions,visible frozen tells,
+canonical damage/control/locomotion,legal swept geometry,finite commitments,
+exact actor/dungeon lifetimes and complementary production compositions.
+Target39/63 only if three meaningful identities pass production validation.
+Do not rewrite the director here or begin Big Loot/Events. Whole-phase
+campaign-aware ecology remains required after the roster cohorts.
+
+## Previous checkpoint — B5: projectile-pattern cohort
 
 Built on verified remote `7c625e074d2921f30e0303d96d3d0d093bf11d8e`.
 **Caromer, Reeler and Forker** bring the normal roster to **33/63**:
@@ -150,16 +234,6 @@ revival/reconnect, interruption/freeze/reset/same-seed replacement and single
 XP/loot settlement. Retain previous cohorts, all bosses/finale/sole Deborah
 succession/Abundance/Level21 cash progression. Capture console_latest.txt +
 rpg_summary_latest.txt. No VPS deployment or Workshop publication.
-
-## Next checkpoint — B6: trap-and-escape cohort
-
-Proposed finite tripwire, delayed proximity snare and destructible pressure node;
-target36/63 only for distinct validated production identities. Reconcile current
-hazard/status/geometry/damage/lifecycle owners, distinguish from Gaoler/Arc Caster/
-Nodule and existing environmental traps, author exact mechanics/tuning in the
-GDD and preserve finite workload, legible escape/counterplay and body budgets.
-These are proposals, not authored mechanics. Complete B6 only; retain whole-phase
-campaign-aware director ecology and do not begin Big Loot or Events.
 
 ## Previous checkpoint — B4: self-defense and reaction cohort
 

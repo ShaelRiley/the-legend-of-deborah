@@ -9,6 +9,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70),
     pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65),
     caromer=Color(90,210,240),reeler=Color(235,180,95),forker=Color(150,240,180),
+    wirewright=Color(80,220,235),snarer=Color(100,165,255),cordon=Color(245,150,60),
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
@@ -218,6 +219,73 @@ function V:Pattern(e)
         render.DrawBeam(b-up,b-side,2,0,1,color);render.DrawBeam(b-side,b+up,2,0,1,color)
     end
 end
+-- B6 uses frozen floor geometry from the existing actor snapshot. The same
+-- boundaries, height posts and countdowns survive reduced effects unchanged.
+-- No props, particles, lights, actor scan or separate render hook are needed.
+function V:Trap(e)
+    local mode=e:GetNW2Int("LOD_TrapMode",0)
+    local stage=e:GetNW2Int("LOD_RosterAttack",0);local now=CurTime()
+    local snap=e:GetNW2Float("LOD_TrapSnap",0)
+    if mode<1 or mode>3 or stage==0 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or now>=e:GetNW2Float("LOD_TrapUntil",0) or (mode==2 and snap>0 and now>=snap)
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local color=({colors.wirewright,colors.snarer,colors.cordon})[mode]
+    local width=stage==1 and 2 or 4
+    local a=e:GetNW2Vector("LOD_TrapA",e:GetPos())
+    local b=e:GetNW2Vector("LOD_TrapB",a)
+    render.SetMaterial(beam)
+    local function line(p,q,w) render.DrawBeam(p,q,w or width,0,1,color) end
+    local function circle(radius)
+        for i=1,24 do
+            local from,to=(i-1)*math.pi/12,i*math.pi/12
+            line(a+Vector(math.cos(from)*radius,math.sin(from)*radius,0),
+                a+Vector(math.cos(to)*radius,math.sin(to)*radius,0))
+        end
+    end
+    if mode==1 then
+        local delta=b-a;delta.z=0;local dir=delta:GetNormalized()
+        local right=Vector(-dir.y,dir.x,0);local side=right*14;local up=Vector(0,0,45)
+        -- Endpoint posts reach floor+48; the narrow footprint shows the full
+        -- collision width. The upper rail makes the jumpable height explicit.
+        line(a,b);line(a-side,b-side);line(a+side,b+side)
+        for i=1,6 do
+            local p,q=(i-1)*math.pi/6,i*math.pi/6
+            line(a+(right*math.cos(p)-dir*math.sin(p))*14,
+                a+(right*math.cos(q)-dir*math.sin(q))*14)
+            line(b+(right*math.cos(p)+dir*math.sin(p))*14,
+                b+(right*math.cos(q)+dir*math.sin(q))*14)
+        end
+        line(a,a+up);line(b,b+up);line(a+up,b+up,1)
+    elseif mode==2 then
+        circle(72)
+        if snap>0 then
+            -- Four inward teeth announce the single impending snap. The bar
+            -- drains against its fixed deadline, never a local restart timer.
+            for i=0,3 do
+                local angle=i*math.pi*.5;local dir=Vector(math.cos(angle),math.sin(angle),0)
+                line(a+dir*72,a+dir*54,5)
+            end
+            local left=a+Vector(-24,0,32)
+            line(left,left+Vector(48*math.Clamp((snap-now)/1.25,0,1),0,0),5)
+        end
+    else
+        -- Unfilled concentric boundaries preserve the safe center. Short
+        -- outer posts show the floor+72 upper limit without filling the ring.
+        circle(80);circle(160)
+        for i=0,3 do
+            local angle=i*math.pi*.5
+            local p=a+Vector(math.cos(angle)*160,math.sin(angle)*160,0)
+            line(p,p+Vector(0,0,69),1)
+        end
+    end
+    if now<e:GetNW2Float("LOD_TrapReady",0) then
+        -- Hollow diamond denotes arming; live geometry becomes thicker.
+        local center=(a+b)*.5+Vector(0,0,60)
+        local side=Vector(0,10,0);local up=Vector(0,0,10)
+        line(center+up,center+side);line(center+side,center-up)
+        line(center-up,center-side);line(center-side,center+up)
+    end
+end
 function V:Draw(e,size)
     self:Support(e)
     self:Pursuit(e)
@@ -227,6 +295,7 @@ function V:Draw(e,size)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
+    if id=="wirewright" or id=="snarer" or id=="cordon" then self:Trap(e);return end
     local origin=e:GetNW2Vector("LOD_RosterOrigin",e:GetPos())
     local aim=e:GetNW2Vector("LOD_RosterAim",origin)
     local range=e:GetNW2Float("LOD_RosterRange",280)

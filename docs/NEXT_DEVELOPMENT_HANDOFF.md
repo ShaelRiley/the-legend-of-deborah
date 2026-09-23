@@ -1,13 +1,13 @@
-# Handoff — Bestiary B6
+# Handoff — Bestiary B7
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B6 only**,
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B7 only**,
 including validation, commit and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Add Bestiary projectile-pattern cohort with bounded trajectories**.
+Latest checkpoint: **Add Bestiary trap-and-escape cohort with bounded lifetimes**.
 The publication response supplies its exact verified SHA; fetch current remote
-main, confirm that checkpoint and preserve intervening work. B5's parent is
-`7c625e074d2921f30e0303d96d3d0d093bf11d8e`.
+main, confirm that checkpoint and preserve intervening work. B6's parent is
+`0616d9d0582687e6112152737d59964f8aedca6d`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -19,65 +19,63 @@ publish to Steam Workshop.**
 Recover from AGENTS.md, active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
 this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live
 GDD00→01→relevant tabs, including LOD-ROADMAP-ECOSYSTEM-001 and
-LOD-BESTIARY-B1-001 through B5-001. Exact HUMAN anchors only for missing required
+LOD-BESTIARY-B1-001 through B6-001. Exact HUMAN anchors only for missing required
 detail. No historical-chat recovery or repeated broad audit. Missing historical
 art does not block implementation.
 
-B1 control, B2 ally support, B3 pursuit and B4 self-defense/reactions remain
-regression constraints. B5 adds Caromer one-bank frozen shot, Reeler fixed
-outbound/pause/return, and Forker parallel-lane pair with open center.
-Compositions: Caromer+Shambler, Reeler+Runner, Forker+Soldier. All use shared
-physical damage, one per-pattern Hero settlement, finite existing projectile
-pool and exact actor/dungeon lifetime contracts. Shared EnemyRoster life helpers
-now serve B4 and B5. See plan/ledger for exact tuning and automated evidence.
-Native collision, health application, rendering/network transport remain doubled;
-do not present these tests as Source playtesting.
+B1 control, B2 support, B3 pursuit, B4 reactions and B5 projectile patterns
+remain regressions. B6 adds Wirewright's finite jumpable tripwire, Snarer's
+proximity-triggered delayed Ice/Held snap and Cordon's destructible annular
+pressure node. Pairs: Wirewright+Runner, Snarer+Soldier, Cordon+Shambler.
+Use shared roster scheduling, canonical damage/status/progression/rewards and
+exact life bindings. One trap per source,16 pending/live maximum; fixed warnings,
+expiry and snap deadlines. Native support checks retire traps over opened false
+floors. Wire cannot retroactively damage warning-period crossings. A pulse's own
+lethal primary hit cannot skip other admitted Heroes. No unseen-warning inheritance
+by late joins/revivals. Source hit-stun/interruptions disarm traps; Muted disarms
+Snarer, Held does not forbid stationary attacks. See ledger for precise tuning.
 
-Frozen baseline **18**, whole Bestiary target **63**, implemented **33/63**,
-**15/45 additions banked**, **30 remaining**. Never rebase or count cosmetics,
+Frozen baseline **18**, whole Bestiary target **63**, implemented **36/63**,
+**18/45 additions banked**, **27 remaining**. Never rebase or count cosmetics,
 numerical permutations, bosses, event actors, friendly summons or unused definitions.
-Whole-phase campaign-aware director ecology is still part of Bestiary.
+Whole-phase campaign-aware director ecology remains part of Bestiary.
 
-Complete one coherent **B6 trap-and-escape cohort**. Candidate tactical roles:
+Complete one coherent **B7 melee spacing-and-commitment cohort**. Provisional
+roles: lateral melee sweep; two-beat strike with a real escape window;
+backstep-then-thrust specialist. These are proposals, not authored mechanics.
+Reconcile against Shambler, Runner, Razor, Redliner and current combat/motion/
+geometry/status owners before authoring distinct identities and tuning in live
+GDD. Each needs real production spawning, progression, useful complementary
+compositions and a different movement/spacing decision. Target **39/63** only
+if three mechanically meaningful identities validate. No unavoidable damage,
+private movement/control/damage/reward authorities, uncapped spawned bodies or
+director rewrite. Preserve independent deterministic RNG, faction unity, cover,
+locked progression geometry and work budgets.
 
-1. A clearly warned finite tripwire across a traversable lane.
-2. A delayed proximity snare with a legible escape window.
-3. A destructible pressure node whose removal opens an approach.
-
-These are proposals, not authored mechanics or permission to duplicate existing
-systems. Reconcile shared hazard/projectile/status/geometry and actor-life owners;
-differentiate from Gaoler, Arc Caster, Nodule, existing environmental traps and
-B5 shots. Choose concrete identities/tuning and record substantive choices in
-live GDD. Each needs useful complementary production compositions, own progression,
-real spawning and finite work. Target **36/63** only if mechanically meaningful.
-No unavoidable damage, control softlocks, private status/damage/reward loops,
-uncapped spawned bodies/hazards or director rewrite. Reuse existing compatible
-assets and shared bounded service where possible. Preserve faction unity,
-independent deterministic RNG, cover, geometry and performance budgets.
-
-Prove counterplay, fixed deadlines, caps, interruption, removal and exact
-source/target/run/graph/progression/campaign lifetimes, including same-seed
-replacement. Preserve all earlier cohorts and bosses, Gordon→Hector→Deborah,
-sole Deborah staging successor, Abundance and Level21 cash progression. B4
-Block stays single-roll/capped; recovery cannot extend under repeated hits.
-B5 released shots survive ordinary interruption, while exact life replacement
-retires them; split lanes must never double-settle against the same Hero.
+Prove frozen tells/counterplay, finite deadlines and recovery, bounded swept
+movement, interruption/removal and exact source/target/run/graph/progression/
+campaign lifetimes including same-seed rebuilds. Preserve earlier cohorts and
+all bosses, Gordon→Hector→Deborah, sole Deborah staging successor, Abundance
+and Level21 cash progression. B4 Block remains single-roll/capped and recovery
+cannot extend under repeated hits. B5 released shots survive ordinary interruption
+but retire on exact life replacement; split lanes never double-settle a Hero.
 
 Reserve the final third for validation, fixes, documentation and publication.
 Use targeted tests while editing, then once coherent run
 `python3 tools/test_checkpoint_g_integration.py`. Fix attributable failures;
 repeat broadly only for concrete remaining risk. Separate automated evidence
-from native acceptance. Update/read-back verify GDD, canonical manual, ledger,
-plan and handoff with counts, results, native checks and concrete next checkpoint.
+from native Source acceptance: native collision,entities,HP mutation,rendering
+and networking remain doubled. Update/read-back verify GDD,canonical manual,
+ledger,plan and handoff with counts,results,native checks and concrete next slice.
 Commit and publish immediately after green validation.
 
-CLI push credentials were unavailable through B4. If still unavailable, use
+CLI push credentials were unavailable through B6. If still unavailable,use
 authenticated GitHub blob/tree/commit/ref tools: verify every blob and the exact
-complete validated tree, advance main non-forced, fetch and verify remote SHA,
+complete validated tree,advance main non-forced,fetch and verify remote SHA,
 parent and tree. Preserve newer work; never overwrite or force-push.
 
 Phase order: **Bestiary→Big Loot→Event System→systems integration/emergence audit
 →low-end PC performance audit→final crash/progression-safety audit→human playtest**.
-Outstanding native acceptance does not block this sequence. Finish B6 only.
-End with verified SHA, implemented scope, tests, progress, native checks and next
+Outstanding native acceptance does not block this sequence. Finish B7 only.
+End with verified SHA,implemented scope,tests,progress,native checks and next
 continuation prompt.

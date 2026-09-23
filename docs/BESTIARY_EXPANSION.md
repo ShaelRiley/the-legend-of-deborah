@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B5
+# Bestiary expansion — frozen baseline through B6
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B5 add fifteen identities: **33/63**, or **15/45 additions**; **30 remain**.
+B1–B6 add eighteen identities: **36/63**, or **18/45 additions**; **27 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -317,3 +317,69 @@ See the current plan for measured validation and retained native checks. This
 checkpoint does not complete the whole Bestiary update or its campaign-aware
 director ecology. Next: B6 trap-and-escape cohort, target36/63 only for distinct
 validated production identities; candidate mechanics are proposals until authored.
+
+
+## B6 — trap-and-escape cohort
+
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `wirewright` / Wirewright | Amber Combine soldier channels a warned, finite low tripwire across the observed Hero cell. Jump above its height, skirt either endpoint, wait, interrupt or destroy the source. | Wirewright + Runner. |
+| `snarer` / Snarer | Blue Vortigaunt lays an Ice proximity circle. After arming, first entry begins a separate fixed snap countdown. Bait and leave, interrupt, mute or destroy; the snap uses canonical Ice/Held. | Snarer + Soldier. |
+| `cordon` / Cordon | Orange floor turret is itself the destructible node. A warned annular physical pulse leaves a safe center and outside. Step inward/outward, use cover, interrupt or destroy to open the approach. | Cordon + Shambler. |
+
+Templates `wirewright_chase`, `snarer_detail`, `cordon_screen` enter sector2+
+arena/ambush production, one specialist per composition, ordinary companion
+scaling and no wandering weights. Append unified spawn identities. Reject
+safe/objective/transition cells and obstructed native hulls; Cordon additionally
+requires two traversable same-floor exits and clear side pockets. Keep the
+ordinary budget-safe replacement for unsuitable placement.
+
+All use EnemyRoster's existing attack scheduler and canonical combat/status/
+Block/Dodge/progression/XP/loot paths. The source channels without moving while
+its trap exists; interruption, source displacement beyond32, death, removal,
+freeze/failure/clear, source/primary-Hero life or progression replacement and
+exact run/graph/progression/campaign replacement retire work. Captured incidental
+Hero lives are revalidated separately. No late join/revival inherits an unseen
+warning; no spawned bodies/props, extra trap rewards or private status timers.
+Held does not prohibit these attacks; Muted prohibits Snarer's Magic. Released
+B5 projectiles still survive ordinary interruption. A pulse killing its original
+target does not truncate other already-admitted Heroes; source invalidation
+still terminates settlement immediately.
+
+Tuning (HP/speed/acquisition range/warning/base recovery/threat): Wirewright
+40/125/600/1.25s/3s/3.5; Snarer35/110/600/1s/3.5s/3.5; Cordon55/0/600/1.5s/4s/4.
+All use1d6+2 with canonical actor scaling; Snarer is Ice Magic. Recovery retains
+canonical rate-of-fire scaling. Invalid planning/capacity retries after0.5s,
+with mobile repositioning after unsuitable geometry.
+
+Wire length224, radius14 in XY, floor-relative feet height−4..48, armed5s;
+one hit per captured Hero and swept crossing after arming only. Crossing during
+the warning never retroactively damages; jumps above48 and endpoints remain
+safe. Snare radius72/height72, armed6s, fixed1.25s countdown after first proximity;
+trigger only when countdown+0.2s grace fits existing expiry. Cordon inner80/
+outer160/height72, one pulse, warning+0.2s hard expiry. Circle lower floor tolerance
+−4. Late arming or snap service beyond0.2s cancels, with no catch-up damage.
+One trap per source,16 pending/live total,32 captured Hero records maximum
+(ordinary party1–4), existing25ms service; no world/target discovery after commit.
+
+Wire centers on the observed Hero cell; Snarer clamps observed XY to64 units
+from its cell center; Cordon freezes its own XY. Only the source cell or one
+traversable same-floor neighbor is eligible. Floor+3 markers, source initial
+floor tolerance24, observed Hero tolerance72. Require native ground at the wire
+center/endpoints or circle center on admission and every service; missing or
+opened false-floor support cancels. At most3 support traces per trap per service,
+plus one LOS trace per geometrically eligible captured Hero. Clearance uses
+standard16×72 standing hull and escape offsets64/104/100 respectively. Shared
+navigation/geometry checks keep effects in their exact cells and respect cover,
+locked edges and transitions. Sweeps exceeding256 units discard the teleport
+segment. The visible capsule/end posts, snare teeth/countdown and unfilled double
+ring match server geometry at full/reduced effects, use finite deadlines and
+2400-unit culling; no new render hook/particles/lights.
+
+Progression (STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; growth die;
+base XP; morale): Wirewright10/13/11/14/11/9;35/65/0;d8;50;5.
+Snarer8/10/10/14/16/10;10/15/75;d8;50;4, actual offensive Magic eligibility.
+Cordon12/8/15/12/13/7;70/30/0;d10;55;7. No private scaling or reward authority.
+
+The live GDD rule is LOD-BESTIARY-B6-001 in03/05/07. Automated validation and
+pending native acceptance are recorded separately in DEVELOPMENT_PLAN.md.

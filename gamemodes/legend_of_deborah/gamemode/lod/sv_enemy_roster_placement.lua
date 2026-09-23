@@ -40,6 +40,8 @@ function E:Placement(graph,c,id,role)
     local d=self.Definitions[id]
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
+    local tag=(graph.CellTags or {})[key(c)] or {}
+    if d.trap and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -55,7 +57,6 @@ function E:Placement(graph,c,id,role)
         end
         return {pos=center}
     end
-    local tag=(graph.CellTags or {})[key(c)] or {}
     if tag.objective then return nil end
     local exits={}
     for _,k in ipairs(sorted(c.neighbors)) do
@@ -63,7 +64,7 @@ function E:Placement(graph,c,id,role)
         if n.z==c.z and N:CanTraverse(graph,key(c),k) and not self:Safe(graph,n) then exits[#exits+1]=n end
     end
     if id=="sentry" and not (role=="reward" or self:HasAlternate(graph,c)) then return nil end
-    if #exits<2 and role~="reward" then return nil end
+    if #exits<2 and (d.trap or role~="reward") then return nil end
     if #exits==0 then return nil end
     local dir=(N:CellCenter(exits[1])-center);dir.z=0;dir:Normalize()
     local yaw=dir:Angle().y
@@ -113,6 +114,9 @@ local templates={
     caromer_screen={name="Caromer Screen",composition={caromer=1,shambler=1}},
     reeler_chase={name="Reeler Chase",composition={reeler=1,runner=1}},
     forker_crossfire={name="Forker Crossfire",composition={forker=1,soldier=1}},
+    wirewright_chase={name="Wirewright Chase",composition={wirewright=1,runner=1}},
+    snarer_detail={name="Snarer Detail",composition={snarer=1,soldier=1}},
+    cordon_screen={name="Cordon Screen",composition={cordon=1,shambler=1}},
     redliner_pressure={name="Redliner Pressure",composition={redliner=1,shambler=1}}
 }
 for id,t in pairs(templates) do EC.Templates[id]=t end
@@ -136,15 +140,16 @@ function D:_EligibleTemplates(sector,role)
         out[#out+1]="pincer_detail";out[#out+1]="harrier_screen";out[#out+1]="waylayer_cutoff"
         out[#out+1]="caromer_screen";out[#out+1]="reeler_chase";out[#out+1]="forker_crossfire"
         out[#out+1]="pavise_advance";out[#out+1]="repriser_detail";out[#out+1]="redliner_pressure"
+        out[#out+1]="wirewright_chase";out[#out+1]="snarer_detail";out[#out+1]="cordon_screen"
     end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
--- or support/pursuit/reaction specialists in one authored encounter.
+-- or support/pursuit/reaction/trap specialists in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

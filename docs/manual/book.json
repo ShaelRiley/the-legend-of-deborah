@@ -1008,6 +1008,29 @@
       ]
     },
     {
+      "id": "enemy-traps",
+      "title": "Leave yourself an escape",
+      "rows": [
+        [
+          "Wirewright",
+          "The cyan-and-orange Combine soldier marks a short tripwire across a lane. A hollow diamond and thin boundaries give 1.25 seconds of warning before it becomes live for five seconds. Endpoint posts and the upper rail show its jumpable height: jump above the wire, walk around either end, wait it out, or interrupt its maker. The narrow floor outline shows the full danger strip."
+        ],
+        [
+          "Snarer",
+          "The blue Vortigaunt arms a fixed circular snare after one second. It stays armed for at most six seconds. Entering with enough time left triggers one snap 1.25 seconds later, announced by inward teeth and a shrinking bar. Leave the circle to bait the snap safely; it cannot follow you or reset its timer. The Ice hit can leave you Held under the ordinary save rules. Mute, interrupt or defeat the Snarer to cancel it."
+        ],
+        [
+          "Cordon",
+          "The orange floor turret is a destructible pressure node. Two concentric rings warn for 1.5 seconds before one physical pulse, followed by a brief recovery. Enter the safe center, leave the outer ring, take cover, or interrupt or destroy the node to open the approach. The center stays safe; this is a single pulse, not lingering gas."
+        ]
+      ],
+      "text": [
+        "Wirewrights appear with Runners, Snarers with Soldiers, and Cordons with Shamblers. Their companions pressure different escape routes; watch the whole encounter before committing.",
+        "These traps stay where they were marked. Thin boundaries and a hollow diamond mean arming; thicker boundaries mean live. Their finite warnings and escape routes remain visible with reduced effects.",
+        "A trap can hit a given Hero only once. Damage, defenses and conditions follow the ordinary combat rules. Interrupting or destroying the maker cancels its trap; removal never leaves a hidden hazard behind."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

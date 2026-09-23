@@ -24,6 +24,9 @@ E.Definitions={
     pavise={name="Pavise",model="models/combine_super_soldier.mdl",baseHP=65,speed=110,damage=5.5,range=600,warning=.7,recovery=2.4,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(165,190,215),dice={1,6,2}},
     repriser={name="Repriser",model="models/police.mdl",baseHP=40,speed=145,damage=5.5,range=600,warning=.7,recovery=2.4,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(230,100,180),dice={1,6,2}},
     redliner={name="Redliner",model="models/combine_soldier.mdl",baseHP=50,speed=170,damage=5.5,range=600,warning=.7,recovery=2.4,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(215,65,45),dice={1,6,2}},
+    wirewright={name="Wirewright",model="models/combine_soldier.mdl",baseHP=40,speed=125,damage=5.5,range=600,warning=1.25,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",trap="wire",color=Color(240,175,70),dice={1,6,2}},
+    snarer={name="Snarer",model="models/vortigaunt.mdl",baseHP=35,speed=110,damage=5.5,range=600,warning=1,recovery=3.5,threat=3.5,activity=ACT_WALK,kind="arc",trap="snare",contentId="ice",color=Color(95,190,250),dice={1,6,2}},
+    cordon={name="Cordon",model="models/combine_turrets/floor_turret.mdl",baseHP=55,speed=0,damage=5.5,range=600,warning=1.5,recovery=4,threat=4,activity=ACT_IDLE,kind="bullet",trap="ring",stationary=true,color=Color(235,110,60),dice={1,6,2}},
     caromer={name="Caromer",model="models/combine_soldier.mdl",baseHP=40,speed=125,damage=5.5,range=720,warning=1.1,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="bank",color=Color(90,210,240),dice={1,6,2}},
     reeler={name="Reeler",model="models/police.mdl",baseHP=40,speed=145,damage=5.5,range=600,warning=1.1,recovery=3.5,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="return",color=Color(235,180,95),dice={1,6,2}},
     forker={name="Forker",model="models/combine_super_soldier.mdl",baseHP=55,speed=110,damage=5.5,range=600,warning=1.2,recovery=3.2,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="split",color=Color(150,240,180),dice={1,6,2}},
@@ -61,19 +64,23 @@ function E:CaptureLife(e,hero)
     return self:Bind({source=e,hero=hero,sourceState=rules:ProgressionState(e),heroState=rules:ProgressionState(hero),
         sourceLife=status.ActorLives[e],heroLife=status.ActorLives[hero]},state())
 end
-function E:ValidLife(r)
+function E:ValidSourceLife(r)
     local s=state();local status,rules=LOD.RPGStatusElements,LOD.RPGAbilityRules
     return r and s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
         and self:Live(r,s) and IsValid(r.source) and not r.source.LODDead
-        and r.source:Health()>0 and r.source.LODActivated and self:Target(r.hero)
+        and r.source:Health()>0 and r.source.LODActivated
         and (not r.source.LODRosterContext or self:Live(r.source.LODRosterContext,s))
-        and rules:ProgressionState(r.source)==r.sourceState and rules:ProgressionState(r.hero)==r.heroState
-        and status.ActorLives[r.source]==r.sourceLife and status.ActorLives[r.hero]==r.heroLife
+        and rules:ProgressionState(r.source)==r.sourceState and status.ActorLives[r.source]==r.sourceLife
+end
+function E:ValidLife(r)
+    return self:ValidSourceLife(r) and self:Target(r.hero)
+        and LOD.RPGAbilityRules:ProgressionState(r.hero)==r.heroState
+        and LOD.RPGStatusElements.ActorLives[r.hero]==r.heroLife
 end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and d.pattern) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -164,6 +171,7 @@ function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
+    if d.trap then return self:BeginTrap(e,p,now) end
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
     local a={kind=override.kind or d.kind,target=p,origin=origin,aim=aim,ready=now+(override.warning or cfg.burstTelegraph),
         range=override.range or cfg.fireRange,
@@ -232,6 +240,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.trap then return self:StepTrap(e,a,now) end
     if a.patternLife and (not self:ValidLife(a.patternLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then self:Finish(e,now);return end
     if a.pursuitRecord and not (a.released and LOD.EnemyPursuit:ValidLife(a.pursuitRecord)
@@ -342,14 +351,14 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=d.kind=="arc" and now<(e.LODNextAttack or 0)
-        and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2
+    local reposition=(d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+        and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
         if not d.stationary then motion:FaceToward(e,p:GetPos()) end
@@ -432,6 +441,9 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         pavise={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         repriser={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         redliner={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        wirewright={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        snarer={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
+        cordon={"npc/turret_floor/ping.wav","npc/turret_floor/die.wav"},
         caromer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         reeler={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         forker={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},

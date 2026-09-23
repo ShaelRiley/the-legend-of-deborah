@@ -20,6 +20,7 @@ local b2={stitcher=true,bulwark=true,cantor=true}
 local b3={pincer='soldier',harrier='shambler',waylayer='runner'}
 local b4={pavise='runner',repriser='soldier',redliner='shambler'}
 local b5={caromer='shambler',reeler='runner',forker='soldier'}
+local b6={wirewright='runner',snarer='soldier',cordon='shambler'}
 local function signature(plan)
  local rows={}
  for _,enc in ipairs(plan.encounters) do
@@ -74,6 +75,10 @@ for seed=1,32 do
      assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B5 production path')
      assert(count==1 and (enc.composition[b5[id]] or 0)>=1,'B5 singleton and complementary companion')
     end
+    if b6[id] then
+     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B6 production path')
+     assert(count==1 and (enc.composition[b6[id]] or 0)>=1,'B6 singleton and complementary companion')
+    end
     counts[id]=(counts[id] or 0)+count
     if E.Definitions[id] then
      local p=E:Placement(graph,graph.Cells[enc.cellKey],id,enc.role)
@@ -84,7 +89,7 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker'}
+local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker','wirewright','snarer','cordon'}
 for _,id in ipairs(sampled) do
  print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id] or 0,viable[id] or 0,early[id] or 0))
 end
