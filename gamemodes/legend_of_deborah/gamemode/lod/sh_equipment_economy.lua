@@ -40,7 +40,15 @@ E.Definitions.fighting_gloves = {name="Gloves of the Fighting Streets", wearable
     model="models/props_junk/cardboard_box004a.mdl", moves={"ember_fist","cinder_rise"}, minimumRarity=2}
 -- Preserve the original generator's random-family stream for recorded rewards.
 -- Newly rolled world rewards opt into innate families on a separate substream.
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves"}
+E.SpecialMoves.veil = {id="veil", name="Veil", displayName="Veil",
+    recipe={"LEFT","UP","LEFT"}, glyphs="← ↑ ←", magicCost=20, cooldown=20, duration=12,
+    value=50, family="invisibility_ring", innateOnly=true, effect="cloak",
+    description="Invisible for up to 12 seconds. Attack input, Magic, throwing, or dealing/taking HP damage reveals you. Removing this ring ends Veil; hazards still hurt."}
+E.MoveOrder[#E.MoveOrder+1] = "veil"
+E.Definitions.invisibility_ring = {name="Ring of Invisibility", wearable=true,
+    slots={"left_hand","right_hand"}, model="models/props_junk/cardboard_box004a.mdl",
+    moves={"veil"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil

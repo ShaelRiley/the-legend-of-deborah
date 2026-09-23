@@ -129,6 +129,7 @@ local function installHostileLOSPatch()
 
     local baseHasLineOfSight = class._HasLineOfSight
     function class:_HasLineOfSight(target)
+        if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
         if not IsValid(target) then return false end
 
         local startPos = self:WorldSpaceCenter() + Vector(0, 0, 12)

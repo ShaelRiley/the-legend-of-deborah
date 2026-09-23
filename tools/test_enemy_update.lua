@@ -42,7 +42,9 @@ LOD.MazeBuilder={CellCenter=function(_,c) return Vector((c.x-(MC.Width+1)*.5)*MC
     (c.y-(MC.Height+1)*.5)*MC.CellSize+MC.Origin.y,c.z*MC.LevelHeight+MC.Origin.z) end}
 LOD.RunManager={State={BuildReady=true,LevelSeed=123,Level=1,GatesOpen={}},MarkUnranked=function(self) self.unranked=true end}
 LOD.CombatRolls={HostileDamageProfiles={}}
-LOD.FactionManager={IsValidPlayerTarget=function(_,p) return IsValid(p) and p.player and p.alive end}
+dofile(root..'sv_faction_manager.lua')
+-- Keep only the actor-membership boundary doubled; acquisition is production.
+LOD.FactionManager.IsValidPlayerTarget=function(_,p) return IsValid(p) and p.player and p.alive end
 LOD.Equipment={CanAct=function() return true end}
 dofile(root..'sv_maze_navigator.lua');dofile(root..'sv_encounter_director.lua')
 local D,N=LOD.EncounterDirector,LOD.MazeNavigator
@@ -129,6 +131,11 @@ player.pos=pos(1)
 local function arm() h.LODSniperNextRoute=now+10;h.LODWaypoints={};h.LODHitStunUntil=nil;h.LODNextAttack=0;U:Tick(h);assert(h.LODSniperShot) end
 arm();blocked=true;U:Tick(h);assert(not h.LODSniperShot,'LOS interruption cancels');blocked=false
 arm();player.alive=false;U:Tick(h);assert(not h.LODSniperShot,'dead target cancels');player.alive=true
+arm();LOD.RPGPerceptionState={IsInvisible=function(_,p) return p==player end}
+assert(not U:CanShoot(h,player) and LOD.FactionManager:IsValidPlayerTarget(player))
+U:Tick(h);assert(not h.LODSniperShot,'cloak cancels directed windup, not faction/damage membership')
+LOD.RPGPerceptionState=nil
+
 arm();LOD.RunManager.State.SimulationFrozen=true;U:Tick(h);assert(not h.LODSniperShot,'empty-world freeze cancels');LOD.RunManager.State.SimulationFrozen=false
 arm();LOD.RunManager.State.LevelSeed=124;U:Tick(h);assert(not h.LODSniperShot,'level change cancels')
 arm();dofile(root..'sv_m3_hit_feedback.lua');LOD.M3HitFeedback:ApplyHitStun(h)

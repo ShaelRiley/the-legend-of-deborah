@@ -34,6 +34,7 @@ local function currentGraph()
 end
 
 local function livingPlayer(ply)
+    if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(ply) then return false end
     return IsValid(ply) and ply:IsPlayer() and ply:Alive()
 end
 

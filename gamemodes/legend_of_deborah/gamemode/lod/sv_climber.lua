@@ -124,7 +124,7 @@ function C:Tick(e,s,now)
     end
     local victim=e.LODClimberVictim
     if victim then
-        local there=E:Target(victim) and N:WorldToCell(s.Graph,victim:GetPos()) or nil
+        local there=E:AcquireTarget(victim) and N:WorldToCell(s.Graph,victim:GetPos()) or nil
         if not there or there.z~=e.LODClimberFloor or E:Safe(s.Graph,there) then self:Detach(e);return true end
         local goal=victim:EyePos()+victim:EyeAngles():Forward()*22-Vector(0,0,14)
         local trace=util.TraceLine({start=victim:EyePos(),endpos=goal,mask=MASK_SOLID,filter={victim,e}})
@@ -141,7 +141,7 @@ function C:Tick(e,s,now)
     local leap=e.LODClimberLeap
     if leap then
         local goal=leap.goal
-        if not E:Target(leap.target) or now>leap.expires then e.LODClimberLeap=nil;e.LODWallReturn=true
+        if not E:AcquireTarget(leap.target) or now>leap.expires then e.LODClimberLeap=nil;e.LODWallReturn=true
         else
             self:Step(e,goal,620,dt,false)
             if e:GetPos():DistToSqr(leap.target:EyePos())<42^2 and E:Visible(e,leap.target,e:GetPos()) then
@@ -160,7 +160,7 @@ function C:Tick(e,s,now)
     e:_RefreshTarget(s.Graph)
     local fleeing,entry=LOD.RPGStatusElements:Has(e,"morale_flee")
     local p=fleeing and entry and entry.source or e.LODTarget
-    if not E:Target(p) then motion:Stop(e);e:_SetActivity(ACT_IDLE);return true end
+    if not E:AcquireTarget(p) then motion:Stop(e);e:_SetActivity(ACT_IDLE);return true end
     if LOD.RPGStatusElements:CanInitiateAttack(e) and now>=(e.LODNextAttack or 0)
         and e:GetPos():DistToSqr(p:EyePos())<=e.LODConfig.fireRange^2 and E:Visible(e,p,e:GetPos()) then
         local tr=util.TraceHull({start=e:GetPos(),endpos=p:EyePos(),mins=Vector(-12,-12,-12),maxs=Vector(12,12,12),mask=MASK_SHOT,

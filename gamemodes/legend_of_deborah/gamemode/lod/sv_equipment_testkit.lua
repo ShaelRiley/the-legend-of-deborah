@@ -106,3 +106,25 @@ concommand.Add("lod_fighting_streets_testkit",function(ply)
     ps.magic=100;LOD.Magic:_Sync(ply,ps)
     E:Report(ply,"FIGHTING STREETS TEST — Ember Fist ← ↓ →; Cinder Rise → ↓ →. Both hands equipped; 100 Magic; run unranked.","fighting_streets_testkit")
 end)
+
+concommand.Add("lod_invisibility_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("invisibility_testkit")
+    E:ClearTransient(ply)
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="invisibility_ring" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"invisibility_ring","invisibility-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the Ring of Invisibility.","special_move_rejected");return
+        end
+    end
+    E:Equip(state,item.id,"left_hand")
+    E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
+    ps.magic=100;LOD.Magic:_Sync(ply,ps)
+    E:Report(ply,"INVISIBILITY TEST — Veil ← ↑ ←; 20 Magic, 12 seconds, 20-second cooldown. Attack or HP damage reveals; hazards still hurt. Run unranked.","invisibility_testkit")
+end)

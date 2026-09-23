@@ -56,7 +56,7 @@ function U:Visible(hostile, origin, target)
     return not tr.Hit or tr.Entity == target or (IsValid(tr.Entity) and tr.Entity:GetOwner() == target)
 end
 function U:CanShoot(hostile, target)
-    return LOD.FactionManager:IsValidPlayerTarget(target)
+    return LOD.FactionManager:CanAcquirePlayerTarget(target)
         and hostile:GetPos():DistToSqr(target:GetPos()) <= hostile.LODConfig.fireRange ^ 2
         and self:Visible(hostile, hostile:WorldSpaceCenter(), target)
 end
@@ -158,7 +158,7 @@ function U:Tick(hostile)
     if statuses and statuses:HandleAIFlee(hostile, graph, motion) then self:Cancel(hostile); return true end
     hostile:_RefreshTarget(graph)
     local target, shot = hostile.LODTarget, hostile.LODSniperShot
-    if not LOD.FactionManager:IsValidPlayerTarget(target) then
+    if not LOD.FactionManager:CanAcquirePlayerTarget(target) then
         self:Cancel(hostile)
         hostile:_RefreshRoute(graph)
         local waypoint = hostile:_AdvanceWaypoint()

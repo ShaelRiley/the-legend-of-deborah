@@ -93,6 +93,7 @@ local function safeCell(graph, cell)
 end
 
 local function livingPlayer(ply)
+    if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(ply) then return false end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
     if LOD.RunManager and LOD.RunManager.IsActivePlayer then
         return LOD.RunManager:IsActivePlayer(ply)

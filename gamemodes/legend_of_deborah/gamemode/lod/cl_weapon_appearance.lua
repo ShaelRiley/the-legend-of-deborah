@@ -196,6 +196,7 @@ function V:WorldWeapon(weapon)
     if worldDraws[weapon] or weapon.RenderOverride~=nil then return end
     local function drawWeapon(ent,flags)
         local owner=ent:GetOwner()
+        if LOD.Equipment and LOD.Equipment.ConcealedPlayer and LOD.Equipment:ConcealedPlayer(owner) then return end
         local active=IsValid(owner) and owner:GetActiveWeapon()==ent
         local style=active and V:EntityStyle(ent) or nil
         if V.DrawSegmented and V:DrawSegmented(ent,style,ent:GetClass(),owner,false,flags) then

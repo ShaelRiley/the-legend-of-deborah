@@ -27,6 +27,13 @@ function FactionManager:IsValidPlayerTarget(ply)
     return LOD.RunManager:IsActivePlayer(ply)
 end
 
+-- Acquisition differs from faction/damage eligibility: stray shots and hazards
+-- can still hit a concealed Hero. All directed AI selection uses this gate.
+function FactionManager:CanAcquirePlayerTarget(ply)
+    local perception=LOD.RPGPerceptionState
+    return self:IsValidPlayerTarget(ply) and not (perception and perception:IsInvisible(ply))
+end
+
 function FactionManager:LivingTargets()
     local targets = {}
     for _, ply in ipairs(player.GetAll()) do
@@ -66,7 +73,7 @@ function FactionManager:BestTarget(hostile, graph, homeCell)
     local best, bestGraphDistance, bestWorldDistance
     for _, ply in ipairs(self:LivingTargets()) do
         local targetCell = navigator:WorldToCell(graph, ply:GetPos())
-        if targetCell then
+        if targetCell and self:CanAcquirePlayerTarget(ply) then
             local graphDistance = homeCell and navigator:Distance(graph, homeCell, targetCell) or 0
             if graphDistance ~= math.huge then
                 local worldDistance = hostile:GetPos():DistToSqr(ply:GetPos())

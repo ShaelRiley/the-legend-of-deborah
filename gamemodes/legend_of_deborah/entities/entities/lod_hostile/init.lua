@@ -476,6 +476,7 @@ function ENT:_IgnoredShotEntities()
 end
 
 function ENT:_HasLineOfSight(target)
+    if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
     if not IsValid(target) then return false end
     local startPos = self:WorldSpaceCenter() + Vector(0, 0, 12)
     local endPos = target:WorldSpaceCenter()
@@ -489,6 +490,7 @@ function ENT:_HasLineOfSight(target)
 end
 
 function ENT:_MeleeAttack(target)
+    if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
     local cfg = self.LODConfig
     if not IsValid(target) or CurTime() < (self.LODNextAttack or 0) then return false end
     if self:GetPos():DistToSqr(target:GetPos()) > cfg.meleeRange * cfg.meleeRange then return false end
@@ -585,6 +587,7 @@ function ENT:_SpawnSoldierBolt(aimDirection, shotIndex)
 end
 
 function ENT:_BeginSoldierBurst(target)
+    if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
     local cfg = self.LODConfig
     if self.LODSoldierBurst or not IsValid(target) then return false end
     if CurTime() < (self.LODNextAttack or 0) then return false end
@@ -828,7 +831,7 @@ end
 function ENT:OnInjured(dmginfo)
     if self.LODDead then return end
     local attacker = dmginfo:GetAttacker()
-    if IsValid(attacker) and attacker:IsPlayer() and LOD.FactionManager:IsValidPlayerTarget(attacker) then
+    if IsValid(attacker) and attacker:IsPlayer() and LOD.FactionManager:CanAcquirePlayerTarget(attacker) then
         self.LODTarget = attacker
         self.LODReturningHome = false
         self.LODNextTargetRefresh = CurTime() + 0.5

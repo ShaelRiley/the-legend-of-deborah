@@ -27,6 +27,7 @@ local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 E.Key=key
 local function state() return LOD.RunManager and LOD.RunManager.State end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
+function E:AcquireTarget(p) return LOD.FactionManager:CanAcquirePlayerTarget(p) end
 function E:Safe(graph,c)
     local tag=graph and c and (graph.CellTags or {})[key(c)]
     return not c or (tag and (tag.safe or tag.role=="boss" or tag.role=="resupply"))
@@ -126,7 +127,7 @@ function E:Release(e,a,now)
 end
 function E:Attack(e,a,now)
     if not a.released then
-        if not self:Target(a.target) or not self:Visible(e,a.target,a.origin)
+        if not self:AcquireTarget(a.target) or not self:Visible(e,a.target,a.origin)
             or not LOD.RPGStatusElements:CanInitiateAttack(e) then self:Finish(e,now);return end
         if now<a.ready then return end
         self:Release(e,a,now)
@@ -201,7 +202,7 @@ function E:Tick(e)
         if not statuses:CanInitiateAttack(e) or statuses:Has(e,"morale_flee") then return true end
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
     e:_RefreshTarget(s.Graph);local p=e.LODTarget
-    local can=self:Target(p) and statuses:CanInitiateAttack(e)
+    local can=self:AcquireTarget(p) and statuses:CanInitiateAttack(e)
         and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))
     if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
         local direction=p:GetPos()-e:GetPos();direction.z=0

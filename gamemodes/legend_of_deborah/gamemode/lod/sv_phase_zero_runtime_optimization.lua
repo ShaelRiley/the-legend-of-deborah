@@ -257,6 +257,7 @@ local function installHostileTracePatch()
     end
 
     function class:_HasLineOfSight(target)
+        if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
         if not IsValid(target) then return false end
         local tr = util.TraceLine({
             start = self:WorldSpaceCenter() + Vector(0, 0, 12),
@@ -390,4 +391,3 @@ concommand.Add("lod_hostile_registry_status", function(ply)
     print("[LOD:HOSTILE-REGISTRY] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

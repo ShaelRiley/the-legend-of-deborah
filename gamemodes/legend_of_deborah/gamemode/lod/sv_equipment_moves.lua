@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
 function E:ClearTransient(ply)
+    if self.EndCloak then self:EndCloak(ply,"lifecycle changed") end
     self.MoveSessions[ply] = nil
     Rules.VoluntaryDashes[ply] = nil
     if Rules.ClearDodge then Rules:ClearDodge(ply) end
@@ -217,6 +218,7 @@ function E:ExecuteMove(ply, id, session)
     resource.magic=resource.magic-cost
     session.cooldowns[id]=CurTime()+move.cooldown
     Magic:_Sync(ply,resource)
+    if offensive and self.EndCloak then self:EndCloak(ply,"offensive technique") end
     handler.resolve(ply,move,context)
     local effects=LOD.RPG.FeatEffectSystem
     if offensive and effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply,move.magicCost,cost) end

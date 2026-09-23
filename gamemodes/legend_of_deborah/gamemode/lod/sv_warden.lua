@@ -194,7 +194,7 @@ function W:Hazards(w,e,targets,dt,now)
     for _,q in ipairs(w.hazards) do
         local expired=now>=q.expires
         if q.kind=="orb" and not expired then
-            if hero(q.target) and not self:Protected(q.target) then
+            if hero(q.target) and not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(q.target)) and not self:Protected(q.target) then
                 local desired=(q.target:WorldSpaceCenter()-q.pos):GetNormalized()
                 local dir=q.velocity:GetNormalized()
                 q.velocity=(dir+(desired-dir)*math.min(1,C.homing*dt)):GetNormalized()*C.shotSpeed
@@ -293,6 +293,12 @@ function W:Tick(e)
     local fraction=e:Health()/math.max(1,e:GetMaxHealth())
     local phase=fraction<=0.25 and 3 or (fraction<=0.60 and 2 or 1)
     self:SetPhase(w,e,math.max(w.phase,phase),now)
+    local visible={}
+    for _,p in ipairs(targets) do
+        if not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(p)) then visible[#visible+1]=p end
+    end
+    targets=visible
+    if #targets==0 then w.volley=nil;w.swing=nil;motion:Stop(e);return true end
     local target=targets[1]
     for _,p in ipairs(targets) do if e:GetPos():DistToSqr(p:GetPos())<e:GetPos():DistToSqr(target:GetPos()) then target=p end end
     if w.cloneIndex then target=targets[(w.cloneIndex%#targets)+1] end
@@ -337,7 +343,7 @@ function W:Tick(e)
             motion:Stop(e)
             if now>=w.swing.ready then
                 local victim=w.swing.target;w.swing=nil;w.nextSwing=now+(e.LODConfig.meleeCooldown or C.meleeGap)
-                if hero(victim) and e:GetPos():DistToSqr(victim:GetPos())<=range^2 then
+                if hero(victim) and not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(victim)) and e:GetPos():DistToSqr(victim:GetPos())<=range^2 then
                     local tr=util.TraceLine({start=e:WorldSpaceCenter(),endpos=victim:WorldSpaceCenter(),mask=MASK_SHOT,filter=e})
                     if not tr.Hit or tr.Entity==victim then self:Damage(e,victim,"crowbar") end
                 end

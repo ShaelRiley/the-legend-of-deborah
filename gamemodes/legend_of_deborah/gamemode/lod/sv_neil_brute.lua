@@ -294,7 +294,7 @@ end
 function H:AlternativeTick(ent,now)
     local a=ent.LODBruteAttack;if not a then return false end
     local target=a.target
-    if not activeHero(target) then ent.LODBruteAttack=nil;return false end
+    if not activeHero(target) or (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target)) then ent.LODBruteAttack=nil;return false end
     LOD.HostileMotionV2:Stop(ent);LOD.HostileMotionV2:FaceToward(ent,target:GetPos())
     if now<a.ready then return true end
     ent.LODBruteAttack=nil
@@ -358,7 +358,7 @@ function H:Tick(ent)
         if status and not status:CanInitiateAttack(ent) then self:CancelCharge(ent) end
         if self:ChargeTick(ent,g,heroes,now) or self:AlternativeTick(ent,now) then return true end
         local target
-        for _,p in ipairs(heroes) do if activeHero(p) and (not target or ent:GetPos():DistToSqr(p:GetPos())<ent:GetPos():DistToSqr(target:GetPos())) then target=p end end
+        for _,p in ipairs(heroes) do if activeHero(p) and not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(p)) and (not target or ent:GetPos():DistToSqr(p:GetPos())<ent:GetPos():DistToSqr(target:GetPos())) then target=p end end
         -- A defense destination controls routing, not attack eligibility.
         if target and now>=(ent.LODNextAttack or 0) and (not status or status:CanInitiateAttack(ent)) then
             local tr=util.TraceLine({start=ent:WorldSpaceCenter(),endpos=target:WorldSpaceCenter(),mask=MASK_SOLID,filter=ent})

@@ -269,7 +269,8 @@ local function bestNearbyTarget(hostile, graph, maximum)
     local best, bestDistance, bestWorld
     for _, ply in ipairs(LOD.FactionManager:LivingTargets()) do
         local targetCell = targetCellFor(ply, graph)
-        if targetCell and targetCell.z == hostile.LODWanderFloor then
+        if targetCell and targetCell.z == hostile.LODWanderFloor
+            and LOD.FactionManager:CanAcquirePlayerTarget(ply) then
             local distance = Navigator:Distance(graph, current, targetCell)
             if distance ~= math.huge and distance <= maximum then
                 local world = hostile:GetPos():DistToSqr(ply:GetPos())
@@ -296,7 +297,7 @@ local function installWandererAIPatch()
 
         local current = currentCellFor(self, graph)
         local existing = self.LODTarget
-        if IsValid(existing) and current then
+        if IsValid(existing) and current and LOD.FactionManager:CanAcquirePlayerTarget(existing) then
             local targetCell = targetCellFor(existing, graph)
             local distance = targetCell and targetCell.z == self.LODWanderFloor
                 and Navigator:Distance(graph, current, targetCell) or math.huge

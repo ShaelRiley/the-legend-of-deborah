@@ -143,6 +143,7 @@ local function installContract()
     end
 
     function class:_BeginSoldierBurst(target)
+        if LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(target) then return false end
         local cfg = self.LODConfig
         if self.LODSoldierBurst or not IsValid(target) then return false end
         if CurTime() < (self.LODNextAttack or 0) then return false end
@@ -231,6 +232,10 @@ local function installContract()
     end
 
     function class:_ProcessSoldierBurst()
+        local pending=self.LODSoldierBurst
+        if pending and LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(pending.target) then
+            self:_CancelSoldierBurst();return false
+        end
         local burst = self.LODSoldierBurst
         if not burst then return false end
         local cfg = self.LODConfig

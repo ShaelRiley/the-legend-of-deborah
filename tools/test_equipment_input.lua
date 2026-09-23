@@ -36,3 +36,13 @@ poll();assert(#sent==before,'Controller codes never enter logical stream')
 held={};poll();held[KEY_DOWN],held[KEY_LEFT]=true,true;poll();assert(sent[#sent]==0,'Ambiguous simultaneous directions reset')
 held={};poll();convars.lod_special_key_up.value=42;held[42]=true;poll();assert(sent[#sent]==1,'Rebinding feeds same stream')
 print('EQUIPMENT_INPUT_PASS: real client edge detection, keyboard mirror/rebinding, menu/chat/focus/Throwable suppression, no controller tokens')
+
+local deadline=12;CurTime=function() return 1 end
+ply.GetNW2Float=function() return deadline end
+ply.GetActiveWeapon=function() return nil end
+assert(callbacks.LOD_VeilBody(ply)==true,'ordinary observer cannot draw cloaked body')
+halo={RenderedEntity=function() return ply end}
+assert(callbacks.LOD_VeilBody(ply)==nil,'authorized Sixth Sense halo mask remains drawable')
+halo=nil;deadline=0
+assert(callbacks.LOD_VeilBody(ply)==nil,'reveal restores normal body drawing')
+print('VEIL_CLIENT_PASS: deadline concealment, authorized halo pass, normal draw restoration')

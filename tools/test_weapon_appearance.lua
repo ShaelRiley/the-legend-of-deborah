@@ -154,6 +154,10 @@ hooks.LOD_ProceduralWeaponSurface(ent,owner,ent);hooks.LOD_ProceduralWeaponAppea
 hooks.LOD_ProceduralWorldWeaponSurface(owner)
 assert(ent.RenderOverride,'World finish must wrap the actual weapon draw')
 ent.RenderOverride(ent);assert(ent.drawn==1);ent.drawn=0
+E.ConcealedPlayer=function(_,p) return p==owner end
+ent.RenderOverride(ent);assert(ent.drawn==0,'cloaked held gun does not render')
+E.ConcealedPlayer=nil
+
 local protected=entity();protected.RenderOverride=function() end;local override=protected.RenderOverride
 V:WorldWeapon(protected);assert(protected.RenderOverride==override,'Respect another renderer')
 V:Apply(ent,style,nil,true);hooks.LOD_WeaponSurfaceRestore();for _,v in pairs(ent.slots) do assert(v=='') end

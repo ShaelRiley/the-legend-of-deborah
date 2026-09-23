@@ -1,4 +1,79 @@
-# Current checkpoint — Gloves of the Fighting Streets
+# Current checkpoint — Ring of Invisibility
+
+Built on verified remote `5d3f837223f433f8b07705cfc4c9dd832e553c8d`.
+Fresh main checkout; no newer remote work was present. The recovered local Gloves
+commit was not reapplied. Read AGENTS.md, the checkpoint and live GDD 00 → 01 →
+relevant 03/06/07/90 rules, then exact Invisible/HUMAN fallback. The live GDD had
+no ring contract. `docs/SEPTEMBER22_MASTER_BRIEF.md` explicitly delegates the
+ring's break/end conditions and P7 design/balancing/GDD synchronization. Exercised
+that delegation in `LOD-INVISIBILITY-RING-001`, written and read back in 03/06/07/90
+and HUMAN. No unrelated design rules were changed.
+
+Ring of Invisibility is a minimum-Rare procedural single-hand item granting
+**Veil: LEFT UP LEFT; fixed 20 Magic; maximum 12 seconds; 20-second cooldown**.
+Its quality-scaled 50-point innate allowance participates in ordinary item value,
+sale and recreation. The independent 1/8 innate reward pool now contains Crown,
+Gloves and Ring; the original seven-family stream and frozen records are intact.
+Two rings expose one recipe; paired gloves displace rings under normal occupancy.
+The shared dispatcher validates grants, status, resources and preflight before
+committing once. Active Veil cannot refresh or spend again.
+
+Canonical perception now supports individually owned invisibility sources,
+composing with its existing permanent/timed state. Veil binds source record/slot,
+Hero state/identity/life, run, level seed and graph. Removal/moving/replacement,
+death/disconnect/respawn/role/staging/level transition, failure/freeze or expiry
+ends that source only; stale callbacks cannot clear a newer activation. Existing
+perception maintenance owns expiry, with no new per-item recurring timer.
+
+AI acquisition and directed attack adapters consult canonical Invisible, including
+wanderer retention, Watcher scans, Soldier windups, roster/Climber, Brute and
+Warden paths. Activation drops existing target/pursuit knowledge. Faction/damage
+eligibility stays distinct: released shots, committed area hazards and manually
+aimed human Soldiers can still hurt the Hero. Warden homing loses the concealed
+target without deleting the projectile. Sixth Sense retains its authorized halo
+pass. Client body/held-weapon concealment reads the replicated deadline.
+
+Attack input (including dry/blocked attempts), Magic on any bound button, offensive
+item techniques, throw attempts and effective incoming/outgoing HP damage reveal.
+Movement, reloading, menu access and drinking alone do not reveal. Ending neither
+refunds Magic nor resets cooldown. Activation/end feedback uses the shared RPG
+feed; the canonical manual and both readers document the item.
+
+Validation: all **129 integrated suites pass, zero failures**, including unchanged
+exact crash replay, LuaJIT, movement/overhead barriers, rescue, Hero/Soldier queue,
+Feather, safe travel, earlier combos, manual and release wiring. Focused production
+checks cover ownership, ordinary generated rewards/value, one-hand grants, cost,
+status denial, actual recipes, target-versus-damage membership, reveal/expiry,
+source composition, item/identity/life/role/run/graph rejection and stale cleanup.
+Extended existing sniper and render/input checks cover windup cancellation, body
+concealment, Sixth Sense halo permission and held-gun draw suppression. Initial
+integrated run passed 121/129: eight dependent fixtures lacked the new faction
+acquisition method. Their common fixture now loads the production faction module
+while retaining its existing actor-membership double; no acceptance assertions
+were relaxed. Lua syntax and whitespace gates pass. These are automated/headless
+checks, not native Source acceptance.
+
+Native gate pending: on gm_flatgrass as a developer-mode admin, run
+`lod_invisibility_testkit`, then LEFT UP LEFT. It equips one ring, fills Magic,
+preserves displaced items and marks the run unranked. Confirm exactly 20 spent,
+loss of directed AI pursuit, 12-second expiry and 20-second cooldown; attack,
+remove the ring and take a released shot/hazard to check reveal. With another
+player, inspect body/held-gun disappearance/restoration, Sixth Sense and manually
+aimed human-Soldier damage. Check death/respawn and dungeon transition cleanup.
+Capture console_latest.txt and rpg_summary_latest.txt; screenshots only for
+appearance defects. Stock pickup model remains provisional.
+
+Next bounded P7 checkpoint: Hat of the Thunder God. Reconcile its retained
+UP DOWN UP lightning-charge brief with live GDD, shared movement/collision,
+electrical damage/status and safe-travel authorities before choosing delegated
+values. Finite gate: equipped source, single resource commit, wall/gate/floor-safe
+path, enemy/ally hit handling and stale lifecycle rejection. Preserve accepted
+movement and overhead barriers, rescue progression and Hero/Soldier queue behavior.
+Earlier native acceptance obligations remain open. No VPS or Workshop deployment.
+
+---
+
+# Previous checkpoint — Gloves of the Fighting Streets
 
 Built on verified remote `1a7d351b33bde23c3c792623dcb5e33b8c85f0b1`.
 No newer remote work was present. Read AGENTS.md, the current checkpoint and

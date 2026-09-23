@@ -671,6 +671,22 @@
       ]
     },
     {
+      "id": "invisibility-ring",
+      "title": "Ring of Invisibility",
+      "rows": [
+        [
+          "Veil",
+          "← ↑ ← · 20 Magic · 20-second cooldown"
+        ]
+      ],
+      "text": [
+        "This single-hand ring grants up to 12 seconds of Invisibility while equipped. It is at least Rare and can occupy either hand. Paired gloves displace it. Its generated properties and innate technique both contribute to its value.",
+        "AI enemies lose you as a target while invisible. Their shots already in flight, committed area attacks, environmental hazards, and manually aimed human Soldiers can still hurt you. Sixth Sense can reveal your silhouette under its ordinary visibility rules.",
+        "Primary or secondary attack input reveals you, even if the attempt is dry or blocked. Magic on any bound button, an offensive item technique, a throw attempt, or dealing or taking HP damage also reveals you. Walking, jumping, reloading, opening menus and drinking a potion alone preserve Veil.",
+        "Removing or moving the source ring, death, a role or dungeon change, and other lifecycle transitions end Veil. It cannot refresh while active. Ending never refunds Magic or resets the cooldown. Failed activation spends nothing; Veil costs a fixed 20 Magic."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

@@ -1,4 +1,17 @@
 local E, UI = LOD.Equipment, LOD.UI
+function E:ConcealedPlayer(ply)
+    return IsValid(ply) and ply:GetNW2Float("LOD_VeilUntil",0)>CurTime()
+end
+hook.Add("PrePlayerDraw","LOD_VeilBody",function(ply)
+    if not E:ConcealedPlayer(ply) then return end
+    local weapon=ply:GetActiveWeapon()
+    if IsValid(weapon) and LOD.WeaponAppearance and LOD.WeaponAppearance.WorldWeapon then
+        LOD.WeaponAppearance:WorldWeapon(weapon)
+    end
+    -- The existing authorized halo pass may draw a mask, never a normal body.
+    if halo and halo.RenderedEntity and halo.RenderedEntity()==ply then return end
+    return true
+end)
 local directions={"UP","DOWN","LEFT","RIGHT"}
 local primary={KEY_UP,KEY_DOWN,KEY_LEFT,KEY_RIGHT}
 local defaults={KEY_LBRACKET,KEY_COMMA,KEY_SEMICOLON,KEY_BACKSLASH}
@@ -83,6 +96,6 @@ net.Receive("LOD_SpecialMoveFX",function()
         util.Effect("cball_bounce",fx)
         return
     end
-    if id=="ember_fist" or id=="cinder_rise" then return end -- shared elemental delivery FX
+    if id=="ember_fist" or id=="cinder_rise" or id=="veil" then return end -- no revealing cloak particle
     util.Effect(id=="quickstep" and "cball_bounce" or "ManhackSparks",fx)
 end)

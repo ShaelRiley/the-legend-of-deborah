@@ -28,12 +28,41 @@ Catalog.OrdinaryFeats = Feats
 LOD.RPGPerceptionState = LOD.RPGPerceptionState or {}
 local Perception = LOD.RPGPerceptionState
 Perception.InvisibleEntities = Perception.InvisibleEntities or setmetatable({}, {__mode = "k"})
+Perception.InvisibleSources = Perception.InvisibleSources or setmetatable({}, {__mode = "k"})
+
+-- Source-owned state composes with legacy permanent/timed invisibility. Removing
+-- a ring can never erase an unrelated cloak, nor can an old token clear a new one.
+function Perception:SetInvisibleSource(ent, key, record)
+    if not IsValid(ent) then return false end
+    local sources=self.InvisibleSources[ent] or {}
+    self.InvisibleSources[ent]=sources; sources[key]=record
+    self.InvisibleEntities[ent]=true
+    return true
+end
+
+function Perception:ClearInvisibleSource(ent, key, expected)
+    local sources=self.InvisibleSources[ent]
+    if not sources or sources[key]~=expected then return false end
+    sources[key]=nil
+    if not next(sources) then self.InvisibleSources[ent]=nil end
+    return true
+end
+
+function Perception:MaintainInvisibleSources(ent, now)
+    for key,record in pairs(self.InvisibleSources[ent] or {}) do
+        if now>=record.ends or record.valid and not record.valid(ent,record) then
+            if self:ClearInvisibleSource(ent,key,record) and record.ended then
+                record.ended(ent,record,now>=record.ends and "expired" or "source/lifecycle changed")
+            end
+        end
+    end
+end
 
 function Perception:SetInvisible(ent, invisible)
     if not IsValid(ent) then return false end
     ent.LODRPGInvisible = invisible == true
     if ent.LODRPGInvisible then self.InvisibleEntities[ent] = true
-    elseif (tonumber(ent.LODRPGInvisibleUntil) or 0) <= CurTime() then self.InvisibleEntities[ent] = nil end
+    elseif not self.InvisibleSources[ent] and (tonumber(ent.LODRPGInvisibleUntil) or 0) <= CurTime() then self.InvisibleEntities[ent] = nil end
     return true
 end
 
@@ -47,7 +76,8 @@ end
 function Perception:IsInvisible(ent, now)
     if not IsValid(ent) then return false end
     now = tonumber(now) or CurTime()
-    return ent.LODRPGInvisible == true or (tonumber(ent.LODRPGInvisibleUntil) or 0) > now
+    self:MaintainInvisibleSources(ent,now)
+    return self.InvisibleSources[ent]~=nil or ent.LODRPGInvisible == true or (tonumber(ent.LODRPGInvisibleUntil) or 0) > now
 end
 
 local NET_SIXTH = "LOD_RPGSixthSenseSnapshot"
@@ -181,6 +211,8 @@ timer.Create("LOD_CheckpointDSixthSense", 0.15, 0, function()
     local graph = activeGraph()
     local hostiles = graph and collectHostiles() or {}
     local now = CurTime()
+    -- Reuse this perception service even when nobody owns Sixth Sense.
+    for ent in pairs(Perception.InvisibleSources) do Perception:MaintainInvisibleSources(ent,now) end
     for _, ply in ipairs(player.GetHumans()) do
         local state = Rules:ProgressionState(ply)
         local active = IsValid(ply) and ply:Alive() and state ~= nil and owns(state, "WIS_SIXTH_SENSE")
