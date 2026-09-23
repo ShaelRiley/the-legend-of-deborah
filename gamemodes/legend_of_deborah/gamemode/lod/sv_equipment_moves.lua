@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
 function E:ClearTransient(ply)
+    if self.EndEquipmentGravity then self:EndEquipmentGravity(ply) end
     if self.EndStatue then self:EndStatue(ply,"lifecycle changed");self.StatueInputAt[ply]=nil end
     if self.StompFlights then self.StompFlights[ply]=nil end
     if self.EndCloak then self:EndCloak(ply,"lifecycle changed") end

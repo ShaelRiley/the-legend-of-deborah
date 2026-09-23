@@ -52,6 +52,7 @@ local function polygons(family,x,y,scale)
 end
 function E:IconFamily(item)
     local id=item and item.definitionId or ''
+    if id=='moon_boots' then return 'boots' end
     if id=='healing_potion' or id=='stink_bomb' then return 'bottle' end
     if id=='weapon_lod_crowbar' then return 'crowbar' end
     if id=='weapon_pistol' or id=='weapon_357' then return 'gun' end

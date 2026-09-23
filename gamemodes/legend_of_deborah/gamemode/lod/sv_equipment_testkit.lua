@@ -193,6 +193,27 @@ concommand.Add("lod_tanuki_testkit",function(ply)
     E:Report(ply,"TANUKI TEST — stand still for 2 seconds: stone, concealed and invulnerable. Movement, attacks or use restart the wait. No Magic cost. Run unranked.","tanuki_testkit")
 end)
 
+concommand.Add("lod_moon_boots_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("moon_boots_testkit")
+    E:ClearTransient(ply)
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="moon_boots" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"moon_boots","moon-boots-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the Boots of the Moon.","special_move_rejected");return
+        end
+    end
+    E:Equip(state,item.id,"feet")
+    E:RefreshDerived(ply,ps);E:Sync(ply)
+    E:Report(ply,"MOON BOOTS TEST — 25% lower gravity while equipped in the dungeon; no Magic cost. Compare jumps/steering, remove in midair, and test locked gates and upper routes. Run unranked.","moon_boots_testkit")
+end)
+
 concommand.Add("lod_wand_testkit",function(ply)
     if not allowed(ply) then return end
     Run:MarkUnranked("wand_testkit")

@@ -535,6 +535,7 @@ hook.Add("OnNPCKilled", "LOD_RPG_GateD_XPSettlement", function(hostile)
 end)
 
 hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
+    if LOD.Equipment and LOD.Equipment.UpdateEquipmentGravity then LOD.Equipment:UpdateEquipmentGravity(ply) end
     if not IsValid(ply) or not ply:Alive() then return end
     local multiplier = AbilityRules:MovementMultiplier(ply)
     move:SetForwardSpeed(move:GetForwardSpeed() * multiplier)

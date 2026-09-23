@@ -74,7 +74,13 @@ E.SpecialMoves.statue = {id="statue", name="Statue", displayName="Statue", passi
     description="Become stone, concealed from enemies and immune to damage while still. Movement, attacks or item/Magic use end it and restart the two-second wait. No Magic cost."}
 E.Definitions.tanuki_ring = {name="Tanuki's Ring", wearable=true, slots={"left_hand","right_hand"},
     model="models/props_junk/cardboard_box004a.mdl", moves={"statue"}, minimumRarity=2}
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots", "tanuki_ring"}
+E.SpecialMoves.moon_gravity = {id="moon_gravity", name="Moon Gravity", displayName="Moon Gravity", passive=true,
+    recipe={}, trigger="While equipped in the dungeon", magicCost=0, cooldown=0,
+    value=50, family="moon_boots", innateOnly=true, gravityMultiplier=.75,
+    description="25% lower gravity while equipped: higher jumps and longer airtime with ordinary steering. No Magic cost. Maze walls, locked gates and fall damage still apply."}
+E.Definitions.moon_boots = {name="Boots of the Moon", wearable=true, slots={"feet"},
+    model="models/props_junk/cardboard_box004a.mdl", moves={"moon_gravity"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots", "tanuki_ring", "moon_boots"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil

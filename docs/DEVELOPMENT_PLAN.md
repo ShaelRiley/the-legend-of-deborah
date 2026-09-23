@@ -1,4 +1,70 @@
-# Current checkpoint — Wand weapon category
+# Current checkpoint — Boots of the Moon
+
+Built on independently verified remote main
+`0534845b185739f1a67e3bff0f5a900a1bc8da83`; clean working tree, no newer work
+replaced. Read AGENTS.md and live GDD 00 → 01 → relevant 03/06/07/90.
+The normalized tabs had no Moon Boots tuning. The retained P7 author brief
+expressly delegates design/balancing and GDD synchronization; recorded
+`LOD-MOON-BOOTS-001` in 03/06/07/90 and HUMAN after a fresh file-backed,
+protected-control-aware read, then verified the 07 readback. No unrelated HUMAN
+catalog audit or repeated completed checkpoint work.
+
+Minimum-Rare Feet-slot **Boots of the Moon** grant passive **Moon Gravity**:
+**25% lower gravity**, no recipe, Magic cost or cooldown. Innate allowance is
+floor(50 × quality / 100); the existing independent 1/8 innate reward pool now
+includes these boots. Normal generator, owned inventory, occupancy, valuation,
+frozen records and derived grant descriptions remain authoritative. Equipment
+uses the existing boots icon; the stock pickup box remains provisional. Both
+manual readers share the new Moon Boots chapter.
+
+The ordinary SetupMove authority and equipment refresh apply one native player
+gravity multiplier to a living deployed walking Hero in a ready dungeon, outside
+a vehicle. Native zero is handled as default gravity. The source composes with
+the existing player multiplier and server gravity without compounding per tick.
+Later native gravity changes become the new baseline while equipped. Cleanup
+restores the saved baseline only when the current value still belongs to this
+source; it does not overwrite a later external change. Held/Muted and attacking
+do not turn off this passive. No Magic debit or refill.
+
+Exact item/Feet-slot, equipment state, identity/life, run/seed/graph bind the effect
+through the existing equipment-move source authority. Unequip/re-equip and source
+replacement retire it immediately. Death, respawn, disconnect, Soldier/staging,
+freeze/failure/level/graph changes and map cleanup reject the old binding. Stale
+cleanup cannot clear a fresh binding; a fresh valid update can reapply surviving
+equipped boots. No new timer or recurring actor scan. No teleport, extra jump,
+forced velocity, invulnerability or fall-damage exception. Existing horizontal
+control, jump/Cloud Step/Wall Jump impulses, Float On and Push remain shared;
+accepted overhead wall and locked-gate collision still owns maze boundaries.
+
+Validation: **134 integrated suites pass, zero failures**, including Lua syntax,
+release wiring, generated manual, generator/JIT/crash replay, shared combat and
+equipment, accepted movement/overhead barriers, rescue and Hero/Soldier queues.
+The focused production Moon Boots suite and whitespace checks also pass.
+The new suite covers real generated items/rewards, ownership/slot admission,
+free passive activation, default and nondefault native gravity, noncompounding,
+external changes and restoration, same-tick replacement, stale callbacks,
+identity/life/state/run/seed/graph, Soldier/dead/inactive/build/freeze/failure/
+vehicle/noclip rejection, map cleanup and native death/disconnect hooks.
+These automated/headless results are distinct from native Source acceptance.
+
+Native gate pending: as a developer-mode admin on gm_flatgrass, run
+`lod_moon_boots_testkit`; compare jumps, descent and steering, then remove/swap
+boots in midair. Check Cloud Step, Wall Jump, Float On, crate/locked-gate barriers
+and legitimate upper routes. Confirm death/role/dungeon transition restoration
+and co-op movement prediction. The kit preserves displaced inventory, does not
+refill Magic, and marks the run unranked. Capture console_latest.txt and
+rpg_summary_latest.txt. No VPS or Workshop deployment; prior native obligations
+remain open.
+
+Next bounded P7 checkpoint: **Magic Hourglass**. Reconcile the rare consumable's
+2d4-minute extension with canonical server dice, current dungeon timer and
+TIME OVER authority. Define finite owned-unit spending, one roll/extension,
+stale lifecycle/deadline rejection and synchronized UI checks before implementing.
+Preserve rescue progression, Hero/Soldier queues and accepted movement/barriers.
+
+---
+
+# Previous checkpoint — Wand weapon category
 
 Built on independently verified remote main
 `320034957fa998d768b87211972be421391c9660`; working tree was clean and no newer

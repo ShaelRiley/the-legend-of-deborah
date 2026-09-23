@@ -719,6 +719,21 @@
       ]
     },
     {
+      "id": "moon-boots",
+      "title": "Boots of the Moon",
+      "rows": [
+        [
+          "Moon Gravity",
+          "25% lower gravity · Passive · No Magic cost"
+        ]
+      ],
+      "text": [
+        "Equip these Rare-or-better boots in your feet slot for higher jumps and longer airtime in the dungeon. Gravity is reduced by 25%; ordinary steering and horizontal movement remain yours to control. No arrow sequence, Magic cost or cooldown is required.",
+        "Your usual jump, Cloud Step and Wall Jump impulses still apply. Float On keeps its own controls and Magic cost. Invisible maze walls, locked gates, collisions and fall damage remain in force: these boots do not grant flight or invulnerability.",
+        "Removing or replacing the boots restores ordinary gravity, including in midair. Their effect ends on death, staging or role change and returns when the same equipped boots belong to a living, deployed Hero again. Human Soldiers cannot borrow the Hero's equipment."
+      ]
+    },
+    {
       "id": "tanuki-ring",
       "title": "Tanuki’s Ring",
       "rows": [
