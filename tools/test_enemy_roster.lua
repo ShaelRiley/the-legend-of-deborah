@@ -6,6 +6,7 @@ GM=GM or {};dofile(root.."sv_damage_info.lua")
 local noop=function() end
 local v=getmetatable(Vector())
 v.__div=function(a,b) return a*(1/b) end
+v.__unm=function(a) return a*-1 end
 function v:Dot(b) return self.x*b.x+self.y*b.y+self.z*b.z end
 function v:Length2D() return math.sqrt(self.x*self.x+self.y*self.y) end
 function v:Normalize() local n=self:GetNormalized();self.x,self.y,self.z=n.x,n.y,n.z end
@@ -80,7 +81,7 @@ e.LODConfig={activity=ACT_WALK};e._SetActivity=function(self,act) self.moveActiv
 A:Move(e);assert(e.moveActivity==ACT_WALK,'retreat selects model locomotion')
 assert(not A:Valid(e,-1) and not A:Valid(e,0) and not A:Valid(e,4))
 -- Load real roster and every specialized behavior.
-dofile(root..'sv_enemy_roster.lua');dofile(root..'sv_climber.lua');dofile(root..'sv_enemy_pursuit.lua');dofile(root..'sv_enemy_roster_placement.lua')
+dofile(root..'sv_enemy_roster.lua');dofile(root..'sv_enemy_patterns.lua');dofile(root..'sv_climber.lua');dofile(root..'sv_enemy_pursuit.lua');dofile(root..'sv_enemy_roster_placement.lua')
 local E,C=LOD.EnemyRoster,LOD.Climber
 for id,d in pairs(E.Definitions) do
     assert(LOD.Config.Encounter.Archetypes[id] and LOD.CombatRolls.HostileDamageProfiles[id])

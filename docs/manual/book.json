@@ -986,6 +986,28 @@
       ]
     },
     {
+      "id": "enemy-patterns",
+      "title": "Read the whole shot path",
+      "rows": [
+        [
+          "Caromer",
+          "The cyan Combine soldier draws a shot path with a diamond at its possible wall bank. After a 1.1-second warning, the physical projectile can ricochet once along the reflected line. Dodge the first lane and watch the second. New cover absorbs it; without a suitable wall it fires straight."
+        ],
+        [
+          "Reeler",
+          "The amber Metrocop warns along a fixed lane, then sends a shot beyond the position where it saw you. The shot pauses for three quarters of a second, marked by a hollow diamond, before returning to its original launch point. Sidestep, then stay clear until the return passes; cover stops either leg."
+        ],
+        [
+          "Forker",
+          "The mint-green Combine elite draws two parallel lanes for 1.2 seconds. Its paired shots leave the center open: hold that gap or move completely outside the lanes. There is no hidden middle shot. Cover and an interrupted wind-up can stop the volley."
+        ]
+      ],
+      "text": [
+        "Caromers appear with Shamblers, Reelers with Runners, and Forkers with Soldiers. Companions can pressure the safe space, so read both attack rhythms. These are physical shots governed by ordinary class defenses and conditions.",
+        "Hit-stun can cancel the warning. A shot already in flight keeps its frozen path; it never follows a moving Hero. Each pattern can damage a given Hero at most once, including both Forker lanes. Reduced effects retain the path warnings."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

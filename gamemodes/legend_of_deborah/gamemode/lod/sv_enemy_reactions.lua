@@ -8,18 +8,11 @@ R.Damage=R.Damage or setmetatable({}, {__mode="k"})
 local stages={pending=1,guard_warning=2,guard=3,attack=2,recovery=4,approach=5}
 local function state() return LOD.RunManager and LOD.RunManager.State end
 local function live(s) return s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen end
-local function identity(e) return Rules:ProgressionState(e) end
 function R:Capture(e,hero)
-    Status:BindActorLife(e);Status:BindActorLife(hero)
-    return E:Bind({source=e,hero=hero,sourceState=identity(e),heroState=identity(hero),
-        sourceLife=Status.ActorLives[e],heroLife=Status.ActorLives[hero]},state())
+    return E:CaptureLife(e,hero)
 end
 function R:ValidLife(r)
-    return r and live(state()) and E:Live(r,state()) and IsValid(r.source) and not r.source.LODDead
-        and r.source:Health()>0 and r.source.LODActivated and E:Target(r.hero)
-        and (not r.source.LODRosterContext or E:Live(r.source.LODRosterContext,state()))
-        and identity(r.source)==r.sourceState and identity(r.hero)==r.heroState
-        and Status.ActorLives[r.source]==r.sourceLife and Status.ActorLives[r.hero]==r.heroLife
+    return E:ValidLife(r)
 end
 function R:CanAct(e,allowHitStun)
     return IsValid(e) and not e.LODDead and e:Health()>0 and e.LODActivated

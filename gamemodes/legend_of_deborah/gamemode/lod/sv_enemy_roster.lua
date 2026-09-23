@@ -24,6 +24,9 @@ E.Definitions={
     pavise={name="Pavise",model="models/combine_super_soldier.mdl",baseHP=65,speed=110,damage=5.5,range=600,warning=.7,recovery=2.4,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(165,190,215),dice={1,6,2}},
     repriser={name="Repriser",model="models/police.mdl",baseHP=40,speed=145,damage=5.5,range=600,warning=.7,recovery=2.4,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(230,100,180),dice={1,6,2}},
     redliner={name="Redliner",model="models/combine_soldier.mdl",baseHP=50,speed=170,damage=5.5,range=600,warning=.7,recovery=2.4,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",reaction=true,color=Color(215,65,45),dice={1,6,2}},
+    caromer={name="Caromer",model="models/combine_soldier.mdl",baseHP=40,speed=125,damage=5.5,range=720,warning=1.1,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="bank",color=Color(90,210,240),dice={1,6,2}},
+    reeler={name="Reeler",model="models/police.mdl",baseHP=40,speed=145,damage=5.5,range=600,warning=1.1,recovery=3.5,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="return",color=Color(235,180,95),dice={1,6,2}},
+    forker={name="Forker",model="models/combine_super_soldier.mdl",baseHP=55,speed=110,damage=5.5,range=600,warning=1.2,recovery=3.2,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pattern="split",color=Color(150,240,180),dice={1,6,2}},
     waylayer={name="Waylayer",model="models/combine_super_soldier.mdl",baseHP=55,speed=145,damage=5.5,range=520,warning=.8,recovery=2.8,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pursuit=true,color=Color(245,145,65),dice={1,6,2}}
 }
 for id,d in pairs(E.Definitions) do
@@ -51,10 +54,27 @@ function E:Live(record,s)
         and record.progression==(s.Graph and s.Graph.Progression) and record.epoch==s.CampaignEpoch
         and record.campaignSeed==s.CampaignSeed and record.runId==s.RunId
 end
+-- Shared incarnation binding for finite roster commitments; no new life owner.
+function E:CaptureLife(e,hero)
+    local status,rules=LOD.RPGStatusElements,LOD.RPGAbilityRules
+    status:BindActorLife(e);status:BindActorLife(hero)
+    return self:Bind({source=e,hero=hero,sourceState=rules:ProgressionState(e),heroState=rules:ProgressionState(hero),
+        sourceLife=status.ActorLives[e],heroLife=status.ActorLives[hero]},state())
+end
+function E:ValidLife(r)
+    local s=state();local status,rules=LOD.RPGStatusElements,LOD.RPGAbilityRules
+    return r and s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
+        and self:Live(r,s) and IsValid(r.source) and not r.source.LODDead
+        and r.source:Health()>0 and r.source.LODActivated and self:Target(r.hero)
+        and (not r.source.LODRosterContext or self:Live(r.source.LODRosterContext,s))
+        and rules:ProgressionState(r.source)==r.sourceState and rules:ProgressionState(r.hero)==r.heroState
+        and status.ActorLives[r.source]==r.sourceLife and status.ActorLives[r.hero]==r.heroLife
+end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
+    return statuses:CanInitiateAttack(e) and (not (d and d.pattern) or not statuses:Has(e,"morale_flee"))
+        and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
 function E:AcquireTarget(p) return LOD.FactionManager:CanAcquirePlayerTarget(p) end
@@ -108,6 +128,7 @@ function E:Damage(e,p,event,kind)
     event.roll=event.roll or rolls:RollHostileAttack(e,profile,e.LODConfig.burstDamage)
     local c={};for k,v in pairs(event.roll) do c[k]=v end
     if e.LODSkeletonHero and event.skeletonFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.skeletonFullMagicBonus end
+    if event.impactOrigin then c.sourcePosition=event.impactOrigin end
     local d=self.Definitions[e.LODArchetypeId]
     local magic=kind=="arc" or kind=="beam" or (d and d.contentId~=nil)
     local rider=(kind=="flame" and "immolated") or (kind=="venom" and "poisoned") or nil
@@ -148,6 +169,10 @@ function E:Begin(e,p,now,override)
         range=override.range or cfg.fireRange,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
     self:Bind(a,state())
+    if d.pattern then
+        if not self:PlanPattern(e,a,d.pattern) then e.LODNextAttack=now+.5;return false end
+        a.patternLife=self:CaptureLife(e,p);a.deadline=a.ready+.2
+    end
     if d.reaction and LOD.EnemyReactions then a.reactionRecord=override.reactionRecord or LOD.EnemyReactions:Capture(e,p) end
     if d.pursuit and LOD.EnemyPursuit then
         a.pursuitRecord=LOD.EnemyPursuit:Capture(e,p)
@@ -177,6 +202,7 @@ function E:Finish(e,now)
     if attack and LOD.EnemyPursuit then LOD.EnemyPursuit:AfterAttack(e,attack,now) end
 end
 function E:Release(e,a,now)
+    if a.patternLife and (not self:ValidLife(a.patternLife) or now>a.deadline) then return false end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then return false end
     if a.pursuitRecord and not LOD.EnemyPursuit:ValidCharge(a.pursuitRecord) then return false end
     if a.released or (e.LODSkeletonHero and a.skeletonCommitting) then return false end
@@ -189,7 +215,9 @@ function E:Release(e,a,now)
     e:SetNW2Float("LOD_RosterFinish",a.finish)
     -- Release is finite: an emitted looping flame asset outlives this attack.
     e:EmitSound(a.kind=="flame" and "ambient/fire/ignite.wav" or (a.kind=="venom" and "npc/barnacle/barnacle_digesting1.wav" or "ambient/energy/weld2.wav"),74,100,.7)
-    if a.kind=="bullet" or a.kind=="venom" or a.kind=="bolt" then
+    if a.pattern then
+        self:ReleasePattern(e,a,now)
+    elseif a.kind=="bullet" or a.kind=="venom" or a.kind=="bolt" then
         if #self.Projectiles<64 then
             local speed=a.kind=="bullet" and 950 or (a.kind=="bolt" and 540 or 380)
             local q={owner=e,pos=a.origin,velocity=a.direction*speed,
@@ -204,6 +232,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.patternLife and (not self:ValidLife(a.patternLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then self:Finish(e,now);return end
     if a.pursuitRecord and not (a.released and LOD.EnemyPursuit:ValidLife(a.pursuitRecord)
         or not a.released and LOD.EnemyPursuit:ValidCharge(a.pursuitRecord)) then self:Finish(e,now);return end
@@ -313,7 +342,7 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
@@ -341,7 +370,8 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     if LOD.EnemySupport then LOD.EnemySupport:Service(now,active) end
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Service(now,active) end
     for e in pairs(E.Active) do
-        if not IsValid(e) or e.LODDead then E.Active[e]=nil
+        if not IsValid(e) then E.Active[e]=nil
+        elseif e.LODDead then E:Cancel(e);E.Active[e]=nil
         elseif not active then E:Cancel(e)
         elseif e.LODRosterAttack then
             local a=e.LODRosterAttack
@@ -355,6 +385,9 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
         if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires
             and (not q.reactionRecord or LOD.EnemyReactions:ValidLife(q.reactionRecord))
             and (not q.pursuitRecord or LOD.EnemyPursuit:ValidLife(q.pursuitRecord)) then
+            if q.pattern then
+                if E:ValidLife(q.patternLife) and E:StepPattern(q,now,dt) then kept[#kept+1]=q end
+            else
             local finish=q.pos+q.velocity*dt
             local radius=(q.kind=="venom" or q.kind=="bolt") and 7 or 2
             local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SOLID,
@@ -363,13 +396,14 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
                 if E:Target(tr.Entity) then E:Damage(q.owner,tr.Entity,q.event,q.kind) end
                 local fx=EffectData();fx:SetOrigin(tr.HitPos);util.Effect(q.kind=="venom" and "cball_explode" or "Sparks",fx,true,true)
             else q.pos=finish;kept[#kept+1]=q end
+            end
         end
     end
     E.Projectiles=kept
     if active and (#kept>0 or E.HadProjectiles) and now>=(E.NextSync or 0) then
         E.HadProjectiles=#kept>0
         E.NextSync=now+.1;net.Start("LOD_RosterProjectiles");net.WriteUInt(#kept,7)
-        for _,q in ipairs(kept) do net.WriteVector(q.pos);net.WriteVector(q.velocity);net.WriteUInt(q.kind=="venom" and 1 or (q.kind=="bolt" and 2 or 0),2) end
+        for _,q in ipairs(kept) do net.WriteVector(q.pos);net.WriteVector(q.velocity);net.WriteUInt(q.pattern and 3 or (q.kind=="venom" and 1 or (q.kind=="bolt" and 2 or 0)),2) end
         net.Broadcast()
     end
 end)
@@ -398,6 +432,9 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         pavise={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         repriser={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         redliner={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        caromer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        reeler={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
+        forker={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         waylayer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"}
     }
     for id,b in pairs(banks) do LOD.CombatAudio:RegisterHostileProfile(id,{pain={b[1]},death={b[2]},

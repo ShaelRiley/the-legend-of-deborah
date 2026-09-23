@@ -88,7 +88,7 @@ function Validation:Run(printResult)
         "razor", "arccaster", "nodule", "lurker", "beamsweeper", "gaoler",
         "silencer", "repulsor", "stitcher", "bulwark", "cantor",
         "pincer", "harrier", "waylayer",
-        "pavise", "repriser", "redliner",
+        "pavise", "repriser", "redliner", "caromer", "reeler", "forker",
         "neil", "brute", "warden", "hector"
     }
     if countKeys(RPG.ArchetypeProgressionTemplates) ~= #expectedArchetypes then

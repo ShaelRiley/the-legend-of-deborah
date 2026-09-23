@@ -72,7 +72,96 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B4: self-defense and reaction cohort
+## Current checkpoint — B5: projectile-pattern cohort
+
+Built on verified remote `7c625e074d2921f30e0303d96d3d0d093bf11d8e`.
+**Caromer, Reeler and Forker** bring the normal roster to **33/63**:
+frozen baseline18, **15/45 additions banked**, **30 remain**.
+
+**Playable scope:** Caromer warns a frozen shot path with one possible reflected
+wall leg; absent suitable geometry it fires straight. Reeler sends a shot beyond
+the observed Hero, pauses0.75s, then retraces the exact path to its original
+launch point. Forker fires two warned parallel lanes with128-unit separation and
+an open center. Cover and pre-release interruption remain counterplay. Production
+pairs: Caromer+Shambler, Reeler+Runner, Forker+Soldier; sector2+ arena/ambush,
+one specialist per composition. Each owns canonical generated classes, usable
+physical feats, HP, XP, normal rewards and unified spawning. No wandering weights.
+Exact tuning and frozen counting contract are in BESTIARY_EXPANSION.md.
+
+**Authorities/lifecycle:** trajectory policy extends EnemyRoster's existing
+projectile list and service. No native projectile entities, scheduler, damage/
+status/reward authority or gameplay RNG is added. Shared64-shot ceiling with
+atomic two-slot admission; at most4 planning hull traces+2 release checks, then
+one sweep per moving shot per service. One pattern attack/dice contract and
+per-Hero ledger prevent double settlement across volley lanes. Incoming direction
+uses the actual swept segment origin. Fixed hard expiry is path length/speed+
+pause+0.2s; warning release grace0.2s; invalid preflight retries after0.5s.
+B4's exact source/Hero life binding moved to shared roster helpers and remains
+behaviorally intact. Charge/flight retire on actor life/progression and exact
+run/graph/progression/campaign replacement, including same-seed rebuilds.
+Emitted shots survive ordinary interruption; Held/Muted permit physical fire.
+New cover absorbs; no target tracking, recursive banks or catch-up trace loops.
+
+**Review repairs:** clear pending attacks when dead valid actors leave the active
+registry. Cancel B5 warnings when canonical morale fleeing begins. Preserve
+actual frozen path parity in client rendering and hide a bank diamond when no
+reflected leg exists. Forker rechecks both launch offsets before any emission,
+so changed cover or insufficient capacity cannot produce a half-volley.
+
+**Design/manual:** live GDD00→01→02/03/05/07 governed B5.
+LOD-BESTIARY-B5-001 records mechanics, production and tuning in03/05/07;
+substantive amendments and current roadmap summaries are read-back verified.
+Canonical manual149 chapters/31 transport chunks explains the bank, return and
+parallel-gap tactics. Exact server paths, return arrow, bank/turnaround diamonds,
+full/reduced geometry and finite tell expiry use the existing render/transport
+owners. Type3 fits the existing two-bit projectile field.
+
+**Validation:** one required `python3 tools/test_checkpoint_g_integration.py`
+run passed **all163 suites, zero failures**. No broad rerun was needed.
+Fresh coverage includes B1–B4, all retained bosses/finale/succession/Abundance/
+cash regressions, shared combat/status/progression/rewards, syntax/release wiring
+and manual readers/transport. Final `git diff --check` passes.
+
+B5 tests exercise actual roster AI→warning→release→shared projectile service;
+one bank with matching/removed/changed/second-wall cases, fixed return and pause,
+real swept safe center and side-lane hits, shared physical roll→GM mitigation→
+one native-doubled HP settlement, duplicate-lane rejection, atomic pool cap,
+blocked/newly-covered offsets, fixed deadlines and bounded work. Full cohort
+charge/flight lifecycle cases include source/Hero progression/status-life,
+exact state/graph/progression/campaign/seed, freeze/failure/clear/death/removal/
+disconnect, interruption, Held/Muted and expiry. Client snapshot geometry, death/
+cancel/deadline hiding and paused-return diamond pass at full/reduced effects.
+Production gate covers48 generated actor seeds, real unified spawn/variance/
+class/usable feats/HP/XP, ceiling preflight, retries and singleton enrichment.
+
+Targeted sampling passed **512 deterministic plans /4930 encounters**,32
+independently generated mazes, parties1–4, dungeons1–5. Planned/legal/early:
+**Caromer65/65/23, Reeler62/61/19, Forker50/47/13**. All prior cohort exposure
+thresholds remain passing; intended companions and single specialists persist.
+Collision/entities/native HP application/rendering/network transport remain
+boundary doubles. Automated evidence does not imply native Source acceptance.
+
+**Native checks retained:** after the ordered phases, on gm_flatgrass observe
+actual paired encounters, one-bank collision normals, missed bank geometry,
+changing container/gate cover, delayed return timing and frozen destination,
+parallel-gap readability/practical width, scaled actor poses/audio, full/reduced
+warnings, real networking and1–4-player balance. Exercise source/target death,
+revival/reconnect, interruption/freeze/reset/same-seed replacement and single
+XP/loot settlement. Retain previous cohorts, all bosses/finale/sole Deborah
+succession/Abundance/Level21 cash progression. Capture console_latest.txt +
+rpg_summary_latest.txt. No VPS deployment or Workshop publication.
+
+## Next checkpoint — B6: trap-and-escape cohort
+
+Proposed finite tripwire, delayed proximity snare and destructible pressure node;
+target36/63 only for distinct validated production identities. Reconcile current
+hazard/status/geometry/damage/lifecycle owners, distinguish from Gaoler/Arc Caster/
+Nodule and existing environmental traps, author exact mechanics/tuning in the
+GDD and preserve finite workload, legible escape/counterplay and body budgets.
+These are proposals, not authored mechanics. Complete B6 only; retain whole-phase
+campaign-aware director ecology and do not begin Big Loot or Events.
+
+## Previous checkpoint — B4: self-defense and reaction cohort
 
 Built on verified remote `965d857e8dbbb62a0dfbf313e3d366741cef9ce2`.
 **Pavise, Repriser and Redliner** bring the normal roster to **30/63**:
@@ -157,16 +246,6 @@ and1–4-player balance. Include death/revival/reconnect/freeze/reset/same-seed
 replacement, single XP/loot settlement and prior cohorts/bosses/finale/sole Deborah
 succession/Abundance/Level21 cash progression. Capture console_latest.txt +
 rpg_summary_latest.txt. No VPS deployment or Workshop publication.
-
-## Next checkpoint — B5: projectile-pattern cohort
-
-Proposed bounded ricochet, delayed return-path shot and split-lane volley with
-readable safe lane; target33/63 only if genuinely distinct production identities.
-Reconcile canonical projectile/geometry/damage and life ownership, distinguish
-from Blitzer/Sniper/basic bullets, author exact tuning in the GDD and preserve
-warning, cover and trace/projectile/dice budgets. These are proposals, not authored
-or implemented mechanics. Complete B5 only, retain the whole-phase campaign-aware
-director ecology exit, and do not begin Big Loot or Events.
 
 ## Previous checkpoint — B3: flank and pursuit cohort
 

@@ -8,6 +8,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70),
     stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70),
     pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65),
+    caromer=Color(90,210,240),reeler=Color(235,180,95),forker=Color(150,240,180),
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
@@ -39,10 +40,16 @@ hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth
     for _,q in ipairs(projectiles) do
         local pos=q.pos+q.velocity*math.min(.1,CurTime()-received)
         if EyePos():DistToSqr(pos)<2400^2 then
-            local c=q.kind==1 and colors.lurker or (q.kind==2 and colors.silencer or colors.sentry)
+            local c=q.kind==3 and colors.reeler or (q.kind==1 and colors.lurker or (q.kind==2 and colors.silencer or colors.sentry))
             local wide=q.kind~=0
             render.SetMaterial(glow);render.DrawSprite(pos,wide and 24 or 10,wide and 24 or 10,c)
             render.SetMaterial(beam);render.DrawBeam(pos-q.velocity:GetNormalized()*24,pos,wide and 5 or 2,0,1,c)
+            if q.kind==3 and q.velocity:LengthSqr()==0 then
+                -- A hollow diamond marks Reeler's brief turnaround, even at reduced effects.
+                local side=(EyePos()-pos):Angle():Right()*13;local up=Vector(0,0,13)
+                render.DrawBeam(pos+up,pos+side,2,0,1,c);render.DrawBeam(pos+side,pos-up,2,0,1,c)
+                render.DrawBeam(pos-up,pos-side,2,0,1,c);render.DrawBeam(pos-side,pos+up,2,0,1,c)
+            end
         end
     end
 end)
@@ -188,6 +195,29 @@ function V:Reaction(e)
         end
     end
 end
+-- The visible polyline is exactly the frozen server trajectory, including the
+-- bank and both parallel lane origins. No client geometry guess or target tracking.
+function V:Pattern(e)
+    local mode=e:GetNW2Int("LOD_PatternMode",0)
+    if mode<1 or mode>3 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or e:GetNW2Int("LOD_RosterAttack",0)==0 or CurTime()>=e:GetNW2Float("LOD_PatternUntil",0) then return end
+    local color=({colors.caromer,colors.reeler,colors.forker})[mode]
+    local a=e:GetNW2Vector("LOD_PatternStart",e:GetPos());local b=e:GetNW2Vector("LOD_PatternEnd",a)
+    local c=e:GetNW2Vector("LOD_PatternSecondStart",b);local d=e:GetNW2Vector("LOD_PatternSecondEnd",c)
+    render.SetMaterial(beam)
+    render.DrawBeam(a,b,2,0,1,color);render.DrawBeam(c,d,2,0,1,color)
+    if mode==2 then
+        local dir=(b-a):GetNormalized();local side=Vector(-dir.y,dir.x,0)
+        local tip=b-dir*20
+        render.DrawBeam(tip,tip+dir*16+side*12,3,0,1,color)
+        render.DrawBeam(tip,tip+dir*16-side*12,3,0,1,color)
+    elseif mode==1 and c:DistToSqr(d)>0 then
+        -- Diamond at the bank distinguishes a bend from a second unrelated shot.
+        local side=(EyePos()-b):Angle():Right()*10;local up=Vector(0,0,10)
+        render.DrawBeam(b+up,b+side,2,0,1,color);render.DrawBeam(b+side,b-up,2,0,1,color)
+        render.DrawBeam(b-up,b-side,2,0,1,color);render.DrawBeam(b-side,b+up,2,0,1,color)
+    end
+end
 function V:Draw(e,size)
     self:Support(e)
     self:Pursuit(e)
@@ -196,6 +226,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
     local origin=e:GetNW2Vector("LOD_RosterOrigin",e:GetPos())
     local aim=e:GetNW2Vector("LOD_RosterAim",origin)
     local range=e:GetNW2Float("LOD_RosterRange",280)

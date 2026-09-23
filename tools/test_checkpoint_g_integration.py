@@ -79,6 +79,8 @@ SUITES = [
     ("Bestiary B3 Flank Pursuit & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b3.lua"]),
     ("Bestiary B4 Self Defense & Reaction Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b4.lua"]),
     ("Bestiary B4 Production Progression & Spawn", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b4_production.lua"]),
+    ("Bestiary B5 Projectile Patterns & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b5.lua"]),
+    ("Bestiary B5 Production Progression & Spawn", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b5_production.lua"]),
     ("Gordon Arena & Encounter Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_warden.lua"]),
     ("Gordon Ordered Health Scaling", ["python3", "tools/run_lua54.py", "tools/test_warden_health.lua"]),
     ("Neil, Brute & Black Gate Hunt", ["python3", "tools/run_lua54.py", "tools/test_neil_brute.lua"]),

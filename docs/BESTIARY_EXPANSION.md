@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B4
+# Bestiary expansion — frozen baseline through B5
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B4 add twelve identities: **30/63**, or **12/45 additions**; **33 remain**.
+B1–B5 add fifteen identities: **33/63**, or **15/45 additions**; **30 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -255,3 +255,65 @@ Complete only B5 next, retaining further tactical-family expansion and the
 whole-phase campaign-aware director: themes, novelty memory, topology, pacing and
 quantitative coverage. Finish Bestiary before Big Loot, Events and the three
 audits, then human playtest. Native acceptance does not block that phase order.
+
+## B5 — projectile-pattern cohort
+
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `caromer` / Caromer | Cyan Combine soldier warns the complete path, including one possible wall bank. Sidestep, then watch the reflected lane. New cover absorbs; unsuitable bank geometry gives a straight shot. | Caromer + Shambler. |
+| `reeler` / Reeler | Amber Metrocop sends a warned shot beyond the observed Hero position, pauses at its endpoint for 0.75s, then retraces the frozen line. Dodge and wait for the return; cover consumes either leg. | Reeler + Runner. |
+| `forker` / Forker | Mint Combine elite warns two parallel lanes with a broad central gap. Stay in that gap or leave both lanes; no hidden center projectile. Offset cover denies the whole volley. | Forker + Soldier. |
+
+Templates `caromer_screen`, `reeler_chase`, `forker_crossfire` enter sector-2+
+arena/ambush selection, one specialist per composition, ordinary companion
+scaling, no wandering weights. Unified spawning appends the three IDs without
+reordering old ordinals. Each has canonical generated classes, usable physical
+feats, HP growth, XP and ordinary single reward settlement.
+
+Reference HP/speed/target range/warning/recovery/threat:
+Caromer40/125/720/1.1s/3s/3.5; Reeler40/145/600/1.1s/3.5s/3.5;
+Forker55/110/600/1.2s/3.2s/4. All use shared physical1d6+2.
+Progression rows in STR/DEX/CON/INT/WIS/CHA order; Fighter/Rogue/Wizard weights;
+progression hit die; base XP; morale:
+Caromer11/13/11/12/10/9;40/60/0;d8;50;5.
+Reeler10/15/10/12/11/10;25/75/0;d8;50;5.
+Forker13/11/13/10/12/9;65/35/0;d10;55;6.
+No offensive Magic capability or new stat/damage multipliers.
+
+Caromer speed620, first leg up to900, total path<=1100, suitable vertical bank
+normal abs(z)<=0.25, minimum first/reflected legs96. Exactly one matching
+warned-surface reflection; missing/changed/new/second cover cannot create another
+bank. Reeler speed480, outbound min(640, observed distance+96), pause0.75s,
+then exact return to launch point. Forker speed600, offsets±64, parallel lanes
+up to640; 128-unit centerline separation with radius2 projectile hulls.
+Geometry clips paths four units short of ordinary cover; bank restarts four
+units off its matched surface and probes at most two units into that endpoint.
+
+Shared `EnemyRoster` retains the projectile list,0.025s service,0.05s maximum
+step and64-shot ceiling; two-slot volleys are atomic. `sv_enemy_patterns.lua`
+is trajectory policy only. At most4 planning hull traces plus2 offset-release
+checks per commitment, at most1 sweep per moving shot per service, no catch-up
+loops, new native projectile bodies, entity scans or RNG calls. Hard expiry is
+summed path length/speed+pause+0.2s; warning release grace0.2s; failed geometry
+retries after0.5s. One shared attack/dice contract and target ledger give at most
+one damage packet per Hero across both volley lanes. Incoming direction uses the
+actual swept segment origin, not the shooter's later position.
+
+B4's exact-life capture/validation is promoted to the roster and reused by both
+cohorts, preserving its contract. Source/Hero progression and status-life plus
+exact run/graph/progression/campaign scope retire stale charges and shots,
+including same-seed rebuilds. Pre-release hit-stun, lost acquisition/cover,
+Intimidated or fleeing cancels; Held/Muted permit physical fire. Emitted shots
+survive ordinary interruption and lost acquisition, but retire on life/dungeon
+replacement, death/removal, freeze/failure/clear and expiry. Dead valid actors
+also clear their pending attack when removed from the active registry.
+
+Client snapshots show exact frozen paths, an actual bank diamond, return arrow,
+parallel gap and paused-return diamond. Existing two-bit projectile type3 carries
+B5 shots without expanding the wire layout. Geometry remains in reduced effects;
+warning and packet deadlines hide stale tells. No extra rendering scan.
+
+See the current plan for measured validation and retained native checks. This
+checkpoint does not complete the whole Bestiary update or its campaign-aware
+director ecology. Next: B6 trap-and-escape cohort, target36/63 only for distinct
+validated production identities; candidate mechanics are proposals until authored.
