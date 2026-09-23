@@ -633,11 +633,16 @@
         [
           "Rebuff · ring",
           "← ↓ → · 20 Magic · 4-second cooldown"
+        ],
+        [
+          "Psychic Crush · Crown of Psychic Crushing",
+          "↓ ↑ ↓ · 18 Magic · 4-second cooldown"
         ]
       ],
       "text": [
         "Quickstep dashes forward up to 90 units over 0.2 seconds; walls stop it. Ordinary voluntary-speed Dodge rules apply. It is not permission to cross a locked gate.",
         "Rebuff sends a one-cell burst of 1d6 untyped Magic, followed by a 96-unit Push attempt against surviving damaged enemies.",
+        "Psychic Crush targets the nearest visible enemy within two connected maze cells. Closed gates and solid cover block it. It deals 2d8 plus your Wisdom bonus as Magic; the enemy makes a Wisdom save for half damage. The die readout identifies the target and save. With no valid target, you spend no Magic. The Crown is at least Rare and its innate power is included in its value.",
         "You must equip an item that grants the move. Enter its sequence with the arrow keys. The default alternate keys map Up to [, Down to comma, Left to semicolon, and Right to backslash. Rebind those mirror keys in Equipment if needed.",
         "Pause more than 0.8 seconds between inputs and the sequence resets. An unavailable move, insufficient Magic, or an active cooldown cannot be bypassed by entering the combination faster."
       ]

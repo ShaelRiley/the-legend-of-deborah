@@ -54,6 +54,7 @@ for serial=1,600 do
     end
 end
 for _,family in ipairs(E.FamilyOrder) do assert(families[family],'Natural wearable family: '..family) end
+for _,family in ipairs(E.InnateFamilyOrder or {}) do assert(families[family],'Natural innate family: '..family) end
 assert((potions.healing_potion or 0)>150 and (potions.stink_bomb or 0)>20,
     'Eligible potion drops include Healing Potions and Stink Bombs')
 Loot.SpawnPickup=originalSpawn

@@ -16,8 +16,9 @@ end
 function E:MoveSession(ply)
     local ps = Run:GetPlayerState(ply)
     local session = self.MoveSessions[ply]
-    if not session or session.ps ~= ps or session.run ~= Run.State or session.levelSeed ~= Run.State.LevelSeed then
-        session={ps=ps,run=Run.State,levelSeed=Run.State.LevelSeed,tokens={},cooldowns={}}
+    if not session or session.ps ~= ps or session.run ~= Run.State or session.levelSeed ~= Run.State.LevelSeed
+        or session.life ~= (ps and ps.equipmentLifeSerial) then
+        session={ps=ps,run=Run.State,levelSeed=Run.State.LevelSeed,life=ps and ps.equipmentLifeSerial,tokens={},cooldowns={}}
         self.MoveSessions[ply]=session
     end
     return session
@@ -71,48 +72,84 @@ function Rules:ApplyVoluntaryDash(ply, data)
     data:SetVelocity(dash.direction*speed+Vector(0,0,velocity.z))
 end
 
+-- Handlers preflight before the single resource/cooldown commit, then resolve
+-- through shared authorities. New items register here instead of new listeners.
+E.MoveHandlers = {
+    dash = {
+        prepare=function(ply,move)
+            return Rules:BeginVoluntaryDash(ply,move) and {} or nil
+        end,
+        resolve=function() end
+    },
+    burst = {
+        prepare=function(ply,move) return Forms:_NewContext(ply,move,nil) end,
+        resolve=function(ply,move,context)
+            for _, target in ipairs(Forms:_BlastTargets(ply,move.cells)) do
+                local before=target:Health()
+                local direction=(target:GetPos()-ply:GetPos()):GetNormalized()
+                Forms:_ApplyDamage(ply,ply,target,move,nil,context,direction)
+                if IsValid(target) and not target.LODDead and target:Health()>0 and target:Health()<before then
+                    LOD.Pushback:Apply(target,{attacker=ply,origin=ply:GetPos(),direction=direction,
+                        distance=move.push,source=move.name,magicPush=true})
+                end
+            end
+        end
+    },
+    nearest = {
+        prepare=function(ply,move)
+            local nearest,distance
+            -- Same graph reachability, cover and faction rules as Blast.
+            for _,target in ipairs(Forms:_BlastTargets(ply,move.cells)) do
+                local d=target:GetPos():DistToSqr(ply:GetPos())
+                if not distance or d<distance or d==distance and target:EntIndex()<nearest:EntIndex() then
+                    nearest,distance=target,d
+                end
+            end
+            if not nearest then
+                E:Report(ply,move.name.." — no visible enemy in reach", "special_move_rejected")
+                return nil
+            end
+            local context=Forms:_NewContext(ply,move,nil)
+            context.selectedTarget=nearest
+            return context
+        end,
+        resolve=function(ply,move,context)
+            local target=context.selectedTarget
+            Forms:_ApplyDamage(ply,ply,target,move,nil,context,(target:GetPos()-ply:GetPos()):GetNormalized())
+        end
+    }
+}
+
 function E:ExecuteMove(ply, id, session)
     local move=self.SpecialMoves[id]
     if not move or not self:CanAct(ply) or self:IsActive(ply) then return false end
+    -- An old call/session cannot spend the resources of a fresh Hero/life/run.
+    if session~=self:MoveSession(ply) then return false end
     local status=LOD.RPGStatusElements
     if not status:CanInitiateMagic(ply) then return false end
     local _,grants=self:Contributions(session.ps.equipment)
-    if not grants[id] or CurTime() < (session.cooldowns[id] or 0) then return false end
-    local cost=move.effect == "burst" and Rules.OffensiveMagicCost
+    local handler=self.MoveHandlers[move.effect]
+    if not handler or not grants[id] or CurTime() < (session.cooldowns[id] or 0) then return false end
+    local offensive=move.offensive or move.effect=="burst"
+    local cost=offensive and Rules.OffensiveMagicCost
         and Rules:OffensiveMagicCost(ply,move.magicCost) or move.magicCost
     local resource=Magic:_EnsureState(ply)
     if not resource or resource.magic < cost then
         self:Report(ply,move.name.." — insufficient Magic", "special_move_rejected"); return false
     end
-    local context
-    if move.effect == "dash" then
-        if not Rules:BeginVoluntaryDash(ply,move) then return false end
-    elseif move.effect == "burst" then
-        context=Forms:_NewContext(ply,move,nil)
-        context.castSerial=Forms:_NextCastSerial(ply)
-    else return false end
-    context=context or {}
+    local context=handler.prepare(ply,move)
+    if not context then return false end
+    if offensive then context.castSerial=Forms:_NextCastSerial(ply) end
     if LOD.RPG.PrepareCheckpointDAuraBurst then context.auraBurst=LOD.RPG:PrepareCheckpointDAuraBurst(ply) end
     resource.magic=resource.magic-cost
     session.cooldowns[id]=CurTime()+move.cooldown
     Magic:_Sync(ply,resource)
-    if move.effect == "burst" then
-        local targets=Forms:_BlastTargets(ply,move.cells)
-        for _, target in ipairs(targets) do
-            local before=target:Health()
-            local direction=(target:GetPos()-ply:GetPos()):GetNormalized()
-            Forms:_ApplyDamage(ply,ply,target,move,nil,context,direction)
-            if IsValid(target) and not target.LODDead and target:Health()>0 and target:Health()<before then
-                LOD.Pushback:Apply(target,{attacker=ply,origin=ply:GetPos(),direction=direction,
-                    distance=move.push,source="Rebuff",magicPush=true})
-            end
-        end
-    end
+    handler.resolve(ply,move,context)
     local effects=LOD.RPG.FeatEffectSystem
-    if move.effect == "burst" and effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply,move.magicCost,cost) end
+    if offensive and effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply,move.magicCost,cost) end
     hook.Run("LODDiscreteMagicSpent",ply,cost,context)
     ply:EmitSound(move.effect == "dash" and "weapons/iceaxe/iceaxe_swing1.wav" or "weapons/physcannon/energy_sing_explosion2.wav",60,115,0.4)
-    net.Start("LOD_SpecialMoveFX"); net.WriteEntity(ply); net.WriteString(id); net.Broadcast()
+    net.Start("LOD_SpecialMoveFX"); net.WriteEntity(ply); net.WriteString(id); net.WriteEntity(IsValid(context.selectedTarget) and context.selectedTarget or NULL); net.Broadcast()
     self:Report(ply,string.format("%s — %g Magic spent / %.1f remaining",move.name,cost,resource.magic),"special_move_"..id)
     return true
 end
@@ -123,21 +160,40 @@ function E:DirectionToken(ply, token)
         return false
     end
     local session=self:MoveSession(ply)
+    local _,grants=self:Contributions(session.ps.equipment)
+    local owned={}
+    for _,id in ipairs(self.MoveOrder) do if grants[id] then owned[#owned+1]=id end end
+    -- Swapping gear cannot complete a recipe begun under another capability set.
+    local signature=table.concat(owned,"|")
+    if session.grants~=signature then session.tokens={};session.grants=signature end
     if token == "RESET" then session.tokens={}; return false end
     if token ~= "UP" and token ~= "DOWN" and token ~= "LEFT" and token ~= "RIGHT" then return false end
     local now=CurTime()
     if now-(session.lastToken or -math.huge)>self.InputTimeout then session.tokens={} end
     session.lastToken=now
     session.tokens[#session.tokens+1]=token
-    while #session.tokens>3 do table.remove(session.tokens,1) end
-    for _, id in ipairs(self.MoveOrder) do
+    -- Bounded suffix recognition allows different recipe lengths and ignores
+    -- leading noise. Only owned abilities compete; ties use registry order.
+    local maximum=0
+    for _,id in ipairs(owned) do maximum=math.max(maximum,math.min(8,#self.SpecialMoves[id].recipe)) end
+    while #session.tokens>maximum do table.remove(session.tokens,1) end
+    local selected,length
+    for _,id in ipairs(owned) do
         local recipe=self.SpecialMoves[id].recipe
-        local match=#session.tokens==#recipe
-        for i,value in ipairs(recipe) do if session.tokens[i]~=value then match=false end end
+        local n=#recipe
+        local match=n>0 and n<=8 and #session.tokens>=n
         if match then
-            session.tokens={}
-            return self:ExecuteMove(ply,id,session)
+            for i,value in ipairs(recipe) do
+                if session.tokens[#session.tokens-n+i]~=value then match=false;break end
+            end
         end
+        if match and (not length or n>length) then selected,length=id,n end
+    end
+    if selected then
+        session.tokens={}
+        -- Never fall through to a second move because the chosen one is on
+        -- cooldown or lacks Magic; each completed recipe makes one attempt.
+        return self:ExecuteMove(ply,selected,session)
     end
     return false
 end

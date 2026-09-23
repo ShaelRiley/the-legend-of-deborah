@@ -13,6 +13,31 @@ for i, class in ipairs(E.WeaponFamilies) do
         model="models/weapons/"..weaponModels[i]..".mdl"}
     E.SlotOrder[#E.SlotOrder+1], E.SlotLabels[class] = class, weaponNames[i]
 end
+-- Innate techniques are authoritative definition grants, not permanent feats.
+-- Generic/frozen records retain their existing IDs, properties and valuation.
+E.SpecialMoves.psychic_crush = {id="psychic_crush", name="Psychic Crush", displayName="Psychic Crush",
+    recipe={"DOWN","UP","DOWN"}, glyphs="↓ ↑ ↓", magicCost=18, cooldown=4,
+    value=50, family="psychic_crown", innateOnly=true, effect="nearest", offensive=true,
+    cells=2, damageDice=2, damageSides=8, saveAbility="wis",
+    description="Crush the nearest visible, reachable enemy within two cells for 2d8 + WIS Magic; WIS save halves damage."}
+E.MoveOrder[#E.MoveOrder+1] = "psychic_crush"
+E.Definitions.psychic_crown = {name="Crown of Psychic Crushing", wearable=true, slots={"head"},
+    model="models/props_junk/cardboard_box004a.mdl", moves={"psychic_crush"}, minimumRarity=2}
+-- Preserve the original generator's random-family stream for recorded rewards.
+-- Newly rolled world rewards opt into innate families on a separate substream.
+E.InnateFamilyOrder = {"psychic_crown"}
+function E:RewardWearableFamily(seed)
+    local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
+    return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil
+end
+
+function E:InnateValue(family, quality)
+    local total=0
+    for _,id in ipairs(self.Definitions[family] and self.Definitions[family].moves or {}) do
+        total=total+self.SpecialMoves[id].value
+    end
+    return math.floor(total*(quality or 100)/100)
+end
 E.Rarities = {
     {name="Unusual", threshold=6500, factor=100, affixes=4},
     {name="Rare", threshold=9000, factor=120, affixes=5},
@@ -69,7 +94,9 @@ for _, id in ipairs(E.RiderOrder) do
 end
 for _, id in ipairs(E.MoveOrder) do
     local move=E.SpecialMoves[id]
-    property("move_"..id, {move=id,label=move.name,epithet=move.name,fixed=1,cost=move.value,family=move.family})
+    if not move.innateOnly then
+        property("move_"..id, {move=id,label=move.name,epithet=move.name,fixed=1,cost=move.value,family=move.family})
+    end
 end
 
 local function finite(value) return type(value)=="number" and value==value and math.abs(value)<math.huge end
@@ -77,7 +104,7 @@ function E:Budget(level, family, rarity, quality)
     local d=finite(level) and math.floor(level) or 1
     d=math.max(1,math.min(self.ScalingDungeonCap,d))
     local base=100+math.floor(12*math.sqrt(d-1)+4*math.log(d)/math.log(2))
-    return math.floor(base*(family=="gloves" and 2 or 1)*(self.Rarities[rarity or 1].factor/100)*(quality or 100)/100)
+    return math.floor(base*(family=="gloves" and 2 or 1)*(self.Rarities[rarity or 1].factor/100)*(quality or 100)/100)+self:InnateValue(family,quality)
 end
 function E:Magnitude(def, power)
     if def.fixed then return def.fixed end
@@ -92,10 +119,12 @@ function E:Value(item)
     for _,r in ipairs(item.properties or {}) do
         if r.amount>0 then positive=positive+r.power else negative=negative+r.power end
     end
-    return positive-math.min(negative,math.floor(item.budget*.2))
+    return positive-math.min(negative,math.floor(item.budget*.2))+self:InnateValue(item.definitionId,item.quality)
 end
 function E:ValidateWearable(item)
     if not item or item.version~=2 then
+        local definition=self:Definition(item)
+        if definition and definition.moves then return false end
         -- The old validator refers to self:Budget; bind its original schedule.
         local proxy=setmetatable({Budget=function(_,d,f)
             return (10+2*math.floor((math.max(1,math.min(100,math.floor(tonumber(d) or 1)))-1)/5))*(f=="gloves" and 2 or 1)
@@ -106,7 +135,7 @@ function E:ValidateWearable(item)
     if not def or not (def.wearable or def.weapon) or item.count~=1 or type(item.id)~="string"
         or #item.id>220 or not finite(item.dungeonLevel) or item.dungeonLevel<1
         or item.dungeonLevel>self.ScalingDungeonCap or item.dungeonLevel%1~=0
-        or not self.Rarities[item.rarity] or not finite(item.quality) or item.quality<90 or item.quality>110 or item.quality%1~=0
+        or not self.Rarities[item.rarity] or item.rarity<(def.minimumRarity or 1) or not finite(item.quality) or item.quality<90 or item.quality>110 or item.quality%1~=0
         or item.budget~=self:Budget(item.dungeonLevel,item.definitionId,item.rarity,item.quality)
         or type(item.properties)~="table" or #item.properties~=self.Rarities[item.rarity].affixes+1 then return false end
     local used, groups, positive, negative, elements, riders={},{},0,0,0,0
@@ -138,6 +167,7 @@ function E:Generate(seed, level, requestedFamily, contextId)
     if not def or not (def.wearable or def.weapon) then return nil end
     local rarityRoll,rarity=rng:Int(1,10000),1
     for i,r in ipairs(self.Rarities) do if rarityRoll<=r.threshold then rarity=i;break end end
+    rarity=math.max(rarity,def.minimumRarity or 1)
     local d=math.max(1,math.min(self.ScalingDungeonCap,math.floor(tonumber(level) or 1)))
     local item={version=2,id="gear2:"..tostring(contextId or seed)..":"..family,definitionId=family,count=1,
         seed=seed,dungeonLevel=d,rarity=rarity,quality=rng:Int(90,110),properties={}}
@@ -156,7 +186,7 @@ function E:Generate(seed, level, requestedFamily, contextId)
     local drawback=rng:Pick(negatives);local dp=self.EconomyProperties[drawback]
     local refund=dp.fixed and dp.cost or math.floor(item.budget*rng:Int(10,20)/100)
     add(drawback,refund,-1)
-    local remaining=item.budget+math.min(refund,math.floor(item.budget*.2))
+    local remaining=item.budget-self:InnateValue(family,item.quality)+math.min(refund,math.floor(item.budget*.2))
     local function choose(id)
         local p=self.EconomyProperties[id]; local power=p.fixed and p.cost or 6
         add(id,power);remaining=remaining-power
@@ -224,6 +254,10 @@ LOD.RuntimeReceipts.equipment_generator = "generator-jit-20260917-01"
 function E:Description(item, compact)
     if not item or item.version~=2 then return legacyDescription(self,item,compact) end
     local out={self.Rarities[item.rarity].name.." · Dungeon "..item.dungeonLevel}
+    for _,id in ipairs(self:Definition(item).moves or {}) do
+        local m=self.SpecialMoves[id]
+        out[#out+1]=m.name.." "..m.glyphs.." / "..m.magicCost.." Magic / "..m.cooldown.."s"..(compact and "" or " — "..m.description)
+    end
     for _,r in ipairs(item.properties) do
         local p=self.EconomyProperties[r.id]
         if p.move then local m=self.SpecialMoves[p.move]
@@ -244,6 +278,7 @@ function E:Contributions(state)
         local def=self:Definition(item)
         if item and not seen[id] and (not def.weapon or state.activeWeaponClass==def.weaponClass) then
             seen[id]=true
+            for _,move in ipairs(def.moves or {}) do moves[move]=true end
             for _,r in ipairs(item.properties or {}) do
                 local p=self:RecordDefinition(item,r)
                 if p then

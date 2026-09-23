@@ -75,7 +75,13 @@ hook.Add("HUDPaint","LOD_BlockFlash",function()
 end)
 net.Receive("LOD_SpecialMoveFX",function()
     local actor,id=net.ReadEntity(),net.ReadString()
+    local target=net.ReadEntity()
     if not IsValid(actor) or not E.SpecialMoves[id] then return end
     local fx=EffectData();fx:SetOrigin(actor:WorldSpaceCenter());fx:SetScale(1)
+    if id=="psychic_crush" and IsValid(target) then
+        fx:SetOrigin(target:WorldSpaceCenter())
+        util.Effect("cball_bounce",fx)
+        return
+    end
     util.Effect(id=="quickstep" and "cball_bounce" or "ManhackSparks",fx)
 end)

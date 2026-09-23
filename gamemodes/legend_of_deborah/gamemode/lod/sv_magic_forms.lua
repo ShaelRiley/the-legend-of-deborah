@@ -270,6 +270,11 @@ function Forms:_ReportDamageRoll(creditCaster, target, form, content, contract, 
         local detail = string.format("[rolls %s%s%s]", LOD.DieLogger:RollBreakdown(contract),
             content and ("; " .. string.upper(content.displayName)) or "; RAW",
             contract.capped and "; work cap" or "")
+        if contract.magicSave then
+            local save=contract.magicSave
+            detail=detail..string.format(" [%s save %d vs DC %d: %s]",string.upper(save.ability),
+                save.total,save.dc,save.passed and "HALF DAMAGE" or "FULL DAMAGE")
+        end
         Rolls:_Send(creditCaster, 0, Rolls:_DamageEventText(creditCaster,
             LOD.DieLogger:DamageFormula(contract) or string.format("%dd%d!", form.damageDice, form.damageSides),
             amount, target, detail, nil, "Hostile", "magic " .. form.id))
@@ -302,6 +307,14 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     end
     local total = Rolls:ResolveActorDamage(contract, attacker, target, tags)
     total = math.max(0, tonumber(total) or 0)
+    if form.saveAbility then
+        local dc=Status:ConditionDC(attacker,form.saveAbility)
+        local save,natural=Status:ConditionSave(target,form.saveAbility,
+            Rolls:_RNG("magic-save:"..form.id..":"..context.castSerial))
+        local passed=save>=dc
+        if passed then total=total*.5 end
+        contract.magicSave={ability=form.saveAbility,dc=dc,total=save,natural=natural,passed=passed}
+    end
     if total <= 0 then
         self:_ReportDamageRoll(creditCaster,target,form,content,contract,0)
         return false

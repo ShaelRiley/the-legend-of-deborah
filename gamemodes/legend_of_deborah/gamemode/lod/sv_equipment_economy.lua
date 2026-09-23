@@ -202,6 +202,7 @@ function E:PrepareReward(owner,kind,payload,options)
     local key=self:RewardKey(owner,source)
     local seed=LOD.Seeds.Derive(Run.State.CampaignSeed or 1,key)
     local function generate(family)
+        if not family then family=self:RewardWearableFamily(seed) end
         local fields={seed=seed, level=Run.State.Level or 1, family=family or "random", key=key}
         LOD.LootDirector:TraceStage("equipment_generate_begin",nil,kind,nil,fields)
         local item=self:Generate(seed,fields.level,family,key)

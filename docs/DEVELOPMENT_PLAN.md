@@ -1,3 +1,47 @@
+# Current checkpoint — shared combo abilities and Psychic Crown
+
+Built on verified remote `af10212ebdce87bc7f5ddda31bb1e16e823c2f77`.
+The existing keyboard/mirror listener and three-bit transport feed one server
+ability dispatcher. Only equipped grants compete; bounded suffix matching supports
+up to eight tokens, selects the longest completed recipe then registry order,
+and attempts just one move. Timeout, reset, capability changes, Hero/life/run/level
+changes invalidate input. Resource/cooldown commit follows successful preflight.
+Quickstep/Rebuff retain their original handlers, restrictions and costs.
+
+Crown of Psychic Crushing is an innate head item, minimum Rare, with a quality-scaled
+50-point innate value plus ordinary procedural affix value. DOWN UP DOWN costs
+18 Magic with four-second cooldown; the nearest visible hostile within two graph
+edges receives 2d8 plus canonical WIS Magic and a shared WIS save for half. Graph
+locks, cover, shared equipment/class/element/damage/defense and attribution stay
+canonical. No valid target spends nothing. The feed names target and save/DC;
+a brief impact marks the selected target. No permanent feat mutation.
+
+New world wearable rewards choose the current innate pool at 1/8 probability using
+an independent named seed stream. The original seven-family generator stream and
+frozen generic economics remain exact. Innate items require v2 validation. The
+first full run passed 122/124: extending the original random-family list broke the
+recorded crash corpus and JIT compatibility replay. Corrected production reward
+selection; both old fixtures pass unchanged. An initial implementation typo in the
+innate value helper caused recursion and was fixed before integration. New fixture
+runs initially lacked Source game/net boundaries; corrected those doubles.
+
+Targeted production checks pass 300 generated Crowns, natural reward admission,
+price/rarity, effective ownership, shared WIS damage/save feedback, actual graph
+locks/cover, no-target/no-Magic/Muting/cooldown rejection, stale life sessions,
+unowned recipe collisions and four-token suffixes. Quickstep/Rebuff and the real
+client input adapter pass. Live GDD 03/06/07 records LOD-EQUIPMENT-COMBO-001;
+manual source and readers rebuilt. Final full regression: all 124 registered suites
+pass with zero failures.
+Native multiplayer targeting, visual/sound and combat acceptance remain pending.
+
+Next: author-prioritized Character Sheet feat selection readability and snapshot
+coverage, then shared safe travel before Summon Card; remaining P7 wearables/consumables,
+then events/minigames and finale. Shadow flicker remains unreproduced/nonblocking.
+Full-strength movement and invisible overhead collision remain regression constraints.
+No VPS deployment or Workshop publication.
+
+---
+
 # Current checkpoint — readable, less oppressive monster defenses
 
 Built on verified remote `e004e9a1999da5f895281a7e24f0027a4b46a503`, preserving
