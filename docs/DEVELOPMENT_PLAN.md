@@ -1,3 +1,57 @@
+# Current checkpoint — recovered equipment and responsive feat selection
+
+Recovery published as `62141883fa4b888c6e29a47812d06de3c6cdda4f`, directly
+on top of `af10212ebdce87bc7f5ddda31bb1e16e823c2f77`. The surviving local
+`4ea6edb095d7337240e984c552b4192d5fd91177` was clean and retained; its exact
+file tree (`c356fd7c3e3072eebec3b8e46fbce26ebb1c1836`) was published through
+the GitHub connector because command-line Git had no write credentials. No
+reconstruction, reset or discard was needed. All 124 recovered integrated suites
+passed again, including targeted Crown/combo, Quickstep/Rebuff and unchanged
+recorded crash-replay checks. The full September 22 main chain is preserved.
+
+The next bounded checkpoint repairs the Character Sheet selection surface.
+Ordinary feats and capstones now share one responsive renderer: one to three
+columns with a 280-pixel preferred minimum card width, 12-pixel gaps and measured
+row heights. Full names, eligibility and canonical descriptions remain intact.
+Short Choose Feat / Choose Capstone buttons retain full-name tooltips and the
+original feat ID/earned-level request contracts. Resolved and read-only cards
+remain inert. Owned-feat text still comes from the canonical server snapshot.
+
+Below 900 pixels of body width the main sheet columns stack, preventing narrow
+identity and draft panels. Section headings wrap and contribute their actual
+height. The header uses its short title when measured text would clip.
+Screen-size changes rebuild the existing snapshot without requesting a
+new hand. Same-identity snapshot refreshes retain the scroll position; a new
+identity starts at the top, and stale layout callbacks cannot affect newer frames.
+No gameplay, eligibility, draft RNG, feat text or server choice behavior changed.
+
+Live GDD navigation: 00, 01, then relevant rules in 03/04/06/07; recovery matches
+LOD-EQUIPMENT-COMBO-001, and presentation retains LOD-FEAT-CARDS-001 and the
+LOD-UI shared-menu rules. No design-law correction or manual rewrite is needed.
+The existing edited manual and feat catalog remain unchanged.
+
+New production-path coverage builds real Hero snapshots and verifies ordinary,
+owned and capstone descriptions against their registered authorities. It opens
+the actual Character Sheet for all 150 registered descriptions (135 ordinary,
+9 capstones, 6 fallbacks) at 640x480, 800x600, 980x720, 1024x768, 1280x800 and
+1920x1080; checks card/section bounds, nonoverlap and intact text; exercises exact
+choice messages, resolved/read-only states, refresh/resize and identity changes.
+An initial test selector confused identically named ordinary-test and capstone
+cards; it now selects the actual draft by its action control. Assertions remain
+intact. All 125 integrated suites pass with zero failures: the recovered 124
+plus the new Character Sheet suite. The final header-fit refinement also passes
+the targeted six-resolution suite after the integrated run.
+
+Native GMod font metrics, visual scrolling/selection and multiplayer acceptance
+remain pending; the headless VGUI boundary is not native rendering evidence.
+Next tranche: canonical safe-cell / safe-teleport resolution and its blocker,
+occupied-hull and level/life-change gates, then Summon Card and remaining P7
+items. Event/minigame dependencies and Hector/finale follow that equipment work.
+Keep full movement, overhead barriers, rescue progression and queue semantics.
+Shadow flicker remains unreproduced/nonblocking. No VPS or Workshop deployment.
+
+---
+
 # Current checkpoint — shared combo abilities and Psychic Crown
 
 Built on verified remote `af10212ebdce87bc7f5ddda31bb1e16e823c2f77`.

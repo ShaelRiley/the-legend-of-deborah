@@ -61,9 +61,7 @@ end
 local function sectionTitle(parent, text, x, y, width)
     local item = label(parent, string.upper(text), "LOD_SheetHeading", RED)
     item:SetPos(x, y)
-    item:SetWrap(false)
-    item:SetSize(width, 30)
-    return item, 30
+    return item, fitWrapped(item, width, 30)
 end
 
 local function paperPanel(parent)
@@ -215,15 +213,18 @@ local function addClassChoices(parent, snapshot, x, y, width)
     return cardHeight
 end
 
-local function addFeatCards(parent, snapshot, x, y, width)
-    local offers = snapshot.featDraft and snapshot.featDraft.offers or {}
+-- Ordinary and capstone drafts share layout only; their server choices stay separate.
+local function addDraftCards(parent, draft, readOnly, x, y, width, buttonText, choose)
+    local offers = draft and draft.offers or {}
+    if #offers == 0 then return 0 end
     local gap = 12
-    local cardWidth = math.floor((width - gap * 2) / 3)
+    local columns = math.max(1, math.min(3, #offers, math.floor((width + gap) / (280 + gap))))
+    local cardWidth = math.floor((width - gap * (columns - 1)) / columns)
     local cards = {}
-    local cardHeight = 246
+    local rowHeights = {}
     for index, feat in ipairs(offers) do
+        local row = math.floor((index - 1) / columns) + 1
         local card = paperPanel(parent)
-        card:SetPos(x + (index - 1) * (cardWidth + gap), y)
         card:SetWide(cardWidth)
         if feat.selected then
             card.Paint = function(self, w, h)
@@ -235,36 +236,50 @@ local function addFeatCards(parent, snapshot, x, y, width)
         local title = label(card, feat.displayName, "LOD_SheetSubheading", feat.selected and RED or BLUE)
         title:SetPos(12, 10)
         local titleHeight = fitWrapped(title, cardWidth - 24, 26)
-        local req = label(card, feat.eligibilityText or "", "LOD_SheetSmall", MUTED)
-        req:SetPos(12, 10 + titleHeight + 5)
-        local reqHeight = fitWrapped(req, cardWidth - 24, 18)
+        local effectY = 10 + titleHeight + 10
+        if feat.eligibilityText and feat.eligibilityText ~= "" then
+            local req = label(card, feat.eligibilityText, "LOD_SheetSmall", MUTED)
+            req:SetPos(12, effectY)
+            effectY = effectY + fitWrapped(req, cardWidth - 24, 18) + 10
+        end
         local effect = label(card, feat.effect or "", "LOD_SheetSmall", INK)
-        local effectY = 10 + titleHeight + 5 + reqHeight + 12
         effect:SetPos(12, effectY)
-        local effectHeight = fitWrapped(effect, cardWidth - 24, 90)
+        local effectHeight = fitWrapped(effect, cardWidth - 24, 18)
 
         local footer
-        if snapshot.featDraft.resolved then
+        if draft.resolved or readOnly then
             footer = label(card, feat.selected and "SELECTED" or "NOT SELECTED",
                 "LOD_SheetKey", feat.selected and RED or MUTED)
             footer:SetSize(cardWidth - 24, 25)
         else
-            footer = makeChoiceButton(card, "Choose " .. feat.displayName, function()
-                net.Start("LOD_RPG_ChooseFeat")
-                net.WriteString(feat.featId)
-                net.WriteUInt(snapshot.featDraft.earnedAtLevel or 1, 5)
-                net.SendToServer()
-            end)
+            footer = makeChoiceButton(card, buttonText, function() choose(feat) end)
+            footer:SetTooltip("Choose " .. feat.displayName)
             footer:SetSize(cardWidth - 24, 28)
         end
-        cards[#cards + 1] = {panel = card, footer = footer}
-        cardHeight = math.max(cardHeight, effectY + effectHeight + 52)
+        cards[#cards + 1] = {panel = card, footer = footer, row = row}
+        rowHeights[row] = math.max(rowHeights[row] or 180, effectY + effectHeight + 52)
     end
-    for _, card in ipairs(cards) do
-        card.panel:SetTall(cardHeight)
-        card.footer:SetPos(12, cardHeight - 38)
+    local rowY, height = {}, 0
+    for row, rowHeight in ipairs(rowHeights) do
+        rowY[row] = y + height
+        height = height + rowHeight + gap
     end
-    return cardHeight
+    for index, card in ipairs(cards) do
+        local rowHeight = rowHeights[card.row]
+        card.panel:SetPos(x + ((index - 1) % columns) * (cardWidth + gap), rowY[card.row])
+        card.panel:SetTall(rowHeight)
+        card.footer:SetPos(12, rowHeight - 38)
+    end
+    return height - gap
+end
+
+local function addFeatCards(parent, snapshot, x, y, width)
+    return addDraftCards(parent, snapshot.featDraft, snapshot.readOnly, x, y, width, "Choose feat", function(feat)
+        net.Start("LOD_RPG_ChooseFeat")
+        net.WriteString(feat.featId)
+        net.WriteUInt(snapshot.featDraft.earnedAtLevel or 1, 5)
+        net.SendToServer()
+    end)
 end
 
 local function addOwnedFeatLedger(parent, snapshot, x, y, width)
@@ -331,63 +346,25 @@ local function addHitDieLedger(parent, snapshot, x, y, width)
 end
 
 local function addCapstoneCards(parent, snapshot, x, y, width)
-    local offers = snapshot.capstoneDraft and snapshot.capstoneDraft.offers or {}
-    local gap = 12
-    local cardWidth = math.floor((width - gap * 2) / 3)
-    local cards = {}
-    local cardHeight = 210
-
-    for index, feat in ipairs(offers) do
-        local card = paperPanel(parent)
-        card:SetPos(x + (index - 1) * (cardWidth + gap), y)
-        card:SetWide(cardWidth)
-        if feat.selected then
-            card.Paint = function(self, w, h)
-                draw.RoundedBox(2, 0, 0, w, h, Color(248, 225, 194))
-                surface.SetDrawColor(GOLD)
-                surface.DrawOutlinedRect(0, 0, w, h, 3)
-            end
-        end
-
-        local title = label(card, feat.displayName, "LOD_SheetSubheading", feat.selected and RED or BLUE)
-        title:SetPos(12, 10)
-        local titleHeight = fitWrapped(title, cardWidth - 24, 26)
-        local effect = label(card, feat.effect or "", "LOD_SheetSmall", INK)
-        local effectY = 10 + titleHeight + 10
-        effect:SetPos(12, effectY)
-        local effectHeight = fitWrapped(effect, cardWidth - 24, 100)
-
-        local footer
-        if snapshot.capstoneDraft.resolved then
-            footer = label(card, feat.selected and "SELECTED" or "NOT SELECTED",
-                "LOD_SheetKey", feat.selected and RED or MUTED)
-            footer:SetSize(cardWidth - 24, 25)
-        else
-            footer = makeChoiceButton(card, "Choose " .. feat.displayName, function()
-                net.Start("LOD_RPG_ChooseCapstone")
-                net.WriteString(feat.featId)
-                net.SendToServer()
-            end)
-            footer:SetSize(cardWidth - 24, 28)
-        end
-        cards[#cards + 1] = {panel = card, footer = footer}
-        cardHeight = math.max(cardHeight, effectY + effectHeight + 52)
-    end
-
-    for _, card in ipairs(cards) do
-        card.panel:SetTall(cardHeight)
-        card.footer:SetPos(12, cardHeight - 38)
-    end
-    return cardHeight
+    return addDraftCards(parent, snapshot.capstoneDraft, snapshot.readOnly, x, y, width, "Choose capstone", function(feat)
+        net.Start("LOD_RPG_ChooseCapstone")
+        net.WriteString(feat.featId)
+        net.SendToServer()
+    end)
 end
 
 function Sheet:Close()
     if UI.ActivePage == "sheet" then UI.ActivePage = nil end
     if IsValid(self.Frame) then self.Frame:Remove() end
     self.Frame = nil
+    self.Scroll = nil
 end
 
 function Sheet:Open(requestFresh)
+    local snapshot = self.Snapshot
+    local savedScroll = requestFresh == false and snapshot
+        and self.RenderedIdentity == snapshot.portraitCacheKey and IsValid(self.Scroll)
+        and self.Scroll:GetVBar():GetScroll() or 0
     if requestFresh ~= false then
         net.Start("LOD_RPG_RequestSheet")
         net.SendToServer()
@@ -395,7 +372,6 @@ function Sheet:Open(requestFresh)
     self:Close()
     UI:SelectPage("sheet")
 
-    local snapshot = self.Snapshot
     local frame = vgui.Create("DFrame")
     self.Frame = frame
     frame:SetSize(math.min(1180, ScrW() - 36), math.min(740, ScrH() - 36))
@@ -434,7 +410,10 @@ function Sheet:Open(requestFresh)
         return
     end
 
-    local title = label(frame, "THE LEGEND OF DEBORAH / CHARACTER SHEET", "LOD_SheetTitle", RED)
+    local titleText = "THE LEGEND OF DEBORAH / CHARACTER SHEET"
+    surface.SetFont("LOD_SheetTitle")
+    if surface.GetTextSize(titleText) > frame:GetWide() - 180 then titleText = "CHARACTER SHEET" end
+    local title = label(frame, titleText, "LOD_SheetTitle", RED)
     title:SetPos(28, 20)
     title:SetSize(frame:GetWide() - 180, 46)
 
@@ -448,6 +427,8 @@ function Sheet:Open(requestFresh)
     ready:SetContentAlignment(6)
 
     local body = vgui.Create("DScrollPanel", frame)
+    self.Scroll = body
+    self.RenderedIdentity = snapshot.portraitCacheKey
     body:SetPos(24, 110)
     body:SetSize(frame:GetWide() - 48, frame:GetTall() - 138)
     local canvas = body:GetCanvas()
@@ -456,8 +437,10 @@ function Sheet:Open(requestFresh)
         for y = 0, h, 5 do surface.DrawRect(0, y, w, 1) end
     end
 
-    local leftWidth = math.min(360, math.floor((body:GetWide() - 24) * 0.34))
-    local rightX = leftWidth + 24
+    local stacked = body:GetWide() < 900
+    local leftWidth = stacked and (body:GetWide() - 18)
+        or math.min(360, math.floor((body:GetWide() - 24) * 0.34))
+    local rightX = stacked and 0 or (leftWidth + 24)
     local rightWidth = body:GetWide() - rightX - 18
 
     local portrait = portraitPanel(canvas, snapshot)
@@ -616,7 +599,7 @@ function Sheet:Open(requestFresh)
     leftY = leftY + addHitDieLedger(canvas, snapshot, 0, leftY, leftWidth)
     local leftBottom = leftY
 
-    local rightY = 0
+    local rightY = stacked and (leftBottom + 18) or 0
     local _, classTitleHeight = sectionTitle(canvas,
         snapshot.classId and ("Class / " .. snapshot.className) or "Choose One Class",
         rightX, rightY, rightWidth)
@@ -716,6 +699,13 @@ function Sheet:Open(requestFresh)
     end
 
     canvas:SetTall(math.max(body:GetTall(), leftBottom, rightY) + 24)
+    -- Snapshot refreshes must not throw readers back to the top of long drafts.
+    -- Wait for native scroll bounds; a newer frame invalidates this callback.
+    timer.Simple(0, function()
+        if Sheet.Frame ~= frame or not IsValid(body) then return end
+        body:InvalidateLayout(true)
+        body:GetVBar():SetScroll(savedScroll)
+    end)
 end
 
 local function inputIsBusy()
@@ -782,3 +772,7 @@ concommand.Add("lod_character_sheet", function()
 end)
 
 hook.Add("ShutDown", "LOD_CharacterSheetClose", function() Sheet:Close() end)
+
+hook.Add("OnScreenSizeChanged", "LOD_CharacterSheetResize", function()
+    if IsValid(Sheet.Frame) then Sheet:Open(false) end
+end)
