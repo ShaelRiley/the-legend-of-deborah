@@ -28,11 +28,20 @@ end
 
 function Slot.Interact(director,instance,ply,identity)
     if not director:IsCurrent(instance) or not Store:ValidAccount(identity) then return false,'stale' end
+    local ps=Run:GetPlayerState(ply)
+    if not ps then return false,'Hero unavailable' end
+    local life,entity,claim=ps.equipmentLifeSerial,instance.entities[1],instance.claims[identity]
+    local function current()
+        return director:InteractionCurrent(instance,ply,identity,ps,entity)
+            and ps.equipmentLifeSerial==life and instance.claims[identity]==claim
+            and (not claim or claim.state=='resolving')
+    end
+    if not current() then return false,'stale' end
     local event=Slot.EventKey(instance,identity)
     local dungeonSeed=LOD.Seeds.DeriveLevel(Run.State.CampaignSeed,instance.level)
     local seed=LOD.Seeds.Derive(dungeonSeed,'dungeon-events:slot-result:'..identity)
     local ok,receipt=Store:Transaction(event,'dungeon_slot',{identity},function(accounts)
-        if not director:IsCurrent(instance) then return false,'stale' end
+        if not current() then return false,'stale' end
         local account=accounts[identity]
         if account.balance<Slot.Stake then return false,'You need 5 $DEB. Nothing spent.' end
         -- Named utility stream is reproducible across storage retries. No combat
@@ -43,7 +52,12 @@ function Slot.Interact(director,instance,ply,identity)
         local result={face=face,stake=Slot.Stake,payout=payout,net=payout-Slot.Stake}
         Store:History(identity,event,'dungeon_slot',result)
         return true,result
-    end)
+    end,{
+        -- Recheck after all fallible SQL/encoding work, before COMMIT. A slot
+        -- has no run-owned inventory to swap, but still belongs to this Hero
+        -- and native event throughout its wallet transaction.
+        validate=current,apply=function() end,rollback=function() end
+    })
     if not ok then return false,receipt end
     -- Presentation must never turn a committed transaction into a retry.
     pcall(function()

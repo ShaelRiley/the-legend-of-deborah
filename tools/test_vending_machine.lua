@@ -27,7 +27,7 @@ dofile(root..'sv_event_vending_machine.lua')
 local V=assert(LOD.EventVendingMachine)
 assert(V.Price==10 and V.Item=='healing_potion' and V.Quantity==1)
 assert(E.Definitions[V.Item].maxStack==3 and E.Definitions[V.Item].amount==25)
-assert(#R:Catalog()==4 and R.PopulationReady==false)
+assert(#R:Catalog()==4 and R.PopulationReady==true)
 local seen={}
 for seed=1,128 do
  local selected,n=R:Select(seed)
@@ -35,15 +35,50 @@ for seed=1,128 do
  assert(n>=1 and n<=4 and n==#selected and n==m and table.concat(selected,',')==table.concat(again,','))
  local unique={}
  for _,id in ipairs(selected) do assert(not unique[id]);unique[id]=true end
+ assert((unique.treasure_chest==true)==(n==4),'Rare treasure occupies only the fourth event slot')
+ assert(n==LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:count:v1')):Int(1,4))
  seen[n]=true
 end
 for n=1,4 do assert(seen[n],'Four production definitions must exercise exact 1d4 counts') end
 local selectedBefore=table.concat(R:Select(92831),',')
 for _=1,99 do math.random() end
 assert(table.concat(R:Select(92831),',')==selectedBefore,'Selection cannot consume global randomness')
+-- A rarity flag cannot silently reduce the count or relax unique selection.
+local saved=R.Definitions
+local function selectSignature(seed)
+ local ids,n=R:Select(seed);return table.concat(ids,','),n
+end
+local before,nBefore=selectSignature(73)
+R.Definitions={}
+local sorted=R:Catalog() -- Empty replacement; register originals in reverse order.
+for id in pairs(saved) do sorted[#sorted+1]=id end;table.sort(sorted)
+for i=#sorted,1,-1 do R:Register(saved[sorted[i]]) end
+local after,nAfter=selectSignature(73)
+assert(before==after and nBefore==nAfter,'Rarity selection is registration-order invariant')
+local bad=table.Copy(saved.vending_machine);bad.id='bad_rarity';bad.rare='rare'
+assert(not pcall(function() R:Register(bad) end),'Rarity declaration must be boolean')
+local rare=table.Copy(saved.treasure_chest);rare.id='fixture_rare';R:Register(rare)
+local common=R.Definitions.vending_machine;R.Definitions.vending_machine=nil
+local missing,missingReason=R:Select(73)
+assert(not missing and missingReason:find('three common'),'Four total entries with only two common cannot bypass gating')
+R.Definitions.vending_machine=common
+local rareSeen={}
+for seed=1,256 do
+ local chosen,n=R:Select(seed)
+ assert(#chosen==n)
+ local original,originalCount
+ R.Definitions.fixture_rare=nil;original,originalCount=R:Select(seed);R.Definitions.fixture_rare=rare
+ assert(n==originalCount,'Additional rare definitions never change the d4 count')
+ for i=1,math.min(n,3) do assert(chosen[i]==original[i],'Rare catalog stream cannot perturb common selection') end
+ if n==4 then assert(R.Definitions[chosen[4]].rare==true);rareSeen[chosen[4]]=true end
+end
+assert(rareSeen.fixture_rare and rareSeen.treasure_chest,'Rare pool selects both definitions without duplicates')
+R.Definitions=saved
 local graphBefore=F.graphSignature(Run.State.Graph)
+R.PopulationReady=false -- Explicit release gate still overrides operator enable.
 local ready,reason=D:Plan(Run.State.Graph,{enabled=true})
 assert(not ready and reason:find('gated') and F.graphSignature(Run.State.Graph)==graphBefore)
+R.PopulationReady=true
 local function account(p) return assert(Store:Read(p.id)) end
 local function count(p) local item=E:Ensure(p.ps).items[V.Item];return item and item.count or 0 end
 local function same(a,b) return WalletJSONEncode(a)==WalletJSONEncode(b) end

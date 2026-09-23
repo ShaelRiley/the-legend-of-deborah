@@ -3,8 +3,8 @@ LOD = LOD or {}
 LOD.EventDirector = LOD.EventDirector or {Serial = 0}
 local D, Registry = LOD.EventDirector, LOD.EventRegistry
 local Run, Builder = LOD.RunManager, LOD.MazeBuilder
-local cvEnabled = CreateConVar("lod_events_enabled", "0", FCVAR_ARCHIVE,
-    "Enable full 1d4 dungeon events only after the production population release gate.")
+local cvEnabled = CreateConVar("lod_events_enabled", "1", FCVAR_ARCHIVE,
+    "Enable approved full 1d4 dungeon events; existing explicit off settings are respected.")
 D.MaxPlacementAttempts = 64
 util.AddNetworkString("LOD_DungeonEvents")
 
@@ -265,6 +265,24 @@ function D:IsCurrent(instance)
         and self.Context.byId[instance.id] == instance
 end
 
+-- Reused at transaction commit, after fallible SQL/native presentation work.
+-- The initially authorized entity and Hero must still be the exact live owners.
+function D:InteractionCurrent(instance, ply, identity, ps, entity)
+    if not self:IsCurrent(instance) or instance.state ~= "active" or not IsValid(entity)
+        or entity.LODEventInstance ~= instance or not IsValid(ply) or not ply:IsPlayer()
+        or not ply:Alive() or ply:SteamID64() ~= identity or not Run:IsActivePlayer(ply)
+        or Run:IsSoldierControl(ply) or Run:GetPlayerState(ply) ~= ps then return false end
+    local tracked = false
+    for _, candidate in ipairs(instance.entities) do if candidate == entity then tracked = true; break end end
+    if not tracked or not ps or not ps.deploymentComplete or ps.inStaging or ps.eliminated
+        or (ps.lives or 0) <= 0 or Run.State.SimulationFrozen then return false end
+    local clock = Run.State.CampaignClock
+    if clock and (clock.expired or clock.scene or (clock.deadline and SysTime() >= clock.deadline)) then return false end
+    if ply:GetPos():DistToSqr(entity:GetPos()) > 160 * 160 then return false end
+    local trace = util.TraceLine({start = ply:EyePos(), endpos = entity:WorldSpaceCenter(), filter = ply, mask = MASK_SOLID})
+    return not trace.Hit or trace.Entity == entity
+end
+
 function D:Track(instance, entity)
     if not IsValid(entity) then return false end
     local context = self.Context
@@ -434,8 +452,8 @@ end
 local baseLevel = Run.BuildCurrentLevel
 function Run:BuildCurrentLevel(...)
     D:Cleanup("dungeon replacement")
-    D.BuildOptions = {enabled = cvEnabled:GetBool(), preview = D.NextPreview}
-    D.NextPreview = nil
+    D.BuildOptions = {enabled = D.NextPopulationPreview == true or cvEnabled:GetBool(), preview = D.NextPreview}
+    D.NextPreview, D.NextPopulationPreview = nil, nil
     local ok, result = baseLevel(self, ...)
     D.BuildOptions = nil
     if not ok then D:Cleanup("build failed") end
@@ -460,29 +478,38 @@ hook.Add("ShutDown", "LOD_DungeonEventCleanup", function() D:Cleanup("shutdown")
 hook.Add("PlayerInitialSpawn", "LOD_DungeonEventSnapshot", function(ply)
     timer.Simple(1, function() if IsValid(ply) then D:SyncPlayer(ply) end end)
 end)
-concommand.Add("lod_event_preview_generate", function(ply, _, args)
+local function preview(ply, id, population, seed)
     local dev = GetConVar("lod_developer_mode")
     if not dev or not dev:GetBool() or (IsValid(ply) and not ply:IsAdmin()) then return end
-    local id = args[1] or "slot_machine"
-    if not Registry.Definitions[id] then return end
-    local notice = Registry.Definitions[id].previewNotice
+    if not population and not Registry.Definitions[id] then return end
+    local notice = population and "Full event preview uses the normal 1d4 count and actual keys, $DEB and persistent DFTs. Campaign unranked."
+        or Registry.Definitions[id].previewNotice
     if notice then
         print('[LOD:EVENT-PREVIEW] ' .. notice)
         if IsValid(ply) then ply:ChatPrint(notice) end
     end
-    D.NextPreview = id
-    Run:MarkUnranked("single dungeon event preview")
-    local ok, err = Run:Regenerate()
+    D.NextPreview = not population and id or nil
+    D.NextPopulationPreview = population == true
+    Run:MarkUnranked(population and "full dungeon event preview" or "single dungeon event preview")
+    local ok, err = Run:Regenerate(seed)
     local lines = {}
     if ok and D.Context and D.Context.plan.instances[1] then
         for _, instance in ipairs(D.Context.plan.instances) do
             local pos = Builder:CellCenter(instance.cell)
             lines[#lines + 1] = string.format("[LOD:EVENT-PREVIEW] %s (%d/%d) at cell %s; developer locator: setpos %.1f %.1f %.1f",
-                id, instance.memberIndex, instance.memberCount, instance.cellKey, pos.x, pos.y, pos.z + 64)
+                instance.archetype, instance.memberIndex, instance.memberCount, instance.cellKey, pos.x, pos.y, pos.z + 64)
         end
     else lines[1] = "[LOD:EVENT-PREVIEW] generation rejected: " .. tostring(err) end
     for _, line in ipairs(lines) do
         print(line)
         if IsValid(ply) then ply:ChatPrint(line) end
     end
+end
+concommand.Add("lod_event_preview_generate", function(ply, _, args)
+    preview(ply, args[1] or "slot_machine", false)
+end)
+concommand.Add("lod_event_population_preview", function(ply, _, args)
+    local seed = args and args[1] and tonumber(args[1])
+    if args and args[1] and (not seed or seed ~= seed or seed < 1 or seed > 2147483646 or seed % 1 ~= 0) then return end
+    preview(ply, nil, true, seed)
 end)

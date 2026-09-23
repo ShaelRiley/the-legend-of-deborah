@@ -937,7 +937,7 @@
       "title": "A little something to keep",
       "art": "deborah:2",
       "text": [
-        "DFTs normally mint when a dungeon objective is completed. Combat Level milestones 1, 5, 10, and 20 can each award one token per account on this server. A rare rescue roll also gives each participating Hero a one-in-1,000 chance. Ordinary enemy kills do not mint DFTs. The developer-preview treasure chest event can also award DFTs; see Treasure to keep. Rescuing Deborah at Level 20 also unlocks Abundance: visit her in staging for one free DFT per Steam account every rolling 24 hours. Reconnecting or restarting a campaign does not reset the timer. The eight-token capacity still applies; a full wallet leaves the gift available until you make room. Recreated equipment retains the usual resale and fusion exclusions.",
+        "DFTs normally mint when a dungeon objective is completed. Combat Level milestones 1, 5, 10, and 20 can each award one token per account on this server. A rare rescue roll also gives each participating Hero a one-in-1,000 chance. Ordinary enemy kills do not mint DFTs. The treasure chest event can also award DFTs; see Treasure to keep. Rescuing Deborah at Level 20 also unlocks Abundance: visit her in staging for one free DFT per Steam account every rolling 24 hours. Reconnecting or restarting a campaign does not reset the timer. The eight-token capacity still applies; a full wallet leaves the gift available until you make room. Recreated equipment retains the usual resale and fusion exclusions.",
         "Your collection has eight slots. Milestone items waiting for space stay frozen; making room does not reroll them. Tokens persist across ordinary death and campaign restart.",
         "At the staging Debbie statue, recreate a token's frozen item for free once per token per run. The DFT remains in your collection. The same token becomes available to recreate again in the next run.",
         "You may instead sell a DFT permanently for its displayed Value in Debs. Read the confirmation carefully: selling the token removes it. Wallet viewing is portable; the statue's staging, proximity, and role rules still govern its physical services."
@@ -945,7 +945,7 @@
     },
     {
       "id": "dungeon-events",
-      "title": "Dungeon Events: a first preview",
+      "title": "Dungeon Events: optional detours",
       "rows": [
         [
           "Slot machine · $5 DEB stake",
@@ -957,9 +957,11 @@
         ]
       ],
       "text": [
-        "Dungeon Events are being introduced in stages. Four archetypes—the slot machine, locked loot chest, DFT treasure chest, and vending machine—are available only in administrator-enabled, unranked previews. Normal random population of 1–4 different events remains disabled pending a separate activation and rarity pass. A treasure event can contain one or two physical chests.",
-        "The machine is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
-        "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine."
+        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, and vending machines. A 4 includes all three plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. Events never replace the required rescue objective.",
+        "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
+        "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
+        "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
+        "In developer mode, administrators can run lod_event_population_preview to generate a normal 1–4 event selection and print its locations, or lod_event_preview_generate followed by an event name for a single-event preview. Previews mark the campaign unranked but still use carried keys and persistent server-local funds and DFTs; they provide no free currency. Regenerating the same dungeon does not refresh account claims."
       ]
     },
     {
@@ -980,7 +982,7 @@
         ]
       ],
       "text": [
-        "The locked loot chest is currently a developer-preview event. It sits off the required rescue route and offers each Steam account one ordinary procedural wearable per dungeon. It does not award a DFT; the item uses your normal equipment storage.",
+        "The locked loot chest sits off the required rescue route and offers each Steam account one ordinary procedural wearable per dungeon. It does not award a DFT; the item uses your normal equipment storage.",
         "Chest Keys can appear among normal loot drops and remain in your bag rather than the Throwable slot. A key is spent only when its chest item successfully enters your equipment storage. A full bag or failed delivery spends no key; make room or retry.",
         "A Rogue gets one lockpick attempt per chest. Failure uses that attempt but leaves any key intact, and you may later open the chest with a key. A full bag or another rejected preflight does not use the attempt. If a successful pick cannot deliver the item, retry to claim the same reward without another roll or a key.",
         "The chest remembers your account’s claim and lockpick attempt through reconnects, replacement Heroes, and regeneration of the same dungeon. Those actions cannot grant another attempt or reroll the reward. A new dungeon provides a new opportunity; a new campaign resets the chest record."
@@ -1007,7 +1009,7 @@
         "Treasure chests hold persistent Debbie Fund Tokens, not ordinary equipment pickups. Each Hero has an independent claim at each chest. The reward is fixed: reconnecting, replacing your Hero, or regenerating the same dungeon cannot reroll it or restore a claim. Selling or recreating the awarded DFT does not reopen the chest.",
         "Press E to spend one Chest Key when the DFT is successfully delivered. A Rogue without a key may pick the lock; hold Sprint + E to choose lockpicking while carrying keys. Each account gets one attempt per chest at 5% per Combat Level, up to 95%. A failed pick consumes the attempt but no key; you can return with a key.",
         "A full DFT collection spends neither key nor lockpick attempt. Make room in your collection, then return. A storage failure spends no key. If a successful pick cannot deliver its DFT, the chest stays unlocked for your account: retry for the same reward without another roll or key.",
-        "This event is currently an unranked developer preview. Administrators can run lod_event_preview_generate treasure_chest to generate it and print every chest location. The existing lod_chest_key_testkit supplies one key only if you have none. Preview interactions can spend real carried keys and award persistent server-local DFTs; these collectibles have no cash value. Leaving the dungeon ends access to its chests."
+        "Treasure events appear only on a four-event selection and contain one or two optional chests. Their DFTs persist in your server-local collection and have no cash value. Leaving the dungeon ends access to its chests. For an administrator preview, use lod_event_preview_generate treasure_chest; lod_chest_key_testkit supplies one key only if you have none."
       ]
     },
     {
@@ -1031,7 +1033,7 @@
         "Press E at a vending machine to buy one standard Healing Potion for your equipment inventory. The price uses your persistent, server-local $DEB balance, which has no cash value. The potion is ordinary run equipment, not a DFT.",
         "Insufficient funds, a full potion stack, a storage failure, or leaving the interaction before it can complete spends nothing and leaves your purchase available. Correct the problem and retry. A successful purchase charges exactly $10 DEB and delivers one bottle.",
         "The machine remembers your account’s completed purchase through death, replacement Heroes, reconnects, and regeneration of the same dungeon. Drinking or discarding the bottle does not restock the machine, and reconnecting does not replace a lost bottle. A new dungeon or campaign provides a new purchase.",
-        "This optional event is currently an unranked developer preview. Administrators can run lod_event_preview_generate vending_machine to generate it and print its location. Purchases spend real server-local $DEB; the preview does not provide free currency."
+        "This optional machine can appear alongside other Dungeon Events. For an administrator preview, use lod_event_preview_generate vending_machine. Purchases spend real server-local $DEB; the preview does not provide free currency."
       ]
     },
     {

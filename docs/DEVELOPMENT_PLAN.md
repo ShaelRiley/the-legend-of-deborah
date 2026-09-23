@@ -1,4 +1,94 @@
-# Current checkpoint — Debbie Vending and explicit population activation gate
+# Current checkpoint — Combined Dungeon Events activation
+
+Built on verified remote main `2354e81d5a95dbe99f93b1c84713f9d5941120e7`;
+no intervening work replaced. Read AGENTS.md/current checkpoint and live GDD
+00 → 01 → relevant 05/06/07/90 rules. Fresh file-backed read found no protected
+controls. Added and read-back verified LOD-EVENT-POPULATION-001 in 05/06/07/90 and
+HUMAN under retained design delegation. No new event archetype in this checkpoint.
+
+**Implemented/activation decision:** the four existing production definitions now
+populate ordinary dungeons. `EventRegistry.PopulationReady=true` approves the
+catalog; `lod_events_enabled` defaults to 1 for new configurations. Existing
+archived/operator-selected 0 remains respected; operators can set 1 for subsequent
+builds. No live VPS or Workshop configuration/deployment occurred. Approval is
+based on the finite automated gate below, not native Source acceptance.
+
+Selection retains the exact authoritative non-exploding 1d4 count. Counts 1–3
+choose distinct common archetypes (Debbie Slots, locked loot chest and Debbie
+Vending). Count 4 adds one rare archetype; the current sole rare entry is DFT
+Treasure. Treasure therefore appears on 25% of unbiased count rolls, the minimum
+possible with four entries and no count truncation/repetition. This is selection
+frequency, not a claim of extreme rarity or exact observed frequency after build
+failures. Common entries use the existing catalog stream; a separate named
+rare-catalog:v1 stream isolates rare choices. Future rare entries share the fourth
+slot. A catalog with any rare entry requires at least 3 common entries; incomplete
+pools fail closed. Catalogs without rare entries retain prior selection behavior.
+
+All actual archetypes/members reserve distinct validated cells against the real
+maze/progression/safe-cell/required-route authorities. Treasure still selects 1–2
+physical members while counting once. Existing 64-candidate/member placement bound
+and generation authorities remain. Rejected placement or partial creation cleans
+and rejects the complete build, never reduces its event count. Same-seed retry
+reproduces the complete selected plan and unrelated graph; no new layout/count
+reroll machinery was introduced. Existing transaction, reward and per-account
+claim authorities remain intact across coexisting events.
+
+Combined-path testing identified and repaired two lifecycle gaps: Slots previously
+lacked final exact-Hero/native-entity authorization after SQL writes; Chest.Open
+could continue after lockpick feedback removed its entity. Shared
+EventDirector:InteractionCurrent now checks exact Hero/account, tracked native
+entity/binding, deployed cooperative role, lives, live clock, range/LOS and current
+generation. Slots uses a validate-only existing CryptoStore participant immediately
+before COMMIT. Ordinary/DFT chests reuse the guard after lockpick feedback and
+before delivery. Both retain exact life and resolving-claim bindings. Rejected
+successful lockpicks keep their immutable result for a valid retry.
+
+Added admin/server developer command `lod_event_population_preview [levelSeed]`:
+one-shot full-catalog generation with the actual count, unranked campaign, all
+member locators and a warning about actual keys/persistent $DEB/DFTs. It grants no
+funds/items and does not change the saved population setting. Optional integer
+seed uses existing debug regeneration, never overrides the d4 outcome. Individual
+previews remain supported. Manual reflects ordinary activation and operator opt-out;
+regenerated 137 chapters/31 chunks. Remaining catalog, minigames and Hector are not
+claimed complete.
+
+Validation: focused real-production/SQLite tests cover all 1–4 counts and both
+Treasure member counts through RunManager generation, deterministic plans and
+unchanged unrelated maze/progression, all four native-Use settlement paths for
+two accounts, independent inventory/wallet/DFT results, receipt hydration/reconnect,
+late joins, exact same-seed failure/retry, bounded rejected placement, partial
+creation cleanup, stale SQL/callback ownership, default-on/saved-off/release-gate
+behavior, and one-shot preview authorization. Prior event/chest/wallet/vending
+and manual regressions remain green. A focused actual encounter-planner/m3 build
+seam check preserves all 10 encounters and avoids 23 protected cells while
+reproducing seed 2 with four archetypes/five entities. Native geometry, traces
+and packet transport remain test doubles; hostile AI/native collision are not
+claimed accepted.
+`python3 tools/test_checkpoint_g_integration.py` passed all **141 suites** with
+zero failures, including the combined encounter/event check.
+
+Native acceptance pending: on gm_flatgrass with two deployed Heroes (one Rogue),
+run `lod_event_population_preview 2`, redeploy and follow the printed locators.
+This tested seed gives 4 archetypes/5 entities without overriding the count roll.
+Exercise all four events independently,
+verify inventory/wallet deltas and reconnect/replay rejection, then regenerate
+and confirm cleanup. Preview uses real funds/keys and may award persistent DFTs;
+use ordinary play funds and the existing one-key testkit if needed. Capture
+console_latest.txt + rpg_summary_latest.txt; screenshots for collision/prompt/model
+defects. Controller/Use, native collision/presentation and multiplayer acceptance
+remain pending, alongside earlier native obligations.
+
+Next bounded checkpoint: **False-floor HAZARD event**, the retained P9 example.
+Use one modest optional floor that drops a Hero to a validated lower level; prove
+both endpoints preserve gate/objective order and a route back, with no stranding
+or unsafe/stale displacement. Reconcile exact interaction/reset/tuning in live GDD,
+reuse maze collision/movement/lifecycle authorities, and test the combined catalog
+before commit/push. Do not expand into bribe/skeleton blockades, warp networks,
+Game Master minigames or Hector. Native acceptance remains a separate open gate.
+
+---
+
+# Previous checkpoint — Debbie Vending and explicit population activation gate
 
 Built on verified remote main `d250ac903afcb5060272cbaf560de49266483f9f`;
 no intervening work replaced. Read AGENTS.md, current checkpoint, retained P9 and

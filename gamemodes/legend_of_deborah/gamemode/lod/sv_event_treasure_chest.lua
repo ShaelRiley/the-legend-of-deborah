@@ -2,7 +2,7 @@
 -- admission path as ordinary chests; CryptoStore owns persistent settlement.
 local Lock,Run,E,C,Store=assert(LOD.EventLockedChest),assert(LOD.RunManager),
     assert(LOD.Equipment),assert(LOD.CryptoDirector),assert(LOD.CryptoStore)
-local Chest={id='treasure_chest',contract='REWARD',production=true,nonblocking=true,maxInstances=2}
+local Chest={id='treasure_chest',contract='REWARD',production=true,rare=true,nonblocking=true,maxInstances=2}
 LOD.EventTreasureChest=Chest
 Chest.previewNotice='Treasure preview spends actual Chest Keys and awards persistent server-local DFTs. The campaign is unranked.'
 

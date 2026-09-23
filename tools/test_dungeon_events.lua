@@ -7,8 +7,10 @@ local created,feedback,commands,hooks,timers=F.created,F.feedback,F.commands,F.h
 local packets,receivers,convars=F.packets,F.receivers,F.convars
 local graphSignature,originalGraph,generate=F.graphSignature,F.originalGraph,F.generate
 assert(not R:Select(1),'One playable archetype cannot silently cap production count')
+convars.lod_events_enabled.value='0' -- Explicit operator opt-out remains supported.
 local ok,disabled=D:Plan(graph);assert(ok and disabled.mode=='disabled' and #disabled.instances==0)
-assert(R.PopulationReady==false,'Automatic population requires a separate authored release gate')
+assert(R.PopulationReady==true,'Approved population release gate is enabled')
+R.PopulationReady=false
 local gated,gateReason=D:Plan(graph,{enabled=true})
 assert(not gated and gateReason:find('catalog activation and rarity tuning pending'))
 R.PopulationReady=true
@@ -28,6 +30,8 @@ for seed=1,256 do
  local again,m=R:Select(seed)
  assert(n==m and n>=1 and n<=4 and #selected==n and table.concat(selected,',')==table.concat(again,','))
  assert(n==LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:count:v1')):Int(1,4),'Exactly one authoritative utility d4')
+ local legacy=R:Catalog();LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:catalog:v1')):Shuffle(legacy)
+ for i=1,n do assert(selected[i]==legacy[i],'Non-rare catalog preserves existing named selection stream') end
  local unique={};for _,id in ipairs(selected) do assert(not unique[id]);unique[id]=true end
  seen[n]=true
 end
@@ -97,7 +101,7 @@ end
 local plannedCounts={}
 defs.BLOCKADE.Place=function() return table.Copy(blockade) end
 Slot.production=false
-R.PopulationReady=true -- Deliberately exercise the future approved population path.
+R.PopulationReady=true -- Exercise approved population with all four placement contracts.
 for seed=1,64 do
  graph.MasterLevelSeed=seed
  local accepted,plan=D:Plan(graph,{enabled=true})

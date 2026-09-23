@@ -74,6 +74,8 @@ function Chest.Open(def,director,instance,ply,identity)
     if not director:IsCurrent(instance) then return false,'stale event' end
     local ps=Run:GetPlayerState(ply)
     if not ps then return false,'Hero unavailable' end
+    local entity,claim=instance.entities[1],instance.claims[identity]
+    if not director:InteractionCurrent(instance,ply,identity,ps,entity) then return false,'stale event' end
     local record=def.Record(instance,identity,true)
     if not record then return false,'stale event' end
     if record.claimed then return false,'already' end
@@ -89,13 +91,9 @@ function Chest.Open(def,director,instance,ply,identity)
     local before,staged=table.Copy(original),table.Copy(original)
     local life=ps.equipmentLifeSerial
     local function current()
-        local c=Run.State.CampaignClock
-        return director:IsCurrent(instance) and IsValid(ply) and ply:Alive()
-            and Run:IsActivePlayer(ply) and not Run:IsSoldierControl(ply)
-            and ply:SteamID64()==identity and Run:GetPlayerState(ply)==ps and ps.equipment==original
-            and ps.equipmentLifeSerial==life and ps.deploymentComplete and not ps.inStaging
-            and not ps.eliminated and (ps.lives or 0)>0 and not Run.State.SimulationFrozen
-            and not (c and (c.scene or (c.deadline and SysTime()>=c.deadline)))
+        return director:InteractionCurrent(instance,ply,identity,ps,entity)
+            and ps.equipment==original and ps.equipmentLifeSerial==life and instance.claims[identity]==claim
+            and (not claim or claim.state=='resolving')
             and def.Record(instance,identity)==record and not record.claimed and equal(original,before)
     end
 
