@@ -1,3 +1,56 @@
+# Current checkpoint — safe Hero relocation and Summon Card
+
+Built on verified remote `5bbc6088eaafb9f6d8314dee3fe349b20fb441ea`.
+`LOD.SafeTeleport` now owns exact graph-cell membership, unlocked-route checks,
+standing-hull clearance and generated-floor support for Hero relocation. It calls
+the live navigator, retaining progression, Warden and jail locks. Destination
+checks reject voids, stair-transition cells, unsupported footprint corners,
+occupied hulls, water/slime and damage triggers. It revalidates both Heroes and
+the landing at commit, then clears carried velocity and dash/forced-motion state.
+Existing normal movement, spawn/deployment and Magic summons are unchanged.
+
+Summon Card uses the canonical finite throwable inventory, held adapter and
+LMB/RMB controls. LMB selects another deployed Hero for an adjacent safe square;
+RMB selects one for the current square or nearest safe equivalent. The server
+owns the target list and position. A one-shot 15-second selection binds owner,
+target, identity state, life, run, level, graph and held record. Failures/cancel
+spend nothing; success consumes one card and no Magic. Stack cap is three and
+the ordinary 0.6-second cooldown applies. New eligible potion opportunities use
+an independent 1/8 card draw; existing conversion/affix streams and authored
+non-eligible rewards remain intact. The stock clipboard provides the visual.
+
+Live GDD navigation used 00/01, relevant 05/06/07 and deferred item rules in 90,
+reconciled with the superseding September 22 master brief. New rule
+`LOD-SAFE-TRAVEL-001` is written and read back in tabs 06 and 07, including the
+candidate search, collision tolerances, lifetime, stack, cooldown and drop tuning.
+
+`tools/test_summon_card.lua` exercises production navigation including the real
+Warden/jail wrapper, hull/support/hazard failures, oversized Heroes, stale life,
+level, graph, identity, inventory and control state; net bounds/replay; precise
+spending, cooldown, velocity reset, no Magic cost, deterministic natural rewards
+and atomic stack overflow. The actual client picker is checked at small/large
+viewport boundaries, with intact names, target/nonce requests, cancellation,
+expiry and page/death close. Initial tests caught a missing Source boundary
+double and an item slot registration error; both were corrected. Headless checks
+are not native Source collision or visual acceptance.
+
+Validation: targeted server and picker checks pass. All 126 integrated suites
+pass with zero failures, including unchanged crash-replay, JIT, movement,
+progression, queue, inventory and release-wiring regressions.
+Native acceptance remains pending: on `gm_flatgrass`, with two deployed Heroes,
+run `lod_summon_card_testkit` as a developer-mode admin, then use LMB/RMB and
+check occupied landing fallback, closed gates and stale/dead target cancellation.
+The command marks the run unranked. Capture `console_latest.txt` and
+`rpg_summary_latest.txt`; add a screenshot only for picker/visual defects.
+
+Next bounded P7 checkpoint: Feather of Resurrection through canonical Hero
+Queue/life admission, with exactly one restored life and atomic consumption;
+then remaining P7 items before event/minigame and Hector/finale work. Preserve
+movement, overhead barriers, rescue progression and queue semantics. Native
+responsive-sheet and Crown acceptance is still pending. No deployment performed.
+
+---
+
 # Current checkpoint — recovered equipment and responsive feat selection
 
 Recovery published as `62141883fa4b888c6e29a47812d06de3c6cdda4f`, directly

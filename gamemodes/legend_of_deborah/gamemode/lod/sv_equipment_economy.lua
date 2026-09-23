@@ -213,6 +213,11 @@ function E:PrepareReward(owner,kind,payload,options)
     LOD.LootDirector:TraceStage("reward_inputs",nil,kind,nil,
         {seed=seed,level=Run.State.Level or 1,key=key,weapon=payload.weaponClass})
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-conversion-v2"))
+    -- A named stream leaves all existing conversion/affix rolls untouched.
+    if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible
+        and LOD.RNG.New(LOD.Seeds.Derive(seed,"summon-card-v1")):Chance(1/8) then
+        return "consumable",{itemId="summon_card"}
+    end
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.35) then
         return "consumable",{itemId=(not self.BombTypes or rng:Chance(.35)) and "stink_bomb" or rng:Pick(self.BombTypes)}
     end

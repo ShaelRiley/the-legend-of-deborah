@@ -520,6 +520,10 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
         local def=LOD.Equipment:Definition(payload.item)
         if def then model=def.model end
     end
+    if kind=="consumable" and payload and LOD.Equipment then
+        local def=LOD.Equipment.Definitions[payload.itemId]
+        if def and def.model then model=def.model end
+    end
 
     ent.LODLootOwnerIdentity = ownerIdentity
     ent.LODLootKind = kind

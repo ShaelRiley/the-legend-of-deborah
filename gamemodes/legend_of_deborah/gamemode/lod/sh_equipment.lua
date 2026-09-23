@@ -91,6 +91,7 @@ end
 
 function E:Prompt(def)
     if not def or not def.throwable then return "" end
+    if def.prompt then return def.prompt end
     return def.drinkable and "LMB: THROW   RMB: DRINK" or "LMB: THROW"
 end
 

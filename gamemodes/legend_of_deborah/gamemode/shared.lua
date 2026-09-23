@@ -40,6 +40,8 @@ if SERVER then AddCSLuaFile("lod/sh_equipment_economy.lua") end
 include("lod/sh_equipment_economy.lua")
 if SERVER then AddCSLuaFile("lod/sh_magic_bombs.lua") end
 include("lod/sh_magic_bombs.lua")
+if SERVER then AddCSLuaFile("lod/sh_travel_items.lua") end
+include("lod/sh_travel_items.lua")
 if SERVER then AddCSLuaFile("lod/sh_weapon_appearance.lua") end
 include("lod/sh_weapon_appearance.lua")
 if SERVER then AddCSLuaFile("lod/sh_rpg_schema.lua") end

@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Safe Teleport & Summon Card", ["python3", "tools/run_lua54.py", "tools/test_summon_card.lua"]),
     ("Responsive Character Sheet & Canonical Feat Text", ["python3", "tools/run_lua54.py", "tools/test_character_sheet_layout.lua"]),
     ("Equipment Combo Abilities", ["python3", "tools/run_lua54.py", "tools/test_equipment_combo_abilities.lua"]),
     ("Monster Defense Balance & Tactical Feedback", ["python3", "tools/run_lua54.py", "tools/test_monster_defenses.lua"]),
