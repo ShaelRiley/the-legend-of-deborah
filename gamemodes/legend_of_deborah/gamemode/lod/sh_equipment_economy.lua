@@ -48,7 +48,15 @@ E.MoveOrder[#E.MoveOrder+1] = "veil"
 E.Definitions.invisibility_ring = {name="Ring of Invisibility", wearable=true,
     slots={"left_hand","right_hand"}, model="models/props_junk/cardboard_box004a.mdl",
     moves={"veil"}, minimumRarity=2}
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring"}
+E.SpecialMoves.thunder_charge = {id="thunder_charge", name="Thunder Charge", displayName="Thunder Charge",
+    recipe={"UP","DOWN","UP"}, glyphs="↑ ↓ ↑", magicCost=24, cooldown=6,
+    value=60, family="thunder_hat", innateOnly=true, effect="charge", offensive=true,
+    element="electric", damageDice=2, damageSides=8, hitStunMultiplier=1, distance=1152, duration=.8, warning=.25,
+    description="Warn for 0.25s, then charge straight up to three blocks. First enemy contact: 2d8 + WIS electric Magic and eligible hit-stun. Actors, walls, locks and unsafe floors stop you. No steering or invulnerability."}
+E.MoveOrder[#E.MoveOrder+1] = "thunder_charge"
+E.Definitions.thunder_hat = {name="Hat of the Thunder God", wearable=true, slots={"head"},
+    model="models/props_junk/cardboard_box004a.mdl", moves={"thunder_charge"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil

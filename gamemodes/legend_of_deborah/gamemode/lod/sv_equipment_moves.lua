@@ -9,7 +9,7 @@ util.AddNetworkString("LOD_SpecialMoveFX")
 function E:ClearTransient(ply)
     if self.EndCloak then self:EndCloak(ply,"lifecycle changed") end
     self.MoveSessions[ply] = nil
-    Rules.VoluntaryDashes[ply] = nil
+    Rules:StopVoluntaryDash(ply)
     if Rules.ClearDodge then Rules:ClearDodge(ply) end
     for _, targets in pairs(Rules.BlockEvents or {}) do targets[ply]=nil end
     if IsValid(self.Projectiles[ply]) then self.Projectiles[ply]:Remove() end
@@ -29,6 +29,9 @@ function E:MoveSession(ply)
 end
 
 function Rules:BeginVoluntaryDash(ply, move)
+    local current=self.VoluntaryDashes[ply]
+    if current and CurTime()<current.ends then return false end
+    if current then self:StopVoluntaryDash(ply,current) end
     if ply:GetMoveType() ~= MOVETYPE_WALK or not LOD.RPGStatusElements:CanMoveVoluntarily(ply)
         or ply.LODForcedMovementUntil and CurTime() < ply.LODForcedMovementUntil then return false end
     local aim = ply:GetAimVector()
@@ -47,6 +50,14 @@ function Rules:BeginVoluntaryDash(ply, move)
     return true
 end
 
+function Rules:StopVoluntaryDash(ply, expected)
+    local dash=self.VoluntaryDashes[ply]
+    if not dash or expected and dash~=expected then return false end
+    self.VoluntaryDashes[ply]=nil
+    if dash.ended then dash.ended(ply,dash) end
+    return true
+end
+
 -- Called inside the ordinary SetupMove authority. Source performs collision and
 -- gravity; no teleport, SetPos, extra Dodge roll or forced-motion exemption.
 function Rules:ApplyVoluntaryDash(ply, data)
@@ -60,16 +71,17 @@ function Rules:ApplyVoluntaryDash(ply, data)
         or Run.State ~= dash.run or Run.State.LevelSeed ~= dash.levelSeed
         or Run:GetPlayerState(ply) ~= dash.ps or E:IsActive(ply)
         or not LOD.RPGStatusElements:CanMoveVoluntarily(ply)
-        or ply:GetMoveType() ~= MOVETYPE_WALK
+        or ply:GetMoveType() ~= MOVETYPE_WALK or dash.valid and not dash.valid(ply,dash)
         or ply.LODForcedMovementUntil and CurTime() < ply.LODForcedMovementUntil then
         -- Do not overwrite a newly imposed Push; it remains the displacement authority.
         if not (ply.LODForcedMovementUntil and CurTime() < ply.LODForcedMovementUntil) then
-            data:SetVelocity(Vector(dash.prior.x,dash.prior.y,velocity.z))
+            data:SetVelocity(dash.stopAtRest and Vector(0,0,velocity.z) or Vector(dash.prior.x,dash.prior.y,velocity.z))
         end
-        self.VoluntaryDashes[ply]=nil
+        self:StopVoluntaryDash(ply,dash)
         return
     end
     local speed=math.min(dash.speed,dash.remaining/math.max(engine.TickInterval(),0.001))
+    if dash.step then speed=dash.step(ply,dash,speed) end
     data:SetMaxSpeed(math.max(data:GetMaxSpeed(),speed))
     data:SetMaxClientSpeed(math.max(data:GetMaxClientSpeed(),speed))
     data:SetForwardSpeed(0); data:SetSideSpeed(0)
@@ -80,10 +92,10 @@ end
 function E:PrepareMoveAttack(ply,move)
     local session=self:MoveSession(ply)
     local state=session.ps.equipment
-    local source
+    local source,sourceSlot
     for _,slot in ipairs(self.SlotOrder) do
         local item=self:Equipped(state,slot)
-        if item and item.definitionId==move.family then source=item;break end
+        if item and item.definitionId==move.family then source,sourceSlot=item,slot;break end
     end
     if not source then return nil end
     local def=self:Definition(source)
@@ -95,12 +107,13 @@ function E:PrepareMoveAttack(ply,move)
         local property=self:RecordDefinition(source,record)
         if property and property.element and record.amount>0 then element=property.element;break end
     end
-    local content=LOD.RPG.MagicContents[element or "fire"]
+    local content=LOD.RPG.MagicContents[move.element or element or "fire"]
     if not content then return nil end
     content=table.Copy(content)
     if move.rider then content.rider=move.rider end
     local context=Forms:_NewContext(ply,move,content)
-    context.moveBinding={session=session,graph=Run.State.Graph,source=source,state=state}
+    context.moveBinding={session=session,graph=Run.State.Graph,source=source,state=state,
+        slot=sourceSlot,identity=session.ps.identity}
     context.deliveryForm=move
     context.deliveryContent=content
     return context
@@ -110,9 +123,9 @@ function E:MoveAttackValid(ply,context)
     local binding=context and context.moveBinding
     if not binding or not IsValid(ply) or not self:CanAct(ply)
         or self:MoveSession(ply)~=binding.session or Run.State.Graph~=binding.graph
-        or binding.session.ps.equipment~=binding.state then return false end
+        or binding.session.ps.equipment~=binding.state or binding.session.ps.identity~=binding.identity then return false end
     local source=binding.source
-    if binding.state.items[source.id]~=source then return false end
+    if binding.state.items[source.id]~=source or self:Equipped(binding.state,binding.slot)~=source then return false end
     for _,slot in ipairs(self:Definition(source).occupancy or {}) do
         if self:Equipped(binding.state,slot)~=source then return false end
     end

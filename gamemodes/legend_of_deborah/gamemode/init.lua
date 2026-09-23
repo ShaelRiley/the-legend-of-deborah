@@ -216,6 +216,7 @@ include("lod/sv_rpg_block.lua")
 include("lod/sv_equipment_moves.lua")
 include("lod/sv_equipment_invisibility.lua")
 include("lod/sv_safe_teleport.lua")
+include("lod/sv_equipment_thunder.lua")
 include("lod/sv_summon_card.lua")
 include("lod/sv_resurrection_feather.lua")
 AddCSLuaFile("lod/cl_summon_card.lua")
@@ -233,6 +234,7 @@ AddCSLuaFile("lod/cl_neil_brute.lua")
 include("lod/sv_enemy_update_testkit.lua")
 include("lod/sv_hermit_repeat_gifts.lua")
 AddCSLuaFile("lod/cl_equipment_moves.lua")
+AddCSLuaFile("lod/cl_equipment_thunder.lua")
 
 -- Finite startup diagnostics only. Do not clear or re-install the controller here:
 -- production hostiles may spawn after these callbacks, so the final class marker

@@ -1,4 +1,85 @@
-# Current checkpoint — Ring of Invisibility
+# Current checkpoint — Hat of the Thunder God
+
+Built on independently verified remote `c821113b33358460ea3b537f77e109dd18e0f089`.
+The working tree was clean and remote main contained no newer work. Followed
+live GDD 00 → 01 → relevant 03/06/07/90, with exact HUMAN hit-stun detail.
+The retained September 22 master brief explicitly authors UP DOWN UP lightning
+travel and delegates remaining design/balancing/GDD synchronization. Recorded
+`LOD-THUNDER-HAT-001` in 03/06/07/90 and HUMAN, read back the contract in 07.
+
+The minimum-Rare head-slot item grants **Thunder Charge: UP DOWN UP; 24 base
+offensive Magic; six-second cooldown**. A quarter-second warning precedes up to
+three blocks (1152 units) of straight movement at 1440 units/second, at most
+0.8 seconds. Aim is frozen at activation. The existing dispatcher owns input,
+grants, cost modifiers, one resource/cooldown commit and Veil reveal. Preflight
+failure is free; a committed miss or cancellation does not refund Magic.
+
+Extended canonical safe travel with continuous flat-floor support and full-hull
+sweeps. Exact cells, generated-floor center/corner support, harmful/wet-space
+rejection and the existing normal/Warden/jail traversal authority are checked
+before every movement step. Probes are at most 16 units apart; runtime lookahead
+is at most 32 units. A clipped activation needs at least 32 safe units. Standing
+footprint checks remain conservative even when crouched. Stairs, voids, walls,
+actors, closed locks and unsafe floors stop the charge. Source still owns gravity
+and collision through the ordinary SetupMove dash seam; no SetPos, flight,
+invulnerability, new Dodge or forced-motion exemption was added.
+
+First opposing body contact deals one canonical 2d8 + WIS electric Magic packet,
+including its normal Morale rider, regardless of procedural item affinity.
+The shared Magic post-damage stun seam now accepts an authored form multiplier;
+this move requests ordinary eligible hit-stun, including elemental weakness,
+CHA, immunity and retrigger limits. It cannot stun on zero effective HP damage
+or death. Existing wall stun remains unchanged. Allies stop travel unharmed.
+
+Delayed attacks now bind the source's actual equipped slot as well as paired
+occupancy. Thunder also binds Hero identity/life/state, run/seed/graph and safe
+travel eligibility. Removal/re-equipping within one tick, source replacement,
+role/death/respawn/staging/level change, freeze, forced movement, air travel,
+Held/Muted or teleport ends the charge. Shared dash cancellation clears horizontal
+charge momentum and replicated feedback; stale cancellation cannot stop a fresh
+charge. Quickstep retains its accepted expiry and ordinary movement behavior.
+
+The existing independent 1/8 innate reward pool adds the Hat; original seven-family
+RNG draws and frozen records are unchanged. The quality-scaled 60-point innate
+allowance uses normal value/sale/recreation. Stock pickup remains provisional.
+A dedicated bounded visual packet draws a depth-tested blue warning path and
+short trail, with sound and no extra entities, particles or dynamic lights.
+Reduced effects retains the same two draw primitives. The canonical manual and
+both readers include the Hat. `lod_thunder_hat_testkit` equips it, preserves the
+displaced item, fills Magic and marks the run unranked.
+
+Validation: all **130 integrated suites pass, zero failures**, including unchanged
+crash replay/LuaJIT, movement/overhead barriers, safe travel, rescue progression,
+Hero/Soldier queues, earlier combos, Ring, manual and release wiring. Focused
+production checks cover generated ownership/economics, actual recipe/cost/cooldown,
+warning/frozen direction/range, native and graph barriers, support/hazards,
+electric damage, eligible/immune/retrigger/defended/lethal stun, ally exclusion,
+source/lifecycle rejection, stale cancellation and client packet/draw budgets.
+The first focused run exposed a cyclic charge/combat context during shared damage
+copying; removed the back-reference before commit and reran successfully. Initial
+integrated run passed 130/130; final integrated run verifies the complete tree.
+Lua syntax and whitespace gates pass. These are automated/headless results;
+native Source acceptance remains pending.
+
+Native gate: on gm_flatgrass, developer-mode admin runs `lod_thunder_hat_testkit`,
+then UP DOWN UP on a flat corridor. Confirm one 24-base-Magic spend, warning,
+straight travel and six-second cooldown; then charge at a wall/closed gate, an
+enemy and an ally. Check one electric hit with eligible stun, no ally damage,
+no unsafe-floor/locked-edge traversal and cancellation when removing the Hat,
+dying or changing dungeon. Another player verifies warning/audio/trail readability.
+Capture console_latest.txt and rpg_summary_latest.txt; screenshots only for visual
+defects. No VPS or Steam Workshop deployment; prior native obligations remain.
+
+Next bounded P7 checkpoint: Boots of the Heavy Plumber. Reconcile the retained
+stomp/bounce brief with live GDD and shared landing/contact/damage/safe movement
+before choosing delegated tuning. Finite gate: equipped source, valid downward
+contact, one damage event, safe bounded bounce, spam prevention and stale lifecycle
+rejection. Preserve accepted movement/overhead barriers, rescue and Hero/Soldier
+queues. Do not restart prior completed audits.
+
+---
+
+# Previous checkpoint — Ring of Invisibility
 
 Built on verified remote `5d3f837223f433f8b07705cfc4c9dd832e553c8d`.
 Fresh main checkout; no newer remote work was present. The recovered local Gloves

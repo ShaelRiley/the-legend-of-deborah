@@ -53,6 +53,56 @@ local function floorHit(trace)
         and ent.LODGeneratedGeometry and ent:GetBoxKind()==1
 end
 
+-- Continuous ground travel uses the same exact cells/generated-floor authority
+-- as relocation, but may cross unlocked horizontal cell boundaries.
+function T:ChargeSupport(ply,graph,pos,previous)
+    local home=self:CellAt(graph,pos)
+    if not self:FlatCell(graph,home) then return nil end
+    local center=N:CellCenter(home)
+    local mins,maxs=ply:GetHull()
+    if math.abs(pos.z+mins.z-center.z)>4 then return nil end
+    local points={Vector(0,0,0),Vector(mins.x,mins.y,0),Vector(mins.x,maxs.y,0),
+        Vector(maxs.x,mins.y,0),Vector(maxs.x,maxs.y,0)}
+    local cells={}
+    for i,offset in ipairs(points) do
+        local point=pos+offset
+        local cell=self:CellAt(graph,point)
+        if not self:FlatCell(graph,cell) or cell.z~=home.z then return nil end
+        local from=previous and previous[i] or home
+        if from~=cell and (from.z~=cell.z or not (from.neighbors or {})[key(cell)]
+            or not N:CanTraverse(graph,key(from),key(cell))) then return nil end
+        local foot=Vector(point.x,point.y,center.z+8)
+        local tr=util.TraceLine({start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=ply})
+        if not floorHit(tr) or math.abs(tr.HitPos.z-center.z)>2 then return nil end
+        for _,z in ipairs({4,maxs.z*.5}) do
+            if bit.band(util.PointContents(point+Vector(0,0,z)),bit.bor(CONTENTS_SLIME,CONTENTS_WATER))~=0 then return nil end
+        end
+        cells[i]=cell
+    end
+    for _,ent in ipairs(ents.FindInBox(pos+mins,pos+maxs)) do
+        if ent:GetClass()=="trigger_hurt" then return nil end
+    end
+    return cells
+end
+
+function T:ChargePath(ply,graph,start,direction,distance)
+    local cells=self:ChargeSupport(ply,graph,start)
+    if not cells then return 0 end
+    local mins,maxs=ply:GetHull()
+    local tr=util.TraceHull({start=start,endpos=start+direction*distance,
+        mins=mins,maxs=maxs,mask=MASK_PLAYERSOLID,filter=ply})
+    if tr.StartSolid or tr.AllSolid then return 0 end
+    local limit=tr.Hit and math.max(0,distance*(tr.Fraction or 0)-2) or distance
+    local safe=0
+    for i=1,math.max(1,math.ceil(limit/16)) do
+        local nextDistance=math.min(limit,i*16)
+        cells=self:ChargeSupport(ply,graph,start+direction*nextDistance,cells)
+        if not cells then return safe end
+        safe=nextDistance
+    end
+    return safe,tr.Hit and tr.Entity or nil
+end
+
 function T:Landing(ply,graph,cell,pos)
     if not self:FlatCell(graph,cell) then return nil end
     local center=N:CellCenter(cell)
@@ -131,7 +181,8 @@ function T:Relocate(targetBinding,anchorBinding,mode,spend)
     local dest,why=self:Resolve(target,anchor,mode)
     if not dest then return false,why end
     if spend and not spend() then return false,"Card unavailable" end
-    if LOD.RPGAbilityRules.VoluntaryDashes then LOD.RPGAbilityRules.VoluntaryDashes[target]=nil end
+    if LOD.RPGAbilityRules.StopVoluntaryDash then LOD.RPGAbilityRules:StopVoluntaryDash(target)
+    elseif LOD.RPGAbilityRules.VoluntaryDashes then LOD.RPGAbilityRules.VoluntaryDashes[target]=nil end
     target.LODForcedMovementUntil=nil
     target:SetLocalVelocity(Vector(0,0,0))
     target:SetPos(dest)

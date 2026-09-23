@@ -96,6 +96,6 @@ net.Receive("LOD_SpecialMoveFX",function()
         util.Effect("cball_bounce",fx)
         return
     end
-    if id=="ember_fist" or id=="cinder_rise" or id=="veil" then return end -- no revealing cloak particle
+    if id=="ember_fist" or id=="cinder_rise" or id=="veil" or id=="thunder_charge" then return end
     util.Effect(id=="quickstep" and "cball_bounce" or "ManhackSparks",fx)
 end)

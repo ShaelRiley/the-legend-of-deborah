@@ -361,8 +361,12 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         })
     end
 
-    if survives and actual > 0 and form.id=="wall" and LOD.M3HitFeedback then
-        LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,self.Tuning.Wall.stunMultiplier)
+    local stunMultiplier=form.hitStunMultiplier or (form.id=="wall" and self.Tuning.Wall.stunMultiplier)
+    if survives and actual > 0 and stunMultiplier and LOD.M3HitFeedback then
+        if form.hitStunMultiplier then
+            stunMultiplier=stunMultiplier*(tags.elementResolution and tags.elementResolution.hitStunMultiplier or 1)
+        end
+        LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,stunMultiplier)
     end
     local effects = RPG.FeatEffectSystem
     local resource = IsValid(creditCaster) and Magic:_EnsureState(creditCaster) or nil

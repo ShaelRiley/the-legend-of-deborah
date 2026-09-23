@@ -687,6 +687,22 @@
       ]
     },
     {
+      "id": "thunder-hat",
+      "title": "Hat of the Thunder God",
+      "rows": [
+        [
+          "Thunder Charge",
+          "↑ ↓ ↑ · 24 base Magic · 6-second cooldown"
+        ]
+      ],
+      "text": [
+        "This Rare-or-better headwear grants Thunder Charge while equipped. Its generated properties and innate technique both contribute to its value. Stowing or replacing the Hat ends an active charge.",
+        "An electric-blue path and sound warn for a quarter-second, then you charge straight along your original aim for up to three blocks in 0.8 seconds. You cannot steer. Walls, locked gates, actors, stairs, ledges, wet or harmful spaces stop the charge. Start on a supported flat floor with at least 32 units of safe room.",
+        "The first enemy contact deals one hit of 2d8 plus Wisdom as electric Magic, with its normal Morale rider. Surviving enemies that lose HP may suffer ordinary hit-stun, subject to their existing immunities and retrigger rules. Allies stop your charge without taking damage. There is no piercing or splash.",
+        "The charge grants no invulnerability, flight or extra Dodge. It uses ordinary offensive Magic cost modifiers and reveals Veil. Failed activation is free; once committed, interruption or a miss does not refund Magic or reset the cooldown. Removal, death, role or dungeon changes, forced movement, Held or Muted cancel it."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

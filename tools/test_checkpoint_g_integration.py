@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Thunder Hat Charge", ["python3", "tools/run_lua54.py", "tools/test_thunder_charge.lua"]),
     ("Ring of Invisibility", ["python3", "tools/run_lua54.py", "tools/test_invisibility_ring.lua"]),
     ("Fighting Streets Techniques", ["python3", "tools/run_lua54.py", "tools/test_fighting_streets.lua"]),
     ("Feather & Canonical Hero Revival", ["python3", "tools/run_lua54.py", "tools/test_resurrection_feather.lua"]),
