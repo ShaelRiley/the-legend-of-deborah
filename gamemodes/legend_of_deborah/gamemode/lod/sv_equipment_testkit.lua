@@ -150,3 +150,24 @@ concommand.Add("lod_thunder_hat_testkit",function(ply)
     ps.magic=100;LOD.Magic:_Sync(ply,ps)
     E:Report(ply,"THUNDER HAT TEST — ↑ ↓ ↑; 24 base Magic, 0.25s warning, up to three blocks, 6s cooldown. First contact stops; locks and unsafe floors block. Run unranked.","thunder_hat_testkit")
 end)
+
+concommand.Add("lod_heavy_plumber_testkit",function(ply)
+    if not allowed(ply) then return end
+    Run:MarkUnranked("heavy_plumber_testkit")
+    E:ClearTransient(ply)
+    local ps=Run:GetPlayerState(ply)
+    local state=E:Ensure(ps)
+    local item
+    for _,owned in pairs(state.items) do
+        if owned.definitionId=="plumber_boots" then item=owned;break end
+    end
+    if not item then
+        item=E:NewItem(ply,"plumber_boots","heavy-plumber-testkit")
+        if not E:AcquireWearable(state,item,true) then
+            E:Report(ply,"Make one inventory space for the Boots of the Heavy Plumber.","special_move_rejected");return
+        end
+    end
+    E:Equip(state,item.id,"feet")
+    E:Deactivate(ply);E:RefreshDerived(ply,ps);E:Sync(ply)
+    E:Report(ply,"HEAVY PLUMBER TEST — land on an enemy from above: 2d6 + STR and safe upward bounce. No Magic cost; touch solid non-actor ground to rearm. Run unranked.","heavy_plumber_testkit")
+end)

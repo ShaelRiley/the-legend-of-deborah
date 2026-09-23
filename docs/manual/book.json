@@ -703,6 +703,22 @@
       ]
     },
     {
+      "id": "heavy-plumber",
+      "title": "Boots of the Heavy Plumber",
+      "rows": [
+        [
+          "Heavy Stomp",
+          "Land from above · Passive · No Magic cost"
+        ]
+      ],
+      "text": [
+        "These Rare-or-better boots occupy your feet slot. Equip them before leaving solid ground, then land on an enemy from above to deal 2d6 plus Strength as physical damage. Your usual dice, defenses and damage modifiers apply. Sideways contact and landing on allies do not attack.",
+        "A valid stomp gives you a short upward rebound, even if the enemy dodges or blocks the damage. Low ceilings reduce the rebound. With insufficient clearance or unsafe floor support below, you land normally without an attack. The Boots do not grant flight, invulnerability or protection from fall damage.",
+        "You get one stomp attempt per airborne excursion, with at least 0.65 seconds between commitments. Your bounce is part of that same excursion. Land on solid, non-actor support to rearm; standing on an enemy or swapping Boots in midair will not do it.",
+        "Heavy Stomp needs no arrow sequence or Magic. Muted and holding a potion do not disable it; Held does. A committed stomp reveals Veil. Removing the Boots or changing life, role or dungeon invalidates the armed landing."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",

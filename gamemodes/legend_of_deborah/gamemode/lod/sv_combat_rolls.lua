@@ -367,6 +367,32 @@ function Rolls:ResolveActorDamage(contract, attacker, target, tags)
     return tonumber(resolved) or 0
 end
 
+-- Innate physical contacts share actor dice, mitigation, native defenses and
+-- feed without masquerading as the currently held gun or a Magic cast.
+function Rolls:ApplyEquipmentContact(attacker,target,move,context)
+    if not IsValid(target) or target.LODDead or target:Health()<=0 then return false end
+    local contract=self:RollActorDamage(attacker,{label=move.displayName,source=move.id,
+        count=move.damageDice,sides=move.damageSides,attackEvent=context},self:_RNG("equipment:"..move.id),0)
+    local tags={physical=true,melee=true,equipmentContact=true,actorDamageResolved=true,
+        attackEvent=context,damageContract=contract}
+    local damage=math.max(0,self:ResolveActorDamage(contract,attacker,target,tags))
+    local before=target:Health()
+    if damage>0 then
+        local info=LOD.NewDamageInfo()
+        info:SetAttacker(attacker);info:SetInflictor(attacker);info:SetDamage(damage)
+        info:SetDamageType(DMG_CLUB);info:SetDamagePosition(target:WorldSpaceCenter());info:SetDamageForce(vector_origin)
+        LOD.RPGStatusElements:AttachDamageContext(info,tags)
+        target:TakeDamageInfo(info)
+    end
+    local actual=math.max(0,before-(IsValid(target) and target:Health() or 0))
+    self.Stats.playerAttacks=(self.Stats.playerAttacks or 0)+1
+    local extra=math.max(0,#(contract.values or {})-contract.baseDice)
+    if extra>0 then self:EmitDiceExplosionFX(attacker,move.id,extra,1) end
+    self:_Send(attacker,0,self:_DamageEventText(attacker,LOD.DieLogger:DamageFormula(contract),
+        actual,target,self:_PlayerRollDetail(contract),nil,"Hostile",move.id))
+    return true
+end
+
 function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
     if LOD.Equipment and LOD.Equipment.RefreshDerived and LOD.RunManager then
         LOD.Equipment:RefreshDerived(ply,LOD.RunManager:GetPlayerState(ply))

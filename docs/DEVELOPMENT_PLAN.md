@@ -1,4 +1,92 @@
-# Current checkpoint — Hat of the Thunder God
+# Current checkpoint — Boots of the Heavy Plumber
+
+Built on verified remote `61f5577f3d7c1a19c2eb7797a6ed3cb2b5950920`.
+Clean local main matched remote; no newer work was overwritten. Read AGENTS.md
+and live GDD 00 → 01 → relevant 03/06/07/90. The Boots' exact author brief is
+retained in `docs/SEPTEMBER22_MASTER_BRIEF.md`, including express authority for
+missing design/balancing and GDD synchronization. Recorded and read back
+`LOD-HEAVY-PLUMBER-001` in normalized 03/06/07/90 and HUMAN. This is an automatic
+landing attack, not an added directional recipe.
+
+Minimum-Rare feet-slot Boots grant **Heavy Stomp: 2d6 + STR physical contact damage,
+no Magic cost, one attempt per airborne excursion, 0.65-second minimum interval**.
+The independent 1/8 innate reward pool now includes Boots; original seven-family
+RNG, frozen records and normal item economics remain intact. Innate allowance is
+floor(50 x quality / 100). Definition grants and passive descriptions use the
+existing equipment registry without permanent feat ownership or input listeners.
+
+The ordinary SetupMove authority samples an armed Hero's movement; FinishMove
+checks actual first-hit native swept-hull contact. Arming requires equipped Boots
+and server-observed solid non-actor ground. Require downward speed at least120,
+upward contact normal >=0.7, feet above the collision top before movement and
+within3 units at contact. Samples expire after0.1s and reject displacement >128.
+No target scan or per-item recurring timer. The bounce belongs to the same
+excursion; actor standing, contact spam and midair item swaps cannot rearm it.
+
+The canonical combat-roll module now exposes an innate physical-contact adapter,
+using existing actor dice, STR/CON, class/gear modifiers, native Dodge/Block,
+status observation, attribution, XP and combat feed. It does not cast Magic or
+impersonate the held weapon. Native firearm hit feedback excludes that explicit
+contact tag, avoiding an accidental gun-stun while holding a firearm. A committed
+stomp reveals Veil. Muted and holding a throwable do not disable this physical
+ability; voluntary movement denial does. No built-in element, Content rider,
+extra stun or displacement of the victim was introduced.
+
+Safe travel validates projected full-footprint generated support, exact cells,
+normal/Warden/jail transitions, void/stair/hazard rejection and the standing hull's
+upward clearance. Native overhead geometry bounds a nominal56-unit rebound with
+4-unit margin and minimum8-unit clearance; launch speed uses actual server/player
+gravity. Preserve horizontal momentum, ordinary Source gravity/collision and all
+accepted movement/overhead barriers. No teleport, old jump-height clamp, extra
+Dodge, invulnerability or fall-damage exemption. Unsafe bounce preflight consumes
+that contact's latch but produces no stomp or bounce. A valid defended contact
+still self-bounces once. Damage reactions revalidate the actor before rebound.
+
+Exact source/feet slot, Hero identity/state/life and run/seed/graph bind arming to
+landing through shared equipment and safe-travel authorities. Removal/replacement,
+role/death/staging/freeze, forced displacement, teleport and stale commands cannot
+revive an old descent. Only a fresh solid-ground observation rearms after
+invalidation. Shared safe relocation explicitly retires the airborne record.
+The shared impact cue, feedback feed, item text and both manual readers describe
+the passive. `lod_heavy_plumber_testkit` equips Boots, preserves displaced gear
+and marks the run unranked without changing Magic.
+
+Validation: all **131 integrated suites pass, zero failures**. The focused suite
+executes real item generation/grants, graph locks, source binding, contact resolver,
+physical combat and rebound preflight with native trace/entity boundaries. It
+covers ownership/value/rewards, no resource spending, actual top contact versus
+side/upward/slow/covered/ally/dead contact, ceiling clipping, unsafe footprints,
+locked-edge corner and swept crossings, one-per-flight/cooldown, held throwable,
+Muted/Held, source mutation and stale identity/life/role/run/graph/teleport rejection.
+Existing Hat, Ring, Gloves, Quickstep, LuaJIT/crash replay, overhead movement,
+rescue and Hero/Soldier queues pass unchanged. The first integrated run passed
+131/131. An added held-throwable focused case then exposed an incomplete native
+weapon double (missing SetNW2String); reused the existing actor Give fixture and
+reran it without weakening assertions. Final integrated run verifies the complete
+tree; syntax and whitespace gates pass. These are automated/headless results,
+not native Source acceptance. Movement-hook placement was checked against the
+[official FinishMove documentation](https://wiki.facepunch.com/gmod/GM:FinishMove).
+
+Native gate pending: as a developer-mode admin on gm_flatgrass, run
+`lod_heavy_plumber_testkit`; touch solid ground, then drop onto a living enemy
+from a ledge or suitable jump. Confirm one physical hit, unchanged Magic and a
+short upward rebound; landing on an actor again must not repeat it before touching
+solid non-actor ground. Check a low ceiling, an ally, side contact and removing
+the Boots during descent. With another player, verify damage attribution and
+bounce/impact readability; check death and dungeon transition cleanup. Capture
+console_latest.txt and rpg_summary_latest.txt. Stock pickup remains provisional.
+No VPS or Steam Workshop deployment; earlier native acceptance obligations remain.
+
+Next bounded P7 checkpoint: Tanuki's Ring. Reconcile the retained two-second
+stationary Statue/invulnerability brief with live GDD and canonical perception,
+status/damage and movement/lifecycle authorities. Define finite activation,
+movement-break, damage denial, acquisition, equipment removal and stale-state
+checks before implementation. Preserve accepted movement/overhead barriers,
+rescue progression and Hero/Soldier queues; do not repeat completed audits.
+
+---
+
+# Previous checkpoint — Hat of the Thunder God
 
 Built on independently verified remote `c821113b33358460ea3b537f77e109dd18e0f089`.
 The working tree was clean and remote main contained no newer work. Followed

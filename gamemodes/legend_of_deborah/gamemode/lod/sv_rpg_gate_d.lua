@@ -542,6 +542,7 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
     move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
     if AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
+    if LOD.Equipment and LOD.Equipment.ObserveStomp then LOD.Equipment:ObserveStomp(ply,move) end
 end)
 
 hook.Add("EntityFireBullets", "LOD_RPG_GateD_AimSpread", function(shooter, bullet)

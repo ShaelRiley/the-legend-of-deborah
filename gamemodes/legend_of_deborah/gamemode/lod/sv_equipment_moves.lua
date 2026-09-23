@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
 function E:ClearTransient(ply)
+    if self.StompFlights then self.StompFlights[ply]=nil end
     if self.EndCloak then self:EndCloak(ply,"lifecycle changed") end
     self.MoveSessions[ply] = nil
     Rules:StopVoluntaryDash(ply)
@@ -89,7 +90,7 @@ function Rules:ApplyVoluntaryDash(ply, data)
 end
 
 -- Innate delivery binds the actual equipped record, not just a family name.
-function E:PrepareMoveAttack(ply,move)
+function E:BindMoveSource(ply,move)
     local session=self:MoveSession(ply)
     local state=session.ps.equipment
     local source,sourceSlot
@@ -102,6 +103,14 @@ function E:PrepareMoveAttack(ply,move)
     for _,slot in ipairs(def.occupancy or {}) do
         if self:Equipped(state,slot)~=source then return nil end
     end
+    return {session=session,graph=Run.State.Graph,source=source,state=state,
+        slot=sourceSlot,identity=session.ps.identity}
+end
+
+function E:PrepareMoveAttack(ply,move)
+    local binding=self:BindMoveSource(ply,move)
+    if not binding then return nil end
+    local source=binding.source
     local element
     for _,record in ipairs(source.properties or {}) do
         local property=self:RecordDefinition(source,record)
@@ -112,8 +121,7 @@ function E:PrepareMoveAttack(ply,move)
     content=table.Copy(content)
     if move.rider then content.rider=move.rider end
     local context=Forms:_NewContext(ply,move,content)
-    context.moveBinding={session=session,graph=Run.State.Graph,source=source,state=state,
-        slot=sourceSlot,identity=session.ps.identity}
+    context.moveBinding=binding
     context.deliveryForm=move
     context.deliveryContent=content
     return context

@@ -56,7 +56,14 @@ E.SpecialMoves.thunder_charge = {id="thunder_charge", name="Thunder Charge", dis
 E.MoveOrder[#E.MoveOrder+1] = "thunder_charge"
 E.Definitions.thunder_hat = {name="Hat of the Thunder God", wearable=true, slots={"head"},
     model="models/props_junk/cardboard_box004a.mdl", moves={"thunder_charge"}, minimumRarity=2}
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat"}
+E.SpecialMoves.heavy_stomp = {id="heavy_stomp", name="Heavy Stomp", displayName="Heavy Stomp",
+    passive=true, recipe={}, trigger="Landing from above", magicCost=0, cooldown=.65,
+    value=50, family="plumber_boots", innateOnly=true, physical=true,
+    damageDice=2, damageSides=6, descentSpeed=120, bounceHeight=56,
+    description="Land on an enemy for 2d6 + STR physical damage and a ceiling-checked upward bounce. Once per airborne excursion; land on solid non-actor support to rearm. No Magic cost."}
+E.Definitions.plumber_boots = {name="Boots of the Heavy Plumber", wearable=true, slots={"feet"},
+    model="models/props_junk/cardboard_box004a.mdl", moves={"heavy_stomp"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil
@@ -288,7 +295,8 @@ function E:Description(item, compact)
     local out={self.Rarities[item.rarity].name.." · Dungeon "..item.dungeonLevel}
     for _,id in ipairs(self:Definition(item).moves or {}) do
         local m=self.SpecialMoves[id]
-        out[#out+1]=m.name.." "..m.glyphs.." / "..m.magicCost.." Magic / "..m.cooldown.."s"..(compact and "" or " — "..m.description)
+        local trigger=m.passive and (m.trigger.." / passive") or m.glyphs
+        out[#out+1]=m.name.." "..trigger.." / "..m.magicCost.." Magic / "..m.cooldown.."s"..(compact and "" or " — "..m.description)
     end
     for _,r in ipairs(item.properties) do
         local p=self.EconomyProperties[r.id]

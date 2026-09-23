@@ -91,6 +91,9 @@ net.Receive("LOD_SpecialMoveFX",function()
     local target=net.ReadEntity()
     if not IsValid(actor) or not E.SpecialMoves[id] then return end
     local fx=EffectData();fx:SetOrigin(actor:WorldSpaceCenter());fx:SetScale(1)
+    if id=="heavy_stomp" then
+        fx:SetOrigin(actor:GetPos());util.Effect("cball_bounce",fx);return
+    end
     if id=="psychic_crush" and IsValid(target) then
         fx:SetOrigin(target:WorldSpaceCenter())
         util.Effect("cball_bounce",fx)

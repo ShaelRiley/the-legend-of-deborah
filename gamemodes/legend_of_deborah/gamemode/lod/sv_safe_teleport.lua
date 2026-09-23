@@ -55,7 +55,7 @@ end
 
 -- Continuous ground travel uses the same exact cells/generated-floor authority
 -- as relocation, but may cross unlocked horizontal cell boundaries.
-function T:ChargeSupport(ply,graph,pos,previous)
+function T:ChargeSupport(ply,graph,pos,previous,filter)
     local home=self:CellAt(graph,pos)
     if not self:FlatCell(graph,home) then return nil end
     local center=N:CellCenter(home)
@@ -72,7 +72,7 @@ function T:ChargeSupport(ply,graph,pos,previous)
         if from~=cell and (from.z~=cell.z or not (from.neighbors or {})[key(cell)]
             or not N:CanTraverse(graph,key(from),key(cell))) then return nil end
         local foot=Vector(point.x,point.y,center.z+8)
-        local tr=util.TraceLine({start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=ply})
+        local tr=util.TraceLine({start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=filter or ply})
         if not floorHit(tr) or math.abs(tr.HitPos.z-center.z)>2 then return nil end
         for _,z in ipairs({4,maxs.z*.5}) do
             if bit.band(util.PointContents(point+Vector(0,0,z)),bit.bor(CONTENTS_SLIME,CONTENTS_WATER))~=0 then return nil end
@@ -83,6 +83,35 @@ function T:ChargeSupport(ply,graph,pos,previous)
         if ent:GetClass()=="trigger_hurt" then return nil end
     end
     return cells
+end
+
+-- No horizontal launch or teleport: native overhead geometry owns collision.
+function T:ContactBounce(ply,target,graph,pos,height,previousPosition)
+    local cell=self:CellAt(graph,pos)
+    local targetCell=self:CellAt(graph,target:GetPos())
+    if not cell or cell~=targetCell or not self:FlatCell(graph,cell) then return nil end
+    local center=N:CellCenter(cell)
+    local mins,maxs=ply:GetHull()
+    local filter={ply,target}
+    local ground=Vector(pos.x,pos.y,center.z-mins.z+2)
+    local previous
+    if previousPosition then
+        local previousCell=self:CellAt(graph,previousPosition)
+        if not previousCell or previousCell.z~=cell.z then return nil end
+        previous=self:ChargeSupport(ply,graph,Vector(previousPosition.x,previousPosition.y,ground.z),nil,filter)
+        if not previous then return nil end
+    end
+    if not self:ChargeSupport(ply,graph,ground,previous,filter) then return nil end
+    local tr=util.TraceHull({start=pos,endpos=pos+Vector(0,0,height+4),
+        mins=mins,maxs=maxs,mask=MASK_PLAYERSOLID,filter=filter})
+    if tr.StartSolid or tr.AllSolid then return nil end
+    local clearance=tr.Hit and math.max(0,(height+4)*(tr.Fraction or 0)-4) or height
+    if clearance<8 then return nil end
+    local gravity=GetConVar("sv_gravity"):GetFloat()
+    local scale=ply:GetGravity()
+    gravity=gravity*(scale==0 and 1 or scale)
+    if gravity<=0 then return nil end
+    return math.sqrt(2*gravity*clearance)
 end
 
 function T:ChargePath(ply,graph,start,direction,distance)
@@ -181,6 +210,7 @@ function T:Relocate(targetBinding,anchorBinding,mode,spend)
     local dest,why=self:Resolve(target,anchor,mode)
     if not dest then return false,why end
     if spend and not spend() then return false,"Card unavailable" end
+    if LOD.Equipment.StompFlights then LOD.Equipment.StompFlights[target]=nil end
     if LOD.RPGAbilityRules.StopVoluntaryDash then LOD.RPGAbilityRules:StopVoluntaryDash(target)
     elseif LOD.RPGAbilityRules.VoluntaryDashes then LOD.RPGAbilityRules.VoluntaryDashes[target]=nil end
     target.LODForcedMovementUntil=nil
