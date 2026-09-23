@@ -22,17 +22,18 @@ function R:Register(def)
     return def
 end
 
-function R:Catalog()
+function R:Catalog(dungeonLevel)
     local ids = {}
     for id, def in pairs(self.Definitions) do
-        if def.production == true then ids[#ids + 1] = id end
+        if def.production == true and (not dungeonLevel or not def.minDungeonLevel
+            or dungeonLevel >= def.minDungeonLevel) then ids[#ids + 1] = id end
     end
     table.sort(ids)
     return ids
 end
 
-function R:Select(seed)
-    local ids = self:Catalog()
+function R:Select(seed, dungeonLevel)
+    local ids = self:Catalog(dungeonLevel or 1)
     -- Do not truncate d4, repeat an archetype, or pass an incomplete catalog off
     -- as production population. Preview is a separate explicitly unranked path.
     if #ids < 4 then return nil, "production event population gated: at least four archetypes required" end

@@ -48,7 +48,7 @@ local function build(seed)
  assert(plan.mode=='full' and Run.State.BuildReport.eventMode=='full')
  assert(LOD.MazeGenerator:Validate(g) and LOD.GraphIntegrity:Audit(g).valid and D:ValidateRoutes(g))
  assert(g.Progression.Validation.valid)
- local selected,n=R:Select(seed)
+ local selected,n=R:Select(seed,Run.State.Level)
  assert(plan.selectedCount==n and Run.State.BuildReport.eventCount==n)
  local archetypes,cells={},{}
  for _,i in ipairs(plan.instances) do
@@ -283,7 +283,10 @@ D.Plan=function(self,g,options)
  local accepted,result=originalPlan(self,g,options)
  assert(accepted,result)
  assert(before==WalletJSONEncode({tags=g.CellTags,encounters=g.EncounterPlan}),'Event planning changed encounter reservations')
- for _,i in ipairs(result.instances) do assert(not occupied[i.cellKey],'Event overlapped actual encounter/safe reservation') end
+ for _,i in ipairs(result.instances) do
+  assert(not occupied[i.cellKey],'Event overlapped actual encounter/safe reservation')
+  assert(not occupied[i.placement.destinationCellKey],'Paired event destination overlapped actual encounter/safe reservation')
+ end
  encounterSignature=before
  return accepted,result
 end
@@ -331,6 +334,55 @@ for sampleSeed=1,64 do
  if sampled==12 then break end
 end
 assert(sampled==12,'Bounded varied production sample must realize the selected hazard')
+-- Sixth member enters the common pool only on later dungeon levels. Exercise
+-- the combined real catalog, production encounters and both endpoint contracts.
+dofile(root..'sv_event_warp_hole.lua')
+assert(#R:Catalog()==6 and R.Definitions.warp_hole.contract=='UTILITY')
+local warpSeeds,allSeen={},{}
+for currentSeed=1,128 do
+ local early,earlyCount=R:Select(currentSeed,4)
+ local later,laterCount=R:Select(currentSeed,5)
+ assert(earlyCount==laterCount,'Eligibility cannot reroll the exact d4 count')
+ for _,id in ipairs(early) do assert(id~='warp_hole','Warp appeared before dungeon 5') end
+ local distinct={}
+ for ordinal,id in ipairs(later) do
+  assert(not distinct[id]);distinct[id]=true;allSeen[id]=true
+  assert(id~='treasure_chest' or ordinal==4)
+ end
+ assert(#later==laterCount and (distinct.treasure_chest==true)==(laterCount==4))
+ if distinct.warp_hole then warpSeeds[laterCount]=warpSeeds[laterCount] or currentSeed end
+end
+assert(count(allSeen)==6,'All six authored archetypes must remain selectable')
+Run.State.Level=5
+local function checkWarp(plan)
+ local occupied,warp={}
+ for _,i in ipairs(plan.instances) do
+  for _,k in ipairs({i.cellKey,i.placement.destinationCellKey}) do
+   assert(not occupied[k],'Paired endpoints overlap sibling event');occupied[k]=true
+  end
+  if i.archetype=='warp_hole' then warp=i end
+ end
+ assert(warp and #warp.entities==2 and not warp.linked)
+ assert(Run.State.Graph.Cells[warp.cellKey].z~=Run.State.Graph.Cells[warp.placement.destinationCellKey].z)
+ return warp
+end
+for n=1,4 do assert(warpSeeds[n]);checkWarp(build(warpSeeds[n])) end
+local laterSignature,laterGraph
+sampled=0
+for sampleSeed=1,64 do
+ local selected=R:Select(sampleSeed,5);local warp=false
+ for _,id in ipairs(selected) do if id=='warp_hole' then warp=true end end
+ if warp then
+  local combined=build(sampleSeed);checkWarp(combined);sampled=sampled+1
+  if sampled==1 then
+   laterSignature,laterGraph=planSignature(combined),F.graphSignature(Run.State.Graph)
+   assert(planSignature(build(sampleSeed))==laterSignature and F.graphSignature(Run.State.Graph)==laterGraph)
+  end
+ end
+ if sampled==12 then break end
+end
+assert(sampled==12,'Bounded actual six-entry sample must realize every selected warp pair')
+print('WARP_POPULATION_PASS: early-level exclusion; six-member catalog at dungeon 5; exact 1d4 counts; 12 actual warp-selected production builds with encounter reservations and deterministic endpoint pairs')
 D.Plan,util.TraceLine,Run._ActiveCount=originalPlan,originalTrace,originalParty
 D:Cleanup('encounter population seam complete');ED:Cleanup()
 print('EVENT_ENCOUNTER_SEAM_PASS: legacy seed 2 retained; '..sampled..' actual five-entry hazard-selected seeds realize with production encounters and both endpoints reserved')

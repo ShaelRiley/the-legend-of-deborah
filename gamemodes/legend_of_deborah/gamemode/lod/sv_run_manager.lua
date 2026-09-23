@@ -652,6 +652,7 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     local generationSeconds = SysTime() - generationStarted
     if not graph then return false, err end
 
+    graph.DungeonLevel = self.State.Level
     LOD.ProgressionDirector:ResetLevelState(graph)
     local buildStarted = SysTime()
     local ok, buildReport = LOD.MazeBuilder:Build(graph)

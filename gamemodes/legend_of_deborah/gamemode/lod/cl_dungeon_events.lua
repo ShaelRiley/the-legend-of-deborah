@@ -15,16 +15,36 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     if not IsValid(ent) or (ent:GetClass()~='lod_dungeon_event' and ent:GetNW2String('LOD_EventArchetype','')~='false_floor')
         or ply:GetPos():DistToSqr(ent:GetPos())>160*160 then return end
     local eventID=ent.GetEventID and ent:GetEventID() or ent:GetNW2String('LOD_EventID','')
-    local row
+    local row,endpoint
     for _,event in ipairs(LOD.DungeonEvents.events) do
-        if event.id==eventID and event.entityIndex==ent:EntIndex() then row=event;break end
+        if event.id==eventID then
+            if event.archetype=='warp_hole' then
+                for index,point in ipairs(event.details and event.details.endpoints or {}) do
+                    if point.entityIndex==ent:EntIndex() then row,endpoint=event,index;break end
+                end
+            elseif event.entityIndex==ent:EntIndex() then row=event end
+            if row then break end
+        end
     end
     local key=string.upper(input.LookupBinding('+use') or 'E')
     local archetype=row and row.archetype or ent:GetNW2String('LOD_EventArchetype','slot_machine')
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='false_floor' then
+    if archetype=='warp_hole' then
+        local details=row and row.details
+        local point=details and details.endpoints[endpoint]
+        local number=endpoint or ent:GetNW2Int('LOD_WarpEndpoint',0)
+        local floor=point and point.destinationFloor or ent:GetNW2Int('LOD_WarpDestinationFloor',0)
+        lines={'WARP HOLE — ENDPOINT '..number..' → FLOOR '..floor,
+            'Free paired shortcut. Ordinary stairs and progression remain available.'}
+        if not row then lines[#lines+1]='Synchronizing warp…'
+        else
+            lines[#lines+1]=details.linked and 'LINKED — available to every deployed Hero this dungeon.'
+                or 'DORMANT — first safe trip permanently links both ends this dungeon.'
+            lines[#lines+1]='['..key..'] '..(details.linked and 'TRAVERSE' or 'LINK AND TRAVERSE')..' — 1 second between trips; arrival must be clear.'
+        end
+    elseif archetype=='false_floor' then
         lines={'FALSE FLOOR','The central panel drops you one floor. Walk around its rim to avoid it.',
             'Return by the existing stairs. Ordinary fall damage applies.',
             row and row.details and row.details.open and 'OPEN — resets after 3 seconds when clear.' or 'ARMED — stepping onto the panel opens it.'}

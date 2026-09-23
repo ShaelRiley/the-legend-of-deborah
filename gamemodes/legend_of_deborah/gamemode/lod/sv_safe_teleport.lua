@@ -235,12 +235,30 @@ function T:Relocate(targetBinding,anchorBinding,mode,spend)
     local dest,why=self:Resolve(target,anchor,mode)
     if not dest then return false,why end
     if spend and not spend() then return false,"Card unavailable" end
+    return self:MoveBound(targetBinding, dest)
+end
+
+-- A single movement commit for every relocation caller. Event utilities supply
+-- their exact ownership guard, rechecked after movement-state callbacks as well.
+function T:MoveBound(binding, dest, current, destinationCell)
+    if not self:Matches(binding) or (current and not current()) then return false, "Hero changed" end
+    local target=binding.actor
     if LOD.Equipment.EndStatue then LOD.Equipment:EndStatue(target,"teleport") end
     if LOD.Equipment.StompFlights then LOD.Equipment.StompFlights[target]=nil end
     if LOD.RPGAbilityRules.StopVoluntaryDash then LOD.RPGAbilityRules:StopVoluntaryDash(target)
     elseif LOD.RPGAbilityRules.VoluntaryDashes then LOD.RPGAbilityRules.VoluntaryDashes[target]=nil end
+    if not self:Matches(binding) or (current and not current()) then return false, "Hero changed" end
     target.LODForcedMovementUntil=nil
     target:SetLocalVelocity(Vector(0,0,0))
+    if not self:Matches(binding) or (current and not current()) then return false, "Hero changed" end
+    if destinationCell then
+        -- Movement teardown and interaction LOS can execute native callbacks.
+        -- Recheck the fixed arrival afterwards, then only the pure ownership
+        -- guard: no later trace may invalidate a just-proven landing.
+        dest=self:Landing(target,binding.graph,destinationCell,dest)
+        if not dest then return false, "Arrival blocked or unsafe. Nothing moved." end
+        if not self:Matches(binding) or (current and not current(true)) then return false, "Hero changed" end
+    end
     target:SetPos(dest)
     return true,dest
 end

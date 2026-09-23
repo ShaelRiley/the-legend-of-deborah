@@ -957,7 +957,7 @@
         ]
       ],
       "text": [
-        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, and False-floor hazards. A 4 selects three of those plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. Events never replace the required rescue objective.",
+        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, and False-floor hazards; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
         "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
         "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
@@ -1044,6 +1044,17 @@
         "The fall leads one floor down. Ordinary gravity and falling consequences apply. The destination preserves your current progression access, and the existing stairs provide a route back; the trap never opens a locked progression shortcut.",
         "The panel stays open for at least three seconds. It closes and rearms only after its opening is clear, so keep moving after landing. All Heroes share the same panel state, and the hazard can trigger again. If the landing is unsafe or occupied before activation, the panel stays closed.",
         "For an administrator preview, use lod_event_preview_generate false_floor. Redeploy after generation and follow the printed locator."
+      ]
+    },
+    {
+      "id": "warp-hole",
+      "title": "A shorter way back",
+      "text": [
+        "From Dungeon Level 5 onward, a paired warp hole may appear as an optional event. Its two cyan endpoints sit on different physical floors. The prompt identifies your endpoint and its destination floor.",
+        "Press E at either dormant endpoint. Your first successful traversal links the pair for everyone until this dungeon ends. Linked holes are free and repeatable; wait one second between your own traversals. Other Heroes can use them independently.",
+        "A warp hole shortens a route you can already reach. It never skips a locked gate, required boss, key or rescue step, and the ordinary stairs still provide a way back. It preserves your facing and stops your previous momentum.",
+        "If the arrival is occupied or unsafe, you stay where you are. Clear the landing and try again. A refused first traversal leaves the pair dormant. Regeneration replaces both endpoints with a fresh dormant pair.",
+        "For an administrator preview, use lod_event_preview_generate warp_hole. This unranked single-event preview can show the pair before Dungeon Level 5. Redeploy after generation and follow the printed locators."
       ]
     },
     {

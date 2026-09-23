@@ -81,8 +81,8 @@ function D:ProtectedCells(g)
 end
 
 -- Replay the actual ordered progression graph under proposed obstructions.
--- New edges/warps are deliberately unsupported until an explicit route-aware
--- endpoint implementation exists. No callback may claim a shortcut is safe.
+-- Paired shortcuts separately prove equivalent progression reachability at every
+-- lock stage; no callback may alter the canonical navigation graph.
 function D:ValidateRoutes(g, extraEdges, extraCells)
     local p = g.Progression
     if not p or not p.JailEdge or not p.CoreCell or not p.DeborahCell then return false, "missing progression" end
@@ -104,18 +104,17 @@ function D:ValidateRoutes(g, extraEdges, extraCells)
     return true
 end
 
--- A drop adds only a physical one-way passage. Both endpoints must already be
--- in the same reachable component at EVERY ordered lock stage, including jail.
--- Thus using the aperture never advances progression, and ordinary stairs return.
-function D:ValidateDrop(g, placement, reserved, environment)
+-- Both physical shortcut endpoints must already belong to the same reachable
+-- component at EVERY ordered lock stage, including jail and Warden lockdown.
+-- The ordinary two-way route remains authoritative; shortcuts add no graph edge.
+function D:ValidateEndpointPair(g, placement, reserved, environment)
     local source, destination = g.Cells[placement.cellKey], g.Cells[placement.destinationCellKey]
-    if not source or not destination or source.x ~= destination.x or source.y ~= destination.y
-        or source.z ~= destination.z + 1 then return false, "drop must reach the floor immediately below" end
+    if not source or not destination or source == destination then return false, "missing distinct endpoints" end
     local protected = self:ProtectedCells(g)
     for _, k in ipairs({placement.cellKey, placement.destinationCellKey}) do
-        if protected[k] or (reserved and reserved[k]) then return false, "drop endpoint reserved" end
+        if protected[k] or (reserved and reserved[k]) then return false, "shortcut endpoint reserved" end
         for _, cell in ipairs(g.CriticalPath or {}) do
-            if key(cell) == k then return false, "drop endpoint must be optional" end
+            if key(cell) == k then return false, "shortcut endpoint must be optional" end
         end
     end
     local p, blocked = g.Progression, copy(environment and environment.edges)
@@ -127,20 +126,27 @@ function D:ValidateDrop(g, placement, reserved, environment)
     for stage = 0, #p.Gates + 1 do
         local reach = walk(g, key(g.Start), blocked, cells)
         if not not reach[placement.cellKey] ~= not not reach[placement.destinationCellKey] then
-            return false, "drop crosses progression stage"
+            return false, "shortcut crosses progression stage"
         end
         if reach[placement.cellKey] then
             reached = true
             if not walk(g, placement.destinationCellKey, blocked, cells)[placement.cellKey]
                 or not walk(g, placement.cellKey, blocked, cells)[placement.destinationCellKey] then
-                return false, "drop has no ordinary return route"
+                return false, "shortcut has no ordinary return route"
             end
         end
         local gate = p.Gates[stage + 1]
         local ek = gate and gate.edgeKey or p.JailEdge.edgeKey
         blocked[ek] = environment and environment.edges and environment.edges[ek] or nil
     end
-    return reached, reached and nil or "drop endpoints unreachable"
+    return reached, reached and nil or "shortcut endpoints unreachable"
+end
+
+function D:ValidateDrop(g, placement, reserved, environment)
+    local source, destination = g.Cells[placement.cellKey], g.Cells[placement.destinationCellKey]
+    if not source or not destination or source.x ~= destination.x or source.y ~= destination.y
+        or source.z ~= destination.z + 1 then return false, "drop must reach the floor immediately below" end
+    return self:ValidateEndpointPair(g, placement, reserved, environment)
 end
 
 function D:ValidatePlacement(g, def, placement, reserved, environment)
@@ -150,7 +156,8 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
     local protected = self:ProtectedCells(g)
     if protected[k] or (reserved and reserved[k]) then return false, "reserved event cell" end
     if placement.addedEdges or placement.destination or placement.destinationCell
-        or (placement.destinationCellKey and not (def.contract == "HAZARD" and def.dropFloor == true)) then
+        or (placement.destinationCellKey and not ((def.contract == "HAZARD" and def.dropFloor == true)
+            or (def.contract == "UTILITY" and def.pairedWarp == true))) then
         return false, "shortcut contract not implemented"
     end
     local valid, err = self:ValidateRoutes(g)
@@ -158,6 +165,10 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
     if def.contract == "UTILITY" or def.contract == "REWARD" then
         if def.nonblocking ~= true or next(placement.blockedCells or {}) or next(placement.blockedEdges or {}) then
             return false, "optional event must be nonblocking"
+        end
+        if def.pairedWarp then
+            valid, err = self:ValidateEndpointPair(g, placement, reserved, environment)
+            if not valid then return false, err end
         end
         if def.contract == "REWARD" then
             for _, c in ipairs(g.CriticalPath or {}) do if key(c) == k then return false, "reward must be optional" end end
@@ -224,7 +235,7 @@ function D:Plan(g, options)
         if not Registry.Definitions[options.preview] then return false, "unknown event preview" end
         selected, count, plan.mode = {options.preview}, 1, "preview"
     else
-        selected, count = Registry:Select(seed)
+        selected, count = Registry:Select(seed, g.DungeonLevel or Run.State.Level or 1)
         if not selected then return false, count end
         plan.mode = "full"
     end
@@ -294,7 +305,8 @@ function D:Plan(g, options)
         if instance.contract == "BLOCKADE" then environment.edges[instance.placement.edgeKey] = true end
     end
     for _, instance in ipairs(plan.instances) do
-        if instance.contract == "BLOCKADE" or Registry.Definitions[instance.archetype].dropFloor then
+        if instance.contract == "BLOCKADE" or Registry.Definitions[instance.archetype].dropFloor
+            or Registry.Definitions[instance.archetype].pairedWarp then
             local ok, err = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
             if not ok then return false, "combined event contract rejected: " .. tostring(err) end
         end
@@ -426,6 +438,20 @@ function D:Interact(entity, ply)
     if tr.Hit and tr.Entity ~= entity then return false, "event obstructed" end
     local identity = ply:SteamID64()
     if not LOD.CryptoStore:ValidAccount(identity) then return false, "valid account required" end
+    local def = Registry.Definitions[instance.archetype]
+    -- Repeatable utility traversals own no economic/account claim. Serialize
+    -- only this body during native safety callbacks, then release immediately.
+    if def.repeatable then
+        instance.interactions = instance.interactions or {}
+        local interactions=instance.interactions
+        if interactions[ply] then return false, "busy" end
+        interactions[ply] = true
+        local ok, accepted, result = pcall(def.Interact, self, instance, ply, identity, entity)
+        interactions[ply] = nil
+        if not ok then return false, "event unavailable" end
+        if not self:IsCurrent(instance) then return false, "stale event" end
+        return accepted, result
+    end
     local claim, claimErr = self:Claim(instance, identity)
     if claimErr then return false, claimErr end
     if claim then return false, claim.state == "resolving" and "busy" or "already" end
@@ -552,9 +578,14 @@ local function preview(ply, id, population, seed)
     local lines = {}
     if ok and D.Context and D.Context.plan.instances[1] then
         for _, instance in ipairs(D.Context.plan.instances) do
-            local pos = Builder:CellCenter(instance.cell)
-            lines[#lines + 1] = string.format("[LOD:EVENT-PREVIEW] %s (%d/%d) at cell %s; developer locator: setpos %.1f %.1f %.1f",
-                instance.archetype, instance.memberIndex, instance.memberCount, instance.cellKey, pos.x, pos.y, pos.z + 64)
+            local cells={instance.cellKey}
+            if Registry.Definitions[instance.archetype].pairedWarp then cells[2]=instance.placement.destinationCellKey end
+            for endpoint,cellKey in ipairs(cells) do
+                local pos = Builder:CellCenter(D.Context.graph.Cells[cellKey])
+                local label=instance.archetype..(#cells>1 and (" endpoint "..endpoint) or "")
+                lines[#lines + 1] = string.format("[LOD:EVENT-PREVIEW] %s (%d/%d) at cell %s; developer locator: setpos %.1f %.1f %.1f",
+                    label, instance.memberIndex, instance.memberCount, cellKey, pos.x, pos.y, pos.z + 64)
+            end
         end
     else lines[1] = "[LOD:EVENT-PREVIEW] generation rejected: " .. tostring(err) end
     for _, line in ipairs(lines) do

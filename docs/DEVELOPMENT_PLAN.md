@@ -1,4 +1,89 @@
-# Current checkpoint — Optional physical False-floor hazard
+# Current checkpoint — Permanent paired warp-hole shortcut
+
+Built on verified remote main `943d33a2c7a58461fc95a62e561b6c6188d58b5c`;
+no intervening work replaced. Read AGENTS.md, retained P9 warp-hole brief and
+live GDD 00 → 01 → relevant 05/06/07/90 rules. Added and read-back verified
+LOD-EVENT-WARP-001 in those subsystem tabs and HUMAN under the current explicit
+design delegation. File-backed GDD read found no protected controls.
+
+**Scope/activation:** `warp_hole` is one optional common UTILITY archetype from
+Dungeon Level 5 onward. Two endpoints count once. Earlier dungeons retain the
+five-entry catalog; later dungeons select from six. Exact non-exploding 1d4,
+three common plus rare treasure on four, named RNG streams, default-on population
+and saved operator opt-outs remain. The explicit unranked single-event preview
+may bypass the level threshold. No VPS deployment or Steam Workshop publication.
+
+**Pairing/play:** two dormant cyan stock-asset endpoints occupy distinct ordinary
+flat optional cells on different physical floors. Both reserve their cells and
+exclude protected/safe/objective/encounter/critical/stair/void locations. Shared
+EventDirector endpoint validation proves equivalent reachability at each ordered
+progression stage, including jail/arena locks, and ordinary bidirectional return
+routes. Combined event masks must preserve that proof. Canonical navigation
+receives no extra graph edge. Search is deterministic and bounded to 64 source
+candidates and 64 partners per source; exhausted placement rejects the build,
+without truncating or rerolling its event count.
+
+Press E at either end: the first successful safe traversal links both for the
+current dungeon. Traversal is free and repeatable for every deployed living Hero,
+with a one-second per-Hero debounce and no account claim. SafeTeleport validates
+the fixed cell-center landing using the full standing hull, generated floor,
+unsafe contents and occupancy. Unsafe or stale arrivals leave the Hero in place
+and cannot activate the pair. Exact Hero/account/body-life, both native endpoint
+bindings, source cell, current route, clock and generation are revalidated at
+movement commit. Existing relocation authority clears incompatible movement and
+momentum while retaining facing. No displacement of occupants or queued teleport.
+
+Existing event snapshots include both native endpoint identities, cells, destination
+floors and shared linked state for late joins. HUD presents dormant/linked state,
+endpoint number, destination floor and Use action at either end. Both locators
+print in preview. Generation replacement resets the pair to dormant; normal
+teardown invalidates ownership before removing both entities. Partial creation
+rejects and cleans the entire build. The manual reflects selection and traversal;
+regenerated 139 chapters/31 transport chunks.
+
+Validation: actual production/encounter generation exercises all 1d4 count
+outcomes, early-level exclusion and 12 warp-selected six-catalog seeds with
+independent endpoint reservations and deterministic regeneration. Production-code
+warp tests cover independent ordered-stage and ordinary-return proofs, endpoint
+and combined-mask rejection, bounded rejection, full standing-hull/generated-floor
+support, water/hurt/occupancy, vehicle/noclip rejection, native Use/repeated return,
+independent Heroes, cooldown, exact body-life/account/native ownership, both-end
+HUD matching, stale client rows, late joins, partial creation failure and teardown.
+
+Focused callback tests exposed two attributable gaps: cleanup could clear the
+repeatable interaction table before release, and native movement teardown could
+invalidate an initially clear arrival. Capture the original admission table and
+recheck landing after movement teardown/LOS, followed by a pure ownership guard
+immediately before SetPos. Both regressions pass. Focused independent review found
+no further concrete blocker. Manual byte/content/reader checks pass.
+
+Final required gate: `python3 tools/test_checkpoint_g_integration.py` passed all
+**143 suites**, zero failures, after the callback fixes and final test additions.
+The earlier integration also passed; the final rerun verifies the finished tree.
+Native Source collision, Use/controller, visual presentation and packet-delivery
+acceptance remain pending; automated boundary doubles do not establish them.
+
+One native procedure: on gm_flatgrass with two deployed Heroes in developer mode,
+run `lod_event_preview_generate warp_hole`, redeploy and follow either printed
+locator. Press E to link/traverse, return after one second, and have the second
+Hero traverse independently. Occupy the arrival center to verify refusal without
+movement, reconnect to check both linked endpoints, then regenerate to verify
+old props disappear and the new pair is dormant. Check ordinary stair return and
+unchanged gate/objective order. Capture console_latest.txt + rpg_summary_latest.txt;
+use screenshots for endpoint/HUD defects. Earlier native multiplayer/economy
+acceptance obligations remain open.
+
+Next bounded checkpoint: **one item-value bribe BLOCKADE** from retained P9.
+Reconcile payment threshold, eligible items, party ownership and cancellation with
+the live GDD before implementation. Prove payment is realistically available from
+the approachable side without circular progression dependencies; use existing
+equipment/value and transaction authorities. Validate solvability, exact inventory
+ownership, multiplayer settlement, retry and teardown, then commit/push. Skeleton
+blockades, Game Master minigames and Hector remain separate subsequent gates.
+
+---
+
+# Previous checkpoint — Optional physical False-floor hazard
 
 Built on verified remote main `d87ac3a4a7483c41c3dbc06c8f298c9e999b2590`;
 no intervening work replaced. Read AGENTS.md, retained P9 false-floor brief and
