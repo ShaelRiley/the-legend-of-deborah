@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B3 builds on verified remote `main` `660c42284b0fae4073380214502bcdc731b17558`,
-`Add Bestiary ally-support cohort with canonical lifecycle`.
-The current B3 checkpoint below is the newest implementation record. Its exact
+B4 builds on verified remote `main` `965d857e8dbbb62a0dfbf313e3d366741cef9ce2`,
+`Add Bestiary flank and pursuit cohort with bounded routes`.
+The current B4 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,103 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B3: flank and pursuit cohort
+## Current checkpoint — B4: self-defense and reaction cohort
+
+Built on verified remote `965d857e8dbbb62a0dfbf313e3d366741cef9ce2`.
+**Pavise, Repriser and Redliner** bring the normal roster to **30/63**:
+frozen baseline18, **12/45 additions banked**, **33 remain**. Each has its own
+canonical progression/class/usable-feat/HP/XP and unified production spawning.
+
+**Playable scope:** Pavise warns then anchors a fixed-facing self-guard, adding
+25 percentage points to the shared physical Block roll within its frontal cone,
+retaining the33% cap. Flank, cast Magic, interrupt or wait. Repriser responds to
+actual direct hostile Hero HP damage with a1s warned nonhoming physical shot;
+cover, sidestep and another hit interrupt it. Redliner changes from ordinary
+ranged fire to a once-per-wounded-episode approach/lunge at<=40% HP, with1s warning
+and3s stationary recovery; healing>=60% rearms. No new damage/speed multiplier.
+Pairs: Pavise+Runner, Repriser+Soldier, Redliner+Shambler. Sector2+ arena/ambush
+production, one specialist per composition, no new wandering weights or bodies.
+Exact tunings and the frozen counting contract are in BESTIARY_EXPANSION.md.
+
+**Authorities/lifecycle:** one EnemyReactions policy uses the existing roster
+scheduler, canonical Block, damage, status, morale and navigation/motion owners.
+The post-native observer requires actual surviving HP loss after mitigation;
+zero/blocked/lethal/passive/status/reactive/environmental damage cannot arm a
+reaction. Fixed pending, warning, approach, guard and recovery deadlines prevent
+unbounded commitment. Exact source/Hero progression/status-life and run/graph/
+progression/campaign bindings reject replacement, including same-seed rebuilds.
+Block uses committed incoming origins and a single cached roll; its cache now
+also distinguishes actor status-life and exact graph/campaign identity. Ordinary
+physical fire remains available while Held; guard/lunge require voluntary motion.
+Released bullets survive ordinary interruption but retire on life/dungeon changes.
+No duplicate damage/reward/status authority or global entity scans.
+
+**Review repairs:** preserve Redliner's original recovery deadline when another
+hit interrupts it, rather than shortening or extending recovery. Re-arm its
+wounded episode when healing occurred between AI ticks. Validate directional
+Block against committed attack origin rather than the attacker's later position.
+Preserve exact-incarnation retirement without recalling already-emitted bullets.
+Native shotgun damage precedes its final4× stun; Magic/crowbar can also stun after
+HP settlement. Forward the committed event so only the triggering attack may
+adopt its own late stun within the unchanged2s pending deadline. A later different
+attack still interrupts normally; stun strength/tuning remains unchanged.
+
+**Design/manual:** live GDD00→01→02/03/05/07 governed B4. LOD-BESTIARY-B4-001
+records mechanics, production and tuning in03/05/07; amendments are read-back
+verified. The canonical manual has148 chapters/31 transport chunks, including
+self-guard, reprisal, wounded lunge and recovery counterplay. Shield/front arc,
+hooked return arrow, jagged chevron/lunge lane and open recovery bars retain
+semantic geometry with reduced effects and finite deadlines.
+
+**Validation:** one required `python3 tools/test_checkpoint_g_integration.py`
+run passed **all161 suites, zero failures**. Final targeted B4, shotgun native
+aggregation, crowbar and Magic Wall checks passed after the late-stun closures;
+no second full gate was run. Final changed-authority Lua syntax and
+`git diff --check` pass. The gate covers prior B1–B3, all retained bosses/finale/
+succession/Abundance/cash regressions, canonical combat/status/progression/XP,
+manual readers/transport and release wiring.
+
+B4 tests exercise real canonical capped Block, committed-origin direction and
+one-roll caching; native-doubled HP loss after mitigation; actual warned
+projectile/dive→shared physical roll→GM mitigation→one native HP settlement;
+source/Hero progression and status-life plus exact dungeon/campaign retirement;
+freeze/expiry/death/reconnect identities; passive/reactive rejection and duplicate
+post callbacks;40/60 wounded hysteresis, bounded approach and fixed recovery;
+shared64-projectile ceiling and active-only scheduling without world scans or RNG.
+Actual production4× shotgun aggregate feed, Wall Form damage and Crowbar
+PrimaryAttack prove trigger-owned late-stun ordering. Production tests exercise
+48 generated actor seeds, unified spawn/variance/HP/class/usable feats/XP once,
+ceiling preflight, retry idempotence, singleton enrichment and legal placement.
+Full/reduced client geometry, direction, finite expiry and death/cancel hiding
+pass. Canonical manual148 chapters/31 chunks passes.
+Targeted production sampling passed **512 deterministic plans /4932 encounters**,
+32 generated mazes, parties1–4 and dungeons1–5. Planned/legal/early appearances:
+**Pavise64/64/16, Repriser47/46/14, Redliner74/71/18**. All prior cohort exposure
+thresholds remain passing, with correct companions and singleton specialists.
+Source collision, entities, networking and health application remain doubled;
+automated evidence is not native Source acceptance.
+
+**Native checks retained:** after the ordered expansions/audits, on gm_flatgrass
+observe actual paired compositions, front/flank/Magic guard behavior, Repriser
+hit→stun→warning→shot and interrupted response, and Redliner threshold→approach→
+lunge→fixed recovery→healing rearm. Check scaled hulls/container/gate clearance,
+model poses/audio, full/reduced glyphs, native shotgun hit timing, real networking
+and1–4-player balance. Include death/revival/reconnect/freeze/reset/same-seed
+replacement, single XP/loot settlement and prior cohorts/bosses/finale/sole Deborah
+succession/Abundance/Level21 cash progression. Capture console_latest.txt +
+rpg_summary_latest.txt. No VPS deployment or Workshop publication.
+
+## Next checkpoint — B5: projectile-pattern cohort
+
+Proposed bounded ricochet, delayed return-path shot and split-lane volley with
+readable safe lane; target33/63 only if genuinely distinct production identities.
+Reconcile canonical projectile/geometry/damage and life ownership, distinguish
+from Blitzer/Sniper/basic bullets, author exact tuning in the GDD and preserve
+warning, cover and trace/projectile/dice budgets. These are proposals, not authored
+or implemented mechanics. Complete B5 only, retain the whole-phase campaign-aware
+director ecology exit, and do not begin Big Loot or Events.
+
+## Previous checkpoint — B3: flank and pursuit cohort
 
 Built on verified remote `660c42284b0fae4073380214502bcdc731b17558`.
 **Pincer, Harrier and Waylayer** bring the implemented normal roster to **27/63**:
@@ -154,7 +250,7 @@ Hector/finale, sole Deborah succession, Abundance and Level21 checks. Headless
 trace/entity doubles do not establish Source runtime acceptance.
 No VPS deployment or Steam Workshop publication.
 
-## Next checkpoint — B4: self-defense and reaction cohort
+## B3 handoff at publication — B4 (now completed above)
 
 Proposed directional self-guard, interruptible warned retaliation and legible
 wounded-state aggression; target30/63 subject to genuinely distinct mechanics.

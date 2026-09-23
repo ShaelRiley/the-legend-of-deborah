@@ -107,7 +107,10 @@ local templates={
     cantor_charge={name="Cantor's Charge",composition={cantor=1,runner=2}},
     pincer_detail={name="Pincer Detail",composition={pincer=1,soldier=1}},
     harrier_screen={name="Harrier Screen",composition={harrier=1,shambler=1}},
-    waylayer_cutoff={name="Waylayer Cutoff",composition={waylayer=1,runner=1}}
+    waylayer_cutoff={name="Waylayer Cutoff",composition={waylayer=1,runner=1}},
+    pavise_advance={name="Pavise Advance",composition={pavise=1,runner=1}},
+    repriser_detail={name="Repriser Detail",composition={repriser=1,soldier=1}},
+    redliner_pressure={name="Redliner Pressure",composition={redliner=1,shambler=1}}
 }
 for id,t in pairs(templates) do EC.Templates[id]=t end
 local baseEligible=D._EligibleTemplates
@@ -128,15 +131,16 @@ function D:_EligibleTemplates(sector,role)
     if sector>=2 and (role=="arena" or role=="ambush") then
         out[#out+1]="stitcher_detail";out[#out+1]="bulwark_line";out[#out+1]="cantor_charge"
         out[#out+1]="pincer_detail";out[#out+1]="harrier_screen";out[#out+1]="waylayer_cutoff"
+        out[#out+1]="pavise_advance";out[#out+1]="repriser_detail";out[#out+1]="redliner_pressure"
     end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
--- or support/pursuit specialists in one authored encounter.
+-- or support/pursuit/reaction specialists in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

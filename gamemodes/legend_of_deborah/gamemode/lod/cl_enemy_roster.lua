@@ -7,7 +7,8 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     lurker=Color(110,240,55),beamsweeper=Color(120,225,255),sentry=Color(255,75,45),razor=Color(255,165,60),
     gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70),
     stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70),
-    pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65)}
+    pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65),
+    pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
@@ -128,9 +129,69 @@ function V:Pursuit(e)
         for i=1,4 do line(destination+points[i],destination+points[i%4+1]) end
     end
 end
+-- Self-defense is visible as geometry, not paint alone. Each tell has a server
+-- deadline, so a missed clear packet cannot leave a permanent warning.
+function V:Reaction(e)
+    local mode=e:GetNW2Int("LOD_ReactionMode",0)
+    local stage=e:GetNW2Int("LOD_ReactionStage",0)
+    local now=CurTime()
+    if mode~=1 and stage==2 and e:GetNW2Int("LOD_RosterAttack",0)==2 then stage=3 end
+    if mode<1 or mode>3 or stage<1 or stage>5 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or now>=e:GetNW2Float("LOD_ReactionUntil",0)
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local color=({colors.pavise,colors.repriser,colors.redliner})[mode]
+    local center=e:WorldSpaceCenter()+Vector(0,0,30)
+    local side=(EyePos()-center):Angle():Right();local up=Vector(0,0,1)
+    local width=stage==3 and 4 or 2
+    render.SetMaterial(beam)
+    local function line(a,b) render.DrawBeam(a,b,width,0,1,color) end
+    if stage==4 then
+        -- Two open bars identify recovery, distinct from an imminent strike.
+        for _,offset in ipairs({-6,6}) do
+            line(center-side*13+up*offset,center-side*3+up*offset)
+            line(center+side*3+up*offset,center+side*13+up*offset)
+        end
+    elseif mode==1 then
+        -- The plate and ground arc remain aligned with the frozen guard yaw.
+        local yaw=e:GetNW2Float("LOD_ReactionYaw",0)
+        local forward=Angle(0,yaw,0):Forward();local right=Angle(0,yaw,0):Right()
+        local plate=e:WorldSpaceCenter()+forward*24
+        local points={plate-right*16+up*17,plate+right*16+up*17,
+            plate+right*13-up*7,plate-up*22,plate-right*13-up*7}
+        for i=1,#points do line(points[i],points[i%#points+1]) end
+        local ground=e:GetPos()+Vector(0,0,5)
+        for i=1,8 do
+            local a=Angle(0,yaw-60+(i-1)*15,0):Forward()*52
+            local b=Angle(0,yaw-60+i*15,0):Forward()*52
+            line(ground+a,ground+b)
+        end
+    elseif mode==2 then
+        -- A hooked return arrow announces retaliation, not reflected damage.
+        local left=center-side*13;local right=center+side*13
+        line(left+up*10,right+up*10);line(right+up*10,right-up*10)
+        line(right-up*10,left-up*10)
+        line(left-up*10,left+side*8-up*2);line(left-up*10,left+side*8-up*18)
+    else
+        -- Jagged forward chevron: wounded approach or committed lunge.
+        line(center-side*15-up*12,center+side*10)
+        line(center+side*10,center-side*15+up*12)
+        line(center-side*15+up*12,center-side*5)
+        line(center-side*5,center-side*15-up*12)
+        if stage==2 or stage==3 then
+            local origin=e:GetNW2Vector("LOD_RosterOrigin",e:GetPos())
+            local aim=e:GetNW2Vector("LOD_RosterAim",origin)
+            local dir=aim-origin;dir.z=0
+            if dir:LengthSqr()>0 then
+                local from=Vector(origin.x,origin.y,e:GetPos().z+5)
+                line(from,from+dir:GetNormalized()*507)
+            end
+        end
+    end
+end
 function V:Draw(e,size)
     self:Support(e)
     self:Pursuit(e)
+    self:Reaction(e)
     if e:GetNW2String("LOD_Archetype","")=="nodule" then self:Gas(e);return end
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end

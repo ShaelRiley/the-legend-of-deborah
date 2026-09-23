@@ -307,6 +307,38 @@ end
 print('BESTIARY_B3_VISUAL_PASS: semantic flank/retreat/junction tells; exact destination; full/reduced effects; cancellation and expiry')
 
 
+-- B4 tells use fixed direction and finite deadlines at both effect settings.
+for mode,id in ipairs({'pavise','repriser','redliner'}) do
+    local e=visualActor(id);e.GetNW2Vector=e.GetNW2Float
+    e.nw.LOD_RosterAlive=true;e.nw.LOD_ReactionMode=mode
+    e.nw.LOD_ReactionUntil=time+5;e.nw.LOD_ReactionYaw=90
+    e.nw.LOD_RosterOrigin=e:GetPos()+Vector(0,0,48)
+    e.nw.LOD_RosterAim=e:GetPos()+Vector(100,0,48)
+    for _,reduced in ipairs({false,true}) do for stage=1,5 do
+        low=reduced;e.nw.LOD_ReactionStage=stage;beams={}
+        LOD.EnemyRosterVisual:Reaction(e)
+        local count=stage==4 and 4 or (mode==1 and 13 or (mode==2 and 5 or ((stage==2 or stage==3) and 5 or 4)))
+        assert(#beams==count,'distinct guard/retaliation/lunge/recovery geometry survives reduced effects')
+        if mode==1 and stage~=4 then
+            local ground=e:GetPos()+Vector(0,0,5)
+            for i=6,13 do
+                assert(beams[i].from.y>ground.y and beams[i].to.y>ground.y,'guard arc uses frozen yaw, not camera facing')
+                assert(math.abs((beams[i].from-ground):Length()-52)<.001,'guard boundary is fixed radius')
+            end
+        end
+        if mode==3 and (stage==2 or stage==3) then
+            assert(math.abs(beams[5].from:Distance(beams[5].to)-507)<.001,'lunge line shows finite committed travel')
+        end
+    end end
+    e.nw.LOD_ReactionUntil=time;beams={};LOD.EnemyRosterVisual:Reaction(e)
+    assert(#beams==0,'reaction warning expires without another packet')
+    e.nw.LOD_ReactionUntil=time+5;e.nw.LOD_RosterAlive=false;beams={};LOD.EnemyRosterVisual:Reaction(e)
+    assert(#beams==0,'dead actor cannot retain a reaction tell')
+    e.nw.LOD_RosterAlive=true;e.nw.LOD_ReactionMode=0;beams={};LOD.EnemyRosterVisual:Reaction(e)
+    assert(#beams==0,'cancelled reaction tell disappears')
+end
+print('BESTIARY_B4_VISUAL_PASS: directional guard arc; distinct retaliation/lunge/recovery glyphs; bounded lunge line; full/reduced; death/cancellation/expiry')
+
 -- Use the accepted actor fixture to exercise real generation (including feat
 -- drafts, class/growth and HP), then the production attribution settlement.
 dofile('tools/test_actor_progression.lua')

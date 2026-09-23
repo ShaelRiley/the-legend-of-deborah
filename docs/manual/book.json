@@ -964,6 +964,28 @@
       ]
     },
     {
+      "id": "enemy-reactions",
+      "title": "Make their response your opening",
+      "rows": [
+        [
+          "Pavise",
+          "The steel-blue Combine elite braces behind a shield-shaped tell. After a short warning, its guard stays aimed in one direction for 2.5 seconds. Frontal physical attacks face an extra Block chance, capped at 33%; it cannot walk or shoot while braced. Use Magic, circle to a flank, interrupt it, or wait for the guard to end. The ground arc shows the protected direction."
+        ],
+        [
+          "Repriser",
+          "The rose-colored Metrocop answers a direct damaging hit with a hooked-arrow warning and one straight projectile. Its one-second wind-up gives you time to sidestep, take cover or interrupt it with another damaging hit. It does not reflect your damage, and damage over time does not trigger the response."
+        ],
+        [
+          "Redliner",
+          "The rust-red Combine soldier normally fires from range. A direct hit that leaves it at 40% health or less can provoke one wounded rush: a jagged chevron announces the approach, followed by a one-second warning along its fixed lunge direction. Step aside or obstruct it. The lunge has three seconds of stationary recovery, shown by open bars; healing to 60% health rearms a later rush."
+        ]
+      ],
+      "text": [
+        "Pavises appear with Runners, Reprisers with Soldiers, and Redliners with Shamblers. Watch both members of the pair: their different attack rhythms create different openings.",
+        "These responses keep ordinary class defenses, statuses and damage rules. Held stops the guard and lunge; Muted does not stop physical shots. Their warnings remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

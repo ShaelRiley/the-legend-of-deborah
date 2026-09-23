@@ -18,6 +18,7 @@ local counts,viable,early,plans,total={},{},{},0,0
 local b1={gaoler=true,silencer=true,repulsor=true}
 local b2={stitcher=true,bulwark=true,cantor=true}
 local b3={pincer='soldier',harrier='shambler',waylayer='runner'}
+local b4={pavise='runner',repriser='soldier',redliner='shambler'}
 local function signature(plan)
  local rows={}
  for _,enc in ipairs(plan.encounters) do
@@ -63,6 +64,11 @@ for seed=1,32 do
      assert(count==1,'pursuit specialist duplicated by encounter enrichment')
      assert((enc.composition[b3[id]] or 0)>=1,'pursuit specialist lost its complementary companion')
     end
+    if b4[id] then
+     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B4 entered an unapproved production path')
+     assert(count==1,'reaction specialist duplicated by encounter enrichment')
+     assert((enc.composition[b4[id]] or 0)>=1,'reaction specialist lost its complementary companion')
+    end
     counts[id]=(counts[id] or 0)+count
     if E.Definitions[id] then
      local p=E:Placement(graph,graph.Cells[enc.cellKey],id,enc.role)
@@ -73,7 +79,7 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer'}
+local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner'}
 for _,id in ipairs(sampled) do
  print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id] or 0,viable[id] or 0,early[id] or 0))
 end

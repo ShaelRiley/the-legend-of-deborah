@@ -373,7 +373,7 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         if form.hitStunMultiplier then
             stunMultiplier=stunMultiplier*(tags.elementResolution and tags.elementResolution.hitStunMultiplier or 1)
         end
-        LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,stunMultiplier)
+        LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,stunMultiplier,nil,context)
     end
     local effects = RPG.FeatEffectSystem
     local resource = IsValid(creditCaster) and Magic:_EnsureState(creditCaster) or nil

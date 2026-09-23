@@ -7,6 +7,7 @@ function LOD.ReleaseDamageInfo(info)
     if status and status.DamageContexts then status.DamageContexts[info] = nil end
     if rolls and rolls.PendingDamageReports then rolls.PendingDamageReports[info] = nil end
     if piercing and piercing.DamageSegments then piercing.DamageSegments[info] = nil end
+    if LOD.EnemyReactions and LOD.EnemyReactions.Damage then LOD.EnemyReactions.Damage[info] = nil end
     if LOD.CryptoDirector and LOD.CryptoDirector.Damage then LOD.CryptoDirector.Damage[info] = nil end
     if LOD.GeneratedGeometryBallistics and LOD.GeneratedGeometryBallistics.ForgetDamageInfo then
         LOD.GeneratedGeometryBallistics:ForgetDamageInfo(info)

@@ -53,10 +53,14 @@ if not HitFeedback.LODFourTimesStunSupported then
         return true
     end
 
-    function HitFeedback:ApplyShotgunShellStun(hostile, attacker)
+    function HitFeedback:ApplyShotgunShellStun(hostile, attacker, attackEvent)
         -- One aggregate stun per damaged target per shell; pellet count never
         -- multiplies control duration.
-        return self:ApplyHitStun(hostile, SHOTGUN_STUN_MULTIPLIER, attacker)
+        local applied=self:ApplyHitStun(hostile, SHOTGUN_STUN_MULTIPLIER, attacker, nil, nil, attackEvent)
+        -- The accepted 4x extension occurs after the base interruption seam.
+        -- Adopt the completed trigger-owned stun without changing its reaction deadline.
+        if applied and LOD.EnemyReactions then LOD.EnemyReactions:Interrupt(hostile,attackEvent,attacker) end
+        return applied
     end
 end
 

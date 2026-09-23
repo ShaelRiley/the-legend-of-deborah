@@ -75,7 +75,7 @@ local function sendHitConfirm(attacker)
     net.Send(attacker)
 end
 
-function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMultiplier, hitKind)
+function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMultiplier, hitKind, attackEvent)
     if not IsValid(hostile) or not hostile.LODHostile or hostile.LODDead then return false end
     if hostile.LODDeadcrabState == "latched" then return false end
 
@@ -97,7 +97,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
 
-    if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile) end
+    if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile, attackEvent, attacker) end
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
     if hostile.LODBruteCharge and LOD.NeilBrute then LOD.NeilBrute:CancelCharge(hostile) end
     if hostile.LODArchetypeId == "warden" and LOD.Warden then LOD.Warden:Interrupt(hostile) end
@@ -129,11 +129,11 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     return true
 end
 
-function HitFeedback:ApplyShotgunShellStun(hostile, attacker)
+function HitFeedback:ApplyShotgunShellStun(hostile, attacker, attackEvent)
     -- One shared Shotgun roll may deliver up to nine pellet damage events.
     -- The roll authority aggregates those events, then calls this once per
     -- damaged target so stun can never scale with pellet count.
-    return self:ApplyHitStun(hostile, 2, attacker)
+    return self:ApplyHitStun(hostile, 2, attacker, nil, nil, attackEvent)
 end
 
 local function activeShotgunContract(attacker)

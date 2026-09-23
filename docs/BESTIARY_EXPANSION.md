@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B3
+# Bestiary expansion — frozen baseline through B4
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B3 add nine identities: **27/63**, or **9/45 additions**; **36 remain**.
+B1–B4 add twelve identities: **30/63**, or **12/45 additions**; **33 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -187,18 +187,71 @@ See DEVELOPMENT_PLAN.md for measured results. This is implementation progress,
 not native Source acceptance. Prior cohorts, bosses, finale/succession, Abundance
 and Level-21 cash progression remain regression constraints.
 
-## Next checkpoint — B4: self-defense and reaction cohort
+## B4 — self-defense and reaction cohort
 
-Proposed finite target **30/63**, subject to three genuinely distinct production
-identities: directional self-guard with an exposed flank; interruptible warned
-retaliation after a hostile hit; and a legible wounded-state aggression transition.
-These are proposed roles, not authored mechanics. Reconcile existing Block,
-mitigation, damage events, statuses, morale, commitment and actor-life authorities;
-differentiate them from Bulwark ally support, existing bosses and mere stat changes.
-Use complementary production compositions and meaningful counterplay; no absolute
-invulnerability, unavoidable damage, duplicate damage settlement or extra bodies.
+| ID / identity | Tactical response and counterplay | Ordinary composition |
+| --- | --- | --- |
+| `pavise` / Pavise | Steel-blue Combine elite warns0.65s, then anchors a fixed-facing2.5s self-guard. Its forward60-degree half-angle adds25 percentage points to canonical physical Block, capped33%. It cannot move or fire during the stance. Flank, use Magic, interrupt or wait. Shield and ground arc show direction. | Pavise + Runner. |
+| `repriser` / Repriser | Rose Metrocop responds to actual HP loss from a direct hostile Hero attack with one1s warned straight physical shot. A hooked arrow announces it. Sidestep, break cover or interrupt again; never reflects damage. | Repriser + Soldier. |
+| `redliner` / Redliner | Rust-red Combine soldier switches from ranged fire to one wounded lunge when a direct Hero hit leaves it at<=40% MaxHP. Bounded pursuit reaches400-unit range, then a1s warning freezes the lunge direction. Sidestep/obstruct/interrupt, then exploit3s stationary recovery. Healing to>=60% rearms a later episode. Jagged chevron/lane and open recovery bars distinguish its states. | Redliner + Shambler. |
 
-Complete only B4 next, then retain further tactical-family expansion and the
+Templates `pavise_advance`, `repriser_detail`, `redliner_pressure` enter sector2+
+arena/ambush selection. Enrichment retains one specialist with ordinary companion
+scaling; safe/objective/transition exclusions, physical clearance, threat and
+hostile budgets remain. IDs append unified spawn ordinals; no added wandering
+weight, bodies, director, class requirement or cosmetic counting.
+
+All ordinary shots and reactions use physical1d6+2, reference5.5. Reference
+HP/speed/ordinary range/warning/recovery/threat: Pavise65/110/600/0.7s/2.4s/4;
+Repriser40/145/600/0.7s/2.4s/3.5; Redliner50/170/600/0.7s/2.4s/3.5.
+Models Combine elite/Metrocop/Combine soldier; RGB165,190,215 /230,100,180 /
+215,65,45. No damaging-Magic capability or forced elemental affinity.
+
+Progression STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die;
+baseXP; morale: Pavise14/8/15/10/12/9;80/20/0;d10;55;7.
+Repriser11/14/11/12/12/10;40/60/0;d8;50;5.
+Redliner14/15/10/6/9/8;55/45/0;d8;50;6. All usesMagic=false. Shared
+progression/class/usable-feat/HP/XP/loot remains authoritative.
+
+Pavise cooldown6s after completion/interruption, acquisition600, failed scan0.3s.
+Repriser pending allowance2s for triggering hit-stun, reaction warning1s, cooldown5s
+from arm. Redliner pending2s, ordinary legal approach at most4s, lunge warning1s,
+existing dive780 units/s for0.65s, recovery3s after attempt/forfeit/interruption.
+All deadlines are finite and nonextending. Reactions use the existing roster
+service and locomotion; no private status clock or recurring per-enemy hook.
+Actual positive native HP loss arms a response only after shared mitigation.
+Passive/status/reactive/environmental damage cannot start reaction loops. Lethal,
+blocked and zero-loss hits cannot arm; duplicate post callbacks cannot extend
+commitments. Trigger-owned late shotgun/Magic/crowbar hit-stun is identified by
+the committed event and adopted inside the unchanged2s pending deadline; another
+attack cancels. Recovery remains stationary for its original3s despite further
+hits; neither shortening nor repeated extension is allowed.
+
+Exact run/graph/progression/campaign and source/Hero progression/status-life
+identity binds guard, pending reactions, ordinary attacks and projectiles. Invalid
+life, same-seed replacement, freeze/failure/clear or expiry retires stale work.
+Held prevents guard/lunge; Muted leaves physical fire available. Released bullets
+retain finite flight through ordinary source interruption, while life/dungeon
+replacement still retires them. Directional protection adds to the existing one
+Block roll with its ordinary exclusions/cap; no second damage or reward settlement.
+Canonical morale and class defenses remain unchanged.
+
+See DEVELOPMENT_PLAN.md for measured automated results and retained native gaps.
+All previous cohorts, bosses, finale/succession, Abundance and cash progression
+remain regression constraints. Implementation does not imply Source acceptance.
+
+## Next checkpoint — B5: projectile-pattern cohort
+
+Proposed finite target **33/63**, subject to three genuinely distinct production
+identities: a clearly warned bounded ricochet, a delayed return-path shot, and a
+split-lane volley with a readable safe lane. These are proposed tactical problems,
+not authored mechanics. Reconcile existing projectile/geometry/damage and actor
+lifetimes before choosing identities/tuning. Distinguish them from Blitzer,
+Sniper, ordinary roster bullets and cosmetic or numerical permutations; preserve
+cover, dodgeable tells and bounded projectile/trace/dice work. No homing through
+walls, unavoidable damage or extra entity bodies.
+
+Complete only B5 next, retaining further tactical-family expansion and the
 whole-phase campaign-aware director: themes, novelty memory, topology, pacing and
 quantitative coverage. Finish Bestiary before Big Loot, Events and the three
 audits, then human playtest. Native acceptance does not block that phase order.

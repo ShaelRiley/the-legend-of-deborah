@@ -469,7 +469,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
         if hits > 0 then
             local damage = contract.damageByTarget[target] or 0
             if IsValid(target) and damage > 0 and LOD.M3HitFeedback and LOD.M3HitFeedback.ApplyShotgunShellStun then
-                LOD.M3HitFeedback:ApplyShotgunShellStun(target, ply)
+                LOD.M3HitFeedback:ApplyShotgunShellStun(target, ply, contract.attackEvent)
             end
             local targetContract = setmetatable({feedResolution = (contract.resolutionByTarget or {})[target] or false},
                 {__index = contract})
