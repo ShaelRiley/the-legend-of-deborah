@@ -1024,7 +1024,8 @@ function CharacterProgressionSystem:ResolveMonsterSpawnLevel(seed, dungeonLevel,
     local fixed = {
         neil = {"typical", 0},
         brute = {"elite", 1},
-        warden = {"champion", 2}
+        warden = {"champion", 2},
+        hector = {"champion", 2}
     }
     local fixedTier = fixed[normalizedId]
     local tierId, offset
@@ -1079,7 +1080,7 @@ function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, use
     local ranged = {
         soldier = true, blitzer = true, sniper = true, flamer = true,
         sentry = true, razor = true, arccaster = true, beamsweeper = true,
-        watcher = true, bioblaster = true, warden = true
+        watcher = true, bioblaster = true, warden = true, hector = true
     }
     if ranged[archetypeId] then
         tags[#tags + 1] = "firearm"
@@ -1246,7 +1247,8 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
     if not IsValid(hostile) or not hostile.LODHostile then return nil end
     if hostile.LODProgressionState then return hostile.LODProgressionState end
     local state, err = self:GenerateMonsterProgression(hostile.LODArchetypeId, actorSeed,
-        dungeonLevel, hostile.LODArchetypeId == "warden" and 1000 or hostile:GetMaxHealth(), "ai")
+        dungeonLevel, hostile.LODArchetypeId == "warden" and 1000
+            or hostile.LODArchetypeId == "hector" and 420 or hostile:GetMaxHealth(), "ai")
     if not state then
         ErrorNoHalt("[LOD:RPG] " .. tostring(err) .. "\n")
         return nil
@@ -1258,6 +1260,14 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
         local party = math.Clamp(tonumber(hostile.LODWardenParty) or 1, 1, 4)
         state.wardenHPScale = size * variation * (1 + 0.2 * (party - 1))
         state.derivedStats.maxHP = math.max(1, math.floor(state.derivedStats.maxHP * state.wardenHPScale + 0.5))
+    end
+    if hostile.LODArchetypeId == "hector" then
+        -- The arena core is fixed-size. Freeze party scaling once, after the
+        -- ordinary champion growth, abilities and feat-derived health resolve.
+        local party = math.Clamp(tonumber(hostile.LODHectorParty) or 1, 1, 4)
+        state.hectorHPScale = 1 + 0.2 * (party - 1)
+        state.derivedStats.maxHP = math.max(1, math.floor(state.derivedStats.maxHP * state.hectorHPScale + 0.5))
+        state.derivedStats.healthRegenEnabled = false
     end
     hostile.LODProgressionState = state
     self:SyncMonsterIdentity(hostile,state)

@@ -25,6 +25,10 @@ function LOD.WanderingDirector:GetDeficitReservation(...)
     local w=R.State and R.State.Warden
     local clones=W:CloneCount(R.State and R.State.Level)
     local pending=(w and w.started) and math.max(0,clones-#(w.clones or {})) or 1+clones
+    if w and w.dead then
+        local h=R.State.Hector
+        pending=(R.State.Level==20 and (not h or h.stage~=3 and not IsValid(h.actor))) and 1 or 0
+    end
     return baseReserve(self,...) + pending
 end
 local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
@@ -58,7 +62,7 @@ function W:SpawnClones(s,w,a)
         if not cell then return false end
         local clone=ents.Create("lod_hostile");if not IsValid(clone) then return false end
         clone.LODArchetypeId="warden";clone.LODEncounterId="warden_clone";clone.LODEncounterOrdinal=910001+index
-        clone.LODWardenClone=index;clone.LODWardenParty=w.actor.LODWardenParty
+        clone.LODWardenClone=index;clone.LODWardenParty=w.actor.LODWardenParty;clone.LODWardenOwner=w
         clone.LODHomeCellKey=key(cell);clone.LODActivated=true
         clone:SetPos(N:CellCenter(cell));clone:Spawn()
         if not IsValid(clone) then return false end
@@ -79,7 +83,7 @@ end
 function W:InCell(p,c) return key(N:WorldToCell(R.State.Graph,p:GetPos()))==key(c) end
 function W:Protected(p)
     local s,w,a=self:State()
-    return s and not w.dead and hero(p) and self:InCell(p,a.entry)
+    return s and (not w.dead or s.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(s))) and hero(p) and self:InCell(p,a.entry)
 end
 function W:Targets()
     local s,w,a=self:State();local out={}
@@ -104,14 +108,15 @@ function W:Prepare()
     local s=R.State;local a=s and s.Graph and s.Graph.Progression.Warden
     if not a or not s.BuildReady or s.Failed or s.LevelCleared or not s.GatesOpen[4] then return false end
     if s.Warden then return true end
-    s.Warden={seed=s.LevelSeed,phase=1,hazards={},resupply={},nextHazard=0}
+    s.Warden={seed=s.LevelSeed,state=s,graph=s.Graph,epoch=s.CampaignEpoch,campaignSeed=s.CampaignSeed,
+        runId=s.RunId,phase=1,hazards={},resupply={},nextHazard=0}
     return true
 end
 function W:Join(p,gate)
     local s,w,a=self:State()
     if not s or not hero(p) or gate~=a.lock.entity or not IsValid(gate) then return false end
     if p:GetPos():DistToSqr(gate:GetPos())>(LOD.Config.Maze.CellSize*0.7)^2 then return false end
-    if w.dead then gate:OpenGate();return true end
+    if w.dead and (s.Level~=20 or LOD.Hector and LOD.Hector:RescueAllowed(s)) then gate:OpenGate();return true end
     p:SetPos(N:CellCenter(a.entry)+Vector(0,0,12));self:Resupply(p);return true
 end
 function W:Commit()
@@ -123,6 +128,7 @@ function W:Commit()
     local party=0;for _,p in ipairs(player.GetAll()) do if R:IsActivePlayer(p) then party=party+1 end end
     e.LODWardenParty=math.Clamp(party,1,4)
     e.LODArchetypeId="warden";e.LODEncounterId="warden";e.LODEncounterOrdinal=910001
+    e.LODWardenOwner=w;e.LODHectorGordon=s.Level==20
     e.LODHomeCellKey=key(a.center);e.LODActivated=true;e.LODMajorThreat=true;e.majorThreat=true
     local cfg=LOD.Config.Encounter.Archetypes.warden
     cfg.model=self:CitizenModel(s.LevelSeed)
@@ -171,7 +177,8 @@ function W:Damage(e,p,kind,shared)
     if shared then
         contract={};for k,v in pairs(shared) do contract[k]=v end
     end
-    local tags={physical=kind~="orb",magic=kind=="orb",melee=kind=="crowbar",element=kind=="orb" and "raw" or nil,
+    local magical=kind=="orb" or kind=="villain"
+    local tags={physical=not magical,magic=magical,melee=kind=="crowbar",element=kind=="villain" and "dark" or (kind=="orb" and "raw" or nil),
         authoredScale=contract.scale,attackEvent=contract.attackEvent,damageContract=contract}
     local amount=rolls:ResolveActorDamage(contract,e,p,tags)
     local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
@@ -197,20 +204,20 @@ function W:Hazards(w,e,targets,dt,now)
             if hero(q.target) and not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(q.target)) and not self:Protected(q.target) then
                 local desired=(q.target:WorldSpaceCenter()-q.pos):GetNormalized()
                 local dir=q.velocity:GetNormalized()
-                q.velocity=(dir+(desired-dir)*math.min(1,C.homing*dt)):GetNormalized()*C.shotSpeed
+                q.velocity=(dir+(desired-dir)*math.min(1,(q.homing or C.homing)*dt)):GetNormalized()*(q.speed or C.shotSpeed)
             end
             local dest=q.pos+q.velocity*dt
             local tr=util.TraceHull({start=q.pos,endpos=dest,mins=Vector(-10,-10,-10),maxs=Vector(10,10,10),mask=MASK_SHOT,filter=e})
             q.pos=tr.Hit and tr.HitPos or dest
-            if tr.Hit then if hero(tr.Entity) then self:Damage(e,tr.Entity,"orb") end;expired=true end
+            if tr.Hit then if hero(tr.Entity) then self:Damage(e,tr.Entity,q.damageKind or "orb") end;expired=true end
         elseif q.kind=="bomb" and expired then
             -- One shared damage event per target, no native grenade/explosion
             -- entities and no splash through the gallery floor or jail walls.
-            local shared=self:RollAttack(e,"bomb")
+            local shared=self:RollAttack(e,q.damageKind or "bomb")
             for _,p in ipairs(targets) do
-                if hero(p) and p:WorldSpaceCenter():DistToSqr(q.pos)<=C.bombRadius^2 then
+                if hero(p) and p:WorldSpaceCenter():DistToSqr(q.pos)<=(q.radius or C.bombRadius)^2 then
                     local tr=util.TraceLine({start=q.pos+Vector(0,0,12),endpos=p:WorldSpaceCenter(),mask=MASK_SHOT,filter=e})
-                    if not tr.Hit or tr.Entity==p then self:Damage(e,p,"bomb",shared) end
+                    if not tr.Hit or tr.Entity==p then self:Damage(e,p,q.damageKind or "bomb",shared) end
                 end
             end
             local fx=EffectData();fx:SetOrigin(q.pos);util.Effect("Explosion",fx,true,true)
@@ -359,6 +366,7 @@ end
 function W:EnsureKey()
     local s,w,a=self:State()
     if not s or not w.dead or s.Failed or s.LevelCleared or s.JailKey then return end
+    if s.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(s)) then return end
     return P:SpawnJailKey(N:CellCenter(a.center)+Vector(0,0,LOD.Config.Progression.KeycardHeight),"gordon_warden")
 end
 function W:Killed(e)
@@ -366,8 +374,14 @@ function W:Killed(e)
     local clone=w and w.cloneStates and w.cloneStates[e]
     if clone then clone.dead=true;clone.hazards={};clone.volley=nil;clone.swing=nil;return end
     if not s or e~=w.actor or w.dead then return end
+    if s.Level==20 and (w.state~=s or w.graph~=s.Graph or w.epoch~=s.CampaignEpoch
+        or w.combatDeath~=e or not IsValid(e) or not e.LODDead or e:Health()>0) then return end
     w.dead=true;w.hazards={};w.volley=nil;w.swing=nil
     for _,other in ipairs(w.clones or {}) do other.dead=true;other.hazards={};other.volley=nil;other.swing=nil end
+    if s.Level==20 then
+        if not LOD.Hector or not LOD.Hector:OnGordonDefeated(s,w,a,e) then R:FailCampaign("Hector handoff unavailable") end
+        return
+    end
     s.ObjectiveStage=P.Stages.TAKE_JAIL_KEY
     -- Preserve ordinary end-of-batch wipe precedence. No rescue/level-complete
     -- call, and no model/collision/entity mutation inside the lethal callback.

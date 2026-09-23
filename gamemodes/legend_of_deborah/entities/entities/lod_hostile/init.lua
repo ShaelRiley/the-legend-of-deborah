@@ -851,6 +851,8 @@ end
 
 function ENT:_FinishDeathPresentation()
     if not IsValid(self) then return end
+    if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
+    if self.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(self)) then return end
     deathStage(self, "loot_enter")
     self:SetNoDraw(true)
     deathStage(self, "loot_hidden")
@@ -861,8 +863,10 @@ end
 
 function ENT:_BeginDeathPresentation()
     if self.LODDeathPresentationStarted then return end
+    if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
     if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.ResolveDeath(self)) then return end
+    if self.LODHector and (not LOD.Hector or not LOD.Hector:ResolveDeath(self)) then return end
     self.LODDeathPresentationStarted = true
     self.LODDead = true
     self.LODActivated = false
@@ -904,6 +908,9 @@ end
 
 function ENT:OnKilled(dmginfo)
     if self.LODDead then return end
+    if (self.LODHectorGordon or self.LODArchetypeId=="warden" and not self.LODWardenClone
+        and LOD.RunManager.State.Level==20) and (not LOD.Hector or not LOD.Hector:AcceptGordonDeath(self)) then return end
+    if self.LODHector and (not LOD.Hector or not LOD.Hector:AcceptDeath(self)) then return end
     if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.AcceptDeath(self)) then return end
     -- Claim death before any extension hook can re-enter it. Keep attribution

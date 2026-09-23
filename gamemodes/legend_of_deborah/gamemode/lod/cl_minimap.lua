@@ -623,7 +623,8 @@ local function drawObjectiveMarker(state, x, y)
     elseif stage==11 then label="BLACK KEY"
     elseif stage==12 then label="BLACK GATE"
     elseif stage==13 then label="WARDEN ARENA"
-    elseif stage==14 then label="GORDON" end
+    elseif stage==14 then label="GORDON"
+    elseif stage==15 then label="DIRECTOR'S HEART";color=Color(235,75,95) end
     surface.DrawCircle(x, y, pulse, color.r, color.g, color.b, color.a)
     surface.DrawCircle(x, y, pulse + 1, color.r, color.g, color.b, 180)
     draw.SimpleText(label, "LOD_Map_Small", x, y - 11,

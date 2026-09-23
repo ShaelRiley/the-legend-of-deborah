@@ -19,7 +19,8 @@ ProgressionDirector.Stages = ProgressionDirector.Stages or {
     TAKE_BLACK_KEYCARD = 11,
     OPEN_BLACK_GATE = 12,
     ENTER_WARDEN = 13,
-    DEFEAT_WARDEN = 14
+    DEFEAT_WARDEN = 14,
+    DEFEAT_HECTOR = 15
 }
 local Stages = ProgressionDirector.Stages
 -- Preserve the serialized numeric stages and legacy debug aliases.
@@ -408,7 +409,8 @@ function ProgressionDirector:GetObjectiveText()
         "TAKE THE BLACK KEYCARD — K / KEY",
         "OPEN BLACK GATE — K / KEY",
         "ENTER GORDON’S ARENA",
-        "DEFEAT GORDON THE WARDEN"
+        "DEFEAT GORDON THE WARDEN",
+        "DEFEAT HECTOR — ATTACK THE DIRECTOR’S HEART"
     }
     return objectives[stage] or "EXPEDITION"
 end
@@ -426,7 +428,7 @@ function ProgressionDirector:GetObjectiveGraphTarget()
         target = target or (progression.Hunt and progression.Hunt.neilCell)
         return target and {kind = 1, a = copyCell(target)} or nil
     end
-    if stage == Stages.ENTER_WARDEN or stage == Stages.DEFEAT_WARDEN then
+    if stage == Stages.ENTER_WARDEN or stage == Stages.DEFEAT_WARDEN or stage == Stages.DEFEAT_HECTOR then
         local a = progression.Warden
         return a and {kind = 1, a = copyCell(stage == Stages.ENTER_WARDEN and a.entry or a.center)} or nil
     end
@@ -493,7 +495,7 @@ function ProgressionDirector:SyncPlayer(ply)
 
     net.Start("LOD_RunState")
     net.WriteDouble(math.max(1, state.Level or 1))
-    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 14), 4)
+    net.WriteUInt(math.Clamp(state.ObjectiveStage or 1, 1, 15), 4)
     for i = 1, 4 do net.WriteBool(state.Cards and state.Cards[i] == true) end
     for i = 1, 4 do net.WriteBool(state.GatesOpen and state.GatesOpen[i] == true) end
     net.WriteBool(state.JailKey == true)
@@ -598,6 +600,7 @@ end
 
 function ProgressionDirector:SpawnJailKey(pos, source)
     local state = LOD.RunManager.State
+    if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
     if state.Failed or state.LevelCleared or state.JailKey then return nil end
     if IsValid(state.JailKeyEntity) then return state.JailKeyEntity end
 
@@ -624,6 +627,7 @@ end
 
 function ProgressionDirector:CollectJailKey(ply, keyEnt)
     local state = LOD.RunManager.State
+    if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
     if state.Failed or state.LevelCleared or state.JailKey then return false end
     if state.ObjectiveStage ~= Stages.TAKE_JAIL_KEY then return false end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or
@@ -645,6 +649,8 @@ end
 
 function ProgressionDirector:TryOpenJailDoor(ply, doorEnt)
     local state = LOD.RunManager.State
+    if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
+    if state.Level==20 and doorEnt~=state.Hector.jail then return false end
     if state.Failed or state.LevelCleared then return false end
     if state.JailDoorOpen then return true end
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or
@@ -679,6 +685,7 @@ end
 
 function ProgressionDirector:CanRescueTarget()
     local state = LOD.RunManager.State
+    if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
     return not state.Failed and not state.LevelCleared and state.GatesOpen and
         state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and state.GatesOpen[4] and
         state.JailKey == true and state.JailDoorOpen == true and

@@ -27,7 +27,27 @@ for level=1,26 do
     local target=R.State.RescueTarget
     assert(target.type==(level<=20 and 'damsel' or 'cash'))
     assert(target.objective==(level<=20 and 'RESCUE '..string.upper(D.Definitions[level].name) or 'SECURE THE BAG'))
-    assert(R:CompleteLevel(hero));assert(not R:CompleteLevel(hero),'duplicate victory')
+    if level==20 then
+        -- This campaign fixture intentionally isolates encounter/geometry
+        -- authorities. test_hector_encounter.lua runs the actual Gordon/Hector,
+        -- native death, key, door and Level21 sequence. Verify both permission
+        -- seams here before representing that accepted encounter outcome.
+        local savedHector=LOD.Hector
+        local savedCanRescue=LOD.ProgressionDirector.CanRescueTarget
+        local defeated,cellReady=false,false
+        LOD.Hector={RescueAllowed=function(_,state) return state==R.State and defeated end}
+        LOD.ProgressionDirector.CanRescueTarget=function() return cellReady end
+        local count=R.State.RescueCount
+        assert(not R:CompleteLevel(hero) and not R.State.LevelCleared and R.State.RescueCount==count
+            and not R.State.Abundance,'Deborah completed before Hector defeat')
+        defeated=true
+        assert(not R:CompleteLevel(hero) and R.State.RescueCount==count,'Hector bypassed locked rescue cell')
+        cellReady=true
+        assert(R:CompleteLevel(hero));assert(not R:CompleteLevel(hero),'duplicate victory')
+        LOD.Hector=savedHector;LOD.ProgressionDirector.CanRescueTarget=savedCanRescue
+    else
+        assert(R:CompleteLevel(hero));assert(not R:CompleteLevel(hero),'duplicate victory')
+    end
     assert(R.State.RescueCount==math.min(level,20))
     assert(R.State.CashRecovered==math.max(0,level-20))
     assert((R.State.Abundance==true)==(level>=20))

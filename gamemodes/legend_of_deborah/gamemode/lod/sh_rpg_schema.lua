@@ -108,7 +108,8 @@ RPG.ArchetypeProgressionTemplates = {
     beamsweeper = archetypeTemplate(9, 10, 13, 13, 14, 7, 20, 30, 50, 10, 55, 7, false, "beamsweeper"),
     neil = archetypeTemplate(10, 13, 11, 12, 12, 14, 20, 40, 40, 10, 150, 8, false, "neil"),
     brute = archetypeTemplate(18, 7, 18, 4, 8, 9, 90, 5, 5, 12, 250, 10, false, "brute"),
-    warden = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "warden")
+    warden = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "warden"),
+    hector = archetypeTemplate(15, 14, 17, 13, 13, 14, 40, 30, 30, 20, 500, "immune", true, "hector")
 }
 
 for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do

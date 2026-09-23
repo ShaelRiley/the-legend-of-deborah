@@ -411,6 +411,8 @@ local function replacementAward(identity, amount, hostile)
 end
 
 function Attribution:_Award(identity, amount, hostile)
+    if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return 0 end
+    if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return 0 end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.RewardOwned(hostile)) then return 0 end
     amount = replacementAward(identity, math.max(0, math.floor(amount or 0)), hostile)
@@ -447,6 +449,14 @@ function Attribution:LargestRemainderShares(pool, damageByIdentity)
 end
 
 function Attribution:Settle(hostile)
+    if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then
+        self.Ledgers[hostile] = nil
+        return false
+    end
+    if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then
+        self.Ledgers[hostile] = nil
+        return false
+    end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.RewardOwned(hostile)) then
         self.Ledgers[hostile] = nil
@@ -477,6 +487,12 @@ end
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
     local source = dmginfo and dmginfo:GetAttacker()
+    if (IsValid(source) and source.LODHector and (not LOD.Hector or not LOD.Hector:Live(source)))
+        or (IsValid(target) and target.LODHector and (not LOD.Hector or not LOD.Hector:CanDamage(target, dmginfo))) then
+        dmginfo:SetDamage(0)
+        if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo] = nil end
+        return true
+    end
     if IsValid(source) and source.LODSkeletonHero and (not LOD.SkeletonHero
         or not LOD.SkeletonHero:Live(source)) then
         dmginfo:SetDamage(0)

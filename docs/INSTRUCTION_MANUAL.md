@@ -1,5 +1,22 @@
 # Canonical instruction manual
 
+## September 23, 2026 Hector and Level-20 rescue gate
+
+The canonical source now teaches the Level-20 sequence: Gordon's defeat reveals
+Hector; Heroes attack the Director's Heart in the court; Hector's defeat releases
+the normal Jail Key; rescuing Deborah advances to Level 21+ SECURE THE BAG.
+Welcome, quick-start, keycard route, Gordon and closing advice distinguish this
+one-dungeon gate from Levels 1–19 and 21 onward. The dedicated Hector chapter
+explains his visible core, telegraphs, phases, protected entrance, ordinary
+revival, continuing collapse clock and existing rewards. Earlier Game Master
+chapters retain their ambiguous identity.
+
+Both shipped manual renderings are rebuilt from `docs/manual/book.json`.
+Generated-content parity, offline reader navigation, manual lifecycle and server
+transport regressions pass. Native Source/Chromium and multiplayer acceptance
+remain pending. The current checkpoint and its single combat acceptance procedure
+are recorded in `DEVELOPMENT_PLAN.md`; historical manual evidence follows below.
+
 ## September 15, 2026 native payload transport repair
 
 Fresh native evidence identifies the actual launch failure. The client console

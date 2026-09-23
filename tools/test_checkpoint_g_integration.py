@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Hector Encounter, Native Death & Level-20 Rescue Gate", ["python3", "tools/run_lua54.py", "tools/test_hector_encounter.lua"]),
+    ("Hector Canonical Actor Health & Defenses", ["python3", "tools/run_lua54.py", "tools/test_hector_health.lua"]),
+    ("Hector Horizon & Telegraph Presentation", ["python3", "tools/run_lua54.py", "tools/test_hector_presentation.lua"]),
     ("Equipment Quiz Lifecycle & Atomic Settlement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_equipment_quiz.lua"]),
     ("Game Master Production Alcove Placement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_quiz_generation.lua"]),
     ("Minigame Shell & Equipment UI Restrictions", ["python3", "tools/run_lua54.py", "tools/test_minigame_ui.lua"]),

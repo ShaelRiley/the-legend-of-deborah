@@ -75,7 +75,8 @@ function N:CanTraverse(g,ak,bk)
     if a then
         local edge=ak<bk and ak.."|"..bk or bk.."|"..ak
         local s=LOD.RunManager.State
-        if edge==a.lock.edgeKey and s.WardenStarted and not (s.Warden and s.Warden.dead) then return false end
+        if edge==a.lock.edgeKey and s.WardenStarted and (not (s.Warden and s.Warden.dead)
+            or s.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(s))) then return false end
         if edge==g.Progression.JailEdge.edgeKey and not s.JailDoorOpen then return false end
     end
     return traverse(self,g,ak,bk)

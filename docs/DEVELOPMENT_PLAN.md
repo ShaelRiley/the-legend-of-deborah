@@ -1,4 +1,99 @@
-# Current checkpoint — Game Master Equipment Quiz
+# Current checkpoint — Hector the Director and Level-20 rescue gate
+
+Built on verified remote main `25147e4c769c337bd5269a45f7a18dc8d84bc69e`;
+no intervening work replaced. Read AGENTS.md, retained P10 and live GDD
+00 → 01 → relevant 02/03/05/06/07/90. Under explicit author design delegation,
+recorded/read-back LOD-HECTOR-001 in 03/05/06/07/90 and HUMAN before implementation;
+retained current monster-grade inflation and canonical combat/lifecycle authorities.
+No VPS deployment or Steam Workshop publication.
+
+**Scope/activation:** automatic at Dungeon Level 20 only. The exact legitimate
+Gordon death hands off, after the native lethal stack, to one Hector encounter:
+Gordon → Hector → ordinary center Jail Key → Deborah → existing victory/Tetris,
+staging and Level 21+ SECURE THE BAG. Levels 1–19 and 21+ retain their prior rules.
+Expanded finale celebration and other Game Master minigames are not implemented.
+
+The generated Warden court/gallery/stairs and overhead containment remain intact.
+A red Hermit upper body and titanic crowbar dominate the elevated Flattywood
+bearing; two client models, ordinary depth testing, no giant navigation entity.
+The plainly labeled Director's Heart at court center is one real stationary
+lod_hostile, the only HP/damage/reward authority, linked to the giant by an energy
+tether. Ordinary weapons, Magic, summons and melee attack that reachable body.
+The protected entry permits neither outgoing nor incoming Hector damage; normal
+join/respawn and once-per-Hero Warden resupply remain available.
+
+**Combat/tuning:** three-second invulnerable reveal; canonical Champion Level 28
+at Dungeon 20, reference starting HP 420 plus d20/CON/feat progression; frozen
+party HP ×1/1.2/1.4/1.6 for one to four Heroes. Core size 1, displacement immunity,
+no regeneration; ordinary affinity, enemy defense caps and applicable feats remain.
+Monotonic phases at 60% and 25% add attack families and shorten recovery from
+2.2 to 1.6 to 1 second. Four slow homing missiles; fixed three-second bomb marks;
+1.5-second titanic-crowbar marks; straight purple Villain of Lore magic volleys.
+Missile/lore wind-ups last one second. Ground impacts have 180-unit radii and LOS
+checks. Shared Warden traced ordnance and CombatRolls own movement/damage; at most
+one pending attack, four released shots/marks and twelve live hazards; five small
+snapshots per second while active. Wind-up commits the attack: hit stun/status
+blocks new commitments without erasing every warned strike under automatic fire.
+Muted blocks new magical commitments. Target/life loss, phase change, absence,
+freeze and teardown retire pending/live hazards. No-target waits retain HP/phase
+and do not pause or replace the existing dungeon deadline.
+
+**Ownership/progression:** bind the state, campaign epoch/seed/run ID, Dungeon
+Level/seed, exact graph/progression/Warden, Gordon/core and native lock/jail/rescue
+entities. Native lethal acceptance precedes existing XP/loot hooks; immutable
+encounter receipts authorize deferred progression exactly once. Persistent
+Level-20 Gordon markers reject late deaths/corpse rewards even after Level 21 or
+same-seed regeneration. Invalid resources reject damage/rewards immediately.
+Core removal is failure, never defeat. Partial creation invalidates/removes owned
+work through ordinary campaign failure. Reset/build/cleanup invalidate before
+native removal. Key creation/collection, jail use, rescue and CompleteLevel all
+require the Hector receipt; no new wallet, rescue timer or reward pool. A valid
+receipt survives ordinary corpse retirement. Late joins receive current reveal,
+combat/defeated phase, canonical HP and bounded telegraphs; client input grants no
+rescue permission. The objective HUD/map and canonical 143-chapter manual explain
+the gate; both manual readers share 31 regenerated transport chunks.
+
+**Validation:** `python3 tools/test_checkpoint_g_integration.py` passed all **154
+automated suites with zero failures**. `git diff --check` is clean.
+Three new production-path suites exercise native lethal callbacks, real
+contributor XP/loot handoff, exactly-once defeat/key/rescue, Level-20-only gating,
+Level-21 advance, reveal/telegraphs/damage tags/LOS/ordnance bounds, target loss,
+death/revival/disconnect, committed attacks under hit stun/Muted, late joins,
+partial Create/Spawn failure, replaced entities/state/graphs, same-seed reset,
+old Gordon corpse rewards, timeout/failure and cleanup. Health tests use actual
+monster generation/variance; client tests run actual packet/render/cleanup paths
+with supported native API doubles. No native Source acceptance is claimed.
+
+First full run exposed two attributable legacy assumptions: RPG validation still
+expected 21 templates (now 22 with Hector), and the campaign-only damsel fixture
+assumed direct Level-20 completion without boss/rescue permission. Both were
+updated; the fixture now explicitly proves both denied boundaries, while the
+Hector suite executes the complete actual combat-to-rescue sequence.
+
+**One native procedure:** on a fresh local gm_flatgrass test campaign with two
+Heroes, use the server-console batch `lod_developer_mode 1; lua_run local r=LOD.RunManager r.State.Level=20 r:Regenerate()`.
+Redeploy, use the existing `lod_rpg_gate_c_level 20` acceleration if needed and
+resolve Character Sheet choices, then run `lod_warden_testkit` as each admin Hero.
+Defeat Gordon normally: no Jail Key, one three-second Hector reveal. Confirm the
+tethered center core is aimable from the court, inspect the giant from the upper
+gallery, dodge each marked attack, and check entrance immunity. Have one Hero die,
+revive and reconnect: phase/HP persist and stale attacks do not follow the new
+life. Defeat Hector, take the single key, rescue Deborah and verify the existing
+victory/staging flow reaches SECURE THE BAG at Level 21. On a fresh test encounter,
+regenerate or fail during a warning and confirm immediate cleanup/no reward.
+Capture console_latest.txt + rpg_summary_latest.txt; screenshots only for framing
+or visual defects. Native 1–4-player tuning, Source collision/aimability, projection
+sightlines, animation and real-network acceptance remain pending.
+
+**Next bounded checkpoint:** expanded Level-20 finale celebration presentation,
+using the existing rescue/victory/staging authorities. Reconcile exact Deborah,
+damsel and Hero choreography with the live GDD; never postpone or duplicate
+rescue settlement, intermission or Level-21 progression. Validate and publish
+separately; retain all earlier native acceptance obligations.
+
+---
+
+# Previous checkpoint — Game Master Equipment Quiz
 
 Built on verified remote main `c0526c9f5a4ebe68af890131ed888899183eb45e`;
 no intervening work replaced. Read AGENTS.md, retained P9 Game Master brief and

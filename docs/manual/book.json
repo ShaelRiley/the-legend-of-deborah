@@ -9,7 +9,7 @@
       "quote": "You brought a rescue party. Good. Now bring a plan.",
       "text": [
         "Somewhere inside a towering prison of shipping containers, Deborah is waiting for you. The passages change. The guards grow stronger. The Warden has a toilet. You have thirty minutes.",
-        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, and defeat Gordon. Levels 1–19 rescue nineteen different damsels; Level 1 begins with Nessa. Deborah herself waits at Level 20. From Level 21 onward, Gordon steals cash instead. SECURE THE BAG, then see how far the server can go!",
+        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, and defeat Gordon. Levels 1–19 rescue nineteen different damsels; Level 1 begins with Nessa. Deborah herself waits at Level 20, where Hector the Director stands between Gordon’s defeat and her rescue. From Level 21 onward, Gordon steals cash instead. SECURE THE BAG, then see how far the server can go!",
         "This booklet uses the game's default keyboard and mouse controls. Its little-console-booklet look is a tribute; your adventure runs in Garry's Mod. Rebound game actions follow your configured bindings."
       ]
     },
@@ -22,7 +22,7 @@
         "Press P to inspect your character. Use Equipment to choose gear, and I to set your spell. Read any unfamiliar effect before entering.",
         "Use the portal. The first Hero entering each dungeon starts its 30:00 collapse clock.",
         "Find the cards and open their gates: Red, Blue, Yellow, then Black. Neil carries the Black Keycard.",
-        "Defeat Gordon. Collect the Jail Key at the arena center, open the rescue chamber, then touch or use the current damsel to complete the level. From Level 21, recover the marked cash case instead."
+        "Defeat Gordon; at Level 20, also defeat Hector’s Director’s Heart in the court. Collect the Jail Key at the arena center, open the rescue chamber, then touch or use the current damsel to complete the level. From Level 21, recover the marked cash case instead."
       ],
       "quote": "Beating the Warden isn't the rescue. Come and get me!"
     },
@@ -145,7 +145,7 @@
         ],
         [
           "6 · Rescue target",
-          "Defeat Gordon → take Jail Key → open chamber → rescue damsel / secure cash"
+          "Defeat Gordon → at Level 20, defeat Hector → take Jail Key → open chamber → rescue damsel / secure cash"
         ]
       ],
       "text": [
@@ -916,8 +916,29 @@
         "An entry or respawn alcove provides protection and one aid allowance per Hero identity per dungeon: up to 25 HP, up to 30 ammunition per owned gun, and one Healing Potion. Repeated entry is not an unlimited supply.",
         "Above roughly 60% HP, Gordon alternates a three-second cloak with a visible warning before launching four slow homing orbs. Around 60%, he rides his toilet and leaves bombs with three-second fuses. Around 25%, he clears that ordnance and charges with his crowbar.",
         "If his cloaked phase goes twelve seconds without damage, Gordon reveals himself and pauses attacks for a two-second taunt. Hitting him ends the taunt. Crowbar stagger works once every three seconds against Gordon; gun hit stun keeps its usual rules.",
-        "Fake Gordon Clones join at Dungeon Levels 4, 8, 12 and 16, up to four. Each has one-third of the real Gordon’s maximum HP. They spread around the arena and have no boss health bar. Defeating a clone does not release the Jail Key; defeating the real Gordon ends the encounter.",
-        "The fight does not reset just because a Hero dies. Defeat him, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. Gordon's death alone never completes the dungeon."
+        "Fake Gordon Clones join at Dungeon Levels 4, 8, 12 and 16, up to four. Each has one-third of the real Gordon’s maximum HP. They spread around the arena and have no boss health bar. Defeating a clone does not release the Jail Key. Defeating the real Gordon ends his fight; at Level 20 it reveals Hector instead of releasing the key.",
+        "The fight does not reset just because a Hero dies. At Levels 1–19 and 21 onward, defeat Gordon, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. At Level 20, defeat Hector first. Gordon’s death alone never completes the dungeon."
+      ]
+    },
+    {
+      "id": "hector",
+      "title": "Hector the Director",
+      "rows": [
+        [
+          "Level 20 only",
+          "Gordon → Hector → Jail Key → Deborah"
+        ],
+        [
+          "Your target",
+          "The Director’s Heart in the court"
+        ]
+      ],
+      "text": [
+        "When the real Gordon falls at Level 20, an enormous, disturbingly familiar figure rises over the Flattywood horizon. Hector’s three-second reveal begins the final fight. The jail remains locked until you defeat him.",
+        "Attack the Director’s Heart: the red figure at the arena center, tethered to the giant above. This reachable core takes your ordinary weapon and spell hits. The distant body is a spectacle, not a separate target. Fight from the lower court or its upper gallery; the protected entrance permits neither outgoing nor incoming Hector damage.",
+        "Hector opens with blue missile volleys and titanic crowbar strikes. Below roughly 60% health, bombs and purple corrupted Villain of Lore bolts enter the rotation. Below roughly 25%, attacks arrive faster and ground strikes may mark several Heroes. Watch the warning text, leave fixed ground circles before impact, and dodge the traveling orbs.",
+        "Death and revival use the normal Hero rules. Returning Heroes resume the same fight; Hector does not heal or restart because everyone temporarily leaves the court. His attacks stop while no visible, living Hero is available there. The dungeon’s collapse clock still matters.",
+        "Hector grants ordinary combat credit and enemy drops, with no separate currency prize. After his defeat, take the Jail Key, open Deborah’s chamber, and rescue her to finish Level 20. The existing Level 21-and-beyond SECURE THE BAG campaign then continues."
       ]
     },
     {
@@ -1079,7 +1100,7 @@
         "Move sideways out of committed charges. A longer corridor is not always a safer escape.",
         "Compare gear drawbacks as carefully as benefits. Keep your permanent feat requirements in mind.",
         "Use short map checks, read the current objective, and remember the stairs.",
-        "When the Warden falls, finish the job. Jail Key, jail door, Deborah."
+        "When the Warden falls, finish the job. At Level 20, defeat Hector too. Then Jail Key, jail door, rescue target."
       ],
       "quote": "You've read the book. Now make yourself useful."
     },

@@ -989,6 +989,8 @@ function RunManager:FailCampaign(reason)
 end
 
 function RunManager:CompleteLevel(ply)
+    if self.State.Level==20 and (not LOD.Hector or not LOD.Hector:RescueAllowed(self.State)
+        or not LOD.ProgressionDirector:CanRescueTarget()) then return false end
     if self.State.Failed or self.State.LevelCleared or not self.State.BuildReady then return false end
     if not IsValid(ply) or not ply:Alive() or not self:IsActivePlayer(ply) then return false end
 

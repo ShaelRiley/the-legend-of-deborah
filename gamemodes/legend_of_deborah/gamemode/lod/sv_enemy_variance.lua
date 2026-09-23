@@ -93,7 +93,8 @@ function EnemyVariance:Apply(hostile)
     hostile.LODVarianceApplied = true
 
     local seed = instanceSeed(hostile)
-    local size = subFloat(seed, "size", V.SizeMin or 0.33, V.SizeMax or 1.33)
+    local size = hostile.LODArchetypeId == "hector" and 1
+        or subFloat(seed, "size", V.SizeMin or 0.33, V.SizeMax or 1.33)
     local originalConfig = hostile.LODConfig
     local cfg = table.Copy(originalConfig)
     hostile.LODConfig = cfg
@@ -181,7 +182,8 @@ function EnemyVariance:Apply(hostile)
         seed = seed,
         size = size,
         hpScale = hpScale,
-        speedScale = cfg.speed and (cfg.speed / (originalConfig.speed or cfg.speed)) or 1
+        speedScale = cfg.speed and originalConfig.speed and originalConfig.speed ~= 0
+            and (cfg.speed / originalConfig.speed) or 1
     }
     local campaignLevel=LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.Level or 1
     local pressure=LOD.Damsels and LOD.Damsels:EndlessPressure(campaignLevel)
