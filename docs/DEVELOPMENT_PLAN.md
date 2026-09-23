@@ -1,4 +1,90 @@
-# Current checkpoint — live rankings and complete party history
+# Current checkpoint — Dungeon Events foundation and Debbie Slots
+
+Built on independently verified remote main
+`62bacda9f0736825f68894f1731d09acf5215910`; no newer work replaced.
+Read AGENTS.md, the retained P9 brief and live GDD 00 → 01 → 05/06/07/90.
+The current author explicitly delegated missing mechanics and tuning. After a
+protected-control-aware file-backed read, added and verified LOD-EVENTS-001 and
+LOD-EVENT-SLOTS-001 in relevant 05/06/07/90 tabs and HUMAN. P7/P8 were preserved.
+
+Implemented one server EventRegistry/EventDirector through the ordinary
+RunManager → progression/graph → MazeBuilder pipeline. Registered REWARD,
+BLOCKADE, HAZARD and UTILITY contracts use separate named count, selection,
+placement and outcome streams. Full selection rolls exactly non-exploding 1d4
+and chooses distinct archetypes. Planning permits at most 64 candidate cells per
+selected archetype; rejected placement/creation fails the build and cleans it
+instead of silently dropping events or accepting an unsolvable dungeon.
+Canonical graph integrity and ordered gate/key/jail reachability protect safe,
+objective, gate, transition, encounter and Warden cells. Combined hazards must
+preserve the route; blockade resolution proofs cannot borrow access through
+locked gates or other unresolved events. Placement callbacks receive isolated
+copies; topology/proof mutation or exceptions reject the plan. New shortcut edges
+remain unsupported until their endpoint contract ships with the travel catalog.
+
+Lifecycle states cover planning, creation, active use, per-account resolving and
+resolved claims, shared resolution and cleanup. Bind state, campaign epoch/run,
+level/seed, graph, generation token and tracked entities. Require a living deployed
+Hero, range/line of sight and a live dungeon; canonical timeout wins at expiry.
+Invalidate ownership before teardown, including build failure, campaign replacement
+and campaign failure. Compact current snapshots hydrate durable claims for late
+joins/reconnects; old client tokens cannot restore a retired event. No client
+payout request or invented inventory/DFT authority was introduced.
+
+**Activation: full production population is OFF (`lod_events_enabled 0`).**
+Enabling it with fewer than four production archetypes rejects generation with
+an explicit catalog-gate error. The only playable archetype is **Debbie Slots**,
+an optional nonblocking UTILITY machine. Developer-mode admin/server command
+`lod_event_preview_generate slot_machine` runs an explicitly unranked, single-event
+preview through real generation and prints its cell/world locator. This is not
+complete P9 or a capped substitute for the 1–4 production contract. Ordinary
+campaign generation remains event-free while the catalog is incomplete.
+
+Slot tuning: one wager per Steam account per campaign dungeon, including after
+reconnect, replacement Hero or same-dungeon regeneration/seed override. Stake
+5 $DEB; one utility d4 returns 15 gross on 4 (+10 net) and zero on 1–3 (−5 net).
+Expected net is −1.25. The immutable ledger key uses run/level/account; outcome
+uses a separate campaign/dungeon/account stream, independent of regenerated
+layout. Existing CryptoStore owns debit, payout, receipt and history in one SQL
+transaction. Insufficient funds or storage failure spends nothing; retry cannot
+reroll. Wallet sync, Die Log, confirmation cue, visible odds and both canonical
+manual readers disclose the mechanic. Lifetime score, inventory and DFT holdings
+are unchanged. Uses a stock receiver prop with player-passable collision.
+
+Validation: the focused production event/real-SQLite suite passes. Four
+representative test definitions exercise all four contracts and exact 1–4 full
+plans; no fixture definitions ship in the production catalog. Tests cover named
+stream determinism/uniqueness, protected/invalid placement, route solvability,
+bounded rejection, immutable callback proofs, real RunManager generation through
+native entity Use, insufficient funds, win/loss, failed ledger insert and COMMIT,
+retry, reentrant/duplicate settlement, lifecycle replacement, cleanup, reconnect,
+late-join packets and the actual client prompt/receiver. Existing wallet SQLite
+regressions and generated manual parity also pass. Initial integrated result was
+136/137: the new event fixture needed native-equivalent cycle/shared-reference
+copying after callback isolation; assertions were retained and the focused suite
+is green. **Final integrated gate: all 137 suites pass, zero failures**, including
+syntax, release wiring, generated manual and existing P7/P8 regressions. These
+are automated/headless results; native multiplayer acceptance remains pending.
+
+Native Source acceptance remains pending: on gm_flatgrass with a teammate and
+existing game funds, enable developer mode and run
+`lod_event_preview_generate slot_machine`. Deploy normally, then use the printed
+locator to reach the machine on this unranked test run. Check visible odds,
+player-passable geometry, one debit/payout/Die Log result, denied repeat use,
+independent teammate use, reconnect receipt and teardown after regeneration.
+Check no-funds rejection without minting production balances. Capture
+console_latest.txt + rpg_summary_latest.txt, plus a screenshot for visual defects.
+No VPS deployment or Workshop publication; earlier native obligations remain open.
+
+Next bounded checkpoint: **Chest Key + locked-loot chest REWARD vertical slice**.
+Reconcile exact chest/lockpick/DFT rules, integrate finite keys into existing drops
+and inventory and atomic chest claims into this director, prove key debit/reward
+rollback and one Rogue attempt per chest. Keep full population gated until at
+least four distinct playable archetypes pass their shared placement/lifecycle
+contracts. Remaining events, Game Master minigames and Hector are deferred.
+
+---
+
+# Previous checkpoint — live rankings and complete party history
 
 Built on independently verified remote main
 `f85bac96e5662e676cd960462de656c4d06521e1`. The stalled Magic Hourglass

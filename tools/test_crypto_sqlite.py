@@ -4,6 +4,7 @@ import ctypes as ct
 import ctypes.util
 import json
 import sqlite3
+import sys
 import tempfile
 from pathlib import Path
 
@@ -90,7 +91,10 @@ def main():
         bind('WalletJSONEncode', lambda x: json.dumps(x, ensure_ascii=False, separators=(',', ':'), sort_keys=True))
         bind('WalletJSONDecode', lambda x: json.loads(x) if x else None)
         bind('WalletSQLFail', fail); bind('WalletSQLReconnect', reconnect)
-        status = lib.luaL_loadfilex(state, b'tools/test_crypto_runtime.lua', None)
+        # Event integration reuses the same real SQLite/JSON bridge and failure
+        # injection; no second mock implementation of wallet transactions.
+        suite = sys.argv[1] if len(sys.argv) > 1 else 'tools/test_crypto_runtime.lua'
+        status = lib.luaL_loadfilex(state, suite.encode(), None)
         if status == 0: status = lib.lua_pcallk(state, 0, 0, 0, 0, None)
         if status:
             print(lib.lua_tolstring(state, -1, None).decode())

@@ -944,6 +944,25 @@
       ]
     },
     {
+      "id": "dungeon-events",
+      "title": "Dungeon Events: a first preview",
+      "rows": [
+        [
+          "Slot machine · $5 DEB stake",
+          "One ordinary d4: 4 pays $15 gross (+$10 net); 1–3 pays nothing (−$5 net)."
+        ],
+        [
+          "Odds",
+          "25% win; 75% loss. No exploding dice or ability bonuses."
+        ]
+      ],
+      "text": [
+        "Dungeon Events are being introduced in stages. The slot machine is available only in the administrator-enabled, unranked single-event preview. Normal random population of 1–4 different events remains disabled while the playable catalog is expanded.",
+        "The machine is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
+        "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine."
+      ]
+    },
+    {
       "id": "tips",
       "title": "Deborah's parting advice",
       "art": "deborah:4",

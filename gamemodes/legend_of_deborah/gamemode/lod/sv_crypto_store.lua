@@ -58,6 +58,17 @@ function Store:Read(id)
     ErrorNoHalt('[LOD:WALLET] '..tostring(result)..'\n')
     return nil,'Wallet storage unavailable; existing account preserved.'
 end
+-- Immutable receipts let reconnecting consumers recover committed outcomes.
+-- A failed read is not evidence that an event has never been settled.
+function Store:Receipt(eventId)
+    local ok,result=pcall(function()
+        local rows=query('SELECT body FROM lod_crypto_ledger WHERE event='..sql.SQLStr(eventId))
+        if not rows then return nil end
+        return assert(util.JSONToTable(rows[1].body,false,true),'corrupt transaction receipt')
+    end)
+    if ok then return result end
+    return nil,'storage'
+end
 function Store:Transaction(eventId,kind,ids,mutate)
     local begun=false
     local ok,result,detail=pcall(function()
