@@ -1,4 +1,101 @@
-# Current checkpoint — Permanent paired warp-hole shortcut
+# Current checkpoint — Solvable item-value bribe blockade
+
+Built on verified remote main `290668078f26f13276e1af05b4ab675de8ddb165`;
+no intervening work replaced. Read AGENTS.md, retained P9 bribe brief and live
+GDD 00 → 01 → relevant 05/06/07/90 rules. Added and read-back verified
+LOD-EVENT-BRIBE-001 in those subsystem tabs and mirrored into HUMAN under the
+current explicit design delegation. File-backed read found no protected controls.
+
+**Scope/activation:** `bribe_blockade` joins the common pool from Dungeon Level 1.
+Catalog size is six before Level 5, seven thereafter. Exact non-exploding 1d4,
+unique types, rare fourth slot, existing RNG streams, default-on population and
+archived operator opt-outs remain. No VPS or Steam Workshop deployment.
+
+One physical toll closes a required ordinary horizontal route. Price: 50 $DEB
+of canonical equipment value; no wallet debit, payout or change. One Hero may
+confirm 1–8 owned unequipped procedural wearables. Existing exchange restrictions
+exclude weapons, consumables, equipped/protected/free-starting gear and DFT
+recreations. No partial contributions or escrow. The entire selected item value
+is surrendered. One payment opens the route for every Hero for this generation.
+
+**Guaranteed payment:** each toll owns a distinct reserved optional lost-property
+cache containing one frozen ordinary generated ring worth at least the price.
+Use at that cache earmarks its ring as shared collateral; it remains there, cannot
+be sold/equipped/discarded, and any Hero may later confirm its surrender at the
+toll. It is an event reward record staged through existing Equipment storage and
+discard, never a second inventory store or a freely spendable item faucet. Full
+bags do not block this zero-net-capacity payment. No starting inventory, random
+drop, distant locked reward or another blockade is assumed by the solvability proof.
+
+**Placement:** EventDirector proves the earliest legitimately reachable approach,
+requiring each earlier key/reader before hypothetically opening its gate. The
+cache must be reachable with this and all other blockades, future progression
+locks and the arena/jail boundary closed. Both edge endpoints and cache reserve
+against other events. Fully resolved ordered routes and combined shortcut/hazard
+proofs remain mandatory. Candidate placement receives current masks/reservations
+and revalidates the growing plan before accepting. Blockade candidates come from
+the canonical critical path; at most64 sources, bounded adjacent/cache searches.
+Warp partner search now considers those same masks. Exhaustion rejects/cleans the
+whole build without changing selected types/count; not every seed must be accepted.
+
+**Settlement/UX:** Use opens a server-owned 45-second itemized review. Explicit
+confirm pays; cancel/close/expiry spends nothing. Revalidate exact native terminal,
+cache and captured barrier; Hero/account/body life; inventory pointer, nested
+owners and complete contents; current graph/campaign/dungeon, clock, role,
+range/LOS and shared state. An instance-wide lock serializes all Heroes. Prepare
+native opening reversibly, recheck after native/LOS callbacks, then seal inventory,
+collateral and shared result synchronously before presentation. Rollback restores
+only the captured barrier still owned by the same dungeon, independently of an
+invalidated terminal/cache. Postcommit sync failure cannot charge again. Existing
+snapshots supply both endpoints and shared state to late joins. Partial creation
+and teardown invalidate reviews and remove every owned entity.
+
+Native geometry reuses the existing tall progression gate collision/rendering;
+its index0 toll presentation cannot invoke keycard progression. Existing ordinary
+and optimized navigation consult current event edges; event-state signatures
+invalidate cached paths immediately on opening/reset. Manual regenerated to140
+chapters/31 chunks and documents payment, collateral, cancellation and preview.
+
+Validation: `python3 tools/test_checkpoint_g_integration.py` passed all **145
+automated suites**, zero failures, on the final source/test tree after native API
+correction. The preceding full run also passed145; final rerun covers the
+corrected native boundary explicitly. Initial integration
+passed144/145; only the new test incorrectly requiring seed32 to succeed failed.
+It now explicitly proves bounded whole-build rejection and cleanup. Native API
+verification replaced an unsupported getter with IsSolid; both new fixtures
+explicitly remove the unsupported method. Focused payment
+checks pass exact49/50 boundary, excess value, eligible source ownership, duplicate
+IDs, cancel/retry, full bag collateral, simultaneous Heroes, inventory/life/account
+replacement, partial native opening/rollback, post-LOS movement/reclosure, late
+joins, cleanup and client confirmation/cancel packets including narrow UI width.
+Production tests use actual RunManager, encounter reservations and all seven
+archetypes: eleven valid sampled layouts cover counts1–4; seed32 explicitly
+proves clean bounded rejection without selected-event changes. Independent graph
+walks prove payment access and full objective order.
+Independent review found the terminal/cache-invalidated rollback gap; fixed and
+covered. Automated boundaries do not establish native Source acceptance.
+
+One native procedure: on gm_flatgrass with two deployed Heroes in developer mode,
+run `lod_event_preview_generate bribe_blockade`, redeploy and follow the printed
+cache/terminal locators. Recover the shared ring, cancel a review, then have both
+Heroes review and confirm: only one settles and both pass the open tall barrier.
+Reconnect to verify shared opening; regenerate and instead review/cancel/pay eligible
+unequipped gear, checking the exact items disappear once, excess gives no change,
+and ordinary gate/objective order remains intact. Capture console_latest.txt +
+rpg_summary_latest.txt; screenshots for collision/label/review defects. Native
+collision, Use/controller/VGUI, concurrent packet delivery and earlier multiplayer
+acceptance remain pending.
+
+Next bounded checkpoint: **one Skeleton of a Hero BLOCKADE** from retained P9.
+Reconcile authored class/stat/feat/level/reward rules with the live GDD; reuse
+canonical Hero generation/combat, shared blockade placement/progression and event
+lifecycle. Prove combat resolution opens the exact obstacle once, combined catalog
+solvability, cleanup and late joins; validate, commit and push. Game Master
+minigames and Hector remain later gates.
+
+---
+
+# Previous checkpoint — Permanent paired warp-hole shortcut
 
 Built on verified remote main `943d33a2c7a58461fc95a62e561b6c6188d58b5c`;
 no intervening work replaced. Read AGENTS.md, retained P9 warp-hole brief and

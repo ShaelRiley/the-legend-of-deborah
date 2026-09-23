@@ -37,6 +37,7 @@ end
 
 function ENT:Use(activator)
     if not IsValid(activator) or not activator:IsPlayer() then return end
+    if self.LODBribeRole=="barrier" then return end
     LOD.ProgressionDirector:TryOpenGate(self:GetGateIndex(), activator, self)
 end
 

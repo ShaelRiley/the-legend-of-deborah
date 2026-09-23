@@ -20,6 +20,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Bribe Blockade Generation & Ownership", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_bribe_blockade.lua"]),
+    ("Bribe Blockade Atomic Payment", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_bribe_payment.lua"]),
     ("Warp Hole Utility & Safe Traversal", ["python3", "tools/test_crypto_sqlite.py", "tools/test_warp_hole.lua"]),
     ("False Floor Hazard & Native Geometry Boundaries", ["python3", "tools/test_crypto_sqlite.py", "tools/test_false_floor.lua"]),
     ("Combined Event Population & Rarity", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_population.lua"]),

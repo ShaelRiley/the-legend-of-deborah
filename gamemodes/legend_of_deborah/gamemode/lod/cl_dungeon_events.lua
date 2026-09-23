@@ -18,7 +18,7 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local row,endpoint
     for _,event in ipairs(LOD.DungeonEvents.events) do
         if event.id==eventID then
-            if event.archetype=='warp_hole' then
+            if event.archetype=='warp_hole' or event.archetype=='bribe_blockade' then
                 for index,point in ipairs(event.details and event.details.endpoints or {}) do
                     if point.entityIndex==ent:EntIndex() then row,endpoint=event,index;break end
                 end
@@ -31,7 +31,22 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='warp_hole' then
+    if archetype=='bribe_blockade' then
+        local details=row and row.details or {}
+        local cache=ent:GetNW2String('LOD_BribeRole','')=='cache'
+        lines={cache and 'LOST-PROPERTY CACHE' or 'BRIBE BLOCKADE — 50 $DEB OF EQUIPMENT',
+            'One Hero pays; the passage opens for everyone. No cash charge or change.'}
+        if not row then lines[#lines+1]='Synchronizing blockade…'
+        elseif details.opened then lines[#lines+1]='OPEN — payment complete for this dungeon.'
+        elseif cache then
+            lines[#lines+1]=details.recovered and 'Ring earmarked for the party. Return to the toll terminal.'
+                or '['..key..'] RECOVER SHARED COLLATERAL — ring stays safe here until payment.'
+        else
+            lines[#lines+1]=details.recovered and 'Lost-property collateral available; your carried gear can stay intact.'
+                or 'Recover the lost-property cache on this side, or offer unequipped wearables.'
+            lines[#lines+1]='['..key..'] REVIEW PAYMENT — choose items, then explicitly confirm.'
+        end
+    elseif archetype=='warp_hole' then
         local details=row and row.details
         local point=details and details.endpoints[endpoint]
         local number=endpoint or ent:GetNW2Int('LOD_WarpEndpoint',0)

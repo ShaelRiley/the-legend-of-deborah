@@ -37,7 +37,7 @@ end
 function D:GraphCallback(def, name, g, argument, reach)
     local isolated, arg, reached = table.Copy(g), table.Copy(argument), reach and table.Copy(reach)
     local ok, result
-    if name == "Place" then ok, result = pcall(def[name], def, self, isolated, arg)
+    if name == "Place" then ok, result = pcall(def[name], def, self, isolated, arg, reached)
     else ok, result = pcall(def[name], def, isolated, arg, reached) end
     if not ok then return false, nil, "event callback failed: " .. name end
     if not sameData(g, isolated) or not sameData(argument, arg) or not sameData(reach, reached) then
@@ -149,6 +149,29 @@ function D:ValidateDrop(g, placement, reserved, environment)
     return self:ValidateEndpointPair(g, placement, reserved, environment)
 end
 
+-- Earliest legitimately reachable blockade approach. Never unlock a gate in
+-- the proof when its key/encounter or reader is trapped behind this toll.
+function D:BlockadeApproach(g, placement, environment)
+    local e=g.Edges[placement.edgeKey]
+    if not e then return nil end
+    local p,blocked=g.Progression,copy(environment and environment.edges)
+    blocked[placement.edgeKey]=true
+    blocked[p.JailEdge.edgeKey]=true
+    if p.Warden and p.Warden.lock then blocked[p.Warden.lock.edgeKey]=true end
+    for _,gate in ipairs(p.Gates) do blocked[gate.edgeKey]=true end
+    for stage=0,#p.Gates do
+        local reach=walk(g,key(g.Start),blocked,environment and environment.cells)
+        if reach[key(e.a)] or reach[key(e.b)] then return reach end
+        local gate=p.Gates[stage+1]
+        if gate then
+            local objective=p.Keycards and p.Keycards[stage+1] and p.Keycards[stage+1].cell
+                or (stage+1==4 and p.Hunt and p.Hunt.neilCell)
+            if not reach[key(gate.beforeCell)] or (objective and not reach[key(objective)]) then return nil end
+            blocked[gate.edgeKey]=environment and environment.edges[gate.edgeKey] or nil
+        end
+    end
+end
+
 function D:ValidatePlacement(g, def, placement, reserved, environment)
     if not g or not g.Cells or not g.Progression or type(placement) ~= "table" then return false, "missing placement graph" end
     local k = placement.cellKey or key(placement.cell)
@@ -196,17 +219,13 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
         if reach[key(g.Progression.DeborahCell)] then return false, "blockade is not on required route" end
         if not reach[key(e.a)] and not reach[key(e.b)] then return false, "blockade cannot be approached" end
         if placement.blockedCells or placement.blockedEdges then return false, "blockade supports one canonical edge" end
-        -- Use the earliest actual progression stage from which the obstacle can
-        -- be approached. Payment/reward proofs cannot borrow from behind locks.
-        for ek in pairs(environment and environment.edges or {}) do blocked[ek] = true end
-        blocked[g.Progression.JailEdge.edgeKey] = true
-        for _, gate in ipairs(g.Progression.Gates) do blocked[gate.edgeKey] = true end
-        local approach
-        for stage = 0, #g.Progression.Gates do
-            reach = walk(g, key(g.Start), blocked, environment and environment.cells)
-            if reach[key(e.a)] or reach[key(e.b)] then approach = reach; break end
-            local gate = g.Progression.Gates[stage + 1]
-            if gate then blocked[gate.edgeKey] = environment and environment.edges[gate.edgeKey] or nil end
+        local approach=self:BlockadeApproach(g,placement,environment)
+        if placement.cacheCellKey then
+            if not g.Cells[placement.cacheCellKey] or protected[placement.cacheCellKey]
+                or (reserved and reserved[placement.cacheCellKey])
+                or placement.cacheCellKey==key(e.a) or placement.cacheCellKey==key(e.b) then
+                return false, "blockade payment cache reserved"
+            end
         end
         if not approach then return false, "blockade cannot be resolved" end
         local called, resolvable, callbackErr = self:GraphCallback(def, "CanResolve", g, placement, approach)
@@ -251,24 +270,58 @@ function D:Plan(g, options)
         for memberIndex = 1, memberCount do
             local memberSeed = multiple and LOD.Seeds.Derive(eventSeed, "instance:" .. memberIndex .. ":v1") or eventSeed
             local candidates = sorted(g.Cells)
+            if def.contract=="BLOCKADE" then
+                -- A required-route obstruction can only cut the canonical
+                -- start-to-rescue path. Spend the finite budget on those cells.
+                local critical={}
+                for _,c in ipairs(g.CriticalPath or {}) do critical[key(c)]=true end
+                candidates=sorted(critical)
+            end
+            local placeEnvironment={edges=copy(hazardEdges),cells=copy(hazardCells),reserved=copy(reserved)}
+            for _,prior in ipairs(plan.instances) do
+                if prior.contract=="BLOCKADE" then placeEnvironment.edges[prior.placement.edgeKey]=true end
+            end
             LOD.RNG.New(LOD.Seeds.Derive(memberSeed, "placement")):Shuffle(candidates)
             local accepted, lastErr
             for i = 1, math.min(#candidates, self.MaxPlacementAttempts) do
                 local cell = g.Cells[candidates[i]]
                 local placement
                 if def.Place then
-                    local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell)
+                    local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell, placeEnvironment)
                     if not called then return false, callbackErr end
                     placement = result
                 else placement = {cellKey = candidates[i]} end
                 if placement then
                     local ok, err, fatal = self:ValidatePlacement(g, def, placement, reserved)
                     if fatal then return false, err end
-                    if ok and def.contract == "HAZARD" then
-                        local edges, cells = copy(hazardEdges), copy(hazardCells)
-                        for k in pairs(placement.blockedEdges or {}) do edges[k] = true end
-                        for k in pairs(placement.blockedCells or {}) do cells[k] = true end
-                        ok, err = self:ValidateRoutes(g, edges, cells)
+                    if ok then
+                        -- Test the growing combined proof while candidates can
+                        -- still be rejected. A later toll must not strand an
+                        -- earlier pair/cache; a later shortcut may not bypass a toll.
+                        local env={edges=copy(hazardEdges),cells=copy(hazardCells)}
+                        for _,prior in ipairs(plan.instances) do
+                            if prior.contract=="BLOCKADE" then env.edges[prior.placement.edgeKey]=true end
+                        end
+                        for ek in pairs(placement.blockedEdges or {}) do env.edges[ek]=true end
+                        for ck in pairs(placement.blockedCells or {}) do env.cells[ck]=true end
+                        if def.contract=="BLOCKADE" then env.edges[placement.edgeKey]=true end
+                        local routes=copy(env.edges)
+                        for _,prior in ipairs(plan.instances) do
+                            if prior.contract=="BLOCKADE" then routes[prior.placement.edgeKey]=nil end
+                        end
+                        if def.contract=="BLOCKADE" then routes[placement.edgeKey]=nil end
+                        ok,err=self:ValidateRoutes(g,routes,env.cells)
+                        if ok then ok,err,fatal=self:ValidatePlacement(g,def,placement,reserved,env) end
+                        if ok then
+                            for _,prior in ipairs(plan.instances) do
+                                local pd=Registry.Definitions[prior.archetype]
+                                if prior.contract=="BLOCKADE" or pd.dropFloor or pd.pairedWarp then
+                                    ok,err,fatal=self:ValidatePlacement(g,pd,prior.placement,nil,env)
+                                    if not ok then break end
+                                end
+                            end
+                        end
+                        if fatal then return false,err end
                     end
                     if ok then accepted = placement; break end
                     lastErr = err
@@ -278,6 +331,7 @@ function D:Plan(g, options)
             local cellKey = accepted.cellKey or key(accepted.cell)
             reserved[cellKey] = true
             if accepted.destinationCellKey then reserved[accepted.destinationCellKey] = true end
+            if accepted.cacheCellKey then reserved[accepted.cacheCellKey] = true end
             for c in pairs(accepted.blockedCells or {}) do reserved[c] = true end
             if accepted.edgeKey then
                 local e = g.Edges[accepted.edgeKey]
@@ -340,6 +394,24 @@ function D:InteractionCurrent(instance, ply, identity, ps, entity)
     if ply:GetPos():DistToSqr(entity:GetPos()) > 160 * 160 then return false end
     local trace = util.TraceLine({start = ply:EyePos(), endpos = entity:WorldSpaceCenter(), filter = ply, mask = MASK_SOLID})
     return not trace.Hit or trace.Entity == entity
+end
+
+-- Navigation reads current event ownership; no graph topology is changed.
+function D:BlocksEdge(g,edgeKey)
+    if not self.Context or self.Context.graph~=g then return false end
+    for _,i in ipairs(self.Context.plan.instances) do
+        if i.contract=="BLOCKADE" and i.placement.edgeKey==edgeKey
+            and self:IsCurrent(i) and i.state~="resolved" then return true end
+    end
+    return false
+end
+function D:RouteSignature(g)
+    if not self.Context or self.Context.graph~=g then return "" end
+    local out={self.Context.token}
+    for _,i in ipairs(self.Context.plan.instances) do
+        if i.contract=="BLOCKADE" and self:IsCurrent(i) then out[#out+1]=i.id..":"..i.state end
+    end
+    return table.concat(out,"|")
 end
 
 function D:Track(instance, entity)
@@ -580,6 +652,7 @@ local function preview(ply, id, population, seed)
         for _, instance in ipairs(D.Context.plan.instances) do
             local cells={instance.cellKey}
             if Registry.Definitions[instance.archetype].pairedWarp then cells[2]=instance.placement.destinationCellKey end
+            if instance.placement.cacheCellKey then cells[2]=instance.placement.cacheCellKey end
             for endpoint,cellKey in ipairs(cells) do
                 local pos = Builder:CellCenter(D.Context.graph.Cells[cellKey])
                 local label=instance.archetype..(#cells>1 and (" endpoint "..endpoint) or "")

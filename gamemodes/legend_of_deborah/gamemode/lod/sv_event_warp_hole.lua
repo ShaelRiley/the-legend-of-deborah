@@ -58,7 +58,7 @@ LOD.EventRegistry:Register({
     id="warp_hole",contract="UTILITY",production=true,nonblocking=true,pairedWarp=true,repeatable=true,
     minDungeonLevel=W.MinimumDungeonLevel,
     previewNotice="Warp-hole preview is unranked and bypasses the Dungeon Level 5 minimum. Use either cyan endpoint to link and traverse; free repeat trips, one second apart.",
-    Place=function(_,director,g,cell)
+    Place=function(_,director,g,cell,environment)
         if not T:FlatCell(g,cell) or director:ProtectedCells(g)[key(cell)] then return nil end
         for _,c in ipairs(g.CriticalPath or {}) do if key(c)==key(cell) then return nil end end
         local candidates={}
@@ -67,7 +67,7 @@ LOD.EventRegistry:Register({
         LOD.RNG.New(LOD.Seeds.Derive(g.MasterLevelSeed or g.LevelSeed or 1,"warp-partner:"..key(cell)..":v1")):Shuffle(candidates)
         for i=1,math.min(#candidates,director.MaxPlacementAttempts) do
             local placement={cellKey=key(cell),destinationCellKey=candidates[i]}
-            if director:ValidateEndpointPair(g,placement) then return placement end
+            if director:ValidateEndpointPair(g,placement,environment and environment.reserved,environment) then return placement end
         end
     end,
     Validate=function(_,g,placement)

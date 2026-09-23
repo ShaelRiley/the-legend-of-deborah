@@ -75,11 +75,13 @@ end
 
 local function currentNavCache(graph)
     local signature = gateSignature()
+    local director=LOD.EventDirector
+    local events=director and director:RouteSignature(graph) or ""
     local cache = graph.LODPhaseZeroNavCache
-    if cache and cache.signature == signature then return cache end
+    if cache and cache.signature == signature and cache.events==events then return cache end
 
     cache = {
-        signature = signature,
+        signature = signature, events=events,
         trees = {},
         order = {}
     }
@@ -89,6 +91,7 @@ end
 
 local function edgeTraversable(graph, cache, aKey, bKey)
     local edge = Navigator:EdgeKey(aKey, bKey)
+    if LOD.EventDirector and LOD.EventDirector:BlocksEdge(graph,edge) then return false end
     local gateIndex = edge and staticGateMap(graph)[edge] or nil
     if not gateIndex then return true end
     local state = LOD.RunManager and LOD.RunManager.State

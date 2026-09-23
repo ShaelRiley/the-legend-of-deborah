@@ -157,7 +157,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             if ent:GetPos():DistToSqr(eyePos) <= GATE_BODY_DISTANCE_SQR then
                 drawn = drawn + 1
                 local index = math.Clamp(ent:GetGateIndex(), 1, 4)
-                local card = PC.Cards[index]
+                local card = ent:GetGateIndex()==0 and {letter="TOLL",symbol="50 $DEB",color=Color(220,180,65)} or PC.Cards[index]
                 local mins, maxs = gateLocalBounds(ent)
                 local frac = openingFraction(ent)
 
@@ -185,11 +185,15 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
     RenderStats.gateBodiesCulled = culled
 end)
 
+local function gateCard(ent)
+    if ent:GetGateIndex()==0 then return {letter="TOLL",symbol="50 $DEB",color=Color(220,180,65)} end
+    return PC.Cards[math.Clamp(ent:GetGateIndex(),1,4)]
+end
 local function drawGateLabel(ent, card, pos, ang)
     cam.Start3D2D(pos, ang, 0.12)
         draw.RoundedBox(4, -180, -36, 360, 72, Color(18, 20, 22, 242))
         draw.SimpleText(card.letter .. " / " .. card.symbol, "DermaLarge", 0, -9, card.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        draw.SimpleText(ent:GetOpened() and "UNLOCKED" or "USE READER WITH KEYCARD", "DermaDefaultBold", 0, 21,
+        draw.SimpleText(ent:GetOpened() and "UNLOCKED" or (ent:GetGateIndex()==0 and "USE TOLL TERMINAL" or "USE READER WITH KEYCARD"), "DermaDefaultBold", 0, 21,
             ent:GetOpened() and Color(100, 230, 120) or Color(245, 245, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
@@ -201,7 +205,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", functio
         if IsValid(ent) and networkReady(ent) then
             if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
                 drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetGateIndex(), 1, 4)]
+                local card = gateCard(ent)
                 local halfHeight = GATE_VISUAL_HEIGHT * 0.5
                 local z = -halfHeight + GATE_SIGN_HEIGHT
                 if ent:GetGateAxis() == 0 then

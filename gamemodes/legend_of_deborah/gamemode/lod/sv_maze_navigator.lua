@@ -95,6 +95,8 @@ function MazeNavigator:_GateIndexForEdge(graph, aKey, bKey)
 end
 
 function MazeNavigator:CanTraverse(graph, aKey, bKey)
+    local director=LOD.EventDirector
+    if director and director:BlocksEdge(graph,edgeKeyFromKeys(aKey,bKey)) then return false end
     local gateIndex = self:_GateIndexForEdge(graph, aKey, bKey)
     if not gateIndex then return true end
     local state = LOD.RunManager and LOD.RunManager.State
