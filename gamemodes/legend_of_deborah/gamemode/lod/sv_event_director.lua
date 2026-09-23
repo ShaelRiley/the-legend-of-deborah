@@ -379,9 +379,14 @@ function D:Snapshot(ply)
     for _, instance in ipairs(context.plan.instances) do
         local claim, err
         if identity then claim, err = self:Claim(instance, identity) end
+        local def, details = Registry.Definitions[instance.archetype]
+        if identity and def.Snapshot and self:IsCurrent(instance) then
+            local ok, value = pcall(def.Snapshot, instance, ply, identity)
+            details = ok and value or {unavailable = true}
+        end
         if self:IsCurrent(instance) then snapshot.events[#snapshot.events + 1] = {id = instance.id, archetype = instance.archetype,
             contract = instance.contract, cellKey = instance.cellKey, state = instance.state,
-            claimed = claim and claim.state == "resolved" or false, result = claim and claim.result, claimUnavailable = err ~= nil,
+            claimed = claim and claim.state == "resolved" or false, result = claim and claim.result, claimUnavailable = err ~= nil, details = details,
             entityIndex = IsValid(instance.entities[1]) and instance.entities[1]:EntIndex() or 0} end
     end
     return snapshot

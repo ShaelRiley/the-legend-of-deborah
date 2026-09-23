@@ -372,6 +372,16 @@ function E:AcquireWearable(state,item,accept,slot)
     return acquire(self,state,item,accept,slot)
 end
 
+-- Pure bag admission, shared by world pickups and staged event transactions.
+-- Callers may operate on a copied inventory and commit it only after all costs
+-- and claims validate. No native weapon grants, equipment changes or network IO.
+function E:StoreWearable(state,item)
+    if not state or not self:ValidateWearable(item) or state.items[item.id]
+        or not self:CanStore(state,item) then return false end
+    state.items[item.id]=table.Copy(item)
+    return true
+end
+
 function E:Discard(state,id)
     local item=state and state.items[id]
     local def=self:Definition(item)

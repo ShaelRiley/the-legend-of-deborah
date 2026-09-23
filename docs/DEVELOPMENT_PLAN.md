@@ -1,4 +1,92 @@
-# Current checkpoint — Dungeon Events foundation and Debbie Slots
+# Current checkpoint — Chest Key and ordinary locked-loot chest
+
+Built on verified remote main `e380dbbfdcb86cd9f65a8849a8bd99a4f56322e5`;
+no intervening work replaced. Read AGENTS.md, current checkpoint, retained P9 and
+live GDD 00 → 01 → relevant 03/05/06/07/90 rules. Existing normalized Wand rule
+supplies Rogue device-use probability; no new class formula. Under the retained
+author delegation, added and verified LOD-EVENT-CHEST-001 in 05/06/07/90 and HUMAN
+after a fresh file-backed read (no protected controls). P7/P8 and event foundation
+remain regression constraints.
+
+**Implemented:** `locked_chest`, one nonblocking REWARD chest in a validated
+optional side branch, using the existing registry, generation, native Use,
+lifecycle, snapshots and cleanup. Each Steam account gets one ordinary procedural
+wearable per dungeon chest, retaining existing rarity, innate-family opportunity,
+value and dungeon scaling. Rewards are individualized; no shared first-come race.
+This is the ordinary locked-loot chest, not the deferred DFT treasure event.
+
+Chest Keys use the existing finite inventory-stack, world pickup and snapshot
+pipeline: cap9, bag-only, no Equip/Hold/throw action. The independent chest-key-v1
+stream converts 1/16 of remaining eligible healing-potion outcomes after existing
+Card/Feather/Hourglass and bomb decisions; those earlier outcomes and unrelated
+streams stay unchanged. Inventory displays quantity, description and a key icon.
+Shared pure `Equipment:StoreWearable` now owns bag admission for ordinary world
+pickups and detached chest transactions; existing placement/capacity rules remain.
+
+Use spends one Chest Key only when its reward is admitted. A Rogue without a key
+uses one lockpick attempt; sprint-binding + Use chooses lockpicking while carrying
+keys. Actual derived arcaneItemUseChance supplies the current 5% × Combat Level,
+max95%, threshold; one named non-exploding d100. Fighters/Wizards require keys.
+A failed pick spends the account's attempt but no key; later ordinary Use can pay
+with a key. Full inventory or invalid preflight spends neither key nor attempt.
+A successful pick interrupted before reward commitment retains the same success
+and frozen item for free retry; changing Hero Combat Level, replacing a Hero or
+regenerating the same dungeon cannot reroll it.
+
+Key debit and item admission occur on a detached inventory via existing Consume
+and StoreWearable. Revalidate exact Hero state, equipment pointer/content, life
+serial, current dungeon token/graph, role, deployment and clock before the single
+inventory-and-claim commit. No native grants/network callbacks divide that commit.
+Postcommit feedback cannot reopen it. Attempt/reward records live outside the
+replaceable Hero state, in one current-dungeon account map, surviving reconnect,
+Hero replacement and same-dungeon regeneration/seed overrides. New campaign or
+next dungeon gets new entitlement. No currency or DFT transaction is added here.
+Owner-specific snapshots report keys, current Rogue chance, attempted/unlocked
+and claimed state. Existing equipment snapshots keep the HUD key count current.
+
+**Activation:** full population remains OFF (`lod_events_enabled 0`): two playable
+archetypes cannot satisfy exact 1d4 unique selection. Admin/server developer preview
+`lod_event_preview_generate locked_chest` marks unranked, runs the actual generation
+path and prints a locator. Player-admin `lod_chest_key_testkit` supplies one key
+only if none is held, requires normal grant eligibility and marks unranked; it
+mints no funds/DFTs. No VPS or Workshop publication.
+
+Validation: focused locked-chest, foundation event, equipment-runtime, Hourglass,
+inventory UI and generated-manual suites pass. New coverage uses real production
+inventory/RPG/loot/graph/director code, including 1,024 deterministic drop cases,
+finite stacks, full pickup/inventory retry, rejected and throwing staged admission,
+exact one-key debit, normal item validation, genuine Rogue success/failure and
+class thresholds, one-attempt retention, interrupted-success retry, reentrancy,
+stale Hero/inventory/life/role/dungeon, rebuilt-layout reward identity, late joins,
+actual client prompts and developer authorization. Shared native test-boundary
+setup is extracted from the prior event suite; its existing assertions remain.
+Integrated gate: `python3 tools/test_checkpoint_g_integration.py` passes all
+138 suites with zero failures. The first run passed 136/138: updated the old
+healing-drop expectation for the explicit key conversion, and repaired a test-only
+Character Sheet lookup that confused two feats sharing a display name. The latter
+now follows actual offer order, retains exact text checks, and covers duplicate
+names explicitly. Focused reruns and the complete final gate are green.
+
+Native acceptance pending: on gm_flatgrass with two deployed Heroes (one Rogue),
+run `lod_event_preview_generate locked_chest`, redeploy and use the printed locator.
+Run `lod_chest_key_testkit` for the key user. Check bag-only key UI, one key/one item,
+full-bag refusal, Rogue sprint+Use odds/result, independent teammate rewards,
+reconnect/repeated Use and same-dungeon regeneration. Capture console_latest.txt
++ rpg_summary_latest.txt, plus a screenshot for prompt/model defects. Native model,
+collision, Use/controller interaction and co-op acceptance remain unproven;
+earlier native obligations remain open.
+
+Next bounded checkpoint: **DFT treasure chest event**, one unique archetype capable
+of spawning1–2 individually identified chests, each awarding one DFT. Reuse this
+key/lockpick/event spine; establish atomic, verifiable key/DFT settlement through
+existing inventory and CryptoStore authorities, full-collection/no-spend retry,
+per-chest attempt/claim snapshots and lifecycle cancellation. Keep full population
+gated with fewer than four production archetypes. Remaining utility/hazard/blockade
+catalog, Game Master minigames and Hector stay deferred.
+
+---
+
+# Previous checkpoint — Dungeon Events foundation and Debbie Slots
 
 Built on independently verified remote main
 `62bacda9f0736825f68894f1731d09acf5215910`; no newer work replaced.

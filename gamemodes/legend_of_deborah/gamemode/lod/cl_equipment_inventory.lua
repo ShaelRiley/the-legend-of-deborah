@@ -102,7 +102,7 @@ local function tile(parent,id,slot,title,size)
         if item then
             E:DrawItemIcon(item,6,4,math.min(w-12,h-17),C.blue)
             local def=E:Definition(item)
-            local tag=def.throwable and ('x'..item.count) or (equipped and 'WORN' or '')
+            local tag=(def.throwable or def.inventoryConsumable) and ('x'..item.count) or (equipped and 'WORN' or '')
             if def.weapon then tag=equipped and 'ACTIVE' or 'STORED' end
             draw.SimpleText(tag,'DermaDefault',w*.5,h-14,C.ink,TEXT_ALIGN_CENTER)
         elseif self.LODIcon then E:DrawItemIcon(nil,8,6,math.min(w-16,h-12),C.rule,self.LODIcon) end
@@ -139,9 +139,10 @@ function E:InventoryDetails()
     text(self:ItemName(item),'LOD_SheetSubheading')
     text(self:Description(item))
     if def.weapon and LOD.WeaponAppearance then text(LOD.WeaponAppearance:Describe(LOD.WeaponAppearance:ItemStyle(item))) end
-    text(def.throwable and ('Quantity: '..item.count..' / '..def.maxStack) or ('Value: '..self:Value(item)))
+    text((def.throwable or def.inventoryConsumable) and ('Quantity: '..item.count..' / '..def.maxStack) or ('Value: '..self:Value(item)))
     local names={};for _,s in ipairs(def.occupancy or def.slots) do names[#names+1]=self.SlotLabels[s] end
-    text('Fits: '..table.concat(names,', ')..(def.occupancy and ' (both together)' or ''))
+    text(def.inventoryConsumable and 'BAG ONLY — use at a compatible dungeon event.'
+        or ('Fits: '..table.concat(names,', ')..(def.occupancy and ' (both together)' or '')))
     local _,displaced=self:Placement(self.Snapshot,item)
     local old={};for _,other in ipairs(displaced or {}) do if other~=id then old[#old+1]=self:ItemName(self.Snapshot.items[other]) end end
     if #old>0 then text('Equipping replaces: '..table.concat(old,', ')..'. Displaced clothing remains in your inventory.') end
@@ -152,7 +153,7 @@ function E:InventoryDetails()
     if def.weapon then
         if slot then button('STOW WEAPON',function() E:InventoryMove(id,'inventory','weapon') end)
         else button('EQUIP WEAPON',function() E:InventoryMove(id,'weapon') end) end
-    else
+    elseif not def.inventoryConsumable then
         if slot then
             button('UNEQUIP',function() E:InventoryMove(id,'inventory',slot) end)
             if def.throwable then button('HOLD THROWABLE',function() E:Request('activate',id,'throwable');E:Close() end) end
@@ -199,7 +200,7 @@ function E:RefreshInventory()
     local ids,consumables={},{}
     for id,item in pairs(self.Snapshot.items) do
         local def=self:Definition(item)
-        if def and def.throwable then consumables[#consumables+1]=id
+        if def and (def.throwable or def.inventoryConsumable) then consumables[#consumables+1]=id
         elseif def and not self:InventorySlot(id) then ids[#ids+1]=id end
     end
     table.sort(consumables)

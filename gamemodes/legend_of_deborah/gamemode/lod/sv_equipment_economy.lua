@@ -175,7 +175,7 @@ function E:AcquireWorldItem(ply,item,accept,source)
     if not slot or state.items[item.id] or (not bag and #displaced>0 and not accept) then return false end
     local def=self:Definition(item)
     if bag then
-        state.items[item.id]=table.Copy(item)
+        if not self:StoreWearable(state,item) then return false end
         self:Sync(ply)
         return true,self:ItemName(item).." added to inventory"
     end
@@ -238,6 +238,12 @@ function E:PrepareReward(owner,kind,payload,options)
     end
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible and rng:Chance(.35) then
         return "consumable",{itemId=(not self.BombTypes or rng:Chance(.35)) and "stink_bomb" or rng:Pick(self.BombTypes)}
+    end
+    -- Only remaining potion opportunities become keys; existing travel-item and
+    -- bomb rolls retain their exact outcomes and shared RNG consumption.
+    if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible
+        and LOD.RNG.New(LOD.Seeds.Derive(seed,"chest-key-v1")):Chance(1/16) then
+        return "consumable",{itemId="chest_key"}
     end
     if kind=="wearable" and not payload.item then
         return "wearable",{item=generate(nil)}

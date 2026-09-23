@@ -131,7 +131,7 @@ end
 function E:Description(item, compact)
     local def = self:Definition(item)
     if not def then return "" end
-    if def.throwable then return def.description end
+    if def.throwable or def.inventoryConsumable then return def.description end
     local parts = {}
     for _, record in ipairs(item.properties or {}) do
         local property = self.Properties[record.id]

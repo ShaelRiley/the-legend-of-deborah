@@ -957,9 +957,33 @@
         ]
       ],
       "text": [
-        "Dungeon Events are being introduced in stages. The slot machine is available only in the administrator-enabled, unranked single-event preview. Normal random population of 1–4 different events remains disabled while the playable catalog is expanded.",
+        "Dungeon Events are being introduced in stages. The slot machine and locked loot chest are available only in administrator-enabled, unranked single-event previews. Normal random population of 1–4 different events remains disabled while the playable catalog is expanded.",
         "The machine is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine."
+      ]
+    },
+    {
+      "id": "locked-chest",
+      "title": "A key, or a Rogue’s touch",
+      "rows": [
+        [
+          "Chest Key",
+          "Bag-only consumable; stacks up to nine. Press E at a locked chest to use one."
+        ],
+        [
+          "Rogue lockpick",
+          "Press E without a key, or hold Sprint + E to pick while carrying keys."
+        ],
+        [
+          "Success chance",
+          "5% per Combat Level, up to 95%; one ordinary d100 roll."
+        ]
+      ],
+      "text": [
+        "The locked loot chest is currently a developer-preview event. It sits off the required rescue route and offers each Steam account one ordinary procedural wearable per dungeon. It does not award a DFT; the item uses your normal equipment storage.",
+        "Chest Keys can appear among normal loot drops and remain in your bag rather than the Throwable slot. A key is spent only when its chest item successfully enters your equipment storage. A full bag or failed delivery spends no key; make room or retry.",
+        "A Rogue gets one lockpick attempt per chest. Failure uses that attempt but leaves any key intact, and you may later open the chest with a key. A full bag or another rejected preflight does not use the attempt. If a successful pick cannot deliver the item, retry to claim the same reward without another roll or a key.",
+        "The chest remembers your account’s claim and lockpick attempt through reconnects, replacement Heroes, and regeneration of the same dungeon. Those actions cannot grant another attempt or reroll the reward. A new dungeon provides a new opportunity; a new campaign resets the chest record."
       ]
     },
     {

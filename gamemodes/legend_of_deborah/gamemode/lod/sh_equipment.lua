@@ -15,6 +15,9 @@ E.SlotLabels = {head="Head", body="Body", legs="Legs", feet="Feet", left_hand="L
     right_hand="Right Hand", left_arm="Left Arm Accessory", throwable="Throwable"}
 E.WeaponClass = "weapon_lod_throwable"
 E.Definitions = {
+    chest_key = {name="Chest Key", slots={}, inventoryConsumable=true, maxStack=9,
+        model="models/props_c17/TrapPropeller_Lever.mdl",
+        description="Unlock one dungeon loot chest. Carried in your bag; used only at a chest. Up to 9 keys; no key is spent unless the reward fits."},
     healing_potion = {name="Healing Potion", slots={"throwable"}, throwable=true, drinkable=true,
         effect="heal", amount=25, maxStack=3, model="models/props_junk/garbage_glassbottle003a.mdl",
         description="Drink to restore up to 25 HP, or throw to heal the first living allied Hero hit. One use; no Magic cost."}
@@ -40,7 +43,7 @@ end
 
 function E:AddConsumable(state, definitionId, count)
     local def = self.Definitions[definitionId]
-    if not state or not def or not def.throwable then return false end
+    if not state or not def or not (def.throwable or def.inventoryConsumable) then return false end
     count = tonumber(count)
     if not count or count < 1 or count ~= math.floor(count) then return false end
     local item = state.items[definitionId]
@@ -48,7 +51,7 @@ function E:AddConsumable(state, definitionId, count)
     -- Pickups are atomic: a full stack leaves the pickup available to its owner.
     if before + count > def.maxStack then return false end
     state.items[definitionId] = {definitionId=definitionId, count=before + count}
-    if not self:Equipped(state, "throwable") then self:Equip(state, definitionId, "throwable") end
+    if def.throwable and not self:Equipped(state, "throwable") then self:Equip(state, definitionId, "throwable") end
     return true
 end
 

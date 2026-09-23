@@ -464,7 +464,7 @@ function Loot:_PreparedRewardValid(kind, payload)
     if kind == "consumable" then
         local equipment = LOD.Equipment
         local def = equipment and equipment.Definitions and equipment.Definitions[payload.itemId]
-        return def ~= nil and def.throwable == true
+        return def ~= nil and (def.throwable == true or def.inventoryConsumable == true)
     end
     if kind == "weapon" then return WEAPONS[payload.weaponClass] ~= nil end
     if kind == "dft" then return payload.token ~= nil end

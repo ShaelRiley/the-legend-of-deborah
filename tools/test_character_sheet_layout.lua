@@ -121,17 +121,15 @@ local function separated(a,b)
 end
 local function verifyDraft(draft,action)
     local cards={}
-    for _,feat in ipairs(draft.offers) do
-        local title
-        for _,node in ipairs(nodes) do
-            if node.valid and node.kind=='DLabel' and node.text==feat.displayName then
-                for _,child in ipairs(node.parent.children) do
-                    if child.kind=='DButton' and child.text==action then title=node end
-                end
-            end
-        end
+    -- Different canonical feats may share a display name (e.g. Spellbreaker).
+    -- Production builds controls in offer order; name-only lookup selected the
+    -- last namesake and compared the wrong canonical effect under pairs order.
+    local choices=buttons(action)
+    assert(#choices==#draft.offers,'Draft choice count differs from stored offers')
+    for index,feat in ipairs(draft.offers) do
+        local card=choices[index].parent
+        local title=nodeWithText(feat.displayName,card)
         assert(title,'Full feat title missing from the correct draft')
-        local card=title.parent
         cards[#cards+1]=card
         within(card,card.parent)
         local effect=assert(nodeWithText(feat.effect,card),'Canonical effect missing or abbreviated')
@@ -172,6 +170,21 @@ local function dto(def)
     return {featId=def.featId,displayName=def.displayName,effect=def.effectParams.description,
         eligibilityText=def.eligibilityText}
 end
+-- Reproduce the former intermittent failure deterministically using two real
+-- same-name feats with distinct effect text, independently asserted per card.
+local namesakes
+for _,a in ipairs(entries) do
+    for _,b in ipairs(entries) do
+        if a.featId~=b.featId and a.displayName==b.displayName
+            and a.effectParams.description~=b.effectParams.description then namesakes={dto(a),dto(b)};break end
+    end
+    if namesakes then break end
+end
+assert(namesakes,'Same-name canonical feat regression fixture missing')
+local duplicateNames=table.Copy(snapshot)
+duplicateNames.featDraft.offers=namesakes
+open(duplicateNames)
+verifyDraft(duplicateNames.featDraft,'CHOOSE FEAT')
 local resolutions={{640,480},{800,600},{980,720},{1024,768},{1280,800},{1920,1080}}
 local seenOne,seenTwo,seenThree=false,false,false
 for _,resolution in ipairs(resolutions) do

@@ -56,13 +56,15 @@ end
 for _,family in ipairs(E.FamilyOrder) do assert(families[family],'Natural wearable family: '..family) end
 for _,family in ipairs(E.InnateFamilyOrder or {}) do assert(families[family],'Natural innate family: '..family) end
 -- Cards reserve 1/8, Feathers 1/8 of the remainder, then Hourglasses 1/16.
--- The healing/bomb mix receives 735/1024 of these 300 opportunities. Scale its
--- existing minimum-coverage bounds by the new 15/16 remainder, not the rolls.
-assert((potions.healing_potion or 0)>120*15/16 and (potions.stink_bomb or 0)>15*15/16,
+-- The healing/bomb mix receives 735/1024 of these 300 opportunities. Keys
+-- convert 1/16 of healing outcomes only, after bombs have already returned.
+-- Keep the existing bomb bound; scale the prior healing bound by 15/16 again.
+assert((potions.healing_potion or 0)>120*(15/16)^2 and (potions.stink_bomb or 0)>15*15/16,
     'Eligible potion drops include Healing Potions and Stink Bombs')
 assert((potions.summon_card or 0)>10 and (potions.resurrection_feather or 0)>10,
     'Final enemy-drop path exposes both travel and resurrection consumables')
 assert((potions.magic_hourglass or 0)>3,'Final enemy-drop path exposes rare Hourglasses')
+assert((potions.chest_key or 0)>0,'Final enemy-drop path exposes finite Chest Keys')
 Loot.SpawnPickup=originalSpawn
 
 -- Generator or payload failure is contained before a native entity is created.
@@ -76,4 +78,4 @@ assert(Loot:SpawnPickup('drop-owner',Vector(),'wearable',{}, {equipmentEligible=
 E.PrepareReward=prepare
 assert(creates==0,'Invalid rewards cannot cross the native entity-creation boundary')
 
-print('EQUIPMENT_DROP_MIX_PASS: final override exposes wearables, potions, Cards/Feathers/Hourglasses, equipment identity and crash-safe rejection')
+print('EQUIPMENT_DROP_MIX_PASS: final override exposes wearables, potions, Cards/Feathers/Hourglasses/Keys, equipment identity and crash-safe rejection')
