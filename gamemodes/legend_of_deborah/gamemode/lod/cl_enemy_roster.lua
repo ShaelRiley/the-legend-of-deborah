@@ -10,7 +10,8 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65),
     caromer=Color(90,210,240),reeler=Color(235,180,95),forker=Color(150,240,180),
     wirewright=Color(80,220,235),snarer=Color(100,165,255),cordon=Color(245,150,60),
-    pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45)}
+    pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
+    reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
@@ -286,6 +287,64 @@ function V:Trap(e)
         line(center-up,center-side);line(center-side,center+up)
     end
 end
+-- Frozen melee footprints convey spacing, not a target-following prediction.
+-- Drubber's outer beat remains visible during the first warning; Fencer's
+-- dashed retreat is movement intent, followed by the actual thrust footprint.
+-- Geometry and fixed-deadline countdowns are identical at either effects level.
+function V:Melee(e)
+    local mode=e:GetNW2Int("LOD_MeleeMode",0);local now=CurTime()
+    if mode<1 or mode>3 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or e:GetNW2Int("LOD_RosterAttack",0)==0 or now>=e:GetNW2Float("LOD_MeleeUntil",0)
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local origin=e:GetNW2Vector("LOD_MeleeOrigin",e:GetPos())+Vector(0,0,3)
+    local dir=e:GetNW2Vector("LOD_MeleeDirection",Vector(1,0,0))
+    local side=Vector(-dir.y,dir.x,0)
+    local ready=e:GetNW2Float("LOD_MeleeReady",0)
+    local color=({colors.reaper,colors.drubber,colors.fencer})[mode]
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
+    local function countdown(deadline,duration)
+        if now>=deadline then return end
+        local left=origin+Vector(0,0,52)-side*24
+        line(left,left+side*(48*math.Clamp((deadline-now)/duration,0,1)),3)
+    end
+    local function sector(radius,halfAngle,segments,width)
+        local function point(angle)
+            return origin+(dir*math.cos(angle)+side*math.sin(angle))*radius
+        end
+        local half=math.rad(halfAngle)
+        line(origin,point(-half),width)
+        for i=1,segments do
+            line(point(-half+2*half*(i-1)/segments),point(-half+2*half*i/segments),width)
+        end
+        line(point(half),origin,width)
+    end
+    if mode==1 then
+        sector(144,90,12,now<ready and 2 or 4)
+        countdown(ready,1.1)
+    elseif mode==2 then
+        local second=e:GetNW2Float("LOD_MeleeSecond",0)
+        if now<ready then sector(112,30,8,2) end
+        sector(184,30,8,now<ready and 1 or (now<second and 2 or 4))
+        countdown(now<ready and ready or second,now<ready and 1 or .85)
+    elseif now<ready-.9 then
+        local start=e:GetNW2Vector("LOD_MeleeStart",origin-Vector(0,0,3))+Vector(0,0,3)
+        local delta=origin-start
+        for i=0,3 do line(start+delta*(i/4),start+delta*((i+.5)/4),1) end
+        local tip=origin+dir*16
+        line(origin,tip+side*10,1);line(origin,tip-side*10,1)
+        local up=Vector(0,0,10);local center=origin+Vector(0,0,14)
+        line(center+up,center+side*10,1);line(center+side*10,center-up,1)
+        line(center-up,center-side*10,1);line(center-side*10,center+up,1)
+    else
+        local endpoint=origin+dir*240;local width=now<ready and 2 or 4
+        line(origin-side*24,endpoint-side*24,width)
+        line(endpoint-side*24,endpoint+side*24,width)
+        line(endpoint+side*24,origin+side*24,width)
+        line(origin+side*24,origin-side*24,width)
+        countdown(ready,.9)
+    end
+end
 function V:Draw(e,size)
     self:Support(e)
     self:Pursuit(e)
@@ -296,6 +355,7 @@ function V:Draw(e,size)
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
     if id=="wirewright" or id=="snarer" or id=="cordon" then self:Trap(e);return end
+    if id=="reaper" or id=="drubber" or id=="fencer" then self:Melee(e);return end
     local origin=e:GetNW2Vector("LOD_RosterOrigin",e:GetPos())
     local aim=e:GetNW2Vector("LOD_RosterAim",origin)
     local range=e:GetNW2Float("LOD_RosterRange",280)

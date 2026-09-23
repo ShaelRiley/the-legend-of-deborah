@@ -3,6 +3,9 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    reaper={name="Reaper",model="models/zombie/classic.mdl",baseHP=55,speed=140,damage=5.5,range=144,warning=1.1,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="sweep",color=Color(135,190,125),dice={1,6,2}},
+    drubber={name="Drubber",model="models/zombie/fast.mdl",baseHP=60,speed=125,damage=5.5,range=112,warning=1,recovery=2.8,threat=4,activity=ACT_RUN,kind="melee",melee="double",color=Color(220,160,70),dice={1,6,2}},
+    fencer={name="Fencer",model="models/police.mdl",baseHP=35,speed=180,damage=5.5,range=144,warning=.9,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="feint",color=Color(195,155,235),dice={1,6,2}},
     nodule={name="Nodule",model="models/barnacle.mdl",baseHP=30,speed=0,damage=3.5,range=384,warning=0,recovery=1,threat=2.5,activity=ACT_IDLE,kind="gas",stationary=true,dice={1,4,1}},
     climber={name="Climber",model="models/zombie/fast.mdl",baseHP=14,speed=205,damage=3.5,range=225,warning=.4,recovery=.75,threat=1.8,activity=ACT_RUN,kind="climber",color=Color(255,35,180),dice={1,4,1}},
     flamer={name="Flamer",model="models/combine_soldier.mdl",baseHP=40,speed=140,damage=13.5,range=280,warning=1,recovery=2.5,threat=3,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="flame",color=Color(240,65,55),dice={3,6,3}},
@@ -80,7 +83,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -123,7 +126,8 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and not (a.released and a.kind=="beam") then self:Cancel(e) end
+    if a and a.melee then self:Finish(e,CurTime())
+    elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
 function E:Damage(e,p,event,kind)
@@ -140,7 +144,7 @@ function E:Damage(e,p,event,kind)
     local magic=kind=="arc" or kind=="beam" or (d and d.contentId~=nil)
     local rider=(kind=="flame" and "immolated") or (kind=="venom" and "poisoned") or nil
     event.riders=event.riders or setmetatable({}, {__mode="k"})
-    local tags={physical=not magic,magic=magic,melee=kind=="dive" or kind=="climber",
+    local tags={physical=not magic,magic=magic,melee=kind=="dive" or kind=="climber" or kind=="melee",
         element=kind=="flame" and "fire" or (magic and "raw" or nil),
         attackEvent=c.attackEvent,damageContract=c,authoredScale=c.scale,
         riderStatusId=rider,riderConsumedTargets=event.riders}
@@ -172,6 +176,7 @@ function E:Begin(e,p,now,override)
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
     if d.trap then return self:BeginTrap(e,p,now) end
+    if d.melee then return self:BeginMelee(e,p,now) end
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
     local a={kind=override.kind or d.kind,target=p,origin=origin,aim=aim,ready=now+(override.warning or cfg.burstTelegraph),
         range=override.range or cfg.fireRange,
@@ -203,6 +208,12 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
+    if attack and attack.melee then
+        e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
+        e.LODNextAttack=e.LODMeleeRecovery.expires
+        LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
+        return
+    end
     local rate=LOD.RPGAbilityRules and LOD.RPGAbilityRules:RateOfFireMultiplier(e) or 1
     e.LODNextAttack=now+e.LODConfig.burstCooldown/math.max(.1,rate)
     e:_SetActivity(ACT_IDLE)
@@ -240,6 +251,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.melee then return self:StepMelee(e,a,now) end
     if a.trap then return self:StepTrap(e,a,now) end
     if a.patternLife and (not self:ValidLife(a.patternLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then self:Finish(e,now);return end
@@ -309,6 +321,13 @@ function E:Tick(e)
     end
     self:Prepare(e)
     if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemyReactions then LOD.EnemyReactions:Cancel(e,true) end;if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;motion:Stop(e);return true end
+    if e.LODMeleeRecovery then
+        local recovery=e.LODMeleeRecovery
+        if self:ValidSourceLife(recovery.life) and now<recovery.expires then
+            motion:Stop(e);e:_SetActivity(ACT_IDLE);return true
+        end
+        e.LODMeleeRecovery=nil
+    end
     if d.reaction and LOD.EnemyReactions and LOD.EnemyReactions:Tick(e,now) then return true end
     if d.support and LOD.EnemySupport and LOD.EnemySupport:Tick(e,now) then motion:Stop(e);return true end
     if d.kind=="climber" then return LOD.Climber:Tick(e,s,now) end
@@ -357,7 +376,7 @@ function E:Tick(e)
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -421,6 +440,9 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        reaper={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die1.wav","npc/zombie/foot1.wav"},
+        drubber={"npc/fast_zombie/fz_pain1.wav","npc/fast_zombie/fz_die1.wav","npc/fast_zombie/foot1.wav"},
+        fencer={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         climber={"npc/fast_zombie/fz_pain1.wav","npc/fast_zombie/fz_die1.wav","npc/fast_zombie/foot1.wav"},
         flamer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         bigcrab={"npc/headcrab/pain1.wav","npc/headcrab/die1.wav","npc/headcrab/alert1.wav"},

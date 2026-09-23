@@ -1031,6 +1031,28 @@
       ]
     },
     {
+      "id": "enemy-melee-spacing",
+      "title": "Respect the second swing",
+      "rows": [
+        [
+          "Reaper",
+          "The green-tinted zombie marks a broad semicircle in front of itself for 1.1 seconds, then sweeps it once. Back beyond the arc, circle behind it, take cover or interrupt. Its facing stays fixed through the warning; exploit the 2.5-second stationary recovery."
+        ],
+        [
+          "Drubber",
+          "The ochre fast zombie marks two nested, narrow attack sectors. After one second it strikes the inner sector; 0.85 seconds later it strikes the longer outer sector along the same fixed direction. Sidestep and wait for both beats. Rushing straight back after the first swing can put you into the second. It then recovers for 2.8 seconds."
+        ],
+        [
+          "Fencer",
+          "The pale-violet Metrocop shows a dashed retreat path and steps backward, then warns for 0.9 seconds before a long, narrow thrust from its marked endpoint. Resist chasing straight after it; move sideways out of the rectangle. Obstructing the retreat or interrupting the warning stops the attack. It recovers for 2.5 seconds."
+        ]
+      ],
+      "text": [
+        "Reapers appear with Soldiers, Drubbers with Runners, and Fencers with Shamblers. Their companions can contest the space you need to escape, so read the entire encounter.",
+        "All three make physical melee attacks under ordinary damage and defense rules. Interrupting them ends the commitment. Held stops a Fencer’s backstep but permits stationary strikes; Muted does not stop physical attacks. The fixed shapes and beat countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

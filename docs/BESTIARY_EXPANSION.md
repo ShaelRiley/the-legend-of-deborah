@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B6
+# Bestiary expansion — frozen baseline through B7
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B6 add eighteen identities: **36/63**, or **18/45 additions**; **27 remain**.
+B1–B7 add twenty-one identities: **39/63**, or **21/45 additions**; **24 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -383,3 +383,68 @@ Cordon12/8/15/12/13/7;70/30/0;d10;55;7. No private scaling or reward authority.
 
 The live GDD rule is LOD-BESTIARY-B6-001 in03/05/07. Automated validation and
 pending native acceptance are recorded separately in DEVELOPMENT_PLAN.md.
+
+## B7 — melee spacing-and-commitment cohort
+
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `reaper` / Reaper | Green zombie freezes a wide frontal semicircle for 1.1s, then sweeps once. Retreat, circle behind, use cover or interrupt. | Reaper + Soldier. |
+| `drubber` / Drubber | Ochre fast zombie marks two nested narrow sectors: short strike after 1s, farther strike 0.85s later along the same frozen direction. Sidestep and respect the second beat. | Drubber + Runner. |
+| `fencer` / Fencer | Pale-violet Metrocop backsteps within a fixed 0.6s, then warns 0.9s before a narrow thrust from the frozen retreat endpoint. Avoid chasing directly; sidestep, obstruct or interrupt. | Fencer + Shambler. |
+
+Sector2+ arena/ambush templates retain one specialist, ordinary companion
+scaling, legal physical placement, safe/objective/transition exclusions, bounded
+fallback and the existing hostile ceiling. Append ordinals; add no wandering
+weights, director rewrite or new bodies. Models zombie/classic, zombie/fast and
+police; RGB135,190,125 /220,160,70 /195,155,235. Existing assets only.
+
+All use physical melee1d6+2 through canonical damage, Block, Dodge, feats,
+XP and loot. A beat shares one roll across at most32 captured Hero incarnations,
+with one settlement each. Drubber's second beat is a separate attack. Frozen
+tells do not track hidden or moving Heroes; late joins/revivals cannot inherit
+a warning. Bind exact source/primary-Hero progression/status-life and run, graph,
+progression, campaign. Same-seed replacement, removal, death, freeze/failure/clear,
+attack prohibition, hit-stun, morale flight and invalid geometry retire work.
+Held permits stationary strikes but forbids Fencer's backstep; Muted permits
+physical melee. One pulse's lethal primary hit cannot skip other admitted Heroes.
+
+Reference HP/speed/acquisition/warning/recovery/threat: Reaper55/140/144/1.1s/
+2.5s/3.5; Drubber60/125/112/1s/2.8s/4; Fencer35/180/144/0.9s after retreat/
+2.5s/3.5. Reaper radius144,half-angle90; Drubber112 then184,half-angle30,
+0.85s between beats; Fencer nominal retreat80 (minimum64,maximum4 lateral),
+thrust240 and half-width24. Feet-height tolerance−4..72; current LOS and exact
+cell prevent wall/floor leakage. Beat grace0.2s; missed deadlines forfeit.
+Stationary recovery is fixed, unaffected by rate-of-fire, and further hits cannot
+shorten or extend it. Failed preflight retries/repositions after0.5s.
+
+Movement remains HostileMotionV2 with ordinary canonical effective speed,
+50ms maximum movement step and shared25ms service. Validate full remaining
+retreat with scaled16×72 hull (size0.33..1.33), same legal cell, canonical
+CellFloorPoint and native floor support. At most one planning/service hull plus
+two support probes; source/endpoint floor+16 to−12 relative to actor origin,
+normal.z>=0.7,within4 of canonical floor. Source starts at floor+2±4; stationary
+drift>4 cancels. A stalled/slow retreat must reach within4 by0.6s or forfeit;
+no teleport, catch-up loop, independent movement/control/damage/reward owner.
+Full/reduced ground tells and countdowns cull at2400 units.
+
+Progression STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die;
+baseXP;morale: Reaper14/10/13/8/10/8;75/25/0;d10;55;6.
+Drubber15/8/14/7/10/8;85/15/0;d10;55;7.
+Fencer10/16/9/12/11/10;20/80/0;d8;50;5. All usesMagic=false, with
+canonical usable physical feats, independent seeded generation and rewards.
+
+Counts describe implementation, not native acceptance. See DEVELOPMENT_PLAN.md
+for measured gates and retained Source checks.
+
+## Next checkpoint — B8: volatile-and-remains cohort
+
+Provisional two-identity scope: a clearly warned post-defeat burst and a
+corpse-consuming scavenger. Reconcile Deadcrab's living suicide fuse, ordinary
+death/XP/drop settlement, corpse lifetime and support healing before authoring
+mechanics. These proposals are not game law. Target41/63 only if both create
+distinct decisions and validate through production; prefer a coherent two-enemy
+checkpoint to a cosmetic third. Prove exactly-once rewards, finite delayed work,
+cover/counterplay, bounded corpse queries/claims and exact dungeon/life scopes;
+no corpse farming, chained unbounded explosions or body proliferation.
+Retain further roster expansion and whole-phase campaign-aware ecology before
+Big Loot, Events, the three audits and human playtest.

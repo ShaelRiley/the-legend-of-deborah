@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B6 builds on verified remote `main` `0616d9d0582687e6112152737d59964f8aedca6d`,
-`Add Bestiary projectile-pattern cohort with bounded trajectories`.
-The current B6 checkpoint below is the newest implementation record. Its exact
+B7 builds on verified remote `main` `0ceeed48a6cb703711716ec31951eae2fdf5cf96`,
+`Add Bestiary trap-and-escape cohort with bounded lifetimes`.
+The current B7 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,75 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B6: trap-and-escape cohort
+## Current checkpoint — B7: melee spacing-and-commitment cohort
+
+Built on verified remote `0ceeed48a6cb703711716ec31951eae2fdf5cf96`.
+**Reaper, Drubber and Fencer** bring the implemented normal roster to **39/63**:
+frozen baseline18, **21/45 additions banked**, **24 remain**.
+
+**Playable scope:** Reaper commits a broad frontal sweep; Drubber commits two
+fixed narrow strikes with a real escape interval; Fencer makes a bounded,
+non-damaging backstep before a fixed narrow thrust. Retreat/rear approach,
+waiting out both beats, and refusing a straight chase are distinct responses.
+Production compositions pair them with Soldier, Runner and Shambler respectively
+in sector2+ arena/ambush. Canonical generated classes, usable physical feats,
+HP, XP and ordinary rewards remain authoritative. Exact tuning and frozen count
+are in BESTIARY_EXPANSION.md; design is read-back verified in live GDD03/05/07
+under LOD-BESTIARY-B7-001. Manual151 chapters/31 transport chunks regenerated.
+
+**Authorities/lifecycle:** no director rewrite, projectile/native bodies, new
+status clock, damage or reward owner. EnemyRoster's service owns finite frozen
+commitments; MotionV2 owns Fencer's ordinary-speed backstep, with scaled native
+swept hull, cell/gate/transition and floor-support preflight. A slow/blocked
+retreat forfeits instead of teleporting or extending the tell. Each beat has one
+canonical physical melee roll and one settlement per admitted Hero. Drubber's
+second beat owns a new attack contract. Exact source/target progression and
+status-life plus run/graph/progression/campaign retire stale work, including
+same-seed replacements. Captured participants prevent late-join/revival warning
+inheritance. One pulse's own lethal primary hit cannot skip other Heroes.
+Stationary recovery is finite and cannot be shortened/extended by further hits.
+Held permits stationary strikes but cancels the backstep; Muted permits melee.
+
+**Validation:** targeted behavioral, production and full/reduced presentation
+gates pass. Behavioral proof includes real interleaved roster AI/service and
+MotionV2 retreat, frozen counterplay, missed-deadline forfeiture, scaled hull
+obstruction, changed native support/cover, exact lifetime matrix, Held/Muted/
+morale, multiplayer admission and canonical roll→GM mitigation→native-doubled
+HP application. Production proves48 generated actor seeds, replay after unrelated
+RNG consumption, every granted feat's capability eligibility, normal HP/XP once,
+real unified spawn/variance, ceiling preflight, mixed old/new stable ordinals,
+retry idempotence, safe/objective/transition/hull admission and bounded fallback.
+512 deterministic plans/4935 encounters across32 mazes,parties1–4,dungeons1–5:
+Reaper planned/legal/early36/36/9; Drubber39/38/11; Fencer55/54/12. All earlier
+cohort exposure thresholds remain green. One fresh canonical integration run
+passed **all169 suites with zero failures**, including prior cohorts, protected
+combat/status/progression, bosses/finale/succession/Abundance/cash, repository
+Lua syntax, release wiring and manual readers/transport. No broad rerun needed.
+
+**Native checks retained:** after the ordered phases,on gm_flatgrass observe
+paired encounters, practical sweep/rear spacing, both Drubber beats, Fencer
+backstep/thrust, scaled zombie/Metrocop poses, audio and full/reduced tells.
+Test actual hull/cover/gate/false-floor changes, interruptions, slow/Held
+retreat, death/revival/disconnect, freeze/reset/same-seed rebuild,1–4-player
+networking and health/reward balance. Preserve all prior cohorts,bosses,
+Gordon→Hector→Deborah,sole staging successor,Abundance andLevel21 cash. Native
+entities/collision/HP application/rendering/networking remain boundary doubles;
+automated evidence is not Source observation or acceptance. Capture
+console_latest.txt + rpg_summary_latest.txt at the scheduled playtest.
+
+## Next checkpoint — B8: volatile-and-remains cohort
+
+Provisional bounded two-identity scope: a clearly warned post-defeat burst and a
+corpse-consuming scavenger. Reconcile Deadcrab's living suicide fuse, ordinary
+death/XP/drop settlement, corpse lifecycle and support healing before authoring
+design. Target41/63 only if two distinct production identities validate; do not
+add a cosmetic third to meet a quota. Prove readable escape/cover, exactly-once
+rewards, finite delayed work and bounded corpse queries/claims with exact scope.
+No corpse farming, unbounded explosion chains or body proliferation. Retain
+remaining roster expansion and whole-phase campaign-aware ecology; do not begin
+Big Loot or Events.
+
+## Previous checkpoint — B6: trap-and-escape cohort
 
 Built on verified remote `0616d9d0582687e6112152737d59964f8aedca6d`.
 **Wirewright, Snarer and Cordon** bring the normal roster to **36/63**:
@@ -143,7 +211,7 @@ Hero health/reward balance and networking. Preserve all prior cohorts,bosses,
 Gordon→Hector→Deborah,sole Deborah staging succession,Abundance andLevel21 cash.
 Evidence:console_latest.txt + rpg_summary_latest.txt; runtime acceptance pending.
 
-## Next checkpoint — B7: melee spacing-and-commitment cohort
+## Historical proposal — B7 (implemented above): melee spacing-and-commitment cohort
 
 Complete one coherent cohort,provisionally a lateral melee sweep,a two-beat
 strike with a real escape window,and a backstep-then-thrust specialist. These
