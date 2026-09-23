@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B2 builds on verified remote `main` `4e20da5f93d06b9707c93979bb191915a937c503`,
-`Add Bestiary control cohort and freeze expansion baseline` (B1:157 suites).
-The current B2 checkpoint below is the newest implementation record. Its exact
+B3 builds on verified remote `main` `660c42284b0fae4073380214502bcdc731b17558`,
+`Add Bestiary ally-support cohort with canonical lifecycle`.
+The current B3 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,100 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B2: prison support detail
+## Current checkpoint — B3: flank and pursuit cohort
+
+Built on verified remote `660c42284b0fae4073380214502bcdc731b17558`.
+**Pincer, Harrier and Waylayer** bring the implemented normal roster to **27/63**:
+frozen baseline18, **9/45 additions banked**, **36 remain**. Every addition owns
+canonical progression/class/usable-feat/HP/XP and ordinary unified production
+spawning. No cosmetics, bosses, events or friendly summons enter the count.
+
+**Playable scope:** Pincer signals then takes a bounded alternate graph approach,
+or a hull-clear two-leg local flank around the observed Hero lane. Harrier fires
+one warned physical projectile before withdrawing to reachable cover or greater
+separation. Waylayer warns for1s at a reachable escape junction adjacent to the
+observed Hero cell, walks there and holds1.5s. Shared physical1d6+2 fire remains
+dodgeable. Production pairs are Pincer+Soldier, Harrier+Shambler, Waylayer+Runner;
+sector2+ arena/ambush admission, at most one specialist, no added wandering weight.
+
+**Authorities/lifecycle:** one EnemyPursuit policy extends EnemyRoster; Navigator
+owns graph edges/waypoints and MotionV2 owns locomotion. Selection uses a visible
+acquired Hero and freezes its observed position; hidden movement never updates
+routes. Search32 nodes/depth4, at most8 candidate routes; sorted choices consume
+no shared RNG. Full legal-edge and scaled-hull checks prevent unsafe/objective/
+transition travel, closed-gate bypass and displaced-actor shortcuts. Local flank
+requires64 lateral and32 forward movement inside its source cell. Waylayer does
+not create a damaging marker. Exact run/graph/progression/campaign and source/
+Hero progression+life bindings retire stale route/attack work, including same-seed
+replacement. Held cancels movement while allowing canonical physical fire;
+released bullets retain their finite trajectory through source hit-stun/Held.
+The fixed6–16s deadline uses route distance/current canonical movement speed,
+plus1s and authored hold, without later extension. Ending/cancelling a commitment
+starts8s cooldown, preserving time to fire after a long route.
+
+**Findings repaired before closure:** loop-only Pincer admission produced only
+8 legal/0 early appearances from66 planned; merely increasing route depth did
+not solve exposure. The bounded local flank supplies actual behavior in ordinary
+maze rooms without lowering distribution thresholds. A fixed6s route timeout
+could not complete the1536-unit square; the computed hard-capped deadline now
+passes real MotionV2 traversal. Cooldown was moved to commitment end to prevent
+endless immediate reflanking. Life/charge/movement validation was separated so
+Held does not suppress physical attacks or erase already released projectiles.
+
+**Design/manual:** live GDD00→01→02/03/05/07 governed this checkpoint.
+LOD-BESTIARY-B3-001 records implementation and tuning in03/05/07; roadmap summaries
+advance to B4. Canonical manual147 chapters/31 transport chunks documents tactics,
+with split/backward chevrons and the junction cross/square retained in reduced
+effects. BESTIARY_EXPANSION.md is the frozen ledger; NEXT_DEVELOPMENT_HANDOFF.md
+contains the complete B4 continuation prompt.
+
+**Validation:** one required `python3 tools/test_checkpoint_g_integration.py`
+run passed **all159 suites, zero failures**. No broad rerun was needed. This
+fresh gate includes B1/B2, B3, production distribution, progression/rewards,
+status/combat, all retained boss/finale/succession/Abundance/cash regressions,
+manual transport/readers and repository Lua syntax/release wiring. Targeted B3
+proofs include48 generated actor seeds, actual unified spawn→variance→progression,
+class/usable feats/HP/XP and single settlement; graph and local two-leg flanking,
+cover preference, adjacent escape junction, bounded search/route candidates,
+canonical gate/event blockades and physical obstruction; warnings, exact
+incarnation/dungeon/campaign retirement, interruption/displacement/freeze/expiry;
+actual roster shot/service/finite projectile limits and real MotionV2 completion
+of both Pincer paths. Held permits physical fire while cancelling movement;
+released bullets survive ordinary hit-stun/invisibility and expire on life reset.
+Client B3 glyph/destination/expiry tests pass at full/reduced effects.
+
+Production sampling passed **512 plans /4923 encounters**,32 generated mazes,
+parties1–4 and dungeons1–5. Planned/legal/early: **Pincer66/64/16,
+Harrier89/87/25, Waylayer64/58/12**. All prior cohort exposure thresholds remain
+passing; every B3 composition has its intended companion and one specialist.
+Canonical manual147 chapters/31 chunks and `git diff --check` pass. Live GDD
+B3 amendments and all updated roadmap summaries were read-back verified.
+Native traces/entities/networking remain test doubles; this is automated evidence.
+
+**Native checks retained:** after the ordered expansions and audits, on
+`gm_flatgrass` observe actual generated compositions: Pincer alternate/local
+flank and firing recovery; Harrier warned shot then clear retreat/cover;
+Waylayer marked escape junction, warning, walk and hold. Verify native scaled
+hull/container/gate collision, attack/route interruption, full/reduced glyphs,
+models/animation/audio, real network behavior and1–4-player balance. Exercise
+death/revival/reconnect, freeze/reset/same-seed replacement and ordinary XP/loot.
+Capture console_latest.txt + rpg_summary_latest.txt. Retain prior B1/B2, all bosses,
+Hector/finale, sole Deborah succession, Abundance and Level21 checks. Headless
+trace/entity doubles do not establish Source runtime acceptance.
+No VPS deployment or Steam Workshop publication.
+
+## Next checkpoint — B4: self-defense and reaction cohort
+
+Proposed directional self-guard, interruptible warned retaliation and legible
+wounded-state aggression; target30/63 subject to genuinely distinct mechanics.
+Reconcile canonical Block/mitigation, damage events, statuses, morale and actor
+lifetimes. Differentiate from Bulwark support and numerical variants. Supply
+complementary production compositions, explicit progression and finite lifecycle
+proofs. No absolute immunity, unavoidable damage, duplicated settlement or extra
+bodies. These proposed roles are not implemented. Finish B4 only next; retain the
+full Bestiary ecology exit before Big Loot, Events and the three audits.
+
+## Previous checkpoint — B2: prison support detail
 
 Built on verified remote `4e20da5f93d06b9707c93979bb191915a937c503`.
 **Stitcher, Bulwark and Cantor** bring the implemented normal roster to **24/63**:
@@ -144,19 +237,6 @@ only, not ally support; use production compositions for support acceptance.
 Capture console_latest.txt + rpg_summary_latest.txt. Retain all prior B1,
 Hector/finale, sole Deborah succession, Abundance and Level21 checks.
 No VPS deployment or Workshop publication.
-
-## Next checkpoint — B3: flank and pursuit cohort
-
-Complete three distinct production identities: legal alternate-route flanker,
-committed attack-and-retreat skirmisher and warned escape-junction interceptor.
-These roles are proposed, not implemented; choose concrete mechanics/tuning under
-renewed handoff authorization and canonical navigation/targeting authorities.
-Finite target27/63, subject to the counting contract. No teleporting, locked-gate
-bypasses, through-wall knowledge, new bodies or full director rewrite. Prove
-bounded route work, reachable placements, distinct counterplay, real progression/
-spawning, deterministic generation and exact-dungeon cancellation, then run the
-canonical integration gate, update GDD/manual/ledger and bank a verified push.
-Do not begin Big Loot until the entire Bestiary phase and ecology exit are met.
 
 ## Previous checkpoint — B1: prison control cohort
 

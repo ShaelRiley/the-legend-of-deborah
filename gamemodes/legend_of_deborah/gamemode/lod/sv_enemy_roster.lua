@@ -18,7 +18,10 @@ E.Definitions={
     repulsor={name="Repulsor",model="models/vortigaunt.mdl",baseHP=55,speed=125,damage=5.5,range=220,warning=1.1,recovery=3,threat=3.5,activity=ACT_WALK,kind="pulse",contentId="earth",color=Color(190,135,55),dice={1,6,2}},
     stitcher={name="Stitcher",model="models/vortigaunt_slave.mdl",baseHP=35,speed=100,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_WALK,kind="bullet",support="recovery",color=Color(90,230,150),dice={1,4,1}},
     bulwark={name="Bulwark",model="models/combine_super_soldier.mdl",baseHP=65,speed=90,damage=3.5,range=600,warning=.7,recovery=2.2,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",support="protection",color=Color(100,150,240),dice={1,4,1}},
-    cantor={name="Cantor",model="models/police.mdl",baseHP=40,speed=140,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",support="rally",color=Color(235,180,70),dice={1,4,1}}
+    cantor={name="Cantor",model="models/police.mdl",baseHP=40,speed=140,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",support="rally",color=Color(235,180,70),dice={1,4,1}},
+    pincer={name="Pincer",model="models/combine_soldier.mdl",baseHP=40,speed=180,damage=5.5,range=520,warning=.65,recovery=2.5,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pursuit=true,color=Color(210,100,235),dice={1,6,2}},
+    harrier={name="Harrier",model="models/police.mdl",baseHP=30,speed=190,damage=5.5,range=720,warning=.85,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pursuit=true,color=Color(65,215,215),dice={1,6,2}},
+    waylayer={name="Waylayer",model="models/combine_super_soldier.mdl",baseHP=55,speed=145,damage=5.5,range=520,warning=.8,recovery=2.8,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",pursuit=true,color=Color(245,145,65),dice={1,6,2}}
 }
 for id,d in pairs(E.Definitions) do
     EC.Archetypes[id]={class="lod_hostile",name=d.name,model=d.model,baseHP=d.baseHP,speed=d.speed,
@@ -86,6 +89,7 @@ function E:Cancel(e)
 end
 function E:Interrupt(e)
     if LOD.EnemySupport then LOD.EnemySupport:Interrupt(e) end
+    if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
     if a and not (a.released and a.kind=="beam") then self:Cancel(e) end
@@ -138,6 +142,10 @@ function E:Begin(e,p,now)
     local a={kind=d.kind,target=p,origin=origin,aim=aim,ready=now+cfg.burstTelegraph,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
     self:Bind(a,state())
+    if d.pursuit and LOD.EnemyPursuit then
+        a.pursuitRecord=LOD.EnemyPursuit:Capture(e,p)
+        a.pursuitRecord.snapshot=Vector(p:GetPos().x,p:GetPos().y,p:GetPos().z)
+    end
     if d.kind=="arc" then a.aim=Vector(p:GetPos().x,p:GetPos().y,p:GetPos().z+3) end
     if d.kind=="pulse" then a.aim=Vector(origin.x,origin.y,e:GetPos().z+3);a.event.pushOrigin=origin end
     if d.kind=="beam" then
@@ -153,12 +161,15 @@ function E:Begin(e,p,now)
     e:_SetActivity(ACT_RANGE_ATTACK1 or ACT_IDLE,true)
 end
 function E:Finish(e,now)
+    local attack=e.LODRosterAttack
     self:Cancel(e)
     local rate=LOD.RPGAbilityRules and LOD.RPGAbilityRules:RateOfFireMultiplier(e) or 1
     e.LODNextAttack=now+e.LODConfig.burstCooldown/math.max(.1,rate)
     e:_SetActivity(ACT_IDLE)
+    if attack and LOD.EnemyPursuit then LOD.EnemyPursuit:AfterAttack(e,attack,now) end
 end
 function E:Release(e,a,now)
+    if a.pursuitRecord and not LOD.EnemyPursuit:ValidCharge(a.pursuitRecord) then return false end
     if a.released or (e.LODSkeletonHero and a.skeletonCommitting) then return false end
     if e.LODSkeletonHero and not LOD.SkeletonHero:CommitArc(e,a) then
         if IsValid(e) and e.LODRosterAttack==a then self:Finish(e,now) end
@@ -176,11 +187,15 @@ function E:Release(e,a,now)
                 expires=now+e.LODConfig.fireRange/speed,kind=a.kind,event=a.event}
             -- Preserve the commitment's scope, never bind a stale release to a new run.
             for _,k in ipairs({"seed","run","graph","progression","epoch","campaignSeed","runId"}) do q[k]=a[k] end
+            q.pursuitRecord=a.pursuitRecord
             self.Projectiles[#self.Projectiles+1]=q
+            a.shotEmitted=true
         end
     end
 end
 function E:Attack(e,a,now)
+    if a.pursuitRecord and not (a.released and LOD.EnemyPursuit:ValidLife(a.pursuitRecord)
+        or not a.released and LOD.EnemyPursuit:ValidCharge(a.pursuitRecord)) then self:Finish(e,now);return end
     if not a.released then
         if not self:AcquireTarget(a.target) or not self:Visible(e,a.target,a.origin)
             or not self:CanCast(e) then self:Finish(e,now);return end
@@ -241,10 +256,10 @@ function E:Tick(e)
     local d=self.Definitions[e.LODArchetypeId];if not d then return false end
     local s=state();local motion=LOD.HostileMotionV2;local now=CurTime()
     if e.LODDead or not e.LODActivated or not s or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then
-        self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
+        self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
     end
     self:Prepare(e)
-    if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;motion:Stop(e);return true end
+    if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;motion:Stop(e);return true end
     if d.support and LOD.EnemySupport and LOD.EnemySupport:Tick(e,now) then motion:Stop(e);return true end
     if d.kind=="climber" then return LOD.Climber:Tick(e,s,now) end
     if d.kind=="gas" then
@@ -266,7 +281,12 @@ function E:Tick(e)
         motion:Stop(e)
         if not statuses:CanInitiateAttack(e) or statuses:Has(e,"morale_flee") then return true end
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
-    e:_RefreshTarget(s.Graph);local p=e.LODTarget
+    if not e.LODPursuit then e:_RefreshTarget(s.Graph) end
+    local p=e.LODTarget
+    if d.pursuit and LOD.EnemyPursuit and LOD.EnemyPursuit:Tick(e,p,now) then return true end
+    if d.pursuit and (not self:AcquireTarget(p) or not self:Visible(e,p)) then
+        e.LODTarget=nil;motion:Stop(e);e:_SetActivity(ACT_IDLE);return true
+    end
     local can=self:AcquireTarget(p) and self:CanCast(e)
         and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))
     if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
@@ -281,7 +301,7 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
@@ -306,19 +326,21 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     local dt=math.Clamp(now-(E.LastService or now),0,.05);E.LastService=now;E.NextService=now+.025
     local active=s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
     if LOD.EnemySupport then LOD.EnemySupport:Service(now,active) end
+    if LOD.EnemyPursuit then LOD.EnemyPursuit:Service(now,active) end
     for e in pairs(E.Active) do
         if not IsValid(e) or e.LODDead then E.Active[e]=nil
         elseif not active then E:Cancel(e)
         elseif e.LODRosterAttack then
             local a=e.LODRosterAttack
-            if not E:Live(a,s) then E:Cancel(e)
+            if not E:Live(a,s) or (a.pursuitRecord and not LOD.EnemyPursuit:ValidLife(a.pursuitRecord)) then E:Cancel(e)
             elseif not (a.released and a.kind=="beam") and (now<(e.LODHitStunUntil or 0) or not E:CanCast(e)) then E:Finish(e,now)
             else E:Attack(e,a,now) end
         end
     end
     local kept={}
     for _,q in ipairs(E.Projectiles) do
-        if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires then
+        if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires
+            and (not q.pursuitRecord or LOD.EnemyPursuit:ValidLife(q.pursuitRecord)) then
             local finish=q.pos+q.velocity*dt
             local radius=(q.kind=="venom" or q.kind=="bolt") and 7 or 2
             local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SOLID,
@@ -356,7 +378,10 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         repulsor={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
         stitcher={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
         bulwark={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
-        cantor={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"}
+        cantor={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
+        pincer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
+        harrier={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
+        waylayer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"}
     }
     for id,b in pairs(banks) do LOD.CombatAudio:RegisterHostileProfile(id,{pain={b[1]},death={b[2]},
         footsteps=b[3] and {b[3]} or {},footDistance=60,footInterval=.5,footVolume=.5,footPitch=100,activation={b[1]}}) end

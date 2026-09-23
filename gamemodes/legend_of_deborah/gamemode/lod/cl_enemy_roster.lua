@@ -6,7 +6,8 @@ local beam=Material("cable/redlaser")
 local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color(110,190,255),
     lurker=Color(110,240,55),beamsweeper=Color(120,225,255),sentry=Color(255,75,45),razor=Color(255,165,60),
     gaoler=Color(90,180,255),silencer=Color(255,245,170),repulsor=Color(220,165,70),
-    stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70)}
+    stitcher=Color(90,230,150),bulwark=Color(100,150,240),cantor=Color(235,180,70),
+    pincer=Color(210,100,235),harrier=Color(65,215,215),waylayer=Color(245,145,65)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
 local gasColor=Color(70,180,65,45)
@@ -97,8 +98,39 @@ function V:Support(e)
         end
     end
 end
+-- Finite tactical tells share the entity renderer and remain legible with
+-- reduced effects. A destination is an intention, never a damaging floor mark.
+function V:Pursuit(e)
+    local mode=e:GetNW2Int("LOD_PursuitMode",0)
+    local now=CurTime()
+    if mode<1 or mode>3 or now>=e:GetNW2Float("LOD_PursuitExpires",0)
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local color=({colors.pincer,colors.harrier,colors.waylayer})[mode]
+    local center=e:WorldSpaceCenter()+Vector(0,0,30)
+    local side=(EyePos()-center):Angle():Right();local up=Vector(0,0,1)
+    render.SetMaterial(beam)
+    local function line(a,b) render.DrawBeam(a,b,3,0,1,color) end
+    if mode==1 then
+        for _,sign in ipairs({-1,1}) do
+            local tip=center+side*sign*15
+            line(tip,center+up*10);line(tip,center-up*10)
+        end
+    elseif mode==2 then
+        for offset=0,1 do
+            local tip=center+side*(offset*12-12)
+            line(tip,tip+side*10+up*10);line(tip,tip+side*10-up*10)
+        end
+    else
+        line(center-side*14,center+side*14);line(center-up*14,center+up*14)
+        local destination=e:GetNW2Vector("LOD_PursuitDestination",e:GetPos())+Vector(0,0,5)
+        local radius=now<e:GetNW2Float("LOD_PursuitReady",0) and 30 or 22
+        local points={Vector(-radius,-radius,0),Vector(radius,-radius,0),Vector(radius,radius,0),Vector(-radius,radius,0)}
+        for i=1,4 do line(destination+points[i],destination+points[i%4+1]) end
+    end
+end
 function V:Draw(e,size)
     self:Support(e)
+    self:Pursuit(e)
     if e:GetNW2String("LOD_Archetype","")=="nodule" then self:Gas(e);return end
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end

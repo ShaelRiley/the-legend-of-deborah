@@ -942,6 +942,28 @@
       ]
     },
     {
+      "id": "enemy-pursuit",
+      "title": "Watch the other route",
+      "rows": [
+        [
+          "Pincer",
+          "A purple Combine soldier takes a legal alternate approach around the lane where it saw you, using a short loop or a two-leg flank within its own room. Its split chevron gives a brief warning before it moves. Watch the side approach, change lanes, or interrupt it; it cannot cross a locked gate or follow an unseen change of direction."
+        ],
+        [
+          "Harrier",
+          "A cyan Metrocop commits a visible firing line and releases one straight projectile before withdrawing. Its backward chevrons announce the retreat. Dodge the shot, then close the gap or deny its cover; interrupting the wind-up prevents the planned withdrawal."
+        ],
+        [
+          "Waylayer",
+          "An amber Combine elite marks a reachable junction with a square and cross. You have one second before it starts walking there. Take a different exit, interrupt it, or beat it to the junction. The marker deals no damage; its ordinary gunfire still warns before release."
+        ]
+      ],
+      "text": [
+        "These specialists move through ordinary passages. Their plans are brief commitments to the position where they last saw a Hero, not knowledge of movement behind walls. Gates, obstructions, disabling conditions and interrupted plans can foil their maneuver.",
+        "Pincers appear beside Soldiers, Harriers beside Shamblers, and Waylayers beside Runners. Their route warnings remain visible with reduced effects. Generated class, health and elemental affinity still belong to the individual."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

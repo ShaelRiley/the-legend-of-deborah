@@ -1,13 +1,13 @@
-# Handoff — Bestiary B3
+# Handoff — Bestiary B4
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B3 only**,
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B4 only**,
 including validation, commit and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Add Bestiary ally-support cohort with canonical lifecycle**.
+Latest checkpoint: **Add Bestiary flank and pursuit cohort with bounded routes**.
 The publication response supplies its exact verified SHA; fetch current remote
-`main`, confirm that checkpoint and preserve intervening work. B2's parent was
-`4e20da5f93d06b9707c93979bb191915a937c503`.
+`main`, confirm that checkpoint and preserve intervening work. B3's parent is
+`660c42284b0fae4073380214502bcdc731b17558`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -16,69 +16,65 @@ live GDD amendments, focused parallel delegation, commits and non-forced pushes
 directly to `main`. Resolve ordinary ambiguities. **Do not deploy to the VPS or
 publish to Steam Workshop.**
 
-Recover from AGENTS.md, the active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
-this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live GDD
-00 → 01 → relevant subsystem tabs, including LOD-ROADMAP-ECOSYSTEM-001 and
-LOD-BESTIARY-B1-001 / LOD-BESTIARY-B2-001. Read exact HUMAN details only if needed;
-no historical-chat recovery or repeated broad audit. Missing historical art does
-not block implementation.
+Recover efficiently from AGENTS.md, active roadmap/newest DEVELOPMENT_PLAN.md
+checkpoint, this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md.
+Follow live GDD00 → 01 → relevant subsystem tabs, including
+LOD-ROADMAP-ECOSYSTEM-001 and LOD-BESTIARY-B1-001/B2-001/B3-001. Exact HUMAN
+anchors only for a needed missing detail. No historical-chat recovery or repeated
+broad audit. Missing historical art does not block implementation.
 
-B1 implemented Gaoler Ice/Held, Silencer Light/Muted and Repulsor Earth/Push.
-B2 implements Stitcher interrupted bounded ally healing with exclusive mending
-reservation; Bulwark breakable positional canonical Block; Cantor bounded group
-target focus. All have production compositions and real class/feat/HP/XP/spawn
-wiring. Canonical healing, statuses, mitigation, targeting and rewards remain
-owners; exact dungeon plus source/recipient/Hero incarnation guards retire stale
-work. Native Source acceptance remains pending. See DEVELOPMENT_PLAN.md for final
-B2 integration results:158 suites exercised,155 initially passed, three stale
-fixture/validator assumptions corrected and all affected reruns plus final B2
-passed; zero remaining failures (not a second full run). The512-plan/4910-
-encounter production sample also passed.
+B1 implements Gaoler Ice/Held, Silencer Light/Muted and Repulsor Earth/Push.
+B2 implements Stitcher bounded interrupted ally healing, Bulwark positional
+canonical Block and Cantor group target focus. B3 adds Pincer alternate-route
+flanking, Harrier committed-shot withdrawal and Waylayer warned escape-junction
+occupation. They share canonical targeting/navigation/motion/damage/status/reward
+owners, explicit progression/feat/HP/XP and unified production spawning. B3 route
+and attack work binds exact dungeon and source/Hero incarnation, freezes the
+observed Hero position, bounds search/expiry and rechecks gates and physical hull
+clearance. See current plan for final measured tests and tuning; native Source
+acceptance remains pending. Do not describe headless tests as native playtesting.
 
-Frozen baseline **18**, whole Bestiary target **63**, implemented **24/63**,
-**6/45 additions banked**, **39 remaining**. Never rebase or count cosmetics,
-numerical permutations, bosses, event-only actors, friendly summons or definitions
-without actual production behavior.
+Frozen baseline **18**, whole Bestiary target **63**, implemented **27/63**,
+**9/45 additions banked**, **36 remaining**. Never rebase or count cosmetics,
+numerical permutations, bosses, event-only actors, friendly summons or unused
+definitions. The campaign-aware director ecology exit remains part of Bestiary.
 
-Complete one coherent **B3 flank/pursuit cohort**. Proposed roles:
+Complete one coherent **B4 self-defense/reaction cohort**. Proposed roles:
 
-1. A flanker choosing a legal alternate approach around the visible Hero's lane.
-2. A skirmisher committing a ranged attack before retreating to a reachable position.
-3. An interceptor warning before occupying a reachable escape junction.
+1. Directional self-guard with an exposed flank.
+2. Interruptible, clearly warned retaliation after a hostile hit.
+3. Legible wounded-state aggression with distinct counterplay and recovery.
 
-These are proposed roles, not fixed or already implemented mechanics. Reconcile
-existing navigation, targeting, commitment, geometry and placement authorities;
-choose concrete identities and tuning and record substantive decisions in the
-live GDD. Each must elicit distinct counterplay and appear in complementary
-production compositions. Finite target **27/63**, subject to the counting contract.
-No teleporting, through-wall knowledge, locked-gate bypass, unavoidable damage,
-reinforcement spawning or full director rewrite. Preserve faction unity,
-independent deterministic RNG streams, budgets and multiplayer lifecycle.
+These are proposed roles, not authored or implemented mechanics. Reconcile
+canonical Block, mitigation, damage events, statuses, morale, commitments and
+actor-life ownership. Choose concrete identities/tuning and record substantive
+choices in the live GDD. Differentiate these identities from Bulwark ally support,
+existing bosses and mere stat changes. Each needs complementary production
+compositions and real progression/spawning. Finite target **30/63**, subject to
+meaningful identity counting. No absolute invulnerability, unavoidable damage,
+duplicate mitigation/damage settlement, reinforcement bodies or director rewrite.
+Preserve deterministic independent RNG, faction unity and performance budgets.
 
-Explicitly wire canonical progression templates, supported class/feat capability,
-HP growth, XP and actual unified spawning. Prove bounded route/target work, real
-reachability/cover, interruption, expiration, source/target lifecycle and reset /
-same-seed replacement using exact dungeon identity. Preserve every prior cohort,
-all bosses, Gordon → Hector → Deborah, finale and sole Deborah staging successor,
-Abundance and Level-21 cash progression.
+Prove bounded work, counterplay, interruption/expiry, source/target lifetimes,
+reset and same-seed replacement using exact dungeon identity. Preserve every
+prior cohort, all bosses, Gordon → Hector → Deborah, finale and sole Deborah
+staging successor, Abundance and Level-21 cash progression.
 
-Reserve roughly the final third for validation, fixes, documentation and
-publication. Use targeted tests while editing, then run
-`python3 tools/test_checkpoint_g_integration.py` once coherent. Fix attributable
-failures; repeat broadly only for a concrete remaining risk. Separate automated
-evidence from native Source acceptance. Update/read-back verify GDD amendments,
-canonical manual, ledger, plan and handoff with the implemented count, results,
-native checks and a concrete next checkpoint. Commit and publish immediately
-after green validation.
+Reserve roughly the final third for validation, fixes, docs and publication.
+Use targeted tests while editing; once coherent run
+`python3 tools/test_checkpoint_g_integration.py`. Fix attributable failures;
+repeat broadly only for a concrete remaining risk. Separate automated evidence
+from native Source acceptance. Update/read-back verify GDD, canonical manual,
+ledger, plan and handoff with counts, results, native checks and concrete next
+checkpoint. Commit and publish immediately after green validation.
 
-CLI push credentials were unavailable in B1/B2. If still unavailable, use
-authenticated GitHub blob/tree/commit/ref tools: verify every blob, compare the
-exact complete validated tree, advance main non-forced, fetch and verify remote
-SHA, parent and tree. Never overwrite newer work or force-push.
+CLI push credentials were unavailable through B3. If still unavailable, use
+authenticated GitHub blob/tree/commit/ref tools: verify every blob and the exact
+complete validated tree, advance main non-forced, fetch and verify remote SHA,
+parent and tree. Preserve newer work; never overwrite or force-push.
 
 Phase order: **Bestiary → Big Loot → Event System → systems integration/emergence
 audit → low-end PC performance audit → final crash/progression-safety audit →
 human playtest**. Outstanding native acceptance does not block this sequence.
-Finish B3 only; do not begin another checkpoint or phase. End with verified SHA,
-implemented scope, tests, expansion progress, remaining native checks and the
-next continuation prompt.
+Finish B4 only; do not begin another checkpoint or phase. End with verified SHA,
+implemented scope, tests, progress, native checks and next continuation prompt.

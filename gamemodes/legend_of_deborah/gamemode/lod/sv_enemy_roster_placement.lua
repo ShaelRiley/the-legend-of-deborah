@@ -42,6 +42,11 @@ function E:Placement(graph,c,id,role)
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
+    -- Mobility specialists require local legal topology before entering production.
+    -- Runtime commitments additionally trace actual bodies, floors and cover.
+    if id=="pincer" or id=="harrier" or id=="waylayer" then
+        if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
+    end
     if not d.stationary then
         if id=="climber" then
             local lane=LOD.Climber:NearestLane(graph,c,center)
@@ -99,7 +104,10 @@ local templates={
     repulsor_screen={name="Repulsor Screen",composition={repulsor=1,soldier=1}},
     stitcher_detail={name="Stitcher's Detail",composition={stitcher=1,shambler=2}},
     bulwark_line={name="Bulwark Line",composition={bulwark=1,soldier=1}},
-    cantor_charge={name="Cantor's Charge",composition={cantor=1,runner=2}}
+    cantor_charge={name="Cantor's Charge",composition={cantor=1,runner=2}},
+    pincer_detail={name="Pincer Detail",composition={pincer=1,soldier=1}},
+    harrier_screen={name="Harrier Screen",composition={harrier=1,shambler=1}},
+    waylayer_cutoff={name="Waylayer Cutoff",composition={waylayer=1,runner=1}}
 }
 for id,t in pairs(templates) do EC.Templates[id]=t end
 local baseEligible=D._EligibleTemplates
@@ -119,15 +127,16 @@ function D:_EligibleTemplates(sector,role)
     end
     if sector>=2 and (role=="arena" or role=="ambush") then
         out[#out+1]="stitcher_detail";out[#out+1]="bulwark_line";out[#out+1]="cantor_charge"
+        out[#out+1]="pincer_detail";out[#out+1]="harrier_screen";out[#out+1]="waylayer_cutoff"
     end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
--- or support sources in one authored encounter.
+-- or support/pursuit specialists in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

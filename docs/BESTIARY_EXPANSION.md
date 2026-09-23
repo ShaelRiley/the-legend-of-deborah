@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B2
+# Bestiary expansion — frozen baseline through B3
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1 and B2 add six identities: **24/63**, or **6/45 additions**; **39 remain**.
+B1–B3 add nine identities: **27/63**, or **9/45 additions**; **36 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -132,21 +132,73 @@ remain. No changes to bosses, Gordon → Hector → Deborah, sole staging succes
 Abundance or cash progression. See DEVELOPMENT_PLAN.md for measured validation;
 implementation count does not imply native Source acceptance.
 
-## Next checkpoint — B3: flank and pursuit cohort
+## B3 — flank and pursuit cohort
 
-Proposed finite target **27/63**, subject to three genuinely distinct identities:
-(1) a junction flanker that uses a legal alternate route around the visible
-Hero's current lane; (2) a skirmisher that commits a ranged attack then retreats
-to a reachable firing position; (3) an interceptor that warns before occupying
-a reachable escape junction. These are proposed roles, not implemented rules.
-Reconcile concrete mechanics with existing navigation, pursuit, commitment and
-placement authorities; avoid teleports, through-wall knowledge, locked-gate
-bypasses, compulsory damage or a director rewrite. Require different tactical
-responses and actual complementary production compositions.
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `pincer` / Pincer | Purple Combine soldier signals with split chevrons, then takes a legal alternate route around the observed Hero lane. Watch the side passage, change lanes or interrupt it. | Pincer + Soldier. |
+| `harrier` / Harrier | Cyan Metrocop commits one physical projectile, then withdraws toward reachable cover or greater separation. Dodge, close the gap or deny its escape. Backward chevrons identify withdrawal. | Harrier + Shambler. |
+| `waylayer` / Waylayer | Amber Combine elite marks a reachable escape junction for one second, walks there and holds briefly. Change exits, beat it to the junction or interrupt. Cross/square is an intention, not damage. | Waylayer + Runner. |
 
-Preserve prior cohorts and prove bounded route work, deterministic choices,
-reachable placement, cancellation and same-seed replacement safety through real
-spawn/progression paths. Retain further tactical-family expansion and the whole
-phase's campaign-aware director: themes, novelty memory, topology, pacing and
+Templates `pincer_detail`, `harrier_screen`, `waylayer_cutoff` enter sector-2+
+arena/ambush selection, with one specialist per composition. Physical admission
+requires a local legal cycle or two-leg lateral pocket, retreat edge or nearby
+junction respectively;
+unsuitable candidates retain the existing budget-safe ordinary replacement.
+All three append unified spawn ordinals and own explicit canonical progression
+profiles, usable physical feats, HP growth, XP and ordinary reward settlement.
+No new wandering weight, reinforcement bodies, target authority or director.
+
+All use shared physical 1d6+2 fire. Reference HP/speed/range/shot warning/recovery/
+threat: Pincer40/180/520/0.65s/2.5s/3.5; Harrier30/190/720/0.85s/3s/3.5;
+Waylayer55/145/520/0.8s/2.8s/4. Pincer tactical warning0.6s; Waylayer warning1s
+and hold1.5s. Fixed route deadline = readiness + clamp(route distance/current
+canonical effective movement speed +1s + hold,6s,16s), without extension.
+Failed-plan cadence2s; active commitments end/cancel into an8s cooldown, leaving
+a real ordinary-fire window. Search bounds32 nodes/depth4, at most8 candidate route validations.
+Sorted choices consume no other random stream. Harrier retreats only after an
+actual projectile release; interrupted or budget-refused fire cannot trigger it.
+
+Pincer prefers a short alternate graph route. If none is clear, a visible Hero
+within two legal edges can trigger a two-leg flank inside the source cell:
+nominal sideways96, endpoint observed position + forward48 + sideways96, both
+clamped by canonical CellFloorPoint. Require at least64 lateral departure and32
+forward closing, plus full hull clearance. Waylayer targets an escape junction
+adjacent to the observed Hero cell.
+
+Only a visible acquired Hero starts a plan; observed position is frozen. Routes
+never update from hidden movement. Reuse Navigator graph traversal/waypoints and
+MotionV2 locomotion, with fresh legal-edge and scaled native hull validation.
+Exact run, graph, progression, campaign, source and Hero incarnation bindings,
+interruption and finite expiry retire stale route/attack work. No safe/objective/
+transition cell, closed-gate bypass, teleport or private damage/status/reward path.
+Held cancels routes, not ordinary physical fire. Already emitted bullets retain
+their finite trajectory through source hit-stun/Held, with exact life/dungeon
+retirement. Full/reduced presentation retains finite glyphs and the junction marker.
+
+Progression tuples STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die;
+baseXP; morale: Pincer11/16/10/10/10/9;20/80/0;d8;45;5.
+Harrier9/16/9/11/11/10;15/85/0;d6;45;4.
+Waylayer13/12/13/11/12/10;65/35/0;d10;55;6. All usesMagic=false.
+Generic physical attack feats remain supported; Soldier-only firearm/reload
+capabilities are not advertised by these roster projectiles.
+
+See DEVELOPMENT_PLAN.md for measured results. This is implementation progress,
+not native Source acceptance. Prior cohorts, bosses, finale/succession, Abundance
+and Level-21 cash progression remain regression constraints.
+
+## Next checkpoint — B4: self-defense and reaction cohort
+
+Proposed finite target **30/63**, subject to three genuinely distinct production
+identities: directional self-guard with an exposed flank; interruptible warned
+retaliation after a hostile hit; and a legible wounded-state aggression transition.
+These are proposed roles, not authored mechanics. Reconcile existing Block,
+mitigation, damage events, statuses, morale, commitment and actor-life authorities;
+differentiate them from Bulwark ally support, existing bosses and mere stat changes.
+Use complementary production compositions and meaningful counterplay; no absolute
+invulnerability, unavoidable damage, duplicate damage settlement or extra bodies.
+
+Complete only B4 next, then retain further tactical-family expansion and the
+whole-phase campaign-aware director: themes, novelty memory, topology, pacing and
 quantitative coverage. Finish Bestiary before Big Loot, Events and the three
-audits, then human playtest. B3 is not started in B2.
+audits, then human playtest. Native acceptance does not block that phase order.

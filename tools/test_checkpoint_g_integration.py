@@ -76,6 +76,7 @@ SUITES = [
     ("Complete Enemy Roster & Animation Safety", ["python3", "tools/run_lua54.py", "tools/test_enemy_roster.lua"]),
     ("Bestiary B1 Content Enemies & Exact Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b1.lua"]),
     ("Bestiary B2 Ally Support & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b2.lua"]),
+    ("Bestiary B3 Flank Pursuit & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b3.lua"]),
     ("Gordon Arena & Encounter Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_warden.lua"]),
     ("Gordon Ordered Health Scaling", ["python3", "tools/run_lua54.py", "tools/test_warden_health.lua"]),
     ("Neil, Brute & Black Gate Hunt", ["python3", "tools/run_lua54.py", "tools/test_neil_brute.lua"]),

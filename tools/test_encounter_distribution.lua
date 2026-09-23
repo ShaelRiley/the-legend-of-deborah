@@ -17,6 +17,7 @@ end
 local counts,viable,early,plans,total={},{},{},0,0
 local b1={gaoler=true,silencer=true,repulsor=true}
 local b2={stitcher=true,bulwark=true,cantor=true}
+local b3={pincer='soldier',harrier='shambler',waylayer='runner'}
 local function signature(plan)
  local rows={}
  for _,enc in ipairs(plan.encounters) do
@@ -57,6 +58,11 @@ for seed=1,32 do
      local allies=0;for ally,n in pairs(enc.composition) do if not b2[ally] then allies=allies+n end end
      assert(allies>=1,'support-only encounter has no eligible ordinary allies')
     end
+    if b3[id] then
+     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B3 entered an unapproved production path')
+     assert(count==1,'pursuit specialist duplicated by encounter enrichment')
+     assert((enc.composition[b3[id]] or 0)>=1,'pursuit specialist lost its complementary companion')
+    end
     counts[id]=(counts[id] or 0)+count
     if E.Definitions[id] then
      local p=E:Placement(graph,graph.Cells[enc.cellKey],id,enc.role)
@@ -67,10 +73,13 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-for _,id in ipairs({'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor'}) do
+local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer'}
+for _,id in ipairs(sampled) do
+ print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id] or 0,viable[id] or 0,early[id] or 0))
+end
+for _,id in ipairs(sampled) do
  assert((counts[id] or 0)>=25,id..' effectively absent from normal encounter generation')
  assert((viable[id] or 0)>=20,id..' always rejected by placement policy')
  assert((early[id] or 0)>=5,id..' unavailable in early/mid sectors')
- print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id],viable[id],early[id]))
 end
 print('ENCOUNTER_DISTRIBUTION_PASS: '..plans..' deterministic plans / '..total..' encounters, 32 generated mazes, party 1–4, dungeon 1–5')

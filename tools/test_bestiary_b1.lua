@@ -285,6 +285,27 @@ assert(#beams==2,'successful healing flashes one cross')
 at(time+.5);beams={};LOD.EnemyRosterVisual:Draw(ally,1);assert(#beams==0,'healing cue expires')
 print('BESTIARY_B2_VISUAL_PASS: distinct support glyphs and source tethers; full/reduced effects; cancellation/status/healing visual expiration')
 
+for mode,id in ipairs({'pincer','harrier','waylayer'}) do
+    local e=visualActor(id);e.nw.LOD_PursuitMode=mode;e.nw.LOD_PursuitReady=time+1
+    e.nw.LOD_PursuitExpires=time+7;e.nw.LOD_PursuitDestination=Vector(160,0,0)
+    e.GetNW2Vector=e.GetNW2Float
+    for _,reduced in ipairs({false,true}) do
+        low=reduced;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+        assert(#beams==(mode==3 and 6 or 4),'distinct tactical glyphs survive reduced effects')
+        if mode==3 then
+            assert(beams[3].from.x==130 and beams[3].from.y==-30,'junction warning matches frozen destination')
+            e.nw.LOD_PursuitReady=time-.1;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+            assert(beams[3].from.x==138,'warning shrinks after movement begins')
+            e.nw.LOD_PursuitReady=time+1
+        end
+    end
+    e.nw.LOD_PursuitExpires=time;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+    assert(#beams==0,'stale tactical tell expires without another network packet')
+    e.nw.LOD_PursuitExpires=time+7;e.nw.LOD_PursuitMode=0;beams={};LOD.EnemyRosterVisual:Draw(e,1)
+    assert(#beams==0,'cancelled tactical tell disappears')
+end
+print('BESTIARY_B3_VISUAL_PASS: semantic flank/retreat/junction tells; exact destination; full/reduced effects; cancellation and expiry')
+
 
 -- Use the accepted actor fixture to exercise real generation (including feat
 -- drafts, class/growth and HP), then the production attribution settlement.

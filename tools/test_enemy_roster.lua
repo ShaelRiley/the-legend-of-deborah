@@ -1,6 +1,7 @@
 -- Production roster/state/placement/animation tests with only engine boundaries doubled.
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
+dofile(root..'sv_hostile_motion_v2.lua')
 GM=GM or {};dofile(root.."sv_damage_info.lua")
 local noop=function() end
 local v=getmetatable(Vector())
@@ -27,7 +28,9 @@ local context,rolls,damage={},0,0
 LOD.RPGStatusElements={CanInitiateAttack=function(_,e) return not e.disabled end,CanMoveVoluntarily=function(_,e) return not e.held end,
     Has=function(_,e) return e.fleeing end,HandleAIFlee=function() return false end,ConditionDC=function() return 13 end,
     AttachDamageContext=function(_,info,tags) context[#context+1]=tags end}
-LOD.RPGAbilityRules={RateOfFireMultiplier=function() return 1 end}
+LOD.RPGStatusElements.ActorLives={}
+LOD.RPGStatusElements.BindActorLife=function(self,e) self.ActorLives[e]=self.ActorLives[e] or {} end
+LOD.RPGAbilityRules={RateOfFireMultiplier=function() return 1 end,ProgressionState=function(_,e) return e.LODProgressionState end}
 function DamageInfo() return {SetAttacker=noop,SetInflictor=noop,SetDamageType=noop,SetDamagePosition=noop,SetDamage=function(self,n) self.amount=n end} end
 LOD.CombatRolls.RollHostileAttack=function(_,e,p,amount) rolls=rolls+1;return {total=amount,scale=1,attackEvent={}} end
 LOD.CombatRolls.ResolveActorDamage=function(_,c) return c.total end
@@ -77,7 +80,7 @@ e.LODConfig={activity=ACT_WALK};e._SetActivity=function(self,act) self.moveActiv
 A:Move(e);assert(e.moveActivity==ACT_WALK,'retreat selects model locomotion')
 assert(not A:Valid(e,-1) and not A:Valid(e,0) and not A:Valid(e,4))
 -- Load real roster and every specialized behavior.
-dofile(root..'sv_enemy_roster.lua');dofile(root..'sv_climber.lua');dofile(root..'sv_enemy_roster_placement.lua')
+dofile(root..'sv_enemy_roster.lua');dofile(root..'sv_climber.lua');dofile(root..'sv_enemy_pursuit.lua');dofile(root..'sv_enemy_roster_placement.lua')
 local E,C=LOD.EnemyRoster,LOD.Climber
 for id,d in pairs(E.Definitions) do
     assert(LOD.Config.Encounter.Archetypes[id] and LOD.CombatRolls.HostileDamageProfiles[id])
@@ -107,6 +110,8 @@ assert(context[#context].magic and context[#context].element=='raw' and not cont
 -- Create a square graph with a true alternate approach and closed wall lanes.
 local graph={Cells={},CellTags={},VerticalEdges={},Progression={Gates={}}};local key=LOD.MazeGenerator.CellKey
 for x=1,2 do for y=1,2 do graph.Cells[key(x,y,0)]={x=x,y=y,z=0,neighbors={}} end end
+-- A legal branch gives the B3 interceptor a reachable three-exit junction.
+graph.Cells[key(3,2,0)]={x=3,y=2,z=0,neighbors={}}
 for _,cell in pairs(graph.Cells) do for _,other in pairs(graph.Cells) do if math.abs(cell.x-other.x)+math.abs(cell.y-other.y)==1 then cell.neighbors[key(other.x,other.y,0)]=true end end end
 s.Graph=graph;s.GatesOpen={};local cell=graph.Cells[key(1,1,0)];local N=LOD.MazeNavigator
 assert(E:HasAlternate(graph,cell))
