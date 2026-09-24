@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B18
+# Bestiary expansion — frozen baseline through B19
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,8 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B18 add forty-three identities: **61/63**, or **43/45 additions**; **2 remain**.
+B1–B19 add forty-five identities: **63/63**, or **45/45 additions**.
+Roster breadth is complete; the campaign-aware ecology gate remains within Bestiary.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -1188,12 +1189,81 @@ frozen baseline18, **43/45 additions**, **2 remain**. Tests, measured exposure a
 native limitations are recorded in `validation/BESTIARY_B18.md` and the current
 DEVELOPMENT_PLAN checkpoint. Automated boundary doubles are not Source acceptance.
 
-## Next checkpoint — B19: final roster breadth
+## B19 — relay and living-link cohort
 
-Select and author the final coherent pair through targeted remaining-niche
-review; target63/63 only when both qualify as meaningful production identities.
-Preserve B18 attack-observation timing, full retaliatory warning, shared Hero
-orders, displaced-refuge access/escape, exact packet/life ownership and all prior
-cohort/campaign regressions. Completing the count does not finish Bestiary:
-campaign-aware encounter themes, novelty memory, topology, pacing and quantitative
-coverage remain before Big Loot or Events. Do not begin the next phase early.
+| Identity | Distinct tactical problem and counterplay | Production composition |
+| --- | --- | --- |
+| `relay` / Relay | Channels a fully warned fixed shot from an existing ally's position. Dodge the alternate firing origin, interpose another body, interrupt the channeler, defeat the ally or break either sightline. | Relay + Soldier. |
+| `lacemaker` / Lacemaker | Channels a short-lived damaging ribbon to a moving ordinary ally. Bait that ally to rotate/open the barrier, leave the line, break cover or defeat either endpoint. | Lacemaker + Runner. |
+
+Targeted niche review selected offensive use of ally geometry. Relay differs
+from ordinary snipers and bodyguards by its actual remote firing origin and
+interruptible dependency. Lacemaker differs from a stationary tripwire or
+Hero-to-Hero spacing check because ordinary enemy movement changes the barrier.
+Neither changes the ward's AI, grants defenses, creates bodies or owns resources.
+Live GDD03/05/07 `LOD-BESTIARY-B19-001` records the authorized design and tuning.
+
+Relay captures an ordinary ally center and the original Hero center before a
+**1.4s** warning. Aim and firing origin remain fixed. First actual body/world
+collision absorbs; only source and exact ward are excluded from the shot trace,
+and only the original Hero can receive damage. Ward displacement above32 cancels.
+Lacemaker warns **1.2s**, then channels for **2s**, with a ground ribbon radius18
+between its stationary source and the ward's actual position. Ward movement is
+bounded to96 from its initial position and32 between service ticks. Contact is
+current-segment only, with one damage attempt per original Hero per channel;
+there is no swept catch-up, continuous damage or retargeting. Without an eligible
+ward, both use a fully warned1.4s fixed source-origin shot. This fallback never
+substitutes for the distinct identities in their production validation.
+
+Both use physical **1d6+2**, reference5.5, through canonical attack rolls,
+Block/Dodge/native HP, kill attribution, XP and drops. The channeler remains the
+attacker; the ward is geometry, not a new damage owner. EnemySupport ordinary
+eligibility and the cached registry supply candidates. Exclude named bosses,
+clones, events, players, summons and either B19 identity. One exact B19 link
+reservation per ward; B17 bodyguard/oath relationships remain independent.
+Source, Hero and ward progression/status-life plus exact run/graph/progression/
+seed/campaign identity retire stale commitments. Late joins, replacement lives,
+death/disconnect, freeze/reset/clear/failure, hit-stun/morale/attack prohibition,
+lost sight/range or unsupported geometry cancel. Held/Muted permit stationary
+physical actions; Lacemaker cancels for involuntary/non-walk/forced Hero movement.
+
+Range360 from source and ward to Hero, ward range240, source drift4, maximum16
+links. Selection scans128 cached candidates and geometrically preflights at most
+eight sorted candidates. Geometry revalidates every0.1s and at damage, with actual Hero-hull96-unit
+escapes on both sides of the current line and support probes no farther than24
+apart. Same legal cell, actual support and cover prevent gate/Wall/false-floor
+bypasses. Existing25ms service, gap0.25s, release grace0.2s, recovery3s and failed
+admission retry/reposition0.5s. Claim before native callbacks; guarded packets
+recheck geometry/ownership. Token-first retirement preserves newer attacks and
+reservations, with no replay or error-induced extension of recovery.
+
+Reference HP/speed/threat: Relay40/115/3.5; Lacemaker45/120/3.5.
+STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die; XP; morale:
+Relay11/13/11/13/12/10;35/65/0;d8;50;5.
+Lacemaker12/12/12/11/12/10;60/40/0;d8;50;5. Both usesMagic=false.
+Existing Combine soldier RGB120/205/235 and Metrocop RGB235/155/205; no external
+assets. Ordinary generated classes, usable feats, HP growth and rewards apply.
+
+Singleton `relay_detail` / `lacemaker_detail`, sector2+ arena/ambush, append
+ordinals60/61. Registry63 normal plus4 separately counted named bosses. Preserve
+all prior IDs/order, independent RNG, threat/entity caps, companion enrichment,
+safe/objective/transition exclusions, same-floor exit/lateral admission and
+budget-safe fallback. Full/reduced tells retain the power tether, distinct shot
+lane or moving ribbon, literal counterplay and finite countdowns; render bounds452.
+The active ribbon clips exactly at ready+2. Float32 timeline tolerance0.05s
+keeps valid long-uptime warnings readable without extending server activity.
+
+Fresh validation, quantitative exposure, manual/live-design readback and native
+limitations are recorded in `validation/BESTIARY_B19.md`. Counts describe
+implemented/static progress, never Source acceptance. Preserve all prior cohort
+contracts and Gordon→Hector→Deborah, sole staging successor, Abundance and Level21.
+
+## Next checkpoint — B20: campaign-aware encounter ecology
+
+The **63/63** breadth target is complete; the Bestiary phase is not. Build the
+next bounded production slice of the existing EncounterDirector's campaign-aware
+themes, topology, novelty memory and pacing. Define a finite deterministic
+campaign-scale gate and preserve current exposure evidence and all gameplay,
+progression, lifecycle, RNG and entity-budget guarantees. Do not begin Big Loot,
+Events or later audits yet. Native acceptance follows the ordered phases/audits;
+no VPS deployment or Workshop publication is authorized.

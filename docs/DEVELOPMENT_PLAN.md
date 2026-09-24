@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B18 builds on verified remote `main` `4b4c730a5d813ca3b8c6f6e877c0dc1192fe63dd`,
-`Add Bestiary Interposer and Mourner companion interactions`.
-The current B18 checkpoint below is the newest implementation record. Its exact
+B19 builds on verified remote `main` `74798e4202e9095f8d94232196c42411ffe484a6`,
+`Add Bestiary Censor and Surveyor prison edicts`.
+The current B19 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,49 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B18: prison-edict cohort
+## Current checkpoint — B19: relay and living-link cohort
+
+Built on verified remote `74798e4202e9095f8d94232196c42411ffe484a6`.
+**Relay and Lacemaker** reach **63/63 meaningful normal identities**:
+frozen baseline18, **45/45 additions banked**. Native Source acceptance remains
+pending. No VPS deployment or Workshop publication. This completes roster breadth,
+not the Bestiary phase; campaign-aware encounter ecology remains next.
+
+**Playable scope:** Relay freezes a fully warned shot from one ordinary ally's
+position; Lacemaker warns a finite damaging ribbon whose second endpoint follows
+an ordinary moving ally. Counterplay changes firing origin, target priority and
+enemy-to-enemy geometry. Interrupt/defeat either participant, break their tether,
+evade the shot or leave/bait the living ribbon. Ward AI is not commandeered.
+Without a qualifying ally both retain a full warned fixed source shot.
+
+**Canonical boundaries:** one bounded EnemyRoster commitment module, ordinary
+EnemySupport eligibility/cached registry, exact source/Hero/ward life and dungeon
+scope, guarded native damage and unchanged defenses/HP/XP/drops. One B19 ward
+reservation, maximum16 links; no extra bodies, private pools/statuses, homing,
+retrospective swept damage or reward authority. Physical support/actual Hero-hull
+lateral escape checks, bounded ward displacement and finite service/recovery
+retire unsafe work. Full design/tuning is in the ledger and live GDD03/05/07
+`LOD-BESTIARY-B19-001`.
+
+**Validation:** one fresh canonical run passed **all206 suites with zero failures**
+after final repairs; no gameplay/config/test edits followed. The unchanged512
+plans produced4949 encounters; all54 identities pass25planned/20legal/5early
+(Relay34/34/6; Lacemaker27/27/6). Five trials/four failures are retained.
+The complete matrix and exposure measurements are recorded
+in `validation/BESTIARY_B19.md`, `BESTIARY_B19_INTEGRATION.txt` and
+`BESTIARY_B19_EXPOSURE.md`. The three B19 suites exercise actual behavior/native
+combat boundary, generated progression/production and client Draw against boundary
+doubles. These are automated proofs, not Source runtime acceptance.
+Manual163 chapters/32chunks. Registry63 normal+4 named; append ordinals60/61.
+
+**Next B20:** bounded campaign-aware EncounterDirector integration. Reconcile and
+author themes/roster subsets, campaign history/novelty, topology and macro-pacing
+through existing deterministic planning authorities; define a finite production
+and campaign-sampling gate. Preserve breadth/exposure and all prior safety,
+combat, lifecycle, boss/finale/succession/Abundance/Level21 contracts. Do not
+begin Big Loot or Events. Native testing follows the ordered phases/audits.
+
+## Previous checkpoint — B18: prison-edict cohort
 
 Built on verified remote `4b4c730a5d813ca3b8c6f6e877c0dc1192fe63dd`.
 **Censor and Surveyor** bring the meaningful normal roster to **61/63**:

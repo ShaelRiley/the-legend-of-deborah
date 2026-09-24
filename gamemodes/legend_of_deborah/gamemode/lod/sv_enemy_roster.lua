@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    relay={name="Relay",model="models/combine_soldier.mdl",baseHP=40,speed=115,damage=5.5,range=360,warning=1.4,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",link=1,usesMagic=false,color=Color(120,205,235),dice={1,6,2}},
+    lacemaker={name="Lacemaker",model="models/police.mdl",baseHP=45,speed=120,damage=5.5,range=360,warning=1.2,recovery=3,threat=3.5,activity=ACT_RUN,kind="bullet",link=2,usesMagic=false,color=Color(235,155,205),dice={1,6,2}},
     censor={name="Censor",model="models/combine_soldier.mdl",baseHP=45,speed=115,damage=5.5,range=360,warning=.8,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",edict=1,usesMagic=false,color=Color(210,170,110),dice={1,6,2}},
     surveyor={name="Surveyor",model="models/vortigaunt.mdl",baseHP=40,speed=100,damage=5.5,range=360,warning=1.6,recovery=3,threat=4,activity=ACT_RUN,kind="arc",edict=2,contentId="raw",color=Color(110,215,190),dice={1,6,2}},
     interposer={name="Interposer",model="models/combine_super_soldier.mdl",baseHP=65,speed=140,damage=5.5,range=360,warning=1.2,recovery=3,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",companion=1,color=Color(125,175,225),dice={1,6,2}},
@@ -105,7 +107,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict or d.link)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -142,6 +144,20 @@ function E:Prepare(e)
 end
 function E:Cancel(e)
     local d=self.Definitions[e.LODArchetypeId]
+    if e.LODRosterAttack and e.LODRosterAttack.link then
+        local old=e.LODRosterAttack;e.LODRosterAttack=nil
+        self:RetireLink(e,old)
+        if not IsValid(e) or e.LODRosterAttack then return end
+        LOD.HostileMotionV2:Stop(e)
+        if not IsValid(e) or e.LODRosterAttack then return end
+        for _,field in ipairs({{"SetNW2Int","LOD_LinkMode",0},
+            {"SetNW2Int","LOD_LinkPhase",0},{"SetNW2Float","LOD_LinkUntil",0},
+            {"SetNW2Int","LOD_RosterAttack",0}}) do
+            e[field[1]](e,field[2],field[3])
+            if not IsValid(e) or e.LODRosterAttack then return end
+        end
+        return
+    end
     if e.LODRosterAttack and e.LODRosterAttack.edict then
         local old=e.LODRosterAttack;e.LODRosterAttack=nil
         self:RetireEdict(e,old)
@@ -199,7 +215,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource or a.crossfire or a.discipline or a.companion or a.edict) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource or a.crossfire or a.discipline or a.companion or a.edict or a.link) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -267,6 +283,7 @@ function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
+    if d.link then return self:BeginLink(e,p,now) end
     if d.edict then return self:BeginEdict(e,p,now) end
     if d.companion then return self:BeginCompanion(e,p,now) end
     if d.discipline then return self:BeginDiscipline(e,p,now) end
@@ -318,12 +335,12 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.discipline or attack.companion or attack.edict) and (not IsValid(e) or e.LODRosterAttack or not self:ValidSourceLife(attack.life)) then return end
-    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire or attack.discipline or attack.companion or attack.edict) then
+    if attack and (attack.discipline or attack.companion or attack.edict or attack.link) and (not IsValid(e) or e.LODRosterAttack or not self:ValidSourceLife(attack.life)) then return end
+    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire or attack.discipline or attack.companion or attack.edict or attack.link) then
         e.LODMeleeRecovery={life=attack.life,expires=attack.recoveryUntil or now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e)
-        if not (attack.discipline or attack.companion or attack.edict) or (IsValid(e) and not e.LODRosterAttack and self:ValidSourceLife(attack.life)) then e:_SetActivity(ACT_IDLE) end
+        if not (attack.discipline or attack.companion or attack.edict or attack.link) or (IsValid(e) and not e.LODRosterAttack and self:ValidSourceLife(attack.life)) then e:_SetActivity(ACT_IDLE) end
         return
     end
     local rate=LOD.RPGAbilityRules and LOD.RPGAbilityRules:RateOfFireMultiplier(e) or 1
@@ -367,6 +384,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.link then return self:StepLink(e,a,now) end
     if a.edict then return self:StepEdict(e,a,now) end
     if a.companion then return self:StepCompanion(e,a,now) end
     if a.discipline then return self:StepDiscipline(e,a,now) end
@@ -506,13 +524,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire and not d.discipline and not d.companion and not d.edict then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire and not d.discipline and not d.companion and not d.edict and not d.link then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.link and now<(e.LODLinkAdvanceUntil or 0)) or (d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)

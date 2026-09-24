@@ -20,6 +20,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     halter=Color(235,145,85),pacer=Color(90,215,225),
     interposer=Color(125,175,225),mourner=Color(195,125,215),
     censor=Color(210,170,110),surveyor=Color(110,215,190),
+    relay=Color(120,205,235),lacemaker=Color(235,155,205),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -936,6 +937,86 @@ function V:Edict(e)
     label(center+up*31,mode==2 and "REFUGE / LEAVE RING" or (phase==3 and "RETALIATION" or "CEASE FIRE"),
         string.format("%s %.1fs",mode==2 and "JUDGMENT" or (phase==1 and "PREPARE" or (phase==2 and "WATCH" or "FIRE")),math.max(0,ready-now)))
 end
+-- Link attacks publish only finite positions and phase times. The client never
+-- queries the moving ward or Hero; late observers reconstruct the same warning.
+function V:Link(e)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local mode=e:GetNW2Int("LOD_LinkMode",0);local phase=e:GetNW2Int("LOD_LinkPhase",0)
+    local function finite(n) return type(n)=="number" and n==n and math.abs(n)<math.huge end
+    local function vector(v) return v and finite(v.x) and finite(v.y) and finite(v.z) end
+    local now=CurTime();local started=e:GetNW2Float("LOD_LinkStarted",0)
+    local ready=e:GetNW2Float("LOD_LinkReady",0);local untilAt=e:GetNW2Float("LOD_LinkUntil",0)
+    if not ((id=="relay" and (mode==1 or mode==3) and phase==1)
+        or (id=="lacemaker" and ((mode==2 and (phase==1 or phase==2)) or (mode==3 and phase==1))))
+        or not e:GetNW2Bool("LOD_RosterAlive",false) or e:GetNW2Int("LOD_RosterAttack",0)~=1
+        or not finite(now) or not finite(started) or not finite(ready) or not finite(untilAt)
+        or now<started or now>=untilAt then return end
+    local warning=mode==2 and 1.2 or 1.4
+    local tail=mode==2 and 2.2 or .2
+    -- NW2 timestamps are floats: allow their quantization on long-lived servers.
+    if math.abs(ready-started-warning)>.05 or math.abs(untilAt-ready-tail)>.05
+        or (phase==2 and (now<ready or now>=ready+2))
+        or (phase==1 and now>ready+.2) then return end
+    local pos=e:GetPos();local eye=EyePos()
+    local origin=e:GetNW2Vector("LOD_LinkOrigin",nil);local aim=e:GetNW2Vector("LOD_LinkAim",nil)
+    local ward=e:GetNW2Vector("LOD_LinkWard",nil)
+    if not vector(pos) or not vector(eye) or not vector(origin) or not vector(aim)
+        or pos:DistToSqr(eye)>2400^2 or origin:DistToSqr(pos)>4^2
+        or origin:DistToSqr(aim)>432^2 then return end
+    if mode~=3 and (not vector(ward) or origin:DistToSqr(ward)>(mode==1 and 312^2 or 244^2)) then return end
+    local up=Vector(0,0,1);local color=colors[id]
+    local center=origin+up*90;local side=(eye-center):Angle():Right()
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 3,0,1,color) end
+    local function arrow(a,b)
+        local direction=(b-a):GetNormalized();local right=direction:Angle():Right()
+        line(a,b,2);line(b,b-direction*14+right*8,2);line(b,b-direction*14-right*8,2)
+    end
+    local function diamond(at,radius)
+        local points={at+up*radius,at+side*radius,at-up*radius,at-side*radius}
+        for i=1,4 do line(points[i],points[i%4+1]) end
+    end
+    local function label(at,text,countdown)
+        cam.Start3D2D(at,Angle(0,(eye-at):Angle().y-90,90),.16)
+        draw.SimpleText(text,"DermaLarge",0,-32,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+        if countdown then draw.SimpleText(countdown,"DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER) end
+        cam.End3D2D()
+    end
+    if mode==1 then
+        line(origin+up*48,ward,1);arrow(ward,aim)
+        diamond(center,15);diamond(ward,12)
+        label(ward+up*27,"SHOT ORIGIN")
+    elseif mode==2 then
+        local a,b=origin+up*3,ward+up*3
+        local delta=b-a;local length=math.sqrt(delta.x*delta.x+delta.y*delta.y)
+        if length<1 then return end
+        local right=Vector(-delta.y/length,delta.x/length,0)*18
+        -- Exact two edges and endpoint discs show the whole damaging capsule.
+        line(a+right,b+right);line(a-right,b-right)
+        for _,endpoint in ipairs({a,b}) do for i=1,24 do
+            local first,last=(i-1)*math.pi/12,i*math.pi/12
+            line(endpoint+Vector(math.cos(first)*18,math.sin(first)*18,0),
+                endpoint+Vector(math.cos(last)*18,math.sin(last)*18,0),2)
+        end end
+        line(a,b,phase==2 and 4 or 1)
+        -- Crossed laces read differently from Relay's linked diamonds in mono.
+        for i=0,2 do
+            local at=center+up*(12-i*12)
+            line(at-side*12,at+side*12-up*12);line(at+side*12,at-side*12-up*12)
+        end
+        label(b+up*35,"MOVING END")
+    else
+        arrow(origin+up*48,aim)
+        line(center-side*16,center+side*16);line(center-up*16,center+up*16)
+        diamond(center,20)
+    end
+    local duration=phase==2 and 2 or warning
+    local deadline=phase==2 and ready+2 or ready
+    local fraction=math.Clamp((deadline-now)/duration,0,1);local bar=center-up*36
+    line(bar-side*24,bar+side*(-24+48*fraction))
+    local instruction=mode==1 and "RELAY SHOT / BREAK LINK" or (mode==2 and "LEAVE RIBBON / BREAK LINK" or "SOURCE SHOT / SIDESTEP")
+    label(center+up*31,instruction,string.format("%s %.1fs",phase==2 and "ACTIVE" or "PREPARE",math.max(0,deadline-now)))
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -945,6 +1026,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="relay" or id=="lacemaker" then self:Link(e);return end
     if id=="censor" or id=="surveyor" then self:Edict(e);return end
     if id=="interposer" or id=="mourner" then self:Companion(e);return end
     if id=="halter" or id=="pacer" then self:Discipline(e);return end

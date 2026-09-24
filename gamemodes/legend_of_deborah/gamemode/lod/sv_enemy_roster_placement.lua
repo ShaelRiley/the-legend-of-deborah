@@ -41,7 +41,7 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict or d.link) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -49,7 +49,7 @@ function E:Placement(graph,c,id,role)
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
     end
-    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict then
+    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion or d.edict or d.link then
         -- Guard planes, marked attacks and movement demands need in-cell flank pockets,
         -- not a whole graph cycle that excludes otherwise escapable rooms.
         local exit
@@ -60,7 +60,8 @@ function E:Placement(graph,c,id,role)
         if not exit then return nil end
         local dir=N:CellCenter(exit)-center;dir.z=0;dir:Normalize()
         local side=Vector(-dir.y,dir.x,0)
-        if not clear(center,center+side*100) or not clear(center,center-side*100) then return nil end
+        local pocket=d.link and 96 or 100
+        if not clear(center,center+side*pocket) or not clear(center,center-side*pocket) then return nil end
         if d.edict==2 then
             -- Surveyor offers a 96-unit refuge and a 160-unit opposite escape.
             -- Either orientation suffices; real Hero hull/support is rechecked
@@ -156,6 +157,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    relay_detail={name="Relay Detail",composition={relay=1,soldier=1}},
+    lacemaker_detail={name="Lacemaker Detail",composition={lacemaker=1,runner=1}},
     censor_detail={name="Censor Detail",composition={censor=1,shambler=1}},
     surveyor_detail={name="Surveyor Detail",composition={surveyor=1,soldier=1}},
     interposer_detail={name="Interposer Detail",composition={interposer=1,soldier=1}},
@@ -1135,6 +1138,38 @@ function D:_EligibleTemplates(sector,role)
         end
         -- End B18 transfers.
     end
+    if sector>=2 and (role=="arena" or role=="ambush") then
+        -- B19 starts with four tickets per link identity, after inherited transfers.
+        for _=1,4 do out[#out+1]="relay_detail";out[#out+1]="lacemaker_detail" end
+        -- B19 measured transfers start.
+        local transfers=sector==2 and {
+            {"pavise_advance","relay_detail",17},
+            {"accumulator_detail","lacemaker_detail",6},
+            {"redliner_pressure","afterburst_detail",4},
+            {"reeler_chase","silencer_screen",5},
+            {"towline_detail","bombardier_pressure",2},
+        } or {
+            {"accumulator_detail","relay_detail",5},
+            {"carrion_feast","lacemaker_detail",5},
+            {"censer_advance","snarer_detail",1},
+            {"pavise_advance","screenwright_detail",3},
+            {"bulwark_line","shy_pressure",3},
+            {"stitcher_detail","exactor_pressure",2},
+            {"outrider_detail","fusilier_screen",3},
+            {"stitcher_detail","afterburst_detail",3},
+            {"absolver_detail","repulsor_screen",2},
+        }
+        for _,transfer in ipairs(transfers) do
+            local remaining=transfer[3]
+            for j=1,#out do
+                local i=sector==2 and j or (#out-j+1)
+                if remaining>0 and out[i]==transfer[1] then
+                    out[i]=transfer[2];remaining=remaining-1
+                end
+            end
+        end
+        -- B19 measured transfers end.
+    end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
@@ -1142,7 +1177,7 @@ end
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire or E.Definitions[k].discipline or E.Definitions[k].companion or E.Definitions[k].edict) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire or E.Definitions[k].discipline or E.Definitions[k].companion or E.Definitions[k].edict or E.Definitions[k].link) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

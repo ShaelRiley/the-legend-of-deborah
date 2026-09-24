@@ -1257,6 +1257,26 @@
       ]
     },
     {
+      "id": "enemy-links",
+      "title": "Break the relay and the living ribbon",
+      "rows": [
+        [
+          "Relay",
+          "The ice-blue Combine soldier draws a linked-diamond channel to one ordinary ally and a separate arrow from that ally toward your frozen position. RELAY SHOT warns for 1.4 seconds. The shot comes from the ally’s captured position, so watch the far end of the channel. Sidestep the fixed shot, interpose a body or solid cover, or defeat either endpoint."
+        ],
+        [
+          "Lacemaker",
+          "The rose Metrocop draws a ground ribbon to one ordinary ally. LEAVE RIBBON warns for 1.2 seconds before the ribbon becomes ACTIVE for two seconds. Its double edge encloses an 18-unit radius. The source stays still while the ally continues its own ordinary movement: bait the ally to rotate the line away, leave the ribbon, break the tether with cover, or defeat either endpoint."
+        ]
+      ],
+      "text": [
+        "The Relay’s arrow never tracks your new position or the ally’s movement. The first body or solid wall absorbs its single physical 1d6+2 shot before ordinary defenses; intervening enemies receive no damage from it. Moving the ally more than 32 units from its captured position cancels the channel.",
+        "The Lacemaker’s live ribbon can deliver at most one physical 1d6+2 hit to the originally captured Hero, subject to ordinary defenses. Other Heroes and enemies receive no ribbon damage. The ally remains in the same legal room, within 96 units of its starting position; a sudden move, unsupported ground or broken connection cancels the ribbon. There is no invisible lingering trail.",
+        "Without an eligible ally, either enemy displays SOURCE SHOT and a fixed arrow from its own body for a full 1.4 seconds. Leave that lane, use a body or solid cover, or interrupt the source. The shot uses the same ordinary physical defenses and recovery.",
+        "Every commitment belongs to the exact source, original Hero and captured ally lives. Death, replacement life, reset, excessive displacement or invalid geometry cancels it. Held and Muted permit these stationary physical actions; morale flight and hit-stun interrupt the attacker. Neither enemy creates extra bodies or shared health. Three seconds of recovery follow each commitment. Distinct glyphs, endpoint labels, literal instructions and countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

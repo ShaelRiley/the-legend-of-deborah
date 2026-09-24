@@ -78,13 +78,13 @@ local bosses={neil=true,brute=true,warden=true,hector=true}
 for id in pairs(LOD.RPG.ArchetypeProgressionTemplates) do
     if bosses[id] then named=named+1 else normal=normal+1 end
 end
-assert(normal==61 and named==4,'61 ordinary archetypes and four separately counted named bosses')
+assert(normal==63 and named==4,'63 ordinary archetypes and four separately counted named bosses')
 
 local spawnSource=assert(io.open(root..'sv_encounter_spawn_variance.lua','r'))
 local spawnText=spawnSource:read('*a');spawnSource:close()
 local order={}
 for id in assert(spawnText:match('local SPAWN_ORDER = {(.-)}')):gmatch('"([^"]+)"') do order[#order+1]=id end
-assert(#order==59 and order[56]=='interposer' and order[57]=='mourner'
+assert(#order==61 and order[56]=='interposer' and order[57]=='mourner'
     and order[58]=='censor' and order[59]=='surveyor','append-only production spawn ordinals58/59')
 local expected={
     censor={die=8,xp=50,magic=false,abilities={11,12,12,13,12,10},fighter=50,rogue=50,wizard=0,morale=5},

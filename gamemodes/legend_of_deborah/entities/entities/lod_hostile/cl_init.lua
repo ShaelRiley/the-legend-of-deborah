@@ -116,6 +116,10 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "relay" or archetype == "lacemaker" then
+        -- Source-to-Hero feet360 plus center72, marks and source drift4.
+        -- Also contains a moving ward within240 plus ribbon radius18.
+        ent:SetRenderBounds(Vector(-452,-452,math.min(-452,mins.z*size)),Vector(452,452,math.max(452,maxs.z*size)))
     elseif archetype == "censor" or archetype == "surveyor" then
         -- Surveyor feet360 + escape160 + source drift4; Censor center432.
         ent:SetRenderBounds(Vector(-532,-532,math.min(-532,mins.z*size)),Vector(532,532,math.max(532,maxs.z*size)))
