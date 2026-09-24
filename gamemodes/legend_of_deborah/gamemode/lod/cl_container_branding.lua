@@ -32,10 +32,10 @@ function Brand.MaterialFor(id, slot)
     if not source or source:IsError() then return nil, path end
     local texture = source:GetTexture("$basetexture")
     if not texture or texture:IsError() then return nil, path end
-    local material = cached and cached.material or CreateMaterial("lod_crate_brand_c1_"..slot,
-        "VertexLitGeneric", {["$basetexture"]="vgui/white", ["$model"]="1",
+    local material = cached and cached.material or CreateMaterial("lod_crate_brand_c3_"..slot,
+        "UnlitGeneric", {["$basetexture"]="vgui/white",
         ["$alphatest"]="1", ["$alphatestreference"]="0.1", ["$vertexcolor"]="1",
-        ["$vertexalpha"]="1", ["$nocull"]="0", ["$halflambert"]="1"})
+        ["$vertexalpha"]="1", ["$nocull"]="0"})
     if not material or material:IsError() then return nil, path end
     material:SetTexture("$basetexture", texture)
     if material.Recompute then material:Recompute() end
@@ -44,9 +44,13 @@ function Brand.MaterialFor(id, slot)
     return material, path
 end
 
+local retrySelectionAt = 0
 local function ensureSelection()
     local seed = tonumber(Wall.seed) or 0
     if selectedSeed == seed and selectedId and selectedMaterial then return true end
+    local now = CurTime()
+    if selectedSeed == seed and not selectedMaterial and now < retrySelectionAt then return false end
+    retrySelectionAt = now + 2
     selectedSeed, selectedId = seed, C.BrandID(seed)
     selectedMaterial, selectedPath = Brand.MaterialFor(selectedId)
     return selectedMaterial ~= nil
@@ -484,11 +488,12 @@ end
 
 function Brand.Draw(model, id, material, eyePos, showSafeArea)
     local fit = C.FitBrand(id)
-    if not fit or not material or not IsValid(model) then return end
-    local mins, maxs = model:GetRenderBounds()
-    local spanY, spanZ = maxs.y-mins.y, maxs.z-mins.z
-    -- Do not guess a replacement model's UVs or show a clipped/error billboard.
-    if spanY < C.SafeWidth+128 or spanZ < C.SafeHeight+24 then return end
+    if not fit or not material or not IsValid(model) then return false, "invalid-input" end
+    if model:GetModel() ~= LOD.Config.Geometry.ContainerModel then return false, "wrong-model" end
+    -- GetRenderBounds is a culling volume and can be zero/expanded before drawing.
+    -- Use the inspected stock mesh bounds for physical anchors, never that volume.
+    local mins, maxs = C.CargoMins, C.CargoMaxs
+    local spanZ = maxs.z-mins.z
     local side = model:GetForward():Dot(eyePos-model:GetPos()) >= 0 and 1 or -1
     local x = side>0 and maxs.x+C.SurfaceOffset or mins.x-C.SurfaceOffset
     local center = model:LocalToWorld(Vector(x,(mins.y+maxs.y)*0.5,mins.z+spanZ*0.55))
@@ -511,12 +516,14 @@ function Brand.Draw(model, id, material, eyePos, showSafeArea)
             center+horizontal*w-up*h,center-horizontal*w-up*h}
         for i=1,4 do render.DrawLine(points[i],points[i%4+1],Color(255,200,40),true) end
     end
+    return true
 end
 
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding")
 hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(depth,sky,sky3d)
     if depth or sky or sky3d then return end
+    Brand.lastDrawCount, Brand.lastSkippedCount, Brand.lastSkipReason = 0, 0, nil
     local world = Wall.world or {}
     if #world==0 or not IsValid(LocalPlayer()) or not ensureSelection() then return end
     local started=SysTime and SysTime() or 0
@@ -545,8 +552,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(dept
         if a.distance~=b.distance then return a.distance<b.distance end
         return a.index<b.index
     end)
-    Brand.lastDrawCount=math.min(#candidates,C.MaxBrandDraws)
-    for i=1,Brand.lastDrawCount do Brand.Draw(candidates[i].model,selectedId,selectedMaterial,eyePos) end
+    for i=1,math.min(#candidates,C.MaxBrandDraws) do
+        local drawn, reason = Brand.Draw(candidates[i].model,selectedId,selectedMaterial,eyePos)
+        if drawn then Brand.lastDrawCount = Brand.lastDrawCount + 1
+        else Brand.lastSkippedCount = Brand.lastSkippedCount + 1; Brand.lastSkipReason = reason end
+    end
     Brand.lastRenderMilliseconds=SysTime and (SysTime()-started)*1000 or nil
 end)
 
@@ -555,6 +565,8 @@ function Brand.Summary()
     if #world>0 then ensureBrandPlacement(world) end
     local ok=ensureSelection()
     return {brandID=selectedId,company=selectedId and LOD.CrateBrandMetadata[selectedId].name,
+        shader=selectedMaterial and selectedMaterial:GetShader() or "missing",
+        skipped=Brand.lastSkippedCount or 0,skipReason=Brand.lastSkipReason,
         material=selectedPath,materialOK=ok,loadedTextures=table.Count(loadedBrands),
         shaderSlots=table.Count(materialSlots),branded=brandedCount,containers=#world,
         cap=globalBrandCap,geometryBlocked=geometryBlockedCount,safeWidth=C.SafeWidth,

@@ -10,20 +10,76 @@ local READER_HOUSING_COLOR = Color(28, 31, 33, 255)
 local READER_SLOT_COLOR = Color(10, 12, 13, 255)
 local GATE_SIGN_HEIGHT = 126
 local GATE_READER_HEIGHT = 62
-local GATE_TEXTURE_TILE = GC.FloorTextureTile or 256
+local GATE_TEXTURE_TILE = GC.GateTextureTile or 128
 local GATE_BODY_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 64
 local PROGRESSION_LABEL_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 16
 
 LOD.ProgressionRenderStats = LOD.ProgressionRenderStats or {}
 local RenderStats = LOD.ProgressionRenderStats
 
--- Keep the gate and decks in one material language, but use the flattened
--- no-bump/no-phong wrapper so the grip pattern cannot masquerade as geometry.
+-- Dedicated stock metal is used only if the native blast-door model cannot load.
+-- Never ask the deck material resolver: its successful result is concrete.
 local function gateMetalMaterial()
-    if LOD.TexturedBox and LOD.TexturedBox.GetIndustrialMaterial then
-        return LOD.TexturedBox:GetIndustrialMaterial(GC.FloorMaterialFallback)
-    end
-    return Material(GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+    return Material(GC.GateMaterial or "models/props_c17/FurnitureMetal001a")
+end
+
+-- One reusable presentation model for every gate, not one entity per gate/frame.
+-- Server blockers, readers and all progression/event ownership remain untouched.
+LOD.GatePresentation = LOD.GatePresentation or {}
+local GateVisual = LOD.GatePresentation
+if GateVisual.Clear then GateVisual.Clear() end
+local gateModel, modelScale, modelCenter, thinY
+local retryAt = 0
+function GateVisual.Clear()
+    if IsValid(gateModel) then gateModel:Remove() end
+    gateModel, modelScale, modelCenter, thinY = nil, nil, nil, nil
+    retryAt = 0
+end
+hook.Add("PostCleanupMap", "LOD_GatePresentation", GateVisual.Clear)
+hook.Add("ShutDown", "LOD_GatePresentation", GateVisual.Clear)
+
+local function stockGateModel()
+    if IsValid(gateModel) then return gateModel end
+    if CurTime() < retryAt then return nil end
+    retryAt = CurTime() + 2
+    -- Also permits headless registry checks without pretending a native model exists.
+    if not ClientsideModel then return nil end
+    if util and util.IsValidModel and not util.IsValidModel(GC.GateModel) then return nil end
+    local model = ClientsideModel(GC.GateModel, RENDERGROUP_OPAQUE)
+    if not IsValid(model) then return nil end
+    model:SetNoDraw(true)
+    model:DrawShadow(false)
+    local mins, maxs = model:GetModelBounds()
+    local span = maxs - mins
+    if span.x <= 0 or span.y <= 0 or span.z <= 0 then model:Remove(); return nil end
+    thinY = span.y < span.x
+    modelScale = Vector((thinY and PC.GateWidth or PC.GateThickness) / span.x,
+        (thinY and PC.GateThickness or PC.GateWidth) / span.y, GATE_VISUAL_HEIGHT / span.z)
+    modelCenter = Vector((mins.x + maxs.x) * 0.5 * modelScale.x,
+        (mins.y + maxs.y) * 0.5 * modelScale.y, (mins.z + maxs.z) * 0.5 * modelScale.z)
+    local matrix = Matrix(); matrix:Scale(modelScale)
+    model:EnableMatrix("RenderMultiply", matrix)
+    model:SetRenderBounds(Vector(mins.x*modelScale.x,mins.y*modelScale.y,mins.z*modelScale.z),
+        Vector(maxs.x*modelScale.x,maxs.y*modelScale.y,maxs.z*modelScale.z))
+    gateModel = model
+    return model
+end
+
+function GateVisual.Draw(center, axis)
+    local model = stockGateModel()
+    if not model then return false end
+    local yaw = (axis == 0 and 0 or 90) + (thinY and 90 or 0)
+    local ang = Angle(0, yaw, 0)
+    local offset = ang:Forward()*modelCenter.x - ang:Right()*modelCenter.y + ang:Up()*modelCenter.z
+    model:SetPos(center - offset); model:SetAngles(ang)
+    model:SetColor(color_white)
+    model:SetupBones()
+    model:DrawModel()
+    return true
+end
+function GateVisual.Summary()
+    return {model=GC.GateModel, loaded=IsValid(gateModel), fallbackMaterial=GC.GateMaterial,
+        stockBodies=RenderStats.gateStockBodies or 0, fallbackBodies=RenderStats.gateFallbackBodies or 0}
 end
 
 local solidMaterial = CreateMaterial("lod_gate_solid_v3", "UnlitGeneric", {
@@ -156,9 +212,11 @@ local function gateCard(ent)
     return PC.Cards[math.Clamp(ent:GetGateIndex(),1,4)]
 end
 
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
+hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function(depth, sky, sky3d)
+    if depth or sky or sky3d then return end
     local eyePos = EyePos()
     local registered, drawn, culled = 0, 0, 0
+    local stockBodies, fallbackBodies = 0, 0
     for ent in pairs(LOD.ClientGates) do
         if IsValid(ent) and networkReady(ent) then
             registered = registered + 1
@@ -170,14 +228,19 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
 
                 if frac < 1 then
                     local center = ent:GetPos() + Vector(0, 0, GATE_VISUAL_HEIGHT * frac)
-                    local material = gateMetalMaterial()
-                    if LOD.TexturedBox and LOD.TexturedBox.Draw then
-                        LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, material, GATE_METAL_COLOR, GATE_TEXTURE_TILE)
+                    if GateVisual.Draw(center, ent:GetGateAxis()) then
+                        stockBodies = stockBodies + 1
                     else
-                        render.SetMaterial(material)
-                        render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
+                        fallbackBodies = fallbackBodies + 1
+                        local material = gateMetalMaterial()
+                        if LOD.TexturedBox and LOD.TexturedBox.Draw then
+                            LOD.TexturedBox:Draw(center, angle_zero, mins, maxs, material, GATE_METAL_COLOR, GATE_TEXTURE_TILE)
+                        else
+                            render.SetMaterial(material)
+                            render.DrawBox(center, angle_zero, mins, maxs, GATE_METAL_COLOR)
+                        end
+                        drawReinforcement(ent, center)
                     end
-                    drawReinforcement(ent, center)
                     drawColorBand(ent, center, card.color)
                 end
 
@@ -187,6 +250,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawSecurityGates", function()
             end
         end
     end
+    RenderStats.gateStockBodies, RenderStats.gateFallbackBodies = stockBodies, fallbackBodies
     RenderStats.gates = registered
     RenderStats.gateBodiesDrawn = drawn
     RenderStats.gateBodiesCulled = culled
@@ -230,6 +294,7 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_DrawSecurityGateLabels", functio
 end)
 
 concommand.Add("lod_progression_render_status", function()
+    print("[LOD:GATE-ASSET] " .. util.TableToJSON(GateVisual.Summary()))
     local stats = LOD.ProgressionRenderStats or {}
     local gates = stats.gates or 0
     local keycards = stats.keycards or 0

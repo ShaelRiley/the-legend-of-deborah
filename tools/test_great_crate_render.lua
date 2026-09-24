@@ -1,6 +1,7 @@
 -- Execute real fit renderer and mesh UV compiler; Source-only boundaries doubled.
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local noop=function() end
+CurTime=function() return 100 end
 local V={};V.__index=V
 function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},V) end
 V.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
@@ -21,11 +22,11 @@ dofile(root..'sh_config.lua');dofile(root..'sh_rng.lua');dofile(root..'sh_crate_
 local loads,creates=0,0
 function Material(path)
  loads=loads+1
- return {IsError=function() return false end,GetTexture=function() return {IsError=function() return false end} end}
+ return {IsError=function() return false end,GetTexture=function() return {IsError=function() return false end} end,GetShader=function() return "UnlitGeneric" end}
 end
 function CreateMaterial(name,shader,args)
- creates=creates+1;assert(args['$nocull']=='0' and args['$alphatest']=='1')
- return {SetTexture=noop,Recompute=noop,IsError=function() return false end}
+ creates=creates+1;assert(shader=='UnlitGeneric' and args['$nocull']=='0' and args['$alphatest']=='1')
+ return {SetTexture=noop,Recompute=noop,IsError=function() return false end,GetShader=function() return "UnlitGeneric" end}
 end
 render={SetMaterial=noop,SetColorModulation=noop,SetBlend=noop,DrawLine=noop}
 MATERIAL_QUADS=7
@@ -49,7 +50,9 @@ Brand.MaterialFor(256);assert(creates==1)
 Brand.MaterialFor(1,'preview');assert(creates==2)
 local model={pos=Vector(),yaw=0}
 function model:GetPos() return self.pos end
-function model:GetRenderBounds() return Vector(-64,-195,-64),Vector(64,195,64) end
+-- Regression: culling bounds can be empty; physical anchors must still render.
+function model:GetRenderBounds() return Vector(),Vector() end
+function model:GetModel() return LOD.Config.Geometry.ContainerModel end
 function model:GetForward() return Vector(math.cos(self.yaw),math.sin(self.yaw),0) end
 function model:GetRight() return Vector(math.sin(self.yaw),-math.cos(self.yaw),0) end
 function model:GetUp() return Vector(0,0,1) end
@@ -66,7 +69,7 @@ for _,yaw in ipairs({0,90,180,270}) do
    for _,v in ipairs(vertices) do
     local p=v.pos-model.pos
     assert(math.abs(p:Dot(model:GetRight()))<=C.SafeWidth*.5+1e-8)
-    assert(math.abs(p:Dot(model:GetForward())-side*(64+C.SurfaceOffset))<1e-8)
+    assert(math.abs(p:Dot(model:GetForward())-(side>0 and C.CargoMaxs.x+C.SurfaceOffset or C.CargoMins.x-C.SurfaceOffset))<1e-8)
     assert(v.u>=0 and v.u<=1 and v.v>=0 and v.v<=1)
     assert(v.color.r==255 and v.color.g==255 and v.color.b==255 and v.color.a==255)
    end
@@ -74,6 +77,10 @@ for _,yaw in ipairs({0,90,180,270}) do
   end
  end
 end
+-- Wrong models must not receive guessed anchors; actual draw count excludes them.
+local oldModel=model.GetModel; model.GetModel=function() return "models/error.mdl" end
+local ok,why=Brand.Draw(model,1,mat,Vector());assert(not ok and why=='wrong-model')
+model.GetModel=oldModel
 -- Hard draw cap in a deliberately excessive visible population; depth/sky skip.
 local w=LOD.WallVisualsClient;w.labelBuckets[0]={['0:0']={}}
 model.pos=Vector(-3840,-3840,64)
@@ -84,7 +91,50 @@ end
 function LocalPlayer() return {} end
 function EyePos() return Vector(-3840,-3840,64) end
 hooks.LOD_DrawContainerBranding();assert(Brand.lastDrawCount==64)
+model.GetModel=function() return "models/error.mdl" end
+hooks.LOD_DrawContainerBranding();assert(Brand.lastDrawCount==0 and Brand.lastSkippedCount==64)
+model.GetModel=oldModel;hooks.LOD_DrawContainerBranding();assert(Brand.lastDrawCount==64)
 local before=vertices;hooks.LOD_DrawContainerBranding(true);assert(vertices==before)
+-- Exercise the real wall compiler -> eligibility -> placement -> bucket renderer.
+-- Earlier coverage injected companyBranded=true and never crossed these seams.
+function model:Remove() self.valid=false end
+surface={CreateFont=noop};net={Receive=noop}
+function Angle(p,y,r) return {p=p,y=y,r=r} end
+function ClientsideModel(path)
+ local m=setmetatable({pos=Vector(),yaw=0,valid=true},{__index=model})
+ function m:SetNoDraw() end
+ function m:SetPos(p) self.pos=p end
+ function m:SetAngles(a) self.yaw=math.rad(a.y) end
+ m.SetSkin=noop;m.SetMaterial=noop;m.SetColor=noop;m.DrawShadow=noop
+ function m:Remove() self.valid=false end
+ return m
+end
+dofile(root..'cl_wall_visuals.lua')
+w.logical={};w.seed=725;w.origin=Vector();w.dirty=true
+for x=2,20 do w.logical[#w.logical+1]={x,10,0,1} end
+hooks.LOD_BuildProceduralContainerWalls()
+assert(#w.world==38)
+-- Simulate a subset reserved for wayfinding, then run real brand placement.
+for i,instance in ipairs(w.world) do instance.marked=i%7==0 end
+w.markRevision=1
+hooks.LOD_RebuildSparseContainerBrandPlacement()
+local chosen,edges,endpoints=0,{},{}
+for _,instance in ipairs(w.world) do
+ if instance.companyBranded then
+  chosen=chosen+1;assert(not instance.marked and instance.brandSurfaceEligible)
+  assert(not edges[instance.overlayEdgeKey]);edges[instance.overlayEdgeKey]=true
+  local prefix=tostring(instance.stackIndex)..':'..instance.overlayOrientation..':'
+  for _,endpoint in ipairs({instance.overlayEndpointA,instance.overlayEndpointB}) do
+   assert(not endpoints[prefix..endpoint]);endpoints[prefix..endpoint]=true
+  end
+ end
+end
+assert(chosen>0 and chosen<=math.floor(#w.world*.4),'brand selection is empty/unbounded')
+EyePos=function() return Vector(0,-384,64) end
+hooks.LOD_DrawContainerBranding();assert(Brand.lastDrawCount>0,'compiled brands never reach rendering')
+local selected={};for i,v in ipairs(w.world) do selected[i]=v.companyBranded end
+w.markRevision=2;hooks.LOD_RebuildSparseContainerBrandPlacement()
+for i,v in ipairs(w.world) do assert(selected[i]==v.companyBranded,'placement is nondeterministic') end
 -- Actual world-aligned UVs agree at every shared seam, including rotated slabs.
 dofile(root..'cl_textured_box.lua')
 local B=LOD.TexturedBox

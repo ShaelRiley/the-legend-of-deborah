@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Great Crate Stock Gates & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_great_crate_gates.lua"]),
     ("Great Crate Stock Hull Assets", ["python3", "tools/test_great_crate_hull.py"]),
     ("Great Crate Hull Candidate Reconciliation", ["python3", "tools/run_lua54.py", "tools/test_great_crate_hull_runtime.lua"]),
     ("Great Crate Original Assets & Safe Fit", ["python3", "tools/test_great_crate_assets.py"]),

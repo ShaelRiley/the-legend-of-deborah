@@ -21,9 +21,9 @@ concommand.Add("lod_crate_preview",function()
     if IsValid(frame) then frame:Remove() end
     frame=vgui.Create("DFrame")
     frame:SetSize(math.min(1060,ScrW()-40),math.min(780,ScrH()-40))
-    frame:Center();frame:SetTitle("Great Crate — C2 hull candidate / native inspection");frame:MakePopup()
+    frame:Center();frame:SetTitle("Great Crate — C3 repair / native inspection");frame:MakePopup()
     local note=vgui.Create("DLabel",frame);note:Dock(TOP);note:SetTall(44);note:SetWrap(true)
-    note:SetText("Drag to orbit; wheel to zoom. Gold outline is the safe area. C2 candidate is selected here only; compare with fallback. Native acceptance is pending. Grates retain solid collision and cover in the maze.")
+    note:SetText("Drag to orbit; wheel to zoom. Gold outline is the safe area. Repaired hull is the maze default; compare with legacy fallback. Native acceptance is pending. Grates retain solid collision and cover in the maze.")
     local controls=vgui.Create("DPanel",frame);controls:Dock(TOP);controls:SetTall(30)
     local brands=vgui.Create("DComboBox",controls);brands:Dock(LEFT);brands:SetWide(400)
     local selected=0
@@ -44,7 +44,7 @@ concommand.Add("lod_crate_preview",function()
         local c=colors[i][2];tint=Vector(c.r/255,c.g/255,c.b/255);hull:SetVector("$color2",tint)
     end
     local hullChoice=vgui.Create("DCheckBoxLabel",controls);hullChoice:Dock(LEFT);hullChoice:SetWide(140)
-    hullChoice:SetText("C2 hull candidate");hullChoice:SetValue(1)
+    hullChoice:SetText("Repaired hull");hullChoice:SetValue(1)
     hullChoice.OnChange=function(_,value)
         candidate=value
         hull=value and Material(LOD.CrateHull.PreviewMaterial) or hullMaterial()
@@ -87,8 +87,9 @@ local function summary()
         if e:GetNW2Bool("LOD_CrateGrate",false) then grates=grates+1 end
     end
     local info={model=GC.ContainerModel,hull=LOD.CrateHull.CandidateEnabled() and LOD.CrateHull.Texture or "metal/metalwall001a",
-        hullRepair="c2-candidate-native-acceptance-pending",
+        hullRepair="c3-repair-native-retest-pending",
         candidateEnabled=LOD.CrateHull.CandidateEnabled(),candidateSamplerValid="not-requested",
+        gate=LOD.GatePresentation and LOD.GatePresentation.Summary() or nil,
         normal="models/props_wasteland/cargo_container01_normal",floor=GC.FloorMaterial,
         floorFallback=fallback,floorStyle=C.FloorStyle,
         grates=grates,grateStyle=C.GrateStyle,brand=LOD.CrateBranding.Summary(),seed=wall.seed,

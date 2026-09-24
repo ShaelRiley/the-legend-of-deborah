@@ -46,7 +46,7 @@ assert 'ContainerModel = "models/props_wasteland/cargo_container01.mdl"' in conf
 floor=ROOT/'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/crate/concrete.vmt'
 assert 'VertexLitGeneric' in floor.read_text() and 'concrete/concretefloor001a' in floor.read_text()
 brand=(ROOT/'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua').read_text()
-assert 'CreateMaterial("lod_crate_brand_c1_"..slot' in brand
+assert 'CreateMaterial("lod_crate_brand_c3_"..slot' in brand
 assert 'source:GetTexture("$basetexture")' in brand and 'sprayPaintColor' not in brand
 assert 'instance.marked' in brand and 'C.MaxBrandDraws' in brand
 assert 'container_brand_spray_atlas' not in brand and 'UV_INSET' not in brand

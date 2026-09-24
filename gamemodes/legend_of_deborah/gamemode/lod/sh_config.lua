@@ -61,6 +61,10 @@ C.Geometry = {
     FloorThickness = 32,
     -- One neutral stock concrete identity; project VMT supports lit model meshes.
     -- Global XY-aligned UVs cross rows and rotated stair aprons without seams.
+    -- Gate identity is independent of the approved concrete deck.
+    GateModel = "models/props_lab/blastdoor001c.mdl",
+    GateMaterial = "models/props_c17/FurnitureMetal001a",
+    GateTextureTile = 128,
     FloorMaterial = "legend_of_deborah/crate/concrete",
     FloorMaterialFallback = "models/props_c17/FurnitureMetal001a",
     -- Broad tiling reduces visual repetition and keeps the deck reading as one

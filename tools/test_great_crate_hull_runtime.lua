@@ -23,9 +23,9 @@ local hooks,callbacks={},{}
 hook={Add=function(_,id,f) hooks[id]=f end}
 concommand={Add=noop}
 cvars={AddChangeCallback=function(id,f) callbacks[id]=f end}
-local enabled=false
+local enabled=true
 function CreateClientConVar(id,default,archive,userinfo)
- assert(id=='lod_crate_hull_candidate' and default=='0' and not archive and not userinfo)
+ assert(id=='lod_crate_hull_candidate' and default=='1' and not archive and not userinfo)
  return {GetBool=function() return enabled end}
 end
 local broken=nil
@@ -62,6 +62,8 @@ local function settle()
 end
 local function set(value) enabled=value;callbacks.lod_crate_hull_candidate() end
 settle()
+for _,m in ipairs(Wall.models) do assert(m.material:find('/crate/sections/c2_',1,true),'repaired default missing') end
+set(false);settle()
 local baseline={}
 for i,m in ipairs(Wall.models) do
  assert(m.material:find('/container_sections/v19_',1,true) and not m.sub and m.color.r==255)
@@ -84,4 +86,4 @@ assert(Wall.models[1].material:find('/crate/sections/c2_',1,true))
 -- A replacement client-model table is reconciled even after the previous pass is idle.
 local replacement={};for i,m in ipairs(Wall.models) do replacement[i]=m;m.material='stale' end
 Wall.models=replacement;settle();assert(replacement[1].material:find('/crate/sections/c2_',1,true))
-print('CRATE_HULL_RUNTIME_PASS: default off; 600 models; unchanged palette; <=192 writes/batch; on/off; 5 material/sampler failures fall back; recovery and replacement-model reconciliation; idle quiescence')
+print('CRATE_HULL_RUNTIME_PASS: repaired default on, legacy recovery; 600 models; unchanged palette; <=192 writes/batch; on/off; 5 material/sampler failures fall back; recovery and replacement-model reconciliation; idle quiescence')

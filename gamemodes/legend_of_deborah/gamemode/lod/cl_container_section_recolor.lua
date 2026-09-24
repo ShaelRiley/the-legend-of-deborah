@@ -49,10 +49,10 @@ local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
 
--- C2 is a native-test candidate, never silently promoted from static evidence.
--- Non-archived: each client session starts on the previously accepted fallback.
-local hullCandidate = CreateClientConVar("lod_crate_hull_candidate", "0", false, false,
-    "Opt into the C2 stock-derived hull for local native acceptance", 0, 1)
+-- C3: the author rejected the old default. Show the repaired hull on restart;
+-- this remains a native-retest candidate. Zero is the explicit recovery switch.
+local hullCandidate = CreateClientConVar("lod_crate_hull_candidate", "1", false, false,
+    "Use the repaired stock hull; 0 selects the legacy recovery material", 0, 1)
 LOD.CrateHull = {}
 local Hull = LOD.CrateHull
 Hull.Texture = "legend_of_deborah/crate/hull_c2"

@@ -10,7 +10,7 @@ pending). This revision changes planning/documentation only.
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate Update — C3 native closure next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
+| 1 | **Great Crate Update — C3 repair; native retest pending** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
 | 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
 | 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
 | 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
@@ -93,7 +93,27 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — Great Crate C2; native evidence then C3 closure
+## Current checkpoint — Great Crate C3; final repair, native retest pending
+
+Baseline655ca0c7c126a66bacc5c39f67cffbd810cd4089. Author rejects the old hull,
+absent sprays and concrete gates; explicitly approves the shown floor. Corrected
+default now uses the repaired stock hull, with reversible recovery. Brand quads
+use an independent mesh-safe shader and inspected physical cargo anchors; actual
+emitted draws/skips are counted. Gates use one shared stock HL2 blast-door model,
+measured transform and native material, plus dedicated stock-metal fallback.
+Preserve approved concrete, all collision, progression, event barriers and RNG.
+Targeted checks and canonical integration are recorded in validation/GREAT_CRATE_C3.md.
+Recovery completed a fresh canonical run: **221 suites passed, zero failures**.
+GDD00/01/05/07 mirror the author-directed correction. No VPS/Workshop deployment.
+
+C3 exhausts the three-pass implementation budget. Native repair acceptance,
+successive-seed residency/frame-time measurements and remaining brief exits are
+explicitly open in that evidence; Great Crate is not declared finished. Any further
+feature repair is deferred carryover before dependent work, with no silent C4 and
+no deferral of a fatal/game-breaking regression. Preserve the immediate and deferred
+roadmap above. Next action is the compact local C3 retest, not more speculative art.
+
+## Previous checkpoint — Great Crate C2; native evidence then C3 closure
 
 Built on verified `bdfaf6c860a24934d348dbb46b8fc31251455b2c`. The author supplied
 all11 mounted stock files; source CRC/SHA receipts, independent active diffuse/

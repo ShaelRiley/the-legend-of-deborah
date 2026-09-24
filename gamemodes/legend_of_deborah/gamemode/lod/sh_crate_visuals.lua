@@ -4,6 +4,9 @@ local C = LOD.CrateVisuals
 
 -- Only presentation constants live here. Graph, collision and section palette
 -- retain their existing owners. Long face is local Y; normal is local +/-X.
+-- Actual canonical cargo VVD bounds (CRATE_HULL_C2.json), not a render-culling box.
+C.CargoMins = Vector(-63.051464, -192.100876, -60.343300)
+C.CargoMaxs = Vector(64.947823, 195.440399, 67.656700)
 C.SafeWidth = 240
 C.SafeHeight = 78
 C.FitMargin = 0.94

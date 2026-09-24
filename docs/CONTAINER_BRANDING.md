@@ -1,4 +1,16 @@
-# Current authority — Great Crate C2 candidate
+# Current authority — Great Crate C3 repair
+
+The author rejected C2's ordinary default presentation and approved the floor.
+The repaired stock-derived hull now defaults on;0 remains the explicit recovery
+switch. Company quads use an independent UnlitGeneric shader and inspected cargo
+bounds, with actual emitted-draw diagnostics. Gates use a real shared stock HL2
+blast-door model and native materials, with a separate stock-metal fallback.
+Concrete and gate appearance no longer share a resolver. Floor presentation and
+collision are unchanged. Read [C3 evidence](validation/GREAT_CRATE_C3.md) for the
+failed screenshots, exact diagnosis, validation and required native retest.
+This is the final implementation pass, not completed native acceptance.
+
+# Previous authority — Great Crate C2 candidate
 
 C2 resolves C1's source-access blocker and provides a stock-derived neutral hull,
 actual UV/source receipts and a reversible native test path. Read
