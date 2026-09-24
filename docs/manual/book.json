@@ -1219,6 +1219,25 @@
       ]
     },
     {
+      "id": "enemy-companions",
+      "title": "Break the bodyguard and the oath",
+      "rows": [
+        [
+          "Interposer",
+          "The blue Combine elite warns BODYGUARD for 0.8 seconds, then moves its own body along the frozen route toward an ally’s firing line. Its shield glyph stays on its actual body. Flank, change angle, use piercing or area attacks, interrupt, or defeat it. The route never follows your new position; its arrival hold lasts at most two seconds."
+        ],
+        [
+          "Mourner",
+          "The violet Metrocop warns OATH for 0.8 seconds, then binds one ordinary ally for three seconds. If that exact ally is legitimately defeated during the armed oath, the broken-oath glyph and RETALIATION announce a separate, full 1.2-second shot warning against the original Hero. Prioritize the Mourner, break the tether, wait out the oath, or defeat its ally and evade the warned shot."
+        ]
+      ],
+      "text": [
+        "The Interposer grants no Block, immunity or damage diversion: ordinary body interception alone can protect the ward, so protection is never guaranteed. Held prevents its movement. The Mourner grants no resurrection or extra rewards; an old corpse cannot trigger its oath. The killer does not become a new retaliation target.",
+        "Without an eligible ally, either enemy warns SHOT for 1.2 seconds. Every fallback or retaliation shot freezes the original Hero’s visible position when that shot warning begins, then releases one physical 1d6+2 packet before ordinary defenses. Leave the fixed lane, use cover or another body, or interrupt the attacker. The first actual body or wall blocks the shot; an intervening enemy is not damaged by it. Each attack ends in three seconds of recovery.",
+        "Only one bodyguard or oath can reserve an ordinary ally at a time. Breaking sight, leaving range, displacing the stationary source or ward, or defeating the source cancels the commitment. Held permits stationary oaths and shots; Muted permits these physical actions. Morale flight and hit-stun cancel them. BODYGUARD, OATH, RETALIATION and SHOT labels, route or lane, distinct shield or oath glyphs and countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

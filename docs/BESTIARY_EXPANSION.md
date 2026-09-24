@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B16
+# Bestiary expansion — frozen baseline through B17
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B16 add thirty-nine identities: **57/63**, or **39/45 additions**; **6 remain**.
+B1–B17 add forty-one identities: **59/63**, or **41/45 additions**; **4 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -1045,12 +1045,82 @@ final evidence and continuation synchronized in00/01/03/05/07. See
 [exposure](validation/BESTIARY_B16_EXPOSURE.md). Counts describe production
 implementation, not native Source observation or acceptance.
 
-## Next checkpoint — B17: remaining tactical breadth
+## B17 — companion-interaction cohort
+
+| Counted ID | Tactical identity | Production composition |
+| --- | --- | --- |
+| `interposer` / Interposer | Warns a frozen route into the firing line between one ally and Hero, then holds its actual body there briefly. Change angle, flank, use piercing/area attacks, interrupt or defeat it. No Block bonus, immunity or redirected damage. | Interposer + Soldier. |
+| `mourner` / Mourner | Places a visible finite oath on one ally. That ally's legitimate defeat during the armed oath starts a separate fully warned shot against the original Hero. Prioritize Mourner, break the tether, wait out the oath or trigger then evade. | Mourner + Shambler. |
+
+The targeted gap review found proactive bodyguard positioning and visible
+ally-death kill-order pressure absent from the57-identity roster. Interposer
+protects an ally with its ordinary physical body, unlike Pincer's flank,
+Waylayer's junction occupation or Screenwright's projected Block. Mourner
+responds to a preselected ally's defeat, unlike Repriser's own-hit reaction or
+Afterburst's own death. Both add a production tactical decision without bodies,
+private HP/status/resource pools, permanent loss or broad faction exceptions.
+
+EnemyRoster owns finite commitments and shared service; EnemySupport owns
+ordinary-ally eligibility; EnemyRemains supplies exact-life legitimate defeat
+receipts; MotionV2 owns movement; existing combat/status/HP/XP/loot settle outcomes.
+One ward reservation per ally spans both roles, cap16 commitments including
+fallback shots. Selection examines at most128 cached registry entries and sorts
+by distance then stable entity ID. Exclude self, either B17 identity, named
+bosses/clones, events, summons and players. Capture exact source/Hero/ward
+progression and status-life plus run/graph/progression/seed/campaign ownership.
+
+Interposer warns0.8s, moves32–160 units toward a frozen point64 units from its
+ally toward the observed Hero (ally–Hero separation160–360), then holds2s.
+Movement ends at readiness+1.8s; hold cannot exceed readiness+3.8s. Actual actor
+hull/endpoint separation and support samples<=24 validate its route. Destination
+never follows unseen motion. No attack or automatic protection occurs while
+moving/holding. Mourner warns0.8s, then watches its ward for3s. Only a valid
+sealed/open corpse receipt matching the captured ward's living life/progression,
+sealed in that armed interval and observed within0.25s, may trigger once.
+The receipt and ordinary corpse reward remain unconsumed. No killer retargeting.
+
+With no eligible ward, both use the same ordinary full1.2s physical firing-lane
+warning as Mourner retaliation. The lane freezes at shot onset; first real
+body/world collision absorbs it, and only the captured Hero may take one
+physical1d6+2 attempt. No B15 allied-fire permit. Actual Hero-hull96-unit lateral
+paths/support are checked; cover, evasion and interruption cancel or evade.
+Ordinary Block/Dodge/HP/rewards remain authoritative. Exact guarded native
+packets, one claim before callbacks and current lifetime/geometry checks prevent
+replay, replacement-life transfer or newer-attack/token erasure.
+
+Hero range360; ward range240/drift32; stationary source drift4; service gap0.25s;
+geometry cadence0.2s plus release; visible ward snapshots0.1s; shot release
+grace0.2s; failed-admission retry/reposition0.5s; fixed3s stationary recovery.
+Held prevents bodyguard movement but permits stationary physical actions; Muted
+permits both; morale/hit-stun/attack prohibition cancel. Death/removal/life
+replacement, cover/support/range/legal-cell failure, freeze/reset and stalled
+service retire work without catch-up movement or damage.
+
+Singleton templates `interposer_detail`/`mourner_detail` use sector2+ arena/ambush
+admission, legal exits/lateral space, safe/objective/transition/gate exclusions
+and ordinary budget-safe replacement. Append spawn ordinals56/57; registry59
+normal+4 named bosses. No new wandering weights. Reference HP/speed/threat:
+65/140/4 and40/115/3.5. Stock Combine elite RGB125/175/225 and Metrocop
+RGB195/125/215. STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die;
+baseXP; morale: Interposer14/11/14/10/12/9;75/25/0;d10;55;6.
+Mourner10/12/11/13/12/10;40/60/0;d8;50;5. Both usesMagic=false with usable
+ordinary physical feats. Stock positional cues. Full/reduced route/body shield,
+oath/broken-oath and fixed lane glyphs retain literal BODYGUARD/OATH/RETALIATION/
+SHOT and countdowns; finite server snapshots, cull2400 and conservative500 bounds.
+Manual161 chapters/32 chunks preserves all prior content.
+
+Live GDD03/05/07 `LOD-BESTIARY-B17-001` was authored and read back before
+implementation. Final validation/exposure and native gaps are recorded in
+[validation](validation/BESTIARY_B17.md) and
+[exposure](validation/BESTIARY_B17_EXPOSURE.md). Counts describe production
+implementation, not native Source observation or acceptance.
+
+## Next checkpoint — B18: remaining tactical breadth
 
 Select and author the next coherent pair through targeted ledger/shared-authority
-review. Target59/63 only after both meaningful identities pass production gates.
-Six additions remain after B16; no cosmetic/affinity/boss/event/summon inflation.
-Preserve exclusive discipline demands and exact canonical motion observations,
-all prior cohorts and complete campaign/finale/succession/Abundance/Level21.
-Whole-phase campaign-aware encounter themes, novelty memory, topology, pacing
-and quantitative coverage remain within Bestiary before Big Loot or Events.
+review. Target61/63 only after both meaningful identities pass production gates.
+Four additions remain after B17; no cosmetic/affinity/boss/event/summon inflation.
+Preserve exact wards and finite bodyguard/oath/retaliation ownership, all prior
+cohorts and complete campaign/finale/succession/Abundance/Level21. Whole-phase
+campaign-aware encounter themes, novelty memory, topology, pacing and quantitative
+coverage remain within Bestiary before Big Loot or Events.

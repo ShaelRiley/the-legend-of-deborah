@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B16 builds on verified remote `main` `5f817c2eb3e99a14156fd3d783359a998d4f5fbb`,
-`Add Bestiary Fusilier and Bombardier careless-fire interactions`.
-The current B16 checkpoint below is the newest implementation record. Its exact
+B17 builds on verified remote `main` `aff47575413f077505006a88ff94ff0df04c5e40`,
+`Add Bestiary Halter and Pacer movement discipline`.
+The current B17 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,55 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B16: movement-discipline cohort
+## Current checkpoint — B17: companion-interaction cohort
+
+Built on verified remote `aff47575413f077505006a88ff94ff0df04c5e40`.
+**Interposer and Mourner** bring the meaningful normal roster to **59/63**:
+frozen baseline18, **41/45 additions banked**, **4 remain**. Source acceptance
+remains pending; no VPS deployment or Workshop publication.
+
+**Playable scope:** Interposer warns a frozen route between one ordinary ally
+and the observed Hero, then places its actual body in the firing line for a
+finite hold. No defense bonus or damage redirection. Mourner visibly swears a
+finite oath to one ally; only that ally's legitimate exact-life defeat during
+the armed oath starts a new full warning against the original Hero. Both retain
+an ordinary warned fixed-lane shot when unpaired. Change angle, pierce, prioritize
+the supporter, break the tether, wait or trigger-and-evade. Full design/tuning:
+ledger and live GDD03/05/07 `LOD-BESTIARY-B17-001`.
+
+**Canonical boundaries:** EnemyRoster service/commitments, EnemySupport bounded
+ordinary selection, EnemyRemains sealed/open living-life receipt, MotionV2
+movement, native packet/combat/status/progression/reward authorities. One exact
+ward reservation across both modes, cap16; no bodies, private pools, resurrection,
+kill-credit invention or general faction exception. Native callback reentry,
+replacement lives, source/ward drift, hidden tracking, unsupported routes,
+stalls, replay and stale corpse reuse fail closed. Full/reduced snapshot tells;
+manual161 chapters/32chunks; append ordinals56/57; registry59 normal+4 named.
+
+**Validation:** One fresh canonical integration run passed **all200 suites with zero failures** after final repairs; no gameplay/config/test edits followed. Three new suites exercise actual AI/shared
+service, guarded native combat, MotionV2, canonical death receipts, production
+spawn/class/feats/HP/XP and native Draw against boundary doubles. See
+[validation](validation/BESTIARY_B17.md) and
+[integration matrix](validation/BESTIARY_B17_INTEGRATION.txt). Unchanged512 plans/
+32mazes/parties1–4/dungeons1–5 produce4950 encounters; all50 sampled identities
+pass25planned/20legal/5early. Interposer39/37/6, Mourner34/34/6. All five trials,
+four failures and exact in-place donor transfers are retained in
+[exposure](validation/BESTIARY_B17_EXPOSURE.md). No thresholds, seeds or prior
+geometry rules weakened. Whole-phase campaign-aware ecology remains required.
+
+**Native checks retained:** gm_flatgrass real bodyguard alignment/interception,
+piercing/area/flank responses, warning/oath/death timing, scaled actor hulls and
+support/gates/Walls/false floors, full/reduced audio/visuals, Block/Dodge/HP/rewards,
+1–4-player network/late join, death/revival/disconnect/freeze/reset/same-seed rebuild.
+Preserve every prior cohort and Gordon→Hector→Deborah/sole staging successor/
+Abundance/Level21. Evidence console_latest.txt+rpg_summary_latest.txt after
+ordered phases/audits; session log only for ordering. No pre-sequence human gate.
+
+**Next:** B18 only: targeted remaining-niche review, author/implement/validate the
+next meaningful coherent pair; target61/63. Four additions plus campaign-aware
+encounter ecology remain inside Bestiary before Big Loot/Events/audits.
+
+## Previous checkpoint — B16: movement-discipline cohort
 
 Built on verified remote `5f817c2eb3e99a14156fd3d783359a998d4f5fbb`.
 **Halter and Pacer** bring the meaningful normal roster to **57/63**:

@@ -41,7 +41,7 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -49,7 +49,7 @@ function E:Placement(graph,c,id,role)
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
     end
-    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline then
+    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline or d.companion then
         -- Guard planes, marked attacks and movement demands need in-cell flank pockets,
         -- not a whole graph cycle that excludes otherwise escapable rooms.
         local exit
@@ -61,6 +61,13 @@ function E:Placement(graph,c,id,role)
         local dir=N:CellCenter(exit)-center;dir.z=0;dir:Normalize()
         local side=Vector(-dir.y,dir.x,0)
         if not clear(center,center+side*100) or not clear(center,center-side*100) then return nil end
+        if d.companion==1 then
+            -- A bodyguard needs room for a real body to advance into the firing
+            -- lane, in addition to the Hero's two lateral escape pockets.
+            -- Actual ward/actor support and frozen-route samples remain runtime gates.
+            local lo,hi=Vector(-16,-16,2)*1.33,Vector(16,16,72)*1.33
+            if not clear(center,center+dir*64,lo,hi) and not clear(center,center-dir*64,lo,hi) then return nil end
+        end
     end
     if d.perception then
         local exit=false
@@ -141,6 +148,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    interposer_detail={name="Interposer Detail",composition={interposer=1,soldier=1}},
+    mourner_detail={name="Mourner Detail",composition={mourner=1,shambler=1}},
     halter_detail={name="Halter Detail",composition={halter=1,soldier=1}},
     pacer_chase={name="Pacer Chase",composition={pacer=1,runner=1}},
     fusilier_screen={name="Fusilier Screen",composition={fusilier=1,shambler=1}},
@@ -1050,6 +1059,33 @@ function D:_EligibleTemplates(sector,role)
             end
         end
     end
+    if sector>=2 and (role=="arena" or role=="ambush") then
+        -- B17 trial1 starts with four tickets per companion identity.
+        for _=1,4 do out[#out+1]="interposer_detail";out[#out+1]="mourner_detail" end
+        -- Repair measured deficits using surplus donors, keeping every pool
+        -- length and unaffected ticket position fixed after the initial append.
+        local transfers=sector==2 and {
+            {"stitcher_detail","interposer_detail",3},{"cantor_charge","mourner_detail",3},
+            {"afterburst_detail","halter_detail",5},{"conductor_pressure","pacer_chase",3},
+            {"fencer_screen","waylayer_cutoff",4},{"screenwright_detail","outrider_detail",2},
+            {"wirewright_chase","interposer_detail",2},{"reeler_chase","mourner_detail",2},
+            {"cantor_charge","waylayer_cutoff",3},{"stitcher_detail","waylayer_cutoff",3}
+        } or {
+            {"gaoler_hold","interposer_detail",5},{"bulwark_line","mourner_detail",4},
+            {"afterburst_detail","pacer_chase",3},{"listener_detail","halter_detail",2},
+            {"silencer_screen","absolver_detail",3},{"accumulator_detail","interposer_detail",2},
+            {"shy_pressure","mourner_detail",2},{"silencer_screen","repulsor_screen",2}
+        }
+        for _,transfer in ipairs(transfers) do
+            local remaining=transfer[3]
+            for j=1,#out do
+                local i=sector==2 and j or (#out-j+1)
+                if remaining>0 and out[i]==transfer[1] then
+                    out[i]=transfer[2];remaining=remaining-1
+                end
+            end
+        end
+    end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
@@ -1057,7 +1093,7 @@ end
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire or E.Definitions[k].discipline) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire or E.Definitions[k].discipline or E.Definitions[k].companion) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

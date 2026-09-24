@@ -18,6 +18,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     siphoner=Color(185,115,235),accumulator=Color(235,205,95),
     fusilier=Color(225,135,75),bombardier=Color(210,175,80),
     halter=Color(235,145,85),pacer=Color(90,215,225),
+    interposer=Color(125,175,225),mourner=Color(195,125,215),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -779,6 +780,76 @@ function V:Discipline(e)
         "DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
+-- Companion tells use finite snapshots, never ward/Hero entity positions. The
+-- shield follows the source's actual body: it promises no remote protection.
+function V:Companion(e)
+    local mode=e:GetNW2Int("LOD_CompanionMode",0)
+    local phase=e:GetNW2Int("LOD_CompanionPhase",0)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local now=CurTime();local ready=e:GetNW2Float("LOD_CompanionReady",0)
+    local untilAt=e:GetNW2Float("LOD_CompanionUntil",0)
+    local function finite(n) return n==n and math.abs(n)<math.huge end
+    local function finiteVector(v) return finite(v.x) and finite(v.y) and finite(v.z) end
+    if not ((id=="interposer" and mode==1) or (id=="mourner" and mode==2))
+        or (phase~=1 and phase~=2 and phase~=3) or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or e:GetNW2Int("LOD_RosterAttack",0)~=1 or not finite(now)
+        or not finite(ready) or not finite(untilAt) or untilAt<ready or now>=untilAt then return end
+    local duration=phase==1 and .8 or (phase==3 and 1.2 or (mode==1 and 2 or 3))
+    local tail=phase==3 and .201 or (mode==1 and (phase==1 and 3.801 or 2.001) or (phase==1 and 3.001 or .001))
+    if ready>now+duration+.001 or untilAt>ready+tail then return end
+    local pos=e:GetPos();local eye=EyePos()
+    local origin=e:GetNW2Vector("LOD_CompanionOrigin",pos)
+    local goal=e:GetNW2Vector("LOD_CompanionGoal",origin)
+    local ward=e:GetNW2Vector("LOD_CompanionWard",origin)
+    local aim=e:GetNW2Vector("LOD_CompanionAim",origin)
+    -- Arrival publishes Origin at Goal. Only the moving phase allows travel;
+    -- the stationary bodyguard hold retains the normal four-unit drift bound.
+    local moving=mode==1 and phase==2 and origin:DistToSqr(goal)>.05^2
+    if not finiteVector(pos) or not finiteVector(eye) or not finiteVector(origin)
+        or not finiteVector(goal) or not finiteVector(ward) or not finiteVector(aim)
+        or pos:DistToSqr(eye)>2400^2 or origin:DistToSqr(pos)>(moving and 164^2 or 4^2)
+        or origin:DistToSqr(goal)>164^2 or origin:DistToSqr(ward)>304^2
+        or origin:DistToSqr(aim)>432^2 then return end
+    local color=colors[id];local up=Vector(0,0,1)
+    local center=pos+up*90;local side=(eye-center):Angle():Right()
+    local function line(a,b,width) render.DrawBeam(a,b,width or 3,0,1,color) end
+    render.SetMaterial(beam)
+    local retaliation=phase==3 and e:GetNW2Int("LOD_CompanionRetaliation",0)==1
+    local label=phase==3 and (retaliation and "RETALIATION" or "SHOT") or (mode==1 and "BODYGUARD" or "OATH")
+    if phase==3 then
+        -- Frozen lane arrow and target cross. Bodies/cover can absorb the shot.
+        local start=origin+up*48;local direction=(aim-start):GetNormalized()
+        local right=direction:Angle():Right();local tip=start+(aim-start)*.65
+        line(start,aim,2);line(tip,tip-direction*14+right*8);line(tip,tip-direction*14-right*8)
+        line(aim-right*10-up*10,aim+right*10+up*10)
+        line(aim-right*10+up*10,aim+right*10-up*10)
+    elseif mode==1 then
+        local a=origin+up*3;local b=goal+up*3
+        local direction=(b-a):GetNormalized();local right=direction:Angle():Right()
+        line(a,b,2);line(b,b-direction*14+right*8);line(b,b-direction*14-right*8)
+        -- Shield is attached to the real Interposer, not its ward or goal.
+        local points={center-side*16+up*14,center+side*16+up*14,
+            center+side*13-up*7,center-up*19,center-side*13-up*7}
+        for i=1,5 do line(points[i],points[i%5+1]) end
+        line(pos+up*48,ward,1)
+    end
+    if (mode==2 and phase~=3) or retaliation then
+        -- Intact oath diamond versus separated halves of a broken oath.
+        local gap=retaliation and 5 or 0
+        line(center-side*(14+gap),center-side*gap+up*16)
+        line(center-side*(14+gap),center-side*gap-up*16)
+        line(center+side*(14+gap),center+side*gap+up*16)
+        line(center+side*(14+gap),center+side*gap-up*16)
+        if phase~=3 then line(origin+up*48,ward,1) end
+    end
+    local fraction=math.Clamp((ready-now)/duration,0,1);local bar=center-up*28
+    line(bar-side*24,bar+side*(-24+48*fraction))
+    cam.Start3D2D(center+up*31,Angle(0,(eye-center):Angle().y-90,90),.16)
+    draw.SimpleText(label,"DermaLarge",0,-32,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+    draw.SimpleText(string.format("%s %.1fs",phase==1 and "PREPARE" or (phase==3 and "FIRE" or "ACTIVE"),math.max(0,ready-now)),
+        "DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+    cam.End3D2D()
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -788,6 +859,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="interposer" or id=="mourner" then self:Companion(e);return end
     if id=="halter" or id=="pacer" then self:Discipline(e);return end
     if id=="fusilier" or id=="bombardier" then self:Crossfire(e);return end
     if id=="siphoner" or id=="accumulator" then self:Resource(e);return end

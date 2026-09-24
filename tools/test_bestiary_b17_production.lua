@@ -1,4 +1,4 @@
--- B16 production gate exercises progression, rewards, placement and canonical spawning.
+-- B17 production gate exercises progression, rewards, placement and canonical spawning.
 -- Native entities, collision traces, motion transport and networking are doubles.
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
@@ -39,7 +39,7 @@ local function at(n) time=n;env.setTime(n) end
 at(time)
 local s=LOD.RunManager.State
 s.BuildReady=true;s.Failed=false;s.LevelCleared=false;s.SimulationFrozen=false;s.Level=8
-s.CampaignEpoch=1;s.RunId='b16';s.CampaignSeed=77;s.LevelSeed=123
+s.CampaignEpoch=1;s.RunId='b17';s.CampaignSeed=77;s.LevelSeed=123
 local clearTrace=function(t) return {Hit=false,HitPos=t.endpos} end
 util.TraceLine=clearTrace;util.TraceHull=clearTrace
 LOD.CombatRolls._Send=noop;LOD.CombatRolls.ReportEnemyHealth=noop
@@ -72,16 +72,23 @@ local function reset()
     util.TraceLine=clearTrace;util.TraceHull=clearTrace;hero.valid=true;hero.alive=true;hero.health=hero.maximum
     if LOD.EnemySupport then LOD.EnemySupport.Pending={};LOD.EnemySupport.Recipients={};LOD.EnemySupport.NextService=0 end
 end
-local ids={'halter','pacer'}
+local ids={'interposer','mourner'}
+local normal,named=0,0
+local bosses={neil=true,brute=true,warden=true,hector=true}
+for id in pairs(LOD.RPG.ArchetypeProgressionTemplates) do
+    if bosses[id] then named=named+1 else normal=normal+1 end
+end
+assert(normal==59 and named==4,'59 ordinary archetypes and four separately counted named bosses')
+
 local spawnSource=assert(io.open(root..'sv_encounter_spawn_variance.lua','r'))
 local spawnText=spawnSource:read('*a');spawnSource:close()
 local order={}
 for id in assert(spawnText:match('local SPAWN_ORDER = {(.-)}')):gmatch('"([^"]+)"') do order[#order+1]=id end
-assert(#order>=55 and order[52]=='fusilier' and order[53]=='bombardier'
-    and order[54]=='halter' and order[55]=='pacer','append-only production spawn ordinals54/55')
+assert(#order==57 and order[54]=='halter' and order[55]=='pacer'
+    and order[56]=='interposer' and order[57]=='mourner','append-only production spawn ordinals56/57')
 local expected={
-    halter={die=8,xp=50,magic=false,abilities={12,11,12,12,12,9},fighter=65,rogue=35,morale=5},
-    pacer={die=8,xp=50,magic=false,abilities={10,15,10,12,12,9},fighter=35,rogue=65,morale=5}
+    interposer={die=10,xp=55,magic=false,abilities={14,11,14,10,12,9},fighter=75,rogue=25,morale=6},
+    mourner={die=8,xp=50,magic=false,abilities={10,12,11,13,12,10},fighter=40,rogue=60,morale=5}
 }
 for _,id in ipairs(ids) do
     local def=expected[id]
@@ -178,7 +185,7 @@ dofile(root..'sv_enemy_variance.lua')
 D.LODUnifiedVarianceSpawner=nil;dofile(root..'sv_encounter_spawn_variance.lua')
 LOD.WanderingDirector={Config={ArchetypeWeights={}}}
 dofile(root..'sv_enemy_roster_placement.lua')
-pair('halter');D.Entities={};D.activeCount=0
+pair('interposer');D.Entities={};D.activeCount=0
 local creates=0
 ents.Create=function(class)
     assert(class=='lod_hostile');creates=creates+1
@@ -192,7 +199,7 @@ ents.Create=function(class)
     return e
 end
 local cell=s.Graph.Cells[key(3,3,0)]
-local encounter={id=903,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,composition={halter=1,pacer=1},entities={}}
+local encounter={id=903,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,composition={interposer=1,mourner=1},entities={}}
 D.activeCount=LOD.Config.Encounter.ActiveHostileCeiling-1
 assert(not D:_SpawnEncounter(encounter) and creates==0,'preflight cap prevents partial cohort')
 D.activeCount=0;assert(D:_SpawnEncounter(encounter) and #encounter.entities==2,'both appear through actual production spawn order')
@@ -202,50 +209,59 @@ for i,e in ipairs(encounter.entities) do
     assert(e.nw.LOD_CharacterLevel==e.LODProgressionState.level,'normal replicated actor Level')
 end
 assert(D:_SpawnEncounter(encounter) and creates==2,'spawn retry cannot duplicate cohort')
-for _,name in ipairs({'halter_detail','pacer_chase'}) do
+for _,name in ipairs({'interposer_detail','mourner_detail'}) do
     assert(table.HasValue(D:_EligibleTemplates(2,'arena'),name) and table.HasValue(D:_EligibleTemplates(2,'ambush'),name))
     assert(not table.HasValue(D:_EligibleTemplates(1,'arena'),name),'sector-one preserves established introductory roster')
-    assert(not table.HasValue(D:_EligibleTemplates(3,'reward'),name),'movement-discipline specialist does not enter reward-only path')
+    assert(not table.HasValue(D:_EligibleTemplates(3,'reward'),name),'companion-interaction specialist does not enter reward-only path')
     for seed=1,16 do
         local composition=D:_TemplateComposition(name,LOD.RNG.New(seed),4)
         for _,id in ipairs(ids) do
-            if composition[id] then assert(composition[id]==1,'party/depth enrichment caps movement-discipline source') end
+            if composition[id] then assert(composition[id]==1,'party/depth enrichment caps companion-interaction source') end
         end
     end
 end
 for _,id in ipairs(ids) do
-    assert(E:Placement(s.Graph,cell,id,'arena'),'ordinary legal room admits movement-discipline source')
+    assert(E:Placement(s.Graph,cell,id,'arena'),'ordinary legal room admits companion-interaction source')
     s.Graph.CellTags[key(3,3,0)]={safe=true}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'safe room rejects movement-discipline source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'safe room rejects companion-interaction source')
     s.Graph.CellTags[key(3,3,0)]={objective=true}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'objective room rejects movement-discipline source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'objective room rejects companion-interaction source')
     s.Graph.CellTags[key(3,3,0)]={}
     s.Graph.VerticalEdges={{a=cell,b=s.Graph.Cells[key(4,3,0)]}}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'vertical transition rejects movement-discipline source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'vertical transition rejects companion-interaction source')
     s.Graph.VerticalEdges={}
     s.Graph.Progression.Gates={{beforeCell=cell,afterCell=s.Graph.Cells[key(4,3,0)]}}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'progression transition rejects movement-discipline source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'progression transition rejects companion-interaction source')
     s.Graph.Progression.Gates={}
     util.TraceHull=function() return {Hit=true,StartSolid=true} end
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'blocked native hull rejects movement-discipline source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'blocked native hull rejects companion-interaction source')
     util.TraceHull=clearTrace
 end
--- Both movement-discipline identities require lateral room and a legal same-floor exit.
+-- Both companion-interaction identities require lateral room and a legal same-floor exit.
 for _,id in ipairs(ids) do
     local c=s.Graph.Cells[key(3,3,0)]
     local neighbors=c.neighbors;c.neighbors={}
-    assert(not E:Placement(s.Graph,c,id,'arena'),'no isolated movement-discipline spawn')
+    assert(not E:Placement(s.Graph,c,id,'arena'),'no isolated companion-interaction spawn')
     c.neighbors=neighbors
     util.TraceHull=function(t) return {Hit=t.start:Distance(t.endpos)>0,StartSolid=false,HitPos=t.endpos} end
     assert(not E:Placement(s.Graph,c,id,'arena'),'no body-blocked lateral pocket')
     util.TraceHull=clearTrace
 end
+-- Interposer cannot be admitted into a room with lateral Hero escape but no
+-- feasible forward/backward body route; Mourner's stationary oath still can.
+util.TraceHull=function(t)
+    local delta=t.endpos-t.start
+    return {Hit=math.abs(delta.x)>1,StartSolid=false,HitPos=t.endpos}
+end
+assert(not E:Placement(s.Graph,cell,'interposer','arena'),'bodyguard needs an actual body route')
+assert(E:Placement(s.Graph,cell,'mourner','arena'),'stationary oath does not demand bodyguard motion')
+util.TraceHull=clearTrace
 -- An unsafe authored composition becomes the same number of ordinary bodies
 -- through the actual shared placement/spawn/progression path.
 s.Graph.CellTags[key(3,3,0)]={objective=true}
 local fallback={id=904,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,
-    composition={halter=1,pacer=1},entities={}}
-assert(D:_SpawnEncounter(fallback) and #fallback.entities==2 and fallback.composition.shambler==2,'illegal movement-discipline sources fall back without body proliferation')
+    composition={interposer=1,mourner=1},entities={}}
+assert(D:_SpawnEncounter(fallback) and #fallback.entities==2 and fallback.composition.shambler==2,'illegal companion-interaction sources fall back without body proliferation')
 for i,e in ipairs(fallback.entities) do
     assert(e.LODArchetypeId=='shambler' and e.LODEncounterOrdinal==i and e.LODProgressionState.archetypeId=='shambler','fallback keeps ordinary canonical identity')
 end
@@ -253,9 +269,9 @@ assert(D:_SpawnEncounter(fallback) and creates==4,'fallback retry cannot duplica
 -- Existing actors retain their earlier ordinals in mixed encounters.
 s.Graph.CellTags[key(3,3,0)]={}
 local mixed={id=905,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,
-    composition={runner=1,wirewright=1,afterburst=1,carrion=1,towline=1,screenwright=1,listener=1,shy=1,absolver=1,exactor=1,outrider=1,conductor=1,siphoner=1,accumulator=1,fusilier=1,bombardier=1,halter=1,pacer=1},entities={}}
-assert(D:_SpawnEncounter(mixed) and #mixed.entities==18)
-for i,id in ipairs({'runner','wirewright','afterburst','carrion','towline','screenwright','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator','fusilier','bombardier','halter','pacer'}) do
+    composition={runner=1,wirewright=1,afterburst=1,carrion=1,towline=1,screenwright=1,listener=1,shy=1,absolver=1,exactor=1,outrider=1,conductor=1,siphoner=1,accumulator=1,fusilier=1,bombardier=1,halter=1,pacer=1,interposer=1,mourner=1},entities={}}
+assert(D:_SpawnEncounter(mixed) and #mixed.entities==20)
+for i,id in ipairs({'runner','wirewright','afterburst','carrion','towline','screenwright','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator','fusilier','bombardier','halter','pacer','interposer','mourner'}) do
     assert(mixed.entities[i].LODArchetypeId==id and mixed.entities[i].LODEncounterOrdinal==i,'new cohorts append without changing accepted ordinals')
 end
-print('BESTIARY_B16_PRODUCTION_PASS: physical class-feat-HP identities; seeded replay; exact-life/graph/progression/campaign/freeze/death/disconnect; shared XP once; cap; production spawn/variance/progression; idempotence; complementary templates; safe/objective/transitions/blocked hull; movement-discipline admission and escape pockets; bounded fallback')
+print('BESTIARY_B17_PRODUCTION_PASS: physical class-feat-HP identities; seeded replay; exact-life/graph/progression/campaign/freeze/death/disconnect; shared XP once; cap; production spawn/variance/progression; idempotence; complementary templates; safe/objective/transitions/blocked hull; companion-interaction admission and escape pockets; bounded fallback')
