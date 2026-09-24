@@ -137,6 +137,10 @@ for i,n in ipairs(full.coverage) do aggregate=aggregate+n;controlAggregate=contr
 print(string.format('B20_NOVELTY aggregate=%d controlAggregate=%d coverageLift=%.6f',aggregate,controlAggregate,aggregate/controlAggregate-1))
 for _,id in ipairs(sampled) do emit(string.format('B20_EXPOSURE %s planned=%d legal=%d early=%d',id,full.planned[id] or 0,full.legal[id] or 0,full.early[id] or 0)) end
 assert(aggregate>controlAggregate,'campaign memory failed to improve aggregate specialist coverage')
+assert(control.crossLevelTemplateReturns>0,'B24 repetition control has no returns')
+local repetitionReduction=1-full.crossLevelTemplateReturns/control.crossLevelTemplateReturns
+emit(string.format('BESTIARY_B24_REPETITION reduction=%.6f required=0.25 memoryReturns=%d controlReturns=%d',repetitionReduction,full.crossLevelTemplateReturns,control.crossLevelTemplateReturns))
+assert(repetitionReduction>=.25,'B24 adjacent-dungeon template returns reduced by less than25%')
 local reportPath=os.getenv('LOD_B20_REPORT_PATH')
 if reportPath then
  local file=assert(io.open(reportPath,'w'));file:write(table.concat(reportLines,'\n')..'\n');file:close()

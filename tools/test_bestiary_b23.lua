@@ -67,10 +67,13 @@ local basic={shambler=true,runner=true,soldier=true,deadcrab=true,bioblaster=tru
 local new={siphoner=true,caromer=true,reaper=true,redliner=true,drubber=true,afterburst=true}
 local function bounds(graph)
  local seen={}
+ local encounterHomes={}
+ for _,enc in ipairs((graph.EncounterPlan or {}).encounters or {}) do encounterHomes[enc.cellKey]=true end
  for _,e in ipairs(W.Entities) do
   if IsValid(e) and not e.LODDead then
    local key=e.LODHomeCellKey;local c=assert(graph.Cells[key]);local tag=graph.CellTags[key]
    assert(not seen[key],'duplicate home');seen[key]=true
+   assert(not encounterHomes[key],'B24 wandering home overlaps planned encounter')
    assert(not tag.safe and not tag.objective and tag.role~='boss' and not E:IsTransition(graph,c),'protected home')
    assert(D:PacingAllows(graph.EncounterPlan,c),'reserved pacing home')
    assert(e.spawned and e.activated and e.settled and e.LODSpawnSource=='wanderer','native spawn/settlement missing')

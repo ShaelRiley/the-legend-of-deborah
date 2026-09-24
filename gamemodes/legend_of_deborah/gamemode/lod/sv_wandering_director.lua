@@ -172,12 +172,19 @@ function WanderingDirector:_SpawnCandidates(graph, floor, rng)
     local cells = self:_FloorCells(graph, floor)
     local players = playerCells(graph)
     local _, homes = self:_Population(floor)
+    -- Dormant squads have no native hull yet. Reserve their authored homes as
+    -- well as living roaming anchors; read the current plan on every attempt so
+    -- rebuilds cannot leave stale exclusions. This does not constrain pursuit.
+    local encounterHomes = {}
+    for _, encounter in ipairs((graph.EncounterPlan or {}).encounters or {}) do
+        if encounter.cellKey then encounterHomes[encounter.cellKey] = true end
+    end
     local out = {}
     local roster, director = LOD.EnemyRoster, LOD.EncounterDirector
     for _, cell in ipairs(cells) do
         local key=keyOf(cell)
         local tag=(graph.CellTags or {})[key] or {}
-        local admitted=not homes[key] and not tag.objective
+        local admitted=not homes[key] and not encounterHomes[key] and not tag.objective
             and (not roster or not roster:IsTransition(graph,cell))
             and (not director or not director.PacingAllows or not graph.EncounterPlan
                 or director:PacingAllows(graph.EncounterPlan,cell))
@@ -673,4 +680,3 @@ concommand.Add("lod_wander_schedule_status", function(ply)
     print("[LOD:WANDER-SCHEDULE] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

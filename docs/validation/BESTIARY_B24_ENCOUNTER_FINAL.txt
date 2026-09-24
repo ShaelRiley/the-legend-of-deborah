@@ -1,0 +1,97 @@
+B20_CAMPAIGN id=1 coverage=49 controlCoverage=42
+B20_CAMPAIGN id=2 coverage=48 controlCoverage=39
+B20_CAMPAIGN id=3 coverage=52 controlCoverage=43
+B20_CAMPAIGN id=4 coverage=48 controlCoverage=42
+B20_CAMPAIGN id=5 coverage=47 controlCoverage=40
+B20_CAMPAIGN id=6 coverage=49 controlCoverage=42
+B20_CAMPAIGN id=7 coverage=46 controlCoverage=41
+B20_CAMPAIGN id=8 coverage=50 controlCoverage=41
+B20_CAMPAIGN id=9 coverage=49 controlCoverage=44
+B20_CAMPAIGN id=10 coverage=44 controlCoverage=39
+B20_CAMPAIGN id=11 coverage=49 controlCoverage=42
+B20_CAMPAIGN id=12 coverage=48 controlCoverage=40
+B20_CAMPAIGN id=13 coverage=47 controlCoverage=42
+B20_CAMPAIGN id=14 coverage=49 controlCoverage=39
+B20_CAMPAIGN id=15 coverage=44 controlCoverage=39
+B20_CAMPAIGN id=16 coverage=49 controlCoverage=43
+B20_CAMPAIGN id=17 coverage=45 controlCoverage=37
+B20_CAMPAIGN id=18 coverage=48 controlCoverage=41
+B20_CAMPAIGN id=19 coverage=49 controlCoverage=41
+B20_CAMPAIGN id=20 coverage=49 controlCoverage=40
+B20_CAMPAIGN id=21 coverage=51 controlCoverage=44
+B20_CAMPAIGN id=22 coverage=48 controlCoverage=39
+B20_CAMPAIGN id=23 coverage=46 controlCoverage=38
+B20_CAMPAIGN id=24 coverage=47 controlCoverage=43
+B20_CAMPAIGN id=25 coverage=45 controlCoverage=39
+B20_CAMPAIGN id=26 coverage=39 controlCoverage=31
+B20_CAMPAIGN id=27 coverage=45 controlCoverage=40
+B20_CAMPAIGN id=28 coverage=41 controlCoverage=34
+B20_CAMPAIGN id=29 coverage=46 controlCoverage=41
+B20_CAMPAIGN id=30 coverage=48 controlCoverage=37
+B20_CAMPAIGN id=31 coverage=48 controlCoverage=40
+B20_CAMPAIGN id=32 coverage=49 controlCoverage=42
+B20_COMPARISON mode=memory campaigns=32 plans=640 encounters=6233 meanCoverage=47.250 minCoverage=39 meanConsecutiveJaccard=0.209819 withinLevelTemplateRepeats=576 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=191
+B20_THEMES memory {corruption=109,crossfire=104,hunting=114,occupation=99,quarantine=106,retinue=108}
+B20_TEMPLATES memory {absolver_detail=33,accumulator_detail=48,afterburst_detail=38,arccaster_zone=45,arena=102,beamsweeper_lane=118,bigcrab_breath=57,bio_pressure=121,blitzer_firing_line=95,bombardier_pressure=29,bulwark_line=37,cantor_charge=33,caromer_screen=27,carrion_feast=31,censer_advance=36,censor_detail=33,climber_wall=75,conductor_pressure=35,cordon_screen=34,deadcrab_nest=125,drubber_chase=27,exactor_pressure=28,fencer_screen=33,firing_line=132,flamer_pressure=58,forker_crossfire=29,fusilier_screen=32,gaoler_hold=45,halter_detail=29,harrier_screen=41,incoming=231,interposer_detail=29,lacemaker_detail=30,listener_detail=44,lurker_ceiling=59,mixed_pressure=194,mourner_detail=37,nodule_gas=58,outrider_detail=44,pacer_chase=29,patrol=248,pavise_advance=35,pincer_detail=36,razor_cover=169,reaper_detail=44,redliner_pressure=28,reeler_chase=36,relay_detail=37,repriser_detail=32,repulsor_screen=30,runner_ambush=183,rush=270,screenwright_detail=33,sentry_flank=109,shy_pressure=46,silencer_screen=45,siphoner_pressure=52,snarer_detail=35,sniper_firing_line=100,stitcher_detail=31,surveillance=168,surveyor_detail=33,towline_detail=38,trailmaker_chase=38,waylayer_cutoff=40,wirewright_chase=36}
+B20_FAMILIES memory {ambush=864,area=439,companion=133,control=324,line_fire=7014,melee=10871,position=180,projectile=153,pursuit=5939,reaction=95,remains=69,resource=100,support=134,trap=105}
+B20_COMPARISON mode=control campaigns=32 plans=640 encounters=6235 meanCoverage=40.156 minCoverage=31 meanConsecutiveJaccard=0.207373 withinLevelTemplateRepeats=576 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=310
+B20_THEMES control {corruption=109,crossfire=104,hunting=114,occupation=99,quarantine=106,retinue=108}
+B20_TEMPLATES control {absolver_detail=33,accumulator_detail=30,afterburst_detail=38,arccaster_zone=50,arena=98,beamsweeper_lane=123,bigcrab_breath=51,bio_pressure=124,blitzer_firing_line=101,bombardier_pressure=27,bulwark_line=39,cantor_charge=35,caromer_screen=23,carrion_feast=23,censer_advance=37,censor_detail=25,climber_wall=79,conductor_pressure=30,cordon_screen=36,deadcrab_nest=146,drubber_chase=25,exactor_pressure=33,fencer_screen=38,firing_line=121,flamer_pressure=59,forker_crossfire=28,fusilier_screen=33,gaoler_hold=35,halter_detail=24,harrier_screen=41,incoming=240,interposer_detail=32,lacemaker_detail=32,listener_detail=43,lurker_ceiling=60,mixed_pressure=185,mourner_detail=39,nodule_gas=54,outrider_detail=35,pacer_chase=29,patrol=266,pavise_advance=29,pincer_detail=35,razor_cover=178,reaper_detail=30,redliner_pressure=35,reeler_chase=36,relay_detail=39,repriser_detail=28,repulsor_screen=29,runner_ambush=158,rush=300,screenwright_detail=26,sentry_flank=111,shy_pressure=50,silencer_screen=58,siphoner_pressure=47,snarer_detail=33,sniper_firing_line=102,stitcher_detail=27,surveillance=180,surveyor_detail=31,towline_detail=38,trailmaker_chase=47,waylayer_cutoff=36,wirewright_chase=32}
+B20_FAMILIES control {ambush=978,area=447,companion=142,control=317,line_fire=6954,melee=10997,position=178,projectile=147,pursuit=5877,reaction=92,remains=61,resource=77,support=134,trap=101}
+B21_SPATIAL {checked=4313,fit={alternate=223,choke_with_retreat=90,corner=84,firing_lane=747,maneuver=1103,neutral=1913,support_approach=152,vertical=1},preferred=2400,rejected=647}
+B22_PACING {branchCampaigns=32,cells={pressure=79934,probe=39407,quiet=69584,recovery=43034,spike=151505,unreachable=565},encounters={pressure=919,probe=2425,spike=969},mixedDungeons=635,phrases={ambush=884,gauntlet=860,surge=816},status={coincident=5,ready=2555},threat={pressure=6040.9,probe=10549.15,spike=6285.0}}
+B20_EXPOSURE climber planned=91 legal=91 early=79
+B20_EXPOSURE razor planned=237 legal=237 early=61
+B20_EXPOSURE lurker planned=59 legal=59 early=29
+B20_EXPOSURE beamsweeper planned=118 legal=118 early=41
+B20_EXPOSURE flamer planned=110 legal=110 early=56
+B20_EXPOSURE arccaster planned=70 legal=70 early=19
+B20_EXPOSURE sentry planned=109 legal=109 early=81
+B20_EXPOSURE bigcrab planned=83 legal=83 early=33
+B20_EXPOSURE nodule planned=58 legal=58 early=24
+B20_EXPOSURE gaoler planned=63 legal=63 early=20
+B20_EXPOSURE silencer planned=62 legal=62 early=19
+B20_EXPOSURE repulsor planned=47 legal=47 early=15
+B20_EXPOSURE stitcher planned=31 legal=31 early=10
+B20_EXPOSURE bulwark planned=37 legal=37 early=12
+B20_EXPOSURE cantor planned=33 legal=33 early=11
+B20_EXPOSURE pincer planned=36 legal=36 early=10
+B20_EXPOSURE harrier planned=41 legal=41 early=12
+B20_EXPOSURE waylayer planned=40 legal=40 early=14
+B20_EXPOSURE pavise planned=35 legal=35 early=6
+B20_EXPOSURE repriser planned=32 legal=32 early=13
+B20_EXPOSURE redliner planned=28 legal=28 early=14
+B20_EXPOSURE caromer planned=27 legal=27 early=11
+B20_EXPOSURE reeler planned=36 legal=36 early=18
+B20_EXPOSURE forker planned=29 legal=29 early=7
+B20_EXPOSURE wirewright planned=36 legal=36 early=6
+B20_EXPOSURE snarer planned=35 legal=35 early=14
+B20_EXPOSURE cordon planned=34 legal=34 early=13
+B20_EXPOSURE reaper planned=44 legal=44 early=14
+B20_EXPOSURE drubber planned=27 legal=27 early=9
+B20_EXPOSURE fencer planned=33 legal=33 early=8
+B20_EXPOSURE afterburst planned=38 legal=38 early=9
+B20_EXPOSURE carrion planned=31 legal=31 early=6
+B20_EXPOSURE towline planned=38 legal=38 early=12
+B20_EXPOSURE screenwright planned=33 legal=33 early=10
+B20_EXPOSURE censer planned=36 legal=36 early=11
+B20_EXPOSURE trailmaker planned=38 legal=38 early=11
+B20_EXPOSURE listener planned=44 legal=44 early=19
+B20_EXPOSURE shy planned=46 legal=46 early=16
+B20_EXPOSURE absolver planned=33 legal=33 early=9
+B20_EXPOSURE exactor planned=28 legal=28 early=9
+B20_EXPOSURE outrider planned=44 legal=44 early=16
+B20_EXPOSURE conductor planned=35 legal=35 early=10
+B20_EXPOSURE siphoner planned=52 legal=52 early=17
+B20_EXPOSURE accumulator planned=48 legal=48 early=15
+B20_EXPOSURE fusilier planned=32 legal=32 early=11
+B20_EXPOSURE bombardier planned=29 legal=29 early=8
+B20_EXPOSURE halter planned=29 legal=29 early=8
+B20_EXPOSURE pacer planned=29 legal=29 early=12
+B20_EXPOSURE interposer planned=29 legal=29 early=12
+B20_EXPOSURE mourner planned=37 legal=37 early=17
+B20_EXPOSURE censor planned=33 legal=33 early=12
+B20_EXPOSURE surveyor planned=33 legal=33 early=10
+B20_EXPOSURE relay planned=37 legal=37 early=14
+B20_EXPOSURE lacemaker planned=30 legal=30 early=12
+BESTIARY_B24_REPETITION reduction=0.383871 required=0.25 memoryReturns=191 controlReturns=310

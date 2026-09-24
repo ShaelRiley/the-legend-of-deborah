@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B23 builds on verified remote `main` `b731d8b42933076b223f8607d1067486eb937cc9`,
-`Add route-based encounter macro-pacing`.
-The current B23 checkpoint below is the newest implementation record. Its exact
+B24 builds on verified remote `main` `76e54e95ebb487c5dd2dc3c63847ef8295651fe1`,
+`Integrate motif-aware wandering population ecology`.
+The current B24 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,50 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B23: bounded wandering-population ecology
+## Current checkpoint — B24: encounter-home convergence and exit reconciliation
+
+Built on verified remote `76e54e95ebb487c5dd2dc3c63847ef8295651fe1`.
+Roster63 normal/4 named, frozen baseline18; Bestiary phase remains open.
+No VPS deployment or Steam Workshop publication.
+
+WanderingDirector excludes all exact planned encounter home cells during initial
+and replacement admission, including dormant discretionary squads. A local
+current-plan set avoids stale reservations; an all-reserved floor defers. No
+new owner/cache/history/hook or four-cell roaming perimeter. Patrol/pursuit may
+still converge later. All B23 physical admission/count/cadence/ownership and
+B20–B22 geometry, budget, pacing and successful-build receipts remain binding.
+
+The fixed campaign gates now enforce>=25% fewer adjacent-dungeon discretionary
+template returns with memory and measure planned ordinary squads+initial roamers
+against legacy roaming weights. Each campaign requires largest basic share<=50%
+and>=10/14 families; all6 motifs must affect aggregate family distributions;
+exact pool/template membership and zero shared homes are checked. Potential
+population is not simultaneous hostile count or Source sightings/acceptance.
+
+One fresh final canonical run passed **all214 suites with zero failures**; no
+gameplay/config/test edits followed. Final encounter sample retains54 exposure
+floors and coverage mean47.250/min39 versus40.156/min31; template returns191
+versus310 (38.3871% reduction). Within-level repeats576/576, encounter-only roster
+Jaccard0.209819/0.207373; no universal improvement claim. Pacing635/640 mixed,
+32/32 branch campaigns. Final roaming sample28,342 bodies per arm,1,747/1,789
+floors full,42 deferring282 slots safely (47 more slots deferred than B23).
+Combined planned+initial bodies54,762 per arm; max basic share0.306147/0.353621,
+minimum13/14 families in both; consecutive roster Jaccard0.243567/0.523944.
+All640 populations differ; all6 new specialist exposures>=225 against>=25 gate.
+
+Final validation evidence: `validation/BESTIARY_B24.md` and final campaign/matrix
+files. Manual164 chapters/32chunks; GDD05/06/07 LOD-BESTIARY-B24-001 amended and
+read back. Full brief reconciliation: `validation/BESTIARY_B24_EXIT.md`.
+
+**Next B25:** bounded motif-linked intensity closure. Explicit density,
+reinforcement probability, elite probability and pacing influences remain partly
+implemented or absent. Resolve elite influence against canonical60/30/10 tier law
+before changes; do not silently relax existing law or exposure/safety thresholds.
+Illustrative named niches/themes are not obligatory content. No Big Loot/Events
+or later audits until the whole Bestiary exit has evidence. Native acceptance
+follows the ordered phases/audits and remains explicitly outstanding.
+
+## Previous checkpoint — B23: bounded wandering-population ecology
 
 Built on verified remote `b731d8b42933076b223f8607d1067486eb937cc9`.
 Roster63 normal/4 named, frozen baseline18; Bestiary phase remains open.

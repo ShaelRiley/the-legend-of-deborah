@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Bestiary B24 Encounter and Wandering Homes", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b24.lua"]),
     ("Bestiary B23 Wandering Population & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b23.lua"]),
     ("Bestiary B23 Campaign Wandering Ecology", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b23_campaign.lua"]),
     ("Bestiary B22 Route Pacing & Production Effects", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b22.lua"]),

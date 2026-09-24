@@ -1,0 +1,141 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=25 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B23_CAMPAIGN id=1 cumulativeSpawned=821
+B24_POPULATION campaign=1 arm=spawned bodies=1659 dominant=shambler basicShare=0.301989 families=14
+B24_POPULATION campaign=1 arm=legacy bodies=1659 dominant=shambler basicShare=0.347197 families=14
+B23_CAMPAIGN id=2 cumulativeSpawned=1747
+B24_POPULATION campaign=2 arm=spawned bodies=1761 dominant=shambler basicShare=0.290744 families=14
+B24_POPULATION campaign=2 arm=legacy bodies=1761 dominant=shambler basicShare=0.339012 families=14
+B23_CAMPAIGN id=3 cumulativeSpawned=2643
+B24_POPULATION campaign=3 arm=spawned bodies=1722 dominant=shambler basicShare=0.288618 families=14
+B24_POPULATION campaign=3 arm=legacy bodies=1722 dominant=shambler basicShare=0.335075 families=14
+B23_CAMPAIGN id=4 cumulativeSpawned=3556
+B24_POPULATION campaign=4 arm=spawned bodies=1745 dominant=shambler basicShare=0.292264 families=14
+B24_POPULATION campaign=4 arm=legacy bodies=1745 dominant=shambler basicShare=0.334097 families=14
+B23_CAMPAIGN id=5 cumulativeSpawned=4388
+B24_POPULATION campaign=5 arm=spawned bodies=1643 dominant=shambler basicShare=0.266586 families=14
+B24_POPULATION campaign=5 arm=legacy bodies=1643 dominant=shambler basicShare=0.328058 families=14
+B23_CAMPAIGN id=6 cumulativeSpawned=5284
+B24_POPULATION campaign=6 arm=spawned bodies=1716 dominant=shambler basicShare=0.280303 families=14
+B24_POPULATION campaign=6 arm=legacy bodies=1716 dominant=shambler basicShare=0.337413 families=14
+B23_CAMPAIGN id=7 cumulativeSpawned=6125
+B24_POPULATION campaign=7 arm=spawned bodies=1670 dominant=shambler basicShare=0.281437 families=14
+B24_POPULATION campaign=7 arm=legacy bodies=1670 dominant=shambler basicShare=0.346707 families=14
+B23_CAMPAIGN id=8 cumulativeSpawned=6996
+B24_POPULATION campaign=8 arm=spawned bodies=1688 dominant=shambler basicShare=0.281991 families=14
+B24_POPULATION campaign=8 arm=legacy bodies=1688 dominant=shambler basicShare=0.348341 families=14
+B23_CAMPAIGN id=9 cumulativeSpawned=7949
+B24_POPULATION campaign=9 arm=spawned bodies=1783 dominant=shambler basicShare=0.287156 families=14
+B24_POPULATION campaign=9 arm=legacy bodies=1783 dominant=shambler basicShare=0.340998 families=14
+B23_CAMPAIGN id=10 cumulativeSpawned=8797
+B24_POPULATION campaign=10 arm=spawned bodies=1675 dominant=shambler basicShare=0.280000 families=13
+B24_POPULATION campaign=10 arm=legacy bodies=1675 dominant=shambler basicShare=0.348060 families=13
+B23_CAMPAIGN id=11 cumulativeSpawned=9731
+B24_POPULATION campaign=11 arm=spawned bodies=1766 dominant=shambler basicShare=0.291619 families=14
+B24_POPULATION campaign=11 arm=legacy bodies=1766 dominant=shambler basicShare=0.343148 families=14
+B23_CAMPAIGN id=12 cumulativeSpawned=10658
+B24_POPULATION campaign=12 arm=spawned bodies=1753 dominant=shambler basicShare=0.298346 families=14
+B24_POPULATION campaign=12 arm=legacy bodies=1753 dominant=shambler basicShare=0.337707 families=14
+B23_CAMPAIGN id=13 cumulativeSpawned=11564
+B24_POPULATION campaign=13 arm=spawned bodies=1723 dominant=shambler basicShare=0.272780 families=14
+B24_POPULATION campaign=13 arm=legacy bodies=1723 dominant=shambler basicShare=0.339524 families=14
+B23_CAMPAIGN id=14 cumulativeSpawned=12470
+B24_POPULATION campaign=14 arm=spawned bodies=1728 dominant=shambler basicShare=0.295718 families=14
+B24_POPULATION campaign=14 arm=legacy bodies=1728 dominant=shambler basicShare=0.344329 families=14
+B23_CAMPAIGN id=15 cumulativeSpawned=13414
+B24_POPULATION campaign=15 arm=spawned bodies=1767 dominant=shambler basicShare=0.285229 families=14
+B24_POPULATION campaign=15 arm=legacy bodies=1767 dominant=shambler basicShare=0.338427 families=14
+B23_CAMPAIGN id=16 cumulativeSpawned=14294
+B24_POPULATION campaign=16 arm=spawned bodies=1702 dominant=shambler basicShare=0.282609 families=14
+B24_POPULATION campaign=16 arm=legacy bodies=1702 dominant=shambler basicShare=0.335488 families=14
+B23_CAMPAIGN id=17 cumulativeSpawned=15171
+B24_POPULATION campaign=17 arm=spawned bodies=1685 dominant=shambler basicShare=0.291395 families=14
+B24_POPULATION campaign=17 arm=legacy bodies=1685 dominant=shambler basicShare=0.340059 families=14
+B23_CAMPAIGN id=18 cumulativeSpawned=16081
+B24_POPULATION campaign=18 arm=spawned bodies=1748 dominant=shambler basicShare=0.272883 families=14
+B24_POPULATION campaign=18 arm=legacy bodies=1748 dominant=shambler basicShare=0.334668 families=14
+B23_CAMPAIGN id=19 cumulativeSpawned=17001
+B24_POPULATION campaign=19 arm=spawned bodies=1751 dominant=shambler basicShare=0.285551 families=14
+B24_POPULATION campaign=19 arm=legacy bodies=1751 dominant=shambler basicShare=0.340377 families=14
+B23_CAMPAIGN id=20 cumulativeSpawned=17879
+B24_POPULATION campaign=20 arm=spawned bodies=1699 dominant=shambler basicShare=0.293702 families=14
+B24_POPULATION campaign=20 arm=legacy bodies=1699 dominant=shambler basicShare=0.340789 families=14
+B23_CAMPAIGN id=21 cumulativeSpawned=18787
+B24_POPULATION campaign=21 arm=spawned bodies=1720 dominant=shambler basicShare=0.281977 families=14
+B24_POPULATION campaign=21 arm=legacy bodies=1720 dominant=shambler basicShare=0.338372 families=14
+B23_CAMPAIGN id=22 cumulativeSpawned=19648
+B24_POPULATION campaign=22 arm=spawned bodies=1692 dominant=shambler basicShare=0.291962 families=14
+B24_POPULATION campaign=22 arm=legacy bodies=1692 dominant=shambler basicShare=0.338061 families=14
+B23_CAMPAIGN id=23 cumulativeSpawned=20554
+B24_POPULATION campaign=23 arm=spawned bodies=1716 dominant=shambler basicShare=0.272145 families=14
+B24_POPULATION campaign=23 arm=legacy bodies=1716 dominant=shambler basicShare=0.335082 families=13
+B23_CAMPAIGN id=24 cumulativeSpawned=21368
+B24_POPULATION campaign=24 arm=spawned bodies=1643 dominant=shambler basicShare=0.306147 families=14
+B24_POPULATION campaign=24 arm=legacy bodies=1643 dominant=shambler basicShare=0.353621 families=14
+B23_CAMPAIGN id=25 cumulativeSpawned=22248
+B24_POPULATION campaign=25 arm=spawned bodies=1724 dominant=shambler basicShare=0.305104 families=14
+B24_POPULATION campaign=25 arm=legacy bodies=1724 dominant=shambler basicShare=0.339907 families=14
+B23_CAMPAIGN id=26 cumulativeSpawned=23123
+B24_POPULATION campaign=26 arm=spawned bodies=1703 dominant=shambler basicShare=0.291838 families=14
+B24_POPULATION campaign=26 arm=legacy bodies=1703 dominant=shambler basicShare=0.345860 families=13
+B23_CAMPAIGN id=27 cumulativeSpawned=24032
+B24_POPULATION campaign=27 arm=spawned bodies=1737 dominant=shambler basicShare=0.284398 families=14
+B24_POPULATION campaign=27 arm=legacy bodies=1737 dominant=shambler basicShare=0.333909 families=14
+B23_CAMPAIGN id=28 cumulativeSpawned=24910
+B24_POPULATION campaign=28 arm=spawned bodies=1711 dominant=shambler basicShare=0.284044 families=14
+B24_POPULATION campaign=28 arm=legacy bodies=1711 dominant=shambler basicShare=0.329047 families=14
+B23_CAMPAIGN id=29 cumulativeSpawned=25718
+B24_POPULATION campaign=29 arm=spawned bodies=1630 dominant=shambler basicShare=0.298773 families=14
+B24_POPULATION campaign=29 arm=legacy bodies=1630 dominant=shambler basicShare=0.346626 families=14
+B23_CAMPAIGN id=30 cumulativeSpawned=26587
+B24_POPULATION campaign=30 arm=spawned bodies=1695 dominant=shambler basicShare=0.294985 families=14
+B24_POPULATION campaign=30 arm=legacy bodies=1695 dominant=shambler basicShare=0.343953 families=14
+B23_CAMPAIGN id=31 cumulativeSpawned=27470
+B24_POPULATION campaign=31 arm=spawned bodies=1707 dominant=shambler basicShare=0.278266 families=14
+B24_POPULATION campaign=31 arm=legacy bodies=1707 dominant=shambler basicShare=0.337434 families=14
+B23_CAMPAIGN id=32 cumulativeSpawned=28342
+B24_POPULATION campaign=32 arm=spawned bodies=1700 dominant=shambler basicShare=0.284706 families=14
+B24_POPULATION campaign=32 arm=legacy bodies=1700 dominant=shambler basicShare=0.325882 families=14
+B23_EXPOSURE afterburst spawned=249
+B23_EXPOSURE bioblaster spawned=2613
+B23_EXPOSURE caromer spawned=227
+B23_EXPOSURE deadcrab spawned=5600
+B23_EXPOSURE drubber spawned=247
+B23_EXPOSURE flamer spawned=231
+B23_EXPOSURE reaper spawned=266
+B23_EXPOSURE redliner spawned=235
+B23_EXPOSURE runner spawned=7509
+B23_EXPOSURE seeker spawned=295
+B23_EXPOSURE shambler spawned=4968
+B23_EXPOSURE siphoner spawned=225
+B23_EXPOSURE soldier spawned=5368
+B23_EXPOSURE watcher spawned=309
+B23_MOTIF hunting dungeons=114 changed=114
+B23_MOTIF retinue dungeons=108 changed=108
+B23_MOTIF quarantine dungeons=106 changed=106
+B23_MOTIF occupation dungeons=99 changed=99
+B23_MOTIF corruption dungeons=109 changed=109
+B23_MOTIF crossfire dungeons=104 changed=104
+BESTIARY_B23_CAMPAIGN_PASS dungeons=640 spawned=28342 legacy=28342 fullFloors=1747 floors=1789 safety/caps/receipt/plan/RNG/replay retained
+B24_COMBINED arm=spawned maxCampaignBasicShare=0.306147 minCampaignFamilies=13 meanConsecutiveJaccard=0.243567 pairs=608
+B24_MOTIF arm=spawned theme=corruption {bodies=9439,families={ambush=1901,area=519,control=125,line_fire=2150,melee=2836,pursuit=1583,resource=325},identities={accumulator=48,arccaster=70,bigcrab=83,bioblaster=1405,deadcrab=1842,flamer=308,gaoler=63,lurker=59,nodule=58,runner=1583,shambler=2836,silencer=62,siphoner=277,soldier=745}}
+B24_MOTIF arm=spawned theme=crossfire {bodies=8702,families={area=118,control=80,line_fire=4466,melee=1708,position=35,projectile=380,pursuit=1915},identities={beamsweeper=118,bioblaster=1399,bombardier=29,caromer=254,conductor=35,forker=29,fusilier=32,reeler=36,repulsor=47,runner=1915,seeker=631,shambler=1708,soldier=2436,surveyor=33}}
+B24_MOTIF arm=spawned theme=hunting {bodies=9611,families={ambush=2740,line_fire=1162,melee=2199,pursuit=3510},identities={climber=91,deadcrab=2104,harrier=41,listener=44,outrider=44,pincer=36,razor=237,reaper=310,runner=3021,shambler=1889,shy=46,soldier=1162,watcher=546,waylayer=40}}
+B24_MOTIF arm=spawned theme=occupation {bodies=8192,families={companion=29,control=91,line_fire=3615,melee=1317,pursuit=2773,reaction=330,support=37},identities={blitzer=144,bulwark=37,censor=33,halter=29,interposer=29,pacer=29,pavise=35,redliner=263,repriser=32,runner=2773,sentry=109,shambler=1317,sniper=144,soldier=3218}}
+B24_MOTIF arm=spawned theme=quarantine {bodies=9334,families={line_fire=2729,melee=3821,position=145,pursuit=2534,trap=105},identities={censer=36,cordon=34,drubber=274,fencer=33,runner=2534,screenwright=33,shambler=3514,snarer=35,soldier=2729,towline=38,trailmaker=38,wirewright=36}}
+B24_MOTIF arm=spawned theme=retinue {bodies=9484,families={ambush=2132,area=33,companion=104,control=28,line_fire=1168,melee=4471,pursuit=1133,remains=318,support=97},identities={absolver=33,afterburst=287,cantor=33,carrion=31,deadcrab=2132,exactor=28,flamer=33,lacemaker=30,mourner=37,relay=37,runner=1133,shambler=4471,soldier=1168,stitcher=31}}
+B24_COMBINED arm=legacy maxCampaignBasicShare=0.353621 minCampaignFamilies=13 meanConsecutiveJaccard=0.523944 pairs=608
+B24_MOTIF arm=legacy theme=corruption {bodies=9439,families={ambush=1420,area=446,control=125,line_fire=2399,melee=3093,pursuit=1856,resource=100},identities={accumulator=48,arccaster=70,bigcrab=83,bioblaster=733,deadcrab=1109,flamer=235,gaoler=63,lurker=59,nodule=58,runner=1856,seeker=234,shambler=3093,silencer=62,siphoner=52,soldier=1432,watcher=252}}
+B24_MOTIF arm=legacy theme=crossfire {bodies=8702,families={ambush=818,area=282,control=80,line_fire=2577,melee=2975,position=35,projectile=153,pursuit=1782},identities={beamsweeper=118,bioblaster=535,bombardier=29,caromer=27,conductor=35,deadcrab=578,flamer=164,forker=29,fusilier=32,reeler=36,repulsor=47,runner=1782,seeker=575,shambler=2975,soldier=1467,surveyor=33,watcher=240}}
+B24_MOTIF arm=legacy theme=hunting {bodies=9611,families={ambush=1178,area=174,line_fire=2668,melee=3310,pursuit=2281},identities={bioblaster=541,climber=91,deadcrab=616,flamer=174,harrier=41,listener=44,outrider=44,pincer=36,razor=237,reaper=44,runner=1792,seeker=252,shambler=3266,shy=46,soldier=1875,watcher=472,waylayer=40}}
+B24_MOTIF arm=legacy theme=occupation {bodies=8192,families={ambush=766,area=142,companion=29,control=91,line_fire=2816,melee=2526,pursuit=1690,reaction=95,support=37},identities={bioblaster=544,blitzer=144,bulwark=37,censor=33,deadcrab=553,flamer=142,halter=29,interposer=29,pacer=29,pavise=35,redliner=28,repriser=32,runner=1690,seeker=216,sentry=109,shambler=2526,sniper=144,soldier=1659,watcher=213}}
+B24_MOTIF arm=legacy theme=quarantine {bodies=9334,families={ambush=832,area=178,line_fire=2606,melee=3301,position=145,pursuit=2167,trap=105},identities={bioblaster=535,censer=36,cordon=34,deadcrab=599,drubber=27,fencer=33,flamer=178,runner=2167,screenwright=33,seeker=240,shambler=3241,snarer=35,soldier=1831,towline=38,trailmaker=38,watcher=233,wirewright=36}}
+B24_MOTIF arm=legacy theme=retinue {bodies=9484,families={ambush=820,area=189,companion=104,control=28,line_fire=2604,melee=3494,pursuit=2079,remains=69,support=97},identities={absolver=33,afterburst=38,bioblaster=509,cantor=33,carrion=31,deadcrab=581,exactor=28,flamer=189,lacemaker=30,mourner=37,relay=37,runner=2079,seeker=233,shambler=3494,soldier=1862,stitcher=31,watcher=239}}
+BESTIARY_B24_COMBINED_PASS 32x20 paired populations; no home overlap; basicShare<=0.5 families>=10; all6 motifs affect family distribution; membership/RNG/receipt/caps retained

@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline and ecology through B23
+# Bestiary expansion — frozen baseline and ecology through B24
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -1417,3 +1417,39 @@ Scope, exact weights, campaign results, failed evidence and native limits:
 `validation/BESTIARY_B23_GATE.md` and `validation/BESTIARY_B23.md`. Manual164/32.
 **Next B24:** full Bestiary brief/campaign exit reconciliation and bounded closure;
 no whole-phase completion claim, Big Loot/Events/audits or deployment in B23.
+
+
+## B24 — planned-home convergence and whole-phase reconciliation
+
+WanderingDirector now reserves each exact planned encounter home cell during
+initial/replacement candidate scans, including dormant discretionary squads whose
+native hull does not exist yet. A local set from the current EncounterPlan avoids
+stale cache/ownership after plan replacement. All-reserved floors defer; no new
+fallback or four-cell roaming exclusion. Existing physical Placement/support,
+near-Hero protection, quiet/recovery home rules,16/floor,4 specialists, shared96,
+20-second replacement and independent streams remain. Patrol/pursuit may still
+converge after admission. No normal identities, external assets or combat tuning.
+
+The fixed paired campaign gate now enforces at least25% fewer adjacent-dungeon
+template returns with memory. Combined planned ordinary squads plus initial
+roamers measure dominant basics,14-family coverage, adjacent roster overlap and
+per-motif identity/family distributions against legacy roaming weights. Require
+largest basic share<=50% and at least10 families per campaign, all6 motif family
+distributions affected, legal membership and zero shared encounter/roaming homes.
+This potential-population measure is neither simultaneous hostile count nor
+Source spawns/sightings. Earlier exposure and safety thresholds are unchanged.
+
+Full brief reconciliation: `validation/BESTIARY_B24_EXIT.md`; finite pre-edit gate
+and measured evidence: `validation/BESTIARY_B24_GATE.md` and `BESTIARY_B24.md`.
+Live GDD05/06/07 LOD-BESTIARY-B24-001 records the design and gate. Manual keeps164
+chapters/32chunks and explains reserved home cells without promising safe paths.
+
+**Bestiary remains open.** B25 must close explicit theme-linked intensity:
+density, reinforcement probability, elite probability and pacing. Existing
+composition differences partly affect density; uniform roaming cadence and
+motif-independent phrases do not satisfy the entire requirement. Reconcile elite
+probability with canonical60/30/10 tier law before changing it. Named niche/theme
+examples are illustrative, not a mandate to add every listed monster. Native
+readability, physical spawn/substitution, combat convergence, multiplayer and
+hardware acceptance remain at the ordered playtest. No Big Loot/Events/later
+audits or deployment begins in B24.
