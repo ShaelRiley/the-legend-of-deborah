@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline and ecology through B21
+# Bestiary expansion — frozen baseline and ecology through B22
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -1364,3 +1364,29 @@ DEVELOPMENT_PLAN.md. This is implemented/static work, not Source acceptance.
 
 **Next B22:** bounded macro-pacing. Wandering ecology and whole-phase campaign
 exit proof also remain; no Big Loot, Events, later audits or deployment yet.
+
+## B22 — route-based macro-pacing
+
+Roster remains63 normal+4 named. EncounterDirector assigns each sector an
+independently seeded Surge, Ambush or Gauntlet phrase, using same-sector
+Navigator distances between its entrance and keycard/CoreCell. Projection
+clamp((a-b+L)/2,0,L)/L locates the route band; (a+b-L)/2 measures detour depth.
+Cumulative quiet/probe/pressure boundaries are10/35/80%,20/45/85%,10/25/85%.
+Quiet/recovery admit no discretionary homes. Probes use base composition scale1;
+pressure and branches at detour>=4 use existing full party/depth scale. Prefer
+one legal probe then pressure/spikes within existing budgets/maxima. Companions,
+singletons, objective squads, physical escape/admission and4-cell spacing remain.
+Missing endpoints are diagnosed unavailable; disconnected/coincident endpoints
+fail closed. No new hook, runtime phase, actor authority or history owner.
+
+The unchanged32x20 campaign gate retains all54 exposure floors25/20/5 and
+minimum36/54. Mean47.250/min39 versus paired control40.156.635/640 dungeons
+contain probe and pressure/spike, all32 campaigns include branch spikes; mean
+probe threat4.350165 versus6.528549. All reserved-band admissions are zero.
+Exact final integration evidence, diagnostics, failed fixture typo and native
+limitations are in `validation/BESTIARY_B22.md`. Manual164 chapters/32chunks.
+This governs encounter homes; pursuing/wandering actors can interrupt respite.
+
+**Next B23:** bounded wandering-population ecology, then complete campaign/
+whole-phase exit proof. Bestiary remains incomplete; no Big Loot/Events/audits
+or VPS/Workshop publication yet. Native acceptance follows ordered phases/audits.

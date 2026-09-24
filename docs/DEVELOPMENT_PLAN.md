@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B21 builds on verified remote `main` `27853c2f7fde54ad377c86c398456b5b9ba33ce8`,
-`Add campaign-aware encounter themes and novelty memory`.
-The current B21 checkpoint below is the newest implementation record. Its exact
+B22 builds on verified remote `main` `35351d7ee24fda7ba65be65f865c3c1e8bcd3555`,
+`Add topology-aware encounter composition and spatial spacing`.
+The current B22 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,47 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B21: topology-aware composition and spatial pacing
+## Current checkpoint — B22: route-based macro-pacing
+
+Built on verified remote `35351d7ee24fda7ba65be65f865c3c1e8bcd3555`.
+Roster remains63 normal/4 named, baseline18; Bestiary phase remains open.
+No VPS deployment or Steam Workshop publication.
+
+EncounterDirector now reserves quiet/recovery home bands along each sector's
+traversable entrance→keycard/CoreCell route. Independently seeded Surge/Ambush/
+Gauntlet phrases use cumulative10/35/80%,20/45/85%,10/25/85% boundaries. Probes
+retain base template/companions at composition scale1; pressure and detour>=4
+branch spikes retain full existing party/depth scale. Prefer one probe then
+pressure/spikes where legal. Missing metadata retains diagnosed legacy fallback;
+no positive route span fails closed. Existing objective squads, B20 receipts/
+motif RNG, B21 spacing/physical admission, budgets/maxima and entity ceilings
+remain binding. No new recurring hook or combat/history owner.
+
+**Validation:** One fresh final canonical run passed **all211 suites with zero failures**; no
+gameplay/config/test edits followed. Complete terminal matrix is retained.
+Unchanged32x20 paired campaigns retain every54-specialist25/20/5 exposure floor
+and minimum36/54 per campaign. Mean47.250/min39 versus control40.156/min31;
+6233 encounters,4313 discretionary.635/640 dungeons contain probes and
+pressure/spikes; all32 campaigns include branch spikes. Mean threat4.350165
+for2425 probes versus6.528549 for1888 pressure/spikes. Reserved admissions zero.
+All three phrases occur. B21 spacing/admission and existing512 independent-plan
+geometry/companion contracts remain.12 production counterfactuals change actual
+homes/composition while preserving exact objectives and motif choice. Historical
+B21 coverage47.562/min43 was slightly higher; no universal improvement claim.
+Evidence and retained failed fixture typo: `validation/BESTIARY_B22.md`.
+
+**Design/presentation:** live GDD00/01/05/06/07 LOD-BESTIARY-B22-001; existing
+manual ecology chapter explains rhythm/probes/branches and pursuit exceptions.
+Manual164 chapters/32chunks. Diagnostic LOD:PACING rows report phrase/path status,
+band cells, placements/threat and per-encounter progress/detour/scale. Native
+Source acceptance remains pending; these are planned homes, not live sightings.
+
+**Next B23:** bounded wandering-population ecology through the existing owner,
+with motif context and explicit RNG/lifecycle/count guarantees. Full campaign/
+whole-Bestiary exit proof remains; do not begin Big Loot/Events or later audits.
+Human native testing follows the ordered phases/audits.
+
+## Previous checkpoint — B21: topology-aware composition and spatial pacing
 
 Built on verified remote `27853c2f7fde54ad377c86c398456b5b9ba33ce8`.
 Roster remains **63/63 normal**, frozen baseline18,45 additions,4 named bosses.

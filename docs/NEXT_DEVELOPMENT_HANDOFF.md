@@ -1,14 +1,14 @@
-# Handoff — Bestiary B22
+# Handoff — Bestiary B23
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B22 only**,
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B23 only**,
 including authorized design, implementation, validation, documentation, commit
 and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Add topology-aware encounter composition and spatial spacing**.
-The publication response supplies the exact verified SHA; fetch current main,
-confirm this checkpoint and preserve intervening work. B21's parent is
-`27853c2f7fde54ad377c86c398456b5b9ba33ce8`.
+Latest checkpoint: **Add route-based encounter macro-pacing**.
+The publication response supplies its exact verified SHA; fetch current main,
+confirm this checkpoint and preserve intervening work. B22's parent is
+`35351d7ee24fda7ba65be65f865c3c1e8bcd3555`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -19,107 +19,119 @@ Steam Workshop.**
 
 Read AGENTS.md, active/newest DEVELOPMENT_PLAN.md checkpoint, this handoff,
 BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Live GDD00→01→needed tabs,
-including LOD-ROADMAP-ECOSYSTEM-001 and LOD-BESTIARY-B20/B21-001 in05/06/07.
+including LOD-ROADMAP-ECOSYSTEM-001 and LOD-BESTIARY-B20/B21/B22-001 in05/06/07.
 Exact HUMAN anchors only for required missing detail. Missing historical art
 is not blocking. No chat archaeology or repeated broad roster audit.
 
-## Current B21 implementation
+## Current B22 implementation
 
-EncounterDirector measures real traversable same-sector planar approaches,
-corners/junctions, straight corridor reach up to3 edges, same-direction clear
-240-unit physical lane at48-unit height, existing conservative256-node same-floor
-HasAlternate proof, reachable vertical edges at/one planar edge from candidate,
-and navigable objective distance. Closed gates/event edges and disconnected
-upper cells cannot masquerade as approaches. Existing specialist landing/escape/
-safe/objective/role/sector/singleton/companion restrictions remain binding.
+EncounterDirector owns spatial macro-pacing in BuildPlan, using existing planning
+BFS with same-sector Navigator traversal. Entrances=Start/preceding gate.afterCell;
+goals=corresponding keycards/CoreCell. Entry distance a, goal distance b and path
+length L give progress=clamp((a-b+L)/2,0,L)/L and detour=max(0,(a+b-L)/2).
+Uniform named pacing:sector RNG chooses Surge/Ambush/Gauntlet, with cumulative
+quiet/probe/pressure boundaries10/35/80%,20/45/85%,10/25/85%; remainder recovery.
+Quiet/recovery forbid discretionary homes with no reservation fallback. Probes
+retain full base template/companions at composition scale1; pressure and active-
+band detour>=4 branch spikes use existing full party/depth scale. Offer one probe,
+then pressure/spikes, then legacy unavailable candidates and remaining probes,
+within existing budgets/maxima. No actor-level/attack/reward changes.
 
-Inside B20's current motif, filter specialist templates through existing
-EnemyRoster.Placement before selection. Use common fallback only if no legal
-motif template remains. Actual spawn rechecks geometry and retains budget-safe
-ordinary-body substitution. Strongest preference only:2 for ambush/corner,
-pursuit/alternate, Climber/vertical or line fire/clear corridor;1.5 for area/trap
-at two-exit chokepoints or support/companion at junctions/objective distance4–6;
-1.25 for control/position/projectile/reaction/melee with2+ planar approaches;
-otherwise1. Ignore basic escorts in specialist scoring. No stored admission cache,
-new recurring hook or duplicate navigation/placement authority.
+Missing endpoint metadata is diagnosed unavailable and retains legacy planning;
+disconnected path or coincident entrance/goal has no positive span and fails
+closed for discretionary homes. Guaranteed objective placement/composition stays
+exact. Distance maps are local; primitive pacing facts/counters remain on plan.
+No new Think/history/combat owner or density cap. lod_encounter_ecology adds
+LOD:PACING phrase/path status, entry/goal/length, band-cell/squad/threat counts
+and per-encounter band/progress/detour/scale. Manual164 chapters/32chunks.
+These are home reservations, not guaranteed silence: wanderers, pursuit,
+backtracking and separated Heroes can interrupt respite.
 
-The stale candidate-list defect is repaired: recheck minimum4 graph-cell spacing
-against every previously planned objective/discretionary encounter before each
-new discretionary placement. Precomputed eligibility is not sufficient after
-placement changes the plan. Retain threat scaling, first-encounter exception,
-0.5 allowance, sector maxima, physical admission, target80/ceiling96 and objective
-owners. Pursuit/wanderers can still converge; this is home spacing, not live
-combat exclusion. lod_encounter_ecology reports geometry, fit multiplier/reason
-and rejected motif-template count. Manual164 chapters/32chunks. Roster63 normal
-plus4 named, frozen baseline18; breadth complete, **Bestiary phase incomplete**.
+B21 retains specialist Placement preflight before motif selection, common fallback
+only when no legal motif survives, and spawn-time geometry revalidation/ordinary
+substitution. Real same-sector approaches, corners/junctions, straight reach3,
+same-direction240-unit physical lane at48 height, conservative256-node alternate
+proof, adjacent vertical access and objective distance affect weights. Strongest
+preference only2/1.5/1.25/1, never stacked; ignore basic specialist escorts.
+Every discretionary admission rechecks4-cell home spacing against current plan,
+including objectives. Preserve all physical escape/transition/safe/role/sector/
+singleton/companion restrictions, budgets/first-admission exception/0.5 allowance,
+sector maxima,target80/ceiling96. Closed gates/events are not traversable routes.
 
-B20 remains six motifs,60 themed+6 common templates,63 identities/14 families.
-Last two committed motifs excluded; choose uniformly among eligible least-used.
-Unseen-template weight3 else1; sectors1–2 use early-template history, later sectors
-all-template history. Divide by1+4*current uses; unseen specialist x2, recent enemy
-x0.7, recent family x0.8, last dungeon matching template x0.2, older two x0.6.
-Immediate template repeat excluded when an alternative exists. Named RNG streams.
-RunManager.State owns guarded before/after receipts; commit only after complete
+B20 remains six motifs,60 themed+6 common templates,63 normal identities/14
+families,4 separately counted named bosses, frozen baseline18. Last two committed
+motifs excluded; uniform choice among eligible least-used. Template weight3 unseen
+else1, early-history sectors1–2/all-history later; divide1+4*current uses; unseen
+specialist x2, recent enemy x0.7, family x0.8, last-dungeon template x0.2, older two
+x0.6. Immediate repeat excluded when alternative exists. Isolated named streams.
+RunManager.State owns guarded before/after receipts, committed only after full
 physical build succeeds, graph/report assigned and before readiness/release.
 Failed builds consume nothing; same-level rebuild replaces from before; successor
 uses after; cleanup retains; new campaign resets even with same seed. Three recent
 primitive summaries, counts cap1,000,000; no graph/entity references in history.
-These are planned squads, not sightings, kills or successful native spawns.
+Counts describe planned squads, not successful native spawns, sightings or kills.
 
-## Complete B22 — bounded macro-pacing
+## Complete B23 — bounded wandering-population ecology
 
-Author the next coherent production slice through the existing EncounterDirector:
-quiet traversal, probes, pressure/spikes and recovery phrasing, with optional
-branches/objective context where suitable. Define finite scope, exact tuning and
-measurable campaign gate before edits. Preserve B20 motif/history ownership and
-independent RNG, B21 topology/admission/spacing, objective guarantees, count/threat
-ceilings, physical escape and all accepted cohort/progression contracts.
-Prefer complete production behavior over unused pacing metadata; do not change
-geometry/escape restrictions or statistical thresholds just to improve exposure.
-Retain failed evidence and reserve final third for validation/publication.
+Integrate the existing WanderingDirector with current encounter ecology in one
+coherent production slice. Inspect its real roster/weights, spawn/placement,
+activation, cap and lifecycle seams before choosing exact scope. Use current
+motif/context where compatible; author explicit conservative specialist inclusion/
+exclusion and composition policy. Do not blindly expose encounter-only stationary,
+trap or companion-dependent actors as solitary wanderers. Preserve accepted
+cohort physical escape/support, progression safe zones, shared hostile ceilings,
+server authority, deterministic RNG separation and campaign receipt ownership.
+Define finite scope/tuning/campaign gate before edits, with real production
+selection/spawn/cleanup effects, not unused metadata. No competing wandering or
+history authority. Do not weaken geometry or statistical thresholds for exposure.
+Reserve final third for validation, documentation and immediate publication.
 
-Wandering-population ecology and full campaign/whole-phase coverage remain
-Bestiary obligations; explicitly record anything beyond B22. A single dungeon
-need not display every family. No whole-Bestiary completion claim before all brief
-exit conditions have evidence. **Do not begin Big Loot, Events or later audits.**
-No human runtime/deployment gate precedes the ordered phases/audits.
+Complete campaign/whole-phase brief coverage remains after this slice unless
+all exit conditions actually have evidence. Numerical breadth and B20–B22 do
+not complete Bestiary. **Do not begin Big Loot, Events or later audits.** No
+human runtime/deployment gate precedes the ordered phases/audits.
 
 ## Validation truth and cadence
 
-One fresh final canonical run passed **all210 suites with zero failures**; no
-gameplay/config/test edits followed. Complete terminal matrix retained in
-BESTIARY_B21_INTEGRATION.txt. Earlier failed/incomplete
-outputs are retained separately. The final fixture proves the spacing bug with
-affordable patrols: production admits one, spacing-disabled control admits two.
-Topology fixtures also cover real loops/branches, gates/event edges, vertical and
-objective reach, blocked lanes, actual selector effects and native-spawn boundary
-revalidation. The unchanged32x20 paired campaigns retain all54 exposure floors
-25planned/20legal/5early and minimum36/54 per campaign. Measured mean47.562/min43,
-control40.750;6232 encounters,4312 discretionary,2372 geometry preferences,
-432 rejected motif-template candidates at selected cells. All sampled spacing/
-admission assertions pass. Cross-level template returns164 versus277; within-level
-repeats571 versus574; consecutive roster Jaccard0.206213 versus0.199360 (not an
-improvement claim). Six motifs109/104/114/99/106/108, no two-level repeats.
-Mean coverage slightly below B20's48.500, minimum above41; all thresholds retained.
-Existing512 independent plans retain geometry/companion restrictions and count
-reporting. Native traces/entities are doubles, not Source observations.
+One fresh final canonical run passed **all211 suites with zero failures**; no
+gameplay/config/test edits followed. Complete terminal matrix is retained.
+Final matrix and campaign measurements: validation/BESTIARY_B22_INTEGRATION.txt
+and BESTIARY_B22_CAMPAIGN_FINAL.txt; scope/failures/native limits in BESTIARY_B22.md.
+New fixtures prove three ordered phrases, branches, closed gates/event edges,
+wrong-sector/coincident/missing routes, deterministic replay, actual placement/
+body-enrichment effects and exact objective/motif preservation.12/12 production
+counterfactuals change;43 lighter probes,46 probes/34 pressure-spikes observed.
 
-Targeted tests while editing, then `python3 tools/test_checkpoint_g_integration.py`
+Unchanged32x20 sequential paired campaigns/parties1–4 retain all54 exposure floors
+25planned/20legal/5early, minimum36/54 and aggregate memory coverage above control.
+Measured mean47.250/min39 versus control40.156/min31;6233 total/4313 discretionary,
+2400 geometry preferences,647 selected-candidate preflight rejections. Template
+returns191 versus310; within-level repeats576 each; Jaccard0.209819 versus0.207373.
+Historical B21 coverage47.562/min43 is slightly higher; no universal improvement
+claim. All spacing/admission/budget and existing512-plan companion checks retained.
+
+Pacing:635/640 mixed probe+pressure/spike dungeons, all32 campaigns with branch
+spikes;2425 probes mean threat4.350165 versus1888 pressure/spikes6.528549.
+Phrase counts816 Surge/884 Ambush/860 Gauntlet. No reserved home admissions.
+Retained failed fixture typo repaired; no weakened gates. Engine boundaries are
+doubles, not native Source observations. Exact sector diagnostics are in report.
+
+Targeted checks while editing, then `python3 tools/test_checkpoint_g_integration.py`
 once stable. Repair attributable failures; broaden only for concrete shared-
-authority risk. Update/readback live GDD, manual, ledger, plan and this handoff;
-keep validator registry synchronized. Commit/publish immediately after green.
+authority risk. Update/readback live GDD, manual, ledger, plan, this handoff and
+suite registry; commit/publish immediately after green. Retain failed evidence.
 
-After ordered phases/audits, gm_flatgrass tests motif/topology recognizability,
-actual placement/substitution, solo support/hulls/gates/stairs/Walls/false floors,
-pursuit/wanderer convergence, full/reduced tells/audio, HP/XP/drops, death/revival/
-disconnect/late join, freeze/reset/same-seed rebuild,1–4-player balance/network and
+After ordered phases/audits, gm_flatgrass tests motif/topology/phrase legibility,
+actual spawn substitutions/support/hulls/gates/stairs/Walls/false floors, pursuit/
+wanderer convergence, full/reduced tells/audio, HP/XP/drops, death/revival/
+disconnect/late join, freeze/reset/rebuild,1–4-player balance/network and
 Gordon→Hector→Deborah, sole staging successor, Abundance and Level21 cash.
-Evidence console_latest.txt+rpg_summary_latest.txt; session log only for ordering.
+Evidence console_latest.txt+rpg_summary_latest.txt; session only for ordering.
 
 If CLI push credentials are unavailable, use authenticated GitHub blob/tree/
 commit/ref tools; verify every blob and complete tested tree, advance non-forced,
 fetch and verify SHA/parent/tree. Preserve newer work; never force.
 Order: Bestiary→Big Loot→Event System→systems integration/emergence audit→low-end
 PC performance audit→final crash/progression-safety audit→human playtest.
-Finish B22 only. End with verified SHA, scope/tests/progress/native checks and
+Finish B23 only. End with verified SHA, scope/tests/progress/native checks and
 next continuation prompt.

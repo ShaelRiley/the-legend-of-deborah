@@ -211,17 +211,81 @@ end
 -- A plan evaluates hundreds of candidate cells against a handful of anchors.
 -- One bounded BFS per anchor replaces repeated full path reconstruction. The
 -- cache exists only inside this synchronous plan, so gate changes cannot stale it.
-function EncounterDirector:_PlanningDistances(graph, startCell)
-    local start=keyOf(startCell);local distances={[start]=0};local queue={start};local head=1
+function EncounterDirector:_PlanningDistances(graph, startCell, tags, sector)
+    local start=keyOf(startCell)
+    if sector and (not tags[start] or tags[start].sector~=sector) then return {} end
+    local distances={[start]=0};local queue={start};local head=1
     while queue[head] do
         local current=queue[head];head=head+1
         for _,nextKey in ipairs(sortedKeys(graph.Cells[current].neighbors)) do
-            if distances[nextKey]==nil and LOD.MazeNavigator:CanTraverse(graph,current,nextKey) then
+            if distances[nextKey]==nil and (not sector or (tags[nextKey] and tags[nextKey].sector==sector))
+                and LOD.MazeNavigator:CanTraverse(graph,current,nextKey) then
                 distances[nextKey]=distances[current]+1;queue[#queue+1]=nextKey
             end
         end
     end
     return distances
+end
+
+-- B22: spatial phrases over real sector routes. These reserve encounter homes,
+-- not live combat-free zones: pursuit and the independent wanderer still exist.
+local pacingPhrases = {
+    {id="surge", quiet=.10, probe=.35, pressure=.80},
+    {id="ambush", quiet=.20, probe=.45, pressure=.85},
+    {id="gauntlet", quiet=.10, probe=.25, pressure=.85}
+}
+
+function EncounterDirector:BeginPacing(plan, graph)
+    local progression = graph.Progression
+    plan.pacing = {sectors={}}
+    for sector=1,4 do
+        local entry = sector==1 and graph.Start or (progression.Gates[sector-1] or {}).afterCell
+        local goal = sector==4 and progression.CoreCell or (progression.Keycards[sector] or {}).cell
+        local phrase = LOD.RNG.New(LOD.Seeds.Derive(plan.seed,"pacing:sector:"..sector)):Pick(pacingPhrases)
+        local row = {phrase=phrase.id, bands={quiet=0,probe=0,pressure=0,recovery=0,spike=0},
+            placed={}, threat={}, status="unavailable"}
+        plan.pacing.sectors[sector] = row
+        if entry and goal and graph.Cells[keyOf(entry)] and graph.Cells[keyOf(goal)] then
+            local fromEntry = self:_PlanningDistances(graph,entry,plan.tags,sector)
+            local fromGoal = self:_PlanningDistances(graph,goal,plan.tags,sector)
+            local length = fromEntry[keyOf(goal)]
+            row.entry, row.goal, row.length = keyOf(entry),keyOf(goal),length
+            row.status = length==0 and "coincident" or length and "ready" or "disconnected"
+            for k,tag in pairs(plan.tags) do
+                if tag.sector==sector then
+                    local a,b = fromEntry[k],fromGoal[k]
+                    local beat,progress,detour = "unreachable",nil,nil
+                    if row.status=="ready" and a and b then
+                        progress = math.Clamp((a-b+length)/2,0,length)/length
+                        detour = math.max(0,(a+b-length)/2)
+                        beat = progress<phrase.quiet and "quiet" or progress<phrase.probe and "probe"
+                            or progress<phrase.pressure and "pressure" or "recovery"
+                        if (beat=="probe" or beat=="pressure") and detour>=4 then beat="spike" end
+                    end
+                    tag.pacing = {beat=beat, progress=progress, detour=detour}
+                    row.bands[beat] = (row.bands[beat] or 0)+1
+                end
+            end
+        end
+    end
+end
+
+function EncounterDirector:PacingAllows(plan, cell)
+    local tag = plan.tags[keyOf(cell)]
+    local beat = tag and tag.pacing and tag.pacing.beat
+    return not beat or beat=="probe" or beat=="pressure" or beat=="spike"
+end
+
+-- Preserve seeded order inside each band, but offer an affordable probe first,
+-- then pressure/branch spikes before additional probes. No reservation fallback.
+function EncounterDirector:PacingCandidates(plan, candidates)
+    local probes,pressure,other = {},{},{}
+    for _,cell in ipairs(candidates) do
+        local pacing = plan.tags[keyOf(cell)].pacing
+        local pool = not pacing and other or pacing.beat=="probe" and probes or pressure
+        pool[#pool+1]=cell
+    end
+    return probes,pressure,other
 end
 
 function EncounterDirector:_FarEnough(graph, plan, cell)
@@ -280,6 +344,7 @@ function EncounterDirector:BuildPlan(graph)
         self:_AddEncounter(plan, cell, sector, "objective", objectiveTemplates[index], composition, true)
     end
 
+    self:BeginPacing(plan,graph)
     local startDistances=self:_PlanningDistances(graph,graph.Start)
     for sector = 1, 4 do
         local budget = (EC.SectorBaseThreat[sector] or 5) * scale
@@ -291,7 +356,7 @@ function EncounterDirector:BuildPlan(graph)
             local tag = tags[k]
             if tag and tag.sector == sector and not tag.safe and not tag.objective and tag.role ~= "boss" and tag.role ~= "resupply" then
                 local startDistance = startDistances[keyOf(cell)] or math.huge
-                if startDistance >= EC.ActivationDistanceCells + 1
+                if self:PacingAllows(plan,cell) and startDistance >= EC.ActivationDistanceCells + 1
                     and self:_FarEnough(graph, plan, cell)
                     and not self:_VisibleFromStart(graph, cell)
                 then
@@ -304,27 +369,42 @@ function EncounterDirector:BuildPlan(graph)
 
         local placed = 0
         local maximum = EC.MaxDiscretionaryPerSector[sector] or 1
-        for _, cell in ipairs(candidates) do
-            if placed >= maximum then break end
-            -- Candidates were collected before this sector's first placement.
-            -- Revalidate against the now-current plan before choosing or spending.
-            if self:_FarEnough(graph, plan, cell) then
-                local role = tags[keyOf(cell)].role
-                local choices = self:_EligibleTemplates(sector, role)
-                local templateId
-                if self.SelectEcologyTemplate then
-                    templateId = self:SelectEcologyTemplate(plan, choices, LOD.RNG.New(LOD.Seeds.Derive(seed,
-                        "ecology:sector:" .. sector .. ":cell:" .. keyOf(cell))), sector, graph, cell)
-                else
-                    templateId = rng:Pick(choices)
-                end
-                local composition = self:_TemplateComposition(templateId, rng:Derive("sector:" .. sector .. ":cell:" .. keyOf(cell)), scale)
-                local cost = compositionThreat(composition)
-                local remaining = budget - plan.sectorSpent[sector]
-                if composition and (cost <= remaining + 0.5 or placed == 0) then
-                    self:_AddEncounter(plan, cell, sector, role, templateId, composition, false)
-                    plan.sectorSpent[sector] = plan.sectorSpent[sector] + cost
-                    placed = placed + 1
+        local probes,pressure,other = self:PacingCandidates(plan,candidates)
+        -- First pass stops after one admitted probe; rejected/unaffordable probes
+        -- do not consume the slot. The final pass may use remaining legal probes.
+        local passes = {{cells=probes,limit=1},{cells=pressure,limit=maximum},
+            {cells=other,limit=maximum},{cells=probes,limit=maximum}}
+        for _,pass in ipairs(passes) do
+            for _, cell in ipairs(pass.cells) do
+                if placed >= pass.limit or placed >= maximum then break end
+                -- Candidates were collected before this sector's first placement.
+                -- Revalidate against the now-current plan before choosing or spending.
+                if self:_FarEnough(graph, plan, cell) then
+                    local role = tags[keyOf(cell)].role
+                    local choices = self:_EligibleTemplates(sector, role)
+                    local templateId
+                    if self.SelectEcologyTemplate then
+                        templateId = self:SelectEcologyTemplate(plan, choices, LOD.RNG.New(LOD.Seeds.Derive(seed,
+                            "ecology:sector:" .. sector .. ":cell:" .. keyOf(cell))), sector, graph, cell)
+                    else
+                        templateId = rng:Pick(choices)
+                    end
+                    local pacing = tags[keyOf(cell)].pacing
+                    local compositionScale = pacing and pacing.beat=="probe" and 1 or scale
+                    local composition = self:_TemplateComposition(templateId, rng:Derive("sector:" .. sector .. ":cell:" .. keyOf(cell)), compositionScale)
+                    local cost = compositionThreat(composition)
+                    local remaining = budget - plan.sectorSpent[sector]
+                    if composition and (cost <= remaining + 0.5 or placed == 0) then
+                        local encounter = self:_AddEncounter(plan, cell, sector, role, templateId, composition, false)
+                        encounter.pacing = pacing and table.Copy(pacing) or {beat="unavailable"}
+                        encounter.pacing.scale = compositionScale
+                        local row = plan.pacing.sectors[sector]
+                        local beat = encounter.pacing.beat
+                        row.placed[beat] = (row.placed[beat] or 0)+1
+                        row.threat[beat] = (row.threat[beat] or 0)+cost
+                        plan.sectorSpent[sector] = plan.sectorSpent[sector] + cost
+                        placed = placed + 1
+                    end
                 end
             end
         end
@@ -441,4 +521,3 @@ end
 hook.Add("Think", "LOD_EncounterDirectorThink", function()
     EncounterDirector:Think()
 end)
-

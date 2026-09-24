@@ -11,12 +11,26 @@ local function add(t,k,n) t[k]=(t[k] or 0)+(n or 1) end
 local function stats() return {planned={},legal={},early={},themes={},templates={},families={},coverage={},repeatedTemplates=0,consecutiveOverlap=0,overlapPairs=0,encounters=0,exactLevelRepeats=0,crossLevelTemplateReturns=0} end
 local full,control=stats(),stats()
 local spatial={checked=0,preferred=0,rejected=0,fit={}}
+local pacing={phrases={},cells={},encounters={},threat={},mixedDungeons=0,branchCampaigns=0,status={}}
 local function observe(s,plan,graph,seen,prior)
  local roster,templates={},{}
+ local beats={}
+ if s==full then
+  for _,row in ipairs(plan.pacing.sectors) do
+   add(pacing.phrases,row.phrase);add(pacing.status,row.status)
+   for beat,n in pairs(row.bands) do add(pacing.cells,beat,n) end
+  end
+ end
  add(s.themes,plan.ecology.theme)
  for _,enc in ipairs(plan.encounters) do
   s.encounters=s.encounters+1
   if not enc.objective then
+   assert(D:PacingAllows(plan,graph.Cells[enc.cellKey]),'B22 quiet/recovery reservation violated')
+   assert(enc.pacing and enc.pacing.beat==plan.tags[enc.cellKey].pacing.beat,'B22 missing/incorrect production pacing')
+   assert(enc.pacing.scale==(enc.pacing.beat=='probe' and 1 or D:_ThreatScale()),'B22 composition scale escaped phrase')
+   if s==full then
+    add(beats,enc.pacing.beat);add(pacing.encounters,enc.pacing.beat);add(pacing.threat,enc.pacing.beat,enc.threat)
+   end
    local distances=D:_PlanningDistances(graph,enc.cell)
    for _,other in ipairs(plan.encounters) do
     if other~=enc then assert((distances[other.cellKey] or math.huge)>=LOD.Config.Encounter.MajorSpacingCells,'B21 spacing violated') end
@@ -43,6 +57,7 @@ local function observe(s,plan,graph,seen,prior)
    end
   end
  end
+ if s==full and beats.probe and (beats.pressure or beats.spike) then pacing.mixedDungeons=pacing.mixedDungeons+1 end
  if prior then
   for id,n in pairs(templates) do
    if prior.templates[id] then s.crossLevelTemplateReturns=s.crossLevelTemplateReturns+n end
@@ -59,6 +74,7 @@ end
 local minimum=math.huge
 local selectWithMemory=D.SelectEcologyTemplate
 for campaign=1,32 do
+ local previousSpikes=pacing.encounters.spike or 0
  local campaignSeed=campaign*7919
  Run.State={CampaignSeed=campaignSeed,Level=1}
  local seen,controlSeen,previous,controlPrevious={},{},nil,nil
@@ -104,6 +120,7 @@ for campaign=1,32 do
  full.coverage[#full.coverage+1]=size(seen);control.coverage[#control.coverage+1]=size(controlSeen)
  minimum=math.min(minimum,size(seen))
  emit(string.format('B20_CAMPAIGN id=%d coverage=%d controlCoverage=%d',campaign,size(seen),size(controlSeen)))
+ if (pacing.encounters.spike or 0)>previousSpikes then pacing.branchCampaigns=pacing.branchCampaigns+1 end
 end
 local function report(label,s)
  local total,min=0,math.huge;for _,n in ipairs(s.coverage) do total=total+n;min=math.min(min,n) end
@@ -114,6 +131,7 @@ local function report(label,s)
 end
 report('memory',full);report('control',control)
 emit('B21_SPATIAL '..H.serial(spatial))
+emit('B22_PACING '..H.serial(pacing))
 local aggregate,controlAggregate=0,0
 for i,n in ipairs(full.coverage) do aggregate=aggregate+n;controlAggregate=controlAggregate+control.coverage[i] end
 print(string.format('B20_NOVELTY aggregate=%d controlAggregate=%d coverageLift=%.6f',aggregate,controlAggregate,aggregate/controlAggregate-1))
@@ -130,4 +148,12 @@ for _,id in ipairs(sampled) do
  assert((full.legal[id] or 0)>=20,id..' legal exposure below20')
  assert((full.early[id] or 0)>=5,id..' early exposure below5')
 end
+assert(size(pacing.phrases)==3,'B22 missing phrase')
+for _,beat in ipairs({'quiet','probe','pressure','recovery'}) do assert((pacing.cells[beat] or 0)>0,'B22 missing band '..beat) end
+assert(pacing.mixedDungeons>=576,'B22 <90% dungeons with probe and pressure/spike: '..pacing.mixedDungeons)
+assert(pacing.branchCampaigns==32,'B22 missing branch spikes in a campaign')
+local probeMean=pacing.threat.probe/pacing.encounters.probe
+local pressureMean=((pacing.threat.pressure or 0)+(pacing.threat.spike or 0))/((pacing.encounters.pressure or 0)+(pacing.encounters.spike or 0))
+assert(probeMean<pressureMean,'B22 probes are not measurably lighter')
+print(string.format('BESTIARY_B22_CAMPAIGN_PASS: mixed=%d/640 branchCampaigns=%d/32 meanProbeThreat=%.6f meanPressureThreat=%.6f; all home reservations/scales retained',pacing.mixedDungeons,pacing.branchCampaigns,probeMean,pressureMean))
 print('BESTIARY_B20_CAMPAIGN_PASS: 32x20 actual sequential plans, six motifs, no two-level repeats, >=36/54 each campaign, 54 exposure floors, paired memory control, objectives/admissions invariant')

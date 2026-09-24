@@ -280,10 +280,25 @@ end
 concommand.Add('lod_encounter_ecology', function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
     print('[LOD:ECOLOGY] ' .. D:EcologySummary(D.Plan))
+    for sector,row in ipairs(D.Plan and D.Plan.pacing and D.Plan.pacing.sectors or {}) do
+        local bands,placed={},{}
+        for _,beat in ipairs(sorted(row.bands)) do bands[#bands+1]=beat..':'..row.bands[beat] end
+        for _,beat in ipairs(sorted(row.placed)) do
+            placed[#placed+1]=string.format('%s:%d/%.2f',beat,row.placed[beat],row.threat[beat])
+        end
+        print(string.format('[LOD:PACING] sector=%d phrase=%s status=%s entry=%s goal=%s routeLength=%s cells=%s squads/threat=%s',
+            sector,row.phrase,row.status,tostring(row.entry),tostring(row.goal),tostring(row.length),
+            table.concat(bands,','),table.concat(placed,',')))
+    end
     for _, encounter in ipairs(D.Plan and D.Plan.encounters or {}) do
         print(string.format('[LOD:ECOLOGY] encounter=%d sector=%d cell=%s template=%s threat=%.2f objective=%s',
             encounter.id, encounter.sector, encounter.cellKey, encounter.templateId,
             encounter.threat, tostring(encounter.objective)))
+        local pace=encounter.pacing
+        if pace then
+            print(string.format('[LOD:PACING] encounter=%d beat=%s progress=%s detour=%s scale=%.3f',
+                encounter.id,pace.beat,tostring(pace.progress),tostring(pace.detour),pace.scale))
+        end
         local decision = encounter.ecologyDecision
         if decision then
             local t=decision.topology
