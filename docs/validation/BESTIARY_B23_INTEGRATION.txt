@@ -1,0 +1,437 @@
+=== CHECKPOINT G INTEGRATED AUTOMATED RPG VALIDATION GATE ===
+Repository Root: /workspace/scratch/643c35b654ad/the-legend-of-deborah
+Registered Test Suites: 213
+
+[PASS]  1/213 - Bestiary B23 Wandering Population & Lifecycle
+[PASS]  2/213 - Bestiary B23 Campaign Wandering Ecology
+[PASS]  3/213 - Bestiary B22 Route Pacing & Production Effects
+[PASS]  4/213 - Bestiary B21 Topology & Spatial Admission
+[PASS]  5/213 - Bestiary B20 Ecology Selection & Receipts
+[PASS]  6/213 - Bestiary B20 Campaign Ecology Coverage
+[PASS]  7/213 - Bestiary B20 Campaign Lifecycle
+[PASS]  8/213 - Bestiary B19 Companion Links & Exact Ownership
+[PASS]  9/213 - Bestiary B19 Production Progression & Spawn
+[PASS] 10/213 - Bestiary B19 Readable Companion Links
+[PASS] 11/213 - Bestiary B18 Attack Restraint & Displaced Refuge
+[PASS] 12/213 - Bestiary B18 Production Progression & Spawn
+[PASS] 13/213 - Bestiary B18 Readable Edicts
+[PASS] 14/213 - Bestiary B17 Companion Commitments & Exact Ownership
+[PASS] 15/213 - Bestiary B17 Production Progression & Spawn
+[PASS] 16/213 - Bestiary B17 Readable Bodyguard & Oath
+[PASS] 17/213 - Bestiary B16 Movement Discipline & Exact Ownership
+[PASS] 18/213 - Bestiary B16 Production Progression & Spawn
+[PASS] 19/213 - Bestiary B16 Readable Movement Demands
+[PASS] 20/213 - Bestiary B15 Careless Fire & Exact Ownership
+[PASS] 21/213 - Bestiary B15 Production Progression & Spawn
+[PASS] 22/213 - Bestiary B15 Readable Careless Fire
+[PASS] 23/213 - Bestiary B14 Canonical Resource Pressure
+[PASS] 24/213 - Bestiary B14 Production Progression & Spawn
+[PASS] 25/213 - Bestiary B14 Readable Resource Commitments
+[PASS] 26/213 - Deborah Finale Client Presentation & Cleanup
+[PASS] 27/213 - Deborah Staging Succession & Canonical Services
+[PASS] 28/213 - Hector Encounter, Native Death & Level-20 Rescue Gate
+[PASS] 29/213 - Hector Canonical Actor Health & Defenses
+[PASS] 30/213 - Hector Horizon & Telegraph Presentation
+[PASS] 31/213 - Equipment Quiz Lifecycle & Atomic Settlement
+[PASS] 32/213 - Game Master Production Alcove Placement
+[PASS] 33/213 - Minigame Shell & Equipment UI Restrictions
+[PASS] 34/213 - Skeleton Hero Generation & Shared Combat
+[PASS] 35/213 - Skeleton Blockade Production Generation
+[PASS] 36/213 - Skeleton Blockade Death & Rewards
+[PASS] 37/213 - Bribe Blockade Generation & Ownership
+[PASS] 38/213 - Bribe Blockade Atomic Payment
+[PASS] 39/213 - Warp Hole Utility & Safe Traversal
+[PASS] 40/213 - False Floor Hazard & Native Geometry Boundaries
+[PASS] 41/213 - Combined Event Population & Rarity
+[PASS] 42/213 - Vending Machine Wallet & Potion Settlement
+[PASS] 43/213 - Treasure Chest DFT Transactions
+[PASS] 44/213 - Chest Keys & Locked Loot Claims
+[PASS] 45/213 - Dungeon Events & Transactional Slot Machine
+[PASS] 46/213 - Live Ranking Boards & Pagination
+[PASS] 47/213 - Magic Hourglass & Shared Clock
+[PASS] 48/213 - Moon Boots Gravity
+[PASS] 49/213 - Finite Wand Weapon
+[PASS] 50/213 - Tanuki Statue
+[PASS] 51/213 - Heavy Plumber Stomp
+[PASS] 52/213 - Thunder Hat Charge
+[PASS] 53/213 - Ring of Invisibility
+[PASS] 54/213 - Fighting Streets Techniques
+[PASS] 55/213 - Feather & Canonical Hero Revival
+[PASS] 56/213 - Safe Teleport & Summon Card
+[PASS] 57/213 - Responsive Character Sheet & Canonical Feat Text
+[PASS] 58/213 - Equipment Combo Abilities
+[PASS] 59/213 - Monster Defense Balance & Tactical Feedback
+[PASS] 60/213 - Invisible Overhead Walls & Free Movement
+[PASS] 61/213 - September 22 Navigation Recovery
+[PASS] 62/213 - Spell Availability & Teammate Identity
+[PASS] 63/213 - Deterministic Encounter Distribution
+[PASS] 64/213 - Integrated Combat, Remedy & Derived UI
+[PASS] 65/213 - Client Geometry Full-Update Recovery
+[PASS] 66/213 - Dungeon Transition Inventory
+[PASS] 67/213 - Exact Native-Crash Reward Replay
+[PASS] 68/213 - Equipment LuaJIT Compatibility Boundary
+[PASS] 69/213 - Force-close Evidence Export
+[PASS] 70/213 - Canonical Blue Minimap Marker
+[PASS] 71/213 - Shared Native DamageInfo Lifetime
+[PASS] 72/213 - Durable Stability Diagnostics
+[PASS] 73/213 - Release Include & Registration Wiring
+[PASS] 74/213 - Shotgun Native Bullet Aggregation
+[PASS] 75/213 - Canonical Manual & Portable Menu
+[PASS] 76/213 - Canonical Manual Server Transport
+[PASS] 77/213 - Manual Source & Reader Navigation
+[PASS] 78/213 - Campaign Clock & TIME OVER Lifecycle
+[PASS] 79/213 - Complete Enemy Roster & Animation Safety
+[PASS] 80/213 - Bestiary B1 Content Enemies & Exact Lifecycle
+[PASS] 81/213 - Bestiary B2 Ally Support & Production Progression
+[PASS] 82/213 - Bestiary B3 Flank Pursuit & Production Progression
+[PASS] 83/213 - Bestiary B4 Self Defense & Reaction Lifecycle
+[PASS] 84/213 - Bestiary B4 Production Progression & Spawn
+[PASS] 85/213 - Bestiary B5 Projectile Patterns & Lifecycle
+[PASS] 86/213 - Bestiary B5 Production Progression & Spawn
+[PASS] 87/213 - Bestiary B6 Trap Geometry & Exact Lifecycle
+[PASS] 88/213 - Bestiary B6 Production Progression & Spawn
+[PASS] 89/213 - Bestiary B6 Readable Trap Presentation
+[PASS] 90/213 - Bestiary B7 Melee Spacing & Lifetimes
+[PASS] 91/213 - Bestiary B7 Production Progression & Spawn
+[PASS] 92/213 - Bestiary B7 Readable Melee Presentation
+[PASS] 93/213 - Bestiary B13 Party Spacing & Exact Lifetimes
+[PASS] 94/213 - Bestiary B13 Production Progression & Spawn
+[PASS] 95/213 - Bestiary B13 Readable Party Commitments
+[PASS] 96/213 - Bestiary B12 Exact Condition Strike
+[PASS] 97/213 - Bestiary B12 Canonical Ally Cleansing
+[PASS] 98/213 - Bestiary B12 Production Progression & Spawn
+[PASS] 99/213 - Bestiary B12 Readable Condition Commitments
+[PASS] 100/213 - Bestiary B11 Perception & Exact Lifetimes
+[PASS] 101/213 - Bestiary B11 Production Progression & Spawn
+[PASS] 102/213 - Bestiary B11 Readable Sensory Commitments
+[PASS] 103/213 - Bestiary B10 Mobile Hazards & Lifetimes
+[PASS] 104/213 - Bestiary B10 Production Progression & Spawn
+[PASS] 105/213 - Bestiary B10 Readable Moving Zones
+[PASS] 106/213 - Bestiary B9 Tether, Screen & Shared Authorities
+[PASS] 107/213 - Bestiary B9 Production Progression & Spawn
+[PASS] 108/213 - Bestiary B9 Readable Tether & Screen
+[PASS] 109/213 - Bestiary B8 Corpse Receipts & Scavenging
+[PASS] 110/213 - Bestiary B8 Production Progression & Spawn
+[PASS] 111/213 - Bestiary B8 Readable Remains Presentation
+[PASS] 112/213 - Gordon Arena & Encounter Lifecycle
+[PASS] 113/213 - Gordon Ordered Health Scaling
+[PASS] 114/213 - Neil, Brute & Black Gate Hunt
+[PASS] 115/213 - Native Resource Ownership & Error Unwinding
+[PASS] 116/213 - Native WeaponEquip Settlement
+[PASS] 117/213 - GPS Cadence & Voice Lifecycle
+[PASS] 118/213 - Pickup Native Creation & Touch Handoff
+[PASS] 119/213 - Procedural Weapon Visual Identity
+[PASS] 120/213 - Loot/Class/Identification Refresh
+[PASS] 121/213 - Fighter Strength / Constitution Bypass
+[PASS] 122/213 - Monster Class, Affinity & Aura
+[PASS] 123/213 - Size Shifter Collision & Growth
+[PASS] 124/213 - Hostile Native Death Handoff
+[PASS] 125/213 - Equipment/Area/Statue Presentation
+[PASS] 126/213 - Magic Spectacle, Weapon Stowing & Natural Drops
+[PASS] 127/213 - Final Loot Override Wearables & Potions
+[PASS] 128/213 - Equipment Body Map & Drag Inventory
+[PASS] 129/213 - Reactive Character Status Portrait
+[PASS] 130/213 - Persistent Wallet, DFTs & SQLite Rollback
+[PASS] 131/213 - Wizard Summon & Starting Content
+[PASS] 132/213 - Wallet Client & Navigation
+[PASS] 133/213 - Equipment Network Delta & Lifecycle
+[PASS] 134/213 - Recurring Hermit Gifts & Staging Board
+[PASS] 135/213 - Enemy Variety & Shared Combat Lifecycle
+[PASS] 136/213 - Equipment Owner-Only Pickup Inspection
+[PASS] 137/213 - Procedural Economy Distribution & Versioning
+[PASS] 138/213 - Procedural Economy Production Integration
+[PASS] 139/213 - Equipment Keyboard & UI Isolation
+[PASS] 140/213 - Equipment Real Loot Transactions
+[PASS] 141/213 - Equipment Catalog, Swaps & Derived Stats
+[PASS] 142/213 - Equipment Shared Block
+[PASS] 143/213 - Equipment Special Moves & Input
+[PASS] 144/213 - Potion Projectile Collision & Lifecycle
+[PASS] 145/213 - Equipment Ownership & Throwable Transactions
+[PASS] 146/213 - Git Diff Check
+[PASS] 147/213 - Lua Syntax Audit
+[PASS] 148/213 - Checkpoint C Python Validator
+[PASS] 149/213 - Actor Core & Level Progression
+[PASS] 150/213 - Magic Forms & Contents Schema
+[PASS] 151/213 - Implemented Feats & Capstones (135+9)
+[PASS] 152/213 - Human Soldier RPG & XP Progression
+[PASS] 153/213 - Human Soldier Lifecycle & Isolation
+[PASS] 154/213 - Death Tetris Deadline & Lifecycle
+[PASS] 155/213 - Checkpoint E Closure & Parity
+[PASS] 156/213 - Soldier P-Sheet & Renderer Contract
+[PASS] 157/213 - Checkpoint F Run-End & Leaderboard
+[PASS] 158/213 - Status & Element Matrix
+[PASS] 159/213 - Protected: Deadeye Stabilization
+[PASS] 160/213 - Protected: Crowbar Mechanics
+[PASS] 161/213 - Protected: Pusher Feat & Impulse
+[PASS] 162/213 - Protected: Map Movement & Navigation
+[PASS] 163/213 - Protected: Quantum Cost Seam
+[PASS] 164/213 - Protected: Strafe Movement
+[PASS] 165/213 - Protected: Backpedal Movement
+[PASS] 166/213 - Protected: Winning Personality
+[PASS] 167/213 - Protected: Deadcrab Dispatch
+[PASS] 168/213 - Protected: Dev Ingress
+[PASS] 169/213 - Protected: Control Magic
+[PASS] 170/213 - Protected: Magic Recovery
+[PASS] 171/213 - Protected: Behavioral Regressions Gate
+[PASS] 172/213 - Feedback Language & Die Logger
+[PASS] 173/213 - Wizard Reaction Sound & Particles
+[PASS] 174/213 - Canonical Burst & Error Cleanup
+[PASS] 175/213 - AG-011 Big Playtest Repairs Gate
+[PASS] 176/213 - Feat: astral_reach
+[PASS] 177/213 - Feat: attunement
+[PASS] 178/213 - Feat: aura_burst
+[PASS] 179/213 - Feat: core_feats
+[PASS] 180/213 - Feat: direct_cha_damage
+[PASS] 181/213 - Feat: gps
+[PASS] 182/213 - Feat: haste
+[PASS] 183/213 - Feat: killer_instinct
+[PASS] 184/213 - Feat: magic_grant_feats
+[PASS] 185/213 - Feat: menace_feats
+[PASS] 186/213 - Feat: morale_defense_feats
+[PASS] 187/213 - Feat: panic_feat
+[PASS] 188/213 - Feat: personality_aura
+[PASS] 189/213 - Feat: sixth_sense
+[PASS] 190/213 - Feat: spellward
+[PASS] 191/213 - Feat: summon_management
+[PASS] 192/213 - Feat: wall_jump
+[PASS] 193/213 - Feat: wis_defense
+[PASS] 194/213 - Feat: wis_information
+[PASS] 195/213 - Feat Descriptions & Stabilization
+[PASS] 196/213 - Hero Weakness & Identity Perks
+[PASS] 197/213 - Snapshot Burst & Lifecycle
+[PASS] 198/213 - Watcher Scan Dispatch
+[PASS] 199/213 - Watermelon Bounce and Shatter Lifecycle
+[PASS] 200/213 - Multiple Mouse Magic Bindings
+[PASS] 201/213 - Wall Placement and Preview
+[PASS] 202/213 - Wall Form and Magic Testkit
+[PASS] 203/213 - Super Ball Ricochet Lifecycle
+[PASS] 204/213 - Ordinary Procedural Pistol and Crowbar Loot
+[PASS] 205/213 - Looping Audio Ownership
+[PASS] 206/213 - Adventure Presentation
+[PASS] 207/213 - Original Adventure Audio
+[PASS] 208/213 - Damsel Campaign & Endless Progression
+[PASS] 209/213 - Damsel Staging, Late Join & Dialogue
+[PASS] 210/213 - Feedback Audio Lifecycle & Coalescing
+[PASS] 211/213 - Feedback Audio Assets
+[PASS] 212/213 - Cross Feats & Shared Dodge
+[PASS] 213/213 - Live-GDD Feat Release Gate
+
+============================================================
+CHECKPOINT G SUITE MATRIX SUMMARY:
+============================================================
+  [PASS]  1. Bestiary B23 Wandering Population & Lifecycle (exit code 0)
+  [PASS]  2. Bestiary B23 Campaign Wandering Ecology       (exit code 0)
+  [PASS]  3. Bestiary B22 Route Pacing & Production Effects (exit code 0)
+  [PASS]  4. Bestiary B21 Topology & Spatial Admission     (exit code 0)
+  [PASS]  5. Bestiary B20 Ecology Selection & Receipts     (exit code 0)
+  [PASS]  6. Bestiary B20 Campaign Ecology Coverage        (exit code 0)
+  [PASS]  7. Bestiary B20 Campaign Lifecycle               (exit code 0)
+  [PASS]  8. Bestiary B19 Companion Links & Exact Ownership (exit code 0)
+  [PASS]  9. Bestiary B19 Production Progression & Spawn   (exit code 0)
+  [PASS] 10. Bestiary B19 Readable Companion Links         (exit code 0)
+  [PASS] 11. Bestiary B18 Attack Restraint & Displaced Refuge (exit code 0)
+  [PASS] 12. Bestiary B18 Production Progression & Spawn   (exit code 0)
+  [PASS] 13. Bestiary B18 Readable Edicts                  (exit code 0)
+  [PASS] 14. Bestiary B17 Companion Commitments & Exact Ownership (exit code 0)
+  [PASS] 15. Bestiary B17 Production Progression & Spawn   (exit code 0)
+  [PASS] 16. Bestiary B17 Readable Bodyguard & Oath        (exit code 0)
+  [PASS] 17. Bestiary B16 Movement Discipline & Exact Ownership (exit code 0)
+  [PASS] 18. Bestiary B16 Production Progression & Spawn   (exit code 0)
+  [PASS] 19. Bestiary B16 Readable Movement Demands        (exit code 0)
+  [PASS] 20. Bestiary B15 Careless Fire & Exact Ownership  (exit code 0)
+  [PASS] 21. Bestiary B15 Production Progression & Spawn   (exit code 0)
+  [PASS] 22. Bestiary B15 Readable Careless Fire           (exit code 0)
+  [PASS] 23. Bestiary B14 Canonical Resource Pressure      (exit code 0)
+  [PASS] 24. Bestiary B14 Production Progression & Spawn   (exit code 0)
+  [PASS] 25. Bestiary B14 Readable Resource Commitments    (exit code 0)
+  [PASS] 26. Deborah Finale Client Presentation & Cleanup  (exit code 0)
+  [PASS] 27. Deborah Staging Succession & Canonical Services (exit code 0)
+  [PASS] 28. Hector Encounter, Native Death & Level-20 Rescue Gate (exit code 0)
+  [PASS] 29. Hector Canonical Actor Health & Defenses      (exit code 0)
+  [PASS] 30. Hector Horizon & Telegraph Presentation       (exit code 0)
+  [PASS] 31. Equipment Quiz Lifecycle & Atomic Settlement  (exit code 0)
+  [PASS] 32. Game Master Production Alcove Placement       (exit code 0)
+  [PASS] 33. Minigame Shell & Equipment UI Restrictions    (exit code 0)
+  [PASS] 34. Skeleton Hero Generation & Shared Combat      (exit code 0)
+  [PASS] 35. Skeleton Blockade Production Generation       (exit code 0)
+  [PASS] 36. Skeleton Blockade Death & Rewards             (exit code 0)
+  [PASS] 37. Bribe Blockade Generation & Ownership         (exit code 0)
+  [PASS] 38. Bribe Blockade Atomic Payment                 (exit code 0)
+  [PASS] 39. Warp Hole Utility & Safe Traversal            (exit code 0)
+  [PASS] 40. False Floor Hazard & Native Geometry Boundaries (exit code 0)
+  [PASS] 41. Combined Event Population & Rarity            (exit code 0)
+  [PASS] 42. Vending Machine Wallet & Potion Settlement    (exit code 0)
+  [PASS] 43. Treasure Chest DFT Transactions               (exit code 0)
+  [PASS] 44. Chest Keys & Locked Loot Claims               (exit code 0)
+  [PASS] 45. Dungeon Events & Transactional Slot Machine   (exit code 0)
+  [PASS] 46. Live Ranking Boards & Pagination              (exit code 0)
+  [PASS] 47. Magic Hourglass & Shared Clock                (exit code 0)
+  [PASS] 48. Moon Boots Gravity                            (exit code 0)
+  [PASS] 49. Finite Wand Weapon                            (exit code 0)
+  [PASS] 50. Tanuki Statue                                 (exit code 0)
+  [PASS] 51. Heavy Plumber Stomp                           (exit code 0)
+  [PASS] 52. Thunder Hat Charge                            (exit code 0)
+  [PASS] 53. Ring of Invisibility                          (exit code 0)
+  [PASS] 54. Fighting Streets Techniques                   (exit code 0)
+  [PASS] 55. Feather & Canonical Hero Revival              (exit code 0)
+  [PASS] 56. Safe Teleport & Summon Card                   (exit code 0)
+  [PASS] 57. Responsive Character Sheet & Canonical Feat Text (exit code 0)
+  [PASS] 58. Equipment Combo Abilities                     (exit code 0)
+  [PASS] 59. Monster Defense Balance & Tactical Feedback   (exit code 0)
+  [PASS] 60. Invisible Overhead Walls & Free Movement      (exit code 0)
+  [PASS] 61. September 22 Navigation Recovery              (exit code 0)
+  [PASS] 62. Spell Availability & Teammate Identity        (exit code 0)
+  [PASS] 63. Deterministic Encounter Distribution          (exit code 0)
+  [PASS] 64. Integrated Combat, Remedy & Derived UI        (exit code 0)
+  [PASS] 65. Client Geometry Full-Update Recovery          (exit code 0)
+  [PASS] 66. Dungeon Transition Inventory                  (exit code 0)
+  [PASS] 67. Exact Native-Crash Reward Replay              (exit code 0)
+  [PASS] 68. Equipment LuaJIT Compatibility Boundary       (exit code 0)
+  [PASS] 69. Force-close Evidence Export                   (exit code 0)
+  [PASS] 70. Canonical Blue Minimap Marker                 (exit code 0)
+  [PASS] 71. Shared Native DamageInfo Lifetime             (exit code 0)
+  [PASS] 72. Durable Stability Diagnostics                 (exit code 0)
+  [PASS] 73. Release Include & Registration Wiring         (exit code 0)
+  [PASS] 74. Shotgun Native Bullet Aggregation             (exit code 0)
+  [PASS] 75. Canonical Manual & Portable Menu              (exit code 0)
+  [PASS] 76. Canonical Manual Server Transport             (exit code 0)
+  [PASS] 77. Manual Source & Reader Navigation             (exit code 0)
+  [PASS] 78. Campaign Clock & TIME OVER Lifecycle          (exit code 0)
+  [PASS] 79. Complete Enemy Roster & Animation Safety      (exit code 0)
+  [PASS] 80. Bestiary B1 Content Enemies & Exact Lifecycle (exit code 0)
+  [PASS] 81. Bestiary B2 Ally Support & Production Progression (exit code 0)
+  [PASS] 82. Bestiary B3 Flank Pursuit & Production Progression (exit code 0)
+  [PASS] 83. Bestiary B4 Self Defense & Reaction Lifecycle (exit code 0)
+  [PASS] 84. Bestiary B4 Production Progression & Spawn    (exit code 0)
+  [PASS] 85. Bestiary B5 Projectile Patterns & Lifecycle   (exit code 0)
+  [PASS] 86. Bestiary B5 Production Progression & Spawn    (exit code 0)
+  [PASS] 87. Bestiary B6 Trap Geometry & Exact Lifecycle   (exit code 0)
+  [PASS] 88. Bestiary B6 Production Progression & Spawn    (exit code 0)
+  [PASS] 89. Bestiary B6 Readable Trap Presentation        (exit code 0)
+  [PASS] 90. Bestiary B7 Melee Spacing & Lifetimes         (exit code 0)
+  [PASS] 91. Bestiary B7 Production Progression & Spawn    (exit code 0)
+  [PASS] 92. Bestiary B7 Readable Melee Presentation       (exit code 0)
+  [PASS] 93. Bestiary B13 Party Spacing & Exact Lifetimes  (exit code 0)
+  [PASS] 94. Bestiary B13 Production Progression & Spawn   (exit code 0)
+  [PASS] 95. Bestiary B13 Readable Party Commitments       (exit code 0)
+  [PASS] 96. Bestiary B12 Exact Condition Strike           (exit code 0)
+  [PASS] 97. Bestiary B12 Canonical Ally Cleansing         (exit code 0)
+  [PASS] 98. Bestiary B12 Production Progression & Spawn   (exit code 0)
+  [PASS] 99. Bestiary B12 Readable Condition Commitments   (exit code 0)
+  [PASS] 100. Bestiary B11 Perception & Exact Lifetimes     (exit code 0)
+  [PASS] 101. Bestiary B11 Production Progression & Spawn   (exit code 0)
+  [PASS] 102. Bestiary B11 Readable Sensory Commitments     (exit code 0)
+  [PASS] 103. Bestiary B10 Mobile Hazards & Lifetimes       (exit code 0)
+  [PASS] 104. Bestiary B10 Production Progression & Spawn   (exit code 0)
+  [PASS] 105. Bestiary B10 Readable Moving Zones            (exit code 0)
+  [PASS] 106. Bestiary B9 Tether, Screen & Shared Authorities (exit code 0)
+  [PASS] 107. Bestiary B9 Production Progression & Spawn    (exit code 0)
+  [PASS] 108. Bestiary B9 Readable Tether & Screen          (exit code 0)
+  [PASS] 109. Bestiary B8 Corpse Receipts & Scavenging      (exit code 0)
+  [PASS] 110. Bestiary B8 Production Progression & Spawn    (exit code 0)
+  [PASS] 111. Bestiary B8 Readable Remains Presentation     (exit code 0)
+  [PASS] 112. Gordon Arena & Encounter Lifecycle            (exit code 0)
+  [PASS] 113. Gordon Ordered Health Scaling                 (exit code 0)
+  [PASS] 114. Neil, Brute & Black Gate Hunt                 (exit code 0)
+  [PASS] 115. Native Resource Ownership & Error Unwinding   (exit code 0)
+  [PASS] 116. Native WeaponEquip Settlement                 (exit code 0)
+  [PASS] 117. GPS Cadence & Voice Lifecycle                 (exit code 0)
+  [PASS] 118. Pickup Native Creation & Touch Handoff        (exit code 0)
+  [PASS] 119. Procedural Weapon Visual Identity             (exit code 0)
+  [PASS] 120. Loot/Class/Identification Refresh             (exit code 0)
+  [PASS] 121. Fighter Strength / Constitution Bypass        (exit code 0)
+  [PASS] 122. Monster Class, Affinity & Aura                (exit code 0)
+  [PASS] 123. Size Shifter Collision & Growth               (exit code 0)
+  [PASS] 124. Hostile Native Death Handoff                  (exit code 0)
+  [PASS] 125. Equipment/Area/Statue Presentation            (exit code 0)
+  [PASS] 126. Magic Spectacle, Weapon Stowing & Natural Drops (exit code 0)
+  [PASS] 127. Final Loot Override Wearables & Potions       (exit code 0)
+  [PASS] 128. Equipment Body Map & Drag Inventory           (exit code 0)
+  [PASS] 129. Reactive Character Status Portrait            (exit code 0)
+  [PASS] 130. Persistent Wallet, DFTs & SQLite Rollback     (exit code 0)
+  [PASS] 131. Wizard Summon & Starting Content              (exit code 0)
+  [PASS] 132. Wallet Client & Navigation                    (exit code 0)
+  [PASS] 133. Equipment Network Delta & Lifecycle           (exit code 0)
+  [PASS] 134. Recurring Hermit Gifts & Staging Board        (exit code 0)
+  [PASS] 135. Enemy Variety & Shared Combat Lifecycle       (exit code 0)
+  [PASS] 136. Equipment Owner-Only Pickup Inspection        (exit code 0)
+  [PASS] 137. Procedural Economy Distribution & Versioning  (exit code 0)
+  [PASS] 138. Procedural Economy Production Integration     (exit code 0)
+  [PASS] 139. Equipment Keyboard & UI Isolation             (exit code 0)
+  [PASS] 140. Equipment Real Loot Transactions              (exit code 0)
+  [PASS] 141. Equipment Catalog, Swaps & Derived Stats      (exit code 0)
+  [PASS] 142. Equipment Shared Block                        (exit code 0)
+  [PASS] 143. Equipment Special Moves & Input               (exit code 0)
+  [PASS] 144. Potion Projectile Collision & Lifecycle       (exit code 0)
+  [PASS] 145. Equipment Ownership & Throwable Transactions  (exit code 0)
+  [PASS] 146. Git Diff Check                                (exit code 0)
+  [PASS] 147. Lua Syntax Audit                              (exit code 0)
+  [PASS] 148. Checkpoint C Python Validator                 (exit code 0)
+  [PASS] 149. Actor Core & Level Progression                (exit code 0)
+  [PASS] 150. Magic Forms & Contents Schema                 (exit code 0)
+  [PASS] 151. Implemented Feats & Capstones (135+9)         (exit code 0)
+  [PASS] 152. Human Soldier RPG & XP Progression            (exit code 0)
+  [PASS] 153. Human Soldier Lifecycle & Isolation           (exit code 0)
+  [PASS] 154. Death Tetris Deadline & Lifecycle             (exit code 0)
+  [PASS] 155. Checkpoint E Closure & Parity                 (exit code 0)
+  [PASS] 156. Soldier P-Sheet & Renderer Contract           (exit code 0)
+  [PASS] 157. Checkpoint F Run-End & Leaderboard            (exit code 0)
+  [PASS] 158. Status & Element Matrix                       (exit code 0)
+  [PASS] 159. Protected: Deadeye Stabilization              (exit code 0)
+  [PASS] 160. Protected: Crowbar Mechanics                  (exit code 0)
+  [PASS] 161. Protected: Pusher Feat & Impulse              (exit code 0)
+  [PASS] 162. Protected: Map Movement & Navigation          (exit code 0)
+  [PASS] 163. Protected: Quantum Cost Seam                  (exit code 0)
+  [PASS] 164. Protected: Strafe Movement                    (exit code 0)
+  [PASS] 165. Protected: Backpedal Movement                 (exit code 0)
+  [PASS] 166. Protected: Winning Personality                (exit code 0)
+  [PASS] 167. Protected: Deadcrab Dispatch                  (exit code 0)
+  [PASS] 168. Protected: Dev Ingress                        (exit code 0)
+  [PASS] 169. Protected: Control Magic                      (exit code 0)
+  [PASS] 170. Protected: Magic Recovery                     (exit code 0)
+  [PASS] 171. Protected: Behavioral Regressions Gate        (exit code 0)
+  [PASS] 172. Feedback Language & Die Logger                (exit code 0)
+  [PASS] 173. Wizard Reaction Sound & Particles             (exit code 0)
+  [PASS] 174. Canonical Burst & Error Cleanup               (exit code 0)
+  [PASS] 175. AG-011 Big Playtest Repairs Gate              (exit code 0)
+  [PASS] 176. Feat: astral_reach                            (exit code 0)
+  [PASS] 177. Feat: attunement                              (exit code 0)
+  [PASS] 178. Feat: aura_burst                              (exit code 0)
+  [PASS] 179. Feat: core_feats                              (exit code 0)
+  [PASS] 180. Feat: direct_cha_damage                       (exit code 0)
+  [PASS] 181. Feat: gps                                     (exit code 0)
+  [PASS] 182. Feat: haste                                   (exit code 0)
+  [PASS] 183. Feat: killer_instinct                         (exit code 0)
+  [PASS] 184. Feat: magic_grant_feats                       (exit code 0)
+  [PASS] 185. Feat: menace_feats                            (exit code 0)
+  [PASS] 186. Feat: morale_defense_feats                    (exit code 0)
+  [PASS] 187. Feat: panic_feat                              (exit code 0)
+  [PASS] 188. Feat: personality_aura                        (exit code 0)
+  [PASS] 189. Feat: sixth_sense                             (exit code 0)
+  [PASS] 190. Feat: spellward                               (exit code 0)
+  [PASS] 191. Feat: summon_management                       (exit code 0)
+  [PASS] 192. Feat: wall_jump                               (exit code 0)
+  [PASS] 193. Feat: wis_defense                             (exit code 0)
+  [PASS] 194. Feat: wis_information                         (exit code 0)
+  [PASS] 195. Feat Descriptions & Stabilization             (exit code 0)
+  [PASS] 196. Hero Weakness & Identity Perks                (exit code 0)
+  [PASS] 197. Snapshot Burst & Lifecycle                    (exit code 0)
+  [PASS] 198. Watcher Scan Dispatch                         (exit code 0)
+  [PASS] 199. Watermelon Bounce and Shatter Lifecycle       (exit code 0)
+  [PASS] 200. Multiple Mouse Magic Bindings                 (exit code 0)
+  [PASS] 201. Wall Placement and Preview                    (exit code 0)
+  [PASS] 202. Wall Form and Magic Testkit                   (exit code 0)
+  [PASS] 203. Super Ball Ricochet Lifecycle                 (exit code 0)
+  [PASS] 204. Ordinary Procedural Pistol and Crowbar Loot   (exit code 0)
+  [PASS] 205. Looping Audio Ownership                       (exit code 0)
+  [PASS] 206. Adventure Presentation                        (exit code 0)
+  [PASS] 207. Original Adventure Audio                      (exit code 0)
+  [PASS] 208. Damsel Campaign & Endless Progression         (exit code 0)
+  [PASS] 209. Damsel Staging, Late Join & Dialogue          (exit code 0)
+  [PASS] 210. Feedback Audio Lifecycle & Coalescing         (exit code 0)
+  [PASS] 211. Feedback Audio Assets                         (exit code 0)
+  [PASS] 212. Cross Feats & Shared Dodge                    (exit code 0)
+  [PASS] 213. Live-GDD Feat Release Gate                    (exit code 0)
+============================================================
+
+CHECKPOINT_G_AUTOMATED_GATE_PASS — All 213 test suites verified cleanly with 0 failures.

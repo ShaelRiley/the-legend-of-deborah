@@ -1,0 +1,62 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=25 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B23_CAMPAIGN id=1 cumulativeSpawned=822
+B23_CAMPAIGN id=2 cumulativeSpawned=1749
+B23_CAMPAIGN id=3 cumulativeSpawned=2645
+B23_CAMPAIGN id=4 cumulativeSpawned=3560
+B23_CAMPAIGN id=5 cumulativeSpawned=4392
+B23_CAMPAIGN id=6 cumulativeSpawned=5288
+B23_CAMPAIGN id=7 cumulativeSpawned=6131
+B23_CAMPAIGN id=8 cumulativeSpawned=7005
+B23_CAMPAIGN id=9 cumulativeSpawned=7961
+B23_CAMPAIGN id=10 cumulativeSpawned=8809
+B23_CAMPAIGN id=11 cumulativeSpawned=9745
+B23_CAMPAIGN id=12 cumulativeSpawned=10676
+B23_CAMPAIGN id=13 cumulativeSpawned=11585
+B23_CAMPAIGN id=14 cumulativeSpawned=12491
+B23_CAMPAIGN id=15 cumulativeSpawned=13435
+B23_CAMPAIGN id=16 cumulativeSpawned=14315
+B23_CAMPAIGN id=17 cumulativeSpawned=15194
+B23_CAMPAIGN id=18 cumulativeSpawned=16105
+B23_CAMPAIGN id=19 cumulativeSpawned=17026
+B23_CAMPAIGN id=20 cumulativeSpawned=17907
+B23_CAMPAIGN id=21 cumulativeSpawned=18817
+B23_CAMPAIGN id=22 cumulativeSpawned=19680
+B23_CAMPAIGN id=23 cumulativeSpawned=20589
+B23_CAMPAIGN id=24 cumulativeSpawned=21405
+B23_CAMPAIGN id=25 cumulativeSpawned=22285
+B23_CAMPAIGN id=26 cumulativeSpawned=23162
+B23_CAMPAIGN id=27 cumulativeSpawned=24072
+B23_CAMPAIGN id=28 cumulativeSpawned=24953
+B23_CAMPAIGN id=29 cumulativeSpawned=25762
+B23_CAMPAIGN id=30 cumulativeSpawned=26633
+B23_CAMPAIGN id=31 cumulativeSpawned=27516
+B23_CAMPAIGN id=32 cumulativeSpawned=28389
+B23_EXPOSURE afterburst spawned=255
+B23_EXPOSURE bioblaster spawned=2639
+B23_EXPOSURE caromer spawned=241
+B23_EXPOSURE deadcrab spawned=5569
+B23_EXPOSURE drubber spawned=255
+B23_EXPOSURE flamer spawned=230
+B23_EXPOSURE reaper spawned=261
+B23_EXPOSURE redliner spawned=238
+B23_EXPOSURE runner spawned=7523
+B23_EXPOSURE seeker spawned=295
+B23_EXPOSURE shambler spawned=4976
+B23_EXPOSURE siphoner spawned=229
+B23_EXPOSURE soldier spawned=5368
+B23_EXPOSURE watcher spawned=310
+B23_MOTIF corruption dungeons=109 changed=109
+B23_MOTIF hunting dungeons=114 changed=114
+B23_MOTIF retinue dungeons=108 changed=108
+B23_MOTIF occupation dungeons=99 changed=99
+B23_MOTIF quarantine dungeons=106 changed=106
+B23_MOTIF crossfire dungeons=104 changed=104
+BESTIARY_B23_CAMPAIGN_PASS dungeons=640 spawned=28389 legacy=28389 fullFloors=1752 floors=1789 safety/caps/receipt/plan/RNG/replay retained

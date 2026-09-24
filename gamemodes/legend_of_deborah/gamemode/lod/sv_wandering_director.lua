@@ -17,6 +17,16 @@ local WC = {
     WanderStepsMax = 8,
     SpawnPlayerClearanceCells = 4,
     ThinkInterval = 0.25,
+    CandidateLimit = 24,
+    SpecialistPerFloor = 4,
+    Pools = {
+        corruption = {shambler=20,runner=10,deadcrab=30,bioblaster=25,siphoner=10,flamer=5},
+        crossfire = {soldier=40,bioblaster=25,runner=15,seeker=10,caromer=10},
+        hunting = {runner=50,deadcrab=30,watcher=10,reaper=10},
+        occupation = {soldier=60,runner=20,redliner=20},
+        quarantine = {shambler=30,soldier=30,runner=20,drubber=20},
+        retinue = {shambler=60,deadcrab=20,afterburst=20}
+    },
     ArchetypeWeights = {
         shambler = 45,
         runner = 25,
@@ -25,6 +35,12 @@ local WC = {
         bioblaster = 8
     }
 }
+
+local basics = {shambler=true,runner=true,soldier=true,deadcrab=true,bioblaster=true}
+local additions = {siphoner=true,caromer=true,reaper=true,redliner=true,drubber=true,afterburst=true}
+local eligible = {watcher=true,seeker=true,flamer=true}
+for id in pairs(basics) do eligible[id]=true end
+for id in pairs(additions) do eligible[id]=true end
 
 WanderingDirector.Config = WC
 WanderingDirector.Entities = WanderingDirector.Entities or {}
@@ -124,59 +140,133 @@ local function playerCells(graph)
     return out
 end
 
+-- Local population facts are ephemeral. Campaign receipts remain EncounterDirector's.
+function WanderingDirector:_Population(floor)
+    local counts, homes, specialists = {}, {}, 0
+    for _, ent in ipairs(self.Entities or {}) do
+        if livingWanderer(ent) and ent.LODWanderFloor == floor then
+            local id=ent.LODArchetypeId
+            counts[id]=(counts[id] or 0)+1
+            homes[ent.LODWanderAnchorCellKey]=true
+            if not basics[id] then specialists=specialists+1 end
+        end
+    end
+    return counts, homes, specialists
+end
+
+function WanderingDirector:_Owns(graph)
+    local s=LOD.RunManager and LOD.RunManager.State
+    local o=self.Owner
+    return s and o and o.state==s and o.graph==graph and s.Graph==graph
+        and o.level==s.Level and o.seed==s.LevelSeed
+        and o.campaign==s.CampaignSeed and o.epoch==s.CampaignEpoch and o.run==s.RunId
+end
+
+function WanderingDirector:Cleanup()
+    for _,ent in ipairs(self.Entities or {}) do if IsValid(ent) then ent:Remove() end end
+    self.Entities={};self.NextRespawn={};self.SpawnOrdinal={};self.LastArchetype={}
+    self.Diagnostics={};self.Graph=nil;self.Owner=nil;self.NextThink=0
+end
+
 function WanderingDirector:_SpawnCandidates(graph, floor, rng)
     local cells = self:_FloorCells(graph, floor)
     local players = playerCells(graph)
-    local preferred = {}
-    local fallback = {}
-
+    local _, homes = self:_Population(floor)
+    local out = {}
+    local roster, director = LOD.EnemyRoster, LOD.EncounterDirector
     for _, cell in ipairs(cells) do
-        local farEnough = true
+        local key=keyOf(cell)
+        local tag=(graph.CellTags or {})[key] or {}
+        local admitted=not homes[key] and not tag.objective
+            and (not roster or not roster:IsTransition(graph,cell))
+            and (not director or not director.PacingAllows or not graph.EncounterPlan
+                or director:PacingAllows(graph.EncounterPlan,cell))
         for _, playerCell in ipairs(players) do
-            if playerCell.z == floor then
+            if admitted and playerCell.z == floor then
                 local distance = Navigator:Distance(graph, playerCell, cell)
-                if distance ~= math.huge and distance < WC.SpawnPlayerClearanceCells then
-                    farEnough = false
-                    break
-                end
+                if distance < WC.SpawnPlayerClearanceCells then admitted=false end
             end
         end
-        if farEnough then preferred[#preferred + 1] = cell end
-        fallback[#fallback + 1] = cell
+        if admitted then out[#out+1]=cell end
     end
-
-    rng:Shuffle(preferred)
-    rng:Shuffle(fallback)
-    return #preferred > 0 and preferred or fallback
+    rng:Shuffle(out)
+    return out
 end
 
-local function weightedArchetype(rng)
-    local total = 0
-    local candidates = {}
+function WanderingDirector:_Pool(graph)
+    local theme=graph.EncounterPlan and graph.EncounterPlan.ecology and graph.EncounterPlan.ecology.theme
+    return WC.Pools[theme] or WC.ArchetypeWeights, WC.Pools[theme] and theme or "legacy"
+end
+
+function WanderingDirector:_Choices(graph, cell, floor)
+    local pool=self:_Pool(graph)
+    local counts, _, specialists=self:_Population(floor)
+    local tag=(graph.CellTags or {})[keyOf(cell)] or {}
+    local choices={}
     local state=LOD.RunManager and LOD.RunManager.State
     local pressure=LOD.Damsels and LOD.Damsels:EndlessPressure(state and state.Level).specialistWeight or 1
-    for id, weight in pairs(WC.ArchetypeWeights) do
-        if id~="shambler" and id~="runner" then weight=weight*pressure end
-        if weight > 0 and EC.Archetypes[id] then
-            total = total + weight
-            candidates[#candidates + 1] = {id = id, weight = weight}
+    for _,id in ipairs(sortedKeys(pool)) do
+        local weight=pool[id]
+        local specialist=not basics[id]
+        local allowed=eligible[id] and EC.Archetypes[id] and weight>0
+            and (not specialist or specialists<WC.SpecialistPerFloor and not counts[id])
+        if additions[id] then
+            allowed=allowed and (tag.sector or 0)>=2 and (tag.role=="arena" or tag.role=="ambush")
+        elseif id=="flamer" then allowed=allowed and (tag.sector or 0)>=2 end
+        local placement
+        if allowed and LOD.EnemyRoster and LOD.EnemyRoster.Definitions[id] then
+            placement=LOD.EnemyRoster:Placement(graph,cell,id,tag.role)
+            allowed=placement~=nil
+        end
+        if allowed then
+            if id~="shambler" and id~="runner" then weight=weight*pressure end
+            choices[#choices+1]={id=id,weight=weight/(1+(counts[id] or 0)),placement=placement}
         end
     end
-    table.sort(candidates, function(a, b) return a.id < b.id end)
-    if total <= 0 then return EC.Archetypes.shambler and "shambler" or candidates[1] and candidates[1].id end
-
-    local roll = rng:Float(0, total)
-    local cursor = 0
-    for _, item in ipairs(candidates) do
-        cursor = cursor + item.weight
-        if roll <= cursor then return item.id end
+    if #choices>1 then
+        for i=#choices,1,-1 do
+            if choices[i].id==(self.LastArchetype or {})[floor] then table.remove(choices,i) end
+        end
     end
-    return candidates[#candidates] and candidates[#candidates].id or "shambler"
+    return choices
+end
+
+local function weightedChoice(rng, choices)
+    local total=0
+    for _,item in ipairs(choices) do total=total+item.weight end
+    if total<=0 then return nil end
+    local roll=rng:Float(0,total)
+    for _,item in ipairs(choices) do
+        roll=roll-item.weight
+        if roll<=0 then return item end
+    end
+    return choices[#choices]
+end
+
+-- Native admission is deliberately not cached. A previously legal cell can be
+-- obstructed by a Wall, event, false floor or another body before replacement.
+function WanderingDirector:_SupportedSpawn(cell)
+    local center=Navigator:CellCenter(cell)+Vector(0,0,2)
+    local hull=util.TraceHull({start=center,endpos=center,mins=Vector(-16,-16,0)*1.33,
+        maxs=Vector(16,16,72)*1.33,mask=MASK_NPCSOLID})
+    if hull.Hit or hull.StartSolid or hull.AllSolid then return nil end
+    local floor=util.TraceLine({start=center+Vector(0,0,16),endpos=center-Vector(0,0,12),mask=MASK_SOLID,
+        filter=function(v) return not v.LODHostile and not v:IsPlayer() end})
+    if not floor.Hit or floor.StartSolid or floor.AllSolid or not floor.HitNormal
+        or floor.HitNormal.z<.7 or math.abs(floor.HitPos.z-(center.z-2))>4 then return nil end
+    return center
 end
 
 function WanderingDirector:_SpawnOne(graph, floor, reason)
     local state = LOD.RunManager and LOD.RunManager.State
-    if not state or not state.BuildReady or state.Failed or state.LevelCleared then return false end
+    if not self:_Owns(graph) or not state.BuildReady or state.Failed or state.LevelCleared
+        or state.SimulationFrozen or floor<0 or floor>=(graph.WanderLayers or graph.Layers or 0)
+        or self:_LivingOnFloor(floor)>=WC.PerFloor then return false end
+    local owner=self.Owner
+    local director=LOD.EncounterDirector
+    if not director or director:GetActiveCount()>=EC.ActiveHostileCeiling then
+        self.Diagnostics[floor]="ceiling";return false
+    end
 
     self.SpawnOrdinal[floor] = (self.SpawnOrdinal[floor] or 0) + 1
     local ordinal = self.SpawnOrdinal[floor]
@@ -184,14 +274,20 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
         string.format("wanderer:%d:%d", floor, ordinal))
     local rng = LOD.RNG.New(seed)
     local candidates = self:_SpawnCandidates(graph, floor, rng:Derive("spawn-cell"))
-    local cell = candidates[1]
-    if not cell then return false end
-
-    local archetype = weightedArchetype(rng:Derive("archetype"))
-    if not archetype or not EC.Archetypes[archetype] then return false end
+    local cell, selected, spawnPos
+    for i=1,math.min(#candidates,WC.CandidateLimit) do
+        local candidate=candidates[i]
+        local pos=self:_SupportedSpawn(candidate)
+        if pos then
+            local choice=weightedChoice(rng:Derive("archetype:"..keyOf(candidate)),self:_Choices(graph,candidate,floor))
+            if choice then cell,selected,spawnPos=candidate,choice,pos;break end
+        end
+    end
+    if not cell then self.Diagnostics[floor]="no_legal_home";return false end
+    local archetype=selected.id
 
     local ent = ents.Create("lod_hostile")
-    if not IsValid(ent) then return false end
+    if not IsValid(ent) then self.Diagnostics[floor]="native_create";return false end
 
     local spawnKey = keyOf(cell)
     ent.LODArchetypeId = archetype
@@ -204,9 +300,28 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     ent.LODWanderSeed = seed
     ent.LODWanderSpawnReason = tostring(reason or "population")
     ent.LODActivated = true
-    ent:SetPos(Navigator:CellCenter(cell) + Vector(0, 0, 10))
+    ent.LODSpawnSource="wanderer"
+    ent.LODRosterPlacement=selected.placement
+    ent.LODWanderTheme=select(2,self:_Pool(graph))
+    ent:SetPos(spawnPos)
     ent:Spawn()
+    if not IsValid(ent) then self.Diagnostics[floor]="native_spawn";return false end
+    if LOD.HostileMotionV2 and LOD.HostileMotionV2.SnapSpawn
+        and LOD.HostileMotionV2:SnapSpawn(ent)==false then
+        if IsValid(ent) then ent:Remove() end
+        self.Diagnostics[floor]="native_settlement";return false
+    end
+    if not IsValid(ent) then self.Diagnostics[floor]="native_settlement";return false end
     ent:Activate()
+    if not IsValid(ent) then self.Diagnostics[floor]="native_activate";return false end
+    -- Native initialization/activation may invoke arbitrary hooks. Never register
+    -- a body across a cleanup/rebuild or a newly exhausted shared reservation.
+    if self.Owner~=owner or not self:_Owns(graph) or not state.BuildReady
+        or state.Failed or state.LevelCleared or state.SimulationFrozen
+        or director:GetActiveCount()>=EC.ActiveHostileCeiling
+        or self:_LivingOnFloor(floor)>=WC.PerFloor then
+        ent:Remove();return false
+    end
 
     -- Initializing every wanderer with refresh time zero made the full roaming
     -- population acquire targets and rebuild routes on the same frames forever.
@@ -227,16 +342,20 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
         LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities + 1] = ent
     end
 
+    self.LastArchetype[floor]=archetype
+    self.Diagnostics[floor]="spawned"
     print(string.format("[LOD:WANDER] spawned #%d floor=%d archetype=%s cell=%s reason=%s",
         ent:EntIndex(), floor + 1, archetype, spawnKey, tostring(reason or "population")))
     return true
 end
 
 function WanderingDirector:_InitializeForGraph(graph)
+    self:Cleanup()
+    local s=LOD.RunManager and LOD.RunManager.State
+    if not s or s.Graph~=graph then return end
     self.Graph = graph
-    self.Entities = {}
-    self.NextRespawn = {}
-    self.SpawnOrdinal = {}
+    self.Owner={state=s,graph=graph,level=s.Level,seed=s.LevelSeed,
+        campaign=s.CampaignSeed,epoch=s.CampaignEpoch,run=s.RunId}
 
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         for _ = 1, WC.PerFloor do self:_SpawnOne(graph, floor, "initial") end
@@ -437,10 +556,11 @@ end
 function WanderingDirector:Think()
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
+    if self.Owner and not self:_Owns(graph) then self:Cleanup() end
     if not state or not graph or not state.BuildReady or state.Failed or state.LevelCleared then return end
     if state.SimulationFrozen then return end
 
-    if self.Graph ~= graph then self:_InitializeForGraph(graph) end
+    if not self:_Owns(graph) then self:_InitializeForGraph(graph) end
 
     local now = CurTime()
     if now < (self.NextThink or 0) then return end
@@ -459,6 +579,16 @@ function WanderingDirector:Think()
         else
             self.NextRespawn[floor] = nil
         end
+    end
+end
+
+-- Follow the canonical dungeon cleanup rather than adding a second lifecycle hook.
+if LOD.EncounterDirector and not LOD.EncounterDirector.LODWanderCleanupWrapped then
+    LOD.EncounterDirector.LODWanderCleanupWrapped=true
+    local baseCleanup=LOD.EncounterDirector.Cleanup
+    function LOD.EncounterDirector:Cleanup(...)
+        WanderingDirector:Cleanup()
+        return baseCleanup(self,...)
     end
 end
 
@@ -483,8 +613,12 @@ concommand.Add("lod_m3_wanderers", function(ply)
         local living = WanderingDirector:_LivingOnFloor(floor)
         local nextAt = WanderingDirector.NextRespawn[floor]
         local wait = nextAt and math.max(0, nextAt - now) or 0
-        local text = string.format("floor=%d living=%d target=%d nextRespawn=%.1fs",
-            floor + 1, living, WC.PerFloor, wait)
+        local counts,_,specialists=WanderingDirector:_Population(floor)
+        local identities={}
+        for _,id in ipairs(sortedKeys(counts)) do identities[#identities+1]=id..":"..counts[id] end
+        local text = string.format("floor=%d living=%d target=%d nextRespawn=%.1fs theme=%s specialists=%d/%d result=%s roster=%s",
+            floor + 1, living, WC.PerFloor, wait, select(2,WanderingDirector:_Pool(graph)),
+            specialists,WC.SpecialistPerFloor,tostring((WanderingDirector.Diagnostics or {})[floor]),table.concat(identities,","))
         print("[LOD:WANDER] " .. text)
         if IsValid(ply) then ply:ChatPrint(text) end
     end

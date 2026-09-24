@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline and ecology through B22
+# Bestiary expansion — frozen baseline and ecology through B23
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -1390,3 +1390,30 @@ This governs encounter homes; pursuing/wandering actors can interrupt respite.
 **Next B23:** bounded wandering-population ecology, then complete campaign/
 whole-phase exit proof. Bestiary remains incomplete; no Big Loot/Events/audits
 or VPS/Workshop publication yet. Native acceptance follows ordered phases/audits.
+
+
+## B23 — motif-aware solitary wandering ecology
+
+WanderingDirector reads the current six-motif EncounterPlan and selects from
+explicit solitary pools, using living-population suppression and last-successful
+ID exclusion. Actual legacy pool8 becomes14 wandering-eligible identities:
+Siphoner, Caromer, Reaper, Redliner, Drubber and Afterburst are the six additions.
+This changes availability, not the63 normal/4 named identity count. Stationary,
+trap, support, companion-link and corpse-consumer actors remain encounter-only.
+Sniper/Blitzer were described but never registered as legacy wanderers; B23
+records their exclusion rather than claiming inherited production availability.
+
+Keep16/floor target and one replacement/20s with existing endless cadence.
+At most4 specialist roamers/floor and1 per identity; six new specialists require
+sector2+ arena/ambush, Flamer sector2+. The five original basics are exempt from
+the specialist cap. Each attempt examines at most24 shuffled candidates; safe,
+objective, gate/stair, reserved pacing and nearby-Hero homes are excluded, with
+no unsafe fallback. Maximum-body hull/support and live Placement are required.
+Native spawn/settlement/activation and exact-owner revalidation precede registry
+admission; shared96 ceiling remains. Deficits wait rather than bypass geometry.
+Canonical cleanup retires local state; campaign history remains unchanged.
+
+Scope, exact weights, campaign results, failed evidence and native limits:
+`validation/BESTIARY_B23_GATE.md` and `validation/BESTIARY_B23.md`. Manual164/32.
+**Next B24:** full Bestiary brief/campaign exit reconciliation and bounded closure;
+no whole-phase completion claim, Big Loot/Events/audits or deployment in B23.

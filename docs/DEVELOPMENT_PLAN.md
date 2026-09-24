@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B22 builds on verified remote `main` `35351d7ee24fda7ba65be65f865c3c1e8bcd3555`,
-`Add topology-aware encounter composition and spatial spacing`.
-The current B22 checkpoint below is the newest implementation record. Its exact
+B23 builds on verified remote `main` `b731d8b42933076b223f8607d1067486eb937cc9`,
+`Add route-based encounter macro-pacing`.
+The current B23 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,50 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B22: route-based macro-pacing
+## Current checkpoint — B23: bounded wandering-population ecology
+
+Built on verified remote `b731d8b42933076b223f8607d1067486eb937cc9`.
+Roster63 normal/4 named, frozen baseline18; Bestiary phase remains open.
+No VPS deployment or Steam Workshop publication.
+
+The existing WanderingDirector reads the current motif and selects explicit
+solitary populations, with live-count suppression and last-ID exclusion. The
+actual legacy8 roaming identities gain6 autonomous specialists: Siphoner,
+Caromer, Reaper, Redliner, Drubber and Afterburst. No stationary/trap/support/
+companion dependency is exposed as a solitary actor. Keep16/floor and20-second
+one-body replenishment with existing endless scaling; specialist cap4/floor,
+singleton identities, sector2+ arena/ambush for additions, Flamer sector2+.
+
+At most24 shuffled candidate checks; no unsafe/near-Hero/reserved-pacing fallback.
+Physical maximum-body clearance/support and live Placement precede native spawn;
+shared96 ceiling, settlement, validity and exact-owner checks guard registration.
+Cleanup retires local bodies/timers/ordinals/choices while preserving campaign
+receipts. No competing owner, recurring hook, stats/attacks/rewards or density.
+Manual164 chapters/32chunks; lod_m3_wanderers reports actual motif/population/
+specialist/defer facts. Live05/06/07 LOD-BESTIARY-B23-001 records exact design.
+
+One fresh final canonical run passed **all213 suites with zero failures**;
+no gameplay/config/test edits followed. Complete terminal matrix is retained.
+The unchanged encounter campaign gate retains all54 exposure floors25/20/5 and
+minimum36/54; measured mean47.250/min39 versus control40.156/min31, identical to
+B22.6,233 encounters/4,313 discretionary; all geometry/spacing/budget,635/640
+mixed pacing and32/32 branch-campaign gates remain green. Manual checks passed.
+The final32x20 sequential campaign sample spawns28,389 motif-selected bodies
+and28,389 legacy-weight control bodies. All640 dungeon populations change under
+motif selection.1,752/1,789 floors fill16 slots initially;37 floors defer235 total
+slots under the same safety rules in both arms. No unsafe fallback is used.
+New-specialist exposure: Siphoner229,Caromer241,Reaper261,Redliner238,Drubber255,
+Afterburst255 (each required>=25). All floor/singleton/specialist/shared caps,
+geometry/role rules, exact plan/receipt identity and deterministic replay pass.
+
+Retained failures, finite gate and native limitations: `validation/BESTIARY_B23.md`.
+Next **B24:** reconcile all Bestiary brief/whole-campaign exit conditions and
+close demonstrated gaps in a bounded production slice. Do not mark the phase
+complete merely from numerical breadth or B20–B23. Do not begin Big Loot/Events
+or later audits before evidence supports Bestiary closure. Native testing follows
+the ordered phases/audits; no deployment/publication authorization is implied.
+
+## Previous checkpoint — B22: route-based macro-pacing
 
 Built on verified remote `35351d7ee24fda7ba65be65f865c3c1e8bcd3555`.
 Roster remains63 normal/4 named, baseline18; Bestiary phase remains open.
