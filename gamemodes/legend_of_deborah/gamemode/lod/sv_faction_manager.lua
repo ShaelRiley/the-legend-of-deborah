@@ -108,7 +108,8 @@ hook.Add("EntityTakeDamage", "LOD_HostileFactionDamage", function(victim, dmginf
     local inflictor = dmginfo:GetInflictor()
     local statusElements = LOD.RPGStatusElements
     local reckless = statusElements and statusElements:AllowsFriendlyFire(attacker)
-    if (FactionManager:IsEnemyCombatant(attacker) or FactionManager:IsEnemyCombatant(inflictor)) and not reckless then
+    if (FactionManager:IsEnemyCombatant(attacker) or FactionManager:IsEnemyCombatant(inflictor)) and not reckless
+        and not (LOD.EnemyRoster and LOD.EnemyRoster.AllowsCrossfire and LOD.EnemyRoster:AllowsCrossfire(dmginfo,attacker,victim)) then
         dmginfo:SetDamage(0)
         dmginfo:ScaleDamage(0)
         return true

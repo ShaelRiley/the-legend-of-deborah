@@ -16,6 +16,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     absolver=Color(170,240,225),exactor=Color(230,95,115),
     outrider=Color(225,170,80),conductor=Color(150,190,250),
     siphoner=Color(185,115,235),accumulator=Color(235,205,95),
+    fusilier=Color(225,135,75),bombardier=Color(210,175,80),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -651,6 +652,77 @@ function V:Resource(e)
     local bar=center+Vector(0,0,mode==3 and 96 or 48)
     line(bar-side*24,bar+side*(-24+48*fraction))
 end
+-- Careless fire has two different counterplays: intercept the narrow shot with
+-- a body, or leave the blast and lure bodies into it. One bounded trace clips
+-- the line against the current first obstruction; it never chooses a new aim.
+-- Every semantic beam survives reduced effects, with no entities or emitters.
+function V:Crossfire(e)
+    local mode=e:GetNW2Int("LOD_CrossfireMode",0)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local now=CurTime();local ready=e:GetNW2Float("LOD_CrossfireReady",0)
+    local untilAt=e:GetNW2Float("LOD_CrossfireUntil",0)
+    local duration=mode==1 and 1.25 or 1.6
+    local function finite(n) return n==n and math.abs(n)<math.huge end
+    local function finiteVector(v) return finite(v.x) and finite(v.y) and finite(v.z) end
+    if not ((id=="fusilier" and mode==1) or (id=="bombardier" and mode==2))
+        or not e:GetNW2Bool("LOD_RosterAlive",false) or e:GetNW2Int("LOD_RosterAttack",0)~=1
+        or not finite(now) or not finite(ready) or not finite(untilAt)
+        or untilAt>ready+.201 or untilAt<ready or now>=untilAt or ready>now+duration+.001 then return end
+    local pos=e:GetPos();local eye=EyePos()
+    local origin=e:GetNW2Vector("LOD_CrossfireOrigin",pos)
+    local aim=e:GetNW2Vector("LOD_CrossfireAim",origin)
+    if not finiteVector(pos) or not finiteVector(eye) or not finiteVector(origin) or not finiteVector(aim)
+        or pos:DistToSqr(eye)>2400^2 or origin:DistToSqr(pos)>4^2
+        or origin:DistToSqr(aim)>(mode==1 and 432 or 360)^2 then return end
+    local color=colors[id];local up=Vector(0,0,1)
+    local center=mode==1 and origin+up*76 or aim+up*48
+    local side=(eye-center):Angle():Right()
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 3,0,1,color) end
+    if mode==1 then
+        local start=origin+up*48
+        if start:DistToSqr(aim)<.01 then return end
+        local trace=util.TraceHull({start=start,endpos=aim,mins=Vector(-4,-4,-4),
+            maxs=Vector(4,4,4),filter=e,mask=MASK_SHOT})
+        local stop=trace.Hit and trace.HitPos or aim
+        -- Reject malformed trace output before it can escape the render bounds.
+        if not stop or not finiteVector(stop) or origin:DistToSqr(stop)>432^2 then return end
+        local direction=(aim-start):GetNormalized()
+        local right=direction:Angle():Right()
+        line(start,stop,2)
+        local tip=start+(stop-start)*.65
+        line(tip,tip-direction*14+right*8,2)
+        line(tip,tip-direction*14-right*8,2)
+        if trace.Hit and not trace.HitWorld and IsValid(trace.Entity) then
+            -- Square brackets make first-body interception explicit without
+            -- promising damage to uncaptured or otherwise excluded bodies.
+            for _,sign in ipairs({-1,1}) do
+                local edge=stop+right*(sign*14)
+                line(edge-up*18,edge+up*18)
+                line(edge-up*18,edge-right*(sign*6)-up*18)
+                line(edge+up*18,edge-right*(sign*6)+up*18)
+            end
+        end
+    else
+        local ground=aim+up*3
+        for i=1,24 do
+            local a,b=(i-1)*math.pi/12,i*math.pi/12
+            line(ground+Vector(math.cos(a)*72,math.sin(a)*72,0),
+                ground+Vector(math.cos(b)*72,math.sin(b)*72,0))
+        end
+        -- Disconnected outward fragments identify an area burst, including
+        -- friendly bodies; no line of bodies can provide blast protection.
+        for i=0,3 do
+            local angle=i*math.pi*.5;local direction=Vector(math.cos(angle),math.sin(angle),0)
+            line(ground+direction*12,ground+direction*28)
+            local edge=ground+direction*72
+            line(edge,edge+up*69,1)
+        end
+        line(origin+up*48,ground,1)
+    end
+    local fraction=math.Clamp((ready-now)/duration,0,1)
+    line(center-side*24,center+side*(-24+48*fraction))
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -660,6 +732,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="fusilier" or id=="bombardier" then self:Crossfire(e);return end
     if id=="siphoner" or id=="accumulator" then self:Resource(e);return end
     if id=="outrider" then self:Spacing(e);return end
     if id=="conductor" then

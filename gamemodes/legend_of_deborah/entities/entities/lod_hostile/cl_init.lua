@@ -116,6 +116,9 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "fusilier" or archetype == "bombardier" then
+        -- Frozen360 range, body-center aim, radius72 and bounded drift fit500.
+        ent:SetRenderBounds(Vector(-500,-500,math.min(-500,mins.z*size)),Vector(500,500,math.max(500,maxs.z*size)))
     elseif archetype == "siphoner" or archetype == "accumulator" then
         -- Frozen mark360 + radius64 + bounded source drift4; visual bounds only.
         ent:SetRenderBounds(Vector(-428,-428,math.min(-364,mins.z*size)),Vector(428,428,math.max(412,maxs.z*size)))

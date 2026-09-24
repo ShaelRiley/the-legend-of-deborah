@@ -1181,6 +1181,24 @@
       ]
     },
     {
+      "id": "enemy-crossfire",
+      "title": "Turn their fire against them",
+      "rows": [
+        [
+          "Fusilier",
+          "The copper Combine soldier freezes a narrow firing lane for 1.25 seconds. Its arrow and body-bracket glyph warn where the single physical shot will go. Sidestep or place an ordinary enemy in the lane: the first body intercepts the shot, including one of its companions. Walls absorb it. The Fusilier then recovers for three seconds."
+        ],
+        [
+          "Bombardier",
+          "The ochre Combine elite marks a fixed 72-unit circle with a fragment glyph and 1.6-second countdown. Leave the circle and lure ordinary enemies into it: the physical blast can hit them too. A body cannot shield you from this area attack, but solid cover can. The circle stays where it was placed when you move away. The Bombardier then recovers for 3.5 seconds."
+        ]
+      ],
+      "text": [
+        "Both attacks deal physical 1d6+2 before ordinary defenses and threaten only actors present when the warning began. Later arrivals and replacement lives do not inherit damage; an unmarked body can still absorb the Fusilier shot harmlessly. Neither enemy harms itself. Named bosses, their clones, event actors, friendly summons and human-controlled Soldiers are excluded from this friendly fire.",
+        "Interrupt, defeat or displace the attacker, or break its sight to cancel the warning. Held and Muted do not stop these stationary physical attacks; morale flight and hit-stun do. The firing lane, blast circle, distinct glyphs and countdowns remain visible with reduced effects. These two enemies do not make the rest of the prison fight among themselves."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

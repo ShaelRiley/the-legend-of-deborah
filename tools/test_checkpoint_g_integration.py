@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Bestiary B15 Careless Fire & Exact Ownership", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b15.lua"]),
+    ("Bestiary B15 Production Progression & Spawn", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b15_production.lua"]),
+    ("Bestiary B15 Readable Careless Fire", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b15_visual.lua"]),
     ("Bestiary B14 Canonical Resource Pressure", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14.lua"]),
     ("Bestiary B14 Production Progression & Spawn", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14_production.lua"]),
     ("Bestiary B14 Readable Resource Commitments", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14_visual.lua"]),

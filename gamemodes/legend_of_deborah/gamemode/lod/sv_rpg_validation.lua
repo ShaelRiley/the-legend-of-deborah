@@ -90,7 +90,7 @@ function Validation:Run(printResult)
         "pincer", "harrier", "waylayer",
         "pavise", "repriser", "redliner", "caromer", "reeler", "forker",
         "wirewright", "snarer", "cordon", "reaper", "drubber", "fencer", "afterburst", "carrion", "towline", "screenwright", "censer", "trailmaker", "listener", "shy",
-        "absolver", "exactor", "outrider", "conductor", "siphoner", "accumulator", "neil", "brute", "warden", "hector"
+        "absolver", "exactor", "outrider", "conductor", "siphoner", "accumulator", "fusilier", "bombardier", "neil", "brute", "warden", "hector"
     }
     if countKeys(RPG.ArchetypeProgressionTemplates) ~= #expectedArchetypes then
         addError(errors, "archetype progression template count must be " .. #expectedArchetypes)

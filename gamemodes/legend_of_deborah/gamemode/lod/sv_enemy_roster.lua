@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    fusilier={name="Fusilier",model="models/combine_soldier.mdl",baseHP=45,speed=125,damage=5.5,range=360,warning=1.25,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",crossfire=1,color=Color(225,135,75),dice={1,6,2}},
+    bombardier={name="Bombardier",model="models/combine_super_soldier.mdl",baseHP=55,speed=100,damage=5.5,range=360,warning=1.6,recovery=3.5,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",crossfire=2,color=Color(210,175,80),dice={1,6,2}},
     siphoner={name="Siphoner",model="models/stalker.mdl",baseHP=35,speed=125,damage=5.5,range=360,warning=1.25,recovery=3.5,threat=3.5,activity=ACT_WALK,kind="arc",contentId="raw",resource="drain",color=Color(185,115,235),dice={1,6,2}},
     accumulator={name="Accumulator",model="models/vortigaunt_slave.mdl",baseHP=50,speed=100,damage=5.5,range=360,warning=1.25,recovery=2.5,threat=4,activity=ACT_WALK,kind="arc",contentId="raw",resource="recharge",color=Color(235,205,95),dice={1,6,2}},
     outrider={name="Outrider",model="models/antlion.mdl",baseHP=45,speed=170,damage=5.5,range=144,warning=1.1,recovery=2.4,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",spacing="isolation",color=Color(225,170,80),dice={1,6,2}},
@@ -97,7 +99,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource or d.crossfire)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -141,6 +143,7 @@ function E:Cancel(e)
     if d and d.condition then e:SetNW2Bool("LOD_ConditionMark",false) end
     if d and d.spacing then e:SetNW2Int("LOD_SpacingMode",0) end
     if d and d.resource then e:SetNW2Int("LOD_ResourceMode",0) end
+    if d and d.crossfire then e:SetNW2Int("LOD_CrossfireMode",0);e:SetNW2Float("LOD_CrossfireUntil",0) end
 end
 function E:Interrupt(e,attackEvent,attacker)
     if self.Definitions[e.LODArchetypeId] and self.Definitions[e.LODArchetypeId].perception then
@@ -152,7 +155,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource or a.crossfire) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -164,10 +167,13 @@ end
 -- Shared packet construction; ordinary callers enter through Damage's living
 -- gate. Post-defeat callers enter only through EnemyRemains' sealed receipt.
 function E:_DamagePacket(e,p,event,kind)
+    local gate=event.crossfireGate
+    if gate and not gate() then return end
     local rolls=LOD.CombatRolls
     local profile=rolls.HostileDamageProfiles[e.LODArchetypeId]
     if e.LODSkeletonHero and kind=="arc" then profile=table.Copy(profile);profile.magicDamage=true end
     event.roll=event.roll or rolls:RollHostileAttack(e,profile,e.LODConfig.burstDamage)
+    if gate and not gate() then return end
     local c={};for k,v in pairs(event.roll) do c[k]=v end
     if e.LODSkeletonHero and event.skeletonFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.skeletonFullMagicBonus end
     if event.resourceFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.resourceFullMagicBonus end
@@ -187,13 +193,21 @@ function E:_DamagePacket(e,p,event,kind)
         if definition and definition.ability then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,definition.ability) end
     elseif rider then tags.riderDC=LOD.RPGStatusElements:ConditionDC(e,rider=="immolated" and "dex" or "con") end
     local amount=rolls:ResolveActorDamage(c,e,p,tags)
+    if gate and not gate() then return end
     local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
     info:SetDamageType(magic and DMG_ENERGYBEAM or (kind=="flame" and DMG_BURN or ((kind=="venom" or kind=="gas") and DMG_POISON or DMG_SLASH)))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)
-    rolls:QueueDamageReport(info,function(final) c.final=final;rolls:_Send(p,1,rolls:_HostileRollText(c,e,p)) end)
+    rolls:QueueDamageReport(info,function(final)
+        c.final=final
+        local observer=event.crossfireAttack and event.crossfireAttack.target or p
+        if IsValid(observer) and observer:IsPlayer() then rolls:_Send(observer,1,rolls:_HostileRollText(c,e,p)) end
+    end)
+    if gate and not gate() then return end
     local before=p:Health()
+    if event.crossfireAttack then self:AuthorizeCrossfire(info,e,p,event.crossfireAttack) end
     p:TakeDamageInfo(info)
+    if event.crossfireAttack then self:RevokeCrossfire(info) end
     if IsValid(e) and not e.LODDead and IsValid(p) and content
         and (not e.LODSkeletonHero or LOD.SkeletonHero:Live(e)) then
         local after=p:Health()
@@ -209,6 +223,7 @@ function E:Begin(e,p,now,override)
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
     if d.resource then return self:BeginResource(e,p,now) end
+    if d.crossfire then return self:BeginCrossfire(e,p,now) end
     if d.spacing and not override.spacingFallback then return self:BeginSpacing(e,p,now) end
     if d.condition and not override.conditionFallback then return self:BeginCondition(e,p,now) end
     if d.tactical and not override.tacticalFallback then return self:BeginTactical(e,p,now) end
@@ -255,8 +270,8 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource) then
-        e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
+    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire) then
+        e.LODMeleeRecovery={life=attack.life,expires=attack.recoveryUntil or now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
         return
@@ -304,6 +319,7 @@ end
 function E:Attack(e,a,now)
     if a.resource then return self:StepResource(e,a,now) end
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
+    if a.crossfire then return self:StepCrossfire(e,a,now) end
     if a.spacing then return self:StepSpacing(e,a,now) end
     if a.spacingFallback and not a.released and not self:SpacingFallbackValid(e,a,now) then self:Finish(e,now);return end
     if a.condition then return self:StepCondition(e,a,now) end
@@ -437,13 +453,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)

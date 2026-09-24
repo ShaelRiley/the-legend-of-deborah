@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B14 builds on verified remote `main` `e8279b1bf904e9a3954436d50063da6a5533e4bf`,
-`Add Bestiary Outrider and Conductor party-spacing pressure`.
-The current B14 checkpoint below is the newest implementation record. Its exact
+B15 builds on verified remote `main` `b6cb650f32c40ed5bd4b04e2fcf3bd40f4d9945e`,
+`Add Bestiary Siphoner and Accumulator resource pressure`.
+The current B15 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,69 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B14: resource-pressure cohort
+## Current checkpoint — B15: careless-fire interaction cohort
+
+Built on verified remote `b6cb650f32c40ed5bd4b04e2fcf3bd40f4d9945e`.
+**Fusilier and Bombardier** bring the meaningful normal roster to **55/63**:
+frozen baseline18, **37/45 additions banked**, **8 remain**. Source acceptance
+remains pending; no VPS deployment or Workshop publication.
+
+**Playable scope:** Fusilier commits a1.25s fixed physical lane that strikes the
+first native body, including a captured ordinary hostile. Bait a companion into
+the line or sidestep. Bombardier warns1.6s over a frozen radius72 blast that can
+hit both Heroes and captured ordinary enemies; lure enemies into it and escape.
+Body interception protects against the single shot, not the area; solid cover
+protects against both. Both physical1d6+2/range360, recovery3s/3.5s. No source
+self-hit or general AI infighting. Full authored design/tuning: ledger and live
+GDD03/05/07 `LOD-BESTIARY-B15-001`. Manual159 chapters/31 chunks.
+
+**Ownership/safety:** EnemyRoster shared commitment/service/packet; FactionManager
+exact single-use native-packet exception; canonical mitigation, HP/death/earned
+XP and loot. Named bosses/clones, event Skeletons, friendly summons and human
+Soldiers cannot be friendly-fire recipients. Source/primary/recipient exact
+status-life/progression plus dungeon/campaign scope, no late-arrival or replacement
+warning transfer. Native first obstruction absorbs the lane even if ineligible.
+Area admission is sealed before callbacks and shares one roll; primary death does
+not suppress already-admitted companions, while source replacement cancels them.
+Packet target/attacker/inflictor and one GM admission are checked across canonical
+mitigation callbacks; replay, reentry and stale lifetimes cannot grant a second
+hit. Claimed errors expire; fixed recovery cannot extend. Actual/changed/diagonal
+Hero hulls, source/mark support, legal cell, two96-unit escape routes,16 commitments,
+32 Hero/128 hostile cached candidates,0.2s grace/0.25s service gap/4 drift.
+No synthetic Hero killing-blow XP: only prior earned contributions settle, once;
+ordinary drops retain their deferred native-death handoff.
+
+**Production:** singleton sector2+ arena/ambush templates Fusilier+Shambler and
+Bombardier+Runner, append ordinals52/53, explicit registry55 normal+4 named bosses.
+Preserved seeds, caps, threat, fallback and legal geometry. Full/reduced finite
+lane/body-bracket and blast/fragment warnings, bounded trace/render work.
+**Fresh validation:** all194 canonical integration suites pass with zero failures;
+no gameplay/config/test edits followed. Unchanged512 plans/32 mazes/parties1–4/
+dungeons1–5 produce4947 encounters; all46 sampled identities retain25/20/5 gates.
+Fusilier54/54/14, Bombardier32/32/8. All23 trials (22 failures), exact262 broad+329
+sector2-only ticket additions and final in-place donor transfers are preserved.
+Pool-length churn prompted wider measured margins and then fixed-length transfers;
+the later campaign-aware director remains required. Complete evidence:
+[validation](validation/BESTIARY_B15.md),
+[integration output](validation/BESTIARY_B15_INTEGRATION.txt) and
+[exposure](validation/BESTIARY_B15_EXPOSURE.md). Final results are recorded there.
+Live GDD00/01/03/05/07 updates are verified by readback; boundary doubles are not
+native Source observation or acceptance.
+
+**Native checks retained:** gm_flatgrass model/pose, actual first-body interception,
+allied blast bait/cover, Hero collision/support/gates/Walls/false floors, native
+Block/Dodge/HP/XP/drop attribution, status/morale, death/revival/disconnect/late join,
+freeze/reset/same-seed rebuild, full/reduced warnings/audio and1–4-player networking/
+balance. Retain prior cohorts and full campaign/finale/succession/Abundance/Level21.
+Evidence console_latest.txt+rpg_summary_latest.txt; session log only for ordering,
+after ordered phases/audits. No new pre-sequence human gate.
+
+**Next:** B16 only: select and author a coherent pair from remaining tactical gaps,
+then implement/validate through canonical authorities. Target57/63 only for two
+meaningful production identities. Eight additions and whole-phase campaign-aware
+encounter ecology remain within Bestiary before Big Loot or Events.
+
+## Previous checkpoint — B14: resource-pressure cohort
 
 Built on verified remote `e8279b1bf904e9a3954436d50063da6a5533e4bf`.
 **Siphoner and Accumulator** bring the meaningful normal roster to **53/63**:

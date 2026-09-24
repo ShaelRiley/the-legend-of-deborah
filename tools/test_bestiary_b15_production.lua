@@ -1,4 +1,4 @@
--- B14 production gate exercises progression, rewards, placement and canonical spawning.
+-- B15 production gate exercises progression, rewards, placement and canonical spawning.
 -- Native entities, collision traces, motion transport and networking are doubles.
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
@@ -39,7 +39,7 @@ local function at(n) time=n;env.setTime(n) end
 at(time)
 local s=LOD.RunManager.State
 s.BuildReady=true;s.Failed=false;s.LevelCleared=false;s.SimulationFrozen=false;s.Level=8
-s.CampaignEpoch=1;s.RunId='b14';s.CampaignSeed=77;s.LevelSeed=123
+s.CampaignEpoch=1;s.RunId='b15';s.CampaignSeed=77;s.LevelSeed=123
 local clearTrace=function(t) return {Hit=false,HitPos=t.endpos} end
 util.TraceLine=clearTrace;util.TraceHull=clearTrace
 LOD.CombatRolls._Send=noop;LOD.CombatRolls.ReportEnemyHealth=noop
@@ -72,16 +72,25 @@ local function reset()
     util.TraceLine=clearTrace;util.TraceHull=clearTrace;hero.valid=true;hero.alive=true;hero.health=hero.maximum
     if LOD.EnemySupport then LOD.EnemySupport.Pending={};LOD.EnemySupport.Recipients={};LOD.EnemySupport.NextService=0 end
 end
-local ids={'siphoner','accumulator'}
+local ids={'fusilier','bombardier'}
 local spawnSource=assert(io.open(root..'sv_encounter_spawn_variance.lua','r'))
 local spawnText=spawnSource:read('*a');spawnSource:close()
 local order={}
 for id in assert(spawnText:match('local SPAWN_ORDER = {(.-)}')):gmatch('"([^"]+)"') do order[#order+1]=id end
-assert(#order>=51 and order[48]=='outrider' and order[49]=='conductor'
-    and order[50]=='siphoner' and order[51]=='accumulator','append-only production spawn ordinals50/51')
-local expected={siphoner={die=8,xp=50,magic=true,paid=false},accumulator={die=10,xp=55,magic=true,paid=true}}
+assert(#order==53 and order[50]=='siphoner' and order[51]=='accumulator'
+    and order[52]=='fusilier' and order[53]=='bombardier','append-only production spawn ordinals52/53')
+local expected={
+    fusilier={die=8,xp=50,magic=false,abilities={12,13,12,10,11,9},fighter=60,rogue=40,morale=5},
+    bombardier={die=10,xp=55,magic=false,abilities={14,10,14,10,10,8},fighter=80,rogue=20,morale=6}
+}
 for _,id in ipairs(ids) do
     local def=expected[id]
+    local template=LOD.RPG.ArchetypeProgressionTemplates[id]
+    for i,ability in ipairs({'str','dex','con','int','wis','cha'}) do
+        assert(template.baseAbilities[ability]==def.abilities[i],'authored base ability '..id..':'..ability)
+    end
+    assert(template.aiClassWeights.fighter==def.fighter and template.aiClassWeights.rogue==def.rogue
+        and template.aiClassWeights.wizard==0 and template.moraleBonus==def.morale,'authored class distribution/morale')
     for seed=1,16 do
         local generated=assert(C:GenerateMonsterProgression(id,72000+seed,8,45,'ai'))
         assert(C:GenerateMonsterProgression('runner',99900+seed,12,25,'ai'))
@@ -90,11 +99,11 @@ for _,id in ipairs(ids) do
         assert(generated.progressionHitDieSides==def.die and generated.level>=9 and #generated.featIds>0)
         assert(generated.derivedStats.maxHP>45 and generated.derivedStats.maxHP==replay.derivedStats.maxHP
             and generated.classId==replay.classId and table.concat(generated.featIds,',')==table.concat(replay.featIds,','),'independent seeded generation replay')
-        assert((generated.classId=='wizard')==def.magic,'authored offensive Magic class identity')
-        assert(C:_HasCapability({},generated,'offensive_magic_activation')==def.paid,'only paid casts qualify for Quantum')
-        assert(C:_HasCapability({},generated,'discrete_magic_activation')==def.paid,'only actual discrete casts qualify for Aura Burst')
-        assert(C:_HasCapability({},generated,'magic_pool'),'canonical resource pool capability')
-        assert(not C:_HasCapability({},generated,'pushable_weapon'),'no unusable physical-attack capability')
+        assert(generated.classId=='fighter' or generated.classId=='rogue','authored physical class identity')
+        assert(not C:_HasCapability({},generated,'offensive_magic_activation'),'no offensive Magic capability')
+        assert(not C:_HasCapability({},generated,'discrete_magic_activation'),'no discrete Magic capability')
+        assert(C:_HasCapability({},generated,'pushable_weapon'),'ordinary physical attack capability')
+        assert(not C:_HasCapability({},generated,'firearm'),'no Soldier-only gun capability')
         for _,featId in ipairs(generated.featIds) do
             local feat=C:_FindFeat(featId)
             for _,capability in ipairs(feat and feat.requiredCapabilityTags or {}) do
@@ -169,7 +178,7 @@ dofile(root..'sv_enemy_variance.lua')
 D.LODUnifiedVarianceSpawner=nil;dofile(root..'sv_encounter_spawn_variance.lua')
 LOD.WanderingDirector={Config={ArchetypeWeights={}}}
 dofile(root..'sv_enemy_roster_placement.lua')
-pair('siphoner');D.Entities={};D.activeCount=0
+pair('fusilier');D.Entities={};D.activeCount=0
 local creates=0
 ents.Create=function(class)
     assert(class=='lod_hostile');creates=creates+1
@@ -183,7 +192,7 @@ ents.Create=function(class)
     return e
 end
 local cell=s.Graph.Cells[key(3,3,0)]
-local encounter={id=903,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,composition={siphoner=1,accumulator=1},entities={}}
+local encounter={id=903,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,composition={fusilier=1,bombardier=1},entities={}}
 D.activeCount=LOD.Config.Encounter.ActiveHostileCeiling-1
 assert(not D:_SpawnEncounter(encounter) and creates==0,'preflight cap prevents partial cohort')
 D.activeCount=0;assert(D:_SpawnEncounter(encounter) and #encounter.entities==2,'both appear through actual production spawn order')
@@ -193,39 +202,39 @@ for i,e in ipairs(encounter.entities) do
     assert(e.nw.LOD_CharacterLevel==e.LODProgressionState.level,'normal replicated actor Level')
 end
 assert(D:_SpawnEncounter(encounter) and creates==2,'spawn retry cannot duplicate cohort')
-for _,name in ipairs({'siphoner_pressure','accumulator_detail'}) do
+for _,name in ipairs({'fusilier_screen','bombardier_pressure'}) do
     assert(table.HasValue(D:_EligibleTemplates(2,'arena'),name) and table.HasValue(D:_EligibleTemplates(2,'ambush'),name))
     assert(not table.HasValue(D:_EligibleTemplates(1,'arena'),name),'sector-one preserves established introductory roster')
-    assert(not table.HasValue(D:_EligibleTemplates(3,'reward'),name),'resource-pressure specialist does not enter reward-only path')
+    assert(not table.HasValue(D:_EligibleTemplates(3,'reward'),name),'careless-fire specialist does not enter reward-only path')
     for seed=1,16 do
         local composition=D:_TemplateComposition(name,LOD.RNG.New(seed),4)
         for _,id in ipairs(ids) do
-            if composition[id] then assert(composition[id]==1,'party/depth enrichment caps resource-pressure source') end
+            if composition[id] then assert(composition[id]==1,'party/depth enrichment caps careless-fire source') end
         end
     end
 end
 for _,id in ipairs(ids) do
-    assert(E:Placement(s.Graph,cell,id,'arena'),'ordinary legal room admits resource-pressure source')
+    assert(E:Placement(s.Graph,cell,id,'arena'),'ordinary legal room admits careless-fire source')
     s.Graph.CellTags[key(3,3,0)]={safe=true}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'safe room rejects resource-pressure source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'safe room rejects careless-fire source')
     s.Graph.CellTags[key(3,3,0)]={objective=true}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'objective room rejects resource-pressure source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'objective room rejects careless-fire source')
     s.Graph.CellTags[key(3,3,0)]={}
     s.Graph.VerticalEdges={{a=cell,b=s.Graph.Cells[key(4,3,0)]}}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'vertical transition rejects resource-pressure source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'vertical transition rejects careless-fire source')
     s.Graph.VerticalEdges={}
     s.Graph.Progression.Gates={{beforeCell=cell,afterCell=s.Graph.Cells[key(4,3,0)]}}
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'progression transition rejects resource-pressure source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'progression transition rejects careless-fire source')
     s.Graph.Progression.Gates={}
     util.TraceHull=function() return {Hit=true,StartSolid=true} end
-    assert(not E:Placement(s.Graph,cell,id,'arena'),'blocked native hull rejects resource-pressure source')
+    assert(not E:Placement(s.Graph,cell,id,'arena'),'blocked native hull rejects careless-fire source')
     util.TraceHull=clearTrace
 end
--- Both resource identities require lateral room and a legal same-floor exit.
+-- Both crossfire identities require lateral room and a legal same-floor exit.
 for _,id in ipairs(ids) do
     local c=s.Graph.Cells[key(3,3,0)]
     local neighbors=c.neighbors;c.neighbors={}
-    assert(not E:Placement(s.Graph,c,id,'arena'),'no isolated resource-pressure spawn')
+    assert(not E:Placement(s.Graph,c,id,'arena'),'no isolated careless-fire spawn')
     c.neighbors=neighbors
     util.TraceHull=function(t) return {Hit=t.start:Distance(t.endpos)>0,StartSolid=false,HitPos=t.endpos} end
     assert(not E:Placement(s.Graph,c,id,'arena'),'no body-blocked lateral pocket')
@@ -235,8 +244,8 @@ end
 -- through the actual shared placement/spawn/progression path.
 s.Graph.CellTags[key(3,3,0)]={objective=true}
 local fallback={id=904,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,
-    composition={siphoner=1,accumulator=1},entities={}}
-assert(D:_SpawnEncounter(fallback) and #fallback.entities==2 and fallback.composition.shambler==2,'illegal resource-pressure sources fall back without body proliferation')
+    composition={fusilier=1,bombardier=1},entities={}}
+assert(D:_SpawnEncounter(fallback) and #fallback.entities==2 and fallback.composition.shambler==2,'illegal careless-fire sources fall back without body proliferation')
 for i,e in ipairs(fallback.entities) do
     assert(e.LODArchetypeId=='shambler' and e.LODEncounterOrdinal==i and e.LODProgressionState.archetypeId=='shambler','fallback keeps ordinary canonical identity')
 end
@@ -244,9 +253,9 @@ assert(D:_SpawnEncounter(fallback) and creates==4,'fallback retry cannot duplica
 -- Existing actors retain their earlier ordinals in mixed encounters.
 s.Graph.CellTags[key(3,3,0)]={}
 local mixed={id=905,cell=cell,cellKey=key(3,3,0),role='arena',sector=2,
-    composition={runner=1,wirewright=1,afterburst=1,carrion=1,towline=1,screenwright=1,listener=1,shy=1,absolver=1,exactor=1,outrider=1,conductor=1,siphoner=1,accumulator=1},entities={}}
-assert(D:_SpawnEncounter(mixed) and #mixed.entities==14)
-for i,id in ipairs({'runner','wirewright','afterburst','carrion','towline','screenwright','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator'}) do
+    composition={runner=1,wirewright=1,afterburst=1,carrion=1,towline=1,screenwright=1,listener=1,shy=1,absolver=1,exactor=1,outrider=1,conductor=1,siphoner=1,accumulator=1,fusilier=1,bombardier=1},entities={}}
+assert(D:_SpawnEncounter(mixed) and #mixed.entities==16)
+for i,id in ipairs({'runner','wirewright','afterburst','carrion','towline','screenwright','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator','fusilier','bombardier'}) do
     assert(mixed.entities[i].LODArchetypeId==id and mixed.entities[i].LODEncounterOrdinal==i,'new cohorts append without changing accepted ordinals')
 end
-print('BESTIARY_B14_PRODUCTION_PASS: offensive Magic class-feat-HP identities; seeded replay; exact-life/graph/progression/campaign/freeze/death/disconnect; shared XP once; cap; production spawn/variance/progression; idempotence; complementary templates; safe/objective/transitions/blocked hull; resource pressure and escape pockets; bounded fallback')
+print('BESTIARY_B15_PRODUCTION_PASS: physical class-feat-HP identities; seeded replay; exact-life/graph/progression/campaign/freeze/death/disconnect; shared XP once; cap; production spawn/variance/progression; idempotence; complementary templates; safe/objective/transitions/blocked hull; crossfire admission and escape pockets; bounded fallback')

@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B14
+# Bestiary expansion — frozen baseline through B15
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B14 add thirty-five identities: **53/63**, or **35/45 additions**; **10 remain**.
+B1–B15 add thirty-seven identities: **55/63**, or **37/45 additions**; **8 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -921,16 +921,75 @@ initial4 per new template) are preserved in [exposure](validation/BESTIARY_B14_E
 Manual158 chapters/31 chunks. Design: live GDD03/05/07 `LOD-BESTIARY-B14-001`.
 Validation: [B14 evidence](validation/BESTIARY_B14.md); no native acceptance implied.
 
-## Next checkpoint — B15: next remaining-roster cohort
+## B15 — careless-fire interaction cohort
 
-Ten meaningful identities remain before the frozen63 target. Select two
-underrepresented tactical identities using a targeted gap review of this ledger
-and the existing shared behavior authorities; do not repeat a whole-roster audit.
-Choose and author their finite counterplay and production gate before coding.
-Prefer a coherent pair that broadens topology or interaction decisions without
-duplicating existing support, pursuit, reaction, projectile, trap, melee, remains,
-tether/cover, mobile-hazard, perception, condition, spacing or resource mechanics.
-Target55/63 only if both are meaningful production identities with solo-safe
-warnings, exact-life ownership, bounded work and canonical combat/progression.
-Preserve remaining breadth and the later campaign-aware encounter ecology
-checkpoint(s) within Bestiary; do not begin Big Loot or Events.
+| Counted ID | Tactical identity | Production composition |
+| --- | --- | --- |
+| `fusilier` / Fusilier | Copper Combine soldier freezes a narrow firing lane for1.25s. The first body intercepts its physical shot, including a captured ordinary hostile. Sidestep, use an enemy as cover, interrupt or break sight. | Fusilier + Shambler. |
+| `bombardier` / Bombardier | Ochre Combine elite freezes a radius72 ground blast for1.6s. Captured Heroes and ordinary enemies can be hit; lure companions into the circle and leave. Body-blocking cannot absorb the whole area attack; solid cover protects. | Bombardier + Runner. |
+
+The new interaction is intentional allied interception versus allied splash,
+not a renamed projectile pattern or numeric variant. Both deal physical1d6+2
+through existing dice, mitigation, HP/death and reward paths. Range360;
+Fusilier recovery3s, Bombardier3.5s. Source+48 to frozen observed Hero center
+forms the Fusilier lane, traced with radius4 against actual bodies/world.
+The first uncaptured/replacement/excluded body harmlessly absorbs the shot;
+no piercing or retargeting. Blast containment uses the frozen Hero ground point,
+radius72 and vertical-4..72, with cover traced from mark+24. One shared roll and
+at most one native settlement per captured recipient. The original Hero can
+leave the mark without canceling it, allowing bait; losing that Hero life before
+release cancels. No source self-hit.
+
+Faction unity has one narrowly owned exception for these exact attack packets;
+other attacks retain existing protection. No general infighting, new hostile
+target selection, aura/status spillover, allegiance change or synthetic Hero kill
+credit. Named bosses/clones, event Skeletons, friendly summons and human-controlled
+Soldiers cannot be friendly-fire recipients. Ordinary defeated enemies retain
+canonical earned-contribution XP/drop settlement and enemy-attacker attribution;
+these packets create no Hero killing-blow credit or new contribution ledger.
+
+EnemyRoster owns the commitments and shared service. Source/primary and every
+recipient bind exact progression/status-life and run/graph/progression/seed/
+campaign scope before the warning. Capture at most32 cached Heroes and128 cached
+hostiles; fail closed on overflow. At most16 crossfire commitments. Source drift4,
+fixed release grace0.2s, service-gap limit0.25s, geometry cadence0.2s and failed
+admission retry/reposition0.5s. Source/mark support, same legal cell, actual Hero
+hulls and two96-unit lateral escapes with support samples<=24 keep solo dodge
+space explicit. Claim before callbacks; replacing actors/attacks cannot inherit
+or erase settlement. A claimed failure expires at the original deadline.
+Held and Muted allow stationary physical attacks; hit-stun, morale and attack
+prohibition cancel. Recovery is stationary, finite and nonextending.
+
+Sector2+ arena/ambush templates `fusilier_screen` and `bombardier_pressure` preserve
+singleton specialists, ordinary companion enrichment, deterministic streams,
+ceilings/threat and fallback. Append ordinals52/53; explicit progression registry
+55 ordinary+4 named bosses. Same-floor exit/lateral admission excludes safe,
+objective, transition and gate cells. No new wandering weights or entity bodies.
+
+Reference HP/speed/threat: Fusilier45/125/3.5; Bombardier55/100/4. Stock models
+Combine soldier/elite; RGB225/135/75 and210/175/80. STR/DEX/CON/INT/WIS/CHA;
+Fighter/Rogue/Wizard weights; HP die; XP; morale:
+Fusilier12/13/12/10/11/9;60/40/0;d8;50;5.
+Bombardier14/10/14/10/10/8;80/20/0;d10;55;6. Both usesMagic=false;
+ordinary physical feats, no Soldier-specific gun capabilities. Full/reduced
+warnings preserve the frozen lane/body brackets or blast/fragment glyph and
+countdown, finite network expiry, cull2400 and conservative500 horizontal bounds.
+No emitters, dynamic lights or model bodies. Stock positional charge sound.
+
+Live GDD03/05/07 `LOD-BESTIARY-B15-001` holds the authored design and tuning.
+Automated evidence and measured production exposure are recorded in
+[validation](validation/BESTIARY_B15.md) and
+[exposure](validation/BESTIARY_B15_EXPOSURE.md). Boundary doubles do not establish
+native Source observation or acceptance. Preserve prior cohorts and the complete
+campaign/finale/succession/Abundance/Level21 regression constraints.
+
+## Next checkpoint — B16: remaining interaction breadth
+
+Choose the next coherent pair through a targeted gap review; author finite
+counterplay and production gates before implementation. Target57/63 only when
+two new meaningful production identities qualify. Eight additions remain after
+B15. Do not count new affinity permutations, renamed existing behaviors or bosses.
+Retain solo-safe geometry, exact-life ownership, canonical combat/status/resource/
+reward authorities and bounded shared service. Whole-phase campaign-aware
+encounter themes, novelty history, topology, pacing and quantitative coverage
+remain within Bestiary before Big Loot, Events and the three audits.

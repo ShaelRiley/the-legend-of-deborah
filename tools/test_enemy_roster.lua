@@ -86,7 +86,7 @@ local E,C=LOD.EnemyRoster,LOD.Climber
 for id,d in pairs(E.Definitions) do
     assert(LOD.Config.Encounter.Archetypes[id] and LOD.CombatRolls.HostileDamageProfiles[id])
     local e=actor(id);e.LODTarget=p
-    if id~='climber' and id~='nodule' and not d.trap and not d.melee and not d.tactical and not d.mobile and not d.condition and not d.resource and not d.spacing then E:Prepare(e);E:Begin(e,p,time);assert(e.LODRosterAttack and e.nw.LOD_RosterAttack==1);E:Interrupt(e);assert(not e.LODRosterAttack) end
+    if id~='climber' and id~='nodule' and not d.trap and not d.melee and not d.tactical and not d.mobile and not d.condition and not d.resource and not d.spacing and not d.crossfire then E:Prepare(e);E:Begin(e,p,time);assert(e.LODRosterAttack and e.nw.LOD_RosterAttack==1);E:Interrupt(e);assert(not e.LODRosterAttack) end
 end
 local f=actor('flamer');f.LODTarget=p;E:Prepare(f);E:Begin(f,p,time)
 at(102);local a=f.LODRosterAttack;E:Attack(f,a,time);local n=damage;local r=rolls

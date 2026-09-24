@@ -24,6 +24,7 @@ local b6={wirewright='runner',snarer='soldier',cordon='shambler'}
 local b8={afterburst='soldier',carrion='shambler'}
 local b9={towline='runner',screenwright='soldier'}
 local b11={listener='soldier',shy='soldier'}
+local b15={fusilier='shambler',bombardier='runner'}
 local b14={siphoner='runner',accumulator='soldier'}
 local b13={outrider='soldier',conductor='shambler'}
 local b12={absolver='shambler',exactor='flamer'}
@@ -99,6 +100,10 @@ for seed=1,32 do
      assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B9 production path')
      assert(count==1 and (enc.composition[b9[id]] or 0)>=1,'B9 singleton and complementary companion')
     end
+    if b15[id] then
+     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B15 production path')
+     assert(count==1 and (enc.composition[b15[id]] or 0)>=1,'B15 singleton and complementary companion')
+    end
     if b14[id] then
      assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B14 production path')
      assert(count==1 and (enc.composition[b14[id]] or 0)>=1,'B14 singleton and complementary companion')
@@ -129,7 +134,7 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker','wirewright','snarer','cordon','reaper','drubber','fencer','afterburst','carrion','towline','screenwright','censer','trailmaker','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator'}
+local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker','wirewright','snarer','cordon','reaper','drubber','fencer','afterburst','carrion','towline','screenwright','censer','trailmaker','listener','shy','absolver','exactor','outrider','conductor','siphoner','accumulator','fusilier','bombardier'}
 for _,id in ipairs(sampled) do
  print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id] or 0,viable[id] or 0,early[id] or 0))
 end
