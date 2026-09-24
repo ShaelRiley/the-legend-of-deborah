@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B8
+# Bestiary expansion — frozen baseline through B9
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B8 add twenty-three identities: **41/63**, or **23/45 additions**; **22 remain**.
+B1–B9 add twenty-five identities: **43/63**, or **25/45 additions**; **20 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -497,17 +497,93 @@ Carrion12/14/11/8/10/8;50/50/0;d8;50;5. Both usesMagic=false.
 
 See DEVELOPMENT_PLAN.md for fresh automated evidence and retained native gaps.
 
-## Next checkpoint — B9: tether-and-cover cohort
+## B9 — tether and projected cover
 
-Provisional bounded two-identity scope: a visibly warned tether/reel attacker
-and a finite deployable-cover engineer. These are proposals, not authored
-mechanics. Reconcile canonical Pushback/locomotion/Block, existing barriers,
-Climber/Deadcrab attachments and progression geometry before choosing concrete
-identities. Target43/63 only if two distinct production behaviors validate.
-No private movement lock, locked-gate/void bypass, permanent route obstruction,
-reward-bearing summoned bodies or unbounded props. Require breakable/escapable
-commitments, legal alternate passage, source/target/run lifetimes and explicit
-entity/work caps. If a proposal cannot meet those contracts, choose a comparably
-bounded distinct tactical identity and record the design before implementation.
-Retain remaining roster breadth and whole-phase campaign-aware director ecology;
-do not begin Big Loot or Events.
+| Identity | Distinct tactical problem and counterplay | Production composition |
+| --- | --- | --- |
+| `towline` / Towline | Teal Metrocop warns a frozen narrow tether lane, then deals one physical hit with a short inward pull. Sidestep, close inside minimum range, break cover, leave the cell, interrupt or brace. | Towline + Runner. |
+| `screenwright` / Screenwright | Blue Combine engineer warns then channels a passable, fixed guard screen protecting a captured group against attacks crossing its finite front. Flank, cross, use Magic, interrupt the exposed engineer or wait. | Screenwright + Soldier. |
+
+Live GDD03/05/07,LOD-BESTIARY-B9-001 records author-delegated design/tuning.
+The proposed solid deployable cover was narrowed to a projected Block screen:
+it cannot obstruct routes or create another native collision/entity authority.
+It differs from Bulwark's moving single-recipient guard and Pavise's self-stance.
+Towline uses neither Climber/Deadcrab attachment nor a movement/status lock.
+Canonical magic Walls and progression/event gates remain unchanged.
+
+**Shared authorities and bounds:** EnemyRoster owns one finite commitment per
+source on its existing25ms service. Capture exact source/primary Hero status-life
+and progression plus run object,graph/progression objects,seed,campaign epoch/
+seed/run ID. Screen recipients also bind exact incarnations. Source death/removal,
+life replacement,displacement,support loss,hit-stun,attack prohibition,morale
+flight,freeze/failure/clear or same-seed replacement retires work. Held and Muted
+permit these stationary physical actions. Missed release beyond0.2s grace forfeits;
+stationary recovery is fixed and repeated interruption cannot extend it.
+
+Towline1.2s warning freezes a lane with half-width24 and endpoint overshoot24;
+minimum target range96. Require the Hero's feet within4 units of the supported
+floor and exact legal cell. One physical1d6+2 packet uses shared actor damage/
+Block/Dodge. Only positive final HP loss on the surviving original Hero permits
+one inward Pushback call: authored48,ordinary save/modifiers/immunity,maximum64
+after modifiers,source standoff64. Pushback's opt-in maxTravel/validatePath seam
+preserves all ordinary callers and its native movement authority. The constrained
+pull requires both its normal sweep and full target collision hull clear,plus
+support samples at<=16-unit intervals (at most5 points). Any obstruction or unsafe
+path forfeits movement,without wall crush. Reentrant damage cannot repeat the
+hit or drag a replaced actor. No velocity injection or private control lock.
+
+Screenwright1s warning,3s active screen; center64 toward frozen observed Hero,
+half-width80,height96. Source and plane anchors require support in the same legal
+nonobjective/nontransition cell. Source drift<=4. Deployment checks both100-unit
+lateral supported,hull-clear pockets at actual commitment facing and again at
+release. At most16 warned/active screens,one per source; at most128 cached
+HostileRegistry entries examined once,nearest three eligible ordinary allies
+captured by distance then entity ID. Source excluded; no recurring scans. At use,
+revalidate source,recipient incarnation,range240,current side,support and cover.
+A finite front-to-back attack segment crossing adds25 percentage points to the
+single canonical physical Block roll. Screens do not stack with each other;
+Bulwark/Pavise/equipment still aggregate under33%. Magic and every existing Block
+exclusion remain intact. No status pool,shield HP,entities,XP or drop channel.
+No suitable cohort/capacity gives ordinary finite physical fallback fire,whose
+warning/projectile bind the exact captured lives and scope.
+
+Reference HP/speed/acquisition/warning/recovery/threat: Towline40/135/320/1.2s/
+3s/3.5; Screenwright50/110/600/1s/4s/4. Screen fallback1d4+1(reference3.5),Towline
+1d6+2(reference5.5). Failed admission retry/advance0.5s. STR/DEX/CON/INT/WIS/CHA;
+Fighter/Rogue/Wizard weights;hit die;baseXP;morale:
+Towline12/12/11/8/10/9;60/40/0;d8;50;6.
+Screenwright10/10/13/12/11/10;80/20/0;d10;60;7. Both usesMagic=false.
+RGB70,200,185 and100,155,230. Stock Metrocop/Combine models and spatial audio.
+Full/reduced corridor/chevrons,open screen slats and countdown share fixed geometry
+and expiry;2400-unit cull. Native render extents352/640 include fallback beams.
+
+**Production:** sector2+ arena/ambush,one specialist; ordinary companions scale.
+Append stable spawn ordinals; preserve cap/retry/fallback and protected geometry.
+Initial512-plan sample: Towline34 planned/32 legal/7 early; Screenwright23/9/3
+failed required25/20/5 exposure. Two Soldiers and a graph-cycle guard were too
+restrictive for passable cover. Author-delegated revision uses one Soldier and
+legal same-level exit/two in-cell lateral pockets. Revised512 plans/4941
+encounters/32 mazes/parties1–4/dungeons1–5: Towline34/32/7,Screenwright32/32/8;
+all prior thresholds pass. Behavioral,production and native-Draw presentation
+harnesses pass; latest integration evidence is in DEVELOPMENT_PLAN.md.
+
+**Native acceptance still pending:** actual Hero displacement,save feedback,
+collision/gates/false floors,screen comprehension and shot origin attribution,
+source interruption,death/revival/disconnect,freeze/reset/same-seed replacement,
+full/reduced effects,audio,1–4-player networking/rewards and encounter balance.
+No Source observation,performance acceptance,VPS deployment or Workshop update
+is claimed. Native entities/collision/HP/render/network boundaries remain doubles.
+
+## Next checkpoint — B10: mobile-hazard cohort
+
+Provisional bounded two-identity mobile-hazard cohort: a visibly warned moving
+zone carrier and a finite trailing hazard layer. These are proposals, not authored
+mechanics. Reconcile MotionV2, existing area/status/geometry lifetimes and source
+movement before choosing identities; distinguish them from Nodule, Repulsor,
+Wirewright, Snarer, Cordon and ordinary pursuit. Require clear escape space and
+finite, interruptible commitments; no unavoidable spawn/contact damage, hidden
+tracking, locked-gate/void bypass, permanent hazards or reward-bearing summons.
+Target45/63 only for two distinct validated production identities. Substitute a
+comparably bounded identity if a proposal cannot meet those contracts. Retain
+remaining roster breadth and whole-phase campaign-aware director ecology. Do not
+begin Big Loot or Events.

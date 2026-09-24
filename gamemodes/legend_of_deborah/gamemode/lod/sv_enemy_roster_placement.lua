@@ -41,13 +41,26 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
     -- Runtime commitments additionally trace actual bodies, floors and cover.
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
+    end
+    if d.tactical=="screen" then
+        -- The guard plane is passable. Require clear in-cell flank pockets,
+        -- not a whole graph cycle that excludes otherwise escapable rooms.
+        local exit
+        for _,k in ipairs(sorted(c.neighbors)) do
+            local n=graph.Cells[k]
+            if n and n.z==c.z and N:CanTraverse(graph,key(c),k) and not self:Safe(graph,n) then exit=n;break end
+        end
+        if not exit then return nil end
+        local dir=N:CellCenter(exit)-center;dir.z=0;dir:Normalize()
+        local side=Vector(-dir.y,dir.x,0)
+        if not clear(center,center+side*100) or not clear(center,center-side*100) then return nil end
     end
     if not d.stationary then
         if id=="climber" then
@@ -91,6 +104,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    towline_detail={name="Towline Detail",composition={towline=1,runner=1}},
+    screenwright_detail={name="Screenwright Detail",composition={screenwright=1,soldier=1}},
     afterburst_detail={name="Afterburst Detail",composition={afterburst=1,soldier=1}},
     carrion_feast={name="Carrion Feast",composition={carrion=1,shambler=2}},
     climber_wall={name="Wall Hunt",composition={climber=1,shambler=1}},
@@ -147,16 +162,17 @@ function D:_EligibleTemplates(sector,role)
         out[#out+1]="pavise_advance";out[#out+1]="repriser_detail";out[#out+1]="redliner_pressure"
         out[#out+1]="wirewright_chase";out[#out+1]="snarer_detail";out[#out+1]="cordon_screen"
         out[#out+1]="afterburst_detail";out[#out+1]="carrion_feast"
+        out[#out+1]="towline_detail";out[#out+1]="screenwright_detail"
         out[#out+1]="reaper_detail";out[#out+1]="drubber_chase";out[#out+1]="fencer_screen"
     end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
--- or support/pursuit/reaction/trap/melee specialists in one authored encounter.
+-- or support/pursuit/reaction/trap/melee/tactical specialists in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

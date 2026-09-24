@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B8 builds on verified remote `main` `1f56389ea096766fae09a69fa31e2811ed2064dd`,
-`Add Bestiary melee-spacing cohort with finite commitments`.
-The current B8 checkpoint below is the newest implementation record. Its exact
+B9 builds on verified remote `main` `d4a9700b250ad894e45e0aa9dc680e81009c3a89`,
+`Add Bestiary volatile remains and corpse-consuming Carrion`.
+The current B9 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,79 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B8: volatile-and-remains cohort
+## Current checkpoint — B9: tether and projected cover
+
+Built on verified remote `d4a9700b250ad894e45e0aa9dc680e81009c3a89`.
+**Towline and Screenwright** bring the implemented normal roster to **43/63**:
+frozen baseline18,**25/45 additions banked**,**20 remain**.
+
+**Playable scope:** Towline warns a frozen lane before a physical hit and short
+resistible inward pull. Screenwright warns then channels a finite passable guard
+plane for up to three captured ordinary allies. Positive final HP loss gates the
+pull; canonical Pushback owns save/modifiers/immunity and movement. Shared Block
+owns screen mitigation,one roll per attack and33% aggregate cap. A projected
+screen replaces the provisional solid cover engineer to preserve route freedom
+and native entity bounds. Details/tuning are in BESTIARY_EXPANSION.md and live
+GDD03/05/07,LOD-BESTIARY-B9-001. Canonical manual153 chapters/31 chunks.
+
+**Safety and ownership:** same-cell supported commitments,full native target-hull
+pull preflight,<=64 displacement/standoff64,finite source drift and no wall crush
+on a denied constrained pull. Screen admission and release recheck actual
+lateral pockets; no collision bodies. At most16 screens,128 cached candidates
+once,three captured recipients. Exact source/target/recipient incarnations and
+run/graph/progression/campaign scope retire stale work at service and use. Held/
+Muted preserve physical channeling; hit-stun/attack prohibition/morale cancel.
+Missed beats forfeit and stationary recovery cannot extend. Released fallback
+shots retain finite exact lifetimes. Prior cohorts,shared reward ownership,
+bosses,finale,sole staging successor,Abundance and Level21 cash are retained.
+
+**Validation:** targeted behavioral,production and presentation suites pass.
+Real roster AI/service,damage→GM mitigation→native-doubled HP,shared Pushback
+contest/movement and Block settlement are exercised. Coverage includes escape,
+cover/void/full hull/changed geometry,Block/save/zero HP denial,hard travel cap,
+reentrancy,exact lifetime matrices,recipient admission,front/side/rear/height,
+nonstacking and aggregate caps,one roll per attack,Magic bypass,global/scan caps,
+missed release,fixed recovery,Held/Muted/morale and stale fallback projectiles.
+Production proves32 seeded actor generations and replay,usable feats/classes,
+HP/XP once,real unified spawn/variance,stable ordinals,ceiling,retry and fallback.
+Native Draw tests full/reduced fixed warnings,countdowns,expiry and conservative
+render bounds including fallback fire.
+
+Initial512-plan sample retained as failed evidence: Screenwright23 planned/9
+legal/3 early,below25/20/5. One Soldier escort and clear in-cell lateral pockets
+replace two Soldiers and unnecessary graph-cycle admission for passable cover.
+Revised512 plans/4941 encounters/32 mazes/parties1–4/dungeons1–5:
+Towline34/32/7; Screenwright32/32/8; all earlier exposure thresholds green.
+One fresh canonical integration run passed **all175 suites with zero failures**,
+including retained prior cohorts,combat/status/progression,bosses/finale/succession/
+Abundance/cash,repository Lua syntax,release wiring and manual readers/transport.
+No gameplay edits followed this integrated pass.
+
+**Native acceptance retained:** after ordered phases,on gm_flatgrass observe
+actual pull/save feedback,full body collision/gates/false floors,screen clarity
+and physical/Magic defenses,interruptions,death/revival/disconnect,freeze/reset/
+same-seed replacement,full/reduced effects/audio,1–4-player networking,rewards
+and balance,plus retained prior cohort/boss/campaign checks. Native entities,
+collision,HP application,rendering and networking remain boundary doubles;
+automated evidence is not Source observation or acceptance. Capture
+console_latest.txt+rpg_summary_latest.txt; session log only for event ordering.
+No deployment or Workshop publication.
+
+## Next checkpoint — B10: mobile-hazard cohort
+
+Provisional bounded two-identity mobile-hazard cohort: a visibly warned moving
+zone carrier and a finite trailing hazard layer. These are proposals, not authored
+mechanics. Reconcile MotionV2, existing area/status/geometry lifetimes and source
+movement before choosing identities; distinguish them from Nodule, Repulsor,
+Wirewright, Snarer, Cordon and ordinary pursuit. Require clear escape space and
+finite, interruptible commitments; no unavoidable spawn/contact damage, hidden
+tracking, locked-gate/void bypass, permanent hazards or reward-bearing summons.
+Target45/63 only for two distinct validated production identities. Substitute a
+comparably bounded identity if a proposal cannot meet those contracts. Retain
+remaining roster breadth and whole-phase campaign-aware director ecology. Do not
+begin Big Loot or Events.
+
+## Previous checkpoint — B8: volatile-and-remains cohort
 
 Built on verified remote `1f56389ea096766fae09a69fa31e2811ed2064dd`.
 **Afterburst and Carrion** bring the implemented normal roster to **41/63**:
@@ -125,21 +197,6 @@ locked gates/false floors,same-seed reset/freeze/removal,death/revival/disconnec
 prior cohort,boss and campaign checks. Automated evidence is not Source
 observation or acceptance. Capture console_latest.txt + rpg_summary_latest.txt;
 request session log only for event ordering. No deployment or Workshop update.
-
-## Next checkpoint — B9: tether-and-cover cohort
-
-Provisional bounded two-identity scope: a visibly warned tether/reel attacker
-and a finite deployable-cover engineer. These are proposals, not authored
-mechanics. Reconcile canonical Pushback/locomotion/Block, existing barriers,
-Climber/Deadcrab attachments and progression geometry before choosing concrete
-identities. Target43/63 only if two distinct production behaviors validate.
-No private movement lock, locked-gate/void bypass, permanent route obstruction,
-reward-bearing summoned bodies or unbounded props. Require breakable/escapable
-commitments, legal alternate passage, source/target/run lifetimes and explicit
-entity/work caps. If a proposal cannot meet those contracts, choose a comparably
-bounded distinct tactical identity and record the design before implementation.
-Retain remaining roster breadth and whole-phase campaign-aware director ecology;
-do not begin Big Loot or Events.
 
 ## Previous checkpoint — B7: melee spacing-and-commitment cohort
 

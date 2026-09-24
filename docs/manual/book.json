@@ -1071,6 +1071,24 @@
       ]
     },
     {
+      "id": "enemy-tether-cover",
+      "title": "Break the line, cross the screen",
+      "rows": [
+        [
+          "Towline",
+          "The teal Metrocop marks a fixed narrow corridor and inward-pointing chevrons for 1.2 seconds. Sidestep, close inside 96 units, leave the lane or interrupt it. A successful physical hit can pull you a short distance toward it, subject to the ordinary push save. Blocked damage prevents the pull. Walls and missing floor support prevent movement. It then rests for three seconds."
+        ],
+        [
+          "Screenwright",
+          "The blue Combine engineer warns a slatted screen for one second, then holds it for three seconds. This screen is freely passable. It adds 25 percentage points to ordinary physical Block for up to three allies behind it when your attack crosses the screen; the combined chance still caps at 33%. Flank, walk through, use Magic, interrupt the engineer or wait. The engineer itself receives no protection from its screen. Without suitable allies it fires an ordinary physical shot."
+        ]
+      ],
+      "text": [
+        "Towline appears with a Runner; Screenwright appears with a Soldier. Read the whole encounter: the companions can exploit a pull or shelter behind the projected screen. No extra bodies or rewards are created.",
+        "Both channels remain stationary and interruptible. Held and Muted do not prohibit these physical actions. Their frozen shapes and countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

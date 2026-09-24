@@ -9,7 +9,8 @@ function Rules:BlockChance(actor,attacker,info)
         and math.max(0,tonumber(derived and derived.strMod) or 0)/100 or 0
     local guard = LOD.RPGStatusElements and LOD.RPGStatusElements:Has(actor, "support_guard")
     local selfGuard=LOD.EnemyReactions and LOD.EnemyReactions:GuardContribution(actor,attacker,info) or 0
-    return math.Clamp(selfGuard + (guard and .25 or 0) + strength + (tonumber(state and state.equipmentBlockChanceContribution) or 0)
+    local screen=LOD.EnemyRoster and LOD.EnemyRoster.ScreenContribution and LOD.EnemyRoster:ScreenContribution(actor,attacker,info) or 0
+    return math.Clamp(screen + selfGuard + (guard and .25 or 0) + strength + (tonumber(state and state.equipmentBlockChanceContribution) or 0)
         + (tonumber(derived and derived.blockChanceContribution) or 0), 0, LOD.Equipment.BlockCap)
 end
 

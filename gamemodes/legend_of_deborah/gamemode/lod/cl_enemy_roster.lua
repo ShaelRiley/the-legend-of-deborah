@@ -12,6 +12,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     wirewright=Color(80,220,235),snarer=Color(100,165,255),cordon=Color(245,150,60),
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
     afterburst=Color(255,150,65),carrion=Color(160,220,95),
+    towline=Color(70,225,205),screenwright=Color(110,175,255),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
@@ -378,6 +379,37 @@ function V:Remains(e)
         render.DrawBeam(left,left+Vector(48*fraction,0,0),3,0,1,colors.carrion)
     end
 end
+function V:Tactical(e)
+    local mode=e:GetNW2Int("LOD_TacticalMode",0);local now=CurTime()
+    if mode==0 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or now>=e:GetNW2Float("LOD_TacticalUntil",0) then return end
+    local origin=e:GetNW2Vector("LOD_TacticalOrigin",e:GetPos())
+    local aim=e:GetNW2Vector("LOD_TacticalAim",origin)
+    local dir=e:GetNW2Vector("LOD_TacticalDirection",Vector(1,0,0))
+    local side=Vector(-dir.y,dir.x,0);local up=Vector(0,0,1)
+    local color=mode==1 and colors.towline or colors.screenwright
+    local ready=e:GetNW2Float("LOD_TacticalReady",0)
+    render.SetMaterial(beam)
+    local function line(a,b,w) render.DrawBeam(a,b,w or 2,0,1,color) end
+    if mode==1 then
+        -- Entire frozen corridor and inward chevrons survive reduced effects.
+        for _,sign in ipairs({-1,1}) do line(origin+dir*96+side*(24*sign)+up*3,aim+dir*24+side*(24*sign)+up*3) end
+        line(origin+up*40,aim+up*40)
+        for _,sign in ipairs({-1,1}) do line(aim-dir*32+up*40,aim-dir*16+side*(12*sign)+up*40) end
+    else
+        local left,right=aim-side*80,aim+side*80
+        local width=now<ready and 1 or 3
+        line(left,right,width);line(left+up*96,right+up*96,width)
+        line(left,left+up*96,width);line(right,right+up*96,width)
+        line(origin+up*40,aim+up*48)
+        -- Open slats distinguish passable probabilistic cover from a solid Wall.
+        for _,offset in ipairs({-40,0,40}) do line(aim+side*offset+up*20,aim+side*offset+up*76,width) end
+    end
+    local duration=mode==1 and 1.2 or (now<ready and 1 or 3)
+    local untilAt=now<ready and ready or e:GetNW2Float("LOD_TacticalUntil",ready)
+    local start=origin-side*24+up*88
+    line(start,start+side*(48*math.Clamp((untilAt-now)/duration,0,1)),3)
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -387,6 +419,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if (id=="towline" or id=="screenwright") and e:GetNW2Int("LOD_TacticalMode",0)>0 then self:Tactical(e);return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
     if id=="wirewright" or id=="snarer" or id=="cordon" then self:Trap(e);return end
     if id=="reaper" or id=="drubber" or id=="fencer" or id=="afterburst" or id=="carrion" then self:Melee(e);return end

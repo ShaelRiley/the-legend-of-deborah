@@ -116,6 +116,10 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "towline" or archetype == "screenwright" then
+        local extent=archetype=="towline" and 352 or 640
+        ent:SetRenderBounds(Vector(-extent,-extent,math.min(0,mins.z*size)),
+            Vector(extent,extent,math.max(104,maxs.z*size)))
     elseif archetype == "afterburst" then
         ent:SetRenderBounds(Vector(-144,-144,math.min(0,mins.z*size+verticalCompensation)),
             Vector(144,144,math.max(80,maxs.z*size+verticalCompensation)))

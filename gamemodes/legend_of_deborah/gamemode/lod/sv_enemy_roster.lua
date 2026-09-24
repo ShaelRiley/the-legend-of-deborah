@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    towline={name="Towline",model="models/police.mdl",baseHP=40,speed=135,damage=5.5,range=320,warning=1.2,recovery=3,threat=3.5,activity=ACT_RUN,kind="bullet",tactical="tow",color=Color(70,200,185),dice={1,6,2}},
+    screenwright={name="Screenwright",model="models/combine_soldier.mdl",baseHP=50,speed=110,damage=3.5,range=600,warning=1,recovery=4,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",tactical="screen",color=Color(100,155,230),dice={1,4,1}},
     afterburst={name="Afterburst",model="models/zombie/classic.mdl",baseHP=50,speed=105,damage=5.5,range=112,warning=.9,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",color=Color(215,115,65),dice={1,6,2}},
     carrion={name="Carrion",model="models/zombie/fast.mdl",baseHP=45,speed=155,damage=5.5,range=112,warning=.8,recovery=2.2,threat=4,activity=ACT_RUN,kind="melee",melee="single",color=Color(160,190,85),dice={1,6,2}},
     reaper={name="Reaper",model="models/zombie/classic.mdl",baseHP=55,speed=140,damage=5.5,range=144,warning=1.1,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="sweep",color=Color(135,190,125),dice={1,6,2}},
@@ -85,7 +87,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -120,6 +122,7 @@ function E:Prepare(e)
     if d.stationary then e.LODRosterAnchor=e:GetPos();e.LODRosterYaw=e:GetAngles().y end
 end
 function E:Cancel(e)
+    if e.LODRosterAttack and e.LODRosterAttack.tactical then self:RetireTactical(e) end
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
 end
 function E:Interrupt(e,attackEvent,attacker)
@@ -129,7 +132,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and a.melee then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -176,6 +179,7 @@ function E:_DamagePacket(e,p,event,kind)
         LOD.MagicForms:ApplyContentPush(e,e,p,content,(p:GetPos()-(event.pushOrigin or e:GetPos())):GetNormalized(),
             math.max(0,math.min(before,before-after)))
     end
+    return IsValid(p) and math.max(0,math.min(before,before-p:Health())) or 0
 end
 local sounds={flame="ambient/fire/ignite.wav",arc="npc/vort/attack_charge.wav",bolt="npc/vort/attack_charge.wav",pulse="npc/vort/attack_charge.wav",venom="npc/barnacle/barnacle_tongue_pull1.wav",
     beam="npc/stalker/laser_burn.wav",bullet="npc/turret_floor/active.wav",dive="npc/manhack/mh_engine_start1.wav"}
@@ -183,6 +187,7 @@ function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
+    if d.tactical and not override.tacticalFallback then return self:BeginTactical(e,p,now) end
     if d.trap then return self:BeginTrap(e,p,now) end
     if d.melee then return self:BeginMelee(e,p,now) end
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
@@ -190,6 +195,7 @@ function E:Begin(e,p,now,override)
         range=override.range or cfg.fireRange,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
     self:Bind(a,state())
+    if override.tacticalFallback then a.fallbackLife=self:CaptureLife(e,p);a.deadline=a.ready+.2 end
     if d.pattern then
         if not self:PlanPattern(e,a,d.pattern) then e.LODNextAttack=now+.5;return false end
         a.patternLife=self:CaptureLife(e,p);a.deadline=a.ready+.2
@@ -216,7 +222,7 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and attack.melee then
+    if attack and (attack.melee or attack.tactical) then
         e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -229,6 +235,7 @@ function E:Finish(e,now)
     if attack and LOD.EnemyPursuit then LOD.EnemyPursuit:AfterAttack(e,attack,now) end
 end
 function E:Release(e,a,now)
+    if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or now>a.deadline) then return false end
     if a.patternLife and (not self:ValidLife(a.patternLife) or now>a.deadline) then return false end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then return false end
     if a.pursuitRecord and not LOD.EnemyPursuit:ValidCharge(a.pursuitRecord) then return false end
@@ -253,12 +260,15 @@ function E:Release(e,a,now)
             for _,k in ipairs({"seed","run","graph","progression","epoch","campaignSeed","runId"}) do q[k]=a[k] end
             q.reactionRecord=a.reactionRecord
             q.pursuitRecord=a.pursuitRecord
+            q.fallbackLife=a.fallbackLife
             self.Projectiles[#self.Projectiles+1]=q
             a.shotEmitted=true
         end
     end
 end
 function E:Attack(e,a,now)
+    if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
+    if a.tactical then return self:StepTactical(e,a,now) end
     if a.melee then return self:StepMelee(e,a,now) end
     if a.trap then return self:StepTrap(e,a,now) end
     if a.patternLife and (not self:ValidLife(a.patternLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
@@ -379,13 +389,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -403,6 +413,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     if now<(E.NextService or 0) then return end
     local dt=math.Clamp(now-(E.LastService or now),0,.05);E.LastService=now;E.NextService=now+.025
     local active=s and s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
+    if E.ServiceTactical then E:ServiceTactical() end
     if LOD.EnemyRemains then LOD.EnemyRemains:Service(now,active) end
     if LOD.EnemyReactions then LOD.EnemyReactions:Service(now,active) end
     if LOD.EnemySupport then LOD.EnemySupport:Service(now,active) end
@@ -422,7 +433,8 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
     for _,q in ipairs(E.Projectiles) do
         if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires
             and (not q.reactionRecord or LOD.EnemyReactions:ValidLife(q.reactionRecord))
-            and (not q.pursuitRecord or LOD.EnemyPursuit:ValidLife(q.pursuitRecord)) then
+            and (not q.pursuitRecord or LOD.EnemyPursuit:ValidLife(q.pursuitRecord))
+            and (not q.fallbackLife or E:ValidLife(q.fallbackLife)) then
             if q.pattern then
                 if E:ValidLife(q.patternLife) and E:StepPattern(q,now,dt) then kept[#kept+1]=q end
             else
@@ -450,6 +462,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        towline={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
+        screenwright={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
         afterburst={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die2.wav","npc/zombie/foot1.wav"},
         carrion={"npc/fast_zombie/wake1.wav","npc/fast_zombie/fz_scream1.wav","npc/fast_zombie/foot1.wav"},
         reaper={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die1.wav","npc/zombie/foot1.wav"},

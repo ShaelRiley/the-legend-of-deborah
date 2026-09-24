@@ -1,13 +1,13 @@
-# Handoff — Bestiary B9
+# Handoff — Bestiary B10
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B9 only**,
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B10 only**,
 including validation,commit and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`,branch `main`.
-Latest checkpoint: **Add Bestiary volatile remains and corpse-consuming Carrion**.
+Latest checkpoint: **Add Bestiary Towline and projected-cover Screenwright**.
 The publication response supplies its exact verified SHA; fetch current remote
-main,confirm that checkpoint and preserve intervening work. B8's parent is
-`1f56389ea096766fae09a69fa31e2811ed2064dd`.
+main,confirm that checkpoint and preserve intervening work. B9's parent is
+`d4a9700b250ad894e45e0aa9dc680e81009c3a89`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation,necessary refactoring,design/tuning decisions,
@@ -16,59 +16,64 @@ amendments,focused parallel delegation,commits and non-forced pushes directly
 to main. Resolve ordinary ambiguities. **Do not deploy to the VPS or publish
 to Steam Workshop.**
 
-Recover from AGENTS.md,active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
-this file,BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live
-GDD00→01→relevant tabs,including LOD-ROADMAP-ECOSYSTEM-001 and
-LOD-BESTIARY-B1-001 through B8-001. Exact HUMAN anchors only for missing required
+Recover from AGENTS.md,the active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
+this file,BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live GDD
+00→01→relevant tabs,including LOD-ROADMAP-ECOSYSTEM-001 and
+LOD-BESTIARY-B1-001 through B9-001. Exact HUMAN anchors only for missing required
 detail. No historical-chat archaeology or repeated broad audit. Missing
 historical art does not block implementation.
 
-B8 adds Afterburst's warned corpse burst and Carrion's exclusive interruptible
-corpse feeding. Death callbacks seal receipts;deferred presentation opens them
-and owns the unchanged one-second lifetime and ordinary loot. Explicit corpse
-life/entity/progression/run/graph/campaign replaces living-source ownership only
-for the burst. Shared physical damage,Block/Dodge,health grant and XP/drop owners
-remain authoritative. Feeding can extinguish an unspent burst. No additional
-bodies,world corpse scans,chains,revival,cures or farming. At most96 receipts,
-128 cached candidates per death opening,32 captured Hero incarnations. Native
-corpse Draw explicitly retains the fixed full/reduced warning. B8 added exact
-receipt checks around the canonical loot handoff;stale same-seed graphs and actor
-replacement cannot drop into the new scope. See ledger for tuning and bounds.
+B9 adds Towline's frozen warned tether lane and short resistible inward pull,
+and Screenwright's finite passable projected guard plane for a captured group.
+Positive final HP loss and exact surviving Hero life gate the pull; Pushback
+owns save/modifiers/movement,with opt-in travel cap and path preflight. No private
+movement lock,unsafe-cell pull or extra wall crush. Screen cover adds25 points
+to existing physical Block,one roll per attack,total cap33%;Magic bypasses it.
+The exposed engineer channels stationary; screen can be crossed/flanked. No
+solid prop,native body,shield HP or separate status/reward authority. Exact
+source/Hero/recipient/run/graph/progression/campaign checks apply at service and
+use. At most16 screens,128 one-time cached candidates,three captured recipients;
+full/reduced warnings retain fixed expiry. Actual deployment rechecks lateral
+pockets. Ordinary fallback shots retain captured lifetimes. See ledger for tuning.
 
-Frozen baseline**18**,whole Bestiary target**63**,implemented**41/63**,
-**23/45 additions banked**,**22 remaining**. Never rebase or count cosmetics,
+Frozen baseline**18**,whole Bestiary target**63**,implemented**43/63**,
+**25/45 additions banked**,**20 remaining**. Never rebase or count cosmetics,
 numerical permutations,bosses,event actors,friendly summons or unused definitions.
 Whole-phase campaign-aware director ecology remains required within Bestiary.
 
-## Complete B9 — tether-and-cover cohort
+## Complete B10 — mobile-hazard cohort
 
-Provisional bounded two-identity scope: a visibly warned tether/reel attacker
-and a finite deployable-cover engineer. These are proposals, not authored
-mechanics. Reconcile canonical Pushback/locomotion/Block, existing barriers,
-Climber/Deadcrab attachments and progression geometry before choosing concrete
-identities. Target43/63 only if two distinct production behaviors validate.
-No private movement lock, locked-gate/void bypass, permanent route obstruction,
-reward-bearing summoned bodies or unbounded props. Require breakable/escapable
-commitments, legal alternate passage, source/target/run lifetimes and explicit
-entity/work caps. If a proposal cannot meet those contracts, choose a comparably
-bounded distinct tactical identity and record the design before implementation.
-Retain remaining roster breadth and whole-phase campaign-aware director ecology;
-do not begin Big Loot or Events.
+Provisional bounded two-identity mobile-hazard cohort: a visibly warned moving
+zone carrier and a finite trailing hazard layer. These are proposals, not authored
+mechanics. Reconcile MotionV2, existing area/status/geometry lifetimes and source
+movement before choosing identities; distinguish them from Nodule, Repulsor,
+Wirewright, Snarer, Cordon and ordinary pursuit. Require clear escape space and
+finite, interruptible commitments; no unavoidable spawn/contact damage, hidden
+tracking, locked-gate/void bypass, permanent hazards or reward-bearing summons.
+Target45/63 only for two distinct validated production identities. Substitute a
+comparably bounded identity if a proposal cannot meet those contracts. Retain
+remaining roster breadth and whole-phase campaign-aware director ecology. Do not
+begin Big Loot or Events.
 
 Preserve every prior cohort,bosses,Gordon→Hector→Deborah,sole staging successor,
-Abundance andLevel21 cash. B4 Block remains single-roll/capped;B5 released shots
+Abundance and Level21 cash. B4 Block remains single-roll/capped;B5 released shots
 survive ordinary interruption but retire on life replacement;B6 traps disarm on
 source interruption/support loss;B7 fixed beats/backstep/recovery cannot extend
-or catch up;B8 living-source checks remain strict and only sealed post-defeat
-receipts can burst. No reward or life authority duplication.
+or catch up;B8 only sealed post-defeat receipts can burst while ordinary living
+source checks stay strict. B9 never turns a canceled channel into a fresh pull/
+guard or lets a revived recipient inherit a screen. No authority duplication.
 
-B8 fresh automated evidence: **172 integration suites pass,zero failures**,
-including targeted behavior,production,presentation and512-plan production
-sampling. See newest DEVELOPMENT_PLAN.md checkpoint. Sample4936 encounters/32 mazes/parties1–4/
-dungeons1–5:Afterburst47 planned/44 legal/7 early,Carrion40/40/8;prior exposure
-thresholds green. Manual152 chapters/31 chunks. Native collision,entities,HP,
-rendering,networking and final reward spawning remain boundary doubles;
-implementation/static evidence is not Source observation or acceptance.
+One fresh canonical integration run passed **all175 suites with zero failures**,
+including retained prior cohorts,combat/status/progression,bosses/finale/succession/
+Abundance/cash,repository Lua syntax,release wiring and manual readers/transport.
+No gameplay edits followed this integrated pass.
+Targeted behavior,production and presentation suites pass.512 plans/4941
+encounters/32 mazes/parties1–4/dungeons1–5:Towline34 planned/32 legal/7 early,
+Screenwright32/32/8;all earlier thresholds green. Initial Screenwright23/9/3
+exposure failure and its bounded admission/composition repair remain documented.
+Manual153 chapters/31 chunks. Native entities,collision,HP,rendering,networking
+and final reward spawning remain boundary doubles; implementation/static
+evidence is not Source observation or acceptance.
 
 Reserve the final third for validation,fixes,documentation and publication.
 Use targeted tests while editing,then once coherent run
@@ -77,17 +82,17 @@ repeat broadly only for concrete remaining risk. Update/read-back verify GDD,
 canonical manual,ledger,plan and handoff with counts,results,native checks and
 concrete next slice. Commit and publish immediately after green validation.
 
-After ordered phases,test gm_flatgrass native corpse/burst/feed/loot,cover/
-gates/false floors,interruption/statuses,death/revival/disconnect,freeze/reset/
-same-seed replacement and1–4-player balance/networking,plus retained prior
-cohort/boss/campaign checks. Evidence:console_latest.txt+rpg_summary_latest.txt;
-session log only for event ordering.
+After ordered phases,test gm_flatgrass actual pull/save feedback,screen clarity/
+Block/Magic,covers/gates/false floors,interruption/statuses,death/revival/
+disconnect,freeze/reset/same-seed replacement and1–4-player balance/networking,
+plus all prior cohort/boss/campaign checks. Evidence:console_latest.txt+
+rpg_summary_latest.txt;session log only for event ordering.
 
 If CLI push credentials are unavailable,use authenticated GitHub blob/tree/
-commit/ref tools:verify every blob and the exact complete validated tree,advance
+commit/ref tools:verify every blob and exact complete validated tree,advance
 main non-forced,fetch and verify SHA,parent and tree. Preserve newer work;never
 force-push or overwrite. Phase order:Bestiary→Big Loot→Event System→systems
 integration/emergence audit→low-end PC performance audit→final crash/progression
 safety audit→human playtest. Outstanding native acceptance does not block this
-sequence. Finish B9 only. End with verified SHA,scope,tests,progress,native checks
+sequence. Finish B10 only. End with verified SHA,scope,tests,progress,native checks
 and the next continuation prompt.

@@ -482,6 +482,10 @@ function Pushback:Apply(hostile, opts)
     local direction = resolveDirection(hostile, opts)
     if not direction then return nil end
 
+    -- Optional authored spatial commitment: keep the canonical contest and
+    -- modifiers, but never let a short constrained pull leave its safe lane.
+    if opts.maxTravel then distance=math.min(distance,math.max(0,opts.maxTravel)) end
+
     local startPos = hostile:GetPos()
     local mins, maxs = traceBounds(hostile)
     local trace = util.TraceHull({
@@ -499,6 +503,8 @@ function Pushback:Apply(hostile, opts)
     end
     local destination = startPos + direction * travel
     destination.z = startPos.z
+
+    if opts.validatePath and not opts.validatePath(startPos,destination,trace) then return nil end
 
     if travel > 0.05 then
         local yaw = hostile:GetAngles().y
