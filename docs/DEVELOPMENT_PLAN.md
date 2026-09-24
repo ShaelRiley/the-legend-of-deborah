@@ -1,42 +1,63 @@
-# Active roadmap — ecology expansions, integration, performance and safety
+# Active roadmap — Great Crate, low-end PCs and game-breaking safety
 
-The author's current direction supersedes the earlier “P10 native acceptance
-next” sequencing. Complete the phases below **in this order**, banking substantial
-validated implementation checkpoints within each. Human playtesting follows the
-three audits; outstanding native acceptance is retained, not silently accepted
-or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
+**Author revision: September 24, 2026.** This supersedes the previous
+Bestiary → Big Loot → Events → comprehensive systems audit → performance →
+safety sequence. Preserve completed Bestiary work; B25 is published at
+`27092b9a31c9282cfcdd5beefba3d62998d60415` (215 suites passed; native acceptance
+pending). This revision changes planning/documentation only.
 
-B25 builds on verified remote `main` `78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`,
-`Reserve encounter homes and enforce Bestiary campaign gates`.
-The current B25 checkpoint below is the newest implementation record. Its exact
-published SHA is returned after remote verification; always fetch current main
-and preserve intervening work. Native Source acceptance remains pending.
+## Immediate sequence
 
-## Ordered phases and exit conditions
-
-| Order | Phase | Implementation chunks and finite exit condition |
+| Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Bestiary Update** | Freeze the actual meaningful normal-enemy baseline and target; expand related tactical families through shared combat/AI authorities, then integrate campaign-aware encounter ecology, topology, novelty memory and pacing. Exit at approximately 3.5× the frozen baseline with production-available enemies, reproducible campaign sampling, bounded threat/entities and preserved progression. See [author brief](briefs/BESTIARY_UPDATE.md). |
-| 2 | **Big Loot Update** | Freeze the actual meaningful item baseline; expand coherent effect/slot families, then upgrade loot selection, motifs, history, need/novelty and risk-aware placement. Exit at approximately 3.5× that baseline with legible production items, validated exposure/repetition/value and intact inventory, persistence, sell/fuse and wallet transactions. See [author brief](briefs/BIG_LOOT_UPDATE.md). |
-| 3 | **Event System Update** | Freeze the actual meaningful production-event baseline; implement related event families through current placement/transaction authorities, then integrate event ecology with the already expanded encounter and loot systems. Exit at approximately 3.5× that baseline with campaign sampling and complete lifecycle proofs. Preserve the exact non-exploding 1d4 count and solvability; breadth does not inflate density. See [author brief](briefs/EVENT_SYSTEM_UPDATE.md). |
-| 4 | **Full systems integration and emergence audit** | Trace generation → encounter → combat/status → equipment/loot → events/rewards → progression/lifecycle/UI across real production paths. Consolidate demonstrated duplicate authorities, remove redundant work, reconcile conflicting contracts and test representative cross-system combinations. Exit with one owner per state/transaction, preserved independent RNG/ownership where required, measurable interaction coverage and no known contradictory or redundant authority. Optimize for varied, legible, emergent decisions; do not add content merely to grow the audit. |
-| 5 | **Low-end PC performance audit** | Establish reproducible representative and worst-case scenarios and explicit budgets from available evidence. Profile/measure server AI, traces, generation, client render/model/particle work, memory/resource retention and networking; repair demonstrated hot spots using shared scheduling, bounds and existing reduced-effects paths. Exit with documented before/after evidence and workload limits, no gameplay-authority regressions, and explicit hardware/native measurement gaps. Container timing or operation counts are not native FPS acceptance. |
-| 6 | **Final pre-playtest crash and progression-safety audit** | Stress build failures, campaign resets, same-seed regeneration, native entity/damage lifetimes, missing assets, delayed callbacks, persistence/transaction failures, concurrent interactions, death/revival/disconnect/late join, all-Hero absence, gates/keys/rescue, Hector/finale/Abundance and Level21+. Repair concrete crash, leak, deadlock, stranded-control and progression-softlock paths. Exit with all required automated gates green, no known unresolved game-ending blocker, durable diagnostics and one concise human playtest plan. Do not claim proof that unobserved native crashes are impossible. |
-| 7 | **Shael's human playtest** | Exercise the integrated build after phases1–6. Include outstanding native Source visuals/collision/controls/audio/real-network checks, low-end hardware measurements, Hector 1–4-player tuning, finale/succession and campaign continuity. Capture evidence, then repair demonstrated issues in separate bounded checkpoints. Deployment remains separately authorized. |
+| 1 | **Great Crate Update — C1 next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
+| 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
+| 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
+| 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
 
-The 3.5× targets apply to each **whole update**, not every chunk. Count stable,
-mechanically meaningful identities; exclude cosmetics, numerical roll permutations
-and renamed duplicates. Record baseline IDs, inclusions/exclusions and target once
-at the start of each phase. Do not rebase the denominator as additions ship.
-The source briefs' whole-update definitions of done remain in force; their request
-to finish one enormous checkpoint is superseded only by this chunking policy.
+## Great Crate pass budget
+
+Start **C1** intending to finish the whole update. No planning-only first pass,
+new speculative rendering framework, art regeneration replacing the existing
+archive, or trivial micro-checkpoints. Inspect current authorities/assets once.
+If a single pass is impractical, bank substantial coherent work and use at most
+**C2 and C3**. A possible fallback is C1 restored/neutral/tintable hull,
+C2 complete branding architecture and256-asset fit, C3 concrete/catwalk completion
+and whole-update closure; combine these whenever practical.
+
+Every pass includes its own targeted validation, applicable stable canonical
+integration gate, documentation, live-GDD readback and verified non-forced push.
+The brief's suggested separate **C4 Integration & Validation** is superseded:
+fold those obligations into C1–C3. The three-pass maximum is not permission to
+weaken acceptance or hide unfinished work. If a genuine blocker prevents full
+completion by C3, record the exact remaining requirement and carry the incomplete
+feature work into next week's deferred backlog, without unsafe partial behavior
+or an unannounced fourth pass. Do not defer a known fatal/game-breaking regression.
+
+## Deferred until next week — September 28–October 4, 2026
+
+Keep these in the following order; the comprehensive audit is **deferred, not
+cancelled**, per the author's clarification:
+
+| Order | Deferred work | Preserved scope |
+| --- | --- | --- |
+| 1 | **Big Loot Update — L1** | [Original brief](briefs/BIG_LOOT_UPDATE.md), actual meaningful baseline and approximately3.5× target; coherent production cohorts then contextual loot ecology; preserve inventory/persistence/sell-fuse/wallet transactions. No baseline discovery or implementation now. |
+| 2 | **Event System Update** | [Original brief](briefs/EVENT_SYSTEM_UPDATE.md), actual meaningful baseline and approximately3.5× target; exploit established Bestiary/loot systems, preserve exact non-exploding1d4 count, placement, deterministic ownership and solvability. Follows Big Loot. |
+| 3 | **Comprehensive systems integration and emergence audit** | Follows Event System Update. Retain the full generation→encounter→combat/status→equipment/loot→events/rewards→progression/lifecycle/UI review, demonstrated authority consolidation, deterministic/transaction/lifecycle contracts and interaction/emergence validation. Do not fold it into this week's focused optimization/safety work. |
+
+Deferred briefs and incomplete requirements remain intact. Any genuine Crate
+carryover is recorded explicitly for next-week resumption before dependent work;
+no silent scope deletion. Existing gameplay content from deferred systems stays
+implemented and remains a regression constraint. This is a planning schedule,
+not automatic execution or a deployment authorization. Do not start deferred
+work early merely because an immediate pass finishes sooner.
 
 ## Checkpoint size and compute policy
 
 - **One coherent production result per checkpoint:** usually a small cohort of
   several related meaningful enemies/items/events sharing an authority, or one
   complete director/lifecycle integration. Prefer multiple related behaviors to
-  one-file or cosmetic microcommits. Do not combine the three major updates.
+  one-file or cosmetic microcommits. Do not pull deferred expansion work into the active Crate/performance/safety scope.
 - Before edits, state the finite scope, exclusions, affected authorities and
   observable pass condition. The first checkpoint may combine necessary baseline
   discovery with a real playable cohort; it must not stop at a taxonomy or unused
@@ -62,7 +83,7 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
 - Record substantive decisions in relevant live GDD tabs and verify by readback;
   update the manual for changed player-facing behavior. Prepend the new checkpoint
   below this roadmap with scope, coverage, results, native gaps and the next slice.
-  Keep this phase order intact until the author changes it.
+  Keep the active/deferred order below intact until the author changes it.
 - Commit and non-force-push each coherent green checkpoint immediately. Recheck
   remote main first. If CLI credentials remain unavailable, use authenticated
   GitHub blobs/tree/commit/ref operations, compare every blob and the complete tree
@@ -72,7 +93,18 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B25: motif intensity and Bestiary implementation exit
+## Current checkpoint — roadmap revision; Great Crate C1 next
+
+Planning-only change on verified B25 main. Great Crate brief retained verbatim;
+its four-pass suggestion is superseded by the author’s one-preferred/three-max
+budget. Live GDD00/01/07/90, this roadmap and the continuation handoff reflect
+Great Crate → low-end PC optimization → fatal/game-breaking safety, with Big Loot
+→ Events → comprehensive systems audit deferred in that order to next week.
+No gameplay, tuning, asset or test changes in this checkpoint. Validation is
+source-copy/content/reference/diff review, not a fresh215-suite gameplay run.
+No VPS deployment or Workshop publication.
+
+## Previous checkpoint — B25: motif intensity and Bestiary implementation exit
 
 Built on verified remote `78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`.
 Roster63 normal/4 named, frozen baseline18. No VPS/Workshop publication.
@@ -111,7 +143,7 @@ production omissions identified at B24. After final green and verified push,
 the Bestiary implementation/static phase is complete. Native Source readability,
 combat/geometry/network/performance acceptance remains after ordered phases/audits.
 
-**Next Big Loot L1:** read its full brief and live required tabs, freeze the actual
+**Historical next under the superseded roadmap — Big Loot L1:** read its full brief and live required tabs, freeze the actual
 meaningful item baseline and complete one coherent first production cohort through
 existing equipment/loot/transaction authorities. Combine discovery with substantive
 implementation; no scaffolding-only checkpoint. No Big Loot work occurs in B25.

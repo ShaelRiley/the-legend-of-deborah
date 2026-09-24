@@ -1,107 +1,85 @@
-# Handoff — Big Loot L1
+# Handoff — Great Crate C1 (one pass preferred; three maximum)
 
-Resume **The Legend of Deborah** and complete **Big Loot checkpoint L1 only**,
-including authorized design, implementation, validation, documentation, commit
-and verified non-forced push to main.
+Resume **The Legend of Deborah**, repository `ShaelRiley/the-legend-of-deborah`,
+branch `main`. Read AGENTS.md, the active DEVELOPMENT_PLAN.md revision and the
+full `docs/briefs/GREAT_CRATE_UPDATE.md`. Follow live GDD00→01→only needed tabs;
+Google Doc ID `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
-Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Close Bestiary motif intensity with bounded reinforcement**.
-The publication response supplies its exact verified SHA; fetch current main,
-confirm this checkpoint and preserve intervening work. B25's parent is
-`78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`.
-Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
+Latest checkpoint: **Prioritize Great Crate and defer expansion audits**.
+Publication response provides exact verified SHA; fetch current main, confirm
+this planning checkpoint and preserve intervening work. Its parent is verified
+B25 `27092b9a31c9282cfcdd5beefba3d62998d60415`.
 
-I authorize implementation, necessary refactoring, design/tuning decisions,
-compatible existing assets, naming, UX, tests, diagnostics, documentation, live
-GDD amendments, focused parallel delegation, commits and non-forced pushes to
-main. Resolve ordinary ambiguities. **Do not deploy to the VPS or publish to
-Steam Workshop.**
+## Authorized next work
 
-Read AGENTS.md, newest DEVELOPMENT_PLAN.md checkpoint, this handoff and the full
-briefs/BIG_LOOT_UPDATE.md. For Bestiary regression/exit truth read
-validation/BESTIARY_B25.md and BESTIARY_B25_EXIT.md; do not restart roster
-archaeology. Follow live GDD00→01→only required normalized tabs, exact HUMAN
-anchors only for HUMAN-DETAIL. Missing historical art is not blocking.
+Complete **Great Crate C1**, aiming to finish the entire supplied update in this
+one implementation pass. The author allows **at most three passes total**.
+Only if necessary bank substantial C1 work, then use C2/C3 for clearly stated
+remaining requirements. Fold integration, validation, documentation and publication
+into these passes; the brief's separate C4 suggestion is superseded. Do not spend
+C1 only planning, regenerate the256-brand library or reopen broad roster audits.
 
-## Completed Bestiary implementation
+You have the brief's design/art/material/rendering/implementation/tuning authority,
+including necessary refactoring, compatible existing assets, diagnostics/tests,
+manual and live-GDD amendments, commits and verified non-forced pushes to main.
+Resolve ordinary choices. **Do not deploy to the VPS or publish to Steam Workshop.**
 
-B25 closes the four production omissions identified by B24. Six catalog-owned
-intensity rows drive existing EncounterDirector/WanderingDirector: targets12/14/16,
-replacement probability.50/.65/.75/.90/1 on the existing20-second opportunity
-cadence and motif-weighted Surge/Ambush/Gauntlet route phrases. Exact values live
-in05/06/07 LOD-BESTIARY-B25-001 and the catalog. Legacy plans retain16/1/uniform.
-No new director/history/hook. Initial fill, admission, due service and deficit
-reservation share the target. Chance rejection preserves spawn ordinals; physical
-failure waits; cleanup retires opportunity state; no catch-up burst or timer
-resurrection after reentrant native reset. Independent named stream ends in
-admission to avoid measured clustering of adjacent decimal labels.
+Inspect current container model/submaterials, source NP mark across material
+channels, existing tint and brand authorities, floor/catwalk geometry/collision,
+and the256-brand archive/manifest. Define a finite gate before edits. Restore
+preferred HL2 container unless a concrete insurmountable blocker is documented;
+remove intrinsic NP and neutralize hull chroma while retaining physical detail.
+Keep gameplay tint and branding independent. Preserve the current coherent
+campaign/dungeon brand scope and aspect-fit complete artwork inside deterministic
+local-space safe anchors. Improve seamless industrial concrete and restrained
+safe grated vistas without sacrificing occlusion, collision or progression.
+Use shared/lazy materials, compact deterministic state and existing owners.
 
-Elite probability has an explicit authorized population-exposure interpretation:
-.30*p per otherwise legal replacement opportunity and1−.70^n for at least one
-Elite among n initial ordinary bodies. Never change each admitted actor's60/30/10
-categorical roll, reroll tiers, impose quotas or equate specialist identity with
-RPG Elite. Preserve named grades and02's later floor(D/3) monster-Level/cap
-increase. B25 changes no class/combat/HP/XP/reward authority.
+Preserve the full brief's exit requirements: all256 assets fit; tint/material
+validity; deterministic visuals; floor/catwalk topology and traversal safety;
+no unnecessary per-container hooks/material growth; measured visual-cost bounds;
+preview/structured diagnostics; relevant integration; accurate GDD/manual/docs;
+commit and verified remote publication. Native appearance/FPS cannot be accepted
+from headless checks. Missing assets require a concrete recovery attempt/blocker,
+not silent omission. A pass cap never permits unsafe or falsely complete output.
+Any unresolved feature scope after C3 is explicitly deferred to next week's
+backlog before dependent work; do not invent C4 or postpone a known fatal defect.
 
-All earlier squad/roaming physical, companion, singleton, exact ownership,
-objective,4-cell squad spacing,4-specialist/floor,16 maximum/floor,24-candidate,
-near-Hero distance4 and shared96-ceiling rules remain. Exact planned homes remain
-reserved against spawning; natural patrol/pursuit may still converge or interrupt
-quiet/recovery. B20 successful-build receipts remain the only campaign history.
-Roster63 normal/4 named, frozen18;60 themed+6 common templates,14 families.
+## Regressions and evidence
 
-One fresh final canonical run passed **all215 suites with zero failures**; no
-gameplay/config/test edits followed. Exact numerical reports are in BESTIARY_B25.md and
-BESTIARY_B25_INTEGRATION.txt, INTENSITY_FINAL, CAMPAIGN_FINAL and ENCOUNTER_FINAL.
-Finite32x6 paired plans show actual motif effects;4096 opportunity trials/motif
-exercise rates and real conditional tiers. Existing32x20 campaign gates retain
-54 exposure floors25/20/5, minimum36/54 coverage,>=25% adjacent-template-return
-reduction, six roaming additions>=25, combined basic-share<=.5,>=10/14 families,
-B22 pacing/spacing and zero shared home cells. These are production harnesses
-with native boundary doubles, not sightings or Source acceptance. Failed evidence
-is retained. Manual164 chapters/32chunks; live GDD and coordination docs updated.
+Bestiary implementation is complete at B25:63 normal/4 named, frozen18; all215
+canonical suites passed then. This roadmap edit does not rerun or newly accept
+those tests. Current evidence: validation/BESTIARY_B25.md and BESTIARY_B25_EXIT.md.
+Preserve motif intensity/history/receipts, physical spawn/admission, topology,
+spacing, ceilings, classes/combat/tiers/rewards, events/loot placement, gates,
+Gordon→Hector→Deborah, staging, Abundance and Level21 cash. Native acceptance
+remains pending. Do not repeat baseline archaeology; use existing shared tests.
 
-The full brief reconciliation closes the Bestiary implementation/static phase
-following green validation and verified publication. Native acceptance remains
-pending after ordered phases/audits; it is not a blocker to Big Loot L1.
+Reserve the final third for validation, repair, docs and immediate publication.
+Use targeted tests while editing; once stable run the required canonical matrix.
+Retain failures, repair attributable regressions, update/read back GDD and relevant
+manual/plan/handoff, commit and verify non-forced publication. No unrelated
+comprehensive audit or deferred catalog expansion belongs in C1. If complete,
+next is low-end PC optimization; otherwise give the exact bounded C2/C3 remainder.
 
-## Complete L1 — baseline plus first coherent loot cohort
+## Revised order and deferrals
 
-Freeze the actual current meaningful equipment/item-effect baseline before
-calculating approximately3.5× target; do not count cosmetic, rarity, numeric or
-class permutations as new identities. Inspect only current canonical equipment,
-loot, property/effect, inventory, pickup, persistence and sell/fuse/reward seams
-needed by the full brief and selected cohort. Recover prior accepted constraints.
+Immediate: **Great Crate → low-end PC optimization → fatal-crash/game-breaking-bug
+audit → focused human playtest/native acceptance**. The focused audits address
+performance and fatal/game-ending defects, without reopening a top-to-bottom
+systems/emergence review. Deferred expansions do not block the immediate playtest.
 
-Combine baseline discovery with a substantial first playable cohort through
-shared existing authorities; do not stop at planning or unused scaffolding.
-Select a coherent effect/slot/interaction family from actual gaps. Reconcile
-live rules, author required behavior/tuning in GDD before dependent edits and
-define a finite production/runtime gate. Maintain readable counterplay/build
-choices, server authority, deterministic RNG, bounded entities/resources,
-atomic inventory/wallet/sell/fuse/persistence transactions, lifecycle and loot
-viability. Do not alter unrelated accepted combat/progression systems just to
-inflate catalog counts. No competing loot/director/history authority.
+Next week, **September28–October4,2026**: **Big Loot → Event System → comprehensive
+systems integration and emergence audit**. The comprehensive audit is retained
+and explicitly follows Events. Preserve original expansion briefs/targets and
+incomplete requirements; do not start them early or auto-execute by date.
 
-Reserve final third for validation, docs and immediate publication. Targeted
-checks while editing; canonical integration once stable. Repair attributable
-failures, retain evidence and broaden only for concrete remaining risk. Update
-and read back GDD, manual where needed, frozen baseline/cohort ledger, plan,
-handoff and suite registry. Commit and verify non-forced publication immediately
-after green. Stop at L1 and name its finite successor; no Events/audits or
-human/deployment gate before the ordered phases are complete.
+Later native gm_flatgrass checks include container/NP/tint/brand fit and clipping,
+floor seams/catwalk vistas, real materials/lighting/occlusion/performance, prior
+Bestiary tells/support/convergence,1–4-player/network/lifecycle and full campaign.
+Evidence console_latest.txt+rpg_summary_latest.txt; session only for event order.
 
-Later gm_flatgrass acceptance still includes readable motifs/phrases/tells/audio,
-real spawn support/hulls/substitution around gates/stairs/Walls/false floors,
-patrol/pursuit convergence, HP/XP/drops,1–4-player balance/network, lifecycle,
-Gordon→Hector→Deborah, sole staging successor, Abundance and Level21 cash, plus
-new loot behavior. Evidence console_latest.txt+rpg_summary_latest.txt; session
-only for ordering. Deployment needs separate authorization.
-
-If CLI push credentials are unavailable, use authenticated GitHub blob/tree/
-commit/ref tools. Verify each blob and complete tested tree, advance non-forced,
-fetch and verify SHA/parent/tree. Preserve newer work; never force.
-Order: Bestiary→Big Loot→Event System→systems integration/emergence audit→low-end
-PC performance audit→final crash/progression-safety audit→human playtest.
-Finish L1 only. End with verified SHA, scope/tests/progress/native checks and
-next continuation prompt.
+If CLI credentials are absent, use authenticated GitHub blob/tree/commit/ref tools,
+verify each blob and complete tested tree, advance non-forced, fetch and verify
+SHA/parent/tree. Never force or overwrite newer work. End with verified SHA,
+completed/pending scope, test evidence/native gaps and the next bounded prompt.
