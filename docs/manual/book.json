@@ -1126,6 +1126,25 @@
       ]
     },
     {
+      "id": "enemy-conditions",
+      "title": "Cure the ailment, break the bargain",
+      "table": [
+        [
+          "Absolver",
+          "The pale-cyan slave Vortigaunt draws a crossed-diamond tether to an ailing ally and channels for 1.5 seconds. It removes one existing negative condition, without restoring HP. Interrupt or mute the Absolver, separate it from its ally, or break their sightline. A cure that has already happened cannot be taken back."
+        ],
+        [
+          "Exactor",
+          "The crimson Combine elite marks an ailing Hero’s position with a 64-unit circle and crossed diamond for 1.25 seconds. Leave the circle, cure the selected Bleeding, Immolated or Poisoned condition, break sight, or interrupt it. The mark never follows you. A successful physical hit consumes that ailment; ordinary Block and Dodge still apply. With no qualifying ailment, Exactor fires an ordinary warned shot."
+        ]
+      ],
+      "text": [
+        "Absolver accompanies Shamblers; Exactor appears with a Flamer. Avoiding the Flamer’s Immolated attempt deprives Exactor of that opportunity. Exactor threatens only the Hero it marked, and each warning permits at most one hit.",
+        "Cleansing targets one condition in a fixed order, not every ailment. If that condition ends during either warning, the commitment fails; a new application needs a fresh warning. Neither enemy applies a new condition or creates extra bodies.",
+        "Held allows these stationary actions. Muted interrupts Absolver’s cleansing Magic but does not prevent either enemy’s physical shots. The tether, glyphs and shrinking countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

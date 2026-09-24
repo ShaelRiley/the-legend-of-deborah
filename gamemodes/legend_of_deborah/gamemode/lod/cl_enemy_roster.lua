@@ -13,6 +13,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
     afterburst=Color(255,150,65),carrion=Color(160,220,95),
     towline=Color(70,225,205),screenwright=Color(110,175,255),
+    absolver=Color(170,240,225),exactor=Color(230,95,115),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -61,15 +62,19 @@ hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth
 end)
 -- Support tells are semantic geometry, retained in reduced-effects mode. They
 -- use existing entity snapshots; no per-frame actor scans or particle emitters.
-local supportColors={colors.stitcher,colors.bulwark,colors.cantor}
+local supportColors={colors.stitcher,colors.bulwark,colors.cantor,colors.absolver}
 local supportRecipients={{2,"SupportGuard"},{3,"SupportRally"}}
-local supportKinds={stitcher=1,bulwark=2,cantor=3}
+local supportKinds={stitcher=1,bulwark=2,cantor=3,absolver=4}
 local function supportIcon(kind,center,color,width)
     local side=(EyePos()-center):Angle():Right();local up=Vector(0,0,1)
     render.SetMaterial(beam)
     if kind==1 then
         render.DrawBeam(center-side*11,center+side*11,width,0,1,color)
         render.DrawBeam(center-up*11,center+up*11,width,0,1,color)
+    elseif kind==4 then
+        local points={center+up*14,center+side*12,center-up*14,center-side*12}
+        for i=1,4 do render.DrawBeam(points[i],points[i%4+1],width,0,1,color) end
+        render.DrawBeam(center-side*16-up*10,center+side*16+up*10,width,0,1,color)
     elseif kind==2 then
         local points={center-side*13+up*12,center+side*13+up*12,
             center+side*11-up*4,center-up*17,center-side*11-up*4}
@@ -87,7 +92,8 @@ function V:Support(e)
     local now=CurTime();local origin=e:WorldSpaceCenter()+Vector(0,0,26)
     local id=e:GetNW2String("LOD_Archetype","")
     local kind=supportKinds[id] and e:GetNW2Int("LOD_SupportKind",0) or 0
-    if kind>=1 and kind<=3 then
+    if kind==4 and (not e:GetNW2Bool("LOD_RosterAlive",false) or now>=e:GetNW2Float("LOD_SupportReady",0)+.2) then kind=0 end
+    if kind>=1 and kind<=4 then
         local color=supportColors[kind]
         local charging=now<e:GetNW2Float("LOD_SupportReady",0)
         supportIcon(kind,origin,color,charging and 2 or 4)
@@ -95,7 +101,11 @@ function V:Support(e)
         if IsValid(target) then
             render.SetMaterial(beam)
             render.DrawBeam(origin,target:WorldSpaceCenter(),charging and 1 or 3,0,1,color)
-            if kind==1 then supportIcon(1,target:WorldSpaceCenter()+Vector(0,0,30),color,2) end
+            if kind==1 or kind==4 then supportIcon(kind,target:WorldSpaceCenter()+Vector(0,0,30),color,2) end
+            if kind==4 then
+                local fraction=math.Clamp((e:GetNW2Float("LOD_SupportReady",0)-now)/1.5,0,1)
+                render.DrawBeam(origin+Vector(-24,0,24),origin+Vector(-24+48*fraction,0,24),3,0,1,color)
+            end
         end
     end
     local healed=e:GetNW2Float("LOD_SupportHealedAt",0)
@@ -517,6 +527,26 @@ function V:Perception(e)
     local fraction=math.Clamp(((now<ready and ready or untilTime)-now)/(now<ready and .8 or 1.4),0,1)
     render.DrawBeam(center+Vector(-24,0,28),center+Vector(-24+48*fraction,0,28),3,0,1,color)
 end
+-- A broken-diamond condition glyph distinguishes this physical collection mark.
+function V:Condition(e)
+    local now=CurTime();local ready=e:GetNW2Float("LOD_ConditionReady",0)
+    if not e:GetNW2Bool("LOD_RosterAlive",false) or now>=e:GetNW2Float("LOD_ConditionUntil",0) then return end
+    local aim=e:GetNW2Vector("LOD_ConditionAim",e:GetPos())+Vector(0,0,3)
+    local origin=e:GetNW2Vector("LOD_ConditionOrigin",e:GetPos())+Vector(0,0,48)
+    local color=colors.exactor
+    render.SetMaterial(beam)
+    for i=1,24 do
+        local a,b=(i-1)*math.pi/12,i*math.pi/12
+        render.DrawBeam(aim+Vector(math.cos(a)*64,math.sin(a)*64,0),
+            aim+Vector(math.cos(b)*64,math.sin(b)*64,0),3,0,1,color)
+    end
+    local points={Vector(0,-14,0),Vector(14,0,0),Vector(0,14,0),Vector(-14,0,0)}
+    for i=1,4 do render.DrawBeam(aim+points[i],aim+points[i%4+1],3,0,1,color) end
+    render.DrawBeam(aim+Vector(-18,-18,0),aim+Vector(18,18,0),3,0,1,color)
+    render.DrawBeam(origin,aim,1,0,1,color)
+    local fraction=math.Clamp((ready-now)/1.25,0,1)
+    render.DrawBeam(aim+Vector(-24,0,28),aim+Vector(-24+48*fraction,0,28),3,0,1,color)
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -526,6 +556,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="exactor" and e:GetNW2Bool("LOD_ConditionMark",false) then self:Condition(e);return end
     if id=="listener" or id=="shy" then
         if e:GetNW2Int("LOD_PerceptionMode",0)>0 then self:Perception(e) else self:Melee(e) end
         return

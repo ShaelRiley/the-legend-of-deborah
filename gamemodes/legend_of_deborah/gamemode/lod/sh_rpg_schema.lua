@@ -124,6 +124,8 @@ RPG.ArchetypeProgressionTemplates = {
     wirewright = archetypeTemplate(10, 13, 11, 14, 11, 9, 35, 65, 0, 8, 50, 5, false, "wirewright"),
     snarer = archetypeTemplate(8, 10, 10, 14, 16, 10, 10, 15, 75, 8, 50, 4, true, "snarer"),
     cordon = archetypeTemplate(12, 8, 15, 12, 13, 7, 70, 30, 0, 10, 55, 7, false, "cordon"),
+    absolver = archetypeTemplate(10, 10, 12, 12, 15, 10, 80, 20, 0, 8, 50, 6, true, "absolver"),
+    exactor = archetypeTemplate(14, 12, 12, 10, 11, 9, 65, 35, 0, 10, 55, 6, false, "exactor"),
     listener = archetypeTemplate(10, 15, 10, 11, 14, 9, 25, 75, 0, 8, 50, 5, false, "listener"),
     shy = archetypeTemplate(14, 14, 12, 6, 12, 8, 60, 40, 0, 10, 55, 6, false, "shy"),
     censer = archetypeTemplate(13, 9, 13, 8, 10, 8, 75, 25, 0, 10, 55, 6, false, "censer"),
@@ -145,6 +147,7 @@ RPG.ArchetypeProgressionTemplates = {
 -- pools/classes remain canonical without inventing an offensive casting source.
 RPG.ArchetypeProgressionTemplates.stitcher.offensiveMagic = false
 RPG.ArchetypeProgressionTemplates.bulwark.offensiveMagic = false
+RPG.ArchetypeProgressionTemplates.absolver.offensiveMagic = false
 
 for archetypeId, template in pairs(RPG.ArchetypeProgressionTemplates) do
     template.archetypeId = archetypeId

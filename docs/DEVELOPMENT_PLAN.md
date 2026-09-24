@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B11 builds on verified remote `main` `86ec5ff6f2fbf84a36ad1521c5a728b69de64f72`,
-`Add Bestiary Censer and Trailmaker mobile hazards`.
-The current B11 checkpoint below is the newest implementation record. Its exact
+B12 builds on verified remote `main` `5c38f7dcdb062064d942967998c375460e593ee1`,
+`Add Bestiary Listener and Shy perception cohort`.
+The current B12 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,67 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B11: perception cohort
+## Current checkpoint — B12: condition-interaction cohort
+
+Built on verified remote `5c38f7dcdb062064d942967998c375460e593ee1`.
+**Absolver and Exactor** bring the normal roster to **49/63**: frozen baseline18,
+**31/45 additions banked**, **14 remain**. Native Source acceptance is pending.
+
+**Playable scope:** Absolver channels1.5s to cure one exact negative condition on
+an ordinary ally; no HP/revival/self-cure. Exactor marks an ailing Hero's frozen
+radius64 position for1.25s, attempts one physical1d6+2 hit and consumes the exact
+Bleeding/Immolated/Poisoned entry only after positive damage on the surviving
+captured life. Cure, leave the circle, separate support, break cover, mute the
+Absolver or interrupt either source. Exactor without an ailment fires a warned
+physical fallback. Companions: two Shamblers / one Flamer. Canonical manual156
+chapters/31 chunks. Full design/tuning: BESTIARY_EXPANSION.md, GDD03/05/07
+LOD-BESTIARY-B12-001. Live design, tuning, evidence, index and continuation are
+amended and read-back verified.
+
+**Ownership/safety:** EnemySupport channels and canonical status reservations;
+RPGStatusElements exact-entry selection/removal/expiry; EnemyRoster finite
+physical marks through shared combat/Block/Dodge/HP/XP/drop. No private status
+clock, stat theft, new bodies or reward owner. Exact source/recipient/Hero lives,
+progression and dungeon/campaign identities; fixed service/release deadlines,
+16 channels/marks, source drift checks, supported escape paths using Hero native
+hulls, identity-safe callbacks, finite recovery. Ordinary support explicitly
+excludes player-controlled Soldiers. Held permits stationary actions; Muted
+cancels cleansing Magic but allows physical attacks. All prior cohorts remain.
+
+**Validation:** four B12 suites pass: real behavior/status/combat, support,
+production and native-Draw boundary.32 seeded actor generations/replays, exact
+life/entry/dungeon matrix, reentrant callbacks, lethal/blocked damage, support/
+hull/cover/escape, caps/retries and fixed deadlines.512 plans/4944 encounters/
+32 mazes/parties1–4/dungeons1–5: Absolver27/25/12, Exactor29/28/8; all retained
+25/20/5 exposure gates pass. Six measured+1 tickets repair dilution; failed trials
+remain in validation/BESTIARY_B12_EXPOSURE.md.
+
+One fresh185-suite canonical integration run passed184 and failed only the stale
+explicit progression-registry assertion (`must be 51`). Added Absolver/Exactor
+to that diagnostic list (now49 ordinary+4 named bosses), then reran the affected
+Protected Behavioral Regressions suite: all six families plus Overall RPG
+Subsystem Validation pass. **Final185-suite coverage is green across integration
+plus targeted rerun**, not one all-green integrated run. No gameplay edits
+followed integration. Exact evidence: validation/BESTIARY_B12.md. Prior cohorts,
+combat/status/progression, bosses/finale/succession/Abundance/cash, Lua syntax,
+release wiring and manual reader/transport passed in the integrated run.
+
+**Native checks retained:** after ordered phases, gm_flatgrass actual statuses,
+tethers/marks/escape/Block/Dodge, support/collision/gates/Walls/false floors,
+interruptions, death/revival/disconnect, freeze/reset/same-seed rebuild, full/
+reduced visuals/audio, actual HP/rewards and1–4-player networking/balance, plus
+all prior cohort/boss/campaign regressions. Boundary doubles are not Source
+observation or acceptance. Evidence console_latest.txt+rpg_summary_latest.txt;
+session log only for ordering. No VPS deployment or Workshop publication.
+
+**Next:** B13 only, provisional party-spacing pressure cohort: isolated-target
+predator and crowd-link punisher. Reconcile canonical targeting, cooperative
+proximity and damage before authoring; require regroup/separate counterplay,
+solo viability and finite exact-life warnings. Target51/63 only for two meaningful
+validated production identities. Keep remaining breadth and whole-phase
+campaign-aware ecology within Bestiary before Big Loot/Events.
+
+## Previous checkpoint — B11: perception cohort
 
 Built on verified remote `86ec5ff6f2fbf84a36ad1521c5a728b69de64f72`.
 **Listener and Shy** bring the implemented normal roster to **47/63**:

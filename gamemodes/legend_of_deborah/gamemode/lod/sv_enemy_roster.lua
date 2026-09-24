@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    absolver={name="Absolver",model="models/vortigaunt_slave.mdl",baseHP=40,speed=105,damage=3.5,range=600,warning=.7,recovery=2.2,threat=3.5,activity=ACT_WALK,kind="bullet",support="cleanse",color=Color(170,240,225),dice={1,4,1}},
+    exactor={name="Exactor",model="models/combine_super_soldier.mdl",baseHP=50,speed=130,damage=5.5,range=360,warning=1.25,recovery=3,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",condition=true,color=Color(230,95,115),dice={1,6,2}},
     listener={name="Listener",model="models/police.mdl",baseHP=40,speed=165,damage=5.5,range=112,warning=.9,recovery=1.8,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",perception="sound",color=Color(235,195,100),dice={1,6,2}},
     shy={name="Shy",model="models/zombie/fast.mdl",baseHP=50,speed=180,damage=5.5,range=112,warning=.9,recovery=1.8,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",perception="sight",color=Color(175,150,230),dice={1,6,2}},
     censer={name="Censer",model="models/combine_soldier.mdl",baseHP=45,speed=120,damage=5.5,range=320,warning=1.2,recovery=3.5,threat=3.5,activity=ACT_RUN,kind="bullet",mobile="carrier",color=Color(220,150,60),dice={1,6,2}},
@@ -91,7 +93,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -132,6 +134,7 @@ function E:Cancel(e)
     if e.LODRosterAttack and e.LODRosterAttack.tactical then self:RetireTactical(e) end
     if e.LODRosterAttack and (e.LODRosterAttack.mobile or e.LODRosterAttack.perception) then LOD.HostileMotionV2:Stop(e) end
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
+    if d and d.condition then e:SetNW2Bool("LOD_ConditionMark",false) end
 end
 function E:Interrupt(e,attackEvent,attacker)
     if self.Definitions[e.LODArchetypeId] and self.Definitions[e.LODArchetypeId].perception then
@@ -143,7 +146,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical or a.mobile or a.perception) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -198,6 +201,7 @@ function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
+    if d.condition and not override.conditionFallback then return self:BeginCondition(e,p,now) end
     if d.tactical and not override.tacticalFallback then return self:BeginTactical(e,p,now) end
     if d.mobile then return self:BeginMobile(e,p,now) end
     if d.trap then return self:BeginTrap(e,p,now) end
@@ -207,7 +211,7 @@ function E:Begin(e,p,now,override)
         range=override.range or cfg.fireRange,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
     self:Bind(a,state())
-    if override.tacticalFallback then a.fallbackLife=self:CaptureLife(e,p);a.deadline=a.ready+.2 end
+    if override.tacticalFallback or override.conditionFallback then a.fallbackLife=self:CaptureLife(e,p);a.deadline=a.ready+.2 end
     if d.pattern then
         if not self:PlanPattern(e,a,d.pattern) then e.LODNextAttack=now+.5;return false end
         a.patternLife=self:CaptureLife(e,p);a.deadline=a.ready+.2
@@ -234,7 +238,7 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception) then
+    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition) then
         e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -280,6 +284,7 @@ function E:Release(e,a,now)
 end
 function E:Attack(e,a,now)
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
+    if a.condition then return self:StepCondition(e,a,now) end
     if a.perception then return self:StepPerception(e,a,now) end
     if a.mobile then return self:StepMobile(e,a,now) end
     if a.tactical then return self:StepTactical(e,a,now) end
@@ -409,13 +414,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -482,6 +487,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        absolver={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
+        exactor={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
         listener={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         shy={"npc/fast_zombie/leap1.wav","npc/fast_zombie/fz_scream1.wav","npc/fast_zombie/foot1.wav"},
         censer={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},

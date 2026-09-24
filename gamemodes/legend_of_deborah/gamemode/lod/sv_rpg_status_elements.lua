@@ -150,6 +150,7 @@ end
 
 System.Registry = {
     support_mending = {direct=true, beneficial=true, reapply="ignore"},
+    support_cleansing = {direct=true, beneficial=true, reapply="ignore"},
     support_guard = {direct=true, beneficial=true, reapply="ignore"},
     support_rally = {direct=true, beneficial=true, reapply="ignore"},
     clumsy = {ability = "dex", duration = function(self, rng) return 1 + rng:Int(1, 4) end,
@@ -198,6 +199,29 @@ function System:Has(target, id, at)
         return false
     end
     return true, entry
+end
+
+-- Commitments capture a live condition entry, never a private copy or clock.
+function System:FirstNegative(actor, allowedIds)
+    self:BindActorLife(actor)
+    local ids = {}
+    for id in pairs(self.Active[actor] or {}) do
+        if not (self.Registry[id] and self.Registry[id].beneficial)
+            and (not allowedIds or listContains(allowedIds, id)) then ids[#ids + 1] = id end
+    end
+    table.sort(ids)
+    for _, id in ipairs(ids) do
+        local present, entry = self:Has(actor, id)
+        if present then return id, entry end
+    end
+end
+
+function System:ClearExpected(actor, id, expected, reason)
+    if not expected then return false end
+    local present, entry = self:Has(actor, id)
+    if not present or entry ~= expected or not self.Active[actor]
+        or self.Active[actor][id] ~= expected then return false end
+    return self:Clear(actor, id, reason)
 end
 
 -- Remedies remove conditions through Clear so locks, replication, hooks and

@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B11
+# Bestiary expansion — frozen baseline through B12
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B11 add twenty-nine identities: **47/63**, or **29/45 additions**; **16 remain**.
+B1–B12 add thirty-one identities: **49/63**, or **31/45 additions**; **14 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -731,16 +731,81 @@ Listener43 planned/41 legal/6 early; Shy33/30/5; every earlier threshold passes.
 Canonical manual155 chapters/31 chunks. Static/automated evidence is distinct
 from native Source observation and acceptance; see DEVELOPMENT_PLAN.md.
 
-## Next checkpoint — B12: condition-interaction cohort
+## B12 — condition-interaction cohort
 
-Provisional bounded two-identity cohort: an ally-condition cleanser and a
-condition-reactive opportunist. These are proposals, not authored mechanics.
-Reconcile canonical condition ownership/removal, beneficial-support eligibility,
-physical/Magic damage and finite life-bound commitments before choosing names,
-actions or tuning. Distinguish them from Stitcher's HP recovery, Carrion's corpse
-consumption and B4's direct-damage reactions. Require visible warnings and real
-counterplay, bounded event-driven/cached work, no guaranteed repeated control,
-private status clocks, duplicate settlement, permanent stat theft or extra bodies.
-Substitute comparable bounded identities if needed. Target49/63 only for two
-meaningful validated production identities. Retain remaining roster breadth and
-whole-phase campaign-aware director ecology; do not begin Big Loot or Events.
+| ID / identity | Readable action and counterplay | Composition |
+| --- | --- | --- |
+| `absolver` / Absolver | Pale-cyan slave Vortigaunt channels a crossed-diamond tether for1.5s, curing one captured negative condition on an ally. Interrupt, mute, separate or break cover. No HP recovery/revival/self-cure. | Absolver + two Shamblers. |
+| `exactor` / Exactor | Crimson Combine elite marks an ailing Hero's frozen position for1.25s. Leave the radius64 circle, cure the captured Bleeding/Immolated/Poisoned ailment, break sight or interrupt. One physical1d6+2 hit consumes that ailment only after positive HP loss on the surviving same life. | Exactor + Flamer. |
+
+Absolver extends EnemySupport, including ordinary recipient eligibility, cached
+128-candidate selection, same-floor/two-traversable-edge/range/LOS constraints.
+Player-controlled Soldiers, bosses/clones, event Skeletons, self, dormant/dead and
+friendly actors are excluded. Selection sorts distance then stable entity ID;
+RPGStatusElements selects the lexically first live nonbeneficial condition.
+Its nonstacking beneficial `support_cleansing` reservation uses canonical1.7s
+expiry; one reserved recipient and at most16 simultaneous cleansing channels.
+Support range360, warning1.5s, cooldown6s, scan0.3s, service0.1s, maximum service
+gap0.25s, release grace0.2s. Source drift tolerance8. Capture recipient floor,
+source/recipient and initiating Hero progression/status-life plus exact dungeon
+scope. Hero LOS/range600 is acquisition-only; its life/acquisition eligibility
+stays bound, and ally tether LOS/range stays mandatory throughout. Held permits
+stationary support; Muted, morale, attack prohibition or hit-stun cancels it.
+
+Exactor extends EnemyRoster's existing25ms service and uses canonical damage,
+Block/Dodge, native HP, XP/drop authorities. One exact condition entry, one Hero,
+one strike; no status application, AoE bystanders or hidden retarget. Source/
+Hero life/progression, run/graph/progression, level seed, campaign epoch/seed/run
+ID bind the mark. Source drift4, max16 marks, gap0.25s, release grace0.2s,
+range360, fixed recovery3s. Ground support and two96-unit lateral escape routes
+are revalidated at0.2s cadence and release, with<=24-unit support probes and the
+Hero's actual native collision hull. Same legal cell and height−4..72 gate impact.
+Held/Muted permit the stationary physical strike; morale/interruptions cancel.
+No eligible ailment uses an ordinary warned physical shot with exact life,
+release deadline and existing projectile cap. Failed geometry retries after0.5s.
+
+Both use canonical `FirstNegative`/`ClearExpected`: natural expiry or removal/
+reapplication cancels, while extension of the same status entry remains valid.
+ClearExpected never consumes a replacement condition. Claim before callbacks;
+reservation/source ownership checks preserve another cleanser's winning claim.
+Zero/blocked/dodged/lethal damage cannot consume Exactor's captured condition.
+Post-damage source/target death/removal/replacement aborts the cure. Freeze,
+failure/clear and same-seed graph replacement retire commitments. No private
+status scheduler, stat theft, summoned bodies or new reward authority.
+
+Reference HP/speed/range/fallback warning/recovery/threat:
+Absolver40/105/600/0.7s/2.2s/3.5 (fallback1d4+1);
+Exactor50/130/360/1.25s/3s/4 (1d6+2).
+STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die; baseXP; morale:
+Absolver10/10/12/12/15/10;80/20/0;d8;50;6, usesMagic=true/offensiveMagic=false.
+Exactor14/12/12/10/11/9;65/35/0;d10;55;6, usesMagic=false.
+Stock models `models/vortigaunt_slave.mdl` and `models/combine_super_soldier.mdl`;
+RGB170,240,225 and230,95,115. Stock spatial cues, semantic crossed diamonds,
+tether/mark and countdowns retain full/reduced clarity, cull2400, render bounds424.
+
+Templates `absolver_detail` and `exactor_pressure`, sector2+ arena/ambush,
+singleton specialists, appended spawn ordinals46/47; safe/objective/transition
+exclusions, same-floor exit and100-unit lateral admission for Exactor. Physical
+runtime support remains distinct from prebuild admission. Unchanged hostile
+ceiling, ordinary companion enrichment, cap/retry/budget-safe fallback.
+
+All forty sampled identities pass unchanged25/20/5 exposure gates in512 plans,
+4944 encounters,32 mazes, parties1–4/dungeons1–5: Absolver27/25/12;
+Exactor29/28/8 (planned/legal/early). Six measured +1 template tickets restore
+exposure: Arc Caster, Absolver, Exactor, Silencer, Wirewright, Drubber. Full failed
+and final counts: [B12 exposure](validation/BESTIARY_B12_EXPOSURE.md).
+Canonical manual156 chapters/31 chunks. See [validation](validation/BESTIARY_B12.md)
+and DEVELOPMENT_PLAN.md for final integrated evidence and native limitations.
+
+## Next checkpoint — B13: party-spacing pressure cohort
+
+Provisional bounded two-identity cohort: an isolated-target predator and a
+crowd-link punisher. These are proposals, not authored mechanics. Reconcile
+FactionManager acquisition, cooperative proximity, ordinary physical/Magic
+combat and finite exact-life commitments before choosing names/actions/tuning.
+Distinct tactical answers should be regrouping versus separating, without
+unwarned damage, unavoidable solo punishment, forced camera behavior, hidden
+tracking, new targeting authority or extra bodies. Retain solo viability and
+1–4-player counterplay; substitute comparably bounded identities if needed.
+Target51/63 only for two meaningful validated production identities. Preserve
+remaining breadth and whole-phase campaign-aware ecology before Big Loot/Events.

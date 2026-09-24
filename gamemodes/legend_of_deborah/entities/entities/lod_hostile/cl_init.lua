@@ -116,6 +116,8 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "exactor" or archetype == "absolver" then
+        ent:SetRenderBounds(Vector(-424,-424,math.min(0,mins.z*size)),Vector(424,424,math.max(112,maxs.z*size)))
     elseif archetype == "listener" or archetype == "shy" then
         ent:SetRenderBounds(Vector(-160,-160,math.min(0,mins.z*size)),Vector(160,160,math.max(80,maxs.z*size)))
     elseif archetype == "censer" or archetype == "trailmaker" then
