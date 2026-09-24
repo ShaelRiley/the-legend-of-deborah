@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B19 builds on verified remote `main` `74798e4202e9095f8d94232196c42411ffe484a6`,
-`Add Bestiary Censor and Surveyor prison edicts`.
-The current B19 checkpoint below is the newest implementation record. Its exact
+B20 builds on verified remote `main` `902678fad48142059841e8ad9849dd21e79695bc`,
+`Add Bestiary Relay and Lacemaker living-ally links`.
+The current B20 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,53 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B19: relay and living-link cohort
+## Current checkpoint — B20: campaign-aware motifs and novelty
+
+Built on verified remote `902678fad48142059841e8ad9849dd21e79695bc`.
+Roster remains **63/63 normal**, baseline18,45 additions,4 separately counted
+named bosses. Six dungeon motifs now select themed discretionary squads through
+EncounterDirector: Hunting Grounds, Occupation, Corruption, Crossfire, Quarantine,
+Funeral Retinue. Catalog60 themed+6common templates;63 identities/14 families.
+The role/sector membership set is unchanged;960 lines of accumulated duplicate
+weighting history are replaced by one motif/history selector.
+
+Exclude the last two committed motifs and choose uniformly among eligible least-used
+motifs. Within a motif use unseen template/identity, recent enemy/family/template
+history and current-dungeon suppression; separate early-template history prevents
+late-only encounters from suppressing early introductions. Keep common fallback,
+objective fights, physical admission, companion/singleton composition and existing
+threat/count/activation ceilings. No changes to wanderer selection or density.
+
+RunManager commits primitive history only after complete physical builder success,
+with exact state/graph/plan/seed/level/epoch/run guards. Failed builds consume no
+history; same-level rebuild/seed overrides replace from the same before snapshot;
+next level uses after; cleanup preserves history and new campaigns reset it even
+with identical seeds. Three recent summaries and bounded counters, independent RNG;
+no new bodies, Think hooks, combat pools or progression authorities.
+
+**Validation:** One fresh final canonical run passed **all209 suites with zero failures**;
+no gameplay/config/test edits followed. Complete terminal matrix retained.
+All54 sampled specialists pass25planned/20legal/5early in32x20 sequential campaigns
+(parties1–4, all60 themed+6common providers). Mean coverage48.500/54,min41, versus
+control41.844; cross-level template returns154 versus280. Full counts, failed
+trials, sample migration and exact limitations: `validation/BESTIARY_B20.md` and
+`BESTIARY_B20_EXPOSURE.md`. Old512 independent plans retain geometry/composition
+checks and comparable count output (4792 encounters). Native Source acceptance
+remains pending; no VPS deployment or Workshop publication.
+
+**Presentation/design:** `lod_encounter_ecology` reports motif/roster/families,
+novelty/fallback choices and encounter cell/threat. Manual164 chapters/32chunks.
+Live GDD00/01/05/06/07 LOD-BESTIARY-B20-001 records design, tuning, ownership and
+measured evidence with readback. All prior cohort and complete campaign regression
+contracts remain binding, including Gordon/Hector/Deborah/staging/Abundance/Level21.
+
+**Next B21:** bounded topology-aware composition and spatial pacing through
+current director/geometry seams. Macro-pacing, wandering-population ecology and
+full campaign exit evidence remain within Bestiary. Numerical breadth and B20
+memory are complete, not the whole phase. Do not begin Big Loot/Events or audits.
+Native testing follows all ordered phases/audits.
+
+## Previous checkpoint — B19: relay and living-link cohort
 
 Built on verified remote `74798e4202e9095f8d94232196c42411ffe484a6`.
 **Relay and Lacemaker** reach **63/63 meaningful normal identities**:

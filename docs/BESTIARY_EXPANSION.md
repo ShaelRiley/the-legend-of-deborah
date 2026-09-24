@@ -1258,7 +1258,7 @@ limitations are recorded in `validation/BESTIARY_B19.md`. Counts describe
 implemented/static progress, never Source acceptance. Preserve all prior cohort
 contracts and Gordon→Hector→Deborah, sole staging successor, Abundance and Level21.
 
-## Next checkpoint — B20: campaign-aware encounter ecology
+## Historical B20 selection gate — now implemented
 
 The **63/63** breadth target is complete; the Bestiary phase is not. Build the
 next bounded production slice of the existing EncounterDirector's campaign-aware
@@ -1267,3 +1267,65 @@ campaign-scale gate and preserve current exposure evidence and all gameplay,
 progression, lifecycle, RNG and entity-budget guarantees. Do not begin Big Loot,
 Events or later audits yet. Native acceptance follows the ordered phases/audits;
 no VPS deployment or Workshop publication is authorized.
+
+## B20 — campaign-aware encounter motifs and novelty memory
+
+B20 leaves breadth at **63 normal /4 named**, frozen baseline18 and45 additions.
+It replaces accumulated duplicate selection tickets with one EncounterDirector
+motif/history resolver over the exact previous eligibility sets. Six disjoint
+motifs each own nine of the54 expanded specialist identities; legacy templates
+also belong to appropriate motifs. Six common templates remain fallback choices.
+A differential check preserved membership for154 sector/role combinations.
+
+| Motif | Specialist identities |
+| --- | --- |
+| Hunting Grounds | Climber, Razor, Pincer, Harrier, Waylayer, Outrider, Listener, Shy, Reaper |
+| Occupation | Sentry, Pavise, Repriser, Redliner, Bulwark, Interposer, Censor, Halter, Pacer |
+| Corruption | Nodule, Flamer, Big Crab, Lurker, Siphoner, Accumulator, Arc Caster, Gaoler, Silencer |
+| Crossfire | Beam Sweeper, Caromer, Reeler, Forker, Fusilier, Bombardier, Conductor, Surveyor, Repulsor |
+| Quarantine | Wirewright, Snarer, Cordon, Towline, Screenwright, Censer, Trailmaker, Drubber, Fencer |
+| Funeral Retinue | Stitcher, Cantor, Absolver, Exactor, Afterburst, Carrion, Mourner, Relay, Lacemaker |
+
+Legacy additions: Occupation includes Sniper/Blitzer; Corruption includes Deadcrab/
+Bio Blaster; Hunting Grounds includes Watcher; Crossfire includes Seeker. Family
+metadata assigns all63 identities one of14 primary-counterplay families, separate
+from motif, model, RPG class or affinity. Objectives, bosses, events, summons and
+wanderers keep their existing owners and do not consume discretionary history.
+
+A dungeon excludes its last two committed motifs, then uniformly selects among
+eligible least-used motifs. At each candidate cell, intersect that motif with
+existing role/sector eligibility; use common templates only if no motif template
+is eligible. No exact immediate discretionary-template repeat when another choice
+exists. Sorted IDs and separate theme/per-cell ecology RNG streams make selection
+reproducible without consuming other subsystem streams.
+
+Template novelty: unseen template weight3 else1, using early-sector appearance
+history for sectors1–2 and all-template history for sectors3–4; divide by1+4*uses
+this dungeon. Late-only sightings do not suppress an early introduction;
+unseen scored identity x2; an identity in three-dungeon recent history x0.7; any
+of its families in that history x0.8. A template seen in the immediately preceding
+dungeon gets x0.2, each older retained occurrence x0.6. Themed squads score their
+specialists rather than ubiquitous Shambler/Runner/Soldier escorts; common squads
+score all their identities. Composition, enrichment/singleton rules, geometry,
+threat accounting and existing first-admission/0.5 exceptions stay unchanged.
+
+RunManager.State owns before/after receipts and three recent primitive summaries;
+counts saturate at1,000,000. BuildPlan is prospective. Commit follows complete
+MazeBuilder success, exact graph/report assignment and precedes readiness/release.
+State/graph/plan/previous receipt/level/master-layout seeds/campaign seed/epoch/run
+must match. Same-level rebuild/override uses the same before snapshot and replaces
+the receipt; successors use after. Cleanup preserves history, new State discards
+it even for the same campaign seed. No graph/entity references enter history;
+transient commit bindings are released after success. These count **planned**
+squads, not sightings, kills or successful physical spawns.
+
+`lod_encounter_ecology` prints theme, roster/templates/families, history depth,
+fallback/novelty decisions and per-encounter cell/threat/objective status. Manual
+chapter “The prison changes its company” explains the player-facing change.
+Validation and retained failed trials: `validation/BESTIARY_B20.md` and
+`validation/BESTIARY_B20_EXPOSURE.md`; native Source acceptance remains pending.
+
+**Next B21:** topology-aware composition and spatial pacing through current
+geometry/director seams. Macro-pacing, wandering-population ecology and full
+campaign coverage remain Bestiary obligations. B20 is not whole-phase completion.
+Do not begin Big Loot/Events or later audits; do not deploy or publish.

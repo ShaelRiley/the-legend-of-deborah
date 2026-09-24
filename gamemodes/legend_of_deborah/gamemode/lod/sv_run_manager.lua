@@ -665,6 +665,11 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
 
     self.State.Graph = graph
     self.State.BuildReport = buildReport
+    -- Encounter planning precedes loot/event admission. Publish campaign
+    -- ecology only after the entire physical build succeeds, before release.
+    if LOD.EncounterDirector and LOD.EncounterDirector.CommitEcologyPlan then
+        LOD.EncounterDirector:CommitEcologyPlan(graph)
+    end
     self.State.BuildReady = true
     for _, ps in pairs(self.State.PlayerState or {}) do
         local progression = ps.progressionState

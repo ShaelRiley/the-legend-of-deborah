@@ -1,0 +1,317 @@
+=== CHECKPOINT G INTEGRATED AUTOMATED RPG VALIDATION GATE ===
+Repository Root: /workspace/scratch/1c95223a9a86/the-legend-of-deborah
+Registered Test Suites: 209
+
+[PASS]  1/209 - Bestiary B20 Ecology Selection & Receipts
+[FAIL]  2/209 - Bestiary B20 Campaign Ecology Coverage
+  --> ERROR output for 'Bestiary B20 Campaign Ecology Coverage':
+STDOUT:
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+B20_CAMPAIGN id=1 coverage=50 controlCoverage=44
+B20_CAMPAIGN id=2 coverage=50 controlCoverage=47
+B20_CAMPAIGN id=3 coverage=48 controlCoverage=43
+B20_CAMPAIGN id=4 coverage=50 controlCoverage=42
+B20_CAMPAIGN id=5 coverage=48 controlCoverage=41
+B20_CAMPAIGN id=6 coverage=47 controlCoverage=43
+B20_CAMPAIGN id=7 coverage=43 controlCoverage=35
+B20_CAMPAIGN id=8 coverage=52 controlCoverage=45
+B20_CAMPAIGN id=9 coverage=51 controlCoverage=45
+B20_CAMPAIGN id=10 coverage=51 controlCoverage=45
+B20_CAMPAIGN id=11 coverage=51 controlCoverage=42
+B20_CAMPAIGN id=12 coverage=48 controlCoverage=40
+B20_CAMPAIGN id=13 coverage=51 controlCoverage=41
+B20_CAMPAIGN id=14 coverage=49 controlCoverage=41
+B20_CAMPAIGN id=15 coverage=49 controlCoverage=40
+B20_CAMPAIGN id=16 coverage=49 controlCoverage=43
+B20_CAMPAIGN id=17 coverage=49 controlCoverage=45
+B20_CAMPAIGN id=18 coverage=50 controlCoverage=45
+B20_CAMPAIGN id=19 coverage=49 controlCoverage=40
+B20_CAMPAIGN id=20 coverage=46 controlCoverage=40
+B20_CAMPAIGN id=21 coverage=50 controlCoverage=48
+B20_CAMPAIGN id=22 coverage=50 controlCoverage=40
+B20_CAMPAIGN id=23 coverage=50 controlCoverage=45
+B20_CAMPAIGN id=24 coverage=48 controlCoverage=42
+B20_CAMPAIGN id=25 coverage=50 controlCoverage=39
+B20_CAMPAIGN id=26 coverage=52 controlCoverage=46
+B20_CAMPAIGN id=27 coverage=48 controlCoverage=41
+B20_CAMPAIGN id=28 coverage=47 controlCoverage=43
+B20_CAMPAIGN id=29 coverage=47 controlCoverage=44
+B20_CAMPAIGN id=30 coverage=52 controlCoverage=42
+B20_CAMPAIGN id=31 coverage=48 controlCoverage=42
+B20_CAMPAIGN id=32 coverage=51 controlCoverage=42
+B20_COMPARISON mode=memory campaigns=32 plans=640 encounters=6233 meanCoverage=49.188 minCoverage=43 meanConsecutiveJaccard=0.234847 withinLevelTemplateRepeats=568 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=221
+B20_THEMES memory {corruption=109,crossfire=104,hunting=114,occupation=99,quarantine=106,retinue=108}
+B20_TEMPLATES memory {absolver_detail=40,accumulator_detail=47,afterburst_detail=37,arccaster_zone=42,arena=91,beamsweeper_lane=233,bigcrab_breath=89,blitzer_firing_line=89,bombardier_pressure=42,bulwark_line=33,cantor_charge=38,caromer_screen=42,carrion_feast=40,censer_advance=39,censor_detail=33,climber_wall=87,conductor_pressure=41,cordon_screen=34,drubber_chase=35,exactor_pressure=38,fencer_screen=37,firing_line=163,flamer_pressure=74,forker_crossfire=30,fusilier_screen=32,gaoler_hold=48,halter_detail=32,harrier_screen=62,interposer_detail=37,lacemaker_detail=43,listener_detail=49,lurker_ceiling=103,mixed_pressure=220,mourner_detail=37,nodule_gas=97,outrider_detail=49,pacer_chase=31,patrol=284,pavise_advance=40,pincer_detail=40,razor_cover=248,reaper_detail=46,redliner_pressure=39,reeler_chase=36,relay_detail=35,repriser_detail=27,repulsor_screen=29,runner_ambush=235,rush=272,screenwright_detail=35,sentry_flank=126,shy_pressure=53,silencer_screen=57,siphoner_pressure=55,snarer_detail=36,sniper_firing_line=91,stitcher_detail=29,surveyor_detail=30,towline_detail=36,trailmaker_chase=36,waylayer_cutoff=50,wirewright_chase=34}
+B20_FAMILIES memory {ambush=205,area=801,companion=152,control=421,line_fire=7349,melee=11020,position=187,projectile=182,pursuit=7224,reaction=106,remains=77,resource=102,support=140,trap=104}
+B20_COMPARISON mode=control campaigns=32 plans=640 encounters=6240 meanCoverage=42.531 minCoverage=35 meanConsecutiveJaccard=0.234991 withinLevelTemplateRepeats=532 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=406
+B20_THEMES control {corruption=109,crossfire=104,hunting=114,occupation=99,quarantine=106,retinue=108}
+B20_TEMPLATES control {absolver_detail=35,accumulator_detail=41,afterburst_detail=38,arccaster_zone=36,arena=73,beamsweeper_lane=241,bigcrab_breath=85,blitzer_firing_line=95,bombardier_pressure=45,bulwark_line=34,cantor_charge=29,caromer_screen=35,carrion_feast=36,censer_advance=40,censor_detail=32,climber_wall=93,conductor_pressure=28,cordon_screen=31,drubber_chase=35,exactor_pressure=37,fencer_screen=39,firing_line=166,flamer_pressure=84,forker_crossfire=34,fusilier_screen=34,gaoler_hold=48,halter_detail=31,harrier_screen=68,interposer_detail=37,lacemaker_detail=47,listener_detail=49,lurker_ceiling=99,mixed_pressure=220,mourner_detail=40,nodule_gas=98,outrider_detail=45,pacer_chase=32,patrol=293,pavise_advance=37,pincer_detail=36,razor_cover=256,reaper_detail=40,redliner_pressure=38,reeler_chase=36,relay_detail=36,repriser_detail=27,repulsor_screen=26,runner_ambush=234,rush=308,screenwright_detail=36,sentry_flank=127,shy_pressure=49,silencer_screen=60,siphoner_pressure=57,snarer_detail=36,sniper_firing_line=87,stitcher_detail=29,surveyor_detail=32,towline_detail=30,trailmaker_chase=37,waylayer_cutoff=49,wirewright_chase=34}
+B20_FAMILIES control {ambush=197,area=811,companion=160,control=422,line_fire=7315,melee=11048,position=171,projectile=184,pursuit=7244,reaction=102,remains=74,resource=98,support=127,trap=101}
+B20_NOVELTY aggregate=1574 controlAggregate=1361 coverageLift=0.156503
+B20_EXPOSURE climber planned=175 legal=155 early=130
+B20_EXPOSURE razor planned=509 legal=509 early=126
+B20_EXPOSURE lurker planned=103 legal=100 early=43
+B20_EXPOSURE beamsweeper planned=233 legal=217 early=74
+B20_EXPOSURE flamer planned=202 legal=202 early=138
+B20_EXPOSURE arccaster planned=92 legal=87 early=30
+B20_EXPOSURE sentry planned=126 legal=117 early=90
+B20_EXPOSURE bigcrab planned=177 legal=177 early=68
+B20_EXPOSURE nodule planned=97 legal=92 early=50
+B20_EXPOSURE gaoler planned=97 legal=97 early=21
+B20_EXPOSURE silencer planned=100 legal=100 early=25
+B20_EXPOSURE repulsor planned=60 legal=60 early=14
+B20_EXPOSURE stitcher planned=29 legal=28 early=10
+B20_EXPOSURE bulwark planned=33 legal=33 early=14
+B20_EXPOSURE cantor planned=38 legal=38 early=12
+B20_EXPOSURE pincer planned=40 legal=39 early=11
+B20_EXPOSURE harrier planned=62 legal=60 early=25
+B20_EXPOSURE waylayer planned=50 legal=43 early=13
+B20_EXPOSURE pavise planned=40 legal=38 early=17
+B20_EXPOSURE repriser planned=27 legal=27 early=10
+B20_EXPOSURE redliner planned=39 legal=38 early=15
+B20_EXPOSURE caromer planned=42 legal=42 early=18
+B20_EXPOSURE reeler planned=36 legal=36 early=10
+B20_EXPOSURE forker planned=30 legal=30 early=8
+B20_EXPOSURE wirewright planned=34 legal=32 early=13
+B20_EXPOSURE snarer planned=36 legal=35 early=7
+B20_EXPOSURE cordon planned=34 legal=34 early=10
+B20_EXPOSURE reaper planned=46 legal=45 early=11
+B20_EXPOSURE drubber planned=35 legal=33 early=10
+B20_EXPOSURE fencer planned=37 legal=37 early=14
+B20_EXPOSURE afterburst planned=37 legal=37 early=11
+B20_EXPOSURE carrion planned=40 legal=40 early=16
+B20_EXPOSURE towline planned=36 legal=34 early=14
+B20_EXPOSURE screenwright planned=35 legal=34 early=9
+B20_EXPOSURE censer planned=39 legal=38 early=12
+B20_EXPOSURE trailmaker planned=36 legal=36 early=9
+B20_EXPOSURE listener planned=49 legal=48 early=14
+B20_EXPOSURE shy planned=53 legal=52 early=21
+B20_EXPOSURE absolver planned=40 legal=39 early=12
+B20_EXPOSURE exactor planned=38 legal=38 early=6
+B20_EXPOSURE outrider planned=49 legal=47 early=10
+B20_EXPOSURE conductor planned=41 legal=41 early=10
+B20_EXPOSURE siphoner planned=55 legal=49 early=15
+B20_EXPOSURE accumulator planned=47 legal=47 early=9
+B20_EXPOSURE fusilier planned=32 legal=31 early=13
+B20_EXPOSURE bombardier planned=42 legal=42 early=14
+B20_EXPOSURE halter planned=32 legal=31 early=11
+B20_EXPOSURE pacer planned=31 legal=30 early=4
+B20_EXPOSURE interposer planned=37 legal=37 early=10
+B20_EXPOSURE mourner planned=37 legal=37 early=14
+B20_EXPOSURE censor planned=33 legal=32 early=12
+B20_EXPOSURE surveyor planned=30 legal=29 early=11
+B20_EXPOSURE relay planned=35 legal=33 early=11
+B20_EXPOSURE lacemaker planned=43 legal=41 early=12
+STDERR:
+/workspace/scratch/1c95223a9a86/the-legend-of-deborah/tools/test_bestiary_b20_campaign.lua: ...e-legend-of-deborah/tools/test_bestiary_b20_campaign.lua:107: pacer early exposure below5
+------------------------------------------------------------
+[PASS]  3/209 - Bestiary B20 Campaign Lifecycle
+[PASS]  4/209 - Bestiary B19 Companion Links & Exact Ownership
+[PASS]  5/209 - Bestiary B19 Production Progression & Spawn
+[PASS]  6/209 - Bestiary B19 Readable Companion Links
+[PASS]  7/209 - Bestiary B18 Attack Restraint & Displaced Refuge
+[PASS]  8/209 - Bestiary B18 Production Progression & Spawn
+[PASS]  9/209 - Bestiary B18 Readable Edicts
+[PASS] 10/209 - Bestiary B17 Companion Commitments & Exact Ownership
+[PASS] 11/209 - Bestiary B17 Production Progression & Spawn
+[PASS] 12/209 - Bestiary B17 Readable Bodyguard & Oath
+[PASS] 13/209 - Bestiary B16 Movement Discipline & Exact Ownership
+[PASS] 14/209 - Bestiary B16 Production Progression & Spawn
+[PASS] 15/209 - Bestiary B16 Readable Movement Demands
+[PASS] 16/209 - Bestiary B15 Careless Fire & Exact Ownership
+[PASS] 17/209 - Bestiary B15 Production Progression & Spawn
+[PASS] 18/209 - Bestiary B15 Readable Careless Fire
+[PASS] 19/209 - Bestiary B14 Canonical Resource Pressure
+[PASS] 20/209 - Bestiary B14 Production Progression & Spawn
+[PASS] 21/209 - Bestiary B14 Readable Resource Commitments
+[PASS] 22/209 - Deborah Finale Client Presentation & Cleanup
+[PASS] 23/209 - Deborah Staging Succession & Canonical Services
+[PASS] 24/209 - Hector Encounter, Native Death & Level-20 Rescue Gate
+[PASS] 25/209 - Hector Canonical Actor Health & Defenses
+[PASS] 26/209 - Hector Horizon & Telegraph Presentation
+[PASS] 27/209 - Equipment Quiz Lifecycle & Atomic Settlement
+[PASS] 28/209 - Game Master Production Alcove Placement
+[PASS] 29/209 - Minigame Shell & Equipment UI Restrictions
+[PASS] 30/209 - Skeleton Hero Generation & Shared Combat
+[PASS] 31/209 - Skeleton Blockade Production Generation
+[PASS] 32/209 - Skeleton Blockade Death & Rewards
+[PASS] 33/209 - Bribe Blockade Generation & Ownership
+[PASS] 34/209 - Bribe Blockade Atomic Payment
+[PASS] 35/209 - Warp Hole Utility & Safe Traversal
+[PASS] 36/209 - False Floor Hazard & Native Geometry Boundaries
+[PASS] 37/209 - Combined Event Population & Rarity
+[PASS] 38/209 - Vending Machine Wallet & Potion Settlement
+[PASS] 39/209 - Treasure Chest DFT Transactions
+[PASS] 40/209 - Chest Keys & Locked Loot Claims
+[PASS] 41/209 - Dungeon Events & Transactional Slot Machine
+[PASS] 42/209 - Live Ranking Boards & Pagination
+[PASS] 43/209 - Magic Hourglass & Shared Clock
+[PASS] 44/209 - Moon Boots Gravity
+[PASS] 45/209 - Finite Wand Weapon
+[PASS] 46/209 - Tanuki Statue
+[PASS] 47/209 - Heavy Plumber Stomp
+[PASS] 48/209 - Thunder Hat Charge
+[PASS] 49/209 - Ring of Invisibility
+[PASS] 50/209 - Fighting Streets Techniques
+[PASS] 51/209 - Feather & Canonical Hero Revival
+[PASS] 52/209 - Safe Teleport & Summon Card
+[PASS] 53/209 - Responsive Character Sheet & Canonical Feat Text
+[PASS] 54/209 - Equipment Combo Abilities
+[PASS] 55/209 - Monster Defense Balance & Tactical Feedback
+[PASS] 56/209 - Invisible Overhead Walls & Free Movement
+[PASS] 57/209 - September 22 Navigation Recovery
+[PASS] 58/209 - Spell Availability & Teammate Identity
+[PASS] 59/209 - Deterministic Encounter Distribution
+[PASS] 60/209 - Integrated Combat, Remedy & Derived UI
+[PASS] 61/209 - Client Geometry Full-Update Recovery
+[PASS] 62/209 - Dungeon Transition Inventory
+[PASS] 63/209 - Exact Native-Crash Reward Replay
+[PASS] 64/209 - Equipment LuaJIT Compatibility Boundary
+[PASS] 65/209 - Force-close Evidence Export
+[PASS] 66/209 - Canonical Blue Minimap Marker
+[PASS] 67/209 - Shared Native DamageInfo Lifetime
+[PASS] 68/209 - Durable Stability Diagnostics
+[PASS] 69/209 - Release Include & Registration Wiring
+[PASS] 70/209 - Shotgun Native Bullet Aggregation
+[PASS] 71/209 - Canonical Manual & Portable Menu
+[PASS] 72/209 - Canonical Manual Server Transport
+[PASS] 73/209 - Manual Source & Reader Navigation
+[PASS] 74/209 - Campaign Clock & TIME OVER Lifecycle
+[PASS] 75/209 - Complete Enemy Roster & Animation Safety
+[PASS] 76/209 - Bestiary B1 Content Enemies & Exact Lifecycle
+[PASS] 77/209 - Bestiary B2 Ally Support & Production Progression
+[PASS] 78/209 - Bestiary B3 Flank Pursuit & Production Progression
+[PASS] 79/209 - Bestiary B4 Self Defense & Reaction Lifecycle
+[PASS] 80/209 - Bestiary B4 Production Progression & Spawn
+[PASS] 81/209 - Bestiary B5 Projectile Patterns & Lifecycle
+[PASS] 82/209 - Bestiary B5 Production Progression & Spawn
+[PASS] 83/209 - Bestiary B6 Trap Geometry & Exact Lifecycle
+[PASS] 84/209 - Bestiary B6 Production Progression & Spawn
+[PASS] 85/209 - Bestiary B6 Readable Trap Presentation
+[PASS] 86/209 - Bestiary B7 Melee Spacing & Lifetimes
+[PASS] 87/209 - Bestiary B7 Production Progression & Spawn
+[PASS] 88/209 - Bestiary B7 Readable Melee Presentation
+[PASS] 89/209 - Bestiary B13 Party Spacing & Exact Lifetimes
+[PASS] 90/209 - Bestiary B13 Production Progression & Spawn
+[PASS] 91/209 - Bestiary B13 Readable Party Commitments
+[PASS] 92/209 - Bestiary B12 Exact Condition Strike
+[PASS] 93/209 - Bestiary B12 Canonical Ally Cleansing
+[PASS] 94/209 - Bestiary B12 Production Progression & Spawn
+[PASS] 95/209 - Bestiary B12 Readable Condition Commitments
+[PASS] 96/209 - Bestiary B11 Perception & Exact Lifetimes
+[PASS] 97/209 - Bestiary B11 Production Progression & Spawn
+[PASS] 98/209 - Bestiary B11 Readable Sensory Commitments
+[PASS] 99/209 - Bestiary B10 Mobile Hazards & Lifetimes
+[PASS] 100/209 - Bestiary B10 Production Progression & Spawn
+[PASS] 101/209 - Bestiary B10 Readable Moving Zones
+[PASS] 102/209 - Bestiary B9 Tether, Screen & Shared Authorities
+[PASS] 103/209 - Bestiary B9 Production Progression & Spawn
+[PASS] 104/209 - Bestiary B9 Readable Tether & Screen
+[PASS] 105/209 - Bestiary B8 Corpse Receipts & Scavenging
+[PASS] 106/209 - Bestiary B8 Production Progression & Spawn
+[PASS] 107/209 - Bestiary B8 Readable Remains Presentation
+[PASS] 108/209 - Gordon Arena & Encounter Lifecycle
+[PASS] 109/209 - Gordon Ordered Health Scaling
+[PASS] 110/209 - Neil, Brute & Black Gate Hunt
+[PASS] 111/209 - Native Resource Ownership & Error Unwinding
+[PASS] 112/209 - Native WeaponEquip Settlement
+[PASS] 113/209 - GPS Cadence & Voice Lifecycle
+[PASS] 114/209 - Pickup Native Creation & Touch Handoff
+[PASS] 115/209 - Procedural Weapon Visual Identity
+[PASS] 116/209 - Loot/Class/Identification Refresh
+[PASS] 117/209 - Fighter Strength / Constitution Bypass
+[PASS] 118/209 - Monster Class, Affinity & Aura
+[PASS] 119/209 - Size Shifter Collision & Growth
+[PASS] 120/209 - Hostile Native Death Handoff
+[PASS] 121/209 - Equipment/Area/Statue Presentation
+[PASS] 122/209 - Magic Spectacle, Weapon Stowing & Natural Drops
+[PASS] 123/209 - Final Loot Override Wearables & Potions
+[PASS] 124/209 - Equipment Body Map & Drag Inventory
+[PASS] 125/209 - Reactive Character Status Portrait
+[PASS] 126/209 - Persistent Wallet, DFTs & SQLite Rollback
+[PASS] 127/209 - Wizard Summon & Starting Content
+[PASS] 128/209 - Wallet Client & Navigation
+[PASS] 129/209 - Equipment Network Delta & Lifecycle
+[PASS] 130/209 - Recurring Hermit Gifts & Staging Board
+[PASS] 131/209 - Enemy Variety & Shared Combat Lifecycle
+[PASS] 132/209 - Equipment Owner-Only Pickup Inspection
+[PASS] 133/209 - Procedural Economy Distribution & Versioning
+[PASS] 134/209 - Procedural Economy Production Integration
+[PASS] 135/209 - Equipment Keyboard & UI Isolation
+[PASS] 136/209 - Equipment Real Loot Transactions
+[PASS] 137/209 - Equipment Catalog, Swaps & Derived Stats
+[PASS] 138/209 - Equipment Shared Block
+[PASS] 139/209 - Equipment Special Moves & Input
+[PASS] 140/209 - Potion Projectile Collision & Lifecycle
+[PASS] 141/209 - Equipment Ownership & Throwable Transactions
+[PASS] 142/209 - Git Diff Check
+[PASS] 143/209 - Lua Syntax Audit
+[PASS] 144/209 - Checkpoint C Python Validator
+[PASS] 145/209 - Actor Core & Level Progression
+[PASS] 146/209 - Magic Forms & Contents Schema
+[PASS] 147/209 - Implemented Feats & Capstones (135+9)
+[PASS] 148/209 - Human Soldier RPG & XP Progression
+[PASS] 149/209 - Human Soldier Lifecycle & Isolation
+[PASS] 150/209 - Death Tetris Deadline & Lifecycle
+[PASS] 151/209 - Checkpoint E Closure & Parity
+[PASS] 152/209 - Soldier P-Sheet & Renderer Contract
+[PASS] 153/209 - Checkpoint F Run-End & Leaderboard
+[PASS] 154/209 - Status & Element Matrix
+[PASS] 155/209 - Protected: Deadeye Stabilization
+[PASS] 156/209 - Protected: Crowbar Mechanics
+[PASS] 157/209 - Protected: Pusher Feat & Impulse
+[PASS] 158/209 - Protected: Map Movement & Navigation
+[PASS] 159/209 - Protected: Quantum Cost Seam
+[PASS] 160/209 - Protected: Strafe Movement
+[PASS] 161/209 - Protected: Backpedal Movement
+[PASS] 162/209 - Protected: Winning Personality
+[PASS] 163/209 - Protected: Deadcrab Dispatch
+[PASS] 164/209 - Protected: Dev Ingress
+[PASS] 165/209 - Protected: Control Magic
+[PASS] 166/209 - Protected: Magic Recovery
+[PASS] 167/209 - Protected: Behavioral Regressions Gate
+[PASS] 168/209 - Feedback Language & Die Logger
+[PASS] 169/209 - Wizard Reaction Sound & Particles
+[PASS] 170/209 - Canonical Burst & Error Cleanup
+[PASS] 171/209 - AG-011 Big Playtest Repairs Gate
+[PASS] 172/209 - Feat: astral_reach
+[PASS] 173/209 - Feat: attunement
+[PASS] 174/209 - Feat: aura_burst
+[PASS] 175/209 - Feat: core_feats
+[PASS] 176/209 - Feat: direct_cha_damage
+[PASS] 177/209 - Feat: gps
+[PASS] 178/209 - Feat: haste
+[PASS] 179/209 - Feat: killer_instinct
+[PASS] 180/209 - Feat: magic_grant_feats
+[PASS] 181/209 - Feat: menace_feats
+[PASS] 182/209 - Feat: morale_defense_feats
+[PASS] 183/209 - Feat: panic_feat
+[PASS] 184/209 - Feat: personality_aura
+[PASS] 185/209 - Feat: sixth_sense
+[PASS] 186/209 - Feat: spellward
+[PASS] 187/209 - Feat: summon_management
+[PASS] 188/209 - Feat: wall_jump
+[PASS] 189/209 - Feat: wis_defense
+[PASS] 190/209 - Feat: wis_information
+[PASS] 191/209 - Feat Descriptions & Stabilization
+[PASS] 192/209 - Hero Weakness & Identity Perks
+[PASS] 193/209 - Snapshot Burst & Lifecycle
+[PASS] 194/209 - Watcher Scan Dispatch
+[PASS] 195/209 - Watermelon Bounce and Shatter Lifecycle
+[PASS] 196/209 - Multiple Mouse Magic Bindings
+[PASS] 197/209 - Wall Placement and Preview
+[PASS] 198/209 - Wall Form and Magic Testkit
+[PASS] 199/209 - Super Ball Ricochet Lifecycle
+[PASS] 200/209 - Ordinary Procedural Pistol and Crowbar Loot
+[PASS] 201/209 - Looping Audio Ownership
+[PASS] 202/209 - Adventure Presentation
+[PASS] 203/209 - Original Adventure Audio
+[PASS] 204/209 - Damsel Campaign & Endless Progression
+[PASS] 205/209 - Damsel Staging, Late Join & Dialogue
+[PASS] 206/209 - Feedback Audio Lifecycle & Coalescing

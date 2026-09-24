@@ -1549,6 +1549,15 @@
         "The Game Master disappears for you after your attempt ends. Other Heroes retain their own independent attempt and may play simultaneously. Reconnecting, changing Heroes or regenerating this dungeon does not grant another attempt. A new dungeon does. Late arrivals see the encounter appropriate to their own account.",
         "Administrator preview: lod_event_preview_generate equipment_quiz. Redeploy with eligible ordinary wearable equipment and follow the printed locator. The preview is unranked but confirmed play risks actual equipment and awards a persistent DFT."
       ]
+    },
+    {
+      "id": "encounter-ecology",
+      "title": "The prison changes its company",
+      "text": [
+        "Each dungeon draws its ordinary encounter squads from a tactical theme: Hunting Grounds, Occupation, Corruption, Crossfire, Quarantine or Funeral Retinue. Hunters pursue and ambush; occupation mixes guards and enforcers; corruption brings strange attacks; crossfire fills firing lanes; quarantine controls space; funeral retinues pair specialists with allies.",
+        "The prison avoids its two most recent themes and favors unfamiliar squads. Expect a narrower selection within one dungeon and changing combinations as the campaign advances. Ordinary patrols can fill spaces where the theme has no suitable squad. Keycard guards and wandering monsters keep their own rules.",
+        "A theme does not change an enemy’s tells, weaknesses, rewards or abilities. Read each encounter: companions, cover and escape routes still matter. A new campaign starts a new encounter history."
+      ]
     }
   ]
 }

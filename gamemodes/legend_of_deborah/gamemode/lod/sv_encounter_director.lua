@@ -204,6 +204,7 @@ function EncounterDirector:_AddEncounter(plan, cell, sector, role, templateId, c
         entities = {}
     }
     plan.encounters[id] = encounter
+    if self.RecordEcologyEncounter then self:RecordEcologyEncounter(plan, encounter) end
     return encounter
 end
 
@@ -267,6 +268,7 @@ function EncounterDirector:BuildPlan(graph)
     local rng = LOD.RNG.New(seed)
     local scale = self:_ThreatScale()
     local plan = {seed = seed, encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+    if self.BeginEcology then self:BeginEcology(plan, graph) end
 
     -- Guaranteed keycard encounters are tuned independently of discretionary
     -- wandering encounters, as required by the GDD.
@@ -306,11 +308,17 @@ function EncounterDirector:BuildPlan(graph)
             if placed >= maximum then break end
             local role = tags[keyOf(cell)].role
             local choices = self:_EligibleTemplates(sector, role)
-            local templateId = rng:Pick(choices)
+            local templateId
+            if self.SelectEcologyTemplate then
+                templateId = self:SelectEcologyTemplate(plan, choices, LOD.RNG.New(LOD.Seeds.Derive(seed,
+                    "ecology:sector:" .. sector .. ":cell:" .. keyOf(cell))), sector)
+            else
+                templateId = rng:Pick(choices)
+            end
             local composition = self:_TemplateComposition(templateId, rng:Derive("sector:" .. sector .. ":cell:" .. keyOf(cell)), scale)
             local cost = compositionThreat(composition)
             local remaining = budget - plan.sectorSpent[sector]
-            if cost <= remaining + 0.5 or placed == 0 then
+            if composition and (cost <= remaining + 0.5 or placed == 0) then
                 self:_AddEncounter(plan, cell, sector, role, templateId, composition, false)
                 plan.sectorSpent[sector] = plan.sectorSpent[sector] + cost
                 placed = placed + 1
