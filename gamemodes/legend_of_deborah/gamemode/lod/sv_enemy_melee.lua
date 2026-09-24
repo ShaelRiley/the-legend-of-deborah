@@ -22,7 +22,7 @@ function E:MeleeRouteClear(e,from,to)
         filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
     return not tr.Hit and not tr.StartSolid and not tr.AllSolid
 end
-function E:BeginMelee(e,p,now)
+function E:BeginMelee(e,p,now,spacing)
     if e.LODRosterAttack or not self:AcquireTarget(p) or not self:CanCast(e)
         or now<(e.LODHitStunUntil or 0) or now<(e.LODNextAttack or 0) then return false end
     local d=self.Definitions[e.LODArchetypeId];local s=LOD.RunManager.State;local g=s and s.Graph
@@ -46,7 +46,10 @@ function E:BeginMelee(e,p,now)
     end
     a.second=d.melee=="double" and a.ready+.85 or nil
     a.expires=(a.second or a.ready)+.2;a.life=self:CaptureLife(e,p)
-    local heroes=player.GetAll()
+    if spacing then
+        a.spacing=spacing.spacing;a.aim=spacing.aim;a.last=now;a.deadline=a.expires
+    end
+    local heroes=spacing and {p} or player.GetAll()
     for i=1,math.min(32,#heroes) do
         if self:Target(heroes[i]) then a.participants[#a.participants+1]=self:CaptureLife(e,heroes[i]) end
     end
@@ -56,9 +59,11 @@ function E:BeginMelee(e,p,now)
     e:SetNW2Vector("LOD_MeleeOrigin",a.origin);e:SetNW2Vector("LOD_MeleeStart",a.start)
     e:SetNW2Vector("LOD_MeleeDirection",dir);e:SetNW2Float("LOD_MeleeReady",a.ready)
     e:SetNW2Float("LOD_MeleeSecond",a.second or 0);e:SetNW2Float("LOD_MeleeUntil",a.expires)
+    if spacing then self:PublishSpacing(e,a) end
+    if spacing and (e.LODRosterAttack~=a or not self:ValidLife(a.life)) then return false end
     e:EmitSound(d.melee=="feint" and "npc/metropolice/gear1.wav" or "npc/zombie/zo_attack1.wav",72,100,.75)
-    e:_SetActivity(ACT_MELEE_ATTACK1 or ACT_IDLE,true)
-    return true
+    if not spacing or (e.LODRosterAttack==a and self:ValidLife(a.life)) then e:_SetActivity(ACT_MELEE_ATTACK1 or ACT_IDLE,true) end
+    return e.LODRosterAttack==a
 end
 function E:MeleeContains(a,p,beat)
     local pos=p:GetPos();local delta=flat(pos-a.origin);local height=pos.z-(a.origin.z-2)
@@ -106,5 +111,5 @@ function E:StepMelee(e,a,now)
         end
     end
     e:EmitSound("npc/zombie/claw_miss1.wav",72,100,.75)
-    if not a.second or beat==2 then self:Finish(e,now) end
+    if (not a.second or beat==2) and IsValid(e) and e.LODRosterAttack==a and self:ValidSourceLife(a.life) then self:Finish(e,now) end
 end

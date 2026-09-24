@@ -1109,7 +1109,7 @@
     {
       "id": "enemy-perception",
       "title": "Footsteps and sightlines",
-      "table": [
+      "rows": [
         [
           "Listener",
           "The amber Metrocop hears non-crouching footsteps in its own room. Its paired-ring marker and dashed route show a brief investigation toward that sound. Crouch, stop making footsteps, or change course after the cue. It does not track your hidden movement."
@@ -1128,7 +1128,7 @@
     {
       "id": "enemy-conditions",
       "title": "Cure the ailment, break the bargain",
-      "table": [
+      "rows": [
         [
           "Absolver",
           "The pale-cyan slave Vortigaunt draws a crossed-diamond tether to an ailing ally and channels for 1.5 seconds. It removes one existing negative condition, without restoring HP. Interrupt or mute the Absolver, separate it from its ally, or break their sightline. A cure that has already happened cannot be taken back."
@@ -1142,6 +1142,24 @@
         "Absolver accompanies Shamblers; Exactor appears with a Flamer. Avoiding the Flamer’s Immolated attempt deprives Exactor of that opportunity. Exactor threatens only the Hero it marked, and each warning permits at most one hit.",
         "Cleansing targets one condition in a fixed order, not every ailment. If that condition ends during either warning, the commitment fails; a new application needs a fresh warning. Neither enemy applies a new condition or creates extra bodies.",
         "Held allows these stationary actions. Muted interrupts Absolver’s cleansing Magic but does not prevent either enemy’s physical shots. The tether, glyphs and shrinking countdowns remain visible with reduced effects."
+      ]
+    },
+    {
+      "id": "enemy-spacing",
+      "title": "Together — or apart?",
+      "rows": [
+        [
+          "Outrider",
+          "The sand-colored antlion singles out an isolated Hero. Its lone bracket glyph and narrow, frozen melee arc warn for 1.1 seconds. Bring an eligible teammate within 192 units on the same floor with clear sight to cancel the attack; alone, leave its arc, retreat or interrupt. The strike reaches 112 units and deals physical 1d6+2 before ordinary defenses."
+        ],
+        [
+          "Conductor",
+          "The pale-blue Vortigaunt marks exactly two nearby Heroes with linked 64-unit circles for 1.4 seconds. Separate beyond 160 units, leave either frozen circle, break its sight to either Hero or break the pair’s sightline to cancel the whole link. Each marked Hero risks one Raw Magic 1d6+2 hit. With no eligible pair, it fires an ordinary warned Raw projectile that a solo Hero can evade."
+        ]
+      ],
+      "text": [
+        "Both attacks commit to the original Heroes and positions; replacement Heroes and later arrivals do not inherit a warning. No attack tracks hidden movement or adds a lasting field. Outrider recovers for 2.4 seconds after its attack.",
+        "Held permits these stationary attacks. Muted cancels Conductor’s Magic; Outrider’s physical strike remains available. Interrupting or defeating the source cancels its pending warning. The isolation glyph, arc, paired circles, linking line and countdowns remain visible with reduced effects."
       ]
     },
     {

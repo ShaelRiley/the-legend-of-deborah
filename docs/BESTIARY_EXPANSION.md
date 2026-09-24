@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B12
+# Bestiary expansion — frozen baseline through B13
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B12 add thirty-one identities: **49/63**, or **31/45 additions**; **14 remain**.
+B1–B13 add thirty-three identities: **51/63**, or **33/45 additions**; **12 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -797,15 +797,79 @@ and final counts: [B12 exposure](validation/BESTIARY_B12_EXPOSURE.md).
 Canonical manual156 chapters/31 chunks. See [validation](validation/BESTIARY_B12.md)
 and DEVELOPMENT_PLAN.md for final integrated evidence and native limitations.
 
-## Next checkpoint — B13: party-spacing pressure cohort
+## B13 — party-spacing pressure cohort
 
-Provisional bounded two-identity cohort: an isolated-target predator and a
-crowd-link punisher. These are proposals, not authored mechanics. Reconcile
-FactionManager acquisition, cooperative proximity, ordinary physical/Magic
-combat and finite exact-life commitments before choosing names/actions/tuning.
-Distinct tactical answers should be regrouping versus separating, without
-unwarned damage, unavoidable solo punishment, forced camera behavior, hidden
-tracking, new targeting authority or extra bodies. Retain solo viability and
-1–4-player counterplay; substitute comparably bounded identities if needed.
-Target51/63 only for two meaningful validated production identities. Preserve
+| Counted ID | Tactical identity | Production composition |
+| --- | --- | --- |
+| `outrider` / Outrider | Amber antlion warns a fixed narrow melee strike against an isolated Hero. Regroup with a visible nearby teammate, sidestep the wedge, retreat or interrupt. Solo play retains the whole warning. | Outrider + Soldier. |
+| `conductor` / Conductor | Pale-blue Vortigaunt marks exactly two nearby Heroes' frozen positions with linked radius64 circles. Separate, leave either circle, break sight, mute or interrupt to cancel both strikes. Without a pair, it fires a warned Raw projectile. | Conductor + Shambler. |
+
+FactionManager owns bounded cooperative queries using its existing cached Hero
+roster; EnemyRoster owns commitments/service, ordinary pursuit, frozen melee and
+canonical physical/Raw Magic damage. No new target selector, private resource,
+status, reward, scheduler or native body. Cooperative eligibility uses living
+acquirable Heroes, same-floor geometry and LOS; camera orientation is irrelevant.
+Outrider considers protection within192. Conductor chooses the closest eligible
+second Hero (stable entity ID breaks ties) within160 of the canonical primary,
+both in the source's legal supported cell and visible to source and each other.
+
+Outrider approaches within144, then uses the shared112-unit,60-degree single
+melee sector with a1.1s warning and2.4s recovery. Only its captured Hero is a
+recipient. Regrouping cancels; it does not convert to an unannounced fallback.
+Conductor freezes two radius64 marks, warns1.4s and attempts one Raw Magic1d6+2
+hit per captured Hero using one shared roll; recovery3.5s. Leaving either mark,
+separating beyond160, concealment or lost LOS cancels the entire link. Both
+recipients qualify before settlement so a lethal first hit alone cannot suppress
+an already admitted second; source or recipient replacement during callbacks
+still prevents stale settlement. No chained third victim or condition rider.
+
+Capture exact source/participant progression and canonical status-life plus
+run/graph/progression/level-seed/campaign epoch/seed/run ID. Fixed0.2s release
+grace,0.25s maximum service gap and4-unit source drift; no late catch-up, re-aim or
+warning inheritance after revival/join. Maximum32 cached Hero candidates,
+16 simultaneous spacing commitments, failed-admission retry/reposition0.5s.
+Both preflight source/target support and two96-unit lateral escape routes
+per marked Hero using actual Hero collision hulls and support samples at most24 apart.
+Geometry checks are bounded and repeat before release. Same-cell/height/cover
+requirements prevent through-floor or mandatory-boundary attacks.
+
+Held permits these stationary actions; Muted permits Outrider but prevents or
+cancels Conductor Magic. Hit-stun, attack prohibition, morale flight, source or
+participant loss/replacement, freeze/failure/clear and same-seed rebuild cancel.
+Fixed stationary recovery never extends under repeated interruption. Emitted
+solo bolts retain canonical projectile service and exact-life ownership; only
+the originally warned Hero can take that bolt's damage, so late joins cannot
+inherit its warning. Ordinary interruption preserves an already emitted bolt.
+
+Reference HP/speed/threat: Outrider45/170/3.5; Conductor40/110/4.
+STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die; XP; morale:
+Outrider14/15/11/6/12/8;45/55/0;d10;55;6, usesMagic=false.
+Conductor10/12/12/12/14/10;0/0/100;d8;50;6, usesMagic/offensiveMagic=true.
+Both attack1d6+2 (physical melee versus Raw Magic). Conductor range360.
+Stock models `models/antlion.mdl` / `models/vortigaunt.mdl`;
+RGB225,170,80 /150,190,250. Finite full/reduced warnings retain the melee wedge
+and isolation glyph or paired circles/link/countdown. Stock positional audio.
+
+Templates `outrider_detail` / `conductor_pressure`, sector2+ arena/ambush;
+singleton specialists, appended spawn ordinals48/49, existing ceiling, companion
+enrichment, deterministic RNG and fallback paths. Both reject safe/objective/
+transition cells and require same-floor exit/lateral admission pockets. Runtime
+physical support remains distinct from prebuild admission.
+
+Design authority: live GDD03/05/07 `LOD-BESTIARY-B13-001`. Validation and measured
+exposure are recorded in [B13 evidence](validation/BESTIARY_B13.md) and
+[B13 exposure](validation/BESTIARY_B13_EXPOSURE.md); implementation counts do not
+imply native Source acceptance.
+
+## Next checkpoint — B14: resource-pressure cohort
+
+Provisional bounded pair: a telegraphed Magic-drain attacker and an interruptible
+self-recharging caster. These are proposals, not authored mechanics. Reconcile
+canonical Magic pools, Arcane Shield, status/combat settlement and generated
+actor capabilities before selecting names/actions/tuning. Require distinct
+legible counterplay, solo viability, exact-life commitments and bounded service;
+no duplicate pools, permanent resource/stat loss, currency/loot theft, unwarned
+or unavoidable drain, hidden tracking or extra bodies. Substitute comparable
+bounded identities if the shared authorities make either proposal redundant.
+Target53/63 only for two meaningful validated production identities. Preserve
 remaining breadth and whole-phase campaign-aware ecology before Big Loot/Events.

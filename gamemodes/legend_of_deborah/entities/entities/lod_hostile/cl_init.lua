@@ -116,7 +116,7 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
-    elseif archetype == "exactor" or archetype == "absolver" then
+    elseif archetype == "exactor" or archetype == "absolver" or archetype == "conductor" then
         ent:SetRenderBounds(Vector(-424,-424,math.min(0,mins.z*size)),Vector(424,424,math.max(112,maxs.z*size)))
     elseif archetype == "listener" or archetype == "shy" then
         ent:SetRenderBounds(Vector(-160,-160,math.min(0,mins.z*size)),Vector(160,160,math.max(80,maxs.z*size)))
@@ -129,7 +129,7 @@ local function applyVisualScale(ent, seekerRoll)
         local extent=archetype=="towline" and 352 or 640
         ent:SetRenderBounds(Vector(-extent,-extent,math.min(0,mins.z*size)),
             Vector(extent,extent,math.max(104,maxs.z*size)))
-    elseif archetype == "afterburst" then
+    elseif archetype == "afterburst" or archetype == "outrider" then
         ent:SetRenderBounds(Vector(-144,-144,math.min(0,mins.z*size+verticalCompensation)),
             Vector(144,144,math.max(80,maxs.z*size+verticalCompensation)))
     elseif archetype == "warden" then

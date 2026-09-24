@@ -41,7 +41,7 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -49,8 +49,8 @@ function E:Placement(graph,c,id,role)
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
     end
-    if d.tactical=="screen" or d.condition then
-        -- Passable guard planes and Exactor marks require in-cell flank pockets,
+    if d.tactical=="screen" or d.condition or d.spacing then
+        -- Passable guard planes, condition marks and spacing attacks need in-cell flank pockets,
         -- not a whole graph cycle that excludes otherwise escapable rooms.
         local exit
         for _,k in ipairs(sorted(c.neighbors)) do
@@ -141,6 +141,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    outrider_detail={name="Outrider Detail",composition={outrider=1,soldier=1}},
+    conductor_pressure={name="Conductor Pressure",composition={conductor=1,shambler=1}},
     absolver_detail={name="Absolver Detail",composition={absolver=1,shambler=2}},
     exactor_pressure={name="Exactor Pressure",composition={exactor=1,flamer=1}},
     listener_detail={name="Listener Detail",composition={listener=1,soldier=1}},
@@ -211,6 +213,7 @@ function D:_EligibleTemplates(sector,role)
         out[#out+1]="censer_advance";out[#out+1]="trailmaker_chase"
         out[#out+1]="listener_detail";out[#out+1]="shy_pressure"
         out[#out+1]="absolver_detail";out[#out+1]="exactor_pressure"
+        out[#out+1]="outrider_detail";out[#out+1]="conductor_pressure"
         -- B11 exposure tuning, preserving the fixed 512-plan regression gate.
         out[#out+1]="afterburst_detail"
         out[#out+1]="bulwark_line"
@@ -243,6 +246,69 @@ function D:_EligibleTemplates(sector,role)
         -- Full failed/final counts: docs/validation/BESTIARY_B12_EXPOSURE.md.
         out[#out+1]="arccaster_zone";out[#out+1]="absolver_detail";out[#out+1]="exactor_pressure"
         out[#out+1]="silencer_screen";out[#out+1]="wirewright_chase";out[#out+1]="drubber_chase"
+        -- B13 measured exposure repair; retained 512-plan 25/20/5 gates.
+        out[#out+1]="repriser_detail";out[#out+1]="drubber_chase";out[#out+1]="exactor_pressure"
+        out[#out+1]="outrider_detail";out[#out+1]="conductor_pressure"
+        out[#out+1]="silencer_screen";out[#out+1]="repulsor_screen";out[#out+1]="absolver_detail"
+        out[#out+1]="stitcher_detail";out[#out+1]="pavise_advance";out[#out+1]="censer_advance"
+        out[#out+1]="bulwark_line";out[#out+1]="outrider_detail"
+        out[#out+1]="waylayer_cutoff";out[#out+1]="reaper_detail";out[#out+1]="afterburst_detail"
+        out[#out+1]="bulwark_line";out[#out+1]="redliner_pressure";out[#out+1]="carrion_feast"
+        out[#out+1]="cantor_charge";out[#out+1]="repriser_detail"
+        out[#out+1]="trailmaker_chase";out[#out+1]="listener_detail"
+        out[#out+1]="pincer_detail";out[#out+1]="forker_crossfire";out[#out+1]="snarer_detail"
+        out[#out+1]="fencer_screen";out[#out+1]="screenwright_detail";out[#out+1]="shy_pressure"
+        out[#out+1]="forker_crossfire";out[#out+1]="snarer_detail";out[#out+1]="outrider_detail"
+        out[#out+1]="reeler_chase";out[#out+1]="listener_detail"
+        -- Eleven trials demonstrate systemic cohort dilution: one common
+        -- expansion-cohort ticket restores breadth without changing mechanics.
+        out[#out+1]="gaoler_hold"
+        out[#out+1]="silencer_screen"
+        out[#out+1]="repulsor_screen"
+        out[#out+1]="stitcher_detail"
+        out[#out+1]="bulwark_line"
+        out[#out+1]="cantor_charge"
+        out[#out+1]="pincer_detail"
+        out[#out+1]="harrier_screen"
+        out[#out+1]="waylayer_cutoff"
+        out[#out+1]="pavise_advance"
+        out[#out+1]="repriser_detail"
+        out[#out+1]="redliner_pressure"
+        out[#out+1]="caromer_screen"
+        out[#out+1]="reeler_chase"
+        out[#out+1]="forker_crossfire"
+        out[#out+1]="wirewright_chase"
+        out[#out+1]="snarer_detail"
+        out[#out+1]="cordon_screen"
+        out[#out+1]="reaper_detail"
+        out[#out+1]="drubber_chase"
+        out[#out+1]="fencer_screen"
+        out[#out+1]="afterburst_detail"
+        out[#out+1]="carrion_feast"
+        out[#out+1]="towline_detail"
+        out[#out+1]="screenwright_detail"
+        out[#out+1]="censer_advance"
+        out[#out+1]="trailmaker_chase"
+        out[#out+1]="listener_detail"
+        out[#out+1]="shy_pressure"
+        out[#out+1]="absolver_detail"
+        out[#out+1]="exactor_pressure"
+        out[#out+1]="outrider_detail"
+        out[#out+1]="conductor_pressure"
+        -- Trial12 retained one early-sector deficit.
+        out[#out+1]="drubber_chase"
+        -- Trial13 failures were early-only; target their measured sector.
+        if sector==2 then out[#out+1]="cordon_screen";out[#out+1]="drubber_chase" end
+        -- Trial14: Caromer early count4, Conductor total24.
+        if sector==2 then out[#out+1]="caromer_screen" end
+        out[#out+1]="conductor_pressure"
+        -- Trial15: Waylayer total24, Exactor early3.
+        out[#out+1]="waylayer_cutoff"
+        if sector==2 then out[#out+1]="exactor_pressure" end
+        -- Trial16 retained Reaper early3.
+        if sector==2 then out[#out+1]="reaper_detail" end
+        -- Trial17 retained Arc Caster24 total/4 early.
+        if sector==2 then out[#out+1]="arccaster_zone" end
     end
     return out
 end
@@ -251,7 +317,7 @@ end
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

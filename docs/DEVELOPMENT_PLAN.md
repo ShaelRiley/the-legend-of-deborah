@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B12 builds on verified remote `main` `5c38f7dcdb062064d942967998c375460e593ee1`,
-`Add Bestiary Listener and Shy perception cohort`.
-The current B12 checkpoint below is the newest implementation record. Its exact
+B13 builds on verified remote `main` `998c99dcafbb96fd89fd0b73d0c1a6ad6b4cfb8a`,
+`Add Bestiary Absolver and Exactor condition interactions`.
+The current B13 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,68 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B12: condition-interaction cohort
+## Current checkpoint — B13: party-spacing pressure cohort
+
+Built on verified remote `998c99dcafbb96fd89fd0b73d0c1a6ad6b4cfb8a`.
+**Outrider and Conductor** bring the normal roster to **51/63**: frozen baseline18,
+**33/45 additions banked**, **12 remain**. Native Source acceptance is pending.
+
+**Playable scope:** Outrider warns1.1s before a frozen112-unit/60-degree physical
+melee strike against an isolated Hero. Regroup within192 with same-floor LOS,
+sidestep, retreat or interrupt. Conductor freezes two radius64 ground marks for
+nearby Heroes, warns1.4s, then attempts one shared-roll Raw Magic hit per Hero.
+Separate beyond160, leave either circle, break sight or mute/interrupt to cancel
+both. Solo has a fully warned fixed Raw projectile; only its captured Hero takes
+that bolt's damage. Soldier/Shambler companions preserve complementary pressure.
+Both use1d6+2 through canonical combat. Design/tuning: BESTIARY_EXPANSION.md and
+live GDD03/05/07 LOD-BESTIARY-B13-001. Manual157 chapters/31 chunks; also repaired
+B11/B12 omitted descriptions caused by wrong source keys.
+
+**Ownership/safety:** FactionManager bounded cooperative queries; EnemyRoster
+existing melee/projectile/shared service and canonical physical/Magic settlement.
+No private targeting, resource, status, reward or timer owner. Exact source and
+participant progression/status-life plus dungeon/campaign identity, cap16,
+cached32 fail-closed candidates, actual Hero-hull lateral escape/support/cover,
+finite warning/service/recovery and source drift. Pair predicates qualify before
+damage so first-victim death alone cannot suppress a valid second settlement;
+source/recipient replacement still blocks stale hits. Native callback replacement
+cannot erase newer attacks; source-life changes retire spent links instead of
+pinning the actor. Held permits stationary actions; Muted cancels Conductor but
+permits Outrider. Ordinary morale dispatch remains intact.
+
+**Validation:** one fresh canonical integration run passes **all188 suites with
+zero failures** after final gameplay/exposure/manual repairs. No gameplay/config/
+test edits followed that pass. Three B13 behavior/production/native-Draw suites
+pass;32 seeded generated actor replays, exact-life/callback/lifecycle/geometry
+matrix, solo and1–4-Hero counterplay.512 plans/4945 encounters/32 mazes/parties1–4/
+dungeons1–5: Outrider49 planned/48 legal/11 early; Conductor39/38/8. Every retained
+25/20/5 exposure threshold passes. Seventeen failed trials and all measured
+weights are preserved:70 broad+six sector2 repair tickets above new base and
+retained prior tickets. Prior cohorts, combat/status/progression, bosses/finale/
+succession/Abundance/cash, Lua syntax, release wiring and manual reader/transport
+pass. Evidence: validation/BESTIARY_B13.md, BESTIARY_B13_INTEGRATION.txt and
+BESTIARY_B13_EXPOSURE.md. Live GDD00/01/03/05/07 design, tuning, final evidence and
+continuation amended/read-back verified.
+
+**Native checks retained:** after ordered phases, gm_flatgrass actual regroup/
+separate/solo counterplay, models/poses/full-reduced warnings/audio, native
+support/collision/escape/gates/Walls/false floors, statuses/morale, death/revival/
+disconnect/late join, freeze/reset/same-seed rebuild, actual HP/XP/drops and
+1–4-player networking/balance, plus prior cohorts and complete campaign continuity.
+Boundary doubles do not establish Source observation/acceptance. Evidence
+console_latest.txt+rpg_summary_latest.txt; session log only for ordering.
+No VPS deployment or Workshop publication.
+
+**Next:** B14 only, provisional resource-pressure pair: telegraphed Magic-drain
+attacker and interruptible self-recharging caster. Reconcile canonical pools,
+Arcane Shield, combat/status settlement and generated capabilities before design.
+No duplicate pools, permanent loss, currency/loot theft or unavoidable drain;
+retain solo counterplay and finite exact-life service. Substitute comparably
+bounded identities if redundant. Target53/63 only after meaningful production
+validation; remaining breadth and whole-phase campaign-aware ecology stay inside
+Bestiary before Big Loot/Events.
+
+## Previous checkpoint — B12: condition-interaction cohort
 
 Built on verified remote `5c38f7dcdb062064d942967998c375460e593ee1`.
 **Absolver and Exactor** bring the normal roster to **49/63**: frozen baseline18,

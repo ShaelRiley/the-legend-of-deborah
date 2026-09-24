@@ -114,3 +114,30 @@ hook.Add("EntityTakeDamage", "LOD_HostileFactionDamage", function(victim, dmginf
         return true
     end
 end)
+
+-- B13 cooperative proximity uses the same cached Hero roster/acquisition as
+-- perception. Geometry is physical visibility, never either player's camera.
+function FactionManager:CooperativeVisible(a,b)
+    local tr=util.TraceLine({start=a:WorldSpaceCenter(),endpos=b:WorldSpaceCenter(),mask=MASK_SOLID,
+        filter=function(v) return not v.LODHostile and not v:IsPlayer() end})
+    return not tr.Hit or tr.Entity==b
+end
+function FactionManager:CooperativeNeighbor(source,primary,graph,radius,sameCell,now)
+    local heroes=self:PerceptionHeroes(now)
+    if #heroes>32 then return nil,false end -- fail closed; never infer isolation from truncation
+    if not self:CanAcquirePlayerTarget(primary) or primary:Health()<=0 then return nil,false end
+    local navigator=LOD.MazeNavigator;local cell=navigator:WorldToCell(graph,primary:GetPos())
+    if not cell then return nil,false end
+    local best,distance
+    for _,p in ipairs(heroes) do
+        if p~=primary and self:CanAcquirePlayerTarget(p) and p:Health()>0 then
+            local other=navigator:WorldToCell(graph,p:GetPos());local d=primary:GetPos():DistToSqr(p:GetPos())
+            if other and other.z==cell.z and (not sameCell or other==cell)
+                and d<=radius^2 and self:CooperativeVisible(primary,p)
+                and (not sameCell or (LOD.EnemyRoster:MeleeCellLegal(graph,other)
+                    and source:GetPos():DistToSqr(p:GetPos())<=360^2 and LOD.EnemyRoster:Visible(source,p)))
+                and (not best or d<distance or d==distance and p:EntIndex()<best:EntIndex()) then best=p;distance=d end
+        end
+    end
+    return best,true
+end

@@ -1,14 +1,14 @@
-# Handoff — Bestiary B13
+# Handoff — Bestiary B14
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B13 only**,
-including design, implementation, validation, documentation, commit and verified
-non-forced push to `main`.
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B14 only**,
+including authorized design, implementation, validation, documentation, commit
+and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Add Bestiary Absolver and Exactor condition interactions**.
+Latest checkpoint: **Add Bestiary Outrider and Conductor party-spacing pressure**.
 The publication response supplies its exact verified SHA; fetch current remote
-main, confirm this checkpoint and preserve intervening work. B12's parent is
-`5c38f7dcdb062064d942967998c375460e593ee1`.
+main, confirm this checkpoint and preserve intervening work. B13's parent is
+`998c99dcafbb96fd89fd0b73d0c1a6ad6b4cfb8a`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -20,41 +20,41 @@ Steam Workshop.**
 Recover from AGENTS.md, the active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
 this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live GDD
 00→01→relevant tabs, including LOD-ROADMAP-ECOSYSTEM-001 and relevant prior
-LOD-BESTIARY rules through B12-001. Exact HUMAN anchors only for required missing
+LOD-BESTIARY rules through B13-001. Exact HUMAN anchors only for required missing
 detail. Missing historical art does not block implementation. No chat archaeology
 or repeated broad audit.
 
-B12 adds Absolver's one-condition ally cleanse and Exactor's condition-consuming
-physical mark. RPGStatusElements owns exact live condition entry selection/
-removal/expiry; EnemySupport owns cleanse reservations and channels; EnemyRoster
-owns finite physical marks, service and canonical damage. Conditions cured then
-reapplied do not inherit a warning; extension of the same canonical entry does.
-Positive HP loss on the surviving captured Hero/source permits Exactor's cure;
-zero/blocked/lethal damage and native callback replacement do not. Absolver never
-heals HP/revives/cures itself. Both bind exact source/recipient/initiating Hero
-status-life/progression and run/graph/progression/campaign identity, cap16,
-forfeit late/stalled service and preserve canonical statuses. Source position,
-ally range/cover, Exactor supported escape routes with actual Hero hulls, finite
-recovery and callback ownership are regression constraints.
+B13 adds Outrider's isolation-gated narrow physical melee and Conductor's paired
+frozen Raw Magic marks. FactionManager owns cooperative queries from its cached
+Hero roster; EnemyRoster owns exact-life commitments, shared service and damage.
+Outrider: regroup within192 with same-floor geometric LOS, sidestep the frozen
+112-unit/60-degree wedge or interrupt. Conductor: leave either radius64 mark,
+separate beyond160, break sight or mute/interrupt to cancel both hits. Solo uses
+one fully warned finite Raw bolt, damaging only the captured Hero. Both endpoints
+qualify before pair settlement; a lethal first hit alone cannot cancel the
+already admitted second. Source/recipient replacement still forbids stale hits.
+Source replacement must retire spent links so they cannot pin an actor forever.
+Held allows stationary attacks; Muted cancels Conductor but permits Outrider.
+No hidden tracking, camera demand, new target/resource/status/reward owner or
+extra bodies. Both retain source/mark support and actual Hero-hull escape checks,
+fixed deadlines/recovery, cap16, cached32 fail-closed selection, native-callback
+ownership and canonical morale dispatch. Frozen baseline **18**, target **63**,
+implemented **51/63**, **33/45 additions banked**, **12 remaining**. Do not count
+cosmetics, procedural permutations, bosses, event actors, summons or unused IDs.
 
-Frozen baseline **18**, whole-phase target **63**, implemented **49/63**,
-**31/45 additions banked**, **14 remaining**. Never rebase or count cosmetics,
-numerical permutations, bosses, event actors, friendly summons or unused definitions.
-Whole-phase campaign-aware director ecology remains required within Bestiary.
+## Complete B14 — resource-pressure cohort
 
-## Complete B13 — party-spacing pressure cohort
-
-Provisional bounded two-identity cohort: an isolated-target predator and a
-crowd-link punisher. These are proposals, not authored mechanics. Reconcile
-FactionManager acquisition, cooperative proximity, ordinary physical/Magic
-damage and finite exact-life commitments before naming, actions and tuning.
-Distinct tactical answers should be regrouping versus separating. Preserve solo
-viability and1–4-player counterplay; no unwarned damage, unavoidable solo
-punishment, forced camera behavior, hidden tracking, new targeting authority or
-extra bodies. Use bounded cached/event-driven work. Substitute comparable
-bounded identities if needed. Target51/63 only for two meaningful validated
-production identities. Preserve remaining breadth and whole-phase campaign-aware
-director ecology; do not begin Big Loot or Events.
+Provisional bounded pair: a telegraphed Magic-drain attacker and an interruptible
+self-recharging caster. These are proposals, not authored mechanics. Reconcile
+canonical Magic pools, Arcane Shield, status/combat settlement and generated
+actor capabilities before choosing names/actions/tuning. Distinct legible
+counterplay and solo viability are mandatory. No duplicate pools, permanent
+resource/stat loss, currency/loot theft, unwarned or unavoidable drain, hidden
+tracking or extra bodies. Substitute comparable bounded identities if either
+proposal duplicates existing behavior or cannot safely use shared authorities.
+Target53/63 only for two meaningful validated production identities. Preserve
+remaining breadth and whole-phase campaign-aware director ecology within
+Bestiary; do not begin Big Loot or Events.
 
 Preserve prior cohorts, bosses, Gordon→Hector→Deborah, sole staging successor,
 Abundance and Level21 cash. B4 Block stays single-roll/capped; B5 released shots
@@ -64,40 +64,33 @@ catch up; B8 only sealed post-defeat receipts burst; B9 canceled channels cannot
 create pulls/guards or transfer screens to revived recipients; B10 stalled
 service cannot catch up motion/damage or leave a trail; B11 cannot pursue hidden
 live positions, use camera facing, inherit pre-activation hearing, retain cloaked
-knowledge or suppress canonical morale movement. B12 cannot consume replacement
-conditions/lives, erase another cleanser's reservation, use a small enemy hull
-for Hero escape or issue stale native cues after callbacks. No duplicate owners.
+knowledge or suppress canonical morale. B12 cannot consume replacement ailments/
+lives, erase another cleanser's reservation or use enemy hulls for Hero escape.
+B13 cannot transfer warnings, leave spent links pinning actors or erase a newer
+attack during native callbacks. No duplicate owners.
 
 ## Validation truth and cadence
 
-One fresh canonical integration run executed185 suites:184 passed, only the
-stale diagnostic progression-registry count failed (`must be 51`). Added the two
-explicit IDs (49 ordinary+4 named bosses); affected Protected Behavioral
-Regressions suite then passed all six families and Overall RPG Subsystem
-Validation. Final **185-suite coverage is green across integrated run plus
-narrow rerun**; do not claim one all-green185-suite run. No gameplay edits
-followed integration. Evidence: docs/validation/BESTIARY_B12.md.
-
-Four B12 behavior/support/production/presentation suites pass.32 seeded actor
-generations/replay;512 plans/4944 encounters/32 mazes/parties1–4/dungeons1–5:
-Absolver27 planned/25 legal/12 early, Exactor29/28/8. All retained25/20/5 gates
-pass. Failed trials and six measured+1 tickets remain in
-validation/BESTIARY_B12_EXPOSURE.md. Manual156 chapters/31 chunks. Live GDD
-00/01/03/05/07 design, tuning, evidence and continuation amended/read-back verified.
-Native boundaries are doubled; static evidence is not Source acceptance.
+One fresh canonical run passed all188 suites with zero failures after final
+repairs; no gameplay/config/test edits followed. Evidence: docs/validation/BESTIARY_B13.md.
+Measured exposure, failed trials and final tickets: BESTIARY_B13_EXPOSURE.md in
+that directory. Three focused suites cover real behavior/combat/status/lifecycle,
+production/progression/spawn and native Draw boundaries. Manual157 chapters/
+31 chunks; repaired B11/B12 source keys so their omitted descriptions now render.
+Static boundary doubles are not Source observation or acceptance.
 
 Reserve the final third for validation, repairs, documentation and publication.
 Use targeted tests while editing, then once coherent run
 `python3 tools/test_checkpoint_g_integration.py`. Fix attributable failures;
 repeat broadly only for concrete remaining risk. Update/read-back verify live
-GDD, manual, ledger, plan and handoff with counts, results, native checks and next
-slice. Keep the explicit progression validation registry in sync with new IDs.
+GDD, manual, ledger, plan and handoff with counts, evidence, native checks and next
+slice. Keep the explicit progression-validation registry synchronized with IDs.
 Commit and publish immediately after green validation.
 
-After ordered phases, test gm_flatgrass actual conditions/cleansing/marks,
+After ordered phases, test gm_flatgrass actual regroup/separation/solo counterplay,
 collision/support/escape/gates/Walls/false floors, status/morale, death/revival/
-disconnect, freeze/reset/same-seed rebuild, full/reduced effects/audio and
-1–4-player networking/rewards/balance, plus all previous cohorts and complete
+disconnect, freeze/reset/same-seed rebuild, full/reduced warnings/audio and
+1–4-player networking/HP/rewards/balance, plus previous cohorts and complete
 campaign regressions. Evidence console_latest.txt+rpg_summary_latest.txt;
 session log only for ordering. No deployment authorization is implied.
 
@@ -107,5 +100,5 @@ main non-forced, fetch and verify SHA, parent and tree. Preserve newer work;
 never force-push or overwrite. Phase order: Bestiary→Big Loot→Event System→systems
 integration/emergence audit→low-end PC performance audit→final crash/progression
 safety audit→human playtest. Native acceptance does not block the sequence.
-Finish B13 only. End with verified SHA, scope, tests, progress, native checks and
+Finish B14 only. End with verified SHA, scope, tests, progress, native checks and
 next continuation prompt.

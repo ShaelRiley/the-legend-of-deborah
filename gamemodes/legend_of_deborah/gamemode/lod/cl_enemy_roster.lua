@@ -14,6 +14,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     afterburst=Color(255,150,65),carrion=Color(160,220,95),
     towline=Color(70,225,205),screenwright=Color(110,175,255),
     absolver=Color(170,240,225),exactor=Color(230,95,115),
+    outrider=Color(225,170,80),conductor=Color(150,190,250),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -314,7 +315,8 @@ function V:Melee(e)
     local dir=e:GetNW2Vector("LOD_MeleeDirection",Vector(1,0,0))
     local side=Vector(-dir.y,dir.x,0)
     local ready=e:GetNW2Float("LOD_MeleeReady",0)
-    local color=({colors.reaper,colors.drubber,colors.fencer,colors.carrion})[mode]
+    local id=e:GetNW2String("LOD_Archetype","")
+    local color=id=="outrider" and colors.outrider or ({colors.reaper,colors.drubber,colors.fencer,colors.carrion})[mode]
     render.SetMaterial(beam)
     local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
     local function countdown(deadline,duration)
@@ -336,7 +338,7 @@ function V:Melee(e)
     if mode==4 then
         sector(112,30,8,now<ready and 2 or 4)
         local id=e:GetNW2String("LOD_Archetype","")
-        countdown(ready,(id=="afterburst" or id=="listener" or id=="shy") and .9 or .8)
+        countdown(ready,id=="outrider" and 1.1 or ((id=="afterburst" or id=="listener" or id=="shy") and .9 or .8))
     elseif mode==1 then
         sector(144,90,12,now<ready and 2 or 4)
         countdown(ready,1.1)
@@ -547,6 +549,55 @@ function V:Condition(e)
     local fraction=math.Clamp((ready-now)/1.25,0,1)
     render.DrawBeam(aim+Vector(-24,0,28),aim+Vector(-24+48*fraction,0,28),3,0,1,color)
 end
+-- Party-spacing snapshots contain only frozen, server-visible commitments.
+-- The twin circles and connecting line encode a pair; the lone bracket glyph
+-- identifies isolation without resembling a second damaging footprint.
+function V:Spacing(e)
+    local mode=e:GetNW2Int("LOD_SpacingMode",0)
+    local now=CurTime();local ready=e:GetNW2Float("LOD_SpacingReady",0)
+    local untilAt=e:GetNW2Float("LOD_SpacingUntil",0)
+    if (mode~=1 and mode~=2) or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or e:GetNW2Int("LOD_RosterAttack",0)==0 or ready~=ready or untilAt~=untilAt
+        or math.abs(ready)==math.huge or math.abs(untilAt)==math.huge
+        or untilAt>ready+.201 or now>=untilAt
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local origin=e:GetNW2Vector("LOD_SpacingOrigin",e:GetPos())
+    local color=mode==1 and colors.outrider or colors.conductor
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
+    if mode==1 then
+        self:Melee(e)
+        local center=origin+Vector(0,0,72)
+        local side=(EyePos()-center):Angle():Right();local up=Vector(0,0,1)
+        for _,sign in ipairs({-1,1}) do
+            local endSide=center+side*sign*14
+            line(endSide-up*12,endSide+up*12)
+            line(endSide-up*12,endSide-side*sign*5-up*12)
+            line(endSide+up*12,endSide-side*sign*5+up*12)
+        end
+        line(center-up*8,center+up*8,3)
+        return
+    end
+    local a=e:GetNW2Vector("LOD_SpacingAimA",origin)+Vector(0,0,3)
+    local b=e:GetNW2Vector("LOD_SpacingAimB",origin)+Vector(0,0,3)
+    -- Invalid or unbounded snapshots must not expand a client render footprint.
+    for _,point in ipairs({a,b}) do
+        local distance=point:DistToSqr(origin)
+        if distance~=distance or distance>364^2 then return end
+    end
+    for _,center in ipairs({a,b}) do
+        for i=1,24 do
+            local from,to=(i-1)*math.pi/12,i*math.pi/12
+            line(center+Vector(math.cos(from)*64,math.sin(from)*64,0),
+                center+Vector(math.cos(to)*64,math.sin(to)*64,0),3)
+        end
+        line(origin+Vector(0,0,48),center,1)
+    end
+    line(a,b,3)
+    local middle=(a+b)*.5+Vector(0,0,28)
+    local fraction=math.Clamp((ready-now)/1.4,0,1)
+    line(middle+Vector(-24,0,0),middle+Vector(-24+48*fraction,0,0),3)
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -556,6 +607,13 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="outrider" then self:Spacing(e);return end
+    if id=="conductor" then
+        if not e:GetNW2Bool("LOD_RosterAlive",false) then return end
+        if e:GetNW2Int("LOD_SpacingMode",0)>0 then self:Spacing(e);return end
+        local deadline=e:GetNW2Float(stage==1 and "LOD_RosterReady" or "LOD_RosterRelease",0)
+        if deadline~=deadline or math.abs(deadline)==math.huge or CurTime()>=deadline+.2 then return end
+    end
     if id=="exactor" and e:GetNW2Bool("LOD_ConditionMark",false) then self:Condition(e);return end
     if id=="listener" or id=="shy" then
         if e:GetNW2Int("LOD_PerceptionMode",0)>0 then self:Perception(e) else self:Melee(e) end
@@ -609,5 +667,9 @@ function V:Draw(e,size)
         end
     else
         render.SetMaterial(beam);render.DrawBeam(origin,aim,stage==2 and 4 or 1,0,1,color)
+        if id=="conductor" and stage==1 then
+            local fraction=math.Clamp((e:GetNW2Float("LOD_RosterReady",0)-CurTime())/1.4,0,1)
+            render.DrawBeam(origin+Vector(-24,0,24),origin+Vector(-24+48*fraction,0,24),3,0,1,color)
+        end
     end
 end
