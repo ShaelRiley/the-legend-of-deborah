@@ -306,22 +306,26 @@ function EncounterDirector:BuildPlan(graph)
         local maximum = EC.MaxDiscretionaryPerSector[sector] or 1
         for _, cell in ipairs(candidates) do
             if placed >= maximum then break end
-            local role = tags[keyOf(cell)].role
-            local choices = self:_EligibleTemplates(sector, role)
-            local templateId
-            if self.SelectEcologyTemplate then
-                templateId = self:SelectEcologyTemplate(plan, choices, LOD.RNG.New(LOD.Seeds.Derive(seed,
-                    "ecology:sector:" .. sector .. ":cell:" .. keyOf(cell))), sector)
-            else
-                templateId = rng:Pick(choices)
-            end
-            local composition = self:_TemplateComposition(templateId, rng:Derive("sector:" .. sector .. ":cell:" .. keyOf(cell)), scale)
-            local cost = compositionThreat(composition)
-            local remaining = budget - plan.sectorSpent[sector]
-            if composition and (cost <= remaining + 0.5 or placed == 0) then
-                self:_AddEncounter(plan, cell, sector, role, templateId, composition, false)
-                plan.sectorSpent[sector] = plan.sectorSpent[sector] + cost
-                placed = placed + 1
+            -- Candidates were collected before this sector's first placement.
+            -- Revalidate against the now-current plan before choosing or spending.
+            if self:_FarEnough(graph, plan, cell) then
+                local role = tags[keyOf(cell)].role
+                local choices = self:_EligibleTemplates(sector, role)
+                local templateId
+                if self.SelectEcologyTemplate then
+                    templateId = self:SelectEcologyTemplate(plan, choices, LOD.RNG.New(LOD.Seeds.Derive(seed,
+                        "ecology:sector:" .. sector .. ":cell:" .. keyOf(cell))), sector, graph, cell)
+                else
+                    templateId = rng:Pick(choices)
+                end
+                local composition = self:_TemplateComposition(templateId, rng:Derive("sector:" .. sector .. ":cell:" .. keyOf(cell)), scale)
+                local cost = compositionThreat(composition)
+                local remaining = budget - plan.sectorSpent[sector]
+                if composition and (cost <= remaining + 0.5 or placed == 0) then
+                    self:_AddEncounter(plan, cell, sector, role, templateId, composition, false)
+                    plan.sectorSpent[sector] = plan.sectorSpent[sector] + cost
+                    placed = placed + 1
+                end
             end
         end
     end

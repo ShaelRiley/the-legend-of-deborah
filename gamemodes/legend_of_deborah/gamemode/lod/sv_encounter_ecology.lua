@@ -60,7 +60,103 @@ function D:BeginEcology(plan, graph)
         epoch=state and state.CampaignEpoch, run=state and state.RunId,
         masterSeed=graph.MasterLevelSeed, layoutSeed=graph.LevelSeed}
 end
-function D:SelectEcologyTemplate(plan, choices, rng, sector)
+-- B21: synchronous, lazy geometry facts for a candidate which has passed
+-- current-plan spacing. Navigator and EnemyRoster remain traversal/admission
+-- authorities; these facts are preferences, never permission to spawn.
+function D:EncounterTopology(graph, plan, cell)
+    local key = LOD.MazeGenerator.CellKey
+    local function cellKey(c) return key(c.x,c.y,c.z) end
+    local origin = cellKey(cell)
+    local sector = plan.tags[origin] and plan.tags[origin].sector
+    local N, E = LOD.MazeNavigator, LOD.EnemyRoster
+    local function legal(a, b)
+        local tag = plan.tags[b]
+        return graph.Cells[b] and tag and tag.sector == sector
+            and N:CanTraverse(graph,a,b)
+    end
+    local exits, vertical = {}, false
+    for _, nk in ipairs(sorted(cell.neighbors)) do
+        local n = graph.Cells[nk]
+        if legal(origin,nk) then
+            if n.z == cell.z then exits[#exits+1] = nk else vertical = true end
+        end
+    end
+    -- Height has to be reachable through a real graph edge, not merely a cell
+    -- at the same XY on a different floor. Do not place on the landing itself.
+    for _, nk in ipairs(exits) do
+        for vk in pairs(graph.Cells[nk].neighbors or {}) do
+            if legal(nk,vk) and graph.Cells[vk].z ~= cell.z then vertical = true end
+        end
+    end
+    local corner = false
+    if #exits == 2 then
+        local a,b = graph.Cells[exits[1]],graph.Cells[exits[2]]
+        corner = a.x+b.x ~= cell.x*2 or a.y+b.y ~= cell.y*2
+    end
+    local corridor, firingLane = 0, false
+    local center = N:CellCenter(cell)+Vector(0,0,48)
+    for _, nk in ipairs(exits) do
+        local n = graph.Cells[nk]
+        local dx,dy = n.x-cell.x,n.y-cell.y
+        local length,current = 1,n
+        -- Three edges per direction suffice to identify a usable straight lane;
+        -- this is a graph fact, not a promise of uninterrupted native visibility.
+        while length < 3 do
+            local nextKey = key(current.x+dx,current.y+dy,current.z)
+            if not current.neighbors[nextKey] or not legal(cellKey(current),nextKey) then break end
+            current=graph.Cells[nextKey];length=length+1
+        end
+        corridor=math.max(corridor,length)
+        local direction=(N:CellCenter(n)-N:CellCenter(cell)):GetNormalized()
+        local tr=util.TraceLine({start=center,endpos=center+direction*240,mask=MASK_SOLID,
+            filter=player.GetAll()})
+        if length>=2 and not tr.StartSolid and not tr.Hit then firingLane=true end
+    end
+    local objectiveDistance=math.huge
+    plan.distanceCache=plan.distanceCache or {}
+    for _, enc in ipairs(plan.encounters) do
+        if enc.objective then
+            local k=cellKey(enc.cell)
+            plan.distanceCache[k]=plan.distanceCache[k] or self:_PlanningDistances(graph,enc.cell)
+            objectiveDistance=math.min(objectiveDistance,plan.distanceCache[k][origin] or math.huge)
+        end
+    end
+    return {approaches=#exits,corner=corner,junction=#exits>=3,corridor=corridor,
+        firingLane=firingLane,alternate=E and E:HasAlternate(graph,cell) or false,
+        vertical=vertical,objectiveDistance=objectiveDistance}
+end
+function D:TopologyPreference(templateId, topology)
+    if not topology then return 1, 'neutral' end
+    local score,reason=1,'neutral'
+    local function prefer(value,label)
+        if value>score then score,reason=value,label end
+    end
+    for _,id in ipairs(sorted(EC.Templates[templateId].composition)) do
+        -- Escorts must not determine the tactical niche of a specialist squad.
+        if self.EcologyCatalog.common[templateId] or (id~='shambler' and id~='runner' and id~='soldier') then
+            local f=family(id)
+            if f=='ambush' and topology.corner then prefer(2,'corner') end
+            if f=='pursuit' and topology.alternate then prefer(2,'alternate') end
+            if id=='climber' and topology.vertical then prefer(2,'vertical') end
+            if f=='line_fire' and topology.corridor>=2 and topology.firingLane then prefer(2,'firing_lane') end
+            if (f=='area' or f=='trap') and topology.approaches==2 and not topology.alternate then prefer(1.5,'choke_with_retreat') end
+            if (f=='support' or f=='companion') and (topology.junction
+                or (topology.objectiveDistance>=4 and topology.objectiveDistance<=6)) then prefer(1.5,'support_approach') end
+            if (f=='control' or f=='position' or f=='projectile' or f=='reaction' or f=='melee')
+                and topology.approaches>=2 then prefer(1.25,'maneuver') end
+        end
+    end
+    return score,reason
+end
+function D:TemplateFitsCell(templateId, graph, cell, role)
+    local E=LOD.EnemyRoster
+    if not E then return true end
+    for _,id in ipairs(sorted(EC.Templates[templateId].composition)) do
+        if E.Definitions[id] and not E:Placement(graph,cell,id,role) then return false end
+    end
+    return true
+end
+function D:SelectEcologyTemplate(plan, choices, rng, sector, graph, cell)
     local e = plan.ecology
     local motif = self.EcologyCatalog.themes[e.theme]
     local unique, themed, fallback = {}, {}, {}
@@ -70,6 +166,23 @@ function D:SelectEcologyTemplate(plan, choices, rng, sector)
             if motif.templates[id] then themed[#themed+1] = id end
             if self.EcologyCatalog.common[id] then fallback[#fallback+1] = id end
         end
+    end
+    local topology, rejected
+    if graph and cell then
+        topology=self:EncounterTopology(graph,plan,cell)
+        rejected=0
+        local function admitted(ids)
+            local out={}
+            for _,id in ipairs(ids) do
+                if self:TemplateFitsCell(id,graph,cell,plan.tags[LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z)].role) then
+                    out[#out+1]=id
+                else rejected=rejected+1 end
+            end
+            return out
+        end
+        themed=admitted(themed)
+        -- Common fallback cannot supersede a legal motif squad.
+        if #themed==0 then fallback=admitted(fallback) end
     end
     local ids = #themed > 0 and themed or fallback
     local usedFallback = #themed == 0
@@ -102,13 +215,18 @@ function D:SelectEcologyTemplate(plan, choices, rng, sector)
                     weight = weight * (i == #e.before.recent and .2 or .6)
                 end
             end
-            rows[#rows+1] = {id=id, weight=weight}
+            local preference=self:TopologyPreference(id,topology)
+            rows[#rows+1] = {id=id, weight=weight*preference}
         end
     end
     local selected = pickWeighted(rows, rng)
     if selected then
         e.decisions[#e.decisions+1] = {template=selected, fallback=usedFallback,
-            candidates=#rows, seen=e.before.templates[selected] or 0}
+            candidates=#rows, seen=e.before.templates[selected] or 0,
+            topology=topology, rejected=rejected or 0,
+            preference=self:TopologyPreference(selected,topology)}
+        local _,reason=self:TopologyPreference(selected,topology)
+        e.decisions[#e.decisions].fit=reason
         if usedFallback then e.fallbacks = e.fallbacks + 1 end
     end
     return selected
@@ -168,6 +286,12 @@ concommand.Add('lod_encounter_ecology', function(ply)
             encounter.threat, tostring(encounter.objective)))
         local decision = encounter.ecologyDecision
         if decision then
+            local t=decision.topology
+            if t then
+                print(string.format('[LOD:ECOLOGY] approaches=%d corner=%s junction=%s corridor=%d lane=%s alternate=%s vertical=%s objectiveDistance=%s fit=%s weight=%.2f rejected=%d',
+                    t.approaches,tostring(t.corner),tostring(t.junction),t.corridor,tostring(t.firingLane),
+                    tostring(t.alternate),tostring(t.vertical),tostring(t.objectiveDistance),decision.fit,decision.preference,decision.rejected))
+            end
             print(string.format("[LOD:ECOLOGY] novelty=%s priorDungeons=%d candidates=%d fallback=%s",
                 encounter.templateId, decision.seen, decision.candidates, tostring(decision.fallback)))
         end

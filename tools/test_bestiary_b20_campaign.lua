@@ -10,11 +10,25 @@ local function size(t) local n=0;for _ in pairs(t) do n=n+1 end;return n end
 local function add(t,k,n) t[k]=(t[k] or 0)+(n or 1) end
 local function stats() return {planned={},legal={},early={},themes={},templates={},families={},coverage={},repeatedTemplates=0,consecutiveOverlap=0,overlapPairs=0,encounters=0,exactLevelRepeats=0,crossLevelTemplateReturns=0} end
 local full,control=stats(),stats()
+local spatial={checked=0,preferred=0,rejected=0,fit={}}
 local function observe(s,plan,graph,seen,prior)
  local roster,templates={},{}
  add(s.themes,plan.ecology.theme)
  for _,enc in ipairs(plan.encounters) do
   s.encounters=s.encounters+1
+  if not enc.objective then
+   local distances=D:_PlanningDistances(graph,enc.cell)
+   for _,other in ipairs(plan.encounters) do
+    if other~=enc then assert((distances[other.cellKey] or math.huge)>=LOD.Config.Encounter.MajorSpacingCells,'B21 spacing violated') end
+   end
+   assert(D:TemplateFitsCell(enc.templateId,graph,graph.Cells[enc.cellKey],enc.role),'B21 selected physically inadmissible squad')
+   if s==full then
+    local decision=assert(enc.ecologyDecision)
+    spatial.checked=spatial.checked+1;spatial.rejected=spatial.rejected+decision.rejected
+    if decision.preference>1 then spatial.preferred=spatial.preferred+1 end
+    add(spatial.fit,decision.fit)
+   end
+  end
   if not enc.objective then
    add(s.templates,enc.templateId);add(templates,enc.templateId)
    if templates[enc.templateId]>1 then s.repeatedTemplates=s.repeatedTemplates+1 end
@@ -59,10 +73,10 @@ for campaign=1,32 do
   local actual=H.signature(plan)
   -- Disable template scoring memory only; retain theme selection and the same
   -- bounded within-level suppression. Production lifecycle is otherwise intact.
-  D.SelectEcologyTemplate=function(self,p,choices,rng,sector)
+  D.SelectEcologyTemplate=function(self,p,choices,rng,sector,graph,cell)
    local before=p.ecology.before
    p.ecology.before={themes={},templates={},enemies={},families={},recent={}}
-   local id=selectWithMemory(self,p,choices,rng,sector)
+   local id=selectWithMemory(self,p,choices,rng,sector,graph,cell)
    p.ecology.before=before;return id
   end
   local paired=H.build(graph);H.bounds(paired)
@@ -99,6 +113,7 @@ local function report(label,s)
  emit('B20_FAMILIES '..label..' '..H.serial(s.families))
 end
 report('memory',full);report('control',control)
+emit('B21_SPATIAL '..H.serial(spatial))
 local aggregate,controlAggregate=0,0
 for i,n in ipairs(full.coverage) do aggregate=aggregate+n;controlAggregate=controlAggregate+control.coverage[i] end
 print(string.format('B20_NOVELTY aggregate=%d controlAggregate=%d coverageLift=%.6f',aggregate,controlAggregate,aggregate/controlAggregate-1))

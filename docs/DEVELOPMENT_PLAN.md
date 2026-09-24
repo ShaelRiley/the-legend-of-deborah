@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B20 builds on verified remote `main` `902678fad48142059841e8ad9849dd21e79695bc`,
-`Add Bestiary Relay and Lacemaker living-ally links`.
-The current B20 checkpoint below is the newest implementation record. Its exact
+B21 builds on verified remote `main` `27853c2f7fde54ad377c86c398456b5b9ba33ce8`,
+`Add campaign-aware encounter themes and novelty memory`.
+The current B21 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,55 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B20: campaign-aware motifs and novelty
+## Current checkpoint — B21: topology-aware composition and spatial pacing
+
+Built on verified remote `27853c2f7fde54ad377c86c398456b5b9ba33ce8`.
+Roster remains **63/63 normal**, frozen baseline18,45 additions,4 named bosses.
+Bestiary remains open; no VPS deployment or Steam Workshop publication.
+
+EncounterDirector now uses real traversable approaches, corners/junctions,
+bounded straight corridors/physical firing lanes, existing alternate-route proof,
+vertical approaches and objective distance to prefer tactically suitable squads
+within B20's current motif. Existing specialist Placement filters templates
+before selection. Common fallback only applies when no admitted motif remains;
+spawn-time admission still rechecks geometry and substitutes ordinary bodies.
+Existing role/sector/escape/companion/singleton restrictions remain intact.
+
+The stale candidate-list spacing defect is repaired: each discretionary placement
+rechecks minimum4 graph cells from all previously placed encounters/objectives.
+No new actors, Think hooks, navigation/placement/combat/history owner or density.
+Retain B20 independent RNG and successful-build receipts, threat scaling,
+first-encounter exception,0.5 allowance, sector maxima and target80/ceiling96.
+
+**Validation:** one fresh final canonical run passed **all210 suites with zero failures**;
+no gameplay/config/test edits followed. Complete terminal matrix retained.
+New production fixtures
+prove real loops versus branches, closed gates/event edges, vertical/objective
+reach, blocked firing lanes, actual selection influence, physical rejection/
+fallback/revalidation and a counterfactual affordable stale-candidate regression.
+The unchanged32x20 campaigns/parties1–4 pass54 exposure floors25/20/5 and
+minimum36/54 per campaign, with new per-plan spacing/admission assertions on both
+memory and control paths. Measured mean47.562/min43 versus control40.750;
+6232 encounters,4312 discretionary,2372 preferred by geometry. Mean coverage is
+slightly below historical B20, minimum higher; no universal improvement claim.
+Full evidence/failed trials: `validation/BESTIARY_B21.md` and its linked logs.
+Source native acceptance remains pending; automated boundary doubles are not play.
+
+**Design/presentation:** live GDD05/06/07 LOD-BESTIARY-B21-001 records exact
+preference tuning/ownership and diagnostics;00/01 route current continuation.
+Manual remains164 chapters/32chunks with player-facing geometry/home-spacing
+explanation. Registry63+4 unchanged; new B21 suite registered with integration.
+All prior cohort/progression obligations remain, including Gordon/Hector/Deborah,
+sole staging successor, Abundance and Level21 cash.
+
+**Next B22:** one bounded macro-pacing slice through the existing director.
+Define finite quiet/probe/pressure/recovery phrases and optional/objective context,
+then prove them with deterministic sampling while retaining B20/B21 safeguards.
+Wandering-population ecology and complete campaign/whole-Bestiary exit proof also
+remain obligations; do not begin Big Loot, Events or the later audits yet.
+Human native testing follows the ordered phases/audits.
+
+## Previous checkpoint — B20: campaign-aware motifs and novelty
 
 Built on verified remote `902678fad48142059841e8ad9849dd21e79695bc`.
 Roster remains **63/63 normal**, baseline18,45 additions,4 separately counted

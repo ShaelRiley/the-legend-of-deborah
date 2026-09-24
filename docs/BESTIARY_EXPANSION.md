@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B19
+# Bestiary expansion — frozen baseline and ecology through B21
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -1329,3 +1329,38 @@ Validation and retained failed trials: `validation/BESTIARY_B20.md` and
 geometry/director seams. Macro-pacing, wandering-population ecology and full
 campaign coverage remain Bestiary obligations. B20 is not whole-phase completion.
 Do not begin Big Loot/Events or later audits; do not deploy or publish.
+
+## B21 — topology-aware composition and local spatial pacing
+
+Roster remains63 normal+4 named. EncounterDirector now filters each motif's
+eligible specialist templates with the existing physical Placement authority,
+then weights admitted squads by real traversable topology. Common fallback only
+fills a candidate with no admitted motif template. Actual spawn still rechecks
+geometry and retains ordinary-body substitution; all prior escape/transition/
+companion/singleton/role restrictions survive.
+
+Measure same-sector planar approaches, corners/junctions, straight reach up to3
+edges with a same-direction240-unit physical firing lane at48-unit height,
+existing conservative same-floor alternate-route proof, reachable vertical edges
+at/adjacent to the candidate, and objective path distance. Strongest preference
+only:2 for ambush/corner, pursuit/alternate, Climber/vertical or line fire/clear
+corridor;1.5 for area/trap at two-exit chokepoints or support/companion at junctions
+or objective distance4–6;1.25 for maneuvering control/position/projectile/reaction/
+melee with2+ planar exits; otherwise1. Ignore basic escorts in specialist scoring.
+No competing topology or placement authority, retained geometry cache or Think.
+
+The stale per-sector candidate-list bug is repaired: recheck minimum4 graph-cell
+spacing after every admission against all prior objective/discretionary groups.
+Budgets, first-encounter exception,0.5 allowance, sector maxima, target80/ceiling96,
+objective placement, B20 motif/history/RNG/lifecycle ownership remain unchanged.
+Diagnostics and the manual's ecology chapter explain selection and home spacing.
+
+The unchanged32x20 campaign gate retains54 exposure floors25/20/5 and minimum36/54.
+Measured mean47.562/min43, paired control40.750;6232 total encounters. All4312
+sampled discretionary groups obey spacing/admission;2372 receive topology
+preferences. Full results, failed/incomplete evidence and native limitations:
+`validation/BESTIARY_B21.md`. Final canonical matrix and evidence state are in
+DEVELOPMENT_PLAN.md. This is implemented/static work, not Source acceptance.
+
+**Next B22:** bounded macro-pacing. Wandering ecology and whole-phase campaign
+exit proof also remain; no Big Loot, Events, later audits or deployment yet.
