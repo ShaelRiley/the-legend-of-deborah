@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B24 builds on verified remote `main` `76e54e95ebb487c5dd2dc3c63847ef8295651fe1`,
-`Integrate motif-aware wandering population ecology`.
-The current B24 checkpoint below is the newest implementation record. Its exact
+B25 builds on verified remote `main` `78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`,
+`Reserve encounter homes and enforce Bestiary campaign gates`.
+The current B25 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,52 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B24: encounter-home convergence and exit reconciliation
+## Current checkpoint — B25: motif intensity and Bestiary implementation exit
+
+Built on verified remote `78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`.
+Roster63 normal/4 named, frozen baseline18. No VPS/Workshop publication.
+
+The existing catalog/directors now link all6 motifs to roaming target12/14/16,
+probabilistic delayed vacancy replenishment on the existing20-second opportunity
+cadence and weighted Surge/Ambush/Gauntlet route phrases. Legacy plans retain
+16/guaranteed/uniform. No new director/history/hook or entity ceiling increase.
+All target/reservation/admission paths agree, chance rejection preserves spawn
+ordinals, and canonical cleanup retires opportunity counters/deadlines. Native
+reentrant reset cannot resurrect a due service. Shared geometry/spacing/companion/
+objective/progression/class/combat/reward authorities remain unchanged.
+
+Live05/06/07 LOD-BESTIARY-B25-001 explicitly reconciles elite probability as
+population exposure (.30*p per legal replacement opportunity), preserving each
+actor's60/30/10 categorical roll and named grades. Retain02's later canonical
+floor(D/3) monster-Level/cap override. No silent tier-table retune or identity
+substitution. Manual164 chapters/32chunks explains population and rhythm.
+
+Finite32x6 paired production plans show actual home changes for all motifs;
+all four reduced-target motifs admit fewer initial bodies in all32 comparisons.
+Fixed4096 opportunity trials/motif and actual Think/spawn/lifecycle tests retain
+conditional tier odds, exact ownership and bounded service. Prior32x20 encounter
+and population gates retain every exposure/spacing/budget/coverage threshold.
+Final matrix/reports and preserved failures: `validation/BESTIARY_B25.md`.
+**One fresh final canonical run passed all215 suites with zero failures.**
+No gameplay/config/test edits followed. Final encounter coverage46.938/min41
+versus40.656/min34; template returns194/321 (39.5639% reduction), all54 floors
+retained.635/640 mixed pacing;32/32 branch campaigns. Roaming24,866 per arm,
+1,759/1,789 floors fill target;30 defer176 slots. Combined51,239 bodies per arm;
+maximum basic share.312052/.364169, minimum14/13 families, adjacent roster
+Jaccard.243213/.512983. Every roaming addition>=186 against>=25 gate.
+
+Whole-phase reconciliation: `validation/BESTIARY_B25_EXIT.md` closes the four
+production omissions identified at B24. After final green and verified push,
+the Bestiary implementation/static phase is complete. Native Source readability,
+combat/geometry/network/performance acceptance remains after ordered phases/audits.
+
+**Next Big Loot L1:** read its full brief and live required tabs, freeze the actual
+meaningful item baseline and complete one coherent first production cohort through
+existing equipment/loot/transaction authorities. Combine discovery with substantive
+implementation; no scaffolding-only checkpoint. No Big Loot work occurs in B25.
+Do not begin Events/audits early or deploy. Exact continuation is in the handoff.
+
+## Previous checkpoint — B24: encounter-home convergence and exit reconciliation
 
 Built on verified remote `76e54e95ebb487c5dd2dc3c63847ef8295651fe1`.
 Roster63 normal/4 named, frozen baseline18; Bestiary phase remains open.

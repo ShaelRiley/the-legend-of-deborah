@@ -1,0 +1,14 @@
+B25_PAIRED corruption {bodies=1209,control=1381,homes=9,pacing=9,pairs=32,phrases={ambush=40,gauntlet=24,surge=64},reduced=32}
+B25_PAIRED occupation {bodies=1381,control=1381,homes=17,pacing=17,pairs=32,phrases={ambush=24,gauntlet=84,surge=20},reduced=0}
+B25_PAIRED quarantine {bodies=1209,control=1381,homes=4,pacing=4,pairs=32,phrases={ambush=60,gauntlet=24,surge=44},reduced=32}
+B25_PAIRED crossfire {bodies=1037,control=1381,homes=6,pacing=6,pairs=32,phrases={ambush=20,gauntlet=64,surge=44},reduced=32}
+B25_PAIRED hunting {bodies=1381,control=1381,homes=10,pacing=10,pairs=32,phrases={ambush=84,gauntlet=24,surge=20},reduced=0}
+B25_PAIRED retinue {bodies=1037,control=1381,homes=8,pacing=8,pairs=32,phrases={ambush=52,gauntlet=20,surge=56},reduced=32}
+B25_LIFECYCLE_PASS targets/reservations; real due service; reject/no-spawn-ordinal; frozen/inactive; no catch-up; physical defer; reentrant reset; legacy fallback; receipt
+B25_OPPORTUNITIES hunting trials=4096 allowed=3700 rate=0.903320 tiers=2223/1113/364 eliteArrivalRate=0.271729 design=0.270
+B25_OPPORTUNITIES occupation trials=4096 allowed=4096 rate=1.000000 tiers=2457/1231/408 eliteArrivalRate=0.300537 design=0.300
+B25_OPPORTUNITIES corruption trials=4096 allowed=3083 rate=0.752686 tiers=1852/928/303 eliteArrivalRate=0.226562 design=0.225
+B25_OPPORTUNITIES crossfire trials=4096 allowed=2662 rate=0.649902 tiers=1600/798/264 eliteArrivalRate=0.194824 design=0.195
+B25_OPPORTUNITIES quarantine trials=4096 allowed=3083 rate=0.752686 tiers=1852/928/303 eliteArrivalRate=0.226562 design=0.225
+B25_OPPORTUNITIES retinue trials=4096 allowed=2065 rate=0.504150 tiers=1242/623/200 eliteArrivalRate=0.152100 design=0.150
+BESTIARY_B25_PASS 32x6 paired production plans; actual density/pacing; bounded live replacement; 4096 opportunities/motif; canonical conditional tiers and named grades; Source acceptance pending

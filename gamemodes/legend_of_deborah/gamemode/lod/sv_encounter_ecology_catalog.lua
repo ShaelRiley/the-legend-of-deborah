@@ -4,6 +4,16 @@
 -- physical admission and encounter/entity budgets remain their own authorities.
 local D=LOD.EncounterDirector
 D.EcologyCatalog={
+    -- B25: reduce/retain existing capacity; never change an actor's tier odds.
+    legacyIntensity={wanderTarget=16,replacementChance=1,phrases={1,1,1}},
+    intensity={
+        corruption={wanderTarget=14,replacementChance=.75,phrases={3,2,1}},
+        crossfire={wanderTarget=12,replacementChance=.65,phrases={2,1,3}},
+        hunting={wanderTarget=16,replacementChance=.90,phrases={1,4,1}},
+        occupation={wanderTarget=16,replacementChance=1,phrases={1,1,4}},
+        quarantine={wanderTarget=14,replacementChance=.75,phrases={2,3,1}},
+        retinue={wanderTarget=12,replacementChance=.50,phrases={3,3,1}},
+    },
     common={patrol=true,rush=true,runner_ambush=true,firing_line=true,mixed_pressure=true,arena=true},
     themes={
         corruption={name="Corruption",templates={
@@ -81,3 +91,8 @@ D.EcologyCatalog={
         cordon="trap",snarer="trap",wirewright="trap",
     }
 }
+
+function D:IntensityProfile(plan)
+    local theme=plan and plan.ecology and plan.ecology.theme
+    return self.EcologyCatalog.intensity[theme] or self.EcologyCatalog.legacyIntensity
+end

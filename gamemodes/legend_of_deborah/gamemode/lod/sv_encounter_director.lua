@@ -241,7 +241,11 @@ function EncounterDirector:BeginPacing(plan, graph)
     for sector=1,4 do
         local entry = sector==1 and graph.Start or (progression.Gates[sector-1] or {}).afterCell
         local goal = sector==4 and progression.CoreCell or (progression.Keycards[sector] or {}).cell
-        local phrase = LOD.RNG.New(LOD.Seeds.Derive(plan.seed,"pacing:sector:"..sector)):Pick(pacingPhrases)
+        local rng = LOD.RNG.New(LOD.Seeds.Derive(plan.seed,"pacing:sector:"..sector))
+        local weights = self.IntensityProfile and self:IntensityProfile(plan).phrases or {1,1,1}
+        local roll = rng:Float(0,weights[1]+weights[2]+weights[3])
+        local index = roll<weights[1] and 1 or roll<weights[1]+weights[2] and 2 or 3
+        local phrase = pacingPhrases[index]
         local row = {phrase=phrase.id, bands={quiet=0,probe=0,pressure=0,recovery=0,spike=0},
             placed={}, threat={}, status="unavailable"}
         plan.pacing.sectors[sector] = row

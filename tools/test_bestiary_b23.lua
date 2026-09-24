@@ -88,7 +88,7 @@ local function bounds(graph)
  end
  for floor=0,(graph.WanderLayers or graph.Layers)-1 do
   local counts,_,specialists=W:_Population(floor)
-  assert(W:_LivingOnFloor(floor)<=16 and specialists<=4,'population ceiling')
+  assert(W:_LivingOnFloor(floor)<=W:GetFloorTarget(graph) and W:GetFloorTarget(graph)<=16 and specialists<=4,'population ceiling')
   for id,n in pairs(counts) do assert(basic[id] or n<=1,'specialist singleton') end
  end
  assert(D:GetActiveCount()<=96,'shared ceiling exceeded')
@@ -136,9 +136,16 @@ local floor=W.Entities[1].LODWanderFloor
 -- A dead native body still in the shared registry cannot hide from the ceiling.
 local victim=W.Entities[1];victim.LODDead=true
 local before=W:_LivingOnFloor(floor)
+-- B25 retains the old20s guaranteed service for chance1 profiles; probabilistic
+-- rejection is separately exercised by the B25 service fixtures.
+local intensity=W.IntensityProfile
+W.IntensityProfile=function(self,g)
+ local p=table.Copy(intensity(self,g));p.replacementChance=1;return p
+end
 now=0;W.NextThink=0;W.NextRespawn={};quiet(function() W:Think() end)
 now=19.9;quiet(function() W:Think() end);assert(W:_LivingOnFloor(floor)==before,'replacement too early')
 now=20.2;quiet(function() W:Think() end);assert(W:_LivingOnFloor(floor)==before+1,'replacement did not occur once')
+W.IntensityProfile=intensity
 for _,field in ipairs({'SimulationFrozen','Failed','LevelCleared'}) do
  Run.State[field]=true;local count=made;quiet(function() W:Think() end);assert(made==count,'spawn during '..field);Run.State[field]=false
 end

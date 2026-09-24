@@ -1453,3 +1453,36 @@ examples are illustrative, not a mandate to add every listed monster. Native
 readability, physical spawn/substitution, combat convergence, multiplayer and
 hardware acceptance remain at the ordered playtest. No Big Loot/Events/later
 audits or deployment begins in B24.
+
+
+## B25 — motif intensity and implementation exit
+
+Roster63 normal/4 named remains frozen. EcologyCatalog now supplies target,
+replacement chance and Surge/Ambush/Gauntlet weights: corruption14/.75/3-2-1,
+crossfire12/.65/2-1-3, hunting16/.90/1-4-1, occupation16/1/1-1-4,
+quarantine14/.75/2-3-1, retinue12/.50/3-3-1. Missing motif retains16/1/uniform.
+Existing directors consume these data; no additional owner or hook. Initial fill
+uses target; delayed vacancies get at most one chance/20s with existing endless
+cadence. Failed chance consumes no spawn ordinal; unsupported/capped attempts
+wait. Exact cleanup/reset ownership includes the local opportunity ordinal.
+
+Live GDD05/06/07 LOD-BESTIARY-B25-001 explicitly defines Elite influence as
+population exposure: .30*p per otherwise legal delayed opportunity,1−.70^n for
+at least one among n initial ordinary actors. Individual categorical odds remain
+60/30/10, including existing named grades and the later02 floor(D/3) Level/cap
+rule. No class/stat/combat/HP/XP/reward authority changes or specialist-as-tier
+substitution. Phrases retain their bands, base probes, full spikes and objectives.
+
+Fixed32x6 paired production plans show motif-linked home changes; all reduced
+targets lower actual initial populations across all32 paired topologies. Fixed
+4096-opportunity samples per motif retain authored rates and conditional tiers;
+real service tests cover due/freeze/no-catch-up/reset/native defer. All earlier
+32x20 campaign exposure, repetition, combined-family/basic-share and geometry
+thresholds remain unchanged. Full evidence/failures/final matrix:
+`validation/BESTIARY_B25.md`. Manual164/32 and existing diagnostics are updated.
+
+Whole-phase reconciliation: `validation/BESTIARY_B25_EXIT.md`. Final green and
+verified publication close the Bestiary implementation/static phase; Source
+native acceptance remains after ordered phases/audits. Next phase is Big Loot
+L1 baseline plus first coherent production cohort, not further roster inflation.
+No Big Loot/Events/audit work or VPS/Workshop publication is included in B25.

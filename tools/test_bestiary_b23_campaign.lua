@@ -4,7 +4,7 @@ local output=print
 local function print(line) lines[#lines+1]=line;output(line) end
 local H,W=T.H,T.W
 local D,Run=H.D,H.Run
-local counts,themes,changed,totals={},{},{},{spawned=0,legacy=0,fullFloors=0,floors=0}
+local counts,themes,changed,totals={},{},{},{spawned=0,legacy=0,fullFloors=0,floors=0,target=0}
 -- B24 combines planned ordinary squads with initial native-boundary roamers.
 -- This is potential population, never a simultaneous-entity or sighting count.
 local basics={shambler=true,runner=true,soldier=true,deadcrab=true,bioblaster=true}
@@ -49,7 +49,8 @@ local function observe(graph,bucket)
  if bucket=='spawned' then
   for f=0,(graph.WanderLayers or graph.Layers)-1 do
    totals.floors=totals.floors+1
-   if W:_LivingOnFloor(f)==16 then totals.fullFloors=totals.fullFloors+1 end
+   totals.target=totals.target+W:GetFloorTarget(graph)
+   if W:_LivingOnFloor(f)==W:GetFloorTarget(graph) then totals.fullFloors=totals.fullFloors+1 end
   end
  end
 end
@@ -95,7 +96,7 @@ for _,id in ipairs((function() local a={} for id in pairs(counts) do a[#a+1]=id 
  print('B23_EXPOSURE '..id..' spawned='..counts[id])
 end
 for theme,n in pairs(themes) do print('B23_MOTIF '..theme..' dungeons='..n..' changed='..(changed[theme] or 0)) end
-print('BESTIARY_B23_CAMPAIGN_PASS dungeons=640 spawned='..totals.spawned..' legacy='..totals.legacy..' fullFloors='..totals.fullFloors..' floors='..totals.floors..' safety/caps/receipt/plan/RNG/replay retained')
+print('BESTIARY_B23_CAMPAIGN_PASS dungeons=640 spawned='..totals.spawned..' legacy='..totals.legacy..' fullFloors='..totals.fullFloors..' floors='..totals.floors..' target='..totals.target..' deferred='..(totals.target-totals.spawned)..' safety/caps/receipt/plan/RNG/replay retained')
 for theme in pairs(W.Config.Pools) do
  assert(H.serial(combined.spawned.motifs[theme].families)~=H.serial(combined.legacy.motifs[theme].families),'B24 combined motif has no family influence '..theme)
 end

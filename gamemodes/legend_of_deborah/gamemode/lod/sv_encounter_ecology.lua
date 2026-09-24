@@ -280,6 +280,9 @@ end
 concommand.Add('lod_encounter_ecology', function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
     print('[LOD:ECOLOGY] ' .. D:EcologySummary(D.Plan))
+    local intensity=D:IntensityProfile(D.Plan)
+    print(string.format('[LOD:INTENSITY] targetPerFloor=%d replacementChance=%.2f eliteArrivalCeiling=%.3f phraseWeights=%s tierOdds=60/30/10',
+        intensity.wanderTarget,intensity.replacementChance,.30*intensity.replacementChance,table.concat(intensity.phrases,'/')))
     for sector,row in ipairs(D.Plan and D.Plan.pacing and D.Plan.pacing.sectors or {}) do
         local bands,placed={},{}
         for _,beat in ipairs(sorted(row.bands)) do bands[#bands+1]=beat..':'..row.bands[beat] end

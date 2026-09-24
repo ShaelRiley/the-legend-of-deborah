@@ -1,14 +1,14 @@
-# Handoff — Bestiary B25
+# Handoff — Big Loot L1
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B25 only**,
+Resume **The Legend of Deborah** and complete **Big Loot checkpoint L1 only**,
 including authorized design, implementation, validation, documentation, commit
-and verified non-forced push to `main`.
+and verified non-forced push to main.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Reserve encounter homes and enforce Bestiary campaign gates**.
+Latest checkpoint: **Close Bestiary motif intensity with bounded reinforcement**.
 The publication response supplies its exact verified SHA; fetch current main,
-confirm this checkpoint and preserve intervening work. B24's parent is
-`76e54e95ebb487c5dd2dc3c63847ef8295651fe1`.
+confirm this checkpoint and preserve intervening work. B25's parent is
+`78bcca4ebf317aae99da383c96fc1c05f8d6d7b2`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -17,103 +17,91 @@ GDD amendments, focused parallel delegation, commits and non-forced pushes to
 main. Resolve ordinary ambiguities. **Do not deploy to the VPS or publish to
 Steam Workshop.**
 
-Read AGENTS.md, active/newest DEVELOPMENT_PLAN.md checkpoint, this handoff,
-BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Crucially read the full
-B24 exit reconciliation in validation/BESTIARY_B24_EXIT.md, finite gate and
-validation/BESTIARY_B24.md. Live GDD00→01→needed tabs, especially05/06/07
-LOD-BESTIARY-B20/B21/B22/B23/B24-001 and02's canonical monster tier law.
-Exact HUMAN anchors only for required missing detail. Missing historical art
-is not blocking. Do not restart broad roster archaeology or prior work.
+Read AGENTS.md, newest DEVELOPMENT_PLAN.md checkpoint, this handoff and the full
+briefs/BIG_LOOT_UPDATE.md. For Bestiary regression/exit truth read
+validation/BESTIARY_B25.md and BESTIARY_B25_EXIT.md; do not restart roster
+archaeology. Follow live GDD00→01→only required normalized tabs, exact HUMAN
+anchors only for HUMAN-DETAIL. Missing historical art is not blocking.
 
-## Current implementation and evidence
+## Completed Bestiary implementation
 
-B24 prevents initial/replacement wandering homes from occupying exact planned
-encounter home cells, including dormant discretionary squads. Local current-plan
-reservation set only; no new owner/cache/history/hook. Fully reserved floors defer.
-Patrol/pursuit still move into ordinary quiet bands and may converge after spawn.
-Retain B23 supported/hull-clear/native-survival admission and24-candidate bound,
-near-Hero distance4,16/floor,4 specialists/floor, specialist singleton,20-second
-replacement, exact graph/state/seed ownership, cleanup and independent RNG.
+B25 closes the four production omissions identified by B24. Six catalog-owned
+intensity rows drive existing EncounterDirector/WanderingDirector: targets12/14/16,
+replacement probability.50/.65/.75/.90/1 on the existing20-second opportunity
+cadence and motif-weighted Surge/Ambush/Gauntlet route phrases. Exact values live
+in05/06/07 LOD-BESTIARY-B25-001 and the catalog. Legacy plans retain16/1/uniform.
+No new director/history/hook. Initial fill, admission, due service and deficit
+reservation share the target. Chance rejection preserves spawn ordinals; physical
+failure waits; cleanup retires opportunity state; no catch-up burst or timer
+resurrection after reentrant native reset. Independent named stream ends in
+admission to avoid measured clustering of adjacent decimal labels.
 
-Roster63 normal/4 named, frozen baseline18. Six motifs/60 themed+6 common templates,
-14 tactical families. B20 receipts commit only after successful physical build;
-last2 motifs excluded, least-used motif balancing, template/enemy/family novelty,
-three bounded recent summaries, same-level replacement and new-campaign reset.
-B21 legal topology/physical preflight and4-cell sequential encounter spacing.
-B22 route phrases reserve quiet/recovery home bands, base probes and full-scale
-pressure/branch spikes. B23 six autonomous additions join actual8 legacy roaming
-identities in explicit motif pools; no escort-dependent actor becomes solitary.
-Refer to live rules/ledger for exact weights rather than rewriting these owners.
+Elite probability has an explicit authorized population-exposure interpretation:
+.30*p per otherwise legal replacement opportunity and1−.70^n for at least one
+Elite among n initial ordinary bodies. Never change each admitted actor's60/30/10
+categorical roll, reroll tiers, impose quotas or equate specialist identity with
+RPG Elite. Preserve named grades and02's later floor(D/3) monster-Level/cap
+increase. B25 changes no class/combat/HP/XP/reward authority.
 
-One fresh final canonical run passed **all214 suites with zero failures**; no
-gameplay/config/test edits followed. Final encounter sample retains54 exposure
-floors and coverage mean47.250/min39 versus40.156/min31; template returns191
-versus310 (38.3871% reduction). Within-level repeats576/576, encounter-only roster
-Jaccard0.209819/0.207373; no universal improvement claim. Pacing635/640 mixed,
-32/32 branch campaigns. Final roaming sample28,342 bodies per arm,1,747/1,789
-floors full,42 deferring282 slots safely (47 more slots deferred than B23).
-Combined planned+initial bodies54,762 per arm; max basic share0.306147/0.353621,
-minimum13/14 families in both; consecutive roster Jaccard0.243567/0.523944.
-All640 populations differ; all6 new specialist exposures>=225 against>=25 gate.
+All earlier squad/roaming physical, companion, singleton, exact ownership,
+objective,4-cell squad spacing,4-specialist/floor,16 maximum/floor,24-candidate,
+near-Hero distance4 and shared96-ceiling rules remain. Exact planned homes remain
+reserved against spawning; natural patrol/pursuit may still converge or interrupt
+quiet/recovery. B20 successful-build receipts remain the only campaign history.
+Roster63 normal/4 named, frozen18;60 themed+6 common templates,14 families.
 
-Final evidence is in validation/BESTIARY_B24_INTEGRATION.txt,
-BESTIARY_B24_CAMPAIGN_FINAL.txt and BESTIARY_B24_ENCOUNTER_FINAL.txt.
-B24 extends the same32x20 sequential sample; all prior54 identity25/20/5 floors,
-minimum36/54 per campaign, pacing/spacing and six roaming addition>=25 gates remain.
-Adjacent-dungeon template returns must fall at least25% against the same-motif
-memory-disabled control. Combined planned ordinary squads+initial roamers enforce
-basic-share<=50%,>=10/14 families per campaign, exact motif membership, all6 motif
-family distributions differing from legacy weights and zero shared home cells.
-These are potential-population/trace-double measurements, not simultaneous
-hostiles, sightings, successful Source combat or native acceptance.
+One fresh final canonical run passed **all215 suites with zero failures**; no
+gameplay/config/test edits followed. Exact numerical reports are in BESTIARY_B25.md and
+BESTIARY_B25_INTEGRATION.txt, INTENSITY_FINAL, CAMPAIGN_FINAL and ENCOUNTER_FINAL.
+Finite32x6 paired plans show actual motif effects;4096 opportunity trials/motif
+exercise rates and real conditional tiers. Existing32x20 campaign gates retain
+54 exposure floors25/20/5, minimum36/54 coverage,>=25% adjacent-template-return
+reduction, six roaming additions>=25, combined basic-share<=.5,>=10/14 families,
+B22 pacing/spacing and zero shared home cells. These are production harnesses
+with native boundary doubles, not sightings or Source acceptance. Failed evidence
+is retained. Manual164 chapters/32chunks; live GDD and coordination docs updated.
 
-## Complete B25 — bounded thematic intensity closure
+The full brief reconciliation closes the Bestiary implementation/static phase
+following green validation and verified publication. Native acceptance remains
+pending after ordered phases/audits; it is not a blocker to Big Loot L1.
 
-The full brief explicitly says themes should influence density, reinforcement
-probability, elite probability and pacing. Current composition-based density is
-partial evidence; roaming target/cadence are uniform and route phrases are
-selected independently of motif. These requirements remain open. The brief's
-named example niches/themes are illustrative and need not each be implemented.
+## Complete L1 — baseline plus first coherent loot cohort
 
-Reconcile the intended dimensions with canonical existing authorities first.
-In particular, monster tiers are60% Typical atD /30% Elite atD+1 /10% Champion atD+2.
-Do not silently reinterpret an enemy identity as an RPG Elite or alter universal
-tier law merely to satisfy the brief. Author-delegated design permits an explicit
-bounded reconciliation recorded in live GDD before dependent implementation.
-Retain class/combat/HP/XP/reward authorities and named-boss tiers. Define any
-reinforcement term precisely (initial companion enrichment versus delayed live
-replenishment); do not claim one proves the other without an authored rule.
+Freeze the actual current meaningful equipment/item-effect baseline before
+calculating approximately3.5× target; do not count cosmetic, rarity, numeric or
+class permutations as new identities. Inspect only current canonical equipment,
+loot, property/effect, inventory, pickup, persistence and sell/fuse/reward seams
+needed by the full brief and selected cohort. Recover prior accepted constraints.
 
-Define a finite B25 production/campaign gate before edits. Add motif influence
-through EncounterDirector's current catalog/planning/pacing and WanderingDirector
-only where necessary, with independent named RNG and existing receipts. Preserve
-solvability, physical escape/support, companions, progression, objective fights,
-entity/threat ceilings and all frozen exposure gates. No new density solely to
-inflate variety, competing director/history owner or decorative taxonomy.
-Use fixed paired counterfactuals on identical topology/state to prove actual
-motif influence; report coherent distributions and remaining native limitations.
-If closure is too large, finish one substantial coherent slice and name the
-remaining bounded Bestiary slice. Phase exit requires all actual brief conditions;
-do not advance automatically to Big Loot/Events or later audits.
+Combine baseline discovery with a substantial first playable cohort through
+shared existing authorities; do not stop at planning or unused scaffolding.
+Select a coherent effect/slot/interaction family from actual gaps. Reconcile
+live rules, author required behavior/tuning in GDD before dependent edits and
+define a finite production/runtime gate. Maintain readable counterplay/build
+choices, server authority, deterministic RNG, bounded entities/resources,
+atomic inventory/wallet/sell/fuse/persistence transactions, lifecycle and loot
+viability. Do not alter unrelated accepted combat/progression systems just to
+inflate catalog counts. No competing loot/director/history authority.
 
 Reserve final third for validation, docs and immediate publication. Targeted
-checks while editing, then `python3 tools/test_checkpoint_g_integration.py` once
-stable. Use LOD_B23_REPORT_PATH and LOD_B20_REPORT_PATH to retain final campaigns.
-Repair attributable failures; broaden only for concrete risk. Update/readback
-GDD, manual when needed, ledger, plan, handoff and suite registry; commit/publish
-after green. No human/deployment gate before the ordered phases.
+checks while editing; canonical integration once stable. Repair attributable
+failures, retain evidence and broaden only for concrete remaining risk. Update
+and read back GDD, manual where needed, frozen baseline/cohort ledger, plan,
+handoff and suite registry. Commit and verify non-forced publication immediately
+after green. Stop at L1 and name its finite successor; no Events/audits or
+human/deployment gate before the ordered phases are complete.
 
-Later gm_flatgrass acceptance covers motif/topology/phrase readability, actual
-spawn support/substitution/hulls/gates/stairs/Walls/false floors, pursuit/wanderer
-convergence, full/reduced tells/audio, HP/XP/drops, death/revival/disconnect/late
-join, freeze/reset/rebuild,1–4-player balance/network and Gordon→Hector→Deborah,
-sole staging successor, Abundance and Level21 cash. Evidence console_latest.txt
-+rpg_summary_latest.txt; session only for ordering. Deployment needs authorization.
+Later gm_flatgrass acceptance still includes readable motifs/phrases/tells/audio,
+real spawn support/hulls/substitution around gates/stairs/Walls/false floors,
+patrol/pursuit convergence, HP/XP/drops,1–4-player balance/network, lifecycle,
+Gordon→Hector→Deborah, sole staging successor, Abundance and Level21 cash, plus
+new loot behavior. Evidence console_latest.txt+rpg_summary_latest.txt; session
+only for ordering. Deployment needs separate authorization.
 
 If CLI push credentials are unavailable, use authenticated GitHub blob/tree/
-commit/ref tools; verify every blob and complete tested tree, advance non-forced,
+commit/ref tools. Verify each blob and complete tested tree, advance non-forced,
 fetch and verify SHA/parent/tree. Preserve newer work; never force.
 Order: Bestiary→Big Loot→Event System→systems integration/emergence audit→low-end
 PC performance audit→final crash/progression-safety audit→human playtest.
-Finish B25 only. End with verified SHA, scope/tests/progress/native checks and
+Finish L1 only. End with verified SHA, scope/tests/progress/native checks and
 next continuation prompt.

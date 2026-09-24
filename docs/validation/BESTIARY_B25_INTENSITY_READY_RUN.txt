@@ -1,0 +1,16 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=25 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B25_PAIRED crossfire {bodies=1037,control=1381,homes=6,pacing=6,pairs=32,phrases={ambush=20,gauntlet=64,surge=44},reduced=32}
+B25_PAIRED occupation {bodies=1381,control=1381,homes=17,pacing=17,pairs=32,phrases={ambush=24,gauntlet=84,surge=20},reduced=0}
+B25_PAIRED retinue {bodies=1037,control=1381,homes=8,pacing=8,pairs=32,phrases={ambush=52,gauntlet=20,surge=56},reduced=32}
+B25_PAIRED corruption {bodies=1209,control=1381,homes=9,pacing=9,pairs=32,phrases={ambush=40,gauntlet=24,surge=64},reduced=32}
+B25_PAIRED hunting {bodies=1381,control=1381,homes=10,pacing=10,pairs=32,phrases={ambush=84,gauntlet=24,surge=20},reduced=0}
+B25_PAIRED quarantine {bodies=1209,control=1381,homes=4,pacing=4,pairs=32,phrases={ambush=60,gauntlet=24,surge=44},reduced=32}
+/workspace/scratch/183b5b3d7d6b/the-legend-of-deborah/tools/test_bestiary_b25.lua: tools/test_bestiary_b23.lua:81: target schedule

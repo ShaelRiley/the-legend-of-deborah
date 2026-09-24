@@ -118,7 +118,28 @@ end
 function WanderingDirector:GetTargetPopulation(graph)
     graph = graph or (LOD.RunManager and LOD.RunManager.State.Graph)
     if not graph then return 0 end
-    return math.max(0, graph.WanderLayers or graph.Layers or 0) * WC.PerFloor
+    return math.max(0, graph.WanderLayers or graph.Layers or 0) * self:GetFloorTarget(graph)
+end
+
+function WanderingDirector:IntensityProfile(graph)
+    local director=LOD.EncounterDirector
+    return director and director.IntensityProfile and director:IntensityProfile(graph and graph.EncounterPlan)
+        or {wanderTarget=WC.PerFloor,replacementChance=1}
+end
+
+function WanderingDirector:GetFloorTarget(graph)
+    return math.Clamp(math.floor(self:IntensityProfile(graph).wanderTarget),0,WC.PerFloor)
+end
+
+-- Read-only roll. Think owns the opportunity ordinal; a failed chance roll
+-- never advances SpawnOrdinal or the independent actor/archetype streams.
+function WanderingDirector:ReplacementAllowed(graph, floor, ordinal)
+    local state=LOD.RunManager and LOD.RunManager.State
+    local seed=LOD.Seeds.Derive(state and state.LevelSeed or graph.LevelSeed or 1,
+        string.format("wander-reinforcement:%d:%d",floor,ordinal))
+    -- Mix the decimal ordinal through a named suffix before taking the first
+    -- draw; adjacent decimal labels otherwise cluster in the base seed hash.
+    return LOD.RNG.New(seed):Derive("admission"):Chance(self:IntensityProfile(graph).replacementChance)
 end
 
 function WanderingDirector:GetDeficitReservation(graph)
@@ -126,7 +147,7 @@ function WanderingDirector:GetDeficitReservation(graph)
     if not graph then return 0 end
     local deficit = 0
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
-        deficit = deficit + math.max(0, WC.PerFloor - self:_LivingOnFloor(floor))
+        deficit = deficit + math.max(0, self:GetFloorTarget(graph) - self:_LivingOnFloor(floor))
     end
     return deficit
 end
@@ -165,7 +186,7 @@ end
 function WanderingDirector:Cleanup()
     for _,ent in ipairs(self.Entities or {}) do if IsValid(ent) then ent:Remove() end end
     self.Entities={};self.NextRespawn={};self.SpawnOrdinal={};self.LastArchetype={}
-    self.Diagnostics={};self.Graph=nil;self.Owner=nil;self.NextThink=0
+    self.Diagnostics={};self.ReplacementOrdinal={};self.Graph=nil;self.Owner=nil;self.NextThink=0
 end
 
 function WanderingDirector:_SpawnCandidates(graph, floor, rng)
@@ -268,7 +289,7 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     local state = LOD.RunManager and LOD.RunManager.State
     if not self:_Owns(graph) or not state.BuildReady or state.Failed or state.LevelCleared
         or state.SimulationFrozen or floor<0 or floor>=(graph.WanderLayers or graph.Layers or 0)
-        or self:_LivingOnFloor(floor)>=WC.PerFloor then return false end
+        or self:_LivingOnFloor(floor)>=self:GetFloorTarget(graph) then return false end
     local owner=self.Owner
     local director=LOD.EncounterDirector
     if not director or director:GetActiveCount()>=EC.ActiveHostileCeiling then
@@ -326,7 +347,7 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     if self.Owner~=owner or not self:_Owns(graph) or not state.BuildReady
         or state.Failed or state.LevelCleared or state.SimulationFrozen
         or director:GetActiveCount()>=EC.ActiveHostileCeiling
-        or self:_LivingOnFloor(floor)>=WC.PerFloor then
+        or self:_LivingOnFloor(floor)>=self:GetFloorTarget(graph) then
         ent:Remove();return false
     end
 
@@ -365,7 +386,7 @@ function WanderingDirector:_InitializeForGraph(graph)
         campaign=s.CampaignSeed,epoch=s.CampaignEpoch,run=s.RunId}
 
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
-        for _ = 1, WC.PerFloor do self:_SpawnOne(graph, floor, "initial") end
+        for _ = 1, self:GetFloorTarget(graph) do self:_SpawnOne(graph, floor, "initial") end
         self.NextRespawn[floor] = nil
     end
 
@@ -568,6 +589,8 @@ function WanderingDirector:Think()
     if state.SimulationFrozen then return end
 
     if not self:_Owns(graph) then self:_InitializeForGraph(graph) end
+    local owner=self.Owner
+    if not self:_Owns(graph) then return end
 
     local now = CurTime()
     if now < (self.NextThink or 0) then return end
@@ -576,12 +599,18 @@ function WanderingDirector:Think()
     local respawnSeconds=WC.RespawnSeconds*(LOD.Damsels and LOD.Damsels:EndlessPressure(state.Level).reinforcement or 1)
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         local living = self:_LivingOnFloor(floor)
-        if living < WC.PerFloor then
+        local target=self:GetFloorTarget(graph)
+        if living < target then
             if not self.NextRespawn[floor] then
                 self.NextRespawn[floor] = now + respawnSeconds
             elseif now >= self.NextRespawn[floor] then
-                if self:_SpawnOne(graph, floor, "replacement") then living = living + 1 end
-                self.NextRespawn[floor] = living < WC.PerFloor and (now + respawnSeconds) or nil
+                self.ReplacementOrdinal[floor]=(self.ReplacementOrdinal[floor] or 0)+1
+                if self:ReplacementAllowed(graph,floor,self.ReplacementOrdinal[floor]) then
+                    if self:_SpawnOne(graph, floor, "replacement") then living = living + 1 end
+                else self.Diagnostics[floor]="motif_wait" end
+                -- Native callbacks can retire this service while spawning.
+                if self.Owner~=owner or not self:_Owns(graph) then return end
+                self.NextRespawn[floor] = living < target and (now + respawnSeconds) or nil
             end
         else
             self.NextRespawn[floor] = nil
@@ -623,9 +652,11 @@ concommand.Add("lod_m3_wanderers", function(ply)
         local counts,_,specialists=WanderingDirector:_Population(floor)
         local identities={}
         for _,id in ipairs(sortedKeys(counts)) do identities[#identities+1]=id..":"..counts[id] end
-        local text = string.format("floor=%d living=%d target=%d nextRespawn=%.1fs theme=%s specialists=%d/%d result=%s roster=%s",
-            floor + 1, living, WC.PerFloor, wait, select(2,WanderingDirector:_Pool(graph)),
-            specialists,WC.SpecialistPerFloor,tostring((WanderingDirector.Diagnostics or {})[floor]),table.concat(identities,","))
+        local profile=WanderingDirector:IntensityProfile(graph)
+        local text = string.format("floor=%d living=%d target=%d nextRespawn=%.1fs theme=%s specialists=%d/%d result=%s roster=%s replacementChance=%.2f eliteArrivalCeiling=%.3f opportunities=%d",
+            floor + 1, living, WanderingDirector:GetFloorTarget(graph), wait, select(2,WanderingDirector:_Pool(graph)),
+            specialists,WC.SpecialistPerFloor,tostring((WanderingDirector.Diagnostics or {})[floor]),table.concat(identities,","),
+            profile.replacementChance,.30*profile.replacementChance,(WanderingDirector.ReplacementOrdinal or {})[floor] or 0)
         print("[LOD:WANDER] " .. text)
         if IsValid(ply) then ply:ChatPrint(text) end
     end
