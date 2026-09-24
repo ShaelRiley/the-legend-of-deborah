@@ -1,7 +1,9 @@
 # Handoff — Great Crate C3 native retest
 
-Repository ShaelRiley/the-legend-of-deborah, branch main. C3 parent:
-655ca0c7c126a66bacc5c39f67cffbd810cd4089; publication response gives verified C3 SHA.
+Repository ShaelRiley/the-legend-of-deborah, branch main. Published C3 implementation:
+1cf25b3a01cc38d417ce24561d17ac5b289bfb0b; parent:
+655ca0c7c126a66bacc5c39f67cffbd810cd4089. Subsequent recovery documentation may
+advance main; fetch it rather than resetting to this implementation checkpoint.
 Fetch remote main and preserve intervening work. Read AGENTS.md, active roadmap
 and docs/validation/GREAT_CRATE_C3.md. Live GDD identity unchanged:
 1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY;00→01→05/07 LOD-CRATE-C3-001.
@@ -17,6 +19,11 @@ shader/skips and stock/fallback gate bodies. Failed screenshots preserved in evi
 
 Targeted/static evidence and canonical result are in GREAT_CRATE_C3.md and its log.
 No claims of engine rendering, shader aesthetics, GPU timing or residency acceptance.
+Final recovery reused the checksum-verified 221-suite integration result with
+unchanged production/tests, reran the three focused repair harnesses, and verified
+the published tree against local code. Do not restart the completed repair or full
+matrix merely to recover context. The author's latest instruction is small coherent
+chunks: validate, commit, non-force-publish and verify each before adding scope.
 Next action: locally update/install C3 after fully quitting GMod; start gm_flatgrass
 with Legend of Deborah and inspect hull/sprays/a gate. Run one console line:
 `lod_crate_status; lod_container_brand_status; lod_progression_render_status`.

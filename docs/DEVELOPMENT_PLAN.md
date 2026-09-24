@@ -54,6 +54,14 @@ work early merely because an immediate pass finishes sooner.
 
 ## Checkpoint size and compute policy
 
+- **September 24 recovery override:** use small coherent, independently validated
+  chunks and publish each immediately before starting another. Chunk size takes
+  precedence over older substantial-pass wording when timeout risk threatens
+  publication. Recover and inspect existing work before rebuilding it. Reuse a
+  preserved integration result only when its tested production/test files are
+  unchanged; distinguish that inherited result from fresh focused checks. Each
+  handoff must identify the verified remote commit and one finite next action.
+  This does not advance deferred work or claim native acceptance.
 - **One coherent production result per checkpoint:** usually a small cohort of
   several related meaningful enemies/items/events sharing an authority, or one
   complete director/lifecycle integration. Prefer multiple related behaviors to
@@ -94,6 +102,13 @@ work early merely because an immediate pass finishes sooner.
   concrete bug or safety/performance regression introduced by the current chunk.
 
 ## Current checkpoint — Great Crate C3; final repair, native retest pending
+
+Recovered implementation published and fetched as
+`1cf25b3a01cc38d417ce24561d17ac5b289bfb0b`, with complete tree equality to the
+tested local recovery. The preserved 221-suite integration log was verified by
+SHA-256; gate, branding-render and hull-reconciliation harnesses passed freshly
+in the final recovery. No production/test changes followed. This publication
+closes the interrupted checkpoint; the next action remains the local native retest.
 
 Baseline655ca0c7c126a66bacc5c39f67cffbd810cd4089. Author rejects the old hull,
 absent sprays and concrete gates; explicitly approves the shown floor. Corrected
