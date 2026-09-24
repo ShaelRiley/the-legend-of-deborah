@@ -1,5 +1,14 @@
 # Canonical instruction manual
 
+## Bestiary B18: Censor and Surveyor
+
+The canonical book now teaches Censor’s attack-commit WATCH and separately
+warned retaliation, plus Surveyor’s frozen threat ring and displaced refuge.
+Literal counterplay, ordinary defenses, exact-life ownership, cover, interruption
+and reduced-effects parity are explained in one new chapter. Both shipped
+renderings are regenerated from `docs/manual/book.json`. Native Source/Chromium
+readability and multiplayer timing remain pending.
+
 ## Level-20 finale and Deborah succession
 
 The canonical source now teaches the 6.5-second celebration inside the existing

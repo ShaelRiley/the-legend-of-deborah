@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B17
+# Bestiary expansion — frozen baseline through B18
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B17 add forty-one identities: **59/63**, or **41/45 additions**; **4 remain**.
+B1–B18 add forty-three identities: **61/63**, or **43/45 additions**; **2 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -1115,7 +1115,7 @@ implementation. Final validation/exposure and native gaps are recorded in
 [exposure](validation/BESTIARY_B17_EXPOSURE.md). Counts describe production
 implementation, not native Source observation or acceptance.
 
-## Next checkpoint — B18: remaining tactical breadth
+## Historical B18 selection gate — now implemented
 
 Select and author the next coherent pair through targeted ledger/shared-authority
 review. Target61/63 only after both meaningful identities pass production gates.
@@ -1124,3 +1124,76 @@ Preserve exact wards and finite bodyguard/oath/retaliation ownership, all prior
 cohorts and complete campaign/finale/succession/Abundance/Level21. Whole-phase
 campaign-aware encounter themes, novelty memory, topology, pacing and quantitative
 coverage remain within Bestiary before Big Loot or Events.
+
+## B18 — prison-edict cohort
+
+| ID / identity | Tactical response | Ordinary composition |
+| --- | --- | --- |
+| `censor` / Censor | Warns a brief cease-fire. A new canonical attack during its watch triggers a **new full warning**, then a fixed physical shot. Stop attacking briefly, interrupt, break sight or deliberately trigger and evade. | Censor + Shambler. |
+| `surveyor` / Surveyor | Marks a threatened disc with a visibly displaced refuge. Enter the refuge, leave the outer ring, break sight or interrupt/mute the caster before its single Raw strike. | Surveyor + Soldier. |
+
+Censor observes the existing `RPGAbilityRules:CommitAttack` seam, used by firearms,
+crowbar, ordinary Magic, Magic Forms and Wand. It does not inspect buttons or
+react to passive damage, previously released projectiles, failed inputs or
+other equipment actions outside that seam. Preparation0.8s, watch2.4s; one new
+commit in that interval starts a separate1.2s shot warning. A stale observation
+older than0.25s cannot trigger retaliation. Watch-end processing grace0.2s
+allows an on-time event to reach the next service tick without extending the
+armed interval. Failed/refunded Forms/Wand discard their captured order/life
+receipt; successful casts cannot transfer it to a new warning. The original captured Hero remains
+the only possible victim; the first body/world cover absorbs the frozen lane.
+Actual Hero-hull96-unit lateral paths on both sides preserve evasion.
+
+Surveyor freezes a radius144 disc at the observed Hero's feet and a radius48
+refuge displaced96 units perpendicular to the source-to-Hero line. Deterministic
+positive-then-negative orientation selection consumes no RNG. Both a supported
+Hero-hull route to the refuge center and a160-unit opposite outer escape must
+exist; all route samples (at most8 segments, spacing<=24) stay in the same legal
+cell. Marks never track. After1.6s, only the original Hero still inside the outer
+disc and outside the refuge may receive one Raw Magic1d6+2 packet. Current
+support/route ambiguity, forced movement or inability to move voluntarily cancels
+rather than imposing unavoidable damage. The refuge is offset, so it demands a
+directional route choice rather than duplicating Cordon's concentric annulus.
+
+Both extend EnemyRoster commitments/shared service, canonical life/status/
+combat/HP/reward authorities and guarded native packet validation. Hero order
+ownership is shared with Halter/Pacer; no opposing demands overlap. Exact source
+and Hero progression/status lives plus run, graph, progression, seed and campaign
+bind all work. Maximum16 B18 commitments, range360, source drift4, service gap0.25s,
+geometry refresh0.2s plus release validation, release grace0.2s, recovery3s and
+failed admission/reposition0.5s. Claim before callbacks; replacement tokens,
+attacks or lives cannot inherit damage, be erased, replay or extend recovery.
+Censor's stationary physical actions permit Held/Muted; Surveyor requires Magic
+eligibility. Morale, hit-stun and attack prohibition cancel both. Visibility,
+legal support, range, lifecycle, freeze/reset and missed service remain gates.
+
+Censor: Combine soldier RGB210/170/110, referenceHP45 speed115 threat3.5;
+STR/DEX/CON/INT/WIS/CHA11/12/12/13/12/10, Fighter/Rogue/Wizard50/50/0, HPd8,
+baseXP50, morale5, usesMagic=false. Surveyor: Vortigaunt RGB110/215/190,
+referenceHP40 speed100 threat4; abilities9/11/11/15/14/10, weights0/0/100,
+HPd8, baseXP55, morale5, usesMagic=true/Raw. Both damage1d6+2 reference5.5;
+canonical class/usable feats/HP growth/defenses/XP/drops remain authoritative.
+No private resource pools, forced control, extra bodies or external assets.
+
+Singleton templates `censor_detail` and `surveyor_detail` enter sector2+
+arena/ambush selection. Append ordinals58/59; preserve prior spawn order,
+enrichment, seeded streams, threat/hostile ceilings and same-body legal fallback.
+Safe/objective/transition/gate cells are excluded; same-floor exit and lateral
+room are required, with Surveyor refuge/outer-escape placement clearance.
+Full/reduced rendering uses finite source/aim/refuge/phase/deadline snapshots,
+literal CEASE FIRE/RETALIATION and REFUGE/LEAVE RING instructions and countdowns.
+
+Implemented and statically validated: **61/63** normal identities,
+frozen baseline18, **43/45 additions**, **2 remain**. Tests, measured exposure and
+native limitations are recorded in `validation/BESTIARY_B18.md` and the current
+DEVELOPMENT_PLAN checkpoint. Automated boundary doubles are not Source acceptance.
+
+## Next checkpoint — B19: final roster breadth
+
+Select and author the final coherent pair through targeted remaining-niche
+review; target63/63 only when both qualify as meaningful production identities.
+Preserve B18 attack-observation timing, full retaliatory warning, shared Hero
+orders, displaced-refuge access/escape, exact packet/life ownership and all prior
+cohort/campaign regressions. Completing the count does not finish Bestiary:
+campaign-aware encounter themes, novelty memory, topology, pacing and quantitative
+coverage remain before Big Loot or Events. Do not begin the next phase early.

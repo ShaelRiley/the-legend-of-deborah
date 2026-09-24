@@ -891,7 +891,9 @@ function Forms:CastSelected(ply,button)
     context.auraBurst = RPG:PrepareCheckpointDAuraBurst(ply)
     context.castSerial = self:_NextCastSerial(ply)
     local previousAceReady = ply.LODRPGNextAceReadyAt
-    context.aceBonus = Rules.CommitAttack and Rules:CommitAttack(ply) and 1 or 0
+    local primed, attackObservation
+    if Rules.CommitAttack then primed, attackObservation = Rules:CommitAttack(ply, true) end
+    context.aceBonus = primed and 1 or 0
     local previousCooldown = Magic.NextCast[ply] or 0
     ps.magic = math.max(0, ps.magic - cost)
     ps.gateEControlMagicTestHoldUntil = nil
@@ -918,6 +920,9 @@ function Forms:CastSelected(ply,button)
         return false, reason or "cast"
     end
 
+    -- Observe only the settled activation; refunded casts never break a
+    -- Censor's cease-fire. Ace is still sealed before synchronous damage.
+    if attackObservation and Rules.ObserveCommittedAttack then Rules:ObserveCommittedAttack(ply, attackObservation) end
     local effects = RPG.FeatEffectSystem
     if effects and effects.RecordQuantumSpend then effects:RecordQuantumSpend(ply, baseCost, cost) end
     -- One observer event only after a real committed activation. Failed/refunded

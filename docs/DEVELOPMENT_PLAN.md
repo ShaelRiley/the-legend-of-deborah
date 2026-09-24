@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B17 builds on verified remote `main` `aff47575413f077505006a88ff94ff0df04c5e40`,
-`Add Bestiary Halter and Pacer movement discipline`.
-The current B17 checkpoint below is the newest implementation record. Its exact
+B18 builds on verified remote `main` `4b4c730a5d813ca3b8c6f6e877c0dc1192fe63dd`,
+`Add Bestiary Interposer and Mourner companion interactions`.
+The current B18 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,58 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B17: companion-interaction cohort
+## Current checkpoint — B18: prison-edict cohort
+
+Built on verified remote `4b4c730a5d813ca3b8c6f6e877c0dc1192fe63dd`.
+**Censor and Surveyor** bring the meaningful normal roster to **61/63**:
+frozen baseline18, **43/45 additions banked**, **2 remain**. Native Source
+acceptance remains pending. No VPS deployment or Workshop publication.
+
+**Playable scope:** Censor warns a cease-fire, watches canonical attack commits,
+and responds to the first new armed-window attack with a separate full warned
+fixed shot. Surveyor freezes a threatened disc containing a displaced refuge;
+the Hero may enter the refuge, leave the disc, take cover or interrupt the caster.
+The two add attack restraint and directional safe-space decisions. Full design
+and authored tuning: ledger and live GDD03/05/07 `LOD-BESTIARY-B18-001`.
+
+**Canonical boundaries:** EnemyRoster commitments/service, shared Halter/Pacer/
+Censor/Surveyor Hero-order token, canonical CommitAttack observer, exact actor
+progression/status lives and dungeon/campaign scope, guarded native damage,
+ordinary status/HP/XP/drops. No private pools, bodies or input spying. Deferred
+Magic Forms/Wand observations capture the original order and settle only after
+successful activation; failed/refunded casts and replacement lives/orders cannot
+inherit retaliation. Watch service grace never extends its armed interval.
+Actual Hero-hull supported refuge/outer escape and Censor lateral routes, finite
+snapshot full/reduced tells, manual162 chapters/32chunks, registry61+4 named,
+append ordinals58/59. B16 preflight now preserves a reentrant cross-mode order.
+
+**Validation:** One fresh canonical integration run passed **all203 suites with zero failures** after final repairs; no gameplay/config/test edits followed. Full results are recorded in
+[validation](validation/BESTIARY_B18.md) and
+[integration matrix](validation/BESTIARY_B18_INTEGRATION.txt). Three B18 suites
+exercise actual AI/shared service/CommitAttack/native combat against boundary
+doubles, production progression/feats/HP/XP/spawn and actual client Draw.
+Magic Forms refund and Wand settlement regression coverage also extended.
+Unchanged512 plans/32mazes/parties1–4/dungeons1–5 produce4942 encounters; all52
+sampled identities pass25planned/20legal/5early. Censor32/32/8, Surveyor30/30/6.
+[Exposure record](validation/BESTIARY_B18_EXPOSURE.md) retains all six trials,
+five failures, exact ordered donor transfers and every identity's counts.
+No resampling, threshold relaxation or prior geometry weakening.
+
+**Native checks retained:** gm_flatgrass real cease-fire/attack/retaliation
+alignment, failed-cast behavior, refuge/outer escape with actual hulls/support/
+gates/Walls/false floors, Raw mitigation and physical Block/Dodge, HP/XP/drops,
+full/reduced warnings/audio, 1–4-player balance/network/late join, death/revival/
+disconnect/freeze/reset/same-seed rebuild. Preserve all earlier cohorts and
+Gordon→Hector→Deborah, sole staging successor, Abundance and Level21 cash.
+Evidence console_latest.txt+rpg_summary_latest.txt after ordered phases/audits;
+session log only for event order. No pre-sequence human/deployment gate.
+
+**Next:** B19 only: targeted remaining-niche review, author/implement/validate the
+final meaningful pair; target63/63. Whole-phase campaign-aware themes, novelty
+memory, topology, pacing and quantitative coverage remain within Bestiary even
+after the numerical roster target is met. Then Big Loot, Events and the audits.
+
+## Previous checkpoint — B17: companion-interaction cohort
 
 Built on verified remote `aff47575413f077505006a88ff94ff0df04c5e40`.
 **Interposer and Mourner** bring the meaningful normal roster to **59/63**:

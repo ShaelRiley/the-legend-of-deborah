@@ -1238,6 +1238,25 @@
       ]
     },
     {
+      "id": "enemy-edicts",
+      "title": "Cease fire or find refuge",
+      "rows": [
+        [
+          "Censor",
+          "The ochre Combine soldier marks one Hero with a crossed-barrel glyph and CEASE FIRE. PREPARE lasts 0.8 seconds; WATCH lasts 2.4 seconds. Starting a firearm, crowbar, Magic or Wand attack during WATCH triggers a separate, full 1.2-second RETALIATION warning. Stop attacking through WATCH, interrupt or defeat the Censor, break sight with solid cover, or leave range."
+        ],
+        [
+          "Surveyor",
+          "The mint Vortigaunt freezes a 144-unit threat ring around your initial position for 1.6 seconds. REFUGE marks a safe pocket of radius 48, displaced 96 units from the ring center. Enter that pocket or LEAVE RING before judgment. Both routes are checked for your actual body when the warning starts. The rings and arrows stay fixed when you move."
+        ]
+      ],
+      "text": [
+        "The Censor observes new committed attacks, not damage: passive effects, ailments, earlier projectiles and equipment actions that do not commit an attack cannot trigger it. Retaliation freezes your visible position when its new warning begins. Leave the fixed lane, use a wall or intervening body, or interrupt the source. The first body or solid cover absorbs the shot; an intervening enemy is not damaged. The single physical hit is 1d6+2 before ordinary defenses.",
+        "The Surveyor releases one physical 1d6+2 hit only if the originally marked Hero remains inside the outer ring and outside the refuge at judgment. Solid cover, leaving range, interrupting or defeating the Surveyor also cancels it. Muted cancels Surveyor judgment; Held does not. Other enemies can still threaten either escape route: refuge protects only against this judgment.",
+        "Each commitment belongs to the original Hero life. A death, replacement life, reset or invalid geometry cancels it; nobody else inherits the warning. Held and Muted permit the Censor’s stationary physical actions. Morale flight and hit-stun interrupt both enemies. Three seconds of recovery follow each commitment. Labels, distinct glyphs, fixed geometry and countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

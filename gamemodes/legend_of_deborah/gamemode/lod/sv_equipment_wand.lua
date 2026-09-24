@@ -62,7 +62,11 @@ function E:FireWand(ply,weapon)
     self:Report(ply,string.format("Wand — %s · %d/%d charges · 0 Magic",success and "BEAM" or "FAILED USE",item.charges,def.maxCharges),"wand_use")
     if not success or not context.sourceValid() then return false end
     context.castSerial=Forms:_NextCastSerial(ply)
-    context.aceBonus=Rules.CommitAttack and Rules:CommitAttack(ply) and 1 or 0
+    local primed,attackObservation
+    if Rules.CommitAttack then primed,attackObservation=Rules:CommitAttack(ply,true) end
+    context.aceBonus=primed and 1 or 0
     if LOD.Audio then LOD.Audio:Emit(ply,"cast") end
-    return Forms:_CastBeam(ply,form,content,context)
+    local fired=Forms:_CastBeam(ply,form,content,context)
+    if fired and attackObservation and Rules.ObserveCommittedAttack then Rules:ObserveCommittedAttack(ply,attackObservation) end
+    return fired
 end

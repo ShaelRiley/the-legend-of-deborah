@@ -78,6 +78,20 @@ local function class(id,level)
  local ps=p.ps.progressionState;ps.classId=id;ps.level=level or 1;C:_RecomputeProgressionState(ps)
 end
 local item=E:NewItem(p,'weapon_lod_wand','proof');local state=E:Ensure(p.ps)
+-- Observe the real Wand transaction's settlement boundary without replacing
+-- canonical Ace accounting. B18's behavioral suite owns receipt/life validation.
+local commitAttack=Rules.CommitAttack
+local attackObservations,attackReceipts=0,{}
+function Rules:CommitAttack(actor,deferred)
+ assert(deferred,'Wand must defer observation until Beam succeeds')
+ local primed=commitAttack(self,actor,true)
+ local receipt={actor=actor};attackReceipts[receipt]=true
+ return primed,receipt
+end
+function Rules:ObserveCommittedAttack(actor,receipt)
+ assert(attackReceipts[receipt] and receipt.actor==actor,'settles original Wand attack receipt')
+ attackReceipts[receipt]=nil;attackObservations=attackObservations+1
+end
 assert(E:ValidateWearable(item) and item.charges==12 and E:Value(item)==item.budget)
 assert(E:Description(item):find('CHARGES 12/12',1,true))
 for _,n in ipairs({-1,13,1.5,math.huge}) do local bad=table.Copy(item);bad.charges=n;assert(not E:ValidateWearable(bad)) end
@@ -97,6 +111,7 @@ assert(weapon:GetClass()=='weapon_lod_wand' and weapon.nw.LOD_WandCharges==12)
 class('fighter');assert(not E:FireWand(p,weapon) and item.charges==12 and utilityRolls==0)
 class('wizard');p.ps.magic=47
 assert(E:FireWand(p,weapon) and item.charges==11 and p.ps.magic==47 and utilityRolls==0)
+assert(attackObservations==1,'one successful Wand commitment observed')
 assert(a.hp<100 and b.hp<100 and ally.hp==100 and damageOrder[1]==a and damageOrder[2]==b and #damageOrder==2)
 assert(endpoints[#endpoints].x==700,'visible Beam ends at its actual blocker')
 local tags=S:DamageContext(a.lastInfo)
@@ -115,6 +130,7 @@ local function reset()
 end
 reset();class('rogue',10);utility=51
 assert(not E:FireWand(p,weapon) and item.charges==10 and #damageOrder==0 and p.ps.magic==47 and utilityRolls==1)
+assert(attackObservations==1,'failed arcane use never triggers Censor')
 assert(feed[#feed].fields.event=='arcane_item_use' and not feed[#feed].fields.success)
 reset();utility=50;assert(E:FireWand(p,weapon) and item.charges==9 and utilityRolls==2)
 for _,row in ipairs({{1,5},{10,50},{19,95},{20,95}}) do
@@ -183,6 +199,10 @@ for _,scenario in ipairs({
  reset();scenario[1]();local n=second.charges;assert(not E:FireWand(p,weapon) and second.charges==n);scenario[2]()
 end
 assert(E:FireWand(p,weapon) and second.charges==11,'restoring valid lifecycle permits activation')
+reset();local castBeam=F._CastBeam;local observedBefore=attackObservations
+F._CastBeam=function() return false end
+assert(not E:FireWand(p,weapon) and attackObservations==observedBefore,'failed native Beam does not settle an attack observation')
+F._CastBeam=castBeam
 assert(E:InventoryWeapon(p,item.id,false))
 assert(p.ps.magic==47 and #p.ps.progressionState.featIds==0)
 -- Execute native adapter and HUD boundaries; no native ammunition/reload authority.

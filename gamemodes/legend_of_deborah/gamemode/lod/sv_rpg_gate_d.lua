@@ -263,7 +263,15 @@ function AbilityRules:ResolveDamageContract(contract, attacker, target, tags)
     return resolved, reduced, resistance
 end
 
-function AbilityRules:CommitAttack(actor)
+function AbilityRules:ObserveCommittedAttack(actor,receipt)
+    local roster=LOD.EnemyRoster
+    if receipt and roster and roster.ObserveEdictAttack then
+        -- An optional hostile observation may not abort an accepted Hero attack.
+        pcall(roster.ObserveEdictAttack,roster,actor,CurTime(),receipt)
+    end
+end
+
+function AbilityRules:CommitAttack(actor,deferObservation)
     local derived = self:Derived(actor)
     if not derived or not IsValid(actor) then return false end
     local now = CurTime()
@@ -271,7 +279,14 @@ function AbilityRules:CommitAttack(actor)
     local primed = primeSeconds > 0
         and now >= (actor.LODRPGNextAceReadyAt or 0)
     if primeSeconds > 0 then actor.LODRPGNextAceReadyAt = now + primeSeconds end
-    return primed
+    local receipt
+    local roster=LOD.EnemyRoster
+    if roster and roster.CaptureEdictAttack then
+        local ok,captured=pcall(roster.CaptureEdictAttack,roster,actor,now)
+        if ok then receipt=captured end
+    end
+    if not deferObservation then self:ObserveCommittedAttack(actor,receipt) end
+    return primed,receipt
 end
 
 function AbilityRules:ComputeMagicDiversion(resolvedHPDamage, fraction, currentMagic, hpPerMagic, roundDesiredUp)

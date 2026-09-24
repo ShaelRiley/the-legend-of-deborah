@@ -19,6 +19,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     fusilier=Color(225,135,75),bombardier=Color(210,175,80),
     halter=Color(235,145,85),pacer=Color(90,215,225),
     interposer=Color(125,175,225),mourner=Color(195,125,215),
+    censor=Color(210,170,110),surveyor=Color(110,215,190),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -850,6 +851,91 @@ function V:Companion(e)
         "DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
+-- Edicts are finite server snapshots. Client rendering neither judges a Hero's
+-- attacks nor follows a recipient; every observer sees the same frozen choice.
+function V:Edict(e)
+    local mode=e:GetNW2Int("LOD_EdictMode",0)
+    local phase=e:GetNW2Int("LOD_EdictPhase",0)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local now=CurTime();local ready=e:GetNW2Float("LOD_EdictReady",0)
+    local untilAt=e:GetNW2Float("LOD_EdictUntil",0)
+    local function finite(n) return type(n)=="number" and n==n and math.abs(n)<math.huge end
+    local function finiteVector(v) return v and finite(v.x) and finite(v.y) and finite(v.z) end
+    if not ((id=="censor" and mode==1 and (phase==1 or phase==2 or phase==3))
+        or (id=="surveyor" and mode==2 and phase==1))
+        or not e:GetNW2Bool("LOD_RosterAlive",false) or e:GetNW2Int("LOD_RosterAttack",0)~=1
+        or not finite(now) or not finite(ready) or not finite(untilAt)
+        or untilAt<ready or now>=untilAt then return end
+    local duration=mode==2 and 1.6 or (phase==1 and .8 or (phase==2 and 2.4 or 1.2))
+    local tail=mode==2 and .201 or (phase==1 and 2.601 or .201)
+    if ready>now+duration+.001 or untilAt>ready+tail then return end
+    local pos=e:GetPos();local eye=EyePos()
+    local origin=e:GetNW2Vector("LOD_EdictOrigin",nil)
+    local aim=e:GetNW2Vector("LOD_EdictAim",nil)
+    if not finiteVector(pos) or not finiteVector(eye) or not finiteVector(origin) or not finiteVector(aim)
+        or pos:DistToSqr(eye)>2400^2 or origin:DistToSqr(pos)>4^2
+        or origin:DistToSqr(aim)>(mode==2 and 360.01^2 or 432^2) then return end
+    local refuge,escape
+    if mode==2 then
+        refuge=e:GetNW2Vector("LOD_EdictRefuge",nil);escape=e:GetNW2Vector("LOD_EdictEscape",nil)
+        if not finiteVector(refuge) or not finiteVector(escape) then return end
+        local a,b=refuge-aim,escape-aim
+        if math.abs(a.z)>.01 or math.abs(b.z)>.01
+            or math.abs(a:LengthSqr()-96^2)>1 or math.abs(b:LengthSqr()-160^2)>1
+            or (a*(160/96)+b):LengthSqr()>.01 then return end
+    end
+    local color=colors[id];local up=Vector(0,0,1)
+    local center=origin+up*90;local side=(eye-center):Angle():Right()
+    render.SetMaterial(beam)
+    local function line(a,b,width,tint) render.DrawBeam(a,b,width or 3,0,1,tint or color) end
+    local function arrow(a,b,width)
+        local direction=(b-a):GetNormalized();local right=direction:Angle():Right()
+        line(a,b,width);line(b,b-direction*14+right*8,width);line(b,b-direction*14-right*8,width)
+    end
+    local function circle(center,radius,tint)
+        for i=1,32 do
+            local a,b=(i-1)*math.pi/16,i*math.pi/16
+            line(center+Vector(math.cos(a)*radius,math.sin(a)*radius,0),
+                center+Vector(math.cos(b)*radius,math.sin(b)*radius,0),2,tint)
+        end
+    end
+    local function label(at,text,countdown)
+        cam.Start3D2D(at,Angle(0,(eye-at):Angle().y-90,90),.16)
+        draw.SimpleText(text,"DermaLarge",0,-32,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+        if countdown then draw.SimpleText(countdown,"DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER) end
+        cam.End3D2D()
+    end
+    if mode==2 then
+        local ground=aim+up*3;local safe=refuge+up*3;local out=escape+up*3
+        -- Full outer threat boundary and displaced refuge boundary, plus two
+        -- literal escape choices. The refuge is not a center-on-target donut.
+        circle(ground,144,color);circle(safe,48,Color(235,245,240))
+        arrow(ground,safe,2);arrow(ground,out,2)
+        line(origin+up*48,ground,1)
+        -- Compass at source; shelter roof at the safe pocket, distinct in mono.
+        line(center-up*17,center+up*17);line(center-side*17,center+side*17)
+        line(center-up*17,center+side*17);line(center+up*17,center-side*17)
+        line(safe-side*15+up*8,safe+up*22);line(safe+up*22,safe+side*15+up*8)
+        label(safe+up*35,"REFUGE")
+    elseif phase==3 then
+        arrow(origin+up*48,aim,2)
+        local right=(aim-origin):Angle():Right()
+        line(aim-right*10-up*10,aim+right*10+up*10)
+        line(aim-right*10+up*10,aim+right*10-up*10)
+    else
+        -- Crossed barrel: a weapon-use edict, visually distinct from Halter's
+        -- octagonal STOP/motion command. PREPARE and WATCH are explicit.
+        line(origin+up*48,aim,1)
+        line(center-side*17+up*5,center+side*17+up*5)
+        line(center-side*17-up*3,center+side*17-up*3)
+        line(center-side*8-up*3,center-side*8-up*13)
+        line(center-side*18-up*17,center+side*18+up*17,4)
+    end
+    local fraction=math.Clamp((ready-now)/duration,0,1);local bar=center-up*28
+    line(bar-side*24,bar+side*(-24+48*fraction))
+    label(center+up*31,mode==2 and "REFUGE / LEAVE RING" or (phase==3 and "RETALIATION" or "CEASE FIRE"),
+        string.format("%s %.1fs",mode==2 and "JUDGMENT" or (phase==1 and "PREPARE" or (phase==2 and "WATCH" or "FIRE")),math.max(0,ready-now)))
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -859,6 +945,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="censor" or id=="surveyor" then self:Edict(e);return end
     if id=="interposer" or id=="mourner" then self:Companion(e);return end
     if id=="halter" or id=="pacer" then self:Discipline(e);return end
     if id=="fusilier" or id=="bombardier" then self:Crossfire(e);return end

@@ -1,6 +1,7 @@
 -- B16 observes canonical voluntary motion; it never owns or modifies movement.
 local E,N,Rules,Status=LOD.EnemyRoster,LOD.MazeNavigator,LOD.RPGAbilityRules,LOD.RPGStatusElements
-local demands=setmetatable({}, {__mode="k"})
+E.HeroOrders=E.HeroOrders or setmetatable({}, {__mode="k"})
+local demands=E.HeroOrders
 local function copy(v) return Vector(v.x,v.y,v.z) end
 local function finite(n) return type(n)=="number" and n==n and math.abs(n)<math.huge end
 function E:DisciplineMotion(p,now)
@@ -28,7 +29,7 @@ function E:DisciplineValid(e,a,now)
 end
 function E:ObserveDisciplineMotion(p,now)
     local a=demands[p]
-    if not a or a.claimed then return end
+    if not a or not a.discipline or a.claimed then return end
     if not self:ValidLife(a.life) then a.invalidMotion=true;return end
     local moving,at=self:DisciplineMotion(p,now)
     if moving==nil then a.invalidMotion=true;return end
@@ -67,11 +68,15 @@ function E:BeginDiscipline(e,p,now)
     if e.LODRosterAttack or not d or not d.discipline or not self:CanCast(e)
         or now<(e.LODNextAttack or 0) or now<(e.LODHitStunUntil or 0)
         or not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then return false end
-    local function deny() e.LODNextAttack=now+.5;e.LODDisciplineAdvanceUntil=now+.5;return false end
+    local function deny()
+        if IsValid(e) and not e.LODRosterAttack then e.LODNextAttack=now+.5;e.LODDisciplineAdvanceUntil=now+.5 end
+        return false
+    end
     if self:DisciplineMotion(p,now)==nil then return deny() end
     local old=demands[p]
     if old then
-        if self:DisciplineValid(old.life.source,old,now) then return deny() end
+        if old.edict and self:EdictValid(old.life.source,old,now)
+            or old.discipline and self:DisciplineValid(old.life.source,old,now) then return deny() end
         -- Do not leave stale tokens pinning a Hero after removal/reset/error.
         if demands[p]==old then demands[p]=nil end
     end
@@ -87,6 +92,15 @@ function E:BeginDiscipline(e,p,now)
         cell=N:WorldToCell(s.Graph,e:GetPos()),started=now,ready=now+d.warning,last=now,event={}},s)
     a.deadline=a.ready+.2;a.window=a.ready-.4
     if not self:DisciplineSpace(e,a) then return deny() end
+    if e.LODRosterAttack or demands[p] or not self:ValidLife(life) then return deny() end
+    -- A native preflight can admit another order. The final census and token
+    -- checks do not run validation callbacks and cannot steal that reservation.
+    count=0
+    for source in pairs(self.Active) do
+        local active=IsValid(source) and source.LODRosterAttack
+        if active and active.discipline and now<=active.deadline then count=count+1 end
+    end
+    if count>=16 or e.LODRosterAttack or demands[p] then return deny() end
     demands[p]=a;self.Active[e]=true;e.LODRosterAttack=a;e.LODDisciplineAdvanceUntil=nil
     LOD.HostileMotionV2:Stop(e)
     local fields={{"SetNW2Int","LOD_RosterAttack",1},{"SetNW2Int","LOD_DisciplineMode",a.discipline},

@@ -131,8 +131,18 @@ hook.Add("LODDiscreteMagicSpent","test_spend_observer",function(_,cost,context)
     assert(cost>0 and context.auraBurst.prepared)
     spentEvents=spentEvents+1
 end)
+local attackObservations,observationReceipts=0,{}
 LOD.RPGAbilityRules = {OffensiveMagicCost = function(_, _, cost) return cost end,
-    CommitAttack=function(_,actor) actor.LODRPGNextAceReadyAt=clock+3;return true end}
+    CommitAttack=function(_,actor,deferred)
+        assert(deferred,'refundable activation must defer attack observation')
+        actor.LODRPGNextAceReadyAt=clock+3
+        local receipt={actor=actor,at=clock};observationReceipts[receipt]=true
+        return true,receipt
+    end,
+    ObserveCommittedAttack=function(_,actor,receipt)
+        assert(receipt.actor==actor and observationReceipts[receipt],'same captured attack receipt settles')
+        observationReceipts[receipt]=nil;attackObservations=attackObservations+1
+    end}
 LOD.RPGStatusElements.CanInitiateMagic = function() return true end
 dofile(root .. "sv_magic_forms.lua")
 local forms = LOD.MagicForms
@@ -142,6 +152,7 @@ forms._CanCastPreSpend = function() return true end
 forms._CastBlast = function() return true end
 assert(forms:CastSelected(a) == true and ps.magic == 25)
 assert(spentEvents==1,"one successful discrete activation event")
+assert(attackObservations==1,'one observation for successful activation')
 assert(logs[#logs].fields.spent == 25 and logs[#logs].fields.outcome == "committed")
 clock = clock + 2; ps.magic = 10
 local ok, reason = forms:CastSelected(a)
@@ -154,6 +165,7 @@ ok, reason = forms:CastSelected(a)
 assert(not ok and reason == "cast" and ps.magic == 50 and LOD.Magic.NextCast[a] == cooldown)
 assert(logs[#logs].fields.outcome == "cast" and logs[#logs].fields.spent == 0)
 assert(spentEvents==1 and a.LODRPGNextAceReadyAt==previousAce,"failed casts neither emit spend nor consume priming")
+assert(attackObservations==1,'unaffordable and refunded casts do not trigger Censor')
 
 -- Execute actual client receiver/renderer and round-trip its acknowledgments.
 local disk, sounds = {}, {}
