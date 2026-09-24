@@ -69,6 +69,11 @@ hook.Add("FinishMove", "LOD_RPG_DodgeVoluntaryMotion", function(actor, move)
     if actor.LODForcedMovementUntil and CurTime() < actor.LODForcedMovementUntil then speed = 0 end
     Rules.DodgeMotion[actor] = {identity = Rules:ProgressionState(actor), at = CurTime(),
         speed = speed, walk = walk, sprint = sprint}
+    -- A single bounded observer uses these exact qualifications; no second
+    -- movement sampler, history buffer or independent movement classification.
+    if LOD.EnemyRoster and LOD.EnemyRoster.ObserveDisciplineMotion then
+        LOD.EnemyRoster:ObserveDisciplineMotion(actor, CurTime())
+    end
 end)
 
 function Rules:ApplyDodge(target, dmginfo)

@@ -17,6 +17,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     outrider=Color(225,170,80),conductor=Color(150,190,250),
     siphoner=Color(185,115,235),accumulator=Color(235,205,95),
     fusilier=Color(225,135,75),bombardier=Color(210,175,80),
+    halter=Color(235,145,85),pacer=Color(90,215,225),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -723,6 +724,61 @@ function V:Crossfire(e)
     local fraction=math.Clamp((ready-now)/duration,0,1)
     line(center-side*24,center+side*(-24+48*fraction))
 end
+-- The server owns the captured life and voluntary-motion judgment. This tell
+-- uses only its bounded aim snapshot, never a live entity's replacement life.
+-- All semantic geometry and literal instructions survive reduced effects.
+function V:Discipline(e)
+    local mode=e:GetNW2Int("LOD_DisciplineMode",0)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local now=CurTime();local ready=e:GetNW2Float("LOD_DisciplineReady",0)
+    local untilAt=e:GetNW2Float("LOD_DisciplineUntil",0)
+    local function finite(n) return n==n and math.abs(n)<math.huge end
+    local function finiteVector(v) return finite(v.x) and finite(v.y) and finite(v.z) end
+    if not ((id=="halter" and mode==1) or (id=="pacer" and mode==2))
+        or not e:GetNW2Bool("LOD_RosterAlive",false) or e:GetNW2Int("LOD_RosterAttack",0)~=1
+        or not finite(now) or not finite(ready) or not finite(untilAt)
+        or untilAt>ready+.201 or untilAt<ready or now>=untilAt or ready>now+1.601 then return end
+    local pos=e:GetPos();local eye=EyePos()
+    local origin=e:GetNW2Vector("LOD_DisciplineOrigin",pos)
+    local aim=e:GetNW2Vector("LOD_DisciplineAim",origin)
+    if not finiteVector(pos) or not finiteVector(eye) or not finiteVector(origin) or not finiteVector(aim)
+        or pos:DistToSqr(eye)>2400^2 or origin:DistToSqr(pos)>4^2
+        or origin:DistToSqr(aim)>432^2 then return end
+    local color=colors[id];local up=Vector(0,0,1)
+    local center=origin+up*90;local side=(eye-center):Angle():Right()
+    local judging=now>=ready-.4
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or (judging and 4 or 2),0,1,color) end
+    line(origin+up*48,aim,1)
+    if mode==1 then
+        -- Octagonal STOP with pause bars, distinct without relying on color.
+        for i=1,8 do
+            local a,b=(i-.5)*math.pi/4,(i+.5)*math.pi/4
+            line(center+side*(math.cos(a)*19)+up*(math.sin(a)*19),
+                center+side*(math.cos(b)*19)+up*(math.sin(b)*19))
+        end
+        for _,sign in ipairs({-1,1}) do line(center+side*(sign*5)-up*9,center+side*(sign*5)+up*9) end
+    else
+        -- Double forward chevrons: KEEP MOVING.
+        for _,offset in ipairs({-11,7}) do
+            local tip=center+side*(offset+8)
+            line(center+side*(offset-4)+up*13,tip)
+            line(tip,center+side*(offset-4)-up*13)
+        end
+    end
+    local fraction=math.Clamp((ready-now)/1.6,0,1)
+    local bar=center-up*28
+    -- A fixed quarter-bar bracket marks the final0.4s judging interval.
+    line(bar-side*24-up*4,bar-side*12-up*4,1)
+    line(bar-side*12-up*4,bar-side*12+up*4,1)
+    line(bar-side*24,bar+side*(-24+48*fraction))
+    local yaw=(eye-center):Angle().y
+    cam.Start3D2D(center+up*31,Angle(0,yaw-90,90),.16)
+    draw.SimpleText(mode==1 and "STOP" or "KEEP MOVING","DermaLarge",0,-32,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+    draw.SimpleText(string.format("%s %.1fs",judging and "JUDGMENT" or "PREPARE",math.max(0,ready-now)),
+        "DermaDefaultBold",0,0,color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+    cam.End3D2D()
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -732,6 +788,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="halter" or id=="pacer" then self:Discipline(e);return end
     if id=="fusilier" or id=="bombardier" then self:Crossfire(e);return end
     if id=="siphoner" or id=="accumulator" then self:Resource(e);return end
     if id=="outrider" then self:Spacing(e);return end

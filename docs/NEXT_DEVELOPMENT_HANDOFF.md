@@ -1,14 +1,14 @@
-# Handoff — Bestiary B16
+# Handoff — Bestiary B17
 
-Resume **The Legend of Deborah** and complete **Bestiary checkpoint B16 only**,
+Resume **The Legend of Deborah** and complete **Bestiary checkpoint B17 only**,
 including authorized design, implementation, validation, documentation, commit
 and verified non-forced push to `main`.
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Latest checkpoint: **Add Bestiary Fusilier and Bombardier careless-fire interactions**.
-The publication response supplies its exact verified SHA; fetch current remote
-main, confirm this checkpoint and preserve intervening work. B15's parent is
-`b6cb650f32c40ed5bd4b04e2fcf3bd40f4d9945e`.
+Latest checkpoint: **Add Bestiary Halter and Pacer movement discipline**.
+The publication response supplies the exact verified SHA; fetch current main,
+confirm this checkpoint and preserve intervening work. B16's parent is
+`5f817c2eb3e99a14156fd3d783359a998d4f5fbb`.
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 
 I authorize implementation, necessary refactoring, design/tuning decisions,
@@ -17,109 +17,95 @@ GDD amendments, focused parallel delegation, commits and non-forced pushes to
 main. Resolve ordinary ambiguities. **Do not deploy to the VPS or publish to
 Steam Workshop.**
 
-Recover from AGENTS.md, the active roadmap/newest DEVELOPMENT_PLAN.md checkpoint,
-this file, BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Follow live GDD
-00→01→relevant tabs, including LOD-ROADMAP-ECOSYSTEM-001 and relevant prior
-LOD-BESTIARY rules through B15-001. Exact HUMAN anchors only for required missing
-detail. Missing historical art does not block implementation. No chat archaeology
-or repeated broad audit.
+Read AGENTS.md, the active/newest DEVELOPMENT_PLAN.md checkpoint, this handoff,
+BESTIARY_EXPANSION.md and briefs/BESTIARY_UPDATE.md. Live GDD00→01→needed tabs,
+including LOD-ROADMAP-ECOSYSTEM-001 and relevant LOD-BESTIARY rules through
+B16-001. Exact HUMAN anchors only for required missing detail. Missing historical
+art is not blocking. No chat archaeology or repeated broad audit.
 
-## Current B15 implementation
+## Current B16 implementation
 
-Fusilier freezes a narrow1.25s lane: first native body intercepts its physical
-1d6+2 shot, including captured ordinary enemies. Bombardier warns1.6s over a
-frozen radius72 ground blast: Heroes can leave and bait companions into it.
-Body-blocking stops the single shot, not the area; solid cover protects both.
-Range360, recovery3s/3.5s. EnemyRoster owns commitments and canonical packets;
-FactionManager permits only the exact owned native friendly-fire packet.
-No general infighting, new targeting, source self-hit, named boss/clone/event/
-friendly-summon/human-Soldier friendly-fire damage or fabricated Hero kill credit.
-Earned Hero contribution XP and ordinary loot retain their existing authorities.
+Halter/STOP and Pacer/KEEP MOVING warn1.6s and judge the final0.4s against25% of
+canonical legitimate walk speed. Every FinishMove observation passes through the
+existing DodgeMovement qualifications into a bounded exact-demand observer;
+there is no second movement classifier. Any violation permits one physical1d6+2
+hit; require≥0.3s distinct coverage, no sample gap>0.15s and final sample within0.1s.
+Unknown/stale/forced/non-walk/movement-prohibited Hero state cancels, including
+recently expired force samples. Range360/same legal supported cell; obey, break
+cover/range/cell or interrupt. Source Held/Muted permit stationary physical actions;
+morale/hit-stun/attack prohibition cancel. Actual Hero-hull escapes/support,
+fixed deadlines/recovery, exclusive per-Hero reservation across both modes,
+cap16, exact source/Hero progression/status-life and dungeon/campaign ownership.
+The existing native packet guard validates single admission and exact
+recipient/attacker/inflictor across mitigation; no B15 faction permit is granted.
 
-Capture source/primary/recipients before warning, including status-life and
-progression plus exact dungeon/campaign scope. No late-arrival/replacement damage;
-uncaptured bodies harmlessly absorb a Fusilier shot. One shared area roll,
-claim before callbacks, simultaneous admission without primary-death order bias,
-source replacement cancels remaining hits. Fixed deadline and recovery, actual
-Hero-hull escape, same legal cell/support, cap16, cached Hero32/hostile128 limits,
-release grace0.2s, service gap0.25s, source drift4. Held/Muted permit these physical
-stationary actions; morale, hit-stun and attack prohibition cancel.
+Production singleton Halter+Soldier and Pacer+Runner, append ordinals54/55,
+registry57 normal+4 named bosses. Full/reduced literal instruction, distinct
+glyph/countdown/final-judgment cue and server-snapshot tether. Manual160chapters/
+32chunks. Frozen baseline18, target63; **57/63 implemented,39/45 additions,
+6 remaining**. No cosmetic/affinity/boss/event/summon inflation. Native acceptance
+remains pending.
 
-Frozen baseline **18**, target **63**, implemented **55/63**, **37/45 additions
-banked**, **8 remaining**. No cosmetic/procedural/boss/event/summon inflation.
-Production singleton templates pair Fusilier with Shambler and Bombardier with
-Runner; append ordinals52/53, explicit registry55 normal+4 named bosses.
-Manual159 chapters/31 chunks. Full/reduced warnings retain lane/body brackets or
-blast fragments and countdown. Native Source acceptance remains pending.
+## Complete B17 — next remaining-roster cohort
 
-## Complete B16 — next remaining-roster cohort
-
-Select two underrepresented tactical identities through a targeted gap review of
-the ledger and shared behavior authorities. Choose a coherent pair and author
-its finite counterplay, tuning and production gate before implementation. Prefer
-new interaction or topology decisions over copies of prior cohorts. Target57/63
-only if both are meaningful validated production identities. Solo-safe warnings,
-exact-life ownership, canonical combat/status/progression/rewards and bounded
-service remain mandatory. No private pools, permanent resource/stat loss, hidden
-tracking, unavoidable control/damage or extra bodies. Preserve remaining breadth
-and whole-phase campaign-aware director ecology within Bestiary; do not begin
-Big Loot or Events.
+Select two underrepresented tactical identities through a targeted ledger/shared-
+authority gap review. Author finite counterplay, tuning and production gates
+before implementation. Target59/63 only if both meaningfully qualify; prefer
+new interaction/topology decisions over copies of prior cohorts. Preserve
+solo-safe geometry, exact-life ownership, canonical combat/status/progression/
+rewards and bounded service. No private pools, permanent losses, hidden tracking,
+unavoidable control/damage or extra bodies. Remaining breadth and whole-phase
+campaign-aware encounter themes/novelty/topology/pacing remain inside Bestiary.
+Do not begin Big Loot or Events.
 
 Preserve prior cohorts, bosses, Gordon→Hector→Deborah, sole staging successor,
-Abundance and Level21 cash. B4 Block stays single-roll/capped; B5 released shots
+Abundance and Level21 cash. B4 Block remains one capped roll; B5 released shots
 survive ordinary interruption but retire on life replacement; B6 traps disarm on
-source interruption/support loss; B7 beats/backstep/recovery cannot extend or
-catch up; B8 only sealed post-defeat receipts burst; B9 canceled channels cannot
-create pulls/guards or transfer screens to revived recipients; B10 stalled
-service cannot catch up motion/damage or leave a trail; B11 cannot pursue hidden
-live positions, use camera facing, inherit pre-activation hearing, retain cloaked
-knowledge or suppress canonical morale; B12 cannot consume replacement ailments/
-lives, erase another cleanser's reservation or use enemy hulls for Hero escape;
-B13 cannot transfer warnings, leave spent links pinning actors or erase a newer
-attack during native callbacks. B14 cannot overdraw/debit/drain/refill twice,
-transfer resources to replacement lives, trigger cast feats from drain/recharge
-or leave claimed callback failures pinning an actor. B15 cannot widen ordinary
-friendly fire, bypass first-body/world interception, grant stale native packets,
-misread diagonal Hero hulls, transfer warnings to new lives or invent Hero kill
-credit. No duplicate authorities.
+interruption/support loss; B7 beats/backstep/recovery cannot extend or catch up;
+B8 only sealed defeat receipts burst; B9 canceled channels cannot create pulls/
+guards or transfer screens; B10 stalls cannot catch up motion/damage or leave
+trails; B11 has no hidden pursuit/camera checks/stale hearing/cloaked memory or
+morale suppression; B12 no replacement ailments/lives/reservation theft or enemy
+hulls for Hero escape; B13 no warning transfer/spent pinned links/newer-attack
+erasure; B14 no overdraw/repeat debit/drain/refill/replacement-pool transfer or
+cast feats from drain/recharge; B15 exact packet-only allied fire, first-body/
+world cover, simultaneous admission and no fabricated Hero XP; B16 no opposing
+orders, skipped inter-service motion samples, forced/stale motion judgments,
+failed-authorize damage, replacement-life warning/damage, new-token erasure,
+late/catch-up judgment or extended error recovery. No duplicate authorities.
 
 ## Validation truth and cadence
 
-One fresh canonical run passed **all194 suites with zero failures** after final
-repairs; no gameplay/config/test edits followed. See docs/validation/BESTIARY_B15.md
-and BESTIARY_B15_INTEGRATION.txt. The unchanged sample has4947 encounters; all46
-sampled identities pass, Fusilier54/54/14 and Bombardier32/32/8. Twenty-three
-trials (22 failures) and final262 broad+329 sector2-only additions are retained.
-The final fixed-length transfers resolved remaining gaps without reshuffling
-unaffected ticket indices; prefer that measured repair over repeated pool-length
-churn when possible, until the full director redesign. BESTIARY_B15_EXPOSURE.md preserves all
-measured trials, exact ticket deltas and final counts under unchanged512 plans/
-32 mazes/parties1–4/dungeons1–5 and25 planned/20 legal/5 early gates. Do not repeat
-sampling without changed selection risk. Whole-phase director redesign remains.
-Live GDD00/01/03/05/07 amendments are read-back verified in the checkpoint record.
-Boundary doubles are not Source observation or acceptance.
+One fresh canonical run passed **all197 suites with zero failures** after final repairs; no gameplay/config/test edits followed. Full result and matrix: validation/BESTIARY_B16.md and
+BESTIARY_B16_INTEGRATION.txt. Three new B16 suites cover behavior/production/
+visuals. Unchanged512 plans/32 mazes/parties1–4/dungeons1–5 produce4939 encounters;
+all48 sampled identities pass25planned/20legal/5early; Halter30/28/5 and
+Pacer33/33/6. All four trials (three failures), exact initial four tickets each
+and fixed-length donor transfers are preserved in BESTIARY_B16_EXPOSURE.md.
+Do not resample without changed selection risk. Preserve validated ticket order;
+whole-phase campaign-aware director redesign is still required. Live GDD
+00/01/03/05/07 authored design/tuning/evidence/continuation are read-back verified
+in the checkpoint record. Boundary doubles are not Source observation/acceptance.
 
-Reserve the final third for validation, repairs, documentation and publication.
-Use targeted tests while editing, then once coherent run
-`python3 tools/test_checkpoint_g_integration.py`. Fix attributable failures;
-repeat broadly only for concrete remaining risk. Update/read-back verify live
-GDD, manual, ledger, plan and handoff with counts, evidence, native checks and next
-slice. Keep the progression-validation registry synchronized with IDs.
+Reserve final third for validation, repairs, documentation and publication.
+Targeted tests while editing, then one coherent canonical run:
+`python3 tools/test_checkpoint_g_integration.py`. Repair attributable failures;
+broaden only for concrete shared-authority risk. Update/read-back verify live
+GDD, manual, ledger, plan and handoff with counts/evidence/native checks/next slice.
+Keep explicit progression validator registry synchronized with all IDs.
 Commit and publish immediately after green validation.
 
-After ordered phases, test gm_flatgrass native models/poses, first-body interception,
-allied blast bait/cover, actual Hero hulls/support/gates/Walls/false floors,
-Block/Dodge/HP/XP/drop attribution, death/revival/disconnect/late join, freeze/reset/
-same-seed rebuild, full/reduced warnings/audio and1–4-player networking/balance,
-plus previous cohorts and complete campaign regressions. Evidence
-console_latest.txt+rpg_summary_latest.txt; session log only for ordering.
-No human runtime or deployment gate is implied before ordered phases complete.
+After ordered phases, test gm_flatgrass actual STOP/GO timing/motion/force/Held/
+slow/crouch, real support/hulls/gates/Walls/false floors, Block/Dodge/HP/XP/drops,
+full/reduced warnings/audio, death/revival/disconnect/late join, freeze/reset/
+same-seed rebuild and1–4-player network/balance plus prior cohorts and complete
+campaign. Evidence console_latest.txt+rpg_summary_latest.txt; session log only
+for ordering. No human runtime or deployment gate precedes the ordered phases.
 
 If CLI push credentials are unavailable, use authenticated GitHub blob/tree/
-commit/ref tools: verify every blob and exact complete validated tree, advance
-main non-forced, fetch and verify SHA, parent and tree. Preserve newer work;
-never force-push or overwrite. Phase order: Bestiary→Big Loot→Event System→systems
-integration/emergence audit→low-end PC performance audit→final crash/progression
-safety audit→human playtest. Native acceptance does not block the sequence.
-Finish B16 only. End with verified SHA, scope, tests, progress, native checks and
+commit/ref tools; verify every blob and exact complete tested tree, advance main
+non-forced, fetch and verify SHA/parent/tree. Preserve newer work; never force.
+Order: Bestiary→Big Loot→Event System→systems integration/emergence audit→low-end
+PC performance audit→final crash/progression-safety audit→human playtest.
+Finish B17 only. End with verified SHA, scope/tests/progress/native checks and
 next continuation prompt.

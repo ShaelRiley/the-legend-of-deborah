@@ -1199,6 +1199,26 @@
       ]
     },
     {
+      "id": "enemy-discipline",
+      "title": "Stop — or keep moving",
+      "rows": [
+        [
+          "Halter",
+          "The amber Combine elite tethers one Hero with an octagonal pause glyph and the literal command STOP. During the final 0.4 seconds, keep voluntary speed below one quarter of your legitimate walking speed."
+        ],
+        [
+          "Pacer",
+          "The cyan Metrocop tethers one Hero with double chevrons and KEEP MOVING. During the final 0.4 seconds, maintain voluntary speed at or above one quarter of your legitimate walking speed."
+        ]
+      ],
+      "text": [
+        "Each demand warns for 1.6 seconds. PREPARE becomes JUDGMENT for the final 0.4 seconds; the countdown, thicker glyph and quarter-bar bracket identify that interval. A violating observation during judgment commits one physical 1d6+2 hit at release, subject to ordinary defenses. Comply throughout the interval to avoid it. Earlier movement does not decide the result.",
+        "The tether follows only the originally captured Hero life. Only one demand can hold a Hero at a time, including across both enemy types. Break sight with solid cover, leave the 360-unit range or current cell, or interrupt or defeat the source to cancel the demand. Later arrivals and replacement lives never inherit it.",
+        "Only actual voluntary motion counts: movement input against a wall is not enough for KEEP MOVING. Forced pushes, Held, nonwalking movement or stale motion evidence cancel the demand harmlessly, rather than making a forced failure count. An interval without enough reliable movement evidence also cancels.",
+        "Held and Muted on the attacker permit these stationary physical demands; morale flight and hit-stun cancel them. STOP and KEEP MOVING text, distinct glyphs, tether and countdown remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

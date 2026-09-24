@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B15 builds on verified remote `main` `b6cb650f32c40ed5bd4b04e2fcf3bd40f4d9945e`,
-`Add Bestiary Siphoner and Accumulator resource pressure`.
-The current B15 checkpoint below is the newest implementation record. Its exact
+B16 builds on verified remote `main` `5f817c2eb3e99a14156fd3d783359a998d4f5fbb`,
+`Add Bestiary Fusilier and Bombardier careless-fire interactions`.
+The current B16 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,58 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B15: careless-fire interaction cohort
+## Current checkpoint — B16: movement-discipline cohort
+
+Built on verified remote `5f817c2eb3e99a14156fd3d783359a998d4f5fbb`.
+**Halter and Pacer** bring the meaningful normal roster to **57/63**:
+frozen baseline18, **39/45 additions banked**, **6 remain**. Source acceptance
+remains pending; no VPS deployment or Workshop publication.
+
+**Playable scope:** Halter demands STOP, Pacer KEEP MOVING. Both warn1.6s, then
+judge every canonical voluntary-motion observation during the final0.4s against
+25% of legitimate walk speed. Any violation permits one physical1d6+2 hit;
+insufficient/stale/forced/impossible motion cancels. Obey, interrupt, break cover,
+leave360 range or the legal room. Exclusive per-Hero ownership prevents opposing
+orders. Shared EnemyRoster commitments/service, canonical FinishMove/DodgeMovement,
+status lives and existing native packet/mitigation/HP/reward authorities. No
+additional motion classifier, faction exception, status/resource pool or bodies.
+Full authored parameters: ledger and live GDD03/05/07 LOD-BESTIARY-B16-001.
+
+**Ownership and readability:** exact source/Hero progression/status-life and
+run/graph/progression/campaign;16-cap, fresh0.3s observed final-window coverage,
+maximum0.15s observation gap/final sample age0.1s, fixed0.2s release grace,
+0.25s service gap,4-unit source drift,3s recovery. Actual Hero hull/support/escape
+checks, including native callback changes. Claim before callbacks, preserve new
+attacks/tokens, reject failed authorization, replay and stale/native mitigation
+replacement. Full/reduced STOP/KEEP MOVING glyph/text/countdown/tether uses only
+visible server snapshots. Manual160 chapters/32 chunks, append ordinals54/55,
+progression registry57 normal+4 named bosses.
+
+**Validation:** one fresh canonical run passed **all197 suites with zero failures**; no gameplay/config/test edits followed. See [B16 validation](validation/BESTIARY_B16.md) and
+[integration output](validation/BESTIARY_B16_INTEGRATION.txt) for the fresh canonical
+result. Three new suites exercise real AI/service, canonical movement and combat,
+production/progression/spawn, and native Draw with boundary doubles. Unchanged
+512-plan/32-maze/parties1–4/dungeons1–5 sample produces4939 encounters;
+all48 sampled identities retain25 planned/20 legal/5 early gates. Halter30/28/5,
+Pacer33/33/6. Four trials including three failures and exact fixed-length donor
+transfers are preserved in [exposure](validation/BESTIARY_B16_EXPOSURE.md).
+No seed/geometry/threshold/ceiling/companion relaxation. Whole-phase director
+ecology remains required. Live GDD updates/readback and final results are in the
+validation record. Boundary doubles are not native observation or acceptance.
+
+**Native checks retained:** gm_flatgrass actual movement/force/Held/slow/crouch,
+warning timing and visibility, real support/collision/gates/Walls/false floors,
+STOP/GO and companion-pressure balance, Block/Dodge/HP/rewards, lifecycle/reset/
+late join, full/reduced audio/visuals and1–4-player networking. Preserve prior
+cohorts and campaign/finale/succession/Abundance/Level21. Evidence
+console_latest.txt+rpg_summary_latest.txt; session log only for ordering after
+ordered phases/audits. No new pre-sequence human gate.
+
+**Next:** B17 only: targeted remaining-niche review, author/implement/validate the
+next meaningful coherent pair; target59/63. Six additions plus whole-phase
+campaign-aware ecology remain inside Bestiary before Big Loot/Events/audits.
+
+## Previous checkpoint — B15: careless-fire interaction cohort
 
 Built on verified remote `b6cb650f32c40ed5bd4b04e2fcf3bd40f4d9945e`.
 **Fusilier and Bombardier** bring the meaningful normal roster to **55/63**:

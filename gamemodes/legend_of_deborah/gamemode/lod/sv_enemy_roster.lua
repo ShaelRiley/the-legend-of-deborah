@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    halter={name="Halter",model="models/combine_super_soldier.mdl",baseHP=45,speed=110,damage=5.5,range=360,warning=1.6,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",discipline=1,color=Color(235,145,85),dice={1,6,2}},
+    pacer={name="Pacer",model="models/police.mdl",baseHP=35,speed=145,damage=5.5,range=360,warning=1.6,recovery=3,threat=3.5,activity=ACT_RUN,kind="bullet",discipline=2,color=Color(90,215,225),dice={1,6,2}},
     fusilier={name="Fusilier",model="models/combine_soldier.mdl",baseHP=45,speed=125,damage=5.5,range=360,warning=1.25,recovery=3,threat=3.5,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",crossfire=1,color=Color(225,135,75),dice={1,6,2}},
     bombardier={name="Bombardier",model="models/combine_super_soldier.mdl",baseHP=55,speed=100,damage=5.5,range=360,warning=1.6,recovery=3.5,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",crossfire=2,color=Color(210,175,80),dice={1,6,2}},
     siphoner={name="Siphoner",model="models/stalker.mdl",baseHP=35,speed=125,damage=5.5,range=360,warning=1.25,recovery=3.5,threat=3.5,activity=ACT_WALK,kind="arc",contentId="raw",resource="drain",color=Color(185,115,235),dice={1,6,2}},
@@ -99,7 +101,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource or d.crossfire)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile or d.condition or d.spacing or d.resource or d.crossfire or d.discipline)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -136,6 +138,16 @@ function E:Prepare(e)
 end
 function E:Cancel(e)
     local d=self.Definitions[e.LODArchetypeId]
+    if e.LODRosterAttack and e.LODRosterAttack.discipline then
+        local old=e.LODRosterAttack;e.LODRosterAttack=nil
+        self:RetireDiscipline(e,old)
+        e:SetNW2Int("LOD_DisciplineMode",0)
+        if e.LODRosterAttack then return end
+        e:SetNW2Float("LOD_DisciplineUntil",0)
+        if e.LODRosterAttack then return end
+        e:SetNW2Int("LOD_RosterAttack",0)
+        return
+    end
     if d and d.perception then e.LODPerceptionMemory=nil;e.LODPerceptionDiscardBefore=CurTime() end
     if e.LODRosterAttack and e.LODRosterAttack.tactical then self:RetireTactical(e) end
     if e.LODRosterAttack and (e.LODRosterAttack.mobile or e.LODRosterAttack.perception) then LOD.HostileMotionV2:Stop(e) end
@@ -155,7 +167,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource or a.crossfire) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile or a.perception or a.condition or a.spacing or a.spacingFallback or a.resource or a.crossfire or a.discipline) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -167,7 +179,7 @@ end
 -- Shared packet construction; ordinary callers enter through Damage's living
 -- gate. Post-defeat callers enter only through EnemyRemains' sealed receipt.
 function E:_DamagePacket(e,p,event,kind)
-    local gate=event.crossfireGate
+    local gate=event.commitmentGate or event.crossfireGate
     if gate and not gate() then return end
     local rolls=LOD.CombatRolls
     local profile=rolls.HostileDamageProfiles[e.LODArchetypeId]
@@ -205,9 +217,10 @@ function E:_DamagePacket(e,p,event,kind)
     end)
     if gate and not gate() then return end
     local before=p:Health()
+    if event.commitmentGate and not self:AuthorizeRosterDamage(info,e,p,event.commitmentGate) then return end
     if event.crossfireAttack then self:AuthorizeCrossfire(info,e,p,event.crossfireAttack) end
     p:TakeDamageInfo(info)
-    if event.crossfireAttack then self:RevokeCrossfire(info) end
+    if event.crossfireAttack or event.commitmentGate then self:RevokeCrossfire(info) end
     if IsValid(e) and not e.LODDead and IsValid(p) and content
         and (not e.LODSkeletonHero or LOD.SkeletonHero:Live(e)) then
         local after=p:Health()
@@ -222,6 +235,7 @@ function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
+    if d.discipline then return self:BeginDiscipline(e,p,now) end
     if d.resource then return self:BeginResource(e,p,now) end
     if d.crossfire then return self:BeginCrossfire(e,p,now) end
     if d.spacing and not override.spacingFallback then return self:BeginSpacing(e,p,now) end
@@ -270,10 +284,12 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire) then
+    if attack and attack.discipline and (e.LODRosterAttack or not self:ValidSourceLife(attack.life)) then return end
+    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire or attack.discipline) then
         e.LODMeleeRecovery={life=attack.life,expires=attack.recoveryUntil or now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
-        LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
+        LOD.HostileMotionV2:Stop(e)
+        if not attack.discipline or (not e.LODRosterAttack and self:ValidSourceLife(attack.life)) then e:_SetActivity(ACT_IDLE) end
         return
     end
     local rate=LOD.RPGAbilityRules and LOD.RPGAbilityRules:RateOfFireMultiplier(e) or 1
@@ -317,6 +333,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.discipline then return self:StepDiscipline(e,a,now) end
     if a.resource then return self:StepResource(e,a,now) end
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
     if a.crossfire then return self:StepCrossfire(e,a,now) end
@@ -453,13 +470,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire and not d.discipline then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -526,6 +543,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        halter={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
+        pacer={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         outrider={"npc/antlion/pain1.wav","npc/antlion/die1.wav","npc/antlion/foot1.wav"},
         siphoner={"npc/stalker/stalker_pain1.wav","npc/stalker/stalker_die1.wav","npc/stalker/stalker_footstep_left.wav"},
         accumulator={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},

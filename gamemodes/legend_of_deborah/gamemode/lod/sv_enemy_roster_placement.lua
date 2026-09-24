@@ -41,7 +41,7 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -49,8 +49,8 @@ function E:Placement(graph,c,id,role)
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
     end
-    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire then
-        -- Passable guard planes, condition, spacing, resource and crossfire marks need in-cell flank pockets,
+    if d.tactical=="screen" or d.condition or d.spacing or d.resource or d.crossfire or d.discipline then
+        -- Guard planes, marked attacks and movement demands need in-cell flank pockets,
         -- not a whole graph cycle that excludes otherwise escapable rooms.
         local exit
         for _,k in ipairs(sorted(c.neighbors)) do
@@ -141,6 +141,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    halter_detail={name="Halter Detail",composition={halter=1,soldier=1}},
+    pacer_chase={name="Pacer Chase",composition={pacer=1,runner=1}},
     fusilier_screen={name="Fusilier Screen",composition={fusilier=1,shambler=1}},
     bombardier_pressure={name="Bombardier Pressure",composition={bombardier=1,runner=1}},
     siphoner_pressure={name="Siphoner Pressure",composition={siphoner=1,runner=1}},
@@ -1025,14 +1027,37 @@ function D:_EligibleTemplates(sector,role)
             out[#out+1]="fusilier_screen";out[#out+1]="fusilier_screen"
         end
     end
+    if sector>=2 and (role=="arena" or role=="ambush") then
+        -- B16 trial1 begins with four tickets per movement-discipline identity.
+        for _=1,4 do out[#out+1]="halter_detail";out[#out+1]="pacer_chase" end
+        -- B16 trial4 restores observed breadth/early deficits by transferring
+        -- existing tickets in place; pool lengths and all admission gates stay fixed.
+        local transfers=sector==2 and {
+            {"silencer_screen","halter_detail",4},{"carrion_feast","pacer_chase",5},
+            {"arccaster_zone","gaoler_hold",1},{"censer_advance","screenwright_detail",3},
+            {"accumulator_detail","halter_detail",1},{"absolver_detail","pacer_chase",1}
+        } or {
+            {"bombardier_pressure","halter_detail",3},{"outrider_detail","pacer_chase",2},
+            {"repriser_detail","gaoler_hold",2},{"fusilier_screen","listener_detail",4},
+            {"forker_crossfire","snarer_detail",2},{"carrion_feast","halter_detail",1}
+        }
+        for _,transfer in ipairs(transfers) do
+            local remaining=transfer[3]
+            for i=#out,1,-1 do
+                if remaining>0 and out[i]==transfer[1] then
+                    out[i]=transfer[2];remaining=remaining-1
+                end
+            end
+        end
+    end
     return out
 end
 -- Party/depth enrichment adds ordinary bodies, never duplicate stationary hazards
--- or support/pursuit/reaction/trap/melee/tactical/mobile/crossfire specialists in one authored encounter.
+-- or support/pursuit/reaction/trap/melee/tactical/mobile/crossfire/discipline specialists in one authored encounter.
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource or E.Definitions[k].crossfire or E.Definitions[k].discipline) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

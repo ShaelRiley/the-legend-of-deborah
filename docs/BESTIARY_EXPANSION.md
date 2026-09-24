@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B15
+# Bestiary expansion — frozen baseline through B16
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B15 add thirty-seven identities: **55/63**, or **37/45 additions**; **8 remain**.
+B1–B16 add thirty-nine identities: **57/63**, or **39/45 additions**; **6 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -983,13 +983,74 @@ Automated evidence and measured production exposure are recorded in
 native Source observation or acceptance. Preserve prior cohorts and the complete
 campaign/finale/succession/Abundance/Level21 regression constraints.
 
-## Next checkpoint — B16: remaining interaction breadth
+## B16 — movement-discipline cohort
 
-Choose the next coherent pair through a targeted gap review; author finite
-counterplay and production gates before implementation. Target57/63 only when
-two new meaningful production identities qualify. Eight additions remain after
-B15. Do not count new affinity permutations, renamed existing behaviors or bosses.
-Retain solo-safe geometry, exact-life ownership, canonical combat/status/resource/
-reward authorities and bounded shared service. Whole-phase campaign-aware
-encounter themes, novelty history, topology, pacing and quantitative coverage
-remain within Bestiary before Big Loot, Events and the three audits.
+| Counted ID | Tactical identity | Production composition |
+| --- | --- | --- |
+| `halter` / Halter | Amber Combine elite demands **STOP** through a visible tether. Remain below25% of legitimate walk speed during the final0.4s judgment. | Halter + Soldier. |
+| `pacer` / Pacer | Cyan Metrocop demands **KEEP MOVING**. Sustain at least25% of legitimate walk speed during the final0.4s judgment. | Pacer + Runner. |
+
+Gap review found action discipline absent from the55-identity roster. These
+opposite sustained locomotion requirements are distinct from frozen floor marks,
+perception acquisition, guard stances and on-hit retaliation. A Hero can move
+out of an ordinary mark and stop; Pacer instead requires continued locomotion.
+Halter creates an intentional pause against companion pressure. Both remain
+interruptible and cancel when cover, range or the legal room relationship breaks.
+
+Warning1.6s includes1.2s preparation and0.4s judgment. Every canonical FinishMove
+observation in the judgment window is considered; any violation permits one
+physical1d6+2 packet at release. At least0.3s of distinct observed coverage is
+required, with no sample gap>0.15s and a final sample within0.1s of release.
+Canonical DodgeMovement owns voluntary speed and legitimate class/status-adjusted
+walk targets. No new speed calculation, camera/input test, movement override,
+position-history pursuit or forced-movement penalty. Unknown/stale motion,
+non-walk movement, forced movement (including a sample from before force expiry),
+or a Hero unable to move voluntarily cancels. Ordinary Block/Dodge/HP/death/XP/loot
+remain authoritative. No status, extra body, private resource or permanent loss.
+
+One exact reservation per Hero spans both modes, preventing contradictory orders.
+At most16 live commitments use the existing roster Think service. Source/target
+bind exact progression/status-life plus run/graph/progression/seed/campaign scope.
+Range360, source drift4, fixed0.2s release grace,0.25s service gap,0.2s geometry
+cadence,0.1s aim-snapshot replication,0.5s failed-admission retry/reposition,
+3s stationary recovery. Runtime validates current supported legal same-cell
+positions and two96-unit movement options with the Hero's actual hull, support
+samples<=24. Source Held/Muted permit stationary physical actions; morale,
+intimidation and hit-stun cancel. Claim before native callbacks; the shared
+packet guard validates actual recipient/attacker/inflictor and one admission
+before/after mitigation, without granting faction exceptions. Failed/reentrant
+callbacks cannot repeat damage, transfer warnings, erase newer attacks or hold
+reservations/recovery beyond their original deadlines.
+
+Sector2+ arena/ambush singleton templates `halter_detail` and `pacer_chase`,
+append ordinals54/55; explicit progression registry57 normal+4 named bosses.
+Placement excludes safe/objective/transition/gate cells and requires a legal
+same-floor exit/lateral room. Preserve independent RNG, threat/entity caps,
+ordinary companion enrichment and budget-safe fallback. No wandering additions.
+
+Reference HP/speed/threat:45/110/3.5 and35/145/3.5. Stock Combine elite/Metrocop;
+RGB235/145/85 and90/215/225. STR/DEX/CON/INT/WIS/CHA;
+Fighter/Rogue/Wizard weights; HP die; XP; morale:
+Halter12/11/12/12/12/9;65/35/0;d8;50;5.
+Pacer10/15/10/12/12/9;35/65/0;d8;50;5. Both usesMagic=false with usable ordinary
+physical feats. Stock positional charge/pain/death/footstep sounds. Full/reduced
+warnings retain STOP/KEEP MOVING text, octagonal pause/double-chevron glyphs,
+tether from server-visible snapshots, PREPARE/JUDGMENT countdown, final-window
+emphasis, finite expiry/cull2400 and conservative500 bounds. No client tracking
+of replacement entities. Canonical manual160 chapters/32 chunks.
+
+Live GDD03/05/07 `LOD-BESTIARY-B16-001` authored and read back before implementation;
+final evidence and continuation synchronized in00/01/03/05/07. See
+[validation](validation/BESTIARY_B16.md) and
+[exposure](validation/BESTIARY_B16_EXPOSURE.md). Counts describe production
+implementation, not native Source observation or acceptance.
+
+## Next checkpoint — B17: remaining tactical breadth
+
+Select and author the next coherent pair through targeted ledger/shared-authority
+review. Target59/63 only after both meaningful identities pass production gates.
+Six additions remain after B16; no cosmetic/affinity/boss/event/summon inflation.
+Preserve exclusive discipline demands and exact canonical motion observations,
+all prior cohorts and complete campaign/finale/succession/Abundance/Level21.
+Whole-phase campaign-aware encounter themes, novelty memory, topology, pacing
+and quantitative coverage remain within Bestiary before Big Loot or Events.

@@ -121,12 +121,18 @@ function E:RevokeCrossfire(info)
     permits[info]=nil
     if packets[info] then packets[info].finished=true end
 end
+-- All exact-life roster packets share this native callback boundary. This does
+-- not grant the faction exception: only AuthorizeCrossfire installs a permit.
+function E:AuthorizeRosterDamage(info,e,p,gate)
+    if not gate() then return false end
+    packets[info]={source=e,target=p,gate=gate};return true
+end
 local previousDamage=GM.EntityTakeDamage
 local function packetLive(target,info)
     local r=packets[info]
     return not r or not r.finished and target==r.target and info:GetAttacker()==r.source
-        and info:GetInflictor()==r.source and E:CrossfireLive(r.source,r.attack)
-        and E:CrossfireRecipient(r.attack,r.attack.recipients[r.target])
+        and info:GetInflictor()==r.source and (r.gate and r.gate() or not r.gate
+        and E:CrossfireLive(r.source,r.attack) and E:CrossfireRecipient(r.attack,r.attack.recipients[r.target]))
 end
 function GM:EntityTakeDamage(target,info)
     local record=packets[info]
