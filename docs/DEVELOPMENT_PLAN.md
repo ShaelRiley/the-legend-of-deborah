@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B9 builds on verified remote `main` `d4a9700b250ad894e45e0aa9dc680e81009c3a89`,
-`Add Bestiary volatile remains and corpse-consuming Carrion`.
-The current B9 checkpoint below is the newest implementation record. Its exact
+B11 builds on verified remote `main` `86ec5ff6f2fbf84a36ad1521c5a728b69de64f72`,
+`Add Bestiary Censer and Trailmaker mobile hazards`.
+The current B11 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,74 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B10: mobile-hazard cohort
+## Current checkpoint — B11: perception cohort
+
+Built on verified remote `86ec5ff6f2fbf84a36ad1521c5a728b69de64f72`.
+**Listener and Shy** bring the implemented normal roster to **47/63**:
+frozen baseline18, **29/45 additions banked**, **16 remain**.
+
+**Playable scope:** Listener investigates an actual non-crouching footstep's
+frozen same-room position; quiet/crouching Heroes deny its acquisition. Shy
+remembers a directly visible Hero and advances toward that last-seen position
+only while no eligible same-floor Hero within480 has geometric LOS to its body.
+No camera-facing demand or invisibility grant. Both warn0.8s, travel at most128
+units within another1.4s, and deal no investigation damage. Fresh sensory
+eligibility plus a separate0.9s narrow melee warning precede physical1d6+2.
+Flee, sidestep, keep sight, reposition or interrupt. Soldier escorts supply
+complementary pressure. Exact design/tuning: BESTIARY_EXPANSION.md and live
+GDD03/05/07 LOD-BESTIARY-B11-001. Manual155 chapters/31 chunks.
+
+**Ownership and safety:** FactionManager owns event receipts and sensory
+selection; EnemyRoster owns exact life-bound commitments, canonical melee and
+existing service; MotionV2 owns effective physical travel. Hearing TTL1.5s,
+sight memory2s, source/target/run/graph/progression/campaign bindings; canonical
+invisibility forget clears cached knowledge immediately. At most32 sound
+receipts/Hero candidates and16 simultaneous investigations; no world scan,
+per-enemy timer, extra bodies, private statuses or rewards. Full scaled hull
+and<=24-unit support probes constrain each step to its legal supported cell.
+Missed release/service forfeits. Held/interruptions cancel investigation;
+Muted allows it; finite recovery never extends. Review repaired a guard ordering
+that could swallow canonical morale-flee movement; a real-handler regression
+proves memory retirement preserves normal fleeing.
+
+**Validation:** focused behavior, real progression/spawn and native-Draw boundary
+suites pass, including actual server footstep event, quiet/crouch/concealment,
+cooperative LOS independent of view direction, snapshot-only navigation, shared
+cloak source/forget dispatch, real MotionV2, ordinary melee/GM mitigation/HP
+boundary, exact lifetime matrix, native-geometry/support denial, statuses,
+finite service/recovery and caps. Production tests32 seeded generations/replays,
+usable physical classes/feats/growth/HP/XP once, spawn variance/ordinals,
+ceiling/idempotence/retry/fallback and room admission. Exposure tuning retains the
+unchanged512-plan/32-maze/parties1–4/dungeons1–5 gate and25/20/5 thresholds.
+Final4952 encounters: Listener43 planned/41 legal/6 early, Shy33/30/5;
+every prior identity remains green. All failed sampling trials and exact final
+tickets are retained in validation/BESTIARY_B11.md.
+
+One fresh final canonical integration run passed **all181 suites with zero
+failures**, after the morale-dispatch repair and its new regression. No gameplay
+edits followed that final integrated pass. An earlier181-suite pass preceded
+completion of that repair and is not the final acceptance evidence. All prior
+cohorts, combat/status/progression, bosses/finale/succession/Abundance/Level21,
+repository Lua syntax, release wiring and manual readers/transport remain green.
+Live GDD00/01/03/05/07 design, tuning, evidence and continuation were amended and
+read-back verified.
+
+**Native acceptance retained:** after ordered phases, test gm_flatgrass footsteps
+versus crouching, cooperative sight/occlusion, actual full-hull motion/support/
+gates/Walls/false floors, statuses and morale, death/revival/disconnect,
+freeze/reset/same-seed rebuild, warning/audio/full-reduced clarity, actual HP/
+rewards,1–4-player networking/balance, plus prior cohorts and complete campaign
+regressions. Boundary doubles do not establish Source observation/acceptance.
+Evidence: console_latest.txt+rpg_summary_latest.txt; session log only for ordering.
+No VPS deployment or Workshop publication.
+
+**Next:** B12 only, a bounded condition-interaction cohort provisionally covering
+an ally-condition cleanser and a condition-reactive opportunist; these are design
+proposals to reconcile with canonical status ownership, not authored mechanics.
+Target49/63 for two distinct production identities. Keep the remaining breadth
+and campaign-aware director ecology within Bestiary before Big Loot and Events.
+
+## Previous checkpoint — B10: mobile-hazard cohort
 
 Built on verified remote `a5ab25e00491795491cd5d89384202c6cb25d1fd`.
 **Censer and Trailmaker** bring the implemented normal roster to **45/63**:

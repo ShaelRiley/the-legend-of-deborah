@@ -116,6 +116,8 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "listener" or archetype == "shy" then
+        ent:SetRenderBounds(Vector(-160,-160,math.min(0,mins.z*size)),Vector(160,160,math.max(80,maxs.z*size)))
     elseif archetype == "censer" or archetype == "trailmaker" then
         -- A frozen 144-unit route plus its largest 64-unit radius fits this
         -- cached bound from every point along the route; no per-frame rebuild.

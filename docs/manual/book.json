@@ -1107,6 +1107,25 @@
       ]
     },
     {
+      "id": "enemy-perception",
+      "title": "Footsteps and sightlines",
+      "table": [
+        [
+          "Listener",
+          "The amber Metrocop hears non-crouching footsteps in its own room. Its paired-ring marker and dashed route show a brief investigation toward that sound. Crouch, stop making footsteps, or change course after the cue. It does not track your hidden movement."
+        ],
+        [
+          "Shy",
+          "The violet fast zombie remembers a visible Hero, then advances toward that last-seen position only when no eligible Hero has line of sight to it. Its crossed-eye marker announces the fixed route. Keep a clear sightline, use a teammate to watch the lane, or relocate behind cover. Camera direction does not matter."
+        ]
+      ],
+      "text": [
+        "Investigations warn for 0.8 seconds, travel at most 128 units, and end within another 1.4 seconds. Movement itself deals no damage. Listener needs fresh hearing and clear sight to strike; Shy can strike a visible Hero who comes close. Each melee attack has a separate 0.9-second, fixed narrow arc: leave it, use cover, or interrupt.",
+        "Their memory is brief and confined to a supported room. Invisibility prevents acquisition; they cannot follow you through walls, closed gates or missing floor. Interrupting or holding them cancels investigation; Muted does not silence physical footsteps or attacks. The dashed route, distinct destination glyph and countdown remain visible with reduced effects.",
+        "Listener is deliberately footstep-sensitive: gunfire and generic sound effects do not feed its hearing. A crouching Hero can still be threatened by its ordinary companions. Shy remains visible; its rule never forces you to aim or look in a particular direction."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

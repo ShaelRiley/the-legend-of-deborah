@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    listener={name="Listener",model="models/police.mdl",baseHP=40,speed=165,damage=5.5,range=112,warning=.9,recovery=1.8,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",perception="sound",color=Color(235,195,100),dice={1,6,2}},
+    shy={name="Shy",model="models/zombie/fast.mdl",baseHP=50,speed=180,damage=5.5,range=112,warning=.9,recovery=1.8,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",perception="sight",color=Color(175,150,230),dice={1,6,2}},
     censer={name="Censer",model="models/combine_soldier.mdl",baseHP=45,speed=120,damage=5.5,range=320,warning=1.2,recovery=3.5,threat=3.5,activity=ACT_RUN,kind="bullet",mobile="carrier",color=Color(220,150,60),dice={1,6,2}},
     trailmaker={name="Trailmaker",model="models/police.mdl",baseHP=35,speed=150,damage=5.5,range=320,warning=1.2,recovery=3.5,threat=3.5,activity=ACT_RUN,kind="bullet",mobile="trail",color=Color(130,195,85),dice={1,6,2}},
     towline={name="Towline",model="models/police.mdl",baseHP=40,speed=135,damage=5.5,range=320,warning=1.2,recovery=3,threat=3.5,activity=ACT_RUN,kind="bullet",tactical="tow",color=Color(70,200,185),dice={1,6,2}},
@@ -117,6 +119,7 @@ function E:Prepare(e)
         end
     end
     if e.LODRosterReady then return end
+    if self.Definitions[e.LODArchetypeId].perception then e.LODPerceptionBorn=CurTime() end
     e.LODRosterReady=true;self.Active[e]=true;e:SetNW2Bool("LOD_RosterAlive",true)
     e.LODRosterContext=self:Bind({},state())
     local d=self.Definitions[e.LODArchetypeId]
@@ -124,18 +127,23 @@ function E:Prepare(e)
     if d.stationary then e.LODRosterAnchor=e:GetPos();e.LODRosterYaw=e:GetAngles().y end
 end
 function E:Cancel(e)
+    local d=self.Definitions[e.LODArchetypeId]
+    if d and d.perception then e.LODPerceptionMemory=nil;e.LODPerceptionDiscardBefore=CurTime() end
     if e.LODRosterAttack and e.LODRosterAttack.tactical then self:RetireTactical(e) end
-    if e.LODRosterAttack and e.LODRosterAttack.mobile then LOD.HostileMotionV2:Stop(e) end
+    if e.LODRosterAttack and (e.LODRosterAttack.mobile or e.LODRosterAttack.perception) then LOD.HostileMotionV2:Stop(e) end
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
 end
 function E:Interrupt(e,attackEvent,attacker)
+    if self.Definitions[e.LODArchetypeId] and self.Definitions[e.LODArchetypeId].perception then
+        e.LODPerceptionMemory=nil;e.LODPerceptionDiscardBefore=CurTime()
+    end
     if LOD.EnemyRemains then LOD.EnemyRemains:Interrupt(e) end
     if LOD.EnemyReactions then LOD.EnemyReactions:Interrupt(e,attackEvent,attacker) end
     if LOD.EnemySupport then LOD.EnemySupport:Interrupt(e) end
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical or a.mobile) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile or a.perception) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -226,7 +234,7 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.melee or attack.tactical or attack.mobile) then
+    if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception) then
         e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -272,6 +280,7 @@ function E:Release(e,a,now)
 end
 function E:Attack(e,a,now)
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
+    if a.perception then return self:StepPerception(e,a,now) end
     if a.mobile then return self:StepMobile(e,a,now) end
     if a.tactical then return self:StepTactical(e,a,now) end
     if a.melee then return self:StepMelee(e,a,now) end
@@ -368,12 +377,18 @@ function E:Tick(e)
     end
     local a=e.LODRosterAttack
     if a then motion:Stop(e);return true end -- shared service owns attacks, even committed sweeps during stun
+    if d.perception and (now<(e.LODHitStunUntil or 0) or not self:CanCast(e) or not LOD.RPGStatusElements:CanMoveVoluntarily(e)) then
+        self:Cancel(e)
+        -- Perception retirement must not consume canonical morale locomotion.
+        if not LOD.RPGStatusElements:Has(e,"morale_flee") then motion:Stop(e);return true end
+    end
     if motion:HoldHitStun(e,now) then return true end
     local statuses=LOD.RPGStatusElements
     if d.stationary then
         motion:Stop(e)
         if not statuses:CanInitiateAttack(e) or statuses:Has(e,"morale_flee") then return true end
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
+    if d.perception then return self:TickPerception(e,now) end
     if not e.LODPursuit then e:_RefreshTarget(s.Graph) end
     local p=e.LODTarget
     if d.pursuit and LOD.EnemyPursuit and LOD.EnemyPursuit:Tick(e,p,now) then return true end
@@ -467,6 +482,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        listener={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
+        shy={"npc/fast_zombie/leap1.wav","npc/fast_zombie/fz_scream1.wav","npc/fast_zombie/foot1.wav"},
         censer={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
         trailmaker={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         towline={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},

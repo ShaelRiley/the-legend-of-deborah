@@ -33,9 +33,11 @@ Perception.InvisibleSources = Perception.InvisibleSources or setmetatable({}, {_
 -- Source-owned state composes with legacy permanent/timed invisibility. Removing
 -- a ring can never erase an unrelated cloak, nor can an old token clear a new one.
 function Perception:ForgetHostileTarget(ply)
+    if LOD.FactionManager and LOD.FactionManager.Footsteps then LOD.FactionManager.Footsteps[ply]=nil end
     -- Bounded existing registry; discard knowledge, not already released shots.
     for _,enemy in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(enemy) then
+            if LOD.EnemyRoster and LOD.EnemyRoster.ForgetPerception then LOD.EnemyRoster:ForgetPerception(enemy,ply) end
             if enemy.LODTarget==ply then
                 enemy.LODTarget=nil;enemy.LODNextTargetRefresh=0
                 enemy.LODWatcherAlertedAt=nil;enemy.LODWatcherAlertSource=nil

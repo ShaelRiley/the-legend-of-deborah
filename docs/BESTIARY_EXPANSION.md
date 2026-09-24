@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B10
+# Bestiary expansion — frozen baseline through B11
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B10 add twenty-seven identities: **45/63**, or **27/45 additions**; **18 remain**.
+B1–B11 add twenty-nine identities: **47/63**, or **29/45 additions**; **16 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -666,3 +666,81 @@ permanent invisibility, new targeting authority or extra summoned bodies.
 Substitute a comparably bounded identity if needed. Target47/63 only for two
 validated meaningful production identities. Preserve remaining roster breadth
 and whole-phase campaign-aware director ecology; do not begin Big Loot or Events.
+
+## B11 — perception cohort
+
+| Identity | Readable tactical response | Production composition |
+| --- | --- | --- |
+| `listener` / Listener | Amber Metrocop hears actual non-crouching footsteps in its own room. Paired rings and a dashed route announce a harmless investigation toward the frozen sound position. Crouch/stay quiet, or change course after the cue. It needs fresh hearing and ordinary sight to begin a close melee strike. | Listener + Soldier. |
+| `shy` / Shy | Violet fast zombie records a directly visible Hero, then approaches that frozen position only while no eligible nearby Hero has geometric LOS to it. A crossed eye marks the route. Maintain a sightline, have a teammate watch, interrupt or reposition. Camera direction is irrelevant; the body stays visible. Close visible Heroes can trigger ordinary warned melee. | Shy + Soldier. |
+
+Investigations warn **0.8s**, move at most **128 units** within a fixed **1.4s**
+window, and never deal damage. A fresh sensory observation and separate **0.9s**
+fixed melee warning precede physical **1d6+2** through the existing narrow112-unit,
+30-degree-half-angle melee authority. Completion/interruption uses fixed **1.8s**
+stationary recovery. Late release beyond0.2s or a released-service gap over0.2s
+forfeits movement, never catches up. Actual canonical effective MotionV2 speed
+applies; no raw speed override. A useful approach must cover at least32 units;
+failed admission retries after0.5s.
+
+FactionManager owns event receipts and sensory candidate selection. Sound range
+320/same cell, receipt TTL1.5s, coalescing0.2s, cap32; reject zero volume,
+crouching, concealed and ineligible actors. No generic audio interception, gunfire
+hearing or private Sixth Sense leak. Only post-activation/unconsumed and
+post-interruption receipts can initiate. Shy sight acquisition320/same cell,
+memory2s; any eligible same-floor Hero within480 with ordinary geometric LOS
+counts as a witness. Idle selection, Hero-list cache and active witness checks
+run at0.1s; at most32 Heroes inspected, oversized parties fail closed for unseen
+movement. At most16 simultaneous investigations, served by the existing25ms
+roster scheduler; no per-enemy timer or world scan.
+
+Memories/commitments use exact source/Hero progression and status-life plus
+run/graph/progression/level seed/campaign epoch/campaign seed/run ID. Footsteps
+also bind Hero life and dungeon. The existing invisibility-forget seam clears
+sound receipts, remembered sight and directed intent immediately. Source
+interruption discards memory. Source/target death, removal, replacement,
+freeze/failure/clear, drift>4, invalid support/hull or expiry retires investigation.
+Held prevents/cancels investigation; a previously committed stationary melee
+retains the accepted Held rule. Muted permits these physical actions. Morale
+retires sensory work while retaining canonical flee locomotion: review caught
+and repaired an early-return ordering defect, with an explicit dispatch regression.
+
+Production templates `listener_detail` and `shy_pressure` enter sector2+
+arena/ambush paths, one specialist plus ordinary Soldier enrichment. Append
+unified spawn ordinals44/45. Require a legal same-floor exit and96-unit lateral
+clearances, exclude safe/objective/transition cells, retain ceiling/retries/
+budget-safe fallback. Runtime validates the actual scaled16x16x72 hull
+(SizeScale0.33..1.33), every<=24-unit support step and legal same-cell geometry.
+No locked-gate, magic-Wall, void or stale-route bypass; no alternate graph route,
+extra bodies, new rewards, invisibility grant or hidden live-position pursuit.
+
+Reference HP/speed/range/warning/recovery/threat:
+Listener40/165/112/0.9s/1.8s/3.5; Shy50/180/112/0.9s/1.8s/3.5.
+STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die; baseXP; morale:
+Listener10/15/10/11/14/9;25/75/0;d8;50;5.
+Shy14/14/12/6/12/8;60/40/0;d10;55;6. Both usesMagic=false.
+Models models/police.mdl and models/zombie/fast.mdl;
+RGB235,195,100 and175,150,230. Stock spatial warning/pain/death/step cues.
+Full/reduced dashed routes, paired rings/crossed eye, countdown and solid melee
+sector remain semantically identical; native render bounds160, cull2400.
+
+Pool dilution required measured selection-ticket repairs, not weaker exposure
+thresholds. Exact trials, final weights and the unchanged512-plan sample are in
+[the B11 validation record](validation/BESTIARY_B11.md). Final4952 encounters:
+Listener43 planned/41 legal/6 early; Shy33/30/5; every earlier threshold passes.
+Canonical manual155 chapters/31 chunks. Static/automated evidence is distinct
+from native Source observation and acceptance; see DEVELOPMENT_PLAN.md.
+
+## Next checkpoint — B12: condition-interaction cohort
+
+Provisional bounded two-identity cohort: an ally-condition cleanser and a
+condition-reactive opportunist. These are proposals, not authored mechanics.
+Reconcile canonical condition ownership/removal, beneficial-support eligibility,
+physical/Magic damage and finite life-bound commitments before choosing names,
+actions or tuning. Distinguish them from Stitcher's HP recovery, Carrion's corpse
+consumption and B4's direct-damage reactions. Require visible warnings and real
+counterplay, bounded event-driven/cached work, no guaranteed repeated control,
+private status clocks, duplicate settlement, permanent stat theft or extra bodies.
+Substitute comparable bounded identities if needed. Target49/63 only for two
+meaningful validated production identities. Retain remaining roster breadth and
+whole-phase campaign-aware director ecology; do not begin Big Loot or Events.

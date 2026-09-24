@@ -62,6 +62,15 @@ function E:Placement(graph,c,id,role)
         local side=Vector(-dir.y,dir.x,0)
         if not clear(center,center+side*100) or not clear(center,center-side*100) then return nil end
     end
+    if d.perception then
+        local exit=false
+        for _,k in ipairs(sorted(c.neighbors)) do
+            local n=graph.Cells[k]
+            if n and n.z==c.z and N:CanTraverse(graph,key(c),k) and not self:Safe(graph,n) then exit=true;break end
+        end
+        if not exit or not clear(center,center+Vector(96,0,0)) or not clear(center,center-Vector(96,0,0))
+            or not clear(center,center+Vector(0,96,0)) or not clear(center,center-Vector(0,96,0)) then return nil end
+    end
     if d.mobile then
         -- Admission checks fixed in-cell routes and room for a Hero to step
         -- outside the largest moving zone. Actual support/cover and actor hull
@@ -132,6 +141,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    listener_detail={name="Listener Detail",composition={listener=1,soldier=1}},
+    shy_pressure={name="Shy Pressure",composition={shy=1,soldier=1}},
     censer_advance={name="Censer Advance",composition={censer=1,soldier=1}},
     trailmaker_chase={name="Trailmaker Chase",composition={trailmaker=1,runner=1}},
     towline_detail={name="Towline Detail",composition={towline=1,runner=1}},
@@ -196,6 +207,34 @@ function D:_EligibleTemplates(sector,role)
         out[#out+1]="afterburst_detail";out[#out+1]="carrion_feast"
         out[#out+1]="towline_detail";out[#out+1]="screenwright_detail"
         out[#out+1]="censer_advance";out[#out+1]="trailmaker_chase"
+        out[#out+1]="listener_detail";out[#out+1]="shy_pressure"
+        -- B11 exposure tuning, preserving the fixed 512-plan regression gate.
+        out[#out+1]="afterburst_detail"
+        out[#out+1]="bulwark_line"
+        out[#out+1]="cantor_charge"
+        out[#out+1]="caromer_screen"
+        out[#out+1]="carrion_feast"
+        out[#out+1]="censer_advance"
+        out[#out+1]="cordon_screen"
+        out[#out+1]="fencer_screen"
+        out[#out+1]="forker_crossfire"
+        out[#out+1]="gaoler_hold"
+        out[#out+1]="harrier_screen"
+        out[#out+1]="listener_detail"
+        out[#out+1]="pavise_advance"
+        out[#out+1]="pincer_detail"
+        out[#out+1]="reaper_detail"
+        out[#out+1]="redliner_pressure"
+        out[#out+1]="reeler_chase"
+        out[#out+1]="repriser_detail"
+        out[#out+1]="repulsor_screen"
+        out[#out+1]="screenwright_detail"
+        out[#out+1]="shy_pressure"
+        out[#out+1]="snarer_detail"
+        out[#out+1]="stitcher_detail"
+        out[#out+1]="towline_detail";out[#out+1]="towline_detail"
+        out[#out+1]="trailmaker_chase"
+        out[#out+1]="wirewright_chase"
         out[#out+1]="reaper_detail";out[#out+1]="drubber_chase";out[#out+1]="fencer_screen"
     end
     return out

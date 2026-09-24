@@ -64,6 +64,10 @@ function FactionManager:BestTarget(hostile, graph, homeCell)
     local navigator = LOD.MazeNavigator
     if not navigator or not graph then return nil end
 
+    if hostile.LODArchetypeId=="listener" then
+        local receipt=self:HeardFootstep(hostile,graph)
+        return receipt and receipt.hero or nil,0
+    end
     local statusElements = LOD.RPGStatusElements
     if statusElements and statusElements.ChooseRecklessTarget then
         local ally, distance = statusElements:ChooseRecklessTarget(hostile, graph, homeCell)

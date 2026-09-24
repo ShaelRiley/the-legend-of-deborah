@@ -13,6 +13,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
     afterburst=Color(255,150,65),carrion=Color(160,220,95),
     towline=Color(70,225,205),screenwright=Color(110,175,255),
+    listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
 local projectiles,received={},0
@@ -324,7 +325,8 @@ function V:Melee(e)
     end
     if mode==4 then
         sector(112,30,8,now<ready and 2 or 4)
-        countdown(ready,e:GetNW2String("LOD_Archetype","")=="afterburst" and .9 or .8)
+        local id=e:GetNW2String("LOD_Archetype","")
+        countdown(ready,(id=="afterburst" or id=="listener" or id=="shy") and .9 or .8)
     elseif mode==1 then
         sector(144,90,12,now<ready and 2 or 4)
         countdown(ready,1.1)
@@ -483,6 +485,38 @@ function V:Mobile(e)
         if now<ready then countdown(start,ready,1.2) end
     end
 end
+function V:Perception(e)
+    local now=CurTime();local ready=e:GetNW2Float("LOD_PerceptionReady",0)
+    local untilTime=e:GetNW2Float("LOD_PerceptionUntil",0)
+    if not e:GetNW2Bool("LOD_RosterAlive",false) or now>=untilTime then return end
+    local mode=e:GetNW2Int("LOD_PerceptionMode",0);if mode==0 then return end
+    local start=e:GetNW2Vector("LOD_PerceptionStart",e:GetPos())
+    local goal=e:GetNW2Vector("LOD_PerceptionGoal",start)
+    local color=colors[e:GetNW2String("LOD_Archetype","")]
+    render.SetMaterial(beam)
+    -- Harmless investigative route: dashed line, fixed destination glyph and
+    -- countdown. The ordinary solid melee arc is a separate damaging warning.
+    for i=0,3 do
+        render.DrawBeam(start+(goal-start)*(i/4),start+(goal-start)*((i+.5)/4),2,0,1,color)
+    end
+    local center=goal+Vector(0,0,6)
+    if mode==1 then
+        for _,radius in ipairs({12,22}) do
+            for i=1,12 do
+                local a,b=(i-1)*math.pi/6,i*math.pi/6
+                render.DrawBeam(center+Vector(math.cos(a)*radius,math.sin(a)*radius,0),center+Vector(math.cos(b)*radius,math.sin(b)*radius,0),2,0,1,color)
+            end
+        end
+    else
+        for _,sign in ipairs({-1,1}) do
+            render.DrawBeam(center+Vector(-24,0,0),center+Vector(0,14*sign,0),2,0,1,color)
+            render.DrawBeam(center+Vector(0,14*sign,0),center+Vector(24,0,0),2,0,1,color)
+        end
+        render.DrawBeam(center+Vector(-16,-20,0),center+Vector(16,20,0),3,0,1,color)
+    end
+    local fraction=math.Clamp(((now<ready and ready or untilTime)-now)/(now<ready and .8 or 1.4),0,1)
+    render.DrawBeam(center+Vector(-24,0,28),center+Vector(-24+48*fraction,0,28),3,0,1,color)
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -492,6 +526,10 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="listener" or id=="shy" then
+        if e:GetNW2Int("LOD_PerceptionMode",0)>0 then self:Perception(e) else self:Melee(e) end
+        return
+    end
     if id=="censer" or id=="trailmaker" then self:Mobile(e);return end
     if (id=="towline" or id=="screenwright") and e:GetNW2Int("LOD_TacticalMode",0)>0 then self:Tactical(e);return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end

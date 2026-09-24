@@ -23,6 +23,7 @@ local b5={caromer='shambler',reeler='runner',forker='soldier'}
 local b6={wirewright='runner',snarer='soldier',cordon='shambler'}
 local b8={afterburst='soldier',carrion='shambler'}
 local b9={towline='runner',screenwright='soldier'}
+local b11={listener='soldier',shy='soldier'}
 local b10={censer='soldier',trailmaker='runner'}
 local b7={reaper='soldier',drubber='runner',fencer='shambler'}
 local function signature(plan)
@@ -95,6 +96,10 @@ for seed=1,32 do
      assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B9 production path')
      assert(count==1 and (enc.composition[b9[id]] or 0)>=1,'B9 singleton and complementary companion')
     end
+    if b11[id] then
+     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B11 production path')
+     assert(count==1 and (enc.composition[b11[id]] or 0)>=1,'B11 singleton and complementary companion')
+    end
     if b10[id] then
      assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B10 production path')
      assert(count==1 and (enc.composition[b10[id]] or 0)>=1,'B10 singleton and complementary companion')
@@ -109,7 +114,7 @@ for seed=1,32 do
  end
 end
 assert(plans==512 and total>2000)
-local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker','wirewright','snarer','cordon','reaper','drubber','fencer','afterburst','carrion','towline','screenwright','censer','trailmaker'}
+local sampled={'climber','razor','lurker','beamsweeper','flamer','arccaster','sentry','bigcrab','nodule','gaoler','silencer','repulsor','stitcher','bulwark','cantor','pincer','harrier','waylayer','pavise','repriser','redliner','caromer','reeler','forker','wirewright','snarer','cordon','reaper','drubber','fencer','afterburst','carrion','towline','screenwright','censer','trailmaker','listener','shy'}
 for _,id in ipairs(sampled) do
  print(string.format('DISTRIBUTION %s planned=%d legal=%d early=%d',id,counts[id] or 0,viable[id] or 0,early[id] or 0))
 end
