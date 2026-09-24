@@ -1089,6 +1089,24 @@
       ]
     },
     {
+      "id": "enemy-mobile-hazards",
+      "title": "Leave the route, mind the trail",
+      "rows": [
+        [
+          "Censer",
+          "The amber Combine soldier outlines its entire short route for 1.2 seconds, then carries a dangerous 64-unit circle along it. Step sideways out of the outlined lane, take cover, interrupt it or defeat it. Once movement begins, the thick ring follows its actual position. The carrier stops at its destination or after 1.8 seconds; it cannot steer after you."
+        ],
+        [
+          "Trailmaker",
+          "The green Metrocop warns a short retreat route for 1.2 seconds. Dashed circles show where it may leave up to three 44-unit patches as it reaches those points. Each placed patch becomes a thin solid ring for another 0.8 seconds before turning thick and dangerous for 1.2 seconds. Leave the circles or wait; chasing directly along the trail is risky. Unreached points never become damaging patches."
+        ]
+      ],
+      "text": [
+        "Each whole commitment can hit a given Hero at most once, for physical damage under ordinary defenses. These enemies choose routes with escape space; they cannot carry hazards through locked gates or unsupported floor. Their paths stay fixed and their hazards expire.",
+        "Interrupting, defeating or holding the source cancels the movement and every associated patch. Muted does not stop these physical actions. Cover blocks damage. Dashed plans, solid warnings, thick danger boundaries and shrinking countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

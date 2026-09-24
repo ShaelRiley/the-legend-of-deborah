@@ -72,7 +72,79 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B9: tether and projected cover
+## Current checkpoint — B10: mobile-hazard cohort
+
+Built on verified remote `a5ab25e00491795491cd5d89384202c6cb25d1fd`.
+**Censer and Trailmaker** bring the implemented normal roster to **45/63**:
+frozen baseline18, **27/45 additions banked**, **18 remain**.
+
+**Playable scope:** Censer warns a fixed144-unit approach then carries a radius64
+physical zone; Trailmaker warns a fixed144-unit retreat and leaves up to three
+radius44 patches at reached start/mid/end points. Both warn1.2s before movement,
+use canonical effective MotionV2 speed and have a1.8s movement deadline. Censer
+ends on arrival/deadline; each trail patch warns another0.8s then lasts1.2s within
+a fixed ready+3.8s lifetime. Physical1d6+2, one canonical attack roll and at most
+one hit per captured Hero for the entire commitment. Full design/tuning is in
+BESTIARY_EXPANSION.md and live GDD03/05/07, LOD-BESTIARY-B10-001.
+Canonical manual154 chapters/31 chunks. Live GDD00/01/03/05/07 amendments
+and evidence were read-back verified after writing.
+
+**Safety and ownership:** reuse EnemyRoster scheduling, exact source/Hero status-
+life/progression and dungeon/campaign scope, canonical damage/Block/Dodge/status/
+HP/XP/drop owners. At most16 mobile commitments, three patches and32 captured
+Hero incarnations per source; no recurring target/world scans. Same-cell support,
+scaled hull and six lateral escape routes are revalidated; route support probes
+prevent floor-gap travel. Review exposed an interior lateral-floor gap missed by
+endpoint-only support; bounded escape-route probes and regression tests now
+close it. Source drift, Held/morale/hit-stun, invalid life/run/geometry or expiry
+cancel every attached hazard. Missed service/release forfeits, never catches up.
+Fixed stationary recovery cannot extend. No native bodies, private status timers,
+homing, unavoidable spawn damage or additional rewards.
+
+**Validation:** targeted real AI/service/MotionV2/combat and native-Draw boundary
+harnesses pass. Coverage includes warning exclusion, actual moving radius, all
+three reached patches, escape/cover/height/floor, full hull, interior source and
+escape-route holes, late/missed service, slow travel, fixed recovery, exact life/
+run/graph/progression/campaign retirement before/during/after movement, statuses,
+multiplayer admission/lethal-primary order, reentrancy and finite caps. Production
+proves32 seeded actor generations/replay, usable feats/classes, HP/XP once, actual
+spawn/variance, idempotence, stable ordinals, cap/retry/fallback and admission.
+Initial512-plan sample: Censer40/39/9, Trailmaker27/27/7; retained Waylayer19/17/4
+failed25/20/5 after selection-pool dilution. A single additional Waylayer ticket
+restores established exposure without changing mechanics/admission/RNG scope.
+Revised512 plans/4927 encounters/32 mazes/parties1–4/dungeons1–5: Censer35 planned/
+34 legal/8 early, Trailmaker25/25/6, Waylayer53/45/12; all retained thresholds pass.
+An early integration run was deliberately stopped for the escape-support repair;
+it is not counted as a pass. One fresh final canonical integration run passed **all178 suites with zero failures**,
+including prior cohorts, combat/status/progression, bosses/finale/succession/
+Abundance/cash, repository Lua syntax, release wiring and manual readers/transport.
+No gameplay edits followed that integrated pass.
+
+**Native acceptance retained:** after ordered phases, gm_flatgrass must establish
+actual movement/collision/support and gate/Wall/false-floor interaction; warning,
+moving ring and individual patch clarity; statuses/interruptions; death/revival/
+disconnect; freeze/reset/same-seed rebuild; native HP/rewards; full/reduced effects,
+audio,1–4-player networking/balance/performance and all prior cohort/boss/campaign
+regressions. Automated native entity/collision/HP/render/network boundaries remain
+doubles, not Source observation or acceptance. Evidence: console_latest.txt+
+rpg_summary_latest.txt; session log only for event ordering. No VPS deployment
+or Workshop publication.
+
+## Next checkpoint — B11: perception cohort
+
+Provisional bounded two-identity perception cohort: a sound-cued hunter and a
+visibility-conditioned stalker. These are proposals, not authored mechanics.
+Reconcile FactionManager acquisition, invisibility, LOS, existing sound/combat
+signals, MotionV2 and finite life-bound commitments before choosing identities.
+Distinguish them from Watcher recruitment, Lurker ambush, Pincer routing and
+ordinary pursuit. Require readable warnings, exploitable counterplay and bounded
+cached/event-driven work; no hidden omniscience, compulsory camera behavior,
+permanent invisibility, new targeting authority or extra summoned bodies.
+Substitute a comparably bounded identity if needed. Target47/63 only for two
+validated meaningful production identities. Preserve remaining roster breadth
+and whole-phase campaign-aware director ecology; do not begin Big Loot or Events.
+
+## Previous checkpoint — B9: tether and projected cover
 
 Built on verified remote `d4a9700b250ad894e45e0aa9dc680e81009c3a89`.
 **Towline and Screenwright** bring the implemented normal roster to **43/63**:
@@ -129,20 +201,6 @@ collision,HP application,rendering and networking remain boundary doubles;
 automated evidence is not Source observation or acceptance. Capture
 console_latest.txt+rpg_summary_latest.txt; session log only for event ordering.
 No deployment or Workshop publication.
-
-## Next checkpoint — B10: mobile-hazard cohort
-
-Provisional bounded two-identity mobile-hazard cohort: a visibly warned moving
-zone carrier and a finite trailing hazard layer. These are proposals, not authored
-mechanics. Reconcile MotionV2, existing area/status/geometry lifetimes and source
-movement before choosing identities; distinguish them from Nodule, Repulsor,
-Wirewright, Snarer, Cordon and ordinary pursuit. Require clear escape space and
-finite, interruptible commitments; no unavoidable spawn/contact damage, hidden
-tracking, locked-gate/void bypass, permanent hazards or reward-bearing summons.
-Target45/63 only for two distinct validated production identities. Substitute a
-comparably bounded identity if a proposal cannot meet those contracts. Retain
-remaining roster breadth and whole-phase campaign-aware director ecology. Do not
-begin Big Loot or Events.
 
 ## Previous checkpoint — B8: volatile-and-remains cohort
 

@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B9
+# Bestiary expansion — frozen baseline through B10
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B9 add twenty-five identities: **43/63**, or **25/45 additions**; **20 remain**.
+B1–B10 add twenty-seven identities: **45/63**, or **27/45 additions**; **18 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -574,16 +574,95 @@ full/reduced effects,audio,1–4-player networking/rewards and encounter balance
 No Source observation,performance acceptance,VPS deployment or Workshop update
 is claimed. Native entities/collision/HP/render/network boundaries remain doubles.
 
-## Next checkpoint — B10: mobile-hazard cohort
+## B10 — mobile-hazard cohort
 
-Provisional bounded two-identity mobile-hazard cohort: a visibly warned moving
-zone carrier and a finite trailing hazard layer. These are proposals, not authored
-mechanics. Reconcile MotionV2, existing area/status/geometry lifetimes and source
-movement before choosing identities; distinguish them from Nodule, Repulsor,
-Wirewright, Snarer, Cordon and ordinary pursuit. Require clear escape space and
-finite, interruptible commitments; no unavoidable spawn/contact damage, hidden
-tracking, locked-gate/void bypass, permanent hazards or reward-bearing summons.
-Target45/63 only for two distinct validated production identities. Substitute a
-comparably bounded identity if a proposal cannot meet those contracts. Retain
-remaining roster breadth and whole-phase campaign-aware director ecology. Do not
-begin Big Loot or Events.
+| Identity | Distinct tactical problem and counterplay | Production composition |
+| --- | --- | --- |
+| `censer` / Censer | Amber Combine carries a warned danger circle along a frozen short approach. Leave its advertised route, take cover or interrupt; no homing. | Censer + Soldier. |
+| `trailmaker` / Trailmaker | Green Metrocop retreats along a frozen route, leaving finite warned patches only at reached points. Leave the trail or interrupt instead of chasing straight through it. | Trailmaker + Runner. |
+
+Live GDD03/05/07, LOD-BESTIARY-B10-001 records author-delegated mechanics and
+implementation tuning. These are moving-zone and trailing-route commitments,
+not Nodule's stationary cell gas, Repulsor's fixed displacement pulse, B6's
+stationary traps, ordinary pursuit or reward-bearing summons. Both use physical
+1d6+2 (reference5.5), one shared attack roll and at most one settlement per
+captured Hero across the entire commitment. Block, Dodge, actor damage,
+progression, statuses, HP, XP and drops retain their canonical owners.
+
+**Commitment:** observe one acquired visible same-cell Hero; freeze a144-unit
+straight route toward it for Censer or away for Trailmaker. Warn1.2s without
+movement or damage. MotionV2 then travels at the actor's current canonical speed,
+with a fixed1.8s movement deadline. Censer's radius64 danger follows actual source
+position and ends at arrival/deadline. Trailmaker places at most three radius44
+patches at start/midpoint/end only as those positions are reached; each has an
+additional0.8s warning and1.2s active lifetime, clipped to ready+3.8s. It holds at
+the endpoint while patches expire. No teleport to catch up, hidden retarget,
+continuous damage, status rider, solid trap, native spawned entity or reward.
+
+**Geometry/lifetime:** one EnemyRoster commitment and existing25ms service; at
+most16 mobile sources and32 captured Hero lives per source, no recurring player
+or world scan. Exact source/primary Hero status-life and progression plus exact
+run, graph/progression, level seed and campaign epoch/seed/run ID bind the action.
+Late join/revival cannot inherit a warning. Death/removal/replacement, failure,
+clear/freeze, source hit-stun, attack prohibition, morale flight or Held cancels
+movement and all patches. Muted permits physical attacks. Source displacement
+beyond4 units from its last serviced position cancels. Primary-Hero death ends
+future service; already admitted same-service hits remain party-order independent.
+Reentrant callbacks cannot repeat or transfer damage.
+
+Stay in one legal supported nonobjective/nontransition cell. Full scaled native
+hull preflight and remaining-route support probes at<=24-unit intervals precede
+movement. Start/mid/end each require two112-unit lateral escape routes, swept
+with the Hero hull and five support probes per side (<=22.4-unit spacing).
+Full route/escape geometry checks at0.1s cadence and again before damage fail
+closed on gates, walls or opened false floors. Review caught and repaired an
+interior lateral-floor gap missed by endpoint-only support. Target height -4..72,
+exact physical cell and current LOS bound contact. Warning release grace0.2s;
+a released service gap>0.2s forfeits instead of catching up. Fixed3.5s stationary
+recovery begins once; further interruption cannot extend it. Failed admission
+retries/repositions after0.5s.
+
+**Tuning:** reference HP/speed/range/warning/recovery/threat Censer45/120/320/
+1.2s/3.5s/3.5; Trailmaker35/150/320/1.2s/3.5s/3.5. STR/DEX/CON/INT/WIS/CHA;
+Fighter/Rogue/Wizard weights; hit die; baseXP; morale:
+Censer13/9/13/8/10/8;75/25/0;d10;55;6.
+Trailmaker10/15/10/12/11/9;30/70/0;d8;50;5. Both usesMagic=false.
+Stock models/combine_soldier.mdl and models/police.mdl; RGB220,150,60 and
+130,195,85. Reuse spatial stock sound. Full/reduced capsule, actual moving ring,
+dashed patch plans, arming/live circles and countdowns retain finite server
+expiry; cull2400, conservative horizontal native render bounds208.
+
+**Production/evidence:** sector2+ arena/ambush singleton specialists, scaled
+ordinary companions; stable appended spawn ordinals42/43, ceilings/retry/fallback
+and RNG scopes preserved. Conservative placement tests144-unit cardinal route,
+1.33-scale hull, same-level legal exit and lateral pockets; runtime rechecks the
+actual observed direction/support. Initial512-plan sample: Censer40 planned/39
+legal/9 early, Trailmaker27/27/7; retained Waylayer19/17/4 failed25/20/5 after pool
+dilution. One additional Waylayer selection ticket restores prior exposure,
+without changing its mechanics or admission. Revised512 plans/4927 encounters/
+32 mazes/parties1–4/dungeons1–5: Censer35/34/8, Trailmaker25/25/6,
+Waylayer53/45/12; every retained threshold passes. Real actor generation/replay,
+usable feats/classes, HP/XP once, spawning/variance, idempotence, caps, retries,
+fallback, interleaved AI/service/MotionV2 and native-Draw boundary tests pass.
+See DEVELOPMENT_PLAN.md for the canonical integration result.
+
+**Native acceptance pending:** actual collision/support around gates, magic Walls
+and false floors; moving warning/ring and individual patch clarity; source
+interruptions/statuses; death/revival/disconnect and same-seed rebuild; full/reduced
+effects/audio;1–4-player balance/networking, native HP/rewards and performance.
+Automated native entity/collision/HP/render/network doubles are not Source
+observation or acceptance. No VPS deployment or Workshop publication.
+
+## Next checkpoint — B11: perception cohort
+
+Provisional bounded two-identity perception cohort: a sound-cued hunter and a
+visibility-conditioned stalker. These are proposals, not authored mechanics.
+Reconcile FactionManager acquisition, invisibility, LOS, existing sound/combat
+signals, MotionV2 and finite life-bound commitments before choosing identities.
+Distinguish them from Watcher recruitment, Lurker ambush, Pincer routing and
+ordinary pursuit. Require readable warnings, exploitable counterplay and bounded
+cached/event-driven work; no hidden omniscience, compulsory camera behavior,
+permanent invisibility, new targeting authority or extra summoned bodies.
+Substitute a comparably bounded identity if needed. Target47/63 only for two
+validated meaningful production identities. Preserve remaining roster breadth
+and whole-phase campaign-aware director ecology; do not begin Big Loot or Events.

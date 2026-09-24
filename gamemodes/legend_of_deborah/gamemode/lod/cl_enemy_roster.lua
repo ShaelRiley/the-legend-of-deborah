@@ -13,6 +13,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     pavise=Color(165,190,215),repriser=Color(230,100,180),redliner=Color(215,65,45),
     afterburst=Color(255,150,65),carrion=Color(160,220,95),
     towline=Color(70,225,205),screenwright=Color(110,175,255),
+    censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
 local projectiles,received={},0
 local gas=Material("particle/particle_smokegrenade")
@@ -410,6 +411,78 @@ function V:Tactical(e)
     local start=origin-side*24+up*88
     line(start,start+side*(48*math.Clamp((untilAt-now)/duration,0,1)),3)
 end
+-- Mobile commitments expose a frozen route before moving. The carrier's live
+-- circle follows its actual position; trail circles never follow their source.
+-- All deadlines are server timestamps, including unplaced plans, so stale NW2
+-- snapshots cannot keep a warning alive. Reduced effects retain every boundary.
+function V:Mobile(e)
+    local mode=e:GetNW2Int("LOD_MobileMode",0);local now=CurTime()
+    local ready=e:GetNW2Float("LOD_MobileReady",0)
+    local untilAt=e:GetNW2Float("LOD_MobileUntil",0)
+    if mode<1 or mode>2 or not e:GetNW2Bool("LOD_RosterAlive",false)
+        or e:GetNW2Int("LOD_RosterAttack",0)==0 or now>=untilAt
+        or (mode==1 and now>=ready+1.8)
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local start=e:GetNW2Vector("LOD_MobileStart",e:GetPos())
+    local goal=e:GetNW2Vector("LOD_MobileGoal",start)
+    local delta=goal-start;local dir=delta:GetNormalized();local side=Vector(-dir.y,dir.x,0)
+    local color=mode==1 and colors.censer or colors.trailmaker
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
+    local function circle(center,radius,width,dashed)
+        for i=1,24 do
+            if not dashed or i%2==1 then
+                local a,b=(i-1)*math.pi/12,i*math.pi/12
+                line(center+Vector(math.cos(a)*radius,math.sin(a)*radius,0),
+                    center+Vector(math.cos(b)*radius,math.sin(b)*radius,0),width)
+            end
+        end
+    end
+    local function countdown(center,deadline,duration)
+        if now>=deadline then return end
+        local left=center+Vector(-24,0,52)
+        line(left,left+Vector(48*math.Clamp((deadline-now)/duration,0,1),0,0),3)
+    end
+    if mode==1 then
+        if now<ready then
+            -- The capsule is the whole swept footprint, not a contact hazard.
+            line(start-side*64,goal-side*64);line(start+side*64,goal+side*64)
+            for i=1,12 do
+                local a,b=(i-1)*math.pi/12,i*math.pi/12
+                line(start+(side*math.cos(a)-dir*math.sin(a))*64,
+                    start+(side*math.cos(b)-dir*math.sin(b))*64)
+                line(goal+(side*math.cos(a)+dir*math.sin(a))*64,
+                    goal+(side*math.cos(b)+dir*math.sin(b))*64)
+            end
+            countdown(start,ready,1.2)
+        else
+            local center=e:GetPos()+Vector(0,0,2)
+            circle(center,64,4)
+            countdown(center,math.min(untilAt,ready+1.8),1.8)
+        end
+    else
+        -- Dashed marks are prospective placement, solid thin rings are arming,
+        -- and thick rings are live. Expired placed patches never become plans.
+        if now<ready+1.8 then
+            for i=0,3 do line(start+delta*(i/4),start+delta*((i+.5)/4),1) end
+        end
+        for i=1,3 do
+            local center=start+delta*((i-1)/2)
+            local patchReady=e:GetNW2Float("LOD_MobilePatchReady"..i,0)
+            local patchUntil=e:GetNW2Float("LOD_MobilePatchUntil"..i,0)
+            if patchReady>0 then
+                if now<math.min(untilAt,patchUntil) then
+                    circle(center,44,now<patchReady and 2 or 4)
+                    countdown(center,now<patchReady and patchReady or math.min(untilAt,patchUntil),
+                        now<patchReady and .8 or 1.2)
+                end
+            elseif now<ready+1.8 then
+                circle(center,44,1,true)
+            end
+        end
+        if now<ready then countdown(start,ready,1.2) end
+    end
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -419,6 +492,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="censer" or id=="trailmaker" then self:Mobile(e);return end
     if (id=="towline" or id=="screenwright") and e:GetNW2Int("LOD_TacticalMode",0)>0 then self:Tactical(e);return end
     if id=="caromer" or id=="reeler" or id=="forker" then self:Pattern(e);return end
     if id=="wirewright" or id=="snarer" or id=="cordon" then self:Trap(e);return end

@@ -89,7 +89,7 @@ function Validation:Run(printResult)
         "silencer", "repulsor", "stitcher", "bulwark", "cantor",
         "pincer", "harrier", "waylayer",
         "pavise", "repriser", "redliner", "caromer", "reeler", "forker",
-        "wirewright", "snarer", "cordon", "reaper", "drubber", "fencer", "afterburst", "carrion", "towline", "screenwright",
+        "wirewright", "snarer", "cordon", "reaper", "drubber", "fencer", "afterburst", "carrion", "towline", "screenwright", "censer", "trailmaker",
         "neil", "brute", "warden", "hector"
     }
     if countKeys(RPG.ArchetypeProgressionTemplates) ~= #expectedArchetypes then

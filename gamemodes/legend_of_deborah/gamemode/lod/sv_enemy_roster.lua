@@ -3,6 +3,8 @@ LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter
 E.Definitions={
+    censer={name="Censer",model="models/combine_soldier.mdl",baseHP=45,speed=120,damage=5.5,range=320,warning=1.2,recovery=3.5,threat=3.5,activity=ACT_RUN,kind="bullet",mobile="carrier",color=Color(220,150,60),dice={1,6,2}},
+    trailmaker={name="Trailmaker",model="models/police.mdl",baseHP=35,speed=150,damage=5.5,range=320,warning=1.2,recovery=3.5,threat=3.5,activity=ACT_RUN,kind="bullet",mobile="trail",color=Color(130,195,85),dice={1,6,2}},
     towline={name="Towline",model="models/police.mdl",baseHP=40,speed=135,damage=5.5,range=320,warning=1.2,recovery=3,threat=3.5,activity=ACT_RUN,kind="bullet",tactical="tow",color=Color(70,200,185),dice={1,6,2}},
     screenwright={name="Screenwright",model="models/combine_soldier.mdl",baseHP=50,speed=110,damage=3.5,range=600,warning=1,recovery=4,threat=4,activity=ACT_RUN_AIM_RIFLE or ACT_RUN,kind="bullet",tactical="screen",color=Color(100,155,230),dice={1,4,1}},
     afterburst={name="Afterburst",model="models/zombie/classic.mdl",baseHP=50,speed=105,damage=5.5,range=112,warning=.9,recovery=2.5,threat=3.5,activity=ACT_RUN,kind="melee",melee="single",color=Color(215,115,65),dice={1,6,2}},
@@ -87,7 +89,7 @@ end
 function E:CanCast(e)
     local statuses=LOD.RPGStatusElements
     local d=self.Definitions[e.LODArchetypeId]
-    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical)) or not statuses:Has(e,"morale_flee"))
+    return statuses:CanInitiateAttack(e) and (not (d and (d.pattern or d.trap or d.melee or d.tactical or d.mobile)) or not statuses:Has(e,"morale_flee"))
         and (not (d and d.contentId) or statuses:CanInitiateMagic(e))
 end
 function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
@@ -123,6 +125,7 @@ function E:Prepare(e)
 end
 function E:Cancel(e)
     if e.LODRosterAttack and e.LODRosterAttack.tactical then self:RetireTactical(e) end
+    if e.LODRosterAttack and e.LODRosterAttack.mobile then LOD.HostileMotionV2:Stop(e) end
     e.LODRosterAttack=nil;e:SetNW2Int("LOD_RosterAttack",0)
 end
 function E:Interrupt(e,attackEvent,attacker)
@@ -132,7 +135,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
     local a=e.LODRosterAttack
     -- A released beam is solved by movement/cover; gunfire only cancels charge.
-    if a and (a.melee or a.tactical) then self:Finish(e,CurTime())
+    if a and (a.melee or a.tactical or a.mobile) then self:Finish(e,CurTime())
     elseif a and not (a.released and a.kind=="beam") then self:Cancel(e) end
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
@@ -188,6 +191,7 @@ function E:Begin(e,p,now,override)
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
     local d=self.Definitions[e.LODArchetypeId];local cfg=e.LODConfig
     if d.tactical and not override.tacticalFallback then return self:BeginTactical(e,p,now) end
+    if d.mobile then return self:BeginMobile(e,p,now) end
     if d.trap then return self:BeginTrap(e,p,now) end
     if d.melee then return self:BeginMelee(e,p,now) end
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
@@ -222,7 +226,7 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
-    if attack and (attack.melee or attack.tactical) then
+    if attack and (attack.melee or attack.tactical or attack.mobile) then
         e.LODMeleeRecovery={life=attack.life,expires=now+self.Definitions[e.LODArchetypeId].recovery}
         e.LODNextAttack=e.LODMeleeRecovery.expires
         LOD.HostileMotionV2:Stop(e);e:_SetActivity(ACT_IDLE)
@@ -268,6 +272,7 @@ function E:Release(e,a,now)
 end
 function E:Attack(e,a,now)
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or not a.released and now>a.deadline) then self:Finish(e,now);return end
+    if a.mobile then return self:StepMobile(e,a,now) end
     if a.tactical then return self:StepTactical(e,a,now) end
     if a.melee then return self:StepMelee(e,a,now) end
     if a.trap then return self:StepTrap(e,a,now) end
@@ -389,13 +394,13 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical then
+    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
         can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -462,6 +467,8 @@ util.AddNetworkString("LOD_RosterProjectiles")
 -- Register spatial pain/death/step cues in the existing audio authority.
 if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
     local banks={
+        censer={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
+        trailmaker={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         towline={"npc/metropolice/pain1.wav","npc/metropolice/die1.wav","npc/metropolice/gear1.wav"},
         screenwright={"npc/combine_soldier/pain1.wav","npc/combine_soldier/die1.wav","npc/combine_soldier/gear1.wav"},
         afterburst={"npc/zombie/zombie_pain1.wav","npc/zombie/zombie_die2.wav","npc/zombie/foot1.wav"},
