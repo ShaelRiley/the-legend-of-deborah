@@ -15,6 +15,7 @@ local colors={flamer=Color(255,105,25),bigcrab=Color(255,105,25),arccaster=Color
     towline=Color(70,225,205),screenwright=Color(110,175,255),
     absolver=Color(170,240,225),exactor=Color(230,95,115),
     outrider=Color(225,170,80),conductor=Color(150,190,250),
+    siphoner=Color(185,115,235),accumulator=Color(235,205,95),
     listener=Color(235,195,100),shy=Color(175,150,230),
     censer=Color(220,150,60),trailmaker=Color(130,195,85),
     reaper=Color(220,155,100),drubber=Color(245,100,70),fencer=Color(165,210,245)}
@@ -598,6 +599,58 @@ function V:Spacing(e)
     local fraction=math.Clamp((ready-now)/1.4,0,1)
     line(middle+Vector(-24,0,0),middle+Vector(-24+48*fraction,0,0),3)
 end
+-- Resource pressure uses fixed ground marks; recharge has a self-only battery
+-- glyph and no damaging footprint. Semantic geometry survives reduced effects.
+function V:Resource(e)
+    local mode=e:GetNW2Int("LOD_ResourceMode",0)
+    local id=e:GetNW2String("LOD_Archetype","")
+    local now=CurTime();local ready=e:GetNW2Float("LOD_ResourceReady",0)
+    local untilAt=e:GetNW2Float("LOD_ResourceUntil",0)
+    if (id=="siphoner" and mode~=1) or (id=="accumulator" and mode~=2 and mode~=3)
+        or not e:GetNW2Bool("LOD_RosterAlive",false) or e:GetNW2Int("LOD_RosterAttack",0)~=1
+        or ready~=ready or untilAt~=untilAt or math.abs(ready)==math.huge or math.abs(untilAt)==math.huge
+        or untilAt>ready+.201 or untilAt<ready or now>=untilAt
+        or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
+    local origin=e:GetNW2Vector("LOD_ResourceOrigin",e:GetPos())
+    local aim=e:GetNW2Vector("LOD_ResourceAim",origin)
+    local distance=aim:DistToSqr(origin);local drift=origin:DistToSqr(e:GetPos())
+    if distance~=distance or distance>360^2 or drift~=drift or drift>4^2
+        or (mode==3 and distance>.01) then return end
+    local center=aim+Vector(0,0,3);local color=colors[id]
+    render.SetMaterial(beam)
+    local function line(a,b,width) render.DrawBeam(a,b,width or 3,0,1,color) end
+    if mode~=3 then
+        for i=1,24 do
+            local from,to=(i-1)*math.pi/12,i*math.pi/12
+            line(center+Vector(math.cos(from)*64,math.sin(from)*64,0),
+                center+Vector(math.cos(to)*64,math.sin(to)*64,0))
+        end
+        line(origin+Vector(0,0,48),center,1)
+    end
+    local glyph=center+Vector(0,0,mode==3 and 68 or 16)
+    local side=(EyePos()-glyph):Angle():Right();local up=Vector(0,0,1)
+    if mode==1 then
+        -- A hollow funnel points down: Magic leaves the marked Hero.
+        line(glyph-side*14+up*12,glyph+side*14+up*12)
+        line(glyph-side*14+up*12,glyph-up*5)
+        line(glyph+side*14+up*12,glyph-up*5)
+        line(glyph-up*5,glyph-up*16)
+        line(glyph-up*16,glyph-side*5-up*10)
+        line(glyph-up*16,glyph+side*5-up*10)
+    elseif mode==2 then
+        -- A zigzag bolt differs from both the drain and self-recharge glyphs.
+        local points={glyph+side*6+up*16,glyph-side*8+up*1,glyph+side*7-up*1,glyph-side*6-up*16}
+        for i=1,3 do line(points[i],points[i+1]) end
+    else
+        local points={glyph-side*17-up*12,glyph+side*17-up*12,glyph+side*17+up*12,glyph-side*17+up*12}
+        for i=1,4 do line(points[i],points[i%4+1]) end
+        line(glyph-side*6+up*16,glyph+side*6+up*16)
+        line(glyph-side*7,glyph+side*7);line(glyph-up*7,glyph+up*7)
+    end
+    local fraction=math.Clamp((ready-now)/(mode==3 and 2 or 1.25),0,1)
+    local bar=center+Vector(0,0,mode==3 and 96 or 48)
+    line(bar-side*24,bar+side*(-24+48*fraction))
+end
 function V:Draw(e,size)
     self:Remains(e)
     self:Support(e)
@@ -607,6 +660,7 @@ function V:Draw(e,size)
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
+    if id=="siphoner" or id=="accumulator" then self:Resource(e);return end
     if id=="outrider" then self:Spacing(e);return end
     if id=="conductor" then
         if not e:GetNW2Bool("LOD_RosterAlive",false) then return end

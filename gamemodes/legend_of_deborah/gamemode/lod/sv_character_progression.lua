@@ -487,6 +487,8 @@ function CharacterProgressionSystem:HasAuthoredPhysicalAttack(state)
     if state.actorType ~= "ai" and state.actorType ~= "human_soldier" then return true end
     local rolls = LOD.CombatRolls
     if state.archetypeId then
+        local template = RPG.ArchetypeProgressionTemplates[state.archetypeId]
+        if template and template.physicalAttack == false then return false end
         return rolls and rolls.HostileDamageProfile and rolls:HostileDamageProfile(state.archetypeId) ~= nil or false
     end
     -- Explicit capability providers for actors outside the archetype factory.
@@ -1097,6 +1099,9 @@ function CharacterProgressionSystem:_AutomaticActorCapabilities(archetypeId, use
         local template = self:ArchetypeProgressionTemplate(archetypeId)
         if not template or template.offensiveMagic ~= false then
             tags[#tags + 1] = "offensive_magic_activation"
+        end
+        if template and template.discreteMagic == true then
+            tags[#tags + 1] = "discrete_magic_activation"
         end
     end
     return tags

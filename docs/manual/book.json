@@ -1163,6 +1163,24 @@
       ]
     },
     {
+      "id": "enemy-resources",
+      "title": "Protect your Magic — interrupt theirs",
+      "rows": [
+        [
+          "Siphoner",
+          "The violet Stalker marks a Hero’s position with a fixed 64-unit circle, downward funnel and 1.25-second countdown. Leave the circle, break its sight or interrupt or mute the caster. A hit deals Raw Magic 1d6+2 through ordinary defenses. Only a surviving Hero who actually loses HP also loses up to 12 current Magic; the Siphoner gains none. A fully absorbed, blocked or dodged hit has no additional drain. It recovers for 3.5 seconds."
+        ],
+        [
+          "Accumulator",
+          "The gold slave Vortigaunt marks a Hero with a fixed 64-unit circle and lightning glyph for 1.25 seconds. Its Raw Magic 1d6+2 attack spends 40 Magic before its ordinary cost modifiers. When it cannot afford that attack, a battery-and-plus glyph over its own position announces a two-second self-recharge instead. A completed recharge restores up to 45 Magic, capped at 100; interrupt or mute it, force it to move or break its sight to cancel the refill. It recovers for 2.5 seconds."
+        ]
+      ],
+      "text": [
+        "Both resource attack marks threaten only the original Hero and never follow movement. Leave the circle or break sight before release; later arrivals and replacement lives do not inherit the mark. An Accumulator with an ordinary cast-triggered Aura Burst feat can also deal supplemental aura damage to other nearby Heroes, including those who escaped its circle. That separate feat never adds a Magic-drain rider. Arcane Shield and other defenses keep their ordinary behavior. These enemies do not steal loot, currency or permanent stats.",
+        "The Accumulator’s recharge creates no damaging circle and needs no ally: its battery glyph and countdown expose an opportunity to pressure it. Canceling a recharge still leaves its recovery period. Held permits stationary attacks and recharging; Muted cancels both enemies’ Magic. The drain, lightning and battery shapes and shrinking countdowns remain visible with reduced effects."
+      ]
+    },
+    {
       "id": "neil",
       "title": "Neil has the Black Keycard",
       "art": "bosses",

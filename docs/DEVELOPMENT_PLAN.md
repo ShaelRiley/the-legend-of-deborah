@@ -6,9 +6,9 @@ validated implementation checkpoints within each. Human playtesting follows the
 three audits; outstanding native acceptance is retained, not silently accepted
 or used to halt the authorized feature work. Do not deploy to the VPS or Workshop.
 
-B13 builds on verified remote `main` `998c99dcafbb96fd89fd0b73d0c1a6ad6b4cfb8a`,
-`Add Bestiary Absolver and Exactor condition interactions`.
-The current B13 checkpoint below is the newest implementation record. Its exact
+B14 builds on verified remote `main` `e8279b1bf904e9a3954436d50063da6a5533e4bf`,
+`Add Bestiary Outrider and Conductor party-spacing pressure`.
+The current B14 checkpoint below is the newest implementation record. Its exact
 published SHA is returned after remote verification; always fetch current main
 and preserve intervening work. Native Source acceptance remains pending.
 
@@ -72,7 +72,65 @@ to finish one enormous checkpoint is superseded only by this chunking policy.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — B13: party-spacing pressure cohort
+## Current checkpoint — B14: resource-pressure cohort
+
+Built on verified remote `e8279b1bf904e9a3954436d50063da6a5533e4bf`.
+**Siphoner and Accumulator** bring the meaningful normal roster to **53/63**:
+frozen baseline18, **35/45 additions banked**, **10 remain**. Source acceptance
+remains pending; no VPS deployment or Workshop publication.
+
+**Playable scope:** Siphoner's1.25s frozen radius64 Raw mark drains up to12 Magic
+only after positive final HP damage on the surviving captured Hero, after normal
+defenses/Arcane Shield. Accumulator pays base40 canonical Magic per warned Raw
+mark; below affordability it instead channels2s to restore45, capped100. Interrupt,
+mute, break sight or exploit the stationary window; escape the fixed attack mark.
+Recovery3.5s/2.5s. Both use Raw1d6+2/range360. Accumulator's generated Aura Burst
+is ordinary supplemental cast damage, separate from the captured mark; no aura
+from drain/recharge. Full design/tuning and canonical capabilities: ledger and
+live GDD03/05/07 `LOD-BESTIARY-B14-001`. Manual158 chapters/31 chunks.
+
+**Ownership/safety:** EnemyRoster shared commitment/service/target/damage;
+Magic canonical100-capacity pools, synchronization and regeneration; Status life,
+defenses and conditions. Exact source/Hero progression/status-life/pool plus
+run/graph/progression/campaign scope. Real Hero-hull escape and floor support,
+cap16, fixed0.2s grace/0.25s service gap/4-unit drift; no catch-up or private timers.
+Claim before native sync/damage/observer callbacks; no stale-life debit/drain/
+refill/hit, newer-attack erasure or forever-pinned spent callback. Held permits
+stationary actions, Muted/morale/stun cancel. Canonical Quantum, pre-cost full-Magic
+snapshot, Feedback Loop and discrete-spend observer are integrated. Explicit
+pure-Magic capability templates prevent inert physical feats, without changing
+previous actors. Spawn ordinals50/51; explicit registry53 normal+4 named bosses.
+
+**Validation:** one fresh canonical run passed **all191 suites with zero failures**
+after final repairs; no gameplay/config/test edits followed. Full output and
+coverage: validation/BESTIARY_B14.md and BESTIARY_B14_INTEGRATION.txt. Live GDD
+00/01/03/05/07 design/tuning/evidence/continuation read-back verified. Three B14
+suites cover real
+AI Tick/shared Think, resource/combat/status/lifecycle/callback boundaries,
+production progression/spawn and native Draw. Unchanged512-plan/32-maze/
+parties1–4/dungeons1–5 sample produces4943 encounters, all44 sampled identities
+passing25 planned/20 legal/5 early gates. Siphoner45/43/9, Accumulator46/42/9.
+Eleven trials including all failures, exact26 broad+30 sector2-only ticket
+additions and final full counts: validation/BESTIARY_B14_EXPOSURE.md. No threshold,
+seed, geometry, population-ceiling or companion relaxations. Canonical manual,
+live GDD, ledger, active plan and handoff document scope and evidence honestly.
+
+**Native checks retained:** gm_flatgrass actual Stalker/Vortigaunt poses and
+full/reduced warnings/audio; mark escape and recharge denial; native support,
+collision/gates/Walls/false floors; damage/Arcane Shield/Magic meter and utilities;
+generated Quantum/Feedback Loop/Aura Burst; Held/Muted/morale; death/revival/
+disconnect/late join; reset/same-seed rebuild;1–4-player HP/rewards/network/balance.
+Retain prior cohorts and full campaign/finale/succession/Abundance/Level21 checks.
+Boundary doubles are not Source observation/acceptance. Evidence console_latest.txt
++rpg_summary_latest.txt; session log only for ordering, after the ordered phases.
+
+**Next:** B15 only: choose the next coherent pair from underrepresented remaining
+roster niches via targeted ledger/shared-authority review, author finite counterplay
+and production gates, then implement and validate. Target55/63 only for two
+meaningful production identities. Remaining roster breadth and campaign-aware
+director ecology remain inside Bestiary before Big Loot/Events; no new phase.
+
+## Previous checkpoint — B13: party-spacing pressure cohort
 
 Built on verified remote `998c99dcafbb96fd89fd0b73d0c1a6ad6b4cfb8a`.
 **Outrider and Conductor** bring the normal roster to **51/63**: frozen baseline18,

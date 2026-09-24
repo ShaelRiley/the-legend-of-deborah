@@ -116,6 +116,9 @@ local function applyVisualScale(ent, seekerRoll)
         ent:SetRenderBounds(
             Vector(-extent, -extent, -extent + verticalCompensation),
             Vector(extent, extent, extent + verticalCompensation))
+    elseif archetype == "siphoner" or archetype == "accumulator" then
+        -- Frozen mark360 + radius64 + bounded source drift4; visual bounds only.
+        ent:SetRenderBounds(Vector(-428,-428,math.min(-364,mins.z*size)),Vector(428,428,math.max(412,maxs.z*size)))
     elseif archetype == "exactor" or archetype == "absolver" or archetype == "conductor" then
         ent:SetRenderBounds(Vector(-424,-424,math.min(0,mins.z*size)),Vector(424,424,math.max(112,maxs.z*size)))
     elseif archetype == "listener" or archetype == "shy" then

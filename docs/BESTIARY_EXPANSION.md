@@ -1,4 +1,4 @@
-# Bestiary expansion — frozen baseline through B13
+# Bestiary expansion — frozen baseline through B14
 
 Baseline frozen against `main` at
 `855b3b9709675b5b035b12c58658eb74f3037fa9` on September 23, 2026.
@@ -10,7 +10,7 @@ validation/publication evidence and sequencing. The complete phase brief is
 
 The baseline contains **18 gameplay-meaningful normal enemy identities**.
 The whole-phase target is **63** (18 × 3.5), requiring **45 additions**.
-B1–B13 add thirty-three identities: **51/63**, or **33/45 additions**; **12 remain**.
+B1–B14 add thirty-five identities: **53/63**, or **35/45 additions**; **10 remain**.
 This denominator is frozen. Subsequent checkpoints must not recount procedural
 permutations or reduce the denominator to make the target easier.
 
@@ -861,15 +861,76 @@ exposure are recorded in [B13 evidence](validation/BESTIARY_B13.md) and
 [B13 exposure](validation/BESTIARY_B13_EXPOSURE.md); implementation counts do not
 imply native Source acceptance.
 
-## Next checkpoint — B14: resource-pressure cohort
+## B14 — resource-pressure cohort
 
-Provisional bounded pair: a telegraphed Magic-drain attacker and an interruptible
-self-recharging caster. These are proposals, not authored mechanics. Reconcile
-canonical Magic pools, Arcane Shield, status/combat settlement and generated
-actor capabilities before selecting names/actions/tuning. Require distinct
-legible counterplay, solo viability, exact-life commitments and bounded service;
-no duplicate pools, permanent resource/stat loss, currency/loot theft, unwarned
-or unavoidable drain, hidden tracking or extra bodies. Substitute comparable
-bounded identities if the shared authorities make either proposal redundant.
-Target53/63 only for two meaningful validated production identities. Preserve
-remaining breadth and whole-phase campaign-aware ecology before Big Loot/Events.
+| Counted ID | Tactical identity | Production composition |
+| --- | --- | --- |
+| `siphoner` / Siphoner | Violet Stalker warns a frozen ground mark. Positive final HP damage on the surviving captured Hero drains up to12 Magic; it gains none. Leave the circle, break sight, mute or interrupt. | Siphoner + Runner. |
+| `accumulator` / Accumulator | Gold slave Vortigaunt pays for warned Raw marks from its canonical Magic pool. When insufficient, it exposes itself during an interruptible self-recharge instead of attacking. Deny the recharge or exploit the stationary window. | Accumulator + Soldier. |
+
+Both marks use radius64, range360, warning1.25s and canonical Raw Magic1d6+2.
+Ordinary defenses and Arcane Shield resolve before Siphoner's rider; zero,
+negated or lethal damage never drains. Loss is min(12,current Magic), not HP,
+voluntary spending, an extra shield-break event, transfer or permanent loss.
+Accumulator pays base40 through OffensiveMagicCost/Quantum rounding at release;
+missing a released mark does not refund its cost. Insufficient current Magic
+at release cancels damage. Below affordability at admission, it channels2s for
+min(45,100-current Magic), with no attack. Normal regeneration continues through
+the shared scheduler. Recovery is3.5s for Siphoner,2.5s for either Accumulator action.
+
+Generated Magic effects use canonical seams: pre-debit full-Magic snapshot,
+Feedback Loop's six-continuation restoration cap and one paid-cast observer.
+Accumulator may generate Aura Burst; its ordinary supplemental aura is distinct
+from the captured mark and can reach nearby unmarked Heroes. Drain and recharge
+cannot trigger that aura. Only the exact warned Hero receives mark damage/drain.
+No new resource pool, acquisition authority, body, status owner or recurring timer.
+
+Bind source/Hero progression, canonical status-life and pool references, plus
+run/graph/progression/level-seed/campaign epoch/seed/run ID. Claim before native
+sync, dice, damage and observer callbacks. Replacement lives cannot inherit a
+warning or settlement; newer attacks are not erased. Claimed callback failures
+retire by deadline. Fixed release grace0.2s, service gap limit0.25s, source drift4,
+maximum16 resource commitments, failed admission retry/reposition0.5s. Support
+and actual Hero-hull escape follow the existing condition geometry: two96-unit
+lateral paths, samples24 apart, checks at most every0.2s plus release. Source and
+mark occupy one legal supported cell; gate/objective/transition exclusions remain.
+Recharge requires source support and the captured living visible Hero within360.
+Held permits stationary action; Muted, morale flight, attack prohibition,
+hit-stun, cover loss, displacement, death/removal, freeze/failure/clear and rebuild
+cancel commitments. Repeated interruption cannot extend fixed recovery.
+
+Reference HP/speed/threat: Siphoner35/125/3.5; Accumulator50/100/4.
+STR/DEX/CON/INT/WIS/CHA; Fighter/Rogue/Wizard weights; HP die; XP; morale:
+Siphoner8/12/10/14/15/10;0/0/100;d8;50;4.
+Accumulator10/10/13/14/14/9;0/0/100;d10;55;6.
+Both usesMagic=true and physicalAttack=false. Siphoner offensiveMagic=false;
+Accumulator offensiveMagic=true/discreteMagic=true. Explicit template capabilities
+prevent inert physical feats and restrict Quantum/Aura eligibility to paid casts;
+prior actors retain their existing rules. Models `models/stalker.mdl` and
+`models/vortigaunt_slave.mdl`, RGB185/115/235 and235/205/95. Stock spatial audio,
+drain funnel/attack lightning/recharge battery glyphs, finite countdowns and frozen
+marks in full/reduced modes; distance cull2400, horizontal render bounds428.
+
+Templates `siphoner_pressure`/`accumulator_detail`, sector2+ arena/ambush,
+append-only spawn ordinals50/51, singleton specialists, canonical enrichment,
+ceiling/threat/placement/fallback and rewards. All44 sampled identities pass
+unchanged25/20/5 exposure gates across512 plans/32 mazes/parties1–4/dungeons1–5,
+4943 encounters: Siphoner45/43/9; Accumulator46/42/9 planned/legal/early.
+Eleven trials and final26 broad+30 sector2-only B14 ticket additions (including
+initial4 per new template) are preserved in [exposure](validation/BESTIARY_B14_EXPOSURE.md).
+Manual158 chapters/31 chunks. Design: live GDD03/05/07 `LOD-BESTIARY-B14-001`.
+Validation: [B14 evidence](validation/BESTIARY_B14.md); no native acceptance implied.
+
+## Next checkpoint — B15: next remaining-roster cohort
+
+Ten meaningful identities remain before the frozen63 target. Select two
+underrepresented tactical identities using a targeted gap review of this ledger
+and the existing shared behavior authorities; do not repeat a whole-roster audit.
+Choose and author their finite counterplay and production gate before coding.
+Prefer a coherent pair that broadens topology or interaction decisions without
+duplicating existing support, pursuit, reaction, projectile, trap, melee, remains,
+tether/cover, mobile-hazard, perception, condition, spacing or resource mechanics.
+Target55/63 only if both are meaningful production identities with solo-safe
+warnings, exact-life ownership, bounded work and canonical combat/progression.
+Preserve remaining breadth and the later campaign-aware encounter ecology
+checkpoint(s) within Bestiary; do not begin Big Loot or Events.

@@ -41,7 +41,7 @@ function E:Placement(graph,c,id,role)
     if not d then return {} end
     if self:Safe(graph,c) or self:IsTransition(graph,c) then return nil end
     local tag=(graph.CellTags or {})[key(c)] or {}
-    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing) and tag.objective then return nil end
+    if (d.trap or d.melee or d.tactical or d.mobile or d.support=="cleanse" or d.condition or d.spacing or d.resource) and tag.objective then return nil end
     local center=N:CellCenter(c)+Vector(0,0,2)
     if not clear(center,center) then return nil end
     -- Mobility specialists require local legal topology before entering production.
@@ -49,8 +49,8 @@ function E:Placement(graph,c,id,role)
     if id=="pincer" or id=="harrier" or id=="waylayer" then
         if not LOD.EnemyPursuit or not LOD.EnemyPursuit:Placement(graph,c,id) then return nil end
     end
-    if d.tactical=="screen" or d.condition or d.spacing then
-        -- Passable guard planes, condition marks and spacing attacks need in-cell flank pockets,
+    if d.tactical=="screen" or d.condition or d.spacing or d.resource then
+        -- Passable guard planes, condition, spacing and resource marks need in-cell flank pockets,
         -- not a whole graph cycle that excludes otherwise escapable rooms.
         local exit
         for _,k in ipairs(sorted(c.neighbors)) do
@@ -141,6 +141,8 @@ function E:Placement(graph,c,id,role)
     return {pos=center,yaw=yaw}
 end
 local templates={
+    siphoner_pressure={name="Siphoner Pressure",composition={siphoner=1,runner=1}},
+    accumulator_detail={name="Accumulator Detail",composition={accumulator=1,soldier=1}},
     outrider_detail={name="Outrider Detail",composition={outrider=1,soldier=1}},
     conductor_pressure={name="Conductor Pressure",composition={conductor=1,shambler=1}},
     absolver_detail={name="Absolver Detail",composition={absolver=1,shambler=2}},
@@ -309,6 +311,69 @@ function D:_EligibleTemplates(sector,role)
         if sector==2 then out[#out+1]="reaper_detail" end
         -- Trial17 retained Arc Caster24 total/4 early.
         if sector==2 then out[#out+1]="arccaster_zone" end
+        -- B14 begins alongside the retained specialist ticket weights.
+        for _=1,4 do
+            out[#out+1]="siphoner_pressure";out[#out+1]="accumulator_detail"
+        end
+        -- Fixed-sample trial1: Censer31/31/4; Trailmaker24/24/4.
+        if sector==2 then out[#out+1]="censer_advance";out[#out+1]="trailmaker_chase" end
+        -- Trial2 deficits remain confined to selection frequency/early exposure.
+        if sector==2 then
+            out[#out+1]="cantor_charge";out[#out+1]="shy_pressure"
+            out[#out+1]="exactor_pressure";out[#out+1]="accumulator_detail"
+        end
+        -- Trial3: Harrier25/24/4; Accumulator31/31/3.
+        if sector==2 then
+            out[#out+1]="harrier_screen"
+            out[#out+1]="accumulator_detail";out[#out+1]="accumulator_detail"
+        end
+        -- Trial4: Arc Caster24/24/6; Pincer24/23/5; Waylayer30/27/3; Siphoner27/25/4.
+        if sector==2 then
+            out[#out+1]="arccaster_zone";out[#out+1]="pincer_detail"
+            out[#out+1]="waylayer_cutoff";out[#out+1]="waylayer_cutoff"
+            out[#out+1]="siphoner_pressure"
+        end
+        -- Trial5: Arc Caster and Wirewright each24 planned/legal; add broad tickets.
+        out[#out+1]="arccaster_zone";out[#out+1]="wirewright_chase"
+        -- Trial6: Arc Caster22/22/4 retains the only deficit.
+        out[#out+1]="arccaster_zone";out[#out+1]="arccaster_zone"
+        -- Trial7: Towline18/18/4 and Exactor24/24/12.
+        out[#out+1]="towline_detail";out[#out+1]="towline_detail";out[#out+1]="exactor_pressure"
+        -- Trial8: Forker38/36/3 and Shy24/23/6.
+        if sector==2 then
+            out[#out+1]="forker_crossfire";out[#out+1]="forker_crossfire";out[#out+1]="shy_pressure"
+        end
+        -- B14 trial9 retains rotating deficits: give every near-floor identity margin.
+        -- Planned<30/legal<25 adds one (two below22/20); early<7 adds one (two below5).
+        out[#out+1]="gaoler_hold"
+        out[#out+1]="gaoler_hold"
+        out[#out+1]="afterburst_detail"
+        out[#out+1]="trailmaker_chase"
+        out[#out+1]="trailmaker_chase"
+        out[#out+1]="accumulator_detail"
+        if sector==2 then
+            out[#out+1]="gaoler_hold"
+            out[#out+1]="gaoler_hold"
+            out[#out+1]="afterburst_detail"
+            out[#out+1]="trailmaker_chase"
+            out[#out+1]="trailmaker_chase"
+            out[#out+1]="absolver_detail"
+        end
+        -- B14 trial10 measured near-floor repair, unchanged sampling/geometry.
+        out[#out+1]="pincer_detail"
+        out[#out+1]="repriser_detail"
+        out[#out+1]="snarer_detail"
+        out[#out+1]="cordon_screen"
+        out[#out+1]="siphoner_pressure"
+        if sector==2 then
+            out[#out+1]="repriser_detail"
+            out[#out+1]="caromer_screen"
+            out[#out+1]="caromer_screen"
+            out[#out+1]="snarer_detail"
+            out[#out+1]="snarer_detail"
+            out[#out+1]="screenwright_detail"
+            out[#out+1]="screenwright_detail"
+        end
     end
     return out
 end
@@ -317,7 +382,7 @@ end
 local baseComposition=D._TemplateComposition
 function D:_TemplateComposition(id,rng,scale)
     local c=baseComposition(self,id,rng,scale)
-    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing) then c[k]=math.min(1,n) end end
+    for k,n in pairs(c or {}) do if E.Definitions[k] and (E.Definitions[k].stationary or E.Definitions[k].support or E.Definitions[k].pursuit or E.Definitions[k].reaction or E.Definitions[k].pattern or E.Definitions[k].trap or E.Definitions[k].melee or E.Definitions[k].tactical or E.Definitions[k].mobile or E.Definitions[k].condition or E.Definitions[k].spacing or E.Definitions[k].resource) then c[k]=math.min(1,n) end end
     return c
 end
 -- Validate physical placement before the unified spawner creates native actors.

@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Bestiary B14 Canonical Resource Pressure", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14.lua"]),
+    ("Bestiary B14 Production Progression & Spawn", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14_production.lua"]),
+    ("Bestiary B14 Readable Resource Commitments", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b14_visual.lua"]),
     ("Deborah Finale Client Presentation & Cleanup", ["python3", "tools/run_lua54.py", "tools/test_deborah_finale_presentation.lua"]),
     ("Deborah Staging Succession & Canonical Services", ["python3", "tools/run_lua54.py", "tools/test_deborah_succession.lua"]),
     ("Hector Encounter, Native Death & Level-20 Rescue Gate", ["python3", "tools/run_lua54.py", "tools/test_hector_encounter.lua"]),
