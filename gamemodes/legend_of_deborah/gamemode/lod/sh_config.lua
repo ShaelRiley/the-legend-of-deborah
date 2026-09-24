@@ -54,19 +54,18 @@ C.Geometry = {
     -- clips a lower column below any legal upper-floor crossing/gallery.
     -- This contains jumps physically without damping ability velocity.
     AntiBypassCeilingZ = 16384,
-    -- Floors are deliberately substantial steel deck plates rather than thin
+    -- Floors remain substantial concrete slabs rather than thin
     -- abstract planes. Their top surface remains exactly at CellCenter.z; extra
     -- thickness extends downward, so navigation/stair landing elevations do not
     -- change while ceilings read as physically solid from the level below.
     FloorThickness = 32,
-    -- Use a visually quiet stock industrial sheet-metal material. The former PHX
-    -- stamped plate contained strong embossed panels that read as false steps even
-    -- after its bump/phong stages were stripped away.
-    FloorMaterial = "models/props_wasteland/metal_tram001a",
+    -- One neutral stock concrete identity; project VMT supports lit model meshes.
+    -- Global XY-aligned UVs cross rows and rotated stair aprons without seams.
+    FloorMaterial = "legend_of_deborah/crate/concrete",
     FloorMaterialFallback = "models/props_c17/FurnitureMetal001a",
     -- Broad tiling reduces visual repetition and keeps the deck reading as one
     -- planar sheet rather than a field of small decorative panels.
-    FloorTextureTile = 384,
+    FloorTextureTile = 512,
     -- Keep the rendered/collision floor above the Flatgrass surface. The floor
     -- plate may extend into the map ground below; only its authored top plane is
     -- gameplay-significant.
@@ -83,7 +82,7 @@ C.Geometry = {
     StairRun = 320,
     StairTopOffset = 0,
     StairSteps = 24,
-    FloorColor = Color(46, 49, 51),
+    FloorColor = Color(155, 155, 155),
     StairColor = Color(68, 72, 74),
     DebugColor = Color(225, 145, 48),
     Skin = 0

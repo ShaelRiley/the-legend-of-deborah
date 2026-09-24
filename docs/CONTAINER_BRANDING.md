@@ -1,3 +1,14 @@
+# Current authority — Great Crate C1
+
+C1 supersedes the historical V5–V22 brand-rendering and floor descriptions below.
+Read [the C1 checkpoint](validation/GREAT_CRATE_C1.md) for current production rules,
+source provenance, exact fit/placement/resource contracts, preview/diagnostics,
+validation and the explicit remaining C2 original-hull repair. Original source
+compositions/manifest are restored; only 232 has a lossless clipped-glyph extension.
+The original per-dungeon brand seed, section palette and all collision remain.
+Historical paragraphs are retained as failure/acceptance evidence, not instructions
+to reapply their retired patch scripts. The CI workflow is now read-only.
+
 # Procedural Container Branding
 
 ## Production rule

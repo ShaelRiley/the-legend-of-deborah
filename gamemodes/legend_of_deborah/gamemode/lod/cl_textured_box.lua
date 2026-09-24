@@ -21,8 +21,9 @@ function TexturedBox:GetIndustrialMaterial(fallbackPath)
     local GC = LOD and LOD.Config and LOD.Config.Geometry or {}
     local primary = GC.FloorMaterial or "models/props_wasteland/metal_tram001a"
     local mat = Material(primary)
-    if mat and not mat:IsError() then return mat end
-    return Material(fallbackPath or GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a")
+    local texture = mat and not mat:IsError() and mat:GetTexture("$basetexture")
+    if texture and not texture:IsError() then return mat, false end
+    return Material(fallbackPath or GC.FloorMaterialFallback or "models/props_c17/FurnitureMetal001a"), true
 end
 
 local function cacheKey(prefix, mins, maxs, tile)
@@ -48,7 +49,24 @@ local function addQuad(a, b, c, d, normal, tangentS, tangentT, uMax, vMax)
     pushVertex(d, normal, tangentS, tangentT, 0, vMax)
 end
 
-local function addTopBottom(mins, maxs, tile)
+-- UVs are world-planar for slabs, including partial/rotated stair aprons.
+local function slabQuad(a,b,c,d,normal,tangentS,tangentT,tile,uv)
+    for _,p in ipairs({a,b,c,d}) do
+        local x=p.x*uv[1]-p.y*uv[2]+uv[3]
+        local y=p.x*uv[2]+p.y*uv[1]+uv[4]
+        pushVertex(p,normal,tangentS,tangentT,x/tile,y/tile)
+    end
+end
+local function addTopBottom(mins, maxs, tile, uv)
+    if uv then
+        slabQuad(Vector(mins.x,mins.y,maxs.z),Vector(maxs.x,mins.y,maxs.z),
+            Vector(maxs.x,maxs.y,maxs.z),Vector(mins.x,maxs.y,maxs.z),
+            Vector(0,0,1),Vector(1,0,0),Vector(0,1,0),tile,uv)
+        slabQuad(Vector(mins.x,maxs.y,mins.z),Vector(maxs.x,maxs.y,mins.z),
+            Vector(maxs.x,mins.y,mins.z),Vector(mins.x,mins.y,mins.z),
+            Vector(0,0,-1),Vector(1,0,0),Vector(0,-1,0),tile,uv)
+        return
+    end
     local dx = math.abs(maxs.x - mins.x)
     local dy = math.abs(maxs.y - mins.y)
 
@@ -64,15 +82,8 @@ local function addTopBottom(mins, maxs, tile)
     )
 end
 
-local function buildBoxMesh(mins, maxs, tile)
-    tile = math.max(1, tile or DEFAULT_TILE)
-    local dx = math.abs(maxs.x - mins.x)
-    local dy = math.abs(maxs.y - mins.y)
-    local dz = math.abs(maxs.z - mins.z)
-
-    local obj = Mesh()
-    mesh.Begin(obj, MATERIAL_QUADS, 6)
-
+local function emitBox(mins,maxs,tile)
+    local dx,dy,dz=maxs.x-mins.x,maxs.y-mins.y,maxs.z-mins.z
     addTopBottom(mins, maxs, tile)
 
     addQuad(
@@ -96,15 +107,27 @@ local function buildBoxMesh(mins, maxs, tile)
         Vector(0, -1, 0), Vector(1, 0, 0), Vector(0, 0, 1), dx / tile, dz / tile
     )
 
+end
+
+local function buildBoxMesh(mins, maxs, tile)
+    tile = math.max(1, tile or DEFAULT_TILE)
+    local dx = math.abs(maxs.x - mins.x)
+    local dy = math.abs(maxs.y - mins.y)
+    local dz = math.abs(maxs.z - mins.z)
+
+    local obj = Mesh()
+    mesh.Begin(obj, MATERIAL_QUADS, 6)
+
+    emitBox(mins,maxs,tile)
     mesh.End()
     return obj
 end
 
-local function buildSlabMesh(mins, maxs, tile)
+local function buildSlabMesh(mins, maxs, tile, uv)
     tile = math.max(1, tile or DEFAULT_TILE)
     local obj = Mesh()
     mesh.Begin(obj, MATERIAL_QUADS, 2)
-    addTopBottom(mins, maxs, tile)
+    addTopBottom(mins, maxs, tile, uv)
     mesh.End()
     return obj
 end
@@ -112,7 +135,7 @@ end
 local function finite(n)
     return type(n) == "number" and n == n and n > -math.huge and n < math.huge
 end
-local function getMesh(prefix, mins, maxs, tile, build)
+local function getMesh(prefix, mins, maxs, tile, build, uv)
     tile = tonumber(tile) or DEFAULT_TILE
     if not mins or not maxs or not finite(tile) then return nil end
     for _, axis in ipairs({"x", "y", "z"}) do
@@ -121,6 +144,10 @@ local function getMesh(prefix, mins, maxs, tile, build)
     if maxs.x == mins.x or maxs.y == mins.y then return nil end
     tile = math.max(1, tile)
     local key = cacheKey(prefix, mins, maxs, tile)
+    if uv then
+        for _,v in ipairs(uv) do if not finite(v) then return nil end end
+        key=key..string.format("|%.5f,%.5f,%.5f,%.5f",uv[1],uv[2],uv[3],uv[4])
+    end
     clock = clock + 1
     local entry = meshCache[key]
     if entry then entry.used = clock; return entry.mesh end
@@ -133,7 +160,7 @@ local function getMesh(prefix, mins, maxs, tile, build)
         meshCache[oldest] = nil
         cacheCount = cacheCount - 1
     end
-    local obj = build(mins, maxs, tile)
+    local obj = build(mins, maxs, tile, uv)
     meshCache[key] = {mesh=obj, used=clock}
     cacheCount = cacheCount + 1
     return obj
@@ -141,8 +168,14 @@ end
 function TexturedBox:GetMesh(mins, maxs, tile)
     return getMesh("box", mins, maxs, tile, buildBoxMesh)
 end
-function TexturedBox:GetSlabMesh(mins, maxs, tile)
-    return getMesh("slab", mins, maxs, tile, buildSlabMesh)
+function TexturedBox:GetSlabMesh(mins, maxs, tile, position, angles)
+    local uv
+    if position then
+        local yaw=math.rad(angles and angles.y or 0)
+        local t=math.max(1,tile or DEFAULT_TILE)
+        uv={math.cos(yaw),math.sin(yaw),position.x%t,position.y%t}
+    end
+    return getMesh("slab", mins, maxs, tile, buildSlabMesh, uv)
 end
 
 local function drawMesh(obj, position, angles, material, color)
@@ -177,5 +210,28 @@ end
 -- geometry and the gate continue to use the full six-face renderer.
 function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile)
     if not position or not mins or not maxs or not material then return end
-    drawMesh(self:GetSlabMesh(mins, maxs, tile), position, angles, material, color)
+    drawMesh(self:GetSlabMesh(mins, maxs, tile, position, angles), position, angles, material, color)
+end
+
+-- Six-sided steel bars and rim give credible undersides. The original 32-unit
+-- collision slab stays solid: sight only, never a shot/drop/progression bypass.
+local function buildGrateMesh(mins,maxs,tile)
+    local C=LOD.CrateVisuals
+    local inset,pitch,bar=C.GrateInset,C.GratePitch,C.GrateBarWidth
+    local x0,x1,y0,y1=mins.x+inset,maxs.x-inset,mins.y+inset,maxs.y-inset
+    local boxes={{mins.x,mins.y,x0,maxs.y},{x1,mins.y,maxs.x,maxs.y},
+        {x0,mins.y,x1,y0},{x0,y1,x1,maxs.y}}
+    for x=x0,x1-bar,pitch do boxes[#boxes+1]={x,y0,math.min(x+bar,x1),y1} end
+    for y=y0,y1-bar,pitch do boxes[#boxes+1]={x0,y,x1,math.min(y+bar,y1)} end
+    local obj=Mesh()
+    mesh.Begin(obj,MATERIAL_QUADS,#boxes*6)
+    for _,b in ipairs(boxes) do
+        emitBox(Vector(b[1],b[2],maxs.z-8),Vector(b[3],b[4],maxs.z),tile)
+    end
+    mesh.End()
+    return obj
+end
+function TexturedBox:DrawGrate(position,angles,mins,maxs)
+    local material=Material("models/props_c17/FurnitureMetal001a")
+    drawMesh(getMesh("crate-grate",mins,maxs,128,buildGrateMesh),position,angles,material,Color(105,110,112))
 end

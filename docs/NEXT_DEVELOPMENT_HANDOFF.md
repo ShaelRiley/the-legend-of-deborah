@@ -1,85 +1,51 @@
-# Handoff — Great Crate C1 (one pass preferred; three maximum)
+# Handoff — Great Crate C2: exact original-hull repair and closure
 
-Resume **The Legend of Deborah**, repository `ShaelRiley/the-legend-of-deborah`,
-branch `main`. Read AGENTS.md, the active DEVELOPMENT_PLAN.md revision and the
-full `docs/briefs/GREAT_CRATE_UPDATE.md`. Follow live GDD00→01→only needed tabs;
-Google Doc ID `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`.
+C1 parent: `2afd214a44f539764a25aed7a116eb0e23400d77`; the publication response
+provides C1's verified remote SHA. Fetch/verify it and preserve intervening work.
+Read AGENTS.md, active DEVELOPMENT_PLAN.md, the complete GREAT_CRATE_UPDATE.md,
+and `docs/validation/GREAT_CRATE_C1.md`. Live GDD identity is
+`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`; navigate00→01→relevant05/07 rules.
 
-Latest checkpoint: **Prioritize Great Crate and defer expansion audits**.
-Publication response provides exact verified SHA; fetch current main, confirm
-this planning checkpoint and preserve intervening work. Its parent is verified
-B25 `27092b9a31c9282cfcdd5beefba3d62998d60415`.
+C1 substantially implements original256-brand compositions, alpha-bound uniform
+safe fitting, independent tint, no board/text overlap, bounded shared/lazy rendering,
+world-aligned concrete, deterministic safe grated stair aprons, preview, diagnostics,
+asset export and canonical manual. It preserves original source PNG hashes;232 has
+one exact clipped-N extension derived from the same bitmap. The CI job is read-only
+and must not be replaced by historical auto-patching scripts. Existing collision,
+progression, Bestiary, seed, signage and native-resource contracts remain constraints.
 
-## Authorized next work
+C2 must finish **the original HL2 hull**. The model is already canonical; the generic
+metal diffuse is not the requested restoration. Original MDL/VVD/VTX and cargo
+materials/texture bytes are absent from the workspace. Local recovery and public
+source searches failed; read-only SSH was unreachable. No VPS mutation was attempted.
+Use local `lod_crate_export_sources` and the resulting
+`garrysmod/data/legend_of_deborah/crate_sources/` (exact bytes in.dat files plus paths
+in manifest.json), or an equivalent verified source. Inspect every stock slot and
+channel and actual UVs; repair NP using clean cargo physical detail, neutralize hue
+with luminance headroom, verify supported texture/material encoding and all tints.
+Never reinstate previously native-failed black custom hulls on static checks alone.
+Keep full compositions, safe anchors, no-touching/40% ceilings, concrete and grates.
+Measure source texture residency over successive seeds; if compression is needed,
+retain full words/keylines and record native decode/legibility acceptance separately.
 
-Complete **Great Crate C1**, aiming to finish the entire supplied update in this
-one implementation pass. The author allows **at most three passes total**.
-Only if necessary bank substantial C1 work, then use C2/C3 for clearly stated
-remaining requirements. Fold integration, validation, documentation and publication
-into these passes; the brief's separate C4 suggestion is superseded. Do not spend
-C1 only planning, regenerate the256-brand library or reopen broad roster audits.
+Aim to finish remaining implementation in C2. At most C3 may follow. Validation,
+docs, live-GDD updates/readback, commit and verified non-forced push belong in the
+same pass. No C4, no silent requirement deletion, no deferred introduced regression.
+Run targeted checks and the stable `python3 tools/test_checkpoint_g_integration.py`
+gate. C1 canonical gate passed218 suites with zero failures. The evidence file contains
+results, finite acceptance and original source
+boundary. Do not call it full-update or native acceptance. Source model/material
+appearance, z-fighting/mips, concrete seams/vistas, real collision/network lifecycle
+and low-end GPU/memory remain unobserved until a local native test supplies evidence.
 
-You have the brief's design/art/material/rendering/implementation/tuning authority,
-including necessary refactoring, compatible existing assets, diagnostics/tests,
-manual and live-GDD amendments, commits and verified non-forced pushes to main.
-Resolve ordinary choices. **Do not deploy to the VPS or publish to Steam Workshop.**
+After Great Crate: low-end PC optimization → focused fatal-crash/game-breaking-bug
+audit → focused native/human playtest. Deferred September28–October4,2026:
+Big Loot → Event System → comprehensive systems integration/emergence audit.
+Preserve full original briefs; comprehensive audit is deferred, not cancelled.
+Do not begin those deferred expansions early or auto-execute by date.
 
-Inspect current container model/submaterials, source NP mark across material
-channels, existing tint and brand authorities, floor/catwalk geometry/collision,
-and the256-brand archive/manifest. Define a finite gate before edits. Restore
-preferred HL2 container unless a concrete insurmountable blocker is documented;
-remove intrinsic NP and neutralize hull chroma while retaining physical detail.
-Keep gameplay tint and branding independent. Preserve the current coherent
-campaign/dungeon brand scope and aspect-fit complete artwork inside deterministic
-local-space safe anchors. Improve seamless industrial concrete and restrained
-safe grated vistas without sacrificing occlusion, collision or progression.
-Use shared/lazy materials, compact deterministic state and existing owners.
-
-Preserve the full brief's exit requirements: all256 assets fit; tint/material
-validity; deterministic visuals; floor/catwalk topology and traversal safety;
-no unnecessary per-container hooks/material growth; measured visual-cost bounds;
-preview/structured diagnostics; relevant integration; accurate GDD/manual/docs;
-commit and verified remote publication. Native appearance/FPS cannot be accepted
-from headless checks. Missing assets require a concrete recovery attempt/blocker,
-not silent omission. A pass cap never permits unsafe or falsely complete output.
-Any unresolved feature scope after C3 is explicitly deferred to next week's
-backlog before dependent work; do not invent C4 or postpone a known fatal defect.
-
-## Regressions and evidence
-
-Bestiary implementation is complete at B25:63 normal/4 named, frozen18; all215
-canonical suites passed then. This roadmap edit does not rerun or newly accept
-those tests. Current evidence: validation/BESTIARY_B25.md and BESTIARY_B25_EXIT.md.
-Preserve motif intensity/history/receipts, physical spawn/admission, topology,
-spacing, ceilings, classes/combat/tiers/rewards, events/loot placement, gates,
-Gordon→Hector→Deborah, staging, Abundance and Level21 cash. Native acceptance
-remains pending. Do not repeat baseline archaeology; use existing shared tests.
-
-Reserve the final third for validation, repair, docs and immediate publication.
-Use targeted tests while editing; once stable run the required canonical matrix.
-Retain failures, repair attributable regressions, update/read back GDD and relevant
-manual/plan/handoff, commit and verify non-forced publication. No unrelated
-comprehensive audit or deferred catalog expansion belongs in C1. If complete,
-next is low-end PC optimization; otherwise give the exact bounded C2/C3 remainder.
-
-## Revised order and deferrals
-
-Immediate: **Great Crate → low-end PC optimization → fatal-crash/game-breaking-bug
-audit → focused human playtest/native acceptance**. The focused audits address
-performance and fatal/game-ending defects, without reopening a top-to-bottom
-systems/emergence review. Deferred expansions do not block the immediate playtest.
-
-Next week, **September28–October4,2026**: **Big Loot → Event System → comprehensive
-systems integration and emergence audit**. The comprehensive audit is retained
-and explicitly follows Events. Preserve original expansion briefs/targets and
-incomplete requirements; do not start them early or auto-execute by date.
-
-Later native gm_flatgrass checks include container/NP/tint/brand fit and clipping,
-floor seams/catwalk vistas, real materials/lighting/occlusion/performance, prior
-Bestiary tells/support/convergence,1–4-player/network/lifecycle and full campaign.
-Evidence console_latest.txt+rpg_summary_latest.txt; session only for event order.
-
-If CLI credentials are absent, use authenticated GitHub blob/tree/commit/ref tools,
-verify each blob and complete tested tree, advance non-forced, fetch and verify
-SHA/parent/tree. Never force or overwrite newer work. End with verified SHA,
-completed/pending scope, test evidence/native gaps and the next bounded prompt.
+Design, implementation, asset/material repair, necessary refactoring, tuning,
+validation, docs/live GDD, commit and verified non-forced main push are authorized.
+**Do not deploy to the VPS or publish to Steam Workshop.** End with verified remote
+SHA, completed/remaining scope, automated results, native gaps and a short prompt.

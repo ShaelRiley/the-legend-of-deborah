@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Great Crate Original Assets & Safe Fit", ["python3", "tools/test_great_crate_assets.py"]),
+    ("Great Crate Deterministic Floor & Collision", ["python3", "tools/run_lua54.py", "tools/test_great_crate_geometry.lua"]),
+    ("Great Crate Rendering, UV & Resource Bounds", ["python3", "tools/run_lua54.py", "tools/test_great_crate_render.lua"]),
     ("Bestiary B25 Motif Intensity & Tier Exposure", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b25.lua"]),
     ("Bestiary B24 Encounter and Wandering Homes", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b24.lua"]),
     ("Bestiary B23 Wandering Population & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b23.lua"]),

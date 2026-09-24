@@ -1,101 +1,31 @@
-# V14 owns the minimal stock HL2/GMod cargo hull; V15 owns strict full-face wayfinding eligibility;
-# V19 owns coverage-first, decal-safe company branding under a global 40% container ceiling;
-# V21 owns orientation-first floor/quadrant wayfinding and brand/sign coexistence;
-# V22 owns deterministic layer order: company spray first, location signage on top.
-name: Build and validate container surface assets
-
+# C1 replaces the historical V14/V19 patch-and-auto-push pipeline. CI verifies
+# committed originals and production code; it must never reinstall old rendering.
+name: Validate Great Crate assets and rendering
 on:
   push:
     branches: [main]
     paths:
       - '.github/workflows/import-container-brands.yml'
-      - 'docs/CONTAINER_BRANDING.md'
-      - 'tools/assets/build_container_stock_v14.py'
-      - 'tools/assets/patch_container_stock_v14.py'
-      - 'tools/assets/validate_container_v14.py'
-      - 'tools/assets/patch_container_brand_coverage_v19.py'
-      - 'tools/assets/validate_container_brand_coverage_v19.py'
-      - 'tools/assets/patch_container_wayfinding_v21.py'
-      - 'tools/assets/validate_container_wayfinding_v21.py'
-      - 'tools/assets/patch_container_overlay_order_v22.py'
-      - 'tools/assets/validate_container_overlay_order_v22.py'
-      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections/**'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_marking_panel.lua'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua'
+      - 'tools/assets/**'
+      - 'tools/test_great_crate*'
+      - 'docs/CONTAINER_BRAND*'
+      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/**'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/*crate*'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/*container*'
+      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
   workflow_dispatch:
-
 permissions:
-  contents: write
-
+  contents: read
 jobs:
-  build-and-validate:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Validate container Python tooling syntax
+      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - run: python3 -m pip install Pillow
+      - name: Original assets, deterministic geometry and bounded rendering
         run: |
-          python3 -m py_compile tools/assets/build_container_stock_v14.py
-          python3 -m py_compile tools/assets/patch_container_stock_v14.py
-          python3 -m py_compile tools/assets/validate_container_v14.py
-          python3 -m py_compile tools/assets/patch_container_brand_coverage_v19.py
-          python3 -m py_compile tools/assets/validate_container_brand_coverage_v19.py
-          python3 -m py_compile tools/assets/patch_container_wayfinding_v21.py
-          python3 -m py_compile tools/assets/validate_container_wayfinding_v21.py
-          python3 -m py_compile tools/assets/patch_container_overlay_order_v22.py
-          python3 -m py_compile tools/assets/validate_container_overlay_order_v22.py
-
-      - name: Build V14 minimal stock section materials
-        run: python3 tools/assets/build_container_stock_v14.py
-
-      - name: Apply V14 minimal stock runtime wiring
-        run: python3 tools/assets/patch_container_stock_v14.py
-
-      - name: Apply V19 coverage-first company branding
-        run: python3 tools/assets/patch_container_brand_coverage_v19.py
-
-      - name: Apply V21 orientation-first wayfinding
-        run: python3 tools/assets/patch_container_wayfinding_v21.py
-
-      - name: Apply V22 deterministic overlay layering
-        run: python3 tools/assets/patch_container_overlay_order_v22.py
-
-      - name: Normalize generated documentation EOF
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          path = Path('docs/CONTAINER_BRANDING.md')
-          path.write_text(path.read_text(encoding='utf-8').rstrip() + '\n', encoding='utf-8')
-          PY
-
-      - name: Validate container presentation
-        run: |
-          python3 tools/assets/validate_container_v14.py
-          python3 tools/assets/validate_container_brand_coverage_v19.py
-          python3 tools/assets/validate_container_wayfinding_v21.py
-          python3 tools/assets/validate_container_overlay_order_v22.py
-          git diff --check
-
-      - name: Commit generated container presentation wiring
-        run: |
-          git add -A \
-            docs/CONTAINER_BRANDING.md \
-            gamemodes/legend_of_deborah/content/materials/legend_of_deborah/container_sections \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_marking_panel.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
-            gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua
-          if git diff --cached --quiet; then
-            echo 'Container presentation already matches generated output.'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Render wayfinding signage above company spray'
-          git push origin HEAD:${GITHUB_REF_NAME}
+          python3 tools/test_great_crate_assets.py
+          python3 tools/run_lua54.py tools/test_great_crate_geometry.lua
+          python3 tools/run_lua54.py tools/test_great_crate_render.lua
+          git diff --exit-code

@@ -430,6 +430,7 @@ local function rebuildMarkedSelection(world)
         end
         if not progressed then break end
     end
+    Wall.markRevision = (Wall.markRevision or 0) + 1
     signTargetCount = desiredTotal
 
     local blocked = buildBlockedPassages()

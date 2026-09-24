@@ -10,7 +10,7 @@ pending). This revision changes planning/documentation only.
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate Update — C1 next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
+| 1 | **Great Crate Update — C2 next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
 | 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
 | 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
 | 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
@@ -93,16 +93,39 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — roadmap revision; Great Crate C1 next
+## Current checkpoint — Great Crate C1; C2 original-hull repair next
 
-Planning-only change on verified B25 main. Great Crate brief retained verbatim;
-its four-pass suggestion is superseded by the author’s one-preferred/three-max
-budget. Live GDD00/01/07/90, this roadmap and the continuation handoff reflect
-Great Crate → low-end PC optimization → fatal/game-breaking safety, with Big Loot
-→ Events → comprehensive systems audit deferred in that order to next week.
-No gameplay, tuning, asset or test changes in this checkpoint. Validation is
-source-copy/content/reference/diff review, not a fresh215-suite gameplay run.
-No VPS deployment or Workshop publication.
+Implemented full original 256-brand compositions, one lossless source-glyph repair,
+local safe-area uniform fitting and independent brand color, deterministic sparse
+placement with unobstructed text, bounded lazy rendering, world-aligned concrete,
+rare safe stair-apron grates, orbit preview, structured diagnostics and mounted
+stock-asset export. Preserve all gameplay, floor/wall collision and existing seeds.
+The old auto-patching CI job is replaced by read-only validation. Manual and live
+GDD05/07 describe the implementation and its exact source-access boundary.
+
+**Great Crate is not complete.** The configured HL2 mesh was already correct; its
+inherited generic-metal hull remains. Original model/UV/material bytes are absent
+and the read-only VPS connection is unreachable. C2 must recover the stock assets
+with `lod_crate_export_sources`, inspect/repair intrinsic NP across the actual
+channels, preserve cargo physical detail and establish the final neutral tintable
+hull. Do not claim the current workaround meets that requirement. C3 remains the
+last available implementation pass; no C4. Full exact scope, cost accounting,
+validation, native gaps and recovery instructions: `validation/GREAT_CRATE_C1.md`.
+
+Completed targeted evidence: all256 original asset hashes/fit;2,048 orientation
+cases;16 generated mazes/4,948 unchanged floor colliders;26 selected grates, peak3;
+64-draw cap/two brand shader slots; UV seams and native resource/full-update harnesses.
+Canonical matrix: **218 suites passed, zero failures** (fresh C1 run); full log and
+bounded follow-up checks are in the checkpoint evidence. Automated results
+are not native appearance, material decoding, texture residency, GPU frame time,
+movement or multiplayer acceptance. No VPS/Workshop publication.
+
+## Previous checkpoint — roadmap revision
+
+Published at `2afd214a44f539764a25aed7a116eb0e23400d77`, following B25.
+Great Crate → low-end PC optimization → fatal/game-breaking safety → native playtest;
+Big Loot → Events → comprehensive integration/emergence audit deferred in that order
+to September28–October4,2026. Briefs and full requirements remain preserved.
 
 ## Previous checkpoint — B25: motif intensity and Bestiary implementation exit
 

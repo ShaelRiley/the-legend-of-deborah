@@ -109,6 +109,8 @@ end
 function MazeBuilder:_BuildFloors(graph)
     self.FloorCells = {}
     local transitions = upperTransitionMap(graph)
+    self.CrateGrates = LOD.CrateVisuals and LOD.CrateVisuals.SelectGrates(graph) or {}
+    self.CrateGrateCount = 0
 
     -- Ground layer: merge deterministic contiguous row runs.
     for y = 1, (graph.Height or MC.Height) do
@@ -149,6 +151,8 @@ function MazeBuilder:_BuildFloors(graph)
             end
         end
     end
+    print(string.format("[LOD:CRATE-FLOOR] style=continuous-concrete tile=%d grates=%d maxPerFloor=1 collision=unchanged",
+        GC.FloorTextureTile, self.CrateGrateCount))
 end
 
 local previousBuild = MazeBuilder.Build

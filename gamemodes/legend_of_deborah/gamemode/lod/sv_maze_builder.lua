@@ -204,8 +204,12 @@ function MazeBuilder:_BuildPerforatedFloor(cell, edge)
     -- The aperture is centered rather than reaching a cell edge. Cargo-container
     -- walls occupy the cell perimeter; keeping end landings inside that perimeter
     -- prevents a valid vertical transition from being blocked by a closed wall.
-    self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
+    local apron = self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, stairHalf, -t * 0.5), Vector(half, half, t * 0.5), 1))
+    if IsValid(apron) and self.CrateGrates and self.CrateGrates[cellKey(cell.x,cell.y,cell.z)] then
+        apron:SetNW2Bool("LOD_CrateGrate",true)
+        self.CrateGrateCount = (self.CrateGrateCount or 0)+1
+    end
     self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,
         Vector(-half, -half, -t * 0.5), Vector(half, -stairHalf, t * 0.5), 1))
     self:_Register(spawnBox(center + Vector(0, 0, -t * 0.5), ang,

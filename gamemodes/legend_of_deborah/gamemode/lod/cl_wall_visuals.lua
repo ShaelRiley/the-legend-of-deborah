@@ -273,8 +273,8 @@ local function buildFullSurfaceEligibility(logical)
     return eligible
 end
 
--- Company paint is inset to 86% of the broad face, so a perpendicular wall that
--- merely meets the extreme endpoint does not clip the actual spray rectangle. Keep
+-- C1 company artwork fits inside the central 240-unit corridor-clear safe area.
+-- A 128-unit perpendicular container cannot cover that inset composition. Keep
 -- duplicate logical faces ineligible, but otherwise allow the central decal-safe area.
 -- Wayfinding continues to use the stricter fullSurfaceEligible classifier above.
 local function buildBrandSurfaceEligibility(logical)

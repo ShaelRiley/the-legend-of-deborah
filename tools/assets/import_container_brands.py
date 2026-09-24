@@ -76,7 +76,8 @@ def import_archive(zip_path: Path, repo_root: Path) -> None:
         # Remove stale runtime textures only after the source archive passes its
         # structural ID check. The directory is dedicated exclusively to this set.
         for old in runtime_dir.glob("container_brand_*.png"):
-            old.unlink()
+            if re.fullmatch(r"container_brand_\d{3}\.png", old.name):
+                old.unlink()
 
         for brand_id in sorted(EXPECTED_IDS):
             data = archive.read(textures[brand_id])

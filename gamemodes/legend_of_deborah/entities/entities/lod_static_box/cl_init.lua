@@ -64,6 +64,10 @@ function ENT:Draw()
 end
 
 local function drawFloorSlab(ent, color)
+    if ent:GetNW2Bool("LOD_CrateGrate",false) and LOD.TexturedBox and LOD.TexturedBox.DrawGrate then
+        LOD.TexturedBox:DrawGrate(ent:GetPos(),ent:GetAngles(),ent:GetBoxMins(),ent:GetBoxMaxs())
+        return
+    end
     local material = floorMaterial()
     if LOD.TexturedBox and LOD.TexturedBox.DrawSlab then
         LOD.TexturedBox:DrawSlab(
@@ -109,7 +113,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
             local kind = ent:GetBoxKind()
 
             -- Ordinary floor runs render only their top and underside. Their
-            -- collision remains a substantial 32-unit steel plate, but internal
+            -- collision remains a substantial 32-unit slab, but internal
             -- row-run side faces are not visible, eliminating false step/riser
             -- seams across a mathematically flat deck. Stair boxes retain all six
             -- faces because their vertical risers are real geometry.
@@ -132,7 +136,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                 -- The continuous level-0 underdeck is deliberately recessed only
                 -- half a unit beneath the ordinary deck. Use the identical material
                 -- and color and draw only broad faces, so any container-base or
-                -- exterior-corner sightline resolves to seamless industrial steel.
+                -- exterior-corner sightline resolves to continuous concrete.
                 drawFloorSlab(ent, floorColor)
             end
             -- Kind 7 is the native-hut staging containment boundary. It owns only
