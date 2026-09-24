@@ -1,40 +1,46 @@
-# Handoff — Great Crate C3 native retest
+# Handoff — C3 company-brand front-face repair
 
-Repository ShaelRiley/the-legend-of-deborah, branch main. Published C3 implementation:
-1cf25b3a01cc38d417ce24561d17ac5b289bfb0b; parent:
-655ca0c7c126a66bacc5c39f67cffbd810cd4089. Subsequent recovery documentation may
-advance main; fetch it rather than resetting to this implementation checkpoint.
-Fetch remote main and preserve intervening work. Read AGENTS.md, active roadmap
-and docs/validation/GREAT_CRATE_C3.md. Live GDD identity unchanged:
-1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY;00→01→05/07 LOD-CRATE-C3-001.
+Repository: ShaelRiley/the-legend-of-deborah; branch main. Last fetched baseline:
+ccc6535e0db22943185fa4b1fb6ca50d1a880432. Resume from the published main commit
+containing this handoff (verify with git fetch / git rev-parse origin/main), never
+reset to the baseline. Final publication response records the exact new SHA.
 
-Author rejected old default hull, absent sprays and concrete gates; floor appearance
-approved. Repaired hull now defaults on by current author direction (not evidence
-of native acceptance), with0 recovery. Brand quads use UnlitGeneric and actual cargo
-VVD anchors, preserving full compositions/deterministic fit/placement. Gate material
-leak repaired with a shared stock HL2 blast-door model and native materials, measured
-bounds fitting and dedicated stock-metal fallback; collision/reader/card/event rules
-unchanged. Approved floor remains untouched. Diagnostics count actual brand emission,
-shader/skips and stock/fallback gate bodies. Failed screenshots preserved in evidence.
+Live GDD: 1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY. Read navigation00→01,
+then only relevant05/07 LOD-CRATE-C3-001. Existing outward-face design governs;
+this is a renderer correction, with no design/tuning or manual change.
 
-Targeted/static evidence and canonical result are in GREAT_CRATE_C3.md and its log.
-No claims of engine rendering, shader aesthetics, GPU timing or residency acceptance.
-Final recovery reused the checksum-verified 221-suite integration result with
-unchanged production/tests, reran the three focused repair harnesses, and verified
-the published tree against local code. Do not restart the completed repair or full
-matrix merely to recover context. The author's latest instruction is small coherent
-chunks: validate, commit, non-force-publish and verify each before adding scope.
-Next action: locally update/install C3 after fully quitting GMod; start gm_flatgrass
-with Legend of Deborah and inspect hull/sprays/a gate. Run one console line:
-`lod_crate_status; lod_container_brand_status; lod_progression_render_status`.
-Return screenshots + console_latest.txt + rpg_summary_latest.txt. Finish original
-native tint/offset/mips, traversal/cover/rails, reset/rejoin and dense multi-seed
-frame-time/residency proof when available. Zero switches back to legacy hull locally.
+Author approves shown restored hull, reports no sprays, and provides a native
+status receipt: brand140 Atlas Tire Pyrolysis;716/1792 containers selected;
+36 draws, zero skips, valid UnlitGeneric material and one loaded texture.
+Investigation proves branding quads had the reverse of Source's front-face
+vertex order. All428 inspected stock cargo VTX triangles and Facepunch's concrete
+DrawQuad example establish the independent negative-cross convention. The old
+static test incorrectly enforced the opposite. Only quad traversal is reversed;
+UVs, anchors, selection, materials, depth/culling, hull, concrete and gates stay
+unchanged. Diagnostic renderer receipt: source-front-face-20260924.
 
-C3 is the last implementation pass. Explicit incomplete exits/carryover are in the
-C3 reconciliation table; no unannounced C4 or weakened gate. Further feature repair
-belongs in the deferred backlog before dependent work unless the author revises
-scope. Fatal/game-breaking regressions cannot be deferred. After Great Crate follow
-low-end optimization→focused fatal/game-breaking safety→native playtest. Deferred
-September28–October4,2026: Big Loot→Events→comprehensive systems audit. No VPS or
-Workshop deployment. Preserve accepted floor and all completed gameplay.
+Fresh corrected regression failed before the fix, then passed2048 brand/side/yaw
+cases plus unmirrored/upright UV assertions. All256 original assets/fit pass.
+Fresh canonical integration:221 suites passed, zero failures. Log, tested blob
+identities and full failed/native evidence are in
+validation/GREAT_CRATE_C3.md. Static success is not native visual acceptance.
+
+Next finite action: fully quit GMod, pull/install published main, inspect sprays
+in the maze and return one screenshot showing a complete company composition.
+If still absent, return lod_container_brand_status from that view; check the
+renderer receipt above. Do not request unrelated attachments or full logs.
+
+Preserve all incomplete C3 exits in its reconciliation table: broader hull/tint
+sampling, brand visibility/offset/mips/legibility, stock gate appearance,
+concrete/grate traversal/cover/rails, reset/rejoin and dense successive-seed native
+frame-time/residency. This explicit author-requested defect repair does not
+silently add another feature pass. Next permitted optimization checkpoint after
+this boundary: measure production branding placement/rebuild cost with fixed
+representative/dense manifests and exact output-equivalence gates before any
+optimization. Do not claim native FPS from headless measurements.
+
+Roadmap: Great Crate → low-end PC optimization → focused fatal/game-breaking
+safety → native playtest. Deferred September28–October4,2026:
+Big Loot → Events → comprehensive systems audit. Preserve all unfinished scope.
+Validate, commit, non-force-push and verify each small coherent result before
+adding scope. No VPS deployment or Steam Workshop publication.

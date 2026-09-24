@@ -504,11 +504,14 @@ function Brand.Draw(model, id, material, eyePos, showSafeArea)
     render.SetColorModulation(1,1,1)
     render.SetBlend(1)
     render.SetMaterial(material)
+    -- Source's front-face order has cross(edge1, edge2) opposite the outward
+    -- normal (also true of the stock cargo VTX). Keep each UV with its corner;
+    -- the former reverse order submitted valid but backface-culled sprays.
     mesh.Begin(MATERIAL_QUADS,1)
         addVertex(center-horizontal*hw+up*hh,normal,fit.u0,fit.v0,color_white)
-        addVertex(center-horizontal*hw-up*hh,normal,fit.u0,fit.v1,color_white)
-        addVertex(center+horizontal*hw-up*hh,normal,fit.u1,fit.v1,color_white)
         addVertex(center+horizontal*hw+up*hh,normal,fit.u1,fit.v0,color_white)
+        addVertex(center+horizontal*hw-up*hh,normal,fit.u1,fit.v1,color_white)
+        addVertex(center-horizontal*hw-up*hh,normal,fit.u0,fit.v1,color_white)
     mesh.End()
     if showSafeArea then
         local w,h=C.SafeWidth*0.5,C.SafeHeight*0.5
@@ -565,6 +568,7 @@ function Brand.Summary()
     if #world>0 then ensureBrandPlacement(world) end
     local ok=ensureSelection()
     return {brandID=selectedId,company=selectedId and LOD.CrateBrandMetadata[selectedId].name,
+        renderer="source-front-face-20260924",
         shader=selectedMaterial and selectedMaterial:GetShader() or "missing",
         skipped=Brand.lastSkippedCount or 0,skipReason=Brand.lastSkipReason,
         material=selectedPath,materialOK=ok,loadedTextures=table.Count(loadedBrands),

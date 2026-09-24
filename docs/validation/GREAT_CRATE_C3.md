@@ -1,5 +1,66 @@
 # Great Crate C3 — rejected presentation repaired; native retest outstanding
 
+## September 24 follow-up — submitted branding faces were reversed
+
+Baseline: clean, fetched `ccc6535e0db22943185fa4b1fb6ca50d1a880432`.
+The author now approves the shown restored hull, but reports no company sprays.
+Their native `lod_container_brand_status` receipt reports brand140, Atlas Tire
+Pyrolysis, valid UnlitGeneric material, 716 branded / 1792 containers, 36 emitted
+draws, zero skips, one shader slot/texture, and 1173/1323 coverage observations.
+The reported render time is 1.2051ms for that sample, not a performance baseline.
+This establishes selection/material lookup/submission, not visible rasterization.
+
+The renderer submitted each quad in the opposite order to native Source front
+faces with `$nocull=0`. Independent inspection of the checksum-verified stock
+cargo VTX/VVD found all428 nondegenerate triangles have
+`cross(v2-v1,v3-v1) dot outwardNormal < 0`; the old branding test erroneously
+required `> 0`. Facepunch's upward-facing `render.DrawQuad` example independently
+uses the same negative-cross order:
+https://wiki.facepunch.com/gmod/render.DrawQuad
+The generic mesh-primitives prose had been interpreted the other way; native
+stock triangle indices and the concrete API example resolve that ambiguity.
+
+Bounded repair: reverse only quad traversal, preserving each corner's original
+UV, physical anchor, independent shader, depth testing, culling, complete artwork,
+selection, fit, two material slots and64-draw ceiling. Add diagnostic renderer
+receipt `source-front-face-20260924` to identify an updated installed build.
+Hull, concrete, gates, collision, gameplay, networking and RNG are unchanged.
+This is the author's explicitly requested repair of the remaining C3 defect,
+not a new Crate feature pass or permission to expand the original scope.
+
+The corrected regression failed on the old production code with
+`Source front-face winding is reversed`, then passed after the repair for all
+2048 brand/side/yaw combinations. New UV-direction assertions prevent mirrored
+or upside-down text. The focused asset check also passes for all256 originals.
+Fresh `python3 tools/test_checkpoint_g_integration.py` completed after the repair:
+**221 suites passed, zero failures**, including the Lua syntax gate. Tested blobs:
+- Renderer: `7ccad11e996b6d5f1b54cbf064c15cf0875e81f0`.
+- Regression: `33285752855ef581addaff110bea839d2e18fa2a`.
+
+The captured matrix summary is byte-identical to the preserved
+`GREAT_CRATE_C3_INTEGRATION.log` (SHA-256
+`e5df3426ff68cf78004748ff6a117e7924decedd742152f66353704bf2c5bfb6`):
+this runner prints suite names/pass states rather than successful test stdout,
+and its suite list/cwd are unchanged. This was a fresh invocation against the
+changed blobs above, not an inherited pass. No production/test changes followed.
+
+**Next native action:** fully quit GMod, pull/install this repair and inspect
+company sprays in the maze. Return one screenshot showing a complete composition;
+if still absent, return `lod_container_brand_status` output from that same view.
+Its renderer field must read `source-front-face-20260924`. No full log package
+is required for this isolated retest unless it exposes a further concrete defect.
+Native visibility is pending, not inferred from the corrected static test.
+
+All unfinished original exits in the reconciliation table below remain open:
+broader hull/tint sampling, brand offset/mips/legibility, stock gate appearance,
+floor/grate traversal/cover/rails, reset/rejoin and dense successive-seed native
+frame-time/residency. The approved hull/floor samples are preserved. The roadmap
+remains Crate → low-end optimization → focused fatal/game-breaking safety → native
+playtest; deferred September28–October4: Big Loot → Events → comprehensive audit.
+No VPS or Workshop deployment.
+
+## Original C3 recovery record
+
 Baseline: verified clean main `655ca0c7c126a66bacc5c39f67cffbd810cd4089`.
 Author feedback: **failed** overall; old hull still displayed, no company sprays,
 and gates looked like concrete. Floor appearance explicitly approved. Preserve

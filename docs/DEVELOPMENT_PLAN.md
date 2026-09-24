@@ -101,7 +101,37 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — Great Crate C3; final repair, native retest pending
+## Current checkpoint — C3 branding front-face repair; native retest pending
+
+Explicit author follow-up supersedes the older no-further-repair boundary for
+this one defect only. Baseline: fetched clean main
+`ccc6535e0db22943185fa4b1fb6ca50d1a880432`. Restored hull now looks good to the
+author; company sprays remain absent. Native status proves716 selected brands,
+36 submitted quads, valid material and zero skipped draws. The submitted vertex
+order is opposite the stock Source front face: all428 stock cargo triangles
+have negative cross-dot-normal, while the old branding test required positive.
+Reverse quad traversal with the same UV corners, leaving all artwork, anchors,
+selection, floor/hull/gates, depth/culling and performance caps unchanged.
+
+Corrected regression fails on the old renderer and passes all2048 orientations
+after repair; all256 original assets/fit pass. Fresh canonical integration: **221 suites passed, zero failures**. The
+native receipt and exact tested blobs are in `validation/GREAT_CRATE_C3.md`. No design/tuning/manual
+rule changed; live GDD00→01→05/07 LOD-CRATE-C3-001 still governs. No GDD write
+is needed for this implementation correction to its existing outward-face rule.
+
+Next finite action: pull/install after quitting GMod and provide one screenshot
+of visible complete branding. If absent, provide `lod_container_brand_status`;
+updated renderer receipt is `source-front-face-20260924`. This is not native
+acceptance. Preserve every unresolved Crate exit in the C3 reconciliation table,
+including gates, offset/mips, traversal/rails/cover, reset/rejoin and dense-seed
+residency/frame-time. After this repair/native evidence checkpoint, the next
+independently actionable optimization checkpoint is measuring the existing
+branding placement/rebuild cost on representative and dense deterministic maze
+manifests; optimize only a demonstrated hot spot and preserve exact selected
+indices, coverage and caps. That measurement is not started here and cannot
+certify native FPS. Immediate/deferred order above is unchanged. No deployment.
+
+## Previous checkpoint — Great Crate C3; recovered publication
 
 Recovered implementation published and fetched as
 `1cf25b3a01cc38d417ce24561d17ac5b289bfb0b`, with complete tree equality to the

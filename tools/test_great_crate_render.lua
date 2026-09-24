@@ -58,6 +58,12 @@ function model:GetRight() return Vector(math.sin(self.yaw),-math.cos(self.yaw),0
 function model:GetUp() return Vector(0,0,1) end
 function model:LocalToWorld(p) return self.pos+self:GetForward()*p.x-self:GetRight()*p.y+self:GetUp()*p.z end
 local checks=0
+-- Independent Source reference: Facepunch render.DrawQuad's upward-facing
+-- example uses (0,0), (0,100), (100,100), (100,0). Its cross product is -Z.
+-- The exported stock cargo VTX agrees: all 428 triangles have cross dot normal <0.
+-- A positive cross dot normal is the BACK face, despite the old test's label.
+local sourceFrontCross=Vector(0,100,0):Cross(Vector(100,100,0))
+assert(sourceFrontCross:Dot(Vector(0,0,1))<0)
 for _,yaw in ipairs({0,90,180,270}) do
  model.yaw=math.rad(yaw);model.pos=Vector(112,328,450)
  for _,side in ipairs({-1,1}) do
@@ -65,7 +71,14 @@ for _,yaw in ipairs({0,90,180,270}) do
    Brand.Draw(model,id,mat,model.pos+model:GetForward()*(side*500))
    assert(#vertices==4)
    local a,b,c=vertices[1],vertices[2],vertices[3]
-   assert((b.pos-a.pos):Cross(c.pos-a.pos):Dot(a.normal)>0,'backface winding')
+   assert((b.pos-a.pos):Cross(c.pos-a.pos):Dot(a.normal)<0,'Source front-face winding is reversed')
+   -- UVs must still run left-to-right and top-to-bottom from the viewer's side.
+   local screenRight=side>0 and -model:GetRight() or model:GetRight()
+   for i=1,4 do for j=i+1,4 do
+    local p,q=vertices[i],vertices[j]
+    assert((q.pos-p.pos):Dot(screenRight)*(q.u-p.u)>=-1e-9,'mirrored company text')
+    assert((q.pos-p.pos):Dot(model:GetUp())*(q.v-p.v)<=1e-9,'upside-down company text')
+   end end
    for _,v in ipairs(vertices) do
     local p=v.pos-model.pos
     assert(math.abs(p:Dot(model:GetRight()))<=C.SafeWidth*.5+1e-8)
