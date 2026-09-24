@@ -10,7 +10,7 @@ pending). This revision changes planning/documentation only.
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate Update — C2 next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
+| 1 | **Great Crate Update — C3 native closure next** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
 | 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
 | 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
 | 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
@@ -93,7 +93,33 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — Great Crate C1; C2 original-hull repair next
+## Current checkpoint — Great Crate C2; native evidence then C3 closure
+
+Built on verified `bdfaf6c860a24934d348dbb46b8fc31251455b2c`. The author supplied
+all11 mounted stock files; source CRC/SHA receipts, independent active diffuse/
+normal checksum matches and actual664-vertex UV/material inspection resolve C1's
+source-access blocker. A reproducible same-column NP repair and neutral luminance
+curve preserve the stock atlas, physical detail and unchanged shared normal.
+One complete-mipped file-backed BGR888 diffuse serves all360 unchanged palette
+colors. Preview opens unbranded on the candidate with a fallback comparison.
+
+The default remains the inherited material because prior custom hulls failed
+natively. Local non-archived `lod_crate_hull_candidate 1` exercises the real
+bounded section reconciler; `0` restores fallback. Missing/error samplers safely
+fall back. Do not describe candidate publication as completed production restoration.
+Original256 compositions, branding/floor/collision/RNG and roadmap are unchanged.
+No gameplay/manual rule changed. No VPS/Workshop deployment.
+
+Targeted gates pass for provenance, UVs, every mip,360 palette entries,10 tint
+ratios, deterministic rebuild and600-model production on/off/failure/recovery.
+Full canonical result is recorded in `validation/GREAT_CRATE_C2.md` and its log.
+See that evidence and `GREAT_CRATE_C2_SURFACES.png` for repair/cost details and
+one compact native procedure. **Native appearance/decoding, successive-seed GPU
+texture residency and real frame-time evidence remain open.** C3 is the last pass:
+repair native defects, promote only after native proof, reconcile the full brief,
+finish documentation/GDD and verified publication. No C4 and no deleted requirement.
+
+## Previous checkpoint — Great Crate C1; C2 original-hull repair next
 
 Implemented full original 256-brand compositions, one lossless source-glyph repair,
 local safe-area uniform fitting and independent brand color, deterministic sparse

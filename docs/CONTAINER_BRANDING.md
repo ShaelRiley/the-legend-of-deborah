@@ -1,4 +1,15 @@
-# Current authority — Great Crate C1
+# Current authority — Great Crate C2 candidate
+
+C2 resolves C1's source-access blocker and provides a stock-derived neutral hull,
+actual UV/source receipts and a reversible native test path. Read
+[the C2 evidence](validation/GREAT_CRATE_C2.md). The default V19 generic-metal
+fallback is retained until native proof; `lod_crate_hull_candidate 1` opts in for
+this local client session, `0` restores it. `lod_crate_preview` opens on the
+unbranded candidate and supports fallback comparison. All C1 composition/floor
+rules remain. C3 must finish native-informed promotion and whole-update closure.
+No VPS/Workshop deployment. The V5–V22 descriptions below are historical.
+
+# Previous authority — Great Crate C1
 
 C1 supersedes the historical V5–V22 brand-rendering and floor descriptions below.
 Read [the C1 checkpoint](validation/GREAT_CRATE_C1.md) for current production rules,

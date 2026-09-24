@@ -21,23 +21,34 @@ concommand.Add("lod_crate_preview",function()
     if IsValid(frame) then frame:Remove() end
     frame=vgui.Create("DFrame")
     frame:SetSize(math.min(1060,ScrW()-40),math.min(780,ScrH()-40))
-    frame:Center();frame:SetTitle("Great Crate — original compositions / native inspection");frame:MakePopup()
+    frame:Center();frame:SetTitle("Great Crate — C2 hull candidate / native inspection");frame:MakePopup()
     local note=vgui.Create("DLabel",frame);note:Dock(TOP);note:SetTall(44);note:SetWrap(true)
-    note:SetText("Drag to orbit; wheel to zoom. Gold outline is the safe area. Hull is the inherited stock-metal workaround: original UV repair is still pending. Grates retain solid collision and cover in the maze.")
+    note:SetText("Drag to orbit; wheel to zoom. Gold outline is the safe area. C2 candidate is selected here only; compare with fallback. Native acceptance is pending. Grates retain solid collision and cover in the maze.")
     local controls=vgui.Create("DPanel",frame);controls:Dock(TOP);controls:SetTall(30)
     local brands=vgui.Create("DComboBox",controls);brands:Dock(LEFT);brands:SetWide(400)
-    local selected=1
+    local selected=0
     brands:AddChoice("Unbranded",0)
     for id=1,256 do brands:AddChoice(string.format("%03d — %s",id,LOD.CrateBrandMetadata[id].name),id) end
-    brands:SetValue("001 — Northern Petrol")
-    local brandMaterial=LOD.CrateBranding.MaterialFor(1,"preview")
+    brands:SetValue("Unbranded — inspect repaired hull first")
+    local brandMaterial=nil
     brands.OnSelect=function(_,_,_,id) selected=id;brandMaterial=id>0 and LOD.CrateBranding.MaterialFor(id,"preview") or nil end
     local tints=vgui.Create("DComboBox",controls);tints:Dock(LEFT);tints:SetWide(160)
     for i,row in ipairs(colors) do tints:AddChoice(row[1],i) end
     tints:SetValue(colors[1][1])
-    local hull=hullMaterial();hull:SetVector("$color2",Vector(1,1,1))
+    LOD.CrateHull.PreviewInspected=true
+    local candidate=true
+    local hull=Material(LOD.CrateHull.PreviewMaterial)
+    local tint=Vector(1,1,1)
+    hull:SetVector("$color2",tint)
     tints.OnSelect=function(_,_,_,i)
-        local c=colors[i][2];hull:SetVector("$color2",Vector(c.r/255,c.g/255,c.b/255))
+        local c=colors[i][2];tint=Vector(c.r/255,c.g/255,c.b/255);hull:SetVector("$color2",tint)
+    end
+    local hullChoice=vgui.Create("DCheckBoxLabel",controls);hullChoice:Dock(LEFT);hullChoice:SetWide(140)
+    hullChoice:SetText("C2 hull candidate");hullChoice:SetValue(1)
+    hullChoice.OnChange=function(_,value)
+        candidate=value
+        hull=value and Material(LOD.CrateHull.PreviewMaterial) or hullMaterial()
+        hull:SetVector("$color2",tint)
     end
     local outlines=vgui.Create("DCheckBoxLabel",controls);outlines:Dock(LEFT);outlines:SetWide(140)
     outlines:SetText("Safe-area outline");outlines:SetValue(1)
@@ -45,7 +56,7 @@ concommand.Add("lod_crate_preview",function()
     panel:SetFOV(48);panel:SetAmbientLight(Color(85,85,85));panel:SetDirectionalLight(BOX_TOP,Color(230,230,230))
     local yaw,pitch,distance,lastX,lastY=25,18,640
     panel.LayoutEntity=function(self,ent)
-        ent:SetAngles(angle_zero);ent:SetMaterial("!lod_crate_c1_preview_hull")
+        ent:SetAngles(angle_zero);ent:SetMaterial(candidate and LOD.CrateHull.PreviewMaterial or "!lod_crate_c1_preview_hull")
         if self:IsHovered() and input.IsMouseDown(MOUSE_LEFT) then
             local x,y=gui.MousePos()
             if lastX then yaw=yaw+(x-lastX)*0.5;pitch=math.Clamp(pitch+(y-lastY)*0.4,-25,65) end
@@ -75,14 +86,24 @@ local function summary()
     for _,e in ipairs(ents.FindByClass("lod_static_box")) do
         if e:GetNW2Bool("LOD_CrateGrate",false) then grates=grates+1 end
     end
-    local info={model=GC.ContainerModel,hull="metal/metalwall001a",hullRepair="pending-source-export",
+    local info={model=GC.ContainerModel,hull=LOD.CrateHull.CandidateEnabled() and LOD.CrateHull.Texture or "metal/metalwall001a",
+        hullRepair="c2-candidate-native-acceptance-pending",
+        candidateEnabled=LOD.CrateHull.CandidateEnabled(),candidateSamplerValid="not-requested",
         normal="models/props_wasteland/cargo_container01_normal",floor=GC.FloorMaterial,
         floorFallback=fallback,floorStyle=C.FloorStyle,
         grates=grates,grateStyle=C.GrateStyle,brand=LOD.CrateBranding.Summary(),seed=wall.seed,
         clientFrameMilliseconds=FrameTime()*1000,meshCache=LOD.TexturedBox:MeshCacheCount()}
+    if LOD.CrateHull.CandidateEnabled() or LOD.CrateHull.PreviewInspected then
+        info.candidateSamplerValid=LOD.CrateHull.CandidateAvailable()
+    end
     for index,m in pairs(wall.models or {}) do
         if IsValid(m) then
             info.stockSlots=m:GetMaterials();info.override=m:GetMaterial()
+            info.candidateFallback=wall.world[index] and wall.world[index].hullCandidateFallback or false
+            local mat=Material(info.override)
+            info.shader=mat:GetShader();info.materialError=mat:IsError()
+            local tex=mat:GetTexture("$basetexture")
+            info.sampler=tex and tex:GetName() or "missing"
             info.tint=wall.world[index] and wall.world[index].sectionColor or m:GetColor()
             break
         end

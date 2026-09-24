@@ -49,6 +49,29 @@ local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
 
+-- C2 is a native-test candidate, never silently promoted from static evidence.
+-- Non-archived: each client session starts on the previously accepted fallback.
+local hullCandidate = CreateClientConVar("lod_crate_hull_candidate", "0", false, false,
+    "Opt into the C2 stock-derived hull for local native acceptance", 0, 1)
+LOD.CrateHull = {}
+local Hull = LOD.CrateHull
+Hull.Texture = "legend_of_deborah/crate/hull_c2"
+Hull.PreviewMaterial = "legend_of_deborah/crate/hull_c2_preview"
+function Hull.CandidateEnabled() return hullCandidate:GetBool() end
+function Hull.CandidateAvailable(name)
+    local material = Material(name or Hull.PreviewMaterial)
+    if not material or material:IsError() then return false end
+    if string.lower(material:GetShader() or "") ~= "vertexlitgeneric" then return false end
+    local texture = material:GetTexture("$basetexture")
+    return texture ~= nil and not texture:IsError()
+        and texture:Width() == 1024 and texture:Height() == 1024
+end
+cvars.AddChangeCallback("lod_crate_hull_candidate", function()
+    reconcileCursor = 1
+    stablePasses = 0
+    reconcileComplete = false
+end, "LOD_CrateHullCandidate")
+
 local paletteSeed = nil
 local paletteFloorCount = nil
 local sectionPalette = {}
@@ -303,6 +326,15 @@ local function sectionMaterialName(instance)
     local key = materialKeyForInstance(instance)
     if not key then return nil end
     local name = SECTION_MATERIAL_PREFIX .. key
+    instance.hullCandidateFallback = false
+    if Hull.CandidateEnabled() then
+        local candidate = "legend_of_deborah/crate/sections/" .. key:gsub("^v19_", "c2_")
+        if Hull.CandidateAvailable(candidate) then
+            name = candidate
+        else
+            instance.hullCandidateFallback = true
+        end
+    end
     materialNames[name] = true
     return name
 end
@@ -459,9 +491,11 @@ concommand.Add("lod_container_recolor_status", function()
     local models = Wall.models or {}
     local correct = 0
     local wrong = 0
+    local candidateFallbacks = 0
     local sectionCodes = {}
 
     for index, instance in ipairs(world) do
+        if instance.hullCandidateFallback then candidateFallbacks = candidateFallbacks + 1 end
         local section = colorForInstance(instance)
         if section then
             local code = tostring((instance.floor or 0) + 1)
@@ -493,12 +527,15 @@ concommand.Add("lod_container_recolor_status", function()
         "[LOD:CONTAINER-RECOLOR] total=%d correct=%d wrong=%d floors=%d uniqueSections=%d minDeltaE=%.1f minHueDeg=%.1f candidatesHueStep=%d materials=%d blend=%.2f materialVersion=%s complete=%s sections={%s}",
         #world, correct, wrong, paletteFloorCount or 0, table.Count(sectionCodes),
         paletteMinDeltaE, paletteMinHueDistance, CANDIDATE_HUE_STEP,
-        table.Count(materialNames), COLOR_REPLACE_BLEND, MATERIAL_VERSION,
+        table.Count(materialNames), Hull.CandidateEnabled() and 0 or COLOR_REPLACE_BLEND,
+        Hull.CandidateEnabled() and "c2-stock-derived-candidate" or MATERIAL_VERSION,
         tostring(reconcileComplete), table.concat(sections, " ")
     ))
     print(string.format(
-        "[LOD:CONTAINER-HULL] source=%s mode=stock-hl2-minimal blend=%.2f",
-        HULL_PATH, COLOR_REPLACE_BLEND
+        "[LOD:CONTAINER-HULL] source=%s mode=%s blend=%.2f candidateFallbacks=%d nativeAccepted=false",
+        Hull.CandidateEnabled() and Hull.Texture or HULL_PATH,
+        Hull.CandidateEnabled() and "c2-candidate" or "stock-hl2-minimal",
+        Hull.CandidateEnabled() and 0 or COLOR_REPLACE_BLEND, candidateFallbacks
     ))
     print("[LOD:CONTAINER-DETAIL] mode=disabled-by-design")
 
@@ -523,7 +560,7 @@ concommand.Add("lod_container_recolor_status", function()
     end
     print(string.format(
         "[LOD:CONTAINER-GLOBAL] mode=%s sampleSlots=%d materialVersion=%s override=%s",
-        sampleMode, sampleSlots, MATERIAL_VERSION,
+        sampleMode, sampleSlots, Hull.CandidateEnabled() and "c2-stock-derived-candidate" or MATERIAL_VERSION,
         sampleOverrideOK and "ok" or "wrong"
     ))
     print(string.format(
@@ -532,7 +569,7 @@ concommand.Add("lod_container_recolor_status", function()
         sampleShader,
         sampleName,
         sampleActual,
-        HULL_PATH,
+        (Material(sampleActual):GetString("$basetexture") or "missing"),
         "models/props_wasteland/cargo_container01_normal"
     ))
 end)

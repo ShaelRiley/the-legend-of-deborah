@@ -1,0 +1,119 @@
+{
+  "source_archive_sha256": "6d92e7120cafd3b385a26c9a8ef6e1d85a5b2afd185159e4ad063407df173259",
+  "files": {
+    "models/props_wasteland/cargo_container01.mdl": {
+      "bytes": 1724,
+      "crc32": "3015c394",
+      "sha256": "935a99c18372caf888b85e1dd87ce7330ce3cdacdb2a57b689d8251af5293ee6"
+    },
+    "models/props_wasteland/cargo_container01.vvd": {
+      "bytes": 42560,
+      "crc32": "7cb0e7b4",
+      "sha256": "a38287f89fe050e9abd5fc90e7fd0f1c362101891f64e9c408e60b5ce5e56161"
+    },
+    "models/props_wasteland/cargo_container01.dx90.vtx": {
+      "bytes": 12104,
+      "crc32": "cb81c737",
+      "sha256": "faaedf4800f5ed6950ff09158e0de524c2bdd6d9a6a0ca06b5b1db24392d7c3f"
+    },
+    "models/props_wasteland/cargo_container01.phy": {
+      "bytes": 722,
+      "crc32": "d77e6241",
+      "sha256": "8cdd77fb10e288b61c1b54e533ad5a89bc0c5601c3bc8c385ed81406c75719b4"
+    },
+    "materials/models/props_wasteland/cargo_container01.vmt": {
+      "bytes": 251,
+      "crc32": "94db5a24",
+      "sha256": "f00cdb46af1deafa6dea3c450a9ceaa1ca3461eecb9bad07a5d1bff3bf630913"
+    },
+    "materials/models/props_wasteland/cargo_container01.vtf": {
+      "bytes": 699256,
+      "crc32": "dc126984",
+      "sha256": "d8b00a1f081ed01b86f68ace2cd6640f8891024add54cc5e03f739e3dddf3f6d"
+    },
+    "materials/models/props_wasteland/cargo_container01_normal.vtf": {
+      "bytes": 699256,
+      "crc32": "f33bf1e9",
+      "sha256": "d403a8794ec14dd33f284028652cc5f62e806a2cd2ba5966caaf262ad1be900a"
+    },
+    "materials/models/props_wasteland/cargo_container02.vmt": {
+      "bytes": 246,
+      "crc32": "e5f88304",
+      "sha256": "217d0cc0c1f88230d816be5f226781e3970cd2fbc2ac8519f62517d4f47db31b"
+    },
+    "materials/models/props_wasteland/cargo_container02.vtf": {
+      "bytes": 699256,
+      "crc32": "5d6d407f",
+      "sha256": "f203c1fe8b13857127abdb3c05bcd825dccc3a3a254acd6e2e3d902b161242dd"
+    },
+    "materials/models/props_wasteland/cargo_container03.vmt": {
+      "bytes": 242,
+      "crc32": "3d7fc385",
+      "sha256": "06f09fa598b2bd1ef1da8a9d43c79c1177863b231f0ea130ee10253f4aeceb3a"
+    },
+    "materials/models/props_wasteland/cargo_container03.vtf": {
+      "bytes": 699256,
+      "crc32": "d302a167",
+      "sha256": "1868e5ad8ec14cdca8634b95432641111af9971ee0c1bbf6c51eb7b668bd0c30"
+    }
+  },
+  "model": {
+    "checksum": 162890868,
+    "textures": [
+      "cargo_container01",
+      "cargo_container02",
+      "cargo_container03"
+    ],
+    "skin_table": [
+      0,
+      1,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      2
+    ],
+    "meshes": 1,
+    "mesh_material": 0,
+    "lod0_vertices": 664,
+    "position_min": [
+      -63.05146408081055,
+      -192.1008758544922,
+      -60.343299865722656
+    ],
+    "position_max": [
+      64.94782257080078,
+      195.44039916992188,
+      67.65670013427734
+    ],
+    "uv_min": [
+      0.009674999862909317,
+      0.010338008403778076
+    ],
+    "uv_max": [
+      0.9953500032424927,
+      0.9978700280189514
+    ]
+  },
+  "repair_rectangle": [
+    136,
+    44,
+    432,
+    194
+  ],
+  "donor_rectangle": [
+    136,
+    200,
+    432,
+    282
+  ],
+  "feather_pixels": 14,
+  "luminance_white": 80.52148027784717,
+  "luminance_curve": "min(245,235*(Rec709/white)^0.65)",
+  "normal_strategy": "Unmodified shared stock normal; visually inspected, no NP mark; all three VMTs use it.",
+  "encoding": "VTF 7.2 BGR888; 1024x1024; 11 mips; no alpha/thumbnail",
+  "hull_sha256": "5691389169a74e54ec79e50c689eeca0444210549bcdc8bce45d926f8272e303",
+  "acceptance": "Offline candidate only; native decode/appearance and production promotion pending."
+}

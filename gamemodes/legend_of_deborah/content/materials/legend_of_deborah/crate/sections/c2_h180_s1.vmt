@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+    "$basetexture" "legend_of_deborah/crate/hull_c2"
+    "$bumpmap" "models/props_wasteland/cargo_container01_normal"
+    "$surfaceprop" "metal"
+    "$model" "1"
+    "$allowdiffusemodulation" "1"
+    "$blendtintbybasealpha" "0"
+    "$blendtintcoloroverbase" "0"
+    "$color2" "[0.144000 0.800000 0.800000]"
+}

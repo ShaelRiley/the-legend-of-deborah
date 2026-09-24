@@ -1,51 +1,52 @@
-# Handoff — Great Crate C2: exact original-hull repair and closure
+# Handoff — Great Crate C3: native-informed hull promotion and closure
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`.
-C1 parent: `2afd214a44f539764a25aed7a116eb0e23400d77`; the publication response
-provides C1's verified remote SHA. Fetch/verify it and preserve intervening work.
-Read AGENTS.md, active DEVELOPMENT_PLAN.md, the complete GREAT_CRATE_UPDATE.md,
-and `docs/validation/GREAT_CRATE_C1.md`. Live GDD identity is
-`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`; navigate00→01→relevant05/07 rules.
+C2 parent `bdfaf6c860a24934d348dbb46b8fc31251455b2c`; the publication response
+supplies C2's verified SHA. Fetch remote main and preserve intervening work.
+Read AGENTS.md, active DEVELOPMENT_PLAN.md, full GREAT_CRATE_UPDATE.md and
+validation/GREAT_CRATE_C2.md (C1 evidence remains linked there).
+Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:00→01→05/07;
+LOD-CRATE-C2-001 supersedes the C1 source-access blocker, not its preserved scope.
 
-C1 substantially implements original256-brand compositions, alpha-bound uniform
-safe fitting, independent tint, no board/text overlap, bounded shared/lazy rendering,
-world-aligned concrete, deterministic safe grated stair aprons, preview, diagnostics,
-asset export and canonical manual. It preserves original source PNG hashes;232 has
-one exact clipped-N extension derived from the same bitmap. The CI job is read-only
-and must not be replaced by historical auto-patching scripts. Existing collision,
-progression, Bestiary, seed, signage and native-resource contracts remain constraints.
+The author's stock export is archived in tools/fixtures/crate_stock/source_export.zip.
+All11 sizes/CRCs and SHA receipts are validated. Red diffuse/shared normal and blue
+skin match independent stock inventory. Actual MDL/VVD/VTX identity and664 UVs
+are inspected; all3 stock skins share the same NP region and logo-free normal.
+`tools/assets/build_crate_hull.py` reproduces repaired equal-RGB hull PNG/VTF,
+360 file-backed palette candidates and CRATE_HULL_C2.json. See the evidence for
+exact donor/repair/illumination/luminance recipe and supported encoding.
 
-C2 must finish **the original HL2 hull**. The model is already canonical; the generic
-metal diffuse is not the requested restoration. Original MDL/VVD/VTX and cargo
-materials/texture bytes are absent from the workspace. Local recovery and public
-source searches failed; read-only SSH was unreachable. No VPS mutation was attempted.
-Use local `lod_crate_export_sources` and the resulting
-`garrysmod/data/legend_of_deborah/crate_sources/` (exact bytes in.dat files plus paths
-in manifest.json), or an equivalent verified source. Inspect every stock slot and
-channel and actual UVs; repair NP using clean cargo physical detail, neutralize hue
-with luminance headroom, verify supported texture/material encoding and all tints.
-Never reinstate previously native-failed black custom hulls on static checks alone.
-Keep full compositions, safe anchors, no-touching/40% ceilings, concrete and grates.
-Measure source texture residency over successive seeds; if compression is needed,
-retain full words/keylines and record native decode/legibility acceptance separately.
+**Production default is intentionally still V19.** Previous custom hulls failed
+natively. Never promote this candidate on static evidence alone.
+`lod_crate_preview` opens unbranded on C2, with fallback comparison and10 tints.
+`lod_crate_hull_candidate 1` tests actual maze section reconciliation;0 reverts.
+It is local/non-archived, preserves exact seeded colors and <=192-model batches,
+and falls back on missing/error/wrong-size material samplers. No new gameplay,
+geometry, hook per container, network state or texture per container was introduced.
+Diagnostics include actual material/shader/sampler readback and fallback state.
 
-Aim to finish remaining implementation in C2. At most C3 may follow. Validation,
-docs, live-GDD updates/readback, commit and verified non-forced push belong in the
-same pass. No C4, no silent requirement deletion, no deferred introduced regression.
-Run targeted checks and the stable `python3 tools/test_checkpoint_g_integration.py`
-gate. C1 canonical gate passed218 suites with zero failures. The evidence file contains
-results, finite acceptance and original source
-boundary. Do not call it full-update or native acceptance. Source model/material
-appearance, z-fighting/mips, concrete seams/vistas, real collision/network lifecycle
-and low-end GPU/memory remain unobserved until a local native test supplies evidence.
+Before C3 promotion obtain the compact native evidence in GREAT_CRATE_C2.md:
+all sides/ends/roof under all10 tints, no black surface/NP/obvious patch;
+brands001/232/256/long name fit and mip/low-angle behavior; actual generated
+section switching/reconciliation; concrete/grate traversal/cover/rails;
+reset/full-update/rejoin and dense-view frame-time/texture residency over seeds.
+Screenshots + console_latest.txt + rpg_summary_latest.txt; session log only if needed.
+The author's export log is native source-recovery evidence, not candidate rendering.
 
-After Great Crate: low-end PC optimization → focused fatal-crash/game-breaking-bug
-audit → focused native/human playtest. Deferred September28–October4,2026:
-Big Loot → Event System → comprehensive systems integration/emergence audit.
-Preserve full original briefs; comprehensive audit is deferred, not cancelled.
-Do not begin those deferred expansions early or auto-execute by date.
+C3 is the final implementation pass. Repair demonstrated native defects, promote
+the repaired hull after proof, resolve outstanding visual-cost/residency evidence,
+reconcile every original brief exit, run affected tests and stable canonical
+`python3 tools/test_checkpoint_g_integration.py`, update live GDD/readback/docs,
+commit and verify non-forced publication. If a genuine blocker remains, follow
+the existing three-pass roadmap carryover rule explicitly; no unannounced C4,
+weakened gate or deferred fatal/game-breaking regression.
 
-Design, implementation, asset/material repair, necessary refactoring, tuning,
-validation, docs/live GDD, commit and verified non-forced main push are authorized.
-**Do not deploy to the VPS or publish to Steam Workshop.** End with verified remote
-SHA, completed/remaining scope, automated results, native gaps and a short prompt.
+Retain all256 original full compositions, safe area/margins, independent branding,
+no-touching/40% ceilings, deterministic placement, coherent concrete, safe sparse
+grates and collision/resource/regression contracts. Keep CI read-only.
+After Great Crate: low-end optimization → focused fatal/game-breaking safety →
+focused native playtest. Deferred September28–October4,2026: Big Loot → Events →
+comprehensive integration/emergence audit. Do not begin deferred work early.
+
+Design, implementation, repair/tuning, validation, docs/live GDD, commit and verified
+non-forced main publication remain authorized. **No VPS or Workshop deployment.**
