@@ -5,22 +5,24 @@ on:
     paths: ['.github/workflows/b29-checkpoint.yml']
 permissions:
   contents: write
+  actions: read
 jobs:
   candidate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     env:
       BASELINE: fc8951840a69e52a0dd4d73ac309480a9b958b98
-      EXPECTED_TREE: 556fab23fd05df680b857ee4148fad3e42a25bc1
+      EXPECTED_TREE: 6f88807fe2c14e159ce4fee74ff33faa0ea15818
       EXPECTED_SOURCE: f3ea6916816c0eb7dd2a66bb7df75a5337cd5a19e6e851fa32c110168115a863
     steps:
       - uses: actions/checkout@v4
         with:
           ref: fc8951840a69e52a0dd4d73ac309480a9b958b98
           fetch-depth: 0
-      - name: Preserve current main
+      - name: Preserve current main and all tracked baseline evidence
         run: |
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASELINE"
+          test "$(git rev-parse HEAD^{tree})" = b565e276f01208843b71bb41c72198b8ee49efef
           test -z "$(git status --porcelain)"
       - name: Reconstruct verified source patch
         env:
@@ -53,31 +55,39 @@ jobs:
           python3 tools/build_manual.py
           git add -N .
           git diff --check
-      - name: Verify frozen gameplay and authored manual
+      - name: Verify frozen source against the completed independent 42-check run
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          gh run download 36199780955 --repo "$GITHUB_REPOSITORY" --name lod-b29-verified-candidate --dir /tmp/b29-prior
+          cp -a /tmp/b29-prior/b29-ci-evidence /tmp/b29-ci-evidence
           python3 - <<'PY'
-          import os, sys
+          import json, os, sys
+          from pathlib import Path
           sys.path.insert(0, 'tools')
           import test_bestiary_b29_checkpoint as gate
           rows = gate.snapshot()
           assert len(rows) == 1889
           assert gate.digest(rows) == os.environ['EXPECTED_SOURCE']
-          print('Exact frozen source verified:', gate.digest(rows))
+          receipt = json.loads(Path('/tmp/b29-ci-evidence/BESTIARY_B29_CHECKS.json').read_text())
+          assert receipt['passed'] == receipt['selected_checks'] == 42 and receipt['failed'] == 0
+          assert all(c['returncode'] == 0 for c in receipt['checks'])
+          assert not receipt['changed_during_gate']
+          assert receipt['source_snapshot_sha256'] == receipt['after_snapshot_sha256'] == gate.digest(rows)
+          manifest = json.loads(Path('/tmp/b29-ci-evidence/source_manifest.json').read_text())
+          assert rows == manifest
+          print('Exact frozen source and completed independent 42/42 evidence verified:', gate.digest(rows))
           PY
-      - name: Install headless Lua runtime
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq liblua5.4-0
-      - name: Independently rerun the finite 42-check gate
-        run: python3 tools/test_bestiary_b29_checkpoint.py --output /tmp/b29-ci-evidence --jobs 3
       - name: Commit and non-force push candidate only
         run: |
           test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASELINE"
           git add -A
-          test "$(git write-tree)" = "$EXPECTED_TREE"
+          actual_tree="$(git write-tree)"
+          echo "Publication tree: $actual_tree"
+          test "$actual_tree" = "$EXPECTED_TREE"
           git config user.name 'LoD Checkpoint Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'B29: protect dungeon arrival and graduate combined opening pressure'
+          git commit -m 'B29: protect dungeon arrival and graduate combined opening pressure' -m 'Preserve B28 physical-query fixes, Crate/P1-P4 and all tracked baseline evidence. Validate frozen source with 42 selected checks locally and independently in Actions run 36199780955. Native acceptance pending; no Workshop or VPS deployment.'
           test "$(git rev-parse HEAD^)" = "$BASELINE"
           test -z "$(git status --porcelain)"
           candidate="checkpoint/b29-validated-${GITHUB_RUN_ID}"
@@ -87,11 +97,7 @@ jobs:
           python3 - <<'PY'
           import json, os, subprocess
           from pathlib import Path
-          report = json.loads(Path('/tmp/b29-ci-evidence/BESTIARY_B29_CHECKS.json').read_text())
-          assert report['passed'] == 42 and report['failed'] == 0
-          assert not report['changed_during_gate']
-          assert report['source_snapshot_sha256'] == os.environ['EXPECTED_SOURCE']
-          report = dict(candidate_branch=os.environ['CANDIDATE_BRANCH'], candidate_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), parent_sha=os.environ['BASELINE'], tree_sha=os.environ['EXPECTED_TREE'], source_snapshot_sha256=os.environ['EXPECTED_SOURCE'], selected_checks=42, passed=42, native_acceptance='pending', main_advanced=False)
+          report = dict(candidate_branch=os.environ['CANDIDATE_BRANCH'], candidate_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), parent_sha=os.environ['BASELINE'], tree_sha=os.environ['EXPECTED_TREE'], source_snapshot_sha256=os.environ['EXPECTED_SOURCE'], independent_checks_run_id=36199780955, selected_checks=42, passed=42, native_acceptance='pending', main_advanced=False)
           Path('/tmp/b29-publication.json').write_text(json.dumps(report, indent=2) + '\n')
           print(json.dumps(report, indent=2))
           PY
