@@ -1,0 +1,90 @@
+name: B27 exact closure
+on:
+  push:
+    branches: [fix/adventure-pacing-b27]
+    paths: [.github/workflows/b27-closure.yml]
+permissions:
+  contents: write
+jobs:
+  closure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve transport receipt
+        run: |
+          mkdir -p /tmp/b27-input
+          cp .github/b27-closure.*.txt /tmp/b27-input/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b27-closure-input
+          path: /tmp/b27-input/
+          retention-days: 3
+      - name: Reconstruct only hash-verified source and documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64,hashlib,json,zlib,subprocess
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          paths=[Path('.github/b27-closure.%d.txt'%i) for i in range(1,5)]
+          parts=[p.read_text().strip() for p in paths]
+          # Correct known transport transcription errors before verifying the
+          # original payload hash; this cannot authorize a differing source tree.
+          for bad,good in [('GFSKK2pf','GFSK2pf'),('HGmU06u','HGm06u'),('X2+zeB3WA','X2+zeB7WA'),('W0yVMrot','W0yVMVrot'),('DrxWJJmd','DrxWJmd')]:
+              assert parts[0].count(bad)==1,(bad,'unexpected transport')
+              parts[0]=parts[0].replace(bad,good)
+          payload=''.join(parts);assert len(payload)==14432,len(payload)
+          raw=zlib.decompress(base64.b64decode(payload,validate=True))
+          assert hashlib.sha256(raw).hexdigest()=='17f11a6fa1fa18f3842146e447a12a022aa084709ec1281832425b643eaa6c13'
+          changes=json.loads(raw)
+          subprocess.run(['git','rm','--']+[str(p) for p in paths]+['.github/workflows/b27-closure.yml'],check=True)
+          assert git('write-tree')=='50442ed012f707fb44926960a68f69c98aaa2b78'
+          for name,record in changes.items():
+              p=Path(name);assert not p.is_absolute() and '..' not in p.parts
+              assert p.parts[0] in ('docs','tools')
+              if record['before']:
+                  assert git('hash-object',name)==record['before'],name
+                  lines=p.read_text().splitlines(True)
+              else:
+                  assert not p.exists(),name
+                  lines=[]
+              for first,last,text in reversed(record['edits']):
+                  assert 0<=first<=last<=len(lines)
+                  lines[first:last]=[text]
+              p.parent.mkdir(parents=True,exist_ok=True);p.write_text(''.join(lines))
+              assert git('hash-object',name)==record['after'],name
+          subprocess.run(['git','add','--']+list(changes),check=True)
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          tree=git('write-tree');assert tree=='8bd49ebc2784fd546fe4fe88c7728ea6e27911b7',tree
+          print('B27_FINAL_COMPLETE_TREE_VERIFIED',tree)
+          Path('/tmp/b27-final-tree.txt').write_text(tree+'\n')
+          PY
+      - name: Verify exact early-roster fixture corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+          for cohort in 5 7 8; do
+            python3 tools/run_lua54.py tools/test_bestiary_b${cohort}_production.lua | tee /tmp/b27-final-b${cohort}.log
+          done
+          git diff HEAD --check
+      - name: Preserve complete candidate without touching main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name='LoD validation' -c user.email='validation@users.noreply.github.com' commit -m 'test: reconcile B27 early encounters and preserve complete validation evidence'
+          git push origin HEAD:fix/adventure-pacing-b27
+          git rev-parse HEAD > /tmp/b27-final-candidate.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b27-closure-proof
+          path: |
+            /tmp/b27-final-tree.txt
+            /tmp/b27-final-candidate.txt
+            /tmp/b27-final-b5.log
+            /tmp/b27-final-b7.log
+            /tmp/b27-final-b8.log
+          retention-days: 7
