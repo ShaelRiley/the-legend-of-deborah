@@ -1,9 +1,18 @@
-# Handoff — local solo acceptance; diagnostic repair → Workshop → VPS
+# Handoff — Steam Deck publishing-tool repair; Workshop → VPS
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Baseline fetched clean: `0ce9a499429b1309b23d1229c8282b872b3c6b7d`.
+Baseline fetched clean: `c615e0c5c3a00ab7377dae6c2af2542710fcfa29`.
 Publication response supplies the exact new revision; fetch current main and
 preserve intervening/uncommitted work.
+
+Current tooling checkpoint: Shael pulled c615e0c5 successfully, but native-only
+Workshop tool discovery failed before packaging. Shared native/Proton discovery
+and launch now support the established Deck win64 executables/Proton Experimental
+workflow. Isolated shell regression and syntax checks pass. No game/addon metadata
+bytes changed; prior local acceptance and 221-suite evidence remain inherited.
+Details: `docs/validation/WORKSHOP_STEAM_DECK.md`. Next: retry the normal publisher
+on Shael's logged-in Steam machine, record output/GMA digest and verify downloaded
+package parity before VPS deployment. No upload has been observed yet.
 
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 00 → 01 → relevant 05/06/07 rules were read for the release sweep; corrected
