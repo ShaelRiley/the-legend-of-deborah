@@ -159,9 +159,11 @@ C.Encounter = {
     PartyThreatMultiplier = {1.00, 1.40, 1.70, 2.00},
     PartyHealthMultiplier = {1.00, 1.10, 1.20, 1.30},
     -- Keycard fights are guaranteed separately. These budgets fund the
-    -- discretionary encounters that give each act its pacing profile.
-    SectorBaseThreat = {4.0, 6.0, 8.0, 9.0},
-    MaxDiscretionaryPerSector = {1, 2, 2, 2},
+    -- discretionary encounters that give each act its pacing profile. B26 funds
+    -- more separate fights, not larger copies of the same baseline squad. The
+    -- opening sector remains gentler; native activation still obeys 80/96.
+    SectorBaseThreat = {8.0, 16.0, 18.0, 20.0},
+    MaxDiscretionaryPerSector = {2, 4, 4, 4},
     Archetypes = {
         shambler = {
             class = "lod_hostile_shambler",

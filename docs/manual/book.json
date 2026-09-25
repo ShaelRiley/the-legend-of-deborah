@@ -850,7 +850,8 @@
         "An enemy's archetype tells you how it fights; its class, Combat Level, feats, and element make that particular creature different. Normal tier chances are 60% Typical, 30% Elite, and 10% Champion, using Dungeon Level, +1, and +2 respectively. A tier is a Level change, not a secret second set of damage multipliers.",
         "Shamblers threaten close quarters; Runners close gaps quickly. Deadcrabs are low jumping attackers. Soldiers use ranged fire; Blitzers press aggressively; Snipers punish exposed sight lines.",
         "BioBlasters threaten with biological attacks. Watchers demand attention to their readable attack tells. Seekers telegraph a committed charge: move out of its path instead of retreating along it.",
-        "Listen, look ahead, and use corners. Killing an enemy does not guarantee a permanently safe floor; wandering populations can replenish. Size, class tint, elemental aura, and aimed information help you decide what to tackle first."
+        "Listen, look ahead, and use corners. Killing an enemy does not guarantee a permanently safe floor; wandering populations can replenish. Size, class tint, elemental aura, and aimed information help you decide what to tackle first.",
+        "Dungeons favor different enemy groups rather than showing the entire Bestiary at once. Ordinary fights favor tactical corners and junctions, with more separate encounters beyond the opening sector. The hunt before the Black Gate remains populated; Gordon’s arena stays reserved for its own encounter. Wandering enemies are an independent population, and not every specialist can appear alone as a wanderer."
       ]
     },
     {

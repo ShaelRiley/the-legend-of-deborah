@@ -315,3 +315,48 @@ concommand.Add('lod_encounter_ecology', function(ply)
         end
     end
 end)
+
+-- Read-only release diagnostic: authored plans are not native sightings. Keep
+-- their initial composition separate from spawn-time safety substitutions, and
+-- report living actors independently. No developer mode or RNG is involved.
+function D:PopulationSnapshot()
+    local state=LOD.RunManager and LOD.RunManager.State
+    local graph=state and state.Graph
+    local plan=graph and graph.EncounterPlan
+    if not plan or plan~=self.Plan then return {ready=false} end
+    local out={ready=true,revision=plan.populationRevision or "legacy",level=state.Level,
+        seed=plan.seed,theme=plan.ecology and plan.ecology.theme,ceiling=LOD.Config.Encounter.ActiveHostileCeiling,
+        developerDense=plan.developerDenseTesting==true,planned={},currentComposition={},alive={},
+        plannedBodies=0,aliveBodies=0,aliveWanderers=0,sectors={}}
+    for sector=1,4 do
+        local pace=plan.pacing and plan.pacing.sectors[sector] or {}
+        out.sectors[sector]={pacing=pace.status,goal=pace.goal,routeLength=pace.length,
+            discretionary=0,objectives=0,spawned=0,budget=plan.sectorBudget[sector],spent=plan.sectorSpent[sector]}
+    end
+    for _,enc in ipairs(plan.encounters or {}) do
+        local row=out.sectors[enc.sector]
+        if row then
+            local kind=enc.objective and "objectives" or "discretionary"
+            row[kind]=row[kind]+1
+            if enc.spawned then row.spawned=row.spawned+1 end
+        end
+        for id,n in pairs(enc.plannedComposition or enc.composition or {}) do
+            out.planned[id]=(out.planned[id] or 0)+n;out.plannedBodies=out.plannedBodies+n
+        end
+        for id,n in pairs(enc.composition or {}) do out.currentComposition[id]=(out.currentComposition[id] or 0)+n end
+    end
+    local seen={}
+    for _,ent in ipairs(self.Entities or {}) do
+        if IsValid(ent) and ent.LODHostile and not ent.LODDead and not seen[ent] then
+            seen[ent]=true
+            local id=ent.LODArchetypeId or "unknown"
+            out.alive[id]=(out.alive[id] or 0)+1;out.aliveBodies=out.aliveBodies+1
+            if ent.LODWanderer then out.aliveWanderers=out.aliveWanderers+1 end
+        end
+    end
+    return out
+end
+concommand.Add("lod_population_status",function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    print("[LOD:POPULATION] "..util.TableToJSON(D:PopulationSnapshot()))
+end)

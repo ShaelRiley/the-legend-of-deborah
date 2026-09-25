@@ -1,5 +1,21 @@
 # Active roadmap — safety → local acceptance → Workshop → VPS
 
+## Current author-requested repair — Bestiary B26 population
+
+The empty/repetitive-dungeon report reopens population acceptance. B26 repairs
+sector4 pacing against the actual Black Gate/Neil/Gordon topology, prioritizes
+legal tactical homes, and funds more separate release encounters. Threat budgets
+8/16/18/20; maxima2/4/4/4; spacing4 and target80/ceiling96 remain. Baseline main
+3f86f99630178df667a8ac3c3410a618931a5962. Evidence and precise native limits:
+`validation/BESTIARY_B26.md` and the associated integration/paired logs.
+
+Next is local acceptance of this repaired candidate in release mode, not another
+Bestiary roster expansion or the deferred comprehensive audit. Use
+`lod_population_status` (revision b26) to distinguish planned/current/live rosters.
+Preserve local acceptance → matching Workshop publication → VPS deployment,
+all earlier safety/Crate checks and the deferred optimization/expansion order.
+Prior source/package/native acceptance does not certify this population change.
+
 **Author revision: September 25, 2026.** This supersedes the previous
 Bestiary → Big Loot → Events → comprehensive systems audit → performance →
 safety sequence. Preserve completed Bestiary work; B25 is published at

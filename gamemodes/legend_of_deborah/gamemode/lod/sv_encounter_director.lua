@@ -196,6 +196,7 @@ function EncounterDirector:_AddEncounter(plan, cell, sector, role, templateId, c
         templateId = templateId,
         templateName = EC.Templates[templateId] and EC.Templates[templateId].name or templateId,
         composition = composition,
+        plannedComposition = copyComposition(composition),
         threat = compositionThreat(composition),
         objective = objective == true,
         activated = false,
@@ -240,7 +241,12 @@ function EncounterDirector:BeginPacing(plan, graph)
     plan.pacing = {sectors={}}
     for sector=1,4 do
         local entry = sector==1 and graph.Start or (progression.Gates[sector-1] or {}).afterCell
-        local goal = sector==4 and progression.CoreCell or (progression.Keycards[sector] or {}).cell
+        -- Sector four ends on the approachable side of Black, not at Gordon's
+        -- Core behind it. The sector map deliberately excludes that reservation;
+        -- targeting Core made the entire production hunt sector "disconnected".
+        -- Keep the old Core endpoint for genuine three-gate/legacy graphs.
+        local finalGoal = progression.Gates[4] and progression.Gates[4].beforeCell or progression.CoreCell
+        local goal = sector==4 and finalGoal or (progression.Keycards[sector] or {}).cell
         local rng = LOD.RNG.New(LOD.Seeds.Derive(plan.seed,"pacing:sector:"..sector))
         local weights = self.IntensityProfile and self:IntensityProfile(plan).phrases or {1,1,1}
         local roll = rng:Float(0,weights[1]+weights[2]+weights[3])
@@ -335,7 +341,7 @@ function EncounterDirector:BuildPlan(graph)
     local seed = LOD.Seeds.Derive(graph.MasterLevelSeed or graph.LevelSeed or 1, "encounters")
     local rng = LOD.RNG.New(seed)
     local scale = self:_ThreatScale()
-    local plan = {seed = seed, encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+    local plan = {seed = seed, populationRevision = "b26", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
     if self.BeginEcology then self:BeginEcology(plan, graph) end
 
     -- Guaranteed keycard encounters are tuned independently of discretionary
@@ -370,6 +376,19 @@ function EncounterDirector:BuildPlan(graph)
         end
         table.sort(candidates,function(a,b) return keyOf(a)<keyOf(b) end)
         rng:Shuffle(candidates)
+        -- Most authored specialists require a tactical corner/junction. Let
+        -- those homes compete before travel/dead-end fallback squads consume
+        -- the sector's finite slots and threat. Preserve seeded order inside
+        -- each group and the probe/pressure bands below; physical admission is
+        -- still checked by SelectEcologyTemplate and again at native spawn.
+        local tactical, fallback = {}, {}
+        for _, cell in ipairs(candidates) do
+            local role = tags[keyOf(cell)].role
+            local pool = (role=="arena" or role=="ambush") and tactical or fallback
+            pool[#pool+1] = cell
+        end
+        candidates = tactical
+        for _, cell in ipairs(fallback) do candidates[#candidates+1] = cell end
 
         local placed = 0
         local maximum = EC.MaxDiscretionaryPerSector[sector] or 1
