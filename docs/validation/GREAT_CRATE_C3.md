@@ -1,4 +1,18 @@
-# Great Crate C3 — rejected presentation repaired; native retest outstanding
+# Great Crate C3 — sample branding visible; broader native acceptance outstanding
+
+## Native follow-up — visible company composition (author-supplied evidence)
+
+The current handoff reports screenshot `image(20260924-234248).png` visibly
+showing TRANS-PIEDMONT BULK, its emblem and “Moving the Mountains.” slogan on a
+restored teal container after published `eb319079f7e1b494851300e3465792cba88b5f2c`.
+This establishes native branding visibility in that sample and supersedes the
+older absent-branding/next-screenshot status below. The screenshot was described
+by the author; its attachment bytes were unavailable in this checkpoint. Do not
+restart that investigation without contradictory evidence. This is not acceptance
+of all brands, angles, tints, offsets, mip levels, legibility or performance.
+Preserve broader hull/tint sampling, stock gate appearance, floor/grate traversal
+and cover/rails, reset/rejoin, and dense successive-seed native frame-time/texture
+residency checks. Approved concrete and restored hull appearance stay intact.
 
 ## September 24 follow-up — submitted branding faces were reversed
 

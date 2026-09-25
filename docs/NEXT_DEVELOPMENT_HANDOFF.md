@@ -1,46 +1,33 @@
-# Handoff — C3 company-brand front-face repair
+# Handoff — P1 placement optimized; remove Bribe next
 
-Repository: ShaelRiley/the-legend-of-deborah; branch main. Last fetched baseline:
-ccc6535e0db22943185fa4b1fb6ca50d1a880432. Resume from the published main commit
-containing this handoff (verify with git fetch / git rev-parse origin/main), never
-reset to the baseline. Final publication response records the exact new SHA.
+Repository ShaelRiley/the-legend-of-deborah, branch main. Baseline
+eb319079f7e1b494851300e3465792cba88b5f2c; resume from published main containing
+this handoff, not by resetting to baseline. Verify fetched HEAD; publication
+response records exact new SHA.
 
-Live GDD: 1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY. Read navigation00→01,
-then only relevant05/07 LOD-CRATE-C3-001. Existing outward-face design governs;
-this is a renderer correction, with no design/tuning or manual change.
+Live GDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:00→01→05/07 Crate,
+determinism and resource contracts. No P1 design/tuning change.
 
-Author approves shown restored hull, reports no sprays, and provides a native
-status receipt: brand140 Atlas Tire Pyrolysis;716/1792 containers selected;
-36 draws, zero skips, valid UnlitGeneric material and one loaded texture.
-Investigation proves branding quads had the reverse of Source's front-face
-vertex order. All428 inspected stock cargo VTX triangles and Facepunch's concrete
-DrawQuad example establish the independent negative-cross convention. The old
-static test incorrectly enforced the opposite. Only quad traversal is reversed;
-UVs, anchors, selection, materials, depth/culling, hull, concrete and gates stay
-unchanged. Diagnostic renderer receipt: source-front-face-20260924.
+Author-reported screenshot image(20260924-234248).png shows TRANS-PIEDMONT BULK,
+emblem and slogan visible on teal restored hull. This establishes sample native
+visibility only; no absent-branding investigation without contradictory evidence.
+P1 caches the nearest chosen distance within each placement rebuild. Three fixed
+real generated manifests preserve every selected index/company/coverage and
+separation/cap/resource receipt, with headless CPU medians61–64% lower.
+See validation/CRATE_PLACEMENT_P1.md and raw evidence for finite gates/results.
+Headless CPU timings do not certify native FPS.
 
-Fresh corrected regression failed before the fix, then passed2048 brand/side/yaw
-cases plus unmirrored/upright UV assertions. All256 original assets/fit pass.
-Fresh canonical integration:221 suites passed, zero failures. Log, tested blob
-identities and full failed/native evidence are in
-validation/GREAT_CRATE_C3.md. Static success is not native visual acceptance.
+Next bounded checkpoint: author's requested removal of Brive, identified in code
+as Bribe/bribe_blockade. Remove active registration/loading/UI; retain unrelated
+events and exact non-exploding1d4 count/rare slot/solvability. Synchronize live GDD
+and manual. Run affected and canonical integration, commit/non-force-push/verify.
+After removal, next profiling target: repeated noise hashing with the same exact
+receipts; only optimize a demonstrated bottleneck.
 
-Next finite action: fully quit GMod, pull/install published main, inspect sprays
-in the maze and return one screenshot showing a complete company composition.
-If still absent, return lod_container_brand_status from that view; check the
-renderer receipt above. Do not request unrelated attachments or full logs.
-
-Preserve all incomplete C3 exits in its reconciliation table: broader hull/tint
-sampling, brand visibility/offset/mips/legibility, stock gate appearance,
-concrete/grate traversal/cover/rails, reset/rejoin and dense successive-seed native
-frame-time/residency. This explicit author-requested defect repair does not
-silently add another feature pass. Next permitted optimization checkpoint after
-this boundary: measure production branding placement/rebuild cost with fixed
-representative/dense manifests and exact output-equivalence gates before any
-optimization. Do not claim native FPS from headless measurements.
-
-Roadmap: Great Crate → low-end PC optimization → focused fatal/game-breaking
-safety → native playtest. Deferred September28–October4,2026:
-Big Loot → Events → comprehensive systems audit. Preserve all unfinished scope.
-Validate, commit, non-force-push and verify each small coherent result before
-adding scope. No VPS deployment or Steam Workshop publication.
+Preserve unfinished Crate: broader hull/tint sampling; offsets/mips/legibility;
+stock gate appearance; floor/grate traversal and cover/rails; reset/rejoin; dense
+successive-seed native frame-time/texture residency. Preserve approved concrete
+and hull, shader/anchors and source-front-face-20260924 renderer.
+Roadmap: Great Crate→low-end optimization→focused fatal/game-breaking audit→native
+playtest. Deferred September28–October4,2026: Big Loot→Event System→comprehensive
+systems audit. Small coherent checkpoints; no agents, VPS or Steam Workshop.

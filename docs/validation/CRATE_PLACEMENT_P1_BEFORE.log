@@ -1,0 +1,4 @@
+representative seed=7719 containers=1800 layers=3 median_ms=2877.285 min_ms=2792.077 max_ms=2931.290 cached_ms=0.000109
+dense seed=15438 containers=1896 layers=4 median_ms=2803.493 min_ms=2778.617 max_ms=2851.386 cached_ms=0.000090
+dense-successor seed=23157 containers=1978 layers=4 median_ms=2702.052 min_ms=2686.273 max_ms=2830.366 cached_ms=0.000091
+PLACEMENT_GATE_PASS: exact repeated indices, identity, coverage, separation, 40% cap, 64 draws, lazy resources; CPU timings are not native FPS

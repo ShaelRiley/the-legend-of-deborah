@@ -233,16 +233,6 @@ local function deterministicNoise(seed, candidate)
     return (derived % 10000) / 10000
 end
 
-local function minChosenDistanceSquared(instance, chosen)
-    if #chosen == 0 then return math.huge end
-    local best = math.huge
-    for _, item in ipairs(chosen) do
-        local distance = floorDistanceSquared(instance, item.instance)
-        if distance < best then best = distance end
-    end
-    return best
-end
-
 local function coverageGain(candidate, covered)
     local gain = 0
     for key in pairs(candidate.coverage or {}) do
@@ -265,7 +255,15 @@ local function pickCoverageCandidate(candidates, chosen, covered,
             and not candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
         then
             local gain = coverageGain(candidate, covered)
-            local distance = minChosenDistanceSquared(instance, chosen)
+            -- Chosen only grows by one between scans. Conflicts only grow too,
+            -- so every still-eligible candidate has seen every prior choice.
+            -- Cache the exact minimum within this rebuild, not across worlds.
+            local distance = candidate.nearestChosenDistance or math.huge
+            local latest = chosen[#chosen]
+            if latest then
+                distance = math.min(distance, floorDistanceSquared(instance, latest.instance))
+            end
+            candidate.nearestChosenDistance = distance
             local visibility = (instance.stackIndex or 0) == 0 and BRAND_LOWER_TIER_BIAS or 0
             local noise = deterministicNoise(seed, candidate)
             if gain > bestGain

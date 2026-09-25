@@ -10,7 +10,7 @@ pending). This revision changes planning/documentation only.
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate Update — C3 repair; native retest pending** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
+| 1 | **Great Crate Update — sample branding visible; broader native checks open** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
 | 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
 | 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
 | 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
@@ -101,7 +101,22 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — C3 branding front-face repair; native retest pending
+## Current checkpoint — P1 branding placement; Bribe removal next
+
+Author reports native TRANS-PIEDMONT BULK composition visible on restored teal
+hull; limited sample success supersedes absent-branding status. Preserve every
+remaining C3 native exit. P1 profiles real deterministic manifests and removes
+repeated all-chosen distance scans with an exact incremental minimum. CPU medians
+fall61–64% while full selected-index/identity/coverage receipts remain identical.
+See validation/CRATE_PLACEMENT_P1.md for fresh gates and native limitations.
+
+Next independently authorized checkpoint: remove Bribe (bribe_blockade) from
+active gameplay, synchronize its GDD/manual rule and prove normal exact1d4
+event population remains valid. This is the author's explicit removal, not the
+deferred Event System expansion. Next profiling target is repeated placement
+noise hashing; no speculative change now. Roadmap/deferred dates remain above.
+
+## Previous checkpoint — C3 branding front-face repair; native sample now observed
 
 Explicit author follow-up supersedes the older no-further-repair boundary for
 this one defect only. Baseline: fetched clean main
