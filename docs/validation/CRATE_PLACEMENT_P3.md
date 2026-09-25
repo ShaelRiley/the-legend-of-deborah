@@ -56,7 +56,7 @@ Every warmup/timed rebuild per manifest matched, with eligibility, exclusions,
 separation, placement/draw caps and lazy-resource assertions passing. Existing
 focused render/UV/resource gate also passed all 2048 orientation/composition cases.
 Production blob: `75ebd645ee48eafb2d7a04b385fefee6c9d49034`.
-Canonical integration: pending closure;
+Canonical integration: **219 suites passed, zero failures** (historical P3 run);
 Log: CRATE_PLACEMENT_P3_INTEGRATION.log; SHA-256
 `746d36874b9b4ca78d007dc9545ae354599dbf5d1a4045de7501d8356cba073f`.
 This is a fresh invocation against P3. No production or test changes followed it.

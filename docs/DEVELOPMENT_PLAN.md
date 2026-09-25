@@ -101,7 +101,25 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — P3 exhausted-coverage cache; conflict profiling next
+## Current checkpoint — P4 conflict cache; active-scan profiling next
+
+Baseline verified clean main `52eb96434af76d0ead341cc9b53386b0a57d23da`.
+Fresh profiling confirms repeated known conflicts and endpoint-key construction.
+Cache true conflicts and exact stack/orientation keys on temporary candidates;
+reservations only grow, while false results remain live. P1/P2/P3 optimizations,
+score/tie order and full coverage stay intact. Fresh same-host CPU medians improve
+17–20% (252/249/255ms → 202/205/212ms). Exact P1 receipts and placement/resource
+gates pass. Evidence: validation/CRATE_PLACEMENT_P4.md and logs.
+Fresh canonical integration: **219 suites passed, zero failures**. No design/tuning/manual/GDD change.
+
+Next finite action: profile remaining full-scan visits to selected/conflicted
+versus active candidates before considering stable active-candidate traversal.
+Preserve exact iteration/tie order, receipts and ceilings; optimize only if measured
+and publish promptly. Native C3 exits stay open; headless timing is not FPS proof.
+Bribe stays removed and approved visuals remain intact. Active/deferred order and
+September 28–October 4 dates above remain unchanged. No deployment.
+
+## Previous checkpoint — P3 exhausted-coverage cache; conflict profiling next
 
 Baseline verified clean main `ec2cb1be2b03455d2966eabefb773eb65e19f1bc`.
 Fresh profiling confirms repeated coverageGain traversal. Cache zero gain on each

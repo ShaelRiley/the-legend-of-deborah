@@ -103,17 +103,30 @@ end
 
 -- Physical contact is always forbidden: vertical partners on one logical wall edge
 -- touch, and same-tier collinear neighbors sharing an endpoint touch end-to-end.
-local function candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
+local function candidateConflicts(candidate, occupiedEdges, occupiedEndpoints)
+    local instance = candidate.instance
     local edgeKey = instance.overlayEdgeKey
     local endpointA = instance.overlayEndpointA
     local endpointB = instance.overlayEndpointB
     local orientation = instance.overlayOrientation
-    if not edgeKey or not endpointA or not endpointB or not orientation then return true end
-    if occupiedEdges[edgeKey] then return true end
+    -- Reservations only accumulate during this selection. A conflict cannot
+    -- clear; remember it on the temporary candidate, never on the world instance.
+    if not edgeKey or not endpointA or not endpointB or not orientation
+        or occupiedEdges[edgeKey]
+    then
+        candidate.conflicted = true
+        return true
+    end
 
-    local stackKey = tostring(instance.stackIndex or 0) .. ":" .. orientation
+    local stackKey = candidate.endpointStackKey
+    if not stackKey then
+        stackKey = tostring(instance.stackIndex or 0) .. ":" .. orientation
+        candidate.endpointStackKey = stackKey
+    end
     local endpoints = occupiedEndpoints[stackKey]
-    return endpoints and (endpoints[endpointA] or endpoints[endpointB]) or false
+    local conflict = endpoints and (endpoints[endpointA] or endpoints[endpointB]) or false
+    if conflict then candidate.conflicted = true end
+    return conflict
 end
 
 local function reserveCandidate(instance, occupiedEdges, occupiedEndpoints)
@@ -257,7 +270,8 @@ local function pickCoverageCandidate(candidates, chosen, covered,
     for _, candidate in ipairs(candidates) do
         local instance = candidate.instance
         if not candidate.selected
-            and not candidateConflicts(instance, occupiedEdges, occupiedEndpoints)
+            and not candidate.conflicted
+            and not candidateConflicts(candidate, occupiedEdges, occupiedEndpoints)
         then
             local gain = coverageGain(candidate, covered)
             -- Chosen only grows by one between scans. Conflicts only grow too,

@@ -1,0 +1,4 @@
+COUNTS representative four_rebuilds calls=1629292 repeated_conflicts=705680 stack_keys=1118660
+COUNTS dense four_rebuilds calls=1558212 repeated_conflicts=673128 stack_keys=1069488
+COUNTS dense-successor four_rebuilds calls=1614352 repeated_conflicts=706724 stack_keys=1121700
+PLACEMENT_GATE_PASS: exact repeated indices, identity, coverage, separation, 40% cap, 64 draws, lazy resources; CPU timings are not native FPS

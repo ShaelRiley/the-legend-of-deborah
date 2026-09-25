@@ -1,0 +1,22 @@
+representative seed=7719 containers=1800 layers=3 median_ms=252.189 min_ms=250.294 max_ms=257.291 cached_ms=0.000107
+sample representative /tmp/crate-p4-baseline.lua:pickCoverageCandidate 12285
+sample representative /tmp/crate-p4-baseline.lua:candidateConflicts 8520
+sample representative /tmp/crate-p4-baseline.lua:coverageGain 3382
+sample representative /tmp/crate-p4-baseline.lua:floorDistanceSquared 3242
+sample representative /tmp/crate-p4-baseline.lua:coverageForInstance 2404
+sample representative /tmp/crate-p4-baseline.lua:passageKey 894
+dense seed=15438 containers=1896 layers=4 median_ms=249.071 min_ms=246.814 max_ms=250.756 cached_ms=0.000090
+sample dense /tmp/crate-p4-baseline.lua:pickCoverageCandidate 11761
+sample dense /tmp/crate-p4-baseline.lua:candidateConflicts 8231
+sample dense /tmp/crate-p4-baseline.lua:coverageGain 3159
+sample dense /tmp/crate-p4-baseline.lua:floorDistanceSquared 3042
+sample dense /tmp/crate-p4-baseline.lua:coverageForInstance 2551
+sample dense /tmp/crate-p4-baseline.lua:passageKey 1037
+dense-successor seed=23157 containers=1978 layers=4 median_ms=255.314 min_ms=253.254 max_ms=266.795 cached_ms=0.000107
+sample dense-successor /tmp/crate-p4-baseline.lua:pickCoverageCandidate 12005
+sample dense-successor /tmp/crate-p4-baseline.lua:candidateConflicts 8392
+sample dense-successor /tmp/crate-p4-baseline.lua:coverageGain 3324
+sample dense-successor /tmp/crate-p4-baseline.lua:floorDistanceSquared 3270
+sample dense-successor /tmp/crate-p4-baseline.lua:coverageForInstance 2640
+sample dense-successor /tmp/crate-p4-baseline.lua:passageKey 1075
+PLACEMENT_GATE_PASS: exact repeated indices, identity, coverage, separation, 40% cap, 64 draws, lazy resources; CPU timings are not native FPS
