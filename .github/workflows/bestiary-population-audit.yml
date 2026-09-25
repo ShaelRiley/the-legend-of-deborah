@@ -2,7 +2,7 @@ name: Bestiary population audit
 on:
   push:
     branches: [fix/bestiary-population-audit]
-    paths: [.github/workflows/bestiary-population-audit.yml, tools/bestiary_population.patch]
+    paths: [.github/workflows/bestiary-population-audit.yml]
 permissions:
   contents: write
 concurrency:
@@ -11,69 +11,43 @@ concurrency:
 jobs:
   assemble:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Install validation dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y liblua5.4-0
-          python3 -m pip install Pillow numpy
-      - name: Apply tested source patch and rebuild manual
+      - name: Apply and verify locally tested novelty correction
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import subprocess
-          p=Path('/tmp/b26.patch')
-          p.write_text(Path('tools/bestiary_population.patch').read_text().replace('\n diff --git ', '\ndiff --git '))
-          subprocess.run(['git','apply','--check',str(p)],check=True)
-          subprocess.run(['git','apply',str(p)],check=True)
+          p=Path('gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua')
+          before=subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          assert before=='df20c2db1e5563afdfefefc62babf522740710ef',before
+          s=p.read_text()
+          old='                    weight = weight * (i == #e.before.recent and .2 or .6)'
+          new='                    -- B26: more legal fights must not dilute adjacent-dungeon\n                    -- variety. Keep repeats possible when geometry limits choices.\n                    weight = weight * (i == #e.before.recent and .1 or .6)'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
+          after=subprocess.check_output(['git','hash-object',str(p)],text=True).strip()
+          assert after=='6613ebe7e68dc1a5a601a7012f606e416888eb2d',after
+          print('B26_SOURCE_VERIFIED',after)
           PY
-          python3 tools/build_manual.py
           git diff --check
-      - name: Verify exact locally tested file bytes
+      - name: Install Lua
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json,subprocess
-          expected={
-            'docs/DEVELOPMENT_PLAN.md':'6a0ec3b4e14b067c10baa0442506e9c8a2d58658',
-            'docs/manual/book.json':'b2a174772261fa45d0031e37a91fdf4769e50ab6',
-            'docs/manual/manual.html':'a0d83b0698846dde5a55523b9be5da81c67e24c0',
-            'gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua':'030b38bc5cf363193a63dc816ac5a6cf49c2bccd',
-            'gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua':'3122e3c4fda3eafcfe75a102f4e6452096a8470d',
-            'gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua':'1c63d68fb33f22ba8656e63921672f3c13a4ead4',
-            'gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua':'93702281d4703ece5cc6c4644beb3d37974d0b12',
-            'gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua':'75203dd19b0f416eab1934131c7124ef1f4f25a6',
-            'gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua':'daa6f94ab7dddf2b037c29a8c1873a120f11fd46',
-            'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua':'be9ae7376afc0a8610601cf4a8c0f4a7a291d162',
-            'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua':'df20c2db1e5563afdfefefc62babf522740710ef',
-            'tools/test_bestiary_b26.lua':'5b323dac2e75d898f348b32c8f4cd68a2fcf00e2',
-            'tools/test_checkpoint_g_integration.py':'15099407e1b428a97684436de484975ac8af71a9'}
-          for path,wanted in expected.items():
-              actual=subprocess.check_output(['git','hash-object',path],text=True).strip()
-              assert actual==wanted,(path,actual,wanted)
-              print(actual,path)
-          Path('/tmp/b26-verified.json').write_text(json.dumps(expected,indent=2)+'\n')
-          PY
-      - name: Run production population regression
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+      - name: Verify production population regression
         run: python3 tools/run_lua54.py tools/test_bestiary_b26.lua | tee /tmp/b26-targeted.log
-      - name: Preserve verified Git objects on audit branch only
+      - name: Preserve verified source object on audit branch
         run: |
-          python3 - <<'PY'
-          import json,subprocess
-          from pathlib import Path
-          paths=list(json.loads(Path('/tmp/b26-verified.json').read_text()))
-          subprocess.run(['git','add','--']+paths,check=True)
-          subprocess.run(['git','-c','user.name=LoD validation','-c','user.email=validation@users.noreply.github.com','commit','-m','fix: restore production Bestiary population and tactical variety'],check=True)
-          subprocess.run(['git','push','origin','HEAD:fix/bestiary-population-audit'],check=True)
-          Path('/tmp/b26-prepared-head.txt').write_text(subprocess.check_output(['git','rev-parse','HEAD'],text=True))
-          PY
+          git add gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua
+          git -c user.name='LoD validation' -c user.email='validation@users.noreply.github.com' commit -m 'fix: preserve adjacent-dungeon novelty with denser encounters'
+          git push origin HEAD:fix/bestiary-population-audit
+          git rev-parse HEAD > /tmp/b26-prepared-head.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: bestiary-b26-verified
+          name: bestiary-b26-novelty-verified
           path: |
-            /tmp/b26-verified.json
             /tmp/b26-prepared-head.txt
             /tmp/b26-targeted.log
           retention-days: 7
