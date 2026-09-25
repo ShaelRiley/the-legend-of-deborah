@@ -101,7 +101,24 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — P1 branding placement; Bribe removal next
+## Current checkpoint — Bribe removed; continue bounded low-end profiling
+
+Author explicitly removes Brive/Bribe (`bribe_blockade`) for now. Baseline:
+`08d887ba5ffaf07c25bea2d400fb7cacc536ebd0`, verified published P1. Server
+registration/payment and client dialog/distribution are unloaded; normal cold
+startup has no Bribe selection, preview, toll/collateral or payment receiver.
+Dormant rollback files remain. Live GDD05 LOD-EVENT-BRIBE-001 and generated manual
+are synchronized. Do not auto-restore this event during the deferred expansion.
+See validation/BRIBE_REMOVAL.md for fresh active-catalog, manual and integration
+evidence; no bug reproduction or native acceptance is claimed.
+
+Next bounded checkpoint: profile repeated deterministic-noise hashing in branding
+placement using P1 manifests/receipts. Preserve exact selected indices, company,
+coverage, no-touching and caps; optimize only a demonstrated bottleneck. Keep
+all native Crate exits open and follow optimization→focused fatal/game-breaking
+audit→native playtest. Deferred order/dates above remain intact. No deployment.
+
+## Previous checkpoint — P1 branding placement; Bribe removal now completed
 
 Author reports native TRANS-PIEDMONT BULK composition visible on restored teal
 hull; limited sample success supersedes absent-branding status. Preserve every

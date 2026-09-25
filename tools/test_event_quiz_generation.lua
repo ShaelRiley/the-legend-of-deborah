@@ -1,4 +1,4 @@
--- Nine-entry catalog through actual RunManager, encounter reservations and native event creation.
+-- Eight-entry catalog through actual RunManager, encounter reservations and native event creation.
 -- Geometry/transport use native API doubles. Only SkeletonHero:Spawn is isolated:
 -- profile/combat/native death have a separate gate; no native acceptance is claimed.
 local equipment=dofile('tools/test_equipment_economy_runtime.lua')
@@ -44,12 +44,12 @@ LOD.SkeletonHero={Spawn=function(_,director,i,g)
  actor:SetPos(LOD.MazeBuilder:CellCenter(g.Cells[i.cellKey]));actor:Spawn();actor:Activate()
  return actor
 end}
-for _,name in ipairs({'locked_chest','treasure_chest','vending_machine','false_floor','warp_hole','bribe_blockade','skeleton_blockade'}) do
+for _,name in ipairs({'locked_chest','treasure_chest','vending_machine','false_floor','warp_hole','skeleton_blockade'}) do
  dofile(root..'sv_event_'..name..'.lua')
 end
-local B,S,definition=LOD.EventBribeBlockade,LOD.EventSkeletonBlockade,R.Definitions.skeleton_blockade
+local S,definition=LOD.EventSkeletonBlockade,R.Definitions.skeleton_blockade
 assert(S and definition and definition.contract=='BLOCKADE' and definition.production)
-assert(#R:Catalog()==8) -- established catalog, before this checkpoint's registration
+assert(#R:Catalog()==7) -- established catalog, before this checkpoint's registration
 -- Reuse the accepted actual encounter planning seam. Geometry is already
 -- built by the fixture when EventDirector requests a plan; the real m3 wrapper
 -- installs LOS policy and reserves enemy/safe cells before event placement.
@@ -92,7 +92,22 @@ dofile(root..'sv_crypto_director.lua')
 LOD.CryptoDirector.Sync=F.noop
 dofile(root..'sv_event_equipment_quiz.lua')
 local Q=assert(LOD.EventEquipmentQuiz)
-assert(#R:Catalog()==9 and #R:Catalog(1)==8 and #R:Catalog(5)==9)
+assert(#R:Catalog()==8 and #R:Catalog(1)==7 and #R:Catalog(5)==8)
+assert(not R.Definitions.bribe_blockade and not LOD.EventBribeBlockade)
+-- Tie the fixture's catalog to the actual boot includes, including dormant-code
+-- boundaries. Explicitly dofile-ing a retired module is not production startup.
+local function read(path) local f=assert(io.open(path));local text=f:read('*a');f:close();return text end
+local boot=read('gamemodes/legend_of_deborah/gamemode/init.lua')
+local client=read('gamemodes/legend_of_deborah/gamemode/cl_init.lua')
+local bootCount=0
+for id in boot:gmatch('include%("lod/sv_event_([%w_]+)%.lua"%)') do
+ if id~='director' then assert(R.Definitions[id],'Active boot/catalog drift: '..id);bootCount=bootCount+1 end
+end
+assert(bootCount==#R:Catalog())
+assert(not boot:find('cl_event_bribe_payment.lua',1,true))
+assert(not client:find('cl_event_bribe_payment.lua',1,true))
+assert(not F.receivers.LOD_BribeDecision,'Retired payment receiver is live')
+
 assert(Q.optionalAlcove and Q.contract=='REWARD' and Q.nonblocking and Q.production)
 local function key(c) return F.G.CellKey(c.x,c.y,c.z) end
 local function edge(a,b) return a<b and a..'|'..b or b..'|'..a end
@@ -160,7 +175,7 @@ local function prove(g,plan)
    end
    for _,i in ipairs(blockades) do
     if not settled[i] and reach[i.cellKey] then
-     assert(i.archetype=='skeleton_blockade' or reach[i.placement.cacheCellKey],'Circular payment requirement')
+     assert(i.archetype=='skeleton_blockade','Removed blockade entered production')
      settled[i]=true;blocked[i.placement.edgeKey]=hazardEdges[i.placement.edgeKey];changed=true
     end
    end
@@ -225,9 +240,9 @@ for seed=1,192 do
    else rejected=rejected+1 end
   end
  end
- if accepted>=8 and count(counts)==4 and count(partners)==9 then break end
+ if accepted>=8 and count(counts)==4 and count(partners)==8 then break end
 end
-assert(count(seen)==9 and accepted>=8 and count(counts)==4 and count(partners)==9,'Missing actual combined catalog/quiz coverage')
+assert(count(seen)==8 and accepted>=8 and count(counts)==4 and count(partners)==8,'Missing actual combined catalog/quiz coverage')
 local sig,graphSig=signature(lastPlan),F.graphSignature(Run.State.Graph)
 local oldEntities={};for _,i in ipairs(lastPlan.instances) do for _,e in ipairs(i.entities) do oldEntities[#oldEntities+1]=e end end
 local plan,i=build(lastSeed);assert(signature(plan)==sig and F.graphSignature(Run.State.Graph)==graphSig)
@@ -287,7 +302,9 @@ for _,row in ipairs(D:Snapshot(fresh).events) do
 end
 assert(found and found.state=='active' and not found.claimed)
 local resources={};for _,member in ipairs(plan.instances) do for _,e in ipairs(member.entities) do resources[#resources+1]=e end end
+local previewOK,previewError=D:Plan(Run.State.Graph,{preview='bribe_blockade'})
+assert(not previewOK and previewError=='unknown event preview','Removed event still previewable')
 D:Cleanup('quiz generation suite complete');LOD.EncounterDirector:Cleanup()
 assert(not D.Context and not D:IsCurrent(i) and #D:Snapshot(fresh).events==0)
 for _,e in ipairs(resources) do assert(not IsValid(e),'Teardown leaked native event resource') end
-print('QUIZ_GENERATION_PASS: nine-entry production catalog; '..accepted..' actual quiz builds / '..rejected..' bounded rejects; real encounter reservations; optional flat alcoves and mouths; independent ordered progression; all catalog partners; exact d4; deterministic retry; native Create failures; late joins; exact teardown')
+print('QUIZ_GENERATION_PASS: eight-entry production catalog; '..accepted..' actual quiz builds / '..rejected..' bounded rejects; real encounter reservations; optional flat alcoves and mouths; independent ordered progression; all catalog partners; exact d4; deterministic retry; native Create failures; late joins; exact teardown')

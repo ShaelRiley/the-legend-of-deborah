@@ -1,33 +1,44 @@
-# Handoff — P1 placement optimized; remove Bribe next
+# Handoff — P1 published; Bribe removed; bounded profiling next
 
-Repository ShaelRiley/the-legend-of-deborah, branch main. Baseline
-eb319079f7e1b494851300e3465792cba88b5f2c; resume from published main containing
-this handoff, not by resetting to baseline. Verify fetched HEAD; publication
-response records exact new SHA.
+Repository ShaelRiley/the-legend-of-deborah; branch main. Last verified checkpoint
+`08d887ba5ffaf07c25bea2d400fb7cacc536ebd0` (P1). Resume from published main
+containing this handoff; fetch/verify HEAD and preserve intervening work. The final
+publication response supplies the exact new Bribe-removal SHA. Never reset to P1.
 
-Live GDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:00→01→05/07 Crate,
-determinism and resource contracts. No P1 design/tuning change.
+Live GDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:00→01→relevant05/07.
+Bribe removal is authored/read back at05 LOD-EVENT-BRIBE-001; former payment
+design is historical. No new tuning or restoration permission.
 
-Author-reported screenshot image(20260924-234248).png shows TRANS-PIEDMONT BULK,
-emblem and slogan visible on teal restored hull. This establishes sample native
-visibility only; no absent-branding investigation without contradictory evidence.
-P1 caches the nearest chosen distance within each placement rebuild. Three fixed
-real generated manifests preserve every selected index/company/coverage and
-separation/cap/resource receipt, with headless CPU medians61–64% lower.
-See validation/CRATE_PLACEMENT_P1.md and raw evidence for finite gates/results.
-Headless CPU timings do not certify native FPS.
+Published P1 preserves exact full placement receipts and removes repeated
+all-chosen distance scans. Same-host CPU medians fell61–64% across three real
+representative/dense manifests (1800/1896/1978 containers). Fresh P1 canonical:
+221 suites, zero failures. Evidence: validation/CRATE_PLACEMENT_P1.md.
 
-Next bounded checkpoint: author's requested removal of Brive, identified in code
-as Bribe/bribe_blockade. Remove active registration/loading/UI; retain unrelated
-events and exact non-exploding1d4 count/rare slot/solvability. Synchronize live GDD
-and manual. Run affected and canonical integration, commit/non-force-push/verify.
-After removal, next profiling target: repeated noise hashing with the same exact
-receipts; only optimize a demonstrated bottleneck.
+Current checkpoint removes Brive, identified as Bribe/bribe_blockade, from server
+registration/payment and client dialog/distribution. Remaining catalog7 before
+Dungeon5,8 thereafter; exact1d4 and rare fourth slot preserved. Live GDD/manual
+updated. Dormant code and historical tests remain, but no normal production or
+developer preview path loads it. A full restart is needed when applying this
+build; no migration of an already running old dungeon, VPS deployment or Workshop
+publish occurred. Do not restore Bribe without a new explicit author decision.
+Fresh affected/canonical evidence: validation/BRIBE_REMOVAL.md and logs.
 
-Preserve unfinished Crate: broader hull/tint sampling; offsets/mips/legibility;
-stock gate appearance; floor/grate traversal and cover/rails; reset/rejoin; dense
-successive-seed native frame-time/texture residency. Preserve approved concrete
-and hull, shader/anchors and source-front-face-20260924 renderer.
-Roadmap: Great Crate→low-end optimization→focused fatal/game-breaking audit→native
-playtest. Deferred September28–October4,2026: Big Loot→Event System→comprehensive
-systems audit. Small coherent checkpoints; no agents, VPS or Steam Workshop.
+Next coherent result: measure repeated deterministic-noise hashing in the current
+branding placement/rebuild scan. Use tools/profile_crate_placement.lua and the
+P1 exact receipt. Preserve selected indices, company, coverage, physical no-touching,
+placement caps/resource ceilings. Change one demonstrated bottleneck only, report
+comparable before/after CPU timing and affected/canonical checks, publish/verify
+immediately. If no demonstrated gain, retain evidence and name the next target.
+Headless timing is not native FPS. No broad audit/repair replay or parallel agents.
+
+Author reports screenshot image(20260924-234248).png shows TRANS-PIEDMONT BULK,
+emblem and “Moving the Mountains.” on a teal restored container. Sample native
+visibility is established; absent-branding investigation stays closed unless
+contradicted. Preserve approved hull/concrete and source-front-face-20260924.
+Unfinished Crate: broader hull/tint sampling; brand offset/mips/legibility; stock
+gate appearance; floor/grate traversal and cover/rails; reset/rejoin; dense
+successive-seed native frame-time/texture residency. See GREAT_CRATE_C3.md.
+
+Roadmap remains Great Crate→low-end optimization→focused fatal/game-breaking
+audit→native playtest. Deferred September28–October4,2026:
+Big Loot→Event System→comprehensive systems audit. Bribe stays removed.

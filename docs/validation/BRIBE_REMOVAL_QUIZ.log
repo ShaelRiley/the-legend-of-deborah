@@ -1,0 +1,33 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=1 layoutAttempt=1 cells=690 entities=1 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=4 layoutAttempt=2 cells=479 entities=1 vertical=3 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=3 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=14 layoutAttempt=2 cells=647 entities=1 vertical=4 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=16 layoutAttempt=1 cells=522 entities=1 vertical=3 mazeAttempt=6 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=18 layoutAttempt=3 cells=481 entities=1 vertical=3 mazeAttempt=5 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=21 layoutAttempt=1 cells=473 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=22 layoutAttempt=1 cells=688 entities=1 vertical=5 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=23 layoutAttempt=1 cells=653 entities=1 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=32 layoutAttempt=1 cells=490 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=52 layoutAttempt=1 cells=600 entities=1 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=52 layoutAttempt=1 cells=600 entities=1 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=52 layoutAttempt=1 cells=600 entities=1 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+QUIZ_GENERATION_PASS: eight-entry production catalog; 10 actual quiz builds / 0 bounded rejects; real encounter reservations; optional flat alcoves and mouths; independent ordered progression; all catalog partners; exact d4; deterministic retry; native Create failures; late joins; exact teardown
