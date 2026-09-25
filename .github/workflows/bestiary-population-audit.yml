@@ -1,0 +1,32 @@
+name: Bestiary population audit
+on:
+  push:
+    branches: [fix/bestiary-population-audit]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Export exact audit source
+        run: |
+          git archive --format=tar.gz HEAD > /tmp/bestiary-audit-source.tar.gz
+          git rev-parse HEAD > /tmp/bestiary-audit-revision.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bestiary-audit-source
+          path: |
+            /tmp/bestiary-audit-source.tar.gz
+            /tmp/bestiary-audit-revision.txt
+          retention-days: 3
+      - name: Install validation dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+          python3 -m pip install Pillow numpy
+      - name: Canonical integration
+        run: python3 tools/test_checkpoint_g_integration.py
