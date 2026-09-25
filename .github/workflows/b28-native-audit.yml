@@ -4,21 +4,61 @@ on:
     branches: [fix/native-population-b28]
     paths: [.github/workflows/b28-native-audit.yml]
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: b28-native-population
+  cancel-in-progress: true
 jobs:
-  source:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          ref: d384b986daa5c6f839df72d3f2a754503ff64102
-      - name: Export exact production baseline
+      - name: Decode exact tested patch and assemble whole tree
         run: |
-          git archive --format=tar.gz HEAD > /tmp/b28-baseline.tar.gz
+          python3 - <<'PY'
+          import base64,gzip,hashlib,subprocess
+          from pathlib import Path
+          parts=sorted(Path('tools').glob('b28-patch-*.b64'))
+          assert len(parts)==5
+          encoded=''.join(p.read_text().strip() for p in parts)
+          patch=gzip.decompress(base64.b64decode(encoded,validate=True))
+          digest=hashlib.sha256(patch).hexdigest()
+          assert digest=='d2aa6aae9f97100c518a86bea01d2f0f45854629b45ad3cfa4f5ab51b209d641',digest
+          p=Path('/tmp/b28.patch');p.write_bytes(patch)
+          subprocess.run(['git','apply','--check',str(p)],check=True)
+          subprocess.run(['git','apply',str(p)],check=True)
+          for helper in parts: helper.unlink()
+          Path('.github/workflows/b28-native-audit.yml').unlink()
+          subprocess.run(['git','add','-A'],check=True)
+          tree=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert tree=='c82055bc8cc1ae0b17877e6975957578a25293bb',tree
+          Path('/tmp/b28-tree.txt').write_text(tree+'\n')
+          print('B28_EXACT_TREE',tree)
+          PY
+          git diff --cached --check
+      - name: Install Lua validation dependency
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+      - name: Production-boundary regression
+        run: python3 tools/run_lua54.py tools/test_bestiary_b28.lua | tee /tmp/b28-targeted.log
+      - name: Actual installer manifest regression
+        run: python3 tools/test_dev_population_manifest.py | tee /tmp/b28-installer.log
+      - name: Verify unchanged tree and preserve audit branch only
+        run: |
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = c82055bc8cc1ae0b17877e6975957578a25293bb
+          git -c user.name='LoD validation' -c user.email='validation@users.noreply.github.com' commit -m 'fix: native population support and visibility probes with release evidence (B28)'
+          git push origin HEAD:fix/native-population-b28
+          git rev-parse HEAD > /tmp/b28-audit-head.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: b28-baseline
-          path: /tmp/b28-baseline.tar.gz
-          retention-days: 3
+          name: b28-exact-source-proof
+          path: |
+            /tmp/b28-tree.txt
+            /tmp/b28-targeted.log
+            /tmp/b28-installer.log
+            /tmp/b28-audit-head.txt
+          retention-days: 7
