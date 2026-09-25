@@ -1,0 +1,27 @@
+name: B29 isolated checkpoint
+on:
+  push:
+    branches: ['checkpoint/b29-entry-safety']
+    paths: ['.github/workflows/b29-checkpoint.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fc8951840a69e52a0dd4d73ac309480a9b958b98
+          persist-credentials: false
+      - name: Archive exact B28 baseline for local validation
+        run: |
+          git archive --format=tar HEAD > /tmp/lod-b28-source.tar
+          git rev-parse HEAD > /tmp/lod-b28-source-sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-b28-source
+          path: |
+            /tmp/lod-b28-source.tar
+            /tmp/lod-b28-source-sha.txt
+          retention-days: 2
