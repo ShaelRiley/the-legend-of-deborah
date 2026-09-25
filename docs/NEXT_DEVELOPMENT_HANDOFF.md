@@ -1,42 +1,43 @@
-# Handoff — focused safety → local acceptance → Workshop → VPS
+# Handoff — local solo acceptance; diagnostic repair → Workshop → VPS
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-Baseline fetched clean: `b7bcae2aa79ca925419f028f0e152572c18df680`.
-Resume from the published main containing this handoff; the publication response
-supplies the exact new SHA. Fetch and preserve intervening/uncommitted work.
+Baseline fetched clean: `0ce9a499429b1309b23d1229c8282b872b3c6b7d`.
+Publication response supplies the exact new revision; fetch current main and
+preserve intervening/uncommitted work.
 
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
-Read 00 → 01 → required 05/06/07 rules. Release sequencing verified by readback in
-00/01/05/07/90. The author-pinned deferred dates remain as stated below.
+00 → 01 → relevant 05/06/07 rules were read for the release sweep; corrected
+sweep → LOCAL acceptance → Workshop → VPS sequencing was read back in
+00/01/05/07/90. This diagnostic repair changes no game-design rule.
 
-Immediate: fatal-crash/game-ending-bug sweep → LOCAL playtest and acceptance →
-Steam Workshop publication (3791535712) → matching verified VPS deployment. Deferred September 28–October 4, 2026,
-strictly: Low-End PC Optimization → Big Loot → Event System → comprehensive audit.
-P4 active-scan profiling and dense successive-seed frame-time/texture-residency
-certification are **pending in next week's optimization**, not immediate work.
+Shael accepted the observed solo experience: good appearance, Gordon defeated,
+no crashes or noticeable bugs. Uploaded console/summary verify clean client/server
+revision 0ce9a499, Neil's card, Warden defeat, two player deaths followed by continued
+play, rescue, +100 $DEB, Level-2 build and recurring Hermit staging. Native geometry
+and vertical audits passed. Server Lua-error counts remained zero.
 
-Current checkpoint: normal InitPostEntity startup now shares the protected
-bootstrap failure boundary. The expanded real-hook regression first reproduced
-an escaping build exception; it now passes exception/false-return recovery on an
-empty server and preservation of an already live campaign. Focused safety review
-reused the native lifetime, lifecycle, transaction and progression authorities.
-Fresh canonical gate: **221 suites passed, zero failures**. Current log:
-`docs/validation/RELEASE_SAFETY_SWEEP_INTEGRATION.log`. Prior evidence remains intact.
-Evidence, exact scope and local acceptance procedure: `docs/validation/RELEASE_SAFETY.md`.
+The console exposed a nonfatal automatic Crate-summary nil-material exception once
+per dungeon. The reporting-only guard now reports missing/error material truthfully.
+Its expanded production-callback regression first failed, then passed. Fresh full
+integration: **221 suites passed, zero failures**; log:
+`docs/validation/RELEASE_LOCAL_DIAGNOSTIC_INTEGRATION.log`. No gameplay/rendering/assets changed; accepted observed solo
+behavior is retained. Native diagnostic readback remains unobserved.
 
-Great Crate implementation reconciled, full native acceptance still open. Preserve
-P1–P4, Bribe removal, approved concrete/restored hull, stock blast-door gates and
-renderer `source-front-face-20260924`. Inherited TRANS-PIEDMONT BULK visibility is
-sample-only. Retain hull/tints; branding offset/mips/legibility; gate appearance;
-floor/grate traversal/cover/rails; reset/rejoin and full campaign native limits.
+Evidence and exact coverage: `docs/validation/RELEASE_LOCAL_ACCEPTANCE.md`.
+Grates (zero in both seeds), detailed offset/mips, reset/rejoin/co-op and Level-20/21
+native checks remain unexercised; no blanket acceptance is claimed.
 
-Local acceptance is the next release gate after the focused sweep and exact-candidate
-publication to GitHub. Use the single LOCAL procedure in RELEASE_SAFETY.md; obtain
-console_latest.txt + rpg_summary_latest.txt and visual evidence, repair failures,
-then publish the accepted build to Workshop item 3791535712. Verify package/revision
-parity before running tools/server/deploy_verified.sh FULL_SHA on the VPS.
-Preserve data/configuration and rollback; verify service health, logs, listing and
-native connectivity. Prior SSH/A2S attempts failed Network is unreachable; no VPS
-restart/deployment or Workshop publication occurred. Their installed revisions
-remain unknown. The previous deployment command is not the next action.
-Never expose GSLT, raw process arguments or unredacted private startup logs.
+Next: publish the exact clean validated revision to Steam Workshop **3791535712**,
+verify package/revision parity, then deploy that matching revision to the VPS with
+persistent data/configuration, backups and rollback preserved. Verify service
+health, startup logs, listing and connectivity. The local Workshop builder stopped
+because gmad is absent; an authenticated owning-account Steam machine is required.
+No Workshop publication or VPS deployment/restart occurred. Previous remote SSH/A2S
+attempts failed Network is unreachable; server health/installed revision remain unknown.
+
+Deferred September 28–October 4, 2026: Low-End PC Optimization → Big Loot → Event
+System → comprehensive systems audit. Preserve P1–P4, Bribe removal, approved
+concrete/restored hull, stock blast-door gates and source-front-face-20260924.
+Active-scan profiling and dense frame-time/texture-residency certification remain
+in the deferred optimization phase. Earlier RELEASE_SAFETY.md local procedure
+is retained for unexercised native checks and failure follow-up.

@@ -102,8 +102,12 @@ local function summary()
             info.stockSlots=m:GetMaterials();info.override=m:GetMaterial()
             info.candidateFallback=wall.world[index] and wall.world[index].hullCandidateFallback or false
             local mat=Material(info.override)
-            info.shader=mat:GetShader();info.materialError=mat:IsError()
-            local tex=mat:GetTexture("$basetexture")
+            -- Model creation and section-material reconciliation run separately.
+            -- A diagnostic may observe an unresolved override; report it rather
+            -- than raising a client Lua error or inventing a valid material.
+            info.shader=mat and mat:GetShader() or "missing"
+            info.materialError=not mat or mat:IsError()
+            local tex=mat and mat:GetTexture("$basetexture")
             info.sampler=tex and tex:GetName() or "missing"
             info.tint=wall.world[index] and wall.world[index].sectionColor or m:GetColor()
             break

@@ -87,3 +87,43 @@ assert(Wall.models[1].material:find('/crate/sections/c2_',1,true))
 local replacement={};for i,m in ipairs(Wall.models) do replacement[i]=m;m.material='stale' end
 Wall.models=replacement;settle();assert(replacement[1].material:find('/crate/sections/c2_',1,true))
 print('CRATE_HULL_RUNTIME_PASS: repaired default on, legacy recovery; 600 models; unchanged palette; <=192 writes/batch; on/off; 5 material/sampler failures fall back; recovery and replacement-model reconciliation; idle quiescence')
+
+-- Field report: the automatic per-world diagnostic ran before a material handle
+-- was available. Reporting must survive nil/error/absent samplers without claiming
+-- valid artwork, and a later explicit read must observe the recovered material.
+local commands,summaryReads,lastSummary={},0,nil
+concommand.Add=function(name,fn) commands[name]=fn end
+LOD.Config={Geometry={ContainerModel='stock',FloorMaterial='concrete'}}
+LOD.CrateVisuals={FloorStyle='continuous-concrete',GrateStyle='test'}
+LOD.TexturedBox={GetIndustrialMaterial=function() return {},false end,MeshCacheCount=function() return 0 end}
+LOD.CrateBranding={Summary=function() return {} end}
+ents={FindByClass=function() return {} end}
+FrameTime=function() return 0.016 end
+util={TableToJSON=function(info) lastSummary=info;summaryReads=summaryReads+1;return 'summary-test' end}
+local materialState='nil'
+local availableMaterial=Material
+Material=function(name)
+ if name==Wall.models[1]:GetMaterial() then
+  if materialState=='nil' then return nil end
+  return {IsError=function() return materialState=='error' end,
+   GetShader=function() return 'VertexLitGeneric' end,
+   GetTexture=function()
+    if materialState=='no-texture' then return nil end
+    return {GetName=function() return 'test/hull' end}
+   end}
+ end
+ return availableMaterial(name)
+end
+-- Use one sample so unordered table traversal cannot mask an absent handle.
+Wall.models={Wall.models[1]};Wall.world={{sectionColor=Color(20,30,40)}}
+Wall.nextModel=2;Wall.retryQueue={}
+dofile(root..'cl_crate_preview.lua')
+assert(pcall(hooks.LOD_CrateSummary),'automatic Crate diagnostic crashed on nil material')
+assert(lastSummary.materialError==true and lastSummary.shader=='missing' and lastSummary.sampler=='missing')
+local count=summaryReads;hooks.LOD_CrateSummary();assert(summaryReads==count,'diagnostic polled unchanged world')
+materialState='ok';commands.lod_crate_status()
+assert(lastSummary.materialError==false and lastSummary.shader=='VertexLitGeneric' and lastSummary.sampler=='test/hull')
+materialState='error';commands.lod_crate_status();assert(lastSummary.materialError==true)
+materialState='no-texture';commands.lod_crate_status();assert(lastSummary.sampler=='missing')
+materialState='nil';Wall.world={{}};hooks.LOD_CrateSummary();assert(lastSummary.materialError==true)
+print('PASS Crate summary: nil/error material, missing sampler, explicit recovery, once per world and replacement-world diagnostic')

@@ -1,5 +1,11 @@
 # Great Crate release candidate — focused safety
 
+Current continuation: [local solo acceptance and diagnostic repair](RELEASE_LOCAL_ACCEPTANCE.md).
+Shael's successful run establishes the observed gameplay/appearance; the supplied
+logs also exposed a reporting-only Crate exception now repaired. Coverage limits
+and the Workshop-next handoff are recorded there. The earlier pending-local labels
+below describe the pre-playtest checkpoint, not the current acceptance status.
+
 Resumed baseline: clean fetched main `b7bcae2aa79ca925419f028f0e152572c18df680`.
 Author override: fatal-crash/game-ending-bug sweep → LOCAL playtest and acceptance
 → Steam Workshop publication (3791535712) → matching verified VPS deployment.

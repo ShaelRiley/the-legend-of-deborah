@@ -103,7 +103,23 @@ because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — startup safety sweep; local acceptance next
+## Current checkpoint — successful local run; Crate diagnostic repair
+
+Shael accepted the observed local solo gameplay/appearance on clean revision
+`0ce9a499429b1309b23d1229c8282b872b3c6b7d`: no crashes or noticeable bugs. Logs
+confirm Gordon defeat, rescue/+100 $DEB and Dungeon-2 build/staging. They also show
+a nonfatal automatic Crate-summary nil-material error once per dungeon. The
+reporting-only guard fixes that demonstrated defect; the expanded production
+regression passes. Fresh canonical integration: **221 suites passed, zero failures**. Gameplay/rendering and
+all approved assets are unchanged; native unexercised boundaries remain explicit.
+Evidence: `validation/RELEASE_LOCAL_ACCEPTANCE.md`.
+
+Next release step: Workshop item 3791535712 from the exact validated clean revision,
+then package/source verification, then matching VPS deployment. This environment's
+builder stopped before packaging because gmad is absent; publication requires the
+owning account's Steam machine. Neither Workshop nor VPS has been changed.
+
+## Previous checkpoint — startup safety sweep; local acceptance next
 
 Baseline `b7bcae2aa79ca925419f028f0e152572c18df680`, fetched clean. Completed live GDD
 sequencing readback and synchronized repository release instructions. The actual
