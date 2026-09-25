@@ -20,6 +20,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Development Population Source Manifest", ["python3", "tools/test_dev_population_manifest.py"]),
+    ("Bestiary B28 Native Population Boundaries", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b28.lua"]),
     ("Bestiary B27 Autonomous Patrols & Adventure Pacing", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b27.lua"]),
     ("Bestiary B26 Production Population Recovery", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b26.lua"]),
     ("Great Crate Stock Gates & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_great_crate_gates.lua"]),

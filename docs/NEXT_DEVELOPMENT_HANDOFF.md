@@ -1,3 +1,32 @@
+# Current handoff — B28 physical population-query repair
+
+Baseline main `d384b986daa5c6f839df72d3f2a754503ff64102`; publication response supplies
+the exact new repair SHA. Fetch current main and preserve intervening work.
+Live GDD00/01/05 governed the existing B27 behavior; no new design/tuning change.
+
+B27 native verdict FAILED, keycard-only contacts. Uploaded seed/attempts reproduced
+using the missing graph/progression safety wrappers. Thin floor rays could reject
+valid BBOX support; thin start-visibility rays could miss generated cover. B28 uses
+the existing feet-hull support approach plus generated-solid visibility correction.
+No quotas, caps, spacing, attacks, rewards or physical geometry were retuned.
+
+New automatic release-mode census in `population_latest.txt` also records native
+probe disagreements and eight-file mounted-source verification. DATA's install
+label alone never proved loaded modules; mixed mounts remain a hypothesis, not a
+finding. Prior release-mode instructions switched off RPG logging before ingress.
+
+Finite static/native boundary, selected checks and honest scope:
+`validation/BESTIARY_B28.md` and `validation/BESTIARY_B28_CHECKS.json`.
+Next: install exact repair, restart GMod, `lod_developer_mode 0; lod_regenerate`
+on a disposable unranked test run; play normally through the first two gates.
+Upload `console_latest.txt` + `population_latest.txt`. Require actual wandering
+and non-objective contacts, verified mounted source, valid support/LOS and good
+pacing before acceptance. The AABB boundary model's18 groups/40 actors is NOT
+native acceptance. Workshop/VPS untouched; release order and deferred work intact.
+
+---
+Previous checkpoint (historical; B27 native acceptance has failed):
+
 # Handoff — Bestiary B27 adventure pacing → local acceptance
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. Baseline

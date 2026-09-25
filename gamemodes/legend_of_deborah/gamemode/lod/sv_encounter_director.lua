@@ -378,7 +378,9 @@ function EncounterDirector:BuildPlan(graph)
     local seed = LOD.Seeds.Derive(graph.MasterLevelSeed or graph.LevelSeed or 1, "encounters")
     local rng = LOD.RNG.New(seed)
     local scale = self:_ThreatScale()
-    local plan = {seed = seed, populationRevision = "b27", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+    local plan = {seed = seed, populationRevision = "b28", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+    self.VisibilityProbeStats={checked=0,lineBlocked=0,bboxBlocked=0,visible=0}
+    plan.visibilityProbe=self.VisibilityProbeStats
     if self.BeginEcology then self:BeginEcology(plan, graph) end
 
     -- Guaranteed keycard encounters are tuned independently of discretionary

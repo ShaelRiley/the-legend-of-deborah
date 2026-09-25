@@ -219,6 +219,7 @@ function WanderingDirector:Cleanup()
     self.Entities={};self.NextRespawn={};self.SpawnOrdinal={};self.LastArchetype={}
     self.Diagnostics={};self.ReplacementOrdinal={};self.Graph=nil;self.Owner=nil;self.NextThink=0
     self.InitialRemaining={};self.NextInitial={};self.AdmissionStats={}
+    self.SupportProbeStats={samples=0,lineMisses=0}
 end
 
 function WanderingDirector:_SpawnCandidates(graph, floor, rng)
@@ -314,12 +315,34 @@ function WanderingDirector:_SupportedSpawn(cell)
     local hull=util.TraceHull({start=center,endpos=center,mins=Vector(-16,-16,0)*1.33,
         maxs=Vector(16,16,72)*1.33,mask=MASK_NPCSOLID})
     if hull.Hit or hull.StartSolid or hull.AllSolid then return nil,"blocked_hull" end
-    local floor=util.TraceLine({start=center+Vector(0,0,16),endpos=center-Vector(0,0,12),mask=MASK_SOLID,
-        filter=function(v) return not v.LODHostile and not v:IsPlayer() end})
+    -- Match the established generated-floor/Wall placement support test.
+    -- lod_static_box uses SOLID_BBOX bounds without a VPhysics mesh: a thin ray
+    -- can miss a slab that correctly supports a moving player/NPC feet hull.
+    -- Keep the original short reach, exact deck height and slope requirements.
+    local trace={start=center+Vector(0,0,16),endpos=center-Vector(0,0,12),mask=MASK_SOLID,
+        mins=Vector(-2,-2,0),maxs=Vector(2,2,2),collisiongroup=COLLISION_GROUP_PLAYER_MOVEMENT,
+        filter=function(v) return not v.LODHostile and not v:IsPlayer() end}
+    local floor=util.TraceHull(trace)
     if not floor.Hit or floor.StartSolid or floor.AllSolid or not floor.HitNormal
         or floor.HitNormal.z<.7 or math.abs(floor.HitPos.z-(center.z-2))>4 then return nil,"unsupported_floor" end
+    -- Bounded native A/B receipt. This is observation, not an alternate admission
+    -- path: a missing/steep/blocked floor above still rejects the spawn.
+    self.SupportProbeStats=self.SupportProbeStats or {samples=0,lineMisses=0}
+    local probes=self.SupportProbeStats
+    if probes.samples<8 then
+        local line=util.TraceLine({start=trace.start,endpos=trace.endpos,mask=trace.mask,filter=trace.filter})
+        probes.samples=probes.samples+1
+        if not line.Hit or line.StartSolid or line.AllSolid or not line.HitNormal
+            or line.HitNormal.z<.7 or math.abs(line.HitPos.z-(center.z-2))>4 then
+            probes.lineMisses=probes.lineMisses+1
+            probes.example={cell=keyOf(cell),deckZ=center.z-2,hullZ=floor.HitPos.z,
+                lineHit=line.Hit==true,lineZ=line.HitPos and line.HitPos.z}
+        end
+    end
     return center
 end
+WanderingDirector.NativeSupportRevision="b28-feet-hull"
+WanderingDirector.NativeSupportFunction=WanderingDirector._SupportedSpawn
 
 function WanderingDirector:_SpawnOne(graph, floor, reason)
     local state = LOD.RunManager and LOD.RunManager.State
@@ -778,7 +801,8 @@ end)
 -- Release observation only: native living counts, target debt and admissions,
 -- not a claim that every planned monster is present or near the player.
 function WanderingDirector:PopulationSnapshot(graph)
-    local out={owned=self:_Owns(graph)==true,cap=WC.GlobalPopulationCap,floors={}}
+    local out={owned=self:_Owns(graph)==true,cap=WC.GlobalPopulationCap,floors={},
+        supportProbe=table.Copy(self.SupportProbeStats or {})}
     if not graph or not out.owned then return out end
     local seen={}
     for floor=0,(graph.WanderLayers or graph.Layers or 0)-1 do

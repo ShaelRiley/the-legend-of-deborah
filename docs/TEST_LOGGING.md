@@ -10,6 +10,22 @@ On Shael's Steam Deck this is:
 
 The upload-facing files are **ordinary physical `.txt` files**, not checkout symlinks.
 
+## Population acceptance — release-mode evidence
+
+From B28, `population_latest.txt` is the bounded, automatic population census in
+`garrysmod/data/legend_of_deborah/`. Pair it with `console_latest.txt` for population
+failures. It captures first-ready state, gate changes,30-second heartbeats and
+shutdown, with at most64 records. It reports actual living actors separately from
+planned and spawned encounter counts, native admission failures, line/hull probe
+disagreement and installed-versus-mounted source fingerprints. `lod_population_evidence`
+is an optional immediate read-only capture, not a prerequisite.
+
+This observer remains active with `lod_developer_mode 0`. The older detailed RPG
+logger does not: a staging-only RPG summary after switching to release mode is not
+evidence that the user never entered the dungeon. The installer records an atomic
+eight-file SHA256 manifest; missing/mismatched source is explicitly unverified.
+No population observation enables cheats, spawns monsters or changes campaign RNG.
+
 ## Primary evidence package
 
 ### `console_latest.txt` — exact Garry's Mod console mirror
