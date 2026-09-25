@@ -1,0 +1,17 @@
+sample,theme,before_optional,after_optional,before_roamers,after_roamers,before_roaming_types,after_roaming_types,before_target,after_target,before_route_steps,after_route_steps,before_covered_steps,after_covered_steps,before_longest_empty_run,after_longest_empty_run
+1,hunting,12,19,32,40,4,17,32,40,82,82,51,67,6,4
+2,crossfire,13,19,24,36,5,17,24,36,82,82,53,68,8,5
+3,corruption,13,20,28,36,6,16,28,36,79,79,41,59,14,8
+4,quarantine,12,17,42,54,4,18,42,54,98,98,63,66,8,10
+5,occupation,12,18,48,60,3,21,48,60,110,110,69,83,6,9
+6,hunting,12,18,32,40,4,15,32,40,105,105,65,75,6,6
+7,crossfire,12,19,36,54,5,18,36,54,100,100,73,71,5,7
+8,corruption,11,19,42,54,6,19,42,54,77,77,53,69,6,2
+9,retinue,11,16,36,54,3,17,36,54,109,109,55,67,14,24
+10,quarantine,12,17,42,54,4,19,42,54,96,96,60,81,8,7
+11,occupation,9,16,64,59,3,17,64,64,107,107,65,81,13,6
+12,crossfire,13,20,48,64,5,21,48,64,106,106,51,83,19,4
+13,corruption,11,16,42,54,6,18,42,54,73,73,38,64,11,4
+14,retinue,11,16,36,54,3,17,36,54,124,124,64,74,15,19
+15,quarantine,13,19,54,63,4,22,56,64,106,106,67,90,7,4
+16,occupation,12,19,48,60,3,20,48,60,108,108,41,76,12,5

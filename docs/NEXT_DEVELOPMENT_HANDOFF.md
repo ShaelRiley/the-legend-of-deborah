@@ -1,3 +1,51 @@
+# Handoff — Bestiary B27 adventure pacing → local acceptance
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. Baseline
+`0084bbbad45e44c8f753ff25b7a13cda2a58b743`; publication response gives the exact
+new revision. Fetch current main and preserve intervening/uncommitted work.
+
+B27 implements the author's explicit follow-up:32 varied autonomous roaming IDs
+available in every motif with contextual weights,18/20 floor targets capped64
+globally,8 non-basic actors/floor with identity singletons; legal initial patrol
+exit and real target-free pursuit/perception dispatch;1s uncreated-initial-seat
+retry separate from20s death replacement. Directed budgets12/24/27/30 and maxima
+4/6/6/6, existing spacing4, near-route/progress-bin placement and brief capped
+respite. No new enemies, attacks, HP/tier/reward changes or96-ceiling increase.
+
+Paired16 solo four-gate samples: distinct actual initial roaming types3–6 →15–22;
+mean bodies40.875 →52.25; separate directed groups11.8125 →18. Potential
+route-contact coverage58.19% →75.16% is a headless spatial measure, not a native
+sighting or time target. Six initial seats defer safely; diagnostics expose them.
+Five seeds have longer maximum uncovered runs, including a24-cell worst case
+versus19 baseline; average gaps improve. These outliers need native observation,
+not a claim of uniformly achieved Zelda-like timing. Four early roaming identities
+also lead sector1 tactical squads through unchanged templates. The existing0.10
+novelty penalty remains; the corrected campaign test passes49.3274% reduction.
+GDD00/01/05/07 and the regenerated canonical manual carry the new contract.
+
+Evidence: `validation/BESTIARY_B27.md`, `BESTIARY_B27_SAMPLES.csv` and final
+`BESTIARY_B27_INTEGRATION.md`; raw logs are in the response archive. Preserve initial failures and the interrupted
+pre-dispatch integration as preliminary, never final passing evidence. All223
+registered checks have passing coverage across the final219-pass matrix and four
+narrow reruns (three explicit early-roster fixture corrections; Git diff in the
+actual repository). No production/manual change followed that matrix.
+
+Next finite action: install the exact B27 revision and playtest a fresh disposable
+local dungeon. Existing developer install console batch:
+`lod_developer_mode 0; lod_regenerate` (replaces dungeon; marks unranked).
+After BuildReady: `lod_population_status; lod_encounter_distribution`.
+Require revision b27/developerDense=false/sector4 ready and inspect per-floor
+actual roaming population/deficits. Play the ordinary route, all gates and
+Neil/Brute; assess actual movement, many types, frequent small contacts, distinct
+room fights, short respite, non-horde convergence and frame time. Shy still stops
+when witnessed. Capture console_latest.txt/rpg_summary_latest.txt; repeat co-op.
+
+No native B27 acceptance, Workshop publication or VPS deployment is claimed.
+Preserve local → matching Workshop → VPS, persistent data/configuration/rollback,
+Crate/P1–P4, and the deferred optimization → Big Loot → Events → full audit order.
+
+## Previous checkpoint record (preserved)
+
 # Handoff — Bestiary B26 population repair → local acceptance
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`.

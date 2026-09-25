@@ -347,6 +347,9 @@ function D:PopulationSnapshot()
         end
         for id,n in pairs(enc.composition or {}) do out.currentComposition[id]=(out.currentComposition[id] or 0)+n end
     end
+    if LOD.WanderingDirector and LOD.WanderingDirector.PopulationSnapshot then
+        out.roaming=LOD.WanderingDirector:PopulationSnapshot(graph)
+    end
     local seen={}
     for _,ent in ipairs(self.Entities or {}) do
         if IsValid(ent) and ent.LODHostile and not ent.LODDead and not seen[ent] then

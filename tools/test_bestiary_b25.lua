@@ -21,7 +21,7 @@ for seed=1,32 do
  local plan=H.build(graph)
  H.bounds(plan)
  local theme=plan.ecology.theme
- local row=stats[theme] or {pairs=0,pacing=0,homes=0,reduced=0,bodies=0,control=0,phrases={}}
+ local row=stats[theme] or {pairs=0,pacing=0,homes=0,increased=0,bodies=0,control=0,phrases={}}
  stats[theme]=row;row.pairs=row.pairs+1
  for _,s in ipairs(plan.pacing.sectors) do row.phrases[s.phrase]=(row.phrases[s.phrase] or 0)+1 end
  local sig=H.signature(plan);local pacing=H.serial(plan.pacing)
@@ -45,8 +45,8 @@ for seed=1,32 do
  W.IntensityProfile=function() return D.EcologyCatalog.legacyIntensity end
  T.init(graph);T.bounds(graph);local baseline=bodies();row.control=row.control+baseline
  W.IntensityProfile=wp
- assert(n<=baseline,'reduced target added bodies')
- if n<baseline then row.reduced=row.reduced+1 end
+ assert(n>=baseline,'raised target lost bodies')
+ if n>baseline then row.increased=row.increased+1 end
  assert(H.serial(Run.State.EncounterEcology)==receipt and H.signature(plan)==sig,'intensity consumed history/plan')
  end
 end
@@ -55,7 +55,7 @@ assert(size(stats)==6,'fixed sample missed a motif')
 for theme,row in pairs(stats) do
  report('B25_PAIRED '..theme..' '..H.serial(row))
  assert(row.pacing>0 and row.homes>0,'motif has no actual pacing/home effect '..theme)
- if D.EcologyCatalog.intensity[theme].wanderTarget<16 then assert(row.reduced>0,'density has no actual effect '..theme) end
+ assert(row.increased>0,'B27 raised density has no actual effect '..theme)
 end
 end
 
@@ -67,7 +67,7 @@ T.setTime(0);T.init(graph)
 local floor=W.Entities[1].LODWanderFloor
 for _,e in ipairs(W.Entities) do if e.LODWanderFloor==floor then e:Remove() end end
 local target=W:GetFloorTarget(graph)
-assert(target==12 and W:GetDeficitReservation(graph)>=12,'target/reservation mismatch')
+assert(target==math.min(18,math.floor(64/(graph.WanderLayers or graph.Layers))) and W:GetDeficitReservation(graph)>=target,'target/reservation mismatch')
 local rejected,accepted
 for ordinal=1,100 do
  if W:ReplacementAllowed(graph,floor,ordinal) then accepted=accepted or ordinal else rejected=rejected or ordinal end

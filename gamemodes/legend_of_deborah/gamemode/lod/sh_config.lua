@@ -162,8 +162,8 @@ C.Encounter = {
     -- discretionary encounters that give each act its pacing profile. B26 funds
     -- more separate fights, not larger copies of the same baseline squad. The
     -- opening sector remains gentler; native activation still obeys 80/96.
-    SectorBaseThreat = {8.0, 16.0, 18.0, 20.0},
-    MaxDiscretionaryPerSector = {2, 4, 4, 4},
+    SectorBaseThreat = {12.0, 24.0, 27.0, 30.0},
+    MaxDiscretionaryPerSector = {4, 6, 6, 6},
     Archetypes = {
         shambler = {
             class = "lod_hostile_shambler",

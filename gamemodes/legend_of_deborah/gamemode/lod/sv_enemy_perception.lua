@@ -120,12 +120,25 @@ function E:TickPerception(e,now)
     if not self:CanCast(e) or not LOD.RPGStatusElements:CanMoveVoluntarily(e) then
         e.LODPerceptionMemory=nil;e.LODPerceptionDiscardBefore=now;return true
     end
-    if now<(e.LODNextPerception or 0) or now<(e.LODNextAttack or 0) then return true end
-    e.LODNextPerception=now+.1
-    local s=LOD.RunManager.State;local memory
+    local s=LOD.RunManager.State
+    local function idlePatrol()
+        -- Ambient roaming is not sensory pursuit. Shy still freezes whenever
+        -- witnessed, and an acquired cue/attack owns its original warning.
+        if e.LODWanderer and (d.perception~="sight" or not F:Witnesses(e,s.Graph,now)) then
+            self:PatrolWanderer(e,s.Graph)
+        end
+        return true
+    end
+    if now<(e.LODNextAttack or 0) then return true end
+    if now<(e.LODNextPerception or 0) then
+        if e.LODPerceptionAmbient then return idlePatrol() end
+        return true
+    end
+    e.LODNextPerception=now+.1;e.LODPerceptionAmbient=nil
+    local memory
     if d.perception=="sound" then
         local r=F:HeardFootstep(e,s.Graph)
-        if not r then return true end
+        if not r then e.LODPerceptionAmbient=true;return idlePatrol() end
         e.LODConsumedFootstep=r
         memory={hero=r.hero,position=copy(r.position),life=self:CaptureLife(e,r.hero),expires=now+2}
     else
@@ -138,7 +151,9 @@ function E:TickPerception(e,now)
         end
         memory=e.LODPerceptionMemory;e.LODPerceptionMemory=nil
         if not memory or now>=memory.expires or not self:ValidLife(memory.life)
-            or not self:AcquireTarget(memory.hero) or F:Witnesses(e,s.Graph,now) then return true end
+            or not self:AcquireTarget(memory.hero) or F:Witnesses(e,s.Graph,now) then
+            e.LODPerceptionAmbient=true;return idlePatrol()
+        end
     end
     -- Hearing allows a close attack only with fresh ordinary sight. Otherwise
     -- investigate the captured location; never read hidden movement to re-aim.

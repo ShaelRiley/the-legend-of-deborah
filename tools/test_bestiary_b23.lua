@@ -64,7 +64,10 @@ local function signature()
  return table.concat(rows,';')
 end
 local basic={shambler=true,runner=true,soldier=true,deadcrab=true,bioblaster=true}
-local new={siphoner=true,caromer=true,reaper=true,redliner=true,drubber=true,afterburst=true}
+-- B27 explicit admission contract (independent of the production config).
+local new={siphoner=2,caromer=1,reaper=1,redliner=2,drubber=1,afterburst=1,
+ blitzer=2,sniper=2,razor=2,arccaster=2,gaoler=2,silencer=2,repulsor=2,pincer=2,
+ harrier=2,waylayer=2,pavise=2,repriser=2,reeler=2,forker=2,fencer=2,listener=2,shy=2,accumulator=2}
 local function bounds(graph)
  local seen={}
  local encounterHomes={}
@@ -81,17 +84,18 @@ local function bounds(graph)
    assert(e.LODNextTargetRefresh>=now and e.LODNextTargetRefresh<=now+LOD.Config.Encounter.TargetRefreshSeconds,'target schedule')
    assert(e.LODNextRouteRefresh>=now and e.LODNextRouteRefresh<=now+LOD.Config.Encounter.RouteRefreshSeconds,'route schedule')
    local pool=W:_Pool(graph);assert(pool[e.LODArchetypeId],'unlisted pool admission')
-   if new[e.LODArchetypeId] then assert(tag.sector>=2 and (tag.role=='arena' or tag.role=='ambush'),'new specialist role escaped') end
+   if new[e.LODArchetypeId] then assert(tag.sector>=new[e.LODArchetypeId] and (tag.role=='arena' or tag.role=='ambush'),'new specialist role escaped') end
    if e.LODArchetypeId=='flamer' then assert(tag.sector>=2,'early Flamer') end
    if E.Definitions[e.LODArchetypeId] then assert(e.LODRosterPlacement and E:Placement(graph,c,e.LODArchetypeId,tag.role),'placement bypass') end
   end
  end
  for floor=0,(graph.WanderLayers or graph.Layers)-1 do
   local counts,_,specialists=W:_Population(floor)
-  assert(W:_LivingOnFloor(floor)<=W:GetFloorTarget(graph) and W:GetFloorTarget(graph)<=16 and specialists<=4,'population ceiling')
+  assert(W:_LivingOnFloor(floor)<=W:GetFloorTarget(graph) and W:GetFloorTarget(graph)<=20 and specialists<=8,'population ceiling')
   for id,n in pairs(counts) do assert(basic[id] or n<=1,'specialist singleton') end
  end
  assert(D:GetActiveCount()<=96,'shared ceiling exceeded')
+ assert(W:GetTargetPopulation(graph)<=64,'roaming global cap')
 end
 local graph,plan=prepare(191919,8)
 assert(D:CommitEcologyPlan(graph))
@@ -122,7 +126,7 @@ for theme,pool in pairs(W.Config.Pools) do
 end
 plan.ecology.theme='occupation'
 local oldTag=graph.CellTags[E.Key(legal)];graph.CellTags[E.Key(legal)]={sector=1,role='arena'}
-for _,v in ipairs(W:_Choices(graph,legal,legal.z)) do assert(not new[v.id] and v.id~='flamer','early specialist') end
+for _,v in ipairs(W:_Choices(graph,legal,legal.z)) do assert((not new[v.id] or new[v.id]==1) and v.id~='flamer','early specialist') end
 graph.CellTags[E.Key(legal)]={sector=2,role='corridor'}
 for _,v in ipairs(W:_Choices(graph,legal,legal.z)) do assert(not new[v.id],'wrong-role specialist') end
 graph.CellTags[E.Key(legal)]=oldTag
@@ -176,7 +180,7 @@ end
 heroes={}
 -- Specialist cap/singleton are based on live bodies, and deaths release them.
 local savedW=W.Entities;W.Entities={};plan.ecology.theme='occupation'
-for _,id in ipairs({'redliner','watcher','seeker','flamer'}) do
+for _,id in ipairs({'redliner','watcher','seeker','flamer','siphoner','caromer','reaper','drubber'}) do
  local e=entity();e.LODArchetypeId=id;e.LODWanderer=true;e.LODWanderFloor=legal.z;e.LODWanderAnchorCellKey=id
  W.Entities[#W.Entities+1]=e
 end

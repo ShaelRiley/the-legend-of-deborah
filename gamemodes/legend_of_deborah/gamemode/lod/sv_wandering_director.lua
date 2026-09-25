@@ -9,7 +9,9 @@ local cellKey = LOD.MazeGenerator.CellKey
 -- Production roaming layer. These enemies exist in addition to the authored
 -- encounter plan and deliberately keep ordinary traversal from feeling empty.
 local WC = {
-    PerFloor = 16,
+    PerFloor = 20,
+    GlobalPopulationCap = 64,
+    InitialRetrySeconds = 1,
     RespawnSeconds = 20,
     AcquireCells = 4,
     DisengageCells = 6,
@@ -18,14 +20,17 @@ local WC = {
     SpawnPlayerClearanceCells = 4,
     ThinkInterval = 0.25,
     CandidateLimit = 24,
-    SpecialistPerFloor = 4,
+    SpecialistPerFloor = 8,
+    -- Themes bias the complete autonomous cast, rather than hard-excluding
+    -- all but three to six identities. Companions and anchored hazards stay in
+    -- directed templates; this is an explicit audited list, not every registry ID.
     Pools = {
-        corruption = {shambler=20,runner=10,deadcrab=30,bioblaster=25,siphoner=10,flamer=5},
-        crossfire = {soldier=40,bioblaster=25,runner=15,seeker=10,caromer=10},
-        hunting = {runner=50,deadcrab=30,watcher=10,reaper=10},
-        occupation = {soldier=60,runner=20,redliner=20},
-        quarantine = {shambler=30,soldier=30,runner=20,drubber=20},
-        retinue = {shambler=60,deadcrab=20,afterburst=20}
+        corruption = {deadcrab=6,bioblaster=6,flamer=6,arccaster=6,gaoler=6,silencer=6,siphoner=6,accumulator=6},
+        crossfire = {soldier=6,bioblaster=6,seeker=6,caromer=6,reeler=6,forker=6,repulsor=6},
+        hunting = {runner=6,deadcrab=6,watcher=6,razor=6,pincer=6,harrier=6,waylayer=6,reaper=6,listener=6,shy=6},
+        occupation = {soldier=6,blitzer=6,sniper=6,pavise=6,repriser=6,redliner=6},
+        quarantine = {shambler=6,drubber=6,fencer=6,gaoler=6,silencer=6,repulsor=6},
+        retinue = {shambler=6,deadcrab=6,afterburst=6,reaper=6,listener=6,shy=6}
     },
     ArchetypeWeights = {
         shambler = 45,
@@ -37,10 +42,22 @@ local WC = {
 }
 
 local basics = {shambler=true,runner=true,soldier=true,deadcrab=true,bioblaster=true}
-local additions = {siphoner=true,caromer=true,reaper=true,redliner=true,drubber=true,afterburst=true}
+-- Min sector is explicit; roster admission still proves geometry. Four
+-- approachable autonomous specialists are no longer hidden behind the Red Gate.
+local additions = {
+    siphoner=2,caromer=1,reaper=1,redliner=2,drubber=1,afterburst=1,
+    blitzer=2,sniper=2,razor=2,arccaster=2,gaoler=2,silencer=2,repulsor=2,
+    pincer=2,harrier=2,waylayer=2,pavise=2,repriser=2,reeler=2,forker=2,
+    fencer=2,listener=2,shy=2,accumulator=2
+}
 local eligible = {watcher=true,seeker=true,flamer=true}
 for id in pairs(basics) do eligible[id]=true end
 for id in pairs(additions) do eligible[id]=true end
+WC.AutonomousTypes=eligible
+WC.SpecialistMinSector=additions
+for _,pool in pairs(WC.Pools) do
+    for id in pairs(eligible) do if not pool[id] then pool[id]=2 end end
+end
 
 WanderingDirector.Config = WC
 WanderingDirector.Entities = WanderingDirector.Entities or {}
@@ -91,6 +108,18 @@ local function eligibleWanderCell(graph, cell)
     return not stairCellSet(graph)[keyOf(cell)]
 end
 
+-- A legal standing point is not necessarily a usable patrol home: a dead
+-- end whose sole neighbor is a protected cell, stair or closed gate strands a
+-- wanderer. Use exactly the ordinary patrol compiler's first-edge rules.
+function WanderingDirector:_HasPatrolExit(graph, cell)
+    for neighborKey in pairs(cell.neighbors or {}) do
+        local neighbor=graph.Cells[neighborKey]
+        if neighbor and neighbor.z==cell.z and eligibleWanderCell(graph,neighbor)
+            and Navigator:CanTraverse(graph,keyOf(cell),neighborKey) then return true end
+    end
+    return false
+end
+
 function WanderingDirector:_FloorCells(graph, floor)
     local out = {}
     for _, key in ipairs(sortedKeys(graph and graph.Cells or {})) do
@@ -128,7 +157,9 @@ function WanderingDirector:IntensityProfile(graph)
 end
 
 function WanderingDirector:GetFloorTarget(graph)
-    return math.Clamp(math.floor(self:IntensityProfile(graph).wanderTarget),0,WC.PerFloor)
+    local floors=math.max(1,graph and (graph.WanderLayers or graph.Layers) or 1)
+    local cap=math.min(WC.PerFloor,math.floor(WC.GlobalPopulationCap/floors))
+    return math.Clamp(math.floor(self:IntensityProfile(graph).wanderTarget),0,cap)
 end
 
 -- Read-only roll. Think owns the opportunity ordinal; a failed chance roll
@@ -187,6 +218,7 @@ function WanderingDirector:Cleanup()
     for _,ent in ipairs(self.Entities or {}) do if IsValid(ent) then ent:Remove() end end
     self.Entities={};self.NextRespawn={};self.SpawnOrdinal={};self.LastArchetype={}
     self.Diagnostics={};self.ReplacementOrdinal={};self.Graph=nil;self.Owner=nil;self.NextThink=0
+    self.InitialRemaining={};self.NextInitial={};self.AdmissionStats={}
 end
 
 function WanderingDirector:_SpawnCandidates(graph, floor, rng)
@@ -206,6 +238,7 @@ function WanderingDirector:_SpawnCandidates(graph, floor, rng)
         local key=keyOf(cell)
         local tag=(graph.CellTags or {})[key] or {}
         local admitted=not homes[key] and not encounterHomes[key] and not tag.objective
+            and self:_HasPatrolExit(graph,cell)
             and (not roster or not roster:IsTransition(graph,cell))
             and (not director or not director.PacingAllows or not graph.EncounterPlan
                 or director:PacingAllows(graph.EncounterPlan,cell))
@@ -218,6 +251,9 @@ function WanderingDirector:_SpawnCandidates(graph, floor, rng)
         if admitted then out[#out+1]=cell end
     end
     rng:Shuffle(out)
+    if director and director.RouteCandidates and graph.EncounterPlan then
+        out=director:RouteCandidates(graph.EncounterPlan,out)
+    end
     return out
 end
 
@@ -239,7 +275,7 @@ function WanderingDirector:_Choices(graph, cell, floor)
         local allowed=eligible[id] and EC.Archetypes[id] and weight>0
             and (not specialist or specialists<WC.SpecialistPerFloor and not counts[id])
         if additions[id] then
-            allowed=allowed and (tag.sector or 0)>=2 and (tag.role=="arena" or tag.role=="ambush")
+            allowed=allowed and (tag.sector or 0)>=additions[id] and (tag.role=="arena" or tag.role=="ambush")
         elseif id=="flamer" then allowed=allowed and (tag.sector or 0)>=2 end
         local placement
         if allowed and LOD.EnemyRoster and LOD.EnemyRoster.Definitions[id] then
@@ -277,11 +313,11 @@ function WanderingDirector:_SupportedSpawn(cell)
     local center=Navigator:CellCenter(cell)+Vector(0,0,2)
     local hull=util.TraceHull({start=center,endpos=center,mins=Vector(-16,-16,0)*1.33,
         maxs=Vector(16,16,72)*1.33,mask=MASK_NPCSOLID})
-    if hull.Hit or hull.StartSolid or hull.AllSolid then return nil end
+    if hull.Hit or hull.StartSolid or hull.AllSolid then return nil,"blocked_hull" end
     local floor=util.TraceLine({start=center+Vector(0,0,16),endpos=center-Vector(0,0,12),mask=MASK_SOLID,
         filter=function(v) return not v.LODHostile and not v:IsPlayer() end})
     if not floor.Hit or floor.StartSolid or floor.AllSolid or not floor.HitNormal
-        or floor.HitNormal.z<.7 or math.abs(floor.HitPos.z-(center.z-2))>4 then return nil end
+        or floor.HitNormal.z<.7 or math.abs(floor.HitPos.z-(center.z-2))>4 then return nil,"unsupported_floor" end
     return center
 end
 
@@ -303,12 +339,18 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     local rng = LOD.RNG.New(seed)
     local candidates = self:_SpawnCandidates(graph, floor, rng:Derive("spawn-cell"))
     local cell, selected, spawnPos
+    self.AdmissionStats=self.AdmissionStats or {}
+    local stats=self.AdmissionStats[floor] or {attempts=0,spawned=0,blocked_hull=0,unsupported_floor=0,no_choices=0,no_candidates=0}
+    self.AdmissionStats[floor]=stats;stats.attempts=stats.attempts+1
+    if #candidates==0 then stats.no_candidates=stats.no_candidates+1 end
     for i=1,math.min(#candidates,WC.CandidateLimit) do
         local candidate=candidates[i]
-        local pos=self:_SupportedSpawn(candidate)
+        local pos,rejection=self:_SupportedSpawn(candidate)
+        if rejection then stats[rejection]=(stats[rejection] or 0)+1 end
         if pos then
             local choice=weightedChoice(rng:Derive("archetype:"..keyOf(candidate)),self:_Choices(graph,candidate,floor))
             if choice then cell,selected,spawnPos=candidate,choice,pos;break end
+            stats.no_choices=stats.no_choices+1
         end
     end
     if not cell then self.Diagnostics[floor]="no_legal_home";return false end
@@ -342,6 +384,9 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     if not IsValid(ent) then self.Diagnostics[floor]="native_settlement";return false end
     ent:Activate()
     if not IsValid(ent) then self.Diagnostics[floor]="native_activate";return false end
+    if ent.LODDead or ent:Health()<=0 then
+        ent:Remove();self.Diagnostics[floor]="native_dead";return false
+    end
     -- Native initialization/activation may invoke arbitrary hooks. Never register
     -- a body across a cleanup/rebuild or a newly exhausted shared reservation.
     if self.Owner~=owner or not self:_Owns(graph) or not state.BuildReady
@@ -371,6 +416,7 @@ function WanderingDirector:_SpawnOne(graph, floor, reason)
     end
 
     self.LastArchetype[floor]=archetype
+    stats.spawned=stats.spawned+1
     self.Diagnostics[floor]="spawned"
     print(string.format("[LOD:WANDER] spawned #%d floor=%d archetype=%s cell=%s reason=%s",
         ent:EntIndex(), floor + 1, archetype, spawnKey, tostring(reason or "population")))
@@ -385,8 +431,15 @@ function WanderingDirector:_InitializeForGraph(graph)
     self.Owner={state=s,graph=graph,level=s.Level,seed=s.LevelSeed,
         campaign=s.CampaignSeed,epoch=s.CampaignEpoch,run=s.RunId}
 
+    local owner=self.Owner
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
-        for _ = 1, self:GetFloorTarget(graph) do self:_SpawnOne(graph, floor, "initial") end
+        self.InitialRemaining[floor]=self:GetFloorTarget(graph)
+        for _ = 1, self:GetFloorTarget(graph) do
+            local spawned=self:_SpawnOne(graph,floor,"initial")
+            if self.Owner~=owner or not self:_Owns(graph) then return end
+            if spawned then self.InitialRemaining[floor]=self.InitialRemaining[floor]-1 end
+        end
+        self.NextInitial[floor]=CurTime()+WC.InitialRetrySeconds
         self.NextRespawn[floor] = nil
     end
 
@@ -600,7 +653,17 @@ function WanderingDirector:Think()
     for floor = 0, math.max(0, (graph.WanderLayers or graph.Layers or 1) - 1) do
         local living = self:_LivingOnFloor(floor)
         local target=self:GetFloorTarget(graph)
-        if living < target then
+        if living < target and (self.InitialRemaining[floor] or 0)>0 then
+            -- Uncreated initial slots are not dead-monster replacements. A
+            -- blocked build must not spend minutes behind motif chance gates.
+            -- Fixed opportunities create at most one body, never catch up.
+            if now >= (self.NextInitial[floor] or 0) then
+                local spawned=self:_SpawnOne(graph,floor,"initial_retry")
+                if self.Owner~=owner or not self:_Owns(graph) then return end
+                if spawned then self.InitialRemaining[floor]=self.InitialRemaining[floor]-1 end
+                self.NextInitial[floor]=now+WC.InitialRetrySeconds
+            end
+        elseif living < target then
             if not self.NextRespawn[floor] then
                 self.NextRespawn[floor] = now + respawnSeconds
             elseif now >= self.NextRespawn[floor] then
@@ -711,3 +774,25 @@ concommand.Add("lod_wander_schedule_status", function(ply)
     print("[LOD:WANDER-SCHEDULE] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
+
+-- Release observation only: native living counts, target debt and admissions,
+-- not a claim that every planned monster is present or near the player.
+function WanderingDirector:PopulationSnapshot(graph)
+    local out={owned=self:_Owns(graph)==true,cap=WC.GlobalPopulationCap,floors={}}
+    if not graph or not out.owned then return out end
+    local seen={}
+    for floor=0,(graph.WanderLayers or graph.Layers or 0)-1 do
+        local row={floor=floor+1,target=self:GetFloorTarget(graph),living=0,types={},
+            initialPending=(self.InitialRemaining or {})[floor] or 0,
+            result=(self.Diagnostics or {})[floor],admission=table.Copy((self.AdmissionStats or {})[floor] or {})}
+        for _,ent in ipairs(self.Entities or {}) do
+            if livingWanderer(ent) and ent.LODWanderFloor==floor and not seen[ent] then
+                seen[ent]=true;row.living=row.living+1
+                local id=ent.LODArchetypeId or "unknown";row.types[id]=(row.types[id] or 0)+1
+            end
+        end
+        row.deficit=math.max(0,row.target-row.living)
+        out.floors[#out.floors+1]=row
+    end
+    return out
+end
