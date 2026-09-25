@@ -1,0 +1,179 @@
+diff --git a/docs/DEVELOPMENT_PLAN.md b/docs/DEVELOPMENT_PLAN.md
+index 3aeeea2..6a0ec3b 100644
+--- a/docs/DEVELOPMENT_PLAN.md
++++ b/docs/DEVELOPMENT_PLAN.md
+@@ -1,5 +1,21 @@
+ # Active roadmap — safety → local acceptance → Workshop → VPS
+ 
++## Current author-requested repair — Bestiary B26 population
++
++The empty/repetitive-dungeon report reopens population acceptance. B26 repairs
++sector4 pacing against the actual Black Gate/Neil/Gordon topology, prioritizes
++legal tactical homes, and funds more separate release encounters. Threat budgets
++8/16/18/20; maxima2/4/4/4; spacing4 and target80/ceiling96 remain. Baseline main
++3f86f99630178df667a8ac3c3410a618931a5962. Evidence and precise native limits:
++`validation/BESTIARY_B26.md` and the associated integration/paired logs.
++
++Next is local acceptance of this repaired candidate in release mode, not another
++Bestiary roster expansion or the deferred comprehensive audit. Use
++`lod_population_status` (revision b26) to distinguish planned/current/live rosters.
++Preserve local acceptance → matching Workshop publication → VPS deployment,
++all earlier safety/Crate checks and the deferred optimization/expansion order.
++Prior source/package/native acceptance does not certify this population change.
++
+ **Author revision: September 25, 2026.** This supersedes the previous
+ Bestiary → Big Loot → Events → comprehensive systems audit → performance →
+ safety sequence. Preserve completed Bestiary work; B25 is published at
+ diff --git a/docs/manual/book.json b/docs/manual/book.json
+index cae52b6..b2a1747 100644
+--- a/docs/manual/book.json
++++ b/docs/manual/book.json
+@@ -850,7 +850,8 @@
+         "An enemy's archetype tells you how it fights; its class, Combat Level, feats, and element make that particular creature different. Normal tier chances are 60% Typical, 30% Elite, and 10% Champion, using Dungeon Level, +1, and +2 respectively. A tier is a Level change, not a secret second set of damage multipliers.",
+         "Shamblers threaten close quarters; Runners close gaps quickly. Deadcrabs are low jumping attackers. Soldiers use ranged fire; Blitzers press aggressively; Snipers punish exposed sight lines.",
+         "BioBlasters threaten with biological attacks. Watchers demand attention to their readable attack tells. Seekers telegraph a committed charge: move out of its path instead of retreating along it.",
+-        "Listen, look ahead, and use corners. Killing an enemy does not guarantee a permanently safe floor; wandering populations can replenish. Size, class tint, elemental aura, and aimed information help you decide what to tackle first."
++        "Listen, look ahead, and use corners. Killing an enemy does not guarantee a permanently safe floor; wandering populations can replenish. Size, class tint, elemental aura, and aimed information help you decide what to tackle first.",
++        "Dungeons favor different enemy groups rather than showing the entire Bestiary at once. Ordinary fights favor tactical corners and junctions, with more separate encounters beyond the opening sector. The hunt before the Black Gate remains populated; Gordon’s arena stays reserved for its own encounter. Wandering enemies are an independent population, and not every specialist can appear alone as a wanderer."
+       ]
+     },
+     {
+diff --git a/gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua b/gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua
+index dccf20a..daa6f94 100644
+--- a/gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua
++++ b/gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua
+@@ -159,9 +159,11 @@ C.Encounter = {
+     PartyThreatMultiplier = {1.00, 1.40, 1.70, 2.00},
+     PartyHealthMultiplier = {1.00, 1.10, 1.20, 1.30},
+     -- Keycard fights are guaranteed separately. These budgets fund the
+-    -- discretionary encounters that give each act its pacing profile.
+-    SectorBaseThreat = {4.0, 6.0, 8.0, 9.0},
+-    MaxDiscretionaryPerSector = {1, 2, 2, 2},
++    -- discretionary encounters that give each act its pacing profile. B26 funds
++    -- more separate fights, not larger copies of the same baseline squad. The
++    -- opening sector remains gentler; native activation still obeys 80/96.
++    SectorBaseThreat = {8.0, 16.0, 18.0, 20.0},
++    MaxDiscretionaryPerSector = {2, 4, 4, 4},
+     Archetypes = {
+         shambler = {
+             class = "lod_hostile_shambler",
+diff --git a/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua b/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua
+index 8aff731..be9ae73 100644
+--- a/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua
++++ b/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua
+@@ -196,6 +196,7 @@ function EncounterDirector:_AddEncounter(plan, cell, sector, role, templateId, c
+         templateId = templateId,
+         templateName = EC.Templates[templateId] and EC.Templates[templateId].name or templateId,
+         composition = composition,
++        plannedComposition = copyComposition(composition),
+         threat = compositionThreat(composition),
+         objective = objective == true,
+         activated = false,
+@@ -240,7 +241,12 @@ function EncounterDirector:BeginPacing(plan, graph)
+     plan.pacing = {sectors={}}
+     for sector=1,4 do
+         local entry = sector==1 and graph.Start or (progression.Gates[sector-1] or {}).afterCell
+-        local goal = sector==4 and progression.CoreCell or (progression.Keycards[sector] or {}).cell
++        -- Sector four ends on the approachable side of Black, not at Gordon's
++        -- Core behind it. The sector map deliberately excludes that reservation;
++        -- targeting Core made the entire production hunt sector "disconnected".
++        -- Keep the old Core endpoint for genuine three-gate/legacy graphs.
++        local finalGoal = progression.Gates[4] and progression.Gates[4].beforeCell or progression.CoreCell
++        local goal = sector==4 and finalGoal or (progression.Keycards[sector] or {}).cell
+         local rng = LOD.RNG.New(LOD.Seeds.Derive(plan.seed,"pacing:sector:"..sector))
+         local weights = self.IntensityProfile and self:IntensityProfile(plan).phrases or {1,1,1}
+         local roll = rng:Float(0,weights[1]+weights[2]+weights[3])
+@@ -335,7 +341,7 @@ function EncounterDirector:BuildPlan(graph)
+     local seed = LOD.Seeds.Derive(graph.MasterLevelSeed or graph.LevelSeed or 1, "encounters")
+     local rng = LOD.RNG.New(seed)
+     local scale = self:_ThreatScale()
+-    local plan = {seed = seed, encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
++    local plan = {seed = seed, populationRevision = "b26", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+     if self.BeginEcology then self:BeginEcology(plan, graph) end
+ 
+     -- Guaranteed keycard encounters are tuned independently of discretionary
+@@ -370,6 +376,19 @@ function EncounterDirector:BuildPlan(graph)
+         end
+         table.sort(candidates,function(a,b) return keyOf(a)<keyOf(b) end)
+         rng:Shuffle(candidates)
++        -- Most authored specialists require a tactical corner/junction. Let
++        -- those homes compete before travel/dead-end fallback squads consume
++        -- the sector's finite slots and threat. Preserve seeded order inside
++        -- each group and the probe/pressure bands below; physical admission is
++        -- still checked by SelectEcologyTemplate and again at native spawn.
++        local tactical, fallback = {}, {}
++        for _, cell in ipairs(candidates) do
++            local role = tags[keyOf(cell)].role
++            local pool = (role=="arena" or role=="ambush") and tactical or fallback
++            pool[#pool+1] = cell
++        end
++        candidates = tactical
++        for _, cell in ipairs(fallback) do candidates[#candidates+1] = cell end
+ 
+         local placed = 0
+         local maximum = EC.MaxDiscretionaryPerSector[sector] or 1
+diff --git a/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua b/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua
+index 322191c..df20c2d 100644
+--- a/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua
++++ b/gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua
+@@ -315,3 +315,48 @@ concommand.Add('lod_encounter_ecology', function(ply)
+         end
+     end
+ end)
++
++-- Read-only release diagnostic: authored plans are not native sightings. Keep
++-- their initial composition separate from spawn-time safety substitutions, and
++-- report living actors independently. No developer mode or RNG is involved.
++function D:PopulationSnapshot()
++    local state=LOD.RunManager and LOD.RunManager.State
++    local graph=state and state.Graph
++    local plan=graph and graph.EncounterPlan
++    if not plan or plan~=self.Plan then return {ready=false} end
++    local out={ready=true,revision=plan.populationRevision or "legacy",level=state.Level,
++        seed=plan.seed,theme=plan.ecology and plan.ecology.theme,ceiling=LOD.Config.Encounter.ActiveHostileCeiling,
++        developerDense=plan.developerDenseTesting==true,planned={},currentComposition={},alive={},
++        plannedBodies=0,aliveBodies=0,aliveWanderers=0,sectors={}}
++    for sector=1,4 do
++        local pace=plan.pacing and plan.pacing.sectors[sector] or {}
++        out.sectors[sector]={pacing=pace.status,goal=pace.goal,routeLength=pace.length,
++            discretionary=0,objectives=0,spawned=0,budget=plan.sectorBudget[sector],spent=plan.sectorSpent[sector]}
++    end
++    for _,enc in ipairs(plan.encounters or {}) do
++        local row=out.sectors[enc.sector]
++        if row then
++            local kind=enc.objective and "objectives" or "discretionary"
++            row[kind]=row[kind]+1
++            if enc.spawned then row.spawned=row.spawned+1 end
++        end
++        for id,n in pairs(enc.plannedComposition or enc.composition or {}) do
++            out.planned[id]=(out.planned[id] or 0)+n;out.plannedBodies=out.plannedBodies+n
++        end
++        for id,n in pairs(enc.composition or {}) do out.currentComposition[id]=(out.currentComposition[id] or 0)+n end
++    end
++    local seen={}
++    for _,ent in ipairs(self.Entities or {}) do
++        if IsValid(ent) and ent.LODHostile and not ent.LODDead and not seen[ent] then
++            seen[ent]=true
++            local id=ent.LODArchetypeId or "unknown"
++            out.alive[id]=(out.alive[id] or 0)+1;out.aliveBodies=out.aliveBodies+1
++            if ent.LODWanderer then out.aliveWanderers=out.aliveWanderers+1 end
++        end
++    end
++    return out
++end
++concommand.Add("lod_population_status",function(ply)
++    if IsValid(ply) and not ply:IsAdmin() then return end
++    print("[LOD:POPULATION] "..util.TableToJSON(D:PopulationSnapshot()))
++end)
+diff --git a/tools/test_checkpoint_g_integration.py b/tools/test_checkpoint_g_integration.py
+index 403d4f0..1509940 100644
+--- a/tools/test_checkpoint_g_integration.py
++++ b/tools/test_checkpoint_g_integration.py
+@@ -20,6 +20,7 @@ def get_lua_files():
+ LUA_FILES = get_lua_files()
+ 
+ SUITES = [
++    ("Bestiary B26 Production Population Recovery", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b26.lua"]),
+     ("Great Crate Stock Gates & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_great_crate_gates.lua"]),
+     ("Great Crate Stock Hull Assets", ["python3", "tools/test_great_crate_hull.py"]),
+     ("Great Crate Hull Candidate Reconciliation", ["python3", "tools/run_lua54.py", "tools/test_great_crate_hull_runtime.lua"]),
