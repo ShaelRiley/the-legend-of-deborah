@@ -1,0 +1,58 @@
+BESTIARY B26 — FINAL VALIDATION EVIDENCE SUMMARY
+This is a summary of observed results, not a replacement or edited copy of raw stdout.
+Audited baseline: 3f86f99630178df667a8ac3c3410a618931a5962.
+
+Final frozen-source matrix: 222 registered suites, 222 completed, 222 passed, zero failures.
+All commands from tools/test_checkpoint_g_integration.py ran unchanged. The two
+read-only B20/B23 campaign commands ran in separate processes beside the serial
+remaining suites. This was not a second invocation of the original sequential
+wrapper. The same command set, source, assertions, seeds and controls were used.
+Source snapshots covered 792 gameplay/test/manual files; zero changed during the
+final run. Every process exit code and output hash is retained in results.json.
+
+Production population: the B26 suite passed twenty actual closed-four-gate plans
+plus replay, including the Neil/Gordon wrappers, release/developer separation,
+protected homes, budgets/spacing, singleton companions, actual roaming admission
+and diagnostic purity. Sixteen solo Dungeon1 matched cases: mean discretionary
+encounters 3.6875 -> 11.8125; mean distinct non-core types 2.25 -> 8.125;
+minimum 1 -> 5; sector4 pacing ready 0/16 -> 16/16. Non-core excludes only
+Shambler/Runner/Soldier; these are headless plans, not native sightings.
+
+Campaign evidence from the FINAL source:
+B20_COMPARISON mode=memory campaigns=32 plans=640 encounters=10336 meanCoverage=53.062 minCoverage=50 meanConsecutiveJaccard=0.151043 withinLevelTemplateRepeats=1975 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=266
+B20_COMPARISON mode=control campaigns=32 plans=640 encounters=10336 meanCoverage=52.188 minCoverage=50 meanConsecutiveJaccard=0.149714 withinLevelTemplateRepeats=1926 exactConsecutiveTemplateSets=0 crossLevelTemplateReturns=381
+BESTIARY_B24_REPETITION reduction=0.301837 required=0.25 memoryReturns=266 controlReturns=381
+BESTIARY_B22_CAMPAIGN_PASS: mixed=640/640 branchCampaigns=32/32 meanProbeThreat=4.677208 meanPressureThreat=6.510186; all home reservations/scales retained
+The final B20 campaign command exited zero, retaining all54 planned/legal/early
+exposure floors and >=36/54 per campaign, all spacing/admission/pacing gates and
+the unchanged >=25% adjacent-template-return reduction requirement. B23 campaign
+roaming also exited zero, as did all other registered suites.
+
+Preliminary failures were retained, not counted as final passing evidence:
+1. B21 spacing fixture expected two unspaced squads under the old budget; the
+   new release budget admitted four. BOTH test arms now explicitly use the old
+   six-threat/two-slot fixture budget. Exact one-versus-two assertions and the
+   production spacing value four are unchanged; settings restore afterward.
+2. The denser campaign produced292 versus381 adjacent returns (23.3596%), below
+   the existing25% gate. The newest prior-dungeon template weight changed0.20 ->
+   0.10; older weights remain0.60. No seed/control/exposure gate was weakened.
+The preliminary matrix and partial campaign reruns were intentionally stopped;
+only the complete frozen-source final matrix above is final passing evidence.
+
+GitHub Actions independently byte-verified assembled source and passed the
+production population regression: runs36169125495 and36170221092. Final ecology
+blob: 6613ebe7e68dc1a5a601a7012f606e416888eb2d. Main publication uses explicit
+verified files atop baseline, excluding audit-only workflow/patch helpers.
+
+Raw receipts (included with all222 stdout/stderr pairs in LoD-B26-audit-evidence.zip):
+final matrix progress and summary: SHA256 f66c834bc77e517005204c16f767340539c308fd999ff8364ed61a410502e96d
+final results.json: SHA256 a18402969b171c5553c2c8bfb2f8b59df8cf92ef62b7c135f17ae4713a838288
+source-before.json: SHA256 b1198a9580b78c1fa4d02a48852da96f0ca7abcf2a50337e2ba97a2835c553ea
+source-after.json: SHA256 b1198a9580b78c1fa4d02a48852da96f0ca7abcf2a50337e2ba97a2835c553ea
+final B20 campaign stdout: SHA256 bf579a07780a95c86785e01b3b3064775885c5ba47af27059c213af8de0f7ae0
+final B23 campaign stdout: SHA256 ded1747cc0715ff1bc71a9b0afe6a9588fcf9c799c6ca8d7cbb42ccf385bf010
+preliminary integration stdout: SHA256 d85e0bc8a3dd43d13d2671f232cb15d0d7f8d0d75b95a207b217e616583d20ee
+
+Native Source gameplay, collision, co-op, actual sightings/convergence and frame
+time remain unobserved for B26. No Workshop publication or VPS deployment is
+claimed. Local acceptance of this candidate must precede those release steps.

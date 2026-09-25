@@ -1,3 +1,38 @@
+# Handoff — Bestiary B26 population repair → local acceptance
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`.
+Audited baseline `3f86f99630178df667a8ac3c3410a618931a5962`; fetch current main and
+preserve intervening/uncommitted work. The publication response supplies the
+exact repair revision. Live GDD05/07 B26 amendment was read back.
+
+Implemented: correct sector4 pacing target to Black.beforeCell (Core is inside
+Gordon's reservation); stable tactical-home priority; release threat8/16/18/20
+and discretionary maxima2/4/4/4; original-plan versus current/live population
+diagnostic. Preserve spacing4, target80/ceiling96, native admission, singleton/
+companion rules, roaming motifs/caps/cadence, combat, tiers and rewards.
+
+Paired16 solo Dungeon1 production graphs: sector4 ready0→16; optional encounters
+mean3.6875→11.8125; distinct non-core types mean2.25→8.125, minimum1→5. These are
+headless plans, not native sightings or concurrent counts. B26 covers20 actual
+four-gate plans plus replay and real-code roaming admission. Full validation
+outcome, raw measurements and native limits: `validation/BESTIARY_B26.md` and
+`validation/BESTIARY_B26_INTEGRATION.log`. Manual source/chunks were regenerated.
+
+Next: install the exact repair locally. On a disposable test run, set
+`lod_developer_mode 0`, then `lod_regenerate` (replaces dungeon; marks unranked).
+After BuildReady, run `lod_population_status` and `lod_encounter_distribution`;
+confirm revision b26/developerDense=false/sector4 ready, then normal play through
+all gates and Neil/Brute. Inspect actual variety, spatial density, physical
+substitution/deferral, progression, co-op and frame time. Capture console/RPG
+logs. No B26 native acceptance, Workshop update or VPS deployment has occurred.
+
+The local→Workshop→VPS release sequence and deferred September28–October4
+optimization→Big Loot→Events→comprehensive audit remain. Keep player data,
+configuration, rollback and accepted Crate/P1–P4 improvements. Earlier tooling
+and native receipts below are historical and do not certify this changed build.
+
+## Previous checkpoint record (preserved)
+
 # Handoff — Steam Deck publishing-tool repair; Workshop → VPS
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.

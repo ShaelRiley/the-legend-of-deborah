@@ -83,7 +83,7 @@ util.TraceHull=function(q) return {Hit=true,StartSolid=true,HitPos=q.start} end
 D:_SpawnEncounter(enc)
 assert(not enc.composition.listener and enc.composition.shambler==1 and enc.composition.soldier==1)
 util.TraceHull=oldHull
--- Force all precomputed candidates into a short corridor. Two fit old budgets,
+-- Force all precomputed candidates into a short corridor. Two fit fixture budgets,
 -- but every pair is <4 apart, so exactly one can survive sequential admission.
 local points,edges={},{}
 for x=0,8 do points[#points+1]={x,0};if x>0 then edges[#edges+1]={x,x+1} end end
@@ -95,11 +95,16 @@ D._VisibleFromStart=function() return false end
 Run.State={Level=1,Graph=sg};H.setParty(1)
 local eligible=D._EligibleTemplates
 D._EligibleTemplates=function() return {'patrol'} end
+-- This isolates spacing, not release tuning. Keep both arms at the original
+-- two-patrol budget so denser release settings cannot change the control count.
+local threat,maximum=EC.SectorBaseThreat[2],EC.MaxDiscretionaryPerSector[2]
+EC.SectorBaseThreat[2],EC.MaxDiscretionaryPerSector[2]=6,2
 local ok,plan=D:BuildPlan(sg);assert(ok)
 assert(#plan.encounters==1,'stale candidate list admitted adjacent encounters')
 local currentSpacing=D._FarEnough
 D._FarEnough=function() return true end
 local controlOK,stale=D:BuildPlan(sg)
+EC.SectorBaseThreat[2],EC.MaxDiscretionaryPerSector[2]=threat,maximum
 D._FarEnough=currentSpacing
 D._EligibleTemplates=eligible
 D._BuildSectorMap,D._BuildCellTags,D._VisibleFromStart=sectorMap,tags,visible

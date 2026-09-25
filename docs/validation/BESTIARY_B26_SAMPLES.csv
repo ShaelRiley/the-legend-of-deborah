@@ -1,0 +1,17 @@
+campaign_seed,theme,before_optional,after_optional,before_other_types,after_other_types,before_other_bodies,after_other_bodies,before_sector4,after_sector4
+7919,hunting,3,12,2,8,2,12,disconnected,ready
+15838,crossfire,5,13,2,8,4,11,disconnected,ready
+23757,corruption,4,13,4,8,6,17,disconnected,ready
+31676,quarantine,4,12,2,8,2,9,disconnected,ready
+39595,occupation,4,12,2,10,2,10,disconnected,ready
+47514,hunting,3,12,3,9,3,12,disconnected,ready
+55433,crossfire,3,12,2,9,2,10,disconnected,ready
+63352,corruption,4,11,4,7,6,15,disconnected,ready
+71271,retinue,3,11,1,9,1,9,disconnected,ready
+79190,quarantine,3,12,2,7,2,7,disconnected,ready
+87109,occupation,4,9,2,5,3,7,disconnected,ready
+95028,crossfire,4,13,2,8,3,11,disconnected,ready
+102947,corruption,4,11,3,9,6,15,disconnected,ready
+110866,retinue,4,11,2,9,2,10,disconnected,ready
+118785,quarantine,4,13,1,7,1,9,disconnected,ready
+126704,occupation,3,12,2,9,2,10,disconnected,ready
