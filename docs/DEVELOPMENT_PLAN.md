@@ -1,3 +1,14 @@
+## Current repair — B28 native population queries
+
+B27 native playtest **failed**: the author encountered monsters only at keycards.
+B28 repairs generated-BBOX floor support and start-visibility query mismatches,
+without further density tuning. It adds automatic release-mode population evidence
+and mounted-source fingerprints. Exact diagnosis limits and finite regressions:
+`validation/BESTIARY_B28.md`. Next gate is the repaired candidate's local playtest;
+prior headless diversity or installed SHA labels are not native acceptance.
+Use `console_latest.txt` + `population_latest.txt`; no manual census is necessary.
+Local acceptance → Workshop parity → VPS and all deferred work remain unchanged.
+
 # Active roadmap — safety → local acceptance → Workshop → VPS
 
 ## Current author-requested correction — Bestiary B27 adventure pacing

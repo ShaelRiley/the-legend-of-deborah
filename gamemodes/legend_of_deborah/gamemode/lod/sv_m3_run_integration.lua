@@ -15,8 +15,28 @@ function EncounterDirector:_VisibleFromStart(graph, cell)
         mask = MASK_SOLID,
         filter = player.GetAll()
     })
-    return tr.Fraction >= 0.995
+    local stats=self.VisibilityProbeStats or {checked=0,lineBlocked=0,bboxBlocked=0,visible=0}
+    self.VisibilityProbeStats=stats;stats.checked=stats.checked+1
+    if tr.Hit and tr.Fraction < 0.995 then stats.lineBlocked=stats.lineBlocked+1;return false end
+    -- The static-box compiler deliberately creates no VPhysics meshes. Preserve
+    -- every ordinary ray occluder, then test the actual generated collision
+    -- bounds with a narrow hull. Only an authoritative generated solid may
+    -- correct a clear ray; a grazing world/prop hit cannot manufacture cover.
+    local box=util.TraceHull({start=startPos,endpos=endPos,mins=Vector(-1,-1,-1),maxs=Vector(1,1,1),
+        mask=MASK_SOLID,filter=player.GetAll()})
+    local ent=box.Entity
+    local class=IsValid(ent) and ent.GetClass and ent:GetClass()
+    local generated=class=="lod_static_box" or class=="lod_gate" or class=="lod_jail_door"
+    if generated and box.Hit and not box.StartSolid and (box.Fraction or 1)<0.995 then
+        stats.bboxBlocked=stats.bboxBlocked+1
+        if not stats.example then stats.example={cell=LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z),class=class} end
+        return false
+    end
+    stats.visible=stats.visible+1
+    return true
 end
+EncounterDirector.NativeVisibilityRevision="b28-generated-bounds"
+EncounterDirector.NativeVisibilityFunction=EncounterDirector._VisibleFromStart
 
 local previousBuild = MazeBuilder.Build
 function MazeBuilder:Build(graph)

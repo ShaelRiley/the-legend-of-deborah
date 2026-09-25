@@ -34,7 +34,12 @@ end
 ents.Create=function() return mode=='create' and {valid=false} or entity() end
 -- Model native floor geometry; real EnemyRoster.Placement remains installed.
 local hullBlocked,supportMissing=false,false
-local traceHull=function(t) return {Hit=hullBlocked,StartSolid=hullBlocked,HitPos=t.endpos} end
+local traceHull=function(t)
+ if not hullBlocked and t.mins and t.mins.x==-2 and t.maxs.z==2 and t.endpos.z-t.start.z==-28 then
+  return {Hit=not supportMissing,StartSolid=false,HitPos=t.endpos+Vector(0,0,10),HitNormal=Vector(0,0,1),Fraction=.5}
+ end
+ return {Hit=hullBlocked,StartSolid=hullBlocked,HitPos=t.endpos}
+end
 local traceLine=function(t)
  local dz=t.endpos.z-t.start.z
  if dz<0 and dz>=-40 then
@@ -106,9 +111,18 @@ local first=signature();init(graph);bounds(graph);assert(signature()==first,'sam
 assert(H.serial(Run.State.EncounterEcology)==receipt and H.signature(plan)==planSig,'spawn mutated plan/history')
 -- Restrict a real legally tagged cell for exhaustive selection-policy checks.
 local legal
-for _,c in pairs(graph.Cells) do
- local tag=graph.CellTags[E.Key(c)]
- if tag and tag.sector>=2 and (tag.role=='arena' or tag.role=='ambush') and not E:IsTransition(graph,c) and not tag.safe and not tag.objective then legal=c;break end
+local cellKeys={};for k in pairs(graph.Cells) do cellKeys[#cellKeys+1]=k end;table.sort(cellKeys)
+for _,k in ipairs(cellKeys) do
+ local c=graph.Cells[k];local tag=graph.CellTags[k]
+ if tag and tag.sector>=2 and (tag.role=='arena' or tag.role=='ambush') and not E:IsTransition(graph,c) and not tag.safe and not tag.objective then
+  -- Exhaustive policy checks need a home that meets EVERY tested identity's
+  -- topology. An arbitrary pairs() arena may lack Waylayer's nearby junction.
+  local fits=true
+  for id in pairs(W.Config.AutonomousTypes) do
+   if not E:Placement(graph,c,id,tag.role) then fits=false;break end
+  end
+  if fits then legal=c;break end
+ end
 end
 assert(legal,'fixture lacks legal specialist cell')
 local savedTheme=plan.ecology.theme

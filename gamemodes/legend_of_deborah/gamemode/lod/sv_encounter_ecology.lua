@@ -333,20 +333,26 @@ function D:PopulationSnapshot()
     for sector=1,4 do
         local pace=plan.pacing and plan.pacing.sectors[sector] or {}
         out.sectors[sector]={pacing=pace.status,goal=pace.goal,routeLength=pace.length,
-            discretionary=0,objectives=0,spawned=0,budget=plan.sectorBudget[sector],spent=plan.sectorSpent[sector]}
+            discretionary=0,objectives=0,spawned=0,discretionarySpawned=0,objectiveSpawned=0,cleared=0,budget=plan.sectorBudget[sector],spent=plan.sectorSpent[sector]}
     end
     for _,enc in ipairs(plan.encounters or {}) do
         local row=out.sectors[enc.sector]
         if row then
             local kind=enc.objective and "objectives" or "discretionary"
             row[kind]=row[kind]+1
-            if enc.spawned then row.spawned=row.spawned+1 end
+            if enc.spawned then
+                row.spawned=row.spawned+1
+                local spawnedKind=enc.objective and "objectiveSpawned" or "discretionarySpawned"
+                row[spawnedKind]=row[spawnedKind]+1
+            end
+            if enc.cleared then row.cleared=row.cleared+1 end
         end
         for id,n in pairs(enc.plannedComposition or enc.composition or {}) do
             out.planned[id]=(out.planned[id] or 0)+n;out.plannedBodies=out.plannedBodies+n
         end
         for id,n in pairs(enc.composition or {}) do out.currentComposition[id]=(out.currentComposition[id] or 0)+n end
     end
+    out.visibilityProbe=table.Copy(plan.visibilityProbe or {})
     if LOD.WanderingDirector and LOD.WanderingDirector.PopulationSnapshot then
         out.roaming=LOD.WanderingDirector:PopulationSnapshot(graph)
     end

@@ -59,6 +59,24 @@ if [[ -n "$(git -C "$REPO_DIR" status --porcelain --untracked-files=no)" ]]; the
   BUILD_DIRTY="modified"
 fi
 printf '%s %s\n' "$BUILD_COMMIT" "$BUILD_DIRTY" > "$RPG_DATA_DIR/dev_build.txt"
+# Hash the exact population authorities, including their effective loader.
+# The independent runtime observer compares GAME-mounted bytes against these;
+# an install label alone cannot certify which overlapping addon won resolution.
+POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
+(
+  cd "$REPO_DIR"
+  sha256sum \
+    gamemodes/legend_of_deborah/gamemode/init.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua \
+    lua/autorun/server/lod_population_observability.lua
+) > "$POPULATION_MANIFEST.tmp"
+mv "$POPULATION_MANIFEST.tmp" "$POPULATION_MANIFEST"
+
 for other_addon in "$ADDONS_DIR"/*; do
   if [[ "$other_addon" != "$TARGET" && -f "$other_addon/gamemodes/legend_of_deborah/gamemode/init.lua" ]]; then
     echo "WARNING: another addon contains the Deborah gamemode: $other_addon" >&2
@@ -151,6 +169,9 @@ echo
 echo "Default files to upload after a runtime test:"
 echo "  $RPG_DATA_DIR/console_latest.txt"
 echo "  $RPG_DATA_DIR/rpg_summary_latest.txt"
+echo
+echo "Population acceptance (automatic, including with developer mode off):"
+echo "  $RPG_DATA_DIR/population_latest.txt"
 echo
 echo "When detailed timing/event order is needed:"
 echo "  $RPG_DATA_DIR/rpg_session_latest.txt"

@@ -1,0 +1,289 @@
+{
+  "baseline": "d384b986daa5c6f839df72d3f2a754503ff64102",
+  "scope": "bounded selected-regression gate; not a full canonical campaign matrix",
+  "registered_canonical_checks": 225,
+  "selected_checks": 22,
+  "passed": 22,
+  "failed": 0,
+  "frozen_gameplay_asset_tool_files": 1810,
+  "source_snapshot_sha256": "e11a4fcb80554ebd6dd8e4dad6b66ba66ae115c283af1a4901de24e5b45835fc",
+  "checks": [
+    {
+      "name": "Development Population Source Manifest",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 1.032,
+      "stdout_sha256": "69ecdd7aceb79d3f2a1552f6a2eee2927182267940d4c6b72c831edd8ea9a60d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B28 Native Population Boundaries",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b28.lua"
+      ],
+      "returncode": 0,
+      "seconds": 14.511,
+      "stdout_sha256": "a580e2153605431af059d039b1ff6ada694eace83b736941b526bd849c1fc74a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B27 Autonomous Patrols & Adventure Pacing",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b27.lua"
+      ],
+      "returncode": 0,
+      "seconds": 19.05,
+      "stdout_sha256": "c18c2b8a6e49aede6d1fa22b3eaf1333fefee38774b3928ed04a9d782ba404f6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B26 Production Population Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b26.lua"
+      ],
+      "returncode": 0,
+      "seconds": 21.682,
+      "stdout_sha256": "ddc848f8da29897da2c6165f48c71a2a833b921d738c233dbcbd64d94b974831",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Great Crate Deterministic Floor & Collision",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_geometry.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.485,
+      "stdout_sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B24 Encounter and Wandering Homes",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b24.lua"
+      ],
+      "returncode": 0,
+      "seconds": 8.111,
+      "stdout_sha256": "fc6ee584103ca1fdc35058dc216c0ff3068bf8aaea579085ad56fe3931f81797",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B23 Wandering Population & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b23.lua"
+      ],
+      "returncode": 0,
+      "seconds": 7.287,
+      "stdout_sha256": "975187bea1a60a73a443ec1c6e7c64f190a16d59082063ecde3e9cd090e4e0a4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B22 Route Pacing & Production Effects",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b22.lua"
+      ],
+      "returncode": 0,
+      "seconds": 9.688,
+      "stdout_sha256": "e3218027ae39f5d7fc745e5c620a0026e37f684074094e76273b40e873a34573",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B21 Topology & Spatial Admission",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b21.lua"
+      ],
+      "returncode": 0,
+      "seconds": 6.15,
+      "stdout_sha256": "984ca1842d41231c9cf6b82dbd3946cce54633ad8b61e466d4d5a1bc4371b9ad",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B20 Ecology Selection & Receipts",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b20.lua"
+      ],
+      "returncode": 0,
+      "seconds": 6.348,
+      "stdout_sha256": "10bb90143f516a99c0765b895f99add4c8dec411b7011b7761cc832182b392d8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Bestiary B20 Campaign Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b20_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.861,
+      "stdout_sha256": "468485de5ee0fcdc56c43702ec7a4b27b3e5754f1273bc24ac475abc7c57f70a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Invisible Overhead Walls & Free Movement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_maze_overhead_walls.lua"
+      ],
+      "returncode": 0,
+      "seconds": 5.424,
+      "stdout_sha256": "583f3a7d4632e338b5d7c429032076d47cc2fea1d1dfe1591d2f90e4a205bd78",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Client Geometry Full-Update Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.852,
+      "stdout_sha256": "b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Force-close Evidence Export",
+      "command": [
+        "python3",
+        "tools/test_crash_evidence_export.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.897,
+      "stdout_sha256": "2cdd4631a029821f6a2f86b1f5dac4b702951d9163c77744dc30509f85708a81",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Complete Enemy Roster & Animation Safety",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_roster.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.95,
+      "stdout_sha256": "09831ef3cfe8e3a97da50afc4f98616b166bbc969e768e873562f4e2e686c59c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Native Resource Ownership & Error Unwinding",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_native_resource_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.015,
+      "stdout_sha256": "c38ab4cde4923bb6b71aa228e5b6de35d8fbf033a6dfea572b569743c8d55d0c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Hostile Native Death Handoff",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hostile_death_handoff.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.985,
+      "stdout_sha256": "cd17fd07acc4558877af892b47c304e24ba316af416bbd4b6ab303567255b156",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Enemy Variety & Shared Combat Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_update.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.957,
+      "stdout_sha256": "f4afe78affc174bfaf3fe3b2f9c20abe9be1c48eb04e6e173fc291ad4c34e3eb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Lua Syntax Audit",
+      "returncode": 0,
+      "seconds": 1.188,
+      "stdout_sha256": "2a51be0626e065e9a4b608b3c22529c7e64c6e52edbd8b73858078a5c4a0d72f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command_prefix": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax"
+      ],
+      "file_arguments": 722,
+      "exact_command_receipt": "checks-final/results.json in response evidence archive"
+    },
+    {
+      "name": "Wall Form and Magic Testkit",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_magic_wall.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.176,
+      "stdout_sha256": "6812f02e850fcbce7c0a7a6b6db7fff75b4ca7ca08976faf2a2aa00a29033a6f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Installer Shell Syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "returncode": 0,
+      "seconds": 0.003,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.015,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "negative_controls": [
+    {
+      "control": "legacy-support",
+      "returncode": 1,
+      "expected_failure": "legal BBOX floor rejected"
+    },
+    {
+      "control": "legacy-visibility",
+      "returncode": 1,
+      "expected_failure": "generated wall is transparent"
+    }
+  ],
+  "native_acceptance": "pending; user B27 test failed"
+}
