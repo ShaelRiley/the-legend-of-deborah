@@ -4,24 +4,104 @@ on:
     branches: ['checkpoint/b29-entry-safety']
     paths: ['.github/workflows/b29-checkpoint.yml']
 permissions:
-  contents: read
+  contents: write
 jobs:
-  source:
+  candidate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
+    env:
+      BASELINE: fc8951840a69e52a0dd4d73ac309480a9b958b98
+      EXPECTED_TREE: 556fab23fd05df680b857ee4148fad3e42a25bc1
+      EXPECTED_SOURCE: f3ea6916816c0eb7dd2a66bb7df75a5337cd5a19e6e851fa32c110168115a863
     steps:
       - uses: actions/checkout@v4
         with:
           ref: fc8951840a69e52a0dd4d73ac309480a9b958b98
-          persist-credentials: false
-      - name: Archive exact B28 baseline for local validation
+          fetch-depth: 0
+      - name: Preserve current main
         run: |
-          git archive --format=tar HEAD > /tmp/lod-b28-source.tar
-          git rev-parse HEAD > /tmp/lod-b28-source-sha.txt
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASELINE"
+          test -z "$(git status --porcelain)"
+      - name: Reconstruct verified source patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, subprocess
+          from pathlib import Path
+          chunks = []
+          for sha in ('a55aa38f4d3be143ec5cb141be019423102e5686', '070312ea5ef874466580bf0b2c83a020d3d61a53', '98a6826671fb375092f3fa11842c91ab4c212a0c'):
+              data = json.loads(subprocess.check_output(['gh', 'api', 'repos/ShaelRiley/the-legend-of-deborah/git/blobs/' + sha]))
+              assert data['encoding'] == 'base64'
+              chunk = base64.b64decode(data['content'])
+              assert len(chunk) == 14184
+              assert hashlib.sha1(b'blob ' + str(len(chunk)).encode() + b'\0' + chunk).hexdigest() == sha
+              chunks.append(chunk)
+          compressed = b''.join(chunks)
+          assert hashlib.sha256(compressed).hexdigest() == '1ff9509c127d9aba11ccc2b5e502c4be190a9b4bae557e494e3c4bfa4543510d'
+          patch = lzma.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '1a7734c82e271a76e7979f6c544c2b99814a53b52822001e88479103bc27541a'
+          Path('/tmp/b29.patch').write_bytes(patch)
+          PY
+          git apply --check /tmp/b29.patch
+          git apply /tmp/b29.patch
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('docs/validation/BESTIARY_B29_SAMPLES.csv')
+          p.write_bytes(p.read_bytes().replace(b'\r\n', b'\n'))
+          PY
+          python3 tools/build_manual.py
+          git add -N .
+          git diff --check
+      - name: Verify frozen gameplay and authored manual
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          sys.path.insert(0, 'tools')
+          import test_bestiary_b29_checkpoint as gate
+          rows = gate.snapshot()
+          assert len(rows) == 1889
+          assert gate.digest(rows) == os.environ['EXPECTED_SOURCE']
+          print('Exact frozen source verified:', gate.digest(rows))
+          PY
+      - name: Install headless Lua runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq liblua5.4-0
+      - name: Independently rerun the finite 42-check gate
+        run: python3 tools/test_bestiary_b29_checkpoint.py --output /tmp/b29-ci-evidence --jobs 3
+      - name: Commit and non-force push candidate only
+        run: |
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASELINE"
+          git add -A
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git config user.name 'LoD Checkpoint Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'B29: protect dungeon arrival and graduate combined opening pressure'
+          test "$(git rev-parse HEAD^)" = "$BASELINE"
+          test -z "$(git status --porcelain)"
+          candidate="checkpoint/b29-validated-${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/$candidate"
+          test "$(git ls-remote origin "refs/heads/$candidate" | cut -f1)" = "$(git rev-parse HEAD)"
+          export CANDIDATE_BRANCH="$candidate"
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          report = json.loads(Path('/tmp/b29-ci-evidence/BESTIARY_B29_CHECKS.json').read_text())
+          assert report['passed'] == 42 and report['failed'] == 0
+          assert not report['changed_during_gate']
+          assert report['source_snapshot_sha256'] == os.environ['EXPECTED_SOURCE']
+          report = dict(candidate_branch=os.environ['CANDIDATE_BRANCH'], candidate_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), parent_sha=os.environ['BASELINE'], tree_sha=os.environ['EXPECTED_TREE'], source_snapshot_sha256=os.environ['EXPECTED_SOURCE'], selected_checks=42, passed=42, native_acceptance='pending', main_advanced=False)
+          Path('/tmp/b29-publication.json').write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+          git archive --format=tar HEAD > /tmp/lod-b29-candidate.tar
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: lod-b28-source
+          name: lod-b29-verified-candidate
           path: |
-            /tmp/lod-b28-source.tar
-            /tmp/lod-b28-source-sha.txt
-          retention-days: 2
+            /tmp/b29-publication.json
+            /tmp/b29-ci-evidence
+            /tmp/lod-b29-candidate.tar
+          retention-days: 7
