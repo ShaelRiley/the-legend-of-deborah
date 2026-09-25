@@ -152,7 +152,7 @@ end
 assert(D:_SpawnEncounter(encounter) and creates==3,'spawn retry cannot duplicate cohort')
 for _,name in ipairs({'caromer_screen','reeler_chase','forker_crossfire'}) do
     assert(table.HasValue(D:_EligibleTemplates(2,'arena'),name) and table.HasValue(D:_EligibleTemplates(2,'ambush'),name))
-    assert(not table.HasValue(D:_EligibleTemplates(1,'arena'),name),'sector-one preserves established introductory roster')
+    assert(table.HasValue(D:_EligibleTemplates(1,'arena'),name)==(name=='caromer_screen'),'B27 permits only its explicit early directed identities')
     assert(not table.HasValue(D:_EligibleTemplates(3,'reward'),name),'projectile-pattern specialist does not enter reward-only path')
     for seed=1,16 do
         local composition=D:_TemplateComposition(name,LOD.RNG.New(seed),4)

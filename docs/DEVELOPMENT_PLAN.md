@@ -1,5 +1,32 @@
 # Active roadmap — safety → local acceptance → Workshop → VPS
 
+## Current author-requested correction — Bestiary B27 adventure pacing
+
+B26 did not meet the author's roaming-variety and encounter-frequency target.
+The original NES Zelda is a qualitative pacing reference: recurrent small fights,
+exploration and brief respite, not horde-size escalation. B27 implements a shared
+32-identity autonomous pool with motif weighting,18/20-per-floor targets capped
+at64 globally,8 non-basic roamers/floor, legal initial patrol exits and actual
+pursuit/perception idle-patrol dispatch. Uncreated initial seats retry once/floor/
+second without accelerating20-second death replacements. Directed groups use
+budgets12/24/27/30 and maxima4/6/6/6, existing4-cell spacing, route-oriented
+placement and two-cell capped entrance/recovery projections. Hard ceiling96 and
+all native admission, template/companion, combat, tier and reward rules remain.
+
+Matched16 four-gate solo samples: roaming types3–6 →15–22; mean roaming bodies
+40.875 →52.25; directed groups11.8125 →18. Potential spatial route contact
+58.19% →75.16%, not native sightings or combat timing. Evidence:
+`validation/BESTIARY_B27.md`, samples and final integration receipts. All223
+registered checks have passing coverage after narrow fixture/orchestration reruns;
+not one pristine223-pass wrapper execution. No production/manual changes followed
+the final gameplay matrix. Five route-gap outliers remain explicit for native play.
+
+Next is local acceptance of the exact B27 revision in release-mode population,
+using `lod_population_status` (revision b27) and actual play through all gates.
+Preserve local → Workshop → VPS, pending co-op/frame-time evidence and the
+unchanged deferred optimization/expansion/audit order. B26 acceptance and its
+passing tests do not substitute for this changed candidate's validation.
+
 ## Current author-requested repair — Bestiary B26 population
 
 The empty/repetitive-dungeon report reopens population acceptance. B26 repairs
