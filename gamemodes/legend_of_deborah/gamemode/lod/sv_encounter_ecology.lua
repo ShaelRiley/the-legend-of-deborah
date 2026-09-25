@@ -212,7 +212,9 @@ function D:SelectEcologyTemplate(plan, choices, rng, sector, graph, cell)
             if recentFamily then weight = weight * .8 end
             for i, old in ipairs(e.before.recent) do
                 if old.templates[id] then
-                    weight = weight * (i == #e.before.recent and .2 or .6)
+                    -- B26: more legal fights must not dilute adjacent-dungeon
+                    -- variety. Keep repeats possible when geometry limits choices.
+                    weight = weight * (i == #e.before.recent and .1 or .6)
                 end
             end
             local preference=self:TopologyPreference(id,topology)
