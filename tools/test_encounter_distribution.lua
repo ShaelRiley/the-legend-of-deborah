@@ -87,7 +87,7 @@ for seed=1,32 do
      assert((enc.composition[b4[id]] or 0)>=1,'reaction specialist lost its complementary companion')
     end
     if b5[id] then
-     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B5 production path')
+     assert(enc.sector>=(id=='caromer' and 1 or 2) and (enc.role=='arena' or enc.role=='ambush'),'B5 production path with explicit B27 early identities')
      assert(count==1 and (enc.composition[b5[id]] or 0)>=1,'B5 singleton and complementary companion')
     end
     if b6[id] then
@@ -95,11 +95,11 @@ for seed=1,32 do
      assert(count==1 and (enc.composition[b6[id]] or 0)>=1,'B6 singleton and complementary companion')
     end
     if b7[id] then
-     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B7 production path')
+     assert(enc.sector>=((id=='reaper' or id=='drubber') and 1 or 2) and (enc.role=='arena' or enc.role=='ambush'),'B7 production path with explicit B27 early identities')
      assert(count==1 and (enc.composition[b7[id]] or 0)>=1,'B7 singleton and complementary companion')
     end
     if b8[id] then
-     assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'B8 production path')
+     assert(enc.sector>=(id=='afterburst' and 1 or 2) and (enc.role=='arena' or enc.role=='ambush'),'B8 production path with explicit B27 early identities')
      assert(count==1 and (enc.composition[b8[id]] or 0)>=1,'B8 singleton and complementary companion')
     end
     if b9[id] then

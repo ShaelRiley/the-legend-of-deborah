@@ -228,6 +228,11 @@ function D:_EligibleTemplates(sector,role)
             add("bigcrab_breath");add("sentry_flank");add("lurker_ceiling");add("nodule_gas")
         end
     end
+    -- B27: the four early autonomous identities also supply directed opening
+    -- variety. Keep original companions and all physical placement contracts.
+    if sector==1 and (role=="arena" or role=="ambush") then
+        for _,id in ipairs({"reaper_detail","drubber_chase","caromer_screen","afterburst_detail"}) do add(id) end
+    end
     if sector>=2 then
         add("razor_cover")
         if role=="arena" or role=="ambush" then add("arccaster_zone") end

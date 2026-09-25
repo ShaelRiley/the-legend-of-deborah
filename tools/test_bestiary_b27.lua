@@ -8,6 +8,19 @@ local EC=LOD.Config.Encounter
 local function count(t) local n=0;for _ in pairs(t) do n=n+1 end;return n end
 local function living() local n=0;for _,e in ipairs(W.Entities) do if IsValid(e) and not e.LODDead then n=n+1 end end;return n end
 assert(count(W.Config.AutonomousTypes)==32,'autonomous repertoire drift')
+-- The same four early autonomous identities may lead directed opening squads;
+-- this does not relax any other specialist's existing eligibility or companions.
+local early={reaper_detail=true,drubber_chase=true,caromer_screen=true,afterburst_detail=true}
+for _,role in ipairs({'arena','ambush'}) do
+ local offered={};for _,id in ipairs(D:_EligibleTemplates(1,role)) do offered[id]=true end
+ for id in pairs(early) do assert(offered[id],'early directed identity missing '..id) end
+ for _,id in ipairs({'fencer_screen','reeler_chase','forker_crossfire','carrion_feast'}) do
+  assert(not offered[id],'unapproved early directed identity '..id)
+ end
+end
+for _,role in ipairs({'travel','reward'}) do
+ for _,id in ipairs(D:_EligibleTemplates(1,role)) do assert(not early[id],'early tactical restriction lost') end
+end
 for _,pool in pairs(W.Config.Pools) do
  assert(count(pool)==32,'motif became a narrow whitelist')
  for id,w in pairs(pool) do assert(W.Config.AutonomousTypes[id] and EC.Archetypes[id] and (w==2 or w==6),'unaudited roaming choice') end
