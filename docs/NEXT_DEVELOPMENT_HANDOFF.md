@@ -1,56 +1,48 @@
-# Handoff — P2 noise cache complete; bounded coverage profiling next
+# Handoff — P3 exhausted-coverage cache complete; conflict profiling next
 
 Repository: ShaelRiley/the-legend-of-deborah; branch: main.
-Baseline verified remote HEAD: `890a73fbe6452599bfca9f08bc20f0a62817f5d9`.
-Resume from published main containing this handoff, not the baseline. Fetch and
-verify HEAD; preserve intervening/uncommitted work. The publication response
-supplies P2's exact new SHA; do not reset to P1 or the Bribe-removal baseline.
+Baseline verified remote HEAD: `ec2cb1be2b03455d2966eabefb773eb65e19f1bc`.
+Resume from published main containing this handoff. The publication response
+supplies the exact new SHA; fetch/verify HEAD and preserve intervening or
+uncommitted work. Do not reset to the baseline.
 
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
 Read 00 → 01 → relevant 05/07 Crate and deterministic/performance rules.
-P2 changes no design, tuning or player-facing behavior; no GDD/manual edit.
+P3 changes no design, tuning or player-facing behavior; no GDD/manual write.
 
-P2 profiles repeated deterministic-noise hashing using the unchanged
-`tools/profile_crate_placement.lua` and P1's fixed 1800/1896/1978-container
-manifests. The pure hash dominated instruction samples. Cache the exact numeric
-noise once per temporary candidate during rebuild; no persistent cache or
-changed hash/score/tie ordering. Fresh same-host CPU medians fall 63–67%, from
-1123.079/1061.657/1104.540ms to 376.045/388.059/403.777ms. All exact P1 receipts
-match byte-for-byte; eligibility, wayfinding exclusions, physical no-touching,
-placement caps and lazy resource gates pass. Evidence and fresh canonical
-closure: `docs/validation/CRATE_PLACEMENT_P2.md` and its three logs. Fresh
-canonical integration: 219 suites, zero failures. Headless CPU
-measurements do not certify native FPS or complete low-end optimization.
+P3 adds only an exhausted-coverage flag to each temporary placement candidate.
+Covered observations only grow; zero gain therefore stays zero. Full coverage
+sets, score/tie order, P1 nearest-distance and P2 noise caches remain intact.
+Fresh same-host CPU medians improve 24–34% against published P2:
+376.922/372.013/378.675ms → 284.978/247.369/271.178ms. Unchanged P1 fixed
+manifests, exact receipts and eligibility/exclusion/separation/resource gates pass.
+Evidence: docs/validation/CRATE_PLACEMENT_P3.md and three logs.
+Fresh canonical integration: **219 suites passed, zero failures**. Headless timings do not establish FPS,
+whole-maze build time, native residency or low-end hardware acceptance.
 
-Next coherent checkpoint: profile repeated coverageGain traversal inside the
-existing placement scan. After P2 this and scan overhead are the largest sampled
-costs. Reuse P1 receipts/manifests; define exact-output and resource gates before
-editing, measure contribution, change one demonstrated bottleneck only if
-worthwhile, compare before/after, validate and publish/verify immediately. If
-not justified, keep the evidence and name the next bounded target. Do not rerun
-old matrices merely for orientation, broaden into deferred work, or use agents.
+Next coherent checkpoint: profile repeated candidateConflicts checks inside the
+placement scan, including endpoint-key construction and already-conflicting
+candidates. After P3 it is the largest named helper cost, behind the scan itself.
+Reuse tools/profile_crate_placement.lua, P1 fixed manifests/receipt and P3 logs.
+Before edits define exact selected indices, identity, coverage, eligibility,
+wayfinding exclusions, physical separation, 40% cap, 64 draws and lazy two-slot
+resource gates. Measure contribution, optimize one demonstrated bottleneck only
+if worthwhile, compare before/after, run affected checks and canonical integration,
+then commit/non-force-publish and verify immediately. Otherwise publish findings
+and the next bounded target. No new user evidence is needed for headless profiling.
 
-Published P1 `08d887ba5ffaf07c25bea2d400fb7cacc536ebd0` remains intact. Its
-61–64% historical improvement and 221-suite pass are inherited evidence.
-Bribe removal `890a73fbe6452599bfca9f08bc20f0a62817f5d9` remains intact:
-`bribe_blockade` server registration/payment and client dialog/distribution stay
-unloaded. Dormant rollback code is not permission to restore it, including in
-next week's Event System work. GDD05 LOD-EVENT-BRIBE-001 and manual remain
-synchronized. Its historical canonical result is 219 suites, zero failures;
-two Bribe-only suites were retired. Applying that removal requires a full
-restart; already running old dungeons were not migrated.
+Bribe removal remains binding: bribe_blockade server registration/payment and
+client dialog/distribution stay unloaded; dormant code is not permission to restore
+it. Preserve approved concrete/restored hull, stock blast-door gates and renderer
+source-front-face-20260924. Native TRANS-PIEDMONT BULK composition visibility is
+established only for the reported sample. All remaining native exits stay open:
+broader hull/tints; branding offset/mips/legibility; stock gate appearance;
+floor/grate traversal and cover/rails; reset/rejoin; dense successive-seed native
+frame-time/texture residency. Full reconciliation: docs/validation/GREAT_CRATE_C3.md.
+P1/P2 historical validation is inherited evidence, distinct from fresh P3 checks.
 
-Native evidence establishes TRANS-PIEDMONT BULK, emblem and slogan on one
-restored teal container. Preserve limited sample success; do not reopen absent
-branding without contradictory evidence. Preserve approved concrete/restored
-hull, stock blast-door gates and renderer `source-front-face-20260924`.
-Outstanding native Crate requirements: broader hull/tint sampling; brand
-offset/mips/legibility; stock gate appearance; floor/grate traversal and
-cover/rails; reset/rejoin; dense successive-seed frame-time/texture residency.
-Full acceptance reconciliation remains in `docs/validation/GREAT_CRATE_C3.md`.
-
-Roadmap: Great Crate → low-end PC optimization → focused fatal-crash/game-breaking
+Active: Great Crate → low-end PC optimization → focused fatal-crash/game-breaking
 bug audit → native playtest. Deferred September 28–October 4, 2026, in order:
-Big Loot → Event System → comprehensive systems audit. Do not deploy to the VPS
-or publish to Steam Workshop. No new user evidence is needed for the next
-headless profiling checkpoint; native tests remain for the planned playtest.
+Big Loot → Event System → comprehensive systems audit. No VPS deployment or
+Steam Workshop publication. Keep the next checkpoint small and publish it before
+starting another. Native evidence remains for the planned playtest.

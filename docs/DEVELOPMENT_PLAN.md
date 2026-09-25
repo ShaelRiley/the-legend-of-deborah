@@ -101,7 +101,25 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — P2 branding noise cache; bounded profiling continues
+## Current checkpoint — P3 exhausted-coverage cache; conflict profiling next
+
+Baseline verified clean main `ec2cb1be2b03455d2966eabefb773eb65e19f1bc`.
+Fresh profiling confirms repeated coverageGain traversal. Cache zero gain on each
+temporary candidate: covered observations only grow, so an exhausted candidate
+cannot recover gain. Its original coverage set and every score/tie rule remain
+intact. Same-host CPU medians improve 24–34% (377/372/379ms → 285/247/271ms).
+P1 receipts remain byte-identical and placement/resource gates pass. Evidence:
+validation/CRATE_PLACEMENT_P3.md and its before/after/integration logs.
+Fresh canonical integration: **219 suites passed, zero failures**. No design/tuning/manual/GDD change.
+
+Next finite action: profile repeated candidateConflicts checks and endpoint-key
+construction, including already-conflicting candidates; preserve the same receipts
+and resource ceilings, change only a measured bottleneck and publish promptly.
+Headless CPU improvement is not native FPS acceptance. Bribe stays removed;
+approved visuals and every native C3 exit remain intact. Immediate/deferred order
+and September 28–October 4 dates above are unchanged. No deployment.
+
+## Previous checkpoint — P2 branding noise cache; bounded profiling continues
 
 Baseline verified clean main `890a73fbe6452599bfca9f08bc20f0a62817f5d9`.
 Fresh P1-manifest profiling identified repeated pure deterministic-noise hashing

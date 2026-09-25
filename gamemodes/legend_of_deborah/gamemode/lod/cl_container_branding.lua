@@ -234,10 +234,15 @@ local function deterministicNoise(seed, candidate)
 end
 
 local function coverageGain(candidate, covered)
+    -- Covered only grows during this selection. Once every observation is
+    -- covered, this temporary candidate can never gain coverage again. Keep
+    -- its full coverage set intact for final allocation/summary accounting.
+    if candidate.coverageExhausted then return 0 end
     local gain = 0
     for key in pairs(candidate.coverage or {}) do
         if not covered[key] then gain = gain + 1 end
     end
+    if gain == 0 then candidate.coverageExhausted = true end
     return gain
 end
 
