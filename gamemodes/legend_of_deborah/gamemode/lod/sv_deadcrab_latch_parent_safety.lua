@@ -35,7 +35,11 @@ local function updateTransform(ply, crab)
 
     local localPos = crab.LODDeadcrabManualLatchLocalPos or DEFAULT_LOCAL_POS
     local localAng = crab.LODDeadcrabManualLatchLocalAngles or DEFAULT_LOCAL_ANG
-    crab:SetPos(ply:LocalToWorld(localPos))
+    local destination=ply:LocalToWorld(localPos)
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(crab,crab:GetPos(),destination) then
+        LOD.EntrySafety:Cancel(crab);return false
+    end
+    crab:SetPos(destination)
     crab:SetAngles(ply:LocalToWorldAngles(localAng))
     Safety.Stats.updates = (Safety.Stats.updates or 0) + 1
     return true
@@ -94,7 +98,11 @@ if entityMeta and not Safety.LODDeadcrabMetaWrapped then
         local ply = self.LODDeadcrabManualLatchTarget
         if IsValid(ply) and isLatchedDeadcrab(self, ply) and self:GetParent() ~= ply then
             self.LODDeadcrabManualLatchLocalPos = pos
-            self:SetPos(ply:LocalToWorld(pos))
+            local destination=ply:LocalToWorld(pos)
+            if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(self,self:GetPos(),destination) then
+                LOD.EntrySafety:Cancel(self);return
+            end
+            self:SetPos(destination)
             return
         end
         return baseSetLocalPos(self, pos)

@@ -826,6 +826,7 @@ function Staging:_ExecuteDeploymentTransition(ply, ps, destination, state)
     ply:SetNW2Bool("LOD_Deployed", true)
     deploymentStage(ply, "before_teleport", state)
     ply:SetPos(destination)
+    if LOD.EntrySafety then LOD.EntrySafety:Deployed(ply,state) end
     ply:SetEyeAngles(Angle(0, 0, 0))
     ply:SetLocalVelocity(vector_origin)
     if LOD.CampaignTimeout then LOD.CampaignTimeout:Start(ply) end

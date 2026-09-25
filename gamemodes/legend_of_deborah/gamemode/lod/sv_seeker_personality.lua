@@ -337,7 +337,7 @@ local function service()
     for seeker in pairs(Personality.Active) do
         if not IsValid(seeker) or seeker.LODDead then
             Personality.Active[seeker] = nil
-        else
+        elseif not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(seeker) then
             runActive(seeker)
         end
     end

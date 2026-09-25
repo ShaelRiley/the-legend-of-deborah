@@ -257,6 +257,7 @@ function H:ChargeTick(ent,g,heroes,now)
         mins=Vector(-16,-16,0),maxs=Vector(16,16,68),mask=MASK_NPCSOLID,
         filter=function(e) return e~=ent and not e.LODHostile and not e:IsPlayer() end})
     local finish=tr.Hit and (tr.HitPos-Vector(0,0,4)) or to
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(ent,from,finish) then self:Impact(ent,now,true);return true end
     ent:SetPos(finish);motion:FaceToward(ent,finish+q.direction*100)
     ent.LODMotionLastUpdate=now;ent.LODMotionMode="charge"
     ent.LODMotionVelocity=q.direction*speed;ent.LODMotionSpeed=speed

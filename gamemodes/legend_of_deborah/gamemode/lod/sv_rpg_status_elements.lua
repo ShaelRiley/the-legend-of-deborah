@@ -384,6 +384,10 @@ function System:Apply(target, id, source, options)
     id = string.lower(tostring(id or ""))
     local definition = self.Registry[id]
     if not definition or not valid(target) or not isAlive(target) then return false, "invalid" end
+    if not definition.beneficial and LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(target,source) then
+        LOD.EntrySafety.Stats.statusDenied=LOD.EntrySafety.Stats.statusDenied+1
+        return false, "entry_sanctuary_or_pressure"
+    end
     if self:IsImmune(target, id) then
         self.Stats.immunities = self.Stats.immunities + 1
         return false, "immune"
@@ -803,6 +807,7 @@ function System:CanInitiateMagic(actor)
 end
 
 function System:CanInitiateAttack(actor)
+    if LOD.EntrySafety and LOD.EntrySafety:Protected(LOD.EntrySafety:Source(actor)) then return false end
     return not self:Has(actor, "intimidated")
 end
 

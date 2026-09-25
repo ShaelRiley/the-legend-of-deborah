@@ -172,7 +172,10 @@ if Navigator and not Navigator.LODPhaseZeroPatched then
         return distance ~= nil and distance or math.huge
     end
 
-    function Navigator:FindPath(graph, startCell, goalCell)
+    local unfilteredFindPath = Navigator.FindPath
+    function Navigator:FindPath(graph, startCell, goalCell, allowCell)
+        -- B29 actor-specific sanctuary filters cannot reuse an unfiltered BFS tree.
+        if allowCell then return unfilteredFindPath(self, graph, startCell, goalCell, allowCell) end
         if not graph or not startCell or not goalCell then return nil end
         local startKey = keyOf(startCell)
         local goalKey = keyOf(goalCell)

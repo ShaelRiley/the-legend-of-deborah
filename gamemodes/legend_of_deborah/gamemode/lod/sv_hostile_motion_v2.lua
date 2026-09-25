@@ -191,6 +191,9 @@ local function advanceStrideVariance(hostile, travelled)
 end
 
 function Motion:MoveToward(hostile, waypoint)
+    if IsValid(hostile) and hostile.LODEntrySuppressed and not hostile.LODEntryWithdrawing then
+        self:Stop(hostile);return false
+    end
     if not IsValid(hostile) or hostile.LODDead or not waypoint or not waypoint.pos then
         self:Stop(hostile)
         return false
@@ -250,6 +253,9 @@ function Motion:MoveToward(hostile, waypoint)
     -- response. The graph and validated local waypoint compiler are the movement
     -- authority; SetPos cannot become stuck while trying to resolve generated
     -- floor/wall contacts.
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,pos,nextPos) then
+        self:Stop(hostile);return false
+    end
     hostile:SetPos(nextPos)
     self:FaceToward(hostile, nextPos + direction * 32)
 
@@ -313,6 +319,7 @@ local function installPatch()
     -- variance, wandering, hit-stun, and death retain their state machines while
     -- sharing one motion kernel.
     function class:_BehaviourTick()
+        if LOD.EntrySafety and LOD.EntrySafety:BeforeAI(self) then return end
         if LOD.Hector and LOD.Hector:Tick(self) then return end
         if LOD.Warden and LOD.Warden:Tick(self) then return end
         if LOD.NeilBrute and LOD.NeilBrute:Tick(self) then return end

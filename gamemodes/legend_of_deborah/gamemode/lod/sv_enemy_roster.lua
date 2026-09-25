@@ -114,7 +114,7 @@ function E:Target(p) return LOD.FactionManager:IsValidPlayerTarget(p) end
 function E:AcquireTarget(p) return LOD.FactionManager:CanAcquirePlayerTarget(p) end
 function E:Safe(graph,c)
     local tag=graph and c and (graph.CellTags or {})[key(c)]
-    return not c or (tag and (tag.safe or tag.role=="boss" or tag.role=="resupply"))
+    return not c or (tag and (tag.safe or tag.entryApron or tag.role=="boss" or tag.role=="resupply"))
 end
 function E:Visible(e,p,origin)
     local tr=util.TraceLine({start=origin or e:WorldSpaceCenter(),endpos=p:WorldSpaceCenter(),mask=MASK_SOLID,
@@ -420,6 +420,7 @@ function E:Attack(e,a,now)
         local tr=util.TraceHull({start=origin,endpos=goal,mins=Vector(-16,-16,2),maxs=Vector(16,16,64),mask=MASK_NPCSOLID,
             filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
         if tr.Hit or tr.StartSolid then self:Finish(e,now);return end
+        if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(e,e:GetPos(),goal) then self:Cancel(e);return true end
         e:SetPos(goal);e.LODMotionVelocity=dir*780;e.LODMotionSpeed=780
         for _,p in ipairs(player.GetAll()) do
             if self:Target(p) and not a.hit[p] and util.DistanceToLine(origin,goal,p:GetPos())<=48 and self:Visible(e,p) then

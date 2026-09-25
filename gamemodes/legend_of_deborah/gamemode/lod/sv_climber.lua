@@ -99,6 +99,7 @@ function C:Step(e,goal,speed,dt,allowStair)
     local tr=util.TraceHull({start=from,endpos=nextPos,mins=Vector(-12,-12,-12),maxs=Vector(12,12,30),mask=MASK_NPCSOLID,
         filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
     if tr.Hit or tr.StartSolid then return false end
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(e,from,nextPos) then return false end
     e:SetPos(nextPos);e.LODMotionSpeed=speed;e.LODMotionVelocity=delta:GetNormalized()*speed
     LOD.HostileMotionV2:FaceToward(e,goal);e:_SetActivity(ACT_CLIMB_UP or ACT_RUN)
     return distance<=speed*dt+2
@@ -120,6 +121,7 @@ function C:Tick(e,s,now)
     if not e.LODWallInitialized then
         local lane=self:NearestLane(s.Graph,c,e:GetPos())
         if not lane then motion:Stop(e);return true end
+        if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(e,e:GetPos(),lane.pos) then return true end
         e.LODWallInitialized=true;e:SetPos(lane.pos);e.LODWallLane=lane
     end
     local victim=e.LODClimberVictim
@@ -129,6 +131,7 @@ function C:Tick(e,s,now)
         local goal=victim:EyePos()+victim:EyeAngles():Forward()*22-Vector(0,0,14)
         local trace=util.TraceLine({start=victim:EyePos(),endpos=goal,mask=MASK_SOLID,filter={victim,e}})
         if trace.Hit then self:Detach(e);return true end
+        if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(e,e:GetPos(),goal) then self:Detach(e);return true end
         e:SetPos(goal);e:SetAngles(Angle(0,victim:EyeAngles().y+180,0));motion:Stop(e)
         if motion:HoldHitStun(e,now) then e.LODNextBite=now+.4;return true end
         if LOD.RPGStatusElements:CanInitiateAttack(e) and now>=(e.LODNextBite or 0) then

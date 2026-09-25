@@ -63,7 +63,9 @@ local function watcherRunLoop(self)
     bindFinalMethods(self)
     while true do
         local watcherTick = unifiedWatcherTick()
-        if watcherTick then
+        if LOD.EntrySafety and LOD.EntrySafety:BeforeAI(self) then
+            -- Shared opening/sanctuary admission precedes the direct instance route.
+        elseif watcherTick then
             watcherTick(self)
         else
             stopWatcherSafely(self)
@@ -86,7 +88,7 @@ local function runBehaviourRouter(self)
     end
 
     while true do
-        self:_BehaviourTick()
+        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then self:_BehaviourTick() end
         coroutine.yield()
     end
 end

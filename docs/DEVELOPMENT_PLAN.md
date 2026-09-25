@@ -1,3 +1,30 @@
+## Current checkpoint — B29 safe arrival and graduated opening
+
+Latest native author report: B28 restored population but Dungeon1 immediately
+mobbed the player at portal arrival. Population-restoration-only acceptance is
+superseded; B27's older keycard-only logs are not this new session.
+
+B29 implements graph-owned, bilateral arrival sanctuary; no-idle approach;
+shared roaming/directed contact quotas1/2/3/4/6 gated by route progress and completed
+contacts; tail/respite; outward withdrawal; native movement/combat seams; cooperative
+identity lifecycle; boundary/manual explanation and34-file release source evidence.
+B28 physical-query repairs, population caps, objectives, Crate and P1–P4 remain.
+Live GDD00/01/05/06/07 `LOD-B29-ENTRY` carries the explicit candidate rules/tuning.
+
+**42/42 selected headless checks passed; not a full228-suite matrix and not native
+acceptance.** Twenty full-build samples retain36–60 roamers,14–24 distinct identities
+and12–21 optional groups. See `validation/BESTIARY_B29.md`, exact check receipts and
+sample CSV. Next is local release-mode acceptance of safe arrival, controlled
+departure and inhabited exploration, with console_latest.txt + population_latest.txt.
+
+Release sequence: **local acceptance → Workshop publication/parity → matching VPS**.
+No publication or VPS restart in this checkpoint. Deferred **Low-End PC Optimization,
+September28–October4,2026 → Big Loot → Event System → comprehensive systems audit**.
+Preserve completed P1–P4 evidence. Everything below this separator is prior checkpoint
+history where it conflicts with this active objective.
+
+---
+
 ## Current repair — B28 native population queries
 
 B27 native playtest **failed**: the author encountered monsters only at keycards.

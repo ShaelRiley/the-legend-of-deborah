@@ -65,6 +65,8 @@ if not EncounterDirector.LODUnifiedVarianceSpawner then
         if self:GetActiveCount() + total > EC.ActiveHostileCeiling then return false end
 
         local spawnCell = safeEncounterSpawnCell(encounter)
+        local graph=LOD.RunManager and LOD.RunManager.State.Graph
+        if LOD.EntrySafety and not LOD.EntrySafety:SpawnCellAllowed(graph,spawnCell) then return false end
         local spawnCellKey = cellKey(spawnCell) or encounter.cellKey
         local relocatedFromStair = spawnCellKey ~= encounter.cellKey
         local center = LOD.MazeNavigator:CellCenter(spawnCell) + Vector(0, 0, 2)

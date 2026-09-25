@@ -312,6 +312,7 @@ function ENT:_CreateSoldierWeaponVisual()
 end
 
 function ENT:Initialize()
+    if LOD.EntrySafety and not LOD.EntrySafety:SpawnPositionAllowed(self:GetPos()) then self:Remove();return end
     self.LODHostile = true
     self.LODArchetypeId = self.LODArchetypeId or "shambler"
     self.LODConfig = archetypeConfig(self.LODArchetypeId)
@@ -388,7 +389,10 @@ function ENT:_RouteToCell(graph, destinationCell)
         return false
     end
 
-    local path = navigator:FindPath(graph, currentCell, destinationCell)
+    local safety = LOD.EntrySafety
+    local path = navigator:FindPath(graph, currentCell, destinationCell, safety and function(cell)
+        return safety:HostilePathCell(graph, cell)
+    end or nil)
     if not path then
         self.LODWaypoints = {}
         self.LODWaypointIndex = 1
@@ -808,7 +812,7 @@ end)
 
 function ENT:RunBehaviour()
     while true do
-        self:_BehaviourTick()
+        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then self:_BehaviourTick() end
         coroutine.yield()
     end
 end

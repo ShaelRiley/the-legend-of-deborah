@@ -100,6 +100,7 @@ end
 
 local function eligibleWanderCell(graph, cell)
     if not cell or safeCell(graph, cell) then return false end
+    if LOD.EntrySafety and not LOD.EntrySafety:SpawnCellAllowed(graph, cell) then return false end
     -- A vertical endpoint contains authored stair/aperture geometry. Wanderers
     -- do not need to use those cells as random same-floor patrol destinations;
     -- keeping them out of the roaming pool prevents a patrol from selecting a
@@ -239,6 +240,7 @@ function WanderingDirector:_SpawnCandidates(graph, floor, rng)
         local key=keyOf(cell)
         local tag=(graph.CellTags or {})[key] or {}
         local admitted=not homes[key] and not encounterHomes[key] and not tag.objective
+            and (not LOD.EntrySafety or LOD.EntrySafety:HomeCandidateAllowed(graph, cell, self.Entities))
             and self:_HasPatrolExit(graph,cell)
             and (not roster or not roster:IsTransition(graph,cell))
             and (not director or not director.PacingAllows or not graph.EncounterPlan
@@ -255,6 +257,7 @@ function WanderingDirector:_SpawnCandidates(graph, floor, rng)
     if director and director.RouteCandidates and graph.EncounterPlan then
         out=director:RouteCandidates(graph.EncounterPlan,out)
     end
+    if LOD.EntrySafety then LOD.EntrySafety:OrderHomes(graph, floor, (self.SpawnOrdinal or {})[floor] or 1, out) end
     return out
 end
 
@@ -274,6 +277,7 @@ function WanderingDirector:_Choices(graph, cell, floor)
         local weight=pool[id]
         local specialist=not basics[id]
         local allowed=eligible[id] and EC.Archetypes[id] and weight>0
+            and (not LOD.EntrySafety or LOD.EntrySafety:HomeArchetypeAllowed(graph,cell,id))
             and (not specialist or specialists<WC.SpecialistPerFloor and not counts[id])
         if additions[id] then
             allowed=allowed and (tag.sector or 0)>=additions[id] and (tag.role=="arena" or tag.role=="ambush")
@@ -572,6 +576,7 @@ local function installWandererAIPatch()
                 if neighbor and neighbor.z == hostile.LODWanderFloor
                     and Navigator:CanTraverse(graph, cursorKey, neighborKey)
                     and eligibleWanderCell(graph, neighbor)
+                    and (not LOD.EntrySafety or LOD.EntrySafety:PatrolCellAllowed(graph, hostile, neighbor))
                 then
                     fallback[#fallback + 1] = neighbor
                     if neighborKey ~= previousKey then choices[#choices + 1] = neighbor end

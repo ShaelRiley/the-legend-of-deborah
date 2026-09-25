@@ -803,6 +803,7 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetNW2Bool("LOD_Staged", false)
     ply:SetNW2Bool("LOD_Deployed", true)
     ply:SetPos(self.State.CheckpointPos or self.State.BuildReport.startPos)
+    if LOD.EntrySafety then LOD.EntrySafety:Deployed(ply,self.State) end
     ply:SetEyeAngles(Angle(0, 0, 0))
 end
 

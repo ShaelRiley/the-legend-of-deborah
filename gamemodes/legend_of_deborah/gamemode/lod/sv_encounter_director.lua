@@ -151,6 +151,7 @@ function EncounterDirector:_BuildCellTags(graph, sectorByKey)
         tags[k] = {sector = sectorByKey[k], role = "boss", safe = true}
     end
     graph.CellTags = tags
+    if LOD.EntrySafety then LOD.EntrySafety:Build(graph, tags) end
     return tags
 end
 
@@ -403,7 +404,7 @@ function EncounterDirector:BuildPlan(graph)
         local candidates = {}
         for k, cell in pairs(graph.Cells) do
             local tag = tags[k]
-            if tag and tag.sector == sector and not tag.safe and not tag.objective and tag.role ~= "boss" and tag.role ~= "resupply" then
+            if tag and tag.sector == sector and not tag.safe and not tag.entryApron and not tag.entryRoamOpening and not tag.objective and tag.role ~= "boss" and tag.role ~= "resupply" then
                 local startDistance = startDistances[keyOf(cell)] or math.huge
                 if self:PacingAllows(plan,cell) and startDistance >= EC.ActivationDistanceCells + 1
                     and self:_FarEnough(graph, plan, cell)
@@ -542,13 +543,15 @@ function EncounterDirector:_AnyPlayerNear(graph, encounter)
         local playerCell = LOD.MazeNavigator:WorldToCell(graph, ply:GetPos())
         if playerCell then
             local distance = LOD.MazeNavigator:Distance(graph, playerCell, encounter.cell)
-            if distance <= EC.ActivationDistanceCells then return true end
+            if distance <= EC.ActivationDistanceCells
+                and (not LOD.EntrySafety or LOD.EntrySafety:EncounterAllowed(graph, encounter, ply)) then return true end
         end
     end
     return false
 end
 
 function EncounterDirector:Think()
+    if LOD.EntrySafety then LOD.EntrySafety:Service() end
     local state = LOD.RunManager and LOD.RunManager.State
     local graph = state and state.Graph
     local plan = graph and graph.EncounterPlan
@@ -575,6 +578,7 @@ function EncounterDirector:OnHostileKilled(hostile, dmginfo)
 end
 
 function EncounterDirector:Cleanup()
+    if LOD.EntrySafety then LOD.EntrySafety:Reset() end
     for _, ent in ipairs(self.Entities or {}) do if IsValid(ent) then ent:Remove() end end
     self.Entities = {}
     self.Plan = nil

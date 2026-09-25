@@ -30,7 +30,9 @@ local function normalizeDeviceFloor(hostile, waypoint)
     local pos = hostile:GetPos()
     if math.abs(pos.z - floorPoint.z) <= 0.05 then return end
 
-    pos.z = floorPoint.z
+    local destination=Vector(pos.x,pos.y,floorPoint.z)
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,pos,destination) then return end
+    pos=destination
     hostile:SetPos(pos)
     hostile:SetAngles(Angle(0, hostile:GetAngles().y, 0))
     hostile.LODMotionLastPos = pos

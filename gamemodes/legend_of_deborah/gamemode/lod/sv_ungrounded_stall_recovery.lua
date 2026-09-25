@@ -190,6 +190,7 @@ function Recovery:Recover(hostile, reason)
     end
 
     local before = hostile:GetPos()
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,before,candidate) then return false end
     hostile:SetPos(candidate)
     hostile:SetVelocity(vector_origin)
     if hostile.loco then

@@ -31,7 +31,8 @@ end
 -- can still hit a concealed Hero. All directed AI selection uses this gate.
 function FactionManager:CanAcquirePlayerTarget(ply)
     local perception=LOD.RPGPerceptionState
-    return self:IsValidPlayerTarget(ply) and not (perception and perception:IsInvisible(ply))
+    return self:IsValidPlayerTarget(ply) and not (LOD.EntrySafety and LOD.EntrySafety:Protected(ply))
+        and not (perception and perception:IsInvisible(ply))
 end
 
 function FactionManager:LivingTargets()

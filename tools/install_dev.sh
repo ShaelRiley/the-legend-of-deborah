@@ -66,13 +66,39 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
 (
   cd "$REPO_DIR"
   sha256sum \
+    gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua \
+    gamemodes/legend_of_deborah/gamemode/cl_init.lua \
     gamemodes/legend_of_deborah/gamemode/init.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua \
-    gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua \
-    gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua \
-    gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua \
     lua/autorun/server/lod_population_observability.lua
 ) > "$POPULATION_MANIFEST.tmp"
 mv "$POPULATION_MANIFEST.tmp" "$POPULATION_MANIFEST"

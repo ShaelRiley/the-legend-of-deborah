@@ -501,6 +501,7 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
+    if LOD.EntrySafety and LOD.EntrySafety:DamageGate(target,dmginfo) then return true end
     local source = dmginfo and dmginfo:GetAttacker()
     if (IsValid(source) and source.LODHector and (not LOD.Hector or not LOD.Hector:Live(source)))
         or (IsValid(target) and target.LODHector and (not LOD.Hector or not LOD.Hector:CanDamage(target, dmginfo))) then

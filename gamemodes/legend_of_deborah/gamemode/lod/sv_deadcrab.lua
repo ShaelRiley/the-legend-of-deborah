@@ -139,6 +139,8 @@ end
 local function beginLeap(self, target)
     local cfg = self.LODConfig
     if not livingPlayer(target) or CurTime() < (self.LODDeadcrabNextLeap or 0) then return false end
+    if LOD.EntrySafety and (not LOD.EntrySafety:CombatAllowed(target,self)
+        or not LOD.EntrySafety:MovementAllowed(self,self:GetPos(),target:GetPos())) then return false end
     if self:GetPos():DistToSqr(target:GetPos()) > cfg.leapRange * cfg.leapRange then return false end
     if self._HasLineOfSight and not self:_HasLineOfSight(target) then return false end
 
@@ -243,6 +245,7 @@ end
 
 local function latch(self, target)
     if not livingPlayer(target) or self.LODDead then return false end
+    if LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(target,self) then return false end
     local cfg = self.LODConfig
 
     self.LODDeadcrabState = "latched"

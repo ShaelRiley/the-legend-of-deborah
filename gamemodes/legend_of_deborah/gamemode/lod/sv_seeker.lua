@@ -637,6 +637,7 @@ end
 local function serviceSeeker(seeker, graph)
     if not IsValid(seeker) or seeker.LODDead or seeker.LODActivated == false then return end
 
+    if LOD.EntrySafety and LOD.EntrySafety:BeforeAI(seeker) then return end
     local state = seeker.LODSeekerState
     if state then
         if state.phase == "windup" then

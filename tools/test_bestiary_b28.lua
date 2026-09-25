@@ -63,7 +63,7 @@ local B=LOD.MazeBuilder
 for _,name in ipairs({'sv_maze_builder.lua','sv_maze_builder_static_walls.lua','sv_maze_builder_floor_anchor.lua'}) do dofile(root..name) end
 LOD.Config.Maze.Origin=Vector(0,0,-12271.97)
 LOD.WallVisuals={SetSegments=function() return true end}
-local boxes={}
+local boxes,traceCache={},{}
 ents.Create=function(class)
  if class~='lod_static_box' then return oldCreate(class) end
  local e={valid=true,class=class}
@@ -80,33 +80,57 @@ ents.Create=function(class)
  return e
 end
 angle_zero=Angle(0,0,0)
-B.Entities={};B.BuildFailures=0;B:_BuildFloors(g);B:_BuildWalls(g)
+local function compile(graph,fullBuild)
+ boxes={};traceCache={};B.Entities={};B.BuildFailures=0
+ if fullBuild then
+  local old=LOD.Config.Geometry.FallbackFloorZ
+  LOD.Config.Geometry.FallbackFloorZ=LOD.Config.Maze.Origin.z-(LOD.Config.Geometry.GroundFloorOffset or 2)
+  local ok,report=B:Build(graph);LOD.Config.Geometry.FallbackFloorZ=old
+  assert(ok,report);return boxes,report
+ end
+ B:_BuildFloors(graph);B:_BuildWalls(graph)
+ return boxes
+end
+compile(g)
 assert(#boxes>500 and B.BuildFailures==0,'physical compiler was not exercised')
 -- AABB slab intersection. Finite feet/volume sweeps hit the compiled bounds;
 -- rayMiss=true models the documented absent-physics-mesh failure boundary.
 local function boxTrace(t)
+ -- Static compiled geometry: memoize identical native hull queries and reject
+ -- disjoint swept bounds before slab intersection. No hit is manufactured from
+ -- cell tags; all bounds below came from the real builder's entities.
+ local mn,mx=t.mins or Vector(0,0,0),t.maxs or Vector(0,0,0)
+ local ck=table.concat({t.start.x,t.start.y,t.start.z,t.endpos.x,t.endpos.y,t.endpos.z,
+  mn.x,mn.y,mn.z,mx.x,mx.y,mx.z},':')
+ if traceCache[ck] then return traceCache[ck] end
  local best=1;local entity,normal,inside
+ local axes={'x','y','z'}
  for _,e in ipairs(boxes) do if IsValid(e) then
-  local lo=e.Pos+e.BoxMins-(t.maxs or Vector(0,0,0))
-  local hi=e.Pos+e.BoxMaxs-(t.mins or Vector(0,0,0))
-  local enter,leave=0,1;local n=Vector(0,0,1);local contained=true
-  for _,axis in ipairs({'x','y','z'}) do
-   local start,delta=t.start[axis],t.endpos[axis]-t.start[axis]
-   if start<=lo[axis] or start>=hi[axis] then contained=false end
+  local enter,leave=0,1;local nAxis,nSign='z',1;local contained=true
+  for _,axis in ipairs(axes) do
+   local lo=e.Pos[axis]+e.BoxMins[axis]-mx[axis]
+   local hi=e.Pos[axis]+e.BoxMaxs[axis]-mn[axis]
+   local start,finish=t.start[axis],t.endpos[axis];local delta=finish-start
+   if math.max(start,finish)<lo or math.min(start,finish)>hi then enter=2;break end
+   if start<=lo or start>=hi then contained=false end
    if math.abs(delta)<.000001 then
-    if start<=lo[axis] or start>=hi[axis] then enter=2;break end
+    if start<=lo or start>=hi then enter=2;break end
    else
-    local a,b=(lo[axis]-start)/delta,(hi[axis]-start)/delta
+    local a,b=(lo-start)/delta,(hi-start)/delta
     local sign=-1;if a>b then a,b=b,a;sign=1 end
-    if a>enter then enter=a;n=Vector(0,0,0);n[axis]=sign end
+    if a>enter then enter=a;nAxis,nSign=axis,sign end
     leave=math.min(leave,b)
    end
   end
-  if enter<=leave and leave>0 and enter<best then best=enter;entity=e;normal=n;inside=contained end
+  if enter<=leave and leave>0 and enter<best then
+   best=enter;entity=e;normal=Vector(0,0,0);normal[nAxis]=nSign;inside=contained
+  end
  end end
- return {Hit=entity~=nil,StartSolid=inside==true,AllSolid=false,Fraction=best,Entity=entity,
+ local result={Hit=entity~=nil,StartSolid=inside==true,AllSolid=false,Fraction=best,Entity=entity,
   HitPos=t.start+(t.endpos-t.start)*best,HitNormal=normal or Vector(0,0,1)}
+ traceCache[ck]=result;return result
 end
+
 util.TraceHull=boxTrace
 util.TraceLine=function(t) return {Hit=false,StartSolid=false,Fraction=1,HitPos=t.endpos,HitNormal=Vector(0,0,1)} end
 local plan=H.build(g);H.bounds(plan);R.State.BuildReady=true
@@ -125,13 +149,39 @@ print(string.format('B28_COMPILED_REPLAY_PASS campaign=1515962883 master=1631970
 -- population RNG, create actors, alter the plan or reset the dungeon.
 local memory,reads,writes={},0,0
 local watched={
+ 'gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua',
+ 'gamemodes/legend_of_deborah/gamemode/cl_init.lua',
  'gamemodes/legend_of_deborah/gamemode/init.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua',
  'lua/autorun/server/lod_population_observability.lua'}
 local manifest={};for _,p in ipairs(watched) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;memory['GAME:'..p]='exact' end
 memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -148,7 +198,7 @@ hook.Add=function(event,id,fn) if event=='ShutDown' then shutdown=fn end end
 local before=H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})
 dofile('lua/autorun/server/lod_population_observability.lua')
 local A=LOD.PopulationObservability
-local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==8 and not snap.developerMode)
+local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==34 and not snap.developerMode)
 assert(snap.nativeProbes.supportBound and snap.nativeProbes.visibilityBound and snap.revision=='b28')
 local lastReads=reads;A:Snapshot('repeat');assert(reads==lastReads,'source files rehashed on every heartbeat')
 T.setTime(2000);T.quiet(function() timers.LOD_PopulationEvidence() end)
@@ -161,6 +211,8 @@ assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(pla
 A.Source=nil;memory['GAME:'..watched[3]]='stale workshop bytes'
 assert(not A:SourceIdentity().verified and A.Source.mismatches==1,'mixed mount certified by install label')
 A.Source=nil;memory['DATA:legend_of_deborah/dev_population_sources.txt']=''
-assert(not A:SourceIdentity().verified and A.Source.missing==8,'absent manifest claimed verified')
+assert(not A:SourceIdentity().verified and A.Source.missing==34,'absent manifest claimed verified')
 T.quiet(function() shutdown() end);assert(#A.Records==64 and A.Records[64]:find('shutdown'),'shutdown evidence missing')
-print('B28_OBSERVER_PASS developer-off capture; exact eight-file mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
+print('B28_OBSERVER_PASS developer-off capture; exact 34-file mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
+
+return {T=T,H=H,W=W,D=D,R=R,graph=g,compile=compile,trace=boxTrace,oldCreate=oldCreate}

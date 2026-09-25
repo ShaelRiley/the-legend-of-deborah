@@ -1,3 +1,43 @@
+# Current handoff — B29 local acceptance candidate
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. Baseline was
+`fc8951840a69e52a0dd4d73ac309480a9b958b98`; the publication response supplies the
+verified new remote SHA. Fetch current main and preserve intervening/local work.
+Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`, 00 → 01 → relevant05/06/07,
+`LOD-B29-ENTRY`, governs the authorized new sanctuary and opening tuning.
+
+B28's population repair is preserved. The current native failure is arrival
+mobbing; its source proportions are unmeasured. Older B27 logs are a different
+keycard-only failure. B29 uses one EntrySafety authority at actual BuildReport /
+graph.Start deployment, persistent reciprocal spatial/combat safety, outward
+withdrawal, limited early home distribution, shared roaming/directed admission,
+progress/contact ramp1/2/3/4/6, no refill and respite. It retains identity progress
+through reconnect/respawn without letting a safe teammate freeze distant explorers.
+Checkpoint/boss destinations, identities, combat/rewards, caps, Crate/P1–P4 remain.
+
+Final frozen gate: **42 passed,0 failed of228 registered checks**, retaining all22
+B28 selected checks. Twenty production full-build headless samples retain36–60
+roamers,14–24 identities and12–21 optional groups; not native Source acceptance.
+Read `validation/BESTIARY_B29.md`, `_CHECKS.json`, `_SAMPLES.csv` and TEST_LOGGING.
+
+Next finite gate: install candidate and fully restart GMod; local disposable
+unranked gm_flatgrass; `lod_developer_mode 0; lod_regenerate`; spend ordinary time
+in staging, deploy, remain safely15–20 seconds, leave normally and play opening
+contacts/first gates. Require no protected harm or queued siege, bounded readable
+first fights with respite, then meaningful roaming/optional variety. Later native
+co-op checks cover staggered/separated Heroes. Request **console_latest.txt +
+population_latest.txt** from garrysmod/data/legend_of_deborah/. Observer version
+b29-entry-safety, source manifest34files; correlate revision/seed/session. First
+attack offsets describe pre-defense incoming damage intent, not guaranteed HP loss.
+
+This checkpoint ends at a locally testable candidate. **Local acceptance → Workshop
+publication and parity → matching VPS deployment**. No Workshop or VPS change now.
+Deferred **Low-End PC Optimization, September28–October4,2026 → Big Loot → Event
+System → comprehensive systems audit**, retaining completed P1–P4 improvements.
+
+---
+Historical checkpoint text below does not override this handoff.
+
 # Current handoff — B28 physical population-query repair
 
 Baseline main `d384b986daa5c6f839df72d3f2a754503ff64102`; publication response supplies

@@ -20,6 +20,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Bestiary B29 Full Build & Opening Safety", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b29.lua"]),
+    ("Bestiary B29 Native Dispatch & Withdrawal", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b29_dispatch.lua"]),
+    ("Bestiary B29 Bilateral Combat Seams", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b29_combat.lua"]),
     ("Development Population Source Manifest", ["python3", "tools/test_dev_population_manifest.py"]),
     ("Bestiary B28 Native Population Boundaries", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b28.lua"]),
     ("Bestiary B27 Autonomous Patrols & Adventure Pacing", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b27.lua"]),

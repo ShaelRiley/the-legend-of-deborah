@@ -23,8 +23,35 @@ is an optional immediate read-only capture, not a prerequisite.
 This observer remains active with `lod_developer_mode 0`. The older detailed RPG
 logger does not: a staging-only RPG summary after switching to release mode is not
 evidence that the user never entered the dungeon. The installer records an atomic
-eight-file SHA256 manifest; missing/mismatched source is explicitly unverified.
+34-file SHA256 manifest (eight files in B28); missing/mismatched source is explicitly unverified.
 No population observation enables cheats, spawns monsters or changes campaign RNG.
+
+## B29 arrival and opening evidence
+
+`b29-entry-safety` extends the same automatic release observer. Each entry snapshot
+reports the sanctuary cells; live AI/damage/spawn function bindings; safety/admission
+counters; and per-deployed Hero depth, high-water, completed contacts, current cap,
+respite, nearby living hostiles and source counts, admitted members and currently
+engaged targets. Nearby observation includes sanctuary occupants; a safe Hero's
+zero engaged count must not conceal a mob nearby. Locality is graph/gate-aware,
+not a through-wall Euclidean-radius claim. Source manifest verification now covers
+34 files including client boundary, native dispatch, movement and combat seams.
+
+Deployment timestamps are recorded after actual SetPos, not generation. Exit and
+first-attack offsets are relative to that deployment. First attack means the first
+positive incoming hostile damage attempt passing entry admission before canonical
+defenses; it is not necessarily HP loss or the beginning of an animation. Reconnect
+retains progression but starts new diagnostic deployment offsets. `entry_progress`
+records serial changes on the existing10-second poll; heartbeat30s and ring64 remain.
+No observation changes RNG, admission or lifecycle. This is bounded sampling, not
+an exhaustive combat trace: short events can occur between records.
+
+For B29 use the same-session **console_latest.txt + population_latest.txt**. Check
+installed SHA/dirty label,34-file GAME-mounted verification, map/seed/build identity,
+entry version and elapsed/deployment timing before attributing any count. B27's
+keycard-only logs cannot diagnose the later B28 arrival-mobbing report. A read-only
+`lod_population_evidence` remains optional; normal play already records release data.
+Native expectations and finite headless bounds are in `validation/BESTIARY_B29.md`.
 
 ## Primary evidence package
 

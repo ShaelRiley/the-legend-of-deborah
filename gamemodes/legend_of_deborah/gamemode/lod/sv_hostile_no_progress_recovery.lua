@@ -187,6 +187,7 @@ local function recoverInsideCurrentCell(hostile)
     local chosen = candidates[1]
     if not chosen then return false end
 
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,hostile:GetPos(),chosen.pos) then return false end
     hostile:SetPos(chosen.pos)
     if hostile.loco and hostile.loco.SetVelocity then hostile.loco:SetVelocity(vector_origin) end
     hostile.LODLastRecoveryGroundZ = chosen.pos.z

@@ -352,6 +352,7 @@ end
 
 function Pushback:Apply(hostile, opts)
     opts = opts or {}
+    if LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(hostile,opts.attacker) then return nil end
     local eligibility = LOD.RPG and LOD.RPG.FeatEffectSystem
     if eligibility and eligibility.ValidPushTarget then
         if not eligibility:ValidPushTarget(hostile) then return nil end
@@ -505,6 +506,7 @@ function Pushback:Apply(hostile, opts)
     destination.z = startPos.z
 
     if opts.validatePath and not opts.validatePath(startPos,destination,trace) then return nil end
+    if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,startPos,destination) then return nil end
 
     if travel > 0.05 then
         local yaw = hostile:GetAngles().y

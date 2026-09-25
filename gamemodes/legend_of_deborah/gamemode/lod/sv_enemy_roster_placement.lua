@@ -270,6 +270,7 @@ local baseSpawn=D._SpawnEncounter
 function D:_SpawnEncounter(encounter)
     if not encounter or encounter.spawned or encounter.cleared then return baseSpawn(self,encounter) end
     local graph=LOD.RunManager.State.Graph
+    if LOD.EntrySafety and not LOD.EntrySafety:SpawnCellAllowed(graph,encounter.cell) then return false end
     encounter.rosterPlacements={}
     E.PlacementStats=E.PlacementStats or {}
     for _,id in ipairs(sorted(encounter.composition)) do

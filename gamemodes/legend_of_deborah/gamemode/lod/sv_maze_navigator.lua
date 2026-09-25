@@ -103,7 +103,7 @@ function MazeNavigator:CanTraverse(graph, aKey, bKey)
     return state and state.GatesOpen and state.GatesOpen[gateIndex] == true
 end
 
-function MazeNavigator:FindPath(graph, startCell, goalCell)
+function MazeNavigator:FindPath(graph, startCell, goalCell, allowCell)
     if not graph or not startCell or not goalCell then return nil end
     local startKey = keyOf(startCell)
     local goalKey = keyOf(goalCell)
@@ -120,7 +120,8 @@ function MazeNavigator:FindPath(graph, startCell, goalCell)
         head = head + 1
         local current = graph.Cells[currentKey]
         for _, neighborKey in ipairs(sortedKeys(current.neighbors)) do
-            if not visited[neighborKey] and self:CanTraverse(graph, currentKey, neighborKey) then
+            if not visited[neighborKey] and self:CanTraverse(graph, currentKey, neighborKey)
+                and (not allowCell or allowCell(graph.Cells[neighborKey])) then
                 visited[neighborKey] = true
                 previous[neighborKey] = currentKey
                 if neighborKey == goalKey then

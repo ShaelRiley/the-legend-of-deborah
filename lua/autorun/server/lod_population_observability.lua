@@ -2,13 +2,42 @@ if CLIENT then return end
 LOD=LOD or {}
 LOD.PopulationObservability=LOD.PopulationObservability or {}
 local A=LOD.PopulationObservability
-A.Version="b28-native-population"
+A.Version="b29-entry-safety"
 A.Records=A.Records or {}
-local root="gamemodes/legend_of_deborah/gamemode/"
 local watched={
-    root.."init.lua",root.."lod/sh_config.lua",root.."lod/sv_encounter_director.lua",
-    root.."lod/sv_m3_run_integration.lua",root.."lod/sv_wandering_director.lua",
-    root.."lod/sv_enemy_roster_placement.lua",root.."lod/sv_encounter_ecology.lua",
+    "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+    "gamemodes/legend_of_deborah/gamemode/cl_init.lua",
+    "gamemodes/legend_of_deborah/gamemode/init.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua",
     "lua/autorun/server/lod_population_observability.lua"
 }
 -- DATA's installer label is not proof of loaded gameplay. Compare the mounted
@@ -43,6 +72,7 @@ function A:Snapshot(reason)
     local D,W=LOD.EncounterDirector,LOD.WanderingDirector
     local graph=state and state.Graph
     local out=D and D.PopulationSnapshot and D:PopulationSnapshot() or {ready=false}
+    out.entry=LOD.EntrySafety and LOD.EntrySafety:Snapshot() or {ready=false,version="missing"}
     out.observer=self.Version;out.reason=reason;out.seconds=CurTime()
     out.source=self:SourceIdentity()
     out.nativeProbes={support=W and W.NativeSupportRevision or "missing",
@@ -83,9 +113,11 @@ function A:Poll()
     for i=1,4 do gateState=gateState..(s.GatesOpen and s.GatesOpen[i] and "1" or "0") end
     local changed=plan~=self.Plan or s.Graph~=self.Graph
     local gates=gateState~=self.Gates
-    if changed or gates or CurTime()>=(self.NextReport or 0) then
-        self:Capture(changed and "built" or gates and "gate_progress" or "heartbeat")
-        self.Plan,self.Graph,self.Gates=plan,s.Graph,gateState
+    local entry=LOD.EntrySafety and LOD.EntrySafety.EventSerial
+    local entryChanged=entry~=self.EntrySerial
+    if changed or gates or entryChanged or CurTime()>=(self.NextReport or 0) then
+        self:Capture(changed and "built" or gates and "gate_progress" or entryChanged and "entry_progress" or "heartbeat")
+        self.Plan,self.Graph,self.Gates,self.EntrySerial=plan,s.Graph,gateState,entry
         self.NextReport=CurTime()+30
     end
 end
