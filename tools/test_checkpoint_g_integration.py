@@ -104,6 +104,8 @@ SUITES = [
     ("Canonical Manual Server Transport", ["python3", "tools/run_lua54.py", "tools/test_manual_transport.lua"]),
     ("Manual Source & Reader Navigation", ["python3", "tools/test_manual_document.py"]),
     ("Campaign Clock & TIME OVER Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_campaign_timeout.lua"]),
+    ("Bootstrap Failure & Explicit Recovery", ["python3", "tools/run_lua54.py", "tools/test_bootstrap_failure.lua"]),
+    ("Dedicated Server Deployment Preservation", ["python3", "tools/test_server_launcher.py"]),
     ("Complete Enemy Roster & Animation Safety", ["python3", "tools/run_lua54.py", "tools/test_enemy_roster.lua"]),
     ("Bestiary B1 Content Enemies & Exact Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b1.lua"]),
     ("Bestiary B2 Ally Support & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b2.lua"]),

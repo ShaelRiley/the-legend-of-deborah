@@ -29,16 +29,44 @@ fi
 # Deploy the same mounted roots used by the Workshop package. Keeping the
 # dedicated server copy generated from main prevents a second implementation
 # authority from drifting away from the repository.
-rm -rf "$ADDON_DIR"
-mkdir -p "$ADDON_DIR"
-cp -a "$ROOT/gamemodes" "$ADDON_DIR/"
-cp -a "$ROOT/lua" "$ADDON_DIR/"
+DEPLOY_DIR="$SERVER_ROOT/.lod-deploy"
+mkdir -p "$DEPLOY_DIR" "$(dirname "$ADDON_DIR")"
+STAGED_ADDON="$(mktemp -d "$DEPLOY_DIR/stage.XXXXXX")"
+trap 'rm -rf -- "$STAGED_ADDON"' EXIT
+cp -a "$ROOT/gamemodes" "$STAGED_ADDON/"
+cp -a "$ROOT/lua" "$STAGED_ADDON/"
 
 # The development-only custom loading page cannot ship through Workshop and is
 # unnecessary on the dedicated server. Keep server deployment aligned with the GMA.
-rm -rf "$ADDON_DIR/gamemodes/legend_of_deborah/content/html"
+rm -rf "$STAGED_ADDON/gamemodes/legend_of_deborah/content/html"
+BUILD_COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
+BUILD_STATE=clean
+if [[ -n "$(git -C "$ROOT" status --porcelain --untracked-files=normal)" ]]; then
+    BUILD_STATE=modified
+fi
+printf '%s %s\n' "$BUILD_COMMIT" "$BUILD_STATE" > "$STAGED_ADDON/lod-build.txt"
+
+# Stage completely before replacing the mounted addon. Keep rollback bytes OUTSIDE
+# addons so GMod never mounts two copies. A failed copy leaves the old build intact.
+if [[ -e "$ADDON_DIR" ]]; then
+    rm -rf -- "$DEPLOY_DIR/previous"
+    mv -- "$ADDON_DIR" "$DEPLOY_DIR/previous"
+fi
+if ! mv -- "$STAGED_ADDON" "$ADDON_DIR"; then
+    if [[ -e "$DEPLOY_DIR/previous" ]]; then
+        mv -- "$DEPLOY_DIR/previous" "$ADDON_DIR"
+    fi
+    exit 1
+fi
+trap - EXIT
+
+mkdir -p "$SERVER_ROOT/garrysmod/data/legend_of_deborah"
+cp "$ADDON_DIR/lod-build.txt" "$SERVER_ROOT/garrysmod/data/legend_of_deborah/dev_build.txt"
 
 mkdir -p "$(dirname "$SERVER_CFG")"
+# This file is operator-owned after first creation. A restart must not silently
+# replace live configuration; release preflight checks the public listing values.
+if [[ ! -e "$SERVER_CFG" ]]; then
 cat > "$SERVER_CFG" <<'EOF'
 hostname "The Legend of Deborah"
 sv_lan 0
@@ -65,6 +93,7 @@ host_rules_show 1
 # freshly restarted public server is announced to the Steam master list promptly.
 heartbeat
 EOF
+fi
 
 printf '\nLaunching public LOD dedicated server\n'
 printf '  root:      %s\n' "$SERVER_ROOT"

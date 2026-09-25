@@ -85,7 +85,10 @@ python3 -u tools/run_lua54.py tools/profile_crate_placement.lua docs/validation/
 python3 -u tools/test_checkpoint_g_integration.py
 ```
 
-## Next bounded action and native boundary
+## Historical next action — deferred by September 25 release override
+
+**Now deferred to September 28–October 4, 2026 Low-End PC Optimization.**
+The following recommendation is preserved as evidence, not immediate work.
 
 Profile the remaining full pickCoverageCandidate scan, specifically visits to
 selected/conflicted candidates versus still-active candidates. It now contributes

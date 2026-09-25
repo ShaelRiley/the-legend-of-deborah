@@ -1,19 +1,18 @@
-# Active roadmap — Great Crate, low-end PCs and game-breaking safety
+# Active roadmap — Great Crate closure, focused safety, VPS release
 
-**Author revision: September 24, 2026.** This supersedes the previous
+**Author revision: September 25, 2026.** This supersedes the previous
 Bestiary → Big Loot → Events → comprehensive systems audit → performance →
 safety sequence. Preserve completed Bestiary work; B25 is published at
 `27092b9a31c9282cfcdd5beefba3d62998d60415` (215 suites passed; native acceptance
-pending). This revision changes planning/documentation only.
+pending). This release override preserves P1–P4 and defers further optimization.
 
 ## Immediate sequence
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate Update — sample branding visible; broader native checks open** | Complete [the supplied brief](briefs/GREAT_CRATE_UPDATE.md): restore the preferred HL2 container, remove intrinsic NP branding, establish neutral tintable hulls, integrate the existing256-brand archive through complete aspect-preserving safe-area placement, improve coherent concrete floors and selective safe catwalks, retain deterministic/compact/shared rendering, add focused preview/diagnostics and required validation. Aim for **one complete implementation pass; no more than three total**. Preserve all gameplay/collision/navigation/progression and performance ceilings. |
-| 2 | **Low-end PC optimization** | Measure representative/dense multilevel workloads; optimize demonstrated server/client/render/material/trace/network/resource hot spots. Record before/after evidence, budgets and remaining native hardware limits. Preserve gameplay and presentation contracts. Headless timings do not certify native FPS. |
-| 3 | **Fatal-crash and game-breaking-bug audit** | Focus on native resource lifetimes, build/reset/cleanup, stale callbacks, fatal exceptions, persistent transaction failures, death/revival/disconnect/late join, trapped controls, gates/keys, campaign progression/softlocks and finale/Abundance/Level21. Repair demonstrated blockers; exit with required gates green, no known unresolved fatal/game-ending defect and a concise native test procedure. This is not the deferred comprehensive systems audit. |
-| 4 | **Focused human playtest / native acceptance** | Carry forward unobserved Source visuals, collision, controls, audio, real networking, low-end hardware and full campaign checks, including Crate appearance. Schedule after the immediate optimization/safety work; deferred expansions are not prerequisites. Deployment remains separately authorized. |
+| 1 | **Great Crate closure** | Reconcile the existing implementation and evidence; repair demonstrated defects. Consolidate hull/tint sampling, branding offset/mips/legibility, stock gate appearance, floor/grate traversal and cover/rails, and reset/rejoin into one native smoke procedure. Preserve approved appearance and renderer `source-front-face-20260924`. Native acceptance is still pending beyond the reported sample. |
+| 2 | **Focused fatal-crash/game-ending-bug elimination** | Use existing authorities/validators for fatal exceptions, native lifetimes, build/reset/cleanup, stale callbacks, transactions, death/revival/disconnect/rejoin, trapped controls, gate/key softlocks and campaign progression. Exit: applicable fresh checks green, no known unresolved demonstrated fatal/game-ending blocker, explicit native limits. |
+| 3 | **VPS deployment and native smoke test** | Author-authorized after the focused safety gate: deploy the exact verified commit, preserve persistent data/configuration, retain rollback, restart the existing service and verify revision, health, query/connectivity and startup logs. Native visual/network acceptance remains evidence-dependent. Workshop publication is outside this request. |
 
 ## Great Crate pass budget
 
@@ -41,15 +40,16 @@ cancelled**, per the author's clarification:
 
 | Order | Deferred work | Preserved scope |
 | --- | --- | --- |
-| 1 | **Big Loot Update — L1** | [Original brief](briefs/BIG_LOOT_UPDATE.md), actual meaningful baseline and approximately3.5× target; coherent production cohorts then contextual loot ecology; preserve inventory/persistence/sell-fuse/wallet transactions. No baseline discovery or implementation now. |
-| 2 | **Event System Update** | [Original brief](briefs/EVENT_SYSTEM_UPDATE.md), actual meaningful baseline and approximately3.5× target; exploit established Bestiary/loot systems, preserve exact non-exploding1d4 count, placement, deterministic ownership and solvability. Follows Big Loot. |
-| 3 | **Comprehensive systems integration and emergence audit** | Follows Event System Update. Retain the full generation→encounter→combat/status→equipment/loot→events/rewards→progression/lifecycle/UI review, demonstrated authority consolidation, deterministic/transaction/lifecycle contracts and interaction/emergence validation. Do not fold it into this week's focused optimization/safety work. |
+| 1 | **Low-End PC Optimization** | Preserve P1–P4 and their exact-output/CPU evidence. Resume measured active-scan profiling here. Dense successive-seed native frame-time and texture-residency certification remains **pending** here; no new optimization in the immediate release. |
+| 2 | **Big Loot Update — L1** | [Original brief](briefs/BIG_LOOT_UPDATE.md), actual meaningful baseline and approximately3.5× target; coherent production cohorts then contextual loot ecology; preserve inventory/persistence/sell-fuse/wallet transactions. No baseline discovery or implementation now. |
+| 3 | **Event System Update** | [Original brief](briefs/EVENT_SYSTEM_UPDATE.md), actual meaningful baseline and approximately3.5× target; exploit established Bestiary/loot systems, preserve exact non-exploding1d4 count, placement, deterministic ownership and solvability. Follows Big Loot. |
+| 4 | **Comprehensive systems integration and emergence audit** | Follows Event System Update. Retain the full generation→encounter→combat/status→equipment/loot→events/rewards→progression/lifecycle/UI review, demonstrated authority consolidation, deterministic/transaction/lifecycle contracts and interaction/emergence validation. Do not fold it into this week's focused optimization/safety work. |
 
 Deferred briefs and incomplete requirements remain intact. Any genuine Crate
 carryover is recorded explicitly for next-week resumption before dependent work;
 no silent scope deletion. Existing gameplay content from deferred systems stays
 implemented and remains a regression constraint. This is a planning schedule,
-not automatic execution or a deployment authorization. Do not start deferred
+not automatic execution. The immediate VPS release is separately authorized above. Do not start deferred
 work early merely because an immediate pass finishes sooner.
 
 ## Checkpoint size and compute policy
@@ -101,7 +101,24 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — P4 conflict cache; active-scan profiling next
+## Current checkpoint — release safety and deployment preparation
+
+Baseline fetched clean `fee9f872f54751ae788ffa351c122ea7f1917488`.
+Great Crate implementation reconciled; native visual/traversal acceptance remains
+explicit in `validation/RELEASE_SAFETY.md`. Dense performance/residency work and
+active-scan profiling move to the deferred optimization phase above.
+
+Focused repairs: bootstrap exception/partial-state recovery; staged dedicated
+addon replacement, prior installed bytes retained outside mounted addons,
+configuration/player data preserved, exact installation receipt.
+Fresh targeted checks pass; canonical integration: **221 suites passed, zero
+failures**. Evidence: `validation/RELEASE_SAFETY_INTEGRATION.log`. Live GDD sequencing follows the author override.
+Direct SSH to the documented VPS failed with `Network is unreachable`; deployment
+has not occurred in this environment. Complete the pinned deployment procedure
+and one native smoke test after publication. Preserve all prior evidence below;
+its earlier “next” recommendations are historical and superseded by this roadmap.
+
+## Previous checkpoint — P4 conflict cache; active-scan profiling now deferred
 
 Baseline verified clean main `52eb96434af76d0ead341cc9b53386b0a57d23da`.
 Fresh profiling confirms repeated known conflicts and endpoint-key construction.

@@ -1,49 +1,45 @@
-# Handoff — P4 conflict cache complete; active-scan profiling next
+# Handoff — focused release safety; exact VPS deployment next
 
-Repository: ShaelRiley/the-legend-of-deborah; branch: main.
-Baseline verified remote HEAD: `52eb96434af76d0ead341cc9b53386b0a57d23da`.
-Resume from published main containing this handoff; publication response supplies
-the exact new SHA. Fetch/verify remote HEAD and preserve intervening/uncommitted
-work. The tested tree and every changed blob must match publication.
+Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
+Baseline fetched clean: `fee9f872f54751ae788ffa351c122ea7f1917488`.
+Resume from the published main containing this handoff; the publication response
+supplies the exact new SHA. Fetch and preserve intervening/uncommitted work.
 
 Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
-Read 00 → 01 → relevant 05/07 Crate and deterministic/performance rules.
-P4 changes no design, tuning or player-facing behavior; no GDD/manual write.
+Read 00 → 01 → required 05/06/07 rules. Release sequencing updated/read back in
+00/01/05/07/90, including native date chips for the deferred week in 00.
 
-P4 caches true conflicts and exact endpoint stack keys on temporary placement
-candidates. Reservations only grow; false results remain live. P1 nearest-distance,
-P2 noise, P3 exhausted coverage, full coverage sets and score/tie order remain intact.
-Fresh same-host CPU medians improve 17–20% against published P3:
-252.189/249.071/255.314ms → 202.249/204.842/212.443ms. Exact P1 receipts,
-eligibility/exclusion/separation/caps and lazy-resource gates pass. Evidence:
-docs/validation/CRATE_PLACEMENT_P4.md and before/after/count/integration logs.
-Fresh canonical integration: **219 suites passed, zero failures**. Historical P3's pending-closure typo was
-corrected against its preserved 219-pass log; that is inherited evidence.
-Headless timings do not establish FPS, whole-maze build time, texture residency
-or low-end hardware acceptance.
+Immediate: Great Crate closure → focused fatal-crash/game-ending-bug elimination →
+verified VPS deployment and native smoke. Deferred September 28–October 4, 2026,
+strictly: Low-End PC Optimization → Big Loot → Event System → comprehensive audit.
+P4 active-scan profiling and dense successive-seed frame-time/texture-residency
+certification are **pending in next week's optimization**, not immediate work.
 
-Next coherent checkpoint: profile full pickCoverageCandidate scan visits to
-selected/conflicted versus active candidates. After P4 the scan contributes
-12023 / 11546 / 11822 instruction samples, over twice the largest helper.
-Reuse tools/profile_crate_placement.lua, fixed P1 manifests/receipt and P4 logs.
-Before edits define exact selected indices, identity, coverage, eligibility,
-wayfinding exclusions, physical separation, 40% placement, 64 draws and lazy
-two-slot gates. Measure first; consider stable active-candidate traversal only if
-warranted, preserving exact iteration/tie order. Compare before/after, run affected
-checks and canonical integration, then commit/non-force-publish and verify.
-Otherwise publish findings and the next bounded target. No new user evidence is
-needed for that headless checkpoint. CLI fetch works; use authenticated GitHub
-blob/tree/commit/ref publication if push credentials remain unavailable.
+Implemented checkpoint: production bootstrap exception/partial-state recovery;
+staged server-addon replacement preserving operator config/player data; exact
+installed revision receipt; pinned deployment helper with backup, rollback and
+service/query/log checks. Regression first reproduced the bootstrap exception;
+focused recovery, failed-copy preservation, deployment/rollback and A2S tests pass.
+Fresh canonical result: **221 suites passed, zero failures** (fresh invocation).
+Evidence, finite scope and native limits: `docs/validation/RELEASE_SAFETY.md`.
 
-Bribe registration/payment and client dialog/distribution remain unloaded. Preserve
-approved concrete/restored hull, stock blast-door gates and renderer
-source-front-face-20260924. Native TRANS-PIEDMONT BULK visibility is established
-only for the reported sample. All other native exits remain open: broader hull/tints;
-branding offset/mips/legibility; stock gate appearance; floor/grate traversal and
-cover/rails; reset/rejoin; dense successive-seed frame-time/texture residency.
-Full reconciliation: docs/validation/GREAT_CRATE_C3.md. No fresh native acceptance.
+Great Crate implementation reconciled, full native acceptance still open. Preserve
+P1–P4, Bribe removal, approved concrete/restored hull, stock blast-door gates and
+renderer `source-front-face-20260924`. Inherited TRANS-PIEDMONT BULK visibility is
+sample-only. Retain hull/tints; branding offset/mips/legibility; gate appearance;
+floor/grate traversal/cover/rails; reset/rejoin and full campaign native limits.
 
-Active: Great Crate → low-end PC optimization → focused fatal-crash/game-breaking
-bug audit → native playtest. Deferred September 28–October 4, 2026, in order:
-Big Loot → Event System → comprehensive systems audit. No VPS deployment or
-Steam Workshop publication. Publish the next small coherent checkpoint promptly.
+Deployment/restart is explicitly authorized after the focused safety gate, with
+persistent data/config preservation and a rollback point. This environment's SSH
+and A2S attempts both failed `Network is unreachable`; no deployment or restart
+occurred and the currently installed VPS revision is unknown. Next finite action:
+execute the published revision's `tools/server/deploy_verified.sh FULL_SHA` on the
+existing VPS via the supplied pinned command, then perform the single smoke test
+in RELEASE_SAFETY.md. Verify exact source/installed receipt, service stability,
+startup logs, Source query, external browser listing and native join. No need for
+another optimization checkpoint or repeated accepted-system audit.
+
+Workshop publication is outside this request. Native candidate client should pull
+and install the same revision; parity of public Workshop assets is unverified.
+Default evidence: console_latest.txt + rpg_summary_latest.txt, one visual sample.
+Never expose GSLT, raw process arguments or unredacted private startup logs.

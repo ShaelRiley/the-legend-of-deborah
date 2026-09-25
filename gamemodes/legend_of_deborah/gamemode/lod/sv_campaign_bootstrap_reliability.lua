@@ -19,7 +19,11 @@ end
 
 local function campaignExists()
     local run = runManager()
+    -- NewCampaign assigns a seed before physical generation. A failed bootstrap
+    -- can therefore leave a seeded, incomplete state; only that exact failed
+    -- state may be retried. Never rebuild a live/replacement campaign.
     return run and run.State and run.State.CampaignSeed ~= nil
+        and not (Bootstrap.LastFailedState == run.State and not run.State.BuildReady)
 end
 
 local function recoveryReady()
@@ -49,16 +53,22 @@ function Bootstrap:Ensure(reason, automatic)
         "[LOD:BOOTSTRAP] campaign seed missing with live player(s); recovery start reason=%s attempt=%d",
         self.LastReason, self.Attempts))
 
-    local ok, result = run:NewCampaign()
+    local callOK, packed = xpcall(function()
+        return {run:NewCampaign()}
+    end, debug.traceback)
+    local ok = callOK and packed[1] == true
+    local result = callOK and packed[2] or packed
     self.InProgress = false
 
     if not ok then
+        self.LastFailedState = run.State
         self.LastError = tostring(result)
         ErrorNoHalt("[LOD:BOOTSTRAP] recovery failed: " .. self.LastError .. "\n")
         return false, result
     end
 
     self.Recoveries = (self.Recoveries or 0) + 1
+    self.LastFailedState = nil
     self.LastError = nil
     print(string.format(
         "[LOD:BOOTSTRAP] recovery complete seed=%s buildReady=%s recoveries=%d",

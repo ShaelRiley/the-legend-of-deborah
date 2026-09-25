@@ -1,5 +1,19 @@
 # Great Crate C3 — sample branding visible; broader native acceptance outstanding
 
+## Release closure override — September 25, 2026
+
+Implementation and automated reconciliation are closed for this release candidate;
+full native acceptance is **not** claimed. No new Crate defect is demonstrated by
+the supplied evidence. Preserve P1–P4, Bribe removal, approved concrete/restored
+hull, stock blast-door gates and renderer `source-front-face-20260924`.
+The single consolidated native procedure is in `RELEASE_SAFETY.md`; it retains
+hull/tint sampling, brand offset/mips/legibility, gate appearance, floor/grate
+traversal/cover/rails and reset/rejoin. Dense successive-seed frame-time and texture
+residency certification is **pending**, deferred to September 28–October 4, 2026
+Low-End PC Optimization. This supersedes historical optimization-next and
+no-VPS sequencing below, not their evidence. VPS deployment/restart is now
+explicitly authorized after the focused safety gate; Workshop remains outside scope.
+
 ## Native follow-up — visible company composition (author-supplied evidence)
 
 The current handoff reports screenshot `image(20260924-234248).png` visibly
