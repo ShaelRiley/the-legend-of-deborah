@@ -1,0 +1,83 @@
+name: B27 final source verification
+on:
+  push:
+    branches: [fix/adventure-pacing-b27]
+    paths: [.github/workflows/b27-finalize.yml]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply exact validated source correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          subprocess.run(['git','rm','.github/workflows/b27-finalize.yml'],check=True)
+          assert git('write-tree')=='63c1e0a204c5ce793a5b6ae125791a746b05a6f1'
+          name='gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua'
+          p=Path(name);assert git('hash-object',name)=='50bc64f2fe67ae863c3e0e0f93e9ee527e5b73a3'
+          old='    if sector>=2 then\n        add("razor_cover")'
+          new='\n'.join(['    -- B27: the four early autonomous identities also supply directed opening','    -- variety. Keep original companions and all physical placement contracts.','    if sector==1 and (role=="arena" or role=="ambush") then','        for _,id in ipairs({"reaper_detail","drubber_chase","caromer_screen","afterburst_detail"}) do add(id) end','    end','    if sector>=2 then','        add("razor_cover")'])
+          s=p.read_text();assert s.count(old)==1;p.write_text(s.replace(old,new))
+          assert git('hash-object',name)=='29fcac6f7bdc4a768953665ed4a9c708910eb35c'
+          name='tools/test_encounter_distribution.lua';p=Path(name)
+          assert git('hash-object',name)=='37a1a0caa123cdd35667f6bd7a867bdab3e413c3'
+          s=p.read_text()
+          for cohort,expr in [('B5',"(id=='caromer' and 1 or 2)"),('B7',"((id=='reaper' or id=='drubber') and 1 or 2)"),('B8',"(id=='afterburst' and 1 or 2)")]:
+              old=f"assert(enc.sector>=2 and (enc.role=='arena' or enc.role=='ambush'),'{cohort} production path')"
+              new=f"assert(enc.sector>={expr} and (enc.role=='arena' or enc.role=='ambush'),'{cohort} production path with explicit B27 early identities')"
+              assert s.count(old)==1;s=s.replace(old,new)
+          p.write_text(s);assert git('hash-object',name)=='ff77c7dd83ace2bfaf34aca9b0448b1f072d4176'
+          name='tools/test_bestiary_b27.lua';p=Path(name)
+          assert git('hash-object',name)=='189d26b2e5f1e80d06f714b3dc27935b81c7dc96'
+          old="assert(count(W.Config.AutonomousTypes)==32,'autonomous repertoire drift')"
+          new=old+'\n'+'''-- The same four early autonomous identities may lead directed opening squads;
+          -- this does not relax any other specialist's existing eligibility or companions.
+          local early={reaper_detail=true,drubber_chase=true,caromer_screen=true,afterburst_detail=true}
+          for _,role in ipairs({'arena','ambush'}) do
+           local offered={};for _,id in ipairs(D:_EligibleTemplates(1,role)) do offered[id]=true end
+           for id in pairs(early) do assert(offered[id],'early directed identity missing '..id) end
+           for _,id in ipairs({'fencer_screen','reeler_chase','forker_crossfire','carrion_feast'}) do
+            assert(not offered[id],'unapproved early directed identity '..id)
+           end
+          end
+          for _,role in ipairs({'travel','reward'}) do
+           for _,id in ipairs(D:_EligibleTemplates(1,role)) do assert(not early[id],'early tactical restriction lost') end
+          end'''
+          s=p.read_text();assert s.count(old)==1;p.write_text(s.replace(old,new))
+          assert git('hash-object',name)=='9b0c7c2617f774422300726df0ea20c89ea203fd'
+          subprocess.run(['git','add','gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua','tools/test_encounter_distribution.lua','tools/test_bestiary_b27.lua'],check=True)
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          assert git('write-tree')=='50442ed012f707fb44926960a68f69c98aaa2b78'
+          print('B27_FINAL_SOURCE_TREE_VERIFIED',git('write-tree'))
+          PY
+      - name: Verify early eligibility and population
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+          python3 tools/run_lua54.py tools/test_bestiary_b27.lua | tee /tmp/b27-final-population.log
+          python3 tools/run_lua54.py tools/test_encounter_distribution.lua | tee /tmp/b27-final-distribution.log
+      - name: Preserve verified objects on candidate branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -c user.name='LoD validation' -c user.email='validation@users.noreply.github.com' commit -m 'fix: introduce audited early specialists in directed encounters'
+          git push origin HEAD:fix/adventure-pacing-b27
+          git rev-parse HEAD > /tmp/b27-final-candidate.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b27-final-source-proof
+          path: |
+            /tmp/b27-final-population.log
+            /tmp/b27-final-distribution.log
+            /tmp/b27-final-candidate.txt
+          retention-days: 7
