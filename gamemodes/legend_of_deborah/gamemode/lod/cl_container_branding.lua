@@ -265,7 +265,13 @@ local function pickCoverageCandidate(candidates, chosen, covered,
             end
             candidate.nearestChosenDistance = distance
             local visibility = (instance.stackIndex or 0) == 0 and BRAND_LOWER_TIER_BIAS or 0
-            local noise = deterministicNoise(seed, candidate)
+            -- Seed and candidate identity are fixed for this rebuild. Keep the
+            -- exact tie-break value on its temporary candidate, never across worlds.
+            local noise = candidate.placementNoise
+            if noise == nil then
+                noise = deterministicNoise(seed, candidate)
+                candidate.placementNoise = noise
+            end
             if gain > bestGain
                 or (gain == bestGain and distance > bestDistance)
                 or (gain == bestGain and distance == bestDistance and visibility > bestVisibility)

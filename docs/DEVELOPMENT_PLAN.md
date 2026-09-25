@@ -101,7 +101,27 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — Bribe removed; continue bounded low-end profiling
+## Current checkpoint — P2 branding noise cache; bounded profiling continues
+
+Baseline verified clean main `890a73fbe6452599bfca9f08bc20f0a62817f5d9`.
+Fresh P1-manifest profiling identified repeated pure deterministic-noise hashing
+as the leading sampled cost. Cache its exact result on each temporary candidate
+within one rebuild. Selected indices, company, coverage and all placement/resource
+gates remain identical. Same-host CPU medians fall 63–67%, to 376–404ms;
+these are not native FPS measurements. Fresh evidence and canonical closure:
+validation/CRATE_PLACEMENT_P2.md. Fresh canonical integration: 219 suites,
+zero failures. No design/tuning/manual or GDD write required.
+
+Next finite profiling target: repeated coverageGain traversal in the current
+placement scan, using the same fixed manifests and exact P1 receipts. Measure
+first and change one demonstrated bottleneck only if worthwhile. P2 does not
+begin that optimization. Bribe removal and all approved visual repairs remain
+constraints. Every native Crate exit remains explicit in GREAT_CRATE_C3.md.
+Preserve optimization → focused fatal/game-breaking audit → native playtest;
+deferred Big Loot → Event System → comprehensive audit stays September 28–
+October 4, 2026. No deployment or automatic Bribe restoration.
+
+## Previous checkpoint — Bribe removed; continue bounded low-end profiling
 
 Author explicitly removes Brive/Bribe (`bribe_blockade`) for now. Baseline:
 `08d887ba5ffaf07c25bea2d400fb7cacc536ebd0`, verified published P1. Server

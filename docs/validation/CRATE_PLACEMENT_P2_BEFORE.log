@@ -1,0 +1,22 @@
+representative seed=7719 containers=1800 layers=3 median_ms=1123.079 min_ms=1094.849 max_ms=1139.488 cached_ms=0.000130
+sample representative gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:? 107114
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 12957
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11928
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 8422
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:deterministicNoise 7090
+sample representative gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:normalize 3804
+dense seed=15438 containers=1896 layers=4 median_ms=1061.657 min_ms=1051.943 max_ms=1070.375 cached_ms=0.000089
+sample dense gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:? 102917
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 12170
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11334
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 7947
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:deterministicNoise 6763
+sample dense gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:normalize 3596
+dense-successor seed=23157 containers=1978 layers=4 median_ms=1104.540 min_ms=1076.857 max_ms=1121.119 cached_ms=0.000170
+sample dense-successor gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:? 105944
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 12664
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11896
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 8531
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:deterministicNoise 6836
+sample dense-successor gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua:normalize 3656
+PLACEMENT_GATE_PASS: exact repeated indices, identity, coverage, separation, 40% cap, 64 draws, lazy resources; CPU timings are not native FPS

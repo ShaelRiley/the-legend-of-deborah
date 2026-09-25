@@ -1,0 +1,22 @@
+representative seed=7719 containers=1800 layers=3 median_ms=376.045 min_ms=373.181 max_ms=422.815 cached_ms=0.000093
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 12413
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11998
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 8331
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:floorDistanceSquared 3317
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageForInstance 2426
+sample representative ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:passageKey 883
+dense seed=15438 containers=1896 layers=4 median_ms=388.059 min_ms=364.079 max_ms=400.750 cached_ms=0.000093
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 11839
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11389
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 8105
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:floorDistanceSquared 3085
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageForInstance 2509
+sample dense ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:passageKey 1008
+dense-successor seed=23157 containers=1978 layers=4 median_ms=403.777 min_ms=402.563 max_ms=409.837 cached_ms=0.000094
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:pickCoverageCandidate 12121
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageGain 11778
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:candidateConflicts 8439
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:floorDistanceSquared 3243
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:coverageForInstance 2710
+sample dense-successor ...legend_of_deborah/gamemode/lod/cl_container_branding.lua:passageKey 1016
+PLACEMENT_GATE_PASS: exact repeated indices, identity, coverage, separation, 40% cap, 64 draws, lazy resources; CPU timings are not native FPS
