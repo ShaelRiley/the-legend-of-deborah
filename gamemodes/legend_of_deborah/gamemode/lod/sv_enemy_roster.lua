@@ -454,6 +454,20 @@ function E:LegalStep(e,from,to)
     if self:Safe(graph,a) or self:Safe(graph,b) or a.z~=b.z then return false end
     return key(a)==key(b) or (a.neighbors[key(b)] and N:CanTraverse(graph,key(a),key(b)))
 end
+-- B27: target-free patrols reuse WanderingDirector's installed graph route.
+-- Authored encounter actors retain their original idle behavior. This never
+-- supplies a hidden Hero position or bypasses a specialist's active commitment.
+function E:PatrolWanderer(e,graph)
+    if not e.LODWanderer or e.LODRosterAttack or e.LODPursuit
+        or not LOD.RPGStatusElements:CanMoveVoluntarily(e) then return false end
+    e.LODTarget=nil
+    e:_RefreshRoute(graph)
+    local waypoint=e:_AdvanceWaypoint()
+    local motion=LOD.HostileMotionV2
+    if waypoint then motion:MoveToward(e,waypoint)
+    else motion:Stop(e);e:_SetActivity(ACT_IDLE) end
+    return true
+end
 function E:Tick(e)
     -- This shared dispatch also sees non-roster Fighter/Rogue skeletons before
     -- ordinary melee/Soldier execution. Late native method binding cannot erase
@@ -508,7 +522,9 @@ function E:Tick(e)
     local p=e.LODTarget
     if d.pursuit and LOD.EnemyPursuit and LOD.EnemyPursuit:Tick(e,p,now) then return true end
     if d.pursuit and (not self:AcquireTarget(p) or not self:Visible(e,p)) then
-        e.LODTarget=nil;motion:Stop(e);e:_SetActivity(ACT_IDLE);return true
+        e.LODTarget=nil
+        if not self:PatrolWanderer(e,s.Graph) then motion:Stop(e);e:_SetActivity(ACT_IDLE) end
+        return true
     end
     local can=self:AcquireTarget(p) and self:CanCast(e)
         and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))

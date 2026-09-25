@@ -15,8 +15,8 @@ local report={plans=0,ready4=0,encounters=0,discretionary=0,otherIdentities=0,mi
     otherBodies=0,plannedBodies=0,initialWanderers=0,sector4Squads=0,themes={}}
 local originalTemplates=H.serial(EC.Templates)
 assert(EC.ActiveHostileTarget==80 and EC.ActiveHostileCeiling==96,'changed live ceiling')
-assert(H.serial(EC.MaxDiscretionaryPerSector)==H.serial({2,4,4,4}),'production slot tuning drift')
-for i,n in ipairs({8,16,18,20}) do assert(EC.SectorBaseThreat[i]==n,'production threat tuning drift') end
+assert(H.serial(EC.MaxDiscretionaryPerSector)==H.serial({4,6,6,6}),'production slot tuning drift')
+for i,n in ipairs({12,24,27,30}) do assert(EC.SectorBaseThreat[i]==n,'production threat tuning drift') end
 -- The dev wrapper must not silently be necessary for release population.
 local developer=false
 local previousConVar=GetConVar
@@ -44,7 +44,7 @@ for sample=1,16 do
   assert(pace.goal==keyOf(g.Progression.Gates[4].beforeCell),'target is behind Black Gate')
   assert(p.tags[keyOf(g.Progression.CoreCell)].sector~=4,'fixture did not isolate boss reservation')
   assert(H.serial(Run.State.GatesOpen)==gateState,'planner unlocked gates to hide the bug')
-  assert(not p.developerDenseTesting and p.populationRevision=='b26','not the release plan')
+  assert(not p.developerDenseTesting and p.populationRevision=='b27','not the release plan')
   local sig=H.signature(p);local pacing=H.serial(p.pacing)
   local repeated=H.build(g)
   assert(H.signature(repeated)==sig and H.serial(repeated.pacing)==pacing,'non-deterministic plan')
@@ -69,13 +69,13 @@ for sample=1,16 do
     end
    end
   end
-  assert(optional<=14,'unbounded discretionary population')
+  assert(optional<=22,'unbounded discretionary population')
   for k in pairs(g.Progression.Warden.cells) do assert(p.tags[k].safe and p.tags[k].role=='boss') end
   Run.State.BuildReady=true
   assert(D:CommitEcologyPlan(g));local memory=H.serial(Run.State.EncounterEcology)
   T.init(g);T.bounds(g)
   local snapshot=D:PopulationSnapshot()
-  assert(snapshot.ready and snapshot.revision=='b26' and snapshot.plannedBodies==bodies)
+  assert(snapshot.ready and snapshot.revision=='b27' and snapshot.plannedBodies==bodies)
   assert(snapshot.aliveBodies==snapshot.aliveWanderers and snapshot.aliveBodies<=96,'live/planned conflation')
   local before=T.signature();assert(H.serial(snapshot)==H.serial(D:PopulationSnapshot()),'unstable observer')
   assert(T.signature()==before and H.serial(Run.State.EncounterEcology)==memory,'observer mutated runtime')

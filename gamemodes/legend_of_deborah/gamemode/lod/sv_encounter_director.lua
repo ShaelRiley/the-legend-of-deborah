@@ -268,9 +268,15 @@ function EncounterDirector:BeginPacing(plan, graph)
                     if row.status=="ready" and a and b then
                         progress = math.Clamp((a-b+length)/2,0,length)/length
                         detour = math.max(0,(a+b-length)/2)
-                        beat = progress<phrase.quiet and "quiet" or progress<phrase.probe and "probe"
-                            or progress<phrase.pressure and "pressure" or "recovery"
-                        if (beat=="probe" or beat=="pressure") and detour>=4 then beat="spike" end
+                        -- Respite is a short route segment, not a percentage
+                        -- which can empty dozens of cells on a long route.
+                        local quiet = math.min(phrase.quiet, 2 / length)
+                        local recovery = math.max(phrase.pressure, 1 - 2 / length)
+                        beat = progress<quiet and "quiet" or progress<phrase.probe and "probe"
+                            or progress<recovery and "pressure" or "recovery"
+                        -- A distant branch is not a sanctuary just because its
+                        -- junction projects onto the entrance/recovery band.
+                        if detour>=4 then beat="spike" end
                     end
                     tag.pacing = {beat=beat, progress=progress, detour=detour}
                     row.bands[beat] = (row.bands[beat] or 0)+1
@@ -288,6 +294,37 @@ end
 
 -- Preserve seeded order inside each band, but offer an affordable probe first,
 -- then pressure/branch spikes before additional probes. No reservation fallback.
+-- B27: distribute homes along the route rather than exhausting a random deep
+-- branch first. Stable progress-bin cycling preserves the incoming seeded order
+-- inside each bin. Two route-near homes alternate with a deeper branch; neither
+-- group bypasses admission, protected cells, spacing or the outer pacing passes.
+function EncounterDirector:RouteCandidates(plan, candidates)
+    local near, branch = {{},{},{},{}}, {}
+    for _,cell in ipairs(candidates) do
+        local tag = plan.tags[keyOf(cell)]
+        local pace = tag and tag.pacing
+        if pace and pace.progress and (pace.detour or 0)<=3 then
+            local bin = math.Clamp(math.floor(pace.progress*4)+1,1,4)
+            near[bin][#near[bin]+1] = cell
+        else branch[#branch+1] = cell end
+    end
+    local route, cursor = {}, 1
+    while true do
+        local any=false
+        for bin=1,4 do
+            if near[bin][cursor] then route[#route+1]=near[bin][cursor];any=true end
+        end
+        if not any then break end
+        cursor=cursor+1
+    end
+    local out,a,b={},1,1
+    while route[a] or branch[b] do
+        for _=1,2 do if route[a] then out[#out+1]=route[a];a=a+1 end end
+        if branch[b] then out[#out+1]=branch[b];b=b+1 end
+    end
+    return out
+end
+
 function EncounterDirector:PacingCandidates(plan, candidates)
     local probes,pressure,other = {},{},{}
     for _,cell in ipairs(candidates) do
@@ -295,7 +332,7 @@ function EncounterDirector:PacingCandidates(plan, candidates)
         local pool = not pacing and other or pacing.beat=="probe" and probes or pressure
         pool[#pool+1]=cell
     end
-    return probes,pressure,other
+    return self:RouteCandidates(plan,probes),self:RouteCandidates(plan,pressure),other
 end
 
 function EncounterDirector:_FarEnough(graph, plan, cell)
@@ -341,7 +378,7 @@ function EncounterDirector:BuildPlan(graph)
     local seed = LOD.Seeds.Derive(graph.MasterLevelSeed or graph.LevelSeed or 1, "encounters")
     local rng = LOD.RNG.New(seed)
     local scale = self:_ThreatScale()
-    local plan = {seed = seed, populationRevision = "b26", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
+    local plan = {seed = seed, populationRevision = "b27", encounters = {}, sectorBudget = {}, sectorSpent = {}, tags = tags}
     if self.BeginEcology then self:BeginEcology(plan, graph) end
 
     -- Guaranteed keycard encounters are tuned independently of discretionary

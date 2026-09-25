@@ -410,3 +410,17 @@ while source.LODPursuit and time<journey.expires+.1 do
 end
 assert(not source.LODPursuit and time<journey.expires and source:GetPos():DistToSqr(journey.destination)<=12^2,'actual local two-leg flank completes inside finite deadline')
 print('BESTIARY_B3_MOTION_PASS: real Motion V2 completed four-edge and local two-leg routes within finite deadlines; graph cells crossed in order; no teleport or corner cutting; native traces still require Source acceptance')
+
+-- B27: real specialist dispatch must consume an idle roaming route, not return
+-- early merely because its tactical pursuit has no currently visible Hero.
+local nativeMove=LOD.HostileMotionV2.MoveToward
+for _,id in ipairs({'pincer','harrier','waylayer'}) do
+    local e=pair(id);e.LODWanderer=true;e.LODTarget=nil
+    local travelled=0;local wp={pos=e:GetPos()+Vector(48,0,0)}
+    e._RefreshRoute=function(self,graph) assert(graph==s.Graph);self.LODWaypoints={wp};self.LODWaypointIndex=1 end
+    LOD.HostileMotionV2.MoveToward=function(_,actor,waypoint) assert(actor==e and waypoint==wp);travelled=travelled+1 end
+    E:Tick(e);assert(travelled==1 and not e.LODPursuit and not e.LODTarget,'idle roaming dispatch '..id)
+    e.LODWanderer=false;E:Tick(e);assert(travelled==1,'authored pursuit actor gained ambient wandering')
+end
+LOD.HostileMotionV2.MoveToward=nativeMove
+print('BESTIARY_B27_PURSUIT_PATROL_PASS: actual roster dispatch consumes target-free patrols; encounter-only behavior unchanged')

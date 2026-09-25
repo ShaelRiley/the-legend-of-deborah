@@ -375,3 +375,25 @@ Status.HandleAIFlee=function(self,actor,graph,motion) fleeCalls=fleeCalls+1;retu
 E:Tick(e);assert(fleeCalls==1 and not e.LODPerceptionMemory,'morale reaches canonical flee handler after forgetting observation')
 Status.HandleAIFlee=priorFlee
 print('BESTIARY_B11_MORALE_PASS: preserved canonical flee dispatch')
+
+-- B27: sensory actors may patrol without a target; that route is ambient, not
+-- knowledge of hidden Hero coordinates. Witnesses, cues and recovery still win.
+local nativeMove=LOD.HostileMotionV2.MoveToward
+for _,id in ipairs({'listener','shy'}) do
+    local e=pair(id);e.LODWanderer=true;e.LODTarget=nil
+    party={};LOD.FactionManager.PerceptionHeroCache={};LOD.FactionManager.NextPerceptionHeroes=0
+    LOD.FactionManager.Footsteps={}
+    local moved=0;local wp={pos=e:GetPos()+Vector(48,0,0)}
+    e._RefreshRoute=function(self,graph) assert(graph==s.Graph);self.LODWaypoints={wp};self.LODWaypointIndex=1 end
+    LOD.HostileMotionV2.MoveToward=function(_,actor,waypoint) assert(actor==e and waypoint==wp);moved=moved+1 end
+    E:Tick(e);assert(moved==1 and not e.LODTarget and not e.LODRosterAttack,'idle sensory patrol '..id)
+    at(time+.05);E:Tick(e);assert(moved==2,'poll cadence stopped ambient locomotion')
+    e.LODNextAttack=time+1;E:Tick(e);assert(moved==2,'patrol skipped recovery');e.LODNextAttack=0
+    if id=='shy' then
+        party={hero};LOD.FactionManager.NextPerceptionHeroes=0
+        E:Tick(e);assert(moved==2,'Shy wandered while witnessed between sensory polls')
+    end
+    e.LODWanderer=false;E:Tick(e);assert(moved==2,'authored sensory actor gained ambient roaming')
+end
+LOD.HostileMotionV2.MoveToward=nativeMove
+print('BESTIARY_B27_SENSORY_PATROL_PASS: actual no-cue patrol dispatch and poll continuity; Shy witness stop, recovery and encounter-only rules retained')

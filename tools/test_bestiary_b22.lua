@@ -24,8 +24,8 @@ for seed=1,30 do
  assert(row.status=='ready' and row.length==100)
  local cuts=profiles[row.phrase]
  for x=0,100 do
-  local expected=x<cuts[1]*100 and 'quiet' or x<cuts[2]*100 and 'probe'
-   or x<cuts[3]*100 and 'pressure' or 'recovery'
+  local expected=x<math.min(cuts[1]*100,2) and 'quiet' or x<cuts[2]*100 and 'probe'
+   or x<math.max(cuts[3]*100,98) and 'pressure' or 'recovery'
   local pace=p.tags[key(x,0,0)].pacing
   assert(pace.beat==expected and pace.progress==x/100 and pace.detour==0,'ordered route bands')
   assert(D:PacingAllows(p,g.Cells[key(x,0,0)])==(expected=='probe' or expected=='pressure'))
