@@ -1,0 +1,23 @@
+name: B28 native population audit
+on:
+  push:
+    branches: [fix/native-population-b28]
+    paths: [.github/workflows/b28-native-audit.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Export exact production baseline
+        run: |
+          git archive --format=tar.gz d384b986daa5c6f839df72d3f2a754503ff64102 > /tmp/b28-baseline.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b28-baseline
+          path: /tmp/b28-baseline.tar.gz
+          retention-days: 3
