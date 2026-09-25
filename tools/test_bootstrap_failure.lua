@@ -44,3 +44,45 @@ assert(not B:Ensure('retry returned failure',false) and calls==before+1)
 LOD.RunManager.State={CampaignSeed=999,BuildReady=true}
 assert(B:Ensure('external recovery',false) and calls==before+1)
 print('PASS bootstrap exceptions, partial seed retry, bounded automatic recovery and live-state preservation')
+
+-- Exercise the actual startup hook, not only the recovery helper. Dedicated
+-- servers initialize before a player exists; failures after seed assignment must
+-- still reach the same recovery boundary, and late startup must not rebuild a
+-- campaign already created by PlayerInitialSpawn.
+local livePlayers, pending = {}, {}
+player.GetAll=function() return livePlayers end
+function CreateConVar() return {} end
+hook.Add=function(event,name,fn)
+ hooks[event]=hooks[event] or {};hooks[event][name]=fn
+end
+hooks={}
+timer.Simple=function(_,fn) pending[#pending+1]=fn end
+LOD.Config={}
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua')
+local R=LOD.RunManager
+local function drain()
+ local q=pending;pending={};for _,fn in ipairs(q) do fn() end
+end
+for _,mode in ipairs({'exception','false'}) do
+ R.State={};B.AutomaticAttempted=false;B.LastFailedState=nil;B.LastError=nil
+ function R:NewCampaign()
+  calls=calls+1;self.State={CampaignSeed=calls,BuildReady=false}
+  if mode=='exception' then error('startup failure after seed assignment') end
+  return false,'startup returned failure'
+ end
+ local n=calls
+ hooks.InitPostEntity.LOD_BeginCampaign()
+ assert(pcall(drain),'initial startup exception escaped recovery boundary')
+ assert(calls==n+1 and B.LastFailedState==R.State and not B.InProgress,
+  'initial startup failure was not recorded for recovery')
+ livePlayers={human}
+ function R:NewCampaign()
+  calls=calls+1;self.State={CampaignSeed=calls,BuildReady=true};return true
+ end
+ assert(B:Ensure('player recovery after startup',true) and calls==n+2,
+  'initial partial seed suppressed player recovery')
+ hooks.InitPostEntity.LOD_BeginCampaign();drain()
+ assert(calls==n+2,'late initial callback replaced a live campaign')
+ livePlayers={}
+end
+print('PASS actual InitPostEntity exception/false-return recovery, empty-server startup and late callback preservation')

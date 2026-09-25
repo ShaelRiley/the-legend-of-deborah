@@ -1,4 +1,4 @@
-# Active roadmap — Great Crate closure, focused safety, VPS release
+# Active roadmap — safety → local acceptance → Workshop → VPS
 
 **Author revision: September 25, 2026.** This supersedes the previous
 Bestiary → Big Loot → Events → comprehensive systems audit → performance →
@@ -10,9 +10,10 @@ pending). This release override preserves P1–P4 and defers further optimizatio
 
 | Order | Phase | Scope and finite exit |
 | --- | --- | --- |
-| 1 | **Great Crate closure** | Reconcile the existing implementation and evidence; repair demonstrated defects. Consolidate hull/tint sampling, branding offset/mips/legibility, stock gate appearance, floor/grate traversal and cover/rails, and reset/rejoin into one native smoke procedure. Preserve approved appearance and renderer `source-front-face-20260924`. Native acceptance is still pending beyond the reported sample. |
-| 2 | **Focused fatal-crash/game-ending-bug elimination** | Use existing authorities/validators for fatal exceptions, native lifetimes, build/reset/cleanup, stale callbacks, transactions, death/revival/disconnect/rejoin, trapped controls, gate/key softlocks and campaign progression. Exit: applicable fresh checks green, no known unresolved demonstrated fatal/game-ending blocker, explicit native limits. |
-| 3 | **VPS deployment and native smoke test** | Author-authorized after the focused safety gate: deploy the exact verified commit, preserve persistent data/configuration, retain rollback, restart the existing service and verify revision, health, query/connectivity and startup logs. Native visual/network acceptance remains evidence-dependent. Workshop publication is outside this request. |
+| 1 | **Focused fatal-crash/game-ending-bug sweep** | Reuse existing authorities/validators for exceptions, native lifetimes, build/reset/cleanup, stale callbacks, transactions, multiplayer lifecycle, controls, gate/key softlocks and progression. Repair demonstrated failures; validate and publish the exact candidate. Great Crate implementation is reconciled; preserve its outstanding native requirements. |
+| 2 | **Local playtest and acceptance** | Test the exact published candidate locally on gm_flatgrass using `validation/RELEASE_SAFETY.md`: safety, hull/tints, branding offset/mips/legibility, stock gates, floors/grates/cover/rails, reset/rejoin. Obtain evidence and repair failures before release publication. Automated checks alone are not acceptance. |
+| 3 | **Steam Workshop publication** | Publish the locally accepted build to item 3791535712; verify package contents and revision parity. |
+| 4 | **VPS deployment** | Only after local acceptance and verified Workshop publication, deploy the matching revision, preserving data/configuration, backup and rollback. Verify installed revision, service health, startup logs, listing and connectivity. |
 
 ## Great Crate pass budget
 
@@ -49,8 +50,9 @@ Deferred briefs and incomplete requirements remain intact. Any genuine Crate
 carryover is recorded explicitly for next-week resumption before dependent work;
 no silent scope deletion. Existing gameplay content from deferred systems stays
 implemented and remains a regression constraint. This is a planning schedule,
-not automatic execution. The immediate VPS release is separately authorized above. Do not start deferred
-work early merely because an immediate pass finishes sooner.
+not automatic execution. Workshop publication and the subsequent VPS release are
+authorized subject to the preceding gates. Do not start deferred work early merely
+because an immediate pass finishes sooner.
 
 ## Checkpoint size and compute policy
 
@@ -101,7 +103,20 @@ work early merely because an immediate pass finishes sooner.
   phase at a checkpoint boundary. Do not use anticipated future audits to defer a
   concrete bug or safety/performance regression introduced by the current chunk.
 
-## Current checkpoint — release safety and deployment preparation
+## Current checkpoint — startup safety sweep; local acceptance next
+
+Baseline `b7bcae2aa79ca925419f028f0e152572c18df680`, fetched clean. Completed live GDD
+sequencing readback and synchronized repository release instructions. The actual
+InitPostEntity startup bypassed the bootstrap exception/partial-state guard; an
+expanded production-hook regression reproduced the escaping exception. Startup
+now shares the existing recovery boundary, including empty dedicated servers and
+late-callback preservation. Targeted regression passes; fresh canonical gate: **221 suites passed, zero failures**.
+Evidence and the single local procedure: `validation/RELEASE_SAFETY.md`.
+Native acceptance remains open. Next: local playtest evidence and repair, then
+Workshop item 3791535712 with verified package/revision parity, then matching VPS
+deployment. P1–P4 and all approved Crate constraints remain intact.
+
+## Previous checkpoint — release safety and deployment preparation
 
 Baseline fetched clean `fee9f872f54751ae788ffa351c122ea7f1917488`.
 Great Crate implementation reconciled; native visual/traversal acceptance remains
@@ -114,8 +129,8 @@ configuration/player data preserved, exact installation receipt.
 Fresh targeted checks pass; canonical integration: **221 suites passed, zero
 failures**. Evidence: `validation/RELEASE_SAFETY_INTEGRATION.log`. Live GDD sequencing follows the author override.
 Direct SSH to the documented VPS failed with `Network is unreachable`; deployment
-has not occurred in this environment. Complete the pinned deployment procedure
-and one native smoke test after publication. Preserve all prior evidence below;
+has not occurred in this environment. Its former VPS-next recommendation is superseded: complete the safety sweep,
+local acceptance and Workshop publication before the pinned VPS procedure. Preserve all prior evidence below;
 its earlier “next” recommendations are historical and superseded by this roadmap.
 
 ## Previous checkpoint — P4 conflict cache; active-scan profiling now deferred

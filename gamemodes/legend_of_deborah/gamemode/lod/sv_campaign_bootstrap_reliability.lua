@@ -34,12 +34,16 @@ local function recoveryReady()
     return game.GetMap() == "gm_flatgrass" and #player.GetAll() > 0
 end
 
-function Bootstrap:Ensure(reason, automatic)
+function Bootstrap:Ensure(reason, automatic, initialStartup)
     local run = runManager()
     if not run or not run.NewCampaign then return false, "RunManager unavailable" end
     if campaignExists() then return true end
     if self.InProgress then return false, "campaign bootstrap already in progress" end
-    if not recoveryReady() then return false, "map/player state not ready" end
+    -- The canonical InitPostEntity attempt also runs on an empty dedicated
+    -- server. Recovery attempts still require a connected player.
+    if not recoveryReady() and not (initialStartup and game.GetMap() == "gm_flatgrass") then
+        return false, "map/player state not ready"
+    end
     if automatic and self.AutomaticAttempted then
         return false, self.LastError or "automatic recovery already attempted"
     end
@@ -50,7 +54,7 @@ function Bootstrap:Ensure(reason, automatic)
     self.LastReason = tostring(reason or "recovery")
 
     print(string.format(
-        "[LOD:BOOTSTRAP] campaign seed missing with live player(s); recovery start reason=%s attempt=%d",
+        "[LOD:BOOTSTRAP] campaign initialization start reason=%s attempt=%d",
         self.LastReason, self.Attempts))
 
     local callOK, packed = xpcall(function()

@@ -1086,6 +1086,14 @@ end
 
 hook.Add("InitPostEntity", "LOD_BeginCampaign", function()
     timer.Simple(0, function()
+        -- Resolve after all modules load. Startup must share the exception and
+        -- partial-state boundary used by player/watchdog recovery, including on
+        -- empty dedicated servers. Ensure also preserves a campaign created by
+        -- an earlier player callback instead of rebuilding it here.
+        if LOD.CampaignBootstrapReliability then
+            LOD.CampaignBootstrapReliability:Ensure("InitPostEntity", false, true)
+            return
+        end
         local ok, err = RunManager:NewCampaign()
         if not ok then ErrorNoHalt("[LOD] Campaign startup failed: " .. tostring(err) .. "\n") end
     end)
