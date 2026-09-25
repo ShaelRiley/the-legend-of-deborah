@@ -32,7 +32,9 @@ jobs:
           Path('.github/workflows/b28-native-audit.yml').unlink()
           subprocess.run(['git','add','-A'],check=True)
           tree=subprocess.check_output(['git','write-tree'],text=True).strip()
-          assert tree=='c82055bc8cc1ae0b17877e6975957578a25293bb',tree
+          # Includes 24 unchanged baseline files matching .gitignore, omitted by
+          # the temporary local index but byte-verified against the source archive.
+          assert tree=='b565e276f01208843b71bb41c72198b8ee49efef',tree
           Path('/tmp/b28-tree.txt').write_text(tree+'\n')
           print('B28_EXACT_TREE',tree)
           PY
@@ -49,7 +51,7 @@ jobs:
         run: |
           git diff --exit-code
           git diff --cached --check
-          test "$(git write-tree)" = c82055bc8cc1ae0b17877e6975957578a25293bb
+          test "$(git write-tree)" = b565e276f01208843b71bb41c72198b8ee49efef
           git -c user.name='LoD validation' -c user.email='validation@users.noreply.github.com' commit -m 'fix: native population support and visibility probes with release evidence (B28)'
           git push origin HEAD:fix/native-population-b28
           git rev-parse HEAD > /tmp/b28-audit-head.txt
