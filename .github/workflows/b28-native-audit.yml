@@ -13,9 +13,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: d384b986daa5c6f839df72d3f2a754503ff64102
       - name: Export exact production baseline
         run: |
-          git archive --format=tar.gz d384b986daa5c6f839df72d3f2a754503ff64102 > /tmp/b28-baseline.tar.gz
+          git archive --format=tar.gz HEAD > /tmp/b28-baseline.tar.gz
       - uses: actions/upload-artifact@v4
         with:
           name: b28-baseline
