@@ -1,26 +1,48 @@
-name: SPOT-03 source audit
+name: SPOT-03 exact candidate verification
 on:
   push:
     branches: [checkpoint/spot03-audit-84c47a12]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  source:
+  candidate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 84c47a12bf723590b4098bdf0d9ff299240a9670
-          persist-credentials: false
-      - name: Archive exact tracked baseline only
+      - name: Apply verified local delta to exact parent
         run: |
-          mkdir -p /tmp/lod-source-audit
-          git rev-parse HEAD HEAD^{tree} > /tmp/lod-source-audit/revision.txt
-          git ls-tree -r HEAD > /tmp/lod-source-audit/tree.txt
-          git archive --format=tar.gz HEAD > /tmp/lod-source-audit/source.tar.gz
+          mkdir -p /tmp/spot03-receipt
+          cat .github/spot03_delta.part0 .github/spot03_delta.part1 > /tmp/spot03_delta
+          cp .github/spot03_apply_delta.py /tmp/spot03_apply_delta.py
+          git fetch --no-tags --depth=1 origin 84c47a12bf723590b4098bdf0d9ff299240a9670
+          git checkout --detach 84c47a12bf723590b4098bdf0d9ff299240a9670
+          python3 /tmp/spot03_apply_delta.py | tee /tmp/spot03-receipt/tree.txt
+          git diff --cached --stat > /tmp/spot03-receipt/files.txt
+      - name: Lua runtime for headless checks
+        run: sudo apt-get update -qq && sudo apt-get install -y liblua5.4-0
+      - name: Focused production checks and syntax (not native GMod)
+        run: |
+          python3 tools/run_lua54.py tools/validate_spot03_razor.lua | tee /tmp/spot03-receipt/razor.log
+          python3 tools/run_lua54.py tools/validate_spot02_climber.lua | tee /tmp/spot03-receipt/climber.log
+          python3 - <<'PY' > /tmp/spot03-receipt/syntax.log
+          from pathlib import Path
+          import subprocess
+          files=sorted(str(p) for d in ('gamemodes','lua','tools') for p in Path(d).rglob('*.lua'))
+          subprocess.run(['python3','tools/run_lua54.py','--syntax',*files],check=True)
+          print('SPOT03_ALL_LUA_SYNTAX_PASS files='+str(len(files)))
+          PY
+      - name: Publish isolated single-parent candidate without force
+        run: |
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = af02fe08d97c7eb953ab720c80da6c7c0e3394ae
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'fix: restore Razor presentation and legal dive pursuit (SPOT-03)'
+          test "$(git rev-parse HEAD^)" = 84c47a12bf723590b4098bdf0d9ff299240a9670
+          git push origin HEAD:refs/heads/checkpoint/spot03-candidate-84c47a12
+          git show --no-patch --pretty=raw HEAD > /tmp/spot03-receipt/commit.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: lod-spot03-source-84c47a12
-          path: /tmp/lod-source-audit/
+          name: lod-spot03-candidate-receipt
+          path: /tmp/spot03-receipt/
           retention-days: 1
