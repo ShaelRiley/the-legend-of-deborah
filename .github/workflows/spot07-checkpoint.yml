@@ -1,0 +1,39 @@
+name: SPOT-07 isolated checkpoint
+on:
+  push:
+    branches: [checkpoint/spot07-c9ddf8cb]
+    paths: [.github/workflows/spot07-checkpoint.yml]
+permissions:
+  contents: read
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d
+          fetch-depth: 1
+          persist-credentials: false
+          path: source
+      - name: Verify exact source and export credential-free checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd source
+          test "$(git rev-parse HEAD)" = c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d
+          test "$(git rev-parse HEAD^{tree})" = 95b9937b6dce2a618a6d0fd0f532a83334384776
+          test -z "$(git status --porcelain)"
+          if git config --local --get-regexp 'extraheader|credential'; then exit 1; fi
+          mkdir -p ../evidence
+          git rev-parse HEAD HEAD^{tree} > ../evidence/source-identity.txt
+          git ls-tree -r HEAD > ../evidence/source-tree.txt
+          tar -czf ../evidence/source-checkout.tar.gz .
+          cd ../evidence
+          sha256sum source-checkout.tar.gz > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot07-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
