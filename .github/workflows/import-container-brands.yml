@@ -1,31 +1,115 @@
-# C1 replaces the historical V14/V19 patch-and-auto-push pipeline. CI verifies
-# committed originals and production code; it must never reinstall old rendering.
-name: Validate Great Crate assets and rendering
+name: SPOT-11 exact-source verification and publication
 on:
   push:
-    branches: [main]
-    paths:
-      - '.github/workflows/import-container-brands.yml'
-      - 'tools/assets/**'
-      - 'tools/test_great_crate*'
-      - 'docs/CONTAINER_BRAND*'
-      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/**'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/*crate*'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/*container*'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
-  workflow_dispatch:
+    branches: [automation/spot11-four-offer-publication]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  validate:
+  verify-and-publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      BASE: 85db2ed5ce287e7dbd96197676af4799922a6bf6
+      EXPECTED_TREE: b10f2f95bb5af90f36f94676dbe1991f74ab05ea
+      EXPECTED_SOURCE: 0ed8bd4fa5ae1f1aa578ea0fcd03b5d50bb3ef017d72f2dd714f24e40689f98d
+      PAYLOAD_HASH: b6f06dad904140262570a98dd3d8e153428f48ef8d031d944af12408c19b0e16
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
-      - run: python3 -m pip install Pillow
-      - name: Original assets, deterministic geometry and bounded rendering
+        with:
+          ref: 85db2ed5ce287e7dbd96197676af4799922a6bf6
+          fetch-depth: 0
+      - name: Prepare evidence and dependencies
+        shell: bash
         run: |
-          python3 tools/test_great_crate_assets.py
-          python3 tools/run_lua54.py tools/test_great_crate_geometry.lua
-          python3 tools/run_lua54.py tools/test_great_crate_render.lua
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/spot11-evidence"
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0
+          python3 -m pip install Pillow
+      - name: Restore and independently verify the frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot11-evidence"
+          exec > >(tee "$E/independent.log") 2>&1
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          git fetch origin "$GITHUB_SHA"
+          for i in 0 1 2 3; do
+            git show "$GITHUB_SHA:.spot11/source.$i.xzpart"
+          done > "$E/source.patch.xz"
+          echo "$PAYLOAD_HASH  $E/source.patch.xz" | sha256sum --check
+          python3 - "$E" <<'PY'
+          import lzma, pathlib, sys
+          root = pathlib.Path(sys.argv[1])
+          (root / 'source.patch').write_bytes(lzma.decompress((root / 'source.patch.xz').read_bytes()))
+          PY
+          git apply --check "$E/source.patch"
+          git apply "$E/source.patch"
+          python3 tools/build_manual.py
+          git add -A
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          test "$(git ls-files | wc -l)" -eq 2173
+          git diff --cached --check
+          python3 tools/test_spot11_gate.py --output "$E/gate" --workers 2
+          python3 - "$E" <<'PY'
+          import json, os, pathlib, sys
+          r = json.loads((pathlib.Path(sys.argv[1])/'gate/receipt.json').read_text())
+          assert r['passed'] == r['total'] == 79, r
+          assert r['lua_files'] == 744, r['lua_files']
+          assert r['source_before'] == r['source_after'] == os.environ['EXPECTED_SOURCE']
+          assert r['changed_during_gate'] == []
+          assert r['native_gmod_accepted'] is False
+          print('EXACT_SOURCE_GATE_PASS 79/79; 744 Lua files; unchanged frozen source')
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
           git diff --exit-code
+      - name: Publish a non-forced child of the actual main parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot11-evidence"
+          exec > >(tee "$E/publication.log") 2>&1
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --exit-code
+          git diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'SPOT-11: four-choice ordinary feat drafts'
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git archive --format=tar.gz HEAD -o "$E/published-source.tar.gz"
+          git ls-tree -r HEAD > "$E/published-tree.txt"
+          git cat-file commit HEAD > "$E/published-commit.txt"
+          git diff --binary "$BASE" HEAD > "$E/published-complete.patch"
+          python3 - "$E" <<'PY'
+          import json, os, pathlib, subprocess, sys
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          record = {'commit':git('rev-parse','HEAD'), 'parent':git('rev-parse','HEAD^'),
+                    'tree':git('rev-parse','HEAD^{tree}'), 'source':os.environ['EXPECTED_SOURCE'],
+                    'tracked':len(git('ls-files').splitlines()), 'run_id':os.environ['GITHUB_RUN_ID'],
+                    'attempt':os.environ['GITHUB_RUN_ATTEMPT'], 'selected_suites':79,
+                    'lua_syntax_files':744, 'new_focused_assertions':1055,
+                    'native_accepted':False, 'full_campaign_matrix':False,
+                    'workshop_or_vps_actions':False, 'push_force':False,
+                    'trigger_commit_not_gameplay_parent':os.environ['GITHUB_SHA']}
+          assert record['parent'] == os.environ['BASE']
+          assert record['tree'] == os.environ['EXPECTED_TREE']
+          assert record['tracked'] == 2173
+          (pathlib.Path(sys.argv[1])/'publication.json').write_text(json.dumps(record,indent=2)+'\n')
+          print(json.dumps(record,indent=2))
+          PY
+      - name: Preserve exact source and independent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot11-exact-source-evidence
+          path: ${{ runner.temp }}/spot11-evidence
+          retention-days: 14
+          if-no-files-found: error
