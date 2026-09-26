@@ -41,11 +41,22 @@ jobs:
           PY
           git apply --check /tmp/spot05.patch
           git apply --index /tmp/spot05.patch
+          python3 - <<'PY'
+          import hashlib, pathlib
+          path = pathlib.Path('docs/validation/SPOT_05_ATTEMPTS.txt')
+          raw = path.read_bytes()
+          assert hashlib.sha256(raw).hexdigest() == '7ab4b5b8243a13bf06e7afaaf0ccda465fc63fdb1eb27b96e8f8b38da79f2514'
+          clean = b''.join(line.rstrip(b' \t\r\n') + b'\n' for line in raw.splitlines(keepends=True))
+          assert sum(a != b for a, b in zip(raw.splitlines(), clean.splitlines())) == 4
+          assert hashlib.sha256(clean).hexdigest() == '405512ed22bad76f6078054bdfba7e9552adab604420c729244e24ccba53c516'
+          path.write_bytes(clean)
+          print('Four trailing transcript whitespace lines normalized; original failure content preserved.')
+          PY
           python3 tools/build_manual.py
-          git add docs/manual/manual.html gamemodes/legend_of_deborah/gamemode/lod/manual
+          git add docs/validation/SPOT_05_ATTEMPTS.txt docs/manual/manual.html gamemodes/legend_of_deborah/gamemode/lod/manual
           git diff --cached --check
           git diff --exit-code
-          test "$(git write-tree)" = 'a796a9a96e420376899e36293afe7927eac0268e'
+          test "$(git write-tree)" = '9faba937d888b33079719aa9b20d719fc01fbbd7'
           test "$(git diff --cached --name-only | wc -l)" -eq 42
       - name: Independent finite production and regression gate
         run: |
@@ -63,14 +74,14 @@ jobs:
           PY
           git diff --exit-code
           git diff --cached --check
-          test "$(git write-tree)" = 'a796a9a96e420376899e36293afe7927eac0268e'
+          test "$(git write-tree)" = '9faba937d888b33079719aa9b20d719fc01fbbd7'
       - name: Commit on real parent and publish candidate branch only
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'fix: restore canonical Die Logger event parity and meaningful dice (SPOT-05)'
           test "$(git rev-parse HEAD^)" = '789d63c843206061b416f0d108e7414e6aba0763'
-          test "$(git rev-parse HEAD^{tree})" = 'a796a9a96e420376899e36293afe7927eac0268e'
+          test "$(git rev-parse HEAD^{tree})" = '9faba937d888b33079719aa9b20d719fc01fbbd7'
           test -z "$(git status --porcelain)"
           git push origin HEAD:refs/heads/checkpoint/spot05-candidate-789d63c8
           git cat-file commit HEAD > /tmp/spot05-independent/candidate-commit.txt
@@ -81,6 +92,7 @@ jobs:
             echo 'Independent selected gate: 38/38 PASS; focused production checks: 76/76; all 732 Lua files syntax checked.'
             echo 'This is not the full campaign matrix. B29 uses its explicitly bounded --runtime gate.'
             echo 'Initial failures and repairs remain in SPOT_05_ATTEMPTS.txt. Native GMod acceptance remains pending.'
+            echo 'First independent run 36252110757 stopped on four transcript trailing-whitespace lines before gameplay tests; those four lines are normalized without changing results. Production/test/manual bytes remain unchanged.'
             echo 'No Workshop or VPS actions.'
             git diff --stat HEAD^ HEAD
           } | tee /tmp/spot05-independent/publication-receipt.txt
