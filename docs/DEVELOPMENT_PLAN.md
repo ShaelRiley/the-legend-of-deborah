@@ -1,6 +1,36 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-05 canonical Die Logger audit
+## Current checkpoint — SPOT-06 Gordon phase one
+
+Recovered from the stalled SPOT-06 thread on September 26, 2026, from exact
+published parent `664762a55d096c628ed5a2faff6da6c97c16cf03`, tree
+`9faba937d888b33079719aa9b20d719fc01fbbd7`. A full tracked-file source snapshot
+and original Git commit were verified before editing. The stalled thread's live
+GDD 05/07 candidate design was already present and is preserved.
+
+Phase one now owns a fixed 1.2-second first-effective-visible-hit opportunity,
+never refreshed and bounded by reveal+4.0 seconds. Released ordnance keeps its
+fuse; unreleased shots cancel. The existing Warden service enforces deadlines
+outside stunned AI wrappers. Invisible physical travel, fixed .45-second
+arrival/departure cues, displacement rewarning and the .65-second ordinary attack
+warning replace ambiguous disappearance. Short contextual taunts share a
+6-second encounter cooldown and require ordinary attack appearances between them.
+Shared controls and all later phases/progression remain authoritative.
+
+The finite [gate](validation/SPOT_06_GORDON_GATE.md) was defined before code.
+Local source validation: **116/116 focused production assertions, 47/47 selected
+suites and 733 Lua-file syntax checks**; no source mutation during the gate.
+The exact frozen candidate is independently gated before publication; published
+parent/tree/SHA and the independent run belong in the delivery receipt, not a
+self-referential source-file hash. See [validation](validation/SPOT_06_GORDON.md)
+for attempts, limits and the native checklist. This is not a full campaign matrix
+or native timing, rendering, audio, collision or cooperative acceptance.
+
+Next single development bullet: **SPOT-07 — Fake Gordon tells**. Do not fold
+SPOT-08 turrets, SPOT-09 Damsel's Revenge or existing-feat rebalances into it.
+No Workshop/VPS operation or native force-spawn test is part of SPOT-06.
+
+## Previous checkpoint — SPOT-05 canonical Die Logger audit
 
 The September 25 author-directed [spot queue](briefs/SPOT_UPDATES.md) precedes the
 scheduled roadmap. One bullet equals one independently validated, non-forced
@@ -34,11 +64,6 @@ Shael's one controlled Razor proves only that instance's visibility/basic combat
 Its Occupation/60-roamer upload was developer-dense, not natural release exposure.
 **No dedicated Razor retest or natural sighting is prerequisite.** Collect natural
 sightings opportunistically; keep the documented native limits and provenance.
-
-Next ordered development bullet: **SPOT-06 — Gordon phase one**. Read current
-Gordon rules and code, define one finite gate, and improve the follow-up-hit
-window without infinite loops, teleport cues and contextual taunts. Do not batch
-SPOT-07 fakes, SPOT-08 turrets or SPOT-09 Damsel's Revenge into it.
 
 ## Existing release gates — unchanged
 

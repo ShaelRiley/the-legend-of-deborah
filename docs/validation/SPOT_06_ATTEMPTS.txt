@@ -1,0 +1,294 @@
+SPOT-06 recovery attempts — September 26, 2026
+Initial full-source reconstruction verified every tracked blob, original tree and original commit. No gameplay code was edited before exact identity was recovered.
+
+===== warden-initial.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+/mnt/data/the-legend-of-deborah/tools/test_warden.lua: /mnt/data/the-legend-of-deborah/tools/test_warden.lua:85: assertion failed!
+
+===== warden-second.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+/mnt/data/the-legend-of-deborah/tools/test_warden.lua: /mnt/data/the-legend-of-deborah/tools/test_warden.lua:183: assertion failed!
+
+===== warden-third.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers and Neil recoil dispatch
+WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD
+WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns
+
+===== focused-first.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers and Neil recoil dispatch
+WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD
+WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns
+SPOT06_OK 1 cloaked phase consumes physical route authority
+SPOT06_OK 2 hidden ordinary hit-stun rejected
+SPOT06_OK 3 cloaking grants no damage immunity or new window
+SPOT06_OK 4 arrival warns before revealing
+SPOT06_OK 5 fixed .45-second actual-destination cue
+SPOT06_OK 6 arrival cannot be stun-pinned
+SPOT06_OK 7 external displacement restarts full warning at actual position
+SPOT06_OK 8 old arrival deadline cannot reveal displaced actor
+SPOT06_OK 9 ordinary attack warning follows arrival warning
+SPOT06_OK 10 visible warning neither travels nor fires early
+SPOT06_OK 11 first released orb uses unchanged attack scheduler
+SPOT06_OK 12 first positive visible hit creates fixed follow-up and cancels remaining shots
+SPOT06_OK 13 released ordnance keeps exact original record and fuse
+/mnt/data/the-legend-of-deborah/tools/validate_spot06_gordon.lua: .../legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua:91: attempt to call a nil value (method 'GetSequence')
+
+===== focused-second.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers and Neil recoil dispatch
+WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD
+WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns
+SPOT06_OK 1 cloaked phase consumes physical route authority
+SPOT06_OK 2 hidden ordinary hit-stun rejected
+SPOT06_OK 3 cloaking grants no damage immunity or new window
+SPOT06_OK 4 arrival warns before revealing
+SPOT06_OK 5 fixed .45-second actual-destination cue
+SPOT06_OK 6 arrival cannot be stun-pinned
+SPOT06_OK 7 external displacement restarts full warning at actual position
+SPOT06_OK 8 old arrival deadline cannot reveal displaced actor
+SPOT06_OK 9 ordinary attack warning follows arrival warning
+SPOT06_OK 10 visible warning neither travels nor fires early
+SPOT06_OK 11 first released orb uses unchanged attack scheduler
+SPOT06_OK 12 first positive visible hit creates fixed follow-up and cancels remaining shots
+SPOT06_OK 13 released ordnance keeps exact original record and fuse
+SPOT06_OK 14 sixty rapid/cooperative hits never renew follow-up
+SPOT06_OK 15 all ordinary hit-stun clamps to fixed window
+SPOT06_OK 16 independent service expires window despite outer AI stun
+SPOT06_OK 17 deadline releases ordinary pin and cannot replay interrupted volley
+SPOT06_OK 18 departure cue has fixed .45-second lifetime
+SPOT06_OK 19 repeated snapshots do not extend departure
+SPOT06_OK 20 zero/negative/non-taken damage cannot interrupt or open window
+SPOT06_OK 21 first very late hit clamps to absolute reveal+4 ceiling
+SPOT06_OK 22 exact absolute ceiling never remains exposed
+SPOT06_OK 23 Held prevents voluntary cloaked travel
+SPOT06_OK 24 releasing Held restores ordinary route admission
+SPOT06_OK 25 Muted appearance never starts a magical wind-up
+SPOT06_OK 26 unmuting cannot replay a cancelled appearance
+SPOT06_OK 27 shared attack prohibition cancels unreleased volley
+SPOT06_OK 28 status prohibition cannot extend exposure
+SPOT06_OK 29 phase 2 retires exposure/cues without old attacks
+SPOT06_OK 30 phase 3 retires exposure/cues without old attacks
+SPOT06_OK 31 run object rejects stale phase work
+SPOT06_OK 32 run object retires work and cues
+SPOT06_OK 33 campaign epoch rejects stale phase work
+SPOT06_OK 34 campaign epoch retires work and cues
+SPOT06_OK 35 campaign seed rejects stale phase work
+SPOT06_OK 36 campaign seed retires work and cues
+SPOT06_OK 37 run id rejects stale phase work
+SPOT06_OK 38 run id retires work and cues
+SPOT06_OK 39 dungeon level rejects stale phase work
+SPOT06_OK 40 dungeon level retires work and cues
+SPOT06_OK 41 dungeon seed rejects stale phase work
+SPOT06_OK 42 dungeon seed retires work and cues
+SPOT06_OK 43 graph object rejects stale phase work
+SPOT06_OK 44 graph object retires work and cues
+SPOT06_OK 45 Warden record rejects stale phase work
+SPOT06_OK 46 Warden record retires work and cues
+SPOT06_OK 47 native owner rejects stale phase work
+SPOT06_OK 48 native owner retires work and cues
+SPOT06_OK 49 phase cycle rejects stale phase work
+SPOT06_OK 50 phase cycle retires work and cues
+SPOT06_OK 51 actor-state rejects stale phase work
+SPOT06_OK 52 actor-state retires work and cues
+SPOT06_OK 53 native removal rejects stale phase work
+SPOT06_OK 54 native removal retires work and cues
+SPOT06_OK 55 native death rejects stale phase work
+SPOT06_OK 56 native death retires work and cues
+SPOT06_OK 57 failed dungeon rejects stale phase work
+SPOT06_OK 58 failed dungeon retires work and cues
+SPOT06_OK 59 cleared dungeon rejects stale phase work
+SPOT06_OK 60 cleared dungeon retires work and cues
+SPOT06_OK 61 unready world rejects stale phase work
+SPOT06_OK 62 unready world retires work and cues
+SPOT06_OK 63 freeze cancels presentation/attacks
+SPOT06_OK 64 freeze preserves HP and progression
+SPOT06_OK 65 no targets cancels presentation/attacks
+SPOT06_OK 66 no targets preserves HP and progression
+SPOT06_OK 67 invisible targets cancels presentation/attacks
+SPOT06_OK 68 invisible targets preserves HP and progression
+SPOT06_OK 69 canonical reset retires previous exact owner
+SPOT06_OK 70 independent service retires removed/dead root without native mutation
+SPOT06_OK 71 existing five-actor maximum remains unchanged
+SPOT06_OK 72 taunt is a short owned appearance after an ordinary appearance
+SPOT06_OK 73 encounter-wide taunt lock and attack-between rule
+SPOT06_OK 74 simultaneous clone appearances cannot create overlapping speakers
+SPOT06_OK 75 context caption 1 selects the authored line
+SPOT06_OK 76 context caption 2 selects the authored line
+SPOT06_OK 77 context caption 3 selects the authored line
+SPOT06_OK 78 context caption 4 selects the authored line
+SPOT06_OK 79 expired damage context does not pretend to be recent
+SPOT06_OK 80 actual taunt snapshot freezes its contextual line
+SPOT06_OK 81 hit ends taunt but preserves full nonrenewable follow-up
+SPOT06_OK 82 unapplied damage is not a successful taunt context
+SPOT06_OK 83 zero post-mitigation damage is not a successful taunt context
+SPOT06_OK 84 positive native Hero damage supplies outgoing context
+SPOT06_OK 85 per-actor cue allocation stays at two
+SPOT06_OK 86 per-actor cue allocation stays at two
+SPOT06_OK 87 per-actor cue allocation stays at two
+SPOT06_OK 88 per-actor cue allocation stays at two
+SPOT06_OK 89 per-actor cue allocation stays at two
+SPOT06_OK 90 all five actors share the ten-cue ceiling
+/mnt/data/the-legend-of-deborah/tools/validate_spot06_gordon.lua: ...a/the-legend-of-deborah/tools/validate_spot06_gordon.lua:9: clone death retires only its owned phase cues
+
+===== focused-third.log =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers and Neil recoil dispatch
+WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD
+WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns
+SPOT06_OK 1 cloaked phase consumes physical route authority
+SPOT06_OK 2 hidden ordinary hit-stun rejected
+SPOT06_OK 3 cloaking grants no damage immunity or new window
+SPOT06_OK 4 arrival warns before revealing
+SPOT06_OK 5 fixed .45-second actual-destination cue
+SPOT06_OK 6 arrival cannot be stun-pinned
+SPOT06_OK 7 external displacement restarts full warning at actual position
+SPOT06_OK 8 old arrival deadline cannot reveal displaced actor
+SPOT06_OK 9 ordinary attack warning follows arrival warning
+SPOT06_OK 10 visible warning neither travels nor fires early
+SPOT06_OK 11 first released orb uses unchanged attack scheduler
+SPOT06_OK 12 first positive visible hit creates fixed follow-up and cancels remaining shots
+SPOT06_OK 13 released ordnance keeps exact original record and fuse
+SPOT06_OK 14 sixty rapid/cooperative hits never renew follow-up
+SPOT06_OK 15 all ordinary hit-stun clamps to fixed window
+SPOT06_OK 16 independent service expires window despite outer AI stun
+SPOT06_OK 17 deadline releases ordinary pin and cannot replay interrupted volley
+SPOT06_OK 18 departure cue has fixed .45-second lifetime
+SPOT06_OK 19 repeated snapshots do not extend departure
+SPOT06_OK 20 zero/negative/non-taken damage cannot interrupt or open window
+SPOT06_OK 21 first very late hit clamps to absolute reveal+4 ceiling
+SPOT06_OK 22 exact absolute ceiling never remains exposed
+SPOT06_OK 23 Held prevents voluntary cloaked travel
+SPOT06_OK 24 releasing Held restores ordinary route admission
+SPOT06_OK 25 Muted appearance never starts a magical wind-up
+SPOT06_OK 26 unmuting cannot replay a cancelled appearance
+SPOT06_OK 27 shared attack prohibition cancels unreleased volley
+SPOT06_OK 28 status prohibition cannot extend exposure
+SPOT06_OK 29 phase 2 retires exposure/cues without old attacks
+SPOT06_OK 30 phase 3 retires exposure/cues without old attacks
+SPOT06_OK 31 run object rejects stale phase work
+SPOT06_OK 32 run object retires work and cues
+SPOT06_OK 33 campaign epoch rejects stale phase work
+SPOT06_OK 34 campaign epoch retires work and cues
+SPOT06_OK 35 campaign seed rejects stale phase work
+SPOT06_OK 36 campaign seed retires work and cues
+SPOT06_OK 37 run id rejects stale phase work
+SPOT06_OK 38 run id retires work and cues
+SPOT06_OK 39 dungeon level rejects stale phase work
+SPOT06_OK 40 dungeon level retires work and cues
+SPOT06_OK 41 dungeon seed rejects stale phase work
+SPOT06_OK 42 dungeon seed retires work and cues
+SPOT06_OK 43 graph object rejects stale phase work
+SPOT06_OK 44 graph object retires work and cues
+SPOT06_OK 45 Warden record rejects stale phase work
+SPOT06_OK 46 Warden record retires work and cues
+SPOT06_OK 47 native owner rejects stale phase work
+SPOT06_OK 48 native owner retires work and cues
+SPOT06_OK 49 phase cycle rejects stale phase work
+SPOT06_OK 50 phase cycle retires work and cues
+SPOT06_OK 51 actor-state rejects stale phase work
+SPOT06_OK 52 actor-state retires work and cues
+SPOT06_OK 53 native removal rejects stale phase work
+SPOT06_OK 54 native removal retires work and cues
+SPOT06_OK 55 native death rejects stale phase work
+SPOT06_OK 56 native death retires work and cues
+SPOT06_OK 57 failed dungeon rejects stale phase work
+SPOT06_OK 58 failed dungeon retires work and cues
+SPOT06_OK 59 cleared dungeon rejects stale phase work
+SPOT06_OK 60 cleared dungeon retires work and cues
+SPOT06_OK 61 unready world rejects stale phase work
+SPOT06_OK 62 unready world retires work and cues
+SPOT06_OK 63 freeze cancels presentation/attacks
+SPOT06_OK 64 freeze preserves HP and progression
+SPOT06_OK 65 no targets cancels presentation/attacks
+SPOT06_OK 66 no targets preserves HP and progression
+SPOT06_OK 67 invisible targets cancels presentation/attacks
+SPOT06_OK 68 invisible targets preserves HP and progression
+SPOT06_OK 69 canonical reset retires previous exact owner
+SPOT06_OK 70 independent service retires removed/dead root without native mutation
+SPOT06_OK 71 existing five-actor maximum remains unchanged
+SPOT06_OK 72 taunt is a short owned appearance after an ordinary appearance
+SPOT06_OK 73 encounter-wide taunt lock and attack-between rule
+SPOT06_OK 74 simultaneous clone appearances cannot create overlapping speakers
+SPOT06_OK 75 context caption 1 selects the authored line
+SPOT06_OK 76 context caption 2 selects the authored line
+SPOT06_OK 77 context caption 3 selects the authored line
+SPOT06_OK 78 context caption 4 selects the authored line
+SPOT06_OK 79 expired damage context does not pretend to be recent
+SPOT06_OK 80 actual taunt snapshot freezes its contextual line
+SPOT06_OK 81 hit ends taunt but preserves full nonrenewable follow-up
+SPOT06_OK 82 unapplied damage is not a successful taunt context
+SPOT06_OK 83 zero post-mitigation damage is not a successful taunt context
+SPOT06_OK 84 positive native Hero damage supplies outgoing context
+SPOT06_OK 85 per-actor cue allocation stays at two
+SPOT06_OK 86 per-actor cue allocation stays at two
+SPOT06_OK 87 per-actor cue allocation stays at two
+SPOT06_OK 88 per-actor cue allocation stays at two
+SPOT06_OK 89 per-actor cue allocation stays at two
+SPOT06_OK 90 all five actors share the ten-cue ceiling
+SPOT06_OK 91 clone death retires only its owned phase cues
+SPOT06_OK 92 replacement clone actor-state invalidates old work
+SPOT06_OK 93 replaced clone retires its old presentation
+SPOT06_OK 94 late-join/current snapshots never replay audio
+SPOT06_OK 95 client consumes exact production snapshot fields
+SPOT06_OK 96 arrival square and chevrons render distinctly
+SPOT06_OK 97 reduced effects retain identical arrival geometry
+SPOT06_OK 98 departure uses distinct contracting ring
+SPOT06_OK 99 exact fixed cue expiry prevents redraw
+SPOT06_OK 100 6000-unit render culling is preserved
+SPOT06_OK 101 stale snapshots cannot retain cues
+SPOT06_OK 102 client model removed once
+SPOT06_OK 103 client model removed once
+SPOT06_OK 104 snapshot timeout retires existing reusable props
+SPOT06_OK 105 client consumes exact production snapshot fields
+SPOT06_OK 106 fresh snapshot reuses exactly the existing two props
+SPOT06_OK 107 client model removed once
+SPOT06_OK 108 client model removed once
+SPOT06_OK 109 map cleanup clears snapshot as well as models
+SPOT06_OK 110 client consumes exact production snapshot fields
+SPOT06_OK 111 actual client HUD renders authored contextual caption
+SPOT06_OK 112 client consumes exact production snapshot fields
+SPOT06_OK 113 inactive snapshot clears caption and geometry
+SPOT06_OK 114 client model removed once
+SPOT06_OK 115 client model removed once
+SPOT06_OK 116 inactive snapshot cleans props without new models
+SPOT06_GORDON_PASS 116/116 production assertions; native timing/audio/co-op unaccepted

@@ -6,19 +6,26 @@ local beam=Material("cable/redlaser")
 local blue=Color(110,185,255,230)
 local gold=Color(255,170,60,255)
 local state
+local captions={"Lucky shot.","Too slow.","Still aiming?","Keep dancing."}
 local prepareProps
 net.Receive("LOD_WardenState",function()
     if not net.ReadBool() then state=nil;return end
     local s={actor=net.ReadEntity(),health=net.ReadFloat(),maximum=net.ReadFloat(),phase=net.ReadUInt(2),hazards={},received=CurTime()}
     local n=net.ReadUInt(5)
     for i=1,n do s.hazards[i]={id=net.ReadUInt(16),bomb=net.ReadBool(),pos=net.ReadVector(),velocity=net.ReadVector(),expires=net.ReadFloat()} end
+    s.cues={}
+    for i=1,net.ReadUInt(4) do
+        local q={kind=net.ReadUInt(2),pos=net.ReadVector(),start=net.ReadFloat(),expires=net.ReadFloat(),caption=net.ReadUInt(3)}
+        if i<=10 and q.kind>=1 and q.kind<=3 and q.expires>CurTime()
+            and q.expires-q.start>0 and q.expires-q.start<=1.2 then s.cues[#s.cues+1]=q end
+    end
     state=s
     if prepareProps then prepareProps(s.phase) end
 end)
 surface.CreateFont("LOD_WardenTitle",{font="Trebuchet MS",size=26,weight=900})
 surface.CreateFont("LOD_WardenPhase",{font="Trebuchet MS",size=17,weight=700})
 hook.Add("HUDPaint","LOD_WardenHealth",function()
-    local s=state;if not s or CurTime()-s.received>2 then return end
+    local s=state;if not s or not IsValid(s.actor) or CurTime()-s.received>2 then return end
     local width=math.min(580,ScrW()*0.64);local x=(ScrW()-width)/2;local y=ScrH()*0.08
     draw.SimpleText("GORDON THE WARDEN","LOD_WardenTitle",ScrW()/2,y,Color(240,225,210),TEXT_ALIGN_CENTER)
     draw.RoundedBox(3,x,y+34,width,14,Color(10,10,18,225))
@@ -27,12 +34,48 @@ hook.Add("HUDPaint","LOD_WardenHealth",function()
     local name=({"VANISHING VOLLEYS","TOILET BOMBER — WATCH THE FUSES","CROWBAR BERSERKER"})[s.phase]
     draw.SimpleText(name.."  ·  "..math.max(0,math.ceil(s.health)).." / "..math.ceil(s.maximum),
         "LOD_WardenPhase",ScrW()/2,y+54,Color(235,235,245),TEXT_ALIGN_CENTER)
+    for _,q in ipairs(s.cues or {}) do
+        if q.kind==3 and captions[q.caption] and CurTime()>=q.start and CurTime()<q.expires and EyePos():DistToSqr(q.pos)<6000^2 then
+            local point=(q.pos+Vector(0,0,90)):ToScreen()
+            if point.visible then draw.SimpleText(captions[q.caption],"LOD_WardenTitle",point.x,point.y,gold,TEXT_ALIGN_CENTER) end
+        end
+    end
 end)
 local function reduced()
     local c=GetConVar("lod_reduced_effects");return c and c:GetBool()
 end
+-- Cosmetic ground glyphs: a contracting ring means departure; a fixed square
+-- with inward chevrons means arrival. Reduced effects keep the same geometry.
+function V:DrawPhaseCue(q,now)
+    if q.kind==3 or now<q.start or now>=q.expires or EyePos():DistToSqr(q.pos)>=6000^2 then return end
+    local p=q.pos+Vector(0,0,4)
+    local progress=math.Clamp((now-q.start)/math.max(0.001,q.expires-q.start),0,1)
+    render.SetMaterial(beam)
+    if q.kind==1 then
+        local radius=60-48*progress
+        for i=1,16 do
+            local a,b=(i-1)*math.pi/8,i*math.pi/8
+            render.DrawBeam(p+Vector(math.cos(a)*radius,math.sin(a)*radius,0),
+                p+Vector(math.cos(b)*radius,math.sin(b)*radius,0),4,0,1,blue)
+        end
+    elseif q.kind==2 then
+        local corners={Vector(-46,-46,0),Vector(46,-46,0),Vector(46,46,0),Vector(-46,46,0)}
+        for i=1,4 do
+            render.DrawBeam(p+corners[i],p+corners[i%4+1],4,0,1,gold)
+            local a=(i-1)*math.pi/2;local forward=Vector(math.cos(a),math.sin(a),0)
+            local side=Vector(-math.sin(a),math.cos(a),0)
+            local tip=p+forward*(32-16*progress)
+            render.DrawBeam(tip+forward*14+side*10,tip,4,0,1,gold)
+            render.DrawBeam(tip+forward*14-side*10,tip,4,0,1,gold)
+        end
+    end
+    if not reduced() then
+        render.SetMaterial(glow);render.DrawSprite(p+Vector(0,0,20),20,20,q.kind==1 and blue or gold)
+    end
+end
 hook.Add("PostDrawTranslucentRenderables","LOD_WardenHazards",function(depth,sky)
-    if depth or sky or not state or CurTime()-state.received>2 then return end
+    if depth or sky or not state or not IsValid(state.actor) or CurTime()-state.received>2 then return end
+    for _,q in ipairs(state.cues or {}) do V:DrawPhaseCue(q,CurTime()) end
     for _,q in ipairs(state.hazards) do
         if CurTime()<q.expires then
             local p=q.pos+q.velocity*math.min(0.2,math.max(0,CurTime()-state.received))
@@ -69,7 +112,7 @@ local function dispose()
     for k,e in pairs(props) do if IsValid(e) then e:Remove() end;props[k]=nil end
 end
 V.DisposeProps=dispose
-hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",dispose)
+hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",function() state=nil;dispose() end)
 prepareProps=function(phase)
     -- Clones can enter different phases. Reuse the same two props for every
     -- draw, allocated on the encounter snapshot, never inside the render hook.

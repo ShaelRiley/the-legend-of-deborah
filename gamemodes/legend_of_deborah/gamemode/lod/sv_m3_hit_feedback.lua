@@ -80,6 +80,9 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     if hostile.LODDeadcrabState == "latched" then return false end
 
     local now = CurTime()
+    local deadline = hostile.LODArchetypeId == "warden" and LOD.Warden and LOD.Warden.HitStunDeadline
+        and LOD.Warden:HitStunDeadline(hostile, now) or nil
+    if deadline and deadline <= now then return false end
     if now < (hostile.LODNextHitStun or 0) then return false end
     local bossMelee = hitKind == "melee" and hostile.LODArchetypeId == "warden"
     if bossMelee and now < (hostile.LODBossMeleeStaggerReady or 0) then return false end
@@ -92,10 +95,12 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     durationMultiplier = math.Clamp((tonumber(durationMultiplier) or 1) * abilityMultiplier, 0.50, 2)
     durationMultiplier = durationMultiplier * math.Clamp(tonumber(formMultiplier) or 1, 1, 2.5)
     local stunSeconds = STUN_SECONDS * durationMultiplier
+    if deadline then stunSeconds = math.min(stunSeconds, deadline - now) end
     local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
     if bossMelee then hostile.LODBossMeleeStaggerReady = now + 3 end
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
+    if deadline then hostile.LODHitStunUntil = math.min(hostile.LODHitStunUntil, deadline) end
 
     if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile, attackEvent, attacker) end
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end

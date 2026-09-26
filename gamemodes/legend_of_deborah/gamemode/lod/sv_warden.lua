@@ -5,7 +5,8 @@ local W=LOD.Warden
 local P,N,R=LOD.ProgressionDirector,LOD.MazeNavigator,LOD.RunManager
 local C={invisible=3,warning=0.65,visible=2,shotGap=0.22,shotSpeed=460,shotLife=8,
     homing=0.45,bombGap=1.6,bombFuse=3,bombRadius=180,meleeGap=0.85,meleeWarning=0.3,
-    meleeRange=95,maxHazards=16,syncGap=0.2,tauntIdle=12,tauntDuration=2,tauntCooldown=16}
+    meleeRange=95,maxHazards=16,syncGap=0.2,followup=1.2,exposureCap=4,departure=0.45,arrival=0.45,
+    tauntDuration=0.8,tauntCooldown=6,contextHorizon=4,maxCues=10}
 W.Config=C
 LOD.Config.Encounter.Archetypes.warden={class="lod_hostile",name="Gordon the Warden",
     model="models/Humans/Group01/male_02.mdl",baseHP=1000,speed=240,meleeDamage=8,meleeCooldown=C.meleeGap,
@@ -37,7 +38,7 @@ local function hero(p) return IsValid(p) and p:IsPlayer() and p:Alive() and R:Is
 local function log(event,data) if LOD.RPGTestLog then LOD.RPGTestLog:Write(event,data) end end
 function W:State()
     local s=R.State;local w=s and s.Warden
-    if not s or not w or w.seed~=s.LevelSeed then return end
+    if not s or not w or w.seed~=s.LevelSeed or not s.Graph or not s.Graph.Progression then return end
     return s,w,s.Graph.Progression.Warden
 end
 function W:Actors(w)
@@ -109,7 +110,7 @@ function W:Prepare()
     if not a or not s.BuildReady or s.Failed or s.LevelCleared or not s.GatesOpen[4] then return false end
     if s.Warden then return true end
     s.Warden={seed=s.LevelSeed,state=s,graph=s.Graph,epoch=s.CampaignEpoch,campaignSeed=s.CampaignSeed,
-        runId=s.RunId,phase=1,hazards={},resupply={},nextHazard=0}
+        runId=s.RunId,level=s.Level,phase=1,hazards={},resupply={},nextHazard=0}
     return true
 end
 function W:Join(p,gate)
@@ -155,6 +156,7 @@ function W:Commit()
 end
 function W:SetPhase(w,e,phase,now)
     if w.phase==phase then return end
+    self:RetirePhaseOne(w,e)
     w.phase=phase;w.hazards={};w.volley=nil;w.swing=nil;w.hiddenUntil=nil;w.nextBomb=now+1;w.tauntUntil=nil
     e:SetNW2Float("LOD_WardenTauntUntil",0)
     e:SetNW2Bool("LOD_WardenHidden",false);e:SetNW2Int("LOD_WardenPhase",phase)
@@ -262,39 +264,187 @@ function W:Route(e,a,target,now,roaming)
     if waypoint then e:_SetActivity(ACT_RUN);LOD.HostileMotionV2:MoveToward(e,waypoint)
     else e:_SetActivity(ACT_IDLE);LOD.HostileMotionV2:Stop(e) end
 end
+-- SPOT-06: finite work inside the existing Warden owner, not another combat or
+-- status authority. The independent service also visits this state while native
+-- AI wrappers are holding ordinary hit-stun.
+function W:PhaseOwner(w,e,work)
+    local s,root=self:State()
+    if not s or not s.BuildReady or s.Failed or s.LevelCleared or not root.started or root.dead
+        or root.state~=s or root.graph~=s.Graph or root.epoch~=s.CampaignEpoch
+        or root.campaignSeed~=s.CampaignSeed or root.runId~=s.RunId or root.level~=s.Level
+        or not alive(root.actor) or not alive(e) or e.LODWardenOwner~=root or w.dead
+        or (e==root.actor and w~=root)
+        or (e~=root.actor and (not root.cloneStates or root.cloneStates[e]~=w))
+        or w.actor~=e or w.phase~=1 then return false end
+    if work and (w.phaseOne~=work or work.cycle~=w.phaseCycle or work.actor~=e
+        or work.owner~=w or work.root~=root or work.state~=s or work.graph~=s.Graph
+        or work.epoch~=s.CampaignEpoch or work.campaignSeed~=s.CampaignSeed
+        or work.runId~=s.RunId or work.level~=s.Level or work.seed~=s.LevelSeed) then return false end
+    return true,root,s
+end
+function W:RetirePhaseOne(w,e)
+    if not w then return end
+    w.phaseOne=nil;w.phaseCues=nil;w.tauntUntil=nil
+    if IsValid(e) then e:SetNW2Float("LOD_WardenTauntUntil",0) end
+end
+function W:RetirePhaseRoot(root)
+    if not root then return end
+    for _,w in ipairs(self:Actors(root)) do self:RetirePhaseOne(w,w.actor) end
+end
+function W:PhaseCue(w,kind,pos,now,seconds,caption)
+    -- Fixed positions and deadlines; snapshots never renew or play these cues.
+    local cues={}
+    for _,q in ipairs(w.phaseCues or {}) do if now<q.expires then cues[#cues+1]=q end end
+    if #cues>=2 then table.remove(cues,1) end
+    cues[#cues+1]={kind=kind,pos=Vector(pos.x,pos.y,pos.z),start=now,
+        expires=now+seconds,caption=caption or 0,cycle=w.phaseCycle}
+    w.phaseCues=cues
+end
+function W:BeginHidden(w,e,now,initial)
+    local ok,root,s=self:PhaseOwner(w,e)
+    if not ok then self:RetirePhaseOne(w,e);return end
+    if self.phaseRoot and self.phaseRoot~=root then self:RetirePhaseRoot(self.phaseRoot) end
+    self.phaseRoot=root
+    w.phaseCycle=(w.phaseCycle or 0)+1
+    local work={cycle=w.phaseCycle,actor=e,owner=w,root=root,state=s,graph=s.Graph,
+        epoch=s.CampaignEpoch,campaignSeed=s.CampaignSeed,runId=s.RunId,
+        level=s.Level,seed=s.LevelSeed,stage="hidden"}
+    w.phaseOne=work;w.phaseCues={};w.volley=nil;w.tauntUntil=nil
+    w.hiddenUntil=initial and (w.hiddenUntil or now+C.invisible) or now+C.invisible
+    work.deadline=w.hiddenUntil
+    e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Float("LOD_WardenTauntUntil",0)
+    e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,now)
+    if not initial then
+        self:PhaseCue(w,1,e:GetPos(),now,C.departure)
+        if LOD.Audio then LOD.Audio:Emit(e,"portal_depart") end
+    end
+    return work
+end
+function W:PhaseTargets(targets)
+    local out={}
+    for _,p in ipairs(targets or self:Targets()) do
+        if not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(p)) then out[#out+1]=p end
+    end
+    return out
+end
+function W:TauntCaption(root,now,targets)
+    if root.lastIncoming and now-root.lastIncoming<=C.contextHorizon then return 1 end
+    if root.lastHeroDamage and now-root.lastHeroDamage<=C.contextHorizon then return 2 end
+    for _,p in ipairs(targets) do
+        if p.KeyDown and ((IN_ATTACK and p:KeyDown(IN_ATTACK)) or (IN_ATTACK2 and p:KeyDown(IN_ATTACK2))) then return 4 end
+    end
+    return 3
+end
+function W:StartArrival(w,e,work,now)
+    LOD.HostileMotionV2:Stop(e)
+    work.stage="arriving";work.position=Vector(e:GetPos().x,e:GetPos().y,e:GetPos().z)
+    work.deadline=now+C.arrival
+    w.phaseCues={} -- a displaced arrival replaces, never accumulates warnings
+    self:PhaseCue(w,2,work.position,now,C.arrival)
+    if LOD.Audio then LOD.Audio:Emit(e,"portal_arrive") end
+end
+function W:ServicePhaseOne(w,e,now,targets)
+    local work=w.phaseOne
+    local ok,root,s=self:PhaseOwner(w,e,work)
+    if not ok then self:RetirePhaseOne(w,e);w.volley=nil;return end
+    targets=self:PhaseTargets(targets)
+    if s.SimulationFrozen or #targets==0 then
+        self:RetirePhaseOne(w,e);w.volley=nil;w.hazards={};w.hiddenUntil=now+C.invisible
+        e:SetNW2Bool("LOD_WardenHidden",true)
+        e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,now)
+        LOD.HostileMotionV2:Stop(e);return
+    end
+    work=work or self:BeginHidden(w,e,now,true)
+    if work.stage=="hidden" then
+        e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,now)
+        if now>=work.deadline then self:StartArrival(w,e,work,now) end
+    elseif work.stage=="arriving" then
+        LOD.HostileMotionV2:Stop(e)
+        e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,now)
+        if e:GetPos():DistToSqr(work.position)>0 then
+            self:StartArrival(w,e,work,now)
+        elseif now>=work.deadline then
+            work.revealed=now;work.cap=now+C.exposureCap;w.phaseCues={}
+            e:SetNW2Bool("LOD_WardenHidden",false)
+            if root.attackSinceTaunt and now>=(root.nextTaunt or 0) then
+                work.stage="taunt";work.deadline=now+C.tauntDuration
+                root.nextTaunt=now+C.tauntCooldown;root.attackSinceTaunt=false
+                w.tauntUntil=work.deadline;e:SetNW2Float("LOD_WardenTauntUntil",w.tauntUntil)
+                self:PhaseCue(w,3,e:GetPos(),now,C.tauntDuration,self:TauntCaption(root,now,targets))
+                if LOD.Audio then LOD.Audio:Emit(e,"boss_taunt") end
+            else
+                work.stage="attack";work.deadline=now+C.warning+C.visible
+                root.attackSinceTaunt=true
+                local status=LOD.RPGStatusElements
+                if not status or status:CanInitiateAttack(e) and (not status.CanInitiateMagic or status:CanInitiateMagic(e)) then
+                    w.volley={count=0,next=now+C.warning,finish=work.deadline,cycle=work.cycle}
+                    e:EmitSound("ambient/energy/weld1.wav",72,110,0.65)
+                end
+            end
+        end
+    else
+        if now>=math.min(work.deadline,work.cap) then return self:BeginHidden(w,e,now) end
+        local status=LOD.RPGStatusElements
+        if status and (not status:CanInitiateAttack(e)
+            or status.CanInitiateMagic and not status:CanInitiateMagic(e)) then w.volley=nil end
+        e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,work.followup or work.cap)
+    end
+    return w.phaseOne
+end
+function W:HitStunDeadline(e,now)
+    local _,root=self:State();local w=root and (root.cloneStates and root.cloneStates[e] or root)
+    -- Unowned test actors and later phases retain ordinary hit-stun semantics.
+    if not w or e~=w.actor or w.phase~=1 then return end
+    local work=self:ServicePhaseOne(w,e,now)
+    if not work or (work.stage~="attack" and work.stage~="taunt") then return now end
+    return work.followup or math.min(now+C.followup,work.cap)
+end
+function W:OnEffectiveHit(e,now)
+    local _,root=self:State();local w=root and (root.cloneStates and root.cloneStates[e] or root)
+    if not w or e~=w.actor or w.phase~=1 then return end
+    local work=self:ServicePhaseOne(w,e,now)
+    if not work then return end
+    root.lastIncoming=now
+    if work.stage~="attack" and work.stage~="taunt" then return end
+    if not work.followup then
+        work.followup=math.min(now+C.followup,work.cap);work.deadline=work.followup
+        log("WARDEN_FOLLOWUP",{cycle=work.cycle,untilTime=work.followup,cap=work.cap,clone=w.cloneIndex or 0})
+    end
+    w.volley=nil;w.tauntUntil=nil;w.phaseCues={}
+    e:SetNW2Float("LOD_WardenTauntUntil",0)
+    e.LODHitStunUntil=math.min(e.LODHitStunUntil or now,work.followup)
+end
 function W:Interrupt(e)
     local _,w=self:State();w=w and (w.cloneStates and w.cloneStates[e] or w)
     if not w or e~=w.actor then return end
-    w.volley=nil;w.swing=nil;w.hiddenUntil=CurTime()+C.invisible;w.tauntUntil=nil
+    w.volley=nil;w.swing=nil
+    if w.phase==1 then return end -- positive damage, not stun admission, owns the window
+    w.hiddenUntil=CurTime()+C.invisible;w.tauntUntil=nil
     e:SetNW2Float("LOD_WardenTauntUntil",0)
-    -- Flying ordnance keeps its existing fuse; the interrupted wind-up cannot
-    -- resume after the outer hit-stun wrapper starts dispatching AI again.
+    -- Already released ordnance retains its original fuse and attribution.
 end
-function W:Taunt(w,e,now)
-    if not w.tauntUntil and now<(w.hiddenUntil or 0)
-        and now-(e.LODBossLastDamage or now)>=C.tauntIdle and now>=(w.nextTaunt or 0) then
-        w.volley=nil;w.swing=nil;w.tauntUntil=now+C.tauntDuration;w.nextTaunt=now+C.tauntCooldown
-        e:SetNW2Bool("LOD_WardenHidden",false);e:SetNW2Float("LOD_WardenTauntUntil",w.tauntUntil)
-        if LOD.Audio then LOD.Audio:Emit(e,"boss_taunt") end
+function W:Cues(now)
+    local _,root=self:State();local out={}
+    if not root then return out end
+    for _,w in ipairs(self:Actors(root)) do
+        if self:PhaseOwner(w,w.actor,w.phaseOne) and w.phaseOne then
+            for _,q in ipairs(w.phaseCues or {}) do
+                if now<q.expires and q.cycle==w.phaseCycle and #out<C.maxCues then out[#out+1]=q end
+            end
+        end
     end
-    if not w.tauntUntil then return false end
-    if now>=w.tauntUntil or (e.LODBossLastDamage or 0)>w.tauntUntil-C.tauntDuration then
-        w.tauntUntil=nil;w.hiddenUntil=now+C.invisible;e:SetNW2Float("LOD_WardenTauntUntil",0)
-        return false
-    end
-    LOD.HostileMotionV2:Stop(e)
-    e:_SetActivity(ACT_IDLE)
-    return true
+    return out
 end
 function W:Tick(e)
     if e.LODArchetypeId~="warden" then return false end
     local s,w,a=self:State();w=w and (w.cloneStates and w.cloneStates[e] or w)
     local now=CurTime();local motion=LOD.HostileMotionV2
-    if not s or e~=w.actor or not alive(e) or w.dead or s.Failed or s.LevelCleared then motion:Stop(e);return true end
+    if not s or not w or e~=w.actor or not alive(e) or w.dead or not s.BuildReady or s.Failed or s.LevelCleared then motion:Stop(e);return true end
     local targets=self:Targets()
     if s.SimulationFrozen or #targets==0 then
         -- Preserve health and phase, but retire attacks aimed at a dead party.
         w.hazards={};w.volley=nil;w.swing=nil;w.hiddenUntil=now+C.invisible
+        if w.phase==1 then self:ServicePhaseOne(w,e,now,targets) end
         motion:Stop(e);return true
     end
     local fraction=e:Health()/math.max(1,e:GetMaxHealth())
@@ -305,35 +455,36 @@ function W:Tick(e)
         if not (LOD.RPGPerceptionState and LOD.RPGPerceptionState:IsInvisible(p)) then visible[#visible+1]=p end
     end
     targets=visible
-    if #targets==0 then w.volley=nil;w.swing=nil;motion:Stop(e);return true end
+    if #targets==0 then
+        w.volley=nil;w.swing=nil
+        if w.phase==1 then self:ServicePhaseOne(w,e,now,targets) end
+        motion:Stop(e);return true
+    end
     local target=targets[1]
     for _,p in ipairs(targets) do if e:GetPos():DistToSqr(p:GetPos())<e:GetPos():DistToSqr(target:GetPos()) then target=p end end
     if w.cloneIndex then target=targets[(w.cloneIndex%#targets)+1] end
     local status=LOD.RPGStatusElements
     local canAttack=not status or status:CanInitiateAttack(e)
     local canMove=not status or status:CanMoveVoluntarily(e)
-    if motion:HoldHitStun(e,now) or not canAttack then
-        w.volley=nil;w.swing=nil;w.hiddenUntil=now+C.invisible;motion:Stop(e);return true
-    end
     if w.phase==1 then
-        if self:Taunt(w,e,now) then return true end
-        if now<(w.hiddenUntil or 0) then
-            e:SetNW2Bool("LOD_WardenHidden",true)
+        local work=self:ServicePhaseOne(w,e,now,targets)
+        if not work then motion:Stop(e);return true end
+        if motion:HoldHitStun(e,now) then return true end
+        if work.stage=="hidden" then
             if canMove then self:Route(e,a,target,now,true) else motion:Stop(e) end
         else
-            e:SetNW2Bool("LOD_WardenHidden",false);motion:Stop(e)
-            if not w.volley then
-                w.volley={count=0,next=now+C.warning,finish=now+C.warning+C.visible}
-                e:EmitSound("ambient/energy/weld1.wav",72,110,0.65)
-            end
+            motion:Stop(e);e:_SetActivity(ACT_IDLE)
+            if not canAttack or status and status.CanInitiateMagic and not status:CanInitiateMagic(e) then w.volley=nil end
             local v=w.volley
-            if v.count<4 and now>=v.next then
+            if work.stage=="attack" and not work.followup and v and v.cycle==work.cycle
+                and v.count<4 and now>=v.next then
                 local aim=targets[((v.count+(w.cloneIndex or 0))%#targets)+1];local pos=e:WorldSpaceCenter()+Vector(0,0,12)
                 self:AddHazard(w,"orb",pos,(aim:WorldSpaceCenter()-pos):GetNormalized()*C.shotSpeed,aim,now)
                 v.count=v.count+1;v.next=now+C.shotGap
             end
-            if v.count==4 and now>=v.finish then w.volley=nil;w.hiddenUntil=now+C.invisible end
         end
+    elseif motion:HoldHitStun(e,now) or not canAttack then
+        w.volley=nil;w.swing=nil;w.hiddenUntil=now+C.invisible;motion:Stop(e);return true
     elseif w.phase==2 then
         if canMove then self:Route(e,a,target,now,true) else motion:Stop(e) end
         if now>=(w.nextBomb or 0) then
@@ -372,10 +523,12 @@ end
 function W:Killed(e)
     local s,w,a=self:State()
     local clone=w and w.cloneStates and w.cloneStates[e]
-    if clone then clone.dead=true;clone.hazards={};clone.volley=nil;clone.swing=nil;return end
+    if clone then clone.dead=true;clone.hazards={};clone.volley=nil;clone.swing=nil
+        self:RetirePhaseOne(clone,e);return end
     if not s or e~=w.actor or w.dead then return end
     if s.Level==20 and (w.state~=s or w.graph~=s.Graph or w.epoch~=s.CampaignEpoch
         or w.combatDeath~=e or not IsValid(e) or not e.LODDead or e:Health()>0) then return end
+    self:RetirePhaseRoot(w)
     w.dead=true;w.hazards={};w.volley=nil;w.swing=nil
     for _,other in ipairs(w.clones or {}) do other.dead=true;other.hazards={};other.volley=nil;other.swing=nil end
     if s.Level==20 then
@@ -399,8 +552,16 @@ function W:Killed(e)
 end
 hook.Add("OnNPCKilled","LOD_WardenDeath",function(e) W:Killed(e) end)
 hook.Add("PostEntityTakeDamage","LOD_BossDamagePresentation",function(e,info,tookDamage)
-    if not tookDamage or not alive(e) or info:GetDamage()<=0 then return end
-    if e.LODArchetypeId=="warden" then e.LODBossLastDamage=CurTime()
+    if not tookDamage or not IsValid(e) or info:GetDamage()<=0 then return end
+    local source=info.GetAttacker and info:GetAttacker()
+    local s,root=W:State()
+    local owner=root and (root.cloneStates and root.cloneStates[source] or root)
+    if s and hero(e) and owner and owner.actor==source and W:PhaseOwner(owner,source,owner.phaseOne) then
+        root.lastHeroDamage=CurTime()
+    end
+    if not alive(e) then return end
+    if e.LODArchetypeId=="warden" then
+        e.LODBossLastDamage=CurTime();W:OnEffectiveHit(e,CurTime())
     elseif e.LODArchetypeId=="neil" then e:SetNW2Float("LOD_NeilHurtAt",CurTime()) end
 end)
 hook.Add("EntityTakeDamage","LOD_WardenAlcove",function(target,info)
@@ -411,7 +572,7 @@ end)
 -- Stable health/phase/hazard replication, capped at five small snapshots/second.
 util.AddNetworkString("LOD_WardenState")
 function W:Sync()
-    local s,w,a=self:State();local active=s and w.started and not w.dead and not s.Failed and not s.LevelCleared and alive(w.actor)
+    local s,w,a=self:State();local active=s and w.started and not w.dead and s.BuildReady and not s.Failed and not s.LevelCleared and alive(w.actor)
     net.Start("LOD_WardenState");net.WriteBool(active==true)
     if active then
         net.WriteEntity(w.actor);net.WriteFloat(w.actor:Health());net.WriteFloat(w.actor:GetMaxHealth());net.WriteUInt(w.phase,2)
@@ -422,25 +583,42 @@ function W:Sync()
             net.WriteVector(q.velocity);net.WriteFloat(q.expires)
         end
     end
+    if active then
+        local cues=not s.SimulationFrozen and #self:PhaseTargets()>0 and self:Cues(CurTime()) or {}
+        net.WriteUInt(#cues,4)
+        for _,q in ipairs(cues) do
+            net.WriteUInt(q.kind,2);net.WriteVector(q.pos);net.WriteFloat(q.start);net.WriteFloat(q.expires);net.WriteUInt(q.caption,3)
+        end
+    end
     net.Broadcast()
 end
 local reset=P.ResetLevelState
 function P:ResetLevelState(...)
+    W:RetirePhaseRoot(R.State and R.State.Warden);W.phaseRoot=nil
     local result=reset(self,...);R.State.Warden=nil;R.State.WardenStarted=false;W:Sync();return result
 end
 -- Fuse/travel time belongs to the shared service, not a stunned NextBot's
 -- behavior coroutine. Phase-three damage thresholds retire ordnance first.
 hook.Add("Think","LOD_WardenOrdnance",function()
     local s,w=W:State()
-    if not s or not w.started or w.dead or not alive(w.actor) or s.Failed or s.LevelCleared then return end
+    if W.phaseRoot and (W.phaseRoot~=w or not s or not s.BuildReady or s.Failed or s.LevelCleared or w.dead or not alive(w.actor)) then
+        W:RetirePhaseRoot(W.phaseRoot);W.phaseRoot=nil
+    end
+    if not s or not s.BuildReady or not w.started or w.dead or not alive(w.actor) or s.Failed or s.LevelCleared then return end
     local now=CurTime();local dt=math.Clamp(now-(w.lastHazardTick or now),0,0.1);w.lastHazardTick=now
     local targets=W:Targets()
     for _,actorState in ipairs(W:Actors(w)) do
         local actor=actorState.actor
-        if s.SimulationFrozen or #targets==0 or not alive(actor) then actorState.hazards={}
+        if s.SimulationFrozen or #targets==0 or not alive(actor) then
+            actorState.hazards={}
+            if actorState.phase==1 then W:ServicePhaseOne(actorState,actor,now,targets) end
         else
             local fraction=actor:Health()/math.max(1,actor:GetMaxHealth())
             W:SetPhase(actorState,actor,math.max(actorState.phase,fraction<=0.25 and 3 or (fraction<=0.60 and 2 or 1)),now)
+            if actorState.phase==1 then
+                W:ServicePhaseOne(actorState,actor,now,targets)
+                if not actorState.phaseOne then actorState.hazards={} end
+            end
             if #actorState.hazards>0 then W:Hazards(actorState,actor,targets,dt,now) end
         end
     end
@@ -471,7 +649,8 @@ concommand.Add("lod_warden_status",function(p)
     local s,w=W:State()
     print("[LOD WARDEN] started="..tostring(w and w.started).." phase="..tostring(w and w.phase).." dead="..tostring(w and w.dead)
         .." hp="..tostring(w and alive(w.actor) and w.actor:Health()).." hazards="..tostring(w and #w.hazards)
-        .." key="..tostring(s and s.JailKey))
+        .." key="..tostring(s and s.JailKey).." phaseOne="..tostring(w and w.phaseOne and w.phaseOne.stage)
+        .." deadline="..tostring(w and w.phaseOne and w.phaseOne.deadline).." cues="..#W:Cues(CurTime()))
 end)
 concommand.Add("lod_warden_testkit",function(p)
     local cv=GetConVar("lod_developer_mode");local s=R.State

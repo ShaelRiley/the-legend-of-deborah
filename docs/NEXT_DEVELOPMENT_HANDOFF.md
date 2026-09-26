@@ -1,57 +1,62 @@
-# Resume The Legend of Deborah — SPOT-06 Gordon phase one
+# Resume The Legend of Deborah — SPOT-07 Fake Gordon tells
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-SPOT-05 real parent: `789d63c843206061b416f0d108e7414e6aba0763`.
-Use the delivery receipt's verified SPOT-05 child SHA, then fetch current main
-and preserve intervening/uncommitted work. The parent above is historical, not
-the new HEAD. Never use a source-reconstruction anchor as an upstream parent.
+SPOT-06 real parent: `664762a55d096c628ed5a2faff6da6c97c16cf03`.
+Use the delivery receipt's verified SPOT-06 child SHA and independent run, then
+fetch current main and preserve intervening/uncommitted work. The parent above
+is historical, not the new HEAD. Do not use a reconstruction anchor or the
+recovery-only workflow branch as a gameplay parent.
 
 ## Orientation
 
 Read AGENTS.md, docs/DEVELOPMENT_PLAN.md, docs/briefs/SPOT_UPDATES.md,
-docs/validation/SPOT_05_DIE_LOGGER.md and docs/TEST_LOGGING.md.
-Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
-Follow 00 → 01 → the needed Gordon/world/combat/lifecycle/tuning rules. Read exact
-HUMAN detail only at the index's named Gordon anchor where normalized rules leave
-it necessary. Audit actual current phase-one behavior before choosing the repair.
+docs/validation/SPOT_06_GORDON.md, docs/validation/SPOT_06_GORDON_GATE.md and
+docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
+00 → 01 → needed Gordon/world/combat/lifecycle/tuning rules. Read HUMAN only for
+needed detail absent from normalized rules. The stalled SPOT-06 thread had already
+saved its design in 05/07; do not append duplicate SPOT-06 candidate rules.
 
-## Just banked — SPOT-05
+## Just implemented — SPOT-06
 
-One canonical server event/serial now reaches each eligible participant/nearby
-listener once, including NPC-only outcomes. Private progression stays private.
-Routine passive Magic refill/full-cap notifications are removed at the producer;
-actual Magic spends, diversion and authored proc restoration remain. The live
-GDD's narrow exception was reconciled in tab 06 and verified by readback.
+One nonrenewable 1.2-second first-effective-visible-hit opportunity, with a hard
+reveal+4.0-second exposure ceiling. Cancel unreleased shots; preserve released
+ordnance fuses. Ordinary hidden/arriving hit-stun cannot pin Gordon; cloaking adds
+no damage immunity and shared Held/Muted/Push remain authoritative. Existing
+independent Warden service enforces deadlines despite outer AI stun wrappers.
+Three-second invisible physical routing is retained. Fixed .45-second departure
+and actual-destination warnings have different reduced/full semantic geometry;
+displacement restarts a full destination warning. Preserve subsequent .65-second
+ordinary warning and four-orb attack. No actual teleport is introduced.
 
-Failed/successful defense rolls, ordinary misses, status save/duration/recovery
-and damage dice, elemental choice detail, Morale cooldown rolls, real HP
-regeneration and committed Hero/Soldier HP-growth dice now retain important
-missing information. They reuse original rolls and settlement, not new RNG.
-Identity spans, exact-life/run baselines, shared live/history order and bounded
-history are preserved. Soldier readouts identify the active Soldier, not the
-stored Hero. The canonical manual is updated and both renderings regenerated.
+Taunts last .8 seconds, share a 6-second encounter cooldown and use 4-second
+contexts. One speaker at a time; ordinary attack appearances must separate taunts.
+Existing Audio carries portal/taunt cues; client snapshots never replay sounds.
+At most two cues per actor / ten total use existing .2-second transport, fixed
+expiry, two-second stale-snapshot rejection and 6000-unit culling. Exact run,
+campaign, level/seed, graph, Warden record, actor-state, native owner and cycle
+bind new work. Phase/death/removal/reset/stale/frozen/no-target work retires.
+Phases two/three, clone count/HP, sixteen-hazard ceiling, resupply, death ordering,
+Gordon→Hector→Jail Key→rescue and rewards remain unchanged.
 
-Final local gate: 76 focused assertions, 38/38 selected suites, 732 Lua syntax;
-source unchanged throughout. This includes manual content/transport. Use the
-delivery receipt for the exact frozen-tree and
-independent GitHub result, not an assumed full campaign-matrix pass. B29 uses
-existing --runtime for the recorded layout/lifecycle, not the extra 20-seed
-exposure sweep. Initial transport fixtures and a total-only-save presentation
-exception were repaired; initial failures and interrupted sampling remain in
-SPOT_05_ATTEMPTS.txt. Native readout/transport/multiplayer acceptance is pending.
+Local gate: **116 focused production assertions, 47/47 selected suites, 733 Lua
+syntax files**, unchanged source. Canonical manual and both renderings match.
+Use the delivery receipt for independent frozen-tree validation and published
+parent/tree/SHA. This is not full campaign-matrix or native acceptance. B29 uses
+its existing --runtime mode, not the extra twenty-seed exposure sweep. The
+attempt record preserves superseded legacy fixture failures, one missing native
+sequence double, and the clone-death cue-retirement omission caught and fixed by
+the new production test. No incomplete attempt is labelled a pass.
 
-## Next single checkpoint — SPOT-06
+## Next single checkpoint — SPOT-07
 
-Improve Gordon phase one only: allow a longer follow-up-hit window without an
-infinite stun/damage loop; give teleport departure and destination clear cues;
-make taunts quicker, more frequent and contextual. Use existing Gordon state,
-audio and combat authorities. Define the finite production-module gate before
-implementation, with exact attack/phase/run/graph ownership, interruption/death,
-reset/late join, bounded work and preserved progression/reward rules. Reconcile
-necessary delegated tuning in the live GDD before dependent changes. Do not
-implement SPOT-07 Fake Gordon tells, SPOT-08 turrets, SPOT-09 Damsel's Revenge or
-feat rebalances in this checkpoint. Validate, non-force push and verify remote
-parent/tree/SHA. Native timing, cue visibility and audibility remain distinct.
+Implement only the author's Fake Gordon tells within max(0, Wisdom bonus / 2)
+squares: randomized-eye wink, tongue and subtle but noticeable tint; consider a
+brief fart on hit and distinct fake hit-stun. Reconcile exact distance/identity,
+WIS visibility and shared-hit-stun interaction in the live GDD before code.
+Do not weaken SPOT-06's nonrenewable follow-up or introduce remote client truth,
+extra clone HP, new damage authority or a progression signal. Define a finite
+production gate, update canonical guidance and validate/non-force publish one
+checkpoint. Do not begin SPOT-08/09 or existing-feat rebalances in this slice.
 
 ## Preserved SPOT-04 and SPOT-03 evidence
 
@@ -89,11 +94,11 @@ force spawns or retune density to manufacture exposure.
 
 ## Release and roadmap constraints
 
-Preserve SPOT01–05, B28 physical queries, B29 sanctuary/graduated pressure,
+Preserve SPOT01–06, B28 physical queries, B29 sanctuary/graduated pressure,
 population limits/Bestiary variety, accepted Crate appearance and P1–P4. No Workshop
 publication, VPS deployment or VPS restart. Local acceptance → Workshop item
 3791535712 package/source parity → matching VPS remains the release sequence.
-No Workshop/VPS action happened in SPOT-05. All earlier native gates remain open.
+No Workshop/VPS action happened in SPOT-05 or SPOT-06. All earlier native gates remain open.
 
 After the spot queue: Low-End PC Optimization, September 28–October 4, 2026 →
 Big Loot → Event System → comprehensive systems audit. Before context pressure,
