@@ -696,7 +696,7 @@ local savedTrail=util.SpriteTrail
 util.SpriteTrail=function() trailCount=trailCount+1 end
 assert(loadfile(entRoot.."init.lua","t",env))()
 local noop=function() end
-for _,name in ipairs({"SetModel","SetMoveType","SetSolid","SetCollisionGroup","DrawShadow","SetRenderMode","SetColor"}) do bomb[name]=noop end
+for _,name in ipairs({"SetNW2Int","SetModel","SetMoveType","SetSolid","SetCollisionGroup","DrawShadow","SetRenderMode","SetColor"}) do bomb[name]=noop end
 bomb.LODFormId="bomb";bomb.LODDirection=Vector(1,0,0)
 bomb:Initialize()
 assert(bomb:GetMagicForm()=="bomb" and trailCount==0,"bomb identity replicated and no missile trail")
@@ -706,7 +706,7 @@ dofile(root..'sv_magic_watermelon.lua')
 local melon=setmetatable({valid=true,LODFormId='watermelon',LODCaster=attacker,
  LODDirection=Vector(1,0,0),LODSpeed=580,LODMaximumTravel=4000,LODCastContext={castSerial=1}}, {__index=env.ENT})
 melon.NetworkVar=bomb.NetworkVar;melon:SetupDataTables()
-for _,name in ipairs({'SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetAngles','NextThink'}) do melon[name]=noop end
+for _,name in ipairs({'SetNW2Int','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetAngles','NextThink'}) do melon[name]=noop end
 melon.SetModel=function(self,value) self.model=value end
 melon.SetColor=function(self,value) self.color=value end
 melon.SetPos=function(self,value) self.pos=value end;melon.GetPos=function(self) return self.pos end

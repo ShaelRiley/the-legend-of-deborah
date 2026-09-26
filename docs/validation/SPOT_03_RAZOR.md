@@ -1,5 +1,47 @@
 # SPOT-03 — Razor / Manhack absence audit and repair
 
+## September 26, 2026 author-observed supplement — partial native confirmation
+
+Published SPOT-03 build: `780d3d3b50f1026ba4a15a535b7569b6b09e0f71`.
+Shael reports two console testkit refusals (no safe placement nearby), followed
+by successful placement on the third attempt. That Razor was visible, attacked,
+dealt damage, took damage and was defeatable. **Visibility and basic combat pass
+for that controlled instance only.** There was no noticed natural Razor before
+the test, despite play beyond the Red Gate. Precise deployed blades, stairs,
+Held interruption, sanctuary/gate blocking, multiplayer replication and ordinary
+release sightings remain unverified.
+
+Evidence below is the author's supplied handoff summary of prior-thread uploads
+`console_latest(4).txt`, `population_latest.txt` and `rpg_summary_latest(4).txt`;
+those raw attachments were not independently re-read in SPOT-04. The console
+summary has two placement refusals followed by success; `lod_razor_status` was
+zero planned/dormant/living/roaming before success and one living **non-roaming
+encounter** Razor afterward. This is controlled-spawn evidence, not exposure.
+The population upload identified the SPOT-03 build with all 34 installed/mounted
+module hashes matching. Its Occupation dungeon had no planned Razor and none
+among 60 roamers, with **developerMode=true / developerDense=true**. It does not
+establish release-mode exposure or pacing acceptance. The RPG summary had **no
+recorded validator result**; the manual fight is not an automated native pass.
+
+The console's missing `npc\manhack\mh_engine_start1.wav` warning is a separate
+audio observation, not proof of a lingering death loop. SPOT-04 traces that path
+in the generic dive warning and Razor footstep bank; see its audio validation.
+The immediate `blade=0` row has unresolved timing relative to preparation and
+does not prove persistently folded blades or negate the visible combat report.
+
+**Sequencing:** Shael explicitly moves on. No further dedicated Razor test or
+confirmed natural sighting is a prerequisite. Collect sightings opportunistically
+in normal play, optionally `lod_razor_status; lod_population_evidence`, separating
+developer-dense sessions from release evidence. Do not force appearances or
+retune density to erase a legitimate zero-Razor dungeon. This decision does not
+claim every cause of the original absence report has been resolved.
+
+## Original SPOT-03 publication record (preserved)
+
+The following original automated and then-unverified native evidence describes
+the publication checkpoint; the supplement above updates only the stated native
+observations. SPOT-04 reruns are recorded separately in its own validation.
+
 ## Scope and evidence boundary
 
 Author report: no Manhack-type enemy has ever been seen. This is native author

@@ -73,7 +73,7 @@ ents.Create=function(class)
     assert(class=='lod_magic_projectile')
     if spawnFail then return nil end
     local ent=setmetatable({valid=true},{__index=projectileMethods})
-    for _,method in ipairs({'SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','Activate','NextThink'}) do ent[method]=function() end end
+    for _,method in ipairs({'SetNW2Int','SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','Activate','NextThink'}) do ent[method]=function() end end
     function ent:SetPos(value) self.position=value end
     function ent:GetPos() return self.position end
     function ent:SetAngles(value) self.angles=value end

@@ -1,38 +1,42 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-03 Razor / Manhack absence
+## Current checkpoint — SPOT-04 enemy loop-audio cleanup
 
 The September 25, 2026 author-directed [spot queue](briefs/SPOT_UPDATES.md)
-precedes the existing scheduled roadmap. One bullet equals one coherent,
-independently validated, non-forced push. High-level design decisions are
-delegated; existing-feat rebalances remain explicitly approval-gated.
+precedes the scheduled roadmap. One bullet equals one coherent, independently
+validated, non-forced push. High-level design authority is delegated;
+existing-feat rebalances remain approval-gated.
 
-SPOT-03 repairs Razor's missing stock blade/active-idle setup, repeated doomed
-planar dives instead of graph/stair pursuit, and Held/post-deadline dive travel.
-A release-safe read-only admin diagnostic separates original plan, current
-composition, dormant units, actual live/roaming actors and placement attempts.
-Razor is the sole actual Manhack-model roster identity; Redliner is not another.
-No selection, population, motif, combat-value, reward, feat or Crate retune.
+SPOT-04 repairs the existing client LoopAudio owner and shared server hostile
+sound/death authority. Valid corpses and dormant/retired actors cannot renew
+ambience. Beam warning/sweep sound is bound to its exact finite attack and
+stopped on cancellation, death, removal and retirement. Reset/rebuild uses the
+existing topology build identity, including same-seed regeneration. Native
+SND_STOP events pass generation/legacy filters; living loop limits, loudness,
+attack cues and intentional one-shot death sounds remain. New sound mutation
+stays outside the synchronous lethal-damage stack. The reported missing Manhack
+startup path is replaced by the stock charge soundscript, not a new engine loop.
 
-Fresh focused evidence: 55/55 Razor checks; identical final harness against the
-two original modules gives 26 passes/29 failures, including six absent diagnostic
-checks. Climber's 44/44 checks were freshly rerun. The bounded integration matrix
-has 226 passing suites. One teammate-UI harness failure reproduces on the
-unchanged parent (missing Color stub); two long campaign-wide samples were not
-completed. All-source syntax passed. This is not a full 229-suite pass.
-Native GMod/model/animation/collision, co-op and ordinary sightings remain open.
-The 20-build parent-main sample had a planned or initialized Razor in six builds,
-none in fourteen; it is headless exposure evidence, not the author's session.
-Current B27 roaming admits sector-2+ Razor in all motifs, biased toward Hunting
-Grounds; the directed Rotor Cover Break template remains Hunting Grounds only.
-Do not claim these bounded fixes resolve every possible absence cause.
+Fresh focused evidence: **74/74 audio lifecycle checks**, **55/55 Razor** and
+**44/44 Climber**. The final audio harness against the unchanged parent gives
+18 passes/56 failures, including absent new ownership APIs; these are not 56
+independent gameplay defects. All 731 Lua files pass syntax. Bounded integration:
+**227 passing suites, one unchanged-parent harness failure, and two campaign-wide suites not run** (coverage across the bounded matrix and explicit reruns, not a full 230-suite pass). Failures and unavailable checks remain explicit in
+[SPOT-04 validation](validation/SPOT_04_ENEMY_AUDIO.md) and its exact gate receipt.
+Headless assertions do not establish audible native playback or silence.
 
-Evidence and finite native gate: [SPOT-03 validation](validation/SPOT_03_RAZOR.md).
-Next development action: **SPOT-04, lingering enemy-death loop audio audit**.
-SPOT-02 junction traversal/recovery stays implemented, without full Climber
-absence or native acceptance claims. SPOT-01's 50 focused passes are inherited;
-its native two-player readout acceptance is still pending. Later bullets remain
-queued, not implemented by this checkpoint.
+SPOT-03 now has author-observed visibility and basic combat for one controlled
+Razor after two placement refusals, not natural exposure or full native
+acceptance. Its Occupation/60-roamer session was developer-dense, with no planned
+or roaming Razor. **Move on; no further dedicated Razor test is prerequisite.**
+See the dated supplement in [SPOT-03 validation](validation/SPOT_03_RAZOR.md).
+SPOT-01's separate 50 focused checks also freshly pass; its native two-player
+readout and SPOT-02's full native acceptance remain open.
+
+Next ordered development bullet: **SPOT-05 — Die Logger audit**. Audit actual
+server events and shared live/history rendering; propose the finite gate before
+repairing missing meaningful events or routine Magic-at-100 noise. SPOT-04's
+compact native audio gate remains open and does not become a Razor retest.
 
 ## Existing release gates — unchanged
 

@@ -9,11 +9,11 @@ unrelated bullets into a single gameplay commit. Keep acceptance limits explicit
 
 | ID | Requested result | Status |
 | --- | --- | --- |
-| SPOT-01 | Replace stock player nickname/health-percent and the old three-row LoD display with `Username as Character Name` and `current/max HP`. Use shared identity/character/resource colors; only the HP suffix changes green/yellow/orange/red. | Implemented; 50 focused checks pass; native multiplayer acceptance pending. |
-| SPOT-02 | Audit and repair absent Climbers. Trace eligibility, selection, admission, placement, movement and visibility; the author has never encountered one. | Implemented; 44 focused checks freshly pass in SPOT-03; native sightings/acceptance pending. |
-| SPOT-03 | Audit and repair absent Manhack-type enemies across the applicable roster, not just one name. The author has never encountered any. | Implemented; 55 focused checks pass; native appearance, behavior and ordinary sightings pending. |
-| SPOT-04 | Stop enemy looping ambient sounds on death and all relevant removal/reset transitions; preserve living-enemy audio. | Next. |
-| SPOT-05 | Audit and update the die logger: restore important missing events, remove routine noise such as Magic reaching 100, and retain useful consistent semantics/history. | Queued. |
+| SPOT-01 | Replace stock player nickname/health-percent and the old three-row LoD display with `Username as Character Name` and `current/max HP`. Use shared identity/character/resource colors; only the HP suffix changes green/yellow/orange/red. | Implemented; 50 focused checks freshly pass in SPOT-04; native multiplayer acceptance pending. |
+| SPOT-02 | Audit and repair absent Climbers. Trace eligibility, selection, admission, placement, movement and visibility; the author has never encountered one. | Implemented; 44 focused checks freshly pass in SPOT-04; native sightings/acceptance pending. |
+| SPOT-03 | Audit and repair absent Manhack-type enemies across the applicable roster, not just one name. The author has never encountered any. | Implemented; 55 focused checks freshly pass in SPOT-04; one controlled native instance passed visibility/basic combat. Other native gates and natural release sightings remain open; no dedicated retest prerequisite. |
+| SPOT-04 | Stop enemy looping ambient sounds on death and all relevant removal/reset transitions; preserve living-enemy audio. | Implemented; 74 focused checks pass; native audibility/lifecycle acceptance pending. |
+| SPOT-05 | Audit and update the die logger: restore important missing events, remove routine noise such as Magic reaching 100, and retain useful consistent semantics/history. | Next. |
 | SPOT-06 | Improve Gordon phase one: longer follow-up-hit window without infinite loops; clear departure and destination teleport cues; quicker, more frequent and contextual taunts. | Queued. |
 | SPOT-07 | Within max(0, Wisdom bonus / 2) squares, reveal Fake Gordon with a randomized-eye wink, tongue and subtle but noticeable tint. Consider a brief fart on hit and give fakes a distinctive hit-stun. | Queued. |
 | SPOT-08 | Add a turret in a random corner of Gordon's arena every five dungeon levels. Resolve scaling/corner occupancy explicitly when implementing. | Queued. |
@@ -27,11 +27,13 @@ unrelated bullets into a single gameplay commit. Keep acceptance limits explicit
 | SPOT-16 | Give human Soldiers a pulse rifle with three-round bursts and infinite ammo, replacing their SMG. | Queued. |
 | SPOT-17 | Root human Soldiers during committed pulse-rifle attacks and reduce movement speed/options to approximate AI Soldiers. Prioritize the human Hero's readable, consistent enemy experience. | Queued. |
 
-SPOT-01, SPOT-02 and SPOT-03 are implemented with the validation limits recorded
+SPOT-01 through SPOT-04 are implemented with the validation limits recorded
 in their checkpoint evidence. Reports of missing enemies are native author
 observations, not proof that one demonstrated defect explains every absence. Use current production
 seams and release-mode evidence; increasing density or a debug-only spawn is not
-by itself acceptance. Preserve B28/B29 sanctuary and graduated pacing.
+by itself acceptance. Shael elected to collect natural Razor sightings during ordinary
+play; another dedicated Razor test or sighting is not a sequencing prerequisite.
+Preserve B28/B29 sanctuary and graduated pacing.
 
 ## Approval and handoff
 

@@ -76,6 +76,7 @@ function MazeBuilder:_Register(ent)
 end
 
 function MazeBuilder:Cleanup()
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Reset() end
     self.FloorCells = {}
     if LOD.PlaceholderLoot and LOD.PlaceholderLoot.Clear then
         LOD.PlaceholderLoot:Clear()

@@ -150,6 +150,7 @@ function E:Prepare(e)
     if d.stationary then e.LODRosterAnchor=e:GetPos();e.LODRosterYaw=e:GetAngles().y end
 end
 function E:Cancel(e)
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Stop(e) end
     local d=self.Definitions[e.LODArchetypeId]
     if e.LODRosterAttack and e.LODRosterAttack.link then
         local old=e.LODRosterAttack;e.LODRosterAttack=nil
@@ -284,8 +285,10 @@ function E:_DamagePacket(e,p,event,kind)
     end
     return IsValid(p) and math.max(0,math.min(before,before-p:Health())) or 0
 end
+-- The stock Manhack charge soundscript resolves the mounted cue; the old
+-- mh_engine_start1.wav path was reported missing (also in the footstep bank).
 local sounds={flame="ambient/fire/ignite.wav",arc="npc/vort/attack_charge.wav",bolt="npc/vort/attack_charge.wav",pulse="npc/vort/attack_charge.wav",venom="npc/barnacle/barnacle_tongue_pull1.wav",
-    beam="npc/stalker/laser_burn.wav",bullet="npc/turret_floor/active.wav",dive="npc/manhack/mh_engine_start1.wav"}
+    beam="npc/stalker/laser_burn.wav",bullet="npc/turret_floor/active.wav",dive="NPC_Manhack.ChargeAnnounce"}
 function E:Begin(e,p,now,override)
     override=override or {}
     if e.LODSkeletonHero and not LOD.SkeletonHero:CanBeginArc(e,now) then return false end
@@ -694,7 +697,7 @@ if LOD.CombatAudio and LOD.CombatAudio.RegisterHostileProfile then
         flamer={"npc/combine_soldier/pain2.wav","npc/combine_soldier/die2.wav","npc/combine_soldier/gear2.wav"},
         bigcrab={"npc/headcrab/pain1.wav","npc/headcrab/die1.wav","npc/headcrab/alert1.wav"},
         sentry={"npc/turret_floor/ping.wav","npc/turret_floor/die.wav"},
-        razor={"npc/manhack/grind1.wav","npc/manhack/gib.wav","npc/manhack/mh_engine_start1.wav"},
+        razor={"npc/manhack/grind1.wav","npc/manhack/gib.wav"},
         arccaster={"npc/vort/vort_pain1.wav","npc/vort/vort_die1.wav","npc/vort/vort_foot1.wav"},
         nodule={"npc/barnacle/barnacle_tongue_pull1.wav","npc/barnacle/barnacle_die1.wav"},
         lurker={"npc/barnacle/barnacle_tongue_pull1.wav","npc/barnacle/barnacle_die1.wav"},

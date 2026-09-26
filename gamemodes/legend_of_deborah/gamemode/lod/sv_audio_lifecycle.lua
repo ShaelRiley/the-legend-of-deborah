@@ -3,6 +3,7 @@ SetGlobalBool('LOD_GenerationSilent',true)
 A.Building=true
 local serial=0
 local function mute()
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Reset() end
     serial=serial+1;A.Building=true;SetGlobalBool('LOD_GenerationSilent',true)
     return serial
 end

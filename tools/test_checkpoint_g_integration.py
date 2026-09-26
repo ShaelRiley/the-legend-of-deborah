@@ -20,6 +20,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("SPOT-04 Enemy Loop Audio Lifecycle", ["python3", "tools/run_lua54.py", "tools/validate_spot04_audio.lua"]),
     ("SPOT-03 Razor Presentation, Pursuit & Release Diagnostics", ["python3", "tools/run_lua54.py", "tools/validate_spot03_razor.lua"]),
     ("Bestiary B29 Full Build & Opening Safety", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b29.lua"]),
     ("Bestiary B29 Native Dispatch & Withdrawal", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b29_dispatch.lua"]),

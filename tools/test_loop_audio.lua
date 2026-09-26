@@ -6,7 +6,9 @@ local staged=false
 function LocalPlayer() return {GetNW2Bool=function() return staged end} end
 function EyePos() return 0 end
 local function entity(distance)
- return {GetPos=function() return {DistToSqr=function() return distance end} end}
+ return {GetPos=function() return {DistToSqr=function() return distance end} end,
+ GetNW2Bool=function(_,k,d) if k=='LOD_RosterAlive' then return true end return d end,
+ GetNW2Float=function(_,_,d) return d end,GetNW2Int=function(_,_,d) return d end}
 end
 hook={Add=function(_,id,fn) hooks[id]=fn end}
 function CreateSound()
@@ -25,6 +27,7 @@ A:Touch('gas',b,'gas',.2,100,60,.3);A:Touch('gas',c,'gas',.2,100,60,.3);assert(c
 local close=entity(1);A:Touch('gas',close,'gas',.2,100,60,.3);assert(created==3 and stopped==1)
 now=.31;hooks.LOD_LoopAudioLeases();assert(stopped==3)
 A:Touch('fuse',a,'fuse',.2,100,60);hooks.LOD_LoopAudioEntityRemoved(a);assert(stopped==4)
+a=entity(100) -- a genuinely new native owner; removed bodies cannot renew
 A:Touch('watcher',b,'watcher',.2,100,60);b.valid=false;hooks.LOD_LoopAudioLeases();assert(stopped==5)
 A:Touch('gas',a,'gas',.2,100,60);staged=true;hooks.LOD_LoopAudioLeases();assert(stopped==6)
 assert(not A:Touch('gas',a,'gas',.2,100,60));staged=false
@@ -35,6 +38,7 @@ end
 for _,event in ipairs({'LOD_LoopAudioCleanup','LOD_LoopAudioShutdown'}) do
  A:Touch('gas',a,'gas',.2,100,60);hooks[event]();assert(created==stopped)
 end
+dofile(path);A=LOD.LoopAudio -- fresh authority after terminal shutdown
 A:Touch('gas',entity(1),'gas',.2,100,60);collectgarbage('collect');dofile(path)
 assert(created==stopped,'Reload/GC cannot orphan a native patch')
 local f=assert(io.open('gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua'))

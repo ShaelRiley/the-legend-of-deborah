@@ -1,0 +1,1169 @@
+SPOT-04 AUDIO CHECKPOINT GATE — 2026-09-26
+Parent: 780d3d3b50f1026ba4a15a535b7569b6b09e0f71
+Parent tree: af02fe08d97c7eb953ab720c80da6c7c0e3394ae
+2118 original tracked blobs verified before modification; source snapshot Actions run36229342028.
+Execution: repository tools/run_lua54.py using liblua5.4, native/network/audio doubles. No GMod or audibility pass.
+Local git anchor is source reconstruction only, never the upstream parent.
+Final: 74/74 audio; 55/55 Razor; 44/44 Climber; 50/50 identity; 731-file syntax.
+Integration coverage: 227 PASS / 1 FAIL / 2 NOT_RUN = 230 registered suites.
+FAIL: unchanged-parent missing global Color in test_refresh_ui/cl_teammate_identity.lua:8.
+NOT_RUN: B23 32x20 campaign wandering and B20 campaign coverage. Never count as passes.
+Bounded initial matrix: four concurrent workers, 90-second per-suite limit.
+Initial: 221 PASS / 5 FAIL / 3 NOT_RUN / 1 TIMEOUT. Subsequent exact targeted reruns follow.
+Four projectile fixture failures needed SetNW2Int native stubs; gameplay assertions unchanged.
+Syntax accidentally skipped by runner substring match; exact canonical syntax suite then passed.
+B25 90-second timeout rerun unchanged in isolation with a 240-second bound: PASS.
+Focused first:72/2 fixture errors; final74/0; exact-parent same final harness18/56.
+The56 baseline failures include absent new APIs/overlapping cases, not56 independent native defects.
+Full230-suite success is NOT claimed. Individual outputs below preserve earlier failure evidence.
+
+FROZEN MODIFIED RUNTIME AND TEST FILES — SHA256
+68fcc6948fe9c0d2bb4bc3a39922c10d19f9a1aa68d5506494c6af85d34caef7  gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua
+38581f5ab914db04a0b7d840649824c039fa200766612afe85aab76cd466ced3  gamemodes/legend_of_deborah/entities/entities/lod_magic_projectile/init.lua
+de8f8e802c5242f602c0a4bfa5ba3ede6f91689a0f4b7a7b6fb4919b7bdc084d  gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua
+5e2fc8f6a95d7d2437d7d73bb2e8a3b8509326c53b5c94649038b57c34204a30  gamemodes/legend_of_deborah/gamemode/lod/sh_audio.lua
+fbfe72741b0f53ee990cccb482df0b89090e9097dc48979bb4b48e90ca31e9ff  gamemodes/legend_of_deborah/gamemode/lod/sv_audio_lifecycle.lua
+bca371ccfba623223e24b29f7618ff4d648247d5ad3f4e160aea7e3d21c3fe3d  gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua
+972c3a982f43f96138cdc3e52088208aa35146fa8bbe35bb24ba153faae4392e  gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_death_audio.lua
+8066faa443196756ea50380a78c4202d805dbfa038c8d057a0d99110804035ff  gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua
+69f480ffe18673fb96ae05fe37f6c653591f271c0a747d8b786df9191568aea8  gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_sound_safety.lua
+cdb849cb350542fb34fc3982a1e65a429df99f2a9585f5ddfb1dff6f0709d66a  tools/test_ag011_repairs.lua
+05f2515cd63cfbf6060ce280434ebf28c1d71641e9150e746b4a5bfe2c7953ac  tools/test_checkpoint_g_integration.py
+23890a73a6bfe5f60b6cfda2ae9226161918021ed211a32c52fbe94be99dbdc1  tools/test_fighting_streets.lua
+975e0d3aab9d651b6c1c1b4105360aa360f236f5371c6b812acb70b7eea6a934  tools/test_loop_audio.lua
+96e3854379a8bc616ebaeeb82174175c2048a3f315be0a275c8db72b0fe60265  tools/test_super_ball.lua
+9cc879719a48f9c00e41ceaabfabed60a56930f4d6968c6793cf43a978730482  tools/test_watermelon_bounces.lua
+38a36c6c6c413466639cbc535c00372df3bb9e6c5cfb67e0e8cba5b50dda23b3  tools/validate_spot04_audio.lua
+
+FINAL REGISTERED SUITE COVERAGE
+001 PASS — SPOT-04 Enemy Loop Audio Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/validate_spot04_audio.lua
+  Output SHA256: 41530cef2f00bcdbf9946e36396a5c35296f41e1e03876dcc12227af06d4c7e2
+002 PASS — SPOT-03 Razor Presentation, Pursuit & Release Diagnostics
+  COMMAND: python3 tools/run_lua54.py tools/validate_spot03_razor.lua
+  Output SHA256: 1509b73566fa3a073686102f98c88b30d3a4c8daa600f36e20fc3d87b7c97a32
+003 PASS — Bestiary B29 Full Build & Opening Safety
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b29.lua
+  Output SHA256: ea920fcc518a7d655c811ec9e3dfad1e1291cbae46cd9650ee1e79333b1ad242
+004 PASS — Bestiary B29 Native Dispatch & Withdrawal
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b29_dispatch.lua
+  Output SHA256: e02eb5bb48bdbd37b33bee2c2887ec29811f5816d4b8a0d2a0b7d0f388a6a0dc
+005 PASS — Bestiary B29 Bilateral Combat Seams
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b29_combat.lua
+  Output SHA256: b4a14de5a5b1d1937e809980f1822667d410246b4dced3045eae029d2324cd11
+006 PASS — Development Population Source Manifest
+  COMMAND: python3 tools/test_dev_population_manifest.py
+  Output SHA256: 9c230c3ab33bd7bad53874840ab4b8cf64368a5e2372bf2a19b23211ec91787f
+007 PASS — Bestiary B28 Native Population Boundaries
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b28.lua
+  Output SHA256: 057e0aa43f8fd7ead8dec89c29c2123f80c26ed5ab10ffb44c8faebd9f9c2579
+008 PASS — Bestiary B27 Autonomous Patrols & Adventure Pacing
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b27.lua
+  Output SHA256: c18c2b8a6e49aede6d1fa22b3eaf1333fefee38774b3928ed04a9d782ba404f6
+009 PASS — Bestiary B26 Production Population Recovery
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b26.lua
+  Output SHA256: ddc848f8da29897da2c6165f48c71a2a833b921d738c233dbcbd64d94b974831
+010 PASS — Great Crate Stock Gates & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_great_crate_gates.lua
+  Output SHA256: 03140e5db82fe473bc9d7d79f84c2db70d4fe317ab25b90ecbc9551326e0a117
+011 PASS — Great Crate Stock Hull Assets
+  COMMAND: python3 tools/test_great_crate_hull.py
+  Output SHA256: e7b6475b49df0f77696628218e9051a937fd95e4dd46902bffe64da6d49a01ba
+012 PASS — Great Crate Hull Candidate Reconciliation
+  COMMAND: python3 tools/run_lua54.py tools/test_great_crate_hull_runtime.lua
+  Output SHA256: a7e81c63ca047de60fbe8cdafa33e21177ba5e35c4c5f63b145e2821c49924a5
+013 PASS — Great Crate Original Assets & Safe Fit
+  COMMAND: python3 tools/test_great_crate_assets.py
+  Output SHA256: 88d2c019d728fd4c173601fdfa3a4c93181bada6837aeae7358690a18d02e1ed
+014 PASS — Great Crate Deterministic Floor & Collision
+  COMMAND: python3 tools/run_lua54.py tools/test_great_crate_geometry.lua
+  Output SHA256: f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859
+015 PASS — Great Crate Rendering, UV & Resource Bounds
+  COMMAND: python3 tools/run_lua54.py tools/test_great_crate_render.lua
+  Output SHA256: bc463d12c1ea78db63e96f4de934f063ceea5ae64638541f1a4f656fbb54f829
+016 PASS — Bestiary B25 Motif Intensity & Tier Exposure (initial TIMEOUT; exact rerun)
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b25.lua
+  Output SHA256: 8adf3c2496f388e5199391c5d21ed404777695568a5dbbb9b5527757785b55d1
+017 PASS — Bestiary B24 Encounter and Wandering Homes
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b24.lua
+  Output SHA256: fc6ee584103ca1fdc35058dc216c0ff3068bf8aaea579085ad56fe3931f81797
+018 PASS — Bestiary B23 Wandering Population & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b23.lua
+  Output SHA256: 975187bea1a60a73a443ec1c6e7c64f190a16d59082063ecde3e9cd090e4e0a4
+019 NOT_RUN — Bestiary B23 Campaign Wandering Ecology
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b23_campaign.lua
+  Deliberately omitted expensive campaign-wide sample; no result.
+020 PASS — Bestiary B22 Route Pacing & Production Effects
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b22.lua
+  Output SHA256: e3218027ae39f5d7fc745e5c620a0026e37f684074094e76273b40e873a34573
+021 PASS — Bestiary B21 Topology & Spatial Admission
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b21.lua
+  Output SHA256: 984ca1842d41231c9cf6b82dbd3946cce54633ad8b61e466d4d5a1bc4371b9ad
+022 PASS — Bestiary B20 Ecology Selection & Receipts
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b20.lua
+  Output SHA256: 10bb90143f516a99c0765b895f99add4c8dec411b7011b7761cc832182b392d8
+023 NOT_RUN — Bestiary B20 Campaign Ecology Coverage
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b20_campaign.lua
+  Deliberately omitted expensive campaign-wide sample; no result.
+024 PASS — Bestiary B20 Campaign Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b20_lifecycle.lua
+  Output SHA256: 468485de5ee0fcdc56c43702ec7a4b27b3e5754f1273bc24ac475abc7c57f70a
+025 PASS — Bestiary B19 Companion Links & Exact Ownership
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b19.lua
+  Output SHA256: 99fa133a941bf2a4754ded0b7b7612de7c4f2f6ee13afdaffe3c094ccf5f2d3e
+026 PASS — Bestiary B19 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b19_production.lua
+  Output SHA256: 6092a4a08c126dd0646ba30ee3e166ca47dbc2e5bbe9d8195fe9db340a021ec8
+027 PASS — Bestiary B19 Readable Companion Links
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b19_visual.lua
+  Output SHA256: fff9faba3c7f052bece8a5a32cd89a5eb93857ea33575210127b75fd4222e06f
+028 PASS — Bestiary B18 Attack Restraint & Displaced Refuge
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b18.lua
+  Output SHA256: 2ffb48e6f71274dad4ddd7d398760877d55f03cea849203211f2c1ff6b7d07d9
+029 PASS — Bestiary B18 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b18_production.lua
+  Output SHA256: 707eddb1e4338bb07866e784de70924723cb536c4461feac73bf0ed24374ce99
+030 PASS — Bestiary B18 Readable Edicts
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b18_visual.lua
+  Output SHA256: 39b15303840c177d847251c10af927594eec39978d1d5a8398805985a8d496de
+031 PASS — Bestiary B17 Companion Commitments & Exact Ownership
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b17.lua
+  Output SHA256: c725a09145ecdbcb31167868a682a5c5927cf4b1fea39f451fcc7d4fa8fd03db
+032 PASS — Bestiary B17 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b17_production.lua
+  Output SHA256: 460928a652e2196076e10dcc03e1ffe3009b7f892eeac15f0df5970083a5594c
+033 PASS — Bestiary B17 Readable Bodyguard & Oath
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b17_visual.lua
+  Output SHA256: e7e0757bda48fb818c04df67c4bcdf5eebfb51e935194ff705d64ec62aafba05
+034 PASS — Bestiary B16 Movement Discipline & Exact Ownership
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b16.lua
+  Output SHA256: 2b8c741fe9c2fbd20316bfcfd6318699ec97480ce056162c1cfb54361b552b3f
+035 PASS — Bestiary B16 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b16_production.lua
+  Output SHA256: f9bfb83622ea6ce2c8e1398937dd4ac16d9e9c5d3ebb774654845c5a55bcbadc
+036 PASS — Bestiary B16 Readable Movement Demands
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b16_visual.lua
+  Output SHA256: 51be06d74116a2fe286d7487ba02485333fd97fa60c420f95e4f2309734db6fc
+037 PASS — Bestiary B15 Careless Fire & Exact Ownership
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b15.lua
+  Output SHA256: c86b5ba2d4902a5a7ed4c69573ca221cf5c57f53da1d589d0d7b5e11cecb40a2
+038 PASS — Bestiary B15 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b15_production.lua
+  Output SHA256: 90b76296bf97c3a7f9c160897fb60a80dbf1b43875aa6f5a4c020b27a4197fbb
+039 PASS — Bestiary B15 Readable Careless Fire
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b15_visual.lua
+  Output SHA256: 34203d1e175119ef394cac08ee3089cc8c8f983129fd197fe9b750353ed12feb
+040 PASS — Bestiary B14 Canonical Resource Pressure
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b14.lua
+  Output SHA256: 43f8d56c4c083bad294b07a2b86fc7e483d8162ad120be239f17084a5b0515cf
+041 PASS — Bestiary B14 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b14_production.lua
+  Output SHA256: 92b5026d0422f688471a5208e3ab1e67213baaa359390f048ed58d9eab618e96
+042 PASS — Bestiary B14 Readable Resource Commitments
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b14_visual.lua
+  Output SHA256: a59a64e5a481b80402b0a0260ba0ecb7cd64a2e5de0143bc8fa3fff28d28b2ee
+043 PASS — Deborah Finale Client Presentation & Cleanup
+  COMMAND: python3 tools/run_lua54.py tools/test_deborah_finale_presentation.lua
+  Output SHA256: dce073763d9f5131041ae5d4f72f7c2cad3b778cf3a6c8c979bd5f5d47828c69
+044 PASS — Deborah Staging Succession & Canonical Services
+  COMMAND: python3 tools/run_lua54.py tools/test_deborah_succession.lua
+  Output SHA256: e9b2728a9c6c77db6ed8c04542d50a776451ab2051472ea963e9966b0364c395
+045 PASS — Hector Encounter, Native Death & Level-20 Rescue Gate
+  COMMAND: python3 tools/run_lua54.py tools/test_hector_encounter.lua
+  Output SHA256: cdcefee1fbe0034f7b06770b364df64f8fbe14d1687c39ceaff8a039c1f0b0ff
+046 PASS — Hector Canonical Actor Health & Defenses
+  COMMAND: python3 tools/run_lua54.py tools/test_hector_health.lua
+  Output SHA256: f5e6570fdeac417be25422f297d83b7dd8cdc11f019499f17686b26fca77ea1e
+047 PASS — Hector Horizon & Telegraph Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_hector_presentation.lua
+  Output SHA256: 569a31f8af5349fdb98dc58a60bafc0d5a1eaf8cdd72dd59ee2c364456da0701
+048 PASS — Equipment Quiz Lifecycle & Atomic Settlement
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_event_equipment_quiz.lua
+  Output SHA256: 65ac8729eb0abcb624b74ffe9da5965691c50a455b0783d756e180cf46bf2edd
+049 PASS — Active Event Catalog, Bribe Removal & Quiz Placement
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_event_quiz_generation.lua
+  Output SHA256: d2eba807beb5bffeebef61e3e3a4e3e5ef687db1afc5b34d1dce65c472036bb8
+050 PASS — Minigame Shell & Equipment UI Restrictions
+  COMMAND: python3 tools/run_lua54.py tools/test_minigame_ui.lua
+  Output SHA256: 9d1cdf0a22f774844cc77e8d2cf2b415d7599cf434882a14d2f46a4279df2763
+051 PASS — Skeleton Hero Generation & Shared Combat
+  COMMAND: python3 tools/run_lua54.py tools/test_skeleton_hero.lua
+  Output SHA256: 7b4865f8661ebf93e65f59db81923a24bd60d771066359047bdbca469fde6cc3
+052 PASS — Skeleton Blockade Historical Mixed-Catalog Regression
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_event_skeleton_blockade.lua
+  Output SHA256: 129a30aea34ee5e71c51acd3fad47f4ee6a9d60f651fb850b6dfa4c8fd4d6111
+053 PASS — Skeleton Blockade Death & Rewards
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_event_skeleton_lifecycle.lua
+  Output SHA256: 9cc22261023705316e5df9324d4a83ecbe1826d4c85042f485017063ab5d5afd
+054 PASS — Warp Hole Utility & Safe Traversal
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_warp_hole.lua
+  Output SHA256: 52adc066cd0ca7235afce261a957d63523e02e659248b55e9b703ce05502ddc8
+055 PASS — False Floor Hazard & Native Geometry Boundaries
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_false_floor.lua
+  Output SHA256: 7728a267b8488b2485c27ab1089680f51921b35fe8e922f83f4029bd5787dfbe
+056 PASS — Combined Event Population & Rarity
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_event_population.lua
+  Output SHA256: ead906535524966259ffb9fbab895cd0dd6278b92fa18b8397b064c70f80f5cd
+057 PASS — Vending Machine Wallet & Potion Settlement
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_vending_machine.lua
+  Output SHA256: 37404e3d0ab7584de1382f795782172d52d91193b671e4eeb80d60e6a380ec77
+058 PASS — Treasure Chest DFT Transactions
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_treasure_chest.lua
+  Output SHA256: ebdfd963e13a629270143d53256768f7382478d2e28fd5d934e38c28884033dd
+059 PASS — Chest Keys & Locked Loot Claims
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_locked_chest.lua
+  Output SHA256: f61be175b894b9ce77782ab3e329d44f8cf8d973121249b2bf5ef6d192f5d5bf
+060 PASS — Dungeon Events & Transactional Slot Machine
+  COMMAND: python3 tools/test_crypto_sqlite.py tools/test_dungeon_events.lua
+  Output SHA256: d3532529fb0d8ee7be81d5141d90d13a233ff8abc82a3d03ac2553f3c7d0cba1
+061 PASS — Live Ranking Boards & Pagination
+  COMMAND: python3 tools/run_lua54.py tools/test_live_boards.lua
+  Output SHA256: 5f7f85e2d11cef1dfacd264f5d9cc93e3cfea987e0ea80a01700acc71c8043d2
+062 PASS — Magic Hourglass & Shared Clock
+  COMMAND: python3 tools/run_lua54.py tools/test_magic_hourglass.lua
+  Output SHA256: 4a10eb30b4ea03368daf90452c0aea094b9f2706d3e6edcb6be325769b6e4e23
+063 PASS — Moon Boots Gravity
+  COMMAND: python3 tools/run_lua54.py tools/test_moon_boots.lua
+  Output SHA256: c3fbc1a8a59a18df2341c9404d66333bd07cfff5a048e6775c68738417654baf
+064 PASS — Finite Wand Weapon
+  COMMAND: python3 tools/run_lua54.py tools/test_wand.lua
+  Output SHA256: 6f94210871ca1606ba4ae6ac8de1401fe76c934601bea0e66e32d8773c44297a
+065 PASS — Tanuki Statue
+  COMMAND: python3 tools/run_lua54.py tools/test_tanuki_ring.lua
+  Output SHA256: 275d65fdae10de19b7c823ebc54a7d67728d7865acb5927e73a677c9facd78ee
+066 PASS — Heavy Plumber Stomp
+  COMMAND: python3 tools/run_lua54.py tools/test_heavy_plumber.lua
+  Output SHA256: e4239bafae003ef30f92b46fbb6bccc99184de1abe1560e6b80e727b31fe9d75
+067 PASS — Thunder Hat Charge
+  COMMAND: python3 tools/run_lua54.py tools/test_thunder_charge.lua
+  Output SHA256: bf4cbf96d56964826348d5c5c2e664e20de0f93c65494e188456aeefd67bff36
+068 PASS — Ring of Invisibility
+  COMMAND: python3 tools/run_lua54.py tools/test_invisibility_ring.lua
+  Output SHA256: f63a13519639ded137e2d301eeb7bb400c40420a51949c8a20b06517a74eaed7
+069 PASS — Fighting Streets Techniques (initial FAIL; exact rerun)
+  COMMAND: python3 tools/run_lua54.py tools/test_fighting_streets.lua
+  Output SHA256: a871711ad9465af7e75f490130aea4695305e0878ed03d76d929cdd5805d66e0
+070 PASS — Feather & Canonical Hero Revival
+  COMMAND: python3 tools/run_lua54.py tools/test_resurrection_feather.lua
+  Output SHA256: 7afd538566cb29a2f85daeaf7d44b8638463c07a96aaf74a2f09f71ac4e8ea91
+071 PASS — Safe Teleport & Summon Card
+  COMMAND: python3 tools/run_lua54.py tools/test_summon_card.lua
+  Output SHA256: 1995eb2d876f583dff1749cbbe07bbf933e67ddc4a23860d36903993806faff9
+072 PASS — Responsive Character Sheet & Canonical Feat Text
+  COMMAND: python3 tools/run_lua54.py tools/test_character_sheet_layout.lua
+  Output SHA256: a12a4216ec158d83b01d5d886cd7e6f37358c0b2400177227f6ee5e873eaca5f
+073 PASS — Equipment Combo Abilities
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_combo_abilities.lua
+  Output SHA256: ae013c05faeb8910c4e6627a8d948ae892594fe9e0c1bfcc155599e393a9d4c9
+074 PASS — Monster Defense Balance & Tactical Feedback
+  COMMAND: python3 tools/run_lua54.py tools/test_monster_defenses.lua
+  Output SHA256: e43d4dd6940bc238aba5ac8c562540bc16e3d18d5a635817b2effda5a6424790
+075 PASS — Invisible Overhead Walls & Free Movement
+  COMMAND: python3 tools/run_lua54.py tools/test_maze_overhead_walls.lua
+  Output SHA256: 583f3a7d4632e338b5d7c429032076d47cc2fea1d1dfe1591d2f90e4a205bd78
+076 PASS — September 22 Navigation Recovery
+  COMMAND: python3 tools/run_lua54.py tools/test_navigation_recovery.lua
+  Output SHA256: 207245e9f49b7d30cf48ab222af4da84d477c5e3214e62ce2864b15876548655
+077 FAIL — Spell Availability & Teammate Identity
+  COMMAND: python3 tools/run_lua54.py tools/test_refresh_ui.lua
+  Output SHA256: 0384f138015a01cc68f49f7f6eb36e52be62011bf91a837a7027b234ee6733db
+078 PASS — Deterministic Encounter Distribution
+  COMMAND: python3 tools/run_lua54.py tools/test_encounter_distribution.lua
+  Output SHA256: 79ba7ff796624de008aaccd225915d8e756098ab941cf34560ff7f8ac2a53bdd
+079 PASS — Integrated Combat, Remedy & Derived UI
+  COMMAND: python3 tools/run_lua54.py tools/test_integrated_refresh.lua
+  Output SHA256: ffb5b2b7f9d9dba143b28c797deac6c5383ddd32b385109d8cda70462f33ec25
+080 PASS — Client Geometry Full-Update Recovery
+  COMMAND: python3 tools/run_lua54.py tools/test_geometry_fullupdate.lua
+  Output SHA256: b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635
+081 PASS — Dungeon Transition Inventory
+  COMMAND: python3 tools/run_lua54.py tools/test_dungeon_transition.lua
+  Output SHA256: e58a01321db3e536e927a41458b315cf17fb0d4c687747e14d340d8d81cd5ad5
+082 PASS — Exact Native-Crash Reward Replay
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_crash_replay.lua
+  Output SHA256: 8dc7db48283bff29667d10b643ba12bf3a7c6253212625c449803e08b7667c74
+083 PASS — Equipment LuaJIT Compatibility Boundary
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_jit_guard.lua
+  Output SHA256: f9ac660f7310ab1dd4b63662e10f0067b1e7b6f582f7355daa22ba4bc84ca922
+084 PASS — Force-close Evidence Export
+  COMMAND: python3 tools/test_crash_evidence_export.py
+  Output SHA256: 9dbcb0bf9ca8514da01317a9e7ca01111e6a3308e630a69b2faa190306fe8a58
+085 PASS — Canonical Blue Minimap Marker
+  COMMAND: python3 tools/run_lua54.py tools/test_minimap_player_marker.lua
+  Output SHA256: 54e474e83a18a80f4279d9ee967cd5ba2e8d8bd924310685e9306e86b358a886
+086 PASS — Shared Native DamageInfo Lifetime
+  COMMAND: python3 tools/run_lua54.py tools/test_shared_damage_lifetime.lua
+  Output SHA256: 13747b223fe50e4878af4c9ccef95bf28545fd965c03b0462c5eb1da1c82f632
+087 PASS — Durable Stability Diagnostics
+  COMMAND: python3 tools/run_lua54.py tools/test_stability_diagnostics.lua
+  Output SHA256: 220a2a2fefdfab44016d6f65a72abae1ed348de04f89467273b76003137ce452
+088 PASS — Release Include & Registration Wiring
+  COMMAND: python3 tools/validate_release_wiring.py
+  Output SHA256: 247fe0d71e385a2b8296b4cc6d39ea42a203db490dc3598a3dde7c61eb19c160
+089 PASS — Shotgun Native Bullet Aggregation
+  COMMAND: python3 tools/run_lua54.py tools/test_shotgun_native_path.lua
+  Output SHA256: 7dc98315c6851ed2cf13bec3ad428c572c3f8f8ef7aba4ee3210ee69f140c96b
+090 PASS — Canonical Manual & Portable Menu
+  COMMAND: python3 tools/run_lua54.py tools/test_instruction_manual.lua
+  Output SHA256: 2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685
+091 PASS — Canonical Manual Server Transport
+  COMMAND: python3 tools/run_lua54.py tools/test_manual_transport.lua
+  Output SHA256: 63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a
+092 PASS — Manual Source & Reader Navigation
+  COMMAND: python3 tools/test_manual_document.py
+  Output SHA256: e7af10c9de7f1dc490fffafc92908c3bda40819722d6db94ca2103ca59ef78dc
+093 PASS — Campaign Clock & TIME OVER Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_campaign_timeout.lua
+  Output SHA256: bf6c8760c92f2a770bed493688509a83879a8de8d24d0dd06e9aa9721ed8cf67
+094 PASS — Bootstrap Failure & Explicit Recovery
+  COMMAND: python3 tools/run_lua54.py tools/test_bootstrap_failure.lua
+  Output SHA256: a4d55987b7c11f30c2f7c0d1cdc35725e351a737fb713fbbed7f17d875707183
+095 PASS — Dedicated Server Deployment Preservation
+  COMMAND: python3 tools/test_server_launcher.py
+  Output SHA256: c063a8db7f6d211dbaa3a995fdeb7f69472901240cfed00c26143376fb0a2bff
+096 PASS — Complete Enemy Roster & Animation Safety
+  COMMAND: python3 tools/run_lua54.py tools/test_enemy_roster.lua
+  Output SHA256: 09831ef3cfe8e3a97da50afc4f98616b166bbc969e768e873562f4e2e686c59c
+097 PASS — Bestiary B1 Content Enemies & Exact Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b1.lua
+  Output SHA256: acdd00506deae090bad803a54690d75202d9c7e1129bd0a9d6d1e7edd1aface2
+098 PASS — Bestiary B2 Ally Support & Production Progression
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b2.lua
+  Output SHA256: 456cba8d64b2c1db9f0d78b10d9c8c78f5af325d39d0ded70ccbe76b5d9f4591
+099 PASS — Bestiary B3 Flank Pursuit & Production Progression
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b3.lua
+  Output SHA256: a3123c2632471cf886beb5f2b5ea7eeb892de177e7357723515a8a867c88683d
+100 PASS — Bestiary B4 Self Defense & Reaction Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b4.lua
+  Output SHA256: 974103e00804da021e92b9071eb523beeb12de4713c028c9167de19228076b38
+101 PASS — Bestiary B4 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b4_production.lua
+  Output SHA256: 9ba3f8d5891998032932f28e7896cc47e87688d2022eac6803066670d048f090
+102 PASS — Bestiary B5 Projectile Patterns & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b5.lua
+  Output SHA256: 69af5fcc96e50a9141ecac2f9b81f5cfad6329b43221347b7eaecc50a8c2ab7e
+103 PASS — Bestiary B5 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b5_production.lua
+  Output SHA256: 452217795e1f3b9165174df95e8a4ce1f318c7dfe074e0d9fdbaf8b6409d130e
+104 PASS — Bestiary B6 Trap Geometry & Exact Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b6.lua
+  Output SHA256: e5261dd498cba058291d03d3f26a89f3f45d7a97bf86c62a81f821caf59573aa
+105 PASS — Bestiary B6 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b6_production.lua
+  Output SHA256: b28349351379508135ebc181ec82e7903a2d5bc8459613a763ca6354a5ca6f3b
+106 PASS — Bestiary B6 Readable Trap Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b6_visual.lua
+  Output SHA256: 31b6009b7cce52b7ef8da7aa9b6ffbc64a3dcb52b8e599685c06504184635688
+107 PASS — Bestiary B7 Melee Spacing & Lifetimes
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b7.lua
+  Output SHA256: 230eb19ccb0e597305263e7709a1f362238b98db56e753209af22010eea82501
+108 PASS — Bestiary B7 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b7_production.lua
+  Output SHA256: c0c51c7b04628123c6320617a4c3e5c498cca1a9319c93dbb943544e16e76f03
+109 PASS — Bestiary B7 Readable Melee Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b7_visual.lua
+  Output SHA256: daa50c4e46d96bd858d2cdf6f24a579db5280b57d4da54063bb83bc82675d0b8
+110 PASS — Bestiary B13 Party Spacing & Exact Lifetimes
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b13.lua
+  Output SHA256: 9718ec2955361882ddec2ca711b37d54bd47f375e2b6c71ef3e90137077a928f
+111 PASS — Bestiary B13 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b13_production.lua
+  Output SHA256: 1351010f801b0bcfd4e684dc37d06f40ca6ca5285cf1064f0011290c1744e2f8
+112 PASS — Bestiary B13 Readable Party Commitments
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b13_visual.lua
+  Output SHA256: 9283f3dbfe377cdf0a714b23f2a8ba403e60042fa7fcc854fe407f0fd36c9ef9
+113 PASS — Bestiary B12 Exact Condition Strike
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b12.lua
+  Output SHA256: 6381d73f01219b41f9779817c14c242e2de4c1d3527919866b09308a295355f3
+114 PASS — Bestiary B12 Canonical Ally Cleansing
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b12_support.lua
+  Output SHA256: 3d8008b0699e42269b39539665e5a9c9db02a85d6a367f348962be8f8c971a78
+115 PASS — Bestiary B12 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b12_production.lua
+  Output SHA256: 98885066722cd73fd66ad0675691edf1189d47011457708dea3283467f1888ce
+116 PASS — Bestiary B12 Readable Condition Commitments
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b12_visual.lua
+  Output SHA256: 7b5a80017d365330c7ab072bd0957ab34681785bef2508d67340f7f1a7930e00
+117 PASS — Bestiary B11 Perception & Exact Lifetimes
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b11.lua
+  Output SHA256: f58ba6a0a5a9a0b66361d0224dcb75f351c8d2866dc467cb82dab35a3eb38bbb
+118 PASS — Bestiary B11 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b11_production.lua
+  Output SHA256: 0683cc10d9388fa9175b03b9e19a95742e09d27ec0c7a051e59e3b86b2abfe3f
+119 PASS — Bestiary B11 Readable Sensory Commitments
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b11_visual.lua
+  Output SHA256: f26645935a1103df137d9d578272da6c9ccb0027fd4084130f43f8fc58dd729f
+120 PASS — Bestiary B10 Mobile Hazards & Lifetimes
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b10.lua
+  Output SHA256: da9f050b334b3dc1bc13f947a8f081c81d84cd3d9d1ca93da3ab6e58e2d9e3bd
+121 PASS — Bestiary B10 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b10_production.lua
+  Output SHA256: 480711307ae649deccd39574b1c03437f98962d7a27fb7c314e50b698a445f2d
+122 PASS — Bestiary B10 Readable Moving Zones
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b10_visual.lua
+  Output SHA256: cece28ee2f4ba16e0abf7cc4f7a9adb3a129a1b23512ffa8a23a9d30c5254824
+123 PASS — Bestiary B9 Tether, Screen & Shared Authorities
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b9.lua
+  Output SHA256: 4fdf964a619cbc6700a53a47f66eb26e3cc743769569fb13da55dbb8527a7844
+124 PASS — Bestiary B9 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b9_production.lua
+  Output SHA256: 3dbb670831f1040cee45ed953ad5bd6d958268fc8fdc80be1da5fbc5f0b10577
+125 PASS — Bestiary B9 Readable Tether & Screen
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b9_visual.lua
+  Output SHA256: c5c7c9a8a8261b788ae59353f8d64c2925683a29d004d87c44f145d9067d22c3
+126 PASS — Bestiary B8 Corpse Receipts & Scavenging
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b8.lua
+  Output SHA256: 24617ad06a069162f82c8073034b8dfa60ab381e93e366a87bcc7c6e37077f41
+127 PASS — Bestiary B8 Production Progression & Spawn
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b8_production.lua
+  Output SHA256: cc30ad7c41ea2cf6b34d18739d7a8d2db4c6d16c172dd0eef2684a447e99d1a0
+128 PASS — Bestiary B8 Readable Remains Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_bestiary_b8_visual.lua
+  Output SHA256: 896480396a10172b0e64aada52a815478ae5d09f281332a4ae592a3fc8f257ec
+129 PASS — Gordon Arena & Encounter Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_warden.lua
+  Output SHA256: 6ad2a24f772d14debb2f559a0994642f5ce3d3e50410bbfb5044e8a6a58f16d8
+130 PASS — Gordon Ordered Health Scaling
+  COMMAND: python3 tools/run_lua54.py tools/test_warden_health.lua
+  Output SHA256: b0fe6733706638618817899a7274237005c7981ae3303adc70654dec3bd032cc
+131 PASS — Neil, Brute & Black Gate Hunt
+  COMMAND: python3 tools/run_lua54.py tools/test_neil_brute.lua
+  Output SHA256: 546a40fcee05fed3a35fc984fd5cf3fd32d8eda69879ea027f755bff5d3ad54e
+132 PASS — Native Resource Ownership & Error Unwinding
+  COMMAND: python3 tools/run_lua54.py tools/test_native_resource_lifecycle.lua
+  Output SHA256: c38ab4cde4923bb6b71aa228e5b6de35d8fbf033a6dfea572b569743c8d55d0c
+133 PASS — Native WeaponEquip Settlement
+  COMMAND: python3 tools/run_lua54.py tools/test_weapon_equip_settlement.lua
+  Output SHA256: bb5ea614c88bbaf8faa317a960699eaa4efdb5005ea58d96f69a752026e4fbd4
+134 PASS — GPS Cadence & Voice Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_gps_cadence.lua
+  Output SHA256: ffc5bb8f4094e3091506f9c2c3263ff81fb2dfc41c8585f4af02dc3317da4a52
+135 PASS — Pickup Native Creation & Touch Handoff
+  COMMAND: python3 tools/run_lua54.py tools/test_pickup_native_handoff.lua
+  Output SHA256: 54e0290f09a3db93bd3205f08e91c66f4748d57955504b727c741d6efcfa0b04
+136 PASS — Procedural Weapon Visual Identity
+  COMMAND: python3 tools/run_lua54.py tools/test_weapon_appearance.lua
+  Output SHA256: 0cacafb3fa0adc10d294e5800cd124870019038765fb03fd3d699baeb2e4a41b
+137 PASS — Loot/Class/Identification Refresh
+  COMMAND: python3 tools/run_lua54.py tools/test_loot_class_refresh.lua
+  Output SHA256: f07100de238abe6cba493076d507035df3725082ca87a0a5a4fc28da5257732f
+138 PASS — Fighter Strength / Constitution Bypass
+  COMMAND: python3 tools/run_lua54.py tools/test_fighter_strength.lua
+  Output SHA256: f5bb763eddb075e96fae46c2ca772a45b9172ce5e3c8c5fdeac667fb42f50640
+139 PASS — Monster Class, Affinity & Aura
+  COMMAND: python3 tools/run_lua54.py tools/test_monster_identity.lua
+  Output SHA256: 76eff45f4d450658c842f1c72b36613835e8def9b7d57152d104dd1f2e8823cb
+140 PASS — Size Shifter Collision & Growth
+  COMMAND: python3 tools/run_lua54.py tools/test_size_shifter_collision.lua
+  Output SHA256: 43ade32b4cd3ee26520c22363cf0a9da56df8f72447ab049f10c3dbc865fd859
+141 PASS — Hostile Native Death Handoff
+  COMMAND: python3 tools/run_lua54.py tools/test_hostile_death_handoff.lua
+  Output SHA256: cd17fd07acc4558877af892b47c304e24ba316af416bbd4b6ab303567255b156
+142 PASS — Equipment/Area/Statue Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_presentation_polish.lua
+  Output SHA256: 9ad90c845f1cde292fc3c30387d34965a9ec135186efa8e692ddbc765f419890
+143 PASS — Magic Spectacle, Weapon Stowing & Natural Drops
+  COMMAND: python3 tools/run_lua54.py tools/test_magic_inventory_refresh.lua
+  Output SHA256: d6f317eae4452f9c78d56046101eaab7b23ab51e80e687d4085a452b8efbf749
+144 PASS — Final Loot Override Wearables & Potions
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_drop_mix.lua
+  Output SHA256: 61b62f6e12919d4d5c5ad0fa3e96d02db6b131f5f2a6089507b74da7ce7b0714
+145 PASS — Equipment Body Map & Drag Inventory
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_inventory_ui.lua
+  Output SHA256: 14f25716bf7d23ec29f084cc68e5afb302ad4463ce5c7f4ffcbc33783a3bdc78
+146 PASS — Reactive Character Status Portrait
+  COMMAND: python3 tools/run_lua54.py tools/test_status_portrait.lua
+  Output SHA256: 8e77fbe879964ab89fceccf264bf94b9807c33b226d730477683ae4c0eb0bb59
+147 PASS — Persistent Wallet, DFTs & SQLite Rollback
+  COMMAND: python3 tools/test_crypto_sqlite.py
+  Output SHA256: 8acffa91a90c906d58127751fba6f6dc1ab5784fd0c1edde3156c88a074ea97b
+148 PASS — Wizard Summon & Starting Content
+  COMMAND: python3 tools/run_lua54.py tools/test_wizard_balance.lua .
+  Output SHA256: 776f8ba38492b3a132d2938275bfc26396305bd977af678cdc7d871c77c9948e
+149 PASS — Wallet Client & Navigation
+  COMMAND: python3 tools/run_lua54.py tools/test_wallet_ui.lua
+  Output SHA256: c05d67bc5fbcd0d8c19763c434069e8ad663b74e79ed82d7b128c76a93f646f0
+150 PASS — Equipment Network Delta & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_delivery.lua
+  Output SHA256: 467798a6c0df9092fa04d49df4c1256a5a86f08dcb4f249c4e2a92790d0b7e58
+151 PASS — Recurring Hermit Gifts & Staging Board
+  COMMAND: python3 tools/run_lua54.py tools/test_hermit_return.lua
+  Output SHA256: 88f4430e9aa4e6bc1617c689187d7cb77b353227ed66f868b288a3e3e3e5d8c5
+152 PASS — Enemy Variety & Shared Combat Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_enemy_update.lua
+  Output SHA256: f4afe78affc174bfaf3fe3b2f9c20abe9be1c48eb04e6e173fc291ad4c34e3eb
+153 PASS — Equipment Owner-Only Pickup Inspection
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_inspection.lua
+  Output SHA256: a54bbcebed4c0a05a2e008148298d99840f6fcb2a9504dca46ad4353780b5c23
+154 PASS — Procedural Economy Distribution & Versioning
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_economy.lua
+  Output SHA256: 8315d05fe724d8cc67334da4fa5d243dab29aeb131716928de2ed3ce0a5f1503
+155 PASS — Procedural Economy Production Integration
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_economy_runtime.lua
+  Output SHA256: 7527fda2a11e9c06321a928e417aee9d9b4141fbfde57551575d2f337a8dcab3
+156 PASS — Equipment Keyboard & UI Isolation
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_input.lua
+  Output SHA256: b22fd8568b2ff7de94113c09295b6816ad44317e2f520117b49095801d80f538
+157 PASS — Equipment Real Loot Transactions
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_loot.lua
+  Output SHA256: 9d5b843ae5e5c8e504ea882d5dd1fd600a3fb7ae62e99b60dc51bc6c4012e4da
+158 PASS — Equipment Catalog, Swaps & Derived Stats
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_catalog.lua
+  Output SHA256: c2af4c4b1ae3e5773ba70ae217c8a10e2293bed2eeb4880963af7e59551e48d0
+159 PASS — Equipment Shared Block
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_block.lua
+  Output SHA256: 3b80f9d370b3ca93f222ca2bdd8b867391b4e0be4744e4a28bf96836bea435d4
+160 PASS — Equipment Special Moves & Input
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment_moves.lua
+  Output SHA256: 9125dd665c9d488b7271c02dadf2674732a56c3ba93ea3cdad2e7fa5fae9cd30
+161 PASS — Potion Projectile Collision & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_potion_projectile.lua
+  Output SHA256: b610428674699070e4a39bf6d3558d78ceaf123e0ceb9cbdbce37d6a127a3ddd
+162 PASS — Equipment Ownership & Throwable Transactions
+  COMMAND: python3 tools/run_lua54.py tools/test_equipment.lua
+  Output SHA256: 2bb7d7f04b84199321a55beffdedf93c68768e509f6aa6746989573d59e98301
+163 PASS — Git Diff Check
+  COMMAND: git diff --check
+  Output SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+164 PASS — Lua Syntax Audit (initial NOT_RUN; exact rerun)
+  COMMAND: exact Lua Syntax Audit entry from tools/test_checkpoint_g_integration.py SUITES; 731 paths; command-array SHA256=d0c618668505448333ac997b243ddc0d0708baa47cf0aa529ed0afdcc5105154
+  Output SHA256: 83dc8a1b8ecec7ab11aa6069d3b464c945626cca1b77c9563a74b9117b384e77
+165 PASS — Checkpoint C Python Validator
+  COMMAND: python3 tools/validate_checkpoint_c.py
+  Output SHA256: 6e851e9d3892a893a6f35fd1f8e5cdd7af65c5168696da4d913a67f50918f137
+166 PASS — Actor Core & Level Progression
+  COMMAND: python3 tools/run_lua54.py tools/test_actor_progression.lua
+  Output SHA256: 4cae589c28b6b32d4fb861db0548857c354c3a4438b9db47c1b75106b4feb0e7
+167 PASS — Magic Forms & Contents Schema
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_c_headless.lua .
+  Output SHA256: 14494e10138fe28fd8f3e4575b1a42537e0d7b1bed5dedb0662af6379975feba
+168 PASS — Implemented Feats & Capstones (135+9)
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_closure.lua
+  Output SHA256: e69685fdb863406aadfc4b00510f5d6cb538a8217ad0abb0013c8545ea6a6849
+169 PASS — Human Soldier RPG & XP Progression
+  COMMAND: python3 tools/run_lua54.py tools/test_human_soldier_progression.lua
+  Output SHA256: 5ef4ad4047ffa7a7c6f571f87af2367c9b53abc45435b5576eae87314f86ce67
+170 PASS — Human Soldier Lifecycle & Isolation
+  COMMAND: python3 tools/run_lua54.py tools/test_human_soldier_lifecycle.lua
+  Output SHA256: 2e1581c13fc2c9ba67a67566299da8039325c22471cc47f8dc94c7276efa2991
+171 PASS — Death Tetris Deadline & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_tetris_lifecycle.lua
+  Output SHA256: 5d5efc17264ecd48aeca67f6d75eacf516ea77ab3ff621ff586bbfb53b85f3b5
+172 PASS — Checkpoint E Closure & Parity
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_e_closure.lua
+  Output SHA256: 11576876ba52fde4c3e432385a31c0cfd327a11d33eedddf94eeebcb7236cb26
+173 PASS — Soldier P-Sheet & Renderer Contract
+  COMMAND: python3 tools/run_lua54.py tools/test_soldier_character_sheet.lua
+  Output SHA256: 85833fc892157f8ee058508b94b6e7f07b233f1d28913cb0f90027d00bea7abb
+174 PASS — Checkpoint F Run-End & Leaderboard
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_f_closure.lua
+  Output SHA256: f78a214cd8e7554ce53e2b9a7024585f45ddf064b43b8e24cf9e8a309c35c2ce
+175 PASS — Status & Element Matrix
+  COMMAND: python3 tools/run_lua54.py tools/test_status_elements.lua
+  Output SHA256: 8f88bdc238cfed50ba07a28ddbbbe402c691e8684216d8a13c8538badc7e7ab5
+176 PASS — Protected: Deadeye Stabilization
+  COMMAND: python3 tools/run_lua54.py tools/test_deadeye_stabilization.lua
+  Output SHA256: 6088b1ded69731a47fbc83b31a2de184fc5e0c4d858d0b6fd09f6f3c8dd0c8bd
+177 PASS — Protected: Crowbar Mechanics
+  COMMAND: python3 tools/run_lua54.py tools/test_gate_e_crowbar.lua
+  Output SHA256: 34ecf991464d3f3ade9a405832017feb5b667419638bbc17319e3eaeda29001f
+178 PASS — Protected: Pusher Feat & Impulse
+  COMMAND: python3 tools/run_lua54.py tools/test_gate_e_pusher.lua
+  Output SHA256: aadbb1c2a34a0407b403dfb1e94a31b34312884776cd438f0968a2d18c9ad8a0
+179 PASS — Protected: Map Movement & Navigation
+  COMMAND: python3 tools/run_lua54.py tools/test_map_movement.lua
+  Output SHA256: 2af9ca960eade9ae79949ffc118958135c1da82f038f8940c020e8b20f6e6f4a
+180 PASS — Protected: Quantum Cost Seam
+  COMMAND: python3 tools/run_lua54.py tools/test_quantum.lua
+  Output SHA256: d4b3dcde9a46ad74b1d0bd41ebc1a5e823ab3047625d192916ca48138190372c
+181 PASS — Protected: Strafe Movement
+  COMMAND: python3 tools/run_lua54.py tools/test_strafe.lua
+  Output SHA256: 9450b5598a154ac07b3a0f5efdb18670b3a95fed6fb965137bb0e6c55702caae
+182 PASS — Protected: Backpedal Movement
+  COMMAND: python3 tools/run_lua54.py tools/test_backpedal.lua
+  Output SHA256: 68ce8e1b08b33206e8f87e2fe70fafae5f32aa4ee845ae5ea023ab90994267d6
+183 PASS — Protected: Winning Personality
+  COMMAND: python3 tools/run_lua54.py tools/test_winning_personality.lua
+  Output SHA256: 0a23817843e7ce542b0e348fc6baafe45b928c0612dac6585bd8329edf0f4b65
+184 PASS — Protected: Deadcrab Dispatch
+  COMMAND: python3 tools/run_lua54.py tools/test_deadcrab_dispatch.lua
+  Output SHA256: 054d16c7f86f6a69e29c54e0e848da115ce9b3af3f0e6ac4da93a7b88ed041f0
+185 PASS — Protected: Dev Ingress
+  COMMAND: python3 tools/run_lua54.py tools/test_dev_ingress.lua
+  Output SHA256: 6ae9fab712c37e297cd6dc15752992d9214410c83cd0293575463d39b26e7a3c
+186 PASS — Protected: Control Magic
+  COMMAND: python3 tools/run_lua54.py tools/test_gate_e_control_magic.lua
+  Output SHA256: 99d9aee84bb7d0fd2c83df3635bf297579946894047fe5d30298ab5b28c87656
+187 PASS — Protected: Magic Recovery
+  COMMAND: python3 tools/run_lua54.py tools/test_gate_e_magic_recovery.lua
+  Output SHA256: f51a0ef96beeef34d521c09f22c0e26739126881da4cd1f555d2346d61a60a22
+188 PASS — Protected: Behavioral Regressions Gate
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_g_protected_regressions.lua
+  Output SHA256: f9cf545e6af748a6992386e875227e7d1a9a548b5aafef8ce465874af3b40e77
+189 PASS — Feedback Language & Die Logger
+  COMMAND: python3 tools/run_lua54.py tools/test_feedback_language.lua
+  Output SHA256: 2c2b92b466831fde3a7de8afd70cfa6997cebc0b44eba1c6ad0de1b4f59f583f
+190 PASS — Wizard Reaction Sound & Particles
+  COMMAND: python3 tools/run_lua54.py tools/test_wizard_reaction_fx.lua
+  Output SHA256: 6f54fb7613153cb6db3239ae57cf56a3a16ddf071435fd03063cab89764e557c
+191 PASS — Canonical Burst & Error Cleanup
+  COMMAND: python3 tools/run_lua54.py tools/test_burst_authority_cleanup.lua
+  Output SHA256: bcd874b1a73a388ac468f2e8c4d5996fbec35d897148123de24f0a799af49f19
+192 PASS — AG-011 Big Playtest Repairs Gate (initial FAIL; exact rerun)
+  COMMAND: python3 tools/run_lua54.py tools/test_ag011_repairs.lua
+  Output SHA256: e2da686cb6d082bf1acb7b178680148defbf896bb89f643cb9d03fe46ffe037d
+193 PASS — Feat: astral_reach
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_astral_reach.lua
+  Output SHA256: 955cdcea1aca816576df55dafdd158829eed8edd5fc6ac16502c08134830d140
+194 PASS — Feat: attunement
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_attunement.lua
+  Output SHA256: 64422968291b9523e11e9986f5886c9305bc96abe4683d93a2a840111caa86dd
+195 PASS — Feat: aura_burst
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_aura_burst.lua
+  Output SHA256: 8e7cac933affe50ae49d01e7a651f0ef21c2c113faa39fb6c75b511fe216a427
+196 PASS — Feat: core_feats
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_core_feats.lua
+  Output SHA256: f84fbf0b0886b44210ef1968c491ae49057580c819edcdf6d5c3b24f2e545251
+197 PASS — Feat: direct_cha_damage
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_direct_cha_damage.lua
+  Output SHA256: 6aa7ea7330b5c54914f6dab5b062bcd9a454cddde3017b6fecf8ae9baa9ee485
+198 PASS — Feat: gps
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_gps.lua
+  Output SHA256: 36cafb96b3db316e181e1a208894875d3f257f4523fa6d51abd0163fd9591778
+199 PASS — Feat: haste
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_haste.lua
+  Output SHA256: 65c8116ae79f8313ac9c8e3b19a2f396b437592931c79e685463f887c4274e37
+200 PASS — Feat: killer_instinct
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_killer_instinct.lua
+  Output SHA256: a52bf1a3cae6c8060d8290753d15889e3ab476bd8fd27e3e3b7cc6466913bed1
+201 PASS — Feat: magic_grant_feats
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_magic_grant_feats.lua
+  Output SHA256: f5977adbc321dce4269039e1ffab1bd19717e6d165e606c8a95d56b81db6be26
+202 PASS — Feat: menace_feats
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_menace_feats.lua
+  Output SHA256: 95d358569c5525ecb2a02a23d92dd32b0e1a3aaeb99a8e0a0958b61dc6055bfa
+203 PASS — Feat: morale_defense_feats
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_morale_defense_feats.lua
+  Output SHA256: 8e2fa1572e64a41971c9634b60c6205e023728c2dcea6ba6b0363506c1d564b2
+204 PASS — Feat: panic_feat
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_panic_feat.lua
+  Output SHA256: 9bfb00cfa7417026fb33da60f5f365c7638b00aaa357e62f4339a135de9c4698
+205 PASS — Feat: personality_aura
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_personality_aura.lua
+  Output SHA256: 57cf77e8864a13db05c34bc5f0fd82dffc22a170c14cc79fa322ce40c9891aad
+206 PASS — Feat: sixth_sense
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_sixth_sense.lua
+  Output SHA256: 7f6e796e678ae312f234838c0d3d26d09675cb824df4dc72aad668fc53fba768
+207 PASS — Feat: spellward
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_spellward.lua
+  Output SHA256: 6aeea3fe990036c8e518cb7101f49d17b74b79f13869d00b9ef30564892738b8
+208 PASS — Feat: summon_management
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_summon_management.lua
+  Output SHA256: 4fc9f6e3bfa704c96c8ed64ae2125aec79cc5d04606b259b2151c8897b443ad4
+209 PASS — Feat: wall_jump
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_wall_jump.lua
+  Output SHA256: 06a13de6d881f6964c91686ebb51f20ab1c66862271e9f048f51990fddb5293b
+210 PASS — Feat: wis_defense
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_wis_defense.lua
+  Output SHA256: bac0602f24b87fb4a62c71482efb62e0a749719b3a77b2a0a06f95caf5339fe0
+211 PASS — Feat: wis_information
+  COMMAND: python3 tools/run_lua54.py tools/test_checkpoint_d_wis_information.lua
+  Output SHA256: 71fcf98171891c435e0f4d19123e79683579f405d281493bdaaa7bb512f46b4b
+212 PASS — Feat Descriptions & Stabilization
+  COMMAND: python3 tools/run_lua54.py tools/test_feat_stabilization.lua
+  Output SHA256: 2ec3a6a238dd9557056d6374d5135b85189d920f46a68b30beeda96a287706a4
+213 PASS — Hero Weakness & Identity Perks
+  COMMAND: python3 tools/run_lua54.py tools/test_identity_perks_weakness.lua
+  Output SHA256: 8ae0b923c74b1e654ce94e0fa7ccd9b832c180ccf4014599624e39fb173adb73
+214 PASS — Snapshot Burst & Lifecycle
+  COMMAND: python3 tools/run_lua54.py tools/test_snapshot_delivery.lua
+  Output SHA256: 1e210cd6aa6bda865f5f4aaaea31642a52bcc85ed2b25a7d02f36815fa34b696
+215 PASS — Watcher Scan Dispatch
+  COMMAND: python3 tools/run_lua54.py tools/test_watcher_dispatch.lua
+  Output SHA256: a48792cc78e31901abaac4562b9dc26962258c28e4cae692493a3646e7353ff4
+216 PASS — Watermelon Bounce and Shatter Lifecycle (initial FAIL; exact rerun)
+  COMMAND: python3 tools/run_lua54.py tools/test_watermelon_bounces.lua
+  Output SHA256: aa6189e29eb31f8498fdd89c7b9bbc525d5aaf26c4a59189a60a1e1e3bd1ab81
+217 PASS — Multiple Mouse Magic Bindings
+  COMMAND: python3 tools/run_lua54.py tools/test_magic_mouse_bindings.lua
+  Output SHA256: f47b468bef561b6cae516bd809c56303e7e99879fea570b97b297a04b3334734
+218 PASS — Wall Placement and Preview
+  COMMAND: python3 tools/run_lua54.py tools/test_wall_placement_preview.lua
+  Output SHA256: 47219532bb08faee6199db45605fafc3fc733f644a5879cbc9c0ce6c46f8755e
+219 PASS — Wall Form and Magic Testkit
+  COMMAND: python3 tools/run_lua54.py tools/test_magic_wall.lua
+  Output SHA256: 6812f02e850fcbce7c0a7a6b6db7fff75b4ca7ca08976faf2a2aa00a29033a6f
+220 PASS — Super Ball Ricochet Lifecycle (initial FAIL; exact rerun)
+  COMMAND: python3 tools/run_lua54.py tools/test_super_ball.lua
+  Output SHA256: b26109003e93da4e6fa3fb55629021c688ec50304ddf3bbdc5dbf448ac4d65ff
+221 PASS — Ordinary Procedural Pistol and Crowbar Loot
+  COMMAND: python3 tools/run_lua54.py tools/test_weapon_loot_roster.lua
+  Output SHA256: a0e80677a375125ca50493c66924400df2344296d12ef88f96dab35ac2fda617
+222 PASS — Looping Audio Ownership
+  COMMAND: python3 tools/run_lua54.py tools/test_loop_audio.lua
+  Output SHA256: f3f04abe64280cd2add9de9f78339a5bb78bcf7cdb7a7c47ea17e0bbce5d5197
+223 PASS — Adventure Presentation
+  COMMAND: python3 tools/run_lua54.py tools/test_adventure_presentation.lua
+  Output SHA256: 10362d6d52a87ab0b0e0a4db7193bb7d737bf4d568cb2ac6fa2c3707be412049
+224 PASS — Original Adventure Audio
+  COMMAND: python3 tools/test_adventure_audio.py
+  Output SHA256: e8c316a9e96f6ab7dff7de7a671f7803c6fa8c3223d3d5251dca7db353f7d5f1
+225 PASS — Damsel Campaign & Endless Progression
+  COMMAND: python3 tools/run_lua54.py tools/test_damsel_progression.lua
+  Output SHA256: d6c2675ab2f664fe5cc4a417271b608bd28279ccc70c2da09345279bf218330b
+226 PASS — Damsel Staging, Late Join & Dialogue
+  COMMAND: python3 tools/run_lua54.py tools/test_damsel_staging.lua
+  Output SHA256: dda36e58f3c5c179e91b437d6570a5641141dd145f8db740f748afeb90e6c1e0
+227 PASS — Feedback Audio Lifecycle & Coalescing
+  COMMAND: python3 tools/run_lua54.py tools/test_damsel_audio.lua
+  Output SHA256: 573d76c25eed0077461df9ec6937ee3829fee43d7ae911c0f34fd7e37007ec36
+228 PASS — Feedback Audio Assets
+  COMMAND: python3 tools/test_feedback_audio.py
+  Output SHA256: 4dbf177809d8576cfc74597e65a786b76a9e3f22344e9d1a0c8cecee1bf475af
+229 PASS — Cross Feats & Shared Dodge
+  COMMAND: python3 tools/run_lua54.py tools/test_cross_feats_dodge.lua
+  Output SHA256: f2892c05cc9064af17d9b8501fb1163f0de206b7f4725cbbf041a281f2fc259a
+230 PASS — Live-GDD Feat Release Gate
+  COMMAND: python3 tools/audit_live_gdd_feats.py
+  Output SHA256: 5bb1c46ca4e03ceccf20ed0bfb8f01b6b575b1d2f9c7aefde5e31c3ea05b1034
+
+===== FOCUSED INITIAL OUTPUT (fixture errors retained) =====
+PASS living gas starts at original level, volume share and pitch
+PASS 1000 renewals keep one owned patch
+PASS nearest-two cap and displacement retained
+PASS ordinary finite lease expires
+PASS maximum watcher lease remains two seconds
+PASS death presentation stops loop while corpse is valid
+PASS server audio retirement rejects previously unaudible corpse
+PASS gas retirement rejects stale draw renewal
+PASS one dead enemy leaves another living enemy audible
+PASS actual Sixth Sense authorization starts watcher loop
+PASS late actual Sixth Sense packet cannot renew dying watcher
+PASS actual Sixth Sense revocation stops its owned loop
+PASS custom hostile does not rely on unreplicated client health
+PASS permanent removal is terminal even before IsValid turns false
+PASS repeated removal and cleanup stop a patch only once
+PASS full-update removal permits legitimate living renewal
+PASS dormant owner stops and cannot renew out of PVS
+PASS transmission loss stops before dormant flag updates
+PASS returning living PVS owner can renew
+PASS same-seed different build stops prior owners
+PASS new build rejects previously unseen stale entity callback
+PASS new build owner starts before next maintenance Think
+PASS ordinary same-build identity snapshot preserves audio
+PASS fuse survives caster death but not projectile retirement
+PASS fuse cannot restart across same-seed rebuild
+PASS staging suspends loops without globally disabling later living audio
+PASS failed suspends loops without globally disabling later living audio
+PASS levelCleared suspends loops without globally disabling later living audio
+PASS generation suspends loops without globally disabling later living audio
+PASS map cleanup rejects stale owners but permits new entities
+PASS shutdown is terminal for late callbacks including unseen owners
+PASS hot refresh closes old authority and preserves legitimate living audio
+PASS reset rejects reentrant touch and remains idempotent
+PASS creation failure owns no phantom loop
+PASS level mutation reentrant cleanup cannot play detached patch
+PASS native play failure is cleaned and reported, not a pass for audibility
+PASS one failed native stop does not skip other owned cleanup
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+PASS real roster Beam warning acquires owned loop
+PASS real roster cancellation stops the same loop
+PASS real roster finish preserves living next-attack audio
+PASS maintainer stops expired Beam commitment
+PASS maintainer stops replaced commitment, not later living attack
+PASS logical death blocks delayed emit before corpse changes
+PASS death of one Beam owner does not silence another
+PASS repeated retirement, cancellation and removal are idempotent
+PASS live native entity removal stops loop without death
+PASS server rejects exact lifecycle replacement: state
+PASS server rejects exact lifecycle replacement: graph
+PASS server rejects exact lifecycle replacement: seed
+PASS server rejects exact lifecycle replacement: epoch
+PASS server rejects exact lifecycle replacement: runId
+PASS server rejects exact lifecycle replacement: build
+PASS pre-ready spawn binds build identity without borrowing old graph
+PASS cleanup rejects stale callbacks, including previously silent owners
+PASS expired deferred native start is refused
+PASS ordinary death and attack one-shots are not suppressed
+PASS legacy administrative death blip remains suppressed
+PASS resolved stock script owns its original stop identifier
+PASS generation barrier passes SND_STOP and combined stop flags
+PASS Seeker missing-file filter never substitutes stop events
+FAIL current living Seeker one-shots remain eligible: ...egend_of_deborah/gamemode/lod/sv_seeker_sound_safety.lua:17: attempt to call a nil value (field 'EndsWith')
+PASS retirement cleans both legacy Seeker loops
+PASS shutdown rejects new and old server loop callbacks
+FAIL native hostile OnKilled seals without new native mutations: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:237: NW write in lethal stack
+PASS native deferred corpse presentation retires audio, preserves death cue
+PASS native hostile OnRemove uses shared retirement
+PASS native constructor binds before model initialization
+PASS server cleanup invalidates before reentrant late emission
+PASS same actor cannot bind into a later generation after retirement
+PASS server auto-refresh retains owned resource and retirement state
+PASS actual build/campaign barriers retire old audio before construction
+PASS actual map cleanup barrier retires existing owners
+PASS raw loop on unrelated non-hostile entity is not suppressed or claimed
+PASS no unshipped Razor startup path remains in executable references
+SPOT04_AUDIO_RESULT passed=72 failed=2 native=false
+/mnt/data/the-legend-of-deborah/tools/validate_spot04_audio.lua: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:423: SPOT-04 audio gate failed
+
+===== FOCUSED FINAL OUTPUT =====
+PASS living gas starts at original level, volume share and pitch
+PASS 1000 renewals keep one owned patch
+PASS nearest-two cap and displacement retained
+PASS ordinary finite lease expires
+PASS maximum watcher lease remains two seconds
+PASS death presentation stops loop while corpse is valid
+PASS server audio retirement rejects previously unaudible corpse
+PASS gas retirement rejects stale draw renewal
+PASS one dead enemy leaves another living enemy audible
+PASS actual Sixth Sense authorization starts watcher loop
+PASS late actual Sixth Sense packet cannot renew dying watcher
+PASS actual Sixth Sense revocation stops its owned loop
+PASS custom hostile does not rely on unreplicated client health
+PASS permanent removal is terminal even before IsValid turns false
+PASS repeated removal and cleanup stop a patch only once
+PASS full-update removal permits legitimate living renewal
+PASS dormant owner stops and cannot renew out of PVS
+PASS transmission loss stops before dormant flag updates
+PASS returning living PVS owner can renew
+PASS same-seed different build stops prior owners
+PASS new build rejects previously unseen stale entity callback
+PASS new build owner starts before next maintenance Think
+PASS ordinary same-build identity snapshot preserves audio
+PASS fuse survives caster death but not projectile retirement
+PASS fuse cannot restart across same-seed rebuild
+PASS staging suspends loops without globally disabling later living audio
+PASS failed suspends loops without globally disabling later living audio
+PASS levelCleared suspends loops without globally disabling later living audio
+PASS generation suspends loops without globally disabling later living audio
+PASS map cleanup rejects stale owners but permits new entities
+PASS shutdown is terminal for late callbacks including unseen owners
+PASS hot refresh closes old authority and preserves legitimate living audio
+PASS reset rejects reentrant touch and remains idempotent
+PASS creation failure owns no phantom loop
+PASS level mutation reentrant cleanup cannot play detached patch
+PASS native play failure is cleaned and reported, not a pass for audibility
+PASS one failed native stop does not skip other owned cleanup
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+PASS real roster Beam warning acquires owned loop
+PASS real roster cancellation stops the same loop
+PASS real roster finish preserves living next-attack audio
+PASS maintainer stops expired Beam commitment
+PASS maintainer stops replaced commitment, not later living attack
+PASS logical death blocks delayed emit before corpse changes
+PASS death of one Beam owner does not silence another
+PASS repeated retirement, cancellation and removal are idempotent
+PASS live native entity removal stops loop without death
+PASS server rejects exact lifecycle replacement: state
+PASS server rejects exact lifecycle replacement: graph
+PASS server rejects exact lifecycle replacement: seed
+PASS server rejects exact lifecycle replacement: epoch
+PASS server rejects exact lifecycle replacement: runId
+PASS server rejects exact lifecycle replacement: build
+PASS pre-ready spawn binds build identity without borrowing old graph
+PASS cleanup rejects stale callbacks, including previously silent owners
+PASS expired deferred native start is refused
+PASS ordinary death and attack one-shots are not suppressed
+PASS legacy administrative death blip remains suppressed
+PASS resolved stock script owns its original stop identifier
+PASS generation barrier passes SND_STOP and combined stop flags
+PASS Seeker missing-file filter never substitutes stop events
+PASS current living Seeker one-shots remain eligible
+PASS retirement cleans both legacy Seeker loops
+PASS shutdown rejects new and old server loop callbacks
+PASS native hostile OnKilled seals without new native audio mutations
+PASS native deferred corpse presentation retires audio, preserves death cue
+PASS native hostile OnRemove uses shared retirement
+PASS native constructor binds before model initialization
+PASS server cleanup invalidates before reentrant late emission
+PASS same actor cannot bind into a later generation after retirement
+PASS server auto-refresh retains owned resource and retirement state
+PASS actual build/campaign barriers retire old audio before construction
+PASS actual map cleanup barrier retires existing owners
+PASS raw loop on unrelated non-hostile entity is not suppressed or claimed
+PASS no unshipped Razor startup path remains in executable references
+SPOT04_AUDIO_RESULT passed=74 failed=0 native=false
+
+===== EXACT PARENT WITH FINAL FOCUSED HARNESS =====
+PASS living gas starts at original level, volume share and pitch
+PASS 1000 renewals keep one owned patch
+PASS nearest-two cap and displacement retained
+PASS ordinary finite lease expires
+PASS maximum watcher lease remains two seconds
+FAIL death presentation stops loop while corpse is valid: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:85: assertion failed!
+FAIL server audio retirement rejects previously unaudible corpse: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:88: assertion failed!
+FAIL gas retirement rejects stale draw renewal: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:92: assertion failed!
+FAIL one dead enemy leaves another living enemy audible: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:96: assertion failed!
+PASS actual Sixth Sense authorization starts watcher loop
+FAIL late actual Sixth Sense packet cannot renew dying watcher: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:103: assertion failed!
+PASS actual Sixth Sense revocation stops its owned loop
+PASS custom hostile does not rely on unreplicated client health
+FAIL permanent removal is terminal even before IsValid turns false: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:114: assertion failed!
+PASS repeated removal and cleanup stop a patch only once
+PASS full-update removal permits legitimate living renewal
+FAIL dormant owner stops and cannot renew out of PVS: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:127: assertion failed!
+FAIL transmission loss stops before dormant flag updates: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:130: attempt to call a nil value (field 'LOD_LoopAudioTransmit')
+FAIL returning living PVS owner can renew: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:134: assertion failed!
+FAIL same-seed different build stops prior owners: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:139: assertion failed!
+FAIL new build rejects previously unseen stale entity callback: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:143: assertion failed!
+FAIL new build owner starts before next maintenance Think: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:147: assertion failed!
+PASS ordinary same-build identity snapshot preserves audio
+FAIL fuse survives caster death but not projectile retirement: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:155: assertion failed!
+FAIL fuse cannot restart across same-seed rebuild: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:159: assertion failed!
+PASS staging suspends loops without globally disabling later living audio
+PASS failed suspends loops without globally disabling later living audio
+PASS levelCleared suspends loops without globally disabling later living audio
+PASS generation suspends loops without globally disabling later living audio
+FAIL map cleanup rejects stale owners but permits new entities: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:171: assertion failed!
+FAIL shutdown is terminal for late callbacks including unseen owners: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:175: assertion failed!
+FAIL hot refresh closes old authority and preserves legitimate living audio: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:180: assertion failed!
+FAIL reset rejects reentrant touch and remains idempotent: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:184: assertion failed!
+PASS creation failure owns no phantom loop
+FAIL level mutation reentrant cleanup cannot play detached patch: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:192: assertion failed!
+FAIL native play failure is cleaned and reported, not a pass for audibility: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:44: injected play failure
+FAIL one failed native stop does not skip other owned cleanup: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:49: injected stop failure
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+FAIL real roster Beam warning acquires owned loop: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:276: assertion failed!
+FAIL real roster cancellation stops the same loop: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:280: attempt to index a nil value (field 'A')
+FAIL real roster finish preserves living next-attack audio: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:284: assertion failed!
+FAIL maintainer stops expired Beam commitment: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:259: attempt to call a nil value (field 'LOD_HostileAudioOwners')
+FAIL maintainer stops replaced commitment, not later living attack: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:259: attempt to call a nil value (field 'LOD_HostileAudioOwners')
+FAIL logical death blocks delayed emit before corpse changes: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:296: assertion failed!
+FAIL death of one Beam owner does not silence another: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:299: attempt to index a nil value (field 'A')
+FAIL repeated retirement, cancellation and removal are idempotent: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:303: attempt to index a nil value (field 'A')
+FAIL live native entity removal stops loop without death: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:307: attempt to call a nil value (field 'LOD_HostileAudioRemoved')
+FAIL server rejects exact lifecycle replacement: state: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL server rejects exact lifecycle replacement: graph: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL server rejects exact lifecycle replacement: seed: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL server rejects exact lifecycle replacement: epoch: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL server rejects exact lifecycle replacement: runId: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL server rejects exact lifecycle replacement: build: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:317: assertion failed!
+FAIL pre-ready spawn binds build identity without borrowing old graph: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:322: assertion failed!
+FAIL cleanup rejects stale callbacks, including previously silent owners: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:325: attempt to index a nil value (field 'A')
+FAIL expired deferred native start is refused: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:329: attempt to index a nil value (field 'A')
+FAIL ordinary death and attack one-shots are not suppressed: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:334: attempt to index a nil value (field 'A')
+PASS legacy administrative death blip remains suppressed
+FAIL resolved stock script owns its original stop identifier: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:340: attempt to index a nil value (field 'A')
+FAIL generation barrier passes SND_STOP and combined stop flags: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:346: assertion failed!
+FAIL Seeker missing-file filter never substitutes stop events: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:352: assertion failed!
+PASS current living Seeker one-shots remain eligible
+FAIL retirement cleans both legacy Seeker loops: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:358: attempt to index a nil value (field 'A')
+FAIL shutdown rejects new and old server loop callbacks: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:363: attempt to call a nil value (field 'LOD_HostileAudioShutdown')
+FAIL native hostile OnKilled seals without new native audio mutations: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:369: assertion failed!
+FAIL native deferred corpse presentation retires audio, preserves death cue: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:375: assertion failed!
+FAIL native hostile OnRemove uses shared retirement: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:379: assertion failed!
+FAIL native constructor binds before model initialization: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:384: assertion failed!
+FAIL server cleanup invalidates before reentrant late emission: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:388: attempt to index a nil value (field 'A')
+FAIL same actor cannot bind into a later generation after retirement: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:391: attempt to index a nil value (field 'A')
+FAIL server auto-refresh retains owned resource and retirement state: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:396: attempt to index a nil value (local 'a')
+FAIL actual build/campaign barriers retire old audio before construction: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:402: assertion failed!
+FAIL actual map cleanup barrier retires existing owners: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:412: assertion failed!
+FAIL raw loop on unrelated non-hostile entity is not suppressed or claimed: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:416: attempt to index a nil value (field 'A')
+FAIL no unshipped Razor startup path remains in executable references: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:420: assertion failed!
+SPOT04_AUDIO_RESULT passed=18 failed=56 native=false
+/mnt/data/the-legend-of-deborah/tools/validate_spot04_audio.lua: ...ta/the-legend-of-deborah/tools/validate_spot04_audio.lua:424: SPOT-04 audio gate failed
+
+===== INITIAL PROJECTILE FIXTURE FAILURES — FIGHTING STREETS =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+/mnt/data/the-legend-of-deborah/tools/test_fighting_streets.lua: ..._deborah/entities/entities/lod_magic_projectile/init.lua:46: attempt to call a nil value (method 'SetNW2Int')
+
+===== INITIAL PROJECTILE FIXTURE FAILURES — AG011 =====
+PASS: Haste single canonical registration & inclusion guard
+PASS: Live RPG Validator GetPos non-spatial fixture safety
+PASS: Feed:OpenHistory VGUI construction and scope validity
+PASS: Rogue forced-max explosion continuation & DIE-LOGGER text
+PASS: Grenade explosion-FX multiplicity gated to exactly 1 per attack contract
+PASS: production Blast/Beam hits, actual trace endpoint, caster-local cue, bounded client rendering
+PASS: dismissed and superseded Spellbook requests remain closed
+PIERCING_TRAJECTORY_PASS: fourteen bodies, lethal first callback, dead intermediate, fixed range, wall stop and duplicate guard
+PASS: zero-damage Magic and production Magnum piercing retain complete arithmetic
+PASS: transparent HUD at Deck/desktop/4:3 sizes and exploded-miss production settlement
+/mnt/data/the-legend-of-deborah/tools/test_ag011_repairs.lua: ..._deborah/entities/entities/lod_magic_projectile/init.lua:46: attempt to call a nil value (method 'SetNW2Int')
+
+===== INITIAL PROJECTILE FIXTURE FAILURES — WATERMELON =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+MAGIC_WALL_PASS: geometric gap fitting, fixed width/Wisdom duration, Hero overlap, enemy rejection, cast cost/cap, both-side cover/contact/riders, stun factor, lifecycle, ten-Form dev grant and class enforcement
+WALL_COLLISION_STUN_PASS: Hero passage, Soldier blocking, actual .75s stun and unchanged ordinary .30s
+/mnt/data/the-legend-of-deborah/tools/test_watermelon_bounces.lua: ..._deborah/entities/entities/lod_magic_projectile/init.lua:46: attempt to call a nil value (method 'SetNW2Int')
+
+===== INITIAL PROJECTILE FIXTURE FAILURES — SUPER BALL =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+/mnt/data/the-legend-of-deborah/tools/test_super_ball.lua: ..._deborah/entities/entities/lod_magic_projectile/init.lua:46: attempt to call a nil value (method 'SetNW2Int')
+
+===== FINAL REMAINING FAILURE — TEAMMATE UI =====
+/mnt/data/the-legend-of-deborah/tools/test_refresh_ui.lua: .../legend_of_deborah/gamemode/lod/cl_teammate_identity.lua:8: attempt to call a nil value (global 'Color')
+
+===== IDENTICAL FAILURE ON EXACT PARENT =====
+/mnt/data/spot04-parent/tools/test_refresh_ui.lua: .../legend_of_deborah/gamemode/lod/cl_teammate_identity.lua:8: attempt to call a nil value (global 'Color')
+
+===== INITIAL B25 OUTPUT BEFORE90-SECOND TIMEOUT =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=192 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+
+===== B25 EXACT BOUNDED RERUN =====
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=192 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B25_PAIRED hunting {bodies=1679,control=1379,homes=10,increased=29,pacing=10,pairs=32,phrases={ambush=84,gauntlet=24,surge=20}}
+B25_PAIRED occupation {bodies=1679,control=1379,homes=17,increased=29,pacing=17,pairs=32,phrases={ambush=24,gauntlet=84,surge=20}}
+B25_PAIRED corruption {bodies=1527,control=1377,homes=9,increased=29,pacing=9,pairs=32,phrases={ambush=40,gauntlet=24,surge=64}}
+B25_PAIRED quarantine {bodies=1527,control=1377,homes=4,increased=29,pacing=4,pairs=32,phrases={ambush=60,gauntlet=24,surge=44}}
+B25_PAIRED crossfire {bodies=1527,control=1377,homes=6,increased=29,pacing=6,pairs=32,phrases={ambush=20,gauntlet=64,surge=44}}
+B25_PAIRED retinue {bodies=1527,control=1377,homes=8,increased=29,pacing=8,pairs=32,phrases={ambush=52,gauntlet=20,surge=56}}
+B25_LIFECYCLE_PASS targets/reservations; real due service; reject/no-spawn-ordinal; frozen/inactive; no catch-up; physical defer; reentrant reset; legacy fallback; receipt
+actor progression headless validation PASS
+B25_OPPORTUNITIES hunting trials=4096 allowed=3700 rate=0.903320 tiers=2223/1113/364 eliteArrivalRate=0.271729 design=0.270
+B25_OPPORTUNITIES occupation trials=4096 allowed=4096 rate=1.000000 tiers=2457/1231/408 eliteArrivalRate=0.300537 design=0.300
+B25_OPPORTUNITIES corruption trials=4096 allowed=3083 rate=0.752686 tiers=1852/928/303 eliteArrivalRate=0.226562 design=0.225
+B25_OPPORTUNITIES quarantine trials=4096 allowed=3083 rate=0.752686 tiers=1852/928/303 eliteArrivalRate=0.226562 design=0.225
+B25_OPPORTUNITIES crossfire trials=4096 allowed=2662 rate=0.649902 tiers=1600/798/264 eliteArrivalRate=0.194824 design=0.195
+B25_OPPORTUNITIES retinue trials=4096 allowed=2065 rate=0.504150 tiers=1242/623/200 eliteArrivalRate=0.152100 design=0.150
+BESTIARY_B25_PASS 32x6 paired production plans; actual density/pacing; bounded live replacement; 4096 opportunities/motif; canonical conditional tiers and named grades; Source acceptance pending
+
+===== FIGHTING STREETS FIXTURE RERUN =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+FIGHTING_STREETS_PASS: paired economy, natural rewards, shared recipes, native projectile preflight/Think/impact, canonical damage/status, source and lifecycle rejection
+
+===== AG011 FIXTURE RERUN =====
+PASS: Haste single canonical registration & inclusion guard
+PASS: Live RPG Validator GetPos non-spatial fixture safety
+PASS: Feed:OpenHistory VGUI construction and scope validity
+PASS: Rogue forced-max explosion continuation & DIE-LOGGER text
+PASS: Grenade explosion-FX multiplicity gated to exactly 1 per attack contract
+PASS: production Blast/Beam hits, actual trace endpoint, caster-local cue, bounded client rendering
+PASS: dismissed and superseded Spellbook requests remain closed
+PIERCING_TRAJECTORY_PASS: fourteen bodies, lethal first callback, dead intermediate, fixed range, wall stop and duplicate guard
+PASS: zero-damage Magic and production Magnum piercing retain complete arithmetic
+PASS: transparent HUD at Deck/desktop/4:3 sizes and exploded-miss production settlement
+PASS: replicated bomb identity, unchanged lob, round body/fuse render and bounded sparks
+AG-011R1_REPAIRS_PASS: All focused deterministic tests passed cleanly.
+
+===== WATERMELON FIXTURE RERUN =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+MAGIC_WALL_PASS: geometric gap fitting, fixed width/Wisdom duration, Hero overlap, enemy rejection, cast cost/cap, both-side cover/contact/riders, stun factor, lifecycle, ten-Form dev grant and class enforcement
+WALL_COLLISION_STUN_PASS: Hero passage, Soldier blocking, actual .75s stun and unchanged ordinary .30s
+WATERMELON_BOUNCES_PASS: all six rolled budgets on swept floor geometry, real entity lifecycle, nonexploding logged count, incoming-only contacts, repeat-hit cadence, one rider, idempotent final AoE, timeout/death/level/embed/sky
+
+===== SUPER BALL FIXTURE RERUN =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+SUPER_BALL_PASS: real cast/cost, geometric multi-body/repeat ricochets, one rider per target, floor/open-shaft cover, cooldown, caps, expiry, death/disconnect/level/cleanup
+
+===== FRESH SPOT-01 TARGET-IDENTITY HARNESS =====
+PASS stock target callback suppressed
+PASS stock remains suppressed with menu open
+PASS stock remains suppressed without local player
+PASS exact two-line text and independent centering
+PASS identity semantic roles and steady resource fraction
+PASS HP band 120/100
+PASS HP band 100/100
+PASS HP band 99/100
+PASS HP band 51/100
+PASS HP band 50/100
+PASS HP band 26/100
+PASS HP band 25/100
+PASS HP band 1/100
+PASS HP band 1/1
+PASS HP band 2/3
+PASS HP band 1/3
+PASS HP band 5/20
+PASS unknown maximum 0
+PASS unknown maximum -1
+PASS changing HP/max does not use stale cached numbers
+PASS embedded connector and numeric names retain roles
+PASS control characters and Unicode line separators stay inline
+PASS long UTF-8 names bounded at width 640
+PASS long UTF-8 names bounded at width 800
+PASS long UTF-8 names bounded at width 1280
+PASS long UTF-8 names bounded at width 1920
+PASS long UTF-8 names bounded at width 3840
+PASS short character name returns width to long nickname
+PASS layout cache invalidates on rename and resize
+PASS long-name layout reused without re-fitting each frame
+PASS blank procedural name uses existing character field
+PASS empty names get readable fallbacks
+PASS human Soldier uses active role not dormant Hero
+PASS Soldier viewer can read visible Hero
+PASS two Soldiers get same two-line readout
+PASS invalid local player
+PASS dead local player
+PASS invalid target
+PASS dead target
+PASS occluding prop/NPC
+PASS self target
+PASS no eye-trace entity
+PASS missing trace
+PASS dormant target
+PASS no-draw target
+PASS Veil-cloaked target
+PASS UI unavailable during initialization
+PASS expired Veil reveals normally
+PASS hot reload replaces hooks instead of duplicating
+PASS legacy role palette fallback
+PLAYER_TARGET_IDENTITY: 50 passed, 0 failed (50 cases)
+
+ADDITIONAL FRESH REGRESSION RECEIPTS
+validate_spot03_razor.txt: SHA256 1509b73566fa3a073686102f98c88b30d3a4c8daa600f36e20fc3d87b7c97a32
+PASS diagnostic leaves positions, plan, RNG and ranked state unchanged
+PASS diagnostic rejects non-admin player
+SPOT03_RAZOR_RESULT passed=55 failed=0 native=false
+climber.txt: SHA256 95547ddbf72565db392a59eb311e09ffe449607c672ff2ff556f1e54ff7538b8
+PASS diagnostic exposes placement rejection separately
+PASS diagnostic preserves enemy state
+SPOT02 Climber: 44 passed, 0 failed
+test_loop_audio.txt: SHA256 f3f04abe64280cd2add9de9f78339a5bb78bcf7cdb7a7c47ea17e0bbce5d5197
+LOOP_AUDIO_PASS: dedupe, nearest caps, finite leases, owner loss, staging, run end, cleanup, reload and fire one-shot
+test_damsel_audio.txt: SHA256 573d76c25eed0077461df9ec6937ee3829fee43d7ae911c0f34fd7e37007ec36
+DAMSEL_AUDIO_PASS: initialization/cleanup silence, stale-build isolation, post-cleanup recovery, per-recipient coalescing, unique identities and preserved diegetic playback
+test_hostile_death_handoff.txt: SHA256 cd17fd07acc4558877af892b47c304e24ba316af416bbd4b6ab303567255b156
+HOSTILE_DEATH_HANDOFF_PASS: deferred native mutations, single settlement, corpse lifecycle, removed entities, shared batching, stale level isolation
+DEATH_PULSE_PASS: normal/red/normal/red interpolation remains bounded
+syntax.txt: SHA256 83dc8a1b8ecec7ab11aa6069d3b464c945626cca1b77c9563a74b9117b384e77
+PASS /mnt/data/the-legend-of-deborah/tools/validate_spot02_climber.lua
+PASS /mnt/data/the-legend-of-deborah/tools/validate_spot03_razor.lua
+PASS /mnt/data/the-legend-of-deborah/tools/validate_spot04_audio.lua

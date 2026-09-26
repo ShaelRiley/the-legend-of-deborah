@@ -53,6 +53,16 @@ keycard-only logs cannot diagnose the later B28 arrival-mobbing report. A read-o
 `lod_population_evidence` remains optional; normal play already records release data.
 Native expectations and finite headless bounds are in `validation/BESTIARY_B29.md`.
 
+## SPOT-04 audio acceptance
+
+Use the compact listening procedure in `validation/SPOT_04_ENEMY_AUDIO.md` on a
+fresh GMod process. The evidence is console_latest.txt + rpg_summary_latest.txt
+plus the tester's living/dead/other-living/reset/Beam listening report or clip.
+Headless StopSound/CSoundPatch assertions and a generic RPG validator do not
+establish audible playback or silence. The existing 34-file population manifest
+remains a population fingerprint, not exhaustive proof of all SPOT-04 audio
+modules; retain the exact installed checkout SHA and use a fresh installation.
+
 ## Primary evidence package
 
 ### `console_latest.txt` — exact Garry's Mod console mirror

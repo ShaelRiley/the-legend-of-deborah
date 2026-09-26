@@ -8,6 +8,8 @@ LOD = LOD or {}
 local FALLBACK = "ambient/energy/zap9.wav"
 
 hook.Add("EntityEmitSound", "LOD_SeekerSoundAssetSafety", function(data)
+    local flag=SND_STOP or 4
+    if data and (tonumber(data.Flags) or 0) % (flag*2)>=flag then return end
     local ent = data and data.Entity
     if not IsValid(ent) or ent.LODArchetypeId ~= "seeker" then return end
 

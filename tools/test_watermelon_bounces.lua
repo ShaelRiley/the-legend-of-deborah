@@ -16,7 +16,7 @@ local function melon()
  local e=setmetatable({valid=true,LODCaster=owner,LODFormId='watermelon',LODContentId='fire',LODLevelSeed=fx.Run.State.LevelSeed,
   LODCastContext={castSerial=123,damageDiceUsed=0},LODMaximumTravel=4000,LODBlastRadius=72,
   LODDirection=Vector(1,0,0),LODSpeed=580}, {__index=env.ENT})
- for _,key in ipairs({'SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','SetAngles','NextThink'}) do e[key]=function() end end
+ for _,key in ipairs({'SetNW2Int','SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','SetAngles','NextThink'}) do e[key]=function() end end
  function e:SetPos(pos) self.pos=pos end;function e:GetPos() return self.pos end
  function e:Remove() self.valid=false;self:OnRemove() end
  e:SetPos(Vector(0,0,64));e:Initialize();return e

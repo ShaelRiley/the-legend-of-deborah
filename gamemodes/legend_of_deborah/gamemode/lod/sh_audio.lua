@@ -71,5 +71,8 @@ else
 end
 -- Stops engine-owned initialization, not just the explicit musical cue layer.
 hook.Add('EntityEmitSound','LOD_GenerationSoundBarrier',function(data)
+    -- StopSound uses SND_STOP; muting must never swallow native cleanup.
+    local flag=SND_STOP or 4
+    if (tonumber(data.Flags) or 0) % (flag*2)>=flag then return end
     if A:Muted() then return false end
 end)

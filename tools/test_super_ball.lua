@@ -33,7 +33,7 @@ local function noop() end
 local spawned={};ents={Create=function(class)
  assert(class=='lod_magic_projectile')
  local e=setmetatable({valid=true},{__index=env.ENT})
- for _,name in ipairs({'SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','SetAngles','Activate','NextThink'}) do e[name]=noop end
+ for _,name in ipairs({'SetNW2Int','SetMagicForm','SetModel','SetMoveType','SetSolid','SetCollisionGroup','DrawShadow','SetRenderMode','SetColor','SetAngles','Activate','NextThink'}) do e[name]=noop end
  function e:SetPos(p) self.pos=p end;function e:GetPos() return self.pos end
  function e:Spawn() self:Initialize() end
  function e:Remove() self.valid=false;self:OnRemove() end

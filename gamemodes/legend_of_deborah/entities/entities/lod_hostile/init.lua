@@ -314,6 +314,7 @@ end
 function ENT:Initialize()
     if LOD.EntrySafety and not LOD.EntrySafety:SpawnPositionAllowed(self:GetPos()) then self:Remove();return end
     self.LODHostile = true
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Bind(self) end
     self.LODArchetypeId = self.LODArchetypeId or "shambler"
     self.LODConfig = archetypeConfig(self.LODArchetypeId)
     if not self.LODConfig then
@@ -882,6 +883,7 @@ function ENT:_BeginDeathPresentation()
     self.LODSoldierBurst = nil
     self.LODDeathLevelSeed = self.LODDeathLevelSeed or (LOD.RunManager and LOD.RunManager.State.LevelSeed or nil)
     deathStage(self, "presentation_enter")
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Retire(self) end
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     self:SetNW2Bool("LOD_WardenHidden", false)
@@ -923,6 +925,9 @@ function ENT:OnKilled(dmginfo)
     -- Claim death before any extension hook can re-enter it. Keep attribution
     -- synchronous, but do not mutate native collision/model state in this stack.
     self.LODDead = true
+    -- Seal without native calls inside lethal damage; shared presentation/Think
+    -- performs StopSound and replication after the native stack has returned.
+    self.LODAudioRetired = true
     self.LODActivated = false
     self.LODTarget = nil
     self.LODSoldierBurst = nil
@@ -939,6 +944,7 @@ function ENT:OnKilled(dmginfo)
 end
 
 function ENT:OnRemove()
+    if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Retire(self) end
     if self.LODSkeletonHero and LOD.EventSkeletonBlockade then LOD.EventSkeletonBlockade.Removed(self) end
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)

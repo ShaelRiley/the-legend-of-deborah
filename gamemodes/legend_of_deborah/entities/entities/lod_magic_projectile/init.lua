@@ -43,6 +43,7 @@ function ENT:Initialize()
     self.LODTravelled = 0
     self.LODLastThink = CurTime()
     self.LODLevelSeed = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.LevelSeed or nil
+    self:SetNW2Int('LOD_AudioBuild',LOD.TopologySyncSafety and LOD.TopologySyncSafety.BuildSerial or 0)
     local color = contentColor(self.LODContentId)
     self:SetRenderMode(RENDERMODE_TRANSCOLOR)
     self:SetColor(form == "watermelon" and Color(255,255,255,255) or Color(color.r, color.g, color.b, 245))
