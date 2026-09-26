@@ -318,7 +318,7 @@ function Magic:CastForceShout(ply)
             if Rolls and Rolls._Send and Rolls._DamageEventText then
                 local detail = string.format("[rolls %s%s]", rollDetail(contract),
                     contract and contract.capped and "; chain cap" or "")
-                Rolls:_Send(ply, 0, Rolls:_DamageEventText(ply,
+                Rolls:_Send({ply,hostile}, 0, Rolls:_DamageEventText(ply,
                     contract and contract.formula or "2d6!", total, hostile,
                     detail, nil, "Hostile", "force shout"))
             end

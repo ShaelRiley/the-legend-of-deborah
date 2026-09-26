@@ -129,6 +129,32 @@ function System:RollExploding(rng, count, sides)
     return total, values
 end
 
+-- Presentation consumes the actual draws and final totals from this authority.
+-- No new RNG stream, delayed callback, resource mutation or status decision.
+function System:ReportDice(target, source, label, formula, values, total, detail, event)
+    local presentation = LOD.RPGPresentation
+    if presentation and presentation.DiceEvent then
+        local ok, err = pcall(presentation.DiceEvent, presentation, target, source, label, formula, values, total,
+            {event=event or "status_dice", detail=detail})
+        if not ok then ErrorNoHalt("[LOD:FEEDBACK] " .. tostring(err) .. "\n") end
+    end
+end
+
+function System:ReportSave(target, source, id, ability, save, natural, dc)
+    -- Legacy integrations may expose only a total. Do not invent a natural die,
+    -- and never make that missing presentation detail interrupt the save result.
+    if type(natural) ~= "number" or type(save) ~= "number" or type(dc) ~= "number" then return end
+    self:ReportDice(target, source, string.upper(id) .. " " .. string.upper(ability) .. " SAVE",
+        "1d20", {natural}, save,
+        string.format("%+g modifier; DC %g — %s", save-natural, dc, save>=dc and "SAVED" or "FAILED"),
+        "status_save")
+end
+
+local function smallDuration(rng, sides, bonus)
+    local natural = rng:Int(1, sides)
+    return natural + (bonus or 0), {natural}
+end
+
 function System:ConditionDC(source, ability, explicit)
     if explicit ~= nil then return math.floor(tonumber(explicit) or 10) end
     local bonus = ability == "wis"
@@ -153,21 +179,21 @@ System.Registry = {
     support_cleansing = {direct=true, beneficial=true, reapply="ignore"},
     support_guard = {direct=true, beneficial=true, reapply="ignore"},
     support_rally = {direct=true, beneficial=true, reapply="ignore"},
-    clumsy = {ability = "dex", duration = function(self, rng) return 1 + rng:Int(1, 4) end,
+    clumsy = {durationFormula="1d4+1", ability = "dex", duration = function(self, rng) return smallDuration(rng, 4, 1) end,
         reapply = "extend"},
-    immolated = {ability = "dex", duration = function(self, rng) return self:RollExploding(rng, 3, 6) end,
+    immolated = {durationFormula="3d6!", ability = "dex", duration = function(self, rng) return self:RollExploding(rng, 3, 6) end,
         reapply = "raise_dc_extend", tick = "immolated"},
     poisoned = {ability = "con", duration = nil, reapply = "raise_dc_keep_schedule", tick = "poisoned"},
     bleeding = {ability = "con", duration = nil, reapply = "raise_dc_keep_schedule", tick = "bleeding"},
-    muted = {ability = "wis", duration = function(self, rng) return 1 + rng:Int(1, 4) end,
+    muted = {durationFormula="1d4+1", ability = "wis", duration = function(self, rng) return smallDuration(rng, 4, 1) end,
         reapply = "extend"},
-    held = {ability = "wis", duration = function(self, rng) return self:RollExploding(rng, 1, 6) end,
+    held = {durationFormula="1d6!", ability = "wis", duration = function(self, rng) return self:RollExploding(rng, 1, 6) end,
         reapply = "extend"},
-    reckless = {ability = "wis", duration = function(self, rng) return self:RollExploding(rng, 4, 6) end,
+    reckless = {durationFormula="4d6!", ability = "wis", duration = function(self, rng) return self:RollExploding(rng, 4, 6) end,
         reapply = "extend"},
-    arcane_shattered = {ability = "int", duration = function(self, rng) return self:RollExploding(rng, 5, 6) end,
+    arcane_shattered = {durationFormula="5d6!", ability = "int", duration = function(self, rng) return self:RollExploding(rng, 5, 6) end,
         reapply = "ignore"},
-    intimidated = {ability = "cha", duration = function(self, rng) return rng:Int(1, 3) end,
+    intimidated = {durationFormula="1d3", ability = "cha", duration = function(self, rng) return smallDuration(rng, 3) end,
         reapply = "extend", direct = true}
 }
 
@@ -371,10 +397,14 @@ function System:_ScheduleInitial(target, id, entry, rng)
     if id == "immolated" then
         entry.nextTickAt = t + 1
     elseif id == "poisoned" then
-        entry.nextRecoveryAt = t + self:RollExploding(rng, 9, 6)
+        local delay, values = self:RollExploding(rng, 9, 6)
+        entry.nextRecoveryAt = t + delay
+        self:ReportDice(target, entry.source, "POISON RECOVERY INTERVAL", "9d6!", values, delay, "seconds")
         entry.lastCellKey = self:CellKey(target)
     elseif id == "bleeding" then
-        entry.nextTickAt = t + rng:Int(1, 3)
+        local delay = rng:Int(1, 3)
+        entry.nextTickAt = t + delay
+        self:ReportDice(target, entry.source, "BLEEDING INTERVAL", "1d3", {delay}, delay, "seconds")
     end
 end
 
@@ -398,7 +428,8 @@ function System:Apply(target, id, source, options)
     local tuning = enemyShatter and RPG.EnemyDefenseTuning
     if enemyShatter then dc = dc + tuning.shatterDCBonus end
     if not options.direct and not definition.direct then
-        local save = self:ConditionSave(target, definition.ability, rng)
+        local save, natural = self:ConditionSave(target, definition.ability, rng)
+        self:ReportSave(target, source, id, definition.ability, save, natural, dc)
         self.Stats.saves = self.Stats.saves + 1
         if save >= dc then
             if enemyShatter and LOD.RPGAbilityRules.EnemyDefenseNotice then
@@ -410,9 +441,17 @@ function System:Apply(target, id, source, options)
         end
     end
     local duration = options.duration
-    if duration == nil and definition.duration then duration = definition.duration(self, rng) end
+    local durationDice, rolledDuration
+    if duration == nil and definition.duration then
+        duration, durationDice = definition.duration(self, rng)
+        rolledDuration = duration
+    end
     if enemyShatter and duration then
         duration = math.max(tuning.shatterMinimumSeconds, duration * tuning.shatterDurationMultiplier)
+    end
+    if durationDice then
+        self:ReportDice(target, source, string.upper(id) .. " DURATION", definition.durationFormula,
+            durationDice, rolledDuration, string.format("resolved %g seconds", duration))
     end
     local expiresAt = duration and (now() + math.max(0, duration)) or nil
     local states = statusTable(target, true)
@@ -475,6 +514,7 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
     if listContains(weaknesses, element) or (RPG.ElementOpposites and RPG.ElementOpposites[current]==element)
         or (tonumber(gear["weak_"..element]) or 0)<0 then
         local index = rng:Int(1, #self.WeaknessMultipliers)
+        local dice = {index}
         local hasAttunement = false
         if attacker then
             local state = actorState(attacker)
@@ -488,19 +528,21 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
         end
         if hasAttunement and (tags.magic == true or tags.magical == true) then
             local secondIndex = rng:Int(1, #self.WeaknessMultipliers)
+            dice[#dice + 1] = secondIndex
             index = math.max(index, secondIndex)
         end
         local multiplier = self.WeaknessMultipliers[index]
         self.Stats.weaknessHits = self.Stats.weaknessHits + 1
         return math.max(0, amount * multiplier), {kind = "weakness", multiplier = multiplier,
-            index = index, element = element, hitStunMultiplier = 2.5, knockback = true}
+            index = index, element = element, hitStunMultiplier = 2.5, knockback = true,
+            rolls=dice, dieSides=#self.WeaknessMultipliers}
     end
     if current == element or (tonumber(gear["ward_"..element]) or 0)>0 then
         local index = rng:Int(1, #self.ResistanceMultipliers)
         local multiplier = self.ResistanceMultipliers[index]
         self.Stats.resistanceHits = self.Stats.resistanceHits + 1
         return math.max(0, amount * multiplier), {kind = "resistance", multiplier = multiplier,
-            index = index, element = element}
+            index = index, element = element, rolls={index}, dieSides=#self.ResistanceMultipliers}
     end
     return amount, {kind = "neutral", multiplier = 1, element = element}
 end
@@ -526,7 +568,11 @@ function System:_ApplyStatusDamage(target, entry, amount, damageType, label, opt
                 wisScaled = false}))
     end
     resolved = math.max(0, tonumber(resolved) or 0)
-    if resolved <= 0 then return false end
+    if resolved <= 0 then
+        self:ReportDice(target, entry.source, label .. " DAMAGE", options.formula or "1d3",
+            contributions, amount, "0 resolved HP damage", "status_damage")
+        return false
+    end
     local info = LOD.NewDamageInfo()
     if valid(entry.source) then info:SetAttacker(entry.source) else info:SetAttacker(game.GetWorld()) end
     info:SetInflictor(valid(entry.source) and entry.source or game.GetWorld())
@@ -541,6 +587,8 @@ function System:_ApplyStatusDamage(target, entry, amount, damageType, label, opt
     target.LODPendingStatusDamageContext = context
     target:TakeDamageInfo(info)
     target.LODPendingStatusDamageContext = nil
+    self:ReportDice(target, entry.source, label .. " DAMAGE", options.formula or "1d3",
+        contributions, amount, string.format("%g resolved HP damage", math.max(0, info:GetDamage())), "status_damage")
     self.Stats.statusDamage = self.Stats.statusDamage + resolved
     return true
 end
@@ -561,11 +609,12 @@ function System:_ProcessImmolated(actor, entry, at)
     local rng = self:_RNG("immolated:tick")
     local damage, values = self:RollExploding(rng, 1, 6)
     self:_ApplyStatusDamage(actor, entry, damage, DMG_BURN, "Immolated",
-        {element = "fire", contributions = values})
+        {element = "fire", contributions = values, formula="1d6!"})
     self:BindActorLife(actor)
     if not isAlive(actor) or not self.Active[actor] or self.Active[actor].immolated ~= entry
         or (entry.expiresAt and at >= entry.expiresAt) then return end
-    local save = self:ConditionSave(actor, "dex", rng)
+    local save, natural = self:ConditionSave(actor, "dex", rng)
+    self:ReportSave(actor, entry.source, "immolated recovery", "dex", save, natural, entry.dc)
     self.Stats.saves = self.Stats.saves + 1
     if save >= entry.dc then self:Clear(actor, "immolated", "extinguished")
     else entry.nextTickAt = at + 1 end
@@ -574,10 +623,15 @@ end
 function System:_ProcessPoisoned(actor, entry, at)
     if at < (entry.nextRecoveryAt or math.huge) then return end
     local rng = self:_RNG("poisoned:recovery")
-    local save = self:ConditionSave(actor, "con", rng)
+    local save, natural = self:ConditionSave(actor, "con", rng)
+    self:ReportSave(actor, entry.source, "poisoned recovery", "con", save, natural, entry.dc)
     self.Stats.saves = self.Stats.saves + 1
     if save >= entry.dc then self:Clear(actor, "poisoned", "recovered")
-    else entry.nextRecoveryAt = at + self:RollExploding(rng, 9, 6) end
+    else
+        local delay, values = self:RollExploding(rng, 9, 6)
+        entry.nextRecoveryAt = at + delay
+        self:ReportDice(actor, entry.source, "POISON RECOVERY INTERVAL", "9d6!", values, delay, "seconds")
+    end
 end
 
 function System:_ProcessBleeding(actor, entry, at)
@@ -586,10 +640,15 @@ function System:_ProcessBleeding(actor, entry, at)
     self:_ApplyStatusDamage(actor, entry, rng:Int(1, 3), DMG_SLASH, "Bleeding")
     self:BindActorLife(actor)
     if not isAlive(actor) or not self.Active[actor] or self.Active[actor].bleeding ~= entry then return end
-    local save = self:ConditionSave(actor, "con", rng)
+    local save, natural = self:ConditionSave(actor, "con", rng)
+    self:ReportSave(actor, entry.source, "bleeding recovery", "con", save, natural, entry.dc)
     self.Stats.saves = self.Stats.saves + 1
     if save >= entry.dc then self:Clear(actor, "bleeding", "recovered")
-    else entry.nextTickAt = at + rng:Int(1, 3) end
+    else
+        local delay = rng:Int(1, 3)
+        entry.nextTickAt = at + delay
+        self:ReportDice(actor, entry.source, "BLEEDING INTERVAL", "1d3", {delay}, delay, "seconds")
+    end
 end
 
 function System:Process(at)
@@ -735,7 +794,8 @@ function System:AttemptMorale(source, target, event)
     local dc = self:MoraleDC(source)
     if LOD.RPGCrossFeats then dc = dc + LOD.RPGCrossFeats:MoraleBonus(source, target, event) end
     local save, natural, naturals = self:MoraleSave(target, rng, self:FirstTerrifyingSave(source, target))
-    local cooldown = 30 + rng:Int(1, 20) + rng:Int(1, 20) + rng:Int(1, 20)
+    local cooldownDice = {rng:Int(1, 20), rng:Int(1, 20), rng:Int(1, 20)}
+    local cooldown = 30 + cooldownDice[1] + cooldownDice[2] + cooldownDice[3]
     if not isPlayer(target) then cooldown = cooldown * 0.25 end
     target.LODMoraleCooldownUntil = at + cooldown
     self.Stats.moraleChecks = self.Stats.moraleChecks + 1
@@ -744,8 +804,10 @@ function System:AttemptMorale(source, target, event)
         local text = string.format("%s MORALE %s [%s] %+d = %d vs DC %d — %s",
             rolls:EntityDisplayName(target), #naturals == 2 and "lower(2d20)" or "1d20",
             table.concat(naturals, ","), save - natural, save, dc, save >= dc and "SAVE" or "FAIL")
-        if isPlayer(source) then rolls:_Send(source, 3, text, "status", {event = "morale", save = save, dc = dc}) end
-        if isPlayer(target) and target ~= source then rolls:_Send(target, 3, text, "status", {event = "morale", save = save, dc = dc}) end
+        text = text .. string.format("; cooldown 30+3d20 [%s]%s = %g seconds", table.concat(cooldownDice, "+"),
+            not isPlayer(target) and " x0.25" or "", cooldown)
+        rolls:_Send({target, source}, 3, text, "status", {event="morale", save=save, dc=dc,
+            natural=natural, naturals=naturals, cooldownDice=cooldownDice, cooldown=cooldown})
     end
     if save >= dc then return true, "saved", {dc = dc, save = save, cooldown = cooldown} end
     self.Stats.moraleFailures = self.Stats.moraleFailures + 1

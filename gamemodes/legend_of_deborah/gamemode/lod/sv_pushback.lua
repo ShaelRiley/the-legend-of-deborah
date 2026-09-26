@@ -188,12 +188,12 @@ function Pushback:_RollWallCrush(hostile, opts)
         classExplosionImmune = profile.classExplosionImmune
     }
 
-    if IsValid(sourceAttacker) and sourceAttacker:IsPlayer() and rolls._Send and rolls._DamageEventText then
+    if rolls._Send and rolls._DamageEventText then
         local detail = string.format("[rolls %s; from %s push]",
             contract and LOD.DieLogger:RollBreakdown(contract) or tostring(total), source)
         local formula = contract and LOD.DieLogger:DamageFormula(contract)
             or string.format("%dd%d", profile.count or 1, profile.sides)
-        rolls:_Send(sourceAttacker, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
+        rolls:_Send({hostile,sourceAttacker}, 0, rolls:_DamageEventText(sourceAttacker, formula, total,
             hostile, detail, nil, "Hostile", "wall crush"))
     end
 
@@ -436,11 +436,10 @@ function Pushback:Apply(hostile, opts)
         self.Stats.pushImmuneBlocks = (self.Stats.pushImmuneBlocks or 0) + 1
     end
     local rolls = LOD.CombatRolls
-    if save.rolled and IsValid(opts.attacker) and opts.attacker:IsPlayer()
-        and rolls and rolls._Send then
+    if save.rolled and rolls and rolls._Send then
         local diceText = #saveNaturals > 1 and string.format("lower(2d20) [%d, %d] -> %d",
             saveNaturals[1], saveNaturals[2], save.natural) or ("d20=" .. save.natural)
-        rolls:_Send(opts.attacker, 2, string.format(
+        rolls:_Send({hostile,opts.attacker}, 2, string.format(
             "PUSH SAVE %s; total %d vs DC %d; %s; distance %.1f",
             diceText, save.save, save.dc,
             save.saveSucceeded and "BRACED" or "FAILED", distance))

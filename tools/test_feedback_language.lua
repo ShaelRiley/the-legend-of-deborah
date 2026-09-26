@@ -116,7 +116,7 @@ LOD.RPGAbilityRules={ProgressionState=function(_,p) return {derivedStats={wisMod
 b.GetPos=function() return {DistToSqr=function() return distance*distance end} end
 local count=#sent;rolls:_Send(a,0,'1d6 = 4');assert(#sent==count+1,'out-of-range observer received roll')
 wis=14;count=#sent;rolls:_Send(a,0,'1d6 = 4');assert(#sent==count+2)
-assert(sent[#sent].ply[1]==b and sent[#sent][5][1]==false,'observer must not acknowledge another player feedback')
+assert(sent[#sent].ply==b and sent[#sent][5][1]==false,'observer must not acknowledge another player feedback')
 assert(rolls:InformationRadius(b)==768)
 count=#sent;rolls:_Send(a,0,'private wallet','resource');assert(#sent==count+1)
 LOD.RPGAbilityRules=oldRules;b.GetPos=oldPosition

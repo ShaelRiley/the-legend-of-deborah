@@ -272,10 +272,10 @@ function Forms:_ReportDamageRoll(creditCaster, target, form, content, contract, 
             contract.capped and "; work cap" or "")
         if contract.magicSave then
             local save=contract.magicSave
-            detail=detail..string.format(" [%s save %d vs DC %d: %s]",string.upper(save.ability),
-                save.total,save.dc,save.passed and "HALF DAMAGE" or "FULL DAMAGE")
+            detail=detail..string.format(" [%s save 1d20[%d] %+d = %d vs DC %d: %s]",string.upper(save.ability),
+                save.natural,save.total-save.natural,save.total,save.dc,save.passed and "HALF DAMAGE" or "FULL DAMAGE")
         end
-        Rolls:_Send(creditCaster, 0, Rolls:_DamageEventText(creditCaster,
+        Rolls:_Send({creditCaster, target}, 0, Rolls:_DamageEventText(creditCaster,
             LOD.DieLogger:DamageFormula(contract) or string.format("%dd%d!", form.damageDice, form.damageSides),
             amount, target, detail, nil, "Hostile", "magic " .. form.id))
     end

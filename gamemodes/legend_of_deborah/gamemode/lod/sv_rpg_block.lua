@@ -45,11 +45,10 @@ function Rules:ApplyBlock(target, info)
             campaignSeed=epoch.CampaignSeed,runId=epoch.RunId}
         targets[target]=result
         if chance > 0 then
-            local text = string.format("%s BLOCK %s — roll %.2f%% / %.0f%%%s", rolls:EntityDisplayName(target),
-                result.blocked and "SUCCESS" or "FAILED", natural*100,chance*100,result.blocked and "; 0 HP damage" or "")
+            local text = string.format("%s BLOCK %s — roll %.17g / chance %.17g%s", rolls:EntityDisplayName(target),
+                result.blocked and "SUCCESS" or "FAILED", natural,chance,result.blocked and "; 0 HP damage" or "")
             local data={event="block",chance=chance,roll=natural,blocked=result.blocked}
-            if target:IsPlayer() then rolls:_Send(target,3,text,"resist",data) end
-            if attacker:IsPlayer() then rolls:_Send(attacker,3,text,"resist",data) end
+            rolls:_Send({target,attacker},3,text,"resist",data)
         end
         if result.blocked then
             target:EmitSound("physics/metal/metal_solid_impact_bullet1.wav",60,110,0.4)

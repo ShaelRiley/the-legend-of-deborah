@@ -1,42 +1,44 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-04 enemy loop-audio cleanup
+## Current checkpoint — SPOT-05 canonical Die Logger audit
 
-The September 25, 2026 author-directed [spot queue](briefs/SPOT_UPDATES.md)
-precedes the scheduled roadmap. One bullet equals one coherent, independently
-validated, non-forced push. High-level design authority is delegated;
-existing-feat rebalances remain approval-gated.
+The September 25 author-directed [spot queue](briefs/SPOT_UPDATES.md) precedes the
+scheduled roadmap. One bullet equals one independently validated, non-forced
+push. High-level design authority is delegated; existing-feat rebalances remain
+approval-gated. SPOT-05 changes presentation/event reporting, not gameplay balance.
 
-SPOT-04 repairs the existing client LoopAudio owner and shared server hostile
-sound/death authority. Valid corpses and dormant/retired actors cannot renew
-ambience. Beam warning/sweep sound is bound to its exact finite attack and
-stopped on cancellation, death, removal and retirement. Reset/rebuild uses the
-existing topology build identity, including same-seed regeneration. Native
-SND_STOP events pass generation/legacy filters; living loop limits, loudness,
-attack cues and intentional one-shot death sounds remain. New sound mutation
-stays outside the synchronous lethal-damage stack. The reported missing Manhack
-startup path is replaced by the stock charge soundscript, not a new engine loop.
+The canonical server stream now removes routine passive Magic/full-cap noise,
+restores omitted defense/status/duration/recovery/Morale/HP-growth dice and
+meaningful outcomes, and uses one event serial for the union of combat
+participants and eligible nearby listeners. Private progression remains private.
+Life observers bind exact Hero/run ownership; human Soldiers do not display the
+dormant Hero name. Both client views retain identical semantic records and order,
+with bounded history and ordered long-dice parts. The GDD's explicit passive-Magic
+exception and the canonical manual are reconciled.
 
-Fresh focused evidence: **74/74 audio lifecycle checks**, **55/55 Razor** and
-**44/44 Climber**. The final audio harness against the unchanged parent gives
-18 passes/56 failures, including absent new ownership APIs; these are not 56
-independent gameplay defects. All 731 Lua files pass syntax. Bounded integration:
-**227 passing suites, one unchanged-parent harness failure, and two campaign-wide suites not run** (coverage across the bounded matrix and explicit reruns, not a full 230-suite pass). Failures and unavailable checks remain explicit in
-[SPOT-04 validation](validation/SPOT_04_ENEMY_AUDIO.md) and its exact gate receipt.
-Headless assertions do not establish audible native playback or silence.
+Final local evidence: **76/76 focused assertions, 38/38 selected suites,
+732 Lua-file syntax**, including manual content/transport and unchanged source
+during the gate. Its frozen-tree independent result and published child SHA
+belong to the delivery receipt. See [SPOT-05 validation](validation/SPOT_05_DIE_LOGGER.md), the stored
+receipt and preserved initial attempts. This is not a full campaign-matrix pass
+or native rendering/multiplayer acceptance. B29 uses its recorded-layout runtime
+mode; the extra 20-seed exposure sweep is not claimed.
 
-SPOT-03 now has author-observed visibility and basic combat for one controlled
-Razor after two placement refusals, not natural exposure or full native
-acceptance. Its Occupation/60-roamer session was developer-dense, with no planned
-or roaming Razor. **Move on; no further dedicated Razor test is prerequisite.**
-See the dated supplement in [SPOT-03 validation](validation/SPOT_03_RAZOR.md).
-SPOT-01's separate 50 focused checks also freshly pass; its native two-player
-readout and SPOT-02's full native acceptance remain open.
+SPOT-04 audio remains implemented and native-unaccepted. Its historical gate is
+227 passing suites, one unchanged-parent Color-fixture failure and two omitted
+campaign suites, not a full 230-suite pass. Fresh SPOT-05 regressions pass
+SPOT-04 74/74, Razor 55/55 and Climber 44/44; the separate SPOT-01 50-check result
+is inherited from SPOT-04. Earlier validation records are not rewritten.
 
-Next ordered development bullet: **SPOT-05 — Die Logger audit**. Audit actual
-server events and shared live/history rendering; propose the finite gate before
-repairing missing meaningful events or routine Magic-at-100 noise. SPOT-04's
-compact native audio gate remains open and does not become a Razor retest.
+Shael's one controlled Razor proves only that instance's visibility/basic combat.
+Its Occupation/60-roamer upload was developer-dense, not natural release exposure.
+**No dedicated Razor retest or natural sighting is prerequisite.** Collect natural
+sightings opportunistically; keep the documented native limits and provenance.
+
+Next ordered development bullet: **SPOT-06 — Gordon phase one**. Read current
+Gordon rules and code, define one finite gate, and improve the follow-up-hit
+window without infinite loops, teleport cues and contextual taunts. Do not batch
+SPOT-07 fakes, SPOT-08 turrets or SPOT-09 Damsel's Revenge into it.
 
 ## Existing release gates — unchanged
 

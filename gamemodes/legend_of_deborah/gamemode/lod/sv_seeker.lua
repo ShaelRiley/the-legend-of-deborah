@@ -318,7 +318,7 @@ local function damagePlayer(seeker, target)
             attackEvent = contract.attackEvent, damageContract = contract, actorDamageResolved = true})
         Rolls:QueueDamageReport(info, function(finalDamage)
             contract.final = finalDamage
-            Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, seeker, target))
+            Rolls:_Send({target,seeker}, 1, Rolls:_HostileRollText(contract, seeker, target))
         end)
     end
     target:TakeDamageInfo(info)

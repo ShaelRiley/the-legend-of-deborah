@@ -210,7 +210,7 @@ function H:Damage(ent,target)
     LOD.RPGStatusElements:AttachDamageContext(info,{physical=true,melee=true,attackEvent=contract.attackEvent,
         damageContract=contract,actorDamageResolved=true})
     rolls:QueueDamageReport(info,function(final)
-        contract.final=final;rolls:_Send(target,1,rolls:_HostileRollText(contract,ent,target))
+        contract.final=final;rolls:_Send({target,ent},1,rolls:_HostileRollText(contract,ent,target))
     end)
     target:TakeDamageInfo(info)
 end

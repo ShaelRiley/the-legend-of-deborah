@@ -32,9 +32,8 @@ local function statusNotice(target, source, id, result, detail)
     local fields = {status = id, outcome = result, target = IsValid(target) and target:EntIndex() or -1,
         source = IsValid(source) and source:EntIndex() or -1, dc = detail and detail.dc,
         save = detail and detail.save}
-    local key = "status:" .. tostring(fields.target) .. ":" .. id .. ":" .. result
-    emit(target, family, text, "status_result", fields, key)
-    if source ~= target then emit(source, family, text, "status_result", fields, key) end
+    fields.event = "status_result"
+    P:CombatEvent(target, source, family, text, fields)
 end
 
 observe(LOD.RPGStatusElements, "Apply", nil, function(_, result, _, target, id, source)
@@ -50,8 +49,8 @@ end, function(entry, result, _, target, id, reason)
     if not result[1] or not entry then return end
     local text = P:FeedbackName(target) .. ": " .. string.upper(id) .. " ENDED (" .. tostring(reason or "cleared") .. ")"
     local fields = {status = id, outcome = reason or "cleared", target = IsValid(target) and target:EntIndex() or -1}
-    emit(target, "clear", text, "status_clear", fields)
-    if entry.source ~= target then emit(entry.source, "clear", text, "status_clear", fields, "clear:" .. id) end
+    fields.event = "status_clear"
+    P:CombatEvent(target, entry.source, "clear", text, fields)
 end)
 hook.Add("LODStatusApplied", "LOD_FeedbackMorale", function(target, id, source)
     if id == "morale_flee" then guarded(statusNotice, target, source, id, "applied") end
@@ -64,9 +63,13 @@ observe(LOD.RPGStatusElements, "ResolveElementDamage", nil, function(_, result, 
     local fields = {element = detail.element, outcome = detail.kind, multiplier = detail.multiplier,
         incoming = amount, resolved = result[1], target = IsValid(target) and target:EntIndex() or -1}
     local family = detail.kind == "weakness" and "weakness" or "resist"
-    local key = "element:" .. fields.target .. ":" .. detail.element
-    emit(attacker, family, text, "element_result", fields, key)
-    if attacker ~= target then emit(target, family, text, "element_result", fields, key) end
+    if detail.rolls then
+        text = text .. string.format("; d%d [%s], selected %d", detail.dieSides,
+            table.concat(detail.rolls, ", "), detail.index)
+        fields.rolls, fields.dieSides, fields.selected = detail.rolls, detail.dieSides, detail.index
+    end
+    fields.event = "element_result"
+    P:CombatEvent(target, attacker, family, text, fields)
 end)
 
 local Rules = LOD.RPGAbilityRules
@@ -82,22 +85,54 @@ for _, spec in ipairs({{"ApplyFeedbackLoop", "FEEDBACK LOOP"}, {"ApplyArcRecover
     local method, label = spec[1], spec[2]
     observe(Effects, method, nil, function(_, result, _, actor)
         if (tonumber(result[1]) or 0) > 0 then
-            emit(actor, "proc", string.format("%s — +%g Magic", label, result[1]),
-                method, {restored = result[1]}, method)
+            P:CombatEvent(actor, nil, "proc", string.format("%s: %s — +%g Magic",
+                P:FeedbackName(actor), label, result[1]), {event=method, restored=result[1]})
         end
     end)
 end
+
+observe(Effects, "_TickActor", function(_, actor)
+    return IsValid(actor) and {hp=actor:Health()} or nil
+end, function(before, _, _, actor)
+    if not before or not IsValid(actor) then return end
+    local after = actor:Health()
+    if after > before.hp then
+        P:CombatEvent(actor, nil, "resource", string.format("%s: HEALTH REGENERATION +%g HP (%g → %g)",
+            P:FeedbackName(actor), after-before.hp, before.hp, after),
+            {event="health_regeneration", restored=after-before.hp, before=before.hp, after=after})
+    end
+end)
 
 local function heroState(actor)
     local ps = LOD.RunManager:GetPlayerState(actor)
     return ps and ps.progressionState
 end
+local function growthDice(actor, state, previousLevel)
+    local ply = P:FeedbackPlayer(actor)
+    if not ply or not state then return end
+    for level = previousLevel + 1, state.level do
+        local roll = state.hitDieRollsByLevel and state.hitDieRollsByLevel[level]
+        if roll then
+            P:DiceEvent(ply, nil, "LEVEL " .. level .. " HP GROWTH", roll.formula,
+                roll.values, roll.total, {event="progression_hp_dice", family="progression", level=level,
+                    detail="hit-die total before ability/feat adjustments"})
+        end
+    end
+end
+observe(LOD.CharacterProgressionSystem, "AdvanceHeroToLevel", function(_, actor)
+    local state = heroState(actor)
+    return state and {owner=state, level=state.level}
+end, function(before, result, _, actor)
+    local state = heroState(actor)
+    if before and result[1] and state == before.owner then growthDice(actor, state, before.level) end
+end)
 observe(LOD.CharacterProgressionSystem, "AwardHeroXP", function(_, actor)
     local state = heroState(actor)
-    return state and state.xp or 0
+    return state and {owner=state, xp=state.xp or 0}
 end, function(before, _, _, actor)
     local state = heroState(actor)
-    local gained = state and (state.xp or 0) - (before or 0) or 0
+    if not before or state ~= before.owner then return end
+    local gained = (state.xp or 0) - before.xp
     if gained > 0 then emit(actor, "resource", string.format("+%d Hero XP (%d total)", gained, state.xp),
         "hero_xp", {granted = gained, xp = state.xp}) end
 end)
@@ -105,14 +140,21 @@ local function soldierState(target)
     return type(target) == "table" and target.actorType == "human_soldier" and target
         or target and target.LODHumanSoldierProgressionState
 end
+observe(LOD.SoldierProgression, "Attach", function(_, actor)
+    return soldierState(actor)
+end, function(before, result, _, actor)
+    local state = soldierState(actor)
+    if state and state ~= before and result[1] == state then growthDice(actor, state, 1) end
+end)
 observe(LOD.SoldierProgression, "Award", function(_, target)
     local state = soldierState(target)
-    return state and {xp = state.soldierXP, level = state.level}
+    return state and {owner=state, xp = state.soldierXP, level = state.level}
 end, function(before, _, _, target)
     local state = soldierState(target)
-    if not before or not state or state.soldierXP <= before.xp then return end
+    if not before or state ~= before.owner or state.soldierXP <= before.xp then return end
     for _, ply in ipairs(player.GetAll()) do
         if ply.LODHumanSoldierProgressionState == state then
+            growthDice(ply, state, before.level)
             local advanced = state.level > before.level
             emit(ply, advanced and "progress" or "resource", string.format("+%d SoldierXP (%d total) — Soldier Level %d",
                 state.soldierXP - before.xp, state.soldierXP, state.level), "soldier_xp",
@@ -127,24 +169,32 @@ local lifeSnapshots = setmetatable({}, {__mode = "k"})
 observe(LOD.RunManager, "_SyncPlayerVars", nil, function(_, _, self, ply)
     if not IsValid(ply) then return end
     local ps = self:GetPlayerState(ply)
-    if not ps then return end
+    if not ps then lifeSnapshots[ply] = nil; return end
     local current = {lives = ps.lives or 0, soldier = self:IsSoldierControl(ply),
         eliminated = ps.eliminated == true, wait = ps.soldierRespawnWait == true,
         epoch = self.State.CampaignEpoch}
     local before = lifeSnapshots[ply]; lifeSnapshots[ply] = current
-    if not before or current.epoch ~= before.epoch then return end
+    -- Compare only the SAME retained Hero. A fresh Hero is not a revival, and
+    -- replacement run objects may deliberately reuse a numeric campaign seed.
+    current.owner, current.identity, current.progression, current.run = ps, ps.identity, ps.progressionState, self.State
+    if not before or current.epoch ~= before.epoch or current.owner ~= before.owner
+        or current.identity ~= before.identity or current.progression ~= before.progression
+        or current.run ~= before.run then return end
+    -- Never ship native/state references into telemetry.
+    local fields = {lives=current.lives, soldier=current.soldier, eliminated=current.eliminated,
+        wait=current.wait, epoch=current.epoch}
     if current.lives < before.lives then
         emit(ply, "danger", current.eliminated and "HERO ELIMINATED — await revival or request Soldier role"
-            or string.format("LIFE LOST — %d remaining", current.lives), "life_lost", current)
+            or string.format("LIFE LOST — %d remaining", current.lives), "life_lost", fields)
     elseif current.lives > before.lives then
         emit(ply, "life", string.format("%s — %d %s", before.eliminated and "HERO REVIVED" or "LIFE GAINED",
-            current.lives, current.lives == 1 and "life" or "lives"), "life_gained", current)
+            current.lives, current.lives == 1 and "life" or "lives"), "life_gained", fields)
     end
     if current.soldier and not before.soldier then
-        emit(ply, "soldier", "SOLDIER ACTIVE — disposable incarnation; SoldierXP starts fresh", "soldier_enter", current)
+        emit(ply, "soldier", "SOLDIER ACTIVE — disposable incarnation; SoldierXP starts fresh", "soldier_enter", fields)
     elseif before.soldier and not current.soldier then
         emit(ply, "soldier", current.wait and "SOLDIER LOST — incarnation retired; respawn delay"
-            or "SOLDIER RETIRED — Hero queue / staging", "soldier_exit", current)
+            or "SOLDIER RETIRED — Hero queue / staging", "soldier_exit", fields)
     end
 end)
 
@@ -197,14 +247,6 @@ end, function(name, result, _, hostile)
     if settlement and settlement.killer then emit(settlement.killer, "kill", name, "kill_settled") end
 end)
 
-local resourceSnapshots = setmetatable({}, {__mode = "k"})
-observe(LOD.Magic, "_Sync", nil, function(_, _, _, ply, state)
-    if not IsValid(ply) or not state then return end
-    local previous = resourceSnapshots[ply]
-    local epoch = LOD.RunManager.State.CampaignEpoch
-    resourceSnapshots[ply] = {state = state, magic = state.magic, epoch = epoch}
-    if previous and previous.state == state and previous.epoch == epoch
-        and previous.magic < 100 and state.magic >= 100 then
-        emit(ply, "resource", "MAGIC FULL — 100", "magic_full")
-    end
-end)
+-- Ordinary passive Magic sync and full-cap crossing are HUD state, not events
+-- (author-directed SPOT-05 exception). Authored restoration, spend and diversion
+-- keep their own canonical producers; never infer their cause from pool deltas.

@@ -168,8 +168,7 @@ function WizardOffense:ApplyFeedback(wizard, attacker, diceCount, intBonus)
     if combatRolls._Send and combatRolls._DamageEventText then
         local text = combatRolls:_DamageEventText(wizard, contract.formula, resolved, attacker,
             "[rolls " .. LOD.DieLogger:RollBreakdown(contract) .. "]", nil, nil, "Feedback")
-        if wizard:IsPlayer() then combatRolls:_Send(wizard, 3, text, "magic", {event = "feedback", damage = resolved}) end
-        if attacker:IsPlayer() then combatRolls:_Send(attacker, 1, text, "magic", {event = "feedback", damage = resolved}) end
+        combatRolls:_Send({wizard, attacker}, 3, text, "damage", {event = "feedback", damage = resolved})
     end
     return true
 end

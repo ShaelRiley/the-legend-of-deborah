@@ -7,7 +7,7 @@ DMG_BULLET,DMG_BUCKSHOT,DMG_CLUB,DMG_SLASH,DMG_FALL,DMG_CRUSH=1,2,3,4,5,6
 local world={};game={GetWorld=function() return world end}
 util={AddNetworkString=function() end};net={Start=function() end,Send=function() end}
 hook={Add=function() end}
-local draws,reports=0,{}
+local draws,reports,audiences=0,{},{}
 local rngValue=0.1
 LOD={Equipment={BlockCap=.33},RunManager={State={Graph={},LevelSeed=1}},
     RPGAbilityRules={Stats={},ProgressionState=function(_,p) return p.state end,
@@ -16,7 +16,7 @@ LOD={Equipment={BlockCap=.33},RunManager={State={Graph={},LevelSeed=1}},
         DamageContext=function(_,info) return info.context end,
         AttachDamageContext=function(_,info,c) info.context=c end},
     CombatRolls={_RNG=function() return {Float=function() draws=draws+1;return rngValue end} end,
-        _Send=function(_,_,_,text) reports[#reports+1]=text end,EntityDisplayName=function() return 'Hero' end}}
+        _Send=function(_,actors,_,text) reports[#reports+1]=text;audiences[#audiences+1]=actors end,EntityDisplayName=function() return 'Hero' end}}
 local function actor(id)
     return {id=id,state={equipmentBlockChanceContribution=.8,derivedStats={dodgeChanceContribution=.33}},
         IsPlayer=function() return true end,Alive=function() return true end,
@@ -43,7 +43,8 @@ assert(not R:ApplyDodge(target,a));assert(R:ApplyBlock(target,a))
 assert(a.damage==0 and a.force==vector_origin and a.context.blocked)
 local initial=draws
 for i=1,8 do assert(R:ApplyBlock(target,hit(event))) end
-assert(draws==initial and #reports==2,'One event/pellet group, one report per participant')
+assert(draws==initial and #reports==1 and audiences[1][1]==target and audiences[1][2]==source,
+    'One canonical event/pellet group includes both participants without duplicate sends')
 rngValue=.8;event={};assert(not R:ApplyBlock(target,hit(event)))
 initial=draws;rngValue=0
 assert(not R:ApplyBlock(target,hit(event)) and draws==initial,'Failed result also cached')

@@ -1,96 +1,101 @@
-# Resume The Legend of Deborah — SPOT-05 Die Logger audit
+# Resume The Legend of Deborah — SPOT-06 Gordon phase one
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-SPOT-04 parent: `780d3d3b50f1026ba4a15a535b7569b6b09e0f71`.
-The delivery receipt supplies the verified SPOT-04 child SHA. Fetch current main
-and preserve intervening/uncommitted work before editing. Never use a local
-source-reconstruction anchor as the upstream parent.
+SPOT-05 real parent: `789d63c843206061b416f0d108e7414e6aba0763`.
+Use the delivery receipt's verified SPOT-05 child SHA, then fetch current main
+and preserve intervening/uncommitted work. The parent above is historical, not
+the new HEAD. Never use a source-reconstruction anchor as an upstream parent.
 
 ## Orientation
 
-Read AGENTS.md, DEVELOPMENT_PLAN.md, briefs/SPOT_UPDATES.md,
-validation/SPOT_04_ENEMY_AUDIO.md and TEST_LOGGING.md. Live GDD:
-`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
-SPOT-04 used live 00 -> 01 -> 06 lifecycle rules and the explicit author audio
-contract; existing design was repaired without changing the live GDD. For
-SPOT-05 use 00 -> 01 -> 06 shared RPG-event/live/history parity, then only needed
-subsystem rules; exact HUMAN detail only where the index requires it.
+Read AGENTS.md, docs/DEVELOPMENT_PLAN.md, docs/briefs/SPOT_UPDATES.md,
+docs/validation/SPOT_05_DIE_LOGGER.md and docs/TEST_LOGGING.md.
+Live GDD: `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
+Follow 00 → 01 → the needed Gordon/world/combat/lifecycle/tuning rules. Read exact
+HUMAN detail only at the index's named Gordon anchor where normalized rules leave
+it necessary. Audit actual current phase-one behavior before choosing the repair.
 
-## Just banked — SPOT-04
+## Just banked — SPOT-05
 
-Client LoopAudio rejects corpse/dormant/retired owners, stops before lease
-expiry on replicated death, and rejects stale build owners using the existing
-ClientTopologyIdentity/BuildSerial. PVS/full-update suspension is reversible for
-living owners; true removal, shutdown and superseded module references cannot
-restart loops. Strong native-handle ownership, limits gas2/watcher2/fuse4,
-volumes, pitches and ordinary leases remain. Fuse ownership stays with the
-projectile rather than the caster.
+One canonical server event/serial now reaches each eligible participant/nearby
+listener once, including NPC-only outcomes. Private progression stays private.
+Routine passive Magic refill/full-cap notifications are removed at the producer;
+actual Magic spends, diversion and authored proc restoration remain. The live
+GDD's narrow exception was reconciled in tab 06 and verified by readback.
 
-Server HostileDeathAudio tracks the existing Beam warning/sweep's emitted sound
-identifier and exact attack/actor/run/graph/build. Cancellation, timeout, death,
-removal, builder cleanup, regeneration, campaign reset and shutdown retire only
-owned audio. Native StopSound and new retirement replication occur outside the
-lethal-damage stack. Existing generation and Seeker asset filters allow SND_STOP,
-including combined flags. Intentional death one-shots and ordinary living cues
-remain. Razor/Redliner's shared dive warning now uses NPC_Manhack.ChargeAnnounce;
-the reported-missing mh_engine_start1.wav was also removed from Razor footsteps.
-Mounted asset decoding and audible playback are still native-unverified.
+Failed/successful defense rolls, ordinary misses, status save/duration/recovery
+and damage dice, elemental choice detail, Morale cooldown rolls, real HP
+regeneration and committed Hero/Soldier HP-growth dice now retain important
+missing information. They reuse original rolls and settlement, not new RNG.
+Identity spans, exact-life/run baselines, shared live/history order and bounded
+history are preserved. Soldier readouts identify the active Soldier, not the
+stored Hero. The canonical manual is updated and both renderings regenerated.
 
-Fresh checks: 74/74 focused audio; 55/55 Razor; 44/44 Climber; 50/50 SPOT-01
-identity checks; 731 Lua-file syntax.
-**227 passing suites, one unchanged-parent harness failure, and two campaign-wide suites not run** (coverage across the bounded matrix and explicit reruns, not a full 230-suite pass). The unchanged parent's teammate-identity test still lacks Color.
-Initial harness failures and bounded/omitted campaign sampling are preserved in
-the SPOT-04 gate, not converted to passes. Native GMod audibility, corpse silence,
-living-neighbor isolation, regeneration/reset and multiplayer remain unaccepted.
-Use the compact local procedure in SPOT_04_ENEMY_AUDIO.md. Fully restart GMod
-for the added audio lifetime fields; do not validate an old/new hot-load mixture.
+Final local gate: 76 focused assertions, 38/38 selected suites, 732 Lua syntax;
+source unchanged throughout. This includes manual content/transport. Use the
+delivery receipt for the exact frozen-tree and
+independent GitHub result, not an assumed full campaign-matrix pass. B29 uses
+existing --runtime for the recorded layout/lifecycle, not the extra 20-seed
+exposure sweep. Initial transport fixtures and a total-only-save presentation
+exception were repaired; initial failures and interrupted sampling remain in
+SPOT_05_ATTEMPTS.txt. Native readout/transport/multiplayer acceptance is pending.
 
-## Updated SPOT-03 observations and sequencing
+## Next single checkpoint — SPOT-06
 
-Shael's third controlled spawn succeeded after two legal-placement refusals.
-That Razor was visible, attacked, dealt/took damage and was defeatable: visibility
-and basic combat passed only for that instance. No natural Razor was noticed
-before the test, including play past Red Gate. Status changed from all-zero
-Razor counts to one live non-roaming encounter actor. The reported population
-upload was Occupation, 60 roamers, zero planned/roaming Razor, developerMode=true
-and developerDense=true, with all34 installed/mounted source hashes matching.
-It is not release exposure/pacing evidence; the RPG summary recorded no validator
-result. The blade=0 row's timing is unresolved. Prior uploads were summarized by
-the author in the handoff, not independently re-read in SPOT-04; preserve that
-provenance. Details remain in the dated SPOT_03_RAZOR.md supplement.
+Improve Gordon phase one only: allow a longer follow-up-hit window without an
+infinite stun/damage loop; give teleport departure and destination clear cues;
+make taunts quicker, more frequent and contextual. Use existing Gordon state,
+audio and combat authorities. Define the finite production-module gate before
+implementation, with exact attack/phase/run/graph ownership, interruption/death,
+reset/late join, bounded work and preserved progression/reward rules. Reconcile
+necessary delegated tuning in the live GDD before dependent changes. Do not
+implement SPOT-07 Fake Gordon tells, SPOT-08 turrets, SPOT-09 Damsel's Revenge or
+feat rebalances in this checkpoint. Validate, non-force push and verify remote
+parent/tree/SHA. Native timing, cue visibility and audibility remain distinct.
 
-**Move on.** No dedicated Razor retest or natural sighting is prerequisite.
-Collect natural sightings opportunistically during ordinary play, optionally
-`lod_razor_status; lod_population_evidence`; separate developer-dense from release
-sessions. Full Razor absence resolution, stairs/blades/Held/safety/co-op remain
-unverified. Do not force spawns or retune density merely to manufacture exposure.
+## Preserved SPOT-04 and SPOT-03 evidence
 
-## Next single checkpoint — SPOT-05
+SPOT-04 source remains at historical 789d63c843206061b416f0d108e7414e6aba0763.
+Client LoopAudio rejects corpse/dormant/retired/stale-build owners, reversibly
+suspends living PVS owners, and cannot restart true removals/shutdown/old modules.
+Native loop ownership, gas2/watcher2/fuse4 limits, volume/pitch and projectile-owned
+Fuse remain. Beam warning/sweep retires only its exact owned attack across death,
+removal, cancellation, timeout, reset and cleanup, outside the lethal native stack.
+SND_STOP passes existing filters; living cues and death one-shots remain. Razor/
+Redliner charge warning uses NPC_Manhack.ChargeAnnounce; the missing engine-start
+path is removed from footsteps. Actual mounted assets/audibility remain unverified.
 
-Audit actual canonical server RPG events, producers, routing/recipient rules and
-shared live/history formatting before changing code. Restore important omitted
-events; remove routine noise such as Magic reaching100 through the canonical
-stream rather than independently filtering one surface. Preserve complete
-underlying authoritative gameplay dice, meaningful resource/life/status outcomes,
-causal grouping, semantic identity colors and bounded retained history. Reconcile
-the explicit author noise-removal direction with the current live parity law.
-Define a finite production-module gate for representative missing/noisy events,
-shared parity/order/history, life/reset/late-join ownership and bounded work.
-Implement only this bullet; native readout observation remains distinct from
-headless event assertions. Validate, non-force push and verify the remote SHA.
-Existing-feat rebalances require approval; this is not a feat-balance task.
+SPOT-04 historical broader evidence is 227 passing suites, one unchanged-parent
+Color-fixture failure and two campaign-wide suites not run, not a full 230 pass.
+SPOT-05 freshly reruns 74 audio, 55 Razor and 44 Climber checks. SPOT-01's separate
+50-check result is inherited. Fully restart GMod for SPOT-04 lifetime fields;
+never validate a mixed hot load. Audio native evidence requires a listening report
+or clip plus console_latest.txt and rpg_summary_latest.txt.
 
-## Preserved constraints and release order
+Shael's third controlled Razor spawn succeeded after two legal-placement refusals;
+that one actor was visible, attacked, dealt/took damage and was defeatable. No
+natural Razor was noticed before the test, including past Red Gate. Reported
+population: Occupation, 60 roamers, zero planned/roaming Razor, developerMode=true,
+developerDense=true, all34 installed/mounted source hashes matching. This is not
+release exposure/pacing evidence; no RPG validator result was recorded and blade=0
+row timing remains unresolved. These uploads were summarized in the author handoff,
+not independently re-read in SPOT-04 or SPOT-05. Preserve that provenance.
 
-Preserve SPOT01/02/03/04, B28 physical queries, B29 sanctuary/graduated combined
-pressure, population limits/Bestiary variety, Crate appearance and P1-P4. Earlier
-native acceptance limits remain explicit. Do not publish Workshop or deploy or
-restart VPS. Local acceptance -> Workshop item3791535712 package/source parity
--> matching VPS remains the release order. No Workshop/VPS operation happened
-in SPOT-04. Default audio evidence: console_latest.txt + rpg_summary_latest.txt
-and a brief listening report/clip; logs alone cannot establish sound audibility.
+Move on: no dedicated Razor retest or natural sighting is prerequisite. Observe
+natural appearances during ordinary play; optional `lod_razor_status;
+lod_population_evidence`. Separate developer-dense from release sessions. Full
+absence resolution, stairs/blades/Held/safety/co-op remain unverified. Do not
+force spawns or retune density to manufacture exposure.
 
-After spot queue: Low-End PC Optimization, September28-October4,2026 -> Big Loot
--> Event System -> comprehensive systems audit. At context pressure finish and
-preserve the checkpoint, verify its remote result and supply a current-state
-handoff for a new conversation; never promise background development.
+## Release and roadmap constraints
+
+Preserve SPOT01–05, B28 physical queries, B29 sanctuary/graduated pressure,
+population limits/Bestiary variety, accepted Crate appearance and P1–P4. No Workshop
+publication, VPS deployment or VPS restart. Local acceptance → Workshop item
+3791535712 package/source parity → matching VPS remains the release sequence.
+No Workshop/VPS action happened in SPOT-05. All earlier native gates remain open.
+
+After the spot queue: Low-End PC Optimization, September 28–October 4, 2026 →
+Big Loot → Event System → comprehensive systems audit. Before context pressure,
+finish/preserve the checkpoint, verify its remote result, and supply a current
+handoff instructing Shael to start a new conversation. No background development.

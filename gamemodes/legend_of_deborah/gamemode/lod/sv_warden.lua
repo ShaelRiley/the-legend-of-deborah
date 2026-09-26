@@ -185,7 +185,7 @@ function W:Damage(e,p,kind,shared)
     info:SetDamageType(kind=="crowbar" and DMG_CLUB or (kind=="bomb" and DMG_BLAST or DMG_ENERGYBEAM))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)
-    rolls:QueueDamageReport(info,function(final) contract.final=final;rolls:_Send(p,1,rolls:_HostileRollText(contract,e,p)) end)
+    rolls:QueueDamageReport(info,function(final) contract.final=final;rolls:_Send({p,e},1,rolls:_HostileRollText(contract,e,p)) end)
     p:TakeDamageInfo(info)
 end
 function W:AddHazard(w,kind,pos,velocity,target,now)

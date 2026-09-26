@@ -63,6 +63,25 @@ establish audible playback or silence. The existing 34-file population manifest
 remains a population fingerprint, not exhaustive proof of all SPOT-04 audio
 modules; retain the exact installed checkout SHA and use a fresh installation.
 
+## SPOT-05 Die Logger acceptance
+
+Use `validation/SPOT_05_DIE_LOGGER.md` for the compact normal-play procedure.
+Fully restart the exact local candidate, watch the lower-right event tail and
+press L to compare the same sentence, dice, ordered parts and semantic identity
+colors. History lasts longer than the HUD; it does not receive different events.
+Passive Magic refill/reaching 100 should be silent in both views, while actual
+spends/diversion/proc restoration, Health Regeneration and meaningful dice remain.
+Observe available status/defense/life events opportunistically, not by requiring
+rare rolls or forced enemy exposure. Multiplayer/private-recipient behavior
+requires native multiplayer evidence and is not established by a headless pass.
+
+Default upload: **console_latest.txt + rpg_summary_latest.txt**, plus a short
+readability report or screenshot/clip of a discrepancy. Detailed RPG session
+records are only needed for a specific ordering investigation. The existing
+release-mode detailed-logger limitations remain; absent detailed records are not
+proof that combat did not happen. Neither logs nor a generic validator alone
+establish visible HUD/history parity, sound or Source transport acceptance.
+
 ## Primary evidence package
 
 ### `console_latest.txt` — exact Garry's Mod console mirror

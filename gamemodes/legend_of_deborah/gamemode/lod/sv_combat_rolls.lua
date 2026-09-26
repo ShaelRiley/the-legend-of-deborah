@@ -267,9 +267,8 @@ function Rolls:ReportEnemyHealth(hostile, contract, size, campaignPartyScale, fi
         entityDisplayName(hostile, "Hostile"), contract.formula, resolution,
         valueList(contract.values), size or 1, campaignPartyScale or 1,
         math.max(1, math.floor((finalHealth or 1) + 0.5)))
-    for _, ply in ipairs(player.GetHumans()) do
-        self:_Send(ply, 2, text)
-    end
+    -- One generation event for the existing audience, not N public fan-outs.
+    self:_Send(player.GetHumans(), 2, text, "progression", {event="enemy_health_roll"})
 end
 
 -- Actor-owned damage dice enter one semantic seam before weapon wrappers add
@@ -388,7 +387,7 @@ function Rolls:ApplyEquipmentContact(attacker,target,move,context)
     self.Stats.playerAttacks=(self.Stats.playerAttacks or 0)+1
     local extra=math.max(0,#(contract.values or {})-contract.baseDice)
     if extra>0 then self:EmitDiceExplosionFX(attacker,move.id,extra,1) end
-    self:_Send(attacker,0,self:_DamageEventText(attacker,LOD.DieLogger:DamageFormula(contract),
+    self:_Send({attacker,target},0,self:_DamageEventText(attacker,LOD.DieLogger:DamageFormula(contract),
         actual,target,self:_PlayerRollDetail(contract),nil,"Hostile",move.id))
     return true
 end
@@ -476,7 +475,7 @@ function Rolls:_FinishShotgunFeed(ply, contract)
             local detail = string.format("[%d/%d pellets; rolls %s; shell share 1/%d per hit]", hits,
                 contract.pellets or 6, LOD.DieLogger:RollBreakdown(targetContract), SHOTGUN_SHARE_COUNT)
             contract.feedReported = true
-            self:_Send(ply, 0, self:_DamageEventText(ply, LOD.DieLogger:DamageFormula(targetContract) or "1d6!", damage,
+            self:_Send({ply,target}, 0, self:_DamageEventText(ply, LOD.DieLogger:DamageFormula(targetContract) or "1d6!", damage,
                 target, detail, nil, (contract.targetNames or {})[target] or "Hostile", "shotgun"))
         end
     end
@@ -589,7 +588,7 @@ end
 -- the engine's synchronous hit callbacks, without inventing a hit or new RNG.
 function Rolls:_FinishExplodedMiss(ply, contract)
     if not IsValid(ply) or contract.feedReported then return end
-    if #(contract.values or {}) <= (contract.baseDice or 1) then return end
+    -- Even a non-exploding miss consumed an authoritative gameplay roll.
     contract.feedReported = true
     self:_Send(ply, 0, self:_DamageEventText(ply, contract.formula, 0, nil,
         self:_PlayerRollDetail(contract), nil, "no damageable target", contract.label or contract.weaponClass))
@@ -738,7 +737,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             end
 
             Rolls:QueueDamageReport(dmginfo, function(finalDamage)
-                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(contract) or "1d20",
+                Rolls:_Send({attacker,target}, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(contract) or "1d20",
                     finalDamage, target, detailStr, nil, "Hostile", "grenade"))
             end)
         elseif weaponClass == "weapon_crowbar" and dmginfo:IsDamageType(DMG_CLUB) then
@@ -762,7 +761,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             end
             local detail = Rolls:_PlayerRollDetail(rolled)
             Rolls:QueueDamageReport(dmginfo, function(finalDamage)
-                Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(rolled),
+                Rolls:_Send({attacker,target}, 0, Rolls:_DamageEventText(attacker, LOD.DieLogger:DamageFormula(rolled),
                     finalDamage, target, detail, nil, "Hostile", "crowbar"))
             end)
         elseif weaponClass == "weapon_shotgun" then
@@ -800,7 +799,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
 
                 contract.feedReported = true
                 Rolls:QueueDamageReport(dmginfo, function(finalDamage)
-                    Rolls:_Send(attacker, 0, Rolls:_DamageEventText(attacker, formula,
+                    Rolls:_Send({attacker,target}, 0, Rolls:_DamageEventText(attacker, formula,
                         finalDamage, target, detail, nil, "Hostile", PLAYER_WEAPONS[contract.weaponClass].source))
                 end)
             end
@@ -825,7 +824,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
         end
         Rolls:QueueDamageReport(dmginfo, function(finalDamage)
             contract.final = finalDamage
-            if target:IsPlayer() then Rolls:_Send(target, 1, Rolls:_HostileRollText(contract, attacker, target)) end
+            Rolls:_Send({target,attacker}, 1, Rolls:_HostileRollText(contract, attacker, target))
         end)
     end
 end)

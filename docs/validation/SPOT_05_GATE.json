@@ -1,0 +1,512 @@
+{
+  "source_before": "7f486f1129c08b5a7425801ee5d788544723af5fc452d4ed1568b77ddbeb9eac",
+  "source_after": "7f486f1129c08b5a7425801ee5d788544723af5fc452d4ed1568b77ddbeb9eac",
+  "changed_during_gate": [],
+  "sampling": "B29 --runtime: recorded native layout/lifecycle, not the extra 20-seed exposure sweep",
+  "scope": "SPOT-05 selected production/regression suites, not full campaign matrix",
+  "passed": 38,
+  "total": 38,
+  "lua_files": 732,
+  "native_gmod_accepted": false,
+  "results": [
+    {
+      "name": "validate_spot05_die_logger.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot05_die_logger.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "validate_spot05_die_logger.lua.log",
+      "log_sha256": "62c79cbe5241ea4f69afcf87ad48027fc02f0ace3be24ed5db7ea3208a9f922a"
+    },
+    {
+      "name": "test_feedback_language.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_feedback_language.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_feedback_language.lua.log",
+      "log_sha256": "2c2b92b466831fde3a7de8afd70cfa6997cebc0b44eba1c6ad0de1b4f59f583f"
+    },
+    {
+      "name": "test_status_elements.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_status_elements.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_status_elements.lua.log",
+      "log_sha256": "8f88bdc238cfed50ba07a28ddbbbe402c691e8684216d8a13c8538badc7e7ab5"
+    },
+    {
+      "name": "test_equipment_block.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_block.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_equipment_block.lua.log",
+      "log_sha256": "3b80f9d370b3ca93f222ca2bdd8b867391b4e0be4744e4a28bf96836bea435d4"
+    },
+    {
+      "name": "test_cross_feats_dodge.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_cross_feats_dodge.lua.log",
+      "log_sha256": "f2892c05cc9064af17d9b8501fb1163f0de206b7f4725cbbf041a281f2fc259a"
+    },
+    {
+      "name": "test_actor_progression.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_actor_progression.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_actor_progression.lua.log",
+      "log_sha256": "4cae589c28b6b32d4fb861db0548857c354c3a4438b9db47c1b75106b4feb0e7"
+    },
+    {
+      "name": "test_human_soldier_progression.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_human_soldier_progression.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_human_soldier_progression.lua.log",
+      "log_sha256": "5ef4ad4047ffa7a7c6f571f87af2367c9b53abc45435b5576eae87314f86ce67"
+    },
+    {
+      "name": "test_human_soldier_lifecycle.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_human_soldier_lifecycle.lua.log",
+      "log_sha256": "2e1581c13fc2c9ba67a67566299da8039325c22471cc47f8dc94c7276efa2991"
+    },
+    {
+      "name": "test_checkpoint_d_closure.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_closure.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_checkpoint_d_closure.lua.log",
+      "log_sha256": "e69685fdb863406aadfc4b00510f5d6cb538a8217ad0abb0013c8545ea6a6849"
+    },
+    {
+      "name": "test_wizard_balance.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_wizard_balance.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_wizard_balance.lua.log",
+      "log_sha256": "776f8ba38492b3a132d2938275bfc26396305bd977af678cdc7d871c77c9948e"
+    },
+    {
+      "name": "test_gate_e_control_magic.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_e_control_magic.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_gate_e_control_magic.lua.log",
+      "log_sha256": "99d9aee84bb7d0fd2c83df3635bf297579946894047fe5d30298ab5b28c87656"
+    },
+    {
+      "name": "test_gate_e_magic_recovery.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_e_magic_recovery.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_gate_e_magic_recovery.lua.log",
+      "log_sha256": "f51a0ef96beeef34d521c09f22c0e26739126881da4cd1f555d2346d61a60a22"
+    },
+    {
+      "name": "test_gate_e_crowbar.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_e_crowbar.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_gate_e_crowbar.lua.log",
+      "log_sha256": "34ecf991464d3f3ade9a405832017feb5b667419638bbc17319e3eaeda29001f"
+    },
+    {
+      "name": "test_gate_e_pusher.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_e_pusher.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_gate_e_pusher.lua.log",
+      "log_sha256": "aadbb1c2a34a0407b403dfb1e94a31b34312884776cd438f0968a2d18c9ad8a0"
+    },
+    {
+      "name": "test_enemy_update.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_update.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_enemy_update.lua.log",
+      "log_sha256": "f4afe78affc174bfaf3fe3b2f9c20abe9be1c48eb04e6e173fc291ad4c34e3eb"
+    },
+    {
+      "name": "test_monster_defenses.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_monster_defenses.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_monster_defenses.lua.log",
+      "log_sha256": "e43d4dd6940bc238aba5ac8c562540bc16e3d18d5a635817b2effda5a6424790"
+    },
+    {
+      "name": "test_snapshot_delivery.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_snapshot_delivery.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_snapshot_delivery.lua.log",
+      "log_sha256": "1e210cd6aa6bda865f5f4aaaea31642a52bcc85ed2b25a7d02f36815fa34b696"
+    },
+    {
+      "name": "test_potion_projectile.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_potion_projectile.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_potion_projectile.lua.log",
+      "log_sha256": "b610428674699070e4a39bf6d3558d78ceaf123e0ceb9cbdbce37d6a127a3ddd"
+    },
+    {
+      "name": "test_fighting_streets.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_fighting_streets.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_fighting_streets.lua.log",
+      "log_sha256": "a871711ad9465af7e75f490130aea4695305e0878ed03d76d929cdd5805d66e0"
+    },
+    {
+      "name": "test_equipment_moves.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_moves.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_equipment_moves.lua.log",
+      "log_sha256": "9125dd665c9d488b7271c02dadf2674732a56c3ba93ea3cdad2e7fa5fae9cd30"
+    },
+    {
+      "name": "test_checkpoint_c_headless.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_c_headless.lua",
+        "."
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_checkpoint_c_headless.lua.log",
+      "log_sha256": "14494e10138fe28fd8f3e4575b1a42537e0d7b1bed5dedb0662af6379975feba"
+    },
+    {
+      "name": "test_bestiary_b28.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b28.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_bestiary_b28.lua.log",
+      "log_sha256": "057e0aa43f8fd7ead8dec89c29c2123f80c26ed5ab10ffb44c8faebd9f9c2579"
+    },
+    {
+      "name": "test_bestiary_b29.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29.lua",
+        "--runtime"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_bestiary_b29.lua.log",
+      "log_sha256": "d66da56e43f8951467ba3a92b30d98143c34da47609a5b7873e96f5122c2beff"
+    },
+    {
+      "name": "test_bestiary_b29_dispatch.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_dispatch.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_bestiary_b29_dispatch.lua.log",
+      "log_sha256": "e02eb5bb48bdbd37b33bee2c2887ec29811f5816d4b8a0d2a0b7d0f388a6a0dc"
+    },
+    {
+      "name": "test_bestiary_b29_combat.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_combat.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_bestiary_b29_combat.lua.log",
+      "log_sha256": "b4a14de5a5b1d1937e809980f1822667d410246b4dced3045eae029d2324cd11"
+    },
+    {
+      "name": "validate_spot02_climber.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot02_climber.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "validate_spot02_climber.lua.log",
+      "log_sha256": "95547ddbf72565db392a59eb311e09ffe449607c672ff2ff556f1e54ff7538b8"
+    },
+    {
+      "name": "validate_spot03_razor.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot03_razor.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "validate_spot03_razor.lua.log",
+      "log_sha256": "1509b73566fa3a073686102f98c88b30d3a4c8daa600f36e20fc3d87b7c97a32"
+    },
+    {
+      "name": "validate_spot04_audio.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot04_audio.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "validate_spot04_audio.lua.log",
+      "log_sha256": "41530cef2f00bcdbf9946e36396a5c35296f41e1e03876dcc12227af06d4c7e2"
+    },
+    {
+      "name": "test_great_crate_geometry.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_geometry.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_great_crate_geometry.lua.log",
+      "log_sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859"
+    },
+    {
+      "name": "test_great_crate_hull_runtime.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_hull_runtime.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_great_crate_hull_runtime.lua.log",
+      "log_sha256": "a7e81c63ca047de60fbe8cdafa33e21177ba5e35c4c5f63b145e2821c49924a5"
+    },
+    {
+      "name": "test_soldier_character_sheet.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_soldier_character_sheet.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_soldier_character_sheet.lua.log",
+      "log_sha256": "85833fc892157f8ee058508b94b6e7f07b233f1d28913cb0f90027d00bea7abb"
+    },
+    {
+      "name": "test_damsel_audio.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_damsel_audio.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_damsel_audio.lua.log",
+      "log_sha256": "573d76c25eed0077461df9ec6937ee3829fee43d7ae911c0f34fd7e37007ec36"
+    },
+    {
+      "name": "test_manual_transport.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_manual_transport.lua"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_manual_transport.lua.log",
+      "log_sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a"
+    },
+    {
+      "name": "test_manual_document.py",
+      "command": [
+        "python3",
+        "tools/test_manual_document.py"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_manual_document.py.log",
+      "log_sha256": "e7af10c9de7f1dc490fffafc92908c3bda40819722d6db94ca2103ca59ef78dc"
+    },
+    {
+      "name": "test_dev_population_manifest.py",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_dev_population_manifest.py.log",
+      "log_sha256": "9c230c3ab33bd7bad53874840ab4b8cf64368a5e2372bf2a19b23211ec91787f"
+    },
+    {
+      "name": "test_great_crate_assets.py",
+      "command": [
+        "python3",
+        "tools/test_great_crate_assets.py"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "test_great_crate_assets.py.log",
+      "log_sha256": "88d2c019d728fd4c173601fdfa3a4c93181bada6837aeae7358690a18d02e1ed"
+    },
+    {
+      "name": "git_diff_check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "git_diff_check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "lua_syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "<all 732 Lua paths enumerated by tools/test_spot05_gate.py>"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "log": "lua_syntax.log",
+      "log_sha256": "d2c5624f0e1becefb39ae896702ff6d7d36d6da540a53ac47fdd970802f29308"
+    }
+  ],
+  "source_note": "38-suite pre-publication gate. Coordination receipt insertion follows this snapshot; no production/test/manual file changes follow. Independent Actions tests the exact final committed tree.",
+  "pre_manual_gate": {
+    "source_before": "647a31827d42888d58af3b4b3832309271d9c07d6242d0f304da0068b2355f05",
+    "source_after": "647a31827d42888d58af3b4b3832309271d9c07d6242d0f304da0068b2355f05",
+    "passed": 36,
+    "total": 36,
+    "lua_files": 732,
+    "changed_during_gate": []
+  },
+  "candidate_runtime_and_test_sha256": {
+    "tools/test_spot05_gate.py": "6617adabe19d81e2e3b661bf47809d7b32364cd35c9f266d71a1a292f2978bf7",
+    "tools/validate_spot05_die_logger.lua": "14aa4125ae3b17c098c556f3d0a5d78187c66fde8765f5423dab0b5a6b2b457c",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua": "1a3e71881116258a1a40017cd25e951e13da19e8e9dee3f65b18c1706a18eddd",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua": "4df04b8fa48cb383db981a49cd04636f8f33672026523db281ad2edadddcda42",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua": "02601152d27292a5998bf23e99218221ebb3baa16bf6058519be71c59eb513db",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua": "40e78e931b86f436cd1d1d1688cb598e172020e49dce954fc0fd59ab1f65e881",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua": "5fef850a047c44c88f7b500236962fc482fe9f56614899093e9e03e8362b98ea",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua": "f9d8c2d0f9943f0d4466d61a8e99dc55150ab53467631c098eedce9125dacc04",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua": "a809f87c94fb8350e0cce251d6f1406a51018fd520199b444f77ba4448dabc37",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua": "cda302ec46e56f594da3b61a46d61e54d9ba61aaf65d1f1f79dc3a560c9f6ecc",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_combat_feed_semantics.lua": "e314d12fe2ca18298ce8c320638dfc74f3bf790799364e8292893cee36be3cb8",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_combat_rolls.lua": "d75bfaa1e53ef719e1a510b60b3ee91d3603d34b1e4656d24afb4eef81373c4d",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua": "f4444224e6f9ecc5878e65a428a5a43c4f74a68c5285c75090d635ac9fd3a12c",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": "0338de8bb84b5d3f14aa974f836f12a650259843c6a767189bdf7bc05dd0032e",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_observers.lua": "a8c05ce4d0687d19d24ea5ef8a3c33c07c434dd9a34a41328e052f98cdbaba81",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_magic.lua": "7816fb70c43d18d74d0206d8b2137de1ea1f96161f1f7c0c231fdff29205db31",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_magic_forms.lua": "7f479d08e600dc224f5242ee2b3c7917ff8479d64a0517f523b7d4439b4230bb",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua": "a30d6ec802a153a7b8f02704475cea32c3309e0adda18db19b1544e698ed8fab",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua": "7e5fca5f210b04de10423a9de2a1409180434f1413e054d1c8f9711f7b10a0dd",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_block.lua": "f4f9e852181ba2abe8c2fc1ca19a522a0990108d1354221e58007b106bef1fd4",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_aura_burst_feats.lua": "a3206aa1095aaf9acf7eabf5930baa8a641e29cc989b101581e979d85ea27483",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_dodge.lua": "c7e8dcb3ca6880b58613b77283cdefae3f99c70d2b45ec5a3d78a64dfb26a84c",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_blast_proof.lua": "894c0de89ec2d61162b7e07405aa29ff79d0af587ffa81106f12ba70ae0be523",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_presentation.lua": "7b10c380e7035a383fd5ddd6d43be36db0690f4c78ff11ac22f43949629599b9",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua": "3a16edc088c4f959230021087b94313128622c9773e23877c58a08c9fcd4c316",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_wizard_feedback.lua": "00a2de6d39c548875a28c60fafa60dac97e19adba46d93bf3c4831b96fdbb90b",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua": "52bae9d0bfe30cebdea5b68fae44eb980c0d1af02a018cf6cfbfc8835a4dcdf2",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua": "bf017d347635f7b5a8bebc483196f752f38eb67f0e749584ab22d50bd687d0d8",
+    "tools/test_checkpoint_g_integration.py": "b99565087752e078df3d466e694ead8026f391db01bd22b1ab341bb7cc55937e",
+    "tools/test_equipment_block.lua": "ff6f7bdf8737ed34124530a6083227f590700157d1107c3d2e0dfdd270d319b2",
+    "tools/test_feedback_language.lua": "ec7e0d62639e68a5c16fb6be3f447c02b0f0430ab58c9a7ec4b06bfc16d4663e",
+    "tools/test_manual_document.py": "b4d157d9dc6594faa7f6d00c5ad427c22dd65b6611784dc5507ce559c79d58f0"
+  }
+}

@@ -1,5 +1,15 @@
 # Canonical instruction manual
 
+## SPOT-05: shared Die Logger semantics
+
+The existing combat chapter now explains identical live/history wording and dice,
+ordered long-roll parts, private progression, nearby combat recipients, the
+1,000-record limit, and the narrow passive-Magic/refill-to-100 noise exception.
+Actual Magic spends, diversion and authored proc restoration remain meaningful.
+Both shipped renderings are regenerated from `docs/manual/book.json`; this is
+content/transport parity, not native DHTML or Die Logger readability acceptance.
+
+
 ## Bestiary B18: Censor and Surveyor
 
 The canonical book now teaches Censor’s attack-commit WATCH and separately

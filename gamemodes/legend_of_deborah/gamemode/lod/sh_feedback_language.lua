@@ -6,6 +6,9 @@ end
 -- Presentation policy only. No gameplay probabilities, costs or durations.
 LOD.FeedbackLanguage = {
     routine = {label = "", priority = 0},
+    damage = {label = "", priority = 0},
+    roll = {label = "", priority = 0},
+    progression = {label = "", priority = 0}, -- generation/HP dice are owner-private
     status = {label = "STATUS +", priority = 1, cueId = "status"},
     clear = {label = "STATUS -", priority = 1, cueId = "status_clear"},
     resist = {label = "RESIST", priority = 1, cueId = "resist"},

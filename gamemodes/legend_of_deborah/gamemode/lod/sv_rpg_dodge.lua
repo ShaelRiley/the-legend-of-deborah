@@ -99,17 +99,17 @@ function Rules:ApplyDodge(target, dmginfo)
         local chance, tier = self:DodgeChance(derived, speed, walk, sprint)
         local rolls = LOD.CombatRolls
         local natural = chance > 0 and rolls:_RNG("dodge:" .. target:EntIndex()):Float(0, 1) or 1
-        result = {identity = identity, epoch = epoch, dodged = natural < chance, chance = chance, tier = tier}
+        result = {identity = identity, epoch = epoch, dodged = natural < chance, chance = chance, tier = tier, natural = natural}
         targets[target] = result
+        if chance > 0 then
+            local text = string.format("%s DODGE %s — roll %.17g / chance %.17g (%s)%s",
+                rolls:EntityDisplayName(target), result.dodged and "SUCCESS" or "FAILED",
+                natural, chance, tier, result.dodged and "; 0 HP DAMAGE" or "")
+            rolls:_Send({target, attacker}, 3, text, "resist",
+                {event="dodge", chance=chance, roll=natural, dodged=result.dodged, damage=result.dodged and 0 or nil})
+        end
         if result.dodged then
-            local text = string.format("%s DODGE — 0 HP DAMAGE (%.0f%%; %s)", rolls:EntityDisplayName(target), chance * 100, tier)
-            if target:IsPlayer() then
-                rolls:_Send(target, 3, text, "resist", {event = "dodge", chance = chance, damage = 0})
-                net.Start("LOD_DodgePulse"); net.Send(target)
-            end
-            if attacker:IsPlayer() and attacker ~= target then
-                rolls:_Send(attacker, 3, text, "resist", {event = "dodge", chance = chance, damage = 0})
-            end
+            if target:IsPlayer() then net.Start("LOD_DodgePulse"); net.Send(target) end
             target:EmitSound("weapons/iceaxe/iceaxe_swing1.wav", 55, 120, .25)
             self.Stats.dodges = (self.Stats.dodges or 0) + 1
         end

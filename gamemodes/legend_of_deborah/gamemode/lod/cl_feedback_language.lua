@@ -16,13 +16,14 @@ if not Feed.historyLoaded then
         local rawData = file.Read(loadedPath, "DATA") or ""
         local loaded = util.JSONToTable(rawData)
         if istable(loaded) then
-            for _, row in ipairs(loaded) do
+            for index = math.max(1, #loaded - MAX_HISTORY + 1), #loaded do
+                local row = loaded[index]
                 if istable(row) and isstring(row.text) then
                     Feed.history[#Feed.history + 1] = {
                         text = string.sub(row.text, 1, LOD.DieLogger.MaxText),
                         stamp = tostring(row.stamp or "previous session"),
                         family = row.family or "routine", category = row.category or 3,
-                        cue = row.cue, cueVariant = row.cueVariant,
+                        cue = row.cue, cueVariant = row.cueVariant, serial = row.serial,
                         segments = LOD.DieLogger:ValidSegments(row.segments, row.text) and row.segments or nil
                     }
                 end
@@ -65,7 +66,8 @@ end
 
 function Feed:RetainFeedback(entry)
     self.history[#self.history + 1] = {text = entry.text, stamp = os.date("%m-%d %H:%M:%S"),
-        family = entry.family, category = entry.category, segments = entry.segments, cue = entry.cue, cueVariant = entry.cueVariant}
+        family = entry.family, category = entry.category, segments = entry.segments,
+        serial = entry.serial, cue = entry.cue, cueVariant = entry.cueVariant}
     while #self.history > MAX_HISTORY do table.remove(self.history, 1) end
     -- Fixed batching: continuous combat still reaches disk.
     if not timer.Exists("LOD_DieLoggerSave") then

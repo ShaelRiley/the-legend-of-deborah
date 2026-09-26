@@ -47,8 +47,7 @@ function RPG:QueueAuraDamageReport(info, owner, target, label, cha, con)
         local text = rolls:_DamageEventText(owner, formula, finalDamage, target,
             "[" .. label .. "; flat damage]", nil, "Hostile", label)
         local fields = {event = "aura_damage", source = label, damage = finalDamage}
-        if IsValid(owner) and owner:IsPlayer() then rolls:_Send(owner, 0, text, "damage", fields) end
-        if IsValid(target) and target:IsPlayer() and target ~= owner then rolls:_Send(target, 1, text, "damage", fields) end
+        rolls:_Send({target, owner}, 0, text, "damage", fields)
     end)
 end
 

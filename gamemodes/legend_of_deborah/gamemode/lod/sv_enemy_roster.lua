@@ -269,7 +269,7 @@ function E:_DamagePacket(e,p,event,kind)
     rolls:QueueDamageReport(info,function(final)
         c.final=final
         local observer=event.crossfireAttack and event.crossfireAttack.target or p
-        if IsValid(observer) and observer:IsPlayer() then rolls:_Send(observer,1,rolls:_HostileRollText(c,e,p)) end
+        rolls:_Send({p,e,observer},1,rolls:_HostileRollText(c,e,p))
     end)
     if gate and not gate() then return end
     local before=p:Health()

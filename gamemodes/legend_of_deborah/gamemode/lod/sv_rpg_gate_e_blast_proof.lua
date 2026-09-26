@@ -108,11 +108,10 @@ function Effects:TryBlastProofContinuation(defender, attacker, context)
     stats.lastDefender = defender:IsPlayer() and defender:Nick() or defender:GetClass()
 
     local rolls = LOD.CombatRolls
-    if defender:IsPlayer() and rolls and rolls._Send then
-        rolls:_Send(defender, 3, "BLAST-PROOF — explosion continuation suppressed")
-    end
-    if attacker:IsPlayer() and attacker ~= defender and rolls and rolls._Send then
-        rolls:_Send(attacker, 3, "BLAST-PROOF — target prevented an explosion continuation", "resist", {event = "blast_proof"})
+    if rolls and rolls._Send then
+        local name = rolls.EntityDisplayName and rolls:EntityDisplayName(defender) or "Defender"
+        rolls:_Send({defender, attacker}, 3, name .. " BLAST-PROOF — explosion continuation suppressed",
+            "resist", {event = "blast_proof"})
     end
     return true
 end

@@ -55,10 +55,10 @@ local function logEvent(name, fields)
     if log and log.Write then log:Write(name, fields or {}) end
 end
 
-local function feed(ply, category, text)
+local function feed(ply, category, text, family)
     local rolls = combatRolls()
     if IsValid(ply) and rolls and rolls._Send then
-        rolls:_Send(ply, category or 3, tostring(text or ""))
+        rolls:_Send(ply, category or 3, tostring(text or ""), family)
     end
 end
 
@@ -88,7 +88,7 @@ function Presentation:InstallProgressionPresentation()
         if ok and afterLevel > beforeLevel and IsValid(recipient) then
             Presentation:SendFX(recipient, FX_LEVEL_UP, "LEVEL UP!", "PRESS P TO SEE")
             feed(recipient, 2, string.format("LEVEL UP! %d → %d — Press P to see progression.",
-                beforeLevel, afterLevel))
+                beforeLevel, afterLevel), "progression")
             Presentation.Stats.levelUpFX = (Presentation.Stats.levelUpFX or 0) + 1
             logEvent("RPG_LEVEL_UP_PRESENTATION", {
                 player = entityLabel(recipient),
@@ -106,7 +106,7 @@ function Presentation:InstallProgressionPresentation()
         local results = pack(Presentation.BaseCommitFeat(self, ply, featId, expectedEarnedAtLevel))
         if results[1] == true and IsValid(ply) then
             Presentation:SendFX(ply, FX_FEAT_CONFIRM, "FEAT CHOSEN", label)
-            feed(ply, 3, "FEAT CHOSEN — " .. label)
+            feed(ply, 3, "FEAT CHOSEN — " .. label, "progression")
             Presentation.Stats.featConfirmFX = (Presentation.Stats.featConfirmFX or 0) + 1
             logEvent("RPG_FEAT_CONFIRMATION", {
                 player = entityLabel(ply),
@@ -129,7 +129,7 @@ function Presentation:InstallProgressionPresentation()
                 local definition = state and self._CapstoneDefinition and self:_CapstoneDefinition(state) or nil
                 local label = definitionLabel(definition, featId)
                 Presentation:SendFX(ply, FX_FEAT_CONFIRM, "CAPSTONE CHOSEN", label)
-                feed(ply, 3, "CAPSTONE CHOSEN — " .. label)
+                feed(ply, 3, "CAPSTONE CHOSEN — " .. label, "progression")
                 Presentation.Stats.featConfirmFX = (Presentation.Stats.featConfirmFX or 0) + 1
                 logEvent("RPG_FEAT_CONFIRMATION", {
                     player = entityLabel(ply),
