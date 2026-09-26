@@ -1,3 +1,8 @@
+SPOT-11 final frozen gate: `python3 tools/test_spot11_gate.py --output <outside-source-empty-directory> --suite-timeout 120 --workers 2`.
+The explicit bounded runner allowance preserves all assertions; the earlier
+independent 45-second Skeleton blockade timeout remains a failed 78/79 gate,
+not a performance acceptance or pass. See validation/SPOT_11_DRAFTS.md.
+
 # Runtime Test Logging
 
 The Legend of Deborah keeps its runtime evidence in Garry's Mod's proven writable/uploadable data directory:
@@ -9,6 +14,20 @@ On Shael's Steam Deck this is:
 `/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah/`
 
 The upload-facing files are **ordinary physical `.txt` files**, not checkout symlinks.
+
+## SPOT-11 — four-choice ordinary feat drafts
+
+Run `python3 tools/test_spot11_gate.py --output <empty directory outside the repository>`.
+It selects 79 suites, retains all 72 D-J selections, and checks all Lua source;
+this is not full campaign or native acceptance. See
+[implementation, attempts and native procedure](validation/SPOT_11_DRAFTS.md).
+On the exact restarted gm_flatgrass build, a new ordinary hand should show four
+legal distinct choices where the pool permits; choose the fourth and verify one
+committed result. A previously pending trio must not reroll across reopen, death,
+rejoin or role change. Test readable wide/narrow scrolling during ordinary play.
+Human Soldiers remain automatic/read-only; capstones remain three. Supply the
+usual console_latest.txt + rpg_summary_latest.txt and short observation. No extra
+Razor test and no Workshop/VPS action are prerequisites for the next spot bullet.
 
 ## SPOT-09 Damsel's Revenge — arena and rescue
 

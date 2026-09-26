@@ -174,14 +174,21 @@ check(type(snap5.hpConBonusPerLevel) == "number", "snap5.hpConBonusPerLevel is p
 -- Test 4: Owned feats & stack count contract
 soldierState.featIds = {"DEX_FAST_RELOAD", "DEX_FAST_RELOAD"}
 soldierState.featStackCounts = {DEX_FAST_RELOAD = 2}
-soldierState.featSlotsGranted = 2
+-- Snapshot counts actual selected drafts, not awarded slot opportunities. The
+-- third slot is a genuinely exhausted no-award record and must not inflate it.
+soldierState.pendingFeatSlots = {
+    {earnedAtLevel=1,offerFeatIds={"DEX_FAST_RELOAD"},selectedFeatId="DEX_FAST_RELOAD",resolved=true},
+    {earnedAtLevel=3,offerFeatIds={"FALLBACK_STR"},selectedFeatId="FALLBACK_STR",resolved=true},
+    {earnedAtLevel=6,offerFeatIds={},offerLimit=4,exhausted=true,resolved=true},
+}
+soldierState.featSlotsGranted = 3
 
 local snapFeat = CPS:BuildClientSnapshot(mockPlayer)
 check(#snapFeat.ownedFeats >= 1, "snapFeat.ownedFeats contains owned feats")
 local reloadFeat = snapFeat.ownedFeats[1]
 check(reloadFeat and reloadFeat.stackCount == 2, "Feat stackCount is 2 (from soldierState.featStackCounts)")
-check(snapFeat.featSlotsGranted == 2, "snapFeat.featSlotsGranted matches soldierState.featSlotsGranted (2)")
-check(snapFeat.ordinaryFeatsCommitted == 2, "snapFeat.ordinaryFeatsCommitted matches soldierState.featSlotsGranted (2)")
+check(snapFeat.featSlotsGranted == 3, "snapFeat.featSlotsGranted includes the exhausted opportunity (3)")
+check(snapFeat.ordinaryFeatsCommitted == 2, "snapFeat.ordinaryFeatsCommitted counts two actual results, not the exhausted slot")
 
 -- Test 5: Level-20 Capstone read-only contract
 soldierState.level = 20

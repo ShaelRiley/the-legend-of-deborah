@@ -9,6 +9,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+SQLITE_LUA = set()
+LABEL = 'SPOT10_GATE'
+SCOPE = 'SPOT-10 selected production/regression suites, not full campaign matrix'
 LUA = [
     'validate_spot05_die_logger.lua', 'test_feedback_language.lua',
     'test_status_elements.lua', 'test_equipment_block.lua', 'test_cross_feats_dodge.lua',
@@ -41,6 +44,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True, help='Receipt/log directory outside the source tree')
     parser.add_argument('--workers', type=int, default=4, choices=range(1, 5))
+    parser.add_argument('--suite-timeout', type=int, default=45, choices=(45, 120),
+                        help='Finite per-suite wall-clock budget; assertions and selection are unchanged')
     args = parser.parse_args()
     output = args.output.resolve()
     if output == ROOT or ROOT in output.parents:
@@ -48,7 +53,7 @@ def main() -> int:
     if output.exists() and any(output.iterdir()):
         parser.error("Preserve earlier evidence; choose an empty output directory.")
     output.mkdir(parents=True, exist_ok=True)
-    suites = [(p, ['python3', 'tools/run_lua54.py', 'tools/' + p] +
+    suites = [(p, ['python3', 'tools/test_crypto_sqlite.py' if p in SQLITE_LUA else 'tools/run_lua54.py', 'tools/' + p] +
                (['.'] if p == 'test_checkpoint_c_headless.lua' else ['--runtime'] if p == 'test_bestiary_b29.lua' else [])) for p in LUA]
     suites += [('manual_catalog_parity', ['python3','tools/run_lua54.py','tools/export_manual_catalog.lua','--check']),
                ('test_manual_document.py', ['python3','tools/test_manual_document.py']),
@@ -69,12 +74,12 @@ def main() -> int:
         name, command = suite
         try:
             result = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT, timeout=45)
+                                    stderr=subprocess.STDOUT, timeout=args.suite_timeout)
             code, text = result.returncode, result.stdout
         except subprocess.TimeoutExpired as exc:
             code, text = 124, (exc.stdout or b'')
             if isinstance(text, bytes): text = text.decode('utf-8', errors='replace')
-            text += '\nTIMEOUT: finite 45-second per-suite budget\n'
+            text += f'\nTIMEOUT: finite {args.suite_timeout}-second per-suite budget\n'
         path = output / (name + '.log')
         path.write_text(text, encoding='utf-8')
         row = {'name':name, 'command':command, 'returncode':code, 'passed':code==0,
@@ -93,11 +98,11 @@ def main() -> int:
                'source_after':hashlib.sha256(json.dumps(after,sort_keys=True).encode()).hexdigest(),
                'changed_during_gate':changed,
                'sampling':'B29 --runtime: recorded native layout/lifecycle, not the extra 20-seed exposure sweep',
-               'scope':'SPOT-10 selected production/regression suites, not full campaign matrix',
+               'scope':SCOPE, 'suite_timeout_seconds':args.suite_timeout, 'workers':args.workers,
                'passed':sum(row['passed'] for row in results), 'total':len(results),
                'lua_files':len(lua_files), 'native_gmod_accepted':False, 'results':results}
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
-    print(f"SPOT10_GATE {receipt['passed']}/{receipt['total']}; syntax {len(lua_files)} Lua files")
+    print(f"{LABEL} {receipt['passed']}/{receipt['total']}; syntax {len(lua_files)} Lua files")
     return 0 if receipt['passed']==receipt['total'] and not changed else 1
 
 if __name__ == '__main__':

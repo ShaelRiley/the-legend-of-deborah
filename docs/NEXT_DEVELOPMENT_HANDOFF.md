@@ -1,4 +1,53 @@
-# Resume The Legend of Deborah — SPOT-11 four-choice feat drafts
+# Resume The Legend of Deborah — SPOT-12 Spellbook availability colors
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. SPOT-11's actual
+parent is `85db2ed5ce287e7dbd96197676af4799922a6bf6`; the delivery receipt supplies
+its verified child/tree/run. Fetch current main and preserve newer/uncommitted
+work. An isolated workflow trigger is never gameplay ancestry.
+
+Read AGENTS.md -> DEVELOPMENT_PLAN.md -> briefs/SPOT_UPDATES.md ->
+validation/SPOT_11_DRAFTS.md -> TEST_LOGGING.md. Live GDD
+`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`: 00 -> 01 -> relevant 03/06/07;
+04 only if required for feat-dependent availability. Exact HUMAN only where
+normalized law leaves detail. Do not duplicate completed SPOT sections.
+
+SPOT-11 is implemented: new ordinary offers up to four; distinct eligible IDs;
+ordinary-first neutral fallback fill; 1-3 legal choices stay smaller; zero is an
+explicit exhausted no-award slot. Valid stored hands keep IDs/order/seed/result,
+including unversioned trios; removed-ID repair keeps the saved limit (legacy3).
+One committed choice per nonempty hand, automatic AI/human Soldiers, responsive
+four-card sheet; fixed capstone trio and Magic choices unchanged. Live GDD and
+manual readers match. Float On remains six seconds at 1 Magic/s; preserve all
+approved D-J, rejected A and unchanged B/C/Mana Spring.
+
+Pre-closeout evidence: 79/79 selected suites, 1055 new focused assertions,
+744 Lua syntax checks, unchanged source. Final frozen local/independent gates and
+publication identity belong in the receipt. Earlier failed/incomplete attempts
+remain failures/incomplete, not passes. No full campaign-matrix or native
+balance/movement/Derma/co-op acceptance. Full Gate-B identity validation is not
+claimed: its historical perkDisplayName assumptions remain a separate issue. The
+first independent run 36280170654 was 78/79 after a 45-second Skeleton blockade
+harness timeout and skipped publication. Preserve that failure; the explicit
+120-second budget changes no assertions. Final frozen gates use the full
+79-suite selection with --suite-timeout 120 --workers 2.
+
+Implement only SPOT-12: color Spellbook cards and backdrops as well as text so
+availability is evident at a glance. Inspect current color grammar, legibility,
+selection/hover states and authoritative availability/resource/lifecycle contracts;
+keep unavailable choices unavailable. Define a finite production/UI test gate,
+retain applicable regressions, verify the frozen source and bank a non-forced push.
+Do not bundle SPOT14 or deferred roadmap work.
+
+Native evidence: exact installed gm_flatgrass build, console_latest.txt plus
+rpg_summary_latest.txt and a short observation; detailed session only for timing.
+No dedicated Razor retest. Preserve SPOT01-11, B28/B29, accepted Crate and P1-P4.
+Release order stays local acceptance -> Workshop3791535712 package/source parity
+-> matching VPS. No Workshop/VPS action occurred or is implicitly authorized.
+No background promises; hand off at a finite checkpoint when the thread grows.
+
+---
+
+# Historical handoff — SPOT-11 four-choice feat drafts
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. SPOT-10 D–J's
 actual parent is `7e2495ccfba3009f8190bd619ea229a8e65da094`; the delivery receipt

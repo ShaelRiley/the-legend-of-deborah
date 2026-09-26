@@ -10,7 +10,7 @@ p.ps.model,p.ps.characterName,p.ps.lives=character.model,character.name,3
 p.LODProgressionState=CPS:InitializeHero(Run,p.ps,character)
 assert(CPS:CommitClass(p,'wizard'))
 local offered=CPS:BuildClientSnapshot(p)
-assert(offered and #offered.featDraft.offers==3)
+assert(offered and #offered.featDraft.offers==4)
 for _,feat in ipairs(offered.featDraft.offers) do
     assert(feat.effect==CPS:_FindFeat(feat.featId).effectParams.description)
 end

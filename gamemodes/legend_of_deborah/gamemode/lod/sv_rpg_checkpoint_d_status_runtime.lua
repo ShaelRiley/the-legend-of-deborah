@@ -64,10 +64,11 @@ end
 
 local baseCommitAutomaticFeat = CPS._CommitAutomaticFeat
 function CPS:_CommitAutomaticFeat(ps, state, draft, actorSeed)
-    baseCommitAutomaticFeat(self, ps, state, draft, actorSeed)
+    local ok, err = baseCommitAutomaticFeat(self, ps, state, draft, actorSeed)
+    if not ok then return ok, err end
     local selectedId = draft and draft.selectedFeatId
     local selected = selectedId and Feats[selectedId]
-    if not selected or not selected.replacesLowerRank or not selected.featFamilyId then return end
+    if not selected or not selected.replacesLowerRank or not selected.featFamilyId then return ok end
 
     local retained = {}
     local selectedRank = tonumber(selected.rankIndex) or 0
@@ -83,6 +84,7 @@ function CPS:_CommitAutomaticFeat(ps, state, draft, actorSeed)
         end
     end
     state.featIds = retained
+    return ok
 end
 
 System.StatusProcStats = System.StatusProcStats or {

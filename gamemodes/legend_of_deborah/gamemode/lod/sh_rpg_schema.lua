@@ -41,6 +41,7 @@ RPG.EnemyDefenseTuning = {conPerDieCap = 1, diversionCap = .30,
     shatterDCBonus = 4, shatterDurationMultiplier = 1.5, shatterMinimumSeconds = 24}
 
 RPG.OrdinaryFeatLevels = {1, 3, 6, 9, 12, 15, 18}
+RPG.OrdinaryFeatOfferCount = 4 -- New ordinary hands only; capstones remain three.
 
 RPG.HeroXPThresholds = {
     [1] = 0, [2] = 300, [3] = 800, [4] = 1600, [5] = 3000,
@@ -274,7 +275,8 @@ RPG.Schema = {
         "featId", "displayName", "classId", "synergyTags", "effectHandlerId", "effectParams"
     },
     PendingFeatDraft = {
-        "earnedAtLevel", "draftType", "offerFeatIds", "rngSeed", "selectedFeatId", "resolved"
+        "earnedAtLevel", "draftType", "offerFeatIds", "rngSeed", "selectedFeatId", "resolved",
+        "offerLimit", "exhausted"
     },
     IdentityTraitDefinition = {"tableType", "tableIndex", "categoryName", "flavorText"},
     IdentityPerkRecord = {"traitSlot", "traitIndex", "handlerId", "targetId", "secondaryTargetId", "abilityBonuses", "targetName", "seed", "displayName", "traitName", "flavorText"},

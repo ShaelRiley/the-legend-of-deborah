@@ -654,52 +654,55 @@ local function weightedDraw(rng, candidates, count)
     return result
 end
 
-function CharacterProgressionSystem:_GenerateOrdinaryDraft(ps, state, campaignSeed, earnedAtLevel)
-    local slotIndex = ordinarySlotIndexForLevel(earnedAtLevel)
-    if not slotIndex then return nil end
-    if state.pendingFeatSlots[slotIndex] then return state.pendingFeatSlots[slotIndex] end
-
-    local draftSeed = derive(self:HeroGrowthProfileSeed(campaignSeed, ps.identity, state.classId),
-        "feat_draft:ordinary:level:" .. earnedAtLevel .. ":slot:" .. slotIndex)
-    local rng = LOD.RNG.New(draftSeed)
-    local ordinaryCandidates = {}
-    local ordinaryFeats = Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats
-    for _, featId in ipairs(sortedKeys(ordinaryFeats)) do
-        local definition = ordinaryFeats[featId]
-        if self:_FeatEligible(ps, state, definition) then
-            ordinaryCandidates[#ordinaryCandidates + 1] = {
-                definition = definition,
-                weight = self:_FeatWeight(ps, state, definition)
-            }
-        end
-    end
-
-    local selected = weightedDraw(rng, ordinaryCandidates, math.min(3, #ordinaryCandidates))
-    if #selected < 3 then
-        local fallbackCandidates = {}
-        for _, featId in ipairs(sortedKeys(Catalog.FallbackFeats)) do
-            local definition = Catalog.FallbackFeats[featId]
-            if self:_FeatEligible(ps, state, definition) then
-                fallbackCandidates[#fallbackCandidates + 1] = {
+-- Shared ordinary-first draw for fresh hands and the existing removed-ID repair.
+-- Every candidate passes the same hard gate; fallback/alias IDs cannot duplicate
+-- an existing card. Small pools are real, never padded with illegal choices.
+function CharacterProgressionSystem:_DrawOrdinaryOffers(ps, state, rng, count, excludedIds)
+    local seen, selected = {}, {}
+    for _, id in ipairs(excludedIds or {}) do seen[id] = true end
+    local function draw(catalog)
+        local candidates = {}
+        for _, key in ipairs(sortedKeys(catalog)) do
+            local definition = catalog[key]
+            local id = definition.featId
+            if id and not seen[id] and self:_FeatEligible(ps, state, definition) then
+                seen[id] = true
+                candidates[#candidates + 1] = {
                     definition = definition,
                     weight = self:_FeatWeight(ps, state, definition)
                 }
             end
         end
-        for _, definition in ipairs(weightedDraw(rng, fallbackCandidates, 3 - #selected)) do
+        for _, definition in ipairs(weightedDraw(rng, candidates, count - #selected)) do
             selected[#selected + 1] = definition
         end
     end
-    assert(#selected == 3,
-        "Gate C Level-" .. earnedAtLevel .. " feat draft could not produce three legal distinct offers")
+    if count > 0 then draw(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats) end
+    if #selected < count then draw(Catalog.FallbackFeats) end
+    return selected
+end
 
+function CharacterProgressionSystem:_GenerateOrdinaryDraft(ps, state, campaignSeed, earnedAtLevel)
+    local slotIndex = ordinarySlotIndexForLevel(earnedAtLevel)
+    if not slotIndex then return nil end
+    -- Never top up or reroll a previously stored hand, even an unversioned trio.
+    if state.pendingFeatSlots[slotIndex] then return state.pendingFeatSlots[slotIndex] end
+
+    local draftSeed = derive(self:HeroGrowthProfileSeed(campaignSeed, ps.identity, state.classId),
+        "feat_draft:ordinary:level:" .. earnedAtLevel .. ":slot:" .. slotIndex)
+    local limit = RPG.OrdinaryFeatOfferCount
+    local selected = self:_DrawOrdinaryOffers(ps, state, LOD.RNG.New(draftSeed), limit)
+    local offers = {}
+    for _, definition in ipairs(selected) do offers[#offers + 1] = definition.featId end
     local draft = {
         earnedAtLevel = earnedAtLevel,
         draftType = "ordinary",
-        offerFeatIds = {selected[1].featId, selected[2].featId, selected[3].featId},
+        offerFeatIds = offers,
+        offerLimit = limit,
         rngSeed = draftSeed,
         selectedFeatId = nil,
-        resolved = false
+        exhausted = #offers == 0,
+        resolved = #offers == 0
     }
     state.pendingFeatSlots[slotIndex] = draft
     state.featSlotsGranted = math.max(state.featSlotsGranted or 0, slotIndex)
@@ -798,21 +801,19 @@ function CharacterProgressionSystem:RepairCanonicalDrafts(ps, state)
     if not ps or not state then return end
     for _, draft in pairs(state.pendingFeatSlots or {}) do
         if draft.needsCanonicalRepair then
-            local seen, pool = {}, {}
-            for _, id in ipairs(draft.offerFeatIds) do seen[id] = true end
-            local function add(catalog)
-                for _, id in ipairs(sortedKeys(catalog)) do
-                    local definition = catalog[id]
-                    if not seen[id] and self:_FeatEligible(ps, state, definition) then
-                        pool[#pool + 1] = {definition = definition, weight = self:_FeatWeight(ps, state, definition)}
-                    end
-                end
-            end
-            add(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats)
-            if #pool < 3 - #draft.offerFeatIds then add(Catalog.FallbackFeats) end
+            -- Unversioned historical hands repair to three, not today's count.
+            local limit = math.Clamp(math.floor(tonumber(draft.offerLimit) or 3),
+                1, RPG.OrdinaryFeatOfferCount)
             local rng = LOD.RNG.New(derive(draft.rngSeed or 1, "canonical-feat-repair-v1"))
-            for _, definition in ipairs(weightedDraw(rng, pool, math.max(0, 3 - #draft.offerFeatIds))) do
+            local missing = math.max(0, limit - #draft.offerFeatIds)
+            for _, definition in ipairs(self:_DrawOrdinaryOffers(ps, state, rng,
+                missing, draft.offerFeatIds)) do
                 draft.offerFeatIds[#draft.offerFeatIds + 1] = definition.featId
+            end
+            if #draft.offerFeatIds == 0 then
+                draft.exhausted, draft.resolved, draft.selectedFeatId = true, true, nil
+            else
+                draft.exhausted = nil
             end
             draft.needsCanonicalRepair = nil
         end
@@ -1118,6 +1119,7 @@ function CharacterProgressionSystem:_GenerateAutomaticHitDie(state, actorSeed, l
 end
 
 function CharacterProgressionSystem:_CommitAutomaticFeat(ps, state, draft, actorSeed)
+    if not draft or draft.resolved then return false end
     local candidates = {}
     for _, featId in ipairs(draft.offerFeatIds or {}) do
         local definition = self:_FindFeat(featId)
@@ -1131,7 +1133,7 @@ function CharacterProgressionSystem:_CommitAutomaticFeat(ps, state, draft, actor
     local rng = LOD.RNG.New(derive(actorSeed,
         "automatic_feat_selection:level:" .. tostring(draft.earnedAtLevel)))
     local definition = weightedDraw(rng, candidates, 1)[1]
-    assert(definition, "automatic actor feat selection requires one legal offer")
+    if not definition then return false, "Automatic feat hand has no legal stored offer." end
     draft.selectedFeatId = definition.featId
     draft.resolved = true
     if not arrayContains(state.featIds, definition.featId) then
@@ -1146,6 +1148,7 @@ function CharacterProgressionSystem:_CommitAutomaticFeat(ps, state, draft, actor
                 + (tonumber(definition.effectParams.amount) or 1)
         end
     end
+    return true
 end
 
 function CharacterProgressionSystem:_CommitAutomaticCapstone(state, actorSeed)
@@ -1367,7 +1370,8 @@ function CharacterProgressionSystem:IsDeploymentEligible(ps)
     local state = ps and ps.progressionState
     local draft = state and state.pendingFeatSlots and state.pendingFeatSlots[1]
     return state ~= nil and state.classId ~= nil and draft ~= nil
-        and draft.resolved == true and draft.selectedFeatId ~= nil
+        and draft.resolved == true and (draft.selectedFeatId ~= nil
+            or (draft.exhausted == true and #(draft.offerFeatIds or {}) == 0))
 end
 
 local function perkSnapshot(definition, package, index)
@@ -1418,6 +1422,12 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         local archetype = CC and CC.Encounter and CC.Encounter.Archetypes and CC.Encounter.Archetypes.soldier
         local modelName = (archetype and archetype.model) or soldierState.model or "models/combine_soldier.mdl"
 
+        local ordinaryFeatsCommitted = 0
+        for _, ordinaryDraft in ipairs(soldierState.pendingFeatSlots or {}) do
+            if ordinaryDraft.resolved and ordinaryDraft.selectedFeatId then
+                ordinaryFeatsCommitted = ordinaryFeatsCommitted + 1
+            end
+        end
         local ownedFeats = {}
         for _, featId in ipairs(soldierState.featIds or {}) do
             local definition = self:_FindFeat(featId)
@@ -1538,7 +1548,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             derivedStats = soldierState.derivedStats or {maxHP = 35, ac = 12},
             ownedFeats = ownedFeats,
             featSlotsGranted = soldierState.featSlotsGranted or #ownedFeats,
-            ordinaryFeatsCommitted = soldierState.featSlotsGranted or #ownedFeats,
+            ordinaryFeatsCommitted = ordinaryFeatsCommitted,
             featStackState = soldierState.featStackCounts or {},
             selectedCapstone = selectedCapstone,
             capstoneDraft = capstoneDraft,
@@ -1567,7 +1577,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
     local ordinaryFeatsCommitted = 0
     for _, ordinaryDraft in ipairs(state.pendingFeatSlots or {}) do
         if ordinaryDraft and ordinaryDraft.resolved then
-            ordinaryFeatsCommitted = ordinaryFeatsCommitted + 1
+            if ordinaryDraft.selectedFeatId then ordinaryFeatsCommitted = ordinaryFeatsCommitted + 1 end
         elseif ordinaryDraft then
             pendingFeatCount = pendingFeatCount + 1
         end
@@ -1719,6 +1729,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         featDraft = draft and {
             earnedAtLevel = draft.earnedAtLevel,
             draftType = draft.draftType,
+            offerLimit = draft.offerLimit or 3,
+            exhausted = draft.exhausted == true,
             rngSeed = draft.rngSeed,
             resolved = draft.resolved,
             selectedFeatId = draft.selectedFeatId,
@@ -1837,6 +1849,26 @@ local function countKeys(values)
     return count
 end
 
+-- Diagnostics must accept stored historical hands and genuine reduced pools,
+-- while rejecting an unmarked empty hand or a fabricated no-award selection.
+local function validOrdinaryDraftShape(draft)
+    if not draft or type(draft.offerFeatIds) ~= "table" then return false end
+    local limit = draft.offerLimit or 3
+    if limit ~= 3 and limit ~= RPG.OrdinaryFeatOfferCount then return false end
+    local count = #draft.offerFeatIds
+    if count == 0 then
+        return draft.exhausted == true and draft.resolved == true
+            and draft.selectedFeatId == nil
+    end
+    return count <= limit and not draft.exhausted
+end
+
+local function ordinaryDraftChosenOrExhausted(draft, seen)
+    return draft and draft.resolved and
+        (seen[draft.selectedFeatId] or (#draft.offerFeatIds == 0
+            and draft.exhausted == true and draft.selectedFeatId == nil))
+end
+
 function CharacterProgressionSystem:ValidateGateBPlayer(ply)
     local errors, perkNames = {}, {}
     for label, definitions in pairs({
@@ -1872,15 +1904,15 @@ function CharacterProgressionSystem:ValidateGateBPlayer(ply)
         errors[#errors + 1] = "class pending"
     else
         if not RPG.Classes[state.classId] then errors[#errors + 1] = "class invalid" end
-        if not draft or #draft.offerFeatIds ~= 3 then errors[#errors + 1] = "draft count" end
+        if not validOrdinaryDraftShape(draft) then errors[#errors + 1] = "draft count/exhaustion" end
         local seen = {}
         for _, featId in ipairs(draft and draft.offerFeatIds or {}) do
             if seen[featId] then errors[#errors + 1] = "duplicate draft offer" end
             seen[featId] = true
             if not self:_FindFeat(featId) then errors[#errors + 1] = "unknown draft offer" end
         end
-        if draft and draft.resolved and not seen[draft.selectedFeatId] then errors[#errors + 1] = "selected feat not offered" end
-        if not draft or not draft.resolved or not draft.selectedFeatId then
+        if draft and draft.selectedFeatId and not seen[draft.selectedFeatId] then errors[#errors + 1] = "selected feat not offered" end
+        if not ordinaryDraftChosenOrExhausted(draft, seen) then
             errors[#errors + 1] = "Level-1 feat pending"
         end
     end
@@ -2010,7 +2042,7 @@ function CharacterProgressionSystem:ValidateGateCPlayer(ply)
         if featLevel <= level then
             expectedSlots = index
             local draft = state.pendingFeatSlots[index]
-            if not draft or draft.earnedAtLevel ~= featLevel or #draft.offerFeatIds ~= 3 then
+            if not validOrdinaryDraftShape(draft) or draft.earnedAtLevel ~= featLevel then
                 errors[#errors + 1] = "ordinary draft L" .. featLevel
             else
                 local seen = {}
@@ -2019,7 +2051,7 @@ function CharacterProgressionSystem:ValidateGateCPlayer(ply)
                     seen[featId] = true
                     if not self:_FindFeat(featId) then errors[#errors + 1] = "unknown offer " .. featId end
                 end
-                if not draft.resolved or not seen[draft.selectedFeatId] then
+                if not ordinaryDraftChosenOrExhausted(draft, seen) then
                     errors[#errors + 1] = "pending selection L" .. featLevel
                 end
             end

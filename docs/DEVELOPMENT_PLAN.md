@@ -1,6 +1,30 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-10 D–J approved and implemented
+## Current checkpoint — SPOT-11 four-choice ordinary feat drafts
+
+Actual gameplay parent: `85db2ed5ce287e7dbd96197676af4799922a6bf6`.
+New ordinary hands target four distinct eligible offers, legal neutral fallbacks
+only. Genuine smaller pools remain smaller; zero eligible choices are an explicit
+resolved no-award slot, not a fabricated perk or staging soft-lock. Existing valid
+stored hands, including legacy trios, retain their IDs/order/seed/result. Human
+heroes choose once; AI/human Soldiers automatically consider the entire hand.
+Capstone trios and Magic choices are unchanged. Four-card sheets use responsive
+2x2 or single-column layouts. Live rules and both manual readers align.
+
+[Evidence and limits](validation/SPOT_11_DRAFTS.md): pre-closeout **79/79 selected
+suites, 1055 new focused assertions, 744 Lua syntax checks**, unchanged source.
+All 72 D-J selections are retained. Final frozen local/independent identity and
+verified non-forced publication belong in the delivery receipt. Earlier 71/72,
+78/79, interrupted launches and focused fixture failures are preserved.
+Native acceptance and the full campaign matrix are not claimed.
+
+**Next single bullet: SPOT-12 — Spellbook card/backdrop availability colors.**
+Reconcile live UI/accessibility law before code; do not start SPOT14 or deferred
+roadmap work inside this checkpoint. Preserve Float On at 1 Magic/s and all
+SPOT01-10, B28/B29, accepted Crate appearance, P1-P4 and release gates.
+No Workshop or VPS operation is authorized.
+
+## Previous checkpoint — SPOT-10 D–J approved and implemented
 
 From actual main parent `7e2495ccfba3009f8190bd619ea229a8e65da094`.
 Shael approved D–J, amending Float On to **1 Magic/second** for up to six seconds.

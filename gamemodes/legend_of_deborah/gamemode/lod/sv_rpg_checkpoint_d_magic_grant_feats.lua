@@ -50,11 +50,11 @@ if not Progression.LODCheckpointDMagicGrantFeatAutomaticWrapped then
     Progression.LODCheckpointDMagicGrantFeatAutomaticWrapped = true
     local base = Progression._CommitAutomaticFeat
     function Progression:_CommitAutomaticFeat(ps, state, draft, actorSeed)
-        local result = {base(self, ps, state, draft, actorSeed)}
-        if state and draft and byId[draft.selectedFeatId] then
+        local ok, err = base(self, ps, state, draft, actorSeed)
+        if ok and state and draft and byId[draft.selectedFeatId] then
             MagicProgression:ApplyCheckpointDMagicGrantFeat(state, draft.selectedFeatId, actorSeed)
         end
-        return unpack(result)
+        return ok, err
     end
 end
 

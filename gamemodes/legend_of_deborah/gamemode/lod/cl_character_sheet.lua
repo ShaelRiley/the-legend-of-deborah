@@ -218,7 +218,8 @@ local function addDraftCards(parent, draft, readOnly, x, y, width, buttonText, c
     local offers = draft and draft.offers or {}
     if #offers == 0 then return 0 end
     local gap = 12
-    local columns = math.max(1, math.min(3, #offers, math.floor((width + gap) / (280 + gap))))
+    local maxColumns = #offers == 4 and 2 or 3
+    local columns = math.max(1, math.min(maxColumns, #offers, math.floor((width + gap) / (280 + gap))))
     local cardWidth = math.floor((width - gap * (columns - 1)) / columns)
     local cards = {}
     local rowHeights = {}
@@ -677,11 +678,26 @@ function Sheet:Open(requestFresh)
         rightY = rightY + fitWrapped(hint, rightWidth, 42)
     elseif not snapshot.classId then
         local hint = label(canvas,
-            "Commit a class first. The server will then generate and store one deterministic three-card ordinary feat draft.",
+            "Commit a class first. The server will then store up to four distinct legal ordinary feat choices. Choose one; genuinely small pools show fewer cards.",
             "LOD_SheetBody", INK)
         hint:SetPos(rightX, rightY)
         rightY = rightY + fitWrapped(hint, rightWidth, 42)
     elseif snapshot.featDraft then
+        if snapshot.featDraft.exhausted then
+            local hint = label(canvas,
+                "No eligible ordinary or fallback feats remained for this slot. No feat was awarded.",
+                "LOD_SheetBody", INK)
+            hint:SetPos(rightX, rightY)
+            rightY = rightY + fitWrapped(hint, rightWidth, 42) + 8
+        elseif not snapshot.featDraft.resolved and #(snapshot.featDraft.offers or {}) < 4 then
+            local hint = label(canvas,
+                snapshot.featDraft.offerLimit == 3
+                    and "Preserved earlier draft: choose one of these stored offers."
+                    or "Small eligible pool: choose one of these stored offers.",
+                "LOD_SheetSmall", MUTED)
+            hint:SetPos(rightX, rightY)
+            rightY = rightY + fitWrapped(hint, rightWidth, 20) + 8
+        end
         local featCardHeight = addFeatCards(canvas, snapshot, rightX, rightY, rightWidth)
         rightY = rightY + featCardHeight + 12
         local fingerprint = label(canvas,
