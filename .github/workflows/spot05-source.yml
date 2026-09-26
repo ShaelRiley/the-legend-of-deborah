@@ -1,0 +1,30 @@
+name: SPOT-05 source snapshot
+on:
+  push:
+    branches: ['checkpoint/spot05-audit-789d63c8']
+    paths: ['.github/workflows/spot05-source.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '789d63c843206061b416f0d108e7414e6aba0763'
+      - name: Archive exact source and real Git objects
+        run: |
+          test "$(git rev-parse HEAD)" = '789d63c843206061b416f0d108e7414e6aba0763'
+          test "$(git rev-parse HEAD^{tree})" = '6fef2a73975481b675ed4e018f401cfc07cbcc9f'
+          mkdir /tmp/spot05-source
+          git archive HEAD | gzip > /tmp/spot05-source/source.tar.gz
+          git cat-file commit HEAD > /tmp/spot05-source/commit.txt
+          git ls-tree -r HEAD > /tmp/spot05-source/tree.txt
+          git show -s --format='commit=%H%nparent=%P%ntree=%T' HEAD > /tmp/spot05-source/receipt.txt
+          sha256sum /tmp/spot05-source/source.tar.gz >> /tmp/spot05-source/receipt.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot05-source-789d63c8
+          path: /tmp/spot05-source/
+          retention-days: 7
