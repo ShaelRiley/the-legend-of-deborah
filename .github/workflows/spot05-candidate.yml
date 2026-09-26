@@ -1,0 +1,93 @@
+name: SPOT-05 exact candidate verification
+on:
+  push:
+    branches: ['checkpoint/spot05-audit-789d63c8']
+    paths: ['.github/workflows/spot05-candidate.yml']
+permissions:
+  contents: write
+jobs:
+  verify-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '789d63c843206061b416f0d108e7414e6aba0763'
+      - name: Install headless Lua runtime
+        run: sudo apt-get update -qq && sudo apt-get install -y liblua5.4-0
+      - name: Verify frozen transport and reconstruct exact candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git rev-parse HEAD)" = '789d63c843206061b416f0d108e7414e6aba0763'
+          test "$(git rev-parse HEAD^{tree})" = '6fef2a73975481b675ed4e018f401cfc07cbcc9f'
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, pathlib, subprocess
+          shas = ['11166d437693c5365ed8fafb4d82ca92f20c2723', '1300740425074ad17e5697eb1c0eea6cb3567e68', '1e7b88e920731f1bc584a064dc74e35aa1ed78b5', '58347261e040d59eca19b226f7f38b721e89d473', '76f487805f1c28d15718df8dc1085bdbc1609e1e', '0b24a743724cf697049036c2618e57fc47304567']
+          chunks = []
+          for sha in shas:
+              payload = json.loads(subprocess.check_output(['gh', 'api', 'repos/ShaelRiley/the-legend-of-deborah/git/blobs/' + sha], timeout=30))
+              assert payload['encoding'] == 'base64'
+              chunk = base64.b64decode(payload['content'])
+              assert hashlib.sha1(b'blob ' + str(len(chunk)).encode() + b'\0' + chunk).hexdigest() == sha
+              chunks.append(chunk)
+          compressed = b''.join(chunks)
+          assert len(compressed) == 42936
+          assert hashlib.sha256(compressed).hexdigest() == '16a3b7db006e7f531f0dae9bb9609e92c15cfc582d8f566cd71f590f3b0f7c95'
+          patch = lzma.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '5ea8721af015a64e97c4679fe1e62edbee8e57cb271c7e6885937fe0f6dc5f90'
+          pathlib.Path('/tmp/spot05.patch').write_bytes(patch)
+          print('All six Git blobs, compressed transport and exact source patch verified.')
+          PY
+          git apply --check /tmp/spot05.patch
+          git apply --index /tmp/spot05.patch
+          python3 tools/build_manual.py
+          git add docs/manual/manual.html gamemodes/legend_of_deborah/gamemode/lod/manual
+          git diff --cached --check
+          git diff --exit-code
+          test "$(git write-tree)" = 'a796a9a96e420376899e36293afe7927eac0268e'
+          test "$(git diff --cached --name-only | wc -l)" -eq 42
+      - name: Independent finite production and regression gate
+        run: |
+          python3 tools/test_spot05_gate.py --output /tmp/spot05-independent
+          python3 - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('/tmp/spot05-independent')
+          result = json.loads((root / 'receipt.json').read_text())
+          assert result['passed'] == result['total'] == 38
+          assert result['lua_files'] == 732
+          assert result['source_before'] == result['source_after']
+          assert result['changed_during_gate'] == []
+          assert result['native_gmod_accepted'] is False
+          assert 'SPOT05_DIE_LOGGER_PASS 76 bounded production assertions' in (root / 'validate_spot05_die_logger.lua.log').read_text()
+          PY
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = 'a796a9a96e420376899e36293afe7927eac0268e'
+      - name: Commit on real parent and publish candidate branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: restore canonical Die Logger event parity and meaningful dice (SPOT-05)'
+          test "$(git rev-parse HEAD^)" = '789d63c843206061b416f0d108e7414e6aba0763'
+          test "$(git rev-parse HEAD^{tree})" = 'a796a9a96e420376899e36293afe7927eac0268e'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/checkpoint/spot05-candidate-789d63c8
+          git cat-file commit HEAD > /tmp/spot05-independent/candidate-commit.txt
+          git ls-tree -r HEAD > /tmp/spot05-independent/candidate-tree.txt
+          {
+            echo 'SPOT-05 independent candidate receipt; main not changed by this workflow'
+            git show -s --format='commit=%H%nparent=%P%ntree=%T%nsubject=%s' HEAD
+            echo 'Independent selected gate: 38/38 PASS; focused production checks: 76/76; all 732 Lua files syntax checked.'
+            echo 'This is not the full campaign matrix. B29 uses its explicitly bounded --runtime gate.'
+            echo 'Initial failures and repairs remain in SPOT_05_ATTEMPTS.txt. Native GMod acceptance remains pending.'
+            echo 'No Workshop or VPS actions.'
+            git diff --stat HEAD^ HEAD
+          } | tee /tmp/spot05-independent/publication-receipt.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lod-spot05-independent-gate
+          path: /tmp/spot05-independent/
+          if-no-files-found: warn
+          retention-days: 14
