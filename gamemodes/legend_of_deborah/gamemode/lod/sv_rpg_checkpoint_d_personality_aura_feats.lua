@@ -15,8 +15,8 @@ for rank, id in ipairs(IDS) do
         prerequisiteFeatIds = rank > 1 and {IDS[rank - 1]} or {}, requiredCapabilityTags = {}, incompatibleFeatIds = {},
         allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {"hostile_registry", "maze_navigation"},
         synergyTags = {"aura", "charisma", "passive_damage"}, oneRank = true, effectHandlerId = "personality_aura_pulse",
-        effectParams = {cellRadius = RADII[rank], intervalDice = {3, 4}, flatDamageAbility = "cha",
-            description = "Every sealed non-exploding 3d4 seconds, deals max(0, CHA_MOD) untyped passive damage to hostiles within " .. RADII[rank] .. " same-floor cell radius."},
+        effectParams = {cellRadius = RADII[rank], intervalSeconds = 3.0, flatDamageAbility = "cha",
+            description = "Every fixed 3 seconds after a full initial wait, deals max(0, CHA_MOD) untyped passive damage to hostiles within " .. RADII[rank] .. " same-floor cell radius."},
         directorBaseWeight = 1.0, eligibilityText = "CHA " .. (11 + rank * 2) .. (rank > 1 and " / requires " .. NAMES[rank - 1] or ""),
         actorText = "Heroes, human Soldiers, and AI"}
 end
@@ -40,23 +40,34 @@ function RPG:CheckpointDPersonalityAuraProfile(state)
     return nil
 end
 
+local function auraEligible(owner)
+    if not alive(owner) then return false end
+    local manager = LOD.RunManager
+    local run = manager and manager.State
+    if not run or not run.Graph or run.SimulationFrozen or run.Failed
+        or run.LevelCleared or run.BuildReady == false then return false end
+    if owner.IsPlayer and owner:IsPlayer() and manager.IsActivePlayer
+        and not manager:IsActivePlayer(owner)
+        and not (manager.IsSoldierControl and manager:IsSoldierControl(owner)) then return false end
+    -- Existing life binding clears pending pulses on graph/identity replacement.
+    if Status.BindActorLife then Status:BindActorLife(owner) end
+    return RPG:CheckpointDPersonalityAuraProfile(Rules:ProgressionState(owner)) ~= nil
+end
+
 function RPG:CheckpointDPersonalityAuraInterval(owner)
-    owner.LODPersonalityAuraRollSerial = (owner.LODPersonalityAuraRollSerial or 0) + 1
-    local run = LOD.RunManager and LOD.RunManager.State
-    local seed = LOD.Seeds.Derive((run and run.LevelSeed) or 1,
-        string.format("personality-aura:%d:%d", owner.EntIndex and owner:EntIndex() or 0, owner.LODPersonalityAuraRollSerial))
-    local rng = LOD.RNG.New(seed)
-    return rng:Int(1, 4) + rng:Int(1, 4) + rng:Int(1, 4)
+    -- Timing is fixed, not a utility roll or a damage-die event.
+    return 3.0
 end
 
 RPG.CheckpointDPersonalityAuraStats = RPG.CheckpointDPersonalityAuraStats or {pulses = 0, targets = 0, damageEvents = 0}
 function RPG:ResolveCheckpointDPersonalityAura(owner)
     local state = Rules:ProgressionState(owner)
     local radius = self:CheckpointDPersonalityAuraProfile(state)
-    if radius == nil or not alive(owner) then return 0 end
+    if radius == nil or not auraEligible(owner) then return 0 end
     local run, navigator = LOD.RunManager and LOD.RunManager.State, LOD.MazeNavigator
     local graph = run and run.Graph
     if not graph or not navigator or not LOD.FactionManager then return 0 end
+    local ownerLife = Status.ActorLives and Status.ActorLives[owner]
     local ownerCell = navigator:WorldToCell(graph, owner:GetPos())
     if not ownerCell then return 0 end
     local damageContract = {bonus = 0}
@@ -66,6 +77,10 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
     if damage <= 0 then return 0 end
     local hits = 0
     for _, target in ipairs(LOD.FactionManager:Opponents(owner)) do
+        -- Native damage may retire or replace the owner/level during a pulse.
+        if not auraEligible(owner) or Rules:ProgressionState(owner) ~= state
+            or LOD.RunManager.State ~= run or run.Graph ~= graph
+            or Status.ActorLives and Status.ActorLives[owner] ~= ownerLife then break end
         if IsValid(target) and target ~= owner and not target.LODDead and target:Health() > 0 then
             local targetCell = navigator:WorldToCell(graph, target:GetPos())
             if self:CheckpointDCellRadiusIncludes(ownerCell, targetCell, radius) then
@@ -102,13 +117,15 @@ hook.Add("Think", "LOD_CheckpointDPersonalityAura", function()
     if now < RPG.CheckpointDPersonalityAuraNextThink then return end
     RPG.CheckpointDPersonalityAuraNextThink = now + 0.25
     for _, owner in ipairs(allOwners()) do
-        if RPG:CheckpointDPersonalityAuraProfile(Rules:ProgressionState(owner)) and alive(owner) then
+        if auraEligible(owner) then
             if owner.LODPersonalityAuraNextAt == nil then
                 owner.LODPersonalityAuraNextAt = now + RPG:CheckpointDPersonalityAuraInterval(owner)
             elseif now >= owner.LODPersonalityAuraNextAt then
-                RPG:ResolveCheckpointDPersonalityAura(owner)
                 owner.LODPersonalityAuraNextAt = now + RPG:CheckpointDPersonalityAuraInterval(owner)
+                RPG:ResolveCheckpointDPersonalityAura(owner)
             end
+        elseif IsValid(owner) then
+            owner.LODPersonalityAuraNextAt = nil
         end
     end
 end)
@@ -123,7 +140,7 @@ function RPG:ValidateCheckpointDPersonalityAuraFeats()
         local definition = Feats[id]
         expect(definition and definition.abilityRequirements.cha == 11 + rank * 2, id .. " CHA requirement")
         expect(definition and definition.effectParams.cellRadius == RADII[rank], id .. " radius")
-        expect(definition and definition.effectParams.intervalDice[1] == 3 and definition.effectParams.intervalDice[2] == 4, id .. " sealed 3d4")
+        expect(definition and definition.effectParams.intervalSeconds == 3 and definition.effectParams.intervalDice == nil, id .. " fixed three seconds without timing dice")
         if rank > 1 then expect(definition.prerequisiteFeatIds[1] == IDS[rank - 1], id .. " prerequisite") end
     end
     expect(self:CheckpointDPersonalityAuraProfile({featIds = {IDS[1], IDS[3]}}) == 2, "highest personality rank replaces lower ranks")

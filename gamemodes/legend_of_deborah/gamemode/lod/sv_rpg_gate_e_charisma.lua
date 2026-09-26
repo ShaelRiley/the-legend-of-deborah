@@ -14,7 +14,7 @@ local SOURCE_REVISION = "ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7
 local HITSTUN_FAMILY = "cha_hitstun_presence"
 local HITSTUN_CHAIN = {"CHA_HITSTUN_1", "CHA_HITSTUN_2", "CHA_HITSTUN_3"}
 local HITSTUN_RANK = {CHA_HITSTUN_1 = 1, CHA_HITSTUN_2 = 2, CHA_HITSTUN_3 = 3}
-local HITSTUN_MULTIPLIER = {[1] = 1.10, [2] = 1.20, [3] = 1.30}
+local HITSTUN_MULTIPLIER = {[1] = 1.22, [2] = 1.44, [3] = 1.66}
 local UTILITY_IDS = {
     CHA_ACADEMIC_ACHIEVEMENT = true,
     CHA_WINNING_PERSONALITY = true
@@ -99,11 +99,11 @@ local function charismaSingleton(id, name, requirement, capability, family, hand
 end
 
 Feats.CHA_HITSTUN_1 = hitStunDefinition(
-    "CHA_HITSTUN_1", "Unnerving Presence", 13, nil, 1, 1.10)
+    "CHA_HITSTUN_1", "Unnerving Presence", 13, nil, 1, 1.22)
 Feats.CHA_HITSTUN_2 = hitStunDefinition(
-    "CHA_HITSTUN_2", "Dazing Presence", 15, "CHA_HITSTUN_1", 2, 1.20)
+    "CHA_HITSTUN_2", "Dazing Presence", 15, "CHA_HITSTUN_1", 2, 1.44)
 Feats.CHA_HITSTUN_3 = hitStunDefinition(
-    "CHA_HITSTUN_3", "Overwhelming Presence", 17, "CHA_HITSTUN_2", 3, 1.30)
+    "CHA_HITSTUN_3", "Overwhelming Presence", 17, "CHA_HITSTUN_2", 3, 1.66)
 
 Feats.CHA_ACADEMIC_ACHIEVEMENT = charismaSingleton(
     "CHA_ACADEMIC_ACHIEVEMENT", "Academic Achievement", 15, "magic_pool",
@@ -163,7 +163,7 @@ if not Rules.LODGateECharismaHitStunWrapped then
         local ordinary = base(self, attacker, defender)
         local attack = self:Derived(attacker)
         local featMultiplier = math.Clamp(
-            tonumber(attack and attack.featHitStunMultiplier) or 1, 1, 1.30)
+            tonumber(attack and attack.featHitStunMultiplier) or 1, 1, 1.66)
         local final = ordinary * featMultiplier
         local stats = Effects.CharismaStats
         stats.hitStunMultiplierQueries = (stats.hitStunMultiplierQueries or 0) + 1
@@ -248,9 +248,9 @@ function Effects:ValidateCharismaFamilies()
         if not ok then errors[#errors + 1] = message end
     end
     local expected = {
-        CHA_HITSTUN_1 = {1, 13, nil, 1.10},
-        CHA_HITSTUN_2 = {2, 15, "CHA_HITSTUN_1", 1.20},
-        CHA_HITSTUN_3 = {3, 17, "CHA_HITSTUN_2", 1.30}
+        CHA_HITSTUN_1 = {1, 13, nil, 1.22},
+        CHA_HITSTUN_2 = {2, 15, "CHA_HITSTUN_1", 1.44},
+        CHA_HITSTUN_3 = {3, 17, "CHA_HITSTUN_2", 1.66}
     }
     for id, values in pairs(expected) do
         local feat = Feats[id]
@@ -268,7 +268,7 @@ function Effects:ValidateCharismaFamilies()
     local hit3 = self:CharismaProfile({featIds = HITSTUN_CHAIN})
     expect(hit0.hitStunRank == 0 and hit0.featHitStunMultiplier == 1,
         "baseline hit-stun profile")
-    expect(hit3.hitStunRank == 3 and hit3.featHitStunMultiplier == 1.30,
+    expect(hit3.hitStunRank == 3 and hit3.featHitStunMultiplier == 1.66,
         "Overwhelming Presence replaces lower ranks")
 
     local academic = Feats.CHA_ACADEMIC_ACHIEVEMENT
@@ -280,7 +280,7 @@ function Effects:ValidateCharismaFamilies()
     expect(math.abs(regen - 1.40) < 0.0001 and effective == 4,
         "Academic Achievement adds positive CHA_MOD to passive regen")
     local negative = self:AcademicMagicRegenMultiplier(1, -3, true)
-    expect(math.abs(negative - 1.10) < 0.0001,
+    expect(math.abs(negative - 1.22) < 0.0001,
         "Academic Achievement ignores negative CHA_MOD")
 
     local winning = Feats.CHA_WINNING_PERSONALITY
@@ -389,7 +389,7 @@ concommand.Add("lod_rpg_gate_e_charisma_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateCharismaFamilies()
     if ok then
-        print("[LOD:RPG-E] Charisma families PASS — hit stun x1.10/x1.20/x1.30 replacement ladder; Academic passive-regeneration CHA contribution; Winning Personality INT-feat qualification only")
+        print("[LOD:RPG-E] Charisma families PASS — hit stun x1.22/x1.44/x1.66 replacement ladder; Academic passive-regeneration CHA contribution; Winning Personality INT-feat qualification only")
     else
         ErrorNoHalt("[LOD:RPG-E] Charisma families FAILED\n")
         for _, message in ipairs(errors or {}) do

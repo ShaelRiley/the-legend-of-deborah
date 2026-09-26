@@ -408,7 +408,7 @@ LOD.CombatRolls.RollHostileAttack=function(self,...)
     return roll
 end
 e,a=fresh('accumulator',function(source) source.LODProgressionState.featIds={'INT_FEEDBACK_LOOP'} end)
-resolve(e,a);assert(a.pool.magic==66,'canonical Feedback Loop restores at most6 once per committed attack')
+resolve(e,a);assert(a.pool.magic==72,'canonical Feedback Loop restores at most12 once per committed attack')
 LOD.CombatRolls.RollHostileAttack=realRoll
 player.GetHumans=function() return {hero} end
 LOD.RunManager.IsActivePlayer=function() return true end

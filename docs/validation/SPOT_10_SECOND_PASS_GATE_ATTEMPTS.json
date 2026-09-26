@@ -1,0 +1,42 @@
+[
+  {
+    "passed": 64,
+    "total": 64,
+    "lua_files": 741,
+    "source_before": "6ca87b6c0b8c9acdae54c57450a5ef9d4a61471367443f85e89a87ba5e274ce9",
+    "source_after": "6ca87b6c0b8c9acdae54c57450a5ef9d4a61471367443f85e89a87ba5e274ce9",
+    "changed_during_gate": [],
+    "attempt": "spot10_baseline",
+    "receipt_sha256": "78111e014d0aeec049e65bd83b33df49e37999656b4b5c95f84727c16e3a1e56"
+  },
+  {
+    "passed": 63,
+    "total": 64,
+    "lua_files": 741,
+    "source_before": "c7e55637bae3932efd729210f55474c60be3a471f77a6f0adf71e558dd300386",
+    "source_after": "c7e55637bae3932efd729210f55474c60be3a471f77a6f0adf71e558dd300386",
+    "changed_during_gate": [],
+    "attempt": "spot10_second_gate01",
+    "receipt_sha256": "143b99a11bbb6407bc01e445d7035cdef4fa27777b6ef61f14617601054ead9b"
+  },
+  {
+    "passed": 71,
+    "total": 72,
+    "lua_files": 742,
+    "source_before": "355543bf8c720df46367f694f2235f056a0da0b6d8743e1f5be4940af7fef6b4",
+    "source_after": "355543bf8c720df46367f694f2235f056a0da0b6d8743e1f5be4940af7fef6b4",
+    "changed_during_gate": [],
+    "attempt": "spot10_second_gate02",
+    "receipt_sha256": "016377d3e596b3a8a2b234140933af66cc63930cb657d0904601a28109742bfa"
+  },
+  {
+    "passed": 72,
+    "total": 72,
+    "lua_files": 742,
+    "source_before": "37af5b52e21f7a882d23a34641ed85dd6310a8648993d6216bb308e5ce00c570",
+    "source_after": "37af5b52e21f7a882d23a34641ed85dd6310a8648993d6216bb308e5ce00c570",
+    "changed_during_gate": [],
+    "attempt": "spot10_second_gate03",
+    "receipt_sha256": "a6d36c675cc92212273eeab3d8a80d1f4473bc8fd5ec6a5eab4bba00d2080e16"
+  }
+]

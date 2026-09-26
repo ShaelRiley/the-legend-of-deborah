@@ -1,3 +1,40 @@
+# Resume The Legend of Deborah — SPOT-11 four-choice feat drafts
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. SPOT-10 D–J's
+actual parent is `7e2495ccfba3009f8190bd619ea229a8e65da094`; the delivery receipt
+supplies its verified child/tree/run. Fetch current main and preserve newer and
+uncommitted work. Isolated workflow commits never belong in gameplay ancestry.
+
+Read AGENTS.md → current DEVELOPMENT_PLAN.md → briefs/SPOT_UPDATES.md →
+validation/SPOT_10_SECOND_PASS_IMPLEMENTED.md and TEST_LOGGING.md. Live GDD
+`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`: 00 → 01 → relevant04/06/07;
+exact HUMAN only for details left unnormalized. D–J are explicitly approved and
+implemented, not pending proposals. Float On is six seconds at **1 Magic/second**.
+Keep A rejected and first-approved B/C/Mana Spring. Do not duplicate GDD approval
+sections or weaken existing movement, lifecycle, recovery or boss protections.
+
+The completed finite source gate is 72/72 selected suites,765 focused D–J
+assertions,742 Lua syntax checks, unchanged source. Final frozen/independent
+receipts establish exact publication. Earlier63/64 and71/72 failures are preserved.
+No full campaign matrix, native balance, enemy sustain/attrition/control, movement
+or co-op acceptance is claimed. No Workshop/VPS action.
+
+Next single bullet: increase feat offers from three to four, respecting eligibility
+and small pools. Reconcile the current live draft law before code; define and test
+stored-hand migration/preservation, distinct eligible offers, one chosen result,
+AI/human-Soldier selection, role/death/rejoin and display contracts. Do not silently
+reroll pending drafts. Do not bundle SPOT12,14 or deferred roadmap changes.
+
+Native evidence remains console_latest.txt + rpg_summary_latest.txt and a brief
+observation from the exact installed build; detailed session only for timing.
+No dedicated Razor test. Preserve SPOT01–09, B28/B29, Crate/P1–P4 and local
+acceptance → Workshop3791535712 package/source parity → matching VPS. Bank each
+validated checkpoint with a verified non-forced push; never promise background work.
+
+---
+
+## Historical handoff below — superseded by the current checkpoint above
+
 # Resume The Legend of Deborah — SPOT-10 second-pass approval
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. This checkpoint's

@@ -1709,6 +1709,7 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             or (100 / 15) * (state.derivedStats.utilityMagicCostMultiplier or 1),
         ammoRegenFloorRank = state.derivedStats.ammoRegenFloorRank,
         ammoRegenFloorFraction = state.derivedStats.ammoRegenFloorFraction,
+        ammoRegenSpeedMultiplier = state.derivedStats.ammoRegenSpeedMultiplier,
         ammoRegenFamilies = ammoRegenFamilies,
         identityTraits = {
             perkSnapshot(Catalog.Origins[package.originIndex], package, 1),

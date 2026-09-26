@@ -1,5 +1,10 @@
 # SPOT-10 — Second-pass feat-value review
 
+> Decision update: Shael subsequently approved all D–J, with H amended from
+> proposed 2 Magic/second to **1 Magic/second**. They are now implemented; see
+> [current implementation and evidence](SPOT_10_SECOND_PASS_IMPLEMENTED.md).
+> The review below is retained as the original proposal record, not current law.
+
 ## Decision register
 
 Shael explicitly rejected A: keep the Perfect Ten → Eight Is Enough → Fourtunate

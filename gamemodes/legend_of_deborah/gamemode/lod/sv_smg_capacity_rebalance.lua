@@ -63,6 +63,19 @@ function Ammo:RegenFloorRounds(ply, weaponClass, profile, derivedOverride)
         math.max(0, math.floor(profile.cap or 0)))
 end
 
+-- SPOT-10: one final-loaded cadence authority, independent of refill ceiling.
+function Ammo:RegenRoundInterval(ply, weaponClass, profile, derivedOverride)
+    profile = profile or self.RegenerativeProfiles and self.RegenerativeProfiles[weaponClass]
+    if not profile then return nil end
+    local derived = derivedOverride
+    if not derived and IsValid(ply) then
+        local rules = LOD.RPGAbilityRules
+        derived = rules and rules.Derived and rules:Derived(ply) or nil
+    end
+    local speed = math.Clamp(tonumber(derived and derived.ammoRegenSpeedMultiplier) or 1, 1, 1.66)
+    return (profile.recovery / profile.floor) / speed
+end
+
 local SHOTGUN_TIER_AMOUNTS = {small = 3, medium = 5, large = 7}
 
 Balance.Stats = Balance.Stats or {clipClamps = 0, capClamps = 0}
@@ -96,7 +109,7 @@ function Ammo:RegenProfileSnapshot(ply)
                 cap = profile.cap,
                 floor = self:RegenFloorRounds(ply, weaponClass, profile),
                 baselineFloor = profile.floor,
-                roundIntervalSeconds = profile.recovery / profile.floor
+                roundIntervalSeconds = self:RegenRoundInterval(ply, weaponClass, profile)
             }
         end
     end
@@ -172,7 +185,7 @@ function Ammo:Interrupt(ply, weaponClass, now)
     local profile = PROFILES[weaponClass]
     if not profile or not IsValid(ply) or testkitBypass(ply, weaponClass) then return end
     local state = self:_FamilyState(ply, weaponClass)
-    state.nextRoundAt = (now or CurTime()) + 3.0 + profile.recovery / profile.floor
+    state.nextRoundAt = (now or CurTime()) + 3.0 + self:RegenRoundInterval(ply, weaponClass, profile)
 end
 
 function Ammo:TickPlayer(ply, now)
@@ -190,9 +203,9 @@ function Ammo:TickPlayer(ply, now)
             if not weapon or total >= floor then
                 state.nextRoundAt = nil
             else
-                -- The feat changes the stopping ceiling only.  This remains the
-                -- existing baseline per-round cadence, not a faster recovery.
-                local interval = profile.recovery / profile.floor
+                -- Existing deadlines remain committed across rank changes: acquiring
+                -- a feat grants no instant round and cannot bypass the no-fire wait.
+                local interval = self:RegenRoundInterval(ply, weaponClass, profile)
                 state.nextRoundAt = state.nextRoundAt or (now + 3.0 + interval)
                 while total < floor and now >= state.nextRoundAt do
                     ply:SetAmmo(ply:GetAmmoCount(profile.ammo) + 1, profile.ammo)

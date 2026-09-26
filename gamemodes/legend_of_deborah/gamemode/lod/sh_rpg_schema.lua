@@ -255,7 +255,7 @@ RPG.Schema = {
         "chaHitStunResistanceMultiplier", "featHitStunMultiplier", "weaponKnockbackProcChance",
         "weaponKnockbackProcDistance", "pusherProcTargetCooldownSeconds", "wallSlamDieSides",
         "wallSlamExplodes", "wallSlamClassExplosionImmune", "ammoRegenFloorFraction",
-        "ammoRegenFloorRank", "ammoRegenFloorRoundsByFamily", "rateOfFireMultiplier",
+        "ammoRegenFloorRank", "ammoRegenFloorRoundsByFamily", "ammoRegenSpeedMultiplier", "rateOfFireMultiplier",
         "reloadTimeMultiplier",
         "smgHeatSuppressionChance", "smgOverheatThreshold", "blastProofCooldownSeconds",
         "invisibleStatePerception", "nearbyHostileWallSenseCells", "watcherMovementSenseAudio",

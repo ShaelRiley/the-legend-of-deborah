@@ -269,6 +269,8 @@ reset();a.soldier=false;run:_SyncPlayerVars(a);check(contains(text(a),'SOLDIER R
 -- unchanged synchronization do not manufacture heal notices.
 as=states[a.id].progressionState;as.derivedStats={healthRegenEnabled=true,healthRegenCeilingFraction=.33,
     healthRegenBaseMaxHPPerSecond=.1,conRegenMultiplier=1,wisMod=1}
+-- Establish the replacement life before admitting this already elapsed delay.
+Rules:Derived(a)
 a.hp=10;a.LODRPGHealthRegenEligibleAt=0
 reset();E:_TickActor(a,.01);check(#packets()==0 and a.hp==10,'fractional HP regeneration is not a committed outcome')
 E:_TickActor(a,1);check(a.hp==20 and contains(text(a),'HEALTH REGENERATION +10 HP'),'actual whole HP regeneration is retained')

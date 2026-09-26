@@ -1,0 +1,470 @@
+Preserved SPOT-10 second-pass attempt outputs; historical failures remain failures.
+
+===== focused01.log | sha256 3c73b5832a7ce2efd5361ace6e403fbf4976cd808b8ffc17e0beeedcac6d893b =====
+/mnt/data/LOD/tools/validate_spot10_second_pass.lua: /mnt/data/LOD/tools/validate_spot10_second_pass.lua:197: 'end' expected (to close 'for' at line 104) near <eof>
+
+===== focused02.log | sha256 e2d78fe2bf04a097074f5e108011375f9da061932a79e6ddc6277f7f2e0a4957 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+/mnt/data/LOD/tools/validate_spot10_second_pass.lua: ...es/legend_of_deborah/gamemode/lod/sv_m3_hit_feedback.lua:184: attempt to index a nil value (global 'scripted_ents')
+
+===== focused03.log | sha256 1192c364070825484da218c3fffbcd75e477542909f2442c52335ea2321eaad9 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+/mnt/data/LOD/tools/validate_spot10_second_pass.lua: gamemodes/legend_of_deborah/gamemode/lod/sv_damage_info.lua:18: attempt to call a nil value (global 'DamageInfo')
+
+===== focused04.log | sha256 e9d089e160089574b86ca8af7bd365dc1426492f713173b4a40af61529c0ab61 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+SPOT10_SECOND_PASS_PASS 758 focused production assertions; native boundary doubles; no campaign/native acceptance claim
+
+===== focused05.log | sha256 8d06ba48dbf36febd6a32de67768a6e483bcc8dcf5b417d38536db10759a2d40 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+SPOT10_SECOND_PASS_PASS 765 focused production assertions; native boundary doubles; no campaign/native acceptance claim
+
+===== gate01.log | sha256 3cd11557b2ef2df9fae1297f2d134043c2b4f11e6df3a47b69e2973a126b963d =====
+PASS test_equipment_block.lua
+PASS test_status_elements.lua
+FAIL validate_spot05_die_logger.lua
+PASS test_feedback_language.lua
+PASS test_cross_feats_dodge.lua
+PASS test_human_soldier_lifecycle.lua
+PASS test_human_soldier_progression.lua
+PASS test_actor_progression.lua
+PASS test_checkpoint_d_closure.lua
+PASS test_gate_e_control_magic.lua
+PASS test_gate_e_magic_recovery.lua
+PASS test_wizard_balance.lua
+PASS test_gate_e_crowbar.lua
+PASS test_gate_e_pusher.lua
+PASS test_enemy_update.lua
+PASS test_snapshot_delivery.lua
+PASS test_potion_projectile.lua
+PASS test_monster_defenses.lua
+PASS test_fighting_streets.lua
+PASS test_checkpoint_c_headless.lua
+PASS test_equipment_moves.lua
+PASS test_bestiary_b29_combat.lua
+PASS validate_spot02_climber.lua
+PASS validate_spot03_razor.lua
+PASS validate_spot04_audio.lua
+PASS test_great_crate_geometry.lua
+PASS test_bestiary_b28.lua
+PASS test_soldier_character_sheet.lua
+PASS test_great_crate_hull_runtime.lua
+PASS test_bestiary_b29.lua
+PASS test_damsel_audio.lua
+PASS test_manual_transport.lua
+PASS test_bestiary_b29_dispatch.lua
+PASS test_warden_health.lua
+PASS test_hector_encounter.lua
+PASS test_hector_presentation.lua
+PASS test_hector_health.lua
+PASS test_deborah_finale_presentation.lua
+PASS test_native_resource_lifecycle.lua
+PASS validate_spot06_gordon.lua
+PASS test_warden.lua
+PASS test_shotgun_native_path.lua
+PASS test_checkpoint_d_wis_information.lua
+PASS test_monster_identity.lua
+PASS test_enemy_roster.lua
+PASS validate_spot09_revenge.lua
+PASS test_equipment_economy_runtime.lua
+PASS validate_spot07_tells.lua
+PASS test_magic_hourglass.lua
+PASS test_damsel_progression.lua
+PASS validate_spot08_turrets.lua
+PASS test_damsel_staging.lua
+PASS test_equipment_loot.lua
+PASS validate_spot10_approved.lua
+PASS test_equipment_inventory_ui.lua
+PASS test_checkpoint_d_wis_defense.lua
+PASS test_checkpoint_d_haste.lua
+PASS test_feat_stabilization.lua
+PASS manual_catalog_parity
+PASS git_diff_check
+PASS test_dev_population_manifest.py
+PASS lua_syntax
+PASS test_manual_document.py
+PASS test_great_crate_assets.py
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+PASS 1 one union delivery per participant/nearby observer
+PASS 2 one event serial and frozen wording for all recipients
+PASS 3 only direct participants own feedback acknowledgments
+PASS 4 dead/far observers excluded; shared spans encoded once
+PASS 5 direct victim receives its result beyond observer radius
+PASS 6 NPC-only outcome routes by actual NPC positions and observer WIS
+PASS 7 explicit progression/resource families remain private
+PASS 8 identical legitimate outcomes retain distinct serials
+PASS 9 real Magic sync/full-cap crossing is silent, HUD state preserved
+PASS 10 real passive regeneration reaches 100 without event noise
+PASS 11 saved status consumes its original one die
+PASS 12 save natural/DC and outcome both represented
+PASS 13 failed save/duration preserve draws and deadline
+PASS 14 save → duration → outcome share causal order
+PASS 15 already-active status does not hide newly consumed duration dice
+PASS 16 actual status clear reaches source and target
+PASS 17 Attunement keeps identical selection and RNG consumption
+PASS 18 both elemental-table choice rolls are retained
+PASS 19 initial poison recovery dice are visible without timing change
+PASS 20 failed poison recovery shows save and fresh interval
+PASS 21 successful poison recovery retains save and clear
+PASS 22 actual status damage reports its consumed die and resolved result
+PASS 23 long dice array splits into finite 64-value records rather than truncating
+PASS 24 ordered parts have explicit common labels in canonical stream
+PASS 25 fallible dice presentation cannot change status result or draw count
+PASS 26 failed Dodge preserves damage and one authoritative float
+PASS 27 failed Dodge is visible once to both participants
+PASS 28 cached failed Dodge does not reroll or duplicate the record
+PASS 29 successful Dodge still commits zero damage
+PASS 30 successful Dodge explicitly represents its zero result
+PASS 31 ineligible zero-chance Dodge produces neither RNG nor fake event
+PASS 32 real Block authority retains chance and damage outcome
+PASS 33 Block uses the same single-event participant union and cache
+PASS 34 NPC Morale save/cooldown retain exactly four draws and timing
+PASS 35 Morale record retains previously omitted cooldown dice
+PASS 36 enemy HP generation has one serial, no all-player fan-out duplicates
+PASS 37 ordinary non-exploding miss keeps its committed dice exactly once
+PASS 38 authored restoration to 100 remains meaningful despite passive-noise exception
+PASS 39 zero actual proc restoration emits no fake resource gain
+PASS 40 total-only legacy save remains authoritative without fabricated natural dice or report errors
+PASS 41 first local sync establishes baseline without invented revival
+PASS 42 real same-Hero life loss reported
+PASS 43 elimination remains meaningful
+PASS 44 same retained Hero resurrection reported
+PASS 45 replacement Hero is not reported as revived
+PASS 46 replacement run with same epoch establishes new baseline
+PASS 47 new campaign epoch cannot inherit life comparison
+PASS 48 late-joining controller receives no synthetic life event
+PASS 49 active Soldier identity uses actual role, not dormant Hero
+PASS 50 username containing as and Soldier have separate canonical semantic roles
+PASS 51 role retirement uses shared lifecycle stream
+PASS 52 fractional HP regeneration is not a committed outcome
+/mnt/data/LOD/tools/validate_spot05_die_logger.lua: /mnt/data/LOD/tools/validate_spot05_die_logger.lua:7: SPOT05 53: actual whole HP regeneration is retained
+
+SPOT10_GATE 63/64; syntax 741 Lua files
+
+===== gate02.log | sha256 43bc3173a0268a8937a183e3ce3abc86965796587d4d552736437052f0439d9e =====
+PASS test_equipment_block.lua
+PASS test_feedback_language.lua
+PASS test_status_elements.lua
+PASS validate_spot05_die_logger.lua
+PASS test_cross_feats_dodge.lua
+PASS test_human_soldier_progression.lua
+PASS test_human_soldier_lifecycle.lua
+PASS test_actor_progression.lua
+PASS test_checkpoint_d_closure.lua
+PASS test_gate_e_control_magic.lua
+PASS test_gate_e_magic_recovery.lua
+PASS test_wizard_balance.lua
+PASS test_gate_e_crowbar.lua
+PASS test_gate_e_pusher.lua
+PASS test_enemy_update.lua
+PASS test_snapshot_delivery.lua
+PASS test_monster_defenses.lua
+PASS test_potion_projectile.lua
+PASS test_fighting_streets.lua
+PASS test_equipment_moves.lua
+PASS test_checkpoint_c_headless.lua
+PASS test_bestiary_b29_combat.lua
+PASS validate_spot02_climber.lua
+PASS validate_spot03_razor.lua
+PASS validate_spot04_audio.lua
+PASS test_great_crate_geometry.lua
+PASS test_bestiary_b28.lua
+PASS test_soldier_character_sheet.lua
+PASS test_great_crate_hull_runtime.lua
+PASS test_damsel_audio.lua
+PASS test_manual_transport.lua
+PASS test_bestiary_b29.lua
+PASS test_bestiary_b29_dispatch.lua
+PASS test_warden_health.lua
+PASS test_hector_encounter.lua
+PASS test_hector_presentation.lua
+PASS test_hector_health.lua
+PASS test_deborah_finale_presentation.lua
+PASS validate_spot06_gordon.lua
+PASS test_warden.lua
+PASS test_native_resource_lifecycle.lua
+PASS test_shotgun_native_path.lua
+PASS test_checkpoint_d_wis_information.lua
+PASS test_monster_identity.lua
+PASS test_enemy_roster.lua
+PASS test_equipment_economy_runtime.lua
+PASS validate_spot09_revenge.lua
+PASS validate_spot07_tells.lua
+PASS test_magic_hourglass.lua
+PASS test_damsel_progression.lua
+PASS test_damsel_staging.lua
+PASS validate_spot08_turrets.lua
+PASS test_equipment_loot.lua
+PASS test_equipment_inventory_ui.lua
+PASS validate_spot10_approved.lua
+PASS test_checkpoint_d_wis_defense.lua
+PASS test_checkpoint_d_haste.lua
+PASS test_feat_stabilization.lua
+PASS test_checkpoint_d_wall_jump.lua
+PASS validate_spot10_second_pass.lua
+PASS test_checkpoint_d_personality_aura.lua
+PASS test_checkpoint_d_aura_burst.lua
+PASS test_moon_boots.lua
+PASS test_bestiary_b14_production.lua
+PASS test_fighter_strength.lua
+FAIL test_bestiary_b14.lua
+PASS manual_catalog_parity
+PASS git_diff_check
+PASS test_dev_population_manifest.py
+PASS test_manual_document.py
+PASS lua_syntax
+PASS test_great_crate_assets.py
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B14_DRAIN_PASS: canonical damage and Magic, warning/escape, capped fractional loss, no zero/lethal rider, Arcane Shield order
+BESTIARY_B14_RECHARGE_PASS: paid casts, Quantum, depleted release, harmless channel, cap100, denial, natural cycle
+BESTIARY_B14_LIFETIME_PASS: all3 modes, early/deadline source/target/resource/dungeon identity matrix, status and stall gates
+BESTIARY_B14_BOUNDARIES_PASS: actual Hero hull, support/cover/progression exclusions, parties1–4, pool/native reentry/replacement, cap16
+/mnt/data/LOD/tools/test_bestiary_b14.lua: /mnt/data/LOD/tools/test_bestiary_b14.lua:411: canonical Feedback Loop restores at most6 once per committed attack
+
+SPOT10_GATE 71/72; syntax 742 Lua files
+
+===== gate03.log | sha256 d128eadea4ebc0107ec5e6640516491700a4ea24dcde48c84dc69a97ed45ceef =====
+PASS test_status_elements.lua
+PASS test_equipment_block.lua
+PASS validate_spot05_die_logger.lua
+PASS test_feedback_language.lua
+PASS test_cross_feats_dodge.lua
+PASS test_human_soldier_lifecycle.lua
+PASS test_human_soldier_progression.lua
+PASS test_actor_progression.lua
+PASS test_checkpoint_d_closure.lua
+PASS test_gate_e_control_magic.lua
+PASS test_gate_e_magic_recovery.lua
+PASS test_wizard_balance.lua
+PASS test_gate_e_crowbar.lua
+PASS test_gate_e_pusher.lua
+PASS test_enemy_update.lua
+PASS test_snapshot_delivery.lua
+PASS test_monster_defenses.lua
+PASS test_potion_projectile.lua
+PASS test_fighting_streets.lua
+PASS test_checkpoint_c_headless.lua
+PASS test_equipment_moves.lua
+PASS test_bestiary_b29_combat.lua
+PASS validate_spot02_climber.lua
+PASS validate_spot03_razor.lua
+PASS validate_spot04_audio.lua
+PASS test_great_crate_geometry.lua
+PASS test_bestiary_b28.lua
+PASS test_soldier_character_sheet.lua
+PASS test_great_crate_hull_runtime.lua
+PASS test_bestiary_b29.lua
+PASS test_manual_transport.lua
+PASS test_damsel_audio.lua
+PASS test_bestiary_b29_dispatch.lua
+PASS test_warden_health.lua
+PASS test_hector_encounter.lua
+PASS test_hector_presentation.lua
+PASS test_hector_health.lua
+PASS test_deborah_finale_presentation.lua
+PASS test_native_resource_lifecycle.lua
+PASS test_shotgun_native_path.lua
+PASS test_warden.lua
+PASS validate_spot06_gordon.lua
+PASS test_checkpoint_d_wis_information.lua
+PASS test_monster_identity.lua
+PASS test_enemy_roster.lua
+PASS validate_spot09_revenge.lua
+PASS test_equipment_economy_runtime.lua
+PASS validate_spot07_tells.lua
+PASS test_magic_hourglass.lua
+PASS test_damsel_progression.lua
+PASS validate_spot08_turrets.lua
+PASS test_damsel_staging.lua
+PASS test_equipment_loot.lua
+PASS validate_spot10_approved.lua
+PASS test_equipment_inventory_ui.lua
+PASS test_checkpoint_d_haste.lua
+PASS test_checkpoint_d_wis_defense.lua
+PASS test_feat_stabilization.lua
+PASS validate_spot10_second_pass.lua
+PASS test_checkpoint_d_wall_jump.lua
+PASS test_checkpoint_d_personality_aura.lua
+PASS test_checkpoint_d_aura_burst.lua
+PASS test_moon_boots.lua
+PASS test_bestiary_b14_production.lua
+PASS test_fighter_strength.lua
+PASS test_bestiary_b14.lua
+PASS manual_catalog_parity
+PASS git_diff_check
+PASS test_dev_population_manifest.py
+PASS test_manual_document.py
+PASS lua_syntax
+PASS test_great_crate_assets.py
+SPOT10_GATE 72/72; syntax 742 Lua files
+
+===== logger02.log | sha256 054b9a5a5fb19e35d05fb347ef86f1745cdf6291310d3daf9c3a18b2a1454344 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+PASS 1 one union delivery per participant/nearby observer
+PASS 2 one event serial and frozen wording for all recipients
+PASS 3 only direct participants own feedback acknowledgments
+PASS 4 dead/far observers excluded; shared spans encoded once
+PASS 5 direct victim receives its result beyond observer radius
+PASS 6 NPC-only outcome routes by actual NPC positions and observer WIS
+PASS 7 explicit progression/resource families remain private
+PASS 8 identical legitimate outcomes retain distinct serials
+PASS 9 real Magic sync/full-cap crossing is silent, HUD state preserved
+PASS 10 real passive regeneration reaches 100 without event noise
+PASS 11 saved status consumes its original one die
+PASS 12 save natural/DC and outcome both represented
+PASS 13 failed save/duration preserve draws and deadline
+PASS 14 save → duration → outcome share causal order
+PASS 15 already-active status does not hide newly consumed duration dice
+PASS 16 actual status clear reaches source and target
+PASS 17 Attunement keeps identical selection and RNG consumption
+PASS 18 both elemental-table choice rolls are retained
+PASS 19 initial poison recovery dice are visible without timing change
+PASS 20 failed poison recovery shows save and fresh interval
+PASS 21 successful poison recovery retains save and clear
+PASS 22 actual status damage reports its consumed die and resolved result
+PASS 23 long dice array splits into finite 64-value records rather than truncating
+PASS 24 ordered parts have explicit common labels in canonical stream
+PASS 25 fallible dice presentation cannot change status result or draw count
+PASS 26 failed Dodge preserves damage and one authoritative float
+PASS 27 failed Dodge is visible once to both participants
+PASS 28 cached failed Dodge does not reroll or duplicate the record
+PASS 29 successful Dodge still commits zero damage
+PASS 30 successful Dodge explicitly represents its zero result
+PASS 31 ineligible zero-chance Dodge produces neither RNG nor fake event
+PASS 32 real Block authority retains chance and damage outcome
+PASS 33 Block uses the same single-event participant union and cache
+PASS 34 NPC Morale save/cooldown retain exactly four draws and timing
+PASS 35 Morale record retains previously omitted cooldown dice
+PASS 36 enemy HP generation has one serial, no all-player fan-out duplicates
+PASS 37 ordinary non-exploding miss keeps its committed dice exactly once
+PASS 38 authored restoration to 100 remains meaningful despite passive-noise exception
+PASS 39 zero actual proc restoration emits no fake resource gain
+PASS 40 total-only legacy save remains authoritative without fabricated natural dice or report errors
+PASS 41 first local sync establishes baseline without invented revival
+PASS 42 real same-Hero life loss reported
+PASS 43 elimination remains meaningful
+PASS 44 same retained Hero resurrection reported
+PASS 45 replacement Hero is not reported as revived
+PASS 46 replacement run with same epoch establishes new baseline
+PASS 47 new campaign epoch cannot inherit life comparison
+PASS 48 late-joining controller receives no synthetic life event
+PASS 49 active Soldier identity uses actual role, not dormant Hero
+PASS 50 username containing as and Soldier have separate canonical semantic roles
+PASS 51 role retirement uses shared lifecycle stream
+/mnt/data/LOD/tools/validate_spot05_die_logger.lua: /mnt/data/LOD/tools/validate_spot05_die_logger.lua:273: attempt to call a nil value (method 'Derived')
+
+===== logger03.log | sha256 62c79cbe5241ea4f69afcf87ad48027fc02f0ace3be24ed5db7ea3208a9f922a =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+PASS 1 one union delivery per participant/nearby observer
+PASS 2 one event serial and frozen wording for all recipients
+PASS 3 only direct participants own feedback acknowledgments
+PASS 4 dead/far observers excluded; shared spans encoded once
+PASS 5 direct victim receives its result beyond observer radius
+PASS 6 NPC-only outcome routes by actual NPC positions and observer WIS
+PASS 7 explicit progression/resource families remain private
+PASS 8 identical legitimate outcomes retain distinct serials
+PASS 9 real Magic sync/full-cap crossing is silent, HUD state preserved
+PASS 10 real passive regeneration reaches 100 without event noise
+PASS 11 saved status consumes its original one die
+PASS 12 save natural/DC and outcome both represented
+PASS 13 failed save/duration preserve draws and deadline
+PASS 14 save → duration → outcome share causal order
+PASS 15 already-active status does not hide newly consumed duration dice
+PASS 16 actual status clear reaches source and target
+PASS 17 Attunement keeps identical selection and RNG consumption
+PASS 18 both elemental-table choice rolls are retained
+PASS 19 initial poison recovery dice are visible without timing change
+PASS 20 failed poison recovery shows save and fresh interval
+PASS 21 successful poison recovery retains save and clear
+PASS 22 actual status damage reports its consumed die and resolved result
+PASS 23 long dice array splits into finite 64-value records rather than truncating
+PASS 24 ordered parts have explicit common labels in canonical stream
+PASS 25 fallible dice presentation cannot change status result or draw count
+PASS 26 failed Dodge preserves damage and one authoritative float
+PASS 27 failed Dodge is visible once to both participants
+PASS 28 cached failed Dodge does not reroll or duplicate the record
+PASS 29 successful Dodge still commits zero damage
+PASS 30 successful Dodge explicitly represents its zero result
+PASS 31 ineligible zero-chance Dodge produces neither RNG nor fake event
+PASS 32 real Block authority retains chance and damage outcome
+PASS 33 Block uses the same single-event participant union and cache
+PASS 34 NPC Morale save/cooldown retain exactly four draws and timing
+PASS 35 Morale record retains previously omitted cooldown dice
+PASS 36 enemy HP generation has one serial, no all-player fan-out duplicates
+PASS 37 ordinary non-exploding miss keeps its committed dice exactly once
+PASS 38 authored restoration to 100 remains meaningful despite passive-noise exception
+PASS 39 zero actual proc restoration emits no fake resource gain
+PASS 40 total-only legacy save remains authoritative without fabricated natural dice or report errors
+PASS 41 first local sync establishes baseline without invented revival
+PASS 42 real same-Hero life loss reported
+PASS 43 elimination remains meaningful
+PASS 44 same retained Hero resurrection reported
+PASS 45 replacement Hero is not reported as revived
+PASS 46 replacement run with same epoch establishes new baseline
+PASS 47 new campaign epoch cannot inherit life comparison
+PASS 48 late-joining controller receives no synthetic life event
+PASS 49 active Soldier identity uses actual role, not dormant Hero
+PASS 50 username containing as and Soldier have separate canonical semantic roles
+PASS 51 role retirement uses shared lifecycle stream
+PASS 52 fractional HP regeneration is not a committed outcome
+PASS 53 actual whole HP regeneration is retained
+PASS 54 regeneration ceiling no-op is silent
+[LOD:RPG-ABILITIES] Starting abilities: raw total 78 >= 74; STR 4d6[6+2+4+2] drop lowest = 12; DEX 4d6[3+5+6+5] drop lowest = 16; CON 4d6[1+4+1+3] drop lowest = 8; INT 4d6[3+6+1+6] drop lowest = 15; WIS 4d6[1+1+4+5] drop lowest = 10; CHA 4d6[6+5+6+3] drop lowest = 17; CON 8 - 2d2[2+2] = 4; WIS 10 - 1d3[3] = 7; STR 12 - 1d3[3] = 9; final total 68. No post-weakness reroll.
+PASS 55 real Hero initialization/class authority loads
+PASS 56 actual Hero advancement succeeds
+PASS 57 committed Hero HP die reaches canonical stream
+PASS 58 HP progression is private and delivered once
+PASS 59 cached/repeated level does not replay HP dice
+PASS 60 actual Soldier admission owns its separate progression
+PASS 61 fresh Soldier HP dice are private and complete for committed levels
+PASS 62 repeated Soldier admission neither rerolls nor replays HP dice
+PASS 63 actual Soldier XP growth reports its new dice and outcome
+PASS 64 Soldier events cannot mutate or advance dormant Hero ownership
+PASS 65 retired Soldier reference cannot emit a new growth event
+PASS 66 real receiver retains exact live/history wording
+PASS 67 live/history preserve event identity and semantic spans
+PASS 68 unrelated client cannot acknowledge another player event
+PASS 69 owner acknowledgment records transport receipt only
+PASS 70 repeat network serial does not duplicate history
+PASS 71 same text with a fresh authoritative serial is not suppressed
+PASS 72 live tail, history and replay memory remain bounded
+PASS 73 retained chronological order survives rollover
+PASS 74 batched persistence retains serial/order
+PASS 75 oversize persisted history is bounded and not replayed live
+PASS 76 no unexpected presentation or engine-boundary errors:
+SPOT05_DIE_LOGGER_PASS 76 bounded production assertions; native rendering/network acceptance pending
+
+===== manual_build_01.log | sha256 0783d5c18f00236cb71cc60ddced53439748b1bc66ed5250ebcff9da0d65f100 =====
+Manual: 165 chapters; 32 client chunks; sha256 6eb68493ee7e7008edc00a8599545ec9123cb1323e7ae7f45fe076ce39f3d501
+
+===== manual_export_01.log | sha256 e69685fdb863406aadfc4b00510f5d6cb538a8217ad0abb0013c8545ea6a6849 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+
+===== manual_export_02.log | sha256 e69685fdb863406aadfc4b00510f5d6cb538a8217ad0abb0013c8545ea6a6849 =====
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+
+===== wall02.log | sha256 06a13de6d881f6964c91686ebb51f20ab1c66862271e9f048f51990fddb5293b =====
+Checkpoint D Wall Jump headless PASS
+WALL_JUMP_RUNTIME_PASS: real input/trace/velocity path; generated walls; four kicks; crouch; fall/inward momentum; ground/death reset; Cloud Step priority; Spring Heel; invalid/held guards
+CLOUD_STEP_PASS: 3 Magic, 2x takeoff, fall cancellation, normalized input, preserved momentum, one use/cue/effect, restrictions, unrestricted Spring Heel/Wall Jump combinations

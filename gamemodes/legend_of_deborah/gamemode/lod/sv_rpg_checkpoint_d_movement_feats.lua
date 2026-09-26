@@ -10,7 +10,7 @@ local PROBE_DISTANCE, LATERAL_KICK, VERTICAL_NORMAL_LIMIT = 24, 160, 0.20
 local WALL_JUMP_LIMIT = 4
 local CLOUD_MAGIC_COST, CLOUD_IMPULSE_MULTIPLIER, CLOUD_HORIZONTAL_BOOST = 3, 2, 120
 local WALL_CLASSES = {lod_static_box=true, lod_gate=true, lod_jail_door=true}
-local FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND, FLOAT_APEX_SPEED = 3.0, 5.0, 30
+local FLOAT_MAX_SECONDS, FLOAT_MAGIC_PER_SECOND, FLOAT_APEX_SPEED = 6.0, 1.0, 30
 local DIRECTIONS = {
     {x = 1, y = 0}, {x = 0, y = 1}, {x = -1, y = 0}, {x = 0, y = -1},
     {x = .70710678, y = .70710678}, {x = -.70710678, y = .70710678},
@@ -46,7 +46,7 @@ Feats.INT_FLOAT_ON = {
     prerequisiteFeatIds = {}, requiredCapabilityTags = {"magic_pool"}, incompatibleFeatIds = {}, allowedActorTypes = {"hero", "human_soldier"},
     requiredSubsystemTags = {"movement", "magic"}, synergyTags = {"movement", "float", "magic"}, oneRank = true,
     effectHandlerId = "float_on", effectParams = {maximumSeconds = FLOAT_MAX_SECONDS, magicPerSecond = FLOAT_MAGIC_PER_SECOND,
-        description = "Once per airborne cycle, hold Space at the apex for a controllable float of up to 3.0 seconds, spending exactly 5 Magic per second. It ends on release, ground contact, exhaustion, or cap."},
+        description = "Once per airborne cycle, hold Space at the apex for a controllable float of up to 6.0 seconds, spending exactly 1 Magic per second. It ends on release, ground contact, exhaustion, or cap."},
     directorBaseWeight = 1.0, eligibilityText = "INT 15 / Magic pool", actorText = "Player-controlled Heroes and human Soldiers only"
 }
 assert(Feats.INT_SIZE_SHIFTER == nil, "duplicate canonical feat INT_SIZE_SHIFTER")
@@ -255,10 +255,25 @@ function Rules:HandleAirborneJump(ply)
 end
 hook.Add("KeyPress", "LOD_RPG_CheckpointDMovementJump", function(ply, key) if key == IN_JUMP then Rules:HandleAirborneJump(ply) end end)
 
+-- Reuse ordinary voluntary-movement and active-life restrictions; this is
+-- neither a gravity authority nor permission to move a controlled/frozen body.
+local function floatAllowed(ply)
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
+    if ply.GetMoveType and ply:GetMoveType() ~= MOVETYPE_WALK then return false end
+    if ply.InVehicle and ply:InVehicle() or ply.IsFrozen and ply:IsFrozen() then return false end
+    local run = LOD.RunManager
+    local world = run and run.State
+    if world and (world.SimulationFrozen or world.Failed or world.LevelCleared or world.BuildReady == false) then return false end
+    if run and run.IsActivePlayer and not run:IsActivePlayer(ply)
+        and not (run.IsSoldierControl and run:IsSoldierControl(ply)) then return false end
+    local status = LOD.RPGStatusElements
+    return not status or status:CanMoveVoluntarily(ply)
+end
+
 function Rules:TryStartFloatOn(ply, now)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply:OnGround() or not ply:KeyDown(IN_JUMP) then return false end
     local derived = self:Derived(ply)
-    if not derived or derived.floatOnEnabled ~= true then return false end
+    if not derived or derived.floatOnEnabled ~= true or not floatAllowed(ply) then return false end
     local cloud = Effects.CloudStepState[ply]
     if derived.cloudStepEnabled == true and not (cloud and cloud.used) then return false end
     local state = Effects.FloatOnState[ply] or {}; Effects.FloatOnState[ply] = state
@@ -269,6 +284,7 @@ function Rules:TryStartFloatOn(ply, now)
     local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
     if not resource or (tonumber(resource.magic) or 0) <= 0 then return false end
     state.used, state.active, state.startedAt, state.lastAt, state.nextSyncAt = true, true, now, now, now
+    state.resource = resource
     return true
 end
 function Rules:EndFloatOn(ply, sync)
@@ -283,21 +299,25 @@ function Rules:EndFloatOn(ply, sync)
     return true
 end
 function Rules:TickFloatOn(ply, now)
+    -- Derived resolves the current actor life before we retain a transient record.
+    local derived = IsValid(ply) and self:Derived(ply) or nil
     local state = Effects.FloatOnState[ply]
     if not state or not state.active then return false end
-    if not IsValid(ply) or not ply:Alive() or ply:OnGround() or not ply:KeyDown(IN_JUMP) then return self:EndFloatOn(ply, true) end
+    if not derived or not derived.floatOnEnabled or not floatAllowed(ply) then return self:EndFloatOn(ply, true) end
     local maxSeconds = FLOAT_MAX_SECONDS
     local capAt = (state.startedAt or now) + maxSeconds
     local magic = LOD.Magic
     local resource = magic and magic._EnsureState and magic:_EnsureState(ply)
     local elapsed = math.max(0, math.min(now, capAt) - (state.lastAt or now)); state.lastAt = now
     local cost = elapsed * FLOAT_MAGIC_PER_SECOND
-    if not resource or (tonumber(resource.magic) or 0) <= 0 then return self:EndFloatOn(ply, true) end
+    if not resource or resource ~= state.resource or (tonumber(resource.magic) or 0) <= 0 then return self:EndFloatOn(ply, true) end
     local actual = math.min(cost, math.max(0, tonumber(resource.magic) or 0))
     resource.magic = math.max(0, (tonumber(resource.magic) or 0) - actual)
+    -- Settle the last observed fraction before voluntary release/landing; never
+    -- transfer a pending debit to a replacement pool or grant an unpaid impulse.
+    if resource.magic <= 0 or now >= capAt or ply:OnGround() or not ply:KeyDown(IN_JUMP) then return self:EndFloatOn(ply, true) end
     local velocity = ply:GetVelocity()
     if velocity and (tonumber(velocity.z) or 0) < 0 then ply:SetVelocity(Vector(0, 0, -(tonumber(velocity.z) or 0))) end
-    if resource.magic <= 0 or now >= capAt then return self:EndFloatOn(ply, true) end
     if now >= (state.nextSyncAt or now) then
         if magic._Sync then magic:_Sync(ply, resource) end
         state.nextSyncAt = now + 0.10
@@ -313,7 +333,10 @@ hook.Add("Think", "LOD_RPG_CheckpointDWallJumpGroundReset", function()
     end
     for ply, state in pairs(Effects.FloatOnState) do
         if not IsValid(ply) then Effects.FloatOnState[ply] = nil
-        elseif ply:OnGround() then state.used, state.active = false, false end
+        elseif ply:OnGround() then
+            Rules:TickFloatOn(ply, CurTime())
+            state.used, state.active = false, false
+        end
     end
     for _, ply in ipairs(player and player.GetAll and player.GetAll() or {}) do
         if IsValid(ply) then
@@ -363,8 +386,8 @@ function Rules:ValidateCheckpointDWallJump()
     expect(cloud and cloud.abilityRequirements.int == 13 and cloud.effectParams.magicCost == CLOUD_MAGIC_COST,
         "Cloud Step definition/cost")
     local float = Feats.INT_FLOAT_ON
-    expect(float and float.abilityRequirements.int == 15 and float.effectParams.maximumSeconds == 3
-        and float.effectParams.magicPerSecond == 5, "Float On definition/cost/duration")
+    expect(float and float.abilityRequirements.int == 15 and float.effectParams.maximumSeconds == 6
+        and float.effectParams.magicPerSecond == 1, "Float On definition/cost/duration")
     local size = Feats.INT_SIZE_SHIFTER
     expect(size and size.abilityRequirements.int == 13 and size.effectParams.targetScale == .33
         and size.effectParams.transitionSeconds == 3, "Size Shifter definition/transition")

@@ -531,8 +531,9 @@ function Sheet:Open(requestFresh)
             families[#families + 1] = string.format("%s %d/%d",
                 profile.label or "Ammo", profile.floor or 0, profile.cap or 0)
         end
-        recordText = recordText .. string.format("\nAmmo Regen: %d%% floor%s",
+        recordText = recordText .. string.format("\nAmmo Regen: %d%% floor / %d%% faster refill%s",
             math.floor((snapshot.ammoRegenFloorFraction or 0) * 100 + 0.5),
+            math.floor(((snapshot.ammoRegenSpeedMultiplier or 1) - 1) * 100 + 0.5),
             #families > 0 and (": " .. table.concat(families, ", ")) or "")
     end
     if (snapshot.featHitStunRank or 0) > 0 then
@@ -553,13 +554,13 @@ function Sheet:Open(requestFresh)
     end
     if snapshot.feedbackLoopEnabled then
         recordText = recordText .. string.format(
-            "\nFeedback Loop: +1 Magic per Magic continuation / cap %d per cast",
-            snapshot.feedbackLoopPerCastCap or 6)
+            "\nFeedback Loop: +%g Magic per Magic continuation / cap %d per cast",
+            snapshot.feedbackLoopPerContinuation or 2, snapshot.feedbackLoopPerCastCap or 12)
     end
     if snapshot.arcRecoveryEnabled then
         recordText = recordText .. string.format(
             "\nArc Recovery: +%d Magic per Magic kill / %.1fs cooldown",
-            snapshot.arcRecoveryMagic or 5, snapshot.arcRecoveryCooldownSeconds or 2)
+            snapshot.arcRecoveryMagic or 11, snapshot.arcRecoveryCooldownSeconds or 2)
     end
     if (snapshot.pusherRank or 0) > 0 then
         recordText = recordText .. string.format(

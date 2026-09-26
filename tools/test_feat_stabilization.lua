@@ -32,11 +32,11 @@ near(Effects:HealthRegenProfile({classId='rogue',featIds={}}).ceilingFraction,0,
 for rank, id in ipairs({'CON_REGEN_11','CON_REGEN_22','CON_REGEN_33'}) do
     for _, class in ipairs({'fighter','rogue','wizard'}) do
         local profile = Effects:HealthRegenProfile({classId=class,featIds={id}})
-        near(profile.ceilingFraction,rank*.11+(class=='fighter' and .33 or 0),'combined ceiling')
-        assert(profile.damageFreeDelaySeconds==5 and profile.baseMaxHPPerSecond==.01)
+        near(profile.ceilingFraction,rank*.22+(class=='fighter' and .33 or 0),'combined ceiling')
+        assert(profile.damageFreeDelaySeconds==5 and profile.baseMaxHPPerSecond==({.01,.015,.02})[rank])
     end
 end
-near(Effects:HealthRegenProfile({classId='fighter',featIds={'CON_REGEN_11','CON_REGEN_22','CON_REGEN_33'}}).ceilingFraction,.66,'no family double count')
+near(Effects:HealthRegenProfile({classId='fighter',featIds={'CON_REGEN_11','CON_REGEN_22','CON_REGEN_33'}}).ceilingFraction,.99,'no family double count')
 local Rules = LOD.RPGAbilityRules
 local diverted, spent, remaining = Rules:ComputeMagicDiversion(3,.1,100,1,true)
 near(diverted,1,'Wizard upward rounding');near(spent,1,'Wizard funding');near(remaining,2,'Wizard HP')

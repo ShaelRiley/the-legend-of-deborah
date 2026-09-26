@@ -38,16 +38,16 @@ assert(ok, table.concat(errors or {}, "; "))
 
 local derived = {}
 effects:ApplyDerived({featIds = {"INT_FEEDBACK_LOOP", "INT_ARC_RECOVERY"}}, derived)
-assert(derived.feedbackLoopEnabled and derived.feedbackLoopPerCastCap == 6)
-assert(derived.arcRecoveryEnabled and derived.arcRecoveryMagic == 5)
+assert(derived.feedbackLoopEnabled and derived.feedbackLoopPerCastCap == 12)
+assert(derived.arcRecoveryEnabled and derived.arcRecoveryMagic == 11)
 
 local actor = {progressionState = {featIds = {"INT_FEEDBACK_LOOP", "INT_ARC_RECOVERY"}}}
 local resource = {magic = 70, arcRecoveryReadyAt = 0}
 local restored, used = effects:ApplyFeedbackLoop(actor, resource, 8, 0)
-assert(restored == 6 and used == 6 and resource.magic == 76)
+assert(restored == 12 and used == 12 and resource.magic == 82)
 restored = effects:ApplyArcRecovery(actor, resource, true, 10)
-assert(restored == 5 and resource.magic == 81 and resource.arcRecoveryReadyAt == 12)
+assert(restored == 11 and resource.magic == 93 and resource.arcRecoveryReadyAt == 12)
 restored = effects:ApplyArcRecovery(actor, resource, true, 11)
-assert(restored == 0 and resource.magic == 81)
+assert(restored == 0 and resource.magic == 93)
 
 print("gate_e_batch_12_magic_recovery PASS")

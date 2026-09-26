@@ -227,7 +227,7 @@
       "art": "deborah:4",
       "text": [
         "A Fighter regenerates toward 33% of maximum HP from Level 1. After five continuous seconds without effective damage, regeneration starts at 1% of maximum HP per second, modified by Constitution. Damage restarts the delay. This does not refill temporary Tetris overfill.",
-        "Second Wind, Rapid Recovery, and Unbroken add 11%, 22%, or 33% to the ceiling; higher ranks replace lower ranks. A Fighter with these reaches 44%, 55%, or 66%. Other independent gear contributions can also help.",
+        "Second Wind, Rapid Recovery, and Unbroken add 22%, 44%, or 66% to the regeneration ceiling and recover 1%, 1.5%, or 2% MaxHP per second before CON scaling, after five damage-free seconds. Higher ranks replace lower ranks. With the innate 33%, a Fighter reaches 55%, 77%, or 99%. Other independent gear contributions can also help, but ordinary regeneration never exceeds MaxHP or restores Tetris overfill.",
         "A Fighter protects half of a positive Strength damage modifier, rounded up, from Constitution reduction. The remaining part is reduced normally. This is a flat damage bonus, not a percentage bonus.",
         "With a shield equipped, a Fighter also adds positive STR modifier percentage points to Block: STR +5 adds five points. All Block sources share one roll and a 33% cap. No shield means no class Block bonus."
       ]

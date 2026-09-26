@@ -1,6 +1,27 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-10 approved corrections and second-pass review
+## Current checkpoint — SPOT-10 D–J approved and implemented
+
+From actual main parent `7e2495ccfba3009f8190bd619ea229a8e65da094`.
+Shael approved D–J, amending Float On to **1 Magic/second** for up to six seconds.
+Arc Recovery 11; Feedback Loop 2/continuation, cap12; Recovery ceilings22/44/66%
+at base rates1/1.5/2%MaxHP/s; ammo refill22/44/66%faster at unchanged floors;
+Presence22/44/66%; aura fixed3seconds. Existing IDs/prerequisites, rejected A and
+prior B/C/Mana Spring remain. Live GDD03/04/exact HUMAN and cards/manual align.
+
+[Implementation and limits](validation/SPOT_10_SECOND_PASS_IMPLEMENTED.md):
+**72/72 selected suites, 765 focused D–J assertions, 742 Lua syntax checks**,
+unchanged source. All earlier64 selections retained. These are source gates,
+not a full campaign matrix or native balance/control/co-op acceptance. Earlier
+63/64 and71/72 attempts remain in the provenance record. Final frozen local/
+independent identity and verified publication belong in the external receipt.
+
+**Next independent bullet: SPOT-11 — four-choice feat drafts.** Reconcile live
+draft law, eligibility/small pools, stored pending hands, authoritative one-choice
+commit and UI before implementing. Do not begin SPOT12/SPOT14 or deferred work
+inside this checkpoint. Preserve native/release gates; no Workshop/VPS operation.
+
+## Previous checkpoint — SPOT-10 first approved corrections and second-pass review
 
 From actual main parent `0b8321344737d11547f323c993b279de7c400d4f`.
 A is rejected; its explosion ladder stays. B (fixed 3-second Mind Over Matter),

@@ -12,7 +12,7 @@ local Feats = Catalog.LevelOneOrdinaryFeats
 -- is present; it is already the FeatDirector's ordinary pool at every feat level.
 Catalog.OrdinaryFeats = Feats
 
-local function regenDefinition(featId, displayName, requirement, prerequisite, rank, ceiling)
+local function regenDefinition(featId, displayName, requirement, prerequisite, rank, ceiling, baseRate)
     return {
         featId = featId,
         displayName = displayName,
@@ -33,9 +33,9 @@ local function regenDefinition(featId, displayName, requirement, prerequisite, r
         effectParams = {
             ceilingFraction = ceiling,
             damageFreeDelaySeconds = 5.0,
-            baseMaxHPPerSecond = 0.01,
-            description = string.format("%sAdds %d%% MaxHP to the regeneration ceiling; highest rank only. Stacks with a Fighter's innate 33%%. After 5.0 damage-free seconds, regenerate 1.0%% MaxHP/second times the CON regeneration multiplier toward the combined ceiling. Never restores Tetris overfill.",
-                rank > 1 and "Replaces lower Recovery ranks. " or "Enables passive Health Regeneration. ", math.floor(ceiling * 100 + 0.5))
+            baseMaxHPPerSecond = baseRate,
+            description = string.format("%sAdds %d%% MaxHP to the regeneration ceiling; highest rank only. Stacks with a Fighter's innate 33%%. After 5.0 damage-free seconds, regenerate %g%% MaxHP/second times the CON regeneration multiplier toward the combined ceiling. Never restores Tetris overfill.",
+                rank > 1 and "Replaces lower Recovery ranks. " or "Enables passive Health Regeneration. ", math.floor(ceiling * 100 + 0.5), baseRate * 100)
         },
         directorBaseWeight = 1.0,
         eligibilityText = string.format("CON %d%s", requirement,
@@ -44,11 +44,11 @@ local function regenDefinition(featId, displayName, requirement, prerequisite, r
     }
 end
 
-Feats.CON_REGEN_11 = regenDefinition("CON_REGEN_11", "Second Wind", 13, nil, 1, 0.11)
+Feats.CON_REGEN_11 = regenDefinition("CON_REGEN_11", "Second Wind", 13, nil, 1, 0.22, 0.01)
 Feats.CON_REGEN_22 = regenDefinition("CON_REGEN_22", "Rapid Recovery", 15,
-    "CON_REGEN_11", 2, 0.22)
+    "CON_REGEN_11", 2, 0.44, 0.015)
 Feats.CON_REGEN_33 = regenDefinition("CON_REGEN_33", "Unbroken", 17,
-    "CON_REGEN_22", 3, 0.33)
+    "CON_REGEN_22", 3, 0.66, 0.02)
 
 local function navigationDefinition(featId, displayName, requirement, prerequisite,
     familyId, rank, effectParams)
@@ -94,7 +94,7 @@ Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartograph
         description = "Multiplies WIS-scaled minimap drain by 0.75, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open. Haste uses this discounted map-equivalent rate before its own rank fraction, even with the map closed."
     })
 
-local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction)
+local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction, speedMultiplier)
     return {
         featId = featId,
         displayName = displayName,
@@ -114,9 +114,10 @@ local function ammoFloorDefinition(featId, displayName, requirement, prerequisit
         effectHandlerId = "ammo_regeneration_floor",
         effectParams = {
             floorFraction = fraction,
+            speedMultiplier = speedMultiplier,
             description = string.format(
-                "Replaces lower ammo-regeneration ranks and sets ordinary regenerative firearm AmmoRegenFloorFraction to %.2f; each owned eligible family stops at ceil(MaxFamilyCapacity × %.2f) without changing capacity, cadence, no-fire delay, consumables, or AR2 secondary ammunition.",
-                fraction, fraction)
+                "Replaces lower ammo-regeneration ranks and sets ordinary regenerative firearm AmmoRegenFloorFraction to %.2f; each owned eligible family stops at ceil(MaxFamilyCapacity × %.2f) with %d%% faster per-round recovery (baseline interval / %.2f). Capacity and no-fire delay stay unchanged; no instant ammo, consumable, Wand-charge or AR2-secondary regeneration.",
+                fraction, fraction, math.floor((speedMultiplier - 1) * 100 + 0.5), speedMultiplier)
         },
         directorBaseWeight = 1.0,
         eligibilityText = string.format("INT %d%s", requirement,
@@ -126,11 +127,11 @@ local function ammoFloorDefinition(featId, displayName, requirement, prerequisit
 end
 
 Feats.INT_AMMO_FLOOR_44 = ammoFloorDefinition("INT_AMMO_FLOOR_44", "Field Supply", 13,
-    nil, 1, 0.44)
+    nil, 1, 0.44, 1.22)
 Feats.INT_AMMO_FLOOR_55 = ammoFloorDefinition("INT_AMMO_FLOOR_55", "Deep Reserves", 15,
-    "INT_AMMO_FLOOR_44", 2, 0.55)
+    "INT_AMMO_FLOOR_44", 2, 0.55, 1.44)
 Feats.INT_AMMO_FLOOR_66 = ammoFloorDefinition("INT_AMMO_FLOOR_66", "War Stock", 17,
-    "INT_AMMO_FLOOR_55", 3, 0.66)
+    "INT_AMMO_FLOOR_55", 3, 0.66, 1.66)
 
 local REGEN_RANKS = {
     CON_REGEN_11 = 1,
@@ -210,7 +211,8 @@ function FeatEffectSystem:AmmoRegenProfile(state)
     return {
         rank = bestRank,
         featId = bestDefinition and bestDefinition.featId or nil,
-        floorFraction = tonumber(params.floorFraction) or 0.33
+        floorFraction = tonumber(params.floorFraction) or 0.33,
+        speedMultiplier = tonumber(params.speedMultiplier) or 1
     }
 end
 
@@ -235,6 +237,7 @@ function FeatEffectSystem:ApplyDerived(state, derived)
     local ammo = self:AmmoRegenProfile(state)
     derived.ammoRegenFloorRank = ammo.rank
     derived.ammoRegenFloorFraction = ammo.floorFraction
+    derived.ammoRegenSpeedMultiplier = ammo.speedMultiplier
     derived.ammoRegenFloorRoundsByFamily = {}
     local ammoAuthority = LOD.DiceAmmo
     if ammoAuthority and ammoAuthority.RegenerativeProfiles
@@ -265,8 +268,8 @@ function FeatEffectSystem:TrackActor(actor, requireFreshDelay)
         return
     end
     local maximum = math.max(1, actor:GetMaxHealth())
-    local ceiling = math.max(1, math.floor(maximum
-        * (tonumber(derived.healthRegenCeilingFraction) or 0)))
+    local ceiling = math.min(maximum, math.max(1, math.floor(maximum
+        * (tonumber(derived.healthRegenCeilingFraction) or 0))))
     if actor:Health() >= ceiling then
         self.RegenActors[actor] = nil
         return
@@ -293,6 +296,8 @@ function FeatEffectSystem:OnEffectiveDamage(actor, damage)
 end
 
 function FeatEffectSystem:_TickActor(actor, elapsed)
+    local run = LOD.RunManager and LOD.RunManager.State
+    if run and (run.SimulationFrozen or run.Failed or run.LevelCleared or run.BuildReady == false) then return end
     if IsValid(actor) and actor.LODHector then self.RegenActors[actor] = nil; return end
     if IsValid(actor) and actor.LODArchetypeId == "warden" and LOD.Warden and #LOD.Warden:Targets() == 0 then return end
     if not IsValid(actor) or actor.LODDead or actor:Health() <= 0 or (actor:IsPlayer() and not actor:Alive()) then
@@ -307,14 +312,18 @@ function FeatEffectSystem:_TickActor(actor, elapsed)
     end
 
     local maximum = math.max(1, actor:GetMaxHealth())
-    local ceiling = math.max(1, math.floor(maximum
-        * (tonumber(derived.healthRegenCeilingFraction) or 0)))
+    local ceiling = math.min(maximum, math.max(1, math.floor(maximum
+        * (tonumber(derived.healthRegenCeilingFraction) or 0))))
     if actor:Health() >= ceiling then
         actor.LODRPGHealthRegenAccumulator = 0
         self.RegenActors[actor] = nil
         return
     end
-    if CurTime() < (actor.LODRPGHealthRegenEligibleAt or 0) then return end
+    if actor.LODRPGHealthRegenEligibleAt == nil then
+        self:TrackActor(actor, true)
+        return
+    end
+    if CurTime() < actor.LODRPGHealthRegenEligibleAt then return end
 
     local amount = self:HealthRegenPerSecond(maximum, derived.conRegenMultiplier,
         derived.healthRegenBaseMaxHPPerSecond) * elapsed
@@ -342,9 +351,9 @@ function FeatEffectSystem:ValidateHealthRegen()
         if not condition then errors[#errors + 1] = message end
     end
     local expected = {
-        CON_REGEN_11 = {1, 13, nil, 0.11},
-        CON_REGEN_22 = {2, 15, "CON_REGEN_11", 0.22},
-        CON_REGEN_33 = {3, 17, "CON_REGEN_22", 0.33}
+        CON_REGEN_11 = {1, 13, nil, 0.22},
+        CON_REGEN_22 = {2, 15, "CON_REGEN_11", 0.44},
+        CON_REGEN_33 = {3, 17, "CON_REGEN_22", 0.66}
     }
     for featId, values in pairs(expected) do
         local definition = Feats[featId]
@@ -363,9 +372,9 @@ function FeatEffectSystem:ValidateHealthRegen()
     local rankThree = self:HealthRegenProfile({featIds = {
         "CON_REGEN_11", "CON_REGEN_22", "CON_REGEN_33"
     }})
-    expect(rankOne.enabled and rankOne.rank == 1 and rankOne.ceilingFraction == 0.11,
+    expect(rankOne.enabled and rankOne.rank == 1 and rankOne.ceilingFraction == 0.22,
         "rank-one profile")
-    expect(rankThree.enabled and rankThree.rank == 3 and rankThree.ceilingFraction == 0.33,
+    expect(rankThree.enabled and rankThree.rank == 3 and rankThree.ceilingFraction == 0.66,
         "rank replacement profile")
     expect(self:HealthRegenPerSecond(100, 1.5, 0.01) == 1.5,
         "CON-scaled regeneration rate")
