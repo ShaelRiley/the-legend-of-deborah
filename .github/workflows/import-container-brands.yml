@@ -10,8 +10,9 @@ jobs:
     timeout-minutes: 12
     env:
       BASE: 85db2ed5ce287e7dbd96197676af4799922a6bf6
-      EXPECTED_TREE: b10f2f95bb5af90f36f94676dbe1991f74ab05ea
-      EXPECTED_SOURCE: 0ed8bd4fa5ae1f1aa578ea0fcd03b5d50bb3ef017d72f2dd714f24e40689f98d
+      EXPECTED_TREE: 414bd946b75bc29e367430e9c1af3e70e56261e0
+      EXPECTED_SOURCE: fd7366ee6592ccbe11695b7bcd7ad338f67494efc7e053b793cbaf5813a650de
+      CORRECTION_HASH: 2b7d63907c4e02883f41c7a99ab2c1c44d60e304a199caeb7494dbfdb3f4313d
       PAYLOAD_HASH: b6f06dad904140262570a98dd3d8e153428f48ef8d031d944af12408c19b0e16
     steps:
       - uses: actions/checkout@v4
@@ -48,16 +49,26 @@ jobs:
           git apply --check "$E/source.patch"
           git apply "$E/source.patch"
           python3 tools/build_manual.py
+          git show "$GITHUB_SHA:.spot11/correction.patch.xz" > "$E/correction.patch.xz"
+          echo "$CORRECTION_HASH  $E/correction.patch.xz" | sha256sum --check
+          python3 - "$E" <<'PY2'
+          import lzma, pathlib, sys
+          root = pathlib.Path(sys.argv[1])
+          (root / 'correction.patch').write_bytes(lzma.decompress((root / 'correction.patch.xz').read_bytes()))
+          PY2
+          git apply --check "$E/correction.patch"
+          git apply "$E/correction.patch"
           git add -A
           test "$(git write-tree)" = "$EXPECTED_TREE"
-          test "$(git ls-files | wc -l)" -eq 2173
+          test "$(git ls-files | wc -l)" -eq 2174
           git diff --cached --check
-          python3 tools/test_spot11_gate.py --output "$E/gate" --workers 2
+          python3 tools/test_spot11_gate.py --output "$E/gate" --suite-timeout 120 --workers 2
           python3 - "$E" <<'PY'
           import json, os, pathlib, sys
           r = json.loads((pathlib.Path(sys.argv[1])/'gate/receipt.json').read_text())
           assert r['passed'] == r['total'] == 79, r
           assert r['lua_files'] == 744, r['lua_files']
+          assert r['suite_timeout_seconds'] == 120 and r['workers'] == 2
           assert r['source_before'] == r['source_after'] == os.environ['EXPECTED_SOURCE']
           assert r['changed_during_gate'] == []
           assert r['native_gmod_accepted'] is False
@@ -96,12 +107,14 @@ jobs:
                     'tracked':len(git('ls-files').splitlines()), 'run_id':os.environ['GITHUB_RUN_ID'],
                     'attempt':os.environ['GITHUB_RUN_ATTEMPT'], 'selected_suites':79,
                     'lua_syntax_files':744, 'new_focused_assertions':1055,
+                    'suite_timeout_seconds':120, 'workers':2,
+                    'previous_independent_run_failed':36280170654,
                     'native_accepted':False, 'full_campaign_matrix':False,
                     'workshop_or_vps_actions':False, 'push_force':False,
                     'trigger_commit_not_gameplay_parent':os.environ['GITHUB_SHA']}
           assert record['parent'] == os.environ['BASE']
           assert record['tree'] == os.environ['EXPECTED_TREE']
-          assert record['tracked'] == 2173
+          assert record['tracked'] == 2174
           (pathlib.Path(sys.argv[1])/'publication.json').write_text(json.dumps(record,indent=2)+'\n')
           print(json.dumps(record,indent=2))
           PY
