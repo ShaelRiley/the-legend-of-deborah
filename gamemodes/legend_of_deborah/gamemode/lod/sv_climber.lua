@@ -26,44 +26,78 @@ function C:Lanes(graph,c)
     end
     return out
 end
-function C:NearestLane(graph,c,pos)
+-- Ties are stable across hash iteration order, including recovery in a junction.
+local function nearest(lanes,pos)
     local best,dist
-    for _,lane in pairs(self:Lanes(graph,c)) do
+    for _,lane in pairs(lanes) do
         local d=lane.pos:DistToSqr(pos)
-        if not dist or d<dist then best,dist=lane,d end
+        if not dist or d<dist or (d==dist and lane.side<best.side) then best,dist=lane,d end
     end
     return best
 end
-function C:Route(e,graph,p,fleeing)
+function C:NearestLane(graph,c,pos)
+    return nearest(self:Lanes(graph,c),pos)
+end
+-- A four-way junction has no wall to perch on, but remains a legal graph route.
+-- These transient center nodes are for travel only. Placement continues using
+-- Lanes/NearestLane, and blocked real wall lanes never become phantom openings.
+function C:RouteLanes(graph,c)
+    local lanes=self:Lanes(graph,c)
+    if next(lanes) or E:Safe(graph,c) then return lanes end
+    for _,v in ipairs(axes) do
+        local k=LOD.MazeGenerator.CellKey(c.x+v.x,c.y+v.y,c.z)
+        if not c.neighbors[k] or not graph.Cells[k] then return lanes end
+    end
+    local pos=N:CellCenter(c)+Vector(0,0,100)
+    if clearLane(pos) then lanes[0]={cell=c,side=0,pos=pos,normal=vector_origin,transit=true} end
+    return lanes
+end
+function C:ClearRoute(e)
+    e.LODWallRoute=nil;e.LODWallRouteIndex=1;e.LODWallBlockedSince=nil
+    e.LODWallRoutePurpose=nil;e.LODWallNextRoute=0
+end
+function C:Route(e,graph,p,fleeing,returning)
+    self:ClearRoute(e)
+    e.LODWallRoutePurpose=returning and "return" or "pursuit"
     local here=N:WorldToCell(graph,e:GetPos());if not here then return end
-    local first=self:NearestLane(graph,here,e:GetPos());if not first then return end
+    local cache={}
+    local function lanes(c)
+        local k=key(c)
+        if not cache[k] then cache[k]=self:RouteLanes(graph,c) end
+        return cache[k]
+    end
+    local first=nearest(lanes(here),e:GetPos());if not first then return end
     local home=graph.Cells[e.LODHomeCellKey] or here
-    local domain=LOD.EnemyUpdate:Reachable(graph,key(home),LOD.Config.Encounter.LeashCells)
-    local queue={first};local seen={[key(here)..":"..first.side]=true};local previous={};local best=first
+    -- A latched Hero can carry the actor beyond its home leash. Recovery has
+    -- no Hero goal: bound that retreat from its current cell, while pursuit
+    -- retains the original home-domain restriction.
+    local domain=LOD.EnemyUpdate:Reachable(graph,key(returning and here or home),LOD.Config.Encounter.LeashCells)
+    local queue={first};local seen={[key(here)..":"..first.side]=true};local previous={}
+    local best=not returning and first or nil
+    local aim=not returning and p:EyePos() or nil
     local function id(n) return key(n.cell)..":"..n.side end
     local head=1
     while queue[head] and head<=256 do
         local lane=queue[head];head=head+1
-        local distance,bestDistance=lane.pos:DistToSqr(p:EyePos()),best.pos:DistToSqr(p:EyePos())
-        if (fleeing and distance>bestDistance) or (not fleeing and distance<bestDistance) then best=lane end
+        -- Breadth-first recovery selects the nearest reachable actual wall.
+        -- A center connector may be crossed but never completes attachment.
+        if returning then
+            if not lane.transit then best=lane;break end
+        else
+            local distance,bestDistance=lane.pos:DistToSqr(aim),best.pos:DistToSqr(aim)
+            if (fleeing and distance>bestDistance) or (not fleeing and distance<bestDistance) then best=lane end
+        end
         local candidates={}
-        for side,n in pairs(self:Lanes(graph,lane.cell)) do
+        for side,n in pairs(lanes(lane.cell)) do
             if (side-lane.side)%2==1 then candidates[#candidates+1]=n end
         end
         for k in pairs(lane.cell.neighbors) do
             local n=graph.Cells[k]
-            if domain[k] and N:CanTraverse(graph,key(lane.cell),k) then
-                if n.z==lane.cell.z then
-                    local nextLane=self:Lanes(graph,n)[lane.side]
-                    if nextLane then candidates[#candidates+1]=nextLane
-                    else
-                        nextLane=self:NearestLane(graph,n,lane.pos)
-                        if nextLane then nextLane.connector=true;candidates[#candidates+1]=nextLane end
-                    end
-                else
-                    local nextLane=self:NearestLane(graph,n,lane.pos)
-                    if nextLane then nextLane.stairFrom=lane.cell;candidates[#candidates+1]=nextLane end
-                end
+            if n and domain[k]~=nil and N:CanTraverse(graph,key(lane.cell),k) then
+                local available=lanes(n)
+                local nextLane=n.z==lane.cell.z and available[lane.side] or nil
+                nextLane=nextLane or nearest(available,lane.pos)
+                if nextLane then candidates[#candidates+1]=nextLane end
             end
         end
         table.sort(candidates,function(a,b) return id(a)<id(b) end)
@@ -71,21 +105,23 @@ function C:Route(e,graph,p,fleeing)
             if not seen[id(n)] then seen[id(n)]=true;previous[id(n)]=lane;queue[#queue+1]=n end
         end
     end
+    if not best then return end
     local nodes={};local n=best
     while n and id(n)~=id(first) do table.insert(nodes,1,n);n=previous[id(n)] end
-    local points={};local last=first
+    -- Re-anchor displaced actors with swept movement before following a lane.
+    local points={{pos=first.pos,lane=first}};local last=first
     for _,nextLane in ipairs(nodes) do
         if key(last.cell)==key(nextLane.cell) then
             local center=N:CellCenter(last.cell)+Vector(0,0,100)
             points[#points+1]={pos=center+(last.normal+nextLane.normal)*(laneOffset())}
-        elseif nextLane.connector and last.cell.z==nextLane.cell.z then
-            points[#points+1]={pos=N:CellCenter(last.cell)+Vector(0,0,100)}
-            points[#points+1]={pos=N:CellCenter(nextLane.cell)+Vector(0,0,100)}
         elseif last.cell.z~=nextLane.cell.z then
             -- Floor change follows the actual authored stair itinerary only.
             for _,wp in ipairs(N:PathToWaypoints(graph,{last.cell,nextLane.cell})) do
                 points[#points+1]={pos=wp.pos+Vector(0,0,72),stair=true}
             end
+        elseif last.transit or nextLane.transit or last.side~=nextLane.side then
+            points[#points+1]={pos=N:CellCenter(last.cell)+Vector(0,0,100)}
+            points[#points+1]={pos=N:CellCenter(nextLane.cell)+Vector(0,0,100)}
         end
         points[#points+1]={pos=nextLane.pos,lane=nextLane,stair=last.cell.z~=nextLane.cell.z};last=nextLane
     end
@@ -104,13 +140,37 @@ function C:Step(e,goal,speed,dt,allowStair)
     LOD.HostileMotionV2:FaceToward(e,goal);e:_SetActivity(ACT_CLIMB_UP or ACT_RUN)
     return distance<=speed*dt+2
 end
+-- Both pursuit and recovery use the same swept, sanctuary-aware execution.
+function C:AdvanceRoute(e,now,dt)
+    local wp=e.LODWallRoute and e.LODWallRoute[e.LODWallRouteIndex or 1]
+    if not wp then return false end
+    local before=e:GetPos()
+    if self:Step(e,wp.pos,e.LODConfig.speed,dt,wp.stair) then
+        e.LODWallRouteIndex=e.LODWallRouteIndex+1
+        e.LODWallLane=wp.lane and not wp.lane.transit and wp.lane or nil
+        e.LODWallBlockedSince=nil
+        if e.LODWallRouteIndex>#e.LODWallRoute then return true end
+    elseif e:GetPos():DistToSqr(before)>.01 then e.LODWallBlockedSince=nil
+    else
+        e.LODWallBlockedSince=e.LODWallBlockedSince or now
+        if now-e.LODWallBlockedSince>.8 then
+            local purpose=e.LODWallRoutePurpose
+            self:ClearRoute(e);e.LODWallRoutePurpose=purpose;e.LODWallNextRoute=now+.8
+        end
+    end
+    if e:GetPos():DistToSqr(before)>.01 and now>=(e.LODNextScrape or 0) then
+        e.LODNextScrape=now+.65;e:EmitSound("npc/fast_zombie/foot1.wav",62,130,.6)
+    end
+    return false
+end
 function C:Detach(e)
+    self:ClearRoute(e)
     e.LODClimberVictim=nil;e:SetNW2Entity("LOD_ClimberVictim",NULL);e.LODClimberLeap=nil
     e.LODClimberAttached=false;e.LODNextAttack=CurTime()+1;e.LODWallReturn=true
 end
 function C:Interrupt(e)
     if e.LODClimberVictim then e.LODNextBite=CurTime()+.4
-    elseif e.LODClimberLeap then e.LODClimberLeap=nil;e.LODWallReturn=true end
+    elseif e.LODClimberLeap then e.LODClimberLeap=nil;e.LODWallReturn=true;self:ClearRoute(e) end
 end
 function C:Tick(e,s,now)
     local motion=LOD.HostileMotionV2
@@ -156,8 +216,14 @@ function C:Tick(e,s,now)
         return true
     end
     if e.LODWallReturn then
-        local lane=self:NearestLane(s.Graph,c,e:GetPos())
-        if lane and self:Step(e,lane.pos,e.LODConfig.speed,dt,false) then e.LODWallReturn=nil;e.LODWallLane=lane end
+        local wp=e.LODWallRoute and e.LODWallRoute[e.LODWallRouteIndex or 1]
+        if e.LODWallRoutePurpose~="return" then self:ClearRoute(e);wp=nil end
+        if not wp and now>=(e.LODWallNextRoute or 0) then
+            self:Route(e,s.Graph,nil,false,true);e.LODWallNextRoute=now+.8
+        end
+        if self:AdvanceRoute(e,now,dt) and e.LODWallLane then
+            e.LODWallReturn=nil;self:ClearRoute(e)
+        end
         return true
     end
     e:_RefreshTarget(s.Graph)
@@ -170,6 +236,7 @@ function C:Tick(e,s,now)
             filter=function(v) return v~=e and not v.LODHostile end})
         local targetCell=N:WorldToCell(s.Graph,p:GetPos())
         if targetCell and targetCell.z==c.z and not E:Safe(s.Graph,targetCell) and (not tr.Hit or tr.Entity==p) then
+            self:ClearRoute(e)
             e.LODClimberLeap={target=p,goal=p:EyePos(),expires=now+.8};e.LODNextAttack=now+1.2
             e:EmitSound("npc/fast_zombie/leap1.wav",74,115,.8);return true
         end
@@ -179,16 +246,33 @@ function C:Tick(e,s,now)
         self:Route(e,s.Graph,p,fleeing);e.LODWallNextRoute=now+.8
         wp=e.LODWallRoute and e.LODWallRoute[e.LODWallRouteIndex or 1]
     end
-    if wp then
-        local before=e:GetPos()
-        if self:Step(e,wp.pos,e.LODConfig.speed,dt,wp.stair) then
-            e.LODWallRouteIndex=e.LODWallRouteIndex+1;e.LODWallLane=wp.lane;e.LODWallBlockedSince=nil
-        elseif e:GetPos():DistToSqr(before)>.01 then e.LODWallBlockedSince=nil
-        else
-            e.LODWallBlockedSince=e.LODWallBlockedSince or now
-            if now-e.LODWallBlockedSince>.8 then e.LODWallRoute=nil;e.LODWallBlockedSince=nil end
-        end
-        if now>=(e.LODNextScrape or 0) then e.LODNextScrape=now+.65;e:EmitSound("npc/fast_zombie/foot1.wav",62,130,.6) end
+    if wp then self:AdvanceRoute(e,now,dt)
     else motion:Stop(e);e:_SetActivity(ACT_IDLE) end
     return true
 end
+
+-- Release-safe, read-only evidence: placement counters are not live sightings.
+-- No spawn, population, clock, ranking, or cadence change accompanies this query.
+concommand.Add("lod_climber_status",function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    local director=LOD.EncounterDirector
+    local plan=director and director.Plan
+    local composition,dormant,living=0,0,0
+    for _,encounter in ipairs(plan and plan.encounters or {}) do
+        local count=(encounter.composition or {}).climber or 0
+        composition=composition+count
+        if not encounter.spawned and not encounter.cleared then dormant=dormant+count end
+    end
+    for _,e in ipairs(director and director.Entities or {}) do
+        if IsValid(e) and not e.LODDead and e.LODArchetypeId=="climber" then
+            living=living+1
+            print(string.format("[LOD:CLIMBER] #%d pos=%s route=%d/%d returning=%s leap=%s latch=%s",
+                e:EntIndex(),tostring(e:GetPos()),e.LODWallRouteIndex or 0,#(e.LODWallRoute or {}),
+                tostring(e.LODWallReturn==true),tostring(e.LODClimberLeap~=nil),tostring(IsValid(e.LODClimberVictim))))
+        end
+    end
+    local stats=E.PlacementStats and E.PlacementStats.climber or {}
+    print(string.format("[LOD:CLIMBER] revision=spot02 motif=%s currentComposition=%d dormant=%d living=%d placementAccepted=%d placementRejected=%d",
+        tostring(plan and plan.ecology and plan.ecology.theme or "none"),composition,dormant,living,
+        stats.accepted or 0,stats.rejected or 0))
+end)

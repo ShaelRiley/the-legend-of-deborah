@@ -1,58 +1,74 @@
-# Resume The Legend of Deborah — SPOT-02 Climbers
+# Resume The Legend of Deborah — SPOT-03 Manhack absence
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-SPOT-01's parent is B29 `20f6ecc82a6bf132b7c4d7f9d145b50aff0d945d`.
-Resolve/fetch the current remote main before edits; the delivery receipt supplies
-the verified SPOT-01 commit. Preserve newer and uncommitted work.
+SPOT-02 parent: `fc559b3b83b4a84ea18842ef40192d97e69dbd14`.
+The delivery receipt supplies the verified SPOT-02 commit; resolve/fetch current
+remote main before edits and preserve newer or uncommitted work.
 
-## Orientation
+## Orientation and authority
 
-Read AGENTS.md, the current DEVELOPMENT_PLAN.md, briefs/SPOT_UPDATES.md and
-validation/SPOT_01_PLAYER_IDENTITY.md. GDD ID:
+Read AGENTS.md, current DEVELOPMENT_PLAN.md, briefs/SPOT_UPDATES.md and
+validation/SPOT_02_CLIMBER.md. Live GDD ID:
 `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`.
-Follow live 00 → 01 → only the relevant subsystem. Current queue authority is
-`LOD-SPOT`; SPOT-01 rules/tuning are in 06/07.
+Use live 00 -> 01 -> relevant subsystem only. SPOT-02 consulted 05/07 and exact
+HUMAN Climber placement; it repaired the existing traversal contract without
+editing the GDD. All seventeen original bullets remain in the spot brief.
+One bullet is one coherent pushable checkpoint ahead of the scheduled roadmap.
+Existing-feat rebalances require Shael's approval; the four-choice draft and
+Time Management remain separately authorized future bullets.
 
-## Banked checkpoint
+## Just banked — SPOT-02
 
-SPOT-01 implements only the player target readout: stock nickname/health-percent
-suppression; `Username as Character Name` plus `current/max HP`; shared semantic
-colors; green/full, yellow/>50%, orange/>25%, red/≤25% HP suffix; UTF-8-safe
-single-line truncation; visible human Soldiers use the active Soldier role.
-The existing HUD owner is reused with no new network messages or entity scans.
+The actual Climber module now crosses clear, four-open-sided graph junctions
+using travel-only center connectors. They are not spawn or attachment lanes.
+An interrupted leap or detached latch can recover from a junction to a real
+wall instead of waiting forever. Pursuit retains the home leash; target-free
+recovery is bounded from the actor's current cell. Both use the same swept
+movement, graph/gate/stair and B29 EntrySafety authority. Recovery retries are
+throttled. No population, ecology, attack, damage or reward changes were made.
 
-Fresh tests: 50/50 standalone production-callback checks, production/test Lua
-syntax. Baseline: 8 passed/42 failed. Full repository integration and native
-GMod rendering, trace behavior and health replication were not run here. Check
-non-100 maximum HP, long names, both roles, walls, menus and concealment locally.
-The player-facing guide is docs/PLAYER_TARGET_READOUT.md; the bundled generated
-in-game manual was not regenerated in this connector-only checkpoint.
+Fresh evidence: tools/validate_spot02_climber.lua passes 44/44 checks against the
+actual module under Lua 5.4 engine stubs; baseline passes 25/fails 19, including
+missing new diagnostics. Production and harness syntax loads pass. Full
+repository integration, native GMod and release sightings were not run.
 
-## One next action
+Do not claim the navigation defects alone explain every reported missing
+Climber. It remains directed-only and its Wall Hunt template belongs only to
+Hunting Grounds. Registration, unified spawn order, wall-placement preservation
+and rendering paths exist. The new release-safe admin `lod_climber_status`
+distinguishes current composition, dormant actors, living actors, cumulative
+placement acceptance/rejection and movement states. Native finite test:
+`lod_enemy_roster_testkit climber; lod_climber_status` after local deployment
+outside sanctuary. Observe junction pursuit and interrupted-latch recovery;
+collect console_latest.txt + rpg_summary_latest.txt. Debug spawning is not
+ordinary release exposure. See validation/SPOT_02_CLIMBER.md for exact limits.
 
-Complete **SPOT-02: diagnose and repair absent Climbers** as its own pushable
-checkpoint. The author has never seen one. Inspect the current release pipeline
-through eligibility, weighted selection, admission/caps, legal placement,
-movement and actual presentation. Start with sv_climber.lua and its actual call
-sites in encounter/roaming authorities, using current B28/B29 release diagnostics.
-Use a focused regression that reproduces the demonstrated failure; distinguish
-successful debug spawning, release admission and native sightings. Preserve
-sanctuary, graduated pressure, population variety, caps and accepted art.
-SPOT-03 Manhack types is the following separate bullet, not part of this commit.
+SPOT-01 player target identity remains implemented with its inherited 50 focused
+passes. Native two-player layout, non-100 HP and replication acceptance is still
+pending. No SPOT-03 or later gameplay bullet has been implemented here.
 
-## Remaining queue and constraints
+## Next single checkpoint
 
-All sixteen remaining bullet requirements are preserved in briefs/SPOT_UPDATES.md.
-The existing-feat audit must produce proposals for Shael's approval before balance
-changes. The separately requested four-choice draft and Time Management feat are
-authorized. Design details not yet resolved stay explicit until their checkpoint.
+Audit and repair the author's report of never seeing any Manhack-type enemy.
+Start with Razor (`razor`), its `models/manhack.mdl` presentation and
+`razor_cover` directed template, then inspect every other actual Manhack-derived
+identity rather than assuming a second roster. Trace current release selection,
+physical admission/fallback, actual spawn, native AI dispatch, movement/attack
+and render paths. Distinguish low exposure/motif restriction from demonstrated
+bugs. Reuse a finite failing regression and current diagnostics; preserve all
+existing identities and the sanctuary/graduated opening. Push only this bullet.
+The lingering death-loop audio audit follows as SPOT-04, not in the same commit.
 
-Preserve local acceptance → Workshop publication/parity → matching VPS. B29 native
-acceptance is pending. Preserve P1–P4 and the unchanged deferred September 28–
-October 4 Low-End PC Optimization → Big Loot → Event System → comprehensive audit.
-The previous B29 handoff is retained verbatim at
-history/NEXT_DEVELOPMENT_HANDOFF_B29_20f6ecc.md.
+## Regression and release constraints
 
-At actual context pressure, close and push the current coherent slice, report the
-verified remote SHA and native limits, and provide a self-contained handoff asking
-Shael to start a new conversation. Do not start a second unbanked feature first.
+Preserve B28 physical-query fixes, B29 safe arrival and graduated combined
+pressure, population/caps, current Bestiary identities, P1-P4 and approved Crate
+visuals. B29 native safety/pacing acceptance remains pending. Native acceptance
+of the exact candidate precedes Workshop item 3791535712 publication/parity,
+then matching VPS deployment. Neither Workshop nor VPS changed in SPOT-02.
+
+After the spot queue, retain the scheduled roadmap, including September 28-
+October 4 Low-End PC Optimization -> Big Loot -> Event System -> comprehensive
+systems audit. Historical roadmap and B29 handoff remain under docs/history.
+At context pressure, finish and verify the current commit, then ask Shael to
+start a new conversation with the exact verified SHA and next finite gate.

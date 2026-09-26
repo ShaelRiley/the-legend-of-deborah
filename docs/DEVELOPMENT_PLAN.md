@@ -1,21 +1,34 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-01 player target identity
+## Current checkpoint — SPOT-02 Climber junction traversal
 
 The September 25, 2026 author-directed [spot queue](briefs/SPOT_UPDATES.md)
 precedes the existing scheduled roadmap. One bullet equals one coherent,
 independently validated, non-forced push. High-level design decisions are
 delegated; existing-feat rebalances remain explicitly approval-gated.
 
-SPOT-01 replaces the overlapping stock/LoD player readout with two semantic-color
-lines and an HP suffix with four health bands. The canonical client HUD owner
-is retained. Fifty focused, standalone draw-contract checks pass; the old
-module passes eight and fails forty-two. Syntax checks pass. These are not
-native rendering/network tests or a fresh full integration run.
+SPOT-02 repairs reproduced Climber wall-route discontinuity at four-way junctions
+and permanent return-to-wall stalls after a leap/latch ends in such a cell.
+Route-only clear junction connectors never become spawn/attachment lanes.
+Pursuit and recovery retain the same swept movement, graph, gates, leash and
+B29 sanctuary checks. A release-safe admin diagnostic separates current
+composition, dormant units, living actors, placement counters and movement state.
+No population, motif, attack, damage, loot or balance change is included.
 
-Evidence: [SPOT-01 validation](../validation/SPOT_01_PLAYER_IDENTITY.md).
-Next development action: **SPOT-02, diagnose and repair missing Climbers**.
-Other queue bullets are not implemented or accepted by this checkpoint.
+Fresh focused validation: 44/44 production-module checks; the same final harness
+against the original module gives 25 passes/19 failures, including absent new
+diagnostics. Both Lua files pass syntax loading under Lua 5.4. Full integration,
+native Source collision/presentation and release sightings were not run. This
+repairs demonstrated navigation failures; it does not establish that they were
+the sole cause of the author's reported absence. Climber remains directed-only
+in Hunting Grounds. Live GDD 05/07 and HUMAN Climber placement were consulted;
+the existing geometry-valid traversal contract is repaired, not redesigned.
+
+Evidence and finite native gate: [SPOT-02 validation](validation/SPOT_02_CLIMBER.md).
+Next development action: **SPOT-03, diagnose and repair absent Manhack types**.
+SPOT-01 remains implemented with its inherited 50 focused passes, not rerun in
+this checkpoint; native two-player target-readout acceptance is still pending.
+Other queue bullets are not implemented or accepted by SPOT-02.
 
 ## Existing release gates — unchanged
 
