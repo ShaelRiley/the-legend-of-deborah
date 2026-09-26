@@ -1,0 +1,253 @@
+SPOT-03 bounded registered integration receipt
+Parent: 84c47a12bf723590b4098bdf0d9ff299240a9670
+226 PASS; 1 pre-existing FAIL; 2 NOT_COMPLETED; native=false
+Initial sequential matrix completed #1-17. #18 interrupted without result.
+Remaining registered commands run unchanged except #22 deferred (not started).
+No test threshold, sample or production policy was weakened. Full matrix not certified.
+
+Frozen production/test SHA256:
+ba506cadca39972f2abc1d66111eaac59110879ba21292400f6c89875238ae28  gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua
+2c3dce54a89d1bf929224db6f1337eb865fb3e6ce5b10aad7b187c394b4ab866  gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua
+7e63eee8a653a1d0a0763db4c187a23805a3f1f4f58799aae487e55a063a396b  tools/validate_spot03_razor.lua
+37c3de6defb6bc86280536f9222fb0b3436433508813a26c0cdc02fbf6c6c917  tools/test_bestiary_b29.lua
+c2eb4212ed614c6e833c67f90355b7d1b2460d3b76e7f9ee811f37943fab1bfe  tools/test_checkpoint_g_integration.py
+
+Focused SPOT03: 55 passed / 0 failed.
+Identical final SPOT03 harness with original two production files: 26 passed / 29 failed.
+SPOT02 Climber regression: 44 passed / 0 failed.
+
+Baseline suite 76 reproduction: parent tree c20ab34c64b1fa176bcf062768b89897807f8438
+Command: python3 tools/run_lua54.py tools/test_refresh_ui.lua; exit 1
+cl_teammate_identity.lua:8: attempt to call a nil value (global 'Color')
+Candidate has the same error. Existing UI test/production files were not edited.
+
+Registered suite results:
+[PASS] 1/229 - SPOT-03 Razor Presentation, Pursuit & Release Diagnostics
+[PASS] 2/229 - Bestiary B29 Full Build & Opening Safety
+[PASS] 3/229 - Bestiary B29 Native Dispatch & Withdrawal
+[PASS] 4/229 - Bestiary B29 Bilateral Combat Seams
+[PASS] 5/229 - Development Population Source Manifest
+[PASS] 6/229 - Bestiary B28 Native Population Boundaries
+[PASS] 7/229 - Bestiary B27 Autonomous Patrols & Adventure Pacing
+[PASS] 8/229 - Bestiary B26 Production Population Recovery
+[PASS] 9/229 - Great Crate Stock Gates & Lifecycle
+[PASS] 10/229 - Great Crate Stock Hull Assets
+[PASS] 11/229 - Great Crate Hull Candidate Reconciliation
+[PASS] 12/229 - Great Crate Original Assets & Safe Fit
+[PASS] 13/229 - Great Crate Deterministic Floor & Collision
+[PASS] 14/229 - Great Crate Rendering, UV & Resource Bounds
+[PASS] 15/229 - Bestiary B25 Motif Intensity & Tier Exposure
+[PASS] 16/229 - Bestiary B24 Encounter and Wandering Homes
+[PASS] 17/229 - Bestiary B23 Wandering Population & Lifecycle
+[NOT_COMPLETED] 18/229 - Bestiary B23 Campaign Wandering Ecology
+[PASS] 19/229 - Bestiary B22 Route Pacing & Production Effects
+[PASS] 20/229 - Bestiary B21 Topology & Spatial Admission
+[PASS] 21/229 - Bestiary B20 Ecology Selection & Receipts
+[NOT_COMPLETED] 22/229 - Bestiary B20 Campaign Ecology Coverage
+[PASS] 23/229 - Bestiary B20 Campaign Lifecycle
+[PASS] 24/229 - Bestiary B19 Companion Links & Exact Ownership
+[PASS] 25/229 - Bestiary B19 Production Progression & Spawn
+[PASS] 26/229 - Bestiary B19 Readable Companion Links
+[PASS] 27/229 - Bestiary B18 Attack Restraint & Displaced Refuge
+[PASS] 28/229 - Bestiary B18 Production Progression & Spawn
+[PASS] 29/229 - Bestiary B18 Readable Edicts
+[PASS] 30/229 - Bestiary B17 Companion Commitments & Exact Ownership
+[PASS] 31/229 - Bestiary B17 Production Progression & Spawn
+[PASS] 32/229 - Bestiary B17 Readable Bodyguard & Oath
+[PASS] 33/229 - Bestiary B16 Movement Discipline & Exact Ownership
+[PASS] 34/229 - Bestiary B16 Production Progression & Spawn
+[PASS] 35/229 - Bestiary B16 Readable Movement Demands
+[PASS] 36/229 - Bestiary B15 Careless Fire & Exact Ownership
+[PASS] 37/229 - Bestiary B15 Production Progression & Spawn
+[PASS] 38/229 - Bestiary B15 Readable Careless Fire
+[PASS] 39/229 - Bestiary B14 Canonical Resource Pressure
+[PASS] 40/229 - Bestiary B14 Production Progression & Spawn
+[PASS] 41/229 - Bestiary B14 Readable Resource Commitments
+[PASS] 42/229 - Deborah Finale Client Presentation & Cleanup
+[PASS] 43/229 - Deborah Staging Succession & Canonical Services
+[PASS] 44/229 - Hector Encounter, Native Death & Level-20 Rescue Gate
+[PASS] 45/229 - Hector Canonical Actor Health & Defenses
+[PASS] 46/229 - Hector Horizon & Telegraph Presentation
+[PASS] 47/229 - Equipment Quiz Lifecycle & Atomic Settlement
+[PASS] 48/229 - Active Event Catalog, Bribe Removal & Quiz Placement
+[PASS] 49/229 - Minigame Shell & Equipment UI Restrictions
+[PASS] 50/229 - Skeleton Hero Generation & Shared Combat
+[PASS] 51/229 - Skeleton Blockade Historical Mixed-Catalog Regression
+[PASS] 52/229 - Skeleton Blockade Death & Rewards
+[PASS] 53/229 - Warp Hole Utility & Safe Traversal
+[PASS] 54/229 - False Floor Hazard & Native Geometry Boundaries
+[PASS] 55/229 - Combined Event Population & Rarity
+[PASS] 56/229 - Vending Machine Wallet & Potion Settlement
+[PASS] 57/229 - Treasure Chest DFT Transactions
+[PASS] 58/229 - Chest Keys & Locked Loot Claims
+[PASS] 59/229 - Dungeon Events & Transactional Slot Machine
+[PASS] 60/229 - Live Ranking Boards & Pagination
+[PASS] 61/229 - Magic Hourglass & Shared Clock
+[PASS] 62/229 - Moon Boots Gravity
+[PASS] 63/229 - Finite Wand Weapon
+[PASS] 64/229 - Tanuki Statue
+[PASS] 65/229 - Heavy Plumber Stomp
+[PASS] 66/229 - Thunder Hat Charge
+[PASS] 67/229 - Ring of Invisibility
+[PASS] 68/229 - Fighting Streets Techniques
+[PASS] 69/229 - Feather & Canonical Hero Revival
+[PASS] 70/229 - Safe Teleport & Summon Card
+[PASS] 71/229 - Responsive Character Sheet & Canonical Feat Text
+[PASS] 72/229 - Equipment Combo Abilities
+[PASS] 73/229 - Monster Defense Balance & Tactical Feedback
+[PASS] 74/229 - Invisible Overhead Walls & Free Movement
+[PASS] 75/229 - September 22 Navigation Recovery
+[FAIL] 76/229 - Spell Availability & Teammate Identity
+[PASS] 77/229 - Deterministic Encounter Distribution
+[PASS] 78/229 - Integrated Combat, Remedy & Derived UI
+[PASS] 79/229 - Client Geometry Full-Update Recovery
+[PASS] 80/229 - Dungeon Transition Inventory
+[PASS] 81/229 - Exact Native-Crash Reward Replay
+[PASS] 82/229 - Equipment LuaJIT Compatibility Boundary
+[PASS] 83/229 - Force-close Evidence Export
+[PASS] 84/229 - Canonical Blue Minimap Marker
+[PASS] 85/229 - Shared Native DamageInfo Lifetime
+[PASS] 86/229 - Durable Stability Diagnostics
+[PASS] 87/229 - Release Include & Registration Wiring
+[PASS] 88/229 - Shotgun Native Bullet Aggregation
+[PASS] 89/229 - Canonical Manual & Portable Menu
+[PASS] 90/229 - Canonical Manual Server Transport
+[PASS] 91/229 - Manual Source & Reader Navigation
+[PASS] 92/229 - Campaign Clock & TIME OVER Lifecycle
+[PASS] 93/229 - Bootstrap Failure & Explicit Recovery
+[PASS] 94/229 - Dedicated Server Deployment Preservation
+[PASS] 95/229 - Complete Enemy Roster & Animation Safety
+[PASS] 96/229 - Bestiary B1 Content Enemies & Exact Lifecycle
+[PASS] 97/229 - Bestiary B2 Ally Support & Production Progression
+[PASS] 98/229 - Bestiary B3 Flank Pursuit & Production Progression
+[PASS] 99/229 - Bestiary B4 Self Defense & Reaction Lifecycle
+[PASS] 100/229 - Bestiary B4 Production Progression & Spawn
+[PASS] 101/229 - Bestiary B5 Projectile Patterns & Lifecycle
+[PASS] 102/229 - Bestiary B5 Production Progression & Spawn
+[PASS] 103/229 - Bestiary B6 Trap Geometry & Exact Lifecycle
+[PASS] 104/229 - Bestiary B6 Production Progression & Spawn
+[PASS] 105/229 - Bestiary B6 Readable Trap Presentation
+[PASS] 106/229 - Bestiary B7 Melee Spacing & Lifetimes
+[PASS] 107/229 - Bestiary B7 Production Progression & Spawn
+[PASS] 108/229 - Bestiary B7 Readable Melee Presentation
+[PASS] 109/229 - Bestiary B13 Party Spacing & Exact Lifetimes
+[PASS] 110/229 - Bestiary B13 Production Progression & Spawn
+[PASS] 111/229 - Bestiary B13 Readable Party Commitments
+[PASS] 112/229 - Bestiary B12 Exact Condition Strike
+[PASS] 113/229 - Bestiary B12 Canonical Ally Cleansing
+[PASS] 114/229 - Bestiary B12 Production Progression & Spawn
+[PASS] 115/229 - Bestiary B12 Readable Condition Commitments
+[PASS] 116/229 - Bestiary B11 Perception & Exact Lifetimes
+[PASS] 117/229 - Bestiary B11 Production Progression & Spawn
+[PASS] 118/229 - Bestiary B11 Readable Sensory Commitments
+[PASS] 119/229 - Bestiary B10 Mobile Hazards & Lifetimes
+[PASS] 120/229 - Bestiary B10 Production Progression & Spawn
+[PASS] 121/229 - Bestiary B10 Readable Moving Zones
+[PASS] 122/229 - Bestiary B9 Tether, Screen & Shared Authorities
+[PASS] 123/229 - Bestiary B9 Production Progression & Spawn
+[PASS] 124/229 - Bestiary B9 Readable Tether & Screen
+[PASS] 125/229 - Bestiary B8 Corpse Receipts & Scavenging
+[PASS] 126/229 - Bestiary B8 Production Progression & Spawn
+[PASS] 127/229 - Bestiary B8 Readable Remains Presentation
+[PASS] 128/229 - Gordon Arena & Encounter Lifecycle
+[PASS] 129/229 - Gordon Ordered Health Scaling
+[PASS] 130/229 - Neil, Brute & Black Gate Hunt
+[PASS] 131/229 - Native Resource Ownership & Error Unwinding
+[PASS] 132/229 - Native WeaponEquip Settlement
+[PASS] 133/229 - GPS Cadence & Voice Lifecycle
+[PASS] 134/229 - Pickup Native Creation & Touch Handoff
+[PASS] 135/229 - Procedural Weapon Visual Identity
+[PASS] 136/229 - Loot/Class/Identification Refresh
+[PASS] 137/229 - Fighter Strength / Constitution Bypass
+[PASS] 138/229 - Monster Class, Affinity & Aura
+[PASS] 139/229 - Size Shifter Collision & Growth
+[PASS] 140/229 - Hostile Native Death Handoff
+[PASS] 141/229 - Equipment/Area/Statue Presentation
+[PASS] 142/229 - Magic Spectacle, Weapon Stowing & Natural Drops
+[PASS] 143/229 - Final Loot Override Wearables & Potions
+[PASS] 144/229 - Equipment Body Map & Drag Inventory
+[PASS] 145/229 - Reactive Character Status Portrait
+[PASS] 146/229 - Persistent Wallet, DFTs & SQLite Rollback
+[PASS] 147/229 - Wizard Summon & Starting Content
+[PASS] 148/229 - Wallet Client & Navigation
+[PASS] 149/229 - Equipment Network Delta & Lifecycle
+[PASS] 150/229 - Recurring Hermit Gifts & Staging Board
+[PASS] 151/229 - Enemy Variety & Shared Combat Lifecycle
+[PASS] 152/229 - Equipment Owner-Only Pickup Inspection
+[PASS] 153/229 - Procedural Economy Distribution & Versioning
+[PASS] 154/229 - Procedural Economy Production Integration
+[PASS] 155/229 - Equipment Keyboard & UI Isolation
+[PASS] 156/229 - Equipment Real Loot Transactions
+[PASS] 157/229 - Equipment Catalog, Swaps & Derived Stats
+[PASS] 158/229 - Equipment Shared Block
+[PASS] 159/229 - Equipment Special Moves & Input
+[PASS] 160/229 - Potion Projectile Collision & Lifecycle
+[PASS] 161/229 - Equipment Ownership & Throwable Transactions
+[PASS] 162/229 - Git Diff Check
+[PASS] 163/229 - Lua Syntax Audit
+[PASS] 164/229 - Checkpoint C Python Validator
+[PASS] 165/229 - Actor Core & Level Progression
+[PASS] 166/229 - Magic Forms & Contents Schema
+[PASS] 167/229 - Implemented Feats & Capstones (135+9)
+[PASS] 168/229 - Human Soldier RPG & XP Progression
+[PASS] 169/229 - Human Soldier Lifecycle & Isolation
+[PASS] 170/229 - Death Tetris Deadline & Lifecycle
+[PASS] 171/229 - Checkpoint E Closure & Parity
+[PASS] 172/229 - Soldier P-Sheet & Renderer Contract
+[PASS] 173/229 - Checkpoint F Run-End & Leaderboard
+[PASS] 174/229 - Status & Element Matrix
+[PASS] 175/229 - Protected: Deadeye Stabilization
+[PASS] 176/229 - Protected: Crowbar Mechanics
+[PASS] 177/229 - Protected: Pusher Feat & Impulse
+[PASS] 178/229 - Protected: Map Movement & Navigation
+[PASS] 179/229 - Protected: Quantum Cost Seam
+[PASS] 180/229 - Protected: Strafe Movement
+[PASS] 181/229 - Protected: Backpedal Movement
+[PASS] 182/229 - Protected: Winning Personality
+[PASS] 183/229 - Protected: Deadcrab Dispatch
+[PASS] 184/229 - Protected: Dev Ingress
+[PASS] 185/229 - Protected: Control Magic
+[PASS] 186/229 - Protected: Magic Recovery
+[PASS] 187/229 - Protected: Behavioral Regressions Gate
+[PASS] 188/229 - Feedback Language & Die Logger
+[PASS] 189/229 - Wizard Reaction Sound & Particles
+[PASS] 190/229 - Canonical Burst & Error Cleanup
+[PASS] 191/229 - AG-011 Big Playtest Repairs Gate
+[PASS] 192/229 - Feat: astral_reach
+[PASS] 193/229 - Feat: attunement
+[PASS] 194/229 - Feat: aura_burst
+[PASS] 195/229 - Feat: core_feats
+[PASS] 196/229 - Feat: direct_cha_damage
+[PASS] 197/229 - Feat: gps
+[PASS] 198/229 - Feat: haste
+[PASS] 199/229 - Feat: killer_instinct
+[PASS] 200/229 - Feat: magic_grant_feats
+[PASS] 201/229 - Feat: menace_feats
+[PASS] 202/229 - Feat: morale_defense_feats
+[PASS] 203/229 - Feat: panic_feat
+[PASS] 204/229 - Feat: personality_aura
+[PASS] 205/229 - Feat: sixth_sense
+[PASS] 206/229 - Feat: spellward
+[PASS] 207/229 - Feat: summon_management
+[PASS] 208/229 - Feat: wall_jump
+[PASS] 209/229 - Feat: wis_defense
+[PASS] 210/229 - Feat: wis_information
+[PASS] 211/229 - Feat Descriptions & Stabilization
+[PASS] 212/229 - Hero Weakness & Identity Perks
+[PASS] 213/229 - Snapshot Burst & Lifecycle
+[PASS] 214/229 - Watcher Scan Dispatch
+[PASS] 215/229 - Watermelon Bounce and Shatter Lifecycle
+[PASS] 216/229 - Multiple Mouse Magic Bindings
+[PASS] 217/229 - Wall Placement and Preview
+[PASS] 218/229 - Wall Form and Magic Testkit
+[PASS] 219/229 - Super Ball Ricochet Lifecycle
+[PASS] 220/229 - Ordinary Procedural Pistol and Crowbar Loot
+[PASS] 221/229 - Looping Audio Ownership
+[PASS] 222/229 - Adventure Presentation
+[PASS] 223/229 - Original Adventure Audio
+[PASS] 224/229 - Damsel Campaign & Endless Progression
+[PASS] 225/229 - Damsel Staging, Late Join & Dialogue
+[PASS] 226/229 - Feedback Audio Lifecycle & Coalescing
+[PASS] 227/229 - Feedback Audio Assets
+[PASS] 228/229 - Cross Feats & Shared Dodge
+[PASS] 229/229 - Live-GDD Feat Release Gate

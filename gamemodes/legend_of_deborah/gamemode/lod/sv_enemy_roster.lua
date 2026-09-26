@@ -134,6 +134,13 @@ function E:Prepare(e)
             e.LODNoduleHullScale=size
         end
     end
+    -- A custom lod_hostile does not execute CNPC_Manhack::StartEngine. The
+    -- stock model's blade is bodygroup 1, value 1; model assignment alone leaves
+    -- it hidden. Do not add native NPC flight or an ambient sound loop.
+    if e.LODArchetypeId=="razor" and not e.LODRazorBladeReady and e.GetModel and e:GetModel()=="models/manhack.mdl"
+        and e.GetBodygroupCount and e:GetBodygroupCount(1)>1 then
+        e:SetBodygroup(1,1);e.LODRazorBladeReady=true
+    end
     if e.LODRosterReady then return end
     if self.Definitions[e.LODArchetypeId].perception then e.LODPerceptionBorn=CurTime() end
     e.LODRosterReady=true;self.Active[e]=true;e:SetNW2Bool("LOD_RosterAlive",true)
@@ -295,6 +302,18 @@ function E:Begin(e,p,now,override)
     if d.mobile then return self:BeginMobile(e,p,now) end
     if d.trap then return self:BeginTrap(e,p,now) end
     if d.melee then return self:BeginMelee(e,p,now) end
+    if e.LODArchetypeId=="razor" then
+        local allowed,reason=self:RazorCanDive(e,p)
+        e.LODRazorApproachReason=reason
+        if not allowed then
+            -- Seeing a Hero over a stair or low obstruction is not proof that
+            -- a planar rotor dive can reach them. Resume the canonical route
+            -- instead of repeatedly stopping to charge into that obstruction.
+            e.LODRazorApproachUntil=now+.5
+            return false
+        end
+        e.LODRazorApproachUntil=nil
+    end
     local origin=self:Origin(e);local aim=p:WorldSpaceCenter()
     local a={kind=override.kind or d.kind,target=p,origin=origin,aim=aim,ready=now+(override.warning or cfg.burstTelegraph),
         range=override.range or cfg.fireRange,
@@ -384,6 +403,14 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if e.LODArchetypeId=="razor" and a.kind=="dive" then
+        -- Held permits some stationary attacks, but never this movement attack.
+        -- An expired service tick must not deliver one final post-deadline hit.
+        if not LOD.RPGStatusElements:CanMoveVoluntarily(e)
+            or (a.released and now>=a.finish) then
+            self:Finish(e,now);LOD.HostileMotionV2:Stop(e);return
+        end
+    end
     if a.link then return self:StepLink(e,a,now) end
     if a.edict then return self:StepEdict(e,a,now) end
     if a.companion then return self:StepCompanion(e,a,now) end
@@ -454,6 +481,32 @@ function E:LegalStep(e,from,to)
     local a=graph and N:WorldToCell(graph,from);local b=graph and N:WorldToCell(graph,to)
     if self:Safe(graph,a) or self:Safe(graph,b) or a.z~=b.z then return false end
     return key(a)==key(b) or (a.neighbors[key(b)] and N:CanTraverse(graph,key(a),key(b)))
+end
+-- Razor is visually airborne but its lunge is deliberately planar. Prove the
+-- committed direct approach before interrupting ordinary graph/stair pursuit.
+-- At most ceil(fireRange/24) graph checks and one native hull query per attempt;
+-- a rejected attempt routes for .5 seconds before another preflight.
+function E:RazorCanDive(e,p)
+    if not self:AcquireTarget(p) or not self:CanCast(e)
+        or not LOD.RPGStatusElements:CanMoveVoluntarily(e) then return false,"control_or_target" end
+    local s=state();local g=s and s.Graph
+    local from=e:GetPos();local target=p:GetPos()
+    local first=g and N:WorldToCell(g,from);local last=g and N:WorldToCell(g,target)
+    if self:Safe(g,first) or self:Safe(g,last) or first.z~=last.z then return false,"floor_or_safe" end
+    local floor=N:CellCenter(first).z+(LOD.HostileMotionV2.FloorLift or 2)
+    if math.abs(from.z-floor)>4 or math.abs(target.z-from.z)>48 then return false,"stair_or_height" end
+    local goal=Vector(target.x,target.y,from.z);local delta=goal-from
+    if delta:Length()>e.LODConfig.fireRange then return false,"range" end
+    local steps=math.max(1,math.ceil(delta:Length()/24));local previous=from
+    for i=1,steps do
+        local point=from+delta*(i/steps)
+        if not self:LegalStep(e,previous,point) then return false,"graph_or_gate" end
+        previous=point
+    end
+    local tr=util.TraceHull({start=from,endpos=goal,mins=Vector(-16,-16,2),maxs=Vector(16,16,64),mask=MASK_NPCSOLID,
+        filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
+    if tr.Hit or tr.StartSolid or tr.AllSolid then return false,"blocked_hull" end
+    return true
 end
 -- B27: target-free patrols reuse WanderingDirector's installed graph route.
 -- Authored encounter actors retain their original idle behavior. This never
@@ -547,7 +600,7 @@ function E:Tick(e)
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(d.link and now<(e.LODLinkAdvanceUntil or 0)) or (d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=(e.LODArchetypeId=="razor" and now<(e.LODRazorApproachUntil or 0)) or (d.link and now<(e.LODLinkAdvanceUntil or 0)) or (d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)
@@ -690,4 +743,41 @@ hook.Add("OnNPCKilled","LOD_RosterDeath",function(e)
         E:Cancel(e);e:SetNW2Bool("LOD_RosterAlive",false)
         if e.LODClimberVictim then LOD.Climber:Detach(e) end
     end
+end)
+
+-- Release-safe observation only: no spawning, targeting, RNG, traces, unranked
+-- flag, or gameplay writes. A server render flag is not client/PVS visibility.
+concommand.Add("lod_razor_status",function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    local director=LOD.EncounterDirector;local plan=director and director.Plan
+    local planned,current,dormant=0,0,0
+    for _,enc in ipairs(plan and plan.encounters or {}) do
+        local count=(enc.composition or {}).razor or 0
+        planned=planned+((enc.plannedComposition or enc.composition or {}).razor or 0)
+        current=current+count
+        if not enc.spawned and not enc.cleared then dormant=dormant+count end
+    end
+    local living,roaming,other,shown=0,0,0,0
+    for _,e in ipairs(ents.FindByClass("lod_hostile")) do
+        if IsValid(e) and not e.LODDead then
+            local model=e:GetModel() or ""
+            if e.LODArchetypeId=="razor" or model=="models/manhack.mdl" then
+                if e.LODArchetypeId=="razor" then
+                    living=living+1;if e.LODWanderer then roaming=roaming+1 end
+                else other=other+1 end
+                if shown<16 then
+                    shown=shown+1
+                    print(string.format("[LOD:RAZOR] #%d id=%s source=%s model=%s blade=%d serverNoDraw=%s pos=%s motion=%s route=%d/%d target=%s attack=%s approach=%s",
+                        e:EntIndex(),tostring(e.LODArchetypeId),tostring(e.LODSpawnSource),model,e:GetBodygroup(1),
+                        tostring(e:GetNoDraw()),tostring(e:GetPos()),tostring(e.LODMotionMode),e.LODWaypointIndex or 0,#(e.LODWaypoints or {}),
+                        tostring(IsValid(e.LODTarget)),tostring(e.LODRosterAttack and (e.LODRosterAttack.released and "dive" or "warning") or "none"),
+                        tostring(e.LODRazorApproachReason or "none")))
+                end
+            end
+        end
+    end
+    local stats=E.PlacementStats and E.PlacementStats.razor or {}
+    print(string.format("[LOD:RAZOR] revision=spot03 motif=%s planned=%d currentComposition=%d dormant=%d living=%d roaming=%d otherManhackModels=%d directedAcceptedSession=%d directedRejectedSession=%d shown=%d clientVisibility=not_observed_by_server",
+        tostring(plan and plan.ecology and plan.ecology.theme or "none"),planned,current,dormant,living,roaming,other,
+        stats.accepted or 0,stats.rejected or 0,shown))
 end)

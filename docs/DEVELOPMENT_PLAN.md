@@ -1,41 +1,45 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-02 Climber junction traversal
+## Current checkpoint — SPOT-03 Razor / Manhack absence
 
 The September 25, 2026 author-directed [spot queue](briefs/SPOT_UPDATES.md)
 precedes the existing scheduled roadmap. One bullet equals one coherent,
 independently validated, non-forced push. High-level design decisions are
 delegated; existing-feat rebalances remain explicitly approval-gated.
 
-SPOT-02 repairs reproduced Climber wall-route discontinuity at four-way junctions
-and permanent return-to-wall stalls after a leap/latch ends in such a cell.
-Route-only clear junction connectors never become spawn/attachment lanes.
-Pursuit and recovery retain the same swept movement, graph, gates, leash and
-B29 sanctuary checks. A release-safe admin diagnostic separates current
-composition, dormant units, living actors, placement counters and movement state.
-No population, motif, attack, damage, loot or balance change is included.
+SPOT-03 repairs Razor's missing stock blade/active-idle setup, repeated doomed
+planar dives instead of graph/stair pursuit, and Held/post-deadline dive travel.
+A release-safe read-only admin diagnostic separates original plan, current
+composition, dormant units, actual live/roaming actors and placement attempts.
+Razor is the sole actual Manhack-model roster identity; Redliner is not another.
+No selection, population, motif, combat-value, reward, feat or Crate retune.
 
-Fresh focused validation: 44/44 production-module checks; the same final harness
-against the original module gives 25 passes/19 failures, including absent new
-diagnostics. Both Lua files pass syntax loading under Lua 5.4. Full integration,
-native Source collision/presentation and release sightings were not run. This
-repairs demonstrated navigation failures; it does not establish that they were
-the sole cause of the author's reported absence. Climber remains directed-only
-in Hunting Grounds. Live GDD 05/07 and HUMAN Climber placement were consulted;
-the existing geometry-valid traversal contract is repaired, not redesigned.
+Fresh focused evidence: 55/55 Razor checks; identical final harness against the
+two original modules gives 26 passes/29 failures, including six absent diagnostic
+checks. Climber's 44/44 checks were freshly rerun. The bounded integration matrix
+has 226 passing suites. One teammate-UI harness failure reproduces on the
+unchanged parent (missing Color stub); two long campaign-wide samples were not
+completed. All-source syntax passed. This is not a full 229-suite pass.
+Native GMod/model/animation/collision, co-op and ordinary sightings remain open.
+The 20-build parent-main sample had a planned or initialized Razor in six builds,
+none in fourteen; it is headless exposure evidence, not the author's session.
+Current B27 roaming admits sector-2+ Razor in all motifs, biased toward Hunting
+Grounds; the directed Rotor Cover Break template remains Hunting Grounds only.
+Do not claim these bounded fixes resolve every possible absence cause.
 
-Evidence and finite native gate: [SPOT-02 validation](validation/SPOT_02_CLIMBER.md).
-Next development action: **SPOT-03, diagnose and repair absent Manhack types**.
-SPOT-01 remains implemented with its inherited 50 focused passes, not rerun in
-this checkpoint; native two-player target-readout acceptance is still pending.
-Other queue bullets are not implemented or accepted by SPOT-02.
+Evidence and finite native gate: [SPOT-03 validation](validation/SPOT_03_RAZOR.md).
+Next development action: **SPOT-04, lingering enemy-death loop audio audit**.
+SPOT-02 junction traversal/recovery stays implemented, without full Climber
+absence or native acceptance claims. SPOT-01's 50 focused passes are inherited;
+its native two-player readout acceptance is still pending. Later bullets remain
+queued, not implemented by this checkpoint.
 
 ## Existing release gates — unchanged
 
 Preserve B28 physical-query repairs, B29 safe arrival/graduated opening,
 author-approved Crate visuals, and completed P1–P4 optimization/evidence.
-B29 has 42 selected headless passes recorded in its earlier checkpoint, not
-native acceptance and not a fresh result from this spot update. Its safe-arrival,
+B29's historical 42 selected headless passes remain distinct from the fresh
+integration results recorded above and from native acceptance. Its safe-arrival,
 controlled-departure and inhabited-exploration native checks remain open.
 
 The established sequence remains focused fatal-crash/game-ending-bug repairs,

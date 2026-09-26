@@ -9,11 +9,17 @@ function A:Valid(e, seq)
 end
 function A:Resolve(e, activity)
     local model=e:GetModel()
-    if e.LODAnimationModel~=model then e.LODAnimationModel=model;e.LODAnimationCache={} end
+    local razor=e.LODArchetypeId=="razor" and model=="models/manhack.mdl"
+    if e.LODAnimationModel~=model or e.LODAnimationRazor~=razor then
+        e.LODAnimationModel=model;e.LODAnimationRazor=razor;e.LODAnimationCache={}
+    end
     local cache=e.LODAnimationCache
     if cache[activity]~=nil then return cache[activity] or nil end
     local moving=activity==ACT_RUN or activity==ACT_WALK or activity==ACT_RUN_AIM_RIFLE
-    local candidates={activity}
+    -- Stock Manhack ACT_IDLE is its packed/inactive pose, not a hover. Keep
+    -- the deployed rotor flying during holds and the existing charge tell.
+    local desired=razor and (activity==ACT_IDLE or activity==ACT_RANGE_ATTACK1) and ACT_FLY or activity
+    local candidates={desired}
     local function add(v) if v~=nil then candidates[#candidates+1]=v end end
     if moving then add(ACT_RUN_AIM_RIFLE);add(ACT_RUN);add(ACT_WALK) end
     for _,act in ipairs(candidates) do
@@ -21,7 +27,7 @@ function A:Resolve(e, activity)
         if self:Valid(e,seq) then cache[activity]=seq;return seq end
     end
     -- Some stock devices expose named cycles but no matching ACT metadata.
-    local names=activity==ACT_CLIMB_UP and {"climb","climb_up","climbwall"} or moving and {"run_all","run","walk_all","walk","fly","idle"} or (activity==ACT_RANGE_ATTACK1 and {"fire","fire1","shoot","attack","attack1","range_attack1"} or {"idle","idle01","idle1","idle_subtle","fly"})
+    local names=razor and {"fly","idle"} or activity==ACT_CLIMB_UP and {"climb","climb_up","climbwall"} or moving and {"run_all","run","walk_all","walk","fly","idle"} or (activity==ACT_RANGE_ATTACK1 and {"fire","fire1","shoot","attack","attack1","range_attack1"} or {"idle","idle01","idle1","idle_subtle","fly"})
     for _,name in ipairs(names) do
         local seq=e:LookupSequence(name)
         if self:Valid(e,seq) then cache[activity]=seq;return seq end

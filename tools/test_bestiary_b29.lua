@@ -45,7 +45,9 @@ for i=1,(arg[1]=="--runtime" and 0 or 20) do
  local arrival=N:CellCenter(g.Start)+Vector(0,0,12)
  assert(key(S:ExactCell(g,arrival))==key(g.Start) and S:ProtectedPosition(arrival),'actual builder arrival unprotected')
  assert(not S:ProtectedPosition(arrival+Vector(0,0,LOD.Config.Maze.LevelHeight)),'sanctuary leaks to upper deck')
- local types,early={},{};local deep=0;local optional=0
+ local types,early={},{};local deep=0;local optional=0;local razorRoam,razorPlanned=0,0
+ -- SPOT-03 exposure receipt: observe existing selection, never force a spawn.
+ for _,enc in ipairs(plan.encounters) do razorPlanned=razorPlanned+(enc.composition.razor or 0) end
  for _,enc in ipairs(plan.encounters) do if not enc.objective then
   optional=optional+1;assert(not g.CellTags[enc.cellKey].entryRoamOpening,'optional squad crowds first roaming contacts')
  end end
@@ -55,6 +57,7 @@ for i=1,(arg[1]=="--runtime" and 0 or 20) do
   assert(W:_SupportedSpawn(home),'spawn without compiled support')
   assert(S:HomeArchetypeAllowed(g,home,e.LODArchetypeId),'opening complexity escaped')
   types[e.LODArchetypeId]=true
+  if e.LODArchetypeId=="razor" then razorRoam=razorRoam+1 end
   if d and d<10 then local bin=d<6 and 1 or 2;early[bin]=(early[bin] or 0)+1 end
   if not d or d>=10 then deep=deep+1 end
   for k in pairs(data.cells) do assert(not S:PatrolCellAllowed(g,e,g.Cells[k]),'sanctuary patrol ingress') end
@@ -66,7 +69,7 @@ for i=1,(arg[1]=="--runtime" and 0 or 20) do
  assert(#W.Entities>=12 and table.Count(types)>=6 and deep>=10 and optional>=4,'population erased')
  samples[#samples+1]={seed=(i<=16 and i or i-16)*7919,level=level,boxes=#boxes,
   sanctuary=safeCount,roamers=#W.Entities,types=table.Count(types),deep=deep,optional=optional,
-  firstHomes=early[1] or 0,secondHomes=early[2] or 0}
+  firstHomes=early[1] or 0,secondHomes=early[2] or 0,razorRoam=razorRoam,razorPlanned=razorPlanned}
  realPrint('B29_SAMPLE '..H.serial(samples[#samples]))
  savedGraph=g
 end
