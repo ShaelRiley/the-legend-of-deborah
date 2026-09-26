@@ -196,6 +196,7 @@ function H:OnGordonDefeated(s,w,a,e)
     s.Hector=h;s.ObjectiveStage=P.Stages.DEFEAT_HECTOR
     timer.Simple(0,function()
         if not H:Current(h) then return end
+        if LOD.WardenTurrets then LOD.WardenTurrets:Cleanup(w.turrets) end
         -- Only Gordon's exact owned clones are retired; no broad arena purge.
         for _,clone in ipairs(w.clones or {}) do
             local actor=clone.actor

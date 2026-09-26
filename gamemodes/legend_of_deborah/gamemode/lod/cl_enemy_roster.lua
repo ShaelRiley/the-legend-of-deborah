@@ -1024,6 +1024,11 @@ function V:Draw(e,size)
     self:Reaction(e)
     if e:GetNW2String("LOD_Archetype","")=="nodule" then self:Gas(e);return end
     local stage=e:GetNW2Int("LOD_RosterAttack",0)
+    if e:GetNW2Bool("LOD_WardenTurret",false) then
+        local deadline=e:GetNW2Float("LOD_RosterUntil",0)
+        if not e:GetNW2Bool("LOD_RosterAlive",false) or deadline~=deadline or math.abs(deadline)==math.huge
+            or CurTime()>=deadline then return end
+    end
     if stage==0 or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local id=e:GetNW2String("LOD_Archetype","");local color=colors[id];if not color then return end
     if id=="relay" or id=="lacemaker" then self:Link(e);return end

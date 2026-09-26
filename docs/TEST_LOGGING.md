@@ -10,6 +10,22 @@ On Shael's Steam Deck this is:
 
 The upload-facing files are **ordinary physical `.txt` files**, not checkout symlinks.
 
+## SPOT-08 turret acceptance — ordinary arena play
+
+The finite source gate is `python3 tools/test_spot08_gate.py --output <empty directory outside the repository>`.
+It selects 52 suites; it is not native acceptance or the complete campaign matrix.
+See [SPOT-08 evidence and limits](validation/SPOT_08_TURRETS.md).
+
+After a full restart, observe a threshold Gordon arena during ordinary play and
+run `lod_warden_status`. The existing output adds living/desired turrets plus
+admitted/skipped counts; the existing RPG test log records WARDEN_TURRETS_ADMITTED
+with desired/admitted/skipped, level and seed. A skipped unsafe slot is an explicit
+refusal, not permission to replace it or force a spawn. Confirm safe entry and
+both gallery stairs, finite readable warnings, dodge/flank/destruction and cleanup
+before Hector. Pair the usual console/summary files with a brief visual/listening
+report; collect co-op lifecycle evidence when playing co-op. No dedicated Razor
+retest or Workshop/VPS operation is a prerequisite for continuing the spot queue.
+
 ## Population acceptance — release-mode evidence
 
 From B28, `population_latest.txt` is the bounded, automatic population census in

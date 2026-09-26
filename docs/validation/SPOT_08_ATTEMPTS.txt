@@ -1,0 +1,49 @@
+SPOT-08 attempt provenance — September 26, 2026
+Actual parent 35c43bc8bac86e5ea108b9f96e9d5ab6a94bf542
+
+Raw logs are retained in the external delivery evidence. The hashes below identify
+actual log bytes, not per-attempt source snapshots. Individual focused-attempt
+source hashes were not captured; do not manufacture them. Complete final gates
+capture all-source hashes before/after and prove no source mutation during tests.
+
+Source-export infrastructure: run 36261428750 failed at upload-artifact because
+its ../spot08-parent path was rejected; checkout/export succeeded but no artifact
+was delivered. No gameplay tests or main publication occurred. The isolated
+checkpoint/spot08-35c43bc8 workflow was corrected to an absolute runner.temp path.
+Run 36261617589 succeeded, artifact 10912466722, authentic parent/tree/all 2137
+entries verified locally. Neither infrastructure commit belongs in main ancestry.
+
+focused-01.txt
+SHA256 ab373df188c60b3d25379438f166d74ddd226c53acaba1f7c4d9e9233abbcd3a
+PASS: initial 172 focused assertions. Not the expanded final gate.
+
+focused-02-exact-cell.txt
+SHA256 5e69081d4a96fea25977cdf310a02c8cf8bcc336021fe4d0cf06d345aff3a9f0
+FAIL: new adversarial test showed upper central void accepted through Navigator nearest-cell fallback. Replaced turret placement/court membership with the existing EntrySafety ExactCell authority; no global navigation change.
+
+focused-03.txt
+SHA256 d2dace3a89a9ec6d2091ebc39098b590defe3afa1e17dd67a3d7390eed8822f8
+PASS: 174 focused assertions after exact-cell correction.
+
+focused-04-ownership.txt
+SHA256 128acde4ffddc2f4151200106f0599c6ba1dd39a3deab97fd98e7ff99585cd5e
+FAIL: stripping source ownership inside collision allowed the old projectile to fall through to ordinary unguarded damage. Dispatch now retains the event turret receipt independently of the current actor flag.
+
+focused-05.txt
+SHA256 d3083eddfb2bd4a2c87e8141f8ce2da21f3ab6cb3f16f1d7baf576cc11584709
+PASS: 179 focused assertions after receipt dispatch correction; explicit cleanup before deferred Hector reveal and finite client warning validation also covered.
+
+focused-06-expanded.txt
+SHA256 feb5fbbbd9d043b20fa85e797db242b73ce9078c4f36e0f74c30cd2767d883a9
+PASS: 250 focused assertions, including expanded admission, capacity, life, role, proxy, render expiry and reversed deferred-callback ordering cases.
+
+roster-01.txt
+SHA256 09831ef3cfe8e3a97da50afc4f98616b166bbc969e768e873562f4e2e686c59c
+PASS: ordinary EnemyRoster regression, separate from the final selected gate.
+
+gate-preflight-summary.txt
+SHA256 212d3c5ac0d8f30983dedc42d71d6bfe64b1f27281761cd26dc6a95e8d34477a
+PASS: 52/52 selected suites, 250 focused assertions, 736 Lua syntax files, unchanged source. Before/after SHA256 3fce1c409f15c85f0a5cd1fc83f3f4fb1648224870b5a5679fd0788547ca6889. This predates documentation close-out.
+
+Final frozen-tree local/independent runs and publication identity are recorded
+in the external delivery receipt; their result is not inferred from this preflight.

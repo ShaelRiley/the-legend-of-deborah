@@ -1,6 +1,34 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-07 Fake Gordon tells
+## Current checkpoint — SPOT-08 Gordon arena turrets
+
+From actual main parent `35c43bc8bac86e5ea108b9f96e9d5ab6a94bf542`.
+Cumulative ordinary Sentry corner turrets at D5/10/15/20, capped at four with
+ordinary monster progression thereafter. Separately seeded corners, one safe
+admission attempt per slot, no delayed fallback/replacement/respawn. Exact-cell
+native hull/support and stair/gallery checks preserve arrival and routes. Shared
+96-hostile, 64-roamer, 64-projectile and 16-Gordon-hazard ceilings remain.
+
+Production EnemyRoster owns fixed warned physical fire, bounded captured Hero
+lives and guarded native damage. Exact owner/run/life retirement prevents stale
+shots across wipes, rebuilds, co-op replacement and Gordon-to-Hector handoff.
+Native body removal occurs outside the lethal stack, explicitly before Hector's
+reveal. No SPOT-06/07, boss progression, reward or feat-balance changes.
+
+The [predefined finite gate](validation/SPOT_08_TURRETS_GATE.md) first passed
+**250 focused assertions, 52/52 selected suites and 736 Lua syntax checks** on
+unchanged source. See [implementation and limits](validation/SPOT_08_TURRETS.md)
+and [preserved failures](validation/SPOT_08_ATTEMPTS.txt). Final frozen local and
+independent hashes, published child/parent/tree and run ID are in the delivery
+receipt. Manual and renderings match. This is not full campaign-matrix or native
+collision/visual/audio/co-op/performance acceptance. No Workshop/VPS actions.
+
+Next single bullet: **SPOT-09 — Damsel's Revenge consumable**. Read the exact
+queue request and reconcile its item grant/use, jailed Damsel gun/combat, Gordon
+ownership, co-op, rescue drop and cleanup contract in the live GDD before code.
+Do not fold existing-feat rebalances into it. Preserve SPOT-01–08 and B28/B29.
+
+## Previous checkpoint — SPOT-07 Fake Gordon tells
 
 From actual main parent `c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d`.
 Only a living deployed Hero with positive canonical Wisdom receives private,

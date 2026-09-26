@@ -31,7 +31,7 @@ function LOD.WanderingDirector:GetDeficitReservation(...)
         local h=R.State.Hector
         pending=(R.State.Level==20 and (not h or h.stage~=3 and not IsValid(h.actor))) and 1 or 0
     end
-    return baseReserve(self,...) + pending
+    return baseReserve(self,...) + pending + (LOD.WardenTurrets and LOD.WardenTurrets:Reservation(R.State) or 0)
 end
 local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 local function alive(e) return IsValid(e) and not e.LODDead and e:Health()>0 end
@@ -144,6 +144,7 @@ function W:Commit()
     s.CheckpointPos=N:CellCenter(a.entry)+Vector(0,0,12)
     LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=e
     self:SpawnClones(s,w,a)
+    if LOD.WardenTurrets then LOD.WardenTurrets:Admit(s,w,a) end
     local gate=a.lock.entity
     if IsValid(gate) then gate:SetOpened(false);gate:SetNotSolid(false);gate:SetSolid(SOLID_BBOX) end
     e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Int("LOD_WardenPhase",1);e:DrawShadow(false)
@@ -194,7 +195,7 @@ function W:Damage(e,p,kind,shared)
 end
 function W:AddHazard(w,kind,pos,velocity,target,now)
     local _,root=self:State();root=root or w
-    if #self:AllHazards(root)>=C.maxHazards then return false end
+    if #self:AllHazards(root)+(LOD.WardenTurrets and LOD.WardenTurrets:ProjectileCount(root) or 0)>=C.maxHazards then return false end
     root.nextHazard=(root.nextHazard or 0)+1
     w.hazards[#w.hazards+1]={id=root.nextHazard,kind=kind,pos=pos,velocity=velocity,target=target,
         expires=now+(kind=="orb" and C.shotLife or C.bombFuse)}
@@ -537,6 +538,7 @@ function W:Killed(e)
         or w.combatDeath~=e or not IsValid(e) or not e.LODDead or e:Health()>0) then return end
     self:RetirePhaseRoot(w)
     w.dead=true;w.hazards={};w.volley=nil;w.swing=nil
+    if LOD.WardenTurrets then LOD.WardenTurrets:Retire(w.turrets) end
     for _,other in ipairs(w.clones or {}) do other.dead=true;other.hazards={};other.volley=nil;other.swing=nil end
     if s.Level==20 then
         if not LOD.Hector or not LOD.Hector:OnGordonDefeated(s,w,a,e) then R:FailCampaign("Hector handoff unavailable") end
@@ -572,7 +574,15 @@ hook.Add("PostEntityTakeDamage","LOD_BossDamagePresentation",function(e,info,too
     elseif e.LODArchetypeId=="neil" then e:SetNW2Float("LOD_NeilHurtAt",CurTime()) end
 end)
 hook.Add("EntityTakeDamage","LOD_WardenAlcove",function(target,info)
-    if W:Protected(target) or (IsValid(target) and target.LODArchetypeId=="warden" and W:Protected(info:GetAttacker())) then
+    local attacker=info:GetAttacker()
+    local turret=IsValid(target) and target.LODWardenTurret
+    local turretSource=IsValid(attacker) and attacker.LODWardenTurret
+    if LOD.WardenTurrets and (turret or turretSource) then
+        local source=LOD.EntrySafety and LOD.EntrySafety:Source(attacker) or attacker
+        if (turret and (not LOD.WardenTurrets:Body(target) or W:Protected(source)))
+            or (turretSource and not LOD.WardenTurrets:Body(attacker)) then info:SetDamage(0);return true end
+    end
+    if W:Protected(target) or (IsValid(target) and target.LODArchetypeId=="warden" and W:Protected(attacker)) then
         info:SetDamage(0);return true
     end
 end)
@@ -711,12 +721,14 @@ function W:Sync()
 end
 local reset=P.ResetLevelState
 function P:ResetLevelState(...)
+    if LOD.WardenTurrets then LOD.WardenTurrets:Retire(LOD.WardenTurrets.current) end
     W:RetirePhaseRoot(R.State and R.State.Warden);W.phaseRoot=nil
     local result=reset(self,...);R.State.Warden=nil;R.State.WardenStarted=false;W:Sync();W:SyncTells();return result
 end
 -- Fuse/travel time belongs to the shared service, not a stunned NextBot's
 -- behavior coroutine. Phase-three damage thresholds retire ordnance first.
 hook.Add("Think","LOD_WardenOrdnance",function()
+    if LOD.WardenTurrets then LOD.WardenTurrets:Service() end
     local s,w=W:State()
     if W.phaseRoot and (W.phaseRoot~=w or not s or not s.BuildReady or s.Failed or s.LevelCleared or w.dead or not alive(w.actor)) then
         W:RetirePhaseRoot(W.phaseRoot);W.phaseRoot=nil
@@ -768,7 +780,7 @@ concommand.Add("lod_warden_status",function(p)
     print("[LOD WARDEN] started="..tostring(w and w.started).." phase="..tostring(w and w.phase).." dead="..tostring(w and w.dead)
         .." hp="..tostring(w and alive(w.actor) and w.actor:Health()).." hazards="..tostring(w and #w.hazards)
         .." key="..tostring(s and s.JailKey).." phaseOne="..tostring(w and w.phaseOne and w.phaseOne.stage)
-        .." deadline="..tostring(w and w.phaseOne and w.phaseOne.deadline).." cues="..#W:Cues(CurTime()))
+        .." deadline="..tostring(w and w.phaseOne and w.phaseOne.deadline).." cues="..#W:Cues(CurTime())..(LOD.WardenTurrets and LOD.WardenTurrets:Status(w) or ""))
 end)
 concommand.Add("lod_warden_testkit",function(p)
     local cv=GetConVar("lod_developer_mode");local s=R.State

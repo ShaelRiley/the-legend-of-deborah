@@ -150,6 +150,8 @@ function E:Prepare(e)
     if d.stationary then e.LODRosterAnchor=e:GetPos();e.LODRosterYaw=e:GetAngles().y end
 end
 function E:Cancel(e)
+    local turretAttack=e.LODRosterAttack
+    if turretAttack and turretAttack.turret and not turretAttack.released then turretAttack.turret.cancelled=true end
     if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Stop(e) end
     local d=self.Definitions[e.LODArchetypeId]
     if e.LODRosterAttack and e.LODRosterAttack.link then
@@ -228,6 +230,10 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
 function E:Damage(e,p,event,kind)
+    if event.turret or e.LODWardenTurret then
+        if LOD.WardenTurrets then return LOD.WardenTurrets:Damage(e,p,event,kind) end
+        return
+    end
     if e.LODSkeletonHero and not LOD.SkeletonHero:Live(e) then return end
     if not IsValid(e) or e.LODDead or not self:Target(p) then return end
     return self:_DamagePacket(e,p,event,kind)
@@ -322,6 +328,7 @@ function E:Begin(e,p,now,override)
         range=override.range or cfg.fireRange,
         seed=state().LevelSeed,run=state(),hit={},event={},started=now,direction=(aim-origin):GetNormalized()}
     self:Bind(a,state())
+    if e.LODWardenTurret and (not LOD.WardenTurrets or not LOD.WardenTurrets:Begin(e,p,a,now)) then return false end
     if override.spacingFallback then
         a.spacingFallback=true;a.last=now;a.life=self:CaptureLife(e,p)
         a.sourceGround=Vector(e:GetPos().x,e:GetPos().y,e:GetPos().z);a.cell=N:WorldToCell(state().Graph,a.sourceGround)
@@ -344,6 +351,7 @@ function E:Begin(e,p,now,override)
     end
     if e.LODSkeletonHero then a.skeletonContent=e.LODSkeletonPendingContent end
     e.LODRosterAttack=a
+    if a.turret then e:SetNW2Float("LOD_RosterUntil",a.deadline) end
     if a.spacingFallback then
         e:SetNW2Int("LOD_SpacingMode",0);e:SetNW2Float("LOD_SpacingReady",a.ready);e:SetNW2Float("LOD_SpacingUntil",a.deadline)
     end
@@ -372,6 +380,7 @@ function E:Finish(e,now)
     if attack and LOD.EnemyPursuit then LOD.EnemyPursuit:AfterAttack(e,attack,now) end
 end
 function E:Release(e,a,now)
+    if (a.turret or e.LODWardenTurret) and (not a.turret or not LOD.WardenTurrets or not LOD.WardenTurrets:Release(e,a,now)) then return false end
     if a.fallbackLife and (not self:ValidLife(a.fallbackLife) or now>a.deadline) then return false end
     if a.patternLife and (not self:ValidLife(a.patternLife) or now>a.deadline) then return false end
     if a.reactionRecord and not LOD.EnemyReactions:ValidAttack(a.reactionRecord) then return false end
@@ -384,13 +393,14 @@ function E:Release(e,a,now)
     a.released=true;a.finish=now+(a.kind=="beam" and 1.2 or (a.kind=="flame" and .8 or (a.kind=="dive" and .65 or .15)))
     a.last=now;e:SetNW2Int("LOD_RosterAttack",2);e:SetNW2Float("LOD_RosterRelease",now)
     e:SetNW2Float("LOD_RosterFinish",a.finish)
+    if a.turret then e:SetNW2Float("LOD_RosterUntil",a.finish) end
     -- Release is finite: an emitted looping flame asset outlives this attack.
     e:EmitSound(a.kind=="flame" and "ambient/fire/ignite.wav" or (a.kind=="venom" and "npc/barnacle/barnacle_digesting1.wav" or "ambient/energy/weld2.wav"),74,100,.7)
     if a.spacingFallback and (e.LODRosterAttack~=a or not self:ValidLife(a.life)) then return false end
     if a.pattern then
         self:ReleasePattern(e,a,now)
     elseif a.kind=="bullet" or a.kind=="venom" or a.kind=="bolt" then
-        if #self.Projectiles<64 then
+        if #self.Projectiles<64 and (not a.turret or LOD.WardenTurrets:Publish(e,a)) then
             local speed=a.kind=="bullet" and 950 or (a.kind=="bolt" and 540 or 380)
             local q={owner=e,pos=a.origin,velocity=a.direction*speed,
                 expires=now+(a.range or e.LODConfig.fireRange)/speed,kind=a.kind,event=a.event}
@@ -400,12 +410,20 @@ function E:Release(e,a,now)
             q.pursuitRecord=a.pursuitRecord
             q.fallbackLife=a.fallbackLife
             q.spacingFallback=a.spacingFallback
+            if a.turret then q.turret=a.turret;q.turret.projectile=q;q.lastService=now end
             self.Projectiles[#self.Projectiles+1]=q
             a.shotEmitted=true
         end
     end
 end
 function E:Attack(e,a,now)
+    if a.turret and not a.released then
+        if not LOD.WardenTurrets or not LOD.WardenTurrets:Charge(e,a,now) then
+            if e.LODRosterAttack==a then self:Finish(e,now) end
+            return
+        end
+        a.turret.last=now
+    end
     if e.LODArchetypeId=="razor" and a.kind=="dive" then
         -- Held permits some stationary attacks, but never this movement attack.
         -- An expired service tick must not deliver one final post-deadline hit.
@@ -538,6 +556,7 @@ function E:Tick(e)
         self:Cancel(e);if LOD.EnemyReactions then LOD.EnemyReactions:Cancel(e,true) end;if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;if e.LODClimberVictim and LOD.Climber then LOD.Climber:Detach(e) end;motion:Stop(e);return true
     end
     self:Prepare(e)
+    if e.LODWardenTurret and (not LOD.WardenTurrets or not LOD.WardenTurrets:Select(e)) then self:Cancel(e);motion:Stop(e);return true end
     if not self:Live(e.LODRosterContext,s) then self:Cancel(e);if LOD.EnemyReactions then LOD.EnemyReactions:Cancel(e,true) end;if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end;if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end;motion:Stop(e);return true end
     if LOD.EnemyRemains and LOD.EnemyRemains.Pending[e] then motion:Stop(e);return true end
     if e.LODMeleeRecovery then
@@ -575,7 +594,7 @@ function E:Tick(e)
         if not statuses:CanInitiateAttack(e) or statuses:Has(e,"morale_flee") then return true end
     elseif statuses:HandleAIFlee(e,s.Graph,motion) then return true end
     if d.perception then return self:TickPerception(e,now) end
-    if not e.LODPursuit then e:_RefreshTarget(s.Graph) end
+    if not e.LODPursuit and not e.LODWardenTurret then e:_RefreshTarget(s.Graph) end
     local p=e.LODTarget
     if d.pursuit and LOD.EnemyPursuit and LOD.EnemyPursuit:Tick(e,p,now) then return true end
     if d.pursuit and (not self:AcquireTarget(p) or not self:Visible(e,p)) then
@@ -642,7 +661,9 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
         if active and E:Live(q,s) and IsValid(q.owner) and not q.owner.LODDead and now<q.expires
             and (not q.reactionRecord or LOD.EnemyReactions:ValidLife(q.reactionRecord))
             and (not q.pursuitRecord or LOD.EnemyPursuit:ValidLife(q.pursuitRecord))
-            and (not q.fallbackLife or E:ValidLife(q.fallbackLife)) then
+            and (not q.fallbackLife or E:ValidLife(q.fallbackLife))
+            and (not q.turret or LOD.WardenTurrets and LOD.WardenTurrets:ProjectileLive(q,now)) then
+            if q.turret then q.lastService=now end
             if q.pattern then
                 if E:ValidLife(q.patternLife) and E:StepPattern(q,now,dt) then kept[#kept+1]=q end
             else
@@ -651,7 +672,7 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
             local tr=util.TraceHull({start=q.pos,endpos=finish,mins=Vector(-radius,-radius,-radius),maxs=Vector(radius,radius,radius),mask=MASK_SOLID,
                 filter=function(v) return v~=q.owner and not v.LODHostile end})
             if tr.Hit then
-                if E:Target(tr.Entity) and (not q.spacingFallback or tr.Entity==q.fallbackLife.hero) then E:Damage(q.owner,tr.Entity,q.event,q.kind) end
+                if (not q.turret or not tr.StartSolid and not tr.AllSolid) and E:Target(tr.Entity) and (not q.spacingFallback or tr.Entity==q.fallbackLife.hero) then E:Damage(q.owner,tr.Entity,q.event,q.kind) end
                 local fx=EffectData();fx:SetOrigin(tr.HitPos);util.Effect(q.kind=="venom" and "cball_explode" or "Sparks",fx,true,true)
             else q.pos=finish;kept[#kept+1]=q end
             end
