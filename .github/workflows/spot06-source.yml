@@ -1,0 +1,32 @@
+name: SPOT-06 exact upstream source
+on:
+  push:
+    branches: [checkpoint/spot06-664762a5]
+    paths: [.github/workflows/spot06-source.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 664762a55d096c628ed5a2faff6da6c97c16cf03
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Freeze exact tree and source
+        run: |
+          test "$(git rev-parse HEAD)" = 664762a55d096c628ed5a2faff6da6c97c16cf03
+          test "$(git rev-parse HEAD^{tree})" = 9faba937d888b33079719aa9b20d719fc01fbbd7
+          mkdir -p /tmp/spot06-upstream
+          git archive --format=tar HEAD | gzip -n > /tmp/spot06-upstream/source.tar.gz
+          git cat-file commit HEAD > /tmp/spot06-upstream/commit.txt
+          git ls-tree -r HEAD > /tmp/spot06-upstream/tree.txt
+          printf '%s\n' 664762a55d096c628ed5a2faff6da6c97c16cf03 9faba937d888b33079719aa9b20d719fc01fbbd7 > /tmp/spot06-upstream/identity.txt
+          cd /tmp/spot06-upstream && sha256sum source.tar.gz tree.txt commit.txt > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot06-upstream
+          path: /tmp/spot06-upstream/
+          retention-days: 14
