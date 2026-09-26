@@ -1,0 +1,114 @@
+name: SPOT-04 exact candidate verification
+on:
+  push:
+    branches: ['checkpoint/spot04-audit-780d3d3b']
+    paths: ['.github/workflows/spot04-candidate.yml']
+permissions:
+  contents: write
+jobs:
+  verify-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '780d3d3b50f1026ba4a15a535b7569b6b09e0f71'
+      - name: Install headless Lua runtime
+        run: sudo apt-get update -qq && sudo apt-get install -y liblua5.4-0
+      - name: Reconstruct and verify exact frozen patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git rev-parse HEAD)" = '780d3d3b50f1026ba4a15a535b7569b6b09e0f71'
+          test "$(git rev-parse HEAD^{tree})" = 'af02fe08d97c7eb953ab720c80da6c7c0e3394ae'
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma, os, pathlib, urllib.request
+          shas = ['af8dac069434de1257d54c15e1534d0ba74c7d9c', '61b7600e60c61f3ab50196169e72900a9ae6a1fb', '836d05836eeed4dc1098f7f92540fe2de4d3bf1d', '643d138e125d174c4c7aab447366f2c246c5ba79', 'b0c4250cebafc594875f7dc93e1e7ee57480ad86', 'd87a9f065865cca3386b9b9f3ca8eb6eda6cd9f1']
+          chunks = []
+          for sha in shas:
+              request = urllib.request.Request('https://api.github.com/repos/ShaelRiley/the-legend-of-deborah/git/blobs/' + sha, headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              assert payload['encoding'] == 'base64'
+              chunk = base64.b64decode(payload['content'])
+              assert hashlib.sha1(b'blob ' + str(len(chunk)).encode() + b'\0' + chunk).hexdigest() == sha
+              chunks.append(chunk)
+          compressed = b''.join(chunks)
+          assert hashlib.sha256(compressed).hexdigest() == 'e6b257675cf9f7b405ffa4692728c45d0913931ee15f0d983561471b5794a0c0'
+          patch = lzma.decompress(compressed)
+          assert hashlib.sha256(patch).hexdigest() == '218e85fb1bfdf969fdff024009cc72775fab26f62136015ac5c6d23d3c750594'
+          pathlib.Path('/tmp/spot04.patch').write_bytes(patch)
+          print('All six blobs, compressed archive and exact patch verified.')
+          PY
+          git apply --check /tmp/spot04.patch
+          git apply --index /tmp/spot04.patch
+          git diff --cached --check
+          test "$(git write-tree)" = '6fef2a73975481b675ed4e018f401cfc07cbcc9f'
+          test "$(git diff --cached --name-only | wc -l)" -eq 23
+      - name: Independent production regressions and all-source syntax
+        run: |
+          mkdir -p /tmp/spot04-ci
+          python3 - <<'PY'
+          import importlib.util, json, pathlib, subprocess, sys
+          spec = importlib.util.spec_from_file_location('matrix', 'tools/test_checkpoint_g_integration.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          files = [
+              'tools/validate_spot04_audio.lua', 'tools/validate_spot03_razor.lua',
+              'tools/validate_spot02_climber.lua', 'tools/tests/player_target_identity.lua',
+              'tools/test_loop_audio.lua', 'tools/test_hostile_death_handoff.lua',
+              'tools/test_damsel_audio.lua', 'tools/test_fighting_streets.lua',
+              'tools/test_ag011_repairs.lua', 'tools/test_watermelon_bounces.lua',
+              'tools/test_super_ball.lua', 'tools/test_bestiary_b29.lua',
+              'tools/test_bestiary_b29_dispatch.lua', 'tools/test_bestiary_b29_combat.lua',
+              'tools/test_great_crate_gates.lua', 'tools/test_great_crate_hull_runtime.lua',
+              'tools/test_great_crate_geometry.lua', 'tools/test_great_crate_render.lua']
+          suites = [(p, ['python3', 'tools/run_lua54.py', p]) for p in files]
+          suites += [('Release wiring', ['python3', 'tools/validate_release_wiring.py'])]
+          suites += [(n, c) for n, c in module.SUITES if n == 'Lua Syntax Audit']
+          assert len(module.LUA_FILES) == 731 and len(module.SUITES) == 230
+          assert len(suites) == 20
+          output = pathlib.Path('/tmp/spot04-ci')
+          rows = []
+          for index, (name, command) in enumerate(suites, 1):
+              try:
+                  result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=240)
+                  text, code = result.stdout, result.returncode
+              except subprocess.TimeoutExpired as exc:
+                  text = exc.stdout or b''
+                  text = text.decode(errors='replace') if isinstance(text, bytes) else text
+                  code = 124
+              (output / f'{index:02d}.txt').write_text(text)
+              row = {'name': name, 'command': command, 'returncode': code, 'status': 'PASS' if code == 0 else 'FAIL'}
+              rows.append(row)
+              print(row['status'], name, flush=True)
+              if code:
+                  print(text[-8000:], flush=True)
+          (output / 'results.json').write_text(json.dumps(rows, indent=2) + '\n')
+          sys.exit(1 if any(r['returncode'] for r in rows) else 0)
+          PY
+      - name: Create real-parent commit and publish candidate branch only
+        run: |
+          test "$(git write-tree)" = '6fef2a73975481b675ed4e018f401cfc07cbcc9f'
+          git diff --exit-code
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: retire enemy-owned loop audio across death and lifecycle (SPOT-04)'
+          test "$(git rev-parse HEAD^)" = '780d3d3b50f1026ba4a15a535b7569b6b09e0f71'
+          test "$(git rev-parse HEAD^{tree})" = '6fef2a73975481b675ed4e018f401cfc07cbcc9f'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/checkpoint/spot04-candidate-780d3d3b
+          {
+            echo 'SPOT-04 independent candidate receipt; main not changed by this workflow'
+            git show -s --format='commit=%H%nparent=%P%ntree=%T%nsubject=%s' HEAD
+            echo 'Selected independent suites: 20/20 PASS; all 731 Lua files syntax checked'
+            echo 'Broader local matrix: 227 PASS, 1 unchanged-parent FAIL, 2 campaign suites NOT RUN'
+            echo 'Native audibility remains unverified. No Workshop or VPS actions.'
+            git diff --stat HEAD^ HEAD
+          } | tee /tmp/spot04-ci/receipt.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lod-spot04-independent-gate
+          path: /tmp/spot04-ci/
+          retention-days: 7
