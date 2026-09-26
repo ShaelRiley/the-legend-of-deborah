@@ -1,0 +1,38 @@
+diff --git a/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.md b/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.md
+index f5b51e0..6e7feb9 100644
+--- a/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.md
++++ b/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.md
+@@ -28,3 +28,20 @@ and their SHA-256 identities are in SPOT_10_SECOND_PASS_ATTEMPTS.txt.
+ The strict local patch helper initially stopped on an unmatched movement-validator
+ literal. It did not discard earlier applied edits or claim test success. The
+ corrected helper applied the remaining exact edits. No Workshop/VPS command ran.
++
++## Publication preflight — retained failure
++
++Independent run **36277978005**, attempt 1, stopped at `git diff HEAD --check`
++before the independent suite gate or publication. The sparse source transport,
++manual rebuild and expected candidate tree matched; one embedded historical
++transcript line ended with a space. The original line is retained in that run's
++source-patch artifact and in the external unmodified transcript. Only its trailing
++space is normalized in this repository; recorded original transcript hashes still
++identify original logs, not the normalized embedding.
++
++The preceding local 72/72 frozen receipt remains a record of the commands actually
++run, not proof of a staged whitespace-clean diff: the newly added transcript was
++not yet staged, so that invocation of `git diff HEAD --check` did not inspect it.
++The corrected candidate is staged **before** the new frozen local gate. Preserve
++the old receipt and failed independent run; do not relabel either as a successful
++publication. Gameplay, tests, manual and GDD are unchanged by this correction.
+diff --git a/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.txt b/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.txt
+index ab09f41..47b802c 100644
+--- a/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.txt
++++ b/docs/validation/SPOT_10_SECOND_PASS_ATTEMPTS.txt
+@@ -446,7 +446,7 @@ PASS 72 live tail, history and replay memory remain bounded
+ PASS 73 retained chronological order survives rollover
+ PASS 74 batched persistence retains serial/order
+ PASS 75 oversize persisted history is bounded and not replayed live
+-PASS 76 no unexpected presentation or engine-boundary errors: 
++PASS 76 no unexpected presentation or engine-boundary errors:
+ SPOT05_DIE_LOGGER_PASS 76 bounded production assertions; native rendering/network acceptance pending
+ 
+ ===== manual_build_01.log | sha256 0783d5c18f00236cb71cc60ddced53439748b1bc66ed5250ebcff9da0d65f100 =====

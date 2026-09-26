@@ -13,8 +13,8 @@ jobs:
     timeout-minutes: 15
     env:
       EXPECTED_PARENT: 7e2495ccfba3009f8190bd619ea229a8e65da094
-      EXPECTED_TREE: 63d42ec5305975b28d0fbb9b25f30ddd8adb6028
-      EXPECTED_SOURCE: de321b5ba4b67c5d023f1869470d513b4c2d27d587b098e54731e1b388033e8f
+      EXPECTED_TREE: de96ff49254a961cdbb8dc7f1a1bc76f34981776
+      EXPECTED_SOURCE: 05cc9bc6f9d4f8ad041b064046b21d49f52d481eea3708cc94df40c409b31849
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,12 +44,19 @@ jobs:
           p=lzma.decompress(z)
           assert hashlib.sha256(p).hexdigest()=='02590f96fa19b2ab507c191290ac261f5c4c1dbb92a89589c724909c13e931a3'
           Path('evidence/source.patch').write_bytes(p)
+          c=Path('transport/.spot10-dj-transport/publication-correction.patch').read_bytes()
+          assert hashlib.sha256(c).hexdigest()=='c8d593b5e579019e7c5e5a68d00178b9c84aacf366cb109d2b33b10b8543a1c3'
+          Path('evidence/publication-correction.patch').write_bytes(c)
           PY
           git -C source apply --check ../evidence/source.patch
           git -C source apply ../evidence/source.patch
           cd source
           python3 tools/run_lua54.py tools/export_manual_catalog.lua
           python3 tools/build_manual.py
+          git add -A
+          test "$(git write-tree)" = '63d42ec5305975b28d0fbb9b25f30ddd8adb6028'
+          git apply --check ../evidence/publication-correction.patch
+          git apply ../evidence/publication-correction.patch
           git add -A
           test "$(git write-tree)" = "$EXPECTED_TREE"
           git diff HEAD --check
@@ -65,6 +72,7 @@ jobs:
           assert d['passed']==d['total']==72 and d['lua_files']==742
           assert d['source_before']==d['source_after']==os.environ['EXPECTED_SOURCE']
           assert d['changed_during_gate']==[]
+          assert 'SPOT10_SECOND_PASS_PASS 765 ' in Path('../evidence/gate/validate_spot10_second_pass.lua.log').read_text()
           PY
           test "$(git write-tree)" = "$EXPECTED_TREE"
       - name: Non-force main publication with renewed expected-parent check
@@ -90,7 +98,7 @@ jobs:
           import json,os,subprocess
           from pathlib import Path
           def git(*a):return subprocess.check_output(['git',*a],text=True).strip()
-          d={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'source':os.environ['EXPECTED_SOURCE'],'run_id':os.environ['GITHUB_RUN_ID'],'attempt':os.environ['GITHUB_RUN_ATTEMPT'],'native_accepted':False,'workshop_or_vps_actions':False}
+          d={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'source':os.environ['EXPECTED_SOURCE'],'run_id':os.environ['GITHUB_RUN_ID'],'attempt':os.environ['GITHUB_RUN_ATTEMPT'],'native_accepted':False,'workshop_or_vps_actions':False,'previous_publication_run':36277978005,'previous_publication_result':'preflight failure; independent gate and publication skipped'}
           Path('../evidence/publication.json').write_text(json.dumps(d,indent=2)+'\n')
           print(json.dumps(d,indent=2))
           PY
