@@ -1,0 +1,34 @@
+name: SPOT-06 recovery
+on:
+  push:
+    branches: [checkpoint/spot06-recovery-664762a5]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 664762a55d096c628ed5a2faff6da6c97c16cf03
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Freeze authoritative source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 664762a55d096c628ed5a2faff6da6c97c16cf03
+          test "$(git rev-parse HEAD^{tree})" = 9faba937d888b33079719aa9b20d719fc01fbbd7
+          mkdir -p /tmp/spot06-source
+          git archive --format=tar.gz HEAD > /tmp/spot06-source/source.tar.gz
+          git rev-parse HEAD HEAD^{tree} > /tmp/spot06-source/identity.txt
+          git ls-tree -r HEAD > /tmp/spot06-source/tree.txt
+          git cat-file commit HEAD > /tmp/spot06-source/commit.txt
+          sha256sum /tmp/spot06-source/source.tar.gz > /tmp/spot06-source/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot06-baseline-source
+          path: /tmp/spot06-source/
+          retention-days: 7
+          if-no-files-found: error
