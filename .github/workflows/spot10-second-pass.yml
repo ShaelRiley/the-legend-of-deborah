@@ -1,0 +1,103 @@
+name: SPOT-10 D-J exact-source gate
+on:
+  push:
+    branches: [infra/spot10-second-pass-20260926]
+permissions:
+  contents: write
+concurrency:
+  group: lod-spot10-second-pass-publication
+  cancel-in-progress: false
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED_PARENT: 7e2495ccfba3009f8190bd619ea229a8e65da094
+      EXPECTED_TREE: 63d42ec5305975b28d0fbb9b25f30ddd8adb6028
+      EXPECTED_SOURCE: de321b5ba4b67c5d023f1869470d513b4c2d27d587b098e54731e1b388033e8f
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: transport
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          path: source
+      - name: Check exact parent and dependencies
+        run: |
+          set -euo pipefail
+          test "$(git -C source rev-parse HEAD)" = "$EXPECTED_PARENT"
+          test -z "$(git -C source status --porcelain)"
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0
+          python3 -m pip install Pillow
+      - name: Verify transport and apply approved source only
+        run: |
+          set -euo pipefail
+          mkdir evidence
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,lzma
+          z=b''.join(Path(f'transport/.spot10-dj-transport/part{i}.xz').read_bytes() for i in range(3))
+          assert hashlib.sha256(z).hexdigest()=='56466c43abbca7dba109ba176e143825989c488a8717f7644c6df80c869798fe'
+          p=lzma.decompress(z)
+          assert hashlib.sha256(p).hexdigest()=='02590f96fa19b2ab507c191290ac261f5c4c1dbb92a89589c724909c13e931a3'
+          Path('evidence/source.patch').write_bytes(p)
+          PY
+          git -C source apply --check ../evidence/source.patch
+          git -C source apply ../evidence/source.patch
+          cd source
+          python3 tools/run_lua54.py tools/export_manual_catalog.lua
+          python3 tools/build_manual.py
+          git add -A
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff HEAD --check
+      - name: Independent frozen-source gate
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 tools/test_spot10_second_pass_gate.py --output ../evidence/gate
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads(Path('../evidence/gate/receipt.json').read_text())
+          assert d['passed']==d['total']==72 and d['lua_files']==742
+          assert d['source_before']==d['source_after']==os.environ['EXPECTED_SOURCE']
+          assert d['changed_during_gate']==[]
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+      - name: Non-force main publication with renewed expected-parent check
+        working-directory: source
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_PARENT"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'SPOT-10: implement approved D-J feat revisions; Float On 1 Magic/s'
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          git push origin HEAD:main
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$(git rev-parse HEAD)"
+          test -z "$(git status --porcelain)"
+          git cat-file commit HEAD > ../evidence/published-commit.txt
+          git ls-tree -r HEAD > ../evidence/published-tree.txt
+          git archive --format=tar.gz HEAD > ../evidence/published-source.tar.gz
+          git diff HEAD^ HEAD --binary > ../evidence/published-complete.patch
+          python3 - <<'PY'
+          import json,os,subprocess
+          from pathlib import Path
+          def git(*a):return subprocess.check_output(['git',*a],text=True).strip()
+          d={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'source':os.environ['EXPECTED_SOURCE'],'run_id':os.environ['GITHUB_RUN_ID'],'attempt':os.environ['GITHUB_RUN_ATTEMPT'],'native_accepted':False,'workshop_or_vps_actions':False}
+          Path('../evidence/publication.json').write_text(json.dumps(d,indent=2)+'\n')
+          print(json.dumps(d,indent=2))
+          PY
+      - name: Preserve all evidence, including failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot10-second-pass-exact-source-evidence
+          path: evidence/
+          retention-days: 30
