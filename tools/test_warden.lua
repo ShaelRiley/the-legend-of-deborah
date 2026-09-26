@@ -194,7 +194,9 @@ local cells={};local afterClones=created
 for i,clone in ipairs(w.clones) do
  local body=clone.actor;local cell=key(N:WorldToCell(g,body:GetPos()))
  assert(body:GetMaxHealth()==333 and body:Health()==333 and not cells[cell] and a.court[cell])
- assert(body.nw.LOD_WardenClone==i and not body.LODMajorThreat)
+ assert(body.LODWardenClone==i and body.nw.LOD_WardenClone==nil and not body.LODMajorThreat)
+ assert(body.nw.LOD_MonsterName=="Gordon the Warden" and body.nw.LOD_WardenVisualLife>0,
+  'SPOT-07 removes unconditional fake labels, not server clone identity')
  assert(w.cloneStates[body]==clone);cells[cell]=true
  clone.hiddenUntil=0;time(400+i);W:Tick(body)
  time(400+i+0.46);W:Tick(body)

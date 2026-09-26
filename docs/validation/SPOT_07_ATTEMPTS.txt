@@ -1,0 +1,57 @@
+SPOT-07 attempt provenance — September 26, 2026
+Actual parent c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d
+
+Raw logs are preserved in the external SPOT-07 delivery evidence archive.
+Hashes below identify their exact bytes, including console control sequences.
+Counts in a partial run never imply suite completion.
+
+spot07-initial-spot06.txt
+SHA256 a523a5ecf1d135a7db7d95b09f9b2be5aed5641a326ef2a467851fbbada99508
+Incomplete SPOT-06 run: cleanup unnecessarily wrote a zero NW token for an observer never admitted. RetireTellObserver now returns without a record.
+
+spot07-initial-spot06-2.txt
+SHA256 55aab549deaacb1e4dae0cd0add06c5d7c35dc984b1fb88c8687e815258430b2
+Incomplete SPOT-06 run: old fixture required the deliberately removed global fake ordinal. Updated to server membership and no global fake label; HP/count checks retained.
+
+spot07-initial-spot06-3.txt
+SHA256 27391e7c3a5c766b9a1cf701bade151db3e594b5d489b15ad9b616824d5db10d
+SPOT-06 focused regression pass: 116/116. This was not a complete selected gate.
+
+spot07-focus-1.txt
+SHA256 24bae4fa56a852955dafe15365c35bf30086c39c1086e235712e0c9d27b4bb49
+Focused attempt stopped after 25 assertions and the process was killed. A naive fixture table.Copy recursively copied cyclic Run/Warden ownership. Changed only identity-substitution test copies to shallow copies; no gameplay deadlock claim.
+
+spot07-focus-2.txt
+SHA256 c87b4d51aa4b111f72bb5a19b69109d10f7f06ff26ab452030119f903e0cd115
+Focused attempt stopped after 51 assertions: cosmetic first draws for 32 neighboring cycle labels all selected the same eye. Added two isolated RNG mixing advances; no combat/global stream changed.
+
+spot07-focus-3.txt
+SHA256 ba8960a8b02ed186add1bf369eb1996b2938d9ad538d6e104673aa30271e16f1
+Focused attempt stopped after 60 assertions: Source boundary lacked GetSequence/sequence-name methods required by real shared hurt-pose code. Added those native boundary methods.
+
+spot07-focus-4.txt
+SHA256 ab0e6d11ad9aea49f9c79a7e7b5346cc08a1e275871c6d6c92c56864b997adfc
+Focused attempt stopped after 85 assertions: test expected zero bone angles while an ordinary SPOT-06 taunt remained active. Production correctly preserved its taunt; fixture must compare restored taunt baseline.
+
+spot07-focus-5.txt
+SHA256 a5ca4138316cfdc5bed6020b8fa67f21f9a7d6699967e9f2130548efbb59974d
+Diagnostic repeat of the previous failure retained. Printed surviving taunt angle and expiry; no pass claimed.
+
+spot07-focus-6.txt
+SHA256 6f202bd773664bcec456cfcfe4ad48cfcce58c7f8a102cd8542b942316b62b81
+Focused production pass: 121/121 after correcting the expected taunt baseline. Later added phase-three, archetype replacement and real zero/private/public revocation cases.
+
+spot07-focus-7.txt
+SHA256 dfa35d6be34e0d3938b69e97fc44230c778db5069f82a47924da300c8e5d96bb
+Expanded focused production pass: 130/130. First complete 50-suite preflight then passed with 734 syntax files and unchanged source; final documentation freeze still follows.
+
+Independent publication preflight: GitHub run 36260665196, attempt 1
+Artifact 10911998495, lod-spot07-publication-36260665196-1.
+The exact transfer decoded/applied and the canonical manual rebuilt. Staged
+whitespace validation then rejected a new blank line at EOF in this attempt
+record. The fifty-suite independent gate and publication were skipped. No
+gameplay defect or independent test pass is claimed. Removed the trailing blank
+line, preserved this failure, and changed the local whitespace suite from
+working-tree-only git diff --check to git diff HEAD --check so staged additions
+are covered too. Rerun the corrected final source locally and independently;
+no gameplay file changed for this preflight repair.

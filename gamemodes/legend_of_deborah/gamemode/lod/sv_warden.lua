@@ -6,7 +6,8 @@ local P,N,R=LOD.ProgressionDirector,LOD.MazeNavigator,LOD.RunManager
 local C={invisible=3,warning=0.65,visible=2,shotGap=0.22,shotSpeed=460,shotLife=8,
     homing=0.45,bombGap=1.6,bombFuse=3,bombRadius=180,meleeGap=0.85,meleeWarning=0.3,
     meleeRange=95,maxHazards=16,syncGap=0.2,followup=1.2,exposureCap=4,departure=0.45,arrival=0.45,
-    tauntDuration=0.8,tauntCooldown=6,contextHorizon=4,maxCues=10}
+    tauntDuration=0.8,tauntCooldown=6,contextHorizon=4,maxCues=10,
+    tellLease=0.4,winkPeriod=2.4,winkDuration=0.35,fakeRecoil=0.35}
 W.Config=C
 LOD.Config.Encounter.Archetypes.warden={class="lod_hostile",name="Gordon the Warden",
     model="models/Humans/Group01/male_02.mdl",baseHP=1000,speed=240,meleeDamage=8,meleeCooldown=C.meleeGap,
@@ -71,11 +72,12 @@ function W:SpawnClones(s,w,a)
         local hp=math.max(1,math.floor(w.actor:GetMaxHealth()/3))
         clone:SetMaxHealth(hp);clone:SetHealth(hp)
         if clone.LODProgressionState then clone.LODProgressionState.derivedStats.maxHP=hp end
-        clone:SetNW2String("LOD_MonsterName","Fake Gordon Clone")
-        clone:SetNW2Int("LOD_WardenClone",index);clone:SetNW2Int("LOD_WardenPhase",1)
+        clone:SetNW2String("LOD_MonsterName","Gordon the Warden")
+        clone:SetNW2Int("LOD_WardenPhase",1)
         clone:SetNW2Bool("LOD_WardenHidden",true);clone:DrawShadow(false)
         clone.LODBossLastDamage=CurTime()
         local state={actor=clone,phase=1,hazards={},cloneIndex=index,hiddenUntil=CurTime()+C.invisible+index*.2}
+        state.visualLife=self:StampVisualLife(clone);state.tellEpoch=CurTime()
         w.clones[index]=state;w.cloneStates[clone]=state
         LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=clone
     end
@@ -136,7 +138,7 @@ function W:Commit()
     e:SetPos(N:CellCenter(a.center));e:Spawn()
     if not IsValid(e) then return false end
     LOD.EnemyVariance:Apply(e);LOD.HostileMotionV2:SnapSpawn(e)
-    w.actor=e;w.started=true;w.hiddenUntil=CurTime()+C.invisible
+    w.actor=e;w.visualLife=self:StampVisualLife(e);w.started=true;w.hiddenUntil=CurTime()+C.invisible
     e.LODBossLastDamage=CurTime()
     s.WardenStarted=true;s.ObjectiveStage=P.Stages.DEFEAT_WARDEN
     s.CheckpointPos=N:CellCenter(a.entry)+Vector(0,0,12)
@@ -267,7 +269,7 @@ end
 -- SPOT-06: finite work inside the existing Warden owner, not another combat or
 -- status authority. The independent service also visits this state while native
 -- AI wrappers are holding ordinary hit-stun.
-function W:PhaseOwner(w,e,work)
+function W:ActorOwner(w,e)
     local s,root=self:State()
     if not s or not s.BuildReady or s.Failed or s.LevelCleared or not root.started or root.dead
         or root.state~=s or root.graph~=s.Graph or root.epoch~=s.CampaignEpoch
@@ -275,7 +277,12 @@ function W:PhaseOwner(w,e,work)
         or not alive(root.actor) or not alive(e) or e.LODWardenOwner~=root or w.dead
         or (e==root.actor and w~=root)
         or (e~=root.actor and (not root.cloneStates or root.cloneStates[e]~=w))
-        or w.actor~=e or w.phase~=1 then return false end
+        or w.actor~=e then return false end
+    return true,root,s
+end
+function W:PhaseOwner(w,e,work)
+    local ok,root,s=self:ActorOwner(w,e)
+    if not ok or w.phase~=1 then return false end
     if work and (w.phaseOne~=work or work.cycle~=w.phaseCycle or work.actor~=e
         or work.owner~=w or work.root~=root or work.state~=s or work.graph~=s.Graph
         or work.epoch~=s.CampaignEpoch or work.campaignSeed~=s.CampaignSeed
@@ -284,7 +291,7 @@ function W:PhaseOwner(w,e,work)
 end
 function W:RetirePhaseOne(w,e)
     if not w then return end
-    w.phaseOne=nil;w.phaseCues=nil;w.tauntUntil=nil
+    w.phaseOne=nil;w.phaseCues=nil;w.tauntUntil=nil;w.tellHit=nil
     if IsValid(e) then e:SetNW2Float("LOD_WardenTauntUntil",0) end
 end
 function W:RetirePhaseRoot(root)
@@ -569,6 +576,116 @@ hook.Add("EntityTakeDamage","LOD_WardenAlcove",function(target,info)
         info:SetDamage(0);return true
     end
 end)
+-- SPOT-07 presentation leases. Generic tokens identify native lifetimes, not
+-- real/fake roles; only admitted recipients receive clone-specific records.
+function W:NextVisualLife()
+    self.visualSerial=((self.visualSerial or 0)%2147483646)+1
+    return self.visualSerial
+end
+function W:StampVisualLife(e)
+    local token=self:NextVisualLife()
+    e:SetNW2Int("LOD_WardenVisualLife",token)
+    return token
+end
+W.tellObservers=setmetatable({},{__mode="k"})
+function W:RetireTellObserver(p)
+    if not self.tellObservers[p] then return end
+    self.tellObservers[p]=nil
+    if IsValid(p) then p:SetNW2Int("LOD_WardenObserverLife",0) end
+end
+for _,event in ipairs({"PlayerDeath","PlayerSpawn","PlayerDisconnected"}) do
+    hook.Add(event,"LOD_WardenTellObserverLife",function(p) W:RetireTellObserver(p) end)
+end
+function W:TellObserver(p,s)
+    if not hero(p) or p:GetNW2Bool("LOD_IsSoldier",false) then return end
+    local ps=R:GetPlayerState(p)
+    local rules=LOD.RPGAbilityRules
+    local derived=rules and rules:Derived(p)
+    local profile=rules and rules:ProgressionState(p)
+    if not ps or not profile or profile~=ps.progressionState or not derived then return end
+    local wisdom=tonumber(derived.wisMod)
+    if not wisdom or wisdom~=wisdom or wisdom==math.huge or wisdom==-math.huge then return end
+    local range=math.max(0,wisdom/2)*LOD.Config.Maze.CellSize
+    if range<=0 or range==math.huge then return end
+    local lives=LOD.RPGStatusElements and LOD.RPGStatusElements.ActorLives
+    local life=lives and lives[p]
+    local old=self.tellObservers[p]
+    if not old or old.state~=s or old.ps~=ps or old.profile~=profile or old.life~=life
+        or old.epoch~=s.CampaignEpoch or old.graph~=s.Graph or old.seed~=s.LevelSeed
+        or old.serial~=(ps.ordinal or 0) then
+        old={state=s,ps=ps,profile=profile,life=life,epoch=s.CampaignEpoch,graph=s.Graph,
+            seed=s.LevelSeed,serial=ps.ordinal or 0}
+    end
+    return old,range
+end
+function W:TellVisible(p,w,range)
+    local e=w.actor
+    if not self:ActorOwner(w,e) or not w.cloneIndex or not w.visualLife
+        or e:GetNW2Int("LOD_WardenVisualLife",0)~=w.visualLife
+        or e:GetNW2Bool("LOD_WardenHidden",false) or e:GetNoDraw()
+        or p:GetPos():DistToSqr(e:GetPos())>range*range then return false end
+    local tr=util.TraceLine({start=p:EyePos(),endpos=e:WorldSpaceCenter(),mask=MASK_VISIBLE,filter=p})
+    return tr and not tr.StartSolid and (not tr.Hit or tr.Entity==e)
+end
+function W:TellEye(w,now)
+    local cycle=math.max(0,math.floor((now-w.tellEpoch)/C.winkPeriod))
+    local rng=LOD.RNG.New(LOD.Seeds.Derive(R.State.LevelSeed,
+        "warden-tell-eye:"..w.cloneIndex..":"..cycle))
+    -- Mix adjacent cycle labels before the cosmetic choice; no shared RNG draw.
+    rng:NextRaw();rng:NextRaw()
+    return rng:Int(0,1),w.tellEpoch+cycle*C.winkPeriod
+end
+function W:OnTellHitStun(e,now)
+    local _,root=self:State();local w=root and root.cloneStates and root.cloneStates[e]
+    if not w or not self:ActorOwner(w,e) or e:GetNW2Bool("LOD_WardenHidden",false) then return end
+    local expires=math.min(now+C.fakeRecoil,e.LODHitStunUntil or now)
+    if expires>now then w.tellHit={start=now,expires=expires,phase=w.phase} end
+end
+function W:TellRecords(p,now)
+    local s,root=self:State()
+    if not root or not self:ActorOwner(root,root.actor) or s.SimulationFrozen
+        or #self:PhaseTargets()==0 then return {} end
+    local observer,range=self:TellObserver(p,s)
+    if not observer then return {} end
+    local records={}
+    for _,w in ipairs(root.clones or {}) do
+        if #records<4 and self:TellVisible(p,w,range) then
+            local eye,start=self:TellEye(w,now)
+            local hit=w.tellHit
+            local hurtUntil=hit and hit.phase==w.phase and math.min(hit.expires,w.actor.LODHitStunUntil or now) or now
+            records[#records+1]={actor=w.actor,life=w.visualLife,phase=w.phase,eye=eye,wink=start,
+                hurt=hit and hurtUntil>now and hit.start or 0,hurtUntil=hurtUntil>now and hurtUntil or 0}
+        end
+    end
+    return records,observer,range,root
+end
+util.AddNetworkString("LOD_WardenTells")
+function W:SyncTells()
+    local now=CurTime()
+    for _,p in ipairs(player.GetAll()) do
+        local records,observer,range,root=self:TellRecords(p,now)
+        if #records>0 then
+            if not observer.token then
+                observer.token=self:NextVisualLife();self.tellObservers[p]=observer
+                p:SetNW2Int("LOD_WardenObserverLife",observer.token)
+            end
+            net.Start("LOD_WardenTells")
+            net.WriteUInt(#records,3);net.WriteFloat(now);net.WriteFloat(now+C.tellLease)
+            net.WriteEntity(root.actor);net.WriteUInt(root.visualLife,31)
+            net.WriteUInt(observer.token,31);net.WriteUInt(observer.serial,32);net.WriteFloat(range)
+            for _,q in ipairs(records) do
+                net.WriteEntity(q.actor);net.WriteUInt(q.life,31);net.WriteUInt(q.phase,2)
+                net.WriteUInt(q.eye,1);net.WriteFloat(q.wink);net.WriteFloat(q.hurt);net.WriteFloat(q.hurtUntil)
+            end
+            net.Send(p);observer.sent=true
+        else
+            local old=self.tellObservers[p]
+            if old and old.sent then net.Start("LOD_WardenTells");net.WriteUInt(0,3);net.Send(p) end
+            self:RetireTellObserver(p)
+        end
+    end
+end
+
 -- Stable health/phase/hazard replication, capped at five small snapshots/second.
 util.AddNetworkString("LOD_WardenState")
 function W:Sync()
@@ -595,7 +712,7 @@ end
 local reset=P.ResetLevelState
 function P:ResetLevelState(...)
     W:RetirePhaseRoot(R.State and R.State.Warden);W.phaseRoot=nil
-    local result=reset(self,...);R.State.Warden=nil;R.State.WardenStarted=false;W:Sync();return result
+    local result=reset(self,...);R.State.Warden=nil;R.State.WardenStarted=false;W:Sync();W:SyncTells();return result
 end
 -- Fuse/travel time belongs to the shared service, not a stunned NextBot's
 -- behavior coroutine. Phase-three damage thresholds retire ordnance first.
@@ -626,6 +743,7 @@ end)
 local nextThink=0
 hook.Add("Think","LOD_WardenService",function()
     local now=CurTime();if now<nextThink then return end;nextThink=now+C.syncGap
+    W:SyncTells()
     local s=R.State
     if not s or not s.BuildReady or s.Failed or s.LevelCleared then
         if W.sentActive then W:Sync();W.sentActive=false end;return

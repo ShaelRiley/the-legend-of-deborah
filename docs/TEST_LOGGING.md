@@ -53,6 +53,17 @@ keycard-only logs cannot diagnose the later B28 arrival-mobbing report. A read-o
 `lod_population_evidence` remains optional; normal play already records release data.
 Native expectations and finite headless bounds are in `validation/BESTIARY_B29.md`.
 
+## SPOT-07 Fake Gordon observation acceptance
+
+Use `validation/SPOT_07_TELLS.md` on a fully restarted GMod process. Provide the
+exact installed/mounted revision, a visual report/clip and same-session console
+and available RPG summary. Compare two deployed Heroes with different current
+Wisdom observing the same clone: fractional range, cover/height, cloak, all
+phases, real/fake reaction and full/reduced effects. Recognition is private and
+cosmetic; verify unchanged stun/follow-up duration and cleanup after role/death,
+rejoin, PVS loss and reset. Do not confuse disabled-release RPG logging with no
+activity, or developer clone exposure with ordinary population/pacing evidence.
+
 ## SPOT-04 audio acceptance
 
 Use the compact listening procedure in `validation/SPOT_04_ENEMY_AUDIO.md` on a

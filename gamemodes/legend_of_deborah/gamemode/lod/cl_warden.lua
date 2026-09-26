@@ -1,6 +1,7 @@
 LOD.WardenPresentation=LOD.WardenPresentation or {}
 local V=LOD.WardenPresentation
 if V.DisposeProps then V.DisposeProps() end
+if V.ClearTells then V:ClearTells() end
 local glow=Material("sprites/light_glow02_add")
 local beam=Material("cable/redlaser")
 local blue=Color(110,185,255,230)
@@ -9,7 +10,7 @@ local state
 local captions={"Lucky shot.","Too slow.","Still aiming?","Keep dancing."}
 local prepareProps
 net.Receive("LOD_WardenState",function()
-    if not net.ReadBool() then state=nil;return end
+    if not net.ReadBool() then state=nil;if V.ClearTells then V:ClearTells() end;return end
     local s={actor=net.ReadEntity(),health=net.ReadFloat(),maximum=net.ReadFloat(),phase=net.ReadUInt(2),hazards={},received=CurTime()}
     local n=net.ReadUInt(5)
     for i=1,n do s.hazards[i]={id=net.ReadUInt(16),bomb=net.ReadBool(),pos=net.ReadVector(),velocity=net.ReadVector(),expires=net.ReadFloat()} end
@@ -22,6 +23,63 @@ net.Receive("LOD_WardenState",function()
     state=s
     if prepareProps then prepareProps(s.phase) end
 end)
+-- Private, finite observations. No client message asks the server to reveal a
+-- fake. Tokens are generic native/observer lifetimes, not persistent discovery.
+local tells
+local fakePosed=setmetatable({},{__mode="k"})
+local tellCache=setmetatable({},{__mode="k"})
+function V:ClearTells()
+    tells=nil;tellCache=setmetatable({},{__mode="k"})
+    for e in pairs(fakePosed) do
+        if IsValid(e) then self:Pose(e) end
+        fakePosed[e]=nil
+    end
+end
+net.Receive("LOD_WardenTells",function()
+    local count=net.ReadUInt(3)
+    if count==0 or count>4 then V:ClearTells();return end
+    local s={sent=net.ReadFloat(),expires=net.ReadFloat(),root=net.ReadEntity(),rootLife=net.ReadUInt(31),
+        observerLife=net.ReadUInt(31),serial=net.ReadUInt(32),range=net.ReadFloat(),records={}}
+    for i=1,count do
+        local q={actor=net.ReadEntity(),life=net.ReadUInt(31),phase=net.ReadUInt(2),eye=net.ReadUInt(1),
+            wink=net.ReadFloat(),hurt=net.ReadFloat(),hurtUntil=net.ReadFloat()}
+        if IsValid(q.actor) then s.records[q.actor]=q end
+    end
+    local now=CurTime()
+    if not IsValid(s.root) or s.sent~=s.sent or s.expires~=s.expires or s.range~=s.range
+        or s.sent>now+0.05 or s.expires<=now or s.expires-s.sent<=0 or s.expires-s.sent>0.45
+        or s.range<=0 or s.range==math.huge then V:ClearTells();return end
+    tells=s;tellCache=setmetatable({},{__mode="k"})
+end)
+local function tellAlive(e)
+    return IsValid(e) and not e:IsDormant() and not e:GetNoDraw()
+        and e:GetNW2Float("LOD_DeathPulseStart",-1)<0 and not e:GetNW2Bool("LOD_AudioRetired",false)
+end
+function V:Tell(e)
+    local s=tells;local q=s and s.records[e]
+    if not q then return end
+    local frame=FrameNumber();local cached=tellCache[e]
+    if cached and cached.frame==frame then return cached.value end
+    cached={frame=frame};tellCache[e]=cached
+    local now=CurTime();local p=LocalPlayer()
+    local world=LOD.ClientState
+    if world and (world.failed or world.levelCleared) then return end
+    if now<s.sent or now>=s.expires or not IsValid(p) or not p:Alive()
+        or not p:GetNW2Bool("LOD_Deployed",false) or p:GetNW2Bool("LOD_IsSoldier",false)
+        or p:GetNW2Bool("LOD_Staged",false) or p:GetNW2Bool("LOD_Eliminated",false)
+        or p:GetNW2Int("LOD_WardenObserverLife",0)~=s.observerLife
+        or p:GetNW2Int("LOD_HeroSerial",0)~=s.serial
+        or not state or state.actor~=s.root or CurTime()-state.received>2
+        or not tellAlive(s.root) or s.root:GetNW2Int("LOD_WardenVisualLife",0)~=s.rootLife
+        or not tellAlive(e) or e==s.root or e:GetNW2String("LOD_Archetype","")~="warden"
+        or e:GetNW2Int("LOD_WardenVisualLife",0)~=q.life or q.life<=0
+        or e:GetNW2Int("LOD_WardenPhase",0)~=q.phase or q.phase<1 or q.phase>3
+        or e:GetNW2Bool("LOD_WardenHidden",false)
+        or p:GetPos():DistToSqr(e:GetPos())>s.range*s.range then return end
+    local tr=util.TraceLine({start=p:EyePos(),endpos=e:WorldSpaceCenter(),mask=MASK_VISIBLE,filter=p})
+    if not tr or tr.StartSolid or tr.Hit and tr.Entity~=e then return end
+    cached.value=q;return q
+end
 surface.CreateFont("LOD_WardenTitle",{font="Trebuchet MS",size=26,weight=900})
 surface.CreateFont("LOD_WardenPhase",{font="Trebuchet MS",size=17,weight=700})
 hook.Add("HUDPaint","LOD_WardenHealth",function()
@@ -112,7 +170,7 @@ local function dispose()
     for k,e in pairs(props) do if IsValid(e) then e:Remove() end;props[k]=nil end
 end
 V.DisposeProps=dispose
-hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",function() state=nil;dispose() end)
+hook.Add("PostCleanupMap","LOD_WardenPropsMapCleanup",function() V:ClearTells();state=nil;dispose() end)
 prepareProps=function(phase)
     -- Clones can enter different phases. Reuse the same two props for every
     -- draw, allocated on the encounter snapshot, never inside the render hook.
@@ -124,7 +182,15 @@ prepareProps=function(phase)
     end
 end
 function V:Pose(e)
-    if e:GetNW2String("LOD_Archetype", "")~="warden" then return end
+    if e:GetNW2String("LOD_Archetype", "")~="warden" then
+        if fakePosed[e] then
+            for _,name in ipairs({"ValveBiped.Bip01_Spine2","ValveBiped.Bip01_L_UpperArm","ValveBiped.Bip01_R_UpperArm"}) do
+                local bone=e:LookupBone(name);if bone then e:ManipulateBoneAngles(bone,Angle(0,0,0)) end
+            end
+            fakePosed[e]=nil;e.LODWasTaunting=nil
+        end
+        return
+    end
     local model=e:GetModel()
     if e.LODWardenBuildModel~=model then
         e.LODWardenBuildModel=model;e.LODWardenSeated=nil
@@ -143,14 +209,18 @@ function V:Pose(e)
         end
     end
     local taunting=e:GetNW2Float("LOD_WardenTauntUntil",0)>CurTime()
-    if taunting or e.LODWasTaunting then
+    local tell=self:Tell(e);local now=CurTime()
+    local recoiling=tell and tell.hurt>0 and now>=tell.hurt and now<tell.hurtUntil
+        and tell.hurtUntil-tell.hurt<=0.4
+    local recoil=recoiling and math.sin(math.pi*(now-tell.hurt)/math.max(0.001,tell.hurtUntil-tell.hurt))*35 or 0
+    if taunting or e.LODWasTaunting or recoiling or fakePosed[e] then
         local sway=taunting and math.sin(CurTime()*12)*25 or 0
         for name,angle in pairs({
-            ["ValveBiped.Bip01_Spine2"]=Angle(sway*.4,0,sway*.5),
-            ["ValveBiped.Bip01_L_UpperArm"]=Angle(0,0,taunting and -75+sway or 0),
-            ["ValveBiped.Bip01_R_UpperArm"]=Angle(0,0,taunting and 75+sway or 0)
+            ["ValveBiped.Bip01_Spine2"]=Angle(sway*.4,recoil*.35,sway*.5+recoil),
+            ["ValveBiped.Bip01_L_UpperArm"]=Angle(recoil*.5,0,(taunting and -75+sway or 0)-recoil),
+            ["ValveBiped.Bip01_R_UpperArm"]=Angle(-recoil*.5,0,(taunting and 75+sway or 0)+recoil*.6)
         }) do local bone=e:LookupBone(name);if bone then e:ManipulateBoneAngles(bone,angle) end end
-        e.LODWasTaunting=taunting
+        e.LODWasTaunting=taunting;fakePosed[e]=recoiling and true or nil
     end
     local seated=e:GetNW2Int("LOD_WardenPhase",1)==2
     if e.LODWardenSeated==seated then return end
@@ -166,6 +236,9 @@ local maskPink=Color(218,147,143)
 local snoutPink=Color(238,166,158)
 local innerPink=Color(148,69,75)
 local maskDark=Color(43,25,30)
+local fakePink=Color(187,147,129)
+local fakeSnout=Color(205,166,142)
+local tonguePink=Color(244,100,143)
 function V:DrawPigMask(e,size)
     if e:GetNW2Bool("LOD_WardenHidden",false) then return end
     local attachment=e:LookupAttachment("eyes")
@@ -182,18 +255,30 @@ function V:DrawPigMask(e,size)
     local center=pos+f*(3*size)-u*(2*size)
     local function point(x,y,z) return center+f*(x*size)+r*(y*size)+u*(z*size) end
     local segments=reduced() and 10 or 16
+    local tell=self:Tell(e)
+    local pink,snout=tell and fakePink or maskPink,tell and fakeSnout or snoutPink
+    local wink=tell and CurTime()>=tell.wink and CurTime()<tell.wink+0.35
     render.SetColorMaterial()
-    render.DrawSphere(center,8.8*size,segments,8,maskPink)
+    render.DrawSphere(center,8.8*size,segments,8,pink)
     -- Rounded, protruding snout with two dark nostrils; black eye apertures
     -- and folded triangular ears make the silhouette readable at a distance.
-    render.DrawSphere(point(7,0,-2),4.7*size,segments,8,snoutPink)
+    render.DrawSphere(point(7,0,-2),4.7*size,segments,8,snout)
     for _,side in ipairs({-1,1}) do
         render.DrawSphere(point(11.1,side*1.8,-1.8),1.15*size,8,6,maskDark)
-        render.DrawSphere(point(7.1,side*3.5,3.0),1.9*size,8,6,maskDark)
+        if wink and side==(tell.eye==0 and -1 or 1) then
+            local a,b,c,d=point(8.6,side*3.5-1.4,2.7),point(8.6,side*3.5+1.4,2.7),
+                point(8.6,side*3.5+1.4,3.3),point(8.6,side*3.5-1.4,3.3)
+            render.DrawQuad(a,b,c,d,maskDark);render.DrawQuad(d,c,b,a,maskDark)
+        else render.DrawSphere(point(7.1,side*3.5,3.0),1.9*size,8,6,maskDark) end
         local a,b,c=point(0,side*5,6),point(-1,side*12,13),point(2,side*10,4)
-        render.DrawQuad(a,b,c,c,maskPink);render.DrawQuad(c,b,a,a,maskPink)
+        render.DrawQuad(a,b,c,c,pink);render.DrawQuad(c,b,a,a,pink)
         local ia,ib,ic=point(1,side*6,6),point(0,side*10.5,11.5),point(2.6,side*9.5,5)
         render.DrawQuad(ia,ib,ic,ic,innerPink);render.DrawQuad(ic,ib,ia,ia,innerPink)
+    end
+    if tell then
+        local a,b,c,d=point(8,-1.2,-5),point(8,1.2,-5),point(11,1.2,-8),point(11,-1.2,-8)
+        render.DrawQuad(a,b,c,d,tonguePink);render.DrawQuad(d,c,b,a,tonguePink)
+        render.DrawSphere(point(11,0,-8),1.25*size,8,6,tonguePink)
     end
 end
 function V:Draw(e,size)
@@ -216,6 +301,15 @@ function V:Draw(e,size)
     p:DrawModel()
 end
 hook.Add("Think","LOD_WardenPropsRetire",function()
+    if tells and CurTime()>=tells.expires then V:ClearTells() end
+    -- At most four previously recoiling clones; no world scan or extra hook per actor.
+    for e in pairs(fakePosed) do
+        if not IsValid(e) then fakePosed[e]=nil
+        else
+            local q=V:Tell(e)
+            if not q or CurTime()>=q.hurtUntil then V:Pose(e) end
+        end
+    end
     if next(props) and (not state or not IsValid(state.actor) or CurTime()-state.received>2) then dispose() end
 end)
-hook.Add("ShutDown","LOD_WardenPropsShutdown",dispose)
+hook.Add("ShutDown","LOD_WardenPropsShutdown",function() V:ClearTells();dispose() end)

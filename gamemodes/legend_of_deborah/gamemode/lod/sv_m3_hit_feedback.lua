@@ -131,6 +131,7 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     hostile:SetVelocity(vector_origin)
 
     hostile.LODHitStunHasFlinch = playFlinch(hostile)
+    if LOD.Warden and LOD.Warden.OnTellHitStun then LOD.Warden:OnTellHitStun(hostile, now) end
     return true
 end
 

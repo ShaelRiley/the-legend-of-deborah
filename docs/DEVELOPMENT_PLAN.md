@@ -1,6 +1,28 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-06 Gordon phase one
+## Current checkpoint — SPOT-07 Fake Gordon tells
+
+From actual main parent `c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d`.
+Only a living deployed Hero with positive canonical Wisdom receives private,
+short-lived fake recognition within half the Wisdom bonus in squares. Fractional
+3D distance and clear sight govern wink/tongue/tint and shared-stun-bound recoil.
+Global fake-name/ordinal labels are removed; optional fart is omitted. No shared
+control/damage/HP change or extension of SPOT-06's fixed follow-up is introduced.
+
+The [predefined finite gate](validation/SPOT_07_TELLS_GATE.md) first passed
+**130 focused production assertions, 50/50 selected suites and 734 Lua syntax
+checks**, unchanged source. Final frozen-tree local/independent source checks,
+publication SHA/parent/tree and run ID belong in the delivery receipt. Canonical
+manual and both renderings are synchronized. See [validation](validation/SPOT_07_TELLS.md)
+and preserved attempt provenance; this is not full campaign-matrix or native
+visual/co-op/performance acceptance. No Workshop/VPS actions.
+
+Next single development bullet: **SPOT-08 — Gordon arena turrets**. Reconcile the
+author's every-five-dungeon-level scaling/corner occupancy in the live GDD before
+code. Do not begin SPOT-09 or existing-feat rebalances in that checkpoint. Preserve
+SPOT-01–07, B28/B29, accepted Crate appearance, P1–P4 and all native/release gates.
+
+## Previous checkpoint — SPOT-06 Gordon phase one
 
 Recovered from the stalled SPOT-06 thread on September 26, 2026, from exact
 published parent `664762a55d096c628ed5a2faff6da6c97c16cf03`, tree

@@ -1,62 +1,74 @@
-# Resume The Legend of Deborah — SPOT-07 Fake Gordon tells
+# Resume The Legend of Deborah — SPOT-08 Gordon arena turrets
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-SPOT-06 real parent: `664762a55d096c628ed5a2faff6da6c97c16cf03`.
-Use the delivery receipt's verified SPOT-06 child SHA and independent run, then
-fetch current main and preserve intervening/uncommitted work. The parent above
-is historical, not the new HEAD. Do not use a reconstruction anchor or the
-recovery-only workflow branch as a gameplay parent.
+SPOT-07 actual parent: `c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d`.
+Use the delivery receipt's verified SPOT-07 child SHA, tree and independent run,
+then fetch current main and preserve intervening/uncommitted work. The parent
+above is historical, not the new HEAD. No source-reconstruction anchor or
+infrastructure-only checkpoint branch belongs in gameplay ancestry.
 
 ## Orientation
 
 Read AGENTS.md, docs/DEVELOPMENT_PLAN.md, docs/briefs/SPOT_UPDATES.md,
-docs/validation/SPOT_06_GORDON.md, docs/validation/SPOT_06_GORDON_GATE.md and
-docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
-00 → 01 → needed Gordon/world/combat/lifecycle/tuning rules. Read HUMAN only for
-needed detail absent from normalized rules. The stalled SPOT-06 thread had already
-saved its design in 05/07; do not append duplicate SPOT-06 candidate rules.
+docs/validation/SPOT_07_TELLS.md, docs/validation/SPOT_07_TELLS_GATE.md,
+docs/validation/SPOT_06_GORDON.md and docs/TEST_LOGGING.md. Live GDD
+`1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`: 00 -> 01 -> required Gordon,
+world/combat/lifecycle/tuning sections. Read HUMAN only for needed detail absent
+from normalized rules. SPOT-07 was reconciled in 05/07 before code; do not append
+duplicate SPOT-06/07 candidate rules.
 
-## Just implemented — SPOT-06
+## Just implemented — SPOT-07
 
-One nonrenewable 1.2-second first-effective-visible-hit opportunity, with a hard
-reveal+4.0-second exposure ceiling. Cancel unreleased shots; preserve released
-ordnance fuses. Ordinary hidden/arriving hit-stun cannot pin Gordon; cloaking adds
-no damage immunity and shared Held/Muted/Push remain authoritative. Existing
-independent Warden service enforces deadlines despite outer AI stun wrappers.
-Three-second invisible physical routing is retained. Fixed .45-second departure
-and actual-destination warnings have different reduced/full semantic geometry;
-displacement restarts a full destination warning. Preserve subsequent .65-second
-ordinary warning and four-orb attack. No actual teleport is introduced.
+Private Fake Gordon wink, tongue and subtly green tint within
+`max(0, canonical derived wisMod / 2) * Maze.CellSize`: fractional halves retained,
+inclusive 3D origin distance plus clear eye-to-body sight. Living deployed Heroes
+only; zero/negative WIS, cover, cloaking and non-Hero roles receive no tell. A
+teammate's Wisdom never reveals the fake for everyone. Existing Omniscience and
+boss-bar/HP inference are unchanged; this is not an anti-cheat guarantee.
 
-Taunts last .8 seconds, share a 6-second encounter cooldown and use 4-second
-contexts. One speaker at a time; ordinary attack appearances must separate taunts.
-Existing Audio carries portal/taunt cues; client snapshots never replay sounds.
-At most two cues per actor / ten total use existing .2-second transport, fixed
-expiry, two-second stale-snapshot rejection and 6000-unit culling. Exact run,
-campaign, level/seed, graph, Warden record, actor-state, native owner and cycle
-bind new work. Phase/death/removal/reset/stale/frozen/no-target work retires.
-Phases two/three, clone count/HP, sixteen-hazard ceiling, resupply, death ordering,
-Gordon→Hector→Jail Key→rescue and rewards remain unchanged.
+A separately seeded eye is selected per 2.4-second cosmetic cycle (.35-second
+wink). Body modulation composes with class/status tint and restores on errors.
+Actual admitted ordinary hit-stun supplies at most .35-second sideways recoil,
+clamped to remaining shared stun; rejected duplicate admission never refreshes
+it. Cleanup restores ordinary taunt pose or clears old archetype bone changes.
+The optional fart is deliberately omitted. Full/reduced art retains every tell;
+no new native actor, client model, per-actor hook or full-world render scan.
 
-Local gate: **116 focused production assertions, 47/47 selected suites, 733 Lua
-syntax files**, unchanged source. Canonical manual and both renderings match.
-Use the delivery receipt for independent frozen-tree validation and published
-parent/tree/SHA. This is not full campaign-matrix or native acceptance. B29 uses
-its existing --runtime mode, not the extra twenty-seed exposure sweep. The
-attempt record preserves superseded legacy fixture failures, one missing native
-sequence double, and the clone-death cue-retirement omission caught and fixed by
-the new production test. No incomplete attempt is labelled a pass.
+Server exact run/campaign/level/seed/graph, Warden/clone-state membership/native
+owner and observer Hero/profile/shared life bind private receipts. Existing .2s
+service, maximum four records per observer, fixed .4s lease; no client request
+supplies eligibility. Generic root/clone/observer visual-life tokens, actual
+client role/life/phase/cloak/distance/LOS, fixed expiry and stale-owner rejection
+prevent lingering presentation. No permanent discovered-fake cache. Removed
+unconditional fake name/ordinal labels; server-only clone membership remains.
 
-## Next single checkpoint — SPOT-07
+Preflight: **130 focused production assertions, 50/50 selected suites, 734 Lua
+syntax checks**, unchanged source. Final frozen local/independent tree evidence
+and publication identity belong in the delivery receipt. Manual and renderings
+match. This is not full campaign-matrix/native acceptance. B29 uses --runtime,
+not its additional twenty-seed exposure sweep. SPOT_07_ATTEMPTS.txt preserves
+partial failures, RNG correlation repair, fixture corrections and their hashes.
 
-Implement only the author's Fake Gordon tells within max(0, Wisdom bonus / 2)
-squares: randomized-eye wink, tongue and subtle but noticeable tint; consider a
-brief fart on hit and distinct fake hit-stun. Reconcile exact distance/identity,
-WIS visibility and shared-hit-stun interaction in the live GDD before code.
-Do not weaken SPOT-06's nonrenewable follow-up or introduce remote client truth,
-extra clone HP, new damage authority or a progression signal. Define a finite
-production gate, update canonical guidance and validate/non-force publish one
-checkpoint. Do not begin SPOT-08/09 or existing-feat rebalances in this slice.
+Preserve SPOT-06: first effective visible hit opens one nonrenewable 1.2-second
+follow-up, bounded by reveal+4 seconds; no hidden/arriving ordinary stun pin,
+no cloak damage immunity, no replayed shots; released ordnance keeps its fuse.
+Three-second physical routing, .45s departure/fixed destination warnings with
+displacement rewarning, .65s ordinary warning and four orbs remain. Taunts last
+.8s with six-second shared cooldown and ordinary attack appearances between.
+Shared Held/Muted/Push, later phases, clone count/HP, sixteen hazards, resupply,
+native death ordering, Gordon -> Hector -> Jail Key -> rescue and rewards remain.
+
+## Next single checkpoint — SPOT-08
+
+Implement only the author's turret bullet: add a turret in a random corner of
+Gordon's arena every five dungeon levels. Before code, reconcile exact cumulative
+count/scaling, finite corner occupancy/placement, safe entry and gallery routes,
+existing hostile/hazard ceilings, targeting/attack authority, warnings, cleanup
+and co-op lifecycle in the live GDD under the delegated design authority. Preserve
+all existing boss/progression and arrival-safety authorities. Define a finite
+production gate; update canonical guidance; validate and non-force publish one
+checkpoint. Do not begin Damsel's Revenge (SPOT-09) or approval-gated existing-feat
+rebalances. No dedicated Razor retest is a prerequisite.
 
 ## Preserved SPOT-04 and SPOT-03 evidence
 
@@ -94,11 +106,11 @@ force spawns or retune density to manufacture exposure.
 
 ## Release and roadmap constraints
 
-Preserve SPOT01–06, B28 physical queries, B29 sanctuary/graduated pressure,
+Preserve SPOT01–07, B28 physical queries, B29 sanctuary/graduated pressure,
 population limits/Bestiary variety, accepted Crate appearance and P1–P4. No Workshop
 publication, VPS deployment or VPS restart. Local acceptance → Workshop item
 3791535712 package/source parity → matching VPS remains the release sequence.
-No Workshop/VPS action happened in SPOT-05 or SPOT-06. All earlier native gates remain open.
+No Workshop/VPS action happened in SPOT-05, SPOT-06 or SPOT-07. All earlier native gates remain open.
 
 After the spot queue: Low-End PC Optimization, September 28–October 4, 2026 →
 Big Loot → Event System → comprehensive systems audit. Before context pressure,

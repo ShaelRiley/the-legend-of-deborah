@@ -23,6 +23,9 @@ function M:DrawBody(ent)
             c={c[1]*(.65+.35*spec.color[1]/255),c[2]*(.65+.35*spec.color[2]/255),c[3]*(.65+.35*spec.color[3]/255)};break
         end
     end
+    if LOD.WardenPresentation and LOD.WardenPresentation:Tell(ent) then
+        c={c[1]*.86,c[2],c[3]*.90}
+    end
     render.SetColorModulation(r*c[1],g*c[2],b*c[3])
     local ok,err=pcall(ent.DrawModel,ent)
     render.SetColorModulation(r,g,b)
