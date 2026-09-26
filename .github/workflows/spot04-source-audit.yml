@@ -1,0 +1,30 @@
+name: SPOT-04 source snapshot
+on:
+  push:
+    branches: ['checkpoint/spot04-audit-780d3d3b']
+    paths: ['.github/workflows/spot04-source-audit.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '780d3d3b50f1026ba4a15a535b7569b6b09e0f71'
+          persist-credentials: false
+      - name: Archive exact tracked tree
+        run: |
+          test "$(git rev-parse HEAD)" = '780d3d3b50f1026ba4a15a535b7569b6b09e0f71'
+          git archive --format=tar.gz -o /tmp/lod-main.tar.gz HEAD
+          git ls-tree -r HEAD > /tmp/lod-tree.txt
+          git rev-parse HEAD HEAD^{tree} > /tmp/lod-revision.txt
+          sha256sum /tmp/lod-main.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot04-source-780d3d3b
+          path: |
+            /tmp/lod-main.tar.gz
+            /tmp/lod-tree.txt
+            /tmp/lod-revision.txt
+          retention-days: 1
