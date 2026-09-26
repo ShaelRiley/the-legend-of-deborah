@@ -1,33 +1,76 @@
-# Resume The Legend of Deborah — SPOT-09 Damsel's Revenge
+# Resume The Legend of Deborah — SPOT-10 feat proposals only
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
-SPOT-08 actual parent: `35c43bc8bac86e5ea108b9f96e9d5ab6a94bf542`.
-Use the delivery receipt's independently verified SPOT-08 child SHA/tree/run,
-then fetch current main and preserve intervening/uncommitted work. The parent
-above is historical, not the new HEAD. No source-reconstruction anchor or isolated
-infrastructure checkpoint belongs in gameplay ancestry.
+SPOT-09 actual parent: `9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86`.
+Use the delivery receipt's independently verified SPOT-09 child SHA/tree/run, then
+fetch current main and preserve intervening/uncommitted work. The parent above is
+historical, not the new HEAD. Never use a reconstruction anchor or isolated
+infrastructure checkpoint as gameplay ancestry.
 
 ## Orientation and one next checkpoint
 
 Read AGENTS.md, docs/DEVELOPMENT_PLAN.md, docs/briefs/SPOT_UPDATES.md,
-docs/validation/SPOT_08_TURRETS.md, docs/validation/SPOT_08_TURRETS_GATE.md and
+docs/validation/SPOT_09_REVENGE.md, docs/validation/SPOT_09_REVENGE_GATE.md and
 docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
-00 → 01 → only required item/combat/Damsel/Gordon/world/lifecycle/tuning sections.
-HUMAN is a targeted fallback only for detail absent from normalized rules.
-SPOT-06/07/08 are already reconciled in 05/07; do not duplicate candidate sections.
+00 → 01 → only relevant feat/class/combat/equipment/lifecycle/tuning sections.
+HUMAN is an exact targeted fallback only where normalized law leaves HUMAN-DETAIL.
+SPOT-06/07/08/09 are already reconciled; do not append duplicate candidate sections.
 
-Implement only SPOT-09: add Damsel's Revenge consumable. In Gordon's arena it
-gives the stationary jailed Damsel a random gun and lets her shoot Gordon. On
-normal rescue, stop her combat, drop the gun at her feet for collection and clean
-up ownership/callbacks. Before code, reconcile exact item generation/use/payment,
-random gun eligibility, target scope, existing damage/faction authority, co-op
-use/reuse, Damsel life/protection, gun persistence/drop and reset/failure/rescue
-ordering in the live GDD under delegated design authority. Do not guess existing
-item or feat rules. Define a finite production gate, update canonical guidance,
-validate and non-force publish one checkpoint. No existing-feat rebalance or
-SPOT-10 implementation; no dedicated Razor retest prerequisite.
+**SPOT-10 is approval-gated.** Audit obsolete, weak or redundant feats against
+current canonical design and real implementation. Present a bounded set of concrete
+proposals with exact feat IDs, existing effect/prerequisites/costs, code evidence,
+problem, proposed change, cross-system implications and finite validation criteria.
+Separate demonstrated defects, design gaps and balance hypotheses. Automated source
+proof does not establish native balance. Record proposals in canonical coordination
+material when useful, but do not edit existing feat balance or portray proposals as
+approved design. Shael must explicitly approve revisions before implementation.
+SPOT-11 four-option drafts and SPOT-14 Time Management remain separate bullets.
+Do not begin them or continue the deferred roadmap in this checkpoint.
 
-## Just implemented — SPOT-08
+## Just implemented — SPOT-09
+
+A three-unit Throwable utility, either mouse button, one synchronous owned debit
+and existing .6-second cooldown, no Magic/ammo/currency. Living deployed court Hero,
+active unexpired exact Gordon encounter, stationary jailed Damsel, D1–20 only.
+One use serves the whole party; invalid/repeated uses spend nothing. A separately
+seeded Pistol/SMG/Pulse Rifle procedural record freezes on generation, survives user
+death/disconnect as encounter support and drops only after normal rescue. New rare
+conversion is 1/16 of remaining eligible Healing Potion outcomes after all prior
+conversions; fixed supplies and old outcomes remain unchanged.
+
+She uses the gun's canonical base physical dice, not the activator's stats/feats or
+the frozen item's properties. Real visible Gordon only; no fakes/turrets/Hector/
+Heroes. First-body traces and both faces of an exact visible jail firing slit gate
+shots. Native jail collision/lock, other walls/floors/doors, sanctuary and alcove
+stay authoritative. Exact run/graph/campaign/dungeon/Warden/actor-life/source/jail
+ownership and single-use packets prevent stale damage. Existing Warden service,
+no new hostile/projectile/nav/reward authority. Gordon death stops support before
+Hector, while the gun waits for legitimate key/jail/rescue progression.
+
+Accepted CompleteLevel plus the canonical rescued record permits one individualized
+LootDirector gun at her feet, for the activating Hero, only during original victory.
+Both loot and equipment admission require its exact receipt. No auto-equip/ammo;
+full bag leaves it. Damsel native Touch/Use forwards to that same deferred claim
+when her own hull covers the pickup. Three bounded creation attempts maximum;
+throwing partial native allocation is cleaned and terminates. No automatic grant
+on absence/failure/missed pickup; reset/transition retires everything. One leased
+client gun/owned arm pose and matching port rendering, all native acceptance open.
+
+Pre-closeout gate: **477 focused numbered assertions plus 512 seeded conversion
+cases, 59/59 selected suites and 740 Lua syntax checks**, unchanged source. Final
+local/independent source hashes and exact published child/parent/tree/run belong
+in the delivery receipt. First aggregate 58/59 failed escaped-HTML assertion;
+correction did not weaken byte-parity checks. SPOT_09_ATTEMPTS.txt preserves all
+focused failures and fixture corrections. Attempts01–09 lack per-attempt source
+hashes;10 onward capture them. Never turn prior failures into passes.
+
+This is not full campaign-matrix or native geometry/render/audio/co-op/performance
+acceptance. B29 uses --runtime, not its extra twenty-seed exposure sweep. Fully
+restart GMod for native work; lod_damsel_revenge_testkit is an unranked admin setup,
+not a boss/key/timer/rescue shortcut or natural drop/pacing proof. Manual source and
+both renderings match. No existing-feat rebalance or Workshop/VPS action.
+
+## Preserved SPOT-08
 
 Turrets are `min(4, floor(D / 5))`: none D1–4, one D5–9, two D10–14, three
 D15–19, four D20 onward. Ordinary Sentry progression continues after the count cap.

@@ -45,5 +45,9 @@ end
 
 function ENT:Use(ply)
     LOD.ProgressionDirector:OnRescueTargetTouched(ply,self)
+    if LOD.DamselRevenge and LOD.DamselRevenge.CollectAtFeet then LOD.DamselRevenge:CollectAtFeet(self,ply) end
+end
+function ENT:Touch(ply)
+    if LOD.DamselRevenge and LOD.DamselRevenge.CollectAtFeet then LOD.DamselRevenge:CollectAtFeet(self,ply) end
 end
 function ENT:OnTakeDamage() return 0 end

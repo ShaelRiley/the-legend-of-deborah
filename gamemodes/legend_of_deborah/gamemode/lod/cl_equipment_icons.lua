@@ -55,6 +55,7 @@ end
 function E:IconFamily(item)
     local id=item and item.definitionId or ''
     if id=='magic_hourglass' then return 'hourglass' end
+    if id=='damsel_revenge' then return 'gun' end
     if id=='moon_boots' then return 'boots' end
     if id=='healing_potion' or id=='stink_bomb' then return 'bottle' end
     if id=='weapon_lod_crowbar' then return 'crowbar' end
@@ -77,6 +78,8 @@ function E:DrawItemIcon(item,x,y,size,color,family)
         surface.DrawRect(x+11*scale,y+19*scale,10*scale,4*scale)
     elseif item and item.definitionId=='stink_bomb' then
         draw.SimpleText('!','LOD_SheetKey',x+16*scale,y+15*scale,LOD.UI.Colors.light,TEXT_ALIGN_CENTER)
+    elseif item and item.definitionId=='damsel_revenge' then
+        draw.SimpleText('!', 'LOD_SheetKey',x+25*scale,y+18*scale,LOD.UI.Colors.light,TEXT_ALIGN_CENTER)
     elseif item and item.definitionId=='weapon_357' then
         surface.DrawCircle(x+16*scale,y+13*scale,4*scale,251,247,233,255)
     end

@@ -539,6 +539,7 @@ function W:Killed(e)
     self:RetirePhaseRoot(w)
     w.dead=true;w.hazards={};w.volley=nil;w.swing=nil
     if LOD.WardenTurrets then LOD.WardenTurrets:Retire(w.turrets) end
+    if LOD.DamselRevenge and LOD.DamselRevenge.OnGordonDeath then LOD.DamselRevenge:OnGordonDeath(w,e) end
     for _,other in ipairs(w.clones or {}) do other.dead=true;other.hazards={};other.volley=nil;other.swing=nil end
     if s.Level==20 then
         if not LOD.Hector or not LOD.Hector:OnGordonDefeated(s,w,a,e) then R:FailCampaign("Hector handoff unavailable") end
@@ -721,6 +722,7 @@ function W:Sync()
 end
 local reset=P.ResetLevelState
 function P:ResetLevelState(...)
+    if LOD.DamselRevenge and LOD.DamselRevenge.Retire then LOD.DamselRevenge:Retire(LOD.DamselRevenge.current,"reset") end
     if LOD.WardenTurrets then LOD.WardenTurrets:Retire(LOD.WardenTurrets.current) end
     W:RetirePhaseRoot(R.State and R.State.Warden);W.phaseRoot=nil
     local result=reset(self,...);R.State.Warden=nil;R.State.WardenStarted=false;W:Sync();W:SyncTells();return result
@@ -728,6 +730,7 @@ end
 -- Fuse/travel time belongs to the shared service, not a stunned NextBot's
 -- behavior coroutine. Phase-three damage thresholds retire ordnance first.
 hook.Add("Think","LOD_WardenOrdnance",function()
+    if LOD.DamselRevenge and LOD.DamselRevenge.Service then LOD.DamselRevenge:Service() end
     if LOD.WardenTurrets then LOD.WardenTurrets:Service() end
     local s,w=W:State()
     if W.phaseRoot and (W.phaseRoot~=w or not s or not s.BuildReady or s.Failed or s.LevelCleared or w.dead or not alive(w.actor)) then

@@ -143,6 +143,7 @@ function E:Use(ply, mode)
     if def.effect == "summon_hero" then return self:BeginSummonCard(ply,mode) end
     if def.effect == "revive_hero" then return self:UseResurrectionFeather(ply) end
     if def.effect == "extend_clock" then return self:UseMagicHourglass(ply) end
+    if def.effect == "damsel_revenge" then return self:UseDamselRevenge(ply) end
     -- Unknown effect definitions fail before spending an item.
     if def.effect ~= "heal" and def.effect ~= "poison_cloud" and def.effect ~= "magic_bomb" then return false end
     if mode == "drink" and ply:Health() >= ply:GetMaxHealth()

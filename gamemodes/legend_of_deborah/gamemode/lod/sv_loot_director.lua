@@ -346,7 +346,8 @@ function Loot:Collect(ent, ply, acceptEquipment)
     local stagedGift = staging and staging.CanCollectGift and staging:CanCollectGift(ply, ent)
     if not RunManager:IsActivePlayer(ply) and not stagedGift then return false end
     local state = RunManager.State
-    if not state or state.Failed or state.LevelCleared then return false end
+    if not state or state.Failed or (state.LevelCleared and not
+        (LOD.DamselRevenge and LOD.DamselRevenge.CanCollect and LOD.DamselRevenge:CanCollect(ent,ply))) then return false end
     if ent.LODLootLevelSeed ~= state.LevelSeed then return false end
     local lootState = self:_PlayerLootState(ply)
     if ent.LODLootStaticId and lootState and lootState.consumedStatic[ent.LODLootStaticId] then return false end
@@ -508,9 +509,14 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
         return nil
     end
 
+    local revenge=options.damselRevenge
+    if revenge and (not LOD.DamselRevenge or not LOD.DamselRevenge.CanCreateDrop or not LOD.DamselRevenge:CanCreateDrop(revenge,ownerIdentity,pos,kind,payload)) then return nil end
     self:TraceStage("entity_create", nil, kind)
     local ent = ents.Create("lod_loot_pickup")
     if not IsValid(ent) then return nil end
+    -- Give the existing encounter owner its exact candidate before native
+    -- Spawn/transport can fail. It retires partial bodies in its safe service.
+    if revenge then revenge.dropCandidate=ent;ent.LODRevengeReceipt=revenge end
 
     local model = kind == "dft" and "models/props_lab/huladoll.mdl" or KIND_MODEL[kind]
     if kind == "weapon" and payload and WEAPONS[payload.weaponClass] then

@@ -5,6 +5,7 @@ LOD = LOD or {}
 function LOD.ReleaseDamageInfo(info)
     local status, rolls, piercing = LOD.RPGStatusElements, LOD.CombatRolls, LOD.MagnumPiercing
     if status and status.DamageContexts then status.DamageContexts[info] = nil end
+    if LOD.DamselRevenge and LOD.DamselRevenge.Packets then LOD.DamselRevenge.Packets[info] = nil end
     if rolls and rolls.PendingDamageReports then rolls.PendingDamageReports[info] = nil end
     if piercing and piercing.DamageSegments then piercing.DamageSegments[info] = nil end
     if LOD.EnemyReactions and LOD.EnemyReactions.Damage then LOD.EnemyReactions.Damage[info] = nil end

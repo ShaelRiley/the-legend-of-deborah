@@ -745,6 +745,23 @@
       ]
     },
     {
+      "id": "damsels-revenge",
+      "title": "Damsel's Revenge",
+      "rows": [
+        [
+          "Damsel's Revenge",
+          "LMB / RMB: USE · Throwable stack of 3 · One use per fight"
+        ]
+      ],
+      "text": [
+        "This rare consumable gives the jailed Damsel a chance to fight back. Equip and hold it in the Throwable slot, enter the committed Gordon fight, and press either mouse button from the court—not the safe entrance. One unit arms her with a random Pistol, SMG or Pulse Rifle. It costs no Magic or ammunition and works for every Hero class. Invalid use spends nothing.",
+        "She stays in her jail and shoots through a visible firing slit at the real, visible Gordon. Walls and intervening bodies still block her fire; the jail remains locked and solid to Heroes. She cannot shoot fakes, turrets, teammates or Hector. Her protection does not change. She uses the gun's basic physical damage, without your abilities, feats or equipment bonuses. Its procedural properties become available only after normal collection and equipping.",
+        "One activation serves the whole party for that encounter. Further uses cannot replace or duplicate her gun. Your death or disconnection does not disarm her; she pauses when no living Hero is in the court. Gordon's defeat stops her combat immediately, including before Hector appears at Dungeon Level 20. Normal Jail Key and rescue requirements still apply.",
+        "After successful rescue, she drops that same gun at her feet. It belongs to the Hero who used Damsel's Revenge. Touch the pickup or press E at her feet during the existing 20-second victory window; her own Touch/Use also forwards collection when her body covers it. Make room in your equipment bag if necessary. Collection stores the gun without equipping it or granting ammunition. There is no automatic replacement for an uncollected gun, and leaving the dungeon ends the opportunity.",
+        "Damsel's Revenge may replace a small fraction of remaining ordinary Healing Potion loot opportunities; fixed supplies are unchanged. It does not work in staging, after Gordon's defeat, during failure or after time runs out. Dungeon Levels 21 onward have cash instead of a jailed Damsel, so the item cannot be used there. Reset or campaign failure ends the activation without refund."
+      ]
+    },
+    {
       "id": "moon-boots",
       "title": "Boots of the Moon",
       "rows": [
@@ -1311,6 +1328,7 @@
         "A living, deployed Hero can spot a fake at up to half their current Wisdom bonus in squares, never below zero. Half-squares count; a +3 bonus reaches 1.5 squares. You need a clear view and must actually be that close, including height. In that range a fake has a slight greenish tint, sticks out its tongue, and periodically winks either eye. Its normal hit stun has an exaggerated sideways recoil, without any extra stun time. These tells are personal: a wiser teammate does not reveal them for you, and they disappear with distance, cover or cloaking. Real Gordon gets none of these tells. Zero or negative Wisdom bonus grants no recognition range.",
         "Corner Sentry turrets join Gordon at Dungeon Levels 5, 10, 15 and 20: one, two, three, then four. Four is the limit even in endless cash runs; their ordinary monster strength still grows with the dungeon. Each appears in a separately seeded, clear lower-court corner pocket. A blocked or unsafe corner is skipped for that fight, not replaced later. Destroyed turrets do not respawn when a Hero dies or rejoins.",
         "A turret faces inward with a narrow frontal firing cone. Its glowing muzzle and straight warning line give at least three-quarters of a second before one fast, nonhoming bullet. Sidestep the frozen line, use real cover, flank it, interrupt its windup or destroy it. The safe entry alcove works in both directions: you cannot shoot a turret from safety. Both stairs and the gallery remain routes around the fight. Surviving turrets and their attacks retire when Gordon falls, before Hector appears at Level 20.",
+        "A Damsel's Revenge consumable can arm the jailed Damsel during this fight. She provides stationary support against the real Gordon only; the item chapter explains her firing slit and the owner-only gun pickup after normal rescue.",
         "The fight does not reset just because a Hero dies. At Levels 1–19 and 21 onward, defeat Gordon, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. At Level 20, defeat Hector first. Gordon’s death alone never completes the dungeon."
       ]
     },

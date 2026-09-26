@@ -54,8 +54,10 @@ function ENT:Draw()
         mins, maxs = Vector(-halfWidth, -halfThickness, -halfHeight), Vector(halfWidth, halfThickness, halfHeight)
     end
     render.SetMaterial(doorMaterial)
-    render.DrawBox(self:GetPos() + Vector(0, 0, PC.GateBlockerHeight * frac), angle_zero,
-        mins, maxs, Color(74, 78, 84))
+    local origin=self:GetPos()+Vector(0,0,PC.GateBlockerHeight*frac)
+    if not (frac==0 and LOD.DamselRevenge and LOD.DamselRevenge.DrawPort and LOD.DamselRevenge:DrawPort(self,origin,mins,maxs,Color(74,78,84))) then
+        render.DrawBox(origin,angle_zero,mins,maxs,Color(74,78,84))
+    end
 end
 
 hook.Add("PostDrawTranslucentRenderables", "LOD_DrawJailDoorLabel", function()

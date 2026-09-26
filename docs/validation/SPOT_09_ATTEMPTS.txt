@@ -1,0 +1,96 @@
+SPOT-09 attempt provenance — September 26, 2026
+Actual parent 9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86
+
+Raw logs remain in external delivery evidence. Attempts 01–09 have no captured
+per-attempt source hashes; do not manufacture them. Attempts 10 onward capture
+all-source hashes and return codes. Complete gates capture before/after hashes.
+Injected *_ERROR lines in successful boundary tests are deliberate assertions.
+No source-export or SPOT-09 publication run occurred before these local attempts.
+
+01.log
+Log SHA256 0d8cdba3a528c034669611e4250d4e8d029e0c0dfb5d55fe799d9f5469214e84
+FAIL: oversized attack-event record pulled the cyclic encounter into damage copying; fixture table.Copy overflowed. Replaced the production payload with a bounded marker. This is not a claim of an observed native GMod stack overflow.
+
+01-trace.log
+Log SHA256 43ce873b4a58c6047b42fb2f7d905351fe5641dd69a4bb7f6652f108f268e648
+FAIL: expanded traceback of the same attack-event copying failure, not a separate repaired pass.
+
+02.log
+Log SHA256 ac573518040ef38600257d4b3862fae832df9dd26096032ea172a695f7c3ae8e
+FAIL: firing path assertion; fixture lacked game.GetWorld.
+
+03.log
+Log SHA256 9c94c3367e31b74f604373a6c635a85e6190db11d5e507cca98df007a96b801d
+FAIL: diagnostic readback exposes the missing game.GetWorld fixture boundary.
+
+04.log
+Log SHA256 7651b088ac7defa6ce04deabf114d4c2850b41739e4272a7180cc586d885073f
+FAIL: fixture had not loaded production combat-feed semantics (_DamageEventText).
+
+05.log
+Log SHA256 956587c774117935843d87df543f8996408be469ee271f7d63e23ca491239213
+PASS: initial eight assertions, not the expanded gate.
+
+06.log
+Log SHA256 ffffab55ec23608fac58b23bf04dad356b0de960a47edb48c590424f4681be10
+FAIL: new fixture assertion incorrectly indexed the bounded boolean marker as a table.
+
+07.log
+Log SHA256 6124f9fc24556480bab4bbe50fa8a36146be4973c1945fff977ebb3d0d1168be
+FAIL: released native packet receipt fell through to ordinary damage. Production source detection and the outer mitigation-chain receipt guard repaired this.
+
+08.log
+Log SHA256 15c971e8c4f631fb29d626b423712d4e9046ae10169c06d85e0289257ca9520e
+FAIL: actual LootDirector spawn required the real staging IsDungeonPlayer method; loaded production staging and intermission rather than substituting behavior.
+
+09.log
+Log SHA256 aec5481b93ee48aca9858dd7bc6c4bddf399ec6b6ec6590c7efdea6a8d6b398b
+FAIL: real victory collection reached a second Equipment admission that still rejected cleared-world pickup. Added the same narrow exact receipt, not a generic clear-world bypass.
+
+10.log
+Log SHA256 2577d15339055a43be62c93daf00fba4999331f79dc350be1455291a882fe487
+FAIL: early-load equipment path assumed the new CanCollect method existed while only shared definitions had loaded. Added explicit method availability guard.
+Source SHA256 7187d96875335676536248e5ab3928269efcf547bfb973b76a45b0e5cdcef554
+
+11.log
+Log SHA256 2350f50c20cdf42cf9045ad7ff39001663686ab76732d104fd57f3ef728aa9ff
+PASS: 414 focused numbered assertions; not the final expanded gate.
+Source SHA256 afd48cd1ea09e9f70258324cbfcddfd5a668be6448fa7fb4b6fe6804aa4bd343
+
+12.log
+Log SHA256 4497ac54cab2986401750364295ae37fd184c7fe51e5d89885892076efced006
+FAIL: fixture referenced max instead of the actual maxStack definition field.
+Source SHA256 eea58d16cab787ef03f5541cae57d52313a71f212c1c0ec7c0c715a4147e5b02
+
+13.log
+Log SHA256 3df5e7943ae8b3ec5160305223f979303b2d733b82dcaa13636eb831a96c8368
+PASS: 449 focused numbered assertions plus 512 seeded reward cases.
+Source SHA256 33ba8aa0ec5e623a3b2db7bb8a41c844b49a1f7faffaabd2aefb5e9abc6a057f
+
+14.log
+Log SHA256 3df5e7943ae8b3ec5160305223f979303b2d733b82dcaa13636eb831a96c8368
+PASS: 449 focused numbered assertions plus 512 seeded reward cases after exact boss root ownership and native at-feet forwarding changes. Forwarding had not yet received its direct entity-method test.
+Source SHA256 c0885484fa58a37564961dfa32df85892b8e28af65ab7fc527da207a5e99f180
+
+15.log
+Log SHA256 cb8e33d09d7eadd29d69dedef5749728844221e8d192de67d758ef04f8816219
+PASS: 477 focused numbered assertions plus 512 seeded reward cases, including actual firing for all three choices and real Damsel/pickup Touch/Use coalescing and reset rejection.
+Source SHA256 cb8de4c64c85112e8e0ba4e28c68069ef10f3e2bb858d7cb3e38b8c06d7e3930
+
+gate_preflight
+Summary SHA256 93ba9f2fa948d282091e9227165f1166cf63de9c2eff1132b505b6be70ae3f1f
+Receipt SHA256 b5d6f62f536715591888a5bc97dec0d9a18b64edd030437d1fac1a781c92500f
+FAIL: 58/59 selected suites; new manual assertion failed on HTML-escaped apostrophe. All other suites, including 477 focused assertions and 740 Lua syntax checks, passed.
+Before/after source SHA256 b361afe3c86ddb66e37039328c4e52036cf96ff4647d9f7aed0b5d407c9e0b03
+Changed during gate: []
+
+gate_repaired
+Summary SHA256 3f4ed77cfca5abb6a96e22eae2b0ec76c1e4e5403d57eb29d7f589db61a9d475
+Receipt SHA256 b006bb0796b4e0529a5752c31016c17117ecda74189bc18b261416c3c864dfa5
+PASS: 59/59 selected suites; same required manual phrase checked after HTML entity decoding, with original canonical byte parity retained. 477 focused assertions plus 512 seeded cases; 740 Lua syntax checks.
+Before/after source SHA256 6cd0d072aff7c851936c90cda8fb41ebfda1ec97bb419d62ea07618cad21b097
+Changed during gate: []
+
+These complete preflight hashes predate documentation close-out. Final frozen
+local/independent gate and publication identity belong in the external receipt.
+No full campaign-matrix or native acceptance is inferred from any pass.

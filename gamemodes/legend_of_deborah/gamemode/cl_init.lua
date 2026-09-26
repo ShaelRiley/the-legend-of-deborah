@@ -199,5 +199,6 @@ include("lod/cl_campaign_timeout.lua")
 include("lod/cl_teammate_identity.lua")
 
 include("lod/cl_damsels.lua")
+include("lod/cl_damsel_revenge.lua")
 include("lod/cl_dungeon_events.lua")
 include("lod/cl_minigame.lua")

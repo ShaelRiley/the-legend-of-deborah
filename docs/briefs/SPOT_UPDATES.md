@@ -17,7 +17,7 @@ unrelated bullets into a single gameplay commit. Keep acceptance limits explicit
 | SPOT-06 | Improve Gordon phase one: longer follow-up-hit window without infinite loops; clear departure and destination teleport cues; quicker, more frequent and contextual taunts. | Implemented; 116 focused assertions and 47/47 selected suites, 733 Lua syntax checks. Native timing/cues/audio/co-op pending; see SPOT_06_GORDON.md and delivery receipt. |
 | SPOT-07 | Within max(0, Wisdom bonus / 2) squares, reveal Fake Gordon with a randomized-eye wink, tongue and subtle but noticeable tint. Consider a brief fart on hit and give fakes a distinctive hit-stun. | Implemented; 130 focused assertions, 50/50 selected suites and 734 Lua syntax checks. Visual-only recoil; optional fart omitted. Native visual/co-op/performance acceptance pending; see SPOT_07_TELLS.md and delivery receipt. |
 | SPOT-08 | Add a turret in a random corner of Gordon's arena every five dungeon levels. Cumulative D5/10/15/20, capped at four; ordinary Sentry scaling thereafter. | Implemented; 250 focused assertions, 52/52 selected suites, 736 Lua syntax checks. Native placement/firing/co-op/progression acceptance open; see SPOT_08_TURRETS.md and delivery receipt. |
-| SPOT-09 | Add Damsel's Revenge consumable. In Gordon's arena it gives the stationary, jailed Damsel a random gun and lets her shoot Gordon. On normal rescue, stop her combat, drop the gun at her feet for collection and clean up ownership/callbacks. | Next; reconcile the exact live GDD contract before code. |
+| SPOT-09 | Add Damsel's Revenge consumable. In Gordon's arena it gives the stationary, jailed Damsel a random gun and lets her shoot Gordon. On normal rescue, stop her combat, drop the gun at her feet for collection and clean up ownership/callbacks. | Implemented; 477 focused numbered assertions plus 512 seeded reward cases, 59/59 selected suites, 740 Lua syntax checks. Native firing/slit/collection/co-op acceptance open; see SPOT_09_REVENGE.md and delivery receipt. |
 | SPOT-10 | Identify obsolete or weak feats and propose specific changes with current-code evidence. Present proposals to Shael, then implement only approved revisions. | Approval-gated audit; no rebalance approved yet. |
 | SPOT-11 | Increase each feat draft from three choices to four, respecting eligibility and small pools. | Queued; explicitly authorized. |
 | SPOT-12 | Color spellbook cards and backdrops as well as text so availability is evident at a glance. | Queued. |
@@ -27,7 +27,7 @@ unrelated bullets into a single gameplay commit. Keep acceptance limits explicit
 | SPOT-16 | Give human Soldiers a pulse rifle with three-round bursts and infinite ammo, replacing their SMG. | Queued. |
 | SPOT-17 | Root human Soldiers during committed pulse-rifle attacks and reduce movement speed/options to approximate AI Soldiers. Prioritize the human Hero's readable, consistent enemy experience. | Queued. |
 
-SPOT-01 through SPOT-08 are implemented with the validation limits recorded
+SPOT-01 through SPOT-09 are implemented with the validation limits recorded
 in their checkpoint evidence. Reports of missing enemies are native author
 observations, not proof that one demonstrated defect explains every absence. Use current production
 seams and release-mode evidence; increasing density or a debug-only spawn is not

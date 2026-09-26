@@ -10,6 +10,7 @@ function ENT:Draw()
         cam.End3D2D()
         return
     end
+    if LOD.DamselRevenge and LOD.DamselRevenge.Pose then LOD.DamselRevenge:Pose(self) end
     if self:GetNW2Bool("LOD_RescueCheer",false) and not self:GetNW2Bool("LOD_RescueCheerSequence",false) then
         -- Models without a cheer sequence still visibly celebrate. Bone angles
         -- are cosmetic only, with no changes to her server hull or placement.
@@ -23,4 +24,5 @@ function ENT:Draw()
         end
     end
     if LOD.Damsels and LOD.Damsels.DrawActor then LOD.Damsels:DrawActor(self,false) else self:DrawModel() end
+    if LOD.DamselRevenge and LOD.DamselRevenge.DrawGun then LOD.DamselRevenge:DrawGun(self) end
 end

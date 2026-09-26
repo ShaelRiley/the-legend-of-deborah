@@ -4,6 +4,7 @@
 This is a logic test, not a substitute for Chromium or native GMod visual QA.
 """
 import importlib.util
+import html as html_entities
 import json
 import re
 import subprocess
@@ -41,6 +42,8 @@ assert 'AddCSLuaFile("lod/manual/' not in init, 'Generated manual payload is ser
 assert 'bribe' not in html.lower(), 'Removed event remains in current manual'
 for term in ['reaching 100 do not add log entries', 'up to 1,000 records', 'repeated real rolls remain separate', 'ordered parts rather than discarding results']:
     assert term in html, 'SPOT-05 manual guidance missing: '+term
+for term in ["Damsel's Revenge", 'One use per fight', 'Its procedural properties become available only after normal collection', 'One activation serves the whole party', 'without equipping it or granting ammunition', 'her own Touch/Use']:
+    assert term.lower() in html_entities.unescape(html).lower(), 'SPOT-09 manual guidance missing: '+term
 for term in ['Relay', 'Lacemaker', 'RELAY SHOT', 'LEAVE RIBBON', 'SOURCE SHOT', 'The shot comes from the ally’s captured position', 'There is no invisible lingering trail', 'Interposer', 'Mourner', 'BODYGUARD', 'RETALIATION', 'an old corpse cannot trigger its oath', 'protection is never guaranteed', 'separate, full 1.2-second shot warning', 'Halter', 'Pacer', 'KEEP MOVING', 'JUDGMENT', 'Only actual voluntary motion counts', 'Fusilier', 'Bombardier', 'body-bracket glyph', 'lure ordinary enemies into it', 'unmarked body can still absorb', 'Siphoner', 'Accumulator', 'downward funnel', 'battery-and-plus glyph', 'supplemental aura damage to other nearby Heroes', 'Only a surviving Hero who actually loses HP', 'The amber Metrocop hears', 'The violet fast zombie remembers', 'The pale-cyan slave Vortigaunt draws', 'The crimson Combine elite marks', 'Outrider', 'Conductor', 'lone bracket glyph', 'linked 64-unit circles', 'TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff','Stink Bomb','Arcane Surge','DFTs normally mint','Abundance','SECURE THE BAG','Nessa','Beam Sweeper']:
     assert term in html,term
 subprocess.run(['node',str(ROOT/'tools/test_manual_reader.js')],check=True,cwd=ROOT)

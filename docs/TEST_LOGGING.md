@@ -10,6 +10,22 @@ On Shael's Steam Deck this is:
 
 The upload-facing files are **ordinary physical `.txt` files**, not checkout symlinks.
 
+## SPOT-09 Damsel's Revenge — arena and rescue
+
+The finite source gate is `python3 tools/test_spot09_gate.py --output <empty directory outside the repository>`.
+It selects 59 suites and checks all Lua files; it is not native acceptance or the
+complete campaign matrix. See [SPOT-09 evidence and limits](validation/SPOT_09_REVENGE.md).
+After a full restart on gm_flatgrass, use the normal item in an active Gordon court.
+An admin with existing developer mode enabled may use `lod_damsel_revenge_testkit`
+for an explicitly unranked three-unit setup; it changes no boss, jail, timer or rescue.
+Confirm stationary gun/visible slit/real shots and then normal rescue and the owner-only
+at-feet pickup during victory. At Level 20, she must stop before Hector and wait for
+normal Deborah rescue. Capture console_latest.txt and rpg_summary_latest.txt plus a
+visual/listening report. ARM/DROP events use DAMSEL_REVENGE_ARMED and
+DAMSEL_REVENGE_DROPPED; finite allocation failure uses DAMSEL_REVENGE_DROP_FAILED,
+with *_ERROR for caught adapter failures. Injected *_ERROR lines in automated
+boundary tests are deliberate asserted cases, not native gameplay reports.
+
 ## SPOT-08 turret acceptance — ordinary arena play
 
 The finite source gate is `python3 tools/test_spot08_gate.py --output <empty directory outside the repository>`.

@@ -160,11 +160,13 @@ function LOD.LootDirector:_MissingWeaponReward(ply,rng)
     if rng:Chance(E.WeaponLoot.variantChance) then return rng:Pick(allowed) end
     return missingWeapon(self,ply,rng) or rng:Pick(allowed)
 end
-function E:AcquireWorldItem(ply,item,accept,source)
+function E:AcquireWorldItem(ply,item,accept,source,pickup)
     local ps=hero(ply)
     local statue=source=="dft" and LOD.CryptoDirector and LOD.CryptoDirector:CanUseStatue(ply)
     local gift=source=="damsel" and self:CanManageInventory(ply)
-    if not ps or not (self:CanAct(ply) or statue or gift) or not self:ValidateWearable(item) then return false end
+    local revenge=source=="pickup" and LOD.DamselRevenge and LOD.DamselRevenge.CanCollect and LOD.DamselRevenge:CanCollect(pickup,ply)
+        and pickup.LODLootPayload.item==item
+    if not ps or not (self:CanAct(ply) or statue or gift or revenge) or not self:ValidateWearable(item) then return false end
     -- Seal provenance at admission as well as at token recreation. Copies keep
     -- this flag across equipment changes, respawns and inventory restoration.
     if source=="dft" then item=table.Copy(item);item.economyExcluded=true end
@@ -176,7 +178,7 @@ function E:AcquireWorldItem(ply,item,accept,source)
     local def=self:Definition(item)
     if bag then
         if not self:StoreWearable(state,item) then return false end
-        self:Sync(ply)
+        if revenge then pcall(self.Sync,self,ply) else self:Sync(ply) end
         return true,self:ItemName(item).." added to inventory"
     end
     if def.weapon and not IsValid(ply:GetWeapon(def.weaponClass)) then
@@ -196,7 +198,7 @@ function E:AcquireWorldItem(ply,item,accept,source)
     return true,self:ItemName(item).." equipped — "..self:Description(item,true)
 end
 function E:CollectWearable(ent,ply,accept)
-    return self:AcquireWorldItem(ply,ent.LODLootPayload and ent.LODLootPayload.item,accept,"pickup")
+    return self:AcquireWorldItem(ply,ent.LODLootPayload and ent.LODLootPayload.item,accept,"pickup",ent)
 end
 function LOD.LootDirector:_GrantWeapon(ply,class,rng)
     if not hero(ply) or not E.Definitions[class] then return grantWeapon(self,ply,class,rng) end
@@ -244,6 +246,10 @@ function E:PrepareReward(owner,kind,payload,options)
     if kind=="consumable" and payload.itemId=="healing_potion" and options.equipmentEligible
         and LOD.RNG.New(LOD.Seeds.Derive(seed,"chest-key-v1")):Chance(1/16) then
         return "consumable",{itemId="chest_key"}
+    end
+    if kind=="consumable" and payload and payload.itemId=="healing_potion" and options.equipmentEligible
+        and LOD.RNG.New(LOD.Seeds.Derive(seed,"damsel-revenge-v1")):Chance(1/16) then
+        return "consumable",{itemId="damsel_revenge"}
     end
     if kind=="wearable" and not payload.item then
         return "wearable",{item=generate(nil)}

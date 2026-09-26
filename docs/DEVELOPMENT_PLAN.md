@@ -1,6 +1,31 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-08 Gordon arena turrets
+## Current checkpoint — SPOT-09 Damsel's Revenge
+
+From actual main parent `9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86`.
+One finite consumable arms the stationary jailed Damsel with a frozen procedural
+Pistol, SMG or Pulse Rifle. Shared source-bound payment, canonical physical dice,
+exact real-Gordon targeting, visible jail firing slit, encounter lifetime and
+normal rescue authorize one owner-only at-feet gun pickup during existing victory.
+No Hero ability/feat inheritance, Hector fire, new reward authority or free ammo.
+
+The [finite gate](validation/SPOT_09_REVENGE_GATE.md) passes **477 focused numbered
+assertions plus 512 seeded reward cases, 59/59 selected suites and 740 Lua syntax
+checks**, unchanged source. See [implementation and limits](validation/SPOT_09_REVENGE.md)
+and [preserved attempts](validation/SPOT_09_ATTEMPTS.txt). The first aggregate was
+58/59 due to escaped-HTML test matching; that failure remains a failure. Final
+frozen local/independent hashes and publication identity belong in the delivery
+receipt. Native gun/port/animation/audio/pickup/co-op/performance acceptance remains
+open; this is not a full campaign matrix. Manual and both renderings match.
+
+Next single bullet: **SPOT-10 — evidence-backed feat proposals only**. Audit current
+live design and implementation, identify obsolete/weak/redundant feats and present
+specific changes with rationale and tests for Shael's approval. Do not implement
+any rebalance without explicit approval by proposal. Do not fold SPOT-11 four-choice
+drafts or SPOT-14 Time Management into this audit. Preserve SPOT-01–09, B28/B29,
+accepted Crate appearance and P1–P4. No Workshop or VPS actions.
+
+## Previous checkpoint — SPOT-08 Gordon arena turrets
 
 From actual main parent `35c43bc8bac86e5ea108b9f96e9d5ab6a94bf542`.
 Cumulative ordinary Sentry corner turrets at D5/10/15/20, capped at four with
@@ -23,7 +48,7 @@ independent hashes, published child/parent/tree and run ID are in the delivery
 receipt. Manual and renderings match. This is not full campaign-matrix or native
 collision/visual/audio/co-op/performance acceptance. No Workshop/VPS actions.
 
-Next single bullet: **SPOT-09 — Damsel's Revenge consumable**. Read the exact
+Historical next action at SPOT-08 close-out: **SPOT-09 — Damsel's Revenge consumable**. Read the exact
 queue request and reconcile its item grant/use, jailed Damsel gun/combat, Gordon
 ownership, co-op, rescue drop and cleanup contract in the live GDD before code.
 Do not fold existing-feat rebalances into it. Preserve SPOT-01–08 and B28/B29.
