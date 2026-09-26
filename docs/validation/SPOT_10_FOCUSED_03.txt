@@ -1,0 +1,5 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 135
+[AUDIT] Implementation Feats Count: 135
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+SPOT10_APPROVED_PASS 129 focused assertions; actual Lua paths, native boundary doubles

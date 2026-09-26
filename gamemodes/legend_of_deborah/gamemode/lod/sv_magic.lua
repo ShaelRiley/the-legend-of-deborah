@@ -396,8 +396,7 @@ timer.Create(MAGIC_TIMER, REGEN_TICK, 0, function()
                         if active then
                             stats.manaSpringActiveTicks = (stats.manaSpringActiveTicks or 0) + 1
                         elseif derived and derived.manaSpringEnabled == true
-                            and (ps.manaSpringWaiting == true
-                                or (ps.manaSpringRemainingSeconds or 0) > 0)
+                            and not regenerationPermitted
                         then
                             stats.manaSpringPausedTicks = (stats.manaSpringPausedTicks or 0) + 1
                         end

@@ -89,9 +89,9 @@ Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer"
     })
 Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartography", 15,
     nil, "wis_frugal_map", 1, {
-        mapDrainMultiplier = 0.85,
+        mapDrainMultiplier = 0.75,
         minimumMapDrainPerSecond = 3.0,
-        description = "Multiplies WIS-scaled minimap drain by 0.85, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open."
+        description = "Multiplies WIS-scaled minimap drain by 0.75, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open. Haste uses this discounted map-equivalent rate before its own rank fraction, even with the map closed."
     })
 
 local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction)
@@ -403,7 +403,7 @@ function FeatEffectSystem:ValidateWISNavigation()
     local expected = {
         WIS_SURVEYOR = {"wis_breadcrumb_range", 1, 13, nil, 4, nil, nil},
         WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 2, 15, "WIS_SURVEYOR", 8, nil, nil},
-        WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 15, nil, nil, 0.85, 3.0}
+        WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 15, nil, nil, 0.75, 3.0}
     }
     for featId, values in pairs(expected) do
         local definition = Feats[featId]
@@ -431,7 +431,7 @@ function FeatEffectSystem:ValidateWISNavigation()
         "Surveyor profile")
     expect(cartographer.breadcrumbRank == 2 and cartographer.breadcrumbBonusCells == 8,
         "Cartographer must replace Surveyor")
-    expect(combined.frugalMapEnabled and combined.mapDrainMultiplier == 0.85
+    expect(combined.frugalMapEnabled and combined.mapDrainMultiplier == 0.75
         and combined.minimumMapDrainPerSecond == 3.0, "Frugal Cartography profile")
 
     local derived = {breadcrumbCells = 10}
@@ -440,19 +440,19 @@ function FeatEffectSystem:ValidateWISNavigation()
     }}, derived)
     expect(derived.breadcrumbCells == 18 and derived.breadcrumbFeatBonusCells == 8,
         "breadcrumb bonus must apply once after WIS")
-    expect(derived.mapDrainFeatMultiplier == 0.85
+    expect(derived.mapDrainFeatMultiplier == 0.75
         and derived.minimumMapDrainPerSecond == 3.0, "derived Frugal Cartography values")
 
     local rules = LOD.RPGAbilityRules
     if rules and rules.MapDrainPerSecondFromDerived then
         expect(math.abs(rules:MapDrainPerSecondFromDerived(100 / 15, {
             utilityMagicCostMultiplier = 1,
-            mapDrainFeatMultiplier = 0.85,
+            mapDrainFeatMultiplier = 0.75,
             minimumMapDrainPerSecond = 3
-        }) - (100 / 15) * 0.85) < 0.0001, "Frugal drain multiplication order")
+        }) - (100 / 15) * 0.75) < 0.0001, "Frugal drain multiplication order")
         expect(rules:MapDrainPerSecondFromDerived(2, {
             utilityMagicCostMultiplier = 1,
-            mapDrainFeatMultiplier = 0.85,
+            mapDrainFeatMultiplier = 0.75,
             minimumMapDrainPerSecond = 3
         }) == 3, "Frugal drain floor")
     else

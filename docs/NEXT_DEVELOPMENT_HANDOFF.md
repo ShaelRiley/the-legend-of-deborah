@@ -1,4 +1,33 @@
-# Resume The Legend of Deborah — SPOT-10 feat proposals only
+# Resume The Legend of Deborah — SPOT-10 second-pass approval
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. This checkpoint's
+actual parent is `0b8321344737d11547f323c993b279de7c400d4f`; the external delivery
+receipt supplies the verified child/tree/run. Fetch current main, preserve newer
+and uncommitted work. Never use an isolated publication-workflow commit as ancestry.
+
+Read AGENTS.md → DEVELOPMENT_PLAN.md → validation/SPOT_10_APPROVED.md and
+validation/SPOT_10_SECOND_PASS.md. Live GDD identity unchanged; 00 → 01 → required
+04/03 and exact HUMAN rows. One SPOT10 approval section already exists in 04.
+
+Decisions: A REJECTED; B and C APPROVED; Mana Spring's flat22% permitted passive
+regen APPROVED. Those three are implemented and statically validated. All D–J
+remain proposals; require explicit approvals. No explosion ladder restructuring,
+SPOT11 draft changes, SPOT14 or other queued mechanics were implemented.
+
+Local pre-closeout gate 64/64, 129 focused assertions, 741 Lua syntax; no source
+mutation. Final frozen/independent receipts establish publication separately.
+Native balance and co-op remain open. Early fixture failures remain failures.
+
+Next action: present/evaluate D–J decisions without guessing personal pick history.
+For approved follow-ons, reconcile exact live rules first, then one bounded shared-
+authority implementation, matching manual and finite gate. Native evidence remains
+console_latest.txt + rpg_summary_latest.txt and the short relevant observation.
+No extra dedicated Razor testing; preserve SPOT01–09, B28/B29, Crate and P1–P4.
+No Workshop/VPS operations; existing local → Workshop parity → VPS sequence stays.
+
+---
+
+# Historical SPOT-09 handoff — approvals below are superseded only as noted above
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`.
 SPOT-09 actual parent: `9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86`.

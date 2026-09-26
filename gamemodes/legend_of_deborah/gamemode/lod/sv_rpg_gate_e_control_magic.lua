@@ -67,7 +67,7 @@ Feats.INT_MANA_SPRING = singleton(
     "INT_MANA_SPRING", "Mana Spring", "int", 13, "magic_pool",
     "int_mana_spring", "mana_spring_regeneration",
     "Heroes, human Soldiers, and Magic-using AI",
-    "Whenever Magic reaches 0, the next time regeneration becomes legally permitted the actor receives a 1.50 multiplier to its already INT-scaled Magic regeneration for 4.0 seconds. The timer does not run and no regeneration occurs while the minimap or another regeneration-suppressing sustained effect remains active.")
+    "Magic regenerates 22% faster whenever ordinary regeneration is permitted. Multiply the otherwise resolved passive regeneration rate by 1.22 once; no zero-Magic trigger, duration or cooldown. Existing suppression and the 100-Magic capacity remain; direct refunds, costs and drains are unchanged.")
 
 Catalog.OrdinaryFeats = Feats
 Catalog.GateEControlMagicSourceRevisionId = SOURCE_REVISION
@@ -76,8 +76,8 @@ Effects.ControlMagicConfig = {
     sourceRevision = SOURCE_REVISION,
     steadfastMultiplier = 0.75,
     forcefulMagicMultiplier = 1.25,
-    manaSpringMultiplier = 1.50,
-    manaSpringDurationSeconds = 4.0
+    manaSpringMultiplier = 1.22,
+    manaSpringDurationSeconds = 0
 }
 Effects.ControlMagicStats = Effects.ControlMagicStats or {
     hitStunQueries = 0,
@@ -101,34 +101,19 @@ function Effects:ControlMagicProfile(state)
         forcefulMagic = forceful,
         magicPushMultiplier = forceful and 1.25 or 1,
         manaSpring = spring,
-        manaSpringRegenMultiplier = spring and 1.50 or 1,
-        manaSpringDurationSeconds = spring and 4.0 or 0
+        manaSpringRegenMultiplier = spring and self.ControlMagicConfig.manaSpringMultiplier or 1,
+        manaSpringDurationSeconds = 0 -- legacy snapshot field; passive effect has no window
     }
 end
 
--- Pure state transition used by the authoritative Magic timer and the finite
--- validator. Remaining time advances only on legally permitted regeneration
--- ticks; reaching zero arms (or re-arms) the next four-second window.
+-- One passive multiplier at the existing Magic timer seam. The legacy signature
+-- stays compatible, but stale waiting/window values are always cleared.
 function Effects:ResolveManaSpringTick(enabled, currentMagic, waiting, remaining,
     regenerationPermitted, elapsed)
-    if enabled ~= true then return 1, false, 0, false, false end
-
-    waiting = waiting == true
-    remaining = math.max(0, tonumber(remaining) or 0)
-    elapsed = math.max(0, tonumber(elapsed) or 0)
-    if (tonumber(currentMagic) or 0) <= 0 then waiting = true end
-
-    local started = false
-    if regenerationPermitted == true and waiting then
-        waiting = false
-        remaining = 4.0
-        started = true
-    end
-
-    local active = regenerationPermitted == true and remaining > 0
-    local multiplier = active and 1.50 or 1
-    if active then remaining = math.max(0, remaining - elapsed) end
-    return multiplier, waiting, remaining, started, active
+    local active = enabled == true and regenerationPermitted == true
+        and (tonumber(currentMagic) or 0) < 100
+    return active and self.ControlMagicConfig.manaSpringMultiplier or 1,
+        false, 0, false, active
 end
 
 function Effects:ResolvePushDistance(authoredDistance, attackerDerived, defenderDerived, opts)
@@ -281,18 +266,20 @@ function Effects:ValidateControlMagicFamilies()
     expect(bypassPush == 420, "explicit resistance bypass preserves Force Multiplier")
     expect(physicalPush == 336, "physical push does not inherit Force Multiplier")
 
+    for _, current in ipairs({0, 1, 50, 99}) do
+        local multiplier, waiting, remaining, started, active =
+            self:ResolveManaSpringTick(true, current, true, 3.75, true, 0.25)
+        expect(multiplier == 1.22 and not waiting and remaining == 0
+            and not started and active, "Mana Spring passive tick / legacy state cleared")
+    end
     local multiplier, waiting, remaining, started, active =
-        self:ResolveManaSpringTick(true, 0, false, 0, false, 0.25)
-    expect(multiplier == 1 and waiting and remaining == 0 and not started and not active,
-        "Mana Spring arms and pauses while regeneration is suppressed")
-    multiplier, waiting, remaining, started, active =
-        self:ResolveManaSpringTick(true, 0, waiting, remaining, true, 0.25)
-    expect(multiplier == 1.50 and not waiting and remaining == 3.75
-        and started and active, "Mana Spring begins on first legal regeneration tick")
-    multiplier, waiting, remaining, started, active =
-        self:ResolveManaSpringTick(true, 1, waiting, remaining, false, 0.25)
-    expect(multiplier == 1 and remaining == 3.75 and not active,
-        "Mana Spring timer pauses with regeneration")
+        self:ResolveManaSpringTick(true, 50, true, 3.75, false, 0.25)
+    expect(multiplier == 1 and not waiting and remaining == 0 and not active,
+        "Mana Spring cannot bypass suppression or retain an old window")
+    expect(self:ResolveManaSpringTick(false, 50, true, 3.75, true, 0.25) == 1,
+        "Mana Spring requires ownership")
+    expect(self:ResolveManaSpringTick(true, 100, false, 0, true, 0.25) == 1,
+        "Full Magic has no regeneration tick")
 
     return #errors == 0, errors
 end
@@ -483,12 +470,11 @@ concommand.Add("lod_rpg_gate_e_control_magic_status", function(ply)
     local stunOK = targetStunResistance ~= nil
         and math.abs((targetStunResistance or 0)
             - (profile.steadfast and 0.75 or 1)) < 0.001
-    local springOK = profile.manaSpring and (stats.manaSpringStarts or 0) >= 1
-        and (stats.manaSpringActiveTicks or 0) >= 1
-        or (not profile.manaSpring and (stats.manaSpringStarts or 0) == 0)
+    local springOK = profile.manaSpring and (stats.manaSpringActiveTicks or 0) >= 1
+        or (not profile.manaSpring and (stats.manaSpringActiveTicks or 0) == 0)
     local acceptance = pushOK and stunOK and springOK
     local line = string.format(
-        "steadfast=%s stunQueries=%d stunResist=x%.2f forceful=%s pushAuthored=%.1f pushMagic=x%.2f pushSteadfast=x%.2f pushRequested=%.1f manaSpring=%s starts=%d activeTicks=%d pausedTicks=%d spring=x%.2f remaining=%.2fs magic=%.2f acceptance=%s",
+        "steadfast=%s stunQueries=%d stunResist=x%.2f forceful=%s pushAuthored=%.1f pushMagic=x%.2f pushSteadfast=x%.2f pushRequested=%.1f manaSpring=%s legacyStarts=%d activeTicks=%d suppressedTicks=%d spring=x%.2f legacyWindow=%.2fs magic=%.2f acceptance=%s",
         tostring(profile.steadfast), stats.hitStunQueries or 0,
         targetStunResistance or 1, tostring(profile.forcefulMagic),
         push.authored or push.lastAuthoredDistance or 0,
@@ -521,7 +507,7 @@ concommand.Add("lod_rpg_gate_e_control_magic_testkit", function(ply, _, args)
     local line = string.format(
         "Batch 11 %s: target %s #%d; Magic held at 30 for 20s. Aim, RMB, wait 1s, then run control_magic_status. Shared STR save; Mana Spring %s.",
         enabled and "FEATS" or "BASELINE", target:GetClass(), target:EntIndex(),
-        enabled and "x1.50 active" or "off")
+        enabled and "x1.22 passive" or "off")
     print("[LOD:RPG-E] " .. line)
     ply:ChatPrint(line)
 end)

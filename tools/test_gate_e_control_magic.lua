@@ -45,7 +45,7 @@ effects:ApplyDerived({featIds = {
 assert(derived.steadfastHitStunMultiplier == 0.75)
 assert(derived.steadfastPushMultiplier == 0.75)
 assert(derived.magicPushMultiplier == 1.25)
-assert(derived.manaSpringRegenMultiplier == 1.50)
+assert(derived.manaSpringRegenMultiplier == 1.22)
 
 local defender = {derivedStats = derived}
 assert(math.abs(LOD.RPGAbilityRules:HitStunMultiplier(nil, defender) - 0.9) < 0.0001)

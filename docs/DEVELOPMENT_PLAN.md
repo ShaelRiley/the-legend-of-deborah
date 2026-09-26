@@ -1,6 +1,26 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-09 Damsel's Revenge
+## Current checkpoint — SPOT-10 approved corrections and second-pass review
+
+From actual main parent `0b8321344737d11547f323c993b279de7c400d4f`.
+A is rejected; its explosion ladder stays. B (fixed 3-second Mind Over Matter),
+C (25% Frugal discount with existing map floor/Haste composition) and the author's
+Mana Spring revision (flat 22% faster permitted passive regeneration) are implemented.
+Live GDD 04/exact HUMAN rules, cards and both manual readers are aligned.
+
+[Evidence](validation/SPOT_10_APPROVED.md): first local aggregate **64/64 selected
+suites, 129 focused assertions, 741 Lua syntax checks**, unchanged source; retained
+SPOT09 regressions, not the full campaign matrix. Final frozen local/independent
+identity and verified publication belong in the delivery receipt. Native balance,
+resource feel and co-op acceptance remain open.
+
+**Next: author decisions on [second-pass proposals D–J](validation/SPOT_10_SECOND_PASS.md).**
+These focus low-payoff effects, not relaxed prerequisite ladders; no comprehensive
+personal pick-rate telemetry is claimed. D–J are not approved or implemented.
+Do not fold SPOT11, SPOT14 or the deferred roadmap into this checkpoint.
+Preserve all earlier native/release gates; no Workshop/VPS action.
+
+## Previous checkpoint — SPOT-09 Damsel's Revenge
 
 From actual main parent `9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86`.
 One finite consumable arms the stationary jailed Damsel with a frozen procedural
