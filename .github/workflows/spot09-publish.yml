@@ -1,0 +1,151 @@
+name: SPOT09 independent gate and publication
+on:
+  push:
+    branches: ['checkpoint/spot09-9b89fdd2']
+    paths: ['.github/workflows/spot09-publish.yml']
+permissions:
+  contents: write
+concurrency:
+  group: lod-main-checkpoint
+  cancel-in-progress: false
+jobs:
+  validate-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED_PARENT: 9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86
+      EXPECTED_TREE: 676345b7ec9a540d7d4e0e82c5f4a63885d66ea1
+      EXPECTED_SOURCE: cbefce017ade66d5b6a80c542e18319b8e0fa7fec4fee1f51d578fbacd3610ce
+      EXPECTED_PATCH: 3bf72b3ae10547f7a7cb241865b1f68a673158932c52252c854398935a6849ad
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 9b89fdd2cfb1eed7d4d9cb1e172b5d02f44a2d86
+          fetch-depth: 1
+      - name: Assemble exact candidate without infrastructure ancestry
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot09-evidence"
+          mkdir -p "$E"
+          test "$(git rev-parse HEAD)" = "$EXPECTED_PARENT"
+          test "$(git rev-parse HEAD^{tree})" = 5057b6798997533bf290a7f0576a670d9c88d347
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$EXPECTED_PARENT"
+          test -z "$(git status --porcelain)"
+          for sha in 8eb9666e04856a8b9fb12bc8f08e884e29bc8073 161005a2d636dcf98ca82ffb86777f42f0236e21 49c4fe842ff44106c7d632297fe6cbe3b12d28e3 cb15519dd933caacedb62aae0d121222731748ec 450a8473e4bb976f09f931bd917d88fb6717175c; do
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$sha" > "$E/blob-$sha.json"
+          done
+          python3 - <<'PY'
+          import os,json,base64,hashlib,lzma
+          from pathlib import Path
+          e=Path(os.environ['RUNNER_TEMP'])/'spot09-evidence'
+          shas=['8eb9666e04856a8b9fb12bc8f08e884e29bc8073','161005a2d636dcf98ca82ffb86777f42f0236e21','49c4fe842ff44106c7d632297fe6cbe3b12d28e3','cb15519dd933caacedb62aae0d121222731748ec','450a8473e4bb976f09f931bd917d88fb6717175c']
+          blobhash=lambda d:hashlib.sha1(b'blob '+str(len(d)).encode()+b'\0'+d).hexdigest()
+          data=b''
+          for i,sha in enumerate(shas):
+              row=json.loads((e/f'blob-{sha}.json').read_text())
+              part=base64.b64decode(row['content'])
+              assert blobhash(part)==sha
+              if i==0:
+                  encoded=base64.b64encode(part).decode()
+                  assert len(encoded)==12000 and encoded[2662:2671]=='dfLDJJdJQ'
+                  part=base64.b64decode(encoded[:2667]+encoded[2668:]+'t',validate=True)
+                  assert blobhash(part)=='66742e4a8e1c954d76f52d855cc782eac87d8f1c'
+                  (e/'transport-recovery.txt').write_text('The first unreferenced transport blob contained an extra Base64 J at zero-based index 2667; its dangling final t was dropped during decoding. Removed that exact J and restored t, then verified the original canonical Git blob SHA 66742e4a8e1c954d76f52d855cc782eac87d8f1c, complete XZ SHA256 and input patch SHA256. No changed candidate source was admitted.\n')
+              data+=part
+          assert len(data)==37248
+          assert hashlib.sha256(data).hexdigest()=='a24d6091e5a077da745a9ac642de2a0879ecb416e07fa5fea2be4046d96dc403'
+          patch=lzma.decompress(data)
+          assert hashlib.sha256(patch).hexdigest()=='6bdb64039c2d52d2f59d90006d086ffcff14429d528013982bcda3dfe47aed2f'
+          (e/'input.patch').write_bytes(patch)
+          PY
+          git apply --check "$E/input.patch"
+          git apply --index "$E/input.patch"
+          python3 tools/build_manual.py > "$E/manual-build.txt"
+          git add docs/manual/manual.html gamemodes/legend_of_deborah/gamemode/lod/manual/
+          git diff HEAD --check
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git ls-tree -r "$EXPECTED_TREE" > "$E/candidate-tree.txt"
+          git diff --cached --binary --full-index HEAD > "$E/candidate.patch"
+          echo "$EXPECTED_PATCH  $E/candidate.patch" | sha256sum -c -
+          git diff --cached --stat > "$E/candidate-stat.txt"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install finite gate dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0
+          python3 -m pip install Pillow
+      - name: Run unchanged-source independent gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot09-evidence"
+          python3 - <<'PY'
+          import os,json,hashlib,subprocess
+          from pathlib import Path
+          e=Path(os.environ['RUNNER_TEMP'])/'spot09-evidence'
+          names=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z']).decode().split('\0')
+          row={n:hashlib.sha256(Path(n).read_bytes()).hexdigest() for n in sorted(set(names)) if n and '__pycache__' not in n and Path(n).is_file()}
+          assert hashlib.sha256(json.dumps(row,sort_keys=True).encode()).hexdigest()==os.environ['EXPECTED_SOURCE']
+          (e/'before-source.json').write_text(json.dumps(row,sort_keys=True,indent=2)+'\n')
+          PY
+          python3 tools/test_spot09_gate.py --output "$E/gate" | tee "$E/gate-summary.txt"
+          python3 - <<'PY'
+          import os,json,hashlib,subprocess
+          from pathlib import Path
+          e=Path(os.environ['RUNNER_TEMP'])/'spot09-evidence'
+          r=json.loads((e/'gate/receipt.json').read_text())
+          assert r['passed']==r['total']==59 and r['lua_files']==740
+          assert not r['changed_during_gate']
+          assert r['source_before']==r['source_after']==os.environ['EXPECTED_SOURCE']
+          assert 'SPOT09_FOCUSED_PASS 477 assertions; plus 512 seeded reward cases' in (e/'gate/validate_spot09_revenge.lua.log').read_text()
+          assert not r['native_gmod_accepted']
+          names=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z']).decode().split('\0')
+          row={n:hashlib.sha256(Path(n).read_bytes()).hexdigest() for n in sorted(set(names)) if n and '__pycache__' not in n and Path(n).is_file()}
+          assert row==json.loads((e/'before-source.json').read_text())
+          assert hashlib.sha256(json.dumps(row,sort_keys=True).encode()).hexdigest()==os.environ['EXPECTED_SOURCE']
+          (e/'after-source.json').write_text(json.dumps(row,sort_keys=True,indent=2)+'\n')
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --exit-code
+          git diff HEAD --check
+      - name: Publish one authentic non-force main child and record evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot09-evidence"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$EXPECTED_PARENT"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "SPOT-09: add encounter-owned Damsel's Revenge"
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git cat-file commit HEAD > "$E/published-commit.txt"
+          git cat-file commit HEAD^ > "$E/parent-commit.txt"
+          git ls-tree -r HEAD > "$E/published-tree.txt"
+          git diff --binary --full-index HEAD^ HEAD > "$E/published.patch"
+          cmp "$E/candidate.patch" "$E/published.patch"
+          cmp "$E/candidate-tree.txt" "$E/published-tree.txt"
+          git archive --format=tar HEAD | gzip -n > "$E/published-source.tar.gz"
+          python3 - <<'PY'
+          import os,json,subprocess,hashlib
+          from pathlib import Path
+          e=Path(os.environ['RUNNER_TEMP'])/'spot09-evidence'
+          git=lambda *a:subprocess.check_output(['git',*a],text=True).strip()
+          row={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'remote_main_verified':True,'publication':'non-force fast-forward; fresh expected-parent checks before apply and push','source_sha256':os.environ['EXPECTED_SOURCE'],'patch_sha256':hashlib.sha256((e/'published.patch').read_bytes()).hexdigest(),'archive_sha256':hashlib.sha256((e/'published-source.tar.gz').read_bytes()).hexdigest(),'tracked_entries':len(git('ls-tree','-r','HEAD').splitlines()),'run_id':int(os.environ['GITHUB_RUN_ID']),'attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),'selected_suites':59,'focused_assertions':477,'seeded_reward_cases':512,'lua_syntax_files':740,'full_campaign_matrix':False,'native_gmod_accepted':False,'workshop_actions':False,'vps_actions':False}
+          assert row['tracked_entries']==2151 and row['patch_sha256']==os.environ['EXPECTED_PATCH']
+          (e/'publication.json').write_text(json.dumps(row,indent=2)+'\n')
+          print(json.dumps(row,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spot09-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/spot09-evidence/
+          retention-days: 14
+          if-no-files-found: error
