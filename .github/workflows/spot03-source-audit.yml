@@ -1,0 +1,26 @@
+name: SPOT-03 source audit
+on:
+  push:
+    branches: [checkpoint/spot03-audit-84c47a12]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 84c47a12bf723590b4098bdf0d9ff299240a9670
+          persist-credentials: false
+      - name: Archive exact tracked baseline only
+        run: |
+          mkdir -p /tmp/lod-source-audit
+          git rev-parse HEAD HEAD^{tree} > /tmp/lod-source-audit/revision.txt
+          git ls-tree -r HEAD > /tmp/lod-source-audit/tree.txt
+          git archive --format=tar.gz HEAD > /tmp/lod-source-audit/source.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot03-source-84c47a12
+          path: /tmp/lod-source-audit/
+          retention-days: 1
