@@ -1,34 +1,118 @@
-name: SPOT-06 recovery
+name: SPOT-06 independent validation
 on:
   push:
     branches: [checkpoint/spot06-recovery-664762a5]
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: spot06-independent-recovery
+  cancel-in-progress: false
 jobs:
-  snapshot:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
+    env:
+      PARENT: 664762a55d096c628ed5a2faff6da6c97c16cf03
+      EXPECTED_TREE: 95b9937b6dce2a618a6d0fd0f532a83334384776
+      EXPECTED_SOURCE: 9436aed4eaad4aabfae886bd10ac0800404c1c189b32c08934c1d5af885e7c4f
     steps:
       - uses: actions/checkout@v4
         with:
           ref: 664762a55d096c628ed5a2faff6da6c97c16cf03
           fetch-depth: 1
-          persist-credentials: false
-      - name: Freeze authoritative source
+      - name: Install finite gate dependencies
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = 664762a55d096c628ed5a2faff6da6c97c16cf03
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends liblua5.4-0
+          python3 -m venv "$RUNNER_TEMP/lod-venv"
+          "$RUNNER_TEMP/lod-venv/bin/python" -m pip install --disable-pip-version-check Pillow
+          echo "$RUNNER_TEMP/lod-venv/bin" >> "$GITHUB_PATH"
+      - name: Reconstruct and verify exact frozen candidate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PARENT"
           test "$(git rev-parse HEAD^{tree})" = 9faba937d888b33079719aa9b20d719fc01fbbd7
-          mkdir -p /tmp/spot06-source
-          git archive --format=tar.gz HEAD > /tmp/spot06-source/source.tar.gz
-          git rev-parse HEAD HEAD^{tree} > /tmp/spot06-source/identity.txt
-          git ls-tree -r HEAD > /tmp/spot06-source/tree.txt
-          git cat-file commit HEAD > /tmp/spot06-source/commit.txt
-          sha256sum /tmp/spot06-source/source.tar.gz > /tmp/spot06-source/SHA256SUMS
-      - uses: actions/upload-artifact@v4
+          parts=(baa413e0bb1163109e84249e9637dfab28332251 2d3894587349524381024bd17166eb1dde4f6cc6 bc0337cb7882b3e3a82bc198fc7368d73aecc213 c1428a7d5c65286bcd31dfddbfabef0ff17b167a)
+          : > "$RUNNER_TEMP/spot06.patch.xz"
+          for part in "${parts[@]}"; do
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$part" --jq .content | base64 --decode >> "$RUNNER_TEMP/spot06.patch.xz"
+          done
+          echo "ea40d04c64edea0c056168297ebf2d4370800a8549ae7b584b574f3cc8e3a727  $RUNNER_TEMP/spot06.patch.xz" | sha256sum --check
+          python3 - <<'PY'
+          import hashlib, lzma, os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP'])
+          patch = lzma.decompress((root/'spot06.patch.xz').read_bytes())
+          assert hashlib.sha256(patch).hexdigest() == 'f5e7f0303aa3c4a8bb3e4939b40dc20456b3fdc349a6e75b73fa131c5a241d1b'
+          (root/'spot06.patch').write_bytes(patch)
+          PY
+          git apply --check "$RUNNER_TEMP/spot06.patch"
+          git apply "$RUNNER_TEMP/spot06.patch"
+          python3 tools/build_manual.py
+          git add -A
+          git diff --cached --check
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+      - name: Run all 47 selected suites without changing source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_spot06_gate.py --workers 4 --output "$RUNNER_TEMP/spot06-gate"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ['RUNNER_TEMP'])/'spot06-gate'
+          receipt = json.loads((root/'receipt.json').read_text())
+          assert receipt['passed'] == receipt['total'] == 47
+          assert receipt['lua_files'] == 733
+          assert receipt['changed_during_gate'] == []
+          assert receipt['source_before'] == receipt['source_after'] == os.environ['EXPECTED_SOURCE']
+          assert receipt['native_gmod_accepted'] is False
+          log = (root/'validate_spot06_gordon.lua.log').read_text()
+          assert '116' in log and 'FAIL' not in log
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --exit-code
+      - name: Publish validated candidate branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PARENT"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: bound Gordon phase-one exposure and clarify cues (SPOT-06)'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          test -z "$(git status --porcelain)"
+          branch="checkpoint/spot06-validated-${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/$branch"
+          export CANDIDATE_BRANCH="$branch"
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          def git(*args): return subprocess.check_output(['git', *args], text=True).strip()
+          root = Path(os.environ['RUNNER_TEMP'])/'spot06-gate'
+          identity = {'parent': git('rev-parse','HEAD^'), 'tree': git('rev-parse','HEAD^{tree}'),
+                      'commit': git('rev-parse','HEAD'), 'branch': os.environ['CANDIDATE_BRANCH'],
+                      'source_snapshot': os.environ['EXPECTED_SOURCE'], 'workflow_run': os.environ['GITHUB_RUN_ID'],
+                      'main_updated': False, 'native_accepted': False, 'workshop_actions': False, 'vps_actions': False}
+          (root/'identity.json').write_text(json.dumps(identity, indent=2)+'\n')
+          (root/'commit.txt').write_bytes(subprocess.check_output(['git','cat-file','commit','HEAD']))
+          (root/'tree.txt').write_bytes(subprocess.check_output(['git','ls-tree','-r','HEAD']))
+          (root/'changes.txt').write_bytes(subprocess.check_output(['git','diff','HEAD^','HEAD','--stat']))
+          print(json.dumps(identity, indent=2))
+          PY
+      - name: Preserve independent evidence, including failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: lod-spot06-baseline-source
-          path: /tmp/spot06-source/
-          retention-days: 7
-          if-no-files-found: error
+          name: lod-spot06-independent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/spot06-gate/
+            ${{ runner.temp }}/spot06.patch.xz
+          retention-days: 30
+          if-no-files-found: warn
