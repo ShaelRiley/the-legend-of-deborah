@@ -1,0 +1,51 @@
+PASS stock target callback suppressed
+PASS stock remains suppressed with menu open
+PASS stock remains suppressed without local player
+PASS exact two-line text and independent centering
+PASS identity semantic roles and steady resource fraction
+PASS HP band 120/100
+PASS HP band 100/100
+PASS HP band 99/100
+PASS HP band 51/100
+PASS HP band 50/100
+PASS HP band 26/100
+PASS HP band 25/100
+PASS HP band 1/100
+PASS HP band 1/1
+PASS HP band 2/3
+PASS HP band 1/3
+PASS HP band 5/20
+PASS unknown maximum 0
+PASS unknown maximum -1
+PASS changing HP/max does not use stale cached numbers
+PASS embedded connector and numeric names retain roles
+PASS control characters and Unicode line separators stay inline
+PASS long UTF-8 names bounded at width 640
+PASS long UTF-8 names bounded at width 800
+PASS long UTF-8 names bounded at width 1280
+PASS long UTF-8 names bounded at width 1920
+PASS long UTF-8 names bounded at width 3840
+PASS short character name returns width to long nickname
+PASS layout cache invalidates on rename and resize
+PASS long-name layout reused without re-fitting each frame
+PASS blank procedural name uses existing character field
+PASS empty names get readable fallbacks
+PASS human Soldier uses active role not dormant Hero
+PASS Soldier viewer can read visible Hero
+PASS two Soldiers get same two-line readout
+PASS invalid local player
+PASS dead local player
+PASS invalid target
+PASS dead target
+PASS occluding prop/NPC
+PASS self target
+PASS no eye-trace entity
+PASS missing trace
+PASS dormant target
+PASS no-draw target
+PASS Veil-cloaked target
+PASS UI unavailable during initialization
+PASS expired Veil reveals normally
+PASS hot reload replaces hooks instead of duplicating
+PASS legacy role palette fallback
+PLAYER_TARGET_IDENTITY: 50 passed, 0 failed (50 cases)
