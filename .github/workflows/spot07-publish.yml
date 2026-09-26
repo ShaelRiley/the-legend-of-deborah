@@ -1,0 +1,135 @@
+name: SPOT-07 frozen-tree validation and publication
+on:
+  push:
+    branches: [checkpoint/spot07-c9ddf8cb]
+    paths: [.github/workflows/spot07-publish.yml]
+permissions:
+  contents: write
+concurrency:
+  group: lod-spot07-publication
+  cancel-in-progress: false
+jobs:
+  validate-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PARENT: c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d
+      EXPECTED_TREE: f2ac3408010b4667b49fa16248d78e8fb4608a88
+      EXPECTED_SOURCE: b8cf441f33a39a9f4b7cc79818e1ed6bc43084b7efe46b88419df8635a8bf2c8
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c9ddf8cb7d1952ce831d2fdb361c4092ebb85f7d
+          fetch-depth: 1
+          path: source
+      - name: Verify parent and acquire exact bounded patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          cd source
+          test "$(git rev-parse HEAD)" = "$PARENT"
+          test "$(git rev-parse HEAD^{tree})" = 95b9937b6dce2a618a6d0fd0f532a83334384776
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$PARENT"
+          cd ..
+          for sha in cf8a01012e0012f16fe8a8588000883ba2c5f5b9 f43ce154f09897e9ad59944745065066460364d3 d329c48d4700ae778b800ee28c68f8dd4cf33da5 038ca635511f5d7e7355d9e7bd30f3e526a0fb03; do
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$sha" > "evidence/blob-$sha.json"
+          done
+          python3 - <<'PY'
+          import base64,hashlib,json,lzma,pathlib
+          d=pathlib.Path('evidence')
+          shas=['cf8a01012e0012f16fe8a8588000883ba2c5f5b9','f43ce154f09897e9ad59944745065066460364d3','d329c48d4700ae778b800ee28c68f8dd4cf33da5','038ca635511f5d7e7355d9e7bd30f3e526a0fb03']
+          blocks=[]
+          for sha in shas:
+              obj=json.loads((d/('blob-'+sha+'.json')).read_text())
+              raw=base64.b64decode(obj['content'])
+              assert hashlib.sha1(('blob %d\0'%len(raw)).encode()+raw).hexdigest()==sha
+              blocks.append(raw)
+          packed=b''.join(blocks)
+          assert hashlib.sha256(packed).hexdigest()=='ef3abd11b4d0d4ebb5daab716591f5090de63347d8bb02f6d301d5094322e27d'
+          patch=lzma.decompress(packed)
+          assert hashlib.sha256(patch).hexdigest()=='f930f9c58a3dc57f0c05c44292a44542eb0af06341218f42410b0de30ea1f483'
+          (d/'candidate.patch').write_bytes(patch)
+          PY
+          cd source
+          git apply --check --index --unidiff-zero ../evidence/candidate.patch
+          git apply --index --unidiff-zero ../evidence/candidate.patch
+      - name: Install test dependencies and reproduce canonical manual
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq liblua5.4-0
+          python3 -m pip install --disable-pip-version-check Pillow
+          cd source
+          python3 tools/build_manual.py | tee ../evidence/manual-build.log
+          git add --all
+          git diff --cached --check
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git ls-tree -r "$EXPECTED_TREE" > ../evidence/candidate-tree.txt
+          git diff --cached --stat > ../evidence/candidate-stat.txt
+      - name: Independently execute the unchanged fifty-suite source gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd source
+          python3 tools/test_spot07_gate.py --output "$GITHUB_WORKSPACE/evidence/gate" | tee ../evidence/gate-run.log
+          python3 - <<'PY'
+          import json,os,pathlib
+          r=json.loads(pathlib.Path('../evidence/gate/receipt.json').read_text())
+          assert r['passed']==r['total']==50 and r['lua_files']==734
+          assert not r['changed_during_gate']
+          assert r['source_before']==r['source_after']==os.environ['EXPECTED_SOURCE']
+          log=pathlib.Path('../evidence/gate/validate_spot07_tells.lua.log').read_text()
+          assert 'SPOT07_TELLS_PASS 130/130' in log
+          log=pathlib.Path('../evidence/gate/validate_spot06_gordon.lua.log').read_text()
+          assert 'SPOT06' in log and '116/116' in log
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --exit-code
+          git diff --cached --check
+      - name: Publish one authentic child with a fresh non-force parent check
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd source
+          test "$(git rev-parse HEAD)" = "$PARENT"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$PARENT"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: gate Fake Gordon tells by observer Wisdom (SPOT-07)'
+          CHILD=$(git rev-parse HEAD)
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          test -z "$(git status --porcelain)"
+          git cat-file commit HEAD > ../evidence/published-commit.txt
+          git ls-tree -r HEAD > ../evidence/published-tree.txt
+          git diff --binary "$PARENT" HEAD > ../evidence/published-full.patch
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$PARENT"
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$CHILD"
+          gh api "repos/$GITHUB_REPOSITORY/git/commits/$CHILD" > ../evidence/remote-commit.json
+          gh api "repos/$GITHUB_REPOSITORY/branches/main" > ../evidence/remote-main.json
+          export CHILD
+          python3 - <<'PY'
+          import json,os,pathlib
+          d=pathlib.Path('../evidence')
+          c=json.loads((d/'remote-commit.json').read_text())
+          main=json.loads((d/'remote-main.json').read_text())
+          assert c['sha']==main['commit']['sha']==os.environ['CHILD']
+          assert c['tree']['sha']==os.environ['EXPECTED_TREE']
+          assert [p['sha'] for p in c['parents']]==[os.environ['PARENT']]
+          receipt={'child':c['sha'],'parent':os.environ['PARENT'],'tree':c['tree']['sha'],'source_sha256':os.environ['EXPECTED_SOURCE'],'run_id':os.environ['GITHUB_RUN_ID'],'run_attempt':os.environ['GITHUB_RUN_ATTEMPT'],'publication':'non-force fast-forward','selected_suites':50,'focused_assertions':130,'lua_syntax_files':734,'native_accepted':False,'workshop_or_vps_actions':False}
+          (d/'publication.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Preserve all independent evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lod-spot07-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
