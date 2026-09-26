@@ -13,8 +13,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: '789d63c843206061b416f0d108e7414e6aba0763'
-      - name: Install headless Lua runtime
-        run: sudo apt-get update -qq && sudo apt-get install -y liblua5.4-0
+      - name: Install headless test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0
+          python3 -m pip install Pillow
       - name: Verify frozen transport and reconstruct exact candidate
         env:
           GH_TOKEN: ${{ github.token }}
@@ -92,7 +95,8 @@ jobs:
             echo 'Independent selected gate: 38/38 PASS; focused production checks: 76/76; all 732 Lua files syntax checked.'
             echo 'This is not the full campaign matrix. B29 uses its explicitly bounded --runtime gate.'
             echo 'Initial failures and repairs remain in SPOT_05_ATTEMPTS.txt. Native GMod acceptance remains pending.'
-            echo 'First independent run 36252110757 stopped on four transcript trailing-whitespace lines before gameplay tests; those four lines are normalized without changing results. Production/test/manual bytes remain unchanged.'
+            echo 'First independent run 36252110757 stopped on four transcript trailing-whitespace lines before gameplay tests; those four lines are normalized without changing results.'
+            echo 'Second independent run 36252219596 passed 37/38: the asset test could not import PIL. This run adds Pillow and reruns the unchanged exact source tree. Prior failures are not counted as passes.'
             echo 'No Workshop or VPS actions.'
             git diff --stat HEAD^ HEAD
           } | tee /tmp/spot05-independent/publication-receipt.txt
