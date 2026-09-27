@@ -1,6 +1,33 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-13 unread-update markers
+## Current checkpoint — SPOT-14 Time Management
+
+Actual gameplay parent: `3b4df50fe001dd0dc7e2d7df9e3339a6bcceff13`.
+Time Management is an ordinary, one-rank INT 17 cooperative-Hero feat. Living,
+completed deployed holders add their positive effective INT modifier in minutes,
+once per identity. The existing deadline gains or loses only the difference in
+current party allowance. Death, disconnect and Soldier/spectator transitions remove
+allowance; return restores it only before expiry. Hourglass time remains independent.
+Same-dungeon internal build holds retain established non-growing allowance without
+refunding elapsed time; real lifecycle losses still win. Old expiry precedes gains,
+rescue and Hourglass debit. Rescue/new campaign reset to the ordinary paused clock.
+
+[Implementation, raw attempts and limits](validation/SPOT_14_TIME_MANAGEMENT.md):
+focused attempt 08 passed **258 production assertions**. The finite final contract is
+**87 selected suites**, retaining all 85 SPOT13 selections and adding ordinary-clock
+and SPOT14 integration tests. Exact final local/independent receipts and non-forced
+child/tree/run belong in the external delivery receipt, not an unrun pre-publication
+claim here. Live GDD 04/05/06/07, canonical manual and both generated readers align.
+Native timing, co-op/rejoin, appearance/font and balance acceptance remain open.
+
+**Next single bullet after verified publication: SPOT-15 — human Soldiers may open
+the team menu with F3 at any time to return to the Hero queue or spectate, with a
+visible hint.** Reconcile current role/queue/control/UI authority before code. Do not
+implement SPOT16/17 or deferred roadmap in that checkpoint. Preserve SPOT01-14,
+Float On at 1 Magic/s, B28/B29, Crate/P1-P4 and local acceptance -> Workshop parity
+-> matching VPS. No Workshop/VPS operation is authorized.
+
+## Previous checkpoint — SPOT-13 unread-update markers
 
 Actual gameplay parent: `795dd444144e4e733dea58e56b4302bcb648f1ba`.
 Character, Spellbook and Equipment now mark meaningful unseen updates with a

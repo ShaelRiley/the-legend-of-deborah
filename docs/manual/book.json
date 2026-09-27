@@ -21,7 +21,7 @@
       "steps": [
         "In staging, visit the Hermit. Choose Fighter, Rogue, or Wizard and settle your first feat choice. Collect your starter weapon.",
         "Press P to inspect your character. Use Equipment to choose gear, and I to set your spell. Read any unfamiliar effect before entering.",
-        "Use the portal. The first Hero entering each dungeon starts its 30:00 collapse clock.",
+        "Use the portal. The first Hero entering each dungeon starts its base 30:00 collapse clock, plus any active Time Management allowance.",
         "Find the cards and open their gates: Red, Blue, Yellow, then Black. Neil carries the Black Keycard.",
         "Defeat Gordon; at Level 20, also defeat Hector’s Director’s Heart in the court. Collect the Jail Key at the arena center, open the rescue chamber, then touch or use the current damsel to complete the level. From Level 21, recover the marked cash case instead."
       ],
@@ -124,8 +124,9 @@
       "title": "Thirty minutes. One campaign.",
       "art": "deborah:5",
       "text": [
-        "Each dungeon has 1,800 seconds. Its clock starts when the first Hero commits to entering the labyrinth. A successful rescue resets the next dungeon clock to 30:00; it stays paused through staging until the first Hero enters.",
-        "Death, Tetris, menus, map use, staging visits, spectating, and disconnections do not pause or extend this clock. An empty server does not bank extra time for your return.",
+        "Each dungeon has a base 1,800 seconds. Its clock starts when the first Hero commits to entering the labyrinth. A successful rescue resets the next dungeon clock to 30:00, clearing the previous dungeon’s temporary allowances; it stays paused through staging until the first Hero enters.",
+        "Death, Tetris, menus, map use, staging visits, spectating, and disconnections never pause this clock. Magic Hourglasses permanently add time to the current dungeon. Time Management is different: each living, deployed holder adds their positive effective INT modifier in minutes only while present. An empty server does not bank extra time for your return.",
+        "Time Management requires INT 17 through the ordinary feat rules and is for cooperative Heroes only. Its allowance follows current effective INT, including equipment: INT 17 contributes three minutes, INT 18 contributes four. Different Heroes stack without a distance or floor limit. Menus and ordinary status/resource changes do not remove a present holder. Death, disconnection, staging, spectating or Soldier play removes that holder’s allowance without taking anyone else’s allowance or Hourglass time. Losing an allowance can cause TIME OVER immediately. Returning or respawning before expiry restores only the current allowance; elapsed time is never refunded, repeated joins never stack, and nothing revives an expired clock. There is no Magic cost.",
         "At zero, a seven-second prison demolition ends in GAME OVER: THE PRISON HAS COLLAPSED. A fresh campaign starts automatically 20 seconds after the collapse finishes. After five seconds of aftermath, PRESS E TO START A NEW GAME restarts sooner at Dungeon 1 with a fresh clock and roster.",
         "A rescue completed earlier in the campaign does not exempt the party from the eventual timeout."
       ],

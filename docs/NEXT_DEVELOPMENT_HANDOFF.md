@@ -1,4 +1,55 @@
-# Resume The Legend of Deborah — SPOT-14 Time Management
+# Resume The Legend of Deborah — SPOT-15 Soldier F3 team menu
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT14 external
+receipt supplies verified published child/tree/source/run. Actual SPOT14 gameplay
+parent is `3b4df50fe001dd0dc7e2d7df9e3339a6bcceff13`, historical rather than a new HEAD.
+Fetch current main, preserve intervening/uncommitted work, and never use an isolated
+workflow trigger or reconstruction anchor as gameplay ancestry.
+
+Read AGENTS.md -> docs/DEVELOPMENT_PLAN.md -> this handoff ->
+docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_14_TIME_MANAGEMENT.md ->
+docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
+00 -> 01 -> relevant normalized Soldier/queue/lifecycle/UI/control and tuning law.
+Only retrieve exact HUMAN fragments for missing normalized details. Do not duplicate
+the already-written SPOT14 supplements in 04/05/06/07 or SPOT13 unread rules.
+
+SPOT14 implements INT_TIME_MANAGEMENT (ordinary one-rank INT17 Hero-only): one minute
+per positive current effective INT modifier while living and completed deployed.
+Different Hero identities stack. The clock applies only the difference in current
+allowance; no repeated join/respawn/sync grants and no recovery of elapsed time.
+Real death, disconnect, identity/role/slot loss and elimination remove allowance.
+Return restores the current amount only before expiry. Internal same-dungeon build
+holds retain a non-growing established allowance, never overriding genuine losses.
+Old deadline expiry wins before any gain, rescue or Hourglass debit. Removing a holder
+can itself trigger TIME OVER. Hourglass seconds are independent; rescue/new campaign
+clear old records and pause at base 30:00. No new timer/channel/world scan/owner/store.
+
+Focused attempt08 passed258 assertions. The final contract is87 selected suites,
+retaining all85 SPOT13 selections; exact final results and publication are external
+receipt facts, not assumed by this source document. Failed fixtures/preparation and
+all historical failures remain preserved. Native timing/co-op/rejoin/appearance and
+balance, the full campaign matrix and the existing full Gate-B perkDisplayName
+identity diagnostic are not accepted by headless tests. Manual/catalog/readers align.
+
+Implement only SPOT15: allow human Soldiers to open the team menu with F3 at any time
+and choose the Hero queue or spectating, with a visible hint. Reconcile ordinary
+queued return, incarnation retirement, restrictions during genuine lifecycle locks,
+and server authority before changing code. Preserve existing Hero choices and avoid
+new Soldier progression choices or duplicated queue/role/control owners. Define a
+finite actual-production test, retain relevant regressions/manual/syntax, then bank
+one independently verified non-forced checkpoint. No SPOT16 pulse-rifle replacement,
+SPOT17 movement restrictions or deferred roadmap implementation in this checkpoint.
+
+Preserve SPOT01-14, four-choice stored drafts, Float On six seconds at1 Magic/s,
+B28/B29, accepted Crate appearance and P1-P4. Native evidence: console_latest.txt +
+rpg_summary_latest.txt and short exact-build gm_flatgrass observation; detailed
+session only for timing. No dedicated Razor retest. Local acceptance -> Workshop
+3791535712 package/source parity -> matching VPS. No Workshop/VPS action occurred
+or is implicitly authorized. Supply a fresh handoff when this conversation grows.
+
+---
+
+# Historical handoff — SPOT-14 Time Management
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT-13 delivery
 receipt supplies the verified child/tree/source/independent run. Its actual

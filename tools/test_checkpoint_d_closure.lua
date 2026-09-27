@@ -99,6 +99,7 @@ end
 
 -- 1. Canonical Inventory Specification (Audited against live GDD revision ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q)
 local CANONICAL_FEATS = {
+    INT_TIME_MANAGEMENT = {ability = "int", req = {int = 17}, prereq = {}, family = "int_time_management", rank = 1, replaces = false},
     CROSS_METEOR_STRIKE = {ability = "str", req = {str = 15, int = 15}, prereq = {"STR_CROWBAR_D6", "INT_CLOUD_STEP"}, family = "cross_meteor_strike", rank = 1, replaces = false},
     CROSS_TINY_TERROR = {ability = "dex", req = {dex = 15, cha = 15}, prereq = {"DEX_SHRINK", "CHA_MENACE_1"}, family = "cross_tiny_terror", rank = 1, replaces = false},
     CROSS_BIG_SCARY = {ability = "con", req = {con = 15, str = 13, cha = 15}, prereq = {"CON_BIG_GUY", "CHA_MENACE_1"}, family = "cross_big_scary", rank = 1, replaces = false},
@@ -329,6 +330,7 @@ check(#replacementMismatches == 0, "Replacement Ladder Mismatch IDs: " .. table.
 -- Focused integrated suites exercise arithmetic and event producers separately.
 local S, X, M = LOD.RPGStatusElements, LOD.RPGCrossFeats, LOD.MagicProgression
 local consumers = {
+    time_management = Effects.TimeManagementSeconds,
     academic_magic_regeneration = Effects.AcademicMagicRegenMultiplier,
     aggressive_personality_damage = RPG.ObserveDirectChaDamage,
     ammo_regeneration_floor = Effects.AmmoRegenProfile,
@@ -455,7 +457,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 135 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 136 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

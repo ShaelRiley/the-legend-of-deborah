@@ -3,6 +3,7 @@
 local Catalog = LOD.RPG.IdentityCatalog
 local function percent(v) return math.floor(v * 100 + .5) end
 local cards = {
+    INT_TIME_MANAGEMENT = Catalog.OrdinaryFeats.INT_TIME_MANAGEMENT.effectParams.description,
     CHA_ACADEMIC_ACHIEVEMENT = 'Add your positive CHA modifier to your INT modifier when calculating passive Magic regeneration. Regeneration must be permitted.',
     CHA_AGGRESSIVE_PERSONALITY = 'Your next physical attack adds your positive CHA modifier as damage to each target. Cooldown: 1d3 seconds; these timing dice do not explode.',
     CHA_PANIC = 'When an enemy fails Morale against you, AI enemies below half HP within 2 connected cells make a Morale check. This cannot cascade again; each target is immune to cascades for 3 seconds.',

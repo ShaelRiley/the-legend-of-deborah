@@ -12,7 +12,109 @@ function T:Clock()
     return s.CampaignClock
 end
 
+-- SPOT-14: this is a reversible component of this exact clock, not an extension
+-- transaction. Only bodies admitted at completed deployment enter this bounded
+-- map. The ordinary service inspects it; no connected-player/world scan is added.
+function T:TimeManagementPresence(ply, record)
+    local s = Run.State
+    local ps = IsValid(ply) and Run:GetPlayerState(ply) or nil
+    if not ps or not ply:IsPlayer() or ply.LODTimeManagementDisconnected
+        or not ply:Alive() or ply.LODHandledRunDeath or ps.eliminated or (ps.lives or 0) <= 0
+        or ps ~= record.ps or ps.progressionState ~= record.progression
+        or ps.heroSerial ~= record.heroSerial or Run:IdentityOf(ply) ~= record.identity
+        or Run:IsSoldierControl(ply) or not Run:IsDungeonPlayer(ply)
+        or ps.deploymentComplete ~= true or ps.deployedDungeonLevel ~= s.Level then
+        record.heldSeconds = nil
+        return false
+    end
+    -- Internal same-dungeon reconstruction may temporarily Spectate/Spawn an
+    -- otherwise present Hero. Real death/role/disconnect invalidation above still
+    -- wins; a completed deployment replaces this frozen, never-growing value.
+    if record.heldSeconds ~= nil then return true end
+    return s.BuildReady == true and s.Graph ~= nil and ps.respawnAt == nil
+        and ply.LODRunInventoryReady == true and ply.LODRunSpawnSerial == record.life
+        and ply:GetObserverMode() == OBS_MODE_NONE and not ply:GetNW2Bool("LOD_Staged", false)
+        and ply:GetNW2Bool("LOD_Deployed", false)
+end
+
+function T:RegisterTimeManagement(ply)
+    local ps = IsValid(ply) and Run:GetPlayerState(ply) or nil
+    if not ps or not ps.progressionState then return false end
+    local record = {ps=ps, progression=ps.progressionState, heroSerial=ps.heroSerial,
+        identity=Run:IdentityOf(ply), life=ply.LODRunSpawnSerial, seconds=0}
+    if not record.identity or not self:TimeManagementPresence(ply, record) then return false end
+    local c = self:Clock()
+    c.timeManagementActors = c.timeManagementActors or {}
+    c.timeManagementActors[ply] = record
+    return true
+end
+
+function T:ReconcileTimeManagement()
+    local s, c, now = Run.State, self:Clock(), SysTime()
+    -- Crucially, never let a late stat/role/join update revive an expired clock.
+    if c.reconcilingTimeManagement or not c.deadline or c.scene or s.Failed or s.LevelCleared
+        or now >= c.deadline then return false end
+    c.reconcilingTimeManagement = true
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    local identities, recipients, total = {}, {}, 0
+    for ply, record in pairs(c.timeManagementActors or {}) do
+        local value = 0
+        if self:TimeManagementPresence(ply, record) and effects and effects.TimeManagementSeconds then
+            value = effects:TimeManagementSeconds(record.progression)
+            if record.heldSeconds ~= nil then
+                -- A hold is a ceiling, never immunity to real ownership/stat loss.
+                record.heldSeconds = math.min(record.heldSeconds, value)
+                value = record.heldSeconds
+            end
+        end
+        record.seconds = value
+        -- A duplicated identity/body can never stack with itself. Ordinary
+        -- RunManager admission still owns the actual player/role slot.
+        identities[record.identity] = math.max(identities[record.identity] or 0, value)
+        if IsValid(ply) and not ply.LODTimeManagementDisconnected then
+            recipients[#recipients+1] = ply
+        else
+            c.timeManagementActors[ply] = nil
+        end
+    end
+    for _, seconds in pairs(identities) do total = total + seconds end
+    local delta = total - (c.timeManagementSeconds or 0)
+    c.timeManagementSeconds = total
+    c.deadline = c.deadline + delta
+    c.reconcilingTimeManagement = nil
+    if delta == 0 then return false end
+    local remaining = self:Remaining(c, now)
+    for threshold in pairs(c.warned or {}) do
+        if remaining > threshold then c.warned[threshold] = nil end
+    end
+    local fields = {event="time_management_changed", seconds=delta, allowance=total,
+        remaining=remaining, epoch=s.CampaignEpoch, level=s.Level}
+    log("TIME_MANAGEMENT_CHANGED", fields)
+    local rolls = LOD.CombatRolls
+    if rolls and rolls._Send and #recipients > 0 then
+        rolls:_Send(recipients, 3, string.format("TIME MANAGEMENT — %+.0f seconds; party allowance %.0f minutes", delta, total/60),
+            "resource", fields)
+    end
+    return true
+end
+
+function T:RefreshTimeManagement()
+    local changed = self:ReconcileTimeManagement()
+    if self:Expire() then return end
+    if changed then self:Sync() end
+end
+
+function T:HoldTimeManagementForBuild()
+    -- The pre-build expiry guard already reconciled the last actual presence.
+    local c = self:Clock()
+    if not c.deadline or c.scene or Run.State.Failed or Run.State.LevelCleared then return end
+    for ply, record in pairs(c.timeManagementActors or {}) do
+        if self:TimeManagementPresence(ply, record) then record.heldSeconds = record.seconds end
+    end
+end
+
 function T:Sync(ply)
+    if self:Expire() then return end
     local c, now = self:Clock(), SysTime()
     local scene = c.scene
     net.Start(self.Message)
@@ -37,16 +139,26 @@ end
 
 function T:Start(ply)
     local s, c = Run.State, self:Clock()
-    if c.deadline or s.Failed or not s.BuildReady or s.LevelCleared
+    self:Expire()
+    if s.Failed or c.scene or not s.BuildReady or s.LevelCleared
         or not Run:IsDungeonPlayer(ply) or Run:IsSoldierControl(ply) then return false end
+    if c.deadline then
+        self:RegisterTimeManagement(ply)
+        self:RefreshTimeManagement()
+        return false -- a later deployment still never restarts the clock
+    end
     c.deadline = SysTime() + self.Duration
+    self:RegisterTimeManagement(ply)
+    self:ReconcileTimeManagement()
     -- Keep only the cheap clock alive on an empty dedicated server. Ordinary AI
     -- still uses RunManager's SimulationFrozen contract. SysTime also survives
     -- any engine hibernation gap; reconnect checks precede Hero activation.
     local cv = GetConVar("sv_hibernate_think")
     if cv and not cv:GetBool() then c.restoreHibernate = true; RunConsoleCommand("sv_hibernate_think", "1") end
     self:Sync()
-    LOD.ProgressionDirector:Announce("PRISON COLLAPSE IN 30:00 — DUNGEON CLOCK STARTED")
+    local seconds = math.ceil(self:Remaining(c, SysTime()))
+    LOD.ProgressionDirector:Announce(string.format("PRISON COLLAPSE IN %02d:%02d — DUNGEON CLOCK STARTED",
+        math.floor(seconds/60), seconds%60))
     log("CAMPAIGN_CLOCK_START", {epoch=s.CampaignEpoch, level=s.Level, duration=self.Duration})
     return true
 end
@@ -69,6 +181,7 @@ end
 
 -- A source captures the exact live clock, not just a duration or campaign ID.
 function T:ExtensionBinding()
+    self:Expire()
     local s=Run.State
     return {run=s,clock=self:Clock(),graph=s.Graph,levelSeed=s.LevelSeed,
         deadline=self:Clock().deadline}
@@ -77,6 +190,7 @@ end
 -- Trusted synchronous transaction: commit validates/debits its source and then
 -- returns the rolled seconds. No networking or deferred work precedes mutation.
 function T:TryExtend(binding,commit)
+    self:Expire()
     local s,c=Run.State,self:Clock()
     if not binding or binding.run~=s or binding.clock~=c or binding.graph~=s.Graph
         or binding.levelSeed~=s.LevelSeed or binding.deadline~=c.deadline
@@ -112,6 +226,7 @@ function T:Bounds()
 end
 
 function T:Expire()
+    self:ReconcileTimeManagement()
     local s, c = Run.State, self:Clock()
     if c.scene or s.Failed or not c.deadline or SysTime() < c.deadline then return false end
     local center, radius, ground = self:Bounds()
@@ -278,6 +393,7 @@ for _,name in ipairs({"CompleteLevel","AdvanceLevel","BuildCurrentLevel","TryAct
     Run[name]=function(self,...)
         T:Expire()
         if T:Clock().scene then return false,"TIME OVER" end
+        if name == "BuildCurrentLevel" then T:HoldTimeManagementForBuild() end
         local ok,result=base(self,...)
         if name == "CompleteLevel" and ok then T:ResetAfterRescue() end
         return ok,result
@@ -291,7 +407,38 @@ function Run:NewCampaign(...)
     return ok,result
 end
 
+-- The normal spawn adapter returns only after Hero equipment/health, spectator
+-- exit and position have committed. Initial staging uses Start at its own actual
+-- deployment boundary. Neither early SyncPlayer nor PlayerSpawn can admit time.
+local applyPlayerState = Run.ApplyPlayerState
+function Run:ApplyPlayerState(ply, ...)
+    T:Expire()
+    if T:Clock().scene then return false, "TIME OVER" end
+    local ok, result = applyPlayerState(self, ply, ...)
+    if IsValid(ply) and ply:Alive() and ply.LODRunInventoryReady == true
+        and not ply.LODHandledRunDeath and ply:GetObserverMode() == OBS_MODE_NONE
+        and ply:GetNW2Bool("LOD_Deployed", false) and not ply:GetNW2Bool("LOD_Staged", false) then
+        T:Start(ply)
+    end
+    return ok, result
+end
+local progression = LOD.CharacterProgressionSystem
+if progression then
+    local syncPlayer = progression.SyncPlayer
+    function progression:SyncPlayer(ply, ...)
+        local ok, result = syncPlayer(self, ply, ...)
+        T:RefreshTimeManagement()
+        return ok, result
+    end
+end
+hook.Add("PlayerDisconnected", "LOD_CampaignClockLeave", function(ply)
+    -- Set this even while the native entity is still valid. Later stale callbacks
+    -- cannot readmit it; any replacement connection owns a different entity.
+    ply.LODTimeManagementDisconnected = true
+    T:RefreshTimeManagement()
+end)
 hook.Add("PlayerInitialSpawn","LOD_CampaignClockJoin",function(ply)
+    ply.LODTimeManagementDisconnected = nil
     T:Expire()
     timer.Simple(1,function() if IsValid(ply) then T:Sync(ply) end end)
 end)
@@ -336,6 +483,8 @@ end)
 concommand.Add("lod_campaign_clock_status",function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
     local c=T:Clock()
+    T:Expire()
+    print(string.format("[LOD:CLOCK] allowance=%d seconds", c.timeManagementSeconds or 0))
     print(string.format("[LOD:CLOCK] epoch=%d level=%d started=%s remaining=%.2f timeout=%s ready=%s physics=%d",
         Run.State.CampaignEpoch or 0,Run.State.Level or 1,tostring(c.deadline~=nil),T:Remaining(c,SysTime()),
         tostring(c.scene~=nil),tostring(c.scene and c.scene.ready==true),c.scene and #c.scene.props or 0))

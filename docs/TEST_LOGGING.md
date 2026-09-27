@@ -1,3 +1,24 @@
+# SPOT-14 Time Management gate
+
+Use `python3 tools/test_spot14_gate.py --output /outside/source/empty-dir --suite-timeout 120 --workers 2`.
+Retains all 85 SPOT13 selections and adds ordinary campaign-clock and actual SPOT14
+integration suites (87 total). Focused attempt08 passes258 production assertions;
+final aggregate/source/publication facts belong in the delivery receipt. Do not treat
+preparation, failed fixtures or prior interrupted gates as passes. Evidence and
+limits: [SPOT14 validation](validation/SPOT_14_TIME_MANAGEMENT.md).
+
+On the exact restarted gm_flatgrass build, a deployed living INT17 holder adds three
+minutes. A real death/return should remove/restore only that allowance while time
+remains. Check another holder and Hourglass time remain intact. The existing admin
+`lod_campaign_clock_status` prints both effective remaining time and party allowance;
+`TIME_MANAGEMENT_CHANGED` records signed delta, current allowance and effective
+remaining time. No event is emitted for an unchanged allowance. Return the usual
+console_latest.txt + rpg_summary_latest.txt and short exact-build observation.
+Detailed session only for timing; no dedicated Razor retest. Native timing/co-op,
+full campaign and full Gate-B identity acceptance remain open. No Workshop/VPS action.
+
+---
+
 # SPOT-12 Spellbook availability gate
 
 Use `python3 tools/test_spot12_gate.py --output /outside/source/empty-dir --suite-timeout 120 --workers 2`.

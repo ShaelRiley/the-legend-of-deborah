@@ -294,4 +294,4 @@ assert(#wearer.ps.progressionState.featIds==0,'Equipment mutated permanent feat 
 
 print('PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution')
 -- Reuse these Source boundaries for the real SQLite wallet integration gate.
-return {actor=actor,Run=Run,hooks=hooks,timers=timers}
+return {actor=actor,Run=Run,hooks=hooks,timers=timers,syncPlayer=SyncOriginal}
