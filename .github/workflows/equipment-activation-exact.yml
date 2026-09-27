@@ -1,0 +1,147 @@
+name: Equipment activation exact-source verification
+on:
+  push:
+    branches: ['automation/equipment-activation-38adbce4']
+    paths: ['.github/workflows/equipment-activation-exact.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 38adbce415ae6dd388c28a450bb9cd3b7a8248d2
+          fetch-depth: 1
+          path: candidate
+      - uses: actions/checkout@v4
+        with:
+          ref: 596ffc4ad9902747d28171bb01a80aac54ad343e
+          fetch-depth: 1
+          path: transport
+          sparse-checkout: .github/equipment-transport
+      - name: Install finite-gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/equipment-venv"
+          "$RUNNER_TEMP/equipment-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/equipment-venv/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/equipment-evidence"
+          echo "EVIDENCE=$RUNNER_TEMP/equipment-evidence" >> "$GITHUB_ENV"
+      - name: Decode only the reviewed checksummed patches
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,hashlib,json,lzma,os,pathlib
+          body=pathlib.Path('../transport/.github/equipment-transport/changes.lzma.b64').read_bytes()
+          assert hashlib.sha256(body).hexdigest()=='530b40ad9eea6b27c8d565d4d88eb5bfe7fc8e9c79593e8afc1ca7528c766140'
+          patches=json.loads(lzma.decompress(base64.b64decode(body.strip(),validate=True)))
+          expected={'stomp':'45f1f9e512fccdd89633c5491d32d59134dd29855866f274f05fe39c4a7d40d7','arrows':'865c43a8b6e007077e9922df0ab26d123a4c50a3d41b05205535d73b9dca821b'}
+          assert set(patches)==set(expected)
+          out=pathlib.Path(os.environ['EVIDENCE'])
+          for name,digest in expected.items():
+              patch=patches[name].encode('utf-8')
+              assert hashlib.sha256(patch).hexdigest()==digest
+              (out/(name+'.patch')).write_bytes(patch)
+          PY
+      - name: Validate the separate Heavy Plumber checkpoint
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git apply --check --index "$EVIDENCE/stomp.patch"
+          git apply --index "$EVIDENCE/stomp.patch"
+          git diff --cached --check
+          test "$(git write-tree)" = 32ec37ffe276f4c2020ca49ccae06b0db002d6d8
+          python3 tools/run_lua54.py tools/test_heavy_plumber.lua 2>&1 | tee "$EVIDENCE/stomp-stage-original.log"
+          python3 tools/run_lua54.py tools/test_stomp_contact.lua 2>&1 | tee "$EVIDENCE/stomp-stage-contact.log"
+          git diff --exit-code
+          git -c user.name=OpenAI -c user.email=noreply@openai.com commit -m "Fix Heavy Plumber landing contact"
+          test "$(git rev-parse HEAD^)" = 38adbce415ae6dd388c28a450bb9cd3b7a8248d2
+          git rev-parse HEAD > "$EVIDENCE/stomp-commit.sha"
+          git cat-file commit HEAD > "$EVIDENCE/stomp-commit.txt"
+      - name: Apply the separate arrow-input checkpoint
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git apply --check --index "$EVIDENCE/arrows.patch"
+          git apply --index "$EVIDENCE/arrows.patch"
+          git diff --cached --check
+          test "$(git write-tree)" = 3f15979fffbc78f37458b7adcf4329fc8ba32984
+      - name: Reproduce all three intended failures on old production source
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess,sys
+          out=pathlib.Path(os.environ['EVIDENCE'])/'baseline';out.mkdir()
+          base='38adbce415ae6dd388c28a450bb9cd3b7a8248d2'
+          cases=[('test_stomp_contact.lua','sv_equipment_stomp.lua','A first upward-normal top contact'),('test_equipment_transport.lua','sv_equipment_moves.lua','Three valid UP packets in one server tick'),('test_special_move_end_to_end.lua','sv_equipment_moves.lua','Keyboard recipe must spawn the real paid Ember Fist projectile')]
+          rows=[]
+          for test,module,expected in cases:
+              target=pathlib.Path('gamemodes/legend_of_deborah/gamemode/lod')/module
+              saved=target.read_bytes()
+              try:
+                  target.write_bytes(subprocess.check_output(['git','show',base+':'+str(target)]))
+                  result=subprocess.run([sys.executable,'tools/run_lua54.py','tools/'+test],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=120)
+                  (out/(test+'.log')).write_bytes(result.stdout)
+                  assert result.returncode!=0 and expected.encode() in result.stdout,(test,result.stdout[-2000:])
+                  rows.append({'suite':test,'baseline':base,'production_module':str(target),'returncode':result.returncode,'expected_failure':expected,'log_sha256':hashlib.sha256(result.stdout).hexdigest()})
+                  print(test+': expected baseline assertion reproduced')
+              finally:
+                  target.write_bytes(saved)
+                  assert target.read_bytes()==saved
+          (out/'receipt.json').write_text(json.dumps(rows,indent=2)+'\n')
+          PY
+          git diff --exit-code
+      - name: Independent 114-suite frozen-source gate
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_equipment_activation_gate.py --output "$EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$EVIDENCE/independent.log"
+      - name: Publish only the exact validated non-forced two-commit child
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,pathlib
+          r=json.loads((pathlib.Path(os.environ['EVIDENCE'])/'independent/receipt.json').read_text())
+          assert r['passed']==r['total']==114 and r['lua_files']==763
+          assert not r['changed_during_gate']
+          assert r['source_before']==r['source_after']=='47bf79bfa684ada1c81cebf219b12c1ca4fc20616b0e90bdc81960d75afec4f2'
+          PY
+          test "$(git write-tree)" = 3f15979fffbc78f37458b7adcf4329fc8ba32984
+          git diff --exit-code
+          git -c user.name=OpenAI -c user.email=noreply@openai.com commit -m "Fix arrow-input equipment attack activation"
+          test "$(git rev-parse HEAD^)" = "$(cat "$EVIDENCE/stomp-commit.sha")"
+          test "$(git rev-parse HEAD^^)" = 38adbce415ae6dd388c28a450bb9cd3b7a8248d2
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = 38adbce415ae6dd388c28a450bb9cd3b7a8248d2
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git archive --format=tar.gz HEAD > "$EVIDENCE/published-source.tar.gz"
+          git ls-tree -r HEAD > "$EVIDENCE/published-tree.txt"
+          git cat-file commit HEAD > "$EVIDENCE/published-commit.txt"
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          r={'commit':git('rev-parse','HEAD'),'stomp_commit':git('rev-parse','HEAD^'),'base':git('rev-parse','HEAD^^'),'tree':git('rev-parse','HEAD^{tree}'),'stomp_tree':git('rev-parse','HEAD^^{tree}'),'selected_passed':114,'lua_syntax_files':763,'source_sha256':'47bf79bfa684ada1c81cebf219b12c1ca4fc20616b0e90bdc81960d75afec4f2','baseline_regressions_reproduced':3,'native_accepted':False,'workshop_published':False,'vps_deployed':False,'workflow_run':os.environ['GITHUB_RUN_ID']}
+          (pathlib.Path(os.environ['EVIDENCE'])/'publication.json').write_text(json.dumps(r,indent=2)+'\n')
+          print(json.dumps(r,indent=2))
+          PY
+      - name: Preserve results including failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: equipment-activation-exact-source-evidence
+          path: ${{ runner.temp }}/equipment-evidence/
+          if-no-files-found: error
