@@ -1,0 +1,60 @@
+name: SPOT-16 exact-source recovery and publication
+on:
+  push:
+    branches: ['automation/spot16-recovery-258c0ef6']
+    paths: ['.github/workflows/spot16-exact-source.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Install finite gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/spot16-venv"
+          "$RUNNER_TEMP/spot16-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/spot16-venv/bin" >> "$GITHUB_PATH"
+          node --version
+      - name: Preserve isolated transport before source checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SPOT16_EVIDENCE="$RUNNER_TEMP/spot16-evidence"
+          export SPOT16_PAYLOAD="$RUNNER_TEMP/spot16-payload.b64"
+          mkdir -p "$SPOT16_EVIDENCE"
+          echo "SPOT16_EVIDENCE=$SPOT16_EVIDENCE" >> "$GITHUB_ENV"
+          echo "SPOT16_PAYLOAD=$SPOT16_PAYLOAD" >> "$GITHUB_ENV"
+          cat .spot16/payload-*.b64 > "$SPOT16_PAYLOAD"
+          test "$(git hash-object .spot16/worker.py)" = 02676605c1ae966bd9b9276debfd15527dcd995a
+          cp .spot16/worker.py "$RUNNER_TEMP/spot16-worker.py"
+          cp .spot16/worker.py .github/workflows/spot16-exact-source.yml "$SPOT16_EVIDENCE/"
+      - name: Recover exact locally validated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot16-worker.py" prepare 2>&1 | tee "$SPOT16_EVIDENCE/preparation.log"
+      - name: Independent 93-suite frozen-source gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_spot16_gate.py --output "$SPOT16_EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$SPOT16_EVIDENCE/independent.log"
+      - name: Guarded non-forced main publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot16-worker.py" publish 2>&1 | tee "$SPOT16_EVIDENCE/publication.log"
+      - name: Preserve all independent output, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot16-exact-source-evidence
+          path: ${{ runner.temp }}/spot16-evidence/
+          if-no-files-found: error
