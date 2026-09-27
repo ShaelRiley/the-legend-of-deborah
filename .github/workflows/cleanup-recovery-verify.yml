@@ -1,13 +1,14 @@
-name: Stalled cleanup independent verification
+name: Stalled cleanup dependency repair and verification
 on:
   push:
     branches: [automation/cleanup-recovery-aa102cc3]
 permissions:
   contents: write
+  actions: read
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -15,7 +16,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Reconstruct exact candidate without changing main
+      - uses: actions/download-artifact@v4
+        with:
+          name: stalled-cleanup-independent-36350793930
+          run-id: 36350793930
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ runner.temp }}/cleanup-previous
+      - name: Reconstruct same frozen candidate without changing main
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/cleanup-proof"
@@ -27,19 +34,75 @@ jobs:
           git apply --index "$RUNNER_TEMP/cleanup.patch"
           git diff --cached --check
           test "$(git write-tree)" = ded2c87cd303d3eb1aa4fcf51798d7175c1ae7d2
-          git diff --cached --stat > "$RUNNER_TEMP/cleanup-proof/changes.txt"
           cp "$RUNNER_TEMP/cleanup.patch" "$RUNNER_TEMP/cleanup-proof/repair.patch"
           git rev-parse HEAD > "$RUNNER_TEMP/cleanup-proof/parent.txt"
           git write-tree > "$RUNNER_TEMP/cleanup-proof/tree.txt"
-      - name: Install validation dependencies
+      - name: Install complete validation dependencies including missing NumPy
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y liblua5.4-0 lua5.1
-          python3 -m pip install pillow
-      - name: Complete frozen-source regression matrix
+          python3 -m pip install pillow numpy
+      - name: Verify prior 263 passes and rerun the exact failed suite
         run: |
-          set -euo pipefail
-          python3 tools/test_checkpoint_g_integration.py --workers 4 --suite-timeout 1200 --output "$RUNNER_TEMP/cleanup-proof/full" | tee "$RUNNER_TEMP/cleanup-proof/matrix.log"
+          python3 - <<'PY'
+          import hashlib
+          import importlib.util
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          import time
+          prior = Path(os.environ['RUNNER_TEMP']) / 'cleanup-previous'
+          out = Path(os.environ['RUNNER_TEMP']) / 'cleanup-proof'
+          receipt_bytes = (prior / 'full/receipt.json').read_bytes()
+          assert hashlib.sha256(receipt_bytes).hexdigest() == 'b31cc676fc2d0b8cf11c594d0884c0fdbc0ce626d54f9d6a3f10713d20905580'
+          previous = json.loads(receipt_bytes)
+          expected = '17499468edcf5c2c49369568834dcaa147043ac0ef341bcb6db441d821b66803'
+          assert previous['total'] == 264 and previous['passed'] == 263
+          assert previous['source_before'] == expected == previous['source_after']
+          assert not previous['changed_during_gate'] and previous['lua_files'] == 767
+          spec = importlib.util.spec_from_file_location('matrix', 'tools/test_checkpoint_g_integration.py')
+          matrix = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(matrix)
+          before = matrix.source_snapshot()
+          assert matrix.snapshot_digest(before) == expected
+          assert len(matrix.SUITES) == 264 == len(previous['results'])
+          failed = []
+          for row, (name, command) in zip(previous['results'], matrix.SUITES):
+              assert row['name'] == name and row['command'] == command
+              for kind in ('stdout', 'stderr'):
+                  data = (prior / 'full' / (row['log_prefix'] + '.' + kind + '.txt')).read_bytes()
+                  assert hashlib.sha256(data).hexdigest() == row[kind + '_sha256']
+              if row['returncode'] != 0:
+                  failed.append(row)
+          assert len(failed) == 1 and failed[0]['name'] == 'Great Crate Stock Hull Assets'
+          reruns = []
+          for old in failed:
+              start = time.monotonic()
+              result = subprocess.run(old['command'], capture_output=True, timeout=1200)
+              row = dict(old, returncode=result.returncode, seconds=round(time.monotonic()-start, 3))
+              for kind, data in [('stdout', result.stdout), ('stderr', result.stderr)]:
+                  (out / ('rerun-' + old['log_prefix'] + '.' + kind + '.txt')).write_bytes(data)
+                  row[kind + '_sha256'] = hashlib.sha256(data).hexdigest()
+              reruns.append(row)
+              print(result.stdout.decode(errors='replace'), end='')
+              print(result.stderr.decode(errors='replace'), end='')
+          after = matrix.source_snapshot()
+          changed = sorted(n for n in before.keys() | after.keys() if before.get(n) != after.get(n))
+          report = dict(full_run_id=36350793930, full_run_passed=263, full_run_total=264,
+              prior_receipt_sha256=hashlib.sha256(receipt_bytes).hexdigest(),
+              rerun_kind='missing-CI-dependency-only; exact unchanged source',
+              rerun_results=reruns,
+              coverage_passed=263+sum(row['returncode']==0 for row in reruns), coverage_total=264,
+              source_before=matrix.snapshot_digest(before), source_after=matrix.snapshot_digest(after),
+              changed_during_gate=changed, lua_files=len(matrix.LUA_FILES), native_gmod_accepted=False)
+          (out / 'combined-coverage.json').write_text(json.dumps(report, indent=2)+'\n')
+          (out / 'original-263-of-264-receipt.json').write_bytes(receipt_bytes)
+          (out / 'source_manifest.json').write_text(json.dumps(after, indent=2)+'\n')
+          assert report['coverage_passed'] == report['coverage_total'] == 264
+          assert report['source_after'] == expected and not changed
+          print('INDEPENDENT COVERAGE 264/264: 263 original passes + 1 dependency-corrected rerun; source_changed=0')
+          PY
       - name: Production Lua 5.1 syntax compatibility
         run: |
           set -euo pipefail
