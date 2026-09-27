@@ -1,0 +1,66 @@
+name: Stalled cleanup independent verification
+on:
+  push:
+    branches: [automation/cleanup-recovery-aa102cc3]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconstruct exact candidate without changing main
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/cleanup-proof"
+          cat .github/recovery/cleanup-aa102cc3/{1,2,3,4}.b64 | base64 --decode | gzip --decompress > "$RUNNER_TEMP/cleanup.patch"
+          echo "e257dba33665b8bc8c5bbdc7cda8535f1a91aa6b1f470297265873bb2d066348  $RUNNER_TEMP/cleanup.patch" | sha256sum --check
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = aa102cc31951d34937ebaa106314cfcfdb855a2f
+          git checkout --detach aa102cc31951d34937ebaa106314cfcfdb855a2f
+          git apply --index "$RUNNER_TEMP/cleanup.patch"
+          git diff --cached --check
+          test "$(git write-tree)" = ded2c87cd303d3eb1aa4fcf51798d7175c1ae7d2
+          git diff --cached --stat > "$RUNNER_TEMP/cleanup-proof/changes.txt"
+          cp "$RUNNER_TEMP/cleanup.patch" "$RUNNER_TEMP/cleanup-proof/repair.patch"
+          git rev-parse HEAD > "$RUNNER_TEMP/cleanup-proof/parent.txt"
+          git write-tree > "$RUNNER_TEMP/cleanup-proof/tree.txt"
+      - name: Install validation dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0 lua5.1
+          python3 -m pip install pillow
+      - name: Complete frozen-source regression matrix
+        run: |
+          set -euo pipefail
+          python3 tools/test_checkpoint_g_integration.py --workers 4 --suite-timeout 1200 --output "$RUNNER_TEMP/cleanup-proof/full" | tee "$RUNNER_TEMP/cleanup-proof/matrix.log"
+      - name: Production Lua 5.1 syntax compatibility
+        run: |
+          set -euo pipefail
+          find gamemodes lua -name '*.lua' -type f -print0 | sort -z | xargs -0 -n 1 luac5.1 -p
+          find gamemodes lua -name '*.lua' -type f | wc -l > "$RUNNER_TEMP/cleanup-proof/lua51-file-count.txt"
+      - name: Preserve tested candidate, never deploy or modify main
+        run: |
+          set -euo pipefail
+          test "$(git write-tree)" = ded2c87cd303d3eb1aa4fcf51798d7175c1ae7d2
+          git diff --quiet
+          git config user.name 'LoD recovery validation'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: recover stalled cleanup with lifecycle and loot regression guards'
+          test "$(git rev-parse HEAD^)" = aa102cc31951d34937ebaa106314cfcfdb855a2f
+          git push origin HEAD:refs/heads/validation/cleanup-recovered-aa102cc3
+          git rev-parse HEAD HEAD^{tree} HEAD^ > "$RUNNER_TEMP/cleanup-proof/candidate.txt"
+          git ls-remote origin refs/heads/main refs/heads/validation/cleanup-recovered-aa102cc3 > "$RUNNER_TEMP/cleanup-proof/remote-refs.txt"
+          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/cleanup-proof/validated-source.tar.gz"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stalled-cleanup-independent-${{ github.run_id }}
+          path: ${{ runner.temp }}/cleanup-proof
+          retention-days: 14
