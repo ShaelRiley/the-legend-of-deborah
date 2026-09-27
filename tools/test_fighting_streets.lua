@@ -197,3 +197,7 @@ assert(not E:Equipped(state,'left_hand'))
 assert(E:Equip(state,item.id,'left_hand'));_,grants=E:Contributions(state);assert(not grants.rebuff)
 assert(cast('ember_fist') and p.ps.magic==88,'Unowned Rebuff must not intercept the same recipe')
 print('FIGHTING_STREETS_PASS: paired economy, natural rewards, shared recipes, native projectile preflight/Think/impact, canonical damage/status, source and lifecycle rejection')
+
+return {player=p,enemy=b,ally=ally,state=state,item=item,reset=reset,
+    advance=function(dt) now=now+dt end,projectile=function() return created end,
+    hit=function(target) hit=target end}

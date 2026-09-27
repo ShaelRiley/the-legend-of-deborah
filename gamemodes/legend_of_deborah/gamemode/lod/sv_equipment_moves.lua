@@ -297,13 +297,30 @@ function E:DirectionToken(ply, token)
     return false
 end
 
+-- Receipt times are not physical key-press times: reliable packets may arrive
+-- together. Permit one maximum-length recipe (8 tokens) as a burst, retaining
+-- the existing 40-token/second sustained bound. Do not silently splice a dropped
+-- key into a later recipe; overload/malformed input clears only the live buffer.
 local rate=setmetatable({}, {__mode="k"})
+local values={"UP","DOWN","LEFT","RIGHT"}
+local function resetInput(ply)
+    local session=E.MoveSessions[ply]
+    if session and #session.tokens>0 then session.tokens={} end
+end
 net.Receive("LOD_SpecialMoveToken",function(bits,ply)
-    if bits ~= 3 or not IsValid(ply) then return end
+    if not IsValid(ply) then return end
+    -- Only the three-bit token is meaningful. Accept a bounded small envelope
+    -- rather than equating the callback's transport length with field width.
+    -- No strings, positions, costs or client-selected attacks are decoded.
+    if bits < 3 or bits > 16 then resetInput(ply);return end
     local token=net.ReadUInt(3)
-    if token == 0 then E:DirectionToken(ply,"RESET"); return end
-    if CurTime() < (rate[ply] or 0) then return end
-    rate[ply]=CurTime()+0.025 -- network abuse bound, below physical recipe cadence
-    local values={"UP","DOWN","LEFT","RIGHT"}
-    if values[token] then E:DirectionToken(ply,values[token]) end
+    if token ~= 0 and not values[token] then resetInput(ply);return end
+    local now=CurTime()
+    local bucket=rate[ply] or {at=now,credit=8}
+    bucket.credit=math.min(8,bucket.credit+math.max(0,now-bucket.at)*40)
+    bucket.at=now;rate[ply]=bucket
+    if bucket.credit<1 then resetInput(ply);return end
+    bucket.credit=bucket.credit-1
+    if token == 0 then resetInput(ply);return end
+    E:DirectionToken(ply,values[token])
 end)

@@ -101,3 +101,5 @@ local old=E:MoveSession(p);Run.State.LevelSeed=2
 assert(E:MoveSession(p)~=old,'Input/cooldowns bound to level identity')
 E:ClearTransient(p);assert(not E.MoveSessions[p])
 print('EQUIPMENT_MOVES_PASS: simultaneous grants; dedupe; costs/cooldowns; inactive, Held, Muted, Throwable and Soldier rejection; buffer reset; voluntary dash expiry; canonical area/damage/Push delegates')
+
+return {player=p,state=state,receivers=receivers,advance=function(dt) now=now+dt end}

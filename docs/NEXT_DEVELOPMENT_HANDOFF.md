@@ -1,3 +1,17 @@
+# Current overlay — Heavy Plumber and arrow-input equipment repairs
+
+September 27 author-requested spot fixes preserve main baseline
+`38adbce415ae6dd388c28a450bb9cd3b7a8248d2` and all Soldier/Reckless, standing-stair
+and SPOT-17 work. Read `docs/validation/EQUIPMENT_STOMP_CONTACT_20260927.md` and
+`docs/validation/EQUIPMENT_ARROW_INPUT_20260927.md`; fetch current main and use the
+external delivery receipt for exact published commits/tree and independent gate.
+First-impact stomp geometry and bounded ordered input transport extend their
+existing authorities without changing attack costs, damage or recipes. Native
+acceptance remains pending. No Workshop/VPS actions, full campaign-matrix pass,
+SPOT-18 or deferred-roadmap work is claimed. Historical sections follow.
+
+---
+
 # Resume The Legend of Deborah — SPOT-17 native acceptance
 
 ## Latest overlay — faction / Reckless damage repair
