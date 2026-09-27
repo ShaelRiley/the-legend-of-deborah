@@ -1,0 +1,100 @@
+name: Faction and Reckless exact-source verification
+on:
+  push:
+    branches: ['automation/faction-reckless-0f1e7092']
+    paths: ['.github/workflows/faction-reckless-exact.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0f1e7092644c9c3e5eede39263206b2b5850c707
+          fetch-depth: 1
+          path: candidate
+      - uses: actions/checkout@v4
+        with:
+          ref: f89b8990918e111b1605b656e763a4b6b0b5e36a
+          fetch-depth: 1
+          path: transport
+          sparse-checkout: .github/faction-transport
+      - name: Install finite-gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/faction-venv"
+          "$RUNNER_TEMP/faction-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/faction-venv/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/faction-evidence"
+          echo "EVIDENCE=$RUNNER_TEMP/faction-evidence" >> "$GITHUB_ENV"
+      - name: Apply only the reviewed checksummed patches
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,hashlib,lzma,os,pathlib,subprocess
+          root=pathlib.Path('../transport/.github/faction-transport')
+          evidence=pathlib.Path(os.environ['EVIDENCE'])
+          packed=b''.join((root/f'patch.{i}').read_bytes() for i in (1,2,3))
+          patch=lzma.decompress(base64.b64decode(packed,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='6a643837949f2eef2f6f1896d03d1d35e0a1dd4927e3b0d83b9b6d0440095e85'
+          fixture=(root/'fixture.patch').read_bytes()
+          assert hashlib.sha256(fixture).hexdigest()=='fe23c2a4ab138e598408f2f223ae29846e7e0d56955b5eedba42f83f3cdb5ef2'
+          for name,body in [('reviewed-original.patch',patch),('fixture.patch',fixture)]:
+              path=evidence/name;path.write_bytes(body)
+              subprocess.run(['git','apply','--check','--index',str(path)],check=True)
+              subprocess.run(['git','apply','--index',str(path)],check=True)
+          final=subprocess.check_output(['git','diff','--cached','--binary','--full-index'])
+          assert hashlib.sha256(final).hexdigest()=='63dba0c048c8c4cb7f1d8c031dbd286a863f949c1b65e3f0a09538d6475e7468'
+          (evidence/'repair.patch').write_bytes(final)
+          PY
+          git diff --cached --check
+          test "$(git write-tree)" = 77be5ef13f3f4f0509420409d4aefec8ea5f27fb
+      - name: Independent 108-suite frozen-source gate
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_faction_damage_gate.py --output "$EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$EVIDENCE/independent.log"
+      - name: Publish only the exact validated non-forced child
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,pathlib
+          r=json.loads((pathlib.Path(os.environ['EVIDENCE'])/'independent/receipt.json').read_text())
+          assert r['passed']==r['total']==108 and r['lua_files']==760
+          assert not r['changed_during_gate']
+          assert r['source_before']==r['source_after']=='7d54f81d2751f68ff94beae924e7b6f3eb7ed8a01bf333210ab685334a73126b'
+          PY
+          test "$(git write-tree)" = 77be5ef13f3f4f0509420409d4aefec8ea5f27fb
+          git diff --exit-code
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = 0f1e7092644c9c3e5eede39263206b2b5850c707
+          git -c user.name=OpenAI -c user.email=noreply@openai.com commit -m "Fix Soldier-Hero damage and Reckless friendly fire"
+          test "$(git rev-parse HEAD^)" = 0f1e7092644c9c3e5eede39263206b2b5850c707
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git archive --format=tar.gz HEAD > "$EVIDENCE/published-source.tar.gz"
+          git ls-tree -r HEAD > "$EVIDENCE/published-tree.txt"
+          git cat-file commit HEAD > "$EVIDENCE/published-commit.txt"
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          r={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'selected_passed':108,'lua_syntax_files':760,'source_sha256':'7d54f81d2751f68ff94beae924e7b6f3eb7ed8a01bf333210ab685334a73126b','native_accepted':False,'workshop_published':False,'vps_deployed':False,'workflow_run':os.environ['GITHUB_RUN_ID']}
+          (pathlib.Path(os.environ['EVIDENCE'])/'publication.json').write_text(json.dumps(r,indent=2)+'\n')
+          print(json.dumps(r,indent=2))
+          PY
+      - name: Preserve results including failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: faction-reckless-exact-source-evidence
+          path: ${{ runner.temp }}/faction-evidence/
+          if-no-files-found: error
