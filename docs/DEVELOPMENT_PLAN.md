@@ -1,3 +1,19 @@
+# Author-reported stair ceiling repair — native acceptance next
+
+September 27: the rear crossover lip now retracts 16 units, sharing its 48-unit
+width with the rail opening. Upright stair-step clearance increases from 80 to
+96 units; the existing standing hull, solid floors, treads and no-jump upper
+circulation remain. See validation/STAIR_HEADROOM_20260927.md for the failed
+baseline, finite regression and native limits. Final aggregate results and exact
+publication identity belong to the delivery receipt.
+
+After verified publication, update the local install and walk a fresh stair up,
+down and around its upper landing without crouching or jumping. This repair does
+not accept SPOT-17 or any earlier native debt, start deferred roadmap work, or
+authorize Workshop/VPS deployment. Earlier headers below remain historical.
+
+---
+
 # SPOT-17 source complete — spot queue complete; native acceptance next
 
 Human Soldiers now use the AI Soldier's configured base speed (currently 140),

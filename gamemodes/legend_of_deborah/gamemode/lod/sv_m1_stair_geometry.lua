@@ -19,10 +19,13 @@ local DIR_BY_NAME = {
 local OPPOSITE = {N = "S", S = "N", E = "W", W = "E"}
 local YAW = {E = 0, N = 90, W = 180, S = -90}
 
--- Keep the no-jump rear crossover broad enough to walk normally, but far enough
--- toward the rear edge that a standing player has generous headroom while
--- ascending beneath it. 64 units is twice the nominal 32-unit player hull width.
-local REAR_CROSSOVER_DEPTH = 64
+-- Reserve headroom for the full standing hull AND its upward stair-step sweep.
+-- At the shipping 384-rise/320-run/24-tread geometry, the old 64-unit deck
+-- left only 80 units over a supported 32-wide hull: standing fit, stepping did
+-- not have a full 72 + 18 unit envelope. Retracting the lip by 16 gives 96 units.
+-- The remaining 48-unit crossover still carries the full 32-unit walking hull
+-- with 8 units spare on each side. Its matching rail opening uses this same value.
+local REAR_CROSSOVER_DEPTH = 48
 
 local function spawnStaticBox(pos, ang, mins, maxs, kind)
     local ent = ents.Create("lod_static_box")
