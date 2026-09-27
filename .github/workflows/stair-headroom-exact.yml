@@ -1,0 +1,88 @@
+name: Standing stair headroom exact-source verification
+on:
+  push:
+    branches: ['automation/stair-headroom-aebd2bb0']
+    paths: ['.github/workflows/stair-headroom-exact.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: aebd2bb0083bb0b13b043486665342dfc1c084f0
+          fetch-depth: 1
+          path: candidate
+      - name: Install existing finite-gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/stair-venv"
+          "$RUNNER_TEMP/stair-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/stair-venv/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/stair-evidence"
+          echo "EVIDENCE=$RUNNER_TEMP/stair-evidence" >> "$GITHUB_ENV"
+      - name: Apply only the reviewed exact-source patch
+        working-directory: candidate
+        shell: bash
+        env:
+          PATCH_GZIP_BASE64: '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'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,gzip,hashlib,os,pathlib,subprocess
+          patch=gzip.decompress(base64.b64decode(os.environ['PATCH_GZIP_BASE64'],validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='0a50a4167b8a9baac2d228bfb32260b81d8113721743e172e62a99ccf80798f3'
+          path=pathlib.Path(os.environ['EVIDENCE'])/'repair.patch'
+          path.write_bytes(patch)
+          subprocess.run(['git','apply','--check','--index',str(path)],check=True)
+          subprocess.run(['git','apply','--index',str(path)],check=True)
+          PY
+          git diff --cached --check
+          test "$(git write-tree)" = 6147bb3efc373ba0255df90aa02fe5182671afdd
+      - name: Independent 99-suite frozen-source gate
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_stair_headroom_gate.py --output "$EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$EVIDENCE/independent.log"
+      - name: Publish only the exact validated non-forced child
+        working-directory: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,os,pathlib
+          r=json.loads((pathlib.Path(os.environ['EVIDENCE'])/'independent/receipt.json').read_text())
+          assert r['passed']==r['total']==99 and r['lua_files']==757
+          assert not r['changed_during_gate']
+          assert r['source_before']==r['source_after']=='7aaa39e242a9ffdd3e8ea9a0e070c8bdc0463bf3e0f59c77fe9124a2acfbd8fd'
+          PY
+          test "$(git write-tree)" = 6147bb3efc373ba0255df90aa02fe5182671afdd
+          git diff --exit-code
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = aebd2bb0083bb0b13b043486665342dfc1c084f0
+          git -c user.name=OpenAI -c user.email=noreply@openai.com commit -m "Fix standing stair headroom while preserving the upper crossover"
+          test "$(git rev-parse HEAD^)" = aebd2bb0083bb0b13b043486665342dfc1c084f0
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git archive --format=tar.gz HEAD > "$EVIDENCE/published-source.tar.gz"
+          git ls-tree -r HEAD > "$EVIDENCE/published-tree.txt"
+          git cat-file commit HEAD > "$EVIDENCE/published-commit.txt"
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          r={'commit':git('rev-parse','HEAD'),'parent':git('rev-parse','HEAD^'),'tree':git('rev-parse','HEAD^{tree}'),'selected_passed':99,'lua_syntax_files':757,'native_accepted':False,'workshop_deployed':False,'vps_deployed':False}
+          (pathlib.Path(os.environ['EVIDENCE'])/'publication.json').write_text(json.dumps(r,indent=2)+'\n')
+          print(json.dumps(r,indent=2))
+          PY
+      - name: Preserve results, including failed attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stair-headroom-exact-source-evidence
+          path: ${{ runner.temp }}/stair-evidence/
+          if-no-files-found: error
