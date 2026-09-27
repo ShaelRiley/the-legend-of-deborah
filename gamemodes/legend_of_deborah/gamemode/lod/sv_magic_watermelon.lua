@@ -37,7 +37,7 @@ function F:StepWatermelon(ent,dt,filter)
         end
         b.bounces=b.bounces+1
         local target=tr.Entity
-        if self:TargetIsOpponent(caster,target) and CurTime()>=(b.lastHit[target] or 0)
+        if self:TargetIsOpponent(caster,target,ent.LODCastContext) and CurTime()>=(b.lastHit[target] or 0)
             and self:LineOfEffect(caster,target,origin) then
             b.lastHit[target]=CurTime()+t.hitDelay
             local form=table.Copy(LOD.RPG.MagicForms.watermelon);form.damageDice=1

@@ -336,6 +336,9 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
         baseDice = count,
         aceBonusDice = math.max(0, math.floor(tonumber(bonusDice) or 0))
     }
+    if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+        LOD.FactionManager:CaptureAttackPermission(attacker, contract.attackEvent)
+    end
     if LOD.IdentityPerkDirector then LOD.IdentityPerkDirector:SealAttack(contract, attacker, rng) end
     if LOD.RPGCrossFeats then LOD.RPGCrossFeats:RestoreBoomBattery(attacker, contract) end
     return contract
@@ -508,7 +511,9 @@ function Rolls:SettleShotgun(ply, contract)
             info:SetDamageForce(vector_origin)
             LOD.RPGStatusElements:AttachDamageContext(info, tags)
             local before = target:Health()
-            target:TakeDamageInfo(info)
+            if LOD.FactionManager and LOD.FactionManager.DealDamage then
+                LOD.FactionManager:DealDamage(target, info, contract.attackEvent, ply)
+            else target:TakeDamageInfo(info) end
             -- Source armor and native rejection happen after Lua mitigation.
             -- The shell feed/control uses actual HP lost, including overkill.
             local after = IsValid(target) and math.max(0, target:Health()) or 0

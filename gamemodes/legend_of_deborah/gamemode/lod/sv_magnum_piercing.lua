@@ -31,6 +31,7 @@ local function combatBody(ent)
     return IsValid(ent) and (ent.LODHostile or ent.LODSummonedSeeker or (ent.IsPlayer and ent:IsPlayer()))
 end
 local function validHostile(ent, attacker)
+    if LOD.FactionManager and LOD.FactionManager.CanDamage then return LOD.FactionManager:CanDamage(attacker, ent) end
     if LOD.FactionManager and LOD.FactionManager.IsOpponent then return LOD.FactionManager:IsOpponent(attacker, ent) end
     return IsValid(ent) and ent.LODHostile and not ent.LODDead and ent:Health() > 0
 end

@@ -207,6 +207,10 @@ local function installContract()
             firingActivityStarted = false
         }
 
+        if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+            LOD.FactionManager:CaptureAttackPermission(self, self.LODSoldierBurst.attackEvent)
+        end
+
         -- Disable every legacy trajectory input before publishing the new one.
         clearNetworkContract(self)
         self:SetNW2Int("LOD_SoldierShotSerial", self.LODSoldierTelegraphSerial)

@@ -335,6 +335,9 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     end
 
     ar2.attackEvent = {}
+    if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+        LOD.FactionManager:CaptureAttackPermission(ply, ar2.attackEvent)
+    end
     ar2.active = true
     ar2.weapon = weapon
     ar2.direction = direction

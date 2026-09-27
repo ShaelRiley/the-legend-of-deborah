@@ -76,7 +76,7 @@ function RPG:ResolveCheckpointDPersonalityAura(owner)
     self.CheckpointDPersonalityAuraStats.pulses = self.CheckpointDPersonalityAuraStats.pulses + 1
     if damage <= 0 then return 0 end
     local hits = 0
-    for _, target in ipairs(LOD.FactionManager:Opponents(owner)) do
+    for _, target in ipairs((LOD.FactionManager.DamageTargets or LOD.FactionManager.Opponents)(LOD.FactionManager,owner)) do
         -- Native damage may retire or replace the owner/level during a pulse.
         if not auraEligible(owner) or Rules:ProgressionState(owner) ~= state
             or LOD.RunManager.State ~= run or run.Graph ~= graph

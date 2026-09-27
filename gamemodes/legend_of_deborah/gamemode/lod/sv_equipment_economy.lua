@@ -337,7 +337,7 @@ function E:PostDamage(target,info,taken)
         or context.throwable or context.auraBurst or context.reactiveDamage or context.dodged or context.blocked
         or not hero(attacker) or hero(attacker).identity~=snapshot.ownerIdentity or not E:CanAct(attacker) or Run.State.RunId~=snapshot.runId
         or Run.State.LevelSeed~=snapshot.levelSeed or attacker==target then return end
-    if not LOD.FactionManager or not LOD.FactionManager:IsOpponent(attacker,target) then return end
+    if not LOD.FactionManager or not (LOD.FactionManager.CanDamage or LOD.FactionManager.IsOpponent)(LOD.FactionManager,attacker,target) then return end
     local event=contract.attackEvent or contract
     event.equipmentTargets=event.equipmentTargets or setmetatable({}, {__mode="k"})
     if event.equipmentTargets[target] then return end

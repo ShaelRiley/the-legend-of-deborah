@@ -39,6 +39,10 @@ local function rebaseOntoFrozenAimPoint(self)
 end
 
 function ENT:Initialize()
+    self.LODAttackEvent = self.LODAttackEvent or {}
+    if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+        LOD.FactionManager:CaptureAttackPermission(self.LODOwner, self.LODAttackEvent)
+    end
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_NONE)
     self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
@@ -62,18 +66,27 @@ local function isOwnerAttachment(ent, owner)
     return false
 end
 
+local function canHit(owner, target, event)
+    local factions = LOD.FactionManager
+    if factions and factions.CanDamage then return factions:CanDamage(owner, target, event) end
+    return IsValid(target) and target:IsPlayer() and target:Alive()
+        and (not factions or factions:IsValidPlayerTarget(target))
+end
+
 local function traceFilter(self, owner)
     return function(ent)
         if ent == self or ent == owner then return false end
-        if IsValid(ent) and ent.LODHostile then return false end
+        if IsValid(ent) and (ent:IsPlayer() or ent.LODHostile or ent.LODSummonedSeeker) then
+            return canHit(owner, ent, self.LODAttackEvent)
+        end
         if isOwnerAttachment(ent, owner) then return false end
         return true
     end
 end
 
-local function playerVictimFromEntity(ent)
+local function combatVictimFromEntity(ent)
     if not IsValid(ent) then return nil end
-    if ent:IsPlayer() then return ent end
+    if ent:IsPlayer() or ent.LODHostile or ent.LODSummonedSeeker then return ent end
 
     local owner = ent:GetOwner()
     if IsValid(owner) and owner:IsPlayer() then return owner end
@@ -84,9 +97,8 @@ local function playerVictimFromEntity(ent)
     return nil
 end
 
-local function damagePlayer(self, owner, victim, hitPos)
-    if not IsValid(victim) or not victim:IsPlayer() or not victim:Alive() then return false end
-    if LOD.FactionManager and not LOD.FactionManager:IsValidPlayerTarget(victim) then return false end
+local function damageCombatant(self, owner, victim, hitPos)
+    if not canHit(owner, victim, self.LODAttackEvent) then return false end
 
     local dmg = LOD.NewDamageInfo()
     dmg:SetDamage(self.LODDamage or 6)
@@ -94,19 +106,25 @@ local function damagePlayer(self, owner, victim, hitPos)
     dmg:SetAttacker(IsValid(owner) and owner or self)
     dmg:SetInflictor(self)
     dmg:SetDamagePosition(hitPos or victim:WorldSpaceCenter())
-    victim:TakeDamageInfo(dmg)
+    if LOD.FactionManager and LOD.FactionManager.DealDamage then
+        LOD.FactionManager:DealDamage(victim, dmg, self.LODAttackEvent, owner)
+    else victim:TakeDamageInfo(dmg) end
     victim:EmitSound("physics/flesh/flesh_impact_bullet1.wav", 60, 105, 0.55)
     return true
 end
 
 local FALLBACK_PLAYER_PROXIMITY_SQR = 160 * 160
 
-local function fallbackPlayerNearby(endPos)
+local function fallbackPlayerNearby(endPos, owner, event)
     -- A Soldier bolt can travel at most 47.5 units in one clamped Think step;
     -- Bio bolts travel less. A 160-unit end-point radius comfortably encloses
     -- the active player's collision bounds, equipped attachments, and the
     -- entire preceding segment. Outside it, FindAlongRay cannot produce a
     -- valid fallback victim.
+    -- The bounded swept query must also run for a Reckless bolt near an ally.
+    -- Its ordinary (non-Reckless) player-only fast path remains unchanged.
+    if LOD.FactionManager and LOD.FactionManager.AllowsFriendlyFire
+        and LOD.FactionManager:AllowsFriendlyFire(owner, event) then return true end
     if not player.Iterator or not LOD or not LOD.FactionManager then return true end
     for _, victim in player.Iterator() do
         if LOD.FactionManager:IsValidPlayerTarget(victim)
@@ -149,8 +167,8 @@ function ENT:Think()
         -- Equipped weapons and other player-owned child entities can be the
         -- first thing a projectile trace touches. Treat those as a hit on the
         -- owning player rather than deleting the bolt harmlessly.
-        local victim = playerVictimFromEntity(tr.Entity)
-        if victim then damagePlayer(self, owner, victim, tr.HitPos) end
+        local victim = combatVictimFromEntity(tr.Entity)
+        if victim then damageCombatant(self, owner, victim, tr.HitPos) end
         self:Remove()
         return
     end
@@ -159,10 +177,10 @@ function ENT:Think()
     -- consistently become the first MASK_SHOT trace entity. FindAlongRay uses
     -- the whole travelled segment, and a clear obstacle trace prevents damage
     -- through cargo-container walls.
-    if fallbackPlayerNearby(endPos) then
+    if fallbackPlayerNearby(endPos, owner, self.LODAttackEvent) then
         for _, ent in ipairs(ents.FindAlongRay(startPos, endPos, Vector(-6, -6, -6), Vector(6, 6, 6))) do
-            local victim = playerVictimFromEntity(ent)
-            if victim and LOD.FactionManager:IsValidPlayerTarget(victim) then
+            local victim = combatVictimFromEntity(ent)
+            if victim and canHit(owner, victim, self.LODAttackEvent) then
                 local obstruction = util.TraceLine({
                     start = startPos,
                     endpos = victim:WorldSpaceCenter(),
@@ -171,12 +189,12 @@ function ENT:Think()
                         if hit == self or hit == owner or hit == victim then return false end
                         if IsValid(hit) and hit.LODHostile then return false end
                         if isOwnerAttachment(hit, owner) then return false end
-                        if playerVictimFromEntity(hit) == victim then return false end
+                        if combatVictimFromEntity(hit) == victim then return false end
                         return true
                     end
                 })
                 if not obstruction.Hit or obstruction.Fraction >= 0.995 then
-                    damagePlayer(self, owner, victim, victim:WorldSpaceCenter())
+                    damageCombatant(self, owner, victim, victim:WorldSpaceCenter())
                     self:Remove()
                     return
                 end

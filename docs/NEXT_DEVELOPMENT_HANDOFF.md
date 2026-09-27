@@ -1,5 +1,10 @@
 # Resume The Legend of Deborah — SPOT-17 native acceptance
 
+## Latest overlay — faction / Reckless damage repair
+
+The unnumbered September 27 author-requested repair follows the standing-stair child `0f1e7092644c9c3e5eede39263206b2b5850c707`. Fetch current `main`; use the external delivery receipt for the actual new child/tree and independent gate. Read `docs/validation/FACTION_RECKLESS_DAMAGE.md` before the historical SPOT-17 handoff below. Soldier/ Hero opposition and attacker-only Reckless use the existing faction/status authorities; geometry, owned sources and committed projectile permissions are covered. Native acceptance is still pending. Do not treat source publication as Workshop or VPS deployment; preserve all intervening work.
+
+
 Repository: ShaelRiley/the-legend-of-deborah, main. The external SPOT-17 delivery
 receipt supplies the verified published child/tree and independent Actions run.
 Its actual gameplay parent is 9e2601953e8f91469fc3d8ece7c13110fd1e8941 (SPOT-16).

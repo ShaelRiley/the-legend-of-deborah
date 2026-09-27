@@ -30,7 +30,7 @@ local function step(ply,dash,speed)
     if safe<distance then
         -- Finish before calling damage: re-entry/duplicate movement cannot hit twice.
         R:StopVoluntaryDash(ply,dash)
-        if IsValid(target) and LOD.FactionManager:IsOpponent(ply,target) and target:Health()>0 then
+        if IsValid(target) and (LOD.FactionManager.CanDamage or LOD.FactionManager.IsOpponent)(LOD.FactionManager,ply,target) and target:Health()>0 then
             F:_ApplyDamage(ply,ply,target,dash.move,dash.context.deliveryContent,dash.context,dash.direction)
         end
         return 0

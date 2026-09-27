@@ -65,7 +65,7 @@ function RPG:PrepareCheckpointDAuraBurst(actor)
     local contract = {bonus = 0}
     local cha, con = Rules:AddChaModDerivedDamage(contract, actor, "sv_rpg_checkpoint_d_aura_burst_feats")
     local pulse = {identity = state, graph = graph, targets = {}, cha = cha, con = con, damage = contract.bonus}
-    for _, target in ipairs(LOD.FactionManager:Opponents(actor)) do
+    for _, target in ipairs((LOD.FactionManager.DamageTargets or LOD.FactionManager.Opponents)(LOD.FactionManager,actor)) do
         if IsValid(target) and target ~= actor and not target.LODDead and target:Health() > 0
             and self:CheckpointDCellRadiusIncludes(ownerCell, navigator:WorldToCell(graph, target:GetPos()), radius) then
             pulse.targets[#pulse.targets + 1] = {actor = target, identity = Rules:ProgressionState(target)}

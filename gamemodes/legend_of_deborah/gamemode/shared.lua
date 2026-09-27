@@ -219,12 +219,11 @@ function GM:CanTool()
 end
 
 function GM:PlayerShouldTakeDamage(victim, attacker)
-    if IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim then
-        local statusElements = LOD.RPGStatusElements
-        if statusElements and statusElements:AllowsFriendlyFire(attacker) then return true end
-        return false
-    end
-    return true
+    local factions = LOD.FactionManager
+    if factions then return not factions:BlocksFriendlyDamage(victim, attacker) end
+    -- The server loads its faction authority before gameplay begins. Keep the
+    -- pre-bootstrap fallback conservative rather than globally enabling PvP.
+    return not (IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim)
 end
 
 function GM:ShouldCollide(ent1, ent2)

@@ -235,7 +235,11 @@ function E:Damage(e,p,event,kind)
         return
     end
     if e.LODSkeletonHero and not LOD.SkeletonHero:Live(e) then return end
-    if not IsValid(e) or e.LODDead or not self:Target(p) then return end
+    if not IsValid(e) or e.LODDead then return end
+    local factions = LOD.FactionManager
+    if factions.CanDamage then
+        if not factions:CanDamage(e,p) then return end
+    elseif not self:Target(p) then return end
     return self:_DamagePacket(e,p,event,kind)
 end
 -- Shared packet construction; ordinary callers enter through Damage's living

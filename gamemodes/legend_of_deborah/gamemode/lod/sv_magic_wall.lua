@@ -177,7 +177,7 @@ function F:StepWall(ent)
     local targets=ents.FindInBox(lo-margin,hi+margin)
     table.sort(targets,function(a,b) return a:EntIndex()<b:EntIndex() end)
     for _,target in ipairs(targets) do
-        if self:TargetIsOpponent(caster,target) and CurTime()>=(ent.LODWallHits[target] or 0) then
+        if self:TargetIsOpponent(caster,target,ent.LODCastContext) and CurTime()>=(ent.LODWallHits[target] or 0) then
             local center=target:WorldSpaceCenter()
             local origin=Vector(math.Clamp(center.x,lo.x,hi.x),math.Clamp(center.y,lo.y,hi.y),math.Clamp(center.z,lo.z,hi.z))
             -- Begin just outside the corresponding face; the solid Wall itself

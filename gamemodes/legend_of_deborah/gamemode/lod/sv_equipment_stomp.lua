@@ -51,7 +51,7 @@ function E:ResolveStomp(ply,data)
         mask=MASK_PLAYERSOLID,filter=ply})
     local target=tr.Entity
     if not tr.Hit or tr.StartSolid or tr.AllSolid or not tr.HitNormal or tr.HitNormal.z<.7
-        or not IsValid(target) or not LOD.FactionManager:IsOpponent(ply,target)
+        or not IsValid(target) or not (LOD.FactionManager.CanDamage or LOD.FactionManager.IsOpponent)(LOD.FactionManager,ply,target)
         or target.LODDead or target:Health()<=0 then return false end
     local _,top=target:WorldSpaceAABB()
     if sample.origin.z+sample.mins.z<top.z-2 or math.abs(pos.z+sample.mins.z-top.z)>3 then return false end

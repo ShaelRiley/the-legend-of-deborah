@@ -404,7 +404,10 @@ local bolt={valid=true,LODCaster=attacker,LODFormId="bolt",LODCastContext={},
     LODDirection=Vector(1,0,0),GetPos=function() return Vector() end,Remove=function() end}
 hits={};forms:ProjectileImpact(bolt,{HitPos=Vector(),Entity=soldier})
 assert(#hits==1 and hits[1]==soldier,"Bolt resolves direct Player opposition")
-local summon={valid=true,LODSummonedSeeker=true,LODCaster=attacker,WorldSpaceCenter=function() return Vector() end}
+-- Engine entities always expose IsPlayer/Health; keep the summon fixture faithful.
+local summon={valid=true,LODSummonedSeeker=true,LODCaster=attacker,
+    IsPlayer=function() return false end,Health=function() return 100 end,
+    WorldSpaceCenter=function() return Vector() end}
 hits={};assert(forms:ResolveSummonAttack(summon,soldier))
 assert(#hits==1 and hits[1]==soldier,"Summon damage agrees with Magic opposition")
 assert(not forms:ResolveSummonAttack(summon,teammate),"Summon cannot damage a cooperative Hero")

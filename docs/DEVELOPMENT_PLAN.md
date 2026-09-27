@@ -1,5 +1,10 @@
 # Author-reported stair ceiling repair — native acceptance next
 
+### Current author-requested spot repair — Soldier / Hero and Reckless damage (September 27, 2026)
+
+The standing-stair repair remains preserved. The new unnumbered damage repair follows current combat roles rather than engine player class and respects attacker-only Reckless in native damage and real attack geometry. See `docs/validation/FACTION_RECKLESS_DAMAGE.md` and the external publication receipt for exact child/tree and headless results. Native acceptance remains pending; no Workshop/VPS action. This is not a new scheduled SPOT-18 or a restart of the deferred roadmap.
+
+
 September 27: the rear crossover lip now retracts 16 units, sharing its 48-unit
 width with the rail opening. Upright stair-step clearance increases from 80 to
 96 units; the existing standing hull, solid floors, treads and no-jump upper

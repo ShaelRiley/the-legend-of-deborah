@@ -125,14 +125,18 @@ local function validCaster(ply)
     return state and not state.Failed and not state.LevelCleared and not state.SimulationFrozen
 end
 
-local function validTarget(caster, target)
+local function validTarget(caster, target, context)
+    if LOD.FactionManager and LOD.FactionManager.CanDamage then
+        return LOD.FactionManager:CanDamage(caster, target, context)
+    end
     if LOD.FactionManager and LOD.FactionManager.IsOpponent then
         return LOD.FactionManager:IsOpponent(caster, target)
     end
     return IsValid(target) and target.LODHostile and not target.LODDead and target:Health() > 0
 end
 
-local function activeHostiles(caster)
+local function activeHostiles(caster, context)
+    if LOD.FactionManager and LOD.FactionManager.DamageTargets then return LOD.FactionManager:DamageTargets(caster, context) end
     if LOD.FactionManager and LOD.FactionManager.Opponents then return LOD.FactionManager:Opponents(caster) end
     local source = LOD.HostileRegistry and LOD.HostileRegistry.List
         and LOD.HostileRegistry:List() or ents.FindByClass("lod_hostile")
@@ -357,7 +361,9 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         target.LODPendingDamageAttribution = {attacker = creditCaster, source = "summon"}
         if tags.moraleDC ~= nil then creditCaster.LODMagicProxyMoraleDC = tags.moraleDC end
     end
-    target:TakeDamageInfo(info)
+    if LOD.FactionManager and LOD.FactionManager.DealDamage then
+        LOD.FactionManager:DealDamage(target, info, context, attacker)
+    else target:TakeDamageInfo(info) end
     if proxyAttack then
         creditCaster.LODMagicProxyMoraleDC = previousProxyDC
         if IsValid(target) then target.LODPendingDamageAttribution = previousAttribution end
@@ -443,7 +449,7 @@ local function broadcastFX(formId, contentId, origin, destination, caster, area)
     net.Broadcast()
 end
 
-function Forms:_BlastTargets(ply, cells)
+function Forms:_BlastTargets(ply, cells, context)
     local run = LOD.RunManager and LOD.RunManager.State
     local graph = run and run.Graph
     if not graph or not Navigator then return {} end
@@ -475,7 +481,7 @@ function Forms:_BlastTargets(ply, cells)
         local cell = graph.Cells[key]
         if cell then footprint[#footprint + 1] = {x=cell.x,y=cell.y,z=cell.z} end
     end
-    for _, hostile in ipairs(activeHostiles(ply)) do
+    for _, hostile in ipairs(activeHostiles(ply, context)) do
         local cell = Navigator:WorldToCell(graph, hostile:GetPos())
         local key = cell and string.format("%d:%d:%d", cell.x, cell.y, cell.z) or nil
         if key and seen[key] ~= nil and worldLineClear(ply, hostile, ply:GetShootPos()) then
@@ -492,10 +498,10 @@ function Forms:LineOfEffect(caster, target, origin)
     return worldLineClear(caster, target, origin)
 end
 
-function Forms:_ConeTargets(caster, origin, direction, range)
+function Forms:_ConeTargets(caster, origin, direction, range, context)
     local targets = {}
     local threshold = math.cos(math.rad(self.Tuning.ConeHalfAngle))
-    for _, target in ipairs(self:_AreaTargets(caster, origin, range)) do
+    for _, target in ipairs(self:_AreaTargets(caster, origin, range, context)) do
         local offset = target:WorldSpaceCenter() - origin
         if offset:LengthSqr() > 0 and offset:GetNormalized():Dot(direction) >= threshold then
             targets[#targets + 1] = target
@@ -508,7 +514,7 @@ function Forms:_CastCone(ply, form, content, context)
     local origin, direction = ply:GetShootPos(), ply:GetAimVector():GetNormalized()
     if direction == vector_origin then return false end
     local range = self.Tuning.BaseConeRange + context.spatialBonusCells * cellSize()
-    for _, target in ipairs(self:_ConeTargets(ply, origin, direction, range)) do
+    for _, target in ipairs(self:_ConeTargets(ply, origin, direction, range, context)) do
         self:_ApplyDamage(ply, ply, target, form, content, context, direction)
     end
     broadcastFX("cone", content and content.id, origin, origin + direction * range, ply)
@@ -518,7 +524,7 @@ end
 function Forms:_CastBlast(ply, form, content, context)
     local rangeCells = 1 + context.spatialBonusCells
     local direction = ply:GetAimVector():GetNormalized()
-    local targets, footprint = self:_BlastTargets(ply, rangeCells)
+    local targets, footprint = self:_BlastTargets(ply, rangeCells, context)
     local origin = ply:GetShootPos()
     for _, target in ipairs(targets) do
         self:_ApplyDamage(ply, ply, target, form, content, context, direction)
@@ -537,7 +543,7 @@ function Forms:_CastBeam(ply, form, content, context)
     local remaining = maximum
     local ignored = {ply}
     for _, other in ipairs(player.GetAll()) do
-        if other ~= ply and not validTarget(ply, other) then ignored[#ignored + 1] = other end
+        if other ~= ply and not validTarget(ply, other, context) then ignored[#ignored + 1] = other end
     end
     local hitCount = 0
     local endpoint = origin + direction * maximum
@@ -554,7 +560,7 @@ function Forms:_CastBeam(ply, form, content, context)
         local body = IsValid(ent) and (ent.LODHostile or ent.LODSummonedSeeker or (ent.IsPlayer and ent:IsPlayer()))
         if not body or seen[ent] then break end
         seen[ent] = true
-        if validTarget(ply, ent) then
+        if validTarget(ply, ent, context) then
             hitCount = hitCount + 1
             self:_ApplyDamage(ply, ply, ent, form, content, context, direction)
         end
@@ -570,6 +576,9 @@ end
 Forms.BroadcastFX = function(_,...) return broadcastFX(...) end
 
 function Forms:_SpawnProjectile(ply, form, content, context)
+    if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+        LOD.FactionManager:CaptureAttackPermission(ply, context)
+    end
     local ent = ents.Create("lod_magic_projectile")
     if not IsValid(ent) then return false end
     local direction = ply:GetAimVector():GetNormalized()
@@ -635,9 +644,9 @@ function Forms:ProjectileContextValid(projectile)
         and LOD.Equipment:MoveAttackValid(projectile.LODCaster,context)
 end
 
-function Forms:_AreaTargets(caster, origin, radius)
+function Forms:_AreaTargets(caster, origin, radius, context)
     local targets = {}
-    for _, hostile in ipairs(activeHostiles(caster)) do
+    for _, hostile in ipairs(activeHostiles(caster, context)) do
         if hostile:WorldSpaceCenter():DistToSqr(origin) <= radius * radius
             and worldLineClear(caster, hostile, origin) then
             targets[#targets + 1] = hostile
@@ -651,12 +660,12 @@ function Forms:_AreaTargets(caster, origin, radius)
     return targets
 end
 
-Forms.TargetIsOpponent = function(_,caster,target) return validTarget(caster,target) end
+Forms.TargetIsOpponent = function(_,caster,target,context) return validTarget(caster,target,context) end
 Forms.LineOfEffect = function(_,caster,target,origin) return worldLineClear(caster,target,origin) end
 
 function Forms:SuperBallHit(projectile,target,origin,usedRider)
     local caster,context=projectile.LODCaster,projectile.LODCastContext
-    if not context or not validTarget(caster,target) or not worldLineClear(caster,target,origin) then return false end
+    if not context or not validTarget(caster,target,context) or not worldLineClear(caster,target,origin) then return false end
     local content=RPG.MagicContents[projectile.LODContentId]
     if usedRider and content then content=table.Copy(content);content.rider=nil end
     local before=target:Health()
@@ -681,11 +690,11 @@ function Forms:ProjectileImpact(projectile, trace)
     if trace and trace.HitNormal then point = point + trace.HitNormal * 2 end
     if projectile.LODFormId == "bolt" then
         local target = trace and trace.Entity or nil
-        if validTarget(caster, target) then
+        if validTarget(caster, target, context) then
             self:_ApplyDamage(caster, caster, target, form, content, context, direction)
         end
     else
-        for _, target in ipairs(self:_AreaTargets(caster, point, projectile.LODBlastRadius or 0)) do
+        for _, target in ipairs(self:_AreaTargets(caster, point, projectile.LODBlastRadius or 0, context)) do
             local rider=content
             if projectile.LODMelon and projectile.LODMelon.riders[target] and content then rider=table.Copy(content);rider.rider=nil end
             self:_ApplyDamage(caster, caster, target, form, rider, context, direction)
@@ -894,6 +903,9 @@ function Forms:CastSelected(ply,button)
     local primed, attackObservation
     if Rules.CommitAttack then primed, attackObservation = Rules:CommitAttack(ply, true) end
     context.aceBonus = primed and 1 or 0
+    if LOD.FactionManager and LOD.FactionManager.CaptureAttackPermission then
+        LOD.FactionManager:CaptureAttackPermission(ply, context)
+    end
     local previousCooldown = Magic.NextCast[ply] or 0
     ps.magic = math.max(0, ps.magic - cost)
     ps.gateEControlMagicTestHoldUntil = nil

@@ -176,24 +176,9 @@ if Progression and not Progression.LODMultiplayerGateContractInstalled then
     end
 end
 
-local function resolvePlayerSource(ent, depth)
-    if not IsValid(ent) then return nil end
-    if ent:IsPlayer() then return ent end
-    depth = depth or 0
-    if depth >= 2 or not ent.GetOwner then return nil end
-    local owner = ent:GetOwner()
-    if not IsValid(owner) or owner == ent then return nil end
-    return resolvePlayerSource(owner, depth + 1)
-end
-
 local function isFriendlyFire(victim, attacker, inflictor)
-    if not IsValid(victim) or not victim:IsPlayer() or not victim:Alive() then return false end
-    if not RunManager:IsActivePlayer(victim) then return false end
-
-    local source = resolvePlayerSource(attacker) or resolvePlayerSource(inflictor)
-    if not IsValid(source) or source == victim then return false end
-    if not RunManager:IsActivePlayer(source) then return false end
-    return true
+    local factions = LOD.FactionManager
+    return factions and factions:BlocksFriendlyDamage(victim, attacker, inflictor) or false
 end
 
 -- Direct player damage is rejected at the dedicated player-damage gate.
@@ -257,7 +242,7 @@ concommand.Add("lod_multiplayer_contract_status", function(ply)
     local line = string.format(
         "level=%d livingActive=%d plannedParty=%d mapAllowed=%d mapMismatch=%d mapD1to20=%s friendlyFire=%s gateContract=%s partyScale=%s ffBlocked=%d gateBlocked=%d result=%s",
         currentLevel(), living, plannedParty, mapAllowed, mapMismatch, tostring(productionMapLevelAvailable()),
-        ffArmed and "OFF/ARMED" or "UNSAFE", gateArmed and "ARMED" or "MISSING",
+        ffArmed and "SAME-FACTION-OFF/RECKLESS-EXCEPTION" or "UNSAFE", gateArmed and "ARMED" or "MISSING",
         scaleArmed and "ARMED" or "MISSING", Contracts.Stats.friendlyFireBlocked or 0,
         Contracts.Stats.invalidGateUsesBlocked or 0, passed and "PASS" or "FAIL")
     print("[LOD:MULTIPLAYER-CONTRACT] " .. line)
