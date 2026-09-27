@@ -83,6 +83,10 @@
         [
           "F after death lockout",
           "Finish death Tetris and respawn"
+        ],
+        [
+          "F3",
+          "Team menu: Soldiers can return to the Hero queue or spectate only, including during Soldier respawn wait"
         ]
       ],
       "text": [
@@ -868,7 +872,11 @@
         "Up to four players take cooperative Hero roles. Up to six additional players can control enemy Soldiers, for ten active players; further arrivals spectate. Role availability and the Soldier queue determine when an incarnation can be entered.",
         "A human Soldier receives a generated monster character, class, abilities, and automatically selected feats. The player does not draft Hero feats. A fresh incarnation is a fresh Soldier character, not the revival of the previous build.",
         "Human Soldiers can earn incarnation-local XP and automatic Combat Levels, capped by Dungeon Level +3. AI Soldiers do not earn XP. Monster-side Levels can reach 999. Soldier play preserves your eliminated Hero; return to the Hero Queue to become eligible for resurrection.",
-        "The Debbie Fund can reward Soldier-attributable Hero life losses after a successful rescue. Switching into Soldier play forfeits that player's Hero share for that dungeon. The fund does not award a rescue pool for a timeout."
+        "The Debbie Fund can reward Soldier-attributable Hero life losses after a successful rescue. Switching into Soldier play forfeits that player's Hero share for that dungeon. The fund does not award a rescue pool for a timeout.",
+        "Press F3 at any time during ordinary Soldier play or the Soldier respawn wait to open the team menu. RETURN TO HERO QUEUE retires the Soldier and restores your saved Hero’s eligibility for future resurrection. It does not grant a life or bank revivals missed while playing a Soldier. SPECTATE ONLY retires the Soldier without entering the resurrection or automatic Hero queue. Press F3 again to return to the Hero queue.",
+        "Either exit discards that Soldier’s equipment and incarnation-local XP, not your saved Hero’s identity, progression, inventory, lives or original elimination order. A Soldier death requires twenty seconds before another Soldier incarnation; leaving its respawn wait cancels automatic respawning but does not skip that remaining delay. Your Hero can wait for resurrection independently.",
+        "Spectate-only preference survives reconnect and successful dungeon advance. Normal successful-clear life restoration still applies, but a spectator does not automatically become active. Returning with a life uses normal four-Hero admission and a fresh Hero spawn; a full team means waiting for a slot. A new campaign uses normal fresh admission.",
+        "The team menu never pauses combat or the dungeon clock. Finish any active Tetris or minigame first; campaign failure, expiry and level-transition locks still apply. Chat, console and text-entry focus do not activate F3. Hero feat choices and automatic Soldier progression are unchanged."
       ]
     },
     {

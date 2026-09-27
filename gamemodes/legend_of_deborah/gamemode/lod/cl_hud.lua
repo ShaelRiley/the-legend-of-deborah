@@ -115,6 +115,8 @@ end
 
 local function drawDeathState(ply, state)
     if state.failed or state.levelCleared then return end
+    -- Soldier waiting has its own F3 team hint, not the eliminated-Hero trio.
+    if ply:GetNW2Bool("LOD_SoldierWaiting", false) then return end
     if not ply:GetNW2Bool("LOD_PlayedIdentity", false) or ply:Alive() then return end
 
     local eliminated = ply:GetNW2Bool("LOD_Eliminated", false)

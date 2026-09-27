@@ -76,7 +76,8 @@ function RunManager:ReviveIdentity(identity, debit)
                     or ps.eliminated or (ps.lives or 0) <= 0 or self:IsSoldierControl(ply) then return end
                 -- Returning from Soldier control can leave an alive spectator.
                 -- It still needs the canonical Hero body/loadout spawn path.
-                if self:IsActivePlayer(ply) then
+                local ownsSlot = self.IsSlotActivePlayer or self.IsActivePlayer
+                if ps.queue ~= "spectator" and ownsSlot(self, ply) then
                     ply:UnSpectate()
                     ply:Spawn()
                 end

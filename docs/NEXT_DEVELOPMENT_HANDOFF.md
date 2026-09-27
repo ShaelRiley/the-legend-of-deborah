@@ -1,4 +1,62 @@
-# Resume The Legend of Deborah — SPOT-15 Soldier F3 team menu
+# Resume The Legend of Deborah — SPOT-16 Soldier pulse rifle
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT-15 delivery
+receipt supplies the verified published child, tree, source and independent run.
+Actual SPOT-15 gameplay parent is `79b770d5b5effc9c329e5931b22dd3954fd60dfb`;
+that parent is historical, not the new HEAD. Fetch main, preserve intervening and
+uncommitted work, and never use a workflow trigger or reconstruction anchor as
+an upstream gameplay parent.
+
+Read AGENTS.md -> docs/DEVELOPMENT_PLAN.md -> this handoff ->
+docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_15_SOLDIER_MENU.md ->
+docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
+00 -> 01 -> normalized Soldier/combat/weapon/control and tuning rules. Retrieve
+exact HUMAN detail only where normalized rules are missing. Reconcile and author
+genuinely missing delegated rules before dependent code. Do not duplicate the
+already-written SPOT-15 06/07 supplements or earlier completed supplements.
+
+SPOT-15 is source complete. Soldiers in play or respawn wait get F3 and a visible
+hint; choices are RETURN TO HERO QUEUE and SPECTATE ONLY. Both retire native
+Soldier equipment/XP/body work while preserving the dormant Hero. The original
+Soldier twenty-second death deadline cannot be skipped by exiting its wait.
+Queue return restores future resurrection eligibility without granting a life or
+banking missed revivals. Explicit spectators stay outside revival/admission through
+reconnect and clear, until requeue; normal clear-time life restoration still occurs.
+Positive-life return retains the life and uses normal four-slot admission and a
+fresh Hero spawn. The shared revived-Hero callback uses slot-active, not already-
+deployed eligibility. Preserve stale contextual-command and native callback guards,
+genuine lifecycle locks, ordinary Hero trio, input focus/edge handling, shared
+manual and no parallel owner. Soldier SMG/movement/progression are unchanged.
+
+Pre-closeout gate01 passed 90/90, retaining all87 SPOT-14 selections, adding the
+actual server/client suites and existing Feather regression. Focused checks are
+196 server +229 client; syntax751. Final frozen/local/independent receipts are not
+assumed by this source document. Raw failures and source-copy boundaries are in
+SPOT_15_ATTEMPTS.tar.xz; never turn earlier failed/partial attempts into passes.
+Native GMod input/layout/fonts/co-op/timing/rejoin/balance, full campaign matrix and
+the pre-existing full Gate-B perkDisplayName diagnostic remain unaccepted.
+
+Implement only SPOT-16: replace human Soldiers' SMG with a pulse rifle firing
+three-round bursts with infinite ammo. Reuse existing weapon, combat, lifecycle,
+loadout and automatic Soldier progression authorities; define exact missing burst
+semantics/tuning in the GDD before code. Verify native ammo/reload/primary attack,
+authoritative damage/attribution and disposable-incarnation cleanup through a
+finite actual-production gate. Preserve ordinary Hero weapons and all previous
+checkpoints. Do not implement SPOT-17 rooting/movement restrictions or deferred
+roadmap work in this checkpoint. Bank one independently verified non-forced push.
+
+Preserve SPOT01–15, Float On six seconds at1 Magic/s, SPOT-14 reversible effective-
+INT clock minutes and expiry precedence, SPOT-13 unread/drag epochs, SPOT-12 card
+colors, four-choice stored drafts, B28/B29, accepted Crate and P1–P4. Native evidence:
+console_latest.txt + rpg_summary_latest.txt and a short exact-build gm_flatgrass
+note; detailed session only for timing. No dedicated Razor retest. Local acceptance
+-> Workshop3791535712 package/source parity -> matching VPS. No Workshop/VPS action
+occurred or is implicitly authorized. Provide a fresh handoff and ask the author
+to start a new conversation when the thread becomes long. No background promises.
+
+---
+
+# Historical handoff — SPOT-15 Soldier F3 team menu
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT14 external
 receipt supplies verified published child/tree/source/run. Actual SPOT14 gameplay

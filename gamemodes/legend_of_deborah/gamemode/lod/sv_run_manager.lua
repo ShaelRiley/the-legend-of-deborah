@@ -145,7 +145,7 @@ function RunManager:IsHeroRevivalQueueEligible(plyOrIdentity)
         end
     end
 
-    if ps.queue == "soldier" or ps.soldierRespawnWait == true then
+    if ps.queue == "soldier" or ps.queue == "spectator" or ps.soldierRespawnWait == true then
         return false
     end
 
@@ -172,6 +172,33 @@ function RunManager:RetireSoldier(target)
     return system:Retire(target)
 end
 
+-- This token identifies an existing lifecycle, never authorizes a client role.
+function RunManager:TeamMenuContext(ply)
+    local ps = self:GetPlayerState(ply)
+    if not ps then return "" end
+    local role = self:IsSoldierControl(ply) and "soldier"
+        or ps.soldierRespawnWait and "soldier_wait"
+        or ps.queue == "spectator" and "spectator"
+        or ps.eliminated and "eliminated" or "hero"
+    return table.concat({tostring(self.State.CampaignEpoch or 0), tostring(ps.ordinal or 0),
+        tostring(ply.LODRunSpawnSerial or 0), role}, ":")
+end
+
+function RunManager:CanChangeTeam(ply)
+    local state = self.State
+    if not IsValid(ply) or not state or not state.BuildReady or state.Failed or state.LevelCleared then
+        return false, "Team changes are unavailable during this transition."
+    end
+    if LOD.DeathTetris and LOD.DeathTetris.IsActiveFor and LOD.DeathTetris:IsActiveFor(ply) then
+        return false, "Finish the current Tetris session first."
+    end
+    if LOD.Equipment and LOD.Equipment.InventoryLocked and LOD.Equipment:InventoryLocked(ply) then
+        return false, "Finish the current minigame first."
+    end
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:Expire() then return false, "Time over." end
+    return true
+end
+
 function RunManager:_SyncPlayerVars(ply)
     if not IsValid(ply) then return end
     local id = self:IdentityOf(ply)
@@ -182,6 +209,8 @@ function RunManager:_SyncPlayerVars(ply)
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
     ply:SetNW2Int("LOD_HeroSerial", ps and ps.ordinal or 0)
     ply:SetNW2Bool("LOD_SoldierWaiting", ps and ps.soldierRespawnWait == true or false)
+    ply:SetNW2String("LOD_HeroQueue", ps and ps.queue or "hero")
+    ply:SetNW2String("LOD_TeamMenuContext", self:TeamMenuContext(ply))
     local previousSoldier=ply.LODWallCollisionSoldier
     ply.LODWallCollisionSoldier=isSoldier
     ply:SetNW2Bool("LOD_IsSoldier", isSoldier)
@@ -272,9 +301,12 @@ function RunManager:TryActivatePlayer(ply)
 
     local id = self:IdentityOf(ply)
     if not id then return false end
-    if self.State.ActiveIdentity[id] then return true end
-
     local ps = self.State.PlayerState[id]
+    if ps and ps.queue == "spectator" then
+        self:PutInRestrictedSpectator(ply)
+        return false
+    end
+    if self.State.ActiveIdentity[id] then return true end
     if ps and (ps.eliminated or ps.lives <= 0) then
         self.State.WaitingSince[id] = self.State.WaitingSince[id] or CurTime()
         self:PutInRestrictedSpectator(ply)
@@ -374,7 +406,8 @@ function RunManager:_ActiveSoldierCount()
 end
 
 function RunManager:JoinSoldierRole(ply)
-    if not IsValid(ply) or not self.State.BuildReady or self.State.Failed then return false, "invalid state" end
+    local allowed, reason = self:CanChangeTeam(ply)
+    if not allowed then return false, reason end
     local id = self:IdentityOf(ply)
     local ps = id and self.State.PlayerState[id]
     if not ps or not ps.eliminated or (ps.lives or 0) > 0 then
@@ -383,7 +416,7 @@ function RunManager:JoinSoldierRole(ply)
     if self:IsSoldierControl(ply) then
         return true, "already controlling soldier"
     end
-    if ps.respawnAt and ps.respawnAt > CurTime() then
+    if math.max(ps.respawnAt or 0, ps.soldierReadyAt or 0) > CurTime() then
         return false, "soldier respawn delay active"
     end
     local maxSoldiers = CC.MaxActiveSoldiers or 6
@@ -401,37 +434,65 @@ function RunManager:JoinSoldierRole(ply)
     return true
 end
 
-function RunManager:ReturnToHeroQueue(ply)
-    if not IsValid(ply) then return false, "invalid player" end
+-- Both exits share the existing queue/retirement authority. Explicit spectators
+-- preserve their dormant Hero but do not enter revival or automatic admission.
+function RunManager:SetHeroQueueMode(ply, queue)
+    if queue ~= "hero" and queue ~= "spectator" then return false, "invalid queue" end
+    local allowed, reason = self:CanChangeTeam(ply)
+    if not allowed then return false, reason end
     local id = self:IdentityOf(ply)
-    local ps = id and self.State and self.State.PlayerState and self.State.PlayerState[id]
+    local ps = id and self.State.PlayerState[id]
     if not ps then return false, "no player state" end
-
     local isSol = self:IsSoldierControl(ply)
-    local inWait = ps.soldierRespawnWait == true or (ps.respawnAt and ps.respawnAt > CurTime() and ps.eliminated == true)
-
-    if not isSol and not inWait and (not ps.eliminated and (ps.lives or 0) > 0) then
+    local inWait = ps.soldierRespawnWait == true
+    local spectator = ps.queue == "spectator"
+    if not isSol and not inWait and not spectator and not ps.eliminated and (ps.lives or 0) > 0 then
         return false, "active hero cannot return to hero queue"
     end
-
-    if isSol then
-        self:RetireSoldier(ply)
+    if queue == "spectator" and not isSol and not inWait and not spectator then
+        return false, "Only Soldiers may choose spectate only."
     end
-
-    if isSol and ply.StripWeapons then ply:StripWeapons() end
-    ply.LODRunInventoryReady = false
-    ps.queue = "hero"
+    if isSol or inWait or spectator ~= (queue == "spectator") then
+        -- Cancel already scheduled native Spawn callbacks before retiring this life.
+        ply.LODRunSpawnSerial = (ply.LODRunSpawnSerial or 0) + 1
+        ply.LODRunInventoryReady = false
+        if LOD.Equipment and LOD.Equipment.ClearTransient then LOD.Equipment:ClearTransient(ply) end
+        if LOD.RPGStatusElements then LOD.RPGStatusElements:ResetActorLife(ply) end
+        self:RetireSoldier(ply)
+        if ply.StripWeapons then ply:StripWeapons() end
+        if ply.RemoveAllAmmo then ply:RemoveAllAmmo() end
+        ply:SetNW2Bool("LOD_Deployed", false)
+        ply:SetNW2Bool("LOD_Staged", false)
+    end
+    -- The death deadline survives cancellation of automatic Soldier respawning.
+    if inWait then ps.soldierReadyAt = math.max(ps.soldierReadyAt or 0, ps.respawnAt or 0) end
+    ps.queue = queue
     ps.soldierRespawnWait = nil
     ps.respawnAt = nil
-    ps.eliminated = true
-    ps.lives = 0
-
+    self.State.ActiveIdentity[id] = nil
+    if queue == "hero" and not ps.eliminated and (ps.lives or 0) > 0 then
+        if self:TryActivatePlayer(ply) then
+            ply:UnSpectate()
+            ply:Spawn() -- fresh Hero body; never re-use a living former Soldier
+            return true
+        end
+    end
     self:PutInRestrictedSpectator(ply)
     self:_SyncPlayerVars(ply)
     return true
 end
 
+function RunManager:ReturnToHeroQueue(ply)
+    return self:SetHeroQueueMode(ply, "hero")
+end
+
+function RunManager:SpectateOnly(ply)
+    return self:SetHeroQueueMode(ply, "spectator")
+end
+
 function RunManager:BeginNewHero(ply)
+    local allowed, reason = self:CanChangeTeam(ply)
+    if not allowed then return false, reason end
     local state, old = self.State, self:GetPlayerState(ply)
     if not IsValid(ply) or not old or not old.eliminated or (old.lives or 0) > 0
         or not state.BuildReady or state.Failed or state.LevelCleared then
@@ -819,6 +880,7 @@ function RunManager:HandleDeath(ply, attacker)
         self:RetireSoldier(ply)
         if ps then
             ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
+            ps.soldierReadyAt = ps.respawnAt
             ps.soldierRespawnWait = true
         end
         self:_SyncPlayerVars(ply)
@@ -1054,8 +1116,9 @@ function RunManager:AdvanceLevel()
         -- identity-bound starter claim and inventory; require a new portal use.
         ps.deploymentComplete = false
         ps.stagingIntroShown = false
-        ps.queue = "hero"
+        if ps.queue ~= "spectator" then ps.queue = "hero" end
         ps.soldierRespawnWait = nil
+        ps.soldierReadyAt = nil
         ps.respawnAt = nil
         if ps.lives <= 0 or ps.eliminated then
             ps.lives = 1
@@ -1184,29 +1247,24 @@ hook.Add("Think", "LOD_RunStateThink", function()
     end
 end)
 
-concommand.Add("lod_join_human_soldier", function(ply)
-    if IsValid(ply) then
-        local ok, err = RunManager:JoinSoldierRole(ply)
-        if not ok then
-            print("[LOD] JoinSoldierRole failed: " .. tostring(err))
+local function teamCommand(method)
+    return function(ply, _, args)
+        if not IsValid(ply) then return end
+        -- Legacy typed commands remain supported. Menu clicks additionally bind
+        -- the exact campaign, Hero, body and role visible when the menu opened.
+        local context = args and args[1]
+        if context and context ~= RunManager:TeamMenuContext(ply) then
+            if ply.ChatPrint then ply:ChatPrint("Team changed; reopen F3 and choose again.") end
+            return
         end
+        local ok, err = RunManager[method](RunManager, ply)
+        if not ok and ply.ChatPrint then ply:ChatPrint(tostring(err)) end
     end
-end)
-
-concommand.Add("lod_return_to_hero_queue", function(ply)
-    if IsValid(ply) then
-        local ok, err = RunManager:ReturnToHeroQueue(ply)
-        if not ok then
-            print("[LOD] ReturnToHeroQueue failed: " .. tostring(err))
-        end
-    end
-end)
-
-concommand.Add("lod_begin_new_hero", function(ply)
-    if not IsValid(ply) then return end
-    local ok, err = RunManager:BeginNewHero(ply)
-    if not ok and ply.ChatPrint then ply:ChatPrint(err) end
-end)
+end
+concommand.Add("lod_join_human_soldier", teamCommand("JoinSoldierRole"))
+concommand.Add("lod_return_to_hero_queue", teamCommand("ReturnToHeroQueue"))
+concommand.Add("lod_spectate_only", teamCommand("SpectateOnly"))
+concommand.Add("lod_begin_new_hero", teamCommand("BeginNewHero"))
 
 hook.Add("ShutDown", "LOD_Cleanup", function()
     LOD.MazeBuilder:Cleanup()

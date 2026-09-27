@@ -460,6 +460,11 @@ check(ps2.lives == 1 and ps2.eliminated == false, "R. P2 Hero restored to 1 life
 -- S. Duplicate transition callbacks remain idempotent
 check(RunManager:RetireSoldier(p1) == false, "S. Duplicate RetireSoldier is idempotent")
 ps1.eliminated = true; ps1.lives = 0
+-- The retained geometry stub can leave AdvanceLevel in its build phase. SPOT-15
+-- rejects role mutations there; idempotency is exercised only after readiness.
+check(RunManager:ReturnToHeroQueue(p1) == false and ps1.lives == 0 and ps1.eliminated,
+    "S. Incomplete build rejects queue transition without changing the Hero")
+RunManager.State.BuildReady = true
 check(RunManager:ReturnToHeroQueue(p1) == true, "S. Duplicate ReturnToHeroQueue on queued player is idempotent")
 
 -- Credit comes from the committed life transaction, not a separate death hook.

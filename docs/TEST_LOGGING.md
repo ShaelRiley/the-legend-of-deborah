@@ -238,3 +238,22 @@ The original `rpg_test_*.txt` files remain internal telemetry sources for compat
 `lod_rpg_test_export_now <label>` forces an immediate RPG republish if a test was interrupted. The engine console mirror is independent and does not require this command.
 
 Screenshots remain useful for visual/layout/rendering defects. Logs replace screenshots for console text, validator output, event sequencing, combat-roll evidence, and most runtime diagnostics.
+
+
+## SPOT-15 Soldier F3 menu
+
+Finite gate: `python3 tools/test_spot15_gate.py --output /absolute/empty/evidence-dir
+--suite-timeout 120 --workers 2` (one command). All87 SPOT-14 selections remain;
+server/client production boundaries and Feather revival bring the selection to90.
+Pre-closeout gate01 passed90/90, syntax751; focused196 server +229 client assertions.
+The final frozen and independent gate receipts identify the exact published source.
+Retain raw failures and source manifests; SPOT_15_ATTEMPTS.tar.xz/HISTORY.md states
+where full earlier source copies do or do not exist. No retroactive passes.
+
+Exact installed gm_flatgrass observation: living/waiting Soldier F3 and hint; queue
+return versus spectate-only; native equipment retirement and saved-Hero revival;
+remaining twenty-second Soldier death delay; ordinary Hero choices; no pause.
+Capture console_latest.txt + rpg_summary_latest.txt with the exact build and a short
+note. Native input/layout/fonts/co-op and timing are open, not established by the
+headless gate. Preserve SPOT-14 clock and SPOT-13 unread/drag observations. No Razor
+retest. Local acceptance -> Workshop parity -> matching VPS; no release operation.

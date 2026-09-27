@@ -1,3 +1,22 @@
+# SPOT-15 source complete — SPOT-16 next
+
+The author-directed Soldier F3 team menu is implemented. Live/waiting Soldiers can
+return to the Hero queue or spectate only; the saved Hero, genuine death delay,
+server authority and ordinary Hero choices are preserved. The actual revived Hero
+spawn now uses the existing slot authority. Pre-closeout: 90/90 selected suites,
+425 focused assertions and 751 Lua syntax checks. Final frozen-source and independent
+publication facts belong to the delivery receipt. Native input/co-op/font/timing
+acceptance remains open. See validation/SPOT_15_SOLDIER_MENU.md.
+
+Next, implement only SPOT-16: human Soldier pulse rifle, three-round bursts and
+infinite ammo in place of the SMG. Reconcile current main and relevant GDD before
+code. Do not batch SPOT-17 movement restrictions or deferred roadmap work. Preserve
+SPOT01–15, B28/B29, approved Crate, P1–P4 and local acceptance -> Workshop -> VPS.
+No Workshop/VPS action authorized. Earlier sequencing below is historical where
+superseded by this header.
+
+---
+
 # Active roadmap — author-directed spot updates
 
 ## Current checkpoint — SPOT-14 Time Management
