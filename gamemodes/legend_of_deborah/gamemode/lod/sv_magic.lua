@@ -133,8 +133,8 @@ function Magic:IsRegenerationSuppressed(ply, ps)
     if ps and (tonumber(ps.gateEControlMagicTestHoldUntil) or 0) > CurTime() then
         return true
     end
-    local mapOpen = LOD.MinimapMagic and LOD.MinimapMagic.Active
-        and LOD.MinimapMagic.Active[ply] ~= nil
+    local map = LOD.MinimapMagic
+    local mapOpen = map and map.IsOpen and map:IsOpen(ply)
     if mapOpen then return true end
     return hook.Run("LODMagicRegenerationSuppressed", ply, ps) == true
 end
@@ -427,4 +427,3 @@ concommand.Add("lod_magic_status", function(ply)
     print("[LOD:MAGIC] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 end)
-

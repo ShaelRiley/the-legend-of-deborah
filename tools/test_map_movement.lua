@@ -85,3 +85,28 @@ state.featIds={ids[1],ids[2]}
 assert(cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[3]]))
 local ok,errors=effects:ValidateMapMovement(); assert(ok,table.concat(errors,'; '))
 print('map_movement PASS: ranks, DEX/SetupMove composition, actor isolation, close/death/access/mapless/failure/freeze/heartbeat/exhaustion, drain, prerequisites')
+
+-- A retained player entity must not carry an old map budget/movement lease into
+-- a replacement body, pool or dungeon, even inside one maintenance interval.
+local changes={
+ function() magicState={magic=100} end,
+ function() LOD.RunManager.State.Graph={} end,
+ function() LOD.RunManager.State.LevelSeed=42 end,
+ function() LOD.RunManager.State.CampaignEpoch=2 end,
+ function() LOD.RunManager.State.RunId='new-run' end,
+ function() LOD.RunManager.State.Level=2 end,
+ function() actor.LODRunSpawnSerial=2 end,
+ function() LOD.RunManager.State={Failed=false} end,
+}
+for i,change in ipairs(changes) do
+ close();magicState.magic=80;open();assert(LOD.MinimapMagic:IsOpen(actor))
+ change()
+ assert(not LOD.MinimapMagic:IsOpen(actor),'stale map lease survived lifecycle case '..i)
+ local before=magicState.magic
+ now=now+.1;timers.LOD_MinimapMagicDrain()
+ near(magicState.magic,before)
+ assert(not LOD.MinimapMagic.Active[actor],'stale session was not retired')
+ open();assert(LOD.MinimapMagic:IsOpen(actor),'fresh open could not acquire current life')
+ now=now+.1;timers.LOD_MinimapMagicDrain();assert(magicState.magic<before)
+end
+print('MAP_LIFECYCLE_PASS: eight exact-owner transitions cannot transfer budget, drain or movement')

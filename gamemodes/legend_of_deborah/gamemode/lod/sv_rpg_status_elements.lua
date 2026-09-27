@@ -998,7 +998,10 @@ hook.Add("StartCommand", "LOD_RPG_StatusActionLocks", function(ply, cmd)
     if System:Has(ply, "intimidated") then
         cmd:RemoveKey(IN_ATTACK)
         cmd:RemoveKey(IN_ATTACK2)
-    elseif System:Has(ply, "muted") then
+    elseif System:Has(ply, "muted")
+        and not (LOD.Equipment and LOD.Equipment:IsActive(ply)) then
+        -- Muted locks spells. An owned active Throwable uses RMB for its
+        -- nonspell action, including drinking the potion that cures Muted.
         cmd:RemoveKey(IN_ATTACK2)
     end
 end)

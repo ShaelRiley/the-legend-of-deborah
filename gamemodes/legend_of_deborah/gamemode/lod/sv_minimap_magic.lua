@@ -54,6 +54,14 @@ local function canDrain(ply)
     return true
 end
 
+local function ownsSession(ply, session, pool)
+    local run = RunManager and RunManager.State
+    return session and run and session.run == run and session.pool == pool
+        and session.graph == run.Graph and session.epoch == run.CampaignEpoch
+        and session.seed == run.LevelSeed and session.level == run.Level
+        and session.runId == run.RunId and session.spawn == ply.LODRunSpawnSerial
+end
+
 -- Read the same server authorization and budget used by the drain, never the
 -- client-visible flag alone. Revocation/exhaustion takes effect before the next
 -- drain tick, so dependent movement cannot retain a stale map-open bonus.
@@ -63,7 +71,7 @@ function MapMagic:IsOpen(ply)
     if CurTime() - (active.lastHeartbeat or 0) > HEARTBEAT_TIMEOUT then return false end
     local Magic = magicAuthority()
     local ps = Magic and Magic._EnsureState and Magic:_EnsureState(ply)
-    return ps ~= nil and (tonumber(ps.magic) or 0) > 0
+    return ps ~= nil and ownsSession(ply, active, ps) and (tonumber(ps.magic) or 0) > 0
         and (tonumber(active.mapMagic) or 0) > 0
 end
 
@@ -87,8 +95,16 @@ local function beginOrRefresh(ply)
 
     local now = CurTime()
     local state = MapMagic.Active[ply]
+    if state and not ownsSession(ply, state, ps) then
+        stopDrain(ply)
+        state = nil
+    end
     if not state then
+        local run = RunManager.State
         state = {
+            run=run, pool=ps, graph=run.Graph, epoch=run.CampaignEpoch,
+            seed=run.LevelSeed, level=run.Level, runId=run.RunId,
+            spawn=ply.LODRunSpawnSerial,
             lastHeartbeat = now,
             lastTick = now,
             mapMagic = math.Clamp(tonumber(ps.magic) or 0, 0, MAX_MAGIC)
@@ -130,7 +146,7 @@ timer.Create(TIMER_NAME, TICK_SECONDS, 0, function()
             stopDrain(ply, "MAP MAGIC UNAVAILABLE")
         else
             local ps = Magic:_EnsureState(ply)
-            if not ps then
+            if not ps or not ownsSession(ply, state, ps) then
                 stopDrain(ply, "")
             else
                 local dt = math.Clamp(now - (state.lastTick or now), 0, 0.35)

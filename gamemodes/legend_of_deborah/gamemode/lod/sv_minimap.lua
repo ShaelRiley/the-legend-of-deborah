@@ -4,6 +4,9 @@ LOD.MinimapServer = LOD.MinimapServer or {}
 local Minimap = LOD.MinimapServer
 local MC = LOD.Config.Maze
 local CHUNK_SIZE = 128
+local REQUEST_INTERVAL = 0.35
+local requests = setmetatable({}, {__mode = "k"})
+local encodedGraph = setmetatable({}, {__mode = "v"})
 
 util.AddNetworkString("LOD_MapRequest")
 util.AddNetworkString("LOD_MapBegin")
@@ -148,7 +151,9 @@ end
 local function cachedCanonicalCells(state, graph)
     local epoch = tonumber(state.CampaignEpoch) or 0
     local levelSeed = tonumber(state.LevelSeed) or 0
-    if Minimap.EncodedEpoch == epoch and Minimap.EncodedLevel == state.Level
+    local build = LOD.TopologySyncSafety and LOD.TopologySyncSafety.BuildSerial
+    if encodedGraph[1] == graph and Minimap.EncodedBuild == build
+        and Minimap.EncodedEpoch == epoch and Minimap.EncodedLevel == state.Level
         and Minimap.EncodedLevelSeed == levelSeed and Minimap.EncodedCells
     then
         Minimap.EncodeCacheHits = (Minimap.EncodeCacheHits or 0) + 1
@@ -157,8 +162,10 @@ local function cachedCanonicalCells(state, graph)
 
     local cells = encodeCanonicalCells(graph)
     local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
-    -- Cache compact serialized cells, not the graph object itself. Holding the
-    -- prior graph here would unnecessarily keep an entire retired level alive.
+    -- A seed is not a build identity. Keep only a weak graph reference so a
+    -- same-seed replacement invalidates the cache without retaining old worlds.
+    encodedGraph[1] = graph
+    Minimap.EncodedBuild = build
     Minimap.EncodedEpoch = epoch
     Minimap.EncodedLevel = state.Level
     Minimap.EncodedLevelSeed = levelSeed
@@ -231,12 +238,31 @@ function Minimap:Send(ply)
     return true
 end
 
-net.Receive("LOD_MapRequest", function(_, ply)
-    if not IsValid(ply) then return end
-    Minimap:Send(ply)
+net.Receive("LOD_MapRequest", function(bits, ply)
+    if bits > 8 or not IsValid(ply) or not ply:IsPlayer() then return end
+    local request = requests[ply]
+    if not request then request = {nextAt=0}; requests[ply] = request end
+    local now = CurTime()
+    if now >= request.nextAt and not request.pending then
+        request.nextAt = now + REQUEST_INTERVAL
+        Minimap:Send(ply)
+    elseif not request.pending then
+        request.pending = true
+        timer.Simple(math.max(0, request.nextAt - now), function()
+            if requests[ply] ~= request or not IsValid(ply) then return end
+            request.pending = false
+            request.nextAt = CurTime() + REQUEST_INTERVAL
+            -- Resolve at dispatch: a rebuild arriving during this window must
+            -- recover the current topology rather than lose its only request.
+            Minimap:Send(ply)
+        end)
+    end
+end)
+
+hook.Add("PlayerDisconnected", "LOD_MinimapRequestDisconnect", function(ply)
+    requests[ply] = nil
 end)
 
 hook.Add("PlayerInitialSpawn", "LOD_MinimapInitialEntitlement", function(ply)
     Minimap:Revoke(ply)
 end)
-

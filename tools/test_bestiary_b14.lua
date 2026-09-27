@@ -415,7 +415,7 @@ LOD.RunManager.IsActivePlayer=function() return true end
 e,a=recharge();resolve(e,a);hero.pool.magic=0
 local pool=a.pool;timers.LOD_MagicRegen()
 assert(pool.magic>45 and hero.pool.magic>0,'same canonical scheduler regenerates both resources')
-LOD.MinimapMagic={Active={[hero]={}}};local heldMagic=hero.pool.magic
+LOD.MinimapMagic={Active={[hero]={}},IsOpen=function(self,p) return self.Active[p]~=nil end};local heldMagic=hero.pool.magic
 timers.LOD_MagicRegen();assert(hero.pool.magic==heldMagic,'map-open suppression remains canonical')
 LOD.MinimapMagic.Active={}
 -- Exactly one cast-spend observer, with a pre-debit full-Magic snapshot; drain

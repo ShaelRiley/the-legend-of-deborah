@@ -221,11 +221,11 @@ net.Receive("LOD_EquipmentRequest", function(bits, ply)
         if E:InventoryWeapon(ply,id,true) then LOD.Audio:Emit(ply,'confirm') end
     elseif action == "deactivate" then E:Deactivate(ply)
     elseif action == "equip" then
-        if E:Equip(state, id, slot) then LOD.Audio:Emit(ply,'confirm');E:Sync(ply) end
+        if E:Equip(state, id, slot) then LOD.Audio:Emit(ply,'confirm') end
     elseif action == "unequip" then
-        if state.slots[slot]==id and E:Unequip(state, slot) then LOD.Audio:Emit(ply,'confirm');E:Sync(ply) end
+        if state.slots[slot]==id and E:Unequip(state, slot) then LOD.Audio:Emit(ply,'confirm') end
     elseif action == "discard" and E.Discard then
-        if E.DiscardOwned and E:DiscardOwned(ply,id) then LOD.Audio:Emit(ply,'item_discard');E:Sync(ply) end
+        if E.DiscardOwned and E:DiscardOwned(ply,id) then LOD.Audio:Emit(ply,'item_discard') end
     end
     if LOD.SnapshotDelivery then LOD.SnapshotDelivery:Invalidate(ply,"LOD_EquipmentSnapshot") end
     E:Sync(ply)
