@@ -874,6 +874,7 @@ function System:CanInitiateAttack(actor)
 end
 
 function System:CanMoveVoluntarily(actor)
+    if LOD.SoldierMovement and LOD.SoldierMovement:Locked(actor) then return false end
     return not self:Has(actor, "held")
 end
 

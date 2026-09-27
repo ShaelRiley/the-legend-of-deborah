@@ -1,3 +1,33 @@
+# SPOT-17 source complete — spot queue complete; native acceptance next
+
+Human Soldiers now use the AI Soldier's configured base speed (currently 140),
+without ordinary sprint or grounded jump. Existing class/DEX/status/Haste and
+directional effects remain; granted airborne movement feats remain off-commitment.
+An accepted rifle attack roots voluntary movement through warning, all rounds and
+actual cadence-adjusted recovery. Gravity/forced motion remain; current-life,
+weapon, role and dungeon cancellation cannot carry a root into another body.
+Dodge cannot reuse a pre-commitment motion sample. Heroes and AI retain their rules.
+
+Live GDD 06/07 SPOT-17 delegated movement/tuning supplements were written and read
+back before production changes. The existing source/attack/movement/control/Dodge
+and client projection seams are reused. No recurring timer or movement owner added.
+See validation/SPOT_17_MOVEMENT_GATE.md. The frozen contract retains all 93 earlier
+selections plus two focused production tests (95 selected; 756 Lua syntax files).
+Final local/independent results and publication identity belong to the external
+receipt, not a pre-publication assumption. Native Source prediction/physics,
+cooperative enemy readability and earlier acceptance debts remain open.
+
+SPOT01–17 now have source implementations. After verified publication, the next
+action is exact-build local gm_flatgrass acceptance, particularly Soldier movement,
+rifle commitment and F3-to-Hero recovery. Use console_latest.txt and
+rpg_summary_latest.txt plus a short observation; detailed session only for disputed
+timing. No dedicated Razor retest. Preserve all previous approved work. No Workshop
+or VPS action is authorized; retain local acceptance -> Workshop parity -> matching
+VPS. Deferred roadmap work is not automatically authorized by completing this queue.
+Earlier headers below are historical where superseded by this one.
+
+---
+
 # SPOT-16 source complete — SPOT-17 next after verified publication
 
 Human Soldiers now receive an incarnation-bound Pulse Rifle with INFINITE ammo,

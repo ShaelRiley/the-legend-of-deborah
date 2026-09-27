@@ -13,6 +13,8 @@ LOD = LOD or {}
 LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
+if SERVER then AddCSLuaFile("lod/sh_soldier_movement.lua") end
+include("lod/sh_soldier_movement.lua")
 if SERVER then
     AddCSLuaFile("lod/cl_ui_theme.lua")
     AddCSLuaFile("lod/cl_ui_unread.lua")

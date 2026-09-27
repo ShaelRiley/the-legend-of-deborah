@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_DodgePulse")
 function Rules:RogueMovementMultiplier(actor, sprinting)
     local state = self:ProgressionState(actor)
     if not state or state.classId ~= "rogue" then return 1 end
+    if LOD.SoldierMovement and LOD.SoldierMovement:Active(actor) then sprinting = false end
     if sprinting == nil then
         sprinting = actor:IsPlayer() and actor.KeyDown and actor:KeyDown(IN_SPEED)
             or not actor:IsPlayer() and actor.LODOrdinarySprinting == true
@@ -36,6 +37,12 @@ end
 function Rules:DodgeMovement(actor)
     if not IsValid(actor) then return 0, 0, 0 end
     if actor:IsPlayer() then
+        -- A commitment can happen between FinishMove observations. Never let
+        -- a pre-commitment cached step grant Dodge during the newly rooted attack.
+        if LOD.SoldierMovement and LOD.SoldierMovement:Locked(actor) then
+            local target = LOD.SoldierMovement:DodgeTarget(actor, self)
+            return 0, target, target
+        end
         local motion = self.DodgeMotion[actor]
         if not motion or motion.identity ~= self:ProgressionState(actor)
             or CurTime() - motion.at > .25 then return 0, 0, 0 end
@@ -66,6 +73,11 @@ hook.Add("FinishMove", "LOD_RPG_DodgeVoluntaryMotion", function(actor, move)
     local multiplier = Rules:MovementMultiplier(actor) / appliedRogue
     local walk = actor:GetWalkSpeed() * multiplier * Rules:RogueMovementMultiplier(actor, false)
     local sprint = actor:GetRunSpeed() * multiplier * Rules:RogueMovementMultiplier(actor, true)
+    if LOD.SoldierMovement and LOD.SoldierMovement:Active(actor) then
+        walk = LOD.SoldierMovement:DodgeTarget(actor, Rules)
+        sprint = walk
+        if LOD.SoldierMovement:Locked(actor) then speed = 0 end
+    end
     if actor.LODForcedMovementUntil and CurTime() < actor.LODForcedMovementUntil then speed = 0 end
     Rules.DodgeMotion[actor] = {identity = Rules:ProgressionState(actor), at = CurTime(),
         speed = speed, walk = walk, sprint = sprint}

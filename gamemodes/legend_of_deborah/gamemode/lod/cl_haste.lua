@@ -15,9 +15,12 @@ end)
 -- No client ownership/cost decisions: the server still resolves every move.
 hook.Add("SetupMove","LOD_PredictedVoluntarySpeed",function(ply,move)
     if ply~=LocalPlayer() or not ply:Alive() then return end
+    local soldier=LOD.SoldierMovement
+    local rooted=soldier and soldier:PrepareMove(ply,move)
     local multiplier=ply:GetNW2Float("LOD_VoluntaryMovementMultiplier",1)
     move:SetForwardSpeed(move:GetForwardSpeed()*multiplier)
     move:SetSideSpeed(move:GetSideSpeed()*multiplier)
     move:SetMaxClientSpeed(move:GetMaxClientSpeed()*multiplier)
     move:SetMaxSpeed(move:GetMaxSpeed()*multiplier)
+    if rooted then soldier:ApplyRoot(ply,move) end
 end)

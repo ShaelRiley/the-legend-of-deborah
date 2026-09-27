@@ -150,6 +150,23 @@ function Specials:CancelSoldierAR2(ply, state)
     local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
     if effects and effects.AR2RateOfFirePlans then effects.AR2RateOfFirePlans[ply] = nil end
     clearAR2Network(ply)
+    if LOD.SoldierMovement then LOD.SoldierMovement:ClearProjection(ply) end
+end
+
+-- The existing burst is the only owner, including final cadence-adjusted recovery.
+function Specials:SoldierMovementLock(ply)
+    local state = self.PlayerState[ply]
+    local ar2 = state and state.ar2
+    if not ar2 or not ar2.soldierBinding then return false, 0 end
+    local now = CurTime()
+    if not self:AR2SourceAllowed(ply, ar2.weapon, ar2)
+        or (ar2.active and now - (ar2.nextShotAt or math.huge) > 0.20) then
+        self:CancelSoldierAR2(ply, state)
+        return false, 0
+    end
+    local deadline = tonumber(ar2.readyAt) or 0
+    local locked = ar2.active == true or now < deadline
+    return locked, locked and math.max(deadline, now + (ar2.active and TICK or 0)) or 0
 end
 
 local function syncSMG(weapon, smg)
@@ -183,6 +200,7 @@ function Specials:ResetPlayer(ply)
     end
     clearAR2Network(ply)
     self.PlayerState[ply] = nil
+    if LOD.SoldierMovement then LOD.SoldierMovement:ClearProjection(ply) end
 end
 
 function Specials:ResetSMGState(ply)
@@ -284,6 +302,7 @@ local function finishAR2(ply, ar2, cooldown)
         ar2.weapon:SetNextPrimaryFire(ar2.readyAt)
     end
     clearAR2Network(ply)
+    if LOD.SoldierMovement then LOD.SoldierMovement:Publish(ply) end
 end
 
 function Specials:BeginAR2Burst(ply, weapon, direction)
@@ -328,6 +347,7 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     ar2.ammoCommitted = soldierBinding and 0 or 1
     ar2.soldierBinding = soldierBinding
     ar2.readyAt = ar2.fireAt + (targetShots - 1) * AR2_BURST_SPACING + AR2_RECOVERY
+    if LOD.SoldierMovement then LOD.SoldierMovement:Publish(ply) end
 
     weapon:SetNextPrimaryFire(ar2.readyAt)
     ply:SetNW2Vector("LOD_PlayerAR2Direction", direction)
@@ -456,6 +476,7 @@ function Specials:ProcessPlayer(ply, state, now)
             end
         end
     end
+    if LOD.SoldierMovement then LOD.SoldierMovement:Publish(ply) end
 end
 
 hook.Add("EntityFireBullets", "LOD_PlayerWeaponSpecials_SMGHeat", function(shooter)
@@ -468,6 +489,7 @@ end)
 hook.Add("StartCommand", "LOD_PlayerWeaponSpecials_Input", function(ply, cmd)
     if LOD.Equipment and LOD.Equipment.ObserveStatueInput then LOD.Equipment:ObserveStatueInput(ply,cmd) end
     if not IsValid(ply) or not ply:Alive() then return end
+    if LOD.SoldierMovement then LOD.SoldierMovement:FilterInput(ply, cmd) end
     local state = stateFor(ply)
     local weapon = activeWeapon(ply)
     local class = IsValid(weapon) and weapon:GetClass() or ""

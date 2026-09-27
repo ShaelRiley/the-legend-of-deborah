@@ -106,6 +106,7 @@ end
 
 hook.Add("CreateMove", "LOD_PlayerWeaponSpecials_PredictedInput", function(cmd)
     local ply = LocalPlayer()
+    if LOD.SoldierMovement then LOD.SoldierMovement:FilterInput(ply, cmd) end
     if not IsValid(ply) or not ply:Alive() then
         ar2AttackHeld = false
         return

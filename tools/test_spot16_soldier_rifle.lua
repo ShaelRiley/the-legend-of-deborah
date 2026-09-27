@@ -14,6 +14,7 @@ function V:GetNormalized() local n=math.sqrt(self.x*self.x+self.y*self.y+self.z*
 function V:LengthSqr() return self.x*self.x+self.y*self.y+self.z*self.z end
 V.__eq=function(a,b) return a.x==b.x and a.y==b.y and a.z==b.z end
 IN_ATTACK=1;IN_ATTACK2=2;IN_RELOAD=4;CHAN_WEAPON=1;CHAN_ITEM=2
+IN_SPEED=8;IN_JUMP=16;IN_FORWARD=32;IN_BACK=64;IN_MOVELEFT=128;IN_MOVERIGHT=256;IN_DUCK=512
 ACT_VM_PRIMARYATTACK=1;PLAYER_ATTACK1=1
 Angle=function(p,y,r) return {p=p or 0,y=y or 0,r=r or 0,Forward=function() return Vector(1,0,0) end} end
 weapons={GetStored=function() return nil end}
@@ -246,3 +247,7 @@ check(not CPS:_HasCapability({},human,'reloadable_firearm'),'infinite Soldier ha
 check(CPS:_HasCapability({starterWeaponClass='weapon_smg1'},ai,'smg'),'AI SMG capabilities unchanged')
 check(human.progressionHitDieSides==ai.progressionHitDieSides and human.level==ai.level,'shared automatic generation and levels retained')
 print('SPOT16_SERVER_PASS '..checks..' actual-production assertions; native engine acceptance pending')
+
+-- Reusable final-production fixture; inherited assertions are not counted again.
+return {fixture=f, env=env, Run=R, Specials=S, Effects=Effects, setup=setup,
+ step=step, command=cmd, input=input, cadence=cadence, shots=function() return shots end}

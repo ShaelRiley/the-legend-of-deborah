@@ -46,6 +46,8 @@ local function actor(id,enemy)
     function p:EmitSound() end
     function p:ChatPrint() end
     function p:SetNW2String(k,v) self.nw[k]=v end
+    p.SetNW2Entity=p.SetNW2String
+    function p:GetNW2Entity(k) return self.nw[k] end
     p.SetNW2Int,p.SetNW2Float,p.SetNW2Bool=p.SetNW2String,p.SetNW2String,p.SetNW2String
     function p:GetNW2Bool(k,default) local v=self.nw[k];if v==nil then return default end;return v end
     function p:GetNW2Float(k,default) return self.nw[k] or default end

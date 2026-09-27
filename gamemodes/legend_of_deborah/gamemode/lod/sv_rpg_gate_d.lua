@@ -103,7 +103,8 @@ end
 function AbilityRules:MovementMultiplier(actor)
     local derived = self:Derived(actor)
     return math.Clamp(tonumber(derived and derived.movementSpeedMultiplier) or 1, 0.90, 1.55)
-        * (self.RogueMovementMultiplier and (not actor:IsPlayer() or actor:OnGround())
+        * (self.RogueMovementMultiplier and (not actor:IsPlayer() or actor:OnGround()
+            or (LOD.SoldierMovement and LOD.SoldierMovement:Active(actor)))
             and self:RogueMovementMultiplier(actor) or 1)
 end
 
@@ -583,18 +584,22 @@ end)
 hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     if LOD.Equipment and LOD.Equipment.UpdateEquipmentGravity then LOD.Equipment:UpdateEquipmentGravity(ply) end
     if not IsValid(ply) or not ply:Alive() then return end
+    local soldier = LOD.SoldierMovement
+    local rooted = soldier and soldier:PrepareMove(ply, move)
     local multiplier = AbilityRules:MovementMultiplier(ply)
     move:SetForwardSpeed(move:GetForwardSpeed() * multiplier)
     move:SetSideSpeed(move:GetSideSpeed() * multiplier)
     ply:SetNW2Float("LOD_VoluntaryMovementMultiplier", multiplier)
     move:SetMaxClientSpeed(move:GetMaxClientSpeed() * multiplier)
     move:SetMaxSpeed(move:GetMaxSpeed() * multiplier)
-    if AbilityRules.ApplyVoluntaryMovementFeats then
+    if not rooted and AbilityRules.ApplyVoluntaryMovementFeats then
         AbilityRules:ApplyVoluntaryMovementFeats(ply, move)
     end
     move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
     move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
-    if AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
+    if not rooted and AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
+    if rooted then soldier:ApplyRoot(ply, move) end
+    if soldier then soldier:Publish(ply) end
     if LOD.Equipment and LOD.Equipment.ObserveStatue then LOD.Equipment:ObserveStatue(ply,move) end
     if LOD.Equipment and LOD.Equipment.ObserveStomp then LOD.Equipment:ObserveStomp(ply,move) end
 end)

@@ -1,53 +1,56 @@
-# Resume The Legend of Deborah — SPOT-17 Soldier movement
+# Resume The Legend of Deborah — SPOT-17 native acceptance
 
-Repository ShaelRiley/the-legend-of-deborah, branch main. The external SPOT-16
-publication receipt supplies the verified child/tree and independent Actions run.
-Actual SPOT-16 parent is 258c0ef6c46c2554987a7ec77862ab45433e5fcc; this is historical
-once published, not the next HEAD. Fetch current main and preserve intervening or
-uncommitted work. Never use an isolated workflow trigger as gameplay ancestry.
+Repository: ShaelRiley/the-legend-of-deborah, main. The external SPOT-17 delivery
+receipt supplies the verified published child/tree and independent Actions run.
+Its actual gameplay parent is 9e2601953e8f91469fc3d8ece7c13110fd1e8941 (SPOT-16).
+That parent is historical once published, not the next HEAD. Fetch current main,
+preserve intervening/uncommitted work, and never use the isolated workflow trigger
+or a local source reconstruction as gameplay ancestry.
 
 Read AGENTS.md -> docs/DEVELOPMENT_PLAN.md -> this handoff ->
-docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_16_SOLDIER_RIFLE.md ->
+docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_17_MOVEMENT_GATE.md ->
 docs/TEST_LOGGING.md. Live GDD: 1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY;
-00 -> 01 -> required normalized Soldier/control/movement/combat/lifecycle and tuning
-rules. Exact HUMAN fragments only where normalized detail is missing. SPOT-16
-06/07 supplements were recovered already written and read back; do not duplicate.
+00 -> 01 -> relevant normalized rules. SPOT-17 06/07 movement/tuning supplements
+were written and read back before code; do not duplicate them.
 
-SPOT-16 is source complete: human Soldier weapon_ar2, zero native ammunition with
-non-consuming role/incarnation permission; INFINITE HUD, no reload or native orb.
-One fresh press commits three baseline projectiles after 0.45 s, spaced 0.09 s,
-then 0.25 s recovery; existing burst/rate/aim feats remain authoritative. Release
-does not cancel and holding does not repeat. Aim freezes at commitment, each round
-starts at the current shoot position. At most one round per service step, forfeiting
-work over 0.20 s late rather than discharging a backlog. Exact source/life/weapon
-and ordinary attack admission are revalidated through final compatibility wrappers.
-Stale contextual network requests, F3 exits, retirement, death/disconnect, replacement,
-weapon switch/loss and dungeon/control invalidation cannot fire or develop a later
-body. Preserve SPOT-15 queues, revival and dormant Hero state. Human capability
-selection follows the actual rifle, not obsolete SMG heat/reload. Hero/AI behavior,
-secondary Magic policy and shared damage/XP/attribution remain authoritative.
+SPOT-17 source contract: human Soldier configured AI base speed (140), no ordinary
+sprint or grounded jump, preserved crouch/steps/stairs and class/DEX/status/Haste/
+directional modifiers. Explicit airborne Wall Jump/Cloud Step/Float On remain
+available outside rifle commitment. Warning, every committed round and actual
+rate-adjusted recovery root voluntary locomotion through the existing burst's
+exact binding and readyAt. Preserve gravity, falls, base-world and marked forced
+motion. No new timer, actor-state owner, freeze, teleport or native speed mutation.
+Airborne voluntary actions/dash cannot escape a commitment. Shared Dodge uses the
+actual Soldier targets and rejects both rooted FinishMove samples and cached
+pre-commitment motion. Client root requires current life-context, exact native
+weapon and a nonexpired server deadline. Read-only snapshot actors are not live
+movement bodies. Hero/AI movement and all SPOT-16 rifle rules remain unchanged.
 
-Focused attempt 07: 988 server + 32 client assertions; additional inherited SPOT-15
-assertions are not counted again. Final frozen-source gate contract: 93 selected
-suites, 753 Lua syntax checks, timeout120/workers2. Actual aggregate results and
-publication identity come from the delivery receipt. Earlier 91/92 gate remains a
-failure: its legacy Soldier-refill expectation was explicitly revised for SPOT-16,
-retaining all finite Hero tests. Raw attempts and exact gate-01 source overlay are
-in delivered recovery evidence; early attempts have logs, not full source copies.
-Native prediction, layout, audio, co-op damage/timing and balance remain unaccepted.
-No full campaign pass; existing full Gate-B perkDisplayName diagnostic remains open.
+Current body/role/weapon/run/graph, control denial and existing >0.20-second service
+lateness retire root and unfinished shots. F3 exits, death, disconnect, replacement
+and dungeon teardown cannot leak to the saved Hero or a later Soldier. SPOT-15
+queues, actual revival and dormant Hero state remain authoritative. Holding or
+releasing primary neither starts another burst nor evades a current commitment.
 
-Implement only SPOT-17: root human Soldiers during committed rifle attacks and
-reduce movement options/speed to approximate AI Soldiers, prioritizing readable
-Hero experience. Define genuinely missing delegated behavior in the live GDD before
-code. Reuse canonical movement, attack and lifecycle authorities; define a finite
-actual-production gate, retain applicable regressions and manual parity, and bank
-one independently verified non-forced checkpoint. Do not add deferred roadmap work.
+Finite contract: all 93 SPOT-16 selections plus actual-production server/client
+movement tests, 95 total and 756 Lua syntax checks, timeout120/workers2. Final
+frozen-source local and independent results come from the receipt. First aggregate
+attempt was 93/95: read-only snapshot test actors lacked native Alive(), affecting
+snapshot delivery and its inherited draft check. That boundary is now explicit;
+earlier failure is preserved, not converted into a pass. See validation for the
+other fixture-setup attempts and full evidence limitations.
 
-Preserve SPOT01–16, Float On six seconds at 1 Magic/s, reversible Time Management
-minutes/expiry precedence, unread/drag epochs, card colors and four-choice drafts,
-B28/B29, accepted Crate and P1–P4. Native evidence remains console_latest.txt plus
-rpg_summary_latest.txt and a short exact-build gm_flatgrass observation; detailed
-session only for timing. No dedicated Razor retest. Local acceptance -> Workshop
-3791535712 parity -> matching VPS. No Workshop/VPS action occurred or is authorized.
-Supply a fresh handoff and instruct the author to start a new conversation when long.
+NEXT ACTION: exact-build local gm_flatgrass acceptance of the completed spot queue,
+with a short Soldier movement/rifle/F3-to-Hero observation. The code/CI gates do not
+establish native collision, latency, animation, audio, co-op balance or acceptance.
+Preserve open full Gate-B perkDisplayName and prior native debts. No full campaign
+matrix pass is claimed. No dedicated Razor retest or natural sighting prerequisite.
+
+Preserve SPOT01–17, Float On six seconds at 1 Magic/s, reversible Time Management
+minutes/expiry precedence, unread/drag epochs, four-choice drafts/card colors,
+B28/B29, accepted Crate and P1–P4. Default evidence: console_latest.txt plus
+rpg_summary_latest.txt and a short exact-build observation; detailed session only
+for timing. Local acceptance -> Workshop 3791535712 parity -> matching VPS.
+No Workshop or VPS action occurred or is authorized. Do not start deferred Low-End
+PC Optimization, Big Loot, Event System or audit work without further direction.
+Supply a fresh handoff and ask the author to start a new conversation when long.
