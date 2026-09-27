@@ -1,0 +1,30 @@
+diff --git a/docs/validation/FACTION_RECKLESS_DAMAGE.md b/docs/validation/FACTION_RECKLESS_DAMAGE.md
+index d5dd186d7da668ea3accd9c10f5b094b227ea8fc..1c92c436428b27b86e5154975a889001f0adfe0a 100644
+--- a/docs/validation/FACTION_RECKLESS_DAMAGE.md
++++ b/docs/validation/FACTION_RECKLESS_DAMAGE.md
+@@ -76,6 +76,9 @@ transport are explicit engine boundaries; real faction, GM, multiplayer,
+ status, role and geometry-selector code is executed. Adjacent retained suites
+ exercise the actual damage dice, mitigation, equipment and Soldier rifle paths.
+ 
++The first complete 108-suite gate passed 107 selections; AG-011 stopped because
++its synthetic summon lacked the engine Entity IsPlayer/Health methods. Only
++that fixture was repaired; no production rule or assertion was relaxed.
+ Earlier incomplete gates or fixture errors remain in the external working
+ record and must not be described as passes. Published evidence must identify
+ its exact tree and include the independent final receipt.
+diff --git a/tools/test_ag011_repairs.lua b/tools/test_ag011_repairs.lua
+index 4f9005c7488b342b42c73fe3230327824791d169..4c9af690d091d195032837a42b8f1391815ff5f9 100644
+--- a/tools/test_ag011_repairs.lua
++++ b/tools/test_ag011_repairs.lua
+@@ -404,7 +404,10 @@ local bolt={valid=true,LODCaster=attacker,LODFormId="bolt",LODCastContext={},
+     LODDirection=Vector(1,0,0),GetPos=function() return Vector() end,Remove=function() end}
+ hits={};forms:ProjectileImpact(bolt,{HitPos=Vector(),Entity=soldier})
+ assert(#hits==1 and hits[1]==soldier,"Bolt resolves direct Player opposition")
+-local summon={valid=true,LODSummonedSeeker=true,LODCaster=attacker,WorldSpaceCenter=function() return Vector() end}
++-- Engine entities always expose IsPlayer/Health; keep the summon fixture faithful.
++local summon={valid=true,LODSummonedSeeker=true,LODCaster=attacker,
++    IsPlayer=function() return false end,Health=function() return 100 end,
++    WorldSpaceCenter=function() return Vector() end}
+ hits={};assert(forms:ResolveSummonAttack(summon,soldier))
+ assert(#hits==1 and hits[1]==soldier,"Summon damage agrees with Magic opposition")
+ assert(not forms:ResolveSummonAttack(summon,teammate),"Summon cannot damage a cooperative Hero")
