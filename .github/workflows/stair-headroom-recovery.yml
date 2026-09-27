@@ -1,0 +1,69 @@
+name: Standing stair headroom verified transport recovery
+on:
+  push:
+    branches: ['automation/stair-headroom-aebd2bb0']
+    paths: ['.github/workflows/stair-headroom-recovery.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2f93c7d4901f6adcb81b8ec9ce50a181518169bd
+          path: transport
+      - uses: actions/checkout@v4
+        with:
+          ref: aebd2bb0083bb0b13b043486665342dfc1c084f0
+          fetch-depth: 1
+          path: candidate
+      - name: Install finite-gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/stair-venv"
+          "$RUNNER_TEMP/stair-venv/bin/python" -m pip install Pillow PyYAML
+          echo "$RUNNER_TEMP/stair-venv/bin" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/stair-evidence"
+          echo "EVIDENCE=$RUNNER_TEMP/stair-evidence" >> "$GITHUB_ENV"
+      - name: Recover byte-identical reviewed payload and execute unchanged gate/publication guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -u - <<'PY'
+          import base64,gzip,hashlib,json,os,pathlib,subprocess,yaml
+          source=pathlib.Path('transport/.github/workflows/stair-headroom-exact.yml')
+          raw=source.read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()=='a7a5b028b2d9b44094545c84779942f430252a89'
+          workflow=yaml.safe_load(raw)
+          steps=workflow['jobs']['verify-and-publish']['steps']
+          prepare=next(s for s in steps if s.get('name')=='Apply only the reviewed exact-source patch')
+          payload=prepare['env']['PATCH_GZIP_BASE64']
+          corrections=[('CP6e21qrbVVuf','CP6e21qrbVuf'),('e21+/uNbtPXcf','e21+/uNbtOcf'),('G1n+PNi+MPIAC','G1n+PNi+MIAC')]
+          for before,after in corrections:
+              assert payload.count(before)==1,before
+              payload=payload.replace(before,after)
+          assert len(payload)==8448
+          patch=gzip.decompress(base64.b64decode(payload,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='0a50a4167b8a9baac2d228bfb32260b81d8113721743e172e62a99ccf80798f3'
+          evidence=pathlib.Path(os.environ['EVIDENCE'])
+          (evidence/'transport-original.yml').write_bytes(raw)
+          (evidence/'transport-repair.json').write_text(json.dumps({'failed_run':36330037086,'corrections':corrections,'patch_sha256':hashlib.sha256(patch).hexdigest(),'source_changed':False},indent=2)+'\n')
+          env=dict(os.environ,PATCH_GZIP_BASE64=payload)
+          names=['Apply only the reviewed exact-source patch','Independent 99-suite frozen-source gate','Publish only the exact validated non-forced child']
+          for name in names:
+              step=next(s for s in steps if s.get('name')==name)
+              print('=== '+name+' ===',flush=True)
+              subprocess.run(['bash','-euo','pipefail','-c',step['run']],cwd='candidate',env=env,check=True)
+          PY
+      - name: Preserve all evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stair-headroom-exact-source-evidence
+          path: ${{ runner.temp }}/stair-evidence/
+          if-no-files-found: error
