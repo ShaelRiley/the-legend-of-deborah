@@ -1,0 +1,60 @@
+name: SPOT-17 exact-source verification and publication
+on:
+  push:
+    branches: ['automation/spot17-verify-9e260195']
+    paths: ['.github/workflows/spot17-exact-source.yml']
+permissions:
+  contents: write
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Install finite gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/spot17-venv"
+          "$RUNNER_TEMP/spot17-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/spot17-venv/bin" >> "$GITHUB_PATH"
+          node --version
+      - name: Preserve isolated transport before source checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SPOT17_EVIDENCE="$RUNNER_TEMP/spot17-evidence"
+          export SPOT17_PAYLOAD="$RUNNER_TEMP/spot17-payload.b64"
+          mkdir -p "$SPOT17_EVIDENCE"
+          echo "SPOT17_EVIDENCE=$SPOT17_EVIDENCE" >> "$GITHUB_ENV"
+          echo "SPOT17_PAYLOAD=$SPOT17_PAYLOAD" >> "$GITHUB_ENV"
+          cat .spot17/payload-*.b64 > "$SPOT17_PAYLOAD"
+          test "$(git hash-object .spot17/worker.py)" = fc967c908bb7567b5be4920aebe81ce259e83ecd
+          cp .spot17/worker.py "$RUNNER_TEMP/spot17-worker.py"
+          cp .spot17/worker.py .github/workflows/spot17-exact-source.yml "$SPOT17_EVIDENCE/"
+      - name: Recover exact locally validated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot17-worker.py" prepare 2>&1 | tee "$SPOT17_EVIDENCE/preparation.log"
+      - name: Independent 95-suite frozen-source gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_spot17_gate.py --output "$SPOT17_EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$SPOT17_EVIDENCE/independent.log"
+      - name: Guarded non-forced main publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot17-worker.py" publish 2>&1 | tee "$SPOT17_EVIDENCE/publication.log"
+      - name: Preserve all independent output, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot17-exact-source-evidence
+          path: ${{ runner.temp }}/spot17-evidence/
+          if-no-files-found: error
