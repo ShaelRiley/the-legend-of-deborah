@@ -6,6 +6,35 @@ historical deferrals and authorizes improvements. Baseline: main
 Crate assets, B28/B29 and all SPOT/September 27 repairs. Native local acceptance,
 Workshop parity, then matching VPS remains the release sequence.
 
+## Final result
+
+**262/262 automated suites pass, including syntax checks for all 765 Lua files.**
+The complete gate ran on the exact tree published as
+`864cdf36854c3671926a9473221c74b7ca727fa5` (tree
+`b7ae56adce42bac90a02499ead3acfb86da1eb05`). Before/after source-manifest SHA-256
+is identical: `fb88666c43fcfc7a252785ff9fb7d9707377a96fc461235f640c6fd1dca76750`.
+The subsequent closeout changes documentation only. Remote publication was
+verified; no forced branch update or deployment was used.
+
+| Run | Result |
+| --- | --- |
+| Original main, original matrix | 228/235; seven pre-existing validation failures. |
+| Gameplay fixes, expanded matrix, attempt 1 | 254/262; the same seven plus the newly invalid synthetic map fixture. |
+| Reconciled validation, expanded matrix, attempt 2 | **262/262**, zero timeouts/failures, source unchanged. |
+
+The passing gate includes the 640-dungeon wandering-ecology campaign, complete
+encounter campaign coverage, 584 literal include/asset paths, current 136 ordinary
+feats plus 6 fallbacks/9 capstones, and the 50-case target-identity contract.
+Raw baseline, failed and final outputs, per-suite receipts and full source hash
+manifests are preserved in `LOD_SYSTEMS_AUDIT_20260927_EVIDENCE.zip`.
+No contradictory automated result remains open. Native acceptance remains open.
+
+Reproduce from the checkout with a new evidence directory outside it:
+
+```sh
+python3 tools/test_checkpoint_g_integration.py --workers 4 --suite-timeout 1200 --output ../lod-audit-evidence
+```
+
 ## Confirmed repairs
 
 - **Minimap topology:** the server cached only campaign epoch, level and seed.
@@ -69,8 +98,8 @@ The matrix now executes recent SPOT/faction checks that were previously only
 syntax-listed, plus target identity, minimap transport, Muted potion, manual
 catalog, Workshop packaging and deployment/rollback tool tests. It contains 262
 unique commands, supports bounded workers and per-suite timeouts, retains raw
-outputs/exit codes/hashes, and rejects source changes during the gate. A complete
-rerun is required for closeout; the targeted repaired checks already pass.
+outputs/exit codes/hashes, and rejects source changes during the gate. The complete
+rerun and targeted repaired checks now pass; see the final result above.
 
 ## Audit coverage and limits
 
@@ -84,8 +113,8 @@ rerun is required for closeout; the targeted repaired checks already pass.
 | Build and release tooling | Lua syntax, literal include/asset wiring, source-manifest integrity, packaging and deploy/rollback simulations. |
 
 This is a source/automated systems audit, not a claim that every possible native
-play sequence is bug-free. The serial baseline matrix is supplementary only;
-its earlier partial status is not a complete-matrix pass.
+play sequence is bug-free. The serial baseline matrix completed at 228/235. Its unsuccessful stop attempt
+and status corrections remain in the raw log; it is not represented as a pass.
 
 Engine networking, native input/physics, rendering and human co-op acceptance are
 not established by these headless tests. No Workshop or VPS deployment has

@@ -1,19 +1,22 @@
-# Current checkpoint — September 27 complete systems audit
+# Current checkpoint — September 27 systems audit complete
 
-The author's explicit audit request supersedes earlier audit deferrals. Gameplay
-repairs are published as `c0c911ad2b0a4466f2dfaec6342ba517df6f0866`: minimap cache
-and request ownership, lifecycle-bound map resources, Muted potion input, and
-redundant equipment synchronization. Read `validation/SYSTEMS_AUDIT_20260927.md`.
+The author's audit request supersedes earlier deferrals. Source and validation
+repairs are published through `864cdf36854c3671926a9473221c74b7ca727fa5` on main;
+this closeout changes documentation only. Read `validation/SYSTEMS_AUDIT_20260927.md`
+for findings, exact tree/source digest, coverage and the retained failed attempts.
 
-The first expanded matrix was 254/262; seven failures reproduce on the original
-baseline, and one fixture bypassed the repaired map-session admission. Those
-validation seams are reconciled with live GDD 02–07 and focused checks now pass.
-Next finite gate: the complete 262-suite matrix with unchanged source manifest.
-Keep exact-build native gm_flatgrass acceptance separate from headless results,
-then preserve Workshop parity -> matching VPS release order. Retain all previous
-SPOT, Soldier/Reckless, stair, stomp, arrow-input, B28/B29 and Crate constraints.
-No native acceptance or Workshop/VPS deployment has occurred during this audit.
-Historical sequencing below is superseded where it conflicts with this checkpoint.
+The complete expanded matrix passes **262/262**, including **765 Lua syntax
+checks**, with identical source before/after. The original matrix was 228/235.
+Minimap cache/request/lifecycle ownership, Muted potion input, duplicate equipment
+sync and stale validation contracts are repaired. No automated failure remains.
+
+Next finite gate: exact-build local gm_flatgrass acceptance, including Muted potion
+use and map reopening after rebuild/respawn. Retain all previous SPOT,
+Soldier/Reckless, stair, stomp, arrow-input, B28/B29 and Crate acceptance constraints.
+Native input/network/physics/rendering and co-op acceptance remain open; headless
+results do not establish them. Preserve local acceptance -> Workshop parity ->
+matching VPS. No Workshop/VPS deployment occurred during this audit. Historical
+sequencing below is superseded where it conflicts with this checkpoint.
 
 ---
 
