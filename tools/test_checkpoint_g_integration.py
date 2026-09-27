@@ -88,6 +88,7 @@ SUITES = [
     ("Finite Wand Weapon", ["python3", "tools/run_lua54.py", "tools/test_wand.lua"]),
     ("Tanuki Statue", ["python3", "tools/run_lua54.py", "tools/test_tanuki_ring.lua"]),
     ("Heavy Plumber Stomp", ["python3", "tools/run_lua54.py", "tools/test_heavy_plumber.lua"]),
+    ("Stomp Movement Contact", ["python3", "tools/run_lua54.py", "tools/test_stomp_contact.lua"]),
     ("Thunder Hat Charge", ["python3", "tools/run_lua54.py", "tools/test_thunder_charge.lua"]),
     ("Ring of Invisibility", ["python3", "tools/run_lua54.py", "tools/test_invisibility_ring.lua"]),
     ("Fighting Streets Techniques", ["python3", "tools/run_lua54.py", "tools/test_fighting_streets.lua"]),

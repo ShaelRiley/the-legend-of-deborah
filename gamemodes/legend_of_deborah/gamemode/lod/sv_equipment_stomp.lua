@@ -53,8 +53,14 @@ function E:ResolveStomp(ply,data)
     if not tr.Hit or tr.StartSolid or tr.AllSolid or not tr.HitNormal or tr.HitNormal.z<.7
         or not IsValid(target) or not (LOD.FactionManager.CanDamage or LOD.FactionManager.IsOpponent)(LOD.FactionManager,ply,target)
         or target.LODDead or target:Health()<=0 then return false end
+    -- FinishMove can be below/beside the first impact after Source slides the
+    -- hull. Validate feet at the actual swept impact, not at the final origin.
+    -- Keep the final origin for support/ceiling preflight and the bounce: never
+    -- rewind/teleport the player to an earlier collision point.
+    local contact=tr.HitPos
     local _,top=target:WorldSpaceAABB()
-    if sample.origin.z+sample.mins.z<top.z-2 or math.abs(pos.z+sample.mins.z-top.z)>3 then return false end
+    if not contact or sample.origin.z+sample.mins.z<top.z-2
+        or math.abs(contact.z+sample.mins.z-top.z)>3 then return false end
     flight.spent=true
     local session=flight.context.moveBinding.session
     if CurTime()<(session.cooldowns.heavy_stomp or 0) then return false end

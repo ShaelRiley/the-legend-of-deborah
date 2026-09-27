@@ -59,7 +59,8 @@ util.TraceHull=function(d)
  if d.endpos.z>d.start.z then
   return {Hit=clearance<60,Fraction=clearance/60,StartSolid=ceiling}
  end
- return {Hit=true,Entity=cover and floor or contact,HitNormal=side and Vector(1,0,0) or Vector(0,0,1)}
+ return {Hit=true,Entity=cover and floor or contact,HitPos=Vector(d.endpos.x,d.endpos.y,74),
+  HitNormal=side and Vector(1,0,0) or Vector(0,0,1)}
 end
 util.PointContents=function() return water and CONTENTS_WATER or 0 end
 ents={FindInBox=function() return hurt and {{GetClass=function() return 'trigger_hurt' end}} or {} end}
@@ -215,3 +216,8 @@ reset();E:UnequipItem(state,item.id);E:ObserveStomp(p,data(p.position));d=descen
 assert(not E:ResolveStomp(p,d),'Backpack does not grant stomp')
 reset();d=descending();assert(not E:ResolveStomp(p,d),'Equipping midair cannot arm a descent')
 print('HEAVY_PLUMBER_PASS: generated ownership/value, native top-contact, shared physical combat, free ceiling-safe bounce, graph/floor/hazard rejection, one-per-flight/cooldown, source and lifecycle guards')
+
+-- Reusable native-boundary fixture for movement-hook integration regressions.
+return {player=p,enemy=enemy,ally=ally,equipment=E,state=state,item=item,graph=graph,
+    floor=floor,data=data,reset=reset,arm=arm,descending=descending,
+    advance=function(dt) now=now+dt end}
