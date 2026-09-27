@@ -1,0 +1,63 @@
+name: SPOT-15 exact-source gate and publication
+on:
+  push:
+    branches: ['automation/spot15-258c0ef6']
+    paths: ['.github/workflows/spot15-exact-source.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install gate dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 libzstd1
+          python3 -m venv "$RUNNER_TEMP/spot15-venv"
+          "$RUNNER_TEMP/spot15-venv/bin/python" -m pip install Pillow
+          echo "$RUNNER_TEMP/spot15-venv/bin" >> "$GITHUB_PATH"
+          node --version
+      - name: Verify isolated transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SPOT15_EVIDENCE="$RUNNER_TEMP/spot15-evidence"
+          export SPOT15_PAYLOAD="$RUNNER_TEMP/spot15-transport.b64"
+          mkdir -p "$SPOT15_EVIDENCE"
+          echo "SPOT15_EVIDENCE=$SPOT15_EVIDENCE" >> "$GITHUB_ENV"
+          echo "SPOT15_PAYLOAD=$SPOT15_PAYLOAD" >> "$GITHUB_ENV"
+          test "$(git hash-object .spot15/worker.py)" = ef462daedf9d3c3f3b6dadbca722e89117d46eb6
+          cp .spot15/worker.py "$RUNNER_TEMP/spot15-worker.py"
+          cp .spot15/worker.py .spot15/assemble.py .github/workflows/spot15-exact-source.yml "$SPOT15_EVIDENCE/"
+          python3 .spot15/assemble.py 2>&1 | tee "$SPOT15_EVIDENCE/transport.log"
+      - name: Recover exact frozen gameplay source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot15-worker.py" prepare 2>&1 | tee "$SPOT15_EVIDENCE/preparation.log"
+      - name: Independent 90-suite gate on frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/test_spot15_gate.py --output "$SPOT15_EVIDENCE/independent" --suite-timeout 120 --workers 2 2>&1 | tee "$SPOT15_EVIDENCE/independent.log"
+      - name: Guarded non-forced gameplay publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/spot15-worker.py" publish 2>&1 | tee "$SPOT15_EVIDENCE/publication.log"
+      - name: Preserve exact-source evidence and raw attempts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot15-exact-source-evidence
+          path: ${{ runner.temp }}/spot15-evidence/
+          if-no-files-found: error
