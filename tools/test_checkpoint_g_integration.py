@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 import os
+import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import hashlib
+import json
+import re
+import time
 import subprocess
 import sys
 from pathlib import Path
@@ -99,7 +105,7 @@ SUITES = [
     ("Monster Defense Balance & Tactical Feedback", ["python3", "tools/run_lua54.py", "tools/test_monster_defenses.lua"]),
     ("Invisible Overhead Walls & Free Movement", ["python3", "tools/run_lua54.py", "tools/test_maze_overhead_walls.lua"]),
     ("September 22 Navigation Recovery", ["python3", "tools/run_lua54.py", "tools/test_navigation_recovery.lua"]),
-    ("Spell Availability & Teammate Identity", ["python3", "tools/run_lua54.py", "tools/test_refresh_ui.lua"]),
+    ("Spell Availability", ["python3", "tools/run_lua54.py", "tools/test_refresh_ui.lua"]),
     ("Deterministic Encounter Distribution", ["python3", "tools/run_lua54.py", "tools/test_encounter_distribution.lua"]),
     ("Integrated Combat, Remedy & Derived UI", ["python3", "tools/run_lua54.py", "tools/test_integrated_refresh.lua"]),
     ("Client Geometry Full-Update Recovery", ["python3", "tools/run_lua54.py", "tools/test_geometry_fullupdate.lua"]),
@@ -245,42 +251,102 @@ SUITES.append(("Feedback Audio Assets", ["python3", "tools/test_feedback_audio.p
 SUITES.append(("Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
 SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 
+# Recent checkpoint gates must also execute in the complete matrix. Syntax-only
+# inclusion does not exercise a regression. Retired Bribe fixtures stay archival;
+# current event-catalog/Bribe-removal tests above cover the shipped replacement.
+executed = {part for _, command in SUITES if "--syntax" not in command for part in command}
+for pattern in ("test_spot*.lua", "validate_spot*.lua", "test_faction*.lua"):
+    for path in sorted(Path(REPO_ROOT, "tools").glob(pattern)):
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        if relative not in executed:
+            SUITES.append((path.stem, ["python3", "tools/run_lua54.py", relative]))
+            executed.add(relative)
+SUITES += [
+    ("Player Target Identity", ["python3", "tools/run_lua54.py", "tools/tests/player_target_identity.lua"]),
+    ("Minimap Cache & Request Ownership", ["python3", "tools/run_lua54.py", "tools/test_minimap_transport.lua"]),
+    ("Muted Potion Input & Cure", ["python3", "tools/run_lua54.py", "tools/test_muted_potion.lua"]),
+    ("Manual Catalog Parity", ["python3", "tools/run_lua54.py", "tools/export_manual_catalog.lua", "--check"]),
+    ("Workshop Native & Proton Tools", ["python3", "tools/test_workshop_tools.py"]),
+    ("Verified Server Deploy & Rollback", ["python3", "tools/test_server_deploy.py"]),
+]
+
+
+def source_snapshot():
+    root = Path(REPO_ROOT)
+    names = subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root
+    ).decode().split("\0")
+    return {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+            for name in sorted(set(names)) if name and (root / name).is_file()
+            and "__pycache__" not in Path(name).parts}
+
+
+def snapshot_digest(snapshot):
+    return hashlib.sha256(json.dumps(snapshot, sort_keys=True).encode()).hexdigest()
+
+
 def main():
-    print("=== CHECKPOINT G INTEGRATED AUTOMATED RPG VALIDATION GATE ===")
-    print(f"Repository Root: {REPO_ROOT}")
-    print(f"Registered Test Suites: {len(SUITES)}\n")
+    parser = argparse.ArgumentParser(description="Complete headless system/regression matrix; not native GMod acceptance.")
+    parser.add_argument("--workers", type=int, default=1, choices=range(1, 5))
+    parser.add_argument("--output", type=Path, help="New evidence directory outside the source checkout")
+    parser.add_argument("--suite-timeout", type=int, default=600)
+    args = parser.parse_args()
+    if args.suite_timeout <= 0:
+        parser.error("--suite-timeout must be positive")
+    output = args.output.resolve() if args.output else None
+    if output:
+        if output == Path(REPO_ROOT) or Path(REPO_ROOT) in output.parents:
+            parser.error("Store evidence outside the source checkout")
+        if output.exists() and any(output.iterdir()):
+            parser.error("Preserve earlier evidence; use a new output directory")
+        output.mkdir(parents=True, exist_ok=True)
+    before = source_snapshot()
+    if output:
+        (output / "source_manifest.json").write_text(json.dumps(before, indent=2)+"\n")
+    print(f"COMPLETE SYSTEMS MATRIX: {len(SUITES)} suites; native acceptance remains separate", flush=True)
 
-    results = []
-    failed_any = False
+    def run(entry):
+        index, (name, command) = entry
+        start = time.monotonic()
+        try:
+            result = subprocess.run(command, cwd=REPO_ROOT, capture_output=True,
+                                    timeout=args.suite_timeout)
+            code, stdout, stderr = result.returncode, result.stdout, result.stderr
+        except subprocess.TimeoutExpired as error:
+            code, stdout = 124, error.stdout or b""
+            stderr = (error.stderr or b"") + f"\nTIMEOUT: {args.suite_timeout}s\n".encode()
+        stem = f"{index:03d}-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        row = dict(index=index, name=name, command=command, returncode=code,
+                   seconds=round(time.monotonic()-start, 3), log_prefix=stem,
+                   stdout_sha256=hashlib.sha256(stdout).hexdigest(),
+                   stderr_sha256=hashlib.sha256(stderr).hexdigest())
+        if output:
+            (output / (stem+".stdout.txt")).write_bytes(stdout)
+            (output / (stem+".stderr.txt")).write_bytes(stderr)
+            (output / (stem+".json")).write_text(json.dumps(row, indent=2)+"\n")
+        return row, stdout, stderr
 
-    for idx, (name, cmd) in enumerate(SUITES, 1):
-        res = subprocess.run(cmd, cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        passed = (res.returncode == 0)
-        status_str = "PASS" if passed else "FAIL"
-        results.append((idx, name, status_str, res.returncode, res.stdout, res.stderr))
-        print(f"[{status_str}] {idx:2d}/{len(SUITES)} - {name}")
-        if not passed:
-            failed_any = True
-            print(f"  --> ERROR output for '{name}':")
-            if res.stdout:
-                print("STDOUT:\n" + res.stdout.strip())
-            if res.stderr:
-                print("STDERR:\n" + res.stderr.strip())
-            print("-" * 60)
+    rows = []
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = [pool.submit(run, entry) for entry in enumerate(SUITES, 1)]
+        for future in as_completed(futures):
+            row, stdout, stderr = future.result()
+            rows.append(row)
+            print(f"[{'PASS' if row['returncode']==0 else 'FAIL'}] {row['index']}/{len(SUITES)} "
+                  f"{row['name']} ({row['seconds']}s)", flush=True)
+            if row['returncode']:
+                print((stdout+stderr).decode(errors="replace")[-6000:], flush=True)
+    after = source_snapshot()
+    changed = sorted(name for name in before.keys() | after.keys() if before.get(name) != after.get(name))
+    report = dict(total=len(rows), passed=sum(row['returncode']==0 for row in rows),
+                  source_before=snapshot_digest(before), source_after=snapshot_digest(after),
+                  changed_during_gate=changed, lua_files=len(LUA_FILES), native_gmod_accepted=False,
+                  results=sorted(rows, key=lambda row: row['index']))
+    if output:
+        (output / "receipt.json").write_text(json.dumps(report, indent=2)+"\n")
+    print(f"SYSTEMS_MATRIX {report['passed']}/{report['total']}; source_changed={len(changed)}", flush=True)
+    return 0 if report['passed']==report['total'] and not changed else 1
 
-    print("\n" + "=" * 60)
-    print("CHECKPOINT G SUITE MATRIX SUMMARY:")
-    print("=" * 60)
-    for idx, name, status_str, code, _, _ in results:
-        print(f"  [{status_str}] {idx:2d}. {name:<45} (exit code {code})")
-    print("=" * 60)
-
-    if failed_any:
-        print("\n[FAIL] CHECKPOINT_G_AUTOMATED_GATE_FAILED — One or more test suites failed.")
-        sys.exit(1)
-    else:
-        print(f"\nCHECKPOINT_G_AUTOMATED_GATE_PASS — All {len(SUITES)} test suites verified cleanly with 0 failures.")
-        sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

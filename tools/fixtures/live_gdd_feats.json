@@ -1344,6 +1344,16 @@
       "pos": 519374,
       "prerequisite": "None",
       "requirement": "FeatQualification CHA < 30"
+    },
+    {
+      "actors": "Heroes",
+      "effect": "While the holder is living and authoritatively deployed in the active dungeon, contribute 60 seconds multiplied by the positive current effective Intelligence modifier, max(0, floor((EffectiveINT - 10) / 2)), to the shared collapse deadline. Use the existing effective-ability/derived-stat authority, including legitimate equipment changes, not a new stat calculation. Ordinary qualification and effect strength remain distinct: owning the feat does not require requalifying after every stat change. There is no Magic cost, cooldown, random roll, radius or same-floor restriction. Different eligible Hero identities stack additively; duplicate feat IDs, bodies, synchronization or deployment notifications never multiply one Hero's contribution. Presence and clock accounting are defined in the matching 05/06 supplements.",
+      "id": "INT_TIME_MANAGEMENT",
+      "name": "Time Management",
+      "pos": 57,
+      "prerequisite": "None",
+      "requirement": "INT 17",
+      "sourceTab": "04 — FEATS & IDENTITY"
     }
   ],
   "overrides": {
@@ -1393,5 +1403,21 @@
       "cardText": "Warn when an enemy becomes visible behind or beside you on your floor. Rear range: your WIS modifier, minimum 1 cell, in a 3-cell-wide strip; side range: half that, rounded up. A violet direction cue and named alert identify one target; no repeat while it stays detected."
     }
   },
-  "requirementAuthority": "Shael 2026-09-14: ordinary feat score gates are exclusively 13/15/17; conflicting older values are deprecated. Capstones and fallback availability retain their separate rules."
+  "requirementAuthority": "Shael 2026-09-14: ordinary feat score gates are exclusively 13/15/17; conflicting older values are deprecated. Capstones and fallback availability retain their separate rules.",
+  "supplements": [
+    {
+      "revision": "ANLCKQnivbWT-1S_iKL8ohyahie2S_SXNmF0wiYcFwOZB24rfDJLCL9w1JWXd6iszMFNy2C9LqodNHlwLdIWMOy_XIstSqCEw8wCCFCPuw",
+      "sourceTab": "04 — FEATS & IDENTITY",
+      "tabId": "t.uvtkgy5665d",
+      "anchor": "LOD-SPOT-14 — TIME MANAGEMENT [AUTHOR-DELEGATED DESIGN]",
+      "range": [
+        1,
+        1310
+      ],
+      "ids": [
+        "INT_TIME_MANAGEMENT"
+      ],
+      "retrieved": "2026-09-27"
+    }
+  ]
 }

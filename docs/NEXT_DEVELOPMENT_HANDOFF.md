@@ -1,3 +1,22 @@
+# Current checkpoint — September 27 complete systems audit
+
+The author's explicit audit request supersedes earlier audit deferrals. Gameplay
+repairs are published as `c0c911ad2b0a4466f2dfaec6342ba517df6f0866`: minimap cache
+and request ownership, lifecycle-bound map resources, Muted potion input, and
+redundant equipment synchronization. Read `validation/SYSTEMS_AUDIT_20260927.md`.
+
+The first expanded matrix was 254/262; seven failures reproduce on the original
+baseline, and one fixture bypassed the repaired map-session admission. Those
+validation seams are reconciled with live GDD 02–07 and focused checks now pass.
+Next finite gate: the complete 262-suite matrix with unchanged source manifest.
+Keep exact-build native gm_flatgrass acceptance separate from headless results,
+then preserve Workshop parity -> matching VPS release order. Retain all previous
+SPOT, Soldier/Reckless, stair, stomp, arrow-input, B28/B29 and Crate constraints.
+No native acceptance or Workshop/VPS deployment has occurred during this audit.
+Historical sequencing below is superseded where it conflicts with this checkpoint.
+
+---
+
 # Current overlay — Heavy Plumber and arrow-input equipment repairs
 
 September 27 author-requested spot fixes preserve main baseline

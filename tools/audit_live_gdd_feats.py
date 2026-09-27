@@ -108,7 +108,7 @@ def audit():
     evasion = inventory['capstones']['rogue']['ROG_CAP_NOW_YOU_SEE_ME']
     if evasion['effectParams'].get('evasionChance') is not None:
         errors.append('NONCANONICAL_DODGE: Now You See Me still declares independent evasion')
-    print(f'Live GDD: {len(expected)-6} ordinary including cross feats, 6 fallbacks; '
+    print(f'GDD fixture: {len(expected)-6} ordinary including cross feats, 6 fallbacks; '
           f'loaded {len(inventory["ordinary"])} ordinary, {len(all_ids)} total; blank descriptions={blank}')
     for error in errors:
         print('BLOCKER:', error)

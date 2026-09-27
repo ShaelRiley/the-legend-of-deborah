@@ -168,7 +168,10 @@ local function createMockPlayer(id, nick, entIndex)
         GetAmmo = function() return {} end,
         SetAmmo = function() end,
         Give = function(_, cls)
-            local w = {_isValid = true, GetClass = function() return cls end, Clip1 = function() return 30 end, Clip2 = function() return 0 end, GetPrimaryAmmoType = function() return 1 end}
+            local w = {_isValid = true, clip1 = 30, GetClass = function() return cls end,
+                Clip1 = function(self) return self.clip1 end,
+                SetClip1 = function(self, n) self.clip1 = n end,
+                Clip2 = function() return 0 end, GetPrimaryAmmoType = function() return 1 end}
             table.insert(weapons, w)
             return w
         end,
@@ -177,6 +180,7 @@ local function createMockPlayer(id, nick, entIndex)
             return nil
         end,
         GetAmmoCount = function() return 0 end,
+        SelectWeapon = function(self, cls) self.selectedWeapon = cls end,
         SetNW2Bool = function() end,
         SetNW2Int = function() end,
         SetNW2String = function() end,
@@ -239,6 +243,8 @@ psA.eliminated = true
 psA.eliminatedSince = 1000
 local okJoin, errJoin = RunManager:JoinSoldierRole(pA)
 check(okJoin == true and RunManager:IsSoldierControl(pA) == true, "3. Hero A eliminated and explicitly joined Human Soldier role")
+check(pA.selectedWeapon == 'weapon_ar2' and pA:GetWeapon('weapon_ar2'):Clip1() == 0,
+    "3. Soldier uses the current zero-ammo Pulse Rifle contract")
 
 -- 4 & 5. Soldier A receives generated automatic Soldier profile NOT equal to Hero A progression state
 local soldierAState = SoldierProgression:StateFor(pA)

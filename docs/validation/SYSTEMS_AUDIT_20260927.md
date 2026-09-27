@@ -45,7 +45,47 @@ failed on the baseline at the intended assertions, then passed on the repair.
 The Muted/potion production regression likewise failed before and passed after.
 Targeted map, status, equipment, snapshot/unread and B14 Magic-resource checks
 passed. Raw pre-repair failures are retained in the external audit evidence.
-Final complete-matrix and publication results belong in the audit closeout.
+Gameplay repair checkpoint: `c0c911ad2b0a4466f2dfaec6342ba517df6f0866`, verified
+on remote main. Its tree is `3adbd956a58c9c5e8e79dfe5c9f9a88dd9820685`.
+
+## Validation-system repairs
+
+The first complete expanded run finished **254/262**, with identical before/after
+source digest `0c9e2eedcd48109d1984d66984d533a3373714c380a4720c2f7bb2cfcf6bb38c`.
+All eight failed suite logs are preserved. Seven reproduce on original main; one
+used an unowned synthetic map session invalidated by this audit's lifecycle fix.
+No failing suite was removed from the matrix to obtain a green result.
+
+| Failure | Reconciliation |
+| --- | --- |
+| Locked Chest reward stream; final loot mix | Include the approved SPOT-09 Revenge reservation after Keys; retain every earlier deterministic outcome, assert natural Revenge availability, and account for its 1/16 share of remaining potion opportunities. No drop rule changed. |
+| Old refresh UI test | Retain its spell availability assertions. The existing 50-case SPOT-01 target-identity suite now supplies the current two-line/Soldier contract in the complete matrix, replacing obsolete three-line expectations. |
+| Checkpoint E Soldier fixture | Implement native clip mutation/weapon selection in the boundary double and assert the current zero-ammo Pulse Rifle contract. All prior lifecycle/parity checks remain. |
+| Winning Personality and protected RPG validator | Correct the shared diagnostic's negative-CHA expected multiplier from 1.22 to 1.10. Exact current HUMAN Academic Achievement row 581632–582573 confirms clamp(1 + 0.10 × effective modifier, 0.50, 2.00); gameplay calculation was already correct. |
+| Feat inventory release gate | Add Time Management from current normalized tab 04, with revision/anchor provenance. Preserve the older base extraction's identity; label the check as a fixture audit, not an online fetch. |
+| SPOT-10 map suppression fixture | Enter/close maps through the real server receiver; assert admitted player ownership and no AI minimap entitlement. Haste and map still debit independently. |
+
+The matrix now executes recent SPOT/faction checks that were previously only
+syntax-listed, plus target identity, minimap transport, Muted potion, manual
+catalog, Workshop packaging and deployment/rollback tool tests. It contains 262
+unique commands, supports bounded workers and per-suite timeouts, retains raw
+outputs/exit codes/hashes, and rejects source changes during the gate. A complete
+rerun is required for closeout; the targeted repaired checks already pass.
+
+## Audit coverage and limits
+
+| System boundary | Automated evidence |
+| --- | --- |
+| Dungeon generation, navigation, geometry, opening safety | Full production builds, B28/B29, hull queries, standing stairs, wandering/encounter campaigns and topology ownership. |
+| Combat, Magic, statuses, feats, equipment | Shared damage/faction authority, sealed attacks, Soldier/Reckless, costs/regeneration, potions, stomp, input recipes and all retained feat regressions. |
+| Campaign, progression and multiplayer lifecycle | Hero/Soldier transitions, clock/Time Management, bosses/rescue, identity, late joins, snapshots, stale callbacks and exact-life ownership. |
+| Events, loot and persistence | Event claims, staged inventory operations, real SQLite transactions, duplicate settlement/recovery and wallet/DFT invariants. |
+| Client presentation and transport | UI contracts, unread/drag epochs, semantic die feed, spell availability, minimap encoding/request bursts, audio/assets and manual parity. |
+| Build and release tooling | Lua syntax, literal include/asset wiring, source-manifest integrity, packaging and deploy/rollback simulations. |
+
+This is a source/automated systems audit, not a claim that every possible native
+play sequence is bug-free. The serial baseline matrix is supplementary only;
+its earlier partial status is not a complete-matrix pass.
 
 Engine networking, native input/physics, rendering and human co-op acceptance are
 not established by these headless tests. No Workshop or VPS deployment has

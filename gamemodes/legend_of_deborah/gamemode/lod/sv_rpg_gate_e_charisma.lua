@@ -280,7 +280,7 @@ function Effects:ValidateCharismaFamilies()
     expect(math.abs(regen - 1.40) < 0.0001 and effective == 4,
         "Academic Achievement adds positive CHA_MOD to passive regen")
     local negative = self:AcademicMagicRegenMultiplier(1, -3, true)
-    expect(math.abs(negative - 1.22) < 0.0001,
+    expect(math.abs(negative - 1.10) < 0.0001,
         "Academic Achievement ignores negative CHA_MOD")
 
     local winning = Feats.CHA_WINNING_PERSONALITY

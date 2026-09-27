@@ -1,4 +1,5 @@
--- Execute client availability and real look-trace identity handling.
+-- Execute client spell availability. The current SPOT-01 target-identity
+-- contract runs separately in tools/tests/player_target_identity.lua.
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local hooks={};hook={Add=function(_,id,f) hooks[id]=f end}
 concommand={Add=function() end};net={Receive=function() end}
@@ -33,15 +34,4 @@ owner.bools={LOD_StatusIntimidated=true};assert(B:Availability(form,'form')=='BL
 owner.bools={LOD_StatusHeld=true};assert(B:Availability(form,'form')=='READY / SELECTED','Held does not lock casting')
 assert(B:Availability({owned=false},'form')=='LOCKED')
 owner.bools={}
-local teammate=player('LongTeammateUsername','A Character With A Very Long Name')
-function owner:GetEyeTrace() return {Entity=self.look} end
-owner.look=teammate
-dofile(root..'cl_teammate_identity.lua')
-hooks.LOD_TeammateIdentity();local text='';local rows={};local colors={}
-for _,span in ipairs(drawn) do text=text..span.text;rows[span.y]=true;colors[span.color]=true end
-assert(text==teammate.name..'75 / 100 HP'..'as '..teammate.character)
-assert(colors.username and colors.connector and colors.character)
-local n=0;for _ in pairs(rows) do n=n+1 end;assert(n>=3,'Identity, health and Hero name must occupy distinct rows')
-owner.look={IsPlayer=function() return false end};drawn={};hooks.LOD_TeammateIdentity();assert(#drawn==0,'Wall trace revealed teammate')
-owner.look=teammate;teammate.bools.LOD_IsSoldier=true;hooks.LOD_TeammateIdentity();assert(#drawn==0,'Enemy classified as teammate')
-print('REFRESH_UI_PASS: Quantum-adjusted resource/cooldown/status/ownership availability; trace-only identity, semantic colors and wrapping')
+print('SPELL_AVAILABILITY_PASS: Quantum-adjusted resource/cooldown/status/ownership availability; target identity uses tools/tests/player_target_identity.lua')

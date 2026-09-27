@@ -52,6 +52,7 @@ for i=1,1024 do
   local conversion=LOD.RNG.New(LOD.Seeds.Derive(seed,'equipment-conversion-v2'))
   if conversion:Chance(.35) then expected=(not E.BombTypes or conversion:Chance(.35)) and 'stink_bomb' or conversion:Pick(E.BombTypes)
   elseif chance('chest-key-v1',1/16) then expected='chest_key'
+  elseif chance('damsel-revenge-v1',1/16) then expected='damsel_revenge'
   else expected='healing_potion' end
  end
  local kind,payload=E:PrepareReward(fighter.id,'consumable',{itemId='healing_potion'},{equipmentEligible=true,staticId=source})
@@ -63,7 +64,7 @@ for i=1,1024 do
  local _,fixed=E:PrepareReward(fighter.id,'consumable',{itemId='healing_potion'},{staticId=source})
  assert(fixed.itemId=='healing_potion','Authored non-eligible drops stay fixed')
 end
-assert((drops.chest_key or 0)>10 and drops.summon_card and drops.resurrection_feather and drops.magic_hourglass)
+assert((drops.chest_key or 0)>10 and drops.summon_card and drops.resurrection_feather and drops.magic_hourglass and drops.damsel_revenge)
 dofile(root..'sv_event_locked_chest.lua')
 local Chest=assert(LOD.EventLockedChest)
 assert(not R:Select(1),'Two playable archetypes still cannot satisfy full 1d4 population')

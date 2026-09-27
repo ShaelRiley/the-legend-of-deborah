@@ -71,6 +71,9 @@ LOD.RunManager={State={},LODMagicWrapped=true,
 player.GetHumans=function() local out={};for _,a in ipairs(actors) do if a:IsPlayer() then out[#out+1]=a end end;return out end
 player.GetAll=player.GetHumans
 net.Start=function() end;net.WriteString=function() end;net.Send=function() end
+local receivers, mapOpen = {}, false
+net.Receive=function(name,fn) receivers[name]=fn end
+net.ReadBool=function() return mapOpen end
 LOD.MinimapServer={CanUse=function(_,a) return a.active end}
 GetConVar=function(name) return {GetBool=function() return name~='lod_mapless' end} end
 hook.Run=function(event,a,ps)
@@ -82,6 +85,9 @@ end
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_magic.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua')
 local M,Map=LOD.Magic,LOD.MinimapMagic
+local function setMap(a,open)
+ mapOpen=open;receivers.LOD_MapMagicState(1,a)
+end
 local tick=assert(timers.LOD_MagicRegen)
 for _,kind in ipairs({'hero','human_soldier','ai'}) do
  local a=actor(1,kind,{'INT_MANA_SPRING'});actors={a}
@@ -94,7 +100,10 @@ for _,kind in ipairs({'hero','human_soldier','ai'}) do
  near(ps.magic,20+20*(100/240)*2*1.5*1.22,kind..' sustained >4sec and existing modifiers')
  ps.magic=99.9;tick();near(ps.magic,100,kind..' hard capacity')
  ps.magic=50;a.suppressed=true;tick();near(ps.magic,50,kind..' sustained suppression')
- a.suppressed=false;Map.Active[a]={};tick();near(ps.magic,50,kind..' map suppression');Map.Active[a]=nil
+ a.suppressed=false;setMap(a,true)
+ expect(Map:IsOpen(a)==a:IsPlayer(),kind..' only a player owns an admitted map session')
+ tick();near(ps.magic,a:IsPlayer() and 50 or 50+(100/240)*2*1.5*1.22,kind..' admitted map suppression')
+ setMap(a,false)
  a.state.featIds={};E:ApplyDerived(a.state,a.state.derivedStats);ps.magic=50;tick()
  near(ps.magic,50+(100/240)*Rules:MagicRegenMultiplier(a),kind..' removal stops spring multiplier')
  a.state.featIds={'INT_MANA_SPRING'};E:ApplyDerived(a.state,a.state.derivedStats)
@@ -107,11 +116,11 @@ near(Rules:MapDrainPerSecond(a,100/15),3,'C native personal floor')
 near(Rules:HasteDrainPerSecond(a),1,'C Haste rank applies after map floor')
 expect(Rules:SetHasteActive(a,true),'Haste activation retained')
 tick();near(a.ps.magic,60,'spring cannot restore under Haste')
-Map.Active[a]={mapMagic=60,lastHeartbeat=now,lastTick=now-.1}
+setMap(a,true);Map.Active[a].lastTick=now-.1
 E.HasteState[a].lastAt=now-.1
 timers.LOD_RPG_CheckpointDHasteDrain();timers.LOD_MinimapMagicDrain()
 near(a.ps.magic,59.6,'map plus Haste debit independently, no duplicate discount')
-Map.Active[a]=nil;Rules:SetHasteActive(a,false)
+setMap(a,false);Rules:SetHasteActive(a,false)
 a.ps.magic=100;tick();near(a.ps.magic,100,'full resource no overfill')
 a.active=false;a.ps.magic=50;tick();near(a.ps.magic,50,'spectator resource untouched')
 a.active=true
