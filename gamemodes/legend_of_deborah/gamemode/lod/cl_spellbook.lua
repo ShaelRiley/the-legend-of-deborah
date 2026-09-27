@@ -174,6 +174,7 @@ function Book:Open()
     for i, entry in ipairs(self.Snapshot.contents or {}) do
         selectionButton(frame, entry, "content", left + (i - 1) * (contentW + gap), 327, contentW, 113)
     end
+    if UI.WatchPageView then UI:WatchPageView(frame, "book", self.Snapshot) end
 end
 
 function Book:Toggle()
@@ -186,6 +187,8 @@ end
 net.Receive("LOD_MagicSpellbookSnapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
+    if UI.AdmitPageSnapshot and not UI:AdmitPageSnapshot("book", snapshot) then return end
+    if UI.ObservePageSnapshot then UI:ObservePageSnapshot("book", snapshot) end
     Book.Snapshot = snapshot
     if Book.PendingOpen or IsValid(Book.Frame) then Book:Open() end
 end)

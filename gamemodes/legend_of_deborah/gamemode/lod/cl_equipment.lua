@@ -66,7 +66,18 @@ hook.Add("PreCleanupMap","LOD_EquipmentComparisonCleanup",function() nameCache=n
 
 net.Receive("LOD_EquipmentSnapshot", function()
     local state = net.ReadTable()
-    if istable(state) and state.equipmentDelta then
+    if not istable(state) then return end
+    local payload = state.equipmentDelta and state.state or state
+    if not istable(payload) or not istable(payload.items) or not istable(payload.slots)
+        or state.equipmentDelta and not istable(state.removed) then return end
+    if UI.AdmitPageSnapshot then
+        local accepted, reason = UI:AdmitPageSnapshot("equipment", payload, state.equipmentDelta)
+        if not accepted then
+            if reason == "baseline" then E:Request("snapshot") end
+            return
+        end
+    end
+    if state.equipmentDelta then
         if not E.HasSnapshot then E:Request("snapshot");return end
         local patch, removed=state.state,state.removed
         if not istable(patch) or not istable(patch.items) or not istable(patch.slots) or not istable(removed) then return end
@@ -80,6 +91,7 @@ net.Receive("LOD_EquipmentSnapshot", function()
         state=patch
     end
     if not istable(state) or not istable(state.items) or not istable(state.slots) then return end
+    if UI.ObservePageSnapshot then UI:ObservePageSnapshot("equipment", state) end
     E.Snapshot = state
     E.HasSnapshot = true
     comparison=nil

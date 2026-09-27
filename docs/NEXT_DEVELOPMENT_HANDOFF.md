@@ -1,4 +1,55 @@
-# Resume The Legend of Deborah — SPOT-13 unread-update markers
+# Resume The Legend of Deborah — SPOT-14 Time Management
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT-13 delivery
+receipt supplies the verified child/tree/source/independent run. Its actual
+SPOT-12 gameplay parent is `795dd444144e4e733dea58e56b4302bcb648f1ba`; this parent
+is historical, not the next HEAD. Fetch current main and preserve intervening or
+uncommitted work. Never use isolated workflow triggers as gameplay ancestry.
+
+Read AGENTS.md -> docs/DEVELOPMENT_PLAN.md -> this handoff ->
+docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_13_UNREAD.md ->
+docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
+00 -> 01 -> required normalized feat, clock/lifecycle and tuning rules. Fetch
+exact HUMAN fragments only for details absent from normalized law. Reconcile
+before code; do not duplicate the already-written SPOT13 sections in 06/07.
+
+SPOT-13 implements unread markers on Character, Spellbook and Equipment (the
+Inventory lives inside Equipment). Quiet initial sync, meaningful copied
+projections, ordered epochs/revisions and exact delta baselines, post-child
+paint acknowledgment, drag-deferred/stale/hidden/blocked-page protection and
+campaign/profile/life resets are complete. Ordinary resync and surviving floor
+transitions retain unread state. Volatile resource changes remain quiet. Final
+focused production test passes 317 assertions; the final gate contract is 85
+selected suites retaining all 83 SPOT12 selections, with manual and syntax.
+The external receipt establishes actual final aggregate and publication results.
+Do not convert earlier failed fixtures or interrupted launches into passes.
+These are headless production-boundary tests, not native acceptance, a full
+campaign matrix or full Gate-B identity validation (the historical perkDisplayName
+diagnostic remains). Canonical manual and both generated readers were updated.
+
+Implement only the separately authorized SPOT-14: **Time Management, prerequisite
+INT 17, adds the holder's Intelligence bonus to the dungeon timer while present**.
+The queue intentionally leaves time units, eligible presence, stacking and
+join/leave anti-exploit semantics for explicit live-GDD reconciliation. Inspect
+the existing timer, feat eligibility and lifecycle authorities first; author the
+missing contract under the queue delegation before dependent code. Avoid repeat
+join/leave grants, loss of rightful time, resurrection/role exploits or deadline
+revival. Preserve existing Hourglass, timeout, rescue and dungeon clock rules.
+Define a finite actual-production gate, retain applicable regressions/manual and
+syntax, then publish one independently verified non-forced checkpoint. Do not
+implement SPOT15 or deferred roadmap work in the same update.
+
+Preserve SPOT01-13, four-choice draft/stored-hand contracts, Float On six seconds
+at 1 Magic/s, B28/B29, accepted Crate appearance and P1-P4. Native evidence remains
+console_latest.txt + rpg_summary_latest.txt and a short exact-build observation
+on gm_flatgrass; detailed session only for timing, no dedicated Razor retest.
+Local acceptance -> Workshop 3791535712 package/source parity -> matching VPS.
+No Workshop/VPS action occurred or is implicitly authorized. Do not promise
+background work. Supply a fresh handoff as the conversation grows.
+
+---
+
+# Historical handoff — SPOT-13 unread-update markers
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT-12 delivery
 receipt supplies the verified child SHA, tree, exact source hash and independent

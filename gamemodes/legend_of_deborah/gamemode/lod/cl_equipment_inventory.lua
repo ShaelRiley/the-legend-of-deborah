@@ -247,6 +247,9 @@ function E:RefreshInventory()
     local height=textHeight(summary,view.LeftWidth-18)
     view.Summary:SetSize(view.LeftWidth-18,height)
     if view.Bindings then view.Bindings:SetPos(0,view.Summary:GetY()+height+4) end
+    if self.HasSnapshot and UI.WatchPageView then
+        UI:WatchPageView(view, "equipment", self.Snapshot, self.Frame)
+    end
 end
 function E:BuildPanel(frame)
     if LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked() then return false end

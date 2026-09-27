@@ -402,12 +402,13 @@ function Sheet:Open(requestFresh)
     close:SetPos(frame:GetWide() - 126, 22)
     close:SetSize(104, 28)
 
-    UI:PageLinks(frame,"sheet",76)
+    -- Reserve the unread band below the title and readiness label.
+    UI:PageLinks(frame,"sheet",100)
 
     if not snapshot then
         local loading = label(frame, "Retrieving the Character Sheet...",
             "LOD_SheetHeading", BLUE)
-        loading:SetPos(40, 116)
+        loading:SetPos(40, 140)
         loading:SetSize(frame:GetWide() - 80, 50)
         return
     end
@@ -431,8 +432,8 @@ function Sheet:Open(requestFresh)
     local body = vgui.Create("DScrollPanel", frame)
     self.Scroll = body
     self.RenderedIdentity = snapshot.portraitCacheKey
-    body:SetPos(24, 110)
-    body:SetSize(frame:GetWide() - 48, frame:GetTall() - 138)
+    body:SetPos(24, 134)
+    body:SetSize(frame:GetWide() - 48, frame:GetTall() - 162)
     local canvas = body:GetCanvas()
     canvas.Paint = function(_, w, h)
         surface.SetDrawColor(80, 66, 41, 12)
@@ -717,6 +718,7 @@ function Sheet:Open(requestFresh)
     end
 
     canvas:SetTall(math.max(body:GetTall(), leftBottom, rightY) + 24)
+    if UI.WatchPageView then UI:WatchPageView(frame, "sheet", snapshot) end
     -- Snapshot refreshes must not throw readers back to the top of long drafts.
     -- Wait for native scroll bounds; a newer frame invalidates this callback.
     timer.Simple(0, function()
@@ -742,6 +744,8 @@ Sheet.Toggle = toggleSheet
 net.Receive("LOD_RPG_Snapshot", function()
     local snapshot = net.ReadTable()
     if not istable(snapshot) then return end
+    if UI.AdmitPageSnapshot and not UI:AdmitPageSnapshot("sheet", snapshot) then return end
+    if UI.ObservePageSnapshot then UI:ObservePageSnapshot("sheet", snapshot) end
     Sheet.Snapshot = snapshot
 
     if IsValid(Sheet.Frame) then

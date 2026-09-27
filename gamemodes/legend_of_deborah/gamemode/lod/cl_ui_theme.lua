@@ -106,6 +106,7 @@ function UI:PageLinks(frame, active, y)
         self:Button(button,page[1]==active and C.red or C.blue)
         button.DoClick=page[3]
     end
+    if self.UnreadPageLinks then self:UnreadPageLinks(frame, pages, tabWidth, y) end
 end
 
 function UI:PageKey(key)

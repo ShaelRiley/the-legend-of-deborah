@@ -1,6 +1,32 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-12 Spellbook availability surfaces
+## Current checkpoint — SPOT-13 unread-update markers
+
+Actual gameplay parent: `795dd444144e4e733dea58e56b4302bcb648f1ba`.
+Character, Spellbook and Equipment now mark meaningful unseen updates with a
+static exclamation above their existing navigation buttons. Inventory is the
+bag inside Equipment, not a new page. First sync is quiet; only the exact updated
+page's post-child paint acknowledges it. Sibling/loading/blocked/stale pages and
+drag-deferred inventory cannot clear unseen content. Ordered snapshot envelopes
+reject stale data; ordinary resync/floor changes preserve unread state, while
+campaign/profile/life changes retire it. Routine resources remain quiet.
+
+[Implementation, attempts and limits](validation/SPOT_13_UNREAD.md): final focused
+production test **317 assertions passed**. The finite aggregate contract is **85
+selected suites**, retaining all 83 SPOT-12 selections; final local/independent
+results and verified non-forced child/tree/run are in the external delivery
+receipt, not assumed from this pre-publication source document. Live GDD 06/07,
+canonical manual and both generated readers align. Failed attempts remain raw.
+Native rendering/font/network/co-op and full campaign acceptance remain open.
+
+**Next single bullet after verified publication: SPOT-14 — Time Management,
+prerequisite INT 17.** Reconcile exact time units, presence, stacking and
+join/leave anti-exploit rules in the live GDD before dependent code. No SPOT14
+implementation or deferred roadmap work belongs in SPOT13. Preserve SPOT01-12,
+Float On at 1 Magic/s, B28/B29, Crate/P1-P4 and local acceptance -> Workshop parity
+-> matching VPS. No Workshop/VPS operation is authorized.
+
+## Previous checkpoint — SPOT-12 Spellbook availability surfaces
 
 Actual gameplay parent: `8b2e936f83f9740f40082fd0c3d04dc3feafde01`.
 Cards now tint their entire backdrop and border from the existing blue/red/gold/

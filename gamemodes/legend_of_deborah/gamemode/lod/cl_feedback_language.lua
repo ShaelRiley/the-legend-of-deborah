@@ -166,13 +166,14 @@ function Feed:OpenHistory()
     local subtitle = vgui.Create("DLabel",frame)
     subtitle:SetFont("LOD_SheetSmall"); subtitle:SetTextColor(C.muted)
     subtitle:SetPos(24,54); subtitle:SetSize(w-48,22)
-    UI:PageLinks(frame,"history",78)
+    -- Keep the unread band clear of the page-count subtitle.
+    UI:PageLinks(frame,"history",100)
     local legend = vgui.Create("DLabel",frame)
     legend:SetText("ROLLS: + base die   > continuation   @N+ threshold   => contribution")
     legend:SetFont("LOD_SheetSmall"); legend:SetTextColor(C.blue)
-    legend:SetPos(24,110); legend:SetSize(w-48,22)
+    legend:SetPos(24,132); legend:SetSize(w-48,22)
     local scroll = vgui.Create("DScrollPanel",frame)
-    scroll:SetPos(20,138); scroll:SetSize(w-40,h-198)
+    scroll:SetPos(20,160); scroll:SetSize(w-40,h-220)
     local page, pageSize, snapshot = 1, 50, {}
     -- Freeze this view while inspecting. New combat cannot move rows under a click.
     for i,row in ipairs(self.history) do snapshot[i] = row end

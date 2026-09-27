@@ -87,7 +87,8 @@
       ],
       "text": [
         "Wallet and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock.",
-        "In the Spellbook, click a Form with LMB or RMB to bind RMB, or click it with M3, M4, or M5 to bind that mouse button. Binding labels appear on the Forms. Your selected Content applies to all bound Forms; bindings stay with your character through reconnects and dungeon transitions. A single-Form character keeps RMB casting."
+        "In the Spellbook, click a Form with LMB or RMB to bind RMB, or click it with M3, M4, or M5 to bind that mouse button. Binding labels appear on the Forms. Your selected Content applies to all bound Forms; bindings stay with your character through reconnects and dungeon transitions. A single-Form character keeps RMB casting.",
+        "A red exclamation mark above CHARACTER, SPELLBOOK or EQUIPMENT means that page has an unseen update. Inventory is the bag on the separate Equipment page. Level, permanent ability, identity and feat-choice changes flag Character; newly owned Forms or Contents flag Spellbook; item records, stack amounts and storage capacity flag Equipment. Open the corresponding page and let its updated contents appear to clear only that mark. Other pages, loading screens and a still-dragging inventory do not clear it. Routine XP, HP, Magic, ammo, cooldowns, spell bindings, weapon switches and remaining Wand charges do not create marks. The first sync and a new campaign, character or life begin quietly; ordinary floor transitions retain unread updates."
       ]
     },
     {
