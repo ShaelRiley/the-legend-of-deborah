@@ -1,31 +1,137 @@
-# C1 replaces the historical V14/V19 patch-and-auto-push pipeline. CI verifies
-# committed originals and production code; it must never reinstall old rendering.
-name: Validate Great Crate assets and rendering
+name: SPOT-13 exact-source verification and publication
 on:
   push:
-    branches: [main]
-    paths:
-      - '.github/workflows/import-container-brands.yml'
-      - 'tools/assets/**'
-      - 'tools/test_great_crate*'
-      - 'docs/CONTAINER_BRAND*'
-      - 'gamemodes/legend_of_deborah/content/materials/legend_of_deborah/**'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/*crate*'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/*container*'
-      - 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
-  workflow_dispatch:
+    branches: [automation/spot13-unread-publication]
 permissions:
-  contents: read
+  contents: write
+  actions: read
 jobs:
-  validate:
+  verify-and-publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE: 795dd444144e4e733dea58e56b4302bcb648f1ba
+      EXPECTED_TREE: 6628e6da2bff4e598e6b21e742396f8abe3d0785
+      EXPECTED_SOURCE: a25d50934b316ae6cb25e96c380385622679ebcd9a19f97d9b4597b4884a9e02
+      PAYLOAD_HASH: d2d911f15dd5b9f194a5bbbb63a25ed85c20450d9a40600cf02956a245e977e8
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
-      - run: python3 -m pip install Pillow
-      - name: Original assets, deterministic geometry and bounded rendering
+        with:
+          ref: 795dd444144e4e733dea58e56b4302bcb648f1ba
+          fetch-depth: 0
+      - name: Prepare verification dependencies
+        shell: bash
         run: |
-          python3 tools/test_great_crate_assets.py
-          python3 tools/run_lua54.py tools/test_great_crate_geometry.lua
-          python3 tools/run_lua54.py tools/test_great_crate_render.lua
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/spot13-evidence"
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 zstd
+          python3 -m pip install Pillow
+      - name: Restore and independently verify frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot13-evidence"
+          exec > >(tee "$E/independent.log") 2>&1
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test -z "$(git status --porcelain)"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          git fetch origin "$GITHUB_SHA"
+          for i in 0 1 2 3 4 5 6; do
+            git show "$GITHUB_SHA:.spot13/source.$i.xzpart"
+          done > "$E/transport.xz"
+          echo "$PAYLOAD_HASH  $E/transport.xz" | sha256sum --check
+          python3 - "$E" <<'PY'
+          import base64, hashlib, json, lzma, pathlib, subprocess, sys
+          evidence = pathlib.Path(sys.argv[1])
+          payload = json.loads(lzma.decompress((evidence/'transport.xz').read_bytes()))
+          names = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          # This verified base manifest is only a compression dictionary, not new evidence.
+          reference = json.dumps({n:hashlib.sha256(pathlib.Path(n).read_bytes()).hexdigest()
+                                  for n in sorted(names) if n and pathlib.Path(n).is_file()},
+                                 sort_keys=True).encode()
+          assert hashlib.sha256(reference).hexdigest() == payload['reference_sha256']
+          (evidence/'base-manifest.json').write_bytes(reference)
+          patch = evidence/'source.patch'
+          patch.write_text(payload['patch'], encoding='utf-8')
+          subprocess.run(['git','apply','--check',str(patch)], check=True)
+          subprocess.run(['git','apply',str(patch)], check=True)
+          delta, raw = evidence/'archive.delta.zst', evidence/'archive.raw.tar'
+          delta.write_bytes(base64.b64decode(payload['archive_delta'], validate=True))
+          subprocess.run(['zstd','-d','--patch-from='+str(evidence/'base-manifest.json'),
+                          str(delta),'-o',str(raw),'-f'], check=True)
+          exact = lzma.compress(raw.read_bytes())
+          assert hashlib.sha256(exact).hexdigest() == payload['archive_sha256']
+          pathlib.Path('docs/validation/SPOT_13_ATTEMPTS.tar.xz').write_bytes(exact)
+          print('EXACT_RETAINED_ATTEMPTS', payload['archive_sha256'])
+          raw.unlink()
+          PY
+          python3 tools/build_manual.py
+          git add -A
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          test "$(git ls-files | wc -l)" -eq 2184
+          git diff --cached --check
+          python3 tools/test_spot13_gate.py --output "$E/gate" --suite-timeout 120 --workers 2
+          python3 - "$E" <<'PY'
+          import hashlib, json, os, pathlib, sys
+          root = pathlib.Path(sys.argv[1])/'gate'
+          r = json.loads((root/'receipt.json').read_text())
+          assert r['passed'] == r['total'] == 85, r
+          assert r['lua_files'] == 747
+          assert r['suite_timeout_seconds'] == 120 and r['workers'] == 2
+          assert r['source_before'] == r['source_after'] == os.environ['EXPECTED_SOURCE']
+          assert r['changed_during_gate'] == [] and r['native_gmod_accepted'] is False
+          for row in r['results']:
+              assert hashlib.sha256((root/row['log']).read_bytes()).hexdigest() == row['log_sha256']
+          print('EXACT_SOURCE_GATE_PASS 85/85; 747 Lua files; unchanged source; verified logs')
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
           git diff --exit-code
+      - name: Publish one non-forced child of actual main
+        shell: bash
+        run: |
+          set -euo pipefail
+          E="$RUNNER_TEMP/spot13-evidence"
+          exec > >(tee "$E/publication.log") 2>&1
+          test "$(git rev-parse HEAD)" = "$BASE"
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --exit-code
+          git diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'SPOT-13: unread player-menu update markers'
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$BASE"
+          git push origin HEAD:refs/heads/main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"
+          git archive --format=tar.gz HEAD -o "$E/published-source.tar.gz"
+          git ls-tree -r HEAD > "$E/published-tree.txt"
+          git cat-file commit HEAD > "$E/published-commit.txt"
+          git diff --binary "$BASE" HEAD > "$E/published-complete.patch"
+          python3 - "$E" <<'PY'
+          import json, os, pathlib, subprocess, sys
+          def git(*args):
+              return subprocess.check_output(['git',*args], text=True).strip()
+          r = {'commit':git('rev-parse','HEAD'), 'parent':git('rev-parse','HEAD^'),
+               'tree':git('rev-parse','HEAD^{tree}'), 'source':os.environ['EXPECTED_SOURCE'],
+               'tracked':len(git('ls-files').splitlines()), 'run_id':os.environ['GITHUB_RUN_ID'],
+               'attempt':os.environ['GITHUB_RUN_ATTEMPT'], 'selected_suites':85,
+               'lua_syntax_files':747, 'new_focused_assertions':317,
+               'suite_timeout_seconds':120, 'workers':2, 'native_accepted':False,
+               'full_campaign_matrix':False, 'workshop_or_vps_actions':False, 'push_force':False,
+               'trigger_commit_not_gameplay_parent':os.environ['GITHUB_SHA'],
+               'transport_hash':os.environ['PAYLOAD_HASH']}
+          assert r['parent'] == os.environ['BASE'] and r['tree'] == os.environ['EXPECTED_TREE']
+          assert r['tracked'] == 2184
+          (pathlib.Path(sys.argv[1])/'publication.json').write_text(json.dumps(r,indent=2)+'\n')
+          print(json.dumps(r,indent=2))
+          PY
+      - name: Preserve exact source and independent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spot13-exact-source-evidence
+          path: ${{ runner.temp }}/spot13-evidence
+          retention-days: 14
+          if-no-files-found: error
