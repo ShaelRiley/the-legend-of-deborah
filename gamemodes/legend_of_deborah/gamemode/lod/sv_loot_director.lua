@@ -537,7 +537,7 @@ function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     ent.LODLootStaticId = options.staticId
     ent.LODLootLevelSeed = RunManager.State and RunManager.State.LevelSeed
     ent.LODLootSpawnedAt = CurTime()
-    ent.LODLootExpiresAt = options.staticId and nil or (CurTime() + ENEMY_DROP_LIFETIME)
+    ent.LODLootExpiresAt = not options.staticId and (CurTime() + ENEMY_DROP_LIFETIME) or nil
     self:TraceStage("model_validate", ent, kind, model)
     ent.LODLootModel = safeModel(model)
     ent.LODLootColor = KIND_COLOR[kind] or KIND_COLOR.ammo

@@ -34,7 +34,7 @@ ents.Create=function(class)
  return entity
 end
 for _,name in ipairs({'locked_chest','treasure_chest','vending_machine','false_floor','warp_hole','bribe_blockade'}) do
- dofile(root..'sv_event_'..name..'.lua')
+ dofile((name=='bribe_blockade' and 'tools/fixtures/retired_bribe/' or root)..'sv_event_'..name..'.lua')
 end
 local B,definition=LOD.EventBribeBlockade,R.Definitions.bribe_blockade
 assert(B and definition and definition.contract=='BLOCKADE' and definition.production and definition.repeatable)

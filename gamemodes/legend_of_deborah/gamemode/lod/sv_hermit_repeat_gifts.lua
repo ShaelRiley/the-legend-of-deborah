@@ -62,9 +62,14 @@ function S:PlacePlayerInHut(ply, announce)
     local ps = Run:GetPlayerState(ply)
     local repeatVisit = ps and ps.starterClaimed and Run.State.Level > (ps.starterClaimedLevel or ps.starterEntryLevel or 1)
     local shouldAnnounce = repeatVisit and announce ~= false and not ps.stagingIntroShown
-    if repeatVisit then ps.stagingIntroShown = true end
-    local ok = place(self, ply, repeatVisit and false or announce)
+    -- A false branch cannot be expressed with Lua's and/or idiom. Suppress the
+    -- initial starter speech on repeat visits without consuming a failed or
+    -- explicitly silent placement's still-pending introduction.
+    local baseAnnounce = announce
+    if repeatVisit then baseAnnounce = false end
+    local ok = place(self, ply, baseAnnounce)
     if ok and shouldAnnounce then
+        ps.stagingIntroShown = true
         local name = self.GuideName and self:GuideName() or "DUNGEON HERMIT"
         ply:ChatPrint(name .. ": Welcome back. Your next gift is on the pedestal. Use the portal when you are ready.")
     end

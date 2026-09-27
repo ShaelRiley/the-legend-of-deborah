@@ -139,7 +139,7 @@ function D:ValidateEndpointPair(g, placement, reserved, environment)
         local ek = gate and gate.edgeKey or p.JailEdge.edgeKey
         blocked[ek] = environment and environment.edges and environment.edges[ek] or nil
     end
-    return reached, reached and nil or "shortcut endpoints unreachable"
+    return reached, not reached and "shortcut endpoints unreachable" or nil
 end
 
 function D:ValidateDrop(g, placement, reserved, environment)

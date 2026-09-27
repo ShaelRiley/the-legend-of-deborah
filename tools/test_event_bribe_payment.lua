@@ -28,8 +28,8 @@ ents.Create=function(class)
  end
  return ent
 end
-dofile(root..'sv_event_bribe_blockade.lua')
-dofile(root..'sv_event_bribe_payment.lua')
+dofile('tools/fixtures/retired_bribe/sv_event_bribe_blockade.lua')
+dofile('tools/fixtures/retired_bribe/sv_event_bribe_payment.lua')
 local B,p,q=LOD.EventBribeBlockade,F.a,F.b
 assert(B.price==50)
 local function copy(t) return table.Copy(t) end
@@ -294,7 +294,7 @@ net.WriteString=function(value) sent.strings[#sent.strings+1]=value end
 net.SendToServer=F.noop
 local quote={id=313,price=50,seconds=45,items={{id='owned:one',name='Exact Ring',value=50}},collateral={name='Recovered Ring',value=100}}
 net.ReadTable=function() return quote end
-dofile(root..'cl_event_bribe_payment.lua')
+dofile('tools/fixtures/retired_bribe/cl_event_bribe_payment.lua')
 local function show()
  widgets={};F.receivers.LOD_BribeReview()
  local frame,list,confirm,cancel,collateral

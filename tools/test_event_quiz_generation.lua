@@ -94,6 +94,12 @@ dofile(root..'sv_event_equipment_quiz.lua')
 local Q=assert(LOD.EventEquipmentQuiz)
 assert(#R:Catalog()==8 and #R:Catalog(1)==7 and #R:Catalog(5)==8)
 assert(not R.Definitions.bribe_blockade and not LOD.EventBribeBlockade)
+for _,file in ipairs({'sv_event_bribe_blockade.lua','sv_event_bribe_payment.lua','cl_event_bribe_payment.lua'}) do
+ local shipped=io.open(root..file,'rb')
+ assert(not shipped,'Retired Bribe module remains in shipped gamemode: '..file)
+ local archive=assert(io.open('tools/fixtures/retired_bribe/'..file,'rb'))
+ archive:close()
+end
 -- Tie the fixture's catalog to the actual boot includes, including dormant-code
 -- boundaries. Explicitly dofile-ing a retired module is not production startup.
 local function read(path) local f=assert(io.open(path));local text=f:read('*a');f:close();return text end

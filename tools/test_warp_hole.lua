@@ -120,6 +120,8 @@ for stage=0,#graph.Progression.Gates+1 do
  if gate then blocked[gate.edgeKey]=nil else blocked[graph.Progression.JailEdge.edgeKey]=nil end
 end
 local placement=instance.placement
+local endpointOK,endpointError=D:ValidateEndpointPair(graph,placement)
+assert(endpointOK and endpointError==nil,'successful endpoint validation must not return an error reason')
 for _,candidate in ipairs({
  {cellKey=placement.cellKey},
  {cellKey=placement.cellKey,destinationCellKey='absent'},

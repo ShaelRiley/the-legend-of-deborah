@@ -250,6 +250,28 @@ end
 -- Source's ordinary jump impulse has already been applied by the time this
 -- zero-delay callback runs. Add only the extra impulse needed for sqrt(2)x
 -- takeoff velocity, which produces 2x apex height under unchanged gravity.
+Effects.SpringHeelPending = Effects.SpringHeelPending or setmetatable({}, {__mode = "k"})
+
+local function springHeelContext(ply)
+    local run = LOD.RunManager
+    local state = run and run.State
+    return {run = run, state = state, graph = state and state.Graph,
+        epoch = state and state.CampaignEpoch, level = state and state.Level,
+        seed = state and state.LevelSeed, serial = ply.LODRunSpawnSerial,
+        actorState = stateFor(ply)}
+end
+
+local function springHeelContextCurrent(ply, context)
+    local run = LOD.RunManager
+    local state = run and run.State
+    return IsValid(ply) and ply:Alive() and context.run == run and context.state == state
+        and context.graph == (state and state.Graph)
+        and context.epoch == (state and state.CampaignEpoch)
+        and context.level == (state and state.Level)
+        and context.seed == (state and state.LevelSeed)
+        and context.serial == ply.LODRunSpawnSerial and context.actorState == stateFor(ply)
+end
+
 hook.Add("KeyPress", "LOD_RPG_GateE_SpringHeel", function(ply, key)
     if key ~= IN_JUMP or not IsValid(ply) or not ply:IsPlayer()
         or not ply:Alive() or not ply:OnGround()
@@ -257,6 +279,10 @@ hook.Add("KeyPress", "LOD_RPG_GateE_SpringHeel", function(ply, key)
         return
     end
 
+    local pending = Effects.SpringHeelPending[ply]
+    if pending and springHeelContextCurrent(ply, pending) then return end
+    local context = springHeelContext(ply)
+    Effects.SpringHeelPending[ply] = context
     local stats = Effects.SingletonStats
     stats.jumpAttempts = (stats.jumpAttempts or 0) + 1
     local startZ = ply:GetPos().z
@@ -264,7 +290,10 @@ hook.Add("KeyPress", "LOD_RPG_GateE_SpringHeel", function(ply, key)
     stats.lastJumpMultiplier = multiplier
 
     timer.Simple(0, function()
-        if not IsValid(ply) or not ply:Alive() then return end
+        -- An old callback must not clear a replacement life's pending claim.
+        if Effects.SpringHeelPending[ply] ~= context then return end
+        Effects.SpringHeelPending[ply] = nil
+        if not springHeelContextCurrent(ply, context) then return end
         local takeoff = ply:GetVelocity().z
         if takeoff <= 0 then return end
         local extra = Effects:SpringHeelAdditionalImpulse(ply, takeoff)
@@ -275,6 +304,7 @@ hook.Add("KeyPress", "LOD_RPG_GateE_SpringHeel", function(ply, key)
         stats.lastJumpImpulse = takeoff
         stats.lastJumpAddedImpulse = extra
         Effects.SpringHeelTraces[ply] = {
+            context = context,
             startedAt = CurTime(),
             startZ = startZ,
             apexZ = math.max(startZ, ply:GetPos().z),
@@ -285,7 +315,7 @@ end)
 
 hook.Add("Think", "LOD_RPG_GateE_SpringHeelTelemetry", function()
     for ply, trace in pairs(Effects.SpringHeelTraces) do
-        if not IsValid(ply) then
+        if not trace.context or not springHeelContextCurrent(ply, trace.context) then
             Effects.SpringHeelTraces[ply] = nil
         else
             trace.apexZ = math.max(trace.apexZ or trace.startZ, ply:GetPos().z)
@@ -304,6 +334,7 @@ hook.Add("Think", "LOD_RPG_GateE_SpringHeelTelemetry", function()
 end)
 
 hook.Add("PlayerDeath", "LOD_RPG_GateE_SpringHeelDeath", function(ply)
+    Effects.SpringHeelPending[ply] = nil
     Effects.SpringHeelTraces[ply] = nil
 end)
 

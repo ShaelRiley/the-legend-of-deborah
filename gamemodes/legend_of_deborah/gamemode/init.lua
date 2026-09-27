@@ -337,7 +337,7 @@ include("lod/sv_event_treasure_chest.lua")
 include("lod/sv_event_vending_machine.lua")
 include("lod/sv_event_false_floor.lua")
 include("lod/sv_event_warp_hole.lua")
--- Bribe is author-disabled; retained modules are dormant rollback code.
+-- Bribe is author-disabled; historical modules live only in tools/fixtures/retired_bribe.
 include("lod/sv_skeleton_hero.lua")
 include("lod/sv_event_skeleton_blockade.lua")
 include("lod/sv_event_equipment_quiz.lua")

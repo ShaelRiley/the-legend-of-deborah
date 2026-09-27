@@ -1,3 +1,20 @@
+# Current checkpoint — stalled cleanup reconstructed; native acceptance next
+
+September 27 author-requested recovery extends verified main
+`aa102cc31951d34937ebaa106314cfcfdb855a2f` without repeating the prior systems audit.
+See `validation/CLEANUP_RECOVERY_20260927.md` for repaired loot/campaign/staging,
+party scaling, jump/death lifecycle, warp diagnostics and isolated Bribe fixtures.
+The complete gate retains all 262 earlier suites and adds two production tests
+(264 entries; 767 Lua syntax files). Final pass/tree/publication evidence belongs
+to the delivery receipt, not a source-preparation assumption here.
+
+Next after verified publication: exact-build local `gm_flatgrass` acceptance.
+Preserve existing regressions and local acceptance -> Workshop parity -> matching
+VPS. No deployment or deferred-roadmap work is included. Older headers below are
+historical where this checkpoint supersedes them.
+
+---
+
 # Current checkpoint — September 27 systems audit complete
 
 The author's audit request supersedes earlier deferrals. Source and validation

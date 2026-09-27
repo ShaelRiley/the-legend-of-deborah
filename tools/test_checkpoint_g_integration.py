@@ -263,6 +263,8 @@ for pattern in ("test_spot*.lua", "validate_spot*.lua", "test_faction*.lua"):
             executed.add(relative)
 SUITES += [
     ("Player Target Identity", ["python3", "tools/run_lua54.py", "tools/tests/player_target_identity.lua"]),
+    ("Cleanup Campaign, Loot & Party Contracts", ["python3", "tools/run_lua54.py", "tools/test_cleanup_contracts.lua"]),
+    ("Cleanup Body-Lifetime & Jump Claims", ["python3", "tools/run_lua54.py", "tools/test_cleanup_lifecycle.lua"]),
     ("Minimap Cache & Request Ownership", ["python3", "tools/run_lua54.py", "tools/test_minimap_transport.lua"]),
     ("Muted Potion Input & Cure", ["python3", "tools/run_lua54.py", "tools/test_muted_potion.lua"]),
     ("Manual Catalog Parity", ["python3", "tools/run_lua54.py", "tools/export_manual_catalog.lua", "--check"]),

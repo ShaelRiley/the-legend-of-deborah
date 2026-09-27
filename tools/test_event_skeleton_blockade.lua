@@ -45,7 +45,7 @@ LOD.SkeletonHero={Spawn=function(_,director,i,g)
  return actor
 end}
 for _,name in ipairs({'locked_chest','treasure_chest','vending_machine','false_floor','warp_hole','bribe_blockade','skeleton_blockade'}) do
- dofile(root..'sv_event_'..name..'.lua')
+ dofile((name=='bribe_blockade' and 'tools/fixtures/retired_bribe/' or root)..'sv_event_'..name..'.lua')
 end
 local B,S,definition=LOD.EventBribeBlockade,LOD.EventSkeletonBlockade,R.Definitions.skeleton_blockade
 assert(S and definition and definition.contract=='BLOCKADE' and definition.production)

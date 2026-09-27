@@ -45,8 +45,12 @@ end,Collect=function(_,ent,ply)
     if ent.owner~=ply.ps.identity or ent.collected then return false end
     ent.collected=true;return true,'collected'
 end}
+local baseAnnounce,placementOK,announcements=nil,true,0
+pa.ChatPrint=function() announcements=announcements+1 end
 local S={StarterEntities={},EnsureHut=function() return true end,_StarterPosition=function() return Vector(0,0,0) end,
-    EnsureStarterPickup=function() return 'initial-starter' end,PlacePlayerInHut=function(self,ply)
+    EnsureStarterPickup=function() return 'initial-starter' end,PlacePlayerInHut=function(self,ply,announce)
+        baseAnnounce=announce
+        if not placementOK then return false end
         self:EnsureStarterPickup(ply);return true
     end}
 LOD.StagingDeployment,LOD.LootDirector=S,Loot
@@ -54,7 +58,16 @@ LOD.Equipment={PrepareReward=function(_,owner,kind,payload) prepared=prepared+1;
 LOD.Seeds={Derive=function(seed,id) return tostring(seed)..':'..id end}
 LOD.RNG={New=function(seed) return {seed=seed} end}
 dofile(root..'sv_hermit_repeat_gifts.lua')
-assert(S:PlacePlayerInHut(pa,true));assert(rolled==1 and prepared==1 and spawned==1)
+placementOK=false
+assert(not S:PlacePlayerInHut(pa,true))
+assert(not a.stagingIntroShown and announcements==0,'failed placement must not consume repeat introduction')
+placementOK=true
+assert(S:PlacePlayerInHut(pa,false))
+assert(baseAnnounce==false and not a.stagingIntroShown and announcements==0,'silent placement must not consume introduction')
+assert(S:PlacePlayerInHut(pa,true))
+assert(baseAnnounce==false and a.stagingIntroShown and announcements==1,'repeat visit suppresses base starter text and announces once after success')
+assert(S:PlacePlayerInHut(pa,true) and announcements==1,'reentry cannot repeat introduction')
+assert(rolled==1 and prepared==1 and spawned==1)
 local first=S.StarterEntities.a
 assert(a.hermitGift.level==2 and not a.hermitGift.claimed)
 assert(S:EnsureStarterPickup(pa) and rolled==1 and spawned==1,'reinteraction uses existing pickup')

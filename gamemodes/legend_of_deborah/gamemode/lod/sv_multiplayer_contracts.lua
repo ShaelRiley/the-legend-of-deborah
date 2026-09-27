@@ -102,20 +102,17 @@ end)
 -- that are actually eligible to enter the level, bounded by the four active slots.
 function RunManager:_ConnectedPartyCountForBuild()
     local count = 0
-    local newAdmissions = 0
-    local played = self:_PlayedCount()
     local maxActive = CC.MaxActivePlayers or 4
 
     for _, ply in ipairs(self:_SortedConnectedPlayers()) do
         if count >= maxActive then break end
         local ps = self:GetPlayerState(ply)
         if ps then
-            if not ps.eliminated and (ps.lives or 0) > 0 then
+            if ps.queue ~= "spectator" and not ps.eliminated and (ps.lives or 0) > 0 then
                 count = count + 1
             end
         else
             count = count + 1
-            newAdmissions = newAdmissions + 1
         end
     end
 

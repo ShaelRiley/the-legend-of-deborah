@@ -647,7 +647,7 @@ function RunManager:NewCampaign()
     self.CampaignEpoch = self.CampaignEpoch + 1
     self.State = freshState(self.CampaignEpoch)
     self.State.Ranked = customSeed == 0
-    self.State.UnrankedReason = customSeed == 0 and nil or "custom campaign seed"
+    self.State.UnrankedReason = customSeed ~= 0 and "custom campaign seed" or nil
     self.State.CampaignSeed = customSeed ~= 0 and LOD.Seeds.Normalize(customSeed) or self:_DefaultSeed()
     self.State.RosterSeed = customRosterAllowed
         and LOD.Seeds.Normalize(customRosterSeed) or self:_DefaultRosterSeed()
@@ -872,6 +872,23 @@ function RunManager:ApplyPlayerState(ply)
     ply:SetEyeAngles(Angle(0, 0, 0))
 end
 
+-- Native death settles on the next tick. The callback belongs to this exact
+-- body, saved Hero and dungeon, not any later death of the same player entity.
+local function queueDeathSpectator(manager, ply)
+    local state, ps = manager.State, manager:GetPlayerState(ply)
+    local graph, epoch = state.Graph, state.CampaignEpoch
+    local level, seed, serial = state.Level, state.LevelSeed, ply.LODRunSpawnSerial
+    timer.Simple(0, function()
+        if IsValid(ply) and not ply:Alive() and manager.State == state
+            and state.Graph == graph and state.CampaignEpoch == epoch
+            and state.Level == level and state.LevelSeed == seed
+            and ply.LODRunSpawnSerial == serial and manager:GetPlayerState(ply) == ps
+        then
+            manager:PutInRestrictedSpectator(ply)
+        end
+    end)
+end
+
 function RunManager:HandleDeath(ply, attacker)
     if not IsValid(ply) or self.State.Failed then return end
     if ply.LODHandledRunDeath then return end
@@ -888,12 +905,7 @@ function RunManager:HandleDeath(ply, attacker)
             ps.soldierRespawnWait = true
         end
         self:_SyncPlayerVars(ply)
-        local deathEpoch = self.State.CampaignEpoch
-        timer.Simple(0, function()
-            if self:IsCampaignEpoch(deathEpoch) and IsValid(ply) and not ply:Alive() then
-                self:PutInRestrictedSpectator(ply)
-            end
-        end)
+        queueDeathSpectator(self, ply)
         self:PromoteWaitingSpectators()
         self:RequestWipeEvaluation()
         return
@@ -921,12 +933,7 @@ function RunManager:HandleDeath(ply, attacker)
     end
 
     self:_SyncPlayerVars(ply)
-    local deathEpoch = self.State.CampaignEpoch
-    timer.Simple(0, function()
-        if self:IsCampaignEpoch(deathEpoch) and IsValid(ply) and not ply:Alive() then
-            self:PutInRestrictedSpectator(ply)
-        end
-    end)
+    queueDeathSpectator(self, ply)
 
     if ps.eliminated then self:PromoteWaitingSpectators() end
     self:RequestWipeEvaluation()
