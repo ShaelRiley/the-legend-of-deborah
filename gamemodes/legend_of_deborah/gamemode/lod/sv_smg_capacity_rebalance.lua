@@ -182,6 +182,7 @@ function Ammo:ClampFamily(ply, weaponClass, profile)
 end
 
 function Ammo:Interrupt(ply, weaponClass, now)
+    if LOD.RunManager and LOD.RunManager:IsSoldierControl(ply) then return end
     local profile = PROFILES[weaponClass]
     if not profile or not IsValid(ply) or testkitBypass(ply, weaponClass) then return end
     local state = self:_FamilyState(ply, weaponClass)
@@ -190,6 +191,8 @@ end
 
 function Ammo:TickPlayer(ply, now)
     if not IsValid(ply) or not ply:Alive() then return end
+    -- Infinite Soldier permission is not a refill service or Hero ammo event.
+    if LOD.RunManager and LOD.RunManager:IsSoldierControl(ply) then return end
     now = now or CurTime()
 
     for weaponClass, profile in pairs(PROFILES) do

@@ -245,3 +245,8 @@ check(not R:ReturnToHeroQueue(p) and not R:SpectateOnly(p) and not R:BeginNewHer
 check(ps.lives==3 and R.State.ActiveIdentity[p.id],'living Hero state unchanged')
 check(not R:SetHeroQueueMode(p,'forged'),'unknown queue rejected')
 print('SPOT15_SERVER_PASS '..checks..' actual-production assertions')
+
+-- Reused by the next focused weapon gate; all SPOT-15 assertions above still run.
+return {env=env, Run=R, actor=actor, soldier=soldier, reset=reset, flush=flush,
+    preserved=preserved, commands=commands, receivers=receivers,
+    now=function(value) if value then now=value end;return now end}

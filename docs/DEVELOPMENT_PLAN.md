@@ -1,3 +1,27 @@
+# SPOT-16 source complete — SPOT-17 next after verified publication
+
+Human Soldiers now receive an incarnation-bound Pulse Rifle with INFINITE ammo,
+committed three-round baseline bursts and preserved burst/rate/aim authorities.
+Zero clip/reserve works without cartridges, reload or a refill service. Stale
+body/role/dungeon/weapon work cancels; Hero finite ammo and SPOT-15 lifecycle remain.
+No Soldier movement, jumping or attack-rooting changes are included.
+
+Live GDD 06/07 already contained the recovered SPOT-16 rules; no duplicate amendment.
+Focused attempt 07 passes 988 server + 32 client assertions. The final frozen-source
+contract is 93 selected suites (all prior 90 plus two focused suites and the existing
+burst-cleanup regression), with 753 Lua syntax checks. Final local/independent
+results and publication identity are supplied by the external delivery receipt.
+See validation/SPOT_16_SOLDIER_RIFLE.md for honest attempt history and native limits.
+
+After verified publication, implement only SPOT-17: Soldier committed-attack rooting
+and movement restrictions approximating AI Soldiers. Reconcile the live GDD before
+code; preserve readable, consistent enemies for human Heroes. No deferred roadmap,
+Workshop publication or VPS restart is authorized. Preserve SPOT01–16, Float On at
+1 Magic/s, B28/B29, approved Crate and P1–P4. Earlier sequencing below is historical
+where superseded by this header.
+
+---
+
 # SPOT-15 source complete — SPOT-16 next
 
 The author-directed Soldier F3 team menu is implemented. Live/waiting Soldiers can

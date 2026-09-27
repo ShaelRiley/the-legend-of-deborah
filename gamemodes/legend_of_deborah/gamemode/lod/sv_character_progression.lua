@@ -497,8 +497,12 @@ end
 
 function CharacterProgressionSystem:_HasCapability(ps, state, tag)
     if not tag or tag == "" then return true end
-    -- Human Soldiers develop the same generated build as AI Soldiers. Controller
-    -- input affordances must not perturb the shared eligibility/RNG candidate set.
+    -- Shared automatic generation stays authoritative. SPOT-16 changes only the
+    -- human Soldier's actual firearm capability; AI Soldier loadouts are unchanged.
+    if state and state.actorType == "human_soldier" then
+        if tag == "smg" or tag == "reloadable_firearm" then return false end
+        if tag == "d10_damage" or tag == "multi_fire_burst" then return true end
+    end
     if state and (state.actorType == "ai" or state.actorType == "human_soldier") then
         if tag == "offensive_magic_activation" then
             local template = self:ArchetypeProgressionTemplate(state.archetypeId)
@@ -1246,7 +1250,7 @@ function CharacterProgressionSystem:GenerateMonsterProgression(archetypeId, acto
 
     local ps = {identity = state.actorId}
     if normalizedId == "soldier" or normalizedId == "blitzer" then
-        ps.starterWeaponClass = "weapon_smg1"
+        ps.starterWeaponClass = actorType == "human_soldier" and "weapon_ar2" or "weapon_smg1"
     end
     state.level = 1
     self:_RecomputeProgressionState(state)

@@ -16,11 +16,17 @@ include("sv_rpg_gate_e_burst_size_runtime_validation.lua")
 
 util.AddNetworkString("LOD_PlayerAR2Activate")
 
-net.Receive("LOD_PlayerAR2Activate", function(_, ply)
+net.Receive("LOD_PlayerAR2Activate", function(length, ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return end
 
     local weapon = ply:GetActiveWeapon()
     if not IsValid(weapon) or weapon:GetClass() ~= "weapon_ar2" then return end
+
+    local soldier = Specials:IsSoldierAR2Actor(ply)
+    if soldier then
+        local run = LOD.RunManager
+        if length <= 0 or not run or net.ReadString() ~= run:TeamMenuContext(ply) then return end
+    elseif length > 0 then return end -- stale Soldier packet cannot charge a restored Hero
 
     -- Client prediction suppresses stock automatic-fire input and asks only to
     -- begin the authored burst. The server revalidates weapon, cadence, the one

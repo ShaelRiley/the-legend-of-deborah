@@ -62,6 +62,8 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
 
     self.AR2RateOfFirePlans[ply] = {
         weapon = weapon,
+        soldierBinding = ar2.soldierBinding,
+        ar2 = ar2,
         startedAt = startedAt,
         authoredReadyAt = authoredReadyAt,
         multiplier = multiplier,
@@ -85,7 +87,9 @@ hook.Add("Think", "LOD_RPG_GateE_AR2RateOfFireCommit", function()
         else
             local state = Specials.PlayerState and Specials.PlayerState[ply] or nil
             local ar2 = state and state.ar2 or nil
-            if not ar2 or ar2.weapon ~= plan.weapon then
+            if not ar2 or ar2.weapon ~= plan.weapon
+                or (plan.soldierBinding and (ar2 ~= plan.ar2
+                    or not Specials:AR2SourceAllowed(ply, plan.weapon, ar2))) then
                 clearPlan(ply)
             elseif ar2.active ~= true then
                 local roundsFired = math.max(0,
@@ -176,6 +180,9 @@ local function installAuthorityWrappers()
         local baseBegin = currentBegin
         local beginWrapper
         beginWrapper = function(self, ply, weapon, direction)
+            local allowed, soldierBinding = true, nil
+            if self.AR2SourceAllowed then allowed, soldierBinding = self:AR2SourceAllowed(ply, weapon) end
+            if not allowed then return false end
             local startedAt = CurTime()
             local clipBefore = IsValid(weapon) and math.max(0, weapon:Clip1()) or 0
             local ok = baseBegin(self, ply, weapon, direction)
@@ -184,12 +191,19 @@ local function installAuthorityWrappers()
             local state = Specials.PlayerState and Specials.PlayerState[ply] or nil
             local ar2 = state and state.ar2 or nil
             if ar2 and ar2.active == true and ar2.weapon == weapon then
-                local alreadyCommitted = ar2.ammoCommitted == 1
-                local expectedClip = math.max(0, clipBefore - 1)
+                if soldierBinding and not self:AR2SourceAllowed(ply, weapon, ar2) then
+                    self:CancelSoldierAR2(ply, state)
+                    return false
+                end
+                local alreadyCommitted = ar2.ammoCommitted == 1 or soldierBinding ~= nil
+                local expectedClip = soldierBinding and clipBefore or math.max(0, clipBefore - 1)
                 if IsValid(weapon) and weapon:Clip1() ~= expectedClip then
                     weapon:SetClip1(expectedClip)
                 end
-                if not alreadyCommitted then
+                if soldierBinding then
+                    ar2.ammoCommitted = 0
+                    ar2.LODLegacyPerProjectileAmmo = false
+                elseif not alreadyCommitted then
                     self.Stats = self.Stats or {}
                     self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
                     ar2.ammoCommitted = 1
@@ -233,8 +247,9 @@ local function installAuthorityWrappers()
         local fireWrapper
         fireWrapper = function(self, ply, ar2)
             local weapon = ar2 and ar2.weapon or nil
+            if self.AR2SourceAllowed and not self:AR2SourceAllowed(ply, weapon, ar2) then return false end
             local preserveClip = ar2 and ar2.LODLegacyPerProjectileAmmo == true
-                and IsValid(weapon)
+                and not ar2.soldierBinding and IsValid(weapon)
             local clipBefore = preserveClip and math.max(0, weapon:Clip1()) or nil
 
             -- A stale base refuses to fire at Clip1==0 and decrements Clip1 per
@@ -246,7 +261,9 @@ local function installAuthorityWrappers()
 
             if ok then
                 local plan = Effects.AR2RateOfFirePlans[ply]
-                if plan and ar2 and plan.weapon == ar2.weapon then
+                if plan and ar2 and plan.weapon == ar2.weapon
+                    and (not plan.soldierBinding or (plan.ar2 == ar2
+                        and self:AR2SourceAllowed(ply, weapon, ar2))) then
                     plan.roundsFired = (tonumber(plan.roundsFired) or 0) + 1
                 end
             end

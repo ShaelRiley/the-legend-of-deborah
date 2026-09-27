@@ -803,9 +803,12 @@ function RunManager:ApplyPlayerState(ply)
 
         ply:StripWeapons()
         ply:RemoveAllAmmo()
-        local wep = ply:Give("weapon_smg1", true)
+        local wep = ply:Give("weapon_ar2", true)
         if IsValid(wep) then
-            ply:SetAmmo(90, wep:GetPrimaryAmmoType())
+            ply:SetAmmo(0, wep:GetPrimaryAmmoType())
+            -- The native magazine is presentation only, never an attack permission.
+            wep:SetClip1(0)
+            ply:SelectWeapon("weapon_ar2")
         end
 
         ps.respawnAt = nil
@@ -815,6 +818,7 @@ function RunManager:ApplyPlayerState(ply)
         ply:SetNW2Bool("LOD_Deployed", true)
         ply:SetPos(self.State.CheckpointPos or (self.State.BuildReport and self.State.BuildReport.startPos) or Vector(0, 0, 0))
         ply:SetEyeAngles(Angle(0, 0, 0))
+        if LOD.PlayerWeaponSpecials then LOD.PlayerWeaponSpecials:BindSoldierRifle(ply, wep) end
         return
     end
 

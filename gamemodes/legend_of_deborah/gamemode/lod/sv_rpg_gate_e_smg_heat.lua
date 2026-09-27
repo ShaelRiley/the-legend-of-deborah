@@ -96,6 +96,7 @@ if not Progression.LODDexSMGCapabilityWrapped then
     local baseHasCapability = Progression._HasCapability
     function Progression:_HasCapability(ps, state, tag)
         if tag == "smg" then
+            if state and state.actorType == "human_soldier" then return false end
             if ps and ps.starterWeaponClass == "weapon_smg1" then return true end
             for _, weaponState in ipairs(ps and ps.inventory and ps.inventory.weapons or {}) do
                 if weaponState.class == "weapon_smg1" then return true end

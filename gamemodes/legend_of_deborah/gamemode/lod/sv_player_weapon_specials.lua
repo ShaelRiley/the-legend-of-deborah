@@ -86,6 +86,72 @@ local function clearAR2Network(ply)
     ply:SetNW2Float("LOD_PlayerAR2TelegraphUntil", 0)
 end
 
+-- SPOT-16: only the exact disposable Soldier loadout owns infinite ammunition.
+-- These bindings live in the existing per-player weapon state and service.
+function Specials:IsSoldierAR2Actor(ply)
+    local run = LOD.RunManager
+    return IsValid(ply) and ((run and run:IsSoldierControl(ply))
+        or ply.LODHumanSoldierProgressionState ~= nil) or false
+end
+
+function Specials:SoldierAR2BindingValid(ply, binding)
+    local run, system = LOD.RunManager, LOD.SoldierProgression
+    local s = run and run.State
+    if not binding or not s or not system or not IsValid(ply) or not ply:IsPlayer()
+        or not ply:Alive() or ply.LODHandledRunDeath or not run:IsSoldierControl(ply)
+        or s ~= binding.run or s.Graph ~= binding.graph or s.LevelSeed ~= binding.seed
+        or s.CampaignEpoch ~= binding.epoch or s.CampaignSeed ~= binding.campaignSeed
+        or s.Level ~= binding.level or s.RunId ~= binding.runId
+        or not s.BuildReady or not s.Graph or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or run:GetPlayerState(ply) ~= binding.ps or ply.LODRunSpawnSerial ~= binding.life
+        or system:StateFor(ply) ~= binding.progression or not binding.progression.soldierIncarnation
+        or ply:GetObserverMode() ~= OBS_MODE_NONE or ply:GetNW2Bool("LOD_Staged", false)
+        or not ply:GetNW2Bool("LOD_Deployed", false) then return false end
+    local weapon = binding.weapon
+    if not IsValid(weapon) or weapon:GetClass() ~= "weapon_ar2" or weapon:GetOwner() ~= ply
+        or ply:GetWeapon("weapon_ar2") ~= weapon or activeWeapon(ply) ~= weapon then return false end
+    local state = self.PlayerState[ply]
+    if not state or state.soldierLoadout ~= binding then return false end
+    if not run:CanChangeTeam(ply) then return false end -- shared minigame/clock admission
+    local status = LOD.RPGStatusElements
+    return (not status or status:CanInitiateAttack(ply))
+        and CurTime() >= (ply.LODHitStunUntil or 0)
+end
+
+function Specials:BindSoldierRifle(ply, weapon)
+    self:ResetPlayer(ply)
+    local run, system = LOD.RunManager, LOD.SoldierProgression
+    local s = run and run.State
+    local progression = system and system:StateFor(ply)
+    if not s or not progression or not IsValid(weapon) then return false end
+    local binding = {run=s, graph=s.Graph, seed=s.LevelSeed, epoch=s.CampaignEpoch,
+        campaignSeed=s.CampaignSeed, level=s.Level, runId=s.RunId,
+        ps=run:GetPlayerState(ply), life=ply.LODRunSpawnSerial,
+        progression=progression, weapon=weapon}
+    stateFor(ply).soldierLoadout = binding
+    return true
+end
+
+function Specials:AR2SourceAllowed(ply, weapon, ar2)
+    local binding = ar2 and ar2.soldierBinding
+    if binding or self:IsSoldierAR2Actor(ply) then
+        local state = self.PlayerState[ply]
+        binding = binding or (not ar2 and state and state.soldierLoadout)
+        return self:SoldierAR2BindingValid(ply, binding)
+            and binding.weapon == weapon and (not ar2 or state.ar2 == ar2), binding
+    end
+    return true, nil -- Ordinary Hero rifles retain their existing finite transaction.
+end
+
+function Specials:CancelSoldierAR2(ply, state)
+    if self.PlayerState[ply] ~= state then return end
+    local old = state.ar2 or {}
+    state.ar2 = {active=false, attackHeld=old.attackHeld, readyAt=old.readyAt or 0}
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and effects.AR2RateOfFirePlans then effects.AR2RateOfFirePlans[ply] = nil end
+    clearAR2Network(ply)
+end
+
 local function syncSMG(weapon, smg)
     if not IsValid(weapon) then return end
     local threshold = math.Clamp(math.floor(tonumber(smg.threshold) or SMG_MAX_HEAT),
@@ -108,6 +174,8 @@ local function resolveAR2BurstTarget(ply)
 end
 
 function Specials:ResetPlayer(ply)
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and effects.AR2RateOfFirePlans then effects.AR2RateOfFirePlans[ply] = nil end
     local state = self.PlayerState[ply]
     if state and state.smg and IsValid(state.smg.weapon) then
         state.smg.weapon:SetNW2Float("LOD_SMGHeat", 0)
@@ -219,6 +287,8 @@ local function finishAR2(ply, ar2, cooldown)
 end
 
 function Specials:BeginAR2Burst(ply, weapon, direction)
+    local allowed, soldierBinding = self:AR2SourceAllowed(ply, weapon)
+    if not allowed then return false end
     local state = stateFor(ply)
     local ar2 = state.ar2
     local now = CurTime()
@@ -226,10 +296,10 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     if ar2.active or now < (ar2.readyAt or 0) then return false end
     if now < weapon:GetNextPrimaryFire() then return false end
 
-    -- Exact authored ammo contract: a trigger burst costs one AR2 round total.
-    -- No burst can begin without that round; once committed, projectile resolution
+    -- Ordinary Hero bursts cost one AR2 round total. Only an exactly bound
+    -- SPOT-16 Soldier loadout bypasses that cost; committed projectile resolution
     -- is independent of later Clip1/reserve changes.
-    if weapon:Clip1() < 1 then
+    if not soldierBinding and weapon:Clip1() < 1 then
         weapon:EmitSound("Weapon_AR2.Empty", 62, 100, 0.72, CHAN_WEAPON)
         return false
     end
@@ -240,8 +310,10 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     local targetShots, burstSizeBonus = resolveAR2BurstTarget(ply)
 
     -- Commit the one ammunition unit only after every pre-burst validity check.
-    weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
-    self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
+    if not soldierBinding then
+        weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
+        self.Stats.ar2AmmoCommitted = (self.Stats.ar2AmmoCommitted or 0) + 1
+    end
 
     ar2.attackEvent = {}
     ar2.active = true
@@ -253,7 +325,8 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     ar2.targetShots = targetShots
     ar2.desiredShots = targetShots
     ar2.burstSizeBonus = burstSizeBonus
-    ar2.ammoCommitted = 1
+    ar2.ammoCommitted = soldierBinding and 0 or 1
+    ar2.soldierBinding = soldierBinding
     ar2.readyAt = ar2.fireAt + (targetShots - 1) * AR2_BURST_SPACING + AR2_RECOVERY
 
     weapon:SetNextPrimaryFire(ar2.readyAt)
@@ -269,7 +342,8 @@ function Specials:FireAR2Round(ply, ar2)
     local weapon = ar2.weapon
     if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
     if activeWeapon(ply) ~= weapon or weapon:GetClass() ~= "weapon_ar2" then return false end
-    if ar2.ammoCommitted ~= 1 then return false end
+    if not self:AR2SourceAllowed(ply, weapon, ar2) then return false end
+    if not ar2.soldierBinding and ar2.ammoCommitted ~= 1 then return false end
 
     -- No Clip1 check/decrement here. The trigger burst already paid exactly one
     -- AR2 round at commit, and all authored/feat-added projectiles are free inside
@@ -295,6 +369,8 @@ function Specials:FireAR2Round(ply, ar2)
         Inflictor = weapon
     }
 
+    -- Presentation hooks above may retire or replace the body. Recheck at firing.
+    if not self:AR2SourceAllowed(ply, weapon, ar2) then return false end
     ply:LagCompensation(true)
     local previousEvent = ply.LODCommittedAttackEvent
     ply.LODCommittedAttackEvent = ar2.attackEvent
@@ -344,6 +420,12 @@ function Specials:ProcessPlayer(ply, state, now)
 
     local ar2 = state.ar2
     if ar2 and ar2.active then
+        if ar2.soldierBinding and (self.PlayerState[ply] ~= state
+            or not self:AR2SourceAllowed(ply, ar2.weapon, ar2)
+            or now - (ar2.nextShotAt or math.huge) > 0.20) then
+            self:CancelSoldierAR2(ply, state)
+            return
+        end
         local weapon = ar2.weapon
         if not ply:Alive() or not IsValid(weapon) or activeWeapon(ply) ~= weapon then
             finishAR2(ply, ar2, 0.15)
@@ -356,11 +438,17 @@ function Specials:ProcessPlayer(ply, state, now)
                 math.floor(tonumber(ar2.targetShots) or AR2_BASE_BURST_SHOTS))
             while ar2.shotsFired < targetShots and now >= (ar2.nextShotAt or math.huge) do
                 if not self:FireAR2Round(ply, ar2) then
-                    finishAR2(ply, ar2, 0.15)
+                    if ar2.soldierBinding then self:CancelSoldierAR2(ply, state)
+                    else finishAR2(ply, ar2, 0.15) end
+                    return
+                end
+                if ar2.soldierBinding and not self:AR2SourceAllowed(ply, weapon, ar2) then
+                    self:CancelSoldierAR2(ply, state)
                     return
                 end
                 ar2.shotsFired = ar2.shotsFired + 1
                 ar2.nextShotAt = ar2.nextShotAt + AR2_BURST_SPACING
+                if ar2.soldierBinding then break end -- no backlog release after a service stall
             end
 
             if ar2.shotsFired >= targetShots then
@@ -393,7 +481,8 @@ hook.Add("StartCommand", "LOD_PlayerWeaponSpecials_Input", function(ply, cmd)
     if class == "weapon_ar2" then
         local down = cmd:KeyDown(IN_ATTACK)
         cmd:RemoveKey(IN_ATTACK)
-        if ar2.active then cmd:RemoveKey(IN_RELOAD) end
+        if ar2.active or Specials:IsSoldierAR2Actor(ply) then cmd:RemoveKey(IN_RELOAD) end
+        if Specials:IsSoldierAR2Actor(ply) then cmd:RemoveKey(IN_ATTACK2) end
 
         if down and not ar2.attackHeld then
             local direction = cmd:GetViewAngles():Forward()
@@ -412,7 +501,18 @@ timer.Create("LOD_PlayerWeaponSpecialsTick", TICK, 0, function()
     end
 end)
 
+hook.Add("PlayerSwitchWeapon", "LOD_PlayerWeaponSpecials_SoldierSwitch", function(ply, old, new)
+    local state = Specials.PlayerState[ply]
+    if state and state.ar2 and state.ar2.soldierBinding and old ~= new then
+        Specials:CancelSoldierAR2(ply, state)
+    end
+end)
+
 hook.Add("PlayerDeath", "LOD_PlayerWeaponSpecials_ResetDeath", function(ply)
+    Specials:ResetPlayer(ply)
+end)
+
+hook.Add("PlayerDisconnected", "LOD_PlayerWeaponSpecials_ResetDisconnect", function(ply)
     Specials:ResetPlayer(ply)
 end)
 

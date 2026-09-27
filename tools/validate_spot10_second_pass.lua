@@ -111,7 +111,18 @@ for _,kind in ipairs({'hero','human_soldier'}) do for rank=0,3 do
   near(Ammo:RegenRoundInterval(a,class,p),interval,class..' final interval')
   near(Ammo:RegenFloorRounds(a,class,p),math.ceil(p.cap*({.33,.44,.55,.66})[rank+1]),class..' ceiling')
   Ammo:TickPlayer(a,300);near(a:GetAmmoCount(p.ammo),0,'no instant rounds')
-  local fs=Ammo:_FamilyState(a,class);near(fs.nextRoundAt,303+interval,'unchanged no-fire delay')
+  local fs=Ammo:_FamilyState(a,class)
+  if kind=='human_soldier' then
+   -- SPOT-16 replaces disposable Soldier ammunition with a non-refilling
+   -- loadout permission. Keep every derived feat formula above, and all
+   -- original finite Hero recovery assertions below.
+   check(fs.nextRoundAt==nil,'Soldier does not schedule reserve regeneration')
+   Ammo:Interrupt(a,class,400);Ammo:TickPlayer(a,10000)
+   check(fs.nextRoundAt==nil,'Soldier fire does not create a refill schedule')
+   near(a:GetAmmoCount(p.ammo),0,'Soldier reserve remains zero')
+   near(a:GetAmmoCount('AR2AltFire'),5,'unrelated secondary count is not rewritten')
+  else
+  near(fs.nextRoundAt,303+interval,'unchanged no-fire delay')
   Ammo:TickPlayer(a,fs.nextRoundAt-1e-6);near(a:GetAmmoCount(p.ammo),0,'before round deadline')
   Ammo:TickPlayer(a,fs.nextRoundAt);near(a:GetAmmoCount(p.ammo),1,'one whole round at deadline')
   Ammo:Interrupt(a,class,400);near(fs.nextRoundAt,403+interval,'shot restarts wait')
@@ -120,6 +131,7 @@ for _,kind in ipairs({'hero','human_soldier'}) do for rank=0,3 do
   gun.clip=math.min(p.load,3);a:SetAmmo(p.cap-gun.clip,p.ammo);Ammo:TickPlayer(a,10001)
   near(a:GetAmmoCount(p.ammo)+gun:Clip1(),p.cap,'clip plus reserve conserved');near(a:GetAmmoCount('AR2AltFire'),5,'secondary ammo excluded')
   a.hp=0;a:SetAmmo(0,p.ammo);Ammo:TickPlayer(a,20000);near(a:GetAmmoCount(p.ammo),0,'dead player no rounds');a.hp=100
+  end
  end
 end end
 check(not Ammo.RegenerativeProfiles.weapon_lod_wand and not Ammo.RegenerativeProfiles.weapon_frag,'Wand and consumable not regenerative')

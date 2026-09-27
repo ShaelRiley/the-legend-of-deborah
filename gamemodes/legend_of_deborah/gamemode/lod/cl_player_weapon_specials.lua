@@ -12,6 +12,7 @@ local tinted = setmetatable({}, {__mode = "k"})
 local nextVisualTick = 0
 local ar2AttackHeld = false
 local ar2InputBlockUntil = 0
+local soldierInputContext, soldierInputWeapon
 
 local function activeWeapon(ply)
     if not IsValid(ply) then return nil end
@@ -119,14 +120,28 @@ hook.Add("CreateMove", "LOD_PlayerWeaponSpecials_PredictedInput", function(cmd)
 
     if class == "weapon_ar2" then
         local down = cmd:KeyDown(IN_ATTACK)
+        if ply:GetNW2Bool("LOD_IsSoldier", false) then
+            local context = ply:GetNW2String("LOD_TeamMenuContext", "")
+            if context ~= soldierInputContext or weapon ~= soldierInputWeapon then
+                ar2AttackHeld = down -- a replacement life requires a fresh press
+            end
+            soldierInputContext, soldierInputWeapon = context, weapon
+        else
+            soldierInputContext, soldierInputWeapon = nil, nil
+        end
         if down and not ar2AttackHeld then
             net.Start("LOD_PlayerAR2Activate")
+            if ply:GetNW2Bool("LOD_IsSoldier", false) then
+                net.WriteString(ply:GetNW2String("LOD_TeamMenuContext", ""))
+            end
             net.SendToServer()
             ar2InputBlockUntil = CurTime() + 0.85
         end
         ar2AttackHeld = down
         cmd:RemoveKey(IN_ATTACK)
-        if CurTime() < ar2InputBlockUntil then cmd:RemoveKey(IN_RELOAD) end
+        if ply:GetNW2Bool("LOD_IsSoldier", false) or CurTime() < ar2InputBlockUntil then
+            cmd:RemoveKey(IN_RELOAD)
+        end
     else
         ar2AttackHeld = false
     end
@@ -195,4 +210,25 @@ hook.Add("PostDrawTranslucentRenderables", "LOD_PlayerAR2TargetingLaser", functi
             end
         end
     end
+end)
+
+-- SPOT-16 substitutes only the Soldier's primary ammunition readout. Magic and
+-- its secondary-input policy remain owned by their existing modules.
+local function soldierRifleHUD()
+    local ply = LocalPlayer()
+    local weapon = activeWeapon(ply)
+    return IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_IsSoldier", false)
+        and not ply:GetNW2Bool("LOD_Staged", false) and ply:GetNW2Bool("LOD_Deployed", false)
+        and IsValid(weapon) and weapon:GetClass() == "weapon_ar2"
+end
+hook.Add("HUDShouldDraw", "LOD_SoldierRifleAmmo", function(name)
+    if name == "CHudAmmo" and soldierRifleHUD() then return false end
+end)
+hook.Add("HUDPaint", "LOD_SoldierRifleAmmo", function()
+    if not soldierRifleHUD() or not LOD.UI or LOD.UI.ActivePage
+        or (LOD.UI.IsMinigameLocked and LOD.UI:IsMinigameLocked()) then return end
+    local scale = ScrH() / 480
+    local x, y = ScrW() - 145 * scale, ScrH() - 48 * scale
+    LOD.UI:HUDText("AMMO", "Default", x, y, LOD.UI.HUDColor)
+    LOD.UI:HUDText("INFINITE", "HudHintTextLarge", x, y + 15 * scale, LOD.UI.HUDColor)
 end)

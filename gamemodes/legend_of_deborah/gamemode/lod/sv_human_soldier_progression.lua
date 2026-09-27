@@ -65,6 +65,7 @@ function System:Retire(target)
     local state = self:StateFor(target)
     if not state then return false end
     if target ~= state then
+        if LOD.PlayerWeaponSpecials then LOD.PlayerWeaponSpecials:ResetPlayer(target) end
         Progression:SyncMonsterIdentity(target,nil)
         target.LODHumanSoldierProgressionState = nil
     end
@@ -93,7 +94,7 @@ function System:_Advance(state)
     local cap = Progression:EffectiveLevelCap("human_soldier", dLvl)
     local wanted = math.min((state.soldierSpawnLevel or state.level) + earned, cap)
     local before = state.level
-    local ps = {identity = state.actorId, starterWeaponClass = "weapon_smg1"}
+    local ps = {identity = state.actorId, starterWeaponClass = "weapon_ar2"}
     local ok, err = Progression:AdvanceAutomaticActor(ps, state,
         state.soldierActorSeed or 1, wanted)
     if not ok then return false, err end

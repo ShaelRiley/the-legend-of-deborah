@@ -152,13 +152,17 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
         return state.ar2
     end
 
+    local emitAR2Round = Specials.FireAR2Round
+
     function Specials:BeginAR2Burst(ply, weapon, direction)
+        local allowed, soldierBinding = self:AR2SourceAllowed(ply, weapon)
+        if not allowed then return false end
         local ar2 = ar2StateFor(ply)
         local now = CurTime()
 
         if ar2.active or now < (ar2.readyAt or 0) then return false end
         if now < weapon:GetNextPrimaryFire() then return false end
-        if weapon:Clip1() < 1 then
+        if not soldierBinding and weapon:Clip1() < 1 then
             weapon:EmitSound("Weapon_AR2.Empty", 62, 100, 0.72, CHAN_WEAPON)
             return false
         end
@@ -167,6 +171,8 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
         if direction == vector_origin then return false end
 
         ar2.active = true
+        ar2.soldierBinding = soldierBinding
+        ar2.ammoCommitted = soldierBinding and 0 or nil
         ar2.attackEvent = {}
         if LOD.Equipment and LOD.Equipment.SealWeaponAttack then
             LOD.Equipment:SealWeaponAttack(ply,{attackEvent=ar2.attackEvent},"weapon_ar2")
@@ -188,45 +194,11 @@ if Specials and not Specials.LODOneRoundBurstEconomyInstalled then
     end
 
     function Specials:FireAR2Round(ply, ar2)
-        local weapon = ar2.weapon
-        if not IsValid(ply) or not ply:Alive() or not IsValid(weapon) then return false end
-        if activeWeapon(ply) ~= weapon or weapon:GetClass() ~= "weapon_ar2" then return false end
-
-        -- One ammunition unit buys the complete authored three-projectile burst.
-        -- Spend that unit only when the first projectile actually releases, so a
-        -- telegraph cancelled by death/weapon switch does not consume ammo.
-        if (ar2.shotsFired or 0) == 0 then
-            if weapon:Clip1() <= 0 then return false end
-            weapon:SetClip1(math.max(0, weapon:Clip1() - 1))
-        end
-
-        weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-        ply:SetAnimation(PLAYER_ATTACK1)
-        ply:MuzzleFlash()
-        weapon:EmitSound("Weapon_AR2.Single", 72, 100, 0.88, CHAN_WEAPON)
-        ply:ViewPunch(Angle(-0.35, 0, 0))
-
-        local direction = ar2.direction:GetNormalized()
-        local bullet = {
-            Num = 1,
-            Src = ply:GetShootPos(),
-            Dir = direction,
-            Spread = vector_origin,
-            Tracer = 1,
-            TracerName = "AR2Tracer",
-            Force = 4,
-            Damage = 1,
-            AmmoType = "AR2",
-            Attacker = ply,
-            Inflictor = weapon,
-            LODAttackEvent = ar2.attackEvent
-        }
-
-        ply:LagCompensation(true)
-        ply:FireBullets(bullet)
-        ply:LagCompensation(false)
-
-        self.Stats.ar2Rounds = (self.Stats.ar2Rounds or 0) + 1
-        return true
+        local weapon = ar2 and ar2.weapon
+        if not self:AR2SourceAllowed(ply, weapon, ar2) then return false end
+        if not IsValid(weapon) or activeWeapon(ply) ~= weapon then return false end
+        -- The final one-ammo wrapper owns Hero cost. Soldier bursts never debit,
+        -- refill or temporarily manufacture native cartridges, even at Clip1=0.
+        return emitAR2Round(self, ply, ar2)
     end
 end
