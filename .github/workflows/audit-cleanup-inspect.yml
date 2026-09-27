@@ -1,0 +1,35 @@
+name: Cleanup audit source inspection
+on:
+  push:
+    branches: [automation/audit-cleanup-aa102cc3]
+    paths: [.github/workflows/audit-cleanup-inspect.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: aa102cc31951d34937ebaa106314cfcfdb855a2f
+          persist-credentials: false
+      - name: Exact source and audit tools
+        run: |
+          set -eu
+          mkdir -p /tmp/audit-evidence/bin
+          git rev-parse HEAD HEAD^{tree} > /tmp/audit-evidence/identity.txt
+          git archive --format=tar.gz HEAD > /tmp/audit-evidence/source.tar.gz
+          sudo apt-get update -qq
+          sudo apt-get install -y lua5.1 lua-check
+          cp /usr/bin/lua5.1 /usr/bin/luac5.1 /tmp/audit-evidence/bin/
+          ldd /usr/bin/lua5.1 > /tmp/audit-evidence/lua-dependencies.txt
+      - name: Inspect potential unused locals and structural defects
+        run: |
+          luacheck gamemodes lua --codes --no-color --no-max-line-length --ignore 111 112 113 > /tmp/audit-evidence/luacheck.txt 2>&1 || test "$?" -le 2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cleanup-audit-inspection-aa102cc3
+          path: /tmp/audit-evidence
+          retention-days: 14
