@@ -1,4 +1,49 @@
-# Resume The Legend of Deborah — SPOT-12 Spellbook availability colors
+# Resume The Legend of Deborah — SPOT-13 unread-update markers
+
+Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. The SPOT-12 delivery
+receipt supplies the verified child SHA, tree, exact source hash and independent
+run. Actual SPOT-12 gameplay parent: `8b2e936f83f9740f40082fd0c3d04dc3feafde01`.
+Fetch current main and preserve intervening/uncommitted work. Never use isolated
+workflow triggers or source-reconstruction anchors as gameplay ancestry.
+
+Read AGENTS.md -> docs/DEVELOPMENT_PLAN.md -> this handoff ->
+docs/briefs/SPOT_UPDATES.md -> docs/validation/SPOT_12_SPELLBOOK.md ->
+docs/TEST_LOGGING.md. Live GDD `1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY`:
+00 -> 01 -> relevant 06/07 and only other required normalized rules. Retrieve
+exact HUMAN fragments only for missing detail. Do not duplicate existing law.
+
+SPOT-12 is source-complete: full state-colored backdrops/borders, readable dark
+semantic ink, separate selection outline, same-state hover and measured description
+font fallback. Existing availability precedence and authoritative snapshot/body
+inputs are unchanged. Owned temporarily uncastable cards remain configurable;
+server cast preflight, costs, cooldowns, class restrictions and bindings are intact.
+Live 06/07 and both manual readers align. Pre-closeout evidence: 83/83 selected
+suites, 1441 new focused assertions, 745 Lua syntax files, unchanged source. Final
+local/independent evidence is in the delivery receipt. Earlier failures and outer
+execution interruptions are retained, not upgraded to full passes. These are
+headless gates, not a full campaign matrix, full Gate-B identity pass or native
+visual/font/balance/movement/rejoin/co-op acceptance.
+
+Implement only SPOT-13: an unread-update exclamation mark over Spellbook, Character
+Sheet and Inventory; clear the corresponding marker only when that updated page
+is viewed. Reconcile exact page names (Equipment is a separate live tab), meaningful
+update detection, initial sync, closed/open pages, stale snapshots and lifecycle
+reset before code. Avoid polling noise, unread reset races and unrelated markers.
+Define a finite production UI/transport/state gate, retain applicable regressions,
+manual parity and syntax, then bank one verified non-forced push. Do not implement
+SPOT14 or deferred roadmap work in the same checkpoint.
+
+Preserve SPOT01-12, four-choice draft/stored-hand contracts, Float On six seconds
+at 1 Magic/s, B28/B29, accepted Crate appearance and P1-P4. Native evidence remains
+console_latest.txt + rpg_summary_latest.txt and a short observation from the exact
+installed build on gm_flatgrass. Detailed session only for timing diagnosis; no
+dedicated Razor retest. Local acceptance -> Workshop 3791535712 package/source
+parity -> matching VPS. No Workshop/VPS action occurred or is implicitly authorized.
+Do not promise background work. Supply a fresh handoff when the conversation grows.
+
+---
+
+# Historical handoff — SPOT-12 Spellbook availability colors
 
 Repository `ShaelRiley/the-legend-of-deborah`, branch `main`. SPOT-11's actual
 parent is `85db2ed5ce287e7dbd96197676af4799922a6bf6`; the delivery receipt supplies

@@ -402,7 +402,7 @@
         "Every Hero begins with one random direct-damage Form and RAW Content. Wall and Summon never replace that starting spell; Wizards may learn them through later grants. Wizards receive an additional distinct Content at Level 1. The normal Content grants occur at Levels 4, 8, and 14. Only a Wizard can acquire or cast SUMMON or WALL.",
         "Magic tops out at 100. Intelligence governs regeneration; Wisdom governs spell power and approved range, radius, and utility scaling. A spell's visible area boundary marks its actual area, while a Beam ends where world geometry stops it.",
         "When holding any throwable, its controls take priority. Switch back to a normal weapon to cast.",
-        "Spellbook labels distinguish READY / AVAILABLE, LOCKED, NEED MAGIC, COOLDOWN, and BLOCKED. Solid floors stop all spell areas. Open stairwells and shafts still allow exposed vertical hits."
+        "Spellbook cards and their backdrops show availability: blue for AVAILABLE or READY / SELECTED; red for NEED MAGIC or BLOCKED; gold for COOLDOWN, BALL LIMIT or WALL LIMIT; muted gray-brown for LOCKED, WIZARD / LOCKED or UNAVAILABLE. Read the label for the exact reason. A separate dark double outline marks the selection without hiding its availability color. Owned spells remain selectable or rebindable while temporarily uncastable; the server still checks every cast. Solid floors stop all spell areas. Open stairwells and shafts still allow exposed vertical hits."
       ]
     },
     {

@@ -1,3 +1,12 @@
+# SPOT-12 Spellbook surface states
+
+The canonical Magic chapter now explains blue available/ready, red blocked/low
+Magic, gold cooldown/limited-Form and muted locked/unavailable card backdrops.
+A separate dark double outline identifies selection without concealing warnings;
+owned spells remain configurable while temporarily uncastable. Server preflight
+is still authoritative. Both shipped renderings are regenerated from
+`docs/manual/book.json`; native engine font/appearance acceptance remains pending.
+
 # Canonical instruction manual
 
 ## SPOT-05: shared Die Logger semantics

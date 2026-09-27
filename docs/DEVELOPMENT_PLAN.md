@@ -1,6 +1,29 @@
 # Active roadmap — author-directed spot updates
 
-## Current checkpoint — SPOT-11 four-choice ordinary feat drafts
+## Current checkpoint — SPOT-12 Spellbook availability surfaces
+
+Actual gameplay parent: `8b2e936f83f9740f40082fd0c3d04dc3feafde01`.
+Cards now tint their entire backdrop and border from the existing blue/red/gold/
+muted availability state. Dark selection outlines and matching hover accents do
+not mask warnings. Literal labels, costs, descriptions, Magic authority and all
+configuration/casting rules remain; long descriptions use an existing small-font
+fallback. Live GDD 06/07 and both canonical manual readers align.
+
+[Evidence and limits](validation/SPOT_12_SPELLBOOK.md): **83/83 selected pre-closeout
+suites, 1441 new focused assertions, 745 Lua syntax checks**, unchanged source;
+minimum computed card-text contrast 5.119:1. All 79 SPOT-11 selections retained.
+Final frozen local/independent hashes and non-forced main publication are in the
+delivery receipt. The first focused width failure and interrupted 57-suite gate
+remain honest incomplete/failed evidence. Native appearance/co-op acceptance and
+the full campaign matrix are not claimed.
+
+**Next single bullet: SPOT-13 — unread-update markers for Spellbook, Character
+Sheet and Inventory, clearing only the corresponding viewed update.** Reconcile
+live notification/snapshot ownership before code. Do not start SPOT14 or deferred
+roadmap work here. Preserve Float On at 1 Magic/s, SPOT01-11, B28/B29, Crate/P1-P4
+and local acceptance -> Workshop parity -> matching VPS. No deployment authorized.
+
+## Previous checkpoint — SPOT-11 four-choice ordinary feat drafts
 
 Actual gameplay parent: `85db2ed5ce287e7dbd96197676af4799922a6bf6`.
 New ordinary hands target four distinct eligible offers, legal neutral fallbacks

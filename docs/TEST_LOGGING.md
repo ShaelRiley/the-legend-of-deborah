@@ -1,3 +1,22 @@
+# SPOT-12 Spellbook availability gate
+
+Use `python3 tools/test_spot12_gate.py --output /outside/source/empty-dir --suite-timeout 120 --workers 2`.
+Retains all 79 SPOT-11 selections and adds production Spellbook Paint/snapshot/
+state/layout, actual mouse-binding/casting, inventory refresh and minigame UI
+regressions. Pre-closeout: 83/83 suites, 1441 new focused assertions, 745 Lua syntax
+checks; minimum computed text contrast 5.119:1. Final frozen/independent receipts
+supply exact hashes and publication identity. Earlier width failure and interrupted
+57-suite run are preserved in SPOT_12_ATTEMPTS.tar.xz; neither is a full pass.
+No full campaign matrix, full Gate-B identity or native visual/font/co-op pass.
+
+For native acceptance, use the exact installed build on gm_flatgrass, open I during
+normal play and check full state backdrops, literal reasons, independent selection
+outline and binding legibility as Magic/cooldown/held-throwable state changes.
+Return console_latest.txt + rpg_summary_latest.txt and a short observation; detailed
+session only for timing. No dedicated Razor test; no Workshop/VPS operation here.
+
+---
+
 SPOT-11 final frozen gate: `python3 tools/test_spot11_gate.py --output <outside-source-empty-directory> --suite-timeout 120 --workers 2`.
 The explicit bounded runner allowance preserves all assertions; the earlier
 independent 45-second Skeleton blockade timeout remains a failed 78/79 gate,

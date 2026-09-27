@@ -9,6 +9,24 @@ local descriptions = {
     raw = "No Content rider", earth = "Push", fire = "Immolated", dark = "Poisoned",
     ice = "Held", light = "Muted", electric = "Intimidated"
 }
+-- SPOT-12: preserve the existing availability resolver and semantic palette.
+-- Treatments are cached lazily: live resource changes repaint without allocating
+-- Colors per card/frame, and selection never masks a warning state.
+local cardTreatments = {}
+local function blend(a, b, fraction)
+    return Color(math.floor(a.r + (b.r - a.r) * fraction + 0.5),
+        math.floor(a.g + (b.g - a.g) * fraction + 0.5),
+        math.floor(a.b + (b.b - a.b) * fraction + 0.5))
+end
+local function cardTreatment(accent)
+    local treatment = cardTreatments[accent]
+    if not treatment then
+        treatment = {backdrop = blend(C.light, accent, 0.22), ink = blend(accent, C.ink, 0.30)}
+        cardTreatments[accent] = treatment
+    end
+    return treatment
+end
+
 local function inputBusy()
     return gui.IsConsoleVisible() or (chat.IsTyping and chat.IsTyping())
 end
@@ -46,10 +64,16 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
     button:SetEnabled(entry.owned == true)
     button.Paint = function(self, width, height)
         local selected = entry.selected == true
-        draw.RoundedBox(1,0,0,width,height,selected and C.peach or C.light)
-        surface.SetDrawColor(selected and C.red or C.rule)
-        surface.DrawOutlinedRect(0,0,width,height,selected and 2 or 1)
-        local label,color = Book:Availability(entry,kind)
+        local label,accent = Book:Availability(entry,kind)
+        local treatment = cardTreatment(accent)
+        draw.RoundedBox(1,0,0,width,height,treatment.backdrop)
+        surface.SetDrawColor(accent)
+        surface.DrawOutlinedRect(0,0,width,height,1)
+        if selected then
+            surface.SetDrawColor(C.ink)
+            surface.DrawOutlinedRect(3,3,width-6,height-6,2)
+        end
+        local color = treatment.ink
         local title=string.upper(entry.displayName or entry.id)
         if kind=='form' then
             for key,id in pairs(Book.Snapshot.bindings or {}) do
@@ -68,9 +92,13 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         local cost = kind == "form" and string.format("%d base Magic",entry.magicCost or 0)
             or string.format("+%d Magic",entry.surcharge or 0)
         draw.SimpleText(cost,"LOD_SheetSmall",width*0.5,height<120 and 47 or 72,C.ink,TEXT_ALIGN_CENTER)
-        draw.SimpleText(descriptions[entry.id] or "","LOD_SheetSmall",width*0.5,height<120 and 66 or 100,C.muted,TEXT_ALIGN_CENTER)
+        local description = descriptions[entry.id] or ""
+        local descriptionFont = "LOD_SheetSmall"
+        surface.SetFont(descriptionFont)
+        if surface.GetTextSize(description)>width-8 then descriptionFont="DermaDefault" end
+        draw.SimpleText(description,descriptionFont,width*0.5,height<120 and 66 or 100,C.ink,TEXT_ALIGN_CENTER)
         if self:IsHovered() and entry.owned then
-            surface.SetDrawColor(C.blue);surface.DrawRect(8,height-6,width-16,2)
+            surface.SetDrawColor(accent);surface.DrawRect(8,height-6,width-16,2)
         end
     end
     local function select(buttonCode)
