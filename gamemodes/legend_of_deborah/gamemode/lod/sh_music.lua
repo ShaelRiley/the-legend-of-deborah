@@ -4,10 +4,14 @@ LOD.Music = {}
 local M = LOD.Music
 M.Roles = {"T0", "T1", "T2", "T3", "BOSS", "VICTORY", "INTERLUDE"}
 M.Limits = {blocks=256, assets=1792, bytes=4194304, duration=180, channels=4,
-    transfers=2, catalogBytes=2097152, packetBytes=60000}
+    transfers=1, loads=2, decodedBytes=67108864, cacheBytes=33554432, cacheFiles=64,
+    chunkBytes=16384, bytesPerSecond=32768, planChunk=1024, metadataBytes=4096,
+    catalogBytes=2097152, packetBytes=60000}
 M.Tuning = {tick=.2, fade=1.2, relax=6, dwell=4, escalate=.8, buffer=.3,
     damageWindow=5, urgentHP=.2, dangerHP=.4, urgentTime=60, dangerTime=180,
-    cueLead=8, cueMinimum=4, cueCount=8}
+    cueLead=8, cueMinimum=4, cueCount=8, mixTick=1/30, frameLimit=.035,
+    severeFrame=.08, severeHold=2, recovery=5, pingLimit=180, pingRise=80,
+    lossLimit=2, serverBudget=.0005}
 local function count(t) local n=0; for _ in pairs(t or {}) do n=n+1 end; return n end
 local function finite(n, lo, hi)
     return type(n)=="number" and n==n and n>=lo and n<=hi
@@ -74,6 +78,7 @@ function M.Asset(a)
         and finite(a.phase,0,a.duration) and finite(a.gain,0,1) and finite(a.headroom,0,24)
         and M.ID(a.grid) and a.handoff=="envelope" and a.loopStart==0 and a.loopEnd==a.duration
         and M.Text(a.credits,512) and M.Text(a.source,512) and M.Cues(a)
+        and (a.delivery==nil or a.delivery==1)
 end
 function M.Compatible(a,b)
     return a and b and a.grid==b.grid and a.bpm==b.bpm and a.beats==b.beats

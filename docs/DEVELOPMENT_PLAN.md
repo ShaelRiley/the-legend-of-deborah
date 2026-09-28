@@ -1,4 +1,26 @@
-# Current checkpoint — pulse-first music section direction
+# Current checkpoint — Chill staging and gameplay-first music
+
+The author requests staging's Chill/INTERLUDE arrangement and resource priority
+for gameplay. This extends verified main `cdfcbb1ab8652109ba141c59b298fb03b68ae676`.
+Live GDD 05/06/07 now records Chill staging, explicit opt-out, bounded on-demand
+media caching, paced downloads and resource shedding. Existing block assignment,
+pressure, pulse/quiet section and one-shot victory authorities remain in charge.
+
+Fixed 16 KiB media objects, one HTTP request, a bounded verified disk cache and
+local native playback replace uncontrolled URL streams. Disabled/zero-volume
+clients suspend music service. Congestion postpones optional work; severe client
+overload releases the score. Read `MUSIC_PERFORMANCE.md` for limits, legacy-host
+migration and the finite native gate. Results are in `validation/MUSIC_PERFORMANCE.md`;
+source checks do not establish native FPS, latency, memory, audio or router QoS.
+
+Next: prepare hosted chunks offline, install the published source, start a new
+campaign and run the compact native music/contention gate. No Workshop or VPS
+release belongs to this checkpoint. Preserve prior low-end optimizations and
+local acceptance → Workshop parity → matching VPS.
+
+---
+
+# Prior checkpoint — pulse-first music section direction
 
 The author promotes section-aware music direction from main
 `67cb7dbf7343d05cd52c3f429e33322a8fc30248`. Rhythmic class has primacy:

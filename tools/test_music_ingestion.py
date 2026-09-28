@@ -8,7 +8,7 @@ import sys
 import tempfile
 import zipfile
 sys.path.insert(0,str(Path(__file__).parent/'music'))
-from catalog_service import CatalogStore, application
+from catalog_service import CatalogStore, application, CHUNK_BYTES
 from lod_music_upload import bundle
 from generate_defaults import generate
 
@@ -32,6 +32,10 @@ with tempfile.TemporaryDirectory() as tmp:
     check(not (store.root/'catalog.json').exists(),'staging cannot publish')
     rev=store.publish(uid)
     c=store.catalog();check(len(c['assets'])==7 and len(c['profiles'])==1,'real seven-role decoded profile')
+    for asset in c['assets'].values():
+        parts=sorted((store.root/'music/chunks'/asset['hash']).glob('*.dat'),key=lambda p:int(p.stem))
+        check(asset.get('delivery')==1 and all(0<p.stat().st_size<=CHUNK_BYTES for p in parts),'fixed-size delivery published offline')
+        check(b''.join(p.read_bytes() for p in parts)==(store.root/asset['path']).read_bytes(),'chunks reproduce exact immutable audio')
     check(all(a.get('cues',{}).get('version')==1 for a in c['assets'].values() if a['loop']), 'loop cue maps published before gameplay')
     check(all('cues' not in a for a in c['assets'].values() if not a['loop']), 'fanfare stays outside section director')
     check(len(c['blocks'])==0,'defaults are not procedural blocks')
@@ -90,4 +94,10 @@ with tempfile.TemporaryDirectory() as tmp:
     legacy['version']='v2';(partial/'manifest.json').write_text(json.dumps(legacy))
     store.publish(store.stage(bundle(partial)))
     check(all(store.catalog()['assets'][roles[r]].get('cues') for r in ('T0','T1','T2','T3')),'new immutable version enriches legacy assets without rewriting audio')
+    old=store.catalog()
+    for a in old['assets'].values():a.pop('delivery',None)
+    atomic_json(store.root/'catalog.json',old)
+    store.prepare_delivery()
+    check(all(a.get('delivery')==1 for a in store.catalog()['assets'].values()),'legacy delivery preparation enriches future plans')
+    frozen=json.loads(json.dumps(old));check(all('delivery' not in a for a in frozen['assets'].values()),'frozen plans remain unchanged')
 print(f'MUSIC_INGESTION PASS {checks}')

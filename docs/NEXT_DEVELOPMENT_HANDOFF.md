@@ -1,3 +1,27 @@
+# Music resource checkpoint
+
+Repository: `ShaelRiley/the-legend-of-deborah`, `main`. Parent:
+`cdfcbb1ab8652109ba141c59b298fb03b68ae676`. Live design is the canonical GDD;
+00 → 01 → 05/06/07 governs this checkpoint, including
+`LOD-MUSIC-RESOURCE-001` and `LOD-MUSIC-RESOURCE-IMPL`.
+
+Implemented: staging/next-staging Chill; opt-out and zero-volume suspension;
+16 KiB paced media chunks; verified bounded cache; native PCM admission;
+resource-pressure shedding/recovery; shared, chunked, budgeted metadata;
+5 Hz selection and capped gain updates. See `MUSIC_PERFORMANCE.md` for operation,
+legacy delivery preparation and the native procedure. Exact source-check results
+belong to `validation/MUSIC_PERFORMANCE.md`; the publication response identifies
+the remote commit. No real hosted catalog was migrated. Native listening,
+performance and network contention remain unaccepted. Workshop/VPS unchanged.
+
+Next: prepare the music host, install exact source, start a new campaign on
+`gm_flatgrass`, then run `lod_music_reload; lod_music_enabled 1; lod_music_status; lod_music_client_status`.
+Check Chill, pulse/quiet, per-player Off and cold/warm network contention as the
+linked guide describes. Return `console_latest.txt` plus `rpg_summary_latest.txt`.
+Preserve all earlier native gates and low-end work.
+
+---
+
 # Current checkpoint — pulse-first music section direction
 
 Fetch current main; this update's parent is

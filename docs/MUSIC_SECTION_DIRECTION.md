@@ -63,7 +63,7 @@ author's local manifest unless `--write-cues` was requested. Declared authored
 cues are validated rather than silently replaced. The deterministic starter
 score includes authored maps matching its known sparse and foreground-drum roles.
 
-Existing catalogs without cues remain playable and explicitly report
+With prepared bounded delivery, existing catalogs without cues remain playable and explicitly report
 `legacy-no-cues`; their old behavior does **not** gain section guarantees. Publish
 a new immutable version through offline ingestion to prepare them. One-way cue
 enrichment of a formerly cue-less content hash is allowed for future plans only.
@@ -75,15 +75,15 @@ or actual dance-track collection was available for reprocessing in this task.
 Cue selection scans at most eight entries of one class. Playback-position checks
 run at most every 0.2 seconds per desired voice. There is no FFT, waveform scan,
 beat detection, external analyzer, extra server scan or gameplay-time generation.
-Ordinary decoding, streaming and the existing gain mixer still have a cost;
+Ordinary decoding, streaming and the 30 Hz gain mixer still have a cost;
 zero CPU cost or measured Steam Deck performance is not claimed.
 
 Eight seconds before a boundary, the director may prepare a same-file second
 voice. It uses `noplay noblock`, checks buffered time and uses `SetTime(pos, true)`
 to avoid decode-to-position. Starting 1.6 seconds before the boundary leaves
 the existing 1.2-second fade plus two 0.2-second check intervals. Intentional
-same-file overlap can require another native transfer; it is counted within
-the existing four-channel/two-transfer caps. It is not a second mixer or a claim
+same-file overlap reads the verified disk cache without another HTTP transfer;
+it remains within four native channels and the declared PCM admission budget. It is not a second mixer or a claim
 of shared native decode buffers. Once a pair is buffered, the outgoing voice is
 paused and reserved for the next renewal; repeated sections do not repeatedly
 download the master. Reservations yield to foreground role/floor changes.
@@ -127,4 +127,4 @@ those release operations.
 
 Native contracts: [SetTime](https://wiki.facepunch.com/gmod/IGModAudioChannel:SetTime),
 [GetBufferedTime](https://wiki.facepunch.com/gmod/IGModAudioChannel:GetBufferedTime),
-[PlayURL](https://wiki.facepunch.com/gmod/sound.PlayURL).
+[PlayFile](https://wiki.facepunch.com/gmod/sound.PlayFile).

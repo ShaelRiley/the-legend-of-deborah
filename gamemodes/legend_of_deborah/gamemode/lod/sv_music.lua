@@ -2,17 +2,19 @@
 LOD.MusicDirector = LOD.MusicDirector or {}
 local D,M,R=LOD.MusicDirector,LOD.Music,LOD.RunManager
 D.Listeners=setmetatable({}, {__mode="k"})
+D.PlanPackets=setmetatable({}, {__mode="k"})
 D.Settings={set="all",profile="",post_victory="auto",universal_boss=false,universal_victory=false,universal_interlude=false}
 local ROOT="legend_of_deborah/music/"
 local enabled=CreateConVar("lod_music_enabled","0",bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED,FCVAR_NOTIFY),
     "Permit optional streamed music. Disabled by default; player Off always wins.",0,1)
-for _,name in ipairs({"LOD_MusicPlan","LOD_MusicState","LOD_MusicPlaying","LOD_MusicSwitch"}) do util.AddNetworkString(name) end
+for _,name in ipairs({"LOD_MusicPlan","LOD_MusicState","LOD_MusicPlaying","LOD_MusicSwitch","LOD_MusicDemand","LOD_MusicBudget"}) do util.AddNetworkString(name) end
 local function report(p,text)
     text="[LOD:MUSIC] "..text;print(text);if IsValid(p) then p:ChatPrint(text) end
 end
 local function operator(p) return not IsValid(p) or p:IsSuperAdmin() end
 function D:Enabled(p)
-    return enabled:GetBool() and (not p or p:GetInfoNum("lod_music",1)~=0)
+    local l=p and self.Listeners[p]
+    return enabled:GetBool() and (not p or p:GetInfoNum("lod_music",0)~=0 and l and l.demand==true) or false
 end
 function D:LoadCatalog(path)
     local raw=file.Read(path or ROOT.."catalog.json","DATA")
@@ -76,6 +78,7 @@ function D:Listener(p)
 end
 function D:ClearAccepted(s)
     if s.MusicVictory and s.MusicVictory.level==s.Level then return end
+    if not enabled:GetBool() then return end
     local plan=self:Prepare(s,s.Level)
     local a=s.Graph and s.Graph.Progression and s.Graph.Progression.Warden
     local floor=a and a.entry.z+1 or 1
@@ -111,8 +114,14 @@ function D:Target(p,l,s)
             return t,{v.plan,v.next}
         end
     end
+    if staged then
+        t.role="INTERLUDE";t.targets={{block=plan.floors[1],weight=1}};t.staged=true
+        if not l.staging then l.pressure=nil;l.damage={};l.combatUntil=nil end
+        l.staging=true
+        return t,{plan}
+    end
+    l.staging=false
     if not s.BuildReady then return t,{plan} end
-    if staged then t.targets={{block=plan.floors[1],weight=1}};t.staged=true;return t,{plan} end
     if not p:Alive() then return t,{plan} end
     local a,b,f=M.Floors(s.Graph,p:GetPos(),p:OnGround(),l.floor)
     if a==b then l.floor=a elseif f<.01 then l.floor=a elseif f>.99 then l.floor=b end
@@ -128,6 +137,7 @@ function D:Target(p,l,s)
     else
         t.role=self:Pressure(p,l,s,false)
         local ba,bb=plan.floors[a],plan.floors[b]
+        f=math.floor(f*20+.5)/20 -- Only audible 5% steps enter metadata.
         if ba==bb then t.targets={{block=ba,weight=1}}
         else t.targets={{block=ba,weight=1-f},{block=bb,weight=f}} end
         t.floor=a;t.destination=b;t.fraction=math.floor(f*100+.5)/100
@@ -137,11 +147,48 @@ function D:Target(p,l,s)
 end
 function D:SendPlan(p,l,plan)
     if l.sent[plan.id] then return true end
-    local raw=util.TableToJSON(plan);local data=raw and util.Compress(raw)
+    if l.clientWork==false then return false end
+    local data=self.PlanPackets[plan]
+    if not data then
+        -- Operator-only selection inventory is not part of client playback.
+        local wire={id=plan.id,epoch=plan.epoch,origin=plan.origin,blocks=plan.blocks,assets=plan.assets,floors=plan.floors}
+        local raw=util.TableToJSON(wire);data=raw and util.Compress(raw)
+        if data then self.PlanPackets[plan]=data end
+    end
     if not data or #data>M.Limits.packetBytes then self.Error="music plan exceeds transport limit";return false end
-    net.Start("LOD_MusicPlan");net.WriteUInt(#data,16);net.WriteData(data,#data);net.Send(p)
-    l.sent[plan.id]=true
+    if l.planAt==CurTime() then return false end
+    local part=l.sending and l.sending[plan.id] or 1
+    local chunk=data:sub((part-1)*M.Limits.planChunk+1,part*M.Limits.planChunk)
+    local cost=#chunk+#plan.id+16
+    if self.WireBudget and self.WireBudget<cost then return false end
+    if self.WireBudget then self.WireBudget=self.WireBudget-cost end
+    net.Start("LOD_MusicPlan");net.WriteString(plan.id);net.WriteUInt(part,16)
+    net.WriteUInt(math.ceil(#data/M.Limits.planChunk),16);net.WriteUInt(#chunk,16);net.WriteData(chunk,#chunk);net.Send(p)
+    l.planAt=CurTime();l.sending=l.sending or {};l.sending[plan.id]=part+1
+    if part*M.Limits.planChunk>=#data then l.sent[plan.id]=true;l.sending[plan.id]=nil;return true end
+    return false
+end
+local function sameTarget(a,b)
+    if not a or not b then return false end
+    for k,v in pairs(a) do if k~="targets" and k~="sequence" and b[k]~=v then return false end end
+    for k,v in pairs(b) do if k~="targets" and k~="sequence" and a[k]~=v then return false end end
+    local aa,bb=a.targets or {},b.targets or {}
+    if #aa~=#bb then return false end
+    for i,v in ipairs(aa) do if v.block~=bb[i].block or v.weight~=bb[i].weight then return false end end
     return true
+end
+function D:Budget(p,l)
+    local now=SysTime();local ping=p.Ping and p:Ping() or 0
+    l.basePing=math.min(l.basePing or ping,ping)
+    local congested=self.ServerBusy or ping>M.Tuning.pingLimit or ping>l.basePing+M.Tuning.pingRise
+        or p.PacketLoss and p:PacketLoss()>=M.Tuning.lossLimit or p.IsTimingOut and p:IsTimingOut()
+    if congested then l.recoverAt=now+M.Tuning.recovery end
+    local available=now>=(l.recoverAt or 0)
+    if available~=l.budget then
+        l.budget=available
+        net.Start("LOD_MusicBudget");net.WriteBool(available);net.Send(p)
+    end
+    return available
 end
 function D:Update(p,s)
     local l=self:Listener(p);local on=self:Enabled(p)
@@ -149,10 +196,12 @@ function D:Update(p,s)
         l.on=on;l.lastPacket=nil
         net.Start("LOD_MusicSwitch");net.WriteBool(on);net.Send(p)
         if not on and s.MusicVictory then s.MusicVictory.participants[p]=nil end
+        if not on then l.sent={};l.sending={};l.plans=nil;l.snapshot=nil;l.allowed={};l.pressure=nil end
     end
     if not on then return end
+    if not self:Budget(p,l) and not s.Failed then return end
     if l.epoch~=s.CampaignEpoch then
-        l.epoch=s.CampaignEpoch;l.sent={};l.allowed={};l.damage={};l.pressure=nil;l.floor=nil;l.lastBlock=nil
+        l.epoch=s.CampaignEpoch;l.sent={};l.sending={};l.allowed={};l.damage={};l.pressure=nil;l.floor=nil;l.lastBlock=nil
     end
     local target,plans
     if s.Failed then target={epoch=s.CampaignEpoch,stop=true};plans={}
@@ -163,23 +212,50 @@ function D:Update(p,s)
         if entry.block and entry.weight>0 then allowed[entry.block]=true end
     end
     if target.nextBlock then allowed[target.nextBlock]=true end
-    l.allowed=allowed;l.plans=plans;l.snapshot=target
+    l.allowed=allowed;l.plans=plans
     local keep={};for _,plan in ipairs(plans) do keep[plan.id]=true end
     for id in pairs(l.sent) do if not keep[id] then l.sent[id]=nil end end
-    local raw=util.TableToJSON(target)
-    if raw~=l.lastPacket then
+    if not sameTarget(target,l.snapshot) or not l.lastPacket then
         l.sequence=l.sequence+1;target.sequence=l.sequence
-        net.Start("LOD_MusicState");net.WriteString(util.TableToJSON(target));net.Send(p)
-        l.lastPacket=raw
+        local raw=util.TableToJSON(target)
+        if self.WireBudget and #raw+16>self.WireBudget then l.sequence=l.sequence-1;return end
+        if self.WireBudget then self.WireBudget=self.WireBudget-#raw-16 end
+        net.Start("LOD_MusicState");net.WriteString(raw);net.Send(p)
+        l.lastPacket=true;l.snapshot=target
     end
 end
 hook.Add("Think","LOD_MusicDirector",function()
+    if not enabled:GetBool() then return end
+    local now=SysTime();local interval=engine and engine.TickInterval and engine.TickInterval() or .015
+    local elapsed=D.lastThink and now-D.lastThink or interval;D.lastThink=now
+    D.FrameAverage=(D.FrameAverage or interval)*.95+elapsed*.05
+    D.ServerBusy=D.FrameAverage>interval*1.8
     if CurTime()<(D.nextTick or 0) then return end;D.nextTick=CurTime()+M.Tuning.tick
     local s=R.State;if not s then return end
-    for _,p in ipairs(player.GetAll()) do
+    local players=player.GetAll();local n=#players;if n==0 then return end
+    local start=SysTime();D.WireBudget=M.Limits.metadataBytes
+    for _=1,n do
+        D.cursor=(D.cursor or 0)%n+1;local p=players[D.cursor]
         local ok,err=pcall(D.Update,D,p,s)
         if not ok then D.Error=tostring(err) end -- presentation failure cannot end a run
+        if SysTime()-start>=M.Tuning.serverBudget then break end
     end
+    D.WireBudget=nil
+end)
+net.Receive("LOD_MusicDemand",function(bits,p)
+    if bits>24 or not IsValid(p) then return end
+    local on,work,resync=net.ReadBool(),net.ReadBool(),net.ReadBool();local l=D:Listener(p)
+    if l.demand==on and l.clientWork==work and not resync then return end
+    local now=SysTime()
+    if on and now<(l.nextDemand or 0) then return end
+    l.nextDemand=on and now+.25 or 0;l.demand=on;l.clientWork=work
+    if on and resync then l.sent={};l.sending={};l.snapshot=nil;l.on=nil end
+    if not on then
+        l.allowed={};l.plans=nil;l.snapshot=nil;l.sent={};l.sending={};l.damage={};l.pressure=nil
+        l.on=false;l.lastPacket=nil
+        if R.State and R.State.MusicVictory then R.State.MusicVictory.participants[p]=nil end
+        net.Start("LOD_MusicSwitch");net.WriteBool(false);net.Send(p)
+    else l.lastPacket=nil end
 end)
 hook.Add("PostEntityTakeDamage","LOD_MusicDamage",function(p,dmg,took)
     if took and IsValid(p) and p:IsPlayer() and D:Enabled(p) then
@@ -222,6 +298,7 @@ cvars.AddChangeCallback("lod_music_enabled",function()
     if not enabled:GetBool() and s and s.MusicVictory then s.MusicVictory.participants=setmetatable({}, {__mode="k"}) end
     for _,p in ipairs(player.GetAll()) do
         local l=D:Listener(p);l.on=nil;l.lastPacket=nil
+        if not enabled:GetBool() then l.sent={};l.sending={};l.snapshot=nil;l.plans=nil;l.allowed={};l.pressure=nil end
         net.Start("LOD_MusicSwitch");net.WriteBool(D:Enabled(p));net.Send(p)
     end
 end,"LOD_MusicMaster")

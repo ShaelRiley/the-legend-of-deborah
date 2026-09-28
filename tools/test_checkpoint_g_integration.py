@@ -33,6 +33,8 @@ SUITES = [
     ("Music Server Permission & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_music_server.lua"]),
     ("Music Client Bounded Streaming", ["python3", "tools/run_lua54.py", "tools/test_music_client.lua"]),
     ("Music Crossfade Transitions", ["python3", "tools/run_lua54.py", "tools/test_music_transitions.lua"]),
+    ("Music Paced Media & Cache", ["python3", "tools/run_lua54.py", "tools/test_music_media.lua"]),
+    ("Music Gameplay Resource Priority", ["python3", "tools/run_lua54.py", "tools/test_music_resources.lua"]),
     ("Player Options Movement Invariants", ["python3", "tools/run_lua54.py", "tools/test_player_options.lua"]),
     ("Music Ingestion Validation", ["python3", "tools/test_music_ingestion.py"]),
     ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),

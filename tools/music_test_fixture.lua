@@ -1,7 +1,9 @@
 -- Minimal engine boundary; all catalog/planning/mixing logic comes from production.
-local E={now=10,callbacks={},hooks={},commands={},wire={},read={},requests={},stops=0,plays=0,cv={}}
+local E={now=10,callbacks={},hooks={},commands={},wire={},read={},requests={},stops=0,plays=0,cv={},announced={},frame=1/60,volumeWrites=0}
 function CurTime() return E.now end;SysTime=CurTime
 function FrameTime() return .1 end
+function RealFrameTime() return E.frame end
+engine={AbsoluteFrameTime=RealFrameTime,TickInterval=function() return .015 end}
 function IsValid(x) return type(x)=='table' and x.valid~=false end
 function isstring(x) return type(x)=='string' end
 function Color(...) return {...} end
@@ -45,10 +47,12 @@ for _,name in ipairs({'String','UInt','Data','Bool'}) do
  net['Write'..name]=function(v) table.insert(E.packet.args,v) end
  net['Read'..name]=function() return table.remove(E.read,1) end
 end
-net.Send=function(p) E.sent=E.sent or {};E.sent[#E.sent+1]=E.packet end
+net.Send=function(p) E.sent=E.sent or {};E.packet.player=p;E.sent[#E.sent+1]=E.packet
+ if E.packet.name=='LOD_MusicPlaying' then E.announced[#E.announced+1]=E.packet end end
 net.SendToServer=net.Send
 function E.receive(name,...) E.read={...};E.wire[name](1024,E.player) end
-sound={PlayURL=function(url,flags,fn) E.requests[#E.requests+1]={url=url,flags=flags,fn=fn} end}
+sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
+ PlayFile=function(path,flags,fn) E.requests[#E.requests+1]={path=path,flags=flags,fn=fn} end}
 function E.complete(index,buffer,fail)
  local req=E.requests[index];assert(req,'request missing')
  if fail then req.fn(nil,2,'test failure');return end
@@ -57,7 +61,7 @@ function E.complete(index,buffer,fail)
  function c:GetBufferedTime() assert(self.valid,'buffer queried after native Stop');return self.buffer end
  function c:GetTime() assert(self.valid,'position queried after native Stop');return self.time end
  function c:SetTime(v) assert(self.valid,'seek after native Stop');assert(v<=self.buffer,'unbuffered native seek');self.time=v end
- function c:SetVolume(v) self.volume=v end
+ function c:SetVolume(v) assert(self.valid,'volume after native Stop');self.volume=v;E.volumeWrites=E.volumeWrites+1 end
  function c:EnableLooping(v) self.loop=v end
  function c:Play() E.plays=E.plays+1;self.played=true end
  function c:Pause() self.played=false end
@@ -68,6 +72,18 @@ LOD={Config={Maze={Width=1,Height=1,CellSize=384,LevelHeight=384,Origin=Vector()
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_music.lua')
+function E.realMedia()
+ LOD.MusicMedia=nil;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_media.lua')
+ return LOD.MusicMedia
+end
+E.realMedia()
+-- Mixer tests begin with instant media readiness; transport has its own real
+-- scheduler/filesystem/HTTP gate. Native channel callbacks remain asynchronous.
+LOD.MusicMedia.Get=function(self,asset)
+ self.cache[asset.hash]={verified=true,bytes=asset.bytes,used=E.now}
+ return 'data/legend_of_deborah/music_cache/'..asset.hash..'.dat'
+end
+LOD.MusicMedia.Pump=function() end
 function E.catalog()
  local c={schema=1,revision='v1',origin='https://music.example.test',assets={},blocks={},profiles={},sets={}}
  for i,role in ipairs(LOD.Music.Roles) do

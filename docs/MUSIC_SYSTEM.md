@@ -1,7 +1,8 @@
 # Streamed Music System
 
 Source implementation; native Garry’s Mod audio acceptance and hosted deployment
-remain pending. The server starts with **`lod_music_enabled 0`**. The default
+remain pending. See [Chill staging and performance](MUSIC_PERFORMANCE.md) for the
+current delivery, cache, resource-priority and migration contract. The server starts with **`lod_music_enabled 0`**. The default
 client preference is On, but cannot override the server. No media request,
 prefetch, fallback or music-only sting bypasses either Off switch. Gameplay
 sound effects, voices and ambience retain their existing behavior.
@@ -37,7 +38,9 @@ are saved in `data/legend_of_deborah/music/settings.json`.
 pressure hysteresis and built-stair projection. `sv_music.lua` reads existing
 RunManager, CampaignTimeout, Warden/Hector and damage authorities; it sends
 frozen plan metadata and compact listener state. `cl_music.lua` owns all streamed
-playback through `sound.PlayURL(..., "noplay noblock", ...)`.
+playback through `sound.PlayFile(..., "noplay noblock", ...)`. Its
+`cl_music_media.lua` helper fetches paced immutable chunks into a bounded cache;
+media never travels through game net messages.
 
 Each plan reserves the maximum four physical floors from a dedicated music seed
 stream. Actual geometry uses only its existing floors. Same-dungeon rebuilds,
@@ -48,9 +51,9 @@ when first testing. A successful clear reserves the next plan early.
 T0/T1/T2/T3 are four looping arrangements. BOSS binds the arena-entry floor’s
 logical block through phases, clones and the Gordon-to-Hector handoff. Final
 boss defeat returns to T0; only accepted rescue/cash completion creates the
-single nonlooping VICTORY receipt. AUTO takes buffered next-floor T0 directly,
+single nonlooping VICTORY receipt. Staging resolves Chill/INTERLUDE with T0 fallback. AUTO takes ready next-floor Chill directly,
 otherwise uses the outgoing INTERLUDE; INTERLUDE policy retains padding until
-staging; OFF uses calm T0. Unavailable interludes fall back to calm audio/ambience.
+staging; OFF skips outgoing padding and uses T0 until the next staging Chill is ready. Unavailable interludes fall back to calm audio/ambience.
 No transition delays the real clock, build, ready portal or intermission.
 
 Role sources resolve custom → server default → project default. Universal switches
@@ -72,31 +75,35 @@ See [pulse-first section direction](MUSIC_SECTION_DIRECTION.md) for offline
 analysis, authored overrides, entry rotation, sustained pulse/quiet renewal and
 the bounded fallback when a second voice cannot be buffered in time. No musical
 analysis runs during gameplay. Section checks use the existing 0.2-second cadence;
-gain envelopes still run in the existing frame mixer. An intentional same-file
-section overlap counts toward the unchanged four-channel/two-transfer ceilings.
+gain envelopes run at most 30 Hz and skip unchanged volume writes. Same-file
+section overlaps read the cache within the four-channel/64 MiB declared PCM
+admission limits. There is only one paced HTTP request at a time.
 
 | Provisional implementation parameter | Value |
 | --- | --- |
-| Listener sample / gain fade | 0.2 s / 1.2 s |
+| Listener sample / gain fade / maximum gain updates | 0.2 s / 1.2 s / 30 Hz |
 | Escalation / relaxation / minimum dwell | 0.8 s / 6 s / 4 s |
 | Recent confirmed combat/damage | 5 s; three received hits can request Danger |
 | Danger / urgent survival | HP ≤40% / ≤20%; effective clock ≤180 s / ≤60 s |
 | Buffered lead / stalled channel timeout | 0.3 s / 8 s |
 | Unbuffered channel timeout | 20 s; ready prefetched tracks remain available |
-| Score slots / pending or incomplete transfers | 4 / 2 |
+| Score slots / pending native opens / HTTP requests | 4 / 2 / 1 |
+| Media chunk / scheduled body rate | 16 KiB / up to 32 KiB/s |
+| Declared float-PCM admission estimate | 64 MiB |
 | Per file | ≤4 MiB encoded, ≤180 s, stereo 44.1 kHz Vorbis |
-| Catalog / compressed plan | ≤2 MiB / ≤60,000 bytes |
+| Catalog / compressed plan / plan piece | ≤2 MiB / ≤60,000 bytes / 1 KiB |
 | Catalog counts | ≤256 blocks, ≤1,792 assets, ≤64 profiles, ≤128 sets |
 | Upload / staged bundles | ≤30 MiB / ≤16 |
-| Disk cache | None |
+| Completed disk cache / partial media | 32 MiB and 64 files / one file ≤4 MiB |
 
-The native API cannot cancel a request before its callback. Off marks it stale,
-keeps its transfer slot counted, stops returned channels and schedules no further
-requests. Already started native transfers may finish in that interval. Four
-maximum-duration files can require substantial native decoded memory; the limits
-are bounds, not measured performance acceptance. Nominal 128 kbps is 16 kB/s per
-arrangement, not a download-rate cap. Validate real buffering, memory and gameplay
-latency before raising these limits.
+Off stops native playback, pending media work and that listener's music-only
+plan/state service. A native HTTP callback cannot be cancelled, but on the prepared
+host only one 16 KiB chunk can remain in flight; it is discarded when stale.
+The governor pauses downloads/new opens during resource pressure and releases the
+score during severe sustained client overload. See `MUSIC_PERFORMANCE.md` for
+thresholds, recovery, server budgets and the limits of application-level QoS.
+The PCM admission estimate is not a native-memory measurement. Cold assets must
+finish downloading and verify before playback; warm assets incur no HTTP traffic.
 
 `Now playing: <title>` is confirmed only when a logical block actually enters the
 audible mix. The server validates its assignment and emits private
@@ -131,11 +138,14 @@ file, outside the repository. Only public audio paths reach game state; no token
 or private upload URL does. See `tools/music/nginx.example.conf`. Restrict process
 permissions to its music root and the one game-data music directory.
 
-Serve immutable `/music/blocks/<id>/<version>/<file>.ogg` through HTTPS with byte
-ranges, correct Ogg content type and immutable cache headers. Keep redirects off,
+Keep immutable `/music/blocks/<id>/<version>/<file>.ogg` masters on the host. New
+clients fetch bounded static `/music/chunks/<sha256>/<index>.dat` objects with
+immutable cache headers. New imports create them automatically; existing media
+requires the offline `--prepare-delivery` command described in `MUSIC_PERFORMANCE.md`. Keep redirects off,
 use per-connection transfer limits, and protect gameplay traffic at the host/network
 level. The supplied proxy example limits to four media connections per IP and
-32 KiB/s per connection; shared-NAT clients can encounter slower buffering.
+32 KiB/s per connection with eight aggregate active responses; shared-NAT clients
+can encounter slower buffering. Application caps do not establish router-level QoS.
 Measure concurrent play before production approval.
 
 ## Author upload
@@ -205,7 +215,7 @@ start a new campaign and use the server console line:
 lod_music_reload; lod_music_enabled 1; lod_music_status
 ```
 
-Verify calm staging → same first-floor transport, all tension roles, stair
+Verify Chill staging → same block with active-role crossfade, all tension roles, stair
 ascent/descent/reversal with a concurrent tension change, warp/fall/backtracking,
 separated listeners, boss/Hector continuity, actual rescue-only fanfare, interlude
 policies, next staging continuity and one matching live/retained block-name entry.
@@ -231,6 +241,6 @@ amendments were reconciled in the same update. See
 original `validation/MUSIC_GDD_AMENDMENTS.json` payload remain historical evidence;
 they are no longer an outstanding synchronization blocker.
 
-Native API contracts consulted: [sound.PlayURL](https://wiki.facepunch.com/gmod/sound.PlayURL),
+Native API contracts consulted: [sound.PlayFile](https://wiki.facepunch.com/gmod/sound.PlayFile),
 [GetBufferedTime](https://wiki.facepunch.com/gmod/IGModAudioChannel:GetBufferedTime),
 [EnableLooping](https://wiki.facepunch.com/gmod/IGModAudioChannel:EnableLooping).

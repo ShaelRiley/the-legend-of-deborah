@@ -27,6 +27,7 @@ ROLES = ('T0', 'T1', 'T2', 'T3', 'BOSS', 'VICTORY', 'INTERLUDE')
 MAX_FILE = 4 * 1024 * 1024
 MAX_UPLOAD = 30 * 1024 * 1024
 MAX_DURATION = 180
+CHUNK_BYTES = 16 * 1024
 IDENTITY = re.compile(r'[a-z0-9][a-z0-9_-]{0,63}\Z')
 ORIGIN = re.compile(r'https://[a-zA-Z0-9][a-zA-Z0-9.-]*(?::[0-9]+)?\Z')
 
@@ -159,6 +160,34 @@ class CatalogStore:
         path = self.root / 'catalog.json'
         return json.loads(path.read_text()) if path.exists() else dict(schema=1, revision='empty', origin=self.origin, assets={}, blocks={}, profiles={}, sets={})
 
+    def chunks(self, asset, source):
+        """Publish fixed-size static objects offline; no dynamic media endpoint."""
+        data = source.read_bytes()
+        require(len(data) == asset['bytes'] and hashlib.sha256(data).hexdigest() == asset['hash'], 'delivery source mismatch')
+        target = self.root / 'music' / 'chunks' / asset['hash']
+        target.parent.mkdir(parents=True, exist_ok=True)
+        parts = [data[i:i+CHUNK_BYTES] for i in range(0, len(data), CHUNK_BYTES)]
+        if target.exists():
+            require(all((target / f'{i}.dat').read_bytes() == part for i, part in enumerate(parts)), 'immutable chunks differ')
+        else:
+            with tempfile.TemporaryDirectory(dir=target.parent) as tmp:
+                for i, part in enumerate(parts):
+                    (Path(tmp) / f'{i}.dat').write_bytes(part)
+                os.rename(tmp, target)
+        asset['delivery'] = 1
+
+    def prepare_delivery(self):
+        """Enrich existing catalog assets without altering audio or frozen plans."""
+        with self.lock():
+            c = self.catalog()
+            for asset in c['assets'].values():
+                source = (self.root / asset['path']).resolve()
+                require(source.is_relative_to(self.root / 'music' / 'blocks'), 'unsafe media path')
+                self.chunks(asset, source)
+            c['revision'] = uuid.uuid4().hex
+            atomic_json(self.root / 'catalog.json', c);self.mirror(c)
+            return c['revision']
+
     def stage(self, body):
         require(len(body) <= MAX_UPLOAD, 'upload too large')
         # Flat whitelisted ZIP only: no paths, links, encryption or expansion bombs.
@@ -196,14 +225,18 @@ class CatalogStore:
             collection = 'profiles' if manifest['kind'] == 'profile' else 'blocks'
             catalog[collection][bid] = block
             for key, asset in assets.items():
+                self.chunks(asset, folder / Path(asset['path']).name)
                 old = catalog['assets'].get(key)
                 if old:
                     # One-way legacy enrichment on a new immutable block version.
                     # Frozen plans contain their own copies; no live retargeting.
                     ignored = {'path', 'cues'} if 'cues' not in old else {'path'}
+                    if 'delivery' not in old:
+                        ignored.add('delivery')
                     require({k:v for k,v in old.items() if k not in ignored} == {k:v for k,v in asset.items() if k not in ignored}, 'existing hash metadata conflict')
                     if 'cues' not in old and 'cues' in asset:
                         old['cues'] = asset['cues']
+                    old['delivery'] = 1
                 else:
                     catalog['assets'][key] = asset
             require(len(catalog['blocks']) <= 256 and len(catalog['profiles']) <= 64 and len(catalog['assets']) <= 1792, 'catalog capacity reached')
@@ -280,7 +313,10 @@ def main():
     p.add_argument('--root', type=Path, required=True);p.add_argument('--origin',required=True)
     p.add_argument('--game-data',type=Path);p.add_argument('--port',type=int,default=8787)
     p.add_argument('--import-folder',type=Path);p.add_argument('--configure',type=Path)
+    p.add_argument('--prepare-delivery', action='store_true', help='Prepare bounded chunks for the existing catalog offline')
     args = p.parse_args();store=CatalogStore(args.root,args.origin,args.game_data)
+    if args.prepare_delivery:
+        print(store.prepare_delivery());return
     if args.configure:
         print(store.configure(json.loads(args.configure.read_text())));return
     if args.import_folder:

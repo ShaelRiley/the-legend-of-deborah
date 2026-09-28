@@ -1,0 +1,15 @@
+{
+  "kind": "headless operation counts, not native FPS",
+  "baseline_commit": "cdfcbb1ab8652109ba141c59b298fb03b68ae676",
+  "simulated_seconds": 1,
+  "rendered_frames": 120,
+  "steady_voices": 1,
+  "before": {
+    "selection_passes": 120,
+    "volume_writes": 120
+  },
+  "after": {
+    "selection_passes": 5,
+    "volume_writes": 0
+  }
+}

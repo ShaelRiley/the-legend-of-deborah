@@ -6,7 +6,8 @@ gate.LABEL = 'MUSIC_GATE'
 gate.SCOPE = 'Music policy/mixer/ingestion plus directly affected regressions; native audio pending'
 gate.LUA = [
     'test_music_policy.lua', 'test_music_server.lua', 'test_music_client.lua',
-    'test_music_transitions.lua', 'test_music_sections.lua', 'test_player_options.lua',
+    'test_music_transitions.lua', 'test_music_sections.lua', 'test_music_media.lua', 'test_music_resources.lua', 'test_player_options.lua',
+    'test_low_end_palette.lua', 'test_low_end_geometry.lua', 'test_low_end_options.lua',
     'test_adventure_presentation.lua', 'test_feedback_language.lua',
     'validate_spot05_die_logger.lua', 'validate_spot04_audio.lua',
     'test_warden.lua', 'test_warden_health.lua', 'test_hector_encounter.lua',

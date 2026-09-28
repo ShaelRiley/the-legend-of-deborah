@@ -1,0 +1,90 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "tabs": [
+    {
+      "tab": "05",
+      "id": "t.8p7v8fnmr641",
+      "revision": "ANLCKQmvX-ARcbbr5URtroKGNS9Fk5HkIQrIWaUGL4uxUqHAXMJTXW8xyB7bcBahans5m1NL0bzYUDQbolWk8KzWFzyg1s2wEUcVjd1lUw",
+      "paragraphs": [
+        {
+          "text": "The streamed Music System, Options and Always Run now have source implementations. Server master lod_music_enabled defaults to 0 (Off); only the server may permit playback. Player Music defaults On, music volume is saved, and either Off prevents new score requests, fallback, prefetch and musical stings while preserving gameplay effects/ambience. Media delivery now uses bounded, paced chunks and an on-demand cache. Off releases audio and stops new chunks and music-only state service; at most one already requested chunk may finish and is discarded. Always Run defaults Off and reverses only legal walking/running input; the physical sprint modifier for other actions, Soldier restrictions and movement caps are preserved.",
+          "startIndex": 17438,
+          "endIndex": 18163,
+          "tabId": "t.8p7v8fnmr641",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "The shared staging area, whether hosted by the Hermit or later Deborah, plays the resolved Chill/INTERLUDE role of the block assigned to physical Floor 1 of the dungeon offered by its portal. Use the same custom → server default → project default resolver and universal INTERLUDE override as the post-fanfare interlude; if no interlude source is available, use that block's resolved T0. This includes the first and every subsequent dungeon. Reserve the assignment before deployment and retain its identity; never substitute a random staging song. Waiting players remain in quiet sections regardless of others' combat. AUTO post-fanfare handoff targets this upcoming Chill arrangement when ready. Staging preserves that transport without restarting. On deployment retain the block and crossfade into the appropriate active-dungeon T0–T3 role; if the asset and required class are unchanged, preserve playback position. Music readiness never delays the portal or gameplay.",
+          "startIndex": 138753,
+          "endIndex": 139722,
+          "tabId": "t.8p7v8fnmr641",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "LOD-MUSIC-RESOURCE-001 — Gameplay-first music [AUTHOR REVISION]",
+          "startIndex": 147828,
+          "endIndex": 147891,
+          "tabId": "t.8p7v8fnmr641",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "Music is expendable presentation. Staging uses the offered block's Chill/INTERLUDE, matching the post-fanfare role. Disabled or zero-volume listeners receive no new media, prefetch or plan/state service. Explicit listener demand complements the existing server/player permission switches. Cache only requested assets within a fixed disk budget; reuse content by hash across floor changes, section renewals and sessions. Never fetch the whole library. Pace one small immutable media chunk at a time, with no catch-up burst after pauses. Pause downloads, decode admission and optional prefetch when frame time, server load, ping or packet loss deteriorates; preserve an appropriate cached passage where possible. Under sustained severe client overload, release score channels and resume only after recovery. Never delay simulation, snapshots, input, combat, generation or deployment to preserve music. Audio bytes remain outside the GMod gameplay net channel; compact metadata is cached, chunked and budgeted below gameplay work. A late or missing score is preferable to impaired play. Keep all pulse/quiet, one-shot, frozen-plan and private block-announcement rules. Runtime metrics are load indicators, not a claim of router-level QoS; the media host also requires aggregate limits or separation from the game uplink.",
+          "startIndex": 147892,
+          "endIndex": 149209,
+          "tabId": "t.8p7v8fnmr641",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ]
+    },
+    {
+      "tab": "06",
+      "id": "t.5ffvxbn7lbs",
+      "revision": "ANLCKQmvX-ARcbbr5URtroKGNS9Fk5HkIQrIWaUGL4uxUqHAXMJTXW8xyB7bcBahans5m1NL0bzYUDQbolWk8KzWFzyg1s2wEUcVjd1lUw",
+      "paragraphs": [
+        {
+          "text": "The streamed Music System, Options and Always Run now have source implementations. Server master lod_music_enabled defaults to 0 (Off); only the server may permit playback. Player Music defaults On, music volume is saved, and either Off prevents new score requests, fallback, prefetch and musical stings while preserving gameplay effects/ambience. Media delivery now uses bounded, paced chunks and an on-demand cache. Off releases audio and stops new chunks and music-only state service; at most one already requested chunk may finish and is discarded. Always Run defaults Off and reverses only legal walking/running input; the physical sprint modifier for other actions, Soldier restrictions and movement caps are preserved.",
+          "startIndex": 4814,
+          "endIndex": 5539,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ]
+    },
+    {
+      "tab": "07",
+      "id": "t.bff19dm33vvw",
+      "revision": "ANLCKQmvX-ARcbbr5URtroKGNS9Fk5HkIQrIWaUGL4uxUqHAXMJTXW8xyB7bcBahans5m1NL0bzYUDQbolWk8KzWFzyg1s2wEUcVjd1lUw",
+      "paragraphs": [
+        {
+          "text": "LOD-MUSIC-RESOURCE-IMPL — Bounded media and scheduling [IMPLEMENTATION-TUNABLE]",
+          "startIndex": 1799,
+          "endIndex": 1878,
+          "tabId": "t.bff19dm33vvw",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "Initial resource tuning: 16 KiB immutable HTTP chunks, one media request in flight, at most 32 KiB/s scheduled body bytes per client with no accumulated burst credit; the uncancellable remainder after Off is at most that one chunk on a correctly configured host. Full asset verification precedes local seekable playback. Cache limit 32 MiB and 64 completed assets, evict least-recently-used unpinned entries; one partial asset, at most 4 MiB, may exist. Reimport or use the offline delivery preparation command for legacy media; never fall back to an uncontrolled whole-file URL download. Keep four native score slots, two native open callbacks, and a conservative 64 MiB declared float-PCM admission budget; constrained capacity uses a faded handoff or same-voice cue renewal. Under ordinary resource pressure reduce to two voices and suspend new opens/downloads/prefetch. Periodic selection and section reconciliation run at 5 Hz, with bounded state/load-event wakeups; gain updates at most 30 Hz, avoiding unchanged native volume writes. No waveform analysis occurs in gameplay.",
+          "startIndex": 1879,
+          "endIndex": 2960,
+          "tabId": "t.bff19dm33vvw",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "Monitor smoothed real frame time and network health: defer optional work above 35 ms client frame time, ping above 180 ms or 80 ms above the observed baseline, or server packet loss at least 2 percent; retain a 5-second healthy recovery window. Sustained client frame time above 80 ms for 2 seconds releases score playback. Server music update budget is 0.5 ms per 0.2-second pass, checked between listeners because synchronous operations cannot be preempted, with round-robin listeners, 4 KiB global metadata allowance per pass and 1 KiB plan chunks per listener per pass. Defer metadata under server frame overruns or listener congestion; opt-out/permission signals remain tiny and prompt. Sample static-stair lookup only while deployed; cache immutable plan serialization/compression once per plan. Host example limits aggregate media concurrency and per-connection rate; shared uplinks still require native contention measurement/operator QoS. These defaults may be revised with evidence, never represented as measured Steam Deck FPS, latency or native memory acceptance.",
+          "startIndex": 2961,
+          "endIndex": 4036,
+          "tabId": "t.bff19dm33vvw",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ]
+    }
+  ]
+}

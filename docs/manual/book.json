@@ -100,10 +100,10 @@
       "id": "music",
       "title": "A score for every floor",
       "text": [
-        "When the server enables music, each physical maze floor has a Music Block. Its four tension arrangements follow your own combat, survival and remaining dungeon time. Staging uses the upcoming first floor’s calm arrangement, continuing through the portal. Stairs blend the two floors; backtracking returns to the same assigned music.",
+        "When the server enables music, each physical maze floor has a Music Block. Its four tension arrangements follow your own combat, survival and remaining dungeon time. Staging uses the upcoming first floor’s Chill arrangement, just like the post-fanfare interlude. Deployment crossfades into the appropriate exploration or combat arrangement of that same block. Stairs blend the two floors; backtracking returns to the same assigned music.",
         "For section-prepared music, combat keeps a sustained rhythmic pulse. Rising danger enters an energetic passage; easing danger keeps a gentler beat until you are truly calm. Calm and interludes stay quiet. The director renews suitable passages instead of repeatedly restarting intros or drifting into an unsuitable outro.",
         "Now playing names appear in your Die Logger when a new block begins, including during a stair crossing. A change of tension within that block does not add another entry. The boss arena uses dedicated boss music; the fanfare plays once after the actual rescue or cash recovery. Loading and intermission can use a calm interlude before the next floor’s song.",
-        "The score is optional. Missing or slow music never prevents playing, deploying, fighting, rescuing or restarting. Server operators can select Music Block Sets and shared boss, victory or interlude themes; changes apply to newly planned dungeons."
+        "The score is optional and yields to gameplay. Music Off or zero volume stops playback and further music downloads. Recently used tracks are cached; music loading pauses when the game or connection is struggling, and severe slowdowns can temporarily silence the score. Effects and dialogue remain. Missing or slow music never delays deploying, fighting, rescuing or restarting. Server operators can select Music Block Sets and shared boss, victory or interlude themes; changes apply to newly planned dungeons."
       ]
     },
     {

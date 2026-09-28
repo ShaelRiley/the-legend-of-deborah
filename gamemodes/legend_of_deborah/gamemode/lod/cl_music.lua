@@ -1,16 +1,15 @@
--- Bounded non-positional score mixer. Native URL requests cannot be cancelled
--- before their callback; tombstones keep those requests counted until return.
+-- Bounded non-positional score mixer; the media helper owns paced downloads.
 if LOD.MusicDirector and LOD.MusicDirector.Stop then LOD.MusicDirector:Stop() end
 LOD.MusicDirector=LOD.MusicDirector or {}
-local D,M=LOD.MusicDirector,LOD.Music
+local D,M,C=LOD.MusicDirector,LOD.Music,LOD.MusicMedia
 D.Plans={};D.Channels=D.Channels or {};D.Failures={};D.SeenVictory={};D.Generation=(D.Generation or 0)+1
-D.ServerOn=false;D.Serial=D.Serial or 0
+D.ServerOn=false;D.ServerBudget=true;D.Serial=D.Serial or 0
 D.CueHistory={}
 D.Volume=CreateClientConVar("lod_music_volume","0.55",true,false,"Streamed music volume",0,1)
 D.Preference=CreateClientConVar("lod_music","1",true,true,"Allow LoD music when the server enables it",0,1)
 function D:Enabled()
     local master=GetConVar("lod_music_enabled")
-    return self.ServerOn and master and master:GetBool() and self.Preference:GetBool()
+    return self.ServerOn and master and master:GetBool() and self.Preference:GetBool() and self.Volume:GetFloat()>0
 end
 function D:Stop()
     self.Generation=(self.Generation or 0)+1
@@ -22,29 +21,37 @@ function D:Stop()
     local accent=LOD.AdventurePresentation
     if accent and accent.soundMusical then accent:Reset() end
     -- Retain logical starts across Off/On; a toggle is not a new block start.
-    self.Wanted={}
+    self.Wanted={};self.MixState=nil;self.NextReconcile=0;self.PlanParts={}
+    C:Stop()
 end
 function D:Duck(seconds) self.DuckUntil=math.max(self.DuckUntil or 0,CurTime()+(seconds or 1)) end
 function D:Counts()
-    local slots,transfers,bytes=0,0,0
+    local slots,loads,bytes,decoded=0,0,0,0
     for _,r in pairs(self.Channels) do
         slots=slots+1;bytes=bytes+r.asset.bytes
-        if r.pending or IsValid(r.channel) and r.channel:GetBufferedTime()+.025<r.asset.duration then transfers=transfers+1 end
+        decoded=decoded+r.asset.duration*r.asset.rate*r.asset.channels*4
+        if r.pending then loads=loads+1 end
     end
-    return slots,transfers,bytes
+    return slots,C.flight and 1 or 0,bytes,decoded,loads
 end
 function D:Request(plan,assetId,key)
     key=key or assetId
     if not self:Enabled() or self.Failures[key] then return end
     if self.Channels[key] then return not self.Channels[key].stale and self.Channels[key] or nil end
     local asset=plan and plan.assets[assetId]
-    if not asset or not M.Asset(asset) or not M.Origin(plan.origin) then return end
-    local slots,transfers=self:Counts()
-    if slots>=M.Limits.channels or transfers>=M.Limits.transfers then return end
+    if not asset then return end -- Validated once on plan receipt.
+    local canWork=not self.WorkBlocked and self.ServerBudget~=false
+    local path,err=C:Get(asset,plan.origin,canWork)
+    if err then self.Failures[key]=err;return end
+    if not path or not canWork then return end
+    local slots,_,_,decoded,loads=self:Counts()
+    if slots>=M.Limits.channels or loads>=M.Limits.loads
+        or decoded+asset.duration*asset.rate*asset.channels*4>M.Limits.decodedBytes then return end
     local r={asset=asset,key=key,pending=true,generation=self.Generation,gain=0,plan=plan.id,requested=CurTime()}
     self.Channels[key]=r
-    sound.PlayURL(plan.origin.."/"..asset.path,"noplay noblock",function(channel,code,message)
+    sound.PlayFile(path,"noplay noblock",function(channel,code,message)
         r.pending=false
+        self.NextReconcile=0
         if r.stale or r.generation~=self.Generation or not self:Enabled() or self.Channels[key]~=r then
             if IsValid(channel) then channel:Stop() end
             if self.Channels[key]==r then self.Channels[key]=nil end
@@ -90,6 +97,7 @@ function D:Candidate(plan,block,role)
     for _,candidate in ipairs(b and b.roles[role] or {}) do
         if not self.Failures[candidate.asset] then return candidate end
     end
+    if role=="INTERLUDE" then return self:Candidate(plan,block,"T0") end
 end
 function D:Position(r,plan,role)
     if role=="VICTORY" then return 0 end
@@ -196,11 +204,12 @@ function D:Desired()
         else return {item(self.Plans[v.plan],v.block,"VICTORY")},{} end
     end
     if s.role=="POST" then
-        local nextPlan=self.Plans[s.next];local candidate=self:Candidate(nextPlan,s.nextBlock,"T0")
+        local nextPlan=self.Plans[s.next];local candidate=self:Candidate(nextPlan,s.nextBlock,"INTERLUDE")
         local ready=candidate and self.Channels[candidate.asset]
-        local nextReady=ready and IsValid(ready.channel) and ready.channel:GetBufferedTime()>=M.Tuning.buffer
-        if s.policy~="interlude" and nextReady then return {item(nextPlan,s.nextBlock,"T0")},{} end
-        if candidate and s.policy~="interlude" then preload[#preload+1]=item(nextPlan,s.nextBlock,"T0") end
+        local cached=candidate and C.cache[candidate.asset]
+        local nextReady=cached and cached.verified or ready and IsValid(ready.channel) and ready.channel:GetBufferedTime()>=M.Tuning.buffer
+        if s.policy~="interlude" and nextReady then return {item(nextPlan,s.nextBlock,"INTERLUDE")},{} end
+        if candidate and s.policy~="interlude" then preload[#preload+1]=item(nextPlan,s.nextBlock,"INTERLUDE") end
         local role=s.policy=="off" and "T0" or "INTERLUDE"
         if not self:Candidate(plan,s.targets[1] and s.targets[1].block,role) then role="T0" end
         for _,t in ipairs(s.targets or {}) do wanted[#wanted+1]=item(plan,t.block,role,t.weight) end
@@ -212,12 +221,7 @@ function D:Desired()
     end
     return wanted,preload
 end
-function D:Tick()
-    if not self:Enabled() then
-        if self.WasEnabled then self:Stop() end
-        self.WasEnabled=false;return
-    end
-    self.WasEnabled=true
+function D:Reconcile()
     if not self.Current or self.Current.stop then return end
     if self.CueRole~=self.Current.role then
         self.CueStrong=M.RoleLevel(self.Current.role)>M.RoleLevel(self.CueRole)
@@ -236,7 +240,9 @@ function D:Tick()
         end
     end
     local wanted,preload=self:Desired();local desired,hold,logical,wantedBlocks={},{},{},{}
-    -- Reconcile the desired asset set before opening URLs. Never stack mixers.
+    local pinned={};for _,r in pairs(self.Channels) do pinned[r.asset.hash]=true end
+    C:Begin(pinned)
+    -- Reconcile the desired asset set before opening decoders. Never stack mixers.
     for _,x in ipairs(wanted) do
         if x.block then wantedBlocks[x.block]=true end
         x.candidate=self:Candidate(x.plan,x.block,x.role)
@@ -255,7 +261,13 @@ function D:Tick()
     -- It cannot wait forever for a fifth slot while preserving all four old ones.
     local need=false
     for _,x in ipairs(wanted) do if x.candidate and not self.Channels[x.candidate.asset] then need=true end end
-    if need and self:Counts()>=M.Limits.channels then
+    local slots,_,_,decoded=self:Counts()
+    local memoryFull=false
+    for _,x in ipairs(wanted) do
+        local a=x.candidate and x.plan.assets[x.candidate.asset]
+        if a and not self.Channels[a.hash] and decoded+a.duration*a.rate*a.channels*4>M.Limits.decodedBytes then memoryFull=true end
+    end
+    if need and (slots>=M.Limits.channels or memoryFull) then
         local quietest
         for id,r in pairs(self.Channels) do
             if not hold[id] and not r.pending and (not quietest or r.gain<quietest.gain) then quietest=r end
@@ -284,22 +296,34 @@ function D:Tick()
             if r.started and not r.retiring and not desired[id] and r.role~="VICTORY" and previousTotal>0 then desired[id]=(1-total)*r.gain/previousTotal end
         end
     end
-    local dt=math.min(.1,FrameTime());local step=dt/M.Tuning.fade
+    self.MixState={desired=desired,hold=hold,logical=logical,wantedBlocks=wantedBlocks}
+    self.Wanted=wanted
+    -- Prefetch uses no extra decoder. Foreground assets always precede it.
+    if not self.WorkBlocked and self.ServerBudget~=false and (total>=.999 or self.Current.role=="POST") then
+        for _,x in ipairs(preload) do if x.candidate then C:Get(x.plan.assets[x.candidate.asset],x.plan.origin,true) end end
+    end
+    C:Pump(not self.WorkBlocked and self.ServerBudget~=false)
+end
+function D:Mix(dt)
+    local state=self.MixState;if not state then return end
+    local desired,hold,logical,wantedBlocks=state.desired,state.hold,state.logical,state.wantedBlocks
+    local step=dt/M.Tuning.fade
     local volume=self.Volume:GetFloat()*(CurTime()<(self.DuckUntil or 0) and .3 or 1)
     local audible,reserves={},{}
     for id,r in pairs(self.Channels) do
         if IsValid(r.channel) then
             local buffered=r.channel:GetBufferedTime()
-            local target=math.Clamp(desired[id] or 0,0,1)
+            local target=r.budgetDrop and 0 or math.Clamp(desired[id] or 0,0,1)
             r.gain=math.Approach(r.gain,target,step)
             local envelope=self:SectionEnvelope(r,dt,r.role)
-            r.channel:SetVolume(r.gain*volume*r.asset.gain*envelope)
+            local gain=r.gain*volume*r.asset.gain*envelope
+            if gain~=r.appliedGain then r.channel:SetVolume(gain);r.appliedGain=gain end
             if logical[id] then r.blocks=logical[id] end
             if r.gain>0 and volume>0 then for bid in pairs(r.blocks or {}) do audible[bid]=true end end
-            if not hold[id] and r.gain<=.001 then
+            if (not hold[id] or r.budgetDrop) and r.gain<=.001 then
                 self.Channels[id]=nil
                 local reserve=r.asset.hash..":next"
-                if r.cueTail and hold[r.asset.hash] and not self.Channels[reserve] then
+                if r.cueTail and not r.budgetDrop and hold[r.asset.hash] and not self.Channels[reserve] then
                     -- Alternate the same two buffered voices on later renewals.
                     -- Do not re-download a whole recording for every quiet loop.
                     r.channel:Pause();r.started=false;r.section=nil;r.entry=nil
@@ -320,27 +344,97 @@ function D:Tick()
         for bid in pairs(audible) do if not (self.Audible or {})[bid] then self:Announce(bid) end end
         self.Audible=audible
     end
-    -- Optional prefetch only after the foreground's requests have priority.
-    for _,x in ipairs(preload) do if x.candidate then self:Request(x.plan,x.candidate.asset) end end
-    self.Wanted=wanted
+end
+function D:Demand(resync)
+    local on=self.Preference:GetBool() and self.Volume:GetFloat()>0 and not self.Emergency
+    local work=on and not self.WorkBlocked
+    if self.DemandOn==on and self.DemandWork==work and not resync then return end
+    self.DemandOn=on;self.DemandWork=work
+    net.Start("LOD_MusicDemand");net.WriteBool(on);net.WriteBool(work);net.WriteBool(resync==true);net.SendToServer()
+end
+function D:Budget(now)
+    if now<(self.NextBudget or 0) then return end;self.NextBudget=now+.5
+    local p=LocalPlayer and LocalPlayer();local ping=IsValid(p) and p.Ping and p:Ping() or 0
+    self.BasePing=math.min(self.BasePing or ping,ping)
+    local timeout=GetTimeoutInfo and GetTimeoutInfo() or false
+    local bad=(self.FrameAverage or 0)>M.Tuning.frameLimit or ping>M.Tuning.pingLimit
+        or ping>self.BasePing+M.Tuning.pingRise or timeout
+    if bad then self.RecoverAt=now+M.Tuning.recovery end
+    self.WorkBlocked=now<(self.RecoverAt or 0)
+    if self.WorkBlocked then
+        local voices={}
+        for _,r in pairs(self.Channels) do voices[#voices+1]=r end
+        table.sort(voices,function(a,b) return a.gain>b.gain end)
+        for i=3,#voices do voices[i].budgetDrop=true end
+    end
+    if (self.FrameAverage or 0)>M.Tuning.severeFrame then
+        self.SevereSince=self.SevereSince or now
+        if now-self.SevereSince>=M.Tuning.severeHold and not self.Emergency then
+            self.Emergency=true;self:Stop()
+        end
+    else self.SevereSince=nil end
+    if self.Emergency and not self.WorkBlocked then self.Emergency=false;self.NextReconcile=0 end
+    self:Demand()
+end
+function D:Tick()
+    local now=SysTime()
+    local master=GetConVar("lod_music_enabled")
+    if self.Preference:GetBool() and self.Volume:GetFloat()>0 and master and master:GetBool() then
+        local frame=engine and engine.AbsoluteFrameTime and engine.AbsoluteFrameTime() or RealFrameTime()
+        self.FrameAverage=(self.FrameAverage or frame)*.95+frame*.05
+        self:Budget(now)
+    end
+    if not self:Enabled() then
+        if self.WasEnabled then self:Stop() end
+        self.WasEnabled=false;return
+    end
+    self.WasEnabled=true
+    if self.Emergency then return end
+    if now>=(self.NextReconcile or 0) or self.Reconciled~=self.Current
+        or self.Current and (self.ReconciledRole~=self.Current.role or self.ReconciledTargets~=self.Current.targets) then
+        self:Reconcile();self.NextReconcile=now+M.Tuning.tick
+        self.Reconciled=self.Current;self.ReconciledRole=self.Current and self.Current.role
+        self.ReconciledTargets=self.Current and self.Current.targets
+    end
+    if now>=(self.NextMix or 0) then
+        local dt=math.min(.1,now-(self.LastMix or now-M.Tuning.mixTick))
+        self.LastMix=now;self.NextMix=now+M.Tuning.mixTick;self:Mix(dt)
+    end
 end
 net.Receive("LOD_MusicPlan",function()
-    local n=net.ReadUInt(16);if n>M.Limits.packetBytes then return end
-    local bytes=net.ReadData(n);local raw=util.Decompress(bytes,M.Limits.catalogBytes)
+    if not D:Enabled() or D.Emergency then return end
+    local id=net.ReadString();local part=net.ReadUInt(16);local total=net.ReadUInt(16);local n=net.ReadUInt(16)
+    if #id>160 or total<1 or total>math.ceil(M.Limits.packetBytes/M.Limits.planChunk)
+        or part<1 or part>total or n<1 or n>M.Limits.planChunk then return end
+    D.PlanParts=D.PlanParts or {}
+    if part==1 then
+        if table.Count(D.PlanParts)>=2 then D.PlanParts={} end
+        D.PlanParts[id]={next=1,total=total,data={}}
+    end
+    local receiving=D.PlanParts[id]
+    if not receiving or receiving.next~=part or receiving.total~=total then return end
+    receiving.data[part]=net.ReadData(n);receiving.next=part+1
+    if part~=total then return end
+    local bytes=table.concat(receiving.data);D.PlanParts[id]=nil
+    if #bytes>M.Limits.packetBytes then return end
+    local raw=util.Decompress(bytes,M.Limits.catalogBytes)
     if not raw or #raw>M.Limits.catalogBytes then return end
     local p=util.JSONToTable(raw)
     if type(p)~="table" or type(p.id)~="string" or #p.id>160 or type(p.assets)~="table"
         or type(p.blocks)~="table" or type(p.floors)~="table" or #p.floors>8 then return end
     for id,a in pairs(p.assets) do if not M.Asset(a) or id~=a.hash then return end end
     if next(p.assets) and not M.Origin(p.origin) then return end
-    D.Plans[p.id]=p
+    if p.id~=id then return end
+    D.Plans[p.id]=p;D.NextReconcile=0
 end)
 net.Receive("LOD_MusicState",function(bits)
-    if bits>32768 then return end
+    if bits>32768 or not D:Enabled() or D.Emergency then return end
     local s=util.JSONToTable(net.ReadString())
     if type(s)~="table" or type(s.sequence)~="number" then return end
     if D.Current and s.sequence<=D.Current.sequence then return end
-    if D.Current and s.epoch~=D.Current.epoch then D:Stop();D.LastBlock=nil;D.Audible={};D.SeenVictory={};D.Failures={} end
+    if D.Current and s.epoch~=D.Current.epoch then
+        D:Stop();D.LastBlock=nil;D.Audible={};D.SeenVictory={};D.Failures={};C.failures={}
+    end
     D.Current=s
     if s.stop then D:Stop();return end
     if s.role=="POST" and s.canVictory and D:Enabled() and not D.SeenVictory[s.victory]
@@ -359,13 +453,20 @@ net.Receive("LOD_MusicState",function(bits)
     for id in pairs(D.Failures) do if not liveAssets[id:gsub(":next$",""):gsub(":tail$","")] then D.Failures[id]=nil end end
     for id in pairs(D.CueHistory) do if not liveAssets[id] then D.CueHistory[id]=nil end end
 end)
+net.Receive("LOD_MusicBudget",function() D.ServerBudget=net.ReadBool() end)
 net.Receive("LOD_MusicSwitch",function()
     local on=net.ReadBool()
     if on~=D.ServerOn then D.VictoryAfter=CurTime() end
     D.ServerOn=on;if not D:Enabled() then D:Stop() end
 end)
-cvars.AddChangeCallback("lod_music",function() D.VictoryAfter=CurTime();if not D:Enabled() then D:Stop() end end,"LOD_MusicPreference")
+local function preferenceChanged()
+    D.VictoryAfter=CurTime();if not D:Enabled() then D:Stop() end;D:Demand()
+end
+cvars.AddChangeCallback("lod_music",preferenceChanged,"LOD_MusicPreference")
+cvars.AddChangeCallback("lod_music_volume",preferenceChanged,"LOD_MusicVolume")
 cvars.AddChangeCallback("lod_music_enabled",function() if not D:Enabled() then D:Stop() end end,"LOD_MusicPermission")
+hook.Add("InitPostEntity","LOD_MusicDemand",function() D:Demand(true) end)
+if timer then timer.Simple(0,function() if IsValid(LocalPlayer()) then D:Demand(true) end end) end
 hook.Add("Think","LOD_MusicMix",function()
     local ok,err=pcall(D.Tick,D)
     if not ok then D.Error=tostring(err);D:Stop() end
@@ -376,12 +477,14 @@ hook.Add("PreCleanupMap","LOD_MusicCleanup",function()
     if not D.Current or D.Current.role~="POST" or not D.Current.victory then D:Stop() end
 end)
 concommand.Add("lod_music_client_status",function()
-    local slots,transfers,bytes=D:Counts();local channels={}
+    local slots,transfers,bytes,decoded,loads=D:Counts();local channels={}
     for id,r in pairs(D.Channels) do channels[#channels+1]={asset=id,role=r.role,block=r.logicalBlock,
         source=r.source,pending=r.pending,gain=r.gain,buffer=IsValid(r.channel) and r.channel:GetBufferedTime(),
         cueMode=r.section and r.section.mode,cueEnd=r.section and r.section.finish,
         cueSource=r.asset.cues and r.asset.cues.source or "legacy-no-cues",cueFallbacks=r.cueFallbacks,
         position=IsValid(r.channel) and r.channel:GetTime()} end
     print("[LOD:MUSIC] "..util.TableToJSON({enabled=D:Enabled(),plan=D.Current and D.Current.plan,
-        channels=channels,slots=slots,transfers=transfers,compressedCeilingBytes=bytes,failures=D.Failures,error=D.Error}))
+        channels=channels,slots=slots,transfers=transfers,nativeLoads=loads,declaredPCMBytes=decoded,
+        compressedCeilingBytes=bytes,paused=D.WorkBlocked,emergency=D.Emergency,serverBudget=D.ServerBudget,
+        receivedBytes=C.received or 0,mediaFailures=C.failures,failures=D.Failures,error=D.Error}))
 end)

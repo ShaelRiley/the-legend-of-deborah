@@ -319,6 +319,7 @@ AddCSLuaFile("lod/cl_campaign_timeout.lua")
 include("lod/sh_campaign_timeout.lua")
 include("lod/sv_campaign_timeout.lua")
 AddCSLuaFile("lod/cl_music.lua")
+AddCSLuaFile("lod/cl_music_media.lua")
 AddCSLuaFile("lod/cl_player_options.lua")
 include("lod/sv_music.lua")
 
