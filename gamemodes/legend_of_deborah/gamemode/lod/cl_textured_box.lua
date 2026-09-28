@@ -7,10 +7,15 @@ local TexturedBox = LOD.TexturedBox
 -- Reclaim owned native meshes on Lua refresh, map cleanup and shutdown.
 if TexturedBox.ClearMeshCache then TexturedBox:ClearMeshCache() end
 local meshCache, cacheCount, clock = {}, 0, 0
+local drawCache = setmetatable({}, {__mode = "k"})
 local MAX_MESHES = 256
 function TexturedBox:ClearMeshCache()
-    for _, entry in pairs(meshCache) do entry.mesh:Destroy() end
+    for _, entry in pairs(meshCache) do
+        entry.mesh:Destroy()
+        entry.mesh = nil -- invalidate borrowed handles before the next draw
+    end
     meshCache, cacheCount = {}, 0
+    drawCache = setmetatable({}, {__mode = "k"})
 end
 function TexturedBox:MeshCacheCount() return cacheCount end
 hook.Add("PostCleanupMap", "LOD_TexturedBoxMeshes", function() TexturedBox:ClearMeshCache() end)
@@ -150,20 +155,22 @@ local function getMesh(prefix, mins, maxs, tile, build, uv)
     end
     clock = clock + 1
     local entry = meshCache[key]
-    if entry then entry.used = clock; return entry.mesh end
+    if entry then entry.used = clock; return entry.mesh, entry end
     if cacheCount >= MAX_MESHES then
         local oldest, age
         for k, v in pairs(meshCache) do
             if not age or v.used < age then oldest, age = k, v.used end
         end
         meshCache[oldest].mesh:Destroy()
+        meshCache[oldest].mesh = nil
         meshCache[oldest] = nil
         cacheCount = cacheCount - 1
     end
     local obj = build(mins, maxs, tile, uv)
-    meshCache[key] = {mesh=obj, used=clock}
+    entry = {mesh=obj, used=clock}
+    meshCache[key] = entry
     cacheCount = cacheCount + 1
-    return obj
+    return obj, entry
 end
 function TexturedBox:GetMesh(mins, maxs, tile)
     return getMesh("box", mins, maxs, tile, buildBoxMesh)
@@ -178,7 +185,54 @@ function TexturedBox:GetSlabMesh(mins, maxs, tile, position, angles)
     return getMesh("slab", mins, maxs, tile, buildSlabMesh, uv)
 end
 
-local function drawMesh(obj, position, angles, material, color)
+-- Static entities repeatedly draw identical local geometry. Borrow the existing
+-- bounded cache entry instead of rebuilding its string key/UV inputs each frame.
+-- Scalar copies detect in-place native vector/angle updates. Weak keys do not
+-- retain removed entities; eviction clears entry.mesh so a borrow cannot outlive
+-- its native resource. Each hit still renews the canonical LRU clock.
+local function resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
+    if prefix == "slab" then return TexturedBox:GetSlabMesh(mins, maxs, tile, position, angles) end
+    return getMesh(prefix, mins, maxs, tile, build)
+end
+local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, build)
+    if not owner then
+        local obj = resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
+        return obj -- the second getMesh return is a cache entry, not a matrix
+    end
+    local row = drawCache[owner]
+    if not row then row = {}; drawCache[owner] = row end
+    local yaw = angles and angles.y or 0
+    local entry = row.entry
+    if not entry or not entry.mesh or row.prefix ~= prefix or row.tile ~= tile
+        or row.x0 ~= mins.x or row.y0 ~= mins.y or row.z0 ~= mins.z
+        or row.x1 ~= maxs.x or row.y1 ~= maxs.y or row.z1 ~= maxs.z
+        or (prefix == "slab" and (row.uvX ~= position.x or row.uvY ~= position.y or row.uvYaw ~= yaw)) then
+        local obj
+        obj, entry = resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
+        row.entry = entry
+        if not obj then return nil end
+        row.prefix, row.tile = prefix, tile
+        row.x0, row.y0, row.z0 = mins.x, mins.y, mins.z
+        row.x1, row.y1, row.z1 = maxs.x, maxs.y, maxs.z
+        row.uvX, row.uvY, row.uvYaw = position.x, position.y, yaw
+    else
+        clock = clock + 1
+        entry.used = clock
+    end
+    local pitch, roll = angles and angles.p or 0, angles and angles.r or 0
+    if not row.matrix or row.px ~= position.x or row.py ~= position.y or row.pz ~= position.z
+        or row.pitch ~= pitch or row.yaw ~= yaw or row.roll ~= roll then
+        local matrix = Matrix()
+        matrix:Translate(position)
+        if angles and angles ~= angle_zero then matrix:Rotate(angles) end
+        row.matrix = matrix
+        row.px, row.py, row.pz = position.x, position.y, position.z
+        row.pitch, row.yaw, row.roll = pitch, yaw, roll
+    end
+    return entry.mesh, row.matrix
+end
+
+local function drawMesh(obj, position, angles, material, color, matrix)
     if not obj or not position or not material then return end
 
     render.SetMaterial(material)
@@ -186,9 +240,11 @@ local function drawMesh(obj, position, angles, material, color)
     render.SetColorModulation(c.r / 255, c.g / 255, c.b / 255)
     render.SetBlend((c.a or 255) / 255)
 
-    local matrix = Matrix()
-    matrix:Translate(position)
-    if angles and angles ~= angle_zero then matrix:Rotate(angles) end
+    if not matrix then
+        matrix = Matrix()
+        matrix:Translate(position)
+        if angles and angles ~= angle_zero then matrix:Rotate(angles) end
+    end
 
     cam.PushModelMatrix(matrix)
     obj:Draw()
@@ -198,9 +254,11 @@ local function drawMesh(obj, position, angles, material, color)
     render.SetColorModulation(1, 1, 1)
 end
 
-function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile)
+function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile, owner)
     if not position or not mins or not maxs or not material then return end
-    drawMesh(self:GetMesh(mins, maxs, tile), position, angles, material, color)
+    local obj, matrix = cachedDraw(owner, "box", position, angles, mins, maxs, tile,
+        buildBoxMesh)
+    drawMesh(obj, position, angles, material, color, matrix)
 end
 
 -- Ordinary floor runs are visually one continuous horizontal deck. Rendering the
@@ -208,9 +266,10 @@ end
 -- angles and made a mathematically flat floor look like a staircase. Slab mode
 -- intentionally draws only the walkable top and ceiling underside. Real stair
 -- geometry and the gate continue to use the full six-face renderer.
-function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile)
+function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile, owner)
     if not position or not mins or not maxs or not material then return end
-    drawMesh(self:GetSlabMesh(mins, maxs, tile, position, angles), position, angles, material, color)
+    local obj, matrix = cachedDraw(owner, "slab", position, angles, mins, maxs, tile)
+    drawMesh(obj, position, angles, material, color, matrix)
 end
 
 -- Six-sided steel bars and rim give credible undersides. The original 32-unit
@@ -231,7 +290,9 @@ local function buildGrateMesh(mins,maxs,tile)
     mesh.End()
     return obj
 end
-function TexturedBox:DrawGrate(position,angles,mins,maxs)
+function TexturedBox:DrawGrate(position,angles,mins,maxs,owner)
     local material=Material("models/props_c17/FurnitureMetal001a")
-    drawMesh(getMesh("crate-grate",mins,maxs,128,buildGrateMesh),position,angles,material,Color(105,110,112))
+    local obj, matrix = cachedDraw(owner, "crate-grate", position, angles, mins, maxs, 128,
+        buildGrateMesh)
+    drawMesh(obj,position,angles,material,Color(105,110,112),matrix)
 end

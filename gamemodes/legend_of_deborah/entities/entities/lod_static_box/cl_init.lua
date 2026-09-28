@@ -65,7 +65,7 @@ end
 
 local function drawFloorSlab(ent, color, getMaterial)
     if ent:GetNW2Bool("LOD_CrateGrate",false) and LOD.TexturedBox and LOD.TexturedBox.DrawGrate then
-        LOD.TexturedBox:DrawGrate(ent:GetPos(),ent:GetAngles(),ent:GetBoxMins(),ent:GetBoxMaxs())
+        LOD.TexturedBox:DrawGrate(ent:GetPos(),ent:GetAngles(),ent:GetBoxMins(),ent:GetBoxMaxs(),ent)
         return
     end
     local material = getMaterial()
@@ -77,7 +77,8 @@ local function drawFloorSlab(ent, color, getMaterial)
             ent:GetBoxMaxs(),
             material,
             color,
-            textureTile
+            textureTile,
+            ent
         )
         return
     end
@@ -96,7 +97,8 @@ local function drawFullMetalBox(ent, color, getMaterial)
             ent:GetBoxMaxs(),
             material,
             color,
-            textureTile
+            textureTile,
+            ent
         )
         return
     end
@@ -106,7 +108,7 @@ local function drawFullMetalBox(ent, color, getMaterial)
 end
 
 -- These boxes are submitted manually, bypassing the native entity draw culler.
--- Reject only spheres wholly BEHIND the current perspective camera. A sphere
+-- Reject only spheres wholly outside the current perspective camera. A sphere
 -- about the entity origin encloses every corner at any rotation, including large
 -- offset underdecks. There is no distance/floor/occlusion guess and no draw cap.
 local function currentPerspective()
@@ -115,10 +117,24 @@ local function currentPerspective()
     if not view or view.ortho or view.offcenter
         or not view.fov or not (view.fov > 0 and view.fov < 180)
         or not view.znear or not (view.znear >= 0) then return nil end
-    return EyePos(), EyeVector()
+    -- GetViewSetup(true) describes this render pass, including nested cameras.
+    -- Its fov is ALREADY aspect-adjusted; applying Source's 4:3 correction again
+    -- would hide visible geometry on some displays. Incomplete setups retain the
+    -- previous conservative rear-plane check instead of guessing screen size.
+    local angles = view.angles
+    if not angles or not angles.Forward or not angles.Right or not angles.Up
+        or not view.origin or not view.aspect or not (view.aspect > 0 and view.aspect < math.huge)
+        or not angles.p or not angles.y or not angles.r
+        or angles.p ~= angles.p or angles.y ~= angles.y or angles.r ~= angles.r then
+        return EyePos(), EyeVector()
+    end
+    local tanX = math.tan(math.rad(view.fov) * 0.5)
+    local tanY = tanX / view.aspect
+    return view.origin, angles:Forward(), angles:Right(), angles:Up(),
+        tanX, tanY, math.sqrt(1 + tanX*tanX), math.sqrt(1 + tanY*tanY)
 end
 
-local function inFrontOfCamera(ent, eye, forward)
+local function inCamera(ent, eye, forward, right, up, tanX, tanY, normX, normY)
     if not eye or not forward then return true end
     local mins, maxs = ent:GetBoxMins(), ent:GetBoxMaxs()
     local cached = ent._LODVisualSphere
@@ -133,15 +149,25 @@ local function inFrontOfCamera(ent, eye, forward)
         ent._LODVisualSphere = cached
     end
     local pos = ent:GetPos()
-    local depth = (pos.x-eye.x)*forward.x + (pos.y-eye.y)*forward.y + (pos.z-eye.z)*forward.z
+    local dx, dy, dz = pos.x-eye.x, pos.y-eye.y, pos.z-eye.z
+    local depth = dx*forward.x + dy*forward.y + dz*forward.z
     -- A malformed/unavailable view fails open rather than hiding the floor.
-    return not (depth < -cached.radius)
+    if depth < -cached.radius then return false end
+    if right and up then
+        local side = dx*right.x + dy*right.y + dz*right.z
+        local height = dx*up.x + dy*up.y + dz*up.z
+        -- Unnormalized inward side-plane tests. Tangency remains visible;
+        -- origin-centred radius includes rotation and asymmetric underdecks.
+        if math.abs(side) - depth*tanX > cached.radius*normX
+            or math.abs(height) - depth*tanY > cached.radius*normY then return false end
+    end
+    return true
 end
 
 hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
     if drawingDepth or drawingSkybox or drawing3DSkybox then return end
 
-    local eye, forward = currentPerspective()
+    local eye, forward, right, up, tanX, tanY, normX, normY = currentPerspective()
     -- Resolve the mounted concrete/fallback once per pass, only if needed.
     -- Pass-local ownership is safe for nested RenderView and retries next frame.
     local material
@@ -151,7 +177,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
     end
     for ent in pairs(visualBoxes) do
         if IsValid(ent) and networkReady(ent) and not ent:GetNW2Bool("LOD_GeometryHidden", false)
-            and inFrontOfCamera(ent, eye, forward) then
+            and inCamera(ent, eye, forward, right, up, tanX, tanY, normX, normY) then
             local kind = ent:GetBoxKind()
 
             -- Ordinary floor runs render only their top and underside. Their

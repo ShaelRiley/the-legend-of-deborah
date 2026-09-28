@@ -1,4 +1,23 @@
-# Current checkpoint — immediate staging campaign-failure repair
+# Current checkpoint — low-end renderer follow-up
+
+The repeated Steam Deck slowdown report promotes a renderer follow-up from main
+`c55a4a4aea77994e8c80725b621e0ef86f856e81`. Extend the existing bounded TexturedBox
+cache with weak per-entity mesh/transform reuse, and extend generated geometry's
+rear-plane rejection to known perspective side/top/bottom planes. Preserve live
+dimensions/transforms, world-planar UVs, the 256-mesh ceiling, map/full-update
+recovery, hidden false floors, materials, all game rules and current startup fixes.
+
+Live GDD 00 -> 01 -> 07 LOD-IMPL-004 governs; no new tuning or design amendment.
+`validation/LOW_END_RENDER_20260928.md` freezes scope, paired operation counts and
+the finite selected integration gate: 32/32 passed plus 808 Lua syntax checks.
+Native FPS/fan behavior remains unmeasured.
+Next: install verified main, play ordinary gm_flatgrass through a full camera turn,
+stairs and combat, and report smoothness/any missing geometry. Preserve outstanding
+native gates and local acceptance -> Workshop parity -> matching VPS. Source only.
+
+---
+
+# Prior checkpoint — immediate staging campaign-failure repair
 
 The author reports two immediate Campaign Failed resets while still in staging.
 This repair extends main `b5a829355291fcae11e963d8891dd9441719b0e7`.
