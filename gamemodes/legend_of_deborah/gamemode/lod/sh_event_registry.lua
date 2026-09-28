@@ -150,6 +150,19 @@ function R:Select(seed, dungeonLevel, context)
     local selected,chosen,families,contracts,roles={},{},{},{},{}
     local diagnostic={version=self.EcologyVersion,theme=context.theme,historyEnabled=useHistory,
         historyLevels=useHistory and #(before.recent or {}) or 0,eligible=#ids,eligibleIds=table.Copy(ids),excluded={},count=count,decisions={}}
+    -- Big Skeleton: an isolated priority draw, plus successful-build drought
+    -- protection. This occupies an existing common slot, never adds an event.
+    local skeleton = self.Definitions.skeleton_blockade
+    local misses = 0
+    if useHistory then
+        for i=#(before.recent or {}),1,-1 do
+            if before.recent[i].events.skeleton_blockade then break end
+            misses=misses+1
+        end
+    end
+    local priority = context.skeletonPriority ~= false and skeleton and contains(common, skeleton.id)
+        and (misses >= 2 or LOD.RNG.New(LOD.Seeds.Derive(seed,"skeleton:priority:v1")):Chance(.65))
+    diagnostic.skeletonPriority, diagnostic.skeletonAbsences = priority == true, misses
     for _,id in ipairs(sorted(self.Definitions)) do
         local def=self.Definitions[id]
         if def.production~=true then diagnostic.excluded[#diagnostic.excluded+1]={id=id,reason="not_production"}
@@ -163,7 +176,8 @@ function R:Select(seed, dungeonLevel, context)
         local grouped,excluded={},{}
         for _,id in ipairs(pool) do
             local def=self.Definitions[id]
-            if not chosen[id] and self:Compatible(def,selected) then
+            if not chosen[id] and self:Compatible(def,selected)
+                and (slot~=1 or not priority or id==skeleton.id) then
                 local factors={base=def.weight,theme=def.themeAffinities and def.themeAffinities[context.theme] or 1,
                     novelty=1,frequency=1,neglect=1,recent=1,previousContract=1,
                     contractDiversity=contracts[def.contract] and .65 or 1,relationship=1}

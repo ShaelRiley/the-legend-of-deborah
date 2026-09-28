@@ -76,6 +76,7 @@ function MazeBuilder:_Register(ent)
 end
 
 function MazeBuilder:Cleanup()
+    if LOD.FallenHeroes then LOD.FallenHeroes:Cleanup() end
     if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Reset() end
     self.FloorCells = {}
     if LOD.PlaceholderLoot and LOD.PlaceholderLoot.Clear then
@@ -369,4 +370,3 @@ function MazeBuilder:Build(graph)
         goalPos = self:CellCenter(graph.Goal) + Vector(0, 0, 12)
     }
 end
-

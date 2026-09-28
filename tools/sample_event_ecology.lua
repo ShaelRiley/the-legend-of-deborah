@@ -13,7 +13,7 @@ local function bump(t,k) t[k]=(t[k] or 0)+1 end
 local function stats()
  return {selections=0,counts={},appearances={},families={},contracts={},themeAppearances={},themes={},
   rareSelections=0,rareAdjacentFloors=0,adjacentRepeatedIdentities=0,adjacentRepeatedFamilies=0,
-  maxIdentityStreak=0,maxFamilyStreak=0,maxSameRareStreak=0,uniqueTotal=0,commonUniqueTotal=0,
+  ordinaryAdjacentRepeats=0,maxIdentityStreak=0,maxFamilyStreak=0,maxSameRareStreak=0,uniqueTotal=0,commonUniqueTotal=0,
   minUnique=100000,maxUnique=0,minCommonUnique=100000,familyCoverageTotal=0,relationSelections=0,firstSeenTotals={}}
 end
 local all,common,families={},{},{}
@@ -62,6 +62,7 @@ for campaign=1,CAMPAIGNS do
     bump(s.themeAppearances[theme],id)
     if diag.decisions[ordinal].relation then s.relationSelections=s.relationSelections+1 end
     if previous[name][id] then s.adjacentRepeatedIdentities=s.adjacentRepeatedIdentities+1 end
+    if previous[name][id] and id~='skeleton_blockade' then s.ordinaryAdjacentRepeats=s.ordinaryAdjacentRepeats+1 end
     streaks[name].ids[id]=previous[name][id] and (streaks[name].ids[id] or 0)+1 or 1
     s.maxIdentityStreak=math.max(s.maxIdentityStreak,streaks[name].ids[id])
     if def.rare then
@@ -107,7 +108,10 @@ local summary={catalog=size(all),common=size(common),families=size(families),cam
  repeatReduction=1-modes.history.adjacentRepeatedIdentities/modes.control.adjacentRepeatedIdentities}
 assert(modes.history.identityCoverage==size(all),'Production identity invisible across finite campaign sample')
 assert(modes.history.meanUnique>modes.control.meanUnique,'History did not improve campaign identity coverage')
-assert(summary.repeatReduction>.5,'History did not substantially reduce adjacent identity overlap')
+-- Big Skeleton explicitly promotes frequent repeats. Keep the original whole
+-- catalog metric visible; all other identities retain the anti-repeat gate.
+summary.ordinaryRepeatReduction=1-modes.history.ordinaryAdjacentRepeats/math.max(1,modes.control.ordinaryAdjacentRepeats)
+assert(summary.ordinaryRepeatReduction>.5,'History did not substantially reduce ordinary adjacent identity overlap')
 assert(modes.history.rareSelections==modes.control.rareSelections,'History changed fourth-slot frequency')
 print('EVENT_ECOLOGY_SAMPLE_JSON: '..WalletJSONEncode(summary))
 print(string.format('EVENT_ECOLOGY_SAMPLE_PASS: %dx%d campaigns; unique %.3f vs %.3f control; adjacent identity repeats %d vs %d; reduction %.2f%%; max streak %d vs %d; rare slots %d identical',

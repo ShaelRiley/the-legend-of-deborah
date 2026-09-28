@@ -298,6 +298,7 @@ function Forms:ApplyContentPush(attacker, creditCaster, target, content, directi
 end
 
 function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, context, direction)
+    if context.sourceValid and not context.sourceValid() then return false end
     if not IsValid(target) or target.LODDead or target:Health() <= 0 then return false end
     if (context.damageDiceUsed or 0) >= (RPG.Constants.MaxDamageDicePerAttackEvent or 128) then return false end
     local contract = self:_RollDamage(attacker, form, context)
@@ -639,6 +640,9 @@ end
 -- Forms retain their existing projectile lifecycle and presentation contracts.
 function Forms:ProjectileContextValid(projectile)
     local context=projectile.LODCastContext
+    if context and context.fallenHero then
+        return context.sourceValid and context.sourceValid() == true
+    end
     if not context or not context.moveBinding then return true end
     return (not projectile.LODExpiresAt or CurTime()<projectile.LODExpiresAt)
         and LOD.Equipment:MoveAttackValid(projectile.LODCaster,context)
@@ -803,6 +807,7 @@ function Forms:ResolveSummonAttack(summon, target)
         or not validTarget(summon, target) then return false end
     local caster = summon.LODCaster
     if not IsValid(caster) then return false end
+    if caster.LODFallenHero and not LOD.FallenHeroes:Live(caster) then return false end
     local content = summon.LODContentId and RPG.MagicContents[summon.LODContentId] or nil
     local form = {id = "summon", displayName = "Summon", damageDice = 2, damageSides = 6, damageBonus = 4}
     local context = {

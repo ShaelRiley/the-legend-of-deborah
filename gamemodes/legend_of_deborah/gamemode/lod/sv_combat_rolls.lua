@@ -396,7 +396,7 @@ function Rolls:ApplyEquipmentContact(attacker,target,move,context)
 end
 
 function Rolls:RollPlayerWeapon(ply, weaponClass, attackEvent)
-    if LOD.Equipment and LOD.Equipment.RefreshDerived and LOD.RunManager then
+    if ply:IsPlayer() and LOD.Equipment and LOD.Equipment.RefreshDerived and LOD.RunManager then
         LOD.Equipment:RefreshDerived(ply,LOD.RunManager:GetPlayerState(ply))
     end
     attackEvent=attackEvent or {}

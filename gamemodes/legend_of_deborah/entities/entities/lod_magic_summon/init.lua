@@ -271,6 +271,8 @@ end
 
 function ENT:_BehaviourTick()
     if not IsValid(self.LODCaster) then self:Remove() return end
+    if self.LODCaster.LODFallenHero and (not LOD.FallenHeroes:Owned(self.LODCaster)
+        or self.LODCaster.LODDead or self.LODCaster:Health()<=0) then self:Remove() return end
     local state, graph = runState()
     if CurTime() >= (self.LODExpiresAt or 0) or not state or not graph or state.Failed or state.LevelCleared then self:Remove() return end
     if state.SimulationFrozen then

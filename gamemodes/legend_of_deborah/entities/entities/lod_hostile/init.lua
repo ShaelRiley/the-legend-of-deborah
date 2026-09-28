@@ -872,7 +872,8 @@ end
 function ENT:_BeginDeathPresentation()
     if self.LODDeathPresentationStarted then return end
     if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
-    if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+    if self.LODFallenHero and not LOD.FallenHeroes:ResolveDeath(self) then return end
+    if self.LODSkeletonHero and not self.LODFallenHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.ResolveDeath(self)) then return end
     if self.LODHector and (not LOD.Hector or not LOD.Hector:ResolveDeath(self)) then return end
     self.LODDeathPresentationStarted = true
@@ -920,7 +921,8 @@ function ENT:OnKilled(dmginfo)
     if (self.LODHectorGordon or self.LODArchetypeId=="warden" and not self.LODWardenClone
         and LOD.RunManager.State.Level==20) and (not LOD.Hector or not LOD.Hector:AcceptGordonDeath(self)) then return end
     if self.LODHector and (not LOD.Hector or not LOD.Hector:AcceptDeath(self)) then return end
-    if self.LODSkeletonHero and (not LOD.EventSkeletonBlockade
+    if self.LODFallenHero and not LOD.FallenHeroes:AcceptDeath(self,dmginfo) then return end
+    if self.LODSkeletonHero and not self.LODFallenHero and (not LOD.EventSkeletonBlockade
         or not LOD.EventSkeletonBlockade.AcceptDeath(self)) then return end
     -- Claim death before any extension hook can re-enter it. Keep attribution
     -- synchronous, but do not mutate native collision/model state in this stack.
@@ -945,7 +947,7 @@ end
 
 function ENT:OnRemove()
     if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Retire(self) end
-    if self.LODSkeletonHero and LOD.EventSkeletonBlockade then LOD.EventSkeletonBlockade.Removed(self) end
+    if self.LODSkeletonHero and not self.LODFallenHero and LOD.EventSkeletonBlockade then LOD.EventSkeletonBlockade.Removed(self) end
     self:SetNW2Bool("LOD_SoldierTelegraph", false)
     self:SetNW2Entity("LOD_SoldierTelegraphTarget", NULL)
     if IsValid(self.LODWeaponVisual) then self.LODWeaponVisual:Remove() end

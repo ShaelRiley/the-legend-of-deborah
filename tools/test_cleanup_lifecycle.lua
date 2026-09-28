@@ -10,6 +10,12 @@ end
 local function drain() for i=#env.timers,1,-1 do env.timers[i]=nil end end
 local basePut=R.PutInRestrictedSpectator
 local put=0
+local captures=0
+LOD.FallenHeroes={Capture=function(_,actor,ps)
+ captures=captures+1
+ check(ps==R:GetPlayerState(actor) and actor.LODHandledRunDeath,'capture uses accepted death and exact owner')
+ check(R:IsActivePlayer(actor) or R:IsSoldierControl(actor),'capture precedes role retirement')
+end}
 R.PutInRestrictedSpectator=function(...) put=put+1;return basePut(...) end
 local mutations={
  unchanged=function() end,
@@ -30,7 +36,10 @@ for _,role in ipairs({'hero','soldier'}) do
   else f.reset();p=f.actor('dead-hero');f.actor('survivor') end
   drain();p.ps.deploymentComplete=true;p:SetNW2Bool('LOD_Staged',false);p:SetNW2Bool('LOD_Deployed',true)
   p.hp=0;p.LODHandledRunDeath=nil;put=0
+  local beforeCaptures=captures
   R:HandleDeath(p)
+  R:HandleDeath(p)
+  check(captures==beforeCaptures+1,role..' death captures exactly one skeleton')
   -- Only execute the actual deferred spectator callback. Other native callbacks
   -- may intentionally process the current party and are tested by SPOT-15.
   local callback=env.timers[1]
@@ -40,6 +49,7 @@ for _,role in ipairs({'hero','soldier'}) do
  end
 end
 R.PutInRestrictedSpectator=basePut
+LOD.FallenHeroes=nil
 -- Singleton registration is reloaded only to capture its real KeyPress callback
 -- in this existing hook boundary; the effect math and progression are production.
 dofile(root..'sv_rpg_gate_e_singletons.lua')

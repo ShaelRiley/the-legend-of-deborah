@@ -283,6 +283,7 @@ function E:Unequip(state,slot)
 end
 
 function E:CaptureAttack(actor,weapon)
+    if IsValid(actor) and actor.LODFallenHero then return LOD.FallenHeroes:EquipmentSnapshot(actor,weapon) end
     local ps=hero(actor)
     if not ps then return nil end
     if weapon then self:EnsureWeapon(actor,weapon) end
@@ -339,10 +340,14 @@ function E:PostDamage(target,info,taken)
     local contract=context.damageContract
     local snapshot=contract and (contract.equipmentSnapshot or contract.originContract and contract.originContract.equipmentSnapshot)
     local attacker=info:GetAttacker()
+    local owner=hero(attacker)
+    local fallen=IsValid(attacker) and attacker.LODFallenHero
+    local sourceValid=snapshot and fallen and LOD.FallenHeroes:Live(attacker) and fallen.identity==snapshot.ownerIdentity
+        or owner and snapshot and owner.identity==snapshot.ownerIdentity and E:CanAct(attacker)
     if not snapshot or not snapshot.weapon or not (context.physical or context.wand)
         or context.statusDamage or context.magic and not context.wand or context.passiveDamage
         or context.throwable or context.auraBurst or context.reactiveDamage or context.dodged or context.blocked
-        or not hero(attacker) or hero(attacker).identity~=snapshot.ownerIdentity or not E:CanAct(attacker) or Run.State.RunId~=snapshot.runId
+        or not sourceValid or Run.State.RunId~=snapshot.runId
         or Run.State.LevelSeed~=snapshot.levelSeed or attacker==target then return end
     if not LOD.FactionManager or not (LOD.FactionManager.CanDamage or LOD.FactionManager.IsOpponent)(LOD.FactionManager,attacker,target) then return end
     local event=contract.attackEvent or contract

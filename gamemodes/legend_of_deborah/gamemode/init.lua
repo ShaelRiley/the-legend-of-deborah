@@ -342,6 +342,7 @@ include("lod/sv_event_false_floor.lua")
 include("lod/sv_event_warp_hole.lua")
 -- Bribe is author-disabled; historical modules live only in tools/fixtures/retired_bribe.
 include("lod/sv_skeleton_hero.lua")
+include("lod/sv_fallen_heroes.lua")
 include("lod/sv_event_skeleton_blockade.lua")
 include("lod/sv_event_equipment_quiz.lua")
 include("lod/sv_event_transactions.lua")

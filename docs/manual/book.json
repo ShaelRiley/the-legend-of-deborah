@@ -1707,12 +1707,38 @@
         ]
       ],
       "text": [
+        "Skeleton Blockades are frequent encounters from Dungeon Level 1. After two completed dungeons with events but no Skeleton, the next event selection includes one. The other event slots and rare-event rules still apply.",
         "A Skeleton of a Hero guards a required passage. Its name begins “Skeleton of” and comes from the same name generator as your Hero. Its abilities, identity perks, class growth, health dice and eligible automatic feats use the ordinary Hero framework, with AI choices restricted to abilities its controller can use.",
         "The Fighter closes in for melee, the Rogue fires SMG bursts, and the Wizard warns before striking a ground arc. Wizard arcs spend 12 base Magic plus their Content cost, modified by ordinary offensive Magic rules. Wizards cycle their generated Contents and must regenerate when their Magic runs low. Shared defenses, status effects and class rules still apply.",
         "The Skeleton is always on the approachable side of its barrier. Fight it before crossing. A legitimate defeat opens the tall barrier for every Hero, including later arrivals; your normal keycard, boss and rescue sequence remains intact. Regenerating the dungeon creates a fresh encounter.",
         "Combat XP follows ordinary killing-blow and damage-contribution rules, and normal individualized enemy drops apply. There is no extra cash, DFT or guaranteed equipment award. Removing the enemy is not a combat victory.",
         "Administrator preview: lod_event_preview_generate skeleton_blockade. Redeploy and follow the printed location. The preview is unranked."
       ]
+    },
+    {
+      "id": "fallen-heroes",
+      "title": "Your bones remember",
+      "rows": [
+        [
+          "When a player dies",
+          "Their build returns as an enemy AI skeleton."
+        ],
+        [
+          "Before it attacks",
+          "Three seconds of rattling bones and a violet warning."
+        ],
+        [
+          "After respawning",
+          "Your skeleton is still out there. Protect each other."
+        ]
+      ],
+      "text": [
+        "A death in the active dungeon leaves a named skeleton near the fallen player. This happens even when dungeon events are switched off. It copies the identity, class, level, abilities, feats, equipment, weapons and remaining resources of the body that died, and rises at full copied maximum health. A fallen player-controlled Soldier copies that Soldier incarnation.",
+        "The skeleton uses its copied weapons and spells against the Heroes. Firearms spend copied ammunition; Wands spend copied charges; spells spend and regenerate Magic. A copied Soldier retains the Soldier rifle’s unlimited ammunition. Wall and Summon spells belong to the enemy side too. Red attack warnings give you time to react.",
+        "These are independent copies. Changing gear, respawning or disconnecting cannot weaken or erase them. Their duplicated gear cannot be looted, and defeating them awards no experience or other kill rewards. Ordinary event Skeletons still have their normal combat rewards.",
+        "Defeat your own skeleton to lay your bones to rest, or avenge a teammate. Staging deaths and deaths after dungeon completion create no skeleton. All remaining copies clear when the dungeon ends. If a death site is blocked, the skeleton waits for a safe nearby place to rise."
+      ],
+      "quote": "Keep your friends alive. You already know how dangerous their builds are."
     },
     {
       "id": "equipment-quiz",

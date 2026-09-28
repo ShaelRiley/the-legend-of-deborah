@@ -232,6 +232,16 @@ function ENT:Draw()
         LOD.MonsterIdentity:DrawBody(self)
         LOD.MonsterIdentity:DrawAura(self,size)
     else self:DrawModel() end
+    -- Visible-body-only tells; no scan, halo, emitter, light or extra entity.
+    if self:GetNW2Bool("LOD_SkeletonHero",false) then
+        local rise=self:GetNW2Float("LOD_SkeletonRiseAt",0)-CurTime()
+        local attack=self:GetNW2Float("LOD_SkeletonAttackAt",0)-CurTime()
+        if rise>0 or attack>0 then
+            local color=rise>0 and Color(190,100,255,220) or Color(255,95,65,230)
+            local radius=rise>0 and 20+16*math.Clamp(rise/3,0,1) or 14+12*math.Clamp(attack/.65,0,1)
+            render.DrawWireframeSphere(self:GetPos()+Vector(0,0,32),radius,12,4,color,false)
+        end
+    end
     if LOD.EnemyRosterVisual then LOD.EnemyRosterVisual:Draw(self,size) end
     if LOD.WardenPresentation then LOD.WardenPresentation:Draw(self,size) end
     if LOD.NeilBrutePresentation then LOD.NeilBrutePresentation:Draw(self,size) end

@@ -166,6 +166,9 @@ function F:_CastWall(ply,form,content,context)
 end
 function F:StepWall(ent)
     local caster,run=ent.LODCaster,LOD.RunManager.State
+    if ent.LODCastContext and ent.LODCastContext.sourceValid and not ent.LODCastContext.sourceValid() then
+        ent:Remove();return
+    end
     if CurTime()>=ent:GetExpiresAt() or not IsValid(caster) or not caster:Alive()
         or caster:GetNW2Bool('LOD_Staged',false) or run~=ent.LODRunState
         or run.LevelSeed~=ent.LODLevelSeed or run.Failed or run.LevelCleared or run.SimulationFrozen then

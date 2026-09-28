@@ -1,0 +1,35 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "status": "pending: Google rejected revision-guarded insertText with HTTP 400 FAILED_PRECONDITION; fresh readback revision unchanged",
+  "readRevision": "ANLCKQmwcEMnWdc7wDcTHXvJO5q3NjoWh8UJmyrHyfE2_SbSMxecCIMXnMoZgzv4XzyzxWNbrFKD-GxUETwgD8y2G7IMPTM7TnYqQcO5uA",
+  "note": "This is the final proposed text, refined after the rejected write. Refresh trusted read and revision before applying. This JSON is not evidence that the live design document changed.",
+  "requests": [
+    {
+      "insertText": {
+        "location": {
+          "index": 1,
+          "tabId": "t.8p7v8fnmr641"
+        },
+        "text": "LOD-BIG-SKELETON-001 — Author-directed Big Skeleton update\nSkeleton Blockade remains independent of retired Bribe. Preserve exact 1d4 event counts, unique identities and rare fourth slot. Give Skeleton Blockade a separate 65% priority draw into the first common slot; force that slot after two completed event-populated dungeons without a skeleton. Ordinary selection can still choose it when priority misses. Failed builds, previews and regeneration do not advance absence history.\nEvery genuine deployed player death leaves a hostile skeleton carrying a detached copy of that body's identity, class, level, abilities, feats, equipment, weapon and Magic inventory. It rises at a safe reachable position near the death, at full copied maximum HP with copied remaining resources, under enemy AI. Player-controlled Soldiers copy their disposable Soldier incarnation and its unlimited AR2, never the dormant Hero profile. Administrative retirement, staging and victory deaths do not create copies. This creation does not depend on dungeon events or their enable switch. Copies cannot grant or transfer duplicated equipment, money, DFTs, lives or progression items. The AI uses the copied build through shared combat and movement authorities; player-input-only actions do not become passive bonuses.\n\n"
+      }
+    },
+    {
+      "insertText": {
+        "location": {
+          "index": 1,
+          "tabId": "t.5ffvxbn7lbs"
+        },
+        "text": "LOD-BIG-SKELETON-001 — Fallen Hero ownership\nCapture once inside the canonical accepted Hero/Soldier-death seams before retirement mutates the profile. Queue native spawning outside the lethal callback; bind the detached record to exact run, campaign epoch, dungeon seed and graph. Respawn/disconnect does not erase the enemy. Freeze pauses its actions; reset, failure and dungeon completion retire it and its attacks. Named rise warnings and Die Logger entries expose the consequence; defeating one's own skeleton or avenging a teammate emits a distinct epitaph. Use ordinary faction/status/defense rules and no kill rewards for death copies, preventing intentional-death farming. Event skeleton rewards and barrier opening retain their existing once-only receipts.\n\n"
+      }
+    },
+    {
+      "insertText": {
+        "location": {
+          "index": 1,
+          "tabId": "t.bff19dm33vvw"
+        },
+        "text": "LOD-BIG-SKELETON-001 — Delegated implementation tuning\nAuthor delegates skeleton design and tuning for this update. Initial event priority 65%; at most two completed populated dungeons without Skeleton Blockade. Fallen player rise warning 3 seconds; attack warning 0.65 seconds; firearm recovery at least 0.35 seconds before the next warning, divided by the copied rate multiplier; copied AR2 bursts use the existing shared count and spacing; one shared 0.25-second service; at most 32 retained death-copy records per dungeon, with oldest retired without rewards when superseded. Native spawn attempts use bounded same-route hull-safe positions, never sanctuary or a locked-boundary shortcut; blocked positions retry. Independent copied resources and combat RNG; shared navigation, damage, defenses, statuses and corpse cleanup. Native combat feel, copied build/action coverage and co-op appearance require local acceptance before Workshop and matching VPS release.\n\n"
+      }
+    }
+  ]
+}

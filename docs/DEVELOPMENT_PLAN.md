@@ -1,4 +1,29 @@
-# Current checkpoint — Music System source; streaming defaults OFF
+# Current checkpoint — Big Skeleton source; native acceptance next
+
+Author-directed design and implementation extends verified main
+`f0b7a66d0e87c18ad18b45a6449b613b7f8ee11d`. Skeleton Blockade remains registered
+after Bribe removal; a separate 65% priority draw and two-dungeon drought cap
+now make it frequent without changing exact 1d4 density or the rare slot.
+Accepted Hero and human-Soldier deaths independently create hostile AI copies
+of their current builds, using shared combat and lifecycle authorities.
+
+See `BIG_SKELETON_UPDATE.md` for behavior, explicit AI-action scope and the
+finite local gate. `validation/BIG_SKELETON_UPDATE.md` records 52/52 targeted
+regressions, 798 Lua syntax checks, final lifetime hardening checks, frequency
+samples and retained logs. Native appearance/combat/co-op acceptance is pending.
+Google again rejected the guarded GDD write; final proposed 05/06/07 amendments
+are preserved in `validation/BIG_SKELETON_GDD_AMENDMENTS.json`. Earlier GDD
+synchronization debt and native gates remain independent.
+
+Next action on exact local source, `gm_flatgrass`:
+`lod_developer_mode 1; lod_event_preview_generate skeleton_blockade`.
+Then follow the short fallen-player test in the implementation note. Preserve
+local acceptance → Workshop parity → matching VPS; no deployment is claimed.
+Evidence: `console_latest.txt` + `rpg_summary_latest.txt`.
+
+---
+
+# Prior checkpoint — Music System source; streaming defaults OFF
 
 The author-promoted Music System extends verified main
 `c5ece210be12077c321264ad4abb81821fe8d9a5`. `lod_music_enabled 0`

@@ -867,6 +867,7 @@ function Loot:ResolveEnemyReward(ply, category, rng)
 end
 
 function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
+    if hostile.LODFallenHero then return false end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return false end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return false end
     if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return false end
@@ -897,6 +898,7 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
 end
 
 function Loot:OnHostileLootHandoff(hostile)
+    if IsValid(hostile) and hostile.LODFallenHero then return end
     if not IsValid(hostile) or hostile.LODLootHandoffCompleted then return end
     if hostile.LODRemainsReceipt and not LOD.EnemyRemains:RewardOwned(hostile) then return end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end

@@ -80,6 +80,7 @@ end
 
 function S:Live(ent)
     if not IsValid(ent) or ent.LODDead or ent:Health() <= 0 then return false end
+    if ent.LODFallenHero then return LOD.FallenHeroes and LOD.FallenHeroes:Live(ent) or false end
     local event, director = LOD.EventSkeletonBlockade, LOD.EventDirector
     local instance, run = ent.LODEventInstance, LOD.RunManager and LOD.RunManager.State
     if not event or not director or not instance or instance.hostile ~= ent

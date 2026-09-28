@@ -427,6 +427,7 @@ local function replacementAward(identity, amount, hostile)
 end
 
 function Attribution:_Award(identity, amount, hostile)
+    if hostile.LODFallenHero then return 0 end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return 0 end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return 0 end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
@@ -465,6 +466,7 @@ function Attribution:LargestRemainderShares(pool, damageByIdentity)
 end
 
 function Attribution:Settle(hostile)
+    if hostile.LODFallenHero then self.Ledgers[hostile]=nil;return false end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then
         self.Ledgers[hostile] = nil
         return false
@@ -502,6 +504,11 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
+    if target.LODFallenHero and not LOD.FallenHeroes:Live(target) then
+        dmginfo:SetDamage(0)
+        if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo]=nil end
+        return true
+    end
     if LOD.EntrySafety and LOD.EntrySafety:DamageGate(target,dmginfo) then return true end
     local source = dmginfo and dmginfo:GetAttacker()
     if (IsValid(source) and source.LODHector and (not LOD.Hector or not LOD.Hector:Live(source)))
@@ -547,6 +554,7 @@ function GM:EntityTakeDamage(target, dmginfo)
     if IsValid(target) and AbilityRules.ApplyNotYetDefense then
         AbilityRules:ApplyNotYetDefense(target, dmginfo)
     end
+    if IsValid(target) and target.LODFallenHero then LOD.FallenHeroes:AbsorbArmor(target,dmginfo) end
     if IsValid(target) and dmginfo:GetDamage() > 0 then
         local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
         if RPG.ObserveDirectChaDamage then RPG:ObserveDirectChaDamage(context.damageContract, dmginfo:GetDamage()) end

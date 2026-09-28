@@ -1,2 +1,2 @@
 -- Generated. Both entry points use these exact bytes.
-return {version="efbcfc8bdb06da80", chapters=171, chunks=32}
+return {version="97b1f97c7b6bea25", chapters=172, chunks=32}

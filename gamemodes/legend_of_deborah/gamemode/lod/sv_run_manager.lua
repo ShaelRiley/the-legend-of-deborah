@@ -918,6 +918,7 @@ function RunManager:HandleDeath(ply, attacker)
 
     if self:IsSoldierControl(ply) then
         ply.LODHandledRunDeath = true
+        if LOD.FallenHeroes then LOD.FallenHeroes:Capture(ply, ps) end
         self:RetireSoldier(ply)
         if ps then
             ps.respawnAt = CurTime() + CC.Lives.RespawnDelay
@@ -933,6 +934,10 @@ function RunManager:HandleDeath(ply, attacker)
 
     if not self:IsPlayedIdentity(ply) or not self:IsActivePlayer(ply) or not ps then return end
     ply.LODHandledRunDeath = true
+
+    -- Capture the accepted Hero death before lives/role/profile retirement.
+    -- Native creation is deferred to the shared fallen-Hero service.
+    if LOD.FallenHeroes then LOD.FallenHeroes:Capture(ply, ps) end
 
     ps.lives = math.max(0, ps.lives - 1)
     if LOD.CryptoDirector then LOD.CryptoDirector:HeroLifeConsumed(ply, attacker) end

@@ -10,6 +10,7 @@ end
 -- Faction membership is independent of engine entity class and controller.
 function FactionManager:IsEnemyCombatant(ent)
     if not IsValid(ent) then return false end
+    if ent.LODSummonedSeeker and IsValid(ent.LODCaster) and ent.LODCaster.LODFallenHero then return true end
     local run = LOD.RunManager
     return self:IsHostile(ent) or (run and run.IsSoldierControl and run:IsSoldierControl(ent)) == true
 end

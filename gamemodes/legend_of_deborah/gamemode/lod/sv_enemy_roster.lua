@@ -548,6 +548,7 @@ function E:PatrolWanderer(e,graph)
     return true
 end
 function E:Tick(e)
+    if e.LODFallenHero then return LOD.FallenHeroes:TickAI(e) end
     -- This shared dispatch also sees non-roster Fighter/Rogue skeletons before
     -- ordinary melee/Soldier execution. Late native method binding cannot erase
     -- the exact-event guard by replacing an instance method.

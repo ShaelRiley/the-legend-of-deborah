@@ -89,6 +89,8 @@ SUITES = [
     ("Active Event Catalog, Bribe Removal & Quiz Placement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_quiz_generation.lua"]),
     ("Minigame Shell & Equipment UI Restrictions", ["python3", "tools/run_lua54.py", "tools/test_minigame_ui.lua"]),
     ("Skeleton Hero Generation & Shared Combat", ["python3", "tools/run_lua54.py", "tools/test_skeleton_hero.lua"]),
+    ("Fallen Player Skeletons & Shared Combat", ["python3", "tools/run_lua54.py", "tools/test_fallen_heroes.lua"]),
+    ("Frequent Skeleton Events & Natural Builds", ["python3", "tools/test_crypto_sqlite.py", "tools/test_skeleton_frequency.lua"]),
     ("Skeleton Blockade Historical Mixed-Catalog Regression", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_blockade.lua"]),
     ("Skeleton Blockade Death & Rewards", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_skeleton_lifecycle.lua"]),
     ("Warp Hole Utility & Safe Traversal", ["python3", "tools/test_crypto_sqlite.py", "tools/test_warp_hole.lua"]),
