@@ -151,6 +151,7 @@ function F:Spawn(r)
     e.LODConfig.speed=r.speed/math.max(.01,(Rules.HostileDexMovementMultiplier and Rules:HostileDexMovementMultiplier(e) or 1)
         *(Rules.RogueMovementMultiplier and Rules:RogueMovementMultiplier(e) or 1))
     e:SetModel(LOD.SkeletonHero.Model)
+    if LOD.HostileAnimation then LOD.HostileAnimation:Apply(e,ACT_IDLE,true) end
     e:SetColor(LOD.SkeletonHero.Colors[r.profile.classId] or color_white)
     e:SetMaxHealth(r.maxHP);e:SetHealth(r.maxHP)
     e:SetNW2Bool("LOD_SkeletonHero",true)
@@ -299,6 +300,7 @@ function F:FireWeapon(e,target,class,burstRound)
         if contract.pellets and self:Live(e) then rolls:SettleShotgun(e,contract);rolls:_FinishShotgunFeed(e,contract) end
     end
     if self:Live(e) then
+        if LOD.HostileAnimation then LOD.HostileAnimation:PlayerAttack(e) end
         e:EmitSound(melee(class) and "Weapon_Crowbar.Single" or "Weapon_"..
             ({weapon_pistol="Pistol",weapon_smg1="SMG1",weapon_ar2="AR2",weapon_357="357",weapon_shotgun="Shotgun"})[class]..".Single",70)
     end
@@ -367,6 +369,7 @@ function F:Cast(e,target,wand)
     local effects=LOD.RPG.FeatEffectSystem
     if effects.RecordQuantumSpend then effects:RecordQuantumSpend(e,forms:TotalBaseCost(form,content),cost) end
     if ok and cost>0 then hook.Run("LODDiscreteMagicSpent",e,cost,context) end
+    if ok and self:Live(e) and LOD.HostileAnimation then LOD.HostileAnimation:PlayerAttack(e) end
     return ok
 end
 

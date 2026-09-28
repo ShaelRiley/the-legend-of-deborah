@@ -1,4 +1,22 @@
-# Current checkpoint — custom-system quantization
+# Current checkpoint — skeleton player animations
+
+The author reports T-posing skeletons and expressly authorizes the source push.
+From verified main `9d3c202`, the shared hostile resolver now uses stock GMod
+player activity families/weapon holds for the skeleton model, with attack gestures
+as overlays. Both model-swap constructors select idle immediately; Motion V2
+drives player move_x/y from its existing kinematic movement. Preserve complete
+player bases across flinches/death and avoid activity-alias cycle restarts.
+
+The finite gate passes 15/15 selected regressions and 811 Lua syntax checks;
+see `validation/SKELETON_ANIMATION_20260928.md` and its checks receipt.
+Native appearance remains pending. Next: fully restart/install and observe an
+event skeleton and fallen-player copy through idle, pursuit, attack and damage
+on gm_flatgrass. Preserve existing gameplay, performance work and remaining
+native gates; local acceptance → Workshop parity → matching VPS remains in force.
+
+---
+
+# Prior checkpoint — custom-system quantization
 
 Shael reports good Steam Deck performance on renderer main `cdb85e6` and requests
 further custom-system simplification. The finite pass replaces event-route text

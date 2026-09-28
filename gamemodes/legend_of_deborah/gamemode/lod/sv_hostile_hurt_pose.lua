@@ -33,6 +33,16 @@ end
 function HurtPose:FindSequence(hostile)
     if not IsValid(hostile) then return nil end
 
+    -- Player flinches are additive gestures, not complete body sequences.
+    -- Freeze the already selected player pose instead of replacing its base
+    -- with an NPC flinch (which can expose the skeleton's reference pose).
+    local animation=LOD.HostileAnimation
+    if animation and animation:PlayerHold(hostile) then
+        local sequence=hostile:GetSequence()
+        if animation:Valid(hostile,sequence) then return sequence end
+        return animation:Resolve(hostile,ACT_IDLE)
+    end
+
     if hostile.LookupSequence then
         for _, name in ipairs(NAMED_SEQUENCES) do
             local sequence = hostile:LookupSequence(name)

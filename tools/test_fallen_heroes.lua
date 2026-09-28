@@ -102,6 +102,10 @@ ents={Create=function(class)
  return e
 end}
 LOD.HostileMotionV2={Stop=noop,HoldHitStun=function() return false end,MoveToward=noop}
+LOD.HostileAnimation={Apply=function(_,e,activity,force)
+ assert(e.model==LOD.SkeletonHero.Model and activity==ACT_IDLE and force,'copy animated before skeleton model swap')
+ e.spawnAnimated=true
+end,PlayerAttack=function(_,e) e.playerAttacks=(e.playerAttacks or 0)+1 end}
 LOD.SkeletonHero.Colors.fighter=Color(255,185,165)
 LOD.RPGTestLog=nil
 LOD.CombatRolls._Send=noop
@@ -118,6 +122,7 @@ assert(r.profile.baseAbilities.str==oldStat and r.inventory.ammo[1]==8 and r.pro
 blocked=true;F:Service();assert(nativeCreated==0,'Blocked hull spawned')
 blocked=false;now=101;F:Service()
 local e=assert(r.entity);assert(nativeCreated==1 and e:Health()==r.maxHP and e:GetMaxHealth()==r.maxHP)
+assert(e.spawnAnimated,'fallen copy left native Initialize pose active during rise')
 assert(not F:Live(e) and not LOD.SkeletonHero:Live(e),'Rise warning attacked')
 now=105;assert(F:Live(e) and LOD.SkeletonHero:Live(e))
 -- Player respawn/disconnect/role changes cannot retarget the copied profile.
@@ -135,6 +140,7 @@ Run.State.Graph=liveGraph;LOD.CombatRolls.RollPlayerWeapon=baseRoll
 e.LODFallenAim=Vector(1,0,0)
 target.hp=1000;target.max=1000
 assert(F:FireWeapon(e,target,'weapon_pistol'))
+assert(e.playerAttacks==1,'copied firearm did not play a player attack gesture')
 assert(r.weapons.weapon_pistol.clip==2 and target.lastInfo:GetDamage()>0)
 local tags=Status:DamageContext(target.lastInfo,target)
 assert(tags.actorDamageResolved and tags.damageContract.profile.sides==4)

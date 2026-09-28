@@ -26,6 +26,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Skeleton Stock Player Animation & Motion", ["python3", "tools/run_lua54.py", "tools/test_skeleton_animation.lua"]),
     ("Discrete Systems Math & Snapshot Equivalence", ["python3", "tools/run_lua54.py", "tools/test_system_quantization.lua"]),
     ("Discrete Event Routes & Cache Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_quantized_routes.lua"]),
     ("Low-end Static Draw Cache & Perspective Culling", ["python3", "tools/run_lua54.py", "tools/test_low_end_render.lua"]),

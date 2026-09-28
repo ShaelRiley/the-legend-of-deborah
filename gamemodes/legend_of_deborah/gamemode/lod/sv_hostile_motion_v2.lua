@@ -418,8 +418,10 @@ local function installPatch()
     -- BodyMoveXY derives animation direction from CLuaLocomotion velocity. V2
     -- deliberately does not use that velocity, so calling it would recreate the
     -- backwards/sideways animation ambiguity seen in testing. Explicit yaw owns
-    -- facing; the selected walk/run activity simply advances in place.
+    -- facing; player rigs use its recorded speed for their 9-way blend, while
+    -- NPC rigs retain the existing walk/run cycle and move_yaw presentation.
     function class:BodyUpdate()
+        if LOD.HostileAnimation and LOD.HostileAnimation:UpdatePlayerBody(self) then return end
         if self.SetPoseParameter then self:SetPoseParameter("move_yaw", 0) end
         self:FrameAdvance()
     end

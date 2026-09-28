@@ -107,6 +107,7 @@ function S:Spawn(events, instance, graph)
     ent.LODConfig = table.Copy(LOD.Config.Encounter.Archetypes[profile.archetypeId])
     ent.LODConfig.name, ent.LODConfig.model = profile.skeletonName, self.Model
     ent:SetModel(self.Model);ent:SetColor(self.Colors[profile.classId])
+    if LOD.HostileAnimation then LOD.HostileAnimation:Apply(ent,ACT_IDLE,true) end
     ent:SetNW2Bool("LOD_SkeletonHero", true)
     ent:SetNW2String("LOD_MonsterName", profile.skeletonName)
     ent:SetNW2Float("LOD_SizeScale", 1)

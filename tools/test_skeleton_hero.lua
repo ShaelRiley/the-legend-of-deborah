@@ -260,8 +260,13 @@ ents={Create=function(class)
     spawned=e;return e
 end}
 local instance={seed=512,level=18,cell={x=0,y=0,z=0},cellKey='0:0:0',id='test',entities={},current=true}
+LOD.HostileAnimation={Apply=function(_,e,activity,force)
+    assert(e.model==S.Model and activity==ACT_IDLE and force,'spawn animated before skeleton model swap')
+    e.spawnAnimated=true
+end}
 local made=S:Spawn(events,instance,{DungeonLevel=18})
 assert(made==spawned and instance.entities[1]==made and made.model==S.Model)
+assert(made.spawnAnimated,'event skeleton left native Initialize pose active')
 assert(made:Health()==made.LODProgressionState.derivedStats.maxHP and made:GetMaxHealth()==made:Health())
 assert(made.nw.LOD_CharacterLevel==20 and made.nw.LOD_MonsterName==made.LODProgressionState.skeletonName)
 instance.current=false;instance.entities={}

@@ -35,6 +35,9 @@ end
 
 local function playFlinch(hostile)
     if not IsValid(hostile) then return false end
+    -- The shared hurt-pose authority freezes the skeleton's full player base;
+    -- NPC flinches here can be additive-only sequences on a player rig.
+    if LOD.HostileAnimation and LOD.HostileAnimation:PlayerHold(hostile) then return false end
 
     local activities = {ACT_BIG_FLINCH, ACT_FLINCH_CHEST, ACT_SMALL_FLINCH, ACT_FLINCH_HEAD}
     for _, activity in ipairs(activities) do

@@ -7,6 +7,13 @@ end
 local function freezeInPainPose(hostile)
     if not IsValid(hostile) or not hostile.LODHostile or not hostile.LODDead then return end
 
+    if LOD.HostileAnimation and LOD.HostileAnimation:PlayerHold(hostile) then
+        -- Keep the full player death/idle pose selected by the shared resolver.
+        hostile:SetCycle(0.48)
+        hostile:SetPlaybackRate(0)
+        return
+    end
+
     local activities = {}
     addActivity(activities, ACT_BIG_FLINCH)
     addActivity(activities, ACT_FLINCH_CHEST)
