@@ -1,0 +1,21 @@
+{
+  "parent_commit": "b5a829355291fcae11e963d8891dd9441719b0e7",
+  "campaign_seed": 31676,
+  "level_seed": 1939356277,
+  "layout_attempt": 14,
+  "old_cell": "1:9:0",
+  "accepted_cell": "16:16:1",
+  "selected_events": [
+    "skeleton_blockade",
+    "memory_terminal"
+  ],
+  "regression_sha256": "a2dff7541391e6638932cbdada949a6c2a0ad772c047fb9682459a179138c9d8",
+  "old_authorities": [
+    "sv_event_director.lua",
+    "sv_event_skeleton_blockade.lua"
+  ],
+  "parent_test_exit_code": 1,
+  "expected_parent_failure": "Staging immediately failed: Skeleton blockade unavailable: hostile removed",
+  "native_engine_executed": false,
+  "engine_boundary": "Source-style deferred Remove; actual game synthesis/Initialize/OnRemove/Tick and lifecycle code"
+}

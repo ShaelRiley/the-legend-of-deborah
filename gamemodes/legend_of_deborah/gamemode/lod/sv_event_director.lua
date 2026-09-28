@@ -639,7 +639,9 @@ function D:RouteSignature(g)
 end
 
 function D:Track(instance, entity)
-    if not IsValid(entity) then return false end
+    -- Entity:Remove only marks deletion until the next Source tick. Such an
+    -- entity can still pass IsValid and have positive HP during construction.
+    if not IsValid(entity) or entity.IsMarkedForDeletion and entity:IsMarkedForDeletion() then return false end
     local context = self.Context
     if not instance or not context or context.state ~= Run.State or instance.token ~= context.token
         or context.epoch ~= Run.State.CampaignEpoch or instance.runId ~= Run.State.RunId
@@ -710,16 +712,22 @@ function D:Activate(g, plan)
         self.Context.byId[instance.id] = instance
         local def = Registry.Definitions[instance.archetype]
         local ok, entity, err = pcall(def.Create, self, instance, g)
-        if not ok or not IsValid(entity) then
+        if not ok or not self:Track(instance, entity) then
             self:Cleanup("creation failed")
             return false, "event creation failed: " .. instance.archetype .. ": " .. tostring(err or entity)
         end
-        if entity.LODEventInstance ~= instance then self:Track(instance, entity)
-        else
-            local tracked = false; for _, e in ipairs(instance.entities) do if e == entity then tracked = true end end
-            if not tracked then self:Track(instance, entity) end
-        end
         instance.state = "active"
+    end
+    -- A later creator can invalidate an earlier actor or secondary barrier.
+    -- Commit the complete plan only while every tracked resource still belongs
+    -- to this construction and has survived native initialization/activation.
+    for _, instance in ipairs(plan.instances) do
+        for _, entity in ipairs(instance.entities) do
+            if not self:Track(instance, entity) or entity.LODEventInstance ~= instance then
+                self:Cleanup("creation resources lost")
+                return false, "event creation failed: " .. instance.archetype .. ": resource lost during construction"
+            end
+        end
     end
     return true
 end

@@ -147,6 +147,7 @@ SUITES = [
     ("Campaign Clock & TIME OVER Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_campaign_timeout.lua"]),
     ("Bootstrap Failure & Explicit Recovery", ["python3", "tools/run_lua54.py", "tools/test_bootstrap_failure.lua"]),
     ("Event-Safe Campaign Bootstrap & Staging", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_bootstrap.lua"]),
+    ("Staging Event Spawn & Deferred Native Deletion", ["python3", "tools/test_crypto_sqlite.py", "tools/test_staging_event_spawn.lua"]),
     ("Dedicated Server Deployment Preservation", ["python3", "tools/test_server_launcher.py"]),
     ("Complete Enemy Roster & Animation Safety", ["python3", "tools/run_lua54.py", "tools/test_enemy_roster.lua"]),
     ("Bestiary B1 Content Enemies & Exact Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b1.lua"]),

@@ -1,4 +1,30 @@
-# Current checkpoint — fatal empty-map bootstrap recovery
+# Current checkpoint — immediate staging campaign-failure repair
+
+The author reports two immediate Campaign Failed resets while still in staging.
+This repair extends main `b5a829355291fcae11e963d8891dd9441719b0e7`.
+The final regression reproduces a matching failure against that parent: campaign
+31676 reaches staging on layout 14, but its Skeleton occupies entry-apron cell
+1:9:0. Native Initialize schedules removal; IsValid and later positive HP let
+construction finish before the next tick reports the required hostile lost.
+
+Skeleton placement now uses the existing EntrySafety spawn-cell authority.
+Event construction rejects native entities marked for deletion and rechecks all
+tracked resources before committing the complete plan. The same campaign and
+event selection now use legal cell 16:16:1 on the same layout. Arrival protection,
+real combat rewards and canonical failure on genuinely lost live resources stay
+enforced; no new recurring service is added.
+
+The exact-source gate passed 35/35 targeted checks and 807 Lua syntax checks.
+Read `validation/STAGING_EVENT_SPAWN.md` for the failed-parent reproduction,
+three-class native initialization, prolonged staging, deferred cleanup and
+partial-creation evidence. Next: fully quit GMod, install verified main, then
+start on `gm_flatgrass`, prepare in staging and deploy normally. The reported
+session's full failure reason was not supplied; native acceptance remains open.
+Source publication only; preserve music/low-end work and existing release gates.
+
+---
+
+# Prior checkpoint — fatal empty-map bootstrap recovery
 
 The author reports an empty `gm_flatgrass` with
 `event placement exhausted: skeleton_blockade: nil`. This repair extends main

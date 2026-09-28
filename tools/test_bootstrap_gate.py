@@ -6,14 +6,14 @@ import test_spot10_gate as gate
 gate.LABEL = 'BOOTSTRAP_GATE'
 gate.SCOPE = 'Event placement recovery, startup, staging and affected lifecycle regressions; native acceptance pending'
 gate.SQLITE_LUA = {
-    'test_event_bootstrap.lua', 'test_event_expansion_generation.lua',
+    'test_event_bootstrap.lua', 'test_staging_event_spawn.lua', 'test_event_expansion_generation.lua',
     'test_skeleton_frequency.lua', 'test_event_ecology.lua',
     'test_event_population.lua', 'test_event_skeleton_blockade.lua',
     'test_event_skeleton_lifecycle.lua', 'test_dungeon_events.lua',
     'test_event_quiz_generation.lua',
 }
 gate.LUA = sorted(gate.SQLITE_LUA) + [
-    'test_bootstrap_failure.lua', 'test_checkpoint_c_headless.lua',
+    'test_bootstrap_failure.lua', 'test_skeleton_hero.lua', 'test_checkpoint_c_headless.lua',
     'test_campaign_timeout.lua', 'test_dungeon_transition.lua',
     'test_cleanup_lifecycle.lua', 'test_cleanup_contracts.lua',
     'test_native_resource_lifecycle.lua', 'test_snapshot_delivery.lua',

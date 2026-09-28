@@ -6,6 +6,11 @@ LOD.EventSkeletonBlockade = S
 local function key(c) return LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 function S.CanResolve(_, g, p, reach) return reach[p.cellKey] == true end
 function S.Validate(_, g, p)
+    local cell=g.Cells[p.cellKey]
+    -- The native hostile initializer enforces this same arrival boundary.
+    -- Prove it while choosing a site, before a rejected Spawn can invalidate
+    -- an otherwise accepted dungeon on the following engine tick.
+    if not cell or LOD.EntrySafety and not LOD.EntrySafety:SpawnCellAllowed(g,cell) then return false end
     local e=g.Edges[p.edgeKey]
     return e and e.a.z==e.b.z and LOD.SafeTeleport:FlatCell(g,e.a)
         and LOD.SafeTeleport:FlatCell(g,e.b) or false

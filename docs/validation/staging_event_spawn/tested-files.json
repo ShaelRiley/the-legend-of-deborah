@@ -1,0 +1,8 @@
+{
+  "gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua": "75a71a258fba5bf139ed2fc8af238f089bf289beac7a4d461f2c83ed82bda9de",
+  "gamemodes/legend_of_deborah/gamemode/lod/sv_event_skeleton_blockade.lua": "4a304bf36f1bb2bc6e971dcb9662f92cf9f8d165517483243470f1ac414e1638",
+  "tools/test_event_bootstrap.lua": "f5c210f8a0cce44c534c30e9a8ab55ccc22391c6c0f51fd0422a0adfc19ec312",
+  "tools/test_staging_event_spawn.lua": "a2dff7541391e6638932cbdada949a6c2a0ad772c047fb9682459a179138c9d8",
+  "tools/test_bootstrap_gate.py": "cfadef840e1f846f20f538a885c6bc79c4e662814cf1fff3e5e285f5bd4a6446",
+  "tools/test_checkpoint_g_integration.py": "ef2978559ca6be8ffb00bf9314ee331c5bc6a8eec0edc33e4f48c4ad3475f299"
+}

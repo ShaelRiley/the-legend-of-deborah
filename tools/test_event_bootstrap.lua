@@ -70,6 +70,7 @@ local function prove(g,plan)
  local skeleton
  for _,instance in ipairs(plan.instances) do if instance.archetype=='skeleton_blockade' then skeleton=instance end end
  assert(skeleton and IsValid(skeleton.hostile) and IsValid(skeleton.barrier))
+ assert(LOD.EntrySafety:SpawnCellAllowed(g,skeleton.cell),'Skeleton placed inside entry protection')
  local reach=F.walk(g,key(g.Start),blocked)
  assert(reach[skeleton.cellKey] and not reach[key(g.Progression.DeborahCell)],'Skeleton not approachable on required route')
  blocked[skeleton.placement.edgeKey]=nil
