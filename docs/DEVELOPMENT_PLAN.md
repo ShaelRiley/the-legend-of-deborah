@@ -1,3 +1,30 @@
+# Current checkpoint — Big Event System source validated; native acceptance next
+
+The author-promoted `briefs/EVENT_SYSTEM_UPDATE.md` extends verified main
+`1685774415ea8bbd82abf931999a29ae7ba25f10`. Frozen active baseline8, additions20,
+production total28 (3.5×); removed Bribe stays removed. Exact1d4 density, shared
+rare fourth slot, existing progression proofs and source-only publication remain.
+
+See `EVENT_SYSTEM_EXPANSION.md` for catalog, shared settlement, family/identity
+ecology, successful-build campaign memory, topology preferences and a compact
+native procedure. All **274/274 suites and 784 Lua syntax files pass**, including
+six new gates; the source remained unchanged throughout the full matrix. See
+`validation/BIG_EVENT_UPDATE.md` and its complete receipt/evidence archive.
+Native Source physics/input/presentation/network/co-op acceptance remains pending.
+
+Live GDD00→01→05/06/07/90 read successfully. Google rejected the revision-guarded
+write with `FAILED_PRECONDITION`; fresh readback confirmed no mutation. Exact
+six-tab changes remain in `validation/big_event/gdd_amendments.json`. This is an
+explicit synchronization blocker, not a completed GDD update. Prior Big Loot
+amendments remain independently outstanding. No Workshop/VPS action.
+
+Next after verified source publication: exact-build local `gm_flatgrass` event
+acceptance, retaining earlier accepted behavior and pending gates. Capture
+`console_latest.txt` + `rpg_summary_latest.txt`. Apply the pending live GDD changes
+when editing is restored; unrelated deferred roadmap work is not included.
+
+---
+
 # Current checkpoint — Big Loot source validated; live GDD synchronization blocked
 
 Author-promoted Big Loot extends verified baseline

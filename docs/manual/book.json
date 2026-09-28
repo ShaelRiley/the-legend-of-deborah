@@ -1452,11 +1452,124 @@
         ]
       ],
       "text": [
-        "An enabled dungeon contains 1–4 different event types, chosen by one ordinary, non-exploding d4. A result of 1–3 selects that many from Debbie Slots, locked loot chests, vending machines, False-floor hazards, Skeleton of a Hero blockades, and the Game Master’s Equipment Quiz; warp holes join this common pool from Dungeon Level 5 onward. A 4 selects three common types plus a DFT treasure event. Treasure therefore appears on 25% of event selections; its one or two physical chests count as one event type. A paired warp hole also counts once. Events never replace the required rescue objective.",
+        "An enabled dungeon contains 1–4 different event types from a catalog of 28, chosen by one ordinary, non-exploding d4. A 1–3 selects common events; a 4 selects three common events plus one rare opportunity: DFT Treasure, Contraband Countdown or Life Underwriter. Treasure can contain one or two chests but counts once; paired warp holes also count once and begin at Dungeon Level 5. The labyrinth remembers recent discoveries, favors fresh combinations, and places them to suit the surrounding rooms. Events never replace the required rescue objective.",
         "Debbie Slots is optional and never blocks the rescue route. Read its posted stake and odds before pressing E to play. Each Steam account may complete one play per dungeon; reconnecting or beginning a replacement Hero does not grant another play. Other Heroes have their own attempt.",
         "The stake uses your persistent, server-local $DEB balance, which has no cash value. A completed play applies the stake and payout together. Insufficient funds or a storage failure spends nothing and leaves your attempt available; retrying does not reroll the outcome. Leaving the dungeon ends access to that machine.",
         "Events are enabled by default on new server configurations. Servers retaining an earlier disabled setting need an administrator to set lod_events_enabled 1 for future dungeon generation.",
-        "In developer mode, administrators can run lod_event_population_preview to generate a normal 1–4 event selection and print its locations, or lod_event_preview_generate followed by an event name for a single-event preview. Previews mark the campaign unranked but still use carried keys and persistent server-local funds and DFTs; they provide no free currency. Regenerating the same dungeon does not refresh account claims."
+        "In developer mode, administrators can run lod_event_population_preview to generate a normal 1–4 event selection and print its locations, or lod_event_preview_generate followed by an event name for a single-event preview. Previews mark the campaign unranked but still use carried keys and persistent server-local funds and DFTs; they provide no free currency. Regenerating the same dungeon does not refresh account claims.",
+        "Some opportunities belong to each account, some affect everyone, and some go to the first buyer. Read the offer and ownership before acting. A new dungeon brings new opportunities; reconnecting, replacing a Hero or regenerating the same dungeon never renews a spent claim."
+      ]
+    },
+    {
+      "id": "prison-services",
+      "title": "Scavenged services",
+      "group": "Dungeon Events",
+      "rows": [
+        [
+          "Prison Triage",
+          "12 $DEB restores missing HP. It does not cure ailments."
+        ],
+        [
+          "Blood Dynamo",
+          "Trade 10 HP for up to 25 Magic. You must keep at least 1 HP."
+        ],
+        [
+          "Salvage Press",
+          "Destroy the reviewed spare wearable for its displayed $DEB value."
+        ],
+        [
+          "Scavenger Reforge",
+          "Fuse two reviewed spare wearables into the displayed stronger item."
+        ],
+        [
+          "Improvised Key Cutter",
+          "One Healing Potion and 20 Magic become one Chest Key."
+        ],
+        [
+          "Ammo Transmuter",
+          "15 Magic buys a large ration for the firearm you are holding."
+        ],
+        [
+          "Wounded Scavenger",
+          "Exchange one Healing Potion for the displayed wearable."
+        ],
+        [
+          "Redline Capacitor",
+          "Fill Magic, but become Reckless for 30 seconds: your attacks can harm allies."
+        ],
+        [
+          "Contraband Countdown",
+          "One shared item. Its price falls while you wait; another Hero can buy it first."
+        ],
+        [
+          "Life Underwriter",
+          "Sell one reserve life for 40 $DEB. Your final life cannot be sold."
+        ]
+      ],
+      "text": [
+        "Press Use to review the exact offer. Press Use again within 12 seconds to confirm it. If your inventory, Hero or offer changes, review the refreshed offer before paying. Looking at a machine does not buy anything.",
+        "Each account gets one successful transaction per service per dungeon, except Contraband Countdown, whose one lot goes to the first buyer. Starter and DFT equipment cannot be salvaged or reforged. Insufficient resources, full bags or full stacks leave payment untouched."
+      ]
+    },
+    {
+      "id": "prison-incidents",
+      "title": "Read the room",
+      "group": "Dungeon Events",
+      "rows": [
+        [
+          "Steam Vent",
+          "Four seconds safe, one second warning, one second steam. Within 64 units, a failed WIS save can Mute you for 2 seconds. Seal the valve or walk around."
+        ],
+        [
+          "Stasis Beacon",
+          "Standing close risks 2 seconds of Clumsy after a failed DEX save. Crouch past it or switch it off."
+        ],
+        [
+          "Watchful Eye",
+          "Meeting its gaze risks 3 seconds of Reckless after a failed WIS save. Avert your eyes, circle behind the screen and unplug it."
+        ],
+        [
+          "Prison Surveyor",
+          "Ask for your current objective’s physical floor and first steps along the presently open route."
+        ],
+        [
+          "Silent Archive",
+          "Use, then stay grounded, motionless and quiet for 4 seconds to restore up to 25 Magic. Moving cancels freely."
+        ]
+      ],
+      "text": [
+        "The three machines impose ordinary saving throws and existing conditions. Their effects are avoidable; disabling a machine makes it safe for everyone. A disabled machine grants no cash reward. Normal combat continues while you investigate."
+      ]
+    },
+    {
+      "id": "prison-challenges",
+      "title": "The prison plays games",
+      "group": "Dungeon Events",
+      "rows": [
+        [
+          "Counterweight Cache",
+          "Two Heroes hold opposite plates for 3 seconds. Alone, use the central lever and hold still for 10 seconds. Once open, each account collects 15 $DEB."
+        ],
+        [
+          "Prison Relay",
+          "Run across numbered markers 1, 2 and 3 in order within 12 seconds, then collect 15 $DEB at the console."
+        ],
+        [
+          "Memory Terminal",
+          "Watch three numbered lights, then use the corresponding buttons in order for 15 $DEB. You have 30 seconds; mistakes let you try again without charge."
+        ],
+        [
+          "Nerve Clock",
+          "Use to start, then use again during green for 20 $DEB. Red spends your attempt and risks 3 seconds of Reckless. The cycle is 3 seconds red, 1 green."
+        ],
+        [
+          "Strength Press",
+          "One non-exploding d20 plus your STR modifier against 12. Success pays 20 $DEB; failure spends the attempt without charging you."
+        ]
+      ],
+      "text": [
+        "Numbered markers and personal prompts show the current challenge. Each successful reward belongs to your account once per dungeon; other Heroes have their own claims. Nerve Clock and Strength Press also remember unsuccessful results.",
+        "These games do not pause the dungeon or protect you from enemies. Let a friend watch the corridor. Counterweight’s solo lever means every challenge remains usable without a second human."
       ]
     },
     {

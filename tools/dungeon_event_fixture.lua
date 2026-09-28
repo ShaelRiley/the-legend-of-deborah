@@ -66,7 +66,7 @@ ents={Create=function(class)
  function e:SetNW2String(k,v) self.nw[k]=v end
  e.SetNW2Bool,e.SetNW2Int=e.SetNW2String,e.SetNW2String
  function e:GetNW2String(k,default) return self.nw[k] or default end
- for _,m in ipairs({'SetModel','SetAngles','SetMoveType','SetSolid','SetUseType','DrawShadow','Spawn','Activate','EmitSound','SetCollisionGroup'}) do e[m]=noop end
+ for _,m in ipairs({'SetModel','SetModelScale','SetAngles','SetMoveType','SetSolid','SetUseType','DrawShadow','Spawn','Activate','EmitSound','SetCollisionGroup'}) do e[m]=noop end
  for _,name in ipairs({'BoxMins','BoxMaxs','BoxKind','NotSolid','NoDraw','Color'}) do
   e['Set'..name]=function(self,v) self[name]=v end
   e['Get'..name]=function(self) return self[name] end

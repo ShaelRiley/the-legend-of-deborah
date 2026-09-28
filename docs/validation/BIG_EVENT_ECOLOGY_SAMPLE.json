@@ -1,0 +1,771 @@
+{
+  "campaigns": 96,
+  "catalog": 28,
+  "common": 25,
+  "control": {
+    "adjacentRepeatedFamilies": 1368,
+    "adjacentRepeatedIdentities": 701,
+    "appearances": {
+      "ammo_transmuter": 109,
+      "blood_dynamo": 93,
+      "contraband_lot": 181,
+      "counterweight_cache": 404,
+      "equipment_quiz": 77,
+      "false_floor": 118,
+      "key_cutter": 102,
+      "life_underwriter": 179,
+      "locked_chest": 314,
+      "memory_terminal": 96,
+      "nerve_clock": 98,
+      "overclock_console": 105,
+      "prison_surveyor": 430,
+      "prisoner_barter": 368,
+      "reforging_bench": 177,
+      "relay_race": 217,
+      "salvage_press": 168,
+      "silent_archive": 91,
+      "skeleton_blockade": 387,
+      "slot_machine": 90,
+      "stasis_beacon": 112,
+      "steam_vent": 135,
+      "strength_press": 223,
+      "treasure_chest": 118,
+      "triage_station": 100,
+      "vending_machine": 79,
+      "warp_hole": 50,
+      "watchful_eye": 154
+    },
+    "contracts": {
+      "BLOCKADE": 387,
+      "HAZARD": 519,
+      "REWARD": 1547,
+      "UTILITY": 2322
+    },
+    "counts": [
+      491,
+      481,
+      470,
+      478
+    ],
+    "families": {
+      "anomalies": 451,
+      "blockades": 387,
+      "bureaucracy": 179,
+      "caches": 432,
+      "equipment": 345,
+      "games": 361,
+      "inhabitants": 430,
+      "mechanisms": 404,
+      "merchant": 181,
+      "prisoners": 368,
+      "services": 390,
+      "traps": 407,
+      "trials": 440
+    },
+    "familyCoverage": 13,
+    "firstSeenTotals": {
+      "ammo_transmuter": {
+        "campaigns": 70,
+        "meanFirstLevel": 9.057142857142857
+      },
+      "blood_dynamo": {
+        "campaigns": 61,
+        "meanFirstLevel": 6.770491803278689
+      },
+      "contraband_lot": {
+        "campaigns": 88,
+        "meanFirstLevel": 7.159090909090909
+      },
+      "counterweight_cache": {
+        "campaigns": 92,
+        "meanFirstLevel": 5.586956521739131
+      },
+      "equipment_quiz": {
+        "campaigns": 49,
+        "meanFirstLevel": 10.612244897959183
+      },
+      "false_floor": {
+        "campaigns": 69,
+        "meanFirstLevel": 8.057971014492754
+      },
+      "key_cutter": {
+        "campaigns": 59,
+        "meanFirstLevel": 9.372881355932204
+      },
+      "life_underwriter": {
+        "campaigns": 89,
+        "meanFirstLevel": 6.719101123595506
+      },
+      "locked_chest": {
+        "campaigns": 92,
+        "meanFirstLevel": 6.163043478260869
+      },
+      "memory_terminal": {
+        "campaigns": 64,
+        "meanFirstLevel": 8.515625
+      },
+      "nerve_clock": {
+        "campaigns": 61,
+        "meanFirstLevel": 8.59016393442623
+      },
+      "overclock_console": {
+        "campaigns": 61,
+        "meanFirstLevel": 7.983606557377049
+      },
+      "prison_surveyor": {
+        "campaigns": 96,
+        "meanFirstLevel": 5.416666666666667
+      },
+      "prisoner_barter": {
+        "campaigns": 92,
+        "meanFirstLevel": 4.521739130434782
+      },
+      "reforging_bench": {
+        "campaigns": 75,
+        "meanFirstLevel": 8.106666666666667
+      },
+      "relay_race": {
+        "campaigns": 85,
+        "meanFirstLevel": 7.2823529411764705
+      },
+      "salvage_press": {
+        "campaigns": 80,
+        "meanFirstLevel": 7.65
+      },
+      "silent_archive": {
+        "campaigns": 57,
+        "meanFirstLevel": 7.982456140350878
+      },
+      "skeleton_blockade": {
+        "campaigns": 93,
+        "meanFirstLevel": 5.408602150537634
+      },
+      "slot_machine": {
+        "campaigns": 53,
+        "meanFirstLevel": 9.339622641509434
+      },
+      "stasis_beacon": {
+        "campaigns": 60,
+        "meanFirstLevel": 8.216666666666667
+      },
+      "steam_vent": {
+        "campaigns": 69,
+        "meanFirstLevel": 7.942028985507246
+      },
+      "strength_press": {
+        "campaigns": 75,
+        "meanFirstLevel": 6.44
+      },
+      "treasure_chest": {
+        "campaigns": 77,
+        "meanFirstLevel": 9.025974025974026
+      },
+      "triage_station": {
+        "campaigns": 63,
+        "meanFirstLevel": 7.5396825396825395
+      },
+      "vending_machine": {
+        "campaigns": 47,
+        "meanFirstLevel": 9.46808510638298
+      },
+      "warp_hole": {
+        "campaigns": 41,
+        "meanFirstLevel": 10.75609756097561
+      },
+      "watchful_eye": {
+        "campaigns": 79,
+        "meanFirstLevel": 9.20253164556962
+      }
+    },
+    "identityCoverage": 28,
+    "maxFamilyStreak": 10,
+    "maxIdentityStreak": 10,
+    "maxSameRareStreak": 2,
+    "maxUnique": 27,
+    "meanCommonUnique": 18.15625,
+    "meanEventsPerLevel": 2.4869791666666665,
+    "meanFamilyCoverage": 12.614583333333334,
+    "meanUnique": 20.802083333333332,
+    "minCommonUnique": 12,
+    "minUnique": 14,
+    "rareAdjacentFloors": 6,
+    "rareSelections": 478,
+    "relationSelections": 1230,
+    "selections": 4775,
+    "themeAppearances": {
+      "corruption": {
+        "ammo_transmuter": 13,
+        "blood_dynamo": 22,
+        "contraband_lot": 20,
+        "counterweight_cache": 51,
+        "equipment_quiz": 9,
+        "false_floor": 16,
+        "key_cutter": 12,
+        "life_underwriter": 37,
+        "locked_chest": 58,
+        "memory_terminal": 18,
+        "nerve_clock": 16,
+        "overclock_console": 24,
+        "prison_surveyor": 59,
+        "prisoner_barter": 60,
+        "reforging_bench": 25,
+        "relay_race": 30,
+        "salvage_press": 16,
+        "silent_archive": 23,
+        "skeleton_blockade": 58,
+        "slot_machine": 14,
+        "stasis_beacon": 31,
+        "steam_vent": 25,
+        "strength_press": 28,
+        "treasure_chest": 23,
+        "triage_station": 12,
+        "vending_machine": 11,
+        "warp_hole": 7,
+        "watchful_eye": 38
+      },
+      "crossfire": {
+        "ammo_transmuter": 28,
+        "blood_dynamo": 18,
+        "contraband_lot": 32,
+        "counterweight_cache": 55,
+        "equipment_quiz": 19,
+        "false_floor": 25,
+        "key_cutter": 14,
+        "life_underwriter": 32,
+        "locked_chest": 61,
+        "memory_terminal": 30,
+        "nerve_clock": 32,
+        "overclock_console": 29,
+        "prison_surveyor": 105,
+        "prisoner_barter": 52,
+        "reforging_bench": 25,
+        "relay_race": 43,
+        "salvage_press": 26,
+        "silent_archive": 12,
+        "skeleton_blockade": 61,
+        "slot_machine": 15,
+        "stasis_beacon": 14,
+        "steam_vent": 20,
+        "strength_press": 33,
+        "treasure_chest": 21,
+        "triage_station": 17,
+        "vending_machine": 8,
+        "warp_hole": 12,
+        "watchful_eye": 46
+      },
+      "hunting": {
+        "ammo_transmuter": 13,
+        "blood_dynamo": 6,
+        "contraband_lot": 14,
+        "counterweight_cache": 66,
+        "equipment_quiz": 11,
+        "false_floor": 23,
+        "key_cutter": 24,
+        "life_underwriter": 45,
+        "locked_chest": 48,
+        "memory_terminal": 11,
+        "nerve_clock": 23,
+        "overclock_console": 14,
+        "prison_surveyor": 55,
+        "prisoner_barter": 62,
+        "reforging_bench": 21,
+        "relay_race": 27,
+        "salvage_press": 24,
+        "silent_archive": 13,
+        "skeleton_blockade": 77,
+        "slot_machine": 14,
+        "stasis_beacon": 27,
+        "steam_vent": 14,
+        "strength_press": 36,
+        "treasure_chest": 12,
+        "triage_station": 12,
+        "vending_machine": 17,
+        "warp_hole": 6,
+        "watchful_eye": 19
+      },
+      "occupation": {
+        "ammo_transmuter": 25,
+        "blood_dynamo": 12,
+        "contraband_lot": 34,
+        "counterweight_cache": 82,
+        "equipment_quiz": 12,
+        "false_floor": 20,
+        "key_cutter": 20,
+        "life_underwriter": 19,
+        "locked_chest": 46,
+        "memory_terminal": 14,
+        "nerve_clock": 8,
+        "overclock_console": 13,
+        "prison_surveyor": 52,
+        "prisoner_barter": 36,
+        "reforging_bench": 29,
+        "relay_race": 48,
+        "salvage_press": 47,
+        "silent_archive": 9,
+        "skeleton_blockade": 54,
+        "slot_machine": 18,
+        "stasis_beacon": 12,
+        "steam_vent": 32,
+        "strength_press": 39,
+        "treasure_chest": 20,
+        "triage_station": 19,
+        "vending_machine": 11,
+        "warp_hole": 11,
+        "watchful_eye": 11
+      },
+      "quarantine": {
+        "ammo_transmuter": 15,
+        "blood_dynamo": 22,
+        "contraband_lot": 32,
+        "counterweight_cache": 66,
+        "equipment_quiz": 12,
+        "false_floor": 22,
+        "key_cutter": 17,
+        "life_underwriter": 27,
+        "locked_chest": 57,
+        "memory_terminal": 12,
+        "nerve_clock": 16,
+        "overclock_console": 11,
+        "prison_surveyor": 58,
+        "prisoner_barter": 102,
+        "reforging_bench": 24,
+        "relay_race": 40,
+        "salvage_press": 26,
+        "silent_archive": 19,
+        "skeleton_blockade": 71,
+        "slot_machine": 9,
+        "stasis_beacon": 16,
+        "steam_vent": 20,
+        "strength_press": 37,
+        "treasure_chest": 20,
+        "triage_station": 27,
+        "vending_machine": 12,
+        "warp_hole": 8,
+        "watchful_eye": 17
+      },
+      "retinue": {
+        "ammo_transmuter": 15,
+        "blood_dynamo": 13,
+        "contraband_lot": 49,
+        "counterweight_cache": 84,
+        "equipment_quiz": 14,
+        "false_floor": 12,
+        "key_cutter": 15,
+        "life_underwriter": 19,
+        "locked_chest": 44,
+        "memory_terminal": 11,
+        "nerve_clock": 3,
+        "overclock_console": 14,
+        "prison_surveyor": 101,
+        "prisoner_barter": 56,
+        "reforging_bench": 53,
+        "relay_race": 29,
+        "salvage_press": 29,
+        "silent_archive": 15,
+        "skeleton_blockade": 66,
+        "slot_machine": 20,
+        "stasis_beacon": 12,
+        "steam_vent": 24,
+        "strength_press": 50,
+        "treasure_chest": 22,
+        "triage_station": 13,
+        "vending_machine": 20,
+        "warp_hole": 6,
+        "watchful_eye": 23
+      }
+    },
+    "themes": {
+      "corruption": 305,
+      "crossfire": 357,
+      "hunting": 297,
+      "occupation": 305,
+      "quarantine": 326,
+      "retinue": 330
+    }
+  },
+  "families": 13,
+  "history": {
+    "adjacentRepeatedFamilies": 433,
+    "adjacentRepeatedIdentities": 17,
+    "appearances": {
+      "ammo_transmuter": 134,
+      "blood_dynamo": 99,
+      "contraband_lot": 162,
+      "counterweight_cache": 324,
+      "equipment_quiz": 110,
+      "false_floor": 134,
+      "key_cutter": 115,
+      "life_underwriter": 190,
+      "locked_chest": 285,
+      "memory_terminal": 130,
+      "nerve_clock": 132,
+      "overclock_console": 113,
+      "prison_surveyor": 335,
+      "prisoner_barter": 312,
+      "reforging_bench": 214,
+      "relay_race": 220,
+      "salvage_press": 192,
+      "silent_archive": 110,
+      "skeleton_blockade": 281,
+      "slot_machine": 102,
+      "stasis_beacon": 120,
+      "steam_vent": 180,
+      "strength_press": 200,
+      "treasure_chest": 126,
+      "triage_station": 116,
+      "vending_machine": 92,
+      "warp_hole": 73,
+      "watchful_eye": 174
+    },
+    "contracts": {
+      "BLOCKADE": 281,
+      "HAZARD": 608,
+      "REWARD": 1527,
+      "UTILITY": 2359
+    },
+    "counts": [
+      491,
+      481,
+      470,
+      478
+    ],
+    "families": {
+      "anomalies": 515,
+      "blockades": 281,
+      "bureaucracy": 190,
+      "caches": 411,
+      "equipment": 406,
+      "games": 474,
+      "inhabitants": 335,
+      "mechanisms": 324,
+      "merchant": 162,
+      "prisoners": 312,
+      "services": 457,
+      "traps": 488,
+      "trials": 420
+    },
+    "familyCoverage": 13,
+    "firstSeenTotals": {
+      "ammo_transmuter": {
+        "campaigns": 85,
+        "meanFirstLevel": 8.623529411764705
+      },
+      "blood_dynamo": {
+        "campaigns": 71,
+        "meanFirstLevel": 7.690140845070423
+      },
+      "contraband_lot": {
+        "campaigns": 93,
+        "meanFirstLevel": 7.236559139784946
+      },
+      "counterweight_cache": {
+        "campaigns": 96,
+        "meanFirstLevel": 4.364583333333333
+      },
+      "equipment_quiz": {
+        "campaigns": 80,
+        "meanFirstLevel": 9.825
+      },
+      "false_floor": {
+        "campaigns": 79,
+        "meanFirstLevel": 6.506329113924051
+      },
+      "key_cutter": {
+        "campaigns": 78,
+        "meanFirstLevel": 9.115384615384615
+      },
+      "life_underwriter": {
+        "campaigns": 92,
+        "meanFirstLevel": 6.434782608695652
+      },
+      "locked_chest": {
+        "campaigns": 96,
+        "meanFirstLevel": 4.510416666666667
+      },
+      "memory_terminal": {
+        "campaigns": 85,
+        "meanFirstLevel": 8.8
+      },
+      "nerve_clock": {
+        "campaigns": 80,
+        "meanFirstLevel": 8.6
+      },
+      "overclock_console": {
+        "campaigns": 77,
+        "meanFirstLevel": 8.454545454545455
+      },
+      "prison_surveyor": {
+        "campaigns": 96,
+        "meanFirstLevel": 4.21875
+      },
+      "prisoner_barter": {
+        "campaigns": 96,
+        "meanFirstLevel": 3.4895833333333335
+      },
+      "reforging_bench": {
+        "campaigns": 94,
+        "meanFirstLevel": 6.829787234042553
+      },
+      "relay_race": {
+        "campaigns": 95,
+        "meanFirstLevel": 6.652631578947369
+      },
+      "salvage_press": {
+        "campaigns": 90,
+        "meanFirstLevel": 6.088888888888889
+      },
+      "silent_archive": {
+        "campaigns": 74,
+        "meanFirstLevel": 8.391891891891891
+      },
+      "skeleton_blockade": {
+        "campaigns": 96,
+        "meanFirstLevel": 4.1875
+      },
+      "slot_machine": {
+        "campaigns": 72,
+        "meanFirstLevel": 9.402777777777779
+      },
+      "stasis_beacon": {
+        "campaigns": 74,
+        "meanFirstLevel": 8.702702702702704
+      },
+      "steam_vent": {
+        "campaigns": 92,
+        "meanFirstLevel": 6.543478260869565
+      },
+      "strength_press": {
+        "campaigns": 94,
+        "meanFirstLevel": 6.276595744680851
+      },
+      "treasure_chest": {
+        "campaigns": 87,
+        "meanFirstLevel": 9.35632183908046
+      },
+      "triage_station": {
+        "campaigns": 81,
+        "meanFirstLevel": 9.358024691358025
+      },
+      "vending_machine": {
+        "campaigns": 67,
+        "meanFirstLevel": 9.298507462686567
+      },
+      "warp_hole": {
+        "campaigns": 60,
+        "meanFirstLevel": 10.6
+      },
+      "watchful_eye": {
+        "campaigns": 90,
+        "meanFirstLevel": 7.2555555555555555
+      }
+    },
+    "identityCoverage": 28,
+    "maxFamilyStreak": 4,
+    "maxIdentityStreak": 2,
+    "maxSameRareStreak": 1,
+    "maxUnique": 28,
+    "meanCommonUnique": 21.854166666666668,
+    "meanEventsPerLevel": 2.4869791666666665,
+    "meanFamilyCoverage": 12.927083333333334,
+    "meanUnique": 24.6875,
+    "minCommonUnique": 19,
+    "minUnique": 21,
+    "rareAdjacentFloors": 6,
+    "rareSelections": 478,
+    "relationSelections": 1232,
+    "selections": 4775,
+    "themeAppearances": {
+      "corruption": {
+        "ammo_transmuter": 16,
+        "blood_dynamo": 29,
+        "contraband_lot": 21,
+        "counterweight_cache": 37,
+        "equipment_quiz": 12,
+        "false_floor": 19,
+        "key_cutter": 13,
+        "life_underwriter": 39,
+        "locked_chest": 53,
+        "memory_terminal": 27,
+        "nerve_clock": 16,
+        "overclock_console": 34,
+        "prison_surveyor": 46,
+        "prisoner_barter": 43,
+        "reforging_bench": 26,
+        "relay_race": 35,
+        "salvage_press": 23,
+        "silent_archive": 25,
+        "skeleton_blockade": 49,
+        "slot_machine": 16,
+        "stasis_beacon": 30,
+        "steam_vent": 21,
+        "strength_press": 20,
+        "treasure_chest": 20,
+        "triage_station": 13,
+        "vending_machine": 19,
+        "warp_hole": 10,
+        "watchful_eye": 44
+      },
+      "crossfire": {
+        "ammo_transmuter": 35,
+        "blood_dynamo": 19,
+        "contraband_lot": 25,
+        "counterweight_cache": 38,
+        "equipment_quiz": 20,
+        "false_floor": 22,
+        "key_cutter": 19,
+        "life_underwriter": 33,
+        "locked_chest": 57,
+        "memory_terminal": 37,
+        "nerve_clock": 40,
+        "overclock_console": 26,
+        "prison_surveyor": 74,
+        "prisoner_barter": 51,
+        "reforging_bench": 31,
+        "relay_race": 55,
+        "salvage_press": 33,
+        "silent_archive": 16,
+        "skeleton_blockade": 45,
+        "slot_machine": 19,
+        "stasis_beacon": 19,
+        "steam_vent": 31,
+        "strength_press": 23,
+        "treasure_chest": 27,
+        "triage_station": 20,
+        "vending_machine": 15,
+        "warp_hole": 12,
+        "watchful_eye": 43
+      },
+      "hunting": {
+        "ammo_transmuter": 9,
+        "blood_dynamo": 8,
+        "contraband_lot": 17,
+        "counterweight_cache": 50,
+        "equipment_quiz": 16,
+        "false_floor": 19,
+        "key_cutter": 31,
+        "life_underwriter": 42,
+        "locked_chest": 44,
+        "memory_terminal": 19,
+        "nerve_clock": 24,
+        "overclock_console": 19,
+        "prison_surveyor": 51,
+        "prisoner_barter": 63,
+        "reforging_bench": 28,
+        "relay_race": 33,
+        "salvage_press": 20,
+        "silent_archive": 19,
+        "skeleton_blockade": 46,
+        "slot_machine": 23,
+        "stasis_beacon": 24,
+        "steam_vent": 26,
+        "strength_press": 34,
+        "treasure_chest": 12,
+        "triage_station": 12,
+        "vending_machine": 9,
+        "warp_hole": 17,
+        "watchful_eye": 19
+      },
+      "occupation": {
+        "ammo_transmuter": 31,
+        "blood_dynamo": 9,
+        "contraband_lot": 28,
+        "counterweight_cache": 75,
+        "equipment_quiz": 21,
+        "false_floor": 23,
+        "key_cutter": 24,
+        "life_underwriter": 23,
+        "locked_chest": 37,
+        "memory_terminal": 14,
+        "nerve_clock": 14,
+        "overclock_console": 14,
+        "prison_surveyor": 37,
+        "prisoner_barter": 28,
+        "reforging_bench": 35,
+        "relay_race": 42,
+        "salvage_press": 55,
+        "silent_archive": 10,
+        "skeleton_blockade": 39,
+        "slot_machine": 11,
+        "stasis_beacon": 17,
+        "steam_vent": 33,
+        "strength_press": 50,
+        "treasure_chest": 22,
+        "triage_station": 18,
+        "vending_machine": 14,
+        "warp_hole": 10,
+        "watchful_eye": 19
+      },
+      "quarantine": {
+        "ammo_transmuter": 18,
+        "blood_dynamo": 21,
+        "contraband_lot": 28,
+        "counterweight_cache": 54,
+        "equipment_quiz": 23,
+        "false_floor": 28,
+        "key_cutter": 12,
+        "life_underwriter": 33,
+        "locked_chest": 51,
+        "memory_terminal": 14,
+        "nerve_clock": 20,
+        "overclock_console": 7,
+        "prison_surveyor": 47,
+        "prisoner_barter": 88,
+        "reforging_bench": 34,
+        "relay_race": 27,
+        "salvage_press": 33,
+        "silent_archive": 22,
+        "skeleton_blockade": 54,
+        "slot_machine": 16,
+        "stasis_beacon": 14,
+        "steam_vent": 40,
+        "strength_press": 33,
+        "treasure_chest": 18,
+        "triage_station": 32,
+        "vending_machine": 17,
+        "warp_hole": 10,
+        "watchful_eye": 21
+      },
+      "retinue": {
+        "ammo_transmuter": 25,
+        "blood_dynamo": 13,
+        "contraband_lot": 43,
+        "counterweight_cache": 70,
+        "equipment_quiz": 18,
+        "false_floor": 23,
+        "key_cutter": 16,
+        "life_underwriter": 20,
+        "locked_chest": 43,
+        "memory_terminal": 19,
+        "nerve_clock": 18,
+        "overclock_console": 13,
+        "prison_surveyor": 80,
+        "prisoner_barter": 39,
+        "reforging_bench": 60,
+        "relay_race": 28,
+        "salvage_press": 28,
+        "silent_archive": 18,
+        "skeleton_blockade": 48,
+        "slot_machine": 17,
+        "stasis_beacon": 16,
+        "steam_vent": 29,
+        "strength_press": 40,
+        "treasure_chest": 27,
+        "triage_station": 21,
+        "vending_machine": 18,
+        "warp_hole": 14,
+        "watchful_eye": 28
+      }
+    },
+    "themes": {
+      "corruption": 305,
+      "crossfire": 357,
+      "hunting": 297,
+      "occupation": 305,
+      "quarantine": 326,
+      "retinue": 330
+    }
+  },
+  "levels": 20,
+  "method": "Selection-only: actual catalog + EncounterDirector motif scheduler; paired equal-seed history-on/control; no physical admission or native gameplay.",
+  "repeatReduction": 0.9757489300998573
+}

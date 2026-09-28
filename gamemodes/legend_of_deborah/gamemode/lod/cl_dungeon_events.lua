@@ -20,12 +20,13 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local row,endpoint
     for _,event in ipairs(LOD.DungeonEvents.events) do
         if event.id==eventID then
-            if event.archetype=='warp_hole' or event.archetype=='bribe_blockade' then
+            if event.details and event.details.endpoints then
                 for index,point in ipairs(event.details and event.details.endpoints or {}) do
                     if point.entityIndex==ent:EntIndex() then row,endpoint=event,index;break end
                 end
-            elseif event.entityIndex==ent:EntIndex()
-                or event.archetype=='skeleton_blockade' and event.details and event.details.barrierIndex==ent:EntIndex() then row=event end
+            end
+            if not row and (event.entityIndex==ent:EntIndex()
+                or event.archetype=='skeleton_blockade' and event.details and event.details.barrierIndex==ent:EntIndex()) then row=event end
             if row then break end
         end
     end
@@ -34,7 +35,22 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
     local treasure=archetype=='treasure_chest'
     local chest=treasure or archetype=='locked_chest'
     local lines
-    if archetype=='equipment_quiz' then
+    if row and row.details and row.details.kind then
+        local details=row.details
+        local point=endpoint and details.endpoints and details.endpoints[endpoint]
+        lines={string.upper(details.name or row.name or archetype),details.offer or ''}
+        if details.status and details.status~='' then lines[#lines+1]=details.status end
+        if row.claimUnavailable or details.unavailable then
+            lines[#lines+1]='Unavailable — try again shortly.'
+        elseif row.claimed or details.spent then
+            lines[#lines+1]=details.resultText or 'COMPLETED — your opportunity is spent for this dungeon.'
+        elseif row.state=='resolved' then
+            lines[#lines+1]=details.resolvedText or 'RESOLVED — shared state updated for everyone.'
+        else
+            local action=point and point.action or details.action
+            if action and action~='' then lines[#lines+1]='['..key..'] '..action end
+        end
+    elseif archetype=='equipment_quiz' then
         local details=row and row.details or {}
         if details.spent then return end
         lines={'GAME MASTER — EQUIPMENT QUIZ',
@@ -63,7 +79,7 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
         end
     elseif archetype=='warp_hole' then
         local details=row and row.details
-        local point=details and details.endpoints[endpoint]
+        local point=details and details.endpoints and details.endpoints[endpoint]
         local number=endpoint or ent:GetNW2Int('LOD_WarpEndpoint',0)
         local floor=point and point.destinationFloor or ent:GetNW2Int('LOD_WarpDestinationFloor',0)
         lines={'WARP HOLE — ENDPOINT '..number..' → FLOOR '..floor,
@@ -125,7 +141,7 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
                 lines[#lines+1]='['..sprint..' + '..key..'] PICK LOCK — '..details.threshold..'% chance; one attempt.'
             end
         end
-    else
+    elseif archetype=='slot_machine' then
         lines={'DEBBIE SLOTS','Pay 5 $DEB. 1d4: roll 4 returns 15; otherwise 0.',
         '25%: +10 net  |  75%: -5 net  |  One play per account.'}
         if not row then lines[#lines+1]='Synchronizing machine…'
@@ -134,6 +150,24 @@ hook.Add('HUDPaint','LOD_DungeonEventPrompt',function()
             local result=row.result
             lines[#lines+1]=result and string.format('PLAYED — rolled %d; returned %d $DEB.',result.face or 0,result.payout or 0) or 'PLAYED — return next dungeon.'
         else lines[#lines+1]='['..key..'] WAGER 5 $DEB' end
+    else
+        lines={string.upper(ent:GetNW2String('LOD_EventName','DUNGEON EVENT')),'Synchronizing event…'}
+    end
+    if row and row.details and row.details.kind and surface and surface.GetTextSize then
+        -- Keep the actual cost and consequence readable at Steam Deck width.
+        surface.SetFont('LOD_HUD_Small')
+        local wrapped={}
+        for _,line in ipairs(lines) do
+            local current=''
+            for word in tostring(line):gmatch('%S+') do
+                local candidate=current=='' and word or current..' '..word
+                if current~='' and surface.GetTextSize(candidate)>math.min(960,ScrW()-48) then
+                    wrapped[#wrapped+1]=current;current=word
+                else current=candidate end
+            end
+            if current~='' then wrapped[#wrapped+1]=current end
+        end
+        lines=wrapped
     end
     for i,line in ipairs(lines) do
         draw.SimpleTextOutlined(line,'LOD_HUD_Small',ScrW()/2,ScrH()/2+24+i*20,

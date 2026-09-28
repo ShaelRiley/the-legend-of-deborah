@@ -1,4 +1,6 @@
--- Eight-entry catalog through actual RunManager, encounter reservations and native event creation.
+-- Historical eight-entry quiz catalog through actual RunManager and native creation.
+-- The expanded complete startup is independently exercised by
+-- test_event_expansion_generation.lua, including both multi-definition modules.
 -- Geometry/transport use native API doubles. Only SkeletonHero:Spawn is isolated:
 -- profile/combat/native death have a separate gate; no native acceptance is claimed.
 local equipment=dofile('tools/test_equipment_economy_runtime.lua')
@@ -100,16 +102,18 @@ for _,file in ipairs({'sv_event_bribe_blockade.lua','sv_event_bribe_payment.lua'
  local archive=assert(io.open('tools/fixtures/retired_bribe/'..file,'rb'))
  archive:close()
 end
--- Tie the fixture's catalog to the actual boot includes, including dormant-code
--- boundaries. Explicitly dofile-ing a retired module is not production startup.
+-- Retain each historical identity's boot binding and dormant-code boundaries.
+-- Shared expansion modules register multiple identities, unlike the old files.
 local function read(path) local f=assert(io.open(path));local text=f:read('*a');f:close();return text end
 local boot=read('gamemodes/legend_of_deborah/gamemode/init.lua')
 local client=read('gamemodes/legend_of_deborah/gamemode/cl_init.lua')
 local bootCount=0
+local expansionModules={transactions=true,services=true,incidents=true}
 for id in boot:gmatch('include%("lod/sv_event_([%w_]+)%.lua"%)') do
- if id~='director' then assert(R.Definitions[id],'Active boot/catalog drift: '..id);bootCount=bootCount+1 end
+ if id~='director' and not expansionModules[id] then assert(R.Definitions[id],'Active boot/catalog drift: '..id);bootCount=bootCount+1 end
 end
 assert(bootCount==#R:Catalog())
+for id in pairs(expansionModules) do assert(boot:find('include("lod/sv_event_'..id..'.lua")',1,true),'Expansion module missing from startup') end
 assert(not boot:find('cl_event_bribe_payment.lua',1,true))
 assert(not client:find('cl_event_bribe_payment.lua',1,true))
 assert(not F.receivers.LOD_BribeDecision,'Retired payment receiver is live')
@@ -229,7 +233,7 @@ end
 Run.State.Level=5
 local seen,counts,partners={}, {}, {}
 local accepted,rejected,lastSeed,lastPlan,lastQuiz=0,0
-for seed=1,192 do
+for seed=1,768 do
  local selected,n=R:Select(seed,5)
  assert(n==LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:count:v1')):Int(1,4))
  local chosen={};for _,id in ipairs(selected) do assert(not chosen[id]);chosen[id]=true;seen[id]=true end
@@ -248,7 +252,8 @@ for seed=1,192 do
  end
  if accepted>=8 and count(counts)==4 and count(partners)==8 then break end
 end
-assert(count(seen)==8 and accepted>=8 and count(counts)==4 and count(partners)==8,'Missing actual combined catalog/quiz coverage')
+assert(count(seen)==8 and accepted>=8 and count(counts)==4 and count(partners)==8,
+ 'Missing actual combined catalog/quiz coverage: catalog='..count(seen)..' builds='..accepted..' counts='..count(counts)..' partners='..count(partners))
 local sig,graphSig=signature(lastPlan),F.graphSignature(Run.State.Graph)
 local oldEntities={};for _,i in ipairs(lastPlan.instances) do for _,e in ipairs(i.entities) do oldEntities[#oldEntities+1]=e end end
 local plan,i=build(lastSeed);assert(signature(plan)==sig and F.graphSignature(Run.State.Graph)==graphSig)

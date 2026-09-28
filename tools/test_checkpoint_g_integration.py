@@ -26,6 +26,12 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),
+    ("Big Event Incidents & Body Lifecycles", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_incidents.lua"]),
+    ("Big Event Campaign Ecology & Determinism", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_ecology.lua"]),
+    ("Big Event Campaign Coverage & Novelty", ["python3", "tools/test_crypto_sqlite.py", "tools/sample_event_ecology.lua"]),
+    ("Big Event Full Catalog & Production Generation", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_expansion_generation.lua"]),
+    ("Big Event Native Presentation & Client Prompts", ["python3", "tools/run_lua54.py", "tools/test_event_expansion_ui.lua"]),
     ("Big Loot Authored Catalog & Budget", ["python3", "tools/run_lua54.py", "tools/test_big_loot_catalog.lua"]),
     ("Big Loot Inventory Finality", ["python3", "tools/run_lua54.py", "tools/test_big_loot_inventory.lua"]),
     ("Big Loot Reward Ecology & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_big_loot_ecology.lua"]),

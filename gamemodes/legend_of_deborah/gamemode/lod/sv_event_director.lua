@@ -279,25 +279,158 @@ function D:ValidatePlacement(g, def, placement, reserved, environment)
     return true
 end
 
+-- Event history is a successful-build receipt, never an activation side effect.
+-- A same-level regeneration reads the pre-level state and replaces one receipt;
+-- unsuccessful plans, native creation, previews and cleanup cannot advance it.
+function D:SelectionContext(g, level, options)
+    options=options or {}
+    local state=Run.State
+    level=level or (g and g.DungeonLevel) or state.Level or 1
+    local receipt=state.EventEcology
+    local before=Registry:NewHistory()
+    if receipt and receipt.run==state.RunId and receipt.epoch==state.CampaignEpoch
+        and receipt.campaign==state.CampaignSeed then
+        if level==receipt.level then before=receipt.before
+        elseif level>receipt.level then before=receipt.after end
+    end
+    local ecology=g and g.EncounterPlan and g.EncounterPlan.ecology
+    return {history=table.Copy(before),theme=ecology and ecology.theme,
+        historyEnabled=options.historyEnabled~=false}
+end
+
+function D:CommitEcologyPlan(g)
+    local state=Run.State
+    local plan=g and g.EventPlan
+    local receipt=plan and plan.ecologyReceipt
+    if not receipt or not self.Context or self.Context.plan~=plan or self.Context.graph~=g
+        or receipt.state~=state or receipt.graph~=g or state.Graph~=g or not state.BuildReady
+        or state.Failed or state.LevelCleared or plan.mode~="full"
+        or state.EventEcology~=receipt.previous or receipt.run~=state.RunId
+        or receipt.epoch~=state.CampaignEpoch or receipt.campaign~=state.CampaignSeed
+        or receipt.level~=state.Level or receipt.seed~=state.LevelSeed
+        or receipt.masterSeed~=g.MasterLevelSeed or receipt.layoutSeed~=g.LevelSeed
+        or (receipt.previous and receipt.previous.run==state.RunId
+            and receipt.previous.epoch==state.CampaignEpoch and receipt.level<receipt.previous.level) then return false end
+    local before=plan.ecology.before
+    state.EventEcology={level=receipt.level,run=receipt.run,epoch=receipt.epoch,campaign=receipt.campaign,
+        before=table.Copy(before),after=Registry:HistoryAfter(before,plan.selected,receipt.level,plan.ecology.theme)}
+    plan.ecologyReceipt=nil
+    receipt.state,receipt.graph,receipt.previous=nil,nil,nil
+    plan.ecology.committed=true
+    self.LastPlanDiagnostics=self:EcologyDiagnostics(plan)
+    return true
+end
+
+-- Graph-only observations bias placement. Every selected candidate still passes
+-- the complete existing isolated and combined progression/shortcut proofs.
+function D:EventTopology(g)
+    local critical,objective,encounter={},{},{}
+    local function add(t,c) if c then t[key(c)]=true end end
+    for _,cell in ipairs(g.CriticalPath or {}) do add(critical,cell) end
+    local p=g.Progression
+    add(objective,g.Start);add(objective,g.Goal);add(objective,p.CoreCell);add(objective,p.DeborahCell)
+    for _,gate in ipairs(p.Gates or {}) do add(objective,gate.beforeCell);add(objective,gate.afterCell) end
+    for _,card in ipairs(p.Keycards or {}) do add(objective,card.cell) end
+    for _,row in ipairs(g.EncounterPlan and g.EncounterPlan.encounters or {}) do encounter[row.cellKey or key(row.cell)]=true end
+    local function distances(starts)
+        local result,queue={},sorted(starts)
+        for _,k in ipairs(queue) do result[k]=0 end
+        local index=1
+        while queue[index] do
+            local k=queue[index];index=index+1
+            for _,n in ipairs(sorted(g.Cells[k] and g.Cells[k].neighbors)) do
+                if g.Cells[n] and result[n]==nil then result[n]=result[k]+1;queue[#queue+1]=n end
+            end
+        end
+        return result
+    end
+    local objectiveDistance,encounterDistance,detour=distances(objective),distances(encounter),distances(critical)
+    local protected=self:ProtectedCells(g)
+    local out={}
+    for k,cell in pairs(g.Cells) do
+        local degree,vertical=0,false
+        for n in pairs(cell.neighbors or {}) do
+            if g.Cells[n] then
+                degree=degree+1
+                if g.Cells[n].z~=cell.z then vertical=true end
+            end
+        end
+        out[k]={degree=degree,deadEnd=degree==1,junction=degree>=3,corridor=degree==2,
+            optional=not critical[k],vertical=vertical,protected=protected[k]==true,
+            encounterDistance=encounterDistance[k] or 999,objectiveDistance=objectiveDistance[k] or 999,
+            detour=detour[k] or 0,floor=cell.z+1}
+    end
+    return out
+end
+
+function D:PlacementPreference(def, facts)
+    if not facts then return 0,"neutral" end
+    local score,reason=0,"neutral"
+    if facts.protected then return -100,"protected" end
+    if def.topology=="dead_end" then
+        if facts.deadEnd then score,reason=6,"optional_dead_end" end
+        if facts.optional then score=score+2 end
+    elseif def.topology=="respite" then
+        if facts.encounterDistance>=3 then score,reason=4,"breathing_space" end
+        if facts.optional then score=score+2 end
+        if facts.degree>=2 then score=score+1 end
+    elseif def.topology=="optional" then
+        if facts.optional then score,reason=4,"side_branch" end
+        score=score+math.min(3,facts.detour)*.5
+    elseif def.topology=="corridor" then
+        if facts.corridor and not facts.vertical then score,reason=4,"readable_corridor" end
+    elseif def.topology=="junction" then
+        if facts.junction then score,reason=4,"multiple_approaches" end
+    elseif def.topology=="required" then
+        if not facts.optional and facts.corridor then score,reason=4,"required_approach" end
+    end
+    if facts.vertical then score=score-2 end
+    if facts.objectiveDistance<=1 then score=score-2 end
+    return score,reason
+end
+
+function D:EcologyDiagnostics(plan)
+    if not plan then return {mode="unavailable"} end
+    local e=plan.ecology or {}
+    return {mode=plan.mode,count=plan.selectedCount,instances=#plan.instances,
+        selected=table.Copy(plan.selected or {}),theme=e.theme or "unavailable",historyLevels=e.historyLevels or 0,
+        historyEnabled=e.historyEnabled~=false,committed=e.committed==true,
+        eligibleIds=table.Copy(e.eligibleIds or {}),excluded=table.Copy(e.excluded or {}),
+        decisions=table.Copy(e.decisions or {}),placements=table.Copy(plan.placementDiagnostics or {}),failure=plan.failure}
+end
+
 function D:Plan(g, options)
     options = options or {}
     local seed = g.MasterLevelSeed or g.LevelSeed or 1
-    local plan = {seed = seed, mode = "disabled", selectedCount = 0, instances = {}}
-    if not options.enabled and not options.preview then return true, plan end
-    if not options.preview and Registry.PopulationReady ~= true then
-        return false, "production event population gated: catalog activation and rarity tuning pending"
+    local plan = {seed = seed, mode = "disabled", selectedCount = 0, instances = {}, placementDiagnostics={}}
+    local function rejected(reason)
+        plan.failure=reason;self.LastPlanDiagnostics=self:EcologyDiagnostics(plan)
+        return false,reason
     end
-    if LOD.GraphIntegrity and not LOD.GraphIntegrity:Audit(g).valid then return false, "invalid maze graph integrity" end
-    local selected, count
+    if not options.enabled and not options.preview then self.LastPlanDiagnostics=self:EcologyDiagnostics(plan);return true, plan end
+    if not options.preview and Registry.PopulationReady ~= true then
+        return rejected("production event population gated: catalog activation and rarity tuning pending")
+    end
+    if LOD.GraphIntegrity and not LOD.GraphIntegrity:Audit(g).valid then return rejected("invalid maze graph integrity") end
+    local selected, count, ecology
+    local context=self:SelectionContext(g,g.DungeonLevel or Run.State.Level or 1,options)
     if options.preview then
-        if not Registry.Definitions[options.preview] then return false, "unknown event preview" end
+        if not Registry.Definitions[options.preview] then return rejected("unknown event preview") end
         selected, count, plan.mode = {options.preview}, 1, "preview"
     else
-        selected, count = Registry:Select(seed, g.DungeonLevel or Run.State.Level or 1)
-        if not selected then return false, count end
+        selected, count, ecology = Registry:Select(seed, g.DungeonLevel or Run.State.Level or 1,context)
+        if not selected then return rejected(count) end
         plan.mode = "full"
     end
-    plan.selectedCount = count
+    plan.selectedCount,plan.selected = count,selected
+    plan.ecology=ecology or {theme=context.theme,historyEnabled=options.historyEnabled~=false,
+        historyLevels=#context.history.recent,decisions={}}
+    plan.ecology.before=context.history
+    local state=Run.State
+    plan.ecologyReceipt=plan.mode=="full" and {state=state,graph=g,previous=state.EventEcology,
+        run=state.RunId,epoch=state.CampaignEpoch,campaign=state.CampaignSeed,
+        level=state.Level,seed=state.LevelSeed,masterSeed=g.MasterLevelSeed,layoutSeed=g.LevelSeed} or nil
+    local topology=self:EventTopology(g)
     local reserved, hazardEdges, hazardCells = {}, {}, {}
     for ordinal, id in ipairs(selected) do
         local def = Registry.Definitions[id]
@@ -327,19 +460,34 @@ function D:Plan(g, options)
                 if prior.contract=="BLOCKADE" then placeEnvironment.edges[prior.placement.edgeKey]=true end
             end
             LOD.RNG.New(LOD.Seeds.Derive(memberSeed, "placement")):Shuffle(candidates)
+            local order={};for index,k in ipairs(candidates) do order[k]=index end
+            table.sort(candidates,function(a,b)
+                local av,bv=self:PlacementPreference(def,topology[a]),self:PlacementPreference(def,topology[b])
+                return av==bv and order[a]<order[b] or av>bv
+            end)
+            local proofs={"ordered_progression","reserved_cells","combined_event_masks"}
+            if def.contract=="BLOCKADE" then proofs[#proofs+1]="earliest_approach_all_blockades_closed_resolution" end
+            if def.contract=="REWARD" then proofs[#proofs+1]="optional_reward" end
+            if def.contract=="UTILITY" or def.contract=="REWARD" then proofs[#proofs+1]="nonblocking" end
+            if def.dropFloor or def.pairedWarp then proofs[#proofs+1]="all_ordered_stages_and_ordinary_return" end
+            if def.optionalAlcove then proofs[#proofs+1]="optional_flat_alcove_and_approach" end
+            local diagnostic={archetype=id,member=memberIndex,contract=def.contract,scope=def.scope,
+                candidates=#candidates,attempts=0,rejections={},proofs=proofs,distanceMeaning="structural_graph_distance"}
+            plan.placementDiagnostics[#plan.placementDiagnostics+1]=diagnostic
             local accepted, lastErr
             for i = 1, math.min(#candidates, self.MaxPlacementAttempts) do
                 local cell = g.Cells[candidates[i]]
+                diagnostic.attempts=i
                 local placement
                 if def.Place then
                     local called, result, callbackErr = self:GraphCallback(def, "Place", g, cell, placeEnvironment)
-                    if not called then return false, callbackErr end
+                    if not called then return rejected(callbackErr) end
                     placement = result
                 elseif def.optionalAlcove then placement = self:AlcovePlacement(g, cell)
                 else placement = {cellKey = candidates[i]} end
                 if placement then
                     local ok, err, fatal = self:ValidatePlacement(g, def, placement, reserved)
-                    if fatal then return false, err end
+                    if fatal then return rejected(err) end
                     if ok then
                         -- Test the growing combined proof while candidates can
                         -- still be rejected. A later toll must not strand an
@@ -373,14 +521,19 @@ function D:Plan(g, options)
                                 end
                             end
                         end
-                        if fatal then return false,err end
+                        if fatal then return rejected(err) end
                     end
                     if ok then accepted = placement; break end
                     lastErr = err
+                    diagnostic.rejections[tostring(err)]=(diagnostic.rejections[tostring(err)] or 0)+1
+                else
+                    diagnostic.rejections.no_candidate=(diagnostic.rejections.no_candidate or 0)+1
                 end
             end
-            if not accepted then return false, "event placement exhausted: " .. id .. ": " .. tostring(lastErr) end
+            if not accepted then return rejected("event placement exhausted: " .. id .. ": " .. tostring(lastErr)) end
             local cellKey = accepted.cellKey or key(accepted.cell)
+            diagnostic.cellKey=cellKey;diagnostic.topology=table.Copy(topology[cellKey])
+            diagnostic.score,diagnostic.fit=self:PlacementPreference(def,topology[cellKey])
             reserved[cellKey] = true
             if accepted.approachCellKey then reserved[accepted.approachCellKey] = true end
             if accepted.destinationCellKey then reserved[accepted.destinationCellKey] = true end
@@ -419,9 +572,10 @@ function D:Plan(g, options)
             or Registry.Definitions[instance.archetype].pairedWarp
             or Registry.Definitions[instance.archetype].optionalAlcove then
             local ok, err = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
-            if not ok then return false, "combined event contract rejected: " .. tostring(err) end
+            if not ok then return rejected("combined event contract rejected: " .. tostring(err)) end
         end
     end
+    self.LastPlanDiagnostics=self:EcologyDiagnostics(plan)
     return true, plan
 end
 
@@ -665,7 +819,7 @@ function Builder:Build(g)
     if not planned then self:Cleanup(); return false, plan end
     g.EventPlan = plan
     local activated, err = D:Activate(g, plan)
-    if not activated then self:Cleanup(); return false, err end
+    if not activated then plan.failure=err;D.LastPlanDiagnostics=D:EcologyDiagnostics(plan);self:Cleanup(); return false, err end
     report.eventCount, report.eventInstanceCount, report.eventMode = plan.selectedCount, #plan.instances, plan.mode
     return true, report
 end
@@ -681,7 +835,8 @@ function Run:BuildCurrentLevel(...)
     D.NextPreview, D.NextPopulationPreview = nil, nil
     local ok, result = baseLevel(self, ...)
     D.BuildOptions = nil
-    if not ok then D:Cleanup("build failed") end
+    if not ok then D:Cleanup("build failed")
+    elseif self.State.Graph then D:CommitEcologyPlan(self.State.Graph) end
     D:SyncAll()
     return ok, result
 end
@@ -753,4 +908,11 @@ concommand.Add("lod_event_population_preview", function(ply, _, args)
     local seed = args and args[1] and tonumber(args[1])
     if args and args[1] and (not seed or seed ~= seed or seed < 1 or seed > 2147483646 or seed % 1 ~= 0) then return end
     preview(ply, nil, true, seed)
+end)
+
+-- Read-only structured diagnostics; this command grants no resources or preview.
+concommand.Add("lod_event_ecology",function(ply)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+    local report=D.Context and D:EcologyDiagnostics(D.Context.plan) or D.LastPlanDiagnostics or {mode="unavailable"}
+    print("[LOD:EVENT-ECOLOGY] "..util.TableToJSON(report))
 end)

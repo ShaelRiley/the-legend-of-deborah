@@ -30,8 +30,12 @@ for seed=1,256 do
  local again,m=R:Select(seed)
  assert(n==m and n>=1 and n<=4 and #selected==n and table.concat(selected,',')==table.concat(again,','))
  assert(n==LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:count:v1')):Int(1,4),'Exactly one authoritative utility d4')
- local legacy=R:Catalog();LOD.RNG.New(LOD.Seeds.Derive(seed,'dungeon-events:catalog:v1')):Shuffle(legacy)
- for i=1,n do assert(selected[i]==legacy[i],'Non-rare catalog preserves existing named selection stream') end
+ -- Catalog selection is now layered by family/novelty. Its named private
+ -- streams must leave independently seeded maze/loot draws untouched.
+ local unrelated=LOD.RNG.New(LOD.Seeds.Derive(seed,'event-test:unrelated'))
+ local expected=LOD.RNG.New(LOD.Seeds.Derive(seed,'event-test:unrelated'))
+ R:Select(seed)
+ for i=1,8 do assert(unrelated:Int(1,10000)==expected:Int(1,10000),'Event ecology contaminated unrelated RNG') end
  local unique={};for _,id in ipairs(selected) do assert(not unique[id]);unique[id]=true end
  seen[n]=true
 end
