@@ -1,28 +1,103 @@
-name: Low-end optimization baseline
+name: Low-end exact-tree verification
 on:
   push:
     branches: [automation/low-end-20260928]
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: low-end-exact-tree-verification
+  cancel-in-progress: false
 jobs:
-  snapshot:
+  verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 30
+    env:
+      PARENT: 3d60d6f730b56abbf3df5de68bb8d71002d44d96
+      EXPECTED_TREE: 34e69dcd164ce4e14b9aaaab1c619da1a8546a21
+      EXPECTED_SOURCE: 1c9b99d3b2ec488f3ecd2dcfcd47c32025192fe61a2677c2921a8090c9e1f255
+      PATCH_SHA256: e5da9bbb09b7c8047501cb6a2e976da63a30306eaf1b92357597acd547c8654e
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 3d60d6f730b56abbf3df5de68bb8d71002d44d96
-      - name: Export verified source and Git metadata
+      - name: Prepare runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0 lua5.1 ffmpeg
+          python3 -m pip install pillow numpy
+      - name: Reconstruct exact candidate without infrastructure ancestry
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = 3d60d6f730b56abbf3df5de68bb8d71002d44d96
-          mkdir -p "$RUNNER_TEMP/lod-baseline"
-          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/lod-baseline/source.tar.gz"
-          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/lod-baseline/refs.txt"
-          git ls-tree -r HEAD > "$RUNNER_TEMP/lod-baseline/tree.txt"
-          git cat-file commit HEAD > "$RUNNER_TEMP/lod-baseline/commit.txt"
+          mkdir -p "$RUNNER_TEMP/low-end-evidence"
+          base64 -d .github/recovery/low-end-20260928.patch.xz.b64 | xz -d > "$RUNNER_TEMP/low-end-evidence/candidate.patch"
+          echo "$PATCH_SHA256  $RUNNER_TEMP/low-end-evidence/candidate.patch" | sha256sum -c -
+          git fetch origin "$PARENT"
+          git checkout --detach "$PARENT"
+          test "$(git rev-parse HEAD)" = "$PARENT"
+          test "$(git rev-parse HEAD^{tree})" = 945fdd9095db107f7915258bcd7a9adce8c7d514
+          git apply --index --whitespace=error "$RUNNER_TEMP/low-end-evidence/candidate.patch"
+          git diff --cached --check
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          python3 - <<'PY'
+          import importlib.util, os, json
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('matrix','tools/test_checkpoint_g_integration.py')
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          s=m.source_snapshot()
+          assert m.snapshot_digest(s)==os.environ['EXPECTED_SOURCE']
+          assert len(m.SUITES)==285 and len(m.LUA_FILES)==801
+          Path(os.environ['RUNNER_TEMP'],'low-end-evidence','initial-source.json').write_text(json.dumps(s,indent=2)+'\n')
+          PY
+      - name: Paired production operation probes
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/low-end-baseline"
+          git archive "$PARENT" | tar -x -C "$RUNNER_TEMP/low-end-baseline"
+          cp tools/test_low_end_palette.lua tools/test_low_end_geometry.lua "$RUNNER_TEMP/low-end-baseline/tools/"
+          (cd "$RUNNER_TEMP/low-end-baseline" && python3 tools/run_lua54.py tools/test_low_end_palette.lua --baseline) | tee "$RUNNER_TEMP/low-end-evidence/palette-before.txt"
+          (cd "$RUNNER_TEMP/low-end-baseline" && python3 tools/run_lua54.py tools/test_low_end_geometry.lua --baseline) | tee "$RUNNER_TEMP/low-end-evidence/geometry-before.txt"
+          python3 tools/run_lua54.py tools/test_low_end_palette.lua | tee "$RUNNER_TEMP/low-end-evidence/palette-after.txt"
+          python3 tools/run_lua54.py tools/test_low_end_geometry.lua | tee "$RUNNER_TEMP/low-end-evidence/geometry-after.txt"
+      - name: Complete frozen matrix
+        run: |
+          set -euo pipefail
+          python3 tools/test_checkpoint_g_integration.py --workers 2 --suite-timeout 120 --output "$RUNNER_TEMP/low-end-evidence/full-attempt01" | tee "$RUNNER_TEMP/low-end-evidence/full-attempt01.log"
+      - name: Lua 5.1 production syntax and immutable source verification
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import importlib.util, os, json, subprocess
+          from pathlib import Path
+          paths=sorted(p for root in ('gamemodes','lua') for p in Path(root).rglob('*.lua'))
+          for p in paths: subprocess.run(['luac5.1','-p',str(p)],check=True)
+          spec=importlib.util.spec_from_file_location('matrix','tools/test_checkpoint_g_integration.py')
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          s=m.source_snapshot(); assert m.snapshot_digest(s)==os.environ['EXPECTED_SOURCE']
+          receipt=json.loads(Path(os.environ['RUNNER_TEMP'],'low-end-evidence','full-attempt01','receipt.json').read_text())
+          assert receipt['passed']==receipt['total']==285 and not receipt['changed_during_gate']
+          assert receipt['source_before']==receipt['source_after']==os.environ['EXPECTED_SOURCE']
+          Path(os.environ['RUNNER_TEMP'],'low-end-evidence','lua51.json').write_text(json.dumps({'production_files':len(paths),'passed':True,'native_accepted':False},indent=2)+'\n')
+          print('LUA51_PRODUCTION_PASS',len(paths))
+          PY
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git diff --check
+      - name: Publish only validated candidate branch
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PARENT"
+          test "$(git write-tree)" = "$EXPECTED_TREE"
+          git config user.name 'Shael Riley'
+          git config user.email 'shael.riley@gmail.com'
+          git commit -m 'perf: optimize low-end client rendering without changing gameplay'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          test "$(git rev-parse HEAD^{tree})" = "$EXPECTED_TREE"
+          git push origin HEAD:refs/heads/validation/low-end-20260928
+          git rev-parse HEAD HEAD^{tree} HEAD^ > "$RUNNER_TEMP/low-end-evidence/published-validation-refs.txt"
+          git cat-file commit HEAD > "$RUNNER_TEMP/low-end-evidence/commit.txt"
+          git ls-tree -r HEAD > "$RUNNER_TEMP/low-end-evidence/tree.txt"
+          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/low-end-evidence/source.tar.gz"
+          echo 'Main, Workshop and VPS were not modified by this workflow.'
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: low-end-baseline-${{ github.run_id }}
-          path: ${{ runner.temp }}/lod-baseline
+          name: low-end-verification-${{ github.run_id }}
+          path: ${{ runner.temp }}/low-end-evidence
           retention-days: 14
