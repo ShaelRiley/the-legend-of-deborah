@@ -1,0 +1,77 @@
+{
+  "test_commit": "88326cdf47d06c5d6b206b064b2b24a25a95e156",
+  "campaigns": 32,
+  "levels": 640,
+  "owners_per_campaign": 2,
+  "enemy_opportunities": 61440,
+  "equipment_offers": 18931,
+  "natural_archetypes_observed": 113,
+  "authored_archetypes": 113,
+  "mean_owner_campaign_coverage": 106.515625,
+  "minimum_owner_campaign_coverage": 100,
+  "immediate_repeat_rate": 0.00053002597127259,
+  "control_repeat_rate": 0.0073143584035618,
+  "repeat_reduction": 0.9275362318840585,
+  "adjacent_level_jaccard": 0.027224597203262,
+  "control_adjacent_level_jaccard": 0.042499915928302,
+  "jaccard_reduction": 0.35941997510794355,
+  "value_percentiles": {
+    "p10": 128,
+    "p50": 166,
+    "p90": 250,
+    "max": 609
+  },
+  "rarity_counts": [
+    10377,
+    6618,
+    1763,
+    173
+  ],
+  "static_nodes": 17871,
+  "reward_nodes": 2449,
+  "unchanged_support_nodes": 15422,
+  "divergent_owner_level_comparisons": 640,
+  "owner_level_comparisons": 640,
+  "phrases": {
+    "cache": 465,
+    "lean": 552,
+    "scavenge": 1543
+  },
+  "motifs": 10,
+  "approximate_elapsed_seconds": 106,
+  "elapsed_measurement": "log file birth-to-final-modification timestamps; one-second precision",
+  "native_gmod_accepted": false,
+  "sampling_limitation": "Native entities/traces/transport are doubled. Empty bags isolate offered vocabulary; full capacity and receipt lifecycle are tested separately. Control disables catalog history only. Complete-campaign replay repeats campaign1 after identical reset.",
+  "logs": [
+    {
+      "path": "/tmp/big-loot-campaign-attempt1.log",
+      "sha256": "40557a3fed7a6f54a11fd1d37f49ada6cad76ef81a96997cd863964483a4b1a3"
+    },
+    {
+      "path": "/tmp/big-loot-campaign-collision.log",
+      "sha256": "7011875a515e83216aaaa64450392bd8505e42ee6ef450500e14a0273ea4c042"
+    },
+    {
+      "path": "/tmp/big-loot-campaign-attempt2.log",
+      "sha256": "7ab21045537e09151949dce233597197630e5f4975ab35922d95d9bcbaf44cd1"
+    },
+    {
+      "path": "/tmp/big-loot-ecology-final.log",
+      "sha256": "a7c1cb32fd333724186f9cb3e77cc447e78b94fe7e3bc8472dfd4636840b4088"
+    }
+  ],
+  "source_sha256": {
+    "tools/big_loot_test_fixture.lua": "036784033b0f0231d6ba9544a33f687d011503166e4dfb6e7287aae6dd754c42",
+    "tools/test_big_loot_ecology.lua": "fdf5a535fe1083bced1de51feda3c17d2b98197295669d6f132763180c2159b7",
+    "tools/test_big_loot_campaign.lua": "335d4d3739aad8ef2a635db2d6a24e7e8899ebf53e0294becbe2f69e86fcc27b",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_equipment_economy.lua": "85719810d2607bd9f09867db0b2c3bc16a2cbf8b717b09843d6b46fe7890f6cd",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_big_loot_catalog.lua": "5bfdb5f20541a262df4bf7b5a100d44fd2ba6c33837457bc3c80fab67eb72e21",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_equipment_economy.lua": "1f8adfad38e0a72a91f72253198cea13e1806a40cbd3d67b012f7f71d8382f91",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_ecology.lua": "76a177c36c7b6e23cde4291b085bd03ee3084b7bb086b6d21017d1f81298b6d8",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_director.lua": "506b3c75508eab5acbb0b73bdded42ec688c8c342212f9f68ca9619f1db03206",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_campaign_decay.lua": "a56da0a494322d8f942905691fba2f803ad25b794cf265ba2f3f2a43fe4e6181",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_crypto_director.lua": "f39daa2c0074ea0fd94d6cd6e191e1a59971c53a98b6cb36a48681290697407e",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_damsels.lua": "6df98e51d5eb1cc380271fa3f8ef0ca27d781ca7eb0c7666aac46626e0c1c819",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_debbie_junk.lua": "67a16dd22cb4a6cb7b84fdcf46c4e90c0b289c96a84ec36449e8005b09108c04"
+  }
+}

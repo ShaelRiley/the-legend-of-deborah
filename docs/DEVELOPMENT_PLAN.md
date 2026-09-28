@@ -1,3 +1,34 @@
+# Current checkpoint — Big Loot source validated; live GDD synchronization blocked
+
+Author-promoted Big Loot extends verified baseline
+`fc166870633db5f277165d9c33ae00d82feaa81a`. Final gameplay/test commit:
+`4f9ec7928f4a44107066da3095937655db806941`. This closeout adds documentation/evidence only; the delivery
+response supplies the fetched, verified final remote HEAD.
+
+Frozen baseline **45**, added **113**, total **158 (3.5111×)** meaningful identities.
+Stable effect packages, campaign motifs/history, contextual/topological rewards,
+late optional treasure, inventory pressure and immutable source receipts extend
+existing authorities. Native weapon restoration and atomic sell/fuse are repaired.
+See `BIG_LOOT_CATALOG.md`, `BIG_LOOT_ECOLOGY.md` and
+`validation/BIG_LOOT_UPDATE.md` for architecture, constants and exact evidence.
+
+Complete finite matrix: **268/268**, **774 Lua syntax files**, unchanged source.
+32×20 campaigns with two owners expose all 113 additions; mean 106.516 / minimum 100
+per owner-campaign, 92.75% fewer immediate repeats and 35.94% less adjacent-level
+overlap versus history-disabled control. All 15,422 support nodes preserved.
+Sampling uses empty bags/native doubles; native gameplay and balance are unaccepted.
+
+**Outstanding:** Google Docs rejects live GDD edits with HTTP 400
+`FAILED_PRECONDITION`; fresh reads confirm no mutation. Exact seven-tab amendments
+and 113 authored rows are saved in `validation/big_loot/gdd_amendments.json`.
+Apply/read back after editing is restored. No live synchronization or complete
+end-to-end closure is claimed. Native `gm_flatgrass` pickup/equipment/economy,
+lifecycle and co-op acceptance follows verified publication, preserving all prior
+acceptance constraints. No Workshop/VPS action. Earlier Big Loot deferrals are
+superseded by this explicit author request; unrelated roadmap work stays deferred.
+
+---
+
 # Current checkpoint — stalled cleanup reconstructed; native acceptance next
 
 September 27 author-requested recovery extends verified main
