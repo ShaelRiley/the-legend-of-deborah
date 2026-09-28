@@ -1,4 +1,31 @@
-# Music resource checkpoint
+# Current checkpoint — event-safe campaign startup
+
+Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`. Repair parent:
+`019d445b76573b3b9d5f77a4c3b7a2df8c63be0e`; the publication response identifies
+the verified child. Current live GDD 00 → 01 → 05/07
+`LOD-BIG-SKELETON-001` / `LOD-EVENT-EXPANSION` governs exact event counts,
+required-route safety, successful-build history and finite placement budgets.
+No authored music, skeleton-frequency, encounter or progression rule changed.
+
+Reproduced the reported `skeleton_blockade: nil` startup failure with campaign
+31676 / level seed 1939356277. Progression-safe layout 9 has no legal blockade
+site; the old build returned failure and never reached staging. The fixed build
+cleans rejected geometry, continues the existing global 64-layout stream and
+accepts layout 14, keeping `skeleton_blockade,memory_terminal`. Selection is drawn
+once per logical build and only the successful layout commits history/releases
+players. Failed native creation, graph integrity and reported callback errors
+remain explicit failures. See `validation/BOOTSTRAP_EVENT_RECOVERY.md`.
+
+Next human action: fully quit GMod, update/install main using the workflow's
+one-line local command, then load `gm_flatgrass` as The Legend of Deborah.
+Confirm staging, normal portal deployment and a generated maze. Source gates
+do not establish native acceptance. If startup still fails, preserve
+`console_latest.txt` and `rpg_summary_latest.txt` from that session.
+No Workshop or VPS deployment occurred; preserve all earlier acceptance work.
+
+---
+
+# Prior checkpoint — Music resource checkpoint
 
 Repository: `ShaelRiley/the-legend-of-deborah`, `main`. Parent:
 `cdfcbb1ab8652109ba141c59b298fb03b68ae676`. Live design is the canonical GDD;

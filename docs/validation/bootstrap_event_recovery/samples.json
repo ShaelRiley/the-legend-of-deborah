@@ -1,0 +1,17 @@
+{
+  "base_commit": "019d445b76573b3b9d5f77a4c3b7a2df8c63be0e",
+  "reproduced_campaign_seed": 31676,
+  "reproduced_level_seed": 1939356277,
+  "first_progression_layout": 9,
+  "accepted_layout": 14,
+  "rejected_critical_path_candidates": 39,
+  "legal_skeleton_candidates_on_rejected_layout": 0,
+  "event_selection": [
+    "skeleton_blockade",
+    "memory_terminal"
+  ],
+  "same_source_sample_builds": 48,
+  "same_source_sample_successes": 48,
+  "sample_scope": "headless production progression, hunt, arena, arrival, encounter and event build; native entity/trace bindings doubled",
+  "native_gmod_accepted": false
+}

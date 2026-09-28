@@ -94,6 +94,19 @@ return proofs. The Skeleton's earliest-approach combat proof never assumes
 currency, gear, class or resources behind the blockade. Rejected complete builds
 retain their selected identities and count.
 
+Campaign generation now includes event feasibility in the existing finite
+progression-layout search. If a built layout has no legal placement, clean it up
+and continue at the next deterministic layout attempt, within the same global
+64-attempt ceiling. Freeze the original event count, identities and selection
+diagnostics across that logical build; do not redraw a smaller or easier event
+set. Each candidate layout still passes all progression, encounter, native
+geometry and combined event proofs. Only the accepted complete layout releases
+players, creates staging and commits ecology history. Native creation, graph
+integrity and reported callback failures remain failures rather than topology
+retries. The build report retains rejected layout seeds/reasons and the retry
+count. See `validation/BOOTSTRAP_EVENT_RECOVERY.md` for the reproduced empty-map
+failure and its startup regression.
+
 ## Interactions and settlement
 
 Services first review the exact offer, then confirm with Use within12s. Review

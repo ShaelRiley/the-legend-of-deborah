@@ -174,7 +174,13 @@ plan=build(seed)
 assert(planSignature(plan)==signature and F.graphSignature(Run.State.Graph)==graphSignature)
 local calls=0;local place=Vending.Place
 Vending.Place=function() calls=calls+1;return {cellKey='absent'} end
+-- Exhaust placement on the last permitted progression layout. Full-build
+-- recovery across later layouts is covered by test_event_bootstrap; this
+-- historical gate retains its exact per-layout 64-candidate assertion.
+local layoutLimit=LOD.Config.Progression.LayoutAttempts
+LOD.Config.Progression.LayoutAttempts=Run.State.Graph.ProgressionLayoutAttempt
 accepted=Run:BuildCurrentLevel(seed)
+LOD.Config.Progression.LayoutAttempts=layoutLimit
 Vending.Place=place
 assert(not accepted and calls==D.MaxPlacementAttempts and not Run.State.BuildReady and not D.Context)
 plan=build(seed);assert(planSignature(plan)==signature)

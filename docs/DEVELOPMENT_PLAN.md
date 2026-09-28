@@ -1,4 +1,30 @@
-# Current checkpoint — Chill staging and gameplay-first music
+# Current checkpoint — fatal empty-map bootstrap recovery
+
+The author reports an empty `gm_flatgrass` with
+`event placement exhausted: skeleton_blockade: nil`. This repair extends main
+`019d445b76573b3b9d5f77a4c3b7a2df8c63be0e`. With production progression safety,
+Neil/Black Gate, Warden arena and arrival reservations loaded, campaign seed
+31676 reproduces the failure: its first progression-safe layout has no legal
+blockade site. Event rejection previously aborted the complete build before
+staging could run.
+
+RunManager now continues the existing deterministic layout stream on explicit
+event-placement exhaustion, within the original shared 64-layout ceiling.
+Event selection stays frozen; cleanup and all graph/native/route proofs remain
+mandatory. Failed attempts cannot advance ecology or release players. Reported
+callback, integrity and native creation failures do not authorize a retry.
+The same failing seed reaches layout 14 with its original two selected events.
+
+Read `validation/BOOTSTRAP_EVENT_RECOVERY.md` for finite startup/lifecycle
+coverage and preserved reproduction evidence. Next: fully quit Garry's Mod,
+install verified main and start the gamemode on `gm_flatgrass`; confirm staging,
+portal deployment and the populated maze. Native acceptance remains open.
+Preserve music/low-end work and local acceptance → Workshop → matching VPS.
+This checkpoint authorizes source publication only.
+
+---
+
+# Prior checkpoint — Chill staging and gameplay-first music
 
 The author requests staging's Chill/INTERLUDE arrangement and resource priority
 for gameplay. This extends verified main `cdfcbb1ab8652109ba141c59b298fb03b68ae676`.

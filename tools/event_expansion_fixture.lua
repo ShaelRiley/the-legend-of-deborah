@@ -135,10 +135,10 @@ D.Plan=function(self,graph,options)
  local reservations=F.encounterSignature(graph)
  assert(#graph.EncounterPlan.encounters>3,'Production encounter reservations missing')
  assert(graph.EncounterPlan.ecology and graph.EncounterPlan.ecology.theme,'Production encounter theme missing')
- local accepted,result=originalPlan(self,graph,options)
+ local accepted,result,retry=originalPlan(self,graph,options)
  assert(reservations==F.encounterSignature(graph),
   'Event planning changed encounter reservations')
- return accepted,result
+ return accepted,result,retry
 end
 
 local function key(cell) return F.G.CellKey(cell.x,cell.y,cell.z) end

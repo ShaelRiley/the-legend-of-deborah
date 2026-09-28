@@ -693,9 +693,9 @@ function RunManager:NewCampaign()
     return self:BuildCurrentLevel()
 end
 
-function RunManager:_GenerateProgressionLevel(masterLevelSeed)
+function RunManager:_GenerateProgressionLevel(masterLevelSeed, firstLayoutAttempt)
     local lastErr = "unknown progression planning failure"
-    for layoutAttempt = 1, CC.Progression.LayoutAttempts do
+    for layoutAttempt = firstLayoutAttempt or 1, CC.Progression.LayoutAttempts do
         local layoutSeed = layoutAttempt == 1 and masterLevelSeed or
             LOD.Seeds.Derive(masterLevelSeed, "progression-layout:" .. layoutAttempt)
         local graph, mazeErr = LOD.MazeGenerator:Generate(layoutSeed)
@@ -728,18 +728,46 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     if LOD.MusicDirector then pcall(LOD.MusicDirector.Prepare,LOD.MusicDirector,self.State,self.State.Level) end
 
     local totalStarted = SysTime()
-    local generationStarted = SysTime()
-    local graph, err = self:_GenerateProgressionLevel(self.State.LevelSeed)
-    local generationSeconds = SysTime() - generationStarted
-    if not graph then return false, err end
+    local graph, buildReport
+    local generationSeconds, buildSeconds, firstLayoutAttempt = 0, 0, 1
+    local placementFailures = {}
+    while firstLayoutAttempt <= CC.Progression.LayoutAttempts do
+        local generationStarted = SysTime()
+        local err
+        graph, err = self:_GenerateProgressionLevel(self.State.LevelSeed, firstLayoutAttempt)
+        generationSeconds = generationSeconds + SysTime() - generationStarted
+        if not graph then
+            if #placementFailures == 0 then return false, err end
+            break
+        end
 
-    graph.DungeonLevel = self.State.Level
-    LOD.ProgressionDirector:ResetLevelState(graph)
-    local buildStarted = SysTime()
-    local ok, buildReport = LOD.MazeBuilder:Build(graph)
-    local buildSeconds = SysTime() - buildStarted
-    if not ok then return false, buildReport end
+        graph.DungeonLevel = self.State.Level
+        LOD.ProgressionDirector:ResetLevelState(graph)
+        local buildStarted = SysTime()
+        local ok, retry
+        ok, buildReport, retry = LOD.MazeBuilder:Build(graph)
+        buildSeconds = buildSeconds + SysTime() - buildStarted
+        if ok then break end
+        -- Event feasibility depends on the actual encounter reservations. A
+        -- progression-safe graph alone is insufficient. Continue the existing
+        -- finite layout stream after cleanup; never reroll the dungeon seed or
+        -- selected events, and never retry native/callback/integrity failures.
+        if retry ~= "event_placement_exhausted" then return false, buildReport end
+        placementFailures[#placementFailures + 1] = {
+            layoutAttempt = graph.ProgressionLayoutAttempt,
+            layoutSeed = graph.LevelSeed,
+            reason = tostring(buildReport)
+        }
+        firstLayoutAttempt = graph.ProgressionLayoutAttempt + 1
+        graph = nil
+    end
+    if not graph then
+        return false, "failed to produce event-safe level within " .. CC.Progression.LayoutAttempts
+            .. " layout attempts: " .. placementFailures[#placementFailures].reason
+    end
 
+    buildReport.eventPlacementRetries = #placementFailures
+    buildReport.eventPlacementFailures = placementFailures
     buildReport.generationSeconds = generationSeconds
     buildReport.buildSeconds = buildSeconds
     buildReport.totalSeconds = SysTime() - totalStarted

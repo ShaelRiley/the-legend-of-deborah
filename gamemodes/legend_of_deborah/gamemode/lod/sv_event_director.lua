@@ -403,9 +403,9 @@ function D:Plan(g, options)
     options = options or {}
     local seed = g.MasterLevelSeed or g.LevelSeed or 1
     local plan = {seed = seed, mode = "disabled", selectedCount = 0, instances = {}, placementDiagnostics={}}
-    local function rejected(reason)
+    local function rejected(reason, retry)
         plan.failure=reason;self.LastPlanDiagnostics=self:EcologyDiagnostics(plan)
-        return false,reason
+        return false,reason,retry
     end
     if not options.enabled and not options.preview then self.LastPlanDiagnostics=self:EcologyDiagnostics(plan);return true, plan end
     if not options.preview and Registry.PopulationReady ~= true then
@@ -418,7 +418,15 @@ function D:Plan(g, options)
         if not Registry.Definitions[options.preview] then return rejected("unknown event preview") end
         selected, count, plan.mode = {options.preview}, 1, "preview"
     else
-        selected, count, ecology = Registry:Select(seed, g.DungeonLevel or Run.State.Level or 1,context)
+        local frozen = options.selection
+        if frozen then
+            selected, count, ecology = table.Copy(frozen.selected), frozen.count, table.Copy(frozen.ecology)
+        else
+            selected, count, ecology = Registry:Select(seed, g.DungeonLevel or Run.State.Level or 1,context)
+            if selected and options.freezeSelection then
+                options.selection = {selected=table.Copy(selected),count=count,ecology=table.Copy(ecology)}
+            end
+        end
         if not selected then return rejected(count) end
         plan.mode = "full"
     end
@@ -530,7 +538,11 @@ function D:Plan(g, options)
                     diagnostic.rejections.no_candidate=(diagnostic.rejections.no_candidate or 0)+1
                 end
             end
-            if not accepted then return rejected("event placement exhausted: " .. id .. ": " .. tostring(lastErr)) end
+            if not accepted then
+                return rejected("event placement exhausted: " .. id .. ": "
+                    .. (lastErr or ("no legal candidate among " .. diagnostic.attempts .. " tested cells")),
+                    "event_placement_exhausted")
+            end
             local cellKey = accepted.cellKey or key(accepted.cell)
             diagnostic.cellKey=cellKey;diagnostic.topology=table.Copy(topology[cellKey])
             diagnostic.score,diagnostic.fit=self:PlacementPreference(def,topology[cellKey])
@@ -571,8 +583,9 @@ function D:Plan(g, options)
         if instance.contract == "BLOCKADE" or Registry.Definitions[instance.archetype].dropFloor
             or Registry.Definitions[instance.archetype].pairedWarp
             or Registry.Definitions[instance.archetype].optionalAlcove then
-            local ok, err = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
-            if not ok then return rejected("combined event contract rejected: " .. tostring(err)) end
+            local ok, err, fatal = self:ValidatePlacement(g, Registry.Definitions[instance.archetype], instance.placement, nil, environment)
+            if not ok then return rejected("combined event contract rejected: " .. tostring(err),
+                not fatal and "event_placement_exhausted" or nil) end
         end
     end
     self.LastPlanDiagnostics=self:EcologyDiagnostics(plan)
@@ -815,8 +828,8 @@ function Builder:Build(g)
     local ok, report = baseBuild(self, g)
     if not ok then return ok, report end
     local options = D.BuildOptions or {enabled = cvEnabled:GetBool()}
-    local planned, plan = D:Plan(g, options)
-    if not planned then self:Cleanup(); return false, plan end
+    local planned, plan, retry = D:Plan(g, options)
+    if not planned then self:Cleanup(); return false, plan, retry end
     g.EventPlan = plan
     local activated, err = D:Activate(g, plan)
     if not activated then plan.failure=err;D.LastPlanDiagnostics=D:EcologyDiagnostics(plan);self:Cleanup(); return false, err end
@@ -831,7 +844,10 @@ end
 local baseLevel = Run.BuildCurrentLevel
 function Run:BuildCurrentLevel(...)
     D:Cleanup("dungeon replacement")
-    D.BuildOptions = {enabled = D.NextPopulationPreview == true or cvEnabled:GetBool(), preview = D.NextPreview}
+    -- One selection per logical build, shared across deterministic layout
+    -- retries. A rejected layout cannot buy different events or a smaller d4.
+    D.BuildOptions = {enabled = D.NextPopulationPreview == true or cvEnabled:GetBool(), preview = D.NextPreview,
+        freezeSelection = true}
     D.NextPreview, D.NextPopulationPreview = nil, nil
     local ok, result = baseLevel(self, ...)
     D.BuildOptions = nil
