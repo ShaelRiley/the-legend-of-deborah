@@ -1,4 +1,24 @@
-# Current checkpoint — low-end renderer follow-up
+# Current checkpoint — custom-system quantization
+
+Shael reports good Steam Deck performance on renderer main `cdb85e6` and requests
+further custom-system simplification. The finite pass replaces event-route text
+signatures with a blocked/open mask, caches exact loot budgets by integer depth,
+uses squared near-look cone comparisons before visibility traces, and prepares
+projectile trails once per visible snapshot. Preserve authored formulas, dice,
+movement, collision, enemy population, timing and the accepted renderer.
+
+Live GDD 00 → 01 → 07 LOD-IMPL-001–004 governs; no authored tuning changes.
+`validation/SYSTEM_QUANTIZATION_20260928.md` records 38/38 selected checks,
+810 Lua syntax checks, exact-value/route/endpoint comparisons and bounded work
+counts. Native performance improvement for this candidate is not measured.
+Next: fully restart/install the verified source and play ordinary gm_flatgrass
+through targeting/loot, projectile combat and Skeleton-blockade resolution.
+Retain outstanding native gates and local acceptance → Workshop parity → matching
+VPS; source publication only.
+
+---
+
+# Prior checkpoint — low-end renderer follow-up
 
 The repeated Steam Deck slowdown report promotes a renderer follow-up from main
 `c55a4a4aea77994e8c80725b621e0ef86f856e81`. Extend the existing bounded TexturedBox

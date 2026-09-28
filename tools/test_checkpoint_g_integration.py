@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Discrete Systems Math & Snapshot Equivalence", ["python3", "tools/run_lua54.py", "tools/test_system_quantization.lua"]),
+    ("Discrete Event Routes & Cache Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_quantized_routes.lua"]),
     ("Low-end Static Draw Cache & Perspective Culling", ["python3", "tools/run_lua54.py", "tools/test_low_end_render.lua"]),
     ("Low-end Immutable Palette & Reconciliation", ["python3", "tools/run_lua54.py", "tools/test_low_end_palette.lua"]),
     ("Low-end Conservative Geometry & Material Batching", ["python3", "tools/run_lua54.py", "tools/test_low_end_geometry.lua"]),

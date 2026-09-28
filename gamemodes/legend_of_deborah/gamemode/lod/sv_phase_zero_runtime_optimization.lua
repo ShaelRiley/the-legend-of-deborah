@@ -76,12 +76,14 @@ end
 local function currentNavCache(graph)
     local signature = gateSignature()
     local director=LOD.EventDirector
-    local events=director and director:RouteSignature(graph) or ""
+    local events, eventContext = 0, nil
+    if director then events, eventContext = director:RouteSignature(graph) end
     local cache = graph.LODPhaseZeroNavCache
-    if cache and cache.signature == signature and cache.events==events then return cache end
+    if cache and cache.signature == signature and cache.events==events
+        and cache.eventContext==eventContext then return cache end
 
     cache = {
-        signature = signature, events=events,
+        signature = signature, events=events, eventContext=eventContext,
         trees = {},
         order = {}
     }

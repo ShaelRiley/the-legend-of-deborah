@@ -1,0 +1,16 @@
+{
+  "base_commit": "cdb85e6acde6a26f01b45eeee396cf8d8a661a17",
+  "validated_source_sha256": "90cb196a88f7f8253b9e1af19780b5e23b5be414aa64562188274a5a2d3b8f24",
+  "changed_files": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_enemy_roster.lua": "67a654fb29ceedee1fcbbc42ab6ae3a28de808b2a9b9330b33b0e761d94df4f2",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_equipment_economy.lua": "fe0fbb6d3846595d9631fcb62db7fd841d3d943ce9127dbebb196049b9da90b9",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua": "9d81b2e3b7f48c9b186e7f874f530ba63d2c7c66c1edd3f9a5920dbdcdc675e0",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua": "5c5e8626b530ad7d61c866d44293fe2de4505ae44e28c430b973a4c7d15705df",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua": "6afd9d32746bec606101c998512f1edbee985e6aed5c446a3a7b9a6feb5bfd50",
+    "tools/test_checkpoint_g_integration.py": "69217c0d349f514d6eaa900858ae8563d8d953571d3cc6f91cffc63b1ea6b32b",
+    "tools/test_quantized_routes.lua": "a04cf3684132d818358cc639f490b5bceb75f8320f8fac82f794252e5bad5489",
+    "tools/test_system_quantization.lua": "68f8f2ced4cf42717831bf857887567f30efd6892e641e0502b2a1749bf5d687",
+    "tools/test_system_quantization_gate.py": "4d3e1dfc4ed4b5ae9df31d305fd834b22f4e62d673bcbda5d3e90b98383f5a4f"
+  },
+  "native_performance_measured": false
+}

@@ -54,10 +54,14 @@ hook.Add("PostDrawTranslucentRenderables","LOD_RosterProjectiles",function(depth
     for _,q in ipairs(projectiles) do
         local pos=q.pos+q.velocity*math.min(.1,CurTime()-received)
         if EyePos():DistToSqr(pos)<2400^2 then
+            -- Velocity is fixed for this 10 Hz snapshot. Compute its exact
+            -- trail once when visible; hidden snapshots need no normalization.
+            -- Position interpolation and turnaround markers remain frame-smooth.
+            q.trail=q.trail or q.velocity:GetNormalized()*24
             local c=q.kind==3 and colors.reeler or (q.kind==1 and colors.lurker or (q.kind==2 and colors.silencer or colors.sentry))
             local wide=q.kind~=0
             render.SetMaterial(glow);render.DrawSprite(pos,wide and 24 or 10,wide and 24 or 10,c)
-            render.SetMaterial(beam);render.DrawBeam(pos-q.velocity:GetNormalized()*24,pos,wide and 5 or 2,0,1,c)
+            render.SetMaterial(beam);render.DrawBeam(pos-q.trail,pos,wide and 5 or 2,0,1,c)
             if q.kind==3 and q.velocity:LengthSqr()==0 then
                 -- A hollow diamond marks Reeler's brief turnaround, even at reduced effects.
                 local side=(EyePos()-pos):Angle():Right()*13;local up=Vector(0,0,13)

@@ -155,10 +155,21 @@ for _, id in ipairs(E.MoveOrder) do
 end
 
 local function finite(value) return type(value)=="number" and value==value and math.abs(value)<math.huge end
+-- The curve's input is already an integer dungeon depth. Evaluate each of its
+-- 999 authored states once; rarity, quality and family remain live inputs.
+-- Keep the exact formula/rounding so existing items and fusion values replay.
+local depthBudgets = {}
+local function depthBudget(d)
+    local base = depthBudgets[d]
+    if base then return base end
+    base = 100+math.floor(12*math.sqrt(d-1)+4*math.log(d)/math.log(2))
+    if d >= 1 and d <= 999 and d == math.floor(d) then depthBudgets[d] = base end
+    return base
+end
 function E:Budget(level, family, rarity, quality)
     local d=finite(level) and math.floor(level) or 1
     d=math.max(1,math.min(self.ScalingDungeonCap,d))
-    local base=100+math.floor(12*math.sqrt(d-1)+4*math.log(d)/math.log(2))
+    local base=depthBudget(d)
     local multiplier=self.Definitions[family] and self.Definitions[family].budgetMultiplier or (family=="gloves" and 2 or 1)
     return math.floor(base*multiplier*(self.Rarities[rarity or 1].factor/100)*(quality or 100)/100)+self:InnateValue(family,quality)
 end

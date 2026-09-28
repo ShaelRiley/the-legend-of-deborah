@@ -630,12 +630,17 @@ function D:BlocksEdge(g,edgeKey)
     return false
 end
 function D:RouteSignature(g)
-    if not self.Context or self.Context.graph~=g then return "" end
-    local out={self.Context.token}
+    if not self.Context or self.Context.graph~=g then return 0, nil end
+    -- Navigation cares only whether each frozen event slot blocks its edge.
+    -- At most four slots means sixteen route states, not a string assembled
+    -- from every event's identity/state on each AI distance/path query.
+    -- Read current ownership every time: resolution must invalidate this tick.
+    local mask, slot = 0, 1
     for _,i in ipairs(self.Context.plan.instances) do
-        if i.contract=="BLOCKADE" and self:IsCurrent(i) then out[#out+1]=i.id..":"..i.state end
+        if i.contract=="BLOCKADE" and i.state~="resolved" and self:IsCurrent(i) then mask=mask+slot end
+        slot=slot*2
     end
-    return table.concat(out,"|")
+    return mask, self.Context.token
 end
 
 function D:Track(instance, entity)
