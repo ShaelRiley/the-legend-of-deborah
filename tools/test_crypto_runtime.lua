@@ -590,6 +590,63 @@ assert(not C:SettleTreasureChest(treasureId,wrong,participant))
 assert(not C:SettleTreasureChest(treasureId,t,{}))
 print('TREASURE_SQLITE_PASS: finite DFT capacity; guarded key/claim reference settlement; history/account/ledger/COMMIT rollback; stale/throwing participant; replacement preservation; retry, sale/reopen replay and score isolation')
 
+-- A carried-item sale/fusion shares the wallet participant boundary: no stale
+-- Hero/bag may be overwritten after a durable credit has already committed.
+local trader=actor('76561198000000981')
+trader.active=false;trader.ps.deploymentComplete=false
+Run.State.Ranked=true;Run.State.BuildReady=true;Run.State.LevelCleared=false
+Run.State.SimulationFrozen=false;Run.State.PlayerState[trader.id]=trader.ps
+assert(C:CanUseStatue(trader))
+local function interceptWrite(pattern,callback)
+    local query=sql.Query
+    sql.Query=function(statement)
+        if statement:find(pattern,1,true) then sql.Query=query;callback() end
+        return query(statement)
+    end
+    return function() sql.Query=query end
+end
+for index,change in ipairs({'equipment','slots','life','hero','campaign'}) do
+    local offered=junk(trader,8800+index)
+    local original,owner,run=trader.ps.equipment,trader.ps,Run.State
+    local starting=account(trader).balance
+    local replacement=table.Copy(original)
+    replacement.capacityBonus=9
+    local restore=interceptWrite('INSERT OR REPLACE INTO lod_crypto_accounts',function()
+        if change=='equipment' then owner.equipment=replacement
+        elseif change=='slots' then original.slots.left_hand=offered.id
+        elseif change=='life' then owner.equipmentLifeSerial=(owner.equipmentLifeSerial or 0)+1
+        elseif change=='hero' then trader.ps=table.Copy(owner)
+        else Run.State=table.Copy(run) end
+    end)
+    local ok=C:ExchangeJunk(trader,'sell_items',{offered.id});restore()
+    assert(not ok,'Late '..change..' replacement settled a stale item exchange')
+    assert(account(trader).balance==starting,'Rejected exchange paid currency')
+    if change=='equipment' then assert(owner.equipment==replacement,'Compensation overwrote the replacement bag') end
+    assert(original.items[offered.id],'Rejected exchange consumed its source')
+    trader.ps=owner;owner.equipment=original;Run.State=run
+end
+for _,action in ipairs({'sell_items','fuse_items'}) do
+    local first,second=junk(trader,8901),junk(trader,8902)
+    local ids=action=='sell_items' and {first.id} or {first.id,second.id}
+    local original=trader.ps.equipment;local before=WalletJSONEncode(original)
+    local starting=account(trader).balance
+    WalletSQLFail('COMMIT')
+    assert(not C:ExchangeJunk(trader,action,ids))
+    assert(trader.ps.equipment==original and WalletJSONEncode(original)==before,
+        'COMMIT failure did not restore the exact original bag')
+    assert(account(trader).balance==starting,'COMMIT failure paid currency')
+    local atCommit=false
+    local restore=interceptWrite('COMMIT',function()
+        atCommit=true
+        for _,id in ipairs(ids) do assert(not trader.ps.equipment.items[id],
+            'Wallet commit ran before the detached inventory participant') end
+    end)
+    local ok,receipt=C:ExchangeJunk(trader,action,ids);restore();assert(ok,receipt)
+    assert(atCommit and trader.ps.equipment~=original)
+    assert(not C:ExchangeJunk(trader,action,ids),'Committed exchange replayed')
+end
+print('BIG_LOOT_JUNK_ATOMIC_PASS: late bag/slot/life/Hero/campaign changes, participant-before-COMMIT, exact COMMIT rollback, sale/fusion replay')
+
 -- Corruption remains present and visible, rather than resetting the account.
 assert(sql.Query("UPDATE lod_crypto_accounts SET body='{}' WHERE account="..sql.SQLStr(a.id))~=false)
 assert(not Store:Read(a.id));assert(#errors>=3)

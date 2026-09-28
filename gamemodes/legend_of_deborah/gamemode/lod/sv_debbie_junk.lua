@@ -22,7 +22,8 @@ function E:FusionResult(seed,value,context)
         local low,high=1,self.ScalingDungeonCap
         while low<=high do
             local depth=math.floor((low+high)/2)
-            local item=self:Generate(candidateSeed,depth,nil,context)
+            local item=self.GenerateFusionCandidate and self:GenerateFusionCandidate(candidateSeed,depth,context,trial)
+                or self:Generate(candidateSeed,depth,nil,context)
             local cost=self:Value(item)
             if cost<=value then
                 local delta=value-cost
@@ -85,6 +86,9 @@ function C:ExchangeJunk(ply,action,ids)
     if action~='sell_items' and action~='sell_unequipped' and action~='fuse_items' then return false,'Invalid exchange.' end
     if type(ids)~='table' or #ids<1 or #ids>(action=='sell_unequipped' and 256 or 8) or (action=='fuse_items' and #ids<2) then return false,'Select 2–8 items to fuse, or 1–8 to sell.' end
     local ps=Run:GetPlayerState(ply);local current=E:Ensure(ps)
+    local run,life,spawn=Run.State,ps.equipmentLifeSerial,ply.LODRunSpawnSerial
+    local runId,levelSeed=run.RunId,run.LevelSeed
+    local accountId=self:Account(ply)
     local seen,value,highest={},0,0
     for _,id in ipairs(ids) do
         if type(id)~='string' or #id>220 or seen[id] then return false,'Invalid or duplicate item.' end
@@ -101,7 +105,7 @@ function C:ExchangeJunk(ply,action,ids)
     local reviewed=table.Copy(current)
     local nextState=table.Copy(current)
     for _,id in ipairs(ids) do E:UnequipItem(nextState,id);nextState.items[id]=nil end
-    local event=action..':'..Run.State.RunId..':'..self:Account(ply)..':'..util.CRC(table.concat(ids,'|'))
+    local event=action..':'..runId..':'..accountId..':'..util.CRC(table.concat(ids,'|'))
     local result
     if action=='fuse_items' then
         result=E:FusionResult(LOD.Seeds.Derive(Run.State.CampaignSeed,event),value,'fused:'..util.CRC(event))
@@ -110,23 +114,36 @@ function C:ExchangeJunk(ply,action,ids)
         if not E:CanStore(nextState,result) then return false,"Free inventory space before fusing." end
         nextState.items[result.id]=result
     end
-    busy[ply]=true
-    local id=self:Account(ply)
-    local ok,receipt=Store:Transaction(event,action,{id},function(accounts)
-        if ps.equipment~=current then return false,'Inventory changed.' end
+    local function validate()
+        if not IsValid(ply) or not ply:Alive() or Run.State~=run or run.RunId~=runId
+            or run.LevelSeed~=levelSeed or run.Failed or run.LevelCleared or run.SimulationFrozen
+            or self:Account(ply)~=accountId or Run:GetPlayerState(ply)~=ps or Run:IsSoldierControl(ply)
+            or ps.equipmentLifeSerial~=life or ply.LODRunSpawnSerial~=spawn or ps.equipment~=current then
+            return false,'Inventory changed. Review the exchange again.'
+        end
         -- Recheck inside the transaction, including in-place slot/provenance
         -- changes; a table identity check alone does not protect the review.
         if not sameInventory(current,reviewed) then return false,'Inventory changed. Review the exchange again.' end
-        if action=='sell_items' or action=='sell_unequipped' then accounts[id].balance=accounts[id].balance+value end
+        return true
+    end
+    local participant={
+        validate=validate,
+        apply=function() ps.equipment=nextState end,
+        rollback=function() if ps.equipment==nextState then ps.equipment=current end end
+    }
+    busy[ply]=true
+    local ok,receipt=Store:Transaction(event,action,{accountId},function(accounts)
+        local currentOwner,reason=validate()
+        if not currentOwner then return false,reason end
+        if action=='sell_items' or action=='sell_unequipped' then accounts[accountId].balance=accounts[accountId].balance+value end
         local record={amount=(action=='sell_items' or action=='sell_unequipped') and value or 0,inputValue=value,item=result and result.id,items=ids}
-        Store:History(id,event,action,record)
+        Store:History(accountId,event,action,record)
         return true,record
-    end)
-    -- No yielding or native grants inside this operation. Failed database writes
-    -- leave the original bag untouched; success swaps the prepared bag once.
+    end,participant)
+    -- Only detached Lua references enter the transaction participant. Native
+    -- weapon retirement and presentation follow successful wallet/bag COMMIT.
     busy[ply]=nil
     if ok then
-        ps.equipment=nextState
         for class,def in pairs(E.Definitions) do
             if def.weapon then
                 local kept=false

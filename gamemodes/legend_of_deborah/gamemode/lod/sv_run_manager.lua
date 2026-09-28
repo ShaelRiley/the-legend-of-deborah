@@ -567,6 +567,18 @@ function RunManager:PromoteWaitingSpectators()
     return promotedCount
 end
 
+local function ownedEquipmentWeapons(ps)
+    local classes = {}
+    local equipment = LOD.Equipment
+    for _, item in pairs(ps.equipment and ps.equipment.items or {}) do
+        local definition = equipment and equipment:Definition(item)
+        if definition and definition.weapon and (item.count or 0) > 0 then
+            classes[definition.weaponClass] = true
+        end
+    end
+    return classes
+end
+
 function RunManager:CaptureInventory(ply, ps, allowDead)
     ps = ps or self:GetPlayerState(ply)
     if not IsValid(ply) or not ps or self:IsSoldierControl(ply)
@@ -577,6 +589,7 @@ function RunManager:CaptureInventory(ply, ps, allowDead)
     -- a later disconnect must never replace a good snapshot with an empty body.
     if not allowDead and not ply:Alive() then return end
     local snapshot = {weapons = {}, ammo = {}}
+    local ownedWeapons = ownedEquipmentWeapons(ps)
     local activeWeapon = ply:GetActiveWeapon()
     for _, wep in ipairs(ply:GetWeapons()) do
         if IsValid(wep) and wep:GetClass() ~= "weapon_frag"
@@ -585,7 +598,8 @@ function RunManager:CaptureInventory(ply, ps, allowDead)
             snapshot.weapons[#snapshot.weapons + 1] = {
                 class = class,
                 clip1 = wep:Clip1(),
-                clip2 = wep:Clip2()
+                clip2 = wep:Clip2(),
+                equipmentOwned = ownedWeapons[class]
             }
             if wep == activeWeapon then snapshot.activeWeaponClass = class end
         end
@@ -602,8 +616,13 @@ function RunManager:RestoreInventory(ply, ps)
     ply:StripWeapons()
     ply:RemoveAllAmmo()
 
+    local ownedWeapons = ownedEquipmentWeapons(ps)
     for _, weaponState in ipairs(ps.inventory.weapons or {}) do
         local allowed = weaponState.class ~= "weapon_frag" and weaponState.class ~= "weapon_lod_throwable" and weaponState.class ~= "weapon_lod_empty_hands"
+        -- Once a snapshot captured procedural ownership, its native magazine
+        -- cannot regrant a sold/trashed family. Another owned copy keeps the
+        -- shared magazine. Unmarked legacy snapshots retain one-time migration.
+        allowed = allowed and (not weaponState.equipmentOwned or ownedWeapons[weaponState.class])
         local wep
         if allowed then
             -- Reconstruct an owned weapon, without admitting another bag item or
