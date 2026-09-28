@@ -218,17 +218,20 @@ function E:ValidateWearable(item)
         and (not def.weapon or riders>=1) and self:Value(item)==item.budget
 end
 
-function E:Generate(seed, level, requestedFamily, contextId)
+function E:Generate(seed, level, requestedFamily, contextId, archetypeId)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-v2:"..tostring(contextId or "preview")))
-    local family=requestedFamily or rng:Pick(self.FamilyOrder)
+    local archetype=archetypeId and self.Archetypes and self.Archetypes[archetypeId]
+    if archetypeId and not archetype then return nil end
+    local family=requestedFamily or (archetype and archetype.base) or rng:Pick(self.FamilyOrder)
     local def=self.Definitions[family]
-    if not def or not (def.wearable or def.weapon) then return nil end
+    if not def or not (def.wearable or def.weapon) or archetype and archetype.base~=family then return nil end
     local rarityRoll,rarity=rng:Int(1,10000),1
     for i,r in ipairs(self.Rarities) do if rarityRoll<=r.threshold then rarity=i;break end end
-    rarity=math.max(rarity,def.minimumRarity or 1)
+    rarity=math.max(rarity,def.minimumRarity or 1,archetype and archetype.minimumRarity or 1)
     local d=math.max(1,math.min(self.ScalingDungeonCap,math.floor(tonumber(level) or 1)))
     local item={version=2,id="gear2:"..tostring(contextId or seed)..":"..family,definitionId=family,count=1,
         seed=seed,dungeonLevel=d,rarity=rarity,quality=rng:Int(90,110),properties={}}
+    if archetype then item.archetypeId=archetype.id end
     if def.maxCharges then item.charges=def.maxCharges end
     item.budget=self:Budget(d,family,rarity,item.quality)
     local used,groups={},{}
@@ -242,7 +245,7 @@ function E:Generate(seed, level, requestedFamily, contextId)
     for _,id in ipairs(self.EconomyOrder) do local p=self.EconomyProperties[id]
         if (p.negative or p.drawbackOnly) and (not p.family or p.family==family) then negatives[#negatives+1]=id end
     end
-    local drawback=rng:Pick(negatives);local dp=self.EconomyProperties[drawback]
+    local drawback=archetype and archetype.drawback or rng:Pick(negatives);local dp=self.EconomyProperties[drawback]
     local refund=dp.fixed and dp.cost or math.floor(item.budget*rng:Int(10,20)/100)
     add(drawback,refund,-1)
     local remaining=item.budget-self:InnateValue(family,item.quality)+math.min(refund,math.floor(item.budget*.2))
@@ -250,8 +253,10 @@ function E:Generate(seed, level, requestedFamily, contextId)
         local p=self.EconomyProperties[id]; local power=p.fixed and p.cost or 6
         add(id,power);remaining=remaining-power
     end
-    choose("element_"..rng:Pick(self.ElementOrder))
-    if def.weapon then choose("proc_"..rng:Pick(self.RiderOrder)) end
+    choose("element_"..(archetype and archetype.element or rng:Pick(self.ElementOrder)))
+    if archetype then
+        for _,id in ipairs(archetype.signature) do choose(id) end
+    elseif def.weapon then choose("proc_"..rng:Pick(self.RiderOrder)) end
     while #item.properties<self.Rarities[rarity].affixes+1 do
         local choices={}
         for _,id in ipairs(self.EconomyOrder) do local p=self.EconomyProperties[id]
@@ -290,6 +295,7 @@ function E:Generate(seed, level, requestedFamily, contextId)
     end
     item.name=item.provenance.." "..qualifier.." "..def.name.." of "..signature
         ..(#secondary>0 and " and "..names:Pick(secondary) or "")
+    if archetype then item.name=archetype.name.." — "..qualifier.." "..def.name end
     assert(self:ValidateWearable(item),"Invalid generated equipment v2")
     return item
 end
