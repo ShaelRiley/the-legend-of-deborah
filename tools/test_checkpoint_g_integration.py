@@ -26,6 +26,15 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Low-end Immutable Palette & Reconciliation", ["python3", "tools/run_lua54.py", "tools/test_low_end_palette.lua"]),
+    ("Low-end Conservative Geometry & Material Batching", ["python3", "tools/run_lua54.py", "tools/test_low_end_geometry.lua"]),
+    ("Low-end Saved Options & Screen Bounds", ["python3", "tools/run_lua54.py", "tools/test_low_end_options.lua"]),
+    ("Music Policy & Catalog Contracts", ["python3", "tools/run_lua54.py", "tools/test_music_policy.lua"]),
+    ("Music Server Permission & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_music_server.lua"]),
+    ("Music Client Bounded Streaming", ["python3", "tools/run_lua54.py", "tools/test_music_client.lua"]),
+    ("Music Crossfade Transitions", ["python3", "tools/run_lua54.py", "tools/test_music_transitions.lua"]),
+    ("Player Options Movement Invariants", ["python3", "tools/run_lua54.py", "tools/test_player_options.lua"]),
+    ("Music Ingestion Validation", ["python3", "tools/test_music_ingestion.py"]),
     ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),
     ("Big Event Incidents & Body Lifecycles", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_incidents.lua"]),
     ("Big Event Campaign Ecology & Determinism", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_ecology.lua"]),

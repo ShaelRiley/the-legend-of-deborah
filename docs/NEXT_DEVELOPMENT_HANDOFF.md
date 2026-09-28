@@ -1,3 +1,33 @@
+# Current checkpoint — low-end PC / Steam Deck source optimization
+
+Fetch current main and preserve intervening work. This checkpoint's exact parent
+is `3d60d6f730b56abbf3df5de68bb8d71002d44d96`; do not reuse it as a later HEAD.
+The independent delivery receipt supplies the actual child/tree and both frozen
+gate results. Read `docs/validation/LOW_END_PC_20260928.md` and the newest
+DEVELOPMENT_PLAN overlay before the historical handoffs below.
+
+The three client optimization files provide immutable container floor/palette and
+candidate-material reuse, conservative rear-camera static-box culling with
+per-pass floor material resolution, and the existing Reduced Effects checkbox.
+A fourth production edit adds the missing IsValid guard before the fallen-Hero
+damage wrapper reads its target. The old protected harness also gains native
+flag/cvar doubles needed by music. The complete gate has 285 suites plus
+independent Lua 5.1 production parsing;
+source publication is allowed only after matching local/independent green gates.
+Keep the initial 279/285 evidence; the final full rerun uses 600 seconds per suite
+without shrinking inputs or assertions.
+Probe operation counts are not Steam Deck FPS. No population,
+skeleton/event/loot behavior, collision geometry or default preference changes.
+
+Next: full restart and ordinary exact-source gm_flatgrass play on Steam Deck,
+including turns, stairs, rebuilds and combat. Reduced Effects is optional, not a
+prerequisite for the automatic efficiency fixes. Retain previous acceptance debts
+and local acceptance → Workshop parity → matching VPS. Do not deploy or publish
+Workshop merely because source tests pass. No further implementation is implied
+by the old deferred queue or earlier current-checkpoint headers below.
+
+---
+
 # Current checkpoint — September 27 systems audit complete
 
 The author's audit request supersedes earlier deferrals. Source and validation

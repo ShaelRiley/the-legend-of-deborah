@@ -504,7 +504,7 @@ end
 -- unordered hook-table iteration while preserving every existing damage hook.
 local baseEntityTakeDamage = GM.EntityTakeDamage
 function GM:EntityTakeDamage(target, dmginfo)
-    if target.LODFallenHero and not LOD.FallenHeroes:Live(target) then
+    if IsValid(target) and target.LODFallenHero and not LOD.FallenHeroes:Live(target) then
         dmginfo:SetDamage(0)
         if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo]=nil end
         return true

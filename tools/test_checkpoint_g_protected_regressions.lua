@@ -99,7 +99,18 @@ local function mockGMod()
     }
     navmesh = navmesh or {}
 
-    FCVAR_ARCHIVE = FCVAR_ARCHIVE or 0
+    -- The shipped music bootstrap uses native flag composition and change
+    -- callbacks. Supply those engine boundaries; keep all validators intact.
+    FCVAR_ARCHIVE = FCVAR_ARCHIVE or 128
+    FCVAR_REPLICATED = FCVAR_REPLICATED or 8192
+    FCVAR_NOTIFY = FCVAR_NOTIFY or 256
+    bit = bit or {}
+    bit.bor = bit.bor or function(...)
+        local value = 0
+        for i=1,select("#", ...) do value = value | select(i, ...) end
+        return value
+    end
+    cvars = cvars or {AddChangeCallback = function() end}
     local function makeConVar(defaultVal)
         local val = defaultVal or "0"
         return {

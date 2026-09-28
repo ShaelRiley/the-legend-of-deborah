@@ -45,6 +45,9 @@ local CANDIDATE_SV = {
 local materialNames = {}
 local reconcileCursor = 1
 local reconcileModelsRef = nil
+local reconcileWorldRef = nil
+local reconcileWorldCount = 0
+local candidateAvailability = {}
 local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
@@ -67,6 +70,7 @@ function Hull.CandidateAvailable(name)
         and texture:Width() == 1024 and texture:Height() == 1024
 end
 cvars.AddChangeCallback("lod_crate_hull_candidate", function()
+    candidateAvailability = {}
     reconcileCursor = 1
     stablePasses = 0
     reconcileComplete = false
@@ -166,14 +170,25 @@ local function maximinScore(candidate, chosen)
         + minimumHueDistance(candidate, chosen) * HUE_DISTANCE_WEIGHT
 end
 
+-- The manifest is replaced as a unit by cl_wall_visuals. Color/material lookups
+-- occur twice per model during reconciliation: rescanning here made that setup
+-- quadratic and kept a whole-maze scan alive even after reconciliation finished.
+local floorWorldRef, floorWorldCount, floorWorldSeed, cachedFloorCount
 local function actualFloorCount()
+    local world = Wall.world
+    local count, seed = world and #world or 0, tonumber(Wall.seed) or 0
+    if world == floorWorldRef and count == floorWorldCount and seed == floorWorldSeed then
+        return cachedFloorCount
+    end
     local highest = -1
-    for _, instance in ipairs(Wall.world or {}) do
+    for _, instance in ipairs(world or {}) do
         if instance.floor ~= nil then
             highest = math.max(highest, math.floor(tonumber(instance.floor) or -1))
         end
     end
-    return math.Clamp(highest + 1, 1, MAX_FLOORS)
+    floorWorldRef, floorWorldCount, floorWorldSeed = world, count, seed
+    cachedFloorCount = math.Clamp(highest + 1, 1, MAX_FLOORS)
+    return cachedFloorCount
 end
 
 local function buildCandidates()
@@ -329,7 +344,15 @@ local function sectionMaterialName(instance)
     instance.hullCandidateFallback = false
     if Hull.CandidateEnabled() then
         local candidate = "legend_of_deborah/crate/sections/" .. key:gsub("^v19_", "c2_")
-        if Hull.CandidateAvailable(candidate) then
+        -- Validate each section's mounted sampler once per reconciliation
+        -- lifetime, not once per wall/model. Failed assets remain retryable.
+        -- Mode/world/model changes invalidate successful cached checks too.
+        local available = candidateAvailability[candidate]
+        if available == nil then
+            available = Hull.CandidateAvailable(candidate)
+            if available then candidateAvailability[candidate] = true end
+        end
+        if available then
             name = candidate
         else
             instance.hullCandidateFallback = true
@@ -439,14 +462,18 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
     if total == 0 then return end
 
     if ensureSectionPalette() then
+        candidateAvailability = {}
         reconcileCursor = 1
         stablePasses = 0
         reconcileComplete = false
         appliedCount = 0
     end
 
-    if models ~= reconcileModelsRef then
+    if models ~= reconcileModelsRef or world ~= reconcileWorldRef or total ~= reconcileWorldCount then
         reconcileModelsRef = models
+        reconcileWorldRef = world
+        reconcileWorldCount = total
+        candidateAvailability = {}
         reconcileCursor = 1
         stablePasses = 0
         reconcileComplete = false

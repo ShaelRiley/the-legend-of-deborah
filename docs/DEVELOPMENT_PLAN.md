@@ -1,3 +1,32 @@
+# Current checkpoint — low-end PC / Steam Deck client optimization
+
+The author's slowdown report promotes the planned low-end work. This checkpoint
+extends main `3d60d6f730b56abbf3df5de68bb8d71002d44d96` with immutable container
+palette/material caches, conservative rear-camera static-geometry rejection,
+pass-local floor material reuse and an Options checkbox for the existing saved
+Reduced Effects preference. Skeletons, events, loot, enemy population/AI,
+geometry/collision, music defaults and all gameplay rules are unchanged.
+The full gate also repairs a nil-target guard in the fallen-Hero damage wrapper
+and missing native API doubles in an older protected-regression harness.
+
+Read `validation/LOW_END_PC_20260928.md` for paired operation counts, cache/camera
+safety cases and the exact-source native procedure. Three new low-end checks and
+six retained music/options checks extend the complete canonical gate to 285
+suites. Retain the initial 279/285 run (four timeouts and two repaired regressions);
+the final complete run uses a 600-second per-suite headless allowance with no
+reduced inputs or assertions. The immutable local/independent receipts, not old checkpoint
+counts below, establish this candidate's aggregate result and published identity.
+Publication requires both gates and an exact-parent non-forced main update.
+
+Next is ordinary Steam Deck play on the installed source: the efficiency changes
+are automatic; Reduced Effects is an optional saved choice in Options. Native
+FPS/frame time and visual acceptance are not measured by headless tests. Preserve
+all previous native gates and local acceptance → Workshop parity → matching VPS.
+No Workshop/VPS deployment belongs to this source checkpoint. Historical sections
+below remain evidence, not instructions to repeat completed work.
+
+---
+
 # Current checkpoint — live GDD reconciliation complete; native acceptance next
 
 The author's express approval to amend the GDD closes the Big Loot, Big Event,
