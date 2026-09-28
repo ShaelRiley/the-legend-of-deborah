@@ -159,7 +159,9 @@ function D:Grant(ply,def,key)
         pool.magic=math.min(maximum,pool.magic+def.parameter);LOD.Magic:_Sync(ply,pool)
         return true,'Clarity restored: +25 Magic, up to your maximum.'
     elseif def.reward=='equipment' then
-        local item=E:Generate(seed,def.level,def.parameter,'damsel:'..Run.State.RunId..':'..ps.identity..':'..def.level)
+        local key='damsel:'..Run.State.RunId..':'..ps.identity..':'..def.level
+        local item=E.GenerateContextItem and E:GenerateContextItem(seed,def.level,def.parameter,key)
+            or E:Generate(seed,def.level,def.parameter,key)
         item.economyExcluded=true
         return E:AcquireWorldItem(ply,item,true,'damsel')
     elseif def.reward=='consumable' then

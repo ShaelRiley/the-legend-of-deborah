@@ -35,7 +35,10 @@ function C:GenerateToken(id,source,reason,depth)
     for _,f in ipairs(E.WeaponFamilies) do families[#families+1]=f end
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,'family'))
     local tokenId=id..':'..source
-    return {id=tokenId,item=E:Generate(seed,depth,families[rng:Int(1,#families)],'dft:'..tokenId),
+    local family=families[rng:Int(1,#families)]
+    local item=E.GenerateContextItem and E:GenerateContextItem(seed,depth,family,'dft:'..tokenId)
+        or E:Generate(seed,depth,family,'dft:'..tokenId)
+    return {id=tokenId,item=item,
         reason=reason,depth=depth,run=Run.State.RunId,source=source}
 end
 local function count(t) local n=0;for _ in pairs(t) do n=n+1 end;return n end

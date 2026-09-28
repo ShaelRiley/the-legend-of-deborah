@@ -24,6 +24,7 @@ local function add(base,id,name,family,element,signature,drawback,description,ra
     local tagged={}
     local function tag(value) if not tagged[value] then tagged[value]=true;row.tags[#row.tags+1]=value end end
     tag(family);tag(element)
+    for _,motif in ipairs(row.motifs) do tag(motif) end
     for _,pid in ipairs(row.signature) do
         local p=assert(E.EconomyProperties[pid],"Unknown signature "..pid)
         if p.rider then tag("status");tag(p.rider) end

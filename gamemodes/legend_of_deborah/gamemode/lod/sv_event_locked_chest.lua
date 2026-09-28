@@ -27,6 +27,17 @@ end
 
 function Chest.Reward(instance,identity)
     local n=Chest.Seed(instance,identity,'reward')
+    if LOD.LootDirector and LOD.LootDirector.Ecology then
+        local context={reward=true,role="treasure",risk=2}
+        local plan=LOD.LootDirector.StaticPlan
+        local cell=instance.cell
+        if plan and plan.ecology and cell then
+            local key=LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z)
+            context=table.Copy(plan.ecology.byCell[key] or context)
+            context.reward=true;context.role="treasure";context.risk=math.max(2,context.risk or 0)
+        end
+        return LOD.LootDirector.Ecology:Generate(identity,n,instance.level,E:RewardWearableFamily(n),Chest.EventKey(instance,identity),context)
+    end
     return E:Generate(n,instance.level,E:RewardWearableFamily(n),Chest.EventKey(instance,identity))
 end
 

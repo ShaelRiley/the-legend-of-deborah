@@ -491,6 +491,9 @@ end
 function Loot:SpawnPickup(ownerIdentity, pos, kind, payload, options)
     if not ownerIdentity or not pos then return nil end
     options = options or {}
+    if self.Ecology and options.equipmentEligible then
+        options.ecologyContext=self.Ecology:ContextForPosition(pos,options)
+    end
     self:TraceStage("reward_prepare", nil, kind)
     if LOD.Equipment and LOD.Equipment.PrepareReward then
         local prepared, preparedKind, preparedPayload = pcall(

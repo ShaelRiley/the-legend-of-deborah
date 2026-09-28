@@ -613,7 +613,45 @@
       "text": [
         "Current generated gear also has one drawback and one elemental damage identity. Weapons always carry a hit rider. An item's effect depends on its actual rolls; a grand name alone is no guarantee it suits your build.",
         "Equipment power scales with Dungeon Level up to 999, even after Hero Level stops at 20. Quality and family affect its budget; paired gloves account for their two occupied slots. Value is a comparison score, not cash in hand.",
-        "Properties can affect abilities, saves, damage, speed, Dodge, Block, regeneration, Push, map cost, breadcrumbs, summons, elemental wards, weaknesses, and hit riders. Conditional damage bonuses say when they work: injured, almost stationary, or highly charged with Magic. The equipment-property reference lists every current property."
+        "Properties can affect abilities, saves, damage, speed, Dodge, Block, regeneration, Push, map cost, breadcrumbs, summons, elemental wards, weaknesses, and hit riders. Conditional damage bonuses say when they work: injured, almost stationary, or highly charged with Magic. The equipment-property reference lists every current property.",
+        "These rarity percentages describe the underlying random roll. Named equipment archetypes can impose a higher minimum rarity. Their stable name identifies a guaranteed combination of effects and a deliberate drawback; extra rolls still vary within the same bounded value budget."
+      ]
+    },
+    {
+      "id": "big-loot",
+      "title": "Build a different rescue",
+      "text": [
+        "The prison now holds 113 named equipment archetypes alongside the existing equipment, special items and consumables: 158 meaningful identities in all. Headwear, body armor, legwear, boots, rings, gloves, shields and all seven weapon types have distinct alternatives. Their names describe repeatable mechanical roles, not just a new coat of paint.",
+        "Loot develops local themes: scavenged, military, medical, occult, elemental, industrial, mobility, defensive, unstable and expedition gear. The director remembers recent items, families, slots and effects, so repeated finds become less likely while unseen choices gain weight. A theme is a tendency, never a promise of a particular item.",
+        "Optional branches can reward a deeper detour, a dead end or a vertical route. Some sectors are leaner in equipment; others favor caches. Baseline healing and ammunition remain separate from build-defining equipment, and no rare item is required to finish a dungeon.",
+        "Read both the guaranteed effects and the drawback. Two pieces can support the same tactic without a set bonus. Wearables work only while equipped; weapons work only while held. Shared Dodge, Block, status saves, element rules and aggregate equipment caps still apply.",
+        "Loot remains individualized. Reconnecting or inspecting an existing reward does not reroll it. The bag still holds 32 permanent records, including equipped gear. Trashing or selling a weapon cannot bring it back through an old saved weapon snapshot. Fuse and sell at Debbie under the same displayed value rules."
+      ],
+      "rows": [
+        [
+          "Surveyor’s Lantern",
+          "Longer breadcrumbs and cheaper mapping; weaker physical protection."
+        ],
+        [
+          "Infirmary Coat",
+          "Higher regeneration ceiling and faster recovery; slower movement."
+        ],
+        [
+          "Measured Retreat",
+          "Quickstep plus stationary physical offense; weaker protection."
+        ],
+        [
+          "Blood Price",
+          "Wounded physical damage plus Bleeding attempts; stronger incoming physical damage."
+        ],
+        [
+          "Bulkhead Buckler",
+          "Block plus resistance to Push; slower movement."
+        ],
+        [
+          "Glass Command",
+          "More summon capacity and Magic damage; weaker protection."
+        ]
       ]
     },
     {
@@ -621,7 +659,7 @@
       "title": "Supplies in the corridors",
       "text": [
         "Ordinary drops are character-owned. A pickup you can inspect is not necessarily an item another player can claim. Walk into your eligible pickup to collect it. A full bag or full consumable stack leaves an unaccepted pickup available rather than silently destroying it.",
-        "Early dungeons offer more need-aware assistance: resource shortages and long dry spells can influence useful drops. This help decreases through Dungeons 2–10; from Dungeon 11 onward the assistance layer no longer provides pity, objective guarantees, deficit steering, or resource-budget supplements. Base random loot remains.",
+        "Early dungeons offer more need-aware resource assistance: shortages and long dry spells can influence useful drops. This assistance fades through Dungeons 2–10. From Dungeon 11 onward, its pity, objective guarantees and resource-budget supplements end. Optional treasure branches remain, and equipment selection continues to use campaign history and local motifs. A nearly full bag reduces new equipment drops; a full bag redirects those opportunities toward usable health or ammunition, otherwise nothing drops.",
         "Normal ammo pickups add up to 6 Pistol rounds, 3 Shotgun shells, 9 SMG rounds, 6 Pulse Rifle rounds, or 2 Revolver rounds, limited by room. The carried caps still include the magazine. Equipment drops, consumables, and temporary ammunition are ordinary run inventory; they are not persistent DFTs."
       ]
     },

@@ -82,6 +82,9 @@ function E:NewItem(ply,class,source)
     if not source then state.serial=(state.serial or 0)+1;source="grant:"..state.serial end
     source="life:"..tostring(ps.equipmentLifeSerial or 0)..":"..source
     local key=self:RewardKey(ps.identity or Run:IdentityOf(ply),source)
+    if self.GenerateContextItem and not source:find("initial:",1,true) then
+        return self:GenerateContextItem(LOD.Seeds.Derive(Run.State.CampaignSeed or 1,key),Run.State.Level or 1,class,key)
+    end
     return self:Generate(LOD.Seeds.Derive(Run.State.CampaignSeed or 1,key),Run.State.Level or 1,class,key)
 end
 function E:EnsureWeapon(ply,class)
@@ -217,7 +220,11 @@ function E:PrepareReward(owner,kind,payload,options)
         if not family then family=self:RewardWearableFamily(seed) end
         local fields={seed=seed, level=Run.State.Level or 1, family=family or "random", key=key}
         LOD.LootDirector:TraceStage("equipment_generate_begin",nil,kind,nil,fields)
-        local item=self:Generate(seed,fields.level,family,key)
+        local ecology=LOD.LootDirector.Ecology
+        local item
+        if ecology and options.equipmentEligible then
+            item=ecology:Generate(owner,seed,fields.level,family,key,options.ecologyContext)
+        else item=self:Generate(seed,fields.level,family,key) end
         fields.family=item and item.definitionId or "invalid"
         LOD.LootDirector:TraceStage("equipment_generate_complete",nil,kind,nil,fields)
         return item

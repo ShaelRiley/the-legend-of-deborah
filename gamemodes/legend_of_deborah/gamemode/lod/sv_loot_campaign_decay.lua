@@ -165,7 +165,8 @@ function Loot:_DropCategory(ply, lootState, rng, guaranteedUseful)
 end
 
 local function randomWeaponResult(rng)
-    return RANDOM_WEAPON_RESULTS[rng:Int(1, #RANDOM_WEAPON_RESULTS)]
+    local choices=Loot.Ecology and Loot:_AllowedWeaponClasses(currentLevel()) or RANDOM_WEAPON_RESULTS
+    return choices[rng:Int(1, #choices)]
 end
 
 -- Enemy-drop payloads also surrender state-reading. Health's emergency +10 HP
@@ -291,6 +292,11 @@ function Loot:BuildStaticPlan(graph)
                 removedNodes = removedNodes + 1
                 removedSupplements = removedSupplements + 1
             end
+        elseif self.Ecology and node.role == "reward" then
+            -- Big Loot treasure remains an exploration opportunity after need
+            -- assistance fades. It grants no mandatory ammunition/HP budget.
+            kept[#kept + 1] = node
+            directedNodes = directedNodes + 1
         elseif rng:Chance(assistance) then
             kept[#kept + 1] = node
             directedNodes = directedNodes + 1
