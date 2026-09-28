@@ -161,8 +161,10 @@ verify old parts/sessions disappear without renewed entitlements. Capture
 `console_latest.txt` and `rpg_summary_latest.txt`, plus a short visual/control
 observation. These previews do not establish native acceptance by themselves.
 
-The live GDD was read through00→01→05/06/07/90. A revision-guarded edit failed with
-Google `FAILED_PRECONDITION`; fresh readback confirmed no mutation. Exact scoped
-amendments are retained with validation evidence for application when editing is
-restored. The implementation and native/static evidence must not be described as
-fully synchronized live design. No Workshop publication or VPS deployment.
+The live GDD was read through 00 → 01 → 05/06/07/90. The initial guarded write
+failed with `FAILED_PRECONDITION`. The author's subsequent express amendment
+request is now applied and read-back verified, including the full 28-event
+catalog, shared rare fourth slot, lifecycle/ecology and later Big Skeleton
+priority rule. See `validation/GDD_SYNC_20260928.md`; the original pending payload
+is retained as history and must not be replayed. Native acceptance remains open.
+No Workshop publication or VPS deployment.

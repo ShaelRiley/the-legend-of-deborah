@@ -1,6 +1,6 @@
 {
   "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
-  "status": "pending: Google rejected revision-guarded insertText with HTTP 400 FAILED_PRECONDITION; fresh readback revision unchanged",
+  "status": "applied_with_reconciliation_and_readback_verified",
   "readRevision": "ANLCKQmwcEMnWdc7wDcTHXvJO5q3NjoWh8UJmyrHyfE2_SbSMxecCIMXnMoZgzv4XzyzxWNbrFKD-GxUETwgD8y2G7IMPTM7TnYqQcO5uA",
   "note": "This is the final proposed text, refined after the rejected write. Refresh trusted read and revision before applying. This JSON is not evidence that the live design document changed.",
   "requests": [
@@ -31,5 +31,11 @@
         "text": "LOD-BIG-SKELETON-001 — Delegated implementation tuning\nAuthor delegates skeleton design and tuning for this update. Initial event priority 65%; at most two completed populated dungeons without Skeleton Blockade. Fallen player rise warning 3 seconds; attack warning 0.65 seconds; firearm recovery at least 0.35 seconds before the next warning, divided by the copied rate multiplier; copied AR2 bursts use the existing shared count and spacing; one shared 0.25-second service; at most 32 retained death-copy records per dungeon, with oldest retired without rewards when superseded. Native spawn attempts use bounded same-route hull-safe positions, never sanctuary or a locked-boundary shortcut; blocked positions retry. Independent copied resources and combat RNG; shared navigation, damage, defenses, statuses and corpse cleanup. Native combat feel, copied build/action coverage and co-op appearance require local acceptance before Workshop and matching VPS release.\n\n"
       }
     }
-  ]
+  ],
+  "original_status": "pending: Google rejected revision-guarded insertText with HTTP 400 FAILED_PRECONDITION; fresh readback revision unchanged",
+  "synchronization": {
+    "receipt": "docs/validation/GDD_SYNC_20260928.json",
+    "revisionId": "ANLCKQkuLuFL1vYL5OkI2mDTcHZp9K3EK--il7iu4e-6vIL7xgVREom02Ix7lrSARsKjbCTXgky3Qg1AyzyBq2GcJNsrMU80Q3KWy8WC6w",
+    "note": "Historical proposed payload retained. Current live GDD contains the reconciled amendments, corrected statuses and cross-references. Do not replay these insertion requests. Big Loot catalog is in 05; HUMAN retains all 113 authored rows."
+  }
 }

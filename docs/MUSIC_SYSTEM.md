@@ -199,11 +199,14 @@ the release sequence. This source delivery does not establish those later gates.
 ## Design synchronization and API references
 
 The live GDD was read through 00 → 01 → relevant 05/06/07 music rules and the named
-Options anchor. The current author’s default-Off directive overrides its earlier
-default-On line. Google rejected the revision-guarded edit with HTTP 400
-`FAILED_PRECONDITION`; fresh readback retained the same revision. Exact pending
-changes are in `validation/MUSIC_GDD_AMENDMENTS.json`. Earlier Big Loot/Event
-amendments remain separate outstanding work.
+Options anchor. The author's subsequent express amendment request is now applied
+and read-back verified: default Off is corrected in normalized and HUMAN rules,
+implemented controls and Options are identified, and provisional tuning and
+remaining hosting/native gates are recorded. Big Loot, Event and Skeleton
+amendments were reconciled in the same update. See
+`validation/GDD_SYNC_20260928.md`. Initial `FAILED_PRECONDITION` attempts and the
+original `validation/MUSIC_GDD_AMENDMENTS.json` payload remain historical evidence;
+they are no longer an outstanding synchronization blocker.
 
 Native API contracts consulted: [sound.PlayURL](https://wiki.facepunch.com/gmod/sound.PlayURL),
 [GetBufferedTime](https://wiki.facepunch.com/gmod/IGModAudioChannel:GetBufferedTime),

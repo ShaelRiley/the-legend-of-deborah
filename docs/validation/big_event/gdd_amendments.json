@@ -1,6 +1,6 @@
 {
   "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
-  "status": "blocked_failed_precondition",
+  "status": "applied_with_reconciliation_and_readback_verified",
   "readPath": [
     "00",
     "01",
@@ -65,5 +65,11 @@
         "text": "LOD-EVENT-EXPANSION — AUTHOR PROMOTION\nThe current supplied brief promotes the full bounded Event Systems expansion. Older blanket Event System/minigame deferrals are superseded only for its twenty new identities and shared ecology. Bribe remains removed. Native acceptance, Workshop and VPS remain separate gates; this update authorizes source publication only.\n\n"
       }
     }
-  ]
+  ],
+  "original_status": "blocked_failed_precondition",
+  "synchronization": {
+    "receipt": "docs/validation/GDD_SYNC_20260928.json",
+    "revisionId": "ANLCKQkuLuFL1vYL5OkI2mDTcHZp9K3EK--il7iu4e-6vIL7xgVREom02Ix7lrSARsKjbCTXgky3Qg1AyzyBq2GcJNsrMU80Q3KWy8WC6w",
+    "note": "Historical proposed payload retained. Current live GDD contains the reconciled amendments, corrected statuses and cross-references. Do not replay these insertion requests. Big Loot catalog is in 05; HUMAN retains all 113 authored rows."
+  }
 }

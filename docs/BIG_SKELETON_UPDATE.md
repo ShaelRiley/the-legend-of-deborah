@@ -3,9 +3,11 @@
 Author-directed design and implementation, extending main
 `f0b7a66d0e87c18ad18b45a6449b613b7f8ee11d`. The author explicitly delegates
 skeleton design and tuning. Live GDD 00 → 01 → 05/06/07 supplied the existing
-event, progression, faction and lifecycle constraints. Google rejected the
-revision-guarded amendment; final proposed changes remain in
-`validation/BIG_SKELETON_GDD_AMENDMENTS.json`. They are not live-GDD synchronization.
+event, progression, faction and lifecycle constraints. The initial guarded write
+failed; the author's subsequent express GDD amendment request is now applied and
+read-back verified, including the other recent updates. See
+`validation/GDD_SYNC_20260928.md`. The original proposed payload remains in
+`validation/BIG_SKELETON_GDD_AMENDMENTS.json` as history, not a replay instruction.
 
 ## Frequent Skeleton Blockades
 

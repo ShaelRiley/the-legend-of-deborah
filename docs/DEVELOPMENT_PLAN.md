@@ -1,4 +1,28 @@
-# Current checkpoint — Big Skeleton source; native acceptance next
+# Current checkpoint — live GDD reconciliation complete; native acceptance next
+
+The author's express approval to amend the GDD closes the Big Loot, Big Event,
+Music and Big Skeleton synchronization backlog against gameplay main
+`2847f416b8d152a24ac4d282cc012e73ddb131d7`. Recent SPOT, audit, cleanup and
+equipment/faction repairs are represented; obsolete deferrals and music
+implementation-pending/default-On statements are corrected. The newer modular
+boss design remains intact and is not claimed implemented by this checkpoint.
+
+Read live GDD 00 → 01 → the relevant normalized rule. Big Loot's active catalog
+is now in 05; HUMAN retains all 113 exact authored identity rows. Exact duplicate
+passages were consolidated into canonical references to resolve apparent size
+pressure, with every retained rule verified. All ten tab texts match the expected
+edit, and native date elements and tab topology are preserved.
+
+See `validation/GDD_SYNC_20260928.md` and its JSON receipt. Earlier failed-write
+notes below are historical; do not replay their old insertion payloads. This
+checkpoint changes documentation only. Gameplay/source-test evidence and all
+pending native acceptance remain unchanged. Next: the finite Big Skeleton local
+gate below, then existing native gates; retain local acceptance → Workshop parity
+→ matching VPS. No Workshop publication or VPS deployment occurred.
+
+---
+
+# Prior checkpoint — Big Skeleton source; native acceptance next
 
 Author-directed design and implementation extends verified main
 `f0b7a66d0e87c18ad18b45a6449b613b7f8ee11d`. Skeleton Blockade remains registered

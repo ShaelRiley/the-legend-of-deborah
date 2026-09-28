@@ -1,0 +1,33 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revisionId": "ANLCKQkuLuFL1vYL5OkI2mDTcHZp9K3EK--il7iu4e-6vIL7xgVREom02Ix7lrSARsKjbCTXgky3Qg1AyzyBq2GcJNsrMU80Q3KWy8WC6w",
+  "sourceCommit": "2847f416b8d152a24ac4d282cc012e73ddb131d7",
+  "allTenTabTextsMatchExpected": true,
+  "tabTopologyPreserved": true,
+  "nativeDateElementsPreserved": 2,
+  "nativeInlineObjectsAndRichLinksPreserved": true,
+  "consolidatedDuplicateGroups": 85,
+  "canonicalParagraphsVerified": 206,
+  "modularBossParagraphsPreserved": 11,
+  "authoredLootRows": 113,
+  "eventCatalogIdentities": 28,
+  "bribeExcluded": true,
+  "musicDefaultOffVerified": true,
+  "textCharacters": 1517623,
+  "readbackSha256": "e50f397eadc3389015860b4eb06f84e7d53a307893e10f1d1d74c13804d29cfd",
+  "tabTextSha256": {
+    "t.dkjl8amu37zv": "a7e81ba84051de026565678fad260518d64f5308dc3944675d1a611440b90b1a",
+    "t.l29tf4evc12u": "e7501f9d639b11399d0efef4937e7e25e23489012e3eb84e88daf87a4242b25b",
+    "t.sczu9lyk92qc": "4135439e0dc3077827b172b5819a249d5a3f96806228c01dba8638d453280b2e",
+    "t.qt6qa9saeusi": "1cdddcf39c4da7f228780464d599645366386f1da792587ced8c345e2b121794",
+    "t.uvtkgy5665d": "a6ce48dc0b1f0d29ed203a818de47c52484366dab408e5a63dea256d83236451",
+    "t.8p7v8fnmr641": "9f33711cd7798f963e2fe6f8ad5e124dbd0087ce10e949fd6b0a9acbe0e4a1e5",
+    "t.5ffvxbn7lbs": "de4a0bf22c9d19048a54bba76adf0eae8749c498cbe79ae964d5c3e026ad34c0",
+    "t.bff19dm33vvw": "a5464a9e055fb1431b2e2d810e54c74577ef5513864f803d100174310472f16e",
+    "t.w79zh9j45uel": "c5701d175e28791e971ae854aec82b8868aad4d15102632c713556c6e69eee58",
+    "t.0": "c0ff1173bd5caafdb58cdc744a6e49210a4920769bf6c22e0b4cd355005b7d9f"
+  },
+  "status": "applied_and_readback_verified",
+  "authorAuthorization": "Express approval to amend the existing GDD and include recent updates.",
+  "nativeAcceptance": "pending; unchanged by this documentation checkpoint"
+}
