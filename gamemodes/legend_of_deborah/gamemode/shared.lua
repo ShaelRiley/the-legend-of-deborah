@@ -28,6 +28,9 @@ include("lod/sh_die_logger.lua")
 if SERVER then AddCSLuaFile("lod/sh_feedback_language.lua") end
 if SERVER then AddCSLuaFile("lod/sh_audio.lua") end
 include("lod/sh_audio.lua")
+if SERVER then AddCSLuaFile("lod/sh_music.lua"); AddCSLuaFile("lod/sh_player_options.lua") end
+include("lod/sh_music.lua")
+include("lod/sh_player_options.lua")
 include("lod/sh_feedback_language.lua")
 if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
 include("lod/sh_player_scale_collision.lua")

@@ -1,0 +1,45 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "write_control": {
+    "requiredRevisionId": "ANLCKQmwcEMnWdc7wDcTHXvJO5q3NjoWh8UJmyrHyfE2_SbSMxecCIMXnMoZgzv4XzyzxWNbrFKD-GxUETwgD8y2G7IMPTM7TnYqQcO5uA"
+  },
+  "requests": [
+    {
+      "replaceAllText": {
+        "containsText": {
+          "text": "Proposed administrator control lod_music_enabled defaults to 1; 0 disables the entire LoD music system.",
+          "matchCase": true
+        },
+        "replaceText": "Administrator control lod_music_enabled defaults to 0; 1 explicitly enables the music system. This author direction supersedes the earlier default-On design.",
+        "tabsCriteria": {
+          "tabIds": [
+            "t.8p7v8fnmr641"
+          ]
+        }
+      }
+    },
+    {
+      "replaceAllText": {
+        "containsText": {
+          "text": "Proposed administrator control: lod_music_enabled 0 disables the entire LoD music system; 1 restores permission (default).",
+          "matchCase": true
+        },
+        "replaceText": "Administrator control: lod_music_enabled defaults to 0 (Off); 1 explicitly enables the music system.",
+        "tabsCriteria": {
+          "tabIds": [
+            "t.0"
+          ]
+        }
+      }
+    },
+    {
+      "insertText": {
+        "location": {
+          "tabId": "t.bff19dm33vvw",
+          "index": 1
+        },
+        "text": "LOD-MUSIC-IMPLEMENTATION — Provisional source parameters; native audio acceptance pending\nServer master lod_music_enabled defaults OFF (0); only the server may enable it. Player Music defaults On and never overrides server Off. Four physical-floor assignments are reserved from the music-only seed stream, covering the maximum existing maze layers; active/offered plans and their role sources remain frozen. The companion ingestion service queues a catalog reload consumed at the next new plan boundary.\nIMPLEMENTATION-TUNABLE initial values: listener update 0.2 seconds; envelope fade 1.2 seconds; escalation 0.8 seconds, relaxation 6 seconds, minimum dwell 4 seconds; urgent danger bypasses dwell. Recent confirmed damage/combat window 5 seconds; three recent received hits or HP at/below 40% or effective clock at/below 180 seconds requests T2; HP at/below 20% or effective clock at/below 60 seconds requests T3. Staging remains T0. Incoming audio requires 0.3 seconds of buffered lead and matched grid/phase before seeking. Unrelated grids use an authored-start envelope handoff.\nResource bounds: four total native score slots, at most two pending/incomplete transfers, 4 MiB and 180 seconds per file, no disk cache, no background library download, at most one attempt per source per plan/campaign context before bounded role fallback. Native callbacks that cannot yet be cancelled retain their slot until they return and are discarded after Off/reset. Startup/reload validation caps catalog at 256 blocks and 1,792 assets; compressed plan transport at 60,000 bytes. These are bounded implementation choices, not measured native bandwidth/memory guarantees.\nOriginal D-Dorian Foundations starter defaults are generated offline by tools/music/generate_defaults.py as seven role-specific Vorbis files (stereo 44.1 kHz, nominal 128 kbps, loops 16 seconds, fanfare 6.5 seconds). They are separate operator-hosted assets and require native audition/hosting acceptance; no 32-block album, deployed HTTPS origin, sample-accurate alignment or native performance acceptance is claimed. Source validation and remaining finite native gate belong in docs/MUSIC_SYSTEM.md.\n\n"
+      }
+    }
+  ]
+}

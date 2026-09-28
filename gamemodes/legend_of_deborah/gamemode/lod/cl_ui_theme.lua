@@ -60,6 +60,7 @@ end
 function UI:SelectPage(page)
     if self:IsMinigameLocked() then return false end
     self.ActivePage = page
+    if page ~= "options" and LOD.PlayerOptions and LOD.PlayerOptions.Close then LOD.PlayerOptions:Close() end
     if page ~= "wallet" and LOD.Wallet and LOD.Wallet.Close then LOD.Wallet:Close() end
     if page ~= "sheet" and LOD.CharacterSheet and LOD.CharacterSheet.Close then LOD.CharacterSheet:Close() end
     if page ~= "book" and LOD.Spellbook and LOD.Spellbook.Close then LOD.Spellbook:Close() end
@@ -99,6 +100,7 @@ function UI:PageLinks(frame, active, y)
         {"history","L / DIE-LOGGER",function() LOD.CombatRollFeed:OpenHistory() end},
         {"manual","MANUAL",function() LOD.FieldManual:Open() end}}
     if LOD.Wallet then pages[#pages+1]={"wallet","WALLET",function() LOD.Wallet:Open() end} end
+    if LOD.PlayerOptions and LOD.PlayerOptions.Open then pages[#pages+1]={"options","OPTIONS",function() LOD.PlayerOptions:Open() end} end
     local tabWidth=math.min(144,(frame:GetWide()-48-10*(#pages-1))/#pages)
     for i,page in ipairs(pages) do
         local button=vgui.Create("DButton",frame)

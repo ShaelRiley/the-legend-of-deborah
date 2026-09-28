@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SQLITE_LUA = set()
+EXTRA_SUITES = []
 LABEL = 'SPOT10_GATE'
 SCOPE = 'SPOT-10 selected production/regression suites, not full campaign matrix'
 LUA = [
@@ -60,6 +61,7 @@ def main() -> int:
                ('test_dev_population_manifest.py', ['python3','tools/test_dev_population_manifest.py']),
                ('test_great_crate_assets.py', ['python3','tools/test_great_crate_assets.py']),
                ('git_diff_check', ['git','diff','HEAD','--check'])]
+    suites += EXTRA_SUITES
     lua_files = sorted(str(p.relative_to(ROOT)) for base in ('gamemodes','lua','tools')
                        for p in (ROOT / base).rglob('*.lua'))
     suites += [('lua_syntax', ['python3','tools/run_lua54.py','--syntax', *lua_files])]

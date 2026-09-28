@@ -1,3 +1,27 @@
+# Current checkpoint — Music System source; streaming defaults OFF
+
+The author-promoted Music System extends verified main
+`c5ece210be12077c321264ad4abb81821fe8d9a5`. `lod_music_enabled 0`
+is the default; only the server may permit streams. Existing player Music Off
+also wins. Live GDD 00→01→05/06/07 and the Options anchor govern six roles,
+optional interlude, inheritance/universal themes, sets, frozen floor plans,
+spatial/pressure mixing, accepted-victory continuity and private Die Logger starts.
+
+See `MUSIC_SYSTEM.md` for implementation, bounded HTTPS ingestion/upload, original
+separate default assets, operator commands and the finite native gate. Source
+verification results are recorded in `validation/MUSIC_SYSTEM.md`. Native audio,
+UI, network and performance acceptance remain pending; no public HTTPS origin,
+Workshop update or VPS deployment is claimed. The required default-Off GDD edit
+and provisional tuning write failed with HTTP 400 FAILED_PRECONDITION; fresh
+readback is unchanged. Exact amendments: `validation/MUSIC_GDD_AMENDMENTS.json`.
+Earlier Big Loot/Event synchronization debt remains independent.
+
+Next: provision/audition the default profile on an operator-controlled HTTPS
+origin, install the exact source locally, start a new campaign and run the short
+native music gate. Maintain local acceptance → Workshop parity → matching VPS.
+
+---
+
 # Current checkpoint — Big Event System source validated; native acceptance next
 
 The author-promoted `briefs/EVENT_SYSTEM_UPDATE.md` extends verified main

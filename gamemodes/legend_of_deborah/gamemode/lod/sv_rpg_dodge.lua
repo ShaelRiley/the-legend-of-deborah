@@ -9,7 +9,8 @@ function Rules:RogueMovementMultiplier(actor, sprinting)
     if not state or state.classId ~= "rogue" then return 1 end
     if LOD.SoldierMovement and LOD.SoldierMovement:Active(actor) then sprinting = false end
     if sprinting == nil then
-        sprinting = actor:IsPlayer() and actor.KeyDown and actor:KeyDown(IN_SPEED)
+        sprinting = actor:IsPlayer() and actor.KeyDown and
+            (LOD.PlayerOptions and LOD.PlayerOptions:WantsSprint(actor) or not LOD.PlayerOptions and actor:KeyDown(IN_SPEED))
             or not actor:IsPlayer() and actor.LODOrdinarySprinting == true
     end
     return sprinting and 1.22 or 1.11

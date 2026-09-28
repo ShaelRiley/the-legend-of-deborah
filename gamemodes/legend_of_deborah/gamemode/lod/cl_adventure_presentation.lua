@@ -20,6 +20,11 @@ function A:Reset()
 end
 function A:Play(index, visual, variant)
     if LOD.Audio and LOD.Audio:Muted() then return false end
+    local music=LOD.MusicDirector
+    -- These authored melodies are music; effects-backed cues retain their role.
+    local musical=LOD.AdventureCues[index] and not LOD.AdventureCues[index].feedback
+    local allowSound=not musical or music and music:Enabled()
+    if index==6 and music then allowSound=false end -- one director owns the clear fanfare
     local spec = LOD.AdventureCues[index]
     local ply, now = LocalPlayer(), CurTime()
     if not spec or not IsValid(ply) then return false end
@@ -31,10 +36,11 @@ function A:Play(index, visual, variant)
         local path = spec.feedback and ("legend_of_deborah/feedback/"..spec.feedback..".wav")
             or "legend_of_deborah/adventure/" .. (spec.sound or spec.id) .. ".wav"
         if self.assetExists[path] == nil then self.assetExists[path] = file.Exists("sound/" .. path, "GAME") end
-        if self.assetExists[path] and volume:GetFloat() > 0 then
+        if allowSound and self.assetExists[path] and volume:GetFloat() > 0 then
             if spec.feedback then sounded=LOD.Audio:Play(spec.feedback,volume:GetFloat())
-            else ply:EmitSound(path, 0, 100, volume:GetFloat(), CHAN_AUTO);sounded=true end
+            else ply:EmitSound(path, 0, 100, volume:GetFloat()*(music and music.Volume:GetFloat() or 1), CHAN_AUTO);sounded=true end
             self.soundOwner, self.soundPath = ply, path
+            self.soundMusical=musical
             self.soundPriority, self.soundUntil = spec.priority, now + spec.duration
         end
     end

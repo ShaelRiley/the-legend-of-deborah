@@ -33,6 +33,10 @@ function A:Play(id,volume)
     if not cue or self:Muted() or CurTime()<(self.Next[id] or 0) then return false end
     local ply=LocalPlayer();if not IsValid(ply) then return false end
     self.Next[id]=CurTime()+cue.cooldown
+    if LOD.MusicDirector and LOD.MusicDirector.Duck and
+        (id=="dialogue" or id=="danger" or id=="enemy_warning" or id=="ar2_warning" or id=="boss_taunt") then
+        LOD.MusicDirector:Duck(1.2)
+    end
     -- Per-mechanic spacing bounds rapid hits without taking over weapon channels.
     ply:EmitSound(cue.path,0,100,(volume or 1)*cue.volume,CHAN_AUTO)
     return true

@@ -90,9 +90,19 @@
         ]
       ],
       "text": [
-        "Wallet and Manual share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock.",
+        "Wallet, Manual and Options share the Player Menu's tabs. Special Moves use arrow-key sequences; their alternate keys can be rebound in Equipment. Menus do not pause this multiplayer world or its clock.",
+        "Options saves Music On/Off, music volume and Always Run between sessions. The server must enable music first; Disabled by server preserves your preference. Music Off also stops soundtrack loading, while effects, ambience and dialogue remain. With Always Run on, hold your sprint key to walk; with it off, hold that key to run. Other modifier shortcuts and legal movement limits stay the same.",
         "In the Spellbook, click a Form with LMB or RMB to bind RMB, or click it with M3, M4, or M5 to bind that mouse button. Binding labels appear on the Forms. Your selected Content applies to all bound Forms; bindings stay with your character through reconnects and dungeon transitions. A single-Form character keeps RMB casting.",
         "A red exclamation mark above CHARACTER, SPELLBOOK or EQUIPMENT means that page has an unseen update. Inventory is the bag on the separate Equipment page. Level, permanent ability, identity and feat-choice changes flag Character; newly owned Forms or Contents flag Spellbook; item records, stack amounts and storage capacity flag Equipment. Open the corresponding page and let its updated contents appear to clear only that mark. Other pages, loading screens and a still-dragging inventory do not clear it. Routine XP, HP, Magic, ammo, cooldowns, spell bindings, weapon switches and remaining Wand charges do not create marks. The first sync and a new campaign, character or life begin quietly; ordinary floor transitions retain unread updates."
+      ]
+    },
+    {
+      "id": "music",
+      "title": "A score for every floor",
+      "text": [
+        "When the server enables music, each physical maze floor has a Music Block. Its four tension arrangements follow your own combat, survival and remaining dungeon time. Staging uses the upcoming first floor’s calm arrangement, continuing through the portal. Stairs blend the two floors; backtracking returns to the same assigned music.",
+        "Now playing names appear in your Die Logger when a new block begins, including during a stair crossing. A change of tension within that block does not add another entry. The boss arena uses dedicated boss music; the fanfare plays once after the actual rescue or cash recovery. Loading and intermission can use a calm interlude before the next floor’s song.",
+        "The score is optional. Missing or slow music never prevents playing, deploying, fighting, rescuing or restarting. Server operators can select Music Block Sets and shared boss, victory or interlude themes; changes apply to newly planned dungeons."
       ]
     },
     {
