@@ -21,6 +21,7 @@ import subprocess
 import tempfile
 import uuid
 import zipfile
+from section_cues import analyze_file, mode_for_role, validate_cues
 
 ROLES = ('T0', 'T1', 'T2', 'T3', 'BOSS', 'VICTORY', 'INTERLUDE')
 MAX_FILE = 4 * 1024 * 1024
@@ -75,7 +76,7 @@ def validate_folder(folder):
     roles = manifest.get('roles')
     require(isinstance(roles, dict) and not set(roles) - set(ROLES), 'invalid roles')
     # Deliberate omissions inherit; a declared but absent file always fails.
-    assets, resolved, declared, siblings = {}, {}, set(), []
+    assets, resolved, declared, siblings, analyzed = {}, {}, set(), [], {}
     for role in ROLES:
         spec = roles.get(role, 'inherit')
         if spec == 'inherit':
@@ -83,7 +84,7 @@ def validate_folder(folder):
             continue
         require(isinstance(spec, dict), 'role must be an asset or inherit')
         require(not set(spec) - {'file','hash','bytes','duration','codec','rate','channels','loop','loopStart','loopEnd',
-            'bpm','beats','phase','gain','headroom','grid','handoff','credits','source'}, 'unknown asset fields')
+            'bpm','beats','phase','gain','headroom','grid','handoff','credits','source','cues'}, 'unknown asset fields')
         name = spec.get('file')
         require(isinstance(name, str) and re.fullmatch(r'[a-z0-9_-]{1,80}\.ogg', name), 'unsafe audio filename')
         path = folder / name
@@ -115,6 +116,20 @@ def validate_folder(folder):
         asset.update(path=f'music/blocks/{bid}/{version}/{name}', duration=duration, loopEnd=duration,
                      credits=text(spec.get('credits', credits)), source=text(spec.get('source')),
                      gain=gain, headroom=headroom)
+        if role != 'VICTORY':
+            cues = spec.get('cues')
+            if cues is None:
+                key = (digest, bpm, phase)
+                if key not in analyzed:
+                    analyzed[key] = analyze_file(path, duration, bpm, phase)
+                cues = analyzed[key]
+            validate_cues(cues, duration, bpm, phase)
+            require(bool(cues[mode_for_role(role)]),
+                    f'{role} has no {mode_for_role(role)} section; audition and supply authored cues or another recording')
+            asset['cues'] = cues
+            spec['cues'] = cues
+        else:
+            require('cues' not in spec, 'VICTORY is one-shot, not section-directed')
         # One hash may be reused, but cannot claim incompatible timing/loop policy.
         if digest in assets:
             require({k:v for k,v in assets[digest].items() if k != 'path'} == {k:v for k,v in asset.items() if k != 'path'}, 'inconsistent shared asset metadata')
@@ -183,7 +198,12 @@ class CatalogStore:
             for key, asset in assets.items():
                 old = catalog['assets'].get(key)
                 if old:
-                    require({k:v for k,v in old.items() if k != 'path'} == {k:v for k,v in asset.items() if k != 'path'}, 'existing hash metadata conflict')
+                    # One-way legacy enrichment on a new immutable block version.
+                    # Frozen plans contain their own copies; no live retargeting.
+                    ignored = {'path', 'cues'} if 'cues' not in old else {'path'}
+                    require({k:v for k,v in old.items() if k not in ignored} == {k:v for k,v in asset.items() if k not in ignored}, 'existing hash metadata conflict')
+                    if 'cues' not in old and 'cues' in asset:
+                        old['cues'] = asset['cues']
                 else:
                     catalog['assets'][key] = asset
             require(len(catalog['blocks']) <= 256 and len(catalog['profiles']) <= 64 and len(catalog['assets']) <= 1792, 'catalog capacity reached')

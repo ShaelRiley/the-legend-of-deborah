@@ -11,11 +11,14 @@ from catalog_service import MAX_UPLOAD, ORIGIN, require, validate_folder
 
 def bundle(folder):
     folder=Path(folder).resolve()
-    validate_folder(folder)
+    manifest, _, _ = validate_folder(folder)
     out=io.BytesIO()
     with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_STORED) as z:
         for path in sorted(folder.iterdir()):
-            z.write(path,path.name)
+            if path.name == 'manifest.json':
+                z.writestr(path.name, json.dumps(manifest, sort_keys=True))
+            else:
+                z.write(path,path.name)
     data=out.getvalue();require(len(data)<=MAX_UPLOAD,'bundle too large');return data
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -26,7 +29,13 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('folder',type=Path);p.add_argument('--origin',default=os.environ.get('LOD_MUSIC_UPLOAD_ORIGIN'))
     p.add_argument('--validate-only',action='store_true')
-    args=p.parse_args();data=bundle(args.folder)
+    p.add_argument('--write-cues',action='store_true',help='analyze/validate and save editable cue metadata locally; do not upload')
+    args=p.parse_args()
+    if args.write_cues:
+        manifest, _, _ = validate_folder(args.folder)
+        (args.folder/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+        print(json.dumps({'cues_written':str(args.folder/'manifest.json')}));return
+    data=bundle(args.folder)
     if args.validate_only:
         print(json.dumps({'valid':True,'bundle_bytes':len(data)}));return
     require(args.origin and ORIGIN.fullmatch(args.origin),'set LOD_MUSIC_UPLOAD_ORIGIN to the HTTPS ingestion origin')

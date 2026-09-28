@@ -6,7 +6,8 @@ M.Roles = {"T0", "T1", "T2", "T3", "BOSS", "VICTORY", "INTERLUDE"}
 M.Limits = {blocks=256, assets=1792, bytes=4194304, duration=180, channels=4,
     transfers=2, catalogBytes=2097152, packetBytes=60000}
 M.Tuning = {tick=.2, fade=1.2, relax=6, dwell=4, escalate=.8, buffer=.3,
-    damageWindow=5, urgentHP=.2, dangerHP=.4, urgentTime=60, dangerTime=180}
+    damageWindow=5, urgentHP=.2, dangerHP=.4, urgentTime=60, dangerTime=180,
+    cueLead=8, cueMinimum=4, cueCount=8}
 local function count(t) local n=0; for _ in pairs(t or {}) do n=n+1 end; return n end
 local function finite(n, lo, hi)
     return type(n)=="number" and n==n and n>=lo and n<=hi
@@ -16,6 +17,54 @@ function M.Text(s, size) return type(s)=="string" and #s>0 and #s<=(size or 128)
 function M.Origin(s)
     return type(s)=="string" and #s<=200 and s:match("^https://[%w][%w%.%-]*:?%d*$")~=nil
 end
+function M.PulseMode(role)
+    if role=="VICTORY" then return nil end
+    return (role=="T0" or role=="INTERLUDE") and "quiet" or "pulse"
+end
+function M.RoleLevel(role)
+    return ({T0=0,T1=1,T2=2,T3=3,BOSS=4,INTERLUDE=0})[role] or 0
+end
+function M.Cues(a)
+    local c=a.cues
+    if c==nil then return true end -- Legacy catalogs are explicit compatibility.
+    if not a.loop or type(c)~="table" or c.version~=1
+        or (c.source~="authored" and c.source~="analyzed-v1") then return false end
+    for key in pairs(c) do if key~="version" and key~="source" and key~="pulse" and key~="quiet" then return false end end
+    local bar=240/a.bpm
+    for _,mode in ipairs({"pulse","quiet"}) do
+        local list=c[mode]
+        if type(list)~="table" or #list>M.Tuning.cueCount or count(list)~=#list then return false end
+        local previous=-1
+        for _,cue in ipairs(list) do
+            if type(cue)~="table" or count(cue)~=3 or not finite(cue.start,0,a.duration)
+                or not finite(cue.finish,0,a.duration+.001) or not finite(cue.energy,0,1)
+                or cue.start<=previous or cue.finish-cue.start<M.Tuning.cueMinimum-.001 then return false end
+            for _,point in ipairs({cue.start,cue.finish}) do
+                local grid=(point-a.phase)/bar
+                if math.abs(grid-math.floor(grid+.5))>=.001 then return false end
+            end
+            previous=cue.start
+        end
+    end
+    if #c.pulse+#c.quiet==0 then return false end
+    for _,p in ipairs(c.pulse) do for _,q in ipairs(c.quiet) do
+        if math.min(p.finish,q.finish)>math.max(p.start,q.start)+.001 then return false end
+    end end
+    return true
+end
+-- Pulse/quiet eligibility is absolute. Energy only ranks within that class.
+function M.Section(a,mode,previous,strong)
+    local list=a.cues and a.cues[mode]
+    if not list or #list==0 then return nil end
+    local low,high=1,0
+    for _,cue in ipairs(list) do low=math.min(low,cue.energy);high=math.max(high,cue.energy) end
+    local middle=(low+high)*.5
+    for offset=1,#list do
+        local index=((previous or 0)+offset-1)%#list+1
+        local cue=list[index]
+        if (strong and cue.energy>=middle) or (not strong and cue.energy<=middle) then return cue,index end
+    end
+end
 function M.Asset(a)
     return type(a)=="table" and type(a.hash)=="string" and #a.hash==64 and a.hash:match("^[a-f0-9]+$")
         and type(a.path)=="string" and #a.path<240 and a.path:match("^music/blocks/[a-z0-9_-]+/[a-z0-9_-]+/[a-z0-9_-]+%.ogg$")
@@ -24,7 +73,7 @@ function M.Asset(a)
         and finite(a.bpm,40,240) and finite(a.beats,1,720) and a.beats%1==0
         and finite(a.phase,0,a.duration) and finite(a.gain,0,1) and finite(a.headroom,0,24)
         and M.ID(a.grid) and a.handoff=="envelope" and a.loopStart==0 and a.loopEnd==a.duration
-        and M.Text(a.credits,512) and M.Text(a.source,512)
+        and M.Text(a.credits,512) and M.Text(a.source,512) and M.Cues(a)
 end
 function M.Compatible(a,b)
     return a and b and a.grid==b.grid and a.bpm==b.bpm and a.beats==b.beats
@@ -45,6 +94,7 @@ function M.ValidateCatalog(c)
             if id~=nil and id~="inherit" then
                 local a=c.assets[id]
                 if not a or a.loop~=(role~="VICTORY") or role=="VICTORY" and a.duration>12 then return false end
+                if a.cues and #a.cues[M.PulseMode(role)]==0 then return false end
                 if role:sub(1,1)=="T" then
                     if sibling and not M.Compatible(sibling,a) then return false end
                     sibling=a

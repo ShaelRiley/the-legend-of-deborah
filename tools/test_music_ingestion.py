@@ -32,6 +32,8 @@ with tempfile.TemporaryDirectory() as tmp:
     check(not (store.root/'catalog.json').exists(),'staging cannot publish')
     rev=store.publish(uid)
     c=store.catalog();check(len(c['assets'])==7 and len(c['profiles'])==1,'real seven-role decoded profile')
+    check(all(a.get('cues',{}).get('version')==1 for a in c['assets'].values() if a['loop']), 'loop cue maps published before gameplay')
+    check(all('cues' not in a for a in c['assets'].values() if not a['loop']), 'fanfare stays outside section director')
     check(len(c['blocks'])==0,'defaults are not procedural blocks')
     block=bundle(sources/'deborah-foundations-v1')
     store.publish(store.stage(block))
@@ -61,6 +63,8 @@ with tempfile.TemporaryDirectory() as tmp:
     reject(lambda:store.stage(broken(lambda m:m['roles']['T1'].update(bpm=123))),'incompatible tempo rejects')
     reject(lambda:store.stage(broken(lambda m:m['roles']['T0'].update(file='absent.ogg'))),'declared missing asset rejects')
     reject(lambda:store.stage(broken(lambda m:m['roles']['T0'].update(upload_token='do-not-project'))),'unknown metadata cannot leak into game state')
+    reject(lambda:store.stage(broken(lambda m:m['roles']['T1']['cues'].update(pulse=[]))),'combat role cannot publish without pulse')
+    reject(lambda:store.stage(broken(lambda m:m['roles']['T0']['cues']['quiet'][0].update(finish=999))),'out-of-range cue fails atomically')
     check((store.root/'catalog.json').read_bytes()==before,'all failed uploads preserve registration')
     app=application(store,'t'*32)
     status=[]
@@ -78,4 +82,12 @@ with tempfile.TemporaryDirectory() as tmp:
     store.publish(store.stage(bundle(partial)))
     roles=store.catalog()['blocks']['four-track']['roles']
     check(roles['BOSS']==roles['VICTORY']==roles['INTERLUDE']=='inherit','partial/legacy roles normalize to inheritance')
+    # A new immutable version may enrich pre-cue hash metadata for future plans.
+    from catalog_service import atomic_json
+    old=store.catalog()
+    for a in old['assets'].values():a.pop('cues',None)
+    atomic_json(store.root/'catalog.json',old)
+    legacy['version']='v2';(partial/'manifest.json').write_text(json.dumps(legacy))
+    store.publish(store.stage(bundle(partial)))
+    check(all(store.catalog()['assets'][roles[r]].get('cues') for r in ('T0','T1','T2','T3')),'new immutable version enriches legacy assets without rewriting audio')
 print(f'MUSIC_INGESTION PASS {checks}')

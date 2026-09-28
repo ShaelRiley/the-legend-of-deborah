@@ -54,12 +54,13 @@ function E.complete(index,buffer,fail)
  if fail then req.fn(nil,2,'test failure');return end
  local c={valid=true,buffer=buffer or 16,time=0,volume=0}
  function c:Stop() self.valid=false;E.stops=E.stops+1 end
- function c:GetBufferedTime() return self.buffer end
- function c:GetTime() return self.time end
- function c:SetTime(v) assert(v<=self.buffer,'unbuffered native seek');self.time=v end
+ function c:GetBufferedTime() assert(self.valid,'buffer queried after native Stop');return self.buffer end
+ function c:GetTime() assert(self.valid,'position queried after native Stop');return self.time end
+ function c:SetTime(v) assert(self.valid,'seek after native Stop');assert(v<=self.buffer,'unbuffered native seek');self.time=v end
  function c:SetVolume(v) self.volume=v end
  function c:EnableLooping(v) self.loop=v end
  function c:Play() E.plays=E.plays+1;self.played=true end
+ function c:Pause() self.played=false end
  req.channel=c;req.fn(c);return c
 end
 LOD={Config={Maze={Width=1,Height=1,CellSize=384,LevelHeight=384,Origin=Vector(),LayerOccupancy={{},{},{},{}}},Geometry={StairRun=320,StairSteps=24,StairWidth=96}},

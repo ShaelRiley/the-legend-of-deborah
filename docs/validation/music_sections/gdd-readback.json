@@ -1,0 +1,60 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revision_05": "ANLCKQm1DGTcXD8YKIphiO-v44FAyqWYe9swTlsaVoezs54s845gLLHbEMlXGgNqo73QEA7W-Rfml3kIvNvVc_1XjZ1DkCn2XZOIoN2LEg",
+  "revision_07": "ANLCKQlCvqd2yOR23ZE5UBaOgb6VtWbdmSnmCMH-b-dphTJ-J7XHZogFjn_X-Roj8jb0Im5qymINbq2D_1K5Bu3wLr-7rA6xtk9RSxBO6w",
+  "source": "Native Google Docs readback after targeted guarded edits",
+  "tab_05": [
+    {
+      "text": "LOD-MUSIC-CUES-001 — Pulse-first section direction [AUTHOR REVISION]",
+      "startIndex": 128930,
+      "endIndex": 128998,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Rhythmic state has primacy over loudness. T1–T3 and BOSS require a sustained rhythmic pulse; T0 and INTERLUDE require a quiet passage. A drop between still-active tension roles selects a gentler pulsed passage, never a beatless intro/outro merely because its volume is lower. Only genuine relaxation into T0/INTERLUDE selects and sustains quiet material. Rising pressure enters an already rhythmic interior phrase. Within the required pulse/quiet class, energy and entry variety are secondary. Renew either class before its marked boundary: maintain the beat through prolonged combat and maintain the quiet interlude through prolonged calm. Rotate available entry points; preserve same-role staging/portal continuity. The existing pressure authority selects arrangements; the cue director never invents combat state or promotes tension merely because a recording ends.",
+      "startIndex": 128999,
+      "endIndex": 129867,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Analyze recordings offline during authoring/import and register compact pulse/quiet cues. Use sustained rhythmic-transient evidence before loudness, with validated authored overrides and audition; automatic analysis is a curation heuristic. Reject a newly imported role with no suitable passage rather than mislabel a loud drone as a pulse or a rhythmic breakdown as quiet. No waveform scans, FFT, beat detection or live generation run in GMod. Runtime uses bounded cue lookups, playback position, buffer checks and the existing crossfader. Preserve four score channels/two transfers; intentional same-file section crossfading may use a spare slot. If no spare is ready, use a short faded buffered reseek within the required class rather than play the wrong class or hard-cut; gameplay never waits. VICTORY begins at zero once and receives no section looping/reseeking. Legacy cue-less registrations retain compatibility with a visible diagnostic and require offline reimport for these guarantees. Frozen active/offered plans never change retroactively. Section changes do not create Die Logger block-name entries.",
+      "startIndex": 129868,
+      "endIndex": 130982,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    }
+  ],
+  "tab_07": [
+    {
+      "text": "LOD-MUSIC-CUES-IMPL — Offline pulse/quiet metadata [IMPLEMENTATION-TUNABLE]",
+      "startIndex": 2883,
+      "endIndex": 2958,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Extend the existing uploader/catalog validator and shared/client MusicDirector. Each looping asset may carry version-1 cues with analyzed/authored provenance and at most eight pulse and eight quiet start/finish intervals plus relative energy. Validate finite bounds, minimum useful length and authored bar grid before publication. The required class must exist for each declared role. Offline analysis decodes mono audio and tests recurring transients across the declared BPM grid before using RMS energy to rank sections. Quiet means absence of the sustained foreground pulse, not merely a lower gain. Author overrides are authoritative curation, not a claim that automatic analysis understands musical intent.",
+      "startIndex": 2959,
+      "endIndex": 3670,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Initial tuning: four-beat bars; four-second minimum useful section, preferring eight seconds where available; at most eight entries per class; 0.2-second section checks; existing 1.2-second fades and 0.3-second buffered lead; eight-second renewal prefetch lead. Rotate entries within class; stronger entries serve rising/high pressure and gentler pulsed entries serve falling/still-active pressure. Quiet passages remain quiet until pressure changes. Fast native seeking avoids decode-to-position; buffer/seek support still needs native verification. Keep four channels/two transfers, count intentional overlaps and stale pending callbacks, and use the existing fade duration for the constrained-slot reseek envelope. Cue history expires with its asset plan. Native audio, CPU/memory and cold-network acceptance remain required; metadata checks alone do not prove those results. Offline classifier tuning: 11,025 Hz mono PCM, 10-millisecond RMS windows, audible RMS floor 0.003, attack threshold max(0.002, 0.18 × bar RMS), attacks in at least three of four beats and circular phase coherence at least 0.72. Exclude silent bars; cap entries by evenly sampling long runs. After the first successful section crossfade, pause and reuse its outgoing buffered voice for later renewals rather than re-download the recording; reserve voices yield to foreground changes. These are provisional curation/efficiency parameters, not native musical acceptance.",
+      "startIndex": 3671,
+      "endIndex": 5118,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    }
+  ],
+  "native_acceptance": false
+}

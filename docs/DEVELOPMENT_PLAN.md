@@ -1,4 +1,35 @@
-# Current checkpoint — low-end PC / Steam Deck client optimization
+# Current checkpoint — pulse-first music section direction
+
+The author promotes section-aware music direction from main
+`67cb7dbf7343d05cd52c3f429e33322a8fc30248`. Rhythmic class has primacy:
+T1–T3/BOSS sustain a pulse, falling active pressure uses gentler pulsed material,
+and T0/INTERLUDE sustain quiet. Offline import prepares bounded, editable cue
+maps. The existing client mixer renews sections before inappropriate endings,
+rotates entries, reuses a buffered pair, and preserves four channels/two transfers.
+There is no gameplay-time waveform analysis. VICTORY and block-name logging retain
+their existing one-shot/logical-block semantics. Server music still defaults Off.
+
+Validation: all 287 registered suites have passing coverage on unchanged source;
+the full matrix was 286/287 plus an isolated passing rerun of its one 600-second
+campaign timeout. All 802 Lua files passed syntax checking. See
+`validation/MUSIC_SECTIONS.md` for exact receipts, retained attempts and native limits.
+
+Live GDD 05/07 pulse-first amendments were written and read back. See
+`MUSIC_SECTION_DIRECTION.md` for authoring, compatibility, runtime limits and the
+finite native gate. Legacy cue-less media needs a new offline-imported version;
+active/offered plans stay frozen. Hosted media and native listening/performance
+acceptance remain pending. The full canonical matrix now includes the new offline
+classifier and section playback gates, alongside the existing music ingestion
+and low-end regressions. Retain local acceptance → Workshop parity → matching VPS.
+
+Next: provision/audition prepared tracks, install the published source, and run
+the short native music gate. No Workshop publication or VPS deployment belongs
+to this source checkpoint. Preserve the prior Steam Deck optimization and all
+outstanding accepted-regression/native gates.
+
+---
+
+# Prior checkpoint — low-end PC / Steam Deck client optimization
 
 The author's slowdown report promotes the planned low-end work. This checkpoint
 extends main `3d60d6f730b56abbf3df5de68bb8d71002d44d96` with immutable container

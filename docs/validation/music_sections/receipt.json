@@ -1,0 +1,37 @@
+{
+  "source_commit": "9e454652c580aaa7a982ec3f7858011a86c7d917",
+  "parent": "67cb7dbf7343d05cd52c3f429e33322a8fc30248",
+  "source_digest": "d7f4028e120872be1d84b2e89faa3e33c614f09b3cc091c0a471004b9d8779f8",
+  "full_matrix": {
+    "passed": 286,
+    "total": 287,
+    "lua_files": 802,
+    "source_unchanged": true,
+    "nonpass": "B23 Campaign Wandering Ecology; 600-second timeout"
+  },
+  "isolated_rerun": {
+    "name": "Bestiary B23 Campaign Wandering Ecology isolated rerun",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_bestiary_b23_campaign.lua"
+    ],
+    "timeout_seconds": 1200,
+    "returncode": 0,
+    "seconds": 446.698,
+    "source_before": "d7f4028e120872be1d84b2e89faa3e33c614f09b3cc091c0a471004b9d8779f8",
+    "source_after": "d7f4028e120872be1d84b2e89faa3e33c614f09b3cc091c0a471004b9d8779f8",
+    "inputs_and_assertions_unchanged": true,
+    "native_gmod_accepted": false,
+    "campaign.stdout.txt_sha256": "63bef5122677cc7b5afe7419c5848c9c6791c9307dff31f85f5869c4f35687f5",
+    "campaign.stderr.txt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "combined_passing_suite_coverage": 287,
+  "music_section_client_assertions": 132,
+  "offline_analysis_assertions": 20,
+  "real_ingestion_assertions": 26,
+  "native_gmod_accepted": false,
+  "workshop_published": false,
+  "vps_deployed": false,
+  "evidence_sha256": "517c4c5ebdad35a741eb62230c6ed43eb5004a3899195a151c755ff685ceb565"
+}

@@ -59,10 +59,21 @@ incorrectly declared files are rejected. Asset hashes deduplicate native channel
 including a shared source across blocks. Failures advance only through that
 role’s finite candidates. A started/failed fanfare never replays another source.
 
-The mixer waits for buffered phase before seeking compatible grids. Unrelated
-grids use the authored beginning with an envelope handoff. It retains outgoing
+The mixer waits for a buffered, suitable section before fast-seeking. For
+cue-prepared assets, pulse/quiet class takes precedence over loudness or a
+corresponding position in another track; compatible beat phase is retained when
+it fits safely inside that section. Legacy cue-less assets retain their earlier
+corresponding-phase/authored-start behavior and report `legacy-no-cues`.
+It retains outgoing
 valid audio while waiting, reconciles stair reversals, and fades obsolete voices
 before admitting work beyond its ceiling. No sample-accurate native claim is made.
+
+See [pulse-first section direction](MUSIC_SECTION_DIRECTION.md) for offline
+analysis, authored overrides, entry rotation, sustained pulse/quiet renewal and
+the bounded fallback when a second voice cannot be buffered in time. No musical
+analysis runs during gameplay. Section checks use the existing 0.2-second cadence;
+gain envelopes still run in the existing frame mixer. An intentional same-file
+section overlap counts toward the unchanged four-channel/two-transfer ceilings.
 
 | Provisional implementation parameter | Value |
 | --- | --- |
@@ -103,7 +114,7 @@ boss loop, a 6.5-second victory phrase and a 16-second interlude. It is an initi
 profile for audition/native acceptance, not the planned 32-composition album.
 
 On the operator host, provision Python 3, ffmpeg/ffprobe, a dedicated media root,
-and HTTPS. The generator also requires numpy. Use the actual HTTPS origin and
+and HTTPS. Offline cue analysis and the generator require numpy. Use the actual HTTPS origin and
 the actual Garry’s Mod DATA directory in place of these examples:
 
 ```bash
@@ -162,6 +173,18 @@ duration, loop boundaries, bpm/beats/grid/phase, envelope handoff, gain/headroom
 credits and source lineage. Omitted roles normalize to inheritance. Only declared
 custom files accompany a block. Legacy four/six-file blocks migrate with an
 explicit new manifest/version; no old bytes are overwritten.
+
+Looping roles now acquire compact `cues` during offline validation/upload when
+omitted. Use `lod_music_upload "/path/to/block" --write-cues` to save the analysis
+for audition/editing before uploading. It performs no upload. Mark auditioned
+manual replacements `source: "authored"`; each interval identifies `start`,
+`finish` and relative `energy` in either `pulse` or `quiet`. T1–T3/BOSS must have a
+pulse section; T0/INTERLUDE must have a quiet section. VICTORY cannot have cues.
+The uploader rejects a role without the required class and never fabricates a
+beat from loudness. New immutable versions can enrich older cue-less asset hashes
+for future plans; existing plans keep their original metadata. A change to an
+already registered cue map for identical bytes still rejects as conflicting
+metadata. Author a new master/version when changing that established map.
 
 Operator metadata passed to `--configure` can select `projectDefault` and replace
 `sets`, for example:

@@ -88,6 +88,12 @@ def generate(destination):
                 codec='vorbis',rate=SR,channels=2,loop=role!='VICTORY',loopStart=0,loopEnd=decoded,
                 bpm=120,beats=13 if role=='VICTORY' else 32,phase=0,grid='d-dorian-120-32' if role!='VICTORY' else 'victory-13',
                 handoff='envelope',gain=1,headroom=6,source=SOURCE,credits=CREDITS)
+            if role != 'VICTORY':
+                # Authored knowledge of this deterministic score: sparse ostinato
+                # T0/interlude versus the foreground kick/hat of the combat roles.
+                mode = 'quiet' if role in ('T0', 'INTERLUDE') else 'pulse'
+                roles[role]['cues'] = dict(version=1, source='authored', pulse=[], quiet=[])
+                roles[role]['cues'][mode] = [dict(start=start, finish=16, energy=.4 if mode=='quiet' else .9) for start in (0, 4, 8)]
     manifest=dict(schema=1,kind='profile',id='deborah-defaults',version='v1',title='Deborah — Dorian Foundations',credits=CREDITS,roles=roles)
     (profile/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     block=destination/'deborah-foundations-v1';block.mkdir(exist_ok=True)

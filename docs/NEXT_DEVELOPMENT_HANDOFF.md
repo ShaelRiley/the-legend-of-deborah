@@ -1,4 +1,30 @@
-# Current checkpoint — low-end PC / Steam Deck source optimization
+# Current checkpoint — pulse-first music section direction
+
+Fetch current main; this update's parent is
+`67cb7dbf7343d05cd52c3f429e33322a8fc30248`, not a later release HEAD.
+Read `MUSIC_SECTION_DIRECTION.md` and live GDD 05 `LOD-MUSIC-CUES-001` /
+07 `LOD-MUSIC-CUES-IMPL`. The author clarified that rhythmic pulse/quiet state
+outranks loudness: easing active danger retains a gentler pulse; true calm
+enters and sustains quiet. Offline cue analysis/import and bounded client
+section renewal implement this distinction. Buffered pairs are reused;
+four channels/two transfers, master Off, frozen plans and one-shot victory remain.
+
+`validation/MUSIC_SECTIONS.md` records all 287 registered checks passing on the
+same source across the full matrix and one isolated campaign-timeout rerun;
+802 Lua files passed syntax. The evidence retains the original timeout.
+
+The complete gate includes new offline classification and prolonged section
+playback tests. Source checks do not certify native musical judgment or seek
+latency. New imports acquire cues; legacy cue-less catalogs remain compatible
+but need offline reimport at a new version. No actual hosted dance-track catalog
+was available to prepare here. Native audition on the exact build is next,
+including rising/falling pressure, long pulse/quiet, two floors, full slots,
+slow buffering and Off with a pending renewal. Capture `console_latest.txt` and
+`rpg_summary_latest.txt`; source publication is distinct from Workshop/VPS release.
+
+---
+
+# Prior checkpoint — low-end PC / Steam Deck source optimization
 
 Fetch current main and preserve intervening work. This checkpoint's exact parent
 is `3d60d6f730b56abbf3df5de68bb8d71002d44d96`; do not reuse it as a later HEAD.
