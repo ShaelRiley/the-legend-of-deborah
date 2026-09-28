@@ -1,0 +1,28 @@
+name: Low-end optimization baseline
+on:
+  push:
+    branches: [automation/low-end-20260928]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 3d60d6f730b56abbf3df5de68bb8d71002d44d96
+      - name: Export verified source and Git metadata
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 3d60d6f730b56abbf3df5de68bb8d71002d44d96
+          mkdir -p "$RUNNER_TEMP/lod-baseline"
+          git archive --format=tar.gz HEAD > "$RUNNER_TEMP/lod-baseline/source.tar.gz"
+          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/lod-baseline/refs.txt"
+          git ls-tree -r HEAD > "$RUNNER_TEMP/lod-baseline/tree.txt"
+          git cat-file commit HEAD > "$RUNNER_TEMP/lod-baseline/commit.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: low-end-baseline-${{ github.run_id }}
+          path: ${{ runner.temp }}/lod-baseline
+          retention-days: 14
