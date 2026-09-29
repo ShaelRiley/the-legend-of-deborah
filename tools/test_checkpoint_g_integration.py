@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Universal Enemy Close Defense & Melee Retaliation", ["python3", "tools/run_lua54.py", "tools/test_enemy_close_defense.lua"]),
+    ("Enemy Stock Attack Animation Resolution", ["python3", "tools/run_lua54.py", "tools/test_enemy_attack_animation.lua"]),
     ("Skeleton Stock Player Animation & Motion", ["python3", "tools/run_lua54.py", "tools/test_skeleton_animation.lua"]),
     ("Discrete Systems Math & Snapshot Equivalence", ["python3", "tools/run_lua54.py", "tools/test_system_quantization.lua"]),
     ("Discrete Event Routes & Cache Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_quantized_routes.lua"]),

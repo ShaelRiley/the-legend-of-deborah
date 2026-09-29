@@ -2,6 +2,136 @@
 local E,N=LOD.EnemyRoster,LOD.MazeNavigator
 local function copy(v) return Vector(v.x,v.y,v.z) end
 local function flat(v) return Vector(v.x,v.y,0) end
+
+-- Universal last-ditch strike, serviced by EnemyRoster's existing bounded
+-- commitment loop. It deliberately has no magic/content or target-cell rule:
+-- a creature at an open cell seam must still be able to defend its own body.
+E.CloseDefense={range=96,warning=.4,grace=.2,recovery=1.2,
+    profile={label="CLOSE DEFENSE",source="melee",count=1,sides=4,bonus=1,reference=3.5}}
+function E:CanCloseDefend(e)
+    local s=LOD.RunManager and LOD.RunManager.State
+    local status=LOD.RPGStatusElements
+    if not IsValid(e) or not e.LODHostile or e.LODDead or e:Health()<=0 or not e.LODActivated
+        or not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or not status:CanInitiateAttack(e) or status:Has(e,"morale_flee") then return false end
+    if e.LODRosterContext and not self:Live(e.LODRosterContext,s) then return false end
+    if e.LODSkeletonHero and (not LOD.SkeletonHero or not LOD.SkeletonHero:Live(e)) then return false end
+    if e.LODWardenTurret and (not LOD.WardenTurrets or not LOD.WardenTurrets:Ready(e)) then return false end
+    if e.LODArchetypeId=="warden" then
+        local root=e.LODWardenOwner
+        local w=root and (root.cloneStates and root.cloneStates[e] or root)
+        if not w or not LOD.Warden or not LOD.Warden:ActorOwner(w,e) or w.phase==1 and
+            (not w.phaseOne or w.phaseOne.stage~="attack") then return false end
+    elseif e.LODArchetypeId=="hector" then
+        if not LOD.Hector or not LOD.Hector:Live(e) then return false end
+    elseif e.LODArchetypeId=="neil" or e.LODArchetypeId=="brute" then
+        local h=s.NeilHunt
+        if not h or h.seed~=s.LevelSeed or e~=h.neil and e~=h.brute then return false end
+    end
+    return true
+end
+function E:CloseTarget(e,p,origin)
+    if not self:AcquireTarget(p) or LOD.FactionManager.CanDamage and not LOD.FactionManager:CanDamage(e,p)
+        or origin:DistToSqr(p:WorldSpaceCenter())>self.CloseDefense.range^2 then return false end
+    if e.LODWardenTurret and not LOD.WardenTurrets:Court(e.LODWardenTurret.owner,p) then return false end
+    if e.LODArchetypeId=="hector" and not LOD.Hector:Hero(p,e.LODHectorEncounter) then return false end
+    if e.LODArchetypeId=="warden" and LOD.Warden:Protected(p) then return false end
+    local tr=util.TraceLine({start=origin,endpos=p:WorldSpaceCenter(),mask=MASK_SOLID,
+        filter=function(v) return v~=e and not v.LODHostile end})
+    return tr and not tr.StartSolid and not tr.AllSolid and (not tr.Hit or tr.Entity==p)
+end
+function E:BeginCloseDefense(e,p,now)
+    if e.LODRosterAttack or now<(e.LODNextCloseDefense or 0) or now<(e.LODHitStunUntil or 0)
+        or not self:CanCloseDefend(e) then return false end
+    local origin=copy(e:WorldSpaceCenter())
+    if not self:CloseTarget(e,p,origin) then return false end
+    local cfg=self.CloseDefense
+    local dir=flat(p:WorldSpaceCenter()-origin):GetNormalized()
+    if dir:LengthSqr()==0 then dir=Angle(0,e:GetAngles().y,0):Forward() end
+    local a=self:Bind({closeDefense=true,kind="close_defense",target=p,origin=origin,
+        start=copy(e:GetPos()),direction=dir,ready=now+cfg.warning,
+        expires=now+cfg.warning+cfg.grace,recoveryUntil=now+cfg.warning+cfg.recovery,
+        life=self:CaptureLife(e,p)},LOD.RunManager.State)
+    local profile=LOD.CombatRolls.HostileDamageProfiles[e.LODArchetypeId]
+    local ordinary=profile and profile.source=="melee" and (e.LODConfig.meleeDamage or 0)>0
+    a.event={impactOrigin=origin,closeProfile=ordinary and profile or cfg.profile,
+        closeDamage=ordinary and e.LODConfig.meleeDamage or cfg.profile.reference*e:GetNW2Float("LOD_SizeScale",1)}
+    -- Claim the one attack and its fixed cooldown before presentation callbacks.
+    e.LODRosterAttack=a;self.Active[e]=true;e.LODNextCloseDefense=a.recoveryUntil
+    e.LODNextAttack=math.max(e.LODNextAttack or 0,a.recoveryUntil)
+    if LOD.EnemySupport then LOD.EnemySupport:Cancel(e) end
+    if LOD.EnemyReactions then LOD.EnemyReactions:Cancel(e,true) end
+    if LOD.EnemyRemains then LOD.EnemyRemains:Interrupt(e) end
+    if LOD.EnemyPursuit then LOD.EnemyPursuit:Cancel(e) end
+    if e.LODRosterAttack~=a or not self:ValidLife(a.life) then return false end
+    local motion=LOD.HostileMotionV2
+    motion:Stop(e);motion:FaceToward(e,e:GetPos()+dir*32)
+    e:SetNW2Bool("LOD_RosterAlive",true);e:SetNW2Int("LOD_RosterAttack",1)
+    e:SetNW2Int("LOD_MeleeMode",5);e:SetNW2Vector("LOD_MeleeOrigin",origin)
+    e:SetNW2Vector("LOD_MeleeDirection",dir);e:SetNW2Float("LOD_MeleeReady",a.ready)
+    e:SetNW2Float("LOD_MeleeUntil",a.expires)
+    e:SetNW2Float("LOD_CloseDefenseAt",a.ready)
+    e:_SetActivity(ACT_MELEE_ATTACK1,true)
+    e:EmitSound("npc/zombie/claw_miss1.wav",65,110,.5)
+    return e.LODRosterAttack==a
+end
+function E:StepCloseDefense(e,a,now)
+    if e.LODRosterAttack~=a then return end
+    if a.settled and now<=a.expires then return end
+    local function valid()
+        return e.LODRosterAttack==a and not a.settled and self:ValidLife(a.life)
+            and self:CanCloseDefend(e) and CurTime()>=(e.LODHitStunUntil or 0)
+            and CurTime()<=a.expires and e:GetPos():DistToSqr(a.start)<=4^2
+            and self:CloseTarget(e,a.target,a.origin)
+    end
+    if not valid() then self:Finish(e,now);return end
+    LOD.HostileMotionV2:Stop(e)
+    if now<a.ready then return end
+    a.released=true
+    local delta=flat(a.target:WorldSpaceCenter()-a.origin)
+    -- Advertised sector is frozen; circling behind/sideways genuinely evades.
+    if delta:Dot(a.direction)>=delta:Length()*.5 then
+        -- Consume before callbacks; a reentrant service cannot repeat impact.
+        a.settled=true
+        a.event.commitmentGate=function()
+            return e.LODRosterAttack==a and self:ValidLife(a.life) and self:CanCloseDefend(e)
+                and CurTime()>=a.ready and CurTime()<=a.expires and CurTime()>=(e.LODHitStunUntil or 0)
+                and e:GetPos():DistToSqr(a.start)<=4^2 and self:CloseTarget(e,a.target,a.origin)
+                and flat(a.target:WorldSpaceCenter()-a.origin):Dot(a.direction)
+                    >=flat(a.target:WorldSpaceCenter()-a.origin):Length()*.5
+        end
+        self:Damage(e,a.target,a.event,"close_defense")
+    end
+    if IsValid(e) and e.LODRosterAttack==a then self:Finish(e,now) end
+end
+function E:TickCloseDefense(e)
+    local a=e.LODRosterAttack
+    if a and a.closeDefense then
+        -- Service owns impact; native controllers cannot replace its animation
+        -- or move the body during the warned strike.
+        if not self:CanCloseDefend(e) then self:Cancel(e) end
+        LOD.HostileMotionV2:Stop(e);return true
+    end
+    local now=CurTime()
+    if now<(e.LODNextCloseDefense or 0) or now<(e.LODHitStunUntil or 0) or not self:CanCloseDefend(e) then return false end
+    -- Never preempt an advertised primary attack, attached bite or leap.
+    if a or e.LODSoldierBurst or e.LODSniperShot or e.LODBioBlast or e.LODBruteCharge or e.LODBruteAttack
+        or e.LODClimberVictim or e.LODDeadcrabState=="latched" or e.LODDeadcrabState=="leaping"
+        or e.LODFallenHero and (e.LODFallenHero.attack or e.LODFallenHero.burst) then return false end
+    if e.LODWardenOwner then
+        local root=e.LODWardenOwner;local w=root.cloneStates and root.cloneStates[e] or root
+        if w.swing or w.volley or w.phaseOne and w.phaseOne.stage=="taunt" then return false end
+    end
+    local h=e.LODHectorEncounter
+    if h and (h.pending or h.volley) then return false end
+    if self.Definitions[e.LODArchetypeId] then self:Prepare(e) end
+    -- These two already possess a reliable close attack. The shared flinch
+    -- recovery and native animation repair restore their opportunity to use it.
+    if e.LODArchetypeId=="shambler" or e.LODArchetypeId=="runner" then return false end
+    e:_RefreshTarget(LOD.RunManager.State.Graph)
+    return self:BeginCloseDefense(e,e.LODTarget,now)
+end
+
 function E:MeleeCellLegal(g,c)
     return c and g.Cells[self.Key(c)]==c and not self:Safe(g,c)
         and not ((g.CellTags or {})[self.Key(c)] or {}).objective and not self:IsTransition(g,c)

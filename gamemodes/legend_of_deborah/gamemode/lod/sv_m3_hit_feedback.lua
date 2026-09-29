@@ -87,7 +87,12 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
         and LOD.Warden:HitStunDeadline(hostile, now) or nil
     if deadline and deadline <= now then return false end
     if now < (hostile.LODNextHitStun or 0) then return false end
-    local bossMelee = hitKind == "melee" and hostile.LODArchetypeId == "warden"
+    local melee = hitKind == "melee"
+    local bossMelee = melee and hostile.LODArchetypeId == "warden"
+    -- A crowbar's cadence was faster than most enemy wind-ups. Reuse Gordon's
+    -- existing finite melee-stagger window for every creature: damage still
+    -- settles, but another ordinary flinch cannot erase every counterattack.
+    if melee and now < (hostile.LODMeleeStaggerReady or 0) then return false end
     if bossMelee and now < (hostile.LODBossMeleeStaggerReady or 0) then return false end
 
     local stamp = hostile.LODLastHitFeedbackEvent
@@ -100,12 +105,14 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     local stunSeconds = STUN_SECONDS * durationMultiplier
     if deadline then stunSeconds = math.min(stunSeconds, deadline - now) end
     local retriggerSeconds = STUN_RETRIGGER_SECONDS + STUN_SECONDS * (durationMultiplier - 1)
+    if melee then hostile.LODMeleeStaggerReady = now + 3 end
     if bossMelee then hostile.LODBossMeleeStaggerReady = now + 3 end
     hostile.LODNextHitStun = now + retriggerSeconds
     hostile.LODHitStunUntil = math.max(hostile.LODHitStunUntil or 0, now + stunSeconds)
     if deadline then hostile.LODHitStunUntil = math.min(hostile.LODHitStunUntil, deadline) end
 
-    if LOD.EnemyRoster and LOD.EnemyRoster.Definitions[hostile.LODArchetypeId] then LOD.EnemyRoster:Interrupt(hostile, attackEvent, attacker) end
+    if LOD.EnemyRoster and (LOD.EnemyRoster.Definitions[hostile.LODArchetypeId]
+        or hostile.LODRosterAttack and hostile.LODRosterAttack.closeDefense) then LOD.EnemyRoster:Interrupt(hostile, attackEvent, attacker) end
     if hostile.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(hostile) end
     if hostile.LODBruteCharge and LOD.NeilBrute then LOD.NeilBrute:CancelCharge(hostile) end
     if hostile.LODArchetypeId == "warden" and LOD.Warden then LOD.Warden:Interrupt(hostile) end

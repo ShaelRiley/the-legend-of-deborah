@@ -335,3 +335,4 @@ LOD.CombatRolls.RollHostileAttack=function(self,...) contractCount=contractCount
 strike(e,a);service(time+.025);assert(contractCount==1 and hero.hits==1,'one roll and settlement per beat')
 LOD.CombatRolls.RollHostileAttack=realRoll
 print('BESTIARY_B7_MULTIPLAYER_PASS: captured lives, no unseen tell inheritance/rescans, lethal-primary order independence, canonical one-roll settlement')
+return {env=env,actor=actor,pair=pair,reset=reset,hero=hero,state=s,at=at,service=service,center=center}

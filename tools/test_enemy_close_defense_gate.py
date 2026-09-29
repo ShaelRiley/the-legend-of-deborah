@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Finite enemy retaliation/animation gate using the existing evidence runner."""
+import test_checkpoint_g_integration as matrix
+
+FILES = {
+    "test_enemy_close_defense.lua", "test_enemy_attack_animation.lua",
+    "test_enemy_roster.lua", "test_enemy_update.lua", "test_skeleton_animation.lua",
+    "test_skeleton_hero.lua", "test_fallen_heroes.lua", "test_event_skeleton_lifecycle.lua",
+    "test_bestiary_b29_dispatch.lua", "test_bestiary_b29_combat.lua",
+    "test_bestiary_b7_visual.lua", "validate_spot03_razor.lua",
+    "test_warden.lua", "test_warden_health.lua", "test_neil_brute.lua",
+    "test_hector_encounter.lua", "test_hector_health.lua",
+    "test_monster_defenses.lua", "test_hostile_death_handoff.lua",
+    "test_native_resource_lifecycle.lua", "test_gate_e_crowbar.lua",
+    "test_gate_e_control_magic.lua", "test_instruction_manual.lua",
+    "test_manual_transport.lua", "test_manual_document.py", "export_manual_catalog.lua",
+    "test_staging_event_spawn.lua", "test_faction_damage.lua",
+}
+FILES.update(f"test_bestiary_b{i}.lua" for i in range(3,20))
+
+if __name__ == "__main__":
+    selected = [(name, command) for name, command in matrix.SUITES
+                if name in {"Git Diff Check", "Lua Syntax Audit"}
+                or any(part.rsplit("/", 1)[-1] in FILES for part in command)]
+    covered = {part.rsplit("/", 1)[-1] for _, command in selected for part in command}
+    assert FILES <= covered, f"Unregistered selected suites: {FILES - covered}"
+    matrix.SUITES = selected
+    print("ENEMY CLOSE DEFENSE TARGETED REGRESSIONS (not the full matrix)", flush=True)
+    raise SystemExit(matrix.main())

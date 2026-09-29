@@ -504,6 +504,7 @@ function ENT:_MeleeAttack(target)
     if not self:_HasLineOfSight(target) then return false end
 
     self.LODNextAttack = CurTime() + cfg.meleeCooldown
+    self:_SetActivity(ACT_MELEE_ATTACK1, true)
     target:TakeDamage(cfg.meleeDamage, self, self)
     self:EmitSound(self.LODArchetypeId == "runner" and "NPC_FastZombie.Attack" or "NPC_Zombie.Attack")
     return true
@@ -813,7 +814,13 @@ end)
 
 function ENT:RunBehaviour()
     while true do
-        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then self:_BehaviourTick() end
+        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then
+            -- Resolve at call time, before archetype wrappers can consume the
+            -- tick. Watchers, support creatures and ranged variants all share
+            -- the same last-ditch defense and existing attack service.
+            if not LOD.EnemyRoster or not LOD.EnemyRoster.TickCloseDefense
+                or not LOD.EnemyRoster:TickCloseDefense(self) then self:_BehaviourTick() end
+        end
         coroutine.yield()
     end
 end

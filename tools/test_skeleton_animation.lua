@@ -90,6 +90,7 @@ for kind,suffix in pairs({fighter='_FIST',rogue='_SMG1',wizard='_MAGIC'}) do
     assert(e.gestures==1,'BodyUpdate replayed the attack gesture')
     e:_SetActivity(ACT_MELEE_ATTACK1,true)
     assert(e.gestures==2)
+    assert(e.lastGesture==ACT_HL2MP_GESTURE_RANGE_ATTACK_FIST,'physical skeleton defense played a gun/spell gesture')
     e.rate=0;e.LODHitStunUntil=11;e.LODMotionSpeed=190
     env.setTime(10);e:BodyUpdate()
     assert(e.rate==0 and e.pose.move_x==0,'hit-stun restarted player animation')

@@ -151,6 +151,10 @@ function E:Prepare(e)
 end
 function E:Cancel(e)
     local turretAttack=e.LODRosterAttack
+    if turretAttack and turretAttack.closeDefense then
+        e:SetNW2Int("LOD_MeleeMode",0)
+        if not turretAttack.released then e:SetNW2Float("LOD_CloseDefenseAt",0) end
+    end
     if turretAttack and turretAttack.turret and not turretAttack.released then turretAttack.turret.cancelled=true end
     if LOD.HostileDeathAudio then LOD.HostileDeathAudio:Stop(e) end
     local d=self.Definitions[e.LODArchetypeId]
@@ -230,7 +234,7 @@ function E:Interrupt(e,attackEvent,attacker)
     if LOD.Climber then LOD.Climber:Interrupt(e) end
 end
 function E:Damage(e,p,event,kind)
-    if event.turret or e.LODWardenTurret then
+    if event.turret or (e.LODWardenTurret and kind~="close_defense") then
         if LOD.WardenTurrets then return LOD.WardenTurrets:Damage(e,p,event,kind) end
         return
     end
@@ -248,23 +252,23 @@ function E:_DamagePacket(e,p,event,kind)
     local gate=event.commitmentGate or event.crossfireGate
     if gate and not gate() then return end
     local rolls=LOD.CombatRolls
-    local profile=rolls.HostileDamageProfiles[e.LODArchetypeId]
+    local profile=event.closeProfile or rolls.HostileDamageProfiles[e.LODArchetypeId]
     if e.LODSkeletonHero and kind=="arc" then profile=table.Copy(profile);profile.magicDamage=true end
-    event.roll=event.roll or rolls:RollHostileAttack(e,profile,e.LODConfig.burstDamage)
+    event.roll=event.roll or rolls:RollHostileAttack(e,profile,event.closeDamage or e.LODConfig.burstDamage)
     if gate and not gate() then return end
     local c={};for k,v in pairs(event.roll) do c[k]=v end
     if e.LODSkeletonHero and event.skeletonFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.skeletonFullMagicBonus end
     if event.resourceFullMagicBonus~=nil then c.wizardFullMagicIntBonus=event.resourceFullMagicBonus end
     if event.impactOrigin then c.sourcePosition=event.impactOrigin end
     local d=self.Definitions[e.LODArchetypeId]
-    local magic=kind=="arc" or kind=="beam" or (d and d.contentId~=nil)
+    local magic=kind~="close_defense" and (kind=="arc" or kind=="beam" or (d and d.contentId~=nil))
     local rider=(kind=="flame" and "immolated") or (kind=="venom" and "poisoned") or nil
     event.riders=event.riders or setmetatable({}, {__mode="k"})
-    local tags={physical=not magic,magic=magic,melee=kind=="dive" or kind=="climber" or kind=="melee",
+    local tags={physical=not magic,magic=magic,melee=kind=="dive" or kind=="climber" or kind=="melee" or kind=="close_defense",
         element=kind=="flame" and "fire" or (magic and "raw" or nil),
         attackEvent=c.attackEvent,damageContract=c,authoredScale=c.scale,
         riderStatusId=rider,riderConsumedTargets=event.riders}
-    local content=event.skeletonContent or (d and d.contentId and LOD.RPG.MagicContents[d.contentId])
+    local content=kind~="close_defense" and (event.skeletonContent or (d and d.contentId and LOD.RPG.MagicContents[d.contentId]))
     if magic and content then
         for k,v in pairs(LOD.MagicForms:_DamageContext(content)) do tags[k]=v end
         local definition=tags.riderStatusId and LOD.RPGStatusElements.Registry[tags.riderStatusId]
@@ -369,6 +373,14 @@ end
 function E:Finish(e,now)
     local attack=e.LODRosterAttack
     self:Cancel(e)
+    if attack and attack.closeDefense then
+        if IsValid(e) and not e.LODRosterAttack then
+            e.LODNextAttack=math.max(e.LODNextAttack or 0,attack.recoveryUntil)
+            LOD.HostileMotionV2:Stop(e)
+            if not e.LODDead and now>=(e.LODHitStunUntil or 0) then e:_SetActivity(ACT_IDLE) end
+        end
+        return
+    end
     if attack and (attack.discipline or attack.companion or attack.edict or attack.link) and (not IsValid(e) or e.LODRosterAttack or not self:ValidSourceLife(attack.life)) then return end
     if attack and (attack.melee or attack.tactical or attack.mobile or attack.perception or attack.condition or attack.spacing or attack.spacingFallback or attack.resource or attack.crossfire or attack.discipline or attack.companion or attack.edict or attack.link) then
         e.LODMeleeRecovery={life=attack.life,expires=attack.recoveryUntil or now+self.Definitions[e.LODArchetypeId].recovery}
@@ -421,6 +433,7 @@ function E:Release(e,a,now)
     end
 end
 function E:Attack(e,a,now)
+    if a.closeDefense then return self:StepCloseDefense(e,a,now) end
     if a.turret and not a.released then
         if not LOD.WardenTurrets or not LOD.WardenTurrets:Charge(e,a,now) then
             if e.LODRosterAttack==a then self:Finish(e,now) end
@@ -657,7 +670,8 @@ hook.Add("Think","LOD_EnemyRosterAttacks",function()
         elseif e.LODRosterAttack then
             local a=e.LODRosterAttack
             if not E:Live(a,s) or (a.pursuitRecord and not LOD.EnemyPursuit:ValidLife(a.pursuitRecord)) then E:Cancel(e)
-            elseif not (a.released and a.kind=="beam") and (now<(e.LODHitStunUntil or 0) or not E:CanCast(e)) then E:Finish(e,now)
+            elseif not (a.released and a.kind=="beam") and (now<(e.LODHitStunUntil or 0)
+                or not (a.closeDefense and E:CanCloseDefend(e) or not a.closeDefense and E:CanCast(e))) then E:Finish(e,now)
             else E:Attack(e,a,now) end
         end
     end

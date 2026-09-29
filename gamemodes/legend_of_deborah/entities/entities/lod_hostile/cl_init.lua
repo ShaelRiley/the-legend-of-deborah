@@ -69,8 +69,12 @@ local function applyVisualScale(ent, seekerRoll)
     local deviceLift = DEVICE_VISUAL_LIFT[archetype] or 0
     if archetype=="warden" and ent:GetNW2Int("LOD_WardenPhase",1)==2 then deviceLift=18*size end
     local roll = archetype == "seeker" and (seekerRoll or 0) or 0
-    local signature = string.format("%s:%.4f:%s:%s:%.2f:%.2f",
-        model, size, tostring(motionV2), archetype, deviceLift, roll)
+    local device=DEVICE_VISUAL_LIFT[archetype] or archetype=="sentry" or archetype=="cordon"
+        or archetype=="nodule" or archetype=="lurker"
+    local recoil=device and LOD.EnemyRosterVisual and LOD.EnemyRosterVisual.CloseRecoil
+        and LOD.EnemyRosterVisual:CloseRecoil(ent) or 0
+    local signature = string.format("%s:%.4f:%s:%s:%.2f:%.2f:%.2f",
+        model, size, tostring(motionV2), archetype, deviceLift, roll, recoil)
     if ent.LODLastClientVisualScale == signature then
         return size, ent.LODVisualVerticalCompensation or 0
     end
@@ -103,7 +107,7 @@ local function applyVisualScale(ent, seekerRoll)
         matrix:Rotate(Angle(roll, 0, 0))
     end
     ent.LODVisualVerticalCompensation=verticalCompensation
-    matrix:SetTranslation(Vector(0, 0, verticalCompensation))
+    matrix:SetTranslation(Vector(recoil, 0, verticalCompensation))
     ent:EnableMatrix("RenderMultiply", matrix)
 
     if archetype == "seeker" then

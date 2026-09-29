@@ -313,20 +313,32 @@ function V:Trap(e)
     end
 end
 -- Frozen melee footprints convey spacing, not a target-following prediction.
+-- Devices have no limb swing. A tiny visual-only pullback/jab makes their
+-- physical strike legible without moving a collision body or adding entities.
+function V:CloseRecoil(e)
+    local ready=e:GetNW2Float("LOD_CloseDefenseAt",0)
+    if ready<=0 or e:GetNW2Float("LOD_DeathPulseStart",-1)>=0 then return 0 end
+    local dt=CurTime()-ready
+    if dt<-.4 or dt>=.2 then return 0 end
+    if dt<0 then return -6*(1+dt/.4) end
+    return 8*(1-dt/.2)
+end
+
 -- Drubber's outer beat remains visible during the first warning; Fencer's
 -- dashed retreat is movement intent, followed by the actual thrust footprint.
 -- Geometry and fixed-deadline countdowns are identical at either effects level.
 function V:Melee(e)
     local mode=e:GetNW2Int("LOD_MeleeMode",0);local now=CurTime()
-    if mode<1 or mode>4 or not e:GetNW2Bool("LOD_RosterAlive",false)
+    if mode<1 or mode>5 or not e:GetNW2Bool("LOD_RosterAlive",false)
         or e:GetNW2Int("LOD_RosterAttack",0)==0 or now>=e:GetNW2Float("LOD_MeleeUntil",0)
         or e:GetPos():DistToSqr(EyePos())>2400^2 then return end
     local origin=e:GetNW2Vector("LOD_MeleeOrigin",e:GetPos())+Vector(0,0,3)
+    if mode==5 then origin=origin-Vector(0,0,3) end
     local dir=e:GetNW2Vector("LOD_MeleeDirection",Vector(1,0,0))
     local side=Vector(-dir.y,dir.x,0)
     local ready=e:GetNW2Float("LOD_MeleeReady",0)
     local id=e:GetNW2String("LOD_Archetype","")
-    local color=id=="outrider" and colors.outrider or ({colors.reaper,colors.drubber,colors.fencer,colors.carrion})[mode]
+    local color=mode==5 and colors.drubber or id=="outrider" and colors.outrider or ({colors.reaper,colors.drubber,colors.fencer,colors.carrion})[mode]
     render.SetMaterial(beam)
     local function line(a,b,width) render.DrawBeam(a,b,width or 2,0,1,color) end
     local function countdown(deadline,duration)
@@ -345,7 +357,10 @@ function V:Melee(e)
         end
         line(point(half),origin,width)
     end
-    if mode==4 then
+    if mode==5 then
+        sector(96,60,8,now<ready and 2 or 4)
+        countdown(ready,.4)
+    elseif mode==4 then
         sector(112,30,8,now<ready and 2 or 4)
         local id=e:GetNW2String("LOD_Archetype","")
         countdown(ready,id=="outrider" and 1.1 or ((id=="afterburst" or id=="listener" or id=="shy") and .9 or .8))
@@ -1022,6 +1037,7 @@ function V:Link(e)
     label(center+up*31,instruction,string.format("%s %.1fs",phase==2 and "ACTIVE" or "PREPARE",math.max(0,deadline-now)))
 end
 function V:Draw(e,size)
+    if e:GetNW2Int("LOD_MeleeMode",0)==5 and e:GetNW2Int("LOD_RosterAttack",0)>0 then self:Melee(e);return end
     self:Remains(e)
     self:Support(e)
     self:Pursuit(e)

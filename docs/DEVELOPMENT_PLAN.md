@@ -1,4 +1,28 @@
-# Current checkpoint — skeleton player animations
+# Current checkpoint — universal enemy close defense
+
+The author requests visible attacks from rare creatures and retaliation under
+sustained crowbar pressure. From verified main `863f7fe`, native behavior now
+offers an existing-service physical close defense before specialist wrappers;
+committed primary attacks retain their controller. All hostiles share the existing
+three-second melee-stagger recovery, and stock attack-sequence resolution covers
+models whose NPC activity request falls back to idle. Preserve the recent skeleton
+player-animation repair and existing combat/lifecycle/arrival authorities.
+
+Live GDD 00 → 01 → 03/07 was read. Google rejected the design-amendment write;
+the proposed text remains in `validation/ENEMY_CLOSE_DEFENSE_GDD_AMENDMENTS.json`
+and has not changed the live GDD. Current explicit author direction governs this
+correction. The finite source gate passes 47/47 selected suites and 813 Lua syntax
+checks; see `validation/ENEMY_CLOSE_DEFENSE_20260928.md` and its checks receipt.
+
+Native acceptance remains pending. Next: fully restart/install and maintain
+crowbar pressure on a close rare enemy on gm_flatgrass; observe the warning,
+counterattack and evasion, including device/skeleton visuals when encountered.
+Preserve remaining native gates and local acceptance → Workshop parity → matching
+VPS release order. Source publication only.
+
+---
+
+# Prior checkpoint — skeleton player animations
 
 The author reports T-posing skeletons and expressly authorizes the source push.
 From verified main `9d3c202`, the shared hostile resolver now uses stock GMod

@@ -58,16 +58,45 @@ function A:Resolve(e, activity)
     local candidates={desired}
     local function add(v) if v~=nil then candidates[#candidates+1]=v end end
     if moving then add(ACT_RUN_AIM_RIFLE);add(ACT_RUN);add(ACT_WALK) end
+    local attacking=attackActivity(activity)
+    local melee=activity==ACT_MELEE_ATTACK1
+    if melee then add(ACT_MELEE_ATTACK2)
+    elseif attacking then add(ACT_RANGE_ATTACK_SMG1);add(ACT_RANGE_ATTACK2) end
+    local function suitable(seq)
+        if not self:Valid(e,seq) then return false end
+        if not attacking or razor then return true end
+        local name=string.lower(e:GetSequenceName(seq) or "")
+        -- A valid idle/walk ID still is not an attack. Some stock models map
+        -- unsupported NPC activities to these harmless fallback cycles.
+        return not name:find("idle",1,true) and not name:find("walk",1,true)
+            and not name:find("run",1,true) and not name:find("gesture",1,true)
+    end
     for _,act in ipairs(candidates) do
         local seq=e:SelectWeightedSequence(act)
-        if self:Valid(e,seq) then cache[activity]=seq;return seq end
+        if suitable(seq) then cache[activity]=seq;return seq end
     end
     -- Some stock devices expose named cycles but no matching ACT metadata.
-    local names=razor and {"fly","idle"} or activity==ACT_CLIMB_UP and {"climb","climb_up","climbwall"} or moving and {"run_all","run","walk_all","walk","fly","idle"} or (activity==ACT_RANGE_ATTACK1 and {"fire","fire1","shoot","attack","attack1","range_attack1"} or {"idle","idle01","idle1","idle_subtle","fly"})
+    local names=razor and {"fly","idle"} or activity==ACT_CLIMB_UP and {"climb","climb_up","climbwall"} or moving and {"run_all","run","walk_all","walk","fly","idle"}
+        or melee and {"melee_gunhit","melee_attack1","melee","melee1","melee2","swing","swingattack","attack","attack1","attack2","bite"}
+        or (attacking and {"fire","fire1","shoot","attack","attack1","range_attack1","range_attack2","zapattack","spit"} or {"idle","idle01","idle1","idle_subtle","fly"})
     for _,name in ipairs(names) do
         local seq=e:LookupSequence(name)
-        if self:Valid(e,seq) then cache[activity]=seq;return seq end
+        if suitable(seq) then cache[activity]=seq;return seq end
     end
+    if attacking then
+        -- Model-specific spellings (for example jumpattack or laserfire) need
+        -- not match our small common-name bank. Inspect once per model/activity.
+        for _,name in ipairs(e.GetSequenceList and e:GetSequenceList() or {}) do
+            local lower=string.lower(name)
+            if lower:find("attack",1,true) or lower:find("melee",1,true) or lower:find("bite",1,true)
+                or lower:find("swing",1,true) or not melee and (lower:find("fire",1,true) or lower:find("shoot",1,true)) then
+                local seq=e:LookupSequence(name)
+                if suitable(seq) then cache[activity]=seq;return seq end
+            end
+        end
+    end
+    -- Devices can legitimately have no skeletal swing. Their shared visible
+    -- strike sector remains authoritative; use a safe body cycle below.
     for _,act in ipairs({ACT_IDLE_ANGRY_SMG1 or ACT_IDLE,ACT_IDLE}) do
         local seq=e:SelectWeightedSequence(act)
         if self:Valid(e,seq) then cache[activity]=seq;return seq end
@@ -92,23 +121,25 @@ function A:Apply(e, activity, force)
     if force or (changed and not e.LODAnimationHold) or e:GetSequence()~=seq or e:GetPlaybackRate()==0 then
         e:ResetSequence(seq);e:SetPlaybackRate(1)
     end
-    if (force or changed) and attackActivity(activity) then self:PlayerAttack(e) end
+    if (force or changed) and attackActivity(activity) then self:PlayerAttack(e,activity==ACT_MELEE_ATTACK1) end
     return true
 end
-function A:PlayerAttack(e)
+function A:PlayerAttack(e,melee)
     local hold=self:PlayerHold(e)
     if not hold or e.LODDead or not e.AddGestureSequence then return false end
     -- Resolve refreshes the model/held-weapon cache without changing the body.
     self:Resolve(e,ACT_IDLE)
     local cache=e.LODAnimationCache
-    if cache.attack==nil then
-        cache.attack=false
-        local act=_G["ACT_HL2MP_GESTURE_RANGE_ATTACK"..hold]
+    local key=melee and "meleeGesture" or "attack"
+    if cache[key]==nil then
+        cache[key]=false
+        local attackHold=melee and hold~="_MELEE" and "_FIST" or hold
+        local act=_G["ACT_HL2MP_GESTURE_RANGE_ATTACK"..attackHold]
         local seq=act and e:SelectWeightedSequence(act)
-        if self:Valid(e,seq) then cache.attack=seq end
+        if self:Valid(e,seq) then cache[key]=seq end
     end
-    if not cache.attack then return false end
-    e:AddGestureSequence(cache.attack,true)
+    if not cache[key] then return false end
+    e:AddGestureSequence(cache[key],true)
     return true
 end
 function A:UpdatePlayerBody(e)

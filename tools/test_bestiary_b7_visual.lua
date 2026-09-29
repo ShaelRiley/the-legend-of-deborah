@@ -99,3 +99,19 @@ end
 local count=0;for _ in pairs(hooks) do count=count+1 end
 assert(count==1 and hooks.LOD_RosterProjectiles,'melee introduces no global render hook')
 print('PASS: B7 production Draw: frozen exact sectors/thrust, two-beat timing, distinct retreat, reduced effects, finite cleanup and culling')
+for _,id in ipairs({'sentry','nodule','watcher','seeker','razor','stitcher','arccaster','warden'}) do
+    local e=actor(id,5);e.nw.LOD_MeleeReady=10.4;e.nw.LOD_CloseDefenseAt=10.4;e.nw.LOD_MeleeUntil=10.6
+    e.nw.LOD_MeleeOrigin=Vector(100,200,36)
+    time=10;low=false;local normal=draw(e);assert(normal==11,'universal tell hidden by archetype renderer '..id)
+    low=true;assert(draw(e)==normal,'reduced effects hid close defense')
+    same(beams[1].a,e.nw.LOD_MeleeOrigin)
+    assert(math.abs(math.sqrt((beams[1].b-beams[1].a):LengthSqr())-96)<.0001,'incorrect close reach')
+    time=10.2;near(LOD.EnemyRosterVisual:CloseRecoil(e),-3)
+    time=10.4;near(LOD.EnemyRosterVisual:CloseRecoil(e),8)
+    time=10.5;near(LOD.EnemyRosterVisual:CloseRecoil(e),4)
+    time=10.7;assert(draw(e)==0 and LOD.EnemyRosterVisual:CloseRecoil(e)==0,'expired strike persisted')
+    time=10.2;e.nw.LOD_CloseDefenseAt=0;assert(LOD.EnemyRosterVisual:CloseRecoil(e)==0,'cancelled recoil persisted')
+    e.nw.LOD_CloseDefenseAt=10.4;e.nw.LOD_DeathPulseStart=10.1
+    assert(LOD.EnemyRosterVisual:CloseRecoil(e)==0,'corpse continued strike')
+end
+print('CLOSE_DEFENSE_VISUAL_PASS all archetype Draw routes; fixed reach; reduced-effects parity; finite device pullback/jab/cancel/death')

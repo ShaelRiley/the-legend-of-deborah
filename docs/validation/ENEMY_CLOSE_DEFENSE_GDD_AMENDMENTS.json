@@ -1,0 +1,19 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "status": "not_written",
+  "reason": "Google Docs API returned 400 FAILED_PRECONDITION for guarded append; author-requested code correction proceeds under current explicit direction.",
+  "amendments": [
+    {
+      "tabId": "t.l29tf4evc12u",
+      "text": "LOD-ENEMY-DEFENSE-001 — Author-requested universal close defense and finite melee stagger → 03 for behavior; 07 for bounded tuning and verification. This supersedes older no-melee descriptions only for last-ditch close defense. Native acceptance remains pending.\n\n"
+    },
+    {
+      "tabId": "t.qt6qa9saeusi",
+      "text": "LOD-ENEMY-DEFENSE-001 — Universal close defense [CURRENT REQUIRED; author-directed correction]\nEvery AI creature must be able to retaliate at close range, including ranged, support, stationary, rare and copied-player enemies. Preserve distinctive primary attacks; when no attack is already committed, a nearby acquired opponent may trigger a modest stationary physical strike through the shared EnemyRoster commitment and damage authorities. Ordinary melee creatures keep their primary damage profile; the fallback gives other creatures a physical attack without casting, ammunition, elemental riders or resource theft. Held and Muted permit stationary physical defense; Intimidated, morale flight, death, inactivity, protected arrival and frozen/invalid world or actor life still forbid it. Keep the warning, fixed direction, finite range, cover, source/target incarnation checks, Block and Dodge. No automatic reflected damage, invisible instant hit, hidden retargeting or extra enemy scheduler.\nRepeated crowbar/melee HP damage must not perpetually restart ordinary melee flinch and cancel every retaliation. Keep the first eligible flinch and its normal duration/CHA/feat modifiers; give all hostiles the existing three-second melee-stagger recovery rule already used by Gordon. Hits during that recovery still inflict ordinary damage. Firearm, shotgun, Magic and genuine disabling-status rules otherwise remain intact. Attack animation resolution should use the model's actual stock attack sequence or player gesture, with a visible strike tell when a device has no skeletal attack cycle; never substitute a reference pose.\n\n"
+    },
+    {
+      "tabId": "t.bff19dm33vvw",
+      "text": "LOD-ENEMY-DEFENSE-001 — Close-defense implementation tuning [IMPLEMENTATION-TUNABLE]\nFallback: 96-unit center-to-center reach, fixed forward 120-degree sector, 0.4-second warning, at most 0.2-second release grace, 1.2-second recovery, one original target and one native damage settlement. Base physical 1d4+1, reference 3.5, scaled by existing body size and shared actor combat rules; creatures with an ordinary physical melee profile retain that profile and instance damage instead. The fallback has its own finite cooldown and does not bypass or restart active attack commitments. Use existing native behavior dispatch, EnemyRoster service, exact-life bindings and visual transport. Break cover/range, sidestep the frozen sector, displace the source or disable it to cancel/evade. No historical-cell restriction for a short visible strike across an open cell boundary. No additional scans, timers or projectile bodies. General melee-stagger retrigger: three seconds, including Gordon's existing rule; withheld stagger never suppresses HP damage.\nFinite verification: every registered creature can commit and finish close defense under legal conditions; repeat crowbar pressure allows retaliation; physical defense remains available to Muted/Held actors; blocked LOS, dodge/Block, departed/replaced target, expired warning, stale source/world, source displacement and freeze cancel safely. Preserve primary attack contracts, skeleton animations, startup/arrival protection and existing combat regressions. Source checks do not certify native animation or play feel.\n\n"
+    }
+  ]
+}

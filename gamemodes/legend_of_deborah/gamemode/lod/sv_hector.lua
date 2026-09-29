@@ -311,6 +311,7 @@ function H:Step(now)
     -- ordinary automatic fire. Already committed ordnance keeps its deadline.
     local interrupted=LOD.HostileMotionV2:HoldHitStun(h.actor,now)
         or (status and not status:CanInitiateAttack(h.actor))
+        or (h.actor.LODRosterAttack and h.actor.LODRosterAttack.closeDefense)
     if h.pending then
         for _,binding in ipairs(h.pending.bindings) do
             if not self:TargetLive(binding,h) then h.pending=nil;h.nextAttack=now+C.warning;break end
