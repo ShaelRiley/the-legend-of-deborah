@@ -1,4 +1,24 @@
-# Current checkpoint — universal enemy close defense
+# Current checkpoint — Options Always Run repair
+
+The author reports that selecting Always Run does not produce running and
+expressly authorizes commit/push. From verified main `673590c`, the existing
+shared PlayerOptions movement seam now scales horizontal requests as well as
+their effective speed cap. Walking-sized/analog requests previously stayed at
+walking speed despite the raised ceiling. A zero native client cap is now
+resolved from the move cap before publishing matching limits to both realms.
+
+Live GDD 00 → 01 → 06 LOD-UI-OPTIONS-001 governs; no design change. The existing
+Options binding, physical sprint modifier, Soldier rules and movement effects
+remain authoritative. The failed-parent reproduction and 11/11 passing selected
+checks (including 813 Lua syntax checks) are recorded in
+`validation/AUTORUN_20260928.md`. Native acceptance remains pending: restart on
+the published source, enable Options → Always Run, move normally, then hold the
+sprint key to walk and release it to resume running. Preserve the other native
+gates and local acceptance → Workshop parity → matching VPS release order.
+
+---
+
+# Prior checkpoint — universal enemy close defense
 
 The author requests visible attacks from rare creatures and retaliation under
 sustained crowbar pressure. From verified main `863f7fe`, native behavior now

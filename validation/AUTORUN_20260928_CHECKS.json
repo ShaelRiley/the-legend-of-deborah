@@ -1,0 +1,167 @@
+{
+  "total": 11,
+  "passed": 11,
+  "source_before": "68efb6aa2797caaeabf6c48ff3e5b1e7f76317dc00ef90a7c889ce4e7ca07a58",
+  "source_after": "68efb6aa2797caaeabf6c48ff3e5b1e7f76317dc00ef90a7c889ce4e7ca07a58",
+  "changed_during_gate": [],
+  "lua_files": 813,
+  "native_gmod_accepted": false,
+  "results": [
+    {
+      "index": 1,
+      "name": "Low-end Saved Options & Screen Bounds",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.033,
+      "log_prefix": "001-low-end-saved-options-screen-bounds",
+      "stdout_sha256": "d1423ab97a1a1e4554b83d06cff9191a0d1e3fcf654e19c6c01372f318aa5555",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 2,
+      "name": "Player Options Movement Invariants",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_player_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.038,
+      "log_prefix": "002-player-options-movement-invariants",
+      "stdout_sha256": "eee6a8723dd9c4906b4cdfa741e6bb79b1265bc4a12b5baac63463d995f61fdf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 3,
+      "name": "Git Diff Check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.045,
+      "log_prefix": "003-git-diff-check",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 4,
+      "name": "Lua Syntax Audit",
+      "returncode": 0,
+      "seconds": 0.337,
+      "log_prefix": "004-lua-syntax-audit",
+      "stdout_sha256": "488a829bc162411981eff6ab0995ef175020625d126fb1054180e9981ec2af7e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "command_prefix": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax"
+      ],
+      "syntax_file_arguments": 813,
+      "command_sha256": "6c68b1db36efe681489f2f19fd56b9a1151c899f182ca2b39d0452836bfae8ca"
+    },
+    {
+      "index": 5,
+      "name": "Protected: Map Movement & Navigation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_map_movement.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.048,
+      "log_prefix": "005-protected-map-movement-navigation",
+      "stdout_sha256": "a14e4ed541aab86b59fc8e86efa1e571a9036566d0cd561e0260735762b02102",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 6,
+      "name": "Protected: Strafe Movement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_strafe.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.051,
+      "log_prefix": "006-protected-strafe-movement",
+      "stdout_sha256": "9450b5598a154ac07b3a0f5efdb18670b3a95fed6fb965137bb0e6c55702caae",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 7,
+      "name": "Protected: Backpedal Movement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_backpedal.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.042,
+      "log_prefix": "007-protected-backpedal-movement",
+      "stdout_sha256": "68ce8e1b08b33206e8f87e2fe70fafae5f32aa4ee845ae5ea023ab90994267d6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 8,
+      "name": "Feat: haste",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_haste.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.036,
+      "log_prefix": "008-feat-haste",
+      "stdout_sha256": "65c8116ae79f8313ac9c8e3b19a2f396b437592931c79e685463f887c4274e37",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 9,
+      "name": "Cross Feats & Shared Dodge",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.1,
+      "log_prefix": "009-cross-feats-shared-dodge",
+      "stdout_sha256": "8112fd5a08a2ddde2730a73019b115992ecb0a48bc44dba495c12e82e8e918a7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 10,
+      "name": "test_spot17_movement_client",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_spot17_movement_client.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.042,
+      "log_prefix": "010-test-spot17-movement-client",
+      "stdout_sha256": "6a5590a1dcae18f306e6818575705a5493b4ce36f6860826680197a34b13c1b1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 11,
+      "name": "test_spot17_movement_server",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_spot17_movement_server.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.456,
+      "log_prefix": "011-test-spot17-movement-server",
+      "stdout_sha256": "b591e22c51c394aee1862f33396b8b3032d79470f71f7cc88e3d250ed207d7f5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
