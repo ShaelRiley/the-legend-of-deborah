@@ -60,7 +60,7 @@ sudo systemctl start "$SERVICE"
 ready=0
 for attempt in {1..30}; do
     if sudo systemctl is-active --quiet "$SERVICE" &&
-       python3 "$REPO/tools/server/query_server.py" 127.0.0.1 > "$BACKUP/query.json" 2>/dev/null; then
+       python3 "$REPO/tools/server/query_server.py" 40.160.86.240 > "$BACKUP/query.json" 2>/dev/null; then
         ready=1
         break
     fi
