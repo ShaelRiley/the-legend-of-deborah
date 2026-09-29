@@ -174,7 +174,46 @@ class CatalogStore:
                 for i, part in enumerate(parts):
                     (Path(tmp) / f'{i}.dat').write_bytes(part)
                 os.rename(tmp, target)
+        # TemporaryDirectory is 0700. Published static media must be readable
+        # by the separate nginx worker, including repaired older imports.
+        for i in range(len(parts)):
+            (target / f'{i}.dat').chmod(0o644)
+        for directory in (target, target.parent, target.parent.parent):
+            directory.chmod(0o755)
         asset['delivery'] = 1
+
+    def expose_block(self, target):
+        """Only public audio paths; staging/configuration keep private modes."""
+        for path in target.glob('*.ogg'):
+            path.chmod(0o644)
+        for directory in (target, target.parent, target.parent.parent):
+            directory.chmod(0o755)
+
+    def merge_assets(self, catalog, assets, folder):
+        """Shared immutable-media authority for single and whole-library imports."""
+        for key, asset in assets.items():
+            self.chunks(asset, folder / Path(asset['path']).name)
+            old = catalog['assets'].get(key)
+            if old:
+                ignored = {'path', 'delivery'}
+                if 'cues' not in old:
+                    ignored.add('cues')
+                require({k:v for k,v in old.items() if k not in ignored} ==
+                        {k:v for k,v in asset.items() if k not in ignored},
+                        'existing hash metadata conflict')
+                if 'cues' in asset:
+                    old['cues'] = asset['cues']
+                old['delivery'] = 1
+            else:
+                catalog['assets'][key] = asset
+
+    def commit_catalog(self, catalog, upload_id=None):
+        require(len(catalog['blocks']) <= 256 and len(catalog['profiles']) <= 64
+                and len(catalog['assets']) <= 1792, 'catalog capacity reached')
+        require(len(json.dumps(catalog).encode()) <= 2 * 1024 * 1024, 'catalog too large')
+        atomic_json(self.root / 'catalog.json', catalog)
+        self.mirror(catalog, upload_id)
+        return catalog['revision']
 
     def prepare_delivery(self):
         """Enrich existing catalog assets without altering audio or frozen plans."""
@@ -220,30 +259,18 @@ class CatalogStore:
             bid, version = manifest['id'], manifest['version']
             catalog = self.catalog()
             require(catalog['origin'] == self.origin, 'origin is immutable; migrate explicitly')
+            require(not catalog.get('defaultBlock'), 'folder libraries use --catalog or lod_music_catalog.py import')
             target = self.root / 'music' / 'blocks' / bid / version
             require(not target.exists(), 'immutable version already exists')
             collection = 'profiles' if manifest['kind'] == 'profile' else 'blocks'
             catalog[collection][bid] = block
-            for key, asset in assets.items():
-                self.chunks(asset, folder / Path(asset['path']).name)
-                old = catalog['assets'].get(key)
-                if old:
-                    # One-way legacy enrichment on a new immutable block version.
-                    # Frozen plans contain their own copies; no live retargeting.
-                    ignored = {'path', 'cues'} if 'cues' not in old else {'path'}
-                    if 'delivery' not in old:
-                        ignored.add('delivery')
-                    require({k:v for k,v in old.items() if k not in ignored} == {k:v for k,v in asset.items() if k not in ignored}, 'existing hash metadata conflict')
-                    if 'cues' not in old and 'cues' in asset:
-                        old['cues'] = asset['cues']
-                    old['delivery'] = 1
-                else:
-                    catalog['assets'][key] = asset
+            self.merge_assets(catalog, assets, folder)
             require(len(catalog['blocks']) <= 256 and len(catalog['profiles']) <= 64 and len(catalog['assets']) <= 1792, 'catalog capacity reached')
             catalog['revision'] = uuid.uuid4().hex
             require(len(json.dumps(catalog).encode()) <= 2 * 1024 * 1024, 'catalog too large')
             target.parent.mkdir(parents=True, exist_ok=True)
             os.rename(folder, target)
+            self.expose_block(target)
             # A crash here may leave an unreferenced immutable folder, never a
             # published manifest pointing at a partly uploaded file.
             atomic_json(self.root / 'catalog.json', catalog)
@@ -262,6 +289,7 @@ class CatalogStore:
         with self.lock():
             c = self.catalog()
             if 'projectDefault' in metadata:
+                require(not c.get('defaultBlock'), 'folder libraries use first-block defaults')
                 profile = identity(metadata['projectDefault'])
                 require(profile in c['profiles'], 'unknown project default profile')
                 require(all(c['profiles'][profile]['roles'].get(role) in c['assets'] for role in ROLES), 'project defaults must cover all seven roles')
@@ -313,8 +341,21 @@ def main():
     p.add_argument('--root', type=Path, required=True);p.add_argument('--origin',required=True)
     p.add_argument('--game-data',type=Path);p.add_argument('--port',type=int,default=8787)
     p.add_argument('--import-folder',type=Path);p.add_argument('--configure',type=Path)
+    p.add_argument('--catalog',type=Path, help='Catalog music/<block>/<role>.ogg from a folder or ZIP offline')
+    p.add_argument('--rebuild-cues',action='store_true', help='With --catalog, recompute analyzed cues; retain authored overrides')
+    p.add_argument('--validate-only',action='store_true', help='With --catalog, prepare and validate without publication')
     p.add_argument('--prepare-delivery', action='store_true', help='Prepare bounded chunks for the existing catalog offline')
     args = p.parse_args();store=CatalogStore(args.root,args.origin,args.game_data)
+    require(sum(bool(v) for v in (args.catalog, args.import_folder, args.configure, args.prepare_delivery)) <= 1,
+            'choose one catalog/import/configure/delivery operation')
+    require(args.catalog or not (args.rebuild_cues or args.validate_only), '--rebuild-cues/--validate-only require --catalog')
+    if args.catalog:
+        from folder_catalog import prepare_library
+        try:
+            print(json.dumps(prepare_library(store, args.catalog, args.rebuild_cues, args.validate_only), sort_keys=True))
+        except (ValueError, KeyError, OSError, zipfile.BadZipFile, subprocess.SubprocessError) as exc:
+            p.exit(1, f'Music catalog failed: {exc}\n')
+        return
     if args.prepare_delivery:
         print(store.prepare_delivery());return
     if args.configure:

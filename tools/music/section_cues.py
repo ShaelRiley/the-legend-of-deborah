@@ -109,10 +109,56 @@ def analyze_samples(samples, sample_rate, duration, bpm, phase=0):
     return validate_cues(result, duration, bpm, phase)
 
 
-def analyze_file(path, duration, bpm, phase=0):
+def decode_samples(path, duration):
     import numpy as np
     # Bounded by the already-validated 180-second master. Low-rate mono PCM is
     # transient author/ingestion memory, never a client payload or cache.
     raw = subprocess.check_output(['ffmpeg', '-v', 'error', '-xerror', '-i', str(path),
         '-t', str(duration), '-ac', '1', '-ar', '11025', '-f', 'f32le', '-'], timeout=30)
-    return analyze_samples(np.frombuffer(raw, dtype='<f4'), 11025, duration, bpm, phase)
+    return np.frombuffer(raw, dtype='<f4')
+
+
+def infer_grid(path, duration, bpm=None):
+    """Offline complete-bar grid inference; explicit authored BPM wins.
+
+    Autocorrelation ranks repeated onsets, never loudness. Half/double-time
+    ambiguity is resolved toward 120 BPM. The cue classifier still independently
+    requires real pulse/quiet sections; a grid alone cannot qualify a recording.
+    """
+    if bpm is not None:
+        if type(bpm) not in (int, float) or not math.isfinite(bpm) or not 40 <= bpm <= 240:
+            raise ValueError('bpm must be a number from 40 to 240')
+        beats = round(duration * bpm / 60)
+        if beats < 4 or beats % 4 or abs(beats * 60 / bpm - duration) >= .025:
+            raise ValueError('loop must contain complete four-beat bars at its authored bpm')
+        return bpm, beats
+    import numpy as np
+    samples = decode_samples(path, duration)
+    hop = 110  # Same approximately 10 ms envelope used by cue analysis.
+    usable = len(samples) // hop * hop
+    if not usable or not np.isfinite(samples).all():
+        raise ValueError('nonfinite/empty audio')
+    envelope = np.sqrt(np.mean(samples[:usable].reshape(-1, hop).astype(float) ** 2, axis=1))
+    attack = np.maximum(0, np.diff(envelope, prepend=envelope[0]))
+    # Quantization/codec ripple in a sustained pad is not rhythmic evidence.
+    attack[attack < max(.002, float(np.sqrt(np.mean(envelope**2))) * .18)] = 0
+    candidates = []
+    for beats in range(4, 721, 4):
+        tempo = beats * 60 / duration
+        if not 40 <= tempo <= 240:
+            continue
+        lag = round(60 / tempo * 11025 / hop)
+        if lag >= len(attack):
+            continue
+        a, b = attack[:-lag], attack[lag:]
+        correlation = float(np.dot(a, b) / max(1e-12, np.linalg.norm(a) * np.linalg.norm(b)))
+        score = correlation - .03 * abs(math.log2(tempo / 120))
+        candidates.append((score, tempo, beats))
+    if not candidates:
+        raise ValueError('loop too short for a useful complete-bar grid')
+    _, tempo, beats = max(candidates)
+    return round(tempo, 8), beats
+
+
+def analyze_file(path, duration, bpm, phase=0):
+    return analyze_samples(decode_samples(path, duration), 11025, duration, bpm, phase)

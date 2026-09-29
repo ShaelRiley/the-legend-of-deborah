@@ -478,7 +478,7 @@ hook.Add("PreCleanupMap","LOD_MusicCleanup",function()
 end)
 concommand.Add("lod_music_client_status",function()
     local slots,transfers,bytes,decoded,loads=D:Counts();local channels={}
-    for id,r in pairs(D.Channels) do channels[#channels+1]={asset=id,role=r.role,block=r.logicalBlock,
+    for id,r in pairs(D.Channels) do channels[#channels+1]={asset=id,role=r.role,roleName=M.RoleNames[r.role],block=r.logicalBlock,
         source=r.source,pending=r.pending,gain=r.gain,buffer=IsValid(r.channel) and r.channel:GetBufferedTime(),
         cueMode=r.section and r.section.mode,cueEnd=r.section and r.section.finish,
         cueSource=r.asset.cues and r.asset.cues.source or "legacy-no-cues",cueFallbacks=r.cueFallbacks,

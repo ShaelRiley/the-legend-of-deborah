@@ -1,4 +1,24 @@
-# Current checkpoint — Options Always Run repair
+# Current checkpoint — six-role music folder/ZIP catalog
+
+The author requests Chill = Tension 1, Tensions 2–4, Boss and Fanfare, with the
+first block as every missing-role default. From main `79faf3d`, the existing
+music ingestion authority now accepts a complete folder/ZIP library, creates
+manifests/versions/cues/chunks offline and publishes one validated catalog. Chill
+also serves staging/post-fanfare; active/offered plans stay frozen. An explicit
+cue rebuild preserves authored overrides; unchanged ordinary imports skip analysis.
+
+Finite evidence: `validation/MUSIC_FOLDER_CATALOG.md`, 41/41 selected suites,
+813 Lua syntax checks and 80 new real-audio/import assertions. The Google Docs
+amendment failed with FAILED_PRECONDITION; its unapplied text is preserved in
+`validation/MUSIC_FOLDER_GDD_AMENDMENTS.json`. Current explicit author direction
+governs. No music origin, recordings, native acceptance or deployment is claimed.
+Next: use `MUSIC_FOLDER_IMPORT.md` to provision HTTPS, import before a new campaign,
+then test the exact source through Chill → tension/stairs → boss → rescue/fanfare
+→ Chill. Retain default-Off and local acceptance → Workshop parity → matching VPS.
+
+---
+
+# Prior checkpoint — Options Always Run repair
 
 The author reports that selecting Always Run does not produce running and
 expressly authorizes commit/push. From verified main `673590c`, the existing

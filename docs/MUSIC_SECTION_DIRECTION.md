@@ -1,5 +1,9 @@
 # Pulse-first music direction
 
+For the current whole-library workflow, use [folder/ZIP import and cue rebuild](MUSIC_FOLDER_IMPORT.md).
+All looping section cues are prepared during cataloging before gameplay; fanfare
+remains a one-shot. The older single-manifest workflow below remains compatible.
+
 This source update extends main `67cb7dbf7343d05cd52c3f429e33322a8fc30248`.
 The author's clarified rule is **rhythmic state before loudness**. Live GDD
 05 `LOD-MUSIC-CUES-001` and 07 `LOD-MUSIC-CUES-IMPL` record the amendment;

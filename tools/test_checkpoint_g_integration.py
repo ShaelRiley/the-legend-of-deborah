@@ -43,6 +43,7 @@ SUITES = [
     ("Music Gameplay Resource Priority", ["python3", "tools/run_lua54.py", "tools/test_music_resources.lua"]),
     ("Player Options Movement Invariants", ["python3", "tools/run_lua54.py", "tools/test_player_options.lua"]),
     ("Music Ingestion Validation", ["python3", "tools/test_music_ingestion.py"]),
+    ("Music Folder Catalog & First-block Defaults", ["python3", "tools/test_music_folder_catalog.py"]),
     ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),
     ("Big Event Incidents & Body Lifecycles", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_incidents.lua"]),
     ("Big Event Campaign Ecology & Determinism", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_ecology.lua"]),

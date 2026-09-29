@@ -1,5 +1,12 @@
 # Streamed Music System
 
+**Current author workflow:** [music folders and ZIP imports](MUSIC_FOLDER_IMPORT.md).
+Chill is Tension 1; the other roles are Tension 2, Tension 3, Tension 4, Boss and
+Fanfare. Folder catalogs use block one for every missing-role default and alias
+Chill for staging/post-fanfare. Import prepares manifests, cues and chunks before
+gameplay. The legacy manifest/profile workflow below still applies to catalogs
+that have not moved to folder imports.
+
 Source implementation; native Garry’s Mod audio acceptance and hosted deployment
 remain pending. See [Chill staging and performance](MUSIC_PERFORMANCE.md) for the
 current delivery, cache, resource-priority and migration contract. The server starts with **`lod_music_enabled 0`**. The default

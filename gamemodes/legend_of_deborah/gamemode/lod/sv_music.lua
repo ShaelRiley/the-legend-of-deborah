@@ -23,8 +23,8 @@ function D:LoadCatalog(path)
     if not ok or not c then return false,tostring(err or c) end
     -- Do not discard a valid restricted catalog if an attempted replacement loses it.
     if self.Settings.set~="all" then local pool,why=M.Pool(c,self.Settings.set);if not pool then return false,why end end
-    if self.Settings.profile~="" and not c.profiles[self.Settings.profile] then return false,"configured profile missing" end
-    local missing={};local profile=c.profiles[c.projectDefault or ""]
+    if not c.defaultBlock and self.Settings.profile~="" and not c.profiles[self.Settings.profile] then return false,"configured profile missing" end
+    local missing={};local profile=c.defaultBlock and c.blocks[c.defaultBlock] or c.profiles[c.projectDefault or ""]
     for _,role in ipairs(M.Roles) do
         if not profile or not c.assets[profile.roles[role]] then missing[#missing+1]=role end
     end
@@ -37,6 +37,7 @@ function D:Configure(key,value)
         if not M.ID(value) then return false,"invalid set ID" end
         if value~="all" then local pool,err=self.Catalog and M.Pool(self.Catalog,value);if not pool then return false,err or "catalog unavailable" end end
     elseif key=="profile" then
+        if self.Catalog and self.Catalog.defaultBlock then return false,"folder libraries use first-block defaults" end
         if value~="" and (not self.Catalog or not self.Catalog.profiles[value]) then return false,"unknown default profile" end
     elseif key=="post_victory" then
         if value~="auto" and value~="interlude" and value~="off" then return false,"expected auto, interlude or off" end
@@ -329,7 +330,8 @@ concommand.Add("lod_music_status",function(p)
     local listeners={}
     for who,l in pairs(D.Listeners) do listeners[#listeners+1]={player=who:EntIndex(),enabled=l.on,state=l.snapshot} end
     report(p,util.TableToJSON({enabled=enabled:GetBool(),configured=D.Settings,
-        catalog=D.Catalog and D.Catalog.revision,currentPlan=plan and plan.id,
+        catalog=D.Catalog and D.Catalog.revision,defaultBlock=D.Catalog and D.Catalog.defaultBlock,
+        roleNames=M.RoleNames,currentPlan=plan and plan.id,
         active=plan and plan.settings,eligible=plan and plan.eligible,listeners=listeners,warning=D.Warning,error=D.Error or plan and plan.error}))
 end)
 do

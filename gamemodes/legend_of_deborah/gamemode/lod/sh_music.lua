@@ -3,6 +3,9 @@ LOD = LOD or {}
 LOD.Music = {}
 local M = LOD.Music
 M.Roles = {"T0", "T1", "T2", "T3", "BOSS", "VICTORY", "INTERLUDE"}
+-- Wire keys stay compatible; the author-facing four tensions start at one.
+M.RoleNames = {T0="Chill (Tension 1)",T1="Tension 2",T2="Tension 3",T3="Tension 4",
+    BOSS="Boss",VICTORY="Fanfare",INTERLUDE="Chill"}
 M.Limits = {blocks=256, assets=1792, bytes=4194304, duration=180, channels=4,
     transfers=1, loads=2, decodedBytes=67108864, cacheBytes=33554432, cacheFiles=64,
     chunkBytes=16384, bytesPerSecond=32768, planChunk=1024, metadataBytes=4096,
@@ -121,6 +124,17 @@ function M.ValidateCatalog(c)
         for _,bid in ipairs(s.members) do if not M.ID(bid) or not c.blocks[bid] then return nil,"unknown set member" end end
     end
     if c.projectDefault and not c.profiles[c.projectDefault] then return nil,"unknown project defaults" end
+    if c.defaultBlock~=nil then
+        local first=M.ID(c.defaultBlock) and c.blocks[c.defaultBlock]
+        if not first or not roles(first.roles,false) then return nil,"first block must supply all six defaults" end
+        for _,b in pairs(c.blocks) do
+            if b.roles.INTERLUDE~=b.roles.T0 then return nil,"folder catalog Chill must also serve staging/interlude" end
+            for _,id in pairs(b.roles) do
+                local a=c.assets[id]
+                if a and (a.delivery~=1 or a.loop and not a.cues) then return nil,"folder catalog must be prepared offline" end
+            end
+        end
+    end
     return c
 end
 function M.Pool(c, selection)
@@ -141,6 +155,10 @@ function M.Candidates(c, b, role, settings)
         if a and not seen[id] then out[#out+1]={asset=id,source=source};seen[id]=true end
     end
     if not settings["universal_"..role:lower()] then add(b.roles[role],"custom") end
+    if c.defaultBlock then
+        add(c.blocks[c.defaultBlock].roles[role],"first-block-default")
+        return out
+    end
     local server=c.profiles[settings.profile or ""]
     local project=c.profiles[c.projectDefault or ""]
     if server then add(server.roles[role],"server-default") end
@@ -150,6 +168,7 @@ end
 function M.Plan(c, settings, seed, id, floors, epoch)
     local pool,err=M.Pool(c,settings.set or "all");if not pool then return nil,err end
     local plan={id=id,epoch=epoch,revision=c.revision,origin=c.origin,settings=table.Copy(settings),
+        defaultBlock=c.defaultBlock,
         setRevision=c.sets[settings.set or ""] and c.sets[settings.set].revision,
         eligible={},floors={},blocks={},assets={},created=CurTime()}
     for _,bid in ipairs(pool) do plan.eligible[bid]=c.blocks[bid].version end

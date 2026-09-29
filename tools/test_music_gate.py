@@ -19,6 +19,7 @@ gate.LUA = [
     'test_snapshot_delivery.lua', 'test_manual_transport.lua', 'test_spot13_unread.lua',
 ]
 gate.EXTRA_SUITES = [('music_ingestion', ['python3','tools/test_music_ingestion.py']),
-                    ('music_sections_analysis', ['python3','tools/test_music_sections.py'])]
+                    ('music_sections_analysis', ['python3','tools/test_music_sections.py']),
+                    ('music_folder_catalog', ['python3','tools/test_music_folder_catalog.py'])]
 if __name__ == '__main__':
     sys.exit(gate.main())
