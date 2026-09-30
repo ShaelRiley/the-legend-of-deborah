@@ -31,6 +31,8 @@ include("lod/sh_audio.lua")
 if SERVER then AddCSLuaFile("lod/sh_music.lua"); AddCSLuaFile("lod/sh_player_options.lua") end
 include("lod/sh_music.lua")
 include("lod/sh_player_options.lua")
+if SERVER then AddCSLuaFile("lod/sh_vr.lua"); AddCSLuaFile("lod/cl_vr.lua") end
+include("lod/sh_vr.lua")
 include("lod/sh_feedback_language.lua")
 if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
 include("lod/sh_player_scale_collision.lua")

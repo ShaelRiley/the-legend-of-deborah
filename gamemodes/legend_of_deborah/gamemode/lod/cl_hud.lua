@@ -156,17 +156,19 @@ local function drawDeathState(ply, state)
         Color(205, 205, 205), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
-hook.Add("PlayerBindPress", "LOD_FailedCampaignRestart", function(_, bind, pressed)
-    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic() then return end
-    if not pressed or not LOD.ClientState or not LOD.ClientState.failed then return end
-    if not string.find(string.lower(bind or ""), "+use", 1, true) then return end
-
+function LOD.RequestCampaignRestart()
+    if LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic() then return false end
+    if not LOD.ClientState or not LOD.ClientState.failed then return false end
     if CurTime() >= nextRestartRequest then
         nextRestartRequest = CurTime() + 1.0
         net.Start("LOD_RestartCampaign")
         net.SendToServer()
     end
     return true
+end
+hook.Add("PlayerBindPress", "LOD_FailedCampaignRestart", function(_, bind, pressed)
+    if not pressed or not string.find(string.lower(bind or ""), "+use", 1, true) then return end
+    if LOD.RequestCampaignRestart() then return true end
 end)
 
 hook.Add("HUDPaint", "LOD_PersistentHUD", function()
@@ -236,4 +238,3 @@ hook.Add("HUDPaint", "LOD_PersistentHUD", function()
         drawDeathState(ply, state)
     end
 end)
-

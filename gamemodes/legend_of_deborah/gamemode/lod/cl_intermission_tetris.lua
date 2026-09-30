@@ -109,11 +109,18 @@ local function sendStart()
     net.SendToServer()
 end
 
-local function sendInput(action)
+function Client:SendInput(action)
     if not Client.active or Client.gameOver then return end
     net.Start("LOD_IntermissionTetrisInput")
     net.WriteUInt(action, 3)
     net.SendToServer()
+end
+local function sendInput(action) Client:SendInput(action) end
+
+function Client:ContextAction()
+    if not Client.available or Client.active then return false end
+    sendStart()
+    return true
 end
 
 hook.Add("Think", "LOD_IntermissionTetrisStartInput", function()
@@ -121,7 +128,7 @@ hook.Add("Think", "LOD_IntermissionTetrisStartInput", function()
     if down and not fWasDown and Client.available and not Client.active
         and not gui.IsGameUIVisible() and not IsValid(vgui.GetKeyboardFocus())
     then
-        sendStart()
+        Client:ContextAction()
     end
     fWasDown = down
 end)

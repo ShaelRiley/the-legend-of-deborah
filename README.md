@@ -6,6 +6,10 @@ Current baseline: **Shael-approved RPG candidate on main**, promoted from `87920
 
 The [Game Design Document](https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY/edit) is the design authority. This repository's `main` branch is the implementation authority.
 
+Optional VRMod support for Quest/WiVRn and mixed desktop/VR multiplayer is
+documented in [VR setup and controls](docs/VR.md). Servers need the VRMod Lua
+dependency in addition to this gamemode.
+
 <details>
 <summary>Historical pre-RPG implementation and optimization checkpoint</summary>
 

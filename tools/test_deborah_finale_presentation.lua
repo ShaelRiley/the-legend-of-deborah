@@ -104,6 +104,9 @@ for i=1,3 do now=now+.2;packet();world() end
 assert(live==22 and created==initialCreated and sounds==initialSounds,'sync replayed models or cues')
 local view=hooks.LOD_VictoryCelebrationThirdPerson(ply,Vector(),Angle(),90)
 assert(view and view.origin and view.angles,'finale camera not installed')
+LOD.VR={IsActive=function() return true end}
+assert(hooks.LOD_VictoryCelebrationThirdPerson(ply,Vector(),Angle(),90)==nil,'finale must retain headset camera ownership')
+LOD.VR=nil
 labels={};hooks.LOD_VictoryCelebrationHUD();assert(#labels>0,'finale titles missing')
 -- Server roster presence updates remove only absent Hero proxies; they do not
 -- rewrite the accepted cast or restart the choreography.

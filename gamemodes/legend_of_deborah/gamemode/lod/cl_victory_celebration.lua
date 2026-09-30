@@ -129,6 +129,7 @@ end
 -- and confetti room to read. Hull tracing prevents the camera from clipping through
 -- the generated container walls.
 hook.Add("CalcView", "LOD_VictoryCelebrationThirdPerson", function(ply, origin, angles, fov)
+    if LOD.VR and LOD.VR:IsActive(ply) then return end
     if Client.finale then return Client:FinaleView(ply, origin, angles, fov) end
     if not celebrationActive() or not IsValid(ply) or not ply:Alive() then return end
 

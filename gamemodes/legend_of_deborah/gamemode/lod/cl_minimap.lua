@@ -339,15 +339,7 @@ net.Receive("LOD_MapDenied", function()
     notification.AddLegacy(text ~= "" and text or "NO MAP", NOTIFY_HINT, 2.5)
 end)
 
-hook.Add("Think", "LOD_MinimapToggleInput", function()
-    local down = input.IsKeyDown(KEY_M)
-    if not down then
-        mapKeyWasDown = false
-        return
-    end
-    if mapKeyWasDown then return end
-    mapKeyWasDown = true
-
+function Map:Toggle()
     if gui.IsGameUIVisible() or IsValid(vgui.GetKeyboardFocus()) then return end
 
     local ply = LocalPlayer()
@@ -368,6 +360,14 @@ hook.Add("Think", "LOD_MinimapToggleInput", function()
             requestMap(true)
         end
     end
+end
+concommand.Add("lod_minimap_toggle", function() Map:Toggle() end)
+hook.Add("Think", "LOD_MinimapToggleInput", function()
+    local down = input.IsKeyDown(KEY_M)
+    if not down then mapKeyWasDown = false;return end
+    if mapKeyWasDown then return end
+    mapKeyWasDown = true
+    Map:Toggle()
 end)
 
 local function gateStateSignature()
