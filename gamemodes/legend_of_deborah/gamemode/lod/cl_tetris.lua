@@ -111,12 +111,13 @@ net.Receive("LOD_TetrisState", function()
     end
 end)
 
-local function sendAction(action)
+function Client:SendInput(action)
     if not Client.active or Client.gameOver then return end
     net.Start("LOD_TetrisInput")
     net.WriteUInt(action, 3)
     net.SendToServer()
 end
+local function sendAction(action) Client:SendInput(action) end
 
 local function sendDeathAction(action)
     net.Start("LOD_DeathTetrisAction")
@@ -131,21 +132,33 @@ local function deathInputEligible(ply)
     return ply:GetNW2Bool("LOD_DeathInteraction", false)
 end
 
+function Client:RequestRespawn()
+    local ply = LocalPlayer()
+    if not deathInputEligible(ply) or Client.active
+        or ply:GetNW2Float("LOD_RespawnRemaining", 0) > 0 then return false end
+    sendDeathAction(DEATH_ACTION_RESPAWN)
+    return true
+end
+
+function Client:ContextAction()
+    local ply = LocalPlayer()
+    if not deathInputEligible(ply) then return false end
+    local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
+    if Client.active then
+        if remaining <= 0 then sendDeathAction(DEATH_ACTION_RESPAWN) end
+    elseif remaining > 0 then
+        sendDeathAction(DEATH_ACTION_ENTER_TETRIS)
+    end
+    return true
+end
+
 -- Production F has one contextual meaning during death:
 --   mandatory wait running + no Tetris -> pay respects / enter Tetris
 --   Tetris active + mandatory wait complete -> respawn
 hook.Add("Think", "LOD_DeathTetrisFInput", function()
     local down = input.IsKeyDown(KEY_F)
     if down and not fWasDown and not gui.IsGameUIVisible() and not IsValid(vgui.GetKeyboardFocus()) then
-        local ply = LocalPlayer()
-        if deathInputEligible(ply) then
-            local remaining = math.max(0, ply:GetNW2Float("LOD_RespawnRemaining", 0))
-            if Client.active then
-                if remaining <= 0 then sendDeathAction(DEATH_ACTION_RESPAWN) end
-            elseif remaining > 0 then
-                sendDeathAction(DEATH_ACTION_ENTER_TETRIS)
-            end
-        end
+        Client:ContextAction()
     end
     fWasDown = down
 end)
@@ -179,7 +192,7 @@ hook.Add("PlayerBindPress", "LOD_DeathPlainRespawnInput", function(ply, bind, pr
     local lower = string.lower(bind or "")
     if not string.find(lower, "+attack", 1, true) then return end
     if ply:GetNW2Float("LOD_RespawnRemaining", 0) > 0 then return end
-    sendDeathAction(DEATH_ACTION_RESPAWN)
+    Client:RequestRespawn()
     return true
 end)
 

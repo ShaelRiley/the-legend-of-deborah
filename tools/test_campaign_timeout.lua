@@ -227,6 +227,9 @@ local clock=T:Clock();clock.scene.started=now-T.Settle;clock.scene.ready=true;cl
 T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==T.Settle)
 local view=hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())
 assert(view.fov>=80 and view.fov<=95 and view.zfar>(view.origin-T.FlattywoodSign):Length(),'camera clips distant Flattywood')
+LOD.VR={IsActive=function() return true end}
+assert(hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())==nil,'timeout must retain headset camera ownership')
+LOD.VR=nil
 local beforeCinematicDraws=drawn
 hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+3)
 local soundCount=sounds;now=now+1;T:Sync();receive();assert(sounds==soundCount,'snapshot replayed entrance audio')

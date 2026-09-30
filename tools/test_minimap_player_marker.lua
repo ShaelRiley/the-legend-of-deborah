@@ -13,7 +13,8 @@ GetRenderTarget=function() return {GetName=function() return 'map' end} end
 CreateMaterial=function() return {} end
 Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a} end
 math.Clamp=function(x,a,b) return math.max(a,math.min(b,x)) end
-net={Receive=noop,Start=noop,SendToServer=noop};concommand={Add=noop}
+local commands={}
+net={Receive=noop,Start=noop,SendToServer=noop};concommand={Add=function(name,fn) commands[name]=fn end}
 CurTime=function() return 10 end;ScrW=function() return 1280 end
 EyeAngles=function() return {y=0} end
 local player={pos={x=0,y=0,z=0},alive=true,access=true}
@@ -68,4 +69,19 @@ for _,state in ipairs({'closed','dead','no-access'}) do
  M.open=state~='closed';player.alive=state~='dead';player.access=state~='no-access'
  circles={};hooks.HUDPaint.LOD_MinimapHUD();assert(#circles==0,'marker bypassed map/player access')
 end
-print('MINIMAP_PLAYER_PASS: one blue marker; standard/expanded topology, extended cells, floors, movement, reload and access')
+-- Keyboard M and the VR quick-menu command share the real access/cache authority.
+local covered,down=false,false
+gui={IsGameUIVisible=function() return covered end}
+vgui={GetKeyboardFocus=function() return nil end}
+input={IsKeyDown=function() return down end}
+LOD.Audio={Play=noop};notification={AddLegacy=noop};NOTIFY_HINT=1
+player.alive=true;player.access=true;M.open=false
+commands.lod_minimap_toggle();assert(M.open,'controller command opens owned map')
+local reopens=M.stats.mapCacheReopens
+commands.lod_minimap_toggle();assert(not M.open)
+down=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open and M.stats.mapCacheReopens==reopens+1)
+hooks.Think.LOD_MinimapToggleInput();assert(M.open,'held M must not toggle repeatedly')
+covered=true;commands.lod_minimap_toggle();assert(M.open,'covered UI retains control')
+covered=false;commands.lod_minimap_toggle();assert(not M.open)
+player.access=false;commands.lod_minimap_toggle();assert(not M.open,'VR cannot bypass map ownership')
+print('MINIMAP_PLAYER_PASS: one blue marker, expanded topology, floors, movement, reload, shared keyboard/VR toggle and access')

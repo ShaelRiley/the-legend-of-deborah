@@ -77,7 +77,8 @@ net.Receive(T.Message,function()
     end
 end)
 
-hook.Add("CalcView","LOD_TimeoutCamera",function(_,origin)
+hook.Add("CalcView","LOD_TimeoutCamera",function(ply,origin)
+    if LOD.VR and LOD.VR:IsActive(ply) then return end
     local s=C.scene
     if not s then return end
     local elapsed=T:Elapsed()
@@ -162,12 +163,19 @@ local function aftermathRemaining(field)
 end
 
 local nextRestart=0
+function T:RequestRestart()
+    if not C.scene or not C.scene.ready or aftermathRemaining("manualRemaining")>0 then return false end
+    if RealTime()>=nextRestart then
+        nextRestart=RealTime()+1
+        net.Start("LOD_RestartCampaign");net.SendToServer()
+    end
+    return true
+end
 hook.Add("Think","LOD_TimeoutRestartKey",function()
     if not C.scene or not C.scene.ready or aftermathRemaining("manualRemaining")>0 then C.useDown=input.IsKeyDown(KEY_E);return end
     local down=input.IsKeyDown(KEY_E)
     if down and not C.useDown and not gui.IsGameUIVisible() and RealTime()>=nextRestart then
-        nextRestart=RealTime()+1
-        net.Start("LOD_RestartCampaign");net.SendToServer()
+        T:RequestRestart()
     end
     C.useDown=down
 end)

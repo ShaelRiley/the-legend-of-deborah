@@ -1,4 +1,18 @@
-# Current checkpoint — six-role music folder/ZIP catalog
+# Current user-directed branch checkpoint — optional VRMod compatibility
+
+The current user explicitly requests VR support published as TheMemeticist on
+`master`, starting from main `df2d8f04ac5daa32f853330c38d2642af9d22dd7`.
+This branch adds controller access to existing menus/map/life/Tetris actions,
+retains headset camera ownership, enables gamemode HUD capture while in VR,
+and supplies a pinned server-addon installer. Gameplay authorities and the
+existing physical-keyboard Special Move recipes remain the baseline.
+
+Finite gate: `python3 tools/test_vr_gate.py`; evidence and remaining headset/
+multiplayer gates are in `validation/VR_COMPATIBILITY.md`. The source branch
+does not update a running server or publish a Workshop package. The current
+music checkpoint and its separate deployment/acceptance work remain below.
+
+# Previous main checkpoint — six-role music folder/ZIP catalog
 
 The author requests Chill = Tension 1, Tensions 2–4, Boss and Fanfare, with the
 first block as every missing-role default. From main `79faf3d`, the existing
