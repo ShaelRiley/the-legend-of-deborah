@@ -11,6 +11,20 @@ function D:Enabled()
     local master=GetConVar("lod_music_enabled")
     return self.ServerOn and master and master:GetBool() and self.Preference:GetBool() and self.Volume:GetFloat()>0
 end
+function D:CanEnableServer()
+    local p=LocalPlayer()
+    return IsValid(p) and (p:IsSuperAdmin() or p.IsListenServerHost and p:IsListenServerHost()) or false
+end
+function D:OptionEnabled()
+    local master=GetConVar("lod_music_enabled")
+    return self.Preference:GetBool() and (not self:CanEnableServer() or master and master:GetBool()) or false
+end
+function D:SetMusicOption(on)
+    RunConsoleCommand("lod_music",on and "1" or "0")
+    -- RunConsoleCommand is queued. Send the explicit On intent now; the server
+    -- grants master permission only to its host/superadmins. Off stays personal.
+    if on then self:Demand(true,true) end
+end
 function D:RememberVictory(id)
     if self.SeenVictory[id] then return end
     self.SeenVictory[id]=true;self.SeenVictoryOrder[#self.SeenVictoryOrder+1]=id
@@ -161,11 +175,12 @@ function D:Sync()
     self.Panel:QueueJavascript("lodScore.state("..raw..");");self.Synced=raw
     if state.role=="VICTORY" and self.Victory then self.Victory.started=true;self:RememberVictory(self.Victory.id) end
 end
-function D:Demand(resync)
-    local on=self.Preference:GetBool() and self.Volume:GetFloat()>0
-    if on==self.DemandOn and not resync then return end
+function D:Demand(resync,enableMaster)
+    local on=(enableMaster==true or self.Preference:GetBool()) and self.Volume:GetFloat()>0
+    if on==self.DemandOn and not resync and not enableMaster then return end
     self.DemandOn=on
-    net.Start("LOD_MusicDemand");net.WriteBool(on);net.WriteBool(true);net.WriteBool(resync==true);net.SendToServer()
+    net.Start("LOD_MusicDemand");net.WriteBool(on);net.WriteBool(true);net.WriteBool(resync==true)
+    net.WriteBool(enableMaster==true);net.SendToServer()
 end
 function D:Tick()
     if not self:Enabled() then if self.WasEnabled then self:Stop() end;self.WasEnabled=false;return end

@@ -6,7 +6,9 @@ The existing server MusicDirector still owns permission, pressure, seeded floor 
 
 ## Play and operate
 
-Fully quit GMod, update/install the repository, then start The Legend of Deborah on `gm_flatgrass`. In the server/listen-server console:
+Fully quit GMod, update/install the repository, then start The Legend of Deborah on `gm_flatgrass`. Select **Player Menu → Options → Music**. For the listen-server host or a superadmin, On enables both the server master and the saved local preference. The host/operator checkbox reflects both states; opening Options alone changes neither. Other players control their own saved preference within the server's permission. Off is always personal and never disables another player's score.
+
+The equivalent explicit server/listen-server console command remains:
 
 ```text
 lod_music_enabled 1; lod_music 1

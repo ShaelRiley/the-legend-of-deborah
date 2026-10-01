@@ -17,7 +17,15 @@ function O:Open()
         l:SetFont(font or "LOD_SheetBody");l:SetTextColor(UI.Colors.ink);l:SetText(text);return l
     end
     label("OPTIONS",24,"LOD_SheetTitle");label("Audio",118,"LOD_SheetHeading")
-    local music=vgui.Create("DCheckBoxLabel",f);music:SetPos(30,158);music:SetText("Music");music:SetTextColor(UI.Colors.ink);music:SetConVar("lod_music");music:SizeToContents()
+    local music=vgui.Create("DCheckBoxLabel",f);music:SetPos(30,158);music:SetText("Music");music:SetTextColor(UI.Colors.ink)
+    local director=LOD.MusicDirector
+    music:SetChecked(director:OptionEnabled())
+    music.OnChange=function(_,on) director:SetMusicOption(on) end
+    music.Think=function(self)
+        local on=director:OptionEnabled()
+        if self:GetChecked()~=on then self:SetChecked(on) end
+    end
+    music:SizeToContents()
     label("Music follows your location and the danger around you.",185)
     local slider=vgui.Create("DNumSlider",f);slider:SetPos(28,222);slider:SetSize(math.min(550,f:GetWide()-56),32)
     slider:SetText("Music volume");slider:SetMinMax(0,1);slider:SetDecimals(2);slider:SetConVar("lod_music_volume")

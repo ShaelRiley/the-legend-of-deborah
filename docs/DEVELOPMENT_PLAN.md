@@ -1,4 +1,14 @@
-# Current repair checkpoint — MS2 complete-bank JSON admission
+# Current repair checkpoint — MS2 Options enablement
+
+The author now confirms native music plays with `lod_music_enabled 1; lod_music 1` on main `93e793cfb35bc0dbef81cb2b079a385ff935578d`, but selecting Music in Options does not start it. This isolates the remaining defect to UI enablement: the old checkbox controls only `lod_music` and can appear checked while the server master is Off. Playback itself is now natively observed under explicit permission; broader musical/performance acceptance remains separate.
+
+The existing MusicDirector demand channel now carries an explicit Options-enable intent. Only the listen-server host or a superadmin may use it to turn the master On. Ordinary startup/reconnect demand preserves default-Off; a player's Off remains personal. The host/operator checkbox displays both local preference and master permission, and its read-only refresh cannot alter settings. The new production-Options regression covers the queued client command, server grant, paced plan/state delivery, renderer handoff, per-player Off and denied remote enablement. See [repair evidence](validation/MS2_OPTIONS_REPAIR.md).
+
+Next native action: fully quit/update/install main, start LoD on gm_flatgrass and toggle Options → Music Off/On. Music must resume without console commands. Preserve `console_latest.txt` plus `rpg_summary_latest.txt` if the menu path fails. The prior console-enabled audibility report is positive evidence; this menu repair still requires its own fresh test.
+
+---
+
+# Previous repair checkpoint — MS2 complete-bank JSON admission
 
 The author reports that music remains silent on main `6abd1e2786a075888d27d6f510a3d48226f18353`, while the Options correction is visible. The earlier path repair is insufficient: GMod's default JSON decoder limits the total number of keys to 15,000. The actual bundled catalog contains 41,125 keys and 62 of the 63 note pages exceed that limit (largest 16,988), so both admission stages reject the score. Only trusted, byte-bounded bundled catalog/note decoding now uses the documented `ignoreLimits` argument; schema/note validation, cache budgets and network decoder limits remain in force.
 

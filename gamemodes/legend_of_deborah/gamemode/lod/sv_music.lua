@@ -234,7 +234,13 @@ hook.Add("Think","LOD_MusicDirector",function()
 end)
 net.Receive("LOD_MusicDemand",function(bits,p)
     if bits>24 or not IsValid(p) then return end
-    local on,work,resync=net.ReadBool(),net.ReadBool(),net.ReadBool();local l=D:Listener(p)
+    local on,work,resync=net.ReadBool(),net.ReadBool(),net.ReadBool()
+    local enableMaster=bits>=4 and net.ReadBool() or false
+    local l=D:Listener(p)
+    -- An explicit Options On from the host/operator grants the same permission
+    -- as its console command. Ordinary subscription/reconnect never does.
+    if enableMaster and not enabled:GetBool()
+        and (p:IsSuperAdmin() or p.IsListenServerHost and p:IsListenServerHost()) then enabled:SetBool(true) end
     if l.demand==on and l.clientWork==work and not resync then return end
     local now=SysTime()
     if on and now<(l.nextDemand or 0) then return end

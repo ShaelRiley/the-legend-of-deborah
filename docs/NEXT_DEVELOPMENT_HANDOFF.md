@@ -1,4 +1,12 @@
-# Current MS2 complete-bank JSON repair
+# Current MS2 Options enablement repair
+
+On main `93e793cfb35bc0dbef81cb2b079a385ff935578d`, the author confirms that `lod_music_enabled 1; lod_music 1` produces audible music, while the Options checkbox does not. The native contradiction is now isolated to UI/master enablement, not confirmed renderer failure. The Music checkbox uses the MusicDirector's explicit preference/permission seam. Host/superadmin On requests the master through the existing demand channel; Off stays personal, ordinary demand stays default-Off, and nonoperators cannot grant server permission. The checkbox's read-only refresh reflects the host's effective permission without changing settings. [Evidence](validation/MS2_OPTIONS_REPAIR.md) includes the full production Options → server grant → plan/state → renderer regression.
+
+Next: fully quit/update/install main, launch LoD on gm_flatgrass and toggle Options → Music Off/On. Confirm audible resumption without console commands. Core console-enabled music is natively observed; the repaired Options path and broader transition/performance gates remain pending native acceptance. Preserve `console_latest.txt` plus `rpg_summary_latest.txt` if needed.
+
+---
+
+# Previous MS2 complete-bank JSON repair
 
 The author confirms the Options update is installed but still hears no music on main `6abd1e2786a075888d27d6f510a3d48226f18353`. Actual bank sizes reveal a second loading defect: the catalog has 41,125 JSON keys and 62/63 note pages exceed GMod's default 15,000-key decoding limit. Both trusted bundled decodes now bypass that limit within existing byte/schema/note/cache bounds. Wire decoding remains limited. The new complete-bank regression reproduces the failed parent and the incomplete catalog-only fix, then covers all 48 arrangements, 1,402 phrases and 170,860 notes. [Evidence and finite gate](validation/MS2_JSON_REPAIR.md) preserve this contradiction; the earlier native failure is not superseded by offline test success.
 
