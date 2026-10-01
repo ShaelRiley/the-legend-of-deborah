@@ -1,4 +1,6 @@
-# Music System 2 validation
+# Historical Music System 2 live-synth validation
+
+The Surge backbone supersedes the live-synth implementation described below. Current implementation, render-bank evidence and pending native acceptance are in [MS2_SURGE.md](MS2_SURGE.md). Prior native console-enabled audibility belongs to the former backend.
 
 Candidate implementation parent: `b4f9f67e2d837e71da1a194dc655a212fd74ff4c` on `ShaelRiley/the-legend-of-deborah/main`. The author supplied `LoD MIDI Library.zip`, archive SHA-256 `bec1b20a195176d373b6ca0740405d0aafb0d54c2eede02a5017527f43e4be7d`, and explicitly authorized MS2 design changes, cleanup and GitHub publication.
 

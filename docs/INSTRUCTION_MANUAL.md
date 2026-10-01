@@ -1,3 +1,7 @@
+# MS2 Surge phrase playback
+
+The music chapter now teaches the coherent electronic instrument bank, authored phrase variety, steady beat, missed-time discard and personal Off/zero volume. It removes superseded fill/tempo/pitch claims. Options explains host/superadmin enablement of the server master. Both shipped renderings were regenerated from `docs/manual/book.json`; automated content/transport parity does not establish native readability or audio acceptance.
+
 # SPOT-12 Spellbook surface states
 
 The canonical Magic chapter now explains blue available/ready, red blocked/low

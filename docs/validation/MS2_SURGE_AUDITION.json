@@ -1,0 +1,70 @@
+{
+  "cues": [
+    {
+      "label": "Block A T0",
+      "seconds": 0
+    },
+    {
+      "label": "acid",
+      "seconds": 4.392312925170068
+    },
+    {
+      "label": "industrial",
+      "seconds": 8.142312925170067
+    },
+    {
+      "label": "strings",
+      "seconds": 9.892312925170067
+    },
+    {
+      "label": "brass",
+      "seconds": 11.642312925170067
+    },
+    {
+      "label": "bass",
+      "seconds": 13.392312925170067
+    },
+    {
+      "label": "tom",
+      "seconds": 15.142312925170067
+    },
+    {
+      "label": "snare",
+      "seconds": 16.892312925170067
+    },
+    {
+      "label": "kick",
+      "seconds": 18.642312925170067
+    },
+    {
+      "label": "closed",
+      "seconds": 20.392312925170067
+    },
+    {
+      "label": "open",
+      "seconds": 22.142312925170067
+    },
+    {
+      "label": "Block A T1",
+      "seconds": 23.892312925170067
+    },
+    {
+      "label": "Block A T2",
+      "seconds": 28.284625850340134
+    },
+    {
+      "label": "Block A T3",
+      "seconds": 32.6769387755102
+    },
+    {
+      "label": "Block A BOSS",
+      "seconds": 37.06925170068027
+    },
+    {
+      "label": "Block A VICTORY",
+      "seconds": 41.461564625850336
+    }
+  ],
+  "duration": 47.70004535147392,
+  "bankRevision": "ms2-surge-0f7591eb682f3b2b"
+}

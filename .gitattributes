@@ -1,0 +1,3 @@
+# Unified diffs have a required one-space prefix on blank context lines.
+# The bank gate still rejects trailing whitespace in actual patch code.
+tools/music/surge/surgepy_lod.patch whitespace=-blank-at-eol

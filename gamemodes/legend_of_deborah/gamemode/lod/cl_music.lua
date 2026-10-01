@@ -1,4 +1,4 @@
--- The existing MusicDirector consumes server plans; MS2 renders bundled MIDI.
+-- Existing MusicDirector plans; bundled Surge phrases, lightweight composition.
 if LOD.MusicDirector and LOD.MusicDirector.Stop then LOD.MusicDirector:Stop() end
 LOD.MusicDirector=LOD.MusicDirector or {}
 local D,M,N=LOD.MusicDirector,LOD.Music,LOD.MusicNative
@@ -33,7 +33,7 @@ end
 function D:Stop()
     self.Generation=(self.Generation or 0)+1
     if IsValid(self.Panel) then self.Panel:Remove() end
-    self.Panel=nil;self.Ready=false;self.SentAssets={};self.Synced=nil;self.Payloads={};self.Pages={};self.PlanParts={}
+    self.Panel=nil;self.Ready=false;self.Backend=nil;self.Stats=nil;self.SentAssets={};self.Synced=nil;self.Payloads={};self.Pages={};self.PlanParts={}
     if self.Victory then self.Victory.finished=true;self:RememberVictory(self.Victory.id) end
     N:Stop()
     local accent=LOD.AdventurePresentation
@@ -49,41 +49,16 @@ function D:Announce(bid)
     net.Start("LOD_MusicPlaying");net.WriteUInt(self.Current and self.Current.sequence or 0,32)
     net.WriteUInt(self.Serial,32);net.WriteString(bid);net.SendToServer()
 end
-function D:Page(name)
-    local found=self.Pages[name];if found then found.used=SysTime();return found.notes end
-    local raw,err=M.IncludeBundled(name)
-    if type(raw)~="string" or #raw>47000 then self.Error=err or "Invalid MIDI note page "..tostring(name);return nil end
-    -- Bundled pages also exceed the native key limit despite their small byte
-    -- size. Only these trusted local files bypass it; notes are validated below.
-    local notes=util.JSONToTable(raw,true)
-    if type(notes)~="table" then self.Error="Could not decode MIDI note page "..tostring(name);return nil end
-    self.Pages[name]={notes=notes,used=SysTime()}
-    if table.Count(self.Pages)>M.Limits.noteCachePages then
-        local oldest
-        for key,p in pairs(self.Pages) do if key~=name and (not oldest or p.used<self.Pages[oldest].used) then oldest=key end end
-        if oldest then self.Pages[oldest]=nil end
-    end
-    return notes
-end
 function D:Payload(aid)
     local known=self.Payloads[aid];if known then known.used=SysTime();return known.data end
     local a=self.Catalog and self.Catalog.assets[aid];if not a then return nil end
     local payload={id=a.id,role=a.role,loop=a.loop,clips={}}
     for _,clip in ipairs(a.clips) do
-        local page=self:Page(clip.page);local notes=page and page[clip.id]
-        if type(notes)~="table" or #notes>M.Limits.clipNotes then self.Error=self.Error or "Missing MIDI phrase "..clip.id;return nil end
-        for _,n in ipairs(notes) do
-            if type(n)~="table" or #n~=5 or type(n[1])~="number" or n[1]<0 or n[1]>=clip.beats*48
-                or type(n[2])~="number" or n[2]<1 or n[2]>clip.beats*48
-                or type(n[3])~="number" or n[3]<0 or n[3]>8 or n[3]%1~=0
-                or type(n[4])~="number" or n[4]<20 or n[4]>100 or type(n[5])~="number" or n[5]<1 or n[5]>127 then
-                self.Error="Invalid MIDI note "..clip.id;return nil
-            end
-        end
-        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,notes=notes}
+        if not self.RenderBank or not self.RenderBank.clips[clip.id] then self.Error="Missing Surge phrase "..clip.id;return end
+        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next}
     end
     self.Payloads[aid]={data=payload,used=SysTime()}
-    if table.Count(self.Payloads)>M.Limits.noteCacheAssets then
+    if table.Count(self.Payloads)>M.Limits.metadataAssets then
         local oldest
         for id,p in pairs(self.Payloads) do if id~=aid and (not oldest or p.used<self.Payloads[oldest].used) then oldest=id end end
         if oldest then self.Payloads[oldest]=nil end
@@ -94,30 +69,42 @@ function D:StartRenderer()
     if IsValid(self.Panel) or SysTime()<(self.RetryAt or 0) then return end
     if not self.Catalog then self.Catalog,self.Error=M.LoadBundled() end
     if not self.Catalog then self.RetryAt=SysTime()+10;return end
+    if not self.RenderBank then self.RenderBank,self.Error=M.LoadRenderBank(self.Catalog) end
+    if not self.RenderBank then self.RetryAt=SysTime()+10;return end
     local engineSource,err=M.IncludeBundled("engine.lua")
     if type(engineSource)~="string" then self.Error=err or "Missing MS2 renderer";self.RetryAt=SysTime()+10;return end
     local panel=vgui.Create("DHTML");self.Panel=panel
     if not IsValid(panel) then self.Error="MS2 HTML renderer unavailable";self.RetryAt=SysTime()+10;return end
     local generation=self.Generation
+    N:Configure(self.Catalog,self.RenderBank,function(token,played)
+        if generation==D.Generation and D:Enabled() and IsValid(D.Panel) then
+            -- Native tokens are decimal IDs. TableToJSON accepts tables only.
+            D.Panel:QueueJavascript("lodScore.result("..tostring(tonumber(token))..","..tostring(played)..");")
+        end
+    end)
     panel:SetSize(1,1);panel:SetPos(0,0);panel:SetMouseInputEnabled(false);panel:SetKeyboardInputEnabled(false)
     panel:SetAllowLua(false);panel.Paint=function() end
     -- Keep IsVisible true: a hidden DHTML does not process its JavaScript queue.
     panel:SetVisible(true)
     function panel:OnDocumentReady()
         local function live() return generation==D.Generation and D:Enabled() end
-        self:AddFunction("lodms2","ready",function(backend)
+        self:AddFunction("lodms2","ready",function(backend,stamp)
             if not live() then return end
-            D.Ready=true;D.Backend=backend;D.Synced=nil
+            if backend~="surge-rendered" or not N:SyncClock(stamp) then
+                D.Error="Surge phrase clock did not initialize";D.RetryAt=SysTime()+10;D:Stop();return
+            end
+            D.Ready=true;D.Backend=backend;D.Error=nil;D.Synced=nil
         end)
         self:AddFunction("lodms2","block",function(bid) if live() then D:Announce(bid) end end)
         self:AddFunction("lodms2","victory",function() if live() and D.Victory then D.Victory.finished=true;D.Synced=nil end end)
-        self:AddFunction("lodms2","mix",function(lane,value,pitch) if live() then N:SetMix(lane,value,pitch) end end)
+        self:AddFunction("lodms2","mix",function(lane,value) if live() then N:SetMix(lane,value) end end)
         self:AddFunction("lodms2","volume",function(volume,quality)
             if not live() then return end
             N:SetVolume(math.Clamp(tonumber(volume) or 0,0,1),quality)
         end)
         self:AddFunction("lodms2","drop",function(id) if live() then N:Drop(id) end end)
-        self:AddFunction("lodms2","notes",function(raw) if live() then N:Enqueue(raw) end end)
+        self:AddFunction("lodms2","prepare",function(token,lane,clip,delay,deadline) if live() then N:Prepare(token,lane,clip,delay,deadline) end end)
+        self:AddFunction("lodms2","cancel",function(token) if live() then N:Cancel(token) end end)
         self:AddFunction("lodms2","stop",function() if live() then N:Stop() end end)
         self:AddFunction("lodms2","stats",function(raw) if live() and type(raw)=="string" and #raw<2000 then D.Stats=util.JSONToTable(raw) end end)
         self:AddFunction("lodms2","error",function(err)
@@ -171,7 +158,7 @@ function D:Sync()
         end
         sent[t.asset]=true
     end
-    self.AudibleTargets=state.targets;self.SentAssets=sent
+    self.AudibleTargets=state.targets;self.PlaybackRole=state.role;self.SentAssets=sent
     self.Panel:QueueJavascript("lodScore.state("..raw..");");self.Synced=raw
     if state.role=="VICTORY" and self.Victory then self.Victory.started=true;self:RememberVictory(self.Victory.id) end
 end
@@ -197,7 +184,10 @@ function D:Tick()
         end
         self:Sync()
     end
-    if self.Backend=="native" then N:Tick() end
+    if self.Backend=="surge-rendered" then
+        N:Tick()
+        if N.Errors>=3 then self.Error=N.Error or "Surge phrase backend failed";self.RetryAt=SysTime()+10;self:Stop() end
+    end
 end
 net.Receive("LOD_MusicPlan",function()
     if not D:Enabled() then return end
@@ -255,6 +245,7 @@ concommand.Add("lod_music_client_status",function()
     if D.Ready and IsValid(D.Panel) then D.Panel:QueueJavascript("lodScore.stats();") end
     print("[LOD:MUSIC] "..util.TableToJSON({system="MS2",enabled=D:Enabled(),backend=D.Backend,ready=D.Ready,
         plan=D.Current and D.Current.plan,catalog=D.Catalog and D.Catalog.revision,quality=D.Quality,
-        notePages=table.Count(D.Pages),noteAssets=table.Count(D.Payloads),stats=D.Stats,nativeVoices=table.Count(N.Voices),
-        nativePeak=N.Peak,nativeError=N.Error,error=D.Error,streamedBytes=0}))
+        metadataAssets=table.Count(D.Payloads),stats=D.Stats,renderBank=D.RenderBank and D.RenderBank.revision,
+        patchBank=D.RenderBank and D.RenderBank.patchRevision,role=D.Ready and D.PlaybackRole or nil,
+        blocks=D.AudibleTargets,playback=N:Status(),error=D.Error,streamedBytes=0}))
 end)

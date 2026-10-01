@@ -127,25 +127,27 @@ The runtime ranks up to six successors for every phrase. Ranking rewards overlap
 
 | Change | Musical handoff |
 | --- | --- |
-| Pressure rises / falls | Existing server hysteresis chooses the role; change phrase at the next shared bar, retaining queued lead-in and short release tails. Tension decreases within combat keep a pulse. |
+| Pressure rises / falls | Existing server hysteresis chooses the role; change rendered phrase at a future shared bar, retaining short release tails. Tension decreases within combat keep a pulse. |
 | Staging → portal | Keep the first floor’s block and its musical position where the role remains Chill; enter combat material on the grid when pressure calls for it. |
 | Stairs / reversal | The two frozen floor blocks share the same beat clock and D-Dorian mode; square-root gain weights blend them. Reversing a crossing reuses the live lanes. |
 | Boss begins / ends | Select the existing universal or assigned boss arrangement on the shared bar. Boss defeat alone cannot invent victory. |
 | Rescue / cash → fanfare → Chill | Admit the fanfare once for the server’s accepted receipt; its twelve beats lead into the upcoming first floor’s calm arrangement. |
-| Timer expires soon | Slew tempo toward a ceiling of +6%; deadline extensions also feed this target. Keep pitch normal unless recent critical combat authorizes expression. |
-| Scheduler stalls | Retain the quiet D bridge, discard missed attacks and resume at a future beat; do not burst old notes. |
+| Timer expires soon | Existing server pressure may choose a higher tension role; rendered audio stays at 130 BPM. Critical combat retains +8% gain. |
+| Scheduler stalls | Discard overdue phrases and resume at a future bar. One bounded quiet Surge bridge may cover a genuine gap. |
 
 ## Instrument assignment
 
 | Source stem | MS2 voice |
 | --- | --- |
-| Synth and short keyboard notes | Monophonic resonant acid; occasional bar-start register inversion. |
+| Synth and short keyboard notes | Monophonic resonant Surge acid with continuous cutoff movement. |
 | Guitar, FX and long keyboard notes | Gritty industrial pad / rhythm guitar; bounded chords and softened high frequencies. |
 | Strings, vocals and backing vocals | Synth strings; relaxed attack in calm/staging and punchier attack in combat. |
 | Brass and woodwinds | Warm heroic brass; low-pass filtering controls harshness. |
 | Bass | Monophonic gritty bass with a sub oscillator; last-note priority. |
-| Drum / percussion stem or MIDI drum channel | Kick, snare, two-voice tom and choking closed/open hats according to the transcribed GM pitch. |
+| Drum / percussion stem or MIDI drum channel | Electronic kick, snare, pitched tom and choking closed/open hats according to the transcribed GM pitch. |
 
-Melodic semitone transcription artifacts are conservatively snapped to D Dorian and instrument range. Dense duplicate/retrigger artifacts are merged, weak candidates are removed, and polyphony is bounded. Very short percussion detections are retained. Fills replace their occupied last-beat snare/tom/hat slots instead of stacking a second kit.
+Melodic semitone transcription artifacts are conservatively snapped to D Dorian and instrument range. Dense duplicate/retrigger artifacts are merged, weak candidates are removed, and polyphony is bounded. Very short percussion detections are retained. The Surge update preserves these compiled notes. Live per-note mutations and procedural fill replacement are superseded; authored phrase selection provides performance variety.
+
+Every clip now has a bundled Surge-rendered phrase with file/level/provenance metadata in [MS2_SURGE_BANK.json](MS2_SURGE_BANK.json). The original score, graph and MIDI exports remain authoritative.
 
 Rebuild and operating instructions: [MUSIC_SYSTEM.md](MUSIC_SYSTEM.md).

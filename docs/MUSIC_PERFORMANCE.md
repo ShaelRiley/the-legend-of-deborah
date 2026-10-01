@@ -1,26 +1,35 @@
-# MS2 resource and lifecycle budgets
+# MS2 rendered playback budgets
 
-MS2 replaces MS1's continuous audio delivery/cache/decoder work with local note scheduling. Score metadata uses the existing paced, permission-gated server channel; audio never crosses it. The 3.2 MB uncompressed event/engine bank is ordinary game content, not streamed media. The Source-native fallback bank is 89,466 bytes.
+Surge renders offline. Runtime work is metadata selection, local asynchronous phrase preparation, bounded frame-timed starts and channel gain. The server metadata channel remains paced and permission-gated; it transfers no audio. No whole-bank audio decode occurs at startup.
 
-| Resource | Bound / policy |
+The runtime bank is **59,993,192 bytes (59.993 MB / 57.214 MiB)**. Its largest phrase is **63,852 bytes**; the mean is **42,770.21 bytes**. Maximum measured PCM peak is **0.620115**, and maximum decoded phrase peak is **0.609020**. No per-phrase normalization is used. Encoded/file/level values are authoritative in [MS2_SURGE_BANK.json](MS2_SURGE_BANK.json). The full bank contains **1,402 musical Ogg phrases plus one bridge**, at 44.1 kHz stereo/Vorbis quality 2. The selected encoded budget is 60,000,000 bytes; 100,000,000 bytes requires design review. Intermediate PCM stays in ignored build storage. The audition is developer evidence outside the gamemode runtime content.
+
+| Resource | Hard bound or policy |
 | --- | --- |
-| Desired floor layers | Two; one shared beat grid, reversible gain weights. |
-| Retiring layers | Two newest tails; ordinary retirement 1.2 seconds. Older excess layers receive a short soft release. |
-| Web Audio note voices | 24 admitted at musical event time; 16 reduced quality, plus short releases and at most four tonal bridges. |
-| Per-lane instrument voices | Acid 1, industrial 3, strings 3, brass 2, bass 1, tom 2, snare 1, kick 1, hat 1. |
-| Web scheduling | 25 ms tick, 650 ms lookahead, at most 2,048 queued events. |
-| Tempo grid | Quarter-note anchors, twelve seconds planned ahead; fewer than 40 anchors in normal use. |
-| Note pages / arrangements | Eight-page and four-arrangement Lua LRUs; JavaScript prunes unreferenced arrangement data. |
-| Clip / arrangement admission | At most 2,048 notes per clip and 256 clips per arrangement. Core maximum is 274 notes per clip. |
-| Native scheduling | At most 1,024 queued attacks, 512 per bridge batch, 64 admissions per game frame; discard attacks over 150 ms late. |
-| Native sound identifiers | Fixed reusable slots per instrument/open-hat plus one bridge identifier per catalog block; never allocate a sound ID per note/phrase. |
-| Native active notes | At most 24, or 16 reduced quality, plus bridges and short release tails. |
-| Server metadata | At most 4 KiB per music tick globally; plan pieces at most 1 KiB; existing 0.5 ms service budget. |
-| Frame pressure | Smoothed frame time over 35 ms selects reduced orchestration; recover after five stable seconds. Playback continues. |
-| Permission/zero volume | Dispose DHTML, voices, event queues, page/arrangement payloads and music demand; retain saved preferences and spent victory receipts. |
+| Wanted physical-floor lanes | Two, on one fixed 130 BPM grid. |
+| Retiring floor lanes | At most two; drop after 1.2 seconds. |
+| Native channels/reservations | Eight total, including cancelled opens awaiting callbacks. |
+| Asynchronous native opens | Two total, including stale reservations across Off/On. |
+| Per-floor material | One current phrase, one retiring tail, at most one upcoming phrase. |
+| Conservative decoded admission | 32 MiB, assuming complete stereo float32 PCM for every reserved file. Actual native decoder heap is not measured. |
+| Largest phrase decoded estimate | About 2.05 MiB for twelve beats plus release; ordinary phrases about 1.43 MiB. |
+| Two-floor slot allowance | Six phrase slots plus bridge, about 10 MiB conservatively; current/prepared and tails normally overlap fewer slots. |
+| Composer preparation | One per audible lane per 25 ms pump; one-second lookahead. |
+| Native musical start | At most one per lane per frame/boundary; reject over 60 ms late. |
+| Control-message timing | Absolute deadlines converted once between the DHTML monotonic clock and native SysTime. Delayed delivery cannot extend an obsolete deadline. |
+| Musical handoff | Four-beat shared bar for roles/resync; ordinary next phrase after eight beats. |
+| Fanfare | One accepted twelve-beat receipt; start only if it still fits the server window. |
+| Gain | Square-root floor weights, 700 ms fades, onset/tail envelopes; channel updates at most 30 Hz and only when changed. |
+| Quiet bridge | One Surge-rendered D/A loop, ten percent master gain; starts only after a 150 ms gap, stops on musical recovery or eight seconds of persistent failure. |
+| Failure | Three native open/duration errors or an eight-second gap tears down playback; ten-second retry backoff. |
+| Lua payload cache | Four arrangement metadata entries; zero decoded note pages. |
+| JavaScript metadata | Prunes arrangements unreferenced by current/retiring lanes; one pending token per audible lane. |
+| Server metadata | Existing 4 KiB global tick budget, 1 KiB plan pieces, 0.5 ms service budget. |
+| Frame-pressure telemetry | Existing 35 ms smoothed threshold/five-second recovery; bounded phrase playback remains the same audio bank. |
+| Off/zero volume | Destroy panel; stop current/tail/bridge; cancel starts; clear payloads. Late native callbacks stop their channels and free reserved slots. |
 
-Pitch/dynamics lifts are limited to confirmed critical combat. Tempo slews at at most 0.3% of base BPM per second and caps at +6%. Fills replace occupied rhythmic slots rather than stacking another kit. Global note limits release a quieter optional voice while favoring bass/kick foundation. Closed hats choke open hats.
+The 550 ms release allowance finishes synth envelopes; join tails overlap naturally. Role interrupts fade the old material at the new bar. Native opening callbacks prepare only, never play a musical phrase. Both control and native timing reject overdue starts. Recovery selects a future bar instead of draining event debt. Reversing stairs changes gains on existing floor lanes.
 
-The primary path reuses periodic waves and five percussion buffers. It performs no runtime FFT, waveform scan, MIDI decode, sample-by-sample JavaScript mix or network request. AudioNode cleanup follows source endings; stopping disconnects lanes and closes the owned context. Native fallback reuses finite generated samples and Source patches; only a bounded due queue runs per frame. Late notes never become a catch-up burst.
+Fixed instrument/master gains preserve level differences. The bank does no per-phrase normalization, realtime synthesis, FFT, MIDI parsing, time stretching or pitch shifting. The former live note ceilings/queues, fills, per-note mutation, +6% tempo slew and +22-cent expression are superseded. Critical combat retains +8% phrase gain with native volume clamped 0–1.
 
-A quiet D bridge and release tails maintain continuity while normal sequencing joins phrases and musical roles. A truly stalled scheduler resynchronizes to a future grid point while retaining that bridge. Resource-reduction behavior is covered by the source gate and actual offline audio renderer. These bounds do not establish Steam Deck FPS or Source/DHTML runtime audibility; the native listening gate remains open.
+Finite tests cover 15 scheduler stalls and 15 native stalls (100 ms, 300 ms, one, four and fifteen seconds, each with ordinary/role/reversal state), delayed callbacks/control delivery, suspension, bounded preparation, repeated Off/On, channel retirement and bridge failure. These limits establish implementation/resource contracts. Native Source timing/audibility, actual decoder memory and Steam Deck frame rate remain human acceptance gates.

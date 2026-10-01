@@ -24,9 +24,9 @@ local plan=assert(LOD.Music.Plan(e.catalog(),{set='all'},17,'bundle-run',4,1))
 D.Plans[plan.id]=plan
 D.Current={sequence=1,epoch=1,plan=plan.id,role='T0',staged=true,targets={{block=plan.floors[1],weight=1}}}
 D:Tick()
-check(e.panel and e.panel.html:find('MS2',1,true),'client loads the actual synth engine')
-e.panel.functions['lodms2.ready']('web');D:Sync()
-check(D.Ready and D.Synced and next(D.Payloads),'client hands note data and state to playback')
+check(e.panel and e.panel.html:find('MS2',1,true),'client loads the actual phrase-control engine')
+e.panel.functions['lodms2.ready']('surge-rendered',e.now);D:Sync()
+check(D.Ready and D.Synced and next(D.Payloads),'client hands phrase metadata and state to playback')
 e.realBundle=true
 local files=assert(LOD.Music.IncludeBundled('files.lua'))
 for _,name in ipairs(files) do

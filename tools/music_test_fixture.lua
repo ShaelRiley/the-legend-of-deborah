@@ -61,7 +61,20 @@ net.Send=function(p) E.sent=E.sent or {};E.packet.player=p;E.sent[#E.sent+1]=E.p
 net.SendToServer=net.Send
 function E.receive(name,...) E.read={...};E.wire[name](1024,E.player) end
 sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
- PlayFile=function() error('recorded-score playback is forbidden in MS2') end}
+ PlayFile=function(path,flags,callback)
+  assert(path:match('^sound/lod/ms2_surge/[a-z0-9_-]+%.ogg$'),'only validated local Surge phrases')
+  assert(flags=='noplay noblock','asynchronous preparation cannot autoplay')
+  local id=path:match('/([^/]+)%.ogg$');local bank=LOD.MusicNative.Bank;local meta=id=='bridge' and bank.bridge or bank.clips[id]
+  local channel={valid=true,volume=0,id=id}
+  function channel:GetLength() return meta.duration end
+  function channel:SetVolume(v) self.volume=v;E.volumeWrites=E.volumeWrites+1 end
+  function channel:EnableLooping(v) self.loop=v end
+  function channel:Play() self.played=E.now;E.plays=E.plays+1 end
+  function channel:Stop() if self.valid then E.stops=E.stops+1 end;self.valid=false end
+  E.channels=E.channels or {};E.channels[#E.channels+1]=channel
+  if E.deferOpens then E.opens=E.opens or {};E.opens[#E.opens+1]={callback=callback,channel=channel}
+  else callback(channel) end
+ end}
 LOD={Config={Maze={Width=1,Height=1,CellSize=384,LevelHeight=384,Origin=Vector(),LayerOccupancy={{},{},{},{}}},Geometry={StairRun=320,StairSteps=24,StairWidth=96}},
  MazeGenerator={CellKey=function(x,y,z) return x..':'..y..':'..z end},MazeBuilder={CellCenter=function(_,c) return Vector(0,0,c.z*384) end}}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua')
@@ -99,6 +112,11 @@ function include(path)
  path=luaPath(path);E.includeCalls[#E.includeCalls+1]=path
  if not mountedLua(path) then error("Couldn't include file '"..path.."' - File not found or is empty") end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
+ if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/render.lua' then
+  local c=E.catalog();local b={schema=1,revision='surge-fixture',catalogRevision=c.revision,patchRevision='lod-va-fixture',bpm=c.bpm,clips={},bridge={duration=4}}
+  for _,a in pairs(c.assets) do for _,clip in ipairs(a.clips) do b.clips[clip.id]={beats=clip.beats,duration=clip.beats*60/c.bpm+.55} end end
+  return util.TableToJSON(b)
+ end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/notes_000.lua' then
   local notes={};for _,a in pairs(E.catalog().assets) do for _,c in ipairs(a.clips) do notes[c.id]={{0,48,0,62,85},{48,48,4,38,85}} end end
   return util.TableToJSON(notes)
@@ -115,19 +133,8 @@ vgui={Create=function(kind)
  function p:SetAllowLua(value) self.allowLua=value end;function p:SetVisible(value) self.visible=value end
  return p
 end}
-sound.Generate=function(name,rate,length,raw,loop) E.generated=E.generated or {};assert(not E.generated[name],'unbounded/duplicate native generation');E.generated[name]=true end
-local originalRead=file.Read
-file.Read=function(path,...)
- if path:match('sound/lod/ms2/.*%.wav$') then return 'RIFF'..string.rep(' ',32)..'data'..string.rep(' ',400) end
- return originalRead(path,...)
-end
-game={GetWorld=function() return {} end}
-function CreateSound(_,name)
- local p={name=name}
- function p:SetSoundLevel() end;function p:PlayEx(v,pitch) self.volume=v;self.pitch=pitch end
- function p:ChangeVolume(v,seconds) assert(type(seconds)=='number','native envelope is numeric');self.volume=v end
- function p:Stop() self.stopped=true end
- return p
+function E.completeOpens()
+ local pending=E.opens or {};E.opens={};for _,o in ipairs(pending) do o.callback(o.channel) end
 end
 E.checks=0
 function E.check(ok,msg) E.checks=E.checks+1;assert(ok,msg) end

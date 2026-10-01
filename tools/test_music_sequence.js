@@ -2,89 +2,75 @@
 const assert=require('assert'),{performance}=require('perf_hooks');
 const engine=require('./music/ms2_engine.js'),bank=require('./music/read_catalog.js');
 let checks=0;function check(ok,msg){checks++;assert(ok,msg);}
-const start=performance.now(),scale=new Set([0,2,4,5,7,9,11]);
-let clipCount=0,noteCount=0,maxNotes=0;
-for(const id of Object.keys(bank.catalog.assets)) {
-    const asset=bank.asset(id),composer=new engine.Composer('catalog:'+id);
-    for(const clip of asset.clips) {
-        check(clip.notes.length<=2048,'bounded phrase');clipCount++;noteCount+=clip.notes.length;maxNotes=Math.max(maxNotes,clip.notes.length);
-        for(const n of clip.notes) {
-            check(n.length===5&&n[0]>=0&&n[0]<clip.beats*48&&n[1]>0&&n[0]+n[1]<=clip.beats*48,'gated phrase boundaries');
-            if(n[2]<5)check(scale.has(n[3]%12),'D Dorian maintained');
-        }
-    }
-    let prior=null;
-    for(let i=0;i<24;i++) {
-        const p=composer.phrase(asset,{quality:1,role:asset.role});
-        if(asset.clips.length>3)check(prior!==p.clip,'recent phrases do not repeat');prior=p.clip;
-        for(const n of p.notes)check(n[0]>=0&&n[0]<p.beats*48&&n[1]>0&&n[4]>0&&n[4]<=120,'bounded mutators');
-    }
+const start=performance.now(),scale=new Set([0,2,4,5,7,9,11]);let clips=0,notes=0;
+function metadata(id){const a=bank.asset(id);return {...a,clips:a.clips.map(({notes,...c})=>c)};}
+for(const id of Object.keys(bank.catalog.assets)){
+ const a=bank.asset(id),c=new engine.Composer('catalog:'+id);
+ for(const clip of a.clips){clips++;notes+=clip.notes.length;check(clip.notes.length<=2048,'bounded source phrase');
+  for(const n of clip.notes){check(n.length===5&&n[0]>=0&&n[0]<clip.beats*48&&n[1]>0&&n[0]+n[1]<=clip.beats*48,'authored source gates remain');
+   if(n[2]<5)check(scale.has(n[3]%12),'D Dorian remains');}}
+ let prior=null;
+ for(let i=0;i<24;i++){const phrase=c.choose(a);if(a.clips.length>3)check(prior!==phrase.id,'recent phrases avoided');prior=phrase.id;}
 }
-const one=bank.asset('a-t1');one.clips=[one.clips[0]];
-const c=new engine.Composer('mutation');const variants=[];let fills=0;
-for(let i=0;i<32;i++){const p=c.phrase(one,{quality:1,role:'T1'});variants.push(JSON.stringify(p.notes));if(p.fill)fills++;}
-check(new Set(variants).size===32,'same clip receives distinct gated/velocity/timbre/humanized realizations');
-check(fills>=2&&fills<=6,'periodic bounded fills');
-check(engine.tempo(130,{remaining:1800})===130,'normal initial tempo');
-check(engine.tempo(130,{remaining:0})===137.8,'timer tempo ceiling six percent');
-check(engine.tempo(130,{remaining:0,staged:true})===130,'staging retains baseline');
-check(engine.expression({role:'T3',remaining:0,expression:0})===0,'timer alone never raises pitch');
-check(engine.expression({role:'T3',expression:1})===1,'confirmed desperate combat permits expression');
-check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss fights retain baseline pitch/dynamics');
-let now=0,notes=[],announcements=[],victories=0,beds={},stops=0;
-const sink={note:e=>notes.push(e),mix:(id,g)=>beds[id]=g,volume:()=>{},drop:id=>delete beds[id],stop:()=>{beds={};stops++;}};
-const scheduler=new engine.Scheduler(130,sink,()=>now,(name,value)=>{if(name==='block')announcements.push(value);else victories++;},'sequence-gate');
-let state={role:'T1',targets:[{block:'a',asset:'a-t1',weight:1}],seed:19,remaining:1800,quality:1,volume:.55};
-function change(next){state={...state,...next};for(const t of state.targets)scheduler.install(bank.asset(t.asset));scheduler.update(state);}
-function step(seconds){for(let t=0;t<seconds;t+=.025){now+=.025;scheduler.pump();}}
-change({});const firstRealization=scheduler.lanes.a.composer.random.value;
-step(9);check(announcements.join(',')==='a','initial block announced exactly once');
-change({role:'T2',targets:[{block:'a',asset:'a-t2',weight:1}]});step(4);
-check(announcements.length===1,'same-block tension has no announcement');
-change({targets:[{block:'a',asset:'a-t2',weight:.4},{block:'b',asset:'b-t2',weight:.6}]});step(3);
-check(announcements.join(',')==='a,b','incoming stairs block starts once');
-const sourceBeat=scheduler.lanes.a.nextBeat,destBeat=scheduler.lanes.b.nextBeat;
-check(Number.isInteger(sourceBeat)&&Number.isInteger(destBeat),'lanes reference the shared musical grid');
-for(let beat=Math.max(sourceBeat,destBeat)-8;beat<Math.max(sourceBeat,destBeat);beat++) {
-    check(scheduler.timeForBeat(beat+.5)>scheduler.timeForBeat(beat),'shared grid is monotone');
+check(clips===1402&&notes===170860,'whole authored composition preserved');
+check(engine.tempo(130,{remaining:0})===130,'fixed rendered tempo replaces old time stretch');
+check(engine.expression({role:'T3',expression:1})===1,'cheap critical gain remains');
+check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss does not fabricate expression');
+function rig(seed='test'){
+ let now=0,state={seed:19,role:'T1',remaining:1800,volume:.55,targets:[{block:'a',asset:'a-t1',weight:1}]};
+ const pending={},plays=[],announcements=[],mixes={},victories=[];let stopCount=0;
+ const sink={prepare:(token,lane,clip,delay,deadline)=>{check(Math.abs(deadline-now-delay)<1e-8,'absolute native deadline preserves grid');pending[token]={token,lane,clip,time:deadline};},cancel:token=>delete pending[token],
+  mix:(id,g)=>mixes[id]=g,volume:()=>{},drop:id=>{delete mixes[id];for(const k in pending)if(pending[k].lane===id)delete pending[k];},
+  stop:()=>{for(const k in pending)delete pending[k];for(const k in mixes)delete mixes[k];stopCount++;}};
+ const scheduler=new engine.Scheduler(130,sink,()=>now,(type,value)=>type==='block'?announcements.push(value):victories.push(now),seed);
+ function change(patch={}){state={...state,...patch};for(const t of state.targets)scheduler.install(metadata(t.asset));scheduler.update(state);}
+ function pump(){scheduler.pump();const starts={};for(const token of Object.keys(pending)){
+  const p=pending[token];if(now>=p.time){delete pending[token];const on=now<=p.time+engine.lateTolerance&&!starts[p.lane];
+   if(on){plays.push({...p,started:now});starts[p.lane]=true;}scheduler.result(token,on);}}
+  check(Object.keys(pending).length<=2,'only one upcoming phrase per audible lane');}
+ function step(seconds){for(let end=now+seconds;now<end;){now=Math.min(end,now+.025);pump();}}
+ change();return {scheduler,plays,announcements,mixes,victories,pending,change,pump,step,jump:n=>{now+=n;},get now(){return now;},get stopCount(){return stopCount;}};
 }
-change({targets:[{block:'a',asset:'a-t2',weight:.8},{block:'b',asset:'b-t2',weight:.2}]});step(2);
-check(announcements.length===2,'stair reversal does not announce existing lanes again');
-change({targets:[{block:'b',asset:'b-t2',weight:1}]});step(2);
-check(!scheduler.lanes.a&&Object.keys(scheduler.lanes).length===1,'retired layers release after fade');
-change({targets:[{block:'a',asset:'a-t2',weight:1}]});
-check(scheduler.lanes.a.composer.random.value!==firstRealization&&scheduler.visits.a===2,'genuine return gets fresh presentation randomness');
-step(3);
-check(announcements.join(',')==='a,b,a','genuine return announces once');
-const before=notes.length;now+=5;scheduler.pump();step(1);
-check(scheduler.underruns===1&&notes.length>before,'long scheduler stall resynchronizes without note debt');
-check(Object.keys(beds).length>0,'sustained bridge remains during a scheduler stall');
-change({role:'VICTORY',targets:[{block:'a',asset:'a-victory',weight:1}]});step(12);
-check(victories===1,'fanfare completes once');const atEnd=notes.length;step(8);
-check(victories===1&&notes.length===atEnd,'fanfare does not loop');
-check(scheduler.maxQueue<=2048&&scheduler.grid.length<40,'event and shared-clock storage bounded');
-scheduler.stop();check(stops===1&&scheduler.queue.length===0&&Object.keys(beds).length===0,'Off releases renderer queues and bridge');
-// Old HTML engines may expose an incomplete prefixed AudioContext. Their
-// missing resume/close/node methods must fall back, rather than time out silently.
-let initialize,tick,backend,bridgedNotes=0;
-global.window={AudioContext:function(){this.state='running';},setTimeout:fn=>initialize=fn,
- setInterval:fn=>{tick=fn;return 1;},clearInterval:()=>{}};
-const renderer=engine.attach({ready:v=>backend=v,mix:()=>{},volume:()=>{},drop:()=>{},stop:()=>{},
- block:()=>{},victory:()=>{},error:e=>{throw new Error(e);},stats:()=>{},notes:raw=>bridgedNotes+=JSON.parse(raw).length});
-initialize();renderer.install(bank.asset('a-t1'));
-renderer.state({role:'T1',seed:1,remaining:1800,quality:1,targets:[{block:'a',asset:'a-t1',weight:1}]});tick();
-check(backend==='native'&&bridgedNotes>0,'incomplete Web Audio implementation plays through the shared native composer');
-renderer.destroy();delete global.window;
-const rapid=new engine.Scheduler(130,sink,()=>now,()=>{},'rapid-gate');
-for(const block of ['a','b','c','d','e','f','g','h']) {
- rapid.install(bank.asset(block+'-t1'));rapid.update({seed:1,role:'T1',remaining:1800,quality:1,
-  targets:[{block,asset:block+'-t1',weight:1}]});
- check(Object.keys(rapid.lanes).length<=3&&Object.keys(rapid.assets).length<=3,'rapid replacements keep two retirement tails');
+const r=rig();r.step(10);check(r.plays.length>=3,'A to B normal phrase sequencing');
+for(let i=1;i<r.plays.length;i++)check(Math.abs(r.plays[i].time-r.plays[i-1].time-8*60/130)<1e-8,'phrases follow canonical future boundary');
+check(r.announcements.join(',')==='a','initial block once');
+r.change({role:'T2',targets:[{block:'a',asset:'a-t2',weight:1}]});r.step(4);
+check(r.announcements.length===1,'tension never announces a block');check(r.plays.at(-1).clip.startsWith('a_t2_'),'new role rendered phrase');
+r.change({targets:[{block:'a',asset:'a-t2',weight:.4},{block:'b',asset:'b-t2',weight:.6}]});r.step(4);
+check(r.announcements.join(',')==='a,b','stair incoming block only');check(Math.abs(r.mixes.a-Math.sqrt(.4))<1e-10,'equal power whole-phrase lanes');
+const a=r.scheduler.lanes.a,b=r.scheduler.lanes.b;
+r.change({targets:[{block:'a',asset:'a-t2',weight:.8},{block:'b',asset:'b-t2',weight:.2}]});r.step(2);
+check(r.scheduler.lanes.a===a&&r.scheduler.lanes.b===b,'reversal reuses two lanes');check(r.announcements.length===2,'reversal does not reannounce');
+r.change({targets:[{block:'b',asset:'b-t2',weight:1}]});r.step(2);check(!r.scheduler.lanes.a,'retiring floor released');
+const oldSeed=a.composer.random.value;r.change({targets:[{block:'a',asset:'a-t2',weight:1}]});r.step(4);
+check(r.scheduler.lanes.a.composer.random.value!==oldSeed,'genuine return gets fresh presentation entropy');
+for(const stall of [.1,.3,1,4,15])for(const mutation of ['none','role','reverse']){
+ const x=rig('stall-'+stall+'-'+mutation);x.step(3.8);
+ if(mutation==='reverse'){x.change({targets:[{block:'a',asset:'a-t1',weight:.3},{block:'b',asset:'b-t1',weight:.7}]});x.step(2);}
+ const job=Object.values(x.pending)[0];check(job,'preparation precedes boundary');x.jump(Math.max(0,job.time-x.now)+stall);
+ if(mutation==='role')x.change({role:'T3',targets:[{block:'a',asset:'a-t3',weight:1}]});
+ if(mutation==='reverse')x.change({targets:[{block:'a',asset:'a-t1',weight:.8},{block:'b',asset:'b-t1',weight:.2}]});
+ const count=x.plays.length;x.pump();check(x.plays.length===count,'stall never starts overdue phrases');
+ x.step(8);check(x.plays.length>count,'stall resumes at a future valid bar');
+ for(const p of x.plays)check(p.started>=p.time&&p.started-p.time<=engine.lateTolerance+1e-8,'only bounded on-time start');
+ const seen=new Set();for(const p of x.plays){const k=p.lane+':'+p.time;check(!seen.has(k),'one start per lane/boundary');seen.add(k);}
+ check(Object.keys(x.scheduler.lanes).length<=2,'stalled stairs do not grow a third lane');x.scheduler.stop();
 }
-rapid.stop();
-for(const kind of ['kick','tom','snare','closed','open']) {
- const pcm=engine.percussion(kind,22050);let peak=0,sum=0;
- for(const n of pcm){check(Number.isFinite(n),'finite synthetic PCM');peak=Math.max(peak,Math.abs(n));sum+=n*n;}
- check(peak<1&&sum/pcm.length>.00001,'audible drum with digital headroom');
-}
-console.log(JSON.stringify({suite:'MS2_SEQUENCE',checks,clips:clipCount,notes:noteCount,maxClipNotes:maxNotes,maxQueue:scheduler.maxQueue,milliseconds:+(performance.now()-start).toFixed(1)}));
+// Delayed preload completion and resume are obsolete acknowledgements, never
+// opportunities to play several skipped phrases together.
+const late=rig('late');late.pump();const token=Object.keys(late.pending)[0];late.jump(10);late.pump();
+late.scheduler.result(token,true);check(late.announcements.length===0,'stale return cannot fabricate a block start');late.step(6);check(late.plays.length>0,'suspension recovers');
+r.change({role:'VICTORY',targets:[{block:'a',asset:'a-victory',weight:1}]});r.step(12);
+check(r.victories.length===1,'12-beat fanfare completes once');const end=r.plays.length;r.step(8);check(r.plays.length===end&&r.victories.length===1,'fanfare never loops');
+r.change({role:'T0',targets:[{block:'b',asset:'b-t0',weight:1}]});r.step(6);check(r.plays.at(-1).clip.startsWith('b_t0_'),'post-victory Chill');
+r.scheduler.stop();check(!Object.keys(r.pending).length&&!Object.keys(r.mixes).length&&r.stopCount===1,'Off disposes all preparations and audio');
+const restart=rig('return');restart.jump(100);restart.pump();check(restart.plays.length===0,'On never replays missed score');restart.step(6);check(restart.plays.length>0,'On resumes future music');restart.scheduler.stop();
+const rapid=rig('rapid');for(const block of ['a','b','c','d','e','f','g','h']){
+ rapid.change({targets:[{block,asset:block+'-t1',weight:1}]});rapid.pump();check(Object.keys(rapid.scheduler.lanes).length<=3,'rapid replacement has bounded retirement tails');}
+rapid.scheduler.stop();
+// The primary controller cannot instantiate any AudioContext/oscillator.
+let init,tick,backend;global.window={AudioContext:function(){throw Error('live synthesis forbidden');},setTimeout:fn=>init=fn,setInterval:fn=>{tick=fn;return 1;},clearInterval:()=>{}};
+const renderer=engine.attach({ready:v=>backend=v,prepare:()=>{},cancel:()=>{},mix:()=>{},volume:()=>{},drop:()=>{},stop:()=>{},block:()=>{},victory:()=>{},error:e=>{throw Error(e);},stats:()=>{}});
+init();renderer.install(metadata('a-t1'));renderer.state({seed:1,bpm:130,role:'T1',targets:[{block:'a',asset:'a-t1',weight:1}]});tick();
+check(backend==='surge-rendered','actual active backend is unambiguous');renderer.destroy();delete global.window;
+console.log(JSON.stringify({suite:'MS2_RENDERED_SEQUENCE',checks,clips,notes,stallCases:15,maxPrepared:r.scheduler.maxQueue,milliseconds:+(performance.now()-start).toFixed(1)}));

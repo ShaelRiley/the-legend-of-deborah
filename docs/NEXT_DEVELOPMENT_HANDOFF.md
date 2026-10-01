@@ -1,4 +1,12 @@
-# Current MS2 Options enablement repair
+# Current MS2 Surge checkpoint
+
+Offline custom Surge XT now renders the unchanged score into 1,402 bundled phrases plus a quiet bridge. Runtime uses bounded `surge-rendered` playback and absolute future deadlines; missed musical time is discarded. Bank/audio/provenance and source regressions are in [the focused validation record](validation/MS2_SURGE.md). The live GDD amendment remains authorized but unapplied after `FAILED_PRECONDITION`.
+
+Next: fully quit/update/install exact main, enable Music through Player Menu → Options on gm_flatgrass, and perform the single native listening/performance procedure in that record. Source/offline success does not establish native timing, subjective timbre or Steam Deck performance. No Workshop or VPS action belongs to this checkpoint.
+
+---
+
+# Previous MS2 Options enablement repair
 
 On main `93e793cfb35bc0dbef81cb2b079a385ff935578d`, the author confirms that `lod_music_enabled 1; lod_music 1` produces audible music, while the Options checkbox does not. The native contradiction is now isolated to UI/master enablement, not confirmed renderer failure. The Music checkbox uses the MusicDirector's explicit preference/permission seam. Host/superadmin On requests the master through the existing demand channel; Off stays personal, ordinary demand stays default-Off, and nonoperators cannot grant server permission. The checkbox's read-only refresh reflects the host's effective permission without changing settings. [Evidence](validation/MS2_OPTIONS_REPAIR.md) includes the full production Options → server grant → plan/state → renderer regression.
 

@@ -10,7 +10,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-import wave
 import zipfile
 import zlib
 
@@ -149,6 +148,9 @@ class ShippedBank(unittest.TestCase):
             self.assertGreater(rows[0]['keys'],15000)
             self.assertEqual(sum(row['keys']>15000 for row in rows[1:]),62)
             self.assertEqual(max(row['keys'] for row in rows[1:]),16988)
+            decoded=read_lua_json(self.directory/'render.lua')
+            fixture=destination/'render.lua';fixture.write_text('return '+lua_value(decoded)+'\n')
+            rows.append({'name':'render.lua','fixture':str(fixture),'keys':json_keys(decoded)})
             script=destination/'admission.lua'
             script.write_text("""
 local e=dofile('tools/music_test_fixture.lua')
@@ -170,7 +172,7 @@ local raw=assert(M.IncludeBundled('catalog.lua'))
 assert(not util.JSONToTable(raw),'default native breadth rejects the real catalog')
 local rejected=0
 for raw,entry in pairs(decoded) do
- if entry.name~='catalog.lua' and not util.JSONToTable(raw) then rejected=rejected+1 end
+ if entry.name:match('^notes_') and not util.JSONToTable(raw) then rejected=rejected+1 end
 end
 assert(rejected==62,'default native breadth also rejects the real note pages')
 local catalog,err=M.LoadBundled()
@@ -191,16 +193,20 @@ assert(e.jsonKeys(plan)<15000,'real wire plans fit the unchanged default decoder
 D.Plans[plan.id]=plan
 D.Current={sequence=1,epoch=1,plan=plan.id,role='T0',staged=true,targets={{block=plan.floors[1],weight=1}}}
 D:Tick();assert(e.panel,'real catalog starts the client renderer')
-e.panel.functions['lodms2.ready']('web');D:Sync()
+e.panel.functions['lodms2.ready']('surge-rendered',e.now);D:Sync()
 assert(D.Ready and D.Synced and not D.Error,D.Error or 'real phrase data reaches playback')
-local phrases,notes=0,0
+local phrases=0
 for id in pairs(catalog.assets) do
  local payload=assert(D:Payload(id),D.Error)
- for _,clip in ipairs(payload.clips) do phrases=phrases+1;notes=notes+#clip.notes end
+ for _,clip in ipairs(payload.clips) do
+  phrases=phrases+1;assert(clip.notes==nil,'runtime never loads per-note score data')
+  assert(D.RenderBank.clips[clip.id],'actual rendered phrase exists')
+ end
 end
-assert(phrases==1402 and notes==170860,'every actual phrase/note admitted')
-assert(table.Count(D.Pages)<=8 and table.Count(D.Payloads)<=4,'real cache bounds retained')
-print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 62 formerly rejected note pages; 48 arrangements; '..phrases..' phrases; '..notes..' notes')
+assert(phrases==1402,'every actual phrase admitted')
+assert(table.Count(D.Pages)==0 and table.Count(D.Payloads)<=4,'runtime retains metadata only')
+for _,path in ipairs(e.includeCalls) do assert(not path:find('/notes_',1,true),'runtime never decodes a note page') end
+print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' rendered phrases; no runtime note decoding')
 """.replace('ENTRIES',lua_value(rows)))
             result=subprocess.run([sys.executable,str(ROOT/'tools/run_lua54.py'),str(script)],cwd=ROOT,
                                   text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
@@ -256,18 +262,13 @@ print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 62 formerly rejected note pages
                 self.assertTrue(all(n[4]==9 or (n[2]-2)%12 in compiler.SCALE for n in exported.notes))
             self.assertEqual(notes,self.report['notes'])
 
-    def test_generated_engine_and_native_pcm_bank(self):
+    def test_generated_control_engine_has_no_live_synthesis(self):
         source=(ROOT/'tools/music/ms2_engine.js').read_text()
         self.assertEqual((self.directory/'engine.lua').read_text(),'return [==['+source+']==]\n')
         self.assertNotIn('XMLHttpRequest',source);self.assertNotIn('fetch(',source)
-        size=0
-        for name in ('acid','industrial','strings','brass','bass','tom','snare','kick','open','closed'):
-            path=ROOT/f'gamemodes/legend_of_deborah/content/sound/lod/ms2/{name}.wav';size+=path.stat().st_size
-            with wave.open(str(path)) as w:
-                self.assertEqual((w.getnchannels(),w.getsampwidth(),w.getframerate()),(1,2,22050))
-                values=struct.unpack('<'+'h'*w.getnframes(),w.readframes(w.getnframes()))
-                self.assertTrue(any(values));self.assertLess(max(map(abs,values)),32767)
-        self.assertLess(size,100000)
+        for name in ('AudioContext','createOscillator','createBiquadFilter','createPeriodicWave','WebSynth','NativeSynth'):
+            self.assertNotIn(name,source)
+        self.assertIn('surge-rendered',source)
 
 
 if __name__=='__main__': unittest.main(verbosity=2)

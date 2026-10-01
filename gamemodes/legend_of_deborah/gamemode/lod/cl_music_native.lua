@@ -1,144 +1,190 @@
--- Native fallback for older HTML engines. The same JS composer supplies notes.
--- A finite generated tone/voice bank is reused, never one sound ID per phrase.
+-- Bundled Surge phrases, opened lazily. Native frame timing is bounded:
+-- a missed deadline is skipped, never played from an asynchronous callback.
 if LOD.MusicNative and LOD.MusicNative.Stop then LOD.MusicNative:Stop() end
-LOD.MusicNative={Voices={},Queue={},Mix={},Volume=.55,Quality=1,Peak=0}
-local N=LOD.MusicNative
-local names={[0]="acid","industrial","strings","brass","bass","tom","snare","kick","closed"}
-local roots={[0]=64,60,69,64,40,45,38,36,42}
-local pools={[0]=2,6,6,4,2,2,2,2,2}
-local gains={[0]=.10,.10,.09,.115,.16,.22,.21,.28,.12}
-local generated=LOD.MS2NativeGenerated or {};LOD.MS2NativeGenerated=generated
-local function finite(x,lo,hi) return type(x)=="number" and x==x and x>=lo and x<=hi end
-local function mixNow(mix,now)
-    if not mix then return 0 end
-    return mix.from+(mix.value-mix.from)*math.Clamp((now-mix.at)/.7,0,1)
+LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipped=0,Errors=0}
+local N,M=LOD.MusicNative,LOD.Music
+local MAX_CHANNELS,MAX_OPENS,MAX_PCM=8,2,32*1024*1024
+local LATE,FADE=.06,.7
+local function stop(channel) if IsValid(channel) then channel:Stop() end end
+function N:Count() local n=0;for _ in pairs(self.Records) do n=n+1 end;for _,r in pairs(self.Opens) do if not self.Records[r.key] then n=n+1 end end;return n end
+function N:Bytes()
+    local n=0;for _,r in pairs(self.Records) do n=n+r.bytes end
+    for _,r in pairs(self.Opens) do if not self.Records[r.key] then n=n+r.bytes end end;return n
 end
-local function waveData(name)
-    local raw=file.Read("sound/lod/ms2/"..name..".wav","GAME")
-    if not raw or #raw<44 or raw:sub(1,4)~="RIFF" or raw:sub(37,40)~="data" then return nil end
-    return raw:sub(45)
+function N:Configure(catalog,bank,callback)
+    self:Stop();self.Catalog=catalog;self.Bank=bank;self.Callback=callback;self.Ready=true;self.Volume=.55;self.Errors=0;self.Error=nil
 end
-function N:Ensure()
-    if self.Ready then return true end
-    if not sound.Generate then self.Error="Native PCM synthesis requires current Garry's Mod";return false end
-    for inst=0,8 do
-        local bytes=waveData(names[inst]);if not bytes then self.Error="Missing native instrument "..names[inst];return false end
-        for slot=1,pools[inst] do
-            local id="lod_ms2_instrument_"..inst.."_"..slot
-            if not generated[id] then
-                sound.Generate(id,22050,#bytes/44100,bytes,inst<5 and 0 or nil);generated[id]=true
+function N:Stop()
+    self.Generation=self.Generation+1;self.Ready=false
+    for _,r in pairs(self.Records) do r.cancelled=true;stop(r.channel) end
+    -- Uncancellable native opens continue to occupy the two-open ceiling until
+    -- their stale callbacks dispose the channel. Off/On cannot grow this pool.
+    for _,r in pairs(self.Opens) do r.cancelled=true end
+    self.Records={};self.Lanes={};self.Bridge=nil;self.GapSince=nil;self.Callback=nil;self.ClockOffset=nil
+end
+function N:SyncClock(stamp)
+    if type(stamp)~="number" or stamp~=stamp or stamp<0 or stamp>9e15 then return false end
+    -- One fixed epoch conversion. A delayed JS→Lua message must not move its
+    -- old deadline into the future merely by arriving late.
+    self.ClockOffset=SysTime()-stamp;return true
+end
+function N:Result(r,played)
+    if r.reported then return end;r.reported=true
+    if r.token and self.Callback then self.Callback(r.token,played) end
+end
+function N:Release(r)
+    if not r then return end;r.cancelled=true;stop(r.channel);self.Records[r.key]=nil
+end
+function N:Cancel(token)
+    for _,r in pairs(self.Records) do
+        if r.token==token and not r.started then self:Release(r);return end
+    end
+end
+function N:SetVolume(volume) self.Volume=math.Clamp(tonumber(volume) or 0,0,1) end
+function N:SetMix(id,value)
+    if not self.Ready or not M.ID(id) then return end
+    value=math.Clamp(tonumber(value) or 0,0,1)
+    local now=SysTime();local l=self.Lanes[id]
+    if l and l.value==value then return end
+    if not l then
+        if table.Count(self.Lanes)>=4 then return end
+        l={value=0,from=0,at=now};self.Lanes[id]=l
+    end
+    local current=l.from+(l.value-l.from)*math.Clamp((now-l.at)/FADE,0,1)
+    l.from=current;l.value=value;l.at=now
+end
+function N:Drop(id)
+    for _,r in pairs(self.Records) do if r.lane==id then self:Release(r) end end
+    self.Lanes[id]=nil
+end
+function N:Open(r)
+    if not self.Ready or self:Count()>=MAX_CHANNELS or table.Count(self.Opens)>=MAX_OPENS or self:Bytes()+r.bytes>MAX_PCM then
+        self:Result(r,false);return false
+    end
+    self.Serial=self.Serial+1;r.key=self.Serial;r.generation=self.Generation
+    self.Records[r.key]=r;self.Opens[r.key]=r;self.Peak=math.max(self.Peak,self:Count())
+    local ok,err=pcall(sound.PlayFile,r.path,"noplay noblock",function(channel,code,name)
+        self.Opens[r.key]=nil
+        if r.cancelled or r.generation~=self.Generation or not self.Ready or self.Records[r.key]~=r then stop(channel);return end
+        if not IsValid(channel) then
+            self.Error="Surge phrase open failed: "..r.clip.." ("..tostring(code)..": "..tostring(name)..")"
+            self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return
+        end
+        local length=channel:GetLength()
+        if type(length)~="number" or length~=length or math.abs(length-r.duration)>.08 then
+            stop(channel);self.Error="Surge phrase duration mismatch: "..r.clip;self.Errors=self.Errors+1
+            self:Result(r,false);self:Release(r);return
+        end
+        r.channel=channel;channel:SetVolume(0);channel:EnableLooping(r.bridge==true)
+        -- The Think loop alone may start it, at its still-valid deadline.
+    end)
+    if not ok then self.Opens[r.key]=nil;self.Error=tostring(err);self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return false end
+    return true
+end
+function N:Prepare(token,lane,clip,delay,deadline)
+    if not self.Ready or type(token)~="string" or not token:match("^%d+$") or #token>12
+        or not M.ID(lane) or not M.ID(clip) or not self.Lanes[lane]
+        or type(delay)~="number" or delay~=delay or delay<0 or delay>1.1
+        or not self.ClockOffset or type(deadline)~="number" or deadline~=deadline then return end
+    local meta=self.Bank.clips[clip];if not meta then self.Error="Unknown rendered phrase "..clip;return end
+    -- Accept only a clip belonging to the current authoritative floor/role.
+    local d=LOD.MusicDirector;local allowed=false
+    for _,t in ipairs(d and d.AudibleTargets or {}) do
+        if t.block==lane and t.weight>0 then
+            local a=self.Catalog.assets[t.asset]
+            for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;break end end
+        end
+    end
+    if not allowed then return end
+    for _,r in pairs(self.Records) do
+        if r.token==token then return end
+        if r.lane==lane and not r.started then self:Release(r) end
+    end
+    local now=SysTime();local due=deadline+self.ClockOffset;local lead=due-now;local musical=meta.beats*60/self.Bank.bpm
+    if lead< -LATE or lead>1.1 then
+        self.Skipped=self.Skipped+1;self:Result({token=token},false);return
+    end
+    if meta.beats==12 and d and d.Victory and CurTime()+math.max(0,lead)+musical>d.Victory.endsAt then
+        self:Result({token=token},false);return
+    end
+    self:Open({token=token,lane=lane,clip=clip,path="sound/lod/ms2_surge/"..clip..".ogg",
+        due=due,musical=musical,duration=meta.duration,bytes=math.ceil(meta.duration*44100)*8})
+end
+function N:BridgeGap(now,gap)
+    if not gap then self.GapSince=nil
+    elseif not self.GapSince then self.GapSince=now end
+    -- One short bridge only. A repeated failure is surfaced, never hidden by an
+    -- eternal drone or a second engine. It is capped at eight seconds per gap.
+    if gap and now-self.GapSince>=8 then
+        self.Error="Surge phrase gap exceeds eight seconds";self.Errors=3
+        self:Release(self.Bridge);self.Bridge=nil;return
+    end
+    local wanted=gap and now-(self.GapSince or now)>.15 and now-self.GapSince<8 and self.Errors<3
+    if wanted and not self.Bridge and self.Bank.bridge then
+        local m=self.Bank.bridge;local r={bridge=true,clip="bridge",path="sound/lod/ms2_surge/bridge.ogg",
+            due=now,duration=m.duration,bytes=math.ceil(m.duration*44100)*8}
+        if self:Open(r) then self.Bridge=r end
+    end
+    local r=self.Bridge;if not r then return end
+    if r.cancelled then self.Bridge=nil;return end
+    if r.channel and not r.started and wanted then r.channel:Play();r.started=now;r.gain=0 end
+    local target=wanted and .10*self.Volume or 0
+    r.gain=math.Approach(r.gain or 0,target,.5*math.min(.05,now-(self.LastTick or now)))
+    if r.channel and now>=(r.nextGain or 0) and math.abs(r.gain-(r.lastGain or -1))>.001 then
+        r.channel:SetVolume(r.gain);r.lastGain=r.gain;r.nextGain=now+1/30
+    end
+    if not wanted and r.gain<=0 then self:Release(r);self.Bridge=nil end
+end
+function N:Tick()
+    if not self.Ready then return end
+    if self.Volume<=0 then self:Stop();return end
+    local now=SysTime();local startedThisFrame={};local audible=false
+    -- Records contain <=8 items; stable due/key order makes overlapping or
+    -- deliberately malformed preparations unable to start twice in one lane.
+    local ordered={};for _,r in pairs(self.Records) do if not r.bridge then ordered[#ordered+1]=r end end
+    table.sort(ordered,function(a,b) return a.due==b.due and a.key<b.key or a.due<b.due end)
+    for _,r in ipairs(ordered) do
+        local l=self.Lanes[r.lane]
+        if r.cancelled or not l then self:Release(r)
+        elseif not r.started and now>r.due+LATE then
+            self.Skipped=self.Skipped+1;self:Result(r,false);self:Release(r)
+        elseif not r.started and r.channel and now>=r.due then
+            if startedThisFrame[r.lane] then self.Skipped=self.Skipped+1;self:Result(r,false);self:Release(r)
+            else
+                -- One current phrase plus one retiring tail per lane. Interrupt
+                -- an old role at this bar; ordinary phrase tails finish naturally.
+                for _,old in pairs(self.Records) do
+                    if old~=r and old.lane==r.lane and old.started then
+                        if old.retireAt then self:Release(old)
+                        elseif now>=old.started+old.musical-LATE then old.retireAt=old.started+old.duration
+                        else old.retireAt=math.min(old.started+old.duration,now+.12) end
+                    end
+                end
+                r.started=now;startedThisFrame[r.lane]=true;r.channel:Play();self.Errors=0;self.Error=nil;self:Result(r,true)
+            end
+        end
+        if r.started and not r.cancelled then
+            local ends=r.retireAt or r.started+r.duration
+            if now>=ends then self:Release(r)
+            else
+                local mix=l.from+(l.value-l.from)*math.Clamp((now-l.at)/FADE,0,1)
+                local envelope=math.min(1,(now-r.started)/.008,math.max(0,(ends-now)/.06))
+                local value=mix*self.Volume*envelope
+                if value>0 then audible=true end
+                if now>=(r.nextGain or 0) and math.abs(value-(r.lastGain or -1))>.001 then
+                    r.channel:SetVolume(value);r.lastGain=value;r.nextGain=now+1/30
+                end
             end
         end
     end
-    local bytes=waveData("open");if not bytes then self.Error="Missing open hat";return false end
-    for slot=1,pools[8] do
-        local id="lod_ms2_open_"..slot
-        if not generated[id] then sound.Generate(id,22050,#bytes/44100,bytes);generated[id]=true end
-    end
-    self.Ready=true;return true
+    self:BridgeGap(now,not audible and next(self.Lanes)~=nil)
+    self.LastTick=now
 end
-function N:Stop()
-    for _,v in pairs(self.Voices) do v.patch:Stop() end
-    self.Voices={};self.Queue={};self.Mix={}
-end
-function N:Drop(lane)
-    self.Mix[lane]=nil
-    for _,v in pairs(self.Voices) do if v.lane==lane then
-        v.patch:ChangeVolume(0,.03);v.ends=math.min(v.ends,SysTime()+.04);v.releasing=true
+function N:Status()
+    local current,prepared={},{}
+    for _,r in pairs(self.Records) do if r.lane then
+        if r.started then current[r.lane]=r.clip else prepared[r.lane]=r.clip end
     end end
-end
-function N:SetVolume(volume,quality)
-    self.Quality=quality
-    if math.abs(self.Volume-volume)<.0001 then return end
-    self.Volume=volume
-    local now=SysTime()
-    for _,v in pairs(self.Voices) do
-        v.patch:ChangeVolume(v.level*mixNow(self.Mix[v.lane],now)*volume,.08)
-    end
-end
-function N:SetMix(lane,value,pitch)
-    if not LOD.MusicDirector or not LOD.MusicDirector:Enabled() then return end
-    if not LOD.Music.ID(lane) or not finite(value,0,1) or not LOD.MusicDirector.Catalog
-        or not LOD.MusicDirector.Catalog.blocks[lane] then return end
-    local now=SysTime()
-    self.Mix[lane]={value=value,from=mixNow(self.Mix[lane],now),at=now,pitch=pitch or 0}
-    -- One sustained tonal bridge also covers native frame-sized note jitter.
-    local key="bed:"..lane
-    if value>0 and self.Voices[key] then self.Voices[key].ends=math.huge;self.Voices[key].releasing=false end
-    if value>0 and not self.Voices[key] and self:Ensure() then
-        -- The bridge gets a dedicated immutable sample ID, not a melodic slot.
-        local id="lod_ms2_bed_"..lane
-        if not generated[id] then
-            local bytes=waveData("industrial");sound.Generate(id,22050,#bytes/44100,bytes,0);generated[id]=true
-        end
-        local patch=CreateSound(game.GetWorld(),id)
-        if patch then patch:SetSoundLevel(0);patch:PlayEx(0,100*2^((50-60)/12));self.Voices[key]={patch=patch,lane=lane,inst=-1,level=.014,ends=math.huge} end
-    end
-    for _,v in pairs(self.Voices) do if v.lane==lane then v.patch:ChangeVolume(v.level*value*self.Volume,.7) end end
-end
-function N:Enqueue(raw)
-    if not LOD.MusicDirector or not LOD.MusicDirector:Enabled() or type(raw)~="string" or #raw>120000 then return end
-    local events=util.JSONToTable(raw);if type(events)~="table" or #events>512 then return end
-    local now=SysTime()
-    for _,e in ipairs(events) do
-        if #self.Queue>=1024 then break end
-        if type(e)=="table" and LOD.Music.ID(e.lane) and finite(e.delay,0,.7) and finite(e.inst,0,8) and e.inst%1==0
-            and finite(e.pitch,20,100) and finite(e.velocity,1,127) and finite(e.duration,0,5) then
-            e.at=now+e.delay;self.Queue[#self.Queue+1]=e
-        end
-    end
-    table.sort(self.Queue,function(a,b) return a.at<b.at end)
-end
-function N:Note(e)
-    local mix=self.Mix[e.lane];if not mix or mix.value<=0 or not self:Ensure() then return end
-    local inst=e.inst;local now=SysTime();local weight=mixNow(mix,now);local chosen,oldest
-    for slot=1,pools[inst] do
-        local key=inst..":"..slot;local v=self.Voices[key]
-        if not v then chosen=slot;break end
-        if not oldest or v.ends<oldest.ends then oldest={slot=slot,ends=v.ends} end
-    end
-    chosen=chosen or oldest.slot
-    local key=inst..":"..chosen;local old=self.Voices[key]
-    if old then old.patch:Stop();self.Voices[key]=nil end
-    -- Per-lane mono acid/bass and two tom voices; global pools stay finite.
-    local same={}
-    for k,v in pairs(self.Voices) do if v.lane==e.lane and v.inst==inst then same[#same+1]={key=k,voice=v} end end
-    local limit=(inst==0 or inst==4 or inst>=6) and 1 or (inst==3 or inst==5) and 2 or 3
-    if #same>=limit then
-        table.sort(same,function(a,b) return a.voice.ends<b.voice.ends end)
-        same[1].voice.patch:Stop();self.Voices[same[1].key]=nil
-    end
-    local count,quiet=0
-    for k,v in pairs(self.Voices) do
-        if v.inst>=0 then
-            count=count+1
-            if not quiet or v.level<quiet.voice.level then quiet={key=k,voice=v} end
-        end
-    end
-    if count>=(self.Quality==0 and 16 or 24) and quiet then
-        quiet.voice.patch:Stop();self.Voices[quiet.key]=nil
-    end
-    local id=inst==8 and e.pitch==46 and "lod_ms2_open_"..chosen or "lod_ms2_instrument_"..inst.."_"..chosen
-    local patch=CreateSound(game.GetWorld(),id);if not patch then self.Error="Native voice creation failed";return end
-    local pitch=inst<5 and 100*2^((e.pitch-roots[inst]+(e.expression==1 and .22 or 0))/12)
-        or inst==5 and 100*2^((e.pitch-45)/12) or 100
-    local level=gains[inst]*(e.velocity/127)^1.25*(e.expression==1 and 1.08 or 1)
-    patch:SetSoundLevel(0);patch:PlayEx(inst<5 and 0 or level*weight*self.Volume,math.Clamp(pitch,1,255))
-    if inst<5 then patch:ChangeVolume(level*weight*self.Volume,(inst==0 or inst==4) and .008 or .035) end
-    local duration=inst<5 and math.min(4,e.duration) or inst==8 and e.pitch==46 and .48 or .42
-    self.Voices[key]={patch=patch,lane=e.lane,inst=inst,level=level,ends=now+duration,releasing=false}
-    self.Peak=math.max(self.Peak,table.Count(self.Voices))
-end
-function N:Tick()
-    if not LOD.MusicDirector or not LOD.MusicDirector:Enabled() then return end
-    local now=SysTime();local future={};local work=0
-    for _,e in ipairs(self.Queue) do
-        if e.at<=now and work<64 then if now-e.at<.15 then self:Note(e) end;work=work+1
-        else future[#future+1]=e end
-    end
-    self.Queue=future
-    for key,v in pairs(self.Voices) do
-        if now>=v.ends then v.patch:Stop();self.Voices[key]=nil
-        elseif v.inst>=0 and v.inst<5 and not v.releasing and now>=v.ends-.035 then v.patch:ChangeVolume(0,.035);v.releasing=true end
-    end
+    return {currentClips=current,preparedClips=prepared,bridge=self.Bridge~=nil,channels=self:Count(),peakChannels=self.Peak,
+        pendingOpens=table.Count(self.Opens),estimatedPCMBytes=self:Bytes(),nativeLateSkipped=self.Skipped,error=self.Error}
 end

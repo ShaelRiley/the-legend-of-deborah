@@ -71,7 +71,7 @@ for i=1,30 do
   if packet.name~='LOD_MusicDemand' and e.wire[packet.name] then e.receive(packet.name,table.unpack(packet.args)) end
  end
  client:Tick()
- if e.panel and e.panel.valid and not client.Ready then e.panel.functions['lodms2.ready']('web');client:Sync() end
+ if e.panel and e.panel.valid and not client.Ready then e.panel.functions['lodms2.ready']('surge-rendered',e.now);client:Sync() end
 end
 check(client:Enabled() and client.Current and next(client.Plans),'Options alone admits host playback through real server metadata')
 check(client.Ready and client.Synced,'Options selection reaches the renderer note/state handoff')

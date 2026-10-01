@@ -1,19 +1,19 @@
--- MS2 is bundled note data. This shared authority owns plans and pressure;
--- only the client renders audio. No soundtrack URL, HTTP cache or media stream.
+-- MS2 retains its curated score; Surge phrases supply local playback. Plans and pressure
+-- remain shared authority. No soundtrack URL, HTTP cache or media stream.
 LOD = LOD or {}
 LOD.Music = {}
 local M=LOD.Music
 M.Roles={"T0","T1","T2","T3","BOSS","VICTORY","INTERLUDE"}
 M.RoleNames={T0="Chill (Tension 1)",T1="Tension 2",T2="Tension 3",T3="Tension 4",BOSS="Boss",VICTORY="Fanfare",INTERLUDE="Chill"}
 M.Limits={blocks=256,assets=1792,catalogBytes=2097152,packetBytes=60000,planChunk=1024,metadataBytes=4096,
-    noteCachePages=8,noteCacheAssets=4,clipNotes=2048}
+    metadataAssets=4,clipNotes=2048}
 M.Tuning={tick=.2,fade=1.2,relax=6,dwell=4,escalate=.8,damageWindow=5,urgentHP=.2,dangerHP=.4,
     urgentTime=60,dangerTime=180,serverBudget=.0005,frameLimit=.035,recovery=5,pingLimit=180,pingRise=80,lossLimit=2}
 -- include() is relative to its current Lua folder. Startup inside lod/ and
 -- later callbacks must resolve the same files in GMod's virtual filesystem.
 M.BundleRoot="legend_of_deborah/gamemode/lod/ms2/"
 function M.IncludeBundled(name)
-    if type(name)~="string" or not (name=="catalog.lua" or name=="engine.lua" or name=="files.lua"
+    if type(name)~="string" or not (name=="catalog.lua" or name=="engine.lua" or name=="files.lua" or name=="render.lua"
         or name:match("^notes_%d%d%d%.lua$")) then return nil,"invalid MS2 bundle file" end
     local path=M.BundleRoot..name
     -- Clients may include server-delivered Lua from the download cache. Only
@@ -71,6 +71,24 @@ function M.LoadBundled()
     local catalog=util.JSONToTable(raw,true)
     if type(catalog)~="table" then return nil,"Could not decode bundled MS2 catalog" end
     return M.ValidateCatalog(catalog)
+end
+function M.LoadRenderBank(catalog)
+    local raw,err=M.IncludeBundled("render.lua")
+    if type(raw)~="string" or #raw>512000 then return nil,err or "Missing Surge render bank; install the complete build" end
+    local b=util.JSONToTable(raw,true)
+    if type(b)~="table" or b.schema~=1 or b.catalogRevision~=catalog.revision or b.bpm~=catalog.bpm
+        or not M.ID(b.revision) or not M.ID(b.patchRevision) or type(b.clips)~="table" then return nil,"Invalid Surge render bank" end
+    local seen={}
+    for _,a in pairs(catalog.assets) do for _,clip in ipairs(a.clips) do
+        local r=b.clips[clip.id]
+        if type(r)~="table" or r.beats~=clip.beats or type(r.duration)~="number" or r.duration~=r.duration
+            or r.duration<clip.beats*60/b.bpm or r.duration>clip.beats*60/b.bpm+1 then return nil,"Invalid Surge phrase "..clip.id end
+        seen[clip.id]=true
+    end end
+    for id in pairs(b.clips) do if not seen[id] then return nil,"Orphan Surge phrase "..tostring(id) end end
+    if type(b.bridge)~="table" or type(b.bridge.duration)~="number" or b.bridge.duration~=b.bridge.duration
+        or b.bridge.duration<1 or b.bridge.duration>8 then return nil,"Invalid Surge bridge" end
+    return b
 end
 function M.Pool(c,selection)
     local out,seen={},{}

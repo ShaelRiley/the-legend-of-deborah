@@ -1,4 +1,14 @@
-# Current repair checkpoint — MS2 Options enablement
+# Current author-directed checkpoint — MS2 Surge backbone
+
+From verified main `c4fb2c0c497b661f0fa7bb972a5c3fe6683b3517`, the author replaces primary live note synthesis with offline custom Surge XT 1.3.4 rendering and bounded local Ogg phrase playback. The eight-block/48-arrangement/1,402-phrase/170,860-note catalog and server MusicDirector remain authoritative. Bank `ms2-surge-0f7591eb682f3b2b` contains 1,402 phrases plus one bridge at 59,993,192 encoded bytes. Acid has strong held-note filter movement; readable patches, pinned external build glue, complete hashes/levels and a 47.7-second audition are committed. No Surge runtime dependency or soundtrack streaming is required.
+
+The ES5 composer keeps authored successor selection on a fixed 130 BPM clock. Native playback uses absolute deadlines, discards missed musical time, and bounds channels to eight / pending opens to two / estimated PCM admission to 32 MiB. Role bars, reversible stairs, once-only fanfare/Chill, private new-block announcements, default-Off and host Options enablement remain. Old per-note mutations/fills, +6% tempo slew and +22-cent lift are superseded; +8% critical gain remains. See [implementation](MUSIC_SYSTEM.md), [budgets](MUSIC_PERFORMANCE.md) and [finite evidence/native procedure](validation/MS2_SURGE.md). The authorized live GDD write failed with `FAILED_PRECONDITION`; its exact unapplied amendment is preserved.
+
+Required source gates: `python3 tools/test_music_gate.py --output /tmp/ms2-surge-gate`, actual decode via `node tools/test_music_audio.js`, and canonical `python3 tools/test_checkpoint_g_integration.py`. Native acceptance is pending: fully quit/update/install exact main, start LoD on gm_flatgrass, enable Music in Player Menu → Options, then hear staging/deployment/calm/danger/combat/relaxation/stairs/reversal/boss/fanfare/Chill/Off–On and inspect `lod_music_client_status`. Judge coherent dance-synth timbre, Acid movement, musical joins, no catch-up, smooth stairs, immediate Off and Steam Deck performance. Workshop and VPS remain separate, untouched actions.
+
+---
+
+# Previous repair checkpoint — MS2 Options enablement
 
 The author now confirms native music plays with `lod_music_enabled 1; lod_music 1` on main `93e793cfb35bc0dbef81cb2b079a385ff935578d`, but selecting Music in Options does not start it. This isolates the remaining defect to UI enablement: the old checkbox controls only `lod_music` and can appear checked while the server master is Off. Playback itself is now natively observed under explicit permission; broader musical/performance acceptance remains separate.
 

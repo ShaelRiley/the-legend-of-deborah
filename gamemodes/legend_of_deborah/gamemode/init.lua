@@ -330,8 +330,13 @@ do
         for _,name in ipairs(files) do AddCSLuaFile(root..name) end
     else print("[LOD:MUSIC] MS2 file registry unavailable; install the complete build") end
     AddCSLuaFile(root.."engine.lua")
-    for _,name in ipairs({"acid","industrial","strings","brass","bass","tom","snare","kick","open","closed"}) do
-        resource.AddFile("sound/lod/ms2/"..name..".wav")
+    AddCSLuaFile(root.."render.lua")
+    local catalog=LOD.Music.LoadBundled()
+    if catalog then
+        for _,a in pairs(catalog.assets) do for _,clip in ipairs(a.clips) do
+            resource.AddFile("sound/lod/ms2_surge/"..clip.id..".ogg")
+        end end
+        resource.AddFile("sound/lod/ms2_surge/bridge.ogg")
     end
 end
 AddCSLuaFile("lod/cl_player_options.lua")
