@@ -163,7 +163,7 @@ local function clampSMG(ply)
 end
 
 configureDefinition()
-hook.Add("InitPostEntity", "LOD_SMGCapacityDefinition", configureDefinition)
+hook.Add("InitPostEntity", "LOD_SMGCapacityDefinition", function() configureDefinition() end)
 hook.Add("OnReloaded", "LOD_SMGCapacityReloadDefinition", configureDefinition)
 hook.Add("WeaponEquip", "LOD_SMGCapacityEquip", function(weapon, ply)
     -- WeaponEquip runs inside the native Give stack. Even GetClass/Primary

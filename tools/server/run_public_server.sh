@@ -20,6 +20,11 @@ if [[ ! -s "$TOKEN_FILE" ]]; then
     exit 1
 fi
 
+# VR networking must exist before Source boots. The complete pinned dependency is
+# bundled in Git; startup needs no Workshop/GitHub download and repeat starts
+# verify existing files instead of silently replacing operator modifications.
+python3 "$ROOT/tools/install_vrmod.py" --garrysmod "$SERVER_ROOT/garrysmod" --ensure
+
 GSLT="$(cat "$TOKEN_FILE")"
 if [[ -z "$GSLT" ]]; then
     echo "GSLT token file is empty." >&2
@@ -27,7 +32,7 @@ if [[ -z "$GSLT" ]]; then
 fi
 
 # Deploy the same mounted roots used by the Workshop package. Keeping the
-# dedicated server copy generated from main prevents a second implementation
+# dedicated server copy generated from this checkout prevents a second implementation
 # authority from drifting away from the repository.
 DEPLOY_DIR="$SERVER_ROOT/.lod-deploy"
 mkdir -p "$DEPLOY_DIR" "$(dirname "$ADDON_DIR")"
@@ -35,6 +40,7 @@ STAGED_ADDON="$(mktemp -d "$DEPLOY_DIR/stage.XXXXXX")"
 trap 'rm -rf -- "$STAGED_ADDON"' EXIT
 cp -a "$ROOT/gamemodes" "$STAGED_ADDON/"
 cp -a "$ROOT/lua" "$STAGED_ADDON/"
+cp "$ROOT/tools/workshop/addon.json" "$STAGED_ADDON/addon.json"
 
 # The development-only custom loading page cannot ship through Workshop and is
 # unnecessary on the dedicated server. Keep server deployment aligned with the GMA.

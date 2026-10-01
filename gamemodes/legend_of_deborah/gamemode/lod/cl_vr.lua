@@ -72,6 +72,7 @@ local function stop(ply)
 end
 hook.Add("VRMod_Start", "LOD_VRStart", start)
 hook.Add("VRMod_Exit", "LOD_VRExit", stop)
+hook.Add("ShutDown", "LOD_VRShutdown", function() stop(LocalPlayer()) end)
 hook.Add("InitPostEntity", "LOD_VRMenu", function()
     registerMenu()
     if VR:IsActive(LocalPlayer()) then start(LocalPlayer()) end
@@ -124,7 +125,27 @@ hook.Add("Think", "LOD_VRTetrisStick", function()
 end)
 
 concommand.Add("lod_vr_status", function()
-    local server = util.NetworkStringToID("vrutil_net_join") ~= 0
-    print("[LOD VR] Server VRMod: " .. (server and "available" or "missing — install the server Lua addon"))
+    local server, reason = VR:ServerReady()
+    print("[LOD VR] Server VRMod: " .. (server and "available" or "unavailable — " .. reason))
+    if server then print("[LOD VR] Server addon revision: " .. GetGlobalString("LOD_VRAddonRevision", "unknown")) end
     print("[LOD VR] Local tracking: " .. (VR:IsActive(LocalPlayer()) and "active" or "inactive"))
+    print("[LOD VR] Local native module: v" .. tostring(g_VR and g_VR.moduleVersion or 0))
+    print("[LOD VR] Server VR registration: " .. (vrmod and vrmod.IsPlayerInVR
+        and vrmod.IsPlayerInVR(LocalPlayer()) and "joined" or "not joined"))
+    if server and not VR:IsActive(LocalPlayer()) then
+        print("[LOD VR] Connect WiVRn/your VR runtime, then run lod_vr_start.")
+    end
+end)
+
+concommand.Add("lod_vr_start", function()
+    local ready, reason = VR:ServerReady()
+    if not ready then print("[LOD VR] Cannot start: " .. reason);return end
+    if VR:IsActive(LocalPlayer()) then print("[LOD VR] Tracking is already active.");return end
+    if not vrmod or not vrmod.LoadNativeModule or not vrmod.GetStartupError then
+        print("[LOD VR] Client VRMod did not load; fully restart GMod and reconnect.");return
+    end
+    vrmod.LoadNativeModule()
+    local error = vrmod.GetStartupError()
+    if error then print("[LOD VR] Cannot start: " .. error);return end
+    RunConsoleCommand("vrmod_start")
 end)

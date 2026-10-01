@@ -54,6 +54,9 @@ if [[ ! -x "$SERVER_ROOT/srcds_run" ]]; then
     exit 1
 fi
 
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+python3 "$REPO_ROOT/tools/install_vrmod.py" --garrysmod "$SERVER_ROOT/garrysmod" --ensure
+
 echo
 echo "Dedicated server installed successfully."
 echo "Next: bash tools/server/configure_gslt.sh"

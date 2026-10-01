@@ -1,9 +1,41 @@
 # VR play
 
 Deborah supports optional VRMod clients alongside ordinary desktop players.
-The server must load the VRMod Lua addon, and each headset client needs the
-matching addon plus the native VR module. A source push alone does not install
-the dependency or update a running multiplayer server.
+The repository includes the complete pinned VRMod Lua/content addon. The
+standard dedicated-server installer and launcher install it automatically;
+every launch verifies the installed files before Source starts. Joining clients
+receive the addon Lua and registered models/materials. Each headset client also
+needs its local native VR module and a connected VR runtime.
+
+A GitHub push still needs to be deployed to the VPS and the server process
+fully restarted. A map change does not run the dependency installer.
+
+## Dedicated server deployment
+
+Deploy the verified commit using the existing service and
+`tools/server/deploy_verified.sh`. Its release branch defaults to `main`; if
+testing the explicitly requested `master` branch before merging, set
+`LOD_RELEASE_BRANCH=master`. The service must run
+`tools/server/run_public_server.sh` from that updated checkout. That launcher
+installs the bundled addon into `garrysmod/addons/vrmod-x64` with no network
+download, then stages Deborah and starts Source.
+
+At map initialization the gamemode checks all five VR network channels,
+server pose APIs and eleven content files. Successful startup logs:
+
+```text
+[LOD VR] Server runtime ready: vrmod-x64 2bddbfb96dac7820bcf8e0bcb90a6d27fc3a0dcc, 5 channels, 11 content files
+```
+
+The deployment health gate requires this confirmation and rolls back a release
+that lacks it, even when ordinary server queries succeed. Dependency bytes are
+backed up and restored with the source; player records are retained. Operator
+configuration and the private Steam token remain in place.
+
+For a server that uses another launcher, run the installer below on the stopped
+server before starting Source. Keep one VRMod copy, including Workshop copies.
+An existing mismatched or modified unpacked addon is reported and left intact;
+reconcile that installation before restarting.
 
 ## Quest 3 / Quest 3S through WiVRn on Linux
 
@@ -18,15 +50,21 @@ The pinned Lua addon is Abyss-c0re/vrmod-x64 at
 this integration. To install it on a **stopped** server or client:
 
 ```sh
-python3 tools/install_vrmod.py --garrysmod "/path/to/GarrysMod/garrysmod"
+python3 tools/install_vrmod.py --garrysmod "/path/to/GarrysMod/garrysmod" --ensure
 ```
 
 The installer verifies the archive's SHA256, preserves upstream license/source
-information and refuses to replace an existing addon. It installs Lua and
-content only; native headset modules remain a separate client installation.
+information and verifies an existing identical addon without rewriting it.
+It installs Lua and content only; native headset modules remain a separate
+client installation. The archive is bundled, so installation works offline.
 Keep only one VRMod copy, including Workshop copies. Restart the entire
 game/server after installation. Select **The Legend of Deborah** on
-`gm_flatgrass`, start VR, then run `lod_vr_status` if tracking is unavailable.
+`gm_flatgrass`, or reconnect to the updated multiplayer server. With WiVRn
+connected, run `lod_vr_start`, then `lod_vr_status`. The status should report
+server VRMod available, local tracking active and server VR registration joined.
+If startup fails, the command reports the exact missing prerequisite or native
+runtime error. A working singleplayer setup needs no new headset module for
+this server repair.
 
 ## Controller access
 
@@ -65,7 +103,8 @@ to preserve procedural item state and legal dungeon movement.
 
 Run `python3 tools/test_vr_gate.py` for the finite static gate. It exercises
 production VR input, desktop life controls, Tetris lifecycle, timeout/finale
-cameras, map access, movement, spell input, manual parity and dependency installation.
+cameras, map access, movement, spell input, manual parity, real offline dependency
+installation, server staging and deployment rollback.
 Headless checks do not prove stereo stability, WiVRn frame delivery, controller
 panel legibility or multiplayer pose replication.
 
@@ -74,6 +113,5 @@ and a level clear on `gm_flatgrass` in VR, with a desktop teammate. Confirm the
 Player Menu and Team Menu can be operated with controllers, spells and firearms
 follow tracked aim, Tetris is visible and playable, and cinematic events leave
 head tracking responsive. Use the evidence paths in [TEST_LOGGING.md](TEST_LOGGING.md).
-The earlier whole-view flickering report remains an open runtime issue until
-the headset test confirms it is resolved; this integration does not certify a
-render-runtime fix.
+The user reports the earlier whole-view flickering resolved. Multiplayer headset
+acceptance remains pending after this server dependency repair.

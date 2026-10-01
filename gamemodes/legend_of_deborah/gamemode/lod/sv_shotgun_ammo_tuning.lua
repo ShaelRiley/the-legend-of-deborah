@@ -108,7 +108,7 @@ local function clampShotgun(ply)
 end
 
 configureShotgunDefinition()
-hook.Add("InitPostEntity", "LOD_ShotgunAmmoTuningDefinition", configureShotgunDefinition)
+hook.Add("InitPostEntity", "LOD_ShotgunAmmoTuningDefinition", function() configureShotgunDefinition() end)
 hook.Add("OnReloaded", "LOD_ShotgunAmmoTuningReloadDefinition", configureShotgunDefinition)
 hook.Add("WeaponEquip", "LOD_ShotgunAmmoTuningEquip", function(weapon, ply)
     timer.Simple(0, function()

@@ -9,9 +9,11 @@ SERVER="${LOD_SERVER_ROOT:-$HOME/Servers/the-legend-of-deborah}"
 SERVICE=legend-of-deborah.service
 cd "$REPO"
 [[ -z "$(git status --porcelain)" ]] || { echo 'Checkout has local work; preserve and reconcile it first.' >&2; exit 1; }
-git fetch origin main
+RELEASE_BRANCH="${LOD_RELEASE_BRANCH:-main}"
+git check-ref-format "refs/heads/$RELEASE_BRANCH"
+git fetch origin "$RELEASE_BRANCH"
 git cat-file -e "$REVISION^{commit}"
-git merge-base --is-ancestor "$REVISION" origin/main
+git merge-base --is-ancestor "$REVISION" "origin/$RELEASE_BRANCH"
 BEFORE="$(git rev-parse HEAD)"
 git merge-base --is-ancestor "$BEFORE" "$REVISION" || { echo 'Target would discard/diverge from current checkout.' >&2; exit 1; }
 [[ "$(systemctl show "$SERVICE" -p WorkingDirectory --value)" == "$REPO" ]] || { echo 'Service checkout differs; inspect deployment configuration.' >&2; exit 1; }
@@ -33,6 +35,14 @@ rollback() {
     if (( code != 0 && STOPPED )); then
         echo "Deployment failed; restoring previous source revision $BEFORE. Backup: $BACKUP" >&2
         sudo systemctl stop "$SERVICE" || true
+        # Restore dependency bytes together with the source revision. Player
+        # records are never reverted. Backups stay outside the mounted addons.
+        if [[ -d "$BACKUP/vrmod-x64" ]]; then
+            rm -rf -- "$SERVER/garrysmod/addons/vrmod-x64"
+            cp -a "$BACKUP/vrmod-x64" "$SERVER/garrysmod/addons/vrmod-x64"
+        elif [[ -e "$BACKUP/vrmod-absent" ]]; then
+            rm -rf -- "$SERVER/garrysmod/addons/vrmod-x64"
+        fi
         if (( MOVED )); then git switch --detach "$BEFORE" || exit "$code"; fi
         # Player data is never rolled back automatically: preserve any new writes.
         # Old launchers may rewrite config, so restore its saved bytes after start.
@@ -51,6 +61,11 @@ for item in data cfg sv.db sv.db-wal sv.db-shm; do
 done
 if [[ -d "$SERVER/garrysmod/addons/the_legend_of_deborah" ]]; then
     cp -a "$SERVER/garrysmod/addons/the_legend_of_deborah" "$BACKUP/addon"
+fi
+if [[ -d "$SERVER/garrysmod/addons/vrmod-x64" ]]; then
+    cp -a "$SERVER/garrysmod/addons/vrmod-x64" "$BACKUP/vrmod-x64"
+else
+    touch "$BACKUP/vrmod-absent"
 fi
 # Configuration, including the private GSLT directory, remains in place.
 git merge --ff-only "$REVISION"
@@ -83,6 +98,10 @@ if bad:
     print('Startup error categories:', ', '.join(sorted(set(bad))))
     raise SystemExit(1)
 print('Startup log: no matched fatal/Lua error signatures; native gameplay remains pending.')
+if '[LOD VR] Server runtime ready:' not in text:
+    print('VR startup gate failed: server did not confirm loaded VR networking and content.')
+    raise SystemExit(1)
+print('VR startup gate: server networking and content ready.')
 print('Steam connectivity marker:', bool(re.search(r'Connection to Steam servers successful|VAC secure mode is activated', text, re.I)))
 PY
 STOPPED=0

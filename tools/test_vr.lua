@@ -3,6 +3,12 @@ CLIENT=true;SERVER=false
 local root="gamemodes/legend_of_deborah/gamemode/lod/"
 local hooks,receivers,commands,messages,settings,menus={},{},{},{},{},{}
 local now,covered,focus=100,false,false
+local serverReady,missingChannel,missingContent=true,nil,nil
+function GetGlobalBool() return serverReady end
+function GetGlobalString() return 'fixture-revision' end
+function SetGlobalBool(_,v) serverReady=v end
+function SetGlobalString() end
+function isfunction(v) return type(v)=='function' end
 local noop=function() end
 hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end}
 net={Receive=function(name,fn) receivers[name]=fn end,
@@ -18,7 +24,12 @@ vgui={CursorVisible=function() return false end,GetKeyboardFocus=function() retu
 input={IsKeyDown=function() return false end}
 chat={IsTyping=function() return false end}
 concommand={Add=function(name,fn) commands[name]=fn end}
-util={NetworkStringToID=function() return 1 end}
+util={NetworkStringToID=function(name) return name==missingChannel and 0 or 1 end}
+file={Exists=function(name) return name~=missingContent end}
+local downloads={}
+resource={AddSingleFile=function(name) downloads[#downloads+1]=name end}
+local nativeCommands={}
+function RunConsoleCommand(name) nativeCommands[#nativeCommands+1]=name end
 local ply={valid=true,alive=true,played=true,eliminated=false,interactive=true,remaining=20}
 function ply:Alive() return self.alive end
 function ply:GetNW2Bool(name)
@@ -97,6 +108,18 @@ hooks.VRMod_Exit.LOD_VRExit(ply)
 assert(settings.vrmod_hud.value=="0" and settings.vrmod_hud_engine.value=="0","saved HUD preferences restored")
 g_VR.active=false;before=#messages;vrInput("boolean_use",true);assert(#messages==before)
 
+-- Client start refuses partial/server-missing setups and reports module errors
+-- before making any native session request. A ready setup uses VRMod's real entry.
+local loaded=0
+vrmod.LoadNativeModule=function() loaded=loaded+1 end
+vrmod.GetStartupError=function() return 'module load error fixture' end
+missingChannel='vrutil_net_tick';commands.lod_vr_start();assert(loaded==0 and #nativeCommands==0)
+missingChannel=nil;serverReady=false;commands.lod_vr_start();assert(loaded==0)
+serverReady=true;commands.lod_vr_start();assert(loaded==1 and #nativeCommands==0)
+vrmod.GetStartupError=function() return nil end
+commands.lod_vr_start();assert(loaded==2 and nativeCommands[1]=='vrmod_start')
+g_VR.active=true;commands.lod_vr_start();assert(loaded==2);g_VR.active=false
+
 -- The exposed action seam preserves ordinary desktop binds and F semantics.
 ply.alive=false;ply.remaining=0;victory.active=false
 hooks.PlayerBindPress.LOD_DeathPlainRespawnInput(ply,"+attack",true)
@@ -113,5 +136,16 @@ local swap,tp=true,true
 settings.vrmod_weapon_swap={SetBool=function(_,v) swap=v end}
 settings.vrmod_allow_teleport={SetBool=function(_,v) tp=v end}
 hooks.Initialize.LOD_VRGameplayPolicy();assert(not swap and not tp)
+vrmod.NetReceiveLimited=noop;vrmod.GetHMDPose=noop;vrmod.GetLeftHandPose=noop;vrmod.GetRightHandPose=noop
+swap=true;tp=true -- Late addon/config initialization must not undo the policy.
+hooks.InitPostEntity.LOD_VRServerStartup()
+assert(serverReady and #downloads==11,'server startup proves all channels/APIs/content and distributes every asset')
+assert(not swap and not tp,'final map startup reapplies weapon/teleport policy after addon initialization')
+missingChannel='vrutil_net_join';hooks.InitPostEntity.LOD_VRServerStartup()
+assert(not serverReady and #downloads==11,'missing networking must not pass server readiness')
+missingChannel=nil;missingContent='models/player/vr_hands.mdl'
+hooks.InitPostEntity.LOD_VRServerStartup();assert(not serverReady)
+missingContent=nil;vrmod.GetHMDPose=nil
+assert(not LOD.VR:ServerReady(),'a pooled join string alone does not prove loaded server runtime')
 vrmod=nil;assert(not LOD.VR:IsActive(ply))
-print("PASS VR: optional dependency, HUD, menus, controller Tetris, life guards and desktop regressions")
+print("PASS VR: server readiness/assets, client start guards, HUD, menus, controller Tetris, life guards and desktop regressions")

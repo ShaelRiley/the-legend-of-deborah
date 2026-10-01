@@ -13,6 +13,10 @@ with tempfile.TemporaryDirectory() as tmp:
     script = repo / 'tools/server/run_public_server.sh'
     script.parent.mkdir(parents=True)
     shutil.copy2(ROOT / 'tools/server/run_public_server.sh', script)
+    shutil.copy2(ROOT / 'tools/install_vrmod.py', repo/'tools/install_vrmod.py')
+    shutil.copytree(ROOT/'third_party', repo/'third_party')
+    (repo/'tools/workshop').mkdir()
+    shutil.copy2(ROOT/'tools/workshop/addon.json', repo/'tools/workshop/addon.json')
     for name in ('gamemodes/legend_of_deborah/content/html', 'lua'):
         (repo / name).mkdir(parents=True)
         (repo / name / 'sample').write_text('new')
@@ -23,6 +27,7 @@ with tempfile.TemporaryDirectory() as tmp:
     sha = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
     addon = server / 'garrysmod/addons/the_legend_of_deborah'
     addon.mkdir(parents=True)
+    (server/'garrysmod/gameinfo.txt').write_text('fixture')
     (addon / 'old').write_text('old build')
     cfg = server / 'garrysmod/cfg/lod_public_server.cfg'
     cfg.parent.mkdir(parents=True)
@@ -53,6 +58,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert (server / '.lod-deploy/previous/old').read_text() == 'old build'
     assert not (addon / 'gamemodes/legend_of_deborah/content/html').exists()
     assert (addon / 'lua/sample').read_text() == 'new'
+    assert (server/'garrysmod/addons/vrmod-x64/lua/autorun/vrmod_init.lua').is_file()
+    assert (server/'garrysmod/addons/vrmod-x64/models/player/vr_hands.mdl').is_file()
     assert (addon / 'lod-build.txt').read_text() == sha + ' clean\n'
     assert (data.parent / 'dev_build.txt').read_text() == sha + ' clean\n'
     assert data.read_text() == 'persistent player data' and token.read_text() == 'test-placeholder-not-a-secret'

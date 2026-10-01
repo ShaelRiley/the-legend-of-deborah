@@ -12,6 +12,7 @@ Thumbs.db
 dist/
 *.gma
 *.zip
+!/third_party/vrmod-x64/upstream.zip
 __pycache__/
 /antigravity_bundle/
 
