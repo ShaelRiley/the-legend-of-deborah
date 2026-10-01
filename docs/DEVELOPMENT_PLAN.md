@@ -1,15 +1,22 @@
-# Current user-directed branch checkpoint — optional VRMod compatibility
+# Current user-directed branch checkpoint — VRMod server provisioning repair
 
 The current user explicitly requests VR support published as TheMemeticist on
-`master`, starting from main `df2d8f04ac5daa32f853330c38d2642af9d22dd7`.
-This branch adds controller access to existing menus/map/life/Tetris actions,
-retains headset camera ownership, enables gamemode HUD capture while in VR,
-and supplies a pinned server-addon installer. Gameplay authorities and the
-existing physical-keyboard Special Move recipes remain the baseline.
+`master`. The earlier compatibility checkpoint is merged into main
+`5b1b29166e03dfbc2faeca3634ddf379d0d84e6b`, but the live server reported its
+VRMod addon missing. This repair bundles the complete pinned Lua/content addon,
+installs and verifies it before every dedicated-server start, registers client
+content, and requires actual VR networking in the deployment health gate.
+Native startup also exposed weapon-definition hook return values stopping later
+map initialization; those callbacks now allow the lifecycle dispatch to continue.
+Controller menus, camera ownership and shared life/Tetris actions remain at
+their existing seams. Gameplay authorities and physical-keyboard Special Move
+recipes remain the baseline. `lod_vr_start` diagnoses the remaining client
+prerequisites and requests the upstream VR startup command.
 
 Finite gate: `python3 tools/test_vr_gate.py`; evidence and remaining headset/
-multiplayer gates are in `validation/VR_COMPATIBILITY.md`. The source branch
-does not update a running server or publish a Workshop package. The current
+multiplayer gates are in `validation/VR_COMPATIBILITY.md`. Deploy the source and
+fully restart the service to load the dependency. This checkpoint does not
+deploy the live VPS or publish a Workshop package. The current
 music checkpoint and its separate deployment/acceptance work remain below.
 
 # Previous main checkpoint — six-role music folder/ZIP catalog

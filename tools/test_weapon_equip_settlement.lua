@@ -2,11 +2,12 @@
 -- WeaponEquip: the hook is published from inside Player:Give's construction
 -- stack. Model that boundary by making every weapon access fail until Give has
 -- returned, then prove the real SMG capacity hook settles on the next tick.
-local handlers, queued = {}, {}
+local handlers, startup, queued = {}, {}, {}
 local function noop() end
 
 hook = {Add = function(event, name, fn)
     if event == "WeaponEquip" then handlers[name] = fn end
+    if event == "InitPostEntity" then startup[name] = fn end
 end}
 timer = {Simple = function(_, fn) queued[#queued + 1] = fn end}
 weapons = {GetStored = function() return {Primary = {}} end}
@@ -29,7 +30,17 @@ LOD = {
     }
 }
 
+dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_weapon_balance_pass.lua")
+dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_shotgun_ammo_tuning.lua")
 dofile("gamemodes/legend_of_deborah/gamemode/lod/sv_smg_capacity_rebalance.lua")
+-- GMod stops hook dispatch on any non-nil result, including false. Exercise
+-- actual definition callbacks with both present and missing stored weapons.
+for _, available in ipairs({true, false}) do
+    weapons.GetStored = function() return available and {Primary={}} or nil end
+    for name, fn in pairs(startup) do
+        assert(fn() == nil, name .. ' must allow campaign/VR startup hooks to run')
+    end
+end
 local onEquip = assert(handlers.LOD_SMGCapacityEquip)
 
 local player = {valid = true, weapons = {}, ammo = {SMG1 = 0}}

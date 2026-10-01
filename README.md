@@ -8,7 +8,8 @@ The [Game Design Document](https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq-
 
 Optional VRMod support for Quest/WiVRn and mixed desktop/VR multiplayer is
 documented in [VR setup and controls](docs/VR.md). Servers need the VRMod Lua
-dependency in addition to this gamemode.
+dependency in addition to this gamemode; the dedicated-server launcher installs
+and verifies the complete bundled addon automatically before starting Source.
 
 <details>
 <summary>Historical pre-RPG implementation and optimization checkpoint</summary>

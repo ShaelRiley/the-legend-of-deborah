@@ -45,6 +45,10 @@ with tempfile.TemporaryDirectory() as tmp:
     script.parent.mkdir(parents=True)
     shutil.copy2(ROOT/'tools/server/deploy_verified.sh', script)
     shutil.copy2(ROOT/'tools/server/run_public_server.sh', script.parent/'run_public_server.sh')
+    shutil.copy2(ROOT/'tools/install_vrmod.py', repo/'tools/install_vrmod.py')
+    shutil.copytree(ROOT/'third_party', repo/'third_party')
+    (repo/'tools/workshop').mkdir()
+    shutil.copy2(ROOT/'tools/workshop/addon.json', repo/'tools/workshop/addon.json')
     for name in ('gamemodes/legend_of_deborah/gamemode', 'lua'):
         (repo/name).mkdir(parents=True)
         (repo/name/'fixture').write_text('old')
@@ -57,11 +61,13 @@ with tempfile.TemporaryDirectory() as tmp:
     (repo/'lua/fixture').write_text('new')
     run('git','-C',str(repo),'commit','-qam','new')
     target=run('git','-C',str(repo),'rev-parse','HEAD')
+    run('git','-C',str(repo),'branch','master',target)
     run('git','clone','--bare','-q',str(repo),str(remote))
     run('git','-C',str(repo),'remote','add','origin',str(remote))
     run('git','-C',str(repo),'switch','--detach',before)
     data=server/'garrysmod/data/legend_of_deborah/player-record'
     data.parent.mkdir(parents=True)
+    (server/'garrysmod/gameinfo.txt').write_text('fixture')
     data.write_text('preserve')
     cfg=server/'garrysmod/cfg/lod_public_server.cfg'
     cfg.parent.mkdir(parents=True)
@@ -73,7 +79,7 @@ with tempfile.TemporaryDirectory() as tmp:
     scripts={
         'sudo':'#!/bin/sh\n[ "$1" = -v ] && exit 0\nexec "$@"\n',
         'sleep':'#!/bin/sh\nexit 0\n',
-        'journalctl':'#!/bin/sh\nif [ -n "$LOD_TEST_BAD_LOG" ]; then echo "Lua Error"; else echo "Connection to Steam servers successful"; fi\n',
+        'journalctl':'#!/bin/sh\nif [ -n "$LOD_TEST_BAD_LOG" ]; then echo "Lua Error"; else echo "Connection to Steam servers successful"; [ -z "$LOD_TEST_NO_VR" ] && echo "[LOD VR] Server runtime ready: fixture"; fi\nexit 0\n',
         'python3':f'#!/bin/sh\ncase "$1" in */query_server.py) echo \'{{"map":"gm_flatgrass"}}\'; exit 0;; esac\nexec "{sys.executable}" "$@"\n',
         'systemctl':'''#!/bin/bash
 case "$1" in
@@ -93,15 +99,27 @@ esac
     assert result.returncode==0, result.stdout+result.stderr
     assert 'DEPLOYED '+target in result.stdout
     assert data.read_text()=='preserve' and cfg.read_text()=='operator configuration'
+    assert (server/'garrysmod/addons/vrmod-x64/lua/autorun/vrmod_init.lua').is_file()
     assert run('git','-C',str(repo),'rev-parse','HEAD')==target
     backups=list((base/'backups').iterdir())
     assert len(backups)==1 and (backups[0]/'previous-commit.txt').read_text().strip()==before
     assert (backups[0]/'data/legend_of_deborah/player-record').read_text()=='preserve'
+    # The requested master checkpoint can be tested before its main merge.
+    run('git','--git-dir',str(remote),'update-ref','refs/heads/main',before)
+    run('git','-C',str(repo),'switch','--detach',before)
+    result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_RELEASE_BRANCH='master'),capture_output=True,text=True)
+    assert result.returncode==0 and run('git','-C',str(repo),'rev-parse','HEAD')==target, result.stdout+result.stderr
+    run('git','--git-dir',str(remote),'update-ref','refs/heads/main',target)
     # A bad fresh startup log rolls source back, restarts and keeps player records.
     run('git','-C',str(repo),'switch','--detach',before)
     result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_TEST_BAD_LOG='1'),capture_output=True,text=True)
     assert result.returncode!=0 and run('git','-C',str(repo),'rev-parse','HEAD')==before
     assert state.read_text().strip()=='active' and data.read_text()=='preserve'
+    # A healthy-looking desktop-only server must fail the VR release gate.
+    run('git','-C',str(repo),'switch','--detach',before)
+    result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_TEST_NO_VR='1'),capture_output=True,text=True)
+    assert result.returncode!=0 and run('git','-C',str(repo),'rev-parse','HEAD')==before
+    assert 'VR startup gate failed' in result.stdout and data.read_text()=='preserve'
     # Uncommitted operator work is rejected before service interruption.
     (repo/'operator-work').write_text('keep')
     result=subprocess.run(['bash',str(script),target],env=env,capture_output=True,text=True)

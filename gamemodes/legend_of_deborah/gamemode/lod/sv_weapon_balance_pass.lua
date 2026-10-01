@@ -125,7 +125,9 @@ local function clampAR2(ply)
 end
 
 configureAR2Definition()
-hook.Add("InitPostEntity", "LOD_AR2BalanceDefinition", configureAR2Definition)
+-- Definition success is private to this setup function. A non-nil hook result
+-- stops GMod's lifecycle dispatch and prevents later campaign/VR initialization.
+hook.Add("InitPostEntity", "LOD_AR2BalanceDefinition", function() configureAR2Definition() end)
 hook.Add("OnReloaded", "LOD_AR2BalanceReloadDefinition", configureAR2Definition)
 hook.Add("WeaponEquip", "LOD_AR2BalanceEquip", function(weapon, ply)
     timer.Simple(0, function()
