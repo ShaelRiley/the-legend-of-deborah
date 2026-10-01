@@ -66,6 +66,13 @@ setup();e.now=e.now+.01;N:Tick();e.now=e.now+.2;N:Tick()
 check(N.Bridge and N:Count()==1,'one quiet local bridge covers a real gap')
 for _=1,50 do e.now=e.now+.01;N:Tick();check(N:Count()==1,'bridge never accumulates') end
 e.now=e.now+8;N:Tick();check(N.Errors==3 and not N.Bridge,'persistent gap stops bridge and reports failure')
+setup();local playFile=sound.PlayFile
+sound.PlayFile=function(path,flags,callback) callback(nil,2,'BASS_ERROR_FILEOPEN') end
+prepare('alpha',1);local originalError=N.Error
+check(originalError and originalError:find('BASS_ERROR_FILEOPEN',1,true),'native open error contains the engine cause')
+N:Tick();e.now=e.now+8.1;N:Tick()
+check(N.Error==originalError and N.Errors>=3,'gap timeout preserves the first native audio error')
+sound.PlayFile=playFile
 N:Stop();setup();N:SetVolume(0);N:Tick();check(not N.Ready and N:Count()==0,'zero volume tears down playback')
 -- Independent admission limits also hold for malformed internal preparations.
 setup();local meta=bank.clips.delta_t0_000

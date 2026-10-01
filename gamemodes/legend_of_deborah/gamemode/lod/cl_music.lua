@@ -33,7 +33,7 @@ end
 function D:Stop()
     self.Generation=(self.Generation or 0)+1
     if IsValid(self.Panel) then self.Panel:Remove() end
-    self.Panel=nil;self.Ready=false;self.Backend=nil;self.Stats=nil;self.SentAssets={};self.Synced=nil;self.Payloads={};self.Pages={};self.PlanParts={}
+    self.Panel=nil;self.Ready=false;self.ReadyDeadline=nil;self.Backend=nil;self.Stats=nil;self.SentAssets={};self.Synced=nil;self.Payloads={};self.Pages={};self.PlanParts={}
     if self.Victory then self.Victory.finished=true;self:RememberVictory(self.Victory.id) end
     N:Stop()
     local accent=LOD.AdventurePresentation
@@ -93,7 +93,7 @@ function D:StartRenderer()
             if backend~="surge-rendered" or not N:SyncClock(stamp) then
                 D.Error="Surge phrase clock did not initialize";D.RetryAt=SysTime()+10;D:Stop();return
             end
-            D.Ready=true;D.Backend=backend;D.Error=nil;D.Synced=nil
+            D.Ready=true;D.ReadyDeadline=nil;D.RetryAt=nil;D.Backend=backend;D.Error=nil;D.Synced=nil
         end)
         self:AddFunction("lodms2","block",function(bid) if live() then D:Announce(bid) end end)
         self:AddFunction("lodms2","victory",function() if live() and D.Victory then D.Victory.finished=true;D.Synced=nil end end)
@@ -179,7 +179,7 @@ function D:Tick()
         if self.FrameAverage>M.Tuning.frameLimit then self.RecoverAt=SysTime()+M.Tuning.recovery end
         self.Quality=SysTime()<(self.RecoverAt or 0) and 0 or 1
         self:StartRenderer()
-        if not self.Ready and self.ReadyDeadline and SysTime()>self.ReadyDeadline then
+        if not self.Ready and IsValid(self.Panel) and self.ReadyDeadline and SysTime()>self.ReadyDeadline then
             self.Error="MS2 renderer did not initialize";self.RetryAt=SysTime()+10;self:Stop()
         end
         self:Sync()
@@ -247,5 +247,7 @@ concommand.Add("lod_music_client_status",function()
         plan=D.Current and D.Current.plan,catalog=D.Catalog and D.Catalog.revision,quality=D.Quality,
         metadataAssets=table.Count(D.Payloads),stats=D.Stats,renderBank=D.RenderBank and D.RenderBank.revision,
         patchBank=D.RenderBank and D.RenderBank.patchRevision,role=D.Ready and D.PlaybackRole or nil,
-        blocks=D.AudibleTargets,playback=N:Status(),error=D.Error,streamedBytes=0}))
+        blocks=D.AudibleTargets,playback=N:Status(),error=D.Error,
+        retryIn=math.max(0,(D.RetryAt or 0)-SysTime()),
+        startupPending=not D.Ready and IsValid(D.Panel),streamedBytes=0}))
 end)

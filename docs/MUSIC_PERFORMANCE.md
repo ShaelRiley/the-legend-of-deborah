@@ -21,7 +21,8 @@ The runtime bank is **59,993,192 bytes (59.993 MB / 57.214 MiB)**. Its largest p
 | Fanfare | One accepted twelve-beat receipt; start only if it still fits the server window. |
 | Gain | Square-root floor weights, 700 ms fades, onset/tail envelopes; channel updates at most 30 Hz and only when changed. |
 | Quiet bridge | One Surge-rendered D/A loop, ten percent master gain; starts only after a 150 ms gap, stops on musical recovery or eight seconds of persistent failure. |
-| Failure | Three native open/duration errors or an eight-second gap tears down playback; ten-second retry backoff. |
+| Failure | Three native open/duration errors or an eight-second gap tears down playback; fixed ten-second retry backoff. Preserve the first native cause, including expected/actual duration when mismatched. |
+| Startup | Five-second deadline for the current initializing panel only; cleared on readiness or teardown. An expired former deadline cannot delay recovery. |
 | Lua payload cache | Four arrangement metadata entries; zero decoded note pages. |
 | JavaScript metadata | Prunes arrangements unreferenced by current/retiring lanes; one pending token per audible lane. |
 | Server metadata | Existing 4 KiB global tick budget, 1 KiB plan pieces, 0.5 ms service budget. |

@@ -1,4 +1,12 @@
-# Current author-directed checkpoint — MS2 Surge backbone
+# Current repair checkpoint — MS2 playback recovery
+
+The author reports silence on Surge main `795001f1fa27dc9c99a5d79ae845ed78a2a7a0da`. Production regressions reproduce an expired HTML startup deadline repeatedly extending the ten-second native-failure retry, and a later gap timeout overwriting the first audio-open error. Startup readiness/teardown now clear that panel's deadline; only a live initializing panel may time out. The first native error survives later open/bridge/gap failures, and status exposes the fixed remaining backoff and pending startup. The unchanged catalog, audio bank, server authority and host Options remain regression constraints. See [focused evidence](validation/MS2_SURGE_RECOVERY.md).
+
+Required source gates remain the complete music gate, actual audio decode and canonical integration matrix. Native silence is reported; its initial engine diagnostic was not recoverable, so audibility after this correction requires fresh evidence. Next action: fully quit/update/install the exact published source, start LoD on gm_flatgrass, enable Options → Music and listen in staging. If silent, run `lod_music_client_status` and preserve its exact output plus `console_latest.txt` and `rpg_summary_latest.txt`. Source publication does not publish Workshop or deploy the VPS.
+
+---
+
+# Previous author-directed checkpoint — MS2 Surge backbone
 
 From verified main `c4fb2c0c497b661f0fa7bb972a5c3fe6683b3517`, the author replaces primary live note synthesis with offline custom Surge XT 1.3.4 rendering and bounded local Ogg phrase playback. The eight-block/48-arrangement/1,402-phrase/170,860-note catalog and server MusicDirector remain authoritative. Bank `ms2-surge-0f7591eb682f3b2b` contains 1,402 phrases plus one bridge at 59,993,192 encoded bytes. Acid has strong held-note filter movement; readable patches, pinned external build glue, complete hashes/levels and a 47.7-second audition are committed. No Surge runtime dependency or soundtrack streaming is required.
 

@@ -20,7 +20,7 @@ Effects, dialogue and essential gameplay cues retain their own controls. Inspect
 lod_music_status; lod_music_client_status
 ```
 
-Healthy client playback reports `system=MS2`, `backend=surge-rendered`, catalog/render/patch revisions, floor targets, role, current/prepared clips, bridge, channels, pending opens, estimated PCM bytes, late skips/resyncs and errors. Composer statistics arrive asynchronously; a later status call includes the sample. `streamedBytes=0` excludes the initial game-content download.
+Healthy client playback reports `system=MS2`, `backend=surge-rendered`, catalog/render/patch revisions, floor targets, role, current/prepared clips, bridge, channels, pending opens, estimated PCM bytes, late skips/resyncs and errors. `retryIn` reports the remaining fixed recovery backoff, and `startupPending` identifies a live panel awaiting initialization. The first native open/duration error survives a subsequent gap timeout. Composer statistics arrive asynchronously; a later status call includes the sample. `streamedBytes=0` excludes the initial game-content download.
 
 | Operator control | Behavior |
 | --- | --- |
@@ -61,7 +61,7 @@ Human-readable [patches.json](../tools/music/surge/patches.json) defines nine lo
 
 Fixed instrument gains plus restrained 27 Hz high-pass / 11.5 kHz low-pass master conditioning retain arrangement dynamics. No per-phrase loudness normalization or heavy compression is applied. Held Acid's spectral movement is measured by the authoring gate; subjective timbre remains a listening gate.
 
-A hidden input-free DHTML panel runs only the ES5 composer/grid. Native `sound.PlayFile` with `noplay noblock` prepares validated local assets; a bounded `IGModAudioChannel` pool plays complete phrases. The runtime does no note synthesis, time stretch or pitch shift. Missing/failed assets produce diagnostics and a ten-second retry backoff. A single quiet Surge string D/A bridge may cover a real gap for at most eight seconds. Persistent failure stops playback. Legacy oscillator/tone engines are retired; a diagnostic and silence are the failure policy.
+A hidden input-free DHTML panel runs only the ES5 composer/grid. Native `sound.PlayFile` with `noplay noblock` prepares validated local assets; a bounded `IGModAudioChannel` pool plays complete phrases. The runtime does no note synthesis, time stretch or pitch shift. Missing/failed assets produce diagnostics and a ten-second retry backoff. The five-second startup deadline belongs only to the current initializing panel; readiness or teardown clears it, so backoff cannot be continually postponed by an old timeout. A single quiet Surge string D/A bridge may cover a real gap for at most eight seconds. Persistent failure stops playback. Legacy oscillator/tone engines are retired; a diagnostic and silence are the failure policy.
 
 ## Build and verify
 

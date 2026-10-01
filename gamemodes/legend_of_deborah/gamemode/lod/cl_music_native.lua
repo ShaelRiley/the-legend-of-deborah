@@ -67,18 +67,19 @@ function N:Open(r)
         self.Opens[r.key]=nil
         if r.cancelled or r.generation~=self.Generation or not self.Ready or self.Records[r.key]~=r then stop(channel);return end
         if not IsValid(channel) then
-            self.Error="Surge phrase open failed: "..r.clip.." ("..tostring(code)..": "..tostring(name)..")"
+            self.Error=self.Error or "Surge phrase open failed: "..r.clip.." ("..tostring(code)..": "..tostring(name)..")"
             self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return
         end
         local length=channel:GetLength()
         if type(length)~="number" or length~=length or math.abs(length-r.duration)>.08 then
-            stop(channel);self.Error="Surge phrase duration mismatch: "..r.clip;self.Errors=self.Errors+1
+            stop(channel);self.Error=self.Error or "Surge phrase duration mismatch: "..r.clip
+                .." (expected "..tostring(r.duration)..", got "..tostring(length)..")";self.Errors=self.Errors+1
             self:Result(r,false);self:Release(r);return
         end
         r.channel=channel;channel:SetVolume(0);channel:EnableLooping(r.bridge==true)
         -- The Think loop alone may start it, at its still-valid deadline.
     end)
-    if not ok then self.Opens[r.key]=nil;self.Error=tostring(err);self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return false end
+    if not ok then self.Opens[r.key]=nil;self.Error=self.Error or tostring(err);self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return false end
     return true
 end
 function N:Prepare(token,lane,clip,delay,deadline)
@@ -116,7 +117,7 @@ function N:BridgeGap(now,gap)
     -- One short bridge only. A repeated failure is surfaced, never hidden by an
     -- eternal drone or a second engine. It is capped at eight seconds per gap.
     if gap and now-self.GapSince>=8 then
-        self.Error="Surge phrase gap exceeds eight seconds";self.Errors=3
+        self.Error=self.Error or "Surge phrase gap exceeds eight seconds";self.Errors=math.max(self.Errors,3)
         self:Release(self.Bridge);self.Bridge=nil;return
     end
     local wanted=gap and now-(self.GapSince or now)>.15 and now-self.GapSince<8 and self.Errors<3
