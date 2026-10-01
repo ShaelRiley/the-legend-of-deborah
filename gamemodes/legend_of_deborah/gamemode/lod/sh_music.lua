@@ -82,12 +82,14 @@ function M.LoadRenderBank(catalog)
     for _,a in pairs(catalog.assets) do for _,clip in ipairs(a.clips) do
         local r=b.clips[clip.id]
         if type(r)~="table" or r.beats~=clip.beats or type(r.duration)~="number" or r.duration~=r.duration
-            or r.duration<clip.beats*60/b.bpm or r.duration>clip.beats*60/b.bpm+1 then return nil,"Invalid Surge phrase "..clip.id end
+            or r.duration<clip.beats*60/b.bpm or r.duration>clip.beats*60/b.bpm+1
+            or type(r.peak)~="number" or r.peak~=r.peak or r.peak<=0 or r.peak>.9 then return nil,"Invalid Surge phrase "..clip.id end
         seen[clip.id]=true
     end end
     for id in pairs(b.clips) do if not seen[id] then return nil,"Orphan Surge phrase "..tostring(id) end end
     if type(b.bridge)~="table" or type(b.bridge.duration)~="number" or b.bridge.duration~=b.bridge.duration
-        or b.bridge.duration<1 or b.bridge.duration>8 then return nil,"Invalid Surge bridge" end
+        or b.bridge.duration<1 or b.bridge.duration>8 or type(b.bridge.peak)~="number"
+        or b.bridge.peak~=b.bridge.peak or b.bridge.peak<=0 or b.bridge.peak>.9 then return nil,"Invalid Surge bridge" end
     return b
 end
 function M.Pool(c,selection)

@@ -1,4 +1,14 @@
-# Current repair checkpoint — MS2 playback recovery
+# Current repair checkpoint — MS2 audible playback level
+
+The author confirms music is audible on recovered main `b0f86dccedae3093355c239cd9608662b80cfd58`, but far too quiet. Median decoded Chill is about −36.81 dBFS, falling to −42.00 dBFS at the saved default 0.55 volume. The canonical native phrase seam now applies gain 4 (+12.04 dB), with one shared estimated score peak ceiling of 0.8. Existing decoded-peak metadata bounds floor lanes, natural tails, the quiet bridge and gains awaiting their 30 Hz writes. Decreases precede increases; each increase uses only remaining headroom. The common reduction preserves square-root stair weights and arrangement dynamics. Saved volume, Off, the catalog/composer, server authority and all encoded audio remain regression constraints.
+
+Live GDD 00 → 01 → 06/07 and the explicit author Surge brief govern. Google rejected the tuning insertion with `FAILED_PRECONDITION`; its exact authorized but unapplied text is in [MS2_LOUDNESS_GDD_AMENDMENTS.json](validation/MS2_LOUDNESS_GDD_AMENDMENTS.json). The metadata-only producer change refreshes renderer provenance without changing synthesis or the bank's 59,993,192 audio bytes. See [focused evidence](validation/MS2_LOUDNESS.md).
+
+Required source gates remain the complete music gate, actual full-bank decode and canonical integration matrix. Prior playback audibility is now runtime observed; louder balance still requires fresh native evidence. Next action: fully quit/update/install exact published main, enable Options → Music, and compare staging, danger and a stair crossing at the current volume setting. Confirm useful loudness, clear musical balance and no distortion; lower the slider to confirm control. Preserve `lod_music_client_status`, `console_latest.txt` and `rpg_summary_latest.txt` only if a defect remains. Workshop and VPS are separate actions.
+
+---
+
+# Previous repair checkpoint — MS2 playback recovery
 
 The author reports silence on Surge main `795001f1fa27dc9c99a5d79ae845ed78a2a7a0da`. Production regressions reproduce an expired HTML startup deadline repeatedly extending the ten-second native-failure retry, and a later gap timeout overwriting the first audio-open error. Startup readiness/teardown now clear that panel's deadline; only a live initializing panel may time out. The first native error survives later open/bridge/gap failures, and status exposes the fixed remaining backoff and pending startup. The unchanged catalog, audio bank, server authority and host Options remain regression constraints. See [focused evidence](validation/MS2_SURGE_RECOVERY.md).
 

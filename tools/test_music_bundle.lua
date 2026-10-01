@@ -27,6 +27,21 @@ D:Tick()
 check(e.panel and e.panel.html:find('MS2',1,true),'client loads the actual phrase-control engine')
 e.panel.functions['lodms2.ready']('surge-rendered',e.now);D:Sync()
 check(D.Ready and D.Synced and next(D.Payloads),'client hands phrase metadata and state to playback')
+-- Peak metadata is part of safe gain admission, not an optional diagnostic.
+local M=LOD.Music;local original=M.IncludeBundled
+local render=util.JSONToTable(assert(original('render.lua')),true)
+local clipId=next(render.clips);local clip=render.clips[clipId];local peak=clip.peak
+local function alteredBank() return util.TableToJSON(render) end
+M.IncludeBundled=function(name) if name=='render.lua' then return alteredBank() end;return original(name) end
+for _,bad in ipairs({0,-.1,1,'0.2'}) do
+ clip.peak=bad;check(not M.LoadRenderBank(D.Catalog),'unsafe phrase peak is rejected before native amplification')
+end
+clip.peak=nil;check(not M.LoadRenderBank(D.Catalog),'missing phrase peak is rejected before native amplification')
+clip.peak=peak;render.bridge.peak=0
+check(not M.LoadRenderBank(D.Catalog),'unsafe bridge peak is rejected before native amplification')
+render.bridge.peak=.04
+check(M.LoadRenderBank(D.Catalog),'complete finite peak metadata admits playback')
+M.IncludeBundled=original
 e.realBundle=true
 local files=assert(LOD.Music.IncludeBundled('files.lua'))
 for _,name in ipairs(files) do

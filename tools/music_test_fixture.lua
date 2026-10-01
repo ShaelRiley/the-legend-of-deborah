@@ -65,9 +65,9 @@ sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
   assert(path:match('^sound/lod/ms2_surge/[a-z0-9_-]+%.ogg$'),'only validated local Surge phrases')
   assert(flags=='noplay noblock','asynchronous preparation cannot autoplay')
   local id=path:match('/([^/]+)%.ogg$');local bank=LOD.MusicNative.Bank;local meta=id=='bridge' and bank.bridge or bank.clips[id]
-  local channel={valid=true,volume=0,id=id}
+  local channel={valid=true,volume=0,id=id,peak=meta.peak}
   function channel:GetLength() return meta.duration end
-  function channel:SetVolume(v) self.volume=v;E.volumeWrites=E.volumeWrites+1 end
+  function channel:SetVolume(v) self.volume=v;E.volumeWrites=E.volumeWrites+1;if E.onVolumeWrite then E.onVolumeWrite() end end
   function channel:EnableLooping(v) self.loop=v end
   function channel:Play() self.played=E.now;E.plays=E.plays+1 end
   function channel:Stop() if self.valid then E.stops=E.stops+1 end;self.valid=false end
@@ -113,8 +113,8 @@ function include(path)
  if not mountedLua(path) then error("Couldn't include file '"..path.."' - File not found or is empty") end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/render.lua' then
-  local c=E.catalog();local b={schema=1,revision='surge-fixture',catalogRevision=c.revision,patchRevision='lod-va-fixture',bpm=c.bpm,clips={},bridge={duration=4}}
-  for _,a in pairs(c.assets) do for _,clip in ipairs(a.clips) do b.clips[clip.id]={beats=clip.beats,duration=clip.beats*60/c.bpm+.55} end end
+  local c=E.catalog();local b={schema=1,revision='surge-fixture',catalogRevision=c.revision,patchRevision='lod-va-fixture',bpm=c.bpm,clips={},bridge={duration=4,peak=.04}}
+  for _,a in pairs(c.assets) do for _,clip in ipairs(a.clips) do b.clips[clip.id]={beats=clip.beats,duration=clip.beats*60/c.bpm+.55,peak=.12} end end
   return util.TableToJSON(b)
  end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/notes_000.lua' then

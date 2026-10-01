@@ -5,6 +5,7 @@ LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipp
 local N,M=LOD.MusicNative,LOD.Music
 local MAX_CHANNELS,MAX_OPENS,MAX_PCM=8,2,32*1024*1024
 local LATE,FADE=.06,.7
+local MASTER_GAIN,PEAK_CEILING=4,.8
 local function stop(channel) if IsValid(channel) then channel:Stop() end end
 function N:Count() local n=0;for _ in pairs(self.Records) do n=n+1 end;for _,r in pairs(self.Opens) do if not self.Records[r.key] then n=n+1 end end;return n end
 function N:Bytes()
@@ -20,7 +21,7 @@ function N:Stop()
     -- Uncancellable native opens continue to occupy the two-open ceiling until
     -- their stale callbacks dispose the channel. Off/On cannot grow this pool.
     for _,r in pairs(self.Opens) do r.cancelled=true end
-    self.Records={};self.Lanes={};self.Bridge=nil;self.GapSince=nil;self.Callback=nil;self.ClockOffset=nil
+    self.Records={};self.Lanes={};self.Bridge=nil;self.GapSince=nil;self.Callback=nil;self.ClockOffset=nil;self.HeadroomScale=1
 end
 function N:SyncClock(stamp)
     if type(stamp)~="number" or stamp~=stamp or stamp<0 or stamp>9e15 then return false end
@@ -76,7 +77,7 @@ function N:Open(r)
                 .." (expected "..tostring(r.duration)..", got "..tostring(length)..")";self.Errors=self.Errors+1
             self:Result(r,false);self:Release(r);return
         end
-        r.channel=channel;channel:SetVolume(0);channel:EnableLooping(r.bridge==true)
+        r.channel=channel;channel:SetVolume(0);r.lastGain=0;channel:EnableLooping(r.bridge==true)
         -- The Think loop alone may start it, at its still-valid deadline.
     end)
     if not ok then self.Opens[r.key]=nil;self.Error=self.Error or tostring(err);self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return false end
@@ -109,7 +110,42 @@ function N:Prepare(token,lane,clip,delay,deadline)
         self:Result({token=token},false);return
     end
     self:Open({token=token,lane=lane,clip=clip,path="sound/lod/ms2_surge/"..clip..".ogg",
-        due=due,musical=musical,duration=meta.duration,bytes=math.ceil(meta.duration*44100)*8})
+        due=due,musical=musical,duration=meta.duration,peak=meta.peak,bytes=math.ceil(meta.duration*44100)*8})
+end
+function N:WrittenPeak(includeBridge)
+    local peak=0
+    for _,r in pairs(self.Records) do
+        if r.started and not r.cancelled and (includeBridge or not r.bridge) then peak=peak+r.peak*(r.lastGain or 0) end
+    end
+    return peak
+end
+function N:ApplyGains(now,ordered,total)
+    -- One common master reduction preserves the authored floor blend. Peaks
+    -- are measured offline; no samples, FFT or live normalization are needed.
+    local bridge=self.Bridge
+    local reserve=self.Bank.bridge.peak*math.max(.10*self.Volume,bridge and bridge.lastGain or 0)
+    local capacity=math.max(0,PEAK_CEILING-reserve)
+    local scale=total>0 and math.min(1,capacity/total) or 1;self.HeadroomScale=scale
+    -- Reduce before increasing, including channels still waiting for their
+    -- paced write. The actual written sum, not just its target, owns headroom.
+    for _,r in ipairs(ordered) do
+        if r.started and not r.cancelled then
+            r.targetGain=r.targetGain*scale
+            if now>=(r.nextGain or 0) and r.targetGain<(r.lastGain or 0)-.001 then
+                r.channel:SetVolume(r.targetGain);r.lastGain=r.targetGain;r.nextGain=now+1/30
+            end
+        end
+    end
+    local used=self:WrittenPeak(false)
+    for _,r in ipairs(ordered) do
+        if r.started and not r.cancelled and now>=(r.nextGain or 0) then
+            local value=math.min(r.targetGain,(r.lastGain or 0)+math.max(0,capacity-used)/r.peak)
+            if value>(r.lastGain or 0)+.001 then
+                used=used+r.peak*(value-(r.lastGain or 0))
+                r.channel:SetVolume(value);r.lastGain=value;r.nextGain=now+1/30
+            end
+        end
+    end
 end
 function N:BridgeGap(now,gap)
     if not gap then self.GapSince=nil
@@ -123,7 +159,7 @@ function N:BridgeGap(now,gap)
     local wanted=gap and now-(self.GapSince or now)>.15 and now-self.GapSince<8 and self.Errors<3
     if wanted and not self.Bridge and self.Bank.bridge then
         local m=self.Bank.bridge;local r={bridge=true,clip="bridge",path="sound/lod/ms2_surge/bridge.ogg",
-            due=now,duration=m.duration,bytes=math.ceil(m.duration*44100)*8}
+            due=now,duration=m.duration,peak=m.peak,bytes=math.ceil(m.duration*44100)*8}
         if self:Open(r) then self.Bridge=r end
     end
     local r=self.Bridge;if not r then return end
@@ -131,15 +167,16 @@ function N:BridgeGap(now,gap)
     if r.channel and not r.started and wanted then r.channel:Play();r.started=now;r.gain=0 end
     local target=wanted and .10*self.Volume or 0
     r.gain=math.Approach(r.gain or 0,target,.5*math.min(.05,now-(self.LastTick or now)))
-    if r.channel and now>=(r.nextGain or 0) and math.abs(r.gain-(r.lastGain or -1))>.001 then
-        r.channel:SetVolume(r.gain);r.lastGain=r.gain;r.nextGain=now+1/30
+    local value=math.min(r.gain,math.max(0,PEAK_CEILING-self:WrittenPeak(false))/r.peak)
+    if r.channel and now>=(r.nextGain or 0) and math.abs(value-(r.lastGain or 0))>.001 then
+        r.channel:SetVolume(value);r.lastGain=value;r.nextGain=now+1/30
     end
     if not wanted and r.gain<=0 then self:Release(r);self.Bridge=nil end
 end
 function N:Tick()
     if not self.Ready then return end
     if self.Volume<=0 then self:Stop();return end
-    local now=SysTime();local startedThisFrame={};local audible=false
+    local now=SysTime();local startedThisFrame={};local audible=false;local total=0
     -- Records contain <=8 items; stable due/key order makes overlapping or
     -- deliberately malformed preparations unable to start twice in one lane.
     local ordered={};for _,r in pairs(self.Records) do if not r.bridge then ordered[#ordered+1]=r end end
@@ -170,14 +207,13 @@ function N:Tick()
             else
                 local mix=l.from+(l.value-l.from)*math.Clamp((now-l.at)/FADE,0,1)
                 local envelope=math.min(1,(now-r.started)/.008,math.max(0,(ends-now)/.06))
-                local value=mix*self.Volume*envelope
+                local value=mix*self.Volume*envelope*MASTER_GAIN
+                r.targetGain=value;total=total+r.peak*value
                 if value>0 then audible=true end
-                if now>=(r.nextGain or 0) and math.abs(value-(r.lastGain or -1))>.001 then
-                    r.channel:SetVolume(value);r.lastGain=value;r.nextGain=now+1/30
-                end
             end
         end
     end
+    self:ApplyGains(now,ordered,total)
     self:BridgeGap(now,not audible and next(self.Lanes)~=nil)
     self.LastTick=now
 end
@@ -187,5 +223,7 @@ function N:Status()
         if r.started then current[r.lane]=r.clip else prepared[r.lane]=r.clip end
     end end
     return {currentClips=current,preparedClips=prepared,bridge=self.Bridge~=nil,channels=self:Count(),peakChannels=self.Peak,
-        pendingOpens=table.Count(self.Opens),estimatedPCMBytes=self:Bytes(),nativeLateSkipped=self.Skipped,error=self.Error}
+        pendingOpens=table.Count(self.Opens),estimatedPCMBytes=self:Bytes(),nativeLateSkipped=self.Skipped,error=self.Error,
+        playerVolume=self.Volume,masterGain=MASTER_GAIN,headroomScale=self.HeadroomScale,
+        estimatedMusicPeak=self:WrittenPeak(true),peakCeiling=PEAK_CEILING}
 end

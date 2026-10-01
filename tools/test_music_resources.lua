@@ -2,8 +2,8 @@
 local e=dofile('tools/music_test_fixture.lua');local check=e.check
 CLIENT=true;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua');dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
 local D,M,N=LOD.MusicDirector,LOD.Music,LOD.MusicNative
-local catalog=e.catalog();local bank={bpm=130,clips={},bridge={duration=4}}
-for _,a in pairs(catalog.assets) do for _,c in ipairs(a.clips) do bank.clips[c.id]={beats=c.beats,duration=c.beats*60/130+.55} end end
+local catalog=e.catalog();local bank={bpm=130,clips={},bridge={duration=4,peak=.04}}
+for _,a in pairs(catalog.assets) do for _,c in ipairs(a.clips) do bank.clips[c.id]={beats=c.beats,duration=c.beats*60/130+.55,peak=.12} end end
 local results={};local serial=0
 local function setup()
  N:Configure(catalog,bank,function(token,played) results[token]=played end)
@@ -13,11 +13,40 @@ end
 local function prepare(lane,delay,clip)
  serial=serial+1;local token=tostring(serial);N:Prepare(token,lane,clip or 'delta_t0_000',delay,e.now+delay);return token
 end
-setup();local token=prepare('alpha',1);local channel=e.channels[#e.channels]
+-- Observe every native volume write, not just its end-of-frame target. Old
+-- tails and channels waiting for their paced write also consume headroom.
+function e.onVolumeWrite()
+ local peak=0
+ for _,c in ipairs(e.channels or {}) do if c.valid then peak=peak+c.volume*c.peak end end
+ check(peak<=.800001,'actual written score gains preserve shared peak headroom')
+end
+setup();N:SetMix('alpha',1);N:SetMix('beta',0);prepare('alpha',1)
+local boosted=e.channels[#e.channels]
+e.now=e.now+1;N:Tick();e.now=e.now+.1;N:Tick()
+check(math.abs(boosted.volume-2.2)<1e-8,'quiet phrases receive a fourfold native boost at saved 55 percent volume')
+N:SetVolume(.275);e.now=e.now+.1;N:Tick()
+check(math.abs(boosted.volume-1.1)<1e-8,'player volume remains proportional below the headroom ceiling')
+N:Stop();local quietPeak=bank.clips.delta_t0_000.peak;bank.clips.delta_t0_000.peak=.9
+setup();N:SetVolume(1);prepare('alpha',1);prepare('beta',1)
+e.now=e.now+1;N:Tick();e.now=e.now+.1;N:Tick()
+local second=e.channels[#e.channels];local first=e.channels[#e.channels-1]
+check(first.volume>.4 and math.abs(first.volume-second.volume)<1e-8,'loud stair lanes share one common headroom reduction')
+N:SetMix('alpha',math.sqrt(.75));N:SetMix('beta',math.sqrt(.25))
+e.now=e.now+.8;N:Tick();e.now=e.now+.04;N:Tick()
+check(math.abs(first.volume/second.volume-math.sqrt(3))<1e-8,'common headroom reduction preserves unequal square-root stair weights')
+local status=N:Status()
+check(status.masterGain==4 and status.playerVolume==1 and status.headroomScale<1
+ and status.estimatedMusicPeak<=status.peakCeiling,'status exposes effective shared headroom and saved player volume')
+for _=1,8 do
+ N:SetMix('alpha',.9);N:SetMix('beta',.1);N:SetVolume(.55);e.now=e.now+.011;N:Tick()
+ N:SetMix('alpha',.1);N:SetMix('beta',.9);N:SetVolume(1);e.now=e.now+.017;N:Tick()
+end
+N:Stop();bank.clips.delta_t0_000.peak=quietPeak
+setup();local playCount=e.plays;local token=prepare('alpha',1);local channel=e.channels[#e.channels]
 check(not channel.played,'asynchronous preparation never autoplays')
 e.now=e.now+.99;N:Tick();check(not channel.played,'early readiness waits for the shared boundary')
 e.now=e.now+.01;N:Tick();check(channel.played==e.now and results[token]==true,'one intended phrase starts on time')
-N:Tick();check(e.plays==1,'repeated frame cannot duplicate phrase start')
+N:Tick();check(e.plays==playCount+1,'repeated frame cannot duplicate phrase start')
 check(N:Count()<=3 and N:Bytes()<32*1024*1024,'lazy playback is bounded')
 local obsolete=e.now+.5;e.now=e.now+2;local oldStarts=e.plays
 N:Prepare('99999','alpha','delta_t0_000',.5,obsolete)
@@ -78,7 +107,7 @@ N:Stop();setup();N:SetVolume(0);N:Tick();check(not N.Ready and N:Count()==0,'zer
 setup();local meta=bank.clips.delta_t0_000
 local function raw_record()
  serial=serial+1;return {token=tostring(serial),lane='alpha',clip='delta_t0_000',path='sound/lod/ms2_surge/delta_t0_000.ogg',
-  due=e.now+1,musical=8*60/130,duration=meta.duration,bytes=math.ceil(meta.duration*44100)*8}
+  due=e.now+1,musical=8*60/130,duration=meta.duration,peak=meta.peak,bytes=math.ceil(meta.duration*44100)*8}
 end
 for _=1,8 do check(N:Open(raw_record()),'hard pool admits its eight slots') end
 check(not N:Open(raw_record()) and N:Count()==8,'ninth channel cannot bypass the hard ceiling')

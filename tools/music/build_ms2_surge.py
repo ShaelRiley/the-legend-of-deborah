@@ -182,7 +182,8 @@ def main():
               'voices':voices,'bridge':bridge,'clips':results}
     MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
     runtime={'schema':1,'revision':revision,'catalogRevision':catalog['revision'],'patchRevision':manifest['patchRevision'],
-             'bpm':catalog['bpm'],'bridge':{'duration':bridge['duration']},'clips':{r['id']:{'beats':r['beats'],'duration':r['duration']} for r in results}}
+             'bpm':catalog['bpm'],'bridge':{'duration':bridge['duration'],'peak':bridge['decodedPeak']},
+             'clips':{r['id']:{'beats':r['beats'],'duration':r['duration'],'peak':r['decodedPeak']} for r in results}}
     (BUNDLE/'render.lua').write_text('return [==['+json.dumps(runtime,separators=(',',':'))+']==]\n')
     # Representative ordered listening evidence: Chill, isolated voices, roles.
     audition=[];cues=[];offset=0

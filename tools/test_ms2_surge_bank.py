@@ -92,11 +92,12 @@ def validate(decode=False):
         for key in ('block','role','asset','beats','noteSHA256'):need(c[key]==source[key],cid+' source '+key)
         need(c['bpm']==130 and c['rendererRevision']==manifest['rendererRevision'] and c['patchRevision']==manifest['patchRevision'],'phrase provenance: '+cid)
         need(c['beats'] in (8,12) and c['musicalDuration']==c['beats']*60/130,'phrase duration: '+cid)
-        need(runtime['clips'][cid]=={'beats':c['beats'],'duration':c['duration']},'runtime duration: '+cid)
+        need(runtime['clips'][cid]=={'beats':c['beats'],'duration':c['duration'],'peak':c['decodedPeak']},'runtime duration/peak: '+cid)
         need(abs(c['duration']-c['musicalDuration']-lock['releaseSeconds'])<=2/44100,'release tail: '+cid)
         all_files.append((cid,c))
     all_files.append(('bridge',manifest['bridge']))
-    need(runtime['bridge']=={'duration':manifest['bridge']['duration']} and 1<manifest['bridge']['duration']<8,'bridge contract')
+    need(runtime['bridge']=={'duration':manifest['bridge']['duration'],'peak':manifest['bridge']['decodedPeak']}
+         and 1<manifest['bridge']['duration']<8,'bridge contract')
     for cid,c in all_files:
         path=DEST/(cid+'.ogg');need(c['path']==str(path.relative_to(ROOT)),'untrusted path: '+cid)
         data=path.read_bytes();need(len(data)==c['bytes']>1000 and sha(data)==c['sha256'],'audio integrity: '+cid)

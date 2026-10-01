@@ -19,8 +19,9 @@ The runtime bank is **59,993,192 bytes (59.993 MB / 57.214 MiB)**. Its largest p
 | Control-message timing | Absolute deadlines converted once between the DHTML monotonic clock and native SysTime. Delayed delivery cannot extend an obsolete deadline. |
 | Musical handoff | Four-beat shared bar for roles/resync; ordinary next phrase after eight beats. |
 | Fanfare | One accepted twelve-beat receipt; start only if it still fits the server window. |
-| Gain | Square-root floor weights, 700 ms fades, onset/tail envelopes; channel updates at most 30 Hz and only when changed. |
-| Quiet bridge | One Surge-rendered D/A loop, ten percent master gain; starts only after a 150 ms gap, stops on musical recovery or eight seconds of persistent failure. |
+| Gain | Fourfold (+12.04 dB) phrase master, saved 0–1 player volume, square-root floor weights, 700 ms fades and onset/tail envelopes; channel updates at most 30 Hz and only when changed. |
+| Shared score headroom | Sum of offline decoded peak × actual written gain at most 0.8, including floor lanes, tails and bridge. One common phrase reduction; decrease before increase, with remaining-headroom admission for every increase. |
+| Quiet bridge | One Surge-rendered D/A loop, ten percent player volume without the fourfold phrase boost; also headroom-limited. Starts only after a 150 ms gap, stops on musical recovery or eight seconds of persistent failure. |
 | Failure | Three native open/duration errors or an eight-second gap tears down playback; fixed ten-second retry backoff. Preserve the first native cause, including expected/actual duration when mismatched. |
 | Startup | Five-second deadline for the current initializing panel only; cleared on readiness or teardown. An expired former deadline cannot delay recovery. |
 | Lua payload cache | Four arrangement metadata entries; zero decoded note pages. |
@@ -31,6 +32,8 @@ The runtime bank is **59,993,192 bytes (59.993 MB / 57.214 MiB)**. Its largest p
 
 The 550 ms release allowance finishes synth envelopes; join tails overlap naturally. Role interrupts fade the old material at the new bar. Native opening callbacks prepare only, never play a musical phrase. Both control and native timing reject overdue starts. Recovery selects a future bar instead of draining event debt. Reversing stairs changes gains on existing floor lanes.
 
-Fixed instrument/master gains preserve level differences. The bank does no per-phrase normalization, realtime synthesis, FFT, MIDI parsing, time stretching or pitch shifting. The former live note ceilings/queues, fills, per-note mutation, +6% tempo slew and +22-cent expression are superseded. Critical combat retains +8% phrase gain with native volume clamped 0–1.
+Fixed instrument/master gains preserve level differences. The bank does no per-phrase normalization, realtime synthesis, FFT, MIDI parsing, time stretching or pitch shifting. The former live note ceilings/queues, fills, per-note mutation, +6% tempo slew and +22-cent expression are superseded. Critical combat retains +8% phrase gain within the shared peak ceiling. Native channel volume may exceed 1: the official [SetVolume API](https://wiki.facepunch.com/gmod/IGModAudioChannel:SetVolume) explicitly supports amplification (its example uses 3 for 300%). The saved player-volume control remains 0–1.
+
+The gain guard adds a few arithmetic passes over at most eight records and one peak number per clip/bridge in trusted metadata. No encoded audio bytes, decoded-PCM allowance, open reservations, server work or content-download volume are added. All native volume writes are checked in the resource harness, including older paced gains during stair reversals, quiet-bridge overlap and natural tails. This is a conservative estimate of the score's sample-peak sum, not measured Source mixer output or a bound on unrelated sound effects.
 
 Finite tests cover 15 scheduler stalls and 15 native stalls (100 ms, 300 ms, one, four and fifteen seconds, each with ordinary/role/reversal state), delayed callbacks/control delivery, suspension, bounded preparation, repeated Off/On, channel retirement and bridge failure. These limits establish implementation/resource contracts. Native Source timing/audibility, actual decoder memory and Steam Deck frame rate remain human acceptance gates.
