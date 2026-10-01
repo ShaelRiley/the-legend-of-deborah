@@ -69,6 +69,10 @@ sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
   function channel:GetLength() return meta.duration end
   function channel:SetVolume(v) self.volume=v;E.volumeWrites=E.volumeWrites+1;if E.onVolumeWrite then E.onVolumeWrite() end end
   function channel:EnableLooping(v) self.loop=v end
+  function channel:SetTime(seconds,fast) assert(fast==true,'phase recovery must seek without decode-to-position');self.seek=seconds end
+  function channel:GetVolume() return self.volume end
+  function channel:GetTime() return self.played and E.now-self.played+(self.seek or 0) or 0 end
+  function channel:GetState() return self.played and 1 or 0 end
   function channel:Play() self.played=E.now;E.plays=E.plays+1 end
   function channel:Stop() if self.valid then E.stops=E.stops+1 end;self.valid=false end
   E.channels=E.channels or {};E.channels[#E.channels+1]=channel

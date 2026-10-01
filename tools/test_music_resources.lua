@@ -42,6 +42,33 @@ for _=1,8 do
  N:SetMix('alpha',.1);N:SetMix('beta',.9);N:SetVolume(1);e.now=e.now+.017;N:Tick()
 end
 N:Stop();bank.clips.delta_t0_000.peak=quietPeak
+-- The file was ready in advance; a 100 ms Think hitch must trim elapsed time,
+-- not throw away all eight beats or move this lane off the shared grid.
+setup();local frameToken=prepare('alpha',1);local frameChannel=e.channels[#e.channels];local due=e.now+1
+e.now=due+.1;N:Tick()
+check(results[frameToken]==true and frameChannel.played==e.now,'prepared phrase survives a bounded native frame hitch')
+check(frameChannel.seek and math.abs(frameChannel.seek-.1)<1e-8,'bounded frame hitch discards elapsed audio through fast native seeking')
+local frameRecord;for _,r in pairs(N.Records) do if r.token==frameToken then frameRecord=r end end
+check(frameRecord and frameRecord.started==due,'late frame preserves the original musical epoch')
+local voice=N:Status().voices[1]
+check(voice and voice.nativeVolume==voice.gain and math.abs(voice.position-.1)<1e-8,'status includes actual native position and gain for gap diagnosis')
+N:Stop();setup();local later=prepare('alpha',1);e.now=e.now+1.151;N:Tick()
+check(results[later]==false,'native delay beyond the bounded phase window still rejects the obsolete phrase')
+N:Stop();setup();e.deferOpens=true;local slowOpen=prepare('alpha',1)
+e.now=e.now+1.1;e.completeOpens();N:Tick()
+check(results[slowOpen]==false,'late file readiness is not mistaken for a prepared-channel frame hitch')
+e.deferOpens=false
+-- Repeated ordinary frame pressure cannot alternate whole played/skipped
+-- phrases. Both floors keep the same eight-beat grid and bounded overlap.
+N:Stop();setup();local steadyDue=e.now+1;local interval=8*60/130
+for i=1,32 do
+ e.now=steadyDue-1;local a=prepare('alpha',1);local b=prepare('beta',1)
+ e.now=steadyDue+.1;N:Tick();e.now=e.now+.04;N:Tick()
+ check(results[a] and results[b],'repeated 100 ms boundary hitches keep both musical floor lanes playing')
+ check(N:Count()<=6 and N:Bytes()<32*1024*1024,'phase joins retain the current/tail/prepared budgets')
+ steadyDue=steadyDue+interval
+end
+N:Stop()
 setup();local playCount=e.plays;local token=prepare('alpha',1);local channel=e.channels[#e.channels]
 check(not channel.played,'asynchronous preparation never autoplays')
 e.now=e.now+.99;N:Tick();check(not channel.played,'early readiness waits for the shared boundary')

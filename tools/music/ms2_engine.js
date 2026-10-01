@@ -3,7 +3,7 @@
  * Missed boundaries are discarded. Native playback independently enforces time. */
 (function(root,factory){var api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MS2=api;}(this,function(){
     'use strict';
-    var LOOKAHEAD=1.0,LATE=.06;
+    var LOOKAHEAD=1.0,LATE=.15,ACK_WAIT=1.0;
     function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
     function hash(s){var h=2166136261,i;s=String(s);for(i=0;i<s.length;i++)h=((h^s.charCodeAt(i))*16777619)>>>0;return h||1;}
     function Random(seed){this.value=hash(seed);}
@@ -25,7 +25,7 @@
     function Scheduler(base,sink,clock,callback,seed){
         this.base=base;this.bpm=base;this.sink=sink;this.clock=clock;this.callback=callback||function(){};
         this.origin=clock()+LOOKAHEAD;this.assets={};this.lanes={};this.jobs={};this.serial=0;this.visits={};
-        this.enabled=true;this.state={role:'T0'};this.skipped=0;this.resyncs=0;this.maxQueue=0;
+        this.enabled=true;this.state={role:'T0'};this.skipped=0;this.resyncs=0;this.maxQueue=0;this.ackTimeouts=0;
         this.performanceSeed=seed===undefined?String(Date.now())+':'+Math.random():seed;
     }
     Scheduler.prototype.timeForBeat=function(beat){return this.origin+beat*60/this.base;};
@@ -78,7 +78,10 @@
             a=this.assets[l.asset];if(!a)continue;
             if(l.pending){
                 j=this.jobs[l.pending];
-                if(j&&j.time<now-LATE){this.sink.cancel(l.pending);this.result(l.pending,false);}else continue;
+                // Native timing owns start eligibility. QueueJavascript can
+                // deliver its result after a correct start; that round trip
+                // must not reuse the much shorter audible-start tolerance.
+                if(j&&j.time<now-ACK_WAIT){this.ackTimeouts++;this.sink.cancel(l.pending);this.result(l.pending,false);}else continue;
                 if(l.finished)continue;
             }
             t=this.timeForBeat(l.nextBeat);
@@ -105,8 +108,8 @@
         return {install:function(a){scheduler.install(a);},state:function(s){if((s.bpm||130)!==scheduler.base)throw Error('rendered bank tempo mismatch');scheduler.update(s);},
             result:function(token,played){scheduler.result(String(token),played);},stop:function(){scheduler.stop();},
             stats:function(){bridge.stats(JSON.stringify({backend:'surge-rendered',bpm:scheduler.base,lateSkipped:scheduler.skipped,resyncs:scheduler.resyncs,
-                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue}));},
+                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts}));},
             destroy:function(){window.clearInterval(interval);scheduler.stop();}};
     }
-    return {Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE};
+    return {Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE,acknowledgementWait:ACK_WAIT};
 }));

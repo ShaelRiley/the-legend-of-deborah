@@ -16,22 +16,30 @@ check(clips===1402&&notes===170860,'whole authored composition preserved');
 check(engine.tempo(130,{remaining:0})===130,'fixed rendered tempo replaces old time stretch');
 check(engine.expression({role:'T3',expression:1})===1,'cheap critical gain remains');
 check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss does not fabricate expression');
-function rig(seed='test'){
+function rig(seed='test',acknowledgementDelay=0){
  let now=0,state={seed:19,role:'T1',remaining:1800,volume:.55,targets:[{block:'a',asset:'a-t1',weight:1}]};
- const pending={},plays=[],announcements=[],mixes={},victories=[];let stopCount=0;
+ const pending={},plays=[],announcements=[],mixes={},victories=[],acks=[];let stopCount=0;
  const sink={prepare:(token,lane,clip,delay,deadline)=>{check(Math.abs(deadline-now-delay)<1e-8,'absolute native deadline preserves grid');pending[token]={token,lane,clip,time:deadline};},cancel:token=>delete pending[token],
   mix:(id,g)=>mixes[id]=g,volume:()=>{},drop:id=>{delete mixes[id];for(const k in pending)if(pending[k].lane===id)delete pending[k];},
   stop:()=>{for(const k in pending)delete pending[k];for(const k in mixes)delete mixes[k];stopCount++;}};
  const scheduler=new engine.Scheduler(130,sink,()=>now,(type,value)=>type==='block'?announcements.push(value):victories.push(now),seed);
  function change(patch={}){state={...state,...patch};for(const t of state.targets)scheduler.install(metadata(t.asset));scheduler.update(state);}
- function pump(){scheduler.pump();const starts={};for(const token of Object.keys(pending)){
+ function pump(){
+  for(let i=acks.length-1;i>=0;i--)if(now>=acks[i].at){const a=acks.splice(i,1)[0];scheduler.result(a.token,a.played);}
+  scheduler.pump();const starts={};for(const token of Object.keys(pending)){
   const p=pending[token];if(now>=p.time){delete pending[token];const on=now<=p.time+engine.lateTolerance&&!starts[p.lane];
-   if(on){plays.push({...p,started:now});starts[p.lane]=true;}scheduler.result(token,on);}}
+   if(on){plays.push({...p,started:now});starts[p.lane]=true;}
+   if(acknowledgementDelay)acks.push({token,played:on,at:now+acknowledgementDelay});else scheduler.result(token,on);}}
   check(Object.keys(pending).length<=2,'only one upcoming phrase per audible lane');}
  function step(seconds){for(let end=now+seconds;now<end;){now=Math.min(end,now+.025);pump();}}
  change();return {scheduler,plays,announcements,mixes,victories,pending,change,pump,step,jump:n=>{now+=n;},get now(){return now;},get stopCount(){return stopCount;}};
 }
 const r=rig();r.step(10);check(r.plays.length>=3,'A to B normal phrase sequencing');
+// Native starts can be correct while their QueueJavascript acknowledgement is
+// delayed by the frame/DHTML boundary. This must not fabricate a failed start.
+const delayedAck=rig('queued-ack',.3);delayedAck.step(20);
+check(delayedAck.scheduler.resyncs===0,'delayed native acknowledgement does not discard already playing phrases');
+for(let i=1;i<delayedAck.plays.length;i++)check(Math.abs(delayedAck.plays[i].time-delayedAck.plays[i-1].time-8*60/130)<1e-8,'delayed acknowledgement retains continuous eight-beat phrase boundaries');
 for(let i=1;i<r.plays.length;i++)check(Math.abs(r.plays[i].time-r.plays[i-1].time-8*60/130)<1e-8,'phrases follow canonical future boundary');
 check(r.announcements.join(',')==='a','initial block once');
 r.change({role:'T2',targets:[{block:'a',asset:'a-t2',weight:1}]});r.step(4);
@@ -50,7 +58,9 @@ for(const stall of [.1,.3,1,4,15])for(const mutation of ['none','role','reverse'
  const job=Object.values(x.pending)[0];check(job,'preparation precedes boundary');x.jump(Math.max(0,job.time-x.now)+stall);
  if(mutation==='role')x.change({role:'T3',targets:[{block:'a',asset:'a-t3',weight:1}]});
  if(mutation==='reverse')x.change({targets:[{block:'a',asset:'a-t1',weight:.8},{block:'b',asset:'b-t1',weight:.2}]});
- const count=x.plays.length;x.pump();check(x.plays.length===count,'stall never starts overdue phrases');
+ const count=x.plays.length;x.pump();
+ if(stall<=engine.lateTolerance&&mutation!=='role')check(x.plays.length===count+1,'bounded frame delay admits only the current prepared phrase');
+ else check(x.plays.length===count,'larger stall never starts an obsolete phrase');
  x.step(8);check(x.plays.length>count,'stall resumes at a future valid bar');
  for(const p of x.plays)check(p.started>=p.time&&p.started-p.time<=engine.lateTolerance+1e-8,'only bounded on-time start');
  const seen=new Set();for(const p of x.plays){const k=p.lane+':'+p.time;check(!seen.has(k),'one start per lane/boundary');seen.add(k);}

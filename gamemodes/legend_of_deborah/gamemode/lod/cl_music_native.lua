@@ -1,10 +1,10 @@
 -- Bundled Surge phrases, opened lazily. Native frame timing is bounded:
 -- a missed deadline is skipped, never played from an asynchronous callback.
 if LOD.MusicNative and LOD.MusicNative.Stop then LOD.MusicNative:Stop() end
-LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipped=0,Errors=0}
+LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipped=0,Errors=0,PhaseJoins=0,LateOpens=0,MaxStartDelay=0}
 local N,M=LOD.MusicNative,LOD.Music
 local MAX_CHANNELS,MAX_OPENS,MAX_PCM=8,2,32*1024*1024
-local LATE,FADE=.06,.7
+local LATE,OPEN_LATE,FADE=.15,.06,.7
 local MASTER_GAIN,PEAK_CEILING=4,.8
 local function stop(channel) if IsValid(channel) then channel:Stop() end end
 function N:Count() local n=0;for _ in pairs(self.Records) do n=n+1 end;for _,r in pairs(self.Opens) do if not self.Records[r.key] then n=n+1 end end;return n end
@@ -77,7 +77,7 @@ function N:Open(r)
                 .." (expected "..tostring(r.duration)..", got "..tostring(length)..")";self.Errors=self.Errors+1
             self:Result(r,false);self:Release(r);return
         end
-        r.channel=channel;channel:SetVolume(0);r.lastGain=0;channel:EnableLooping(r.bridge==true)
+        r.channel=channel;r.readyAt=SysTime();channel:SetVolume(0);r.lastGain=0;channel:EnableLooping(r.bridge==true)
         -- The Think loop alone may start it, at its still-valid deadline.
     end)
     if not ok then self.Opens[r.key]=nil;self.Error=self.Error or tostring(err);self.Errors=self.Errors+1;self:Result(r,false);self:Release(r);return false end
@@ -185,9 +185,12 @@ function N:Tick()
         local l=self.Lanes[r.lane]
         if r.cancelled or not l then self:Release(r)
         elseif not r.started and now>r.due+LATE then
+            if not r.channel or r.readyAt>r.due+OPEN_LATE then self.LateOpens=self.LateOpens+1 end
             self.Skipped=self.Skipped+1;self:Result(r,false);self:Release(r)
         elseif not r.started and r.channel and now>=r.due then
-            if startedThisFrame[r.lane] then self.Skipped=self.Skipped+1;self:Result(r,false);self:Release(r)
+            if r.readyAt>r.due+OPEN_LATE or startedThisFrame[r.lane] then
+                if r.readyAt>r.due+OPEN_LATE then self.LateOpens=self.LateOpens+1 end
+                self.Skipped=self.Skipped+1;self:Result(r,false);self:Release(r)
             else
                 -- One current phrase plus one retiring tail per lane. Interrupt
                 -- an old role at this bar; ordinary phrase tails finish naturally.
@@ -198,7 +201,15 @@ function N:Tick()
                         else old.retireAt=math.min(old.started+old.duration,now+.12) end
                     end
                 end
-                r.started=now;startedThisFrame[r.lane]=true;r.channel:Play();self.Errors=0;self.Error=nil;self:Result(r,true)
+                -- The file was prepared in advance. A bounded frame hitch
+                -- trims elapsed samples instead of losing an entire phrase.
+                -- Keep its original epoch so stairs and the next phrase align.
+                local elapsed=math.max(0,now-r.due)
+                if elapsed>0 then r.channel:SetTime(elapsed,true) end
+                r.started=r.due;r.playedAt=now;r.startDelay=elapsed;startedThisFrame[r.lane]=true
+                if elapsed>OPEN_LATE then self.PhaseJoins=self.PhaseJoins+1 end
+                self.MaxStartDelay=math.max(self.MaxStartDelay,elapsed)
+                r.channel:Play();self.Errors=0;self.Error=nil;self:Result(r,true)
             end
         end
         if r.started and not r.cancelled then
@@ -206,7 +217,7 @@ function N:Tick()
             if now>=ends then self:Release(r)
             else
                 local mix=l.from+(l.value-l.from)*math.Clamp((now-l.at)/FADE,0,1)
-                local envelope=math.min(1,(now-r.started)/.008,math.max(0,(ends-now)/.06))
+                local envelope=math.min(1,(now-(r.playedAt or r.started))/.008,math.max(0,(ends-now)/.06))
                 local value=mix*self.Volume*envelope*MASTER_GAIN
                 r.targetGain=value;total=total+r.peak*value
                 if value>0 then audible=true end
@@ -218,12 +229,21 @@ function N:Tick()
     self.LastTick=now
 end
 function N:Status()
-    local current,prepared={},{}
+    local current,prepared,voices={},{},{}
     for _,r in pairs(self.Records) do if r.lane then
         if r.started then current[r.lane]=r.clip else prepared[r.lane]=r.clip end
+    end end
+    for _,r in pairs(self.Records) do if IsValid(r.channel) then
+        local voice={clip=r.clip,lane=r.lane,bridge=r.bridge==true,gain=r.lastGain or 0,startDelay=r.startDelay,started=r.started~=nil}
+        local ok,err=pcall(function()
+            voice.nativeVolume=r.channel:GetVolume();voice.position=r.channel:GetTime();voice.state=r.channel:GetState()
+        end)
+        if not ok then voice.nativeStatusError=tostring(err) end
+        voices[#voices+1]=voice
     end end
     return {currentClips=current,preparedClips=prepared,bridge=self.Bridge~=nil,channels=self:Count(),peakChannels=self.Peak,
         pendingOpens=table.Count(self.Opens),estimatedPCMBytes=self:Bytes(),nativeLateSkipped=self.Skipped,error=self.Error,
         playerVolume=self.Volume,masterGain=MASTER_GAIN,headroomScale=self.HeadroomScale,
-        estimatedMusicPeak=self:WrittenPeak(true),peakCeiling=PEAK_CEILING}
+        estimatedMusicPeak=self:WrittenPeak(true),peakCeiling=PEAK_CEILING,voices=voices,
+        nativePhaseJoins=self.PhaseJoins,nativeLateOpens=self.LateOpens,maxNativeStartDelay=self.MaxStartDelay}
 end
