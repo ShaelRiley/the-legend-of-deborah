@@ -1,4 +1,12 @@
-# Current MS2 loading repair
+# Current MS2 complete-bank JSON repair
+
+The author confirms the Options update is installed but still hears no music on main `6abd1e2786a075888d27d6f510a3d48226f18353`. Actual bank sizes reveal a second loading defect: the catalog has 41,125 JSON keys and 62/63 note pages exceed GMod's default 15,000-key decoding limit. Both trusted bundled decodes now bypass that limit within existing byte/schema/note/cache bounds. Wire decoding remains limited. The new complete-bank regression reproduces the failed parent and the incomplete catalog-only fix, then covers all 48 arrangements, 1,402 phrases and 170,860 notes. [Evidence and finite gate](validation/MS2_JSON_REPAIR.md) preserve this contradiction; the earlier native failure is not superseded by offline test success.
+
+Next action: fully quit GMod, pull/install main using DEVELOPMENT_WORKFLOW.md, load LoD on gm_flatgrass and run `lod_music_enabled 1; lod_music 1`. Confirm audible staging/gameplay music and inspect `lod_music_status; lod_music_client_status` if silent. Fresh native success is still required. Preserve canonical `console_latest.txt` plus `rpg_summary_latest.txt` for contradictory runtime evidence.
+
+---
+
+# Previous MS2 loading repair
 
 The first native attempt reported a missing catalog include and no music. The files are present; nested music modules used paths relative to the gamemode root instead of explicit GMod virtual paths. The repair covers server/client catalog, note pages, engine and AddCSLuaFile distribution. Options also removes the outdated server-disabled text. [Evidence and finite gate](validation/MS2_LOADING_REPAIR.md) preserve the reported contradiction and regression reproduction.
 

@@ -66,7 +66,11 @@ end
 function M.LoadBundled()
     local raw,err=M.IncludeBundled("catalog.lua")
     if type(raw)~="string" or #raw>M.Limits.catalogBytes then return nil,err or "bundled MIDI catalog unavailable" end
-    return M.ValidateCatalog(util.JSONToTable(raw))
+    -- The trusted, byte-bounded bundled bank exceeds GMod's default 15,000
+    -- JSON keys. Wire messages retain the decoder's normal limits.
+    local catalog=util.JSONToTable(raw,true)
+    if type(catalog)~="table" then return nil,"Could not decode bundled MS2 catalog" end
+    return M.ValidateCatalog(catalog)
 end
 function M.Pool(c,selection)
     local out,seen={},{}

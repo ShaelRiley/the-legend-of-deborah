@@ -1,4 +1,12 @@
-# Current repair checkpoint — MS2 catalog loading
+# Current repair checkpoint — MS2 complete-bank JSON admission
+
+The author reports that music remains silent on main `6abd1e2786a075888d27d6f510a3d48226f18353`, while the Options correction is visible. The earlier path repair is insufficient: GMod's default JSON decoder limits the total number of keys to 15,000. The actual bundled catalog contains 41,125 keys and 62 of the 63 note pages exceed that limit (largest 16,988), so both admission stages reject the score. Only trusted, byte-bounded bundled catalog/note decoding now uses the documented `ignoreLimits` argument; schema/note validation, cache budgets and network decoder limits remain in force.
+
+The permanent catalog suite now runs production server/client loading against every real arrangement and note page with that native key boundary. It reproduces catalog rejection before repair and note-delivery rejection with the catalog-only fix, then admits all 48 arrangements, 1,402 phrases and 170,860 notes with both fixes. See [repair evidence](validation/MS2_JSON_REPAIR.md). Run the finite music/audio gate and publish the exact verified source. Fully quit/update/install GMod, load LoD on gm_flatgrass, enable `lod_music_enabled 1; lod_music 1` and listen in staging/gameplay. Native audibility remains pending fresh evidence; preserve `console_latest.txt` plus `rpg_summary_latest.txt` if failure persists.
+
+---
+
+# Previous repair checkpoint — MS2 catalog loading
 
 The author's first native MS2 attempt on main `bc3cf1967ebdc77e98c5fc028ef6337c9e7139fe` reported silence and `Couldn't include file 'lod\\ms2\\catalog.lua' - File not found or is empty` from `sh_music.lua` during `sv_music.lua` startup. The catalog exists in the repository; the nested loader incorrectly assumed include paths always resolve from the gamemode root. Catalog, engine, note pages and client distribution now use the explicit `legend_of_deborah/gamemode/lod/ms2/` virtual path. Missing mounts produce a precise diagnostic before attempting a noisy include. The user also requests removal of the stale server-disabled Music message; Options now retains the location/danger description without a recurring status callback.
 

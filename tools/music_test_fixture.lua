@@ -35,6 +35,11 @@ hook={Add=function(event,id,fn) E.hooks[id]=fn end}
 concommand={Add=function(name,fn) E.commands[name]=fn end}
 file={Read=function() end,CreateDir=function() end,Write=function() end}
 local json={}
+local function jsonKeys(v)
+ if type(v)~='table' then return 0 end
+ local n=0;for _,child in pairs(v) do n=n+1+jsonKeys(child) end;return n
+end
+E.jsonKeys=jsonKeys
 local function stable(v)
  if type(v)~='table' then return tostring(v) end
  local keys={};for k in pairs(v) do keys[#keys+1]=k end;table.sort(keys,function(a,b) return tostring(a)<tostring(b) end)
@@ -42,7 +47,10 @@ local function stable(v)
  return '{'..table.concat(out,',')..'}'
 end
 util={AddNetworkString=function() end,TableToJSON=function(v) local s=stable(v);json[s]=table.Copy(v);return s end,
- JSONToTable=function(s) return table.Copy(json[s]) end,Compress=function(s) return s end,Decompress=function(s) return s end}
+ JSONToTable=function(s,ignoreLimits)
+  local value=json[s];if not ignoreLimits and jsonKeys(value)>15000 then return nil end
+  return table.Copy(value)
+ end,Compress=function(s) return s end,Decompress=function(s) return s end}
 net={Receive=function(name,fn) E.wire[name]=fn end,Start=function(name) E.packet={name=name,args={}} end}
 for _,name in ipairs({'String','UInt','Data','Bool'}) do
  net['Write'..name]=function(v) table.insert(E.packet.args,v) end

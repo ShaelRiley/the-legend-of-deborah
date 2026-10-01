@@ -6,6 +6,7 @@ import io
 import json
 from pathlib import Path
 import struct
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -38,6 +39,23 @@ def zip_bytes(entries):
 
 def read_lua_json(path):
     return json.loads(path.read_text().split('[==[',1)[1].rsplit(']==]',1)[0])
+
+
+def lua_value(value):
+    """Supply Python-decoded real JSON to the Lua engine-boundary model."""
+    if isinstance(value,dict):
+        return '{'+','.join('['+lua_value(k)+']='+lua_value(v) for k,v in value.items())+'}'
+    if isinstance(value,list): return '{'+','.join(map(lua_value,value))+'}'
+    if value is None: return 'nil'
+    if isinstance(value,bool): return 'true' if value else 'false'
+    if isinstance(value,str): return json.dumps(value,ensure_ascii=False)
+    return repr(value)
+
+
+def json_keys(value):
+    if isinstance(value,dict): return len(value)+sum(map(json_keys,value.values()))
+    if isinstance(value,list): return len(value)+sum(map(json_keys,value))
+    return 0
 
 
 class Reader(unittest.TestCase):
@@ -118,6 +136,75 @@ class ShippedBank(unittest.TestCase):
         cls.directory=ROOT/'gamemodes/legend_of_deborah/gamemode/lod/ms2'
         cls.catalog=read_lua_json(cls.directory/'catalog.lua')
         cls.report=json.loads((ROOT/'docs/MS2_CATALOG.json').read_text())
+
+    def test_gmod_catalog_admission_and_all_payloads(self):
+        """Exercise production Lua with the full bank and GMod's 15k-key boundary."""
+        with tempfile.TemporaryDirectory() as temp:
+            destination=Path(temp);rows=[]
+            for name in ['catalog.lua',*self.catalog['pages']]:
+                decoded=read_lua_json(self.directory/name)
+                fixture=destination/name;fixture.write_text('return '+lua_value(decoded)+'\n')
+                rows.append({'name':name,'fixture':str(fixture),'keys':json_keys(decoded)})
+            self.assertEqual(rows[0]['keys'],41125)
+            self.assertGreater(rows[0]['keys'],15000)
+            self.assertEqual(sum(row['keys']>15000 for row in rows[1:]),62)
+            self.assertEqual(max(row['keys'] for row in rows[1:]),16988)
+            script=destination/'admission.lua'
+            script.write_text("""
+local e=dofile('tools/music_test_fixture.lua')
+local decoded={}
+for _,entry in ipairs(ENTRIES) do
+ local raw=dofile('gamemodes/legend_of_deborah/gamemode/lod/ms2/'..entry.name)
+ decoded[raw]=entry
+end
+local original=util.JSONToTable
+util.JSONToTable=function(raw,ignoreLimits,ignoreConversions)
+ local entry=decoded[raw]
+ if not entry then return original(raw,ignoreLimits,ignoreConversions) end
+ if not ignoreLimits and entry.keys>15000 then return nil end
+ return dofile(entry.fixture)
+end
+e.realBundle=true
+local M=LOD.Music
+local raw=assert(M.IncludeBundled('catalog.lua'))
+assert(not util.JSONToTable(raw),'default native breadth rejects the real catalog')
+local rejected=0
+for raw,entry in pairs(decoded) do
+ if entry.name~='catalog.lua' and not util.JSONToTable(raw) then rejected=rejected+1 end
+end
+assert(rejected==62,'default native breadth also rejects the real note pages')
+local catalog,err=M.LoadBundled()
+assert(catalog,err or 'complete catalog failed native admission')
+assert(table.Count(catalog.blocks)==8 and table.Count(catalog.assets)==48)
+SERVER=true;CLIENT=false
+LOD.RunManager={State={},GetPlayerState=function() return {} end}
+player={GetAll=function() return {} end}
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_music.lua')
+assert(LOD.MusicDirector.Catalog,'real server startup has the complete catalog')
+CLIENT=true;SERVER=false;e.cacheOnly=true
+dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua')
+dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
+local D=LOD.MusicDirector
+e.set('lod_music_enabled',1);D.ServerOn=true
+local plan=assert(M.Plan(catalog,{set='all'},17,'complete-bank',4,1))
+assert(e.jsonKeys(plan)<15000,'real wire plans fit the unchanged default decoder limit')
+D.Plans[plan.id]=plan
+D.Current={sequence=1,epoch=1,plan=plan.id,role='T0',staged=true,targets={{block=plan.floors[1],weight=1}}}
+D:Tick();assert(e.panel,'real catalog starts the client renderer')
+e.panel.functions['lodms2.ready']('web');D:Sync()
+assert(D.Ready and D.Synced and not D.Error,D.Error or 'real phrase data reaches playback')
+local phrases,notes=0,0
+for id in pairs(catalog.assets) do
+ local payload=assert(D:Payload(id),D.Error)
+ for _,clip in ipairs(payload.clips) do phrases=phrases+1;notes=notes+#clip.notes end
+end
+assert(phrases==1402 and notes==170860,'every actual phrase/note admitted')
+assert(table.Count(D.Pages)<=8 and table.Count(D.Payloads)<=4,'real cache bounds retained')
+print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 62 formerly rejected note pages; 48 arrangements; '..phrases..' phrases; '..notes..' notes')
+""".replace('ENTRIES',lua_value(rows)))
+            result=subprocess.run([sys.executable,str(ROOT/'tools/run_lua54.py'),str(script)],cwd=ROOT,
+                                  text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
+            self.assertEqual(result.returncode,0,result.stdout)
 
     def test_complete_bounded_lineage_and_graph(self):
         catalog=self.catalog;self.assertEqual(catalog['schema'],2)

@@ -39,7 +39,10 @@ function D:Page(name)
     local found=self.Pages[name];if found then found.used=SysTime();return found.notes end
     local raw,err=M.IncludeBundled(name)
     if type(raw)~="string" or #raw>47000 then self.Error=err or "Invalid MIDI note page "..tostring(name);return nil end
-    local notes=util.JSONToTable(raw);if type(notes)~="table" then return nil end
+    -- Bundled pages also exceed the native key limit despite their small byte
+    -- size. Only these trusted local files bypass it; notes are validated below.
+    local notes=util.JSONToTable(raw,true)
+    if type(notes)~="table" then self.Error="Could not decode MIDI note page "..tostring(name);return nil end
     self.Pages[name]={notes=notes,used=SysTime()}
     if table.Count(self.Pages)>M.Limits.noteCachePages then
         local oldest
