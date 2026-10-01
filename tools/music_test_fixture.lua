@@ -1,5 +1,5 @@
 -- Minimal engine boundary; all catalog/planning/mixing logic comes from production.
-local E={now=10,callbacks={},hooks={},commands={},wire={},read={},requests={},stops=0,plays=0,cv={},announced={},frame=1/60,volumeWrites=0}
+local E={now=10,callbacks={},hooks={},commands={},wire={},read={},stops=0,plays=0,cv={},announced={},frame=1/60,volumeWrites=0}
 function CurTime() return E.now end;SysTime=CurTime
 function FrameTime() return .1 end
 function RealFrameTime() return E.frame end
@@ -28,6 +28,7 @@ local function cv(name,value)
  return c
 end
 CreateConVar=cv;CreateClientConVar=cv;GetConVar=function(name) return E.cv[name] end
+CreateConVar('lod_music_enabled','0') -- replicated server boundary in client tests
 cvars={AddChangeCallback=function(name,fn,id) E.callbacks[name]=E.callbacks[name] or {};E.callbacks[name][id]=fn end}
 function E.set(name,v) E.cv[name].value=tostring(v);for _,f in pairs(E.callbacks[name] or {}) do f() end end
 hook={Add=function(event,id,fn) E.hooks[id]=fn end}
@@ -52,51 +53,55 @@ net.Send=function(p) E.sent=E.sent or {};E.packet.player=p;E.sent[#E.sent+1]=E.p
 net.SendToServer=net.Send
 function E.receive(name,...) E.read={...};E.wire[name](1024,E.player) end
 sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
- PlayFile=function(path,flags,fn) E.requests[#E.requests+1]={path=path,flags=flags,fn=fn} end}
-function E.complete(index,buffer,fail)
- local req=E.requests[index];assert(req,'request missing')
- if fail then req.fn(nil,2,'test failure');return end
- local c={valid=true,buffer=buffer or 16,time=0,volume=0}
- function c:Stop() self.valid=false;E.stops=E.stops+1 end
- function c:GetBufferedTime() assert(self.valid,'buffer queried after native Stop');return self.buffer end
- function c:GetTime() assert(self.valid,'position queried after native Stop');return self.time end
- function c:SetTime(v) assert(self.valid,'seek after native Stop');assert(v<=self.buffer,'unbuffered native seek');self.time=v end
- function c:SetVolume(v) assert(self.valid,'volume after native Stop');self.volume=v;E.volumeWrites=E.volumeWrites+1 end
- function c:EnableLooping(v) self.loop=v end
- function c:Play() E.plays=E.plays+1;self.played=true end
- function c:Pause() self.played=false end
- req.channel=c;req.fn(c);return c
-end
+ PlayFile=function() error('recorded-score playback is forbidden in MS2') end}
 LOD={Config={Maze={Width=1,Height=1,CellSize=384,LevelHeight=384,Origin=Vector(),LayerOccupancy={{},{},{},{}}},Geometry={StairRun=320,StairSteps=24,StairWidth=96}},
  MazeGenerator={CellKey=function(x,y,z) return x..':'..y..':'..z end},MazeBuilder={CellCenter=function(_,c) return Vector(0,0,c.z*384) end}}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_music.lua')
-function E.realMedia()
- LOD.MusicMedia=nil;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_media.lua')
- return LOD.MusicMedia
-end
-E.realMedia()
--- Mixer tests begin with instant media readiness; transport has its own real
--- scheduler/filesystem/HTTP gate. Native channel callbacks remain asynchronous.
-LOD.MusicMedia.Get=function(self,asset)
- self.cache[asset.hash]={verified=true,bytes=asset.bytes,used=E.now}
- return 'data/legend_of_deborah/music_cache/'..asset.hash..'.dat'
-end
-LOD.MusicMedia.Pump=function() end
 function E.catalog()
- local c={schema=1,revision='v1',origin='https://music.example.test',assets={},blocks={},profiles={},sets={}}
- for i,role in ipairs(LOD.Music.Roles) do
-  local hash=string.rep(string.format('%x',i),64)
-  c.assets[hash]={hash=hash,path='music/blocks/default/v1/'..role:lower()..'.ogg',bytes=1000,duration=role=='VICTORY' and 6.5 or 16,
-   codec='vorbis',rate=44100,channels=2,loop=role~='VICTORY',bpm=120,beats=role=='VICTORY' and 13 or 32,phase=0,gain=1,headroom=6,
-   grid='grid',handoff='envelope',loopStart=0,loopEnd=role=='VICTORY' and 6.5 or 16,credits='Test',source='Authored fixture'}
+ local c={schema=2,revision='ms2-fixture',ppq=48,bpm=130,defaultBlock='delta',assets={},blocks={},sets={}}
+ for _,id in ipairs({'alpha','beta','gamma','delta'}) do c.blocks[id]={version='v1',title=id,roles={}} end
+ for _,role in ipairs({'T0','T1','T2','T3','BOSS','VICTORY'}) do
+  local aid='delta-'..role:lower();local cid='delta_'..role:lower()..'_000'
+  c.assets[aid]={id=aid,block='delta',role=role,loop=role~='VICTORY',clips={{id=cid,beats=role=='VICTORY' and 12 or 8,page='notes_000.lua',next={cid},energy=.5,entry=2,exit=2}}}
+  c.blocks.delta.roles[role]=aid
  end
- local defaults={};for i,role in ipairs(LOD.Music.Roles) do defaults[role]=string.rep(string.format('%x',i),64) end
- c.profiles.default={version='v1',roles=defaults};c.projectDefault='default'
- for _,id in ipairs({'alpha','beta','gamma','delta'}) do c.blocks[id]={version='v1',title=id,credits='Test',roles={}} end
+ c.blocks.delta.roles.INTERLUDE=c.blocks.delta.roles.T0
  c.sets.pair={revision='v1',title='Two',members={'beta','alpha','alpha'}}
  return c
+end
+function include(path)
+ if path=='lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
+ if path=='lod/ms2/notes_000.lua' then
+  local notes={};for _,a in pairs(E.catalog().assets) do for _,c in ipairs(a.clips) do notes[c.id]={{0,48,0,62,85},{48,48,4,38,85}} end end
+  return util.TableToJSON(notes)
+ end
+ return dofile('gamemodes/legend_of_deborah/gamemode/'..path)
+end
+vgui={Create=function(kind)
+ local p={valid=true,functions={},calls={},kind=kind};E.panel=p
+ function p:AddFunction(ns,name,fn) self.functions[ns..'.'..name]=fn end
+ function p:QueueJavascript(raw) self.calls[#self.calls+1]=raw end
+ function p:SetHTML(raw) self.html=raw;self:OnDocumentReady() end
+ function p:Remove() self.valid=false end
+ function p:SetSize() end;function p:SetPos() end;function p:SetMouseInputEnabled() end;function p:SetKeyboardInputEnabled() end
+ function p:SetAllowLua(value) self.allowLua=value end;function p:SetVisible(value) self.visible=value end
+ return p
+end}
+sound.Generate=function(name,rate,length,raw,loop) E.generated=E.generated or {};assert(not E.generated[name],'unbounded/duplicate native generation');E.generated[name]=true end
+local originalRead=file.Read
+file.Read=function(path,...)
+ if path:match('sound/lod/ms2/.*%.wav$') then return 'RIFF'..string.rep(' ',32)..'data'..string.rep(' ',400) end
+ return originalRead(path,...)
+end
+game={GetWorld=function() return {} end}
+function CreateSound(_,name)
+ local p={name=name}
+ function p:SetSoundLevel() end;function p:PlayEx(v,pitch) self.volume=v;self.pitch=pitch end
+ function p:ChangeVolume(v,seconds) assert(type(seconds)=='number','native envelope is numeric');self.volume=v end
+ function p:Stop() self.stopped=true end
+ return p
 end
 E.checks=0
 function E.check(ok,msg) E.checks=E.checks+1;assert(ok,msg) end

@@ -1,3 +1,15 @@
+# Current author-directed checkpoint — Music System 2
+
+Repository `ShaelRiley/the-legend-of-deborah`, canonical `main`; implementation parent `b4f9f67e2d837e71da1a194dc655a212fd74ff4c`. The author explicitly replaces the bandwidth-heavy MS1 score with a complete local MIDI/synth system and authorizes source publication and cleanup. This checkpoint supersedes the older streaming-music provisioning sequence below; preserve intervening VR/gameplay work.
+
+Eight authored blocks and all 48 MIDI arrangements are compiled into 1,402 curated phrases, with original-source lineage, D-Dorian cleanup, nine instrument parts, cadence/energy successor graphs and portable MIDI exports. The existing reactive MusicDirector retains permission/default-Off, seeded physical-floor plans, staging/portal continuity, pressure, bosses, victory receipts and Die Logger ownership. MS2 adds local synthesis, procedural performance variation, periodic fills, a shared musical clock, restrained timer BPM/expression and bounded native fallback. MS1's downloader/origin/upload/cue implementation and obsolete tests are retired; historical evidence remains historical.
+
+Read [MUSIC_SYSTEM.md](MUSIC_SYSTEM.md), [MS2_CATALOG.md](MS2_CATALOG.md), [resource budgets](MUSIC_PERFORMANCE.md) and [validation](validation/MS2.md). The finite gate is `python3 tools/test_music_gate.py --output /tmp/ms2-gate`; add `MS2_CHROMIUM` for actual offline Web Audio. GDD navigation 00 → 01 → 05/06/07 was followed. Google Docs rejects the authorized amendment with FAILED_PRECONDITION and its fallback browser session is view-only; [the unapplied amendment](validation/MS2_GDD_AMENDMENTS.json) is preserved. Explicit current author direction governs this design change.
+
+Next native action: fully quit/update/install main, load LoD on gm_flatgrass and enable `lod_music_enabled 1; lod_music 1`. Play staging → portal → danger/stairs/reversal → boss → actual rescue/fanfare → Chill, then toggle Music Off/On and inspect `lod_music_client_status`. Confirm audible instruments, uninterrupted phrasing, restrained urgency, once-only fanfare and clean Off on the intended PC/Steam Deck. Source and offline audio results do not establish Source/DHTML/co-op/FPS acceptance. Preserve existing native/release gates; no Workshop/VPS deployment is included in this checkpoint. Keep console_latest.txt plus rpg_summary_latest.txt for contradictory runtime evidence.
+
+---
+
 # Current checkpoint — event-safe campaign startup
 
 Repository: `ShaelRiley/the-legend-of-deborah`, branch `main`. Repair parent:
@@ -53,7 +65,7 @@ Preserve all earlier native gates and low-end work.
 
 Fetch current main; this update's parent is
 `67cb7dbf7343d05cd52c3f429e33322a8fc30248`, not a later release HEAD.
-Read `MUSIC_SECTION_DIRECTION.md` and live GDD 05 `LOD-MUSIC-CUES-001` /
+Read `history/MS1_MUSIC_SECTION_DIRECTION.md` and live GDD 05 `LOD-MUSIC-CUES-001` /
 07 `LOD-MUSIC-CUES-IMPL`. The author clarified that rhythmic pulse/quiet state
 outranks loudness: easing active danger retains a gentler pulse; true calm
 enters and sustains quiet. Offline cue analysis/import and bounded client

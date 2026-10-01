@@ -19,7 +19,7 @@ gate.LUA = [
     'test_staging_event_spawn.lua', 'test_stair_headroom.lua',
     'test_maze_overhead_walls.lua', 'test_snapshot_delivery.lua',
     'test_player_options.lua', 'test_music_resources.lua',
-    'test_music_transitions.lua', 'test_music_media.lua',
+    'test_music_transitions.lua', 'test_music_client.lua',
 ]
 if __name__ == '__main__':
     sys.exit(gate.main())

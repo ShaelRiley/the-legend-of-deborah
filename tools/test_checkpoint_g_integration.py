@@ -37,13 +37,12 @@ SUITES = [
     ("Low-end Saved Options & Screen Bounds", ["python3", "tools/run_lua54.py", "tools/test_low_end_options.lua"]),
     ("Music Policy & Catalog Contracts", ["python3", "tools/run_lua54.py", "tools/test_music_policy.lua"]),
     ("Music Server Permission & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_music_server.lua"]),
-    ("Music Client Bounded Streaming", ["python3", "tools/run_lua54.py", "tools/test_music_client.lua"]),
+    ("MS2 Client Local Synthesis", ["python3", "tools/run_lua54.py", "tools/test_music_client.lua"]),
     ("Music Crossfade Transitions", ["python3", "tools/run_lua54.py", "tools/test_music_transitions.lua"]),
-    ("Music Paced Media & Cache", ["python3", "tools/run_lua54.py", "tools/test_music_media.lua"]),
     ("Music Gameplay Resource Priority", ["python3", "tools/run_lua54.py", "tools/test_music_resources.lua"]),
     ("Player Options Movement Invariants", ["python3", "tools/run_lua54.py", "tools/test_player_options.lua"]),
-    ("Music Ingestion Validation", ["python3", "tools/test_music_ingestion.py"]),
-    ("Music Folder Catalog & First-block Defaults", ["python3", "tools/test_music_folder_catalog.py"]),
+    ("MS2 MIDI Compiler & Catalog", ["python3", "tools/test_ms2_catalog.py"]),
+    ("MS2 Composer & Musical Transport", ["node", "tools/test_music_sequence.js"]),
     ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),
     ("Big Event Incidents & Body Lifecycles", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_incidents.lua"]),
     ("Big Event Campaign Ecology & Determinism", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_ecology.lua"]),
@@ -294,8 +293,6 @@ for pattern in ("test_spot*.lua", "validate_spot*.lua", "test_faction*.lua"):
             SUITES.append((path.stem, ["python3", "tools/run_lua54.py", relative]))
             executed.add(relative)
 SUITES += [
-    ("Pulse-first Music Section Playback", ["python3", "tools/run_lua54.py", "tools/test_music_sections.lua"]),
-    ("Offline Pulse-first Music Analysis", ["python3", "tools/test_music_sections.py"]),
     ("Player Target Identity", ["python3", "tools/run_lua54.py", "tools/tests/player_target_identity.lua"]),
     ("Cleanup Campaign, Loot & Party Contracts", ["python3", "tools/run_lua54.py", "tools/test_cleanup_contracts.lua"]),
     ("Cleanup Body-Lifetime & Jump Claims", ["python3", "tools/run_lua54.py", "tools/test_cleanup_lifecycle.lua"]),

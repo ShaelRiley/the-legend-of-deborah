@@ -3,10 +3,10 @@ LOD.MusicDirector = LOD.MusicDirector or {}
 local D,M,R=LOD.MusicDirector,LOD.Music,LOD.RunManager
 D.Listeners=setmetatable({}, {__mode="k"})
 D.PlanPackets=setmetatable({}, {__mode="k"})
-D.Settings={set="all",profile="",post_victory="auto",universal_boss=false,universal_victory=false,universal_interlude=false}
-local ROOT="legend_of_deborah/music/"
+D.Settings={set="all",post_victory="auto",universal_boss=false,universal_victory=false,universal_interlude=false}
+local ROOT="legend_of_deborah/music2/"
 local enabled=CreateConVar("lod_music_enabled","0",bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED,FCVAR_NOTIFY),
-    "Permit optional streamed music. Disabled by default; player Off always wins.",0,1)
+    "Permit local procedural MIDI music. Disabled by default; player Off always wins.",0,1)
 for _,name in ipairs({"LOD_MusicPlan","LOD_MusicState","LOD_MusicPlaying","LOD_MusicSwitch","LOD_MusicDemand","LOD_MusicBudget"}) do util.AddNetworkString(name) end
 local function report(p,text)
     text="[LOD:MUSIC] "..text;print(text);if IsValid(p) then p:ChatPrint(text) end
@@ -17,18 +17,11 @@ function D:Enabled(p)
     return enabled:GetBool() and (not p or p:GetInfoNum("lod_music",0)~=0 and l and l.demand==true) or false
 end
 function D:LoadCatalog(path)
-    local raw=file.Read(path or ROOT.."catalog.json","DATA")
-    if not raw or #raw>M.Limits.catalogBytes then return false,"catalog absent or too large" end
-    local ok,c,err=pcall(function() return M.ValidateCatalog(util.JSONToTable(raw)) end)
+    local ok,c,err=pcall(M.LoadBundled)
     if not ok or not c then return false,tostring(err or c) end
     -- Do not discard a valid restricted catalog if an attempted replacement loses it.
     if self.Settings.set~="all" then local pool,why=M.Pool(c,self.Settings.set);if not pool then return false,why end end
-    if not c.defaultBlock and self.Settings.profile~="" and not c.profiles[self.Settings.profile] then return false,"configured profile missing" end
-    local missing={};local profile=c.defaultBlock and c.blocks[c.defaultBlock] or c.profiles[c.projectDefault or ""]
-    for _,role in ipairs(M.Roles) do
-        if not profile or not c.assets[profile.roles[role]] then missing[#missing+1]=role end
-    end
-    self.Warning=#missing>0 and ("project defaults missing: "..table.concat(missing,",")) or nil
+    self.Warning=nil
     self.Catalog=c;self.Error=nil;return true,"catalog "..c.revision.." loaded for future plans"
 end
 function D:Configure(key,value)
@@ -36,9 +29,6 @@ function D:Configure(key,value)
     if key=="set" then
         if not M.ID(value) then return false,"invalid set ID" end
         if value~="all" then local pool,err=self.Catalog and M.Pool(self.Catalog,value);if not pool then return false,err or "catalog unavailable" end end
-    elseif key=="profile" then
-        if self.Catalog and self.Catalog.defaultBlock then return false,"folder libraries use first-block defaults" end
-        if value~="" and (not self.Catalog or not self.Catalog.profiles[value]) then return false,"unknown default profile" end
     elseif key=="post_victory" then
         if value~="auto" and value~="interlude" and value~="off" then return false,"expected auto, interlude or off" end
     elseif key:match("^universal_") then
@@ -52,22 +42,12 @@ end
 function D:Prepare(s,level)
     s.MusicPlans=s.MusicPlans or {}
     if s.MusicPlans[level] then return s.MusicPlans[level] end
-    -- The ingestion service queues an explicit reload. Consume it only at a new
-    -- plan boundary, with no directory scan or recurring media-network work.
-    local request=file.Read(ROOT.."reload.json","DATA")
-    if request and #request<512 then
-        local r=util.JSONToTable(request)
-        if r and r.revision~=self.ReloadReceipt then
-            local ok,why=self:LoadCatalog()
-            if ok then self.ReloadReceipt=r.revision else self.Error=why end
-        end
-    end
     local id=tostring(s.RunId or s.CampaignEpoch)..":"..level
     local plan,err
     if self.Catalog then plan,err=M.Plan(self.Catalog,self.Settings,
         LOD.Seeds.DeriveLevel(s.CampaignSeed,level),id,#LOD.Config.Maze.LayerOccupancy,s.CampaignEpoch) end
     -- Even an empty offered plan is frozen. Loading assets never reshuffles it.
-    plan=plan or {id=id,epoch=s.CampaignEpoch,created=CurTime(),floors={},blocks={},assets={},settings=table.Copy(self.Settings),error=err or "no catalog"}
+    plan=plan or {schema=2,id=id,epoch=s.CampaignEpoch,created=CurTime(),floors={},blocks={},assets={},settings=table.Copy(self.Settings),error=err or "no catalog"}
     s.MusicPlans[level]=plan
     for old in pairs(s.MusicPlans) do if old<level-1 or old>level+1 then s.MusicPlans[old]=nil end end
     return plan
@@ -103,7 +83,15 @@ end
 function D:Target(p,l,s)
     local plan=self:Prepare(s,s.Level);local ps=R:GetPlayerState(p)
     local staged=p:GetNW2Bool("LOD_Staged",false) or not ps or ps.deploymentComplete~=true
-    local t={plan=plan.id,epoch=s.CampaignEpoch,targets={},role="T0"}
+    local remaining
+    if s.CampaignClock and LOD.CampaignTimeout then remaining=LOD.CampaignTimeout:Remaining(s.CampaignClock,SysTime()) end
+    local hp=p:Health()/math.max(1,p:GetMaxHealth())
+    -- Compact expression is exceptional, not a permanent transpose/loudness
+    -- boost just because the countdown or the dedicated boss role is active.
+    local recent=CurTime()<(l.combatUntil or 0) or #l.damage>0 and CurTime()-l.damage[#l.damage]<M.Tuning.damageWindow
+    local expression=not staged and recent and hp<=M.Tuning.urgentHP and 1 or 0
+    local t={plan=plan.id,epoch=s.CampaignEpoch,targets={},role="T0",expression=expression,
+        remaining=remaining and math.max(0,math.floor(remaining/5)*5) or -1}
     local v=s.MusicVictory
     if v and s.Level>=v.level and s.Level<=v.level+1 then
         -- Receipt is independent of old maze entities and survives successful cleanup.
@@ -152,7 +140,8 @@ function D:SendPlan(p,l,plan)
     local data=self.PlanPackets[plan]
     if not data then
         -- Operator-only selection inventory is not part of client playback.
-        local wire={id=plan.id,epoch=plan.epoch,origin=plan.origin,blocks=plan.blocks,assets=plan.assets,floors=plan.floors}
+        local wire={schema=2,id=plan.id,epoch=plan.epoch,revision=plan.revision,seed=plan.seed,
+            blocks=plan.blocks,assets=plan.assets,floors=plan.floors}
         local raw=util.TableToJSON(wire);data=raw and util.Compress(raw)
         if data then self.PlanPackets[plan]=data end
     end
@@ -303,7 +292,7 @@ cvars.AddChangeCallback("lod_music_enabled",function()
         net.Start("LOD_MusicSwitch");net.WriteBool(D:Enabled(p));net.Send(p)
     end
 end,"LOD_MusicMaster")
-for _,key in ipairs({"set","profile","post_victory","universal_boss","universal_victory","universal_interlude"}) do
+for _,key in ipairs({"set","post_victory","universal_boss","universal_victory","universal_interlude"}) do
     local option=key
     concommand.Add("lod_music_"..key,function(p,_,args)
         if not operator(p) then return end
@@ -315,21 +304,12 @@ concommand.Add("lod_music_reload",function(p)
     if not operator(p) then return end
     local ok,why=D:LoadCatalog();if not ok then D.Error=why end;report(p,why)
 end)
-concommand.Add("lod_music_import",function(p,_,args)
-    if not operator(p) then return end
-    local id=args[1];if not M.ID(id) then report(p,"expected validated staged upload ID");return end
-    -- Only the authenticated companion service writes these validated snapshots.
-    local path=ROOT.."imports/"..id..".json"
-    local ok,why=D:LoadCatalog(path)
-    if ok then file.Write(ROOT.."catalog.json",util.TableToJSON(D.Catalog,true)) end
-    report(p,why)
-end)
 concommand.Add("lod_music_status",function(p)
     if not operator(p) then return end
     local s=R.State;local plan=s and s.MusicPlans and s.MusicPlans[s.Level]
     local listeners={}
     for who,l in pairs(D.Listeners) do listeners[#listeners+1]={player=who:EntIndex(),enabled=l.on,state=l.snapshot} end
-    report(p,util.TableToJSON({enabled=enabled:GetBool(),configured=D.Settings,
+    report(p,util.TableToJSON({system="MS2",delivery="bundled-MIDI/local-synthesis",enabled=enabled:GetBool(),configured=D.Settings,
         catalog=D.Catalog and D.Catalog.revision,defaultBlock=D.Catalog and D.Catalog.defaultBlock,
         roleNames=M.RoleNames,currentPlan=plan and plan.id,
         active=plan and plan.settings,eligible=plan and plan.eligible,listeners=listeners,warning=D.Warning,error=D.Error or plan and plan.error}))
@@ -345,7 +325,7 @@ do
             if saved[key]~=nil then
                 local value=saved[key];if type(value)=="boolean" then value=value and "1" or "0" end
                 local accepted=D:Configure(key,tostring(value))
-                if not accepted and (key=="set" or key=="profile") then
+                if not accepted and key=="set" then
                     -- Preserve a saved restriction during a temporarily missing catalog.
                     if M.ID(tostring(value)) then D.Settings[key]=value;D.Error="saved selection unavailable" end
                 end

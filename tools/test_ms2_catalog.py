@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+"""Bounded MIDI parsing, source lineage, reproducible curation and shipped bank."""
+import contextlib
+import hashlib
+import io
+import json
+from pathlib import Path
+import struct
+import sys
+import tempfile
+import unittest
+import wave
+import zipfile
+import zlib
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'tools/music'))
+import midi
+import build_ms2 as compiler
+
+
+def vlq(n):
+    out=[n&127];n >>= 7
+    while n: out.insert(0,(n&127)|128);n >>= 7
+    return bytes(out)
+
+
+def smf(events,ppq=480,fmt=0):
+    return b'MThd'+struct.pack('>IHHH',6,fmt,1,ppq)+b'MTrk'+struct.pack('>I',len(events))+events
+
+
+def zip_bytes(entries):
+    buffer=io.BytesIO()
+    with zipfile.ZipFile(buffer,'w',zipfile.ZIP_DEFLATED) as z:
+        for name,data in entries.items(): z.writestr(name,data)
+    return buffer.getvalue()
+
+
+def read_lua_json(path):
+    return json.loads(path.read_text().split('[==[',1)[1].rsplit(']==]',1)[0])
+
+
+class Reader(unittest.TestCase):
+    def test_portable_phrase_roundtrip(self):
+        notes=[[0,48,0,62,100],[48,48,4,38,90],[24,6,7,36,95],[60,6,8,46,80]]
+        result=midi.read(midi.write_clip(notes,130,8))
+        expected=sorted((t/48,d/48,p,v,inst if inst<5 else 9,inst+1) for t,d,inst,p,v in notes)
+        self.assertEqual(result.notes,expected)
+        self.assertEqual(result.end,8)
+        self.assertIn('MS2 D Dorian',result.names)
+
+    def test_running_status_and_metadata(self):
+        events=b'\x00\x90\x3e\x64'+vlq(240)+b'\xff\x01\x01x'+vlq(240)+b'\x3e\x00\x00\xff\x2f\x00'
+        notes=midi.read(smf(events)).notes
+        self.assertEqual(notes,[(0,1,62,100,0,0)])
+
+    def test_sustain_and_retrigger(self):
+        events=b'\x00\xb0\x40\x7f\x00\x90\x3e\x64'+vlq(240)+b'\x80\x3e\x00'+vlq(240)+b'\x90\x3e\x50'+vlq(240)+b'\x80\x3e\x00\x00\xb0\x40\x00'
+        self.assertEqual(midi.read(smf(events)).notes,[(0,1.5,62,100,0,0),(1,.5,62,80,0,0)])
+
+    def test_tempo_meter_program_and_end_cleanup(self):
+        events=b'\x00\xff\x51\x03\x07\xa1\x20\x00\xff\x58\x04\x04\x02\x18\x08\x00\xc0\x50\x00\x90\x3e\x64'+vlq(480)+b'\xff\x2f\x00'
+        result=midi.read(smf(events))
+        self.assertEqual(result.tempos,[(0,120)])
+        self.assertEqual(result.meters,[(0,4,4)])
+        self.assertEqual(result.programs,{0:80})
+        self.assertEqual(result.notes[0][1],1)
+
+    def test_all_truncations_fail_safely(self):
+        data=smf(b'\x00\x90\x3e\x64'+vlq(480)+b'\x80\x3e\x00')
+        for length in range(len(data)):
+            with self.subTest(length=length),self.assertRaises(ValueError): midi.read(data[:length])
+
+    def test_unsupported_time_and_events(self):
+        for data in (smf(b'',fmt=2),smf(b'',ppq=0),smf(b'',ppq=0xe728),
+                     smf(b'\x00\x3e\x64'),smf(b'\x00\xf2\x01\x02'),
+                     smf(b'\x81\x81\x81\x81\x01'),smf(vlq(480*32769)+b'\xff\x2f\x00')):
+            with self.assertRaises(ValueError): midi.read(data)
+
+    def test_sysex_and_all_notes_off(self):
+        events=b'\x00\xf0\x02\x01\xf7\x00\x90\x3e\x64'+vlq(480)+b'\xb0\x7b\x00'
+        self.assertEqual(midi.read(smf(events)).notes[0][1],1)
+
+
+class Curation(unittest.TestCase):
+    def test_short_transcribed_drums_are_preserved(self):
+        source=midi.Midi([(0,1/480,36,90,9,0),(0,1/480,62,90,0,0)],[],[],{},[],1)
+        notes=compiler.curate([('synth',source)],'T2')
+        self.assertEqual(notes,[[0,6,7,36,90]])
+
+    def test_mono_priority_and_mode_cleanup(self):
+        source=midi.Midi([(0,2,63,90,0,0),(0,2,67,70,0,0),(1,1,66,100,0,0)],[],[],{},[],2)
+        notes=compiler.curate([('synth',source)],'T2')
+        self.assertEqual(len(notes),2)
+        self.assertEqual(notes[0][1],48)
+        self.assertTrue(all((n[3]-2)%12 in compiler.SCALE for n in notes))
+
+    def test_archive_deduplication_and_ignored_recordings(self):
+        data=smf(b'\x00\x90\x3e\x64'+vlq(480)+b'\x80\x3e\x00')
+        inner=zip_bytes({'Block A Chill (synth).mid':data,'old.mp3':b'not a MIDI'})
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'library.zip';path.write_bytes(zip_bytes({'one.zip':inner,'two.zip':inner,'empty.zip':zip_bytes({})}))
+            self.assertEqual(len(compiler.inputs(path)),1)
+            path.write_bytes(zip_bytes({'../Block A Chill (synth).mid':data}))
+            with self.assertRaises(ValueError): compiler.inputs(path)
+
+    def test_archive_depth_limit(self):
+        data=smf(b'')
+        for i in range(5): data=zip_bytes({f'layer{i}.zip':data})
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'nested.zip';path.write_bytes(data)
+            with self.assertRaises(ValueError): compiler.inputs(path)
+
+
+class ShippedBank(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.directory=ROOT/'gamemodes/legend_of_deborah/gamemode/lod/ms2'
+        cls.catalog=read_lua_json(cls.directory/'catalog.lua')
+        cls.report=json.loads((ROOT/'docs/MS2_CATALOG.json').read_text())
+
+    def test_complete_bounded_lineage_and_graph(self):
+        catalog=self.catalog;self.assertEqual(catalog['schema'],2)
+        self.assertEqual(len(catalog['blocks']),8);self.assertEqual(len(catalog['assets']),48)
+        self.assertEqual(catalog['defaultBlock'],'a');self.assertEqual(catalog['scale'],'D Dorian')
+        all_notes={}
+        for name in catalog['pages']:
+            data=(self.directory/name).read_bytes()
+            self.assertLess(len(data),47000);self.assertLess(len(zlib.compress(data)),65536)
+            all_notes.update(read_lua_json(self.directory/name))
+        self.assertEqual({p.name for p in self.directory.glob('notes_*.lua')},set(catalog['pages']))
+        used=set()
+        for asset in catalog['assets'].values():
+            ids={c['id'] for c in asset['clips']}
+            self.assertTrue(0<len(ids)<=256);self.assertEqual(asset['bpm'],catalog['bpm'])
+            for clip in asset['clips']:
+                used.add(clip['id']);self.assertIn(clip['id'],all_notes)
+                self.assertTrue(set(clip['next'])<=ids)
+                self.assertTrue(0<=clip['energy']<=1 and 0<=clip['pulse']<=1)
+                if asset['role'] not in ('T0','VICTORY'): self.assertGreaterEqual(clip['pulse'],.5)
+        self.assertEqual(set(all_notes),used)
+        self.assertEqual(len(used),self.report['clips'])
+        self.assertEqual(sum(map(len,all_notes.values())),self.report['notes'])
+        self.assertLess(len(zlib.compress((self.directory/'catalog.lua').read_bytes())),65536)
+        sources=list((ROOT/'tools/music/sources').glob('*.mid'))
+        self.assertEqual(len(sources),465)
+        declared={s['sha256'] for s in self.report['sources']}
+        self.assertEqual({hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},declared)
+
+    def test_source_folder_rebuild_matches_every_shipped_shard(self):
+        with tempfile.TemporaryDirectory() as temp,contextlib.redirect_stdout(io.StringIO()):
+            destination=Path(temp)
+            catalog,_,_=compiler.compile_library(ROOT/'tools/music/sources',destination)
+            self.assertEqual(catalog['revision'],self.catalog['revision'])
+            for name in ['catalog.lua','files.lua',*catalog['pages']]:
+                self.assertEqual((destination/name).read_bytes(),(self.directory/name).read_bytes(),name)
+
+    def test_portable_core_clip_bank(self):
+        with zipfile.ZipFile(ROOT/'docs/MS2_CLIPS.zip') as archive:
+            index=json.loads(archive.read('index.json'))
+            self.assertEqual(index['revision'],self.catalog['revision'])
+            self.assertEqual(len(index['clips']),self.report['clips'])
+            notes=0
+            for clip in index['clips']:
+                exported=midi.read(archive.read(clip['file']))
+                self.assertEqual(exported.end,clip['beats'])
+                self.assertEqual(len(exported.names),10)
+                notes+=len(exported.notes)
+                self.assertTrue(all(n[4]==9 or (n[2]-2)%12 in compiler.SCALE for n in exported.notes))
+            self.assertEqual(notes,self.report['notes'])
+
+    def test_generated_engine_and_native_pcm_bank(self):
+        source=(ROOT/'tools/music/ms2_engine.js').read_text()
+        self.assertEqual((self.directory/'engine.lua').read_text(),'return [==['+source+']==]\n')
+        self.assertNotIn('XMLHttpRequest',source);self.assertNotIn('fetch(',source)
+        size=0
+        for name in ('acid','industrial','strings','brass','bass','tom','snare','kick','open','closed'):
+            path=ROOT/f'gamemodes/legend_of_deborah/content/sound/lod/ms2/{name}.wav';size+=path.stat().st_size
+            with wave.open(str(path)) as w:
+                self.assertEqual((w.getnchannels(),w.getsampwidth(),w.getframerate()),(1,2,22050))
+                values=struct.unpack('<'+'h'*w.getnframes(),w.readframes(w.getnframes()))
+                self.assertTrue(any(values));self.assertLess(max(map(abs,values)),32767)
+        self.assertLess(size,100000)
+
+
+if __name__=='__main__': unittest.main(verbosity=2)
