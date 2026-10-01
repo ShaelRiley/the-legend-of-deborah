@@ -1,4 +1,12 @@
-# Current author-directed checkpoint — Music System 2
+# Current repair checkpoint — MS2 catalog loading
+
+The author's first native MS2 attempt on main `bc3cf1967ebdc77e98c5fc028ef6337c9e7139fe` reported silence and `Couldn't include file 'lod\\ms2\\catalog.lua' - File not found or is empty` from `sh_music.lua` during `sv_music.lua` startup. The catalog exists in the repository; the nested loader incorrectly assumed include paths always resolve from the gamemode root. Catalog, engine, note pages and client distribution now use the explicit `legend_of_deborah/gamemode/lod/ms2/` virtual path. Missing mounts produce a precise diagnostic before attempting a noisy include. The user also requests removal of the stale server-disabled Music message; Options now retains the location/danger description without a recurring status callback.
+
+The strengthened music fixture models nested and rootless include contexts and a client using server-delivered Lua without loose files. The new production-path regression reproduces the old failure, checks server catalog admission, client engine/note handoff, every actual distributed score file and missing-mount recovery. Run the finite music gate and GitHub CI. After pulling/installing, fully restart GMod, load LoD on gm_flatgrass, enable `lod_music_enabled 1; lod_music 1` and listen in staging/gameplay. Native audibility remains pending fresh evidence; prior offline audio/source results did not establish native acceptance. See [repair evidence](validation/MS2_LOADING_REPAIR.md).
+
+---
+
+# Previous author-directed checkpoint — Music System 2
 
 Repository `ShaelRiley/the-legend-of-deborah`, canonical `main`; implementation parent `b4f9f67e2d837e71da1a194dc655a212fd74ff4c`. The author explicitly replaces the bandwidth-heavy MS1 score with a complete local MIDI/synth system and authorizes source publication and cleanup. This checkpoint supersedes the older streaming-music provisioning sequence below; preserve intervening VR/gameplay work.
 

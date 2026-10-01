@@ -9,6 +9,20 @@ M.Limits={blocks=256,assets=1792,catalogBytes=2097152,packetBytes=60000,planChun
     noteCachePages=8,noteCacheAssets=4,clipNotes=2048}
 M.Tuning={tick=.2,fade=1.2,relax=6,dwell=4,escalate=.8,damageWindow=5,urgentHP=.2,dangerHP=.4,
     urgentTime=60,dangerTime=180,serverBudget=.0005,frameLimit=.035,recovery=5,pingLimit=180,pingRise=80,lossLimit=2}
+-- include() is relative to its current Lua folder. Startup inside lod/ and
+-- later callbacks must resolve the same files in GMod's virtual filesystem.
+M.BundleRoot="legend_of_deborah/gamemode/lod/ms2/"
+function M.IncludeBundled(name)
+    if type(name)~="string" or not (name=="catalog.lua" or name=="engine.lua" or name=="files.lua"
+        or name:match("^notes_%d%d%d%.lua$")) then return nil,"invalid MS2 bundle file" end
+    local path=M.BundleRoot..name
+    -- Clients may include server-delivered Lua from the download cache. Only
+    -- preflight the server's mounted files; include owns client availability.
+    if SERVER and not file.Exists(path,"LUA") then return nil,"Missing MS2 file "..path.."; install the complete build" end
+    local ok,value=pcall(include,path)
+    if not ok or value==nil then return nil,"Could not load MS2 file "..path end
+    return value
+end
 local function count(t) local n=0;for _ in pairs(t or {}) do n=n+1 end;return n end
 function M.ID(s) return type(s)=="string" and #s>0 and #s<=64 and s:match("^[a-z0-9][a-z0-9_-]*$")~=nil end
 function M.Text(s,size) return type(s)=="string" and #s>0 and #s<=(size or 128) and not s:find("[%z\1-\31\127]") end
@@ -50,8 +64,8 @@ function M.ValidateCatalog(c)
     return c
 end
 function M.LoadBundled()
-    local ok,raw=pcall(include,"lod/ms2/catalog.lua")
-    if not ok or type(raw)~="string" or #raw>M.Limits.catalogBytes then return nil,"bundled MIDI catalog unavailable" end
+    local raw,err=M.IncludeBundled("catalog.lua")
+    if type(raw)~="string" or #raw>M.Limits.catalogBytes then return nil,err or "bundled MIDI catalog unavailable" end
     return M.ValidateCatalog(util.JSONToTable(raw))
 end
 function M.Pool(c,selection)

@@ -18,11 +18,7 @@ function O:Open()
     end
     label("OPTIONS",24,"LOD_SheetTitle");label("Audio",118,"LOD_SheetHeading")
     local music=vgui.Create("DCheckBoxLabel",f);music:SetPos(30,158);music:SetText("Music");music:SetTextColor(UI.Colors.ink);music:SetConVar("lod_music");music:SizeToContents()
-    local status=label("",185)
-    status.Think=function(l)
-        local cv=GetConVar("lod_music_enabled")
-        l:SetText(cv and cv:GetBool() and "Music follows your location and the danger around you." or "Disabled by server — your preference is saved.")
-    end
+    label("Music follows your location and the danger around you.",185)
     local slider=vgui.Create("DNumSlider",f);slider:SetPos(28,222);slider:SetSize(math.min(550,f:GetWide()-56),32)
     slider:SetText("Music volume");slider:SetMinMax(0,1);slider:SetDecimals(2);slider:SetConVar("lod_music_volume")
     slider.Label:SetTextColor(UI.Colors.ink)

@@ -6,7 +6,7 @@ import test_spot10_gate as gate
 gate.LABEL = 'MUSIC_GATE'
 gate.SCOPE = 'MS2 MIDI/catalog/composer/synth lifecycle plus directly affected regressions; native GMod audio pending'
 gate.LUA = [
-    'test_music_policy.lua', 'test_music_server.lua', 'test_music_client.lua',
+    'test_music_policy.lua', 'test_music_bundle.lua', 'test_music_server.lua', 'test_music_client.lua',
     'test_music_transitions.lua', 'test_music_resources.lua', 'test_player_options.lua',
     'test_low_end_palette.lua', 'test_low_end_geometry.lua', 'test_low_end_options.lua',
     'test_adventure_presentation.lua', 'test_feedback_language.lua',

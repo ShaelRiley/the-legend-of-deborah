@@ -37,8 +37,8 @@ function D:Announce(bid)
 end
 function D:Page(name)
     local found=self.Pages[name];if found then found.used=SysTime();return found.notes end
-    local ok,raw=pcall(include,"lod/ms2/"..name)
-    if not ok or type(raw)~="string" or #raw>47000 then return nil end
+    local raw,err=M.IncludeBundled(name)
+    if type(raw)~="string" or #raw>47000 then self.Error=err or "Invalid MIDI note page "..tostring(name);return nil end
     local notes=util.JSONToTable(raw);if type(notes)~="table" then return nil end
     self.Pages[name]={notes=notes,used=SysTime()}
     if table.Count(self.Pages)>M.Limits.noteCachePages then
@@ -54,7 +54,7 @@ function D:Payload(aid)
     local payload={id=a.id,role=a.role,loop=a.loop,clips={}}
     for _,clip in ipairs(a.clips) do
         local page=self:Page(clip.page);local notes=page and page[clip.id]
-        if type(notes)~="table" or #notes>M.Limits.clipNotes then self.Error="Missing MIDI phrase "..clip.id;return nil end
+        if type(notes)~="table" or #notes>M.Limits.clipNotes then self.Error=self.Error or "Missing MIDI phrase "..clip.id;return nil end
         for _,n in ipairs(notes) do
             if type(n)~="table" or #n~=5 or type(n[1])~="number" or n[1]<0 or n[1]>=clip.beats*48
                 or type(n[2])~="number" or n[2]<1 or n[2]>clip.beats*48
@@ -77,8 +77,8 @@ function D:StartRenderer()
     if IsValid(self.Panel) or SysTime()<(self.RetryAt or 0) then return end
     if not self.Catalog then self.Catalog,self.Error=M.LoadBundled() end
     if not self.Catalog then self.RetryAt=SysTime()+10;return end
-    local ok,engineSource=pcall(include,"lod/ms2/engine.lua")
-    if not ok or type(engineSource)~="string" then self.Error="Missing MS2 renderer";self.RetryAt=SysTime()+10;return end
+    local engineSource,err=M.IncludeBundled("engine.lua")
+    if type(engineSource)~="string" then self.Error=err or "Missing MS2 renderer";self.RetryAt=SysTime()+10;return end
     local panel=vgui.Create("DHTML");self.Panel=panel
     if not IsValid(panel) then self.Error="MS2 HTML renderer unavailable";self.RetryAt=SysTime()+10;return end
     local generation=self.Generation

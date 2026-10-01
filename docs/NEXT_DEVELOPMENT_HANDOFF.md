@@ -1,3 +1,11 @@
+# Current MS2 loading repair
+
+The first native attempt reported a missing catalog include and no music. The files are present; nested music modules used paths relative to the gamemode root instead of explicit GMod virtual paths. The repair covers server/client catalog, note pages, engine and AddCSLuaFile distribution. Options also removes the outdated server-disabled text. [Evidence and finite gate](validation/MS2_LOADING_REPAIR.md) preserve the reported contradiction and regression reproduction.
+
+Next action: fully quit GMod, pull/install main using the one-line command in DEVELOPMENT_WORKFLOW.md, load LoD on gm_flatgrass and run `lod_music_enabled 1; lod_music 1`. Confirm audible staging/gameplay music. Native success has not yet been observed; preserve console_latest.txt plus rpg_summary_latest.txt if silence or errors persist.
+
+---
+
 # Current author-directed checkpoint — Music System 2
 
 Repository `ShaelRiley/the-legend-of-deborah`, canonical `main`; implementation parent `b4f9f67e2d837e71da1a194dc655a212fd74ff4c`. The author explicitly replaces the bandwidth-heavy MS1 score with a complete local MIDI/synth system and authorizes source publication and cleanup. This checkpoint supersedes the older streaming-music provisioning sequence below; preserve intervening VR/gameplay work.

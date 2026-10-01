@@ -320,15 +320,16 @@ include("lod/sh_campaign_timeout.lua")
 include("lod/sv_campaign_timeout.lua")
 AddCSLuaFile("lod/cl_music.lua")
 AddCSLuaFile("lod/cl_music_native.lua")
-AddCSLuaFile("lod/ms2/files.lua")
 do
     -- Optional score distribution belongs to server startup, not shared
     -- gameplay loading. A missing bank must never abort a campaign.
-    local ok,files=pcall(include,"lod/ms2/files.lua")
+    local root="legend_of_deborah/gamemode/lod/ms2/"
+    AddCSLuaFile(root.."files.lua")
+    local ok,files=pcall(include,root.."files.lua")
     if ok and type(files)=="table" then
-        for _,name in ipairs(files) do AddCSLuaFile("lod/ms2/"..name) end
+        for _,name in ipairs(files) do AddCSLuaFile(root..name) end
     else print("[LOD:MUSIC] MS2 file registry unavailable; install the complete build") end
-    AddCSLuaFile("lod/ms2/engine.lua")
+    AddCSLuaFile(root.."engine.lua")
     for _,name in ipairs({"acid","industrial","strings","brass","bass","tom","snare","kick","open","closed"}) do
         resource.AddFile("sound/lod/ms2/"..name..".wav")
     end

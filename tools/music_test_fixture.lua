@@ -71,13 +71,31 @@ function E.catalog()
  c.sets.pair={revision='v1',title='Two',members={'beta','alpha','alpha'}}
  return c
 end
+-- GMod includes are relative to the currently executing Lua folder, not always
+-- the gamemode root. Explicit gamemode paths also work in later callbacks.
+E.luaDirectory='legend_of_deborah/gamemode/lod/'
+E.includeCalls={};E.missingLua={}
+local function luaPath(path)
+ if not path:match('^legend_of_deborah/gamemode/') then path=E.luaDirectory..path end
+ return path
+end
+local function mountedLua(path)
+ if E.missingLua[path] then return false end
+ local f=io.open('gamemodes/'..path,'rb');if not f then return false end;f:close();return true
+end
+file.Exists=function(path,realm)
+ if realm~='LUA' or E.cacheOnly and CLIENT then return false end
+ return mountedLua(path)
+end
 function include(path)
- if path=='lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
- if path=='lod/ms2/notes_000.lua' then
+ path=luaPath(path);E.includeCalls[#E.includeCalls+1]=path
+ if not mountedLua(path) then error("Couldn't include file '"..path.."' - File not found or is empty") end
+ if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
+ if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/notes_000.lua' then
   local notes={};for _,a in pairs(E.catalog().assets) do for _,c in ipairs(a.clips) do notes[c.id]={{0,48,0,62,85},{48,48,4,38,85}} end end
   return util.TableToJSON(notes)
  end
- return dofile('gamemodes/legend_of_deborah/gamemode/'..path)
+ return dofile('gamemodes/'..path)
 end
 vgui={Create=function(kind)
  local p={valid=true,functions={},calls={},kind=kind};E.panel=p
