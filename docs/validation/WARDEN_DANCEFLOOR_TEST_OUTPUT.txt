@@ -1,0 +1,21 @@
+PASS: idempotent tuning and actual fourfold post-volley exposure
+PASS: late fourth release still receives the full post-shot window
+PASS: first and repeated hits cannot truncate or renew the opening
+PASS: early interrupt cancels remaining shots without an early disappearance
+PASS: standalone taunt is 6.4 seconds and emits once
+PASS: root and all four clone slots share the new window
+PASS: four opening dance moves rotate without gameplay RNG
+PASS: physical dance route crosses court and never enters a non-court cell
+PASS: blocked dance route holds and retries at a bounded rate
+PASS: Held and finite hit-stun stop movement without renewing dance
+PASS: freeze, target loss and invisibility retire dance state
+PASS: stale phase/campaign and dead owners cannot move or restart a dance
+PASS: phase two still drops bombs and clears the dance route
+PASS: phase three still warns and performs the crowbar strike
+PASS: non-Warden Tick remains untouched
+PASS: all four client moves are distinct, cached and purely bone-based
+PASS: private clone recoil takes priority over dance bones
+PASS: missing bones and model replacement are safe
+PASS: dance cleanup preserves phase-two seating and hides expired captions
+PASS: 19 focused dancefloor behavior checks (mocked engine boundaries)
+PASS: four Lua syntax checks; server/client load-order and distribution checks
