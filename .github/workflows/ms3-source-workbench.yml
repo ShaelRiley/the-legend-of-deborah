@@ -1,0 +1,31 @@
+name: MS3 source arrangement workbench
+on:
+  push:
+    branches: [work/ms3-sixteen-bar-source]
+    paths:
+      - .github/workflows/ms3-source-workbench.yml
+      - tools/music/**
+      - tools/test_ms3_sixteen_bar.py
+permissions:
+  contents: read
+jobs:
+  source-workbench:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect exact authoring sources and runtime contracts
+        run: |
+          mkdir -p build/ms3-workbench
+          git rev-parse HEAD > build/ms3-workbench/source-head.txt
+          tar -czf build/ms3-workbench/source-workbench.tar.gz tools/music tools/test_music* tools/test_ms2* tools/test_ms3* gamemodes/legend_of_deborah/gamemode/lod/*music* gamemodes/legend_of_deborah/gamemode/lod/ms2 docs/MUSIC* docs/MS2_CATALOG* docs/MS2_SURGE_BANK.json docs/validation/MS3_SAMPLE_CLOCK.md
+      - name: Source arrangement regression
+        run: |
+          if test -f tools/test_ms3_sixteen_bar.py; then python3 tools/test_ms3_sixteen_bar.py; fi
+          if test -f tools/music/remap_ms3_sixteen_bar.py; then python3 tools/music/remap_ms3_sixteen_bar.py --output build/ms3-workbench/remap; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ms3-source-workbench
+          path: build/ms3-workbench
+          retention-days: 7
