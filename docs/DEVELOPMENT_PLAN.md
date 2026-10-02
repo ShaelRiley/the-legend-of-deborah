@@ -7,17 +7,20 @@ and hit-stun floor repairs remain intact. The catalog now contains 114 ordinary
 feats, six fallbacks and nine capstones, with retired ranks/CROSS ownership and
 stored drafts repaired through the canonical migration authority.
 
-`docs/FEAT_REBALANCE_ACCEPTANCE.md` records the exact inventory, final review
-repairs, source gate and native procedure. The recovered gate passed 305/305;
-the later transfer recovery failed before validation, so its planned 306-check
-receipt is not evidence. Run the complete frozen-source gate for the final tree
-and verify remote main before source publication. Never treat this as native
-GMod/controller acceptance. No Workshop or VPS operation is authorized.
+`docs/FEAT_REBALANCE_ACCEPTANCE.md` records the exact inventory, review repairs
+and native procedure. Publication `b5bf93bfc16828ac722113bb358d57b5026d2000` passed
+the fresh 305-suite source gate. Separate VR CI then found a stale six-menu test
+after removal of the Haste toggle. The repaired test now verifies the five
+retained actions and is explicitly included in the final 306-suite frozen-source
+matrix. This genuine expanded gate is distinct from the abandoned transfer's
+unverified planned count. Verify the final remote commit and its Music/VR CI;
+source checks are not native acceptance. No Workshop/VPS operation is authorized.
 
-Primary live GDD rows match the ledger. Eleven stale secondary statements were
-identified; the first guarded correction was cancelled and unchanged readback
-verified. Those live-document corrections require permission to retry before
-GDD reconciliation can be called complete.
+Primary live GDD rows match the ledger. Two duplicate corrections are applied and
+readback-verified in tabs 06/07 (additive life capacity and Russian Asset's
+at-least-15 funding/exactly-15 spend). Nine HUMAN duplicates remain blocked by
+`FAILED_PRECONDITION` and a cancelled final attempt despite explicit permission.
+Do not call GDD duplicate cleanup complete; preserve the successful corrections.
 
 Next native action after verified source publication: fully restart/update GMod,
 then run the compact acceptance session, prioritizing Russian Asset input and

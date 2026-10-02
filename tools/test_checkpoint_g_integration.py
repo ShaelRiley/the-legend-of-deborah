@@ -300,6 +300,7 @@ for pattern in ("test_spot*.lua", "validate_spot*.lua", "test_faction*.lua"):
             SUITES.append((path.stem, ["python3", "tools/run_lua54.py", relative]))
             executed.add(relative)
 SUITES += [
+    ("VR Startup, Menus & Input Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_vr.lua"]),
     ("Player Target Identity", ["python3", "tools/run_lua54.py", "tools/tests/player_target_identity.lua"]),
     ("Cleanup Campaign, Loot & Party Contracts", ["python3", "tools/run_lua54.py", "tools/test_cleanup_contracts.lua"]),
     ("Cleanup Body-Lifetime & Jump Claims", ["python3", "tools/run_lua54.py", "tools/test_cleanup_lifecycle.lua"]),

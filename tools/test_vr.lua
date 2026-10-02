@@ -65,7 +65,14 @@ vrmod={IsPlayerInVR=function(p) return p==ply end,
 g_VR={active=true,input={},menuFocus=false}
 hooks.VRMod_Start.LOD_VRStart(ply)
 hooks.VRMod_Start.LOD_VRStart(ply)
-assert(#menus==6,"restarting VR must not duplicate quick-menu entries")
+local expectedMenus={['Deborah Player Menu']=true,['Deborah: Pay respects / Tetris']=true,
+    ['Deborah Team Menu']=true,['Deborah Map']=true,['Deborah GPS']=true}
+assert(#menus==5,"restarting VR must not duplicate the five retained quick-menu entries")
+for _,entry in ipairs(menus) do
+    assert(expectedMenus[entry.name],"retired Haste toggle or duplicate/unexpected quick-menu entry")
+    expectedMenus[entry.name]=nil
+end
+assert(next(expectedMenus)==nil,"all retained quick-menu actions must remain available")
 assert(settings.vrmod_hud.value=="1" and settings.vrmod_hud_engine.value=="1","gamemode HUD captured")
 vrInput("boolean_menucontext",true);assert(toggles==1)
 assert(hooks.VRMod_AllowDefaultAction.LOD_VRDefaultActions("boolean_menucontext")==false)

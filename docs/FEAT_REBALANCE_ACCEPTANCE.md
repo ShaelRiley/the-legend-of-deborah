@@ -15,16 +15,24 @@ is preserved.
 
 ### Current live-document reconciliation
 
-Read revision:
-`AHj4eMRFDoHb0T1VJ2VShQ6Ns65T3rc6d18gCBG_Rv0aOMKUpUrK4wIPNaVCl-UjMex_pM2hUclvnfk4P0KJOBpTPKY_TDlkPhVHKPx6zg`.
+Final readback revision:
+`AHj4eMR5lftem9RSbEiTJtukYOiHIcSUxU5jJ3zWX-ruwQJnw7HuWXyJSPlHts1VDyEuAmq4PJ-mIcAgUEht649z0xHKbKfNodixRpzG1g`.
 The primary live feat rows match the final ledger, including Aura Burst / Radiance /
-Majesty radii 1/2/3. Eleven stale secondary statements remain: life cap hard-coded
-at four in two old planning paragraphs, five generic lethal-interceptor pipeline
-mentions, one Content-rider comparison to 11/22/33, a Wizard Content-count example,
-and two normalized Russian Asset cost statements. The guarded cleanup write was
-cancelled and a readback confirmed no mutation. Final live-GDD cleanup is pending
-explicit permission to retry; source correctness must not be represented as a
-completed document reconciliation.
+Majesty radii 1/2/3. Two duplicate rules were corrected and readback-verified:
+
+- `07 — IMPLEMENTATION & TUNING`: Russian Asset requires at least 15 Magic and
+  spends exactly 15 once.
+- `06 — MULTIPLAYER, LIFECYCLE & UI`: life capacity is baseline four plus additive
+  modifiers; Not Yet adds one capacity and does not award a life.
+
+Nine stale HUMAN-tab duplicates remain: two hard-cap-four planning statements,
+five generic lethal-interceptor pipeline mentions, an old 11/22/33 Content-rider
+comparison and a Wizard Content-count example. The user authorized the cleanup,
+but guarded batch, single-phrase and native indexed edits returned
+`FAILED_PRECONDITION`; the final shortening attempt was cancelled. Verified
+writes were preserved, all ten tabs remain, and no unsupported fallback was used.
+This is a document-write blocker, not missing user permission. Source correctness
+and the matching primary rules do not establish complete duplicate reconciliation.
 
 ## Implementation
 
@@ -127,11 +135,22 @@ Push, Morale, elemental/status and other reusable systems remain intact.
 
 Recovered gameplay commit `e2997b15469ff335c2991d4f585770e8f0b4116c` is a direct
 child of baseline main and passed 305/305 suites with 913 Lua syntax checks
-in its preserved October 2 validation artifact. It was never published to main.
+in its preserved October 2 validation artifact. It was unpublished when recovered.
 A later transfer-based recovery failed HTTP 403 before validation. Its planned
 306-check gate and expected tree are not validation evidence and are not claimed
 here. In particular, its abandoned prose said Aura Burst 1/1/2, but the recovered
 production code already implements the live 1/2/3 radii.
+
+The recovered implementation and final review fixes were published as
+`b5bf93bfc16828ac722113bb358d57b5026d2000` after a fresh 305/305 unchanged-source
+gate. Its separate [VR CI run](https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37073755643)
+then exposed a stale test expecting six menu entries even though passive Haste
+correctly removed the sixth toggle. The repair verifies the five retained menu
+names, no duplicates and no retired Haste action. The VR startup/menu/input
+regression is now an explicit member of the full matrix, genuinely expanding
+this final gate to 306 suites. This is distinct from the earlier failed transfer's
+unverified planned count. The complete local VR gate also covers 13 checks plus
+syntax, and source CI must pass for the final published commit.
 
 Final review adds real input and presentation regression coverage rather than
 assuming a historical test count. The catalog, migration, proc-boundary, actual-HP
