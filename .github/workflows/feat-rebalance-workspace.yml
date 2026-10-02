@@ -1,0 +1,32 @@
+name: Feat rebalance source workspace
+on:
+  push:
+    branches: ['work/feat-rebalance-20261002']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e
+          persist-credentials: false
+      - name: Archive verified source and test inputs
+        shell: python
+        run: |
+          import pathlib, subprocess, zipfile
+          root = pathlib.Path.cwd()
+          files = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          excluded = {'.ogg','.mp3','.wav','.flac','.vtf','.vmt','.mdl','.vvd','.vtx','.phy','.png','.jpg','.jpeg','.webp','.mp4','.gif','.woff','.woff2','.ttf','.otf','.gma'}
+          with zipfile.ZipFile('/tmp/lod-source.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for name in files:
+                  if name and (root/name).is_file() and pathlib.Path(name).suffix.lower() not in excluded:
+                      z.write(root/name,name)
+              z.writestr('SOURCE_COMMIT.txt',subprocess.check_output(['git','rev-parse','HEAD']))
+              z.writestr('SOURCE_TREE.txt',subprocess.check_output(['git','ls-tree','-r','HEAD']))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lod-source-b81e8b95
+          path: /tmp/lod-source.zip
+          retention-days: 1
