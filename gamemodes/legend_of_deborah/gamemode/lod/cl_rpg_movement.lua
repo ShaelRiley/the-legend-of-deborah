@@ -19,6 +19,9 @@ hook.Add("SetupMove","LOD_PredictedVoluntarySpeed",function(ply,move)
         local back=ply:GetNW2Float("LOD_BackpedalMovementMultiplier",1)
         if ground and not move:KeyDown(IN_JUMP) and move:GetForwardSpeed()<0 and back>1 then F.Scale(move,back) end
         local bonus=ply:GetNW2Float(ground and "LOD_HasteMovementMultiplier" or "LOD_SpringHeelAirMultiplier",1)
+        -- Match the server's takeoff-command exclusion before Source switches
+        -- from grounded SetupMove to the same command's airborne acceleration.
+        if ground and move:KeyDown(IN_JUMP) then bonus=1 end
         if bonus>1 then F.Scale(move,bonus) end
         local strafe=ply:GetNW2Float("LOD_StrafeSpeedMultiplier",1)
         if strafe>1 and move:GetSideSpeed()~=0 then F.Strafe(move,strafe) end

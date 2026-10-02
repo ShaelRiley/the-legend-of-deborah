@@ -51,14 +51,20 @@ end
 -- Modify voluntary wish movement, never velocity, BaseVelocity or authored kicks.
 -- The ordinary walk/run/sprint, DEX, Rogue, equipment and status rates have already
 -- resolved at the single Gate D SetupMove seam. Strafe changes only its own axis.
-function Rules:VoluntaryFeatMovementMultiplier(actor,derived)
+function Rules:VoluntaryFeatMovementMultiplier(actor,derived,move)
     if not IsValid(actor) or not actor:IsPlayer() or not actor:Alive()
         or actor:GetMoveType()~=MOVETYPE_WALK or actor:WaterLevel()>=2
         or (actor.InVehicle and actor:InVehicle()) or (actor.IsFrozen and actor:IsFrozen()) then return 1 end
     local status=LOD.RPGStatusElements
     if status and not status:CanMoveVoluntarily(actor) then return 1 end
     derived=derived or self:Derived(actor) or {}
-    if actor:OnGround() then return tonumber(derived.hasteMovementMultiplier) or 1 end
+    if actor:OnGround() then
+        -- SetupMove precedes Source's jump/air-move decision. A jump command
+        -- must not carry the grounded Haste wish-speed bonus into AirMove.
+        -- Existing horizontal momentum and the jump impulse remain untouched.
+        if move and move:KeyDown(IN_JUMP) then return 1 end
+        return tonumber(derived.hasteMovementMultiplier) or 1
+    end
     return tonumber(derived.springHeelAirMovementMultiplier) or 1
 end
 if not Rules.LODPassiveHasteMovement20261002 then
@@ -66,7 +72,7 @@ if not Rules.LODPassiveHasteMovement20261002 then
     local base=Rules.ApplyVoluntaryMovementFeats
     function Rules:ApplyVoluntaryMovementFeats(actor,move)
         if base then base(self,actor,move) end
-        local multiplier=self:VoluntaryFeatMovementMultiplier(actor)
+        local multiplier=self:VoluntaryFeatMovementMultiplier(actor,nil,move)
         if multiplier==1 then return end
         move:SetForwardSpeed(move:GetForwardSpeed()*multiplier)
         move:SetSideSpeed(move:GetSideSpeed()*multiplier)

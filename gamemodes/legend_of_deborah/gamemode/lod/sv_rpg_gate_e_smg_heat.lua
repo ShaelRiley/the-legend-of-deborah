@@ -430,7 +430,7 @@ concommand.Add("lod_rpg_gate_e_smg_heat_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateSMGHeatFamily()
     if ok then
-        print("[LOD:RPG-E] DEX SMG-Heat feat family PASS — DEX 13/15/17; 66% deterministic suppression; 8 heat replacement thresholds; cooling, feedback, cadence, damage, ammo, and 2.0s lock preserved")
+        print("[LOD:RPG-E] Heat Sink PASS — single rank, DEX 13; 66% deterministic suppression; threshold 8; cooling, feedback, cadence, damage, ammo, and 2.0s lock preserved")
     else
         ErrorNoHalt("[LOD:RPG-E] DEX SMG-Heat feat family FAILED\n")
         for _, message in ipairs(errors or {}) do
@@ -459,7 +459,7 @@ end)
 
 concommand.Add("lod_rpg_test_smg_heat", function(ply, _, args)
     if not developerAllowed(ply) or not IsValid(ply) then return end
-    local rank = math.Clamp(math.floor(tonumber(args[1]) or 0), 0, 3)
+    local rank = math.Clamp(math.floor(tonumber(args[1]) or 0), 0, 1)
     local ok, message = configureRank(ply, rank)
     if not ok then ply:ChatPrint(message) return end
     local profile = Effects:SMGHeatProfile(Rules:ProgressionState(ply))

@@ -326,6 +326,10 @@ function DeathTetris:StartSession(ply, kind, endsAt)
         pool.magic = pool.magic - 15
         magic:_Sync(ply, pool)
         ply:SetNW2Bool("LOD_LiveTetrisActive", true)
+        -- A rapid open/close may happen between client polls. Retire any
+        -- existing special-move prefix at the authoritative ownership change.
+        local equipment = LOD.Equipment
+        if equipment and equipment.DirectionToken then equipment:DirectionToken(ply, "RESET") end
     else
         deathState.tetrisStarted = true
         deathState.tetrisStartedAt = now

@@ -2,7 +2,7 @@ local base='gamemodes/legend_of_deborah/gamemode/lod/'
 function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
 function IsValid(v) return type(v)=='table' and v.valid~=false end
 function GetConVar() return nil end
-MOVETYPE_WALK=2;MOVETYPE_LADDER=9
+MOVETYPE_WALK=2;MOVETYPE_LADDER=9;IN_JUMP=2
 concommand={Add=function() end}
 LOD={RPG={IdentityCatalog={OrdinaryFeats={}},FeatEffectSystem={}},RPGAbilityRules={},
  RPGStatusElements={CanMoveVoluntarily=function(_,a)return not a.held end}}
@@ -26,8 +26,14 @@ function mv:GetForwardSpeed()return self.forward end;function mv:SetForwardSpeed
 function mv:GetSideSpeed()return self.side end;function mv:SetSideSpeed(n)self.side=n end
 function mv:GetMaxSpeed()return self.max end;function mv:SetMaxSpeed(n)self.max=n end
 function mv:GetMaxClientSpeed()return self.client end;function mv:SetMaxClientSpeed(n)self.client=n end
+function mv:KeyDown(key)return key==IN_JUMP and self.jump==true end
 R:ApplyVoluntaryMovementFeats(a,mv)
 assert(mv.forward==133 and mv.side==-106.4 and mv.max==220*1.33)
+mv.forward,mv.side,mv.max,mv.client,mv.jump=100,-80,220,220,true
+R:ApplyVoluntaryMovementFeats(a,mv)
+assert(mv.forward==100 and mv.side==-80 and mv.max==220 and mv.client==220,
+ 'grounded jump command cannot feed Haste into the first airborne acceleration')
+mv.jump=false
 a.ground=false;assert(R:VoluntaryFeatMovementMultiplier(a)==1.5,'air uses Spring Heel, never Haste')
 a.derived.springHeelAirMovementMultiplier=nil
 assert(R:VoluntaryFeatMovementMultiplier(a)==1,'Haste does not accelerate air movement')
@@ -60,3 +66,33 @@ assert(removed.LOD_RPG_CheckpointDHasteDrain and removed['LODMagicRegenerationSu
 local migrated={};E:ApplyDerived({featIds={'INT_HASTE_1'}},migrated)
 assert(migrated.hasteMovementMultiplier==1.33 and migrated.hasteRank==nil and migrated.hasteDrainMultiplier==nil)
 print('HASTE_HOT_RELOAD_PASS: old timer, input, state, regeneration and captured movement closures retired safely')
+
+-- Actual client SetupMove projection and server feat seam must agree at takeoff,
+-- in ordinary grounded movement, and while airborne. None owns carried impulses.
+local callbacks={}
+hook.Add=function(_,id,fn) callbacks[id]=fn end
+LocalPlayer=function() return a end
+function a:GetNW2Float(id,fallback) return (self.nw or {})[id] or fallback end
+a.alive,a.ground,a.water,a.moveType=true,true,0,MOVETYPE_WALK
+a.derived={hasteMovementMultiplier=1.33,springHeelAirMovementMultiplier=1.5}
+a.nw={LOD_HasteMovementMultiplier=1.33,LOD_SpringHeelAirMultiplier=1.5}
+dofile(base..'sh_feat_movement.lua')
+dofile(base..'cl_rpg_movement.lua')
+function mv:GetVelocity() error('feat multiplier must not read/copy forced velocity') end
+function mv:SetVelocity() error('feat multiplier must not rewrite forced velocity') end
+local function resetMove(jump)
+ mv.forward,mv.side,mv.max,mv.client,mv.jump=100,-80,220,220,jump
+end
+for _,ground in ipairs({true,false}) do
+ for _,jump in ipairs({true,false}) do
+  a.ground=ground
+  resetMove(jump);R:ApplyVoluntaryMovementFeats(a,mv)
+  local f,s,max,client=mv.forward,mv.side,mv.max,mv.client
+  resetMove(jump);callbacks.LOD_PredictedVoluntarySpeed(a,mv)
+  assert(mv.forward==f and mv.side==s and mv.max==max and mv.client==client,
+   'client/server wish axes and caps agree across takeoff boundary')
+  local expected=ground and (jump and 1 or 1.33) or 1.5
+  assert(math.abs(mv.forward-100*expected)<.00001 and math.abs(mv.max-220*expected)<.00001)
+ end
+end
+print('HASTE_TAKEOFF_PREDICTION_PASS: grounded takeoff excludes Haste; ordinary ground and Spring Heel air controls match; carried impulses untouched')

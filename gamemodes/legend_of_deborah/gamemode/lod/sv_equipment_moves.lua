@@ -6,6 +6,10 @@ Rules.VoluntaryDashes = setmetatable({}, {__mode="k"})
 util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
+local function tetrisActive(ply)
+    return LOD.DeathTetris and LOD.DeathTetris.IsActiveFor and LOD.DeathTetris:IsActiveFor(ply)
+end
+
 function E:ClearTransient(ply)
     if self.EndSizeShifter then self:EndSizeShifter(ply,true) end
     if self.EndEquipmentGravity then self:EndEquipmentGravity(ply) end
@@ -221,7 +225,7 @@ E.MoveHandlers = {
 
 function E:ExecuteMove(ply, id, session)
     local move=self.SpecialMoves[id]
-    if not move or not self:CanAct(ply) or self:IsActive(ply) then return false end
+    if not move or not self:CanAct(ply) or self:IsActive(ply) or tetrisActive(ply) then return false end
     -- An old call/session cannot spend the resources of a fresh Hero/life/run.
     if session~=self:MoveSession(ply) then return false end
     if self.EndStatue then self.StatueInputAt[ply]=CurTime();self:EndStatue(ply,"technique attempt") end
@@ -256,7 +260,7 @@ function E:ExecuteMove(ply, id, session)
 end
 
 function E:DirectionToken(ply, token)
-    if not self:CanAct(ply) or self:IsActive(ply) then
+    if not self:CanAct(ply) or self:IsActive(ply) or tetrisActive(ply) then
         local old=self.MoveSessions[ply]; if old then old.tokens={} end
         return false
     end

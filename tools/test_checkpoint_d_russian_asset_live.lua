@@ -38,6 +38,7 @@ function p:Spawn() self.hp=self.max end
 player.GetAll=function() return {p} end
 LOD.Magic._EnsureState=function(_,actor) return actor.ps end
 LOD.Magic._Sync=noop
+dofile(root..'sv_equipment_moves.lua')
 LOD.DeathTetris=nil
 dofile(root..'sh_tetris.lua');dofile(root..'sv_death_tetris.lua')
 local D,T=LOD.DeathTetris,LOD.Tetris
@@ -52,7 +53,9 @@ p.ps.magic=15
 check(not directions({1,3,2,4}),'wrong order rejected')
 check(not directions({1,2,3}),'incomplete sequence is not activation')
 check(#paidEvents==0 and prepared==0,'unfunded/wrong/incomplete input has no paid-activation observers')
+LOD.Equipment.MoveSessions[p]={tokens={'UP','DOWN'}}
 local s=assert(directions({4}))
+check(#LOD.Equipment.MoveSessions[p].tokens==0,'successful live opening immediately retires a special-move prefix')
 check(s.kind=='live' and s.endsAt==nil and p.ps.magic==0,'one exact 15-Magic debit; no timer')
 check(p.nw.LOD_LiveTetrisActive and not p.nw.LOD_DeathTetrisActive and not p.nw.LOD_DeathInteraction,'no death/safety state')
 check(not Run.State.SimulationFrozen and not p.LODDead and p:Alive(),'world and body remain live')
@@ -139,7 +142,7 @@ local function press(key)
  hooks.LOD_RussianAssetDirectionalInput() -- repeated frame is not a repeated edge
  held[key]=nil;hooks.LOD_RussianAssetDirectionalInput()
 end
-for _,keys in ipairs({{KEY_LEFT,KEY_RIGHT,KEY_UP,KEY_DOWN},{149,147,146,148}}) do
+for _,keys in ipairs({{KEY_LEFT,KEY_RIGHT,KEY_UP,KEY_DOWN},{149,147,146,148},{KEY_LEFT,147,KEY_UP,148}}) do
  packets={}
  for _,key in ipairs(keys) do press(key) end
  check(#packets==4,'exactly four keyboard/POV edges')
@@ -147,6 +150,26 @@ for _,keys in ipairs({{KEY_LEFT,KEY_RIGHT,KEY_UP,KEY_DOWN},{149,147,146,148}}) d
 end
 packets={};held[KEY_LEFT]=true;held[149]=true;hooks.LOD_RussianAssetDirectionalInput()
 check(#packets==1,'simultaneous alias press is one edge');held={};hooks.LOD_RussianAssetDirectionalInput()
+-- Ambiguous chords must invalidate a partial server sequence rather than
+-- serialize the client's LEFT/RIGHT/UP/DOWN polling order into an activation.
+for _,keys in ipairs({{KEY_LEFT,KEY_RIGHT,KEY_UP,KEY_DOWN},{KEY_UP,148}}) do
+ clock=clock+2;p.ps.magic=30
+ check(not directions({1,2}),'partial sequence waits for ordered directions')
+ packets={}
+ for _,key in ipairs(keys) do held[key]=true end
+ hooks.LOD_RussianAssetDirectionalInput();hooks.LOD_RussianAssetDirectionalInput()
+ check(#packets==1 and packets[1].name=='LOD_RussianAssetDirection' and packets[1].value==0,
+  'same-frame keyboard/mixed-device chord emits one reset')
+ directions({packets[1].value})
+ check(D.LiveSequences[p].index==0,'chord invalidates the server partial sequence')
+ check(not directions({3,4}) and p.ps.magic==30,'chord cannot complete or spend for an ordered sequence')
+ held={};hooks.LOD_RussianAssetDirectionalInput()
+end
+clock=clock+2;packets={}
+for _,key in ipairs({KEY_LEFT,147,KEY_UP,148}) do press(key) end
+local ordered={};for _,row in ipairs(packets) do ordered[#ordered+1]=row.value end
+check(directions(ordered) and p.ps.magic==15,'ordered mixed-device edges still activate for exactly 15 Magic')
+D:EndSession(p.id)
 C.active=true;C.kind=3;C.gameOver=false;packets={}
 held[KEY_LEFT]=true;hooks.LOD_RussianAssetDirectionalInput()
 hooks.LOD_DeathTetrisControls(p,'+moveleft',true)

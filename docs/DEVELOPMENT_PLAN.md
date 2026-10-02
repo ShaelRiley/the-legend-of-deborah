@@ -1,3 +1,31 @@
+# Current checkpoint — final feat rebalance
+
+Implements the complete author ledger in `docs/briefs/FEAT_REBALANCE_20261002.md`
+from remote-main baseline `b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e` via recovered
+validated checkpoint `e2997b15469ff335c2991d4f585770e8f0b4116c`. Existing music
+and hit-stun floor repairs remain intact. The catalog now contains 114 ordinary
+feats, six fallbacks and nine capstones, with retired ranks/CROSS ownership and
+stored drafts repaired through the canonical migration authority.
+
+`docs/FEAT_REBALANCE_ACCEPTANCE.md` records the exact inventory, final review
+repairs, source gate and native procedure. The recovered gate passed 305/305;
+the later transfer recovery failed before validation, so its planned 306-check
+receipt is not evidence. Run the complete frozen-source gate for the final tree
+and verify remote main before source publication. Never treat this as native
+GMod/controller acceptance. No Workshop or VPS operation is authorized.
+
+Primary live GDD rows match the ledger. Eleven stale secondary statements were
+identified; the first guarded correction was cancelled and unchanged readback
+verified. Those live-document corrections require permission to retry before
+GDD reconciliation can be called complete.
+
+Next native action after verified source publication: fully restart/update GMod,
+then run the compact acceptance session, prioritizing Russian Asset input and
+vulnerability, movement/collision, ring reversal and stale-refund rejection.
+Keep earlier music listening and hit-stun floor-presentation acceptance open.
+
+---
+
 # Current repair — MS3 song-first compositions
 
 Author reports that the sixteen-bar system remains musically disjunct. Parent is `a73cafd2a7678bafe4bf84e8b4132af449546baa`, preserving intervening Gordon/gameplay work. Current direction supersedes randomized excerpt choice and immediate ordinary floor/tension replacement: play source-ordered driving edits through, preserve whole calm songs in staging, and let ordinary requests choose the next song. Boss/victory/Off, staging changes and new dungeon plans remain exceptions.

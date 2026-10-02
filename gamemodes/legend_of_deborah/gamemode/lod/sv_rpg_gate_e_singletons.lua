@@ -251,8 +251,8 @@ for _, field in ipairs({
 end
 
 -- Source's ordinary jump impulse has already been applied by the time this
--- zero-delay callback runs. Add only the extra impulse needed for sqrt(2)x
--- takeoff velocity, which produces 2x apex height under unchanged gravity.
+-- zero-delay callback runs. Add only the extra impulse needed for sqrt(3)x
+-- takeoff velocity, which produces 3x apex height under unchanged gravity.
 Effects.SpringHeelPending = Effects.SpringHeelPending or setmetatable({}, {__mode = "k"})
 
 local function springHeelContext(ply)

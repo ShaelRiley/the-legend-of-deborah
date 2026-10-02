@@ -35,6 +35,17 @@ held={};poll();held[150]=true;poll();local before=#sent
 poll();assert(#sent==before,'Controller codes never enter logical stream')
 held={};poll();held[KEY_DOWN],held[KEY_LEFT]=true,true;poll();assert(sent[#sent]==0,'Ambiguous simultaneous directions reset')
 held={};poll();convars.lod_special_key_up.value=42;held[42]=true;poll();assert(sent[#sent]==1,'Rebinding feeds same stream')
+LOD.TetrisClient={active=true};poll()
+assert(sent[#sent]==0,'Live Tetris opening resets the ordinary special-move stream')
+local tetrisStart=#sent
+for _,key in ipairs({KEY_UP,KEY_DOWN,KEY_UP,42}) do
+ held={};poll();held[key]=true;poll()
+end
+assert(#sent==tetrisStart,'Tetris arrows and keyboard mirrors cannot emit special-move tokens')
+LOD.TetrisClient.active=false;poll()
+assert(#sent==tetrisStart,'A held Tetris key is not replayed on close')
+held={};poll();held[KEY_UP]=true;poll()
+assert(#sent==tetrisStart+1 and sent[#sent]==1,'Closing Tetris restores fresh special-move edges')
 print('EQUIPMENT_INPUT_PASS: real client edge detection, keyboard mirror/rebinding, menu/chat/focus/Throwable suppression, no controller tokens')
 
 local deadline=12;CurTime=function() return 1 end

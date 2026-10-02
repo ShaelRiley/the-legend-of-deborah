@@ -27,6 +27,7 @@ end
 function E:SpecialInputBusy()
     local ply=LocalPlayer()
     return not IsValid(ply) or not ply:Alive() or self:IsActive(ply)
+        or LOD.TetrisClient and LOD.TetrisClient.active == true
         or gui.IsGameUIVisible() or gui.IsConsoleVisible() or vgui.CursorVisible()
         or IsValid(vgui.GetKeyboardFocus()) or chat.IsTyping and chat.IsTyping()
         or UI.ActivePage ~= nil

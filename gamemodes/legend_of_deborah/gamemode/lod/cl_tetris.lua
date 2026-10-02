@@ -178,6 +178,7 @@ hook.Add("Think", "LOD_RussianAssetDirectionalInput", function()
     local ply = LocalPlayer()
     local focused = not gui.IsGameUIVisible() and not IsValid(vgui.GetKeyboardFocus())
     local now = CurTime()
+    local activationEdges = {}
     for direction = 1, 4 do
         local down = rawDirectionDown(direction)
         local edge = down and not directionDown[direction]
@@ -188,13 +189,19 @@ hook.Add("Think", "LOD_RussianAssetDirectionalInput", function()
                     repeatAt[direction] = now + (edge and 0.20 or 0.07)
                 end
             elseif edge and ply:Alive() then
-                net.Start("LOD_RussianAssetDirection")
-                net.WriteUInt(direction, 3)
-                net.SendToServer()
+                activationEdges[#activationEdges + 1] = direction
             end
         end
         directionDown[direction] = down
         if not down then repeatAt[direction] = nil end
+    end
+    if #activationEdges > 0 then
+        -- A frame cannot establish the order of simultaneous directions. Zero
+        -- resets the server recognizer instead of inventing a valid sequence
+        -- from this loop's order. Arrow/POV aliases still form one direction.
+        net.Start("LOD_RussianAssetDirection")
+        net.WriteUInt(#activationEdges == 1 and activationEdges[1] or 0, 3)
+        net.SendToServer()
     end
 end)
 

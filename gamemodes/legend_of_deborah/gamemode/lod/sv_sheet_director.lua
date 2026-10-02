@@ -10,8 +10,15 @@ function D:Rows(actor)
     local function percent(family,label,value,baseline)
         if math.abs(value-(baseline or 0))>.0001 then add(family,label,string.format('%.1f%%',value*100),'Resolved build') end
     end
-    percent('Movement','Current speed multiplier',LOD.RPGStatusElements:CanMoveVoluntarily(actor) and R:MovementMultiplier(actor) or 0,1)
+    local baseMovement=LOD.RPGStatusElements:CanMoveVoluntarily(actor) and R:MovementMultiplier(actor) or 0
+    if math.abs(baseMovement-1)>.0001 then
+        add('Movement','Base movement multiplier',string.format('%.1f%%',baseMovement*100),
+            'Before directional, ground and air feat modifiers')
+    end
     if d.hasteEnabled then add('Movement','Haste','Passive ×1.33 ground movement','Haste feat') end
+    if (d.strafeSpeedMultiplier or 1)>1 then
+        add('Movement','Strafer','×1.75 lateral movement','Only voluntary left/right input')
+    end
     if d.springHeelEnabled then
         add('Movement','Spring Heel jump apex','×3','Voluntary jumps only')
         add('Movement','Spring Heel air control','×1.5','Voluntary horizontal input only')

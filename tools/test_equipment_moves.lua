@@ -100,6 +100,19 @@ p.soldier=true;assert(not recipe({'LEFT','DOWN','RIGHT'}));p.soldier=false
 local old=E:MoveSession(p);Run.State.LevelSeed=2
 assert(E:MoveSession(p)~=old,'Input/cooldowns bound to level identity')
 E:ClearTransient(p);assert(not E.MoveSessions[p])
+-- Client packets queued at the UI ownership boundary must also be rejected by
+-- the authoritative recognizer and direct execution seam.
+local tetris=false
+LOD.DeathTetris={IsActiveFor=function(_,actor) return actor==p and tetris end}
+p.ps.magic=100;now=now+10
+E:DirectionToken(p,'LEFT');tetris=true
+assert(not recipe({'DOWN','RIGHT'}) and p.ps.magic==100,'Live Tetris cannot complete an existing recipe')
+assert(#E:MoveSession(p).tokens==0,'Live Tetris packets clear the prior prefix')
+assert(not E:ExecuteMove(p,'rebuff',E:MoveSession(p)) and p.ps.magic==100,'Direct special execution also respects Tetris ownership')
+tetris=false
+assert(not recipe({'DOWN','RIGHT'}) and p.ps.magic==100,'Closing does not restore the discarded prefix')
+local priorDamage=damage
+assert(recipe({'LEFT','DOWN','RIGHT'}) and p.ps.magic==80 and damage==priorDamage+2,'Closing permits a fresh ordinary recipe')
 print('EQUIPMENT_MOVES_PASS: simultaneous grants; dedupe; costs/cooldowns; inactive, Held, Muted, Throwable and Soldier rejection; buffer reset; voluntary dash expiry; canonical area/damage/Push delegates')
 
 return {player=p,state=state,receivers=receivers,advance=function(dt) now=now+dt end}

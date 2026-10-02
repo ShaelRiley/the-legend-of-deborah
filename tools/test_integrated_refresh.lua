@@ -110,7 +110,19 @@ local rows=LOD.SheetDirector:Rows(actor);local by={}
 for _,row in ipairs(rows) do by[row.label]=row.value end
 assert(by['Offensive cost multiplier']=='50.0%')
 assert(by['Health regeneration']=='1.50 HP/s' and by['Health regeneration cap']=='33.0%')
-assert(not by['Haste'] and not by['Current speed multiplier']);assert(#rows<30)
+assert(not by['Haste'] and not by['Base movement multiplier'] and not by['Current speed multiplier']);assert(#rows<30)
+-- Directional/ground/air feat factors cannot be presented as one current speed.
+local savedFeats=state.featIds
+state.featIds={'INT_HASTE_1','DEX_STRAFER_1','DEX_SPRING_HEEL'}
+LOD.CharacterProgressionSystem:_RecomputeProgressionState(state)
+local boosted={};for _,row in ipairs(LOD.SheetDirector:Rows(actor)) do boosted[row.label]=row end
+assert(boosted.Haste.value=='Passive ×1.33 ground movement')
+assert(boosted.Strafer.value=='×1.75 lateral movement')
+assert(boosted['Spring Heel jump apex'].value=='×3' and boosted['Spring Heel air control'].value=='×1.5')
+assert(not boosted['Current speed multiplier'],'partial base factor must not claim to be the final current speed')
+state.featIds=savedFeats;LOD.CharacterProgressionSystem:_RecomputeProgressionState(state)
+d=state.derivedStats;d.quantumCostMultiplier=.5;d.healthRegenCeilingFraction=.33
+d.healthRegenBaseMaxHPPerSecond=.01;d.conRegenMultiplier=1.5
 -- Watermelon is selected/granted by the canonical progression, then cast through
 -- the actual resource transaction and projectile setup. Only engine entities are doubled.
 local P=LOD.MagicProgression
