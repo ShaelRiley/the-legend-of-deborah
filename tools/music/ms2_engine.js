@@ -8,11 +8,18 @@
     function hash(s){var h=2166136261,i;s=String(s);for(i=0;i<s.length;i++)h=((h^s.charCodeAt(i))*16777619)>>>0;return h||1;}
     function Random(seed){this.value=hash(seed);}
     Random.prototype.next=function(){this.value=(1664525*this.value+1013904223)>>>0;return this.value/4294967296;};
-    function passesFor(c){return c.beats===64?PHRASE_PASSES:4;}
+    function passesFor(c){return c.songIndex!==undefined||c.beats===64?PHRASE_PASSES:4;}
     function expression(s){return !s.staged&&s.expression===1&&(s.role==='T3'||s.role==='BOSS')?1:0;}
     function Composer(seed){this.random=new Random(seed);this.history=[];this.last=null;}
     Composer.prototype.choose=function(asset,commit){
         var r=this.random,last=this.last,candidates=[],preferred={},i,c,dist;
+        // A song is an ordered performance. Chunk boundaries are storage only.
+        if(asset.songFirst){
+            var index=-1;
+            for(i=0;i<asset.clips.length;i++)if(last&&asset.clips[i].id===last.id)index=i;
+            c=asset.clips[(index+1)%asset.clips.length];
+            if(commit!==false)this.accept(c);return c;
+        }
         if(last){
             for(i=0;i<(last.next||[]).length;i++)preferred[last.next[i]]=1-i*.08;
             var handoff=last.handoffs&&last.handoffs[asset.role];
@@ -39,23 +46,46 @@
         this.enabled=true;this.state={role:'T0'};this.skipped=0;this.resyncs=0;this.maxQueue=0;this.ackTimeouts=0;
         this.performanceSeed=seed===undefined?String(Date.now())+':'+Math.random():seed;
     }
+    Scheduler.prototype.clipBeats=function(c){return c.musicalFrames?c.musicalFrames/44100/this.beatSeconds:c.beats;};
+    Scheduler.prototype.songState=function(s,complete){
+        this.requestedState=s;
+        var best=null,i,t,a,context;
+        for(i=0;i<(s.targets||[]).length;i++){
+            t=s.targets[i];if(t.weight>0&&this.assets[t.asset]&&(!best||t.weight>best.weight))best=t;
+        }
+        if(!best)return s;
+        a=this.assets[best.asset];
+        context=String(s.planKey||s.seed)+':'+(s.staged?'staging':'maze')+':'+(a.role==='BOSS'||a.role==='VICTORY'?a.role:'ordinary');
+        if(!this.songTarget||this.songContext!==context||complete){
+            this.songTarget={block:best.block,asset:best.asset,weight:1,lane:'song'};
+            this.songContext=context;this.songEnd=null;
+        }
+        var out={};for(var key in s)out[key]=s[key];
+        out.role=this.assets[this.songTarget.asset].role;
+        out.targets=[this.songTarget];return out;
+    };
     Scheduler.prototype.timeForBeat=function(beat){return this.origin+beat*this.beatSeconds;};
     Scheduler.prototype.boundary=function(now,beats,lead){return Math.max(0,Math.ceil((now+(lead===undefined?LOOKAHEAD:lead)-this.origin)/this.beatSeconds/beats)*beats);};
     Scheduler.prototype.install=function(a){
         if(!a||!a.id||!a.clips||!a.clips.length||a.clips.length>256)throw Error('invalid phrase arrangement');
-        for(var i=0;i<a.clips.length;i++)if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(a.clips[i].id)||(a.clips[i].beats!==8&&a.clips[i].beats!==12&&a.clips[i].beats!==64))throw Error('invalid rendered phrase');
+        for(var i=0;i<a.clips.length;i++){
+            var c=a.clips[i],valid=a.songFirst?c.beats>=4&&c.beats<=64&&c.beats%4===0:c.beats===8||c.beats===12||c.beats===64;
+            if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(c.id)||!valid)throw Error('invalid rendered phrase');
+            if(a.songFirst&&(c.songIndex!==i||!isFinite(c.musicalFrames)||c.musicalFrames%1!==0||Math.abs(c.musicalFrames-c.beats*60/130*44100)>2))throw Error('invalid song position');
+        }
         if(!this.gridReady&&a.loop&&this.sink.continuous){
-            var beats=a.clips[0].beats,rate=this.sink.context.sampleRate;
+            var beats=a.songFirst?64:a.clips[0].beats,rate=this.sink.context.sampleRate;
             this.beatSeconds=Math.round(beats*60/this.base*rate)/(beats*rate);this.gridReady=true;
         }
         this.assets[a.id]=a;
     };
     Scheduler.prototype.cancel=function(l){if(l.pending){this.sink.cancel(l.pending);delete this.jobs[l.pending];l.pending=null;}};
-    Scheduler.prototype.update=function(s){
+    Scheduler.prototype.update=function(s,complete,atBeat){
+        if(s.songFirst)s=this.songState(s,complete);
         var now=this.clock(),wanted={},i,t,l,id,retired=[];this.state=s;this.enabled=true;
         this.sink.volume((s.volume===undefined?.55:s.volume)*(1+.08*expression(s)),s.quality);
         for(i=0;i<(s.targets||[]).length&&i<2;i++){
-            t=s.targets[i];if(t.weight<=0||!this.assets[t.asset])continue;id=t.block;wanted[id]=true;l=this.lanes[id];
+            t=s.targets[i];if(t.weight<=0||!this.assets[t.asset])continue;id=t.lane||t.block;wanted[id]=true;l=this.lanes[id];
             if(!l){
                 this.visits[id]=(this.visits[id]||0)+1;
                 l={id:id,asset:t.asset,nextBeat:this.boundary(now,s.role==='VICTORY'?1:(this.sink.continuous?8:4),s.role==='VICTORY'?.25:LOOKAHEAD),
@@ -64,7 +94,8 @@
                 this.cancel(l);l.asset=t.asset;l.finished=false;l.clip=null;l.passes=0;
                 l.nextBeat=this.boundary(now,s.role==='VICTORY'?1:(this.sink.continuous?8:4),s.role==='VICTORY'?.25:LOOKAHEAD);
             }
-            l.retire=null;l.weight=t.weight;this.sink.mix(id,Math.sqrt(t.weight),now);
+            if(atBeat!==undefined)l.nextBeat=atBeat;
+            l.block=t.block;l.retire=null;l.weight=t.weight;this.sink.mix(id,Math.sqrt(t.weight),now);
         }
         for(id in this.lanes)if(!wanted[id]){
             l=this.lanes[id];if(!l.retire){this.cancel(l);l.retire=now+1.2;this.sink.mix(id,0,now);}retired.push(l);
@@ -72,6 +103,7 @@
         retired.sort(function(a,b){return a.retire-b.retire;});
         while(retired.length>2){l=retired.shift();this.sink.drop(l.id);delete this.lanes[l.id];}
         var used={};for(id in this.lanes)used[this.lanes[id].asset]=true;
+        if(this.requestedState)for(i=0;i<this.requestedState.targets.length;i++)used[this.requestedState.targets[i].asset]=true;
         for(id in this.assets)if(!used[id])delete this.assets[id];
     };
     Scheduler.prototype.result=function(token,played){
@@ -79,7 +111,10 @@
         if(!l||l.pending!==token)return;l.pending=null;
         if(played){
             l.playedAsset=j.asset;l.passes=(l.passes||0)+1;if(j.choice)l.composer.accept(j.choice);
-            if(!l.began){l.began=true;this.callback('block',l.id);}
+            l.heardChoice=j.choice;l.heardBeat=j.atBeat;
+            if(!l.began||l.announcedBlock!==l.block){l.began=true;l.announcedBlock=l.block;this.callback('block',l.block||l.id);}
+            var asset=this.assets[j.asset];
+            if(asset&&asset.songFirst&&asset.loop&&j.choice.songIndex===asset.clips.length-1)this.songEnd=j.atBeat+j.beats;
             if(!j.loop){l.finished=true;this.victoryEnd=j.time+j.beats*this.beatSeconds;}
         }else{
             this.skipped++;this.resyncs++;
@@ -87,12 +122,19 @@
             else if(l.began&&l.playedAsset===l.asset){
                 // A native hold repeats the resident phrase. Retry on this
                 // lane's original whole-passage grid, never halfway through it.
-                l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*this.beatSeconds)))*j.beats;
+                if(this.state.songFirst&&l.heardChoice){
+                    var span=this.clipBeats(l.heardChoice);
+                    l.nextBeat=l.heardBeat+Math.max(1,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.heardBeat))/(span*this.beatSeconds)))*span;
+                }else l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*this.beatSeconds)))*j.beats;
             }else l.nextBeat=this.boundary(this.clock(),this.sink.continuous?8:4);
         }
     };
     Scheduler.prototype.pump=function(){
         if(!this.enabled)return;var now=this.clock(),id,l,a,t,c,j,queued=0;
+        if(this.songEnd!==null&&this.songEnd!==undefined&&this.timeForBeat(this.songEnd)<=now+LOOKAHEAD){
+            var boundary=this.songEnd;this.songEnd=null;this.completedSongs=(this.completedSongs||0)+1;
+            this.update(this.requestedState,true,boundary);
+        }
         for(id in this.lanes){
             l=this.lanes[id];if(l.retire&&now>=l.retire){this.sink.drop(id);delete this.lanes[id];continue;}if(l.retire||l.finished)continue;
             a=this.assets[l.asset];if(!a)continue;
@@ -116,14 +158,14 @@
                 if(a.loop&&l.clip&&(l.passes||0)<passesFor(l.clip))c=l.clip;
                 else{c=l.composer.choose(a,false);l.clip=c;l.passes=0;}
                 var token=String(++this.serial);
-                j={lane:id,asset:a.id,clip:c.id,beats:c.beats,time:t,loop:a.loop,choice:c};this.jobs[token]=j;l.pending=token;
-                l.nextBeat+=c.beats;this.sink.prepare(token,id,c.id,Math.max(0,t-now),t);
+                j={lane:id,asset:a.id,clip:c.id,beats:this.clipBeats(c),atBeat:l.nextBeat,time:t,loop:a.loop,choice:c};this.jobs[token]=j;l.pending=token;
+                l.nextBeat+=j.beats;this.sink.prepare(token,id,c.id,Math.max(0,t-now),t);
             }
         }
         for(id in this.jobs)queued++;this.maxQueue=Math.max(this.maxQueue,queued);
         if(this.victoryEnd&&now>=this.victoryEnd){this.victoryEnd=null;this.callback('victory','');}
     };
-    Scheduler.prototype.stop=function(){this.enabled=false;this.jobs={};this.lanes={};this.assets={};this.victoryEnd=null;this.sink.stop();};
+    Scheduler.prototype.stop=function(){this.enabled=false;this.jobs={};this.lanes={};this.assets={};this.victoryEnd=null;this.songEnd=null;this.songTarget=null;this.requestedState=null;this.sink.stop();};
     // Rendered-audio transport, NOT a synthesizer. The audio rendering thread
     // owns all starts, loop points and releases; JS only prepares future work.
     var AUDIO_LEAD=.05,PCM_LIMIT=32*1024*1024,CLIP_LIMIT=4,LOAD_LIMIT=2,VOICE_LIMIT=8;
@@ -164,7 +206,7 @@
         return Object.keys(this.cache).length+Object.keys(this.loads).length<CLIP_LIMIT&&this.bytes+this.reserved+bytes<=PCM_LIMIT;
     };
     AudioTransport.prototype.build=function(buffer,info){
-        var rate=buffer.sampleRate,c=info.clip,period=Math.round(c.beats*60/130*rate),channels=buffer.numberOfChannels;
+        var rate=buffer.sampleRate,c=info.clip,period=c.musicalFrames?Math.round(c.musicalFrames*rate/44100):Math.round(c.beats*60/130*rate),channels=buffer.numberOfChannels;
         if(channels!==2||Math.abs(buffer.duration-c.duration)>.08||period<1||buffer.length<=period||buffer.length>period*2)throw Error('MS3 decoded phrase shape mismatch: '+c.id);
         var tailFrames=buffer.length-period,loop=!!info.asset.loop;
         // Save only the short release, then reuse the decoded file's tail space
@@ -248,7 +290,7 @@
         }
         this.reap();if(this.voices.length+(old?2:1)>VOICE_LIMIT){delete this.jobs[j.token];this.missed++;this.result(j.token,false);return;}
         var reference=this.references[e.asset];if(!reference)this.references[e.asset]=reference=e.rms;
-        var norm=clamp(reference/e.rms,1/Math.SQRT2,Math.SQRT2);
+        var norm=j.info.asset.songFirst?1:clamp(reference/e.rms,1/Math.SQRT2,Math.SQRT2);
         j.previous=old;j.previousBound=l.bound;
         // The bound is arrangement-wide and fixed across ordinary successors.
         // One conservative lane budget covers a full incoming phrase plus an
@@ -441,6 +483,7 @@
             result:function(token,played){if(scheduler&&!transport)scheduler.result(String(token),played);},stop:halt,
             stats:function(){if(!scheduler)return;var stats={backend:backend,bpm:scheduler.base,lateSkipped:scheduler.skipped,resyncs:scheduler.resyncs,
                 prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts,phrasePasses:PHRASE_PASSES,fallbackReason:fallbackReason};
+                if(scheduler.state.songFirst){var lane=scheduler.lanes.song;stats.song={asset:lane&&lane.playedAsset,part:lane&&lane.heardChoice&&lane.heardChoice.songIndex+1,completed:scheduler.completedSongs||0,requested:scheduler.requestedState&&scheduler.requestedState.targets};}
                 if(transport)stats.audio=transport.stats();bridge.stats(JSON.stringify(stats));},destroy:halt};
     }
     return {AudioTransport:AudioTransport,levelAt:levelAt,Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE,acknowledgementWait:ACK_WAIT,phrasePasses:PHRASE_PASSES};

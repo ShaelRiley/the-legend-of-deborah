@@ -26,6 +26,9 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("MS3 Song Source Completeness", ["python3", "tools/test_ms3_song_score.py"]),
+    ("MS3 Song Chronological Playback", ["node", "tools/test_ms3_song_sequence.js"]),
+    ("MS3 Song Plan And Native Policy", ["python3", "tools/run_lua54.py", "tools/test_ms3_song_policy.lua"]),
     ("Universal Enemy Close Defense & Melee Retaliation", ["python3", "tools/run_lua54.py", "tools/test_enemy_close_defense.lua"]),
     ("Enemy Stock Attack Animation Resolution", ["python3", "tools/run_lua54.py", "tools/test_enemy_attack_animation.lua"]),
     ("Skeleton Stock Player Animation & Motion", ["python3", "tools/run_lua54.py", "tools/test_skeleton_animation.lua"]),

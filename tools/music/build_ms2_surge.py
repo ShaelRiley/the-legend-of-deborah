@@ -35,11 +35,11 @@ def clips():
             if c['page'] not in pages:pages[c['page']]=lua_json(BUNDLE/c['page'])
             notes=pages[c['page']][c['id']]
             out.append({**c,'block':a['block'],'role':a['role'],'asset':aid,'notes':notes})
-    audit=json.loads((ROOT/'docs/MS3_16_BAR_AUDIT.json').read_text())
+    audit=json.loads((ROOT/('docs/MS3_SONG_AUDIT.json' if catalog.get('songFirst') else 'docs/MS3_16_BAR_AUDIT.json')).read_text())
     if (catalog.get('phraseBars')!=16 or audit['catalogRevision']!=catalog['revision']
             or len(out)!=audit['ordinaryClips']+audit['fanfares'] or len({c['id'] for c in out})!=len(out)
             or sum(len(c['notes']) for c in out)!=audit['notes']
-            or any(c['beats']!=(12 if c['role']=='VICTORY' else 64) for c in out)):
+            or any((c['beats']!=(12 if c['role']=='VICTORY' else 64)) if not catalog.get('songFirst') else (c['beats']<4 or c['beats']>64 or c['beats']%4) for c in out)):
         raise RuntimeError('Long-form score/audit mismatch; regenerate from source first')
     for c in out:
         if sha(json.dumps(c['notes'],separators=(',',':')).encode())!=c['noteSHA256']:
@@ -134,6 +134,62 @@ def render_clip(task):
             'rendererRevision':LOCK['rendererVersion'],'patchRevision':PATCHES['revision']+'-'+PATCH_SHA[:12],
             'pcmSHA256':sha(wave_path.read_bytes()),**metrics,**encoded}
 
+
+def render_song(task):
+    """One uninterrupted Surge performance; split PCM, never restart voices.
+
+    Internal chunks carry zero release padding. A prepared adjacent chunk starts
+    with the actual continuation waveform, so overlap-add cannot double it. Only
+    the song's last chunk has the real terminal release. The resident loop is a
+    bounded emergency fallback, not the normal song traversal.
+    """
+    asset,score,bank,module,work,fingerprint=task
+    work=Path(work);aid=asset['id'];beat_seconds=round(64*60/130*RATE)/(64*RATE)
+    total_frames=sum(c['musicalFrames'] for c in bank)
+    release=round(LOCK['releaseSeconds']*RATE)
+    duration=(total_frames+release)/RATE
+    if sha(json.dumps(score['notes'],separators=(',',':')).encode())!=asset['scoreSHA256']:
+        raise ValueError('Whole-song score hash mismatch: '+aid)
+    surge=load_surge(module);pcm=np.zeros((total_frames+release,2),dtype=np.float64)
+    parts={name:[] for name in [*NAMES,'closed','open']};hat_closed=[]
+    for t,d,inst,pitch,velocity in score['notes']:
+        name=NAMES[inst] if inst<8 else ('open' if pitch==46 else 'closed')
+        onset=t/48*beat_seconds;gate=d/48*beat_seconds
+        parts[name].append((onset,gate,pitch,velocity))
+        if name=='closed':hat_closed.append(onset)
+    for name,events in parts.items():
+        if not events:continue
+        if name=='open':events=[(on,min(gate,min((x-on for x in hat_closed if x>on),default=gate)),p,v) for on,gate,p,v in events]
+        seed=int(sha((aid+':whole-song:'+name).encode())[:8],16)
+        voice=render_voice(surge,name,events,duration,seed,asset['role'])
+        pcm+=voice[:len(pcm)];del voice
+    pcm,_=condition(pcm)
+    # Quantize once for a reproducible dry-body reconstruction proof.
+    pcm=np.asarray(np.rint(pcm*32767),dtype='<i2').astype(np.float64)/32767
+    full_hash=sha(np.asarray(np.rint(pcm[:total_frames]*32767),dtype='<i2').tobytes())
+    body_hash=hashlib.sha256();results=[];offset=0
+    for index,c in enumerate(bank):
+        frames=c['musicalFrames'];last=index==len(bank)-1
+        part=np.zeros((frames+release,2),dtype=np.float64)
+        part[:frames]=pcm[offset:offset+frames]
+        if last:part[frames:]=pcm[total_frames:total_frames+release]
+        body_hash.update(np.asarray(np.rint(part[:frames]*32767),dtype='<i2').tobytes())
+        path=work/(c['id']+'.wav');wav_write(path,part)
+        target=DEST/(c['id']+'.ogg');encoded=encode(path,target,c['id'],frames/RATE)
+        if abs(encoded['duration']-(frames+release)/RATE)>2/RATE:raise ValueError('Song chunk duration mismatch')
+        results.append({'id':c['id'],'block':c['block'],'role':c['role'],'asset':aid,
+            'beats':c['beats'],'bpm':130,'musicalFrames':frames,'musicalDuration':frames/RATE,
+            'songIndex':index,'songPCM_SHA256':full_hash,'continuousPerformance':True,
+            'sourceFrameRange':[offset,offset+frames],'internalZeroTail':not last,
+            'path':str(target.relative_to(ROOT)),'noteSHA256':c['noteSHA256'],
+            'rendererRevision':LOCK['rendererVersion'],'patchRevision':PATCHES['revision']+'-'+PATCH_SHA[:12],
+            'pcmSHA256':sha(path.read_bytes()),'peak':float(abs(part).max()),
+            'rms':float(np.sqrt((part*part).mean())),'dc':float(abs(part.mean(axis=0)).max()),**encoded})
+        offset+=frames
+    if body_hash.hexdigest()!=full_hash or offset!=total_frames:
+        raise ValueError('Chunk bodies do not reconstruct the continuous song PCM: '+aid)
+    return results
+
 def voice_gate(surge,work):
     receipt={};measures=[];sections=[];pitches=[62,62,69,64,38,45,38,36,46]
     for i,v in enumerate(PATCHES['voices']):
@@ -162,7 +218,7 @@ def voice_gate(surge,work):
 def write_runtime(manifest):
     runtime={'schema':1,'revision':manifest['revision'],'catalogRevision':manifest['catalogRevision'],'patchRevision':manifest['patchRevision'],
              'bpm':manifest['bpm'],'bridge':{'duration':manifest['bridge']['duration'],'peak':manifest['bridge']['decodedPeak']},
-             'clips':{r['id']:{'beats':r['beats'],'duration':r['duration'],'peak':r['decodedPeak'],'tailPeak':r['decodedTailPeak']} for r in manifest['clips']}}
+             'clips':{r['id']:{'beats':r['beats'],'duration':r['duration'],'peak':r['decodedPeak'],'tailPeak':r['decodedTailPeak'],**({'musicalFrames':r['musicalFrames']} if 'musicalFrames' in r else {})} for r in manifest['clips']}}
     (BUNDLE/'render.lua').write_text('return [==['+json.dumps(runtime,separators=(',',':'))+']==]\n')
 
 def refresh_join_metadata():
@@ -192,12 +248,23 @@ def main():
     renderer_hash=sha(Path(__file__).read_bytes()+(ROOT/'tools/music/surge/bank.py').read_bytes())
     render_fingerprint=sha((PATCH_SHA+LOCK['bindingPatchSHA256']+renderer_hash).encode())
     selected=bank[:args.limit] if args.limit else bank
-    tasks=[(c,catalog['bpm'],str(args.surge_module.resolve()),str(work),render_fingerprint) for c in selected]
     results=[]
-    with ProcessPoolExecutor(max_workers=args.jobs) as pool:
-        for i,result in enumerate(pool.map(render_clip,tasks,chunksize=4),1):
-            results.append(result)
-            if i%50==0 or i==len(tasks):print(f'Rendered {i}/{len(tasks)}; {sum(r["bytes"] for r in results):,} bytes',flush=True)
+    if catalog.get('songFirst'):
+        score=json.loads((ROOT/'docs/MS3_SONG_SCORE.json').read_text())
+        if score['catalogRevision']!=catalog['revision']:raise ValueError('Song score/catalog mismatch')
+        tasks=[(a,score['songs'][aid],[c for c in bank if c['asset']==aid],str(args.surge_module.resolve()),str(work),render_fingerprint)
+               for aid,a in sorted(catalog['assets'].items())]
+        if args.limit:tasks=tasks[:args.limit]
+        with ProcessPoolExecutor(max_workers=args.jobs) as pool:
+            for i,rows in enumerate(pool.map(render_song,tasks),1):
+                results.extend(rows)
+                print(f'Rendered complete song {i}/{len(tasks)}; {sum(r["bytes"] for r in results):,} bytes',flush=True)
+    else:
+        tasks=[(c,catalog['bpm'],str(args.surge_module.resolve()),str(work),render_fingerprint) for c in selected]
+        with ProcessPoolExecutor(max_workers=args.jobs) as pool:
+            for i,result in enumerate(pool.map(render_clip,tasks,chunksize=4),1):
+                results.append(result)
+                if i%50==0 or i==len(tasks):print(f'Rendered {i}/{len(tasks)}; {sum(r["bytes"] for r in results):,} bytes',flush=True)
     if args.limit:
         print('Smoke mean bytes:',sum(r['bytes'] for r in results)//len(results),'estimated bank bytes:',sum(r['bytes'] for r in results)//len(results)*len(bank));return
     # Bounded quiet D/A ambient bed drawn from the same synthetic string patch.

@@ -3,23 +3,24 @@ const assert=require('assert'),{performance}=require('perf_hooks');
 const engine=require('./music/ms2_engine.js'),bank=require('./music/read_catalog.js');
 let checks=0;function check(ok,msg){checks++;assert(ok,msg);}
 const start=performance.now(),scale=new Set([0,2,4,5,7,9,11]);let clips=0,notes=0;
-function metadata(id){const a=bank.asset(id);return {...a,clips:a.clips.map(({notes,...c})=>c)};}
+function metadata(id){const a=bank.asset(id);return {...a,songFirst:false,clips:a.clips.map(({notes,musicalFrames,songIndex,...c})=>({...c,beats:a.loop?64:12}))};}
 for(const id of Object.keys(bank.catalog.assets)){
  const a=bank.asset(id),c=new engine.Composer('catalog:'+id);
  for(const clip of a.clips){clips++;notes+=clip.notes.length;check(clip.notes.length<=2048,'bounded source phrase');
-  check(clip.beats===(a.loop?64:12),'real bank uses complete sixteen-bar bodies and distinct fanfares');
+  check(a.loop?clip.beats>=4&&clip.beats<=64&&clip.beats%4===0:clip.beats===12,'song delivery chunks are bounded bars; fanfares stay distinct');
   for(const n of clip.notes){check(n.length===5&&n[0]>=0&&n[0]<clip.beats*48&&n[1]>0&&n[0]+n[1]<=clip.beats*48,'authored source gates remain');
    if(n[2]<5)check(scale.has(n[3]%12),'D Dorian remains');}}
  let prior=null;
  for(let i=0;i<24;i++){const phrase=c.choose(a);if(a.clips.length>3)check(prior!==phrase.id,'recent phrases avoided');prior=phrase.id;}
 }
-const audit=require('../docs/MS3_16_BAR_AUDIT.json');
-check(clips===165&&clips===audit.ordinaryClips+audit.fanfares&&notes===audit.notes,'whole source-audited sixteen-bar composition preserved');
+const audit=require('../docs/MS3_SONG_AUDIT.json');
+check(clips===224&&clips===audit.ordinaryClips+audit.fanfares&&notes===audit.notes,'whole source-audited song composition preserved');
 check(engine.tempo(130,{remaining:0})===130,'fixed rendered tempo replaces old time stretch');
 check(engine.expression({role:'T3',expression:1})===1,'cheap critical gain remains');
 check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss does not fabricate expression');
 // Legacy short-phrase fixture retains the original timing regression cases.
-// Separate long-form cases below use unmodified production metadata.
+// Separate historical 64-beat timing fixtures below retain prior coverage.
+// Actual song-first metadata/policy is exercised by test_ms3_song_sequence.js.
 function rig(seed='test',acknowledgementDelay=0,longform=false){
  let now=0,state={seed:19,role:'T1',remaining:1800,volume:.55,targets:[{block:'a',asset:'a-t1',weight:1}]};
  const pending={},plays=[],announcements=[],mixes={},victories=[],acks=[];let stopCount=0;

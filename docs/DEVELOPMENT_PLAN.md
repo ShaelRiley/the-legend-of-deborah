@@ -1,3 +1,15 @@
+# Current repair — MS3 song-first compositions
+
+Author reports that the sixteen-bar system remains musically disjunct. Parent is `a73cafd2a7678bafe4bf84e8b4132af449546baa`, preserving intervening Gordon/gameplay work. Current direction supersedes randomized excerpt choice and immediate ordinary floor/tension replacement: play source-ordered driving edits through, preserve whole calm songs in staging, and let ordinary requests choose the next song. Boss/victory/Off, staging changes and new dungeon plans remain exceptions.
+
+All 465 sources map to 40 continuous song edits plus eight short fanfares. No selected-window ranking, per-chunk foreground reassignment, competing-melody thinning or added exit fill remains in the active builder. A complete source performance is rendered once before bounded PCM slicing. Internal slices have no synthesis reset or per-chunk normalization; the player retains the 32-MiB ceiling and native compatibility fallback. Exact source windows and retained beat evidence are in `MS3_SONG_AUDIT.json`.
+
+Run complete source/music/integration, real full-bank decode and actual browser song traversal gates before main publication. `validation/MS3_SONG.md` and its final receipt distinguish completed gates from native listening. The video remains inaccessible. Google rejected the live GDD amendment; `validation/MS3_SONG_GDD_AMENDMENT.md` preserves it. No Workshop/VPS action.
+
+Next native action after verified source publication: fully quit/update/install main, enable Options → Music on gm_flatgrass, and remain in ordinary maze play for a complete song while crossing stairs and encountering changing danger. It should keep developing in order rather than switch every sixteen bars. Also check staging/deployment, boss, genuine victory and Off/On. Native perceptual continuity and Steam Deck performance remain unaccepted until heard.
+
+---
+
 # Current author-directed checkpoint — MS3 sixteen-bar source integration
 
 From main `208a1af11c4448a054cc24e81603ed3446c0c55f`, the author authorizes source publication of genuine sixteen-bar arrangements and bounded playback. The canonical mapper now reads all 465 originals into 157 sixty-four-beat passages plus eight short fanfares (121,557 notes); catalog `ms3-s16-e5961c1e5e7bf8cd` matches Surge bank `ms2-surge-1d9386ddd67218a5`, 166 files / 46,853,341 bytes. Seven weak source-mapped exits contain baked percussion replacement fills. The new compact-tail loop avoids duplicate whole buffers and keeps the 32-MiB limit. Ordinary phrases advance after one pass; short-boundary role/stair response and healthy resident holds remain.
