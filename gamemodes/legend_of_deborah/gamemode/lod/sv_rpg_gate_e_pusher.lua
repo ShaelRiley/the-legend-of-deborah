@@ -14,7 +14,7 @@ local SOURCE_REVISION = "ANLCKQmcBBEnzsnYbFvdzzXmHJB2gAgkhunV5P2pczqttiFNGF1lfRG
 local FAMILY = "str_pusher"
 local CHAIN = {"STR_KNOCKBACK_1", "STR_KNOCKBACK_2", "STR_KNOCKBACK_3"}
 local RANK = {STR_KNOCKBACK_1 = 1, STR_KNOCKBACK_2 = 2, STR_KNOCKBACK_3 = 3}
-local CHANCE = {[1] = 0.25, [2] = 0.50, [3] = 0.75}
+local CHANCE = {[1] = 0.55, [2] = 0.75, [3] = 0.95}
 local WALL_DIE = {[1] = 8, [2] = 10, [3] = 12}
 local PROC_DISTANCE = 168
 local TARGET_COOLDOWN = 0.50
@@ -72,11 +72,11 @@ local function definition(id, name, requirement, prerequisite, rank, chance, wal
 end
 
 Feats.STR_KNOCKBACK_1 = definition(
-    "STR_KNOCKBACK_1", "Pusher", 13, nil, 1, 0.25, 8)
+    "STR_KNOCKBACK_1", "Pusher", 13, nil, 1, 0.55, 8)
 Feats.STR_KNOCKBACK_2 = definition(
-    "STR_KNOCKBACK_2", "Shover", 15, "STR_KNOCKBACK_1", 2, 0.50, 10)
+    "STR_KNOCKBACK_2", "Shover", 15, "STR_KNOCKBACK_1", 2, 0.75, 10)
 Feats.STR_KNOCKBACK_3 = definition(
-    "STR_KNOCKBACK_3", "Space Hog", 17, "STR_KNOCKBACK_2", 3, 0.75, 12)
+    "STR_KNOCKBACK_3", "Space Hog", 17, "STR_KNOCKBACK_2", 3, 0.95, 12)
 
 Catalog.OrdinaryFeats = Feats
 Catalog.GateEPusherSourceRevisionId = SOURCE_REVISION
@@ -262,9 +262,9 @@ function Effects:ValidatePusherFamily()
         if not ok then errors[#errors + 1] = message end
     end
     local expected = {
-        {"STR_KNOCKBACK_1", 13, nil, 0.25, 8, true},
-        {"STR_KNOCKBACK_2", 15, "STR_KNOCKBACK_1", 0.50, 10, true},
-        {"STR_KNOCKBACK_3", 17, "STR_KNOCKBACK_2", 0.75, 12, false}
+        {"STR_KNOCKBACK_1", 13, nil, 0.55, 8, true},
+        {"STR_KNOCKBACK_2", 15, "STR_KNOCKBACK_1", 0.75, 10, true},
+        {"STR_KNOCKBACK_3", 17, "STR_KNOCKBACK_2", 0.95, 12, false}
     }
     for rank, row in ipairs(expected) do
         local feat = Feats[row[1]]
@@ -286,20 +286,20 @@ function Effects:ValidatePusherFamily()
     local hog = self:PusherProfile({featIds = CHAIN})
     expect(baseline.rank == 0 and baseline.wallSlamDieSides == 3,
         "baseline 1d3 wall slam")
-    expect(pusher.rank == 1 and pusher.weaponKnockbackProcChance == 0.25
+    expect(pusher.rank == 1 and pusher.weaponKnockbackProcChance == 0.55
         and pusher.wallSlamDieSides == 8 and pusher.wallSlamClassExplosionImmune,
         "Pusher profile")
-    expect(shover.rank == 2 and shover.weaponKnockbackProcChance == 0.50
+    expect(shover.rank == 2 and shover.weaponKnockbackProcChance == 0.75
         and shover.wallSlamDieSides == 10 and shover.wallSlamClassExplosionImmune,
         "Shover profile")
-    expect(hog.rank == 3 and hog.weaponKnockbackProcChance == 0.75
+    expect(hog.rank == 3 and hog.weaponKnockbackProcChance == 0.95
         and hog.wallSlamDieSides == 12 and hog.wallSlamExplodes
         and not hog.wallSlamClassExplosionImmune, "Space Hog profile")
-    local proc, rolled, reason = self:ResolvePusherRoll(0.25, false, 0.249)
+    local proc, rolled, reason = self:ResolvePusherRoll(0.55, false, 0.549)
     expect(proc and rolled and reason == "proc", "Pusher successful utility roll")
-    proc, rolled, reason = self:ResolvePusherRoll(0.75, false, 0.751)
+    proc, rolled, reason = self:ResolvePusherRoll(0.95, false, 0.951)
     expect(not proc and rolled and reason == "miss", "Space Hog failed utility roll")
-    proc, rolled, reason = self:ResolvePusherRoll(0.75, true, 0.1)
+    proc, rolled, reason = self:ResolvePusherRoll(0.95, true, 0.1)
     expect(not proc and not rolled and reason == "cooldown", "cooldown suppresses roll")
     return #errors == 0, errors
 end
@@ -444,7 +444,7 @@ concommand.Add("lod_rpg_gate_e_pusher_validate", function(ply)
         pushOK, pushErrors = LOD.Pushback:ValidateSharedPushSave()
     end
     if ok and pushOK then
-        print("[LOD:RPG-E] Pusher PASS — 25/50/75%; +168; cooldown 0.50s; wall dice d8/d10/SUPER-d12")
+        print("[LOD:RPG-E] Pusher PASS — 55/75/95%; +168; cooldown 0.50s; wall dice d8/d10/SUPER-d12")
     else
         ErrorNoHalt("[LOD:RPG-E] Pusher FAILED\n")
         for _, message in ipairs(errors or {}) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end

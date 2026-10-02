@@ -61,19 +61,7 @@ function E:ResourceNotice(e,recipient,label,amount)
     LOD.CombatRolls:_Send(recipient,1,label.." "..string.format("%g",amount).." MAGIC")
 end
 function E:ResourceDamage(e,a)
-    local dealt=self:Damage(e,a.target,a.event,"arc")
-    -- These generated Magic users can own Feedback Loop. Reuse its canonical
-    -- per-attack continuation cap; replenishment is never a voluntary cast.
-    local effects=LOD.RPG.FeatEffectSystem
-    if self:ValidSourceLife(a.life) and e.LODRosterAttack==a and LOD.Magic:_EnsureState(e)==a.pool
-        and effects and effects.ApplyFeedbackLoop and a.event.roll then
-        local roll=a.event.roll
-        local continuations=math.max(0,#(roll.values or {})-(roll.baseDice or 1))
-        local restored
-        restored,a.event.feedbackRestored=effects:ApplyFeedbackLoop(e,a.pool,continuations,a.event.feedbackRestored or 0)
-        if restored>0 then LOD.Magic:_Sync(e,a.pool) end
-    end
-    return dealt
+    return self:Damage(e,a.target,a.event,"arc")
 end
 function E:StepResource(e,a,now)
     if not IsValid(e) or e.LODRosterAttack~=a then return end

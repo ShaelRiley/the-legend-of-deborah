@@ -68,14 +68,9 @@ local actor = {valid=true, state={notYetConsumedDungeonLevel=3}, LODRPGNotYetImm
 local damage = {amount=20,SetDamage=function(self,n) self.amount=n end,GetAttacker=function() return nil end}
 assert(GM:EntityTakeDamage(actor,damage)==true,'upstream cancellation must survive wrapper')
 assert(wisCalls==0 and damage.amount==20,'cancelled hit must not run downstream defenses')
-baseResult=nil
-assert(GM:EntityTakeDamage(actor,damage)==true and damage.amount==0,'Not Yet immunity cancels whole hit')
-assert(wisCalls==0,'immune hit must not consume Wisdom cooldown or reach shield spending')
-LOD.RunManager.State.Level=4
-assert(not Rules:NotYetImmunityActive(actor),'immunity cannot cross dungeon boundary')
-actor.state={}
-LOD.RunManager.State.Level=3
-assert(not Rules:NotYetImmunityActive(actor),'reused player entity cannot lend immunity to a fresh identity')
+assert(Rules.NotYetImmunityActive==nil and Rules.ApplyNotYet==nil,'retired survival interceptors are absent, including with old saved state')
+-- Normal damage vulnerability and post-mitigation HP snapshots are executed by
+-- test_gate_e_magic_recovery.lua; this fixture isolates upstream cancellation.
 baseResult=false
 assert(GM:EntityTakeDamage(nil,nil)==false,'false return must remain false')
 baseResult=nil

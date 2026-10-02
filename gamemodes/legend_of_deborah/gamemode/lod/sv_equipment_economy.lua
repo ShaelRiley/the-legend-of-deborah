@@ -13,6 +13,10 @@ end
 function E:ApplyDerived(state,d)
     local x=state.equipmentExtras or {}
     d.equipmentExtras=x
+    local grants=state.equipmentMoveGrants or {}
+    d.sizeShifterEnabled=grants.size_shift==true
+    d.sizeShifterTargetScale=.33
+    d.sizeShifterTransitionSeconds=3
     d.dodgeChanceContribution=(d.dodgeChanceContribution or 0)+bounded(x,"dodge",0,33)/100
     local ceiling=bounded(x,"regen_ceiling",0,60)/100
     d.healthRegenCeilingFraction=math.min(1,(d.healthRegenCeilingFraction or 0)+ceiling)
@@ -43,7 +47,8 @@ function E:RefreshDerived(ply,ps)
     if p.equipmentKey==key then return end
     local shield=self:Definition(self:Equipped(state,"left_arm"))
     p.equipmentShieldEquipped=shield and shield.name=="Shield" or false
-    local a,_,block,x=self:Contributions(state)
+    local a,moves,block,x=self:Contributions(state)
+    p.equipmentMoveGrants=moves
     p.equipmentKey,p.equipmentAbilityDelta,p.equipmentBlockChanceContribution,p.equipmentExtras=key,a,block,x
     CPS:_RecomputeProgressionState(p)
     CPS:_ApplyPlayerMaxHP(ply,p)
@@ -59,8 +64,8 @@ function Rules:MagicRegenMultiplier(actor)
 end
 local save=Status.ConditionSave
 function Status:ConditionSave(target,ability,rng)
-    local result,natural=save(self,target,ability,rng)
-    return result+bounded(E:Extras(target),"save_"..ability,-6,6),natural
+    local result,natural,rolls=save(self,target,ability,rng)
+    return result+bounded(E:Extras(target),"save_"..ability,-6,6),natural,rolls
 end
 local morale=Status.MoraleSave
 function Status:MoraleSave(target,rng,disadvantage)

@@ -140,12 +140,12 @@ function System:ReportDice(target, source, label, formula, values, total, detail
     end
 end
 
-function System:ReportSave(target, source, id, ability, save, natural, dc)
+function System:ReportSave(target, source, id, ability, save, natural, dc, rolls)
     -- Legacy integrations may expose only a total. Do not invent a natural die,
     -- and never make that missing presentation detail interrupt the save result.
     if type(natural) ~= "number" or type(save) ~= "number" or type(dc) ~= "number" then return end
     self:ReportDice(target, source, string.upper(id) .. " " .. string.upper(ability) .. " SAVE",
-        "1d20", {natural}, save,
+        rolls and #rolls == 2 and "2d20kh1" or "1d20", rolls or {natural}, save,
         string.format("%+g modifier; DC %g — %s", save-natural, dc, save>=dc and "SAVED" or "FAILED"),
         "status_save")
 end
@@ -166,12 +166,16 @@ end
 function System:ConditionSave(target, ability, rng)
     local bonus = modifier(score(target, ability)) + math.floor((level(target) - 1) / 4)
     local natural = rng:Int(1, 20)
-    if ability == "wis" then
-        local authored = derived(target) and derived(target).magicSaveBonus
-        bonus = bonus + (authored ~= nil and math.floor(tonumber(authored) or 0)
-            or (owns(target, "WIS_SPELLWARD") and 2 or 0))
+    local rolls = {natural}
+    -- Only this already-authorized WIS Magic Save gains advantage. No new save,
+    -- flat bonus, exploding die, or second effect application is introduced.
+    local d = derived(target)
+    if ability == "wis" and (d and d.magicSaveAdvantage == true or owns(target, "WIS_SPELLWARD")) then
+        local second = rng:Int(1, 20)
+        rolls[2] = second
+        natural = math.max(natural, second)
     end
-    return natural + bonus, natural
+    return natural + bonus, natural, rolls
 end
 
 System.Registry = {
@@ -289,6 +293,7 @@ function System:IsStatue(actor)
 end
 
 function System:ResetActorLife(actor)
+    if LOD.Equipment and LOD.Equipment.EndSizeShifter then LOD.Equipment:EndSizeShifter(actor,true) end
     if LOD.Equipment and LOD.Equipment.EndStatue then LOD.Equipment:EndStatue(actor,"actor lifecycle") end
     local statue=self.Statues[actor]
     if statue then self:ClearStatue(actor,statue);statue.ended(actor,statue,"actor lifecycle") end
@@ -302,16 +307,16 @@ function System:ResetActorLife(actor)
         for _, record in pairs(self.MoraleEncounters) do record.sources[actor] = nil end
     end
     if valid(actor) then
-        actor.LODMoraleCooldownUntil, actor.LODPanicCascadeUntil, actor.LODCrashMoraleUntil = nil, nil, nil
+        actor.LODMoraleCooldownUntil, actor.LODPanicCascadeUntil = nil, nil
         actor.LODCheckpointDAggressiveReadyAt, actor.LODCheckpointDAggressiveSerial, actor.LODCheckpointDAggressivePending = nil, nil, nil
         actor.LODPersonalityAuraNextAt, actor.LODPersonalityAuraRollSerial = nil, nil
-        actor.LODRPGNextAceReadyAt, actor.LODRPGNotYetImmuneUntil, actor.LODMindOverMatterReadyAt = nil, nil, nil
+        actor.LODRPGNextAceReadyAt, actor.LODMindOverMatterReadyAt = nil, nil
         actor.LODRPGBlastProofReadyAt, actor.LODWizardFeedbackNextReadyAt = nil, nil
         actor.LODRPGHealthRegenAccumulator, actor.LODRPGHealthRegenEligibleAt = nil, nil
     end
     local effects = RPG.FeatEffectSystem
     if effects then
-        for _, name in ipairs({"WallJumpState", "CloudStepState", "FloatOnState", "SizeShifterState", "PusherCooldowns", "PusherRNGState"}) do
+        for _, name in ipairs({"WallJumpState", "CloudStepState", "FloatOnState", "PusherCooldowns", "PusherRNGState"}) do
             if effects[name] then effects[name][actor] = nil end
         end
     end
@@ -321,7 +326,6 @@ function System:ResetActorLife(actor)
         end
     end
     if Rules.ClearDodge then Rules:ClearDodge(actor) end
-    if Rules.SetHasteActive then Rules:SetHasteActive(actor, false) end
     self.ActorLives[actor] = nil
 end
 
@@ -428,8 +432,8 @@ function System:Apply(target, id, source, options)
     local tuning = enemyShatter and RPG.EnemyDefenseTuning
     if enemyShatter then dc = dc + tuning.shatterDCBonus end
     if not options.direct and not definition.direct then
-        local save, natural = self:ConditionSave(target, definition.ability, rng)
-        self:ReportSave(target, source, id, definition.ability, save, natural, dc)
+        local save, natural, rolls = self:ConditionSave(target, definition.ability, rng)
+        self:ReportSave(target, source, id, definition.ability, save, natural, dc, rolls)
         self.Stats.saves = self.Stats.saves + 1
         if save >= dc then
             if enemyShatter and LOD.RPGAbilityRules.EnemyDefenseNotice then
@@ -526,12 +530,10 @@ function System:ResolveElementDamage(amount, attacker, target, tags, rng)
                 end
             end
         end
-        if hasAttunement and (tags.magic == true or tags.magical == true) then
-            local secondIndex = rng:Int(1, #self.WeaknessMultipliers)
-            dice[#dice + 1] = secondIndex
-            index = math.max(index, secondIndex)
-        end
         local multiplier = self.WeaknessMultipliers[index]
+        if hasAttunement and (tags.magic == true or tags.magical == true) then
+            multiplier = 1 + 2 * (multiplier - 1)
+        end
         self.Stats.weaknessHits = self.Stats.weaknessHits + 1
         return math.max(0, amount * multiplier), {kind = "weakness", multiplier = multiplier,
             index = index, element = element, hitStunMultiplier = 2.5, knockback = true,
@@ -721,8 +723,7 @@ function System:MoraleSave(target, rng, disadvantage)
         natural = math.min(natural, naturals[2])
     end
     return natural + modifier(score(target, "cha")) + math.floor((level(target) - 1) / 4)
-        + math.floor(tonumber(bonus) or 0)
-        + math.floor(tonumber(derived(target) and derived(target).moraleSaveBonus) or 0), natural, naturals
+        + math.floor(tonumber(bonus) or 0), natural, naturals
 end
 
 System.MoraleEncounters = System.MoraleEncounters or setmetatable({}, {__mode = "k"})
@@ -742,10 +743,34 @@ function System:FirstTerrifyingSave(source, target)
     return true
 end
 
+function System:MoraleCellsWithin(actor, radius)
+    local graph = LOD.RunManager and LOD.RunManager.State and LOD.RunManager.State.Graph
+    local nav = LOD.MazeNavigator
+    if not graph or not nav or not IsValid(actor) or not actor.GetPos then return {} end
+    local cell = nav:WorldToCell(graph, actor:GetPos())
+    if not cell then return {} end
+    local key = LOD.MazeGenerator.CellKey(cell.x, cell.y, cell.z)
+    local distances, queue, head = {[key] = 0}, {key}, 1
+    while head <= #queue do
+        local current = queue[head]; head = head + 1
+        if distances[current] < radius then
+            local neighbors = {}
+            for neighbor in pairs(graph.Cells[current].neighbors or {}) do neighbors[#neighbors + 1] = neighbor end
+            table.sort(neighbors)
+            for _, neighbor in ipairs(neighbors) do
+                if graph.Cells[neighbor] and distances[neighbor] == nil and nav:CanTraverse(graph, current, neighbor) then
+                    distances[neighbor] = distances[current] + 1
+                    queue[#queue + 1] = neighbor
+                end
+            end
+        end
+    end
+    return distances
+end
+
 function System:CascadeMorale(source, target, event)
-    if event.cascade or not owns(source, "CHA_PANIC") or not LOD.RPGCrossFeats
-        or not LOD.FactionManager then return end
-    local cells = LOD.RPGCrossFeats:CellsWithin(target, 2)
+    if event.cascade or not owns(source, "CHA_PANIC") or not LOD.FactionManager then return end
+    local cells = self:MoraleCellsWithin(target, 2)
     local candidates = {}
     for _, other in ipairs(LOD.FactionManager:Opponents(source)) do
         if other ~= target and other ~= source and isAlive(other) and not isPlayer(other)
@@ -792,7 +817,6 @@ function System:AttemptMorale(source, target, event)
     if not trigger then return false, "no_trigger" end
     local rng = self:_RNG("morale", event.rng)
     local dc = self:MoraleDC(source)
-    if LOD.RPGCrossFeats then dc = dc + LOD.RPGCrossFeats:MoraleBonus(source, target, event) end
     local save, natural, naturals = self:MoraleSave(target, rng, self:FirstTerrifyingSave(source, target))
     local cooldownDice = {rng:Int(1, 20), rng:Int(1, 20), rng:Int(1, 20)}
     local cooldown = 30 + cooldownDice[1] + cooldownDice[2] + cooldownDice[3]
@@ -841,9 +865,6 @@ function System:ObserveDamage(target, dmginfo, defenseResult)
     local survives = before - finalDamage > 0
     local maxHP = target.GetMaxHealth and target:GetMaxHealth() or before
     if survives and not context.statusDamage then
-        local crash = context.wallCrush and owns(source, "CROSS_CRUSH_PANIC")
-            and now() >= (target.LODCrashMoraleUntil or 0)
-        if crash then target.LODCrashMoraleUntil = now() + 3 end
         context.riderConsumedTargets = context.riderConsumedTargets
             or setmetatable({}, {__mode = "k"})
         if context.riderStatusId and not context.riderConsumedTargets[target] then
@@ -852,7 +873,7 @@ function System:ObserveDamage(target, dmginfo, defenseResult)
         end
         self:AttemptMorale(source, target, {
             hpBefore = before, maxHP = maxHP, finalHPDamage = finalDamage,
-            forceMorale = context.forceMorale or crash, moraleIneligible = context.moraleIneligible,
+            forceMorale = context.forceMorale, moraleIneligible = context.moraleIneligible,
             melee = context.melee, physicalPush = context.physicalPush, wallCrush = context.wallCrush,
             statusDamage = context.statusDamage,
             humanTraumaFraction = context.humanTraumaFraction

@@ -330,11 +330,11 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
     total = math.max(0, tonumber(total) or 0)
     if form.saveAbility then
         local dc=Status:ConditionDC(attacker,form.saveAbility)
-        local save,natural=Status:ConditionSave(target,form.saveAbility,
+        local save,natural,rolls=Status:ConditionSave(target,form.saveAbility,
             Rolls:_RNG("magic-save:"..form.id..":"..context.castSerial))
         local passed=save>=dc
         if passed then total=total*.5 end
-        contract.magicSave={ability=form.saveAbility,dc=dc,total=save,natural=natural,passed=passed}
+        contract.magicSave={ability=form.saveAbility,dc=dc,total=save,natural=natural,rolls=rolls,passed=passed}
     end
     if total <= 0 then
         self:_ReportDamageRoll(creditCaster,target,form,content,contract,0)
@@ -382,21 +382,6 @@ function Forms:_ApplyDamage(attacker, creditCaster, target, form, content, conte
         end
         LOD.M3HitFeedback:ApplyHitStun(target,1,attacker,stunMultiplier,nil,context)
     end
-    local effects = RPG.FeatEffectSystem
-    local resource = IsValid(creditCaster) and Magic:_EnsureState(creditCaster) or nil
-    local continuations = math.max(0, #(contract.values or {}) - (contract.baseDice or form.damageDice or 0))
-    if effects and effects.ApplyFeedbackLoop and resource then
-        local restored
-        restored, context.feedbackRestored = effects:ApplyFeedbackLoop(
-            attacker, resource, continuations, context.feedbackRestored or 0)
-        if restored > 0 and Magic._Sync then Magic:_Sync(creditCaster, resource) end
-    end
-    local defeated = before > 0 and (not IsValid(target) or target.LODDead or after <= 0)
-    if effects and effects.ApplyArcRecovery and resource then
-        effects:ApplyArcRecovery(attacker, resource, defeated, CurTime())
-        if Magic._Sync then Magic:_Sync(creditCaster, resource) end
-    end
-
     self.Stats.damageEvents = (self.Stats.damageEvents or 0) + 1
     self.Stats.targets = (self.Stats.targets or 0) + 1
     self.Stats.damage = (self.Stats.damage or 0) + actual

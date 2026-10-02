@@ -77,21 +77,16 @@ local function navigationDefinition(featId, displayName, requirement, prerequisi
     }
 end
 
-Feats.WIS_SURVEYOR = navigationDefinition("WIS_SURVEYOR", "Surveyor", 13, nil,
-    "wis_breadcrumb_range", 1, {
-        breadcrumbBonusCells = 4,
-        description = "Adds +4 BreadcrumbCells after the normal WIS formula without revealing topology forbidden by map degradation."
-    })
-Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer", 15,
-    "WIS_SURVEYOR", "wis_breadcrumb_range", 2, {
+Feats.WIS_CARTOGRAPHER = navigationDefinition("WIS_CARTOGRAPHER", "Cartographer", 13,
+    nil, "wis_breadcrumb_range", 1, {
         breadcrumbBonusCells = 8,
-        description = "Replaces Surveyor's +4 with +8 BreadcrumbCells after the normal WIS formula; degradation and current-floor restrictions remain absolute."
+        description = "Adds +8 BreadcrumbCells along the canonical current-objective route after the normal WIS formula; current-floor and routing restrictions remain absolute."
     })
 Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartography", 15,
     nil, "wis_frugal_map", 1, {
         mapDrainMultiplier = 0.75,
         minimumMapDrainPerSecond = 3.0,
-        description = "Multiplies WIS-scaled minimap drain by 0.75, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open. Haste uses this discounted map-equivalent rate before its own rank fraction, even with the map closed."
+        description = "Multiplies WIS-scaled minimap drain by 0.75, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open."
     })
 
 local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction, speedMultiplier)
@@ -140,8 +135,7 @@ local REGEN_RANKS = {
 }
 
 local BREADCRUMB_RANKS = {
-    WIS_SURVEYOR = 1,
-    WIS_CARTOGRAPHER = 2
+    WIS_CARTOGRAPHER = 1
 }
 
 local AMMO_FLOOR_RANKS = {
@@ -410,8 +404,7 @@ function FeatEffectSystem:ValidateWISNavigation()
         if not condition then errors[#errors + 1] = message end
     end
     local expected = {
-        WIS_SURVEYOR = {"wis_breadcrumb_range", 1, 13, nil, 4, nil, nil},
-        WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 2, 15, "WIS_SURVEYOR", 8, nil, nil},
+        WIS_CARTOGRAPHER = {"wis_breadcrumb_range", 1, 13, nil, 8, nil, nil},
         WIS_FRUGAL_MAP = {"wis_frugal_map", 1, 15, nil, nil, 0.75, 3.0}
     }
     for featId, values in pairs(expected) do
@@ -436,10 +429,10 @@ function FeatEffectSystem:ValidateWISNavigation()
     local combined = self:NavigationProfile({featIds = {
         "WIS_SURVEYOR", "WIS_CARTOGRAPHER", "WIS_FRUGAL_MAP"
     }})
-    expect(surveyor.breadcrumbRank == 1 and surveyor.breadcrumbBonusCells == 4,
-        "Surveyor profile")
-    expect(cartographer.breadcrumbRank == 2 and cartographer.breadcrumbBonusCells == 8,
-        "Cartographer must replace Surveyor")
+    expect(surveyor.breadcrumbRank == 0 and surveyor.breadcrumbBonusCells == 0,
+        "retired navigation ID is inert")
+    expect(cartographer.breadcrumbRank == 1 and cartographer.breadcrumbBonusCells == 8,
+        "Cartographer is one rank, +8 cells")
     expect(combined.frugalMapEnabled and combined.mapDrainMultiplier == 0.75
         and combined.minimumMapDrainPerSecond == 3.0, "Frugal Cartography profile")
 
@@ -472,15 +465,16 @@ function FeatEffectSystem:ValidateWISNavigation()
     if progression and progression._FeatEligible then
         local state = {
             featIds = {},
-            featQualificationAbilities = {wis = 15},
+            featQualificationAbilities = {wis = 13},
             classId = "wizard",
             secondaryAbilities = {}
         }
-        expect(not progression:_FeatEligible({}, state, Feats.WIS_CARTOGRAPHER),
-            "Cartographer must require Surveyor")
+        expect(progression:_FeatEligible({}, state, Feats.WIS_CARTOGRAPHER),
+            "Cartographer is available at WIS 13 without prerequisites")
         state.featIds = {"WIS_SURVEYOR"}
         expect(progression:_FeatEligible({}, state, Feats.WIS_CARTOGRAPHER),
-            "Cartographer legal after Surveyor")
+            "stale navigation ID cannot block Cartographer")
+        state.featQualificationAbilities.wis = 15
         expect(progression:_FeatEligible({}, state, Feats.WIS_FRUGAL_MAP),
             "Frugal Cartography independently legal")
     else
@@ -702,7 +696,7 @@ concommand.Add("lod_rpg_test_navigation", function(ply, _, args)
         ply:ChatPrint("RPG progression state is unavailable.")
         return
     end
-    local mode = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 3)
+    local mode = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 2)
     local navigationFeats = {
         WIS_SURVEYOR = true,
         WIS_CARTOGRAPHER = true,
@@ -715,14 +709,10 @@ concommand.Add("lod_rpg_test_navigation", function(ply, _, args)
     state.featIds = kept
     for featId in pairs(navigationFeats) do state.featStackCounts[featId] = nil end
     if mode >= 1 then
-        state.featIds[#state.featIds + 1] = "WIS_SURVEYOR"
-        state.featStackCounts.WIS_SURVEYOR = 1
-    end
-    if mode >= 2 then
         state.featIds[#state.featIds + 1] = "WIS_CARTOGRAPHER"
         state.featStackCounts.WIS_CARTOGRAPHER = 1
     end
-    if mode >= 3 then
+    if mode >= 2 then
         state.featIds[#state.featIds + 1] = "WIS_FRUGAL_MAP"
         state.featStackCounts.WIS_FRUGAL_MAP = 1
     end
@@ -730,7 +720,7 @@ concommand.Add("lod_rpg_test_navigation", function(ply, _, args)
     progression:SyncPlayer(ply)
     if run.MarkUnranked then run:MarkUnranked("Gate E WIS Navigation feat test") end
     ply:ChatPrint(string.format(
-        "Gate E navigation mode %d configured (0=none, 1=Surveyor, 2=Cartographer chain, 3=chain + Frugal).",
+        "Gate E navigation mode %d configured (0=none, 1=Cartographer, 2=Cartographer + Frugal).",
         mode))
 end)
 

@@ -125,7 +125,7 @@ local function actor(id,score,owned)
  end
  ps.ordinal=#humans+1;ps.heroSerial=1;ps.lives=3;ps.characterName=id;ps.lastPlayerName=id
  ps.deploymentComplete=false;ps.progressionState.featIds={}
- ps.progressionState.featCatalogRevision='hybrid-stable-150-v1'
+ ps.progressionState.featCatalogRevision='feat-rebalance-20261002-v1'
  R.State.PlayerState[id]=ps;R.State.ActiveIdentity[id]=true;R.State.PlayedIdentities[id]=true
  humans[#humans+1]=p
  setInt(p,score or 17)

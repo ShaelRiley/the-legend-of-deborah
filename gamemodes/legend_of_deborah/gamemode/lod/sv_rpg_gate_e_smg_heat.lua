@@ -11,18 +11,10 @@ local Validation = LOD.RPGValidation
 if not Feats or not Effects or not Rules or not Progression then return end
 
 local FAMILY = "dex_smg_heat"
-local CHAIN = {
-    "DEX_SMG_COLD_HANDS_1",
-    "DEX_SMG_COLD_HANDS_2",
-    "DEX_SMG_COLD_HANDS_3"
-}
-local RANK = {
-    DEX_SMG_COLD_HANDS_1 = 1,
-    DEX_SMG_COLD_HANDS_2 = 2,
-    DEX_SMG_COLD_HANDS_3 = 3
-}
-local CHANCE = {[1] = 0.11, [2] = 0.22, [3] = 0.33}
-local THRESHOLD = {[0] = 6, [1] = 8, [2] = 10, [3] = 12}
+local CHAIN = {"DEX_HEAT_SINK"}
+local RANK = {DEX_HEAT_SINK = 1}
+local CHANCE = {[1] = 0.66}
+local THRESHOLD = {[0] = 6, [1] = 8}
 local SOURCE_REVISION = "364"
 local TEST_SEED = 43
 
@@ -43,8 +35,7 @@ Effects.SMGHeatTestSeeds = Effects.SMGHeatTestSeeds or setmetatable({}, {__mode 
 Effects.SMGHeatStats = Effects.SMGHeatStats or {}
 
 local function definition(id, name, dex, prerequisite, rank, chance, threshold)
-    local effectLead = rank > 1 and "Replaces lower Cold Hands ranks and sets"
-        or "Sets"
+    local effectLead = "Sets"
     return {
         featId = id,
         displayName = name,
@@ -76,15 +67,8 @@ local function definition(id, name, dex, prerequisite, rank, chance, threshold)
     }
 end
 
--- Replace the Gate-B ownership placeholder with the exact live-GDD ladder.
-Feats.DEX_SMG_COLD_HANDS_1 = definition(
-    "DEX_SMG_COLD_HANDS_1", "Cold Hands", 13, nil, 1, 0.11, 8)
-Feats.DEX_SMG_COLD_HANDS_2 = definition(
-    "DEX_SMG_COLD_HANDS_2", "Ice in the Veins", 15,
-    "DEX_SMG_COLD_HANDS_1", 2, 0.22, 10)
-Feats.DEX_SMG_COLD_HANDS_3 = definition(
-    "DEX_SMG_COLD_HANDS_3", "Absolute Zero", 17,
-    "DEX_SMG_COLD_HANDS_2", 3, 0.33, 12)
+-- The retired Cold Hands ladder is not a grant/alias for this single feat.
+Feats.DEX_HEAT_SINK = definition("DEX_HEAT_SINK", "Heat Sink", 13, nil, 1, 0.66, 8)
 Catalog.OrdinaryFeats = Feats
 Catalog.GateESMGHeatSourceRevisionId = SOURCE_REVISION
 
@@ -152,7 +136,7 @@ end
 
 function Rules:SMGHeatSuppressionChance(actor)
     local derived = self:Derived(actor)
-    return math.Clamp(tonumber(derived and derived.smgHeatSuppressionChance) or 0, 0, 0.33)
+    return math.Clamp(tonumber(derived and derived.smgHeatSuppressionChance) or 0, 0, 0.66)
 end
 
 function Rules:SMGOverheatThreshold(actor)
@@ -216,7 +200,7 @@ function Effects:_SMGHeatStream(actor)
 end
 
 function Effects:RollSMGHeatSuppressionFromRNG(rng, chance)
-    chance = math.Clamp(tonumber(chance) or 0, 0, 0.33)
+    chance = math.Clamp(tonumber(chance) or 0, 0, 0.66)
     if not rng or not isfunction(rng.Float) then return false, 1 end
     local roll = rng:Float(0, 1)
     return chance > 0 and roll < chance, roll
@@ -292,7 +276,7 @@ function Effects:RecordSMGHeatShot(actor, fields)
 end
 
 local function highestOwned(state)
-    for rank = 3, 1, -1 do
+    for rank = #CHAIN, 1, -1 do
         if owns(state, CHAIN[rank]) then return CHAIN[rank], rank end
     end
     return nil, 0
@@ -324,7 +308,7 @@ if not Progression.LODDexSMGHeatSnapshotWrapped then
 end
 
 function Effects:SMGHeatAcceptanceExpectation(rank, seed)
-    rank = math.Clamp(math.floor(tonumber(rank) or 0), 0, 3)
+    rank = math.Clamp(math.floor(tonumber(rank) or 0), 0, 1)
     local chance = CHANCE[rank] or 0
     local threshold = THRESHOLD[rank] or THRESHOLD[0]
     local rng = LOD.RNG and LOD.RNG.New and LOD.RNG.New(seed or TEST_SEED) or nil
@@ -350,75 +334,24 @@ function Effects:ValidateSMGHeatFamily()
     local function expect(ok, message)
         if not ok then errors[#errors + 1] = message end
     end
-    local expected = {
-        DEX_SMG_COLD_HANDS_1 = {1, 13, nil, 0.11, 8},
-        DEX_SMG_COLD_HANDS_2 = {2, 15, "DEX_SMG_COLD_HANDS_1", 0.22, 10},
-        DEX_SMG_COLD_HANDS_3 = {3, 17, "DEX_SMG_COLD_HANDS_2", 0.33, 12}
-    }
-    for id, values in pairs(expected) do
-        local feat = Feats[id]
-        expect(feat and feat.featFamilyId == FAMILY, id .. " definition/family")
-        if feat then
-            expect(feat.rankIndex == values[1] and feat.replacesLowerRank == (values[1] > 1),
-                id .. " replacement rank")
-            expect(feat.abilityRequirements.dex == values[2], id .. " DEX requirement")
-            expect((feat.prerequisiteFeatIds or {})[1] == values[3], id .. " prerequisite")
-            expect(feat.effectParams.smgHeatSuppressionChance == values[4],
-                id .. " total suppression chance")
-            expect(feat.effectParams.smgOverheatThreshold == values[5],
-                id .. " overheat threshold")
-            expect((feat.requiredCapabilityTags or {})[1] == "smg", id .. " SMG requirement")
-            expect(#(feat.allowedActorTypes or {}) == 2
-                and feat.allowedActorTypes[1] == "hero"
-                and feat.allowedActorTypes[2] == "human_soldier",
-                id .. " player-controlled actor restriction")
-        end
-    end
-
-    local p0 = self:SMGHeatProfile({featIds = {}})
-    local p1 = self:SMGHeatProfile({featIds = {CHAIN[1]}})
-    local p2 = self:SMGHeatProfile({featIds = {CHAIN[1], CHAIN[2]}})
-    local p3 = self:SMGHeatProfile({featIds = {CHAIN[1], CHAIN[2], CHAIN[3]}})
-    expect(p0.rank == 0 and p0.suppressionChance == 0 and p0.overheatThreshold == 6,
-        "baseline SMG heat profile")
-    expect(p1.rank == 1 and p1.suppressionChance == 0.11 and p1.overheatThreshold == 8,
-        "Cold Hands profile")
-    expect(p2.rank == 2 and p2.suppressionChance == 0.22 and p2.overheatThreshold == 10,
-        "Ice in the Veins replaces lower rank")
-    expect(p3.rank == 3 and p3.suppressionChance == 0.33 and p3.overheatThreshold == 12,
-        "Absolute Zero replaces lower ranks")
-
-    local acceptance = self:SMGHeatAcceptanceExpectation(3, TEST_SEED)
-    expect(acceptance.shots == 18 and acceptance.suppressed == 6
-        and acceptance.heatAdded == 12,
-        "dedicated deterministic seed 43 yields 6 suppressed + 12 heat in 18 rank-3 shots")
-
-    local state = {
-        featIds = {}, featQualificationAbilities = {dex = 17}, classId = "wizard",
-        secondaryAbilities = {}, capabilityTags = {}
-    }
-    local smgPS = {starterWeaponClass = "weapon_smg1"}
-    local inventorySMGPS = {starterWeaponClass = "weapon_ar2", inventory = {
-        weapons = {{class = "weapon_smg1"}}
-    }}
-    local ar2PS = {starterWeaponClass = "weapon_ar2"}
-    expect(Progression:_FeatEligible(smgPS, state, Feats[CHAIN[1]]),
-        "Cold Hands legal for SMG user")
-    expect(Progression:_FeatEligible(inventorySMGPS, state, Feats[CHAIN[1]]),
-        "Cold Hands legal for later-acquired SMG")
-    expect(not Progression:_FeatEligible(ar2PS, state, Feats[CHAIN[1]]),
-        "non-SMG user excluded")
-    expect(not Progression:_FeatEligible(smgPS, state, Feats[CHAIN[2]]),
-        "Ice in the Veins prerequisite")
-    state.featIds = {CHAIN[1]}
-    expect(Progression:_FeatEligible(smgPS, state, Feats[CHAIN[2]]),
-        "Ice in the Veins legal after Cold Hands")
-    expect(not Progression:_FeatEligible(smgPS, state, Feats[CHAIN[3]]),
-        "Absolute Zero prerequisite")
-    state.featIds = {CHAIN[1], CHAIN[2]}
-    expect(Progression:_FeatEligible(smgPS, state, Feats[CHAIN[3]]),
-        "Absolute Zero legal after Ice in the Veins")
-
+    local feat = Feats.DEX_HEAT_SINK
+    expect(feat and feat.abilityRequirements.dex == 13 and #feat.prerequisiteFeatIds == 0,
+        "Heat Sink entry gate")
+    expect(feat and feat.effectParams.smgHeatSuppressionChance == 0.66
+        and feat.effectParams.smgOverheatThreshold == 8, "Heat Sink exact effect")
+    local p0, p1 = self:SMGHeatProfile({featIds={}}), self:SMGHeatProfile({featIds={CHAIN[1]}})
+    expect(p0.rank == 0 and p0.suppressionChance == 0 and p0.overheatThreshold == 6, "baseline heat")
+    expect(p1.rank == 1 and p1.suppressionChance == 0.66 and p1.overheatThreshold == 8, "Heat Sink profile")
+    local low = {Float=function() return 0.659999 end}
+    local edge = {Float=function() return 0.66 end}
+    expect(self:RollSMGHeatSuppressionFromRNG(low, 0.66), "below 66% suppresses")
+    expect(not self:RollSMGHeatSuppressionFromRNG(edge, 0.66), "66% boundary does not suppress")
+    local state = {featIds={}, featQualificationAbilities={dex=13}, classId="wizard",
+        secondaryAbilities={}, capabilityTags={}}
+    expect(Progression:_FeatEligible({starterWeaponClass="weapon_smg1"},state,feat), "SMG eligible")
+    expect(Progression:_FeatEligible({starterWeaponClass="weapon_ar2",inventory={weapons={{class="weapon_smg1"}}}},state,feat),
+        "later SMG eligible")
+    expect(not Progression:_FeatEligible({starterWeaponClass="weapon_ar2"},state,feat), "non-SMG excluded")
     local Specials = LOD.PlayerWeaponSpecials
     if Specials then
         local runtime = Specials.SMGConfig or {}
@@ -474,7 +407,7 @@ local function configureRank(ply, rank)
     local ps = run and run.GetPlayerState and run:GetPlayerState(ply) or nil
     local state = ps and ps.progressionState or nil
     if not state then return false, "RPG progression state is unavailable." end
-    rank = math.Clamp(math.floor(tonumber(rank) or 0), 0, 3)
+    rank = math.Clamp(math.floor(tonumber(rank) or 0), 0, 1)
     local kept = {}
     for _, id in ipairs(state.featIds or {}) do
         if not RANK[id] then kept[#kept + 1] = id end
@@ -497,7 +430,7 @@ concommand.Add("lod_rpg_gate_e_smg_heat_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateSMGHeatFamily()
     if ok then
-        print("[LOD:RPG-E] DEX SMG-Heat feat family PASS — DEX 13/15/17; 11/22/33% deterministic suppression; 8/10/12 heat replacement thresholds; cooling, feedback, cadence, damage, ammo, and 2.0s lock preserved")
+        print("[LOD:RPG-E] DEX SMG-Heat feat family PASS — DEX 13/15/17; 66% deterministic suppression; 8 heat replacement thresholds; cooling, feedback, cadence, damage, ammo, and 2.0s lock preserved")
     else
         ErrorNoHalt("[LOD:RPG-E] DEX SMG-Heat feat family FAILED\n")
         for _, message in ipairs(errors or {}) do
@@ -537,7 +470,7 @@ end)
 
 concommand.Add("lod_rpg_gate_e_smg_heat_testkit", function(ply, _, args)
     if not developerAllowed(ply) or not IsValid(ply) or not ply:Alive() then return end
-    local rank = math.Clamp(math.floor(tonumber(args[1]) or 3), 0, 3)
+    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 1)
     local ok, message = configureRank(ply, rank)
     if not ok then ply:ChatPrint(message) return end
 

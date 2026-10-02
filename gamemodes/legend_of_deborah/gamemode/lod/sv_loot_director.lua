@@ -270,7 +270,7 @@ end
 function Loot:_CanUseExtraLife(ply)
     local ps = RunManager:GetPlayerState(ply)
     if not ps then return false end
-    if (ps.lives or 0) < (LOD.Config.Lives.MaxLives or 4) then return true end
+    if (ps.lives or 0) < (RunManager:PersonalLifeCap(ps)) then return true end
     local id = identityOf(ply)
     return self:_OldestEliminatedTeammate(id) ~= nil
 end
@@ -278,7 +278,7 @@ end
 function Loot:_GrantExtraLife(ply)
     local ps = RunManager:GetPlayerState(ply)
     if not ps then return false end
-    local cap = LOD.Config.Lives.MaxLives or 4
+    local cap = RunManager:PersonalLifeCap(ps)
 
     if (ps.lives or 0) < cap then
         ps.lives = ps.lives + 1

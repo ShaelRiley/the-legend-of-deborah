@@ -507,7 +507,7 @@ assertTest(matchAll, "Save/load preserves exact tie order and completionOrder se
 -- R. Fighter Human Soldier P snapshot reports actual fighterTraining
 local soldierState = {
     actorType = "human_soldier", soldierIncarnation = true,
-    featCatalogRevision = "hybrid-stable-150-v1", -- precomputed snapshot fixture; migration has its own production test
+    featCatalogRevision = "feat-rebalance-20261002-v1", -- precomputed snapshot fixture; migration has its own production test
     level = 5,
     classId = "fighter",
     baseAbilities = {str = 14, dex = 12, con = 14, int = 10, wis = 10, cha = 10},

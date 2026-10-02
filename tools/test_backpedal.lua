@@ -64,7 +64,7 @@ state.featIds={'INT_WAS_DEBORAH'}
 cps:_RecomputeProgressionState(state)
 for _,cap in ipairs({100,200,400}) do
     local m=move(-100,50,cap)
-    near(m.speed,math.min(520,cap*1.11*1.25)); near(m.client,m.speed)
+    near(m.speed,math.min(520,cap*1.11)*1.25); near(m.client,m.speed)
     near(m.forward,-125*1.11); near(m.side,62.5*1.11); assert(m.vertical==320)
 end
 near(move(100,0).speed,222); near(move(0,100).speed,222)

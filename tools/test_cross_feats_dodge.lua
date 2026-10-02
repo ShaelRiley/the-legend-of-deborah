@@ -19,7 +19,7 @@ Rolls.EntityDisplayName = function(_, a) return 'actor' .. tostring(a.id) end
 local function actor(feats, human)
     serial = serial + 1
     local a = {valid=true,id=serial,hp=100,ground=false,LODHostile=not human,
-        state={featCatalogRevision="hybrid-stable-150-v1",featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
+        state={featCatalogRevision="feat-rebalance-20261002-v1",featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
     function a:IsPlayer() return human == true end
     function a:Alive() return self.hp > 0 end
     function a:Health() return self.hp end
@@ -44,50 +44,14 @@ end
 LOD.Magic = {_EnsureState=function(_, a) return a.resource end, _Sync=function() end}
 LOD.RunManager = {State={LevelSeed=3,Graph={}}}
 
--- One per-attack continuation budget, across distinct rolls; no Magic farming
--- from copying a contract, Magic rolls, full resources, or shared blast victims.
-local source = actor({'CROSS_BOOM_BATTERY'},true)
+-- Retired cross-attribute ownership cannot affect ordinary dice or resources.
+local source = actor({'CROSS_BOOM_BATTERY','CROSS_METEOR_STRIKE','CROSS_FORCE_OF_WILL'},true)
 local event = {}
 local first = Rolls:RollActorDamage(source,{sides=6,count=1,attackEvent=event},rng({6,6,1}),0)
-near(source.resource.magic,91,'two continuations restore one Magic')
-Cross:RestoreBoomBattery(source, first); near(source.resource.magic,91,'same roll cannot refund twice')
-local second = Rolls:RollActorDamage(source,{sides=6,count=1,attackEvent=event},rng({6,1}),0)
-near(source.resource.magic,91,'odd continuation retained on attack')
-Rolls:RollActorDamage(source,{sides=6,count=1,attackEvent=event},rng({6,1}),0)
-near(source.resource.magic,92,'continuations accumulate across subprojectiles')
-for i=1,8 do Rolls:RollActorDamage(source,{sides=6,count=1,attackEvent=event},rng({6,6,1}),0) end
-near(source.resource.magic,95,'five Magic attack cap')
-Rolls:RollActorDamage(source,{sides=6,count=1,magicDamage=true},rng({6,6,1}),0)
-near(source.resource.magic,95,'Magic excluded')
-source.resource.magic=99.5
-Rolls:RollActorDamage(source,{sides=6,count=1},rng({6,6,1}),0)
-near(source.resource.magic,100,'capacity clamp')
-
--- A mixed-die Meteor remains two separate chains with truthful arithmetic.
-source.state.featIds={'CROSS_METEOR_STRIKE'}
-Effects.CloudStepState[source]={used=true}
-local strike=Rolls:RollActorDamage(source,{sides=12,count=1},rng({1}),0)
-Cross:AugmentMeteor(source,strike,rng({6,2}))
-assert(strike.formula=='1d12!+1d6!' and strike.total==9 and strike.baseDice==2)
-assert(strike.chainStarts[2]==2 and strike.values[3]==2)
-assert(not Effects.CloudStepState[source].meteorUsed,'augmentation is not a committed damaging hit')
-Cross:ConsumeMeteor(strike)
-local nextStrike=Rolls:RollActorDamage(source,{sides=12,count=1},rng({1}),0)
-Cross:AugmentMeteor(source,nextStrike,rng({}))
-assert(nextStrike.baseDice==1,'once per airborne cycle')
-
--- Shared push proc: bridge after Magic distance, existing target cooldown.
-source.state.featIds={'CROSS_FORCE_OF_WILL','STR_KNOCKBACK_1'}
-source.state.derivedStats={weaponKnockbackProcChance=.25,weaponKnockbackProcDistance=168,pusherProcTargetCooldownSeconds=.5}
+near(source.resource.magic,90,'retired cross feats cannot restore Magic')
+assert(first.total==13 and first.baseDice==1,'underlying ordinary damage dice remain intact')
+assert(Cross==nil,'cross-attribute subsystem is retired')
 local target=actor()
-local originalRoll=Effects._PusherRoll
-Effects._PusherRoll=function() return 0 end
-local options={distance=100,magicPush=true}
-near(Cross:BridgeMagicPush(source,target,200,options),368,'Force Multiplier precedes +168')
-assert(options.pusherFamilyEligible)
-near(Cross:BridgeMagicPush(source,target,200,options),200,'shared target cooldown')
-near(Cross:BridgeMagicPush(source,actor(),0,{distance=0,magicPush=true}),0,'non-pushing Magic excluded')
-Effects._PusherRoll=originalRoll
 
 -- Canonical caps and contributions, identical for grounded/airborne movement.
 local rogue={rogueAllDamageDiceExplode=true,dodgeChanceContribution=.20}
@@ -132,7 +96,7 @@ assert(ok and reason=='flee' and data.save==1 and data.dc==14,'Terrifying keeps 
 target.LODMoraleCooldownUntil=0
 ok,reason,data=Status:AttemptMorale(source,target,{forceMorale=true,rng=rng({20,1,1,1})})
 assert(ok and reason=='saved' and data.save==20,'later encounter save rolls once')
-target.state={featCatalogRevision="hybrid-stable-150-v1",featIds={},derivedStats={},effectiveAbilities={cha=10}}
+target.state={featCatalogRevision="feat-rebalance-20261002-v1",featIds={},derivedStats={},effectiveAbilities={cha=10}}
 assert(Status:FirstTerrifyingSave(source,target),'new incarnation resets first save')
 
 -- Blast-Proof resolves a target-local view of the real shared roll. It ends
@@ -152,11 +116,8 @@ near(Rolls:ResolveActorDamage(nextAttack,source,defended,{}),17,'two-second supp
 local CPS=LOD.CharacterProgressionSystem
 local state={actorType='hero',classId='fighter',featIds={},capabilityTags={}}
 local ps={starterWeaponClass='weapon_pistol'}
-assert(not CPS:_HasCapability(ps,state,'exploding_nonmagic_damage_dice'),'baseline pistol/crowbar cannot feed battery')
-ps.starterWeaponClass='weapon_shotgun'
-assert(CPS:_HasCapability(ps,state,'exploding_nonmagic_damage_dice'),'universal d6 source qualifies')
 for _,id in ipairs({'INT_CALCULATED_LUCK','CROSS_LUCKY_BOOM','CHA_SPOT_1','CHA_SPOT_2','CHA_SPOT_3','INT_POLYMORPH','INT_AFTERSHOCK','DEX_AR2_SNAP'}) do
-    assert(not LOD.RPG.IdentityCatalog.OrdinaryFeats[id],id..' must remain deferred')
+    assert(not LOD.RPG.IdentityCatalog.OrdinaryFeats[id],id..' must not be registered')
 end
 
 -- Every ordinary feat must actually be offerable through the shipped director
@@ -180,7 +141,7 @@ end
 table.sort(missing)
 assert(#missing==0,'canonical feats cannot enter a legal draft: '..table.concat(missing,','))
 assert(CPS:HasFeatPrerequisite({featIds={'STR_CROWBAR_D12'}},'STR_CROWBAR_D6'),
-    'replacement ownership still satisfies lower-rank CROSS prerequisites')
+    'replacement ownership still satisfies lower-rank ordinary prerequisites')
 assert(not CPS:_HasCapability(nil,{magicFormIds={}},'magic_form_owned'))
 assert(not CPS:_HasCapability(nil,{magicFormIds={}},'magic_form_summon'))
 assert(not CPS:_HasCapability(nil,{magicFormIds={}},'discrete_magic_activation'))
@@ -202,10 +163,11 @@ Rolls._RNG=weaponRNG
 
 -- Historical ownership and locked offers migrate through the production ingress.
 local migrated=CPS:NewProgressionState('legacy','hero','hero')
-migrated.featIds={'STR_HERO_OF_LEGEND','DEX_AR2_SNAP','WIS_HERO_OF_LEGEND'}
+migrated.featCatalogRevision='hybrid-stable-150-v1' -- previously reconciled campaign must migrate again
+migrated.featIds={'STR_HERO_OF_LEGEND','DEX_AR2_SNAP','WIS_HERO_OF_LEGEND','CON_STEADFAST','INT_HASTE_3','WIS_SPELLBANE','INT_SIZE_SHIFTER'}
 migrated.featStackCounts={STR_HERO_OF_LEGEND=1,DEX_AR2_SNAP=1}
 migrated.pendingFeatSlots={{earnedAtLevel=1,rngSeed=42,resolved=false,
-    offerFeatIds={'STR_HERO_OF_LEGEND','DEX_AR2_SNAP','CON_REGEN_11'}}}
+    offerFeatIds={'STR_HERO_OF_LEGEND','INT_SIZE_SHIFTER','CON_REGEN_11'}}}
 assert(CPS:ReconcileFeatOwnership(migrated))
 assert(#migrated.featIds==1 and migrated.featIds[1]=='WIS_HERO_OF_LEGEND')
 assert(migrated.featStackCounts.DEX_AR2_SNAP==nil)
@@ -295,13 +257,13 @@ LOD.MazeNavigator={WorldToCell=function(_,g,pos) return pos end,
     CanTraverse=function(_,g,a,b) return not (blocked and b==key(2,0,0)) end}
 source.cell=graph.Cells[key(0,0,0)];victimA.cell=graph.Cells[key(2,0,0)]
 victimB.cell=graph.Cells[key(3,0,0)]
-source.state.featIds={'CROSS_TINY_TERROR','DEX_SHRINK'}
-near(Cross:MoraleBonus(source,victimA,{}),2,'Tiny Terror at two graph cells')
-near(Cross:MoraleBonus(source,victimB,{}),0,'Tiny Terror outside radius')
-blocked=true;near(Cross:MoraleBonus(source,victimA,{}),0,'closed graph edge excludes Tiny Terror');blocked=false
-source.state.featIds={'CROSS_BIG_SCARY','CON_BIG_GUY'}
-near(Cross:MoraleBonus(source,victimA,{physical=true}),0,'ordinary ranged hit gets no Big Scary')
-near(Cross:MoraleBonus(source,victimA,{wallCrush=true}),2,'physical wall crush gets Big Scary')
+-- The cross-attribute category is retired, but shared graph routing remains
+-- authoritative for the retained Panic Cascade mechanic.
+local reachable=Status:MoraleCellsWithin(source,2)
+assert(reachable[key(2,0,0)]==2 and reachable[key(3,0,0)]==nil)
+blocked=true
+assert(Status:MoraleCellsWithin(source,2)[key(2,0,0)]==nil,'closed graph edge excludes cascade traversal')
+blocked=false
 source.state.featIds={'CHA_PANIC'}
 local neighbor=actor();neighbor.hp=49;neighbor.cell=source.cell
 local healthy=actor();healthy.cell=source.cell
@@ -332,17 +294,18 @@ Status:AttachDamageContext(ignored,{actorDamageResolved=true,auraBurst=true})
 registered.EntityTakeDamage.LOD_DiceDamageAuthority(source,ignored)
 near(ignored:GetDamage(),6,'AI aura cannot become its ordinary weapon roll')
 
--- Lifecycle reset clears per-life controls; persistent feat/dungeon consumption
--- belongs to progression and must survive the same reset.
-target.state.notYetConsumedDungeonLevel=3
+-- Lifecycle reset clears per-life controls, without consuming or awarding lives.
+target.state.featIds={"CON_NOT_YET"}
+local capBefore=Rules:ResolvePersonalLifeCap(4,target.state.derivedStats)
 target.LODMoraleCooldownUntil=999
 target.LODMindOverMatterReadyAt=999
 target.LODPersonalityAuraNextAt=999
-Effects.CloudStepState[target]={used=true,meteorUsed=true}
+Effects.CloudStepState[target]={used=true}
 Status:ResetActorLife(target)
 assert(target.LODMoraleCooldownUntil==nil and target.LODMindOverMatterReadyAt==nil)
 assert(target.LODPersonalityAuraNextAt==nil and Effects.CloudStepState[target]==nil)
-assert(target.state.notYetConsumedDungeonLevel==3,'no extra Not Yet use from respawn')
+assert(Rules:ResolvePersonalLifeCap(4,target.state.derivedStats)==capBefore,'life reset preserves the current cap')
+assert(Rules.ApplyNotYetDefense==nil,'no lethal-intercept implementation remains')
 -- Execute the shipped custom Crowbar, not just the old stock-weapon hook.
 -- Only the engine trace/input/damage boundary is faked.
 local vecmt={}
@@ -364,7 +327,7 @@ function struck:TakeDamageInfo(info)
     crowbarContexts[#crowbarContexts+1]=context
     -- First hit is dodged by the final-defense boundary. The next hit lands.
     if #crowbarContexts==1 then info:SetDamage(0)
-    else self.hp=self.hp-info:GetDamage();Cross:ConsumeMeteor(context.meteor) end
+    else self.hp=self.hp-info:GetDamage() end
 end
 util.TraceHull=function() return {Entity=struck,HitPos=struck.cell} end
 IsFirstTimePredicted=function() return true end
@@ -379,10 +342,10 @@ Effects.CloudStepState[wielder]={used=true}
 local beforeRoll=Rolls._RNG
 Rolls._RNG=function() return rng({1,6,2}) end
 club:PrimaryAttack()
-assert(not Effects.CloudStepState[wielder].meteorUsed,'custom Crowbar miss/Dodge preserves Meteor')
+assert(not crowbarContexts[1].meteor,'removed Meteor cannot attach a damage rider')
 club:PrimaryAttack()
-assert(Effects.CloudStepState[wielder].meteorUsed and struck.hp==91,'custom Crowbar lands the independent Meteor chain')
-assert(crowbarContexts[2].damageContract.formula=='1d6!+1d6!')
+assert(not crowbarContexts[2].meteor and struck.hp==99,'retired Meteor ownership leaves the ordinary Crowbar roll intact')
+assert(crowbarContexts[2].damageContract.formula=='1d6!')
 Rolls._RNG=beforeRoll
 
 -- Human Soldier targets and AI-vs-AI combat enter the real weapon resolver.
@@ -420,7 +383,7 @@ wizard.ActiveFullMagicSnapshots[source]=nil
 source.state.classId='wizard';source.state.featIds={'CROSS_BOOM_BATTERY'}
 source.state.derivedStats={intMod=4};source.resource.magic=99
 local preRoll=Rolls:RollActorDamage(source,{sides=6,count=1},rng({6,6,1}),0)
-near(source.resource.magic,100)
+near(source.resource.magic,99,"retired Boom Battery cannot refund Magic")
 near(preRoll.wizardFullMagicIntBonus,0,'restoration during an attack cannot create a full-Magic start')
 -- The real instrumentation observes the preceding Dodge even when the later
 -- diversion authority returns nil. Disk/timer boundaries alone are stubbed.
@@ -450,7 +413,7 @@ local defense=Rules:ApplyPlayerDefense(dodger,landed)
 observed=telemetry[#telemetry]
 assert(defense and defense.finalHPDamage==20 and not observed.fields.dodged and not observed.fields.evaded,
     'ordinary undeflected hit cannot inherit a prior attack Dodge')
-print('[CROSS_FEATS_DODGE] PASS: production dice/refund/Meteor/bridge/Dodge/Morale and capability seams')
+print('[CROSS_FEATS_DODGE] PASS: retired cross IDs inert; production dice, bridge, Dodge, Morale and capability seams')
 
 -- Poison packets bypass both Wizard diversion and generic Mana Barrier.
 local poisonHero=actor({},true)

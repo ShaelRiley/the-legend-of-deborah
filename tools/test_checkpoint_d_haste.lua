@@ -1,44 +1,62 @@
-local root = "."
-local now = 10
-function CurTime() return now end
-function IsValid(value) return type(value) == "table" and value.valid ~= false end
-function math.Clamp(value, low, high) return math.max(low, math.min(high, value)) end
-hook, net, util, timer, concommand = {Add = function() end}, {Receive = function() end}, {AddNetworkString = function() end}, {Create = function() end}, {Add = function() end}
+local base='gamemodes/legend_of_deborah/gamemode/lod/'
+function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
+function IsValid(v) return type(v)=='table' and v.valid~=false end
 function GetConVar() return nil end
+MOVETYPE_WALK=2;MOVETYPE_LADDER=9
+concommand={Add=function() end}
+LOD={RPG={IdentityCatalog={OrdinaryFeats={}},FeatEffectSystem={}},RPGAbilityRules={},
+ RPGStatusElements={CanMoveVoluntarily=function(_,a)return not a.held end}}
+local R,E=LOD.RPGAbilityRules,LOD.RPG.FeatEffectSystem
+function R:Derived(a) return a.derived end
+function E:ApplyDerived() end
+dofile(base..'sv_rpg_checkpoint_d_haste.lua')
+local ok,errors=R:ValidateCheckpointDHaste();assert(ok,table.concat(errors,';'))
+local a={ground=true,moveType=MOVETYPE_WALK,alive=true,water=0,
+ derived={hasteMovementMultiplier=1.33,springHeelAirMovementMultiplier=1.5}}
+function a:IsPlayer()return true end
+function a:Alive()return self.alive end
+function a:GetMoveType()return self.moveType end
+function a:WaterLevel()return self.water end
+function a:OnGround()return self.ground end
+function a:IsFrozen()return self.frozen end
+function a:InVehicle()return self.vehicle end
+function a:SetVelocity()error('voluntary multiplier cannot write a discrete or forced velocity')end
+local mv={forward=100,side=-80,max=220,client=220}
+function mv:GetForwardSpeed()return self.forward end;function mv:SetForwardSpeed(n)self.forward=n end
+function mv:GetSideSpeed()return self.side end;function mv:SetSideSpeed(n)self.side=n end
+function mv:GetMaxSpeed()return self.max end;function mv:SetMaxSpeed(n)self.max=n end
+function mv:GetMaxClientSpeed()return self.client end;function mv:SetMaxClientSpeed(n)self.client=n end
+R:ApplyVoluntaryMovementFeats(a,mv)
+assert(mv.forward==133 and mv.side==-106.4 and mv.max==220*1.33)
+a.ground=false;assert(R:VoluntaryFeatMovementMultiplier(a)==1.5,'air uses Spring Heel, never Haste')
+a.derived.springHeelAirMovementMultiplier=nil
+assert(R:VoluntaryFeatMovementMultiplier(a)==1,'Haste does not accelerate air movement')
+a.ground=true
+for _,k in ipairs({'frozen','vehicle','held'})do a[k]=true;assert(R:VoluntaryFeatMovementMultiplier(a)==1,k);a[k]=false end
+a.moveType=MOVETYPE_LADDER;assert(R:VoluntaryFeatMovementMultiplier(a)==1)
+a.moveType=MOVETYPE_WALK;a.water=2;assert(R:VoluntaryFeatMovementMultiplier(a)==1)
+a.water=0;a.alive=false;assert(R:VoluntaryFeatMovementMultiplier(a)==1)
+assert(R.SetHasteActive==nil and R.HasteDrainPerSecond==nil and R.IsHasteActive==nil)
+local d={};E:ApplyDerived({featIds={'INT_HASTE_1','INT_HASTE_2','INT_HASTE_3'}},d)
+assert(d.hasteEnabled and d.hasteMovementMultiplier==1.33 and d.hasteDrainMultiplier==nil,'removed ranks cannot multiply passive Haste')
+print('HASTE_PASS: one passive 1.33 ground wish multiplier; no Magic/toggle/drain; air/forces/ladders/status exclusions')
 
-LOD = {RPG = {IdentityCatalog = {OrdinaryFeats = {}}, FeatEffectSystem = {}}, RPGAbilityRules = {}, Magic = {}}
-function LOD.RPG.FeatEffectSystem:ApplyDerived() end
-function LOD.RPGAbilityRules:Derived(actor) return actor.derived end
-function LOD.RPGAbilityRules:MapDrainPerSecond(actor, base) return base * (actor.mapMultiplier or 1) end
-function LOD.RPGAbilityRules:MovementMultiplier() return 1.5 end
-function LOD.Magic:_EnsureState(actor) return actor.resource end
-function LOD.Magic:_Sync() end
-
-dofile(root .. "/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_haste.lua")
-local Rules, Effects = LOD.RPGAbilityRules, LOD.RPG.FeatEffectSystem
-local ok, errors = Rules:ValidateCheckpointDHaste()
-assert(ok, table.concat(errors or {}, "; "))
-local actor = {derived = {hasteRank = 3, hasteMovementMultiplier = 2, hasteDrainMultiplier = 1 / 3}, resource = {magic = 20}, mapMultiplier = .85}
-function actor:IsPlayer() return true end
-function actor:Alive() return true end
-function actor:SetNW2Bool(_, value) self.hasteNetworked = value end
-assert(Rules:SetHasteActive(actor, true), "positive Magic enables Haste")
-assert(Rules:IsHasteActive(actor) and actor.hasteNetworked, "Haste state is server owned/networked")
-assert(math.abs(Rules:HasteDrainPerSecond(actor) - (100 / 15) * .85 / 3) < .000001, "Haste uses current map-equivalent rate")
-assert(Rules:MovementMultiplier(actor) == 3, "Haste doubles resolved ordinary movement")
-actor.resource.magic = 0
-assert(not Rules:SetHasteActive(actor, true), "zero Magic rejects Haste")
-assert(Effects.HasteState[actor] == nil, "Inactive Haste does not remain in recurring drain work")
-actor.resource.magic = 20
-assert(Rules:SetHasteActive(actor, true))
-local originalDerived = Rules.Derived
-Rules.Derived = function(self, target)
-    self:SetHasteActive(target, false) -- shared life binding invalidates sustained state
-    return target.derived
-end
-assert(not Rules:IsHasteActive(actor) and not actor.hasteNetworked,
-    "Life invalidation during derived lookup cannot return stale active Haste")
-Rules.Derived = originalDerived
-local rank, drain = Effects:HasteProfile({featIds = {"INT_HASTE_1", "INT_HASTE_2", "INT_HASTE_3"}})
-assert(rank == 3 and drain == 1 / 3, "highest Haste rank replaces lower drain")
-print("Checkpoint D Haste headless PASS")
+-- Simulate a still-loaded pre-rebalance Haste closure during AutoRefresh.
+local removed={}
+timer={Remove=function(id) removed[id]=true end}
+hook={Remove=function(event,id) removed[event..'/'..id]=true end}
+net={Receivers={lod_hastetoggle=function() error('retired toggle') end}}
+function a:SetNW2Bool(id,value) assert(id=='LOD_HasteActive' and value==false);self.oldActive=value end
+a.LODNextHasteToggle=90
+E.LODPassiveHaste20261002=nil;E.LODCheckpointDHasteDerivedWrapped=true;E.HasteState={[a]={active=true}}
+R.IsHasteActive=function()return true end;R.SetHasteActive=function()end;R.HasteDrainPerSecond=function()return 99 end
+local oldDerived=E.ApplyDerived
+E.ApplyDerived=function(self,state,d) oldDerived(self,state,d);d.hasteRank=3;d.hasteDrainMultiplier=.66 end
+local oldMovement=function() return R:IsHasteActive(a) and 2 or 1 end
+dofile(base..'sv_rpg_checkpoint_d_haste.lua')
+assert(oldMovement()==1 and R.SetHasteActive==nil and R.HasteDrainPerSecond==nil)
+assert(E.HasteState==nil and a.oldActive==false and a.LODNextHasteToggle==nil and net.Receivers.lod_hastetoggle==nil)
+assert(removed.LOD_RPG_CheckpointDHasteDrain and removed['LODMagicRegenerationSuppressed/LOD_RPG_CheckpointDHaste'])
+local migrated={};E:ApplyDerived({featIds={'INT_HASTE_1'}},migrated)
+assert(migrated.hasteMovementMultiplier==1.33 and migrated.hasteRank==nil and migrated.hasteDrainMultiplier==nil)
+print('HASTE_HOT_RELOAD_PASS: old timer, input, state, regeneration and captured movement closures retired safely')

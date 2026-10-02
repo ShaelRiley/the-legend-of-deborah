@@ -61,32 +61,37 @@ local function jumper(enabled)
  f.reset();local p=f.actor('jumper');drain()
  p.ps.progressionState.featIds=enabled and {'DEX_SPRING_HEEL'} or {}
  E.SpringHeelTraces[p]=nil;p.velocity=Vector(0,0,200)
+ function p:GetMoveType() return MOVETYPE_WALK end
+ function p:WaterLevel() return 0 end
+ function p:GetJumpPower() return 200 end
+ function p:OnGround() return self.jumpGround~=false end
+ p.jumpGround=true
  function p:SetVelocity(v) self.velocity=self.velocity+v;self.boosts=(self.boosts or 0)+1 end
  return p
 end
 local p=jumper(true)
-jump(p,IN_JUMP);jump(p,IN_JUMP)
+jump(p,IN_JUMP);p.jumpGround=false;jump(p,IN_JUMP)
 check(#env.timers==1,'duplicate grounded inputs coalesce before takeoff')
 f.flush()
-check((p.boosts or 0)==1 and math.abs(p.velocity.z-200*math.sqrt(2))<.00001,'ordinary jump amplified once by sqrt(2)')
-p=jumper(false);jump(p,IN_JUMP);f.flush()
+check((p.boosts or 0)==1 and math.abs(p.velocity.z-200*math.sqrt(3))<.00001,'ordinary jump amplified once by sqrt(3)')
+p=jumper(false);jump(p,IN_JUMP);p.jumpGround=false;f.flush()
 check((p.boosts or 0)==0 and p.velocity.z==200,'no-feat baseline unmodified')
 for name,mutate in pairs(mutations) do
  if name~='alive' then
-  p=jumper(true);jump(p,IN_JUMP);mutate(p);f.flush()
+  p=jumper(true);jump(p,IN_JUMP);p.jumpGround=false;mutate(p);f.flush()
   check((p.boosts or 0)==(name=='unchanged' and 1 or 0),'jump callback '..name)
  end
 end
 p=jumper(true);jump(p,IN_JUMP)
 local old=table.remove(env.timers,1)
 p.LODRunSpawnSerial=p.LODRunSpawnSerial+1
-death(p);jump(p,IN_JUMP)
+death(p);jump(p,IN_JUMP);p.jumpGround=false
 old();check((p.boosts or 0)==0,'old life cannot consume or apply new jump claim')
 f.flush();check((p.boosts or 0)==1,'new life still receives exactly its own jump')
 -- Death without a replacement life cancels pending work and stale telemetry.
-p=jumper(true);jump(p,IN_JUMP);death(p);f.flush()
+p=jumper(true);jump(p,IN_JUMP);p.jumpGround=false;death(p);f.flush()
 check((p.boosts or 0)==0,'death clears pending jump even before native serial changes')
-p=jumper(true);jump(p,IN_JUMP);f.flush();p.LODRunSpawnSerial=p.LODRunSpawnSerial+1
+p=jumper(true);jump(p,IN_JUMP);p.jumpGround=false;f.flush();p.LODRunSpawnSerial=p.LODRunSpawnSerial+1
 telemetry();check(E.SpringHeelTraces[p]==nil,'old-life jump telemetry discarded')
 -- The native acceptance kit must reset telemetry, not reserve a phantom jump.
 p=jumper(false)
@@ -95,7 +100,7 @@ dev.value=1
 f.commands.lod_rpg_gate_e_singletons_testkit(p,'lod_rpg_gate_e_singletons_testkit',{'1'})
 f.flush()
 check(not E.SpringHeelPending or not E.SpringHeelPending[p],'testkit does not block pending jump')
-jump(p,IN_JUMP);f.flush()
+jump(p,IN_JUMP);p.jumpGround=false;f.flush()
 check((p.boosts or 0)==1,'testkit-enabled ordinary jump remains usable')
 assert(#failures==0,table.concat(failures,'; '))
 print('CLEANUP_LIFECYCLE_PASS '..checks..' production assertions')

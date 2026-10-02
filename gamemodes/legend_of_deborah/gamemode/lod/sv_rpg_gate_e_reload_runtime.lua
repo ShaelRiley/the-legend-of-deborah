@@ -90,7 +90,7 @@ local function setReloadViewModelRate(ply, multiplier)
     local viewModel = ply:GetViewModel()
     if not IsValid(viewModel) or not viewModel.SetPlaybackRate then return end
     local rate = multiplier and multiplier < 1 and (1 / multiplier) or 1
-    viewModel:SetPlaybackRate(math.Clamp(rate, 1, 2.5))
+    viewModel:SetPlaybackRate(math.Clamp(rate, 1, 1 / 0.34))
 end
 
 local function primaryReserve(ply, weapon)

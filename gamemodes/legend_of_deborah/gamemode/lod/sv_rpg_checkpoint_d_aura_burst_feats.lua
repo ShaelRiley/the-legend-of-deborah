@@ -6,7 +6,7 @@ local Rules = assert(LOD.RPGAbilityRules, "Aura Burst feats require ability rule
 local Status = assert(LOD.RPGStatusElements, "Aura Burst feats require status authority")
 
 local IDS = {"CHA_AURA_BURST_1", "CHA_RADIANCE_2", "CHA_MAJESTY_3"}
-local NAMES, RADII = {"Aura Burst", "Radiance", "Majesty"}, {0, 1, 2}
+local NAMES, RADII = {"Aura Burst", "Radiance", "Majesty"}, {1, 2, 3}
 for rank, id in ipairs(IDS) do
     assert(Feats[id] == nil, "duplicate canonical feat " .. id)
     Feats[id] = {featId = id, displayName = NAMES[rank], featFamilyId = "cha_aura_burst", rankIndex = rank,
@@ -118,7 +118,7 @@ function RPG:ValidateCheckpointDAuraBurstFeats()
         expect(definition and definition.effectParams.cellRadius == RADII[rank], id .. " radius")
         if rank > 1 then expect(definition.prerequisiteFeatIds[1] == IDS[rank - 1], id .. " prerequisite") end
     end
-    expect(self:CheckpointDAuraBurstProfile({featIds = {IDS[1], IDS[3]}}) == 2, "highest Aura rank replaces lower ranks")
+    expect(self:CheckpointDAuraBurstProfile({featIds = {IDS[1], IDS[3]}}) == 3, "highest Aura rank replaces lower ranks")
     expect(self:CheckpointDCellRadiusIncludes({x = 3, y = 3, z = 0}, {x = 5, y = 1, z = 0}, 2), "same-floor square radius")
     expect(not self:CheckpointDCellRadiusIncludes({x = 3, y = 3, z = 0}, {x = 3, y = 3, z = 1}, 2), "same-floor restriction")
     return #errors == 0, errors

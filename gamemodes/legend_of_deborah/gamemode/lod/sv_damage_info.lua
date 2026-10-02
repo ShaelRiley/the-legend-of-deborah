@@ -4,6 +4,8 @@ LOD = LOD or {}
 -- do not expire its old semantic tags merely because a damage call returned.
 function LOD.ReleaseDamageInfo(info)
     local status, rolls, piercing = LOD.RPGStatusElements, LOD.CombatRolls, LOD.MagnumPiercing
+    local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
+    if effects and effects.MagicRecoveryPending then effects.MagicRecoveryPending[info] = nil end
     if status and status.DamageContexts then status.DamageContexts[info] = nil end
     if LOD.DamselRevenge and LOD.DamselRevenge.Packets then LOD.DamselRevenge.Packets[info] = nil end
     if rolls and rolls.PendingDamageReports then rolls.PendingDamageReports[info] = nil end

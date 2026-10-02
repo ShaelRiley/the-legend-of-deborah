@@ -238,3 +238,19 @@ end
 function Tetris.RewardForLines(lines)
     return Tetris.Rewards[math.Clamp(math.floor(tonumber(lines) or 0), 0, 4)] or 0
 end
+
+-- Russian Asset owns this sequence independently of the Special Move system.
+-- Directions are left/right/up/down = 1/2/3/4, regardless of input device.
+function Tetris.AdvanceRussianAssetSequence(index, direction)
+    index = math.max(0, math.min(3, math.floor(tonumber(index) or 0)))
+    direction = tonumber(direction)
+    if direction == index + 1 then
+        if direction == 4 then return 0, true end
+        return direction, false
+    end
+    return direction == 1 and 1 or 0, false
+end
+
+function Tetris.LiveHealingForLines(lines)
+    return Tetris.RewardForLines(lines) * 2
+end

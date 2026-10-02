@@ -555,14 +555,10 @@ function Sheet:Open(requestFresh)
             snapshot.effectiveINTFeatQualificationScore or 0)
     end
     if snapshot.feedbackLoopEnabled then
-        recordText = recordText .. string.format(
-            "\nFeedback Loop: +%g Magic per Magic continuation / cap %d per cast",
-            snapshot.feedbackLoopPerContinuation or 2, snapshot.feedbackLoopPerCastCap or 12)
+        recordText = recordText .. "\nFeedback Loop: 50% of actual HP damage taken returns as Magic after 1d4 seconds (cap 100)."
     end
     if snapshot.arcRecoveryEnabled then
-        recordText = recordText .. string.format(
-            "\nArc Recovery: +%d Magic per Magic kill / %.1fs cooldown",
-            snapshot.arcRecoveryMagic or 11, snapshot.arcRecoveryCooldownSeconds or 2)
+        recordText = recordText .. "\nArc Recovery: 50% of Magic-tagged actual HP damage dealt returns as Magic after 1d4 seconds (cap 100)."
     end
     if (snapshot.pusherRank or 0) > 0 then
         recordText = recordText .. string.format(

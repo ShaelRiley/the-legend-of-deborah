@@ -9,9 +9,9 @@ local Rules = LOD.RPGAbilityRules
 if not Feats or not Effects or not Rules then return end
 
 local FAMILY = "dex_reload_cadence"
-local CHAIN = {"DEX_FAST_RELOAD", "DEX_FAST_RELOAD_2", "DEX_FAST_RELOAD_3"}
-local RANK = {DEX_FAST_RELOAD = 1, DEX_FAST_RELOAD_2 = 2, DEX_FAST_RELOAD_3 = 3}
-local MULTIPLIER = {[1] = 0.80, [2] = 0.60, [3] = 0.40}
+local CHAIN = {"DEX_FAST_RELOAD"}
+local RANK = {DEX_FAST_RELOAD = 1}
+local MULTIPLIER = {[1] = 0.34}
 local SOURCE_REVISION = "ANLCKQlapECu8CFLXSznFQ2lgvQ8M8VlvQhJ6jUmVhQbn2lCBBwIhl7vSnqoITG_UgVn6lRA023z123S2E8aBALkwBAko20hUtbYAf053Q"
 local EPSILON = 0.002
 local ORDINARY_RELOADABLE = {
@@ -63,11 +63,7 @@ local function definition(id, name, dex, prerequisite, rank, multiplier)
     }
 end
 
-Feats.DEX_FAST_RELOAD = definition("DEX_FAST_RELOAD", "Quick Reload", 13, nil, 1, 0.80)
-Feats.DEX_FAST_RELOAD_2 = definition("DEX_FAST_RELOAD_2", "Lightning Reload", 15,
-    "DEX_FAST_RELOAD", 2, 0.60)
-Feats.DEX_FAST_RELOAD_3 = definition("DEX_FAST_RELOAD_3", "Blink Reload", 17,
-    "DEX_FAST_RELOAD_2", 3, 0.40)
+Feats.DEX_FAST_RELOAD = definition("DEX_FAST_RELOAD", "Quick Reload", 13, nil, 1, 0.34)
 Catalog.OrdinaryFeats = Feats
 Catalog.GateEReloadSourceRevisionId = SOURCE_REVISION
 
@@ -101,7 +97,7 @@ end
 
 function Rules:ReloadTimeMultiplier(actor)
     local derived = self:Derived(actor)
-    return math.Clamp(tonumber(derived and derived.reloadTimeMultiplier) or 1, 0.40, 1.00)
+    return math.Clamp(tonumber(derived and derived.reloadTimeMultiplier) or 1, 0.34, 1.00)
 end
 
 -- Only a deadline newly extended by a confirmed reload may be compressed. The
@@ -111,7 +107,7 @@ function Rules:ScaleReloadDeadline(now, priorDeadline, authoredDeadline, multipl
     now = tonumber(now) or 0
     priorDeadline = tonumber(priorDeadline) or now
     authoredDeadline = tonumber(authoredDeadline) or priorDeadline
-    multiplier = math.Clamp(tonumber(multiplier) or 1, 0.40, 1.00)
+    multiplier = math.Clamp(tonumber(multiplier) or 1, 0.34, 1.00)
     if authoredDeadline <= now + EPSILON or authoredDeadline <= priorDeadline + EPSILON then
         return authoredDeadline, false
     end

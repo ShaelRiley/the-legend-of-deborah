@@ -34,7 +34,7 @@ local function reset()
 end
 reset()
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
-dofile(root..'sh_soldier_movement.lua');dofile(root..'cl_haste.lua');dofile(root..'cl_player_weapon_specials.lua')
+dofile(root..'sh_soldier_movement.lua');dofile(root..'cl_rpg_movement.lua');dofile(root..'cl_player_weapon_specials.lua')
 local M=LOD.SoldierMovement
 local function move(mask,cap,velocity)
  local m={mask=mask or 0,max=cap or 400,client=cap or 400,forward=450,side=450,up=150,velocity=velocity or Vector(250,180,-60)}

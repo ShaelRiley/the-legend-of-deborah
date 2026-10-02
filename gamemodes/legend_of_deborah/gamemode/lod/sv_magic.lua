@@ -120,6 +120,10 @@ function Magic:_EnsureState(ply)
         ps = progression
     elseif ply:IsPlayer() then ps = playerState(ply) end
     if not ps then return nil end
+    if not ps.featResourceRevision20261002 then
+        ps.arcRecoveryReadyAt,ps.manaSpringWaiting,ps.manaSpringRemainingSeconds=nil,nil,nil
+        ps.featResourceRevision20261002=true
+    end
     self.ActivePools[ply] = true
     if ps.magic == nil then ps.magic = MAX_MAGIC end
     ps.magic = math.Clamp(tonumber(ps.magic) or MAX_MAGIC, 0, MAX_MAGIC)
@@ -127,12 +131,6 @@ function Magic:_EnsureState(ply)
 end
 
 function Magic:IsRegenerationSuppressed(ply, ps)
-    -- The finite Gate E acceptance kit holds its exact 30-Magic precondition until
-    -- the tester casts. The short expiry prevents an abandoned developer test from
-    -- suppressing regeneration indefinitely.
-    if ps and (tonumber(ps.gateEControlMagicTestHoldUntil) or 0) > CurTime() then
-        return true
-    end
     local map = LOD.MinimapMagic
     local mapOpen = map and map.IsOpen and map:IsOpen(ply)
     if mapOpen then return true end
@@ -272,7 +270,6 @@ function Magic:CastForceShout(ply)
     local aceBonus = rules and rules.CommitAttack and rules:CommitAttack(ply) and 1 or 0
     local targets = targetList(ply, direction)
     local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
-    local castFeedbackRestored = 0
     for _, hostile in ipairs(targets) do
         if IsValid(hostile) and not hostile.LODDead and hostile:Health() > 0 then
             local contract = rollExploding2d6(ply, aceBonus)
@@ -283,17 +280,6 @@ function Magic:CastForceShout(ply)
             if explosions > 0 and Rolls and Rolls.EmitDiceExplosionFX then
                 Rolls:EmitDiceExplosionFX(ply, "force_shout", explosions, 1)
             end
-            if effects and effects.ApplyFeedbackLoop then
-                local restored
-                restored, castFeedbackRestored = effects:ApplyFeedbackLoop(
-                    ply, ps, explosions, castFeedbackRestored)
-                if restored > 0 and castFeedbackRestored == restored then
-                    effects.MagicRecoveryStats.castsWithFeedback =
-                        (effects.MagicRecoveryStats.castsWithFeedback or 0) + 1
-                end
-            end
-
-            local wasAlive = hostile:Health() > 0 and not hostile.LODDead
             local info = LOD.NewDamageInfo()
             info:SetAttacker(ply)
             info:SetInflictor(ply)
@@ -305,12 +291,6 @@ function Magic:CastForceShout(ply)
                 statusElements:AttachDamageContext(info, {magic = true})
             end
             hostile:TakeDamageInfo(info)
-
-            local defeated = wasAlive and (not IsValid(hostile)
-                or hostile.LODDead or hostile:Health() <= 0)
-            if effects and effects.ApplyArcRecovery then
-                effects:ApplyArcRecovery(ply, ps, defeated, now)
-            end
 
             Magic.Stats.targets = (Magic.Stats.targets or 0) + 1
             Magic.Stats.damage = (Magic.Stats.damage or 0) + total
@@ -382,25 +362,16 @@ timer.Create(MAGIC_TIMER, REGEN_TICK, 0, function()
                 local effects = LOD.RPG and LOD.RPG.FeatEffectSystem
                 local springMultiplier = 1
                 if effects and effects.ResolveManaSpringTick then
-                    local started, active
-                    springMultiplier, ps.manaSpringWaiting,
-                        ps.manaSpringRemainingSeconds, started, active =
-                        effects:ResolveManaSpringTick(
-                            derived and derived.manaSpringEnabled == true,
-                            ps.magic, ps.manaSpringWaiting,
-                            ps.manaSpringRemainingSeconds,
-                            regenerationPermitted, REGEN_TICK)
-                    local stats = effects.ControlMagicStats
+                    local springActive
+                    springMultiplier,springActive=effects:ResolveManaSpringTick(
+                        derived and derived.manaSpringEnabled==true,ps.magic,regenerationPermitted)
+                    local stats=effects.ControlMagicStats
                     if stats then
-                        if started then stats.manaSpringStarts = (stats.manaSpringStarts or 0) + 1 end
-                        if active then
-                            stats.manaSpringActiveTicks = (stats.manaSpringActiveTicks or 0) + 1
-                        elseif derived and derived.manaSpringEnabled == true
-                            and not regenerationPermitted
-                        then
-                            stats.manaSpringPausedTicks = (stats.manaSpringPausedTicks or 0) + 1
+                        if springActive then stats.manaSpringActiveTicks=(stats.manaSpringActiveTicks or 0)+1
+                        elseif derived and derived.manaSpringEnabled and not regenerationPermitted then
+                            stats.manaSpringPausedTicks=(stats.manaSpringPausedTicks or 0)+1
                         end
-                        stats.lastManaSpringMultiplier = springMultiplier
+                        stats.lastManaSpringMultiplier=springMultiplier
                     end
                 end
                 if canRegenerate then

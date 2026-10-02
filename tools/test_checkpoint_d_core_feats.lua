@@ -40,25 +40,13 @@ assert(littleDerived.playerTargetScale == .70 and littleDerived.littleGuyEnabled
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_SHRINK.incompatibleFeatIds[1] == "CON_BIG_GUY",
     "Little Guy cannot coexist with Big Guy")
 
-local target = {health = 10, LODProgressionState = {
-    featIds = {"CON_NOT_YET"}, derivedStats = {notYetEnabled = true}
-}}
-function target:Health() return self.health end
-function target:SetNW2Float() end
-function target:SetModelScale() end
-local damage = {amount = 15}
-function damage:GetDamage() return self.amount end
-function damage:SetDamage(value) self.amount = value end
-
-assert(Rules:ApplyNotYetDefense(target, damage), "Not Yet should intercept lethal damage")
-assert(damage.amount == 9, "Not Yet leaves exactly one HP")
-assert(target.LODProgressionState.notYetConsumedDungeonLevel == 3, "Not Yet persists per dungeon")
-damage.amount = 7
-assert(Rules:ApplyNotYetDefense(target, damage) and damage.amount == 0,
-    "Not Yet immunity suppresses follow-up damage")
-now = 11
-damage.amount = 15
-assert(not Rules:ApplyNotYetDefense(target, damage), "Not Yet remains consumed in dungeon")
+local caps = {personalLifeCapBonus = 2}
+LOD.RPG.FeatEffectSystem:ApplyDerived({featIds = {"CON_NOT_YET"}}, caps)
+assert(caps.personalLifeCapBonus == 3 and Rules:ResolvePersonalLifeCap(4, caps) == 7,
+    "Not Yet composes additively with hypothetical +2 cap source")
+assert(Rules:ResolvePersonalLifeCap(4, {}) == 4, "ordinary cap remains four")
+assert(Rules.ApplyNotYetDefense == nil and Rules.NotYetImmunityActive == nil,
+    "Not Yet no longer intercepts damage or grants immunity")
 
 local glowActor = {LODProgressionState = {featIds = {"CON_GLOW_UP"}, derivedStats = {
     chaMod = 3, conMod = 4

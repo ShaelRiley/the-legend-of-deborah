@@ -54,6 +54,19 @@ for serial=1,600 do
     end
 end
 for _,family in ipairs(E.FamilyOrder) do assert(families[family],'Natural wearable family: '..family) end
+-- Each added named family dilutes the small innate sub-pool. Preserve the
+-- original 600-event potion/mix sample, then independently cover that expanded
+-- catalog through additional unchanged production wearable draws.
+for serial=601,6000 do
+    local hostile={valid=true,LODInstanceSeed=serial}
+    function hostile:GetPos() return Vector() end
+    function hostile:EntIndex() return self.LODInstanceSeed end
+    assert(Loot:_SpawnEnemyResult(hero,hostile,'wearable',LOD.RNG.New(serial*37)))
+    local item=captured[#captured].payload.item
+    assert(E:ValidateWearable(item));families[item.definitionId]=true
+    local complete=true;for _,id in ipairs(E.InnateFamilyOrder or {}) do if not families[id] then complete=false end end
+    if complete then break end
+end
 for _,family in ipairs(E.InnateFamilyOrder or {}) do assert(families[family],'Natural innate family: '..family) end
 -- Cards reserve 1/8, Feathers 1/8 of the remainder, then Hourglasses 1/16.
 -- The healing/bomb mix receives 735/1024 of these 300 opportunities. Keys

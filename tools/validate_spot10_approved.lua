@@ -32,14 +32,14 @@ expect(not C.WIS_MIND_OVER_MATTER.effectParams.description:find('3d4',1,true),'B
 for _,pool in ipairs({0,1,50,99,100}) do
  for _,enabled in ipairs({false,true}) do
   for _,permitted in ipairs({false,true}) do
-   local m,w,r,s,a=E:ResolveManaSpringTick(enabled,pool,true,3.75,permitted,100)
+   local m,a=E:ResolveManaSpringTick(enabled,pool,permitted)
    local active=enabled and permitted and pool<100
    near(m,active and 1.22 or 1,'spring exact multiplier')
-   expect(not w and r==0 and not s and a==active,'spring clears legacy state; no timer/trigger')
+   expect(a==active,'spring has no timer or trigger')
   end
  end
 end
--- Map floor precedes Haste rank fraction, without a second feat discount.
+-- Frugal Cartography changes map costs only; passive Haste is unrelated.
 for _,u in ipairs({.6,.85,1,1.4}) do
  local d={utilityMagicCostMultiplier=u,mapDrainFeatMultiplier=.75,minimumMapDrainPerSecond=3}
  near(Rules:MapDrainPerSecondFromDerived(100/15,d),math.max(3,100/15*u*.75),'C exact map rate')
@@ -91,9 +91,9 @@ end
 local tick=assert(timers.LOD_MagicRegen)
 for _,kind in ipairs({'hero','human_soldier','ai'}) do
  local a=actor(1,kind,{'INT_MANA_SPRING'});actors={a}
- local ps=assert(M:_EnsureState(a));ps.magic=50;ps.manaSpringWaiting=true;ps.manaSpringRemainingSeconds=4
+ local ps=assert(M:_EnsureState(a));ps.magic=50;ps.manaSpringWaiting=true;ps.manaSpringRemainingSeconds=4;ps.featResourceRevision20261002=nil
  tick();near(ps.magic,50+(100/240)*1.22,kind..' actual timer restores without empty trigger')
- expect(ps.manaSpringWaiting==false and ps.manaSpringRemainingSeconds==0,kind..' legacy resource state cleared')
+ expect(ps.manaSpringWaiting==nil and ps.manaSpringRemainingSeconds==nil,kind..' legacy resource state cleared')
  -- No four-second expiry. Capstone and ability contributions compose once.
  ps.magic=20;a.state.derivedStats.magicRegenMultiplier=2;a.state.derivedStats.wizardCapstoneMagicRegenMultiplier=1.5
  for i=1,20 do now=now+.25;tick() end
@@ -110,17 +110,15 @@ for _,kind in ipairs({'hero','human_soldier','ai'}) do
  a.hp=0;ps.magic=50;tick();near(ps.magic,50,kind..' death does not regenerate')
  M.ActivePools[a]=nil
 end
--- Real Haste rate/activation and actual additive map + Haste drain callbacks.
-local a=actor(2,'hero',{'INT_MANA_SPRING','WIS_FRUGAL_MAP','INT_HASTE_3'});actors={a};a.ps.magic=60
+-- Passive Haste never touches resources, including while an independent map drains.
+local a=actor(2,'hero',{'INT_MANA_SPRING','WIS_FRUGAL_MAP','INT_HASTE_1'});actors={a};a.ps.magic=60
 near(Rules:MapDrainPerSecond(a,100/15),3,'C native personal floor')
-near(Rules:HasteDrainPerSecond(a),1,'C Haste rank applies after map floor')
-expect(Rules:SetHasteActive(a,true),'Haste activation retained')
-tick();near(a.ps.magic,60,'spring cannot restore under Haste')
-setMap(a,true);Map.Active[a].lastTick=now-.1
-E.HasteState[a].lastAt=now-.1
-timers.LOD_RPG_CheckpointDHasteDrain();timers.LOD_MinimapMagicDrain()
-near(a.ps.magic,59.6,'map plus Haste debit independently, no duplicate discount')
-setMap(a,false);Rules:SetHasteActive(a,false)
+expect(Rules.SetHasteActive==nil and Rules.HasteDrainPerSecond==nil and not timers.LOD_RPG_CheckpointDHasteDrain,'no live toggle/drain authority')
+tick();near(a.ps.magic,60+(100/240)*1.22,'passive Haste permits passive regeneration')
+a.ps.magic=60;setMap(a,true);Map.Active[a].lastTick=now-.1
+timers.LOD_MinimapMagicDrain();near(a.ps.magic,59.7,'only map debit applies')
+tick();near(a.ps.magic,59.7,'the open map still suppresses regeneration')
+setMap(a,false)
 a.ps.magic=100;tick();near(a.ps.magic,100,'full resource no overfill')
 a.active=false;a.ps.magic=50;tick();near(a.ps.magic,50,'spectator resource untouched')
 a.active=true

@@ -41,7 +41,6 @@ local function registerMenu()
     vrmod.AddInGameMenuItem("Deborah: Pay respects / Tetris", 2, 2, function() VR:ContextAction() end)
     vrmod.AddInGameMenuItem("Deborah Team Menu", 2, 3, function() LOD.SoldierQueueUI:Open() end)
     vrmod.AddInGameMenuItem("Deborah Map", 2, 4, function() RunConsoleCommand("lod_minimap_toggle") end)
-    vrmod.AddInGameMenuItem("Deborah Haste", 2, 5, function() RunConsoleCommand("lod_haste_toggle") end)
     vrmod.AddInGameMenuItem("Deborah GPS", 2, 0, function() RunConsoleCommand("lod_gps_toggle") end)
     menuRegistered = true
 end

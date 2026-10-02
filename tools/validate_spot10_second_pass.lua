@@ -53,22 +53,20 @@ local function derived(a) E:ApplyDerived(a.state,a.state.derivedStats);return a.
 local a=actor('hero',{'INT_ARC_RECOVERY','INT_FEEDBACK_LOOP'})
 for _,kind in ipairs({'hero','human_soldier','ai'}) do
  a=actor(kind,{'INT_ARC_RECOVERY','INT_FEEDBACK_LOOP'});derived(a)
- local p=E:MagicRecoveryProfile(a.state);near(p.arcRecoveryMagic,11,kind..' Arc profile');near(p.feedbackLoopPerCastCap,12,'Feedback cap')
- a.resource.magic=60
- near(E:ApplyArcRecovery(a,a.resource,false,100),0,'non-AI kill excluded')
- near(E:ApplyArcRecovery(a,a.resource,true,100),11,'qualified kill amount')
- near(E:ApplyArcRecovery(a,a.resource,true,101.999),0,'two second cooldown')
- near(E:ApplyArcRecovery(a,a.resource,true,102),11,'exact cooldown boundary')
- a.resource.magic=99;near(E:ApplyArcRecovery(a,a.resource,true,104),1,'Arc capacity');near(a.resource.magic,100,'capacity 100')
- a.resource.magic=50
- local refund,used=E:ApplyFeedbackLoop(a,a.resource,0,0);near(refund,0,'no initial-die refund')
- refund,used=E:ApplyFeedbackLoop(a,a.resource,1,used);near(refund,2,'one actual continuation')
- refund,used=E:ApplyFeedbackLoop(a,a.resource,4,used);near(refund,8,'later targets share event')
- refund,used=E:ApplyFeedbackLoop(a,a.resource,32,used);near(refund,2,'remaining event budget only');near(used,12,'event cap')
- refund,used=E:ApplyFeedbackLoop(a,a.resource,32,used);near(refund,0,'exhausted event replay cannot refund')
- a.resource.magic=99.75;refund,used=E:ApplyFeedbackLoop(a,a.resource,1,0);near(used,.25,'fractional accepted refund retained')
- a.resource.magic=50;refund,used=E:ApplyFeedbackLoop(a,a.resource,32,used);near(refund,11.75,'fractional prior refund consumes cap');near(used,12,'fractional cap total')
- a.state.featIds={};near(E:ApplyArcRecovery(a,a.resource,true,110),0,'unowned Arc excluded');near(E:ApplyFeedbackLoop(a,a.resource,8,0),0,'unowned Feedback excluded')
+ local p=E:MagicRecoveryProfile(a.state)
+ check(p.arcRecovery and p.feedbackLoop and p.refundFraction==.5,kind..' actual HP recovery profile')
+ for _,mode in ipairs({'feedbackLoop','arcRecovery'}) do
+  a.resource.magic=60
+  local record=assert(E:QueueDamageRecovery(E:CaptureRecoveryOwner(a,mode),11.5))
+  near(a.resource.magic,60,'no immediate payment');check(record.delay>=1 and record.delay<=4,'sealed timing d4')
+  near(E:PayDamageRecovery(record),5.75,'half actual HP, fractions retained')
+  near(E:PayDamageRecovery(record),0,'duplicate callback cannot pay twice')
+  a.resource.magic=99.75;record=assert(E:QueueDamageRecovery(E:CaptureRecoveryOwner(a,mode),11.5))
+  near(E:PayDamageRecovery(record),.25,'ordinary 100 cap')
+  check(E:QueueDamageRecovery(E:CaptureRecoveryOwner(a,mode),0)==nil,'zero loss has no callback')
+ end
+ a.state.featIds={};check(E:CaptureRecoveryOwner(a,'arcRecovery')==nil and E:CaptureRecoveryOwner(a,'feedbackLoop')==nil,'unowned excluded')
+ check(E.ApplyArcRecovery==nil and E.ApplyFeedbackLoop==nil,'old kill and continuation mechanics removed')
 end
 -- F: every class/rank, actual whole-HP scheduler, delay and ordinary ceiling.
 local healthIds={'CON_REGEN_11','CON_REGEN_22','CON_REGEN_33'}
@@ -173,12 +171,12 @@ if not LOD.M3HitFeedback then dofile(root..'sv_m3_hit_feedback.lua') end
 local H=LOD.M3HitFeedback
 for rank=1,3 do
  a=actor('hero',{});for i=1,rank do table.insert(a.state.featIds,'CHA_HITSTUN_'..i) end
- local d=derived(a);near(d.featHitStunMultiplier,1+.22*rank,'Presence replacement multiplier')
+ local d=derived(a);near(d.featHitStunMultiplier,rank+1,'Presence replacement multiplier')
  local t=actor('ai');t.LODHostile=true;derived(t);now=1000
- check(H:ApplyHitStun(t,1,a),'real inflicted stun');near(t.LODHitStunUntil-now,({.366,.432,.498})[rank],'ordinary neutral duration')
- check(not H:ApplyHitStun(t,1,a),'retrigger denial');near(t.LODHitStunUntil,1000+({.366,.432,.498})[rank],'no extending repeated hits')
+ check(H:ApplyHitStun(t,1,a),'real inflicted stun');near(t.LODHitStunUntil-now, .6,'ordinary neutral duration')
+ check(not H:ApplyHitStun(t,1,a),'retrigger denial');near(t.LODHitStunUntil,1000+ .6,'no extending repeated hits')
  t.LODNextHitStun=0;t.LODHitStunUntil=0;t.state.derivedStats.chaHitStunResistanceMultiplier=.7;H:ApplyHitStun(t,1,a)
- near(t.LODHitStunUntil-now,.3*(1+.22*rank)*.7,'defender resistance composes')
+ near(t.LODHitStunUntil-now,math.min(.6,.3*(rank+1)*.7),'defender resistance composes')
  t.LODNextHitStun=0;t.LODHitStunUntil=0;H:ApplyHitStun(t,10,a);near(t.LODHitStunUntil-now,.6,'shared ordinary multiplier cap')
  t.LODArchetypeId='warden';LOD.Warden={HitStunDeadline=function() return now+.05 end,Interrupt=noop};t.LODNextHitStun=0;t.LODHitStunUntil=0
  H:ApplyHitStun(t,1,a);near(t.LODHitStunUntil,now+.05,'fixed Gordon opportunity bounds stun');LOD.Warden=warden
@@ -209,14 +207,14 @@ end
 local pulse=assert(hooks.LOD_CheckpointDPersonalityAura)
 local rng=LOD.RNG.New;LOD.RNG.New=function() error('Aura cadence must not roll dice') end
 for rank,id in ipairs({'CHA_ABRASIVE_PERSONALITY_1','CHA_NARCISSISM_2','CHA_MEGALOMANIA_3'}) do
- a=actor('hero',{id,'CON_GLOW_UP'});local d=derived(a);d.chaMod=3;d.conMod=2;owners={a};targets={target(0,0,0),target(rank,0,0),target(0,0,1)}
+ a=actor('hero',{id,'CON_GLOW_UP'});local d=derived(a);d.chaMod=3;d.conMod=2;owners={a};targets={target(0,0,0),target(rank,0,0),target(rank+1,0,0),target(0,0,1)}
  count,amount=0,0;now=1100+rank*100;RPG.CheckpointDPersonalityAuraNextThink=0;pulse();near(count,0,'full initial aura wait');near(a.LODPersonalityAuraNextAt,now+3,'fixed first interval')
- now=now+2.75;pulse();near(count,0,'no early pulse');now=now+.25;pulse();near(count,1,'only in-range same-floor hostile');near(amount,5,'CHA plus Glow Up once')
- now=now+30;pulse();near(count,2,'stall yields only one pulse, no burst');near(a.LODPersonalityAuraNextAt,now+3,'next full interval from current time')
- run.State.SimulationFrozen=true;now=now+.25;pulse();check(a.LODPersonalityAuraNextAt==nil,'freeze clears old pulse');near(count,2,'freeze no damage');run.State.SimulationFrozen=false
- now=now+20;pulse();near(count,2,'resume waits full interval');near(a.LODPersonalityAuraNextAt,now+3,'resume new initial deadline')
- run.State.Graph={};now=now+3;pulse();near(count,2,'same-seed graph replacement cannot inherit pulse');near(a.LODPersonalityAuraNextAt,now+3,'new graph full initial wait')
- a.hp=0;now=now+3;pulse();near(count,2,'dead aura no damage')
+ now=now+2.75;pulse();near(count,0,'no early pulse');now=now+.25;pulse();near(count,2,'inclusive radius and same-floor hostiles only');near(amount,10,'CHA plus Glow Up once per recipient')
+ now=now+30;pulse();near(count,4,'stall yields only one pulse, no burst');near(a.LODPersonalityAuraNextAt,now+3,'next full interval from current time')
+ run.State.SimulationFrozen=true;now=now+.25;pulse();check(a.LODPersonalityAuraNextAt==nil,'freeze clears old pulse');near(count,4,'freeze no damage');run.State.SimulationFrozen=false
+ now=now+20;pulse();near(count,4,'resume waits full interval');near(a.LODPersonalityAuraNextAt,now+3,'resume new initial deadline')
+ run.State.Graph={};now=now+3;pulse();near(count,4,'same-seed graph replacement cannot inherit pulse');near(a.LODPersonalityAuraNextAt,now+3,'new graph full initial wait')
+ a.hp=0;now=now+3;pulse();near(count,4,'dead aura no damage')
 end
 
 a=actor('hero',{'CHA_ABRASIVE_PERSONALITY_1'});derived(a).chaMod=3;owners={a};local t1,t2=target(0,0,0),target(0,0,0);targets={t1,t2}

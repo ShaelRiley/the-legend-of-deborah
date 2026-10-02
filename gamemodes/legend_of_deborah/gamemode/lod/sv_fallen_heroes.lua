@@ -259,7 +259,6 @@ function F:FireWeapon(e,target,class,burstRound)
         profile=copy(profile);profile.attackEvent=event
         contract=rolls:RollActorDamage(e,profile,rolls:_RNG("fallen:crowbar"),Rules:CommitAttack(e) and 1 or 0)
         contract.equipmentSnapshot=event.equipmentSnapshot
-        if LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(e,contract,rolls:_RNG("fallen:meteor")) end
     else contract=rolls:RollPlayerWeapon(e,weaponClass,event) end
     if not contract or not self:Live(e) then return false end
     if not melee(class) and not burstRound and not unlimited then w.clip=w.clip-1 end
@@ -271,7 +270,7 @@ function F:FireWeapon(e,target,class,burstRound)
             return
         end
         local tags={physical=true,melee=melee(class),actorDamageResolved=true,
-            attackEvent=event,damageContract=contract,meteor=melee(class) and contract or nil}
+            attackEvent=event,damageContract=contract}
         local damage=rolls:ResolveActorDamage(contract,e,victim,tags)
         local info=LOD.NewDamageInfo()
         info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(damage)

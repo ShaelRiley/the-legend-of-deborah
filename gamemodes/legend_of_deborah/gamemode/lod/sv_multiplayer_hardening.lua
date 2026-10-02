@@ -105,7 +105,7 @@ if Loot and not Loot.LODMultiplayerReviveAuthorityInstalled then
     function Loot:_GrantExtraLife(ply)
         local ps = RunManager:GetPlayerState(ply)
         if not ps then return false end
-        local cap = CC.Lives.MaxLives or 4
+        local cap = RunManager:PersonalLifeCap(ps)
 
         if (ps.lives or 0) < cap then
             ps.lives = ps.lives + 1

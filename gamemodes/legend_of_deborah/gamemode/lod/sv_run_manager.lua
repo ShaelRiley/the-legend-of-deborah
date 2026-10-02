@@ -199,6 +199,19 @@ function RunManager:CanChangeTeam(ply)
     return true
 end
 
+-- Shared stock cap for pickups, revival overflow, displays and validation.
+-- Accept the owning player or its stored PlayerState (including offline Heroes).
+function RunManager:PersonalLifeCap(subject)
+    local ps = IsValid(subject) and subject.IsPlayer and subject:IsPlayer()
+        and self:GetPlayerState(subject) or subject
+    local state = type(ps) == "table" and (ps.progressionState or ps) or nil
+    local derived = state and state.derivedStats
+    local rules = LOD.RPGAbilityRules
+    local base = tonumber(CC.Lives.MaxLives) or 4
+    if rules and rules.ResolvePersonalLifeCap then return rules:ResolvePersonalLifeCap(base, derived) end
+    return math.max(0, math.floor(base + (tonumber(derived and derived.personalLifeCapBonus) or 0)))
+end
+
 function RunManager:_SyncPlayerVars(ply)
     if not IsValid(ply) then return end
     local id = self:IdentityOf(ply)
@@ -206,6 +219,7 @@ function RunManager:_SyncPlayerVars(ply)
     local isSoldier = self:IsSoldierControl(ply)
     ply:SetNW2Bool("LOD_PlayedIdentity", ps ~= nil)
     ply:SetNW2Int("LOD_Lives", ps and ps.lives or 0)
+    ply:SetNW2Int("LOD_PersonalLifeCap", self:PersonalLifeCap(ps))
     ply:SetNW2Bool("LOD_Eliminated", ps and ps.eliminated == true or false)
     ply:SetNW2Int("LOD_HeroSerial", ps and ps.ordinal or 0)
     ply:SetNW2Bool("LOD_SoldierWaiting", ps and ps.soldierRespawnWait == true or false)

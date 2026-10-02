@@ -7,6 +7,7 @@ util.AddNetworkString("LOD_SpecialMoveToken")
 util.AddNetworkString("LOD_SpecialMoveFX")
 
 function E:ClearTransient(ply)
+    if self.EndSizeShifter then self:EndSizeShifter(ply,true) end
     if self.EndEquipmentGravity then self:EndEquipmentGravity(ply) end
     if self.EndStatue then self:EndStatue(ply,"lifecycle changed");self.StatueInputAt[ply]=nil end
     if self.StompFlights then self.StompFlights[ply]=nil end
@@ -129,9 +130,10 @@ function E:PrepareMoveAttack(ply,move)
     return context
 end
 
-function E:MoveAttackValid(ply,context)
+function E:MoveAttackValid(ply,context,allowStagingPassive)
     local binding=context and context.moveBinding
-    if not binding or not IsValid(ply) or not self:CanAct(ply)
+    if not binding or not IsValid(ply) or not (self:CanAct(ply)
+        or allowStagingPassive and self:CanManageInventory(ply))
         or self:MoveSession(ply)~=binding.session or Run.State.Graph~=binding.graph
         or binding.session.ps.equipment~=binding.state or binding.session.ps.identity~=binding.identity then return false end
     local source=binding.source

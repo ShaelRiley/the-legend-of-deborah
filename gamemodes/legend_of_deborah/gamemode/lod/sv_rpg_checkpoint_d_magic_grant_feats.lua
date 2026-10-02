@@ -15,8 +15,8 @@ for _, item in ipairs(definitions) do
         replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"int"}, abilityRequirements = {int = 17},
         prerequisiteFeatIds = {}, requiredCapabilityTags = {item.capability}, incompatibleFeatIds = {}, allowedActorTypes = {"hero"},
         requiredSubsystemTags = {"magic_progression"}, synergyTags = {"magic", item.kind, "progression"}, oneRank = true,
-        effectHandlerId = "grant_distinct_magic_" .. item.kind, effectParams = {kind = item.kind, rngSubstream = item.stream,
-            description = "Immediately grants one deterministic distinct canonical Magic " .. item.kind .. " without replacing later scheduled grants."},
+        effectHandlerId = "grant_distinct_magic_" .. item.kind, effectParams = {kind = item.kind, grantCount = 2, rngSubstream = item.stream,
+            description = "Immediately grants up to two deterministic distinct currently-unowned class-eligible Magic " .. item.kind .. "; if one remains, grants one; if none remain, this feat is not offered. Later scheduled grants use the remainder."},
         directorBaseWeight = 1.0, eligibilityText = "INT 17 / unowned Magic " .. item.kind, actorText = "Cooperative Heroes only"}
 end
 Catalog.OrdinaryFeats = Feats
@@ -26,7 +26,15 @@ function MagicProgression:ApplyCheckpointDMagicGrantFeat(state, featId, campaign
     local item = byId[featId]
     if not item or not state then return false end
     local streamSeed = LOD.Seeds.Derive(campaignSeed or 1, item.stream)
-    return self:_GrantDistinct(state, item.kind, "feat:" .. item.stream, streamSeed)
+    -- Independent persistent milestones keep retries/hot reloads idempotent.
+    -- Retain the original first-grant key so older actors never reroll it.
+    local granted = {}
+    for ordinal = 1, 2 do
+        local milestone = "feat:" .. item.stream .. (ordinal == 1 and "" or ":2")
+        local changed, id = self:_GrantDistinct(state, item.kind, milestone, streamSeed)
+        if changed then granted[#granted + 1] = id end
+    end
+    return #granted > 0, granted
 end
 
 if not Progression.LODCheckpointDMagicGrantFeatCommitWrapped then

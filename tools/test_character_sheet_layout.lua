@@ -170,17 +170,12 @@ local function dto(def)
     return {featId=def.featId,displayName=def.displayName,effect=def.effectParams.description,
         eligibilityText=def.eligibilityText}
 end
--- Reproduce the former intermittent failure deterministically using two real
--- same-name feats with distinct effect text, independently asserted per card.
-local namesakes
-for _,a in ipairs(entries) do
-    for _,b in ipairs(entries) do
-        if a.featId~=b.featId and a.displayName==b.displayName
-            and a.effectParams.description~=b.effectParams.description then namesakes={dto(a),dto(b)};break end
-    end
-    if namesakes then break end
-end
-assert(namesakes,'Same-name canonical feat regression fixture missing')
+-- Preserve the historical same-name renderer regression using two explicitly
+-- synthetic DTOs; WIS Spellbreaker is no longer a canonical selectable feat.
+local namesakes={dto(entries[1]),dto(entries[2])}
+namesakes[1].displayName="Historical duplicate-name fixture"
+namesakes[2].displayName=namesakes[1].displayName
+assert(namesakes[1].effect~=namesakes[2].effect)
 local duplicateNames=table.Copy(snapshot)
 duplicateNames.featDraft.offers=namesakes
 open(duplicateNames)

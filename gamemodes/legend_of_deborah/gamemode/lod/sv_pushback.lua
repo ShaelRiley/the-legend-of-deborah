@@ -246,9 +246,7 @@ function Pushback:ResolveSharedPushSave(requestedDistance, attackerDerived,
     local postSave = sizeAdjusted * successfulFraction
     local incoming = opts.ignoreResistance == true and 1
         or math.max(0, tonumber(opts.incomingMultiplier) or 1)
-    local steadfast = opts.ignoreResistance == true and 1
-        or math.max(0, tonumber(opts.steadfastMultiplier) or 1)
-    local resolved = postSave * incoming * steadfast
+    local resolved = postSave * incoming
     return resolved, {
         pushImmune = false,
         rolled = true,
@@ -264,7 +262,6 @@ function Pushback:ResolveSharedPushSave(requestedDistance, attackerDerived,
         sizeAdjusted = sizeAdjusted,
         postSave = postSave,
         incomingMultiplier = incoming,
-        steadfastMultiplier = steadfast,
         resolved = resolved
     }
 end
@@ -313,8 +310,8 @@ function Pushback:ValidateSharedPushSave()
     expect(not result.saveSucceeded and distance == 336 and result.sizeModifier == -8,
         "tiny defender save penalty and displacement cap")
     distance, result = self:ResolveSharedPushSave(168, {}, {}, 1, 1,
-        {incomingMultiplier = 0.75, steadfastMultiplier = 0.75})
-    expect(distance == 94.5, "post-save defender multipliers")
+        {incomingMultiplier = 0.75})
+    expect(distance == 126, "post-save capstone defender multiplier")
     distance, result = self:ResolveSharedPushSave(168, {}, {}, 1, 1,
         {pushImmune = true})
     expect(distance == 0 and result.pushImmune and not result.rolled,
@@ -382,15 +379,11 @@ function Pushback:Apply(hostile, opts)
             outgoingMultiplier = outgoing,
             magicPushMultiplier = 1,
             incomingMultiplier = 1,
-            steadfastMultiplier = 1
         }
     end
     local assembled = authoredDistance * (parts.outgoingMultiplier or 1)
         * (parts.magicPushMultiplier or 1)
         * (opts.magicPush == true and 1 or math.max(0, tonumber(attackerDerived and attackerDerived.bigGuyPhysicalPushMultiplier) or 1))
-    -- The explicit bridge adds the physical proc after Force Multiplier. It
-    -- never multiplies the +168 proc by the Magic multiplier a second time.
-    if LOD.RPGCrossFeats then assembled = LOD.RPGCrossFeats:BridgeMagicPush(opts.attacker, hostile, assembled, opts) end
     local sizeScale = hostile:GetNW2Float("LOD_SizeScale", 1)
     local pushImmune = opts.pushImmune == true or hostile.LODPushImmune == true
         or hostile:GetNW2Bool("LOD_PushImmune", false)
@@ -408,7 +401,6 @@ function Pushback:Apply(hostile, opts)
                 or (tonumber(attackerDerived and attackerDerived.steamrollerSuccessfulSaveFraction) or 0),
             ignoreResistance = opts.ignoreResistance,
             incomingMultiplier = parts.incomingMultiplier,
-            steadfastMultiplier = parts.steadfastMultiplier
         })
     save.naturals = saveNaturals
     save.pushTagMultiplicity = opts.pushTagMultiplicity or 1
@@ -420,7 +412,6 @@ function Pushback:Apply(hostile, opts)
     self.Stats.lastOutgoingMultiplier = parts.outgoingMultiplier
     self.Stats.lastMagicPushMultiplier = parts.magicPushMultiplier
     self.Stats.lastIncomingMultiplier = parts.incomingMultiplier
-    self.Stats.lastSteadfastMultiplier = parts.steadfastMultiplier
     self.Stats.lastSaveNatural = save.natural
     self.Stats.lastSaveDC = save.dc
     self.Stats.lastSaveTotal = save.save
@@ -454,7 +445,6 @@ function Pushback:Apply(hostile, opts)
             outgoingMultiplier = parts.outgoingMultiplier,
             magicPushMultiplier = parts.magicPushMultiplier,
             incomingMultiplier = parts.incomingMultiplier,
-            steadfastMultiplier = parts.steadfastMultiplier,
             moved = 0,
             blocked = false,
             crushed = false,
@@ -475,7 +465,6 @@ function Pushback:Apply(hostile, opts)
             outgoingMultiplier = parts.outgoingMultiplier,
             magicPushMultiplier = parts.magicPushMultiplier,
             incomingMultiplier = parts.incomingMultiplier,
-            steadfastMultiplier = parts.steadfastMultiplier
         }
         return result
     end
@@ -540,7 +529,6 @@ function Pushback:Apply(hostile, opts)
         outgoingMultiplier = parts.outgoingMultiplier,
         magicPushMultiplier = parts.magicPushMultiplier,
         incomingMultiplier = parts.incomingMultiplier,
-        steadfastMultiplier = parts.steadfastMultiplier,
         moved = travel,
         blocked = trace.Hit == true,
         crushed = crushed,
@@ -557,7 +545,6 @@ function Pushback:Apply(hostile, opts)
         outgoingMultiplier = parts.outgoingMultiplier,
         magicPushMultiplier = parts.magicPushMultiplier,
         incomingMultiplier = parts.incomingMultiplier,
-        steadfastMultiplier = parts.steadfastMultiplier,
         moved = travel,
         crushed = crushed,
         crushDamage = crushDamage,

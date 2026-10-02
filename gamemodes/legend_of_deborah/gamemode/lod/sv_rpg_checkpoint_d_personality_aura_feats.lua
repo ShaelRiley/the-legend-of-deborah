@@ -7,7 +7,7 @@ local Status = assert(LOD.RPGStatusElements, "Personality aura feats require sta
 assert(RPG.CheckpointDCellRadiusIncludes, "Personality aura requires shared cell-radius authority")
 
 local IDS = {"CHA_ABRASIVE_PERSONALITY_1", "CHA_NARCISSISM_2", "CHA_MEGALOMANIA_3"}
-local NAMES, RADII = {"Abrasive Personality", "Narcissism", "Megalomania"}, {0, 1, 2}
+local NAMES, RADII = {"Abrasive Personality", "Narcissism", "Megalomania"}, {1, 2, 3}
 for rank, id in ipairs(IDS) do
     assert(Feats[id] == nil, "duplicate canonical feat " .. id)
     Feats[id] = {featId = id, displayName = NAMES[rank], featFamilyId = "cha_personality_aura", rankIndex = rank,
@@ -143,7 +143,7 @@ function RPG:ValidateCheckpointDPersonalityAuraFeats()
         expect(definition and definition.effectParams.intervalSeconds == 3 and definition.effectParams.intervalDice == nil, id .. " fixed three seconds without timing dice")
         if rank > 1 then expect(definition.prerequisiteFeatIds[1] == IDS[rank - 1], id .. " prerequisite") end
     end
-    expect(self:CheckpointDPersonalityAuraProfile({featIds = {IDS[1], IDS[3]}}) == 2, "highest personality rank replaces lower ranks")
+    expect(self:CheckpointDPersonalityAuraProfile({featIds = {IDS[1], IDS[3]}}) == 3, "highest personality rank replaces lower ranks")
     return #errors == 0, errors
 end
 

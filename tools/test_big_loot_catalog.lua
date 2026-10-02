@@ -16,7 +16,7 @@ local old=E:Generate(77,20,"boots")
 dofile(root.."sh_equipment_economy.lua")
 dofile(root.."sh_magic_bombs.lua");dofile(root.."sh_travel_items.lua");dofile(root.."sh_damsel_revenge.lua")
 local baseline=0;for _ in pairs(E.Definitions) do baseline=baseline+1 end
-assert(baseline==45 and #E.EconomyOrder==60,"Freeze identities once, not affix permutations")
+assert(baseline==46 and #E.EconomyOrder==60,"Original identities plus the new named Size Shifter ring, not affix permutations")
 local frozen=E:Generate(991,20,"weapon_357","frozen")
 dofile(root.."sh_big_loot_catalog.lua")
 assert(E.BigLootBaseline==45 and #E.ArchetypeOrder==113)

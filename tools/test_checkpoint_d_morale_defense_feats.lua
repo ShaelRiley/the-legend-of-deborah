@@ -1,11 +1,8 @@
-function IsValid(value) return type(value) == "table" and value.valid ~= false end
-function GetConVar() return nil end
-concommand = {Add = function() end}
-LOD = {RPG = {IdentityCatalog = {OrdinaryFeats = {}}, FeatEffectSystem = {}}}
-function LOD.RPG.FeatEffectSystem:ApplyDerived() end
-dofile("./gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
-local ok, errors = LOD.RPG:ValidateCheckpointDMoraleDefenseFeats()
-assert(ok, table.concat(errors or {}, "; "))
-local derived = {}; LOD.RPG.FeatEffectSystem:ApplyDerived({featIds = {"CHA_NERVE_1", "CHA_NERVE_2"}}, derived)
-assert(derived.moraleSaveBonus == 4, "highest Nerve rank replaces lower bonus")
-print("Checkpoint D morale defense feats headless PASS")
+-- Defensive Nerve feats are retired, while the underlying Morale save survives.
+dofile("tools/test_checkpoint_d_closure.lua")
+local C,E=LOD.RPG.IdentityCatalog.OrdinaryFeats,LOD.RPG.FeatEffectSystem
+assert(C.CHA_NERVE_1==nil and C.CHA_NERVE_2==nil)
+local d={};E:ApplyDerived({featIds={"CHA_NERVE_1","CHA_NERVE_2"}},d)
+assert(d.moraleSaveBonus==nil or d.moraleSaveBonus==0,"retired IDs cannot add save bonuses")
+assert(type(LOD.RPGStatusElements.AttemptMorale)=="function","shared Morale remains")
+print("NERVE_REMOVAL_PASS: retired ranks unregistered and inert; Morale retained")

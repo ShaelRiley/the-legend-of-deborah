@@ -151,7 +151,7 @@ local heroPS=rm.State.PlayerState.test
 local savedState=heroPS.progressionState
 local p,s=fresh('hero','rogue',700,13)
 s.characterIdentityPackage=table.Copy(savedState.characterIdentityPackage)
-s.featCatalogRevision='hybrid-stable-150-v1'
+s.featCatalogRevision='feat-rebalance-20261002-v1'
 heroPS.progressionState=s
 local hand=CPS:_GenerateOrdinaryDraft(heroPS,s,777,1)
 local hand3=CPS:_GenerateOrdinaryDraft(heroPS,s,777,3)
@@ -174,7 +174,7 @@ check(CPS:_NextPendingOrdinaryDraft(s)==hand3,'next slot chronological')
 -- initial requirements. No fake capstone/currency/effect is awarded.
 local _,empty=fresh('hero','rogue',701,30)
 empty.characterIdentityPackage=table.Copy(savedState.characterIdentityPackage)
-empty.featCatalogRevision='hybrid-stable-150-v1'
+empty.featCatalogRevision='feat-rebalance-20261002-v1'
 empty.pendingFeatSlots[1]={earnedAtLevel=1,draftType='ordinary',offerFeatIds={},rngSeed=123,offerLimit=4,exhausted=true,resolved=true}
 empty.featSlotsGranted=1;heroPS.progressionState=empty
 local emptySnapshot=CPS:BuildClientSnapshot(hero)

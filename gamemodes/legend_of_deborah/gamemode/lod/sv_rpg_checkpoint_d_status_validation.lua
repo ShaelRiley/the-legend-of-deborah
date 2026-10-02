@@ -60,7 +60,7 @@ function Validation:Run(printResult)
                 or definition.effectHandlerId == "morale_proc_family",
                 "unreachable handler for " .. tostring(featId))
             local chance = tonumber(definition.effectParams and definition.effectParams.procChance)
-            local expected = ({0.11, 0.22, 0.33})[tonumber(definition.rankIndex) or 0]
+            local expected = ({0.55, 0.75, 0.95})[tonumber(definition.rankIndex) or 0]
             expect(chance == expected, "proc chance mismatch for " .. tostring(featId))
         end
     end

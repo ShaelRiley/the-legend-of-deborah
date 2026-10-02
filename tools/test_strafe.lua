@@ -33,7 +33,7 @@ LOD = {RunManager = {State = {Failed=false}},
     RPGValidation = {Run = function() return true, {} end},
     RPGAbilityRules = {}}
 local root = 'gamemodes/legend_of_deborah/gamemode/lod/'
-for _, name in ipairs({'sh_rpg_schema','sv_rpg_gate_b_catalog','sv_rpg_gate_c_catalog',
+for _, name in ipairs({'sh_rpg_schema','sh_feat_movement','sv_rpg_gate_b_catalog','sv_rpg_gate_c_catalog',
     'sv_rpg_gate_e_feats','sv_character_progression','sv_rpg_gate_d',
     'sv_rpg_gate_e_map_movement','sv_rpg_gate_e_backpedal','sv_rpg_gate_e_strafe','sv_minimap_magic'}) do assert(loadfile(root..name..'.lua'))() end
 local cps, effects, rules = LOD.CharacterProgressionSystem, LOD.RPG.FeatEffectSystem, LOD.RPGAbilityRules
@@ -69,7 +69,7 @@ for rank=0,3 do
     state.featIds={}
     for i=1,rank do state.featIds[i]=ids[i] end
     cps:_RecomputeProgressionState(state)
-    local multiplier=1+rank*.11
+    local multiplier=rank>0 and 1.75 or 1
     for _,f in ipairs({-10000,0,10000}) do
         for _,side in ipairs({-10000,10000}) do
             local m=move(f,side)
@@ -85,20 +85,20 @@ for rank=0,3 do
 end
 local baseline=222/math.sqrt(2)
 actor.grounded=false
-local f,s=realized(move(10000,10000)); near(f,baseline); near(s,baseline)
+local f,s=realized(move(10000,10000)); near(f,baseline); near(s,baseline*1.75)
 actor.grounded=true; actor.mode=9
 f,s=realized(move(10000,10000)); near(f,baseline); near(s,baseline)
 actor.mode=MOVETYPE_WALK; actor.water=2
 f,s=realized(move(10000,10000)); near(f,baseline); near(s,baseline)
 actor.water=0
-f,s=realized(move(10000,10000,200,true)); near(f,baseline); near(s,baseline)
+f,s=realized(move(10000,10000,200,true)); near(f,baseline); near(s,baseline*1.75)
 -- Map and backpedal compose before the lateral-only modifier.
 state.featIds={'DEX_STRAFER_1','DEX_SIDELER_2','DEX_LATERAL_MOVER_3',
     'INT_WAS_DEBORAH','INT_WORLD_WALKER_1','INT_GLOBETROTTER_2','INT_MIND_STRIDER_3'}
 cps:_RecomputeProgressionState(state)
 receivers.LOD_MapMagicState(0,actor)
 f,s=realized(move(-10000,10000,400))
-near(math.sqrt(f*f+s*s),520); near(s,-f*1.33)
+near(f,-520/math.sqrt(2)*1.25); near(s,-f*1.75)
 -- Differing client/server caps and zero client cap retain the original axis.
 f,s=effects:ResolveStrafeInput(10000,10000,400,200,1.33)
 near(f,200/math.sqrt(2)); near(s,f*1.33)
@@ -109,6 +109,7 @@ local catalog=LOD.RPG.IdentityCatalog.OrdinaryFeats
 assert(not cps:_FeatEligible({},state,catalog[ids[1]]))
 state.featQualificationAbilities.dex=17
 assert(not cps:_FeatEligible({},state,catalog[ids[3]]))
-state.featIds={ids[1],ids[2]}; assert(cps:_FeatEligible({},state,catalog[ids[3]]))
+assert(catalog[ids[2]]==nil and catalog[ids[3]]==nil, 'retired ranks cannot be offered')
+state.featIds={ids[1]}; assert(not cps:_FeatEligible({},state,catalog[ids[1]]))
 local ok,errors=effects:ValidateStrafe(); assert(ok,table.concat(errors,'; '))
-print('strafe PASS: all ranks, replacement, left/right/backward diagonals, forward-axis preservation after engine cap, analog, exclusions, DEX/map/backpedal/sprint composition, prerequisites')
+print('strafe PASS: single rank, retired IDs inert, left/right/backward diagonals, forward-axis preservation after engine cap, analog, exclusions, DEX/map/backpedal/sprint composition, entry gate and owned exclusion')

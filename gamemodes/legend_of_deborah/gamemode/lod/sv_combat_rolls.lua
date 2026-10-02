@@ -340,7 +340,6 @@ function Rolls:RollActorDamage(attacker, profile, rng, bonusDice)
         LOD.FactionManager:CaptureAttackPermission(attacker, contract.attackEvent)
     end
     if LOD.IdentityPerkDirector then LOD.IdentityPerkDirector:SealAttack(contract, attacker, rng) end
-    if LOD.RPGCrossFeats then LOD.RPGCrossFeats:RestoreBoomBattery(attacker, contract) end
     return contract
 end
 
@@ -753,8 +752,7 @@ hook.Add("EntityTakeDamage", "LOD_DiceDamageAuthority", function(target, dmginfo
             local rng = Rolls:_RNG("player:weapon_crowbar")
             local rolled = Rolls:RollActorDamage(attacker, profile, rng, 0)
             if LOD.Equipment and LOD.Equipment.SealWeaponAttack then LOD.Equipment:SealWeaponAttack(attacker,rolled,"weapon_lod_crowbar") end
-            if LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(attacker, rolled, rng) end
-            local tags={physical=true,melee=true,attackEvent=rolled.attackEvent,meteor=rolled,damageContract=rolled}
+            local tags={physical=true,melee=true,attackEvent=rolled.attackEvent,damageContract=rolled}
             local total = Rolls:ResolveActorDamage(rolled, attacker, target, tags)
             if statusElements then statusElements:AttachDamageContext(dmginfo,tags) end
             dmginfo:SetDamage(total)

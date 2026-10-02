@@ -103,9 +103,9 @@ assert(math.abs(amount - 111) < 0.001 and resolution.kind == "weakness",
 source.LODProgressionState.featIds = {"WIS_ATTUNEMENT"}
 amount, resolution = System:ResolveElementDamage(100, source, target, {
     magic = true, element = "fire", targetWeaknesses = {fire = true}
-}, scripted({1, 8}))
-assert(math.abs(amount - 188) < 0.001 and resolution.kind == "weakness",
-    "Attunement keeps the better weakness-table result")
+}, scripted({1}))
+assert(math.abs(amount - 122) < 0.001 and resolution.kind == "weakness",
+    "Attunement doubles the one ordinary weakness bonus, not the attack")
 source.LODProgressionState.featIds = nil
 local invalid, invalidInfo = System:ResolveElementDamage(100, source, target,
     {element = "water"}, scripted({1}))
@@ -181,8 +181,8 @@ LOD.RunManager.State.Graph = {} -- Same-seed rebuild is still a new world.
 assert(not System:Has(a, "bleeding"), "Same-seed topology replacement clears stale statuses")
 bleeding(a)
 System:BindActorLife(b)
-b.LODRPGNotYetImmuneUntil = clock + 10
+b.LODMoraleCooldownUntil = clock + 10
 hooks.PreCleanupMap.LOD_RPG_CombatLifeCleanup()
 assert(not next(System.Active) and not next(System.ActorLives), "Cleanup clears all active status lifetimes")
-assert(b.LODRPGNotYetImmuneUntil == nil, "Cleanup also clears bound actors with no active status")
+assert(b.LODMoraleCooldownUntil == nil, "Cleanup also clears bound actors with no active status")
 print("status/element headless matrix PASS")

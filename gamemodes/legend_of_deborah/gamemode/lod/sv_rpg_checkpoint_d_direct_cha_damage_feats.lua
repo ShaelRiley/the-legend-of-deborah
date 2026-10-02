@@ -19,7 +19,7 @@ for _, item in ipairs(definitions) do
         effectHandlerId = item.physical and "aggressive_personality_damage" or "self_actualization_magic_damage",
         effectParams = {flatDamageAbility = "cha", cooldownDice = item.physical and {1, 3} or nil,
             description = item.physical
-                and "While ready, the next eligible physical attack adds max(0, CHA_MOD) once per resolved target and begins a sealed non-exploding 1d3-second cooldown."
+                and "While ready, the next eligible physical attack adds max(0, CHA_MOD) once per resolved target at any legal attack distance, with no feat range gate, and begins a sealed non-exploding 1d3-second cooldown."
                 or "Each eligible magical target damage event gains max(0, CHA_MOD) once after source-side multipliers."},
         directorBaseWeight = 1.0, eligibilityText = "CHA 15 / eligible " .. (item.physical and "physical attack" or "Magic Form"),
         actorText = "Heroes, human Soldiers, and AI with an eligible attack"}

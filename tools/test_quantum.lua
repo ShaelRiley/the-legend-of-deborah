@@ -55,7 +55,7 @@ LOD.Audio=dofile('tools/audio_test_double.lua')
 assert(loadfile(root..'sv_magic.lua'))()
 local magic=LOD.Magic
 local ids={'INT_QUANTUM_MATHEMATICS_1','INT_QUANTUM_MECHANICS_2','INT_QUANTUM_MASTERY_3'}
-local costs={30,27,24,21}
+local costs={30,24,17,11}
 for rank=0,3 do
     state.featIds={}
     for i=1,rank do state.featIds[i]=ids[i] end
@@ -91,6 +91,6 @@ state.featQualificationAbilities.int=17
 assert(not cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[3]]))
 state.featIds={ids[1],ids[2]}
 assert(cps:_FeatEligible({},state,LOD.RPG.IdentityCatalog.OrdinaryFeats[ids[3]]))
-assert(effects:QuantumCost(1,.67)==1 and effects:QuantumCost(31,.67)==21)
+assert(effects:QuantumCost(1,.34)==1 and effects:QuantumCost(31,.34)==11)
 local ok,errors=effects:ValidateQuantum(); assert(ok,table.concat(errors,'; '))
 print('quantum PASS: live cast affordability/deduction, all ranks, replacement, rounding/minimum, no rejected-cast spend, unchanged cooldown/utility/regen, eligibility')

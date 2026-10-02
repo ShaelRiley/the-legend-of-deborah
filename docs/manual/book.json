@@ -77,8 +77,8 @@
           "Toggle the Magic-powered map"
         ],
         [
-          "G / H",
-          "GPS / Haste toggle, when their feats are owned"
+          "G",
+          "Toggle GPS when its feat is owned"
         ],
         [
           "F after death lockout",
@@ -94,7 +94,7 @@
         "Options saves Music On/Off, music volume and Always Run between sessions. When the listen-server host or a superadmin selects Music On, it enables the server master too. Other players choose their own preference within the server’s permission. Opening Options changes no settings. Music Off stops your playback while effects, ambience and dialogue remain. With Always Run on, hold your sprint key to walk; with it off, hold that key to run. Other modifier shortcuts and legal movement limits stay the same.",
         "In the Spellbook, click a Form with LMB or RMB to bind RMB, or click it with M3, M4, or M5 to bind that mouse button. Binding labels appear on the Forms. Your selected Content applies to all bound Forms; bindings stay with your character through reconnects and dungeon transitions. A single-Form character keeps RMB casting.",
         "A red exclamation mark above CHARACTER, SPELLBOOK or EQUIPMENT means that page has an unseen update. Inventory is the bag on the separate Equipment page. Level, permanent ability, identity and feat-choice changes flag Character; newly owned Forms or Contents flag Spellbook; item records, stack amounts and storage capacity flag Equipment. Open the corresponding page and let its updated contents appear to clear only that mark. Other pages, loading screens and a still-dragging inventory do not clear it. Routine XP, HP, Magic, ammo, cooldowns, spell bindings, weapon switches and remaining Wand charges do not create marks. The first sync and a new campaign, character or life begin quietly; ordinary floor transitions retain unread updates.",
-        "VRMod players: the standard dedicated-server launcher installs the bundled VRMod Lua addon, and headset clients need the matching native module. After connecting your VR runtime and joining the updated server, run lod_vr_start; lod_vr_status reports server readiness, local tracking and registration. In VRMod's quick menu, Deborah Player Menu opens the same live pages; Deborah Team Menu reaches Hero and Soldier choices. Use the controller trigger assigned to secondary fire for your selected RMB spell. During death or victory, the controller's Use action or Deborah: Pay respects / Tetris performs the ordinary contextual F action. In Tetris, use the movement stick left/right to move, forward to rotate, back to drop, and Jump to hard-drop; center the stick between presses. Without death Tetris, primary fire requests respawn after the wait. Map, GPS and Haste also have Deborah quick-menu entries. Special Move recipes remain physical-keyboard inputs. Headset tracking keeps control during victory and TIME OVER."
+        "VRMod players: the standard dedicated-server launcher installs the bundled VRMod Lua addon, and headset clients need the matching native module. After connecting your VR runtime and joining the updated server, run lod_vr_start; lod_vr_status reports server readiness, local tracking and registration. In VRMod's quick menu, Deborah Player Menu opens the same live pages; Deborah Team Menu reaches Hero and Soldier choices. Use the controller trigger assigned to secondary fire for your selected RMB spell. During death or victory, the controller's Use action or Deborah: Pay respects / Tetris performs the ordinary contextual F action. In Tetris, use the movement stick left/right to move, forward to rotate, back to drop, and Jump to hard-drop; center the stick between presses. Without death Tetris, primary fire requests respawn after the wait. Map and GPS also have Deborah quick-menu entries. Haste is passive. Ordinary equipment Special Move recipes remain physical-keyboard inputs; Russian Asset separately accepts arrows or a Steam Input D-pad. Headset tracking keeps control during victory and TIME OVER."
       ]
     },
     {
@@ -279,7 +279,7 @@
       "text": [
         "Arcane Surge rewards a full Magic pool. An eligible attack committed at full Magic receives a bonus equal to your positive Intelligence modifier. Its commitment snapshot matters: spending the spell’s cost does not retroactively erase an earned full-pool bonus.",
         "Feedback is a reactive counterattack. When an eligible hit deals HP damage to a Wizard whose shield is online, Feedback’s chance equals your current diversion fraction. A successful response has a one-second cooldown. It rolls one d4 for each actual die in the incoming damage contract, including continuations, then adds positive INT modifier.",
-        "Feedback is Magic damage, but does not add Wisdom or recursively trigger Feedback. An Arcane Shattered shield cannot produce this response. The separate Feedback Loop feat restores Magic from eligible damage-die continuations; read its entry for the per-cast cap."
+        "Feedback is Magic damage, but does not add Wisdom or recursively trigger Feedback. An Arcane Shattered shield cannot produce this response. The separate Feedback Loop feat refunds half your actual HP loss as Magic after one sealed 1d4-second delay per damage event. Arc Recovery similarly refunds half the actual HP damage your Magic deals, once per damaged target. Both permit fractional Magic up to 100; death or a changed actor/run invalidates pending refunds."
       ]
     },
     {
@@ -740,6 +740,15 @@
       ]
     },
     {
+      "id": "size-shifter-ring",
+      "title": "Ring of the Size Shifter",
+      "text": [
+        "This named, at-least-Rare single-hand ring occupies either hand. Its former Size Shifter feat is retired: the ability exists only while this ring is equipped, through the same equipment-effect authority as other item abilities.",
+        "Crouch to shrink smoothly toward 0.33× scale over three seconds. Release crouch to return toward your ordinary scale, including Little Guy or Big Guy. Partial transitions reverse continuously and spend no Magic. Your model, safe camera and Push size follow the change.",
+        "Your authoritative movement and collision hull, USE reach, weapon traces, stair and gate rules do not shrink. This is not permission to squeeze through a progression barrier. Unequipping removes the grant immediately and safely returns your appearance; death, replacement and reset clear the transformation."
+      ]
+    },
+    {
       "id": "invisibility-ring",
       "title": "Ring of Invisibility",
       "rows": [
@@ -880,6 +889,29 @@
       ]
     },
     {
+      "id": "russian-asset-live",
+      "title": "Russian Asset: live Tetris",
+      "rows": [
+        [
+          "← → ↑ ↓",
+          "Arrow keys or Steam Input/controller D-pad · 15 Magic once"
+        ],
+        [
+          "Single / double / triple / quad",
+          "Heal 20 / 60 / 100 / 160 HP immediately"
+        ],
+        [
+          "F",
+          "Close live Tetris"
+        ]
+      ],
+      "text": [
+        "While alive in ordinary active-dungeon play, Russian Asset lets you enter its own Left, Right, Up, Down sequence to open Tetris. You need at least 15 Magic and spend exactly 15 on a successful opening. There is no continuing Magic drain or time limit; a finished board may restart within that paid session.",
+        "The world never pauses. Enemies can attack and kill you normally; this minigame grants no invulnerability, aggro protection or safety. Close it voluntarily with F. Death, disconnect, character/run replacement and other authoritative lifecycle changes end the live session.",
+        "Line clears heal immediately up to ordinary MaxHP. Excess is discarded, not banked as temporary overfill. Death and victory Tetris retain their separate doubled-reward overfill rules; Russian Asset preserves the 120-second death maximum and unchanged 20-second mandatory wait/victory duration."
+      ]
+    },
+    {
       "id": "death",
       "title": "Down, but not finished",
       "art": "deborah:4",
@@ -914,7 +946,7 @@
       "text": [
         "Move pieces left or right, rotate with Up/Forward, soft-drop with Down/Back, and hard-drop with Jump. Clearing several lines at once earns the corresponding reward, not the sum of separate single-line clears.",
         "Rewards become temporary HP overfill. They do not permanently increase maximum HP and cannot be refilled by ordinary regeneration. Topping out ends the board session while preserving the bonus already earned; it does not erase the mandatory death wait.",
-        "After rescue, Victory Tetris lasts 20 seconds. Russian Asset doubles qualifying HP rewards in both Tetris modes. It also raises the death-Tetris maximum to 120 seconds, but F still becomes available after the same 20-second lockout. It never extends Victory Tetris or the active dungeon clock."
+        "After rescue, Victory Tetris lasts 20 seconds. Russian Asset doubles qualifying HP rewards in death and victory Tetris. It also raises the death-Tetris maximum to 120 seconds, but F still becomes available after the same 20-second lockout. It never extends Victory Tetris or the active dungeon clock."
       ]
     },
     {

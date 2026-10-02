@@ -54,7 +54,7 @@ effects:ApplyDerived({featIds = {
     "STR_KNOCKBACK_1", "STR_KNOCKBACK_2", "STR_KNOCKBACK_3"
 }}, derived)
 assert(derived.pusherRank == 3)
-assert(derived.weaponKnockbackProcChance == 0.75)
+assert(derived.weaponKnockbackProcChance == 0.95)
 assert(derived.weaponKnockbackProcDistance == 168)
 assert(derived.pusherProcTargetCooldownSeconds == 0.50)
 assert(derived.wallSlamDieSides == 12)

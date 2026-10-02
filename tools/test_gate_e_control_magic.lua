@@ -42,14 +42,16 @@ local derived = {}
 effects:ApplyDerived({featIds = {
     "CON_STEADFAST", "WIS_FORCEFUL_MAGIC", "INT_MANA_SPRING"
 }}, derived)
-assert(derived.steadfastHitStunMultiplier == 0.75)
-assert(derived.steadfastPushMultiplier == 0.75)
-assert(derived.magicPushMultiplier == 1.25)
+assert(derived.steadfastHitStunMultiplier == nil and derived.steadfastPushMultiplier == nil)
+assert(derived.magicPushMultiplier == nil, "removed Force Multiplier ownership is inert")
 assert(derived.manaSpringRegenMultiplier == 1.22)
-
+for _,id in ipairs({"CON_STEADFAST","WIS_FORCEFUL_MAGIC"}) do
+ assert(LOD.RPG.IdentityCatalog.OrdinaryFeats[id]==nil,"removed feat is not registered")
+end
 local defender = {derivedStats = derived}
-assert(math.abs(LOD.RPGAbilityRules:HitStunMultiplier(nil, defender) - 0.9) < 0.0001)
-assert(math.abs(LOD.RPGAbilityRules:HitStunMultiplier(
-    nil, defender, {ignoreResistance = true}) - 1.2) < 0.0001)
+assert(LOD.RPGAbilityRules:HitStunMultiplier(nil, defender)==1.2,"ordinary resistance unchanged")
+assert(effects:ResolvePushDistance(100,{}, {},{magicPush=true})==100)
+assert(effects:ResolvePushDistance(100,{fighterCapstoneOutgoingPushMultiplier=2},
+ {fighterCapstoneIncomingPushMultiplier=.5},{magicPush=true})==100,"retained shared Push modifiers compose")
 
 print("gate_e_batch_11_control_magic PASS")

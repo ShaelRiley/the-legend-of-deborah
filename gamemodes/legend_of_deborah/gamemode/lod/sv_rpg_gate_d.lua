@@ -51,6 +51,9 @@ function AbilityRules:Derived(actor)
     local progression = LOD.CharacterProgressionSystem
     local identityChanged = LOD.IdentityPerkDirector and LOD.IdentityPerkDirector:EnsureState(state)
     local featsChanged = state and progression and progression.ReconcileFeatOwnership and progression:ReconcileFeatOwnership(state)
+    if featsChanged then
+        actor.LODRPGNotYetImmuneUntil,actor.LODRPGNotYetTriggeredAt=nil,nil
+    end
     if identityChanged or featsChanged then progression:_RecomputeProgressionState(state) end
     if LOD.RPGStatusElements and LOD.RPGStatusElements.BindActorLife then LOD.RPGStatusElements:BindActorLife(actor) end
     return state and state.derivedStats or nil
@@ -534,14 +537,6 @@ function GM:EntityTakeDamage(target, dmginfo)
         if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo] = nil end
         return true
     end
-    -- Immunity cancels the incoming event before mitigation can spend Magic or
-    -- consume a defense cooldown. The lethal intercept itself remains post-diversion.
-    if IsValid(target) and AbilityRules.NotYetImmunityActive
-        and AbilityRules:NotYetImmunityActive(target) then
-        dmginfo:SetDamage(0)
-        if LOD.CombatRolls and LOD.CombatRolls.ReportResolvedDamage then LOD.CombatRolls:ReportResolvedDamage(dmginfo) end
-        return true
-    end
     if IsValid(target) and AbilityRules.ApplyDodge then AbilityRules:ApplyDodge(target, dmginfo) end
     if IsValid(target) and AbilityRules.ApplyBlock then AbilityRules:ApplyBlock(target, dmginfo) end
     if IsValid(target) and AbilityRules.ApplyWisDefense then
@@ -551,14 +546,10 @@ function GM:EntityTakeDamage(target, dmginfo)
     if IsValid(target) then
         defenseResult = AbilityRules:ApplyPlayerDefense(target, dmginfo)
     end
-    if IsValid(target) and AbilityRules.ApplyNotYetDefense then
-        AbilityRules:ApplyNotYetDefense(target, dmginfo)
-    end
     if IsValid(target) and target.LODFallenHero then LOD.FallenHeroes:AbsorbArmor(target,dmginfo) end
     if IsValid(target) and dmginfo:GetDamage() > 0 then
         local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
         if RPG.ObserveDirectChaDamage then RPG:ObserveDirectChaDamage(context.damageContract, dmginfo:GetDamage()) end
-        if context.meteor and LOD.RPGCrossFeats then LOD.RPGCrossFeats:ConsumeMeteor(context.meteor) end
         if LOD.M3HitFeedback then LOD.M3HitFeedback:HandleDamageEvent(target, dmginfo, "resolved") end
     end
     local soldierProgression = LOD.SoldierProgression
@@ -582,7 +573,17 @@ function GM:EntityTakeDamage(target, dmginfo)
     end
     if IsValid(target) and target.LODHostile then Attribution:Record(target, dmginfo) end
     if dmginfo and LOD.CombatRolls and LOD.CombatRolls.ReportResolvedDamage then LOD.CombatRolls:ReportResolvedDamage(dmginfo) end
+    if featEffects and featEffects.CaptureDamageRecovery then featEffects:CaptureDamageRecovery(target,dmginfo) end
     return baseResult
+end
+
+local basePostEntityTakeDamage = GM.PostEntityTakeDamage
+function GM:PostEntityTakeDamage(target, dmginfo, wasDamageTaken)
+    -- Read native HP settlement before retiring the borrowed DamageInfo.
+    -- Shared post-hit damage reactions are deferred until this stack returns.
+    local effects = RPG.FeatEffectSystem
+    if effects and effects.FinishDamageRecovery then effects:FinishDamageRecovery(target,dmginfo,wasDamageTaken) end
+    if basePostEntityTakeDamage then return basePostEntityTakeDamage(self,target,dmginfo,wasDamageTaken) end
 end
 
 hook.Add("OnNPCKilled", "LOD_RPG_GateD_XPSettlement", function(hostile)
@@ -601,11 +602,11 @@ hook.Add("SetupMove", "LOD_RPG_GateD_Movement", function(ply, move)
     ply:SetNW2Float("LOD_VoluntaryMovementMultiplier", multiplier)
     move:SetMaxClientSpeed(move:GetMaxClientSpeed() * multiplier)
     move:SetMaxSpeed(move:GetMaxSpeed() * multiplier)
+    move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
+    move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
     if not rooted and AbilityRules.ApplyVoluntaryMovementFeats then
         AbilityRules:ApplyVoluntaryMovementFeats(ply, move)
     end
-    move:SetMaxClientSpeed(math.min(520, move:GetMaxClientSpeed()))
-    move:SetMaxSpeed(math.min(520, move:GetMaxSpeed()))
     if not rooted and AbilityRules.ApplyVoluntaryDash then AbilityRules:ApplyVoluntaryDash(ply, move) end
     if rooted then soldier:ApplyRoot(ply, move) end
     if soldier then soldier:Publish(ply) end

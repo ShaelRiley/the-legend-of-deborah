@@ -50,7 +50,7 @@ function p:Alive() return true end
 function p:SetNW2Float(_,v) self.multiplier=v end
 function p:GetNW2Float(_,default) return self.multiplier or default end
 LocalPlayer=function() return p end
-dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_haste.lua')
+dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_movement.lua')
 for _,realm in ipairs({'server','client'}) do
  SERVER=realm=='server';CLIENT=not SERVER
  local callback=e.hooks[SERVER and 'LOD_RPG_GateD_Movement' or 'LOD_PredictedVoluntarySpeed']

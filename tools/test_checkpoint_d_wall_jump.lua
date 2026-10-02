@@ -18,7 +18,7 @@ assert(ok, table.concat(errors or {}, "; "))
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.DEX_WALL_JUMP.effectParams.probeDistance == 24)
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_CLOUD_STEP.effectParams.magicCost == 3)
 assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_FLOAT_ON.effectParams.maximumSeconds == 6)
-assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_SIZE_SHIFTER.effectParams.targetScale == .33)
+assert(LOD.RPG.IdentityCatalog.OrdinaryFeats.INT_SIZE_SHIFTER == nil, "Size Shifter is an equipped ring, not a feat")
 local floater = {derived = {floatOnEnabled = true, cloudStepEnabled = false}, resource = {magic = 20}, velocity = {z = 0}}
 function floater:IsPlayer() return true end
 function floater:Alive() return true end
@@ -80,8 +80,8 @@ LOD.RPGStatusElements=nil
 p.dead=true;assert(not R:TryWallJump(p));p.dead=false
 hook.handlers.LOD_RPG_CheckpointDWallJumpDeath(p);assert(not E.WallJumpState[p])
 p.derived.wallJumpEnabled=false;assert(not R:TryWallJump(p));p.derived.wallJumpEnabled=true
-R.SpringHeelImpulseMultiplier=function() return math.sqrt(2) end
-assert(R:TryWallJump(p));assert(math.abs(p.velocity.z-200*math.sqrt(2))<.00001 and p.velocity.x==160)
+R.SpringHeelImpulseMultiplier=function() return math.sqrt(3) end
+assert(R:TryWallJump(p));assert(math.abs(p.velocity.z-200*math.sqrt(3))<.00001 and p.velocity.x==160)
 p.ground=true;press(p,IN_JUMP);assert(not E.WallJumpState[p],'Landing press resets even before Think')
 print('WALL_JUMP_RUNTIME_PASS: real input/trace/velocity path; generated walls; four kicks; crouch; fall/inward momentum; ground/death reset; Cloud Step priority; Spring Heel; invalid/held guards')
 
@@ -122,10 +122,10 @@ end
 LOD.RPGStatusElements=nil
 LOD.Config={Maze={Origin=Vector(),LevelHeight=384},Geometry={GroundFloorOffset=16,AntiBypassHeight=384}}
 LOD.RunManager={State={Graph={}}}
-R.SpringHeelImpulseMultiplier=function() return math.sqrt(2) end
+R.SpringHeelImpulseMultiplier=function() return math.sqrt(3) end
 reset(310);assert(R:TryCloudStep(p))
-assert(math.abs(p.velocity.z-400*math.sqrt(2))<.00001,'Full Cloud Step impulse near crate tops')
+assert(math.abs(p.velocity.z-400*math.sqrt(3))<.00001,'Full Cloud Step impulse near crate tops')
 p.derived.wallJumpEnabled=true;E.WallJumpState[p]=nil
-assert(R:TryWallJump(p));assert(math.abs(p.velocity.z-200*math.sqrt(2))<.00001,'Subsequent wall kick retains full strength')
+assert(R:TryWallJump(p));assert(math.abs(p.velocity.z-200*math.sqrt(3))<.00001,'Subsequent wall kick retains full strength')
 reset(696);assert(R:TryCloudStep(p));assert(p.resource.magic==7,'High altitude does not disable a funded jump')
 print('CLOUD_STEP_PASS: 3 Magic, 2x takeoff, fall cancellation, normalized input, preserved momentum, one use/cue/effect, restrictions, unrestricted Spring Heel/Wall Jump combinations')

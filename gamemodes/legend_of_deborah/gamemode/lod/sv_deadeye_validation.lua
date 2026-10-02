@@ -116,10 +116,10 @@ function Effects:ValidateSingletonFamilies()
     expect(all.meleeReachMultiplier == 1.25
         and self.SingletonConfig.baseMeleeReach * all.meleeReachMultiplier == 120,
         "Long Reach trace distance")
-    expect(baseline.jumpHeightMultiplier == 1 and all.jumpHeightMultiplier == 2,
+    expect(baseline.jumpHeightMultiplier == 1 and all.jumpHeightMultiplier == 3,
         "Spring Heel height multiplier")
-    expect(math.abs(all.jumpImpulseMultiplier * all.jumpImpulseMultiplier - 2) < 0.00001,
-        "Spring Heel impulse produces 2x ballistic height")
+    expect(math.abs(all.jumpImpulseMultiplier * all.jumpImpulseMultiplier - 3) < 0.00001,
+        "Spring Heel impulse produces 3x ballistic height")
     expect(baseline.tetrisOverfillMultiplier == 1
         and baseline.deathTetrisMaxSeconds == 60, "baseline Tetris profile")
     expect(all.tetrisOverfillMultiplier == 2 and all.deathTetrisMaxSeconds == 120,

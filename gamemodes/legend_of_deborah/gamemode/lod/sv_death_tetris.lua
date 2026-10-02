@@ -8,12 +8,14 @@ local Tetris = LOD.Tetris
 util.AddNetworkString("LOD_TetrisState")
 util.AddNetworkString("LOD_TetrisInput")
 util.AddNetworkString("LOD_DeathTetrisAction")
+util.AddNetworkString("LOD_RussianAssetDirection")
 
 local ACTION_LEFT = 1
 local ACTION_RIGHT = 2
 local ACTION_ROTATE = 3
 local ACTION_SOFT_DROP = 4
 local ACTION_HARD_DROP = 5
+local ACTION_CLOSE = 6
 
 local DEATH_ACTION_ENTER_TETRIS = 1
 local DEATH_ACTION_RESPAWN = 2
@@ -31,6 +33,11 @@ local sessions = DeathTetris.Sessions or {}
 local deaths = DeathTetris.Deaths or {}
 DeathTetris.Sessions = sessions
 DeathTetris.Deaths = deaths
+-- A reload invalidates live grants rather than carrying a paid session into a
+-- replaced authority. Death-session compatibility remains unchanged.
+local liveGeneration = {}
+DeathTetris.LiveGeneration = liveGeneration
+DeathTetris.LiveSequences = setmetatable({}, {__mode = "k"})
 
 local function connectedPlayerForIdentity(identity)
     for _, ply in ipairs(player.GetAll()) do
@@ -64,7 +71,7 @@ local function writeSnapshot(ply, session, active)
     end
 
     local game = session.game
-    net.WriteUInt(session.kind == "death" and 1 or 2, 2)
+    net.WriteUInt(session.kind == "live" and 3 or session.kind == "death" and 1 or 2, 2)
     for y = 1, Tetris.Height do
         for x = 1, Tetris.Width do
             net.WriteUInt(game.board[y][x] or 0, 3)
@@ -100,6 +107,54 @@ local function recordEvent(session, eventType)
     session.eventSerial = (session.eventSerial or 0) + 1
 end
 
+-- Capture the existing campaign/actor authorities; this does not grant a
+-- safety state, alter aggro, freeze input, or change damage eligibility.
+function DeathTetris:LiveContext(ply)
+    local run = RunManager.State
+    if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() or ply.LODDead
+        or not run or run.Failed or run.LevelCleared or run.BuildReady==false or run.SimulationFrozen
+        or not RunManager:IsActivePlayer(ply)
+        or (RunManager.IsSoldierControl and RunManager:IsSoldierControl(ply)) then return nil end
+    local ps = RunManager:GetPlayerState(ply)
+    local state = ps and ps.progressionState
+    if not ps or ps.eliminated or not state then return nil end
+    local owns = false
+    for _, id in ipairs(state.featIds or {}) do
+        if id == "CON_RUSSIAN_ASSET" then owns = true break end
+    end
+    if not owns then return nil end
+    local status = LOD.RPGStatusElements
+    if status and status.BindActorLife then status:BindActorLife(ply) end
+    local life = status and status.ActorLives and status.ActorLives[ply] or nil
+    return {actor = ply, ps = ps, state = state, run = run, epoch = run.CampaignEpoch,
+        level = run.Level, seed = run.LevelSeed, graph = run.Graph,
+        identity = RunManager:IdentityOf(ply), spawn = ply.LODRunSpawnSerial,
+        combatLife = ply.LODCombatLifeSerial, status = status, life = life,
+        generation = liveGeneration}
+end
+
+function DeathTetris:LiveContextCurrent(binding)
+    if not binding or binding.generation ~= self.LiveGeneration then return false end
+    local now = self:LiveContext(binding.actor)
+    if not now then return false end
+    for _, key in ipairs({"actor", "ps", "state", "run", "epoch", "level", "seed", "graph",
+        "identity", "spawn", "combatLife", "status", "life", "generation"}) do
+        if now[key] ~= binding[key] then return false end
+    end
+    return true
+end
+
+function DeathTetris:HealLiveLines(session, lines)
+    if not session or session.kind ~= "live" or not self:LiveContextCurrent(session.live) then return 0 end
+    local ply = session.live.actor
+    local before = math.max(0, ply:Health())
+    local maximum = math.max(0, ply:GetMaxHealth())
+    -- Existing overfill is never extended or removed by a live clear.
+    local healed = math.min(Tetris.LiveHealingForLines(lines), math.max(0, maximum - before))
+    if healed > 0 then ply:SetHealth(before + healed) end
+    return healed
+end
+
 local function addLineReward(session, lines)
     if lines <= 0 then return end
     local ps = RunManager:GetPlayerState(session.identity)
@@ -109,6 +164,15 @@ local function addLineReward(session, lines)
         and effects:TetrisOverfillReward(lines, state)
         or Tetris.RewardForLines(lines)
     if reward <= 0 then return end
+
+    if session.kind == "live" then
+        local healed = DeathTetris:HealLiveLines(session, lines)
+        session.bonus = (session.bonus or 0) + healed
+        session.firstClear = true
+        session.lastClearLines = lines
+        session.clearSerial = (session.clearSerial or 0) + 1
+        return -- no next-life reserve and no temporary overfill in live mode
+    end
 
     session.bonus = (session.bonus or 0) + reward
     session.firstClear = true
@@ -205,8 +269,17 @@ function DeathTetris:StartSession(ply, kind, endsAt)
     local identity = RunManager:IdentityOf(ply)
     local ps = identity and RunManager:GetPlayerState(identity)
     local deathState = identity and deaths[identity]
-    if not identity or not ps or not deathState then return nil end
-    if sessions[identity] or deathState.tetrisStarted then return sessions[identity] end
+    local live = kind == "live" and self:LiveContext(ply) or nil
+    if not identity or not ps or (kind == "live" and not live)
+        or (kind ~= "live" and not deathState) then return nil end
+    if sessions[identity] then return nil end
+    if deathState and deathState.tetrisStarted and kind ~= "live" then return nil end
+    local magic, pool
+    if live then
+        magic = LOD.Magic
+        pool = magic and magic._EnsureState and magic:_EnsureState(ply)
+        if not pool or (tonumber(pool.magic) or 0) < 15 then return nil end
+    end
 
     ps.tetrisSessionOrdinal = (ps.tetrisSessionOrdinal or 0) + 1
     local levelSeed = RunManager.State and RunManager.State.LevelSeed or 1
@@ -214,11 +287,23 @@ function DeathTetris:StartSession(ply, kind, endsAt)
     local sessionSeed = LOD.Seeds.Derive(playerSeed,
         tostring(kind or "death") .. ":" .. tostring(ps.tetrisSessionOrdinal))
 
+    -- This one-time paid activation observes the existing discrete-Magic
+    -- authority. Maintenance/board inputs never generate another aura pulse.
+    local context
+    if live then
+        context = {source = "russian_asset_live"}
+        local rpg = LOD.RPG
+        if rpg and rpg.PrepareCheckpointDAuraBurst then
+            context.auraBurst = rpg:PrepareCheckpointDAuraBurst(ply)
+        end
+    end
     local now = CurTime()
     local session = {
         identity = identity,
         kind = kind or "death",
-        endsAt = endsAt or deathState.hardCapAt,
+        endsAt = kind ~= "live" and (endsAt or (deathState and deathState.hardCapAt)) or nil,
+        live = live,
+        seed = sessionSeed,
         startedAt = now,
         game = Tetris.NewGame(sessionSeed),
         bonus = 0,
@@ -235,12 +320,21 @@ function DeathTetris:StartSession(ply, kind, endsAt)
         lastEvent = EVENT_NONE
     }
     sessions[identity] = session
-    deathState.tetrisStarted = true
-    deathState.tetrisStartedAt = now
-    ply:SetNW2Bool("LOD_DeathTetrisActive", true)
-    ply:SetNW2Float("LOD_DeathTetrisStartedAt", now)
-    ply:SetNW2Int("LOD_TetrisNextLifeBonus", ps.nextLifeHPBonus or 0)
+    if live then
+        -- Exactly one debit, after successful construction. No upkeep or passive
+        -- regeneration suppression is registered for this session.
+        pool.magic = pool.magic - 15
+        magic:_Sync(ply, pool)
+        ply:SetNW2Bool("LOD_LiveTetrisActive", true)
+    else
+        deathState.tetrisStarted = true
+        deathState.tetrisStartedAt = now
+        ply:SetNW2Bool("LOD_DeathTetrisActive", true)
+        ply:SetNW2Float("LOD_DeathTetrisStartedAt", now)
+        ply:SetNW2Int("LOD_TetrisNextLifeBonus", ps.nextLifeHPBonus or 0)
+    end
     syncSession(session, true)
+    if live then hook.Run("LODDiscreteMagicSpent", ply, 15, context) end
     return session
 end
 
@@ -251,6 +345,7 @@ function DeathTetris:EndSession(identity)
     if IsValid(ply) then
         writeSnapshot(ply, session, false)
         ply:SetNW2Bool("LOD_DeathTetrisActive", false)
+        ply:SetNW2Bool("LOD_LiveTetrisActive", false)
     end
     sessions[identity] = nil
 end
@@ -285,6 +380,29 @@ local function permitInput(session)
     return true
 end
 
+function DeathTetris:AcceptRussianAssetDirection(ply, direction)
+    local binding = self:LiveContext(ply)
+    if not binding or sessions[binding.identity] then
+        self.LiveSequences[ply] = nil
+        return false
+    end
+    local sequence = self.LiveSequences[ply]
+    if not sequence or not self:LiveContextCurrent(sequence.binding) then
+        sequence = {binding = binding, index = 0}
+        self.LiveSequences[ply] = sequence
+    end
+    if not permitInput(sequence) then return false end
+    local complete
+    sequence.index, complete = Tetris.AdvanceRussianAssetSequence(sequence.index, direction)
+    if not complete then return false end
+    self.LiveSequences[ply] = nil
+    return self:StartSession(ply, "live") ~= nil
+end
+
+net.Receive("LOD_RussianAssetDirection", function(_, ply)
+    DeathTetris:AcceptRussianAssetDirection(ply, net.ReadUInt(3))
+end)
+
 local function respawnPlayer(ply, identity, ps)
     if not IsValid(ply) or ply:Alive() or not identity or not ps then return false end
     ps.respawnAt = nil
@@ -315,21 +433,34 @@ net.Receive("LOD_DeathTetrisAction", function(_, ply)
     end
 end)
 
-net.Receive("LOD_TetrisInput", function(_, ply)
-    if not IsValid(ply) or ply:Alive() or not RunManager:IsActivePlayer(ply) then return end
+function DeathTetris:ApplySessionInput(ply, action)
+    if not IsValid(ply) or not RunManager:IsActivePlayer(ply) then return false end
     local identity = RunManager:IdentityOf(ply)
     local session = identity and sessions[identity]
-    local deathState = identity and deaths[identity]
-    if not session or not deathState or session.kind ~= "death" or session.game.gameOver
-        or CurTime() >= deathState.hardCapAt or not permitInput(session)
-    then
-        return
+    if not session then return false end
+    if session.kind == "live" then
+        if not self:LiveContextCurrent(session.live) then self:EndSession(identity) return false end
+        if action == ACTION_CLOSE then self:EndSession(identity) return true end
+        if not permitInput(session) then return false end
+        if session.game.gameOver then
+            if action ~= ACTION_HARD_DROP then return false end
+            -- A lost board can restart inside the same paid, indefinite session.
+            session.restartOrdinal = (session.restartOrdinal or 0) + 1
+            session.game = Tetris.NewGame(LOD.Seeds.Derive(session.seed,
+                "live-restart:" .. tostring(session.restartOrdinal)))
+            session.nextFallAt = CurTime() + Tetris.FallInterval
+            session.lockDeadline, session.lockResets = nil, 0
+            syncSession(session, true)
+            return true
+        end
+    else
+        local deathState = identity and deaths[identity]
+        local ps = RunManager:GetPlayerState(identity)
+        if ply:Alive() or not deathState or session.kind ~= "death" or session.game.gameOver
+            or CurTime() >= deathState.hardCapAt or not ps or ps.eliminated or ps.lives <= 0
+            or not permitInput(session) then return false end
     end
 
-    local ps = RunManager:GetPlayerState(identity)
-    if not ps or ps.eliminated or ps.lives <= 0 then return end
-
-    local action = net.ReadUInt(3)
     local changed = false
 
     if action == ACTION_LEFT then
@@ -355,9 +486,19 @@ net.Receive("LOD_TetrisInput", function(_, ply)
     end
 
     if changed then syncSession(session, true) end
+    return changed
+end
+
+net.Receive("LOD_TetrisInput", function(_, ply)
+    DeathTetris:ApplySessionInput(ply, net.ReadUInt(3))
 end)
 
 hook.Add("PlayerDeath", "LOD_DeathTetrisPrepare", function(victim)
+    local identity = RunManager:IdentityOf(victim)
+    if identity and sessions[identity] and sessions[identity].kind == "live" then
+        DeathTetris:EndSession(identity)
+    end
+    DeathTetris.LiveSequences[victim] = nil
     local runState, serial = RunManager.State, victim.LODRunSpawnSerial
     timer.Simple(0, function()
         if not IsValid(victim) or victim:Alive() or RunManager.State ~= runState
@@ -372,10 +513,12 @@ end)
 
 hook.Add("PlayerSpawn", "LOD_DeathTetrisEndOnSpawn", function(ply)
     local identity = RunManager:IdentityOf(ply)
-    if identity and deaths[identity] then DeathTetris:EndDeath(identity) end
+    if identity and (deaths[identity] or sessions[identity]) then DeathTetris:EndDeath(identity) end
+    DeathTetris.LiveSequences[ply] = nil
 end)
 
 hook.Add("PlayerDisconnected", "LOD_DeathTetrisDisconnectCleanup", function(ply)
+    DeathTetris.LiveSequences[ply] = nil
     local identity = RunManager:IdentityOf(ply)
     if identity then
         sessions[identity] = nil
@@ -391,6 +534,12 @@ end)
 
 hook.Add("Think", "LOD_DeathTetrisThink", function()
     local now = CurTime()
+    -- Validate live ownership even during transitions that pause death Tetris.
+    for identity, session in pairs(sessions) do
+        if session.kind == "live" and not DeathTetris:LiveContextCurrent(session.live) then
+            DeathTetris:EndSession(identity)
+        end
+    end
     if RunManager.State and RunManager.State.SimulationFrozen then
         for _, session in pairs(sessions) do session.wasFrozen = true end
         return
@@ -414,8 +563,8 @@ hook.Add("Think", "LOD_DeathTetrisThink", function()
         local ps = RunManager:GetPlayerState(identity)
         local ply = connectedPlayerForIdentity(identity)
 
-        if not deathState or not ps or ps.eliminated or ps.lives <= 0
-            or (IsValid(ply) and ply:Alive()) or now >= (deathState.hardCapAt or 0)
+        if session.kind ~= "live" and (not deathState or not ps or ps.eliminated or ps.lives <= 0
+            or (IsValid(ply) and ply:Alive()) or now >= (deathState.hardCapAt or 0))
         then
             DeathTetris:EndSession(identity)
         elseif session.wasFrozen then

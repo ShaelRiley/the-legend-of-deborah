@@ -21,7 +21,7 @@ local function owns(state, id)
 end
 
 local function highestOwned(state)
-    for rank = 3, 1, -1 do
+    for rank = #CHAIN, 1, -1 do
         if owns(state, CHAIN[rank]) then return CHAIN[rank], rank end
     end
     return nil, 0
@@ -57,11 +57,7 @@ function Effects:ValidateReloadCadence()
     local function expect(ok, message)
         if not ok then errors[#errors + 1] = message end
     end
-    local expected = {
-        DEX_FAST_RELOAD = {1, 13, nil, 0.80},
-        DEX_FAST_RELOAD_2 = {2, 15, "DEX_FAST_RELOAD", 0.60},
-        DEX_FAST_RELOAD_3 = {3, 17, "DEX_FAST_RELOAD_2", 0.40}
-    }
+    local expected = {DEX_FAST_RELOAD = {1, 13, nil, 0.34}}
     for id, values in pairs(expected) do
         local feat = Feats[id]
         expect(feat and feat.featFamilyId == Config.family, id .. " definition/family")
@@ -77,19 +73,19 @@ function Effects:ValidateReloadCadence()
 
     local p0 = self:ReloadProfile({featIds = {}})
     local p1 = self:ReloadProfile({featIds = {CHAIN[1]}})
-    local p2 = self:ReloadProfile({featIds = {CHAIN[1], CHAIN[2]}})
-    local p3 = self:ReloadProfile({featIds = {CHAIN[1], CHAIN[2], CHAIN[3]}})
-    expect(p0.rank == 0 and p0.reloadTimeMultiplier == 1.0, "baseline reload profile")
-    expect(p1.rank == 1 and p1.reloadTimeMultiplier == 0.80, "Quick Reload profile")
-    expect(p2.rank == 2 and p2.reloadTimeMultiplier == 0.60, "Lightning Reload replaces lower rank")
-    expect(p3.rank == 3 and p3.reloadTimeMultiplier == 0.40, "Blink Reload replaces lower ranks")
+    -- Retired save IDs are inert, never hidden replacement ranks.
+    local retired = self:ReloadProfile({featIds = {"DEX_FAST_RELOAD_2", "DEX_FAST_RELOAD_3"}})
+    expect(p0.rank == 0 and p0.reloadTimeMultiplier == 1, "baseline reload profile")
+    expect(p1.rank == 1 and p1.reloadTimeMultiplier == .34, "Quick Reload profile")
+    expect(retired.rank == 0 and retired.reloadTimeMultiplier == 1, "retired reload IDs are inert")
+    expect(not Feats.DEX_FAST_RELOAD_2 and not Feats.DEX_FAST_RELOAD_3, "retired ranks not registered")
 
-    local scaled, changed = Rules:ScaleReloadDeadline(100, 99, 102, 0.80)
-    expect(changed and math.abs(scaled - 101.6) < 0.0001, "ordinary reload deadline scaling")
-    local protected, protectedChanged = Rules:ScaleReloadDeadline(100, 101.5, 102, 0.40)
+    local scaled, changed = Rules:ScaleReloadDeadline(100, 99, 102, 0.34)
+    expect(changed and math.abs(scaled - 100.68) < 0.0001, "ordinary reload deadline scaling")
+    local protected, protectedChanged = Rules:ScaleReloadDeadline(100, 101.5, 102, 0.34)
     expect(protectedChanged and math.abs(protected - 101.5) < 0.0001,
         "pre-existing lock remains absolute floor")
-    local untouched, untouchedChanged = Rules:ScaleReloadDeadline(100, 102, 101.8, 0.40)
+    local untouched, untouchedChanged = Rules:ScaleReloadDeadline(100, 102, 101.8, 0.34)
     expect(not untouchedChanged and math.abs(untouched - 101.8) < 0.0001,
         "non-reload/pre-existing deadline is untouched")
 
@@ -105,12 +101,8 @@ function Effects:ValidateReloadCadence()
     }
     local ps = {starterWeaponClass = "weapon_smg1"}
     expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[1]]), "Quick Reload legal")
-    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[2]]), "Lightning Reload prerequisite")
     state.featIds = {CHAIN[1]}
-    expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[2]]), "Lightning Reload legal")
-    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[3]]), "Blink Reload prerequisite")
-    state.featIds = {CHAIN[1], CHAIN[2]}
-    expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[3]]), "Blink Reload legal")
+    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[1]]), "owned single-rank feat not offered again")
 
     return #errors == 0, errors
 end
@@ -155,7 +147,7 @@ concommand.Add("lod_rpg_gate_e_reload_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateReloadCadence()
     if ok then
-        print("[LOD:RPG-E] DEX Reload feat family PASS — 0.80/0.60/0.40 replacement ladder; reload-only deadline scaling; pre-existing lockouts preserved")
+        print("[LOD:RPG-E] DEX Reload feat family PASS — single-rank 0.34 multiplier; reload-only deadline scaling; pre-existing lockouts preserved")
     else
         ErrorNoHalt("[LOD:RPG-E] DEX Reload feat family FAILED\n")
         for _, message in ipairs(errors or {}) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
@@ -195,7 +187,7 @@ concommand.Add("lod_rpg_test_reload", function(ply, _, args)
     local state = ps and ps.progressionState or nil
     if not state then ply:ChatPrint("RPG progression state is unavailable.") return end
 
-    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 3)
+    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 1)
     local kept = {}
     for _, id in ipairs(state.featIds or {}) do
         if not RANK[id] then kept[#kept + 1] = id end
@@ -212,7 +204,7 @@ concommand.Add("lod_rpg_test_reload", function(ply, _, args)
     Progression:SyncPlayer(ply)
     if run.MarkUnranked then run:MarkUnranked("Gate E DEX Reload feat test") end
     ply:ChatPrint(string.format(
-        "Gate E reload rank %d configured (0=1.00, 1=0.80, 2=0.60, 3=0.40 reload-time multiplier).",
+        "Gate E reload rank %d configured (0=1.00, 1=0.34 reload-time multiplier).",
         rank))
 end)
 

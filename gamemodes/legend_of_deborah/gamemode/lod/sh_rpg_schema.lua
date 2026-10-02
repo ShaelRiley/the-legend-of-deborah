@@ -219,7 +219,7 @@ RPG.Schema = {
         "totalEligibleEffectiveDamage", "resolved"
     },
     DefensiveProcState = {
-        "actorId", "blastProofReadyAtSeconds", "notYetConsumedDungeonNumber"
+        "actorId", "blastProofReadyAtSeconds"
     },
     CombatHitResolution = {
         "attackEventId", "targetActorId", "hitConnected", "harmWasEffective", "effectiveHPDamage",
@@ -257,7 +257,11 @@ RPG.Schema = {
         "weaponKnockbackProcDistance", "pusherProcTargetCooldownSeconds", "wallSlamDieSides",
         "wallSlamExplodes", "wallSlamClassExplosionImmune", "ammoRegenFloorFraction",
         "ammoRegenFloorRank", "ammoRegenFloorRoundsByFamily", "ammoRegenSpeedMultiplier", "rateOfFireMultiplier",
-        "reloadTimeMultiplier",
+        "reloadTimeMultiplier", "personalLifeCapBonus", "magicSaveAdvantage",
+        "hasteEnabled", "hasteMovementMultiplier", "springHeelEnabled", "springHeelAirMovementMultiplier",
+        "feedbackLoopEnabled", "arcRecoveryEnabled", "damageRecoveryFraction",
+        "manaSpringEnabled", "manaSpringRegenMultiplier", "weaknessBonusMultiplier", "russianAssetEnabled",
+        "sizeShifterEnabled", "sizeShifterTargetScale", "sizeShifterTransitionSeconds",
         "smgHeatSuppressionChance", "smgOverheatThreshold", "blastProofCooldownSeconds",
         "invisibleStatePerception", "nearbyHostileWallSenseCells", "watcherMovementSenseAudio",
         "burstBonusRounds", "heroOfLegendPulseEnabled", "heroOfLegendPulseRangeCells",

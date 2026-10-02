@@ -80,7 +80,14 @@ E.SpecialMoves.moon_gravity = {id="moon_gravity", name="Moon Gravity", displayNa
     description="25% lower gravity while equipped: higher jumps and longer airtime with ordinary steering. No Magic cost. Maze walls, locked gates and fall damage still apply."}
 E.Definitions.moon_boots = {name="Boots of the Moon", wearable=true, slots={"feet"},
     model="models/props_junk/cardboard_box004a.mdl", moves={"moon_gravity"}, minimumRarity=2}
-E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots", "tanuki_ring", "moon_boots"}
+E.SpecialMoves.size_shift = {id="size_shift", name="Size Shift", displayName="Size Shift", passive=true,
+    recipe={}, trigger="Hold crouch; release to return", magicCost=0, cooldown=0,
+    value=50, family="size_shifter_ring", innateOnly=true, targetScale=.33, transitionSeconds=3,
+    description="Crouch to shrink smoothly toward 0.33 scale over three seconds; release to reverse continuously toward your ordinary size. No Magic cost. Collision hull, reach, stairs, gates and progression barriers remain unchanged. Only while this ring is equipped."}
+E.Definitions.size_shifter_ring = {name="Ring of the Size Shifter", wearable=true,
+    slots={"left_hand","right_hand"}, model="models/props_junk/cardboard_box004a.mdl",
+    moves={"size_shift"}, minimumRarity=2}
+E.InnateFamilyOrder = {"psychic_crown", "fighting_gloves", "invisibility_ring", "thunder_hat", "plumber_boots", "tanuki_ring", "moon_boots", "size_shifter_ring"}
 function E:RewardWearableFamily(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed,"equipment-innate-family-v1"))
     return rng:Chance(.125) and rng:Pick(self.InnateFamilyOrder) or nil

@@ -32,10 +32,11 @@ for id,definition in pairs(S.Registry) do
  else assert(not S:Has(actor,id),id..' survived potion') end
 end
 assert(not S.Active[actor]);assert(not actor.nw.LOD_StatusHeld and not actor.nw.LOD_StatusPoisoned)
--- Production movement hook gets funded Haste from owned/recomputed feat state.
+-- Production movement hook gets passive Haste from owned/recomputed feat state.
 local state=actor.ps.progressionState;state.featIds={'INT_HASTE_1'}
 LOD.CharacterProgressionSystem:_RecomputeProgressionState(state)
-assert(R:SetHasteActive(actor,true))
+assert(state.derivedStats.hasteMovementMultiplier==1.33 and R.SetHasteActive==nil)
+local magicBefore=actor.ps.magic
 local hooks={};local previous=hook.Add;hook.Add=function(_,id,fn) hooks[id]=fn end
 -- Reuse the existing authoritative hook from the actual bootstrap registration.
 local source=assert(io.open(root..'sv_rpg_gate_d.lua')):read('*a')
@@ -50,9 +51,9 @@ for _,name in ipairs({'ForwardSpeed','SideSpeed','MaxSpeed','MaxClientSpeed'}) d
  move['Get'..name]=function(self) return self[key] end;move['Set'..name]=function(self,v) self[key]=v end
 end
 hooks.LOD_RPG_GateD_Movement(actor,move)
-assert(move.forward==400 and move.side==100 and move.speed==400 and actor.nw.LOD_VoluntaryMovementMultiplier==2)
-R:SetHasteActive(actor,false)
-state.featIds={};LOD.CharacterProgressionSystem:_RecomputeProgressionState(state);assert(not R:SetHasteActive(actor,true))
+assert(math.abs(move.forward-266)<1e-8 and math.abs(move.side-66.5)<1e-8 and math.abs(move.speed-266)<1e-8)
+assert(actor.ps.magic==magicBefore,'passive Haste never debits Magic')
+state.featIds={};LOD.CharacterProgressionSystem:_RecomputeProgressionState(state);assert(state.derivedStats.hasteMovementMultiplier==1)
 -- Solid slab clips area/cone; an open shaft admits the very same vertical target.
 local targets={}
 local function target(id,x,y,z)

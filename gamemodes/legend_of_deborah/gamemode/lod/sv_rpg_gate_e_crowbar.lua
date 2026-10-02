@@ -319,27 +319,17 @@ function Effects:ResolveHeroOfLegendHit(pulse, target, hitPos)
     target:TakeDamageInfo(info)
 
     local healthAfter = IsValid(target) and target:Health() or 0
-    local defeated = not IsValid(target) or target.LODDead == true or healthAfter <= 0
     local effectiveDamage = math.max(0, healthBefore - math.max(0, healthAfter))
     local stats = self.CrowbarStats
     stats.pulseHits = (stats.pulseHits or 0) + 1
     stats.lastPulseDamage = effectiveDamage
 
-    local run = LOD.RunManager
-    local ps = LOD.Magic and LOD.Magic:_EnsureState(attacker) or nil
     local view = contract.feedResolution and contract.feedResolution.resolvedContract or contract
     local continuations = math.max(0,
         #(view.values or {}) - (tonumber(view.baseDice) or 1))
     if continuations > 0 and rolls and rolls.EmitDiceExplosionFX then
         rolls:EmitDiceExplosionFX(attacker, "weapon_crowbar", continuations, 1)
     end
-    if ps and self.ApplyFeedbackLoop then
-        self:ApplyFeedbackLoop(attacker, ps, continuations, 0)
-    end
-    if ps and self.ApplyArcRecovery then
-        self:ApplyArcRecovery(attacker, ps, defeated, CurTime())
-    end
-    if ps and LOD.Magic and LOD.Magic._Sync then LOD.Magic:_Sync(attacker, ps) end
 
     if rolls._Send and rolls._DamageEventText then
         local detail = contract.values and #contract.values > 0
@@ -376,9 +366,8 @@ hook.Add("PostEntityTakeDamage", "LOD_RPG_GateE_CrowbarPush", function(target, d
         procDistance, pusherProc = Effects:TryPusherProc(attacker, target, CurTime())
     end
     local context = LOD.RPGStatusElements and LOD.RPGStatusElements:DamageContext(dmginfo, target) or {}
-    local meteorMultiplier = context.meteor and context.meteor.meteorState and 2 or 1
     local requested = Effects:ResolveCrowbarPushRequest(
-        profile.crowbarPushDistance * meteorMultiplier, procDistance)
+        profile.crowbarPushDistance, procDistance)
     local stats = Effects.CrowbarStats
     stats.meleeHits = (stats.meleeHits or 0) + 1
     stats.lastMeleeDamageDie = profile.crowbarDamageDieSides

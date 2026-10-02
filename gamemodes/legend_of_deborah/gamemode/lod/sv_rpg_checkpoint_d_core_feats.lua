@@ -88,11 +88,11 @@ register({
     featFamilyId = "con_not_yet", rankIndex = 1, replacesLowerRank = false,
     governingAbilities = {"con"}, abilityRequirements = {con = 15},
     prerequisiteFeatIds = {}, requiredCapabilityTags = {}, incompatibleFeatIds = {},
-    allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {},
-    synergyTags = {"survival", "damage_immunity"}, oneRank = true,
-    repeatableFallback = false, effectHandlerId = "not_yet_death_prevention",
-    effectParams = {description = "Once per dungeon for each owning actor, damage that would reduce the actor from above 1 HP to 0 or less instead leaves that actor at exactly 1 HP and grants 0.50 seconds of damage immunity. The trigger is consumed for that dungeon even if the actor is healed, dies later, respawns, disconnects/reconnects, or changes floors; it resets only when the campaign advances to a new dungeon. An AI actor spawned for the first time in a dungeon begins with its one use available and cannot gain another use within that dungeon through despawn/recreation exploits.", remainingHP = 1, immunitySeconds = 0.50}, directorBaseWeight = 1.0,
-    eligibilityText = "CON 15", actorText = "Heroes, human Soldiers, and AI"
+    allowedActorTypes = {"hero"}, requiredSubsystemTags = {},
+    synergyTags = {"survival", "personal_lives"}, oneRank = true,
+    repeatableFallback = false, effectHandlerId = "personal_life_cap",
+    effectParams = {description = "Adds +1 to the personal-life cap (normally 4 to 5). Acquiring Not Yet raises the maximum only; it does not award a life. Extra-life pickups fill the current personal cap before overflow can revive a teammate.", personalLifeCapBonus = 1}, directorBaseWeight = 1.0,
+    eligibilityText = "CON 15", actorText = "Cooperative Heroes with personal lives"
 })
 
 if not Effects.LODCheckpointDCoreFeatDerivedWrapped then
@@ -111,9 +111,7 @@ if not Effects.LODCheckpointDCoreFeatDerivedWrapped then
         derived.meleeReachMultiplier = (tonumber(derived.meleeReachMultiplier) or 1)
             * (bigGuy and 1.15 or 1)
         derived.bigGuyPhysicalPushMultiplier = bigGuy and 1.20 or 1
-        derived.notYetEnabled = notYet
-        derived.notYetRemainingHP = notYet and 1 or 0
-        derived.notYetImmunitySeconds = notYet and 0.50 or 0
+        derived.personalLifeCapBonus = (tonumber(derived.personalLifeCapBonus) or 0) + (notYet and 1 or 0)
     end
 end
 
@@ -165,46 +163,32 @@ if not Progression.LODCheckpointDGlowUpCapabilityWrapped then
     end
 end
 
-function Rules:NotYetImmunityActive(target)
-    if not IsValid(target) then return false end
-    local state = self:ProgressionState(target)
-    local run = LOD.RunManager and LOD.RunManager.State
-    local dungeonLevel = math.max(1, math.floor(tonumber(run and run.Level) or 1))
-    return state ~= nil and state.notYetConsumedDungeonLevel == dungeonLevel
-        and CurTime() < (tonumber(target.LODRPGNotYetImmuneUntil) or 0)
+-- A cap modifier never grants stock. Other additive sources may contribute to
+-- personalLifeCapBonus before/after this feat's derived pass.
+function Rules:ResolvePersonalLifeCap(baseCap, derived)
+    return math.max(0, math.floor((tonumber(baseCap) or 4)
+        + (tonumber(derived and derived.personalLifeCapBonus) or 0)))
 end
 
-function Rules:ApplyNotYetDefense(target, dmginfo)
-    if not IsValid(target) or not dmginfo then return false end
-    local derived = self:Derived(target)
-    if not derived or derived.notYetEnabled ~= true then return false end
-    local state = self:ProgressionState(target)
-    if not state then return false end
-    local run = LOD.RunManager and LOD.RunManager.State
-    local dungeonLevel = math.max(1, math.floor(tonumber(run and run.Level) or 1))
-    if state.notYetConsumedDungeonLevel == dungeonLevel then
-        if self:NotYetImmunityActive(target) then
-            dmginfo:SetDamage(0)
-            return true
-        end
-        return false
-    end
-    local current = math.max(0, tonumber(target:Health()) or 0)
-    local incoming = math.max(0, tonumber(dmginfo:GetDamage()) or 0)
-    if current <= 1 or incoming < current then return false end
-    state.notYetConsumedDungeonLevel = dungeonLevel
-    target.LODRPGNotYetImmuneUntil = CurTime() + 0.50
-    dmginfo:SetDamage(math.max(0, current - 1))
-    target.LODRPGNotYetTriggeredAt = CurTime()
-    return true
+-- Ordinary body presentation remains available independently of equipment.
+function Rules:PlayerTargetScale(actor)
+    local derived = self:Derived(actor)
+    return math.Clamp(tonumber(derived and derived.playerTargetScale) or 1, .33, 3)
 end
+function Rules:PushSizeScale(actor) return self:PlayerTargetScale(actor) end
 
 local baseSync = Rules.SyncPlayer
 function Rules:SyncPlayer(ply)
     baseSync(self, ply)
     if not IsValid(ply) then return end
+    local run=LOD.RunManager
+    if run and run.PersonalLifeCap then ply:SetNW2Int("LOD_PersonalLifeCap",run:PersonalLifeCap(ply)) end
+    local derived = self:Derived(ply) or {}
+    ply:SetNW2Float("LOD_HasteMovementMultiplier",derived.hasteMovementMultiplier or 1)
+    ply:SetNW2Float("LOD_SpringHeelAirMultiplier",derived.springHeelAirMovementMultiplier or 1)
+    ply:SetNW2Float("LOD_StrafeSpeedMultiplier",derived.strafeSpeedMultiplier or 1)
+    ply:SetNW2Float("LOD_BackpedalMovementMultiplier",derived.backpedalMovementMultiplier or 1)
     if self.ApplySizeShifterScale then self:ApplySizeShifterScale(ply); return end
-    local derived = self:Derived(ply)
     local scale = tonumber(derived and derived.playerTargetScale) or 1
     ply:SetNW2Float("LOD_PlayerTargetScale", scale)
     ply:SetModelScale(scale, 0)
@@ -223,7 +207,9 @@ function Rules:ValidateCheckpointDCoreFeats()
     expect(derived.playerTargetScale == 1.30 and derived.meleeReachMultiplier >= 1.15,
         "Big Guy derived body/reach")
     expect(derived.bigGuyPhysicalPushMultiplier == 1.20, "Big Guy physical push")
-    expect(derived.notYetEnabled and derived.notYetImmunitySeconds == 0.50, "Not Yet derived")
+    expect(derived.personalLifeCapBonus == 1, "Not Yet additive personal-life cap")
+    expect(self:ResolvePersonalLifeCap(4, derived) == 5, "Not Yet 4 to 5")
+    expect(self:ResolvePersonalLifeCap(4, {personalLifeCapBonus=3}) == 7, "additional additive life-cap source")
     local little = {}; Effects:ApplyDerived({featIds = {"DEX_SHRINK"}}, little)
     expect(little.littleGuyEnabled and little.playerTargetScale == .70, "Little Guy derived presentation scale")
     expect(not Effects:HasUsableChaModDamage({featIds = {}}), "Glow Up no invented CHA damage source")

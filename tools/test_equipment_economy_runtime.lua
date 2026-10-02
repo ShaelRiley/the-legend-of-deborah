@@ -21,6 +21,10 @@ function Run:GetPlayerState(p) return type(p)=='table' and p.ps or self.State.Pl
 function Run:IdentityOf(p) return p.id end
 function Run:IsActivePlayer(p) return p.active~=false end
 function Run:IsSoldierControl(p) return p.soldier end
+function Run:PersonalLifeCap(subject)
+ local ps=self:GetPlayerState(subject)
+ return Rules:ResolvePersonalLifeCap(4,ps and ps.progressionState and ps.progressionState.derivedStats)
+end
 LOD.RunManager=Run;LOD.MazeBuilder={}
 scripted_ents={GetStored=function() end}
 LOD.RPGPresentation={Event=function() end}

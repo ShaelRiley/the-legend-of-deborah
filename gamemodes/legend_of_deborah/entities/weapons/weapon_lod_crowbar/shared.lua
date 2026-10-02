@@ -127,9 +127,8 @@ function SWEP:PrimaryAttack()
     local rng = rolls:_RNG("player:weapon_lod_crowbar")
     local contract = rolls.RollActorDamage and rolls:RollActorDamage(owner, profile, rng, aceBonus) or nil
     if LOD.Equipment and LOD.Equipment.SealWeaponAttack then LOD.Equipment:SealWeaponAttack(owner,contract,"weapon_lod_crowbar") end
-    if contract and LOD.RPGCrossFeats then LOD.RPGCrossFeats:AugmentMeteor(owner, contract, rng) end
     local tags={actorDamageResolved=true,physical=true,melee=true,attackEvent=contract and contract.attackEvent,
-        damageContract=contract,meteor=contract,authoredScale=aimMultiplier}
+        damageContract=contract,authoredScale=aimMultiplier}
     local total = contract and rolls:ResolveActorDamage(contract, owner, target, tags) or (rolls:_RollFormula(profile,
         rolls:_RNG("player:weapon_lod_crowbar:fallback")) * aimMultiplier)
     local values = contract and contract.values or nil

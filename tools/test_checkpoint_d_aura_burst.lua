@@ -1,5 +1,5 @@
 dofile('tools/test_checkpoint_d_closure.lua')
 local ok, errors = LOD.RPG:ValidateCheckpointDAuraBurstFeats()
 assert(ok, table.concat(errors or {}, "; "))
-assert(LOD.RPG:CheckpointDAuraBurstProfile({featIds = {"CHA_AURA_BURST_1", "CHA_RADIANCE_2"}}) == 1)
+assert(LOD.RPG:CheckpointDAuraBurstProfile({featIds = {"CHA_AURA_BURST_1", "CHA_RADIANCE_2"}}) == 2)
 print("Checkpoint D Aura Burst headless PASS")

@@ -161,10 +161,10 @@ check(#records==3 and contains(records[1][2][1],'FAILED') and contains(records[2
 reset();rng=scripted({1,2});S:Apply(b,'held',a,{dc=10,rng=rng})
 check(rng.count==2 and contains(text(a),'[2] = 2'),'already-active status does not hide newly consumed duration dice')
 reset();check(S:Clear(b,'held','test') and contains(text(a),'HELD ENDED'),'actual status clear reaches source and target')
-reset();rng=scripted({1,8});as.featIds={'WIS_ATTUNEMENT'}
+reset();rng=scripted({1});as.featIds={'WIS_ATTUNEMENT'}
 local amount,detail=S:ResolveElementDamage(100,a,b,{magic=true,element='fire',targetWeaknesses={fire=true}},rng)
-check(math.abs(amount-188)<1e-9 and rng.count==2 and detail.index==8,'Attunement keeps identical selection and RNG consumption')
-check(contains(text(a),'d8 [1, 8], selected 8'),'both elemental-table choice rolls are retained');as.featIds={}
+check(math.abs(amount-122)<1e-9 and rng.count==1 and detail.index==1,'Attunement doubles the single ordinary weakness bonus')
+check(contains(text(a),'d8 [1], selected 1'),'exactly one elemental-table choice is reported');as.featIds={}
 
 reset();rng=scripted({1,1,1,1,1,1,1,1,1});S:Apply(b,'poisoned',a,{direct=true,dc=10,rng=rng})
 check(rng.count==9 and S.Active[b].poisoned.nextRecoveryAt==clock+9 and contains(text(a),'POISON RECOVERY INTERVAL'),'initial poison recovery dice are visible without timing change')
@@ -228,11 +228,12 @@ check(#healthPackets==#humans and same,'enemy HP generation has one serial, no a
 reset();local miss={values={3},contributions={3},total=3,formula='1d6',baseDice=1,label='pistol'}
 R:_FinishExplodedMiss(a,miss);R:_FinishExplodedMiss(a,miss)
 check(#packets(a)==1 and contains(text(a),'[rolls 3 = 3 rolled]') and contains(text(a),'(0) DAMAGE'),'ordinary non-exploding miss keeps its committed dice exactly once')
-reset();as.featIds={'INT_FEEDBACK_LOOP'};local pool={magic=98}
-local restored=E:ApplyFeedbackLoop(a,pool,2,0)
-check(restored==2 and pool.magic==100 and contains(text(a),'FEEDBACK LOOP — +2 Magic'),'authored restoration to 100 remains meaningful despite passive-noise exception')
-reset();E:ApplyFeedbackLoop(a,pool,2,0)
-check(#packets()==0 and pool.magic==100,'zero actual proc restoration emits no fake resource gain');as.featIds={}
+reset();as.featIds={'INT_FEEDBACK_LOOP'};local pool=M:_EnsureState(a);pool.magic=98
+local owner=assert(E:CaptureRecoveryOwner(a,'feedbackLoop'))
+local restored=E:PayDamageRecovery({owner=owner,actualHPDamage=4})
+check(restored==2 and pool.magic==100 and contains(text(a),'FEEDBACK LOOP — +2 Magic'),'delayed restoration to 100 remains meaningful despite passive-noise exception')
+reset();E:PayDamageRecovery({owner=owner,actualHPDamage=4})
+check(#packets()==0 and pool.magic==100,'zero actual recovery emits no fake resource gain');as.featIds={}
 
 reset();local totalOnly=S.ConditionSave;S.ConditionSave=function() return 20 end
 local saved,totalReason=S:Apply(b,'held',a,{dc=10});S.ConditionSave=totalOnly

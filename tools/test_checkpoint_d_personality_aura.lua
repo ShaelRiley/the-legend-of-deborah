@@ -1,5 +1,5 @@
 dofile('tools/test_checkpoint_d_closure.lua')
 local ok, errors = LOD.RPG:ValidateCheckpointDPersonalityAuraFeats()
 assert(ok, table.concat(errors or {}, "; "))
-assert(LOD.RPG:CheckpointDPersonalityAuraProfile({featIds = {"CHA_ABRASIVE_PERSONALITY_1", "CHA_NARCISSISM_2"}}) == 1)
+assert(LOD.RPG:CheckpointDPersonalityAuraProfile({featIds = {"CHA_ABRASIVE_PERSONALITY_1", "CHA_NARCISSISM_2"}}) == 2)
 print("Checkpoint D Personality Aura headless PASS")

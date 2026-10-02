@@ -11,7 +11,11 @@ function D:Rows(actor)
         if math.abs(value-(baseline or 0))>.0001 then add(family,label,string.format('%.1f%%',value*100),'Resolved build') end
     end
     percent('Movement','Current speed multiplier',LOD.RPGStatusElements:CanMoveVoluntarily(actor) and R:MovementMultiplier(actor) or 0,1)
-    if R:IsHasteActive(actor) then add('Movement','Haste','ACTIVE / ×2','Haste feat') end
+    if d.hasteEnabled then add('Movement','Haste','Passive ×1.33 ground movement','Haste feat') end
+    if d.springHeelEnabled then
+        add('Movement','Spring Heel jump apex','×3','Voluntary jumps only')
+        add('Movement','Spring Heel air control','×1.5','Voluntary horizontal input only')
+    end
     percent('Offense','Firearm cadence multiplier',R.RateOfFireMultiplier and R:RateOfFireMultiplier(actor) or 1,1)
     if R.BlockChance then percent('Defense','Block',R:BlockChance(actor)) end
     if R.DodgeSnapshot then
@@ -42,7 +46,11 @@ function D:Rows(actor)
     percent('Offense','Aim spread multiplier',R:AimSpreadMultiplier(actor),1)
     percent('Offense','Fighter damage multiplier',d.fighterCapstonePhysicalDamageMultiplier or 1,1)
     percent('Magic','Wizard power multiplier',d.wizardCapstoneMagicPowerMultiplier or 1,1)
-    flat('Magic','Magic save bonus',d.magicSaveBonus)
+    if d.magicSaveAdvantage then add('Magic','Magic saves','Advantage (2d20, keep higher)','Spellward') end
+    if state.actorType=='hero' and LOD.RunManager.PersonalLifeCap then
+        add('Recovery','Personal-life cap',tostring(LOD.RunManager:PersonalLifeCap(actor)),'Base cap + additive sources')
+    end
+    flat('Recovery','Personal-life cap bonus',d.personalLifeCapBonus)
     flat('Magic','Magic DC bonus',d.wizardCapstoneMagicDCBonus)
     if (d.rogueBackstabMultiplier or 1)>1 then add('Offense','Backstab multiplier',tostring(d.rogueBackstabMultiplier)..'×','Requires backstab geometry') end
     local owned={};for _,id in ipairs(state.featIds or {}) do owned[id]=true end

@@ -249,7 +249,7 @@ concommand.Add("lod_m2_audit", function(ply)
     require(activeCount <= LOD.Config.MaxActivePlayers, "active-player cap exceeded")
 
     for id, ps in pairs(state.PlayerState or {}) do
-        require(ps.lives >= 0 and ps.lives <= LOD.Config.Lives.MaxLives, "invalid life count for " .. tostring(id))
+        require(ps.lives >= 0 and ps.lives <= RunManager:PersonalLifeCap(ps), "invalid life count for " .. tostring(id))
         require(state.PlayedIdentities[id] == true, "player state exists without played identity ledger entry")
     end
 

@@ -73,23 +73,12 @@ observe(LOD.RPGStatusElements, "ResolveElementDamage", nil, function(_, result, 
 end)
 
 local Rules = LOD.RPGAbilityRules
-observe(Rules, "ApplyNotYetDefense", function(_, target) return target.LODRPGNotYetTriggeredAt end,
-    function(before, result, _, target)
-        if result[1] and target.LODRPGNotYetTriggeredAt ~= before then
-            emit(target, "life", "NOT YET — lethal hit intercepted; 1 HP remains", "not_yet")
-        end
-    end)
-
 local Effects = LOD.RPG and LOD.RPG.FeatEffectSystem
-for _, spec in ipairs({{"ApplyFeedbackLoop", "FEEDBACK LOOP"}, {"ApplyArcRecovery", "ARC RECOVERY"}}) do
-    local method, label = spec[1], spec[2]
-    observe(Effects, method, nil, function(_, result, _, actor)
-        if (tonumber(result[1]) or 0) > 0 then
-            P:CombatEvent(actor, nil, "proc", string.format("%s: %s — +%g Magic",
-                P:FeedbackName(actor), label, result[1]), {event=method, restored=result[1]})
-        end
-    end)
-end
+hook.Add("LODMagicRecoveryPaid","LOD_FeedbackDamageRecovery",function(actor,kind,restored)
+    local label=kind=="feedbackLoop" and "FEEDBACK LOOP" or "ARC RECOVERY"
+    P:CombatEvent(actor,nil,"proc",string.format("%s: %s — +%g Magic",P:FeedbackName(actor),label,restored),
+        {event="damage_recovery",kind=kind,restored=restored})
+end)
 
 observe(Effects, "_TickActor", function(_, actor)
     return IsValid(actor) and {hp=actor:Health()} or nil

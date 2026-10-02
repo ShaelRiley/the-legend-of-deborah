@@ -4,7 +4,7 @@ local Progression = LOD.CharacterProgressionSystem
 local Feats = RPG.IdentityCatalog.OrdinaryFeats
 local IDS = {'INT_QUANTUM_MATHEMATICS_1','INT_QUANTUM_MECHANICS_2','INT_QUANTUM_MASTERY_3'}
 local NAMES = {'Quantum Mathematics','Quantum Mechanics','Quantum Mastery'}
-local MULTIPLIERS = {0.89,0.78,0.67}
+local MULTIPLIERS = {0.78,0.56,0.34}
 local RANKS = {}
 for rank,id in ipairs(IDS) do
     RANKS[id]=rank
@@ -14,7 +14,7 @@ for rank,id in ipairs(IDS) do
         incompatibleFeatIds={},allowedActorTypes={'hero','human_soldier','ai'},requiredSubsystemTags={},
         synergyTags={'offensive_magic'},oneRank=true,repeatableFallback=false,directorBaseWeight=1,
         effectHandlerId='quantum_offensive_cost',effectParams={multiplier=MULTIPLIERS[rank],description=string.format(
-            'Offensive active Magic costs %d%% less, rounded up with a minimum cost of 1. Highest rank replaces lower ranks. Utility costs, map drain, regeneration, damage and shield diversion are unchanged.',rank*11)}}
+            'Offensive active Magic costs %d%% less, rounded up with a minimum cost of 1. Highest rank replaces lower ranks. Utility costs, map drain, regeneration, damage and shield diversion are unchanged.',rank*22)}}
 end
 function Effects:QuantumProfile(state)
     local rank=0
@@ -48,7 +48,7 @@ function Effects:RecordQuantumSpend(actor,baseCost,cost)
 end
 function Effects:ValidateQuantum()
     local errors={}
-    local expected={27,24,21}
+    local expected={24,17,11}
     for rank,id in ipairs(IDS) do
         local owned={}
         for i=1,rank do owned[i]=IDS[i] end

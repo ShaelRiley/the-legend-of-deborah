@@ -7,9 +7,9 @@ Feats.WIS_ATTUNEMENT = {featId = "WIS_ATTUNEMENT", displayName = "Attunement", f
     replacesLowerRank = false, repeatableFallback = false, governingAbilities = {"wis"}, abilityRequirements = {wis = 17},
     prerequisiteFeatIds = {}, requiredCapabilityTags = {"elemental_magic_attack"}, incompatibleFeatIds = {},
     allowedActorTypes = {"hero", "human_soldier", "ai"}, requiredSubsystemTags = {"elements", "magic_forms"},
-    synergyTags = {"wisdom", "element", "magic"}, oneRank = true, effectHandlerId = "weakness_bonus_advantage",
-    effectParams = {weaknessBonusRolls = 2, keep = "higher",
-        description = "When an elemental Magic attack exploits a weakness, roll the weakness-bonus table twice and keep the more favorable bonus."},
+    synergyTags = {"wisdom", "element", "magic"}, oneRank = true, effectHandlerId = "weakness_bonus_double",
+    effectParams = {weaknessBonusMultiplier = 2, weaknessBonusRolls = 1,
+        description = "When elemental Magic exploits a weakness, roll the ordinary weakness bonus once and double that bonus contribution, not the entire attack. No additional weakness roll or riders are generated."},
     directorBaseWeight = 1.0, eligibilityText = "WIS 17 / owns an elemental Magic attack",
     actorText = "Heroes, human Soldiers, and eligible AI"}
 Catalog.OrdinaryFeats = Feats
@@ -18,7 +18,7 @@ function RPG:ValidateCheckpointDAttunementFeat()
     local definition = Feats.WIS_ATTUNEMENT
     local ok = definition and definition.abilityRequirements.wis == 17
         and definition.requiredCapabilityTags[1] == "elemental_magic_attack"
-        and definition.effectParams.weaknessBonusRolls == 2 and definition.effectParams.keep == "higher"
+        and definition.effectParams.weaknessBonusRolls == 1 and definition.effectParams.weaknessBonusMultiplier == 2
     return ok == true, ok and {} or {"Attunement definition mismatch"}
 end
 

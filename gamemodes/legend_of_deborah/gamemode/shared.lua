@@ -31,6 +31,8 @@ include("lod/sh_audio.lua")
 if SERVER then AddCSLuaFile("lod/sh_music.lua"); AddCSLuaFile("lod/sh_player_options.lua") end
 include("lod/sh_music.lua")
 include("lod/sh_player_options.lua")
+if SERVER then AddCSLuaFile("lod/sh_feat_movement.lua") end
+include("lod/sh_feat_movement.lua")
 if SERVER then AddCSLuaFile("lod/sh_vr.lua"); AddCSLuaFile("lod/cl_vr.lua") end
 include("lod/sh_vr.lua")
 include("lod/sh_feedback_language.lua")
@@ -132,10 +134,8 @@ if SERVER then
     include("lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua")
     include("lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua")
     include("lod/sv_rpg_checkpoint_d_gps_feat.lua")
-    include("lod/sv_rpg_checkpoint_d_morale_defense_feats.lua")
     include("lod/sv_rpg_checkpoint_d_menace_feats.lua")
     include("lod/sv_rpg_checkpoint_d_panic_feat.lua")
-    include("lod/sv_rpg_cross_feats.lua")
     include("lod/sv_rpg_dodge.lua")
     include("lod/sv_rpg_checkpoint_d_haste.lua")
     include("lod/sv_rpg_time_management.lua")

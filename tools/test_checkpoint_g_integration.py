@@ -236,7 +236,7 @@ SUITES = [
     ("Checkpoint C Python Validator", ["python3", "tools/validate_checkpoint_c.py"]),
     ("Actor Core & Level Progression", ["python3", "tools/run_lua54.py", "tools/test_actor_progression.lua"]),
     ("Magic Forms & Contents Schema", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_c_headless.lua", "."]),
-    ("Implemented Feats & Capstones (135+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
+    ("Implemented Feats & Capstones (114+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
     ("Human Soldier RPG & XP Progression", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_progression.lua"]),
     ("Human Soldier Lifecycle & Isolation", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_lifecycle.lua"]),
     ("Death Tetris Deadline & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_tetris_lifecycle.lua"]),
@@ -286,7 +286,7 @@ SUITES.append(("Damsel Campaign & Endless Progression", ["python3", "tools/run_l
 SUITES.append(("Damsel Staging, Late Join & Dialogue", ["python3", "tools/run_lua54.py", "tools/test_damsel_staging.lua"]))
 SUITES.append(("Feedback Audio Lifecycle & Coalescing", ["python3", "tools/run_lua54.py", "tools/test_damsel_audio.lua"]))
 SUITES.append(("Feedback Audio Assets", ["python3", "tools/test_feedback_audio.py"]))
-SUITES.append(("Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
+SUITES.append(("Retired Cross Feats & Shared Dodge", ["python3", "tools/run_lua54.py", "tools/test_cross_feats_dodge.lua"]))
 SUITES.append(("Live-GDD Feat Release Gate", ["python3", "tools/audit_live_gdd_feats.py"]))
 
 # Recent checkpoint gates must also execute in the complete matrix. Syntax-only

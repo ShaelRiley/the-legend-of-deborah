@@ -408,7 +408,7 @@ LOD.CombatRolls.RollHostileAttack=function(self,...)
     return roll
 end
 e,a=fresh('accumulator',function(source) source.LODProgressionState.featIds={'INT_FEEDBACK_LOOP'} end)
-resolve(e,a);assert(a.pool.magic==72,'canonical Feedback Loop restores at most12 once per committed attack')
+resolve(e,a);assert(a.pool.magic==60,'Feedback Loop no longer refunds offensive continuation dice')
 LOD.CombatRolls.RollHostileAttack=realRoll
 player.GetHumans=function() return {hero} end
 LOD.RunManager.IsActivePlayer=function() return true end
@@ -432,7 +432,7 @@ assert(spent==1 and a.pool.magic==60 and a.event.resourceFullMagicBonus~=nil,'on
 e,a=recharge();resolve(e,a);e,a=fresh('siphoner');resolve(e,a)
 assert(spent==1,'drain/recharge do not impersonate casts')
 hook.Run=previousHook
-print('BESTIARY_B14_MAGIC_INTEGRATION_PASS: real shared regeneration/suppression, Quantum, FeedbackLoop cap, full-Magic snapshot and single discrete-spend dispatch')
+print('BESTIARY_B14_MAGIC_INTEGRATION_PASS: real shared regeneration/suppression, Quantum, retired continuation refund inert, full-Magic snapshot and single discrete-spend dispatch')
 e,a=fresh('accumulator');advance(e,a.ready-.025)
 Magic._Sync=function() error('injected native sync failure') end
 local ok=pcall(function() advance(e,a.ready) end);Magic._Sync=sync

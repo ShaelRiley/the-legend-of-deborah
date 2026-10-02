@@ -49,7 +49,7 @@ def chapters():
             'rows': [[p['label'].replace('_',' ').title(), ('Only '+p['family']+'. ' if p.get('family') else '')+
                       ('Drawback only.' if p.get('drawbackOnly') else 'May be positive or a drawback.' if p.get('negative') else 'Benefit.')]
                      for _,p in sorted(properties.items())]})
-    assert len(feats) == 136 and len(catalog['FallbackFeats']) == 6
+    assert len(feats) == 114 and len(catalog['FallbackFeats']) == 6
     assert sum(map(len,catalog['ClassCapstones'].values())) == 9
     return book
 
@@ -147,7 +147,7 @@ def pdf(book, destination):
     for i,c in enumerate(book['chapters']):
         if c.get('group'):continue
         story.append(p(str(i+2).zfill(2)+'  '+c['title'],'cell'))
-    story += [p('Then: 136 ordinary feats · 6 fallback feats · 9 class capstones · all equipment properties','small'),PageBreak()]
+    story += [p('Then: 114 ordinary feats · 6 fallback feats · 9 class capstones · all equipment properties','small'),PageBreak()]
     for chapter in book['chapters']:
         chapter_start=len(story)
         story.append(p(chapter.get('group','HOW TO PLAY').upper(),'small'))

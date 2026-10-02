@@ -92,22 +92,35 @@ for _,class in ipairs({'fighter','rogue','wizard'}) do
   end
  end
 end
--- Directional feats retain their existing authored effect instead of being
--- squashed by a post-feat 140 cap. Haste remains the real sustained authority.
-for _,id in ipairs({'INT_WAS_DEBORAH','DEX_STRAFER_1','DEX_SIDELER_2','DEX_LATERAL_MOVER_3'}) do
+-- Retained directional feats survive the ordinary Soldier base ceiling.
+-- Removed ranks are inert even in a stale stored incarnation.
+for _,id in ipairs({'INT_WAS_DEBORAH','DEX_STRAFER_1'}) do
  local p,w,_,inc=setup();inc.featIds={id};LOD.CharacterProgressionSystem:_RecomputeProgressionState(inc)
  local base=140*Rules:MovementMultiplier(p)
  local m=move(-450,450);moveHook(p,m)
  check(m.max>base,id..' real directional bonus survives')
  check(m.max<=520,id..' canonical global ceiling')
 end
-local p,w,saved,inc=setup();inc.featIds={'INT_HASTE_1'};LOD.CharacterProgressionSystem:_RecomputeProgressionState(inc)
-check(Rules:Derived(p).hasteRank==1,'actual authored first Haste rank')
+for _,id in ipairs({'DEX_SIDELER_2','DEX_LATERAL_MOVER_3','INT_HASTE_2','INT_HASTE_3'}) do
+ local p,w,_,inc=setup();inc.featIds={id};LOD.CharacterProgressionSystem:_RecomputeProgressionState(inc)
+ local base=140*Rules:MovementMultiplier(p)
+ local m=move(-450,450);moveHook(p,m)
+ near(m.max,base,id..' retired ownership cannot change Soldier movement')
+end
+local p,w,saved,inc=setup()
 local before=Rules:MovementMultiplier(p)
-check(Rules:SetHasteActive(p,true),'real Haste activation')
-near(Rules:MovementMultiplier(p),before*2,'Haste composes once with Soldier base')
-local hm=move();moveHook(p,hm);near(hm.max,140*before*2,'Haste speed survives base restriction')
-Rules:SetHasteActive(p,false)
+inc.featIds={'INT_HASTE_1'};LOD.CharacterProgressionSystem:_RecomputeProgressionState(inc)
+check(Rules:Derived(p).hasteEnabled,'actual passive Haste grant')
+near(Rules:MovementMultiplier(p),before,'Haste does not contaminate shared air/impulse multiplier')
+local resource=LOD.Magic:_EnsureState(p);resource.magic=13.25
+local hm=move();moveHook(p,hm);near(hm.max,140*before*1.33,'passive Haste composes once with Soldier ground movement')
+near(resource.magic,13.25,'passive Haste spends no Magic')
+p.ground=false
+hm=move();moveHook(p,hm);near(hm.max,140*before,'Haste does not increase airborne movement')
+inc.featIds={'INT_HASTE_1','DEX_STRAFER_1','DEX_SPRING_HEEL'}
+LOD.CharacterProgressionSystem:_RecomputeProgressionState(inc)
+hm=move(450,0);moveHook(p,hm);near(hm.max,140*before*1.5,'Spring Heel alone supplies airborne voluntary multiplier')
+near(resource.magic,13.25,'movement composition has zero Magic interaction')
 -- Every burst size with the real final cadence wrapper. Recovery uses actual
 -- completion/cadence, never a duplicate guessed duration or second owner.
 for rank=0,3 do

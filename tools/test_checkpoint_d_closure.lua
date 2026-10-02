@@ -97,15 +97,11 @@ local function check(ok, message)
     end
 end
 
--- 1. Canonical Inventory Specification (Audited against live GDD revision ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q)
+-- 1. Canonical inventory reconciled with the authoritative 2026-10-02 feat decision ledger.
+-- Prior GDD audit revision ANLCKQmjFx3fTZxP09CRHVOO_fgMiaXVXqAh6lf_by1mKt0ExbMSE6x7KN8nMl4VxCrNKupQ0i-Q_x77o7aZgX6sumGBgseGHr39gD8Y6Q)
 local CANONICAL_FEATS = {
     INT_TIME_MANAGEMENT = {ability = "int", req = {int = 17}, prereq = {}, family = "int_time_management", rank = 1, replaces = false},
-    CROSS_METEOR_STRIKE = {ability = "str", req = {str = 15, int = 15}, prereq = {"STR_CROWBAR_D6", "INT_CLOUD_STEP"}, family = "cross_meteor_strike", rank = 1, replaces = false},
-    CROSS_TINY_TERROR = {ability = "dex", req = {dex = 15, cha = 15}, prereq = {"DEX_SHRINK", "CHA_MENACE_1"}, family = "cross_tiny_terror", rank = 1, replaces = false},
-    CROSS_BIG_SCARY = {ability = "con", req = {con = 15, str = 13, cha = 15}, prereq = {"CON_BIG_GUY", "CHA_MENACE_1"}, family = "cross_big_scary", rank = 1, replaces = false},
-    CROSS_CRUSH_PANIC = {ability = "str", req = {str = 17, cha = 17}, prereq = {"STR_KNOCKBACK_1", "CHA_MENACE_2"}, family = "cross_crush_panic", rank = 1, replaces = false},
-    CROSS_BOOM_BATTERY = {ability = "dex", req = {dex = 15, int = 15}, prereq = {}, family = "cross_boom_battery", rank = 1, replaces = false},
-    CROSS_FORCE_OF_WILL = {ability = "str", req = {str = 15, wis = 15}, prereq = {"STR_KNOCKBACK_1", "WIS_FORCEFUL_MAGIC"}, family = "cross_force_of_will", rank = 1, replaces = false},
+    DEX_HEAT_SINK = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_smg_heat", rank = 1, replaces = false},
     -- CON
     CON_REGEN_11 = {ability = "con", req = {con = 13}, prereq = {}, family = "con_health_regeneration", rank = 1, replaces = false},
     CON_REGEN_22 = {ability = "con", req = {con = 15}, prereq = {"CON_REGEN_11"}, family = "con_health_regeneration", rank = 2, replaces = true},
@@ -114,7 +110,6 @@ local CANONICAL_FEATS = {
     CON_POISON_PROC_2 = {ability = "con", req = {con = 15}, prereq = {"CON_POISON_PROC_1"}, family = "con_poison_proc", rank = 2, replaces = true},
     CON_POISON_PROC_3 = {ability = "con", req = {con = 17}, prereq = {"CON_POISON_PROC_2"}, family = "con_poison_proc", rank = 3, replaces = true},
     CON_GLOW_UP = {ability = "con", req = {con = 17}, prereq = {}, family = "con_glow_up", rank = 1, replaces = false},
-    CON_STEADFAST = {ability = "con", req = {con = 13}, prereq = {}, family = "con_steadfast", rank = 1, replaces = false},
     CON_BLAST_PROOF = {ability = "con", req = {con = 15}, prereq = {}, family = "con_blast_proof", rank = 1, replaces = false},
     CON_BIG_GUY = {ability = "con", req = {con = 15, str = 13}, prereq = {}, family = "con_big_guy", rank = 1, replaces = false},
     CON_NOT_YET = {ability = "con", req = {con = 15}, prereq = {}, family = "con_not_yet", rank = 1, replaces = false},
@@ -131,8 +126,6 @@ local CANONICAL_FEATS = {
     DEX_IMMOLATE_PROC_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_IMMOLATE_PROC_1"}, family = "dex_immolate_proc", rank = 2, replaces = true},
     DEX_IMMOLATE_PROC_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_IMMOLATE_PROC_2"}, family = "dex_immolate_proc", rank = 3, replaces = true},
     DEX_FAST_RELOAD = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_reload_cadence", rank = 1, replaces = false},
-    DEX_FAST_RELOAD_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_FAST_RELOAD"}, family = "dex_reload_cadence", rank = 2, replaces = true},
-    DEX_FAST_RELOAD_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_FAST_RELOAD_2"}, family = "dex_reload_cadence", rank = 3, replaces = true},
     DEX_RATE_OF_FIRE_1 = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_rate_of_fire", rank = 1, replaces = false},
     DEX_RATE_OF_FIRE_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_RATE_OF_FIRE_1"}, family = "dex_rate_of_fire", rank = 2, replaces = true},
     DEX_RATE_OF_FIRE_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_RATE_OF_FIRE_2"}, family = "dex_rate_of_fire", rank = 3, replaces = true},
@@ -142,12 +135,7 @@ local CANONICAL_FEATS = {
     DEX_SPRING_HEEL = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_spring_heel", rank = 1, replaces = false},
     DEX_WALL_JUMP = {ability = "dex", req = {dex = 15}, prereq = {}, family = "dex_wall_jump", rank = 1, replaces = false},
     DEX_STRAFER_1 = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_strafe", rank = 1, replaces = false},
-    DEX_SIDELER_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_STRAFER_1"}, family = "dex_strafe", rank = 2, replaces = true},
-    DEX_LATERAL_MOVER_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_SIDELER_2"}, family = "dex_strafe", rank = 3, replaces = true},
     DEX_SHRINK = {ability = "dex", req = {dex = 15}, prereq = {}, family = "dex_shrink", rank = 1, replaces = false},
-    DEX_SMG_COLD_HANDS_1 = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_smg_heat", rank = 1, replaces = false},
-    DEX_SMG_COLD_HANDS_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_SMG_COLD_HANDS_1"}, family = "dex_smg_heat", rank = 2, replaces = true},
-    DEX_SMG_COLD_HANDS_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_SMG_COLD_HANDS_2"}, family = "dex_smg_heat", rank = 3, replaces = true},
     DEX_MAGNUM_DEADEYE = {ability = "dex", req = {dex = 15}, prereq = {}, family = "dex_magnum_deadeye", rank = 1, replaces = false},
 
     -- INT
@@ -163,7 +151,6 @@ local CANONICAL_FEATS = {
     INT_MANA_SPRING = {ability = "int", req = {int = 13}, prereq = {}, family = "int_mana_spring", rank = 1, replaces = false},
     INT_CLOUD_STEP = {ability = "int", req = {int = 13}, prereq = {}, family = "int_cloud_step", rank = 1, replaces = false},
     INT_FLOAT_ON = {ability = "int", req = {int = 15}, prereq = {}, family = "int_float_on", rank = 1, replaces = false},
-    INT_SIZE_SHIFTER = {ability = "int", req = {int = 13}, prereq = {}, family = "int_size_shifter", rank = 1, replaces = false},
     INT_QUANTUM_MATHEMATICS_1 = {ability = "int", req = {int = 13}, prereq = {}, family = "int_quantum_cost", rank = 1, replaces = false},
     INT_QUANTUM_MECHANICS_2 = {ability = "int", req = {int = 15}, prereq = {"INT_QUANTUM_MATHEMATICS_1"}, family = "int_quantum_cost", rank = 2, replaces = true},
     INT_QUANTUM_MASTERY_3 = {ability = "int", req = {int = 17}, prereq = {"INT_QUANTUM_MECHANICS_2"}, family = "int_quantum_cost", rank = 3, replaces = true},
@@ -177,8 +164,6 @@ local CANONICAL_FEATS = {
     INT_EXTRACURRICULAR_ACTIVITY = {ability = "int", req = {int = 17}, prereq = {}, family = "int_extracurricular_activity", rank = 1, replaces = false},
     INT_WAS_DEBORAH = {ability = "int", req = {int = 13}, prereq = {}, family = "int_backpedal", rank = 1, replaces = false},
     INT_HASTE_1 = {ability = "int", req = {int = 13}, prereq = {}, family = "int_haste", rank = 1, replaces = false},
-    INT_HASTE_2 = {ability = "int", req = {int = 15}, prereq = {"INT_HASTE_1"}, family = "int_haste", rank = 2, replaces = true},
-    INT_HASTE_3 = {ability = "int", req = {int = 17}, prereq = {"INT_HASTE_2"}, family = "int_haste", rank = 3, replaces = true},
     INT_FEEDBACK_LOOP = {ability = "int", req = {int = 15}, prereq = {}, family = "int_feedback_loop", rank = 1, replaces = false},
     INT_ARC_RECOVERY = {ability = "int", req = {int = 17}, prereq = {}, family = "int_arc_recovery", rank = 1, replaces = false},
 
@@ -196,8 +181,7 @@ local CANONICAL_FEATS = {
     STR_MELEE_REACH = {ability = "str", req = {str = 15}, prereq = {}, family = "str_melee_reach", rank = 1, replaces = false},
 
     -- WIS
-    WIS_SURVEYOR = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_breadcrumb_range", rank = 1, replaces = false},
-    WIS_CARTOGRAPHER = {ability = "wis", req = {wis = 15}, prereq = {"WIS_SURVEYOR"}, family = "wis_breadcrumb_range", rank = 2, replaces = true},
+    WIS_CARTOGRAPHER = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_breadcrumb_range", rank = 1, replaces = false},
     WIS_FRUGAL_MAP = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_frugal_map", rank = 1, replaces = false},
     WIS_MUTE_PROC_1 = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_mute_proc", rank = 1, replaces = false},
     WIS_MUTE_PROC_2 = {ability = "wis", req = {wis = 15}, prereq = {"WIS_MUTE_PROC_1"}, family = "wis_mute_proc", rank = 2, replaces = true},
@@ -216,18 +200,13 @@ local CANONICAL_FEATS = {
     WIS_KILLER_INSTINCT = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_killer_instinct", rank = 1, replaces = false},
     WIS_OMNISCIENCE = {ability = "wis", req = {wis = 17}, prereq = {}, family = "wis_omniscience", rank = 1, replaces = false},
     WIS_SPELLWARD = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_spellward", rank = 1, replaces = false},
-    WIS_SPELLBREAKER = {ability = "wis", req = {wis = 15}, prereq = {"WIS_SPELLWARD"}, family = "wis_spellward", rank = 2, replaces = true},
-    WIS_SPELLBANE = {ability = "wis", req = {wis = 17}, prereq = {"WIS_SPELLBREAKER"}, family = "wis_spellward", rank = 3, replaces = true},
     WIS_HERO_OF_LEGEND = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_hero_of_legend", rank = 1, replaces = false},
-    WIS_FORCEFUL_MAGIC = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_forceful_magic", rank = 1, replaces = false},
     WIS_ATTUNEMENT = {ability = "wis", req = {wis = 17}, prereq = {}, family = "wis_attunement", rank = 1, replaces = false},
 
     -- CHA
     CHA_HITSTUN_1 = {ability = "cha", req = {cha = 13}, prereq = {}, family = "cha_hitstun_presence", rank = 1, replaces = false},
     CHA_HITSTUN_2 = {ability = "cha", req = {cha = 15}, prereq = {"CHA_HITSTUN_1"}, family = "cha_hitstun_presence", rank = 2, replaces = true},
     CHA_HITSTUN_3 = {ability = "cha", req = {cha = 17}, prereq = {"CHA_HITSTUN_2"}, family = "cha_hitstun_presence", rank = 3, replaces = true},
-    CHA_NERVE_1 = {ability = "cha", req = {cha = 13}, prereq = {}, family = "cha_nerve", rank = 1, replaces = false},
-    CHA_NERVE_2 = {ability = "cha", req = {cha = 15}, prereq = {"CHA_NERVE_1"}, family = "cha_nerve", rank = 2, replaces = true},
     CHA_MENACE_1 = {ability = "cha", req = {cha = 13}, prereq = {}, family = "cha_menace", rank = 1, replaces = false},
     CHA_MENACE_2 = {ability = "cha", req = {cha = 15}, prereq = {"CHA_MENACE_1"}, family = "cha_menace", rank = 2, replaces = true},
     CHA_MENACE_3 = {ability = "cha", req = {cha = 17}, prereq = {"CHA_MENACE_2"}, family = "cha_menace", rank = 3, replaces = true},
@@ -328,7 +307,7 @@ check(#replacementMismatches == 0, "Replacement Ladder Mismatch IDs: " .. table.
 -- 4. Require a real loaded production consumer for every listed family. Handler
 -- labels alone are never proof: periodic families require their installed service.
 -- Focused integrated suites exercise arithmetic and event producers separately.
-local S, X, M = LOD.RPGStatusElements, LOD.RPGCrossFeats, LOD.MagicProgression
+local S, M = LOD.RPGStatusElements, LOD.MagicProgression
 local consumers = {
     time_management = Effects.TimeManagementSeconds,
     academic_magic_regeneration = Effects.AcademicMagicRegenMultiplier,
@@ -341,12 +320,6 @@ local consumers = {
     cha_hitstun_presence = Rules.HitStunMultiplier,
     cloud_step = Rules.TryCloudStep,
     con_blast_proof = Effects.BlastProofTargetContract,
-    cross_big_scary = X.MoraleBonus,
-    cross_boom_battery = X.RestoreBoomBattery,
-    cross_crush_panic = S.ObserveDamage,
-    cross_force_of_will = X.BridgeMagicPush,
-    cross_meteor_strike = X.AugmentMeteor,
-    cross_tiny_terror = X.MoraleBonus,
     crowbar_family = Effects.ResolveCrowbarPushRequest,
     dex_burst_size = Rules.ResolveBurstSize,
     dex_exploding_damage_dice = Effects.ApplyExplodingDiceToDamageProfile,
@@ -355,20 +328,19 @@ local consumers = {
     dex_smg_heat = Effects.ResolveSMGHeatSuppression,
     direct_look_hostile_information = observedTimers.LOD_CheckpointDWisInformation,
     float_on = Rules.TickFloatOn,
-    forceful_magic_push = Effects.ResolvePushDistance,
     mana_barrier_diversion = Rules.ComputeMagicDiversion,
     glow_up_cha_damage_rider = Rules.AddChaModDerivedDamage,
     grant_distinct_magic_content = M.ApplyCheckpointDMagicGrantFeat,
     grant_distinct_magic_form = M.ApplyCheckpointDMagicGrantFeat,
-    haste_sustained_movement = Rules.HasteDrainPerSecond,
+    haste_passive_movement = Rules.VoluntaryFeatMovementMultiplier,
     health_regeneration = Effects._TickActor,
     incoming_magical_damage_reduction = Rules.ApplyWisDefense,
     incoming_physical_damage_reduction_cooldown = Rules.ApplyWisDefense,
     lateral_strafe = Effects.ResolveStrafeInput,
     little_guy_body_scale = Rules.PlayerTargetScale,
-    magic_continuation_recovery = Effects.ApplyFeedbackLoop,
-    magic_kill_recovery = Effects.ApplyArcRecovery,
-    magic_save_bonus = S.ConditionSave,
+    incoming_actual_hp_recovery = Effects.FinishDamageRecovery,
+    outgoing_magic_actual_hp_recovery = Effects.FinishDamageRecovery,
+    magic_save_advantage = S.ConditionSave,
     magic_spatial_bonus_cells = LOD.MagicForms.SpatialBonusCells,
     magnum_deadeye = Rules.AimHoldSeconds,
     mana_spring_regeneration = Effects.ResolveManaSpringTick,
@@ -377,8 +349,7 @@ local consumers = {
     morale_dc_intimidation = S.MoraleDC,
     morale_failure_cascade = S.CascadeMorale,
     morale_proc_family = S.ResolveStatusProcFamilies,
-    morale_save_bonus = S.MoraleSave,
-    not_yet_death_prevention = Rules.ApplyNotYetDefense,
+    personal_life_cap = Rules.ResolvePersonalLifeCap,
     personality_aura_pulse = observedHooks.LOD_CheckpointDPersonalityAura,
     private_killer_instinct_priority = observedTimers.LOD_CheckpointDKillerInstinct,
     private_sixth_sense_perception = observedTimers.LOD_CheckpointDSixthSense,
@@ -387,15 +358,13 @@ local consumers = {
     rear_hostile_awareness = observedTimers.LOD_CheckpointDWisInformation,
     russian_asset = Rules.TetrisOverfillMultiplier,
     self_actualization_magic_damage = Rules.ResolveDamageContract,
-    size_shifter = Rules.ApplySizeShifterScale,
     spring_heel = observedHooks.LOD_RPG_GateE_SpringHeel,
     status_proc_family = S.ResolveStatusProcFamilies,
-    steadfast_control_resistance = Effects.ResolvePushDistance,
     steamroller_push_save = LOD.Pushback.ResolveSharedPushSave,
     summon_active_cap = M.MaxActiveSummons,
     triggered_magic_aura_burst = observedHooks.LOD_CheckpointDAuraBurst,
     wall_jump = Rules.TryWallJump,
-    weakness_bonus_advantage = S.ResolveElementDamage,
+    weakness_bonus_double = S.ResolveElementDamage,
     winning_personality_qualification = Effects.WinningPersonalityQualificationScore,
     wis_navigation = Rules.MapDrainPerSecond,
 }
@@ -457,7 +426,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 136 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

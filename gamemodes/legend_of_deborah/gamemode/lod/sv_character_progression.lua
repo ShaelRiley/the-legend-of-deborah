@@ -770,7 +770,9 @@ end
 -- One versioned ingress for historical ownership. Valid locked offers keep their
 -- order and seed; only removed IDs are replaced. No valid player choice is rerolled.
 function CharacterProgressionSystem:ReconcileFeatOwnership(state)
-    if not state or state.featCatalogRevision == "hybrid-stable-150-v1" then return false end
+    if not state or state.featCatalogRevision == "feat-rebalance-20261002-v1" then return false end
+    -- Finite migration only: retired survival bookkeeping has no runtime effect.
+    state.notYetConsumedDungeonLevel,state.notYetConsumedDungeonNumber=nil,nil
     local function canonical(id)
         if id == "STR_HERO_OF_LEGEND" then id = "WIS_HERO_OF_LEGEND" end
         return self:_FindFeat(id) and id or nil
@@ -797,7 +799,7 @@ function CharacterProgressionSystem:ReconcileFeatOwnership(state)
         end
         draft.offerFeatIds = offers
     end
-    state.featCatalogRevision = "hybrid-stable-150-v1"
+    state.featCatalogRevision = "feat-rebalance-20261002-v1"
     return true
 end
 
@@ -1694,6 +1696,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
         maxHP = state.derivedStats.maxHP,
         currentHP = IsValid(ply) and ply:Health() or state.derivedStats.maxHP,
         lives = ps.lives,
+        personalLifeCap = runManager.PersonalLifeCap and runManager:PersonalLifeCap(ply) or 4,
+        tetrisOverfillMultiplier = state.derivedStats.tetrisOverfillMultiplier or 1,
         dungeonLevel = runManager.State.Level,
         classId = state.classId,
         className = class and class.displayName or nil,
