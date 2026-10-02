@@ -1,29 +1,102 @@
-name: Feat rebalance recovery snapshot
+name: Validate and publish authorized feat rebalance
 on:
   push:
     branches: [work/feat-rebalance-recovery-20261002]
     paths: [.github/workflows/feat-rebalance-recovery.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  snapshot:
+  validate-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           ref: b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e
-          persist-credentials: false
-      - name: Archive the verified baseline without credentials or Git configuration
+          fetch-depth: 1
+      - name: Recover only the authorized source delta
         run: |
-          test "$(git rev-parse HEAD)" = b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e
-          git archive --format=tar.gz --output=lod-baseline.tar.gz HEAD
-          git rev-parse HEAD > lod-baseline-sha.txt
-      - uses: actions/upload-artifact@v4
+          python3 - <<'PY'
+          import hashlib, json, pathlib, urllib.request
+          root = pathlib.Path.cwd()
+          # This short-lived transfer contains only the source changes authorized
+          # for public main. It grants no repository, Drive or account access.
+          url = 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-969c-81fd-91db-58328ed96598/raw?se=2026-10-02T21%3A43%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=cb87ad0c-26b7-54eb-ab98-83e1cf497a62&skoid=5e713cdb-766b-475e-a3ca-8adb6cf99aa0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T19%3A51%3A45Z&ske=2026-10-03T19%3A51%3A45Z&sks=b&skv=2026-02-06&sig=sV5yEEFcH7P%2B2tPkSJPFxfjVXTNMrHU6c7nqV7AsORg%3D'
+          with urllib.request.urlopen(url, timeout=60) as response:
+              raw = response.read(1000000)
+          assert hashlib.sha256(raw).hexdigest() == 'e7bf009744e1b7885bcc4bfdafb6509ecd0a15a823f9d826294c0aedeea48442'
+          changes = json.loads(raw)
+          seen = set()
+          for name, old_hash, new_hash, edits in changes:
+              path = root / name
+              assert name not in seen and root in path.resolve().parents and '.git' not in path.parts
+              assert name.startswith(('docs/', 'tools/', 'gamemodes/', 'lua/'))
+              seen.add(name)
+              old = path.read_bytes() if path.exists() else None
+              assert (hashlib.sha256(old).hexdigest() if old is not None else None) == old_hash, name
+              lines = old.decode('utf-8').splitlines(keepends=True) if old is not None else []
+              for start, end, prefix, suffix, middle in reversed(edits):
+                  original = ''.join(lines[start:end])
+                  replacement = original[:prefix] + middle + (original[-suffix:] if suffix else '')
+                  lines[start:end] = [replacement]
+              new = ''.join(lines).encode('utf-8')
+              if new_hash is None:
+                  path.unlink()
+              else:
+                  assert hashlib.sha256(new).hexdigest() == new_hash, name
+                  path.parent.mkdir(parents=True, exist_ok=True)
+                  path.write_bytes(new)
+          print('Verified source changes:', len(changes))
+          PY
+      - uses: actions/setup-python@v5
         with:
-          name: feat-rebalance-baseline
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install finite headless validation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y liblua5.4-0 ffmpeg
+          python3 -m pip install Pillow==12.3.0 numpy==2.3.5
+      - name: Rebuild manual and verify the entire intended Git tree
+        run: |
+          python3 tools/run_lua54.py tools/export_manual_catalog.lua
+          python3 tools/build_manual.py
+          git add --all
+          git diff --cached --check
+          test "$(git write-tree)" = 70f6b1f80d1ad32f27185e1c97becef107269fdb
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Implement final feat rebalance, live Tetris and Size Shifter ring'
+      - name: Complete frozen-source validation gate
+        run: python3 tools/test_checkpoint_g_integration.py --workers 4 --output "$RUNNER_TEMP/feat-validation"
+      - name: Verify receipt and non-force publish the authorized main update
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          report = json.loads((pathlib.Path(os.environ['RUNNER_TEMP']) / 'feat-validation/receipt.json').read_text())
+          assert report['passed'] == report['total'] == 306
+          assert not report['changed_during_gate']
+          assert report['source_before'] == report['source_after']
+          assert report['native_gmod_accepted'] is False
+          PY
+          git diff --exit-code
+          git fetch origin main
+          test "$(git rev-parse FETCH_HEAD)" = b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e
+          test "$(git rev-parse HEAD^{tree})" = 70f6b1f80d1ad32f27185e1c97becef107269fdb
+          git push origin HEAD:refs/heads/main
+          git fetch origin main
+          test "$(git rev-parse FETCH_HEAD)" = "$(git rev-parse HEAD)"
+          git rev-parse HEAD > "$RUNNER_TEMP/feat-publication.txt"
+          printf '\n306/306; source unchanged; native acceptance pending; no Workshop/VPS action\n' >> "$RUNNER_TEMP/feat-publication.txt"
+          cat "$RUNNER_TEMP/feat-publication.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: feat-rebalance-publication-evidence
           path: |
-            lod-baseline.tar.gz
-            lod-baseline-sha.txt
-          retention-days: 1
-          if-no-files-found: error
+            ${{ runner.temp }}/feat-validation
+            ${{ runner.temp }}/feat-publication.txt
+          if-no-files-found: warn
+          retention-days: 7
