@@ -1,32 +1,92 @@
-name: Feat rebalance source workspace
+name: Feat rebalance complete validation
 on:
   push:
     branches: ['work/feat-rebalance-20261002']
 permissions:
-  contents: read
+  contents: write
 jobs:
-  snapshot:
+  validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
+      - name: Fetch bounded author-approved source payload
+        env:
+          PAYLOAD_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-11f0-81fd-8c0d-d28562a6a4a5/raw?se=2026-10-02T20%3A25%3A59Z&sp=r&sv=2026-02-06&sr=b&scid=33db0c2f-c41e-5588-8cc5-f82166412aa8&skoid=5e713cdb-766b-475e-a3ca-8adb6cf99aa0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T19%3A56%3A29Z&ske=2026-10-03T19%3A56%3A29Z&sks=b&skv=2026-02-06&sig=QPi3C2DryubZlUBDfOD98BFxNOfPBOiKwGA%2BgAKcynQ%3D'
+        run: curl --fail --silent --show-error --location "$PAYLOAD_URL" --output /tmp/feat-transfer.txt
       - uses: actions/checkout@v4
         with:
           ref: b81e8b95c55df2c6f7f5eb8a4ef7292700aef68e
-          persist-credentials: false
-      - name: Archive verified source and test inputs
+          fetch-depth: 1
+      - name: Verify and apply exact patch
         shell: python
         run: |
-          import pathlib, subprocess, zipfile
-          root = pathlib.Path.cwd()
-          files = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
-          excluded = {'.ogg','.mp3','.wav','.flac','.vtf','.vmt','.mdl','.vvd','.vtx','.phy','.png','.jpg','.jpeg','.webp','.mp4','.gif','.woff','.woff2','.ttf','.otf','.gma'}
-          with zipfile.ZipFile('/tmp/lod-source.zip','w',zipfile.ZIP_DEFLATED) as z:
-              for name in files:
-                  if name and (root/name).is_file() and pathlib.Path(name).suffix.lower() not in excluded:
-                      z.write(root/name,name)
-              z.writestr('SOURCE_COMMIT.txt',subprocess.check_output(['git','rev-parse','HEAD']))
-              z.writestr('SOURCE_TREE.txt',subprocess.check_output(['git','ls-tree','-r','HEAD']))
+          import base64, gzip, hashlib, json, pathlib, subprocess
+          raw=base64.b64decode(pathlib.Path('/tmp/feat-transfer.txt').read_text(encoding='utf-8-sig'))
+          assert hashlib.sha256(raw).hexdigest()=='e9c47b848c7e86e5bd7a277867203f1314c93580458c1479f4162fd8a554e030'
+          payload=json.loads(gzip.decompress(raw))
+          assert subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()==payload['base']
+          for name in payload['expected']:
+              p=pathlib.PurePosixPath(name)
+              assert not p.is_absolute() and '..' not in p.parts and p.parts[0] in ('gamemodes','lua','tools','docs')
+          pathlib.Path('/tmp/feat-payload.json').write_text(json.dumps(payload))
+          pathlib.Path('/tmp/feat.patch').write_text(payload['patch'])
+          subprocess.run(['git','apply','--check','/tmp/feat.patch'],check=True)
+          subprocess.run(['git','apply','/tmp/feat.patch'],check=True)
+      - name: Install headless test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y liblua5.4-0 ffmpeg
+          python3 -m pip install --quiet pillow numpy scipy mido
+      - name: Rebuild manual and verify exact source outputs
+        run: |
+          python3 tools/run_lua54.py tools/export_manual_catalog.lua
+          python3 tools/build_manual.py
+          python3 - <<'PY'
+          import hashlib,json,pathlib,subprocess
+          payload=json.loads(pathlib.Path('/tmp/feat-payload.json').read_text())
+          for name,expected in payload['expected'].items():
+              p=pathlib.Path(name)
+              actual=hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
+              assert actual==expected,(name,actual,expected)
+          changed=set(filter(None,subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0')))
+          changed.update(filter(None,subprocess.check_output(['git','ls-files','--others','--exclude-standard','-z']).decode().split('\0')))
+          assert changed==set(payload['expected']),(changed-set(payload['expected']),set(payload['expected'])-changed)
+          print('EXACT_LOCAL_REMOTE_SOURCE_MATCH',len(changed))
+          PY
+      - name: Full syntax and independent live-GDD inventory gate
+        run: |
+          mkdir -p /tmp/feat-validation
+          python3 - <<'PY'
+          import pathlib,subprocess
+          files=sorted(str(p) for base in ('gamemodes','lua','tools') for p in pathlib.Path(base).rglob('*.lua'))
+          with open('/tmp/feat-validation/syntax.txt','w') as log:
+              subprocess.run(['python3','tools/run_lua54.py','--syntax',*files],stdout=log,stderr=subprocess.STDOUT,check=True)
+          pathlib.Path('/tmp/feat-validation/syntax-count.txt').write_text(str(len(files)))
+          PY
+          python3 tools/audit_live_gdd_feats.py | tee /tmp/feat-validation/gdd-inventory.txt
+      - name: Complete 305-suite system matrix with original sample sizes
+        run: python3 tools/test_checkpoint_g_integration.py --workers 4 --suite-timeout 1200 --output /tmp/feat-validation/matrix
+      - name: Stage validated candidate without changing main
+        shell: python
+        run: |
+          import hashlib,json,pathlib,subprocess
+          receipt=json.loads(pathlib.Path('/tmp/feat-validation/matrix/receipt.json').read_text())
+          assert receipt['passed']==receipt['total'] and not receipt['changed_during_gate']
+          payload=json.loads(pathlib.Path('/tmp/feat-payload.json').read_text())
+          for name,expected in payload['expected'].items():
+              p=pathlib.Path(name)
+              assert (hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None)==expected,name
+          subprocess.run(['git','config','user.name','github-actions[bot]'],check=True)
+          subprocess.run(['git','config','user.email','41898282+github-actions[bot]@users.noreply.github.com'],check=True)
+          subprocess.run(['git','add','--all'],check=True)
+          subprocess.run(['git','commit','-m','Implement complete October 2 feat rebalance and ring migration','-m','Apply final author ledger across feat registry, Hero/AI drafts and saved-ID repair, movement, legal saves, actual-HP delayed Magic recovery, personal-life caps, live Russian Asset Tetris, equipment, Character Sheet and regenerated manual. Reconcile independent live-GDD fixture. Preserve current-main hit-stun repair. Full unchanged-source system matrix and shipping Lua syntax validated; native GMod/Steam Deck acceptance remains separate. No Workshop publication or VPS deployment.'],check=True)
+          sha=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()
+          subprocess.run(['git','push','origin','HEAD:refs/heads/work/feat-rebalance-validated-20261002'],check=True)
+          pathlib.Path('/tmp/feat-validation/candidate.json').write_text(json.dumps({'sha':sha,'base':payload['base'],'passed':receipt['passed'],'total':receipt['total'],'main_updated':False,'native_gmod_accepted':False},indent=2))
+          print('VALIDATED_CANDIDATE',sha)
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: lod-source-b81e8b95
-          path: /tmp/lod-source.zip
-          retention-days: 1
+          name: feat-rebalance-full-validation
+          path: /tmp/feat-validation
+          retention-days: 7
