@@ -95,24 +95,18 @@ function N:Prepare(token,lane,clip,delay,deadline)
         or type(delay)~="number" or delay~=delay or delay<0 or delay>1.1
         or not self.ClockOffset or type(deadline)~="number" or deadline~=deadline then return end
     local meta=self.Bank.clips[clip];if not meta then self.Error="Unknown rendered phrase "..clip;return end
-    -- Accept only a clip belonging to the current authoritative floor/role.
-    local d=LOD.MusicDirector;local allowed=false;local asset
-    for _,t in ipairs(d and d.AudibleTargets or {}) do
-        if t.block==lane and t.weight>0 then
-            local a=self.Catalog.assets[t.asset]
-            for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;asset=a;break end end
-        end
-    end
-    if not allowed then return end
+    local d=LOD.MusicDirector
+    local asset=M.ClipAsset(self.Catalog,d and d.AudibleTargets,d and d.Plans,lane,clip)
+    if not asset then return end
     for _,r in pairs(self.Records) do
         if r.token==token then return end
         if r.lane==lane and not r.started then self:Release(r) end
     end
-    local now=SysTime();local due=deadline+self.ClockOffset;local lead=due-now;local musical=meta.beats*60/self.Bank.bpm
+    local now=SysTime();local due=deadline+self.ClockOffset;local lead=due-now;local musical=meta.musicalFrames and meta.musicalFrames/44100 or meta.beats*60/self.Bank.bpm
     if lead< -LATE or lead>1.1 then
         self.Skipped=self.Skipped+1;self:Result({token=token},false);return
     end
-    if meta.beats==12 and d and d.Victory and CurTime()+math.max(0,lead)+musical>d.Victory.endsAt then
+    if asset.role=="VICTORY" and d and d.Victory and CurTime()+math.max(0,lead)+musical>d.Victory.endsAt then
         self:Result({token=token},false);return
     end
     self:Open({token=token,lane=lane,clip=clip,path="sound/lod/ms2_surge/"..clip..".ogg",
@@ -193,6 +187,7 @@ function N:Tick()
     local ordered={};for _,r in pairs(self.Records) do if not r.bridge then ordered[#ordered+1]=r end end
     table.sort(ordered,function(a,b) return a.due==b.due and a.key<b.key or a.due<b.due end)
     local ready={};local wanted={};local lanePeaks={}
+    if self.Catalog.songFirst and self.Lanes.song then wanted.song=true end
     for _,t in ipairs(LOD.MusicDirector and LOD.MusicDirector.AudibleTargets or {}) do if t.weight>0 then wanted[t.block]=t.asset end end
     for _,r in ipairs(ordered) do
         if not r.started and r.channel and now>=r.due and now<=r.due+LATE and r.readyAt<=r.due+OPEN_LATE then ready[r.lane]=true end

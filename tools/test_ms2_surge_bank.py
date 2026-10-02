@@ -68,9 +68,9 @@ def validate(decode=False):
     need(manifest['channels']==2 and manifest['sampleRate']==lock['sampleRate']==44100,'audio format')
     need(manifest['bpm']==runtime['bpm']==catalog['bpm']==130,'canonical fixed tempo')
     need(len(catalog['blocks'])==8 and len(catalog['assets'])==48,'composition authority')
-    audit=json.loads((ROOT/'docs/MS3_16_BAR_AUDIT.json').read_text())
-    need(audit['catalogRevision']==catalog['revision'] and catalog['phraseBars']==16 and catalog['mappedExits'],'source arrangement revision')
-    need(audit['sourceMidiFiles']==465 and audit['ordinaryClips']==157 and audit['fanfares']==8,'authored long-form coverage')
+    audit=json.loads((ROOT/'docs/MS3_SONG_AUDIT.json').read_text())
+    need(audit['catalogRevision']==catalog['revision'] and catalog['phraseBars']==16 and catalog['songFirst'],'source arrangement revision')
+    need(audit['sourceMidiFiles']==465 and audit['ordinaryClips']==216 and audit['fanfares']==8,'authored long-form coverage')
     expected_count=audit['ordinaryClips']+audit['fanfares']
     pages={};compiled={};notes=0
     for aid,asset in catalog['assets'].items():
@@ -95,8 +95,14 @@ def validate(decode=False):
         source=compiled[cid]
         for key in ('block','role','asset','beats','noteSHA256'):need(c[key]==source[key],cid+' source '+key)
         need(c['bpm']==130 and c['rendererRevision']==manifest['rendererRevision'] and c['patchRevision']==manifest['patchRevision'],'phrase provenance: '+cid)
-        need(c['beats']==(12 if c['role']=='VICTORY' else 64) and c['musicalDuration']==c['beats']*60/130,'phrase duration: '+cid)
-        need(runtime['clips'][cid]=={'beats':c['beats'],'duration':c['duration'],'peak':c['decodedPeak'],'tailPeak':c['decodedTailPeak']},'runtime duration/peak: '+cid)
+        need((c['beats']==12 if c['role']=='VICTORY' else c['beats'] in range(4,65,4)) and c['musicalDuration']==c['musicalFrames']/44100,'song chunk duration: '+cid)
+        need(c['musicalFrames']==source['musicalFrames'] and c['continuousPerformance'] and c['songIndex']==source['songIndex'],'continuous performance provenance: '+cid)
+        songrows=[r for r in manifest['clips'] if r['asset']==c['asset']]
+        prior=sum(r['musicalFrames'] for r in songrows if r['songIndex']<c['songIndex'])
+        need(c['sourceFrameRange']==[prior,prior+c['musicalFrames']],'source performance frame range: '+cid)
+        need(len({r['songPCM_SHA256'] for r in songrows})==1,'chunks share one full performance: '+cid)
+        need(c['internalZeroTail']==(c['songIndex']<len(songrows)-1),'only terminal song chunk has a release: '+cid)
+        need(runtime['clips'][cid]=={'beats':c['beats'],'duration':c['duration'],'peak':c['decodedPeak'],'tailPeak':c['decodedTailPeak'],'musicalFrames':c['musicalFrames']},'runtime duration/peak: '+cid)
         need(math.isfinite(c['decodedTailPeak']) and 0<=c['decodedTailPeak']<=c['decodedPeak'],'tail peak: '+cid)
         need(abs(c['duration']-c['musicalDuration']-lock['releaseSeconds'])<=2/44100,'release tail: '+cid)
         all_files.append((cid,c))
@@ -116,7 +122,7 @@ def validate(decode=False):
             need(0<c['peak']<=.82 and c['rms']>.00002 and c['dc']<.005,'PCM level: '+cid)
             need(len(c['pcmSHA256'])==64,'PCM provenance: '+cid)
         total+=len(data)
-    need(total==manifest['totalBytes']<=lock['packageBudgetBytes']<=60000000,'package budget')
+    need(total==manifest['totalBytes']<=lock['packageBudgetBytes']==60000000,'package budget')
     need(lock['designReviewBytes']==100000000 and manifest['fileCount']==len(all_files)==expected_count+1,'file count/design review')
     need(manifest['largestBytes']==max(c['bytes'] for c in bank.values()),'largest file')
     need(manifest['averagePhraseBytes']==sum(c['bytes'] for c in bank.values())/expected_count,'average phrase')

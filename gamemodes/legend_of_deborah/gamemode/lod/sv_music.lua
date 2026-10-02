@@ -202,6 +202,9 @@ function D:Update(p,s)
         if entry.block and entry.weight>0 then allowed[entry.block]=true end
     end
     if target.nextBlock then allowed[target.nextBlock]=true end
+    if self.Catalog and self.Catalog.songFirst then
+        for _,plan in ipairs(plans) do for bid in pairs(plan.blocks or {}) do allowed[bid]=true end end
+    end
     l.allowed=allowed;l.plans=plans
     local keep={};for _,plan in ipairs(plans) do keep[plan.id]=true end
     for id in pairs(l.sent) do if not keep[id] then l.sent[id]=nil end end

@@ -38,13 +38,22 @@ function M.ValidateCatalog(c)
     for id,a in pairs(c.assets) do
         if not M.Asset(a) or id~=a.id or not c.blocks[a.block] or type(a.clips)~="table" or #a.clips<1 or #a.clips>256
             or a.loop~=(a.role~="VICTORY") then return nil,"invalid MIDI arrangement "..tostring(id) end
-        local ids={}
-        for _,clip in ipairs(a.clips) do
-            if not M.ID(clip.id) or ids[clip.id] or (clip.beats~=8 and clip.beats~=12 and clip.beats~=64)
+        local ids={};local songBeats=0
+        for index,clip in ipairs(a.clips) do
+            local songLength=a.songFirst and type(clip.beats)=="number" and clip.beats>=4 and clip.beats<=64 and clip.beats%4==0
+            if not M.ID(clip.id) or ids[clip.id] or (not songLength and clip.beats~=8 and clip.beats~=12 and clip.beats~=64)
                 or type(clip.page)~="string" or not clip.page:match("^notes_%d%d%d%.lua$")
                 or type(clip.next)~="table" or #clip.next>6 then return nil,"invalid MIDI phrase" end
+            if a.songFirst then
+                if not c.songFirst or not songLength or clip.songIndex~=index-1 or clip.offset~=songBeats
+                    or type(clip.musicalFrames)~="number" or clip.musicalFrames%1~=0
+                    or math.abs(clip.musicalFrames-clip.beats*60/c.bpm*44100)>2
+                    or #clip.next~=1 or clip.next[1]~=a.clips[index%#a.clips+1].id then return nil,"invalid ordered song" end
+                songBeats=songBeats+clip.beats
+            elseif c.songFirst then return nil,"mixed song catalog" end
             ids[clip.id]=true
         end
+        if a.songFirst and songBeats~=a.songBeats then return nil,"invalid song duration" end
         for _,clip in ipairs(a.clips) do for _,cid in ipairs(clip.next) do
             if not ids[cid] then return nil,"phrase successor leaves arrangement" end
         end end
@@ -81,7 +90,7 @@ function M.LoadRenderBank(catalog)
     local seen={}
     for _,a in pairs(catalog.assets) do for _,clip in ipairs(a.clips) do
         local r=b.clips[clip.id]
-        if type(r)~="table" or r.beats~=clip.beats or type(r.duration)~="number" or r.duration~=r.duration
+        if type(r)~="table" or r.beats~=clip.beats or (a.songFirst and r.musicalFrames~=clip.musicalFrames) or type(r.duration)~="number" or r.duration~=r.duration
             or r.duration<clip.beats*60/b.bpm or r.duration>clip.beats*60/b.bpm+1
             or type(r.peak)~="number" or r.peak~=r.peak or r.peak<=0 or r.peak>.9
             or type(r.tailPeak)~="number" or r.tailPeak~=r.tailPeak or r.tailPeak<0 or r.tailPeak>r.peak then return nil,"Invalid Surge phrase "..clip.id end
@@ -92,6 +101,23 @@ function M.LoadRenderBank(catalog)
         or b.bridge.duration<1 or b.bridge.duration>8 or type(b.bridge.peak)~="number"
         or b.bridge.peak~=b.bridge.peak or b.bridge.peak<=0 or b.bridge.peak>.9 then return nil,"Invalid Surge bridge" end
     return b
+end
+-- A persistent song may outlive an ordinary floor/pressure preference. Its
+-- local file still must belong to a server-supplied, current catalog plan.
+function M.ClipAsset(catalog,targets,plans,lane,clip)
+    if not catalog or not M.ID(lane) or not M.ID(clip) then return end
+    local candidates={}
+    if catalog.songFirst and lane=="song" then
+        for _,plan in pairs(plans or {}) do
+            if plan.revision==catalog.revision then for aid in pairs(plan.assets or {}) do candidates[aid]=true end end
+        end
+    else
+        for _,t in ipairs(targets or {}) do if t.block==lane and t.weight>0 then candidates[t.asset]=true end end
+    end
+    for aid in pairs(candidates) do
+        local a=catalog.assets[aid]
+        for _,c in ipairs(a and a.clips or {}) do if c.id==clip then return a end end
+    end
 end
 function M.Pool(c,selection)
     local out,seen={},{}

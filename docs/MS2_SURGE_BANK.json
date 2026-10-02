@@ -19,7 +19,7 @@
     "rendererVersion": "lod-surge-1",
     "releaseSeconds": 0.55,
     "vorbisQuality": 2,
-    "packageBudgetBytes": 96000000,
+    "packageBudgetBytes": 60000000,
     "designReviewBytes": 100000000,
     "reportedBuildVersion": "1.3.HEAD.f7b97c6"
   },

@@ -44,6 +44,9 @@ function D:Announce(bid)
     if not self:Enabled() or not M.ID(bid) or bid==self.LastBlock then return end
     local allowed=false
     for _,t in ipairs(self.AudibleTargets or {}) do if t.block==bid and t.weight>0 then allowed=true end end
+    if self.Catalog and self.Catalog.songFirst then
+        for _,plan in pairs(self.Plans) do if plan.revision==self.Catalog.revision and plan.blocks[bid] then allowed=true end end
+    end
     if not allowed then return end
     self.LastBlock=bid;self.Serial=self.Serial+1
     net.Start("LOD_MusicPlaying");net.WriteUInt(self.Current and self.Current.sequence or 0,32)
@@ -52,13 +55,13 @@ end
 function D:Payload(aid)
     local known=self.Payloads[aid];if known then known.used=SysTime();return known.data end
     local a=self.Catalog and self.Catalog.assets[aid];if not a then return nil end
-    local payload={id=a.id,role=a.role,loop=a.loop,clips={},bound=0}
+    local payload={id=a.id,role=a.role,loop=a.loop,clips={},bound=0,songFirst=a.songFirst,songBeats=a.songBeats}
     local full,tail=0,0
     for _,clip in ipairs(a.clips) do
         if not self.RenderBank or not self.RenderBank.clips[clip.id] then self.Error="Missing Surge phrase "..clip.id;return end
         local meta=self.RenderBank.clips[clip.id]
         full=math.max(full,meta.peak);tail=math.max(tail,meta.tailPeak)
-        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,motifs=clip.motifs,handoffs=clip.handoffs,duration=meta.duration}
+        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,motifs=clip.motifs,handoffs=clip.handoffs,duration=meta.duration,songIndex=clip.songIndex,musicalFrames=meta.musicalFrames}
     end
     payload.bound=full+(a.loop and tail or 0)
     self.Payloads[aid]={data=payload,used=SysTime()}
@@ -104,13 +107,7 @@ function D:StartRenderer()
             if not live() or D.Backend~="surge-sample-clock" or not M.ID(lane) or not M.ID(clip) then return end
             -- This bridge reads only a currently authorized, bundled score file.
             -- No arbitrary paths, HTTP, network soundtrack or unrestricted Lua.
-            local allowed=false
-            for _,t in ipairs(D.AudibleTargets or {}) do
-                if t.block==lane and t.weight>0 then
-                    local a=D.Catalog.assets[t.asset]
-                    for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;break end end
-                end
-            end
+            local allowed=M.ClipAsset(D.Catalog,D.AudibleTargets,D.Plans,lane,clip)
             if not allowed then self:QueueJavascript('lodScore.audio("'..clip..'","");');return end
             local now=SysTime()
             if now>=(D.ClipReadWindow or 0) then D.ClipReadWindow=now+.1;D.ClipReadCount=0 end
@@ -170,7 +167,10 @@ function D:Desired()
     end
     if not plan then return end
     if plan.revision~=self.Catalog.revision then self.Error="MS2 client/server catalog mismatch; install the same build";return end
-    local state={targets={},role=role,remaining=s.remaining or -1,expression=s.expression or 0,staged=s.staged,
+    -- Calm maze pressure selects a driving composition; only staging keeps
+    -- the full calm arrangement including its authored beatless passages.
+    if self.Catalog.songFirst and not s.staged and role=="T0" and s.role~="POST" then role="T1" end
+    local state={songFirst=self.Catalog.songFirst,planKey=plan.id,targets={},role=role,remaining=s.remaining or -1,expression=s.expression or 0,staged=s.staged,
         seed=plan.seed or 0,bpm=self.Catalog.bpm,quality=self.Quality or 1,
         volume=self.Volume:GetFloat()*(CurTime()<(self.DuckUntil or 0) and .55 or 1)}
     for _,t in ipairs(targets or {}) do

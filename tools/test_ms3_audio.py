@@ -31,7 +31,7 @@ SCRIPT = r'''async (input) => {
   async function decoded(data){const raw=atob(data),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return await ctx.decodeAudioData(bytes.buffer);}
   const a=input?await decoded(input.a):original(1),b=input?await decoded(input.b):original(.8),metas=[['a',a],['b',b]].map(([id,buffer])=>({id,beats,duration:buffer.duration,energy:.5,entry:0,exit:0}));
   const dryA=Float32Array.from(a.getChannelData(0)),dryB=Float32Array.from(b.getChannelData(0));
-  const asset={id:'calm',role:'T0',loop:true,bound:input?input.bound:.15,clips:metas};tr.install(asset);tr.mix('floor',1);
+  const asset={id:'calm',role:'T0',loop:true,songFirst:!!input,bound:input?input.bound:.15,clips:metas};tr.install(asset);tr.mix('floor',1);
   for(const [i,buffer] of [a,b].entries()){const e=tr.build(buffer,{asset,clip:metas[i]});tr.cache[e.id]=e;tr.bytes+=e.bytes;}
   tr.prepare('1','floor','a',1,1);
   tr.prepare('2','floor','b',1,switchFrame/rate);
@@ -73,7 +73,7 @@ def main():
             results=[]
             for asset in catalog['assets'].values():
                 if not asset['loop']:continue
-                ids=[asset['clips'][0]['id'],asset['clips'][-1]['id']]
+                ids=[asset['clips'][0]['id'],asset['clips'][1]['id']]
                 rows=[bank[c['id']] for c in asset['clips']]
                 data={'beats':asset['clips'][0]['beats'],'bound':max(c['decodedPeak'] for c in rows)+max(c['decodedTailPeak'] for c in rows)}
                 for key,cid in zip(('a','b'),ids):data[key]=base64.b64encode((ROOT/bank[cid]['path']).read_bytes()).decode('ascii')

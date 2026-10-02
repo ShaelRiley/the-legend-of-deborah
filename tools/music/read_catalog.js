@@ -6,7 +6,7 @@ function read(name) {return JSON.parse(fs.readFileSync(path.join(directory,name)
 const catalog=read('catalog.lua'),pages={};
 function asset(id) {
     const a=catalog.assets[id];
-    return {id:a.id,role:a.role,loop:a.loop,clips:a.clips.map(c=>{
+    return {...a,clips:a.clips.map(c=>{
         if(!pages[c.page])pages[c.page]=read(c.page);
         return {...c,notes:pages[c.page][c.id]};
     })};
