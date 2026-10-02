@@ -1,0 +1,54 @@
+name: MS3 long-form build
+on:
+  push:
+    branches: [work/ms3-sixteen-bar-source]
+    paths: [.github/workflows/ms3-longform-build.yml, tools/music/**, tools/test_ms3_longform*]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update -qq && sudo apt-get install -y liblua5.4-0 ffmpeg libpython3.12-dev
+      - run: python -m pip install numpy scipy cmake Pillow==12.3.0 yt-dlp
+      - name: Snapshot complete repository
+        run: |
+          mkdir -p build/handoff
+          git rev-parse HEAD > build/handoff/head.txt
+          git archive --format=tar.gz HEAD > build/handoff/repository.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ms3-full-repository
+          path: build/handoff
+          retention-days: 7
+      - uses: actions/cache@v4
+        with:
+          path: |
+            /tmp/lod-surge-source
+            /tmp/lod-surge-build
+          key: lod-surge-ubuntu24-py312-f7b97c6-offline1
+      - name: Build pinned offline Surge
+        run: python tools/music/surge/prepare.py --source /tmp/lod-surge-source --build /tmp/lod-surge-build --jobs 4
+      - name: Retrieve author reference captions where publicly available
+        continue-on-error: true
+        run: |
+          mkdir -p build/reference
+          timeout 60 yt-dlp --skip-download --write-info-json --write-auto-subs --write-subs --sub-langs 'en.*' --sub-format vtt --no-playlist -o 'build/reference/arrangement-guide.%(ext)s' 'https://www.youtube.com/watch?v=8yu502IyV0o' > build/reference/retrieval.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ms3-reference-and-build
+          path: |
+            build/reference
+            /tmp/lod-surge-build/src/surge-python/*.so
+          retention-days: 7
