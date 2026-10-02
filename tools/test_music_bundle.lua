@@ -40,6 +40,12 @@ clip.peak=nil;check(not M.LoadRenderBank(D.Catalog),'missing phrase peak is reje
 clip.peak=peak;render.bridge.peak=0
 check(not M.LoadRenderBank(D.Catalog),'unsafe bridge peak is rejected before native amplification')
 render.bridge.peak=.04
+local tailPeak=clip.tailPeak
+for _,bad in ipairs({-.1,peak+1,'0.1'}) do
+ clip.tailPeak=bad;check(not M.LoadRenderBank(D.Catalog),'unsafe tail peak is rejected before steady join admission')
+end
+clip.tailPeak=nil;check(not M.LoadRenderBank(D.Catalog),'missing tail peak is rejected before steady join admission')
+clip.tailPeak=tailPeak
 check(M.LoadRenderBank(D.Catalog),'complete finite peak metadata admits playback')
 M.IncludeBundled=original
 e.realBundle=true

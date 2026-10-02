@@ -3,7 +3,7 @@ local e=dofile('tools/music_test_fixture.lua');local check=e.check
 CLIENT=true;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua');dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
 local D,M,N=LOD.MusicDirector,LOD.Music,LOD.MusicNative
 local catalog=e.catalog();local bank={bpm=130,clips={},bridge={duration=4,peak=.04}}
-for _,a in pairs(catalog.assets) do for _,c in ipairs(a.clips) do bank.clips[c.id]={beats=c.beats,duration=c.beats*60/130+.55,peak=.12} end end
+for _,a in pairs(catalog.assets) do for _,c in ipairs(a.clips) do bank.clips[c.id]={beats=c.beats,duration=c.beats*60/130+.55,peak=.12,tailPeak=.01} end end
 local results={};local serial=0
 local function setup()
  N:Configure(catalog,bank,function(token,played) results[token]=played end)
@@ -17,7 +17,7 @@ end
 -- tails and channels waiting for their paced write also consume headroom.
 function e.onVolumeWrite()
  local peak=0
- for _,c in ipairs(e.channels or {}) do if c.valid then peak=peak+c.volume*c.peak end end
+ for _,r in pairs(N.Records) do if r.channel and r.channel.valid then peak=peak+r.channel.volume*N:RecordPeak(r,e.now) end end
  check(peak<=.800001,'actual written score gains preserve shared peak headroom')
 end
 setup();N:SetMix('alpha',1);N:SetMix('beta',0);prepare('alpha',1)
@@ -42,6 +42,38 @@ for _=1,8 do
  N:SetMix('alpha',.1);N:SetMix('beta',.9);N:SetVolume(1);e.now=e.now+.017;N:Tick()
 end
 N:Stop();bank.clips.delta_t0_000.peak=quietPeak
+-- Reserve the arrangement's measured full+tail bound throughout its life.
+-- A routine handoff must not duck the whole mix or fade its incoming phrase.
+bank.clips.delta_t0_000.peak=.4
+setup();N:SetMix('alpha',1);N:SetMix('beta',0);local joinDue=e.now+1;prepare('alpha',1)
+e.now=joinDue;N:Tick();local resident=e.channels[#e.channels];local gain=resident.volume
+check(gain>0,'ready phrase has full intended gain on its first native frame')
+e.now=joinDue+8*60/130-1;prepare('alpha',1);local incoming=e.channels[#e.channels]
+e.now=joinDue+8*60/130;N:Tick()
+check(math.abs(resident.volume-gain)<1e-8 and math.abs(incoming.volume-gain)<1e-8,'routine natural-tail overlap has no whole-score gain dip')
+e.now=e.now+.56;N:Tick();check(math.abs(incoming.volume-gain)<1e-8,'tail disposal does not pump the incoming phrase gain')
+N:Stop();bank.clips.delta_t0_000.peak=quietPeak
+setup();N:SetMix('alpha',1);N:SetMix('beta',0);local holdDue=e.now+1;prepare('alpha',1)
+e.now=holdDue;N:Tick();resident=e.channels[#e.channels];gain=resident.volume
+e.deferOpens=true;e.now=holdDue+8*60/130-1;local missing=prepare('alpha',1)
+local opens=N:Count();local holds=N.HeldLoops;e.now=holdDue+8*60/130;N:Tick()
+check(N.HeldLoops==holds+1 and resident.seek==0,'missing replacement renews the resident musical buffer')
+check(results[missing]==false and resident.volume==gain and N:Count()<=opens,'held repeat retains level and opens no additional buffer')
+e.now=e.now+.2;e.completeOpens();N:Tick();check(resident.valid and resident.volume==gain,'late replacement cannot interrupt the held phrase')
+e.deferOpens=false;e.now=holdDue+16*60/130-1;local recovered=prepare('alpha',1)
+e.now=holdDue+16*60/130;N:Tick();check(results[recovered]==true,'ready replacement starts on the next complete phrase boundary')
+N:Stop()
+setup();N:SetMix('alpha',1);N:SetMix('beta',0);holdDue=e.now+1;prepare('alpha',1)
+e.now=holdDue;N:Tick();holds=N.HeldLoops
+for i=1,3 do e.now=holdDue+i*8*60/130;N:Tick() end
+check(N.HeldLoops==holds+2,'resident recovery cannot hide an unavailable replacement beyond eight seconds')
+N:Stop();setup();holdDue=e.now+1;prepare('alpha',1);e.now=holdDue;N:Tick();holds=N.HeldLoops
+D.AudibleTargets[1].asset='delta-t2';e.now=holdDue+8*60/130;N:Tick()
+check(N.HeldLoops==holds,'resident recovery does not loop an obsolete role')
+N:Stop();setup();D.AudibleTargets[1].asset='delta-victory';holdDue=e.now+1;prepare('alpha',1,'delta_victory_000')
+e.now=holdDue;N:Tick();holds=N.HeldLoops;e.now=holdDue+12*60/130;N:Tick()
+check(N.HeldLoops==holds,'once-only victory cannot become a resident recovery loop')
+N:Stop()
 -- The file was ready in advance; a 100 ms Think hitch must trim elapsed time,
 -- not throw away all eight beats or move this lane off the shared grid.
 setup();local frameToken=prepare('alpha',1);local frameChannel=e.channels[#e.channels];local due=e.now+1
@@ -134,7 +166,7 @@ N:Stop();setup();N:SetVolume(0);N:Tick();check(not N.Ready and N:Count()==0,'zer
 setup();local meta=bank.clips.delta_t0_000
 local function raw_record()
  serial=serial+1;return {token=tostring(serial),lane='alpha',clip='delta_t0_000',path='sound/lod/ms2_surge/delta_t0_000.ogg',
-  due=e.now+1,musical=8*60/130,duration=meta.duration,peak=meta.peak,bytes=math.ceil(meta.duration*44100)*8}
+  due=e.now+1,musical=8*60/130,duration=meta.duration,peak=meta.peak,tailPeak=meta.tailPeak,asset='delta-t0',loop=true,bytes=math.ceil(meta.duration*44100)*8}
 end
 for _=1,8 do check(N:Open(raw_record()),'hard pool admits its eight slots') end
 check(not N:Open(raw_record()) and N:Count()==8,'ninth channel cannot bypass the hard ceiling')

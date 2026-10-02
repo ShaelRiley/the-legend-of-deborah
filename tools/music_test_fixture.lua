@@ -69,9 +69,9 @@ sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
   function channel:GetLength() return meta.duration end
   function channel:SetVolume(v) self.volume=v;E.volumeWrites=E.volumeWrites+1;if E.onVolumeWrite then E.onVolumeWrite() end end
   function channel:EnableLooping(v) self.loop=v end
-  function channel:SetTime(seconds,fast) assert(fast==true,'phase recovery must seek without decode-to-position');self.seek=seconds end
+  function channel:SetTime(seconds,fast) assert(fast==true,'phase recovery must seek without decode-to-position');self.seek=seconds;self.seekAt=E.now end
   function channel:GetVolume() return self.volume end
-  function channel:GetTime() return self.played and E.now-self.played+(self.seek or 0) or 0 end
+  function channel:GetTime() return self.played and E.now-(self.seekAt or self.played)+(self.seek or 0) or 0 end
   function channel:GetState() return self.played and 1 or 0 end
   function channel:Play() self.played=E.now;E.plays=E.plays+1 end
   function channel:Stop() if self.valid then E.stops=E.stops+1 end;self.valid=false end
@@ -118,7 +118,7 @@ function include(path)
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/catalog.lua' then return util.TableToJSON(E.catalog()) end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/render.lua' then
   local c=E.catalog();local b={schema=1,revision='surge-fixture',catalogRevision=c.revision,patchRevision='lod-va-fixture',bpm=c.bpm,clips={},bridge={duration=4,peak=.04}}
-  for _,a in pairs(c.assets) do for _,clip in ipairs(a.clips) do b.clips[clip.id]={beats=clip.beats,duration=clip.beats*60/c.bpm+.55,peak=.12} end end
+  for _,a in pairs(c.assets) do for _,clip in ipairs(a.clips) do b.clips[clip.id]={beats=clip.beats,duration=clip.beats*60/c.bpm+.55,peak=.12,tailPeak=.01} end end
   return util.TableToJSON(b)
  end
  if not E.realBundle and path=='legend_of_deborah/gamemode/lod/ms2/notes_000.lua' then

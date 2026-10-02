@@ -35,6 +35,15 @@ function rig(seed='test',acknowledgementDelay=0){
  change();return {scheduler,plays,announcements,mixes,victories,pending,change,pump,step,jump:n=>{now+=n;},get now(){return now;},get stopCount(){return stopCount;}};
 }
 const r=rig();r.step(10);check(r.plays.length>=3,'A to B normal phrase sequencing');
+const dwell=rig('phrase-dwell');dwell.step(33);
+check(dwell.plays.length>=8,'dwell exercises two complete phrase residencies');
+for(let i=0;i<8;i++)check(dwell.plays[i].clip===dwell.plays[Math.floor(i/4)*4].clip,'routine phrase holds for four successful passes');
+check(dwell.plays[0].clip!==dwell.plays[4].clip,'fresh composition follows a fifteen-second-scale residence');
+// A rejected preparation must retry on the held phrase's grid, rather than
+// interrupt its repeat at the next four-beat half-phrase boundary.
+const held=rig('resident-hold');held.step(3.8);const heldJob=Object.values(held.pending)[0];
+held.jump(heldJob.time-held.now+.2);held.pump();const retryBeat=held.scheduler.lanes.a.nextBeat;
+check(Math.abs(held.scheduler.timeForBeat(retryBeat)-heldJob.time-8*60/130)<1e-8,'failed replacement preserves the resident repeat boundary');
 // Native starts can be correct while their QueueJavascript acknowledgement is
 // delayed by the frame/DHTML boundary. This must not fabricate a failed start.
 const delayedAck=rig('queued-ack',.3);delayedAck.step(20);

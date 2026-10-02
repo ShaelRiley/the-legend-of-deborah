@@ -3,7 +3,7 @@
  * Missed boundaries are discarded. Native playback independently enforces time. */
 (function(root,factory){var api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MS2=api;}(this,function(){
     'use strict';
-    var LOOKAHEAD=1.0,LATE=.15,ACK_WAIT=1.0;
+    var LOOKAHEAD=1.0,LATE=.15,ACK_WAIT=1.0,PHRASE_PASSES=4;
     function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
     function hash(s){var h=2166136261,i;s=String(s);for(i=0;i<s.length;i++)h=((h^s.charCodeAt(i))*16777619)>>>0;return h||1;}
     function Random(seed){this.value=hash(seed);}
@@ -46,7 +46,7 @@
                 l={id:id,asset:t.asset,nextBeat:this.boundary(now,s.role==='VICTORY'?1:4,s.role==='VICTORY'?.25:LOOKAHEAD),
                     composer:new Composer(s.seed+':'+this.performanceSeed+':'+id+':'+this.visits[id]),began:false};this.lanes[id]=l;
             }else if(l.asset!==t.asset){
-                this.cancel(l);l.asset=t.asset;l.finished=false;
+                this.cancel(l);l.asset=t.asset;l.finished=false;l.clip=null;l.passes=0;
                 l.nextBeat=this.boundary(now,s.role==='VICTORY'?1:4,s.role==='VICTORY'?.25:LOOKAHEAD);
             }
             l.retire=null;l.weight=t.weight;this.sink.mix(id,Math.sqrt(t.weight),now);
@@ -63,12 +63,17 @@
         var j=this.jobs[token];if(!j)return;delete this.jobs[token];var l=this.lanes[j.lane];
         if(!l||l.pending!==token)return;l.pending=null;
         if(played){
+            l.passes=(l.passes||0)+1;
             if(!l.began){l.began=true;this.callback('block',l.id);}
             if(!j.loop){l.finished=true;this.victoryEnd=j.time+j.beats*60/this.base;}
         }else{
             this.skipped++;this.resyncs++;
             if(!j.loop){l.finished=true;this.callback('victory','');}
-            else l.nextBeat=this.boundary(this.clock(),4);
+            else if(l.began){
+                // A native hold repeats the resident phrase. Retry on this
+                // lane's original eight-beat grid, never halfway through it.
+                l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*60/this.base)))*j.beats;
+            }else l.nextBeat=this.boundary(this.clock(),4);
         }
     };
     Scheduler.prototype.pump=function(){
@@ -85,10 +90,17 @@
                 if(l.finished)continue;
             }
             t=this.timeForBeat(l.nextBeat);
-            if(t<now-LATE){this.skipped++;this.resyncs++;l.nextBeat=this.boundary(now,4);t=this.timeForBeat(l.nextBeat);}
+            if(t<now-LATE){
+                this.skipped++;this.resyncs++;
+                if(a.loop&&l.began&&l.clip)l.nextBeat+=Math.ceil((now+LOOKAHEAD-t)/(l.clip.beats*60/this.base))*l.clip.beats;
+                else l.nextBeat=this.boundary(now,4);
+                t=this.timeForBeat(l.nextBeat);
+            }
             if(t<=now+LOOKAHEAD+.001){
                 // One preparation per lane/pump. Never drain overdue debt.
-                c=l.composer.choose(a);var token=String(++this.serial);
+                if(a.loop&&l.clip&&(l.passes||0)<PHRASE_PASSES)c=l.clip;
+                else{c=l.composer.choose(a);l.clip=c;l.passes=0;}
+                var token=String(++this.serial);
                 j={lane:id,clip:c.id,beats:c.beats,time:t,loop:a.loop};this.jobs[token]=j;l.pending=token;
                 l.nextBeat+=c.beats;this.sink.prepare(token,id,c.id,Math.max(0,t-now),t);
             }
@@ -108,8 +120,8 @@
         return {install:function(a){scheduler.install(a);},state:function(s){if((s.bpm||130)!==scheduler.base)throw Error('rendered bank tempo mismatch');scheduler.update(s);},
             result:function(token,played){scheduler.result(String(token),played);},stop:function(){scheduler.stop();},
             stats:function(){bridge.stats(JSON.stringify({backend:'surge-rendered',bpm:scheduler.base,lateSkipped:scheduler.skipped,resyncs:scheduler.resyncs,
-                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts}));},
+                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts,phrasePasses:PHRASE_PASSES}));},
             destroy:function(){window.clearInterval(interval);scheduler.stop();}};
     }
-    return {Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE,acknowledgementWait:ACK_WAIT};
+    return {Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE,acknowledgementWait:ACK_WAIT,phrasePasses:PHRASE_PASSES};
 }));

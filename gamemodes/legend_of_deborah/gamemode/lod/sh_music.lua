@@ -83,7 +83,8 @@ function M.LoadRenderBank(catalog)
         local r=b.clips[clip.id]
         if type(r)~="table" or r.beats~=clip.beats or type(r.duration)~="number" or r.duration~=r.duration
             or r.duration<clip.beats*60/b.bpm or r.duration>clip.beats*60/b.bpm+1
-            or type(r.peak)~="number" or r.peak~=r.peak or r.peak<=0 or r.peak>.9 then return nil,"Invalid Surge phrase "..clip.id end
+            or type(r.peak)~="number" or r.peak~=r.peak or r.peak<=0 or r.peak>.9
+            or type(r.tailPeak)~="number" or r.tailPeak~=r.tailPeak or r.tailPeak<0 or r.tailPeak>r.peak then return nil,"Invalid Surge phrase "..clip.id end
         seen[clip.id]=true
     end end
     for id in pairs(b.clips) do if not seen[id] then return nil,"Orphan Surge phrase "..tostring(id) end end

@@ -1,4 +1,14 @@
-# Current repair checkpoint — MS2 intermittent phrase continuity
+# Current repair checkpoint — MS2 smooth phrase joins
+
+Verified main `e633cd13fed0908ff424fb2da5190285cbc22407` is the repair parent. The author reports short clips changing too quickly and clearly audible fades at their joins, calls this MS3 and requests a quick fix with resident looping until replacement readiness. Native smoothness is failed evidence, not accepted continuity.
+
+The canonical composer holds each ordinary phrase for four successful passes (14.77 seconds); roles/stairs/once-only victory remain responsive. Routine native joins use constant gain and natural release overlap. Offline full+tail arrangement bounds keep the shared peak guard from ducking at every join. If the same-role successor is not prepared, reuse the resident musical buffer on its eight-beat grid for at most two repeats within eight seconds; reject stale replacement and retry a complete phrase boundary. Preserve master gain 4, saved volume, peak ceiling 0.8 and all resource/lifecycle contracts. The encoded bank remains unchanged. See [focused evidence](validation/MS2_JOINS.md).
+
+Live GDD 00 → 01 → 05/06/07 and the author Surge brief govern. Google rejected the tuning insertion with `FAILED_PRECONDITION`; its exact authorized-but-unapplied request is preserved. Complete music, actual decode and canonical integration gates precede source publication. Next native action: fully quit/update/install exact main, enable Options → Music and listen through several routine joins plus stairs for a steady level and unobtrusive transitions. Native Source smoothness and performance remain pending. No Workshop/VPS deployment.
+
+---
+
+# Previous repair checkpoint — MS2 intermittent phrase continuity
 
 Remote main `174b011a62dd676285435feed2e551e8a3bf26bf` is the repair parent. The author initially reports silence, then hears intermittent music after several minutes or an audio-option toggle (cause uncertain). Their client diagnostic shows enabled/ready rendered playback, two channels, no reported backend error, quality 0 and nine native late skips. This is runtime-observed intermittent audibility and a failed continuity gate, not acceptance of the louder mix. Preserve the exact report in [MS2_CONTINUITY_NATIVE_REPORT.json](validation/MS2_CONTINUITY_NATIVE_REPORT.json).
 

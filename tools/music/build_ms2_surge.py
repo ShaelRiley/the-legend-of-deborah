@@ -4,7 +4,7 @@
 Full authoring gate. Normal CI validates the committed bank without Surge.
 """
 import argparse
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import hashlib
 import json
 import math
@@ -77,7 +77,12 @@ def canonical_ogg(path,clip):
     if at!=len(data):raise ValueError('Truncated Ogg page')
     path.write_bytes(data)
 
-def encode(path,dest,clip):
+def tail_peak(pcm,musical):
+    # Cover the last 150 ms of musical time too, conservatively allowing the
+    # native frame/fast-seek window at a natural overlapping release.
+    return float(abs(pcm[max(0,math.floor((musical-.15)*RATE)):]).max())
+
+def encode(path,dest,clip,musical=None):
     subprocess.run(['ffmpeg','-nostdin','-v','error','-y','-i',str(path),'-map_metadata','-1','-fflags','+bitexact',
                     '-flags:a','+bitexact','-c:a','libvorbis','-q:a',str(LOCK['vorbisQuality']),str(dest)],check=True)
     canonical_ogg(dest,clip)
@@ -86,7 +91,8 @@ def encode(path,dest,clip):
     decoded=np.frombuffer(result.stdout,dtype='<f4').reshape(-1,2)
     if not np.isfinite(decoded).all() or abs(decoded).max()>.9 or np.sqrt((decoded*decoded).mean())<.00002:raise ValueError('Invalid encoded audio: '+clip)
     frames=round(float(subprocess.check_output(['ffprobe','-v','error','-select_streams','a:0','-show_entries','stream=duration','-of','csv=p=0',str(dest)],text=True))*RATE)
-    return {'duration':frames/RATE,'decodedFrames':len(decoded),'decodedPeak':float(abs(decoded).max()),
+    return {**({'decodedTailPeak':tail_peak(decoded,musical)} if musical is not None else {}),
+            'duration':frames/RATE,'decodedFrames':len(decoded),'decodedPeak':float(abs(decoded).max()),
             'decodedRMS':float(np.sqrt((decoded*decoded).mean())),'decodedDC':float(abs(decoded.mean(axis=0)).max()),
             'sha256':sha(dest.read_bytes()),'bytes':dest.stat().st_size}
 
@@ -113,7 +119,7 @@ def render_clip(task):
             pcm+=render_voice(surge,name,events,duration,seed,c['role'])
         pcm,metrics=condition(pcm);wav_write(wave_path,pcm)
         cache.write_text(json.dumps({'key':key,'metrics':metrics,'pcmSHA256':sha(wave_path.read_bytes())}))
-    target=DEST/(cid+'.ogg');encoded=encode(wave_path,target,cid)
+    target=DEST/(cid+'.ogg');encoded=encode(wave_path,target,cid,c['beats']*60/bpm)
     if abs(encoded['duration']-duration)>2/RATE:raise ValueError('Wrong duration: '+cid)
     return {'id':cid,'block':c['block'],'role':c['role'],'asset':c['asset'],'beats':c['beats'],'bpm':bpm,
             'musicalDuration':c['beats']*60/bpm,'path':str(target.relative_to(ROOT)),'noteSHA256':note_hash,
@@ -145,11 +151,35 @@ def voice_gate(surge,work):
     (work/'patch-parameters.json').write_text(json.dumps(receipt,indent=2)+'\n')
     return measures,sections
 
+def write_runtime(manifest):
+    runtime={'schema':1,'revision':manifest['revision'],'catalogRevision':manifest['catalogRevision'],'patchRevision':manifest['patchRevision'],
+             'bpm':manifest['bpm'],'bridge':{'duration':manifest['bridge']['duration'],'peak':manifest['bridge']['decodedPeak']},
+             'clips':{r['id']:{'beats':r['beats'],'duration':r['duration'],'peak':r['decodedPeak'],'tailPeak':r['decodedTailPeak']} for r in manifest['clips']}}
+    (BUNDLE/'render.lua').write_text('return [==['+json.dumps(runtime,separators=(',',':'))+']==]\n')
+
+def refresh_join_metadata():
+    manifest=json.loads(MANIFEST.read_text())
+    def measure(c):
+        path=ROOT/c['path']
+        if sha(path.read_bytes())!=c['sha256']:raise ValueError('Changed bank: '+c['id'])
+        raw=subprocess.check_output(['ffmpeg','-nostdin','-v','error','-i',str(path),'-f','f32le','-acodec','pcm_f32le','-'])
+        pcm=np.frombuffer(raw,dtype='<f4').reshape(-1,2)
+        if abs(float(abs(pcm).max())-c['decodedPeak'])>1e-7:raise ValueError('Changed decode: '+c['id'])
+        c['decodedTailPeak']=tail_peak(pcm,c['musicalDuration'])
+    with ThreadPoolExecutor(max_workers=4) as pool:list(pool.map(measure,manifest['clips']))
+    manifest['rendererSHA256']=sha(Path(__file__).read_bytes()+(ROOT/'tools/music/surge/bank.py').read_bytes())
+    MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n');write_runtime(manifest)
+    print(json.dumps({'metadataOnly':True,'clips':len(manifest['clips']),'unchangedAudioBytes':manifest['totalBytes']}))
+
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--surge-module',type=Path,required=True)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--surge-module',type=Path)
+    parser.add_argument('--refresh-join-metadata',action='store_true',help='Decode committed audio to refresh conservative tail peaks; do not render or encode')
     parser.add_argument('--work',type=Path,default=ROOT/'build/ms2-surge');parser.add_argument('--jobs',type=int,default=4)
     parser.add_argument('--limit',type=int,help='Smoke render only; does not publish a manifest or runtime bank')
-    args=parser.parse_args();work=args.work.resolve();work.mkdir(parents=True,exist_ok=True);DEST.mkdir(parents=True,exist_ok=True)
+    args=parser.parse_args()
+    if args.refresh_join_metadata:refresh_join_metadata();return
+    if not args.surge_module:parser.error('--surge-module is required for rendering')
+    work=args.work.resolve();work.mkdir(parents=True,exist_ok=True);DEST.mkdir(parents=True,exist_ok=True)
     surge=load_surge(args.surge_module);catalog,bank=clips();voices,isolated=voice_gate(surge,work)
     renderer_hash=sha(Path(__file__).read_bytes()+(ROOT/'tools/music/surge/bank.py').read_bytes())
     render_fingerprint=sha((PATCH_SHA+LOCK['bindingPatchSHA256']+renderer_hash).encode())
@@ -181,10 +211,7 @@ def main():
               'totalBytes':total,'largestBytes':max(r['bytes'] for r in results),'averagePhraseBytes':sum(r['bytes'] for r in results)/len(results),
               'voices':voices,'bridge':bridge,'clips':results}
     MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
-    runtime={'schema':1,'revision':revision,'catalogRevision':catalog['revision'],'patchRevision':manifest['patchRevision'],
-             'bpm':catalog['bpm'],'bridge':{'duration':bridge['duration'],'peak':bridge['decodedPeak']},
-             'clips':{r['id']:{'beats':r['beats'],'duration':r['duration'],'peak':r['decodedPeak']} for r in results}}
-    (BUNDLE/'render.lua').write_text('return [==['+json.dumps(runtime,separators=(',',':'))+']==]\n')
+    write_runtime(manifest)
     # Representative ordered listening evidence: Chill, isolated voices, roles.
     audition=[];cues=[];offset=0
     def append(label,pcm):

@@ -1,7 +1,7 @@
 -- Bundled Surge phrases, opened lazily. Native frame timing is bounded:
 -- a missed deadline is skipped, never played from an asynchronous callback.
 if LOD.MusicNative and LOD.MusicNative.Stop then LOD.MusicNative:Stop() end
-LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipped=0,Errors=0,PhaseJoins=0,LateOpens=0,MaxStartDelay=0}
+LOD.MusicNative={Lanes={},Records={},Opens={},Serial=0,Generation=0,Peak=0,Skipped=0,Errors=0,PhaseJoins=0,LateOpens=0,MaxStartDelay=0,HeldLoops=0}
 local N,M=LOD.MusicNative,LOD.Music
 local MAX_CHANNELS,MAX_OPENS,MAX_PCM=8,2,32*1024*1024
 local LATE,OPEN_LATE,FADE=.15,.06,.7
@@ -14,6 +14,12 @@ function N:Bytes()
 end
 function N:Configure(catalog,bank,callback)
     self:Stop();self.Catalog=catalog;self.Bank=bank;self.Callback=callback;self.Ready=true;self.Volume=.55;self.Errors=0;self.Error=nil
+    self.Bounds={}
+    for id,a in pairs(catalog.assets) do
+        local peak,tail=0,0
+        for _,c in ipairs(a.clips) do local m=bank.clips[c.id];peak=math.max(peak,m.peak);tail=math.max(tail,m.tailPeak) end
+        self.Bounds[id]=peak+(a.loop and tail or 0)
+    end
 end
 function N:Stop()
     self.Generation=self.Generation+1;self.Ready=false
@@ -90,11 +96,11 @@ function N:Prepare(token,lane,clip,delay,deadline)
         or not self.ClockOffset or type(deadline)~="number" or deadline~=deadline then return end
     local meta=self.Bank.clips[clip];if not meta then self.Error="Unknown rendered phrase "..clip;return end
     -- Accept only a clip belonging to the current authoritative floor/role.
-    local d=LOD.MusicDirector;local allowed=false
+    local d=LOD.MusicDirector;local allowed=false;local asset
     for _,t in ipairs(d and d.AudibleTargets or {}) do
         if t.block==lane and t.weight>0 then
             local a=self.Catalog.assets[t.asset]
-            for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;break end end
+            for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;asset=a;break end end
         end
     end
     if not allowed then return end
@@ -110,12 +116,16 @@ function N:Prepare(token,lane,clip,delay,deadline)
         self:Result({token=token},false);return
     end
     self:Open({token=token,lane=lane,clip=clip,path="sound/lod/ms2_surge/"..clip..".ogg",
-        due=due,musical=musical,duration=meta.duration,peak=meta.peak,bytes=math.ceil(meta.duration*44100)*8})
+        due=due,musical=musical,duration=meta.duration,peak=meta.peak,tailPeak=meta.tailPeak,asset=asset.id,loop=asset.loop,
+        bytes=math.ceil(meta.duration*44100)*8})
+end
+function N:RecordPeak(r,now)
+    return not r.bridge and r.started and now>=r.started+r.musical and r.tailPeak or r.peak
 end
 function N:WrittenPeak(includeBridge)
-    local peak=0
+    local peak=0;local now=SysTime()
     for _,r in pairs(self.Records) do
-        if r.started and not r.cancelled and (includeBridge or not r.bridge) then peak=peak+r.peak*(r.lastGain or 0) end
+        if r.started and not r.cancelled and (includeBridge or not r.bridge) then peak=peak+self:RecordPeak(r,now)*(r.lastGain or 0) end
     end
     return peak
 end
@@ -139,9 +149,10 @@ function N:ApplyGains(now,ordered,total)
     local used=self:WrittenPeak(false)
     for _,r in ipairs(ordered) do
         if r.started and not r.cancelled and now>=(r.nextGain or 0) then
-            local value=math.min(r.targetGain,(r.lastGain or 0)+math.max(0,capacity-used)/r.peak)
+            local peak=self:RecordPeak(r,now)
+            local value=math.min(r.targetGain,(r.lastGain or 0)+math.max(0,capacity-used)/math.max(peak,1e-9))
             if value>(r.lastGain or 0)+.001 then
-                used=used+r.peak*(value-(r.lastGain or 0))
+                used=used+peak*(value-(r.lastGain or 0))
                 r.channel:SetVolume(value);r.lastGain=value;r.nextGain=now+1/30
             end
         end
@@ -181,6 +192,24 @@ function N:Tick()
     -- deliberately malformed preparations unable to start twice in one lane.
     local ordered={};for _,r in pairs(self.Records) do if not r.bridge then ordered[#ordered+1]=r end end
     table.sort(ordered,function(a,b) return a.due==b.due and a.key<b.key or a.due<b.due end)
+    local ready={};local wanted={};local lanePeaks={}
+    for _,t in ipairs(LOD.MusicDirector and LOD.MusicDirector.AudibleTargets or {}) do if t.weight>0 then wanted[t.block]=t.asset end end
+    for _,r in ipairs(ordered) do
+        if not r.started and r.channel and now>=r.due and now<=r.due+LATE and r.readyAt<=r.due+OPEN_LATE then ready[r.lane]=true end
+    end
+    for _,r in ipairs(ordered) do
+        local boundary=r.started and r.started+r.musical
+        if boundary and r.loop and not r.retireAt and wanted[r.lane]==r.asset and not ready[r.lane]
+            and now>=boundary and now<=boundary+LATE and (not r.holdSince or boundary+r.musical<=r.holdSince+8) then
+            -- Reuse the resident buffer on the musical grid, excluding its
+            -- release tail. Never loop the whole Ogg's off-grid tail/silence.
+            r.channel:SetTime(now-boundary,true);r.channel:Play();r.started=boundary;r.playedAt=now
+            r.holdSince=r.holdSince or boundary;self.HeldLoops=self.HeldLoops+1
+            for _,pending in ipairs(ordered) do if pending.lane==r.lane and not pending.started and pending.due<=now then
+                self.Skipped=self.Skipped+1;self:Result(pending,false);self:Release(pending)
+            end end
+        end
+    end
     for _,r in ipairs(ordered) do
         local l=self.Lanes[r.lane]
         if r.cancelled or not l then self:Release(r)
@@ -197,8 +226,8 @@ function N:Tick()
                 for _,old in pairs(self.Records) do
                     if old~=r and old.lane==r.lane and old.started then
                         if old.retireAt then self:Release(old)
-                        elseif now>=old.started+old.musical-LATE then old.retireAt=old.started+old.duration
-                        else old.retireAt=math.min(old.started+old.duration,now+.12) end
+                        elseif now>=old.started+old.musical-LATE then old.retireAt=old.started+old.duration;old.interrupted=old.asset~=r.asset
+                        else old.retireAt=math.min(old.started+old.duration,now+.12);old.interrupted=true end
                     end
                 end
                 -- The file was prepared in advance. A bounded frame hitch
@@ -217,13 +246,18 @@ function N:Tick()
             if now>=ends then self:Release(r)
             else
                 local mix=l.from+(l.value-l.from)*math.Clamp((now-l.at)/FADE,0,1)
-                local envelope=math.min(1,(now-(r.playedAt or r.started))/.008,math.max(0,(ends-now)/.06))
+                -- Routine joins retain constant gain and the rendered release.
+                -- Only a genuine role interruption needs a short cutoff ramp.
+                local envelope=r.interrupted and math.Clamp((ends-now)/.12,0,1) or 1
                 local value=mix*self.Volume*envelope*MASTER_GAIN
-                r.targetGain=value;total=total+r.peak*value
+                r.targetGain=value
+                if r.interrupted then total=total+self:RecordPeak(r,now)*value
+                else lanePeaks[r.lane]=math.max(lanePeaks[r.lane] or 0,self.Bounds[r.asset]*value) end
                 if value>0 then audible=true end
             end
         end
     end
+    for _,peak in pairs(lanePeaks) do total=total+peak end
     self:ApplyGains(now,ordered,total)
     self:BridgeGap(now,not audible and next(self.Lanes)~=nil)
     self.LastTick=now
@@ -245,5 +279,5 @@ function N:Status()
         pendingOpens=table.Count(self.Opens),estimatedPCMBytes=self:Bytes(),nativeLateSkipped=self.Skipped,error=self.Error,
         playerVolume=self.Volume,masterGain=MASTER_GAIN,headroomScale=self.HeadroomScale,
         estimatedMusicPeak=self:WrittenPeak(true),peakCeiling=PEAK_CEILING,voices=voices,
-        nativePhaseJoins=self.PhaseJoins,nativeLateOpens=self.LateOpens,maxNativeStartDelay=self.MaxStartDelay}
+        nativePhaseJoins=self.PhaseJoins,nativeLateOpens=self.LateOpens,maxNativeStartDelay=self.MaxStartDelay,nativeHeldLoops=self.HeldLoops}
 end
