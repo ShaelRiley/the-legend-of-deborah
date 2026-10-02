@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Fetch bounded author-approved source payload
         env:
-          PAYLOAD_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-11f0-81fd-8c0d-d28562a6a4a5/raw?se=2026-10-02T20%3A25%3A59Z&sp=r&sv=2026-02-06&sr=b&scid=33db0c2f-c41e-5588-8cc5-f82166412aa8&skoid=5e713cdb-766b-475e-a3ca-8adb6cf99aa0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T19%3A56%3A29Z&ske=2026-10-03T19%3A56%3A29Z&sks=b&skv=2026-02-06&sig=QPi3C2DryubZlUBDfOD98BFxNOfPBOiKwGA%2BgAKcynQ%3D'
+          PAYLOAD_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-7dc4-81fd-9bc0-e87643531667/raw?se=2026-10-02T20%3A32%3A49Z&sp=r&sv=2026-02-06&sr=b&scid=ca46d02e-8ec0-51fb-8b7c-7cffe7e0315e&skoid=5e713cdb-766b-475e-a3ca-8adb6cf99aa0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T19%3A49%3A20Z&ske=2026-10-03T19%3A49%3A20Z&sks=b&skv=2026-02-06&sig=G9hPt%2BokqK0HlU6brRUuid0ioculSr3GUjtfdVL42Ww%3D'
         run: curl --fail --silent --show-error --location "$PAYLOAD_URL" --output /tmp/feat-transfer.txt
       - uses: actions/checkout@v4
         with:
@@ -22,7 +22,7 @@ jobs:
         run: |
           import base64, gzip, hashlib, json, pathlib, subprocess
           raw=base64.b64decode(pathlib.Path('/tmp/feat-transfer.txt').read_text(encoding='utf-8-sig'))
-          assert hashlib.sha256(raw).hexdigest()=='e9c47b848c7e86e5bd7a277867203f1314c93580458c1479f4162fd8a554e030'
+          assert hashlib.sha256(raw).hexdigest()=='7192b126a34596b33c3cd1d08b49f6c82e68b6b75adaeba2a9190d36f22bba49'
           payload=json.loads(gzip.decompress(raw))
           assert subprocess.check_output(['git','rev-parse','HEAD']).decode().strip()==payload['base']
           for name in payload['expected']:
