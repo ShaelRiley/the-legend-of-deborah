@@ -7,23 +7,27 @@ function metadata(id){const a=bank.asset(id);return {...a,clips:a.clips.map(({no
 for(const id of Object.keys(bank.catalog.assets)){
  const a=bank.asset(id),c=new engine.Composer('catalog:'+id);
  for(const clip of a.clips){clips++;notes+=clip.notes.length;check(clip.notes.length<=2048,'bounded source phrase');
+  check(clip.beats===(a.loop?64:12),'real bank uses complete sixteen-bar bodies and distinct fanfares');
   for(const n of clip.notes){check(n.length===5&&n[0]>=0&&n[0]<clip.beats*48&&n[1]>0&&n[0]+n[1]<=clip.beats*48,'authored source gates remain');
    if(n[2]<5)check(scale.has(n[3]%12),'D Dorian remains');}}
  let prior=null;
  for(let i=0;i<24;i++){const phrase=c.choose(a);if(a.clips.length>3)check(prior!==phrase.id,'recent phrases avoided');prior=phrase.id;}
 }
-check(clips===1402&&notes===170860,'whole authored composition preserved');
+const audit=require('../docs/MS3_16_BAR_AUDIT.json');
+check(clips===165&&clips===audit.ordinaryClips+audit.fanfares&&notes===audit.notes,'whole source-audited sixteen-bar composition preserved');
 check(engine.tempo(130,{remaining:0})===130,'fixed rendered tempo replaces old time stretch');
 check(engine.expression({role:'T3',expression:1})===1,'cheap critical gain remains');
 check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss does not fabricate expression');
-function rig(seed='test',acknowledgementDelay=0){
+// Legacy short-phrase fixture retains the original timing regression cases.
+// Separate long-form cases below use unmodified production metadata.
+function rig(seed='test',acknowledgementDelay=0,longform=false){
  let now=0,state={seed:19,role:'T1',remaining:1800,volume:.55,targets:[{block:'a',asset:'a-t1',weight:1}]};
  const pending={},plays=[],announcements=[],mixes={},victories=[],acks=[];let stopCount=0;
  const sink={prepare:(token,lane,clip,delay,deadline)=>{check(Math.abs(deadline-now-delay)<1e-8,'absolute native deadline preserves grid');pending[token]={token,lane,clip,time:deadline};},cancel:token=>delete pending[token],
   mix:(id,g)=>mixes[id]=g,volume:()=>{},drop:id=>{delete mixes[id];for(const k in pending)if(pending[k].lane===id)delete pending[k];},
   stop:()=>{for(const k in pending)delete pending[k];for(const k in mixes)delete mixes[k];stopCount++;}};
  const scheduler=new engine.Scheduler(130,sink,()=>now,(type,value)=>type==='block'?announcements.push(value):victories.push(now),seed);
- function change(patch={}){state={...state,...patch};for(const t of state.targets)scheduler.install(metadata(t.asset));scheduler.update(state);}
+ function change(patch={}){state={...state,...patch};for(const t of state.targets){let a=metadata(t.asset);if(!longform&&a.loop)a={...a,clips:a.clips.map(c=>({...c,beats:8}))};scheduler.install(a);}scheduler.update(state);}
  function pump(){
   for(let i=acks.length-1;i>=0;i--)if(now>=acks[i].at){const a=acks.splice(i,1)[0];scheduler.result(a.token,a.played);}
   scheduler.pump();const starts={};for(const token of Object.keys(pending)){
@@ -87,6 +91,25 @@ const restart=rig('return');restart.jump(100);restart.pump();check(restart.plays
 const rapid=rig('rapid');for(const block of ['a','b','c','d','e','f','g','h']){
  rapid.change({targets:[{block,asset:block+'-t1',weight:1}]});rapid.pump();check(Object.keys(rapid.scheduler.lanes).length<=3,'rapid replacement has bounded retirement tails');}
 rapid.scheduler.stop();
+// The shipping score must advance after ONE full 16-bar source passage.
+const long=rig('actual-sixteen-bar',0,true);long.step(95);
+check(long.plays.length===4,'actual long-form score plays four passages over 95 seconds');
+for(let i=1;i<long.plays.length;i++){
+ check(Math.abs(long.plays[i].time-long.plays[i-1].time-64*60/130)<1e-8,'long passages advance on full sixty-four-beat boundaries');
+ check(long.plays[i].clip!==long.plays[i-1].clip,'no artificial four-pass short-phrase extension');
+}
+const longRole=rig('responsive-long-role',0,true);longRole.step(6);const changedAt=longRole.now;
+longRole.change({role:'BOSS',targets:[{block:'a',asset:'a-boss',weight:1}]});longRole.step(4);
+check(longRole.plays.at(-1).clip.startsWith('a_boss_')&&longRole.plays.at(-1).time-changedAt<3,'boss response does not wait sixteen bars');
+longRole.change({targets:[{block:'a',asset:'a-boss',weight:.5},{block:'b',asset:'b-boss',weight:.5}]});longRole.step(4);
+check(longRole.plays.at(-1).clip.startsWith('b_boss_'),'long-form second-floor handoff is responsive');
+const longHeld=rig('long-whole-resident',0,true);longHeld.step(29.8);const longJob=Object.values(longHeld.pending)[0];
+check(longJob,'long successor prepared before whole-passage boundary');
+longHeld.jump(longJob.time-longHeld.now+.3);longHeld.pump();
+check(Math.abs(longHeld.scheduler.timeForBeat(longHeld.scheduler.lanes.a.nextBeat)-longJob.time-64*60/130)<1e-8,'failed same-role successor leaves the resident full passage intact');
+longHeld.change({role:'T3',targets:[{block:'a',asset:'a-t3',weight:1}]});longHeld.step(4);
+check(longHeld.plays.at(-1).clip.startsWith('a_t3_'),'failed old-role replacement cannot delay fresh danger sixteen bars');
+long.scheduler.stop();longRole.scheduler.stop();longHeld.scheduler.stop();
 // A legacy bridge without bundled-byte support must retain native playback.
 // AudioContext is now allowed only for rendered AudioBuffer playback, never synthesis.
 let init,tick,backend;global.window={AudioContext:function(){throw Error('live synthesis forbidden');},setTimeout:fn=>init=fn,setInterval:fn=>{tick=fn;return 1;},clearInterval:()=>{}};

@@ -86,7 +86,7 @@
             if(!j.loop){l.finished=true;this.callback('victory','');}
             else if(l.began&&l.playedAsset===l.asset){
                 // A native hold repeats the resident phrase. Retry on this
-                // lane's original eight-beat grid, never halfway through it.
+                // lane's original whole-passage grid, never halfway through it.
                 l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*this.beatSeconds)))*j.beats;
             }else l.nextBeat=this.boundary(this.clock(),this.sink.continuous?8:4);
         }
@@ -107,7 +107,7 @@
             t=this.timeForBeat(l.nextBeat);
             if(t<now-LATE){
                 this.skipped++;this.resyncs++;
-                if(a.loop&&l.began&&l.clip)l.nextBeat+=Math.ceil((now+LOOKAHEAD-t)/(l.clip.beats*this.beatSeconds))*l.clip.beats;
+                if(a.loop&&l.began&&l.clip&&l.playedAsset===l.asset)l.nextBeat+=Math.ceil((now+LOOKAHEAD-t)/(l.clip.beats*this.beatSeconds))*l.clip.beats;
                 else l.nextBeat=this.boundary(now,this.sink.continuous?8:4);
                 t=this.timeForBeat(l.nextBeat);
             }
@@ -233,7 +233,7 @@
         gain.gain.value=norm;source.connect(gain);gain.connect(lane.gain);
         var v={entry:entry,source:source,gain:gain,norm:norm,tail:!!tail,lane:lane.id,due:due,end:tail?due+entry.tail.duration:(entry.loop?Infinity:due+entry.buffer.duration)};
         source.onended=function(){v.ended=true;};entry.refs++;entry.used=ctx.currentTime;
-        if(tail)source.start(due);else source.start(due);
+        source.start(due);
         this.voices.push(v);this.peakVoices=Math.max(this.peakVoices,this.voices.length);return v;
     };
     AudioTransport.prototype.schedule=function(j,e){

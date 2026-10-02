@@ -1,3 +1,13 @@
+# Current author-directed checkpoint — MS3 sixteen-bar source integration
+
+From main `208a1af11c4448a054cc24e81603ed3446c0c55f`, the author authorizes source publication of genuine sixteen-bar arrangements and bounded playback. The canonical mapper now reads all 465 originals into 157 sixty-four-beat passages plus eight short fanfares (121,557 notes); catalog `ms3-s16-e5961c1e5e7bf8cd` matches Surge bank `ms2-surge-1d9386ddd67218a5`, 166 files / 46,853,341 bytes. Seven weak source-mapped exits contain baked percussion replacement fills. The new compact-tail loop avoids duplicate whole buffers and keeps the 32-MiB limit. Ordinary phrases advance after one pass; short-boundary role/stair response and healthy resident holds remain.
+
+The active checkpoint includes source/MIDI/provenance parity, complete music and integration gates, actual decoding and browser-rendered long joins. See `docs/validation/MS3_LONGFORM.md` for exact evidence and outstanding limitations; source publication is not native acceptance. The guide video remains inaccessible/unverified. Google again rejected the live tuning insertion with `FAILED_PRECONDITION`; `MS3_LONGFORM_GDD_AMENDMENT.md` preserves it. This supersedes the earlier source-only candidate and two-bar hold design where they conflict, not their historical evidence.
+
+Next native action: fully quit/update/install the exact published main, enable Options → Music on gm_flatgrass, and listen through at least two complete passages plus danger and a stair crossing/reversal. Confirm evolving sixteen-bar material, useful loudness, uninterrupted joins and clean Off/On. If a defect remains, collect `lod_music_client_status` twice and the normal console/summary logs. No Workshop/VPS action is included; local acceptance → Workshop parity → matching VPS remains the release order.
+
+---
+
 # Current repair checkpoint — MS3 sample-clock phrase continuity
 
 The author reports rhythmic and dynamic segmentation on main 90510057c608f8e2beec9debc6ceec36b35d14f3. The previous frame-start/fast-seek repair is failed continuity evidence. The current authorized checkpoint moves capable clients to scheduled AudioBuffer playback of the same bundled Surge recordings, with the existing native backend retained for compatibility. This is rendered playback, not live synthesis. See docs/validation/MS3_SAMPLE_CLOCK.md for the design, measured gates, constraints and the still-required native audition. Source/automated audio validation never establishes in-game perceptual acceptance. No Workshop or VPS deployment.

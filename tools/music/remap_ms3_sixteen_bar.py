@@ -6,8 +6,9 @@ canonical MIDI reader, instrument router/curator and portable MIDI writer.
 No old short-clip bank or rendered recording is an input. All ordinary clips
 are contiguous 64-beat source windows. Victory remains a 12-beat one-shot.
 
-Outputs deliberately live outside the shipping catalog until the longer-buffer
-transport, Surge regeneration and native listening gates have passed together.
+Default outputs are isolated authoring files. --stage-for-render explicitly stages
+the score; regenerate the matching Surge bank and pass integration gates before
+publishing. Native listening acceptance remains a separate release gate.
 """
 from __future__ import annotations
 
@@ -459,8 +460,8 @@ def build(source: Path, output: Path, maximum: int = 4, mapped_exits: bool = Fal
                 runtimeStatus='Offline arranged score; publish only with matching rendered bank and passing integration gates.')
     catalog=dict(schema=2,revision='',ppq=PPQ,defaultBlock='a',scale='D Dorian',bpm=130,
                  instruments=list(INSTRUMENTS),blocks=blocks,assets=assets,sets={},pages=[],phraseBars=16,mappedExits=mapped_exits)
-    # Candidate shards obey the existing byte limit. Shipping admission remains
-    # deliberately untouched because it currently permits only 8/12-beat clips.
+    # Authoring shards retain the existing byte bound. Shipping is explicit and
+    # requires a matching rendered bank; never install an isolated catalog.
     bundle=output/'catalog';bundle.mkdir(exist_ok=True)
     for p in bundle.glob('notes_*.lua'):p.unlink()
     page={};index=0
@@ -492,13 +493,13 @@ def build(source: Path, output: Path, maximum: int = 4, mapped_exits: bool = Fal
         'Nine named instrument parts plus conductor. MIDI GM programs are audition hints, not the Surge sound.\n'
         'Bridges/: source-derived one-bar percussion replacement candidates; never a second stacked kit.\n'
         'index.json: candidate graph and role handoffs; motifs.json and source-audit.json: provenance/edit decisions.\n'
-        'Not installed in the game. Longer-buffer admission, complete Surge rendering and native listening remain open.\n'
+        'This ZIP alone does not install game audio. Stage, render and validate a matching bank; native listening remains separate.\n'
         'The linked arrangement video was not accessible in full; guide-specific compliance is not claimed.\n'
     ).encode()
     write_zip(output/'MS3_16_BAR_MIDI_CANDIDATES.zip',entries)
     rows=['# MS3 — genuine 16-bar source arrangement candidates','',
           f"Revision `{catalog['revision']}`. {report['sourceMidiFiles']} original MIDIs → {report['ordinaryClips']} sixteen-bar passages + {report['fanfares']} short fanfares; {report['notes']:,} arranged notes.",'',
-          '**Authoring candidate, not a shipping audio replacement.** The active game remains unchanged. The linked guide could not be reviewed in full. Motif recognition below is an auditable heuristic; perceptual identity and balance require listening.','',
+          '**Source arrangement report; MIDI exports alone are not an audio installation.** The linked guide could not be reviewed in full. Motif recognition below is an auditable heuristic; perceptual identity and balance require listening.','',
           '## Arrangement principles','',
           'Keep the complete 64-beat source timeline. Choose a foreground from a block motif or recurring source cell and preserve its entire voice part across the full passage. The four four-bar groups retain source development, not arbitrary lead swaps. Protect every selected motif onset, subordinate competing Acid/Brass attacks, soften harmonic support, preserve bass/kick, and reduce calm hat density. Same-pitch overlapping gates are shortened at their next source retrigger so MIDI note-offs are unambiguous. No new melodic notes or repeated two-bar tiles are manufactured. Fills are separately exported source-derived replacement candidates, not automatically played at every seam.','',
           '## Block motifs','', '| Block | Voice | Source role / beat | Intervals (semitones) | Roles with exact fingerprint |','| --- | --- | --- | --- | --- |']
@@ -506,8 +507,8 @@ def build(source: Path, output: Path, maximum: int = 4, mapped_exits: bool = Fal
         for m in ms:rows.append(f"| {b.upper()} | {m['instrument']} | {m['sourceRole']} / {m['sourceBeat']:g} | {', '.join(map(str,m['intervals']))} | {', '.join(m['roles'])} |")
     rows+=['','## Source windows','', '| Arrangement | Source starts (beats) | Length |','| --- | --- | --- |']
     for aid,a in assets.items():rows.append(f"| {aid} | {', '.join(str(c['offset']) for c in a['clips'])} | {64 if a['loop'] else 12} beats |")
-    rows+=['','## Remaining integration gate','',
-           'Do not copy the candidate catalog over the active bank. The current renderer pins the old clip count, catalog admission allows only 8/12 beats, and the sample-clock backend retains three buffer-lengths per looping clip. A 64-beat clip nearly exhausts its 32 MiB PCM budget by itself; successors/stair lanes must be redesigned and tested, not admitted by changing a constant. Required follow-through: bounded long-buffer transport; full original-source Surge regeneration; source/audio hash parity; complete existing music/integration regressions; actual 16-bar join/stair/role/fanfare decoding; native GMod/Steam Deck listening.','']
+    rows+=['','## Publication and listening gates','',
+           'Stage the catalog only as part of the offline Surge build, with matching note/audio hashes, byte-bounded compact-tail transport, complete music/integration regressions and real sixteen-bar browser joins. The source-derived mapped exits replace percussion rather than stacking a kit. Native GMod/Steam Deck listening remains the perceptual acceptance gate; no automated result substitutes for it. The reference video has not been verified.','']
     (output/'MS3_16_BAR_DIRECTION.md').write_text('\n'.join(rows))
     print(compact({k:report[k] for k in ('catalogRevision','sourceMidiFiles','arrangements','ordinaryClips','fanfares','notes')}))
     return catalog,payloads,report

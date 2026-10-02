@@ -17,6 +17,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools/music'))
 import midi
 import build_ms2 as compiler
+import remap_ms3_sixteen_bar as longform
 
 
 def vlq(n):
@@ -144,10 +145,11 @@ class ShippedBank(unittest.TestCase):
                 decoded=read_lua_json(self.directory/name)
                 fixture=destination/name;fixture.write_text('return '+lua_value(decoded)+'\n')
                 rows.append({'name':name,'fixture':str(fixture),'keys':json_keys(decoded)})
-            self.assertEqual(rows[0]['keys'],41125)
-            self.assertGreater(rows[0]['keys'],15000)
-            self.assertEqual(sum(row['keys']>15000 for row in rows[1:]),62)
-            self.assertEqual(max(row['keys'] for row in rows[1:]),16988)
+            # Keep the native 15,000-key regression boundary, not the retired
+            # score's accidental number of keys/pages.
+            rejected_pages=sum(row['keys']>15000 for row in rows[1:])
+            self.assertGreater(rejected_pages,0)
+            self.assertGreater(max(row['keys'] for row in rows[1:]),15000)
             decoded=read_lua_json(self.directory/'render.lua')
             fixture=destination/'render.lua';fixture.write_text('return '+lua_value(decoded)+'\n')
             rows.append({'name':'render.lua','fixture':str(fixture),'keys':json_keys(decoded)})
@@ -169,12 +171,12 @@ end
 e.realBundle=true
 local M=LOD.Music
 local raw=assert(M.IncludeBundled('catalog.lua'))
-assert(not util.JSONToTable(raw),'default native breadth rejects the real catalog')
+assert((util.JSONToTable(raw)==nil)==CATALOG_REJECTED,'default native breadth matches the actual catalog size')
 local rejected=0
 for raw,entry in pairs(decoded) do
  if entry.name:match('^notes_') and not util.JSONToTable(raw) then rejected=rejected+1 end
 end
-assert(rejected==62,'default native breadth also rejects the real note pages')
+assert(rejected==REJECTED_PAGES,'default native breadth also rejects the real note pages')
 local catalog,err=M.LoadBundled()
 assert(catalog,err or 'complete catalog failed native admission')
 assert(table.Count(catalog.blocks)==8 and table.Count(catalog.assets)==48)
@@ -203,11 +205,11 @@ for id in pairs(catalog.assets) do
   assert(D.RenderBank.clips[clip.id],'actual rendered phrase exists')
  end
 end
-assert(phrases==1402,'every actual phrase admitted')
+assert(phrases==CLIP_COUNT,'every actual phrase admitted')
 assert(table.Count(D.Pages)==0 and table.Count(D.Payloads)<=4,'runtime retains metadata only')
 for _,path in ipairs(e.includeCalls) do assert(not path:find('/notes_',1,true),'runtime never decodes a note page') end
-print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' rendered phrases; no runtime note decoding')
-""".replace('ENTRIES',lua_value(rows)))
+print('MS2_NATIVE_JSON PASS: actual catalog/key limits; 48 arrangements; '..phrases..' rendered phrases; no runtime note decoding')
+""".replace('ENTRIES',lua_value(rows)).replace('CATALOG_REJECTED',lua_value(rows[0]['keys']>15000)).replace('REJECTED_PAGES',str(rejected_pages)).replace('CLIP_COUNT',str(self.report['clips'])))
             result=subprocess.run([sys.executable,str(ROOT/'tools/run_lua54.py'),str(script)],cwd=ROOT,
                                   text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
             self.assertEqual(result.returncode,0,result.stdout)
@@ -215,7 +217,7 @@ print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' 
     def test_complete_bounded_lineage_and_graph(self):
         catalog=self.catalog;self.assertEqual(catalog['schema'],2)
         self.assertEqual(len(catalog['blocks']),8);self.assertEqual(len(catalog['assets']),48)
-        self.assertEqual(catalog['defaultBlock'],'a');self.assertEqual(catalog['scale'],'D Dorian')
+        self.assertEqual(catalog['phraseBars'],16);self.assertTrue(catalog['mappedExits']);self.assertEqual(catalog['defaultBlock'],'a');self.assertEqual(catalog['scale'],'D Dorian')
         all_notes={}
         for name in catalog['pages']:
             data=(self.directory/name).read_bytes()
@@ -227,6 +229,7 @@ print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' 
             ids={c['id'] for c in asset['clips']}
             self.assertTrue(0<len(ids)<=256);self.assertEqual(asset['bpm'],catalog['bpm'])
             for clip in asset['clips']:
+                self.assertEqual(clip['beats'],64 if asset['loop'] else 12)
                 used.add(clip['id']);self.assertIn(clip['id'],all_notes)
                 self.assertTrue(set(clip['next'])<=ids)
                 self.assertTrue(0<=clip['energy']<=1 and 0<=clip['pulse']<=1)
@@ -243,7 +246,8 @@ print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' 
     def test_source_folder_rebuild_matches_every_shipped_shard(self):
         with tempfile.TemporaryDirectory() as temp,contextlib.redirect_stdout(io.StringIO()):
             destination=Path(temp)
-            catalog,_,_=compiler.compile_library(ROOT/'tools/music/sources',destination)
+            catalog,_,_=longform.build(ROOT/'tools/music/sources',destination,mapped_exits=True)
+            destination=destination/'catalog'
             self.assertEqual(catalog['revision'],self.catalog['revision'])
             for name in ['catalog.lua','files.lua',*catalog['pages']]:
                 self.assertEqual((destination/name).read_bytes(),(self.directory/name).read_bytes(),name)
