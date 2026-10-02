@@ -1,0 +1,50 @@
+name: MS3 long-form workbench
+on:
+  push:
+    branches: [work/ms3-longform-integration]
+    paths: [.github/workflows/ms3-longform-workbench.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover complete exact-source validation workspace
+        run: |
+          mkdir -p /tmp/ms3-recovery
+          git archive --format=tar.gz HEAD > /tmp/ms3-recovery/repository.tar.gz
+          git rev-parse HEAD > /tmp/ms3-recovery/head.txt
+          du -h /tmp/ms3-recovery/repository.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ms3-complete-source
+          path: /tmp/ms3-recovery
+          compression-level: 0
+          retention-days: 7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy scipy cmake yt-dlp
+      - name: Retrieve requested public arrangement reference
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/ms3-guide
+          python -m yt_dlp --skip-download --write-info-json --write-subs --write-auto-subs --sub-langs 'en.*' --sub-format vtt -o '/tmp/ms3-guide/%(id)s.%(ext)s' 'https://www.youtube.com/watch?v=8yu502IyV0o' > /tmp/ms3-guide/retrieval.txt 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ms3-reference-retrieval
+          path: /tmp/ms3-guide
+          retention-days: 7
+      - uses: actions/cache@v4
+        id: surge
+        with:
+          path: |
+            /tmp/lod-surge-source
+            /tmp/lod-surge-build
+          key: lod-surge-f7b97c6-accb4349-python312-ubuntu24-v1
+      - name: Build pinned external Surge offline tool
+        if: steps.surge.outputs.cache-hit != 'true'
+        run: python tools/music/surge/prepare.py --source /tmp/lod-surge-source --build /tmp/lod-surge-build --jobs 4
