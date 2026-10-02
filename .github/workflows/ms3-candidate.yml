@@ -7,6 +7,9 @@ permissions:
 concurrency:
   group: ms3-continuous-score-candidate
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -19,8 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Assemble hash-verified candidate without modifying main
-        shell: bash
+      - name: Assemble exact final candidate without changing main
         run: |
           mkdir -p /tmp/ms3-evidence
           python3 - <<'PY'
@@ -38,6 +40,8 @@ jobs:
           Path('/tmp/ms3-apply.py').write_text(data['apply'])
           PY
           python3 /tmp/ms3-apply.py | tee /tmp/ms3-evidence/assemble.log
+          test "$(git hash-object .ms3-final.py)" = c85903b26944e63e8f5788d2b42e954725530790
+          python3 .ms3-final.py | tee /tmp/ms3-evidence/hardening.log
           git diff --check
       - name: Install finite validation dependencies
         run: |
@@ -55,15 +59,19 @@ jobs:
       - name: Decode every shipped recording
         run: node tools/test_music_audio.js | tee /tmp/ms3-evidence/decoded-bank.log
       - name: Full integration and syntax gate
-        run: python3 tools/test_checkpoint_g_integration.py | tee /tmp/ms3-evidence/integration.log
+        run: python3 tools/test_checkpoint_g_integration.py --workers 4 --output /tmp/ms3-integration | tee /tmp/ms3-evidence/integration.log
       - name: Record tested tree and publish only to the isolated candidate branch
-        shell: bash
         run: |
           python3 - <<'PY'
           import hashlib,json,os
           from pathlib import Path
           paths=['tools/music/ms2_engine.js','gamemodes/legend_of_deborah/gamemode/lod/ms2/engine.lua','gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua','tools/test_ms3_transport.js','tools/test_ms3_audio.py','tools/test_ms2_catalog.py','tools/test_music_sequence.js','tools/test_music_gate.py','docs/DEVELOPMENT_PLAN.md','docs/validation/MS3_SAMPLE_CLOCK.md','docs/validation/MS3_GDD_AMENDMENT.md']
           receipt={'base':'90510057c608f8e2beec9debc6ceec36b35d14f3','runId':os.environ['GITHUB_RUN_ID'],'candidateTrigger':os.environ['GITHUB_SHA'],'nativeListeningAccepted':False,'liveGDDApplied':False,'passed':['ms3_transport','ms3_browser_audio_bank','music_gate','all_recording_decodes','checkpoint_g_integration'],'sha256':{p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in paths}}
+          matrix=json.loads(Path('/tmp/ms3-integration/receipt.json').read_text())
+          receipt['integration']={key:matrix[key] for key in ('total','passed','changed_during_gate','lua_files')}
+          receipt['transport']=json.loads(Path('/tmp/ms3-evidence/transport.log').read_text())
+          receipt['audio']=[json.loads(line) for line in Path('/tmp/ms3-evidence/browser-audio.log').read_text().splitlines()]
+          receipt['decode']=json.loads(Path('/tmp/ms3-evidence/decoded-bank.log').read_text())
           Path('docs/validation/MS3_CI_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
           Path('/tmp/ms3-paths').write_text('\n'.join(paths+['docs/validation/MS3_CI_RECEIPT.json'])+'\n')
           PY
@@ -72,19 +80,19 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           xargs -d '\n' git add -- < /tmp/ms3-paths
-          git rm .github/workflows/ms3-candidate.yml .ms3-candidate/payload.0 .ms3-candidate/payload.1 .ms3-candidate/payload.2
+          git rm .github/workflows/ms3-candidate.yml .ms3-candidate/payload.0 .ms3-candidate/payload.1 .ms3-candidate/payload.2 .ms3-final.py
           git diff --cached --check
           git commit -m 'MS3: validated sample-clock rendered phrase continuity'
           git push origin HEAD:"$GITHUB_REF_NAME"
           git rev-parse HEAD | tee /tmp/ms3-evidence/validated-commit.txt
       - name: Preserve finite validation evidence
         if: always()
-        shell: bash
         run: |
           mkdir -p /tmp/ms3-evidence
           git diff --binary > /tmp/ms3-evidence/candidate.patch
           git status --short > /tmp/ms3-evidence/status.txt
           test ! -d /tmp/ms3-gate || cp -r /tmp/ms3-gate /tmp/ms3-evidence/music-gate
+          test ! -d /tmp/ms3-integration || cp -r /tmp/ms3-integration /tmp/ms3-evidence/integration
           for path in gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua docs/validation/MS3_CI_RECEIPT.json; do
             test ! -f "$path" || cp "$path" /tmp/ms3-evidence/
           done
