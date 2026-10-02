@@ -58,7 +58,7 @@ function D:Payload(aid)
         if not self.RenderBank or not self.RenderBank.clips[clip.id] then self.Error="Missing Surge phrase "..clip.id;return end
         local meta=self.RenderBank.clips[clip.id]
         full=math.max(full,meta.peak);tail=math.max(tail,meta.tailPeak)
-        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,duration=meta.duration}
+        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,motifs=clip.motifs,handoffs=clip.handoffs,duration=meta.duration}
     end
     payload.bound=full+(a.loop and tail or 0)
     self.Payloads[aid]={data=payload,used=SysTime()}
@@ -118,8 +118,8 @@ function D:StartRenderer()
             if D.ClipReadCount>2 then self:QueueJavascript('lodScore.audio("'..clip..'","");');return end
             local path="sound/lod/ms2_surge/"..clip..".ogg"
             local size=file.Size(path,"GAME");local bytes
-            if size and size>0 and size<=256*1024 then bytes=file.Read(path,"GAME") end
-            if type(bytes)~="string" or #bytes>256*1024 or bytes:sub(1,4)~="OggS" then bytes=nil end
+            if size and size>0 and size<=1024*1024 then bytes=file.Read(path,"GAME") end
+            if type(bytes)~="string" or #bytes>1024*1024 or bytes:sub(1,4)~="OggS" then bytes=nil end
             local encoded=bytes and util.Base64Encode(bytes) or ""
             self:QueueJavascript('lodScore.audio("'..clip..'","'..encoded..'");')
         end)

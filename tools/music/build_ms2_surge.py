@@ -35,8 +35,15 @@ def clips():
             if c['page'] not in pages:pages[c['page']]=lua_json(BUNDLE/c['page'])
             notes=pages[c['page']][c['id']]
             out.append({**c,'block':a['block'],'role':a['role'],'asset':aid,'notes':notes})
-    if len(out)!=1402 or len({c['id'] for c in out})!=1402 or sum(len(c['notes']) for c in out)!=170860:
-        raise RuntimeError('Unexpected curated phrase/note count; reconcile the score first')
+    audit=json.loads((ROOT/'docs/MS3_16_BAR_AUDIT.json').read_text())
+    if (catalog.get('phraseBars')!=16 or audit['catalogRevision']!=catalog['revision']
+            or len(out)!=audit['ordinaryClips']+audit['fanfares'] or len({c['id'] for c in out})!=len(out)
+            or sum(len(c['notes']) for c in out)!=audit['notes']
+            or any(c['beats']!=(12 if c['role']=='VICTORY' else 64) for c in out)):
+        raise RuntimeError('Long-form score/audit mismatch; regenerate from source first')
+    for c in out:
+        if sha(json.dumps(c['notes'],separators=(',',':')).encode())!=c['noteSHA256']:
+            raise RuntimeError('Changed arranged notes: '+c['id'])
     return catalog,out
 
 def condition(pcm,tail_fade=True):
@@ -100,7 +107,7 @@ def render_clip(task):
     c,bpm,module,work,render_fingerprint=task
     work=Path(work);cid=c['id'];duration=c['beats']*60/bpm+LOCK['releaseSeconds'];wave_path=work/(cid+'.wav');cache=work/(cid+'.json')
     note_hash=sha(json.dumps(c['notes'],separators=(',',':')).encode())
-    key=sha((render_fingerprint+note_hash+c['role']).encode())
+    key=sha((render_fingerprint+note_hash+c['role']+str(c['beats'])).encode())
     known=json.loads(cache.read_text()) if cache.exists() else {}
     if known.get('key')==key and wave_path.exists() and known.get('pcmSHA256')==sha(wave_path.read_bytes()):metrics=known['metrics']
     else:
@@ -120,6 +127,7 @@ def render_clip(task):
         pcm,metrics=condition(pcm);wav_write(wave_path,pcm)
         cache.write_text(json.dumps({'key':key,'metrics':metrics,'pcmSHA256':sha(wave_path.read_bytes())}))
     target=DEST/(cid+'.ogg');encoded=encode(wave_path,target,cid,c['beats']*60/bpm)
+    if encoded['bytes']>1024*1024:raise ValueError('Phrase exceeds bounded local-file admission: '+cid)
     if abs(encoded['duration']-duration)>2/RATE:raise ValueError('Wrong duration: '+cid)
     return {'id':cid,'block':c['block'],'role':c['role'],'asset':c['asset'],'beats':c['beats'],'bpm':bpm,
             'musicalDuration':c['beats']*60/bpm,'path':str(target.relative_to(ROOT)),'noteSHA256':note_hash,
@@ -191,7 +199,7 @@ def main():
             results.append(result)
             if i%50==0 or i==len(tasks):print(f'Rendered {i}/{len(tasks)}; {sum(r["bytes"] for r in results):,} bytes',flush=True)
     if args.limit:
-        print('Smoke mean bytes:',sum(r['bytes'] for r in results)//len(results),'estimated bank bytes:',sum(r['bytes'] for r in results)//len(results)*1402);return
+        print('Smoke mean bytes:',sum(r['bytes'] for r in results)//len(results),'estimated bank bytes:',sum(r['bytes'] for r in results)//len(results)*len(bank));return
     # Bounded quiet D/A ambient bed drawn from the same synthetic string patch.
     drone=render_voice(surge,'strings',[(0,8,50,60),(0,8,57,45)],8.6,7919,'T0')[RATE:RATE*5]
     drone,_=condition(drone,tail_fade=False)
@@ -210,6 +218,10 @@ def main():
               'sampleRate':RATE,'channels':2,'bpm':catalog['bpm'],'clipCount':len(results),'fileCount':len(results)+1,
               'totalBytes':total,'largestBytes':max(r['bytes'] for r in results),'averagePhraseBytes':sum(r['bytes'] for r in results)/len(results),
               'voices':voices,'bridge':bridge,'clips':results}
+    # The complete new bank passed before retiring old short recordings.
+    keep={r['id']+'.ogg' for r in results}|{'bridge.ogg'}
+    for old in DEST.glob('*.ogg'):
+        if old.name not in keep:old.unlink()
     MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
     write_runtime(manifest)
     # Representative ordered listening evidence: Chill, isolated voices, roles.

@@ -3,20 +3,27 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
  * Older HTML engines retain the bounded native compatibility backend. */
 (function(root,factory){var api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MS2=api;}(this,function(){
     'use strict';
-    var LOOKAHEAD=1.0,LATE=.15,ACK_WAIT=1.0,PHRASE_PASSES=4;
+    var LOOKAHEAD=1.0,LATE=.15,ACK_WAIT=1.0,PHRASE_PASSES=1;
     function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
     function hash(s){var h=2166136261,i;s=String(s);for(i=0;i<s.length;i++)h=((h^s.charCodeAt(i))*16777619)>>>0;return h||1;}
     function Random(seed){this.value=hash(seed);}
     Random.prototype.next=function(){this.value=(1664525*this.value+1013904223)>>>0;return this.value/4294967296;};
+    function passesFor(c){return c.beats===64?PHRASE_PASSES:4;}
     function expression(s){return !s.staged&&s.expression===1&&(s.role==='T3'||s.role==='BOSS')?1:0;}
     function Composer(seed){this.random=new Random(seed);this.history=[];this.last=null;}
     Composer.prototype.choose=function(asset,commit){
         var r=this.random,last=this.last,candidates=[],preferred={},i,c,dist;
-        if(last)for(i=0;i<(last.next||[]).length;i++)preferred[last.next[i]]=1-i*.08;
+        if(last){
+            for(i=0;i<(last.next||[]).length;i++)preferred[last.next[i]]=1-i*.08;
+            var handoff=last.handoffs&&last.handoffs[asset.role];
+            if(handoff)preferred[handoff.to]=1.5;
+        }
         for(i=0;i<asset.clips.length;i++){
-            c=asset.clips[i];if(asset.clips.length>3&&this.history.indexOf(c.id)!==-1)continue;
+            c=asset.clips[i];if(last&&c.id===last.id&&asset.clips.length>1)continue;
+            if(asset.clips.length>3&&this.history.indexOf(c.id)!==-1)continue;
             dist=last?Math.min((c.entry-last.exit+12)%12,(last.exit-c.entry+12)%12):0;
-            candidates.push({clip:c,score:(preferred[c.id]||0)-1.5*(last?Math.abs(c.energy-last.energy):0)-.12*dist+r.next()*.15});
+            var shared=0,m;for(m=0;m<(c.motifs||[]).length;m++)if(last&&(last.motifs||[]).indexOf(c.motifs[m])!==-1)shared++;
+            candidates.push({clip:c,score:(preferred[c.id]||0)+.28*Math.min(2,shared)-1.5*(last?Math.abs(c.energy-last.energy):0)-.12*dist+r.next()*.15});
         }
         candidates.sort(function(a,b){return b.score-a.score;});
         c=candidates.length?candidates[0].clip:asset.clips[0];if(commit!==false)this.accept(c);return c;
@@ -24,9 +31,10 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     Composer.prototype.accept=function(c){if(this.last&&this.last.id===c.id)return;this.last=c;this.history.push(c.id);if(this.history.length>3)this.history.shift();};
     function Scheduler(base,sink,clock,callback,seed){
         this.base=base;this.bpm=base;
-        // Eight-beat loop granules and the shared clock use the same integer
-        // sample count. Repeated looping cannot accumulate fractional-sample drift.
-        this.beatSeconds=sink.continuous?Math.round(8*60/base*sink.context.sampleRate)/(8*sink.context.sampleRate):60/base;this.sink=sink;this.clock=clock;this.callback=callback||function(){};
+        // Quantize the full sixteen-bar period, not eight separately rounded tiles.
+        // The first installed looping asset also admits legacy eight-beat fixtures.
+        this.gridReady=false;
+        this.beatSeconds=sink.continuous?Math.round(64*60/base*sink.context.sampleRate)/(64*sink.context.sampleRate):60/base;this.sink=sink;this.clock=clock;this.callback=callback||function(){};
         this.origin=clock()+LOOKAHEAD;this.assets={};this.lanes={};this.jobs={};this.serial=0;this.visits={};
         this.enabled=true;this.state={role:'T0'};this.skipped=0;this.resyncs=0;this.maxQueue=0;this.ackTimeouts=0;
         this.performanceSeed=seed===undefined?String(Date.now())+':'+Math.random():seed;
@@ -35,7 +43,11 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     Scheduler.prototype.boundary=function(now,beats,lead){return Math.max(0,Math.ceil((now+(lead===undefined?LOOKAHEAD:lead)-this.origin)/this.beatSeconds/beats)*beats);};
     Scheduler.prototype.install=function(a){
         if(!a||!a.id||!a.clips||!a.clips.length||a.clips.length>256)throw Error('invalid phrase arrangement');
-        for(var i=0;i<a.clips.length;i++)if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(a.clips[i].id)||(a.clips[i].beats!==8&&a.clips[i].beats!==12))throw Error('invalid rendered phrase');
+        for(var i=0;i<a.clips.length;i++)if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(a.clips[i].id)||(a.clips[i].beats!==8&&a.clips[i].beats!==12&&a.clips[i].beats!==64))throw Error('invalid rendered phrase');
+        if(!this.gridReady&&a.loop&&this.sink.continuous){
+            var beats=a.clips[0].beats,rate=this.sink.context.sampleRate;
+            this.beatSeconds=Math.round(beats*60/this.base*rate)/(beats*rate);this.gridReady=true;
+        }
         this.assets[a.id]=a;
     };
     Scheduler.prototype.cancel=function(l){if(l.pending){this.sink.cancel(l.pending);delete this.jobs[l.pending];l.pending=null;}};
@@ -66,13 +78,13 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         var j=this.jobs[token];if(!j)return;delete this.jobs[token];var l=this.lanes[j.lane];
         if(!l||l.pending!==token)return;l.pending=null;
         if(played){
-            l.passes=(l.passes||0)+1;if(j.choice)l.composer.accept(j.choice);
+            l.playedAsset=j.asset;l.passes=(l.passes||0)+1;if(j.choice)l.composer.accept(j.choice);
             if(!l.began){l.began=true;this.callback('block',l.id);}
             if(!j.loop){l.finished=true;this.victoryEnd=j.time+j.beats*this.beatSeconds;}
         }else{
             this.skipped++;this.resyncs++;
             if(!j.loop){l.finished=true;this.callback('victory','');}
-            else if(l.began){
+            else if(l.began&&l.playedAsset===l.asset){
                 // A native hold repeats the resident phrase. Retry on this
                 // lane's original eight-beat grid, never halfway through it.
                 l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*this.beatSeconds)))*j.beats;
@@ -101,10 +113,10 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             }
             if(t<=now+LOOKAHEAD+.001){
                 // One preparation per lane/pump. Never drain overdue debt.
-                if(a.loop&&l.clip&&(l.passes||0)<PHRASE_PASSES)c=l.clip;
+                if(a.loop&&l.clip&&(l.passes||0)<passesFor(l.clip))c=l.clip;
                 else{c=l.composer.choose(a,false);l.clip=c;l.passes=0;}
                 var token=String(++this.serial);
-                j={lane:id,clip:c.id,beats:c.beats,time:t,loop:a.loop,choice:c};this.jobs[token]=j;l.pending=token;
+                j={lane:id,asset:a.id,clip:c.id,beats:c.beats,time:t,loop:a.loop,choice:c};this.jobs[token]=j;l.pending=token;
                 l.nextBeat+=c.beats;this.sink.prepare(token,id,c.id,Math.max(0,t-now),t);
             }
         }
@@ -153,28 +165,29 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     };
     AudioTransport.prototype.build=function(buffer,info){
         var rate=buffer.sampleRate,c=info.clip,period=Math.round(c.beats*60/130*rate),channels=buffer.numberOfChannels;
-        if(channels!==2||Math.abs(buffer.duration-c.duration)>.08||period<1||buffer.length<period||buffer.length>period*2)throw Error('MS3 decoded phrase shape mismatch: '+c.id);
-        var loop=info.asset.loop?this.context.createBuffer(channels,period*2,rate):null;
-        var ch,i,x,y,sum=0,peak=0,tailPeak=0,src,out;
+        if(channels!==2||Math.abs(buffer.duration-c.duration)>.08||period<1||buffer.length<=period||buffer.length>period*2)throw Error('MS3 decoded phrase shape mismatch: '+c.id);
+        var tailFrames=buffer.length-period,loop=!!info.asset.loop;
+        // Save only the short release, then reuse the decoded file's tail space
+        // for head+release. Loop [tailFrames,period+tailFrames). The first body
+        // remains untouched; every later body receives exactly one prior tail.
+        // No extra period-sized allocation and no JS callbacks at loop edges.
+        var tail=loop?this.context.createBuffer(channels,tailFrames,rate):null;
+        var ch,i,x,sum=0,peak=0,tailPeak=0,src,out;
         for(ch=0;ch<channels;ch++){
-            src=buffer.getChannelData(ch);out=loop&&loop.getChannelData(ch);
+            src=buffer.getChannelData(ch);out=tail&&tail.getChannelData(ch);
             for(i=0;i<src.length;i++){
                 x=src[i];if(!isFinite(x))throw Error('MS3 non-finite phrase: '+c.id);
                 peak=Math.max(peak,Math.abs(x));
-                if(i<period){sum+=x*x;if(out)out[i]=x;}
-                else tailPeak=Math.max(tailPeak,Math.abs(x));
+                if(i<period)sum+=x*x;
+                else{tailPeak=Math.max(tailPeak,Math.abs(x));if(out)out[i-period]=x;}
             }
-            if(out)for(i=0;i<period;i++){
-                // First traversal is the untouched body. Later traversals add
-                // the previous release to the new attack, with no fade dip.
-                y=src[i]+(period+i<src.length?src[period+i]:0);out[period+i]=y;
-            }
+            if(out)for(i=0;i<tailFrames;i++)src[period+i]=src[i]+out[i];
         }
         var rms=Math.sqrt(sum/(period*channels));
         if(rms<.00002||peak>.95)throw Error('MS3 invalid decoded level: '+c.id);
-        return {id:c.id,asset:info.asset.id,role:info.asset.role,meta:c,original:buffer,buffer:loop||buffer,
-            period:period/rate,frames:period,rms:rms,peak:peak,tailPeak:tailPeak,
-            bytes:(buffer.length+(loop?loop.length:0))*channels*4,refs:0,used:this.context.currentTime,loop:!!loop};
+        return {id:c.id,asset:info.asset.id,role:info.asset.role,meta:c,buffer:buffer,tail:tail,
+            period:period/rate,frames:period,loopStart:tailFrames/rate,rms:rms,peak:peak,tailPeak:tailPeak,
+            bytes:(buffer.length+(tail?tail.length:0))*channels*4,refs:0,used:this.context.currentTime,loop:loop};
     };
     AudioTransport.prototype.receive=function(clip,encoded){
         var self=this,load=this.loads[clip];if(!load||load.decoding||this.stopped)return;
@@ -190,7 +203,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             var tokens=Object.keys(self.jobs),i,j;for(i=0;i<tokens.length;i++){j=self.jobs[tokens[i]];if(j&&j.clip===clip&&!j.scheduled)self.schedule(j,e);}
         }
         try{
-            if(typeof encoded!=='string'||!encoded.length||encoded.length>350000)throw Error('MS3 missing/bounded local audio');
+            if(typeof encoded!=='string'||!encoded.length||encoded.length>1400000)throw Error('MS3 missing/bounded local audio');
             var raw=atob(encoded),bytes=new Uint8Array(raw.length),i;for(i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
             // Callback form also works in older Chromium. Never start in the
             // decode callback unless the original FUTURE deadline still fits.
@@ -207,7 +220,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         l.requestedAt=now;
         if(this.cache[clip]){this.schedule(j,this.cache[clip]);return;}
         if(this.loads[clip])return;
-        var estimate=(Math.ceil((info.clip.duration+(info.asset.loop?2*info.clip.beats*60/130:0))*this.context.sampleRate)+4)*8;
+        var estimate=(Math.ceil((info.clip.duration+(info.asset.loop?info.clip.duration-info.clip.beats*60/130:0))*this.context.sampleRate)+4)*8;
         if(Object.keys(this.loads).length>=LOAD_LIMIT||!this.room(estimate)){delete this.jobs[token];this.missed++;this.result(token,false);return;}
         this.loads[clip]={info:info,bytes:estimate,at:now};this.reserved+=estimate;
         this.peakBytes=Math.max(this.peakBytes,this.bytes+this.reserved);this.request(lane,clip);
@@ -215,12 +228,12 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     AudioTransport.prototype.voice=function(entry,lane,due,tail,norm){
         this.reap();if(this.voices.length>=VOICE_LIMIT)throw Error('MS3 voice admission exceeded');
         var ctx=this.context,source=ctx.createBufferSource(),gain=ctx.createGain();
-        source.buffer=tail?entry.original:entry.buffer;source.loop=!tail&&entry.loop;
-        if(source.loop){source.loopStart=entry.period;source.loopEnd=entry.period*2;}
+        source.buffer=tail?entry.tail:entry.buffer;source.loop=!tail&&entry.loop;
+        if(source.loop){source.loopStart=entry.loopStart;source.loopEnd=entry.buffer.duration;}
         gain.gain.value=norm;source.connect(gain);gain.connect(lane.gain);
-        var v={entry:entry,source:source,gain:gain,norm:norm,tail:!!tail,lane:lane.id,due:due,end:tail?due+entry.original.duration-entry.period:(entry.loop?Infinity:due+entry.original.duration)};
+        var v={entry:entry,source:source,gain:gain,norm:norm,tail:!!tail,lane:lane.id,due:due,end:tail?due+entry.tail.duration:(entry.loop?Infinity:due+entry.buffer.duration)};
         source.onended=function(){v.ended=true;};entry.refs++;entry.used=ctx.currentTime;
-        if(tail)source.start(due,entry.period);else source.start(due);
+        if(tail)source.start(due);else source.start(due);
         this.voices.push(v);this.peakVoices=Math.max(this.peakVoices,this.voices.length);return v;
     };
     AudioTransport.prototype.schedule=function(j,e){
@@ -371,7 +384,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         for(var id in this.lanes)try{this.lanes[id].gain.disconnect();}catch(ignore){}
         this.master.disconnect();this.voices=[];this.jobs={};this.cache={};this.loads={};this.lanes={};this.assets={};this.references={};this.bytes=0;this.reserved=0;
     };
-    AudioTransport.prototype.stats=function(){return {transport:'sample-clock',decodedClips:Object.keys(this.cache).length,pendingDecodes:Object.keys(this.loads).length,
+    AudioTransport.prototype.stats=function(){return {transport:'sample-clock',bufferLayout:'compact-tail-loop',decodedClips:Object.keys(this.cache).length,pendingDecodes:Object.keys(this.loads).length,
         waitingLanes:Object.keys(this.lanes).filter(function(id){return this.lanes[id].waiting;},this).length,pcmBytes:this.bytes+this.reserved,peakPCMBytes:this.peakBytes,voices:this.voices.length,peakVoices:this.peakVoices,
         missedPreparations:this.missed,residentPasses:this.held,scheduledTransitions:this.transitions,sampleRate:this.context.sampleRate,error:this.error};};
 
@@ -391,6 +404,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
                     // take the native path, not consume readiness and go silent.
                     for(var i=0,required=['createGain','createBufferSource','createBuffer','decodeAudioData'];i<required.length;i++)
                         if(typeof context[required[i]]!=='function')throw Error('MS3 incomplete audio API: '+required[i]);
+                    if(context.sampleRate>44100)throw Error('MS3 requested 44100 Hz unavailable; use bounded native playback');
                     transport=new AudioTransport(context,function(lane,clip){bridge.readclip(lane,clip);},function(token,played){scheduler.result(token,played);});
                 }catch(error){useAudio=false;transport=null;reason=String(error);}
             }
@@ -413,7 +427,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             var Constructor=window.AudioContext||window.webkitAudioContext;
             if(allowAudio===false||!bridge.readclip||!Constructor){finish(false,'Audio clock unavailable or disabled');return;}
             try{
-                context=new Constructor();
+                context=new Constructor({sampleRate:44100});
                 if(context.state==='running'||context.state===undefined){finish(true);return;}
                 var resumed=context.resume();
                 if(resumed&&resumed.then)resumed.then(function(){if(context&&context.state==='running')finish(true);},function(){finish(false,'Audio context resume rejected');});
