@@ -18,7 +18,9 @@ gate.LUA = [
     'test_cross_feats_dodge.lua', 'test_native_resource_lifecycle.lua',
     'test_snapshot_delivery.lua', 'test_manual_transport.lua', 'test_spot13_unread.lua',
 ]
-gate.EXTRA_SUITES = [('ms2_catalog', ['python3','tools/test_ms2_catalog.py']),
+gate.EXTRA_SUITES = [('ms3_longform', ['node','tools/test_ms3_longform.js']),
+                    ('ms3_source', ['python3','tools/test_ms3_sixteen_bar.py']),
+('ms2_catalog', ['python3','tools/test_ms2_catalog.py']),
                     ('ms2_surge_bank', ['python3','tools/test_ms2_surge_bank.py']),
                     ('ms2_sequence', ['node','tools/test_music_sequence.js']),
                     ('ms3_sample_clock', ['node','tools/test_ms3_transport.js']),

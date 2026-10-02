@@ -1,3 +1,13 @@
+# Current author-directed checkpoint — MS3 sixteen-bar source integration
+
+Parent main: `208a1af11c4448a054cc24e81603ed3446c0c55f`. The author authorizes a source build and push. The source mapper is integrated into canonical authoring: 465 original MIDIs, 157 real sixteen-bar passages plus eight short fanfares, motif-guided role/successor maps, and same-source percussion-only closing turnarounds. No repeated two-bar construction. The nine pinned Surge instruments and server director remain unchanged.
+
+Long recordings use one decoded body plus a short clean first-attack buffer on capable clients, within the existing 32 MiB admission bound; native compatibility remains exclusive. Ordinary long-form selection plays once, while role/boss/stair changes remain responsive. Full regeneration and exact catalog/audio parity are release requirements. See MUSIC_SYSTEM.md, MUSIC_PERFORMANCE.md and validation/MS3_LONGFORM.md. The guide transcript remains unavailable and native listening/performance is not accepted by source tests. No Workshop or VPS deployment.
+
+Next native gate after verified source publication: fully quit/update/install exact main, enable Music from Options, listen through complete passages, a danger change, stairs/reversal and actual rescue/fanfare/Chill. Inspect `lod_music_client_status` if a defect occurs. Do not alter the local acceptance → Workshop parity → matching VPS sequence.
+
+---
+
 # Current repair checkpoint — MS3 sample-clock phrase continuity
 
 The author reports rhythmic and dynamic segmentation on main 90510057c608f8e2beec9debc6ceec36b35d14f3. The previous frame-start/fast-seek repair is failed continuity evidence. The current authorized checkpoint moves capable clients to scheduled AudioBuffer playback of the same bundled Surge recordings, with the existing native backend retained for compatibility. This is rendered playback, not live synthesis. See docs/validation/MS3_SAMPLE_CLOCK.md for the design, measured gates, constraints and the still-required native audition. Source/automated audio validation never establishes in-game perceptual acceptance. No Workshop or VPS deployment.

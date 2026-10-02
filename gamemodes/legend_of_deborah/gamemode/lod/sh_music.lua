@@ -40,7 +40,7 @@ function M.ValidateCatalog(c)
             or a.loop~=(a.role~="VICTORY") then return nil,"invalid MIDI arrangement "..tostring(id) end
         local ids={}
         for _,clip in ipairs(a.clips) do
-            if not M.ID(clip.id) or ids[clip.id] or (clip.beats~=8 and clip.beats~=12)
+            if not M.ID(clip.id) or ids[clip.id] or (clip.beats~=8 and clip.beats~=12 and clip.beats~=64)
                 or type(clip.page)~="string" or not clip.page:match("^notes_%d%d%d%.lua$")
                 or type(clip.next)~="table" or #clip.next>6 then return nil,"invalid MIDI phrase" end
             ids[clip.id]=true

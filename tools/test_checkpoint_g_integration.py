@@ -41,6 +41,8 @@ SUITES = [
     ("Music Crossfade Transitions", ["python3", "tools/run_lua54.py", "tools/test_music_transitions.lua"]),
     ("Music Gameplay Resource Priority", ["python3", "tools/run_lua54.py", "tools/test_music_resources.lua"]),
     ("Player Options Movement Invariants", ["python3", "tools/run_lua54.py", "tools/test_player_options.lua"]),
+    ("MS3 Long-form Memory & Source Ownership", ["node", "tools/test_ms3_longform.js"]),
+    ("MS3 Source Motif & Provenance", ["python3", "tools/test_ms3_sixteen_bar.py"]),
     ("MS2 MIDI Compiler & Catalog", ["python3", "tools/test_ms2_catalog.py"]),
     ("MS2 Surge Rendered Asset Integrity", ["python3", "tools/test_ms2_surge_bank.py"]),
     ("MS2 Host Options Permission", ["python3", "tools/run_lua54.py", "tools/test_music_options.lua"]),

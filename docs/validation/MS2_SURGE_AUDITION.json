@@ -6,65 +6,65 @@
     },
     {
       "label": "acid",
-      "seconds": 4.392312925170068
+      "seconds": 30.23848072562358
     },
     {
       "label": "industrial",
-      "seconds": 8.142312925170067
+      "seconds": 33.98848072562358
     },
     {
       "label": "strings",
-      "seconds": 9.892312925170067
+      "seconds": 35.73848072562358
     },
     {
       "label": "brass",
-      "seconds": 11.642312925170067
+      "seconds": 37.48848072562358
     },
     {
       "label": "bass",
-      "seconds": 13.392312925170067
+      "seconds": 39.23848072562358
     },
     {
       "label": "tom",
-      "seconds": 15.142312925170067
+      "seconds": 40.98848072562358
     },
     {
       "label": "snare",
-      "seconds": 16.892312925170067
+      "seconds": 42.73848072562358
     },
     {
       "label": "kick",
-      "seconds": 18.642312925170067
+      "seconds": 44.48848072562358
     },
     {
       "label": "closed",
-      "seconds": 20.392312925170067
+      "seconds": 46.23848072562358
     },
     {
       "label": "open",
-      "seconds": 22.142312925170067
+      "seconds": 47.98848072562358
     },
     {
       "label": "Block A T1",
-      "seconds": 23.892312925170067
+      "seconds": 49.73848072562358
     },
     {
       "label": "Block A T2",
-      "seconds": 28.284625850340134
+      "seconds": 79.97696145124716
     },
     {
       "label": "Block A T3",
-      "seconds": 32.6769387755102
+      "seconds": 110.21544217687074
     },
     {
       "label": "Block A BOSS",
-      "seconds": 37.06925170068027
+      "seconds": 140.45392290249433
     },
     {
       "label": "Block A VICTORY",
-      "seconds": 41.461564625850336
+      "seconds": 170.69240362811792
     }
   ],
-  "duration": 47.70004535147392,
-  "bankRevision": "ms2-surge-0f7591eb682f3b2b"
+  "duration": 176.9308843537415,
+  "bankRevision": "ms2-surge-b988d56db1b977a1"
 }

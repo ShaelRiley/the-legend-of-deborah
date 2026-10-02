@@ -12,7 +12,9 @@ for(const id of Object.keys(bank.catalog.assets)){
  let prior=null;
  for(let i=0;i<24;i++){const phrase=c.choose(a);if(a.clips.length>3)check(prior!==phrase.id,'recent phrases avoided');prior=phrase.id;}
 }
-check(clips===1402&&notes===170860,'whole authored composition preserved');
+const report=require('../docs/MS2_CATALOG.json');
+check(clips===165&&clips===report.clips&&notes===report.notes,'whole long-form source composition preserved');
+const phraseBeats=64,period=phraseBeats*60/130,passes=1;
 check(engine.tempo(130,{remaining:0})===130,'fixed rendered tempo replaces old time stretch');
 check(engine.expression({role:'T3',expression:1})===1,'cheap critical gain remains');
 check(engine.expression({role:'BOSS',expression:0})===0,'ordinary boss does not fabricate expression');
@@ -34,22 +36,22 @@ function rig(seed='test',acknowledgementDelay=0){
  function step(seconds){for(let end=now+seconds;now<end;){now=Math.min(end,now+.025);pump();}}
  change();return {scheduler,plays,announcements,mixes,victories,pending,change,pump,step,jump:n=>{now+=n;},get now(){return now;},get stopCount(){return stopCount;}};
 }
-const r=rig();r.step(10);check(r.plays.length>=3,'A to B normal phrase sequencing');
-const dwell=rig('phrase-dwell');dwell.step(33);
+const r=rig();r.step(3*period+1);check(r.plays.length>=3,'A to B normal phrase sequencing');
+const dwell=rig('phrase-dwell');dwell.step(8*period+1);
 check(dwell.plays.length>=8,'dwell exercises two complete phrase residencies');
-for(let i=0;i<8;i++)check(dwell.plays[i].clip===dwell.plays[Math.floor(i/4)*4].clip,'routine phrase holds for four successful passes');
-check(dwell.plays[0].clip!==dwell.plays[4].clip,'fresh composition follows a fifteen-second-scale residence');
+for(let i=0;i<8;i++)check(dwell.plays[i].clip===dwell.plays[Math.floor(i/passes)*passes].clip,'routine phrase holds for one complete sixteen-bar passage');
+check(dwell.plays[0].clip!==dwell.plays[passes].clip,'fresh composition follows a sixteen-bar residence');
 // A rejected preparation must retry on the held phrase's grid, rather than
 // interrupt its repeat at the next four-beat half-phrase boundary.
-const held=rig('resident-hold');held.step(3.8);const heldJob=Object.values(held.pending)[0];
+const held=rig('resident-hold');held.step(period+.1);const heldJob=Object.values(held.pending)[0];
 held.jump(heldJob.time-held.now+.2);held.pump();const retryBeat=held.scheduler.lanes.a.nextBeat;
-check(Math.abs(held.scheduler.timeForBeat(retryBeat)-heldJob.time-8*60/130)<1e-8,'failed replacement preserves the resident repeat boundary');
+check(Math.abs(held.scheduler.timeForBeat(retryBeat)-heldJob.time-phraseBeats*60/130)<1e-8,'failed replacement preserves the resident repeat boundary');
 // Native starts can be correct while their QueueJavascript acknowledgement is
 // delayed by the frame/DHTML boundary. This must not fabricate a failed start.
-const delayedAck=rig('queued-ack',.3);delayedAck.step(20);
+const delayedAck=rig('queued-ack',.3);delayedAck.step(3*period+1);
 check(delayedAck.scheduler.resyncs===0,'delayed native acknowledgement does not discard already playing phrases');
-for(let i=1;i<delayedAck.plays.length;i++)check(Math.abs(delayedAck.plays[i].time-delayedAck.plays[i-1].time-8*60/130)<1e-8,'delayed acknowledgement retains continuous eight-beat phrase boundaries');
-for(let i=1;i<r.plays.length;i++)check(Math.abs(r.plays[i].time-r.plays[i-1].time-8*60/130)<1e-8,'phrases follow canonical future boundary');
+for(let i=1;i<delayedAck.plays.length;i++)check(Math.abs(delayedAck.plays[i].time-delayedAck.plays[i-1].time-phraseBeats*60/130)<1e-8,'delayed acknowledgement retains continuous sixteen-bar phrase boundaries');
+for(let i=1;i<r.plays.length;i++)check(Math.abs(r.plays[i].time-r.plays[i-1].time-phraseBeats*60/130)<1e-8,'phrases follow canonical future boundary');
 check(r.announcements.join(',')==='a','initial block once');
 r.change({role:'T2',targets:[{block:'a',asset:'a-t2',weight:1}]});r.step(4);
 check(r.announcements.length===1,'tension never announces a block');check(r.plays.at(-1).clip.startsWith('a_t2_'),'new role rendered phrase');
@@ -62,7 +64,7 @@ r.change({targets:[{block:'b',asset:'b-t2',weight:1}]});r.step(2);check(!r.sched
 const oldSeed=a.composer.random.value;r.change({targets:[{block:'a',asset:'a-t2',weight:1}]});r.step(4);
 check(r.scheduler.lanes.a.composer.random.value!==oldSeed,'genuine return gets fresh presentation entropy');
 for(const stall of [.1,.3,1,4,15])for(const mutation of ['none','role','reverse']){
- const x=rig('stall-'+stall+'-'+mutation);x.step(3.8);
+ const x=rig('stall-'+stall+'-'+mutation);x.step(period+.1);
  if(mutation==='reverse'){x.change({targets:[{block:'a',asset:'a-t1',weight:.3},{block:'b',asset:'b-t1',weight:.7}]});x.step(2);}
  const job=Object.values(x.pending)[0];check(job,'preparation precedes boundary');x.jump(Math.max(0,job.time-x.now)+stall);
  if(mutation==='role')x.change({role:'T3',targets:[{block:'a',asset:'a-t3',weight:1}]});
@@ -70,7 +72,7 @@ for(const stall of [.1,.3,1,4,15])for(const mutation of ['none','role','reverse'
  const count=x.plays.length;x.pump();
  if(stall<=engine.lateTolerance&&mutation!=='role')check(x.plays.length===count+1,'bounded frame delay admits only the current prepared phrase');
  else check(x.plays.length===count,'larger stall never starts an obsolete phrase');
- x.step(8);check(x.plays.length>count,'stall resumes at a future valid bar');
+ x.step(period+4);check(x.plays.length>count,'stall resumes at a future valid bar');
  for(const p of x.plays)check(p.started>=p.time&&p.started-p.time<=engine.lateTolerance+1e-8,'only bounded on-time start');
  const seen=new Set();for(const p of x.plays){const k=p.lane+':'+p.time;check(!seen.has(k),'one start per lane/boundary');seen.add(k);}
  check(Object.keys(x.scheduler.lanes).length<=2,'stalled stairs do not grow a third lane');x.scheduler.stop();

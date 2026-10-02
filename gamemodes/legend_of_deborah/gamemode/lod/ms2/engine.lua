@@ -13,21 +13,24 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     Composer.prototype.choose=function(asset,commit){
         var r=this.random,last=this.last,candidates=[],preferred={},i,c,dist;
         if(last)for(i=0;i<(last.next||[]).length;i++)preferred[last.next[i]]=1-i*.08;
+        var handoff=last&&last.handoffs&&last.handoffs[asset.role];
+        if(handoff)preferred[handoff.to]=Math.max(preferred[handoff.to]||0,1.1);
         for(i=0;i<asset.clips.length;i++){
             c=asset.clips[i];if(asset.clips.length>3&&this.history.indexOf(c.id)!==-1)continue;
             dist=last?Math.min((c.entry-last.exit+12)%12,(last.exit-c.entry+12)%12):0;
-            candidates.push({clip:c,score:(preferred[c.id]||0)-1.5*(last?Math.abs(c.energy-last.energy):0)-.12*dist+r.next()*.15});
+            var shared=0;if(last&&last.motifs&&c.motifs)for(var m=0;m<c.motifs.length;m++)if(last.motifs.indexOf(c.motifs[m])!==-1)shared++;
+            candidates.push({clip:c,score:.28*Math.min(shared,2)+(preferred[c.id]||0)-1.5*(last?Math.abs(c.energy-last.energy):0)-.12*dist+r.next()*.15});
         }
         candidates.sort(function(a,b){return b.score-a.score;});
         c=candidates.length?candidates[0].clip:asset.clips[0];if(commit!==false)this.accept(c);return c;
     };
     Composer.prototype.accept=function(c){if(this.last&&this.last.id===c.id)return;this.last=c;this.history.push(c.id);if(this.history.length>3)this.history.shift();};
-    function Scheduler(base,sink,clock,callback,seed){
-        this.base=base;this.bpm=base;
-        // Eight-beat loop granules and the shared clock use the same integer
+    function Scheduler(base,sink,clock,callback,seed,gridBeats){
+        this.base=base;this.bpm=base;gridBeats=gridBeats||8;
+        // Whole-phrase loop granules and the shared clock use the same integer
         // sample count. Repeated looping cannot accumulate fractional-sample drift.
-        this.beatSeconds=sink.continuous?Math.round(8*60/base*sink.context.sampleRate)/(8*sink.context.sampleRate):60/base;this.sink=sink;this.clock=clock;this.callback=callback||function(){};
-        this.origin=clock()+LOOKAHEAD;this.assets={};this.lanes={};this.jobs={};this.serial=0;this.visits={};
+        this.beatSeconds=sink.continuous?Math.round(gridBeats*60/base*sink.context.sampleRate)/(gridBeats*sink.context.sampleRate):60/base;this.sink=sink;this.clock=clock;this.callback=callback||function(){};
+        this.gridBeats=gridBeats;this.origin=clock()+LOOKAHEAD;this.assets={};this.lanes={};this.jobs={};this.serial=0;this.visits={};
         this.enabled=true;this.state={role:'T0'};this.skipped=0;this.resyncs=0;this.maxQueue=0;this.ackTimeouts=0;
         this.performanceSeed=seed===undefined?String(Date.now())+':'+Math.random():seed;
     }
@@ -35,7 +38,12 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     Scheduler.prototype.boundary=function(now,beats,lead){return Math.max(0,Math.ceil((now+(lead===undefined?LOOKAHEAD:lead)-this.origin)/this.beatSeconds/beats)*beats);};
     Scheduler.prototype.install=function(a){
         if(!a||!a.id||!a.clips||!a.clips.length||a.clips.length>256)throw Error('invalid phrase arrangement');
-        for(var i=0;i<a.clips.length;i++)if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(a.clips[i].id)||(a.clips[i].beats!==8&&a.clips[i].beats!==12))throw Error('invalid rendered phrase');
+        for(var i=0;i<a.clips.length;i++)if(!/^[a-z0-9][a-z0-9_-]{0,63}$/.test(a.clips[i].id)||(a.clips[i].beats!==8&&a.clips[i].beats!==12&&a.clips[i].beats!==64))throw Error('invalid rendered phrase');
+        // Choose the long-form integer-sample grid before the first lane starts.
+        if(a.clips[0].beats===64&&this.gridBeats!==64&&Object.keys(this.lanes).length===0){
+            this.gridBeats=64;
+            if(this.sink.continuous)this.beatSeconds=Math.round(64*60/this.base*this.sink.context.sampleRate)/(64*this.sink.context.sampleRate);
+        }
         this.assets[a.id]=a;
     };
     Scheduler.prototype.cancel=function(l){if(l.pending){this.sink.cancel(l.pending);delete this.jobs[l.pending];l.pending=null;}};
@@ -74,7 +82,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             if(!j.loop){l.finished=true;this.callback('victory','');}
             else if(l.began){
                 // A native hold repeats the resident phrase. Retry on this
-                // lane's original eight-beat grid, never halfway through it.
+                // lane's original phrase grid, never halfway through it.
                 l.nextBeat+=Math.max(0,Math.ceil((this.clock()+LOOKAHEAD-this.timeForBeat(l.nextBeat))/(j.beats*this.beatSeconds)))*j.beats;
             }else l.nextBeat=this.boundary(this.clock(),this.sink.continuous?8:4);
         }
@@ -101,7 +109,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             }
             if(t<=now+LOOKAHEAD+.001){
                 // One preparation per lane/pump. Never drain overdue debt.
-                if(a.loop&&l.clip&&(l.passes||0)<PHRASE_PASSES)c=l.clip;
+                if(a.loop&&l.clip&&(l.passes||0)<(l.clip.beats===64?1:PHRASE_PASSES))c=l.clip;
                 else{c=l.composer.choose(a,false);l.clip=c;l.passes=0;}
                 var token=String(++this.serial);
                 j={lane:id,clip:c.id,beats:c.beats,time:t,loop:a.loop,choice:c};this.jobs[token]=j;l.pending=token;
@@ -154,7 +162,11 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     AudioTransport.prototype.build=function(buffer,info){
         var rate=buffer.sampleRate,c=info.clip,period=Math.round(c.beats*60/130*rate),channels=buffer.numberOfChannels;
         if(channels!==2||Math.abs(buffer.duration-c.duration)>.08||period<1||buffer.length<period||buffer.length>period*2)throw Error('MS3 decoded phrase shape mismatch: '+c.id);
-        var loop=info.asset.loop?this.context.createBuffer(channels,period*2,rate):null;
+        // Long-form recordings retain one decoded body plus a short clean head,
+        // not another two full periods. The audio thread loops the same body.
+        var compact=!!info.asset.loop&&c.beats===64,headFrames=buffer.length-period;
+        var head=compact&&headFrames?this.context.createBuffer(channels,headFrames,rate):null;
+        var loop=info.asset.loop&&!compact?this.context.createBuffer(channels,period*2,rate):null;
         var ch,i,x,y,sum=0,peak=0,tailPeak=0,src,out;
         for(ch=0;ch<channels;ch++){
             src=buffer.getChannelData(ch);out=loop&&loop.getChannelData(ch);
@@ -164,6 +176,12 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
                 if(i<period){sum+=x*x;if(out)out[i]=x;}
                 else tailPeak=Math.max(tailPeak,Math.abs(x));
             }
+            if(head){
+                // Preserve the initial attack exactly; fold only the previous
+                // release into the prefix used by subsequent resident passes.
+                var clean=head.getChannelData(ch);
+                for(i=0;i<headFrames;i++){clean[i]=src[i];src[i]+=src[period+i];}
+            }
             if(out)for(i=0;i<period;i++){
                 // First traversal is the untouched body. Later traversals add
                 // the previous release to the new attack, with no fade dip.
@@ -172,9 +190,9 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         }
         var rms=Math.sqrt(sum/(period*channels));
         if(rms<.00002||peak>.95)throw Error('MS3 invalid decoded level: '+c.id);
-        return {id:c.id,asset:info.asset.id,role:info.asset.role,meta:c,original:buffer,buffer:loop||buffer,
+        return {id:c.id,asset:info.asset.id,role:info.asset.role,meta:c,original:buffer,buffer:loop||buffer,head:head,compact:compact,
             period:period/rate,frames:period,rms:rms,peak:peak,tailPeak:tailPeak,
-            bytes:(buffer.length+(loop?loop.length:0))*channels*4,refs:0,used:this.context.currentTime,loop:!!loop};
+            bytes:(buffer.length+(loop?loop.length:0)+(head?head.length:0))*channels*4,refs:0,used:this.context.currentTime,loop:!!info.asset.loop};
     };
     AudioTransport.prototype.receive=function(clip,encoded){
         var self=this,load=this.loads[clip];if(!load||load.decoding||this.stopped)return;
@@ -190,7 +208,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             var tokens=Object.keys(self.jobs),i,j;for(i=0;i<tokens.length;i++){j=self.jobs[tokens[i]];if(j&&j.clip===clip&&!j.scheduled)self.schedule(j,e);}
         }
         try{
-            if(typeof encoded!=='string'||!encoded.length||encoded.length>350000)throw Error('MS3 missing/bounded local audio');
+            if(typeof encoded!=='string'||!encoded.length||encoded.length>1400000)throw Error('MS3 missing/bounded local audio');
             var raw=atob(encoded),bytes=new Uint8Array(raw.length),i;for(i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
             // Callback form also works in older Chromium. Never start in the
             // decode callback unless the original FUTURE deadline still fits.
@@ -207,7 +225,8 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         l.requestedAt=now;
         if(this.cache[clip]){this.schedule(j,this.cache[clip]);return;}
         if(this.loads[clip])return;
-        var estimate=(Math.ceil((info.clip.duration+(info.asset.loop?2*info.clip.beats*60/130:0))*this.context.sampleRate)+4)*8;
+        var overhead=info.asset.loop?(info.clip.beats===64?Math.max(0,info.clip.duration-info.clip.beats*60/130):2*info.clip.beats*60/130):0;
+        var estimate=(Math.ceil((info.clip.duration+overhead)*this.context.sampleRate)+1024)*8;
         if(Object.keys(this.loads).length>=LOAD_LIMIT||!this.room(estimate)){delete this.jobs[token];this.missed++;this.result(token,false);return;}
         this.loads[clip]={info:info,bytes:estimate,at:now};this.reserved+=estimate;
         this.peakBytes=Math.max(this.peakBytes,this.bytes+this.reserved);this.request(lane,clip);
@@ -215,12 +234,16 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     AudioTransport.prototype.voice=function(entry,lane,due,tail,norm){
         this.reap();if(this.voices.length>=VOICE_LIMIT)throw Error('MS3 voice admission exceeded');
         var ctx=this.context,source=ctx.createBufferSource(),gain=ctx.createGain();
-        source.buffer=tail?entry.original:entry.buffer;source.loop=!tail&&entry.loop;
-        if(source.loop){source.loopStart=entry.period;source.loopEnd=entry.period*2;}
+        var intro=tail==='intro';
+        source.buffer=intro?entry.head:(tail?entry.original:entry.buffer);source.loop=!tail&&entry.loop;
+        if(source.loop){source.loopStart=entry.compact?0:entry.period;source.loopEnd=entry.compact?entry.period:entry.period*2;}
         gain.gain.value=norm;source.connect(gain);gain.connect(lane.gain);
-        var v={entry:entry,source:source,gain:gain,norm:norm,tail:!!tail,lane:lane.id,due:due,end:tail?due+entry.original.duration-entry.period:(entry.loop?Infinity:due+entry.original.duration)};
+        var v={entry:entry,source:source,gain:gain,norm:norm,tail:!!tail,lane:lane.id,due:due,end:intro?due+entry.head.duration:(tail?due+entry.original.duration-entry.period:(entry.loop?Infinity:due+entry.original.duration))};
         source.onended=function(){v.ended=true;};entry.refs++;entry.used=ctx.currentTime;
-        if(tail)source.start(due,entry.period);else source.start(due);
+        if(intro)source.start(due);
+        else if(tail)source.start(due,entry.period);
+        else if(entry.head)source.start(due+entry.head.duration,entry.head.duration);
+        else source.start(due);
         this.voices.push(v);this.peakVoices=Math.max(this.peakVoices,this.voices.length);return v;
     };
     AudioTransport.prototype.schedule=function(j,e){
@@ -233,7 +256,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             // reopen, seek, restart, fade or create another source each pass.
             j.scheduled=true;j.resident=true;l.confirmed=j.due;this.held++;return;
         }
-        this.reap();if(this.voices.length+(old?2:1)>VOICE_LIMIT){delete this.jobs[j.token];this.missed++;this.result(j.token,false);return;}
+        this.reap();if(this.voices.length+(old?2:1)+(e.head?1:0)>VOICE_LIMIT){delete this.jobs[j.token];this.missed++;this.result(j.token,false);return;}
         var reference=this.references[e.asset];if(!reference)this.references[e.asset]=reference=e.rms;
         var norm=clamp(reference/e.rms,1/Math.SQRT2,Math.SQRT2);
         j.previous=old;j.previousBound=l.bound;
@@ -242,8 +265,11 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
         // interrupted previous arrangement. Routine successors do not change it.
         l.bound=Math.max(j.info.asset.bound,l.bound||0);
         if(old&&old.entry.asset!==e.asset)l.bound=Math.max(l.bound,(old.entry.peak+e.peak+old.entry.tailPeak+e.tailPeak));
-        j.voice=this.voice(e,l,j.due,false,norm);j.scheduled=true;l.current=j.voice;l.confirmed=j.due;
+        j.voice=this.voice(e,l,j.due,false,norm);
+        if(e.head){j.intro=this.voice(e,l,j.due,'intro',norm);j.voice.intro=j.intro;}
+        j.scheduled=true;l.current=j.voice;l.confirmed=j.due;
         if(old){
+            if(old.intro&&old.intro.end>j.due){old.intro.source.stop(j.due);old.intro.end=j.due;}
             var turns=(j.due-old.due)/old.entry.period;
             if(old.entry.loop&&Math.abs(turns-Math.round(turns))<.002){
                 j.tail=this.voice(old.entry,l,j.due,true,old.norm);
@@ -260,10 +286,13 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     AudioTransport.prototype.cancel=function(token){
         var j=this.jobs[token];if(!j)return;delete this.jobs[token];var now=this.context.currentTime,l=this.lanes[j.lane];
         if(j.voice&&j.due>now){
-            j.voice.source.stop(now);j.voice.end=now;if(j.tail){j.tail.source.stop(now);j.tail.end=now;}
+            j.voice.source.stop(now);j.voice.end=now;
+            if(j.intro){j.intro.source.stop(now);j.intro.end=now;}
+            if(j.tail){j.tail.source.stop(now);j.tail.end=now;}
             if(j.previous&&!j.previous.ended){
                 // A later stop replaces a not-yet-reached stop in Web Audio.
                 j.previous.source.stop(now+86400);j.previous.end=now+86400;
+                if(j.previous.intro&&!j.previous.intro.ended){j.previous.intro.source.stop(now+86400);j.previous.intro.end=j.previous.intro.due+j.previous.entry.head.duration;}
                 j.previous.gain.gain.cancelScheduledValues(now);j.previous.gain.gain.setValueAtTime(j.previous.norm,now);
             }
             if(l&&l.current===j.voice){l.current=j.previous;l.bound=j.previousBound;}
@@ -367,7 +396,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
     };
     AudioTransport.prototype.stop=function(){
         if(this.stopped)return;this.stopped=true;this.generation++;
-        for(var i=0;i<this.voices.length;i++){try{this.voices[i].source.stop();this.voices[i].source.disconnect();this.voices[i].gain.disconnect();}catch(ignore){}}
+        for(var i=0;i<this.voices.length;i++){var v=this.voices[i];try{v.source.stop();v.source.disconnect();v.source.onended=null;v.source.buffer=null;v.gain.disconnect();}catch(ignore){}if(!v.disposed){v.disposed=true;v.entry.refs--;}}
         for(var id in this.lanes)try{this.lanes[id].gain.disconnect();}catch(ignore){}
         this.master.disconnect();this.voices=[];this.jobs={};this.cache={};this.loads={};this.lanes={};this.assets={};this.references={};this.bytes=0;this.reserved=0;
     };
@@ -397,7 +426,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             if(useAudio){sink=transport;clock=function(){return context.currentTime;};backend='surge-sample-clock';}
             else{disposeContext();backend='surge-rendered';}
             initializing=false;fallbackReason=reason||null;
-            scheduler=new Scheduler(130,sink,clock,function(name,value){if(name==='block')bridge.block(value);else bridge.victory();});
+            scheduler=new Scheduler(130,sink,clock,function(name,value){if(name==='block')bridge.block(value);else bridge.victory();},undefined,64);
             interval=window.setInterval(function(){try{
                 // Report work the audio thread already performed BEFORE the
                 // control scheduler considers acknowledgement timeouts.
@@ -413,7 +442,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             var Constructor=window.AudioContext||window.webkitAudioContext;
             if(allowAudio===false||!bridge.readclip||!Constructor){finish(false,'Audio clock unavailable or disabled');return;}
             try{
-                context=new Constructor();
+                try{context=new Constructor({sampleRate:44100});}catch(optionsError){context=new Constructor();}
                 if(context.state==='running'||context.state===undefined){finish(true);return;}
                 var resumed=context.resume();
                 if(resumed&&resumed.then)resumed.then(function(){if(context&&context.state==='running')finish(true);},function(){finish(false,'Audio context resume rejected');});
@@ -426,7 +455,7 @@ return [==[/* MS3 rendered Surge score. ES5 control plane; no live note synthesi
             audio:function(clip,data){if(transport&&!closed)transport.receive(clip,data);},
             result:function(token,played){if(scheduler&&!transport)scheduler.result(String(token),played);},stop:halt,
             stats:function(){if(!scheduler)return;var stats={backend:backend,bpm:scheduler.base,lateSkipped:scheduler.skipped,resyncs:scheduler.resyncs,
-                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts,phrasePasses:PHRASE_PASSES,fallbackReason:fallbackReason};
+                prepared:Object.keys(scheduler.jobs).length,peakPrepared:scheduler.maxQueue,ackTimeouts:scheduler.ackTimeouts,phrasePasses:scheduler.gridBeats===64?1:PHRASE_PASSES,phraseBeats:scheduler.gridBeats,fallbackReason:fallbackReason};
                 if(transport)stats.audio=transport.stats();bridge.stats(JSON.stringify(stats));},destroy:halt};
     }
     return {AudioTransport:AudioTransport,levelAt:levelAt,Composer:Composer,Scheduler:Scheduler,Random:Random,expression:expression,tempo:function(base){return base;},attach:attach,lookahead:LOOKAHEAD,lateTolerance:LATE,acknowledgementWait:ACK_WAIT,phrasePasses:PHRASE_PASSES};

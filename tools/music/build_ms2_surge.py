@@ -35,8 +35,11 @@ def clips():
             if c['page'] not in pages:pages[c['page']]=lua_json(BUNDLE/c['page'])
             notes=pages[c['page']][c['id']]
             out.append({**c,'block':a['block'],'role':a['role'],'asset':aid,'notes':notes})
-    if len(out)!=1402 or len({c['id'] for c in out})!=1402 or sum(len(c['notes']) for c in out)!=170860:
-        raise RuntimeError('Unexpected curated phrase/note count; reconcile the score first')
+    report=json.loads((ROOT/'docs/MS2_CATALOG.json').read_text())
+    if catalog['revision']!=report['revision'] or len(out)!=report['clips'] or len({c['id'] for c in out})!=len(out) or sum(len(c['notes']) for c in out)!=report['notes']:
+        raise RuntimeError('Catalog/source report mismatch; reconcile the score first')
+    if any(c['beats']!=(12 if c['role']=='VICTORY' else 64) for c in out):
+        raise RuntimeError('Long-form bank requires genuine 64-beat passages and short fanfares')
     return catalog,out
 
 def condition(pcm,tail_fade=True):
@@ -168,6 +171,10 @@ def refresh_join_metadata():
         c['decodedTailPeak']=tail_peak(pcm,c['musicalDuration'])
     with ThreadPoolExecutor(max_workers=4) as pool:list(pool.map(measure,manifest['clips']))
     manifest['rendererSHA256']=sha(Path(__file__).read_bytes()+(ROOT/'tools/music/surge/bank.py').read_bytes())
+    # Retire obsolete short recordings only after the full replacement passes.
+    expected={r['id']+'.ogg' for r in results}|{'bridge.ogg'}
+    for old in DEST.glob('*.ogg'):
+        if old.name not in expected:old.unlink()
     MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n');write_runtime(manifest)
     print(json.dumps({'metadataOnly':True,'clips':len(manifest['clips']),'unchangedAudioBytes':manifest['totalBytes']}))
 
@@ -191,7 +198,7 @@ def main():
             results.append(result)
             if i%50==0 or i==len(tasks):print(f'Rendered {i}/{len(tasks)}; {sum(r["bytes"] for r in results):,} bytes',flush=True)
     if args.limit:
-        print('Smoke mean bytes:',sum(r['bytes'] for r in results)//len(results),'estimated bank bytes:',sum(r['bytes'] for r in results)//len(results)*1402);return
+        print('Smoke mean bytes:',sum(r['bytes'] for r in results)//len(results),'estimated bank bytes:',sum(r['bytes'] for r in results)//len(results)*len(bank));return
     # Bounded quiet D/A ambient bed drawn from the same synthetic string patch.
     drone=render_voice(surge,'strings',[(0,8,50,60),(0,8,57,45)],8.6,7919,'T0')[RATE:RATE*5]
     drone,_=condition(drone,tail_fade=False)
@@ -210,6 +217,10 @@ def main():
               'sampleRate':RATE,'channels':2,'bpm':catalog['bpm'],'clipCount':len(results),'fileCount':len(results)+1,
               'totalBytes':total,'largestBytes':max(r['bytes'] for r in results),'averagePhraseBytes':sum(r['bytes'] for r in results)/len(results),
               'voices':voices,'bridge':bridge,'clips':results}
+    # Retire obsolete short recordings only after the full replacement passes.
+    expected={r['id']+'.ogg' for r in results}|{'bridge.ogg'}
+    for old in DEST.glob('*.ogg'):
+        if old.name not in expected:old.unlink()
     MANIFEST.write_text(json.dumps(manifest,indent=2)+'\n')
     write_runtime(manifest)
     # Representative ordered listening evidence: Chill, isolated voices, roles.

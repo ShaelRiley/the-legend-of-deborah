@@ -96,7 +96,7 @@ def route(stem, note):
     return inst, pitch
 
 
-def curate(stems, role):
+def curate(stems, role, max_note_ticks=TICKS):
     events = {}
     for stem, midi in stems:
         for note in midi.notes:
@@ -107,7 +107,7 @@ def curate(stems, role):
             # Melodic timing retains 1/48 beat; hits are snapped to sixteenths.
             grid = 12 if inst >= 5 else 3
             tick = int(round(start*PPQ/grid))*grid
-            length = max(3,min(TICKS,int(round(duration*PPQ/3))*3))
+            length = max(3,min(max_note_ticks,int(round(duration*PPQ/3))*3))
             if inst >= 5: length = 6 if inst != 8 or pitch == 42 else 18
             velocity = min(112, max(32, velocity))
             key = tick,inst,pitch

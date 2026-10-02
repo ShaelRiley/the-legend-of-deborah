@@ -12,7 +12,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = r'''async (input) => {
-  const rate=44100, period=Math.round(8*60/130*rate), tail=22050, origin=rate;
+  const rate=44100, beats=input?input.beats:8, period=Math.round(beats*60/130*rate), tail=22050, origin=rate;
   const switchFrame=origin+4*period, length=origin+7*period;
   const ctx=new OfflineAudioContext(2,length,rate);
   const tr=new MS2.AudioTransport(ctx,()=>{throw Error('unexpected local-file request');},()=>{});
@@ -29,13 +29,14 @@ SCRIPT = r'''async (input) => {
     return b;
   }
   async function decoded(data){const raw=atob(data),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return await ctx.decodeAudioData(bytes.buffer);}
-  const a=input?await decoded(input.a):original(1),b=input?await decoded(input.b):original(.8),metas=[['a',a],['b',b]].map(([id,buffer])=>({id,beats:8,duration:buffer.duration,energy:.5,entry:0,exit:0}));
+  const a=input?await decoded(input.a):original(1),b=input?await decoded(input.b):original(.8),metas=[['a',a],['b',b]].map(([id,buffer])=>({id,beats,duration:buffer.duration,energy:.5,entry:0,exit:0}));
+  const cleanA=new Float32Array(a.getChannelData(0)),cleanB=new Float32Array(b.getChannelData(0));
   const asset={id:'calm',role:'T0',loop:true,bound:input?input.bound:.15,clips:metas};tr.install(asset);tr.mix('floor',1);
   for(const [i,buffer] of [a,b].entries()){const e=tr.build(buffer,{asset,clip:metas[i]});tr.cache[e.id]=e;tr.bytes+=e.bytes;}
   tr.prepare('1','floor','a',1,1);
   tr.prepare('2','floor','b',1,switchFrame/rate);
   const norm=tr.jobs['2'].voice.norm,master=MS2.levelAt(tr.masterEnvelope,2);
-  const rendered=await ctx.startRendering(), actual=rendered.getChannelData(0),src=a.getChannelData(0),next=b.getChannelData(0);
+  const rendered=await ctx.startRendering(), actual=rendered.getChannelData(0),src=cleanA,next=cleanB;
   function reference(i){const el=i-origin,pos=el%period;let value=(el>=4*period?next[pos]*norm:src[pos]);
     if(el>=period){const prior=el>=5*period?next:src;value+=(prior[period+pos]||0)*(el>=5*period?norm:1);}return value*master;}
 
@@ -55,6 +56,7 @@ SCRIPT = r'''async (input) => {
     for(let i=lo;i<hi;i++){let x=reference(i);ae+=actual[i]*actual[i];re+=x*x;}
     const db=10*Math.log10(ae/re);if(Math.abs(db)>.002)throw Error('Join level discontinuity: '+db);edgeWindows.push(db);
   }
+  tr.stop();
   return {suite:'MS3_OFFLINE_AUDIO',actualAudio:true,sampleRate:rate,renderedFrames:length,joins:6,successorJoins:1,
       maxAbsoluteSampleError:maxError,errorRMS:Math.sqrt(sumError/samples),relativeErrorDB:10*Math.log10(sumError/referencePower),maxPeak,joinLevelErrorDB:edgeWindows};
 }'''
@@ -74,7 +76,7 @@ def main():
                 if not asset['loop']:continue
                 ids=[asset['clips'][0]['id'],asset['clips'][-1]['id']]
                 rows=[bank[c['id']] for c in asset['clips']]
-                data={'bound':max(c['decodedPeak'] for c in rows)+max(c['decodedTailPeak'] for c in rows)}
+                data={'beats':asset['clips'][0]['beats'],'bound':max(c['decodedPeak'] for c in rows)+max(c['decodedTailPeak'] for c in rows)}
                 for key,cid in zip(('a','b'),ids):data[key]=base64.b64encode((ROOT/bank[cid]['path']).read_bytes()).decode('ascii')
                 results.append(page.evaluate(SCRIPT,data))
             print(json.dumps({'suite':'MS3_SURGE_BROWSER_AUDIO','arrangements':len(results),'actualDecodes':len(results)*2,
