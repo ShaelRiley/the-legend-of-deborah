@@ -68,6 +68,10 @@ def validate(decode=False):
     need(manifest['channels']==2 and manifest['sampleRate']==lock['sampleRate']==44100,'audio format')
     need(manifest['bpm']==runtime['bpm']==catalog['bpm']==130,'canonical fixed tempo')
     need(len(catalog['blocks'])==8 and len(catalog['assets'])==48,'composition authority')
+    audit=json.loads((ROOT/'docs/MS3_16_BAR_AUDIT.json').read_text())
+    need(audit['catalogRevision']==catalog['revision'] and catalog['phraseBars']==16 and catalog['mappedExits'],'source arrangement revision')
+    need(audit['sourceMidiFiles']==465 and audit['ordinaryClips']==157 and audit['fanfares']==8,'authored long-form coverage')
+    expected_count=audit['ordinaryClips']+audit['fanfares']
     pages={};compiled={};notes=0
     for aid,asset in catalog['assets'].items():
         for clip in asset['clips']:
@@ -77,7 +81,7 @@ def validate(decode=False):
             compiled[clip['id']]={**clip,'block':asset['block'],'role':asset['role'],'asset':aid,
                                  'noteSHA256':sha(json.dumps(source,separators=(',',':')).encode())}
     bank={c['id']:c for c in manifest['clips']}
-    need(len(bank)==len(manifest['clips'])==len(compiled)==manifest['clipCount']==1402 and notes==170860,'complete curated score')
+    need(len(bank)==len(manifest['clips'])==len(compiled)==manifest['clipCount']==expected_count and notes==audit['notes'],'complete curated score')
     need(set(bank)==set(compiled)==set(runtime['clips']),'missing/orphan phrase')
     need({p.name for p in DEST.iterdir()}=={cid+'.ogg' for cid in bank}|{'bridge.ogg'},'missing/orphan runtime audio')
     need({v['name'] for v in patches['voices']}=={'acid','industrial','strings','brass','bass','tom','snare','kick','closed','open'},'physical patches')
@@ -91,7 +95,7 @@ def validate(decode=False):
         source=compiled[cid]
         for key in ('block','role','asset','beats','noteSHA256'):need(c[key]==source[key],cid+' source '+key)
         need(c['bpm']==130 and c['rendererRevision']==manifest['rendererRevision'] and c['patchRevision']==manifest['patchRevision'],'phrase provenance: '+cid)
-        need(c['beats'] in (8,12) and c['musicalDuration']==c['beats']*60/130,'phrase duration: '+cid)
+        need(c['beats']==(12 if c['role']=='VICTORY' else 64) and c['musicalDuration']==c['beats']*60/130,'phrase duration: '+cid)
         need(runtime['clips'][cid]=={'beats':c['beats'],'duration':c['duration'],'peak':c['decodedPeak'],'tailPeak':c['decodedTailPeak']},'runtime duration/peak: '+cid)
         need(math.isfinite(c['decodedTailPeak']) and 0<=c['decodedTailPeak']<=c['decodedPeak'],'tail peak: '+cid)
         need(abs(c['duration']-c['musicalDuration']-lock['releaseSeconds'])<=2/44100,'release tail: '+cid)
@@ -101,7 +105,7 @@ def validate(decode=False):
          and 1<manifest['bridge']['duration']<8,'bridge contract')
     for cid,c in all_files:
         path=DEST/(cid+'.ogg');need(c['path']==str(path.relative_to(ROOT)),'untrusted path: '+cid)
-        data=path.read_bytes();need(len(data)==c['bytes']>1000 and sha(data)==c['sha256'],'audio integrity: '+cid)
+        data=path.read_bytes();need(1000<len(data)==c['bytes']<=1024*1024 and sha(data)==c['sha256'],'audio integrity: '+cid)
         channels,rate,frames=ogg_info(data,cid)
         need((channels,rate)==(2,44100) and frames/44100==c['duration'],'encoded duration/format: '+cid)
         need(abs(frames-c['decodedFrames'])<=256,'decoded frame count: '+cid)
@@ -113,9 +117,9 @@ def validate(decode=False):
             need(len(c['pcmSHA256'])==64,'PCM provenance: '+cid)
         total+=len(data)
     need(total==manifest['totalBytes']<=lock['packageBudgetBytes']<=60000000,'package budget')
-    need(lock['designReviewBytes']==100000000 and manifest['fileCount']==len(all_files)==1403,'file count/design review')
+    need(lock['designReviewBytes']==100000000 and manifest['fileCount']==len(all_files)==expected_count+1,'file count/design review')
     need(manifest['largestBytes']==max(c['bytes'] for c in bank.values()),'largest file')
-    need(manifest['averagePhraseBytes']==sum(c['bytes'] for c in bank.values())/1402,'average phrase')
+    need(manifest['averagePhraseBytes']==sum(c['bytes'] for c in bank.values())/expected_count,'average phrase')
     revision='ms2-surge-'+sha(json.dumps([(c['id'],c['sha256']) for c in manifest['clips']]+[('bridge',manifest['bridge']['sha256'])]).encode())[:16]
     need(revision==manifest['revision'],'content revision')
     if decode:
@@ -131,7 +135,7 @@ def validate(decode=False):
             need(abs(float(np.sqrt((pcm*pcm).mean()))-c['decodedRMS'])<1e-8,'decoded RMS metadata: '+cid)
             need(abs(float(abs(pcm.mean(axis=0)).max())-c['decodedDC'])<1e-8,'decoded DC metadata: '+cid)
         with ThreadPoolExecutor(max_workers=4) as pool:list(pool.map(check_file,all_files))
-    return {'suite':'MS2_SURGE_BANK','revision':manifest['revision'],'clips':1402,'notes':notes,'files':1403,'bytes':total,
+    return {'suite':'MS2_SURGE_BANK','revision':manifest['revision'],'clips':expected_count,'notes':notes,'files':len(all_files),'bytes':total,
             'acidMovementRatio':manifest['voices'][0]['movementRatio'],'actualDecodes':len(all_files) if decode else 0}
 
 def main():

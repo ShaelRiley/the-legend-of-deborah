@@ -65,11 +65,11 @@ e.now=holdDue+16*60/130;N:Tick();check(results[recovered]==true,'ready replaceme
 N:Stop()
 setup();N:SetMix('alpha',1);N:SetMix('beta',0);holdDue=e.now+1;prepare('alpha',1)
 e.now=holdDue;N:Tick();holds=N.HeldLoops
-for i=1,3 do e.now=holdDue+i*8*60/130;N:Tick() end
-check(N.HeldLoops==holds+2,'resident recovery cannot hide an unavailable replacement beyond eight seconds')
+for i=1,3 do e.now=holdDue+i*8*60/130+.00001;N:Tick() end
+check(N.HeldLoops==holds+3,'healthy resident remains audible while replacement is unavailable');check(N:Bytes()<32*1024*1024,'extended resident hold uses bounded memory')
 N:Stop();setup();holdDue=e.now+1;prepare('alpha',1);e.now=holdDue;N:Tick();holds=N.HeldLoops
 D.AudibleTargets[1].asset='delta-t2';e.now=holdDue+8*60/130;N:Tick()
-check(N.HeldLoops==holds,'resident recovery does not loop an obsolete role')
+check(N.HeldLoops==holds+1,'resident music continues while a newly requested role is preparing')
 N:Stop();setup();D.AudibleTargets[1].asset='delta-victory';holdDue=e.now+1;prepare('alpha',1,'delta_victory_000')
 e.now=holdDue;N:Tick();holds=N.HeldLoops;e.now=holdDue+12*60/130;N:Tick()
 check(N.HeldLoops==holds,'once-only victory cannot become a resident recovery loop')

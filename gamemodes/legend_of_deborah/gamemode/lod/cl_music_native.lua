@@ -199,8 +199,8 @@ function N:Tick()
     end
     for _,r in ipairs(ordered) do
         local boundary=r.started and r.started+r.musical
-        if boundary and r.loop and not r.retireAt and wanted[r.lane]==r.asset and not ready[r.lane]
-            and now>=boundary and now<=boundary+LATE and (not r.holdSince or boundary+r.musical<=r.holdSince+8) then
+        if boundary and r.loop and not r.retireAt and wanted[r.lane] and not ready[r.lane]
+            and now>=boundary and now<=boundary+LATE then
             -- Reuse the resident buffer on the musical grid, excluding its
             -- release tail. Never loop the whole Ogg's off-grid tail/silence.
             r.channel:SetTime(now-boundary,true);r.channel:Play();r.started=boundary;r.playedAt=now
