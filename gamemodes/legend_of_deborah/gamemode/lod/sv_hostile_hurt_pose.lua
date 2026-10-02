@@ -30,23 +30,39 @@ local function sequenceName(hostile, sequence)
     return string.lower(hostile:GetSequenceName(sequence) or "")
 end
 
+-- Source studio.h sequence flags, not the similarly named render flags.
+-- DELTA adds offsets to another pose; ALLZEROS has no full animation data.
+-- Neither can supply the entity's base pose, even on an ordinary NPC model.
+local UNSAFE_BASE_FLAGS = 0x0004 + 0x0020
+
+local function fullBodySequence(hostile, sequence, requireMetadata)
+    if not validSequence(hostile, sequence) then return false end
+    local name = sequenceName(hostile, sequence)
+    if name == "" or string.find(name, "gesture", 1, true) then return false end
+    if not hostile.GetSequenceInfo then
+        -- Without metadata, only retain a valid existing base or resolved idle.
+        -- Never introduce an unverified flinch; native entities expose this API.
+        return not requireMetadata
+    end
+    local info = hostile:GetSequenceInfo(sequence)
+    if not info or not isnumber(info.flags) then return false end
+    if bit.band(info.flags, UNSAFE_BASE_FLAGS) ~= 0 then return false end
+    local activity = string.lower(info.activityname or "")
+    return not string.find(activity, "gesture", 1, true)
+end
+
 function HurtPose:FindSequence(hostile)
     if not IsValid(hostile) then return nil end
 
-    -- Player flinches are additive gestures, not complete body sequences.
-    -- Freeze the already selected player pose instead of replacing its base
-    -- with an NPC flinch (which can expose the skeleton's reference pose).
-    local animation=LOD.HostileAnimation
-    if animation and animation:PlayerHold(hostile) then
-        local sequence=hostile:GetSequence()
-        if animation:Valid(hostile,sequence) then return sequence end
-        return animation:Resolve(hostile,ACT_IDLE)
-    end
+    -- Skeleton player rigs retain their complete player base and exact cycle.
+    -- Other models may use a flinch only when its metadata proves it is a base.
+    local animation = LOD.HostileAnimation
+    if animation and animation:PlayerHold(hostile) then return nil end
 
     if hostile.LookupSequence then
         for _, name in ipairs(NAMED_SEQUENCES) do
             local sequence = hostile:LookupSequence(name)
-            if validSequence(hostile, sequence) then
+            if fullBodySequence(hostile, sequence, true) then
                 local actual = sequenceName(hostile, sequence)
                 if actual ~= "" and (string.find(actual, "flinch", 1, true) or string.find(actual, "pain", 1, true)) then
                     return sequence
@@ -59,7 +75,7 @@ function HurtPose:FindSequence(hostile)
         for _, activity in ipairs(ACTIVITIES) do
             if isnumber(activity) then
                 local sequence = hostile:SelectWeightedSequence(activity)
-                if validSequence(hostile, sequence) then
+                if fullBodySequence(hostile, sequence, true) then
                     local actual = sequenceName(hostile, sequence)
                     -- Reject obvious locomotion/idle fallbacks. If the model does
                     -- not expose a descriptive sequence name, still accept a
@@ -84,7 +100,7 @@ local function applySequence(hostile, sequence, cycle)
     if hostile:GetSequence() ~= sequence then
         hostile:SetSequence(sequence)
     end
-    hostile:SetCycle(math.Clamp(cycle or 0.44, 0.15, 0.80))
+    hostile:SetCycle(math.Clamp(cycle or 0.44, 0, 1))
     hostile:SetPlaybackRate(0)
     return true
 end
@@ -93,18 +109,27 @@ function HurtPose:Freeze(hostile, cycle, mode)
     if not IsValid(hostile) or not hostile.LODHostile then return false end
 
     local sequence = self:FindSequence(hostile)
-    if not sequence then
-        -- Last-resort presentation fallback: freeze the current sequence rather
-        -- than letting locomotion continue during a state that is mechanically
-        -- supposed to be stunned. Most production HL2 models should resolve a
-        -- real flinch above; the diagnostic command exposes any fallback case.
+    local fallback = sequence == nil
+    local frozenCycle = math.Clamp(cycle or 0.44, 0.15, 0.80)
+    if fallback then
+        -- Hold the actual pose, not an arbitrary point in a walk/jump cycle.
+        -- Advancing a fallback to 44% can itself move its root through the floor.
         sequence = hostile:GetSequence()
-        if not validSequence(hostile, sequence) then return false end
+        if fullBodySequence(hostile, sequence, false) then
+            frozenCycle = hostile.GetCycle and hostile:GetCycle() or 0
+        else
+            local animation = LOD.HostileAnimation
+            sequence = animation and animation:Resolve(hostile, ACT_IDLE) or nil
+            if not fullBodySequence(hostile, sequence, false) then return false end
+            frozenCycle = 0
+        end
     end
 
     hostile.LODFrozenHurtSequence = sequence
-    hostile.LODFrozenHurtCycle = math.Clamp(cycle or 0.44, 0.15, 0.80)
+    hostile.LODFrozenHurtCycle = math.Clamp(frozenCycle, 0, 1)
     hostile.LODFrozenHurtMode = mode or "stun"
+    hostile.LODFrozenHurtFallback = fallback
+    hostile.LODFrozenHurtModel = hostile.GetModel and hostile:GetModel() or nil
     return applySequence(hostile, sequence, hostile.LODFrozenHurtCycle)
 end
 
@@ -113,6 +138,8 @@ function HurtPose:Clear(hostile)
     hostile.LODFrozenHurtSequence = nil
     hostile.LODFrozenHurtCycle = nil
     hostile.LODFrozenHurtMode = nil
+    hostile.LODFrozenHurtFallback = nil
+    hostile.LODFrozenHurtModel = nil
     hostile:SetPlaybackRate(1)
     hostile.LODCurrentActivity = nil
 end
@@ -150,7 +177,16 @@ hook.Add("Think", "LOD_HostileHurtPoseAuthoritative", function()
                     if hostile.loco.SetVelocity then hostile.loco:SetVelocity(vector_origin) end
                 end
                 hostile:SetVelocity(vector_origin)
-                applySequence(hostile, hostile.LODFrozenHurtSequence, hostile.LODFrozenHurtCycle)
+                if hostile.GetModel and hostile:GetModel() ~= hostile.LODFrozenHurtModel then
+                    -- Sequence IDs are model-local; never replay a cached ID on
+                    -- a replacement model. Revalidate only at this rare boundary.
+                    if not HurtPose:Freeze(hostile, dead and 0.50 or 0.44, dead and "death" or "stun") then
+                        HurtPose:Clear(hostile)
+                        hostile:SetPlaybackRate(0)
+                    end
+                else
+                    applySequence(hostile, hostile.LODFrozenHurtSequence, hostile.LODFrozenHurtCycle)
+                end
             elseif hostile.LODFrozenHurtMode == "stun" then
                 HurtPose:Clear(hostile)
                 hostile.LODNextRouteRefresh = 0
@@ -185,12 +221,12 @@ concommand.Add("lod_m3_hurtpose_status", function(ply)
         if IsValid(hostile) then
             count = count + 1
             local sequence = hostile.LODFrozenHurtSequence
-            local text = string.format("#%d %s frozenSequence=%s name=%s mode=%s playback=%.2f cycle=%.2f stunRemaining=%.3f dead=%s",
+            local text = string.format("#%d %s frozenSequence=%s name=%s mode=%s playback=%.2f cycle=%.2f stunRemaining=%.3f dead=%s fallback=%s",
                 hostile:EntIndex(), tostring(hostile.LODArchetypeId),
                 tostring(sequence or "none"), sequence and sequenceName(hostile, sequence) or "none",
                 tostring(hostile.LODFrozenHurtMode or "none"), hostile:GetPlaybackRate(),
                 hostile:GetCycle(), math.max(0, (hostile.LODHitStunUntil or 0) - CurTime()),
-                tostring(hostile.LODDead == true))
+                tostring(hostile.LODDead == true), tostring(hostile.LODFrozenHurtFallback == true))
             print("[LOD:HURTPOSE] " .. text)
             if IsValid(ply) then ply:ChatPrint(text) end
         end

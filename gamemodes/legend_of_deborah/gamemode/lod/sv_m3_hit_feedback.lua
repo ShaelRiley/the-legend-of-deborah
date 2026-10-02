@@ -33,43 +33,6 @@ local function firearmDamage(attacker, dmginfo)
     return dmginfo and dmginfo:IsDamageType(DMG_BULLET)
 end
 
-local function playFlinch(hostile)
-    if not IsValid(hostile) then return false end
-    -- The shared hurt-pose authority freezes the skeleton's full player base;
-    -- NPC flinches here can be additive-only sequences on a player rig.
-    if LOD.HostileAnimation and LOD.HostileAnimation:PlayerHold(hostile) then return false end
-
-    local activities = {ACT_BIG_FLINCH, ACT_FLINCH_CHEST, ACT_SMALL_FLINCH, ACT_FLINCH_HEAD}
-    for _, activity in ipairs(activities) do
-        if isnumber(activity) and hostile.SelectWeightedSequence then
-            local sequence = hostile:SelectWeightedSequence(activity)
-            if isnumber(sequence) and sequence >= 0 then
-                hostile.LODCurrentActivity = nil
-                hostile:ResetSequence(sequence)
-                hostile:SetCycle(0)
-                hostile:SetPlaybackRate(1)
-                return true
-            end
-        end
-    end
-
-    for _, name in ipairs({
-        "flinch", "flinch1", "flinch2", "pain",
-        "flinch_phys_01", "flinch_phys_02", "flinch_phys_03", "flinch_phys_04"
-    }) do
-        local sequence = hostile.LookupSequence and hostile:LookupSequence(name) or -1
-        if isnumber(sequence) and sequence >= 0 then
-            hostile.LODCurrentActivity = nil
-            hostile:ResetSequence(sequence)
-            hostile:SetCycle(0)
-            hostile:SetPlaybackRate(1)
-            return true
-        end
-    end
-
-    return false
-end
-
 local function sendHitConfirm(attacker)
     local now = CurTime()
     if now < (attacker.LODNextHitConfirm or 0) then return end
@@ -140,7 +103,10 @@ function HitFeedback:ApplyHitStun(hostile, durationMultiplier, attacker, formMul
     end
     hostile:SetVelocity(vector_origin)
 
-    hostile.LODHitStunHasFlinch = playFlinch(hostile)
+    -- The shared hurt-pose wrapper selects once, after these callbacks. Do not
+    -- install an unchecked NPC flinch first: an additive sequence would already
+    -- have replaced the full body before the safe fallback can capture it.
+    hostile.LODHitStunHasFlinch = false
     if LOD.Warden and LOD.Warden.OnTellHitStun then LOD.Warden:OnTellHitStun(hostile, now) end
     return true
 end
