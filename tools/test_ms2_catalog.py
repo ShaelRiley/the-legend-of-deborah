@@ -266,9 +266,11 @@ print('MS2_NATIVE_JSON PASS: 41125 catalog keys; 48 arrangements; '..phrases..' 
         source=(ROOT/'tools/music/ms2_engine.js').read_text()
         self.assertEqual((self.directory/'engine.lua').read_text(),'return [==['+source+']==]\n')
         self.assertNotIn('XMLHttpRequest',source);self.assertNotIn('fetch(',source)
-        for name in ('AudioContext','createOscillator','createBiquadFilter','createPeriodicWave','WebSynth','NativeSynth'):
+        for name in ('createOscillator','createBiquadFilter','createPeriodicWave','WebSynth','NativeSynth'):
             self.assertNotIn(name,source)
         self.assertIn('surge-rendered',source)
+        self.assertIn('surge-sample-clock',source)
+        self.assertIn('createBufferSource',source)
 
 
 if __name__=='__main__': unittest.main(verbosity=2)

@@ -1,3 +1,9 @@
+# Current repair checkpoint — MS3 sample-clock phrase continuity
+
+The author reports rhythmic and dynamic segmentation on main 90510057c608f8e2beec9debc6ceec36b35d14f3. The previous frame-start/fast-seek repair is failed continuity evidence. The current authorized checkpoint moves capable clients to scheduled AudioBuffer playback of the same bundled Surge recordings, with the existing native backend retained for compatibility. This is rendered playback, not live synthesis. See docs/validation/MS3_SAMPLE_CLOCK.md for the design, measured gates, constraints and the still-required native audition. Source/automated audio validation never establishes in-game perceptual acceptance. No Workshop or VPS deployment.
+
+---
+
 # Current repair checkpoint — MS2 smooth phrase joins
 
 Verified main `e633cd13fed0908ff424fb2da5190285cbc22407` is the repair parent. The author reports short clips changing too quickly and clearly audible fades at their joins, calls this MS3 and requests a quick fix with resident looping until replacement readiness. Native smoothness is failed evidence, not accepted continuity.

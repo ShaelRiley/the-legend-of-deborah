@@ -87,7 +87,8 @@ const restart=rig('return');restart.jump(100);restart.pump();check(restart.plays
 const rapid=rig('rapid');for(const block of ['a','b','c','d','e','f','g','h']){
  rapid.change({targets:[{block,asset:block+'-t1',weight:1}]});rapid.pump();check(Object.keys(rapid.scheduler.lanes).length<=3,'rapid replacement has bounded retirement tails');}
 rapid.scheduler.stop();
-// The primary controller cannot instantiate any AudioContext/oscillator.
+// A legacy bridge without bundled-byte support must retain native playback.
+// AudioContext is now allowed only for rendered AudioBuffer playback, never synthesis.
 let init,tick,backend;global.window={AudioContext:function(){throw Error('live synthesis forbidden');},setTimeout:fn=>init=fn,setInterval:fn=>{tick=fn;return 1;},clearInterval:()=>{}};
 const renderer=engine.attach({ready:v=>backend=v,prepare:()=>{},cancel:()=>{},mix:()=>{},volume:()=>{},drop:()=>{},stop:()=>{},block:()=>{},victory:()=>{},error:e=>{throw Error(e);},stats:()=>{}});
 init();renderer.install(metadata('a-t1'));renderer.state({seed:1,bpm:130,role:'T1',targets:[{block:'a',asset:'a-t1',weight:1}]});tick();
