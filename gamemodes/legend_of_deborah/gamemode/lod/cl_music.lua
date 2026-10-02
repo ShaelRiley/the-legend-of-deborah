@@ -52,11 +52,15 @@ end
 function D:Payload(aid)
     local known=self.Payloads[aid];if known then known.used=SysTime();return known.data end
     local a=self.Catalog and self.Catalog.assets[aid];if not a then return nil end
-    local payload={id=a.id,role=a.role,loop=a.loop,clips={}}
+    local payload={id=a.id,role=a.role,loop=a.loop,clips={},bound=0}
+    local full,tail=0,0
     for _,clip in ipairs(a.clips) do
         if not self.RenderBank or not self.RenderBank.clips[clip.id] then self.Error="Missing Surge phrase "..clip.id;return end
-        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next}
+        local meta=self.RenderBank.clips[clip.id]
+        full=math.max(full,meta.peak);tail=math.max(tail,meta.tailPeak)
+        payload.clips[#payload.clips+1]={id=clip.id,beats=clip.beats,energy=clip.energy,entry=clip.entry,exit=clip.exit,next=clip.next,duration=meta.duration}
     end
+    payload.bound=full+(a.loop and tail or 0)
     self.Payloads[aid]={data=payload,used=SysTime()}
     if table.Count(self.Payloads)>M.Limits.metadataAssets then
         local oldest
@@ -90,10 +94,34 @@ function D:StartRenderer()
         local function live() return generation==D.Generation and D:Enabled() end
         self:AddFunction("lodms2","ready",function(backend,stamp)
             if not live() then return end
-            if backend~="surge-rendered" or not N:SyncClock(stamp) then
+            if backend~="surge-sample-clock" and (backend~="surge-rendered" or not N:SyncClock(stamp)) then
                 D.Error="Surge phrase clock did not initialize";D.RetryAt=SysTime()+10;D:Stop();return
             end
+            if backend=="surge-sample-clock" then N:Stop() end -- exactly one audible backend
             D.Ready=true;D.ReadyDeadline=nil;D.RetryAt=nil;D.Backend=backend;D.Error=nil;D.Synced=nil
+        end)
+        self:AddFunction("lodms2","readclip",function(lane,clip)
+            if not live() or D.Backend~="surge-sample-clock" or not M.ID(lane) or not M.ID(clip) then return end
+            -- This bridge reads only a currently authorized, bundled score file.
+            -- No arbitrary paths, HTTP, network soundtrack or unrestricted Lua.
+            local allowed=false
+            for _,t in ipairs(D.AudibleTargets or {}) do
+                if t.block==lane and t.weight>0 then
+                    local a=D.Catalog.assets[t.asset]
+                    for _,c in ipairs(a and a.clips or {}) do if c.id==clip then allowed=true;break end end
+                end
+            end
+            if not allowed then self:QueueJavascript('lodScore.audio("'..clip..'","");');return end
+            local now=SysTime()
+            if now>=(D.ClipReadWindow or 0) then D.ClipReadWindow=now+.1;D.ClipReadCount=0 end
+            D.ClipReadCount=(D.ClipReadCount or 0)+1
+            if D.ClipReadCount>2 then self:QueueJavascript('lodScore.audio("'..clip..'","");');return end
+            local path="sound/lod/ms2_surge/"..clip..".ogg"
+            local size=file.Size(path,"GAME");local bytes
+            if size and size>0 and size<=256*1024 then bytes=file.Read(path,"GAME") end
+            if type(bytes)~="string" or #bytes>256*1024 or bytes:sub(1,4)~="OggS" then bytes=nil end
+            local encoded=bytes and util.Base64Encode(bytes) or ""
+            self:QueueJavascript('lodScore.audio("'..clip..'","'..encoded..'");')
         end)
         self:AddFunction("lodms2","block",function(bid) if live() then D:Announce(bid) end end)
         self:AddFunction("lodms2","victory",function() if live() and D.Victory then D.Victory.finished=true;D.Synced=nil end end)
@@ -109,9 +137,14 @@ function D:StartRenderer()
         self:AddFunction("lodms2","stats",function(raw) if live() and type(raw)=="string" and #raw<2000 then D.Stats=util.JSONToTable(raw) end end)
         self:AddFunction("lodms2","error",function(err)
             if not live() then return end
-            D.Error=tostring(err):sub(1,512);D.RetryAt=SysTime()+10;D:Stop()
+            D.Error=tostring(err):sub(1,512)
+            -- A capability/decode failure falls back once, rather than trapping
+            -- an otherwise working client in repeated silent AudioContext retries.
+            if D.Backend=="surge-sample-clock" then D.NativeFallbackReason=D.Error;D.PreferNative=true;D.RetryAt=SysTime()+.1
+            else D.RetryAt=SysTime()+10 end
+            D:Stop()
         end)
-        self:QueueJavascript("window.lodScore=MS2.attach(lodms2);")
+        self:QueueJavascript("window.lodScore=MS2.attach(lodms2,"..tostring(not D.PreferNative)..");")
     end
     panel:SetHTML('<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\'"><script>'..engineSource..'</script>')
     self.ReadyDeadline=SysTime()+5
@@ -243,11 +276,12 @@ end)
 hook.Add("ShutDown","LOD_MusicShutdown",function() D:Stop() end)
 concommand.Add("lod_music_client_status",function()
     if D.Ready and IsValid(D.Panel) then D.Panel:QueueJavascript("lodScore.stats();") end
-    print("[LOD:MUSIC] "..util.TableToJSON({system="MS2",enabled=D:Enabled(),backend=D.Backend,ready=D.Ready,
+    print("[LOD:MUSIC] "..util.TableToJSON({system="MS3",enabled=D:Enabled(),backend=D.Backend,ready=D.Ready,
         plan=D.Current and D.Current.plan,catalog=D.Catalog and D.Catalog.revision,quality=D.Quality,
         metadataAssets=table.Count(D.Payloads),stats=D.Stats,renderBank=D.RenderBank and D.RenderBank.revision,
         patchBank=D.RenderBank and D.RenderBank.patchRevision,role=D.Ready and D.PlaybackRole or nil,
-        blocks=D.AudibleTargets,playback=N:Status(),error=D.Error,
+        blocks=D.AudibleTargets,playback=D.Backend=="surge-sample-clock" and (D.Stats and D.Stats.audio or {}) or N:Status(),error=D.Error,
+        nativeFallbackReason=D.NativeFallbackReason,
         retryIn=math.max(0,(D.RetryAt or 0)-SysTime()),
         startupPending=not D.Ready and IsValid(D.Panel),streamedBytes=0}))
 end)
