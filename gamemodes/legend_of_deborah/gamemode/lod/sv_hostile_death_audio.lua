@@ -3,6 +3,8 @@
 LOD.HostileDeathAudio=LOD.HostileDeathAudio or {Loops={},Owners=setmetatable({}, {__mode='k'})}
 local A=LOD.HostileDeathAudio
 local BEAM='npc/stalker/laser_burn.wav'
+local CHARGE='npc/vort/attack_charge.wav'
+A.Stopping=A.Stopping or setmetatable({}, {__mode='k'})
 local LEGACY={'npc/roller/mine/rmine_seek_loop1.wav','npc/roller/mine/rmine_seek_loop2.wav'}
 local function state() return LOD.RunManager and LOD.RunManager.State end
 local function stopEvent(data)
@@ -10,7 +12,8 @@ local function stopEvent(data)
     return (tonumber(data.Flags) or 0) % (flag*2)>=flag
 end
 local function pathOf(data)
-    return string.lower(data.SoundName or data.OriginalSoundName or ''):gsub('\\','/'):gsub('^[%*#@<>%^%)}!?]+','')
+    local path=(data.SoundName and data.SoundName~='' and data.SoundName) or data.OriginalSoundName or ''
+    return string.lower(path):gsub('\\','/'):gsub('^[%*#@<>%^%)}!?]+','')
 end
 local function report(ok,err)
     if not ok and ErrorNoHalt then ErrorNoHalt('[LOD:AUDIO] '..tostring(err)..'\n') end
@@ -33,6 +36,34 @@ function A:Live(ent)
         and c.build==(LOD.TopologySyncSafety and LOD.TopologySyncSafety.BuildSerial or 0)
         and s.BuildReady and not s.Failed and not s.LevelCleared
 end
+-- Vortigaunt, Stalker Siphoner and several other models share the charge asset.
+-- Support casts have their own canonical pending record, not LODRosterAttack.
+local function commitment(ent,path)
+    local cast=ent.LODSupportCast
+    local pending=LOD.EnemySupport and LOD.EnemySupport.Pending
+    if path==CHARGE and cast and pending and pending[ent]==cast then return cast,true end
+    return ent.LODRosterAttack,false
+end
+local function active(ent,attack,support,path)
+    local s=state();local now=CurTime()
+    if not attack or not s or not ent.LODActivated or s.SimulationFrozen
+        or (LOD.Audio and LOD.Audio:Muted()) then return false end
+    if support then
+        local pending=LOD.EnemySupport and LOD.EnemySupport.Pending
+        local record=attack.records and attack.records[1]
+        if ent.LODSupportCast~=attack or not pending or pending[ent]~=attack
+            or not record or record.run~=s then return false end
+    elseif ent.LODRosterAttack~=attack or attack.run~=s then return false end
+    if attack.finish and now>=attack.finish then return false end
+    if path==CHARGE then
+        -- The authored ready time is the charge boundary; never invent a lease
+        -- or let an interrupted/stalled cast leave its cue running indefinitely.
+        return not attack.released and type(attack.ready)=='number' and now<attack.ready
+            and (not attack.deadline or now<attack.deadline)
+    end
+    -- Beam keeps its full warning AND released sweep, unlike a charge cue.
+    return attack.kind=='beam'
+end
 function A:Stop(ent)
     -- Roster Cancel also runs synchronously from kill hooks. Preserve the native
     -- death safety boundary; the shared presentation/Think retires this row.
@@ -40,7 +71,15 @@ function A:Stop(ent)
     local row=self.Loops[ent];if not row then return end
     -- Detach BEFORE native calls: stop events/reentrant cleanup cannot stop twice.
     self.Loops[ent]=nil
-    if IsValid(ent) then report(pcall(ent.StopSound,ent,row.path)) end
+    if IsValid(ent) then
+        self.Stopping[ent]=true
+        -- Keep exact native identifiers (including spatial prefixes). Stop the
+        -- resolved file too when a soundscript was used. Old hot-reload rows
+        -- contain only path and remain compatible.
+        if row.resolved and row.resolved~=row.path then report(pcall(ent.StopSound,ent,row.resolved)) end
+        if IsValid(ent) then report(pcall(ent.StopSound,ent,row.path)) end
+        self.Stopping[ent]=nil
+    end
 end
 function A:Retire(ent)
     if not IsValid(ent) then self:Stop(ent);self.Owners[ent]=nil;return end
@@ -52,8 +91,11 @@ function A:Retire(ent)
     self:Stop(ent)
     if first then
         report(pcall(ent.SetNW2Bool,ent,'LOD_AudioRetired',true))
-        -- Also clean an already-running pre-refresh Beam/legacy Seeker loop.
-        if not owned then report(pcall(ent.StopSound,ent,BEAM)) end
+        -- Also clean an untracked pre-refresh charge/Beam on this actor only.
+        if not owned then
+            report(pcall(ent.StopSound,ent,BEAM))
+            if IsValid(ent) then report(pcall(ent.StopSound,ent,CHARGE)) end
+        end
         if ent.LODArchetypeId=='seeker' then
             for _,path in ipairs(LEGACY) do report(pcall(ent.StopSound,ent,path)) end
         end
@@ -72,16 +114,24 @@ hook.Add('EntityEmitSound','LOD_HostileDeathAudio_SuppressLegacy',function(data)
     if ent.LODDead and (path=='buttons/blip1.wav' or path=='buttons/button15.wav') then return false end
     if ent.LODPlaceholderLoot and path=='items/itempickup.wav' then return false end
     if not ent.LODHostile then return end
-    if path==BEAM then
-        local attack=ent.LODRosterAttack
-        if not A:Live(ent) or not ent.LODActivated or not attack or attack.kind~='beam'
-            or attack.run~=state() or (attack.finish and CurTime()>=attack.finish)
+    if path==BEAM or path==CHARGE then
+        local attack,support=commitment(ent,path)
+        if not A:Live(ent) or A.Stopping[ent] or not active(ent,attack,support,path)
             or (tonumber(data.SoundTime) or 0)>CurTime() then return false end
-        -- The production warning and sweep are one finite existing commitment.
-        -- Record the original emitted identifier so StopSound matches scripts too.
+        local resolved=(data.SoundName and data.SoundName~='' and data.SoundName) or path
+        local emitted=(data.OriginalSoundName and data.OriginalSoundName~='' and data.OriginalSoundName) or resolved
         local row=A.Loops[ent]
-        if row and row.attack~=attack then A:Stop(ent) end
-        A.Loops[ent]={path=data.OriginalSoundName or data.SoundName,attack=attack}
+        if row and row.attack==attack and row.path==emitted and (row.resolved or row.path)==resolved then
+            -- Repeated CHAN_AUTO starts must not stack copies of one loop.
+            -- Pitch/volume changes still reach the existing native sound.
+            if (tonumber(data.Flags) or 0)%4==0 then return false end
+            return
+        end
+        if row then A:Stop(ent) end
+        -- StopSound can reenter death/cancel callbacks; do not resurrect the
+        -- captured commitment after native cleanup invalidated it.
+        if not A:Live(ent) or not active(ent,attack,support,path) then return false end
+        A.Loops[ent]={path=emitted,resolved=resolved,attack=attack,support=support,sound=path}
     elseif path==LEGACY[1] or path==LEGACY[2] then
         -- Current Seeker is intentionally one-shot-only; no living loop is added.
         if not A:Live(ent) then return false end
@@ -91,9 +141,7 @@ hook.Add('Think','LOD_HostileAudioOwners',function()
     -- Bounded by actual sounding actors, not a per-frame world/registry scan.
     for ent,row in pairs(A.Loops) do
         if not A:Live(ent) then A:Retire(ent)
-        elseif ent.LODRosterAttack~=row.attack or not ent.LODActivated
-            or (row.attack.finish and CurTime()>=row.attack.finish)
-            or state().SimulationFrozen or (LOD.Audio and LOD.Audio:Muted()) then A:Stop(ent) end
+        elseif not active(ent,row.attack,row.support,row.sound or BEAM) then A:Stop(ent) end
     end
 end)
 hook.Add('EntityRemoved','LOD_HostileAudioRemoved',function(ent)
