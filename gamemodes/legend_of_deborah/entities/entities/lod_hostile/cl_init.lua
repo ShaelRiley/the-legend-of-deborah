@@ -209,6 +209,7 @@ local function renderedMuzzlePosition(ent, size, verticalCompensation, aim)
 end
 
 function ENT:Draw()
+    if LOD.BossPresentation and self:GetNW2String("LOD_BossId","")~="" then return LOD.BossPresentation:DrawActor(self) end
     local deathAt = self:GetNW2Float("LOD_DeathPulseStart", -1)
     local dying = deathAt >= 0
     if not dying and self:GetNW2Bool("LOD_WardenHidden", false) then return end

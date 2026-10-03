@@ -10,7 +10,7 @@ local function active(s) return s and s.BuildReady and not s.Failed and not s.Le
 local function copy(p) return Vector(p.x,p.y,p.z) end
 function R:Seal(e)
     if e.LODRemainsReceipt or not IsValid(e) or not e.LODDead or e:Health()>0 or not e.LODHostile
-        or e:IsPlayer() or excluded[e.LODArchetypeId] or e.LODSkeletonHero or e.LODWardenClone or e.LODHector
+        or e:IsPlayer() or excluded[e.LODArchetypeId] or e.LODBossEncounter or e.LODSkeletonHero or e.LODWardenClone or e.LODHector
         or not LOD.Config.Encounter.Archetypes[e.LODArchetypeId] or not active(state())
         or e.LODRosterContext and not E:Live(e.LODRosterContext,state()) or self.Count>=96 then return end
     local r=E:Bind({source=e,sourceState=Rules:ProgressionState(e),livingLife=Status.ActorLives[e],

@@ -39,6 +39,8 @@ include("lod/sh_feedback_language.lua")
 if SERVER then AddCSLuaFile("lod/sh_player_scale_collision.lua") end
 include("lod/sh_player_scale_collision.lua")
 include("lod/sh_rng.lua")
+if SERVER then AddCSLuaFile("lod/sh_boss_registry.lua") end
+include("lod/sh_boss_registry.lua")
 if SERVER then
     AddCSLuaFile("lod/sh_crate_visuals.lua")
     AddCSLuaFile("lod/sh_crate_brand_metadata.lua")

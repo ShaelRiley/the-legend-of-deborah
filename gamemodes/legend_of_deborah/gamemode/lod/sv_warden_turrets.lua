@@ -153,6 +153,17 @@ function T:Admit(s,w,a)
     for _,slot in ipairs(group.slots) do
         slot.owner=group
         local ok,reason=self:Placement(s,a,slot,slot.pos)
+        if not ok and s.Level==20 and LOD.BossRegistry and slot.cell then
+            -- Four authored Sentries require four safe admissions. Search only
+            -- bounded points in each designated corner; never invade a stair lane.
+            local center=N:CellCenter(slot.cell)
+            for _,offset in ipairs({{72,72},{48,72},{72,48},{96,72},{72,96},{48,48},{96,48},{48,96},{24,72},{72,24}}) do
+                local candidate=LOD.HostileMotionV2:CellFloorPoint(slot.cell,center+Vector(slot.dx*offset[1],slot.dy*offset[2],0))
+                local legal,why=self:Placement(s,a,slot,candidate)
+                if legal then slot.pos=candidate;ok=true;reason=nil;break end
+                reason=why
+            end
+        end
         local reserve=LOD.WanderingDirector:GetDeficitReservation(s.Graph)
         if not self:Scope(group) or s.Failed or s.LevelCleared or s.SimulationFrozen then ok,reason=false,"scope" end
         if LOD.EncounterDirector:GetActiveCount()+reserve+1>LOD.Config.Encounter.ActiveHostileCeiling then ok,reason=false,"capacity" end

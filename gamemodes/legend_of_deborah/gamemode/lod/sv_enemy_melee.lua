@@ -11,6 +11,7 @@ E.CloseDefense={range=96,warning=.4,grace=.2,recovery=1.2,
 function E:CanCloseDefend(e)
     local s=LOD.RunManager and LOD.RunManager.State
     local status=LOD.RPGStatusElements
+    if e.LODBossEncounter then return false end
     if not IsValid(e) or not e.LODHostile or e.LODDead or e:Health()<=0 or not e.LODActivated
         or not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
         or not status:CanInitiateAttack(e) or status:Has(e,"morale_flee") then return false end

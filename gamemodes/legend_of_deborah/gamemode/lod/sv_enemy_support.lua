@@ -21,7 +21,7 @@ local function identity(a) return LOD.RPGAbilityRules:ProgressionState(a) end
 local function living(a) return IsValid(a) and not a.LODDead and a:Health()>0 end
 function S:Ordinary(a)
     return living(a) and not a:IsPlayer() and a.LODHostile and a.LODActivated and not a.LODSkeletonHero
-        and not a.LODHector and not a.LODWardenClone and not excluded[a.LODArchetypeId]
+        and not a.LODBossEncounter and not a.LODHector and not a.LODWardenClone and not excluded[a.LODArchetypeId]
 end
 function S:CanSupport(e,kind)
     return self:Ordinary(e) and liveRun(state())

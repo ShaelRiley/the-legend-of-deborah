@@ -1,3 +1,13 @@
+# Current checkpoint — complete authored modular boss production
+
+Source parent is verified main `96ab02aa78254eed9bfccb5b06dca947b82abd9f`. The original live GDD body was fully corrected and readback-verified before gameplay work. Exact authored order now routes eighteen new primary modules at Dungeons 2–19, retaining Gordon at 1 and Gordon→Hector at 20. Chuck alone owns Dungeon 14; Jane is subordinate. Timer-only automatic failure, retained no-Hero state and safe authored key locations remain authoritative.
+
+The common registry/encounter owner extends canonical RPG damage/status/Push, native death/loot, Motion V2, graph/arena, music and key/jail/rescue. All mature authored routines, special completion, physical arenas, diagnostics and player manual are integrated. Read [production/acceptance](BOSS_PRODUCTION_ACCEPTANCE.md) and [exact implementation tuning](BOSS_IMPLEMENTATION_TUNING.md). The final publication reply supplies the exact child commit and frozen complete-gate receipt; do not substitute a focused pass or prior source count.
+
+Native GMod visual/physics/input/co-op/Steam Deck acceptance remains open. After exact-source restart on gm_flatgrass, use the finite roster procedure in the acceptance record, prioritizing Chuck/Jane authority, Melf frozen identities, Button route/E timing, Joilette three-Cleaner recovery, flight/Strider cover/collision and the retained Gordon→Hector finale. Preserve all earlier feat/music/hit-stun acceptance debts. Source push only; no Workshop/VPS authorization.
+
+---
+
 # Current checkpoint — final feat rebalance
 
 Implements the complete author ledger in `docs/briefs/FEAT_REBALANCE_20261002.md`

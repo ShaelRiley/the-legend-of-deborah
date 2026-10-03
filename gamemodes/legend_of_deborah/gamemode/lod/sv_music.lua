@@ -114,7 +114,7 @@ function D:Target(p,l,s)
     if not p:Alive() then return t,{plan} end
     local a,b,f=M.Floors(s.Graph,p:GetPos(),p:OnGround(),l.floor)
     if a==b then l.floor=a elseif f<.01 then l.floor=a elseif f>.99 then l.floor=b end
-    local w=s.Warden;local arena=s.Graph.Progression and s.Graph.Progression.Warden
+    local w=s.Boss or s.Warden;local arena=s.Graph.Progression and s.Graph.Progression.Warden
     local cell=LOD.MazeNavigator:WorldToCell(s.Graph,p:GetPos())
     local key=cell and LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z)
     local inside=arena and key and (arena.court[key] or key==LOD.MazeGenerator.CellKey(arena.entry.x,arena.entry.y,arena.entry.z))

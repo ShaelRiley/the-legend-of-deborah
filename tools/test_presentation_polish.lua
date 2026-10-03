@@ -73,7 +73,13 @@ dofile(root..'lod/sv_crypto_statue.lua');assert(LOD.CryptoDirector:EnsureStatue(
 assert(statue.pos.x<S.HutCenter.x-S.HutGuideDistance-32 and statue.pos.x>S.HutCenter.x-S.HutHalfForward+16)
 assert(statue.pos.y-S.HutCenter.y==80 and statue.angle.y==0)
 -- One shared prompt painter for statue, portal and manual, honoring rebound Use.
-include=function() end
+local included={}
+include=function(path)
+    included[path]=(included[path] or 0)+1
+    -- Preserve this prompt fixture's isolated client dependencies, but load
+    -- the real shared registry used by cl_init's authored module dispatch.
+    if path=='shared.lua' then dofile(root..'lod/sh_boss_registry.lua') end
+end
 ScrW=function() return 1280 end;ScrH=function() return 800 end
 input={LookupBinding=function() return 'mouse4' end}
 TEXT_ALIGN_CENTER=1
@@ -86,6 +92,10 @@ player.EyePos=function() return Vector() end
 player.EyeAngles=function() return Angle(0,0,0) end
 ents.FindByClass=function() return {} end
 dofile(root..'cl_init.lua');events.LOD_StagingInteractionPrompt()
+assert(included['shared.lua']==1 and #LOD.BossRegistry.Modules==18)
+for _,id in ipairs(LOD.BossRegistry.Modules) do
+    assert(included['lod/bosses/cl_'..id..'.lua']==1,'authored client module dispatch missing or duplicated')
+end
 assert(#paints==1 and paints[1][1]=='Press "MOUSE 4" to Open the Wallet')
 assert(paints[1][2]=='LOD_StagingBoundPrompt' and paints[1][8]==4)
 assert(LOD.StagingPromptOwnedByGamemode,'Legacy entity prompt defers to gamemode')

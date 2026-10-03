@@ -357,6 +357,9 @@ function Pushback:Apply(hostile, opts)
     if hostile.LODDeadcrabState == "latched" then return nil end
 
     local authoredDistance = math.max(0, tonumber(opts.distance) or 0)
+    if LOD.BossEncounter and (hostile.LODBossEncounter or hostile.LODBossObject) then
+        authoredDistance=authoredDistance*LOD.BossEncounter:PushScale(hostile)
+    end
     if LOD.Equipment and LOD.Equipment.Extras then
         local attackGear=LOD.Equipment:Extras(opts.attacker)
         local defendGear=LOD.Equipment:Extras(hostile)
@@ -493,6 +496,10 @@ function Pushback:Apply(hostile, opts)
     local destination = startPos + direction * travel
     destination.z = startPos.z
 
+    if hostile.LODBossObject and LOD.BossEncounter then
+        local o=hostile.LODBossObject
+        if not LOD.BossEncounter:ObjectPositionAllowed(o,destination) then return nil end
+    end
     if opts.validatePath and not opts.validatePath(startPos,destination,trace) then return nil end
     if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,startPos,destination) then return nil end
 
@@ -551,6 +558,7 @@ function Pushback:Apply(hostile, opts)
         source = tostring(opts.source or "generic"),
         pushSave = save
     }
+    if hostile.LODBossObject and LOD.BossEncounter then LOD.BossEncounter:PushObjectSettled(hostile,startPos,destination,result) end
     return result
 end
 

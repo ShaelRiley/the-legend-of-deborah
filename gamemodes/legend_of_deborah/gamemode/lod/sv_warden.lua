@@ -145,6 +145,17 @@ function W:Commit()
     LOD.EncounterDirector.Entities[#LOD.EncounterDirector.Entities+1]=e
     self:SpawnClones(s,w,a)
     if LOD.WardenTurrets then LOD.WardenTurrets:Admit(s,w,a) end
+    if s.Level==20 and LOD.BossRegistry and (#(w.clones or {})~=4 or not w.turrets or w.turrets.admitted~=4) then
+        -- A rejected native allocation is not a smaller authored finale. Roll
+        -- back the complete uncommitted group and retry through normal service.
+        if LOD.WardenTurrets then LOD.WardenTurrets:Retire(w.turrets);LOD.WardenTurrets:Cleanup(w.turrets) end
+        for _,clone in ipairs(w.clones or {}) do if IsValid(clone.actor) then clone.actor:Remove() end end
+        if IsValid(e) then e:Remove() end
+        w.actor=nil;w.started=nil;w.clones={};w.cloneStates={};w.turrets=nil;w.visualLife=nil
+        s.WardenStarted=false;s.ObjectiveStage=P.Stages.ENTER_WARDEN
+        log("WARDEN_COMPOSITION_RETRY",{level=20,requiredClones=4,requiredTurrets=4})
+        return false
+    end
     local gate=a.lock.entity
     if IsValid(gate) then gate:SetOpened(false);gate:SetNotSolid(false);gate:SetSolid(SOLID_BBOX) end
     e:SetNW2Bool("LOD_WardenHidden",true);e:SetNW2Int("LOD_WardenPhase",1);e:DrawShadow(false)

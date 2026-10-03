@@ -93,7 +93,7 @@ function EnemyVariance:Apply(hostile)
     hostile.LODVarianceApplied = true
 
     local seed = instanceSeed(hostile)
-    local size = hostile.LODArchetypeId == "hector" and 1
+    local size = (hostile.LODBossDefinition or hostile.LODArchetypeId == "hector") and 1
         or subFloat(seed, "size", V.SizeMin or 0.33, V.SizeMax or 1.33)
     local originalConfig = hostile.LODConfig
     local cfg = table.Copy(originalConfig)

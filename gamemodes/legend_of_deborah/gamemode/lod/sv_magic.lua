@@ -219,6 +219,15 @@ local function targetList(ply, direction)
     table.sort(targets, function(a, b)
         return origin:DistToSqr(a:WorldSpaceCenter()) < origin:DistToSqr(b:WorldSpaceCenter())
     end)
+    local boss=LOD.RunManager.State and LOD.RunManager.State.Boss
+    if boss and LOD.BossEncounter then
+        for _,o in ipairs(LOD.BossEncounter:Objects(boss)) do local e=o.ent
+            if LOD.BossEncounter:ObjectPushAllowed(e) and e:Health()>0 then
+                local delta=e:WorldSpaceCenter()-origin;local dist=delta:LengthSqr()
+                if dist>1 and dist<=SHOUT_RANGE*SHOUT_RANGE and direction:Dot(delta:GetNormalized())>=SHOUT_DOT and lineClear(ply,e) then targets[#targets+1]=e end
+            end
+        end
+    end
     return targets
 end
 

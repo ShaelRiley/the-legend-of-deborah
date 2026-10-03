@@ -246,6 +246,21 @@ if LOD.RPGValidation and LOD.RPGValidation.Run then
     local ok, errs = LOD.RPGValidation:Run(false)
     if ok then
         print("[PASS] Overall RPG Subsystem Validation")
+        -- Verify the enlarged catalog is exact rather than relaxing the former
+        -- count assertion or accepting Jane as another primary boss.
+        local templates=LOD.RPG.ArchetypeProgressionTemplates
+        local chonker=templates.chonker
+        assert(chonker and templates.jane_propane and LOD.BossEncounter)
+        templates.chonker=nil
+        local missing,missingErrors=LOD.RPGValidation:Run(false)
+        templates.chonker=chonker
+        assert(not missing and table.concat(missingErrors,";"):find("missing archetype progression template chonker",1,true))
+        templates.jane_propane.boss=true
+        local wrongRole,roleErrors=LOD.RPGValidation:Run(false)
+        templates.jane_propane.boss=false
+        assert(not wrongRole and table.concat(roleErrors,";"):find("primary/support role mismatch jane_propane",1,true))
+        assert(LOD.RPGValidation:Run(false))
+        print("[PASS] Exact modular template inventory and subordinate Jane role")
     else
         print("[FAIL] Overall RPG Subsystem Validation (" .. tostring(errs and table.concat(errs, "; ") or "error") .. ")")
         failures = failures + 1

@@ -170,6 +170,7 @@ function Effects:_SetPusherCooldown(attacker, target, readyAt)
 end
 
 function Effects:ValidPushTarget(target)
+    if IsValid(target) and target.LODBossObject then return LOD.BossEncounter and LOD.BossEncounter:ObjectPushAllowed(target) or false end
     if not IsValid(target) or target.LODDead or target:Health() <= 0 then return false end
     if target.LODHostile then return true end
     if not target:IsPlayer() or not target:Alive() then return false end

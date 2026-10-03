@@ -92,6 +92,25 @@ function Validation:Run(printResult)
         "wirewright", "snarer", "cordon", "reaper", "drubber", "fencer", "afterburst", "carrion", "towline", "screenwright", "censer", "trailmaker", "listener", "shy",
         "absolver", "exactor", "outrider", "conductor", "siphoner", "accumulator", "fusilier", "bombardier", "halter", "pacer", "interposer", "mourner", "censor", "surveyor", "relay", "lacemaker", "neil", "brute", "warden", "hector"
     }
+    -- The modular owner registers first-class templates at server bootstrap.
+    -- Keep the finite ordinary catalog valid in isolated pre-bootstrap checks,
+    -- but require every authored identity once that owner is present.
+    if LOD.BossEncounter then
+        local bosses = {"chonker", "felon", "melf", "ollie", "crystal_bepis", "daryl", "sofa", "marion", "button", "ray", "cornette", "moshi", "chuck", "rank_and_file", "flightmeister", "conan", "joilette", "little_mooky", "jane_propane"}
+        for _, archetypeId in ipairs(bosses) do
+            expectedArchetypes[#expectedArchetypes + 1] = archetypeId
+            local template = (RPG.ArchetypeProgressionTemplates or {})[archetypeId]
+            if template then
+                local primary = archetypeId ~= "jane_propane"
+                if template.archetypeId ~= archetypeId or template.externalHealthProfileId ~= archetypeId then
+                    addError(errors, "boss progression identity mismatch " .. archetypeId)
+                end
+                if template.boss ~= primary or template.baseXp ~= (primary and 500 or 80) then
+                    addError(errors, "boss progression primary/support role mismatch " .. archetypeId)
+                end
+            end
+        end
+    end
     if countKeys(RPG.ArchetypeProgressionTemplates) ~= #expectedArchetypes then
         addError(errors, "archetype progression template count must be " .. #expectedArchetypes)
     end

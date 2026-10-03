@@ -864,6 +864,7 @@ function ENT:_SpawnPlaceholderLoot()
 end
 
 function ENT:_FinishDeathPresentation()
+    if self.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(self)) then return end
     if not IsValid(self) then return end
     if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
     if self.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(self)) then return end
@@ -877,6 +878,7 @@ function ENT:_FinishDeathPresentation()
 end
 
 function ENT:_BeginDeathPresentation()
+    if self.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(self)) then return end
     if self.LODDeathPresentationStarted then return end
     if self.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(self)) then return end
     if self.LODFallenHero and not LOD.FallenHeroes:ResolveDeath(self) then return end
@@ -925,6 +927,7 @@ end
 
 function ENT:OnKilled(dmginfo)
     if self.LODDead then return end
+    if self.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:AcceptDeath(self)) then return end
     if (self.LODHectorGordon or self.LODArchetypeId=="warden" and not self.LODWardenClone
         and LOD.RunManager.State.Level==20) and (not LOD.Hector or not LOD.Hector:AcceptGordonDeath(self)) then return end
     if self.LODHector and (not LOD.Hector or not LOD.Hector:AcceptDeath(self)) then return end

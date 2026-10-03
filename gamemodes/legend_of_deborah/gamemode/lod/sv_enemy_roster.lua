@@ -277,7 +277,7 @@ function E:_DamagePacket(e,p,event,kind)
     local amount=rolls:ResolveActorDamage(c,e,p,tags)
     if gate and not gate() then return end
     local info=LOD.NewDamageInfo();info:SetAttacker(e);info:SetInflictor(e);info:SetDamage(amount)
-    info:SetDamageType(magic and DMG_ENERGYBEAM or (kind=="flame" and DMG_BURN or ((kind=="venom" or kind=="gas") and DMG_POISON or DMG_SLASH)))
+    info:SetDamageType(event.nativeDamageType or (magic and DMG_ENERGYBEAM or (kind=="flame" and DMG_BURN or ((kind=="venom" or kind=="gas") and DMG_POISON or DMG_SLASH))))
     info:SetDamagePosition(p:WorldSpaceCenter());tags.actorDamageResolved=true
     LOD.RPGStatusElements:AttachDamageContext(info,tags)
     rolls:QueueDamageReport(info,function(final)
@@ -416,7 +416,7 @@ function E:Release(e,a,now)
     if a.pattern then
         self:ReleasePattern(e,a,now)
     elseif a.kind=="bullet" or a.kind=="venom" or a.kind=="bolt" then
-        if #self.Projectiles<64 and (not a.turret or LOD.WardenTurrets:Publish(e,a)) then
+        if (LOD.BossEncounter and LOD.BossEncounter:ProjectileCount() or #self.Projectiles)<64 and (not a.turret or LOD.WardenTurrets:Publish(e,a)) then
             local speed=a.kind=="bullet" and 950 or (a.kind=="bolt" and 540 or 380)
             local q={owner=e,pos=a.origin,velocity=a.direction*speed,
                 expires=now+(a.range or e.LODConfig.fireRange)/speed,kind=a.kind,event=a.event}

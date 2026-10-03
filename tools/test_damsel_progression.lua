@@ -21,6 +21,7 @@ player.GetAll=function() return {} end
 R._SortedConnectedPlayers=player.GetAll
 R.State.HighestLevel=1;R.State.Level=1;R.State.LevelCleared=false;R.State.RescuedDamsels={};R.State.CashRecovered=0
 hero.throwGive=false
+local modularRescueGates=0
 for level=1,26 do
     assert(R:BuildCurrentLevel())
     assert(R.State.Level==level and R.State.HighestLevel==level)
@@ -45,6 +46,32 @@ for level=1,26 do
         cellReady=true
         assert(R:CompleteLevel(hero));assert(not R:CompleteLevel(hero),'duplicate victory')
         LOD.Hector=savedHector;LOD.ProgressionDirector.CanRescueTarget=savedCanRescue
+    elseif level>=2 and level<=19 then
+        -- Like the Level20 fixture above, isolate encounter/geometry here.
+        -- test_boss_framework.lua exercises the actual modular boss defeat,
+        -- delayed key, jail door and CanRescueTarget path. This campaign test
+        -- proves CompleteLevel honors that authority before accepting its
+        -- approved outcome; a missing fake method must not bypass the guard.
+        assert(LOD.BossRegistry:Modular(level),'authored modular level missing from registry')
+        local savedCanRescue=LOD.ProgressionDirector.CanRescueTarget
+        local cellReady,eligibilityCalls=false,0
+        LOD.ProgressionDirector.CanRescueTarget=function(self)
+            assert(self==LOD.ProgressionDirector and R.State.Level==level)
+            eligibilityCalls=eligibilityCalls+1
+            return cellReady
+        end
+        local count,cash,intermission=R.State.RescueCount,R.State.CashRecovered,R.State.IntermissionEnd
+        assert(not R:CompleteLevel(hero),'modular rescue bypassed canonical eligibility')
+        assert(eligibilityCalls==1 and not R.State.LevelCleared
+            and R.State.RescueCount==count and not R.State.RescuedDamsels[level]
+            and R.State.CashRecovered==cash and R.State.IntermissionEnd==intermission
+            and not R.State.Abundance,'blocked modular rescue mutated campaign rewards or completion')
+        assert(not R:AdvanceLevel() and R.State.Level==level,'blocked modular rescue advanced campaign')
+        cellReady=true
+        assert(R:CompleteLevel(hero) and eligibilityCalls==2)
+        assert(not R:CompleteLevel(hero),'duplicate victory')
+        LOD.ProgressionDirector.CanRescueTarget=savedCanRescue
+        modularRescueGates=modularRescueGates+1
     else
         assert(R:CompleteLevel(hero));assert(not R:CompleteLevel(hero),'duplicate victory')
     end
@@ -53,6 +80,7 @@ for level=1,26 do
     assert((R.State.Abundance==true)==(level>=20))
     assert(R:AdvanceLevel())
 end
+assert(modularRescueGates==18,'every modular campaign rescue must check eligibility')
 local previous=D:EndlessPressure(20)
 for _,level in ipairs({21,22,30,100,10000,1000000}) do
     assert(D:Target(level).type=='cash')
@@ -68,4 +96,4 @@ R.CampaignEpoch=1
 assert(R:NewCampaign())
 assert(R.State.Level==1 and R.State.RescueTarget.name=='Nessa' and next(R.State.RescuedDamsels)==nil)
 assert(next(R.State.DamselClaims)==nil and not R.State.Abundance and R.State.CashRecovered==0)
-print('DAMSEL_PROGRESSION_PASS: 20 unique names, five families, canonical model, complementary palette, real levels 1–26, no duplicate victory, endless pressure and campaign reset')
+print('DAMSEL_PROGRESSION_PASS: 20 unique names, five families, canonical model, complementary palette, real levels 1–26, all 18 modular rescue permission gates, no duplicate victory, endless pressure and campaign reset')

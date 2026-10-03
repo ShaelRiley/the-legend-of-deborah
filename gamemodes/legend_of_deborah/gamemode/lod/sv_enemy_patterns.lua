@@ -57,7 +57,7 @@ function E:PlanPattern(e,a,kind)
 end
 function E:ReleasePattern(e,a,now)
     -- Atomic capacity and offset recheck: no half-volley or launch through new cover.
-    if #self.Projectiles+#a.paths>64 then return false end
+    if (LOD.BossEncounter and LOD.BossEncounter:ProjectileCount() or #self.Projectiles)+#a.paths>64 then return false end
     for _,path in ipairs(a.paths) do
         local tr=trace(e,a.origin,path.start,true)
         if tr.Hit or tr.StartSolid then return false end

@@ -9,7 +9,7 @@ local function flat(v) return Vector(v.x,v.y,0) end
 function E:CrossfireOrdinary(p)
     return IsValid(p) and p.LODHostile and p.LODActivated and not p:IsPlayer()
         and not p.LODDead and p:Health()>0 and not excluded[p.LODArchetypeId]
-        and not p.LODSkeletonHero and not p.LODWardenClone and not p.LODHector
+        and not p.LODBossEncounter and not p.LODSkeletonHero and not p.LODWardenClone and not p.LODHector
         and not p.LODFriendlySummon and not p.LODSummonedSeeker and F:IsEnemyCombatant(p)
 end
 function E:CrossfireRecipient(a,r)

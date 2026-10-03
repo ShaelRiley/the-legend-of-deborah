@@ -868,6 +868,7 @@ end
 
 function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     if hostile.LODFallenHero then return false end
+    if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return false end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return false end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return false end
     if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return false end
@@ -876,6 +877,7 @@ function Loot:_SpawnEnemyResult(ply, hostile, category, rng)
     local kind, payload = self:ResolveEnemyReward(ply, category, rng)
     if not kind then return false end
     if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return false end
+    if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return false end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return false end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return false end
     local basePos = hostile:GetPos() + Vector(0, 0, 12)
@@ -901,6 +903,7 @@ function Loot:OnHostileLootHandoff(hostile)
     if IsValid(hostile) and hostile.LODFallenHero then return end
     if not IsValid(hostile) or hostile.LODLootHandoffCompleted then return end
     if hostile.LODRemainsReceipt and not LOD.EnemyRemains:RewardOwned(hostile) then return end
+    if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
@@ -914,6 +917,7 @@ function Loot:OnHostileLootHandoff(hostile)
     local instanceSeed = hostile.LODInstanceSeed or hostile:GetNW2Int("LOD_InstanceSeed", hostile:EntIndex())
 
     for _, ply in ipairs(player.GetAll()) do
+        if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return end
         if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
         if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
         if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return end
@@ -931,6 +935,7 @@ function Loot:OnHostileLootHandoff(hostile)
                 local category, pity = self:_DropCategory(ply, lootState, rng, guaranteedUseful)
 
                 self:TraceStage("category_resolved", hostile, category or "none")
+                if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return end
                 if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return end
                 if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return end
                 if hostile.LODSkeletonHero and not LOD.EventSkeletonBlockade.RewardOwned(hostile) then return end

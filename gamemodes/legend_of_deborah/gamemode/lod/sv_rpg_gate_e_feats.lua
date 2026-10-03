@@ -292,6 +292,7 @@ end
 function FeatEffectSystem:_TickActor(actor, elapsed)
     local run = LOD.RunManager and LOD.RunManager.State
     if run and (run.SimulationFrozen or run.Failed or run.LevelCleared or run.BuildReady == false) then return end
+    if IsValid(actor) and actor.LODBossEncounter and LOD.BossEncounter and (#LOD.BossEncounter:Targets(actor.LODBossEncounter)==0 or actor.LODBossEncounter.dead) then return end
     if IsValid(actor) and actor.LODHector then self.RegenActors[actor] = nil; return end
     if IsValid(actor) and actor.LODArchetypeId == "warden" and LOD.Warden and #LOD.Warden:Targets() == 0 then return end
     if not IsValid(actor) or actor.LODDead or actor:Health() <= 0 or (actor:IsPlayer() and not actor:Alive()) then

@@ -9,7 +9,7 @@
       "quote": "You brought a rescue party. Good. Now bring a plan.",
       "text": [
         "Somewhere inside a towering prison of shipping containers, Deborah is waiting for you. The passages change. The guards grow stronger. The Warden has a toilet. You have thirty minutes.",
-        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, and defeat Gordon. Levels 1–19 rescue nineteen different damsels; Level 1 begins with Nessa. Deborah herself waits at Level 20, where Hector the Director stands between Gordon’s defeat and her rescue. From Level 21 onward, Gordon steals cash instead. SECURE THE BAG, then see how far the server can go!",
+        "Gather one to four Heroes, cross the colored gates, hunt down the Black Keycard, and defeat that dungeon’s authored boss. Levels 1–19 rescue nineteen different damsels; Level 1 begins with Nessa. Deborah herself waits at Level 20, where Hector the Director stands between Gordon’s defeat and her rescue. From Level 21 onward, Gordon steals cash instead. SECURE THE BAG, then see how far the server can go!",
         "Container colors identify floor/quadrant sections; company marks are atmospheric and remain consistent throughout a dungeon. Most decks are solid concrete. Rare steel grates beside stairs offer a view below, but remain solid footing and cover: they are not drop routes or firing holes.",
         "This booklet uses the game's default keyboard and mouse controls. Its little-console-booklet look is a tribute; your adventure runs in Garry's Mod. Rebound game actions follow your configured bindings."
       ]
@@ -169,12 +169,12 @@
           "Find Neil → defeat Neil → take Black Keycard"
         ],
         [
-          "5 · The Warden",
-          "Open Black Gate → enter Gordon's arena"
+          "5 · The dungeon boss",
+          "Open Black Gate → enter the current boss arena"
         ],
         [
           "6 · Rescue target",
-          "Defeat Gordon → at Level 20, defeat Hector → take Jail Key → open chamber → rescue damsel / secure cash"
+          "Defeat current boss → at Level 20, defeat Hector after Gordon → take Jail Key → open chamber → rescue damsel / secure cash"
         ]
       ],
       "text": [
@@ -1413,20 +1413,255 @@
       ]
     },
     {
+      "id": "boss-roster",
+      "title": "Twenty authored boss encounters",
+      "rows": [
+        [
+          "1",
+          "Gordon the Warden"
+        ],
+        [
+          "2",
+          "Chonker the Honker"
+        ],
+        [
+          "3",
+          "Felon the Melon"
+        ],
+        [
+          "4",
+          "Melf the Yourself"
+        ],
+        [
+          "5",
+          "Ollie the Trolly"
+        ],
+        [
+          "6",
+          "Crystal Bepis"
+        ],
+        [
+          "7",
+          "Daryl the Barrel"
+        ],
+        [
+          "8",
+          "Sofa King Dangerous"
+        ],
+        [
+          "9",
+          "Marion the Carbarian"
+        ],
+        [
+          "10",
+          "Button for Punishment"
+        ],
+        [
+          "11",
+          "Ray D. Aitor"
+        ],
+        [
+          "12",
+          "Cornette, Who’s Drills Hurt"
+        ],
+        [
+          "13",
+          "Moshi the Washy"
+        ],
+        [
+          "14",
+          "Chuck Chuck Bo Buck + Jane the Propane"
+        ],
+        [
+          "15",
+          "Rank and File"
+        ],
+        [
+          "16",
+          "The Flightmeister"
+        ],
+        [
+          "17",
+          "Conan the Cone"
+        ],
+        [
+          "18",
+          "Joilette the Toilet"
+        ],
+        [
+          "19",
+          "Little Mooky"
+        ],
+        [
+          "20",
+          "Gordon the Warden → Hector the Director"
+        ]
+      ],
+      "text": [
+        "Each dungeon keeps its own named encounter. Mechanics follow the boss, not an old level number. Watch its warnings, use the permanent safe routes and exploit committed recovery windows. The entrance alcove remains protected in both directions.",
+        "Boss health, phase, frozen party composition and mandatory progress survive ordinary death, reconnect and an empty Hero team. Only the dungeon timer automatically fails the dungeon. A fresh Hero can continue the retained encounter.",
+        "Defeat releases exactly one recoverable Jail Key through the shared progression rules. Some authored scenes place it at a safe local feature; otherwise look at the arena center. The key, jail door and current rescue target remain separate steps. Jane, clones, drones, summoned enemies and cinematic props never replace the primary defeat receipt."
+      ]
+    },
+    {
+      "id": "boss-chonker",
+      "title": "Chonker the Honker",
+      "group": "Dungeon bosses",
+      "text": [
+        "Shoot bombs to defuse them. Black bombs have timed fuses; red mines warn after proximity; only one gold signature bomb can be active. Destroy THE BIG ONE to backfire into Chonker and earn the biggest punish window. His skates commit to arcs; wing Push discourages endless crowbar pressure."
+      ]
+    },
+    {
+      "id": "boss-felon",
+      "title": "Felon the Melon",
+      "group": "Dungeon bosses",
+      "text": [
+        "Read short, long and high bounce tells. Thrown melons can ricochet a limited number of times before harmless breakage; strong Push changes their path rather than moving Felon. Use the bowl edges, dodge marked produce rain and punish hard landings or cracked-shell wall impacts."
+      ]
+    },
+    {
+      "id": "boss-melf",
+      "title": "Melf the Yourself",
+      "group": "Dungeon bosses",
+      "text": [
+        "Your party’s models, class cores, representative weapons and a small executable set of signatures freeze when the encounter begins. Evil copies rise again as skeletons, then one fixed Hero becomes the directly damageable giant. Break skeleton bones with strong impacts and bait the marked giant attack into mirror pylons. Late joining or changing gear does not rewrite the copies."
+      ]
+    },
+    {
+      "id": "boss-ollie",
+      "title": "Ollie the Trolly",
+      "group": "Dungeon bosses",
+      "text": [
+        "Watch the basket reveal before each purchase flies out: cans, bowling ball, melon, explosives, bad groceries, crabs, spring props and Mystery Bags behave differently. Destroy loose stock before Shopping Spree collects it, shoot exposed basket items and bait the damaged-wheel cart into a return corral."
+      ]
+    },
+    {
+      "id": "boss-crystal_bepis",
+      "title": "Crystal Bepis",
+      "group": "Dungeon bosses",
+      "text": [
+        "Soda attacks use ordinary Poisoned status. When CRYSTAL IS THIRSTY appears, interrupt her committed vending run or hold E at the machine to jam one attempt. Jams reset; drinks use finite visible stock. Diet Crystal heals less but briefly speeds up. When stock reads SOLD OUT, no endless healing loop remains."
+      ]
+    },
+    {
+      "id": "boss-daryl",
+      "title": "Daryl the Barrel",
+      "group": "Dungeon bosses",
+      "text": [
+        "Learn Stable, Armed and Critical barrel states. Stable barrels can be moved; armed fuses are visible. Blast barriers and loading ramps provide routes around sequential chains. Barrel explosions and the Internal Fuse can only cause bounded nonlethal self-damage; repeated blast stagger has diminishing returns. Blue barrels mainly Push hazards clear."
+      ]
+    },
+    {
+      "id": "boss-sofa",
+      "title": "Sofa King Dangerous",
+      "group": "Dungeon bosses",
+      "text": [
+        "Charges, Recliner Slam and Full Recline commit to readable lanes or rectangles. Detached chaise sections are temporary hazards with no second boss-health pool. Bait finite furniture collisions; a missed Full Recline leaves the couch inverted for its largest melee opportunity. Move before the recovery shove."
+      ]
+    },
+    {
+      "id": "boss-marion",
+      "title": "Marion the Carbarian",
+      "group": "Dungeon bosses",
+      "text": [
+        "Dodge the three-hit hammer combo and bait the final blow into designated heavy objects. Traffic uses marked lanes with safe medians and post-hit protection. FORE launches a car; barriers can send its wreck back toward Marion. The late pileup settles into cover instead of an uncontrolled physics jam."
+      ]
+    },
+    {
+      "id": "boss-button",
+      "title": "Button for Punishment",
+      "group": "Dungeon bosses",
+      "text": [
+        "Only E presses on real buttons remove health segments. Follow the distant beacon and reach the pedestal by an ordinary approach; weapons, Magic and teleport shortcuts do not count. A missed timer retries without permanent escalation. Co-op may require two separated real buttons in the same window; solo never does. Press THE BIG RED BUTTON, then the small JAIL KEY button."
+      ]
+    },
+    {
+      "id": "boss-ray",
+      "title": "Ray D. Aitor",
+      "group": "Dungeon bosses",
+      "text": [
+        "Heat and pressure build toward a heavily warned Emergency Vent. Survive using cover and relief zones, then punish the dark cooled radiator. Optional relief valves clear local hot zones, shorten the vent and modestly extend recovery, with cooldowns. PIPE DOWN sequences steam inward while retaining visible openings."
+      ]
+    },
+    {
+      "id": "boss-cornette",
+      "title": "Cornette, Who’s Drills Hurt",
+      "group": "Dungeon bosses",
+      "text": [
+        "Watch alternating drill hands accelerate before release. Missed drills can embed and return; the runaway drill has a limited ricochet budget. Kill rear-position Drizel drones, avoid front/rear crossfire and bait the long two-handed charge into heavy columns. Overstrain makes Cornette vulnerable while remaining drones suppress."
+      ]
+    },
+    {
+      "id": "boss-moshi",
+      "title": "Moshi the Washy",
+      "group": "Dungeon bosses",
+      "text": [
+        "Read Fill, Wash, Spin and Drain. Wet floor and stronger suds change traction; dry platforms remain available. Clear optional jammed drains by E or shooting. Debris has distinct light, medium and heavy trajectories. The harmless LOST SOCK is a fakeout before an off-angle charge; leave rinse bands through the dry openings."
+      ]
+    },
+    {
+      "id": "boss-chuck",
+      "title": "Chuck Chuck Bo Buck",
+      "group": "Dungeon bosses",
+      "text": [
+        "The citizen with the beaver face and tail is the primary boss. Planks, heavy timber and broad panels have different arcs, impact, Push and breakage. Jane is the hostile propane-tank companion: gas warns before a separate ignition, cylinders move through explicit pressure states and critical tanks resist absurd punts. Jane’s defeat never releases a key. Chuck’s legitimate defeat ends the encounter and retires all remaining wood, gas, fire, cylinders and support."
+      ]
+    },
+    {
+      "id": "boss-rank_and_file",
+      "title": "Rank and File",
+      "group": "Dungeon bosses",
+      "text": [
+        "Drawer labels tell you what is coming. PERSONNEL summons bounded ordinary zombies; shoot PENDING folders to cancel delayed emergence; DENIED Pushes; MISFILED relocates existing zombies. The final surge pauses at the shared hostile limit while the cabinet is exposed. Optional shredders can clear nearby folders."
+      ]
+    },
+    {
+      "id": "boss-flightmeister",
+      "title": "The Flightmeister",
+      "group": "Dungeon bosses",
+      "text": [
+        "Stay mobile between permanent hard cover as the gunship follows bounded orbits, strafes, hovers and dives. Ordinary damage always works; committed banks expose the engine. Optional targeting beacons attract a predictable next pass. DOGFIGHT ends in long recovery, and the desperation dive can strike its designated structure."
+      ]
+    },
+    {
+      "id": "boss-conan",
+      "title": "Conan the Cone",
+      "group": "Dungeon bosses",
+      "text": [
+        "Destroy or Push small cones to open authored detours; only one lane closure is active at once. CONED is a warned leap/drop with bounded capture, teammate-assisted release and automatic solo escape. Separate attempts cannot chain-lock you. Read both segments of the Detour Charge and exploit finite sign collisions."
+      ]
+    },
+    {
+      "id": "boss-joilette",
+      "title": "Joilette the Toilet",
+      "group": "Dungeon bosses",
+      "text": [
+        "Bathroom Defense Device starts truly invulnerable. Defeat visibly marked Cleaner Neils, pick up Toilet Cleaner and use LMB to throw it at BDD. Exactly three successful unique hits break it. Missed or lost opportunities are replaced; death/reconnect does not reset progress. After the third hit, normal attacks work and Cleaner farming stops."
+      ]
+    },
+    {
+      "id": "boss-little_mooky",
+      "title": "Little Mooky",
+      "group": "Dungeon bosses",
+      "text": [
+        "The enormous Strider has one boss HP pool. Concentrated front-knee hits build temporary stagger and lower the body, then that knee gets a protection window. Underbody movement is a real but risky tactic: watch leg strikes and stomps. Preserve permanent cover, move during MOOKY WALK and leave the laser line before its final lock. No adds distract from Mooky."
+      ]
+    },
+    {
       "id": "gordon",
       "title": "Gordon the Warden",
       "art": "bosses",
       "text": [
-        "Beyond Black Gate is a two-level arena: a lower court and an upper gallery. Gordon is the heavy man in a pig mask. Entering commits the encounter and closes the back gate.",
+        "Gordon guards Dungeon 1 and returns at Dungeon 20. Beyond Black Gate, his lower court and upper gallery remain the familiar pig-masked showdown. Entering commits the encounter and closes the back gate.",
         "An entry or respawn alcove provides protection and one aid allowance per Hero identity per dungeon: up to 25 HP, up to 30 ammunition per owned gun, and one Healing Potion. Repeated entry is not an unlimited supply.",
         "Above roughly 60% HP, Gordon vanishes and physically moves through the arena for three seconds. A contracting ring marks his departure; a fixed square with inward arrows warns where he will reappear. That destination warning comes before his ordinary visible attack warning and four slow homing orbs. Around 60%, he rides his toilet and leaves bombs with three-second fuses. Around 25%, he clears that ordnance and charges with his crowbar.",
-        "During phase one, the first effective hit in a visible attack appearance or taunt cancels his unreleased shots and leaves a 1.2-second follow-up opportunity. More hits do not extend it, and no continuous appearance can exceed four seconds. Ordinary hit stun cannot pin him while cloaked or reappearing; invisibility itself does not block damage. Shared conditions still apply. Brief contextual taunts replace some attacks, with one speaker at a time and ordinary attack appearances between them. Hitting a taunt ends the gesture but preserves the same follow-up opportunity. Crowbar stagger still works at most once every three seconds; later phases retain their ordinary hit-stun rules.",
-        "Fake Gordon Clones join at Dungeon Levels 4, 8, 12 and 16, up to four. Each has one-third of the real Gordon’s maximum HP. They spread around the arena and have no boss health bar. Defeating a clone does not release the Jail Key. Defeating the real Gordon ends his fight; at Level 20 it reveals Hector instead of releasing the key.",
+        "Phase one leaves a generous dance opening after the fourth orb: 5.36 seconds of post-volley exposure. Standalone traveling taunts last 6.4 seconds. A first effective hit cancels unreleased shots and gives a fixed 1.2-second follow-up allowance without shortening the promised opening; repeated hits cannot renew it forever. The exposure cap is 13 seconds. Crowbar stagger still works at most once every three seconds; other phases keep their shared hit-stun rules.",
+        "Dungeon 1 has one real Gordon, with no clones or turrets. Dungeon 20 has one real Gordon plus exactly four fake Gordon clones. Each fake has one-third of his maximum HP, spreads around the arena and has no primary boss health bar. A fake never releases the Jail Key. The real Gordon’s Level-20 defeat transfers the locked fight to Hector.",
         "A living, deployed Hero can spot a fake at up to half their current Wisdom bonus in squares, never below zero. Half-squares count; a +3 bonus reaches 1.5 squares. You need a clear view and must actually be that close, including height. In that range a fake has a slight greenish tint, sticks out its tongue, and periodically winks either eye. Its normal hit stun has an exaggerated sideways recoil, without any extra stun time. These tells are personal: a wiser teammate does not reveal them for you, and they disappear with distance, cover or cloaking. Real Gordon gets none of these tells. Zero or negative Wisdom bonus grants no recognition range.",
-        "Corner Sentry turrets join Gordon at Dungeon Levels 5, 10, 15 and 20: one, two, three, then four. Four is the limit even in endless cash runs; their ordinary monster strength still grows with the dungeon. Each appears in a separately seeded, clear lower-court corner pocket. A blocked or unsafe corner is skipped for that fight, not replaced later. Destroyed turrets do not respawn when a Hero dies or rejoins.",
+        "Dungeon 20 also includes four Gordon-owned Sentry turrets, using seeded safe corner pockets and the shared hostile/projectile limits. Destroyed turrets do not reappear when a Hero dies or rejoins. Dungeons 2–19 have their own bosses instead of Gordon or his army.",
         "A turret faces inward with a narrow frontal firing cone. Its glowing muzzle and straight warning line give at least three-quarters of a second before one fast, nonhoming bullet. Sidestep the frozen line, use real cover, flank it, interrupt its windup or destroy it. The safe entry alcove works in both directions: you cannot shoot a turret from safety. Both stairs and the gallery remain routes around the fight. Surviving turrets and their attacks retire when Gordon falls, before Hector appears at Level 20.",
         "A Damsel's Revenge consumable can arm the jailed Damsel during this fight. She provides stationary support against the real Gordon only; the item chapter explains her firing slit and the owner-only gun pickup after normal rescue.",
-        "The fight does not reset just because a Hero dies. At Levels 1–19 and 21 onward, defeat Gordon, take the Jail Key at the arena center, open the rescue chamber, and reach the damsel—or the cash after Level 20. At Level 20, defeat Hector first. Gordon’s death alone never completes the dungeon."
+        "A death or even an empty Hero team does not reset the encounter. Returning or fresh Heroes resume its retained state while the dungeon clock continues to govern failure. At Dungeon 1, Gordon’s legitimate defeat releases one recoverable Jail Key at the center. At Dungeon 20, Hector must fall first. Take the key, open the chamber, then reach the rescue target; boss defeat alone is never rescue."
       ]
     },
     {
@@ -1721,7 +1956,7 @@
         "Move sideways out of committed charges. A longer corridor is not always a safer escape.",
         "Compare gear drawbacks as carefully as benefits. Keep your permanent feat requirements in mind.",
         "Use short map checks, read the current objective, and remember the stairs.",
-        "When the Warden falls, finish the job. At Level 20, defeat Hector too. Then Jail Key, jail door, rescue target."
+        "When the current boss falls, finish the job. At Level 20, defeat Hector after Gordon. Then Jail Key, jail door, rescue target."
       ],
       "quote": "You've read the book. Now make yourself useful."
     },

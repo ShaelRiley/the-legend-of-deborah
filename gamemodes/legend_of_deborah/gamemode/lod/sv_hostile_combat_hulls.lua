@@ -53,6 +53,11 @@ local function segmentAABB(startPos, endPos, mins, maxs)
 end
 
 local function combatBounds(hostile)
+    if hostile.LODBossEncounter and LOD.BossEncounter then
+        local d=hostile.LODBossDefinition
+        local b=hostile.LODBossCombatBounds or d and (d.combatBounds or d.hull)
+        if b then return hostile:GetPos()+(b.mins or b[1]),hostile:GetPos()+(b.maxs or b[2]) end
+    end
     if LOD.EnemyRoster then
         local lo,hi=LOD.EnemyRoster:CombatBounds(hostile)
         if lo then return lo,hi end

@@ -1041,6 +1041,7 @@ function CharacterProgressionSystem:ResolveMonsterSpawnLevel(seed, dungeonLevel,
         hector = {"champion", 2}
     }
     local fixedTier = fixed[normalizedId]
+    if LOD.BossRegistry and LOD.BossRegistry.Primary[normalizedId] then fixedTier={"champion",2} end
     local tierId, offset
     if fixedTier then
         tierId, offset = fixedTier[1], fixedTier[2]
@@ -1268,7 +1269,7 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
     if not IsValid(hostile) or not hostile.LODHostile then return nil end
     if hostile.LODProgressionState then return hostile.LODProgressionState end
     local state, err = self:GenerateMonsterProgression(hostile.LODArchetypeId, actorSeed,
-        dungeonLevel, hostile.LODArchetypeId == "warden" and 1000
+        dungeonLevel, hostile.LODBossDefinition and (hostile.LODBossDefinition.baseHP or 700) or hostile.LODArchetypeId == "warden" and 1000
             or hostile.LODArchetypeId == "hector" and 420 or hostile:GetMaxHealth(), "ai")
     if not state then
         ErrorNoHalt("[LOD:RPG] " .. tostring(err) .. "\n")
@@ -1289,6 +1290,10 @@ function CharacterProgressionSystem:AttachMonsterProgression(hostile, actorSeed,
         state.hectorHPScale = 1 + 0.2 * (party - 1)
         state.derivedStats.maxHP = math.max(1, math.floor(state.derivedStats.maxHP * state.hectorHPScale + 0.5))
         state.derivedStats.healthRegenEnabled = false
+    end
+    if hostile.LODBossDefinition then
+        state.bossHPScale=1+.2*(math.Clamp(hostile.LODBossParty or 1,1,4)-1)
+        state.derivedStats.maxHP=math.max(1,math.floor(state.derivedStats.maxHP*state.bossHPScale+.5))
     end
     hostile.LODProgressionState = state
     self:SyncMonsterIdentity(hostile,state)

@@ -257,3 +257,10 @@ Capture console_latest.txt + rpg_summary_latest.txt with the exact build and a s
 note. Native input/layout/fonts/co-op and timing are open, not established by the
 headless gate. Preserve SPOT-14 clock and SPOT-13 unread/drag observations. No Razor
 retest. Local acceptance -> Workshop parity -> matching VPS; no release operation.
+
+
+## Authored modular boss diagnostics
+
+`lod_boss_status` reports current identity, phase, exact encounter serial, primary death receipt and actor/object/hazard counts. In an explicitly unranked developer test session, `lod_developer_mode 1; lod_boss_test_level 14` builds the selected authored dungeon; deploy normally, then `lod_boss_testkit; lod_boss_status`. Test levels are restricted to 1–20 and never bypass a module’s completion law. `lod_warden_status` remains the Gordon-specific diagnostic.
+
+Boss logs use `BOSS_` events with identity/serial/phase. Preserve failed allocation, cancellation, lifetime rejection and module error evidence. Capture canonical `console_latest.txt` plus `rpg_summary_latest.txt`, adding the session log only for ambiguous ordering. See `BOSS_PRODUCTION_ACCEPTANCE.md`; native results remain distinct from headless source gates.

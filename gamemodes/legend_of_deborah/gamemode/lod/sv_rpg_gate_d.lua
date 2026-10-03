@@ -431,6 +431,7 @@ end
 
 function Attribution:_Award(identity, amount, hostile)
     if hostile.LODFallenHero then return 0 end
+    if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return 0 end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then return 0 end
     if hostile.LODHector and (not LOD.Hector or not LOD.Hector:RewardOwned(hostile)) then return 0 end
     if hostile.LODSkeletonHero and (not LOD.EventSkeletonBlockade
@@ -470,6 +471,7 @@ end
 
 function Attribution:Settle(hostile)
     if hostile.LODFallenHero then self.Ledgers[hostile]=nil;return false end
+    if hostile.LODBossEncounter and (not LOD.BossEncounter or not LOD.BossEncounter:RewardOwned(hostile)) then return end
     if hostile.LODHectorGordon and (not LOD.Hector or not LOD.Hector:GordonRewardOwned(hostile)) then
         self.Ledgers[hostile] = nil
         return false
@@ -514,6 +516,10 @@ function GM:EntityTakeDamage(target, dmginfo)
     end
     if LOD.EntrySafety and LOD.EntrySafety:DamageGate(target,dmginfo) then return true end
     local source = dmginfo and dmginfo:GetAttacker()
+    if LOD.BossEncounter and LOD.BossEncounter:DamageGate(target,dmginfo) then
+        if LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[dmginfo]=nil end
+        return true
+    end
     if (IsValid(source) and source.LODHector and (not LOD.Hector or not LOD.Hector:Live(source)))
         or (IsValid(target) and target.LODHector and (not LOD.Hector or not LOD.Hector:CanDamage(target, dmginfo))) then
         dmginfo:SetDamage(0)

@@ -323,6 +323,7 @@ function H:AlternativeTick(ent,now)
 end
 
 function H:Tick(ent)
+    if ent.LODBossEncounter and LOD.BossEncounter and LOD.BossEncounter:Owned(ent.LODBossEncounter,ent) then return false end
     if ent.LODArchetypeId~="neil" and ent.LODArchetypeId~="brute" then return false end
     local s=R.State;local g=s and s.Graph;local h=s and s.NeilHunt
     local motion,now=LOD.HostileMotionV2,CurTime()

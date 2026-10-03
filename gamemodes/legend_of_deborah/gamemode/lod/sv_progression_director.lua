@@ -408,8 +408,8 @@ function ProgressionDirector:GetObjectiveText()
         "FIND NEIL AND THE BLACK KEYCARD",
         "TAKE THE BLACK KEYCARD — K / KEY",
         "OPEN BLACK GATE — K / KEY",
-        "ENTER GORDON’S ARENA",
-        "DEFEAT GORDON THE WARDEN",
+        "ENTER " .. string.upper(LOD.BossRegistry and LOD.BossRegistry:Name(LOD.RunManager.State.Level) or "GORDON") .. "’S ARENA",
+        "DEFEAT " .. string.upper(LOD.BossRegistry and LOD.BossRegistry:Name(LOD.RunManager.State.Level) or "GORDON THE WARDEN"),
         "DEFEAT HECTOR — ATTACK THE DIRECTOR’S HEART"
     }
     return objectives[stage] or "EXPEDITION"
@@ -600,6 +600,10 @@ end
 
 function ProgressionDirector:SpawnJailKey(pos, source)
     local state = LOD.RunManager.State
+    if LOD.BossRegistry and LOD.BossRegistry:Modular(state.Level) then
+        local c=state.Boss
+        if not LOD.BossEncounter:Current(c) or not c.dead or not c.receipt or not c.keyReady then return nil end
+    end
     if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
     if state.Failed or state.LevelCleared or state.JailKey then return nil end
     if IsValid(state.JailKeyEntity) then return state.JailKeyEntity end
@@ -634,7 +638,8 @@ function ProgressionDirector:CollectJailKey(ply, keyEnt)
         not LOD.RunManager:IsActivePlayer(ply) then return false end
 
     if state.Graph and state.Graph.Progression.Warden then
-        local w = state.Warden
+        local w = state.Boss or state.Warden
+        if state.Boss and (not state.Boss.receipt or keyEnt.LODBossKeyReceipt~=state.Boss.receipt) then return false end
         if not w or not w.dead or keyEnt ~= state.JailKeyEntity or not IsValid(keyEnt)
             or ply:NearestPoint(keyEnt:GetPos()):DistToSqr(keyEnt:GetPos()) > PC.KeycardTriggerRadius^2 then return false end
     end
@@ -685,6 +690,9 @@ end
 
 function ProgressionDirector:CanRescueTarget()
     local state = LOD.RunManager.State
+    if LOD.BossRegistry and LOD.BossRegistry:Modular(state.Level) then
+        local c=state.Boss;if not LOD.BossEncounter:Current(c) or not c.dead or not c.receipt then return false end
+    end
     if state.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(state)) then return false end
     return not state.Failed and not state.LevelCleared and state.GatesOpen and
         state.GatesOpen[1] and state.GatesOpen[2] and state.GatesOpen[3] and state.GatesOpen[4] and

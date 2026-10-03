@@ -195,6 +195,8 @@ include("lod/cl_neil_brute.lua")
 include("lod/cl_warden.lua")
 include("lod/cl_warden_dancefloor.lua")
 include("lod/cl_hector.lua")
+include("lod/cl_boss_encounter.lua")
+for _, id in ipairs(LOD.BossRegistry.Modules) do include("lod/bosses/cl_" .. id .. ".lua") end
 include("lod/cl_enemy_roster.lua")
 
 include("lod/sh_campaign_timeout.lua")

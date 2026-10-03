@@ -147,6 +147,7 @@ function Motion:SafeEngagementPoint(graph, target)
 end
 
 function Motion:SnapSpawn(hostile)
+    if IsValid(hostile) and hostile.LODBossAirborne then self:Stop(hostile);return true end
     if not IsValid(hostile) or hostile.LODDead then return false end
     local _, graph = graphState()
     if not graph or not Navigator then return false end
@@ -253,6 +254,15 @@ function Motion:MoveToward(hostile, waypoint)
     -- response. The graph and validated local waypoint compiler are the movement
     -- authority; SetPos cannot become stuck while trying to resolve generated
     -- floor/wall contacts.
+    if hostile.LODBossEncounter and LOD.BossEncounter then
+        local lo,hi=LOD.BossEncounter:Hull(hostile)
+        local tr=util.TraceHull({start=pos,endpos=nextPos,mins=lo,maxs=hi,mask=MASK_NPCSOLID,
+            filter=function(e) return e~=hostile and not e:IsPlayer() and not e.LODHostile end})
+        hostile.LODBossBlockTrace=tr
+        if tr.StartSolid or tr.AllSolid then self:Stop(hostile);hostile.LODBossMotionBlocked=true;return false end
+        if tr.Hit then nextPos=tr.HitPos;wallBlocked=true end
+        hostile.LODBossMotionBlocked=tr.Hit==true
+    end
     if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,pos,nextPos) then
         self:Stop(hostile);return false
     end
@@ -320,6 +330,7 @@ local function installPatch()
     -- sharing one motion kernel.
     function class:_BehaviourTick()
         if LOD.EntrySafety and LOD.EntrySafety:BeforeAI(self) then return end
+        if LOD.BossEncounter and LOD.BossEncounter:TickActor(self) then return end
         if LOD.Hector and LOD.Hector:Tick(self) then return end
         if LOD.Warden and LOD.Warden:Tick(self) then return end
         if LOD.NeilBrute and LOD.NeilBrute:Tick(self) then return end

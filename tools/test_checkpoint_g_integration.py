@@ -26,6 +26,16 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Boss Full Button Routes & Native E Interaction", ["python3", "tools/run_lua54.py", "tools/test_boss_button_routes.lua"]),
+    ("Boss Native Snapshot & Client Presentation Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_boss_presentation.lua"]),
+    ("Boss Original Audio Asset Integrity", ["python3", "tools/test_boss_assets.py"]),
+    ("Authored Boss Registry, Ownership & Native Integration", ["python3", "tools/run_lua54.py", "tools/test_boss_framework.lua"]),
+    ("Authored Physical Boss Mechanics", ["python3", "tools/run_lua54.py", "tools/test_boss_physical.lua"]),
+    ("Authored Boss Resource Cycles", ["python3", "tools/run_lua54.py", "tools/test_boss_resources.lua"]),
+    ("Authored Boss Special Completion", ["python3", "tools/run_lua54.py", "tools/test_boss_special.lua"]),
+    ("Authored Boss Companions & Chuck Receipt", ["python3", "tools/run_lua54.py", "tools/test_boss_companions.lua"]),
+    ("Authored Large Body & Aerial Bosses", ["python3", "tools/run_lua54.py", "tools/test_boss_large.lua"]),
+    ("Gordon Dancefloor Actual Exposure & Presentation", ["python3", "tools/test_warden_dancefloor.py"]),
     ("MS3 Song Source Completeness", ["python3", "tools/test_ms3_song_score.py"]),
     ("MS3 Song Chronological Playback", ["node", "tools/test_ms3_song_sequence.js"]),
     ("MS3 Song Plan And Native Policy", ["python3", "tools/run_lua54.py", "tools/test_ms3_song_policy.lua"]),

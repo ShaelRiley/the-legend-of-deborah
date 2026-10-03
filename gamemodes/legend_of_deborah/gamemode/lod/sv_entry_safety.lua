@@ -414,7 +414,7 @@ function S:BeforeAI(e)
         return true
     end
     e.LODEntryLastOutside=e:GetPos()
-    if e.LODHector or e.LODWarden or e.LODNeilBrute then return false end
+    if e.LODBossEncounter or e.LODHector or e.LODWarden or e.LODNeilBrute then return false end
     local target,limited=self:Claim(e)
     local c=self:ExactCell(g,e:GetPos());local depth=c and g.EntrySafety.depth[key(c)]
     if target then
