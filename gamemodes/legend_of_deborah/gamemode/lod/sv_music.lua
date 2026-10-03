@@ -9,7 +9,16 @@ local enabled=CreateConVar("lod_music_enabled","0",bit.bor(FCVAR_ARCHIVE,FCVAR_R
     "Permit local procedural MIDI music. Disabled by default; player Off always wins.",0,1)
 for _,name in ipairs({"LOD_MusicPlan","LOD_MusicState","LOD_MusicPlaying","LOD_MusicSwitch","LOD_MusicDemand","LOD_MusicBudget"}) do util.AddNetworkString(name) end
 local function report(p,text)
-    text="[LOD:MUSIC] "..text;print(text);if IsValid(p) then p:ChatPrint(text) end
+    text="[LOD:MUSIC] "..text;print(text)
+    if not IsValid(p) then return end
+    -- TextMsg has a 255-byte wire limit, including engine framing. Keep each
+    -- diagnostic piece bounded and avoid splitting a UTF-8 character.
+    local first=1
+    while first<=#text do
+        local last=math.min(first+199,#text)
+        while last>first and last<#text and text:byte(last+1)>=128 and text:byte(last+1)<192 do last=last-1 end
+        p:ChatPrint(text:sub(first,last));first=last+1
+    end
 end
 local function operator(p) return not IsValid(p) or p:IsSuperAdmin() end
 function D:Enabled(p)
@@ -318,7 +327,7 @@ concommand.Add("lod_music_status",function(p)
     local s=R.State;local plan=s and s.MusicPlans and s.MusicPlans[s.Level]
     local listeners={}
     for who,l in pairs(D.Listeners) do listeners[#listeners+1]={player=who:EntIndex(),enabled=l.on,state=l.snapshot} end
-    report(p,util.TableToJSON({system="MS2",delivery="bundled-MIDI/local-synthesis",enabled=enabled:GetBool(),configured=D.Settings,
+    report(p,util.TableToJSON({system="MS3",delivery="bundled-Surge/local-playback",enabled=enabled:GetBool(),configured=D.Settings,
         catalog=D.Catalog and D.Catalog.revision,defaultBlock=D.Catalog and D.Catalog.defaultBlock,
         roleNames=M.RoleNames,currentPlan=plan and plan.id,
         active=plan and plan.settings,eligible=plan and plan.eligible,listeners=listeners,warning=D.Warning,error=D.Error or plan and plan.error}))

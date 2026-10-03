@@ -70,8 +70,11 @@ sound={PlayURL=function() error('unbounded URL streaming is forbidden') end,
   function channel:EnableLooping(v) self.loop=v end
   function channel:SetTime(seconds,fast) assert(fast==true,'phase recovery must seek without decode-to-position');self.seek=seconds;self.seekAt=E.now end
   function channel:GetVolume() return self.volume end
-  function channel:GetTime() return self.played and E.now-(self.seekAt or self.played)+(self.seek or 0) or 0 end
-  function channel:GetState() return self.played and 1 or 0 end
+  function channel:GetTime()
+   local position=self.played and E.now-(self.seekAt or self.played)+(self.seek or 0) or 0
+   return self.loop and position%meta.duration or math.min(meta.duration,position)
+  end
+  function channel:GetState() return self.played and (self.loop or self:GetTime()<meta.duration) and 1 or 0 end
   function channel:Play() self.played=E.now;E.plays=E.plays+1 end
   function channel:Stop() if self.valid then E.stops=E.stops+1 end;self.valid=false end
   E.channels=E.channels or {};E.channels[#E.channels+1]=channel

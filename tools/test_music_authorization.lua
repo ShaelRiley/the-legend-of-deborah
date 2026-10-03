@@ -117,11 +117,13 @@ ce.panel.functions['lodms2.ready']('surge-sample-clock',ce.now);client:Sync()
 local readyStatus=status()
 check(readyStatus.system=='MS3' and readyStatus.enabled and readyStatus.ready and not readyStatus.startupPending
  and readyStatus.backend=='surge-sample-clock' and readyStatus.streamedBytes==0,'diagnostics reflect actual ready callback and bundled backend')
+check(readyStatus.serverAuthorized and readyStatus.preference and readyStatus.volume>0 and readyStatus.demand,'status exposes actual authorization inputs')
 check(music:GetChecked() and client.Synced,'Options and renderer reflect authorization')
 -- Off wins immediately, before its packet/userinfo reaches the server.
 local oldPanel=ce.panel;local staleReady=oldPanel.functions['lodms2.ready']
 choose(false);flushCommands()
 check(not client:Enabled() and not client:OptionEnabled() and not oldPanel.valid,'local Off tears down playback immediately')
+local offStatus=status();check(offStatus.serverAuthorized and not offStatus.preference and not offStatus.enabled,'diagnostic distinguishes immediate local Off from pending server revocation')
 staleReady('surge-sample-clock',ce.now);check(not client.Ready,'stale renderer callback cannot resurrect Off playback')
 clientPackets();serverPackets();check(not client.ServerOn and master:GetBool(),'personal Off revokes only that listener, never the server master')
 choose(true);clientPackets();flushCommands();pump('surge-sample-clock')

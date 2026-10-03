@@ -195,9 +195,12 @@ function N:Tick()
     for _,r in ipairs(ordered) do
         local boundary=r.started and r.started+r.musical
         if boundary and r.loop and not r.retireAt and wanted[r.lane] and not ready[r.lane]
-            and now>=boundary and now<=boundary+LATE then
-            -- Reuse the resident buffer on the musical grid, excluding its
-            -- release tail. Never loop the whole Ogg's off-grid tail/silence.
+            and IsValid(r.channel) and now>=boundary then
+            -- A frame hitch must not strand the resident channel at EOF until
+            -- the next long-phrase retry. Rejoin only its current musical phase;
+            -- missed repeats create no catch-up work or new audio allocation.
+            boundary=r.started+math.max(1,math.floor((now-r.started)/r.musical))*r.musical
+            -- Exclude the release tail, preserving the original musical grid.
             r.channel:SetTime(now-boundary,true);r.channel:Play();r.started=boundary;r.playedAt=now
             r.holdSince=r.holdSince or boundary;self.HeldLoops=self.HeldLoops+1
             for _,pending in ipairs(ordered) do if pending.lane==r.lane and not pending.started and pending.due<=now then
@@ -266,6 +269,7 @@ function N:Status()
         local voice={clip=r.clip,lane=r.lane,bridge=r.bridge==true,gain=r.lastGain or 0,startDelay=r.startDelay,started=r.started~=nil}
         local ok,err=pcall(function()
             voice.nativeVolume=r.channel:GetVolume();voice.position=r.channel:GetTime();voice.state=r.channel:GetState()
+            voice.playing=voice.state==1
         end)
         if not ok then voice.nativeStatusError=tostring(err) end
         voices[#voices+1]=voice

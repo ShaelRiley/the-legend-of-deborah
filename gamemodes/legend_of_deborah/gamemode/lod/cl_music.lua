@@ -117,7 +117,8 @@ function D:StartRenderer()
             local size=file.Size(path,"GAME");local bytes
             if size and size>0 and size<=1024*1024 then bytes=file.Read(path,"GAME") end
             if type(bytes)~="string" or #bytes>1024*1024 or bytes:sub(1,4)~="OggS" then bytes=nil end
-            local encoded=bytes and util.Base64Encode(bytes) or ""
+            -- RFC 2045 wrapping contains raw newlines, invalid inside this JS string.
+            local encoded=bytes and util.Base64Encode(bytes,true) or ""
             self:QueueJavascript('lodScore.audio("'..clip..'","'..encoded..'");')
         end)
         self:AddFunction("lodms2","block",function(bid) if live() then D:Announce(bid) end end)
@@ -276,6 +277,7 @@ hook.Add("ShutDown","LOD_MusicShutdown",function() D:Stop() end)
 concommand.Add("lod_music_client_status",function()
     if D.Ready and IsValid(D.Panel) then D.Panel:QueueJavascript("lodScore.stats();") end
     print("[LOD:MUSIC] "..util.TableToJSON({system="MS3",enabled=D:Enabled(),backend=D.Backend,ready=D.Ready,
+        serverAuthorized=D.ServerOn,preference=D.Preference:GetBool(),volume=D.Volume:GetFloat(),demand=D.DemandOn,
         plan=D.Current and D.Current.plan,catalog=D.Catalog and D.Catalog.revision,quality=D.Quality,
         metadataAssets=table.Count(D.Payloads),stats=D.Stats,renderBank=D.RenderBank and D.RenderBank.revision,
         patchBank=D.RenderBank and D.RenderBank.patchRevision,role=D.Ready and D.PlaybackRole or nil,

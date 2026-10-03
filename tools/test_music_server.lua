@@ -106,4 +106,23 @@ s.Failed=true;p.loss=3;e.now=e.now+.2;D:Update(p,s)
 check(l.snapshot.stop==true,'failure stop bypasses optional congestion deferral')
 e.now=e.now+1;e.read={true,true,true};e.wire.LOD_MusicDemand(3,p)
 check(not l.snapshot and not next(l.sent) and l.on==nil,'client refresh can request bounded plan and permission resynchronization')
+-- Exercise the actual operator diagnostic with native TextMsg-sized pieces.
+local originalPrint=print;local printed;local messages={}
+print=function(text) printed=text end
+function p:EntIndex() return 1 end
+function second:EntIndex() return 2 end
+function p:ChatPrint(text)
+ check(#text<=200,'status stays below the native TextMsg payload ceiling')
+ check(utf8.len(text)~=nil,'diagnostic chunks preserve UTF-8 boundaries')
+ messages[#messages+1]=text
+end
+p.admin=true;D.Warning=string.rep('é…',250)
+e.commands.lod_music_status(p)
+check(#messages>1 and table.concat(messages)==printed,'complete operator status survives bounded native messages')
+local diagnostic=util.JSONToTable(printed:gsub('^%[LOD:MUSIC%] ',''))
+check(diagnostic.system=='MS3' and diagnostic.delivery=='bundled-Surge/local-playback','server diagnostic describes the current renderer architecture')
+check(diagnostic.enabled==GetConVar('lod_music_enabled'):GetBool(),'server diagnostic reports the real master value')
+p.admin=false;local before=#messages;e.commands.lod_music_status(p)
+check(#messages==before,'diagnostic remains operator-only')
+print=originalPrint
 print('MUSIC_SERVER PASS '..e.checks)
