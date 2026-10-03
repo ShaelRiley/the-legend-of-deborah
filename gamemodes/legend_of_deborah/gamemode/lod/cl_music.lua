@@ -8,16 +8,16 @@ D.SeenVictoryOrder={}
 D.Volume=CreateClientConVar("lod_music_volume","0.55",true,false,"Procedural music volume",0,1)
 D.Preference=CreateClientConVar("lod_music","1",true,true,"Allow local LoD music when the server enables it",0,1)
 function D:Enabled()
-    local master=GetConVar("lod_music_enabled")
-    return self.ServerOn and master and master:GetBool() and self.Preference:GetBool() and self.Volume:GetFloat()>0
+    -- The server owns master permission; only its effective switch crosses
+    -- the realm boundary. Dedicated clients need no local master convar.
+    return self.ServerOn and self.Preference:GetBool() and self.Volume:GetFloat()>0
 end
 function D:CanEnableServer()
     local p=LocalPlayer()
     return IsValid(p) and (p:IsSuperAdmin() or p.IsListenServerHost and p:IsListenServerHost()) or false
 end
 function D:OptionEnabled()
-    local master=GetConVar("lod_music_enabled")
-    return self.Preference:GetBool() and (not self:CanEnableServer() or master and master:GetBool()) or false
+    return self.Preference:GetBool() and (not self:CanEnableServer() or self.ServerOn) or false
 end
 function D:SetMusicOption(on)
     RunConsoleCommand("lod_music",on and "1" or "0")
@@ -267,7 +267,6 @@ local function preferenceChanged()
 end
 cvars.AddChangeCallback("lod_music",preferenceChanged,"LOD_MusicPreference")
 cvars.AddChangeCallback("lod_music_volume",preferenceChanged,"LOD_MusicVolume")
-cvars.AddChangeCallback("lod_music_enabled",function() if not D:Enabled() then D:Stop() end end,"LOD_MusicPermission")
 hook.Add("InitPostEntity","LOD_MusicDemand",function() D:Demand(true) end)
 if timer then timer.Simple(0,function() if IsValid(LocalPlayer()) then D:Demand(true) end end) end
 hook.Add("Think","LOD_MusicMix",function()

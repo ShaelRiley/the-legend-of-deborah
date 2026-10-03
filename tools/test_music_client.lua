@@ -1,6 +1,6 @@
 local e=dofile('tools/music_test_fixture.lua');local check=e.check
 CLIENT=true;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua');dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
-local D=LOD.MusicDirector;local M=LOD.Music;e.set('lod_music_enabled',1);D.ServerOn=true
+local D=LOD.MusicDirector;local M=LOD.Music;D.ServerOn=true
 local p=M.Plan(e.catalog(),{set='all'},17,'run:1',4,1);D.Plans[p.id]=p
 D.Current={sequence=1,epoch=1,plan=p.id,role='INTERLUDE',staged=true,targets={{block=p.floors[1],weight=1}},remaining=-1}
 D:Tick();local panel=e.panel;check(panel.visible and panel.allowLua==false,'invisible painting retains JS processing without arbitrary Lua')

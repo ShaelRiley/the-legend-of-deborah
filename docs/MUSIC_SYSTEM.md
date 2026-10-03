@@ -8,7 +8,9 @@ Surge XT 1.3.4 renders each full song offline through the existing project-owned
 
 Fully quit GMod, update/install the source, start The Legend of Deborah on `gm_flatgrass`, and enable **Player Menu → Options → Music**. For the listen-server host or a superadmin, On enables the server master and saved local preference. Other players control their own preference within server permission. Opening Options changes neither setting. Off remains personal; zero volume also tears down playback.
 
-Explicit equivalent: `lod_music_enabled 1; lod_music 1`.
+The server owns master music permission and sends effective per-client authorization through `LOD_MusicSwitch`; clients apply their saved preference and volume without reading the server-only master convar. Host/operator Options state uses that authorization; other players' checkboxes retain their saved personal preference.
+
+Console equivalent: set `lod_music_enabled 1` on the server, then `lod_music 1; lod_music_volume 0.99` on the client.
 
 Diagnostics: `lod_music_status; lod_music_client_status`. Healthy capable clients report `backend=surge-sample-clock`; older/unsupported audio contexts use `surge-rendered`, the mutually exclusive native compatibility backend. Composer statistics arrive asynchronously; repeat status when needed. Look for matching catalog/render revisions, `phrasePasses=1`, `stats.song.asset/part/completed/requested`, and audio `bufferLayout=compact-tail-loop`, PCM bytes, voices and errors. Native status retains actual channel state/position/volume, late opens, phase joins and fixed retry backoff. `streamedBytes=0` excludes initial installation of bundled content.
 

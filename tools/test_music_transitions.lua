@@ -1,6 +1,6 @@
 local e=dofile('tools/music_test_fixture.lua');local check=e.check
 CLIENT=true;dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua');dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
-local D=LOD.MusicDirector;local M=LOD.Music;e.set('lod_music_enabled',1);D.ServerOn=true
+local D=LOD.MusicDirector;local M=LOD.Music;D.ServerOn=true
 local p=M.Plan(e.catalog(),{set='all'},17,'run:1',4,1);local q=M.Plan(e.catalog(),{set='all'},31,'run:2',4,1)
 D.Plans[p.id]=p;D.Plans[q.id]=q;D:StartRenderer();e.panel.functions['lodms2.ready']('surge-rendered',e.now)
 local function post(sequence,receipt,at)

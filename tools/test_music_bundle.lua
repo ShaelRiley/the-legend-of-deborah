@@ -19,7 +19,7 @@ check(not file.Exists(root..'catalog.lua','LUA'),'remote client has no loose cat
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
 local D=LOD.MusicDirector
-e.set('lod_music_enabled',1);D.ServerOn=true
+D.ServerOn=true
 local plan=assert(LOD.Music.Plan(e.catalog(),{set='all'},17,'bundle-run',4,1))
 D.Plans[plan.id]=plan
 D.Current={sequence=1,epoch=1,plan=plan.id,role='T0',staged=true,targets={{block=plan.floors[1],weight=1}}}

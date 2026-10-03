@@ -178,7 +178,7 @@ e.now=e.now+.1;N:Tick();N:SetMix('alpha',.2);local writes=e.volumeWrites
 for _=1,1000 do e.now=e.now+.001;N:Tick() end
 check(e.volumeWrites-writes<=31,'gain interpolation does not write to native audio every frame')
 -- Client lifecycle and existing chunked-plan admission still exercise production.
-e.set('lod_music_enabled',1);D.ServerOn=true;D.Catalog=catalog
+D.ServerOn=true;D.Catalog=catalog
 local p=M.Plan(catalog,{set='all'},17,'run:1',4,1);D.Plans[p.id]=p
 D.Current={sequence=1,epoch=1,plan=p.id,role='T0',targets={{block=p.floors[1],weight=1}}}
 D:Tick();e.panel.functions['lodms2.ready']('surge-rendered',e.now);D:Sync()

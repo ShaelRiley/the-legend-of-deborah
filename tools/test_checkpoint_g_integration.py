@@ -59,6 +59,7 @@ SUITES = [
     ("MS3 Sixteen-bar Source Arrangement", ["python3", "tools/test_ms3_sixteen_bar.py"]),
     ("MS2 MIDI Compiler & Catalog", ["python3", "tools/test_ms2_catalog.py"]),
     ("MS2 Surge Rendered Asset Integrity", ["python3", "tools/test_ms2_surge_bank.py"]),
+    ("MS3 Dedicated Server Authorization", ["python3", "tools/run_lua54.py", "tools/test_music_authorization.lua"]),
     ("MS2 Host Options Permission", ["python3", "tools/run_lua54.py", "tools/test_music_options.lua"]),
     ("MS2 Composer & Musical Transport", ["node", "tools/test_music_sequence.js"]),
     ("Big Event Services & Atomic Resources", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_services.lua"]),

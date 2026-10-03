@@ -189,7 +189,7 @@ CLIENT=true;SERVER=false;e.cacheOnly=true
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music_native.lua')
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_music.lua')
 local D=LOD.MusicDirector
-e.set('lod_music_enabled',1);D.ServerOn=true
+D.ServerOn=true
 local plan=assert(M.Plan(catalog,{set='all'},17,'complete-bank',4,1))
 assert(e.jsonKeys(plan)<15000,'real wire plans fit the unchanged default decoder limit')
 D.Plans[plan.id]=plan

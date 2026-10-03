@@ -28,7 +28,6 @@ local function cv(name,value)
  return c
 end
 CreateConVar=cv;CreateClientConVar=cv;GetConVar=function(name) return E.cv[name] end
-CreateConVar('lod_music_enabled','0') -- replicated server boundary in client tests
 cvars={AddChangeCallback=function(name,fn,id) E.callbacks[name]=E.callbacks[name] or {};E.callbacks[name][id]=fn end}
 function E.set(name,v) E.cv[name].value=tostring(v);for _,f in pairs(E.callbacks[name] or {}) do f() end end
 hook={Add=function(event,id,fn) E.hooks[id]=fn end}
