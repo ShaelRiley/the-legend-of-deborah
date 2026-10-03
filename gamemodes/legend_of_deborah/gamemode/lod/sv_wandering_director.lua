@@ -516,6 +516,19 @@ local function installWandererAIPatch()
     if not class or class.LODWandererAIPatched then return false end
     class.LODWandererAIPatched = true
 
+    local baseCanAcquireTarget = class._CanAcquireTarget
+    function class:_CanAcquireTarget(graph, target, newReservation)
+        if not self.LODWanderer then
+            return baseCanAcquireTarget and baseCanAcquireTarget(self, graph, target, newReservation) or false
+        end
+        local current = currentCellFor(self, graph)
+        local targetCell = targetCellFor(target, graph)
+        if not current or not targetCell or targetCell.z ~= self.LODWanderFloor
+            or safeCell(graph, targetCell) then return false end
+        local maximum = target == self.LODTarget and WC.DisengageCells or WC.AcquireCells
+        return Navigator:Distance(graph, current, targetCell) <= maximum
+    end
+
     local baseRefreshTarget = class._RefreshTarget
     function class:_RefreshTarget(graph)
         if not self.LODWanderer then return baseRefreshTarget(self, graph) end
@@ -525,10 +538,7 @@ local function installWandererAIPatch()
         local current = currentCellFor(self, graph)
         local existing = self.LODTarget
         if IsValid(existing) and current and LOD.FactionManager:CanAcquirePlayerTarget(existing) then
-            local targetCell = targetCellFor(existing, graph)
-            local distance = targetCell and targetCell.z == self.LODWanderFloor
-                and Navigator:Distance(graph, current, targetCell) or math.huge
-            if distance <= WC.DisengageCells and not safeCell(graph, targetCell) then
+            if self:_CanAcquireTarget(graph, existing) then
                 self.LODReturningHome = false
                 return
             end
@@ -542,8 +552,7 @@ local function installWandererAIPatch()
         end
 
         local target = bestNearbyTarget(self, graph, WC.AcquireCells)
-        local targetCell = IsValid(target) and targetCellFor(target, graph) or nil
-        if IsValid(target) and not safeCell(graph, targetCell) then
+        if IsValid(target) and self:_CanAcquireTarget(graph, target) then
             self.LODTarget = target
             self.LODReturningHome = false
             self.LODWaypoints = {}

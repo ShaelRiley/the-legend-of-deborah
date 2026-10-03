@@ -199,6 +199,11 @@ function Motion:MoveToward(hostile, waypoint)
         self:Stop(hostile)
         return false
     end
+    -- Specialized retreat timers share this kernel with the native coroutine.
+    -- They may not move an actor out of its advertised stationary close strike.
+    if hostile.LODRosterAttack and hostile.LODRosterAttack.closeDefense then
+        self:Stop(hostile);return false
+    end
     if hostile.LODDeadcrabState == "leaping" or hostile.LODDeadcrabState == "latched" then
         return false
     end

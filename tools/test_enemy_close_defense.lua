@@ -149,7 +149,7 @@ do
     LOD.WardenTurrets=nil
 end
 -- Already warned primary attacks and attached bites retain their controller.
-for _,field in ipairs({'LODRosterAttack','LODSoldierBurst','LODSniperShot','LODBioBlast','LODBruteCharge','LODBruteAttack','LODClimberVictim'}) do
+for _,field in ipairs({'LODRosterAttack','LODSoldierBurst','LODSniperShot','LODBioBlast','LODBruteCharge','LODBruteAttack','LODClimberVictim','LODWatcherScan','LODSeekerState'}) do
     local e,co=setup('sniper');local pending={};e[field]=pending
     tick(co);assert(e[field]==pending and e.ordinaryTicks==1,'preempted active primary '..field)
 end
@@ -173,3 +173,32 @@ for _,id in ipairs({'warden','hector','neil','brute'}) do
     LOD.Warden=nil;LOD.Hector=nil;H.state.NeilHunt=nil
 end
 print('ENEMY_CLOSE_DEFENSE_PASS '..count..' registered types; actual native dispatch/service/combat; repeated melee flinches; Held/Muted; fixed arc/cover/life/scope; reentrancy; no primary preemption')
+
+-- The real Watcher instance router replaces ENT:RunBehaviour in production.
+-- Exercise it with the actual close-defense commitment/damage service, rather
+-- than assuming the generic coroutine above is the installed controller.
+do
+    local watcherTicks=0
+    LOD.WatcherUnified={Stats={},BehaviourTick=function() watcherTicks=watcherTicks+1 end}
+    LOD.WatcherScanEscapeHandoff=nil;LOD.WatcherUnifiedDispatch=nil
+    local stored=scripted_ents.GetStored
+    local find=ents.FindByClass;ents.FindByClass=function()return {} end
+    scripted_ents.GetStored=function()return nil end
+    dofile(root..'sv_watcher_instance_dispatch.lua')
+    local e=setup('watcher');e.GetClass=function()return 'lod_hostile'end
+    local co=coroutine.create(function()LOD.WatcherUnifiedDispatch.Router(e)end)
+    tick(co);assert(e.LODRosterAttack and e.LODRosterAttack.closeDefense and watcherTicks==0,
+        'actual Watcher router bypassed close defense')
+    local before=e:GetPos();e.LODMotionLastUpdate=now-.05
+    assert(not LOD.HostileMotionV2:MoveToward(e,{pos=before+Vector(100,0,0)}) and e:GetPos()==before,
+        'independent retreat moved Watcher during its close warning')
+    release(e);assert(H.hero.hits==1,'actual Watcher route failed shared physical impact')
+    tick(co);assert(watcherTicks==1,'Watcher controller did not resume during recovery')
+    at(now+3);e.LODWatcherScan={target=H.hero}
+    tick(co);assert(not e.LODRosterAttack and watcherTicks==2,'close defense stole committed Watcher scan')
+    e.LODWatcherScan=nil
+    LOD.EntrySafety={BeforeAI=function()return true end}
+    tick(co);assert(not e.LODRosterAttack and watcherTicks==2,'Watcher router bypassed sanctuary')
+    LOD.EntrySafety=nil;scripted_ents.GetStored=stored;ents.FindByClass=find
+end
+print('WATCHER_CLOSE_DISPATCH_PASS: actual instance router, native damage, stationary warning, recovery, retained scan, sanctuary')

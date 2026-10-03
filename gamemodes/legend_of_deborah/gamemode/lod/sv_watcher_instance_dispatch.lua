@@ -65,6 +65,9 @@ local function watcherRunLoop(self)
         local watcherTick = unifiedWatcherTick()
         if LOD.EntrySafety and LOD.EntrySafety:BeforeAI(self) then
             -- Shared opening/sanctuary admission precedes the direct instance route.
+        elseif LOD.EnemyRoster and LOD.EnemyRoster.TickCloseDefense
+            and LOD.EnemyRoster:TickCloseDefense(self) then
+            -- Match the native hostile dispatcher before specialized retreat.
         elseif watcherTick then
             watcherTick(self)
         else
@@ -88,7 +91,10 @@ local function runBehaviourRouter(self)
     end
 
     while true do
-        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then self:_BehaviourTick() end
+        if not LOD.EntrySafety or not LOD.EntrySafety:BeforeAI(self) then
+            if not LOD.EnemyRoster or not LOD.EnemyRoster.TickCloseDefense
+                or not LOD.EnemyRoster:TickCloseDefense(self) then self:_BehaviourTick() end
+        end
         coroutine.yield()
     end
 end

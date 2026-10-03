@@ -409,18 +409,45 @@ function ENT:_TargetCell(graph, target)
     return IsValid(target) and LOD.MazeNavigator:WorldToCell(graph, target:GetPos()) or nil
 end
 
+-- Read-only native eligibility for NEW opening reservations. A cached target
+-- can move out of the native leash between scheduled selection polls;
+-- validating it must not redraw Reckless/rally or alter an owned attack state.
+function ENT:_CanAcquireTarget(graph, target, newReservation)
+    -- Listener's canonical selector uses a current same-room footstep receipt,
+    -- not an ordinary home leash. Consume that authority without inventing sight.
+    if self.LODArchetypeId == "listener" then
+        local receipt = LOD.FactionManager:HeardFootstep(self, graph)
+        return receipt ~= nil and receipt.hero == target
+    end
+    local home = self:GetLODHomeCell(graph)
+    local current = LOD.MazeNavigator:WorldToCell(graph, self:GetPos())
+    local there = self:_TargetCell(graph, target)
+    local leash = LOD.Config.Encounter.LeashCells
+    return current and home and there
+        and (not newReservation or LOD.MazeNavigator:Distance(graph, home, current) <= leash)
+        and LOD.MazeNavigator:Distance(graph, home, there) <= leash or false
+end
+
 function ENT:_RefreshTarget(graph)
     if CurTime() < (self.LODNextTargetRefresh or 0) then return end
     self.LODNextTargetRefresh = CurTime() + LOD.Config.Encounter.TargetRefreshSeconds
 
+    local previous = self.LODTarget
     local home = self:GetLODHomeCell(graph)
     local target, homeDistance = LOD.FactionManager:BestTarget(self, graph, home)
     if target and homeDistance <= LOD.Config.Encounter.LeashCells then
-        self.LODTarget = target
-        self.LODReturningHome = false
+        self.LODTarget = target;self.LODReturningHome = false
     else
-        self.LODTarget = nil
-        self.LODReturningHome = true
+        self.LODTarget = nil;self.LODReturningHome = true
+    end
+    if previous ~= self.LODTarget then
+        -- A new/lost Hero invalidates a patrol, return-home or old-Hero goal.
+        -- Complete an in-flight stair connector before changing its route.
+        local waypoint = self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
+        if not (waypoint and waypoint.stair) then
+            self.LODWaypoints = {};self.LODWaypointIndex = 1
+        end
+        self.LODNextRouteRefresh = 0
     end
 end
 

@@ -1,3 +1,26 @@
+# Current repair checkpoint — gate-reveal enemy engagement
+
+Source parent is verified main `2f4c968518ff29cb9ef206b3f9906d797b017ee1`, preserving
+all authored modular bosses and the feat/music/VR work. A real generated-gate
+regression reproduces an empty opening-pressure reservation: an enemy near the
+Hero cannot acquire them under its native home leash, yet forces ready enemies
+to withdraw. New reservations now require one current, native-eligible target;
+stationary threat geometry, stale-route handoff, warning cancellation and actual
+Watcher close-defense dispatch are repaired through existing authorities.
+
+See [repair evidence and finite native procedure](validation/GATE_ENEMY_ENGAGEMENT_20261003.md).
+Preserve sanctuary, combined opening quotas, native acquisition cadence/owned
+states, full telegraphs, graph/gates and boss ownership. The publication reply
+supplies the exact final source digest, complete matrix receipt, remote SHA and
+CI result. Native GMod acceptance is still open; no Workshop/VPS operation.
+
+Next: after exact-source restart on gm_flatgrass, open a gate and observe nearby
+eligible enemies entering their actual attacks, including Soldier warning and
+Watcher close retaliation, then verify reciprocal sanctuary safety. Keep all
+previous native acceptance debts open.
+
+---
+
 # Current checkpoint — complete authored modular boss production
 
 Source parent is verified main `96ab02aa78254eed9bfccb5b06dca947b82abd9f`. The original live GDD body was fully corrected and readback-verified before gameplay work. Exact authored order now routes eighteen new primary modules at Dungeons 2–19, retaining Gordon at 1 and Gordon→Hector at 20. Chuck alone owns Dungeon 14; Jane is subordinate. Timer-only automatic failure, retained no-Hero state and safe authored key locations remain authoritative.

@@ -117,6 +117,7 @@ function E:TickCloseDefense(e)
     if now<(e.LODNextCloseDefense or 0) or now<(e.LODHitStunUntil or 0) or not self:CanCloseDefend(e) then return false end
     -- Never preempt an advertised primary attack, attached bite or leap.
     if a or e.LODSoldierBurst or e.LODSniperShot or e.LODBioBlast or e.LODBruteCharge or e.LODBruteAttack
+        or e.LODWatcherScan or e.LODSeekerState
         or e.LODClimberVictim or e.LODDeadcrabState=="latched" or e.LODDeadcrabState=="leaping"
         or e.LODFallenHero and (e.LODFallenHero.attack or e.LODFallenHero.burst) then return false end
     if e.LODWardenOwner then

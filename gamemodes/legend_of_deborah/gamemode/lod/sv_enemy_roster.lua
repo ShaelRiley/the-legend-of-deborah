@@ -560,6 +560,28 @@ function E:PatrolWanderer(e,graph)
     else motion:Stop(e);e:_SetActivity(ACT_IDLE) end
     return true
 end
+-- Shared present-position eligibility. Mobile actors may still pursue when
+-- this is false; stationary actors cannot reserve an opening contact on a
+-- target they can neither reach nor threaten from their authored placement.
+function E:CanTargetFromHere(e,p,presentThreatOnly)
+    local d=self.Definitions[e.LODArchetypeId]
+    if not d or not self:AcquireTarget(p) then return false end
+    local g=state().Graph
+    if d.kind=="gas" or presentThreatOnly and d.stationary and d.trap then
+        if key(N:WorldToCell(g,e:GetPos()))~=key(N:WorldToCell(g,p:GetPos())) then return false end
+        if d.kind=="gas" then return true end
+    end
+    local origin=self:Origin(e)
+    local range=d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange
+    if origin:DistToSqr(p:WorldSpaceCenter())>range^2 or not self:Visible(e,p,origin) then return false end
+    if d.kind=="bullet" and not d.support and not d.pursuit and not d.reaction and not d.pattern
+        and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire
+        and not d.discipline and not d.companion and not d.edict and not d.link then
+        local direction=(p:GetPos()-e:GetPos()):GetNormalized()
+        return direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(55))
+    end
+    return true
+end
 function E:Tick(e)
     if e.LODFallenHero then return LOD.FallenHeroes:TickAI(e) end
     -- This shared dispatch also sees non-roster Fighter/Rogue skeletons before
@@ -620,8 +642,7 @@ function E:Tick(e)
         if not self:PatrolWanderer(e,s.Graph) then motion:Stop(e);e:_SetActivity(ACT_IDLE) end
         return true
     end
-    local can=self:AcquireTarget(p) and self:CanCast(e)
-        and self:Origin(e):DistToSqr(p:WorldSpaceCenter())<=(d.kind=="beam" and EC.Archetypes.beamsweeper.fireRange or e.LODConfig.fireRange)^2 and self:Visible(e,p,self:Origin(e))
+    local can=self:CanCast(e) and self:CanTargetFromHere(e,p)
     if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
         local direction=p:GetPos()-e:GetPos();direction.z=0
         local yaw=direction:Angle().y
@@ -634,9 +655,9 @@ function E:Tick(e)
         end
         if range>=120 then e.LODRosterYaw=yaw;e.LODConfig.fireRange=range;motion:FaceToward(e,p:GetPos()) end
     end
-    if can and (d.kind=="bullet" or d.kind=="beam") and not d.support and not d.pursuit and not d.reaction and not d.pattern and not d.trap and not d.tactical and not d.mobile and not d.condition and not d.crossfire and not d.discipline and not d.companion and not d.edict and not d.link then
+    if can and d.kind=="beam" then
         local direction=(p:GetPos()-e:GetPos()):GetNormalized()
-        can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(d.kind=="beam" and 45 or 55))
+        can=direction:Dot(Angle(0,e.LODRosterYaw or 0,0):Forward())>=math.cos(math.rad(45))
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.

@@ -308,13 +308,24 @@ end
 -- per director/player. Safe Heroes never participate in these reservations.
 function S:Claim(e)
     self:Service();local s,g=self:Context();if not s then return nil,false end
+    -- A pressure reservation must describe an actor that can actually acquire
+    -- a Hero through its native controller. Graph proximity alone can admit a
+    -- returning actor whose HOME leash excludes the Hero, then make every ready
+    -- enemy withdraw while that empty reservation owns the contact. Reuse the
+    -- normal selector (including wanderer floor/range and sensory overrides).
+    -- Existing members retain their advertised commitments and projectile tail.
+    local reserved=false
+    for _,r in ipairs(self.Active) do
+        if r.wave and r.wave.members[e] then reserved=true;break end
+    end
     local nearby={};local target,best;local limited=false
     for _,r in ipairs(self.Active) do
         local d=self:MemberDistance(r,e,g)
         local committed=r.wave and r.wave.members[e] and d<=self.Config.Disengage
         if d<=self.Config.Locality or committed then
             nearby[#nearby+1]=r;limited=limited or r.limited
-            if (d<=self.Config.Acquire or committed) and (not best or d<best) and LOD.FactionManager:CanAcquirePlayerTarget(r.actor) then
+            if (d<=self.Config.Acquire or committed) and (not best or d<best)
+                and LOD.FactionManager:CanAcquirePlayerTarget(r.actor) then
                 target,best=r.actor,d
             end
         end
@@ -324,6 +335,27 @@ function S:Claim(e)
         if (self.Lungers[e.LODArchetypeId] and r.depth<=self.Config.Apron+1)
             or not self:WaveAllows(r,e.LODArchetypeId,e) then
             self.Stats.admissionDenied=self.Stats.admissionDenied+1;return nil,true
+        end
+    end
+    -- Only a viable new LOCAL reservation needs a fresh target query. Ordinary
+    -- unlimited AI and quota-denied actors retain their existing polling budget.
+    if limited and not reserved and e._RefreshTarget then
+        local roster=LOD.EnemyRoster
+        if roster and roster.Definitions[e.LODArchetypeId] then roster:Prepare(e) end
+        e:_RefreshTarget(g)
+        local nativeTarget=e.LODTarget
+        if e._CanAcquireTarget and not e:_CanAcquireTarget(g,nativeTarget,true) then return nil,limited end
+        target=nil
+        for _,r in ipairs(nearby) do
+            if r.actor==nativeTarget and LOD.FactionManager:CanAcquirePlayerTarget(r.actor)
+                and self:MemberDistance(r,e,g)<=self.Config.Acquire then target=r.actor;break end
+        end
+        if not target then return nil,limited end
+        local definition=roster and roster.Definitions[e.LODArchetypeId]
+        if definition and definition.stationary and roster.CanTargetFromHere
+            and not roster:CanTargetFromHere(e,target,true)
+            and not (roster.CloseTarget and roster:CloseTarget(e,target,e:WorldSpaceCenter())) then
+            return nil,limited
         end
     end
     for _,r in ipairs(nearby) do self:AddMember(r,e) end
@@ -344,6 +376,11 @@ function S:Permit(e,target)
     return true
 end
 function S:Cancel(e)
+    -- Retire pending attack presentation through the owning cancellation seam.
+    -- A suppressed Sniper previously kept its frozen shot and could resume the
+    -- old warning/shot when readmitted; Soldier beams could remain visible.
+    if e.LODSoldierBurst and e._CancelSoldierBurst then e:_CancelSoldierBurst() end
+    if e.LODSniperShot and LOD.EnemyUpdate then LOD.EnemyUpdate:Cancel(e) end
     e.LODTarget=nil;e.LODEntryTarget=nil;e.LODSoldierBurst=nil
     e.LODWaypoints={};e.LODWaypointIndex=1;e.LODNextTargetRefresh=0;e.LODNextRouteRefresh=0
     if e.LODRosterAttack and LOD.EnemyRoster then LOD.EnemyRoster:Cancel(e) end
@@ -539,7 +576,7 @@ function S:Snapshot()
                 local src=e.LODSpawnSource or "other";row.nearbySources[src]=(row.nearbySources[src] or 0)+1
                 local m=r.wave and r.wave.members[e]
                 if r.active and not r.safe and not e.LODEntrySuppressed and (not r.limited or (m and m.ordinal<=r.cap))
-                    and (e.LODTarget==r.actor or e.LODEntryTarget==r.actor) then row.engaged=row.engaged+1 end
+                    and e.LODTarget==r.actor then row.engaged=row.engaged+1 end
             end
         end
         for e,m in pairs(r.wave and r.wave.members or {}) do
