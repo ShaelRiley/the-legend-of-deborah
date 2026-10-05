@@ -52,9 +52,15 @@ local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
 local reconcileCalls = 0
+-- This module is the sole native appearance writer. Track its exact model and
+-- invalidation lifetime: native client getters can keep returning an empty
+-- override/stale color after successful setters (October 5 Proton captures).
+-- Retrying those same writes every frame never establishes acknowledgement.
+local appearanceGeneration = {}
 Wall.sectionMaterialsReady = false
 
 local function invalidateBatches()
+    appearanceGeneration = {}
     Wall.sectionMaterialsReady = false
     if Wall.ClearBatches then Wall:ClearBatches() end
 end
@@ -428,11 +434,11 @@ local function applySectionMaterial(model, matName, instance)
     end
 
     local slotCount = #(model:GetMaterials() or {})
-    local matches = globalMaterialMatches(model, matName)
     local changed = instance.appliedSectionMaterialName ~= matName
         or instance.appliedSectionMode ~= "file-backed-global"
         or instance.appliedSectionSlotCount ~= slotCount
-        or not matches
+        or instance.appliedSectionModel ~= model
+        or instance.appliedSectionGeneration ~= appearanceGeneration
 
     if changed then
         -- Every stock material island on the cargo mesh should use the same blank
@@ -440,9 +446,16 @@ local function applySectionMaterial(model, matName, instance)
         -- than V11's per-slot replacement. Clear stale submaterial state first.
         model:SetSubMaterial()
         model:SetMaterial(matName)
+        model:SetColor(color_white)
+        model:SetSkin(0)
+        -- Publish ownership only after every native setter returns. A world,
+        -- palette, model-owner, mode or Lua-refresh invalidation retries the
+        -- whole appearance, including when the desired material name is equal.
         instance.appliedSectionMaterialName = matName
         instance.appliedSectionMode = "file-backed-global"
         instance.appliedSectionSlotCount = slotCount
+        instance.appliedSectionModel = model
+        instance.appliedSectionGeneration = appearanceGeneration
     end
     return changed
 end
@@ -460,14 +473,6 @@ local function reconcileModel(index, model, instance)
     local matName = sectionMaterialName(instance)
     if not matName then return false end
     local changed = applySectionMaterial(model, matName, instance)
-
-    local current = model:GetColor()
-    if current.r ~= 255 or current.g ~= 255 or current.b ~= 255 or current.a ~= 255 then
-        model:SetColor(color_white)
-        changed = true
-    end
-
-    model:SetSkin(0)
 
     local vivid = vividSectionColor(section)
     instance.bodyColor = Color(vivid.r, vivid.g, vivid.b, 255)

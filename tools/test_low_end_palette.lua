@@ -104,5 +104,49 @@ for _,m in nativeIpairs(Wall.models) do assert(m.material:find('/crate/sections/
 Wall.world={};Wall.models={};Wall.nextModel=1;tick()
 Wall.world={{floor=0,quadrant=1}};Wall.models={model()};Wall.nextModel=2;settle()
 assert(Wall.models[1].material:find('/crate/sections/',1,true))
+-- Reproduce the exact native 1,868-wall workload: setters succeed, but material
+-- and color getters never acknowledge them. Count ALL native writes, not just
+-- material changes. Ownership must settle without a frame-by-frame retry loop.
+local nativeCalls={material=0,submaterial=0,color=0,skin=0}
+local function staleGetterModel()
+    local m={}
+    function m:SetMaterial(name)
+        assert(name:find('/crate/sections/',1,true));self.drawMaterial=name
+        writes=writes+1;nativeCalls.material=nativeCalls.material+1
+    end
+    function m:GetMaterial() return '' end
+    function m:GetMaterials() return {'stock1','stock2','stock3'} end
+    function m:SetSubMaterial() nativeCalls.submaterial=nativeCalls.submaterial+1 end
+    function m:SetColor(c) assert(c.r==255 and c.g==255 and c.b==255 and c.a==255);nativeCalls.color=nativeCalls.color+1 end
+    function m:GetColor() return Color(20,30,40) end
+    function m:SetSkin(s) assert(s==0);nativeCalls.skin=nativeCalls.skin+1 end
+    return m
+end
+Wall.world={};Wall.models={};Wall.nextModel=1869;Wall.retryQueue={}
+for i=1,1868 do
+    Wall.world[i]={floor=(i-1)%3,quadrant=math.floor((i-1)/3)%4+1}
+    Wall.models[i]=staleGetterModel()
+end
+settle()
+assert(Wall:SectionMaterialStatus().complete and Wall.sectionMaterialsReady,
+    'native stale getters prevented quiescence')
+for kind,count in pairs(nativeCalls) do assert(count==1868,kind..' repeated before native ownership settled') end
+for _,m in nativeIpairs(Wall.models) do assert(m.drawMaterial,'native appearance was skipped') end
+local nativeWrites=writes
+for _=1,600 do tick() end
+assert(writes==nativeWrites and Wall:SectionMaterialStatus().applied==1868,'native empty getter caused steady material churn')
+for kind,count in pairs(nativeCalls) do assert(count==1868,kind..' wrote during steady play') end
+-- An explicit same-mode reset must reapply even when the material name matches.
+callbacks.lod_crate_hull_candidate();settle()
+for kind,count in pairs(nativeCalls) do assert(count==3736,kind..' ignored explicit appearance invalidation') end
+-- A fresh model owner with the SAME manifest must receive every setter.
+local newModels={};for i=1,1868 do newModels[i]=staleGetterModel() end
+Wall.models=newModels;settle()
+for kind,count in pairs(nativeCalls) do assert(count==5604,kind..' reused another native model owner') end
+-- Lua refresh must not reuse a prior generation token on the same objects.
+dofile(root..'cl_container_section_recolor.lua');tick=assert(hooks.LOD_ReconcileContainerSectionMaterials);settle()
+for kind,count in pairs(nativeCalls) do assert(count==7472,kind..' reused a pre-refresh appearance lifetime') end
+assert(Wall:SectionMaterialStatus().complete)
+print('NATIVE_PALETTE_WORK instances=1868 initial_writes_per_setter=1868 steady_600_ticks_writes=0 getters_acknowledged=false native_fps_measured=false')
 ipairs=nativeIpairs
-print('LOW_END_PALETTE_PASS: exact visible assignment, stable quiescence, world/count/seed/model/mode lifetimes, finite cap, fallback/recovery')
+print('LOW_END_PALETTE_PASS: exact visible assignment, stable quiescence including native stale material/color getters; world/count/seed/model/mode/refresh lifetimes, <=192-model write cap, fallback/recovery')

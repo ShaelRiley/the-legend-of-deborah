@@ -86,3 +86,14 @@ disappear, include a short video. Population status is included automatically.
 
 Native visual acceptance and the sustained >=40 FPS target remain open. Do not
 promote experimental batches, publish Workshop or deploy VPS from source checks.
+
+## Later native result
+
+The author's October 5, 16:19 Chicago retest on exact clean main 6dc145d accepts
+the native route: "Walls look good again." Live renderer windows verify native
+mode, zero hidden originals and unchanged settings. The visibility defect is
+closed for this route; experimental batch visibility remains unaccepted.
+Performance still fails: 13.68 active FPS on a different, larger 1,868-wall maze.
+See [new capture and next bounded repair](STEAM_DECK_20261005_WALL_IDLE.md).
+The earlier failed capture and static-only receipts above retain their original
+evidence state; they are not retroactively native acceptance.

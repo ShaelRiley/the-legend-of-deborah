@@ -38,12 +38,29 @@ the other optimizations. Batching is retained only behind the explicit, unsaved
 stop retrying. Exact native failure remains unproven; bounds/count/static tests
 cannot certify rasterized visibility. See [visibility repair and evidence](validation/STEAM_DECK_20261005_WALL_VISIBILITY.md).
 
-The next action is a fully restarted gm_flatgrass run with
-`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`, preserving Proton,
-windowed Arch Desktop, resolution, graphics settings and loaded population. Check
-that wall bodies stay visible during ordinary movement; return
+The author accepts native wall visibility on exact clean main 6dc145d: "Walls
+look good again." The new capture verifies all seven renderer/41 population
+sources, with batches disabled and zero hidden originals throughout its live
+windows. It measures 13.68 active FPS / 41.80 seconds, p95 137.926 ms, on a larger
+1,868-wall maze. Different generated workload prevents a controlled comparison
+with the earlier 1,448-wall run. The 40 FPS target still fails.
+
+The next source checkpoint repairs a demonstrated perpetual appearance loop:
+138,048 applications without becoming idle. The sole native writer now applies
+material/color/skin once per exact model and invalidation lifetime, preserving
+the original appearance and <=192-model batch. Native getter acknowledgement
+remains diagnostic rather than a reason to rewrite the same appearance forever.
+World/palette/model-owner/mode/refresh changes reapply it. Keep the now-accepted
+native renderer; experimental batching remains opt-in. See [fresh evidence and
+idle-writer repair](validation/STEAM_DECK_20261005_WALL_IDLE.md).
+
+The next native action after source publication is a fully restarted gm_flatgrass
+capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`,
+preserving Proton, windowed Arch Desktop, resolution, graphics settings and
+loaded population. Wall bodies must remain visible; live section applications
+must stop increasing after construction/reconciliation. Return
 performance_client_latest.txt + console_latest.txt. A separate population file
-is not required. Native visual and sustained 40 FPS acceptance remain open.
+is not required. New repair FPS and sustained 40 FPS acceptance remain open.
 Workshop and VPS remain outside this pass.
 
 ---

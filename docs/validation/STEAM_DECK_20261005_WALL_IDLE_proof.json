@@ -1,0 +1,26 @@
+{
+  "parent_main": "6dc145db623fcd7643e3c1a4519ec9f0f2009dfa",
+  "passed": 307,
+  "total": 307,
+  "lua_files": 877,
+  "source_before": "45484b02fb7ac8a0b724fde51fcee680b02621f55d1a762e1328c548b8d29c1c",
+  "source_after": "45484b02fb7ac8a0b724fde51fcee680b02621f55d1a762e1328c548b8d29c1c",
+  "source_files": 2474,
+  "changed_during_gate": [],
+  "verified_suite_logs": 307,
+  "receipt_sha256": "76c44eb289730e614f8d5c6685934e446b2b78b1e100b0b7596b2e598f5f8beb",
+  "production_files": 562,
+  "production_sha256": "bf2fb49e935e002768f4aa07f57f3df9bc6adc993547d6c6b6f80d95d8de2171",
+  "logs_archive_bytes": 313361,
+  "logs_archive_sha256": "e5efab18227ff1f1bdaea0f05477c48af6e7bf6dbd0f2a564f95b7f1fd23074f",
+  "parent_visibility_native_accepted": true,
+  "new_repair_native_accepted": false,
+  "sustained_40_fps_accepted": false,
+  "parent_ci": {
+    "complete_matrix": "success",
+    "low_end": "success",
+    "vr": "success",
+    "ambient_audio": "success on retry 2"
+  },
+  "publication_scope": "Production/test bytes unchanged; only documentation/evidence appended after the frozen gate."
+}

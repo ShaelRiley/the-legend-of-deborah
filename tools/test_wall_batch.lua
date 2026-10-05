@@ -260,7 +260,8 @@ dofile(root..'sh_rng.lua')
 dofile(root..'cl_container_section_recolor.lua')
 assert(Wall:SectionBatchMaterial(Wall.world[1]),'desired native sampler unavailable before reconciliation')
 dofile(root..'cl_wall_batch.lua');settle()
-assert(not Wall.sectionMaterialsReady and not Wall:SectionMaterialStatus().complete,'native stall fixture settled')
+assert(Wall.sectionMaterialsReady and Wall:SectionMaterialStatus().complete,
+    'stale native getters prevented the canonical appearance owner becoming idle')
 assert(Wall.batchStats.status=='ready' and hidden()==1542 and Wall.batchStats.vertices==1542*1284)
 local pipelineUploads=uploads
 for _=1,10 do tick() end

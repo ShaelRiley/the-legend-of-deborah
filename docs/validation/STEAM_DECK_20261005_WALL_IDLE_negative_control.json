@@ -1,0 +1,9 @@
+{
+  "baseline_main": "6dc145db623fcd7643e3c1a4519ec9f0f2009dfa",
+  "baseline_returncode": 1,
+  "baseline_expected_failure": "native stale getters prevented quiescence",
+  "stdout": "LOW_END_PALETTE build_world_visits=600 build_material_lookups=32 idle_600_world_visits=0 idle_material_lookups=0 build_lua_seconds=0.029627 idle_lua_seconds=0.000114 native_fps_measured=false\nLOW_END_PALETTE visible_assignment_fingerprint=151650907\n",
+  "stderr": "/workspace/scratch/fd74461b3127/wall-repair/tools/test_low_end_palette.lua: .../fd74461b3127/wall-repair/tools/test_low_end_palette.lua:131: native stale getters prevented quiescence\n",
+  "new_source_focused_pass": true,
+  "native_fps_measured": false
+}
