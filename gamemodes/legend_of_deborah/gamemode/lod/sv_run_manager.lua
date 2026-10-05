@@ -739,7 +739,6 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     local levelSeed = levelSeedOverride or LOD.Seeds.DeriveLevel(self.State.CampaignSeed, self.State.Level)
     if levelSeedOverride then self:MarkUnranked("debug level-seed override") end
     self.State.LevelSeed = LOD.Seeds.Normalize(levelSeed)
-    if LOD.MusicDirector then pcall(LOD.MusicDirector.Prepare,LOD.MusicDirector,self.State,self.State.Level) end
 
     local totalStarted = SysTime()
     local graph, buildReport
@@ -1167,7 +1166,6 @@ function RunManager:CompleteLevel(ply)
     else self.State.RescueCount = (self.State.RescueCount or 0) + 1 end
     self.State.LevelCleared = true
     self.State.IntermissionEnd = CurTime() + CC.Progression.IntermissionSeconds
-    if LOD.MusicDirector then pcall(LOD.MusicDirector.ClearAccepted,LOD.MusicDirector,self.State) end
 
     LOD.ProgressionDirector:Announce(string.format("%s — LEVEL %d CLEAR",
         self.State.RescueTarget and self.State.RescueTarget.victory or "OBJECTIVE SECURED", self.State.Level))

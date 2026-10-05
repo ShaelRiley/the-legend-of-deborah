@@ -5,7 +5,6 @@ function LOD.EnemyDeathPulse(elapsed)
 end
 -- Presentation policy only. No gameplay probabilities, costs or durations.
 LOD.FeedbackLanguage = {
-    music = {label = "", priority = 0}, -- listener-private playback ACK; same live/history record
     routine = {label = "", priority = 0},
     damage = {label = "", priority = 0},
     roll = {label = "", priority = 0},

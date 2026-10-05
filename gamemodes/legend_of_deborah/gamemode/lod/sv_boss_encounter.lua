@@ -338,7 +338,7 @@ function B:Commit(c)
         c.run.WardenStarted=previous.started;c.run.ObjectiveStage=previous.stage;c.run.CheckpointPos=previous.checkpoint
         if IsValid(gate) then gate:OpenGate() end;P:SyncAll();return false
     end
-    self:Announce(c,string.upper(c.def.name));P:SyncAll();hook.Run('LOD_EncounterMusicPressure','boss:'..c.id,2)
+    self:Announce(c,string.upper(c.def.name));P:SyncAll()
     self:Log(c,'COMMIT',{party=c.party,maxHP=e:GetMaxHealth()});return true
 end
 function B:Join(p,gate)
@@ -382,7 +382,6 @@ function B:Complete(c,e,reason)
         local caption=c.def.deathCaption or (string.upper(c.def.name)..' DEFEATED')
         if c.def.deathCaptionDelay then B:Later(c,c.def.deathCaptionDelay,'cosmetic:defeat_caption',function(owner) B:Announce(owner,caption) end)
         else B:Announce(c,caption) end;P:SyncAll()
-        hook.Run('LOD_EncounterMusicPressure','boss:'..c.id,0)
     end)
     return true
 end

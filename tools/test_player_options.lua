@@ -1,4 +1,4 @@
-local e=dofile('tools/music_test_fixture.lua');local check=e.check
+local e=dofile('tools/movement_test_fixture.lua');local check=e.check
 CLIENT=true;LOD.SoldierMovement={Active=function(_,p) return p.soldier==true end}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua')
 local p={setting=0,held=false,mode=MOVETYPE_WALK}

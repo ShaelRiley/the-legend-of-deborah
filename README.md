@@ -1,5 +1,7 @@
 # The Legend of Deborah
 
+
+Audio uses ambience and short gameplay/event cues. The adaptive music systems and banks have been removed; the preserved standalone player is [MS3 Music System](https://github.com/ShaelRiley/ms3-music-system).
 **The Legend of Deborah** is a procedural cooperative survival-maze gamemode for Garry's Mod, developed and runtime-tested on `gm_flatgrass`.
 
 Current baseline: **Shael-approved RPG candidate on main**, promoted from `87920e5ba3b27d46ff096f5a85cd41030a77f964` on 2026-09-14. Astra / Work leads implementation; Sol complements review, architecture, planning and bounded implementation. Antigravity and the hybrid workflow are retired. See [current status](docs/DEVELOPMENT_STATUS.md), [development plan](docs/DEVELOPMENT_PLAN.md), and [workflow](docs/DEVELOPMENT_WORKFLOW.md). Public-server and Workshop deployment remain separate from this promotion.

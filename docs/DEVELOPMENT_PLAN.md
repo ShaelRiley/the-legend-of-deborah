@@ -1,3 +1,28 @@
+# Current author direction — ambient audio and core gameplay
+
+Music System 3 is extracted into the separate `ShaelRiley/ms3-music-system`
+repository with all original banks, sources, synthesis tooling and a manual
+browser/WebView player. Deborah returns to ambient sounds and short event cues.
+Keycard/jail-key discovery, unlock, learning, leveling and rescue cues no longer
+depend on a music switch. Options exposes saved event-cue volume, Always Run and
+Reduced Effects. All adaptive music code, download registration, hooks, banks,
+source tooling and executable music-only tests leave this game repository.
+
+This explicit October 4, 2026 author direction supersedes all historical music
+requirements and pending music acceptance below. It does not reopen or redesign
+combat, progression, enemies, bosses, VR or the ambient-sound lifecycle. Original
+music evidence remains in the extracted repository; lightweight historical notes
+below retain their historical status. Local native acceptance remains separate
+from source checks. No Workshop publication or VPS deployment is part of this
+source extraction/removal checkpoint.
+
+Next native action: fully restart the updated local build on gm_flatgrass,
+collect a keycard and open its gate. Verify the short discovery/unlock cues,
+ambient and combat audio, and the absence of continuous music. Continue core
+systems work after this finite audio regression check.
+
+---
+
 # Current repair checkpoint — gate-reveal enemy engagement
 
 Source parent is verified main `2f4c968518ff29cb9ef206b3f9906d797b017ee1`, preserving

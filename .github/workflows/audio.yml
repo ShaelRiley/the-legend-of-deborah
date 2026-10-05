@@ -1,0 +1,12 @@
+name: Validate ambient audio and event cues
+on: [push, pull_request]
+jobs:
+  audio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - run: python3 tools/test_audio_only.py

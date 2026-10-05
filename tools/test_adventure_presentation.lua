@@ -28,7 +28,6 @@ function ScrH() return 800 end
 TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP,CHAN_AUTO=1,2,0
 LOD={Config={Progression={Cards={{color=Color(240,80,80),letter='R'},{color=Color(80,190,110),letter='G'}}}}}
 LOD.Audio=dofile('tools/audio_test_double.lua')
-LOD.MusicDirector={Enabled=function() return true end,Volume={GetFloat=function() return 1 end}}
 dofile(root..'sh_feedback_language.lua')
 dofile(root..'cl_adventure_presentation.lua')
 local A=LOD.AdventurePresentation
@@ -43,12 +42,12 @@ assert(#sounds==1 and sounds[1].path:find('discovery.wav') and A.active.variant=
 assert(not A:OnFeedback({cue=1,cueVariant=2}) and #sounds==1,'same accent cooldown')
 now=100.2
 assert(not A:Play(4,true) and A.active.index==1,'lesser event cannot displace discovery or soundtrack')
-assert(not A:Play(6,false),'streamed director exclusively owns the rescue fanfare')
+assert(A:Play(6,false) and sounds[#sounds].path:find('rescue.wav'),'restored rescue cue overrides lesser accents without a music director')
 hooks.LOD_AdventureAccent()
 assert(#draws>0,'actual HUD path draws the small card ornament')
 now=104;hooks.LOD_AdventureAccent();assert(not A.active)
 cvs.lod_adventure_volume.value=0
-assert(not A:Play(2,true) and #sounds==1,'mute affects new music but permits visual confirmation')
+assert(not A:Play(2,true) and #sounds==2,'mute affects new event cues but permits visual confirmation')
 cvs.lod_reduced_effects.value=1
 assert(A:Reduced())
 hooks.LOD_AdventureAccent()

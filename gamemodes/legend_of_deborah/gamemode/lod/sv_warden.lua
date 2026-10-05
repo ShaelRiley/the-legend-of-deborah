@@ -164,7 +164,6 @@ function W:Commit()
         if a.court[key(N:WorldToCell(s.Graph,p:GetPos()))] then self:Resupply(p) end
     end end
     P:Announce("GORDON THE WARDEN");P:SyncAll()
-    hook.Run("LOD_EncounterMusicPressure","warden",2)
     log("WARDEN_COMMIT",{seed=w.seed,party=e.LODWardenParty,maxHP=e:GetMaxHealth(),phase=1})
     return true
 end
@@ -176,7 +175,6 @@ function W:SetPhase(w,e,phase,now)
     e:SetNW2Bool("LOD_WardenHidden",false);e:SetNW2Int("LOD_WardenPhase",phase)
     e:EmitSound("ambient/energy/weld2.wav",75,phase==2 and 90 or 125,0.7)
     if not w.cloneIndex then
-        hook.Run("LOD_EncounterMusicPressure","warden",phase==3 and 3 or 2)
         P:Announce(phase==2 and "GORDON — TOILET BOMBER" or "GORDON — CROWBAR BERSERKER")
     end
     log("WARDEN_PHASE",{phase=phase,health=e:Health(),maximum=e:GetMaxHealth()})
@@ -566,7 +564,6 @@ function W:Killed(e)
             if IsValid(other) and other~=e and a.cells[key(N:WorldToCell(s.Graph,other:GetPos()))] then other:Remove() end
         end
         W:EnsureKey();P:Announce("GORDON DEFEATED — TAKE THE JAIL KEY AT THE ARENA CENTER");P:SyncAll()
-        hook.Run("LOD_EncounterMusicPressure","warden",0)
         for _,p in ipairs(player.GetAll()) do if R:IsActivePlayer(p) then p:EmitSound("legend_of_deborah/adventure/unlock.wav",60,100,0.7) end end
         log("WARDEN_DEFEATED",{seed=w.seed,keyCell=key(a.center)})
     end)

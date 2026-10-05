@@ -33,10 +33,6 @@ function A:Play(id,volume)
     if not cue or self:Muted() or CurTime()<(self.Next[id] or 0) then return false end
     local ply=LocalPlayer();if not IsValid(ply) then return false end
     self.Next[id]=CurTime()+cue.cooldown
-    if LOD.MusicDirector and LOD.MusicDirector.Duck and
-        (id=="dialogue" or id=="danger" or id=="enemy_warning" or id=="ar2_warning" or id=="boss_taunt") then
-        LOD.MusicDirector:Duck(1.2)
-    end
     -- Per-mechanic spacing bounds rapid hits without taking over weapon channels.
     ply:EmitSound(cue.path,0,100,(volume or 1)*cue.volume,CHAN_AUTO)
     return true
@@ -73,7 +69,7 @@ else
         if id then A:Play(id,math.Clamp(volume,0,1)) end
     end)
 end
--- Stops engine-owned initialization, not just the explicit musical cue layer.
+-- Stops engine-owned initialization, including explicit event cues.
 hook.Add('EntityEmitSound','LOD_GenerationSoundBarrier',function(data)
     -- StopSound uses SND_STOP; muting must never swallow native cleanup.
     local flag=SND_STOP or 4

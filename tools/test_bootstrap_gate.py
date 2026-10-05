@@ -21,7 +21,6 @@ gate.LUA = sorted(gate.SQLITE_LUA) + [
     'test_warden.lua', 'test_hector_encounter.lua',
     'test_bestiary_b29.lua', 'test_bestiary_b29_dispatch.lua',
     'test_bestiary_b29_combat.lua', 'test_great_crate_geometry.lua',
-    'test_music_server.lua', 'test_music_transitions.lua',
 ]
 if __name__ == '__main__':
     sys.exit(gate.main())

@@ -1,6 +1,6 @@
 -- Execute the real Options UI with VGUI/convar boundaries doubled; no new
 -- preference authority or engine graphics settings may be created/overwritten.
-local panels,settings,locked={}, {lod_music_enabled=0,lod_reduced_effects=1},false
+local panels,settings,locked={}, {lod_reduced_effects=1},false
 local width,height=1280,800
 function ScrW() return width end;function ScrH() return height end
 function IsValid(p) return type(p)=='table' and not p.removed end
@@ -8,10 +8,7 @@ input={LookupBinding=function(k) assert(k=='+speed');return 'lshift' end}
 function GetConVar(k) return {GetBool=function() return settings[k]~=0 end} end
 function CreateClientConVar() error('Options created another preference') end
 function RunConsoleCommand() error('Opening Options overwrote a setting') end
-local musicOn=false
-LOD={PlayerOptions={},UI={Colors={ink={}}},MusicDirector={
- OptionEnabled=function() return musicOn end,
- SetMusicOption=function() error('Opening Options changed music permission') end}}
+LOD={PlayerOptions={},UI={Colors={ink={}}}}
 local UI=LOD.UI
 function UI:IsMinigameLocked() return locked end
 function UI:SelectPage() end;function UI:Paper() end;function UI:CloseButton() end;function UI:PageLinks() end
@@ -31,20 +28,17 @@ local O=LOD.PlayerOptions
 for _,size in ipairs({{1280,800},{640,480}}) do
  width,height=size[1],size[2];panels={};O:Open();local frame=O.Frame
  assert(UI.ActivePage=='options' and frame.w<=width-32 and frame.h<=height-32)
- local counts={};local musicControls=0
+ local counts={};local eventControls=0
  for _,p in ipairs(panels) do
   if p.convar then counts[p.convar]=(counts[p.convar] or 0)+1 end
   if p.parent==frame and p.y then assert(p.y+p.h<=frame.h,'control clipped below frame') end
-  if p.text=='Music' then
-   musicControls=musicControls+1;assert(p.OnChange and p.Think and not p.convar,'Music uses its complete permission/preference seam')
-   musicOn=false;p:Think();assert(not p:GetChecked())
-   musicOn=true;p:Think();assert(p:GetChecked());musicOn=false
-  end
+  assert(p.text~='Music' and p.convar~='lod_music_volume','retired music option remains')
+  if p.text=='Event cue volume' then eventControls=eventControls+1 end
  end
- assert(musicControls==1,'missing/duplicate Music option')
- for _,k in ipairs({'lod_music_volume','lod_always_run','lod_reduced_effects'}) do assert(counts[k]==1,'missing/duplicate option '..k) end
+ assert(eventControls==1,'missing/duplicate event cue volume')
+ for _,k in ipairs({'lod_adventure_volume','lod_always_run','lod_reduced_effects'}) do assert(counts[k]==1,'missing/duplicate option '..k) end
  assert(settings.lod_reduced_effects==1,'saved reduced-effects preference changed')
  O:Close();assert(O.Frame==nil and UI.ActivePage==nil)
 end
 locked=true;panels={};O:Open();assert(#panels==0,'minigame UI lock bypassed')
-print('LOW_END_OPTIONS_PASS: existing saved Reduced Effects binding; music/volume/run intact; 1280x800 and 640x480 bounds; no new settings or writes; minigame lock')
+print('LOW_END_OPTIONS_PASS: existing saved Reduced Effects binding; event cues/run intact; 1280x800 and 640x480 bounds; no new settings or writes; minigame lock')

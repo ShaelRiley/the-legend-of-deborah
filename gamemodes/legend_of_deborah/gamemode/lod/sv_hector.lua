@@ -157,7 +157,6 @@ function H:Spawn(h)
         end
         P:Announce("HECTOR THE DIRECTOR — ATTACK THE DIRECTOR'S HEART IN THE COURT")
         P:SyncAll();self:Sync()
-        hook.Run("LOD_EncounterMusicPressure","warden",3)
         log("HECTOR_REVEAL",{seed=h.seed,party=h.party,maxHP=e:GetMaxHealth()})
     end)
     h.spawning=nil
@@ -234,7 +233,6 @@ function H:ResolveDeath(e)
     local ok=pcall(h.lock.OpenGate,h.lock)
     if not ok or not self:RewardOwned(e) then return self:Fail(h,"owned arena lock could not open") end
     W:EnsureKey();P:Announce("HECTOR DEFEATED — TAKE THE JAIL KEY AT THE ARENA CENTER");P:SyncAll();self:Sync()
-    hook.Run("LOD_EncounterMusicPressure","warden",0)
     log("HECTOR_DEFEATED",{seed=h.seed})
     return self:RewardOwned(e)
 end
