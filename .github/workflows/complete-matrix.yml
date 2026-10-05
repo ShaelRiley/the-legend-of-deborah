@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: '06e36554cc79807cb7af13ef73369cff5bab90fc'
+          ref: '94e5a4d80362b9212aa1f985891284afe585ed5f'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: '22'
       - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
-      - run: python3 -m pip install Pillow
+      - run: python3 -m pip install Pillow numpy
       - name: Native-boundary regressions and complete Lua syntax
         run: |
           python3 - <<'PY'
