@@ -5,18 +5,15 @@ local MC = LOD.Config and LOD.Config.Maze
 local GC = LOD.Config and LOD.Config.Geometry
 if not Wall or not MC or not GC then return end
 
--- Presentation-only quadrant pass. Keep the validated stock HL2 cargo-container
--- mesh/material/skin so the Northern Petrol texture, corrugation, grime, seams and
--- normal map all survive. Section identity is applied as a restrained modulation,
--- not a replacement material. Only a sparse balanced subset receives a physical-
--- looking plywood cover panel over the NP side logo plus an industrial stencil.
+-- Sparse physical marking placement and plywood/stencil rendering. Container
+-- material, skin and body/stencil tints belong to cl_container_section_recolor;
+-- this pass must not reset that canonical appearance after model creation.
 -- Graph, collision, stairs, gates, minimap and Motion V2 remain untouched.
 local LABEL_MAX_DISTANCE = 1800
 local LABEL_MAX_DISTANCE_SQR = LABEL_MAX_DISTANCE * LABEL_MAX_DISTANCE
 local LABEL_BUCKET_CELLS = 4
 local LABEL_SCALE = 0.22
 local LABEL_SURFACE_OFFSET = 1.8
-local APPEARANCE_BATCH_SIZE = 128
 local MARKING_DENSITY = 0.30
 local MIN_MARKS_PER_SECTION = 5
 local SIGN_SIGHTLINE_RANGE_CELLS = 6
@@ -516,47 +513,13 @@ concommand.Add("lod_container_wayfinding_status", function()
     ))
 end)
 
-local appearanceModelsRef = nil
-local appearanceCursor = 1
-local appearanceComplete = false
-
 hook.Remove("Think", "LOD_ApplyContainerSectionColors")
 hook.Add("Think", "LOD_ApplyContainerSectionColors", function()
-    local models = Wall.models or {}
     local world = Wall.world or {}
-
     if world ~= selectionWorldRef then
         selectionWorldRef = world
         rebuildMarkedSelection(world)
     end
-
-    if models ~= appearanceModelsRef then
-        appearanceModelsRef = models
-        appearanceCursor = 1
-        appearanceComplete = false
-    end
-    if appearanceComplete or #world == 0 then return end
-
-    if (Wall.nextModel or 1) <= #world then return end
-    if Wall.retryQueue and #Wall.retryQueue > 0 then return end
-
-    local last = math.min(#world, appearanceCursor + APPEARANCE_BATCH_SIZE - 1)
-    for index = appearanceCursor, last do
-        local model = models[index]
-        local instance = world[index]
-        if IsValid(model) and instance and instance.sectionColor then
-            local bodyTint = sectionModelColor(instance.sectionColor)
-            instance.bodyColor = bodyTint
-            instance.stencilColor = complementaryStencilColor(bodyTint)
-
-            model:SetSkin(GC.Skin or 0)
-            model:SetMaterial("")
-            model:SetColor(bodyTint)
-        end
-    end
-
-    appearanceCursor = last + 1
-    if appearanceCursor > #world then appearanceComplete = true end
 end)
 
 local function drawPlywoodPanel()

@@ -1,3 +1,17 @@
+# Current Steam Deck native capture repair
+
+The first verified capture recorded no frames while waiting for batching; it is
+an unmeasured result. The repaired `lod_perf_start 180` bounds preparation to
+30 seconds, preserves blocked-renderer diagnostics and requests one existing
+server population snapshot automatically. It mirrors that full snapshot into
+client DATA and embeds it in the performance report. Return
+performance_client_latest.txt + console_latest.txt; locating a separate
+population_latest.txt is not required. Follow the same-configuration, fully
+restarted [finite retest](validation/STEAM_DECK_20261005_NATIVE_REPAIR.md).
+Native >=40 FPS and presentation/gameplay acceptance remain pending.
+
+---
+
 # SPOT-14 Time Management gate
 
 Use `python3 tools/test_spot14_gate.py --output /outside/source/empty-dir --suite-timeout 120 --workers 2`.
@@ -114,7 +128,7 @@ is an optional immediate read-only capture, not a prerequisite.
 This observer remains active with `lod_developer_mode 0`. The older detailed RPG
 logger does not: a staging-only RPG summary after switching to release mode is not
 evidence that the user never entered the dungeon. The installer records an atomic
-40-file SHA256 manifest (eight files in B28, 34 in B29); missing/mismatched source is explicitly unverified.
+41-file SHA256 manifest (eight files in B28, 34 in B29); missing/mismatched source is explicitly unverified.
 No population observation enables cheats, spawns monsters or changes campaign RNG.
 
 ## B29 arrival and opening evidence

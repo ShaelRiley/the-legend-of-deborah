@@ -186,4 +186,21 @@ assert(undersides>0 and quads<200)
 local cached=B:MeshCacheCount();B:DrawGrate(Vector(20,20,0),angle_zero,Vector(-192,64,-16),Vector(192,192,16))
 assert(B:MeshCacheCount()==cached)
 hooks.LOD_TexturedBoxMeshes();assert(grate.dead)
+-- Wayfinding owns sparse placement only, even if run after the material owner.
+-- Re-running it must preserve canonical skin/material/body/stencil colors.
+local appearanceWrites=0
+for i,m in ipairs(w.models) do
+    m.SetSkin=function() appearanceWrites=appearanceWrites+1 end
+    m.SetMaterial=function() appearanceWrites=appearanceWrites+1 end
+    m.SetColor=function() appearanceWrites=appearanceWrites+1 end
+    w.world[i].bodyColor=Color(21,43,65);w.world[i].stencilColor=Color(123,145,167)
+end
+dofile(root..'cl_container_wayfinding_projection.lua')
+hooks.LOD_ApplyContainerSectionColors()
+for _=1,40 do hooks.LOD_ApplyContainerSectionColors() end
+assert(appearanceWrites==0,'wayfinding overwrote canonical appearance')
+for _,inst in ipairs(w.world) do
+    assert(inst.bodyColor.r==21 and inst.stencilColor.r==123,'wayfinding tint authority duplicated')
+end
+assert(w.markRevision>2,'sparse mark placement did not run')
 print('CRATE_RENDER_PASS: '..checks..' original composition/orientation checks; independent untinted artwork; two lazy shader slots; 64-draw ceiling for 1000 candidates; rotated/shared slab UV seams; '..quads..' cached opaque grate quads with underside and cleanup')

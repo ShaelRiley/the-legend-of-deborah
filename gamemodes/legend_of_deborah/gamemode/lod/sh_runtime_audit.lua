@@ -113,7 +113,53 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
+    local populationChannel="LOD_PopulationSnapshot"
+    if net and net.Receive and net.ReadUInt and net.ReadData and util.JSONToTable then
+        net.Receive(populationChannel,function()
+            local size=net.ReadUInt(16)
+            if size<2 or size>60000 then return end
+            local encoded=net.ReadData(size)
+            if type(encoded)~="string" or #encoded~=size then return end
+            local parsed,out=pcall(util.JSONToTable,encoded)
+            if not parsed or type(out)~="table" or type(out.source)~="table"
+                or type(out.observer)~="string" or type(out.seconds)~="number" then return end
+            Audit.LastPopulationEvidence=out
+            local text="[LOD:POPULATION] "..encoded.."\n"
+            local ok,err=pcall(function()
+                file.CreateDir("legend_of_deborah")
+                file.Write("legend_of_deborah/population_latest.txt",text)
+                assert(file.Read("legend_of_deborah/population_latest.txt","DATA")==text,"DATA write did not persist")
+            end)
+            Audit.PopulationEvidenceStatus={state="received",seconds=out.seconds,client_write=ok,
+                server_write=out.server_write,error=not ok and tostring(err) or nil}
+            if not ok then print("[LOD:POPULATION] Client save failed: "..tostring(err)) end
+        end)
+    end
+    local function requestPopulation()
+        Audit.LastPopulationEvidence=nil
+        Audit.PopulationEvidenceStatus={state="unavailable"}
+        if not net or not net.Start or not net.SendToServer then return end
+        Audit.PopulationEvidenceStatus={state="requested"}
+        local ok,err=pcall(function() net.Start(populationChannel);net.SendToServer() end)
+        if not ok then Audit.PopulationEvidenceStatus={state="request-failed",error=tostring(err)} end
+    end
+    local function rendererState()
+        local wall=LOD.WallVisualsClient
+        local stats=wall and wall.batchStats or {}
+        local out={status=stats.status or "unloaded",reason=stats.reason,hidden=stats.hidden or 0,
+            think_calls=wall and wall.batchBuildTicks or 0,
+            chunks=stats.chunks or 0,vertices=stats.vertices or 0,
+            section=wall and wall.SectionMaterialStatus and wall:SectionMaterialStatus() or nil}
+        if hook.GetTable then
+            local think=hook.GetTable().Think or {}
+            out.hooks={batches=think.LOD_BuildContainerBatches~=nil,
+                materials=think.LOD_ReconcileContainerSectionMaterials~=nil,
+                wayfinding=think.LOD_ApplyContainerSectionColors~=nil}
+        end
+        return out
+    end
     local function configuration()
         local out={width=ScrW(),height=ScrH(),engine=tostring(VERSIONSTR or VERSION or "unknown"),
             branch=tostring(BRANCH or "unknown"),os=jit and jit.os or "unknown",
@@ -163,8 +209,15 @@ if CLIENT then
         self.PerformanceCapture=nil
         hook.Remove("PreRender","LOD_PerformanceFrames")
         hook.Remove("Think","LOD_PerformanceDeadline")
-        local out={version="steam-deck-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
-            elapsed_seconds=math.max(0,SysTime()-capture.start),renderer_wait_seconds=math.max(0,capture.start-capture.created-3),start_configuration=capture.config,
+        local now=SysTime()
+        local out={version="steam-deck-native-repair-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+            elapsed_seconds=capture.ready and math.max(0,now-capture.start) or 0,
+            total_seconds=math.max(0,now-capture.created),
+            renderer_wait_seconds=capture.preparation_wait or math.max(0,now-capture.created),
+            preparation_limit_seconds=30,preparation_timed_out=capture.preparation_timed_out or false,
+            renderer_at_sample_start=capture.renderer_start,renderer_at_end=rendererState(),
+            population=self.LastPopulationEvidence,population_status=self.PopulationEvidenceStatus,
+            start_configuration=capture.config,
             end_configuration=configuration(),start_resources=capture.resources,end_resources=self:Snapshot(),
             source=capture.source,all=statistics(capture.all),active=statistics(capture.active),
             other_frames=#capture.all-#capture.active,windows=capture.windows,
@@ -186,14 +239,18 @@ if CLIENT then
                 w.active_seconds,w.active_frames,w.fps,w.over25,w.over50,w.over100)
         end
         local a=out.active
-        local line=string.format("[LOD:PERF] active_frames=%d active_seconds=%.2f fps=%.2f median_ms=%.3f p95_ms=%.3f p99_ms=%.3f max_ms=%.3f over25=%d over50=%d over100=%d source_verified=%s reason=%s",
-            a.frames,a.seconds,a.fps or 0,a.median_ms or 0,a.p95_ms or 0,a.p99_ms or 0,a.max_ms or 0,
-            a.over25,a.over50,a.over100,tostring(out.source.verified),out.reason)
+        local line=string.format("[LOD:PERF] active_frames=%d active_seconds=%.2f fps=%s median_ms=%.3f p95_ms=%.3f p99_ms=%.3f max_ms=%.3f over25=%d over50=%d over100=%d source_verified=%s reason=%s renderer=%s preparation_timed_out=%s",
+            a.frames,a.seconds,a.fps and string.format("%.2f",a.fps) or "unmeasured",
+            a.median_ms or 0,a.p95_ms or 0,a.p99_ms or 0,a.max_ms or 0,
+            a.over25,a.over50,a.over100,tostring(out.source.verified),out.reason,
+            out.renderer_at_end.status,tostring(out.preparation_timed_out))
         local text=line.."\n"..table.concat(windowLines,"\n").."\n"..util.TableToJSON(out,true).."\n"
         local ok,err=pcall(function()
             file.CreateDir("legend_of_deborah")
             file.Write("legend_of_deborah/performance_client_latest.txt",text)
+            assert(file.Read("legend_of_deborah/performance_client_latest.txt","DATA")==text,"DATA write did not persist")
         end)
+        out.saved=ok;out.save_error=not ok and tostring(err) or nil
         self.LastPerformanceCapture=out
         print(line)
         if ok then print("[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt")
@@ -212,17 +269,22 @@ if CLIENT then
         local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},windows=windows,
             config=configuration(),source=sourceIdentity(),resources=self:Snapshot()}
         self.PerformanceCapture=capture
+        requestPopulation()
         hook.Add("PreRender","LOD_PerformanceFrames",function()
             local now=SysTime()
             if not capture.ready then
                 local wall=LOD.WallVisualsClient
                 local cv=GetConVar("lod_reduced_effects")
                 local status=wall and wall.batchStats and wall.batchStats.status
-                if cv and cv:GetBool() and wall and wall.world and #wall.world>0
-                    and status~="ready" and status~="fallback" then
-                    if now>capture.created+120 then self:StopPerformanceCapture("renderer-timeout") end
-                    return
-                end
+                local waiting=cv and cv:GetBool() and wall and wall.world and #wall.world>0
+                    and status~="ready" and status~="fallback"
+                if waiting and now<capture.created+30 then return end
+                -- A blocked renderer is evidence to measure, not a reason to
+                -- discard every frame. Preserve its preflight state and proceed
+                -- after this bounded wait with the same three-second warmup.
+                capture.preparation_timed_out=waiting or false
+                capture.preparation_wait=now-capture.created
+                capture.renderer_start=rendererState()
                 capture.ready=true;capture.start=now+3;capture.finish=capture.start+seconds
             end
             if now<capture.start then return end
@@ -253,7 +315,7 @@ if CLIENT then
             if capture.ready and now>=capture.finish then self:StopPerformanceCapture("complete")
             elseif not capture.ready and now>=capture.created+120 then self:StopPerformanceCapture("renderer-timeout") end
         end)
-        print(string.format("[LOD:PERF] Recording %.0fs after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.",seconds))
+        print(string.format("[LOD:PERF] Recording %.0fs after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.",seconds))
     end
     concommand.Add("lod_perf_start",function(_,_,args) Audit:StartPerformanceCapture(args[1]) end)
     concommand.Add("lod_perf_stop",function() Audit:StopPerformanceCapture("manual") end)

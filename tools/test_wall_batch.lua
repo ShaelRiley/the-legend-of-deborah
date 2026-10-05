@@ -42,6 +42,7 @@ for i=1,1284 do
     local p=(i%3==0) and C.CargoMins or (i%3==1) and C.CargoMaxs or Vector(C.CargoMins.x,C.CargoMaxs.y,C.CargoMins.z)
     triangles[i]={pos=p,normal=Vector(0,0,1),u=(i%13)/13,v=(i%17)/17,tangent=Vector(1,0,0),binormal=Vector(0,1,0)}
 end
+local stockTriangles=triangles
 local fetches=0
 util={GetModelMeshes=function(path,lod,groups,skin)
     assert(path==LOD.Config.Geometry.ContainerModel and lod==0 and groups==0 and skin==0)
@@ -181,8 +182,65 @@ assert(Wall.batchMaterials.other.material.texture=='other','Lua refresh aliased 
 Wall:ClearBatches();dofile(root..'cl_wall_batch.lua');settle()
 assert(creations==2 and hidden()==8,'refresh accumulated shaders or lost hulls')
 Wall:ClearBatches()
+-- The real palette authority can compile meshes even while native material
+-- setters never report settled. Match the native 1542-instance workload with
+-- three stock slots; no alternate appearance table or second palette.
+Wall:ClearBatches();alternate=false;triangles=stockTriangles;populate(1542)
+Wall.nextModel=1543;Wall.retryQueue={}
+color_white=Color(255,255,255)
+concommand={Add=noop}
+CreateClientConVar=function() return {GetBool=function() return true end} end
+function HSVToColor(h,s,v)
+ local c=v*s;local x=c*(1-math.abs((h/60)%2-1));local m=v-c
+ local t=({{c,x,0},{x,c,0},{0,c,x},{0,x,c},{x,0,c},{c,0,x}})[math.floor(h/60)%6+1]
+ return Color((t[1]+m)*255,(t[2]+m)*255,(t[3]+m)*255)
+end
+function ColorToHSV(c)
+ local r,g,b=c.r/255,c.g/255,c.b/255;local hi,lo=math.max(r,g,b),math.min(r,g,b)
+ local d,h=hi-lo,0
+ if d>0 then
+  if hi==r then h=60*((g-b)/d%6) elseif hi==g then h=60*((b-r)/d+2) else h=60*((r-g)/d+4) end
+ end
+ return h,hi==0 and 0 or d/hi,hi
+end
+
+local previousMaterial=Material
+Material=function(name)
+    local mat=previousMaterial(name);mat.GetShader=function() return 'VertexLitGeneric' end
+    local tex=mat:GetTexture();tex.Width=function() return 1024 end;tex.Height=function() return 1024 end
+    return mat
+end
+for i,m in ipairs(Wall.models) do
+    Wall.world[i].quadrant=(i-1)%4+1
+    m.GetMaterial=function() return '' end -- native override never acknowledges its setter
+    m.SetMaterial=noop;m.SetSubMaterial=noop;m.SetSkin=noop;m.SetColor=noop
+    m.GetColor=function() return color_white end
+    m.GetMaterials=function() return {'stock1','stock2','stock3'} end
+end
+dofile(root..'sh_rng.lua')
+dofile(root..'cl_container_section_recolor.lua')
+assert(Wall:SectionBatchMaterial(Wall.world[1]),'desired native sampler unavailable before reconciliation')
+dofile(root..'cl_wall_batch.lua');settle()
+assert(not Wall.sectionMaterialsReady and not Wall:SectionMaterialStatus().complete,'native stall fixture settled')
+assert(Wall.batchStats.status=='ready' and hidden()==1542 and Wall.batchStats.vertices==1542*1284)
+local pipelineUploads=uploads
+for _=1,10 do tick() end
+assert(uploads==pipelineUploads,'native reconciliation stall rebuilt compiled meshes')
+Wall.nextModel=1;tick();assert(hidden()==0 and live==0 and Wall.batchStats.reason=='model-construction')
+Wall.nextModel=1543;Wall.retryQueue={1};tick();assert(hidden()==0 and Wall.batchStats.reason=='model-retries')
+Wall.retryQueue={};settle();assert(hidden()==1542)
+Wall:ClearBatches()
+local actualProvider=Wall.SectionBatchMaterial
+Wall.SectionBatchMaterial=function() return nil end
+settle();assert(hidden()==0 and live==0 and Wall.batchStats.reason=='no-valid-section-appearance',
+    'missing desired appearance reused stale applied material')
+Wall.SectionBatchMaterial=actualProvider
+settle() -- existing fallback attempt remains conservative until explicit reset
+Wall:ClearBatches();settle();assert(hidden()==1542)
+Wall:ClearBatches()
 -- Extraction/bounds failure is conservative and retryable on Lua refresh.
+
 triangles={{pos=Vector(),normal=Vector(0,0,1),u=0,v=0},{pos=Vector(1,0,0),normal=Vector(0,0,1),u=1,v=0},{pos=Vector(0,1,0),normal=Vector(0,0,1),u=0,v=1}}
 dofile(root..'cl_wall_batch.lua');settle()
 assert(Wall.batchStats.status=='fallback' and Wall.batchStats.reason=='stock-bounds-mismatch' and hidden()==0 and live==0)
-print('WALL_BATCH_PASS: exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup')
+print('WALL_BATCH_PASS: exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup; real 1542-instance palette pipeline independent of stalled native overrides; construction/retry/unavailable-material guards')

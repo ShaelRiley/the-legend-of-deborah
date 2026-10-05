@@ -15,6 +15,7 @@ jobs:
       - run: python3 tools/run_lua54.py tools/test_hostile_route_cache.lua
       - run: python3 tools/run_lua54.py tools/test_wall_batch.lua
       - run: python3 tools/run_lua54.py tools/test_performance_capture.lua
+      - run: python3 tools/run_lua54.py tools/test_population_transport.lua
       - run: python3 tools/run_lua54.py tools/test_low_end_render.lua
       - run: python3 tools/run_lua54.py tools/test_low_end_palette.lua
       - run: python3 tools/run_lua54.py tools/test_low_end_geometry.lua

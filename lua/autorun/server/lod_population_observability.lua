@@ -11,6 +11,7 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
     "gamemodes/legend_of_deborah/gamemode/cl_init.lua",
     "gamemodes/legend_of_deborah/gamemode/init.lua",
@@ -97,6 +98,41 @@ function A:Snapshot(reason)
     return out
 end
 
+-- Native console lines have a smaller ceiling than the full source manifest.
+-- Keep complete, valid JSON in the console and the full snapshot in DATA/net.
+function A:ConsoleSummary(out)
+    local summary={}
+    for key,value in pairs(out) do summary[key]=value end
+    local source=out.source or {}
+    summary.source={verified=source.verified,checked=source.checked,missing=source.missing,
+        mismatches=source.mismatches,installLabel=source.installLabel}
+    local entry=out.entry or {}
+    summary.entry={version=entry.version,ready=entry.ready,eventSerial=entry.eventSerial,
+        bindings=entry.bindings,stats=entry.stats,cells=#(entry.cells or {}),heroes={},
+        hero_count=#(entry.heroes or {})}
+    -- Per-Hero counters survive; unbounded locality/source detail stays in the
+    -- full record. The fallback below also bounds unusually large co-op records.
+    for i=1,math.min(4,#(entry.heroes or {})) do
+        local row={}
+        for key,value in pairs(entry.heroes[i]) do
+            if type(value)=="number" or type(value)=="boolean" then row[key]=value end
+        end
+        summary.entry.heroes[i]=row
+    end
+    local encoded=util.TableToJSON(summary)
+    if encoded and #encoded<=3800 then return encoded end
+    local compact={source=summary.source,gates=out.gates,entry={version=entry.version,
+        ready=entry.ready,eventSerial=entry.eventSerial,stats=entry.stats},
+        console_detail_omitted=true}
+    for key,value in pairs(out) do
+        if type(value)=="number" or type(value)=="boolean" or type(value)=="string" then compact[key]=value end
+    end
+    encoded=util.TableToJSON(compact)
+    if encoded and #encoded<=3800 then return encoded end
+    return util.TableToJSON({observer=out.observer,reason=out.reason,seconds=out.seconds,
+        source=summary.source,gates=out.gates,console_detail_omitted=true}) or "{}"
+end
+
 function A:Capture(reason)
     if game.GetMap()~="gm_flatgrass" or not LOD.RunManager then return end
     local out=self:Snapshot(reason)
@@ -105,9 +141,18 @@ function A:Capture(reason)
     local line="[LOD:POPULATION] "..encoded
     self.Records[#self.Records+1]=line
     if #self.Records>64 then table.remove(self.Records,1) end
-    file.CreateDir("legend_of_deborah")
-    file.Write("legend_of_deborah/population_latest.txt",table.concat(self.Records,"\n").."\n")
-    print(line)
+    local text=table.concat(self.Records,"\n").."\n"
+    local ok,err=pcall(function()
+        file.CreateDir("legend_of_deborah")
+        file.Write("legend_of_deborah/population_latest.txt",text)
+        assert(file.Read("legend_of_deborah/population_latest.txt","DATA")==text,"DATA write did not persist")
+    end)
+    self.LastWrite={ok=ok,path="legend_of_deborah/population_latest.txt",error=not ok and tostring(err) or nil}
+    if not ok and self.LastWriteError~=tostring(err) then
+        print("[LOD:POPULATION] Save failed: "..tostring(err))
+    end
+    self.LastWriteError=not ok and tostring(err) or nil
+    print("[LOD:POPULATION] "..self:ConsoleSummary(out))
     return out
 end
 
@@ -135,3 +180,27 @@ concommand.Add("lod_population_evidence",function(ply)
     if IsValid(ply) and not ply:IsAdmin() then return end
     A:Capture("requested")
 end)
+
+-- One opt-in client request mirrors this server-owned census into the same
+-- client DATA directory as the performance file. No second census or timer.
+-- Source hashes remain session-cached; requests are admin-only and rate-limited.
+if util.AddNetworkString and net and net.Receive and net.Start and net.WriteUInt
+    and net.WriteData and net.Send then
+    local channel="LOD_PopulationSnapshot"
+    util.AddNetworkString(channel)
+    local nextRequest=setmetatable({},{__mode="k"})
+    net.Receive(channel,function(_,ply)
+        if not IsValid(ply) or not ply:IsAdmin() or game.GetMap()~="gm_flatgrass" then return end
+        if CurTime()<(nextRequest[ply] or 0) then return end
+        nextRequest[ply]=CurTime()+2
+        local out=A:Capture("performance_requested")
+        if not out then return end
+        out.server_write=A.LastWrite
+        local encoded=util.TableToJSON(out)
+        if not encoded or #encoded>60000 then
+            print("[LOD:POPULATION] Client snapshot exceeds the 60000-byte transport limit")
+            return
+        end
+        net.Start(channel);net.WriteUInt(#encoded,16);net.WriteData(encoded,#encoded);net.Send(ply)
+    end)
+end

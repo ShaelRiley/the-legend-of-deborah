@@ -51,6 +51,7 @@ local candidateAvailability = {}
 local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
+local reconcileCalls = 0
 Wall.sectionMaterialsReady = false
 
 local function invalidateBatches()
@@ -382,6 +383,21 @@ local function sectionMaterialAvailable(name)
     return ok, shader
 end
 
+-- The mesh compiler consumes the same desired file-backed appearance as the
+-- native model reconciler. Native SetMaterial/GetMaterial settling is not a
+-- prerequisite for compiling exact hull triangles with this validated sampler.
+function Wall:SectionBatchMaterial(instance)
+    local name = sectionMaterialName(instance)
+    if name and sectionMaterialAvailable(name) then return name end
+end
+
+function Wall:SectionMaterialStatus()
+    return {ready = self.sectionMaterialsReady, cursor = reconcileCursor,
+        stable_passes = stablePasses, applied = appliedCount, calls = reconcileCalls,
+        complete = reconcileComplete, instances = #(self.world or {}),
+        next_model = self.nextModel or 1, retries = #(self.retryQueue or {})}
+end
+
 local function complementaryColor(c)
     local vivid = vividSectionColor(c)
     local h, s, _ = ColorToHSV(vivid)
@@ -463,6 +479,7 @@ local function reconcileModel(index, model, instance)
 end
 
 hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
+    reconcileCalls = reconcileCalls + 1
     local models = Wall.models or {}
     local world = Wall.world or {}
     local total = #world

@@ -1,0 +1,62 @@
+{
+  "observed_native_source": "8fa634426d3fd1bf9f8dd8028866a24622488bad",
+  "observed_native_reason": "renderer-timeout",
+  "observed_native_frames": 0,
+  "native_accepted": false,
+  "original_target": "sustained >=40 FPS on Steam Deck, Proton, windowed, Arch Desktop; same 1280x800 settings and population",
+  "candidate_sha": "94e5a4d80362b9212aa1f985891284afe585ed5f",
+  "candidate_tree": "5800548c1ab3839701599ecc362ccc797055d0d2",
+  "driver_sha": "e11e7869c3a7ae269eec8eb6f9b7ae6c9aa5418c",
+  "driver_tree": "820079bd18dbf18ca27f6e34063d1235804866f1",
+  "failed_attempts": [
+    {
+      "candidate": "037d8b39fb84d9cd91df5185fb93d6103d9887fb",
+      "driver": "db4eeb24113b704b89ce7be886f605f6f5d2efa4",
+      "run": 37339111951,
+      "job": 111861348787,
+      "result": "targeted failed: new real-palette fixture omitted concommand native boundary; matrix not run"
+    },
+    {
+      "candidate": "06e36554cc79807cb7af13ef73369cff5bab90fc",
+      "driver": "9e0ad26725b7038eedfabfd1243dc181241d02a8",
+      "run": 37339580063,
+      "job": 111862916153,
+      "artifact": 11357494052,
+      "result": "306/307 suites, source_changed=0; stock hull asset check could not import numpy; focused regressions and 877 syntax checks passed"
+    }
+  ],
+  "failed_matrix_job_log_sha256": "4552694d2febbd895b70ff5de96cbaeeac631c464e52e00da16e5a22ea8b2a21",
+  "modified_production_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua": "e5edb23f0bdeaa2b0ce14284fa1d95770ebb2a3c91ac6e74bd38220c70facdbd",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua": "6d48ebcd2d04c9c187b1a6318d40cd11c00137dd95acf267faf63531a38eb601",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua": "584230c463596d82ebd137b219bb17b6d8a3bac1cb7b5eaa7a30fef3879cbb2c",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "0bc86e68dc250f67de3b4b6acec6ef17d61cbc187fea09b33ba5b88c004aadec",
+    "lua/autorun/server/lod_population_observability.lua": "53df3df202f5495984a0c4b9d32cf083d751abac08c87fc40bd7057d8bf95801"
+  },
+  "gdd_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_tabs": [
+    "00 — AI ENTRYPOINT",
+    "01 — AI RULE INDEX",
+    "07 — IMPLEMENTATION & TUNING"
+  ],
+  "publication_scope": "validated non-force main source publication only; no Workshop/VPS operation",
+  "complete_gate": {
+    "run_id": 37342766921,
+    "job_id": 111873708394,
+    "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37342766921",
+    "changed_during_gate": [],
+    "checkout_sha": "94e5a4d80362b9212aa1f985891284afe585ed5f",
+    "checkout_tree": "5800548c1ab3839701599ecc362ccc797055d0d2",
+    "lua_files": 877,
+    "native_gmod_accepted": false,
+    "passed": 307,
+    "production_files": 562,
+    "production_sha256": "7846ec6c115930b88863a6f42c8ea579b83afbe8c5bc952218b54a1905cd9b48",
+    "receipt_sha256": "467b557aab890f40814f81ac3f67809950288e1fb86796c15c2c28903df9dbe6",
+    "source_after": "948b2b3e7cd89c16f46dbf234ec088c6e372e445199e656ff094a3be0bfb0f22",
+    "source_before": "948b2b3e7cd89c16f46dbf234ec088c6e372e445199e656ff094a3be0bfb0f22",
+    "source_files": 2461,
+    "total": 307,
+    "verified_suite_logs": 307
+  }
+}

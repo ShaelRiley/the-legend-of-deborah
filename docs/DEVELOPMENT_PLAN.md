@@ -21,10 +21,18 @@ combat and progression remain protected.
 preparation/warmup, including active-play percentiles, five-second pacing windows,
 configuration, source verification and resource snapshots. Source checks and
 synthetic work reductions are evidence of implementation, not native FPS.
-40 FPS target: native validation pending. The next finite action is the pull/
-install and loaded gm_flatgrass procedure in the current evidence document;
-retain Proton, windowed Arch Desktop, resolution and graphics settings. Workshop
-and VPS remain outside this pass.
+The first exact-source native capture timed out with all 1,542 walls unbatched
+and zero frame samples. This is unmeasured FPS. Its population observer ran, but
+the console truncated the full source list and the separate DATA file could not
+be located. The repair removes the duplicate wayfinding appearance writer,
+lets batches consume the canonical desired sampler, bounds preparation before
+sampling, and mirrors existing population evidence automatically into the client
+capture. See [native failure, repair and finite retest](validation/STEAM_DECK_20261005_NATIVE_REPAIR.md).
+40 FPS target: native validation pending. The next action remains a fully restarted
+gm_flatgrass capture with the same Proton, windowed Arch Desktop, resolution,
+graphics settings and loaded population. Return performance_client_latest.txt +
+console_latest.txt; a missing separate population file does not block evidence.
+Workshop and VPS remain outside this pass.
 
 ---
 

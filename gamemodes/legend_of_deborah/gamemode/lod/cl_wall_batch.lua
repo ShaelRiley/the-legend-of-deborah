@@ -60,9 +60,14 @@ local function modelSource()
     return source
 end
 
+local function sectionName(instance)
+    if Wall.SectionBatchMaterial then return Wall:SectionBatchMaterial(instance) end
+    -- Legacy/headless callers still require an applied native appearance.
+    if instance.appliedSectionMode=="file-backed-global" then return instance.sectionMaterialName end
+end
 local function appearance(instance)
-    local name=instance.sectionMaterialName
-    if not name or instance.appliedSectionMode~="file-backed-global" then return end
+    local name=sectionName(instance)
+    if not name then return end
     local original=Material(name)
     if not original or original:IsError() then return end
     local texture=original:GetTexture("$basetexture")
@@ -122,14 +127,15 @@ end
 
 local function begin()
     state={world=Wall.world,models=Wall.models,seed=Wall.seed,chunks={},cursor=1}
+    Wall.batchStats.reason=nil
     if not modelSource() then Wall.batchStats.status="fallback";Wall.batchStats.reason=sourceError;return end
     local groups={}
     local appearances={}
     local reservedVertices=0
     for index,instance in ipairs(state.world) do
         if IsValid(state.models[index]) and reservedVertices+#source<=MAX_TOTAL_VERTICES then
-            local name=instance.sectionMaterialName
-            local material=appearances[name]
+            local name=sectionName(instance)
+            local material=name and appearances[name]
             if not material then material=appearance(instance);if name then appearances[name]=material end end
             if material then
                 local key=math.floor((instance.gridX-1)/TILE_CELLS)..":"..
@@ -146,14 +152,27 @@ local function begin()
         end
     end
     Wall.batchStats.status=#state.chunks>0 and "building" or "fallback"
+    if #state.chunks==0 then Wall.batchStats.reason="no-valid-section-appearance" end
     Wall.batchStats.chunks=#state.chunks
     Wall.batchStats.reserved_vertices=reservedVertices
 end
 
 hook.Add("Think","LOD_BuildContainerBatches",function()
-    if not enabled() then if state then Wall:ClearBatches() end;return end
-    if not Wall.sectionMaterialsReady or (state and (state.world~=Wall.world or state.models~=Wall.models or state.seed~=Wall.seed)) then
+    Wall.batchBuildTicks=(Wall.batchBuildTicks or 0)+1
+    if not enabled() then
+        if state or Wall.batchStats.status~="off" then Wall:ClearBatches() end
+        return
+    end
+    if state and (state.world~=Wall.world or state.models~=Wall.models or state.seed~=Wall.seed) then
+        Wall:ClearBatches()
+        return
+    end
+    local constructing=Wall.SectionBatchMaterial and (Wall.nextModel or 1)<=#(Wall.world or {})
+    local retrying=Wall.SectionBatchMaterial and #(Wall.retryQueue or {})>0
+    if constructing or retrying or (not Wall.SectionBatchMaterial and not Wall.sectionMaterialsReady) then
         if state then Wall:ClearBatches() end
+        Wall.batchStats.status="waiting-appearance"
+        Wall.batchStats.reason=constructing and "model-construction" or retrying and "model-retries" or "section-reconciliation"
         return
     end
     if not state then

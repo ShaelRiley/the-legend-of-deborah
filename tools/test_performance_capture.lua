@@ -31,7 +31,7 @@ LOD.WallVisualsClient={world={{}},models={},batchStats={status='building'}}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
-    root..'cl_container_section_recolor.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',root..'sh_runtime_audit.lua'}
 local manifest={}
 for _,p in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;files['GAME:'..p]='exact' end
 files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -45,7 +45,7 @@ end
 assert(not hooks.PreRender,'idle frame sampler installed')
 assert(commands.lod_perf_start and commands.lod_perf_stop)
 commands.lod_perf_start(nil,nil,{'180'})
-assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==6)
+assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==7)
 local startReads=reads
 -- Preparing batches is separated from sustained gameplay; no empty warmup data.
 now=20;fire('PreRender');fire('Think');assert(#A.PerformanceCapture.all==0)
@@ -77,7 +77,7 @@ assert(windowFrames==out.active.frames,'window aggregation dropped gameplay')
 assert(out.start_configuration.width==1280 and out.start_configuration.height==800 and #out.configuration_changes==0)
 assert(files['DATA:legend_of_deborah/performance_client_latest.txt']:find('p99_ms=120.000',1,true))
 assert(not next(hooks.PreRender) and not next(hooks.Think),'sampler left recurring hooks')
-local afterReads=reads;assert(afterReads-startReads==1,'per-frame hashing/I/O occurred')
+local afterReads=reads;assert(afterReads-startReads==2,'per-frame hashing/I/O occurred')
 local written=writes;fire('PreRender');fire('Think');commands.lod_perf_stop();assert(writes==written)
 -- Build identity remains independently verified. Missing/tampered mounts are
 -- explicit; the installed SHA label does not certify the loaded client bytes.
@@ -86,7 +86,7 @@ assert(not A.PerformanceCapture.source.verified and A.PerformanceCapture.source.
 settings.mat_vsync='1';out=A:StopPerformanceCapture('manual')
 assert(out.all.frames==0 and out.active.frames==0 and out.configuration_changes[1]=='mat_vsync')
 files['GAME:'..paths[1]]='exact';files['DATA:legend_of_deborah/dev_population_sources.txt']=''
-A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==6)
+A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==7)
 A:StopPerformanceCapture('manual')
 -- Lifecycle cleanup and bounded collection, even at absurd synthetic FPS.
 ply.deployed=true;ply.alive=true;LOD.UI.ActivePage=nil
@@ -98,10 +98,33 @@ A:StartPerformanceCapture(10000);assert(A.PerformanceCapture.duration==300)
 fire('ShutDown');assert(not A.PerformanceCapture and A.LastPerformanceCapture.reason=='shutdown')
 A:StartPerformanceCapture(-1);assert(A.PerformanceCapture.duration==30)
 dofile(root..'sh_runtime_audit.lua');assert(not A.PerformanceCapture and A.LastPerformanceCapture.reason=='lua-refresh')
+-- A native renderer which never settles still produces a full FPS sample.
+LOD.WallVisualsClient.batchStats={status='waiting-appearance',reason='model-retries',hidden=0}
+LOD.WallVisualsClient.SectionMaterialStatus=function() return {ready=false,cursor=193,retries=3,instances=1542} end
+local blockedStart=now;A:StartPerformanceCapture(30)
+now=blockedStart+29;fire('PreRender');assert(not A.PerformanceCapture.ready)
+now=blockedStart+30;fire('PreRender')
+assert(A.PerformanceCapture.ready and A.PerformanceCapture.start==blockedStart+33)
+now=blockedStart+33;fire('PreRender')
+for _=1,100 do now=now+.05;fire('PreRender');fire('Think') end
+now=blockedStart+63;fire('Think');out=A.LastPerformanceCapture
+assert(out.reason=='complete' and out.all.frames==100 and out.active.frames==100)
+assert(math.abs(out.active.fps-20)<1e-7 and out.renderer_wait_seconds==30 and out.preparation_timed_out)
+assert(out.renderer_at_sample_start.status=='waiting-appearance' and out.renderer_at_sample_start.section.retries==3)
+assert(out.renderer_at_end.reason=='model-retries' and out.elapsed_seconds==30 and out.saved)
+assert(not next(hooks.PreRender) and not next(hooks.Think),'blocked capture did not clean up')
+-- No PreRender ever arriving is a different bounded failure: no measured FPS.
 LOD.WallVisualsClient.batchStats.status='building';A:StartPerformanceCapture(30)
 now=now+121;fire('Think');assert(not A.PerformanceCapture and A.LastPerformanceCapture.reason=='renderer-timeout')
+assert(A.LastPerformanceCapture.renderer_wait_seconds==121 and A.LastPerformanceCapture.elapsed_seconds==0)
+assert(files['DATA:legend_of_deborah/performance_client_latest.txt']:find('fps=unmeasured',1,true))
 LOD.WallVisualsClient.batchStats.status='ready';A:StartPerformanceCapture(30)
 local oldWrite=file.Write;file.Write=function() error('injected disk failure') end
 out=A:StopPerformanceCapture('manual');assert(out and not A.PerformanceCapture and not next(hooks.PreRender))
+assert(out.saved==false and out.save_error:find('injected',1,true))
+file.Write=function() end
+A:StartPerformanceCapture(30)
+out=A:StopPerformanceCapture('manual')
+assert(not out.saved and out.save_error:find('did not persist',1,true),'silent disk failure claimed saved')
 file.Write=oldWrite
-print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows; build/settings/resource evidence; preparation excluded; 65536 limit; reset/refresh/shutdown/I/O cleanup')
+print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows; build/settings/resource evidence; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')

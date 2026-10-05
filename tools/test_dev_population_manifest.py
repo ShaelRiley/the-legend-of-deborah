@@ -20,7 +20,7 @@ with tempfile.TemporaryDirectory() as tmp:
                                     env=env, capture_output=True, text=True, check=True)
             pid = int((data / '.console_mirror.pid').read_text())
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 40
+            assert len(rows) == 41
             for row in rows:
                 digest, relative = row.split(None, 1)
                 assert hashlib.sha256((repo / relative).read_bytes()).hexdigest() == digest, relative
@@ -35,4 +35,4 @@ with tempfile.TemporaryDirectory() as tmp:
                     os.kill(pid, signal.SIGTERM)
             except (ProcessLookupError, FileNotFoundError):
                 pass
-print('DEV_POPULATION_MANIFEST_PASS exact 40-source hashes; repeat install; actual symlink; atomic manifest; observer instructions')
+print('DEV_POPULATION_MANIFEST_PASS exact 41-source hashes; repeat install; actual symlink; atomic manifest; observer instructions')
