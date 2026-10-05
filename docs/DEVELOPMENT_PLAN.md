@@ -1,3 +1,22 @@
+# Current author direction — Steam Deck performance
+
+October 5, 2026: optimize the post-music-removal build for sustained >=40 FPS
+on Steam Deck, Proton, windowed, Arch Linux Desktop mode. Reported baseline is
+approximately 15 FPS, not an instrumented measurement. This implementation pass
+supersedes historical sequencing, preserving game rules, population, progression,
+safe arrival, authored bosses and ambient/event audio. Validated non-force pushes
+to main are authorized; Workshop publication and VPS deployment remain held for
+native acceptance. See [current evidence](validation/STEAM_DECK_20261005.md).
+
+First checkpoint shares the canonical sanctuary-filtered hostile BFS trees within
+the existing navigation cache and 72-tree total. Exact path choices, graph/gate/
+event/filter ownership and arbitrary live predicates remain protected. Source
+checks pass; native 40 FPS acceptance remains pending. Continue with the existing
+container presentation and bounded native frame-time evidence, not a profiler-only
+handoff. Finish each coherent validated checkpoint before broadening scope.
+
+---
+
 # Current author direction — ambient audio and core gameplay
 
 Music System 3 is extracted into the separate `ShaelRiley/ms3-music-system`

@@ -26,6 +26,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
     ("Gate Reveal Native Enemy Engagement", ["python3", "tools/run_lua54.py", "tools/test_gate_enemy_engagement.lua"]),
     ("Boss Full Button Routes & Native E Interaction", ["python3", "tools/run_lua54.py", "tools/test_boss_button_routes.lua"]),
     ("Boss Native Snapshot & Client Presentation Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_boss_presentation.lua"]),

@@ -391,9 +391,14 @@ function ENT:_RouteToCell(graph, destinationCell)
     end
 
     local safety = LOD.EntrySafety
-    local path = navigator:FindPath(graph, currentCell, destinationCell, safety and function(cell)
-        return safety:HostilePathCell(graph, cell)
-    end or nil)
+    local path
+    if navigator.FindHostilePath then
+        path = navigator:FindHostilePath(graph, currentCell, destinationCell)
+    else
+        path = navigator:FindPath(graph, currentCell, destinationCell, safety and function(cell)
+            return safety:HostilePathCell(graph, cell)
+        end or nil)
+    end
     if not path then
         self.LODWaypoints = {}
         self.LODWaypointIndex = 1
