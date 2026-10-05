@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: '037d8b39fb84d9cd91df5185fb93d6103d9887fb'
+          ref: '06e36554cc79807cb7af13ef73369cff5bab90fc'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -34,20 +34,29 @@ jobs:
       - run: python3 -m pip install Pillow
       - name: Native-boundary regressions and complete Lua syntax
         run: |
-          python3 tools/run_lua54.py tools/test_wall_batch.lua
-          python3 tools/run_lua54.py tools/test_performance_capture.lua
-          python3 tools/run_lua54.py tools/test_population_transport.lua
-          python3 tools/run_lua54.py tools/test_low_end_palette.lua
-          python3 tools/run_lua54.py tools/test_great_crate_render.lua
-          python3 tools/test_dev_population_manifest.py
           python3 - <<'PY'
-          import subprocess
+          import subprocess, sys
           from pathlib import Path
+          commands = [["python3", "tools/run_lua54.py", "tools/" + name + ".lua"]
+                      for name in ("test_wall_batch", "test_performance_capture",
+                                   "test_population_transport", "test_low_end_palette",
+                                   "test_great_crate_render")]
+          commands.append(["python3", "tools/test_dev_population_manifest.py"])
           files = sorted(str(p) for root in ("gamemodes", "lua", "tools")
                          for p in Path(root).rglob("*.lua"))
-          subprocess.run(["python3", "tools/run_lua54.py", "--syntax", *files],
-                         check=True, stdout=subprocess.DEVNULL)
-          print("LUA_SYNTAX_FILES=" + str(len(files)))
+          commands.append(["python3", "tools/run_lua54.py", "--syntax", *files])
+          failed = []
+          for command in commands:
+              result = subprocess.run(command, capture_output=True, text=True)
+              label = "Lua syntax" if "--syntax" in command else command[-1]
+              print("TARGETED_RESULT=" + label + " returncode=" + str(result.returncode), flush=True)
+              if "--syntax" not in command or result.returncode:
+                  print(result.stdout[-12000:] + result.stderr[-12000:], flush=True)
+              if result.returncode:
+                  failed.append(label)
+          print("LUA_SYNTAX_FILES=" + str(len(files)), flush=True)
+          if failed:
+              sys.exit("TARGETED_FAILURES=" + repr(failed))
           PY
       - name: Complete frozen integration matrix
         env:
