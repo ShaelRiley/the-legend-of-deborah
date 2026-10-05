@@ -1,0 +1,19 @@
+{
+  "parent_main": "438c3d8114e932ddb7de6a6488048b9df8c1a6d4",
+  "passed": 307,
+  "total": 307,
+  "lua_files": 877,
+  "source_before": "78f4ed3f315a2c214f2326c65c92e83a7cc1679786a07a4f238baf5c8f677e87",
+  "source_after": "78f4ed3f315a2c214f2326c65c92e83a7cc1679786a07a4f238baf5c8f677e87",
+  "changed_during_gate": [],
+  "source_files": 2467,
+  "verified_suite_logs": 307,
+  "receipt_sha256": "7fa99d7bba9e68f4174732c44a0c56563d3a27e5f3c01f2114d9fd457b831bfd",
+  "production_files": 562,
+  "production_sha256": "c14e5d9517a5c227a49943d760dbe9e00b70f233b87609c58feaaff5ea2032d7",
+  "logs_archive_bytes": 312864,
+  "logs_archive_sha256": "256537da5c324ded63f2537185a01f328712a4f0ba27b6cbe720fbd8c911f69c",
+  "native_gmod_accepted": false,
+  "sustained_40_fps_accepted": false,
+  "publication_scope": "Validated production/test bytes unchanged; only documentation and evidence appended after this frozen gate."
+}

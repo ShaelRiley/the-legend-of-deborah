@@ -162,22 +162,29 @@ bounds are in `validation/BESTIARY_B29.md`.
 
 ## Steam Deck rendered-frame evidence
 
-The October 5 performance candidate extends the existing saved Reduced Effects
-option. After deploying on gm_flatgrass, one batch captures three minutes of
+The October 5 wall-visibility repair keeps the existing saved Reduced Effects
+option but restores native wall models by default. Experimental replacement
+meshes require the unsaved `lod_wall_batches 1` opt-in; leave this off for the
+current visibility/performance retest. After deploying on gm_flatgrass, one batch captures three minutes of
 loaded play without changing resolution, graphics settings, sync or frame limits:
 
-`lod_reduced_effects 1; lod_perf_start 180`
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`
 
 The client waits for wall preparation and three seconds of warmup, then records
 rendered frame intervals, active-play FPS/median/p95/p99/max, >25/50/100ms counts,
 five-second pacing windows, actual viewport/settings, mounted renderer source
-hashes and start/end resources. Sampling is bounded and opt-in; there is no idle
+hashes, experimental preference, live renderer snapshots in five-second windows
+and start/end resources. The intentional native route does not wait for batch
+preparation. Shutdown cleanup may say off at the end; assess the live windows
+and sample-start renderer before attributing the run. Sampling is bounded and opt-in; there is no idle
 frame hook or per-frame disk write. `lod_perf_stop` ends a capture early. This
 command observes gameplay; it does not spawn actors, enable cheats or alter RNG.
 
-Return **performance_client_latest.txt + console_latest.txt + population_latest.txt**
+Return **performance_client_latest.txt + console_latest.txt**
 from the same canonical data directory, plus the Proton version and confirmation
-of windowed Arch Linux Desktop mode. Lua KB is not process/GPU memory. A short,
+of windowed Arch Linux Desktop mode. Population evidence/status is mirrored
+automatically into the capture; a separate population file is not a prerequisite.
+Lua KB is not process/GPU memory. A short,
 inactive, fallback, source-mismatched or settings-changing capture requires that
 context when assessing performance; aggregate average FPS alone is insufficient.
 See [implementation evidence and exact pull/install instructions](validation/STEAM_DECK_20261005.md).

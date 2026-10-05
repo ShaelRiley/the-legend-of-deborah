@@ -1,12 +1,15 @@
--- Reduced Effects extends the canonical wall manifest/appearance owner. Stock
--- hull triangles, UVs, two-container stacks and overlays remain exact; spatial
--- chunks replace thousands of native model submissions with simpler lighting.
--- Native models remain as transform/overlay handles and a transactional fallback.
+-- Experimental replacement of the canonical native wall models. The October 5
+-- Proton capture showed missing surfaces with all originals hidden, so Reduced
+-- Effects alone must retain native walls until batching passes visual acceptance.
+-- Other reduced-effects optimizations remain independent of this opt-in path.
 local Wall, MC, GC = LOD.WallVisualsClient, LOD.Config.Maze, LOD.Config.Geometry
 if Wall.ClearBatches then Wall:ClearBatches() end
 local C = LOD.CrateVisuals
 local TILE_CELLS, MAX_VERTICES, MAX_CHUNKS, MAX_TOTAL_VERTICES = 4, 60000, 512, 4000000
-local state, source, sourceError
+local state, source, sourceError, drawError
+local batchPreference = CreateClientConVar("lod_wall_batches", "0", false, false,
+    "Experimental container meshes; native wall rendering is the default", 0, 1)
+local worldMatrix = Matrix()
 -- GMod keeps CreateMaterial names across Lua refresh. Retain texture-to-shader
 -- ownership too, so a changed candidate/fallback order cannot reuse a shader
 -- name with another texture. Two shared shaders, never per wall/section/chunk.
@@ -14,7 +17,7 @@ local materials = Wall.batchMaterials or {}
 Wall.batchMaterials = materials
 local function enabled()
     local cv = GetConVar("lod_reduced_effects")
-    return cv and cv:GetBool() or false
+    return cv and cv:GetBool() and batchPreference:GetBool() or false
 end
 local function finite(n) return type(n)=="number" and n==n and n>-math.huge and n<math.huge end
 
@@ -27,6 +30,7 @@ function Wall:ClearBatches()
         end
     end
     state = nil
+    drawError = nil
     self.batchStats = {status="off", chunks=0, hidden=0, draws=0, visits=0, vertices=0}
 end
 Wall:ClearBatches()
@@ -160,9 +164,16 @@ end
 hook.Add("Think","LOD_BuildContainerBatches",function()
     Wall.batchBuildTicks=(Wall.batchBuildTicks or 0)+1
     if not enabled() then
-        if state or Wall.batchStats.status~="off" then Wall:ClearBatches() end
+        local cv=GetConVar("lod_reduced_effects")
+        local status=cv and cv:GetBool() and "native" or "off"
+        if state or Wall.batchStats.status~=status then Wall:ClearBatches() end
+        Wall.batchStats.status=status
+        Wall.batchStats.reason=status=="native" and "wall-batches-disabled" or nil
         return
     end
+    -- A failed draw stays native until an explicit preference/world reset or
+    -- Lua refresh. Rebuilding the same broken mesh every Think is not recovery.
+    if drawError then return end
     if state and (state.world~=Wall.world or state.models~=Wall.models or state.seed~=Wall.seed) then
         Wall:ClearBatches()
         return
@@ -223,12 +234,8 @@ local function visible(chunk,eye,f,r,u,tx,ty,nx,ny)
         and math.abs(x*u.x+y*u.y+z*u.z)-depth*ty<=radius*ny
 end
 
-hook.Add("PostDrawOpaqueRenderables","LOD_DrawContainerBatches",function(depth,sky,sky3d)
-    if depth or sky or sky3d or not state then return end
-    local stats=Wall.batchStats;stats.draws,stats.visits=0,0
-    local view=render.GetViewSetup and render.GetViewSetup(true)
-    local eye,f,r,u,tx,ty,nx,ny=perspective(view)
-    render.SetColorModulation(1,1,1);render.SetBlend(1)
+local function drawChunks(eye,f,r,u,tx,ty,nx,ny)
+    local stats=Wall.batchStats
     for _,chunk in ipairs(state.chunks) do
         if chunk.mesh then
             stats.visits=stats.visits+1
@@ -237,7 +244,27 @@ hook.Add("PostDrawOpaqueRenderables","LOD_DrawContainerBatches",function(depth,s
             end
         end
     end
+end
+hook.Add("PostDrawOpaqueRenderables","LOD_DrawContainerBatches",function(depth,sky,sky3d)
+    if depth or sky or sky3d or not state then return end
+    local stats=Wall.batchStats;stats.draws,stats.visits=0,0
+    local view=render.GetViewSetup and render.GetViewSetup(true)
+    local eye,f,r,u,tx,ty,nx,ny=perspective(view)
+    render.SetColorModulation(1,1,1);render.SetBlend(1)
+    -- Vertices already contain their world transform. Own the matrix instead
+    -- of inheriting a preceding entity/overlay's transform, and always pop it
+    -- before restoring native models after a draw exception.
+    cam.PushModelMatrix(worldMatrix)
+    local ok,err=pcall(drawChunks,eye,f,r,u,tx,ty,nx,ny)
+    cam.PopModelMatrix()
+    if not ok then
+        Wall:ClearBatches()
+        drawError=tostring(err)
+        Wall.batchStats.status="fallback"
+        Wall.batchStats.reason="draw-failed: "..drawError
+    end
 end)
 cvars.AddChangeCallback("lod_reduced_effects",function() Wall:ClearBatches() end,"LOD_WallBatchPreference")
+cvars.AddChangeCallback("lod_wall_batches",function() Wall:ClearBatches() end,"LOD_WallBatchExperimentalPreference")
 hook.Add("PostCleanupMap","LOD_ClearContainerBatches",function() Wall:ClearBatches() end)
 hook.Add("ShutDown","LOD_ClearContainerBatches",function() Wall:ClearBatches() end)

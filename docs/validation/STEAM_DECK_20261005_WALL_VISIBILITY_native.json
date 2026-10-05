@@ -1,0 +1,509 @@
+{
+  "parent_main": "438c3d8114e932ddb7de6a6488048b9df8c1a6d4",
+  "observed_date": "2026-10-05",
+  "visual_result": "Missing wall surfaces in supplied video; batched originals hidden. Native visual acceptance failed.",
+  "inputs": {
+    "2026-10-05 15-36-58.mkv": {
+      "bytes": 19062435,
+      "sha256": "b083d38c0825357e4fb5b95375318d81919935d43b6e3f6f05ec9135655172a6"
+    },
+    "console_latest(20261005-203845).txt": {
+      "bytes": 41161,
+      "sha256": "424f4f447ad3dec4fbee6b4685aa8e51b9fe06160da8e1108ce44048cf17f17c"
+    },
+    "performance_client_latest(1).txt": {
+      "bytes": 27995,
+      "sha256": "951dc23ea2a97b156469fd422180ef501d09a6223fd4ffad47145bbb725d2bea"
+    }
+  },
+  "capture": {
+    "active": {
+      "max_ms": 263.743,
+      "over100": 99,
+      "median_ms": 42.525,
+      "over50": 618,
+      "p95_ms": 113.06,
+      "frames": 1529,
+      "p99_ms": 178.2,
+      "over25": 1418,
+      "seconds": 81.72460100000009,
+      "fps": 18.709176689648178
+    },
+    "version": "steam-deck-native-repair-20261005",
+    "active_definition": "deployed, alive, no LOD menu or cinematic",
+    "end_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_waterforceexpensive": "1",
+      "window_mode": "user-recorded",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "r_shadows": "1",
+      "mat_picmip": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "preparation_limit_seconds": 30,
+    "start_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_waterforceexpensive": "1",
+      "window_mode": "user-recorded",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "r_shadows": "1",
+      "mat_picmip": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "preparation_timed_out": false,
+    "source": {
+      "verified": true,
+      "checked": 7,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "renderer_at_end": {
+      "think_calls": 1616,
+      "section": {
+        "next_model": 1449,
+        "retries": 0,
+        "stable_passes": 0,
+        "applied": 306816,
+        "instances": 1448,
+        "complete": false,
+        "cursor": 1289,
+        "calls": 1616,
+        "ready": false
+      },
+      "hidden": 0,
+      "status": "off",
+      "vertices": 0,
+      "hooks": {
+        "materials": true,
+        "wayfinding": true,
+        "batches": true
+      },
+      "chunks": 0
+    },
+    "start_resources": {
+      "lua_kb": 39733,
+      "damsels": "damsels-20260919-01",
+      "jit_version": "LuaJIT 2.1.0-beta3",
+      "lua_errors": 0,
+      "realm": "client",
+      "branch": "unknown",
+      "equipment_generation": "interpreter-generator",
+      "build": "generator-jit-20260917-01",
+      "engine": "2026.09.17",
+      "wall_models": 1448,
+      "meshes": 72,
+      "install": "438c3d8114e932ddb7de6a6488048b9df8c1a6d4 clean ",
+      "missing": "none",
+      "feedback_audio": "feedback-20260919-01",
+      "architecture": "x64",
+      "loot_entities": 0,
+      "entities": 2388
+    },
+    "requested_seconds": 180,
+    "renderer_at_sample_start": {
+      "think_calls": 127,
+      "section": {
+        "next_model": 1449,
+        "retries": 0,
+        "stable_passes": 0,
+        "applied": 20928,
+        "instances": 1448,
+        "complete": false,
+        "cursor": 657,
+        "calls": 127,
+        "ready": false
+      },
+      "hidden": 1448,
+      "status": "ready",
+      "vertices": 1859232,
+      "hooks": {
+        "materials": true,
+        "wayfinding": true,
+        "batches": true
+      },
+      "chunks": 110
+    },
+    "configuration_changes": [],
+    "total_seconds": 93.02813189999999,
+    "windows": [
+      {
+        "active_seconds": 4.89334869999999,
+        "over25": 92,
+        "fps": 18.80103087687174,
+        "over50": 33,
+        "active_frames": 92,
+        "over100": 5
+      },
+      {
+        "active_seconds": 5.045624099999998,
+        "over25": 120,
+        "fps": 23.782984546946345,
+        "over50": 18,
+        "active_frames": 120,
+        "over100": 2
+      },
+      {
+        "active_seconds": 4.971911900000009,
+        "over25": 123,
+        "fps": 24.73897415599817,
+        "over50": 14,
+        "active_frames": 123,
+        "over100": 1
+      },
+      {
+        "active_seconds": 5.0040853,
+        "over25": 121,
+        "fps": 24.18024329041713,
+        "over50": 16,
+        "active_frames": 121,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.980475900000002,
+        "over25": 113,
+        "fps": 22.688594879055625,
+        "over50": 29,
+        "active_frames": 113,
+        "over100": 2
+      },
+      {
+        "active_seconds": 5.010813599999992,
+        "over25": 109,
+        "fps": 21.752954450351172,
+        "over50": 28,
+        "active_frames": 109,
+        "over100": 3
+      },
+      {
+        "active_seconds": 5.0165267,
+        "over25": 58,
+        "fps": 11.561784371645027,
+        "over50": 35,
+        "active_frames": 58,
+        "over100": 19
+      },
+      {
+        "active_seconds": 5.018194700000009,
+        "over25": 91,
+        "fps": 18.13401142048152,
+        "over50": 50,
+        "active_frames": 91,
+        "over100": 1
+      },
+      {
+        "active_seconds": 4.874177599999996,
+        "over25": 56,
+        "fps": 11.489117671871465,
+        "over50": 41,
+        "active_frames": 56,
+        "over100": 15
+      },
+      {
+        "active_seconds": 5.0506130999999925,
+        "over25": 56,
+        "fps": 11.087762790620426,
+        "over50": 56,
+        "active_frames": 56,
+        "over100": 10
+      },
+      {
+        "active_seconds": 4.9954343999999935,
+        "over25": 55,
+        "fps": 11.010053500051981,
+        "over50": 55,
+        "active_frames": 55,
+        "over100": 12
+      },
+      {
+        "active_seconds": 5.082387699999998,
+        "over25": 71,
+        "fps": 13.969811866182509,
+        "over50": 59,
+        "active_frames": 71,
+        "over100": 9
+      },
+      {
+        "active_seconds": 4.98984870000001,
+        "over25": 76,
+        "fps": 15.230922733188251,
+        "over50": 52,
+        "active_frames": 76,
+        "over100": 7
+      },
+      {
+        "active_seconds": 4.914282000000014,
+        "over25": 69,
+        "fps": 14.040708286581804,
+        "over50": 65,
+        "active_frames": 69,
+        "over100": 7
+      },
+      {
+        "active_seconds": 5.0951763999999855,
+        "over25": 76,
+        "fps": 14.91606846035796,
+        "over50": 53,
+        "active_frames": 76,
+        "over100": 5
+      },
+      {
+        "active_seconds": 4.9971372999999915,
+        "over25": 128,
+        "fps": 28.61638402450944,
+        "over50": 14,
+        "active_frames": 143,
+        "over100": 1
+      },
+      {
+        "active_seconds": 1.7845484000000056,
+        "over25": 4,
+        "fps": 56.036586062893946,
+        "over50": 0,
+        "active_frames": 100,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      }
+    ],
+    "other_frames": 0,
+    "all": {
+      "max_ms": 263.743,
+      "over100": 99,
+      "median_ms": 42.525,
+      "over50": 618,
+      "p95_ms": 113.06,
+      "frames": 1529,
+      "p99_ms": 178.2,
+      "over25": 1418,
+      "seconds": 81.72460100000009,
+      "fps": 18.709176689648178
+    },
+    "sample_precision_ms": 0.001,
+    "population_status": {
+      "server_write": {
+        "path": "legend_of_deborah/population_latest.txt",
+        "ok": true
+      },
+      "client_write": true,
+      "state": "received",
+      "seconds": 24.464999453164637
+    },
+    "elapsed_seconds": 81.95868009999998,
+    "end_resources": {
+      "lua_kb": 28189,
+      "damsels": "damsels-20260919-01",
+      "jit_version": "LuaJIT 2.1.0-beta3",
+      "lua_errors": 0,
+      "realm": "client",
+      "branch": "unknown",
+      "equipment_generation": "interpreter-generator",
+      "build": "generator-jit-20260917-01",
+      "engine": "2026.09.17",
+      "wall_models": 1448,
+      "meshes": 93,
+      "install": "438c3d8114e932ddb7de6a6488048b9df8c1a6d4 clean ",
+      "missing": "none",
+      "feedback_audio": "feedback-20260919-01",
+      "architecture": "x64",
+      "loot_entities": 0,
+      "entities": 2483
+    },
+    "wall_batches": {
+      "vertices": 0,
+      "draws": 0,
+      "status": "off",
+      "visits": 0,
+      "hidden": 0,
+      "chunks": 0
+    },
+    "reason": "shutdown",
+    "renderer_wait_seconds": 8.06945180000001,
+    "sample_limit_reached": false
+  },
+  "diagnosis": "Replacement batching was active at sampling start. No native draw/upload exception proves the exact cause of missing faces. Shutdown cleanup explains the end off state; it does not imply batching was inactive during play.",
+  "repair": "Native walls by default; Reduced Effects and other optimizations retained. Experimental batching requires explicit unsaved lod_wall_batches 1; identity model matrix and draw-error rollback added.",
+  "native_gmod_accepted": false,
+  "sustained_40_fps_accepted": false
+}

@@ -19,7 +19,22 @@ local hooks,callbacks={},{ }
 hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end}
 cvars={AddChangeCallback=function(id,fn) callbacks[id]=fn end}
 local on=true
+local experimental=false
 GetConVar=function(name) assert(name=='lod_reduced_effects');return {GetBool=function() return on end} end
+CreateClientConVar=function(name,default,save,userinfo)
+    assert(name=='lod_wall_batches' and default=='0' and not save and not userinfo,
+        'experimental wall meshes must not become a saved/default production preference')
+    return {GetBool=function() return experimental end}
+end
+local inheritedMatrix={entity='previous draw'};local currentMatrix=inheritedMatrix;local matrixStack={}
+function Matrix() return {identity=true} end
+cam={PushModelMatrix=function(m,multiply)
+    assert(m.identity and not multiply,'world vertices inherited an entity transform')
+    matrixStack[#matrixStack+1]=currentMatrix;currentMatrix=m
+end,PopModelMatrix=function()
+    assert(#matrixStack>0,'matrix stack underflow')
+    currentMatrix=table.remove(matrixStack)
+end}
 local clock=10;SysTime=function() clock=clock+.0001;return clock end
 local textures={};local function texture(path)
     textures[path]=textures[path] or {IsError=function() return false end,GetName=function() return path end}
@@ -49,7 +64,7 @@ util={GetModelMeshes=function(path,lod,groups,skin)
     fetches=fetches+1;return {{triangles=triangles}}
 end}
 local meshes,live,peak,uploads={ },0,0,0
-local failUpload=false;local detailed=true
+local failUpload=false;local failDraw=false;local detailed=true
 function Mesh(material)
     local m={material=material};meshes[#meshes+1]=m;live=live+1;peak=math.max(peak,live)
     function m:BuildFromTriangles(vertices)
@@ -59,7 +74,11 @@ function Mesh(material)
         if detailed then self.vertices=vertices end
     end
     function m:Destroy() assert(not self.dead,'double mesh destruction');self.dead=true;self.vertices=nil;live=live-1 end
-    function m:Draw() assert(not self.dead);self.drawn=true end
+    function m:Draw()
+        assert(not self.dead and currentMatrix.identity,'world mesh displaced by inherited model matrix')
+        if failDraw then error('injected native draw failure') end
+        self.drawn=true
+    end
     return m
 end
 local view=nil;local boundMaterial
@@ -90,6 +109,11 @@ local function hidden()
     local n=0;for _,m in pairs(Wall.models) do if m.hidden then n=n+1 end end;return n
 end
 populate(8);dofile(root..'cl_wall_batch.lua');settle()
+assert(Wall.batchStats.status=='native' and hidden()==0 and live==0 and fetches==0 and uploads==0,
+    'Reduced Effects alone hid native wall surfaces')
+fire('PostDrawOpaqueRenderables',false,false,false)
+assert(currentMatrix==inheritedMatrix and #matrixStack==0)
+experimental=true;callbacks.lod_wall_batches();settle()
 assert(Wall.batchStats.status=='ready' and hidden()==8 and fetches==1 and creations==1)
 local count=0
 -- Independent full native model transform oracle for EVERY source vertex.
@@ -113,6 +137,17 @@ end end
 assert(count==8*1284,'missing/duplicate container triangles')
 fire('PostDrawOpaqueRenderables',false,false,false)
 assert(Wall.batchStats.draws==Wall.batchStats.chunks,'unknown view must fail open')
+assert(currentMatrix==inheritedMatrix and #matrixStack==0,'draw did not restore the preceding matrix')
+-- Even a successful upload can fail at draw time. Restore EVERY original and
+-- release all meshes, keep the matrix balanced, and do not retry every frame.
+failDraw=true;fire('PostDrawOpaqueRenderables',false,false,false)
+assert(Wall.batchStats.status=='fallback' and Wall.batchStats.reason:find('injected native draw failure',1,true))
+assert(hidden()==0 and live==0 and currentMatrix==inheritedMatrix and #matrixStack==0)
+local failedUploads=uploads;settle();assert(uploads==failedUploads and hidden()==0,'failed draws rebuilt in a loop')
+failDraw=false;callbacks.lod_wall_batches();settle();assert(hidden()==8)
+experimental=false;callbacks.lod_wall_batches();tick()
+assert(Wall.batchStats.status=='native' and hidden()==0 and live==0,'opt-out left invisible native walls')
+experimental=true;callbacks.lod_wall_batches();settle()
 -- Chunk culling uses this render pass, never LocalPlayer/EyePos or floor guesses.
 local A={};A.__index=A
 function Angle(p,y,r) return setmetatable({p=p,y=y,r=r},A) end
@@ -189,7 +224,11 @@ Wall:ClearBatches();alternate=false;triangles=stockTriangles;populate(1542)
 Wall.nextModel=1543;Wall.retryQueue={}
 color_white=Color(255,255,255)
 concommand={Add=noop}
-CreateClientConVar=function() return {GetBool=function() return true end} end
+local createExperimentalPreference=CreateClientConVar
+CreateClientConVar=function(name,...)
+    if name=='lod_wall_batches' then return createExperimentalPreference(name,...) end
+    return {GetBool=function() return true end}
+end
 function HSVToColor(h,s,v)
  local c=v*s;local x=c*(1-math.abs((h/60)%2-1));local m=v-c
  local t=({{c,x,0},{x,c,0},{0,c,x},{0,x,c},{x,0,c},{c,0,x}})[math.floor(h/60)%6+1]
@@ -243,4 +282,4 @@ Wall:ClearBatches()
 triangles={{pos=Vector(),normal=Vector(0,0,1),u=0,v=0},{pos=Vector(1,0,0),normal=Vector(0,0,1),u=1,v=0},{pos=Vector(0,1,0),normal=Vector(0,0,1),u=0,v=1}}
 dofile(root..'cl_wall_batch.lua');settle()
 assert(Wall.batchStats.status=='fallback' and Wall.batchStats.reason=='stock-bounds-mismatch' and hidden()==0 and live==0)
-print('WALL_BATCH_PASS: exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup; real 1542-instance palette pipeline independent of stalled native overrides; construction/retry/unavailable-material guards')
+print('WALL_BATCH_PASS: native walls by default with Reduced Effects; explicit unsaved experimental opt-in; isolated world matrix and draw-failure recovery without retry bursts; exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup; real 1542-instance palette pipeline independent of stalled native overrides; construction/retry/unavailable-material guards')

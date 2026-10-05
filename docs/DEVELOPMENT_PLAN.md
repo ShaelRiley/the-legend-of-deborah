@@ -28,10 +28,22 @@ be located. The repair removes the duplicate wayfinding appearance writer,
 lets batches consume the canonical desired sampler, bounds preparation before
 sampling, and mirrors existing population evidence automatically into the client
 capture. See [native failure, repair and finite retest](validation/STEAM_DECK_20261005_NATIVE_REPAIR.md).
-40 FPS target: native validation pending. The next action remains a fully restarted
-gm_flatgrass capture with the same Proton, windowed Arch Desktop, resolution,
-graphics settings and loaded population. Return performance_client_latest.txt +
-console_latest.txt; a missing separate population file does not block evidence.
+The next exact-source capture on main 438c3d8 measured 18.71 FPS (1,529 active
+frames / 81.72 seconds; p95 113.06 ms) and the supplied video shows missing wall
+surfaces. Replacement batching was ready with all 1,448 originals hidden when
+sampling began. This fails visual acceptance and does not meet the 40 FPS target.
+Native wall rendering is restored by default while keeping Reduced Effects and
+the other optimizations. Batching is retained only behind the explicit, unsaved
+`lod_wall_batches 1` test switch; native draw errors restore every original and
+stop retrying. Exact native failure remains unproven; bounds/count/static tests
+cannot certify rasterized visibility. See [visibility repair and evidence](validation/STEAM_DECK_20261005_WALL_VISIBILITY.md).
+
+The next action is a fully restarted gm_flatgrass run with
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`, preserving Proton,
+windowed Arch Desktop, resolution, graphics settings and loaded population. Check
+that wall bodies stay visible during ordinary movement; return
+performance_client_latest.txt + console_latest.txt. A separate population file
+is not required. Native visual and sustained 40 FPS acceptance remain open.
 Workshop and VPS remain outside this pass.
 
 ---

@@ -106,7 +106,7 @@ if CLIENT then
     if Audit.StopPerformanceCapture then Audit:StopPerformanceCapture("lua-refresh") end
     local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
         "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
-        "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects"}
+        "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches"}
     local renderSources={
         "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
@@ -150,7 +150,7 @@ if CLIENT then
         local stats=wall and wall.batchStats or {}
         local out={status=stats.status or "unloaded",reason=stats.reason,hidden=stats.hidden or 0,
             think_calls=wall and wall.batchBuildTicks or 0,
-            chunks=stats.chunks or 0,vertices=stats.vertices or 0,
+            chunks=stats.chunks or 0,vertices=stats.vertices or 0,draws=stats.draws or 0,visits=stats.visits or 0,
             section=wall and wall.SectionMaterialStatus and wall:SectionMaterialStatus() or nil}
         if hook.GetTable then
             local think=hook.GetTable().Think or {}
@@ -210,7 +210,7 @@ if CLIENT then
         hook.Remove("PreRender","LOD_PerformanceFrames")
         hook.Remove("Think","LOD_PerformanceDeadline")
         local now=SysTime()
-        local out={version="steam-deck-native-repair-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+        local out={version="steam-deck-wall-visibility-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
             elapsed_seconds=capture.ready and math.max(0,now-capture.start) or 0,
             total_seconds=math.max(0,now-capture.created),
             renderer_wait_seconds=capture.preparation_wait or math.max(0,now-capture.created),
@@ -277,7 +277,7 @@ if CLIENT then
                 local cv=GetConVar("lod_reduced_effects")
                 local status=wall and wall.batchStats and wall.batchStats.status
                 local waiting=cv and cv:GetBool() and wall and wall.world and #wall.world>0
-                    and status~="ready" and status~="fallback"
+                    and status~="ready" and status~="fallback" and status~="native"
                 if waiting and now<capture.created+30 then return end
                 -- A blocked renderer is evidence to measure, not a reason to
                 -- discard every frame. Preserve its preflight state and proceed
@@ -295,14 +295,18 @@ if CLIENT then
             if dt<=0 then return end
             local ms=math.floor(dt*1000000+.5)/1000
             capture.all[#capture.all+1]=ms
+            -- Preserve one live renderer snapshot per five-second window. A
+            -- shutdown cleanup may legitimately make renderer_at_end say off;
+            -- it must not erase which renderer actually produced the sample.
+            local index=math.floor((now-capture.start)/5)+1
+            local w=capture.windows[index]
+            if not w.renderer then w.renderer=rendererState() end
             local ply=LocalPlayer()
             local active=IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_Deployed",false)
                 and not (LOD.UI and LOD.UI.ActivePage)
                 and not (LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic())
             if active then
                 capture.active[#capture.active+1]=ms
-                local index=math.floor((now-capture.start)/5)+1
-                local w=capture.windows[index]
                 w.active_seconds=w.active_seconds+dt;w.active_frames=w.active_frames+1
                 if ms>25 then w.over25=w.over25+1 end
                 if ms>50 then w.over50=w.over50+1 end

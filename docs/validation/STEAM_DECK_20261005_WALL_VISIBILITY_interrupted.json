@@ -1,0 +1,16 @@
+{
+  "result": "interrupted; not a complete/frozen pass",
+  "exit_code": 130,
+  "reason": "Documentation evidence was written after the whole-tree gate started. Restart with stable source and docs.",
+  "completed_suites": 54,
+  "passed_completed_suites": 54,
+  "changed_during_attempt": [
+    "docs/DEVELOPMENT_PLAN.md",
+    "docs/TEST_LOGGING.md",
+    "docs/validation/STEAM_DECK_20261005_WALL_VISIBILITY.md",
+    "docs/validation/STEAM_DECK_20261005_WALL_VISIBILITY_native.json"
+  ],
+  "production_and_tests_unchanged": true,
+  "source_before": "1d0a65c63218d7ee433751d336ee632c4d9e3de4be086c0cd61444c8c523f61f",
+  "source_after": "6e99571185ea46c6d9ff7acd709168004abbf5e41132257049675ba09457aade"
+}

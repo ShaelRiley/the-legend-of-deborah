@@ -17,7 +17,7 @@ function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
 ents={GetCount=function() return 3000 end}
 function ScrW() return 1280 end;function ScrH() return 800 end
 game={GetMap=function() return 'gm_flatgrass' end,SinglePlayer=function() return true end}
-local settings={lod_reduced_effects='1',fps_max='300',mat_vsync='0'}
+local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0'}
 GetConVar=function(name)
     if not settings[name] then return end
     return {GetString=function() return settings[name] end,GetBool=function() return settings[name]=='1' end}
@@ -75,6 +75,8 @@ assert(#out.windows==36 and out.windows[1].active_frames==0 and out.windows[10].
 local windowFrames=0;for _,w in ipairs(out.windows) do windowFrames=windowFrames+w.active_frames end
 assert(windowFrames==out.active.frames,'window aggregation dropped gameplay')
 assert(out.start_configuration.width==1280 and out.start_configuration.height==800 and #out.configuration_changes==0)
+assert(out.start_configuration.lod_wall_batches=='0' and out.windows[1].renderer.status=='ready',
+    'renderer preference/live windows missing from frame evidence')
 assert(files['DATA:legend_of_deborah/performance_client_latest.txt']:find('p99_ms=120.000',1,true))
 assert(not next(hooks.PreRender) and not next(hooks.Think),'sampler left recurring hooks')
 local afterReads=reads;assert(afterReads-startReads==2,'per-frame hashing/I/O occurred')
@@ -113,6 +115,18 @@ assert(math.abs(out.active.fps-20)<1e-7 and out.renderer_wait_seconds==30 and ou
 assert(out.renderer_at_sample_start.status=='waiting-appearance' and out.renderer_at_sample_start.section.retries==3)
 assert(out.renderer_at_end.reason=='model-retries' and out.elapsed_seconds==30 and out.saved)
 assert(not next(hooks.PreRender) and not next(hooks.Think),'blocked capture did not clean up')
+-- Native walls are an intentional ready route. Reduced Effects stays enabled;
+-- no batch preparation timeout should delay this comparison. A shutdown state
+-- must not replace the live renderer history already recorded in the sample.
+LOD.WallVisualsClient.batchStats={status='native',reason='wall-batches-disabled',hidden=0}
+local nativeStart=now;A:StartPerformanceCapture(30);fire('PreRender')
+assert(A.PerformanceCapture.ready and not A.PerformanceCapture.preparation_timed_out)
+now=nativeStart+3;fire('PreRender');now=now+.05;fire('PreRender')
+LOD.WallVisualsClient.batchStats={status='off',hidden=0}
+out=A:StopPerformanceCapture('shutdown')
+assert(out.renderer_at_sample_start.status=='native' and out.renderer_at_end.status=='off')
+assert(out.windows[1].renderer.status=='native' and out.windows[1].renderer.hidden==0)
+assert(out.start_configuration.lod_wall_batches=='0' and out.renderer_wait_seconds==0)
 -- No PreRender ever arriving is a different bounded failure: no measured FPS.
 LOD.WallVisualsClient.batchStats.status='building';A:StartPerformanceCapture(30)
 now=now+121;fire('Think');assert(not A.PerformanceCapture and A.LastPerformanceCapture.reason=='renderer-timeout')
@@ -127,4 +141,4 @@ A:StartPerformanceCapture(30)
 out=A:StopPerformanceCapture('manual')
 assert(not out.saved and out.save_error:find('did not persist',1,true),'silent disk failure claimed saved')
 file.Write=oldWrite
-print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows; build/settings/resource evidence; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')
+print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')
