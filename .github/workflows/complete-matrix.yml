@@ -1,0 +1,106 @@
+name: Validate complete frozen source matrix
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/validation/**'
+      - 'docs/DEVELOPMENT_PLAN.md'
+      - 'docs/TEST_LOGGING.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/validation/**'
+      - 'docs/DEVELOPMENT_PLAN.md'
+      - 'docs/TEST_LOGGING.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: '037d8b39fb84d9cd91df5185fb93d6103d9887fb'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - run: python3 -m pip install Pillow
+      - name: Native-boundary regressions and complete Lua syntax
+        run: |
+          python3 tools/run_lua54.py tools/test_wall_batch.lua
+          python3 tools/run_lua54.py tools/test_performance_capture.lua
+          python3 tools/run_lua54.py tools/test_population_transport.lua
+          python3 tools/run_lua54.py tools/test_low_end_palette.lua
+          python3 tools/run_lua54.py tools/test_great_crate_render.lua
+          python3 tools/test_dev_population_manifest.py
+          python3 - <<'PY'
+          import subprocess
+          from pathlib import Path
+          files = sorted(str(p) for root in ("gamemodes", "lua", "tools")
+                         for p in Path(root).rglob("*.lua"))
+          subprocess.run(["python3", "tools/run_lua54.py", "--syntax", *files],
+                         check=True, stdout=subprocess.DEVNULL)
+          print("LUA_SYNTAX_FILES=" + str(len(files)))
+          PY
+      - name: Complete frozen integration matrix
+        env:
+          GATE_OUTPUT: ${{ runner.temp }}/native-repair-matrix
+        run: python3 tools/test_checkpoint_g_integration.py --workers 2 --suite-timeout 600 --output "$GATE_OUTPUT"
+      - name: Verify receipt, all suite logs and exact production bytes
+        env:
+          GATE_OUTPUT: ${{ runner.temp }}/native-repair-matrix
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          import tools.test_checkpoint_g_integration as gate
+          output = Path(os.environ["GATE_OUTPUT"])
+          receipt = json.loads((output / "receipt.json").read_text())
+          assert receipt["passed"] == receipt["total"] == len(gate.SUITES)
+          assert not receipt["changed_during_gate"]
+          assert receipt["source_before"] == receipt["source_after"]
+          assert gate.snapshot_digest(gate.source_snapshot()) == receipt["source_after"]
+          for row in receipt["results"]:
+              assert row["returncode"] == 0
+              for stream in ("stdout", "stderr"):
+                  path = output / (row["log_prefix"] + "." + stream + ".txt")
+                  assert hashlib.sha256(path.read_bytes()).hexdigest() == row[stream + "_sha256"]
+          names = sorted(p for p in subprocess.check_output(
+              ["git", "ls-files", "gamemodes", "lua"]).decode().splitlines()
+              if p.endswith(".lua"))
+          production = {p: hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in names}
+          (output / "production_manifest.json").write_text(json.dumps(production, indent=2) + "\n")
+          proof = dict(checkout_sha=subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip(),
+                       checkout_tree=subprocess.check_output(["git", "rev-parse", "HEAD:"]).decode().strip(),
+                       total=receipt["total"], passed=receipt["passed"], lua_files=receipt["lua_files"],
+                       source_before=receipt["source_before"], source_after=receipt["source_after"],
+                       source_files=len(json.loads((output / "source_manifest.json").read_text())),
+                       changed_during_gate=receipt["changed_during_gate"],
+                       verified_suite_logs=len(receipt["results"]),
+                       receipt_sha256=hashlib.sha256((output / "receipt.json").read_bytes()).hexdigest(),
+                       production_files=len(production),
+                       production_sha256=hashlib.sha256(json.dumps(production, sort_keys=True).encode()).hexdigest(),
+                       native_gmod_accepted=False)
+          (output / "proof.json").write_text(json.dumps(proof, indent=2) + "\n")
+          print("FROZEN_MATRIX_PROOF=" + json.dumps(proof, sort_keys=True))
+          # Chunked exact JSON allows the source receipt to be preserved in the
+          # repository even when the local command runner is unavailable.
+          for filename in ("receipt.json", "production_manifest.json"):
+              data = (output / filename).read_text()
+              for index in range(0, len(data), 4000):
+                  print("EVIDENCE_CHUNK=" + json.dumps(dict(file=filename, offset=index,
+                        text=data[index:index+4000]), ensure_ascii=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frozen-source-matrix
+          path: ${{ runner.temp }}/native-repair-matrix
+          retention-days: 90
