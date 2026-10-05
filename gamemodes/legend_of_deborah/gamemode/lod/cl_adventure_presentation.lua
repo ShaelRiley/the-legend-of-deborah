@@ -4,7 +4,7 @@ if LOD.AdventurePresentation and LOD.AdventurePresentation.Reset then LOD.Advent
 LOD.AdventurePresentation = LOD.AdventurePresentation or {}
 local A = LOD.AdventurePresentation
 local volume = CreateClientConVar("lod_adventure_volume", "0.65", true, false, "Volume of original discovery and celebration accents", 0, 1)
-local reduced = CreateClientConVar("lod_reduced_effects", "0", true, false, "Reduce optional decorative motion and confetti", 0, 1)
+local reduced = CreateClientConVar("lod_reduced_effects", "0", true, false, "Batch container hulls with simpler lighting and reduce decorative effects", 0, 1)
 local white = Color(255, 244, 207)
 local glow = CreateMaterial("lod_discovery_glint_depth", "UnlitGeneric", {
     ["$basetexture"] = "sprites/light_glow02", ["$additive"] = "1",

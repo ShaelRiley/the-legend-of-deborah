@@ -16,6 +16,7 @@ local cellKey = LOD.MazeGenerator.CellKey
 -- short-lived player-state events, so level cleanup naturally drops them.
 
 local NAV_TREE_LIMIT = 72
+local HOSTILE_PATH_LIMIT = 72
 local ENCOUNTER_THINK_INTERVAL = 0.20
 local TARGET_CACHE_SECONDS = 0.05
 
@@ -74,6 +75,7 @@ local function staticGateMap(graph)
 end
 
 local function currentNavCache(graph)
+    staticGateMap(graph)
     local signature = gateSignature()
     local director=LOD.EventDirector
     local events, eventContext = 0, nil
@@ -89,8 +91,7 @@ local function currentNavCache(graph)
     cache = {
         signature = signature, events=events, eventContext=eventContext,
         sanctuary=sanctuary, sanctuaryCells=sanctuaryCells, hostileFilter=hostileFilter,
-        trees = {}, hostileTrees = {},
-        order = {}
+        trees = {}, order = {}, hostilePaths = {}, hostileOrder = {}
     }
     graph.LODPhaseZeroNavCache = cache
     return cache
@@ -105,16 +106,16 @@ local function edgeTraversable(graph, cache, aKey, bKey)
     return state and state.GatesOpen and state.GatesOpen[gateIndex] == true or false
 end
 
-local function rememberTree(cache, trees, sourceKey, tree)
-    trees[sourceKey] = tree
-    cache.order[#cache.order + 1] = {trees=trees, key=sourceKey}
+local function rememberTree(cache, sourceKey, tree)
+    cache.trees[sourceKey] = tree
+    cache.order[#cache.order + 1] = sourceKey
     if #cache.order <= NAV_TREE_LIMIT then return end
 
     local evicted = table.remove(cache.order, 1)
-    if evicted then evicted.trees[evicted.key] = nil end
+    if evicted then cache.trees[evicted] = nil end
 end
 
-local function buildTree(graph, cache, sourceKey, hostile)
+local function buildTree(graph, cache, sourceKey)
     if not graph.Cells or not graph.Cells[sourceKey] then return nil end
 
     local queue = {sourceKey}
@@ -126,9 +127,7 @@ local function buildTree(graph, cache, sourceKey, hostile)
         local currentKey = queue[head]
         head = head + 1
         for _, neighborKey in ipairs(staticNeighborKeys(graph, currentKey)) do
-            if distance[neighborKey] == nil and edgeTraversable(graph, cache, currentKey, neighborKey)
-                and (not hostile or not cache.hostileFilter
-                    or cache.hostileFilter(LOD.EntrySafety, graph, graph.Cells[neighborKey])) then
+            if distance[neighborKey] == nil and edgeTraversable(graph, cache, currentKey, neighborKey) then
                 distance[neighborKey] = distance[currentKey] + 1
                 parent[neighborKey] = currentKey
                 queue[#queue + 1] = neighborKey
@@ -137,21 +136,21 @@ local function buildTree(graph, cache, sourceKey, hostile)
     end
 
     local tree = {source = sourceKey, distance = distance, parent = parent}
-    rememberTree(cache, hostile and cache.hostileTrees or cache.trees, sourceKey, tree)
+    rememberTree(cache, sourceKey, tree)
     PhaseZero.NavStats.builds = (PhaseZero.NavStats.builds or 0) + 1
     return tree
 end
 
-local function treeFor(graph, sourceKey, hostile)
+local function treeFor(graph, sourceKey)
     local cache = currentNavCache(graph)
-    local tree = (hostile and cache.hostileTrees or cache.trees)[sourceKey]
+    local tree = cache.trees[sourceKey]
     if tree then
         PhaseZero.NavStats.hits = (PhaseZero.NavStats.hits or 0) + 1
         return tree
     end
 
     PhaseZero.NavStats.misses = (PhaseZero.NavStats.misses or 0) + 1
-    return buildTree(graph, cache, sourceKey, hostile)
+    return buildTree(graph, cache, sourceKey)
 end
 
 local function pathFromTree(graph, tree, startKey, goalKey)
@@ -166,6 +165,37 @@ local function pathFromTree(graph, tree, startKey, goalKey)
     local path = {}
     for i = #reverse, 1, -1 do path[#path + 1] = graph.Cells[reverse[i]] end
     return path
+end
+
+local function copyPath(path)
+    if not path then return nil end
+    local copy = {}
+    for i, cell in ipairs(path) do copy[i] = cell end
+    return copy
+end
+
+local function hostilePath(graph, cache, startKey, goalKey)
+    -- Preserve the legacy early exit and sorted BFS ties on a miss. Complete
+    -- filtered trees at moving actor positions cost more than this short search
+    -- and can evict stable home-distance trees. Only finished route results are
+    -- retained, within the same graph-owned navigation cache/invalidation seam.
+    local queue, previous, visited = {startKey}, {}, {[startKey]=true}
+    local head = 1
+    while head <= #queue do
+        local currentKey = queue[head]
+        head = head + 1
+        for _, neighborKey in ipairs(staticNeighborKeys(graph, currentKey)) do
+            if not visited[neighborKey] and edgeTraversable(graph, cache, currentKey, neighborKey)
+                and (not cache.hostileFilter
+                    or cache.hostileFilter(LOD.EntrySafety, graph, graph.Cells[neighborKey])) then
+                visited[neighborKey], previous[neighborKey] = true, currentKey
+                if neighborKey == goalKey then
+                    return pathFromTree(graph, {distance=visited, parent=previous}, startKey, goalKey)
+                end
+                queue[#queue + 1] = neighborKey
+            end
+        end
+    end
 end
 
 if Navigator and not Navigator.LODPhaseZeroPatched then
@@ -215,15 +245,30 @@ if Navigator and not Navigator.LODPhaseZeroPatched then
     -- Ordinary hostile routes all apply the SAME graph-owned sanctuary rule.
     -- Their former freshly allocated closures bypassed every cached tree. Keep
     -- arbitrary/actor-specific predicates on FindPath's uncached path above;
-    -- this explicit seam shares only the canonical HostilePathCell predicate.
-    -- Both modes compete within the original 72-tree total, and gate/event/
-    -- graph/sanctuary replacement invalidates them together in the same tick.
+    -- this explicit seam caches only the canonical HostilePathCell predicate.
+    -- Retain 72 completed paths separately from the existing 72 general trees,
+    -- avoiding home-tree eviction and full filtered-tree work on moving misses.
+    -- Gate/event/graph/sanctuary replacement invalidates both in the same tick.
     function Navigator:FindHostilePath(graph, startCell, goalCell)
         if not graph or not startCell or not goalCell then return nil end
         local startKey, goalKey = keyOf(startCell), keyOf(goalCell)
         if not startKey or not goalKey or not graph.Cells[startKey] or not graph.Cells[goalKey] then return nil end
         if startKey == goalKey then return {graph.Cells[startKey]} end
-        return pathFromTree(graph, treeFor(graph, startKey, true), startKey, goalKey)
+        local cache = currentNavCache(graph)
+        local pathKey = startKey.."|"..goalKey
+        local path = cache.hostilePaths[pathKey]
+        if path ~= nil then
+            PhaseZero.NavStats.hostileHits = (PhaseZero.NavStats.hostileHits or 0) + 1
+            return copyPath(path)
+        end
+        PhaseZero.NavStats.hostileBuilds = (PhaseZero.NavStats.hostileBuilds or 0) + 1
+        path = hostilePath(graph, cache, startKey, goalKey)
+        cache.hostilePaths[pathKey] = copyPath(path) or false
+        cache.hostileOrder[#cache.hostileOrder + 1] = pathKey
+        if #cache.hostileOrder > HOSTILE_PATH_LIMIT then
+            cache.hostilePaths[table.remove(cache.hostileOrder, 1)] = nil
+        end
+        return path
     end
 end
 

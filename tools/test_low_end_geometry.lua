@@ -57,6 +57,14 @@ local offcenter=box(-200,2,Vector(-5,-5,0),Vector(300,6,50)) -- origin is not bo
 local grate=box(200);grate.nw.LOD_CrateGrate=true
 local hazard=box(400);hazard.nw.LOD_EventArchetype='false_floor'
 assert(frame()==5 and draws[near.pos] and draws[big.pos] and draws[offcenter.pos] and wires[offcenter.pos] and wires[hazard.pos] and grates>0)
+-- Collision-only boxes are the majority of a generated maze. They must skip
+-- visibility bounds/transforms entirely, while same-pass kind changes recover.
+local collision=box(500,3);local transformCalls=0
+local oldPosition=collision.GetPos
+collision.GetPos=function(self) transformCalls=transformCalls+1;return oldPosition(self) end
+assert(frame()==5 and transformCalls==0,'invisible collision geometry still performs visibility work')
+collision.kind=1;assert(frame()==6 and transformCalls>0,'late kind change did not recover')
+collision:OnRemove(false)
 -- Arbitrary pitch/yaw cannot escape the origin-centred bounding sphere.
 offcenter.ang={p=87,y=137,r=21};assert(frame()==5)
 -- Same-tick new geometry bounds, motion and hidden state must be observed.

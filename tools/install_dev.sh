@@ -67,6 +67,12 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
   cd "$REPO_DIR"
   sha256sum \
     gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua \
     gamemodes/legend_of_deborah/gamemode/cl_init.lua \
     gamemodes/legend_of_deborah/gamemode/init.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua \
@@ -213,4 +219,3 @@ echo
 echo "Launch Garry's Mod with gm_flatgrass and gamemode legend_of_deborah."
 echo "For the legacy M1 audit you can still run:"
 echo "  lod_m1_audit"
-

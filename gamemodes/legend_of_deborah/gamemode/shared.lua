@@ -144,6 +144,7 @@ if SERVER then
     include("lod/sv_workshop_distribution.lua")
     AddCSLuaFile("lod/cl_container_wayfinding_projection.lua")
     AddCSLuaFile("lod/cl_container_section_recolor.lua")
+    AddCSLuaFile("lod/cl_wall_batch.lua")
     AddCSLuaFile("lod/cl_container_marking_panel.lua")
     -- Major level-up/Feedback presentation is explicitly distributed here rather
     -- than relying on the larger client include chain. This keeps the critical

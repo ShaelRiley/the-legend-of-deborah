@@ -1,0 +1,22 @@
+name: Validate low-end performance sources
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
+      - run: python3 tools/run_lua54.py tools/test_hostile_route_cache.lua
+      - run: python3 tools/run_lua54.py tools/test_wall_batch.lua
+      - run: python3 tools/run_lua54.py tools/test_performance_capture.lua
+      - run: python3 tools/run_lua54.py tools/test_low_end_render.lua
+      - run: python3 tools/run_lua54.py tools/test_low_end_palette.lua
+      - run: python3 tools/run_lua54.py tools/test_low_end_geometry.lua
+      - run: python3 tools/run_lua54.py tools/test_low_end_options.lua
+      - run: python3 tools/test_dev_population_manifest.py

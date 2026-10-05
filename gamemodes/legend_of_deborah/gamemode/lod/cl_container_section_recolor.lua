@@ -51,6 +51,12 @@ local candidateAvailability = {}
 local stablePasses = 0
 local reconcileComplete = false
 local appliedCount = 0
+Wall.sectionMaterialsReady = false
+
+local function invalidateBatches()
+    Wall.sectionMaterialsReady = false
+    if Wall.ClearBatches then Wall:ClearBatches() end
+end
 
 -- C3: the author rejected the old default. Show the repaired hull on restart;
 -- this remains a native-retest candidate. Zero is the explicit recovery switch.
@@ -70,6 +76,7 @@ function Hull.CandidateAvailable(name)
         and texture:Width() == 1024 and texture:Height() == 1024
 end
 cvars.AddChangeCallback("lod_crate_hull_candidate", function()
+    invalidateBatches()
     candidateAvailability = {}
     reconcileCursor = 1
     stablePasses = 0
@@ -462,6 +469,7 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
     if total == 0 then return end
 
     if ensureSectionPalette() then
+        invalidateBatches()
         candidateAvailability = {}
         reconcileCursor = 1
         stablePasses = 0
@@ -470,6 +478,7 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
     end
 
     if models ~= reconcileModelsRef or world ~= reconcileWorldRef or total ~= reconcileWorldCount then
+        invalidateBatches()
         reconcileModelsRef = models
         reconcileWorldRef = world
         reconcileWorldCount = total
@@ -497,6 +506,7 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
             changedThisBatch = false
             if stablePasses >= 2 then
                 reconcileComplete = true
+                Wall.sectionMaterialsReady = true
                 break
             end
         end

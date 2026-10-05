@@ -70,6 +70,7 @@ local function resetRetries()
 end
 
 local function removeModels()
+    if Wall.ClearBatches then Wall:ClearBatches() end
     for _, model in pairs(Wall.models or {}) do
         if IsValid(model) then model:Remove() end
     end

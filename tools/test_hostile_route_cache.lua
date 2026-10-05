@@ -79,11 +79,49 @@ filterVisits=0;before=os.clock()
 for _=1,30 do for i=1,64 do N:FindHostilePath(g,cells[i+21],cells[441-i]) end end
 local cachedVisits,cachedSeconds=filterVisits,os.clock()-before
 assert(cachedVisits<legacyVisits/10,'stable requests still rebuild filtered BFS')
--- Unfiltered+hostile caches share the original TOTAL 72-tree bound.
+-- Mixed stable-home and moving-position sources must not evict home trees.
+-- This deliberately crosses the former shared 72-tree budget (128 sources).
+local function mixed(candidate)
+    local mixedGraph,mixedCells=graph(21)
+    mixedGraph.EntrySafety.cells[key(mixedCells[1])]=true
+    LOD.RunManager.State.Graph=mixedGraph
+    filterVisits=0
+    local builds=LOD.PhaseZeroOptimization.NavStats.builds
+    local started=os.clock()
+    for _=1,30 do for i=1,64 do
+        N:Distance(mixedGraph,mixedCells[i+21],mixedCells[i+200])
+        N:Distance(mixedGraph,mixedCells[i+21],mixedCells[441-i])
+        if candidate then N:FindHostilePath(mixedGraph,mixedCells[i+200],mixedCells[441-i])
+        else legacy(N,mixedGraph,mixedCells[i+200],mixedCells[441-i],function(c) return oldFilter(LOD.EntrySafety,mixedGraph,c) end) end
+    end end
+    return filterVisits,LOD.PhaseZeroOptimization.NavStats.builds-builds,os.clock()-started
+end
+local mixedLegacyVisits,mixedLegacyTrees,mixedLegacySeconds=mixed(false)
+local mixedCachedVisits,mixedCachedTrees,mixedCachedSeconds=mixed(true)
+assert(mixedCachedVisits<mixedLegacyVisits/10,'mixed route cache lost its savings')
+assert(mixedCachedTrees==64 and mixedCachedTrees==mixedLegacyTrees,'moving routes evicted stable home trees')
+-- Returned path arrays are caller-owned; mutation cannot corrupt future hits.
+local route=N:FindHostilePath(g,cells[22],cells[440]);local expected=signature(route)
+route[2]=cells[1]
+assert(signature(N:FindHostilePath(g,cells[22],cells[440]))==expected,'caller mutated cached route')
+-- On misses, early-exit BFS performs exactly the legacy predicate work, even
+-- when more unique routes than the path budget cause continuous eviction.
+for i=1,100 do
+    filterVisits=0
+    local old=legacy(N,g,cells[i],cells[441-i],function(c) return oldFilter(LOD.EntrySafety,g,c) end)
+    local visits=filterVisits;filterVisits=0
+    assert(signature(N:FindHostilePath(g,cells[i],cells[441-i]))==signature(old))
+    assert(filterVisits<=visits,'route miss expanded beyond legacy early exit')
+end
+-- Keep the existing 72 general trees and at most 72 compact completed paths.
 for i=1,100 do N:FindPath(g,cells[i],cells[441]);N:FindHostilePath(g,cells[i],cells[441]) end
-local n=0;for _ in pairs(g.LODPhaseZeroNavCache.trees) do n=n+1 end
-for _ in pairs(g.LODPhaseZeroNavCache.hostileTrees) do n=n+1 end
-assert(n<=72 and #g.LODPhaseZeroNavCache.order<=72,'combined tree bound exceeded')
+local n,p=0,0;for _ in pairs(g.LODPhaseZeroNavCache.trees) do n=n+1 end
+for _ in pairs(g.LODPhaseZeroNavCache.hostilePaths) do p=p+1 end
+assert(n<=72 and #g.LODPhaseZeroNavCache.order<=72,'general tree bound exceeded')
+assert(p<=72 and #g.LODPhaseZeroNavCache.hostileOrder<=72,'completed route bound exceeded')
 local clone={Cells=g.Cells,Progression=g.Progression,EntrySafety={cells={[key(cells[441])]=true}}}
 assert(not N:FindHostilePath(clone,cells[23],cells[441]),'graph replacement leaked a route')
-print(string.format('HOSTILE_ROUTE_CACHE_PASS exact_path_cases=%d requests=1920 legacy_filter_visits=%d cached_filter_visits=%d legacy_lua_seconds=%.6f cached_lua_seconds=%.6f total_tree_limit=72 native_fps_measured=false',tests,legacyVisits,cachedVisits,legacySeconds,cachedSeconds))
+local visits=filterVisits
+assert(not N:FindHostilePath(clone,cells[23],cells[441]) and filterVisits==visits,'unreachable path was not cached')
+print(string.format('HOSTILE_ROUTE_CACHE_PASS exact_path_cases=%d requests=1920 legacy_filter_visits=%d cached_filter_visits=%d legacy_lua_seconds=%.6f cached_lua_seconds=%.6f general_tree_limit=72 completed_path_limit=72 native_fps_measured=false',tests,legacyVisits,cachedVisits,legacySeconds,cachedSeconds))
+print(string.format('MIXED_HOSTILE_ROUTE_CACHE_PASS requests=1920 legacy_filter_visits=%d cached_filter_visits=%d legacy_home_trees=%d cached_home_trees=%d legacy_lua_seconds=%.6f cached_lua_seconds=%.6f native_fps_measured=false',mixedLegacyVisits,mixedCachedVisits,mixedLegacyTrees,mixedCachedTrees,mixedLegacySeconds,mixedCachedSeconds))

@@ -29,6 +29,10 @@ local function refreshRenderBounds(ent)
     if not networkReady(ent) then return false end
     local mins = ent:GetBoxMins()
     local maxs = ent:GetBoxMaxs()
+    local b = ent._LODBoundsSnapshot
+    if b and b[1]==mins.x and b[2]==mins.y and b[3]==mins.z
+        and b[4]==maxs.x and b[5]==maxs.y and b[6]==maxs.z then return true end
+    ent._LODBoundsSnapshot = {mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z}
     local margin = Vector(32, 32, 32)
     ent:SetRenderBounds(mins - margin, maxs + margin)
     return true
@@ -50,6 +54,7 @@ end
 function ENT:OnRemove(fullUpdate)
     -- Source may retain this entity across cl_fullupdate without Initialize.
     if not fullUpdate then visualBoxes[self] = nil end
+    self._LODBoundsSnapshot = nil
 end
 
 hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, transmitting)
@@ -57,6 +62,7 @@ hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, tra
         visualBoxes[ent] = true
         -- Defer bounds until Think; accessors may not exist in this hook.
         ent._LODNextBoundsRefresh = 0
+        ent._LODBoundsSnapshot = nil
     end
 end)
 
@@ -176,9 +182,12 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
         return material
     end
     for ent in pairs(visualBoxes) do
-        if IsValid(ent) and networkReady(ent) and not ent:GetNW2Bool("LOD_GeometryHidden", false)
+        local kind = IsValid(ent) and networkReady(ent) and ent:GetBoxKind()
+        -- Most generated boxes are invisible collision walls. Resolve their
+        -- cheap kind before native visibility/bounds/transform work; the kind is
+        -- still read every pass so late datatables and mutations recover.
+        if (kind==1 or kind==2 or kind==5) and not ent:GetNW2Bool("LOD_GeometryHidden", false)
             and inCamera(ent, eye, forward, right, up, tanX, tanY, normX, normY) then
-            local kind = ent:GetBoxKind()
 
             -- Ordinary floor runs render only their top and underside. Their
             -- collision remains a substantial 32-unit slab, but internal

@@ -28,5 +28,5 @@ function O:Open()
     local reduced=vgui.Create("DCheckBoxLabel",f);reduced:SetPos(30,375)
     reduced:SetText("Reduced effects (Steam Deck / slower PCs)");reduced:SetTextColor(UI.Colors.ink)
     reduced:SetConVar("lod_reduced_effects");reduced:SizeToContents()
-    label("Options are saved between sessions. Menus do not pause the game.",414)
+    label("Reduced effects batches container hulls with simpler lighting. Options are saved.",414)
 end

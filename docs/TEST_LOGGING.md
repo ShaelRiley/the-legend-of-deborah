@@ -114,7 +114,7 @@ is an optional immediate read-only capture, not a prerequisite.
 This observer remains active with `lod_developer_mode 0`. The older detailed RPG
 logger does not: a staging-only RPG summary after switching to release mode is not
 evidence that the user never entered the dungeon. The installer records an atomic
-34-file SHA256 manifest (eight files in B28); missing/mismatched source is explicitly unverified.
+40-file SHA256 manifest (eight files in B28, 34 in B29); missing/mismatched source is explicitly unverified.
 No population observation enables cheats, spawns monsters or changes campaign RNG.
 
 ## B29 arrival and opening evidence
@@ -125,8 +125,9 @@ counters; and per-deployed Hero depth, high-water, completed contacts, current c
 respite, nearby living hostiles and source counts, admitted members and currently
 engaged targets. Nearby observation includes sanctuary occupants; a safe Hero's
 zero engaged count must not conceal a mob nearby. Locality is graph/gate-aware,
-not a through-wall Euclidean-radius claim. Source manifest verification now covers
-34 files including client boundary, native dispatch, movement and combat seams.
+not a through-wall Euclidean-radius claim. B29 source manifest verification covered
+34 files including client boundary, native dispatch, movement and combat seams;
+the October 5 performance pass adds six rendering files for a total of 40.
 
 Deployment timestamps are recorded after actual SetPos, not generation. Exit and
 first-attack offsets are relative to that deployment. First attack means the first
@@ -138,11 +139,35 @@ No observation changes RNG, admission or lifecycle. This is bounded sampling, no
 an exhaustive combat trace: short events can occur between records.
 
 For B29 use the same-session **console_latest.txt + population_latest.txt**. Check
-installed SHA/dirty label,34-file GAME-mounted verification, map/seed/build identity,
-entry version and elapsed/deployment timing before attributing any count. B27's
-keycard-only logs cannot diagnose the later B28 arrival-mobbing report. A read-only
-`lod_population_evidence` remains optional; normal play already records release data.
-Native expectations and finite headless bounds are in `validation/BESTIARY_B29.md`.
+installed SHA/dirty label, GAME-mounted verification (34 files in B29, 40 now),
+map/seed/build identity, entry version and elapsed/deployment timing before
+attributing any count. B27's keycard-only logs cannot diagnose the later B28
+arrival-mobbing report. A read-only `lod_population_evidence` remains optional;
+normal play already records release data. Native expectations and finite headless
+bounds are in `validation/BESTIARY_B29.md`.
+
+## Steam Deck rendered-frame evidence
+
+The October 5 performance candidate extends the existing saved Reduced Effects
+option. After deploying on gm_flatgrass, one batch captures three minutes of
+loaded play without changing resolution, graphics settings, sync or frame limits:
+
+`lod_reduced_effects 1; lod_perf_start 180`
+
+The client waits for wall preparation and three seconds of warmup, then records
+rendered frame intervals, active-play FPS/median/p95/p99/max, >25/50/100ms counts,
+five-second pacing windows, actual viewport/settings, mounted renderer source
+hashes and start/end resources. Sampling is bounded and opt-in; there is no idle
+frame hook or per-frame disk write. `lod_perf_stop` ends a capture early. This
+command observes gameplay; it does not spawn actors, enable cheats or alter RNG.
+
+Return **performance_client_latest.txt + console_latest.txt + population_latest.txt**
+from the same canonical data directory, plus the Proton version and confirmation
+of windowed Arch Linux Desktop mode. Lua KB is not process/GPU memory. A short,
+inactive, fallback, source-mismatched or settings-changing capture requires that
+context when assessing performance; aggregate average FPS alone is insufficient.
+See [implementation evidence and exact pull/install instructions](validation/STEAM_DECK_20261005.md).
+40 FPS target: native validation pending.
 
 ## SPOT-07 Fake Gordon observation acceptance
 
@@ -161,7 +186,7 @@ Use the compact listening procedure in `validation/SPOT_04_ENEMY_AUDIO.md` on a
 fresh GMod process. The evidence is console_latest.txt + rpg_summary_latest.txt
 plus the tester's living/dead/other-living/reset/Beam listening report or clip.
 Headless StopSound/CSoundPatch assertions and a generic RPG validator do not
-establish audible playback or silence. The existing 34-file population manifest
+establish audible playback or silence. The current 40-file population manifest
 remains a population fingerprint, not exhaustive proof of all SPOT-04 audio
 modules; retain the exact installed checkout SHA and use a fresh installation.
 

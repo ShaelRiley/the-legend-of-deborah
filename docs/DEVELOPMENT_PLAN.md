@@ -8,12 +8,23 @@ safe arrival, authored bosses and ambient/event audio. Validated non-force pushe
 to main are authorized; Workshop publication and VPS deployment remain held for
 native acceptance. See [current evidence](validation/STEAM_DECK_20261005.md).
 
-First checkpoint shares the canonical sanctuary-filtered hostile BFS trees within
-the existing navigation cache and 72-tree total. Exact path choices, graph/gate/
-event/filter ownership and arbitrary live predicates remain protected. Source
-checks pass; native 40 FPS acceptance remains pending. Continue with the existing
-container presentation and bounded native frame-time evidence, not a profiler-only
-handoff. Finish each coherent validated checkpoint before broadening scope.
+The current candidate extends the existing Reduced Effects setting with spatial
+batches of the original container hulls and simpler diffuse lighting; section
+hues, UVs, warning overlays and native collision remain. It skips render work for
+invisible collision boxes and retains unchanged render bounds. The canonical
+navigation cache retains completed sanctuary routes without evicting the existing
+72 home-distance trees; mixed-source testing repaired the first checkpoint's
+shared-tree regression. Exact paths, gate/event/filter invalidation, population,
+combat and progression remain protected.
+
+`lod_perf_start 180` adds bounded, opt-in rendered-frame evidence after wall
+preparation/warmup, including active-play percentiles, five-second pacing windows,
+configuration, source verification and resource snapshots. Source checks and
+synthetic work reductions are evidence of implementation, not native FPS.
+40 FPS target: native validation pending. The next finite action is the pull/
+install and loaded gm_flatgrass procedure in the current evidence document;
+retain Proton, windowed Arch Desktop, resolution and graphics settings. Workshop
+and VPS remain outside this pass.
 
 ---
 

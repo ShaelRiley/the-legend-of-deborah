@@ -98,3 +98,164 @@ hook.Add("OnLuaError", "LOD_RuntimeLuaErrors", function(message, realm, stack)
     end
     Audit:Record("LUA_ERROR", table.concat(lines, "\n"))
 end)
+
+-- Opt-in rendered-frame evidence. No frame hook, sample array, hashing or disk
+-- writes exist while idle. SysTime intervals between PreRender calls include the
+-- complete frame, unlike tick rate or the engine's clamped RealFrameTime value.
+if CLIENT then
+    if Audit.StopPerformanceCapture then Audit:StopPerformanceCapture("lua-refresh") end
+    local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
+        "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
+        "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects"}
+    local renderSources={
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
+    local function configuration()
+        local out={width=ScrW(),height=ScrH(),engine=tostring(VERSIONSTR or VERSION or "unknown"),
+            branch=tostring(BRANCH or "unknown"),os=jit and jit.os or "unknown",
+            architecture=jit and jit.arch or "unknown",singleplayer=game.SinglePlayer(),
+            map=game.GetMap(),proton_version="not-exposed-by-engine",window_mode="user-recorded"}
+        for _,name in ipairs(settingsNames) do
+            local cv=GetConVar(name);out[name]=cv and cv:GetString() or "unavailable"
+        end
+        return out
+    end
+    local function sourceIdentity()
+        local expected={}
+        for line in (file.Read("legend_of_deborah/dev_population_sources.txt","DATA") or ""):gmatch("[^\r\n]+") do
+            local hash,path=line:match("^(%x+)%s+(.+)$")
+            if hash and #hash==64 then expected[path]=hash end
+        end
+        local out={checked=0,missing=0,mismatches=0}
+        for _,path in ipairs(renderSources) do
+            local bytes=file.Read(path,"GAME")
+            local actual=bytes and util.SHA256(bytes)
+            if not actual or not expected[path] then out.missing=out.missing+1
+            else out.checked=out.checked+1;if actual~=expected[path] then out.mismatches=out.mismatches+1 end end
+        end
+        out.verified=out.checked==#renderSources and out.missing==0 and out.mismatches==0
+        return out
+    end
+    local function statistics(samples)
+        local out={frames=#samples,seconds=0,over25=0,over50=0,over100=0}
+        for _,ms in ipairs(samples) do
+            out.seconds=out.seconds+ms/1000
+            if ms>25 then out.over25=out.over25+1 end
+            if ms>50 then out.over50=out.over50+1 end
+            if ms>100 then out.over100=out.over100+1 end
+        end
+        if #samples==0 then return out end
+        table.sort(samples)
+        out.fps=#samples/out.seconds
+        out.median_ms=samples[math.ceil(#samples*.5)]
+        out.p95_ms=samples[math.ceil(#samples*.95)]
+        out.p99_ms=samples[math.ceil(#samples*.99)]
+        out.max_ms=samples[#samples]
+        return out
+    end
+    function Audit:StopPerformanceCapture(reason)
+        local capture=self.PerformanceCapture
+        if not capture then return end
+        self.PerformanceCapture=nil
+        hook.Remove("PreRender","LOD_PerformanceFrames")
+        hook.Remove("Think","LOD_PerformanceDeadline")
+        local out={version="steam-deck-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+            elapsed_seconds=math.max(0,SysTime()-capture.start),renderer_wait_seconds=math.max(0,capture.start-capture.created-3),start_configuration=capture.config,
+            end_configuration=configuration(),start_resources=capture.resources,end_resources=self:Snapshot(),
+            source=capture.source,all=statistics(capture.all),active=statistics(capture.active),
+            other_frames=#capture.all-#capture.active,windows=capture.windows,
+            wall_batches=LOD.WallVisualsClient and LOD.WallVisualsClient.batchStats}
+        local changed={}
+        for k,v in pairs(out.start_configuration) do
+            if v~=out.end_configuration[k] then changed[#changed+1]=k end
+        end
+        table.sort(changed);out.configuration_changes=changed
+        out.sample_limit_reached=reason=="sample-limit"
+        -- Active means deployed/alive with no menu/cinematic. Staging, death,
+        -- menus and their pauses remain visible in ALL rather than masquerading
+        -- as a representative loaded gameplay sample.
+        out.active_definition="deployed, alive, no LOD menu or cinematic"
+        local windowLines={}
+        for i,w in ipairs(out.windows) do
+            w.fps=w.active_seconds>0 and w.active_frames/w.active_seconds or 0
+            windowLines[i]=string.format("window_%d active_seconds=%.3f frames=%d fps=%.2f over25=%d over50=%d over100=%d",i,
+                w.active_seconds,w.active_frames,w.fps,w.over25,w.over50,w.over100)
+        end
+        local a=out.active
+        local line=string.format("[LOD:PERF] active_frames=%d active_seconds=%.2f fps=%.2f median_ms=%.3f p95_ms=%.3f p99_ms=%.3f max_ms=%.3f over25=%d over50=%d over100=%d source_verified=%s reason=%s",
+            a.frames,a.seconds,a.fps or 0,a.median_ms or 0,a.p95_ms or 0,a.p99_ms or 0,a.max_ms or 0,
+            a.over25,a.over50,a.over100,tostring(out.source.verified),out.reason)
+        local text=line.."\n"..table.concat(windowLines,"\n").."\n"..util.TableToJSON(out,true).."\n"
+        local ok,err=pcall(function()
+            file.CreateDir("legend_of_deborah")
+            file.Write("legend_of_deborah/performance_client_latest.txt",text)
+        end)
+        self.LastPerformanceCapture=out
+        print(line)
+        if ok then print("[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt")
+        else print("[LOD:PERF] Save failed: "..tostring(err)) end
+        return out
+    end
+    function Audit:StartPerformanceCapture(seconds)
+        if self.PerformanceCapture then self:StopPerformanceCapture("restarted") end
+        seconds=tonumber(seconds) or 180
+        if seconds~=seconds or seconds==math.huge or seconds==-math.huge then seconds=180 end
+        seconds=math.Clamp(seconds,30,300)
+        local created=SysTime()
+        local start=created+3
+        local windows={}
+        for i=1,math.ceil(seconds/5) do windows[i]={active_seconds=0,active_frames=0,over25=0,over50=0,over100=0} end
+        local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},windows=windows,
+            config=configuration(),source=sourceIdentity(),resources=self:Snapshot()}
+        self.PerformanceCapture=capture
+        hook.Add("PreRender","LOD_PerformanceFrames",function()
+            local now=SysTime()
+            if not capture.ready then
+                local wall=LOD.WallVisualsClient
+                local cv=GetConVar("lod_reduced_effects")
+                local status=wall and wall.batchStats and wall.batchStats.status
+                if cv and cv:GetBool() and wall and wall.world and #wall.world>0
+                    and status~="ready" and status~="fallback" then
+                    if now>capture.created+120 then self:StopPerformanceCapture("renderer-timeout") end
+                    return
+                end
+                capture.ready=true;capture.start=now+3;capture.finish=capture.start+seconds
+            end
+            if now<capture.start then return end
+            if now>=capture.finish then self:StopPerformanceCapture("complete");return end
+            local previous=capture.last;capture.last=now
+            if not previous then return end
+            local dt=now-previous
+            if dt<=0 then return end
+            local ms=math.floor(dt*1000000+.5)/1000
+            capture.all[#capture.all+1]=ms
+            local ply=LocalPlayer()
+            local active=IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_Deployed",false)
+                and not (LOD.UI and LOD.UI.ActivePage)
+                and not (LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic())
+            if active then
+                capture.active[#capture.active+1]=ms
+                local index=math.floor((now-capture.start)/5)+1
+                local w=capture.windows[index]
+                w.active_seconds=w.active_seconds+dt;w.active_frames=w.active_frames+1
+                if ms>25 then w.over25=w.over25+1 end
+                if ms>50 then w.over50=w.over50+1 end
+                if ms>100 then w.over100=w.over100+1 end
+            end
+            if #capture.all>=65536 then self:StopPerformanceCapture("sample-limit") end
+        end)
+        hook.Add("Think","LOD_PerformanceDeadline",function()
+            local now=SysTime()
+            if capture.ready and now>=capture.finish then self:StopPerformanceCapture("complete")
+            elseif not capture.ready and now>=capture.created+120 then self:StopPerformanceCapture("renderer-timeout") end
+        end)
+        print(string.format("[LOD:PERF] Recording %.0fs after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.",seconds))
+    end
+    concommand.Add("lod_perf_start",function(_,_,args) Audit:StartPerformanceCapture(args[1]) end)
+    concommand.Add("lod_perf_stop",function() Audit:StopPerformanceCapture("manual") end)
+    hook.Add("ShutDown","LOD_PerformanceShutdown",function() Audit:StopPerformanceCapture("shutdown") end)
+end

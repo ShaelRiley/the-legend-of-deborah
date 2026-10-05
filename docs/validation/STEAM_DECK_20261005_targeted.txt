@@ -1,0 +1,34 @@
+Hostile Sanctuary Route Cache & Exact Paths
+HOSTILE_ROUTE_CACHE_PASS exact_path_cases=9072 requests=1920 legacy_filter_visits=749190 cached_filter_visits=24973 legacy_lua_seconds=2.345172 cached_lua_seconds=0.060810 general_tree_limit=72 completed_path_limit=72 native_fps_measured=false
+MIXED_HOSTILE_ROUTE_CACHE_PASS requests=1920 legacy_filter_visits=514200 cached_filter_visits=17140 legacy_home_trees=64 cached_home_trees=64 legacy_lua_seconds=1.446167 cached_lua_seconds=0.056191 native_fps_measured=false
+
+Reduced Container Batching & Exact Hulls
+WALL_BATCH_WORK instances=600 legacy_native_submissions=600 batched_submissions=95 exact_triangles=256800 native_fps_measured=false
+WALL_BATCH_PASS: exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup
+
+Opt-in Rendered Frame Evidence & Lifecycle
+[LOD:PERF] Recording 180s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=4881 active_seconds=131.43 fps=37.14 median_ms=25.000 p95_ms=25.000 p99_ms=120.000 max_ms=120.000 over25=99 over50=99 over100=99 source_verified=true reason=complete
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 180s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 180s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=65536 active_seconds=6.55 fps=10000.00 median_ms=0.100 p95_ms=0.100 p99_ms=0.100 max_ms=0.100 over25=0 over50=0 over100=0 source_verified=false reason=sample-limit
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 300s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=shutdown
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=lua-refresh
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=renderer-timeout
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after wall preparation and 3s warmup; play normally through combat, gates and a boss. No settings or gameplay are changed.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=0.00 median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual
+[LOD:PERF] Save failed: ...the-legend-of-deborah/tools/test_performance_capture.lua:104: injected disk failure
+PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows; build/settings/resource evidence; preparation excluded; 65536 limit; reset/refresh/shutdown/I/O cleanup
