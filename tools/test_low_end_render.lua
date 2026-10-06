@@ -18,26 +18,37 @@ local V={};V.__index=V
 function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},V) end
 V.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 V.__sub=function(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
+-- Angle axes cross a native vector boundary in GMod. Count their component
+-- reads without assigning a hardware cost to the doubled accessors.
+local axisReads=0
+local AX={__index=function(v,k)
+ if k=='x' or k=='y' or k=='z' then axisReads=axisReads+1;return v.values[k] end
+ return V[k]
+end,__add=V.__add,__sub=V.__sub}
+local function axis(x,y,z) return setmetatable({values={x=x,y=y,z=z}},AX) end
 local A={};A.__index=A
 function Angle(p,y,r) return setmetatable({p=p or 0,y=y or 0,r=r or 0},A) end
 function A:Forward()
  local p,y=math.rad(self.p),math.rad(self.y)
- return Vector(math.cos(p)*math.cos(y),math.cos(p)*math.sin(y),-math.sin(p))
+ return axis(math.cos(p)*math.cos(y),math.cos(p)*math.sin(y),-math.sin(p))
 end
 function A:Right()
  local p,y,r=math.rad(self.p),math.rad(self.y),math.rad(self.r)
- return Vector(-math.sin(r)*math.sin(p)*math.cos(y)+math.cos(r)*math.sin(y),
+ return axis(-math.sin(r)*math.sin(p)*math.cos(y)+math.cos(r)*math.sin(y),
   -math.sin(r)*math.sin(p)*math.sin(y)-math.cos(r)*math.cos(y),-math.sin(r)*math.cos(p))
 end
 function A:Up()
  local p,y,r=math.rad(self.p),math.rad(self.y),math.rad(self.r)
- return Vector(math.cos(r)*math.sin(p)*math.cos(y)+math.sin(r)*math.sin(y),
+ return axis(math.cos(r)*math.sin(p)*math.cos(y)+math.sin(r)*math.sin(y),
   math.cos(r)*math.sin(p)*math.sin(y)-math.sin(r)*math.cos(y),math.cos(r)*math.cos(p))
 end
 angle_zero=Angle();vector_origin=Vector()
 local view={origin=Vector(),angles=Angle(),fov=90,aspect=1.6,znear=1}
 EyePos=function() return view.origin end;EyeVector=function() return view.angles:Forward() end
 local formats,matrices,allocations,live,peak,draws,geometryReads=0,0,0,0,0,0,0
+local absoluteValues=0
+local absolute=math.abs
+math.abs=function(n) absoluteValues=absoluteValues+1;return absolute(n) end
 local format=string.format
 string.format=function(...) formats=formats+1;return format(...) end
 local currentMatrix,lastDraw,seen=nil,nil,{}
@@ -97,12 +108,17 @@ end
 -- Same 120 visible static entities; alternating floors/stairs share few meshes.
 for i=1,120 do box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1) end
 assert(frame()==120)
-formats,matrices,geometryReads=0,0,0
+formats,matrices,geometryReads,absoluteValues,axisReads=0,0,0,0,0
 for _=1,120 do assert(frame()==120) end
 print(format('LOW_END_STATIC_WORK entities=120 frames=120 cache_key_formats=%d matrix_allocations=%d native_peak_meshes=%d',formats,matrices,peak))
 if not baseline then assert(formats==0 and matrices==0,'static drawing repeats compilation/transform allocation') end
 print(format('LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=%d native_fps_measured=false',geometryReads))
 if not baseline then assert(geometryReads==4*120*120,'drawable boxes repeat native geometry reads within a pass') end
+print(format('LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=%d basis_component_reads=%d native_fps_measured=false',absoluteValues,axisReads))
+if not baseline then
+ assert(absoluteValues<=20*120,'identity-axis support repeats plane arithmetic per box')
+ assert(axisReads<=9*120,'unchanged box support repeats native basis component reads')
+end
 -- Simulate Source honoring SetNextClientThink/true, including the existing
 -- one-second deadline. The parent invokes each callback every rendered frame.
 local callbacks=0
@@ -186,6 +202,12 @@ local savedAspect=view.aspect;view.aspect=nil;assert(frame()==1,'unknown aspect 
 e.pos=Vector(1000,0,0);e.nw.LOD_GeometryHidden=true;assert(frame()==0)
 e:OnRemove(true);e.nw.LOD_GeometryHidden=false;assert(frame()==1)
 e:OnRemove(false);assert(frame()==0);fire('NotifyShouldTransmit',e,true);assert(frame()==1)
+-- Existing entities can still carry the previous file's cached native basis
+-- when only the renderer is hot-reloaded. Rebuild before borrowing new fields.
+local priorSnapshot=e._LODVisualBox
+ENT={};dofile(entityPath)
+assert(frame()==1,'renderer refresh delayed a registered floor')
+assert(e._LODVisualBox~=priorSnapshot,'renderer refresh borrowed a previous snapshot schema')
 -- Independent corner projection oracle: every sampled visible corner requires a
 -- draw. Culling may conservatively retain more, but may never hide such a box.
 local function dot(a,b) return a.x*b.x+a.y*b.y+a.z*b.z end

@@ -157,6 +157,34 @@ local function currentPerspective()
         tanX, tanY, math.sqrt(1 + tanX*tanX), math.sqrt(1 + tanY*tanY)
 end
 
+local function plane(x,y,z)
+    return {x,y,z,math.abs(x),math.abs(y),math.abs(z)}
+end
+local function cameraSnapshot()
+    local eye, f, r, u, tanX, tanY, normX, normY = currentPerspective()
+    if not eye or not f then return nil end
+    -- Native vector indexing and side-plane construction belong to this view,
+    -- not to every generated box. Keep ownership local to the render pass so
+    -- nested RenderView and immediate camera changes use their own planes.
+    local fx,fy,fz=f.x,f.y,f.z
+    local camera={ex=eye.x,ey=eye.y,ez=eye.z,fx=fx,fy=fy,fz=fz,
+        front=plane(fx,fy,fz)}
+    if r and u then
+        local rx,ry,rz,ux,uy,uz=r.x,r.y,r.z,u.x,u.y,u.z
+        camera.rx,camera.ry,camera.rz=rx,ry,rz
+        camera.ux,camera.uy,camera.uz=ux,uy,uz
+        camera.tanX,camera.tanY,camera.normX,camera.normY=tanX,tanY,normX,normY
+        camera.left=plane(fx*tanX-rx,fy*tanX-ry,fz*tanX-rz)
+        camera.right=plane(fx*tanX+rx,fy*tanX+ry,fz*tanX+rz)
+        camera.bottom=plane(fx*tanY-ux,fy*tanY-uy,fz*tanY-uz)
+        camera.top=plane(fx*tanY+ux,fy*tanY+uy,fz*tanY+uz)
+    end
+    return camera
+end
+
+-- A refresh can retain entities and snapshots from the previous implementation.
+-- Resolve their basis again before borrowing fields owned by this file instance.
+local snapshotOwner = {}
 local function visualSnapshot(ent)
     local mins, maxs = ent:GetBoxMins(), ent:GetBoxMaxs()
     local pos, angles = ent:GetPos(), ent:GetAngles()
@@ -164,17 +192,24 @@ local function visualSnapshot(ent)
     local cached = ent._LODVisualBox
     -- Snapshot once per pass; reuse identical geometry/pose across passes.
     -- Scalars observe in-place native vector/angle mutations immediately.
-    if not cached or cached.x0 ~= mins.x or cached.y0 ~= mins.y or cached.z0 ~= mins.z
+    if not cached or cached.owner ~= snapshotOwner
+        or cached.x0 ~= mins.x or cached.y0 ~= mins.y or cached.z0 ~= mins.z
         or cached.x1 ~= maxs.x or cached.y1 ~= maxs.y or cached.z1 ~= maxs.z
         or cached.px ~= pos.x or cached.py ~= pos.y or cached.pz ~= pos.z
         or cached.pitch ~= pitch or cached.yaw ~= yaw or cached.roll ~= roll then
-        cached = {x0=mins.x,y0=mins.y,z0=mins.z,x1=maxs.x,y1=maxs.y,z1=maxs.z,
+        cached = {owner=snapshotOwner,x0=mins.x,y0=mins.y,z0=mins.z,x1=maxs.x,y1=maxs.y,z1=maxs.z,
             px=pos.x,py=pos.y,pz=pos.z,pitch=pitch,yaw=yaw,roll=roll,
             position=pos,angles=angles,mins=mins,maxs=maxs}
         if angles and angles.Forward and angles.Right and angles.Up then
             local f, r, u = angles:Forward(), angles:Right(), angles:Up()
             local x, y, z = (mins.x+maxs.x)*0.5,(mins.y+maxs.y)*0.5,(mins.z+maxs.z)*0.5
             cached.f, cached.r, cached.u = f, r, u
+            cached.fx,cached.fy,cached.fz=f.x,f.y,f.z
+            cached.rx,cached.ry,cached.rz=r.x,r.y,r.z
+            cached.ux,cached.uy,cached.uz=u.x,u.y,u.z
+            cached.axisAligned=cached.fx==1 and cached.fy==0 and cached.fz==0
+                and cached.rx==0 and cached.ry==-1 and cached.rz==0
+                and cached.ux==0 and cached.uy==0 and cached.uz==1
             cached.cx=pos.x+f.x*x-r.x*y+u.x*z
             cached.cy=pos.y+f.y*x-r.y*y+u.y*z
             cached.cz=pos.z+f.z*x-r.z*y+u.z*z
@@ -193,31 +228,35 @@ local function visualSnapshot(ent)
     return cached
 end
 
-local function support(box, x, y, z)
-    local f, r, u = box.f, box.r, box.u
-    return box.hx*math.abs(f.x*x+f.y*y+f.z*z)
-        + box.hy*math.abs(r.x*x+r.y*y+r.z*z)
-        + box.hz*math.abs(u.x*x+u.y*y+u.z*z)
+local function support(box, p)
+    -- The generated unrotated floors/stairs have exact identity axes. Their
+    -- support uses the absolute plane coefficients already resolved once for
+    -- this view. Arbitrarily rotated boxes retain the same oriented formula.
+    if box.axisAligned then return box.hx*p[4]+box.hy*p[5]+box.hz*p[6] end
+    local x,y,z=p[1],p[2],p[3]
+    return box.hx*math.abs(box.fx*x+box.fy*y+box.fz*z)
+        + box.hy*math.abs(box.rx*x+box.ry*y+box.rz*z)
+        + box.hz*math.abs(box.ux*x+box.uy*y+box.uz*z)
 end
-local function inCamera(box, eye, forward, right, up, tanX, tanY, normX, normY)
-    if not eye or not forward then return true end
+local function inCamera(box, camera)
+    if not camera then return true end
     if not box.f then
-        local dx, dy, dz = box.px-eye.x, box.py-eye.y, box.pz-eye.z
-        return dx*forward.x+dy*forward.y+dz*forward.z >= -box.radius
+        local dx, dy, dz = box.px-camera.ex, box.py-camera.ey, box.pz-camera.ez
+        return dx*camera.fx+dy*camera.fy+dz*camera.fz >= -box.radius
     end
-    local dx, dy, dz = box.cx-eye.x, box.cy-eye.y, box.cz-eye.z
-    local depth = dx*forward.x + dy*forward.y + dz*forward.z
+    local dx, dy, dz = box.cx-camera.ex, box.cy-camera.ey, box.cz-camera.ez
+    local depth = dx*camera.fx + dy*camera.fy + dz*camera.fz
     -- A malformed/unavailable view fails open rather than hiding the floor.
-    if depth + support(box,forward.x,forward.y,forward.z) < -1 then return false end
-    if right and up then
-        local side = dx*right.x + dy*right.y + dz*right.z
-        local height = dx*up.x + dy*up.y + dz*up.z
+    if depth + support(box,camera.front) < -1 then return false end
+    if camera.left then
+        local side = dx*camera.rx + dy*camera.ry + dz*camera.rz
+        local height = dx*camera.ux + dy*camera.uy + dz*camera.uz
         -- Unnormalized inward planes with one world-unit tolerance. A box is
         -- rejected only when its greatest support lies strictly outside a plane.
-        if depth*tanX-side+support(box,forward.x*tanX-right.x,forward.y*tanX-right.y,forward.z*tanX-right.z) < -normX
-            or depth*tanX+side+support(box,forward.x*tanX+right.x,forward.y*tanX+right.y,forward.z*tanX+right.z) < -normX
-            or depth*tanY-height+support(box,forward.x*tanY-up.x,forward.y*tanY-up.y,forward.z*tanY-up.z) < -normY
-            or depth*tanY+height+support(box,forward.x*tanY+up.x,forward.y*tanY+up.y,forward.z*tanY+up.z) < -normY then return false end
+        if depth*camera.tanX-side+support(box,camera.left) < -camera.normX
+            or depth*camera.tanX+side+support(box,camera.right) < -camera.normX
+            or depth*camera.tanY-height+support(box,camera.bottom) < -camera.normY
+            or depth*camera.tanY+height+support(box,camera.top) < -camera.normY then return false end
     end
     return true
 end
@@ -225,7 +264,7 @@ end
 hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
     if drawingDepth or drawingSkybox or drawing3DSkybox then return end
 
-    local eye, forward, right, up, tanX, tanY, normX, normY = currentPerspective()
+    local camera = cameraSnapshot()
     -- Resolve the mounted concrete/fallback once per pass, only if needed.
     -- Pass-local ownership is safe for nested RenderView and retries next frame.
     local material
@@ -240,7 +279,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
         -- still read every pass so late datatables and mutations recover.
         if (kind==1 or kind==2 or kind==5) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
             local box = visualSnapshot(ent)
-            if inCamera(box, eye, forward, right, up, tanX, tanY, normX, normY) then
+            if inCamera(box, camera) then
 
                 -- Ordinary floor runs render only their top and underside. Their
                 -- collision remains a substantial 32-unit slab, but internal

@@ -177,6 +177,35 @@ new Lua errors; measure the remaining bottleneck and the still-open >=40 FPS
 target. Use the same console batch and two upload files above. No Workshop/VPS
 operation is included.
 
+The next exact-source capture on clean main `8b89517` averages 18.42 active FPS
+over 166.22 active seconds (median 46.331 ms, p95 87.786 ms), with 1,696 wall
+models and 54 initial roamers on three floors. The preceding capture had 1,406
+walls and 40 roamers on two floors; different workload prevents a controlled
+regression claim. All source authorities match, native walls remain enabled and
+both realms report zero Lua errors. Compressed server attribution now arrives
+completely with `server_status=received`; its transport gate passes. Static
+geometry remains the largest game-code render row, about 9.6 ms per rendered
+frame. Server sanctuary and close-defense callbacks are also measured, without
+changing their existing semantics or polling in this checkpoint.
+
+The next bounded source checkpoint resolves the current camera planes once per
+render pass and caches native box-axis scalars with the existing geometry/pose
+snapshot. Exact identity-axis boxes reuse absolute plane coefficients; arbitrary
+rotations retain their oriented support calculation and original tolerance.
+Every pass still observes bounds, pose, kind and hidden-state changes; nested
+cameras and Lua refresh retain separate current ownership. No cross-pass
+visibility cache, distance/draw cap, mesh, UV, floor material or gameplay change.
+See [native evidence and finite validation gate](validation/STEAM_DECK_20261006_PLANES.md).
+The corrected frozen candidate passes all 309 integration suites and 879 Lua
+syntax files; every canonical command, raw stream and source hash is verified.
+Parent/candidate work reduces 120-box/120-pass basis-component reads from
+1,166,400 to 1,080 and absolute-value operations from 216,000 to 1,800 while
+retaining the exact visible surfaces. Full evidence and source bytes are retained
+with that gate; no native FPS gain is claimed.
+After verified source publication, repeat the same three-minute native capture
+and return the same two files. Native surfaces, complete server rows and >=40 FPS
+remain the acceptance conditions; work-count improvements are not FPS proof.
+
 ---
 
 # Current author direction — ambient audio and core gameplay
