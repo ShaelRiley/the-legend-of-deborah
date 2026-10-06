@@ -1,0 +1,76 @@
+{
+  "verified_source_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+  "verified_source_tree": "6156b1d9c4b493435ed48e0e2501e79c0fa57d23",
+  "complete_workflow_run_id": 37468610450,
+  "complete_job_id": 112285908748,
+  "workflows": [
+    {
+      "name": "Validate ambient audio and event cues",
+      "run_id": 37468610407,
+      "head_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-10-06T13:09:57Z",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37468610407"
+    },
+    {
+      "name": "Validate VR compatibility",
+      "run_id": 37468610368,
+      "head_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-10-06T13:09:55Z",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37468610368"
+    },
+    {
+      "name": "Validate low-end performance sources",
+      "run_id": 37468610406,
+      "head_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-10-06T13:10:24Z",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37468610406"
+    },
+    {
+      "name": "Validate complete frozen source matrix",
+      "run_id": 37468610450,
+      "head_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-10-06T13:18:15Z",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37468610450"
+    }
+  ],
+  "artifact": {
+    "id": 11416795236,
+    "name": "frozen-source-matrix",
+    "bytes": 600993,
+    "sha256": "dfcbab65500149aa5b98122b8bb474791495dd1eb13f4f7d0f80b8d6bd98554f",
+    "archive": "STEAM_DECK_20261006_PROFILE_complete.zip"
+  },
+  "recovery_verification": {
+    "suite_log_pairs": 309,
+    "source_files_identical": 2504,
+    "production_files_identical": 562,
+    "all_suite_returncodes_zero": true,
+    "native_gmod_accepted": false,
+    "native_sustained_40_fps_accepted": false,
+    "new_native_fps_gain_claimed": false
+  },
+  "complete_matrix_proof": {
+    "checkout_sha": "0e26d652d3c3beda7423326dd7a4fff53cc107d9",
+    "checkout_tree": "6156b1d9c4b493435ed48e0e2501e79c0fa57d23",
+    "total": 309,
+    "passed": 309,
+    "lua_files": 879,
+    "source_before": "3963574d4b54d860ab74034e33e3c4b46a915b24918995d5ebb932795ba6962a",
+    "source_after": "3963574d4b54d860ab74034e33e3c4b46a915b24918995d5ebb932795ba6962a",
+    "source_files": 2504,
+    "changed_during_gate": [],
+    "verified_suite_logs": 309,
+    "receipt_sha256": "a3014613aed7910a4b481818a2d0d0bc4a732cf592b7aec816f667abebfa655c",
+    "production_files": 562,
+    "production_sha256": "f62ecd1b6eb609b45c475133cc911583576579fbde48cfb1d4c4b158253b6500",
+    "native_gmod_accepted": false
+  }
+}

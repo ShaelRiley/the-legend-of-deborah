@@ -127,3 +127,25 @@ Only these evidence/coordination documents were finalized after the gate; tested
 production and test bytes stay unchanged. The separate complete frozen matrix
 runs in Actions on the published commit; source checks do not establish native
 profiling acceptance or sustained 40 FPS.
+
+## Completed published matrix — recovered October 6, 2026
+
+Published source `0e26d652d3c3beda7423326dd7a4fff53cc107d9`, tree
+`6156b1d9c4b493435ed48e0e2501e79c0fa57d23`, completed the
+[full matrix](https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37468610450)
+successfully at 13:18 UTC. All **309/309 suites** and **879 Lua syntax files**
+passed. The complete, low-end, ambient-audio and VR workflows all succeeded.
+The frozen source digest did not change during validation.
+
+Recovery independently downloaded and SHA256-verified the complete Actions
+artifact, verified both output-log hashes for every suite, and matched all
+2,504 source files and 562 production files to the clean published checkout.
+The production digest also matches the earlier 37-check selected gate. Preserve
+the [complete artifact](STEAM_DECK_20261006_PROFILE_complete.zip) and
+[CI/recovery receipt](STEAM_DECK_20261006_PROFILE_ci.json) beyond Actions retention.
+
+This closes the pending full source validation. The recovery changes only these
+evidence and coordination files; gameplay and diagnostic source remain exactly
+the validated build. No new profiled native capture is present. The next action
+remains the single `lod_perf_start 180 profile` capture above; native profiling
+acceptance and sustained >=40 FPS remain open.

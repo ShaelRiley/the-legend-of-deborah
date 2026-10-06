@@ -131,6 +131,14 @@ gamemode-method work remains partly unmeasured, and this is not GPU profiling.
 No gameplay, authored tuning, geometry, population or graphics default changes.
 See [native result and CPU attribution](validation/STEAM_DECK_20261006_PROFILE.md).
 
+Recovery on October 6 verifies that published source `0e26d65` completed all
+four CI workflows successfully, including **309/309 complete integration suites**
+and **879 Lua syntax files**. The full artifact, suite-log hashes and all 562
+production file hashes independently match the clean checkout. The complete
+[archive and verification receipt](validation/STEAM_DECK_20261006_PROFILE.md#completed-published-matrix--recovered-october-6-2026)
+close the pending source gate. No unfinished source change or newer profiled
+native capture was recovered. Continue at the native attribution gate below.
+
 The next native action after source publication is a fully restarted gm_flatgrass
 capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`.
 Keep Proton, windowed Arch Desktop, resolution, graphics settings and loaded
