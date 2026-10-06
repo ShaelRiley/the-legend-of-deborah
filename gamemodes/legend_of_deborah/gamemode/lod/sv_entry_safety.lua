@@ -88,23 +88,33 @@ end
 function S:ExactCell(graph,pos)
     if not graph or not pos then return nil end
     local m=LOD.Config.Maze
-    local x=math.floor((pos.x-m.Origin.x)/m.CellSize+(m.Width+1)*.5+.5)
-    local y=math.floor((pos.y-m.Origin.y)/m.CellSize+(m.Height+1)*.5+.5)
-    local z=math.floor((pos.z-m.Origin.z+24)/m.LevelHeight)
+    -- Native Vector component access crosses the engine boundary. Borrow its
+    -- coordinates only inside this query; never retain membership across calls.
+    local px,py,pz=pos.x,pos.y,pos.z
+    local x=math.floor((px-m.Origin.x)/m.CellSize+(m.Width+1)*.5+.5)
+    local y=math.floor((py-m.Origin.y)/m.CellSize+(m.Height+1)*.5+.5)
+    local z=math.floor((pz-m.Origin.z+24)/m.LevelHeight)
     local c=graph.Cells[LOD.MazeGenerator.CellKey(x,y,z)]
     if not c then return nil end
     local p=nav():CellCenter(c)
-    if math.abs(pos.x-p.x)>m.CellSize*.5 or math.abs(pos.y-p.y)>m.CellSize*.5
-        or pos.z<p.z-24 or pos.z>=p.z+m.LevelHeight-24 then return nil end
+    if math.abs(px-p.x)>m.CellSize*.5 or math.abs(py-p.y)>m.CellSize*.5
+        or pz<p.z-24 or pz>=p.z+m.LevelHeight-24 then return nil end
     return c
 end
 function S:ProtectedPosition(pos,padding)
     local s=state();local data=s and s.Graph and s.Graph.EntrySafety
     if not data or not pos then return false end
     local m=LOD.Config.Maze;local half=m.CellSize*.5+(padding or 0)
+    local px,py,pz=pos.x
     for _,c in ipairs(data.centers) do
-        if math.abs(pos.x-c.x)<=half and math.abs(pos.y-c.y)<=half
-            and pos.z>=c.z-24 and pos.z<c.z+m.LevelHeight-24 then return true end
+        if math.abs(px-c.x)<=half then
+            -- Keep the original short-circuiting: a distant actor needs only X.
+            if py==nil then py=pos.y end
+            if math.abs(py-c.y)<=half then
+                if pz==nil then pz=pos.z end
+                if pz>=c.z-24 and pz<c.z+m.LevelHeight-24 then return true end
+            end
+        end
     end
     return false
 end
@@ -112,11 +122,13 @@ function S:Protected(actor)
     return IsValid(actor) and actor.GetPos and self:ProtectedPosition(actor:GetPos()) or false
 end
 function S:Source(actor)
-    local seen={}
+    -- Direct combat actors need no cycle detector. Allocate it only when an
+    -- actual owner chain is followed, preserving the existing four-hop limit.
+    local seen
     for _=1,4 do
-        if not IsValid(actor) or seen[actor] then return nil end
-        seen[actor]=true
+        if not IsValid(actor) or (seen and seen[actor]) then return nil end
         if actor.LODHostile or actor:IsPlayer() then return actor end
+        seen=seen or {};seen[actor]=true
         local owner=actor.GetOwner and actor:GetOwner()
         if not IsValid(owner) then return actor end
         actor=owner
@@ -308,6 +320,9 @@ end
 -- per director/player. Safe Heroes never participate in these reservations.
 function S:Claim(e)
     self:Service();local s,g=self:Context();if not s then return nil,false end
+    -- Service has already observed deployment/freeze/owner changes. With no
+    -- active records, both admission loops are empty and cannot claim an actor.
+    if not self.Active[1] then return nil,false end
     -- A pressure reservation must describe an actor that can actually acquire
     -- a Hero through its native controller. Graph proximity alone can admit a
     -- returning actor whose HOME leash excludes the Hero, then make every ready
@@ -318,11 +333,12 @@ function S:Claim(e)
     for _,r in ipairs(self.Active) do
         if r.wave and r.wave.members[e] then reserved=true;break end
     end
-    local nearby={};local target,best;local limited=false
+    local nearby;local target,best;local limited=false
     for _,r in ipairs(self.Active) do
         local d=self:MemberDistance(r,e,g)
         local committed=r.wave and r.wave.members[e] and d<=self.Config.Disengage
         if d<=self.Config.Locality or committed then
+            nearby=nearby or {}
             nearby[#nearby+1]=r;limited=limited or r.limited
             if (d<=self.Config.Acquire or committed) and (not best or d<best)
                 and LOD.FactionManager:CanAcquirePlayerTarget(r.actor) then

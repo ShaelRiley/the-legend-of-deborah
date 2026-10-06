@@ -28,6 +28,7 @@ LUA_FILES = get_lua_files()
 SUITES = [
     ("Hair Trigger Singleton & All Firearm Cadence", ["python3", "tools/run_lua54.py", "tools/test_hair_trigger.lua"]),
     ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
+    ("Entrance Spatial Query & Source Allocation Equivalence", ["python3", "tools/run_lua54.py", "tools/test_entry_safety_hotpath.lua"]),
     ("Reduced Container Batching & Exact Hulls", ["python3", "tools/run_lua54.py", "tools/test_wall_batch.lua"]),
     ("Opt-in Rendered Frame Evidence & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_performance_capture.lua"]),
     ("Opt-in Client/Server CPU Attribution & Transparent Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_performance_profile.lua"]),

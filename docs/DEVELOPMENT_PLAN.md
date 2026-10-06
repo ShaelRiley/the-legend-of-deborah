@@ -206,6 +206,34 @@ After verified source publication, repeat the same three-minute native capture
 and return the same two files. Native surfaces, complete server rows and >=40 FPS
 remain the acceptance conditions; work-count improvements are not FPS proof.
 
+The following exact-source capture on clean main `a447d9f` averages 16.56 active
+FPS over 104.69 active seconds (median 58.654 ms, p95 103.064 ms), with 1,648 wall
+models and 54 initial roamers. All eight renderer/42 population authorities match,
+settings remain unchanged, server attribution is complete and both realms report
+zero Lua errors. The preceding capture had 166.22 active seconds and a different
+maze; no controlled FPS regression or improvement is established. Static geometry
+remains the largest measured game render row. Sanctuary and close-defense checks
+account for 8,116.97 and 7,874.36 inclusive server CPU milliseconds respectively.
+
+The current bounded checkpoint removes repeated native position-component reads
+inside live sanctuary queries and direct-actor source-resolution allocations.
+Admission still runs its existing service/context and all needed distance queries;
+empty/far searches avoid allocating an unused nearby array. No cross-call spatial
+cache, polling/timing change, tuning, population, rendering or combat redesign.
+The paired unchanged parent/candidate gate retains 5,145 boundary cases and live
+mutations; 10,000 distant membership queries use 20,000 -> 10,000 native position
+reads. Direct-source and far-admission GC-stopped allocation growth drops to zero
+in the fixed doubled workloads. All 310 complete integration suites and 880 Lua
+syntax files pass, with independent command/receipt/raw-stream/source verification.
+The inherited asset rebuild check produced an observed partial PNG prefix; the
+exact frozen parent asset was restored and independently rebuilt/decoded. Final
+source hashes match the initial snapshot; the observation and its unproven cause
+remain in the evidence. No texture change is published.
+See [native evidence and finite gate](validation/STEAM_DECK_20261006_ENTRY_HOTPATH.md).
+After publication, deploy before starting the established three-minute profiled
+capture and return the same two files. Exact source, intact surfaces, safe opening/
+close defense, complete server attribution and sustained >=40 FPS remain the gate.
+
 ---
 
 # Current author direction — ambient audio and core gameplay
