@@ -1,0 +1,2988 @@
+{
+  "inputs": [
+    {
+      "name": "performance_client_latest(6).txt",
+      "sha256": "03bbe03b92de31fd04c928742b9f9d9f93a784b9a85506ec73f6e03bd8bc5e0b"
+    },
+    {
+      "name": "console_latest(20261006-165221).txt",
+      "sha256": "f3aa6703cd1da5039f69dff34eebe52fd9aeb2f635ce620ba8846989917e9740"
+    }
+  ],
+  "parent_sha": "a4ecb4bbf0dc2442d54f1454935a44b982535b0d",
+  "independently_verified_modules": 42,
+  "active": {
+    "max_ms": 331.451,
+    "over100": 95,
+    "median_ms": 40.164,
+    "over50": 1012,
+    "p95_ms": 79.436,
+    "frames": 3659,
+    "p99_ms": 132.995,
+    "over25": 3658,
+    "seconds": 171.18282400000007,
+    "fps": 21.37480802396389
+  },
+  "start_configuration": {
+    "mat_viewportscale": "1.0",
+    "width": 1280,
+    "singleplayer": true,
+    "fps_max": "60",
+    "mat_aaquality": "0",
+    "mat_queue_mode": "-2",
+    "r_waterforceexpensive": "1",
+    "window_mode": "user-recorded",
+    "mat_picmip": "0",
+    "mat_antialias": "0",
+    "architecture": "x64",
+    "engine": "2026.09.17",
+    "lod_reduced_effects": "1",
+    "r_shadowrendertotexture": "1",
+    "r_shadows": "1",
+    "lod_wall_batches": "0",
+    "os": "Windows",
+    "mat_hdr_level": "2",
+    "mat_dxlevel": "95",
+    "mat_vsync": "0",
+    "proton_version": "not-exposed-by-engine",
+    "branch": "unknown",
+    "height": 800,
+    "map": "gm_flatgrass"
+  },
+  "end_configuration": {
+    "mat_viewportscale": "1.0",
+    "width": 1280,
+    "singleplayer": true,
+    "fps_max": "60",
+    "mat_aaquality": "0",
+    "mat_queue_mode": "-2",
+    "r_waterforceexpensive": "1",
+    "window_mode": "user-recorded",
+    "mat_picmip": "0",
+    "mat_antialias": "0",
+    "architecture": "x64",
+    "engine": "2026.09.17",
+    "lod_reduced_effects": "1",
+    "r_shadowrendertotexture": "1",
+    "r_shadows": "1",
+    "lod_wall_batches": "0",
+    "os": "Windows",
+    "mat_hdr_level": "2",
+    "mat_dxlevel": "95",
+    "mat_vsync": "0",
+    "proton_version": "not-exposed-by-engine",
+    "branch": "unknown",
+    "height": 800,
+    "map": "gm_flatgrass"
+  },
+  "source": {
+    "verified": true,
+    "checked": 8,
+    "mismatches": 0,
+    "missing": 0
+  },
+  "population_source": {
+    "installLabel": "a4ecb4bbf0dc2442d54f1454935a44b982535b0d clean ",
+    "missing": 0,
+    "mismatches": 0,
+    "checked": 42,
+    "verified": true,
+    "modules": [
+      {
+        "path": "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+        "installed": "10ddb1f175a657c663577223e467a4c018c27a27b573ac8d6079c47f48304ebd",
+        "mounted": "10ddb1f175a657c663577223e467a4c018c27a27b573ac8d6079c47f48304ebd"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+        "installed": "f3772dff33d67e898f690563e5d80b771e9a79c3ce1fe30d198810c989c3feca",
+        "mounted": "f3772dff33d67e898f690563e5d80b771e9a79c3ce1fe30d198810c989c3feca"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+        "installed": "e930f48061aa49468c49623e3a14cb7f125b75343bcac38ad2b165ee69af95db",
+        "mounted": "e930f48061aa49468c49623e3a14cb7f125b75343bcac38ad2b165ee69af95db"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
+        "installed": "193e83372116ac38839f5eeb766727e7eca28e684038b620153f9a926a3d7f95",
+        "mounted": "193e83372116ac38839f5eeb766727e7eca28e684038b620153f9a926a3d7f95"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
+        "installed": "503df28912eecf59e8f9bf4a9641c17845bd1f89a059f925d24def98c5fc585a",
+        "mounted": "503df28912eecf59e8f9bf4a9641c17845bd1f89a059f925d24def98c5fc585a"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
+        "installed": "717660c5d7adca56c0f418c8fa813ee0298d0de15e7c20e4077dabf200f1e1a0",
+        "mounted": "717660c5d7adca56c0f418c8fa813ee0298d0de15e7c20e4077dabf200f1e1a0"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
+        "installed": "bf19b78395a5af4392ed6346ce36da0262ee20f3072524fe1ba36c318ba475f4",
+        "mounted": "bf19b78395a5af4392ed6346ce36da0262ee20f3072524fe1ba36c318ba475f4"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua",
+        "installed": "c3e2cdc7a4e3ad0c4675a9b7d94c43e8cdf9c99bfdc4be06f6b3bd9ce91a1178",
+        "mounted": "c3e2cdc7a4e3ad0c4675a9b7d94c43e8cdf9c99bfdc4be06f6b3bd9ce91a1178"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "installed": "664a450ffdc2b221c0bc2a1b57f4982b6b95863ed3aa45938280e490f9c1c790",
+        "mounted": "664a450ffdc2b221c0bc2a1b57f4982b6b95863ed3aa45938280e490f9c1c790"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/cl_init.lua",
+        "installed": "c0bdc6e17fc421fbacfea08dfd494088fd3b174522b39e7343f5ec0e4632816b",
+        "mounted": "c0bdc6e17fc421fbacfea08dfd494088fd3b174522b39e7343f5ec0e4632816b"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/init.lua",
+        "installed": "50386f0439a0cc14fa0d82b4f9e8c31ac886dead929d14bfa64942f38f3a2204",
+        "mounted": "50386f0439a0cc14fa0d82b4f9e8c31ac886dead929d14bfa64942f38f3a2204"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua",
+        "installed": "be5ccc26e02dccfd0056793f7565a7c2b144c57ce2fe62a9ae713f00afec025d",
+        "mounted": "be5ccc26e02dccfd0056793f7565a7c2b144c57ce2fe62a9ae713f00afec025d"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua",
+        "installed": "350cce6720fbffc9eb70766e4a8e9787479e4db98d91510af10d1586bf1631a1",
+        "mounted": "350cce6720fbffc9eb70766e4a8e9787479e4db98d91510af10d1586bf1631a1"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua",
+        "installed": "6497d7b7c6fb890cc6bc8da9297d5b7b5c4ba70161c920bee7836b43c0968d92",
+        "mounted": "6497d7b7c6fb890cc6bc8da9297d5b7b5c4ba70161c920bee7836b43c0968d92"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua",
+        "installed": "5cbeaaa08a10814e256c43c280fdee80a7c61005f913be0b5544f2684fa2288d",
+        "mounted": "5cbeaaa08a10814e256c43c280fdee80a7c61005f913be0b5544f2684fa2288d"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua",
+        "installed": "8e6aad5a39d825c8eb5919ce77a7aa1f3067f7f331debf122e73cc9aeff1f654",
+        "mounted": "8e6aad5a39d825c8eb5919ce77a7aa1f3067f7f331debf122e73cc9aeff1f654"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua",
+        "installed": "4aa271365bc4b6fa52e686ac46b409e157cbf9740bd9a0010983fde18cab9410",
+        "mounted": "4aa271365bc4b6fa52e686ac46b409e157cbf9740bd9a0010983fde18cab9410"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua",
+        "installed": "3d663f3d90a9b3c384aab7cd89c8d8043ef874fe36a222fcf1a2a76cb3300743",
+        "mounted": "3d663f3d90a9b3c384aab7cd89c8d8043ef874fe36a222fcf1a2a76cb3300743"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua",
+        "installed": "da26cd689b2a478bd82b3fbaf69414f6449f94ae49c2730a789570349b5446b2",
+        "mounted": "da26cd689b2a478bd82b3fbaf69414f6449f94ae49c2730a789570349b5446b2"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua",
+        "installed": "f635afef84e89848e640bd9de9c2047614c6dfb6188776fd10eab1f45bf643b5",
+        "mounted": "f635afef84e89848e640bd9de9c2047614c6dfb6188776fd10eab1f45bf643b5"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+        "installed": "9b682a35066e3da7b5d3651f0529ea989d7d1a73ed821babdccf69235dd3f136",
+        "mounted": "9b682a35066e3da7b5d3651f0529ea989d7d1a73ed821babdccf69235dd3f136"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
+        "installed": "6f97249a0a292d099276180e8f05aed37fba7cae1047b7804920d5f3479fc9a6",
+        "mounted": "6f97249a0a292d099276180e8f05aed37fba7cae1047b7804920d5f3479fc9a6"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+        "installed": "6a1315071d921e7fcd8a0e3c7274c1aec04c596f353865a173225250b3b6daef",
+        "mounted": "6a1315071d921e7fcd8a0e3c7274c1aec04c596f353865a173225250b3b6daef"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
+        "installed": "3e59012abe2ae7bab0017387c0a8c4e7b8ab9f49a38a9edc6cdab60ab319452f",
+        "mounted": "3e59012abe2ae7bab0017387c0a8c4e7b8ab9f49a38a9edc6cdab60ab319452f"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+        "installed": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed",
+        "mounted": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua",
+        "installed": "b7ed7d26520bb56c1dee9fd8b88e8fb7565e313c1f3e5c6304ffae6e336e8835",
+        "mounted": "b7ed7d26520bb56c1dee9fd8b88e8fb7565e313c1f3e5c6304ffae6e336e8835"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+        "installed": "86532b3480fadc7cf46b66074950b3097597683402a5d2d3a1c0bbd65f9e0f2c",
+        "mounted": "86532b3480fadc7cf46b66074950b3097597683402a5d2d3a1c0bbd65f9e0f2c"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua",
+        "installed": "508136fac4c4aadc2c3977d04ddb649cb26db164169a71ee61a4c8704ef6c6ba",
+        "mounted": "508136fac4c4aadc2c3977d04ddb649cb26db164169a71ee61a4c8704ef6c6ba"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+        "installed": "1b6e0583aacc1d9958aaa79c64e242f8de941ba03865b2ec7f095aa9aaed263d",
+        "mounted": "1b6e0583aacc1d9958aaa79c64e242f8de941ba03865b2ec7f095aa9aaed263d"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua",
+        "installed": "49b4d54e5e1701dc3bdd37b9ac953f52823d5942f395bfd6cb6d6925e8b3bfe8",
+        "mounted": "49b4d54e5e1701dc3bdd37b9ac953f52823d5942f395bfd6cb6d6925e8b3bfe8"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+        "installed": "ffda8d11aafdb2ecadd08f1c52aeacbbb900bece39de7e1f32cb3b29d33c4a01",
+        "mounted": "ffda8d11aafdb2ecadd08f1c52aeacbbb900bece39de7e1f32cb3b29d33c4a01"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua",
+        "installed": "82398160993c23104d18f40bae05d988717f9dc6267e850b36b37a0fcbe2f938",
+        "mounted": "82398160993c23104d18f40bae05d988717f9dc6267e850b36b37a0fcbe2f938"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+        "installed": "6046568810bb36029f43b039b09183794a50cb467b5ef2656751ac8c79052b34",
+        "mounted": "6046568810bb36029f43b039b09183794a50cb467b5ef2656751ac8c79052b34"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+        "installed": "76e444925fd0af730f8fe81dc422dadbd36323110bb8ee094264a31a8eca0829",
+        "mounted": "76e444925fd0af730f8fe81dc422dadbd36323110bb8ee094264a31a8eca0829"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+        "installed": "8db6ed6c061d7efd19da1b1772712b34dcaac3570afba0f21135f2384b447940",
+        "mounted": "8db6ed6c061d7efd19da1b1772712b34dcaac3570afba0f21135f2384b447940"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua",
+        "installed": "52bae9d0bfe30cebdea5b68fae44eb980c0d1af02a018cf6cfbfc8835a4dcdf2",
+        "mounted": "52bae9d0bfe30cebdea5b68fae44eb980c0d1af02a018cf6cfbfc8835a4dcdf2"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua",
+        "installed": "e2e1ced9c7c7978eea3c2a441ca86566fd94316b19c1703b6c27f9d8e45efc73",
+        "mounted": "e2e1ced9c7c7978eea3c2a441ca86566fd94316b19c1703b6c27f9d8e45efc73"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua",
+        "installed": "0e2e11bb814bb25614c3bfbe803ae1d8a23c32b5351fe556e9640f32b451e383",
+        "mounted": "0e2e11bb814bb25614c3bfbe803ae1d8a23c32b5351fe556e9640f32b451e383"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua",
+        "installed": "c43ae70ea06a603395a0396bd5f88fcdac221101647ba157cc5ed3c268b1d325",
+        "mounted": "c43ae70ea06a603395a0396bd5f88fcdac221101647ba157cc5ed3c268b1d325"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+        "installed": "b4c447f9839e281c0f036817ac76484994378a3335f3c0edffb39bca14baf2c0",
+        "mounted": "b4c447f9839e281c0f036817ac76484994378a3335f3c0edffb39bca14baf2c0"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua",
+        "installed": "08c9988be3faad6d421f0fe72682aa906534e39b9ea93dcdeef99266fb5f02d8",
+        "mounted": "08c9988be3faad6d421f0fe72682aa906534e39b9ea93dcdeef99266fb5f02d8"
+      },
+      {
+        "path": "lua/autorun/server/lod_population_observability.lua",
+        "installed": "c56044ded05df6469f38e746e076fe0ced21015279c766c5ac8a0aded4fcfdeb",
+        "mounted": "c56044ded05df6469f38e746e076fe0ced21015279c766c5ac8a0aded4fcfdeb"
+      }
+    ]
+  },
+  "wall_models": 1406,
+  "initial_wanderers": 40,
+  "initial_floors": [
+    {
+      "initialPending": 0,
+      "target": 20,
+      "living": 20,
+      "floor": 1,
+      "result": "spawned",
+      "types": {
+        "runner": 4,
+        "bioblaster": 1,
+        "shy": 1,
+        "flamer": 1,
+        "deadcrab": 3,
+        "shambler": 2,
+        "watcher": 1,
+        "listener": 1,
+        "harrier": 1,
+        "soldier": 2,
+        "seeker": 1,
+        "reaper": 1,
+        "fencer": 1
+      },
+      "admission": {
+        "attempts": 20,
+        "no_choices": 0,
+        "blocked_hull": 0,
+        "no_candidates": 0,
+        "spawned": 20,
+        "unsupported_floor": 0
+      },
+      "deficit": 0
+    },
+    {
+      "initialPending": 0,
+      "target": 20,
+      "living": 20,
+      "floor": 2,
+      "result": "spawned",
+      "types": {
+        "runner": 3,
+        "bioblaster": 2,
+        "shy": 1,
+        "flamer": 1,
+        "deadcrab": 2,
+        "reeler": 1,
+        "watcher": 1,
+        "shambler": 3,
+        "pincer": 1,
+        "soldier": 2,
+        "seeker": 1,
+        "reaper": 1,
+        "sniper": 1
+      },
+      "admission": {
+        "attempts": 20,
+        "no_choices": 0,
+        "blocked_hull": 1,
+        "no_candidates": 0,
+        "spawned": 20,
+        "unsupported_floor": 0
+      },
+      "deficit": 0
+    }
+  ],
+  "renderer_at_sample_start": {
+    "visits": 0,
+    "status": "native",
+    "hooks": {
+      "materials": true,
+      "wayfinding": true,
+      "batches": true
+    },
+    "chunks": 0,
+    "reason": "wall-batches-disabled",
+    "section": {
+      "next_model": 1407,
+      "retries": 0,
+      "stable_passes": 2,
+      "applied": 1406,
+      "instances": 1406,
+      "complete": true,
+      "cursor": 1,
+      "calls": 907,
+      "ready": true
+    },
+    "overlays": {
+      "branding": {
+        "milliseconds": 0.6292999999999438,
+        "draws": 6,
+        "culled": 23,
+        "candidates": 29,
+        "admitted": 29
+      },
+      "wayfinding": {
+        "culled": 0,
+        "milliseconds": 0,
+        "visits": 0,
+        "draws": 0
+      }
+    },
+    "vertices": 0,
+    "think_calls": 907,
+    "hidden": 0,
+    "draws": 0
+  },
+  "renderer_at_end": {
+    "visits": 0,
+    "status": "native",
+    "hooks": {
+      "materials": true,
+      "wayfinding": true,
+      "batches": true
+    },
+    "chunks": 0,
+    "reason": "wall-batches-disabled",
+    "section": {
+      "next_model": 1407,
+      "retries": 0,
+      "stable_passes": 2,
+      "applied": 1406,
+      "instances": 1406,
+      "complete": true,
+      "cursor": 1,
+      "calls": 4831,
+      "ready": true
+    },
+    "overlays": {
+      "branding": {
+        "milliseconds": 0.6862999999839303,
+        "draws": 17,
+        "culled": 34,
+        "candidates": 51,
+        "admitted": 51
+      },
+      "wayfinding": {
+        "culled": 0,
+        "milliseconds": 0,
+        "visits": 0,
+        "draws": 0
+      }
+    },
+    "vertices": 0,
+    "think_calls": 4831,
+    "hidden": 0,
+    "draws": 0
+  },
+  "cpu_profile": {
+    "server": {
+      "error": "profile exceeds transport limit",
+      "token": 1,
+      "realm": "server"
+    },
+    "server_status": "failed",
+    "client": {
+      "state_start": {
+        "resources": {
+          "lua_kb": 36521,
+          "damsels": "damsels-20260919-01",
+          "jit_version": "LuaJIT 2.1.0-beta3",
+          "lua_errors": 0,
+          "realm": "client",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "build": "generator-jit-20260917-01",
+          "engine": "2026.09.17",
+          "wall_models": 1406,
+          "meshes": 102,
+          "install": "a4ecb4bbf0dc2442d54f1454935a44b982535b0d clean ",
+          "missing": "none",
+          "feedback_audio": "feedback-20260919-01",
+          "architecture": "x64",
+          "loot_entities": 0,
+          "entities": 2474
+        }
+      },
+      "reason": "complete",
+      "timing": "inclusive wall-clock; nested rows overlap; diagnostic overhead included; GPU unmeasured",
+      "realm": "client",
+      "rows": [
+        {
+          "calls": 3904,
+          "milliseconds": 70923.56759999992,
+          "completed": 3904,
+          "ms_per_second": 394.0396789430855,
+          "mean_ms": 18.166897438524572,
+          "name": "phase/PreRender-to-PostRender",
+          "maximum_ms": 59.60719999998787
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 22143.4708999997,
+          "completed": 7810,
+          "ms_per_second": 123.0254830570797,
+          "mean_ms": 2.8352715620998334,
+          "name": "hook/PostDrawOpaqueRenderables/LOD.DrawGeneratedStaticGeometry",
+          "maximum_ms": 23.617400000006228
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 5153.027200000366,
+          "completed": 3905,
+          "ms_per_second": 28.629371761512083,
+          "mean_ms": 1.3195972343150746,
+          "name": "hook/HUDPaint/LOD_CombatRollFeed",
+          "maximum_ms": 16.4550999999733
+        },
+        {
+          "calls": 30998,
+          "milliseconds": 3353.763600000477,
+          "completed": 30998,
+          "ms_per_second": 18.632959070084848,
+          "mean_ms": 0.10819290276793589,
+          "name": "entity/lod_hostile.Draw",
+          "maximum_ms": 13.569100000012213
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 3165.8117999978826,
+          "completed": 7810,
+          "ms_per_second": 17.58872977598773,
+          "mean_ms": 0.40535362355926796,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DrawContainerBranding",
+          "maximum_ms": 14.399100000019871
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 2714.120799999293,
+          "completed": 3905,
+          "ms_per_second": 15.079208855879282,
+          "mean_ms": 0.6950373367475783,
+          "name": "hook/HUDPaint/LOD_StatusPortrait",
+          "maximum_ms": 1.5027000000031876
+        },
+        {
+          "calls": 3572160,
+          "milliseconds": 2331.6682000484975,
+          "completed": 3572160,
+          "ms_per_second": 12.954365100902129,
+          "mean_ms": 0.0006527334162099395,
+          "name": "entity/lod_static_box.Think",
+          "maximum_ms": 0.6175000000041564
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 2027.8703999989318,
+          "completed": 3905,
+          "ms_per_second": 11.26651448021301,
+          "mean_ms": 0.5193009987193167,
+          "name": "hook/HUDPaint/LOD_PersistentHUD",
+          "maximum_ms": 13.992900000005193
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 1271.6442999991814,
+          "completed": 7810,
+          "ms_per_second": 7.065046622125685,
+          "mean_ms": 0.16282257362345473,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DrawContainerWayfinding",
+          "maximum_ms": 13.19269999999051
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 979.4203000001716,
+          "completed": 3905,
+          "ms_per_second": 5.441498131326497,
+          "mean_ms": 0.25081185659415406,
+          "name": "hook/HUDPaint/LOD_TimeoutHUD",
+          "maximum_ms": 0.7889999999974862
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 814.9366999992509,
+          "completed": 7810,
+          "ms_per_second": 4.5276542973374445,
+          "mean_ms": 0.10434528809209358,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DrawSecurityGates",
+          "maximum_ms": 12.971999999990658
+        },
+        {
+          "calls": 6773,
+          "milliseconds": 735.8212999994151,
+          "completed": 6773,
+          "ms_per_second": 4.088102144642448,
+          "mean_ms": 0.10864038092417173,
+          "name": "hook/PreDrawViewModel/LOD_ProceduralWeaponSurface",
+          "maximum_ms": 1.8910000000005311
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 709.6645999992859,
+          "completed": 3905,
+          "ms_per_second": 3.9427798206388043,
+          "mean_ms": 0.1817322919332358,
+          "name": "hook/HUDPaint/LOD_MagicHUD",
+          "maximum_ms": 0.8904999999970187
+        },
+        {
+          "calls": 6207,
+          "milliseconds": 660.7735000002748,
+          "completed": 6207,
+          "ms_per_second": 3.671148908676831,
+          "mean_ms": 0.10645617850818025,
+          "name": "entity/lod_hostile.DrawTranslucent",
+          "maximum_ms": 0.46679999999810207
+        },
+        {
+          "calls": 29079,
+          "milliseconds": 652.9168000013357,
+          "completed": 29079,
+          "ms_per_second": 3.627498375435267,
+          "mean_ms": 0.02245320678157212,
+          "name": "entity/lod_loot_pickup.DrawTranslucent",
+          "maximum_ms": 13.516699999996717
+        },
+        {
+          "calls": 15905,
+          "milliseconds": 584.4495999994024,
+          "completed": 15905,
+          "ms_per_second": 3.2471058709429546,
+          "mean_ms": 0.03674628104365937,
+          "name": "hook/CreateMove/LOD_MagicPredictedInput",
+          "maximum_ms": 0.3944000000046799
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 555.7597999980146,
+          "completed": 3905,
+          "ms_per_second": 3.0877100598742486,
+          "mean_ms": 0.14232005121588082,
+          "name": "hook/HUDPaint/LOD_DungeonEventPrompt",
+          "maximum_ms": 0.6151000000045315
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 475.6254999999783,
+          "completed": 7810,
+          "ms_per_second": 2.6424970663367495,
+          "mean_ms": 0.06089955185659133,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DrawSecurityGateLabels",
+          "maximum_ms": 0.5778999999961343
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 344.0797000007194,
+          "completed": 3905,
+          "ms_per_second": 1.911650232878539,
+          "mean_ms": 0.08811259923193838,
+          "name": "hook/HUDPaint/LOD_MinimapHUD",
+          "maximum_ms": 1.3009999999979982
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 277.9280000001876,
+          "completed": 7810,
+          "ms_per_second": 1.5441222656341373,
+          "mean_ms": 0.03558617157492799,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DrawKeycards",
+          "maximum_ms": 0.31920000000695836
+        },
+        {
+          "calls": 6773,
+          "milliseconds": 268.0070999997213,
+          "completed": 6773,
+          "ms_per_second": 1.4890033766202941,
+          "mean_ms": 0.0395699247009776,
+          "name": "hook/PostDrawViewModel/LOD_ProceduralWeaponAppearance",
+          "maximum_ms": 12.279800000001728
+        },
+        {
+          "calls": 1498,
+          "milliseconds": 237.89360000043303,
+          "completed": 1498,
+          "ms_per_second": 1.3216977224759,
+          "mean_ms": 0.15880747663580308,
+          "name": "entity/lod_deborah.Draw",
+          "maximum_ms": 0.8337000000153694
+        },
+        {
+          "calls": 144558,
+          "milliseconds": 203.22110000719817,
+          "completed": 144558,
+          "ms_per_second": 1.1290630140452371,
+          "mean_ms": 0.0014058101247056418,
+          "name": "hook/HUDShouldDraw/LOD_SoldierRifleAmmo",
+          "maximum_ms": 0.2626999999790769
+        },
+        {
+          "calls": 15905,
+          "milliseconds": 199.72810000176366,
+          "completed": 15905,
+          "ms_per_second": 1.1096564804025384,
+          "mean_ms": 0.012557566803003059,
+          "name": "hook/CreateMove/LOD_PlayerWeaponSpecials_PredictedInput",
+          "maximum_ms": 0.48479999998107814
+        },
+        {
+          "calls": 749,
+          "milliseconds": 186.22089999986713,
+          "completed": 749,
+          "ms_per_second": 1.0346126983104578,
+          "mean_ms": 0.2486260347127732,
+          "name": "entity/lod_deborah.DrawTranslucent",
+          "maximum_ms": 0.8389000000192937
+        },
+        {
+          "calls": 760966,
+          "milliseconds": 160.9602999993598,
+          "completed": 760966,
+          "ms_per_second": 0.8942689585503948,
+          "mean_ms": 0.00021152101407863135,
+          "name": "entity/lod_static_box.Draw",
+          "maximum_ms": 0.32690000000457076
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 141.90469999783772,
+          "completed": 7810,
+          "ms_per_second": 0.7883991784370263,
+          "mean_ms": 0.018169615876803807,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_EntrySanctuaryBoundary",
+          "maximum_ms": 0.38190000000781765
+        },
+        {
+          "calls": 3685,
+          "milliseconds": 126.83829999949126,
+          "completed": 3685,
+          "ms_per_second": 0.704692737558881,
+          "mean_ms": 0.03442016282211432,
+          "name": "entity/lod_dungeon_event.Draw",
+          "maximum_ms": 0.18810000000257787
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 120.5501000000595,
+          "completed": 3904,
+          "ms_per_second": 0.6697565323910799,
+          "mean_ms": 0.03087861168034311,
+          "name": "hook/Think/LOD_SoldierQueueUIThink",
+          "maximum_ms": 0.25329999999712527
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 120.42200000036019,
+          "completed": 7810,
+          "ms_per_second": 0.6690448298574622,
+          "mean_ms": 0.015418950064066605,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DrawKeycardLabels",
+          "maximum_ms": 0.9661999999934778
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 105.04400000048975,
+          "completed": 3904,
+          "ms_per_second": 0.5836071906102267,
+          "mean_ms": 0.026906762295207415,
+          "name": "hook/Think/LOD_SpecialMoveKeyboard",
+          "maximum_ms": 0.9072999999943931
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 101.92440000123781,
+          "completed": 3905,
+          "ms_per_second": 0.5662752060001338,
+          "mean_ms": 0.026100998719907252,
+          "name": "hook/HUDPaint/LOD_EquipmentComparison",
+          "maximum_ms": 1.202300000002765
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 99.64370000089673,
+          "completed": 3905,
+          "ms_per_second": 0.553604011835616,
+          "mean_ms": 0.025516952625069585,
+          "name": "hook/HUDPaint/LOD_EntrySanctuaryCaption",
+          "maximum_ms": 0.7415999999977885
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 98.43289999741955,
+          "completed": 7810,
+          "ms_per_second": 0.5468770061197553,
+          "mean_ms": 0.012603444301846293,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_PlayerAR2TargetingLaser",
+          "maximum_ms": 11.987099999998918
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 78.78280000120697,
+          "completed": 3905,
+          "ms_per_second": 0.4377042817952229,
+          "mean_ms": 0.020174852753190003,
+          "name": "hook/PostDrawHUD/LOD_MinimapQuadrantPresentation",
+          "maximum_ms": 0.6625000000042292
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 75.09590000137223,
+          "completed": 3905,
+          "ms_per_second": 0.41722047166847254,
+          "mean_ms": 0.019230704225703516,
+          "name": "hook/HUDPaint/LOD_SoldierQueueHint",
+          "maximum_ms": 0.36199999999553256
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 68.39569999965533,
+          "completed": 3905,
+          "ms_per_second": 0.3799952622370876,
+          "mean_ms": 0.017514903969181903,
+          "name": "hook/HUDPaint/LOD_MonsterElementCaption",
+          "maximum_ms": 0.820099999998547
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 58.765000001073986,
+          "completed": 7810,
+          "ms_per_second": 0.32648867671334736,
+          "mean_ms": 0.007524327785028679,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_HeldPotion",
+          "maximum_ms": 0.1513999999929183
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 57.983000000703555,
+          "completed": 3904,
+          "ms_per_second": 0.3221440133030502,
+          "mean_ms": 0.014852202869032672,
+          "name": "hook/Think/LOD_PlayerWeaponSpecials_VisualState",
+          "maximum_ms": 0.347599999997783
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 55.95920000183696,
+          "completed": 3905,
+          "ms_per_second": 0.31090011330219336,
+          "mean_ms": 0.014330140845540835,
+          "name": "hook/HUDPaint/LOD_SoldierRifleAmmo",
+          "maximum_ms": 0.14300000000844193
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 55.2706000000569,
+          "completed": 3905,
+          "ms_per_second": 0.30707436492540663,
+          "mean_ms": 0.01415380281691598,
+          "name": "hook/PreRender/LOD_StagingMirrorRender",
+          "maximum_ms": 0.12999999998442036
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 54.80070000020021,
+          "completed": 3904,
+          "ms_per_second": 0.30446367779636707,
+          "mean_ms": 0.01403706454923161,
+          "name": "hook/Think/LOD_RussianAssetDirectionalInput",
+          "maximum_ms": 0.2692000000195094
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 54.09720000072582,
+          "completed": 3904,
+          "ms_per_second": 0.3005551474825402,
+          "mean_ms": 0.013856864754284277,
+          "name": "hook/Think/LOD_StagingPortalFeedbackSafeState",
+          "maximum_ms": 0.21519999998531603
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 52.85139999901389,
+          "completed": 7810,
+          "ms_per_second": 0.29363368753187263,
+          "mean_ms": 0.0067671446861733535,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_WallPlacementGhost",
+          "maximum_ms": 0.17859999999814136
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 52.34639999899571,
+          "completed": 3905,
+          "ms_per_second": 0.2908279905737655,
+          "mean_ms": 0.013404967989499542,
+          "name": "hook/HUDPaint/LOD_AdventureAccent",
+          "maximum_ms": 0.6009999999889715
+        },
+        {
+          "calls": 144558,
+          "milliseconds": 51.71580000052245,
+          "completed": 144558,
+          "ms_per_second": 0.2873244806778545,
+          "mean_ms": 0.0003577512140491875,
+          "name": "hook/HUDShouldDraw/LOD_MagicReplacesSuitBattery",
+          "maximum_ms": 0.2192000000036387
+        },
+        {
+          "calls": 1204,
+          "milliseconds": 51.62500000007242,
+          "completed": 1204,
+          "ms_per_second": 0.2868200108064692,
+          "mean_ms": 0.04287790697680433,
+          "name": "entity/lod_dungeon_event.DrawTranslucent",
+          "maximum_ms": 0.19120000000327764
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 51.55569999914178,
+          "completed": 7810,
+          "ms_per_second": 0.28643499139696244,
+          "mean_ms": 0.006601241997329293,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DrawJailDoorLabel",
+          "maximum_ms": 0.11530000000448126
+        },
+        {
+          "calls": 132557,
+          "milliseconds": 50.75190000214036,
+          "completed": 132557,
+          "ms_per_second": 0.281969210790166,
+          "mean_ms": 0.0003828685018681802,
+          "name": "hook/HUDShouldDraw/LOD_TimeoutStockHUD",
+          "maximum_ms": 0.4806000000030508
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 48.92710000042655,
+          "completed": 3905,
+          "ms_per_second": 0.2718309220500117,
+          "mean_ms": 0.012529346991146363,
+          "name": "hook/HUDPaint/LOD_ThrowableControls",
+          "maximum_ms": 0.12420000001611697
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 48.57709999929227,
+          "completed": 3905,
+          "ms_per_second": 0.269886379597567,
+          "mean_ms": 0.01243971830967792,
+          "name": "hook/HUDPaint/LOD_WallPlacementHint",
+          "maximum_ms": 0.29820000000313485
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 43.60640000014371,
+          "completed": 3904,
+          "ms_per_second": 0.24226998778217707,
+          "mean_ms": 0.011169672131184352,
+          "name": "hook/Think/LOD_LoopAudioLeases",
+          "maximum_ms": 0.16600000000721593
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 43.19190000052231,
+          "completed": 3905,
+          "ms_per_second": 0.23996709394449137,
+          "mean_ms": 0.011060665813193933,
+          "name": "hook/PostDrawHUD/LOD_WizardReactionHUD",
+          "maximum_ms": 0.8054999999984602
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 42.28769999876647,
+          "completed": 7810,
+          "ms_per_second": 0.23494350742101522,
+          "mean_ms": 0.005414558258484824,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_StagingPortalFeedbackSafeWorld",
+          "maximum_ms": 0.1546999999959553
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 39.800400000444824,
+          "completed": 3905,
+          "ms_per_second": 0.22112447764093687,
+          "mean_ms": 0.010192163892559494,
+          "name": "hook/Think/LOD_BuildProceduralContainerWalls",
+          "maximum_ms": 0.17990000000622786
+        },
+        {
+          "calls": 6773,
+          "milliseconds": 38.4023000007403,
+          "completed": 6773,
+          "ms_per_second": 0.21335686394557193,
+          "mean_ms": 0.005669909936621925,
+          "name": "hook/PreDrawViewModel/LOD_SMGHeat_ViewModel",
+          "maximum_ms": 0.1266000000157419
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 37.506700000378146,
+          "completed": 3904,
+          "ms_per_second": 0.20838105761565842,
+          "mean_ms": 0.009607248975506697,
+          "name": "hook/Think/LOD_MinimapLogicalCellGuard",
+          "maximum_ms": 1.1351999999931195
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 35.833900002501196,
+          "completed": 7810,
+          "ms_per_second": 0.1990872559020031,
+          "mean_ms": 0.004588207426696696,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_StagingQuadrantStyleWallPanels",
+          "maximum_ms": 0.1481999999839445
+        },
+        {
+          "calls": 154513,
+          "milliseconds": 35.56900000289431,
+          "completed": 154513,
+          "ms_per_second": 0.1976155150642351,
+          "mean_ms": 0.00023020069510587662,
+          "name": "entity/lod_hostile.Think",
+          "maximum_ms": 0.07349999999917145
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 35.26950000099305,
+          "completed": 3905,
+          "ms_per_second": 0.19595154230332978,
+          "mean_ms": 0.009031882202559039,
+          "name": "hook/HUDPaint/LOD_TeammateIdentity",
+          "maximum_ms": 0.16779999998561834
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 35.16780000072117,
+          "completed": 3905,
+          "ms_per_second": 0.19538651382532576,
+          "mean_ms": 0.00900583866855856,
+          "name": "hook/HUDPaint/LOD_StagingPortalFeedbackSafeScreen",
+          "maximum_ms": 0.12370000001737935
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 33.856100000548395,
+          "completed": 7810,
+          "ms_per_second": 0.1880989243197786,
+          "mean_ms": 0.0043349679898269395,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_WizardReactionWorld",
+          "maximum_ms": 0.3193999999950847
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 33.48030000113056,
+          "completed": 7810,
+          "ms_per_second": 0.18601104131941162,
+          "mean_ms": 0.004286850192206217,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DeborahFinaleTableau",
+          "maximum_ms": 0.12870000000475557
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 31.68930000038017,
+          "completed": 3905,
+          "ms_per_second": 0.17606053982655176,
+          "mean_ms": 0.008115057618535254,
+          "name": "hook/Think/LOD_MinimapMagicHeartbeat",
+          "maximum_ms": 0.4423999999971784
+        },
+        {
+          "calls": 160484,
+          "milliseconds": 31.562900015586592,
+          "completed": 160484,
+          "ms_per_second": 0.17535828229620054,
+          "mean_ms": 0.0001966731887015939,
+          "name": "entity/lod_loot_pickup.Think",
+          "maximum_ms": 0.0747999999930471
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 26.05419999871117,
+          "completed": 3904,
+          "ms_per_second": 0.1447528508508235,
+          "mean_ms": 0.006673719261964951,
+          "name": "hook/Think/LOD_BuildContainerBatches",
+          "maximum_ms": 0.12159999999994398
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 25.881100001655,
+          "completed": 3905,
+          "ms_per_second": 0.14379113573167232,
+          "mean_ms": 0.006627682458810499,
+          "name": "hook/HUDPaint/LOD_MagnumAimState_HUD",
+          "maximum_ms": 0.187299999993229
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 24.793600000975857,
+          "completed": 3905,
+          "ms_per_second": 0.13774916455595532,
+          "mean_ms": 0.006349193342119298,
+          "name": "hook/PreDrawHUD/LOD_MinimapNearestRealCell",
+          "maximum_ms": 0.13520000001676635
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 21.442799998624196,
+          "completed": 7810,
+          "ms_per_second": 0.11913267074707451,
+          "mean_ms": 0.002745556978056875,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_WatcherScanBeam",
+          "maximum_ms": 0.11390000000233158
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 21.203599998571576,
+          "completed": 3905,
+          "ms_per_second": 0.11780371488073255,
+          "mean_ms": 0.005429859154563784,
+          "name": "hook/HUDPaint/LOD_StagingInteractionPrompt",
+          "maximum_ms": 0.12959999997974592
+        },
+        {
+          "calls": 1,
+          "milliseconds": 19.91630000000555,
+          "completed": 1,
+          "ms_per_second": 0.11065168777178615,
+          "mean_ms": 19.91630000000555,
+          "name": "entity/lod_magic_projectile.DrawTranslucent",
+          "maximum_ms": 19.91630000000555
+        },
+        {
+          "calls": 1,
+          "milliseconds": 19.91239999998129,
+          "completed": 1,
+          "ms_per_second": 0.11063002001296578,
+          "mean_ms": 19.91239999998129,
+          "name": "entity/lod_magic_projectile.Draw",
+          "maximum_ms": 19.91239999998129
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 19.235299999181166,
+          "completed": 3905,
+          "ms_per_second": 0.10686816375056811,
+          "mean_ms": 0.004925813059969569,
+          "name": "hook/PostRender/LOD_MinimapTopologyCache",
+          "maximum_ms": 2.777699999995775
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 19.167500000961013,
+          "completed": 7810,
+          "ms_per_second": 0.10649147810946098,
+          "mean_ms": 0.002454225352235725,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_RosterProjectiles",
+          "maximum_ms": 0.11470000001168046
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 18.604700000310004,
+          "completed": 7810,
+          "ms_per_second": 0.10336465385244642,
+          "mean_ms": 0.002382163892485276,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_MagicFormPresentation",
+          "maximum_ms": 0.48370000001796143
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 18.19680000052415,
+          "completed": 7810,
+          "ms_per_second": 0.10109842852854573,
+          "mean_ms": 0.002329935979580557,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_WatcherScanCompletionPulse",
+          "maximum_ms": 0.10489999999663269
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 16.794200000347814,
+          "completed": 7810,
+          "ms_per_second": 0.09330581357053767,
+          "mean_ms": 0.002150345710671935,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_SeekerChargeFX",
+          "maximum_ms": 0.08730000000412019
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 16.55310000018062,
+          "completed": 7810,
+          "ms_per_second": 0.09196630161599438,
+          "mean_ms": 0.0021194750320333703,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DebugGraphRender",
+          "maximum_ms": 0.09149999999635838
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 16.393199999285457,
+          "completed": 7810,
+          "ms_per_second": 0.09107792350491176,
+          "mean_ms": 0.0020990012803182405,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DrawContainerBatches",
+          "maximum_ms": 0.10299999999574538
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 15.753299998578996,
+          "completed": 7810,
+          "ms_per_second": 0.08752274432588164,
+          "mean_ms": 0.002017067861533802,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_MagicForceShoutWaves",
+          "maximum_ms": 0.12139999999760676
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 15.580400000331451,
+          "completed": 3905,
+          "ms_per_second": 0.08656214036722344,
+          "mean_ms": 0.003989859155014456,
+          "name": "hook/HUDPaint/LOD_DamselCampaignRecord",
+          "maximum_ms": 0.195100000041748
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 15.481900001162785,
+          "completed": 3905,
+          "ms_per_second": 0.08601489056914201,
+          "mean_ms": 0.003964635083524401,
+          "name": "hook/Think/LOD_MinimapToggleInput",
+          "maximum_ms": 6.350499999996373
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 14.986300000714436,
+          "completed": 7810,
+          "ms_per_second": 0.08326141846291281,
+          "mean_ms": 0.0019188604354307857,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_HectorWorld",
+          "maximum_ms": 0.08270000000720756
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 14.966100000890492,
+          "completed": 7810,
+          "ms_per_second": 0.0831491905855707,
+          "mean_ms": 0.0019162740077964778,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_ModularBossMarks",
+          "maximum_ms": 0.15870000001427798
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 14.923800000900656,
+          "completed": 3905,
+          "ms_per_second": 0.08291417874142192,
+          "mean_ms": 0.0038217157492703344,
+          "name": "hook/Think/LOD_DeathTetrisFInput",
+          "maximum_ms": 0.10779999999499523
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 14.746300000368251,
+          "completed": 3904,
+          "ms_per_second": 0.08192801792649153,
+          "mean_ms": 0.003777228483700884,
+          "name": "hook/Think/LOD_ReconcileContainerSectionMaterials",
+          "maximum_ms": 0.13599999999769352
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 14.700299999574895,
+          "completed": 3904,
+          "ms_per_second": 0.08167244948630499,
+          "mean_ms": 0.003765445696612422,
+          "name": "hook/CalcView/LOD_TimeoutCamera",
+          "maximum_ms": 0.17950000000155342
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 14.373300000286804,
+          "completed": 7810,
+          "ms_per_second": 0.07985569126200681,
+          "mean_ms": 0.0018403713188587458,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_TimeoutExplosions",
+          "maximum_ms": 0.09289999999850806
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 14.357600000678872,
+          "completed": 7810,
+          "ms_per_second": 0.07976846464588666,
+          "mean_ms": 0.0018383610756310975,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_PushbackMotionTrails",
+          "maximum_ms": 0.1361999999858199
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 13.859699998718611,
+          "completed": 7810,
+          "ms_per_second": 0.0770022141094686,
+          "mean_ms": 0.00177460947486794,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_WardenHazards",
+          "maximum_ms": 0.07199999998874773
+        },
+        {
+          "calls": 7810,
+          "milliseconds": 13.848600000969213,
+          "completed": 7810,
+          "ms_per_second": 0.07694054434725205,
+          "mean_ms": 0.0017731882203545727,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_ThunderCharge",
+          "maximum_ms": 0.09950000000458203
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 13.54629999825363,
+          "completed": 3904,
+          "ms_per_second": 0.07526101524225334,
+          "mean_ms": 0.0034698514339789014,
+          "name": "hook/Think/LOD_HectorPropsRetire",
+          "maximum_ms": 0.10089999997831
+        },
+        {
+          "calls": 5456,
+          "milliseconds": 13.44820000078073,
+          "completed": 5456,
+          "ms_per_second": 0.07471598778781746,
+          "mean_ms": 0.002464846041198814,
+          "name": "hook/EntityEmitSound/LOD_GenerationSoundBarrier",
+          "maximum_ms": 0.17009999999118008
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 13.420699999429075,
+          "completed": 3904,
+          "ms_per_second": 0.07456320230239667,
+          "mean_ms": 0.0034376793031324474,
+          "name": "hook/Think/LOD_VRTetrisStick",
+          "maximum_ms": 0.1566000000252643
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 11.906599999917944,
+          "completed": 3905,
+          "ms_per_second": 0.06615111168309888,
+          "mean_ms": 0.0030490653008752736,
+          "name": "hook/PreDrawHalos/LOD_SeekerChargeHalo",
+          "maximum_ms": 0.13699999999516876
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 10.732700001753415,
+          "completed": 3905,
+          "ms_per_second": 0.05962911632893342,
+          "mean_ms": 0.00274845070467437,
+          "name": "hook/HUDPaint/LOD_RPGWisOmniscience",
+          "maximum_ms": 0.11599999999134525
+        },
+        {
+          "calls": 261,
+          "milliseconds": 10.516000000308168,
+          "completed": 261,
+          "ms_per_second": 0.05842516675496343,
+          "mean_ms": 0.04029118774064432,
+          "name": "hook/PlayerBindPress/LOD_EquipmentBindingFallback",
+          "maximum_ms": 9.411200000016606
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 10.418600001088407,
+          "completed": 3904,
+          "ms_per_second": 0.05788402837571457,
+          "mean_ms": 0.002668698770770596,
+          "name": "hook/CalcView/LOD_VictoryCelebrationThirdPerson",
+          "maximum_ms": 0.10940000001369299
+        },
+        {
+          "calls": 6773,
+          "milliseconds": 10.34499999954619,
+          "completed": 6773,
+          "ms_per_second": 0.05747511886990023,
+          "mean_ms": 0.001527388158799083,
+          "name": "hook/PostDrawViewModel/LOD_SMGHeat_ViewModelReset",
+          "maximum_ms": 0.08800000000519503
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 9.919999999794982,
+          "completed": 3905,
+          "ms_per_second": 0.05511388875810905,
+          "mean_ms": 0.002540332906477588,
+          "name": "hook/HUDPaint/LOD_FeedbackNotice",
+          "maximum_ms": 0.12599999999451938
+        },
+        {
+          "calls": 7562,
+          "milliseconds": 9.764500002034993,
+          "completed": 7562,
+          "ms_per_second": 0.054249956340910725,
+          "mean_ms": 0.001291258926479105,
+          "name": "hook/ShouldDrawLocalPlayer/LOD_StagingMirrorLocalPlayer",
+          "maximum_ms": 0.09729999999308347
+        },
+        {
+          "calls": 6773,
+          "milliseconds": 9.760499998506589,
+          "completed": 6773,
+          "ms_per_second": 0.05422773297906586,
+          "mean_ms": 0.0014410896203316977,
+          "name": "hook/PreDrawViewModel/LOD_TimeoutViewModel",
+          "maximum_ms": 0.07460000000492073
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 9.71309999999903,
+          "completed": 3905,
+          "ms_per_second": 0.05396438638179428,
+          "mean_ms": 0.002487349551856346,
+          "name": "hook/HUDPaint/LOD_StagingCelebrationHUD",
+          "maximum_ms": 0.1220999999986816
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 9.62230000104114,
+          "completed": 3904,
+          "ms_per_second": 0.05345991651869901,
+          "mean_ms": 0.002464728483873243,
+          "name": "hook/Think/LOD_RebuildSparseContainerBrandPlacement",
+          "maximum_ms": 0.09260000000210766
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 9.447399998620654,
+          "completed": 3905,
+          "ms_per_second": 0.052488200865735815,
+          "mean_ms": 0.0024193085783919726,
+          "name": "hook/PostDrawHUD/LOD_DeathTetrisPresentation",
+          "maximum_ms": 0.09760000000369473
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 9.272799999422432,
+          "completed": 3905,
+          "ms_per_second": 0.051518151981343116,
+          "mean_ms": 0.0023745966707867943,
+          "name": "hook/HUDPaint/LOD_WardenDanceCaptions",
+          "maximum_ms": 0.08460000003651658
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 8.696799999910354,
+          "completed": 3904,
+          "ms_per_second": 0.04831799070125888,
+          "mean_ms": 0.002227663934403267,
+          "name": "hook/Think/LOD_TimeoutRestartKey",
+          "maximum_ms": 0.20919999998625372
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 8.368500001196821,
+          "completed": 3905,
+          "ms_per_second": 0.04649400989392431,
+          "mean_ms": 0.0021430217672719133,
+          "name": "hook/PreDrawHalos/LOD_RPGSixthSenseHalos",
+          "maximum_ms": 0.18850000003567402
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 8.352000000954263,
+          "completed": 3904,
+          "ms_per_second": 0.046402338605829964,
+          "mean_ms": 0.002139344262539514,
+          "name": "hook/Think/LOD_DeveloperM3TestkitInput",
+          "maximum_ms": 0.09869999996681145
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 8.108999998214017,
+          "completed": 3905,
+          "ms_per_second": 0.04505227054942645,
+          "mean_ms": 0.0020765685014632568,
+          "name": "hook/HUDPaint/LOD_VictoryCelebrationHUD",
+          "maximum_ms": 0.1318999999995185
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 7.762599999352915,
+          "completed": 3905,
+          "ms_per_second": 0.04312772911762862,
+          "mean_ms": 0.001987861715583333,
+          "name": "hook/RenderScreenspaceEffects/LOD_RPG_DodgePulse",
+          "maximum_ms": 0.1004000000079941
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 7.628599999463859,
+          "completed": 3904,
+          "ms_per_second": 0.04238324715315032,
+          "mean_ms": 0.0019540471310102096,
+          "name": "hook/Think/LOD_IntermissionTetrisStartInput",
+          "maximum_ms": 0.09670000000028267
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 7.606599999860464,
+          "completed": 3904,
+          "ms_per_second": 0.042261018773024815,
+          "mean_ms": 0.0019484118852101599,
+          "name": "hook/Think/LOD_CrateSummary",
+          "maximum_ms": 0.0950999999531632
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 7.563800000596643,
+          "completed": 3905,
+          "ms_per_second": 0.04202322901512944,
+          "mean_ms": 0.0019369526249927384,
+          "name": "hook/Think/LOD_WardenPropsRetire",
+          "maximum_ms": 0.09729999999308347
+        },
+        {
+          "calls": 19520,
+          "milliseconds": 7.427700000775417,
+          "completed": 19520,
+          "ms_per_second": 0.041267079796351136,
+          "mean_ms": 0.0003805174180725111,
+          "name": "entity/lod_gate.Think",
+          "maximum_ms": 0.06489999998393614
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 7.306400000331337,
+          "completed": 3905,
+          "ms_per_second": 0.040593156940406404,
+          "mean_ms": 0.0018710371319670517,
+          "name": "hook/PostRender/LOD_WeaponSurfaceRestore",
+          "maximum_ms": 0.05999999999062311
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 7.152099999842676,
+          "completed": 3905,
+          "ms_per_second": 0.03973589151072052,
+          "mean_ms": 0.0018315236875397379,
+          "name": "hook/Think/LOD_ApplyContainerSectionColors",
+          "maximum_ms": 0.09730000002150518
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 7.151400001049524,
+          "completed": 3904,
+          "ms_per_second": 0.03973200243253328,
+          "mean_ms": 0.0018318135248589968,
+          "name": "hook/Think/LOD_DeborahFinaleClientLifecycle",
+          "maximum_ms": 0.0667999999990343
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 7.072200000479256,
+          "completed": 3904,
+          "ms_per_second": 0.03929198025298065,
+          "mean_ms": 0.0018115266394670227,
+          "name": "hook/Think/LOD_TimeoutPresentation",
+          "maximum_ms": 0.2288000000021384
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.937000000093008,
+          "completed": 3905,
+          "ms_per_second": 0.038540831283067546,
+          "mean_ms": 0.0017764404609713208,
+          "name": "hook/PostDrawHUD/LOD_IntermissionTetrisPresentation",
+          "maximum_ms": 0.08809999999925822
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.696399998986635,
+          "completed": 3905,
+          "ms_per_second": 0.03720409724108654,
+          "mean_ms": 0.001714827144426795,
+          "name": "hook/PreDrawHalos/LOD_RPGKillerInstinctHalo",
+          "maximum_ms": 0.0965000000121563
+        },
+        {
+          "calls": 23424,
+          "milliseconds": 6.65759999861848,
+          "completed": 23424,
+          "ms_per_second": 0.036988530819297295,
+          "mean_ms": 0.000284221311416431,
+          "name": "entity/lod_staging_prop.Think",
+          "maximum_ms": 0.0588000000050215
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.490800000023,
+          "completed": 3905,
+          "ms_per_second": 0.03606181745562451,
+          "mean_ms": 0.0016621766965487837,
+          "name": "hook/HUDPaint/LOD_MagicLocalCast",
+          "maximum_ms": 0.19740000001888802
+        },
+        {
+          "calls": 5817,
+          "milliseconds": 6.432900001584585,
+          "completed": 5817,
+          "ms_per_second": 0.035740134585352794,
+          "mean_ms": 0.001105879319509126,
+          "name": "hook/PreDrawViewModel/LOD_MagicHideWeaponDuringCast",
+          "maximum_ms": 0.07469999999898391
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 6.430800000160275,
+          "completed": 3904,
+          "ms_per_second": 0.035728467322762705,
+          "mean_ms": 0.001647233606598431,
+          "name": "hook/Think/LOD_DamselRevengeVisualLifetime",
+          "maximum_ms": 0.09679999999434585
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.422799999569406,
+          "completed": 3905,
+          "ms_per_second": 0.03568402063499667,
+          "mean_ms": 0.0016447631240894766,
+          "name": "hook/HUDPaint/LOD_BlockFlash",
+          "maximum_ms": 0.1409000000052174
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.387100002072543,
+          "completed": 3905,
+          "ms_per_second": 0.03548567731939712,
+          "mean_ms": 0.001635620999250331,
+          "name": "hook/HUDPaint/LOD_HectorHealth",
+          "maximum_ms": 0.09059999999294632
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 6.337599999952204,
+          "completed": 3905,
+          "ms_per_second": 0.03521066344737666,
+          "mean_ms": 0.0016229449423693224,
+          "name": "hook/Think/LOD_ModularBossPresentationLifetime",
+          "maximum_ms": 0.08869999999205902
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 6.317500001330245,
+          "completed": 3904,
+          "ms_per_second": 0.03509899116026863,
+          "mean_ms": 0.0016182120905046734,
+          "name": "hook/Think/LOD_RPGWisGPSDefaultBinding",
+          "maximum_ms": 0.0850000000127693
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 5.907299999805105,
+          "completed": 3905,
+          "ms_per_second": 0.03281998740491581,
+          "mean_ms": 0.0015127528808719858,
+          "name": "hook/HUDPaint/LOD_WardenHealth",
+          "maximum_ms": 0.09260000000210766
+        },
+        {
+          "calls": 261,
+          "milliseconds": 5.774200000146834,
+          "completed": 261,
+          "ms_per_second": 0.03208050569372409,
+          "mean_ms": 0.02212337164807216,
+          "name": "hook/PlayerBindPress/LOD_StagingPortalFeedbackSafeUse",
+          "maximum_ms": 0.33010000004196627
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 5.203899999145278,
+          "completed": 3905,
+          "ms_per_second": 0.028912012668058883,
+          "mean_ms": 0.0013326248397299049,
+          "name": "hook/HUDPaint/LOD_FieldManualAndPortalPrompts",
+          "maximum_ms": 0.07709999999860884
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 5.0407000000518565,
+          "completed": 3905,
+          "ms_per_second": 0.028005300309637084,
+          "mean_ms": 0.0012908322663385036,
+          "name": "hook/PostDrawHUD/LOD_RPGMajorFX",
+          "maximum_ms": 0.07899999997107443
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 4.603700001496236,
+          "completed": 3905,
+          "ms_per_second": 0.02557740017776349,
+          "mean_ms": 0.0011789244562090233,
+          "name": "hook/HUDPaint/LOD_SpatialAwarenessLight",
+          "maximum_ms": 0.08589999998775966
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 4.565700000696893,
+          "completed": 3905,
+          "ms_per_second": 0.025366278422026965,
+          "mean_ms": 0.0011691933420478599,
+          "name": "hook/HUDPaint/LOD_ModularBossHUD",
+          "maximum_ms": 0.07460000000492073
+        },
+        {
+          "calls": 3905,
+          "milliseconds": 4.373399999977323,
+          "completed": 3905,
+          "ms_per_second": 0.02429789123976268,
+          "mean_ms": 0.0011199487836049482,
+          "name": "hook/HUDDrawTargetID/LOD_HideStockPlayerTargetID",
+          "maximum_ms": 0.07750000000328328
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 4.042299999966303,
+          "completed": 3904,
+          "ms_per_second": 0.022458354085650344,
+          "mean_ms": 0.0010354252049094015,
+          "name": "hook/Think/LOD_StagingCelebrationLifetime",
+          "maximum_ms": 0.07559999997397426
+        },
+        {
+          "calls": 15616,
+          "milliseconds": 3.9458000019862993,
+          "completed": 15616,
+          "ms_per_second": 0.021922215965293732,
+          "mean_ms": 0.00025267674193047514,
+          "name": "entity/lod_dungeon_event.Think",
+          "maximum_ms": 0.09829999999055872
+        },
+        {
+          "calls": 746,
+          "milliseconds": 3.731899999920074,
+          "completed": 746,
+          "ms_per_second": 0.020733822727442838,
+          "mean_ms": 0.005002546916782941,
+          "name": "entity/lod_jail_door.Draw",
+          "maximum_ms": 0.08670000001131939
+        },
+        {
+          "calls": 1339,
+          "milliseconds": 3.279299999860541,
+          "completed": 1339,
+          "ms_per_second": 0.018219251552471387,
+          "mean_ms": 0.0024490664674089177,
+          "name": "hook/EntityNetworkedVarChanged/LOD_WallRoleCollision",
+          "maximum_ms": 0.07860000000903256
+        },
+        {
+          "calls": 3236,
+          "milliseconds": 2.5572999991680945,
+          "completed": 3236,
+          "ms_per_second": 0.014207938274009638,
+          "mean_ms": 0.0007902657599406967,
+          "name": "entity/lod_gate.Draw",
+          "maximum_ms": 0.07390000001805674
+        },
+        {
+          "calls": 9103,
+          "milliseconds": 2.3893000020791533,
+          "completed": 9103,
+          "ms_per_second": 0.013274557916034446,
+          "mean_ms": 0.00026247390992850195,
+          "name": "entity/lod_keycard.Think",
+          "maximum_ms": 0.05329999999048596
+        },
+        {
+          "calls": 261,
+          "milliseconds": 2.1345999998345633,
+          "completed": 261,
+          "ms_per_second": 0.011859486586327935,
+          "mean_ms": 0.008178544060668825,
+          "name": "hook/PlayerBindPress/LOD_CharacterSheetPBindingFallback",
+          "maximum_ms": 0.11789999996381084
+        },
+        {
+          "calls": 261,
+          "milliseconds": 1.6662999998260375,
+          "completed": 261,
+          "ms_per_second": 0.009257688793341467,
+          "mean_ms": 0.006384291187072941,
+          "name": "hook/PlayerBindPress/LOD_FailedCampaignRestart",
+          "maximum_ms": 0.11230000001205553
+        },
+        {
+          "calls": 261,
+          "milliseconds": 1.60609999954886,
+          "completed": 261,
+          "ms_per_second": 0.008923227491064948,
+          "mean_ms": 0.00615363984501479,
+          "name": "hook/PlayerBindPress/LOD_MagicAuxiliaryBindings",
+          "maximum_ms": 0.12859999998227067
+        },
+        {
+          "calls": 261,
+          "milliseconds": 1.3870999997180888,
+          "completed": 261,
+          "ms_per_second": 0.007706499504275787,
+          "mean_ms": 0.0053145593858930605,
+          "name": "hook/PlayerBindPress/LOD_DeathPlainRespawnInput",
+          "maximum_ms": 0.11649999999008287
+        },
+        {
+          "calls": 7808,
+          "milliseconds": 1.379700000981643,
+          "completed": 7808,
+          "ms_per_second": 0.007665386328148866,
+          "mean_ms": 0.0001767033812732637,
+          "name": "entity/lod_heroes_of_legend_board.Think",
+          "maximum_ms": 0.01679999999737447
+        },
+        {
+          "calls": 1531,
+          "milliseconds": 1.2712999999848762,
+          "completed": 1531,
+          "ms_per_second": 0.007063133747862759,
+          "mean_ms": 0.0008303723056726821,
+          "name": "entity/lod_keycard.Draw",
+          "maximum_ms": 0.06589999999562224
+        },
+        {
+          "calls": 261,
+          "milliseconds": 1.2476000001413468,
+          "completed": 261,
+          "ms_per_second": 0.006931460445950412,
+          "mean_ms": 0.004780076628894049,
+          "name": "hook/PlayerBindPress/LOD_SpellbookBindingFallback",
+          "maximum_ms": 0.07829999998421044
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 0.9984999989569587,
+          "completed": 3904,
+          "ms_per_second": 0.005547501801272496,
+          "mean_ms": 0.0002557633194049587,
+          "name": "entity/lod_field_manual.Think",
+          "maximum_ms": 0.0009999999974752427
+        },
+        {
+          "calls": 87,
+          "milliseconds": 0.8046999999038462,
+          "completed": 87,
+          "ms_per_second": 0.0044707808749261625,
+          "mean_ms": 0.009249425286251107,
+          "name": "hook/DoAnimationEvent/LOD_PortraitMelee",
+          "maximum_ms": 0.08300000001781882
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 0.7891000008726223,
+          "completed": 3904,
+          "ms_per_second": 0.004384109845566158,
+          "mean_ms": 0.000202126024813684,
+          "name": "entity/lod_debbie_statue.Think",
+          "maximum_ms": 0.008100000002286833
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 0.7750000010986469,
+          "completed": 3904,
+          "ms_per_second": 0.004305772565420159,
+          "mean_ms": 0.00019851434454371079,
+          "name": "entity/lod_jail_door.Think",
+          "maximum_ms": 0.0197999999898002
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 0.74650000013321,
+          "completed": 3904,
+          "ms_per_second": 0.0041474312465847206,
+          "mean_ms": 0.00019121413937838371,
+          "name": "entity/lod_deborah.Think",
+          "maximum_ms": 0.018299999993587335
+        },
+        {
+          "calls": 3904,
+          "milliseconds": 0.6697000025468469,
+          "completed": 3904,
+          "ms_per_second": 0.00372074308895515,
+          "mean_ms": 0.0001715420088490899,
+          "name": "entity/lod_staging_mirror.Think",
+          "maximum_ms": 0.0005999999928008037
+        },
+        {
+          "calls": 261,
+          "milliseconds": 0.45409999998469175,
+          "completed": 261,
+          "ms_per_second": 0.0025229049278962562,
+          "mean_ms": 0.001739846743236367,
+          "name": "hook/PlayerBindPress/LOD_IntermissionTetrisControls",
+          "maximum_ms": 0.0043999999661537
+        },
+        {
+          "calls": 261,
+          "milliseconds": 0.4439000001070781,
+          "completed": 261,
+          "ms_per_second": 0.0024662354058600524,
+          "mean_ms": 0.0017007662839351651,
+          "name": "hook/PlayerBindPress/LOD_DeathTetrisControls",
+          "maximum_ms": 0.08400000000108321
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.29440000008662537,
+          "completed": 47,
+          "ms_per_second": 0.0016356379894654134,
+          "mean_ms": 0.0062638297890771355,
+          "name": "hook/EntityRemoved/LOD_WatcherPolishFXCleanup",
+          "maximum_ms": 0.0747999999930471
+        },
+        {
+          "calls": 34,
+          "milliseconds": 0.26199999997800205,
+          "completed": 34,
+          "ms_per_second": 0.0014556289167046983,
+          "mean_ms": 0.007705882352294178,
+          "name": "hook/OnEntityCreated/LOD_HeroShimmerPresentationLateBind",
+          "maximum_ms": 0.026299999944967567
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.1917000000872804,
+          "completed": 47,
+          "ms_per_second": 0.0010650536774151433,
+          "mean_ms": 0.004078723406112349,
+          "name": "hook/EntityRemoved/LOD_LoopAudioEntityRemoved",
+          "maximum_ms": 0.038199999977450716
+        },
+        {
+          "calls": 16,
+          "milliseconds": 0.19020000002001325,
+          "completed": 16,
+          "ms_per_second": 0.001056719923700806,
+          "mean_ms": 0.011887500001250828,
+          "name": "entity/lod_soldier_bolt.DrawTranslucent",
+          "maximum_ms": 0.07159999995565158
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.1458999999641719,
+          "completed": 47,
+          "ms_per_second": 0.000810596408064483,
+          "mean_ms": 0.0031042553183866363,
+          "name": "hook/EntityRemoved/LOD_SeekerFXCleanup",
+          "maximum_ms": 0.07499999999538431
+        },
+        {
+          "calls": 34,
+          "milliseconds": 0.1305000000115797,
+          "completed": 34,
+          "ms_per_second": 0.0007250365406975885,
+          "mean_ms": 0.003838235294458226,
+          "name": "hook/OnEntityCreated/LOD_FreshHostilePresentationGuard",
+          "maximum_ms": 0.07659999999987122
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.1260000000797845,
+          "completed": 47,
+          "ms_per_second": 0.0007000352810546869,
+          "mean_ms": 0.0026808510655273302,
+          "name": "hook/EntityRemoved/LOD_WatcherFXCleanup",
+          "maximum_ms": 0.07090000002563102
+        },
+        {
+          "calls": 28,
+          "milliseconds": 0.11310000006403698,
+          "completed": 28,
+          "ms_per_second": 0.000628365002237932,
+          "mean_ms": 0.004039285716572749,
+          "name": "hook/NotifyShouldTransmit/LOD_Recover_lod_keycard",
+          "maximum_ms": 0.07020000003876703
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.08019999989983262,
+          "completed": 47,
+          "ms_per_second": 0.000445578011388214,
+          "mean_ms": 0.0017063829765921834,
+          "name": "hook/EntityRemoved/LOD_FreshHostilePresentationCleanup",
+          "maximum_ms": 0.009599999998499698
+        },
+        {
+          "calls": 47,
+          "milliseconds": 0.05430000025796744,
+          "completed": 47,
+          "ms_per_second": 0.00030168187236338307,
+          "mean_ms": 0.0011553191544248392,
+          "name": "hook/EntityRemoved/LOD_RPGKillerInstinctRemoved",
+          "maximum_ms": 0.0016000000186977559
+        },
+        {
+          "calls": 34,
+          "milliseconds": 0.05199999998239946,
+          "completed": 34,
+          "ms_per_second": 0.00028890344904343413,
+          "mean_ms": 0.0015294117641882193,
+          "name": "hook/OnEntityCreated/LOD_WatcherPolishDrawInstall",
+          "maximum_ms": 0.003800000001774606
+        },
+        {
+          "calls": 28,
+          "milliseconds": 0.03399999991415825,
+          "completed": 28,
+          "ms_per_second": 0.00018889840857695187,
+          "mean_ms": 0.0012142857112199376,
+          "name": "hook/NotifyShouldTransmit/LOD_Recover_lod_gate",
+          "maximum_ms": 0.0017000000127609383
+        },
+        {
+          "calls": 28,
+          "milliseconds": 0.030299999949079393,
+          "completed": 28,
+          "ms_per_second": 0.0001683418171974581,
+          "mean_ms": 0.001082142855324264,
+          "name": "hook/NotifyShouldTransmit/LOD_Recover_lod_jail_door",
+          "maximum_ms": 0.0013000000080864993
+        },
+        {
+          "calls": 28,
+          "milliseconds": 0.029399999903034768,
+          "completed": 28,
+          "ms_per_second": 0.00016334156493727449,
+          "mean_ms": 0.001049999996536956,
+          "name": "hook/NotifyShouldTransmit/LOD_Recover_lod_static_box",
+          "maximum_ms": 0.0016000000186977559
+        },
+        {
+          "calls": 44,
+          "milliseconds": 0.0286999999730142,
+          "completed": 44,
+          "ms_per_second": 0.00015945248043378307,
+          "mean_ms": 0.0006522727266594137,
+          "name": "entity/lod_soldier_bolt.Think",
+          "maximum_ms": 0.0011999999856016075
+        },
+        {
+          "calls": 28,
+          "milliseconds": 0.02500000006477876,
+          "completed": 28,
+          "ms_per_second": 0.000138895889370102,
+          "mean_ms": 0.00089285714517067,
+          "name": "hook/NotifyShouldTransmit/LOD_LoopAudioTransmit",
+          "maximum_ms": 0.001499999996212864
+        },
+        {
+          "calls": 1,
+          "milliseconds": 0.0007000000152856956,
+          "completed": 1,
+          "ms_per_second": 3.889084977210463e-06,
+          "mean_ms": 0.0007000000152856956,
+          "name": "entity/lod_magic_projectile.Think",
+          "maximum_ms": 0.0007000000152856956
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_debbie_statue.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_debbie_statue.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_field_manual.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_field_manual.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_gate.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_heroes_of_legend_board.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_heroes_of_legend_board.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_jail_door.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_keycard.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_loot_pickup.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_soldier_bolt.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_staging_mirror.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_staging_mirror.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_staging_prop.Draw",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_staging_prop.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "entity/lod_static_box.DrawTranslucent",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/EntityFireBullets/LOD_PortraitShot",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/EntityFireBullets/LOD_ProceduralWeaponPredictedFlash",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/FinishChat/LOD_SoldierQueueChat",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/InitPostEntity/LOD_CharacterSheetInitialSnapshot",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/InitPostEntity/LOD_HeroShimmerPresentation",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/InitPostEntity/LOD_RuntimeBuildIdentity",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/InitPostEntity/LOD_VRMenu",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/OnLuaError/LOD_RuntimeLuaErrors",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/OnScreenSizeChanged/LOD_CharacterSheetResize",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PlayerButtonDown/LOD_CharacterSheetP",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PlayerButtonDown/LOD_DieLoggerInput",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PlayerButtonDown/LOD_EquipmentMenuKey",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PlayerButtonDown/LOD_SpellbookInput",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PlayerFireAnimationEvent/LOD_ProceduralWeaponMuzzle",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_ClearContainerBatches",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_DeborahFinalePostCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_GatePresentation",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_HectorMapCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_MagicFormPresentationCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_MagicShoutCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_ModularBossPresentationCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_PushbackGhostCacheCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_SpatialAwarenessClear",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_TexturedBoxMeshes",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_TimeoutClientMapCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_WallVisualsMapCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_WardenDanceCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostCleanupMap/LOD_WardenPropsMapCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PostPlayerDraw/LOD_SoldierClassTintReset",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_AdventureReset",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_DamselRevengeVisualCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_EquipmentComparisonCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_LoopAudioCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_MinigameCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_StagingCelebrationReset",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_VictoryPresentationReset",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_WallAimCancel",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_WallPreviewCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_WeaponAppearanceCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_WeaponSegmentCache",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PreCleanupMap/LOD_WizardReactionCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PrePlayerDraw/LOD_DeborahFinaleHideParticipants",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PrePlayerDraw/LOD_ProceduralWorldWeaponSurface",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PrePlayerDraw/LOD_SoldierClassTint",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PrePlayerDraw/LOD_TimeoutPlayers",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/PrePlayerDraw/LOD_VeilBody",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/SetupMove/LOD_PlayerScaleLegalHull",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/SetupMove/LOD_PredictedVoluntarySpeed",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_AdventureStop",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_CharacterSheetClose",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_ClearContainerBatches",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_CratePreview",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_DamselRevengeVisualShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_DeborahFinaleShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_DieLoggerSave",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_EquipmentCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_EquipmentPageClose",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_GPSStopVoice",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_GatePresentation",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_HectorShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_HolyStatueMeshCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_LoopAudioShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_MagicFormPresentationShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_MagicShoutShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_MinigameShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_ModularBossPresentationCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_PortraitCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_PushbackGhostCacheCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_SpatialAwarenessShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_SpellbookClose",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_StagingCelebrationCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_TexturedBoxMeshes",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_TimeoutClientCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_VRShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WallPreviewShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WallVisualsClientCleanup",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WardenDanceShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WardenPropsShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WeaponSurfaceShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/ShutDown/LOD_WizardReactionShutdown",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/StartChat/LOD_SoldierQueueChat",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/VRMod_AllowDefaultAction/LOD_VRDefaultActions",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/VRMod_Exit/LOD_VRExit",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/VRMod_Input/LOD_VRInput",
+          "maximum_ms": 0
+        },
+        {
+          "calls": 0,
+          "milliseconds": 0,
+          "completed": 0,
+          "ms_per_second": 0,
+          "mean_ms": 0,
+          "name": "hook/VRMod_Start/LOD_VRStart",
+          "maximum_ms": 0
+        }
+      ],
+      "state_end": {
+        "resources": {
+          "lua_kb": 39493,
+          "damsels": "damsels-20260919-01",
+          "jit_version": "LuaJIT 2.1.0-beta3",
+          "lua_errors": 0,
+          "realm": "client",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "build": "generator-jit-20260917-01",
+          "engine": "2026.09.17",
+          "wall_models": 1406,
+          "meshes": 102,
+          "install": "a4ecb4bbf0dc2442d54f1454935a44b982535b0d clean ",
+          "missing": "none",
+          "feedback_audio": "feedback-20260919-01",
+          "architecture": "x64",
+          "loot_entities": 0,
+          "entities": 2461
+        }
+      },
+      "seconds": 179.9909283,
+      "coverage": "existing LOD hooks, native LOD entity callbacks and selected AI services; excludes timers, gamemode methods and unwrapped engine work"
+    }
+  },
+  "capture_reason": "complete",
+  "elapsed_seconds": 180.00700940000002,
+  "native_sustained_40_fps_accepted": false
+}

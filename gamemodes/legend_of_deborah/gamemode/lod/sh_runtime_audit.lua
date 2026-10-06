@@ -107,6 +107,7 @@ if CLIENT and Audit.StopPerformanceCapture then Audit:StopPerformanceCapture("lu
 if SERVER and Audit.StopServerCPUProfile then Audit:StopServerCPUProfile("lua-refresh") end
 if Audit.StopCPUProfile then Audit:StopCPUProfile("lua-refresh") end
 local profileChannel="LOD_PerformanceProfile"
+local profileJSONLimit=262144 -- finite decompression memory; wire remains <=60000
 local function profileState()
     local state=LOD.RunManager and LOD.RunManager.State
     local graph=state and state.Graph
@@ -251,6 +252,16 @@ if SERVER and net and net.Receive and util.AddNetworkString then
         if not out or not IsValid(current.owner) then return end
         out.token=current.token
         local encoded=util.TableToJSON(out)
+        -- Dense real profiles exceed the original JSON wire ceiling. Compress
+        -- the complete report, retaining every row and timing. A NUL prefix is
+        -- unambiguous beside the existing JSON messages; small reports keep the
+        -- original wire format. Compression only runs during this finite lease.
+        if encoded and #encoded>60000 then
+            if #encoded<=profileJSONLimit and util.Compress then
+                local ok,packed=pcall(util.Compress,encoded)
+                encoded=ok and type(packed)=="string" and #packed>0 and ("\0"..packed) or nil
+            else encoded=nil end
+        end
         if not encoded or #encoded>60000 then
             encoded=util.TableToJSON({token=current.token,realm="server",error="profile exceeds transport limit"})
         end
@@ -303,6 +314,12 @@ if CLIENT then
             if size<2 or size>60000 then return end
             local encoded=net.ReadData(size)
             if type(encoded)~="string" or #encoded~=size then return end
+            if encoded:byte(1)==0 then
+                if not util.Decompress then return end
+                local ok,decoded=pcall(util.Decompress,encoded:sub(2),profileJSONLimit)
+                if not ok or type(decoded)~="string" or #decoded<2 or #decoded>profileJSONLimit then return end
+                encoded=decoded
+            end
             local ok,out=pcall(util.JSONToTable,encoded)
             if not ok or type(out)~="table" or out.realm~="server" then return end
             local capture=Audit.PerformanceCapture

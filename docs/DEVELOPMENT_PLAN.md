@@ -149,6 +149,34 @@ overlay counters and population are included automatically. This measures the
 remaining bottleneck; it does not claim an additional FPS improvement. Sustained
 40 FPS acceptance remains open. Workshop and VPS remain outside this pass.
 
+The next complete capture independently matches all 42 authorities to clean
+main `a4ecb4b`, measuring 21.37 active FPS (171.18 seconds; median 40.164 ms,
+p95 79.436 ms). It has 1,406 wall models and 40 initial roamers on two floors.
+The static-geometry render hook is the largest measured game-code render row;
+3,572,160 static-box Think calls mostly poll an existing one-second deadline.
+Server attribution fails explicitly because its JSON exceeds the wire ceiling;
+missing server rows are not evidence of inexpensive AI/navigation.
+
+The current bounded source checkpoint uses conservative oriented-box support planes
+instead of broad origin spheres, shares one native bounds/pose snapshot per
+drawable box/pass, and schedules the existing bounds refresh at its existing
+one-second deadline. Incomplete datatables retry immediately; transmission wakes
+the callback and the existing weak registry survives Lua refresh. Meshes, floor
+UVs/material/colors, grates, stairs, false-floor visibility, native wall bodies
+and all server geometry/gameplay remain unchanged. Oversized finite CPU reports
+use native compression, retaining all rows/timings, with the original 60,000-byte
+wire ceiling and a 262,144-byte decompression ceiling. Small JSON reports retain
+their existing wire format. The corrected frozen source passes 309/309 complete
+integration suites and 879 Lua syntax files, with exact raw log/source hash
+verification and failed-attempt evidence preserved. See the
+[finite source/native gate](validation/STEAM_DECK_20261006_STATIC_GATE.md).
+
+After publication, repeat the same fully restarted three-minute profiled capture.
+Require complete server attribution, visible floor/stair/wall surfaces and no
+new Lua errors; measure the remaining bottleneck and the still-open >=40 FPS
+target. Use the same console batch and two upload files above. No Workshop/VPS
+operation is included.
+
 ---
 
 # Current author direction — ambient audio and core gameplay

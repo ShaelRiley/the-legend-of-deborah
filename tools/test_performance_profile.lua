@@ -1,6 +1,7 @@
 -- Execute the production opt-in observer across separate client/server realms.
 -- Exact clocks and native boundaries are doubled; no native FPS/GPU claim.
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
+local auditPath=arg and arg[1]=='--source' and assert(arg[2]) or root..'sh_runtime_audit.lua'
 local noop=function() end
 local now=100;SysTime=function() return now end;RealTime=SysTime;CurTime=SysTime
 function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
@@ -40,11 +41,14 @@ local function copy(v)
     if type(v)~='table' then return v end
     local c={};for k,item in pairs(v) do c[k]=copy(item) end;return c
 end
-local codec={};local serial=0;local oversized=false
+local codec={};local serial=0;local oversized=false;local oversizedBytes=60001
 util={SHA256=function() return string.rep('a',64) end,AddNetworkString=function(channel)
     assert(channel=='LOD_PerformanceProfile')
 end,TableToJSON=function(v)
-    if oversized and v.rows then return string.rep('x',60001) end
+    if oversized and v.rows then
+        serial=serial+1;local text='{"test_payload":'..serial..',"padding":"'..string.rep('x',oversizedBytes)..'"}'
+        codec[text]=copy(v);return text
+    end
     serial=serial+1;local text='{"test_payload":'..serial..'}';codec[text]=copy(v);return text
 end,JSONToTable=function(text)
     if text=='throw-json' then error('bad codec') end
@@ -114,8 +118,8 @@ local box,bfields=entity('lod_static_box',{Draw=draw,Think=function() now=now+.0
 entities.client={box}
 local think=function(a,b,c) assert(a=='arg' and b==nil and c==7);now=now+.006;return false,nil,7,nil end
 realm('server',function() hook.Add('TestEvent','LOD_ProfileReturn',think);hook.Add('TestEvent','ForeignAddon',noop) end)
-realm('server',function() dofile(root..'sh_runtime_audit.lua') end)
-realm('client',function() dofile(root..'sh_runtime_audit.lua') end)
+realm('server',function() dofile(auditPath) end)
+realm('client',function() dofile(auditPath) end)
 local A=realms.client.RuntimeAudit;local B=realms.server.RuntimeAudit
 receivers.server.LOD_PopulationSnapshot=noop
 assert(scans==0 and writes==0 and not A.CPUProfile and not B.CPUProfile)
@@ -217,7 +221,56 @@ assert(hooks.server.Failure.LOD_ProfileFailure==errorHook)
 request(hero,true,101,30);oversized=true;now=now+5;fire('server','Think');oversized=false
 local packet=table.remove(queue.client);assert(codec[packet.values[2]].error=='profile exceeds transport limit')
 fire('server','PostCleanupMap');assert(not B.CPUProfile);queue.client={}
-request(hero,true,102,30);realm('server',function() dofile(root..'sh_runtime_audit.lua') end)
+-- The native capture exceeded raw JSON transport. Exercise the production
+-- compressed path through binary net data, progress/final merging and every
+-- original row/timing, while keeping the old small JSON wire format unchanged.
+local compressed={};local packedSerial=0;local packMode
+util.Compress=function(text)
+    if packMode=='throw' then error('native compression failed') end
+    if packMode=='oversize' then return string.rep('x',60000) end
+    if packMode=='empty' then return '' end
+    packedSerial=packedSerial+1
+    local packed=string.pack('<I8',#text)..'native-lzma-boundary\0'..packedSerial
+    compressed[packed]=text;return packed
+end
+util.Decompress=function(packed,limit)
+    assert(limit==262144,'native decompression was not bounded')
+    local text=compressed[packed]
+    return text and #text<=limit and text or nil
+end
+realm('client',function() A:StartPerformanceCapture(30,true) end);fire('client','PreRender');now=now+3;fire('client','PreRender')
+deliver('server');assert(B.CPUProfile)
+realm('server',function() soldier:_BehaviourTick('a',nil,'c') end)
+oversized=true;now=now+5;fire('server','Think')
+local binary=queue.client[1].values[2]
+assert(binary:byte(1)==0 and #binary<60000 and #compressed[binary:sub(2)]>60000,'large report was not compressed')
+deliver('client')
+local received=A.PerformanceCapture.server_profile
+assert(received.reason=='progress' and not received.error)
+local timed=row(received,'entity/lod_hostile/soldier._BehaviourTick')
+assert(timed.calls==1 and math.abs(timed.milliseconds-10)<1e-7,'compression dropped exact timings')
+local totalRows=#received.rows;assert(totalRows>5)
+-- Invalid codecs/data cannot overwrite the accepted progress snapshot.
+reply('\0not-native-lzma');assert(A.PerformanceCapture.server_profile==received)
+local unpack=util.Decompress
+util.Decompress=function() error('native decode failed') end
+reply(binary);assert(A.PerformanceCapture.server_profile==received)
+util.Decompress=function() return string.rep('x',262145) end
+reply(binary);assert(A.PerformanceCapture.server_profile==received)
+util.Decompress=unpack
+oversizedBytes=262145;now=now+5;fire('server','Think');oversizedBytes=60001
+local tooLarge=table.remove(queue.client);assert(codec[tooLarge.values[2]].error=='profile exceeds transport limit')
+for _,mode in ipairs({'throw','oversize','empty'}) do
+ packMode=mode;now=now+5;fire('server','Think')
+ local failure=table.remove(queue.client);assert(codec[failure.values[2]].error=='profile exceeds transport limit')
+end
+packMode=nil
+local finished=realm('client',function() return A:StopPerformanceCapture('compression-test') end)
+deliver('server');deliver('client');oversized=false
+assert(finished.cpu_profile.server_status=='received' and #finished.cpu_profile.server.rows==totalRows)
+assert(row(finished.cpu_profile.server,'entity/lod_hostile/soldier._BehaviourTick').milliseconds==timed.milliseconds)
+assert(not A.CPUProfile and not B.CPUProfile,'compressed final report leaked profiler bindings')
+request(hero,true,102,30);realm('server',function() dofile(auditPath) end)
 assert(not B.CPUProfile and not hooks.server.Think.LOD_CPUProfileDeadline,'reload leaked server lease')
 local refreshed=table.remove(queue.client);assert(codec[refreshed.values[2]].reason=='lua-refresh','reload lost final server evidence')
 realm('client',function() A:StartPerformanceCapture(30,true) end);fire('client','PreRender');now=now+3;fire('client','PreRender')
@@ -228,7 +281,7 @@ fire('client','PostCleanupMap');assert(not A.PerformanceCapture and not A.CPUPro
 realm('client',function() for _,fn in ipairs(deferred.client) do fn() end end)
 assert(late:GetTable().Draw==nil,'retired deferred bind changed an entity')
 realm('client',function() A:StartPerformanceCapture(30,true) end);fire('client','PreRender');now=now+3;fire('client','PreRender')
-realm('client',function() dofile(root..'sh_runtime_audit.lua') end)
+realm('client',function() dofile(auditPath) end)
 assert(not A.CPUProfile and not A.PerformanceCapture and A.LastPerformanceCapture.reason=='lua-refresh')
 assert(A.LastPerformanceCapture.cpu_profile.client.reason=='lua-refresh','reload lost final client evidence')
-print('PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; malformed/stale/oversized/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement')
+print('PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement')

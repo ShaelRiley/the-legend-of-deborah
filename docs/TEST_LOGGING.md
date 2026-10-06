@@ -12,6 +12,15 @@ status, population and source verification. Inclusive rows overlap; diagnostic
 overhead is included and GPU time is unmeasured. See
 [exact native evidence and limits](validation/STEAM_DECK_20261006_PROFILE.md).
 
+The first complete profiled run measured 21.37 active FPS but failed server
+transport with `profile exceeds transport limit`. The current static-geometry
+and bounded compression checkpoint retains the same command. Keep the game open
+through capture completion so the matching final server reply can update the
+same file. The next source/native gate requires nonempty server rows with
+`server_status=received`, exact mounted source verification, unchanged visible
+floor/stair/wall geometry and no new Lua errors. See
+[measured seam and finite regression gate](validation/STEAM_DECK_20261006_STATIC_GATE.md).
+
 # Historical Steam Deck native capture repair
 
 The first verified capture recorded no frames while waiting for batching; it is
