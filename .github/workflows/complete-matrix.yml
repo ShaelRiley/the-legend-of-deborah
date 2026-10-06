@@ -38,7 +38,7 @@ jobs:
           import subprocess, sys
           from pathlib import Path
           commands = [["python3", "tools/run_lua54.py", "tools/" + name + ".lua"]
-                      for name in ("test_wall_batch", "test_performance_capture",
+                      for name in ("test_wall_batch", "test_performance_capture", "test_performance_profile",
                                    "test_population_transport", "test_low_end_palette",
                                    "test_great_crate_render")]
           commands.append(["python3", "tools/test_dev_population_manifest.py"])

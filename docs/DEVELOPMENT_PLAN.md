@@ -104,14 +104,42 @@ to zero repeated fit resolutions. Maximum sorting falls from 968 records to
 counts automatically; no new setting, native mesh, hidden wall or game rule is
 introduced. See [finite checks and limits](validation/STEAM_DECK_20261005_BRANDING.md).
 
+The October 6 capture independently matches all 42 installed/mounted source hashes
+to clean main `7f93cb145fdf1e84fa6a3cfebb62cba76511aab2`. It spans 179.92 measured
+seconds (163.50 active), with 17.31 active FPS, median 47.440 ms and p95 104.987 ms.
+All 2,830 active frames exceed 25 ms; sustained 40 FPS fails. This generated maze
+has 1,718 wall models and 60 initial roamers across three floors, versus 1,364
+models and 36 roamers across two floors in the earlier f657913 capture. Graphics
+settings match; this is not a controlled source-regression comparison.
+The sole wall appearance writer stays idle at 1,718 applications, zero retries,
+and zero hidden originals in every live window. Window snapshot logo CPU costs
+range 0.390–1.010 ms (median 0.583); wayfinding reports zero visits/draws. These
+isolated CPU snapshots cannot identify the remaining engine/server/GPU frame cost.
+
+The next bounded checkpoint extends the existing capture with optional `profile`
+attribution after warmup. It measures existing LOD hooks, native entity callbacks,
+selected AI/navigation services and the client PreRender-to-PostRender interval.
+Watcher and entry safety are timed at their canonical bodies/calls without
+changing their exact binding identities; original callback arguments, all
+returns and errors remain intact. Weak ownership and guarded restoration protect
+retired models and newer method bindings. A single admin-owned, finite server
+lease sends bounded five-second progress reports plus a final reply; the same
+performance file preserves partial evidence on immediate quit and merges a
+matching final reply. Default capture/play has no profiling wrappers or scans.
+Inclusive rows overlap; diagnostic overhead is included, native engine/timer/
+gamemode-method work remains partly unmeasured, and this is not GPU profiling.
+No gameplay, authored tuning, geometry, population or graphics default changes.
+See [native result and CPU attribution](validation/STEAM_DECK_20261006_PROFILE.md).
+
 The next native action after source publication is a fully restarted gm_flatgrass
-capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`.
+capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`.
 Keep Proton, windowed Arch Desktop, resolution, graphics settings and loaded
 population; play through the full capture before quitting. Wall bodies, nearby
 boards and company artwork must remain visible when turning and crossing stairs.
-Return performance_client_latest.txt + console_latest.txt; overlay counters and
-population are included automatically. New overlay FPS and sustained 40 FPS
-acceptance remain open. Workshop and VPS remain outside this pass.
+Return performance_client_latest.txt + console_latest.txt; client/server CPU rows,
+overlay counters and population are included automatically. This measures the
+remaining bottleneck; it does not claim an additional FPS improvement. Sustained
+40 FPS acceptance remains open. Workshop and VPS remain outside this pass.
 
 ---
 

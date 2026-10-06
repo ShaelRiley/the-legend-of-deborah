@@ -1,0 +1,17 @@
+{
+  "parent_sha": "7f93cb145fdf1e84fa6a3cfebb62cba76511aab2",
+  "passed": 37,
+  "total": 37,
+  "lua_syntax_files": 879,
+  "source_unchanged_during_gate": true,
+  "verified_log_sha256_count": 37,
+  "production_files": 562,
+  "production_sha256": "f62ecd1b6eb609b45c475133cc911583576579fbde48cfb1d4c4b158253b6500",
+  "gate_receipt_sha256": "b27898748ebc077763cb8296e7e2962e5e8bb54b04ca910869f71b4d07c11d49",
+  "logs_archive_sha256": "6029c9246a43bc148bc0a6b1b1cfc6f91d0485e3a82a8c72912c64213647c992",
+  "native_gmod_accepted": false,
+  "native_sustained_40_fps_accepted": false,
+  "new_native_fps_gain_claimed": false,
+  "source_before": "cc50dc015596a24b6f8e08b238d32cd4dc11a23fdceda5827564e2ba116eabf5",
+  "source_after": "cc50dc015596a24b6f8e08b238d32cd4dc11a23fdceda5827564e2ba116eabf5"
+}

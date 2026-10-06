@@ -30,6 +30,7 @@ SUITES = [
     ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
     ("Reduced Container Batching & Exact Hulls", ["python3", "tools/run_lua54.py", "tools/test_wall_batch.lua"]),
     ("Opt-in Rendered Frame Evidence & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_performance_capture.lua"]),
+    ("Opt-in Client/Server CPU Attribution & Transparent Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_performance_profile.lua"]),
     ("Bounded Server Population Evidence Client Mirror", ["python3", "tools/run_lua54.py", "tools/test_population_transport.lua"]),
     ("Gate Reveal Native Enemy Engagement", ["python3", "tools/run_lua54.py", "tools/test_gate_enemy_engagement.lua"]),
     ("Boss Full Button Routes & Native E Interaction", ["python3", "tools/run_lua54.py", "tools/test_boss_button_routes.lua"]),

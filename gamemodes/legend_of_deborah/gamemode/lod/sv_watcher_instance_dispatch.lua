@@ -69,7 +69,10 @@ local function watcherRunLoop(self)
             and LOD.EnemyRoster:TickCloseDefense(self) then
             -- Match the native hostile dispatcher before specialized retreat.
         elseif watcherTick then
-            watcherTick(self)
+            local audit=LOD.RuntimeAudit
+            if audit and audit.CPUProfile then
+                audit:MeasureCPUCall("service/WatcherDirectBehaviour",watcherTick,self)
+            else watcherTick(self) end
         else
             stopWatcherSafely(self)
             self.LODMotionMode = "watcher-dispatch-wait"

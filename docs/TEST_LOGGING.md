@@ -1,4 +1,18 @@
-# Current Steam Deck native capture repair
+# Current Steam Deck native cost attribution
+
+The exact clean 7f93cb1 capture spans nearly 180 measured seconds and fails the
+40 FPS target at 17.31 active FPS. Wall appearance writes remain idle and sampled
+logo CPU costs are small; layout/population differ from the earlier run. The next
+capture adds optional client/server costs through the same observer:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`.
+Fully quit/update/install main first, play through the complete gm_flatgrass
+capture in the established configuration, and return performance_client_latest.txt
++ console_latest.txt. The same file includes both realms, partial/final transport
+status, population and source verification. Inclusive rows overlap; diagnostic
+overhead is included and GPU time is unmeasured. See
+[exact native evidence and limits](validation/STEAM_DECK_20261006_PROFILE.md).
+
+# Historical Steam Deck native capture repair
 
 The first verified capture recorded no frames while waiting for batching; it is
 an unmeasured result. The repaired `lod_perf_start 180` bounds preparation to
@@ -168,7 +182,7 @@ meshes require the unsaved `lod_wall_batches 1` opt-in; leave this off for the
 current visibility/performance retest. After deploying on gm_flatgrass, one batch captures three minutes of
 loaded play without changing resolution, graphics settings, sync or frame limits:
 
-`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`
 
 The client waits for wall preparation and three seconds of warmup, then records
 rendered frame intervals, active-play FPS/median/p95/p99/max, >25/50/100ms counts,
@@ -179,6 +193,18 @@ preparation. Shutdown cleanup may say off at the end; assess the live windows
 and sample-start renderer before attributing the run. Sampling is bounded and opt-in; there is no idle
 frame hook or per-frame disk write. `lod_perf_stop` ends a capture early. This
 command observes gameplay; it does not spawn actors, enable cheats or alter RNG.
+
+The optional `profile` argument starts CPU attribution only after warmup. It
+times registered LOD hooks, actual native LOD entity callbacks and selected
+server AI/navigation services, plus the client render submission interval.
+Callback returns/errors and retired/newer method ownership remain protected.
+The admin-owned server lease sends bounded five-second progress copies and a
+final reply into the same file. `partial` means quit interrupted final delivery;
+`received` means the final server reply arrived. Cleanup/refresh/shutdown/deadline
+restore the original callbacks. Default captures omit profiler scans/wrappers.
+Rows are inclusive and may overlap; do not add them or treat the render interval
+as a GPU timing. Foreign addon callbacks, timers, gamemode methods and some native
+engine work remain outside coverage. Profiled FPS includes diagnostic overhead.
 
 Return **performance_client_latest.txt + console_latest.txt**
 from the same canonical data directory, plus the Proton version and confirmation

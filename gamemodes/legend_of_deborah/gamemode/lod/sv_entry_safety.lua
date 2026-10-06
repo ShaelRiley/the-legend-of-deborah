@@ -438,7 +438,7 @@ function S:Withdraw(e,g)
     if w then e.LODEntryWithdrawing=true;motion:MoveToward(e,w);e.LODEntryWithdrawing=nil
     else motion:Stop(e) end
 end
-function S:BeforeAI(e)
+local function beforeAI(self,e)
     local s,g=self:Context();if not s or not alive(e) then return false end
     if not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then return false end
     self:Service()
@@ -469,6 +469,13 @@ function S:BeforeAI(e)
     end
     e.LODEntrySuppressed=nil
     return false
+end
+function S:BeforeAI(e)
+    local audit=LOD.RuntimeAudit
+    if audit and audit.CPUProfile then
+        return audit:MeasureCPUCall("service/EntrySafety.BeforeAI",beforeAI,self,e)
+    end
+    return beforeAI(self,e)
 end
 
 -- Swept segment versus the compact sanctuary, expanded by the hostile hull.
