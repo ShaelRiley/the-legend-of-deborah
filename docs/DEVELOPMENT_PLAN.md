@@ -1,3 +1,21 @@
+# Current intervening correction — Hair Trigger
+
+October 5, 2026 author correction: Hair Trigger is one nonrepeatable DEX 13 feat
+at 55% faster firearm firing; Rapid Fire and Lead Storm are removed. Revolver,
+pistol, shotgun, SMG and AR2 share the 1.55 cadence multiplier. AR2 projectile
+spacing and completed-burst cycles both use it. Existing owned/resolved ranks
+collapse to one Hair Trigger; unchosen retired cards use canonical stored-hand
+repair. The card and manual say "Increase firearm firing rate by 55%."
+Live HUMAN and normalized 04 rules are reconciled and readback-verified; the
+current catalog has 112 ordinary feats, six fallbacks and nine capstones.
+See [author scope](briefs/HAIR_TRIGGER_20261005.md) and
+[finite source checks](validation/HAIR_TRIGGER_20261005.md).
+
+Publish this validated source correction before the pending optimization retest
+below. It preserves the accepted native wall renderer and the overlay optimization.
+Native firing feel and sustained 40 FPS acceptance remain open; no Workshop/VPS
+operation is included.
+
 # Current author direction — Steam Deck performance
 
 October 5, 2026: optimize the post-music-removal build for sustained >=40 FPS

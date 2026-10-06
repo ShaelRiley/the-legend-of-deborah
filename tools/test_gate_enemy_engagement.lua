@@ -192,6 +192,27 @@ hero:SetPos(pos(dest));at(clock+.1);tick(gunner)
 at(gunner.LODNextAttack+.01);tick(gunner)
 assert(gunner.LODSoldierBurst and gunner.LODSoldierBurst.windupEnd>clock and #shots==3,
     'readmission replayed an old shot instead of a full fresh warning')
+-- Hair Trigger's final actor resolver also drives the actual AI burst service.
+local oldProgression=gunner.LODProgressionState
+local oldRPG=LOD.RPG
+LOD.RPG={IdentityCatalog={OrdinaryFeats={}},SystemBootstrap={},
+    FeatEffectSystem={ApplyDerived=function()end}}
+LOD.RPGAbilityRules={Derived=function(_,e)return e.LODProgressionState.derivedStats end}
+dofile(root..'sv_rpg_gate_e_rate_of_fire.lua')
+local firearmRules=LOD.RPGAbilityRules
+gunner.LODProgressionState={actorType='ai',featIds={'DEX_RATE_OF_FIRE_1'},derivedStats={}}
+LOD.RPG.FeatEffectSystem:ApplyDerived(gunner.LODProgressionState,gunner.LODProgressionState.derivedStats)
+assert(math.abs(firearmRules:RateOfFireMultiplier(gunner)-1.55)<.000001,
+    'AI Hair Trigger resolver retained the old cap')
+burst=gunner.LODSoldierBurst
+at(burst.windupEnd);gunner:_ProcessSoldierBurst()
+assert(#shots==4 and math.abs(burst.nextShot-clock-gunner.LODConfig.burstShotInterval/1.55)<.000001,
+    'AI firearm spacing did not use Hair Trigger')
+for i=1,2 do at(burst.nextShot+.000001);gunner:_ProcessSoldierBurst() end
+assert(#shots==6 and not gunner.LODSoldierBurst
+    and math.abs(gunner.LODNextAttack-clock-gunner.LODConfig.burstCooldown/1.55)<.000001,
+    'AI burst recovery did not use the same multiplier')
+gunner.LODProgressionState=oldProgression;LOD.RPGAbilityRules=nil;LOD.RPG=oldRPG
 -- Sniper cancellation uses the production owner, including presentation.
 local sniperSource=read(root..'sv_enemy_update.lua')
 LOD.EnemyUpdate={}

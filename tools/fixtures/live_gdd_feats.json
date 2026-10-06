@@ -1,6 +1,6 @@
 {
   "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
-  "revision": "ANLCKQm7g4K-QKg69u8AUFhbLLj2YBvEu7nFg7b1VKsEuXB7qA5cZy2NhBGMk8ZBLY_Nuyee6tMtFjcOVMLrU7OAcVuX2ZDAwFUOgulsQw",
+  "revision": "ANLCKQmUlHpIXlUgqqjCRjeDq_RX5wfx7ceBkFwsdpnj5ZxQkzwWH2SxmdIiMnmRGrSLjqw2kDKEAZWGg9e2Cg8ohbKLMunfHqqeJwdRdA",
   "sourceTab": "HUMAN — Complete GDD",
   "rows": [
     {
@@ -216,26 +216,8 @@
       "requirement": "DEX 13",
       "prerequisite": "None",
       "actors": "Heroes, human Soldiers, and AI whose equipped/authored ordinary firearm uses the shared attack-cadence authority",
-      "effect": "Sets RateOfFireMultiplier = 1.10. For eligible ordinary firearm primary attacks, NextPrimaryAttackInterval = BasePrimaryAttackInterval / RateOfFireMultiplier. It changes trigger/attack opportunity cadence only: it does not shorten reloads, Magic cooldowns, SMG cooling or 2-second overheat lockout, AR2 targeting-laser duration, internal AR2 three-shot spacing, Magnum free-projectile burst spacing, or enemy telegraph duration.",
-      "pos": 521869
-    },
-    {
-      "id": "DEX_RATE_OF_FIRE_2",
-      "name": "Rapid Fire",
-      "requirement": "DEX 15",
-      "prerequisite": "Hair Trigger",
-      "actors": "Heroes, human Soldiers, and eligible firearm-using AI",
-      "effect": "Replaces Hair Trigger and sets total RateOfFireMultiplier = 1.20. The same exclusions remain authoritative. Faster SMG firing may therefore accumulate heat sooner in real time; the Heat Sink feat may independently suppress per-shot heat additions, but Rate of Fire itself grants no heat-system exemption.",
-      "pos": 522490
-    },
-    {
-      "id": "DEX_RATE_OF_FIRE_3",
-      "name": "Lead Storm",
-      "requirement": "DEX 17",
-      "prerequisite": "Rapid Fire",
-      "actors": "Heroes, human Soldiers, and eligible firearm-using AI",
-      "effect": "Replaces lower Rate-of-Fire ranks and sets total RateOfFireMultiplier = 1.30. AR2 gains shorter recovery between completed burst cycles but retains its full targeting-laser tell and authored internal burst spacing; Magnum gains shorter trigger-to-trigger recovery but retains authored chamber-burst projectile spacing; AI firearm users recover between completed authored attack cycles faster but retain the complete readable telegraph for every attack.",
-      "pos": 522934
+      "effect": "Single-rank, nonrepeatable Hair Trigger sets RateOfFireMultiplier=1.55: 55% faster firearm firing, with firing intervals divided by 1.55 for the revolver, pistol, shotgun, SMG and AR2. Apply the same shared multiplier to AR2 within-burst projectile spacing and the completed-burst next-trigger cycle; a burst must genuinely complete before the next trigger can begin. Preserve reloads, Magic cooldowns, SMG cooling/2-second overheat lockout, targeting-laser duration, Magnum free-projectile burst spacing and enemy telegraphs. Faster SMG firing accrues heat sooner; Heat Sink may independently suppress additions. Player-facing text: Increase firearm firing rate by 55%. Rapid Fire and Lead Storm are removed entirely, including future Hero/Soldier/AI drafts and prerequisite graphs. Existing owned or resolved historical ranks collapse to one Hair Trigger without stacking or a new award; unchosen retired offers use canonical stored-hand repair while retaining valid choices, seed and offer limit.",
+      "pos": 339236
     },
     {
       "id": "DEX_BURSTER_1",
@@ -1195,5 +1177,6 @@
       "retrieved": "2026-10-02"
     }
   ],
-  "rebalanceAuthority": "Author final 2026-10-02 decision ledger; live HUMAN and normalized tabs reconciled in place. Retired IDs removed, not deferred. Source effects are extracted from the live document, independently of runtime."
+  "rebalanceAuthority": "Author final 2026-10-02 decision ledger; live HUMAN and normalized tabs reconciled in place. Retired IDs removed, not deferred. Source effects are extracted from the live document, independently of runtime.",
+  "hairTriggerAuthority": "Author correction: singleton 55% for all firearm modes; exact live HUMAN row and normalized LOD-HAIR-TRIGGER-001 read back; retired ranks removed."
 }

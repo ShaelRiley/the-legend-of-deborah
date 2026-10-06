@@ -9,7 +9,7 @@ local supportedForms={cone=true,blast=true,beam=true,bomb=true,missile=true,bolt
     super_ball=true,watermelon=true,wall=true}
 -- Each allowed signature has a live shared execution/mitigation path below.
 local signatures={STR_CROWBAR_D6=true,STR_CROWBAR_D12=true,
-    DEX_RATE_OF_FIRE_1=true,DEX_RATE_OF_FIRE_2=true,DEX_RATE_OF_FIRE_3=true,INT_MANA_BARRIER_1=true,INT_MANA_BARRIER_2=true,INT_MANA_BARRIER_3=true,
+    DEX_RATE_OF_FIRE_1=true,INT_MANA_BARRIER_1=true,INT_MANA_BARRIER_2=true,INT_MANA_BARRIER_3=true,
     WIS_TRUE_FAITH=true,WIS_MIND_OVER_MATTER=true,CHA_AGGRESSIVE_PERSONALITY=true,
     CHA_SELF_ACTUALIZATION=true}
 local function copy(v) return Vector(v.x,v.y,v.z) end

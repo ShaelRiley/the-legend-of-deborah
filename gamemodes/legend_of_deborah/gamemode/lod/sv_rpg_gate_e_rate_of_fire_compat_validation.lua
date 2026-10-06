@@ -42,7 +42,7 @@ function Effects:ValidateRateOfFireCadence()
         "delayed post-shot deadline clears protected pre-shot floor")
 
     local scaled, changed = LOD.RPGAbilityRules:ScaleAttackDeadline(
-        100.81, delayedFloor, 101.4, 1.30)
+        100.81, delayedFloor, 101.4, 1.55)
     expect(changed and scaled >= delayedFloor and scaled < 101.4,
         "delayed stock deadline scales only after shot proof")
 
@@ -51,18 +51,18 @@ function Effects:ValidateRateOfFireCadence()
     expect(isfunction(self.BeginAR2RateOfFirePlan),
         "canonical AR2 activation transaction bridge is installed")
     if isfunction(self.RateOfFireAR2ReadyAt) then
-        local ar2Ready, ar2Changed = self:RateOfFireAR2ReadyAt(100.0, 100.88, 100.63, 1.30)
-        local expected = 100.0 + 0.88 / 1.30
+        local ar2Ready, ar2Changed = self:RateOfFireAR2ReadyAt(100.0, 100.88, 100.0 + 0.45 + 0.18 / 1.55, 1.55)
+        local expected = 100.0 + 0.88 / 1.55
         expect(ar2Changed and math.abs(ar2Ready - expected) < 0.0001,
-            "AR2 total next-trigger interval is divided by Lead Storm")
+            "AR2 total next-trigger interval is divided by Hair Trigger")
 
         local delayedCompletion, delayedChanged = self:RateOfFireAR2ReadyAt(
-            100.0, 100.88, 100.70, 1.30)
+            100.0, 100.88, 100.70, 1.55)
         expect(delayedChanged and math.abs(delayedCompletion - 100.70) < 0.0001,
-            "AR2 completed burst is an absolute floor for laser/internal spacing")
+            "AR2 completed burst is an absolute floor after genuine projectile completion")
 
         local tooLate, tooLateChanged = self:RateOfFireAR2ReadyAt(
-            100.0, 100.88, 100.90, 1.30)
+            100.0, 100.88, 100.90, 1.55)
         expect(not tooLateChanged and math.abs(tooLate - 100.90) < 0.0001,
             "late completion never fabricates a cadence gain")
 

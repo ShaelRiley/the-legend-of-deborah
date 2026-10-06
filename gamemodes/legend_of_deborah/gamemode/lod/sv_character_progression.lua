@@ -770,36 +770,40 @@ end
 -- One versioned ingress for historical ownership. Valid locked offers keep their
 -- order and seed; only removed IDs are replaced. No valid player choice is rerolled.
 function CharacterProgressionSystem:ReconcileFeatOwnership(state)
-    if not state or state.featCatalogRevision == "feat-rebalance-20261002-v1" then return false end
+    if not state or state.featCatalogRevision == "feat-hair-trigger-20261005-v1" then return false end
     -- Finite migration only: retired survival bookkeeping has no runtime effect.
     state.notYetConsumedDungeonLevel,state.notYetConsumedDungeonNumber=nil,nil
-    local function canonical(id)
+    local function canonical(id, preserveRateOwnership)
         if id == "STR_HERO_OF_LEGEND" then id = "WIS_HERO_OF_LEGEND" end
+        if id == "DEX_RATE_OF_FIRE_2" or id == "DEX_RATE_OF_FIRE_3" then
+            id = preserveRateOwnership and "DEX_RATE_OF_FIRE_1" or nil
+        end
         return self:_FindFeat(id) and id or nil
     end
     local ids, seen, counts = {}, {}, {}
     for _, old in ipairs(state.featIds or {}) do
-        local id = canonical(old)
+        local id = canonical(old, true)
         if id then
             if not seen[id] then ids[#ids + 1] = id; seen[id] = true end
             counts[id] = math.max(counts[id] or 0, (state.featStackCounts or {})[old] or 1)
+            if id == "DEX_RATE_OF_FIRE_1" then counts[id] = 1 end
         end
     end
     state.featIds, state.featStackCounts = ids, counts
     for _, draft in pairs(state.pendingFeatSlots or {}) do
         local offers, offered = {}, {}
         for _, old in ipairs(draft.offerFeatIds or {}) do
-            local id = canonical(old)
+            local id = canonical(old, draft.resolved == true)
             if id and not offered[id] then offers[#offers + 1] = id; offered[id] = true
             else draft.needsCanonicalRepair = true end
         end
         if draft.selectedFeatId then
-            draft.selectedFeatId = canonical(draft.selectedFeatId)
+            draft.selectedFeatId = canonical(draft.selectedFeatId, true)
             if not draft.selectedFeatId then draft.resolved = false; draft.needsCanonicalRepair = true end
         end
         draft.offerFeatIds = offers
     end
-    state.featCatalogRevision = "feat-rebalance-20261002-v1"
+    state.featCatalogRevision = "feat-hair-trigger-20261005-v1"
     return true
 end
 

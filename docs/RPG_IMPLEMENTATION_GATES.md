@@ -77,7 +77,18 @@ The acceptance investigation found and repaired a systemic Source/GMod clock-bou
 
 Blink Reload + AR2 is deliberately retained as positive emergent high-DEX build space: reload downtime can become nearly imperceptible while the AR2's laser telegraph, pre-burst delay, and burst-internal spacing remain authored costs.
 
-### Batch 6 — DEX Rate-of-Fire Cadence — PASSED 2026-09-05
+### Current Hair Trigger correction — source checkpoint
+
+The author replaces the former three-rank family with one DEX 13 Hair Trigger at
+`RateOfFireMultiplier = 1.55`. Revolver, pistol, shotgun, SMG and AR2 use this
+shared multiplier, including AR2 projectile spacing and completed-burst cycles.
+Rapid Fire and Lead Storm are retired; historical owned/resolved ranks collapse
+once at canonical ingress. Player-facing text: "Increase firearm firing rate by
+55%." See [scope](briefs/HAIR_TRIGGER_20261005.md) and
+[validation](validation/HAIR_TRIGGER_20261005.md). The earlier native acceptance
+below remains evidence for that historical build, not the new 55% cadence.
+
+### Historical Batch 6 — DEX Rate-of-Fire Cadence — PASSED 2026-09-05
 
 Hair Trigger / Rapid Fire / Lead Storm are runtime accepted from the same live-GDD authority:
 

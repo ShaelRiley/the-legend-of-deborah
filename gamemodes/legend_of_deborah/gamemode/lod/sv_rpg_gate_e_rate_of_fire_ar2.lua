@@ -10,6 +10,7 @@ if Effects.LODRateOfFireAR2NetBridgeInstalled then return Effects end
 local EPSILON = (Effects.RateOfFireConfig and Effects.RateOfFireConfig.epsilon) or 0.002
 local AR2_BASE_BURST_ROUNDS = 3
 local AUTHORITY_REVISION = "gate_e_ar2_one_ammo_per_burst_v2"
+local MAX_MULTIPLIER = Effects.RateOfFireConfig.maximumMultiplier
 
 -- The AR2 uses a custom burst transaction rather than ordinary stock IN_ATTACK
 -- cadence authority. Rate of Fire therefore owns a plan table keyed by player.
@@ -24,7 +25,7 @@ function Effects:RateOfFireAR2ReadyAt(startedAt, authoredReadyAt, completedAt, m
     startedAt = tonumber(startedAt) or 0
     authoredReadyAt = tonumber(authoredReadyAt) or startedAt
     completedAt = tonumber(completedAt) or startedAt
-    multiplier = math.Clamp(tonumber(multiplier) or 1, 1.00, 1.30)
+    multiplier = math.Clamp(tonumber(multiplier) or 1, 1.00, MAX_MULTIPLIER)
 
     if multiplier <= 1.00 + EPSILON or authoredReadyAt <= startedAt + EPSILON then
         return math.max(completedAt, authoredReadyAt), false
@@ -48,6 +49,8 @@ function Effects:BeginAR2RateOfFirePlan(ply, weapon, startedAt)
     startedAt = tonumber(startedAt) or CurTime()
     local authoredReadyAt = tonumber(ar2.readyAt) or startedAt
     local multiplier = Rules:RateOfFireMultiplier(ply)
+    local config = Specials.AR2Config or {}
+    ar2.burstSpacing = (tonumber(config.burstSpacing) or 0.09) / multiplier
     local _, changed = self:RateOfFireAR2ReadyAt(
         startedAt, authoredReadyAt, startedAt, multiplier)
 
@@ -260,6 +263,13 @@ local function installAuthorityWrappers()
             if preserveClip and IsValid(weapon) then weapon:SetClip1(clipBefore) end
 
             if ok then
+                -- Older Workshop bases advance a hard-coded spacing after this
+                -- call. Adjust that same deadline once; current bases read the
+                -- per-burst spacing directly in their canonical service.
+                if not self.AR2UsesRateOfFireSpacing and ar2 and ar2.burstSpacing then
+                    local spacing = tonumber((self.AR2Config or {}).burstSpacing) or 0.09
+                    ar2.nextShotAt = ar2.nextShotAt + ar2.burstSpacing - spacing
+                end
                 local plan = Effects.AR2RateOfFirePlans[ply]
                 if plan and ar2 and plan.weapon == ar2.weapon
                     and (not plan.soldierBinding or (plan.ar2 == ar2

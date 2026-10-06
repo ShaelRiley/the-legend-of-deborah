@@ -1,0 +1,239 @@
+{
+  "parent": "bbd1c19a755ba99427c647ef9d01307cf9ea24a5",
+  "source_before": "825ecdce65bdc313bd510ac2524c7381f8a5e3cee78b17568e979f545e940254",
+  "source_after": "825ecdce65bdc313bd510ac2524c7381f8a5e3cee78b17568e979f545e940254",
+  "changed_during_gate": false,
+  "total": 19,
+  "passed": 19,
+  "lua_files": 878,
+  "native_gmod_accepted": false,
+  "results": [
+    {
+      "name": "test_hair_trigger",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hair_trigger.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.323,
+      "stdout_sha256": "99d4cd7dc7d07036811b2fb048280239892bdb8f7c263681387065353741b37a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_checkpoint_g_protected_regressions",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_g_protected_regressions.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.195,
+      "stdout_sha256": "a29b786403246f3f489c59da841cf3c9798c66ddb1e0eb4a68d25dc0e411a8d0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_cross_feats_dodge",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.075,
+      "stdout_sha256": "151a33d18ff6e18fb7505fd17001319186e3f91ee56b5e7cd08d034ca6fed00e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_feat_stabilization",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_feat_stabilization.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.075,
+      "stdout_sha256": "c20f22fc5260d8658be72afa52fb4b9a738ae59f8d37e0f152e41e66e90e0723",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_human_soldier_progression",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_human_soldier_progression.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.046,
+      "stdout_sha256": "5ef4ad4047ffa7a7c6f571f87af2367c9b53abc45435b5576eae87314f86ce67",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_human_soldier_lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.05,
+      "stdout_sha256": "225b6eda6bb05e6a3d69e5cc9f5e50f41c95d01b714205cbbba3ceb3371d7002",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_checkpoint_e_closure",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_e_closure.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.051,
+      "stdout_sha256": "777b14da685e8ba29da573b2d29f26602206f5cd5dc0bd137b176d43727ee5ce",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_soldier_character_sheet",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_soldier_character_sheet.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.04,
+      "stdout_sha256": "ddd61700cb5a532826adeef3de82d841ac7cf679f1e2ba46b5abb85612b2d893",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_boss_resources",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_resources.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.206,
+      "stdout_sha256": "2aeb3bd50f990b53efe6a0740794309704be842b71433390003adf8eca9b9b81",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_gate_enemy_engagement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_enemy_engagement.lua"
+      ],
+      "returncode": 0,
+      "seconds": 5.95,
+      "stdout_sha256": "98d4b904b90f9379d453fd7c03af8c82cbb0ad6891ce3044d3b988e49cb34606",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_checkpoint_f_closure",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_f_closure.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.044,
+      "stdout_sha256": "dfa5b2830d7d1a34c37d8a210fbabc269827605293b7105ec2b9f095094636c3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "validate_spot11_drafts",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot11_drafts.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.119,
+      "stdout_sha256": "3cc90a1d68ee52179ad1db7252e9a9049878d4512312257cd29676f155595346",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_burst_authority_cleanup",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_burst_authority_cleanup.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.035,
+      "stdout_sha256": "bcd874b1a73a388ac468f2e8c4d5996fbec35d897148123de24f0a799af49f19",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_checkpoint_d_rebalance_20261002",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.093,
+      "stdout_sha256": "696546278f81e6f1502f0a7a5e1979dd45f2e87e606658f9da3aab96c2217a3f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "live_gdd_audit",
+      "command": [
+        "python3",
+        "tools/audit_live_gdd_feats.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.105,
+      "stdout_sha256": "fb17c7d02c853e403288a363b29cb0966b9ba4f0d2c6543fb610a22bf2afbd9a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "manual_document",
+      "command": [
+        "python3",
+        "tools/test_manual_document.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.293,
+      "stdout_sha256": "2b5ca05bcedbc1d4b7074202d1606a6144251fca970ebf518fa99b5c879ce6e1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "dev_installer_manifest",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.141,
+      "stdout_sha256": "39de7682b020a5ec65c42b6e8dbde8314e10b7403f3fc0e527fd0de34eaa496f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "lua_syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/effects/lod_cloud_step/init.lua",
+        "<all 878 Lua files>"
+      ],
+      "returncode": 0,
+      "seconds": 0.372,
+      "stdout_sha256": "81bd4c3546ba1e684c5e4817c86704c0b0c289559797ed42063bec6273f86cb9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "git_diff_check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.032,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

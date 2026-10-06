@@ -9,10 +9,11 @@ local Rules = LOD.RPGAbilityRules
 if not Feats or not Effects or not Rules then return end
 
 local FAMILY = "dex_rate_of_fire"
-local CHAIN = {"DEX_RATE_OF_FIRE_1", "DEX_RATE_OF_FIRE_2", "DEX_RATE_OF_FIRE_3"}
-local RANK = {DEX_RATE_OF_FIRE_1 = 1, DEX_RATE_OF_FIRE_2 = 2, DEX_RATE_OF_FIRE_3 = 3}
-local MULTIPLIER = {[1] = 1.10, [2] = 1.20, [3] = 1.30}
-local SOURCE_REVISION = "ANLCKQlqd7CuK8mqO8bD6YLSczpkCCbzvF_CuSWwh7tZahxeualxoHhhteJPwzEODy4h7eRO3dVCIqKnCRDqh7Khd3tSntD1CNYK-SRLVg"
+local CHAIN = {"DEX_RATE_OF_FIRE_1"}
+local RANK = {DEX_RATE_OF_FIRE_1 = 1}
+local MULTIPLIER = {[1] = 1.55}
+local MAX_MULTIPLIER = MULTIPLIER[1]
+local SOURCE_REVISION = "ANLCKQmUlHpIXlUgqqjCRjeDq_RX5wfx7ceBkFwsdpnj5ZxQkzwWH2SxmdIiMnmRGrSLjqw2kDKEAZWGg9e2Cg8ohbKLMunfHqqeJwdRdA"
 local EPSILON = 0.002
 local ORDINARY_FIREARMS = {
     weapon_pistol = true,
@@ -28,6 +29,7 @@ Effects.RateOfFireConfig = {
     chain = CHAIN,
     rankById = RANK,
     multiplierByRank = MULTIPLIER,
+    maximumMultiplier = MAX_MULTIPLIER,
     sourceRevision = SOURCE_REVISION,
     epsilon = EPSILON,
     ordinaryFirearms = ORDINARY_FIREARMS,
@@ -55,7 +57,7 @@ local function definition(id, name, dex, prerequisite, rank, multiplier)
         effectParams = {
             rateOfFireMultiplier = multiplier,
             description = string.format(
-                "Sets RateOfFireMultiplier = %.2f total. Eligible ordinary-firearm primary attack intervals are divided by this multiplier; reloads, Magic cooldowns, SMG cooling/overheat lockout, AR2 targeting-laser duration, internal AR2 three-shot spacing, Magnum free-projectile burst spacing, and enemy telegraphs are unchanged.",
+                "Sets RateOfFireMultiplier = %.2f total. Eligible firearm firing intervals, including AR2 burst spacing and completed-cycle cadence, are divided by this multiplier. Reloads, Magic cooldowns, SMG cooling/overheat lockout, targeting-laser duration, Magnum free-projectile burst spacing, and enemy telegraphs are unchanged.",
                 multiplier)
         },
         directorBaseWeight = 1.0,
@@ -67,11 +69,9 @@ end
 
 -- These assignments intentionally replace the stale Gate-B catalog placeholders.
 -- The live GDD is authoritative: Hair Trigger begins at DEX 13, not DEX 12.
-Feats.DEX_RATE_OF_FIRE_1 = definition("DEX_RATE_OF_FIRE_1", "Hair Trigger", 13, nil, 1, 1.10)
-Feats.DEX_RATE_OF_FIRE_2 = definition("DEX_RATE_OF_FIRE_2", "Rapid Fire", 15,
-    "DEX_RATE_OF_FIRE_1", 2, 1.20)
-Feats.DEX_RATE_OF_FIRE_3 = definition("DEX_RATE_OF_FIRE_3", "Lead Storm", 17,
-    "DEX_RATE_OF_FIRE_2", 3, 1.30)
+Feats.DEX_RATE_OF_FIRE_1 = definition("DEX_RATE_OF_FIRE_1", "Hair Trigger", 13, nil, 1, MULTIPLIER[1])
+Feats.DEX_RATE_OF_FIRE_2 = nil
+Feats.DEX_RATE_OF_FIRE_3 = nil
 Catalog.OrdinaryFeats = Feats
 Catalog.GateERateOfFireSourceRevisionId = SOURCE_REVISION
 
@@ -107,7 +107,7 @@ end
 
 function Rules:RateOfFireMultiplier(actor)
     local derived = self:Derived(actor)
-    return math.Clamp(tonumber(derived and derived.rateOfFireMultiplier) or 1, 1.00, 1.30)
+    return math.Clamp(tonumber(derived and derived.rateOfFireMultiplier) or 1, 1.00, MAX_MULTIPLIER)
 end
 
 -- This helper is intentionally expressed in deadlines so stock Source weapons can
@@ -118,7 +118,7 @@ function Rules:ScaleAttackDeadline(now, priorDeadline, authoredDeadline, multipl
     now = tonumber(now) or 0
     priorDeadline = tonumber(priorDeadline) or now
     authoredDeadline = tonumber(authoredDeadline) or priorDeadline
-    multiplier = math.Clamp(tonumber(multiplier) or 1, 1.00, 1.30)
+    multiplier = math.Clamp(tonumber(multiplier) or 1, 1.00, MAX_MULTIPLIER)
     if multiplier <= 1.00 + EPSILON
         or authoredDeadline <= now + EPSILON
         or authoredDeadline <= priorDeadline + EPSILON

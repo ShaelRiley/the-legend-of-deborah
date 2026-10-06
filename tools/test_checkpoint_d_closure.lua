@@ -127,8 +127,6 @@ local CANONICAL_FEATS = {
     DEX_IMMOLATE_PROC_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_IMMOLATE_PROC_2"}, family = "dex_immolate_proc", rank = 3, replaces = true},
     DEX_FAST_RELOAD = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_reload_cadence", rank = 1, replaces = false},
     DEX_RATE_OF_FIRE_1 = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_rate_of_fire", rank = 1, replaces = false},
-    DEX_RATE_OF_FIRE_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_RATE_OF_FIRE_1"}, family = "dex_rate_of_fire", rank = 2, replaces = true},
-    DEX_RATE_OF_FIRE_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_RATE_OF_FIRE_2"}, family = "dex_rate_of_fire", rank = 3, replaces = true},
     DEX_BURSTER_1 = {ability = "dex", req = {dex = 13}, prereq = {}, family = "dex_burst_size", rank = 1, replaces = false},
     DEX_BURSTER_2 = {ability = "dex", req = {dex = 15}, prereq = {"DEX_BURSTER_1"}, family = "dex_burst_size", rank = 2, replaces = true},
     DEX_BURSTER_3 = {ability = "dex", req = {dex = 17}, prereq = {"DEX_BURSTER_2"}, family = "dex_burst_size", rank = 3, replaces = true},
@@ -426,7 +424,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

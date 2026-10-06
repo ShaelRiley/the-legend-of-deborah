@@ -26,6 +26,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Hair Trigger Singleton & All Firearm Cadence", ["python3", "tools/run_lua54.py", "tools/test_hair_trigger.lua"]),
     ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
     ("Reduced Container Batching & Exact Hulls", ["python3", "tools/run_lua54.py", "tools/test_wall_batch.lua"]),
     ("Opt-in Rendered Frame Evidence & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_performance_capture.lua"]),
@@ -237,7 +238,7 @@ SUITES = [
     ("Checkpoint C Python Validator", ["python3", "tools/validate_checkpoint_c.py"]),
     ("Actor Core & Level Progression", ["python3", "tools/run_lua54.py", "tools/test_actor_progression.lua"]),
     ("Magic Forms & Contents Schema", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_c_headless.lua", "."]),
-    ("Implemented Feats & Capstones (114+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
+    ("Implemented Feats & Capstones (112+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
     ("Human Soldier RPG & XP Progression", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_progression.lua"]),
     ("Human Soldier Lifecycle & Isolation", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_lifecycle.lua"]),
     ("Death Tetris Deadline & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_tetris_lifecycle.lua"]),

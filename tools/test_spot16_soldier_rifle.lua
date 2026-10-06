@@ -129,9 +129,9 @@ for n=0,2 do step(p,t+n*.09+.000001);input(p,cmd(IN_ATTACK)) end
 step(p,CurTime()+2);input(p,cmd(IN_ATTACK));check(#shots==3 and not a.active,'hold cannot auto-repeat')
 input(p,cmd(0));input(p,cmd(IN_ATTACK));check(S.PlayerState[p].ar2.active,'fresh re-press accepted')
 -- Final cadence authority may accelerate only genuinely completed bursts.
-p,w=setup(1,3);check(S:BeginAR2Burst(p,w,p.aim),'rate-feat burst begins')
+p,w=setup(1,1);check(S:BeginAR2Burst(p,w,p.aim),'rate-feat burst begins')
 a=S.PlayerState[p].ar2;local plan=Effects.AR2RateOfFirePlans[p];check(plan and plan.ar2==a,'cadence binds same burst')
-t=a.fireAt;for n=0,3 do step(p,t+n*.09+.000001) end
+t=a.fireAt;for n=0,3 do step(p,t+n*.09/1.55+.000001) end
 local before=a.readyAt;cadence();check(a.readyAt<before and not Effects.AR2RateOfFirePlans[p],'actual completion earns shared cadence')
 -- The actual aim wrapper consumes one armed state and freezes its multiplier
 -- for the whole burst; later aim changes cannot rewrite committed damage.

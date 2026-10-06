@@ -33,6 +33,7 @@ Specials.AR2Config = {
     ammoPerTriggerBurst = 1,
     multiFireBurst = true
 }
+Specials.AR2UsesRateOfFireSpacing = true
 
 local SMG_WARM_SOUND = "legend_of_deborah/feedback/heat_warm.wav"
 local SMG_NEAR_SOUND = "legend_of_deborah/feedback/heat_near.wav"
@@ -296,6 +297,7 @@ local function finishAR2(ply, ar2, cooldown)
     ar2.ammoCommitted = nil
     ar2.fireAt = nil
     ar2.nextShotAt = nil
+    ar2.burstSpacing = nil
     ar2.direction = nil
     ar2.readyAt = CurTime() + (cooldown or AR2_RECOVERY)
     if IsValid(ar2.weapon) then
@@ -343,6 +345,7 @@ function Specials:BeginAR2Burst(ply, weapon, direction)
     ar2.direction = direction
     ar2.fireAt = now + AR2_TELEGRAPH
     ar2.nextShotAt = ar2.fireAt
+    ar2.burstSpacing = AR2_BURST_SPACING
     ar2.shotsFired = 0
     ar2.targetShots = targetShots
     ar2.desiredShots = targetShots
@@ -470,7 +473,7 @@ function Specials:ProcessPlayer(ply, state, now)
                     return
                 end
                 ar2.shotsFired = ar2.shotsFired + 1
-                ar2.nextShotAt = ar2.nextShotAt + AR2_BURST_SPACING
+                ar2.nextShotAt = ar2.nextShotAt + (tonumber(ar2.burstSpacing) or AR2_BURST_SPACING)
                 if ar2.soldierBinding then break end -- no backlog release after a service stall
             end
 

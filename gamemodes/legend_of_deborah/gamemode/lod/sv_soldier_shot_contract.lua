@@ -272,7 +272,9 @@ local function installContract()
             burst.shotIndex = burst.shotIndex + 1
             self:_SpawnSoldierBolt(burst.shotDirection, burst.shotIndex)
             burst.shotsRemaining = burst.shotsRemaining - 1
-            burst.nextShot = CurTime() + cfg.burstShotInterval
+            local rules = LOD.RPGAbilityRules
+            local rate = rules and rules.RateOfFireMultiplier and rules:RateOfFireMultiplier(self) or 1
+            burst.nextShot = CurTime() + cfg.burstShotInterval / rate
         end
 
         if burst.shotsRemaining <= 0 then

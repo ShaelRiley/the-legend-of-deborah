@@ -22,7 +22,7 @@ local function owns(state, id)
 end
 
 local function highestOwned(state)
-    for rank = 3, 1, -1 do
+    for rank = #CHAIN, 1, -1 do
         if owns(state, CHAIN[rank]) then return CHAIN[rank], rank end
     end
     return nil, 0
@@ -59,9 +59,7 @@ function Effects:ValidateRateOfFireCadence()
         if not ok then errors[#errors + 1] = message end
     end
     local expected = {
-        DEX_RATE_OF_FIRE_1 = {1, 13, nil, 1.10},
-        DEX_RATE_OF_FIRE_2 = {2, 15, "DEX_RATE_OF_FIRE_1", 1.20},
-        DEX_RATE_OF_FIRE_3 = {3, 17, "DEX_RATE_OF_FIRE_2", 1.30}
+        DEX_RATE_OF_FIRE_1 = {1, 13, nil, 1.55}
     }
     for id, values in pairs(expected) do
         local feat = Feats[id]
@@ -78,23 +76,21 @@ function Effects:ValidateRateOfFireCadence()
 
     local p0 = self:RateOfFireProfile({featIds = {}})
     local p1 = self:RateOfFireProfile({featIds = {CHAIN[1]}})
-    local p2 = self:RateOfFireProfile({featIds = {CHAIN[1], CHAIN[2]}})
-    local p3 = self:RateOfFireProfile({featIds = {CHAIN[1], CHAIN[2], CHAIN[3]}})
     expect(p0.rank == 0 and p0.rateOfFireMultiplier == 1.0, "baseline attack-rate profile")
-    expect(p1.rank == 1 and math.abs(p1.rateOfFireMultiplier - 1.10) < 0.0001,
+    expect(p1.rank == 1 and math.abs(p1.rateOfFireMultiplier - 1.55) < 0.0001,
         "Hair Trigger profile")
-    expect(p2.rank == 2 and math.abs(p2.rateOfFireMultiplier - 1.20) < 0.0001,
-        "Rapid Fire replaces lower rank")
-    expect(p3.rank == 3 and math.abs(p3.rateOfFireMultiplier - 1.30) < 0.0001,
-        "Lead Storm replaces lower ranks")
+    expect(#CHAIN == 1 and not Feats.DEX_RATE_OF_FIRE_2 and not Feats.DEX_RATE_OF_FIRE_3,
+        "Hair Trigger is the sole rate-of-fire feat")
+    expect(not Config.rankById.DEX_RATE_OF_FIRE_2 and not Config.rankById.DEX_RATE_OF_FIRE_3,
+        "retired ranks are absent from the mechanical family")
 
-    local scaled, changed = Rules:ScaleAttackDeadline(100, 99, 101.3, 1.30)
+    local scaled, changed = Rules:ScaleAttackDeadline(100, 99, 101.55, 1.55)
     expect(changed and math.abs(scaled - 101.0) < 0.0001,
         "authored attack interval is divided by multiplier")
-    local protected, protectedChanged = Rules:ScaleAttackDeadline(100, 100.9, 101.0, 1.30)
+    local protected, protectedChanged = Rules:ScaleAttackDeadline(100, 100.9, 101.0, 1.55)
     expect(protectedChanged and math.abs(protected - 100.9) < 0.0001,
         "pre-existing attack lock remains absolute floor")
-    local untouched, untouchedChanged = Rules:ScaleAttackDeadline(100, 101.1, 101.0, 1.30)
+    local untouched, untouchedChanged = Rules:ScaleAttackDeadline(100, 101.1, 101.0, 1.55)
     expect(not untouchedChanged and math.abs(untouched - 101.0) < 0.0001,
         "non-attack/pre-existing deadline is untouched")
 
@@ -111,12 +107,11 @@ function Effects:ValidateRateOfFireCadence()
     }
     local ps = {starterWeaponClass = "weapon_smg1"}
     expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[1]]), "Hair Trigger legal")
-    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[2]]), "Rapid Fire prerequisite")
+    state.featQualificationAbilities.dex = 12
+    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[1]]), "Hair Trigger requires DEX 13")
+    state.featQualificationAbilities.dex = 17
     state.featIds = {CHAIN[1]}
-    expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[2]]), "Rapid Fire legal")
-    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[3]]), "Lead Storm prerequisite")
-    state.featIds = {CHAIN[1], CHAIN[2]}
-    expect(Progression:_FeatEligible(ps, state, Feats[CHAIN[3]]), "Lead Storm legal")
+    expect(not Progression:_FeatEligible(ps, state, Feats[CHAIN[1]]), "Hair Trigger is nonrepeatable")
 
     return #errors == 0, errors
 end
@@ -161,7 +156,7 @@ concommand.Add("lod_rpg_gate_e_rate_of_fire_validate", function(ply)
     if not developerAllowed(ply) then return end
     local ok, errors = Effects:ValidateRateOfFireCadence()
     if ok then
-        print("[LOD:RPG-E] DEX Rate-of-Fire feat family PASS — 1.10/1.20/1.30 replacement ladder; firearm primary-attack interval division; authored exclusions preserved")
+        print("[LOD:RPG-E] DEX Rate-of-Fire feat family PASS — Hair Trigger singleton at 1.55; all firearm firing modes; protected non-firing timers preserved")
     else
         ErrorNoHalt("[LOD:RPG-E] DEX Rate-of-Fire feat family FAILED\n")
         for _, message in ipairs(errors or {}) do ErrorNoHalt("[LOD:RPG-E]  - " .. message .. "\n") end
@@ -201,14 +196,15 @@ concommand.Add("lod_rpg_test_rate_of_fire", function(ply, _, args)
     local state = ps and ps.progressionState or nil
     if not state then ply:ChatPrint("RPG progression state is unavailable.") return end
 
-    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, 3)
+    local rank = math.Clamp(math.floor(tonumber(args[1]) or 1), 0, #CHAIN)
     local kept = {}
     for _, id in ipairs(state.featIds or {}) do
-        if not RANK[id] then kept[#kept + 1] = id end
+        if not RANK[id] and id ~= "DEX_RATE_OF_FIRE_2" and id ~= "DEX_RATE_OF_FIRE_3" then kept[#kept + 1] = id end
     end
     state.featIds = kept
     state.featStackCounts = state.featStackCounts or {}
     for id in pairs(RANK) do state.featStackCounts[id] = nil end
+    state.featStackCounts.DEX_RATE_OF_FIRE_2, state.featStackCounts.DEX_RATE_OF_FIRE_3 = nil, nil
     for index = 1, rank do
         local id = CHAIN[index]
         state.featIds[#state.featIds + 1] = id
@@ -218,7 +214,7 @@ concommand.Add("lod_rpg_test_rate_of_fire", function(ply, _, args)
     Progression:SyncPlayer(ply)
     if run.MarkUnranked then run:MarkUnranked("Gate E DEX Rate-of-Fire feat test") end
     ply:ChatPrint(string.format(
-        "Gate E rate-of-fire rank %d configured (0=1.00, 1=1.10, 2=1.20, 3=1.30 RateOfFireMultiplier).",
+        "Gate E rate-of-fire rank %d configured (0=1.00, 1=1.55 RateOfFireMultiplier).",
         rank))
 end)
 

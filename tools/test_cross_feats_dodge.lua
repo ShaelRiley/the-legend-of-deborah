@@ -19,7 +19,7 @@ Rolls.EntityDisplayName = function(_, a) return 'actor' .. tostring(a.id) end
 local function actor(feats, human)
     serial = serial + 1
     local a = {valid=true,id=serial,hp=100,ground=false,LODHostile=not human,
-        state={featCatalogRevision="feat-rebalance-20261002-v1",featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
+        state={featCatalogRevision="feat-hair-trigger-20261005-v1",featIds=feats or {},level=1,effectiveAbilities={cha=10},derivedStats={}},resource={magic=90}}
     function a:IsPlayer() return human == true end
     function a:Alive() return self.hp > 0 end
     function a:Health() return self.hp end
@@ -96,7 +96,7 @@ assert(ok and reason=='flee' and data.save==1 and data.dc==14,'Terrifying keeps 
 target.LODMoraleCooldownUntil=0
 ok,reason,data=Status:AttemptMorale(source,target,{forceMorale=true,rng=rng({20,1,1,1})})
 assert(ok and reason=='saved' and data.save==20,'later encounter save rolls once')
-target.state={featCatalogRevision="feat-rebalance-20261002-v1",featIds={},derivedStats={},effectiveAbilities={cha=10}}
+target.state={featCatalogRevision="feat-hair-trigger-20261005-v1",featIds={},derivedStats={},effectiveAbilities={cha=10}}
 assert(Status:FirstTerrifyingSave(source,target),'new incarnation resets first save')
 
 -- Blast-Proof resolves a target-local view of the real shared roll. It ends

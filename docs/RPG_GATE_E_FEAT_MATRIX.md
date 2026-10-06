@@ -76,8 +76,6 @@ The live GDD says the Form catalog has six entries while Hero progression and fo
 | INT_AMMO_FLOOR_55 | Deep Reserves | INT 15 | Field Supply | Present | ammo_regeneration_floor |
 | INT_AMMO_FLOOR_66 | War Stock | INT 17 | Deep Reserves | Present | ammo_regeneration_floor |
 | DEX_RATE_OF_FIRE_1 | Hair Trigger | DEX 13 | None | Present | dex_rate_of_fire |
-| DEX_RATE_OF_FIRE_2 | Rapid Fire | DEX 15 | Hair Trigger | Present | dex_rate_of_fire |
-| DEX_RATE_OF_FIRE_3 | Lead Storm | DEX 17 | Rapid Fire | Present | dex_rate_of_fire |
 | DEX_BURSTER_1 | Extra Round | DEX 13 | None | Present | dex_burst_size |
 | DEX_BURSTER_2 | Extended Volley | DEX 15 | Extra Round | Present | dex_burst_size |
 | DEX_BURSTER_3 | Full Barrage | DEX 17 | Extended Volley | Present | dex_burst_size |
